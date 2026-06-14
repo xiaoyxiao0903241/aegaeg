@@ -1,0 +1,140 @@
+@keyframes faq-slide-down {
+  from {
+    block-size: 0;
+  }
+  to {
+    block-size: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes faq-slide-up {
+  from {
+    block-size: var(--radix-accordion-content-height);
+  }
+  to {
+    block-size: 0;
+  }
+}
+
+/* FAQ accordion — shared by Home + DApp (Radix sets --radix-accordion-content-height) */
+[data-faq-animated] [data-faq-answer][data-state='open'] {
+  animation: faq-slide-down 260ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+[data-faq-animated] [data-faq-answer][data-state='closed'] {
+  animation: faq-slide-up 260ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+@keyframes language-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dapp-rays-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes hero-rays-drift {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes character-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes metric-count-pop {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.72;
+  }
+  58% {
+    transform: scale(1.045);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes roadmap-dot-grow {
+  0% {
+    opacity: 0;
+    transform: scale(0.28);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1.16);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes roadmap-active-ripple {
+  0%,
+  100% {
+    box-shadow: 0 0 0 6px oklch(94.92% 0.0224 45.6 / 68%);
+  }
+  48% {
+    box-shadow: 0 0 0 9px oklch(94.92% 0.0224 45.6 / 100%);
+  }
+}
+
+@keyframes character-float-centered {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px);
+  }
+}
+
+@keyframes character-float-mobile {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes swap-card-flip {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.96);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

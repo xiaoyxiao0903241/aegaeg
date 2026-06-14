@@ -1,0 +1,184 @@
+/**
+ * 设计系统主题 —— 唯一真源 (single source of truth)
+ *
+ * 全部采用 shadcn 语义命名 + oklch 色彩空间。
+ * - :root 定义源变量（运行时可读、可主题切换）
+ * - @theme inline 将源变量映射为 Tailwind 工具类（bg-*, text-*, shadow-* ...）
+ *
+ */
+
+:root {
+  /* ---- shadcn 语义色 ---- */
+  --background: oklch(97.29% 0.0029 264.54);
+  --foreground: oklch(16.35% 0.0136 264.09);
+
+  --card: oklch(100% 0 89.88);
+  --card-foreground: var(--foreground);
+
+  --popover: oklch(100% 0 89.88);
+  --popover-foreground: var(--foreground);
+
+  /* 品牌色：珊瑚 */
+  --primary: oklch(66.83% 0.1625 36.6);
+  --primary-foreground: oklch(100% 0 89.88);
+
+  --secondary: oklch(94.83% 0.0075 260.73);
+  --secondary-foreground: var(--foreground);
+
+  --muted: oklch(94.83% 0.0075 260.73);
+  --muted-foreground: oklch(0% 0 0 / 50%);
+
+  --accent: oklch(94.92% 0.0224 45.6);
+  --accent-foreground: var(--primary);
+
+  --destructive: oklch(62% 0.2 25);
+  --destructive-foreground: oklch(100% 0 89.88);
+
+  --border: oklch(94.87% 0.0058 264.53);
+  --input: var(--border);
+  --ring: oklch(66.83% 0.1625 36.6);
+
+  --radius: 16px;
+
+  /* ---- 扩展品牌色 ---- */
+  --success: oklch(69.46% 0.1551 159.22);
+  --coral-bright: oklch(80.08% 0.0962 39.91);
+  --dark: oklch(19.25% 0.0189 270.25);
+  --on-dark: #b8c0ce;
+  --bsc: oklch(81.94% 0.1561 84.2);
+  --bsc-foreground: oklch(22.21% 0 89.88);
+
+  /* ---- 中性/辅助色 ---- */
+  --faint: oklch(0% 0 0 / 30%);
+  --ink-strong: oklch(0% 0 0 / 70%);
+  --subtle-ink: oklch(45% 0.02 260);
+  --faq-text: oklch(50.06% 0.025 259.18);
+  --placeholder: oklch(82% 0.011 264);
+  --focus-border: oklch(35% 0.02 260);
+  --border-subtle: oklch(92% 0.01 263);
+
+  /* ---- 表面（带透明度）---- */
+  --surface-glass: oklch(100% 0 0 / 82%);
+  --surface-wash: oklch(100% 0 0 / 56%);
+  --surface-wash-strong: oklch(100% 0 0 / 62%);
+  --pill-muted-bg: oklch(96% 0.006 264);
+
+  /* ---- 状态/描边（带透明度）---- */
+  --coral-hover-border: oklch(66.83% 0.1625 36.6 / 38%);
+  --coral-strong-border: oklch(66.83% 0.1625 36.6 / 55%);
+  --status-success-bg: oklch(91% 0.075 159 / 70%);
+
+  /* ---- 代币品牌色 ---- */
+  --token-usd1: #e86a43;
+  --token-agx: #232833;
+  --token-gagx: #7c6230;
+  --token-x: #5e2a40;
+
+  /* ---- 布局 ---- */
+  --container: 1200px;
+
+  /* ---- 滚动条（覆盖系统默认）---- */
+  --scrollbar-size: 8px;
+  --scrollbar-thumb: oklch(0% 0 0 / 14%);
+  --scrollbar-thumb-hover: oklch(0% 0 0 / 26%);
+  --scrollbar-thumb-active: oklch(66.83% 0.1625 36.6 / 52%);
+  --scrollbar-thumb-dark: oklch(100% 0 0 / 18%);
+  --scrollbar-thumb-dark-hover: oklch(100% 0 0 / 32%);
+  --scrollbar-thumb-dark-active: oklch(80.08% 0.0962 39.91 / 62%);
+  /* ---- DApp H5 顶栏区渐变（Figma `62:2`）---- */
+  --dapp-h5-gradient-top: #fbeae1;
+}
+
+/**
+ * 圆角与阴影：用非 inline 的 @theme 定义。
+ * 这样既会输出到 :root（裸 var(--shadow-card)、var(--radius-md) 可解析），
+ * 又会生成对应工具类（rounded-md、shadow-card ...）。
+ */
+@theme {
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  --shadow-card: 0 8px 24px oklch(22% 0.04 265 / 7%);
+  --shadow-card-strong: 0 18px 48px oklch(22% 0.04 265 / 12%);
+  --shadow-window: 0 12px 80px oklch(22% 0.04 265 / 16%);
+  --shadow-window-compact: 0 16px 40px oklch(22% 0.04 265 / 10%);
+  --shadow-primary-hover: 0 10px 24px oklch(66.83% 0.1625 36.6 / 24%);
+  --shadow-primary-hover-lg: 0 12px 24px oklch(66.83% 0.1625 36.6 / 24%);
+  --shadow-primary-hover-xl: 0 14px 28px oklch(22% 0.04 265 / 18%);
+  --shadow-coral-sm: 0 8px 22px oklch(66.83% 0.1625 36.6 / 14%);
+  --shadow-subtle: 0 10px 28px rgba(20, 28, 51, 0.1);
+  --shadow-token: 0 16px 50px oklch(22% 0.04 265 / 12%);
+  --shadow-faq: 0 6px 20px oklch(22% 0.04 265 / 6%);
+}
+
+/**
+ * @theme inline —— 把源变量暴露为 Tailwind v4 工具类。
+ * inline 表示工具类在使用处解析 var()，保留运行时主题能力。
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* 扩展品牌色 */
+  --color-success: var(--success);
+  --color-coral-bright: var(--coral-bright);
+  --color-dark: var(--dark);
+  --color-on-dark: var(--on-dark);
+  --color-bsc: var(--bsc);
+  --color-bsc-foreground: var(--bsc-foreground);
+
+  /* 中性/辅助 */
+  --color-faint: var(--faint);
+  --color-ink-strong: var(--ink-strong);
+  --color-subtle-ink: var(--subtle-ink);
+  --color-faq-text: var(--faq-text);
+  --color-placeholder: var(--placeholder);
+  --color-focus-border: var(--focus-border);
+  --color-border-subtle: var(--border-subtle);
+
+  /* 表面/状态 */
+  --color-surface-glass: var(--surface-glass);
+  --color-surface-wash: var(--surface-wash);
+  --color-surface-wash-strong: var(--surface-wash-strong);
+  --color-pill-muted-bg: var(--pill-muted-bg);
+  --color-coral-hover-border: var(--coral-hover-border);
+  --color-coral-strong-border: var(--coral-strong-border);
+  --color-status-success-bg: var(--status-success-bg);
+
+  --color-dapp-h5-gradient-top: var(--dapp-h5-gradient-top);
+
+  /* 代币 */
+  --color-token-usd1: var(--token-usd1);
+  --color-token-agx: var(--token-agx);
+  --color-token-gagx: var(--token-gagx);
+  --color-token-x: var(--token-x);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

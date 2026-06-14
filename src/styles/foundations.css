@@ -1,0 +1,10 @@
+@import './theme.css';
+@import './shared.css';
+@import './scrollbars.css';
+@import './animations.css';
+
+@source '../app';
+@source '../components';
+@source '../home';
+@source '../wallet-loader.ts';
+@source '../wallet-island.tsx';

@@ -1,0 +1,879 @@
+import Autoplay from 'embla-carousel-autoplay'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from '../../components/carousel'
+import { cn } from '~/lib/utils'
+import { useI18n } from '../../i18n/use-i18n'
+import { revealClass } from '~/lib/reveal'
+import {
+  desktopCopyClass,
+  shellContentHeadingClass,
+  shellContentPageClass,
+  shellModulePanelClass,
+} from '../shell-layout'
+import { dappAssets } from '../assets'
+import {
+  mobileRecentSwaps,
+  recentSwaps,
+  swapTokenCardKeys,
+  swapTokenKeys,
+  type SwapTokenKey,
+} from '../data'
+import { WalletConnectChip } from '../wallet-connect-chip'
+import type { DetailPanelControls } from '../types'
+import { DappActionButton } from '../components/dapp-action-button'
+import { DappActionRow } from '../components/dapp-action-row'
+import { AnchoredTooltip } from '../../components/anchored-tooltip'
+import { MetricCard } from '../components/dapp-card'
+import { DappPillTabs } from '../components/dapp-pill-tabs'
+import { DappSection } from '../components/dapp-section'
+import { DappWidgetHeader } from '../components/dapp-widget-header'
+import { DappMetaList } from '../components/dapp-meta-list'
+import { FaqStack } from '../components/faq-stack'
+import { GenesisPromoCard } from '../components/genesis-promo-card'
+import { MetricGrid } from '../components/metric-grid'
+import { ResponsiveTable } from '../components/responsive-table'
+import { SwapConnectPromptCard } from '../components/swap-connect-prompt-card'
+import { SwapAmountBox } from '../components/swap-amount-box'
+import { SwapSlippageModal } from '../components/swap-slippage-modal'
+
+const SELL_BALANCE_TEXT = '2,860.12'
+const BUY_BALANCE_TEXT = '3,200.46'
+const SELL_BALANCE_NUM = parseFloat(SELL_BALANCE_TEXT.replace(/,/g, ''))
+const BUY_BALANCE_NUM = parseFloat(BUY_BALANCE_TEXT.replace(/,/g, ''))
+
+const TOKEN_USDT = {
+  key: 'usdt' as const,
+  icon: dappAssets.usdt,
+  label: 'USDT',
+  balanceText: SELL_BALANCE_TEXT,
+  balanceNum: SELL_BALANCE_NUM,
+}
+const TOKEN_USD1 = {
+  key: 'usd1' as const,
+  icon: dappAssets.usd1,
+  label: 'USD1',
+  balanceText: BUY_BALANCE_TEXT,
+  balanceNum: BUY_BALANCE_NUM,
+}
+
+const PERCENTS = [25, 50, 75, 100] as const
+
+const SWAP_CARD_FLIP_ANIM =
+  '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]'
+
+const SWAP_WIDGET_FOOTER_SPACER = 'min-h-3.5 shrink-0 grow basis-3.5'
+
+const SWAP_BOTTOM_CARD_CLASS = 'mt-auto w-full shrink-0'
+
+const PERCENT_BTN_CLASS = cn(
+  'flex h-[25px] cursor-pointer items-center justify-center rounded-[9px] border border-border bg-card',
+  'px-0 py-0 text-xs font-semibold whitespace-nowrap text-muted-foreground',
+  'transition-[border-color,color,transform] duration-180 ease-out',
+  'hover:-translate-y-px hover:border-primary hover:text-primary',
+  'disabled:cursor-not-allowed disabled:opacity-[.58]',
+  'max-[820px]:h-auto max-[820px]:py-1.5 max-[820px]:text-[11px]',
+)
+
+const TOKEN_ICON_BG: Record<string, string> = {
+  usd1: 'bg-token-usd1',
+  agx: 'bg-token-agx',
+  x: 'bg-token-x',
+  gagx: 'bg-token-gagx',
+}
+
+export function SwapWidget({
+  connected,
+  detailPanel,
+  onSelectGenesis,
+}: {
+  connected: boolean
+  detailPanel: DetailPanelControls
+  onSelectGenesis: () => void
+}) {
+  const { messages: t } = useI18n()
+  const [sellAmount, setSellAmount] = useState(connected ? '200.00' : '')
+  const [isFlipping, setIsFlipping] = useState(false)
+  const [rotation, setRotation] = useState(0)
+  const [direction, setDirection] = useState<'forward' | 'reverse'>('forward')
+  const [slippage, setSlippage] = useState(1)
+  const [slippageOpen, setSlippageOpen] = useState(false)
+
+  const sellToken = direction === 'forward' ? TOKEN_USDT : TOKEN_USD1
+  const buyToken = direction === 'forward' ? TOKEN_USD1 : TOKEN_USDT
+  const buyAmount = connected ? sellAmount : ''
+  const sellBalance = `${t.swap.balance}: ${connected ? sellToken.balanceText : '—'}`
+  const buyBalance = `${t.swap.balance}: ${connected ? buyToken.balanceText : '—'}`
+
+  const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
+
+  const fillPercent = useCallback(
+    (percent: number) => {
+      if (!connected) return
+      const value = ((sellToken.balanceNum * percent) / 100).toFixed(2)
+      setSellAmount(value)
+    },
+    [connected, sellToken.balanceNum],
+  )
+
+  const handleFlip = useCallback(() => {
+    if (!connected || isFlipping) return
+    setIsFlipping(true)
+    setRotation((prev) => prev + 180)
+    window.setTimeout(() => {
+      setDirection((prev) => (prev === 'forward' ? 'reverse' : 'forward'))
+    }, 160)
+    window.setTimeout(() => {
+      setIsFlipping(false)
+    }, 320)
+  }, [connected, isFlipping])
+
+  return (
+    <div className={cn(shellModulePanelClass, 'max-[820px]:gap-0', '[&>:first-child]:mb-[18px]')}>
+      <DappWidgetHeader
+        detailCollapsed={detailPanel.collapsed}
+        intro={connected ? t.swap.intro : t.swap.disconnectedIntro}
+        onTogglePanel={detailPanel.onToggle}
+        showToggle={connected}
+        title={t.swap.title}
+      />
+
+      <SwapAmountBox
+        amountProps={{
+          'aria-label': 'USDT sell amount',
+          disabled: !connected,
+          inputMode: 'decimal',
+          onChange: (event) => setSellAmount(event.currentTarget.value),
+          placeholder: '0.00',
+          value: sellAmount,
+        }}
+        className={flipAnimClass}
+        mobilePreviewValue={connected ? sellAmount || '0.00' : undefined}
+        balance={sellBalance}
+        label={t.swap.sell}
+        tokenIcon={sellToken.icon}
+        tokenLabel={sellToken.label}
+      />
+
+      <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-[820px]:mt-3 max-[820px]:py-0">
+        {PERCENTS.map((percent) => (
+          <button
+            className={PERCENT_BTN_CLASS}
+            disabled={!connected}
+            key={percent}
+            onClick={() => fillPercent(percent)}
+            type="button"
+          >
+            {percent}%
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-center py-1.5 max-[820px]:py-0 max-[820px]:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]">
+        <AnchoredTooltip content={t.swap.flip}>
+          <button
+            aria-label={t.swap.flip}
+            className={cn(
+              'grid size-[34px] place-items-center rounded-[11px] border border-border bg-card p-0',
+              'text-sm leading-none text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
+              'disabled:cursor-default enabled:hover:-translate-y-px enabled:hover:border-primary',
+              'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
+              'max-[820px]:my-2',
+            )}
+            disabled={!connected}
+            onClick={handleFlip}
+            type="button"
+          >
+            <span
+              className="grid place-items-center transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
+              style={{ transform: `rotate(${rotation}deg)` }}
+            >
+              ⇅
+            </span>
+          </button>
+        </AnchoredTooltip>
+      </div>
+
+      <SwapAmountBox
+        amountProps={{
+          'aria-label': 'USD1 receive amount',
+          placeholder: '0.00',
+          readOnly: true,
+          value: buyAmount,
+        }}
+        className={cn('mt-0', flipAnimClass)}
+        mobilePreviewValue={connected ? buyAmount || '0.00' : undefined}
+        balance={buyBalance}
+        label={t.swap.buy}
+        tokenIcon={buyToken.icon}
+        tokenLabel={buyToken.label}
+      />
+
+      <DappMetaList
+        items={[
+          {
+            label: t.swap.rate,
+            value: `1 ${sellToken.label} = 1.001 ${buyToken.label}`,
+          },
+          {
+            label: t.swap.slippage,
+            value: connected ? (
+              <>
+                {slippage}%
+                <button
+                  aria-label={t.swap.slippageSettings}
+                  className={cn(
+                    'grid size-[18px] shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+                    'transition-opacity duration-180 ease-out hover:opacity-80',
+                  )}
+                  onClick={() => setSlippageOpen(true)}
+                  type="button"
+                >
+                  <img alt="" height="14" src={dappAssets.setting} width="14" />
+                </button>
+              </>
+            ) : (
+              '0%'
+            ),
+            valueClassName: 'inline-flex items-center justify-end gap-1',
+          },
+          {
+            label: t.swap.route,
+            value: `${sellToken.label} → ${buyToken.label}`,
+          },
+        ]}
+      />
+
+      {connected ? (
+        <DappActionRow>
+          <DappActionButton className="hidden" variant="secondary">
+            {t.swap.approve}
+          </DappActionButton>
+          <DappActionButton className="col-span-full">
+            {t.swap.action}
+          </DappActionButton>
+        </DappActionRow>
+      ) : (
+        <div className="mt-3.5 max-[820px]:mt-3 [&_.aegis-thirdweb-button]:!w-full">
+          <WalletConnectChip label={t.common.connectWallet} variant="primary" />
+        </div>
+      )}
+
+      {connected ? (
+        <>
+          <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
+          <GenesisPromoCard
+            actionLabel={t.genesis.joinGenesis}
+            className={cn(
+              SWAP_BOTTOM_CARD_CLASS,
+              'gap-1.5 [&_button]:min-h-[38px] [&_button]:text-[13px] [&_p]:leading-tight',
+              'max-[820px]:mt-3.5 max-[820px]:[&_button]:min-h-[42px] max-[820px]:[&_button]:text-sm',
+            )}
+            onClick={onSelectGenesis}
+            showProgress
+          />
+        </>
+      ) : (
+        <>
+          <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
+          <SwapConnectPromptCard className={SWAP_BOTTOM_CARD_CLASS} />
+        </>
+      )}
+
+      <SwapSlippageModal
+        onConfirm={setSlippage}
+        onOpenChange={setSlippageOpen}
+        open={slippageOpen}
+        slippage={slippage}
+      />
+    </div>
+  )
+}
+
+export function SwapContent({ connected }: { connected: boolean }) {
+  const { messages: t } = useI18n()
+  const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
+  const [aboutOpen, setAboutOpen] = useState(true)
+  const faqItems = getSwapFaqItems(t, faqToken)
+
+  return (
+    <div
+      className={cn(
+        shellContentPageClass,
+        !connected && 'max-[820px]:[&>.metric-grid]:hidden max-[820px]:[&>h2]:hidden',
+      )}
+    >
+      <h2 className={shellContentHeadingClass} id="swap-title">
+        {t.swap.overview}
+      </h2>
+
+      <MetricGrid columns={2}>
+        <MetricCard
+          className={cn(
+            !connected && 'py-3.5 [&_small]:hidden',
+            'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
+            connected &&
+              'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+          )}
+          label={t.swap.exchangeRate}
+          value={connected ? t.swap.fixedRateConnected : t.swap.fixedRate}
+        />
+        <MetricCard
+          className={cn(
+            !connected && 'py-3.5 [&_small]:hidden',
+            'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
+            connected &&
+              'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+          )}
+          label={t.swap.settlement}
+          value={t.swap.settlementValue}
+        />
+      </MetricGrid>
+
+      <DappSection
+        className={cn(
+          '!translate-y-0 !opacity-100 !transition-none',
+          '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
+          '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
+          'min-[821px]:[&+section]:mt-[34px]',
+        )}
+        title={(
+          <span className="flex w-full items-center justify-between gap-3">
+            {t.swap.tokenAbout}
+            <button
+              aria-controls="swap-about-body"
+              aria-expanded={aboutOpen}
+              aria-label={aboutOpen ? t.common.collapse : t.common.expand}
+              className="inline-grid size-4 flex-none cursor-pointer place-items-center border-0 bg-transparent p-0"
+              onClick={() => setAboutOpen((open) => !open)}
+              type="button"
+            >
+              <img
+                alt=""
+                className={cn(
+                  'size-4 text-foreground opacity-40 transition-transform duration-200',
+                  !aboutOpen && 'rotate-180',
+                )}
+                height="16"
+                src={dappAssets.chevronUp}
+                width="16"
+              />
+            </button>
+          </span>
+        )}
+      >
+        <div className="-mx-3" hidden={!aboutOpen} id="swap-about-body">
+          <TokenInfoCarousel />
+          <MobileTokenCarousel />
+        </div>
+      </DappSection>
+
+      <DappSection
+        className={cn(connected && 'hidden max-[820px]:block')}
+        title={t.swap.recentSwaps}
+      >
+        {connected ? (
+          <>
+            <ResponsiveTable
+              className="max-[820px]:hidden"
+              headers={[t.tables.time, t.tables.paid, t.tables.received, t.tables.status]}
+              plain
+              rows={recentSwaps}
+              positiveColumns={[2]}
+              statusColumns={[3]}
+            />
+            <ResponsiveTable
+              className="hidden max-[820px]:block"
+              compact
+              headers={[t.tables.time, t.tables.received, t.tables.status]}
+              plain
+              rows={mobileRecentSwaps}
+              positiveColumns={[1]}
+            />
+          </>
+        ) : (
+          <SwapEmptyState />
+        )}
+      </DappSection>
+
+      {connected ? (
+        <DappSection title={t.swap.faq}>
+          <div className={cn(revealClass(), 'max-[820px]:hidden')} data-reveal>
+            <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
+            <FaqStack items={faqItems} />
+          </div>
+          <div className={cn(revealClass(), 'hidden max-[820px]:block')} data-reveal>
+            <FaqStack items={faqItems} />
+          </div>
+        </DappSection>
+      ) : null}
+    </div>
+  )
+}
+
+function SwapFaqTabs({
+  activeToken,
+  onSelect,
+}: {
+  activeToken: SwapTokenKey
+  onSelect: (token: SwapTokenKey) => void
+}) {
+  const { messages: t } = useI18n()
+  const labels: Record<SwapTokenKey, string> = {
+    usd1: t.swap.faqTabUsd1,
+    agx: t.swap.faqTabAgx,
+    gagx: t.swap.faqTabGagx,
+    x: t.swap.faqTabX,
+  }
+
+  return (
+    <DappPillTabs
+      ariaLabel={t.swap.faq}
+      className="mt-4 flex flex-wrap gap-2"
+      items={swapTokenKeys.map((key) => ({
+        active: key === activeToken,
+        label: labels[key],
+      }))}
+      onSelect={(index) => onSelect(swapTokenKeys[index])}
+    />
+  )
+}
+
+function getSwapFaqItems(
+  t: ReturnType<typeof useI18n>['messages'],
+  token: SwapTokenKey,
+) {
+  const items: Record<SwapTokenKey, { answer: string; question: string }[]> = {
+    agx: t.swap.faqTabAgxItems.map(({ q, a }) => ({ question: q, answer: a })),
+    gagx: t.swap.faqTabGagxItems.map(({ q, a }) => ({ question: q, answer: a })),
+    usd1: t.swap.faqTabUsd1Items.map(({ q, a }) => ({ question: q, answer: a })),
+    x: t.swap.faqTabXItems.map(({ q, a }) => ({ question: q, answer: a })),
+  }
+
+  return items[token]
+}
+
+function tokenCardRaysClass(key: string) {
+  return cn(
+    'before:pointer-events-none before:absolute before:right-0 before:top-0 before:h-[180px] before:w-[328px]',
+    'before:bg-[url("/assets/figma/dapp/token-card-rays.svg")] before:bg-cover before:bg-right before:bg-no-repeat',
+    key === 'usd1' ? 'before:opacity-95' : 'before:opacity-[0.72]',
+  )
+}
+
+function mobileTokenCardRaysClass(key: string) {
+  return cn(
+    'before:pointer-events-none before:absolute before:right-0 before:top-0 before:h-[103px] before:w-[118px]',
+    'before:bg-[url("/assets/figma/dapp/token-card-corner.svg")] before:bg-cover before:bg-right before:bg-no-repeat',
+    key === 'usd1' ? 'before:opacity-95' : 'before:opacity-[0.72]',
+  )
+}
+
+function TokenInfoCarousel() {
+  const { messages: t } = useI18n()
+  const tokens = getSwapTokenContent(t)
+  const [api, setApi] = useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
+  const autoplay = useMemo(
+    () =>
+      Autoplay({
+        delay: 4000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+        stopOnFocusIn: true,
+      }),
+    [],
+  )
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+    const handleSelect = () => {
+      setCurrent(api.selectedScrollSnap())
+    }
+    api.on('select', handleSelect)
+    return () => {
+      api.off('select', handleSelect)
+    }
+  }, [api])
+
+  const goTo = useCallback(
+    (index: number) => {
+      api?.scrollTo(index)
+    },
+    [api],
+  )
+
+  return (
+    <Carousel
+      aria-label={t.swap.tokenAbout}
+      className={cn(revealClass(), 'mt-3.5 grid gap-3 overflow-hidden max-[820px]:hidden')}
+      data-reveal
+      opts={{ align: 'start', loop: true }}
+      plugins={[autoplay]}
+      setApi={setApi}
+    >
+      <CarouselContent className="flex items-start">
+        {tokens.map((token, index) => (
+          <CarouselItem className="shrink-0 grow-0 basis-full" key={token.key}>
+            <article
+              aria-hidden={current !== index}
+              className={cn(
+                'relative mx-3 mb-[22px] mt-4 min-h-[78px] min-w-0 overflow-hidden rounded-md bg-card px-4 py-4',
+                'shadow-[0_4px_12px_rgba(20,28,51,0.08)]',
+                tokenCardRaysClass(token.key),
+              )}
+            >
+              <div className="relative z-[1] flex min-w-0 items-start gap-3">
+                <TokenIcon size="desktop" token={token} />
+                <div className="flex min-w-0 flex-col gap-2">
+                  <strong className="text-base font-semibold leading-[1.2] tracking-[-0.48px] text-foreground">
+                    {token.title}
+                  </strong>
+                  <p className="m-0 max-w-[570px] text-[13px] font-normal leading-[1.5] tracking-[-0.26px] text-ink-strong">
+                    {token.desktopBody}
+                  </p>
+                </div>
+              </div>
+              <AnchoredTooltip content={t.swap.tokenContractTooltip}>
+                <button
+                  className={cn(
+                    'absolute right-[26px] top-1/2 z-[1] inline-flex h-9 -translate-y-1/2 items-center gap-[7px]',
+                    'rounded-full border border-border bg-card px-4 text-[13px] font-semibold leading-[1.2]',
+                    'tracking-[-0.26px] text-foreground transition-[border-color,transform] duration-180 ease-out',
+                    'hover:-translate-y-1/2 hover:translate-x-px hover:border-primary',
+                    'focus-visible:-translate-y-1/2 focus-visible:translate-x-px focus-visible:border-primary',
+                  )}
+                  type="button"
+                >
+                  {t.swap.tokenContract}
+                  <img
+                    alt=""
+                    height="15"
+                    src={dappAssets.arrowUpRight}
+                    width="15"
+                  />
+                </button>
+              </AnchoredTooltip>
+            </article>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <div className="inline-flex items-center justify-center gap-3.5 self-center pt-3">
+        <button
+          aria-label={t.swap.tokenPrevious}
+          className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint"
+          onClick={() => api?.scrollPrev()}
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+            className="block size-4 -rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
+          />
+        </button>
+        <span
+          aria-label={t.swap.tokenAbout}
+          className="inline-flex items-center gap-[7px]"
+          role="group"
+        >
+          {tokens.map((token, index) => (
+            <button
+              aria-current={current === index ? 'true' : undefined}
+              aria-label={`${t.swap.tokenAbout} ${index + 1}`}
+              className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0"
+              key={token.key}
+              onClick={() => goTo(index)}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'block h-[7px] rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
+                  current === index ? 'w-[22px] bg-primary' : 'w-[7px]',
+                )}
+              />
+            </button>
+          ))}
+        </span>
+        <button
+          aria-label={t.swap.tokenNext}
+          className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint"
+          onClick={() => api?.scrollNext()}
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+            className="block size-4 rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
+          />
+        </button>
+      </div>
+    </Carousel>
+  )
+}
+
+function getSwapTokenContent(t: ReturnType<typeof useI18n>['messages']) {
+  const tokenContent = {
+    agx: {
+      asset: dappAssets.tokenAgx,
+      key: 'agx',
+      mode: 'image' as const,
+      symbol: 'A',
+      title: t.swap.tokenAgx,
+      body: t.swap.tokenAgxBody,
+      desktopBody: t.swap.tokenAgxBodyDesktop,
+    },
+    usd1: {
+      asset: '',
+      key: 'usd1',
+      mode: 'text' as const,
+      symbol: 'U',
+      title: t.swap.tokenUsd1,
+      body: t.swap.tokenUsd1Body,
+      desktopBody: t.swap.tokenUsd1Body,
+    },
+    x: {
+      asset: '',
+      key: 'x',
+      mode: 'text' as const,
+      symbol: 'X',
+      title: t.swap.tokenX,
+      body: t.swap.tokenXBody,
+      desktopBody: t.swap.tokenXBodyDesktop,
+    },
+    gagx: {
+      asset: '',
+      key: 'gagx',
+      mode: 'text' as const,
+      symbol: 'g',
+      title: t.swap.tokenGagx,
+      body: t.swap.tokenGagxBody,
+      desktopBody: t.swap.tokenGagxBodyDesktop,
+    },
+  } satisfies Record<(typeof swapTokenCardKeys)[number], {
+    asset: string
+    body: string
+    desktopBody: string
+    key: (typeof swapTokenCardKeys)[number]
+    mode: 'image' | 'text'
+    symbol: string
+    title: string
+  }>
+
+  return swapTokenCardKeys.map((key) => tokenContent[key])
+}
+
+function MobileTokenCarousel() {
+  const { messages: t } = useI18n()
+  const tokens = getSwapTokenContent(t)
+  const [api, setApi] = useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+    const handleSelect = () => {
+      setCurrent(api.selectedScrollSnap())
+    }
+    api.on('select', handleSelect)
+    return () => {
+      api.off('select', handleSelect)
+    }
+  }, [api])
+
+  const goTo = useCallback(
+    (index: number) => {
+      api?.scrollTo(index)
+    },
+    [api],
+  )
+
+  return (
+    <Carousel
+      aria-label={t.swap.tokenAbout}
+      className={cn(revealClass(), 'hidden gap-2.5 overflow-hidden max-[820px]:grid max-[820px]:mt-3')}
+      data-reveal
+      opts={{ align: 'start', loop: true }}
+      setApi={setApi}
+    >
+      <CarouselContent
+        className={cn(
+          'flex items-start overflow-hidden scroll-smooth',
+          '-mx-[18px] mb-[-38px] w-[calc(100%+36px)] px-[18px] pb-[38px]',
+        )}
+      >
+        {tokens.map((token, index) => (
+          <CarouselItem className="shrink-0 grow-0 basis-full" key={token.key}>
+            <article
+              aria-hidden={current !== index}
+              className={cn(
+                'relative h-[103px] min-w-0 overflow-hidden rounded-2xl bg-card px-4 py-3.5 shadow-subtle',
+                mobileTokenCardRaysClass(token.key),
+              )}
+            >
+              <div className="relative z-[1] flex min-w-0 items-center justify-between gap-2">
+                <TokenIcon size="mobile" token={token} />
+                <strong className="min-w-0 flex-1 text-sm font-semibold leading-[1.2] tracking-[-0.42px] text-foreground">
+                  {token.title}
+                </strong>
+                <AnchoredTooltip content={t.swap.tokenContractTooltip}>
+                  <button
+                    className={cn(
+                      'inline-flex min-h-[30px] cursor-pointer items-center gap-[5px] rounded-full',
+                      'border border-border bg-card px-3 text-xs font-semibold leading-[1.2] whitespace-nowrap text-foreground',
+                    )}
+                    type="button"
+                  >
+                    {t.swap.tokenContract}
+                    <img
+                      alt=""
+                      height="15"
+                      src={dappAssets.arrowUpRight}
+                      width="15"
+                    />
+                  </button>
+                </AnchoredTooltip>
+              </div>
+              <p className="m-0 mt-2 max-w-[32ch] text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong">
+                {token.body}
+              </p>
+            </article>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <div aria-hidden="true" className="inline-flex items-center justify-center gap-3.5 pt-3 text-muted-foreground">
+        <button
+          className="grid size-[26px] cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-faint transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground"
+          onClick={() => api?.scrollPrev()}
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+            className="block size-3.5 -rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
+          />
+        </button>
+        <span className="inline-flex items-center gap-[7px]">
+          {tokens.map((token, index) => (
+            <button
+              className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0"
+              key={token.key}
+              onClick={() => goTo(index)}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'block h-1.5 rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
+                  current === index ? 'w-[18px] bg-primary' : 'w-1.5',
+                )}
+              />
+            </button>
+          ))}
+        </span>
+        <button
+          className="grid size-[26px] cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-faint transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground"
+          onClick={() => api?.scrollNext()}
+          type="button"
+        >
+          <span
+            aria-hidden="true"
+            className="block size-3.5 rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
+          />
+        </button>
+      </div>
+    </Carousel>
+  )
+}
+
+type SwapTokenContent = ReturnType<typeof getSwapTokenContent>[number]
+
+function TokenIcon({
+  size,
+  token,
+}: {
+  size: 'desktop' | 'mobile'
+  token: SwapTokenContent
+}) {
+  const isDesktop = size === 'desktop'
+  const bgClass =
+    token.mode === 'image' ? 'bg-token-agx' : TOKEN_ICON_BG[token.key]
+
+  if (token.mode === 'text') {
+    return (
+      <span
+        aria-hidden="true"
+        className={cn(
+          'grid shrink-0 place-items-center rounded-full font-semibold leading-[1.2] text-white',
+          isDesktop ? 'size-8 text-[13px]' : 'size-[30px] text-xs',
+          bgClass,
+        )}
+      >
+        {token.symbol}
+      </span>
+    )
+  }
+
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'grid shrink-0 place-items-center rounded-full font-semibold leading-[1.2] text-white',
+        isDesktop ? 'size-8 text-[13px]' : 'size-[30px] text-xs',
+        bgClass,
+      )}
+    >
+      <img
+        alt=""
+        className="object-contain"
+        height={isDesktop ? 20 : 19}
+        src={token.asset}
+        width={isDesktop ? 24 : 22}
+      />
+    </span>
+  )
+}
+
+function SwapEmptyState() {
+  const { messages: t } = useI18n()
+
+  return (
+    <div
+      className={cn(
+        revealClass(),
+        'mt-3.5 grid justify-items-center gap-[18px] overflow-hidden rounded-[18px] bg-card p-[30px_24px] shadow-card',
+        'max-[820px]:gap-3.5 max-[820px]:border max-[820px]:border-border max-[820px]:p-[22px_16px] max-[820px]:shadow-none',
+      )}
+      data-reveal
+    >
+      <div aria-hidden="true" className="grid w-full gap-3 max-[820px]:gap-[11px]">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            className={cn(
+              'grid grid-cols-[minmax(80px,120px)_1fr_minmax(56px,90px)_minmax(50px,70px)] items-center gap-3.5',
+              'max-[820px]:grid-cols-[minmax(56px,80px)_1fr_minmax(46px,56px)] max-[820px]:gap-2.5',
+            )}
+            key={index}
+          >
+            <span className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
+            <i className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
+            <b className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
+          </div>
+        ))}
+      </div>
+      <div className="grid justify-items-center gap-1.5 text-center text-faint max-[820px]:w-full max-[820px]:gap-[5px]">
+        <strong className="text-[15px] font-semibold leading-[1.2] text-foreground max-[820px]:text-sm">
+          {t.swap.emptyTitle}
+        </strong>
+        <p className="m-0 max-w-[42ch] text-[13px] leading-[1.5] max-[820px]:max-w-none max-[820px]:text-xs max-[820px]:whitespace-nowrap">
+          {t.swap.emptyBody}
+        </p>
+      </div>
+      <WalletConnectChip label={t.common.connectWallet} variant="primary" />
+    </div>
+  )
+}

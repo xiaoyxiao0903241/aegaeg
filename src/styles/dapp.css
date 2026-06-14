@@ -1,0 +1,97 @@
+@import 'tailwindcss/utilities';
+@import './foundations.css';
+@import './wallet.css';
+
+/* DApp shell — detail column collapse animation (CSS variable track, not swapped utilities) */
+@media (min-width: 821px) {
+  [data-dapp-window] {
+    --shell-detail-col: minmax(0, 1fr);
+    grid-template-columns:
+      minmax(76px, 84px)
+      minmax(min(320px, 100%), 400px)
+      var(--shell-detail-col);
+    transition:
+      grid-template-columns 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      max-width 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 320ms ease;
+  }
+
+  [data-dapp-window][data-collapsed='true'] {
+    --shell-detail-col: minmax(0, 0fr);
+    max-width: min(482px, 100%);
+  }
+}
+
+/* Sonner toast — third-party portal; uses shadcn semantic tokens only */
+[data-sonner-toaster] {
+  --border-radius: 9999px;
+  --width: min(380px, calc(100vw - 32px));
+  --offset-bottom: 24px;
+  font-family: inherit;
+}
+
+[data-sonner-toast][data-styled='true'] {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--foreground);
+  box-shadow: var(--shadow-card);
+}
+
+/* H5 全屏菜单 — keyframes 保证打开/关闭动画一致（不依赖 transition 首帧） */
+@media (max-width: 820px) {
+  @keyframes dapp-mobile-nav-in {
+    from {
+      transform: translateX(-100%);
+    }
+
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes dapp-mobile-nav-out {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes dapp-mobile-nav-fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes dapp-mobile-nav-fade-out {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+
+  [data-dapp-mobile-nav][data-motion='enter'] [data-dapp-mobile-nav-panel] {
+    animation: dapp-mobile-nav-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  [data-dapp-mobile-nav][data-motion='exit'] [data-dapp-mobile-nav-panel] {
+    animation: dapp-mobile-nav-out 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  [data-dapp-mobile-nav][data-motion='enter'] [data-dapp-mobile-nav-backdrop] {
+    animation: dapp-mobile-nav-fade-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  [data-dapp-mobile-nav][data-motion='exit'] [data-dapp-mobile-nav-backdrop] {
+    animation: dapp-mobile-nav-fade-out 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
