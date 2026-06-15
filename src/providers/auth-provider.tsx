@@ -21,6 +21,7 @@ import {
   type StoredAuthSession,
 } from '../lib/api/auth/session'
 import { defaultChain } from '../web3/thirdweb'
+import { useDappActions } from '../stores/dapp-actions'
 
 export interface AuthContextValue {
   token: string | null
@@ -53,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearWalletSession(storage)
         setSession(null)
         setLoginError(null)
+        useDappActions.getState().afterAuthLogout()
       }
       connectedAddressRef.current = undefined
       return
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearWalletSession(storage)
       setSession(null)
       setLoginError(null)
+      useDappActions.getState().afterAuthLogout()
       return
     }
 
@@ -92,6 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         token: result.token,
         savedAt: Date.now(),
       })
+      useDappActions.getState().afterAuthLogin()
     } catch (error) {
       if (error instanceof ApiError) {
         setLoginError(error.message)
@@ -123,6 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearWalletSession(storage)
     setSession(null)
     setLoginError(null)
+    useDappActions.getState().afterAuthLogout()
   }, [storage])
 
   const clearLoginError = useCallback(() => {

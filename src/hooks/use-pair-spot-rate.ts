@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { SWAP_CONFIG } from '../config/swap'
+import { QUERY_STALE_TIME } from '../lib/query/query-client'
+import { queryKeys } from '../lib/query/query-keys'
 import { readPairSpotRate } from '../web3/swap-read'
-import { useVisibilityAwareInterval } from './use-visibility-aware-interval'
+import { useVisibleQueryInterval } from './queries/use-visible-query-interval'
 
 function formatPoolRateLabel(rate: { usd1PerXx: number }) {
   return `1 USDT ≈ ${rate.usd1PerXx.toFixed(2)} USD1`
@@ -11,43 +13,16 @@ export function usePairSpotRate(
   enabled = true,
   intervalMs = SWAP_CONFIG.spotRateRefreshIntervalMs,
 ) {
-  const [rateLabel, setRateLabel] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const spotRateQuery = useQuery({
+    queryKey: queryKeys.chain.pairSpotRate,
+    queryFn: () => readPairSpotRate(),
+    enabled,
+    staleTime: QUERY_STALE_TIME.quote,
+  })
 
-  const refresh = useCallback(async (showLoading = false) => {
-    if (!enabled) {
-      return
-    }
+  useVisibleQueryInterval(spotRateQuery, intervalMs, enabled)
 
-    if (showLoading) {
-      setIsLoading(true)
-    }
+  const rateLabel = spotRateQuery.data ? formatPoolRateLabel(spotRateQuery.data) : null
 
-    try {
-      const rate = await readPairSpotRate()
-      if (rate) {
-        setRateLabel(formatPoolRateLabel(rate))
-      }
-    } catch {
-      setRateLabel(null)
-    } finally {
-      if (showLoading) {
-        setIsLoading(false)
-      }
-    }
-  }, [enabled])
-
-  useEffect(() => {
-    if (!enabled) {
-      setRateLabel(null)
-      setIsLoading(false)
-      return
-    }
-
-    void refresh(true)
-  }, [enabled, refresh])
-
-  useVisibilityAwareInterval(() => refresh(false), intervalMs, enabled)
-
-  return { rateLabel, isLoading }
+  return { rateLabel, isLoading: spotRateQuery.isLoading }
 }

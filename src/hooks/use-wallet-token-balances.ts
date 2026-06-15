@@ -1,7 +1,9 @@
+import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
-import { useCallback, useEffect, useState } from 'react'
 import { BSC_CONTRACTS } from '../config/contracts'
 import { formatTokenAmount } from '../lib/swap/token-amount'
+import { QUERY_STALE_TIME } from '../lib/query/query-client'
+import { queryKeys } from '../lib/query/query-keys'
 import { readErc20Balance } from '../web3/swap-read'
 
 export interface WalletTokenBalance {
@@ -12,24 +14,17 @@ export interface WalletTokenBalance {
 
 export function useWalletTokenBalances(enabled = true) {
   const account = useActiveAccount()
-  const [balances, setBalances] = useState<WalletTokenBalance[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const address = account?.address
 
-  const refresh = useCallback(async () => {
-    if (!enabled || !account?.address) {
-      setBalances([])
-      return
-    }
-
-    setIsLoading(true)
-
-    try {
+  const balancesQuery = useQuery({
+    queryKey: queryKeys.chain.walletBalances(address ?? ''),
+    queryFn: async () => {
       const [usd1, xx] = await Promise.all([
-        readErc20Balance(BSC_CONTRACTS.usd1, account.address),
-        readErc20Balance(BSC_CONTRACTS.xxToken, account.address),
+        readErc20Balance(BSC_CONTRACTS.usd1, address!),
+        readErc20Balance(BSC_CONTRACTS.xxToken, address!),
       ])
 
-      setBalances([
+      return [
         {
           symbol: 'USD1',
           label: 'USD1',
@@ -40,17 +35,19 @@ export function useWalletTokenBalances(enabled = true) {
           label: 'XX (USDT)',
           value: formatTokenAmount(xx, 18, 4),
         },
-      ])
-    } catch {
-      setBalances([])
-    } finally {
-      setIsLoading(false)
-    }
-  }, [account?.address, enabled])
+      ] satisfies WalletTokenBalance[]
+    },
+    enabled: enabled && Boolean(address),
+    staleTime: QUERY_STALE_TIME.balances,
+  })
 
-  useEffect(() => {
-    void refresh()
-  }, [refresh])
+  const refresh = async () => {
+    await balancesQuery.refetch()
+  }
 
-  return { balances, isLoading, refresh }
+  return {
+    balances: balancesQuery.data ?? [],
+    isLoading: balancesQuery.isLoading,
+    refresh,
+  }
 }

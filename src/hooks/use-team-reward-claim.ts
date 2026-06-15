@@ -2,10 +2,12 @@ import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useState } from 'react'
 import { useAuth } from '../providers/auth-provider'
 import { executeTeamRewardClaim } from '../web3/reward-claim'
+import { useDappActions } from '../stores/dapp-actions'
 
 export function useTeamRewardClaim() {
   const account = useActiveAccount()
   const { token, isAuthenticated } = useAuth()
+  const afterTeamClaim = useDappActions((state) => state.afterTeamClaim)
   const [isClaiming, setIsClaiming] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,6 +22,7 @@ export function useTeamRewardClaim() {
 
     try {
       await executeTeamRewardClaim({ account, token })
+      afterTeamClaim()
       return true
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Claim failed')
@@ -27,7 +30,7 @@ export function useTeamRewardClaim() {
     } finally {
       setIsClaiming(false)
     }
-  }, [account, isAuthenticated, token])
+  }, [account, afterTeamClaim, isAuthenticated, token])
 
   return { claim, isClaiming, error, canClaim: Boolean(account && token && isAuthenticated) }
 }

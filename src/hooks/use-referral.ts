@@ -1,16 +1,21 @@
+import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { REFERRAL_CONFIG, parseReferrerFromSearch } from '../config/referral'
 import { formatShortAddress } from '../lib/api/format-display'
+import { QUERY_STALE_TIME } from '../lib/query/query-client'
+import { queryKeys } from '../lib/query/query-keys'
 import {
   readIsBindReferral,
   readReferralCount,
   readReferrer,
 } from '../web3/referral-read'
 import { bindReferrer } from '../web3/referral-write'
+import { useDappActions } from '../stores/dapp-actions'
 
 export function useReferral(connected: boolean) {
   const account = useActiveAccount()
+  const afterReferralBind = useDappActions((state) => state.afterReferralBind)
   const pendingReferrer = useMemo(() => {
     const fromUrl = parseReferrerFromSearch(window.location.search)
     if (fromUrl) {
@@ -21,13 +26,25 @@ export function useReferral(connected: boolean) {
     const stored = sessionStorage.getItem('aegis.pendingReferrer')
     return stored && /^0x[a-fA-F0-9]{40}$/.test(stored) ? (stored as `0x${string}`) : null
   }, [])
-  const [isBound, setIsBound] = useState(false)
-  const [referrer, setReferrer] = useState<string | null>(null)
-  const [directCount, setDirectCount] = useState<bigint>(0n)
   const [referrerInput, setReferrerInput] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const address = account?.address
+
+  const referralQuery = useQuery({
+    queryKey: queryKeys.chain.referral(address ?? ''),
+    queryFn: async () => {
+      const [isBound, referrer, directCount] = await Promise.all([
+        readIsBindReferral(address!),
+        readReferrer(address!),
+        readReferralCount(address!),
+      ])
+      return { isBound, referrer, directCount }
+    },
+    enabled: connected && Boolean(address),
+    staleTime: QUERY_STALE_TIME.balances,
+  })
 
   useEffect(() => {
     if (pendingReferrer) {
@@ -35,37 +52,9 @@ export function useReferral(connected: boolean) {
     }
   }, [pendingReferrer])
 
-  const refresh = useCallback(async () => {
-    if (!connected || !account?.address) {
-      setIsBound(false)
-      setReferrer(null)
-      setDirectCount(0n)
-      return
-    }
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const [bound, ref, count] = await Promise.all([
-        readIsBindReferral(account.address),
-        readReferrer(account.address),
-        readReferralCount(account.address),
-      ])
-
-      setIsBound(bound)
-      setReferrer(ref)
-      setDirectCount(count)
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Failed to load referral data')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [account?.address, connected])
-
-  useEffect(() => {
-    void refresh()
-  }, [refresh])
+  const isBound = referralQuery.data?.isBound ?? false
+  const referrer = referralQuery.data?.referrer ?? null
+  const directCount = referralQuery.data?.directCount ?? 0n
 
   const effectiveReferrer = useMemo(() => {
     if (isBound && referrer && referrer !== '0x0000000000000000000000000000000000000000') {
@@ -88,7 +77,7 @@ export function useReferral(connected: boolean) {
 
     try {
       await bindReferrer({ account, referrer: target })
-      await refresh()
+      afterReferralBind(account.address)
       return true
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Bind referral failed')
@@ -96,7 +85,11 @@ export function useReferral(connected: boolean) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, pendingReferrer, referrerInput, refresh])
+  }, [account, afterReferralBind, pendingReferrer, referrerInput])
+
+  const refresh = useCallback(async () => {
+    await referralQuery.refetch()
+  }, [referralQuery])
 
   return {
     isBound,
@@ -105,9 +98,15 @@ export function useReferral(connected: boolean) {
     directCount: directCount.toString(),
     referrerInput,
     setReferrerInput,
-    isLoading,
+    isLoading: referralQuery.isLoading,
     isSubmitting,
-    error,
+    error:
+      error ??
+      (referralQuery.error instanceof Error
+        ? referralQuery.error.message
+        : referralQuery.error
+          ? 'Failed to load referral data'
+          : null),
     bind,
     refresh,
   }

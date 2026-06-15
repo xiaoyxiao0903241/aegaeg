@@ -25,8 +25,8 @@ import {
   RewardsHeroBodySkeleton,
 } from '../components/dapp-skeleton'
 import { useAuth } from '../../providers/auth-provider'
-import { useTeamRewardClaim } from '../../hooks/use-team-reward-claim'
 import { useShareholderRankLabels } from '../../hooks/use-shareholder-rank'
+import { useTeamRewardClaim } from '../../hooks/use-team-reward-claim'
 import { toast } from 'sonner'
 import { toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
 import {
@@ -84,7 +84,7 @@ export function RewardsWidget({
     rankLabel,
   } = useShareholderRankLabels(t)
   const { data: referralTotal, isLoading: referralLoading } = useReferralTotal(apiEnabled)
-  const { data: teamTotal, isLoading: teamLoading, refresh: refreshTeamTotal } = useTeamRewardTotal(apiEnabled)
+  const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(apiEnabled)
   const teamClaim = useTeamRewardClaim()
 
   useEffect(() => {
@@ -238,7 +238,6 @@ export function RewardsWidget({
               void teamClaim.claim().then((ok) => {
                 if (!ok) return
                 toast.success(t.rewards.claim)
-                void refreshTeamTotal()
               })
             }
           >

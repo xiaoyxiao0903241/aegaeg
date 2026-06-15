@@ -230,18 +230,11 @@ export function GenesisContent() {
     String(genesis.activeSeasonNumber),
   )
   const apiEnabled = connected && isAuthenticated
-  const { data: performance, isLoading: performanceLoading, refresh: refreshPerformance } =
-    usePerformance(apiEnabled)
-  const { data: salesLogs, isLoading: salesLoading, refresh: refreshSales } = useSalesLogs(
+  const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
+  const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
     { page: 1, page_size: 20 },
     apiEnabled,
   )
-
-  useEffect(() => {
-    if (!apiEnabled) return
-    void refreshPerformance()
-    void refreshSales()
-  }, [apiEnabled, genesis.userTotal, refreshPerformance, refreshSales])
 
   const phaseMaxUsd1 = Number(
     PRESALE_CONFIG.phases[genesis.phaseIndex]?.maxUsd1 ??

@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BSC_CONTRACTS } from '../config/contracts'
@@ -6,7 +7,6 @@ import {
   estimateAgxFromUsd1,
   formatPhaseCountdown,
   resolvePhaseCountdownTarget,
-  type PresalePhaseOnChain,
 } from '../lib/presale/presale-math'
 import {
   buildSeasonOptions,
@@ -16,14 +16,18 @@ import { buildGenesisPromoSnapshot } from '../lib/presale/genesis-promo'
 import { formatTokenAmount, parseTokenAmount } from '../lib/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '../web3/presale-write'
 import { MAX_UINT256 } from '../web3/abis'
-import {
-  readActivePresalePhase,
-  readAllPresalePhases,
-  readPresaleAgxPriceWei,
-  readUserPresaleTotal,
-} from '../web3/presale-read'
 import { GENESIS_PURCHASE_ERROR } from '../lib/web3/resolve-contract-error-message'
 import { readErc20Allowance, readErc20Balance } from '../web3/swap-read'
+import { queryKeys } from '../lib/query/query-keys'
+import { invalidatePresaleChainQueries } from '../lib/query/invalidate'
+import {
+  usePresaleActivePhaseQuery,
+  usePresaleAgxPriceQuery,
+  usePresalePhasesQuery,
+  usePresaleUserTotalQuery,
+  useUsd1PresaleWalletQuery,
+} from './queries/use-presale-queries'
+import { useDappActions } from '../stores/dapp-actions'
 
 export interface GenesisPurchaseResult {
   success: boolean
@@ -32,68 +36,37 @@ export interface GenesisPurchaseResult {
 
 const USD1_DECIMALS = 18
 
-export function useGenesisWidget(connected: boolean, enabled = true) {
+export function useGenesisWidget(connected: boolean) {
   const account = useActiveAccount()
+  const queryClient = useQueryClient()
+  const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
   const [shares, setShares] = useState(1)
-  const [phases, setPhases] = useState<PresalePhaseOnChain[]>([])
-  const [activePhase, setActivePhase] = useState<PresalePhaseOnChain | null>(null)
-  const [userTotal, setUserTotal] = useState<bigint>(0n)
-  const [usd1Balance, setUsd1Balance] = useState<bigint>(0n)
-  const [allowance, setAllowance] = useState<bigint>(0n)
-  const [agxPriceWei, setAgxPriceWei] = useState<bigint>(0n)
-  const [isLoading, setIsLoading] = useState(false)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [nowSeconds, setNowSeconds] = useState(() => Math.floor(Date.now() / 1000))
+
+  const address = account?.address
+  const phasesQuery = usePresalePhasesQuery()
+  const activePhaseQuery = usePresaleActivePhaseQuery()
+  const agxPriceQuery = usePresaleAgxPriceQuery()
+  const userTotalQuery = usePresaleUserTotalQuery(connected, address)
+  const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(connected, address)
+
+  const phases = phasesQuery.data ?? []
+  const activePhase = activePhaseQuery.data ?? null
+  const userTotal = userTotalQuery.data ?? 0n
+  const agxPriceWei = agxPriceQuery.data ?? 0n
+
+  const isLoading =
+    phasesQuery.isLoading ||
+    activePhaseQuery.isLoading ||
+    agxPriceQuery.isLoading ||
+    (connected && userTotalQuery.isLoading)
 
   const purchaseAmount = useMemo(
     () => parseTokenAmount(String(shares * Number(PRESALE_CONFIG.sharePriceUsd1)), USD1_DECIMALS),
     [shares],
   )
-
-  const refresh = useCallback(async () => {
-    if (!enabled) return
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const [allPhases, active, total, agxPrice] = await Promise.all([
-        readAllPresalePhases(),
-        readActivePresalePhase(),
-        connected && account?.address
-          ? readUserPresaleTotal(account.address)
-          : Promise.resolve(0n),
-        readPresaleAgxPriceWei(),
-      ])
-
-      setPhases(allPhases)
-      setActivePhase(active)
-      setUserTotal(total)
-      setAgxPriceWei(agxPrice)
-
-      if (connected && account?.address) {
-        const [balance, approved] = await Promise.all([
-          readErc20Balance(BSC_CONTRACTS.usd1, account.address),
-          readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
-        ])
-        setUsd1Balance(balance)
-        setAllowance(approved)
-      } else {
-        setUsd1Balance(0n)
-        setAllowance(0n)
-      }
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Failed to load presale data')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [account?.address, connected, enabled])
-
-  useEffect(() => {
-    if (!enabled) return
-    void refresh()
-  }, [enabled, refresh])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -128,13 +101,9 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
     connected && activePhase !== null && purchaseAmount >= minAmount && purchaseAmount <= maxAmount
   const isSubmitting = submittingAction !== null
 
-  useEffect(() => {
-    if (!connected || !account?.address) return
-
-    void readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale).then(
-      setAllowance,
-    )
-  }, [account?.address, connected, purchaseAmount])
+  const refresh = useCallback(async () => {
+    invalidatePresaleChainQueries(address)
+  }, [address])
 
   const approve = useCallback(async (): Promise<GenesisPurchaseResult> => {
     if (!account || !canPurchase || isApproved) {
@@ -146,8 +115,12 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
 
     try {
       await approveUsd1ForPresaleIfNeeded({ account, amount: purchaseAmount })
-      setAllowance(MAX_UINT256)
-      await refresh()
+      if (address) {
+        queryClient.setQueryData(
+          queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+          MAX_UINT256,
+        )
+      }
       return { success: true }
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : 'Approve failed'
@@ -155,7 +128,7 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
     } finally {
       setSubmittingAction(null)
     }
-  }, [account, canPurchase, isApproved, purchaseAmount, refresh])
+  }, [account, address, canPurchase, isApproved, purchaseAmount, queryClient])
 
   const purchase = useCallback(async (): Promise<GenesisPurchaseResult> => {
     if (!account || !activePhase || !canPurchase) {
@@ -170,8 +143,17 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
         readErc20Balance(BSC_CONTRACTS.usd1, account.address),
         readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
       ])
-      setUsd1Balance(balance)
-      setAllowance(approved)
+
+      if (address) {
+        queryClient.setQueryData(
+          queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address),
+          balance,
+        )
+        queryClient.setQueryData(
+          queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+          approved,
+        )
+      }
 
       if (approved < purchaseAmount) {
         return { success: false, error: GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE }
@@ -186,7 +168,7 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
         phase: activePhase.index,
         amount: purchaseAmount,
       })
-      await refresh()
+      afterGenesisPurchase(account.address)
       return { success: true }
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : 'Purchase failed'
@@ -194,7 +176,15 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
     } finally {
       setSubmittingAction(null)
     }
-  }, [account, activePhase, canPurchase, purchaseAmount, refresh])
+  }, [
+    account,
+    activePhase,
+    address,
+    afterGenesisPurchase,
+    canPurchase,
+    purchaseAmount,
+    queryClient,
+  ])
 
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
 
@@ -214,6 +204,12 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
     () => buildGenesisPromoSnapshot(phases, activePhase, nowSeconds),
     [activePhase, nowSeconds, phases],
   )
+
+  const queryError =
+    phasesQuery.error ??
+    activePhaseQuery.error ??
+    agxPriceQuery.error ??
+    userTotalQuery.error
 
   return {
     shares,
@@ -248,7 +244,9 @@ export function useGenesisWidget(connected: boolean, enabled = true) {
     isLoading,
     isSubmitting,
     submittingAction,
-    error,
+    error:
+      error ??
+      (queryError instanceof Error ? queryError.message : queryError ? 'Failed to load presale data' : null),
     refresh,
     approve,
     purchase,

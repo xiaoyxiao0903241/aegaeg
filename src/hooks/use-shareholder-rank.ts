@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { buildRewardTierRows } from '../lib/presale/tier-table'
 import {
@@ -8,9 +8,9 @@ import {
 import { resolveDisplayPresaleRank } from '../lib/presale/rank'
 import { formatTokenAmount } from '../lib/swap/token-amount'
 import { useAuth } from '../providers/auth-provider'
-import { readUserPresaleTotal } from '../web3/presale-read'
 import { usePerformance } from './use-api-data'
 import { useDappShell } from '../app/dapp-shell-context'
+import { usePresaleUserTotalQuery } from './queries/use-presale-queries'
 
 export function useShareholderRank() {
   const { connected } = useDappShell()
@@ -18,35 +18,14 @@ export function useShareholderRank() {
   const { isAuthenticated, isLoggingIn, loginError } = useAuth()
   const apiEnabled = connected && isAuthenticated
   const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
-  const [chainVolumeUsd, setChainVolumeUsd] = useState(0)
-  const [isChainVolumeLoading, setIsChainVolumeLoading] = useState(false)
 
-  useEffect(() => {
-    if (!connected || !account?.address) {
-      setChainVolumeUsd(0)
-      setIsChainVolumeLoading(false)
-      return
-    }
+  const address = account?.address
+  const userTotalQuery = usePresaleUserTotalQuery(connected, address)
 
-    let cancelled = false
-    setIsChainVolumeLoading(true)
-
-    void readUserPresaleTotal(account.address)
-      .then((total) => {
-        if (cancelled) return
-        setChainVolumeUsd(Number(formatTokenAmount(total, 18, 0)))
-      })
-      .catch(() => {
-        if (!cancelled) setChainVolumeUsd(0)
-      })
-      .finally(() => {
-        if (!cancelled) setIsChainVolumeLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [account?.address, connected])
+  const chainVolumeUsd = useMemo(() => {
+    if (!userTotalQuery.data) return 0
+    return Number(formatTokenAmount(userTotalQuery.data, 18, 0))
+  }, [userTotalQuery.data])
 
   const personalVolumeUsd = useMemo(() => {
     const apiVolume = Number(performance?.presale_volume ?? 0)
@@ -59,6 +38,7 @@ export function useShareholderRank() {
   )
 
   const authPending = connected && !isAuthenticated && !loginError
+  const isChainVolumeLoading = connected && userTotalQuery.isLoading
 
   const isRankLoading =
     connected &&

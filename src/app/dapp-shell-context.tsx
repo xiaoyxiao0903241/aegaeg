@@ -1,4 +1,5 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { useActiveAccount } from 'thirdweb/react'
+import { useDappShellStore } from '../stores/dapp-shell-store'
 import type { DappTab } from './types'
 
 export interface DappShellState {
@@ -7,24 +8,15 @@ export interface DappShellState {
   detailCollapsed: boolean
 }
 
-const DappShellContext = createContext<DappShellState | null>(null)
+export function useDappShell(): DappShellState {
+  const account = useActiveAccount()
+  const tab = useDappShellStore((state) => state.activeTab)
+  const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
+  const connected = Boolean(account)
 
-export function DappShellProvider({
-  children,
-  value,
-}: {
-  children: ReactNode
-  value: DappShellState
-}) {
-  return (
-    <DappShellContext.Provider value={value}>{children}</DappShellContext.Provider>
-  )
-}
-
-export function useDappShell() {
-  const context = useContext(DappShellContext)
-  if (!context) {
-    throw new Error('useDappShell must be used within DappShellProvider')
+  return {
+    tab,
+    connected,
+    detailCollapsed: connected && detailCollapsed,
   }
-  return context
 }

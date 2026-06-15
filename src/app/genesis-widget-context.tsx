@@ -8,13 +8,11 @@ const GenesisWidgetContext = createContext<GenesisWidgetContextValue | null>(nul
 export function GenesisWidgetProvider({
   children,
   connected,
-  enabled,
 }: {
   children: ReactNode
   connected: boolean
-  enabled: boolean
 }) {
-  const value = useGenesisWidget(connected, enabled)
+  const value = useGenesisWidget(connected)
   return <GenesisWidgetContext.Provider value={value}>{children}</GenesisWidgetContext.Provider>
 }
 

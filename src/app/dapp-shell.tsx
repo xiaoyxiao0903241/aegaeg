@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '../i18n/use-i18n'
 import { dappAssets } from './assets'
 import { DappRail } from './dapp-rail'
@@ -12,8 +11,7 @@ import { GenesisWidgetProvider } from './genesis-widget-context'
 import { RewardsContent, RewardsWidget } from './tabs/rewards-tab'
 import { SwapContent, SwapWidget } from './tabs/swap-tab'
 import type { DappTab, DetailPanelControls } from './types'
-import { getInitialTab, isDappTab } from './utils'
-import { DappShellProvider } from './dapp-shell-context'
+import { useDappShell } from './dapp-shell-context'
 import {
   shellContainerClass,
   shellContentClass,
@@ -25,57 +23,39 @@ import {
   shellWindowClass,
 } from './shell-layout'
 import { isThirdwebConfigured } from '../web3/thirdweb'
+import { useDappShellStore } from '../stores/dapp-shell-store'
 
 export function DappShell() {
-  const account = useActiveAccount()
   const { messages: t } = useI18n()
-  const [activeTab, setActiveTab] = useState<DappTab>(getInitialTab)
-  const [detailCollapsed, setDetailCollapsed] = useState(false)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const activeTab = useDappShellStore((state) => state.activeTab)
+  const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
+  const mobileNavOpen = useDappShellStore((state) => state.mobileNavOpen)
+  const selectTab = useDappShellStore((state) => state.selectTab)
+  const selectMobileTab = useDappShellStore((state) => state.selectMobileTab)
+  const toggleDetailCollapsed = useDappShellStore((state) => state.toggleDetailCollapsed)
+  const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
+  const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
+  const shellState = useDappShell()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
 
-  const connected = Boolean(account)
-
   useEffect(() => {
-    const syncHash = () => {
-      const hash = window.location.hash.slice(1)
-      if (isDappTab(hash)) {
-        setActiveTab(hash)
-      }
-    }
-
-    window.addEventListener('hashchange', syncHash)
-    return () => window.removeEventListener('hashchange', syncHash)
-  }, [])
-
-  function selectTab(tab: DappTab) {
-    setActiveTab(tab)
-    window.history.replaceState(null, '', `#${tab}`)
-  }
-
-  function selectMobileTab(tab: DappTab) {
-    selectTab(tab)
-    setMobileNavOpen(false)
-  }
+    syncTabFromHash()
+    window.addEventListener('hashchange', syncTabFromHash)
+    return () => window.removeEventListener('hashchange', syncTabFromHash)
+  }, [syncTabFromHash])
 
   const detailPanel = useMemo<DetailPanelControls>(
     () => ({
-      collapsed: connected && detailCollapsed,
-      onToggle: () => setDetailCollapsed((collapsed) => !collapsed),
+      collapsed: shellState.detailCollapsed,
+      onToggle: toggleDetailCollapsed,
     }),
-    [connected, detailCollapsed],
+    [shellState.detailCollapsed, toggleDetailCollapsed],
   )
 
   const mobileNavId = 'dapp-mobile-nav'
-  const effectiveDetailCollapsed = connected && detailCollapsed
-  const shellState = {
-    tab: activeTab,
-    connected,
-    detailCollapsed: effectiveDetailCollapsed,
-  }
+  const effectiveDetailCollapsed = shellState.detailCollapsed
   return (
-    <DappShellProvider value={shellState}>
-      <main className={shellPageClass}>
+    <main className={shellPageClass}>
         <DappTopbar />
 
         {import.meta.env.DEV && !isThirdwebConfigured ? (
@@ -100,10 +80,10 @@ export function DappShell() {
               className={shellWindowClass(shellState)}
               data-dapp-window
               data-tab={activeTab}
-              data-connected={connected ? 'true' : 'false'}
+              data-connected={shellState.connected ? 'true' : 'false'}
               data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
             >
-              <GenesisWidgetProvider connected={connected} enabled={activeTab === 'genesis'}>
+              <GenesisWidgetProvider connected={shellState.connected}>
                 <>
                   <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 
@@ -128,7 +108,7 @@ export function DappShell() {
                     />
                     <TabWidget
                       activeTab={activeTab}
-                      connected={connected}
+                      connected={shellState.connected}
                       detailPanel={detailPanel}
                       onSelectTab={selectTab}
                     />
@@ -141,7 +121,7 @@ export function DappShell() {
                   >
                     <TabContent
                       activeTab={activeTab}
-                      connected={connected}
+                      connected={shellState.connected}
                       onSelectTab={selectTab}
                     />
                   </section>
@@ -153,7 +133,6 @@ export function DappShell() {
 
         <DappRevealObserver container={windowNode} />
       </main>
-    </DappShellProvider>
   )
 }
 

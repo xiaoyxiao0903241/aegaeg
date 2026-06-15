@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import {
   getPerformance,
   getReferralTotal,
@@ -8,74 +7,50 @@ import {
   getTeamRewardTotal,
 } from '../lib/api/endpoints'
 import type { PaginationParams } from '../lib/api/types'
-import { useApiQuery } from './use-api-query'
-import { useAuth } from '../providers/auth-provider'
+import { queryKeys } from '../lib/query/query-keys'
+import { useAuthenticatedQuery } from './use-authenticated-query'
 
 export function usePerformance(enabled = true) {
-  const { isAuthenticated } = useAuth()
-
-  return useApiQuery(
-    useMemo(() => (token) => getPerformance(token), []),
-    enabled && isAuthenticated,
-  )
+  return useAuthenticatedQuery(queryKeys.api.performance, getPerformance, enabled)
 }
 
 export function useSalesLogs(params: PaginationParams = {}, enabled = true) {
-  const { isAuthenticated } = useAuth()
   const page = params.page
   const pageSize = params.page_size
 
-  return useApiQuery(
-    useMemo(
-      () => (token) => getSalesLogs(token, { page, page_size: pageSize }),
-      [page, pageSize],
-    ),
-    enabled && isAuthenticated,
+  return useAuthenticatedQuery(
+    queryKeys.api.salesLogs({ page, page_size: pageSize }),
+    (token) => getSalesLogs(token, { page, page_size: pageSize }),
+    enabled,
   )
 }
 
 export function useRewardLogs(params: PaginationParams = {}, enabled = true) {
-  const { isAuthenticated } = useAuth()
   const page = params.page
   const pageSize = params.page_size
 
-  return useApiQuery(
-    useMemo(
-      () => (token) => getRewardLogs(token, { page, page_size: pageSize }),
-      [page, pageSize],
-    ),
-    enabled && isAuthenticated,
+  return useAuthenticatedQuery(
+    queryKeys.api.rewardLogs({ page, page_size: pageSize }),
+    (token) => getRewardLogs(token, { page, page_size: pageSize }),
+    enabled,
   )
 }
 
 export function useReferralTotal(enabled = true) {
-  const { isAuthenticated } = useAuth()
-
-  return useApiQuery(
-    useMemo(() => (token) => getReferralTotal(token), []),
-    enabled && isAuthenticated,
-  )
+  return useAuthenticatedQuery(queryKeys.api.referralTotal, getReferralTotal, enabled)
 }
 
 export function useTeamRewardTotal(enabled = true) {
-  const { isAuthenticated } = useAuth()
-
-  return useApiQuery(
-    useMemo(() => (token) => getTeamRewardTotal(token), []),
-    enabled && isAuthenticated,
-  )
+  return useAuthenticatedQuery(queryKeys.api.teamRewardTotal, getTeamRewardTotal, enabled)
 }
 
 export function useTeamReferrals(params: PaginationParams = {}, enabled = true) {
-  const { isAuthenticated } = useAuth()
   const page = params.page
   const pageSize = params.page_size
 
-  return useApiQuery(
-    useMemo(
-      () => (token) => getTeamReferrals(token, { page, page_size: pageSize }),
-      [page, pageSize],
-    ),
-    enabled && isAuthenticated,
+  return useAuthenticatedQuery(
+    queryKeys.api.teamReferrals({ page, page_size: pageSize }),
+    (token) => getTeamReferrals(token, { page, page_size: pageSize }),
+    enabled,
   )
 }

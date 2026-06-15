@@ -44,7 +44,7 @@ import { SwapConnectPromptCard } from '../components/swap-connect-prompt-card'
 import { SwapAmountBox } from '../components/swap-amount-box'
 import { SwapSlippageModal } from '../components/swap-slippage-modal'
 import { useSwapWidget } from '../../hooks/use-swap-widget'
-import { useGenesisWidget } from '../../hooks/use-genesis-widget'
+import { useGenesisWidgetContext } from '../genesis-widget-context'
 import { usePairSpotRate } from '../../hooks/use-pair-spot-rate'
 import { useSwapHistory } from '../../hooks/use-swap-history'
 import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '../../config/token-contracts'
@@ -106,7 +106,7 @@ export function SwapWidget({
 }) {
   const { messages: t } = useI18n()
   const swap = useSwapWidget(connected)
-  const genesis = useGenesisWidget(connected)
+  const genesis = useGenesisWidgetContext()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
   const [slippageOpen, setSlippageOpen] = useState(false)
@@ -341,15 +341,10 @@ export function SwapContent({ connected }: { connected: boolean }) {
   const { messages: t } = useI18n()
   const isMobileViewport = useMobileViewport()
   const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
-  const { desktopRows: swapHistoryRows, mobileRows: mobileSwapHistoryRows, refresh: refreshSwapHistory } =
-    useSwapHistory()
+  const { desktopRows: swapHistoryRows, mobileRows: mobileSwapHistoryRows } = useSwapHistory()
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
   const [aboutOpen, setAboutOpen] = useState(true)
   const faqItems = getSwapFaqItems(t, faqToken)
-
-  useEffect(() => {
-    refreshSwapHistory()
-  }, [connected, refreshSwapHistory])
 
   return (
     <div

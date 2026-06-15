@@ -1,3 +1,4 @@
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '../lib/swap/calc-amount-out-min'
@@ -15,27 +16,22 @@ import { SWAP_CONFIG } from '../config/swap'
 import { readErc20Allowance, readErc20Balance, fetchSwapQuote } from '../web3/swap-read'
 import { approveTokenIfNeeded, executeTokenSwap } from '../web3/swap-write'
 import { appendSwapHistory } from '../lib/swap/swap-history'
-import { useVisibilityAwareInterval } from './use-visibility-aware-interval'
+import { QUERY_STALE_TIME } from '../lib/query/query-client'
+import { queryKeys } from '../lib/query/query-keys'
+import { useDappActions } from '../stores/dapp-actions'
+import { useVisibleQueryInterval } from './queries/use-visible-query-interval'
 
 export function useSwapWidget(connected: boolean) {
   const account = useActiveAccount()
+  const afterSwap = useDappActions((state) => state.afterSwap)
   const [sellAmount, setSellAmountRaw] = useState('')
   const [direction, setDirection] = useState<SwapDirection>('forward')
   const [slippage, setSlippage] = useState(1)
-  const [sellBalance, setSellBalance] = useState<bigint>(0n)
-  const [buyBalance, setBuyBalance] = useState<bigint>(0n)
-  const [allowance, setAllowance] = useState<bigint>(0n)
-  const [quotedOut, setQuotedOut] = useState<bigint>(0n)
-  const [quotePath, setQuotePath] = useState<string[]>([])
-  const [spotQuotedOut, setSpotQuotedOut] = useState<bigint>(0n)
-  const [spotQuotePath, setSpotQuotePath] = useState<string[]>([])
-  const [isQuoting, setIsQuoting] = useState(false)
-  const [isSpotQuoting, setIsSpotQuoting] = useState(false)
-  const [isBalancesLoading, setIsBalancesLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
+  const address = account?.address
   const amountIn = useMemo(
     () => parseTokenAmount(sellAmount, pair.sell.decimals),
     [pair.sell.decimals, sellAmount],
@@ -45,6 +41,76 @@ export function useSwapWidget(connected: boolean) {
     () => 10n ** BigInt(pair.sell.decimals),
     [pair.sell.decimals],
   )
+
+  const balancesQuery = useQuery({
+    queryKey: queryKeys.chain.swapBalances(
+      address ?? '',
+      pair.sell.address,
+      pair.buy.address,
+    ),
+    queryFn: async () => {
+      const [sell, buy, approved] = await Promise.all([
+        readErc20Balance(pair.sell.address, address!),
+        readErc20Balance(pair.buy.address, address!),
+        readErc20Allowance(pair.sell.address, address!, SWAP_CONFIG.router),
+      ])
+      return { sell, buy, approved }
+    },
+    enabled: connected && Boolean(address),
+    staleTime: QUERY_STALE_TIME.balances,
+  })
+
+  const spotQuoteQuery = useQuery({
+    queryKey: queryKeys.chain.swapQuote(
+      pair.sell.address,
+      pair.buy.address,
+      spotQuoteAmount.toString(),
+    ),
+    queryFn: () =>
+      fetchSwapQuote({
+        amountIn: spotQuoteAmount,
+        tokenIn: pair.sell.address,
+        tokenOut: pair.buy.address,
+      }),
+    enabled: connected,
+    staleTime: QUERY_STALE_TIME.quote,
+    placeholderData: keepPreviousData,
+  })
+
+  const amountQuoteQuery = useQuery({
+    queryKey: queryKeys.chain.swapQuote(
+      pair.sell.address,
+      pair.buy.address,
+      amountIn.toString(),
+    ),
+    queryFn: () =>
+      fetchSwapQuote({
+        amountIn,
+        tokenIn: pair.sell.address,
+        tokenOut: pair.buy.address,
+      }),
+    enabled: connected && amountIn > 0n,
+    staleTime: QUERY_STALE_TIME.quote,
+    placeholderData: keepPreviousData,
+  })
+
+  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, connected)
+  useVisibleQueryInterval(
+    amountQuoteQuery,
+    SWAP_CONFIG.quoteRefreshIntervalMs,
+    connected && amountIn > 0n,
+  )
+
+  const sellBalance = balancesQuery.data?.sell ?? 0n
+  const buyBalance = balancesQuery.data?.buy ?? 0n
+  const allowance = balancesQuery.data?.approved ?? 0n
+  const isBalancesLoading = connected && balancesQuery.isLoading
+  const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
+  const quotePath = amountQuoteQuery.data?.path ?? []
+  const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
+  const spotQuotePath = spotQuoteQuery.data?.path ?? []
+  const isQuoting = connected && amountIn > 0n && amountQuoteQuery.isFetching
+  const isSpotQuoting = connected && amountIn === 0n && spotQuoteQuery.isFetching
 
   const setSellAmount = useCallback(
     (value: string) => {
@@ -73,131 +139,20 @@ export function useSwapWidget(connected: boolean) {
     }
   }, [connected, pair.sell.decimals, sellAmount, sellBalance])
 
-  const refreshBalances = useCallback(async () => {
-    if (!connected || !account?.address) {
-      setSellBalance(0n)
-      setBuyBalance(0n)
-      setAllowance(0n)
-      setIsBalancesLoading(false)
+  useEffect(() => {
+    if (amountQuoteQuery.error) {
+      setError(
+        amountQuoteQuery.error instanceof Error
+          ? amountQuoteQuery.error.message
+          : 'Quote failed',
+      )
       return
     }
 
-    setIsBalancesLoading(true)
-
-    try {
-      const [sell, buy, approved] = await Promise.all([
-        readErc20Balance(pair.sell.address, account.address),
-        readErc20Balance(pair.buy.address, account.address),
-        readErc20Allowance(pair.sell.address, account.address, SWAP_CONFIG.router),
-      ])
-
-      setSellBalance(sell)
-      setBuyBalance(buy)
-      setAllowance(approved)
-    } finally {
-      setIsBalancesLoading(false)
+    if (amountIn > 0n) {
+      setError(null)
     }
-  }, [account?.address, connected, pair.buy.address, pair.sell.address])
-
-  useEffect(() => {
-    void refreshBalances()
-  }, [refreshBalances])
-
-  const refreshSpotQuote = useCallback(
-    async (showLoading = false) => {
-      if (!connected) {
-        setSpotQuotedOut(0n)
-        setSpotQuotePath([])
-        if (showLoading) {
-          setIsSpotQuoting(false)
-        }
-        return
-      }
-
-      if (showLoading) {
-        setIsSpotQuoting(true)
-      }
-
-      try {
-        const quote = await fetchSwapQuote({
-          amountIn: spotQuoteAmount,
-          tokenIn: pair.sell.address,
-          tokenOut: pair.buy.address,
-        })
-        setSpotQuotedOut(quote.quotedOut)
-        setSpotQuotePath(quote.path)
-      } catch {
-        if (showLoading) {
-          setSpotQuotedOut(0n)
-          setSpotQuotePath([])
-        }
-      } finally {
-        if (showLoading) {
-          setIsSpotQuoting(false)
-        }
-      }
-    },
-    [connected, pair.buy.address, pair.sell.address, spotQuoteAmount],
-  )
-
-  useEffect(() => {
-    void refreshSpotQuote(true)
-  }, [refreshSpotQuote])
-
-  useVisibilityAwareInterval(
-    () => refreshSpotQuote(false),
-    SWAP_CONFIG.quoteRefreshIntervalMs,
-    connected,
-  )
-
-  const refreshQuote = useCallback(
-    async (showLoading = false) => {
-      if (!connected || amountIn === 0n) {
-        setQuotedOut(0n)
-        setQuotePath([])
-        if (showLoading) {
-          setIsQuoting(false)
-        }
-        return
-      }
-
-      if (showLoading) {
-        setIsQuoting(true)
-        setError(null)
-      }
-
-      try {
-        const quote = await fetchSwapQuote({
-          amountIn,
-          tokenIn: pair.sell.address,
-          tokenOut: pair.buy.address,
-        })
-        setQuotedOut(quote.quotedOut)
-        setQuotePath(quote.path)
-      } catch (quoteError: unknown) {
-        if (showLoading) {
-          setQuotedOut(0n)
-          setQuotePath([])
-          setError(quoteError instanceof Error ? quoteError.message : 'Quote failed')
-        }
-      } finally {
-        if (showLoading) {
-          setIsQuoting(false)
-        }
-      }
-    },
-    [amountIn, connected, pair.buy.address, pair.sell.address],
-  )
-
-  useEffect(() => {
-    void refreshQuote(true)
-  }, [refreshQuote])
-
-  useVisibilityAwareInterval(
-    () => refreshQuote(false),
-    SWAP_CONFIG.quoteRefreshIntervalMs,
-    connected && amountIn > 0n,
-  )
+  }, [amountIn, amountQuoteQuery.error])
 
   const rateQuote = useMemo(() => {
     if (amountIn > 0n && quotedOut > 0n) {
@@ -258,11 +213,11 @@ export function useSwapWidget(connected: boolean) {
       return `${pair.sell.symbol} → ${pair.buy.symbol}`
     }
 
-    const labels = path.map((address) => {
-      if (address.toLowerCase() === pair.sell.address.toLowerCase()) return pair.sell.symbol
-      if (address.toLowerCase() === pair.buy.address.toLowerCase()) return pair.buy.symbol
-      if (address.toLowerCase() === SWAP_CONFIG.wbnb.toLowerCase()) return 'WBNB'
-      return address.slice(0, 6)
+    const labels = path.map((pathAddress) => {
+      if (pathAddress.toLowerCase() === pair.sell.address.toLowerCase()) return pair.sell.symbol
+      if (pathAddress.toLowerCase() === pair.buy.address.toLowerCase()) return pair.buy.symbol
+      if (pathAddress.toLowerCase() === SWAP_CONFIG.wbnb.toLowerCase()) return 'WBNB'
+      return pathAddress.slice(0, 6)
     })
 
     return labels.join(' → ')
@@ -290,7 +245,6 @@ export function useSwapWidget(connected: boolean) {
   const flipDirection = useCallback(() => {
     setDirection((current) => (current === 'forward' ? 'reverse' : 'forward'))
     setSellAmountRaw('')
-    setQuotedOut(0n)
   }, [])
 
   const submit = useCallback(async (): Promise<boolean> => {
@@ -306,7 +260,7 @@ export function useSwapWidget(connected: boolean) {
           token: pair.sell.address,
           amountIn,
         })
-        await refreshBalances()
+        await balancesQuery.refetch()
         return true
       }
 
@@ -323,7 +277,8 @@ export function useSwapWidget(connected: boolean) {
         status: 'Success',
       })
       setSellAmountRaw('')
-      await refreshBalances()
+      afterSwap(account.address, pair.sell.address, pair.buy.address)
+      await balancesQuery.refetch()
       return true
     } catch (submitError: unknown) {
       setError(submitError instanceof Error ? submitError.message : 'Transaction failed')
@@ -334,13 +289,17 @@ export function useSwapWidget(connected: boolean) {
   }, [
     account,
     action,
+    afterSwap,
     amountIn,
+    balancesQuery,
     canSubmit,
     pair.buy.address,
+    pair.buy.decimals,
     pair.sell.address,
-    refreshBalances,
-    slippageBps,
+    pair.sell.decimals,
+    pair.sell.symbol,
     quotedOut,
+    slippageBps,
   ])
 
   return {
