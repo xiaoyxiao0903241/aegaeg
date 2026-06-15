@@ -328,6 +328,8 @@ const ru = defineMessages({
     directShort: 'Прямые',
     titleShort: 'Статус',
     referralBondActive: 'Реферальная связь активна · прямые приглашения {count}',
+    referralBondPermanent: 'Реферальная связь активна · привязка постоянна.',
+    referralBondActiveSince: 'Реферальная связь активна с {date} · привязка постоянна.',
     volumePrefix: 'Объём',
     genesisShareholder: 'Акционер Genesis',
     statDirectVolume: 'Объём $48,200',

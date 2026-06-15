@@ -11,6 +11,8 @@ export interface DappShellState {
   tab: DappTab
   /** SIWE session ready — drives API data and logged-in UI. */
   connected: boolean
+  /** Wallet connected but JWT missing — show sign-in CTA. */
+  needsSignIn: boolean
   /** thirdweb active account — drives sign / send tx. Real-time from wallet SDK. */
   walletReady: boolean
   /** AutoConnect still restoring a previous wallet session. */
@@ -21,16 +23,17 @@ export interface DappShellState {
 export function useDappShell(): DappShellState {
   const account = useActiveAccount()
   const isAutoConnecting = useIsAutoConnecting()
-  const { isAuthenticated, isLoggingIn } = useAuth()
+  const { isAuthenticated, needsSignIn } = useAuth()
   const tab = useDappShellStore((state) => state.activeTab)
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
-  const connected = isAuthenticated || isLoggingIn
-  const isWalletConnecting = isWalletRestorePending(account, isAutoConnecting)
   const walletReady = hasWalletAccount(account)
+  const connected = isAuthenticated
+  const isWalletConnecting = isWalletRestorePending(account, isAutoConnecting)
 
   return {
     tab,
     connected,
+    needsSignIn,
     walletReady,
     isWalletConnecting,
     detailCollapsed: connected && detailCollapsed,

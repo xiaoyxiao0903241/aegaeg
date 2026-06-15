@@ -15,7 +15,7 @@ import {
   shellContentPageClass,
   shellModulePanelClass,
 } from '../shell-layout'
-import { dappAssets } from '../assets'
+import { dappAssets, tokenCarouselIcons } from '../assets'
 import {
   swapTokenCardKeys,
   swapTokenKeys,
@@ -81,19 +81,12 @@ const SWAP_BOTTOM_CARD_CLASS = 'mt-auto w-full shrink-0'
 
 const PERCENT_BTN_CLASS = cn(
   'flex h-[25px] cursor-pointer items-center justify-center rounded-[9px] border border-border bg-card',
-  'px-0 py-0 text-xs font-semibold whitespace-nowrap text-ink-strong',
+  'px-0 py-[5px] text-xs font-semibold whitespace-nowrap text-ink-strong',
   'transition-[border-color,color,transform] duration-180 ease-out',
   'hover:-translate-y-px hover:border-primary hover:text-primary',
   'disabled:cursor-not-allowed disabled:opacity-[.58]',
   'max-[820px]:h-auto max-[820px]:py-1.5 max-[820px]:text-[11px]',
 )
-
-const TOKEN_ICON_BG: Record<string, string> = {
-  usd1: 'bg-token-usd1',
-  agx: 'bg-token-agx',
-  x: 'bg-token-x',
-  gagx: 'bg-token-gagx',
-}
 
 export function SwapWidget({
   connected,
@@ -113,14 +106,12 @@ export function SwapWidget({
 
   const { pair } = swap
   const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
-  const showBalanceSkeleton = swap.walletReady && swap.isBalancesLoading
+  const showBalanceSkeleton = swap.isBalancesLoading
   const showRateSkeleton =
-    swap.walletReady &&
     swap.isSpotQuoting &&
     swap.sellAmount.trim().length === 0 &&
     !swap.rateLabel
-  const showBuyAmountSkeleton =
-    swap.walletReady && swap.isQuoting && swap.sellAmount.trim().length > 0
+  const showBuyAmountSkeleton = swap.isQuoting && swap.sellAmount.trim().length > 0
 
   const sellBalanceLabel = showBalanceSkeleton ? (
     <>
@@ -221,13 +212,18 @@ export function SwapWidget({
         </div>
       ) : null}
 
-      <div className="flex items-center justify-center py-1.5 max-[820px]:py-0 max-[820px]:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]">
+      <div
+        className={cn(
+          'flex items-center justify-center py-[6px]',
+          'max-[820px]:h-auto max-[820px]:py-0 max-[820px]:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]',
+        )}
+      >
         <AnchoredTooltip content={t.swap.flip}>
           <button
             aria-label={t.swap.flip}
             className={cn(
               'grid size-[34px] place-items-center rounded-[11px] border border-border bg-card p-0',
-              'text-sm leading-none text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
+              'text-[14px] font-normal leading-normal tracking-[-0.28px] text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
               'disabled:cursor-default enabled:hover:-translate-y-px enabled:hover:border-primary',
               'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
               'max-[820px]:my-2',
@@ -311,7 +307,7 @@ export function SwapWidget({
         ]}
       />
 
-      {swap.walletReady ? (
+      {connected && swap.walletReady ? (
         <DappActionRow>
           <DappActionButton
             className="col-span-full"
@@ -324,7 +320,7 @@ export function SwapWidget({
         </DappActionRow>
       ) : (
         <div className="mt-3.5 max-[820px]:mt-3 [&_.aegis-thirdweb-button-primary]:!min-h-[50px] [&_.aegis-thirdweb-button-primary]:!h-[50px] [&_.aegis-thirdweb-button-primary]:!text-[15px]">
-          <WalletConnectChip fullWidth label={t.common.connectWallet} variant="primary" />
+          <WalletConnectChip fullWidth variant="primary" />
         </div>
       )}
 
@@ -379,7 +375,8 @@ export function SwapContent({ connected }: { connected: boolean }) {
       <h2
         className={cn(
           shellContentHeadingClass,
-          !connected && 'min-[821px]:text-xl min-[821px]:tracking-[-0.8px]',
+          'pb-4',
+          !connected && 'min-[821px]:tracking-[-0.8px]',
         )}
         id="swap-title"
       >
@@ -392,12 +389,8 @@ export function SwapContent({ connected }: { connected: boolean }) {
         ) : (
           <MetricCard
             className={cn(
-              !connected &&
-                'min-[821px]:rounded-2xl min-[821px]:px-4 min-[821px]:py-3.5 min-[821px]:[&_span]:text-[13px] min-[821px]:[&_span]:text-ink-muted min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:tracking-[-0.54px]',
-              connected && 'py-3.5 [&_small]:hidden',
-              'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
-              connected &&
-                'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+              connected && '[&_small]:hidden',
+              'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
             )}
             label={t.swap.exchangeRate}
             value={
@@ -409,12 +402,8 @@ export function SwapContent({ connected }: { connected: boolean }) {
         )}
         <MetricCard
           className={cn(
-            !connected &&
-              'min-[821px]:rounded-2xl min-[821px]:px-4 min-[821px]:py-3.5 min-[821px]:[&_span]:text-[13px] min-[821px]:[&_span]:text-ink-muted min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:tracking-[-0.54px]',
-            connected && 'py-3.5 [&_small]:hidden',
-            'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
-            connected &&
-              'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+            connected && '[&_small]:hidden',
+            'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
           )}
           label={t.swap.settlement}
           value={t.swap.settlementValue}
@@ -454,8 +443,12 @@ export function SwapContent({ connected }: { connected: boolean }) {
           </span>
         )}
       >
-        <div className="-mx-3" hidden={!aboutOpen} id="swap-about-body">
-          {isMobileViewport ? <MobileTokenCarousel /> : <TokenInfoCarousel />}
+        <div className="-mx-3" id="swap-about-body">
+          {aboutOpen
+            ? isMobileViewport
+              ? <MobileTokenCarousel />
+              : <TokenInfoCarousel />
+            : null}
         </div>
       </DappSection>
       ) : null}
@@ -525,7 +518,7 @@ function SwapFaqTabs({
   return (
     <DappPillTabs
       ariaLabel={t.swap.faq}
-      className="mt-4 flex flex-wrap gap-2"
+      className="mt-4 flex flex-wrap gap-2 mb-3"
       items={swapTokenKeys.map((key) => ({
         active: key === activeToken,
         label: labels[key],
@@ -610,33 +603,33 @@ function TokenInfoCarousel() {
       plugins={[autoplay]}
       setApi={setApi}
     >
-      <CarouselContent className="flex items-start">
+      <CarouselContent className="flex items-stretch">
         {tokens.map((token, index) => (
           <CarouselItem className="shrink-0 grow-0 basis-full" key={token.key}>
             <article
               aria-hidden={current !== index}
               className={cn(
-                'relative mx-3 mb-[22px] mt-4 min-h-[78px] min-w-0 overflow-hidden rounded-md bg-card px-4 py-4',
-                'shadow-[0_4px_12px_rgba(20,28,51,0.08)]',
+                'relative h-[92px] min-w-0 overflow-hidden rounded-2xl bg-card p-4',
+                'shadow-[0_10px_28px_rgba(20,28,51,0.1)]',
                 tokenCardRaysClass(token.key),
               )}
             >
-              <div className="relative z-[1] flex min-w-0 items-start gap-3">
-                <TokenIcon size="desktop" token={token} />
-                <div className="flex min-w-0 flex-col gap-2">
-                  <strong className="text-base font-semibold leading-[1.2] tracking-[-0.48px] text-foreground">
+              <div className="relative z-[1] flex h-full min-w-0 flex-col gap-2">
+                <div className="flex min-w-0 items-center gap-3">
+                  <TokenIcon size="desktop" token={token} />
+                  <strong className="truncate text-base font-semibold leading-[1.2] tracking-[-0.48px] text-foreground">
                     {token.title}
                   </strong>
-                  <p className="m-0 max-w-[570px] text-[13px] font-normal leading-[1.5] tracking-[-0.26px] text-ink-strong">
-                    {token.desktopBody}
-                  </p>
                 </div>
+                <p className="m-0 line-clamp-1 max-w-[570px] text-[13px] font-normal leading-[1.5] tracking-[-0.26px] text-ink-strong">
+                  {token.desktopBody}
+                </p>
               </div>
               <AnchoredTooltip content={t.swap.tokenContractTooltip}>
                 <button
                   className={cn(
-                    'absolute right-[26px] top-1/2 z-[1] inline-flex h-9 -translate-y-1/2 items-center gap-[7px]',
-                    'rounded-full border border-border bg-card px-4 text-[13px] font-semibold leading-[1.2]',
+                    'absolute right-[26px] top-1/2 z-[1] inline-flex -translate-y-1/2 items-center gap-[7px]',
+                    'rounded-full border border-border bg-card px-4 py-2.5 text-[13px] font-semibold leading-[1.2]',
                     'tracking-[-0.26px] text-foreground transition-[border-color,transform] duration-180 ease-out',
                     'hover:-translate-y-1/2 hover:translate-x-px hover:border-primary',
                     'focus-visible:-translate-y-1/2 focus-visible:translate-x-px focus-visible:border-primary',
@@ -714,37 +707,29 @@ function TokenInfoCarousel() {
 function getSwapTokenContent(t: ReturnType<typeof useI18n>['messages']) {
   const tokenContent = {
     agx: {
-      asset: dappAssets.tokenAgx,
+      asset: tokenCarouselIcons.agxIcon,
       key: 'agx',
-      mode: 'image' as const,
-      symbol: 'A',
       title: t.swap.tokenAgx,
       body: t.swap.tokenAgxBody,
       desktopBody: t.swap.tokenAgxBodyDesktop,
     },
     usd1: {
-      asset: '',
+      asset: tokenCarouselIcons.usd1Icon,
       key: 'usd1',
-      mode: 'text' as const,
-      symbol: 'U',
       title: t.swap.tokenUsd1,
       body: t.swap.tokenUsd1Body,
       desktopBody: t.swap.tokenUsd1Body,
     },
     x: {
-      asset: '',
+      asset: tokenCarouselIcons.xIcon,
       key: 'x',
-      mode: 'text' as const,
-      symbol: 'X',
       title: t.swap.tokenX,
       body: t.swap.tokenXBody,
       desktopBody: t.swap.tokenXBodyDesktop,
     },
     gagx: {
-      asset: '',
+      asset: tokenCarouselIcons.gagxIcon,
       key: 'gagx',
-      mode: 'text' as const,
-      symbol: 'g',
       title: t.swap.tokenGagx,
       body: t.swap.tokenGagxBody,
       desktopBody: t.swap.tokenGagxBodyDesktop,
@@ -754,8 +739,6 @@ function getSwapTokenContent(t: ReturnType<typeof useI18n>['messages']) {
     body: string
     desktopBody: string
     key: (typeof swapTokenCardKeys)[number]
-    mode: 'image' | 'text'
-    symbol: string
     title: string
   }>
 
@@ -797,11 +780,8 @@ function MobileTokenCarousel() {
       setApi={setApi}
     >
       <CarouselContent
-        className={cn(
-          'ml-0 flex h-full items-stretch overflow-hidden',
-          '-mx-[18px] w-[calc(100%+36px)] px-[18px]',
-        )}
-        viewportClassName="h-[103px]"
+        className="ml-0 flex h-full items-stretch"
+        viewportClassName="h-[103px] -mx-[18px] w-[calc(100%+36px)]"
       >
         {tokens.map((token, index) => (
           <CarouselItem className="box-border h-[103px] shrink-0 grow-0 basis-full pl-0" key={token.key}>
@@ -899,39 +879,22 @@ function TokenIcon({
   token: SwapTokenContent
 }) {
   const isDesktop = size === 'desktop'
-  const bgClass =
-    token.mode === 'image' ? 'bg-token-agx' : TOKEN_ICON_BG[token.key]
-
-  if (token.mode === 'text') {
-    return (
-      <span
-        aria-hidden="true"
-        className={cn(
-          'grid shrink-0 place-items-center rounded-full font-semibold leading-[1.2] text-white',
-          isDesktop ? 'size-8 text-[13px]' : 'size-[30px] text-xs',
-          bgClass,
-        )}
-      >
-        {token.symbol}
-      </span>
-    )
-  }
+  const dimension = isDesktop ? 32 : 30
 
   return (
     <span
       aria-hidden="true"
       className={cn(
-        'grid shrink-0 place-items-center rounded-full font-semibold leading-[1.2] text-white',
-        isDesktop ? 'size-8 text-[13px]' : 'size-[30px] text-xs',
-        bgClass,
+        'grid shrink-0 overflow-hidden rounded-full',
+        isDesktop ? 'size-8' : 'size-[30px]',
       )}
     >
       <img
         alt=""
-        className="object-contain"
-        height={isDesktop ? 20 : 19}
+        className="block size-full"
+        height={dimension}
         src={token.asset}
-        width={isDesktop ? 24 : 22}
+        width={dimension}
       />
     </span>
   )
@@ -972,7 +935,7 @@ function SwapEmptyState() {
           {t.swap.emptyBody}
         </p>
       </div>
-      <WalletConnectChip label={t.common.connectWallet} variant="primary" />
+      <WalletConnectChip fullWidth variant="primary" />
     </div>
   )
 }

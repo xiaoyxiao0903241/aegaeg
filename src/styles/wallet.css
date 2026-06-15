@@ -64,7 +64,7 @@
   align-items: center;
   gap: 8px;
   min-block-size: 36px;
-  padding: 0 16px;
+  padding: 10px 16px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface-glass);
@@ -73,7 +73,8 @@
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.2;
+  letter-spacing: -0.26px;
   white-space: nowrap;
   cursor: pointer;
   transition:

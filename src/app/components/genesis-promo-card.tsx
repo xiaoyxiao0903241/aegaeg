@@ -87,11 +87,13 @@ export function GenesisPromoCard({
       )}
       data-reveal
     >
-      <strong className="text-sm font-semibold leading-[1.2] text-white">{title}</strong>
+      <strong className="text-[14px] font-semibold leading-[1.2] tracking-[-0.28px] text-white">
+        {title}
+      </strong>
       {isLoading ? (
         <GenesisPromoBodySkeleton />
       ) : (
-        <p className="m-0 text-xs leading-normal text-on-dark">{body}</p>
+        <p className="m-0 text-[12px] leading-normal tracking-[-0.24px] text-on-dark">{body}</p>
       )}
       <DappActionButton
         className="mt-2 min-h-[38px] text-[13px] group-data-[tab=genesis]/shell:max-[820px]:min-h-[42px] group-data-[tab=genesis]/shell:max-[820px]:text-sm"

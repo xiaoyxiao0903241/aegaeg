@@ -23,8 +23,9 @@ export function DappSection({
     >
       <h3
         className={cn(
-          dappTextClass('sectionTitle', { tone: 'ink' }),
-          'group-data-[tab=rewards]/shell:tracking-[-0.72px] group-data-[tab=community]/shell:tracking-[-0.72px] group-data-[tab=rewards]/shell:max-[820px]:text-[17px]',
+          dappTextClass('titleMd', { tone: 'ink' }),
+          'group-data-[tab=rewards]/shell:tracking-[-0.72px] group-data-[tab=community]/shell:tracking-[-0.72px]',
+          'group-data-[tab=rewards]/shell:max-[820px]:text-[17px]',
         )}
       >
         {title}

@@ -41,12 +41,14 @@ import type { DappTab, DetailPanelControls } from '../types'
 import { DappActionButton } from '../components/dapp-action-button'
 import {
   CommunityStatCard,
+  DappReferrerBoundCard,
   DappSideCard,
   ProgramCard,
   SideHint,
   SideLabel,
   SideValue,
 } from '../components/dapp-card'
+import { dappLayout, dappSpacing } from '../../components/primitive-styles'
 import { DappSection } from '../components/dapp-section'
 import { DappWidgetHeader } from '../components/dapp-widget-header'
 import { InviteFlow } from '../components/invite-flow'
@@ -62,19 +64,10 @@ type CommunityStat = {
   volume?: ReactNode
 }
 
-const REFERRAL_CARD_CLASS = cn(
-  '[&_button]:mt-2',
-  '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-)
-
-const REFERRER_ADDRESS_CLASS = cn(
-  'mt-2.5 flex items-center gap-2.5 rounded-[11px] bg-background px-3.5 py-[11px]',
-  '[&_strong]:m-0 [&_strong]:flex-1 [&_strong]:text-sm [&_strong]:leading-[1.2]',
-  '[&_button]:grid [&_button]:aspect-square [&_button]:w-[30px] [&_button]:cursor-pointer [&_button]:place-items-center [&_button]:rounded-lg [&_button]:bg-transparent [&_button]:text-subtle-ink',
-)
+const REFERRAL_CARD_CLASS = '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate'
 
 const SHAREHOLDER_ACTION_CLASS = cn(
-  'mt-2 min-h-12 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-[820px]:hidden',
+  'mt-4 min-h-12 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-[820px]:hidden',
 )
 
 const COMMUNITY_STAT_GRID = cn(
@@ -82,29 +75,6 @@ const COMMUNITY_STAT_GRID = cn(
   'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))]',
   'max-[820px]:min-w-0 max-[820px]:grid-cols-1',
   'max-[820px]:[&:has(.community-stat)]:grid-cols-3 max-[820px]:[&:has(.community-stat)]:gap-2.5',
-)
-
-const COMMUNITY_STAT_CARD_CLASS = cn(
-  'max-[820px]:min-h-[70px] max-[820px]:rounded-xl max-[820px]:p-3.5',
-  'max-[820px]:items-center max-[820px]:text-center',
-  'max-[820px]:[&:not(.is-dark)>span]:text-xs max-[820px]:[&:not(.is-dark)>span]:leading-[1.35] max-[820px]:[&:not(.is-dark)>span]:text-faint',
-  'max-[820px]:[&.is-dark>span]:text-xs max-[820px]:[&.is-dark>span]:leading-[1.35] max-[820px]:[&.is-dark>span]:text-on-dark',
-  'max-[820px]:[&>strong]:mt-[3px] max-[820px]:[&>strong]:text-2xl max-[820px]:[&>strong]:leading-[1.05]',
-  'max-[820px]:[&>b]:hidden max-[820px]:[&>small]:hidden',
-  '[&>strong]:tracking-[-1.2px]',
-  'max-[820px]:[&.is-dark>small]:hidden',
-)
-
-const CONNECTED_STAT_CLASS = cn(
-  'community-stat',
-  'max-[820px]:min-h-[90px] max-[820px]:items-start max-[820px]:rounded-[14px] max-[820px]:border-0 max-[820px]:p-[13px_12px] max-[820px]:text-left max-[820px]:shadow-card',
-  'max-[820px]:[&>span]:w-full max-[820px]:[&>span]:text-[11px] max-[820px]:[&>span]:leading-[1.5]',
-  'max-[820px]:[&.is-dark>span]:text-on-dark',
-  'max-[820px]:[&>strong]:mt-1 max-[820px]:[&>strong]:w-full max-[820px]:[&>strong]:text-2xl',
-  'max-[820px]:[&>b]:mt-1 max-[820px]:[&>b]:block max-[820px]:[&>b]:w-full max-[820px]:[&>b]:text-[11px] max-[820px]:[&>b]:leading-[1.2]',
-  'max-[820px]:[&:not(.is-dark)>small]:mt-1 max-[820px]:[&:not(.is-dark)>small]:block max-[820px]:[&:not(.is-dark)>small]:w-full max-[820px]:[&:not(.is-dark)>small]:text-[11px] max-[820px]:[&:not(.is-dark)>small]:leading-[1.2]',
-  'max-[820px]:[&.is-dark>b]:text-coral-bright',
-  'max-[820px]:[&.is-dark>small]:mt-1 max-[820px]:[&.is-dark>small]:block max-[820px]:[&.is-dark>small]:w-full max-[820px]:[&.is-dark>small]:text-[11px] max-[820px]:[&.is-dark>small]:leading-[1.2] max-[820px]:[&.is-dark>small]:text-on-dark',
 )
 
 export function CommunityWidget({
@@ -186,28 +156,42 @@ function CommunityConnectedWidget({
         </DappActionButton>
       </DappSideCard>
 
-      <DappSideCard className="mt-2">
-        <SideLabel tone="muted">{t.community.referrer}</SideLabel>
-        <div className={REFERRER_ADDRESS_CLASS}>
-          <span className="grid aspect-square w-6 flex-none place-items-center rounded-full bg-accent text-[10px] font-semibold text-primary">
-            R
-          </span>
-          <strong>{referral.referrerLabel ?? (referral.isLoading ? '…' : '—')}</strong>
-          {referral.referrer ? (
-            <button
-              aria-label={t.common.copy}
-              onClick={() => void copyReferrerAddress()}
-              type="button"
-            >
-              <img alt="" height="16" src={dappAssets.copy} width="16" />
-            </button>
-          ) : null}
-        </div>
-        {!referral.isBound ? (
-          <div className="mt-2 grid grid-cols-[minmax(0,1fr)_max-content] items-end gap-2">
+      {referral.isBound ? (
+        <DappReferrerBoundCard>
+          <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
+            {t.community.referrer}
+          </p>
+          <div className={dappLayout.referrerAddrRow}>
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="grid size-6 flex-none place-items-center rounded-full bg-accent text-[10px] font-semibold leading-[1.2] text-primary">
+                R
+              </span>
+              <strong className="truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px] text-foreground">
+                {referral.referrerLabel ?? '—'}
+              </strong>
+            </div>
+            {referral.referrer ? (
+              <button
+                aria-label={t.common.copy}
+                className="grid size-[30px] shrink-0 cursor-pointer place-items-center rounded-[8px] bg-transparent"
+                onClick={() => void copyReferrerAddress()}
+                type="button"
+              >
+                <img alt="" height="16" src={dappAssets.copy} width="16" />
+              </button>
+            ) : null}
+          </div>
+          <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
+            {t.community.referralBondPermanent}
+          </p>
+        </DappReferrerBoundCard>
+      ) : (
+        <DappSideCard className={dappSpacing.stackBetweenCards}>
+          <SideLabel tone="muted">{t.community.referrer}</SideLabel>
+          <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-end gap-2">
             <input
               aria-label={t.community.referrerPlaceholder}
-              className="w-full min-h-11 rounded-[11px] border border-border bg-background px-3.5 text-muted-foreground outline-0"
+              className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0"
               onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
               placeholder={t.community.referrerPlaceholder}
               value={referral.referrerInput}
@@ -224,13 +208,9 @@ function CommunityConnectedWidget({
               {t.community.bindReferrer}
             </DappActionButton>
           </div>
-        ) : null}
-        <SideHint>
-          {referral.isBound
-            ? t.community.referralBondActive.replace('{count}', referral.directCount)
-            : t.community.referrerHint}
-        </SideHint>
-      </DappSideCard>
+          <SideHint>{t.community.referrerHint}</SideHint>
+        </DappSideCard>
+      )}
 
       <CommunityQuickLinks />
 
@@ -252,7 +232,7 @@ function CommunityDisconnectedWidget({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { connected, walletReady } = useDappShell()
+  const { connected, needsSignIn } = useDappShell()
   const referral = useReferral(connected)
 
   useEffect(() => {
@@ -289,7 +269,7 @@ function CommunityDisconnectedWidget({
           <label className="grid gap-2">
             <input
               aria-label={t.community.referrerPlaceholder}
-              className="w-full min-h-11 rounded-[11px] border border-border bg-background px-3.5 text-muted-foreground outline-0 disabled:opacity-60"
+              className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0 disabled:opacity-60"
               disabled={!connected || referral.isBound}
               onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
               placeholder={t.community.referrerPlaceholder}
@@ -307,8 +287,8 @@ function CommunityDisconnectedWidget({
           </DappActionButton>
         </div>
         <SideHint>
-          {connected && !walletReady && !referral.isBound
-            ? t.wallet.reconnectHint
+          {needsSignIn && !referral.isBound
+            ? t.wallet.signInRequired
             : referral.isBound
               ? t.community.boundTo.replace('{address}', referral.referrerLabel ?? '—')
               : t.community.referrerHint}
@@ -507,7 +487,6 @@ export function CommunityContent({
         ) : (
           stats.map((stat, index) => (
             <CommunityStatCard
-              className={cn(COMMUNITY_STAT_CARD_CLASS, CONNECTED_STAT_CLASS)}
               dark={stat.dark}
               image={stat.image}
               key={index}

@@ -18,16 +18,10 @@ export function DappMetaList({
   items: DappMetaListItem[]
 }) {
   return (
-    <div
-      className={
-        connected
-          ? dappCardClass('metaList', { className })
-          : cn('mt-3.5 grid shrink-0 gap-2.5 pt-1.5 tracking-[-0.26px]', className)
-      }
-    >
+    <div className={dappCardClass('metaList', { className })}>
       {items.map((item, index) => (
         <p className={dappLayout.metaRow} key={index}>
-          <span className={dappTextClass('metaLabel', { tone: connected ? 'body' : 'subtle' })}>
+          <span className={dappTextClass('body', { tone: connected ? 'body' : 'subtle' })}>
             {item.label}
           </span>
           <strong className={cn(dappTextClass('metaValue'), item.valueClassName)}>

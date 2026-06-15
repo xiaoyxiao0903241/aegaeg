@@ -327,6 +327,8 @@ const ko = defineMessages({
     directShort: '직접 추천',
     titleShort: '칭호',
     referralBondActive: '추천 관계 활성화 · 직접 초대 {count}명',
+    referralBondPermanent: '추천 관계 활성화 · 바인딩은 영구적입니다.',
+    referralBondActiveSince: '{date}부터 추천 관계 활성화 · 바인딩은 영구적입니다.',
     volumePrefix: '실적',
     genesisShareholder: 'Genesis 주주',
     statDirectVolume: '실적 $48,200',

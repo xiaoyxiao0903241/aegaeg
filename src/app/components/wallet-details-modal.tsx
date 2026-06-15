@@ -8,6 +8,7 @@ import { formatTokenAmount } from '../../lib/swap/token-amount'
 import { readErc20Balance } from '../../web3/swap-read'
 import { useI18n } from '../../i18n/use-i18n'
 import { useAuth } from '../../providers/auth-provider'
+import { hasWalletAccount } from '../../lib/web3/wallet-connection-state'
 import { dappAssets } from '../assets'
 import { formatAddress } from '../utils'
 import { defaultChain, thirdwebClient } from '../../web3/thirdweb'
@@ -35,7 +36,7 @@ export function WalletDetailsModal({
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { disconnect } = useDisconnect()
-  const { logout, session } = useAuth()
+  const { logout } = useAuth()
   const { messages: t } = useI18n()
   const [copied, setCopied] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
@@ -43,8 +44,8 @@ export function WalletDetailsModal({
   const [nativeBalanceLoading, setNativeBalanceLoading] = useState(false)
   const [tokenBalances, setTokenBalances] = useState<WalletTokenBalanceRow[]>([])
   const [tokensLoading, setTokensLoading] = useState(false)
-  const walletAddress = account?.address ?? session?.address
-  const walletReady = Boolean(account)
+  const walletAddress = account?.address
+  const walletReady = hasWalletAccount(account)
 
   useEffect(() => {
     if (!open) {
@@ -270,7 +271,7 @@ export function WalletDetailsModal({
                 aria-hidden="true"
                 className="size-[15px]"
                 height="15"
-                src={copied ? dappAssets.check : dappAssets.copy}
+                src={copied ? dappAssets.check : dappAssets.copyWhite}
                 width="15"
               />
               {copied ? t.wallet.copied : t.wallet.copyAddress}

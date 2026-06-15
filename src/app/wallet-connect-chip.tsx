@@ -19,25 +19,16 @@ const walletGlyphClass = cn(
 
 function ConnectedWalletChip() {
   const account = useActiveAccount()
-  const { session, isAuthenticated, isLoggingIn, loginError, retryLogin, login } = useAuth()
+  const { session, isAuthenticated, loginError, retryLogin } = useAuth()
   const { messages: t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [connectOpen, setConnectOpen] = useState(false)
 
   const walletReady = hasWalletAccount(account)
-  const needsReconnect = isAuthenticated && !walletReady && !loginError
-  const needsSignIn = walletReady && !isAuthenticated && !isLoggingIn && !loginError
   const address = account?.address ?? session?.address
 
-  if (!address) {
+  if (!isAuthenticated || !walletReady || !address) {
     return null
   }
-
-  const addressLabel = needsReconnect
-    ? t.wallet.reconnectWallet
-    : needsSignIn
-      ? t.wallet.signInRequired
-      : formatAddress(address)
 
   async function handleClick() {
     if (loginError) {
@@ -52,8 +43,65 @@ function ConnectedWalletChip() {
       return
     }
 
-    if (needsReconnect) {
-      setConnectOpen(true)
+    setMenuOpen(true)
+  }
+
+  return (
+    <>
+      <button
+        aria-label={formatAddress(address)}
+        className={cn(
+          'aegis-connected-wallet-chip',
+          loginError && 'aegis-connected-wallet-chip--reconnect',
+        )}
+        onClick={() => void handleClick()}
+        type="button"
+      >
+        <span className="aegis-connected-wallet-chip__status" aria-hidden="true" />
+        <span className="truncate">{formatAddress(address)}</span>
+      </button>
+      {menuOpen ? <WalletDetailsModal onOpenChange={setMenuOpen} open={menuOpen} /> : null}
+    </>
+  )
+}
+
+function WalletConnectButton({
+  label,
+  variant = 'pill',
+  fullWidth = false,
+}: {
+  label?: string
+  variant?: 'pill' | 'primary' | 'inline'
+  fullWidth?: boolean
+}) {
+  const account = useActiveAccount()
+  const { isAuthenticated, isLoggingIn, login, loginError, retryLogin, needsSignIn } = useAuth()
+  const { messages: t } = useI18n()
+  const [connectOpen, setConnectOpen] = useState(false)
+
+  const walletReady = hasWalletAccount(account)
+
+  const connectLabel =
+    label ??
+    (needsSignIn ? t.wallet.signInRequired : t.common.connectWallet)
+
+  const connectButtonClassName =
+    variant === 'primary'
+      ? 'aegis-thirdweb-button aegis-thirdweb-button-primary'
+      : variant === 'inline'
+        ? 'aegis-thirdweb-button aegis-thirdweb-button-inline'
+        : 'aegis-thirdweb-button'
+
+  async function handleClick() {
+    if (loginError) {
+      try {
+        await retryLogin()
+      } catch (error) {
+        const message = toWalletUserFacingMessage(error)
+        if (message) {
+          toast.error(message)
+        }
+      }
       return
     }
 
@@ -69,71 +117,28 @@ function ConnectedWalletChip() {
       return
     }
 
-    if (isAuthenticated && walletReady) {
-      setMenuOpen(true)
-    }
+    setConnectOpen(true)
   }
-
-  return (
-    <>
-      <button
-        aria-busy={isLoggingIn}
-        aria-label={addressLabel}
-        className={cn(
-          'aegis-connected-wallet-chip',
-          (needsReconnect || needsSignIn) && 'aegis-connected-wallet-chip--reconnect',
-        )}
-        onClick={() => void handleClick()}
-        type="button"
-      >
-        <span className="aegis-connected-wallet-chip__status" aria-hidden="true" />
-        <span className="truncate">{addressLabel}</span>
-      </button>
-      {isAuthenticated && walletReady && menuOpen ? (
-        <WalletDetailsModal onOpenChange={setMenuOpen} open={menuOpen} />
-      ) : null}
-      {needsReconnect ? (
-        <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
-      ) : null}
-    </>
-  )
-}
-
-function WalletConnectButton({
-  label,
-  variant = 'pill',
-  fullWidth = false,
-}: {
-  label?: string
-  variant?: 'pill' | 'primary' | 'inline'
-  fullWidth?: boolean
-}) {
-  const { messages: t } = useI18n()
-  const [connectOpen, setConnectOpen] = useState(false)
-  const connectLabel = label ?? t.common.connectWallet
-
-  const connectButtonClassName =
-    variant === 'primary'
-      ? 'aegis-thirdweb-button aegis-thirdweb-button-primary'
-      : variant === 'inline'
-        ? 'aegis-thirdweb-button aegis-thirdweb-button-inline'
-        : 'aegis-thirdweb-button'
 
   return (
     <div className={cn(fullWidth ? 'flex w-full' : 'inline-flex items-center')}>
       <button
+        aria-busy={isLoggingIn}
         className={cn(connectButtonClassName, fullWidth && 'aegis-thirdweb-button-full')}
-        onClick={() => setConnectOpen(true)}
+        disabled={isLoggingIn}
+        onClick={() => void handleClick()}
         type="button"
       >
         <span className={walletLabelClass}>
-          {variant !== 'primary' ? (
+          {variant !== 'primary' && !needsSignIn ? (
             <span className={walletGlyphClass} aria-hidden="true" />
           ) : null}
-          {connectLabel}
+          {isLoggingIn ? t.wallet.connecting : connectLabel}
         </span>
       </button>
-      <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
+      {!needsSignIn ? (
+        <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
+      ) : null}
     </div>
   )
 }
@@ -147,9 +152,15 @@ export function WalletConnectChip({
   variant?: 'pill' | 'primary' | 'inline' | 'connected'
   fullWidth?: boolean
 }) {
-  if (variant === 'connected') {
-    return <ConnectedWalletChip />
+  const account = useActiveAccount()
+  const { isAuthenticated } = useAuth()
+  const walletReady = hasWalletAccount(account)
+
+  if (variant === 'connected' || (walletReady && isAuthenticated)) {
+    if (walletReady && isAuthenticated) {
+      return <ConnectedWalletChip />
+    }
   }
 
-  return <WalletConnectButton fullWidth={fullWidth} label={label} variant={variant} />
+  return <WalletConnectButton fullWidth={fullWidth} label={label} variant={variant === 'connected' ? 'primary' : variant} />
 }

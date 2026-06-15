@@ -1,4 +1,5 @@
 import { cn } from '~/lib/utils'
+import { dappSpacing } from '~/lib/dapp-styles'
 import type { DappTab } from './types'
 
 /** Figma 设计稿窗口高度上限（px）——大屏不无限拉伸，小屏随视口收缩。 */
@@ -88,14 +89,16 @@ export const shellRailIconClass = 'aspect-square w-[22px] bg-current'
 
 export function shellWidgetClass() {
   return cn(
-    'h-full min-h-0 max-h-full overflow-y-auto overflow-x-hidden border-r border-border bg-card px-6 pb-[22px] pt-10',
+    dappSpacing.widgetCol,
+    'h-full min-h-0 max-h-full overflow-y-auto overflow-x-hidden border-r border-border bg-card',
     'max-[820px]:h-auto max-[820px]:max-h-none max-[820px]:w-full max-[820px]:overflow-visible max-[820px]:border-r-0 max-[820px]:border-b-0 max-[820px]:p-0',
   )
 }
 
 export function shellContentClass(detailCollapsed: boolean) {
   return cn(
-    'min-h-0 min-w-0 max-h-full overflow-y-auto overflow-x-hidden bg-card px-7 pb-[30px] pt-10 transition-[opacity,padding-inline] duration-320 ease-[cubic-bezier(.2,.8,.2,1)]',
+    dappSpacing.contentCol,
+    'min-h-0 min-w-0 max-h-full overflow-y-auto overflow-x-hidden bg-card transition-[opacity,padding-inline] duration-320 ease-[cubic-bezier(.2,.8,.2,1)]',
     detailCollapsed && 'pointer-events-none overflow-hidden px-0 opacity-0',
     'max-[820px]:pointer-events-auto max-[820px]:w-full max-[820px]:min-h-0 max-[820px]:overflow-visible max-[820px]:p-0 max-[820px]:opacity-100',
   )
@@ -130,8 +133,10 @@ export const shellModulePanelClass = cn(
 export const shellContentPageClass = 'min-w-0'
 
 export const shellContentHeadingClass = cn(
-  'm-0 text-lg font-semibold leading-[1.3] tracking-normal text-foreground',
+  'm-0 text-lg font-semibold leading-[1.3] text-foreground',
+  'group-data-[tab=swap]/shell:tracking-[-0.36px]',
   'group-data-[tab=rewards]/shell:tracking-[-0.72px]',
+  'group-data-[tab=community]/shell:tracking-[-0.72px]',
 )
 
 export const desktopCopyClass = 'max-[820px]:hidden'

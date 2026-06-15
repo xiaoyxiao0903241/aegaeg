@@ -14,7 +14,7 @@ export const langMenuClass = cn(
 
 /** Home / DApp 共用语言切换触发器 */
 export const langTriggerClass = cn(
-  'inline-flex min-h-9 min-w-[58px] cursor-pointer items-center justify-center gap-2 rounded-full',
+  'inline-flex min-h-9 min-w-[58px] cursor-pointer items-center justify-center gap-1.5 rounded-[18px]',
   'border border-border bg-card px-3 text-[13px] font-semibold leading-none text-foreground shadow-none',
   'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
   surfacePillHoverClass,

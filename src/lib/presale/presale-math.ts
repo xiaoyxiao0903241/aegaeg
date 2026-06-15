@@ -22,6 +22,20 @@ export function findActivePresalePhase(
 
 export type PhaseCountdownMode = 'starts' | 'ends'
 
+export function buildPhaseCountdownKey(
+  target: { mode: PhaseCountdownMode; targetTime: bigint } | null,
+): string | null {
+  if (!target) return null
+  return `${target.mode}:${target.targetTime.toString()}`
+}
+
+export function hasPhaseCountdownElapsed(
+  targetTime: bigint,
+  nowSeconds = Math.floor(Date.now() / 1000),
+): boolean {
+  return nowSeconds >= Number(targetTime)
+}
+
 export function resolvePhaseCountdownTarget(
   phases: PresalePhaseOnChain[],
   nowSeconds = Math.floor(Date.now() / 1000),

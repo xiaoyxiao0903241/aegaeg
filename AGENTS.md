@@ -42,7 +42,7 @@ AI 工作规范
 
 ### 8.4 设计稿来源
 
-- **正式 Figma 设计稿 SSOT**：https://www.figma.com/design/vwsbcJZSSj7ssKaTDGyxzL/AEGIS-X--Copy---Copy---Copy-?m=auto&fuid=937729319273650487
+- **正式 Figma 设计稿 SSOT**：https://www.figma.com/design/sXWXDvBrLeg5r0NnP1SMZH/AEGIS-X--Copy---Copy---Copy-
 - 后续官网首页、H5、DApp 页面和组件的像素级对齐，以该 Figma 文件为准；历史 Figma 链接只作为过往参考，除非用户明确指定。
 - **像素级对齐的含义**：优先对齐元素归属、组件结构、视觉层级、字体、颜色、圆角、阴影、边框、间距节奏、素材、hover / active / connected / disconnected 状态。1-2px 的浏览器渲染、截图或布局取整偏差可以接受，禁止围绕这些误差反复修改。
 - **PC 是文案 SSOT**：H5 是 PC 的响应式布局，不是独立文案版本。PC / H5 文案不一致时，以 PC 为准；不要为了 H5 单独新增同义文案 key 或分叉 copy。

@@ -121,13 +121,16 @@ export const Carousel = forwardRef<
         return
       }
 
-      let wasHidden = node.getBoundingClientRect().width === 0
+      let lastWidth = node.getBoundingClientRect().width
       const observer = new ResizeObserver((entries) => {
         const width = entries[0]?.contentRect.width ?? 0
-        if (wasHidden && width > 0) {
+        const becameVisible = lastWidth === 0 && width > 0
+        const resizedWhileVisible =
+          width > 0 && lastWidth > 0 && Math.abs(width - lastWidth) > 1
+        if (becameVisible || resizedWhileVisible) {
           api.reInit()
         }
-        wasHidden = width === 0
+        lastWidth = width
       })
       observer.observe(node)
       return () => observer.disconnect()

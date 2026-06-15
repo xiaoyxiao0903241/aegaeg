@@ -37,6 +37,23 @@ export function invalidateApiQueries() {
   return queryClient.invalidateQueries({ queryKey: queryKeys.api.all })
 }
 
+/** User SIWE session became active — refresh API + wallet-scoped chain reads. */
+export function invalidateAfterAuthLogin(address?: string) {
+  void invalidateApiQueries()
+  invalidatePresaleChainQueries(address)
+
+  if (!address) return
+
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.walletBalances(address) })
+}
+
+/** Genesis phase start/end boundary crossed — refresh presale + authenticated API. */
+export function invalidateAfterGenesisPhaseTransition(address?: string) {
+  invalidatePresaleChainQueries(address)
+  void invalidateApiQueries()
+}
+
 export function clearApiQueries() {
   return queryClient.removeQueries({ queryKey: queryKeys.api.all })
 }

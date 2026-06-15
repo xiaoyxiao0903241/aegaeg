@@ -315,6 +315,8 @@ const zh = defineMessages({
     directShort: '直推',
     titleShort: '称号',
     referralBondActive: '推荐关系已激活 · 直推 {count} 人',
+    referralBondPermanent: '推荐关系已激活 · 绑定为永久关系。',
+    referralBondActiveSince: '推荐关系自 {date} 起已激活 · 绑定为永久关系。',
     volumePrefix: '业绩',
     genesisShareholder: 'Genesis 股东',
     statDirectVolume: '业绩 $48,200',

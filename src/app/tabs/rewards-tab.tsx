@@ -44,6 +44,7 @@ import {
   RewardBalanceCard,
   SideHint,
   SideLabel,
+  SideTitle,
   SideValue,
 } from '../components/dapp-card'
 import { DappPillTabs } from '../components/dapp-pill-tabs'
@@ -53,17 +54,9 @@ import { FaqStack } from '../components/faq-stack'
 import { ProgressMeter } from '../components/progress-meter'
 import { ResponsiveTable } from '../components/responsive-table'
 import { useDappShell } from '../dapp-shell-context'
+import { dappGap, dappSpacing } from '../../components/primitive-styles'
 
-const TITLE_MINI_CARD_CLASS = cn(
-  '[&_p]:text-[11px] [&_p]:font-semibold [&_p]:uppercase [&_p]:tracking-[0.88px] [&_p]:leading-[1.3] [&_p]:text-primary',
-  '[&_strong]:mt-1.5 [&_strong]:block [&_strong]:text-[17px] [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-normal',
-  '[&_small]:mt-1.5 [&_small]:block [&_small]:min-h-[2.25rem] [&_small]:line-clamp-2 [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-normal [&_small]:text-muted-foreground',
-  'max-[820px]:py-[13px] max-[820px]:[&_small]:max-w-[31ch] max-[820px]:[&_small]:leading-[1.4] max-[820px]:[&_small]:text-faint',
-)
-
-const PROGRESS_CARD_CLASS = cn(
-  'grid gap-1.5 max-[820px]:gap-1.5 max-[820px]:py-[13px] max-[820px]:[&_span]:text-faint',
-)
+const PROGRESS_CARD_CLASS = cn(dappSpacing.stackBetweenCards, 'grid', dappGap.sm, 'max-[820px]:py-[13px] max-[820px]:[&_span]:text-faint')
 
 export function RewardsWidget({
   detailPanel,
@@ -163,14 +156,19 @@ export function RewardsWidget({
         title={t.rewards.title}
       />
 
-      <DappSideCard className={TITLE_MINI_CARD_CLASS}>
+      <DappSideCard className="max-[820px]:py-[13px]">
         <SideLabel tone="coral">{t.rewards.currentTitle}</SideLabel>
         {showTitleSkeleton ? (
           <CurrentTitleCardBodySkeleton />
         ) : (
           <>
-            <SideValue>{titleValue}</SideValue>
-            <SideHint tone="body">{titleHint}</SideHint>
+            <SideTitle>{titleValue}</SideTitle>
+            <SideHint
+              className="min-h-[2.25rem] line-clamp-2 max-[820px]:max-w-[31ch] max-[820px]:leading-[1.4] max-[820px]:text-faint"
+              tone="body"
+            >
+              {titleHint}
+            </SideHint>
           </>
         )}
       </DappSideCard>
@@ -217,7 +215,7 @@ export function RewardsWidget({
       <RewardBalanceCard
         badge={t.rewards.autoPaidLabel}
         className={cn(
-          'max-[820px]:pb-3 max-[820px]:[&_button]:mt-1.5 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
+          'mt-2 max-[820px]:pb-3 max-[820px]:[&_button]:mt-1.5 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
           '[&_strong_span]:text-xs [&_strong_span]:font-semibold [&_strong_span]:text-faint',
         )}
         hint={t.rewards.autoPaid}
@@ -232,6 +230,7 @@ export function RewardsWidget({
       <RewardBalanceCard
         action={
           <DappActionButton
+            className="!min-h-[42px]"
             disabled={teamClaimable === '$0.00' || teamLoading || teamClaim.isClaiming || !teamClaim.canClaim}
             loading={teamClaim.isClaiming}
             onClick={() =>
@@ -245,7 +244,7 @@ export function RewardsWidget({
           </DappActionButton>
         }
         className={cn(
-          '[&_strong]:text-lg',
+          'mt-2 [&_strong]:text-lg',
           'max-[820px]:pb-3 max-[820px]:[&_button]:mt-1.5 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
         )}
         label={t.rewards.teamRewards}

@@ -1,11 +1,13 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BSC_CONTRACTS } from '../config/contracts'
 import { PRESALE_CONFIG } from '../config/presale'
 import {
+  buildPhaseCountdownKey,
   estimateAgxFromUsd1,
   formatPhaseCountdown,
+  hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
 } from '../lib/presale/presale-math'
 import {
@@ -40,6 +42,8 @@ export function useGenesisWidget() {
   const account = useActiveAccount()
   const queryClient = useQueryClient()
   const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
+  const afterGenesisPhaseTransition = useDappActions((state) => state.afterGenesisPhaseTransition)
+  const countdownRefreshRef = useRef<string | null>(null)
   const [shares, setShares] = useState(1)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -202,6 +206,20 @@ export function useGenesisWidget() {
   ])
 
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
+
+  useEffect(() => {
+    if (!countdownTarget || !hasPhaseCountdownElapsed(countdownTarget.targetTime, nowSeconds)) {
+      return
+    }
+
+    const countdownKey = buildPhaseCountdownKey(countdownTarget)
+    if (!countdownKey || countdownRefreshRef.current === countdownKey) {
+      return
+    }
+
+    countdownRefreshRef.current = countdownKey
+    afterGenesisPhaseTransition(address)
+  }, [address, afterGenesisPhaseTransition, countdownTarget, nowSeconds])
 
   const seasonOptions = useMemo(
     () => buildSeasonOptions(phases, agxPriceUsd, nowSeconds),

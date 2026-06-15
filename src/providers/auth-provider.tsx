@@ -4,90 +4,97 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useRef,
   type ReactNode,
 } from 'react'
-import {
-  useActiveAccount,
-  useIsAutoConnecting,
-} from 'thirdweb/react'
+import { useActiveAccount } from 'thirdweb/react'
 import { ApiError } from '../lib/api/client'
 import {
-  clearWalletSession,
+  buildSilentLoginAttemptKey,
+  shouldAttemptSilentLogin,
+  shouldClearSessionForWalletMismatch,
+  shouldPurgeExpiredSession,
+} from '../lib/api/auth/auth-sync'
+import {
   isUnauthorizedError,
   loginWithWallet,
-  readWalletSession,
 } from '../lib/api/auth/login-with-wallet'
-import {
-  createLocalAuthSessionStorage,
-  type StoredAuthSession,
-} from '../lib/api/auth/session'
+import { resolveAuthStatus } from '../lib/api/auth/resolve-auth-status'
+import type { StoredAuthSession } from '../lib/api/auth/session'
 import { defaultChain } from '../web3/thirdweb'
-import { isWalletRestorePending } from '../lib/web3/wallet-connection-state'
+import { useAuthStore } from '../stores/auth-store'
+import {
+  createStoreAuthSessionStorage,
+  createStoreLoginSignatureStorage,
+} from '../stores/auth-storage-adapters'
 import { useDappActions } from '../stores/dapp-actions'
 
 export interface AuthContextValue {
   token: string | null
   session: StoredAuthSession | null
   isAuthenticated: boolean
+  needsSignIn: boolean
+  hasHydrated: boolean
   isLoggingIn: boolean
   loginError: string | null
   login: () => Promise<void>
   retryLogin: () => Promise<void>
   logout: () => void
+  invalidateSession: () => void
   clearLoginError: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+const sessionStorage = createStoreAuthSessionStorage()
+const signatureStorage = createStoreLoginSignatureStorage()
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const account = useActiveAccount()
-  const isAutoConnecting = useIsAutoConnecting()
-  const storage = useMemo(() => createLocalAuthSessionStorage(localStorage), [])
-  const [session, setSession] = useState<StoredAuthSession | null>(() => storage.read())
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
-  const [loginError, setLoginError] = useState<string | null>(null)
+  const walletAddress = account?.address
+  const session = useAuthStore((state) => state.session)
+  const loginError = useAuthStore((state) => state.loginError)
+  const isLoggingIn = useAuthStore((state) => state.isLoggingIn)
+  const hasHydrated = useAuthStore((state) => state.hasHydrated)
+  const silentLoginAttemptRef = useRef<string | null>(null)
+  const wasAuthenticatedRef = useRef(false)
 
   useEffect(() => {
-    const nextAddress = account?.address
-    if (!nextAddress) {
-      return
+    silentLoginAttemptRef.current = null
+  }, [walletAddress])
+
+  useEffect(() => {
+    if (!hasHydrated) return
+
+    const isAuthenticated = resolveAuthStatus({ session, walletAddress }).isAuthenticated
+    if (isAuthenticated && !wasAuthenticatedRef.current) {
+      useDappActions.getState().afterAuthLogin(walletAddress)
     }
 
-    const stored = storage.read()
-    if (stored && stored.address.toLowerCase() !== nextAddress.toLowerCase()) {
-      clearWalletSession(storage)
-      setSession(null)
-      setLoginError(null)
-      useDappActions.getState().afterAuthLogout()
-      return
-    }
-
-    setSession(readWalletSession(nextAddress, storage))
-  }, [account?.address, storage])
+    wasAuthenticatedRef.current = isAuthenticated
+  }, [hasHydrated, session, walletAddress])
 
   const login = useCallback(async () => {
     if (!account) {
-      setLoginError('Wallet not connected')
+      useAuthStore.getState().setLoginError('Wallet not connected')
       return
     }
 
+    const { setIsLoggingIn, setLoginError } = useAuthStore.getState()
     setIsLoggingIn(true)
     setLoginError(null)
 
     try {
-      const result = await loginWithWallet({
+      await loginWithWallet({
         account,
         chainId: defaultChain.id,
-        storage,
+        storage: sessionStorage,
+        signatureStorage,
       })
-
-      setSession({
-        address: account.address,
-        token: result.token,
-        savedAt: Date.now(),
-      })
-      useDappActions.getState().afterAuthLogin()
+      silentLoginAttemptRef.current = buildSilentLoginAttemptKey(
+        account.address,
+        useAuthStore.getState().session,
+      )
     } catch (error) {
       if (error instanceof ApiError) {
         setLoginError(error.message)
@@ -98,57 +105,128 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       throw error
     } finally {
-      setIsLoggingIn(false)
+      useAuthStore.getState().setIsLoggingIn(false)
     }
-  }, [account, storage])
+  }, [account])
 
-  const retryLogin = useCallback(async () => {
-    setLoginError(null)
-    await login()
-  }, [login])
+  useEffect(() => {
+    if (!hasHydrated) return
+
+    const store = useAuthStore.getState()
+
+    if (shouldPurgeExpiredSession(store.session)) {
+      store.clearSession()
+      useDappActions.getState().afterAuthLogout()
+      return
+    }
+
+    if (shouldClearSessionForWalletMismatch(store.session, walletAddress)) {
+      store.clearWalletAuth()
+      store.setLoginError(null)
+      silentLoginAttemptRef.current = null
+      useDappActions.getState().afterAuthLogout()
+    }
+  }, [hasHydrated, session?.expiresAt, session?.token, walletAddress])
+
+  useEffect(() => {
+    if (!session?.expiresAt) return
+
+    const delay = session.expiresAt - Date.now()
+    if (delay <= 0) {
+      useAuthStore.getState().clearSession()
+      useDappActions.getState().afterAuthLogout()
+      return
+    }
+
+    const timerId = window.setTimeout(() => {
+      useAuthStore.getState().clearSession()
+      useDappActions.getState().afterAuthLogout()
+    }, delay)
+
+    return () => window.clearTimeout(timerId)
+  }, [session?.expiresAt, session?.token])
 
   useEffect(() => {
     if (
-      !account?.address ||
-      isLoggingIn ||
-      loginError ||
-      isWalletRestorePending(account, isAutoConnecting)
+      !shouldAttemptSilentLogin({
+        hasHydrated,
+        walletAddress,
+        session,
+        isLoggingIn,
+        loginError,
+        signatureStorage,
+        attemptedKey: silentLoginAttemptRef.current,
+      })
     ) {
       return
     }
 
-    const existing = readWalletSession(account.address, storage)
-    if (existing?.token) {
-      return
-    }
+    silentLoginAttemptRef.current = buildSilentLoginAttemptKey(walletAddress!, session)
+    void login().catch(() => {
+      // login() records loginError; user can retry manually
+    })
+  }, [hasHydrated, isLoggingIn, login, loginError, session, walletAddress])
 
-    void login().catch(() => undefined)
-  }, [account, isAutoConnecting, isLoggingIn, login, loginError, storage])
+  const retryLogin = useCallback(async () => {
+    silentLoginAttemptRef.current = null
+    useAuthStore.getState().setLoginError(null)
+    await login()
+  }, [login])
+
+  const invalidateSession = useCallback(() => {
+    const { clearSession, setLoginError } = useAuthStore.getState()
+    clearSession()
+    setLoginError(null)
+    silentLoginAttemptRef.current = null
+    useDappActions.getState().afterAuthLogout()
+  }, [])
 
   const logout = useCallback(() => {
-    clearWalletSession(storage)
-    setSession(null)
+    const { clearWalletAuth, setLoginError } = useAuthStore.getState()
+    clearWalletAuth()
     setLoginError(null)
+    silentLoginAttemptRef.current = null
     useDappActions.getState().afterAuthLogout()
-  }, [storage])
+  }, [])
 
   const clearLoginError = useCallback(() => {
-    setLoginError(null)
+    useAuthStore.getState().setLoginError(null)
   }, [])
+
+  const authStatus = useMemo(
+    () => resolveAuthStatus({ session, walletAddress }),
+    [session, walletAddress],
+  )
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      token: session?.token ?? null,
+      token: authStatus.token,
       session,
-      isAuthenticated: Boolean(session?.token),
+      isAuthenticated: authStatus.isAuthenticated,
+      needsSignIn: authStatus.needsSignIn && !isLoggingIn,
+      hasHydrated,
       isLoggingIn,
       loginError,
       login,
       retryLogin,
       logout,
+      invalidateSession,
       clearLoginError,
     }),
-    [clearLoginError, isLoggingIn, login, loginError, logout, retryLogin, session],
+    [
+      authStatus.isAuthenticated,
+      authStatus.needsSignIn,
+      authStatus.token,
+      clearLoginError,
+      hasHydrated,
+      invalidateSession,
+      isLoggingIn,
+      login,
+      loginError,
+      logout,
+      retryLogin,
+      session,
+    ],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

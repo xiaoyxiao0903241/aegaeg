@@ -6,6 +6,14 @@ import {
   resolveLoginMessageFormat,
 } from './build-login-message'
 import {
+  createLocalLoginSignatureStorage,
+  createMemoryLoginSignatureStorage,
+  readUsableLoginSignature,
+  type LoginSignatureStorage,
+  type StoredLoginSignature,
+} from './login-signature-cache'
+import { isJwtExpired, withJwtExpiry } from './jwt'
+import {
   createLocalAuthSessionStorage,
   isSessionForAddress,
   type AuthSessionStorage,
@@ -18,6 +26,7 @@ export interface WalletLoginParams {
   domain?: string
   signMessage?: (message: string) => Promise<string>
   storage?: AuthSessionStorage
+  signatureStorage?: LoginSignatureStorage
 }
 
 export interface WalletLoginResult {
@@ -26,13 +35,73 @@ export interface WalletLoginResult {
   signature: string
 }
 
+function isLoginSignatureRejected(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /nonce|signature|expired|invalid/i.test(error.message)
+  )
+}
+
+async function exchangeLoginSignature({
+  address,
+  message,
+  signature,
+  storage,
+}: {
+  address: string
+  message: string
+  signature: string
+  storage: AuthSessionStorage
+}): Promise<string> {
+  const { token } = await login({
+    address,
+    message,
+    signature,
+  })
+
+  storage.write(
+    withJwtExpiry({
+      address,
+      token,
+      savedAt: Date.now(),
+    }),
+  )
+
+  return token
+}
+
 export async function loginWithWallet({
   account,
   chainId,
   domain,
   signMessage = (message) => account.signMessage({ message }),
   storage = createLocalAuthSessionStorage(localStorage),
+  signatureStorage = createLocalLoginSignatureStorage(localStorage),
 }: WalletLoginParams): Promise<WalletLoginResult> {
+  const cached = readUsableLoginSignature(account.address, signatureStorage)
+  if (cached) {
+    try {
+      const token = await exchangeLoginSignature({
+        address: account.address,
+        message: cached.message,
+        signature: cached.signature,
+        storage,
+      })
+
+      return {
+        token,
+        message: cached.message,
+        signature: cached.signature,
+      }
+    } catch (error) {
+      if (!isLoginSignatureRejected(error)) {
+        throw error
+      }
+
+      signatureStorage.clear()
+    }
+  }
+
   const message = buildLoginMessage(
     {
       address: account.address,
@@ -44,16 +113,19 @@ export async function loginWithWallet({
   )
 
   const signature = await signMessage(message)
-  const { token } = await login({
+  const cachedAttempt: StoredLoginSignature = {
     address: account.address,
     message,
     signature,
-  })
-
-  storage.write({
-    address: account.address,
-    token,
     savedAt: Date.now(),
+  }
+  signatureStorage.write(cachedAttempt)
+
+  const token = await exchangeLoginSignature({
+    address: account.address,
+    message,
+    signature,
+    storage,
   })
 
   return { token, message, signature }
@@ -64,13 +136,23 @@ export function readWalletSession(
   storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),
 ): StoredAuthSession | null {
   const session = storage.read()
-  return isSessionForAddress(session, address) ? session : null
+  if (!isSessionForAddress(session, address)) return null
+  if (isJwtExpired(session.token)) return null
+  return session
+}
+
+export function clearAuthSession(
+  storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),
+): void {
+  storage.clear()
 }
 
 export function clearWalletSession(
   storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),
+  signatureStorage: LoginSignatureStorage = createLocalLoginSignatureStorage(localStorage),
 ): void {
   storage.clear()
+  signatureStorage.clear()
 }
 
 export function isUnauthorizedError(error: unknown): boolean {
@@ -81,3 +163,5 @@ export function isUnauthorizedError(error: unknown): boolean {
     (error as { code: number }).code === 401
   )
 }
+
+export { createMemoryLoginSignatureStorage }

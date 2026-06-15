@@ -8,12 +8,12 @@ export function useAuthenticatedQuery<T>(
   fetcher: (token: string) => Promise<T>,
   enabled = true,
 ) {
-  const { token, logout, isAuthenticated } = useAuth()
+  const { token, invalidateSession, isAuthenticated, hasHydrated } = useAuth()
 
   const query = useQuery({
     queryKey,
-    queryFn: () => fetchAuthenticated(fetcher, token!, logout),
-    enabled: enabled && isAuthenticated && Boolean(token),
+    queryFn: () => fetchAuthenticated(fetcher, token!, invalidateSession),
+    enabled: enabled && hasHydrated && isAuthenticated && Boolean(token),
     staleTime: QUERY_STALE_TIME.api,
   })
 

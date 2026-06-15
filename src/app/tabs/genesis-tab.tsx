@@ -159,7 +159,7 @@ export function GenesisWidget({
         <span>{t.genesis.shares}</span>
         <div className="flex gap-2">
           <input
-            className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-3.5 text-base font-bold text-foreground outline-none focus:border-primary"
+            className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-base font-bold text-foreground outline-none focus:border-primary"
             disabled={!walletReady}
             max={MAX_SHARES}
             min={1}
@@ -292,32 +292,32 @@ export function GenesisContent() {
       <MetricGrid columns={4}>
         {genesis.isLoading && genesis.phases.length === 0 ? (
           <>
-            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
-            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
-            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
-            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
+            <MetricCardSkeleton className="max-[820px]:rounded-md" />
+            <MetricCardSkeleton className="max-[820px]:rounded-md" />
+            <MetricCardSkeleton className="max-[820px]:rounded-md" />
+            <MetricCardSkeleton className="max-[820px]:rounded-md" />
           </>
         ) : (
           <>
             <MetricCard
-              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3] [&_strong]:tabular-nums"
+              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:tabular-nums"
               label={
                 genesis.countdownMode === 'ends' ? t.genesis.endsIn : t.genesis.startsIn
               }
               value={genesis.countdown}
             />
             <MetricCard
-              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
+              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:tabular-nums"
               label={<span className="text-muted-foreground">{t.genesis.referencePrice}</span>}
               value={genesis.referencePriceLabel}
             />
             <MetricCard
-              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
+              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2]"
               label={t.genesis.discountRatio}
               value={genesis.discountLabel}
             />
             <MetricCard
-              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
+              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2]"
               label={t.genesis.xAirdropRatio}
               value={genesis.airdropLabel}
             />

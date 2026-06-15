@@ -52,7 +52,7 @@ const variantStyles = {
     ),
     question: 'min-w-0',
     answer: cn(
-      dappTextClass('faqAnswer', { tone: 'body' }),
+      dappTextClass('faqAnswer', { tone: 'faq' }),
       'group-data-[tab=swap]/shell:max-[820px]:leading-normal group-data-[tab=rewards]/shell:max-[820px]:hidden',
     ),
     arrow:

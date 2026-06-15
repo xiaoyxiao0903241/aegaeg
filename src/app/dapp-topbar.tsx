@@ -18,7 +18,7 @@ const topbarClass = cn(
 )
 
 const brandClass = cn(
-  'flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.36px] text-foreground',
+  'flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.34px] text-foreground',
   'max-[820px]:text-[15px]',
   'group-data-[tab=rewards]/shell:max-[820px]:group-data-[connected=true]/shell:[&_span]:hidden',
 )
@@ -29,7 +29,7 @@ const brandMarkClass = cn(
 )
 
 const topActionsClass = cn(
-  'flex items-center gap-2.5',
+  'flex items-center gap-3',
   'max-[820px]:min-w-0 max-[820px]:flex-1 max-[820px]:justify-end max-[820px]:gap-2',
 )
 

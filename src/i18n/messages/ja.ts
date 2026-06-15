@@ -327,6 +327,8 @@ const ja = defineMessages({
     directShort: '直接紹介',
     titleShort: 'タイトル',
     referralBondActive: '紹介関係有効 · 直接招待 {count}人',
+    referralBondPermanent: '紹介関係が有効 · 紐付けは永久です。',
+    referralBondActiveSince: '{date} から紹介関係が有効 · 紐付けは永久です。',
     volumePrefix: '実績',
     genesisShareholder: 'Genesis株主',
     statDirectVolume: '実績 $48,200',

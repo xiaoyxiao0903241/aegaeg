@@ -1,16 +1,18 @@
 import { create } from 'zustand'
 import {
   clearApiQueries,
+  invalidateAfterAuthLogin,
+  invalidateAfterGenesisPhaseTransition,
   invalidateAfterGenesisPurchase,
   invalidateAfterReferralBind,
   invalidateAfterSwap,
   invalidateAfterTeamClaim,
-  invalidateApiQueries,
 } from '../lib/query/invalidate'
 
 interface DappActionsState {
-  afterAuthLogin: () => void
+  afterAuthLogin: (address?: string) => void
   afterAuthLogout: () => void
+  afterGenesisPhaseTransition: (address?: string) => void
   afterSwap: (address: string, sellToken: string, buyToken: string) => void
   afterGenesisPurchase: (address: string, purchaseAmount?: bigint) => void
   afterTeamClaim: () => void
@@ -18,8 +20,11 @@ interface DappActionsState {
 }
 
 export const useDappActions = create<DappActionsState>(() => ({
-  afterAuthLogin: () => {
-    void invalidateApiQueries()
+  afterAuthLogin: (address) => {
+    invalidateAfterAuthLogin(address)
+  },
+  afterGenesisPhaseTransition: (address) => {
+    invalidateAfterGenesisPhaseTransition(address)
   },
   afterAuthLogout: () => {
     clearApiQueries()

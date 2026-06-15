@@ -20,9 +20,14 @@ import { QUERY_STALE_TIME } from '../lib/query/query-client'
 import { queryKeys } from '../lib/query/query-keys'
 import { useDappActions } from '../stores/dapp-actions'
 import { GENESIS_PURCHASE_ERROR } from '../lib/web3/resolve-contract-error-message'
+import { hasWalletAccount } from '../lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from './queries/use-visible-query-interval'
 
-export function useSwapWidget(connected: boolean) {
+/**
+ * @param authenticated — SIWE session ready; gates quotes, swap submit, and amount capping.
+ * Balances load on wallet account presence (`walletReady`), independent of SIWE.
+ */
+export function useSwapWidget(authenticated: boolean) {
   const account = useActiveAccount()
   const afterSwap = useDappActions((state) => state.afterSwap)
   const [sellAmount, setSellAmountRaw] = useState('')
@@ -33,7 +38,7 @@ export function useSwapWidget(connected: boolean) {
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
   const address = account?.address
-  const walletReady = Boolean(address)
+  const walletReady = hasWalletAccount(account)
   const amountIn = useMemo(
     () => parseTokenAmount(sellAmount, pair.sell.decimals),
     [pair.sell.decimals, sellAmount],
@@ -74,7 +79,7 @@ export function useSwapWidget(connected: boolean) {
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
       }),
-    enabled: connected,
+    enabled: authenticated,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
@@ -91,36 +96,36 @@ export function useSwapWidget(connected: boolean) {
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
       }),
-    enabled: connected && amountIn > 0n,
+    enabled: authenticated && amountIn > 0n,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, connected)
+  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, authenticated)
   useVisibleQueryInterval(
     amountQuoteQuery,
     SWAP_CONFIG.quoteRefreshIntervalMs,
-    connected && amountIn > 0n,
+    authenticated && amountIn > 0n,
   )
 
   const sellBalance = balancesQuery.data?.sell ?? 0n
   const buyBalance = balancesQuery.data?.buy ?? 0n
   const allowance = balancesQuery.data?.approved ?? 0n
-  const isBalancesLoading = connected && balancesQuery.isLoading
+  const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
   const quotePath = amountQuoteQuery.data?.path ?? []
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
   const spotQuotePath = spotQuoteQuery.data?.path ?? []
   const isQuoting =
-    connected && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
+    authenticated && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
   const isSpotQuoting =
-    connected && amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
+    authenticated && amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
 
   const setSellAmount = useCallback(
     (value: string) => {
       const fractionLimit = Math.min(pair.sell.decimals, 6)
 
-      if (!connected) {
+      if (!authenticated) {
         setSellAmountRaw(sanitizeTokenAmountInput(value, fractionLimit))
         return
       }
@@ -129,11 +134,11 @@ export function useSwapWidget(connected: boolean) {
         capTokenAmountInput(value, sellBalance, pair.sell.decimals, 6),
       )
     },
-    [connected, pair.sell.decimals, sellBalance],
+    [authenticated, pair.sell.decimals, sellBalance],
   )
 
   useEffect(() => {
-    if (!connected || !sellAmount) {
+    if (!authenticated || !sellAmount) {
       return
     }
 
@@ -141,7 +146,7 @@ export function useSwapWidget(connected: boolean) {
     if (capped !== sellAmount) {
       setSellAmountRaw(capped)
     }
-  }, [connected, pair.sell.decimals, sellAmount, sellBalance])
+  }, [authenticated, pair.sell.decimals, sellAmount, sellBalance])
 
   useEffect(() => {
     if (amountQuoteQuery.error) {
@@ -178,12 +183,12 @@ export function useSwapWidget(connected: boolean) {
   ])
 
   const buyAmount = useMemo(
-    () => (connected && quotedOut > 0n ? formatTokenAmount(quotedOut, pair.buy.decimals, 6) : ''),
-    [connected, pair.buy.decimals, quotedOut],
+    () => (authenticated && quotedOut > 0n ? formatTokenAmount(quotedOut, pair.buy.decimals, 6) : ''),
+    [authenticated, pair.buy.decimals, quotedOut],
   )
 
   const rateLabel = useMemo(() => {
-    if (!connected) {
+    if (!authenticated) {
       return '—'
     }
 
@@ -200,7 +205,7 @@ export function useSwapWidget(connected: boolean) {
       symbolOut: pair.buy.symbol,
     })
   }, [
-    connected,
+    authenticated,
     isQuoting,
     isSpotQuoting,
     pair.buy.decimals,
@@ -244,7 +249,7 @@ export function useSwapWidget(connected: boolean) {
       const value = (sellBalance * BigInt(percent)) / 100n
       setSellAmountRaw(formatTokenAmount(value, pair.sell.decimals, 6))
     },
-    [connected, pair.sell.decimals, sellBalance],
+    [walletReady, pair.sell.decimals, sellBalance],
   )
 
   const flipDirection = useCallback(() => {

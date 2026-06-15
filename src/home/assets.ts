@@ -1,5 +1,5 @@
 export const homeAssets = {
-  logoMark: '/assets/figma/home/logo-mark.png',
+  logoMark: '/assets/figma/home/icons/token-x-mark.webp',
   globe: '/assets/figma/dapp/ic-globe.svg',
   heroVideo: '/assets/figma/home/hero-ip-alpha.webm',
   heroVideoPoster: '/assets/figma/home/hero-ip-alpha-poster.webp',
@@ -24,7 +24,7 @@ export const homeAssets = {
     usd1Shape: '/assets/figma/home/icons/token-usd1-shape.svg',
     xIcon: '/assets/figma/home/icons/token-x-mark.webp',
     xShape: '/assets/figma/home/icons/token-x-mark.webp',
-    gagxIcon: '/assets/figma/home/icons/token-gagx-icon.png',
+    gagxIcon: '/assets/figma/home/icons/token-gagx-mark.png',
     gagxShape: '/assets/figma/home/icons/token-gagx-shape.svg',
   },
   partners: {

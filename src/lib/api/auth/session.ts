@@ -2,6 +2,8 @@ export interface StoredAuthSession {
   address: string
   token: string
   savedAt: number
+  /** JWT exp claim in ms — cached for proactive expiry checks. */
+  expiresAt?: number
 }
 
 export interface AuthSessionStorage {
@@ -11,6 +13,7 @@ export interface AuthSessionStorage {
 }
 
 export const AUTH_SESSION_STORAGE_KEY = 'aegis.auth.session'
+export const AUTH_SIGNATURE_STORAGE_KEY = 'aegis.auth.signature'
 
 export function createLocalAuthSessionStorage(
   storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>,

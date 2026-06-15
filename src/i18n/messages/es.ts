@@ -328,6 +328,8 @@ const es = defineMessages({
     directShort: 'Ref. directos',
     titleShort: 'Título',
     referralBondActive: 'Vínculo de referido activo · invitaciones directas {count}',
+    referralBondPermanent: 'Vínculo de referido activo · el enlace es permanente.',
+    referralBondActiveSince: 'Vínculo de referido activo desde {date} · el enlace es permanente.',
     volumePrefix: 'Volumen',
     genesisShareholder: 'Accionista Genesis',
     statDirectVolume: 'Volumen $48,200',

@@ -62,7 +62,7 @@ const en = defineMessages({
     disconnect: 'Disconnect',
     reconnectWallet: 'Reconnect wallet',
     reconnectHint: 'Wallet disconnected. Reconnect to sign on-chain actions.',
-    signInRequired: 'Sign in',
+    signInRequired: 'Sign to log in',
   },
   swap: {
     title: 'Swap',
@@ -328,6 +328,8 @@ const en = defineMessages({
     directShort: 'Direct refs',
     titleShort: 'Title',
     referralBondActive: 'Referral bond active · direct invites {count}',
+    referralBondPermanent: 'Referral bond active · binding is permanent.',
+    referralBondActiveSince: 'Referral bond active since {date} · binding is permanent.',
     volumePrefix: 'Volume',
     genesisShareholder: 'Genesis Shareholder',
     statDirectVolume: 'Volume $48,200',

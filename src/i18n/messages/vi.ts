@@ -328,6 +328,8 @@ const vi = defineMessages({
     directShort: 'Giới thiệu TT',
     titleShort: 'Danh hiệu',
     referralBondActive: 'Mối quan hệ giới thiệu đã kích hoạt · mời trực tiếp {count}',
+    referralBondPermanent: 'Mối quan hệ giới thiệu đã kích hoạt · liên kết là vĩnh viễn.',
+    referralBondActiveSince: 'Mối quan hệ giới thiệu đã kích hoạt từ {date} · liên kết là vĩnh viễn.',
     volumePrefix: 'Khối lượng',
     genesisShareholder: 'Cổ đông Genesis',
     statDirectVolume: 'Khối lượng $48,200',

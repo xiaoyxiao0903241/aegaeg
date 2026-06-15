@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
-import { dappCardClass, dappLayout, dappTextClass } from '../../components/primitive-styles'
+import { dappCardClass, dappResponsive, dappLayout, dappTextClass } from '../../components/primitive-styles'
 import { cn } from '~/lib/utils'
 import { SwapAmountSkeleton } from './dapp-skeleton'
 import { TokenChip } from './token-chip'
@@ -35,7 +35,7 @@ export function SwapAmountBox({
     <section
       className={dappCardClass('swapForm', {
         className: cn(
-          connected ? 'rounded-2xl' : 'rounded-[14px]',
+          dappResponsive.swapForm,
           !connected && '[&_input]:text-ink-muted [&_input]:placeholder:text-ink-muted',
           className,
         ),
@@ -43,7 +43,7 @@ export function SwapAmountBox({
     >
       <div className={dappLayout.formRow}>
         <span
-          className={dappTextClass('formLabel', {
+          className={dappTextClass('body', {
             tone: labelTone,
             className: !connected && 'text-xs tracking-[-0.24px]',
           })}
@@ -51,7 +51,7 @@ export function SwapAmountBox({
           {label}
         </span>
         <small
-          className={dappTextClass('formHint', {
+          className={dappTextClass('body', {
             tone: connected ? 'ink' : 'subtle',
             className: cn(
               connected && 'font-semibold',
