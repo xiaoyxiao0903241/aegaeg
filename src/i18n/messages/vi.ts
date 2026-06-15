@@ -60,6 +60,9 @@ const vi = defineMessages({
     copyAddress: 'Sao chép địa chỉ',
     copied: 'Đã sao chép',
     disconnect: 'Ngắt kết nối',
+    reconnectWallet: 'Kết nối lại ví',
+    reconnectHint: 'Ví đã ngắt kết nối. Hãy kết nối lại để thực hiện thao tác on-chain.',
+    signInRequired: 'Đăng nhập ký',
   },
   swap: {
     title: 'Hoán đổi',
@@ -173,8 +176,8 @@ const vi = defineMessages({
       },
     ],
     recentSwaps: 'Hoán đổi gần đây',
-    emptyTitle: 'Kết nối ví để xem tài sản',
-    emptyBody: 'Lịch sử hoán đổi và số dư sẽ hiện ở đây sau khi kết nối.',
+    emptyTitle: 'Kết nối ví để xem và quản lý tài sản',
+    emptyBody: 'Lịch sử hoán đổi và số dư của bạn sẽ hiển thị tại đây sau khi kết nối.',
     faq: 'FAQ',
     faqRate: 'Tại sao tỷ giá cố định 1:1?',
     faqRateBody:
@@ -253,6 +256,7 @@ const vi = defineMessages({
     insufficientUsd1: 'Số dư USD1 không đủ. Hãy có đủ USD1 trước khi tham gia.',
     insufficientAllowance: 'Allowance USD1 không đủ. Hãy ủy quyền trước.',
     purchaseUnavailable: 'Hiện không thể tham gia. Hãy kiểm tra số phần hoặc trạng thái season.',
+    walletNotConnected: 'Ví đã ngắt kết nối. Hãy kết nối lại để ký giao dịch.',
     contributionsSyncPending:
       'Giao dịch on-chain đã xác nhận. Đang đồng bộ lịch sử — vui lòng làm mới sau.',
     contributionsEmpty: 'Chưa có bản ghi đóng góp',

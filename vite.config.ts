@@ -16,7 +16,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': resolve(__dirname, 'src'),
+      '@tanstack/react-query': resolve(__dirname, 'node_modules/@tanstack/react-query'),
     },
+    dedupe: ['@tanstack/react-query', 'react', 'react-dom'],
   },
   build: {
     modulePreload: false,
@@ -29,7 +31,12 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['thirdweb', 'thirdweb/react', 'thirdweb/wallets'],
+    include: [
+      'thirdweb',
+      'thirdweb/react',
+      'thirdweb/wallets',
+      '@tanstack/react-query',
+    ],
   },
   plugins: [react(), tailwindcss()],
 })

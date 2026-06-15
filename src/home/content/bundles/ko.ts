@@ -22,7 +22,10 @@ export const koBundle: HomeContentBundle = {
   },
   hero: {
     guardianLabel: 'AEGIS X 가디언',
-    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+    eyebrow: {
+      desktop: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+      mobile: 'AI x DeFi x USD1 · DeFi 4.0',
+    },
     title: '미래 가치의 수호',
     body: {
       desktop:
@@ -118,28 +121,27 @@ export const koBundle: HomeContentBundle = {
       title: '다자산 플라이휠',
       subtitle: {
         desktop:
-          '4개 토큰, 하나의 자기 강화 가치 루프: 성장 → 유동성 + 결제 + 생태계.',
+          '4개 토큰, 하나의 자기 강화 가치 루프: 성장 → 유동성 → 결제 → 생태계.',
         mobile: '4개 토큰, 하나의 자기 강화 가치 루프.',
       },
       cards: [
-        {
-          label: '안정 리저브 자산',
-          description: '결제 레이어 · USD 담보 유동성',
-        },
         {
           label: '핵심 프로토콜 자산',
           description: '150% 초과 담보 · AI 싱크탱크 관리',
         },
         {
-          label: '보상 정산 토큰',
-          description: 'AGX 1:1 · X 마이닝 구동',
+          label: '안정 리저브 자산',
+          description: '결제 레이어 · USD 담보 유동성',
         },
         {
           label: '생태계 가치 토큰',
           description: '2.1억 고정 공급 · 25% 매도 소각',
         },
+        {
+          label: '보상 정산 토큰',
+          description: 'AGX 1:1 · X 마이닝 구동',
+        },
       ],
-      note: '사용자 → 유동성 → 결제 → 성장 → 무한',
     },
     roadmap: {
       eyebrow: 'ROADMAP',
@@ -147,7 +149,7 @@ export const koBundle: HomeContentBundle = {
       phases: [
         {
           phase: 'PHASE 01',
-          time: '2025 Q3',
+          time: '2026 Q3',
           title: 'Genesis Launch',
           description: '프로토콜 배포 · AGX 발행 · USD1 유동성 풀',
           dot: '✓',
@@ -156,7 +158,7 @@ export const koBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 02',
-          time: '2025 Q4',
+          time: '2026 Q4',
           title: 'DeFi Core',
           description: 'Rebase 스테이킹 · LP 본드 · 소각 본드 · AI 마켓 메이킹',
           dot: '✓',
@@ -165,7 +167,7 @@ export const koBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 03',
-          time: '2026 Q1',
+          time: '2027 Q1',
           title: 'DAO & Growth',
           description: 'X DAO 인센티브 · 멀티시그 거버넌스 · 글로벌 노드',
           dot: '✓',
@@ -174,7 +176,7 @@ export const koBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 04',
-          time: '2026 Q2',
+          time: '2027 Q2',
           title: 'AI Agent Economy',
           description: '자율 결제 · 온체인 협업 · 에이전트 마켓 메이킹',
           dot: '4',
@@ -183,7 +185,7 @@ export const koBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 05',
-          time: '2026 Q3',
+          time: '2027 Q3',
           title: 'Global Payments',
           description: '크로스보더 정산 · 가맹점 온보딩 · USD1 레일',
           dot: '5',
@@ -191,7 +193,7 @@ export const koBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 06',
-          time: '2026 Q4',
+          time: '2027 Q4',
           title: 'DeFi 4.0',
           description: '기관 상품 · 컴플라이언스 프레임워크 · 풀 생태계',
           dot: '6',
@@ -271,15 +273,15 @@ export const koBundle: HomeContentBundle = {
       label: '담보 비율',
     },
     {
-      value: '4,880%',
-      countTarget: 4880,
+      value: '100%',
+      countTarget: 100,
       suffix: '%',
       label: '최대 참고 APY',
     },
     {
-      value: '2+',
-      countTarget: 2,
-      suffix: '+',
+      value: '24H',
+      countTarget: 24,
+      suffix: 'H',
       label: '지원 체인',
     },
     {

@@ -11,6 +11,7 @@ type SwapAmountBoxProps = {
   }
   balance: ReactNode
   className?: string
+  connected?: boolean
   label: ReactNode
   mobilePreviewValue?: ReactNode
   tokenIcon: string
@@ -22,16 +23,42 @@ export function SwapAmountBox({
   amountProps,
   balance,
   className,
+  connected = true,
   label,
   mobilePreviewValue,
   tokenIcon,
   tokenLabel,
 }: SwapAmountBoxProps) {
+  const labelTone = connected ? 'body' : 'subtle'
+
   return (
-    <section className={dappCardClass('swapForm', { className })}>
+    <section
+      className={dappCardClass('swapForm', {
+        className: cn(
+          connected ? 'rounded-2xl' : 'rounded-[14px]',
+          !connected && '[&_input]:text-ink-muted [&_input]:placeholder:text-ink-muted',
+          className,
+        ),
+      })}
+    >
       <div className={dappLayout.formRow}>
-        <span className={dappTextClass('formLabel', { tone: 'body' })}>{label}</span>
-        <small className={dappTextClass('formHint', { tone: 'body' })}>
+        <span
+          className={dappTextClass('formLabel', {
+            tone: labelTone,
+            className: !connected && 'text-xs tracking-[-0.24px]',
+          })}
+        >
+          {label}
+        </span>
+        <small
+          className={dappTextClass('formHint', {
+            tone: connected ? 'ink' : 'subtle',
+            className: cn(
+              connected && 'font-semibold',
+              !connected && 'text-xs tracking-[-0.24px]',
+            ),
+          })}
+        >
           <span>{balance}</span>
         </small>
       </div>
@@ -44,12 +71,19 @@ export function SwapAmountBox({
             <input
               className={cn(
                 dappLayout.amountInput,
+                !connected && 'text-ink-muted placeholder:text-ink-muted',
                 mobilePreviewValue && 'max-[820px]:hidden',
               )}
               {...amountProps}
             />
             {mobilePreviewValue ? (
-              <span className={dappLayout.amountMobilePreview} aria-hidden="true">
+              <span
+                className={cn(
+                  dappLayout.amountMobilePreview,
+                  !connected && 'text-ink-muted',
+                )}
+                aria-hidden="true"
+              >
                 {mobilePreviewValue}
               </span>
             ) : null}

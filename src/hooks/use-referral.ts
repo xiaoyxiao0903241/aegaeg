@@ -11,6 +11,7 @@ import {
   readReferrer,
 } from '../web3/referral-read'
 import { bindReferrer } from '../web3/referral-write'
+import { GENESIS_PURCHASE_ERROR } from '../lib/web3/resolve-contract-error-message'
 import { useDappActions } from '../stores/dapp-actions'
 
 export function useReferral(connected: boolean) {
@@ -31,6 +32,7 @@ export function useReferral(connected: boolean) {
   const [error, setError] = useState<string | null>(null)
 
   const address = account?.address
+  const walletReady = Boolean(address)
 
   const referralQuery = useQuery({
     queryKey: queryKeys.chain.referral(address ?? ''),
@@ -64,7 +66,10 @@ export function useReferral(connected: boolean) {
   }, [isBound, referrer])
 
   const bind = useCallback(async () => {
-    if (!account) return false
+    if (!account) {
+      setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
+      return false
+    }
 
     const target = (referrerInput.trim() || pendingReferrer || REFERRAL_CONFIG.defaultReferrer) as `0x${string}`
     if (!/^0x[a-fA-F0-9]{40}$/.test(target)) {
@@ -100,6 +105,8 @@ export function useReferral(connected: boolean) {
     setReferrerInput,
     isLoading: referralQuery.isLoading,
     isSubmitting,
+    walletReady,
+    canBind: connected && walletReady && !isBound && !isSubmitting,
     error:
       error ??
       (referralQuery.error instanceof Error

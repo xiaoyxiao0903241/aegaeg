@@ -5,14 +5,8 @@ type GenesisWidgetContextValue = ReturnType<typeof useGenesisWidget>
 
 const GenesisWidgetContext = createContext<GenesisWidgetContextValue | null>(null)
 
-export function GenesisWidgetProvider({
-  children,
-  connected,
-}: {
-  children: ReactNode
-  connected: boolean
-}) {
-  const value = useGenesisWidget(connected)
+export function GenesisWidgetProvider({ children }: { children: ReactNode }) {
+  const value = useGenesisWidget()
   return <GenesisWidgetContext.Provider value={value}>{children}</GenesisWidgetContext.Provider>
 }
 

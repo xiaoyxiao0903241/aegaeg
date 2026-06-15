@@ -22,7 +22,10 @@ export const jaBundle: HomeContentBundle = {
   },
   hero: {
     guardianLabel: 'AEGIS X ガーディアン',
-    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+    eyebrow: {
+      desktop: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+      mobile: 'AI x DeFi x USD1 · DeFi 4.0',
+    },
     title: '未来の価値を守る',
     body: {
       desktop:
@@ -118,28 +121,27 @@ export const jaBundle: HomeContentBundle = {
       title: 'マルチアセット・フライホイール',
       subtitle: {
         desktop:
-          '4つのトークン、1つの自己強化バリューループ：成長 → 流動性 + 決済 + エコシステム。',
+          '4つのトークン、1つの自己強化バリューループ：成長 → 流動性 → 決済 → エコシステム。',
         mobile: '4つのトークン、1つの自己強化バリューループ。',
       },
       cards: [
-        {
-          label: '安定リザーブ資産',
-          description: '決済レイヤー · USD担保流動性',
-        },
         {
           label: 'コアプロトコル資産',
           description: '150%超過担保 · AIシンクタンク管理',
         },
         {
-          label: '報酬決済トークン',
-          description: 'AGX 1:1 · Xマイニングを駆動',
+          label: '安定リザーブ資産',
+          description: '決済レイヤー · USD担保流動性',
         },
         {
           label: 'エコシステム価値トークン',
           description: '2.1億固定供給 · 25%売却バーン',
         },
+        {
+          label: '報酬決済トークン',
+          description: 'AGX 1:1 · Xマイニングを駆動',
+        },
       ],
-      note: 'ユーザー → 流動性 → 決済 → 成長 → インフィニティ',
     },
     roadmap: {
       eyebrow: 'ROADMAP',
@@ -147,7 +149,7 @@ export const jaBundle: HomeContentBundle = {
       phases: [
         {
           phase: 'PHASE 01',
-          time: '2025 Q3',
+          time: '2026 Q3',
           title: 'Genesis Launch',
           description: 'プロトコルデプロイ · AGXミント · USD1流動性プール',
           dot: '✓',
@@ -156,7 +158,7 @@ export const jaBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 02',
-          time: '2025 Q4',
+          time: '2026 Q4',
           title: 'DeFi Core',
           description: 'Rebaseステーキング · LPボンド · バーンボンド · AIマーケットメイキング',
           dot: '✓',
@@ -165,7 +167,7 @@ export const jaBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 03',
-          time: '2026 Q1',
+          time: '2027 Q1',
           title: 'DAO & Growth',
           description: 'X DAOインセンティブ · マルチシグガバナンス · グローバルノード',
           dot: '✓',
@@ -174,7 +176,7 @@ export const jaBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 04',
-          time: '2026 Q2',
+          time: '2027 Q2',
           title: 'AI Agent Economy',
           description: '自律決済 · オンチェーン協業 · エージェントマーケットメイキング',
           dot: '4',
@@ -183,7 +185,7 @@ export const jaBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 05',
-          time: '2026 Q3',
+          time: '2027 Q3',
           title: 'Global Payments',
           description: 'クロスボーダー決済 · 加盟店オンボーディング · USD1レール',
           dot: '5',
@@ -191,7 +193,7 @@ export const jaBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 06',
-          time: '2026 Q4',
+          time: '2027 Q4',
           title: 'DeFi 4.0',
           description: '機関向けプロダクト · コンプライアンスフレームワーク · フルエコシステム',
           dot: '6',
@@ -271,15 +273,15 @@ export const jaBundle: HomeContentBundle = {
       label: '担保比率',
     },
     {
-      value: '4,880%',
-      countTarget: 4880,
+      value: '100%',
+      countTarget: 100,
       suffix: '%',
       label: '最大参考APY',
     },
     {
-      value: '2+',
-      countTarget: 2,
-      suffix: '+',
+      value: '24H',
+      countTarget: 24,
+      suffix: 'H',
       label: '対応チェーン',
     },
     {

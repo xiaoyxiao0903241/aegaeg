@@ -19,6 +19,7 @@ import { appendSwapHistory } from '../lib/swap/swap-history'
 import { QUERY_STALE_TIME } from '../lib/query/query-client'
 import { queryKeys } from '../lib/query/query-keys'
 import { useDappActions } from '../stores/dapp-actions'
+import { GENESIS_PURCHASE_ERROR } from '../lib/web3/resolve-contract-error-message'
 import { useVisibleQueryInterval } from './queries/use-visible-query-interval'
 
 export function useSwapWidget(connected: boolean) {
@@ -32,6 +33,7 @@ export function useSwapWidget(connected: boolean) {
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
   const address = account?.address
+  const walletReady = Boolean(address)
   const amountIn = useMemo(
     () => parseTokenAmount(sellAmount, pair.sell.decimals),
     [pair.sell.decimals, sellAmount],
@@ -56,7 +58,7 @@ export function useSwapWidget(connected: boolean) {
       ])
       return { sell, buy, approved }
     },
-    enabled: connected && Boolean(address),
+    enabled: walletReady,
     staleTime: QUERY_STALE_TIME.balances,
   })
 
@@ -109,8 +111,10 @@ export function useSwapWidget(connected: boolean) {
   const quotePath = amountQuoteQuery.data?.path ?? []
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
   const spotQuotePath = spotQuoteQuery.data?.path ?? []
-  const isQuoting = connected && amountIn > 0n && amountQuoteQuery.isFetching
-  const isSpotQuoting = connected && amountIn === 0n && spotQuoteQuery.isFetching
+  const isQuoting =
+    connected && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
+  const isSpotQuoting =
+    connected && amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
 
   const setSellAmount = useCallback(
     (value: string) => {
@@ -183,8 +187,8 @@ export function useSwapWidget(connected: boolean) {
       return '—'
     }
 
-    if (amountIn === 0n && isSpotQuoting) {
-      return ''
+    if (rateQuote.amountOut === 0n) {
+      return isSpotQuoting || isQuoting ? '' : '—'
     }
 
     return formatSwapRate({
@@ -196,8 +200,8 @@ export function useSwapWidget(connected: boolean) {
       symbolOut: pair.buy.symbol,
     })
   }, [
-    amountIn,
     connected,
+    isQuoting,
     isSpotQuoting,
     pair.buy.decimals,
     pair.buy.symbol,
@@ -223,19 +227,20 @@ export function useSwapWidget(connected: boolean) {
     return labels.join(' → ')
   }, [pair.buy.address, pair.buy.symbol, pair.sell.address, pair.sell.symbol, rateQuote.path])
 
-  const action = amountIn > 0n ? resolveSwapAction(allowance, amountIn) : 'swap'
-  const exceedsBalance = connected && amountIn > sellBalance
+  const action =
+    walletReady && amountIn > 0n ? resolveSwapAction(allowance, amountIn) : 'swap'
+  const exceedsBalance = walletReady && amountIn > sellBalance
   const canSubmit =
-    connected &&
+    walletReady &&
     amountIn > 0n &&
     !exceedsBalance &&
     quotedOut > 0n &&
-    !isQuoting &&
+    !amountQuoteQuery.isPending &&
     !isSubmitting
 
   const fillPercent = useCallback(
     (percent: number) => {
-      if (!connected || sellBalance === 0n) return
+      if (!walletReady || sellBalance === 0n) return
       const value = (sellBalance * BigInt(percent)) / 100n
       setSellAmountRaw(formatTokenAmount(value, pair.sell.decimals, 6))
     },
@@ -248,7 +253,11 @@ export function useSwapWidget(connected: boolean) {
   }, [])
 
   const submit = useCallback(async (): Promise<boolean> => {
-    if (!account || !canSubmit) return false
+    if (!account) {
+      setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
+      return false
+    }
+    if (!canSubmit) return false
 
     setIsSubmitting(true)
     setError(null)
@@ -316,6 +325,7 @@ export function useSwapWidget(connected: boolean) {
     rateLabel,
     routeLabel,
     action,
+    walletReady,
     canSubmit,
     isQuoting,
     isSpotQuoting,

@@ -60,7 +60,7 @@ export function GenesisWidget({
   onSelectGenesis: () => void
 }) {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
+  const { connected, walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()
   const seasonIntro = t.genesis.intro
     .replace('{season}', String(genesis.activeSeasonNumber))
@@ -83,15 +83,19 @@ export function GenesisWidget({
     }
 
     if (!result.error) return
-    const message = resolveContractErrorMessage(result.error, {
+    const message = resolveGenesisPurchaseError(result.error, {
       insufficientAllowance: t.genesis.insufficientAllowance,
       insufficientUsd1: t.genesis.insufficientUsd1,
+      purchaseUnavailable: t.genesis.purchaseUnavailable,
+      walletNotConnected: t.genesis.walletNotConnected,
     })
     if (message) toast.error(message)
   }, [
     genesis,
     t.genesis.insufficientAllowance,
     t.genesis.insufficientUsd1,
+    t.genesis.purchaseUnavailable,
+    t.genesis.walletNotConnected,
     t.swap.approveSuccess,
   ])
 
@@ -107,6 +111,7 @@ export function GenesisWidget({
         insufficientAllowance: t.genesis.insufficientAllowance,
         insufficientUsd1: t.genesis.insufficientUsd1,
         purchaseUnavailable: t.genesis.purchaseUnavailable,
+        walletNotConnected: t.genesis.walletNotConnected,
       })
       if (message) toast.error(message)
     }
@@ -116,6 +121,7 @@ export function GenesisWidget({
     t.genesis.insufficientUsd1,
     t.genesis.joinSuccess,
     t.genesis.purchaseUnavailable,
+    t.genesis.walletNotConnected,
   ])
 
   useEffect(() => {
@@ -154,7 +160,7 @@ export function GenesisWidget({
         <div className="flex gap-2">
           <input
             className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-3.5 text-base font-bold text-foreground outline-none focus:border-primary"
-            disabled={!connected}
+            disabled={!walletReady}
             max={MAX_SHARES}
             min={1}
             onChange={(e) => handleSharesChange(e.target.value)}
@@ -163,7 +169,7 @@ export function GenesisWidget({
           />
           <button
             className="min-h-11 min-w-[66px] shrink-0 cursor-pointer rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary disabled:opacity-50"
-            disabled={!connected}
+            disabled={!walletReady}
             onClick={() => genesis.setShares(MAX_SHARES)}
             type="button"
           >
@@ -177,7 +183,7 @@ export function GenesisWidget({
           { label: t.genesis.quota, value: genesis.quotaLabel },
           { label: t.genesis.pay, value: genesis.payUsd1Label },
           { label: t.genesis.receive, value: `${genesis.estimatedAgxLabel} AGX` },
-          { label: t.genesis.usd1Balance, value: connected ? `${genesis.usd1BalanceLabel} USD1` : '—' },
+          { label: t.genesis.usd1Balance, value: walletReady ? `${genesis.usd1BalanceLabel} USD1` : '—' },
           {
             label: t.genesis.phase,
             value: genesis.activePhase
@@ -192,7 +198,7 @@ export function GenesisWidget({
       <DappActionRow className={genesis.isApproved ? 'grid-cols-1' : undefined}>
         {!genesis.isApproved ? (
           <DappActionButton
-            disabled={!connected || !genesis.canPurchase || genesis.isSubmitting}
+            disabled={!walletReady || !genesis.canPurchase || genesis.isSubmitting}
             loading={genesis.submittingAction === 'approve'}
             onClick={() => void handleApprove()}
             variant="secondary"
@@ -201,7 +207,7 @@ export function GenesisWidget({
           </DappActionButton>
         ) : null}
         <DappActionButton
-          disabled={!connected || !genesis.canPurchase || genesis.isSubmitting}
+          disabled={!walletReady || !genesis.canPurchase || genesis.isSubmitting}
           loading={genesis.submittingAction === 'purchase'}
           onClick={() => void handleParticipate()}
           variant="primary"
@@ -263,12 +269,14 @@ export function GenesisContent() {
     salesLogs?.items.map((item) => mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)) ?? []
   const mobileRows =
     salesLogs?.items.map((item) => mapSalesLogToMobileRow(item, genesis.agxPriceUsd)) ?? []
-  const useMockRows = !connected
+  const useMockRows = !connected && !genesis.walletReady
   const authPending = connected && (isLoggingIn || !isAuthenticated)
   const tableRows = useMockRows ? contributionRows : desktopRows
   const tableRowsMobile = useMockRows ? mobileContributionRows : mobileRows
   const showSalesSyncHint =
     apiEnabled && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
+  const showContributionsSignInHint =
+    !apiEnabled && genesis.walletReady && genesis.userTotal > 0n && desktopRows.length === 0
   const showContributionSkeleton =
     connected &&
     !useMockRows &&
@@ -396,6 +404,11 @@ export function GenesisContent() {
               {t.genesis.contributionsSyncPending}
             </p>
           ) : null}
+          {showContributionsSignInHint ? (
+            <p className="mb-3 text-[13px] leading-normal text-muted-foreground">
+              {t.rewards.rankSignInRequired}
+            </p>
+          ) : null}
           {tableRows.length > 0 ? (
             <>
               <ResponsiveTable
@@ -427,7 +440,7 @@ export function GenesisContent() {
                 rows={tableRowsMobile}
               />
             </>
-          ) : apiEnabled && !showSalesSyncHint ? (
+          ) : apiEnabled && !showSalesSyncHint && !showContributionsSignInHint ? (
             <p className="text-[13px] leading-normal text-muted-foreground">{t.genesis.contributionsEmpty}</p>
           ) : null}
             </>

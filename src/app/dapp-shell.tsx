@@ -81,9 +81,10 @@ export function DappShell() {
               data-dapp-window
               data-tab={activeTab}
               data-connected={shellState.connected ? 'true' : 'false'}
+              data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
               data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
             >
-              <GenesisWidgetProvider connected={shellState.connected}>
+              <GenesisWidgetProvider>
                 <>
                   <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 

@@ -9,6 +9,7 @@ export function DappWidgetHeader({
   className,
   detailCollapsed,
   intro,
+  introTone = 'body',
   onTogglePanel,
   showToggle = true,
   title,
@@ -16,6 +17,7 @@ export function DappWidgetHeader({
   className?: string
   detailCollapsed: boolean
   intro: ReactNode
+  introTone?: 'body' | 'subtle'
   onTogglePanel: () => void
   showToggle?: boolean
   title: string
@@ -36,7 +38,7 @@ export function DappWidgetHeader({
         </h1>
         <p
           className={cn(
-            dappTextClass('widgetIntro', { tone: 'body' }),
+            dappTextClass('widgetIntro', { tone: introTone }),
             'group-data-[tab=rewards]/shell:tracking-[-0.24px] group-data-[tab=community]/shell:tracking-[-0.24px]',
             'max-[820px]:mt-2.5 max-[820px]:max-w-none max-[820px]:text-[13px] max-[820px]:leading-normal max-[820px]:text-faint',
             'group-data-[tab=rewards]/shell:max-[820px]:mt-3 group-data-[tab=rewards]/shell:max-[820px]:tracking-[-0.26px]',

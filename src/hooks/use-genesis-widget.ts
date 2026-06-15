@@ -36,7 +36,7 @@ export interface GenesisPurchaseResult {
 
 const USD1_DECIMALS = 18
 
-export function useGenesisWidget(connected: boolean) {
+export function useGenesisWidget() {
   const account = useActiveAccount()
   const queryClient = useQueryClient()
   const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
@@ -46,11 +46,12 @@ export function useGenesisWidget(connected: boolean) {
   const [nowSeconds, setNowSeconds] = useState(() => Math.floor(Date.now() / 1000))
 
   const address = account?.address
+  const walletReady = Boolean(address)
   const phasesQuery = usePresalePhasesQuery()
   const activePhaseQuery = usePresaleActivePhaseQuery()
   const agxPriceQuery = usePresaleAgxPriceQuery()
-  const userTotalQuery = usePresaleUserTotalQuery(connected, address)
-  const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(connected, address)
+  const userTotalQuery = usePresaleUserTotalQuery(address)
+  const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address)
 
   const phases = phasesQuery.data ?? []
   const activePhase = activePhaseQuery.data ?? null
@@ -61,7 +62,7 @@ export function useGenesisWidget(connected: boolean) {
     phasesQuery.isLoading ||
     activePhaseQuery.isLoading ||
     agxPriceQuery.isLoading ||
-    (connected && userTotalQuery.isLoading)
+    (walletReady && userTotalQuery.isLoading)
 
   const purchaseAmount = useMemo(
     () => parseTokenAmount(String(shares * Number(PRESALE_CONFIG.sharePriceUsd1)), USD1_DECIMALS),
@@ -94,11 +95,14 @@ export function useGenesisWidget(connected: boolean) {
     discountBps,
     agxPriceUsd,
   )
-  const isApproved = purchaseAmount > 0n && allowance >= purchaseAmount
-  const needsApproval = purchaseAmount > 0n && !isApproved
+  const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
+  const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
   const hasSufficientBalance = usd1Balance >= purchaseAmount
   const canPurchase =
-    connected && activePhase !== null && purchaseAmount >= minAmount && purchaseAmount <= maxAmount
+    walletReady &&
+    activePhase !== null &&
+    purchaseAmount >= minAmount &&
+    purchaseAmount <= maxAmount
   const isSubmitting = submittingAction !== null
 
   const refresh = useCallback(async () => {
@@ -106,8 +110,14 @@ export function useGenesisWidget(connected: boolean) {
   }, [address])
 
   const approve = useCallback(async (): Promise<GenesisPurchaseResult> => {
-    if (!account || !canPurchase || isApproved) {
-      return { success: false }
+    if (!account) {
+      return { success: false, error: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED }
+    }
+    if (!canPurchase) {
+      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
+    }
+    if (isApproved) {
+      return { success: true }
     }
 
     setSubmittingAction('approve')
@@ -131,7 +141,10 @@ export function useGenesisWidget(connected: boolean) {
   }, [account, address, canPurchase, isApproved, purchaseAmount, queryClient])
 
   const purchase = useCallback(async (): Promise<GenesisPurchaseResult> => {
-    if (!account || !activePhase || !canPurchase) {
+    if (!account) {
+      return { success: false, error: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED }
+    }
+    if (!activePhase || !canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
 
@@ -168,7 +181,8 @@ export function useGenesisWidget(connected: boolean) {
         phase: activePhase.index,
         amount: purchaseAmount,
       })
-      afterGenesisPurchase(account.address)
+      afterGenesisPurchase(account.address, purchaseAmount)
+      await refresh()
       return { success: true }
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : 'Purchase failed'
@@ -184,6 +198,7 @@ export function useGenesisWidget(connected: boolean) {
     canPurchase,
     purchaseAmount,
     queryClient,
+    refresh,
   ])
 
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
@@ -237,6 +252,7 @@ export function useGenesisWidget(connected: boolean) {
     referencePriceLabel: `$${agxPriceUsd.toFixed(2)}`,
     airdropLabel: getAirdropLabelForPhase(phaseIndex),
     agxPriceUsd,
+    walletReady,
     needsApproval,
     isApproved,
     hasSufficientBalance,

@@ -22,7 +22,10 @@ export const enBundle: HomeContentBundle = {
   },
   hero: {
     guardianLabel: 'AEGIS X guardian',
-    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+    eyebrow: {
+      desktop: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+      mobile: 'AI x DeFi x USD1 · DeFi 4.0',
+    },
     title: 'Guarding the Future of Value',
     body: {
       desktop:
@@ -120,28 +123,27 @@ export const enBundle: HomeContentBundle = {
       title: 'Multi-asset flywheel',
       subtitle: {
         desktop:
-          'Four tokens, one self-reinforcing value loop: growth → liquidity + payments + ecosystem.',
+          'Four tokens, one self-reinforcing value loop: growth → liquidity → payments → ecosystem.',
         mobile: 'Four tokens, one self-reinforcing value loop.',
       },
       cards: [
-        {
-          label: 'Stable reserve asset',
-          description: 'Settlement layer · USD-backed liquidity',
-        },
         {
           label: 'Core protocol asset',
           description: '150% over-collateralized · AI think-tank managed',
         },
         {
-          label: 'Reward settlement token',
-          description: '1:1 to AGX · powers X mining',
+          label: 'Stable reserve asset',
+          description: 'Settlement layer · USD-backed liquidity',
         },
         {
           label: 'Ecosystem value token',
           description: '210M fixed · 25% sell-burn',
         },
+        {
+          label: 'Reward settlement token',
+          description: '1:1 to AGX · powers X mining',
+        },
       ],
-      note: 'Users → Liquidity → Payments → Growth → infinity',
     },
     roadmap: {
       eyebrow: 'ROADMAP',
@@ -149,7 +151,7 @@ export const enBundle: HomeContentBundle = {
       phases: [
         {
           phase: 'PHASE 01',
-          time: '2025 Q3',
+          time: '2026 Q3',
           title: 'Genesis Launch',
           description: 'Protocol deployment · AGX minting · USD1 liquidity pool',
           dot: '✓',
@@ -158,7 +160,7 @@ export const enBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 02',
-          time: '2025 Q4',
+          time: '2026 Q4',
           title: 'DeFi Core',
           description: 'Rebase staking · LP bonds · burn bonds · AI market-making',
           dot: '✓',
@@ -167,7 +169,7 @@ export const enBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 03',
-          time: '2026 Q1',
+          time: '2027 Q1',
           title: 'DAO & Growth',
           description: 'X DAO incentives · multisig governance · global nodes',
           dot: '✓',
@@ -176,7 +178,7 @@ export const enBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 04',
-          time: '2026 Q2',
+          time: '2027 Q2',
           title: 'AI Agent Economy',
           description:
             'Autonomous payments · on-chain collaboration · agent market-making',
@@ -186,7 +188,7 @@ export const enBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 05',
-          time: '2026 Q3',
+          time: '2027 Q3',
           title: 'Global Payments',
           description: 'Cross-border settlement · merchant onboarding · USD1 rails',
           dot: '5',
@@ -194,7 +196,7 @@ export const enBundle: HomeContentBundle = {
         },
         {
           phase: 'PHASE 06',
-          time: '2026 Q4',
+          time: '2027 Q4',
           title: 'DeFi 4.0',
           description:
             'Institutional products · compliance framework · full ecosystem',
@@ -275,15 +277,15 @@ export const enBundle: HomeContentBundle = {
       label: 'Collateral Ratio',
     },
     {
-      value: '4,880%',
-      countTarget: 4880,
+      value: '100%',
+      countTarget: 100,
       suffix: '%',
       label: 'Max Ref. APY',
     },
     {
-      value: '2+',
-      countTarget: 2,
-      suffix: '+',
+      value: '24H',
+      countTarget: 24,
+      suffix: 'H',
       label: 'Chains Supported',
     },
     {

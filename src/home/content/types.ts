@@ -29,6 +29,7 @@ export type TokenCard = {
   icon: string
   iconClassName?: string
   shape: string
+  shapeWrapClassName?: string
   shapeClassName?: string
   symbol: string
   label: string
@@ -83,7 +84,7 @@ export type HomeContent = {
   }
   hero: {
     guardianLabel: string
-    eyebrow: string
+    eyebrow: ResponsiveCopy
     title: string
     body: ResponsiveCopy
     enterProtocol: string
@@ -108,7 +109,6 @@ export type HomeContent = {
       title: string
       subtitle: ResponsiveCopy
       cards: TokenCard[]
-      note: string
     }
     roadmap: {
       eyebrow: string
@@ -171,7 +171,6 @@ export type HomeContentBundle = {
       title: string
       subtitle: ResponsiveCopy
       cards: TokenCardCopy[]
-      note: string
     }
     roadmap: HomeContent['sections']['roadmap']
     security: HomeContent['sections']['security']

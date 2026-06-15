@@ -22,7 +22,10 @@ export const ruBundle: HomeContentBundle = {
   },
   hero: {
     guardianLabel: 'Страж AEGIS X',
-    eyebrow: 'AI x DeFi x USD1 · Протокол DeFi 4.0',
+    eyebrow: {
+      desktop: 'AI x DeFi x USD1 · Протокол DeFi 4.0',
+      mobile: 'AI x DeFi x USD1 · DeFi 4.0',
+    },
     title: 'Защита Будущего Ценности',
     body: {
       desktop:
@@ -120,28 +123,27 @@ export const ruBundle: HomeContentBundle = {
       title: 'Мультиактивный маховик',
       subtitle: {
         desktop:
-          'Четыре токена, один самоусиливающийся цикл ценности: рост → ликвидность + платежи + экосистема.',
+          'Четыре токена, один самоусиливающийся цикл ценности: рост → ликвидность → платежи → экосистема.',
         mobile: 'Четыре токена, один самоусиливающийся цикл ценности.',
       },
       cards: [
-        {
-          label: 'Стабильный резервный актив',
-          description: 'Расчётный слой · Ликвидность, обеспеченная USD',
-        },
         {
           label: 'Основной актив протокола',
           description: 'Обеспечение 150% · Управление AI think-tank',
         },
         {
-          label: 'Токен расчёта наград',
-          description: '1:1 к AGX · питает X mining',
+          label: 'Стабильный резервный актив',
+          description: 'Расчётный слой · Ликвидность, обеспеченная USD',
         },
         {
           label: 'Токен ценности экосистемы',
           description: '210M фиксированно · 25% sell-burn',
         },
+        {
+          label: 'Токен расчёта наград',
+          description: '1:1 к AGX · питает X mining',
+        },
       ],
-      note: 'Пользователи → Ликвидность → Платежи → Рост → бесконечность',
     },
     roadmap: {
       eyebrow: 'ДОРОЖНАЯ КАРТА',
@@ -149,7 +151,7 @@ export const ruBundle: HomeContentBundle = {
       phases: [
         {
           phase: 'ФАЗА 01',
-          time: '2025 Q3',
+          time: '2026 Q3',
           title: 'Genesis Launch',
           description: 'Развёртывание протокола · Эмиссия AGX · Пул ликвидности USD1',
           dot: '✓',
@@ -158,7 +160,7 @@ export const ruBundle: HomeContentBundle = {
         },
         {
           phase: 'ФАЗА 02',
-          time: '2025 Q4',
+          time: '2026 Q4',
           title: 'DeFi Core',
           description: 'Rebase staking · LP bonds · burn bonds · AI market-making',
           dot: '✓',
@@ -167,7 +169,7 @@ export const ruBundle: HomeContentBundle = {
         },
         {
           phase: 'ФАЗА 03',
-          time: '2026 Q1',
+          time: '2027 Q1',
           title: 'DAO и Рост',
           description: 'Incentives X DAO · multisig governance · глобальные ноды',
           dot: '✓',
@@ -176,7 +178,7 @@ export const ruBundle: HomeContentBundle = {
         },
         {
           phase: 'ФАЗА 04',
-          time: '2026 Q2',
+          time: '2027 Q2',
           title: 'Экономика AI Agent',
           description:
             'Автономные платежи · on-chain коллаборация · agent market-making',
@@ -186,7 +188,7 @@ export const ruBundle: HomeContentBundle = {
         },
         {
           phase: 'ФАЗА 05',
-          time: '2026 Q3',
+          time: '2027 Q3',
           title: 'Глобальные Платежи',
           description: 'Трансграничные расчёты · onboarding мерчантов · USD1 rails',
           dot: '5',
@@ -194,7 +196,7 @@ export const ruBundle: HomeContentBundle = {
         },
         {
           phase: 'ФАЗА 06',
-          time: '2026 Q4',
+          time: '2027 Q4',
           title: 'DeFi 4.0',
           description:
             'Институциональные продукты · compliance framework · полная экосистема',
@@ -276,15 +278,15 @@ export const ruBundle: HomeContentBundle = {
       label: 'Коэффициент Обеспечения',
     },
     {
-      value: '4,880%',
-      countTarget: 4880,
+      value: '100%',
+      countTarget: 100,
       suffix: '%',
       label: 'Макс. Ref. APY',
     },
     {
-      value: '2+',
-      countTarget: 2,
-      suffix: '+',
+      value: '24H',
+      countTarget: 24,
+      suffix: 'H',
       label: 'Поддерживаемые Сети',
     },
     {

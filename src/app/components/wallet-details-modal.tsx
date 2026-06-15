@@ -1,24 +1,29 @@
 import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { LogOut, Wallet, X } from 'lucide-react'
-import {
-  useActiveAccount,
-  useActiveWallet,
-  useDisconnect,
-  useWalletBalance,
-} from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
+import { getWalletBalance, type GetWalletBalanceResult } from 'thirdweb/wallets'
+import { BSC_CONTRACTS } from '../../config/contracts'
+import { formatTokenAmount } from '../../lib/swap/token-amount'
+import { readErc20Balance } from '../../web3/swap-read'
 import { useI18n } from '../../i18n/use-i18n'
 import { useAuth } from '../../providers/auth-provider'
 import { dappAssets } from '../assets'
 import { formatAddress } from '../utils'
 import { defaultChain, thirdwebClient } from '../../web3/thirdweb'
-import { useWalletTokenBalances } from '../../hooks/use-wallet-token-balances'
 import { cn } from '~/lib/utils'
 import { dappButtonClass } from '~/lib/dapp-styles'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '../../components/aegis-responsive-dialog'
+import { WalletConnectModal } from './wallet-connect-modal'
+
+interface WalletTokenBalanceRow {
+  symbol: string
+  label: string
+  value: string
+}
 
 export function WalletDetailsModal({
   onOpenChange,
@@ -30,15 +35,16 @@ export function WalletDetailsModal({
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { disconnect } = useDisconnect()
-  const { logout } = useAuth()
+  const { logout, session } = useAuth()
   const { messages: t } = useI18n()
   const [copied, setCopied] = useState(false)
-  const { data: balance, isLoading } = useWalletBalance({
-    address: account?.address,
-    chain: defaultChain,
-    client: thirdwebClient,
-  })
-  const { balances: tokenBalances, isLoading: tokensLoading } = useWalletTokenBalances(open)
+  const [connectOpen, setConnectOpen] = useState(false)
+  const [nativeBalance, setNativeBalance] = useState<GetWalletBalanceResult | null>(null)
+  const [nativeBalanceLoading, setNativeBalanceLoading] = useState(false)
+  const [tokenBalances, setTokenBalances] = useState<WalletTokenBalanceRow[]>([])
+  const [tokensLoading, setTokensLoading] = useState(false)
+  const walletAddress = account?.address ?? session?.address
+  const walletReady = Boolean(account)
 
   useEffect(() => {
     if (!open) {
@@ -46,14 +52,95 @@ export function WalletDetailsModal({
     }
   }, [open])
 
-  if (!account) {
+  useEffect(() => {
+    if (!open || !walletAddress) {
+      setNativeBalance(null)
+      setNativeBalanceLoading(false)
+      return
+    }
+
+    let cancelled = false
+    setNativeBalanceLoading(true)
+
+    void getWalletBalance({
+      address: walletAddress,
+      chain: defaultChain,
+      client: thirdwebClient,
+    })
+      .then((result) => {
+        if (!cancelled) {
+          setNativeBalance(result)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setNativeBalance(null)
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setNativeBalanceLoading(false)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [open, walletAddress])
+
+  useEffect(() => {
+    if (!open || !walletAddress) {
+      setTokenBalances([])
+      setTokensLoading(false)
+      return
+    }
+
+    let cancelled = false
+    setTokensLoading(true)
+
+    void Promise.all([
+      readErc20Balance(BSC_CONTRACTS.usd1, walletAddress),
+      readErc20Balance(BSC_CONTRACTS.xxToken, walletAddress),
+    ])
+      .then(([usd1, xx]) => {
+        if (cancelled) return
+
+        setTokenBalances([
+          {
+            symbol: 'USD1',
+            label: 'USD1',
+            value: formatTokenAmount(usd1, 18, 4),
+          },
+          {
+            symbol: 'USDT',
+            label: 'XX (USDT)',
+            value: formatTokenAmount(xx, 18, 4),
+          },
+        ])
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setTokenBalances([])
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setTokensLoading(false)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [open, walletAddress])
+
+  if (!walletAddress) {
     return null
   }
 
-  const walletAddress = account.address
   const addressLabel = formatAddress(walletAddress)
-  const balanceValue = isLoading ? '…' : balance ? balance.displayValue : '—'
-  const balanceSymbol = balance?.symbol ?? ''
+  const balanceValue = nativeBalanceLoading ? '…' : nativeBalance ? nativeBalance.displayValue : '—'
+  const balanceSymbol = nativeBalance?.symbol ?? ''
 
   async function handleCopy() {
     try {
@@ -114,6 +201,12 @@ export function WalletDetailsModal({
         {addressLabel}
       </DialogPrimitive.Title>
 
+      {!walletReady ? (
+        <p className="m-0 mt-3 text-[13px] font-medium leading-[1.45] text-primary">
+          {t.wallet.reconnectHint}
+        </p>
+      ) : null}
+
       <p className="m-0 mt-3 text-[15px] font-semibold leading-none text-muted-foreground">
         <span className="mr-1.5 text-[17px] font-bold text-primary tabular-nums">
           {balanceValue}
@@ -137,37 +230,66 @@ export function WalletDetailsModal({
         </div>
       ) : null}
 
-      <div className="mt-6 grid grid-cols-2 gap-2.5">
-        <button
-          className={cn(
-            dappButtonClass('capsule', 'primary'),
-            'h-[46px] gap-2 px-3 text-sm',
-          )}
-          onClick={() => void handleCopy()}
-          type="button"
-        >
-          <img
-            alt=""
-            aria-hidden="true"
-            className="size-[15px]"
-            height="15"
-            src={copied ? dappAssets.check : dappAssets.copy}
-            width="15"
-          />
-          {copied ? t.wallet.copied : t.wallet.copyAddress}
-        </button>
-        <button
-          className={cn(
-            dappButtonClass('capsule', 'secondary'),
-            'h-[46px] gap-2 px-3 text-sm',
-          )}
-          onClick={() => void handleDisconnect()}
-          type="button"
-        >
-          <LogOut aria-hidden className="size-[15px]" strokeWidth={2} />
-          {t.wallet.disconnect}
-        </button>
+      <div className="mt-6 grid gap-2.5">
+        {!walletReady ? (
+          <>
+            <button
+              className={cn(
+                dappButtonClass('capsule', 'primary'),
+                'h-[46px] gap-2 px-3 text-sm',
+              )}
+              onClick={() => setConnectOpen(true)}
+              type="button"
+            >
+              {t.wallet.reconnectWallet}
+            </button>
+            <button
+              className={cn(
+                dappButtonClass('capsule', 'secondary'),
+                'h-[46px] gap-2 px-3 text-sm',
+              )}
+              onClick={() => void handleDisconnect()}
+              type="button"
+            >
+              <LogOut aria-hidden className="size-[15px]" strokeWidth={2} />
+              {t.wallet.disconnect}
+            </button>
+          </>
+        ) : (
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              className={cn(
+                dappButtonClass('capsule', 'primary'),
+                'h-[46px] gap-2 px-3 text-sm',
+              )}
+              onClick={() => void handleCopy()}
+              type="button"
+            >
+              <img
+                alt=""
+                aria-hidden="true"
+                className="size-[15px]"
+                height="15"
+                src={copied ? dappAssets.check : dappAssets.copy}
+                width="15"
+              />
+              {copied ? t.wallet.copied : t.wallet.copyAddress}
+            </button>
+            <button
+              className={cn(
+                dappButtonClass('capsule', 'secondary'),
+                'h-[46px] gap-2 px-3 text-sm',
+              )}
+              onClick={() => void handleDisconnect()}
+              type="button"
+            >
+              <LogOut aria-hidden className="size-[15px]" strokeWidth={2} />
+              {t.wallet.disconnect}
+            </button>
+          </div>
+        )}
       </div>
+      <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
     </AegisResponsiveDialog>
   )
 }

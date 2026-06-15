@@ -169,7 +169,7 @@ export const CarouselContent = forwardRef<
   HTMLAttributes<HTMLDivElement> & {
     viewportClassName?: string
   }
->(({ className, viewportClassName, ...props }, ref) => {
+>(({ className, viewportClassName, children, ...props }, ref) => {
   const { carouselRef, orientation } = useCarousel()
   return (
     <div ref={carouselRef} className={cn('overflow-hidden', viewportClassName)}>
@@ -181,7 +181,9 @@ export const CarouselContent = forwardRef<
           className,
         )}
         {...props}
-      />
+      >
+        {children}
+      </div>
     </div>
   )
 })
@@ -190,7 +192,7 @@ CarouselContent.displayName = 'CarouselContent'
 export const CarouselItem = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   const { orientation } = useCarousel()
   return (
     <div
@@ -203,7 +205,9 @@ export const CarouselItem = forwardRef<
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </div>
   )
 })
 CarouselItem.displayName = 'CarouselItem'

@@ -22,7 +22,10 @@ export const esBundle: HomeContentBundle = {
   },
   hero: {
     guardianLabel: 'Guardián AEGIS X',
-    eyebrow: 'AI x DeFi x USD1 · Protocolo DeFi 4.0',
+    eyebrow: {
+      desktop: 'AI x DeFi x USD1 · Protocolo DeFi 4.0',
+      mobile: 'AI x DeFi x USD1 · DeFi 4.0',
+    },
     title: 'Protegiendo el Futuro del Valor',
     body: {
       desktop:
@@ -120,28 +123,27 @@ export const esBundle: HomeContentBundle = {
       title: 'Volante multi-activo',
       subtitle: {
         desktop:
-          'Cuatro tokens, un ciclo de valor autorreforzado: crecimiento → liquidez + pagos + ecosistema.',
+          'Cuatro tokens, un ciclo de valor autorreforzado: crecimiento → liquidez → pagos → ecosistema.',
         mobile: 'Cuatro tokens, un ciclo de valor autorreforzado.',
       },
       cards: [
-        {
-          label: 'Activo de reserva estable',
-          description: 'Capa de liquidación · Liquidez respaldada en USD',
-        },
         {
           label: 'Activo central del protocolo',
           description: 'Sobrecolateralizado al 150% · Gestionado por think-tank de IA',
         },
         {
-          label: 'Token de liquidación de recompensas',
-          description: '1:1 con AGX · impulsa la minería X',
+          label: 'Activo de reserva estable',
+          description: 'Capa de liquidación · Liquidez respaldada en USD',
         },
         {
           label: 'Token de valor del ecosistema',
           description: '210M fijos · 25% burn en venta',
         },
+        {
+          label: 'Token de liquidación de recompensas',
+          description: '1:1 con AGX · impulsa la minería X',
+        },
       ],
-      note: 'Usuarios → Liquidez → Pagos → Crecimiento → infinito',
     },
     roadmap: {
       eyebrow: 'HOJA DE RUTA',
@@ -149,7 +151,7 @@ export const esBundle: HomeContentBundle = {
       phases: [
         {
           phase: 'FASE 01',
-          time: '2025 Q3',
+          time: '2026 Q3',
           title: 'Lanzamiento Genesis',
           description: 'Despliegue del protocolo · Emisión de AGX · Pool de liquidez USD1',
           dot: '✓',
@@ -158,7 +160,7 @@ export const esBundle: HomeContentBundle = {
         },
         {
           phase: 'FASE 02',
-          time: '2025 Q4',
+          time: '2026 Q4',
           title: 'DeFi Central',
           description: 'Rebase staking · LP bonds · burn bonds · AI market-making',
           dot: '✓',
@@ -167,7 +169,7 @@ export const esBundle: HomeContentBundle = {
         },
         {
           phase: 'FASE 03',
-          time: '2026 Q1',
+          time: '2027 Q1',
           title: 'DAO y Crecimiento',
           description: 'Incentivos X DAO · gobernanza multisig · nodos globales',
           dot: '✓',
@@ -176,7 +178,7 @@ export const esBundle: HomeContentBundle = {
         },
         {
           phase: 'FASE 04',
-          time: '2026 Q2',
+          time: '2027 Q2',
           title: 'Economía de Agentes IA',
           description:
             'Pagos autónomos · colaboración on-chain · market-making de agentes',
@@ -186,7 +188,7 @@ export const esBundle: HomeContentBundle = {
         },
         {
           phase: 'FASE 05',
-          time: '2026 Q3',
+          time: '2027 Q3',
           title: 'Pagos Globales',
           description: 'Liquidación transfronteriza · onboarding de comercios · rails USD1',
           dot: '5',
@@ -194,7 +196,7 @@ export const esBundle: HomeContentBundle = {
         },
         {
           phase: 'FASE 06',
-          time: '2026 Q4',
+          time: '2027 Q4',
           title: 'DeFi 4.0',
           description:
             'Productos institucionales · marco de cumplimiento · ecosistema completo',
@@ -276,15 +278,15 @@ export const esBundle: HomeContentBundle = {
       label: 'Ratio de Colateral',
     },
     {
-      value: '4,880%',
-      countTarget: 4880,
+      value: '100%',
+      countTarget: 100,
       suffix: '%',
       label: 'APY Ref. Máximo',
     },
     {
-      value: '2+',
-      countTarget: 2,
-      suffix: '+',
+      value: '24H',
+      countTarget: 24,
+      suffix: 'H',
       label: 'Cadenas Soportadas',
     },
     {

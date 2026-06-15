@@ -28,7 +28,7 @@ export const homeBrandMarkClass = cn(
 export const homeBrandInverseClass = 'text-primary-foreground'
 
 export const homeNavLinksClass = cn(
-  'flex items-center gap-[34px] whitespace-nowrap text-[15px] font-medium text-muted-foreground',
+  'flex items-center gap-[34px] whitespace-nowrap text-[15px] font-medium text-ink-strong',
   'max-[1100px]:hidden',
   '[&_a]:transition-[color,transform] [&_a]:duration-180 [&_a]:ease-out',
   '[&_a:hover]:-translate-y-px [&_a:hover]:text-foreground',
@@ -41,25 +41,28 @@ export const homeNavActionsClass = cn(
 
 const HOME_BTN_BASE = cn(
   'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full px-[26px]',
-  'text-[15px] font-semibold leading-none tracking-normal whitespace-nowrap text-foreground',
-  'transition-[box-shadow,border-color,background-color,opacity] duration-180 ease-out',
+  'text-[15px] font-semibold leading-none tracking-normal whitespace-nowrap',
+  'transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out',
   'hover:opacity-[0.96] focus-visible:opacity-[0.96]',
 )
 
 const HOME_BTN_VARIANT = {
   primary: cn(
     'border-0 bg-primary text-primary-foreground',
+    'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
     'shadow-[0_10px_24px_oklch(66.83%_0.1625_36.6_/_24%)]',
     'hover:shadow-[0_14px_30px_oklch(66.83%_0.1625_36.6_/_30%)]',
     'focus-visible:shadow-[0_14px_30px_oklch(66.83%_0.1625_36.6_/_30%)]',
   ),
   secondary: cn(
     'border border-border bg-card text-foreground',
+    'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
     surfacePillHoverClass,
     'hover:shadow-card focus-visible:shadow-card',
   ),
   ghost: cn(
     'border border-border bg-transparent text-foreground',
+    'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
     surfacePillHoverClass,
     'hover:shadow-card focus-visible:shadow-card',
   ),
@@ -127,7 +130,7 @@ export const tokenCardHoverClass = cn(
   'hover:before:opacity-100',
   'hover:[&_.token-tile]:border-white/50 hover:[&_.token-tile]:bg-white/20 hover:[&_.token-tile]:shadow-[0_10px_26px_oklch(0%_0_0_/_12%)]',
   'hover:[&_.token-tile_img]:saturate-[1.08] hover:[&_.token-tile_img]:contrast-[1.04]',
-  'hover:[&_.token-shape]:opacity-100 hover:[&_.token-shape]:saturate-[1.08]',
+  'hover:[&_.token-shape-wrap]:opacity-100 hover:[&_.token-shape-wrap]:saturate-[1.08]',
 )
 
 const HOME_CARD_RADIUS = {
@@ -194,11 +197,11 @@ const HOME_TEXT = {
   cardBody:
     'mt-3 max-w-[420px] text-[15px] leading-[1.5] max-[820px]:mt-2.5 max-[820px]:w-full max-[820px]:max-w-[318px] max-[820px]:text-sm',
   tokenSymbol:
-    'm-0 text-[26px] font-semibold leading-[1.3] max-[820px]:mt-0.5 max-[820px]:text-[22px] max-[820px]:leading-[1.2]',
+    'm-0 text-[26px] font-semibold leading-[1.3] tracking-[-0.78px] max-[820px]:mt-0.5 max-[820px]:text-[22px] max-[820px]:leading-[1.2] max-[820px]:tracking-[-0.66px]',
   tokenLabel:
-    'mt-1.5 text-sm leading-[1.3] max-[820px]:mt-0 max-[820px]:leading-[1.2]',
+    'text-sm font-semibold leading-[1.3] tracking-[-0.28px] max-[820px]:leading-[1.2]',
   tokenBody:
-    'mt-1.5 w-[min(100%,235px)] text-[13px] leading-[1.5] max-[820px]:mt-0 max-[820px]:w-full',
+    'w-[min(100%,235px)] text-[13px] font-normal leading-[1.5] tracking-[-0.26px] max-[820px]:w-full',
   faqQuestion: 'text-[15px] font-semibold leading-[1.3] max-[820px]:text-sm',
   faqAnswer: 'mt-3 mb-0 text-sm leading-[1.5] max-[820px]:text-[13px]',
   footerLink: 'text-sm leading-[1.2] max-[820px]:text-[13px] max-[820px]:leading-[1.5]',
@@ -208,12 +211,12 @@ const HOME_TEXT = {
 
 const HOME_TEXT_TONE = {
   default: 'text-foreground',
-  body: 'text-muted-foreground',
+  body: 'text-ink-strong',
   muted: 'text-faint',
   coral: 'text-primary',
   inverse: 'text-white',
   onDark: 'text-on-dark',
-  faq: 'text-subtle-ink',
+  faq: 'text-faq-text',
 } as const
 
 export function homeTextClass(

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { SWAP_CONFIG } from '../config/swap'
 import { QUERY_STALE_TIME } from '../lib/query/query-client'
 import { queryKeys } from '../lib/query/query-keys'
@@ -18,11 +18,15 @@ export function usePairSpotRate(
     queryFn: () => readPairSpotRate(),
     enabled,
     staleTime: QUERY_STALE_TIME.quote,
+    placeholderData: keepPreviousData,
   })
 
   useVisibleQueryInterval(spotRateQuery, intervalMs, enabled)
 
   const rateLabel = spotRateQuery.data ? formatPoolRateLabel(spotRateQuery.data) : null
 
-  return { rateLabel, isLoading: spotRateQuery.isLoading }
+  return {
+    rateLabel,
+    isLoading: spotRateQuery.isPending,
+  }
 }

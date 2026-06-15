@@ -22,7 +22,10 @@ export const viBundle: HomeContentBundle = {
   },
   hero: {
     guardianLabel: 'Người bảo vệ AEGIS X',
-    eyebrow: 'AI x DeFi x USD1 · Giao thức DeFi 4.0',
+    eyebrow: {
+      desktop: 'AI x DeFi x USD1 · Giao thức DeFi 4.0',
+      mobile: 'AI x DeFi x USD1 · DeFi 4.0',
+    },
     title: 'Bảo vệ Tương lai Giá trị',
     body: {
       desktop:
@@ -120,28 +123,27 @@ export const viBundle: HomeContentBundle = {
       title: 'Vòng xoáy đa tài sản',
       subtitle: {
         desktop:
-          'Bốn token, một vòng lặp giá trị tự củng cố: tăng trưởng → thanh khoản + thanh toán + hệ sinh thái.',
+          'Bốn token, một vòng lặp giá trị tự củng cố: tăng trưởng → thanh khoản → thanh toán → hệ sinh thái.',
         mobile: 'Bốn token, một vòng lặp giá trị tự củng cố.',
       },
       cards: [
-        {
-          label: 'Tài sản dự trữ ổn định',
-          description: 'Lớp thanh toán · Thanh khoản hỗ trợ USD',
-        },
         {
           label: 'Tài sản giao thức cốt lõi',
           description: 'Thế chấp vượt mức 150% · Quản lý bởi tư duy AI',
         },
         {
-          label: 'Token thanh toán phần thưởng',
-          description: '1:1 với AGX · vận hành khai thác X',
+          label: 'Tài sản dự trữ ổn định',
+          description: 'Lớp thanh toán · Thanh khoản hỗ trợ USD',
         },
         {
           label: 'Token giá trị hệ sinh thái',
           description: '210M cố định · 25% đốt khi bán',
         },
+        {
+          label: 'Token thanh toán phần thưởng',
+          description: '1:1 với AGX · vận hành khai thác X',
+        },
       ],
-      note: 'Người dùng → Thanh khoản → Thanh toán → Tăng trưởng → vô hạn',
     },
     roadmap: {
       eyebrow: 'LỘ TRÌNH',
@@ -149,7 +151,7 @@ export const viBundle: HomeContentBundle = {
       phases: [
         {
           phase: 'GIAI ĐOẠN 01',
-          time: '2025 Q3',
+          time: '2026 Q3',
           title: 'Ra mắt Genesis',
           description: 'Triển khai giao thức · Phát hành AGX · Pool thanh khoản USD1',
           dot: '✓',
@@ -158,7 +160,7 @@ export const viBundle: HomeContentBundle = {
         },
         {
           phase: 'GIAI ĐOẠN 02',
-          time: '2025 Q4',
+          time: '2026 Q4',
           title: 'DeFi Cốt lõi',
           description: 'Rebase staking · LP bond · burn bond · AI market-making',
           dot: '✓',
@@ -167,7 +169,7 @@ export const viBundle: HomeContentBundle = {
         },
         {
           phase: 'GIAI ĐOẠN 03',
-          time: '2026 Q1',
+          time: '2027 Q1',
           title: 'DAO & Tăng trưởng',
           description: 'Khuyến khích X DAO · quản trị multisig · node toàn cầu',
           dot: '✓',
@@ -176,7 +178,7 @@ export const viBundle: HomeContentBundle = {
         },
         {
           phase: 'GIAI ĐOẠN 04',
-          time: '2026 Q2',
+          time: '2027 Q2',
           title: 'Kinh tế AI Agent',
           description:
             'Thanh toán tự động · cộng tác trên chuỗi · market-making agent',
@@ -186,7 +188,7 @@ export const viBundle: HomeContentBundle = {
         },
         {
           phase: 'GIAI ĐOẠN 05',
-          time: '2026 Q3',
+          time: '2027 Q3',
           title: 'Thanh toán Toàn cầu',
           description: 'Thanh toán xuyên biên giới · onboarding merchant · kênh USD1',
           dot: '5',
@@ -194,7 +196,7 @@ export const viBundle: HomeContentBundle = {
         },
         {
           phase: 'GIAI ĐOẠN 06',
-          time: '2026 Q4',
+          time: '2027 Q4',
           title: 'DeFi 4.0',
           description:
             'Sản phẩm tổ chức · khung tuân thủ · hệ sinh thái hoàn chỉnh',
@@ -276,15 +278,15 @@ export const viBundle: HomeContentBundle = {
       label: 'Tỷ lệ Thế chấp',
     },
     {
-      value: '4,880%',
-      countTarget: 4880,
+      value: '100%',
+      countTarget: 100,
       suffix: '%',
       label: 'APY Tham chiếu Tối đa',
     },
     {
-      value: '2+',
-      countTarget: 2,
-      suffix: '+',
+      value: '24H',
+      countTarget: 24,
+      suffix: 'H',
       label: 'Chuỗi Hỗ trợ',
     },
     {

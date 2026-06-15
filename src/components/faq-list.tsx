@@ -116,7 +116,7 @@ export function FaqList({
   return (
     <Accordion.Root
       className={cn(styles.list, className)}
-      data-reveal={dataReveal ? true : variant === 'dapp' ? true : undefined}
+      data-reveal={dataReveal ?? true}
       onValueChange={handleValueChange}
       type="multiple"
       value={value}

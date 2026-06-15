@@ -34,20 +34,20 @@ export function usePresaleAgxPriceQuery() {
   })
 }
 
-export function usePresaleUserTotalQuery(connected: boolean, address?: string) {
+export function usePresaleUserTotalQuery(address?: string) {
   return useQuery({
     queryKey: queryKeys.chain.presaleUserTotal(address ?? ''),
     queryFn: () => readUserPresaleTotal(address!),
-    enabled: connected && Boolean(address),
+    enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.presale,
   })
 }
 
-export function useUsd1PresaleWalletQuery(connected: boolean, address?: string) {
+export function useUsd1PresaleWalletQuery(address?: string) {
   const balanceQuery = useQuery({
     queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address ?? ''),
     queryFn: () => readErc20Balance(BSC_CONTRACTS.usd1, address!),
-    enabled: connected && Boolean(address),
+    enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,
   })
 
@@ -59,7 +59,7 @@ export function useUsd1PresaleWalletQuery(connected: boolean, address?: string) 
     ),
     queryFn: () =>
       readErc20Allowance(BSC_CONTRACTS.usd1, address!, BSC_CONTRACTS.preSale),
-    enabled: connected && Boolean(address),
+    enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,
   })
 
@@ -68,6 +68,6 @@ export function useUsd1PresaleWalletQuery(connected: boolean, address?: string) 
     allowanceQuery,
     usd1Balance: balanceQuery.data ?? 0n,
     allowance: allowanceQuery.data ?? 0n,
-    isWalletLoading: connected && (balanceQuery.isLoading || allowanceQuery.isLoading),
+    isWalletLoading: Boolean(address) && (balanceQuery.isLoading || allowanceQuery.isLoading),
   }
 }

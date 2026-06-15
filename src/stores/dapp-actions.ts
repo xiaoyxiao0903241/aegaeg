@@ -12,7 +12,7 @@ interface DappActionsState {
   afterAuthLogin: () => void
   afterAuthLogout: () => void
   afterSwap: (address: string, sellToken: string, buyToken: string) => void
-  afterGenesisPurchase: (address: string) => void
+  afterGenesisPurchase: (address: string, purchaseAmount?: bigint) => void
   afterTeamClaim: () => void
   afterReferralBind: (address: string) => void
 }
@@ -27,8 +27,8 @@ export const useDappActions = create<DappActionsState>(() => ({
   afterSwap: (address, sellToken, buyToken) => {
     invalidateAfterSwap(address, sellToken, buyToken)
   },
-  afterGenesisPurchase: (address) => {
-    invalidateAfterGenesisPurchase(address)
+  afterGenesisPurchase: (address, purchaseAmount) => {
+    invalidateAfterGenesisPurchase(address, purchaseAmount)
   },
   afterTeamClaim: () => {
     invalidateAfterTeamClaim()

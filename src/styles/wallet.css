@@ -53,6 +53,11 @@
   box-shadow: var(--shadow-primary-hover-lg) !important;
 }
 
+.aegis-thirdweb-button-full {
+  width: 100% !important;
+  display: flex !important;
+}
+
 /* Connected wallet chip — address only, opens custom wallet details modal */
 .aegis-connected-wallet-chip {
   display: inline-flex;
@@ -87,6 +92,29 @@
   flex-shrink: 0;
   border-radius: 999px;
   background: var(--success);
+}
+
+.aegis-connected-wallet-chip--reconnect .aegis-connected-wallet-chip__status {
+  background: var(--primary);
+  box-shadow: 0 0 0 2px oklch(66.83% 0.1625 36.6 / 22%);
+}
+
+.aegis-connected-wallet-chip[aria-busy='true'] .aegis-connected-wallet-chip__status {
+  background: var(--primary);
+  animation: aegis-wallet-status-pulse 1s ease-in-out infinite;
+}
+
+@keyframes aegis-wallet-status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(0.88);
+  }
 }
 
 /* ConnectEmbed 内嵌于自定义外壳 — 去除自带边框/阴影，QR 在壳内切换 */

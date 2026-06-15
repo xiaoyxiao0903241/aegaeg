@@ -2,6 +2,8 @@ import { useActiveAccount } from 'thirdweb/react'
 import { cn } from '~/lib/utils'
 import { AnchoredTooltip } from '../components/anchored-tooltip'
 import { useI18n } from '../i18n/use-i18n'
+import { useAuth } from '../providers/auth-provider'
+import { hasWalletAccount } from '../lib/web3/wallet-connection-state'
 import { dappAssets } from './assets'
 import { WalletConnectChip } from './wallet-connect-chip'
 
@@ -13,24 +15,28 @@ const networkPillClass = cn(
 
 export function WalletTopbarActions() {
   const account = useActiveAccount()
+  const { isAuthenticated, isLoggingIn } = useAuth()
   const { messages: t } = useI18n()
-  const connected = Boolean(account)
+  const walletReady = hasWalletAccount(account)
+  const showConnectedChip = walletReady || isAuthenticated || isLoggingIn
 
-  if (connected) {
+  if (showConnectedChip) {
     return (
       <>
-        <AnchoredTooltip content={t.nav.bscTooltip} position="bottom">
-          <div className={networkPillClass} aria-label={t.topbar.currentNetwork}>
-            <img
-              className="block aspect-square w-[18px] flex-none rounded-full object-contain"
-              src={dappAssets.bsc}
-              alt=""
-              width="18"
-              height="18"
-            />
-            {t.common.bsc}
-          </div>
-        </AnchoredTooltip>
+        {walletReady ? (
+          <AnchoredTooltip content={t.nav.bscTooltip} position="bottom">
+            <div className={networkPillClass} aria-label={t.topbar.currentNetwork}>
+              <img
+                className="block aspect-square w-[18px] flex-none rounded-full object-contain"
+                src={dappAssets.bsc}
+                alt=""
+                width="18"
+                height="18"
+              />
+              {t.common.bsc}
+            </div>
+          </AnchoredTooltip>
+        ) : null}
         <WalletConnectChip variant="connected" />
       </>
     )

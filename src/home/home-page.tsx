@@ -1,11 +1,9 @@
 import type { CSSProperties, ImgHTMLAttributes, ReactNode } from 'react'
 import { useEffect, useMemo } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
 import { Card, Text } from '../components/primitives'
 import { FaqList } from '../components/faq-list'
 import { LanguageMenu } from '../components/language-menu'
 import { desktopCopyClass, mobileCopyClass } from '../app/shell-layout'
-import { WalletConnectChip } from '../app/wallet-connect-chip'
 import { WalletTopbarActions } from '../app/wallet-topbar-actions'
 import { withLocalePrefix } from '../i18n/locale'
 import {
@@ -67,14 +65,14 @@ const heroClass = {
   title:
     'mt-[22px] max-w-[660px] text-[64px] font-semibold leading-[1.08] tracking-[0] text-foreground max-[820px]:mt-4 max-[820px]:w-full max-[820px]:text-[34px] max-[820px]:leading-[1.2]',
   body:
-    'mt-[22px] max-w-[660px] text-lg font-normal leading-[1.5] text-muted-foreground max-[820px]:mt-2.5 max-[820px]:w-full max-[820px]:text-sm',
+    'mt-[22px] max-w-[660px] text-lg font-normal leading-[1.5] text-ink-strong max-[820px]:mt-2.5 max-[820px]:w-full max-[820px]:text-sm',
   actions:
     'hero-actions mt-[22px] flex items-center gap-3.5 pt-3.5 max-[1100px]:justify-center max-[820px]:mt-3 max-[820px]:w-full max-[820px]:flex-col max-[820px]:items-stretch max-[820px]:gap-4 max-[820px]:pt-0',
   actionButton:
     'max-[820px]:w-full max-[820px]:!shadow-none',
   secondaryAction:
     'max-[820px]:w-full max-[820px]:!shadow-none',
-  actionLabel: 'wallet-label',
+  actionLabel: 'text-inherit',
   actionArrow: 'ml-1.5 size-4 shrink-0',
   art:
     'hero-art relative w-[min(100%,438px)] aspect-[438/510] max-[1100px]:w-[min(438px,100%)] max-[1100px]:aspect-[438/420] max-[820px]:order-1 max-[820px]:w-[294px] max-[820px]:aspect-[294/342]',
@@ -113,18 +111,22 @@ const iconCardClass = {
 
 const tokenCardClass = {
   section:
-    'token-section relative pt-[120px] pb-[84px] min-[821px]:min-h-[804px] max-[820px]:min-h-[902px] max-[820px]:pt-0 max-[820px]:pb-14',
+    'token-section relative py-[120px] min-[821px]:min-h-[696px] max-[820px]:min-h-[902px] max-[820px]:pt-0 max-[820px]:pb-14',
   container: 'container max-[820px]:!w-[min(calc(100vw-40px),362px)]',
   grid:
     'token-grid mt-14 grid grid-cols-4 gap-[22px] max-[1100px]:grid-cols-2 max-[820px]:mt-4 max-[820px]:grid-cols-1 max-[820px]:gap-4',
   card:
-    'token-card relative isolate flex min-h-[280px] flex-col justify-end overflow-hidden p-6 transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-[820px]:min-h-[173px] max-[820px]:justify-start max-[820px]:gap-[7px] max-[820px]:rounded-[18px] max-[820px]:p-5',
+    'token-card relative isolate h-[280px] overflow-hidden transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-[820px]:flex max-[820px]:h-auto max-[820px]:min-h-[173px] max-[820px]:flex-col max-[820px]:justify-start max-[820px]:gap-[7px] max-[820px]:rounded-[18px] max-[820px]:p-5',
   iconWrap:
-    'token-tile absolute left-6 top-6 z-[1] grid size-[52px] origin-center place-items-center rounded-[14px] border border-white/30 bg-white/15 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:static max-[820px]:size-[46px] max-[820px]:rounded-[13px] max-[820px]:border-0 max-[820px]:bg-card [&_img:not([src])]:bg-transparent',
+    'token-tile absolute left-6 top-6 z-[1] grid size-[52px] origin-center place-items-center rounded-[14px] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:static max-[820px]:size-[46px] max-[820px]:rounded-[13px] max-[820px]:border-0 max-[820px]:bg-card [&_img:not([src])]:bg-transparent',
   icon:
     'size-[30px] object-contain transition-[filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:size-[26px]',
-  shape:
-    'token-shape absolute -bottom-5 -right-5 -z-[1] size-[170px] origin-center object-contain transition-[filter,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] [[&:not([src])]]:bg-transparent max-[820px]:!hidden',
+  shapeWrap:
+    'token-shape-wrap pointer-events-none absolute -z-[1] transition-[filter,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:hidden',
+  shapeImg:
+    'token-shape block size-full [[&:not([src])]]:bg-transparent',
+  info:
+    'token-info absolute left-6 top-[154px] z-[1] flex w-[min(calc(100%-48px),235px)] flex-col gap-1.5 max-[820px]:static max-[820px]:w-full',
 } as const
 
 const metricClass = {
@@ -159,25 +161,23 @@ const roadmapClass = {
   phaseLabel:
     'text-[11px] font-semibold leading-[1.2] tracking-[0.72px] min-[821px]:text-xs min-[821px]:leading-normal',
   phaseLabelActive: 'text-primary',
-  phaseLabelMuted: 'text-[oklch(0%_0_0_/_42%)]',
+  phaseLabelMuted: 'text-ink-muted',
   now:
     'rounded-[999px] bg-primary px-2 py-0.5 text-[10px] font-semibold not-italic text-white min-[821px]:px-2.5 min-[821px]:py-[3px] min-[821px]:text-[11px]',
   time:
-    'ml-auto text-[11px] font-semibold leading-[1.2] min-[821px]:text-xs min-[821px]:leading-normal',
-  timeMuted: 'text-faint',
+    'ml-auto text-[11px] font-semibold leading-[1.2] min-[821px]:text-xs min-[821px]:leading-[1.4]',
+  timeMuted: 'text-ink-muted',
   timeCurrent: 'text-primary',
   title:
-    'mt-1.5 text-base font-semibold leading-[1.2] min-[821px]:mt-2 min-[821px]:text-lg min-[821px]:leading-[1.4]',
-  titleActive: 'text-foreground',
-  titleMuted: 'text-[oklch(0%_0_0_/_42%)]',
+    'mt-1.5 text-base font-semibold leading-[1.2] tracking-[-0.64px] text-foreground min-[821px]:mt-2 min-[821px]:text-lg min-[821px]:leading-[1.4] min-[821px]:tracking-[-0.72px]',
   body:
-    'mt-1.5 text-[13px] leading-[1.5] text-faint min-[821px]:mt-2 min-[821px]:leading-[1.4]',
+    'mt-1.5 text-[13px] font-normal leading-[1.4] tracking-[-0.26px] text-ink-muted min-[821px]:mt-2',
   dot:
     'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-[999px] text-sm font-semibold min-[821px]:absolute min-[821px]:left-[calc(50%_-_18px)] min-[821px]:top-[42px] min-[821px]:size-9 min-[821px]:border-[3px]',
   dotComplete:
     'bg-primary text-white min-[821px]:border-primary',
   dotUpcoming:
-    'border-[3px] border-border bg-card text-faint',
+    'border-[3px] border-border bg-card text-ink-muted',
   dotCurrent:
     'min-[821px]:shadow-[0_0_0_8px_oklch(94.92%_0.0224_45.6_/_96%)]',
   dotConnector:
@@ -224,7 +224,7 @@ const partnerClass = {
   section:
     'partners min-[821px]:min-h-52 border-b border-border bg-secondary pb-[120px] text-center max-[820px]:min-h-[262px] max-[820px]:py-12',
   row: 'partner-row mt-6 flex flex-wrap justify-center gap-3.5 max-[820px]:mt-4',
-  chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border py-3 pl-3 pr-7 text-[15px] font-semibold text-muted-foreground max-[820px]:min-h-9 max-[820px]:py-1.5 max-[820px]:pl-3 max-[820px]:pr-4 max-[820px]:text-[13px]',
+  chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border py-3 pl-3 pr-7 text-[15px] font-semibold text-ink-strong max-[820px]:min-h-9 max-[820px]:py-1.5 max-[820px]:pl-3 max-[820px]:pr-4 max-[820px]:text-[13px]',
 } as const
 
 const faqClass = {
@@ -367,54 +367,39 @@ function HeroPrimaryAction({
   enterProtocol: string
   locale: Locale
 }) {
-  const account = useActiveAccount()
-  const { messages: t } = useI18n()
   const appHref = withLocalePrefix(locale, '/app.html')
 
-  if (account) {
-    return (
-      <a
-        className={cn(homeBtnClass('primary'), heroClass.actionButton)}
-        href={appHref}
-      >
-        <span className={heroClass.actionLabel}>{enterProtocol}</span>
-        <svg
-          className={heroClass.actionArrow}
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            d="M5 12H19"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 5L19 12L12 19"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </a>
-    )
-  }
-
   return (
-    <div
-      className={cn(
-        heroClass.actionButton,
-        'max-[820px]:w-full [&_.aegis-thirdweb-button-primary]:!h-10 [&_.aegis-thirdweb-button-primary]:max-[820px]:!w-full',
-      )}
+    <a
+      className={cn(homeBtnClass('primary'), heroClass.actionButton)}
+      href={appHref}
     >
-      <WalletConnectChip label={t.common.connectWallet} variant="primary" />
-    </div>
+      <span className={heroClass.actionLabel}>{enterProtocol}</span>
+      <svg
+        className={heroClass.actionArrow}
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M5 12H19"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M12 5L19 12L12 19"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </a>
   )
 }
 
@@ -432,7 +417,10 @@ function HeroSection({
         <div className={cn(heroClass.copy, revealClass())} data-reveal>
           <div className={heroClass.eyebrow}>
             <span className={heroClass.statusDot} />
-            {content.eyebrow}
+            <ResponsiveCopy
+              desktop={content.eyebrow.desktop}
+              mobile={content.eyebrow.mobile}
+            />
           </div>
           <h1 className={heroClass.title} id="hero-title">
             {content.title}
@@ -689,15 +677,6 @@ function TokenSection({ content }: { content: HomeContent['sections']['token'] }
             <TokenCardItem token={token} key={token.symbol} />
           ))}
         </div>
-        <p
-          className={cn(
-            'flywheel-note mt-10 text-center text-[15px] tracking-[0.75px] text-faint max-[820px]:hidden',
-            revealClass(),
-          )}
-          data-reveal
-        >
-          {content.note}
-        </p>
       </div>
     </section>
   )
@@ -711,6 +690,18 @@ function TokenCardItem({ token }: { token: TokenCardContent }) {
       radius="xl"
       tone="token"
     >
+      <div
+        className={cn(tokenCardClass.shapeWrap, token.shapeWrapClassName)}
+        aria-hidden="true"
+      >
+        <DeferredImage
+          className={cn(tokenCardClass.shapeImg, token.shapeClassName)}
+          src={token.shape}
+          alt=""
+          width="170"
+          height="170"
+        />
+      </div>
       <span className={tokenCardClass.iconWrap} aria-hidden="true">
         <DeferredImage
           className={cn(tokenCardClass.icon, token.iconClassName)}
@@ -720,23 +711,17 @@ function TokenCardItem({ token }: { token: TokenCardContent }) {
           height="30"
         />
       </span>
-      <DeferredImage
-        className={cn(tokenCardClass.shape, token.shapeClassName)}
-        src={token.shape}
-        alt=""
-        width="170"
-        height="170"
-        aria-hidden="true"
-      />
-      <Text as="h3" variant="tokenSymbol" tone="inverse">
-        {token.symbol}
-      </Text>
-      <Text as="strong" variant="tokenLabel" tone="inverse">
-        {token.label}
-      </Text>
-      <Text as="p" variant="tokenBody" tone="inverse">
-        {token.description}
-      </Text>
+      <div className={tokenCardClass.info}>
+        <Text as="h3" variant="tokenSymbol" tone="inverse">
+          {token.symbol}
+        </Text>
+        <Text as="strong" variant="tokenLabel" tone="inverse">
+          {token.label}
+        </Text>
+        <Text as="p" variant="tokenBody" tone="inverse">
+          {token.description}
+        </Text>
+      </div>
     </Card>
   )
 }
@@ -865,16 +850,7 @@ function RoadmapSection({ content }: { content: HomeContent['sections']['roadmap
                     {phase.time}
                   </time>
                 </div>
-                <h3
-                  className={cn(
-                    roadmapClass.title,
-                    phase.state
-                      ? roadmapClass.titleActive
-                      : roadmapClass.titleMuted,
-                  )}
-                >
-                  {phase.title}
-                </h3>
+                <h3 className={roadmapClass.title}>{phase.title}</h3>
                 <p className={roadmapClass.body}>{phase.description}</p>
               </Card>
             </article>

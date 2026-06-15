@@ -24,7 +24,7 @@ export const homeAssets = {
     usd1Shape: '/assets/figma/home/icons/token-usd1-shape.svg',
     xIcon: '/assets/figma/home/icons/token-x-mark.webp',
     xShape: '/assets/figma/home/icons/token-x-mark.webp',
-    gagxIcon: '/assets/figma/home/icons/token-gagx-icon.svg',
+    gagxIcon: '/assets/figma/home/icons/token-gagx-icon.png',
     gagxShape: '/assets/figma/home/icons/token-gagx-shape.svg',
   },
   partners: {

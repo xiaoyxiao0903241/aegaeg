@@ -48,7 +48,7 @@ import { useGenesisWidgetContext } from '../genesis-widget-context'
 import { usePairSpotRate } from '../../hooks/use-pair-spot-rate'
 import { useSwapHistory } from '../../hooks/use-swap-history'
 import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '../../config/token-contracts'
-import { toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
+import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
 import { toast } from 'sonner'
 
 const PERCENTS = [25, 50, 75, 100] as const
@@ -81,7 +81,7 @@ const SWAP_BOTTOM_CARD_CLASS = 'mt-auto w-full shrink-0'
 
 const PERCENT_BTN_CLASS = cn(
   'flex h-[25px] cursor-pointer items-center justify-center rounded-[9px] border border-border bg-card',
-  'px-0 py-0 text-xs font-semibold whitespace-nowrap text-muted-foreground',
+  'px-0 py-0 text-xs font-semibold whitespace-nowrap text-ink-strong',
   'transition-[border-color,color,transform] duration-180 ease-out',
   'hover:-translate-y-px hover:border-primary hover:text-primary',
   'disabled:cursor-not-allowed disabled:opacity-[.58]',
@@ -113,18 +113,21 @@ export function SwapWidget({
 
   const { pair } = swap
   const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
-  const showBalanceSkeleton = connected && swap.isBalancesLoading
+  const showBalanceSkeleton = swap.walletReady && swap.isBalancesLoading
   const showRateSkeleton =
-    connected && swap.isSpotQuoting && swap.sellAmount.trim().length === 0
+    swap.walletReady &&
+    swap.isSpotQuoting &&
+    swap.sellAmount.trim().length === 0 &&
+    !swap.rateLabel
   const showBuyAmountSkeleton =
-    connected && swap.isQuoting && swap.sellAmount.trim().length > 0
+    swap.walletReady && swap.isQuoting && swap.sellAmount.trim().length > 0
 
   const sellBalanceLabel = showBalanceSkeleton ? (
     <>
       {t.swap.balance}: <SwapBalanceSkeleton />
     </>
   ) : (
-    `${t.swap.balance}: ${connected ? swap.sellBalanceLabel : '—'}`
+    `${t.swap.balance}: ${swap.walletReady ? swap.sellBalanceLabel : '—'}`
   )
 
   const buyBalanceLabel = showBalanceSkeleton ? (
@@ -132,11 +135,11 @@ export function SwapWidget({
       {t.swap.balance}: <SwapBalanceSkeleton />
     </>
   ) : (
-    `${t.swap.balance}: ${connected ? swap.buyBalanceLabel : '—'}`
+    `${t.swap.balance}: ${swap.walletReady ? swap.buyBalanceLabel : '—'}`
   )
 
   const handleFlip = useCallback(() => {
-    if (!connected || isFlipping) return
+    if (!swap.walletReady || isFlipping) return
     setIsFlipping(true)
     setRotation((prev) => prev + 180)
     window.setTimeout(() => {
@@ -145,7 +148,7 @@ export function SwapWidget({
     window.setTimeout(() => {
       setIsFlipping(false)
     }, 320)
-  }, [connected, isFlipping, swap])
+  }, [isFlipping, swap])
 
   const handleSubmit = useCallback(async () => {
     const success = await swap.submit()
@@ -155,15 +158,30 @@ export function SwapWidget({
 
   useEffect(() => {
     if (!swap.error) return
-    const message = toWalletUserFacingMessage(swap.error)
+    const message =
+      resolveGenesisPurchaseError(swap.error, {
+        insufficientAllowance: t.genesis.insufficientAllowance,
+        insufficientUsd1: t.genesis.insufficientUsd1,
+        purchaseUnavailable: t.genesis.purchaseUnavailable,
+        walletNotConnected: t.genesis.walletNotConnected,
+      }) ?? toWalletUserFacingMessage(swap.error)
     if (message) toast.error(message)
-  }, [swap.error])
+  }, [
+    swap.error,
+    t.genesis.insufficientAllowance,
+    t.genesis.insufficientUsd1,
+    t.genesis.purchaseUnavailable,
+    t.genesis.walletNotConnected,
+  ])
+
+  const disconnectedRateLabel = `1 ${pair.sell.symbol} = 1 ${pair.buy.symbol}`
 
   return (
     <div className={cn(shellModulePanelClass, 'max-[820px]:gap-0', '[&>:first-child]:mb-[18px]')}>
       <DappWidgetHeader
         detailCollapsed={detailPanel.collapsed}
         intro={connected ? t.swap.intro : t.swap.disconnectedIntro}
+        introTone={connected ? 'body' : 'subtle'}
         onTogglePanel={detailPanel.onToggle}
         showToggle={connected}
         title={t.swap.title}
@@ -179,26 +197,29 @@ export function SwapWidget({
           value: swap.sellAmount,
         }}
         className={flipAnimClass}
-        mobilePreviewValue={connected ? swap.sellAmount || '0.00' : undefined}
+        connected={connected}
+        mobilePreviewValue={connected ? swap.sellAmount || '0.00' : '0.00'}
         balance={sellBalanceLabel}
         label={t.swap.sell}
         tokenIcon={pair.sell.icon}
         tokenLabel={pair.sell.symbol}
       />
 
-      <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-[820px]:mt-3 max-[820px]:py-0">
-        {PERCENTS.map((percent) => (
-          <button
-            className={PERCENT_BTN_CLASS}
-            disabled={!connected}
-            key={percent}
-            onClick={() => swap.fillPercent(percent)}
-            type="button"
-          >
-            {percent}%
-          </button>
-        ))}
-      </div>
+      {connected ? (
+        <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-[820px]:mt-3 max-[820px]:py-0">
+          {PERCENTS.map((percent) => (
+            <button
+              className={PERCENT_BTN_CLASS}
+              disabled={!swap.walletReady}
+              key={percent}
+              onClick={() => swap.fillPercent(percent)}
+              type="button"
+            >
+              {percent}%
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <div className="flex items-center justify-center py-1.5 max-[820px]:py-0 max-[820px]:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]">
         <AnchoredTooltip content={t.swap.flip}>
@@ -211,7 +232,7 @@ export function SwapWidget({
               'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
               'max-[820px]:my-2',
             )}
-            disabled={!connected}
+            disabled={!swap.walletReady}
             onClick={handleFlip}
             type="button"
           >
@@ -234,12 +255,13 @@ export function SwapWidget({
           value: swap.buyAmount,
         }}
         className={cn('mt-0', flipAnimClass)}
+        connected={connected}
         mobilePreviewValue={
           showBuyAmountSkeleton
             ? undefined
             : connected
               ? swap.buyAmount || '0.00'
-              : undefined
+              : '0.00'
         }
         balance={buyBalanceLabel}
         label={t.swap.buy}
@@ -248,6 +270,7 @@ export function SwapWidget({
       />
 
       <DappMetaList
+        connected={connected}
         items={[
           {
             label: t.swap.rate,
@@ -256,7 +279,7 @@ export function SwapWidget({
             ) : connected ? (
               swap.rateLabel || '—'
             ) : (
-              '—'
+              disconnectedRateLabel
             ),
           },
           {
@@ -288,7 +311,7 @@ export function SwapWidget({
         ]}
       />
 
-      {connected ? (
+      {swap.walletReady ? (
         <DappActionRow>
           <DappActionButton
             className="col-span-full"
@@ -300,8 +323,8 @@ export function SwapWidget({
           </DappActionButton>
         </DappActionRow>
       ) : (
-        <div className="mt-3.5 max-[820px]:mt-3 [&_.aegis-thirdweb-button]:!w-full">
-          <WalletConnectChip label={t.common.connectWallet} variant="primary" />
+        <div className="mt-3.5 max-[820px]:mt-3 [&_.aegis-thirdweb-button-primary]:!min-h-[50px] [&_.aegis-thirdweb-button-primary]:!h-[50px] [&_.aegis-thirdweb-button-primary]:!text-[15px]">
+          <WalletConnectChip fullWidth label={t.common.connectWallet} variant="primary" />
         </div>
       )}
 
@@ -353,17 +376,25 @@ export function SwapContent({ connected }: { connected: boolean }) {
         !connected && 'max-[820px]:[&>.metric-grid]:hidden max-[820px]:[&>h2]:hidden',
       )}
     >
-      <h2 className={shellContentHeadingClass} id="swap-title">
+      <h2
+        className={cn(
+          shellContentHeadingClass,
+          !connected && 'min-[821px]:text-xl min-[821px]:tracking-[-0.8px]',
+        )}
+        id="swap-title"
+      >
         {t.swap.overview}
       </h2>
 
       <MetricGrid columns={2}>
-        {connected && poolRateLoading ? (
+        {connected && poolRateLoading && !poolRateLabel ? (
           <MetricCardSkeleton className="max-[820px]:rounded-[14px] max-[820px]:p-3.5" />
         ) : (
           <MetricCard
             className={cn(
-              !connected && 'py-3.5 [&_small]:hidden',
+              !connected &&
+                'min-[821px]:rounded-2xl min-[821px]:px-4 min-[821px]:py-3.5 min-[821px]:[&_span]:text-[13px] min-[821px]:[&_span]:text-ink-muted min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:tracking-[-0.54px]',
+              connected && 'py-3.5 [&_small]:hidden',
               'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
               connected &&
                 'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
@@ -378,7 +409,9 @@ export function SwapContent({ connected }: { connected: boolean }) {
         )}
         <MetricCard
           className={cn(
-            !connected && 'py-3.5 [&_small]:hidden',
+            !connected &&
+              'min-[821px]:rounded-2xl min-[821px]:px-4 min-[821px]:py-3.5 min-[821px]:[&_span]:text-[13px] min-[821px]:[&_span]:text-ink-muted min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:tracking-[-0.54px]',
+            connected && 'py-3.5 [&_small]:hidden',
             'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
             connected &&
               'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
@@ -388,14 +421,15 @@ export function SwapContent({ connected }: { connected: boolean }) {
         />
       </MetricGrid>
 
-      <DappSection
-        className={cn(
-          '!translate-y-0 !opacity-100 !transition-none',
-          '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
-          '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
-          'min-[821px]:[&+section]:mt-[34px]',
-        )}
-        title={(
+      {connected ? (
+        <DappSection
+          className={cn(
+            '!translate-y-0 !opacity-100 !transition-none',
+            '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
+            '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
+            'min-[821px]:[&+section]:mt-[34px]',
+          )}
+          title={(
           <span className="flex w-full items-center justify-between gap-3">
             {t.swap.tokenAbout}
             <button
@@ -424,6 +458,7 @@ export function SwapContent({ connected }: { connected: boolean }) {
           {isMobileViewport ? <MobileTokenCarousel /> : <TokenInfoCarousel />}
         </div>
       </DappSection>
+      ) : null}
 
       <DappSection
         className={cn(connected && 'hidden max-[820px]:block')}
@@ -933,7 +968,7 @@ function SwapEmptyState() {
         <strong className="text-[15px] font-semibold leading-[1.2] text-foreground max-[820px]:text-sm">
           {t.swap.emptyTitle}
         </strong>
-        <p className="m-0 max-w-[42ch] text-[13px] leading-[1.5] max-[820px]:max-w-none max-[820px]:text-xs max-[820px]:whitespace-nowrap">
+        <p className="m-0 max-w-[42ch] text-[13px] leading-[1.5] text-ink-muted max-[820px]:max-w-none max-[820px]:text-xs max-[820px]:whitespace-nowrap">
           {t.swap.emptyBody}
         </p>
       </div>

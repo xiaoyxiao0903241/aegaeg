@@ -22,7 +22,7 @@ import { CommunityStatCardSkeleton } from '../components/dapp-skeleton'
 import { useAuth } from '../../providers/auth-provider'
 import { useReferral } from '../../hooks/use-referral'
 import { toast } from 'sonner'
-import { toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
+import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
 import {
   desktopCopyClass,
   mobileCopyClass,
@@ -252,14 +252,26 @@ function CommunityDisconnectedWidget({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
+  const { connected, walletReady } = useDappShell()
   const referral = useReferral(connected)
 
   useEffect(() => {
     if (!referral.error) return
-    const message = toWalletUserFacingMessage(referral.error)
+    const message =
+      resolveGenesisPurchaseError(referral.error, {
+        insufficientAllowance: t.genesis.insufficientAllowance,
+        insufficientUsd1: t.genesis.insufficientUsd1,
+        purchaseUnavailable: t.genesis.purchaseUnavailable,
+        walletNotConnected: t.genesis.walletNotConnected,
+      }) ?? toWalletUserFacingMessage(referral.error)
     if (message) toast.error(message)
-  }, [referral.error])
+  }, [
+    referral.error,
+    t.genesis.insufficientAllowance,
+    t.genesis.insufficientUsd1,
+    t.genesis.purchaseUnavailable,
+    t.genesis.walletNotConnected,
+  ])
 
   return (
     <div className={shellModulePanelClass}>
@@ -285,7 +297,7 @@ function CommunityDisconnectedWidget({
             />
           </label>
           <DappActionButton
-            disabled={!connected || referral.isBound || referral.isSubmitting}
+            disabled={!referral.canBind}
             loading={referral.isSubmitting}
             onClick={() => void referral.bind().then((ok) => ok && toast.success(t.community.bindReferrerSuccess))}
             shape="inline"
@@ -294,7 +306,13 @@ function CommunityDisconnectedWidget({
             {t.community.bindReferrer}
           </DappActionButton>
         </div>
-        <SideHint>{referral.isBound ? t.community.boundTo.replace('{address}', referral.referrerLabel ?? '—') : t.community.referrerHint}</SideHint>
+        <SideHint>
+          {connected && !walletReady && !referral.isBound
+            ? t.wallet.reconnectHint
+            : referral.isBound
+              ? t.community.boundTo.replace('{address}', referral.referrerLabel ?? '—')
+              : t.community.referrerHint}
+        </SideHint>
       </DappSideCard>
 
       <CommunityQuickLinks />

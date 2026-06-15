@@ -60,6 +60,9 @@ const en = defineMessages({
     copyAddress: 'Copy address',
     copied: 'Copied',
     disconnect: 'Disconnect',
+    reconnectWallet: 'Reconnect wallet',
+    reconnectHint: 'Wallet disconnected. Reconnect to sign on-chain actions.',
+    signInRequired: 'Sign in',
   },
   swap: {
     title: 'Swap',
@@ -173,8 +176,8 @@ const en = defineMessages({
       },
     ],
     recentSwaps: 'Recent swaps',
-    emptyTitle: 'Connect a wallet to view your funds',
-    emptyBody: 'Swap history & balances appear here once connected.',
+    emptyTitle: 'Connect a wallet to view and manage your funds',
+    emptyBody: 'Your swap history and balances appear here once connected.',
     faq: 'FAQ',
     faqRate: 'Why is the rate fixed at 1:1?',
     faqRateBody:
@@ -253,6 +256,7 @@ const en = defineMessages({
     insufficientUsd1: 'Insufficient USD1 balance. Add enough USD1 before participating.',
     insufficientAllowance: 'Insufficient USD1 allowance. Approve first.',
     purchaseUnavailable: 'Participation is unavailable. Check your share amount or season status.',
+    walletNotConnected: 'Wallet disconnected. Reconnect to sign transactions.',
     contributionsSyncPending:
       'On-chain purchase confirmed. History is syncing — refresh in a moment.',
     contributionsEmpty: 'No contribution records yet',

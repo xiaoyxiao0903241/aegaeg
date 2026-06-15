@@ -8,6 +8,7 @@ export const GENESIS_PURCHASE_ERROR = {
   INSUFFICIENT_USD1: 'GENESIS_INSUFFICIENT_USD1',
   INSUFFICIENT_ALLOWANCE: 'GENESIS_INSUFFICIENT_ALLOWANCE',
   UNAVAILABLE: 'GENESIS_UNAVAILABLE',
+  WALLET_NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
 } as const
 
 function readErrorCode(error: unknown): number | string | undefined {
@@ -83,6 +84,7 @@ export function resolveGenesisPurchaseError(
     insufficientUsd1: string
     insufficientAllowance: string
     purchaseUnavailable: string
+    walletNotConnected: string
   },
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
@@ -99,6 +101,10 @@ export function resolveGenesisPurchaseError(
 
   if (raw === GENESIS_PURCHASE_ERROR.UNAVAILABLE) {
     return messages.purchaseUnavailable
+  }
+
+  if (raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED) {
+    return messages.walletNotConnected
   }
 
   return resolveContractErrorMessage(error, messages)

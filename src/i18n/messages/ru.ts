@@ -60,6 +60,9 @@ const ru = defineMessages({
     copyAddress: 'Копировать адрес',
     copied: 'Скопировано',
     disconnect: 'Отключить',
+    reconnectWallet: 'Переподключить кошелёк',
+    reconnectHint: 'Кошелёк отключён. Подключите его снова для on-chain действий.',
+    signInRequired: 'Войти',
   },
   swap: {
     title: 'Обмен',
@@ -173,7 +176,7 @@ const ru = defineMessages({
       },
     ],
     recentSwaps: 'Недавние обмены',
-    emptyTitle: 'Подключите кошелёк, чтобы увидеть средства',
+    emptyTitle: 'Подключите кошелёк, чтобы просматривать и управлять средствами',
     emptyBody: 'История обменов и балансы появятся здесь после подключения.',
     faq: 'FAQ',
     faqRate: 'Почему курс фиксирован 1:1?',
@@ -253,6 +256,7 @@ const ru = defineMessages({
     insufficientUsd1: 'Недостаточно USD1. Пополните баланс перед участием.',
     insufficientAllowance: 'Недостаточно allowance USD1. Сначала выполните approve.',
     purchaseUnavailable: 'Участие сейчас недоступно. Проверьте количество долей или статус сезона.',
+    walletNotConnected: 'Кошелёк отключён. Подключите его снова, чтобы подписать транзакцию.',
     contributionsSyncPending:
       'Покупка в сети подтверждена. История синхронизируется — обновите страницу позже.',
     contributionsEmpty: 'Записей о вкладе пока нет',

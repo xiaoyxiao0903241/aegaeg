@@ -4,11 +4,13 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+import {
+  useActiveAccount,
+  useIsAutoConnecting,
+} from 'thirdweb/react'
 import { ApiError } from '../lib/api/client'
 import {
   clearWalletSession,
@@ -21,6 +23,7 @@ import {
   type StoredAuthSession,
 } from '../lib/api/auth/session'
 import { defaultChain } from '../web3/thirdweb'
+import { isWalletRestorePending } from '../lib/web3/wallet-connection-state'
 import { useDappActions } from '../stores/dapp-actions'
 
 export interface AuthContextValue {
@@ -30,6 +33,7 @@ export interface AuthContextValue {
   isLoggingIn: boolean
   loginError: string | null
   login: () => Promise<void>
+  retryLogin: () => Promise<void>
   logout: () => void
   clearLoginError: () => void
 }
@@ -38,29 +42,17 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const account = useActiveAccount()
+  const isAutoConnecting = useIsAutoConnecting()
   const storage = useMemo(() => createLocalAuthSessionStorage(localStorage), [])
   const [session, setSession] = useState<StoredAuthSession | null>(() => storage.read())
   const [isLoggingIn, setIsLoggingIn] = useState(false)
   const [loginError, setLoginError] = useState<string | null>(null)
-  const connectedAddressRef = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     const nextAddress = account?.address
-    const previousAddress = connectedAddressRef.current
-
     if (!nextAddress) {
-      // AutoConnect may briefly report no account after reload — do not wipe session then.
-      if (previousAddress) {
-        clearWalletSession(storage)
-        setSession(null)
-        setLoginError(null)
-        useDappActions.getState().afterAuthLogout()
-      }
-      connectedAddressRef.current = undefined
       return
     }
-
-    connectedAddressRef.current = nextAddress
 
     const stored = storage.read()
     if (stored && stored.address.toLowerCase() !== nextAddress.toLowerCase()) {
@@ -110,8 +102,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [account, storage])
 
+  const retryLogin = useCallback(async () => {
+    setLoginError(null)
+    await login()
+  }, [login])
+
   useEffect(() => {
-    if (!account?.address || isLoggingIn) {
+    if (
+      !account?.address ||
+      isLoggingIn ||
+      loginError ||
+      isWalletRestorePending(account, isAutoConnecting)
+    ) {
       return
     }
 
@@ -121,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     void login().catch(() => undefined)
-  }, [account?.address, isLoggingIn, login, storage])
+  }, [account, isAutoConnecting, isLoggingIn, login, loginError, storage])
 
   const logout = useCallback(() => {
     clearWalletSession(storage)
@@ -142,10 +144,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoggingIn,
       loginError,
       login,
+      retryLogin,
       logout,
       clearLoginError,
     }),
-    [clearLoginError, isLoggingIn, login, loginError, logout, session],
+    [clearLoginError, isLoggingIn, login, loginError, logout, retryLogin, session],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

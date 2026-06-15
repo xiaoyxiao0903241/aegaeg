@@ -20,7 +20,7 @@ export function useShareholderRank() {
   const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
 
   const address = account?.address
-  const userTotalQuery = usePresaleUserTotalQuery(connected, address)
+  const userTotalQuery = usePresaleUserTotalQuery(address)
 
   const chainVolumeUsd = useMemo(() => {
     if (!userTotalQuery.data) return 0
@@ -38,7 +38,7 @@ export function useShareholderRank() {
   )
 
   const authPending = connected && !isAuthenticated && !loginError
-  const isChainVolumeLoading = connected && userTotalQuery.isLoading
+  const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 
   const isRankLoading =
     connected &&

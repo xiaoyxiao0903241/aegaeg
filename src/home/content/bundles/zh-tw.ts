@@ -22,7 +22,10 @@ export const zhTwBundle: HomeContentBundle = {
   },
   hero: {
     guardianLabel: 'AEGIS X 守護者',
-    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 協議',
+    eyebrow: {
+      desktop: 'AI x DeFi x USD1 · DeFi 4.0 協議',
+      mobile: 'AI x DeFi x USD1 · DeFi 4.0',
+    },
     title: '守護未來價值',
     body: {
       desktop:
@@ -113,28 +116,27 @@ export const zhTwBundle: HomeContentBundle = {
       title: '多資產飛輪',
       subtitle: {
         desktop:
-          '四種代幣，一個自強化價值循環：增長 → 流動性 + 支付 + 生態。',
+          '四種代幣，一個自強化價值循環：增長 → 流動性 → 支付 → 生態。',
         mobile: '四種代幣，一個自強化價值循環。',
       },
       cards: [
-        {
-          label: '穩定儲備資產',
-          description: '結算層 · USD 支撐流動性',
-        },
         {
           label: '核心協議資產',
           description: '150% 超額抵押 · AI 智庫管理',
         },
         {
-          label: '獎勵結算代幣',
-          description: '1:1 對應 AGX · 驅動 X 挖礦',
+          label: '穩定儲備資產',
+          description: '結算層 · USD 支撐流動性',
         },
         {
           label: '生態價值代幣',
           description: '2.1 億固定供應 · 25% 賣出銷毀',
         },
+        {
+          label: '獎勵結算代幣',
+          description: '1:1 對應 AGX · 驅動 X 挖礦',
+        },
       ],
-      note: '用戶 → 流動性 → 支付 → 增長 → 無限循環',
     },
     roadmap: {
       eyebrow: '路線圖',
@@ -142,7 +144,7 @@ export const zhTwBundle: HomeContentBundle = {
       phases: [
         {
           phase: '階段 01',
-          time: '2025 Q3',
+          time: '2026 Q3',
           title: '創世啟動',
           description: '協議部署 · AGX 鑄造 · USD1 流動性池',
           dot: '✓',
@@ -151,7 +153,7 @@ export const zhTwBundle: HomeContentBundle = {
         },
         {
           phase: '階段 02',
-          time: '2025 Q4',
+          time: '2026 Q4',
           title: 'DeFi 核心',
           description: 'Rebase 質押 · LP 債券 · 銷毀債券 · AI 做市',
           dot: '✓',
@@ -160,7 +162,7 @@ export const zhTwBundle: HomeContentBundle = {
         },
         {
           phase: '階段 03',
-          time: '2026 Q1',
+          time: '2027 Q1',
           title: 'DAO 與增長',
           description: 'X DAO 激勵 · 多簽治理 · 全球節點',
           dot: '✓',
@@ -169,7 +171,7 @@ export const zhTwBundle: HomeContentBundle = {
         },
         {
           phase: '階段 04',
-          time: '2026 Q2',
+          time: '2027 Q2',
           title: 'AI Agent 經濟',
           description: '自主支付 · 鏈上協作 · Agent 做市',
           dot: '4',
@@ -178,7 +180,7 @@ export const zhTwBundle: HomeContentBundle = {
         },
         {
           phase: '階段 05',
-          time: '2026 Q3',
+          time: '2027 Q3',
           title: '全球支付',
           description: '跨境結算 · 商戶接入 · USD1 支付通道',
           dot: '5',
@@ -186,7 +188,7 @@ export const zhTwBundle: HomeContentBundle = {
         },
         {
           phase: '階段 06',
-          time: '2026 Q4',
+          time: '2027 Q4',
           title: 'DeFi 4.0',
           description: '機構產品 · 合規框架 · 完整生態',
           dot: '6',
@@ -261,15 +263,15 @@ export const zhTwBundle: HomeContentBundle = {
       label: '抵押率',
     },
     {
-      value: '4,880%',
-      countTarget: 4880,
+      value: '100%',
+      countTarget: 100,
       suffix: '%',
       label: '最高參考 APY',
     },
     {
-      value: '2+',
-      countTarget: 2,
-      suffix: '+',
+      value: '24H',
+      countTarget: 24,
+      suffix: 'H',
       label: '支援鏈',
     },
     {

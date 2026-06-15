@@ -60,6 +60,9 @@ const es = defineMessages({
     copyAddress: 'Copiar dirección',
     copied: 'Copiado',
     disconnect: 'Desconectar',
+    reconnectWallet: 'Reconectar billetera',
+    reconnectHint: 'La billetera está desconectada. Vuelve a conectarla para acciones on-chain.',
+    signInRequired: 'Iniciar sesión',
   },
   swap: {
     title: 'Swap',
@@ -173,8 +176,8 @@ const es = defineMessages({
       },
     ],
     recentSwaps: 'Swaps recientes',
-    emptyTitle: 'Conecta una billetera para ver tus fondos',
-    emptyBody: 'El historial de swaps y saldos aparecerán aquí tras conectar.',
+    emptyTitle: 'Conecta una billetera para ver y gestionar tus fondos',
+    emptyBody: 'Tu historial de swaps y saldos aparecerán aquí una vez conectado.',
     faq: 'FAQ',
     faqRate: '¿Por qué la tasa es fija 1:1?',
     faqRateBody:
@@ -253,6 +256,7 @@ const es = defineMessages({
     insufficientUsd1: 'Saldo USD1 insuficiente. Obtén suficiente USD1 antes de participar.',
     insufficientAllowance: 'Allowance USD1 insuficiente. Aprueba primero.',
     purchaseUnavailable: 'No puedes participar ahora. Revisa la cantidad de shares o el estado de la temporada.',
+    walletNotConnected: 'La billetera está desconectada. Vuelve a conectarla para firmar transacciones.',
     contributionsSyncPending:
       'Compra on-chain confirmada. Sincronizando historial; actualiza en un momento.',
     contributionsEmpty: 'Aún no hay registros de contribución',

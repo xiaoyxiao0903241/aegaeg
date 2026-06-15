@@ -57,7 +57,7 @@ const DAPP_TEXT = {
   panelBody: 'm-0 text-xs leading-[1.5]',
   formLabel: 'text-[13px] font-normal leading-[1.5]',
   formHint: 'text-[13px] font-normal leading-[1.5]',
-  metaLabel: 'text-[13px] font-normal leading-[1.5] text-ink-strong',
+  metaLabel: 'text-[13px] font-normal leading-[1.5]',
   metaValue: 'mt-0 text-right text-[13px] font-semibold leading-[1.3] text-foreground',
   widgetTitle: 'm-0 text-[21px] font-semibold leading-[1.3]',
   widgetIntro: 'm-0 mt-1.5 max-w-[34ch] text-[13px] leading-[1.4]',
@@ -74,7 +74,8 @@ const DAPP_TEXT = {
 
 const DAPP_TEXT_TONE = {
   ink: 'text-foreground',
-  body: 'text-muted-foreground',
+  body: 'text-ink-strong',
+  subtle: 'text-ink-muted',
   muted: 'text-faint',
   coral: 'text-primary',
   up: 'text-success',

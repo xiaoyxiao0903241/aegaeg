@@ -188,8 +188,14 @@ export function ContributionBlockSkeleton() {
         </div>
         <DappSkeleton className="h-[7px] w-full rounded-full" />
       </div>
-      <TableRowSkeleton columns={5} />
-      <TableRowSkeleton columns={5} />
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-0 border-collapse text-[13px] leading-[1.5]">
+          <tbody>
+            <TableRowSkeleton columns={5} />
+            <TableRowSkeleton columns={5} isLast />
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

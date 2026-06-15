@@ -5,36 +5,38 @@ import type { LanguageOption } from './types'
 
 export const tokenCardShells = [
   {
-    className: 'bg-token-usd1',
-    icon: homeAssets.token.usd1Icon,
-    shape: homeAssets.token.usd1Shape,
-    shapeClassName: 'opacity-90',
-    symbol: 'USD1',
-  },
-  {
     className: 'bg-token-agx',
     icon: homeAssets.token.agxIcon,
-    iconClassName: 'scale-110',
     shape: homeAssets.token.agxShape,
-    shapeClassName:
-      '!right-[-10px] !bottom-0 !h-[124px] !w-[133px] opacity-20',
+    shapeWrapClassName:
+      'left-[56.54%] right-[-3.53%] top-[55%] bottom-[0.71%] opacity-20',
+    shapeClassName: 'object-cover',
     symbol: 'AGX',
   },
   {
-    className: 'bg-token-gagx',
-    icon: homeAssets.token.gagxIcon,
-    shape: homeAssets.token.gagxShape,
-    shapeClassName: 'opacity-90',
-    symbol: 'gAGX',
+    className: 'bg-token-usd1',
+    icon: homeAssets.token.usd1Icon,
+    shape: homeAssets.token.usd1Shape,
+    shapeWrapClassName: 'left-[133px] top-[130px] size-[170px]',
+    symbol: 'USD1',
   },
   {
     className: 'bg-token-x',
     icon: homeAssets.token.xIcon,
     iconClassName: 'scale-110',
     shape: homeAssets.token.xShape,
-    shapeClassName:
-      '!right-0 !bottom-[11px] !h-[129px] !w-[136px] opacity-10',
+    shapeWrapClassName:
+      'left-[51.94%] right-0 top-[calc(50%+64.5px)] aspect-[584.8/553.8] -translate-y-1/2 opacity-10',
+    shapeClassName: 'object-contain',
     symbol: 'X',
+  },
+  {
+    className: 'bg-token-gagx',
+    icon: homeAssets.token.gagxIcon,
+    iconClassName: 'size-[34px] max-[820px]:size-[26px]',
+    shape: homeAssets.token.gagxShape,
+    shapeWrapClassName: 'left-[133px] top-[130px] size-[170px]',
+    symbol: 'gAGX',
   },
 ] as const
 

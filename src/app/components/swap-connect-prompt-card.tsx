@@ -6,7 +6,7 @@ export function SwapConnectPromptCard({ className }: { className?: string }) {
   const { messages: t } = useI18n()
 
   return (
-    <section className={cn('grid gap-2 rounded-md bg-accent p-4', className)}>
+    <section className={cn('grid gap-2 rounded-2xl bg-accent p-4', className)}>
       <div className="flex min-w-0 items-center gap-2.5">
         <img alt="" className="size-[22px] shrink-0" height="22" src={dappAssets.swapConnectPrompt} width="22" />
         <strong className="max-w-[250px] text-sm font-semibold leading-[1.2] tracking-normal text-foreground">

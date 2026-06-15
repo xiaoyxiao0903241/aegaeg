@@ -50,9 +50,10 @@
 
   /* ---- 中性/辅助色 ---- */
   --faint: oklch(0% 0 0 / 30%);
+  --ink-muted: oklch(0% 0 0 / 40%);
   --ink-strong: oklch(0% 0 0 / 70%);
   --subtle-ink: oklch(45% 0.02 260);
-  --faq-text: oklch(50.06% 0.025 259.18);
+  --faq-text: #5b6472;
   --placeholder: oklch(82% 0.011 264);
   --focus-border: oklch(35% 0.02 260);
   --border-subtle: oklch(92% 0.01 263);
@@ -148,6 +149,7 @@
 
   /* 中性/辅助 */
   --color-faint: var(--faint);
+  --color-ink-muted: var(--ink-muted);
   --color-ink-strong: var(--ink-strong);
   --color-subtle-ink: var(--subtle-ink);
   --color-faq-text: var(--faq-text);
@@ -180,5 +182,9 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  a {
+    text-decoration: none;
   }
 }
