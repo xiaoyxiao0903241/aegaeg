@@ -115,6 +115,8 @@ const vi = defineMessages({
     tokenContract: 'Xem hợp đồng',
     tokenPrevious: 'Token trước',
     tokenNext: 'Token tiếp',
+    swipeNext: 'Vuốt lên để xem trang tiếp theo',
+    swipePrevious: 'Vuốt xuống để quay lại trang trước',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

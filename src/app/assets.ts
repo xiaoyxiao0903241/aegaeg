@@ -39,6 +39,8 @@ export const dappAssets = {
   check: '/assets/figma/dapp/ic-check.svg',
   chevron: '/assets/figma/dapp/ic-chevron.svg',
   chevronUp: '/assets/figma/dapp/ic-chevron-up.svg',
+  /** H5 Swap pager — Figma `101:344` / `136:3` double chevron (down); rotate 180° for previous page. */
+  swipeChevronDouble: '/assets/figma/dapp/ic-swipe-chevron-double.svg',
   community: '/assets/figma/dapp/ic-community.svg',
   genesis: '/assets/figma/dapp/ic-genesis.svg',
   globe: '/assets/figma/dapp/ic-globe.svg',

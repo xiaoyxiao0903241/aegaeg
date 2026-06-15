@@ -28,6 +28,7 @@ import {
   mobileCopyClass,
   shellContentHeadingClass,
   shellContentPageClass,
+  shellMobilePageTitleClass,
   shellModulePanelClass,
 } from '../shell-layout'
 import { useDappShell } from '../dapp-shell-context'
@@ -70,11 +71,21 @@ const SHAREHOLDER_ACTION_CLASS = cn(
   'mt-4 min-h-12 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-[820px]:hidden',
 )
 
+const COMMUNITY_MY_COMMUNITY_HEADING_CLASS = cn(
+  shellContentHeadingClass,
+  revealClass(),
+  'max-[820px]:mt-0.5',
+)
+
+const COMMUNITY_WIDGET_HEADER_CLASS = cn(
+  shellMobilePageTitleClass,
+  'max-[820px]:[&_p]:mt-3',
+)
+
 const COMMUNITY_STAT_GRID = cn(
   'mt-3.5 grid grid-cols-3 gap-3.5',
   'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))]',
-  'max-[820px]:min-w-0 max-[820px]:grid-cols-1',
-  'max-[820px]:[&:has(.community-stat)]:grid-cols-3 max-[820px]:[&:has(.community-stat)]:gap-2.5',
+  'max-[820px]:min-w-0 max-[820px]:grid-cols-3 max-[820px]:gap-2.5',
 )
 
 export function CommunityWidget({
@@ -142,6 +153,7 @@ function CommunityConnectedWidget({
   return (
     <div className={shellModulePanelClass}>
       <DappWidgetHeader
+        className={COMMUNITY_WIDGET_HEADER_CLASS}
         detailCollapsed={detailPanel.collapsed}
         intro={t.community.intro}
         onTogglePanel={detailPanel.onToggle}
@@ -197,7 +209,7 @@ function CommunityConnectedWidget({
               value={referral.referrerInput}
             />
             <DappActionButton
-              disabled={referral.isSubmitting}
+              disabled={!referral.canBind}
               loading={referral.isSubmitting}
               onClick={() =>
                 void referral.bind().then((ok) => ok && toast.success(t.community.bindReferrerSuccess))
@@ -256,6 +268,7 @@ function CommunityDisconnectedWidget({
   return (
     <div className={shellModulePanelClass}>
       <DappWidgetHeader
+        className={COMMUNITY_WIDGET_HEADER_CLASS}
         detailCollapsed={detailPanel.collapsed}
         intro={t.community.intro}
         onTogglePanel={detailPanel.onToggle}
@@ -470,7 +483,7 @@ export function CommunityContent({
   return (
     <div className={shellContentPageClass}>
       <h2
-        className={cn(shellContentHeadingClass, revealClass())}
+        className={COMMUNITY_MY_COMMUNITY_HEADING_CLASS}
         data-reveal
         id="community-title"
       >
@@ -598,7 +611,10 @@ function MobileCommunityFirstStats() {
   return (
     <>
       <h2
-        className={cn(shellContentHeadingClass, revealClass(), 'hidden max-[820px]:block max-[820px]:mt-6')}
+        className={cn(
+          COMMUNITY_MY_COMMUNITY_HEADING_CLASS,
+          'hidden max-[820px]:block',
+        )}
         data-reveal
         id="community-title"
       >

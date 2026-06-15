@@ -115,6 +115,8 @@ const en = defineMessages({
     tokenContract: 'View contract',
     tokenPrevious: 'Previous token',
     tokenNext: 'Next token',
+    swipeNext: 'Swipe to next page',
+    swipePrevious: 'Swipe to previous page',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

@@ -13,6 +13,7 @@ import {
   desktopCopyClass,
   shellContentHeadingClass,
   shellContentPageClass,
+  shellMobilePageTitleClass,
   shellModulePanelClass,
 } from '../shell-layout'
 import { dappAssets, tokenCarouselIcons } from '../assets'
@@ -29,7 +30,7 @@ import { AnchoredTooltip } from '../../components/anchored-tooltip'
 import { MetricCard } from '../components/dapp-card'
 import { DappPillTabs } from '../components/dapp-pill-tabs'
 import { DappSection } from '../components/dapp-section'
-import { DappWidgetHeader } from '../components/dapp-widget-header'
+import { DappWidgetHeader, dappWidgetTitleClassName } from '../components/dapp-widget-header'
 import { DappMetaList } from '../components/dapp-meta-list'
 import {
   MetricCardSkeleton,
@@ -44,6 +45,7 @@ import { SwapConnectPromptCard } from '../components/swap-connect-prompt-card'
 import { SwapAmountBox } from '../components/swap-amount-box'
 import { SwapSlippageModal } from '../components/swap-slippage-modal'
 import { useSwapWidget } from '../../hooks/use-swap-widget'
+import { useMobileViewport } from '../../hooks/use-mobile-viewport'
 import { useGenesisWidgetContext } from '../genesis-widget-context'
 import { usePairSpotRate } from '../../hooks/use-pair-spot-rate'
 import { useSwapHistory } from '../../hooks/use-swap-history'
@@ -52,25 +54,6 @@ import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../li
 import { toast } from 'sonner'
 
 const PERCENTS = [25, 50, 75, 100] as const
-const MOBILE_MAX_WIDTH_QUERY = '(max-width: 820px)'
-
-function useMobileViewport() {
-  const [isMobile, setIsMobile] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia(MOBILE_MAX_WIDTH_QUERY).matches,
-  )
-
-  useEffect(() => {
-    const media = window.matchMedia(MOBILE_MAX_WIDTH_QUERY)
-    const handleChange = () => setIsMobile(media.matches)
-    handleChange()
-    media.addEventListener('change', handleChange)
-    return () => media.removeEventListener('change', handleChange)
-  }, [])
-
-  return isMobile
-}
 
 const SWAP_CARD_FLIP_ANIM =
   '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]'
@@ -91,10 +74,12 @@ const PERCENT_BTN_CLASS = cn(
 export function SwapWidget({
   connected,
   detailPanel,
+  layoutMode = 'default',
   onSelectGenesis,
 }: {
   connected: boolean
   detailPanel: DetailPanelControls
+  layoutMode?: 'default' | 'mobilePager'
   onSelectGenesis: () => void
 }) {
   const { messages: t } = useI18n()
@@ -168,13 +153,22 @@ export function SwapWidget({
   const disconnectedRateLabel = `1 ${pair.sell.symbol} = 1 ${pair.buy.symbol}`
 
   return (
-    <div className={cn(shellModulePanelClass, 'max-[820px]:gap-0', '[&>:first-child]:mb-[18px]')}>
+    <div
+      className={cn(
+        layoutMode === 'mobilePager'
+          ? 'flex min-h-0 flex-col max-[820px]:gap-0'
+          : shellModulePanelClass,
+        'max-[820px]:gap-0',
+        '[&>:first-child]:mb-[18px]',
+      )}
+    >
       <DappWidgetHeader
+        className={layoutMode === 'mobilePager' ? shellMobilePageTitleClass : undefined}
         detailCollapsed={detailPanel.collapsed}
         intro={connected ? t.swap.intro : t.swap.disconnectedIntro}
         introTone={connected ? 'body' : 'subtle'}
         onTogglePanel={detailPanel.onToggle}
-        showToggle={connected}
+        showToggle={connected && layoutMode !== 'mobilePager'}
         title={t.swap.title}
       />
 
@@ -326,11 +320,13 @@ export function SwapWidget({
 
       {connected ? (
         <>
-          <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
+          {layoutMode !== 'mobilePager' ? (
+            <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
+          ) : null}
           <GenesisPromoCard
             actionLabel={t.genesis.joinGenesis}
             className={cn(
-              SWAP_BOTTOM_CARD_CLASS,
+              layoutMode === 'mobilePager' ? 'mt-3.5 w-full shrink-0' : SWAP_BOTTOM_CARD_CLASS,
               'gap-1.5 [&_button]:min-h-[38px] [&_button]:text-[13px] [&_p]:leading-tight',
               'max-[820px]:mt-3.5 max-[820px]:[&_button]:min-h-[42px] max-[820px]:[&_button]:text-sm',
             )}
@@ -341,8 +337,14 @@ export function SwapWidget({
         </>
       ) : (
         <>
-          <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
-          <SwapConnectPromptCard className={SWAP_BOTTOM_CARD_CLASS} />
+          {layoutMode !== 'mobilePager' ? (
+            <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
+          ) : null}
+          <SwapConnectPromptCard
+            className={
+              layoutMode === 'mobilePager' ? 'mt-3.5 w-full shrink-0' : SWAP_BOTTOM_CARD_CLASS
+            }
+          />
         </>
       )}
 
@@ -356,7 +358,13 @@ export function SwapWidget({
   )
 }
 
-export function SwapContent({ connected }: { connected: boolean }) {
+export function SwapContent({
+  connected,
+  layoutMode = 'default',
+}: {
+  connected: boolean
+  layoutMode?: 'default' | 'mobilePager'
+}) {
   const { messages: t } = useI18n()
   const isMobileViewport = useMobileViewport()
   const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
@@ -365,10 +373,40 @@ export function SwapContent({ connected }: { connected: boolean }) {
   const [aboutOpen, setAboutOpen] = useState(true)
   const faqItems = getSwapFaqItems(t, faqToken)
 
+  const overviewMetrics = (
+    <MetricGrid columns={2}>
+      {connected && poolRateLoading && !poolRateLabel ? (
+        <MetricCardSkeleton className="max-[820px]:rounded-[14px] max-[820px]:p-3.5" />
+      ) : (
+        <MetricCard
+          className={cn(
+            connected && '[&_small]:hidden',
+            'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+          )}
+          label={t.swap.exchangeRate}
+          value={
+            connected
+              ? poolRateLabel ?? '—'
+              : t.swap.fixedRate
+          }
+        />
+      )}
+      <MetricCard
+        className={cn(
+          connected && '[&_small]:hidden',
+          'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+        )}
+        label={t.swap.settlement}
+        value={t.swap.settlementValue}
+      />
+    </MetricGrid>
+  )
+
   return (
     <div
       className={cn(
         shellContentPageClass,
+        layoutMode === 'mobilePager' && 'px-0',
         !connected && 'max-[820px]:[&>.metric-grid]:hidden max-[820px]:[&>h2]:hidden',
       )}
     >
@@ -376,6 +414,7 @@ export function SwapContent({ connected }: { connected: boolean }) {
         className={cn(
           shellContentHeadingClass,
           'pb-4',
+          layoutMode === 'mobilePager' && 'hidden',
           !connected && 'min-[821px]:tracking-[-0.8px]',
         )}
         id="swap-title"
@@ -383,32 +422,20 @@ export function SwapContent({ connected }: { connected: boolean }) {
         {t.swap.overview}
       </h2>
 
-      <MetricGrid columns={2}>
-        {connected && poolRateLoading && !poolRateLabel ? (
-          <MetricCardSkeleton className="max-[820px]:rounded-[14px] max-[820px]:p-3.5" />
-        ) : (
-          <MetricCard
-            className={cn(
-              connected && '[&_small]:hidden',
-              'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+      {layoutMode === 'mobilePager' ? (
+        <>
+          <h1
+            className={dappWidgetTitleClassName(
+              cn(shellMobilePageTitleClass, 'max-[820px]:mb-3'),
             )}
-            label={t.swap.exchangeRate}
-            value={
-              connected
-                ? poolRateLabel ?? '—'
-                : t.swap.fixedRate
-            }
-          />
-        )}
-        <MetricCard
-          className={cn(
-            connected && '[&_small]:hidden',
-            'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
-          )}
-          label={t.swap.settlement}
-          value={t.swap.settlementValue}
-        />
-      </MetricGrid>
+          >
+            {t.swap.overview}
+          </h1>
+          {overviewMetrics}
+        </>
+      ) : (
+        overviewMetrics
+      )}
 
       {connected ? (
         <DappSection
@@ -416,6 +443,7 @@ export function SwapContent({ connected }: { connected: boolean }) {
             '!translate-y-0 !opacity-100 !transition-none',
             '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
             '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
+            'max-[820px]:[&_h3]:pb-2.5 max-[820px]:[&_h3]:text-base max-[820px]:[&_h3]:tracking-[-0.64px]',
             'min-[821px]:[&+section]:mt-[34px]',
           )}
           title={(
@@ -552,7 +580,7 @@ function tokenCardRaysClass(key: string) {
 
 function mobileTokenCardRaysClass(key: string) {
   return cn(
-    'before:pointer-events-none before:absolute before:right-0 before:top-0 before:h-[103px] before:w-[118px]',
+    'before:pointer-events-none before:absolute before:right-0 before:top-0 before:h-[72px] before:w-[118px]',
     'before:bg-[url("/assets/figma/dapp/token-card-corner.svg")] before:bg-cover before:bg-right before:bg-no-repeat',
     key === 'usd1' ? 'before:opacity-95' : 'before:opacity-[0.72]',
   )
@@ -774,59 +802,65 @@ function MobileTokenCarousel() {
   return (
     <Carousel
       aria-label={t.swap.tokenAbout}
-      className={cn(revealClass(), 'mt-3 grid gap-2.5 overflow-hidden')}
+      className={cn(revealClass(), 'mt-3 grid overflow-hidden max-[820px]:mt-2.5')}
       data-reveal
       opts={{ align: 'start', loop: true }}
       setApi={setApi}
     >
       <CarouselContent
-        className="ml-0 flex h-full items-stretch"
-        viewportClassName="h-[103px] -mx-[18px] w-[calc(100%+36px)]"
+        className="ml-0 flex h-full items-stretch gap-3"
+        viewportClassName="h-[132px] py-[14px]"
       >
         {tokens.map((token, index) => (
-          <CarouselItem className="box-border h-[103px] shrink-0 grow-0 basis-full pl-0" key={token.key}>
+          <CarouselItem className="h-[104px] shrink-0 grow-0 basis-full pl-0" key={token.key}>
             <article
               aria-hidden={current !== index}
               className={cn(
-                'box-border relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl bg-card px-4 py-3.5 shadow-subtle',
+                'relative flex h-full min-w-0 flex-col overflow-hidden rounded-md bg-card shadow-subtle',
                 mobileTokenCardRaysClass(token.key),
               )}
             >
-              <div className="relative z-[1] flex min-h-[30px] min-w-0 shrink-0 items-center justify-between gap-2">
-                <TokenIcon size="mobile" token={token} />
-                <strong className="min-w-0 flex-1 text-sm font-semibold leading-[1.2] tracking-[-0.42px] text-foreground">
-                  {token.title}
-                </strong>
-                <AnchoredTooltip content={t.swap.tokenContractTooltip}>
-                  <button
-                    className={cn(
-                      'inline-flex min-h-[30px] shrink-0 cursor-pointer items-center gap-[5px] rounded-full',
-                      'border border-border bg-card px-3 text-xs font-semibold leading-[1.2] whitespace-nowrap text-foreground',
-                      getSwapTokenContractAddress(token.key) ? '' : 'pointer-events-none opacity-45',
-                    )}
-                    disabled={!getSwapTokenContractAddress(token.key)}
-                    onClick={() => openTokenContractOnBscScan(token.key)}
-                    type="button"
-                  >
-                    {t.swap.tokenContract}
-                    <img
-                      alt=""
-                      height="15"
-                      src={dappAssets.arrowUpRight}
-                      width="15"
-                    />
-                  </button>
-                </AnchoredTooltip>
+              <div className="relative z-[1] flex min-h-0 flex-1 flex-col gap-2 px-4 py-[14px]">
+                <div className="flex min-w-0 items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-[9px]">
+                    <TokenIcon size="mobile" token={token} />
+                    <strong className="truncate text-[15px] font-semibold leading-[1.2] tracking-[-0.45px] text-foreground">
+                      {token.title}
+                    </strong>
+                  </div>
+                  <AnchoredTooltip content={t.swap.tokenContractTooltip}>
+                    <button
+                      className={cn(
+                        'inline-flex shrink-0 cursor-pointer items-center gap-[5px] rounded-full',
+                        'border border-border bg-card px-3 py-[7px] text-xs font-semibold leading-[1.2]',
+                        'tracking-[-0.24px] whitespace-nowrap text-foreground',
+                        getSwapTokenContractAddress(token.key) ? '' : 'pointer-events-none opacity-45',
+                      )}
+                      disabled={!getSwapTokenContractAddress(token.key)}
+                      onClick={() => openTokenContractOnBscScan(token.key)}
+                      type="button"
+                    >
+                      {t.swap.tokenContract}
+                      <img
+                        alt=""
+                        height="13"
+                        src={dappAssets.arrowUpRight}
+                        width="13"
+                      />
+                    </button>
+                  </AnchoredTooltip>
+                </div>
+                <p className="m-0 line-clamp-2 max-w-[236px] text-[13px] font-normal leading-[1.5] tracking-[-0.26px] text-faq-text">
+                  {token.body}
+                </p>
               </div>
-              <p className="m-0 mt-2 min-h-[36px] max-w-[32ch] text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong line-clamp-2">
-                {token.body}
-              </p>
             </article>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div aria-hidden="true" className="inline-flex items-center justify-center gap-3.5 pt-3 text-muted-foreground">
+      <div className="inline-flex items-center justify-center gap-2.5 pt-3 text-muted-foreground">
         <button
+          aria-label={t.swap.tokenPrevious}
           className="grid size-[26px] cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-faint transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground"
           onClick={() => api?.scrollPrev()}
           type="button"
@@ -836,9 +870,15 @@ function MobileTokenCarousel() {
             className="block size-3.5 -rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
           />
         </button>
-        <span className="inline-flex items-center gap-[7px]">
+        <span
+          aria-label={t.swap.tokenAbout}
+          className="inline-flex items-center gap-1.5"
+          role="group"
+        >
           {tokens.map((token, index) => (
             <button
+              aria-current={current === index ? 'true' : undefined}
+              aria-label={`${t.swap.tokenAbout} ${index + 1}`}
               className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0"
               key={token.key}
               onClick={() => goTo(index)}
@@ -847,14 +887,15 @@ function MobileTokenCarousel() {
               <span
                 aria-hidden="true"
                 className={cn(
-                  'block h-1.5 rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
-                  current === index ? 'w-[18px] bg-primary' : 'w-1.5',
+                  'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
+                  current === index ? 'h-1.5 w-[18px] bg-primary' : 'size-1.5',
                 )}
               />
             </button>
           ))}
         </span>
         <button
+          aria-label={t.swap.tokenNext}
           className="grid size-[26px] cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-faint transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground"
           onClick={() => api?.scrollNext()}
           type="button"

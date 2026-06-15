@@ -115,6 +115,8 @@ const es = defineMessages({
     tokenContract: 'Ver contrato',
     tokenPrevious: 'Token anterior',
     tokenNext: 'Token siguiente',
+    swipeNext: 'Desliza hacia arriba para la siguiente página',
+    swipePrevious: 'Desliza hacia abajo para la página anterior',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

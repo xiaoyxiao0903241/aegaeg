@@ -1,4 +1,4 @@
-import { dappCardClass, dappLayout } from '../../components/primitive-styles'
+import { dappCardClass, dappLayout, dappResponsive, dappSurfaceClass } from '../../components/primitive-styles'
 import { cn } from '~/lib/utils'
 
 const skeletonSurfaceClass =
@@ -141,11 +141,17 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
 
   return (
     <article
-      className={dappCardClass('communityStat', {
+      className={dappSurfaceClass({
+        gap: 'stat',
+        radius: 'lg',
+        pad: 'stat',
+        shadow: 'stat',
         tone: dark ? 'dark' : 'surface',
         className: cn(
-          'min-h-[90px] rounded-[14px] border-0 p-[13px_12px] shadow-card',
+          'community-stat',
           dark && 'is-dark',
+          dappResponsive.communityStatCard,
+          'min-h-[90px] rounded-[14px] border-0 p-[13px_12px] shadow-card',
         ),
       })}
     >

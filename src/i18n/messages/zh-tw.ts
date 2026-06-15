@@ -110,6 +110,8 @@ const zhTw = defineMessages({
     tokenContract: '查看合約',
     tokenPrevious: '上一個代幣',
     tokenNext: '下一個代幣',
+    swipeNext: '上滑查看下一頁',
+    swipePrevious: '下滑返回上一頁',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

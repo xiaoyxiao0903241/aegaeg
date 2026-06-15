@@ -26,6 +26,11 @@ interface WalletTokenBalanceRow {
   value: string
 }
 
+const WALLET_TOKEN_DEFINITIONS = [
+  { symbol: 'USD1', label: 'USD1' },
+  { symbol: 'USDT', label: 'XX (USDT)' },
+] as const
+
 export function WalletDetailsModal({
   onOpenChange,
   open,
@@ -43,7 +48,7 @@ export function WalletDetailsModal({
   const [nativeBalance, setNativeBalance] = useState<GetWalletBalanceResult | null>(null)
   const [nativeBalanceLoading, setNativeBalanceLoading] = useState(false)
   const [tokenBalances, setTokenBalances] = useState<WalletTokenBalanceRow[]>([])
-  const [tokensLoading, setTokensLoading] = useState(false)
+  const [tokensFetched, setTokensFetched] = useState(false)
   const walletAddress = account?.address
   const walletReady = hasWalletAccount(account)
 
@@ -92,12 +97,12 @@ export function WalletDetailsModal({
   useEffect(() => {
     if (!open || !walletAddress) {
       setTokenBalances([])
-      setTokensLoading(false)
+      setTokensFetched(false)
       return
     }
 
     let cancelled = false
-    setTokensLoading(true)
+    setTokensFetched(false)
 
     void Promise.all([
       readErc20Balance(BSC_CONTRACTS.usd1, walletAddress),
@@ -126,7 +131,7 @@ export function WalletDetailsModal({
       })
       .finally(() => {
         if (!cancelled) {
-          setTokensLoading(false)
+          setTokensFetched(true)
         }
       })
 
@@ -141,7 +146,14 @@ export function WalletDetailsModal({
 
   const addressLabel = formatAddress(walletAddress)
   const balanceValue = nativeBalanceLoading ? '…' : nativeBalance ? nativeBalance.displayValue : '—'
-  const balanceSymbol = nativeBalance?.symbol ?? ''
+  const balanceSymbol = nativeBalance?.symbol ?? defaultChain.nativeCurrency?.symbol ?? 'BNB'
+  const displayTokenRows = WALLET_TOKEN_DEFINITIONS.map((definition) => {
+    const loaded = tokenBalances.find((token) => token.symbol === definition.symbol)
+    return {
+      ...definition,
+      value: !tokensFetched ? '…' : loaded?.value ?? '—',
+    }
+  })
 
   async function handleCopy() {
     try {
@@ -215,21 +227,17 @@ export function WalletDetailsModal({
         {balanceSymbol}
       </p>
 
-      {tokenBalances.length > 0 ? (
-        <div className="mt-4 grid gap-2 text-left">
-          {tokenBalances.map((token) => (
-            <div
-              className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5"
-              key={token.symbol}
-            >
-              <span className="text-xs font-semibold text-muted-foreground">{token.label}</span>
-              <strong className="text-sm font-bold tabular-nums text-foreground">
-                {tokensLoading ? '…' : token.value}
-              </strong>
-            </div>
-          ))}
-        </div>
-      ) : null}
+      <div className="mt-4 grid gap-2 text-left">
+        {displayTokenRows.map((token) => (
+          <div
+            className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5"
+            key={token.symbol}
+          >
+            <span className="text-xs font-semibold text-muted-foreground">{token.label}</span>
+            <strong className="text-sm font-bold tabular-nums text-foreground">{token.value}</strong>
+          </div>
+        ))}
+      </div>
 
       <div className="mt-6 grid gap-2.5">
         {!walletReady ? (

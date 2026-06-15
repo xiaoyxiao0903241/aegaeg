@@ -110,6 +110,8 @@ const zh = defineMessages({
     tokenContract: '查看合同',
     tokenPrevious: '上一个代币',
     tokenNext: '下一个代币',
+    swipeNext: '上滑查看下一页',
+    swipePrevious: '下滑返回上一页',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

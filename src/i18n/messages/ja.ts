@@ -115,6 +115,8 @@ const ja = defineMessages({
     tokenContract: 'コントラクトを表示',
     tokenPrevious: '前のトークン',
     tokenNext: '次のトークン',
+    swipeNext: '上にスワイプして次のページへ',
+    swipePrevious: '下にスワイプして前のページへ',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

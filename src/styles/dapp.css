@@ -112,4 +112,30 @@
   [data-dapp-mobile-nav][data-motion='exit'] [data-dapp-mobile-nav-backdrop] {
     animation: dapp-mobile-nav-fade-out 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
+
+  @keyframes dapp-swipe-chevron-breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: translateY(0);
+    }
+
+    50% {
+      opacity: 1;
+      transform: translateY(4px);
+    }
+  }
+
+  @keyframes dapp-swipe-chevron-breathe-up {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: translateY(0);
+    }
+
+    50% {
+      opacity: 1;
+      transform: translateY(-4px);
+    }
+  }
 }

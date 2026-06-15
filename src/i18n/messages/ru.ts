@@ -115,6 +115,8 @@ const ru = defineMessages({
     tokenContract: 'Просмотр контракта',
     tokenPrevious: 'Предыдущий токен',
     tokenNext: 'Следующий токен',
+    swipeNext: 'Смахните вверх для следующей страницы',
+    swipePrevious: 'Смахните вниз для предыдущей страницы',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

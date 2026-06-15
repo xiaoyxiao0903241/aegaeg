@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { cn } from '~/lib/utils'
 import { useI18n } from '../i18n/use-i18n'
+import { useMobileViewport } from '../hooks/use-mobile-viewport'
 import { dappAssets } from './assets'
 import { DappRail } from './dapp-rail'
 import { DappMobileNav } from './components/dapp-mobile-nav'
@@ -10,6 +12,7 @@ import { GenesisContent, GenesisWidget } from './tabs/genesis-tab'
 import { GenesisWidgetProvider } from './genesis-widget-context'
 import { RewardsContent, RewardsWidget } from './tabs/rewards-tab'
 import { SwapContent, SwapWidget } from './tabs/swap-tab'
+import { SwapMobilePager } from './components/swap-mobile-pager'
 import type { DappTab, DetailPanelControls } from './types'
 import { useDappShell } from './dapp-shell-context'
 import {
@@ -36,6 +39,7 @@ export function DappShell() {
   const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
   const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
   const shellState = useDappShell()
+  const isMobileViewport = useMobileViewport()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -54,8 +58,16 @@ export function DappShell() {
 
   const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = shellState.detailCollapsed
+  const useSwapMobilePager =
+    isMobileViewport && activeTab === 'swap' && shellState.connected
   return (
-    <main className={shellPageClass}>
+    <main
+      className={cn(
+        shellPageClass,
+        useSwapMobilePager &&
+          'max-[820px]:flex max-[820px]:h-dvh max-[820px]:max-h-dvh max-[820px]:flex-col',
+      )}
+    >
         <DappTopbar />
 
         {import.meta.env.DEV && !isThirdwebConfigured ? (
@@ -71,21 +83,49 @@ export function DappShell() {
         ) : null}
 
         <section
-          className={shellStageClass(shellState)}
+          className={shellStageClass({
+            tab: activeTab,
+            connected: shellState.connected,
+            detailCollapsed: effectiveDetailCollapsed,
+            mobileSwapPager: useSwapMobilePager,
+          })}
           aria-label="AEGIS X DApp"
         >
-          <div className={shellContainerClass}>
-            <div
-              ref={setWindowNode}
-              className={shellWindowClass(shellState)}
-              data-dapp-window
-              data-tab={activeTab}
-              data-connected={shellState.connected ? 'true' : 'false'}
-              data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
-              data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
-            >
-              <GenesisWidgetProvider>
-                <>
+          <div className={shellContainerClass(useSwapMobilePager)}>
+            <GenesisWidgetProvider>
+              {useSwapMobilePager ? (
+                <SwapMobilePager
+                  detailPanel={detailPanel}
+                  onSelectGenesis={() => selectTab('genesis')}
+                  windowClassName={shellWindowClass({
+                    tab: activeTab,
+                    connected: shellState.connected,
+                    detailCollapsed: effectiveDetailCollapsed,
+                    mobileSwapPager: true,
+                  })}
+                  windowDataset={{
+                    tab: activeTab,
+                    connected: shellState.connected ? 'true' : 'false',
+                    walletReady: shellState.walletReady ? 'true' : 'false',
+                    collapsed: effectiveDetailCollapsed ? 'true' : 'false',
+                  }}
+                  windowRef={setWindowNode}
+                />
+              ) : (
+                <div
+                  ref={setWindowNode}
+                  className={shellWindowClass({
+                    tab: activeTab,
+                    connected: shellState.connected,
+                    detailCollapsed: effectiveDetailCollapsed,
+                    mobileSwapPager: false,
+                  })}
+                  data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
+                  data-connected={shellState.connected ? 'true' : 'false'}
+                  data-dapp-window
+                  data-tab={activeTab}
+                  data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
+                >
                   <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 
                   <aside className={shellWidgetClass()}>
@@ -126,9 +166,9 @@ export function DappShell() {
                       onSelectTab={selectTab}
                     />
                   </section>
-                </>
-              </GenesisWidgetProvider>
-            </div>
+                </div>
+              )}
+            </GenesisWidgetProvider>
           </div>
         </section>
 

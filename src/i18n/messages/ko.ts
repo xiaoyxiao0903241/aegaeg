@@ -115,6 +115,8 @@ const ko = defineMessages({
     tokenContract: '컨트랙트 보기',
     tokenPrevious: '이전 토큰',
     tokenNext: '다음 토큰',
+    swipeNext: '위로 스와이프하여 다음 페이지',
+    swipePrevious: '아래로 스와이프하여 이전 페이지',
     faqTabUsd1: 'USD1',
     faqTabAgx: 'AGX',
     faqTabGagx: 'gAGX',

@@ -34,6 +34,7 @@ export function shellStageClass(state: {
   tab: DappTab
   connected: boolean
   detailCollapsed: boolean
+  mobileSwapPager?: boolean
 }) {
   return cn(
     'relative z-[1] flex min-h-0 flex-1 flex-col overflow-visible px-0 pb-4 min-[821px]:pt-1',
@@ -43,20 +44,26 @@ export function shellStageClass(state: {
       state.tab === 'swap' &&
       'min-[821px]:justify-center min-[821px]:pb-10',
     'max-[820px]:flex-none max-[820px]:overflow-visible max-[820px]:pb-6',
+    state.mobileSwapPager &&
+      'max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-1 max-[820px]:pb-0',
   )
 }
 
-export const shellContainerClass = cn(
-  'mx-auto flex h-full min-h-0 w-[min(calc(100%-48px),1320px)] flex-col',
-  'max-[820px]:h-auto max-[820px]:w-[min(calc(100%-24px),378px)]',
-)
+export function shellContainerClass(mobileSwapPager = false) {
+  return cn(
+    'mx-auto flex h-full min-h-0 w-[min(calc(100%-48px),1320px)] flex-col',
+    'max-[820px]:h-auto max-[820px]:w-[min(calc(100%-24px),378px)]',
+    mobileSwapPager && 'max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-1',
+  )
+}
 
 export function shellWindowClass(state: {
   tab: DappTab
   connected: boolean
   detailCollapsed: boolean
+  mobileSwapPager?: boolean
 }) {
-  const { connected, detailCollapsed } = state
+  const { connected, mobileSwapPager } = state
 
   return cn(
     'group/shell mx-auto grid w-full min-h-0 max-w-[1320px] overflow-hidden border border-border bg-card shadow-window',
@@ -66,6 +73,8 @@ export function shellWindowClass(state: {
     !connected && 'shadow-window-compact',
     'max-[820px]:flex max-[820px]:h-auto max-[820px]:max-h-none max-[820px]:min-h-0 max-[820px]:flex-col max-[820px]:gap-3',
     'max-[820px]:overflow-hidden max-[820px]:rounded-3xl max-[820px]:border-0 max-[820px]:p-[18px] max-[820px]:pb-[22px] max-[820px]:shadow-card',
+    mobileSwapPager &&
+      'max-[820px]:flex max-[820px]:h-full max-[820px]:max-h-full max-[820px]:min-h-0 max-[820px]:flex-1 max-[820px]:gap-0 max-[820px]:overflow-hidden max-[820px]:pb-[18px]',
   )
 }
 
@@ -109,6 +118,9 @@ export const shellMobileDrawerClass = 'relative hidden max-[820px]:block'
 export const shellMobileDrawerSummaryClass = cn(
   'grid aspect-square w-[42px] cursor-pointer list-none place-items-center rounded-[13px] border border-border bg-card',
 )
+
+/** H5 — spacing from hamburger row to page / section title (Figma `62:2`, Rewards widget). */
+export const shellMobilePageTitleClass = 'max-[820px]:mt-3'
 
 export function shellMobileDrawerItemClass(active: boolean) {
   return cn(
