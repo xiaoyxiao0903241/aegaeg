@@ -145,9 +145,6 @@ export const dappLayout = {
   tablePositiveCell: 'font-bold text-success',
   tableStatusBadge:
     'inline-flex items-center rounded-full bg-status-success-bg px-[9px] py-0.5 text-[11px] font-bold text-success',
-  progressTrack: 'block h-[7px] overflow-hidden rounded-full bg-border',
-  progressValue:
-    'block h-full origin-left rounded-full bg-primary [transform:scaleX(var(--progress,0))]',
   faqChevron:
     'inline-block aspect-square w-[18px] rotate-180 flex-none bg-primary transition-transform duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)] [mask:url("/assets/figma/dapp/ic-chevron.svg")_center/contain_no-repeat]',
   amountMobilePreview:

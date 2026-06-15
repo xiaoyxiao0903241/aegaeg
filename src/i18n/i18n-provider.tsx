@@ -20,28 +20,20 @@ import {
 } from './messages'
 import { I18nContext, type I18nContextValue } from './context'
 
-type LoadedMessages = {
-  locale: Locale
-  messages: Messages
-}
-
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
     const initialLocale = getInitialLocale()
     persistLocale(initialLocale)
     return initialLocale
   })
-  const [loaded, setLoaded] = useState<LoadedMessages>(() => ({
-    locale: 'en',
-    messages: defaultMessages,
-  }))
+  const [messages, setMessages] = useState<Messages>(defaultMessages)
 
   useEffect(() => {
     let cancelled = false
 
     loadMessages(locale).then((nextMessages) => {
       if (!cancelled) {
-        setLoaded({ locale, messages: nextMessages })
+        setMessages(nextMessages)
       }
     })
 
@@ -60,8 +52,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`
 
         if (nextUrl !== currentUrl) {
-          window.location.assign(nextUrl)
-          return
+          window.history.replaceState(null, '', nextUrl)
         }
       }
 
@@ -71,14 +62,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     return {
       locale,
       localeLabel: localeLabels[locale],
-      messages: loaded.messages,
+      messages,
       setLocale,
     }
-  }, [loaded.messages, locale])
-
-  if (loaded.locale !== locale) {
-    return null
-  }
+  }, [locale, messages])
 
   return <I18nContext value={value}>{children}</I18nContext>
 }

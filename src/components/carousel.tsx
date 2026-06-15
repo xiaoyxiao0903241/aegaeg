@@ -3,6 +3,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useRef,
   useState,
   type HTMLAttributes,
   type KeyboardEvent,
@@ -49,6 +50,14 @@ export const Carousel = forwardRef<
         axis: orientation === 'horizontal' ? 'x' : 'y',
       },
       plugins,
+    )
+    const viewportNodeRef = useRef<HTMLElement | null>(null)
+    const setViewportRef = useCallback(
+      (node: HTMLElement | null) => {
+        viewportNodeRef.current = node
+        carouselRef(node)
+      },
+      [carouselRef],
     )
     const [canScrollPrev, setCanScrollPrev] = useState(false)
     const [canScrollNext, setCanScrollNext] = useState(false)
@@ -103,10 +112,31 @@ export const Carousel = forwardRef<
       }
     }, [api, onSelect])
 
+    useEffect(() => {
+      if (!api) {
+        return
+      }
+      const node = viewportNodeRef.current
+      if (!node) {
+        return
+      }
+
+      let wasHidden = node.getBoundingClientRect().width === 0
+      const observer = new ResizeObserver((entries) => {
+        const width = entries[0]?.contentRect.width ?? 0
+        if (wasHidden && width > 0) {
+          api.reInit()
+        }
+        wasHidden = width === 0
+      })
+      observer.observe(node)
+      return () => observer.disconnect()
+    }, [api])
+
     return (
       <CarouselContext.Provider
         value={{
-          carouselRef,
+          carouselRef: setViewportRef,
           api,
           opts,
           orientation,
@@ -136,11 +166,13 @@ Carousel.displayName = 'Carousel'
 
 export const CarouselContent = forwardRef<
   HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+  HTMLAttributes<HTMLDivElement> & {
+    viewportClassName?: string
+  }
+>(({ className, viewportClassName, ...props }, ref) => {
   const { carouselRef, orientation } = useCarousel()
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div ref={carouselRef} className={cn('overflow-hidden', viewportClassName)}>
       <div
         ref={ref}
         className={cn(

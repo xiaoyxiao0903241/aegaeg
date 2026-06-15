@@ -8,10 +8,11 @@ import { DappRevealObserver } from './components/dapp-reveal-observer'
 import { DappTopbar } from './dapp-topbar'
 import { CommunityContent, CommunityWidget } from './tabs/community-tab'
 import { GenesisContent, GenesisWidget } from './tabs/genesis-tab'
+import { GenesisWidgetProvider } from './genesis-widget-context'
 import { RewardsContent, RewardsWidget } from './tabs/rewards-tab'
 import { SwapContent, SwapWidget } from './tabs/swap-tab'
 import type { DappTab, DetailPanelControls } from './types'
-import { formatAddress, getInitialTab, isDappTab } from './utils'
+import { getInitialTab, isDappTab } from './utils'
 import { DappShellProvider } from './dapp-shell-context'
 import {
   shellContainerClass,
@@ -23,13 +24,7 @@ import {
   shellWidgetClass,
   shellWindowClass,
 } from './shell-layout'
-
-type WalletPreviewState = 'connected' | 'disconnected' | 'real'
-
-function getInitialWalletPreview(): WalletPreviewState {
-  const value = new URLSearchParams(window.location.search).get('previewWallet')
-  return value === 'connected' || value === 'disconnected' ? value : 'real'
-}
+import { isThirdwebConfigured } from '../web3/thirdweb'
 
 export function DappShell() {
   const account = useActiveAccount()
@@ -37,25 +32,9 @@ export function DappShell() {
   const [activeTab, setActiveTab] = useState<DappTab>(getInitialTab)
   const [detailCollapsed, setDetailCollapsed] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const [walletPreview, setWalletPreview] =
-    useState<WalletPreviewState>(getInitialWalletPreview)
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
 
-  const connected =
-    walletPreview === 'connected'
-      ? true
-      : walletPreview === 'disconnected'
-        ? false
-        : Boolean(account)
-  const addressLabel = useMemo(
-    () =>
-      connected && account && walletPreview === 'real'
-        ? formatAddress(account.address)
-        : connected
-          ? '0x8F32…91A2'
-          : t.common.connectWallet,
-    [account, connected, t.common.connectWallet, walletPreview],
-  )
+  const connected = Boolean(account)
 
   useEffect(() => {
     const syncHash = () => {
@@ -79,15 +58,6 @@ export function DappShell() {
     setMobileNavOpen(false)
   }
 
-  function toggleWalletPreview() {
-    const nextPreview: WalletPreviewState = connected ? 'disconnected' : 'connected'
-    const url = new URL(window.location.href)
-    url.searchParams.set('previewWallet', nextPreview)
-    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
-    setWalletPreview(nextPreview)
-    setDetailCollapsed(false)
-  }
-
   const detailPanel = useMemo<DetailPanelControls>(
     () => ({
       collapsed: connected && detailCollapsed,
@@ -106,12 +76,19 @@ export function DappShell() {
   return (
     <DappShellProvider value={shellState}>
       <main className={shellPageClass}>
-        <DappTopbar
-          addressLabel={addressLabel}
-          connected={connected}
-          onToggleWalletPreview={toggleWalletPreview}
-          walletPreviewConnected={connected}
-        />
+        <DappTopbar />
+
+        {import.meta.env.DEV && !isThirdwebConfigured ? (
+          <div
+            className="mx-4 mb-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-relaxed text-destructive"
+            role="status"
+          >
+            未配置 <code className="font-mono">VITE_THIRDWEB_CLIENT_ID</code>
+            ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code>{' '}
+            为 <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client
+            ID 后重启 <code className="font-mono">pnpm dev</code>。
+          </div>
+        ) : null}
 
         <section
           className={shellStageClass(shellState)}
@@ -126,46 +103,50 @@ export function DappShell() {
               data-connected={connected ? 'true' : 'false'}
               data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
             >
-              <DappRail activeTab={activeTab} onSelectTab={selectTab} />
+              <GenesisWidgetProvider connected={connected} enabled={activeTab === 'genesis'}>
+                <>
+                  <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 
-              <aside className={shellWidgetClass()}>
-                <div className={shellMobileDrawerClass}>
-                  <button
-                    aria-controls={mobileNavId}
-                    aria-expanded={mobileNavOpen}
-                    aria-label={t.topbar.openMenu}
-                    className={shellMobileDrawerSummaryClass}
-                    onClick={() => setMobileNavOpen(true)}
-                    type="button"
+                  <aside className={shellWidgetClass()}>
+                    <div className={shellMobileDrawerClass}>
+                      <button
+                        aria-controls={mobileNavId}
+                        aria-expanded={mobileNavOpen}
+                        aria-label={t.topbar.openMenu}
+                        className={shellMobileDrawerSummaryClass}
+                        onClick={() => setMobileNavOpen(true)}
+                        type="button"
+                      >
+                        <img alt="" height="18" src={dappAssets.menu} width="18" />
+                      </button>
+                    </div>
+                    <DappMobileNav
+                      activeTab={activeTab}
+                      onClose={() => setMobileNavOpen(false)}
+                      onSelectTab={selectMobileTab}
+                      open={mobileNavOpen}
+                    />
+                    <TabWidget
+                      activeTab={activeTab}
+                      connected={connected}
+                      detailPanel={detailPanel}
+                      onSelectTab={selectTab}
+                    />
+                  </aside>
+
+                  <section
+                    className={shellContentClass(effectiveDetailCollapsed)}
+                    aria-hidden={effectiveDetailCollapsed}
+                    aria-labelledby={`${activeTab}-title`}
                   >
-                    <img alt="" height="18" src={dappAssets.menu} width="18" />
-                  </button>
-                </div>
-                <DappMobileNav
-                  activeTab={activeTab}
-                  onClose={() => setMobileNavOpen(false)}
-                  onSelectTab={selectMobileTab}
-                  open={mobileNavOpen}
-                />
-                <TabWidget
-                  activeTab={activeTab}
-                  connected={connected}
-                  detailPanel={detailPanel}
-                  onSelectTab={selectTab}
-                />
-              </aside>
-
-              <section
-                className={shellContentClass(effectiveDetailCollapsed)}
-                aria-hidden={effectiveDetailCollapsed}
-                aria-labelledby={`${activeTab}-title`}
-              >
-                <TabContent
-                  activeTab={activeTab}
-                  connected={connected}
-                  onSelectTab={selectTab}
-                />
-              </section>
+                    <TabContent
+                      activeTab={activeTab}
+                      connected={connected}
+                      onSelectTab={selectTab}
+                    />
+                  </section>
+                </>
+              </GenesisWidgetProvider>
             </div>
           </div>
         </section>

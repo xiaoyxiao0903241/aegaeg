@@ -1,35 +1,59 @@
-import { ConnectButton } from 'thirdweb/react'
-import {
-  appMetadata,
-  defaultChain,
-  supportedChains,
-  thirdwebClient,
-  walletConnectProjectId,
-} from '../web3/thirdweb'
+import { useState } from 'react'
+import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '../i18n/use-i18n'
+import { formatAddress } from './utils'
 import { cn } from '~/lib/utils'
+import { WalletDetailsModal } from './components/wallet-details-modal'
+import { WalletConnectModal } from './components/wallet-connect-modal'
 
-const walletLabelClass = 'inline-flex items-center gap-2'
-
-const walletStatusDotClass =
-  'aspect-square w-2 shrink-0 rounded-full bg-success'
+const walletLabelClass = 'inline-flex min-w-0 items-center gap-1.5'
 
 const walletGlyphClass = cn(
   'relative aspect-[16/13] w-4 shrink-0 rounded border-[1.5px] border-primary',
   'after:absolute after:right-0.5 after:top-[3px] after:aspect-square after:w-[5px] after:rounded-full after:bg-primary after:content-[""]',
 )
 
+function ConnectedWalletChip() {
+  const account = useActiveAccount()
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  if (!account) {
+    return null
+  }
+
+  const addressLabel = formatAddress(account.address)
+
+  return (
+    <>
+      <button
+        className="aegis-connected-wallet-chip"
+        onClick={() => setMenuOpen(true)}
+        type="button"
+      >
+        <span className="aegis-connected-wallet-chip__status" aria-hidden="true" />
+        <span className="truncate">{addressLabel}</span>
+      </button>
+      <WalletDetailsModal onOpenChange={setMenuOpen} open={menuOpen} />
+    </>
+  )
+}
+
 export function WalletConnectChip({
-  connected = false,
   label,
   variant = 'pill',
 }: {
-  connected?: boolean
-  label: string
-  variant?: 'pill' | 'primary' | 'inline'
+  label?: string
+  variant?: 'pill' | 'primary' | 'inline' | 'connected'
 }) {
+  if (variant === 'connected') {
+    return <ConnectedWalletChip />
+  }
+
   const { messages: t } = useI18n()
-  const buttonClassName =
+  const [connectOpen, setConnectOpen] = useState(false)
+  const connectLabel = label ?? t.common.connectWallet
+
+  const connectButtonClassName =
     variant === 'primary'
       ? 'aegis-thirdweb-button aegis-thirdweb-button-primary'
       : variant === 'inline'
@@ -38,53 +62,19 @@ export function WalletConnectChip({
 
   return (
     <div className="inline-flex items-center">
-      <ConnectButton
-        appMetadata={appMetadata}
-        autoConnect={{ timeout: 15_000 }}
-        chain={defaultChain}
-        chains={[...supportedChains]}
-        client={thirdwebClient}
-        connectButton={{
-          label: (
-            <span className={walletLabelClass}>
-              {variant !== 'primary' ? (
-                <span
-                  className={connected ? walletStatusDotClass : walletGlyphClass}
-                  aria-hidden="true"
-                />
-              ) : null}
-              {label}
-            </span>
-          ),
-          className: buttonClassName,
-        }}
-        connectModal={{
-          showThirdwebBranding: false,
-          size: 'compact',
-          title: t.wallet.connectTitle,
-          titleIcon: '',
-        }}
-        detailsButton={{
-          connectedAccountName: (
-            <span className={walletLabelClass}>
-              <span className={walletStatusDotClass} aria-hidden="true" />
-              {label}
-            </span>
-          ),
-          className: buttonClassName,
-        }}
-        detailsModal={{
-          networkSelector: {
-            sections: [{ label: t.wallet.supportedNetwork, chains: [...supportedChains] }],
-          },
-        }}
-        hiddenWallets={['inApp']}
-        showAllWallets={false}
-        theme="light"
-        walletConnect={
-          walletConnectProjectId ? { projectId: walletConnectProjectId } : undefined
-        }
-      />
+      <button
+        className={connectButtonClassName}
+        onClick={() => setConnectOpen(true)}
+        type="button"
+      >
+        <span className={walletLabelClass}>
+          {variant !== 'primary' ? (
+            <span className={walletGlyphClass} aria-hidden="true" />
+          ) : null}
+          {connectLabel}
+        </span>
+      </button>
+      <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
     </div>
   )
 }

@@ -3,6 +3,15 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
+const locales = ['en', 'zh', 'zh-tw', 'ko', 'ja', 'vi', 'es', 'ru'] as const
+
+const localeEntries = Object.fromEntries(
+  locales.flatMap((locale) => [
+    [`${locale}-app`, resolve(__dirname, `${locale}/app.html`)],
+    [`${locale}-home`, resolve(__dirname, `${locale}/index.html`)],
+  ]),
+)
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -14,11 +23,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         app: resolve(__dirname, 'app.html'),
-        'en-app': resolve(__dirname, 'en/app.html'),
-        'en-home': resolve(__dirname, 'en/index.html'),
         index: resolve(__dirname, 'index.html'),
-        'zh-app': resolve(__dirname, 'zh/app.html'),
-        'zh-home': resolve(__dirname, 'zh/index.html'),
+        ...localeEntries,
       },
     },
   },

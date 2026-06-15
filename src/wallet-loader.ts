@@ -1,67 +1,9 @@
-type WalletIsland = {
-  openWalletModal: () => Promise<void>
-}
-
-const triggers = document.querySelectorAll<HTMLElement>('[data-wallet-trigger]')
 const deferredImages = document.querySelectorAll<HTMLImageElement>('img[data-src]')
 const revealElements = document.querySelectorAll<HTMLElement>('[data-reveal]')
 const countElements = document.querySelectorAll<HTMLElement>('[data-count-target]')
 const countPanels = document.querySelectorAll<HTMLElement>('[data-count-panel]')
-let walletIslandPromise: Promise<WalletIsland> | undefined
-
-function loadWalletIsland() {
-  walletIslandPromise ??= import('./wallet-island')
-  return walletIslandPromise
-}
-
-function setBusy(trigger: HTMLElement, busy: boolean) {
-  const label = trigger.querySelector<HTMLElement>('.wallet-label')
-  const labelTarget = label ?? trigger
-
-  if (busy) {
-    trigger.setAttribute('aria-busy', 'true')
-    trigger.dataset.previousLabel = labelTarget.textContent ?? ''
-    labelTarget.textContent = trigger.dataset.walletBusyLabel ?? 'Opening wallet...'
-    return
-  }
-
-  trigger.removeAttribute('aria-busy')
-  if (trigger.dataset.previousLabel) {
-    labelTarget.textContent = trigger.dataset.previousLabel
-    delete trigger.dataset.previousLabel
-  }
-}
-
-triggers.forEach((trigger) => {
-  trigger.addEventListener('pointerenter', loadWalletIsland, { passive: true })
-  trigger.addEventListener('focus', loadWalletIsland, { passive: true })
-  trigger.addEventListener('touchstart', loadWalletIsland, { passive: true })
-  trigger.addEventListener('click', async (event) => {
-    event.preventDefault()
-    setBusy(trigger, true)
-
-    try {
-      const walletIsland = await loadWalletIsland()
-      void walletIsland.openWalletModal().catch((error) => {
-        if (import.meta.env.DEV) {
-          console.error('Failed to open wallet modal', error)
-        }
-      })
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Failed to open wallet modal', error)
-      }
-    } finally {
-      setBusy(trigger, false)
-    }
-  })
-})
 
 document.documentElement.dataset.walletLoaderReady = 'true'
-
-// Language switchers are self-contained components. The static homepage uses a
-// native `<details>` disclosure handled by the browser and project CSS; the DApp
-// uses a React-controlled menu. No global wiring is required here.
 
 function loadDeferredImage(image: HTMLImageElement) {
   const src = image.dataset.src
@@ -258,5 +200,7 @@ if ('IntersectionObserver' in window && countPanels.length > 0) {
 } else {
   countElements.forEach(animateCount)
 }
+
+export {}
 
 

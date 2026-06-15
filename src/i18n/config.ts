@@ -7,7 +7,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    supportedLngs: ['en', 'zh'],
+    supportedLngs: ['en', 'zh', 'zh-tw', 'ko', 'ja', 'vi', 'es', 'ru'],
 
     // 命名空间分割
     ns: ['common', 'home', 'dapp'],

@@ -1,15 +1,31 @@
-import { useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useI18n } from '../../i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { dappButtonClass } from '~/lib/dapp-styles'
 import { revealClass } from '~/lib/reveal'
+import { toast } from 'sonner'
+import {
+  usePerformance,
+  useSalesLogs,
+} from '../../hooks/use-api-data'
+import { useGenesisWidgetContext } from '../genesis-widget-context'
+import {
+  calcProgressPercent,
+  formatUsd,
+  mapSalesLogToDesktopRow,
+  mapSalesLogToMobileRow,
+  sumSalesLogAmountUsd,
+} from '../../lib/api/format-display'
+import { PRESALE_CONFIG } from '../../config/presale'
+import { BSC_CONTRACTS } from '../../config/contracts'
+import { bscscanAddress } from '../../config/explorer'
 import {
   shellContentHeadingClass,
   shellContentPageClass,
   shellModulePanelClass,
 } from '../shell-layout'
 import { dappAssets } from '../assets'
-import { contributionRows, mobileContributionRows, seasons } from '../data'
+import { contributionRows, mobileContributionRows, seasons as fallbackSeasons } from '../data'
 import type { DetailPanelControls } from '../types'
 import { DappActionButton } from '../components/dapp-action-button'
 import { DappActionRow } from '../components/dapp-action-row'
@@ -24,6 +40,15 @@ import { ProgressMeter } from '../components/progress-meter'
 import { ResponsiveTable } from '../components/responsive-table'
 import { SeasonSelector } from '../components/season-selector'
 import { useDappShell } from '../dapp-shell-context'
+import { useAuth } from '../../providers/auth-provider'
+import {
+  ContributionBlockSkeleton,
+  DappSkeleton,
+  MetricCardSkeleton,
+  SeasonOptionSkeleton,
+} from '../components/dapp-skeleton'
+import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '../../lib/web3/resolve-contract-error-message'
+import { formatTokenAmount } from '../../lib/swap/token-amount'
 
 const MAX_SHARES = 100
 
@@ -36,43 +61,110 @@ export function GenesisWidget({
 }) {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
-  const [shares, setShares] = useState(1)
+  const genesis = useGenesisWidgetContext()
+  const seasonIntro = t.genesis.intro
+    .replace('{season}', String(genesis.activeSeasonNumber))
+    .replace('{discount}', genesis.isLoading ? '…' : genesis.discountLabel)
 
   const handleSharesChange = (value: string) => {
     const parsed = Number.parseInt(value, 10)
     if (Number.isNaN(parsed)) {
-      setShares(1)
+      genesis.setShares(1)
       return
     }
-    setShares(Math.min(Math.max(parsed, 1), MAX_SHARES))
+    genesis.setShares(Math.min(Math.max(parsed, 1), MAX_SHARES))
   }
+
+  const handleApprove = useCallback(async () => {
+    const result = await genesis.approve()
+    if (result.success) {
+      toast.success(t.swap.approveSuccess)
+      return
+    }
+
+    if (!result.error) return
+    const message = resolveContractErrorMessage(result.error, {
+      insufficientAllowance: t.genesis.insufficientAllowance,
+      insufficientUsd1: t.genesis.insufficientUsd1,
+    })
+    if (message) toast.error(message)
+  }, [
+    genesis,
+    t.genesis.insufficientAllowance,
+    t.genesis.insufficientUsd1,
+    t.swap.approveSuccess,
+  ])
+
+  const handleParticipate = useCallback(async () => {
+    const result = await genesis.purchase()
+    if (result.success) {
+      toast.success(t.genesis.joinSuccess)
+      return
+    }
+
+    if (result.error) {
+      const message = resolveGenesisPurchaseError(result.error, {
+        insufficientAllowance: t.genesis.insufficientAllowance,
+        insufficientUsd1: t.genesis.insufficientUsd1,
+        purchaseUnavailable: t.genesis.purchaseUnavailable,
+      })
+      if (message) toast.error(message)
+    }
+  }, [
+    genesis,
+    t.genesis.insufficientAllowance,
+    t.genesis.insufficientUsd1,
+    t.genesis.joinSuccess,
+    t.genesis.purchaseUnavailable,
+  ])
+
+  useEffect(() => {
+    if (!genesis.error) return
+    const message = resolveContractErrorMessage(genesis.error, {
+      insufficientAllowance: t.genesis.insufficientAllowance,
+      insufficientUsd1: t.genesis.insufficientUsd1,
+    })
+    if (message) toast.error(message)
+  }, [genesis.error, t.genesis.insufficientAllowance, t.genesis.insufficientUsd1])
 
   return (
     <div className={cn(shellModulePanelClass, 'min-[821px]:[&>*]:shrink-0')}>
       <DappWidgetHeader
         detailCollapsed={detailPanel.collapsed}
-        intro={t.genesis.intro}
+        intro={seasonIntro}
         onTogglePanel={detailPanel.onToggle}
         showToggle={connected}
         title={t.genesis.title}
       />
 
-      <SeasonSelector seasons={seasons} />
+      {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
+        <div aria-busy="true" className={cn(revealClass(), 'mt-3.5 grid gap-2')} data-reveal>
+          <SeasonOptionSkeleton />
+          <SeasonOptionSkeleton />
+          <SeasonOptionSkeleton />
+        </div>
+      ) : (
+        <SeasonSelector
+          seasons={genesis.seasonOptions.length > 0 ? genesis.seasonOptions : fallbackSeasons}
+        />
+      )}
 
       <label className="mt-3.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground">
         <span>{t.genesis.shares}</span>
         <div className="flex gap-2">
           <input
             className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-3.5 text-base font-bold text-foreground outline-none focus:border-primary"
+            disabled={!connected}
             max={MAX_SHARES}
             min={1}
             onChange={(e) => handleSharesChange(e.target.value)}
             type="number"
-            value={shares}
+            value={genesis.shares}
           />
           <button
-            className="min-h-11 min-w-[66px] shrink-0 cursor-pointer rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary"
-            onClick={() => setShares(MAX_SHARES)}
+            className="min-h-11 min-w-[66px] shrink-0 cursor-pointer rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary disabled:opacity-50"
+            disabled={!connected}
+            onClick={() => genesis.setShares(MAX_SHARES)}
             type="button"
           >
             {t.common.max}
@@ -82,58 +174,154 @@ export function GenesisWidget({
 
       <DappMetaList
         items={[
-          { label: t.genesis.quota, value: '$100 – $10,000' },
-          { label: t.genesis.pay, value: '100 USD1' },
-          { label: t.genesis.receive, value: '2.20 AGX' },
-          { label: t.genesis.value, value: '$143' },
-          { label: t.genesis.xTokenAirdrop, value: '$5' },
+          { label: t.genesis.quota, value: genesis.quotaLabel },
+          { label: t.genesis.pay, value: genesis.payUsd1Label },
+          { label: t.genesis.receive, value: `${genesis.estimatedAgxLabel} AGX` },
+          { label: t.genesis.usd1Balance, value: connected ? `${genesis.usd1BalanceLabel} USD1` : '—' },
+          {
+            label: t.genesis.phase,
+            value: genesis.activePhase
+              ? t.genesis.phaseSeason
+                  .replace('{season}', String(genesis.phaseIndex + 1))
+                  .replace('{discount}', genesis.discountLabel)
+              : '—',
+          },
         ]}
       />
 
-      <DappActionRow>
-        <DappActionButton variant="secondary">
-          {t.swap.approve}
-        </DappActionButton>
-        <DappActionButton>
+      <DappActionRow className={genesis.isApproved ? 'grid-cols-1' : undefined}>
+        {!genesis.isApproved ? (
+          <DappActionButton
+            disabled={!connected || !genesis.canPurchase || genesis.isSubmitting}
+            loading={genesis.submittingAction === 'approve'}
+            onClick={() => void handleApprove()}
+            variant="secondary"
+          >
+            {t.swap.approve}
+          </DappActionButton>
+        ) : null}
+        <DappActionButton
+          disabled={!connected || !genesis.canPurchase || genesis.isSubmitting}
+          loading={genesis.submittingAction === 'purchase'}
+          onClick={() => void handleParticipate()}
+          variant="primary"
+        >
           {t.genesis.join}
         </DappActionButton>
       </DappActionRow>
 
-      <GenesisPromoCard className="hidden max-[820px]:grid" onClick={onSelectGenesis} />
+      <GenesisPromoCard
+        className="hidden max-[820px]:grid"
+        isLoading={genesis.isLoading}
+        onClick={onSelectGenesis}
+        promo={genesis.promoSnapshot}
+      />
     </div>
   )
 }
 
 export function GenesisContent() {
   const { messages: t } = useI18n()
+  const { connected } = useDappShell()
+  const { isAuthenticated, isLoggingIn } = useAuth()
+  const genesis = useGenesisWidgetContext()
+  const seasonStatsTitle = t.genesis.statsTitle.replace(
+    '{season}',
+    String(genesis.activeSeasonNumber),
+  )
+  const apiEnabled = connected && isAuthenticated
+  const { data: performance, isLoading: performanceLoading, refresh: refreshPerformance } =
+    usePerformance(apiEnabled)
+  const { data: salesLogs, isLoading: salesLoading, refresh: refreshSales } = useSalesLogs(
+    { page: 1, page_size: 20 },
+    apiEnabled,
+  )
+
+  useEffect(() => {
+    if (!apiEnabled) return
+    void refreshPerformance()
+    void refreshSales()
+  }, [apiEnabled, genesis.userTotal, refreshPerformance, refreshSales])
+
+  const phaseMaxUsd1 = Number(
+    PRESALE_CONFIG.phases[genesis.phaseIndex]?.maxUsd1 ??
+      PRESALE_CONFIG.phases[0]?.maxUsd1 ??
+      10000,
+  )
+  const chainMaxContribution = genesis.activePhase
+    ? Number(formatTokenAmount(genesis.activePhase.maxAmount, 18, 0))
+    : 0
+  const maxContribution =
+    chainMaxContribution > 0 ? chainMaxContribution : phaseMaxUsd1
+  const chainContributedUsd = Number(formatTokenAmount(genesis.userTotal, 18, 0))
+  const apiContributedUsd = Number(performance?.presale_volume ?? 0)
+  const salesLogsTotalUsd = sumSalesLogAmountUsd(salesLogs?.items ?? [])
+  const contributedUsd = Math.max(apiContributedUsd, chainContributedUsd, salesLogsTotalUsd)
+  const contributed = String(contributedUsd)
+  const contributionProgress = calcProgressPercent(contributed, maxContribution)
+  const isContributionLoading =
+    apiEnabled &&
+    contributedUsd === 0 &&
+    genesis.userTotal === 0n &&
+    (performanceLoading || salesLoading)
+  const contributedLabel = `${formatUsd(contributed)} / ${formatUsd(maxContribution)}`
+
+  const desktopRows =
+    salesLogs?.items.map((item) => mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)) ?? []
+  const mobileRows =
+    salesLogs?.items.map((item) => mapSalesLogToMobileRow(item, genesis.agxPriceUsd)) ?? []
+  const useMockRows = !connected
+  const authPending = connected && (isLoggingIn || !isAuthenticated)
+  const tableRows = useMockRows ? contributionRows : desktopRows
+  const tableRowsMobile = useMockRows ? mobileContributionRows : mobileRows
+  const showSalesSyncHint =
+    apiEnabled && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
+  const showContributionSkeleton =
+    connected &&
+    !useMockRows &&
+    desktopRows.length === 0 &&
+    (authPending || isContributionLoading || salesLoading)
 
   return (
     <div className={shellContentPageClass}>
       <h2 className={shellContentHeadingClass} id="genesis-title">
-        {t.genesis.statsTitle}
+        {seasonStatsTitle}
       </h2>
 
       <MetricGrid columns={4}>
-        <MetricCard
-          className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
-          label={t.genesis.startsIn}
-          value="17D 03H 51M"
-        />
-        <MetricCard
-          className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
-          label={<span className="text-muted-foreground">{t.genesis.referencePrice}</span>}
-          value="$55"
-        />
-        <MetricCard
-          className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
-          label={t.genesis.discountRatio}
-          value="-25%"
-        />
-        <MetricCard
-          className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
-          label={t.genesis.xAirdropRatio}
-          value="+5%"
-        />
+        {genesis.isLoading && genesis.phases.length === 0 ? (
+          <>
+            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
+            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
+            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
+            <MetricCardSkeleton className="max-[820px]:rounded-xl" />
+          </>
+        ) : (
+          <>
+            <MetricCard
+              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3] [&_strong]:tabular-nums"
+              label={
+                genesis.countdownMode === 'ends' ? t.genesis.endsIn : t.genesis.startsIn
+              }
+              value={genesis.countdown}
+            />
+            <MetricCard
+              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
+              label={<span className="text-muted-foreground">{t.genesis.referencePrice}</span>}
+              value={genesis.referencePriceLabel}
+            />
+            <MetricCard
+              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
+              label={t.genesis.discountRatio}
+              value={genesis.discountLabel}
+            />
+            <MetricCard
+              className="px-4 py-3.5 max-[820px]:min-h-0 max-[820px]:rounded-xl max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:mt-[5px] [&_strong]:text-base [&_strong]:leading-[1.3]"
+              label={t.genesis.xAirdropRatio}
+              value={genesis.airdropLabel}
+            />
+          </>
+        )}
       </MetricGrid>
 
       <section className="mt-8 max-[820px]:!hidden">
@@ -150,7 +338,11 @@ export function GenesisContent() {
               {t.genesis.globalLabel}
             </span>
             <strong className="mt-[7px] block text-[21px] font-bold leading-[1.25] text-white">
-              25,000,000 USD1
+              {genesis.isLoading && genesis.phases.length === 0 ? (
+                <DappSkeleton className="h-6 w-40" tone="dark" />
+              ) : (
+                `${genesis.globalPurchasedLabel} USD1`
+              )}
             </strong>
             <p className="mt-2.5 mb-0 max-w-[70ch] text-[13px] leading-[1.5] text-white">
               {t.genesis.globalBody}
@@ -166,6 +358,9 @@ export function GenesisContent() {
                 '[&_img]:size-[15px] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
               ),
             )}
+            onClick={() =>
+              window.open(bscscanAddress(BSC_CONTRACTS.preSale), '_blank', 'noopener,noreferrer')
+            }
             type="button"
           >
             {t.genesis.viewContract}
@@ -185,45 +380,65 @@ export function GenesisContent() {
 
       <DappSection title={t.genesis.myContributions}>
         <div className={cn(revealClass(), 'mt-3.5 max-[820px]:mt-3')} data-reveal>
+          {showContributionSkeleton ? (
+            <ContributionBlockSkeleton />
+          ) : (
+            <>
           <div className="mb-3 grid gap-1.5 border-0 bg-transparent p-0">
             <div className="flex items-center justify-between gap-3">
               <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
                 {t.genesis.totalContributed}
               </span>
               <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
-                6,000 / 10,000
+                {contributedLabel}
               </strong>
             </div>
-            <ProgressMeter label={t.genesis.totalContributed} value={60} />
+            <ProgressMeter
+              label={t.genesis.totalContributed}
+              value={contributionProgress}
+            />
           </div>
-          <ResponsiveTable
-            className="max-[820px]:hidden"
-            compact
-            headers={[
-              t.tables.time,
-              t.tables.paid,
-              t.tables.discount,
-              t.tables.estimatedAgx,
-              t.tables.tx,
-            ]}
-            plain
-            linkColumns={[4]}
-            positiveColumns={[2]}
-            rows={contributionRows}
-          />
-          <ResponsiveTable
-            className="hidden max-[820px]:block"
-            compact
-            headers={[
-              t.tables.time,
-              t.tables.paid,
-              t.tables.discount,
-              t.tables.estimatedAgx,
-            ]}
-            plain
-            positiveColumns={[2]}
-            rows={mobileContributionRows}
-          />
+          {showSalesSyncHint ? (
+            <p className="mb-3 text-[13px] leading-normal text-muted-foreground">
+              {t.genesis.contributionsSyncPending}
+            </p>
+          ) : null}
+          {tableRows.length > 0 ? (
+            <>
+              <ResponsiveTable
+                className="max-[820px]:hidden"
+                compact
+                headers={[
+                  t.tables.time,
+                  t.tables.paid,
+                  t.tables.discount,
+                  t.tables.estimatedAgx,
+                  t.tables.tx,
+                ]}
+                plain
+                linkColumns={[4]}
+                positiveColumns={[2]}
+                rows={tableRows}
+              />
+              <ResponsiveTable
+                className="hidden max-[820px]:block"
+                compact
+                headers={[
+                  t.tables.time,
+                  t.tables.paid,
+                  t.tables.discount,
+                  t.tables.estimatedAgx,
+                ]}
+                plain
+                positiveColumns={[2]}
+                rows={tableRowsMobile}
+              />
+            </>
+          ) : apiEnabled && !showSalesSyncHint ? (
+            <p className="text-[13px] leading-normal text-muted-foreground">{t.genesis.contributionsEmpty}</p>
+          ) : null}
+            </>
+          )}
         </div>
       </DappSection>
 

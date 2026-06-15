@@ -9,6 +9,7 @@
     "build": "tsc -b && pnpm render:home && vite build",
     "lint": "eslint .",
     "test:unit": "node --test tests/unit/*.test.mjs",
+    "test:integration": "node tests/integration/swap-quote-live.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

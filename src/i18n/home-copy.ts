@@ -1,30 +1,30 @@
-import { localeLabels, type Locale } from './locales'
+import { getHomeContent } from '../home/content'
+import { localeLabels, locales, type Locale } from './locales'
 
-export const homeCopy: Record<Locale, Record<string, string>> = {
-  en: {
-    protocol: 'Protocol',
-    engine: 'Engine',
-    token: 'Token',
-    roadmap: 'Roadmap',
-    security: 'Security',
-    faq: 'FAQ',
-    whitepaper: 'Whitepaper',
-    launchDapp: 'Launch DApp',
-    enterProtocol: 'Enter Protocol',
-    readWhitepaper: 'Read Whitepaper',
-    language: localeLabels.en,
-  },
-  zh: {
-    protocol: '协议',
-    engine: '引擎',
-    token: '代币',
-    roadmap: '路线图',
-    security: '安全',
-    faq: '常见问题',
-    whitepaper: '白皮书',
-    launchDapp: '启动 DApp',
-    enterProtocol: '进入协议',
-    readWhitepaper: '阅读白皮书',
-    language: localeLabels.zh,
-  },
+function buildHomeCopy(locale: Locale): Record<string, string> {
+  const content = getHomeContent(locale)
+  const protocolLink = content.nav.links.find((link) => link.href === '#protocol')
+  const engineLink = content.nav.links.find((link) => link.href === '#engine')
+  const tokenLink = content.nav.links.find((link) => link.href === '#token')
+  const roadmapLink = content.nav.links.find((link) => link.href === '#roadmap')
+  const securityLink = content.nav.links.find((link) => link.href === '#security')
+  const faqLink = content.nav.links.find((link) => link.href === '#faq')
+
+  return {
+    protocol: protocolLink?.label ?? 'Protocol',
+    engine: engineLink?.label ?? 'Engine',
+    token: tokenLink?.label ?? 'Token',
+    roadmap: roadmapLink?.label ?? 'Roadmap',
+    security: securityLink?.label ?? 'Security',
+    faq: faqLink?.label ?? 'FAQ',
+    whitepaper: content.nav.whitepaper,
+    launchDapp: content.nav.launchDapp,
+    enterProtocol: content.hero.enterProtocol,
+    readWhitepaper: content.hero.readWhitepaper,
+    language: localeLabels[locale],
+  }
 }
+
+export const homeCopy = Object.fromEntries(
+  locales.map((locale) => [locale, buildHomeCopy(locale)]),
+) as Record<Locale, Record<string, string>>

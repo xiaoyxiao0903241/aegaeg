@@ -7,9 +7,16 @@
     <title>AEGIS X</title>
     <script>
       (() => {
-        const supported = new Set(['en', 'zh'])
+        const supported = new Set(["en","zh","zh-tw","ko","ja","vi","es","ru"])
         const stored = window.localStorage.getItem('aegis.locale')
-        const browser = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+        const browser = (() => {
+          const tag = (navigator.language || 'en').toLowerCase()
+          if (tag.startsWith('zh')) {
+            return tag.includes('tw') || tag.includes('hk') || tag.includes('hant') ? 'zh-tw' : 'zh'
+          }
+          const direct = tag.split('-')[0]
+          return supported.has(direct) ? direct : 'en'
+        })()
         const locale = supported.has(stored) ? stored : browser
         window.location.replace('/' + locale + '/' + window.location.search + window.location.hash)
       })()

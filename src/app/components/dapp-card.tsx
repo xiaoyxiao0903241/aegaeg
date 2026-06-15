@@ -159,9 +159,10 @@ export function CommunityStatCard({
         tone: dark ? 'dark' : 'surface',
         className: cn(
           revealClass(),
+          dark && 'is-dark',
           image && 'relative overflow-visible',
           'group-data-[tab=community]/shell:min-h-[70px] group-data-[tab=community]/shell:rounded-xl group-data-[tab=community]/shell:p-3.5',
-          'group-data-[tab=community]/shell:group-data-[connected=true]/shell:min-h-[90px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:border group-data-[tab=community]/shell:group-data-[connected=true]/shell:border-border group-data-[tab=community]/shell:group-data-[connected=true]/shell:shadow-none group-data-[tab=community]/shell:group-data-[connected=true]/shell:p-[13px_12px]',
+          'group-data-[tab=community]/shell:group-data-[connected=true]/shell:min-h-[90px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:border-0 group-data-[tab=community]/shell:group-data-[connected=true]/shell:shadow-card group-data-[tab=community]/shell:group-data-[connected=true]/shell:p-[13px_12px]',
           'group-data-[tab=community]/shell:max-[820px]:items-center group-data-[tab=community]/shell:max-[820px]:text-center',
           'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:items-start group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:text-left',
           className,
@@ -172,9 +173,11 @@ export function CommunityStatCard({
       <span
         className={cn(
           dappTextClass('communityLabel', { tone: dark ? 'onDark' : 'body' }),
-          'relative z-[1] group-data-[tab=community]/shell:text-faint group-data-[tab=community]/shell:text-xs group-data-[tab=community]/shell:leading-[1.35]',
+          'relative z-[1] group-data-[tab=community]/shell:text-xs group-data-[tab=community]/shell:leading-[1.35]',
+          !dark && 'group-data-[tab=community]/shell:text-faint',
           'group-data-[tab=community]/shell:group-data-[connected=true]/shell:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:leading-normal',
-          dark && 'group-data-[tab=community]/shell:text-[13px]',
+          dark &&
+            'text-on-dark group-data-[tab=community]/shell:text-[13px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:text-on-dark',
         )}
       >
         {label}
@@ -193,7 +196,6 @@ export function CommunityStatCard({
           className={cn(
             dappTextClass('communityVolume', { tone: dark ? 'coralBright' : 'coral' }),
             'relative z-[1] group-data-[tab=community]/shell:hidden group-data-[tab=community]/shell:group-data-[connected=true]/shell:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:leading-[1.2]',
-            dark && 'group-data-[tab=community]/shell:group-data-[connected=true]/shell:hidden',
           )}
         >
           {volume}
@@ -204,8 +206,9 @@ export function CommunityStatCard({
           className={cn(
             dappTextClass('communityHint', { tone: dark ? 'onDark' : 'muted' }),
             'relative z-[1] group-data-[tab=community]/shell:hidden',
-            dark &&
-              'group-data-[tab=community]/shell:group-data-[connected=true]/shell:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:leading-[1.2]',
+            dark
+              ? 'group-data-[tab=community]/shell:group-data-[connected=true]/shell:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:leading-[1.2] group-data-[tab=community]/shell:group-data-[connected=true]/shell:text-on-dark'
+              : 'group-data-[tab=community]/shell:group-data-[connected=true]/shell:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:leading-[1.2]',
           )}
         >
           {today}

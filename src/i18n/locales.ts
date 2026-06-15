@@ -1,28 +1,28 @@
-export const locales = ['en', 'zh'] as const
+export const locales = ['en', 'zh', 'zh-tw', 'ko', 'ja', 'vi', 'es', 'ru'] as const
 
 export type Locale = (typeof locales)[number]
 
 export const defaultLocale: Locale = 'en'
 
-export const localeLabels: Record<Locale, string> = {
-  en: 'EN',
-  zh: '中文',
-}
+export { localeMeta, type LocaleMeta } from './locale-meta'
+export { resolveHomeContentLocale, getHtmlLang } from './locale-meta'
+
+import { localeMeta } from './locale-meta'
+
+export const localeLabels: Record<Locale, string> = Object.fromEntries(
+  locales.map((locale) => [locale, localeMeta[locale].label]),
+) as Record<Locale, string>
 
 export type LanguageMeta = {
   code: string
   name: string
   label: string
-  locale?: Locale
+  locale: Locale
 }
 
-export const allLanguageOptions: LanguageMeta[] = [
-  { code: 'EN', name: 'English', label: 'English (US)', locale: 'en' },
-  { code: '简', name: '简体中文', label: 'Chinese, Simplified', locale: 'zh' },
-  { code: '繁', name: '繁體中文', label: 'Chinese, Traditional' },
-  { code: 'KO', name: '한국어', label: 'Korean' },
-  { code: 'JA', name: '日本語', label: 'Japanese' },
-  { code: 'VI', name: 'Tiếng Việt', label: 'Vietnamese' },
-  { code: 'ES', name: 'Español', label: 'Spanish' },
-  { code: 'RU', name: 'Русский', label: 'Russian' },
-]
+export const allLanguageOptions: LanguageMeta[] = locales.map((locale) => ({
+  code: localeMeta[locale].menuCode,
+  name: localeMeta[locale].menuName,
+  label: localeMeta[locale].menuLabel,
+  locale,
+}))

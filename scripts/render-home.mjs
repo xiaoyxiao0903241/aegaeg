@@ -5,8 +5,9 @@ import { createServer } from 'vite'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const placeholderHtml = '<!doctype html><html><head></head><body></body></html>\n'
+const locales = ['en', 'zh', 'zh-tw', 'ko', 'ja', 'vi', 'es', 'ru']
 
-for (const locale of ['en', 'zh']) {
+for (const locale of locales) {
   const localeRoot = resolve(root, locale)
   await mkdir(localeRoot, { recursive: true })
   await writeFile(resolve(localeRoot, 'index.html'), placeholderHtml, 'utf8')
@@ -31,7 +32,7 @@ try {
   await writeFile(resolve(root, 'index.html'), renderRootRedirectDocument(), 'utf8')
   await writeFile(resolve(root, 'app.html'), renderAppRedirectDocument(), 'utf8')
 
-  for (const locale of ['en', 'zh']) {
+  for (const locale of locales) {
     const localeRoot = resolve(root, locale)
     await writeFile(resolve(localeRoot, 'index.html'), renderHomeDocument(locale), 'utf8')
     await writeFile(resolve(localeRoot, 'app.html'), renderAppDocument(locale), 'utf8')

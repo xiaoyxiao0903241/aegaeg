@@ -1,33 +1,3 @@
-export const inviteFlow = [
-  {
-    title: 'Share your link',
-    copy: 'Connect wallet to generate a personal referral link.',
-  },
-  {
-    title: 'Friends join',
-    copy: 'Registering via your link activates the bond.',
-  },
-  {
-    title: 'Earn rewards',
-    copy: 'When they contribute or stake, rewards flow to you.',
-  },
-]
-
-export const programs = [
-  {
-    label: 'X DAO Genesis · Season 1',
-    title: 'Global genesis shareholder recruitment is live',
-    body: 'The Genesis phase unites core builders worldwide to co-build the AEGIS X ecosystem.',
-    link: 'Learn about the program →',
-  },
-  {
-    label: 'X Academy',
-    title: 'Professional DeFi training for the community',
-    body: 'X Academy helps builders worldwide participate in XDAO more systematically.',
-    link: 'View session requirements →',
-  },
-]
-
 export const invites = [
   ['2026-04-12', '0x05…E515', '8,450', 'S6', '16', '245,960'],
   ['2026-04-28', '0x94…A2BF', '3,280', 'S3', '8', '82,140'],
@@ -126,7 +96,7 @@ export const mobileContributionRows = contributionRows.map(
 
 export const rewardTiers = [
   ['S1', '$500', '$5,000', '1%', 'A2'],
-  ['S2 · current', '$1,000', '$10,000', '2%', 'A3'],
+  ['S2', '$1,000', '$10,000', '2%', 'A3'],
   ['S3', '$2,000', '$30,000', '3%', 'A4'],
   ['S4', '$3,000', 'Two legs S3', '4%', 'A5'],
   ['S5', '$5,000', 'Two legs S4', '5%', 'A6'],
@@ -136,7 +106,7 @@ export const rewardTiers = [
 export const mobileRewardTiers = rewardTiers
   .slice(0, 4)
   .map(([title, personalContribution, , bonusRate, postLaunchRank]) => [
-    title.replace(' · current', ''),
+    title,
     personalContribution,
     bonusRate,
     postLaunchRank,

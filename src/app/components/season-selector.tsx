@@ -3,6 +3,13 @@ import { dappLayout } from '../../components/primitive-styles'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
+function translateSeasonStatus(status: string, t: ReturnType<typeof useI18n>['messages']) {
+  if (status === 'LIVE') return t.genesis.seasonLive
+  if (status === 'Ended') return t.genesis.seasonEnded
+  if (status === 'Upcoming') return t.genesis.seasonUpcoming
+  return status
+}
+
 export type SeasonOption = {
   active?: boolean
   date: string
@@ -51,7 +58,7 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
               className={dappLayout.seasonStatus}
               data-selected={season.active ? 'true' : 'false'}
             >
-              {season.status}
+              {translateSeasonStatus(season.status, t)}
             </em>
             <time className="text-[11px] leading-[1.35] text-faint whitespace-nowrap">
               {season.date}

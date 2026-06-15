@@ -11,18 +11,23 @@ const DialogPortal = DialogPrimitive.Portal
 
 const DialogClose = DialogPrimitive.Close
 
+/** Shared Radix Dialog overlay — fade in/out */
+export const modalOverlayClass = 'aegis-modal-overlay fixed inset-0 z-50'
+
+/** Shared Radix Dialog panel — centered pop (opacity + scale) */
+export const modalContentClass =
+  'aegis-modal-content fixed left-1/2 top-1/2 z-50 focus:outline-none'
+
+/** PC modal + H5 bottom sheet — see animations.css */
+export const responsivePanelClass = 'aegis-responsive-panel focus:outline-none'
+
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn(
-      'fixed inset-0 z-50 bg-black/80',
-      'data-[state=open]:animate-in data-[state=closed]:animate-out',
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-      className
-    )}
+    className={cn(modalOverlayClass, 'bg-black/80', className)}
     {...props}
   />
 ))
@@ -37,16 +42,9 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%]',
-        'gap-4 border border-border bg-background p-6 shadow-lg',
-        'duration-200',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out',
-        'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-        'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-        'data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]',
-        'data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
-        'sm:rounded-lg',
-        className
+        modalContentClass,
+        'grid w-full max-w-lg gap-4 border border-border bg-background p-6 shadow-lg sm:rounded-lg',
+        className,
       )}
       {...props}
     >

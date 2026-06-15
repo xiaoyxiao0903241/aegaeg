@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type ReactNode,
+} from 'react'
 import {
   langMenuClass,
   langSwitcherClass,
@@ -39,7 +45,7 @@ function MenuItem({
 }: {
   option: LanguageMenuOption
   checkIcon?: string
-  onClick?: () => void
+  onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
 }) {
   const itemClassName = cn(
     'flex h-[42px] items-center gap-2 rounded-[10px] bg-transparent px-[10px] text-left transition-colors duration-150 ease-out focus-visible:outline-none',
@@ -232,8 +238,18 @@ function ReactLanguageMenu({
     }
   }, [open])
 
-  function selectOption(option: LanguageMenuOption) {
+  function selectOption(
+    option: LanguageMenuOption,
+    event?: MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+  ) {
     if (option.disabled) {
+      return
+    }
+
+    if (option.onSelect) {
+      event?.preventDefault()
+      option.onSelect()
+      setOpen(false)
       return
     }
 
@@ -242,7 +258,6 @@ function ReactLanguageMenu({
       return
     }
 
-    option.onSelect?.()
     setOpen(false)
   }
 
@@ -280,7 +295,7 @@ function ReactLanguageMenu({
             key={option.code}
             option={option}
             checkIcon={checkIcon}
-            onClick={() => selectOption(option)}
+            onClick={(event) => selectOption(option, event)}
           />
         ))}
       </div>

@@ -1,6 +1,10 @@
 import type { Locale } from '../i18n/locales'
+import { getHtmlLang } from '../i18n/locale-meta'
+import { locales } from '../i18n/locales'
 import { getHomeContent } from './content'
 import { homeAssets } from './assets'
+
+const supportedLocalesJson = JSON.stringify(locales)
 
 // 首页挂载前关闭滚动恢复跳动
 const bootScript =
@@ -19,7 +23,7 @@ function escapeAttr(value: string) {
  * 仅内联关键引导脚本与本地化 <title>/<meta>，由 /src/home/main.tsx 客户端挂载。
  */
 export function renderHomeDocument(locale: Locale) {
-  const lang = locale === 'zh' ? 'zh-CN' : 'en'
+  const lang = getHtmlLang(locale)
   const content = getHomeContent(locale)
 
   return `<!doctype html>
@@ -43,7 +47,6 @@ export function renderHomeDocument(locale: Locale) {
   </head>
   <body>
     <div id="root"></div>
-    <div id="wallet-root"></div>
     <script type="module" src="/src/home/main.tsx"></script>
   </body>
 </html>
@@ -51,7 +54,7 @@ export function renderHomeDocument(locale: Locale) {
 }
 
 export function renderAppDocument(locale: Locale) {
-  const lang = locale === 'zh' ? 'zh-CN' : 'en'
+  const lang = getHtmlLang(locale)
   const description =
     'AEGIS X DApp community dashboard for BSC wallet access, referral links, programs, and genesis shareholder progress.'
 
@@ -89,9 +92,16 @@ export function renderRootRedirectDocument() {
     <title>AEGIS X</title>
     <script>
       (() => {
-        const supported = new Set(['en', 'zh'])
+        const supported = new Set(${supportedLocalesJson})
         const stored = window.localStorage.getItem('aegis.locale')
-        const browser = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+        const browser = (() => {
+          const tag = (navigator.language || 'en').toLowerCase()
+          if (tag.startsWith('zh')) {
+            return tag.includes('tw') || tag.includes('hk') || tag.includes('hant') ? 'zh-tw' : 'zh'
+          }
+          const direct = tag.split('-')[0]
+          return supported.has(direct) ? direct : 'en'
+        })()
         const locale = supported.has(stored) ? stored : browser
         window.location.replace('/' + locale + '/' + window.location.search + window.location.hash)
       })()
@@ -114,9 +124,16 @@ export function renderAppRedirectDocument() {
     <title>AEGIS X DApp</title>
     <script>
       (() => {
-        const supported = new Set(['en', 'zh'])
+        const supported = new Set(${supportedLocalesJson})
         const stored = window.localStorage.getItem('aegis.locale')
-        const browser = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+        const browser = (() => {
+          const tag = (navigator.language || 'en').toLowerCase()
+          if (tag.startsWith('zh')) {
+            return tag.includes('tw') || tag.includes('hk') || tag.includes('hant') ? 'zh-tw' : 'zh'
+          }
+          const direct = tag.split('-')[0]
+          return supported.has(direct) ? direct : 'en'
+        })()
         const locale = supported.has(stored) ? stored : browser
         window.location.replace('/' + locale + '/app.html' + window.location.search + window.location.hash)
       })()

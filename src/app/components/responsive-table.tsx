@@ -1,5 +1,6 @@
 import { dappCardClass, dappLayout } from '../../components/primitive-styles'
 import { cn } from '~/lib/utils'
+import { TableRowSkeleton } from './dapp-skeleton'
 
 export function ResponsiveTable({
   className = '',
@@ -7,7 +8,9 @@ export function ResponsiveTable({
   emphasisColumns = [],
   headers,
   highlightedRows = [],
+  isLoading = false,
   linkColumns = [],
+  loadingRowCount = 3,
   plain = false,
   positiveColumns = [],
   rows,
@@ -18,7 +21,9 @@ export function ResponsiveTable({
   emphasisColumns?: number[]
   headers: string[]
   highlightedRows?: number[]
+  isLoading?: boolean
   linkColumns?: number[]
+  loadingRowCount?: number
   plain?: boolean
   positiveColumns?: number[]
   rows: string[][]
@@ -50,7 +55,15 @@ export function ResponsiveTable({
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, rowIndex) => (
+          {isLoading
+            ? Array.from({ length: loadingRowCount }, (_, rowIndex) => (
+                <TableRowSkeleton
+                  columns={headers.length}
+                  isLast={rowIndex === loadingRowCount - 1}
+                  key={`loading-${rowIndex}`}
+                />
+              ))
+            : rows.map((row, rowIndex) => (
             <tr
               className={highlightedRows.includes(rowIndex) ? dappLayout.tableHighlightedRow : ''}
               key={`${row[0]}-${rowIndex}`}

@@ -1,8 +1,13 @@
 import type { CSSProperties, ImgHTMLAttributes, ReactNode } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useActiveAccount } from 'thirdweb/react'
 import { Card, Text } from '../components/primitives'
 import { FaqList } from '../components/faq-list'
 import { LanguageMenu } from '../components/language-menu'
 import { desktopCopyClass, mobileCopyClass } from '../app/shell-layout'
+import { WalletConnectChip } from '../app/wallet-connect-chip'
+import { WalletTopbarActions } from '../app/wallet-topbar-actions'
+import { withLocalePrefix } from '../i18n/locale'
 import {
   deferredImgClass,
   homeArtGlowClass,
@@ -27,6 +32,9 @@ import {
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import type { Locale } from '../i18n/locales'
+import { allLanguageOptions } from '../i18n/locales'
+import { localeMeta } from '../i18n/locale-meta'
+import { useI18n } from '../i18n/use-i18n'
 import { dappAssets } from '../app/assets'
 import { homeAssets } from './assets'
 import { getHomeContent } from './content'
@@ -245,11 +253,6 @@ const footerLinkClass =
 
 const navClass = {
   secondary: homeBtnClass('ghost', { sm: true, className: 'max-[820px]:!hidden' }),
-  primary: homeBtnClass('primary', {
-    sm: true,
-    className:
-      'max-[820px]:!min-w-[123px] max-[820px]:!min-h-[34px] max-[820px]:!flex-none max-[820px]:!px-4 max-[820px]:!text-[13px] max-[820px]:!shadow-none',
-  }),
 } as const
 
 function labelKey(label: string | ResponsiveCopyValue) {
@@ -311,8 +314,15 @@ function DeferredImage({
 function Header({
   content,
 }: {
-  content: HomeContent['nav'] & Pick<HomeContent['hero'], 'walletBusy'>
+  content: HomeContent['nav']
 }) {
+  const { locale, setLocale } = useI18n()
+  const languageOptions = allLanguageOptions.map((option) => ({
+    ...option,
+    active: option.locale === locale,
+    onSelect: () => setLocale(option.locale),
+  }))
+
   return (
     <header className={homeNavClass} aria-label="Primary navigation">
       <div className={cn(homeNavInnerClass, homeContainerClass)}>
@@ -337,20 +347,12 @@ function Header({
           <a className={navClass.secondary} href="#whitepaper">
             {content.whitepaper}
           </a>
-          <button
-            className={navClass.primary}
-            type="button"
-            data-wallet-trigger
-            data-wallet-busy-label={content.walletBusy}
-          >
-            {content.launchDapp}
-          </button>
+          <WalletTopbarActions />
           <LanguageMenu
             checkIcon={dappAssets.check}
             globeIcon={homeAssets.globe}
             label={content.languageLabel}
-            native
-            options={content.languages}
+            options={languageOptions}
           />
         </div>
       </div>
@@ -358,7 +360,71 @@ function Header({
   )
 }
 
-function HeroSection({ content }: { content: HomeContent['hero'] }) {
+function HeroPrimaryAction({
+  enterProtocol,
+  locale,
+}: {
+  enterProtocol: string
+  locale: Locale
+}) {
+  const account = useActiveAccount()
+  const { messages: t } = useI18n()
+  const appHref = withLocalePrefix(locale, '/app.html')
+
+  if (account) {
+    return (
+      <a
+        className={cn(homeBtnClass('primary'), heroClass.actionButton)}
+        href={appHref}
+      >
+        <span className={heroClass.actionLabel}>{enterProtocol}</span>
+        <svg
+          className={heroClass.actionArrow}
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 12H19"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 5L19 12L12 19"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </a>
+    )
+  }
+
+  return (
+    <div
+      className={cn(
+        heroClass.actionButton,
+        'max-[820px]:w-full [&_.aegis-thirdweb-button-primary]:!h-10 [&_.aegis-thirdweb-button-primary]:max-[820px]:!w-full',
+      )}
+    >
+      <WalletConnectChip label={t.common.connectWallet} variant="primary" />
+    </div>
+  )
+}
+
+function HeroSection({
+  content,
+  locale,
+}: {
+  content: HomeContent['hero']
+  locale: Locale
+}) {
   return (
     <section className={heroClass.section} aria-labelledby="hero-title">
       <div className={homeHeroRaysClass} aria-hidden="true" />
@@ -378,38 +444,7 @@ function HeroSection({ content }: { content: HomeContent['hero'] }) {
             />
           </p>
           <div className={heroClass.actions}>
-            <button
-              className={cn(homeBtnClass('primary'), heroClass.actionButton)}
-              type="button"
-              data-wallet-trigger
-              data-wallet-busy-label={content.walletBusy}
-            >
-              <span className={heroClass.actionLabel}>{content.enterProtocol}</span>
-              <svg
-                className={heroClass.actionArrow}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M5 12H19"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 5L19 12L12 19"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+            <HeroPrimaryAction enterProtocol={content.enterProtocol} locale={locale} />
             <a
               className={cn(homeBtnClass('secondary'), heroClass.secondaryAction)}
               href="#whitepaper"
@@ -979,12 +1014,12 @@ function FaqSection({ content }: { content: HomeContent['sections']['faq'] }) {
 }
 
 function Footer({
-  locale,
   content,
 }: {
-  locale: Locale
   content: HomeContent['footer']
 }) {
+  const { locale } = useI18n()
+
   return (
     <footer className={footerClass.root}>
       <div className={footerClass.top}>
@@ -1009,7 +1044,7 @@ function Footer({
               <path d="M8 1.7C4 4.2 4 11.8 8 14.3C12 11.8 12 4.2 8 1.7Z" />
               <path d="M1.7 8H14.3" />
             </svg>
-            <span>{content.languages.find((option) => option.active)?.code ?? content.languages[0]?.code}</span>
+            <span>{localeMeta[locale].menuCode}</span>
           </span>
         </div>
         {content.groups.map((group) => (
@@ -1054,14 +1089,24 @@ function Footer({
   )
 }
 
-export function HomePage({ locale }: { locale: Locale }) {
-  const content = getHomeContent(locale)
+export function HomePage() {
+  const { locale } = useI18n()
+  const content = useMemo(() => getHomeContent(locale), [locale])
+
+  useEffect(() => {
+    document.title = content.meta.title
+
+    const descriptionMeta = document.querySelector('meta[name="description"]')
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute('content', content.meta.description)
+    }
+  }, [content.meta.description, content.meta.title])
 
   return (
     <div className={homeShellClass}>
-      <Header content={{ ...content.nav, walletBusy: content.hero.walletBusy }} />
+      <Header content={content.nav} />
       <main className="pt-[74px] max-[820px]:pt-[60px]" id="top">
-        <HeroSection content={content.hero} />
+        <HeroSection content={content.hero} locale={locale} />
         <ProtocolSection content={content.sections.protocol} />
         <EngineSection content={content.sections.engine} />
         <TokenSection content={content.sections.token} />
@@ -1071,7 +1116,7 @@ export function HomePage({ locale }: { locale: Locale }) {
         <PartnersSection content={content.sections.partners} />
         <FaqSection content={content.sections.faq} />
       </main>
-      <Footer locale={locale} content={content.footer} />
+      <Footer content={content.footer} />
     </div>
   )
 }

@@ -17,8 +17,6 @@ import {
 } from '../shell-layout'
 import { dappAssets } from '../assets'
 import {
-  mobileRecentSwaps,
-  recentSwaps,
   swapTokenCardKeys,
   swapTokenKeys,
   type SwapTokenKey,
@@ -33,6 +31,11 @@ import { DappPillTabs } from '../components/dapp-pill-tabs'
 import { DappSection } from '../components/dapp-section'
 import { DappWidgetHeader } from '../components/dapp-widget-header'
 import { DappMetaList } from '../components/dapp-meta-list'
+import {
+  MetricCardSkeleton,
+  SwapBalanceSkeleton,
+  SwapMetaValueSkeleton,
+} from '../components/dapp-skeleton'
 import { FaqStack } from '../components/faq-stack'
 import { GenesisPromoCard } from '../components/genesis-promo-card'
 import { MetricGrid } from '../components/metric-grid'
@@ -40,28 +43,34 @@ import { ResponsiveTable } from '../components/responsive-table'
 import { SwapConnectPromptCard } from '../components/swap-connect-prompt-card'
 import { SwapAmountBox } from '../components/swap-amount-box'
 import { SwapSlippageModal } from '../components/swap-slippage-modal'
-
-const SELL_BALANCE_TEXT = '2,860.12'
-const BUY_BALANCE_TEXT = '3,200.46'
-const SELL_BALANCE_NUM = parseFloat(SELL_BALANCE_TEXT.replace(/,/g, ''))
-const BUY_BALANCE_NUM = parseFloat(BUY_BALANCE_TEXT.replace(/,/g, ''))
-
-const TOKEN_USDT = {
-  key: 'usdt' as const,
-  icon: dappAssets.usdt,
-  label: 'USDT',
-  balanceText: SELL_BALANCE_TEXT,
-  balanceNum: SELL_BALANCE_NUM,
-}
-const TOKEN_USD1 = {
-  key: 'usd1' as const,
-  icon: dappAssets.usd1,
-  label: 'USD1',
-  balanceText: BUY_BALANCE_TEXT,
-  balanceNum: BUY_BALANCE_NUM,
-}
+import { useSwapWidget } from '../../hooks/use-swap-widget'
+import { useGenesisWidget } from '../../hooks/use-genesis-widget'
+import { usePairSpotRate } from '../../hooks/use-pair-spot-rate'
+import { useSwapHistory } from '../../hooks/use-swap-history'
+import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '../../config/token-contracts'
+import { toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
+import { toast } from 'sonner'
 
 const PERCENTS = [25, 50, 75, 100] as const
+const MOBILE_MAX_WIDTH_QUERY = '(max-width: 820px)'
+
+function useMobileViewport() {
+  const [isMobile, setIsMobile] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia(MOBILE_MAX_WIDTH_QUERY).matches,
+  )
+
+  useEffect(() => {
+    const media = window.matchMedia(MOBILE_MAX_WIDTH_QUERY)
+    const handleChange = () => setIsMobile(media.matches)
+    handleChange()
+    media.addEventListener('change', handleChange)
+    return () => media.removeEventListener('change', handleChange)
+  }, [])
+
+  return isMobile
+}
 
 const SWAP_CARD_FLIP_ANIM =
   '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]'
@@ -96,28 +105,34 @@ export function SwapWidget({
   onSelectGenesis: () => void
 }) {
   const { messages: t } = useI18n()
-  const [sellAmount, setSellAmount] = useState(connected ? '200.00' : '')
+  const swap = useSwapWidget(connected)
+  const genesis = useGenesisWidget(connected)
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
-  const [direction, setDirection] = useState<'forward' | 'reverse'>('forward')
-  const [slippage, setSlippage] = useState(1)
   const [slippageOpen, setSlippageOpen] = useState(false)
 
-  const sellToken = direction === 'forward' ? TOKEN_USDT : TOKEN_USD1
-  const buyToken = direction === 'forward' ? TOKEN_USD1 : TOKEN_USDT
-  const buyAmount = connected ? sellAmount : ''
-  const sellBalance = `${t.swap.balance}: ${connected ? sellToken.balanceText : '—'}`
-  const buyBalance = `${t.swap.balance}: ${connected ? buyToken.balanceText : '—'}`
-
+  const { pair } = swap
   const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
+  const showBalanceSkeleton = connected && swap.isBalancesLoading
+  const showRateSkeleton =
+    connected && swap.isSpotQuoting && swap.sellAmount.trim().length === 0
+  const showBuyAmountSkeleton =
+    connected && swap.isQuoting && swap.sellAmount.trim().length > 0
 
-  const fillPercent = useCallback(
-    (percent: number) => {
-      if (!connected) return
-      const value = ((sellToken.balanceNum * percent) / 100).toFixed(2)
-      setSellAmount(value)
-    },
-    [connected, sellToken.balanceNum],
+  const sellBalanceLabel = showBalanceSkeleton ? (
+    <>
+      {t.swap.balance}: <SwapBalanceSkeleton />
+    </>
+  ) : (
+    `${t.swap.balance}: ${connected ? swap.sellBalanceLabel : '—'}`
+  )
+
+  const buyBalanceLabel = showBalanceSkeleton ? (
+    <>
+      {t.swap.balance}: <SwapBalanceSkeleton />
+    </>
+  ) : (
+    `${t.swap.balance}: ${connected ? swap.buyBalanceLabel : '—'}`
   )
 
   const handleFlip = useCallback(() => {
@@ -125,12 +140,24 @@ export function SwapWidget({
     setIsFlipping(true)
     setRotation((prev) => prev + 180)
     window.setTimeout(() => {
-      setDirection((prev) => (prev === 'forward' ? 'reverse' : 'forward'))
+      swap.flipDirection()
     }, 160)
     window.setTimeout(() => {
       setIsFlipping(false)
     }, 320)
-  }, [connected, isFlipping])
+  }, [connected, isFlipping, swap])
+
+  const handleSubmit = useCallback(async () => {
+    const success = await swap.submit()
+    if (!success) return
+    toast.success(swap.action === 'approve' ? t.swap.approveSuccess : t.swap.swapSuccess)
+  }, [swap, t.swap.approveSuccess, t.swap.swapSuccess])
+
+  useEffect(() => {
+    if (!swap.error) return
+    const message = toWalletUserFacingMessage(swap.error)
+    if (message) toast.error(message)
+  }, [swap.error])
 
   return (
     <div className={cn(shellModulePanelClass, 'max-[820px]:gap-0', '[&>:first-child]:mb-[18px]')}>
@@ -144,19 +171,19 @@ export function SwapWidget({
 
       <SwapAmountBox
         amountProps={{
-          'aria-label': 'USDT sell amount',
+          'aria-label': `${pair.sell.symbol} sell amount`,
           disabled: !connected,
           inputMode: 'decimal',
-          onChange: (event) => setSellAmount(event.currentTarget.value),
+          onChange: (event) => swap.setSellAmount(event.currentTarget.value),
           placeholder: '0.00',
-          value: sellAmount,
+          value: swap.sellAmount,
         }}
         className={flipAnimClass}
-        mobilePreviewValue={connected ? sellAmount || '0.00' : undefined}
-        balance={sellBalance}
+        mobilePreviewValue={connected ? swap.sellAmount || '0.00' : undefined}
+        balance={sellBalanceLabel}
         label={t.swap.sell}
-        tokenIcon={sellToken.icon}
-        tokenLabel={sellToken.label}
+        tokenIcon={pair.sell.icon}
+        tokenLabel={pair.sell.symbol}
       />
 
       <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-[820px]:mt-3 max-[820px]:py-0">
@@ -165,7 +192,7 @@ export function SwapWidget({
             className={PERCENT_BTN_CLASS}
             disabled={!connected}
             key={percent}
-            onClick={() => fillPercent(percent)}
+            onClick={() => swap.fillPercent(percent)}
             type="button"
           >
             {percent}%
@@ -199,31 +226,44 @@ export function SwapWidget({
       </div>
 
       <SwapAmountBox
+        amountLoading={showBuyAmountSkeleton}
         amountProps={{
-          'aria-label': 'USD1 receive amount',
+          'aria-label': `${pair.buy.symbol} receive amount`,
           placeholder: '0.00',
           readOnly: true,
-          value: buyAmount,
+          value: swap.buyAmount,
         }}
         className={cn('mt-0', flipAnimClass)}
-        mobilePreviewValue={connected ? buyAmount || '0.00' : undefined}
-        balance={buyBalance}
+        mobilePreviewValue={
+          showBuyAmountSkeleton
+            ? undefined
+            : connected
+              ? swap.buyAmount || '0.00'
+              : undefined
+        }
+        balance={buyBalanceLabel}
         label={t.swap.buy}
-        tokenIcon={buyToken.icon}
-        tokenLabel={buyToken.label}
+        tokenIcon={pair.buy.icon}
+        tokenLabel={pair.buy.symbol}
       />
 
       <DappMetaList
         items={[
           {
             label: t.swap.rate,
-            value: `1 ${sellToken.label} = 1.001 ${buyToken.label}`,
+            value: showRateSkeleton ? (
+              <SwapMetaValueSkeleton />
+            ) : connected ? (
+              swap.rateLabel || '—'
+            ) : (
+              '—'
+            ),
           },
           {
             label: t.swap.slippage,
             value: connected ? (
               <>
-                {slippage}%
+                {swap.slippage}%
                 <button
                   aria-label={t.swap.slippageSettings}
                   className={cn(
@@ -243,18 +283,20 @@ export function SwapWidget({
           },
           {
             label: t.swap.route,
-            value: `${sellToken.label} → ${buyToken.label}`,
+            value: swap.routeLabel,
           },
         ]}
       />
 
       {connected ? (
         <DappActionRow>
-          <DappActionButton className="hidden" variant="secondary">
-            {t.swap.approve}
-          </DappActionButton>
-          <DappActionButton className="col-span-full">
-            {t.swap.action}
+          <DappActionButton
+            className="col-span-full"
+            disabled={!swap.canSubmit}
+            loading={swap.isSubmitting}
+            onClick={() => void handleSubmit()}
+          >
+            {swap.action === 'approve' ? t.swap.approve : t.swap.action}
           </DappActionButton>
         </DappActionRow>
       ) : (
@@ -273,8 +315,9 @@ export function SwapWidget({
               'gap-1.5 [&_button]:min-h-[38px] [&_button]:text-[13px] [&_p]:leading-tight',
               'max-[820px]:mt-3.5 max-[820px]:[&_button]:min-h-[42px] max-[820px]:[&_button]:text-sm',
             )}
+            isLoading={genesis.isLoading}
             onClick={onSelectGenesis}
-            showProgress
+            promo={genesis.promoSnapshot}
           />
         </>
       ) : (
@@ -285,10 +328,10 @@ export function SwapWidget({
       )}
 
       <SwapSlippageModal
-        onConfirm={setSlippage}
+        onConfirm={swap.setSlippage}
         onOpenChange={setSlippageOpen}
         open={slippageOpen}
-        slippage={slippage}
+        slippage={swap.slippage}
       />
     </div>
   )
@@ -296,9 +339,17 @@ export function SwapWidget({
 
 export function SwapContent({ connected }: { connected: boolean }) {
   const { messages: t } = useI18n()
+  const isMobileViewport = useMobileViewport()
+  const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
+  const { desktopRows: swapHistoryRows, mobileRows: mobileSwapHistoryRows, refresh: refreshSwapHistory } =
+    useSwapHistory()
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
   const [aboutOpen, setAboutOpen] = useState(true)
   const faqItems = getSwapFaqItems(t, faqToken)
+
+  useEffect(() => {
+    refreshSwapHistory()
+  }, [connected, refreshSwapHistory])
 
   return (
     <div
@@ -312,16 +363,24 @@ export function SwapContent({ connected }: { connected: boolean }) {
       </h2>
 
       <MetricGrid columns={2}>
-        <MetricCard
-          className={cn(
-            !connected && 'py-3.5 [&_small]:hidden',
-            'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
-            connected &&
-              'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
-          )}
-          label={t.swap.exchangeRate}
-          value={connected ? t.swap.fixedRateConnected : t.swap.fixedRate}
-        />
+        {connected && poolRateLoading ? (
+          <MetricCardSkeleton className="max-[820px]:rounded-[14px] max-[820px]:p-3.5" />
+        ) : (
+          <MetricCard
+            className={cn(
+              !connected && 'py-3.5 [&_small]:hidden',
+              'min-[821px]:[&_span]:font-medium min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:leading-[1.2]',
+              connected &&
+                'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+            )}
+            label={t.swap.exchangeRate}
+            value={
+              connected
+                ? poolRateLabel ?? '—'
+                : t.swap.fixedRate
+            }
+          />
+        )}
         <MetricCard
           className={cn(
             !connected && 'py-3.5 [&_small]:hidden',
@@ -367,8 +426,7 @@ export function SwapContent({ connected }: { connected: boolean }) {
         )}
       >
         <div className="-mx-3" hidden={!aboutOpen} id="swap-about-body">
-          <TokenInfoCarousel />
-          <MobileTokenCarousel />
+          {isMobileViewport ? <MobileTokenCarousel /> : <TokenInfoCarousel />}
         </div>
       </DappSection>
 
@@ -377,24 +435,28 @@ export function SwapContent({ connected }: { connected: boolean }) {
         title={t.swap.recentSwaps}
       >
         {connected ? (
-          <>
-            <ResponsiveTable
-              className="max-[820px]:hidden"
-              headers={[t.tables.time, t.tables.paid, t.tables.received, t.tables.status]}
-              plain
-              rows={recentSwaps}
-              positiveColumns={[2]}
-              statusColumns={[3]}
-            />
-            <ResponsiveTable
-              className="hidden max-[820px]:block"
-              compact
-              headers={[t.tables.time, t.tables.received, t.tables.status]}
-              plain
-              rows={mobileRecentSwaps}
-              positiveColumns={[1]}
-            />
-          </>
+          swapHistoryRows.length > 0 ? (
+            <>
+              <ResponsiveTable
+                className="max-[820px]:hidden"
+                headers={[t.tables.time, t.tables.paid, t.tables.received, t.tables.status]}
+                plain
+                rows={swapHistoryRows}
+                positiveColumns={[2]}
+                statusColumns={[3]}
+              />
+              <ResponsiveTable
+                className="hidden max-[820px]:block"
+                compact
+                headers={[t.tables.time, t.tables.received, t.tables.status]}
+                plain
+                rows={mobileSwapHistoryRows}
+                positiveColumns={[1]}
+              />
+            </>
+          ) : (
+            <SwapEmptyState />
+          )
         ) : (
           <SwapEmptyState />
         )}
@@ -512,7 +574,7 @@ function TokenInfoCarousel() {
   return (
     <Carousel
       aria-label={t.swap.tokenAbout}
-      className={cn(revealClass(), 'mt-3.5 grid gap-3 overflow-hidden max-[820px]:hidden')}
+      className={cn(revealClass(), 'mt-3.5 grid gap-3 overflow-hidden')}
       data-reveal
       opts={{ align: 'start', loop: true }}
       plugins={[autoplay]}
@@ -548,7 +610,10 @@ function TokenInfoCarousel() {
                     'tracking-[-0.26px] text-foreground transition-[border-color,transform] duration-180 ease-out',
                     'hover:-translate-y-1/2 hover:translate-x-px hover:border-primary',
                     'focus-visible:-translate-y-1/2 focus-visible:translate-x-px focus-visible:border-primary',
+                    getSwapTokenContractAddress(token.key) ? '' : 'pointer-events-none opacity-45',
                   )}
+                  disabled={!getSwapTokenContractAddress(token.key)}
+                  onClick={() => openTokenContractOnBscScan(token.key)}
                   type="button"
                 >
                   {t.swap.tokenContract}
@@ -696,27 +761,28 @@ function MobileTokenCarousel() {
   return (
     <Carousel
       aria-label={t.swap.tokenAbout}
-      className={cn(revealClass(), 'hidden gap-2.5 overflow-hidden max-[820px]:grid max-[820px]:mt-3')}
+      className={cn(revealClass(), 'mt-3 grid gap-2.5 overflow-hidden')}
       data-reveal
       opts={{ align: 'start', loop: true }}
       setApi={setApi}
     >
       <CarouselContent
         className={cn(
-          'flex items-start overflow-hidden scroll-smooth',
-          '-mx-[18px] mb-[-38px] w-[calc(100%+36px)] px-[18px] pb-[38px]',
+          'ml-0 flex h-full items-stretch overflow-hidden',
+          '-mx-[18px] w-[calc(100%+36px)] px-[18px]',
         )}
+        viewportClassName="h-[103px]"
       >
         {tokens.map((token, index) => (
-          <CarouselItem className="shrink-0 grow-0 basis-full" key={token.key}>
+          <CarouselItem className="box-border h-[103px] shrink-0 grow-0 basis-full pl-0" key={token.key}>
             <article
               aria-hidden={current !== index}
               className={cn(
-                'relative h-[103px] min-w-0 overflow-hidden rounded-2xl bg-card px-4 py-3.5 shadow-subtle',
+                'box-border relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl bg-card px-4 py-3.5 shadow-subtle',
                 mobileTokenCardRaysClass(token.key),
               )}
             >
-              <div className="relative z-[1] flex min-w-0 items-center justify-between gap-2">
+              <div className="relative z-[1] flex min-h-[30px] min-w-0 shrink-0 items-center justify-between gap-2">
                 <TokenIcon size="mobile" token={token} />
                 <strong className="min-w-0 flex-1 text-sm font-semibold leading-[1.2] tracking-[-0.42px] text-foreground">
                   {token.title}
@@ -724,9 +790,12 @@ function MobileTokenCarousel() {
                 <AnchoredTooltip content={t.swap.tokenContractTooltip}>
                   <button
                     className={cn(
-                      'inline-flex min-h-[30px] cursor-pointer items-center gap-[5px] rounded-full',
+                      'inline-flex min-h-[30px] shrink-0 cursor-pointer items-center gap-[5px] rounded-full',
                       'border border-border bg-card px-3 text-xs font-semibold leading-[1.2] whitespace-nowrap text-foreground',
+                      getSwapTokenContractAddress(token.key) ? '' : 'pointer-events-none opacity-45',
                     )}
+                    disabled={!getSwapTokenContractAddress(token.key)}
+                    onClick={() => openTokenContractOnBscScan(token.key)}
                     type="button"
                   >
                     {t.swap.tokenContract}
@@ -739,7 +808,7 @@ function MobileTokenCarousel() {
                   </button>
                 </AnchoredTooltip>
               </div>
-              <p className="m-0 mt-2 max-w-[32ch] text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong">
+              <p className="m-0 mt-2 min-h-[36px] max-w-[32ch] text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong line-clamp-2">
                 {token.body}
               </p>
             </article>
