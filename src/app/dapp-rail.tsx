@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { cn } from '~/lib/utils'
 import type { DappTab } from './types'
 import { railItems } from './assets'
@@ -9,6 +9,7 @@ import {
   shellMobileRailItemClass,
   shellRailClass,
   shellRailIconClass,
+  shellRailIndicatorClass,
   shellRailItemClass,
 } from './shell-layout'
 
@@ -41,6 +42,11 @@ function railIconMask(icon: string): CSSProperties {
   }
 }
 
+type RailIndicator = {
+  height: number
+  top: number
+}
+
 export function DappRail({
   activeTab,
   mobile = false,
@@ -51,12 +57,65 @@ export function DappRail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
+  const navRef = useRef<HTMLElement>(null)
+  const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
+  const [indicator, setIndicator] = useState<RailIndicator | null>(null)
+  const [indicatorReady, setIndicatorReady] = useState(false)
+
+  const updateIndicator = useCallback(() => {
+    const nav = navRef.current
+    const button = itemRefs.current.get(activeTab)
+    if (!nav || !button) return
+
+    const navRect = nav.getBoundingClientRect()
+    const buttonRect = button.getBoundingClientRect()
+
+    setIndicator({
+      top: buttonRect.top - navRect.top,
+      height: buttonRect.height,
+    })
+  }, [activeTab])
+
+  useLayoutEffect(() => {
+    updateIndicator()
+
+    if (!indicatorReady) {
+      requestAnimationFrame(() => setIndicatorReady(true))
+    }
+  }, [activeTab, indicatorReady, updateIndicator])
+
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+
+    const observer = new ResizeObserver(updateIndicator)
+    observer.observe(nav)
+    itemRefs.current.forEach((button) => observer.observe(button))
+
+    return () => observer.disconnect()
+  }, [updateIndicator])
 
   return (
     <nav
       className={cn(shellRailClass(), mobile && shellMobileRailClass)}
       aria-label="DApp sections"
+      ref={navRef}
     >
+      {indicator ? (
+        <span
+          aria-hidden
+          className={cn(
+            shellRailIndicatorClass,
+            indicatorReady &&
+              'transition-[transform,height] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+          )}
+          style={{
+            height: indicator.height,
+            transform: `translate3d(0, ${indicator.top}px, 0)`,
+          }}
+        />
+      ) : null}
+
       {railItems.map((item) => {
         const copy = railCopy[item.id]
         const label = t.nav[copy.label]
@@ -69,6 +128,10 @@ export function DappRail({
               aria-selected={active}
               className={mobile ? shellMobileRailItemClass(active) : shellRailItemClass(active)}
               onClick={() => onSelectTab(item.id)}
+              ref={(node) => {
+                if (node) itemRefs.current.set(item.id, node)
+                else itemRefs.current.delete(item.id)
+              }}
               role="tab"
               type="button"
             >

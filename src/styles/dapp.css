@@ -11,14 +11,44 @@
       minmax(min(320px, 100%), 400px)
       var(--shell-detail-col);
     transition:
-      grid-template-columns 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
-      max-width 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
-      box-shadow 320ms ease;
+      grid-template-columns 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      max-width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 280ms ease;
   }
 
   [data-dapp-window][data-collapsed='true'] {
     --shell-detail-col: minmax(0, 0fr);
     max-width: min(482px, 100%);
+  }
+}
+
+/* Right detail panel — restrained tab switch (no per-block scroll reveal replay) */
+@keyframes dapp-detail-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 5px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.dapp-detail-panel {
+  min-height: 0;
+  animation: dapp-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+[data-dapp-detail] [data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dapp-detail-panel {
+    animation: none;
   }
 }
 

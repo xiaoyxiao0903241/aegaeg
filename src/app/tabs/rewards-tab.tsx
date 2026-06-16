@@ -466,7 +466,7 @@ export function RewardsContent() {
             onSelect={(index) => setHistoryTab(index === 0 ? 'referral' : 'team')}
           />
           {showHistoryRequiresAuth ? (
-            <DappTableEmptyState className="mt-0" variant="history" />
+            <DappTableEmptyState className="mt-0" />
           ) : showHistoryQueryEmpty ? (
             <DappTableEmptyMessage
               body={

@@ -509,7 +509,7 @@ export function CommunityContent({
 
       <DappSection title={inviteSectionTitle}>
         {showInvitesRequiresAuth ? (
-          <DappTableEmptyState className="mt-3.5" variant="invites" />
+          <DappTableEmptyState className="mt-3.5" />
         ) : showInvitesQueryEmpty ? (
           <DappTableEmptyMessage
             body={t.community.invitesEmptyBody}

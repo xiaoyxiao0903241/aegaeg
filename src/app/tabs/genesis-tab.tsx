@@ -398,7 +398,7 @@ export function GenesisContent() {
             </p>
           ) : null}
           {showContributionsRequiresAuth ? (
-            <DappTableEmptyState variant="contributions" />
+            <DappTableEmptyState />
           ) : showContributionsQueryEmpty ? (
             <DappTableEmptyMessage title={t.genesis.contributionsEmpty} />
           ) : (

@@ -80,19 +80,21 @@ export function shellWindowClass(state: {
 
 export function shellRailClass() {
   return cn(
-    'flex h-full min-h-0 max-h-full flex-col gap-1.5 border-r border-border bg-card px-2 py-3.5',
+    'relative flex h-full min-h-0 max-h-full flex-col gap-1.5 border-r border-border bg-card px-2 py-3.5',
     'max-[820px]:hidden',
   )
 }
 
 export function shellRailItemClass(active: boolean) {
   return cn(
-    'flex w-full min-h-[60px] cursor-pointer flex-col items-center justify-center gap-[5px] rounded-[14px] bg-transparent px-1 py-[11px]',
-    'text-[10px] font-medium leading-[1.3] tracking-[-0.2px] text-ink-strong transition-[background-color,color] duration-180 ease-out',
-    'hover:bg-background hover:text-foreground',
-    active && 'bg-accent text-primary',
+    'relative z-[1] flex w-full min-h-[60px] cursor-pointer flex-col items-center justify-center gap-[5px] rounded-[14px] bg-transparent px-1 py-[11px]',
+    'text-[10px] font-medium leading-[1.3] tracking-[-0.2px] transition-[color] duration-180 ease-out',
+    active ? 'text-primary' : 'text-ink-strong hover:bg-background hover:text-foreground',
   )
 }
+
+export const shellRailIndicatorClass =
+  'pointer-events-none absolute inset-x-2 top-0 z-0 rounded-[14px] bg-accent will-change-[transform,height]'
 
 export const shellRailIconClass = 'aspect-square w-[22px] bg-current'
 
@@ -107,7 +109,7 @@ export function shellWidgetClass() {
 export function shellContentClass(detailCollapsed: boolean) {
   return cn(
     dappSpacing.contentCol,
-    'min-h-0 min-w-0 max-h-full overflow-y-auto overflow-x-hidden bg-card transition-[opacity,padding-inline] duration-320 ease-[cubic-bezier(.2,.8,.2,1)]',
+    'min-h-0 min-w-0 max-h-full overflow-y-auto overflow-x-hidden bg-card transition-[opacity,padding-inline] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
     detailCollapsed && 'pointer-events-none overflow-hidden px-0 opacity-0',
     'max-[820px]:pointer-events-auto max-[820px]:w-full max-[820px]:min-h-0 max-[820px]:overflow-visible max-[820px]:p-0 max-[820px]:opacity-100',
   )

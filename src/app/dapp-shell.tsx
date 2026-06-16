@@ -159,12 +159,15 @@ export function DappShell() {
                     className={shellContentClass(effectiveDetailCollapsed)}
                     aria-hidden={effectiveDetailCollapsed}
                     aria-labelledby={`${activeTab}-title`}
+                    data-dapp-detail
                   >
-                    <TabContent
-                      activeTab={activeTab}
-                      connected={shellState.connected}
-                      onSelectTab={selectTab}
-                    />
+                    <div className="dapp-detail-panel" key={activeTab}>
+                      <TabContent
+                        activeTab={activeTab}
+                        connected={shellState.connected}
+                        onSelectTab={selectTab}
+                      />
+                    </div>
                   </section>
                 </div>
               )}
