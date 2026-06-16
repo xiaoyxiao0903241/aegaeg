@@ -48,11 +48,11 @@ function MenuItem({
   onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
 }) {
   const itemClassName = cn(
-    'flex h-[42px] items-center gap-2 rounded-[10px] bg-transparent px-[10px] text-left transition-colors duration-150 ease-out focus-visible:outline-none',
+    'flex h-[42px] cursor-pointer items-center gap-2 rounded-[10px] bg-transparent px-[10px] text-left transition-colors duration-150 ease-out focus-visible:outline-none',
     option.active
       ? 'bg-[var(--background)]'
       : 'hover:bg-secondary focus-visible:bg-secondary',
-    option.disabled && 'cursor-default opacity-60',
+    option.disabled && 'cursor-not-allowed opacity-60',
   )
 
   const children = (

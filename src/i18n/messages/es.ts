@@ -177,9 +177,6 @@ const es = defineMessages({
         a: 'La app enruta la conversión por la ruta de swap BSC compatible y presenta la transacción final a través de la billetera conectada.',
       },
     ],
-    recentSwaps: 'Swaps recientes',
-    emptyTitle: 'Conecta una billetera para ver y gestionar tus fondos',
-    emptyBody: 'Tu historial de swaps y saldos aparecerán aquí una vez conectado.',
     faq: 'FAQ',
     faqRate: '¿Por qué la tasa es fija 1:1?',
     faqRateBody:
@@ -304,6 +301,20 @@ const es = defineMessages({
     teamHistory: 'Recompensas de equipo',
     faqSettlement: '¿Cómo se liquidan las bonificaciones de equipo?',
     faqSettlementBody: 'Las bonificaciones de equipo se liquidan por época tras confirmarse contribuciones calificadas.',
+    rewardType: {
+      referralPaid: 'Recompensa por referido',
+      referralWithdrawn: 'Reclamo de referido',
+      marketTeam: 'Equipo market',
+      presaleTeam: 'Equipo presale',
+      unknown: '—',
+    },
+    logStatus: {
+      pending: 'Pendiente',
+      processing: 'Procesando',
+      paid: 'Pagado',
+      failed: 'Fallido',
+      unknown: '—',
+    },
   },
   community: {
     title: 'Comunidad',

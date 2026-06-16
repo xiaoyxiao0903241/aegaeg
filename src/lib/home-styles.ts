@@ -42,7 +42,7 @@ export const homeNavActionsClass = cn(
 const HOME_BTN_BASE = cn(
   'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full px-[26px]',
   'text-[15px] font-semibold leading-none tracking-normal whitespace-nowrap',
-  'transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out',
+  'transition-[box-shadow,border-color,background-color,opacity,color,transform] duration-180 ease-out',
   'hover:opacity-[0.96] focus-visible:opacity-[0.96]',
 )
 
@@ -50,9 +50,8 @@ const HOME_BTN_VARIANT = {
   primary: cn(
     'border-0 bg-primary text-primary-foreground',
     'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
-    'shadow-[0_10px_24px_oklch(66.83%_0.1625_36.6_/_24%)]',
-    'hover:shadow-[0_14px_30px_oklch(66.83%_0.1625_36.6_/_30%)]',
-    'focus-visible:shadow-[0_14px_30px_oklch(66.83%_0.1625_36.6_/_30%)]',
+    'hover:opacity-100 focus-visible:opacity-100',
+    'hover:-translate-y-px hover:shadow-primary-hover focus-visible:-translate-y-px focus-visible:shadow-primary-hover',
   ),
   secondary: cn(
     'border border-border bg-card text-foreground',
@@ -109,15 +108,6 @@ export const homeMetricsPanelGlowClass = cn(
   "after:pointer-events-none after:absolute after:top-[-26px] after:left-1/2 after:z-0 after:h-[62px] after:w-[62px] after:-translate-x-1/2 after:rounded-full after:bg-white/56 after:blur-[18px] after:content-['']",
   'max-[820px]:after:hidden',
 )
-
-export const homeFooterLangMarkerClass = cn(
-  'mt-auto flex h-7 w-[66px] items-center justify-center gap-1.5 rounded-full border border-on-dark',
-  'px-3 text-[13px] font-semibold leading-none whitespace-nowrap text-on-dark',
-  'max-[820px]:mt-3.5',
-)
-
-export const homeFooterLangIconClass =
-  'size-4 shrink-0 fill-none stroke-current [stroke-width:1.4]'
 
 export const homeFooterBrandClass = cn(
   homeBrandClass,

@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useI18n } from '../../i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { dappButtonClass } from '~/lib/dapp-styles'
+import { buttonDisabledClass, dappButtonClass } from '~/lib/dapp-styles'
 import { revealClass } from '~/lib/reveal'
 import { toast } from 'sonner'
 import {
@@ -168,7 +168,11 @@ export function GenesisWidget({
             value={genesis.shares}
           />
           <button
-            className="min-h-11 min-w-[66px] shrink-0 cursor-pointer rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary disabled:opacity-50"
+            className={cn(
+              'min-h-11 min-w-[66px] shrink-0 rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary',
+              buttonDisabledClass,
+              'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+            )}
             disabled={!walletReady}
             onClick={() => genesis.setShares(MAX_SHARES)}
             type="button"

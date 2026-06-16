@@ -59,6 +59,22 @@ button {
   border: 0;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.5;
+}
+
+summary {
+  cursor: pointer;
+}
+
 img,
 video {
   max-width: 100%;

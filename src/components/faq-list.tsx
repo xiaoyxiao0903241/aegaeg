@@ -46,6 +46,7 @@ const variantStyles = {
     optional: '',
     trigger: cn(
       dappTextClass('faqSummary', { tone: 'ink' }),
+      'cursor-pointer',
       'w-full border-0 bg-transparent text-left outline-none',
       'max-[820px]:py-3.5 max-[820px]:text-[13px] max-[820px]:font-normal',
       'group-data-[tab=rewards]/shell:text-sm group-data-[tab=rewards]/shell:font-normal group-data-[tab=rewards]/shell:text-faq-text',

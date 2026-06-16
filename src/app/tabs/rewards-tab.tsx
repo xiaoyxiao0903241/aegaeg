@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '../../i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
@@ -15,6 +15,7 @@ import {
   isReferralRewardLog,
   isTeamRewardLog,
   mapRewardLogToRow,
+  resolveRewardTypeI18nKey,
 } from '../../lib/api/format-display'
 import { REWARDS_PROGRESS_PLACEHOLDERS } from '../../config/rewards-progress'
 import { buildNextTierProgress } from '../../lib/presale/tier-progress'
@@ -139,6 +140,20 @@ export function RewardsWidget({
   const showPerformanceSkeleton = connected && apiEnabled && performanceLoading && !performance
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
+  const teamRewardMeta = (() => {
+    if (teamTotal?.claimed == null) return undefined
+    const claimedLine = t.rewards.claimed.replace('{amount}', formatUsd(teamTotal.claimed, 2))
+    const breakdown = teamTotal.items
+      ?.map((item) => {
+        const pending = formatClaimableAmount(item.total, item.claimed)
+        const typeKey = resolveRewardTypeI18nKey(item.source_type)
+        const typeLabel = t.rewards.rewardType[typeKey]
+        return `${typeLabel} ${pending}`
+      })
+      .filter(Boolean)
+      .join(' · ')
+    return breakdown ? `${claimedLine} · ${breakdown}` : claimedLine
+  })()
   const showReferralSkeleton = connected && apiEnabled && referralLoading && referralTotal == null
   const showTeamSkeleton = connected && apiEnabled && teamLoading && teamTotal == null
   const showTitleSkeleton = connected && isRankLoading
@@ -248,11 +263,7 @@ export function RewardsWidget({
           'max-[820px]:pb-3 max-[820px]:[&_button]:mt-1.5 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
         )}
         label={t.rewards.teamRewards}
-        meta={
-          teamTotal?.claimed != null
-            ? t.rewards.claimed.replace('{amount}', formatUsd(teamTotal.claimed, 2))
-            : undefined
-        }
+        meta={teamRewardMeta}
         value={`${teamClaimable} ${t.common.claimable.toLowerCase()}`}
       />
       )}
@@ -272,11 +283,18 @@ export function RewardsContent() {
     { page: 1, page_size: 20 },
     apiEnabled,
   )
+  const rewardLogLabels = useMemo(
+    () => ({
+      rewardType: t.rewards.rewardType,
+      logStatus: t.rewards.logStatus,
+    }),
+    [t.rewards.logStatus, t.rewards.rewardType],
+  )
 
   const referralHistoryRows =
-    rewardLogs?.items.filter(isReferralRewardLog).map(mapRewardLogToRow) ?? []
+    rewardLogs?.items.filter(isReferralRewardLog).map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
   const teamHistoryRows =
-    rewardLogs?.items.filter(isTeamRewardLog).map(mapRewardLogToRow) ?? []
+    rewardLogs?.items.filter(isTeamRewardLog).map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
   const useMockHistory = !connected
   const authPending = connected && (isLoggingIn || !isAuthenticated)
   const historyRows = useMockHistory

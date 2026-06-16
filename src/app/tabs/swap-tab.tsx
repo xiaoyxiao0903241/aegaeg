@@ -7,6 +7,7 @@ import {
   type CarouselApi,
 } from '../../components/carousel'
 import { cn } from '~/lib/utils'
+import { buttonDisabledClass } from '~/lib/dapp-styles'
 import { useI18n } from '../../i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import {
@@ -40,7 +41,6 @@ import {
 import { FaqStack } from '../components/faq-stack'
 import { GenesisPromoCard } from '../components/genesis-promo-card'
 import { MetricGrid } from '../components/metric-grid'
-import { ResponsiveTable } from '../components/responsive-table'
 import { SwapConnectPromptCard } from '../components/swap-connect-prompt-card'
 import { SwapAmountBox } from '../components/swap-amount-box'
 import { SwapSlippageModal } from '../components/swap-slippage-modal'
@@ -48,7 +48,6 @@ import { useSwapWidget } from '../../hooks/use-swap-widget'
 import { useMobileViewport } from '../../hooks/use-mobile-viewport'
 import { useGenesisWidgetContext } from '../genesis-widget-context'
 import { usePairSpotRate } from '../../hooks/use-pair-spot-rate'
-import { useSwapHistory } from '../../hooks/use-swap-history'
 import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '../../config/token-contracts'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
 import { toast } from 'sonner'
@@ -65,9 +64,10 @@ const SWAP_BOTTOM_CARD_CLASS = 'mt-auto w-full shrink-0'
 const PERCENT_BTN_CLASS = cn(
   'flex h-[25px] cursor-pointer items-center justify-center rounded-[9px] border border-border bg-card',
   'px-0 py-[5px] text-xs font-semibold whitespace-nowrap text-ink-strong',
-  'transition-[border-color,color,transform] duration-180 ease-out',
+  'transition-[border-color,color,transform,background-color] duration-180 ease-out',
   'hover:-translate-y-px hover:border-primary hover:text-primary',
-  'disabled:cursor-not-allowed disabled:opacity-[.58]',
+  buttonDisabledClass,
+  'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
   'max-[820px]:h-auto max-[820px]:py-1.5 max-[820px]:text-[11px]',
 )
 
@@ -218,7 +218,7 @@ export function SwapWidget({
             className={cn(
               'grid size-[34px] place-items-center rounded-[11px] border border-border bg-card p-0',
               'text-[14px] font-normal leading-normal tracking-[-0.28px] text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
-              'disabled:cursor-default enabled:hover:-translate-y-px enabled:hover:border-primary',
+              'enabled:hover:-translate-y-px enabled:hover:border-primary',
               'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
               'max-[820px]:my-2',
             )}
@@ -368,7 +368,6 @@ export function SwapContent({
   const { messages: t } = useI18n()
   const isMobileViewport = useMobileViewport()
   const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
-  const { desktopRows: swapHistoryRows, mobileRows: mobileSwapHistoryRows } = useSwapHistory()
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
   const [aboutOpen, setAboutOpen] = useState(true)
   const faqItems = getSwapFaqItems(t, faqToken)
@@ -481,49 +480,15 @@ export function SwapContent({
       </DappSection>
       ) : null}
 
-      <DappSection
-        className={cn(connected && 'hidden max-[820px]:block')}
-        title={t.swap.recentSwaps}
-      >
-        {connected ? (
-          swapHistoryRows.length > 0 ? (
-            <>
-              <ResponsiveTable
-                className="max-[820px]:hidden"
-                headers={[t.tables.time, t.tables.paid, t.tables.received, t.tables.status]}
-                plain
-                rows={swapHistoryRows}
-                positiveColumns={[2]}
-                statusColumns={[3]}
-              />
-              <ResponsiveTable
-                className="hidden max-[820px]:block"
-                compact
-                headers={[t.tables.time, t.tables.received, t.tables.status]}
-                plain
-                rows={mobileSwapHistoryRows}
-                positiveColumns={[1]}
-              />
-            </>
-          ) : (
-            <SwapEmptyState />
-          )
-        ) : (
-          <SwapEmptyState />
-        )}
+      <DappSection title={t.swap.faq}>
+        <div className={cn(revealClass(), 'max-[820px]:hidden')} data-reveal>
+          <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
+          <FaqStack items={faqItems} />
+        </div>
+        <div className={cn(revealClass(), 'hidden max-[820px]:block')} data-reveal>
+          <FaqStack items={faqItems} />
+        </div>
       </DappSection>
-
-      {connected ? (
-        <DappSection title={t.swap.faq}>
-          <div className={cn(revealClass(), 'max-[820px]:hidden')} data-reveal>
-            <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
-            <FaqStack items={faqItems} />
-          </div>
-          <div className={cn(revealClass(), 'hidden max-[820px]:block')} data-reveal>
-            <FaqStack items={faqItems} />
-          </div>
-        </DappSection>
-      ) : null}
     </div>
   )
 }
@@ -938,45 +903,5 @@ function TokenIcon({
         width={dimension}
       />
     </span>
-  )
-}
-
-function SwapEmptyState() {
-  const { messages: t } = useI18n()
-
-  return (
-    <div
-      className={cn(
-        revealClass(),
-        'mt-3.5 grid justify-items-center gap-[18px] overflow-hidden rounded-[18px] bg-card p-[30px_24px] shadow-card',
-        'max-[820px]:gap-3.5 max-[820px]:border max-[820px]:border-border max-[820px]:p-[22px_16px] max-[820px]:shadow-none',
-      )}
-      data-reveal
-    >
-      <div aria-hidden="true" className="grid w-full gap-3 max-[820px]:gap-[11px]">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div
-            className={cn(
-              'grid grid-cols-[minmax(80px,120px)_1fr_minmax(56px,90px)_minmax(50px,70px)] items-center gap-3.5',
-              'max-[820px]:grid-cols-[minmax(56px,80px)_1fr_minmax(46px,56px)] max-[820px]:gap-2.5',
-            )}
-            key={index}
-          >
-            <span className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
-            <i className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
-            <b className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
-          </div>
-        ))}
-      </div>
-      <div className="grid justify-items-center gap-1.5 text-center text-faint max-[820px]:w-full max-[820px]:gap-[5px]">
-        <strong className="text-[15px] font-semibold leading-[1.2] text-foreground max-[820px]:text-sm">
-          {t.swap.emptyTitle}
-        </strong>
-        <p className="m-0 max-w-[42ch] text-[13px] leading-[1.5] text-ink-muted max-[820px]:max-w-none max-[820px]:text-xs max-[820px]:whitespace-nowrap">
-          {t.swap.emptyBody}
-        </p>
-      </div>
-      <WalletConnectChip fullWidth variant="primary" />
-    </div>
   )
 }

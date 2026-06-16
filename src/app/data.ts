@@ -25,20 +25,6 @@ export const mobileCommunityFirstVisitInvites = [
   ['05-02', '0xc4…9C6a', 'S3', '45K'],
 ]
 
-export const recentSwaps = [
-  ['Today 09:42', '200 USDT', '+200.00 USD1', 'Success'],
-  ['Yesterday 14:08', '50 USD1', '+50.00 USDT', 'Success'],
-  ['Yesterday 11:32', '120 USDT', '+120.00 USD1', 'Success'],
-  ['05-24 23:45', '500 USDT', '+500.00 USD1', 'Success'],
-]
-
-export const mobileRecentSwaps = [
-  ['Today 09:42', '+200.00 USD1', 'Success'],
-  ['Yest. 14:08', '+50.00 USDT', 'Success'],
-  ['Yest. 11:32', '+120.00 USD1', 'Success'],
-  ['05-24 23:45', '+500.00 USD1', 'Success'],
-]
-
 export const swapTokenKeys = ['usd1', 'agx', 'gagx', 'x'] as const
 export const swapTokenCardKeys = ['agx', 'usd1', 'x', 'gagx'] as const
 

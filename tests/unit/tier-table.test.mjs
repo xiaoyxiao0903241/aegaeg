@@ -21,7 +21,8 @@ test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () 
       id: 1,
       node_type: 1,
       amount: '1000',
-      reward_percent: 30,
+      phase_id: 0,
+      tokens: '21.98',
       tx_hash: '0xabc123def4567890abcdef1234567890abcdef12',
       block_number: 1,
       block_time: 1_700_000_000,
@@ -32,5 +33,6 @@ test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () 
     65,
   )
 
+  assert.equal(row[2], '-30%')
   assert.equal(row[3], '21.98')
 })

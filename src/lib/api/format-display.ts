@@ -88,24 +88,74 @@ export function formatShortAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`
 }
 
-export function formatRewardPercent(rewardPercent: number): string {
-  if (!Number.isFinite(rewardPercent) || rewardPercent === 0) return '—'
-  return `-${rewardPercent}%`
+export function formatDiscountBps(discountBps: number): string {
+  if (!Number.isFinite(discountBps) || discountBps <= 0) return '—'
+  return `-${discountBps / 100}%`
 }
 
-export function formatRewardStatus(status: number): string {
+function resolvePhaseDiscountBps(phaseId: number): number {
+  if (!Number.isFinite(phaseId) || phaseId < 0) return 0
+  return PRESALE_CONFIG.phases[phaseId]?.discountBps ?? 0
+}
+
+export function formatRewardStatus(
+  status: number,
+  labels: RewardLogStatusLabels,
+): string {
+  return labels[resolveRewardLogStatusKey(status)]
+}
+
+export const REWARD_TYPE_I18N_KEYS = {
+  referral_paid: 'referralPaid',
+  referral_withdrawn: 'referralWithdrawn',
+  MARKET: 'marketTeam',
+  PRESALE: 'presaleTeam',
+} as const
+
+export type RewardTypeI18nKey =
+  | (typeof REWARD_TYPE_I18N_KEYS)[keyof typeof REWARD_TYPE_I18N_KEYS]
+  | 'unknown'
+
+export type RewardLogStatusKey =
+  | 'pending'
+  | 'processing'
+  | 'paid'
+  | 'failed'
+  | 'unknown'
+
+export type RewardTypeLabels = Record<RewardTypeI18nKey, string>
+export type RewardLogStatusLabels = Record<RewardLogStatusKey, string>
+
+export interface RewardLogRowLabels {
+  rewardType: RewardTypeLabels
+  logStatus: RewardLogStatusLabels
+}
+
+export function resolveRewardTypeI18nKey(rewardType: string): RewardTypeI18nKey {
+  const key = REWARD_TYPE_I18N_KEYS[rewardType as keyof typeof REWARD_TYPE_I18N_KEYS]
+  return key ?? 'unknown'
+}
+
+export function resolveRewardLogStatusKey(status: number): RewardLogStatusKey {
   switch (status) {
     case 0:
-      return 'Pending'
+      return 'pending'
     case 1:
-      return 'Processing'
+      return 'processing'
     case 2:
-      return 'Paid'
+      return 'paid'
     case 3:
-      return 'Failed'
+      return 'failed'
     default:
-      return '—'
+      return 'unknown'
   }
+}
+
+export function formatRewardTypeLabel(
+  rewardType: string,
+  labels: RewardTypeLabels,
+): string {
+  return labels[resolveRewardTypeI18nKey(rewardType)]
 }
 
 export function formatClaimableAmount(total: string, claimed: string): string {
@@ -128,7 +178,7 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
     formatRegisterDate(item.register_time),
     formatShortAddress(item.address),
     formatPresaleRank(item.presale_rank),
-    '—',
+    String(item.direct_referral_count ?? 0),
     formatUsd(Number(item.sales_team_market)),
   ]
 }
@@ -163,21 +213,21 @@ export function sumSalesLogAmountUsd(items: readonly SalesLogItem[]): number {
   }, 0)
 }
 
-function resolveSalesLogDiscountBps(rewardPercent: number): number {
-  if (!Number.isFinite(rewardPercent) || rewardPercent <= 0) return 0
-  return rewardPercent < 100 ? rewardPercent * 100 : rewardPercent
-}
-
-function formatEstimatedAgx(
+function formatSalesLogAgx(
   item: SalesLogItem,
   agxPriceUsd = Number(PRESALE_CONFIG.agxPriceUsd),
 ): string {
+  const tokens = Number(item.tokens)
+  if (Number.isFinite(tokens) && tokens > 0) {
+    return tokens.toFixed(2)
+  }
+
   const amountUsd1 = Number(item.amount)
   if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) return '—'
 
   const estimated = estimateAgxFromUsd1(
     amountUsd1,
-    resolveSalesLogDiscountBps(item.reward_percent),
+    resolvePhaseDiscountBps(item.phase_id),
     agxPriceUsd,
   )
   return estimated > 0 ? estimated.toFixed(2) : '—'
@@ -190,8 +240,8 @@ export function mapSalesLogToDesktopRow(
   return [
     formatBlockTime(item.block_time),
     formatAmountToken(item.amount, 'USD1'),
-    formatRewardPercent(item.reward_percent),
-    formatEstimatedAgx(item, agxPriceUsd),
+    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
+    formatSalesLogAgx(item, agxPriceUsd),
     item.tx_hash ? formatShortAddress(item.tx_hash) : '—',
   ]
 }
@@ -203,12 +253,15 @@ export function mapSalesLogToMobileRow(
   return [
     formatBlockTime(item.block_time),
     formatAmountToken(item.amount, 'USD1'),
-    formatRewardPercent(item.reward_percent),
-    formatEstimatedAgx(item, agxPriceUsd),
+    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
+    formatSalesLogAgx(item, agxPriceUsd),
   ]
 }
 
-export function mapRewardLogToRow(item: RewardLogItem): string[] {
+export function mapRewardLogToRow(
+  item: RewardLogItem,
+  labels: RewardLogRowLabels,
+): string[] {
   const signedAmount = Number(item.amount)
   const amountLabel = Number.isFinite(signedAmount)
     ? `+${formatUsd(Math.abs(signedAmount), 2)}`
@@ -219,13 +272,13 @@ export function mapRewardLogToRow(item: RewardLogItem): string[] {
     amountLabel,
     formatShortAddress(item.from_address),
     '—',
-    item.times ? `${item.times}%` : '—',
-    formatRewardStatus(item.status),
+    formatRewardTypeLabel(item.reward_type, labels.rewardType),
+    formatRewardStatus(item.status, labels.logStatus),
   ]
 }
 
 export function isReferralRewardLog(item: RewardLogItem): boolean {
-  return item.reward_type.includes('referral')
+  return item.reward_type === 'referral_paid' || item.reward_type === 'referral_withdrawn'
 }
 
 export function isTeamRewardLog(item: RewardLogItem): boolean {

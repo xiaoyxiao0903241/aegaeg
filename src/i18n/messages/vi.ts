@@ -177,9 +177,6 @@ const vi = defineMessages({
         a: 'Ứng dụng định tuyến chuyển đổi qua lộ trình hoán đổi BSC được hỗ trợ và trình bày giao dịch cuối qua ví đã kết nối.',
       },
     ],
-    recentSwaps: 'Hoán đổi gần đây',
-    emptyTitle: 'Kết nối ví để xem và quản lý tài sản',
-    emptyBody: 'Lịch sử hoán đổi và số dư của bạn sẽ hiển thị tại đây sau khi kết nối.',
     faq: 'FAQ',
     faqRate: 'Tại sao tỷ giá cố định 1:1?',
     faqRateBody:
@@ -304,6 +301,20 @@ const vi = defineMessages({
     teamHistory: 'Phần thưởng nhóm',
     faqSettlement: 'Thưởng nhóm được thanh toán như thế nào?',
     faqSettlementBody: 'Thưởng nhóm được thanh toán theo epoch sau khi đóng góp đủ điều kiện được xác nhận.',
+    rewardType: {
+      referralPaid: 'Thưởng giới thiệu',
+      referralWithdrawn: 'Nhận thưởng giới thiệu',
+      marketTeam: 'Thưởng nhóm market',
+      presaleTeam: 'Thưởng nhóm presale',
+      unknown: '—',
+    },
+    logStatus: {
+      pending: 'Đang chờ',
+      processing: 'Đang xử lý',
+      paid: 'Đã thanh toán',
+      failed: 'Thất bại',
+      unknown: '—',
+    },
   },
   community: {
     title: 'Cộng đồng',

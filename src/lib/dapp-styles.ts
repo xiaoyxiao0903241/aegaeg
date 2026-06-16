@@ -330,15 +330,39 @@ const DAPP_BTN_TONE = {
 
 const SURFACE_BORDER_TONES = new Set<keyof typeof DAPP_BTN_TONE>(['secondary', 'light', 'panel'])
 
+/** shadcn 风格：禁用无 hover、灰底弱对比文字 */
+export const buttonDisabledClass = cn(
+  'disabled:pointer-events-none disabled:cursor-not-allowed',
+  'disabled:translate-y-0 disabled:shadow-none',
+  'disabled:hover:translate-y-0 disabled:hover:shadow-none',
+)
+
+const DAPP_BTN_DISABLED_TONE = {
+  primary:
+    'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+  secondary:
+    'disabled:border-border disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-100',
+  subtle:
+    'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+  light:
+    'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+  panel:
+    'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+  active: 'disabled:opacity-50',
+  text: 'disabled:text-muted-foreground disabled:opacity-100',
+} as const
+
 export function dappButtonClass(
   kind: keyof typeof DAPP_BTN_KIND,
   tone: keyof typeof DAPP_BTN_TONE,
   className?: string,
 ) {
   return cn(
-    'inline-flex cursor-pointer items-center justify-center font-semibold tracking-[0] transition-[border-color,background-color,box-shadow,transform] duration-[180ms] ease-out',
+    'inline-flex cursor-pointer items-center justify-center font-semibold tracking-[0] transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-[180ms] ease-out',
+    buttonDisabledClass,
     DAPP_BTN_KIND[kind],
     DAPP_BTN_TONE[tone],
+    DAPP_BTN_DISABLED_TONE[tone],
     SURFACE_BORDER_TONES.has(tone) && surfacePillHoverClass,
     className,
   )

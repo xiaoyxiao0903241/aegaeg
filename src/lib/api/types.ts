@@ -22,13 +22,18 @@ export interface LoginResponse {
 
 export interface SalesLogItem {
   id: number
+  /** 期数 (phaseIndex + 1) */
   node_type: number
   amount: string
-  reward_percent: number
+  /** 预售阶段索引 */
+  phase_id: number
+  /** 购买的 AGX 数量 */
+  tokens: string
   tx_hash: string | null
   block_number: number
   block_time: number
   log_index: number
+  /** 0=pending, 1=processing, 2=completed, 3=failed */
   status: number
   created_at: string | null
 }
@@ -38,26 +43,36 @@ export interface RewardLogItem {
   from_address: string
   to_address: string
   amount: string
-  times: string
   tx_hash: string | null
   block_number: number
   block_time: number
   log_index: number
+  /** referral_paid | referral_withdrawn | team reward types */
   reward_type: string
   status: number
   created_at: string | null
   updated_at: string | null
 }
 
+export interface RewardTotalItem {
+  /** MARKET=做市团队极差奖, PRESALE=预售团队极差奖 */
+  source_type: string
+  total: string
+  claimed: string
+}
+
 export interface RewardTotals {
   total: string
   claimed: string
+  /** 按 source_type 分组明细（团队奖汇总接口返回） */
+  items?: RewardTotalItem[]
 }
 
 export interface UserPerformance {
   address: string
   sales_team_market: string
-  team_reward: string
+  market_team_reward: string
+  presale_team_reward: string
   team_reward_claimed: string
   sum_invest_usdt: string
   presale_volume: string
@@ -70,6 +85,7 @@ export interface TeamReferralItem {
   address: string
   register_time: string | null
   presale_rank: number
+  direct_referral_count: number
   sales_team_market: string
 }
 
@@ -110,6 +126,12 @@ export interface ClaimConfirmResult {
       distributed: string
       claimed: string
       pending: string
+    }
+    market_team_reward?: {
+      distributed: string
+    }
+    presale_team_reward?: {
+      distributed: string
     }
   }
 }

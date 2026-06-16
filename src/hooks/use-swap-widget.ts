@@ -15,7 +15,6 @@ import { getSwapPairTokens, type SwapDirection } from '../lib/swap/swap-pair'
 import { SWAP_CONFIG } from '../config/swap'
 import { readErc20Allowance, readErc20Balance, fetchSwapQuote } from '../web3/swap-read'
 import { approveTokenIfNeeded, executeTokenSwap } from '../web3/swap-write'
-import { appendSwapHistory } from '../lib/swap/swap-history'
 import { QUERY_STALE_TIME } from '../lib/query/query-client'
 import { queryKeys } from '../lib/query/query-keys'
 import { useDappActions } from '../stores/dapp-actions'
@@ -285,11 +284,6 @@ export function useSwapWidget(authenticated: boolean) {
         tokenOut: pair.buy.address,
         slippageBps,
       })
-      appendSwapHistory({
-        paidLabel: `${formatTokenAmount(amountIn, pair.sell.decimals, 4)} ${pair.sell.symbol}`,
-        receivedLabel: `+${formatTokenAmount(quotedOut, pair.buy.decimals, 4)} ${pair.buy.symbol}`,
-        status: 'Success',
-      })
       setSellAmountRaw('')
       afterSwap(account.address, pair.sell.address, pair.buy.address)
       await balancesQuery.refetch()
@@ -312,7 +306,6 @@ export function useSwapWidget(authenticated: boolean) {
     pair.sell.address,
     pair.sell.decimals,
     pair.sell.symbol,
-    quotedOut,
     slippageBps,
   ])
 

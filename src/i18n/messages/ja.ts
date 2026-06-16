@@ -177,9 +177,6 @@ const ja = defineMessages({
         a: 'アプリは対応BSCスワップパスで変換をルーティングし、接続ウォレットで最終取引を提示。',
       },
     ],
-    recentSwaps: '最近のスワップ',
-    emptyTitle: 'ウォレットを接続して資産を表示・管理',
-    emptyBody: '接続後、スワップ履歴と残高がここに表示されます。',
     faq: 'FAQ',
     faqRate: 'レートが1:1固定なのはなぜ？',
     faqRateBody:
@@ -303,6 +300,20 @@ const ja = defineMessages({
     teamHistory: 'チームリワード',
     faqSettlement: 'チームボーナスはどのように決済？',
     faqSettlementBody: 'チームボーナスは資格のある貢献が確認された後、エポックごとに決済。',
+    rewardType: {
+      referralPaid: '紹介報酬',
+      referralWithdrawn: '紹介報酬受取',
+      marketTeam: 'マーケットチーム報酬',
+      presaleTeam: 'プレセールチーム報酬',
+      unknown: '—',
+    },
+    logStatus: {
+      pending: '保留中',
+      processing: '処理中',
+      paid: '支払済',
+      failed: '失敗',
+      unknown: '—',
+    },
   },
   community: {
     title: 'コミュニティ',

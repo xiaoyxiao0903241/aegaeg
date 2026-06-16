@@ -15,8 +15,6 @@ import {
   homeBtnClass,
   homeContainerClass,
   homeFooterBrandClass,
-  homeFooterLangIconClass,
-  homeFooterLangMarkerClass,
   homeHeroRaysClass,
   homeMetricsPanelGlowClass,
   homeMetricsRaysClass,
@@ -31,7 +29,6 @@ import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import type { Locale } from '../i18n/locales'
 import { allLanguageOptions } from '../i18n/locales'
-import { localeMeta } from '../i18n/locale-meta'
 import { useI18n } from '../i18n/use-i18n'
 import { dappAssets } from '../app/assets'
 import { homeAssets } from './assets'
@@ -1007,21 +1004,6 @@ function Footer({
           <Text as="p" className={footerClass.brandCopy} tone="onDark">
             <ResponsiveLines copy={content.brandCopy} />
           </Text>
-          <span
-            aria-label={content.languageLabel}
-            className={homeFooterLangMarkerClass}
-          >
-            <svg
-              aria-hidden="true"
-              className={homeFooterLangIconClass}
-              viewBox="0 0 16 16"
-            >
-              <path d="M8 14.3C11.4794 14.3 14.3 11.4794 14.3 8C14.3 4.52061 11.4794 1.7 8 1.7C4.52061 1.7 1.7 4.52061 1.7 8C1.7 11.4794 4.52061 14.3 8 14.3Z" />
-              <path d="M8 1.7C4 4.2 4 11.8 8 14.3C12 11.8 12 4.2 8 1.7Z" />
-              <path d="M1.7 8H14.3" />
-            </svg>
-            <span>{localeMeta[locale].menuCode}</span>
-          </span>
         </div>
         {content.groups.map((group) => (
           <nav

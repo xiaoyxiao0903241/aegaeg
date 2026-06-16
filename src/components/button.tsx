@@ -5,14 +5,16 @@ import { cn } from '~/lib/utils'
 
 const buttonVariants = tv({
   base: [
-    'inline-flex items-center justify-center gap-2',
+    'inline-flex cursor-pointer items-center justify-center gap-2',
     'whitespace-nowrap rounded-full',
     'text-sm font-semibold tracking-normal',
     'ring-offset-background',
     'transition-all duration-180 ease-out',
     'focus-visible:outline-none focus-visible:ring-2',
     'focus-visible:ring-ring focus-visible:ring-offset-2',
-    'disabled:pointer-events-none disabled:opacity-50',
+    'disabled:pointer-events-none disabled:cursor-not-allowed',
+    'disabled:translate-y-0 disabled:shadow-none',
+    'disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
     '[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   ],
   variants: {
@@ -28,10 +30,12 @@ const buttonVariants = tv({
       outline: [
         'border border-input bg-background',
         'hover:bg-accent hover:text-accent-foreground hover:-translate-y-px',
+        'disabled:bg-transparent disabled:text-muted-foreground',
       ],
       secondary: [
         'bg-secondary text-secondary-foreground',
         'hover:bg-secondary/80',
+        'disabled:bg-transparent disabled:text-muted-foreground',
       ],
       ghost: 'hover:bg-accent hover:text-accent-foreground',
       link: 'text-primary underline-offset-4 hover:underline',

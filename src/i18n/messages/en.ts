@@ -177,9 +177,6 @@ const en = defineMessages({
         a: 'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
       },
     ],
-    recentSwaps: 'Recent swaps',
-    emptyTitle: 'Connect a wallet to view and manage your funds',
-    emptyBody: 'Your swap history and balances appear here once connected.',
     faq: 'FAQ',
     faqRate: 'Why is the rate fixed at 1:1?',
     faqRateBody:
@@ -304,6 +301,20 @@ const en = defineMessages({
     teamHistory: 'Team rewards',
     faqSettlement: 'How are team bonuses settled?',
     faqSettlementBody: 'Team bonuses settle by epoch after qualified contributions clear.',
+    rewardType: {
+      referralPaid: 'Referral',
+      referralWithdrawn: 'Referral claim',
+      marketTeam: 'Market team',
+      presaleTeam: 'Presale team',
+      unknown: '—',
+    },
+    logStatus: {
+      pending: 'Pending',
+      processing: 'Processing',
+      paid: 'Paid',
+      failed: 'Failed',
+      unknown: '—',
+    },
   },
   community: {
     title: 'Community',

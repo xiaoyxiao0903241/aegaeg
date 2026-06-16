@@ -177,9 +177,6 @@ const ko = defineMessages({
         a: '앱은 지원되는 BSC 스왑 경로를 통해 전환을 라우팅하고, 연결된 지갑을 통해 최종 거래를 제시합니다.',
       },
     ],
-    recentSwaps: '최근 스왑',
-    emptyTitle: '지갑을 연결하여 자산을 확인하고 관리하세요',
-    emptyBody: '연결 후 스왑 기록과 잔액이 여기에 표시됩니다.',
     faq: 'FAQ',
     faqRate: '환율이 왜 1:1로 고정되어 있나요?',
     faqRateBody:
@@ -303,6 +300,20 @@ const ko = defineMessages({
     teamHistory: '팀 리워드',
     faqSettlement: '팀 보너스는 어떻게 정산되나요?',
     faqSettlementBody: '팀 보너스는 자격을 갖춘 기여가 확인된 후 에포크별로 정산됩니다.',
+    rewardType: {
+      referralPaid: '추천 보상',
+      referralWithdrawn: '추천 보상 수령',
+      marketTeam: '마켓 팀 보상',
+      presaleTeam: '프리세일 팀 보상',
+      unknown: '—',
+    },
+    logStatus: {
+      pending: '대기 중',
+      processing: '처리 중',
+      paid: '지급 완료',
+      failed: '실패',
+      unknown: '—',
+    },
   },
   community: {
     title: '커뮤니티',
