@@ -40,11 +40,15 @@ export function normalizeTeamRewardClaimPayload(payload: TeamRewardSignature): {
   }
 
   if (!salt) {
-    throw new Error('Claim API did not return salt (required for on-chain claim)')
+    throw new Error(
+      'Claim API returned signature only; salt is required for on-chain claim (see POST /claim/team-reward)',
+    )
   }
 
   if (!amountWeiStr) {
-    throw new Error('Claim API did not return amount / amountWei (required for on-chain claim)')
+    throw new Error(
+      'Claim API returned signature only; amountWei is required for on-chain claim (see POST /claim/team-reward)',
+    )
   }
 
   return {

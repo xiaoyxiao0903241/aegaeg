@@ -30,6 +30,7 @@ import { DappActionRow } from '../components/dapp-action-row'
 import { AnchoredTooltip } from '../../components/anchored-tooltip'
 import { MetricCard } from '../components/dapp-card'
 import { DappPillTabs } from '../components/dapp-pill-tabs'
+import { DappCollapsibleSection } from '../components/dapp-collapsible-section'
 import { DappSection } from '../components/dapp-section'
 import { DappWidgetHeader, dappWidgetTitleClassName } from '../components/dapp-widget-header'
 import { DappMetaList } from '../components/dapp-meta-list'
@@ -47,6 +48,7 @@ import { SwapSlippageModal } from '../components/swap-slippage-modal'
 import { useSwapWidget } from '../../hooks/use-swap-widget'
 import { useMobileViewport } from '../../hooks/use-mobile-viewport'
 import { useGenesisWidgetContext } from '../genesis-widget-context'
+import { useAuth } from '../../providers/auth-provider'
 import { usePairSpotRate } from '../../hooks/use-pair-spot-rate'
 import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '../../config/token-contracts'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
@@ -83,7 +85,8 @@ export function SwapWidget({
   onSelectGenesis: () => void
 }) {
   const { messages: t } = useI18n()
-  const swap = useSwapWidget(connected)
+  const { isAuthenticated } = useAuth()
+  const swap = useSwapWidget(isAuthenticated)
   const genesis = useGenesisWidgetContext()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
@@ -150,7 +153,7 @@ export function SwapWidget({
     t.genesis.walletNotConnected,
   ])
 
-  const disconnectedRateLabel = `1 ${pair.sell.symbol} = 1 ${pair.buy.symbol}`
+  const placeholderRateLabel = t.swap.ratePlaceholder
 
   return (
     <div
@@ -168,7 +171,7 @@ export function SwapWidget({
         intro={connected ? t.swap.intro : t.swap.disconnectedIntro}
         introTone={connected ? 'body' : 'subtle'}
         onTogglePanel={detailPanel.onToggle}
-        showToggle={connected && layoutMode !== 'mobilePager'}
+        showToggle={layoutMode !== 'mobilePager'}
         title={t.swap.title}
       />
 
@@ -264,12 +267,12 @@ export function SwapWidget({
         items={[
           {
             label: t.swap.rate,
-            value: showRateSkeleton ? (
+            value: !isAuthenticated ? (
+              placeholderRateLabel
+            ) : showRateSkeleton ? (
               <SwapMetaValueSkeleton />
-            ) : connected ? (
-              swap.rateLabel || '—'
             ) : (
-              disconnectedRateLabel
+              swap.rateLabel || '—'
             ),
           },
           {
@@ -369,7 +372,6 @@ export function SwapContent({
   const isMobileViewport = useMobileViewport()
   const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
-  const [aboutOpen, setAboutOpen] = useState(true)
   const faqItems = getSwapFaqItems(t, faqToken)
 
   const overviewMetrics = (
@@ -406,7 +408,6 @@ export function SwapContent({
       className={cn(
         shellContentPageClass,
         layoutMode === 'mobilePager' && 'px-0',
-        !connected && 'max-[820px]:[&>.metric-grid]:hidden max-[820px]:[&>h2]:hidden',
       )}
     >
       <h2
@@ -437,55 +438,25 @@ export function SwapContent({
       )}
 
       {connected ? (
-        <DappSection
+        <DappCollapsibleSection
+          bodyClassName="-mx-3"
           className={cn(
             '!translate-y-0 !opacity-100 !transition-none',
             '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
             '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
             'max-[820px]:[&_h3]:pb-2.5 max-[820px]:[&_h3]:text-base max-[820px]:[&_h3]:tracking-[-0.64px]',
             'min-[821px]:[&+section]:mt-[34px]',
+            '[&_h3_button]:w-full',
           )}
-          title={(
-          <span className="flex w-full items-center justify-between gap-3">
-            {t.swap.tokenAbout}
-            <button
-              aria-controls="swap-about-body"
-              aria-expanded={aboutOpen}
-              aria-label={aboutOpen ? t.common.collapse : t.common.expand}
-              className="inline-grid size-4 flex-none cursor-pointer place-items-center border-0 bg-transparent p-0"
-              onClick={() => setAboutOpen((open) => !open)}
-              type="button"
-            >
-              <img
-                alt=""
-                className={cn(
-                  'size-4 text-foreground opacity-40 transition-transform duration-200',
-                  !aboutOpen && 'rotate-180',
-                )}
-                height="16"
-                src={dappAssets.chevronUp}
-                width="16"
-              />
-            </button>
-          </span>
-        )}
-      >
-        <div className="-mx-3" id="swap-about-body">
-          {aboutOpen
-            ? isMobileViewport
-              ? <MobileTokenCarousel />
-              : <TokenInfoCarousel />
-            : null}
-        </div>
-      </DappSection>
+          title={t.swap.tokenAbout}
+        >
+          {isMobileViewport ? <MobileTokenCarousel /> : <TokenInfoCarousel />}
+        </DappCollapsibleSection>
       ) : null}
 
       <DappSection title={t.swap.faq}>
-        <div className={cn(revealClass(), 'max-[820px]:hidden')} data-reveal>
+        <div className={cn(revealClass(), 'mt-3.5')} data-reveal>
           <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
-          <FaqStack items={faqItems} />
-        </div>
-        <div className={cn(revealClass(), 'hidden max-[820px]:block')} data-reveal>
           <FaqStack items={faqItems} />
         </div>
       </DappSection>

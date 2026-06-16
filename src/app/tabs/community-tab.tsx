@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '../../i18n/use-i18n'
 import { cn } from '~/lib/utils'
@@ -15,7 +15,6 @@ import {
   formatUsd,
   formatUsdCompact,
   mapTeamReferralToCompactRow,
-  mapTeamReferralToMobileRow,
 } from '../../lib/api/format-display'
 import { buildReferralSharePath } from '../../config/referral'
 import { CommunityStatCardSkeleton } from '../components/dapp-skeleton'
@@ -33,11 +32,6 @@ import {
 } from '../shell-layout'
 import { useDappShell } from '../dapp-shell-context'
 import { dappAssets } from '../assets'
-import {
-  compactInvites,
-  mobileCommunityFirstVisitInvites,
-  mobileCommunityInvites,
-} from '../data'
 import type { DappTab, DetailPanelControls } from '../types'
 import { DappActionButton } from '../components/dapp-action-button'
 import {
@@ -54,7 +48,11 @@ import { DappSection } from '../components/dapp-section'
 import { DappWidgetHeader } from '../components/dapp-widget-header'
 import { InviteFlow } from '../components/invite-flow'
 import { QuickLinks } from '../components/quick-links'
+import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
+import { DappTableEmptyState } from '../components/dapp-table-empty-state'
+import { DappTablePagination } from '../components/dapp-table-pagination'
 import { ResponsiveTable } from '../components/responsive-table'
+import { DAPP_TABLE_PAGE_SIZE } from '../../lib/table-pagination'
 
 type CommunityStat = {
   dark?: boolean
@@ -272,7 +270,6 @@ function CommunityDisconnectedWidget({
         detailCollapsed={detailPanel.collapsed}
         intro={t.community.intro}
         onTogglePanel={detailPanel.onToggle}
-        showToggle={false}
         title={t.community.title}
       />
 
@@ -362,36 +359,32 @@ export function CommunityContent({
   const { isAuthenticated, isLoggingIn } = useAuth()
   const referralChain = useReferral(connected)
   const apiEnabled = connected && isAuthenticated
+  const [invitesPage, setInvitesPage] = useState(1)
   const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
   const { displayRank, isRankLoading } = useShareholderRank()
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
-    { page: 1, page_size: 20 },
+    { page: invitesPage, page_size: DAPP_TABLE_PAGE_SIZE },
     apiEnabled,
   )
 
   const inviteRowsCompact = referrals?.items.map(mapTeamReferralToCompactRow) ?? []
-  const inviteRowsMobile = referrals?.items.map(mapTeamReferralToMobileRow) ?? []
-  const useMockInvites = !connected
-  const authPending = connected && (isLoggingIn || !isAuthenticated)
-  const compactRows = useMockInvites ? compactInvites : inviteRowsCompact
-  const mobileRows = useMockInvites ? mobileCommunityInvites : inviteRowsMobile
-  const showInvitesSkeleton =
-    !useMockInvites && (authPending || referralsLoading) && compactRows.length === 0
-  const inviteCount = useMockInvites
-    ? String(compactInvites.length)
-    : referralsLoading || authPending
+  const compactRows = inviteRowsCompact
+  const invitesTotal = referrals?.total ?? 0
+  const showInvitesRequiresAuth = !apiEnabled && !isLoggingIn
+  const showInvitesSkeleton = apiEnabled && referralsLoading && compactRows.length === 0
+  const showInvitesQueryEmpty = apiEnabled && !referralsLoading && compactRows.length === 0
+  const inviteCount = !apiEnabled
+    ? '0'
+    : referralsLoading || isLoggingIn
       ? '…'
       : String(referrals?.total ?? Number(referralChain.directCount || 0))
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
-  const showInvitesEmpty =
-    !useMockInvites && !referralsLoading && !authPending && inviteRowsCompact.length === 0
+  const authPending = connected && (isLoggingIn || !isAuthenticated)
 
   if (!connected) {
     return (
       <div className={cn(shellContentPageClass, 'max-[820px]:pb-20')}>
-        <MobileCommunityFirstStats />
         <CommunityFlowSection onSelectTab={onSelectTab} />
-        <MobileCommunityFirstInvites />
       </div>
     )
   }
@@ -515,13 +508,19 @@ export function CommunityContent({
       <CommunityFlowSection connected={connected} onSelectTab={onSelectTab} tab={tab} />
 
       <DappSection title={inviteSectionTitle}>
-        {showInvitesEmpty ? (
-          <InvitesEmptyState />
+        {showInvitesRequiresAuth ? (
+          <DappTableEmptyState className="mt-3.5" variant="invites" />
+        ) : showInvitesQueryEmpty ? (
+          <DappTableEmptyMessage
+            body={t.community.invitesEmptyBody}
+            className="mt-3.5"
+            title={t.community.invitesEmptyTitle}
+          />
         ) : (
           <>
             <ResponsiveTable
               className={cn(
-                'mt-3.5 max-[820px]:hidden',
+                'mt-3.5',
                 '[&_table]:table-fixed',
                 '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
                 '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
@@ -543,135 +542,15 @@ export function CommunityContent({
               plain
               rows={compactRows}
             />
-            <ResponsiveTable
-              className="mt-3.5 hidden max-[820px]:block"
-              compact
-              headers={[
-                t.tables.joined,
-                t.tables.address,
-                t.tables.title,
-                t.tables.volumeShort,
-              ]}
-              isLoading={showInvitesSkeleton}
-              linkColumns={[1]}
-              plain
-              rows={mobileRows}
+            <DappTablePagination
+              onPageChange={setInvitesPage}
+              page={invitesPage}
+              total={invitesTotal}
             />
           </>
         )}
       </DappSection>
     </div>
-  )
-}
-
-function InvitesEmptyState() {
-  const { messages: t } = useI18n()
-
-  return (
-    <div
-      className={cn(
-        revealClass(),
-        'mt-3.5 grid justify-items-center gap-[18px] overflow-hidden rounded-[18px] bg-card p-[30px_24px] shadow-card',
-        'max-[820px]:gap-3.5 max-[820px]:border max-[820px]:border-border max-[820px]:p-[22px_16px] max-[820px]:shadow-none',
-      )}
-      data-reveal
-    >
-      <div aria-hidden="true" className="grid w-full gap-3 max-[820px]:gap-[11px]">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div
-            className={cn(
-              'grid grid-cols-[minmax(72px,1fr)_minmax(96px,1.4fr)_repeat(3,minmax(40px,0.7fr))] items-center gap-3.5',
-              'max-[820px]:grid-cols-[minmax(56px,80px)_1fr_minmax(46px,56px)] max-[820px]:gap-2.5',
-            )}
-            key={index}
-          >
-            <span className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
-            <i className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
-            <b className="h-3.5 rounded-lg bg-border max-[820px]:h-3 max-[820px]:hidden" />
-            <b className="h-3.5 rounded-lg bg-border max-[820px]:hidden" />
-            <b className="h-3.5 rounded-lg bg-border max-[820px]:h-3" />
-          </div>
-        ))}
-      </div>
-      <div className="grid justify-items-center gap-1.5 text-center text-faint max-[820px]:w-full max-[820px]:gap-[5px]">
-        <strong className="text-[15px] font-semibold leading-[1.2] text-foreground max-[820px]:text-sm">
-          {t.community.invitesEmptyTitle}
-        </strong>
-        <p className="m-0 max-w-[42ch] text-[13px] leading-normal max-[820px]:max-w-none max-[820px]:text-xs">
-          {t.community.invitesEmptyBody}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function MobileCommunityFirstStats() {
-  const { messages: t } = useI18n()
-
-  return (
-    <>
-      <h2
-        className={cn(
-          COMMUNITY_MY_COMMUNITY_HEADING_CLASS,
-          'hidden max-[820px]:block',
-        )}
-        data-reveal
-        id="community-title"
-      >
-        {t.community.myCommunity}
-      </h2>
-      <div
-        className={cn(
-          revealClass(),
-          'hidden max-[820px]:mt-3.5 max-[820px]:grid max-[820px]:grid-cols-3 max-[820px]:gap-2.5',
-        )}
-        data-reveal
-      >
-        <article className="grid min-h-[72px] place-items-center rounded-xl bg-card p-3 text-center shadow-card">
-          <strong className="text-xl font-bold leading-[1.1] text-foreground">0</strong>
-          <span className="text-xs leading-[1.35] text-faint">{t.community.directShort}</span>
-        </article>
-        <article className="grid min-h-[72px] place-items-center rounded-xl bg-card p-3 text-center shadow-card">
-          <strong className="text-xl font-bold leading-[1.1] text-foreground">0</strong>
-          <span className="text-xs leading-[1.35] text-faint">{t.community.myTeam}</span>
-        </article>
-        <article className="grid min-h-[72px] place-items-center rounded-xl bg-card p-3 text-center shadow-card">
-          <strong className="text-xl font-bold leading-[1.1] text-foreground">S3</strong>
-          <span className="text-xs leading-[1.35] text-faint">{t.community.titleShort}</span>
-        </article>
-      </div>
-    </>
-  )
-}
-
-function MobileCommunityFirstInvites() {
-  const { messages: t } = useI18n()
-
-  return (
-    <DappSection
-      className={cn(
-        'hidden max-[820px]:block',
-        '[&_td]:py-[7px] [&_th]:py-[7px]',
-      )}
-      title={t.community.myInvites.replace(
-        '{count}',
-        String(mobileCommunityFirstVisitInvites.length),
-      )}
-    >
-      <ResponsiveTable
-        className="mt-3.5 hidden max-[820px]:block"
-        compact
-        headers={[
-          t.tables.joined,
-          t.tables.address,
-          t.tables.title,
-          t.tables.volumeShort,
-        ]}
-        linkColumns={[1]}
-        plain
-        rows={mobileCommunityFirstVisitInvites}
-      />
-    </DappSection>
   )
 }
 

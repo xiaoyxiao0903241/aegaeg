@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '../lib/swap/calc-amount-out-min'
-import { formatSwapRate } from '../lib/swap/format-swap-rate'
+import { formatSwapRateColon } from '../lib/swap/format-swap-rate'
 import { resolveSwapAction } from '../lib/swap/resolve-swap-action'
 import {
   capTokenAmountInput,
@@ -195,22 +195,18 @@ export function useSwapWidget(authenticated: boolean) {
       return isSpotQuoting || isQuoting ? '' : '—'
     }
 
-    return formatSwapRate({
+    return formatSwapRateColon({
       amountIn: rateQuote.amountIn,
       amountOut: rateQuote.amountOut,
       decimalsIn: pair.sell.decimals,
       decimalsOut: pair.buy.decimals,
-      symbolIn: pair.sell.symbol,
-      symbolOut: pair.buy.symbol,
     })
   }, [
     authenticated,
     isQuoting,
     isSpotQuoting,
     pair.buy.decimals,
-    pair.buy.symbol,
     pair.sell.decimals,
-    pair.sell.symbol,
     rateQuote.amountIn,
     rateQuote.amountOut,
   ])

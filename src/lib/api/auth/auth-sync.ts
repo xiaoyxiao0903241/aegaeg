@@ -1,7 +1,3 @@
-import {
-  readUsableLoginSignature,
-  type LoginSignatureStorage,
-} from './login-signature-cache'
 import { isJwtExpired } from './jwt'
 import { resolveAuthStatus } from './resolve-auth-status'
 import type { StoredAuthSession } from './session'
@@ -13,13 +9,13 @@ export function buildSilentLoginAttemptKey(
   return `${walletAddress.toLowerCase()}:${session?.token ?? 'none'}`
 }
 
-export function shouldAttemptSilentLogin({
+/** Wallet connected but no valid JWT — attempt login once (cached SIWE or fresh signature). */
+export function shouldAttemptAutoLogin({
   hasHydrated,
   walletAddress,
   session,
   isLoggingIn,
   loginError,
-  signatureStorage,
   attemptedKey,
 }: {
   hasHydrated: boolean
@@ -27,7 +23,6 @@ export function shouldAttemptSilentLogin({
   session: StoredAuthSession | null
   isLoggingIn: boolean
   loginError: string | null
-  signatureStorage: LoginSignatureStorage
   attemptedKey: string | null
 }): boolean {
   if (!hasHydrated || !walletAddress || isLoggingIn || loginError) {
@@ -39,13 +34,12 @@ export function shouldAttemptSilentLogin({
     return false
   }
 
-  if (!readUsableLoginSignature(walletAddress, signatureStorage)) {
-    return false
-  }
-
   const nextKey = buildSilentLoginAttemptKey(walletAddress, session)
   return attemptedKey !== nextKey
 }
+
+/** @deprecated Use shouldAttemptAutoLogin */
+export const shouldAttemptSilentLogin = shouldAttemptAutoLogin
 
 export function shouldClearSessionForWalletMismatch(
   session: StoredAuthSession | null,

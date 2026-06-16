@@ -58,6 +58,28 @@ test('apiRequest throws ApiError for business failures', async () => {
   }
 })
 
+test('getTeamRewardClaimLogs calls paginated endpoint', async () => {
+  const { getTeamRewardClaimLogs } = await loadModule('/src/lib/api/endpoints.ts')
+
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url, init) => {
+    assert.match(String(url), /\/team-reward\/logs\?page=1&page_size=5/)
+    assert.equal(init?.headers?.Authorization, 'Bearer jwt')
+
+    return Response.json({
+      code: 0,
+      data: { total: 0, page: 1, page_size: 5, items: [] },
+    })
+  }
+
+  try {
+    const data = await getTeamRewardClaimLogs('jwt', { page: 1, page_size: 5 })
+    assert.deepEqual(data.items, [])
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
 test('getTeamReferrals calls paginated endpoint', async () => {
   const { getTeamReferrals } = await loadModule('/src/lib/api/endpoints.ts')
 

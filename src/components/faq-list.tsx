@@ -54,7 +54,7 @@ const variantStyles = {
     question: 'min-w-0',
     answer: cn(
       dappTextClass('faqAnswer', { tone: 'faq' }),
-      'group-data-[tab=swap]/shell:max-[820px]:leading-normal group-data-[tab=rewards]/shell:max-[820px]:hidden',
+      'group-data-[tab=swap]/shell:max-[820px]:leading-normal group-data-[tab=rewards]/shell:max-[820px]:leading-normal',
     ),
     arrow:
       'grid size-4 shrink-0 origin-center place-items-center text-faint transition-[color,transform] duration-200 ease-out group-data-[state=open]:text-primary group-data-[state=open]:rotate-180',

@@ -7,6 +7,7 @@ export function useAuthenticatedQuery<T>(
   queryKey: QueryKey,
   fetcher: (token: string) => Promise<T>,
   enabled = true,
+  options?: { keepPreviousData?: boolean },
 ) {
   const { token, invalidateSession, isAuthenticated, hasHydrated } = useAuth()
 
@@ -15,6 +16,9 @@ export function useAuthenticatedQuery<T>(
     queryFn: () => fetchAuthenticated(fetcher, token!, invalidateSession),
     enabled: enabled && hasHydrated && isAuthenticated && Boolean(token),
     staleTime: QUERY_STALE_TIME.api,
+    placeholderData: options?.keepPreviousData
+      ? (previousData) => previousData
+      : undefined,
   })
 
   return {

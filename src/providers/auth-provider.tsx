@@ -11,7 +11,7 @@ import { useActiveAccount } from 'thirdweb/react'
 import { ApiError } from '../lib/api/client'
 import {
   buildSilentLoginAttemptKey,
-  shouldAttemptSilentLogin,
+  shouldAttemptAutoLogin,
   shouldClearSessionForWalletMismatch,
   shouldPurgeExpiredSession,
 } from '../lib/api/auth/auth-sync'
@@ -40,6 +40,7 @@ export interface AuthContextValue {
   login: () => Promise<void>
   retryLogin: () => Promise<void>
   logout: () => void
+  clearAuthOnDisconnect: () => void
   invalidateSession: () => void
   clearLoginError: () => void
 }
@@ -148,13 +149,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (
-      !shouldAttemptSilentLogin({
+      !shouldAttemptAutoLogin({
         hasHydrated,
         walletAddress,
         session,
         isLoggingIn,
         loginError,
-        signatureStorage,
         attemptedKey: silentLoginAttemptRef.current,
       })
     ) {
@@ -189,6 +189,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useDappActions.getState().afterAuthLogout()
   }, [])
 
+  const clearAuthOnDisconnect = useCallback(() => {
+    const { clearSession, setLoginError } = useAuthStore.getState()
+    clearSession()
+    setLoginError(null)
+    silentLoginAttemptRef.current = null
+    useDappActions.getState().afterAuthLogout()
+  }, [])
+
   const clearLoginError = useCallback(() => {
     useAuthStore.getState().setLoginError(null)
   }, [])
@@ -210,6 +218,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       retryLogin,
       logout,
+      clearAuthOnDisconnect,
       invalidateSession,
       clearLoginError,
     }),
@@ -217,6 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authStatus.isAuthenticated,
       authStatus.needsSignIn,
       authStatus.token,
+      clearAuthOnDisconnect,
       clearLoginError,
       hasHydrated,
       invalidateSession,

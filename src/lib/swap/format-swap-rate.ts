@@ -1,5 +1,44 @@
 import { formatTokenAmount } from './token-amount'
 
+function formatRateRatioFixed(
+  normalizedOut: bigint,
+  decimalsOut: number,
+  fractionDigits = 4,
+): string {
+  const divisor = 10n ** BigInt(decimalsOut)
+  const whole = normalizedOut / divisor
+  const fraction = normalizedOut % divisor
+  const fractionText = fraction
+    .toString()
+    .padStart(decimalsOut, '0')
+    .slice(0, fractionDigits)
+    .padEnd(fractionDigits, '0')
+
+  return `${whole}.${fractionText}`
+}
+
+/** Swap widget rate label — `1 : 1.0010` (Figma colon format, 4 fraction digits). */
+export function formatSwapRateColon({
+  amountIn,
+  amountOut,
+  decimalsIn,
+  decimalsOut,
+}: {
+  amountIn: bigint
+  amountOut: bigint
+  decimalsIn: number
+  decimalsOut: number
+}): string {
+  if (amountIn === 0n || amountOut === 0n) {
+    return '—'
+  }
+
+  const oneUnitIn = 10n ** BigInt(decimalsIn)
+  const normalizedOut = (amountOut * oneUnitIn) / amountIn
+
+  return `1 : ${formatRateRatioFixed(normalizedOut, decimalsOut)}`
+}
+
 export function formatSwapRate({
   amountIn,
   amountOut,

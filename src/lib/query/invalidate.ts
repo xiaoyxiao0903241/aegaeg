@@ -8,7 +8,7 @@ function sleep(ms: number) {
 
 function readSalesLogCount(): number {
   const entries = queryClient.getQueriesData<Paginated<SalesLogItem>>({
-    queryKey: ['api', 'salesLogs'],
+    queryKey: queryKeys.api.salesLogsRoot,
   })
 
   return entries.reduce((max, [, data]) => Math.max(max, data?.items?.length ?? 0), 0)
@@ -16,7 +16,7 @@ function readSalesLogCount(): number {
 
 async function pollGenesisContributions(baselineCount: number) {
   await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
-  await queryClient.refetchQueries({ queryKey: ['api', 'salesLogs'] })
+  await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
 
   if (readSalesLogCount() > baselineCount) {
     return
@@ -24,7 +24,7 @@ async function pollGenesisContributions(baselineCount: number) {
 
   for (let attempt = 0; attempt < 8; attempt += 1) {
     await sleep(2500)
-    await queryClient.refetchQueries({ queryKey: ['api', 'salesLogs'] })
+    await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
     await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
 
     if (readSalesLogCount() > baselineCount) {
@@ -95,12 +95,14 @@ export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?:
 
 export function invalidateAfterTeamClaim() {
   void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamRewardTotal })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.rewardLogs() })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.api.rewardLogsRoot })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamRewardClaimLogsRoot })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.api.performance })
 }
 
 export function invalidateAfterReferralBind(address: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.api.performance })
   void queryClient.invalidateQueries({ queryKey: queryKeys.api.referralTotal })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamReferrals() })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamReferralsRoot })
 }

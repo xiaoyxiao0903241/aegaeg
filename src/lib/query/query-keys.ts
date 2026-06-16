@@ -4,12 +4,18 @@ export const queryKeys = {
   api: {
     all: ['api'] as const,
     performance: ['api', 'performance'] as const,
+    salesLogsRoot: ['api', 'salesLogs'] as const,
     salesLogs: (params: PaginationParams = {}) =>
       ['api', 'salesLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    rewardLogsRoot: ['api', 'rewardLogs'] as const,
     rewardLogs: (params: PaginationParams = {}) =>
       ['api', 'rewardLogs', params.page ?? 1, params.page_size ?? 20] as const,
     referralTotal: ['api', 'referralTotal'] as const,
     teamRewardTotal: ['api', 'teamRewardTotal'] as const,
+    teamRewardClaimLogsRoot: ['api', 'teamRewardClaimLogs'] as const,
+    teamRewardClaimLogs: (params: PaginationParams = {}) =>
+      ['api', 'teamRewardClaimLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    teamReferralsRoot: ['api', 'teamReferrals'] as const,
     teamReferrals: (params: PaginationParams = {}) =>
       ['api', 'teamReferrals', params.page ?? 1, params.page_size ?? 20] as const,
   },

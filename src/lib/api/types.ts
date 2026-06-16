@@ -43,11 +43,13 @@ export interface RewardLogItem {
   from_address: string
   to_address: string
   amount: string
+  /** floor(amount / 0.03) */
+  order_amount: string
   tx_hash: string | null
   block_number: number
   block_time: number
   log_index: number
-  /** referral_paid | referral_withdrawn | team reward types */
+  /** referral_paid | referral_withdrawn */
   reward_type: string
   status: number
   created_at: string | null
@@ -89,8 +91,17 @@ export interface TeamReferralItem {
   sales_team_market: string
 }
 
+export interface TeamRewardClaimLogItem {
+  /** 0=待领取, 1=已领取, 2=已过期, 3=已替换 */
+  status: number
+  amount: string
+  claimed_at: string | null
+  created_at: string | null
+}
+
 export interface TeamRewardSignature {
   signature: string
+  /** 文档未声明；若后端扩展返回则用于链上 claim */
   salt?: string
   amount?: string
   amountWei?: string
@@ -114,7 +125,6 @@ export interface ClaimConfirmOrder {
 }
 
 export interface ClaimConfirmResult {
-  pending: boolean
   confirmed: boolean
   alreadyConfirmed: boolean
   ignored: boolean

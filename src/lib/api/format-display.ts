@@ -1,4 +1,4 @@
-import type { RewardLogItem, SalesLogItem, TeamReferralItem } from './types'
+import type { RewardLogItem, SalesLogItem, TeamReferralItem, TeamRewardClaimLogItem } from './types'
 import { estimateAgxFromUsd1 } from '../presale/presale-math'
 import { PRESALE_CONFIG } from '../../config/presale'
 
@@ -7,7 +7,7 @@ export function formatPresaleRank(rank: number): string {
   return `S${rank}`
 }
 
-/** Maps API presale_rank (S1=1 … S6=6) to 0-based row indices in the tier table. */
+/** Maps API presale_rank (S1=1 …) to 0-based row indices in the tier table. */
 export function getPresaleRankHighlightedRows(
   rank: number | undefined,
   rowCount: number,
@@ -15,6 +15,18 @@ export function getPresaleRankHighlightedRows(
   if (rank == null || !Number.isFinite(rank) || rank <= 0 || rowCount <= 0) return []
   const index = Math.min(Math.trunc(rank) - 1, rowCount - 1)
   return index >= 0 ? [index] : []
+}
+
+export function getPresaleRankHighlightedRowsForPage(
+  rank: number | undefined,
+  rowCount: number,
+  page: number,
+  pageSize: number,
+): number[] {
+  const pageStart = (page - 1) * pageSize
+  return getPresaleRankHighlightedRows(rank, rowCount)
+    .map((index) => index - pageStart)
+    .filter((index) => index >= 0 && index < pageSize)
 }
 
 export function formatShareholderHintForRank(
@@ -67,6 +79,19 @@ export function formatBlockTime(timestamp: number): string {
   if (!timestamp) return '—'
 
   const date = new Date(timestamp * 1000)
+  return formatDateTimeParts(date)
+}
+
+export function formatApiDateTime(iso: string | null): string {
+  if (!iso) return '—'
+
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return '—'
+
+  return formatDateTimeParts(date)
+}
+
+function formatDateTimeParts(date: Date): string {
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
   const hours = String(date.getHours()).padStart(2, '0')
@@ -146,6 +171,22 @@ export function resolveRewardLogStatusKey(status: number): RewardLogStatusKey {
       return 'paid'
     case 3:
       return 'failed'
+    default:
+      return 'unknown'
+  }
+}
+
+/** reward_claim_orders: 0=待领取, 1=已领取, 2=已过期, 3=已替换 */
+export function resolveTeamRewardClaimStatusKey(status: number): RewardLogStatusKey {
+  switch (status) {
+    case 0:
+      return 'pending'
+    case 1:
+      return 'paid'
+    case 2:
+      return 'failed'
+    case 3:
+      return 'unknown'
     default:
       return 'unknown'
   }
@@ -271,18 +312,72 @@ export function mapRewardLogToRow(
     formatBlockTime(item.block_time),
     amountLabel,
     formatShortAddress(item.from_address),
-    '—',
-    formatRewardTypeLabel(item.reward_type, labels.rewardType),
+    formatOrderAmountUsd(item.order_amount),
+    formatReferralRewardRate(item),
     formatRewardStatus(item.status, labels.logStatus),
+  ]
+}
+
+function formatReferralRewardRate(item: RewardLogItem): string {
+  const amount = Number(item.amount)
+  const orderAmount = Number(item.order_amount)
+  if (orderAmount > 0 && Number.isFinite(amount) && amount > 0) {
+    const percent = Math.round((amount / orderAmount) * 100)
+    if (percent > 0) return `${percent}%`
+  }
+  return '3%'
+}
+
+function parsePercentLabel(value: string): number {
+  const numeric = Number(value.replace('%', '').trim())
+  return Number.isFinite(numeric) && numeric > 0 ? numeric / 100 : 0
+}
+
+function formatOrderAmountUsd(orderAmount: string | undefined): string {
+  const num = Number(orderAmount)
+  if (!Number.isFinite(num) || num <= 0) return '—'
+  return formatUsd(num, 0)
+}
+
+export function mapTeamRewardClaimLogToRow(
+  item: TeamRewardClaimLogItem,
+  labels: {
+    bonusRateLabel: string
+    claimableLabel: string
+    claimedLabel: string
+    logStatus: RewardLogStatusLabels
+    sourceLabel: string
+  },
+): string[] {
+  const amountNum = Number(item.amount)
+  const amountLabel = Number.isFinite(amountNum)
+    ? `+${formatUsd(Math.abs(amountNum), 2)}`
+    : '—'
+  const rateFraction = parsePercentLabel(labels.bonusRateLabel)
+  const contributionLabel =
+    amountNum > 0 && rateFraction > 0
+      ? formatUsd(amountNum / rateFraction, 0)
+      : '—'
+  const statusKey = resolveTeamRewardClaimStatusKey(item.status)
+  const statusLabel =
+    statusKey === 'paid'
+      ? labels.claimedLabel
+      : statusKey === 'pending'
+        ? labels.claimableLabel
+        : labels.logStatus[statusKey]
+
+  return [
+    formatApiDateTime(item.claimed_at ?? item.created_at),
+    amountLabel,
+    labels.sourceLabel,
+    contributionLabel,
+    labels.bonusRateLabel,
+    statusLabel,
   ]
 }
 
 export function isReferralRewardLog(item: RewardLogItem): boolean {
   return item.reward_type === 'referral_paid' || item.reward_type === 'referral_withdrawn'
-}
-
-export function isTeamRewardLog(item: RewardLogItem): boolean {
-  return !isReferralRewardLog(item)
 }
 
 export function buildReferralLink(address: string): string {

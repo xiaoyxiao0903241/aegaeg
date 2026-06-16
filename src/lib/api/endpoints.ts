@@ -10,6 +10,7 @@ import type {
   RewardTotals,
   SalesLogItem,
   TeamReferralItem,
+  TeamRewardClaimLogItem,
   TeamRewardSignature,
   UserPerformance,
 } from './types'
@@ -64,6 +65,19 @@ export async function getTeamReferrals(
   params: PaginationParams = {},
 ): Promise<Paginated<TeamReferralItem>> {
   return apiRequest<Paginated<TeamReferralItem>>('/team/referrals', {
+    token,
+    searchParams: {
+      page: params.page,
+      page_size: params.page_size,
+    },
+  })
+}
+
+export async function getTeamRewardClaimLogs(
+  token: string,
+  params: PaginationParams = {},
+): Promise<Paginated<TeamRewardClaimLogItem>> {
+  return apiRequest<Paginated<TeamRewardClaimLogItem>>('/team-reward/logs', {
     token,
     searchParams: {
       page: params.page,

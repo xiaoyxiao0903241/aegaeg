@@ -5,16 +5,16 @@ import { revealClass } from '~/lib/reveal'
 import {
   useReferralTotal,
   useRewardLogs,
+  useTeamRewardClaimLogs,
   useTeamRewardTotal,
 } from '../../hooks/use-api-data'
 import {
   formatClaimableAmount,
   formatPresaleRank,
   formatUsd,
-  getPresaleRankHighlightedRows,
-  isReferralRewardLog,
-  isTeamRewardLog,
+  getPresaleRankHighlightedRowsForPage,
   mapRewardLogToRow,
+  mapTeamRewardClaimLogToRow,
   resolveRewardTypeI18nKey,
 } from '../../lib/api/format-display'
 import { REWARDS_PROGRESS_PLACEHOLDERS } from '../../config/rewards-progress'
@@ -36,8 +36,8 @@ import {
   shellModulePanelClass,
 } from '../shell-layout'
 import { dappAssets } from '../assets'
-import { buildMobileRewardTierRows, buildRewardTierRows } from '../../lib/presale/tier-table'
-import { rewardRows, teamRewardRows } from '../data'
+import { buildRewardTierRows, getTeamBonusRateLabel } from '../../lib/presale/tier-table'
+import { DAPP_TABLE_PAGE_SIZE, paginateStaticRows } from '../../lib/table-pagination'
 import type { DetailPanelControls } from '../types'
 import { DappActionButton } from '../components/dapp-action-button'
 import {
@@ -48,8 +48,11 @@ import {
   SideTitle,
   SideValue,
 } from '../components/dapp-card'
+import { DappCollapsibleSection } from '../components/dapp-collapsible-section'
 import { DappPillTabs } from '../components/dapp-pill-tabs'
-import { DappSection } from '../components/dapp-section'
+import { DappTablePagination } from '../components/dapp-table-pagination'
+import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
+import { DappTableEmptyState } from '../components/dapp-table-empty-state'
 import { DappWidgetHeader } from '../components/dapp-widget-header'
 import { FaqStack } from '../components/faq-stack'
 import { ProgressMeter } from '../components/progress-meter'
@@ -58,6 +61,14 @@ import { useDappShell } from '../dapp-shell-context'
 import { dappGap, dappSpacing } from '../../components/primitive-styles'
 
 const PROGRESS_CARD_CLASS = cn(dappSpacing.stackBetweenCards, 'grid', dappGap.sm, 'max-[820px]:py-[13px] max-[820px]:[&_span]:text-faint')
+
+const FAQ_STACK_CLASS = cn(
+  'justify-items-start [&_[data-faq-item]]:w-full [&_[data-faq-item]]:max-w-full',
+  'max-[820px]:[&_[data-faq-item]]:rounded-[14px] max-[820px]:[&_[data-faq-item]]:border-0 max-[820px]:[&_[data-faq-item]]:px-4 max-[820px]:[&_[data-faq-item]]:shadow-faq',
+  'max-[820px]:[&_[data-faq-trigger]]:py-3.5 max-[820px]:[&_[data-faq-trigger]]:text-[13px] max-[820px]:[&_[data-faq-trigger]]:font-normal max-[820px]:[&_[data-faq-trigger]]:text-faq-text',
+  'max-[820px]:[&_[data-faq-answer]]:leading-normal',
+  '[&_[data-faq-trigger]]:text-sm [&_[data-faq-trigger]]:font-normal [&_[data-faq-trigger]]:text-faq-text',
+)
 
 export function RewardsWidget({
   detailPanel,
@@ -133,9 +144,9 @@ export function RewardsWidget({
 
   const teamProgressPercent = useProgressPlaceholders
     ? REWARDS_PROGRESS_PLACEHOLDERS.teamProgressPercent
-    : tierProgress.teamLegRank != null || teamVolumeUsd <= 0
-      ? null
-      : tierProgress.teamProgressPercent
+    : tierProgress.isMaxRank
+      ? 100
+      : tierProgress.teamProgressPercent ?? 0
 
   const showPerformanceSkeleton = connected && apiEnabled && performanceLoading && !performance
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
@@ -167,7 +178,7 @@ export function RewardsWidget({
         detailCollapsed={detailPanel.collapsed}
         intro={t.rewards.intro}
         onTogglePanel={detailPanel.onToggle}
-        showToggle={connected}
+        showToggle
         title={t.rewards.title}
       />
 
@@ -215,12 +226,10 @@ export function RewardsWidget({
             {teamProgressValue}
           </strong>
         </div>
-        {teamProgressPercent != null ? (
-          <ProgressMeter
-            label={teamProgressLabel}
-            value={teamProgressPercent}
-          />
-        ) : null}
+        <ProgressMeter
+          label={teamProgressLabel}
+          value={teamProgressPercent}
+        />
       </DappSideCard>
       )}
 
@@ -259,8 +268,9 @@ export function RewardsWidget({
           </DappActionButton>
         }
         className={cn(
-          'mt-2 [&_strong]:text-lg',
-          'max-[820px]:pb-3 max-[820px]:[&_button]:mt-1.5 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
+          'mt-3 [&_strong]:text-lg',
+          '[&_button]:mt-3',
+          'max-[820px]:pb-3 max-[820px]:[&_button]:mt-3 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
         )}
         label={t.rewards.teamRewards}
         meta={teamRewardMeta}
@@ -278,9 +288,17 @@ export function RewardsContent() {
   const { displayRank, heroBody, heroTitle, isRankLoading } = useShareholderRankLabels(t)
   const showHeroSkeleton = connected && isRankLoading
   const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
+  const [referralPage, setReferralPage] = useState(1)
+  const [teamPage, setTeamPage] = useState(1)
+  const [tierPage, setTierPage] = useState(1)
   const apiEnabled = connected && isAuthenticated
+  const bonusRateLabel = getTeamBonusRateLabel(displayRank)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
-    { page: 1, page_size: 20 },
+    { page: referralPage, page_size: DAPP_TABLE_PAGE_SIZE },
+    apiEnabled,
+  )
+  const { data: teamClaimLogs, isLoading: teamClaimLogsLoading } = useTeamRewardClaimLogs(
+    { page: teamPage, page_size: DAPP_TABLE_PAGE_SIZE },
     apiEnabled,
   )
   const rewardLogLabels = useMemo(
@@ -290,33 +308,43 @@ export function RewardsContent() {
     }),
     [t.rewards.logStatus, t.rewards.rewardType],
   )
+  const teamHistoryLabels = useMemo(
+    () => ({
+      bonusRateLabel,
+      claimableLabel: t.common.claimable,
+      claimedLabel: t.rewards.logStatus.claimed,
+      logStatus: t.rewards.logStatus,
+      sourceLabel: t.rewards.teamHistorySource,
+    }),
+    [bonusRateLabel, t.common.claimable, t.rewards.logStatus, t.rewards.teamHistorySource],
+  )
 
   const referralHistoryRows =
-    rewardLogs?.items.filter(isReferralRewardLog).map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
+    rewardLogs?.items.map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
   const teamHistoryRows =
-    rewardLogs?.items.filter(isTeamRewardLog).map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
-  const useMockHistory = !connected
-  const authPending = connected && (isLoggingIn || !isAuthenticated)
-  const historyRows = useMockHistory
-    ? historyTab === 'referral'
-      ? rewardRows
-      : teamRewardRows
-    : historyTab === 'referral'
-      ? referralHistoryRows
-      : teamHistoryRows
+    teamClaimLogs?.items.map((item) => mapTeamRewardClaimLogToRow(item, teamHistoryLabels)) ?? []
+  const showHistoryRequiresAuth = !apiEnabled && !isLoggingIn
+  const historyRows = historyTab === 'referral' ? referralHistoryRows : teamHistoryRows
+  const historyTotal = historyTab === 'referral'
+    ? rewardLogs?.total ?? 0
+    : teamClaimLogs?.total ?? 0
+  const historyPage = historyTab === 'referral' ? referralPage : teamPage
+  const onHistoryPageChange = historyTab === 'referral' ? setReferralPage : setTeamPage
+  const historyLoading = historyTab === 'referral' ? rewardLogsLoading : teamClaimLogsLoading
   const showHistorySkeleton =
-    !useMockHistory &&
-    (authPending || (apiEnabled && rewardLogsLoading)) &&
-    historyRows.length === 0
+    isLoggingIn ||
+    (apiEnabled && historyLoading && historyRows.length === 0)
+  const showHistoryQueryEmpty = apiEnabled && !historyLoading && historyRows.length === 0
 
   const rewardTiers = buildRewardTierRows()
-  const mobileRewardTiers = buildMobileRewardTierRows()
+  const { rows: pagedTierRows, total: tierTotal } = paginateStaticRows(
+    rewardTiers,
+    tierPage,
+    DAPP_TABLE_PAGE_SIZE,
+  )
   const tierHighlightedRows = connected
-    ? getPresaleRankHighlightedRows(displayRank, rewardTiers.length)
-    : [1]
-  const mobileTierHighlightedRows = connected
-    ? getPresaleRankHighlightedRows(displayRank, mobileRewardTiers.length)
-    : [1]
+    ? getPresaleRankHighlightedRowsForPage(displayRank, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
+    : getPresaleRankHighlightedRowsForPage(2, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
 
   const historyHeaders =
     historyTab === 'referral'
@@ -408,9 +436,8 @@ export function RewardsContent() {
         </div>
       </section>
 
-      <DappSection title={t.rewards.allTiers}>
+      <DappCollapsibleSection title={t.rewards.allTiers}>
         <ResponsiveTable
-          className="max-[820px]:hidden"
           compact
           headers={[
             t.tables.title,
@@ -422,28 +449,12 @@ export function RewardsContent() {
           highlightedRows={tierHighlightedRows}
           plain
           positiveColumns={[3]}
-          rows={rewardTiers.map((row) => [...row])}
+          rows={pagedTierRows.map((row) => [...row])}
         />
-        <ResponsiveTable
-          className="hidden max-[820px]:block"
-          compact
-          headers={[
-            t.tables.title,
-            t.tables.personalShort,
-            t.tables.bonusShort,
-            t.tables.rankShort,
-          ]}
-          highlightedRows={mobileTierHighlightedRows}
-          plain
-          positiveColumns={[2]}
-          rows={mobileRewardTiers.map((row) => [...row])}
-        />
-      </DappSection>
+        <DappTablePagination onPageChange={setTierPage} page={tierPage} total={tierTotal} />
+      </DappCollapsibleSection>
 
-      <DappSection
-        className="max-[820px]:hidden"
-        title={t.rewards.history}
-      >
+      <DappCollapsibleSection title={t.rewards.history}>
         <div className={cn(revealClass(), 'mt-3.5')} data-reveal>
           <DappPillTabs
             ariaLabel={t.rewards.history}
@@ -454,40 +465,71 @@ export function RewardsContent() {
             ]}
             onSelect={(index) => setHistoryTab(index === 0 ? 'referral' : 'team')}
           />
-          <ResponsiveTable
-            className="[&_th]:text-faint"
-            compact
-            headers={historyHeaders}
-            isLoading={showHistorySkeleton}
-            loadingRowCount={4}
-            plain
-            positiveColumns={[1]}
-            rows={historyRows}
-          />
+          {showHistoryRequiresAuth ? (
+            <DappTableEmptyState className="mt-0" variant="history" />
+          ) : showHistoryQueryEmpty ? (
+            <DappTableEmptyMessage
+              body={
+                historyTab === 'referral'
+                  ? t.rewards.referralHistoryEmptyBody
+                  : t.rewards.teamHistoryEmptyBody
+              }
+              className="mt-0"
+              title={
+                historyTab === 'referral'
+                  ? t.rewards.referralHistoryEmpty
+                  : t.rewards.teamHistoryEmpty
+              }
+            />
+          ) : (
+            <>
+              <ResponsiveTable
+                className="[&_th]:text-faint"
+                compact
+                headers={historyHeaders}
+                isLoading={showHistorySkeleton}
+                loadingRowCount={4}
+                plain
+                positiveColumns={[1]}
+                rows={historyRows}
+              />
+              <DappTablePagination
+                onPageChange={onHistoryPageChange}
+                page={historyPage}
+                total={historyTotal}
+              />
+            </>
+          )}
         </div>
-      </DappSection>
+      </DappCollapsibleSection>
 
-      <DappSection
+      <DappCollapsibleSection
         className="max-[820px]:mt-[22px] max-[820px]:[&_h3]:text-[17px]"
         title={t.swap.faq}
       >
         <FaqStack
-          className={cn(
-            'justify-items-start [&_[data-faq-item]]:w-full [&_[data-faq-item]]:max-w-full',
-            'max-[820px]:[&_[data-faq-item]]:rounded-[14px] max-[820px]:[&_[data-faq-item]]:border-0 max-[820px]:[&_[data-faq-item]]:px-4 max-[820px]:[&_[data-faq-item]]:shadow-faq',
-            'max-[820px]:[&_[data-faq-trigger]]:py-3.5 max-[820px]:[&_[data-faq-trigger]]:text-[13px] max-[820px]:[&_[data-faq-trigger]]:font-normal max-[820px]:[&_[data-faq-trigger]]:text-faq-text',
-            'max-[820px]:[&_p]:hidden',
-            '[&_[data-faq-trigger]]:text-sm [&_[data-faq-trigger]]:font-normal [&_[data-faq-trigger]]:text-faq-text',
-          )}
+          className={FAQ_STACK_CLASS}
           defaultOpenFirst={false}
           items={[
             {
               answer: t.rewards.faqSettlementBody,
               question: t.rewards.faqSettlement,
             },
+            {
+              answer: t.rewards.faqReferralBody,
+              question: t.rewards.faqReferral,
+            },
+            {
+              answer: t.rewards.faqTeamClaimBody,
+              question: t.rewards.faqTeamClaim,
+            },
+            {
+              answer: t.rewards.faqRankBody,
+              question: t.rewards.faqRank,
+            },
           ]}
         />
-      </DappSection>
+      </DappCollapsibleSection>
     </div>
   )
 }

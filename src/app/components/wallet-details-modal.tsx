@@ -41,7 +41,7 @@ export function WalletDetailsModal({
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { disconnect } = useDisconnect()
-  const { logout } = useAuth()
+  const { clearAuthOnDisconnect } = useAuth()
   const { messages: t } = useI18n()
   const [copied, setCopied] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
@@ -169,7 +169,7 @@ export function WalletDetailsModal({
     if (wallet) {
       await disconnect(wallet)
     }
-    logout()
+    clearAuthOnDisconnect()
     onOpenChange(false)
   }
 

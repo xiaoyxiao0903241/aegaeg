@@ -10,12 +10,19 @@ test('formatPresaleRank maps API rank to shareholder label', async () => {
 })
 
 test('getPresaleRankHighlightedRows maps rank to tier table row index', async () => {
-  const { getPresaleRankHighlightedRows } = await loadModule('/src/lib/api/format-display.ts')
+  const {
+    getPresaleRankHighlightedRows,
+    getPresaleRankHighlightedRowsForPage,
+  } = await loadModule('/src/lib/api/format-display.ts')
 
   assert.deepEqual(getPresaleRankHighlightedRows(0, 6), [])
   assert.deepEqual(getPresaleRankHighlightedRows(3, 6), [2])
   assert.deepEqual(getPresaleRankHighlightedRows(6, 6), [5])
-  assert.deepEqual(getPresaleRankHighlightedRows(8, 6), [5])
+  assert.deepEqual(getPresaleRankHighlightedRows(8, 10), [7])
+
+  assert.deepEqual(getPresaleRankHighlightedRowsForPage(6, 10, 1, 5), [])
+  assert.deepEqual(getPresaleRankHighlightedRowsForPage(6, 10, 2, 5), [0])
+  assert.deepEqual(getPresaleRankHighlightedRowsForPage(2, 10, 1, 5), [1])
 })
 
 test('formatShareholderHintForRank renders tier-specific hint', async () => {
@@ -102,6 +109,7 @@ test('mapRewardLogToRow uses i18n labels for type and status', async () => {
       from_address: '0xabc123def4567890abcdef1234567890abcdef12',
       to_address: '0xdef',
       amount: '12.5',
+      order_amount: '416',
       tx_hash: null,
       block_number: 1,
       block_time: 1_700_000_000,
@@ -114,6 +122,41 @@ test('mapRewardLogToRow uses i18n labels for type and status', async () => {
     labels,
   )
 
+  assert.equal(row[3], '$416')
+})
+
+test('mapTeamRewardClaimLogToRow renders presale team claim history', async () => {
+  const { mapTeamRewardClaimLogToRow } = await loadModule('/src/lib/api/format-display.ts')
+  const labels = {
+    bonusRateLabel: '2%',
+    claimableLabel: '可领取',
+    claimedLabel: '已领取',
+    sourceLabel: '周期结算',
+    logStatus: {
+      pending: '待领取',
+      processing: '处理中',
+      paid: '已领取',
+      claimed: '已领取',
+      failed: '已过期',
+      unknown: '—',
+    },
+  }
+
+  const row = mapTeamRewardClaimLogToRow(
+    {
+      status: 1,
+      amount: '342.18',
+      claimed_at: '2026-05-25T00:00:00.000Z',
+      created_at: '2026-05-24T12:00:00.000Z',
+    },
+    labels,
+  )
+
+  assert.equal(row[1], '+$342.18')
+  assert.equal(row[2], '周期结算')
+  assert.equal(row[3], '$17,109')
+  assert.equal(row[4], '2%')
+  assert.equal(row[5], '已领取')
 })
 
 test('formatClaimableAmount subtracts claimed from total', async () => {

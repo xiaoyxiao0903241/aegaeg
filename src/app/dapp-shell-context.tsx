@@ -36,6 +36,6 @@ export function useDappShell(): DappShellState {
     needsSignIn,
     walletReady,
     isWalletConnecting,
-    detailCollapsed: connected && detailCollapsed,
+    detailCollapsed,
   }
 }

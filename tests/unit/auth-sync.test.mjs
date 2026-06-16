@@ -2,17 +2,14 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('auth sync helpers gate silent login and wallet mismatch', async () => {
-  const { createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/lib/api/auth/login-signature-cache.ts',
-  )
+test('auth sync helpers gate auto login and wallet mismatch', async () => {
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/lib/api/auth/session.ts')
   const {
     buildSilentLoginAttemptKey,
-    shouldAttemptSilentLogin,
+    shouldAttemptAutoLogin,
     shouldClearSessionForWalletMismatch,
     shouldPurgeExpiredSession,
   } = await loadModule('/src/lib/api/auth/auth-sync.ts')
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/lib/api/auth/session.ts')
 
   const nowSec = Math.floor(Date.now() / 1000)
   const header = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64url')
@@ -28,27 +25,6 @@ test('auth sync helpers gate silent login and wallet mismatch', async () => {
     savedAt: Date.now(),
   })
 
-  const signatureStorage = createMemoryLoginSignatureStorage()
-  const futureAt = new Date(Date.now() + 3600_000).toUTCString()
-  signatureStorage.write({
-    address: '0xabc',
-    message: [
-      'aegis-x.io wants you to sign in with your Ethereum account:',
-      '0xabc',
-      '',
-      'Sign in to AEGIS X',
-      '',
-      'URI: https://aegis-x.io',
-      'Version: 1',
-      'Chain ID: 56',
-      'Nonce: cached-nonce',
-      'Issued At: 2026-01-01T00:00:00.000Z',
-      `Expiration Time: ${futureAt}`,
-    ].join('\n'),
-    signature: '0xsig',
-    savedAt: Date.now(),
-  })
-
   assert.equal(
     shouldClearSessionForWalletMismatch(sessionStorage.read(), '0xdef'),
     true,
@@ -57,27 +33,39 @@ test('auth sync helpers gate silent login and wallet mismatch', async () => {
 
   const attemptKey = buildSilentLoginAttemptKey('0xabc', null)
   assert.equal(
-    shouldAttemptSilentLogin({
+    shouldAttemptAutoLogin({
       hasHydrated: true,
       walletAddress: '0xabc',
       session: null,
       isLoggingIn: false,
       loginError: null,
-      signatureStorage,
       attemptedKey: null,
     }),
     true,
+    'auto login without cached signature',
   )
   assert.equal(
-    shouldAttemptSilentLogin({
+    shouldAttemptAutoLogin({
       hasHydrated: true,
       walletAddress: '0xabc',
       session: null,
       isLoggingIn: false,
       loginError: null,
-      signatureStorage,
       attemptedKey: attemptKey,
     }),
     false,
+    'skip duplicate auto login attempt',
+  )
+  assert.equal(
+    shouldAttemptAutoLogin({
+      hasHydrated: true,
+      walletAddress: '0xabc',
+      session: null,
+      isLoggingIn: false,
+      loginError: 'User rejected',
+      attemptedKey: null,
+    }),
+    false,
+    'skip auto login after user rejection',
   )
 })

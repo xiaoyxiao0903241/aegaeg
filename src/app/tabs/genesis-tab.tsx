@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useI18n } from '../../i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { buttonDisabledClass, dappButtonClass } from '~/lib/dapp-styles'
@@ -13,7 +13,6 @@ import {
   calcProgressPercent,
   formatUsd,
   mapSalesLogToDesktopRow,
-  mapSalesLogToMobileRow,
   sumSalesLogAmountUsd,
 } from '../../lib/api/format-display'
 import { PRESALE_CONFIG } from '../../config/presale'
@@ -25,7 +24,7 @@ import {
   shellModulePanelClass,
 } from '../shell-layout'
 import { dappAssets } from '../assets'
-import { contributionRows, mobileContributionRows, seasons as fallbackSeasons } from '../data'
+import { seasons as fallbackSeasons } from '../data'
 import type { DetailPanelControls } from '../types'
 import { DappActionButton } from '../components/dapp-action-button'
 import { DappActionRow } from '../components/dapp-action-row'
@@ -37,12 +36,15 @@ import { FaqStack } from '../components/faq-stack'
 import { GenesisPromoCard } from '../components/genesis-promo-card'
 import { MetricGrid } from '../components/metric-grid'
 import { ProgressMeter } from '../components/progress-meter'
+import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
+import { DappTableEmptyState } from '../components/dapp-table-empty-state'
+import { DappTablePagination } from '../components/dapp-table-pagination'
 import { ResponsiveTable } from '../components/responsive-table'
+import { DAPP_TABLE_PAGE_SIZE } from '../../lib/table-pagination'
 import { SeasonSelector } from '../components/season-selector'
 import { useDappShell } from '../dapp-shell-context'
 import { useAuth } from '../../providers/auth-provider'
 import {
-  ContributionBlockSkeleton,
   DappSkeleton,
   MetricCardSkeleton,
   SeasonOptionSkeleton,
@@ -139,7 +141,6 @@ export function GenesisWidget({
         detailCollapsed={detailPanel.collapsed}
         intro={seasonIntro}
         onTogglePanel={detailPanel.onToggle}
-        showToggle={connected}
         title={t.genesis.title}
       />
 
@@ -240,9 +241,10 @@ export function GenesisContent() {
     String(genesis.activeSeasonNumber),
   )
   const apiEnabled = connected && isAuthenticated
+  const [contributionsPage, setContributionsPage] = useState(1)
   const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
-    { page: 1, page_size: 20 },
+    { page: contributionsPage, page_size: DAPP_TABLE_PAGE_SIZE },
     apiEnabled,
   )
 
@@ -262,30 +264,21 @@ export function GenesisContent() {
   const contributedUsd = Math.max(apiContributedUsd, chainContributedUsd, salesLogsTotalUsd)
   const contributed = String(contributedUsd)
   const contributionProgress = calcProgressPercent(contributed, maxContribution)
-  const isContributionLoading =
-    apiEnabled &&
-    contributedUsd === 0 &&
-    genesis.userTotal === 0n &&
-    (performanceLoading || salesLoading)
   const contributedLabel = `${formatUsd(contributed)} / ${formatUsd(maxContribution)}`
 
   const desktopRows =
     salesLogs?.items.map((item) => mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)) ?? []
-  const mobileRows =
-    salesLogs?.items.map((item) => mapSalesLogToMobileRow(item, genesis.agxPriceUsd)) ?? []
-  const useMockRows = !connected && !genesis.walletReady
-  const authPending = connected && (isLoggingIn || !isAuthenticated)
-  const tableRows = useMockRows ? contributionRows : desktopRows
-  const tableRowsMobile = useMockRows ? mobileContributionRows : mobileRows
+  const tableRows = desktopRows
+  const contributionsTotal = salesLogs?.total ?? 0
+  const showContributionsRequiresAuth = !apiEnabled && !isLoggingIn
   const showSalesSyncHint =
     apiEnabled && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
-  const showContributionsSignInHint =
-    !apiEnabled && genesis.walletReady && genesis.userTotal > 0n && desktopRows.length === 0
   const showContributionSkeleton =
-    connected &&
-    !useMockRows &&
+    apiEnabled &&
     desktopRows.length === 0 &&
-    (authPending || isContributionLoading || salesLoading)
+    (isLoggingIn || salesLoading)
+  const showContributionsQueryEmpty =
+    apiEnabled && !salesLoading && !showSalesSyncHint && desktopRows.length === 0
 
   return (
     <div className={shellContentPageClass}>
@@ -385,10 +378,6 @@ export function GenesisContent() {
 
       <DappSection title={t.genesis.myContributions}>
         <div className={cn(revealClass(), 'mt-3.5 max-[820px]:mt-3')} data-reveal>
-          {showContributionSkeleton ? (
-            <ContributionBlockSkeleton />
-          ) : (
-            <>
           <div className="mb-3 grid gap-1.5 border-0 bg-transparent p-0">
             <div className="flex items-center justify-between gap-3">
               <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
@@ -408,15 +397,13 @@ export function GenesisContent() {
               {t.genesis.contributionsSyncPending}
             </p>
           ) : null}
-          {showContributionsSignInHint ? (
-            <p className="mb-3 text-[13px] leading-normal text-muted-foreground">
-              {t.rewards.rankSignInRequired}
-            </p>
-          ) : null}
-          {tableRows.length > 0 ? (
+          {showContributionsRequiresAuth ? (
+            <DappTableEmptyState variant="contributions" />
+          ) : showContributionsQueryEmpty ? (
+            <DappTableEmptyMessage title={t.genesis.contributionsEmpty} />
+          ) : (
             <>
               <ResponsiveTable
-                className="max-[820px]:hidden"
                 compact
                 headers={[
                   t.tables.time,
@@ -425,34 +412,24 @@ export function GenesisContent() {
                   t.tables.estimatedAgx,
                   t.tables.tx,
                 ]}
+                isLoading={showContributionSkeleton}
+                loadingRowCount={4}
                 plain
                 linkColumns={[4]}
                 positiveColumns={[2]}
                 rows={tableRows}
               />
-              <ResponsiveTable
-                className="hidden max-[820px]:block"
-                compact
-                headers={[
-                  t.tables.time,
-                  t.tables.paid,
-                  t.tables.discount,
-                  t.tables.estimatedAgx,
-                ]}
-                plain
-                positiveColumns={[2]}
-                rows={tableRowsMobile}
+              <DappTablePagination
+                onPageChange={setContributionsPage}
+                page={contributionsPage}
+                total={contributionsTotal}
               />
-            </>
-          ) : apiEnabled && !showSalesSyncHint && !showContributionsSignInHint ? (
-            <p className="text-[13px] leading-normal text-muted-foreground">{t.genesis.contributionsEmpty}</p>
-          ) : null}
             </>
           )}
         </div>
       </DappSection>
 
-      <DappSection className="max-[820px]:hidden" title={t.swap.faq}>
+      <DappSection title={t.swap.faq}>
         <FaqStack
           items={[
             {

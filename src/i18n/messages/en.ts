@@ -16,6 +16,10 @@ const en = defineMessages({
     expand: 'Expand',
     confirm: 'Confirm',
     close: 'Close',
+    paginationTotal: 'Total {total}',
+    paginationPerPage: '{size} per page',
+    paginationPrev: 'Previous page',
+    paginationNext: 'Next page',
   },
   nav: {
     swap: 'Swap',
@@ -73,6 +77,7 @@ const en = defineMessages({
     flip: 'Swap from/to',
     balance: 'Balance',
     rate: 'Rate',
+    ratePlaceholder: '1 : 1',
     slippage: 'Slippage tolerance',
     slippageSettings: 'Slippage tolerance settings',
     route: 'Route',
@@ -299,8 +304,24 @@ const en = defineMessages({
     history: 'Reward history',
     referralHistory: 'Referral rewards',
     teamHistory: 'Team rewards',
+    referralHistoryEmpty: 'No referral reward records yet',
+    referralHistoryEmptyBody:
+      'Referral rewards appear here after your referees contribute during Genesis.',
+    teamHistoryEmpty: 'No team reward records yet',
+    teamHistoryEmptyBody:
+      'Team settlement and claim history will appear here once rewards accrue.',
     faqSettlement: 'How are team bonuses settled?',
     faqSettlementBody: 'Team bonuses settle by epoch after qualified contributions clear.',
+    faqReferral: 'How are referral rewards calculated?',
+    faqReferralBody:
+      'Referral rewards are paid automatically when your referee contributes during Genesis. The reward rate depends on your shareholder tier.',
+    faqTeamClaim: 'How do I claim team rewards?',
+    faqTeamClaimBody:
+      'Team rewards accrue by settlement epoch. Use “Claim to wallet” on the left panel when a balance becomes claimable.',
+    faqRank: 'How is shareholder rank determined?',
+    faqRankBody:
+      'Rank is based on your personal Genesis contribution and team volume. Higher ranks unlock larger team bonus rates.',
+    teamHistorySource: 'Epoch settlement',
     rewardType: {
       referralPaid: 'Referral',
       referralWithdrawn: 'Referral claim',
@@ -312,6 +333,7 @@ const en = defineMessages({
       pending: 'Pending',
       processing: 'Processing',
       paid: 'Paid',
+      claimed: 'Claimed',
       failed: 'Failed',
       unknown: '—',
     },
