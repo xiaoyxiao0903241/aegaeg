@@ -28,13 +28,6 @@ export const localeMeta: Record<Locale, LocaleMeta> = {
     menuName: '简体中文',
     menuLabel: 'Chinese, Simplified',
   },
-  'zh-tw': {
-    label: '繁中',
-    htmlLang: 'zh-TW',
-    menuCode: '繁',
-    menuName: '繁體中文',
-    menuLabel: 'Chinese, Traditional',
-  },
   ko: {
     label: 'KO',
     htmlLang: 'ko',

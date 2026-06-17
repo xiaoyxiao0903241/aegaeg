@@ -90,3 +90,28 @@ export function estimateAgxFromUsd1(
 
   return amountUsd1 / effectiveAgxPrice
 }
+
+export const AIRDROP_BPS_BY_PHASE = [500, 200, 100] as const
+
+export function getAirdropBpsForPhase(phaseIndex: number): number {
+  return AIRDROP_BPS_BY_PHASE[phaseIndex] ?? 100
+}
+
+/** AGX amount at reference price — not the discounted purchase price. */
+export function estimateContributionValueUsd(
+  amountUsd1: number,
+  discountBps: number,
+  agxPriceUsd: number,
+): number {
+  const agx = estimateAgxFromUsd1(amountUsd1, discountBps, agxPriceUsd)
+  return agx * agxPriceUsd
+}
+
+/** X token airdrop value in USD from phase airdrop ratio (+5% / +2% / +1%). */
+export function estimateXTokenAirdropUsd(
+  amountUsd1: number,
+  phaseIndex: number,
+): number {
+  if (amountUsd1 <= 0) return 0
+  return amountUsd1 * (getAirdropBpsForPhase(phaseIndex) / 10_000)
+}

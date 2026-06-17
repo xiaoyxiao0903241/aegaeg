@@ -64,6 +64,7 @@ export function useShareholderRank() {
 
 export function useShareholderRankLabels(t: {
   rewards: {
+    heroBodyForRank: string
     heroBody: string
     rankSignInRequired: string
     shareholder: string
@@ -107,7 +108,18 @@ export function useShareholderRankLabels(t: {
     )
   })()
 
-  const heroBody = rankState.isRankLoading ? '' : t.rewards.heroBody
+  const heroBody = (() => {
+    if (rankState.isRankLoading) return ''
+    if (!rankState.connected || !rankState.isAuthenticated || rankState.displayRank <= 0) {
+      return t.rewards.shareholderHintNoRank
+    }
+    return formatShareholderHintForRank(
+      rankState.displayRank,
+      t.rewards.heroBodyForRank,
+      t.rewards.shareholderHintNoRank,
+      buildRewardTierRows(),
+    )
+  })()
 
   return {
     ...rankState,

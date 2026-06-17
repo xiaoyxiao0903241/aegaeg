@@ -62,6 +62,7 @@ export function invalidatePresaleChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presalePhases })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleActivePhase })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAgxPrice })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleTotalPurchased })
 
   if (!address) return
 
@@ -82,6 +83,10 @@ export function invalidateAfterSwap(address: string, sellToken: string, buyToken
 export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?: bigint) {
   if (purchaseAmount && purchaseAmount > 0n) {
     queryClient.setQueryData(queryKeys.chain.presaleUserTotal(address), (current?: bigint) => {
+      const base = typeof current === 'bigint' ? current : 0n
+      return base + purchaseAmount
+    })
+    queryClient.setQueryData(queryKeys.chain.presaleTotalPurchased, (current?: bigint) => {
       const base = typeof current === 'bigint' ? current : 0n
       return base + purchaseAmount
     })

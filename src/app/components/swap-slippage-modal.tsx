@@ -56,9 +56,10 @@ export function SwapSlippageModal({
       open={open}
       overlayClassName="bg-[oklch(0%_0_0/35%)]"
       className={cn(
+        'border-0 bg-card',
         'w-[min(calc(100%-32px),400px)] max-[820px]:w-full',
         'max-[820px]:rounded-t-[24px] max-[820px]:px-4 max-[820px]:pb-[max(20px,env(safe-area-inset-bottom))] max-[820px]:pt-3',
-        'min-[821px]:rounded-[24px] min-[821px]:border-0 min-[821px]:bg-card min-[821px]:p-6',
+        'min-[821px]:rounded-[24px] min-[821px]:p-6',
         'min-[821px]:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
       )}
     >

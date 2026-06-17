@@ -13,13 +13,13 @@ import {
   calcProgressPercent,
   formatUsd,
   mapSalesLogToDesktopRow,
+  mapSalesLogToMobileRow,
   sumSalesLogAmountUsd,
 } from '../../lib/api/format-display'
 import { PRESALE_CONFIG } from '../../config/presale'
 import { BSC_CONTRACTS } from '../../config/contracts'
 import { bscscanAddress } from '../../config/explorer'
 import {
-  shellContentHeadingClass,
   shellContentPageClass,
   shellModulePanelClass,
 } from '../shell-layout'
@@ -28,6 +28,7 @@ import { seasons as fallbackSeasons } from '../data'
 import type { DetailPanelControls } from '../types'
 import { DappActionButton } from '../components/dapp-action-button'
 import { DappActionRow } from '../components/dapp-action-row'
+import { DappContentHeading } from '../components/dapp-content-heading'
 import { MetricCard } from '../components/dapp-card'
 import { DappMetaList } from '../components/dapp-meta-list'
 import { DappSection } from '../components/dapp-section'
@@ -43,6 +44,7 @@ import { ResponsiveTable } from '../components/responsive-table'
 import { DAPP_TABLE_PAGE_SIZE } from '../../lib/table-pagination'
 import { SeasonSelector } from '../components/season-selector'
 import { useDappShell } from '../dapp-shell-context'
+import { useMobileViewport } from '../../hooks/use-mobile-viewport'
 import { useAuth } from '../../providers/auth-provider'
 import {
   DappSkeleton,
@@ -136,7 +138,13 @@ export function GenesisWidget({
   }, [genesis.error, t.genesis.insufficientAllowance, t.genesis.insufficientUsd1])
 
   return (
-    <div className={cn(shellModulePanelClass, 'min-[821px]:[&>*]:shrink-0')}>
+    <div
+      className={cn(
+        shellModulePanelClass,
+        'min-[821px]:[&>*]:shrink-0',
+        'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
+      )}
+    >
       <DappWidgetHeader
         detailCollapsed={detailPanel.collapsed}
         intro={seasonIntro}
@@ -145,7 +153,7 @@ export function GenesisWidget({
       />
 
       {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
-        <div aria-busy="true" className={cn(revealClass(), 'mt-3.5 grid gap-2')} data-reveal>
+        <div aria-busy="true" className={cn(revealClass(), 'mt-3.5 grid gap-2 max-[820px]:mt-0')} data-reveal>
           <SeasonOptionSkeleton />
           <SeasonOptionSkeleton />
           <SeasonOptionSkeleton />
@@ -156,11 +164,11 @@ export function GenesisWidget({
         />
       )}
 
-      <label className="mt-3.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground">
+      <label className="mt-3.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground max-[820px]:mt-0">
         <span>{t.genesis.shares}</span>
         <div className="flex gap-2">
           <input
-            className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-base font-bold text-foreground outline-none focus:border-primary"
+            className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-base font-bold text-foreground outline-none focus:border-primary max-[820px]:h-[46px] max-[820px]:min-h-[46px]"
             disabled={!walletReady}
             max={MAX_SHARES}
             min={1}
@@ -170,7 +178,7 @@ export function GenesisWidget({
           />
           <button
             className={cn(
-              'min-h-11 min-w-[66px] shrink-0 rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary',
+              'min-h-11 min-w-[66px] shrink-0 rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary max-[820px]:h-[46px] max-[820px]:min-h-[46px]',
               buttonDisabledClass,
               'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
             )}
@@ -188,19 +196,12 @@ export function GenesisWidget({
           { label: t.genesis.quota, value: genesis.quotaLabel },
           { label: t.genesis.pay, value: genesis.payUsd1Label },
           { label: t.genesis.receive, value: `${genesis.estimatedAgxLabel} AGX` },
-          { label: t.genesis.usd1Balance, value: walletReady ? `${genesis.usd1BalanceLabel} USD1` : '—' },
-          {
-            label: t.genesis.phase,
-            value: genesis.activePhase
-              ? t.genesis.phaseSeason
-                  .replace('{season}', String(genesis.phaseIndex + 1))
-                  .replace('{discount}', genesis.discountLabel)
-              : '—',
-          },
+          { label: t.genesis.value, value: genesis.contributionValueLabel },
+          { label: t.genesis.xTokenAirdrop, value: genesis.xTokenAirdropLabel },
         ]}
       />
 
-      <DappActionRow className={genesis.isApproved ? 'grid-cols-1' : undefined}>
+      <DappActionRow className={cn(genesis.isApproved ? 'grid-cols-1' : undefined, 'max-[820px]:mt-0')}>
         {!genesis.isApproved ? (
           <DappActionButton
             disabled={!walletReady || !genesis.canPurchase || genesis.isSubmitting}
@@ -234,6 +235,7 @@ export function GenesisWidget({
 export function GenesisContent() {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
+  const isMobileViewport = useMobileViewport()
   const { isAuthenticated, isLoggingIn } = useAuth()
   const genesis = useGenesisWidgetContext()
   const seasonStatsTitle = t.genesis.statsTitle.replace(
@@ -268,7 +270,13 @@ export function GenesisContent() {
 
   const desktopRows =
     salesLogs?.items.map((item) => mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)) ?? []
-  const tableRows = desktopRows
+  const mobileRows =
+    salesLogs?.items.map((item) => mapSalesLogToMobileRow(item, genesis.agxPriceUsd)) ?? []
+  const tableRows = isMobileViewport ? mobileRows : desktopRows
+  const tableHeaders = isMobileViewport
+    ? [t.tables.time, t.tables.paid, t.tables.discShort, t.tables.agxShort]
+    : [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx, t.tables.tx]
+  const tableLinkColumns = isMobileViewport ? [] : [4]
   const contributionsTotal = salesLogs?.total ?? 0
   const showContributionsRequiresAuth = !apiEnabled && !isLoggingIn
   const showSalesSyncHint =
@@ -282,39 +290,36 @@ export function GenesisContent() {
 
   return (
     <div className={shellContentPageClass}>
-      <h2 className={shellContentHeadingClass} id="genesis-title">
-        {seasonStatsTitle}
-      </h2>
+      <DappContentHeading id="genesis-title">{seasonStatsTitle}</DappContentHeading>
 
       <MetricGrid columns={4}>
         {genesis.isLoading && genesis.phases.length === 0 ? (
           <>
-            <MetricCardSkeleton className="max-[820px]:rounded-md" />
-            <MetricCardSkeleton className="max-[820px]:rounded-md" />
-            <MetricCardSkeleton className="max-[820px]:rounded-md" />
-            <MetricCardSkeleton className="max-[820px]:rounded-md" />
+            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
+            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
+            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
+            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
           </>
         ) : (
           <>
             <MetricCard
-              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:tabular-nums"
+              className="[&_strong]:tabular-nums"
               label={
                 genesis.countdownMode === 'ends' ? t.genesis.endsIn : t.genesis.startsIn
               }
               value={genesis.countdown}
             />
             <MetricCard
-              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2] [&_strong]:tabular-nums"
+              className="[&_strong]:tabular-nums"
               label={<span className="text-muted-foreground">{t.genesis.referencePrice}</span>}
               value={genesis.referencePriceLabel}
             />
             <MetricCard
-              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2]"
+              className="[&_strong]:tabular-nums"
               label={t.genesis.discountRatio}
               value={genesis.discountLabel}
             />
             <MetricCard
-              className="max-[820px]:min-h-0 max-[820px]:rounded-md max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[15px] max-[820px]:[&_strong]:leading-[1.2]"
               label={t.genesis.xAirdropRatio}
               value={genesis.airdropLabel}
             />
@@ -337,6 +342,8 @@ export function GenesisContent() {
             </span>
             <strong className="mt-[7px] block text-[21px] font-bold leading-[1.25] text-white">
               {genesis.isLoading && genesis.phases.length === 0 ? (
+                <DappSkeleton className="h-6 w-40" tone="dark" />
+              ) : genesis.globalPurchasedLoading ? (
                 <DappSkeleton className="h-6 w-40" tone="dark" />
               ) : (
                 `${genesis.globalPurchasedLabel} USD1`
@@ -376,8 +383,17 @@ export function GenesisContent() {
         </div>
       </section>
 
-      <DappSection title={t.genesis.myContributions}>
-        <div className={cn(revealClass(), 'mt-3.5 max-[820px]:mt-3')} data-reveal>
+      <DappSection
+        className="group-data-[tab=genesis]/shell:max-[820px]:mt-0"
+        title={t.genesis.myContributions}
+      >
+        <div
+          className={cn(
+            revealClass(),
+            'mt-3.5 max-[820px]:mt-3 max-[820px]:rounded-2xl max-[820px]:bg-card max-[820px]:p-4 max-[820px]:shadow-card',
+          )}
+          data-reveal
+        >
           <div className="mb-3 grid gap-1.5 border-0 bg-transparent p-0">
             <div className="flex items-center justify-between gap-3">
               <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
@@ -405,17 +421,11 @@ export function GenesisContent() {
             <>
               <ResponsiveTable
                 compact
-                headers={[
-                  t.tables.time,
-                  t.tables.paid,
-                  t.tables.discount,
-                  t.tables.estimatedAgx,
-                  t.tables.tx,
-                ]}
+                headers={tableHeaders}
                 isLoading={showContributionSkeleton}
                 loadingRowCount={4}
                 plain
-                linkColumns={[4]}
+                linkColumns={tableLinkColumns}
                 positiveColumns={[2]}
                 rows={tableRows}
               />
@@ -429,7 +439,7 @@ export function GenesisContent() {
         </div>
       </DappSection>
 
-      <DappSection title={t.swap.faq}>
+      <DappSection className="max-[820px]:hidden" title={t.swap.faq}>
         <FaqStack
           items={[
             {

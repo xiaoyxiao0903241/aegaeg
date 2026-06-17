@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createServer } from 'vite'
 
-const locales = ['en', 'zh', 'zh-tw', 'ko', 'ja', 'vi', 'es', 'ru']
+const locales = ['en', 'zh', 'ko', 'ja', 'vi', 'es', 'ru']
 
 async function loadHomeContent() {
   const server = await createServer({
@@ -42,7 +42,7 @@ test('homepage content exposes matching structures across all locales', async ()
   for (const locale of locales) {
     const content = getHomeContent(locale)
     assert.deepEqual(sectionCounts(content), baseline, locale)
-    assert.equal(content.nav.languages.length, 8, locale)
+    assert.equal(content.nav.languages.length, 7, locale)
     assert.equal(
       content.nav.languages.filter((option) => option.active).length,
       1,

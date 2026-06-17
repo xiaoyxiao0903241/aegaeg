@@ -21,7 +21,12 @@ export function DappMetaList({
     <div className={dappCardClass('metaList', { className })}>
       {items.map((item, index) => (
         <p className={dappLayout.metaRow} key={index}>
-          <span className={dappTextClass('body', { tone: connected ? 'body' : 'subtle' })}>
+          <span
+            className={cn(
+              dappTextClass('body', { tone: connected ? 'body' : 'subtle' }),
+              connected && 'max-[820px]:text-faint',
+            )}
+          >
             {item.label}
           </span>
           <strong className={cn(dappTextClass('metaValue'), item.valueClassName)}>

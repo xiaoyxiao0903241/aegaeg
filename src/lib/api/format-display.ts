@@ -82,6 +82,23 @@ export function formatBlockTime(timestamp: number): string {
   return formatDateTimeParts(date)
 }
 
+export function formatBlockDateShort(timestamp: number): string {
+  if (!timestamp) return '—'
+
+  const date = new Date(timestamp * 1000)
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${month}-${day}`
+}
+
+export function formatPaidAmountCompact(amount: string): string {
+  const num = Number(amount)
+  if (!Number.isFinite(num)) return '—'
+
+  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(num)
+}
+
 export function formatApiDateTime(iso: string | null): string {
   if (!iso) return '—'
 
@@ -292,8 +309,8 @@ export function mapSalesLogToMobileRow(
   agxPriceUsd = Number(PRESALE_CONFIG.agxPriceUsd),
 ): string[] {
   return [
-    formatBlockTime(item.block_time),
-    formatAmountToken(item.amount, 'USD1'),
+    formatBlockDateShort(item.block_time),
+    formatPaidAmountCompact(item.amount),
     formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
     formatSalesLogAgx(item, agxPriceUsd),
   ]

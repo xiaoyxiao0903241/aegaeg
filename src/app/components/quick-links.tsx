@@ -10,9 +10,9 @@ export type QuickLinkItem = {
   size?: number
 }
 
-export function QuickLinks({ items }: { items: QuickLinkItem[] }) {
+export function QuickLinks({ className, items }: { className?: string; items: QuickLinkItem[] }) {
   return (
-    <div className={dappLayout.quickLinks}>
+    <div className={cn(dappLayout.quickLinks, 'max-[820px]:mt-0', className)}>
       {items.map((item) => (
         <a className={dappLayout.quickLink} href={item.href} key={item.href}>
           <span

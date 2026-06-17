@@ -82,7 +82,7 @@ export function GenesisPromoCard({
       className={cn(
         dappCardClass('promo'),
         revealClass(),
-        'max-[820px]:mt-3.5 group-data-[tab=genesis]/shell:max-[820px]:grid',
+        'max-[820px]:mt-0 group-data-[tab=genesis]/shell:max-[820px]:grid',
         className,
       )}
       data-reveal

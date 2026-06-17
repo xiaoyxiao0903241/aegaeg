@@ -8,13 +8,11 @@ import { koBundle } from './bundles/ko'
 import { ruBundle } from './bundles/ru'
 import { viBundle } from './bundles/vi'
 import { zhBundle } from './bundles/zh'
-import { zhTwBundle } from './bundles/zh-tw'
 import type { HomeContent, HomeContentBundle } from './types'
 
 const bundles: Record<Locale, HomeContentBundle> = {
   en: enBundle,
   zh: zhBundle,
-  'zh-tw': zhTwBundle,
   ko: koBundle,
   ja: jaBundle,
   vi: viBundle,

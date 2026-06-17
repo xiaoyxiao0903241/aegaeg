@@ -13,7 +13,6 @@ type SwapAmountBoxProps = {
   className?: string
   connected?: boolean
   label: ReactNode
-  mobilePreviewValue?: ReactNode
   tokenIcon: string
   tokenLabel: string
 }
@@ -25,11 +24,11 @@ export function SwapAmountBox({
   className,
   connected = true,
   label,
-  mobilePreviewValue,
   tokenIcon,
   tokenLabel,
 }: SwapAmountBoxProps) {
   const labelTone = connected ? 'body' : 'subtle'
+  const disconnectedLabelClass = !connected ? 'text-xs tracking-[-0.24px]' : undefined
 
   return (
     <section
@@ -45,7 +44,7 @@ export function SwapAmountBox({
         <span
           className={dappTextClass('body', {
             tone: labelTone,
-            className: !connected && 'text-xs tracking-[-0.24px]',
+            className: disconnectedLabelClass,
           })}
         >
           {label}
@@ -53,10 +52,7 @@ export function SwapAmountBox({
         <small
           className={dappTextClass('body', {
             tone: connected ? 'ink' : 'subtle',
-            className: cn(
-              connected && 'font-semibold',
-              !connected && 'text-xs tracking-[-0.24px]',
-            ),
+            className: cn(connected && 'font-semibold', disconnectedLabelClass),
           })}
         >
           <span>{balance}</span>
@@ -67,27 +63,13 @@ export function SwapAmountBox({
         {amountLoading ? (
           <SwapAmountSkeleton />
         ) : (
-          <>
-            <input
-              className={cn(
-                dappLayout.amountInput,
-                !connected && 'text-ink-muted placeholder:text-ink-muted',
-                mobilePreviewValue && 'max-[820px]:hidden',
-              )}
-              {...amountProps}
-            />
-            {mobilePreviewValue ? (
-              <span
-                className={cn(
-                  dappLayout.amountMobilePreview,
-                  !connected && 'text-ink-muted',
-                )}
-                aria-hidden="true"
-              >
-                {mobilePreviewValue}
-              </span>
-            ) : null}
-          </>
+          <input
+            className={cn(
+              dappLayout.amountInput,
+              !connected && 'text-ink-muted placeholder:text-ink-muted',
+            )}
+            {...amountProps}
+          />
         )}
       </div>
     </section>

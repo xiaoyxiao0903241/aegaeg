@@ -6,6 +6,8 @@ import { PRESALE_CONFIG } from '../config/presale'
 import {
   buildPhaseCountdownKey,
   estimateAgxFromUsd1,
+  estimateContributionValueUsd,
+  estimateXTokenAirdropUsd,
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
@@ -18,6 +20,7 @@ import { buildGenesisPromoSnapshot } from '../lib/presale/genesis-promo'
 import { formatTokenAmount, parseTokenAmount } from '../lib/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '../web3/presale-write'
 import { MAX_UINT256 } from '../web3/abis'
+import { formatUsd } from '../lib/api/format-display'
 import { GENESIS_PURCHASE_ERROR } from '../lib/web3/resolve-contract-error-message'
 import { readErc20Allowance, readErc20Balance } from '../web3/swap-read'
 import { queryKeys } from '../lib/query/query-keys'
@@ -26,6 +29,7 @@ import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
   usePresalePhasesQuery,
+  usePresaleTotalPurchasedQuery,
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
 } from './queries/use-presale-queries'
@@ -54,6 +58,7 @@ export function useGenesisWidget() {
   const phasesQuery = usePresalePhasesQuery()
   const activePhaseQuery = usePresaleActivePhaseQuery()
   const agxPriceQuery = usePresaleAgxPriceQuery()
+  const totalPurchasedQuery = usePresaleTotalPurchasedQuery()
   const userTotalQuery = usePresaleUserTotalQuery(address)
   const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address)
 
@@ -66,6 +71,7 @@ export function useGenesisWidget() {
     phasesQuery.isLoading ||
     activePhaseQuery.isLoading ||
     agxPriceQuery.isLoading ||
+    totalPurchasedQuery.isLoading ||
     (walletReady && userTotalQuery.isLoading)
 
   const purchaseAmount = useMemo(
@@ -99,6 +105,13 @@ export function useGenesisWidget() {
     discountBps,
     agxPriceUsd,
   )
+  const payUsd1 = shares * Number(PRESALE_CONFIG.sharePriceUsd1)
+  const contributionValueUsd = estimateContributionValueUsd(
+    payUsd1,
+    discountBps,
+    agxPriceUsd,
+  )
+  const xTokenAirdropUsd = estimateXTokenAirdropUsd(payUsd1, phaseIndex)
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
   const hasSufficientBalance = usd1Balance >= purchaseAmount
@@ -242,6 +255,7 @@ export function useGenesisWidget() {
     phasesQuery.error ??
     activePhaseQuery.error ??
     agxPriceQuery.error ??
+    totalPurchasedQuery.error ??
     userTotalQuery.error
 
   return {
@@ -256,16 +270,17 @@ export function useGenesisWidget() {
       ? formatPhaseCountdown(countdownTarget.targetTime, nowSeconds)
       : '—',
     countdownMode: countdownTarget?.mode ?? null,
-    globalPurchasedLabel: formatTokenAmount(
-      phases[phaseIndex]?.purchasedAmount ?? 0n,
-      USD1_DECIMALS,
-      0,
-    ),
+    globalPurchasedLabel: Number(
+      formatTokenAmount(totalPurchasedQuery.data ?? 0n, USD1_DECIMALS, 0),
+    ).toLocaleString('en-US'),
+    globalPurchasedLoading: totalPurchasedQuery.isLoading,
     userTotalLabel: formatTokenAmount(userTotal, USD1_DECIMALS, 0),
     userTotal,
     usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, 2),
     estimatedAgxLabel: estimatedAgx.toFixed(2),
-    payUsd1Label: `${shares * Number(PRESALE_CONFIG.sharePriceUsd1)} USD1`,
+    payUsd1Label: `${payUsd1} USD1`,
+    contributionValueLabel: formatUsd(contributionValueUsd),
+    xTokenAirdropLabel: formatUsd(xTokenAirdropUsd),
     quotaLabel: `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`,
     referencePriceLabel: `$${agxPriceUsd.toFixed(2)}`,
     airdropLabel: getAirdropLabelForPhase(phaseIndex),

@@ -15,6 +15,7 @@ import {
   formatUsd,
   formatUsdCompact,
   mapTeamReferralToCompactRow,
+  mapTeamReferralToMobileRow,
 } from '../../lib/api/format-display'
 import { buildReferralSharePath } from '../../config/referral'
 import { CommunityStatCardSkeleton } from '../components/dapp-skeleton'
@@ -25,12 +26,11 @@ import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../li
 import {
   desktopCopyClass,
   mobileCopyClass,
-  shellContentHeadingClass,
   shellContentPageClass,
-  shellMobilePageTitleClass,
   shellModulePanelClass,
 } from '../shell-layout'
 import { useDappShell } from '../dapp-shell-context'
+import { useMobileViewport } from '../../hooks/use-mobile-viewport'
 import { dappAssets } from '../assets'
 import type { DappTab, DetailPanelControls } from '../types'
 import { DappActionButton } from '../components/dapp-action-button'
@@ -45,8 +45,9 @@ import {
 } from '../components/dapp-card'
 import { dappLayout, dappSpacing } from '../../components/primitive-styles'
 import { DappSection } from '../components/dapp-section'
+import { DappContentHeading } from '../components/dapp-content-heading'
 import { DappWidgetHeader } from '../components/dapp-widget-header'
-import { InviteFlow } from '../components/invite-flow'
+import { InviteFlow, InviteFlowStack } from '../components/invite-flow'
 import { QuickLinks } from '../components/quick-links'
 import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
 import { DappTableEmptyState } from '../components/dapp-table-empty-state'
@@ -63,27 +64,25 @@ type CommunityStat = {
   volume?: ReactNode
 }
 
-const REFERRAL_CARD_CLASS = '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate'
+const REFERRAL_CARD_CLASS = cn(
+  '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
+  'rounded-2xl px-4 py-3.5 max-[820px]:mt-0',
+  '[&_label]:text-xs [&_label]:text-faint',
+)
+
+const COMMUNITY_WIDGET_SHELL_CLASS = cn(
+  shellModulePanelClass,
+  'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
+)
 
 const SHAREHOLDER_ACTION_CLASS = cn(
   'mt-4 min-h-12 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-[820px]:hidden',
 )
 
-const COMMUNITY_MY_COMMUNITY_HEADING_CLASS = cn(
-  shellContentHeadingClass,
-  revealClass(),
-  'max-[820px]:mt-0.5',
-)
-
-const COMMUNITY_WIDGET_HEADER_CLASS = cn(
-  shellMobilePageTitleClass,
-  'max-[820px]:[&_p]:mt-3',
-)
-
 const COMMUNITY_STAT_GRID = cn(
   'mt-3.5 grid grid-cols-3 gap-3.5',
   'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))]',
-  'max-[820px]:min-w-0 max-[820px]:grid-cols-3 max-[820px]:gap-2.5',
+  'max-[820px]:mt-3 max-[820px]:min-w-0 max-[820px]:grid-cols-3 max-[820px]:gap-2.5',
 )
 
 export function CommunityWidget({
@@ -149,9 +148,8 @@ function CommunityConnectedWidget({
   }, [referral.error])
 
   return (
-    <div className={shellModulePanelClass}>
+    <div className={COMMUNITY_WIDGET_SHELL_CLASS}>
       <DappWidgetHeader
-        className={COMMUNITY_WIDGET_HEADER_CLASS}
         detailCollapsed={detailPanel.collapsed}
         intro={t.community.intro}
         onTogglePanel={detailPanel.onToggle}
@@ -160,14 +158,18 @@ function CommunityConnectedWidget({
 
       <DappSideCard className={REFERRAL_CARD_CLASS}>
         <SideLabel>{t.community.referralLink}</SideLabel>
-        <SideValue>{isAuthenticated ? referralLink : '…'}</SideValue>
-        <DappActionButton disabled={!account} onClick={() => void copyReferralLink()}>
+        <SideValue className="text-[13px] tracking-[-0.26px]">{isAuthenticated ? referralLink : '…'}</SideValue>
+        <DappActionButton
+          className="max-[820px]:min-h-11 max-[820px]:text-sm"
+          disabled={!account}
+          onClick={() => void copyReferralLink()}
+        >
           {t.community.shareReferral}
         </DappActionButton>
       </DappSideCard>
 
       {referral.isBound ? (
-        <DappReferrerBoundCard>
+        <DappReferrerBoundCard className="rounded-2xl px-4 py-3.5 max-[820px]:mt-0">
           <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
             {t.community.referrer}
           </p>
@@ -196,12 +198,12 @@ function CommunityConnectedWidget({
           </p>
         </DappReferrerBoundCard>
       ) : (
-        <DappSideCard className={dappSpacing.stackBetweenCards}>
+        <DappSideCard className={cn(REFERRAL_CARD_CLASS, dappSpacing.stackBetweenCards, 'grid gap-2')}>
           <SideLabel tone="muted">{t.community.referrer}</SideLabel>
-          <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-end gap-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2">
             <input
               aria-label={t.community.referrerPlaceholder}
-              className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0"
+              className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0 max-[820px]:h-11"
               onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
               placeholder={t.community.referrerPlaceholder}
               value={referral.referrerInput}
@@ -218,11 +220,11 @@ function CommunityConnectedWidget({
               {t.community.bindReferrer}
             </DappActionButton>
           </div>
-          <SideHint>{t.community.referrerHint}</SideHint>
+          <SideHint className="max-[820px]:hidden">{t.community.referrerHint}</SideHint>
         </DappSideCard>
       )}
 
-      <CommunityQuickLinks />
+      <CommunityQuickLinks className="max-[820px]:mt-0" />
 
       <DappActionButton
         className={SHAREHOLDER_ACTION_CLASS}
@@ -264,16 +266,15 @@ function CommunityDisconnectedWidget({
   ])
 
   return (
-    <div className={shellModulePanelClass}>
+    <div className={COMMUNITY_WIDGET_SHELL_CLASS}>
       <DappWidgetHeader
-        className={COMMUNITY_WIDGET_HEADER_CLASS}
         detailCollapsed={detailPanel.collapsed}
-        intro={t.community.intro}
+        intro={t.community.disconnectedIntro}
         onTogglePanel={detailPanel.onToggle}
         title={t.community.title}
       />
 
-      <DappSideCard className="max-[820px]:mt-[22px]">
+      <DappSideCard className={cn(REFERRAL_CARD_CLASS, 'max-[820px]:mt-0')}>
         <SideLabel>{t.community.referrer}</SideLabel>
         <div className="mt-2 grid grid-cols-[minmax(0,1fr)_max-content] items-end gap-2">
           <label className="grid gap-2">
@@ -317,11 +318,12 @@ function CommunityDisconnectedWidget({
   )
 }
 
-function CommunityQuickLinks() {
+function CommunityQuickLinks({ className }: { className?: string }) {
   const { messages: t } = useI18n()
 
   return (
     <QuickLinks
+      className={className}
       items={[
         {
           href: '#docs',
@@ -356,6 +358,7 @@ export function CommunityContent({
 }) {
   const { messages: t } = useI18n()
   const { tab } = useDappShell()
+  const isMobileViewport = useMobileViewport()
   const { isAuthenticated, isLoggingIn } = useAuth()
   const referralChain = useReferral(connected)
   const apiEnabled = connected && isAuthenticated
@@ -367,7 +370,10 @@ export function CommunityContent({
     apiEnabled,
   )
 
-  const inviteRowsCompact = referrals?.items.map(mapTeamReferralToCompactRow) ?? []
+  const inviteRowsCompact =
+    referrals?.items.map((item) =>
+      isMobileViewport ? mapTeamReferralToMobileRow(item) : mapTeamReferralToCompactRow(item),
+    ) ?? []
   const compactRows = inviteRowsCompact
   const invitesTotal = referrals?.total ?? 0
   const showInvitesRequiresAuth = !apiEnabled && !isLoggingIn
@@ -384,7 +390,7 @@ export function CommunityContent({
   if (!connected) {
     return (
       <div className={cn(shellContentPageClass, 'max-[820px]:pb-20')}>
-        <CommunityFlowSection onSelectTab={onSelectTab} />
+        <CommunityFlowSection isMobileViewport={isMobileViewport} onSelectTab={onSelectTab} />
       </div>
     )
   }
@@ -463,25 +469,16 @@ export function CommunityContent({
       ),
       value: shareholderRank,
       volume: genesisShareholderLabel,
-      today: (
-        <>
-          <span className={desktopCopyClass}>{t.community.statGenesisToday}</span>
-          <span className={mobileCopyClass}>{t.community.statGenesisTodayShort}</span>
-        </>
-      ),
-      dark: true,
+      today: t.community.statGenesisToday,
+      dark: !isMobileViewport,
     },
   ]
 
   return (
     <div className={shellContentPageClass}>
-      <h2
-        className={COMMUNITY_MY_COMMUNITY_HEADING_CLASS}
-        data-reveal
-        id="community-title"
-      >
+      <DappContentHeading id="community-title" reveal>
         {t.community.myCommunity}
-      </h2>
+      </DappContentHeading>
 
       <div className={COMMUNITY_STAT_GRID}>
         {useStatPlaceholders ? (
@@ -493,6 +490,10 @@ export function CommunityContent({
         ) : (
           stats.map((stat, index) => (
             <CommunityStatCard
+              className={cn(
+                isMobileViewport &&
+                  'items-center text-center shadow-card [&>b]:hidden [&>small]:hidden [&>span]:text-[11px] [&>span]:tracking-[-0.11px] [&>strong]:text-lg [&>strong]:tracking-[-0.54px]',
+              )}
               dark={stat.dark}
               image={stat.image}
               key={index}
@@ -505,9 +506,17 @@ export function CommunityContent({
         )}
       </div>
 
-      <CommunityFlowSection connected={connected} onSelectTab={onSelectTab} tab={tab} />
+      <CommunityFlowSection
+        connected={connected}
+        isMobileViewport={isMobileViewport}
+        onSelectTab={onSelectTab}
+        tab={tab}
+      />
 
-      <DappSection title={inviteSectionTitle}>
+      <DappSection
+        className="group-data-[tab=community]/shell:max-[820px]:mt-0"
+        title={inviteSectionTitle}
+      >
         {showInvitesRequiresAuth ? (
           <DappTableEmptyState className="mt-3.5" />
         ) : showInvitesQueryEmpty ? (
@@ -520,23 +529,34 @@ export function CommunityContent({
           <>
             <ResponsiveTable
               className={cn(
-                'mt-3.5',
-                '[&_table]:table-fixed',
-                '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
-                '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
-                '[&_th:nth-child(3)]:w-[15.38%] [&_td:nth-child(3)]:w-[15.38%]',
-                '[&_th:nth-child(4)]:w-[15.38%] [&_td:nth-child(4)]:w-[15.38%]',
-                '[&_th:nth-child(5)]:w-[15.38%] [&_td:nth-child(5)]:w-[15.38%]',
+                'mt-3.5 max-[820px]:mt-3 max-[820px]:rounded-2xl max-[820px]:shadow-card',
+                !isMobileViewport && [
+                  '[&_table]:table-fixed',
+                  '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
+                  '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
+                  '[&_th:nth-child(3)]:w-[15.38%] [&_td:nth-child(3)]:w-[15.38%]',
+                  '[&_th:nth-child(4)]:w-[15.38%] [&_td:nth-child(4)]:w-[15.38%]',
+                  '[&_th:nth-child(5)]:w-[15.38%] [&_td:nth-child(5)]:w-[15.38%]',
+                ],
               )}
               compact
-              emphasisColumns={[3]}
-              headers={[
-                t.tables.joined,
-                t.tables.address,
-                t.tables.title,
-                t.tables.direct,
-                t.tables.volume,
-              ]}
+              emphasisColumns={isMobileViewport ? [] : [3]}
+              headers={
+                isMobileViewport
+                  ? [
+                      t.tables.joined,
+                      t.tables.address,
+                      t.tables.title,
+                      t.tables.volumeShort,
+                    ]
+                  : [
+                      t.tables.joined,
+                      t.tables.address,
+                      t.tables.title,
+                      t.tables.direct,
+                      t.tables.volume,
+                    ]
+              }
               isLoading={showInvitesSkeleton}
               linkColumns={[1]}
               plain
@@ -556,15 +576,16 @@ export function CommunityContent({
 
 function CommunityFlowSection({
   connected = false,
+  isMobileViewport = false,
   onSelectTab,
   tab,
 }: {
   connected?: boolean
+  isMobileViewport?: boolean
   onSelectTab: (tab: DappTab) => void
   tab?: DappTab
 }) {
   const { messages: t } = useI18n()
-  const isCommunityTab = tab === 'community' || tab === undefined
 
   const inviteFlowItems = [
     {
@@ -600,24 +621,32 @@ function CommunityFlowSection({
     <>
       <DappSection
         className={cn(
-          connected && isCommunityTab && 'max-[820px]:hidden',
+          connected && 'group-data-[tab=community]/shell:max-[820px]:mt-0',
           !connected && 'max-[820px]:mt-5',
         )}
-        title={(
-          <>
-            <span className={cn(!connected && 'max-[820px]:hidden')}>{t.community.inviteTitle}</span>
-            {!connected ? (
-              <span className="hidden max-[820px]:inline">{t.community.startInvitingMobile}</span>
-            ) : null}
-          </>
-        )}
+        title={
+          isMobileViewport && connected
+            ? t.community.startInvitingMobile
+            : (
+              <>
+                <span className={cn(!connected && 'max-[820px]:hidden')}>{t.community.inviteTitle}</span>
+                {!connected ? (
+                  <span className="hidden max-[820px]:inline">{t.community.startInvitingMobile}</span>
+                ) : null}
+              </>
+            )
+        }
       >
-        <InviteFlow items={inviteFlowItems} />
+        {isMobileViewport ? (
+          <InviteFlowStack items={inviteFlowItems} />
+        ) : (
+          <InviteFlow items={inviteFlowItems} />
+        )}
       </DappSection>
 
       <DappSection
         className={cn(
-          connected && isCommunityTab && 'max-[820px]:hidden',
+          connected && 'group-data-[tab=community]/shell:max-[820px]:mt-0',
           !connected && 'max-[820px]:mt-[18px]',
         )}
         title={t.community.programs}

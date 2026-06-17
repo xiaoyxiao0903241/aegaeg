@@ -448,8 +448,8 @@ export function SwapMobilePager({
                   <SwapWidget
                     connected
                     detailPanel={detailPanel}
-                    layoutMode="mobilePager"
                     onSelectGenesis={onSelectGenesis}
+                    swapPager
                   />
                 </div>
 
@@ -459,7 +459,7 @@ export function SwapMobilePager({
                   className={pagerPageScrollClass}
                   style={{ height: viewportHeight }}
                 >
-                  <SwapContent connected layoutMode="mobilePager" />
+                  <SwapContent connected swapPager />
                 </div>
               </div>
             ) : null}

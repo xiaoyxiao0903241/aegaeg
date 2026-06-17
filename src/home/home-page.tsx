@@ -51,9 +51,9 @@ type DeferredImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> & {
 
 const heroClass = {
   section:
-    'hero relative flex min-h-[696px] items-start overflow-hidden pt-[90px] pb-24 [background:linear-gradient(180deg,var(--background),oklch(95.6%_0_0))] max-[1100px]:min-h-0 max-[1100px]:pt-16 max-[1100px]:pb-20 max-[820px]:block max-[820px]:min-h-[754px] max-[820px]:pt-9 max-[820px]:pb-12 max-[820px]:[background:var(--background)]',
+    'hero relative flex items-start overflow-hidden pt-[90px] pb-24 [background:linear-gradient(180deg,var(--background),oklch(95.6%_0_0))] max-[1100px]:pt-16 max-[1100px]:pb-20 max-[820px]:block max-[820px]:pt-9 max-[820px]:pb-12 max-[820px]:[background:var(--background)]',
   grid:
-    'container hero-grid relative z-[1] grid min-h-[510px] grid-cols-[minmax(0,660px)_438px] items-center justify-between gap-16 max-[1100px]:grid-cols-1 max-[1100px]:justify-items-center max-[1100px]:gap-8 max-[1100px]:text-center max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-col max-[820px]:items-center max-[820px]:justify-start max-[820px]:gap-4 max-[820px]:text-center',
+    'container hero-grid relative z-[1] grid grid-cols-[minmax(0,660px)_438px] items-center justify-between gap-16 max-[1100px]:grid-cols-1 max-[1100px]:justify-items-center max-[1100px]:gap-8 max-[1100px]:text-center max-[820px]:flex max-[820px]:flex-col max-[820px]:items-center max-[820px]:justify-start max-[820px]:gap-4 max-[820px]:text-center',
   copy:
     'hero-copy max-w-[660px] pt-[65px] max-[1100px]:pt-0 max-[820px]:order-2 max-[820px]:flex max-[820px]:w-full max-[820px]:max-w-[362px] max-[820px]:flex-col max-[820px]:items-center max-[820px]:pt-0',
   eyebrow:
@@ -84,10 +84,8 @@ const sectionHeadClass = {
 } as const
 
 const homeSectionClass = {
-  protocol:
-    'relative py-[120px] max-[820px]:min-h-[827px] max-[820px]:pt-0 max-[820px]:pb-14',
-  engine:
-    'relative py-[120px] max-[820px]:min-h-[976px] max-[820px]:pt-0 max-[820px]:pb-14',
+  protocol: 'relative py-[120px] max-[820px]:pt-0 max-[820px]:pb-14',
+  engine: 'relative py-[120px] max-[820px]:pt-0 max-[820px]:pb-14',
 } as const
 
 const iconCardClass = {
@@ -108,7 +106,7 @@ const iconCardClass = {
 
 const tokenCardClass = {
   section:
-    'token-section relative py-[120px] min-[821px]:min-h-[696px] max-[820px]:min-h-[902px] max-[820px]:pt-0 max-[820px]:pb-14',
+    'token-section relative py-[120px] max-[820px]:pt-0 max-[820px]:pb-14',
   container: 'container max-[820px]:!w-[min(calc(100vw-40px),362px)]',
   grid:
     'token-grid mt-14 grid grid-cols-4 gap-[22px] max-[1100px]:grid-cols-2 max-[820px]:mt-4 max-[820px]:grid-cols-1 max-[820px]:gap-4',
@@ -127,8 +125,7 @@ const tokenCardClass = {
 } as const
 
 const metricClass = {
-  section:
-    'metrics-wrap min-[821px]:min-h-[231px] pb-10 max-[820px]:min-h-[252px] max-[820px]:pb-12',
+  section: 'metrics-wrap pb-10 max-[820px]:pb-12',
   container: 'container max-[820px]:!w-[min(calc(100vw-40px),362px)]',
   panel:
     'relative isolate grid min-h-[191px] grid-cols-4 items-center justify-between overflow-hidden rounded-[28px] bg-dark px-10 py-14 text-white max-[820px]:min-h-[204px] max-[820px]:grid-cols-2 max-[820px]:gap-y-6 max-[820px]:rounded-[22px] max-[820px]:px-5 max-[820px]:py-7',
@@ -140,8 +137,7 @@ const metricClass = {
 } as const
 
 const roadmapClass = {
-  section:
-    'roadmap relative py-[120px] min-[821px]:min-h-[1215px] max-[820px]:min-h-[911px] max-[820px]:pt-0 max-[820px]:pb-14',
+  section: 'roadmap relative py-[120px] max-[820px]:pt-0 max-[820px]:pb-14',
   timeline:
     'timeline relative mt-5 flex min-h-[776px] w-full flex-col gap-0 pl-0 min-[821px]:mt-12 min-[821px]:block min-[821px]:min-h-[851px]',
   rail:
@@ -194,9 +190,8 @@ const roadmapPhaseTopClass = [
 
 const securityClass = {
   section:
-    'relative border-y border-border bg-[#ebeef3] py-[120px] min-[821px]:min-h-[794px] max-[820px]:min-h-[711px] max-[820px]:border-y-0 max-[820px]:py-12',
+    'relative border-y border-border bg-[#ebeef3] py-[120px] max-[820px]:border-y-0 max-[820px]:py-12',
   container: 'container max-[820px]:!w-[min(calc(100vw-40px),362px)]',
-  head: 'min-[821px]:min-h-[140px]',
   title:
     '[&&]:max-w-[420px] min-[821px]:[&&]:mt-4 min-[821px]:[&&]:leading-[1.1] max-[820px]:whitespace-nowrap',
   subtitle:
@@ -219,23 +214,22 @@ const securityClass = {
 
 const partnerClass = {
   section:
-    'partners min-[821px]:min-h-52 border-b border-border bg-secondary pb-[120px] text-center max-[820px]:min-h-[262px] max-[820px]:py-12',
+    'partners border-b border-border bg-secondary pb-[120px] pt-12 text-center max-[820px]:py-12',
   row: 'partner-row mt-6 flex flex-wrap justify-center gap-3.5 max-[820px]:mt-4',
   chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border py-3 pl-3 pr-7 text-[15px] font-semibold text-ink-strong max-[820px]:min-h-9 max-[820px]:py-1.5 max-[820px]:pl-3 max-[820px]:pr-4 max-[820px]:text-[13px]',
 } as const
 
 const faqClass = {
-  section:
-    'relative py-[120px] min-[821px]:min-h-[800px] max-[820px]:min-h-[529px] max-[820px]:py-14',
+  section: 'relative py-[120px] max-[820px]:py-14',
 } as const
 
 const footerClass = {
   root:
-    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-[72px] pb-9 text-on-dark min-[821px]:min-h-[336px] max-[820px]:gap-6 max-[820px]:pt-12 max-[820px]:pb-8',
+    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-[72px] pb-9 text-on-dark max-[820px]:gap-6 max-[820px]:pt-12 max-[820px]:pb-8',
   top:
-    'container footer-top grid min-[821px]:min-h-[131px] grid-cols-4 items-start gap-10 overflow-hidden max-[820px]:grid-cols-3 max-[820px]:gap-x-3.5 max-[820px]:gap-y-6',
+    'container footer-top grid grid-cols-4 items-start gap-10 overflow-hidden max-[820px]:grid-cols-3 max-[820px]:gap-x-3.5 max-[820px]:gap-y-6',
   brand:
-    'footer-brand flex min-h-[124px] min-w-0 flex-col items-start gap-3.5 overflow-hidden max-[820px]:col-span-full max-[820px]:min-h-0',
+    'footer-brand flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-[820px]:col-span-full',
   brandCopy:
     'm-0 w-[min(100%,260px)] text-sm font-normal leading-[1.5] tracking-[-0.28px] text-on-dark max-[820px]:text-[13px]',
   group:
@@ -869,7 +863,6 @@ function SecuritySection({ content }: { content: HomeContent['sections']['securi
         <SectionHead
           eyebrow={content.eyebrow}
           title={content.title}
-          className={securityClass.head}
           titleClassName={securityClass.title}
           subtitleClassName={securityClass.subtitle}
           subtitle={

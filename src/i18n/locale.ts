@@ -13,9 +13,6 @@ function normalizeLocaleTag(tag: string): Locale | null {
   const lower = tag.toLowerCase()
 
   if (lower.startsWith('zh')) {
-    if (lower.includes('tw') || lower.includes('hk') || lower.includes('hant')) {
-      return 'zh-tw'
-    }
     return 'zh'
   }
 

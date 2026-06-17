@@ -23,6 +23,7 @@ export const queryKeys = {
     presalePhases: ['chain', 'presale', 'phases'] as const,
     presaleActivePhase: ['chain', 'presale', 'activePhase'] as const,
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
+    presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
     presaleUserTotal: (address: string) => ['chain', 'presale', 'userTotal', address] as const,
     erc20Balance: (token: string, address: string) =>
       ['chain', 'erc20', 'balance', token, address] as const,

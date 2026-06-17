@@ -118,7 +118,6 @@ export function DappShell() {
                     tab: activeTab,
                     connected: shellState.connected,
                     detailCollapsed: effectiveDetailCollapsed,
-                    mobileSwapPager: false,
                   })}
                   data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
                   data-connected={shellState.connected ? 'true' : 'false'}

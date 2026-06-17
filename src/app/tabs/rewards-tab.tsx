@@ -31,7 +31,6 @@ import { useTeamRewardClaim } from '../../hooks/use-team-reward-claim'
 import { toast } from 'sonner'
 import { toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
 import {
-  shellContentHeadingClass,
   shellContentPageClass,
   shellModulePanelClass,
 } from '../shell-layout'
@@ -49,18 +48,30 @@ import {
   SideValue,
 } from '../components/dapp-card'
 import { DappCollapsibleSection } from '../components/dapp-collapsible-section'
+import { DappSection } from '../components/dapp-section'
 import { DappPillTabs } from '../components/dapp-pill-tabs'
 import { DappTablePagination } from '../components/dapp-table-pagination'
 import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
 import { DappTableEmptyState } from '../components/dapp-table-empty-state'
 import { DappWidgetHeader } from '../components/dapp-widget-header'
+import { DappContentHeading } from '../components/dapp-content-heading'
 import { FaqStack } from '../components/faq-stack'
 import { ProgressMeter } from '../components/progress-meter'
 import { ResponsiveTable } from '../components/responsive-table'
 import { useDappShell } from '../dapp-shell-context'
+import { useMobileViewport } from '../../hooks/use-mobile-viewport'
 import { dappGap, dappSpacing } from '../../components/primitive-styles'
 
-const PROGRESS_CARD_CLASS = cn(dappSpacing.stackBetweenCards, 'grid', dappGap.sm, 'max-[820px]:py-[13px] max-[820px]:[&_span]:text-faint')
+const REWARDS_WIDGET_CARD_CLASS = cn(
+  'rounded-2xl px-4 py-3.5 max-[820px]:mt-0',
+  '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-[820px]:[&_span]:text-faint',
+)
+
+const REWARDS_PROGRESS_CARD_CLASS = cn(
+  REWARDS_WIDGET_CARD_CLASS,
+  dappGap.sm,
+  'grid gap-1.5',
+)
 
 const FAQ_STACK_CLASS = cn(
   'justify-items-start [&_[data-faq-item]]:w-full [&_[data-faq-item]]:max-w-full',
@@ -77,6 +88,7 @@ export function RewardsWidget({
 }) {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
+  const isMobileViewport = useMobileViewport()
   const {
     apiEnabled,
     displayRank,
@@ -153,7 +165,9 @@ export function RewardsWidget({
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
     if (teamTotal?.claimed == null) return undefined
-    const claimedLine = t.rewards.claimed.replace('{amount}', formatUsd(teamTotal.claimed, 2))
+    const claimedTemplate = isMobileViewport ? t.rewards.claimedMobile : t.rewards.claimed
+    const claimedLine = claimedTemplate.replace('{amount}', formatUsd(teamTotal.claimed, 2))
+    if (isMobileViewport) return claimedLine
     const breakdown = teamTotal.items
       ?.map((item) => {
         const pending = formatClaimableAmount(item.total, item.claimed)
@@ -172,9 +186,13 @@ export function RewardsWidget({
   const titleHint = !connected ? t.rewards.shareholderHint : rankHint
 
   return (
-    <div className={shellModulePanelClass}>
+    <div
+      className={cn(
+        shellModulePanelClass,
+        'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
+      )}
+    >
       <DappWidgetHeader
-        className="max-[820px]:mt-3 max-[820px]:[&_p]:mt-3"
         detailCollapsed={detailPanel.collapsed}
         intro={t.rewards.intro}
         onTogglePanel={detailPanel.onToggle}
@@ -182,15 +200,17 @@ export function RewardsWidget({
         title={t.rewards.title}
       />
 
-      <DappSideCard className="max-[820px]:py-[13px]">
+      <DappSideCard className={REWARDS_WIDGET_CARD_CLASS}>
         <SideLabel tone="coral">{t.rewards.currentTitle}</SideLabel>
         {showTitleSkeleton ? (
           <CurrentTitleCardBodySkeleton />
         ) : (
           <>
-            <SideTitle>{titleValue}</SideTitle>
+            <SideTitle className="max-[820px]:text-[17px] max-[820px]:tracking-[-0.34px]">
+              {titleValue}
+            </SideTitle>
             <SideHint
-              className="min-h-[2.25rem] line-clamp-2 max-[820px]:max-w-[31ch] max-[820px]:leading-[1.4] max-[820px]:text-faint"
+              className="min-h-[2.25rem] line-clamp-2 text-xs tracking-[-0.24px] max-[820px]:max-w-none max-[820px]:leading-normal max-[820px]:text-faint"
               tone="body"
             >
               {titleHint}
@@ -200,11 +220,11 @@ export function RewardsWidget({
       </DappSideCard>
 
       {showPerformanceSkeleton ? (
-        <DappSideCard className={PROGRESS_CARD_CLASS}>
+        <DappSideCard className={REWARDS_PROGRESS_CARD_CLASS}>
           <ProgressCardSkeleton />
         </DappSideCard>
       ) : (
-      <DappSideCard className={PROGRESS_CARD_CLASS}>
+      <DappSideCard className={REWARDS_PROGRESS_CARD_CLASS}>
         <div className="flex items-center justify-between gap-3">
           <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
             {personalProgressLabel}
@@ -239,8 +259,10 @@ export function RewardsWidget({
       <RewardBalanceCard
         badge={t.rewards.autoPaidLabel}
         className={cn(
-          'mt-2 max-[820px]:pb-3 max-[820px]:[&_button]:mt-1.5 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
-          '[&_strong_span]:text-xs [&_strong_span]:font-semibold [&_strong_span]:text-faint',
+          REWARDS_WIDGET_CARD_CLASS,
+          'mt-2 max-[820px]:mt-0',
+          '[&_strong]:text-[22px] [&_strong]:tracking-[-0.66px]',
+          'max-[820px]:[&_small]:hidden',
         )}
         hint={t.rewards.autoPaid}
         label={t.rewards.referralRewards}
@@ -254,7 +276,7 @@ export function RewardsWidget({
       <RewardBalanceCard
         action={
           <DappActionButton
-            className="!min-h-[42px]"
+            className="!min-h-[42px] max-[820px]:!min-h-11 max-[820px]:!text-sm"
             disabled={teamClaimable === '$0.00' || teamLoading || teamClaim.isClaiming || !teamClaim.canClaim}
             loading={teamClaim.isClaiming}
             onClick={() =>
@@ -268,9 +290,11 @@ export function RewardsWidget({
           </DappActionButton>
         }
         className={cn(
-          'mt-3 [&_strong]:text-lg',
+          REWARDS_WIDGET_CARD_CLASS,
+          'mt-3 max-[820px]:mt-0',
+          'min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:tracking-[-0.54px]',
+          'max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:tracking-[-0.51px]',
           '[&_button]:mt-3',
-          'max-[820px]:pb-3 max-[820px]:[&_button]:mt-3 max-[820px]:[&_strong]:mt-1.5 max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:leading-[1.1]',
         )}
         label={t.rewards.teamRewards}
         meta={teamRewardMeta}
@@ -284,6 +308,7 @@ export function RewardsWidget({
 export function RewardsContent() {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
+  const isMobileViewport = useMobileViewport()
   const { isAuthenticated, isLoggingIn } = useAuth()
   const { displayRank, heroBody, heroTitle, isRankLoading } = useShareholderRankLabels(t)
   const showHeroSkeleton = connected && isRankLoading
@@ -346,6 +371,40 @@ export function RewardsContent() {
     ? getPresaleRankHighlightedRowsForPage(displayRank, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
     : getPresaleRankHighlightedRowsForPage(2, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
 
+  const tierHeaders = isMobileViewport
+    ? [t.tables.title, t.tables.personalShort, t.tables.bonusShort, t.tables.rankShort]
+    : [
+        t.tables.title,
+        t.tables.personalShort,
+        t.tables.totalVolume,
+        t.tables.bonusShort,
+        t.tables.postLaunchShort,
+      ]
+
+  const tierRows = pagedTierRows.map((row, rowIndex) => {
+    const cells = isMobileViewport
+      ? [row[0], row[1], row[3], row[4]]
+      : [...row]
+    if (tierHighlightedRows.includes(rowIndex)) {
+      cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
+    }
+    return cells
+  })
+
+  const tierTable = (
+    <>
+      <ResponsiveTable
+        compact
+        headers={tierHeaders}
+        highlightedRows={tierHighlightedRows}
+        plain
+        positiveColumns={[isMobileViewport ? 2 : 3]}
+        rows={tierRows}
+      />
+      <DappTablePagination onPageChange={setTierPage} page={tierPage} total={tierTotal} />
+    </>
+  )
+
   const historyHeaders =
     historyTab === 'referral'
       ? [
@@ -367,17 +426,12 @@ export function RewardsContent() {
 
   return (
     <div className={shellContentPageClass}>
-      <h2
-        className={cn(shellContentHeadingClass, 'max-[820px]:mt-0.5')}
-        id="rewards-title"
-      >
-        {t.rewards.heroTitle}
-      </h2>
+      <DappContentHeading id="rewards-title">{t.rewards.heroTitle}</DappContentHeading>
 
       <section
         className={cn(
           revealClass(),
-          'relative mt-3.5 flex min-h-[145px] items-center justify-between gap-6 overflow-visible rounded-md bg-dark p-6 text-white shadow-card',
+          'relative mt-3.5 flex min-h-[145px] items-center justify-between gap-6 overflow-visible rounded-2xl bg-dark p-6 text-white shadow-card',
           'max-[820px]:hidden',
         )}
         data-reveal
@@ -392,8 +446,10 @@ export function RewardsContent() {
             </div>
           ) : (
             <>
-              <h3 className="my-2 text-[21px] font-bold text-white">{heroTitle}</h3>
-              <p className="m-0 text-[13px] leading-[1.55] text-on-dark">
+              <h3 className="my-2 text-[21px] font-bold leading-[1.3] tracking-[-0.63px] text-white">
+                {heroTitle}
+              </h3>
+              <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-on-dark">
                 {heroBody}
               </p>
             </>
@@ -411,12 +467,12 @@ export function RewardsContent() {
 
       <section
         className={cn(
-          'relative mt-3.5 hidden min-h-[127px] items-center justify-between gap-6 overflow-visible rounded-md bg-dark p-[18px] text-white shadow-card',
-          'max-[820px]:flex',
+          'relative mt-3.5 hidden min-h-[127px] overflow-visible rounded-2xl bg-dark p-[18px] text-white shadow-card',
+          'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-2',
         )}
       >
         <div className="relative z-[1]">
-          <span className="text-[11px] font-bold uppercase tracking-[1.4px] text-coral-bright">
+          <span className="text-[11px] font-bold uppercase tracking-[0.88px] text-coral-bright">
             {t.rewards.heroKicker}
           </span>
           {showHeroSkeleton ? (
@@ -425,10 +481,10 @@ export function RewardsContent() {
             </div>
           ) : (
             <>
-              <h3 className="my-2 text-lg font-bold text-white max-[820px]:text-lg">
+              <h3 className="my-2 text-lg font-bold leading-[1.2] tracking-[-0.54px] text-white">
                 {heroTitle}
               </h3>
-              <p className="m-0 text-[13px] leading-[1.55] text-on-dark">
+              <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-on-dark">
                 {heroBody}
               </p>
             </>
@@ -436,25 +492,17 @@ export function RewardsContent() {
         </div>
       </section>
 
-      <DappCollapsibleSection title={t.rewards.allTiers}>
-        <ResponsiveTable
-          compact
-          headers={[
-            t.tables.title,
-            t.tables.personalShort,
-            t.tables.totalVolume,
-            t.tables.bonusShort,
-            t.tables.postLaunchShort,
-          ]}
-          highlightedRows={tierHighlightedRows}
-          plain
-          positiveColumns={[3]}
-          rows={pagedTierRows.map((row) => [...row])}
-        />
-        <DappTablePagination onPageChange={setTierPage} page={tierPage} total={tierTotal} />
-      </DappCollapsibleSection>
+      {isMobileViewport ? (
+        <DappSection className="group-data-[tab=rewards]/shell:max-[820px]:mt-0" title={t.rewards.allTiers}>
+          <div className={cn(revealClass(), 'mt-3')} data-reveal>
+            {tierTable}
+          </div>
+        </DappSection>
+      ) : (
+        <DappCollapsibleSection title={t.rewards.allTiers}>{tierTable}</DappCollapsibleSection>
+      )}
 
-      <DappCollapsibleSection title={t.rewards.history}>
+      <DappCollapsibleSection className="max-[820px]:hidden" title={t.rewards.history}>
         <div className={cn(revealClass(), 'mt-3.5')} data-reveal>
           <DappPillTabs
             ariaLabel={t.rewards.history}
@@ -504,7 +552,7 @@ export function RewardsContent() {
       </DappCollapsibleSection>
 
       <DappCollapsibleSection
-        className="max-[820px]:mt-[22px] max-[820px]:[&_h3]:text-[17px]"
+        className="group-data-[tab=rewards]/shell:max-[820px]:mt-0"
         title={t.swap.faq}
       >
         <FaqStack

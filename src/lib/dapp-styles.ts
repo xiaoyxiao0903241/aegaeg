@@ -121,12 +121,13 @@ const DAPP_SURFACE_PRESET: Record<string, DappSurfaceOptions> = {
     radius: 'sm',
     pad: 'meta',
     clip: false,
-    className: 'grid shrink-0 gap-2 tracking-[-0.26px] max-[820px]:mt-3',
+    className: 'grid shrink-0 gap-2 tracking-[-0.26px] max-[820px]:mt-0',
   },
   faq: { pad: 'faq', shadow: 'faq' },
   promo: {
     pad: 'promo',
-    className: 'mt-auto grid gap-[5px] bg-dark text-white',
+    className:
+      'mt-auto grid gap-[5px] bg-dark text-white max-[820px]:gap-1.5 max-[820px]:rounded-2xl max-[820px]:px-[18px] max-[820px]:py-4',
   },
 }
 
@@ -145,7 +146,7 @@ export function dappCardClass(
 export const dappResponsive = {
   metricCard: cn(
     'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:rounded-[14px] group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:p-3.5',
-    'group-data-[tab=genesis]/shell:max-[820px]:min-h-[70px] group-data-[tab=genesis]/shell:max-[820px]:rounded-md group-data-[tab=genesis]/shell:max-[820px]:p-3.5',
+    'group-data-[tab=genesis]/shell:max-[820px]:min-h-0 group-data-[tab=genesis]/shell:max-[820px]:rounded-[14px] group-data-[tab=genesis]/shell:max-[820px]:p-3.5 group-data-[tab=genesis]/shell:max-[820px]:shadow-card',
   ),
   metricValue: cn(
     'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:text-[13px] group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:leading-[1.2]',
@@ -241,11 +242,34 @@ export function dappTextClass(
   return cn('tracking-[0]', TEXT_ROLE[role], opts?.tone && DAPP_TEXT_TONE[opts.tone], opts?.className)
 }
 
+/** DApp page heading typography — SSOT for widget h1, content h2, section h3. */
+export const dappHeading = {
+  widgetTitle: cn(
+    dappTextClass('titleWidget', { tone: 'ink' }),
+    'tracking-[-0.84px]',
+    'max-[820px]:text-[22px] max-[820px]:leading-[1.2] max-[820px]:tracking-[-0.88px]',
+  ),
+  widgetIntro: cn(
+    'min-[821px]:text-[12px] min-[821px]:tracking-[-0.24px]',
+    'max-[820px]:mt-2.5 max-[820px]:max-w-none max-[820px]:text-[13px] max-[820px]:leading-normal max-[820px]:tracking-[-0.26px] max-[820px]:text-faint',
+    '[&_strong]:font-bold [&_strong]:text-primary',
+  ),
+  contentTitle: cn(
+    'm-0 text-lg font-semibold leading-[1.3] text-foreground tracking-[-0.72px]',
+    'max-[820px]:mt-0 max-[820px]:text-[17px] max-[820px]:tracking-[-0.68px]',
+  ),
+  sectionTitle: cn(
+    dappTextClass('titleMd', { tone: 'ink' }),
+    'tracking-[-0.72px]',
+    'max-[820px]:text-[17px] max-[820px]:tracking-[-0.68px]',
+  ),
+} as const
+
 export const dappLayout = {
   metricGridTwo:
     'mt-3.5 grid grid-cols-2 gap-3 max-[820px]:min-w-0 max-[820px]:grid-cols-1',
   metricGridFour:
-    'mt-3.5 grid grid-cols-4 gap-3 max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] max-[820px]:min-w-0 max-[820px]:grid-cols-1',
+    'mt-3.5 grid grid-cols-4 gap-3 max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] max-[820px]:min-w-0 max-[820px]:grid-cols-1 group-data-[tab=genesis]/shell:max-[820px]:mt-3 group-data-[tab=genesis]/shell:max-[820px]:grid-cols-2 group-data-[tab=genesis]/shell:max-[820px]:gap-3',
   formRow: 'flex items-center justify-between gap-3',
   tokenAmountRow:
     'mt-[9px] flex items-center justify-between gap-3 max-[820px]:items-start',
@@ -253,11 +277,11 @@ export const dappLayout = {
     'w-full min-w-0 border-0 bg-transparent text-right text-[22px] font-bold leading-[1.2] text-foreground outline-0 placeholder:text-placeholder disabled:cursor-not-allowed disabled:opacity-[.58]',
   metaRow: 'm-0 flex items-start justify-between gap-3',
   actionRow: 'mt-3.5 grid shrink-0 grid-cols-2 gap-[9px] max-[820px]:mt-3',
-  seasonOptions: 'mt-3.5 grid gap-2',
+  seasonOptions: 'mt-3.5 grid gap-2 max-[820px]:mt-0',
   seasonOption:
-    'flex items-center gap-[11px] rounded-[13px] border border-border bg-card px-3.5 py-3 data-[selected=true]:border-primary',
+    'flex items-center gap-[11px] rounded-[13px] border border-border bg-card px-3.5 py-3 data-[selected=true]:border-primary max-[820px]:gap-2.5 max-[820px]:px-3.5 max-[820px]:py-3 max-[820px]:data-[selected=true]:border-[1.5px]',
   seasonRadio:
-    'relative aspect-square w-[17px] flex-none rounded-full border-2 border-border bg-card data-[selected=true]:border-primary',
+    'relative aspect-square w-[17px] flex-none rounded-full border-2 border-border bg-card data-[selected=true]:border-primary max-[820px]:size-[18px]',
   seasonRadioDot: 'absolute inset-[3px] rounded-full bg-primary',
   seasonBody: 'min-w-0 flex-1',
   seasonTitle: 'block text-[13px] font-bold leading-[1.25] text-foreground',
@@ -266,7 +290,7 @@ export const dappLayout = {
   seasonMetaMobile: 'hidden max-[820px]:inline [&_b]:font-inherit [&_b]:text-primary',
   seasonTiming: 'grid flex-none justify-items-end gap-1',
   seasonStatus:
-    'rounded-full bg-pill-muted-bg px-2 py-[3px] text-[10px] font-bold not-italic leading-[1.2] text-faint whitespace-nowrap data-[selected=true]:bg-primary data-[selected=true]:text-white',
+    'rounded-full bg-pill-muted-bg px-2 py-[3px] text-[10px] font-bold not-italic leading-[1.2] text-faint whitespace-nowrap data-[selected=true]:bg-primary data-[selected=true]:text-white max-[820px]:px-[9px] max-[820px]:text-[11px]',
   quickLinks: 'mt-3.5 grid gap-2',
   quickLink:
     'flex items-center gap-3 rounded-[14px] border border-border-subtle bg-card px-[14px] py-[13px] text-[14px] font-semibold leading-[1.3] tracking-[-0.28px] text-foreground transition-[border-color,transform] duration-[180ms] ease-out hover:translate-x-0.5 hover:border-coral-hover-border',
@@ -298,8 +322,6 @@ export const dappLayout = {
     'inline-flex items-center rounded-full bg-status-success-bg px-[9px] py-0.5 text-[11px] font-bold text-success',
   faqChevron:
     'inline-block aspect-square w-[18px] rotate-180 flex-none bg-primary transition-transform duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)] [mask:url("/assets/figma/dapp/ic-chevron.svg")_center/contain_no-repeat]',
-  amountMobilePreview:
-    'hidden text-[22px] font-bold leading-[1.2] text-foreground whitespace-nowrap max-[820px]:block',
   pillTabs: 'flex flex-wrap items-center gap-2',
   referrerAddrRow: 'flex h-[46px] items-center justify-between rounded-[11px] bg-background px-[14px]',
 } as const

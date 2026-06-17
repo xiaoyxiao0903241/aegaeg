@@ -6,7 +6,6 @@ export type Messages = typeof en
 const messageLoaders = {
   en: () => Promise.resolve(en),
   zh: () => import('./messages/zh').then((module) => module.default),
-  'zh-tw': () => import('./messages/zh-tw').then((module) => module.default),
   ko: () => import('./messages/ko').then((module) => module.default),
   ja: () => import('./messages/ja').then((module) => module.default),
   vi: () => import('./messages/vi').then((module) => module.default),

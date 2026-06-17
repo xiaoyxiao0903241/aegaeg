@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-const LOCALES = ['zh', 'zh-tw', 'ko', 'ja', 'vi', 'es', 'ru']
+const LOCALES = ['zh', 'ko', 'ja', 'vi', 'es', 'ru']
 
 /**
  * @param {unknown} reference

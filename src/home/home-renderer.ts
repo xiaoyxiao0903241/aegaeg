@@ -97,7 +97,7 @@ export function renderRootRedirectDocument() {
         const browser = (() => {
           const tag = (navigator.language || 'en').toLowerCase()
           if (tag.startsWith('zh')) {
-            return tag.includes('tw') || tag.includes('hk') || tag.includes('hant') ? 'zh-tw' : 'zh'
+            return 'zh'
           }
           const direct = tag.split('-')[0]
           return supported.has(direct) ? direct : 'en'
@@ -129,7 +129,7 @@ export function renderAppRedirectDocument() {
         const browser = (() => {
           const tag = (navigator.language || 'en').toLowerCase()
           if (tag.startsWith('zh')) {
-            return tag.includes('tw') || tag.includes('hk') || tag.includes('hant') ? 'zh-tw' : 'zh'
+            return 'zh'
           }
           const direct = tag.split('-')[0]
           return supported.has(direct) ? direct : 'en'

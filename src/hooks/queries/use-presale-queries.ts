@@ -6,6 +6,7 @@ import {
   readActivePresalePhase,
   readAllPresalePhases,
   readPresaleAgxPriceWei,
+  readTotalPresalePurchased,
   readUserPresaleTotal,
 } from '../../web3/presale-read'
 import { readErc20Allowance, readErc20Balance } from '../../web3/swap-read'
@@ -30,6 +31,14 @@ export function usePresaleAgxPriceQuery() {
   return useQuery({
     queryKey: queryKeys.chain.presaleAgxPrice,
     queryFn: () => readPresaleAgxPriceWei(),
+    staleTime: QUERY_STALE_TIME.presale,
+  })
+}
+
+export function usePresaleTotalPurchasedQuery() {
+  return useQuery({
+    queryKey: queryKeys.chain.presaleTotalPurchased,
+    queryFn: () => readTotalPresalePurchased(),
     staleTime: QUERY_STALE_TIME.presale,
   })
 }

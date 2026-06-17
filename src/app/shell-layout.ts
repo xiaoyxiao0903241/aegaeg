@@ -1,5 +1,5 @@
 import { cn } from '~/lib/utils'
-import { dappSpacing } from '~/lib/dapp-styles'
+import { dappHeading, dappSpacing } from '~/lib/dapp-styles'
 import type { DappTab } from './types'
 
 /** Figma 设计稿窗口高度上限（px）——大屏不无限拉伸，小屏随视口收缩。 */
@@ -146,12 +146,8 @@ export const shellModulePanelClass = cn(
 
 export const shellContentPageClass = 'min-w-0'
 
-export const shellContentHeadingClass = cn(
-  'm-0 text-lg font-semibold leading-[1.3] text-foreground',
-  'group-data-[tab=swap]/shell:tracking-[-0.36px]',
-  'group-data-[tab=rewards]/shell:tracking-[-0.72px]',
-  'group-data-[tab=community]/shell:tracking-[-0.72px]',
-)
+/** @deprecated Prefer `dappHeading.contentTitle` or `DappContentHeading`. */
+export const shellContentHeadingClass = dappHeading.contentTitle
 
 export const desktopCopyClass = 'max-[820px]:hidden'
 export const mobileCopyClass = 'hidden max-[820px]:inline'
