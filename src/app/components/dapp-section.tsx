@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { dappHeading } from '../../lib/dapp-styles'
+import { Text } from '~/components/text'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
@@ -21,7 +21,14 @@ export function DappSection({
       )}
       data-reveal
     >
-      <h3 className={dappHeading.sectionTitle}>{title}</h3>
+      <Text
+        as="h3"
+        size="lg"
+        weight="semibold"
+        className="tracking-[-0.36px] max-[820px]:text-[17px] max-[820px]:tracking-[-0.68px]"
+      >
+        {title}
+      </Text>
       {children}
     </section>
   )

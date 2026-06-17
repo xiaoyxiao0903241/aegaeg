@@ -1,70 +1,79 @@
-import { forwardRef } from 'react'
+import { createElement, type HTMLAttributes, type ReactNode } from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/lib/utils'
 
-const Card = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        'rounded-lg border border-border bg-card text-card-foreground shadow-sm',
-        className
-      )}
-      {...props}
-    />
+/** DApp：context=dapp + surface | Home：context=home + fill + radius */
+export const cardVariants = tv({
+  variants: {
+    context: {
+      dapp: 'overflow-hidden rounded-md bg-card px-4 py-3.5',
+      home: '',
+    },
+    surface: {
+      outlined: 'border border-border',
+      elevated: 'shadow-card',
+    },
+    fill: {
+      surface: 'bg-card shadow-card',
+      transparent: '',
+      token: 'text-white shadow-token',
+    },
+    radius: {
+      none: 'rounded-none',
+      sm: 'rounded-[14px]',
+      md: 'rounded-md',
+      lg: 'rounded-[18px]',
+      xl: 'rounded-lg',
+      full: 'rounded-full',
+    },
+    tone: {
+      dark: 'border-0 bg-dark text-white',
+    },
+    hover: {
+      shadow:
+        'transition-shadow duration-200 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-[0_14px_34px_oklch(22%_0.04_265_/_10%)] focus-within:shadow-[0_14px_34px_oklch(22%_0.04_265_/_10%)]',
+    },
+  },
+  defaultVariants: {
+    context: 'dapp',
+    surface: 'outlined',
+  },
+})
+
+export type CardProps = HTMLAttributes<HTMLElement> &
+  VariantProps<typeof cardVariants> & {
+    as?: 'article' | 'div' | 'section' | 'details' | 'span'
+    children: ReactNode
+  }
+
+export function Card({
+  as = 'article',
+  children,
+  className,
+  context = 'dapp',
+  surface,
+  fill,
+  radius,
+  tone,
+  hover,
+  ...props
+}: CardProps) {
+  return createElement(
+    as,
+    {
+      ...props,
+      className: cn(
+        cardVariants({
+          context,
+          surface: context === 'dapp' ? (surface ?? 'outlined') : undefined,
+          fill: context === 'home' ? (fill ?? 'surface') : undefined,
+          radius: context === 'home' ? (radius ?? 'md') : undefined,
+          tone,
+          hover,
+        }),
+        className,
+      ),
+    },
+    children,
   )
-)
-Card.displayName = 'Card'
-
-const CardHeader = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('flex flex-col space-y-1.5 p-6', className)}
-      {...props}
-    />
-  )
-)
-CardHeader.displayName = 'CardHeader'
-
-const CardTitle = forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className, ...props }, ref) => (
-    <h3
-      ref={ref}
-      className={cn('text-lg font-semibold leading-none tracking-tight', className)}
-      {...props}
-    />
-  )
-)
-CardTitle.displayName = 'CardTitle'
-
-const CardDescription = forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn('text-sm text-muted-foreground', className)}
-    {...props}
-  />
-))
-CardDescription.displayName = 'CardDescription'
-
-const CardContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
-  )
-)
-CardContent.displayName = 'CardContent'
-
-const CardFooter = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('flex items-center p-6 pt-0', className)}
-      {...props}
-    />
-  )
-)
-CardFooter.displayName = 'CardFooter'
-
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+}

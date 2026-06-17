@@ -1,5 +1,4 @@
 import { cn } from '~/lib/utils'
-import { dappHeading, dappSpacing } from '~/lib/dapp-styles'
 import type { DappTab } from './types'
 
 /** Figma 设计稿窗口高度上限（px）——大屏不无限拉伸，小屏随视口收缩。 */
@@ -72,7 +71,7 @@ export function shellWindowClass(state: {
     'rounded-xl',
     !connected && 'shadow-window-compact',
     'max-[820px]:flex max-[820px]:h-auto max-[820px]:max-h-none max-[820px]:min-h-0 max-[820px]:flex-col max-[820px]:gap-3',
-    'max-[820px]:overflow-hidden max-[820px]:rounded-3xl max-[820px]:border-0 max-[820px]:p-[18px] max-[820px]:pb-[22px] max-[820px]:shadow-card',
+    'max-[820px]:overflow-hidden max-[820px]:rounded-[24px] max-[820px]:border-0 max-[820px]:p-[18px] max-[820px]:pb-[22px] max-[820px]:shadow-card',
     mobileSwapPager &&
       'max-[820px]:flex max-[820px]:h-full max-[820px]:max-h-full max-[820px]:min-h-0 max-[820px]:flex-1 max-[820px]:gap-0 max-[820px]:overflow-hidden max-[820px]:pb-[18px]',
   )
@@ -89,6 +88,9 @@ export function shellRailItemClass(active: boolean) {
   return cn(
     'relative z-[1] flex w-full min-h-[60px] cursor-pointer flex-col items-center justify-center gap-[5px] rounded-[14px] bg-transparent px-1 py-[11px]',
     'text-[10px] font-medium leading-[1.3] tracking-[-0.2px] transition-[color] duration-180 ease-out',
+    'group-data-[tab=swap]/shell:text-xs group-data-[tab=swap]/shell:font-normal group-data-[tab=swap]/shell:tracking-[-0.24px]',
+    'group-data-[tab=genesis]/shell:text-xs group-data-[tab=genesis]/shell:font-normal group-data-[tab=genesis]/shell:tracking-[-0.24px]',
+    'group-data-[tab=rewards]/shell:text-xs group-data-[tab=rewards]/shell:font-normal group-data-[tab=rewards]/shell:tracking-[-0.24px]',
     active ? 'text-primary' : 'text-ink-strong hover:bg-background hover:text-foreground',
   )
 }
@@ -100,16 +102,14 @@ export const shellRailIconClass = 'aspect-square w-[22px] bg-current'
 
 export function shellWidgetClass() {
   return cn(
-    dappSpacing.widgetCol,
-    'h-full min-h-0 max-h-full overflow-y-auto overflow-x-hidden border-r border-border bg-card',
+    'h-full min-h-0 max-h-full overflow-y-auto overflow-x-hidden border-r border-border bg-card pt-10 px-6 pb-[22px]',
     'max-[820px]:h-auto max-[820px]:max-h-none max-[820px]:w-full max-[820px]:overflow-visible max-[820px]:border-r-0 max-[820px]:border-b-0 max-[820px]:p-0',
   )
 }
 
 export function shellContentClass(detailCollapsed: boolean) {
   return cn(
-    dappSpacing.contentCol,
-    'min-h-0 min-w-0 max-h-full overflow-y-auto overflow-x-hidden bg-card transition-[opacity,padding-inline] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+    'min-h-0 min-w-0 max-h-full overflow-y-auto overflow-x-hidden bg-card pt-10 px-7 pb-[30px] transition-[opacity,padding-inline] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
     detailCollapsed && 'pointer-events-none overflow-hidden px-0 opacity-0',
     'max-[820px]:pointer-events-auto max-[820px]:w-full max-[820px]:min-h-0 max-[820px]:overflow-visible max-[820px]:p-0 max-[820px]:opacity-100',
   )
@@ -145,9 +145,3 @@ export const shellModulePanelClass = cn(
 )
 
 export const shellContentPageClass = 'min-w-0'
-
-/** @deprecated Prefer `dappHeading.contentTitle` or `DappContentHeading`. */
-export const shellContentHeadingClass = dappHeading.contentTitle
-
-export const desktopCopyClass = 'max-[820px]:hidden'
-export const mobileCopyClass = 'hidden max-[820px]:inline'

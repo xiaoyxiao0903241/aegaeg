@@ -10,6 +10,9 @@
     "lint": "eslint .",
     "test:unit": "node --test tests/unit/*.test.mjs",
     "test:integration": "node tests/integration/swap-quote-live.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "dev:e2e": "pnpm render:home && vite --host 127.0.0.1 --port 5175 --strictPort --force",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -38,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.0",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",

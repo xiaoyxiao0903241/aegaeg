@@ -1,4 +1,4 @@
-import { dappCardClass, dappLayout, dappResponsive, dappSurfaceClass } from '../../components/primitive-styles'
+import { Card } from '~/components/card'
 import { cn } from '~/lib/utils'
 
 const skeletonSurfaceClass =
@@ -6,6 +6,14 @@ const skeletonSurfaceClass =
 
 const skeletonDarkClass =
   'bg-[oklch(100%_0_0/18%)] motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
+
+const TABLE_CELL =
+  'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal'
+
+const communityStatCardResponsive = cn(
+  'group-data-[tab=community]/shell:max-[820px]:min-h-[70px] group-data-[tab=community]/shell:max-[820px]:rounded-xl group-data-[tab=community]/shell:max-[820px]:p-3.5',
+  'group-data-[tab=community]/shell:max-[820px]:items-center group-data-[tab=community]/shell:max-[820px]:text-center',
+)
 
 export function DappSkeleton({
   className,
@@ -28,14 +36,14 @@ export function DappSkeleton({
 
 export function MetricCardSkeleton({ className }: { className?: string }) {
   return (
-    <article
-      className={dappCardClass('metric', {
-        className: cn('px-4 py-3.5', className),
-      })}
+    <Card
+      as="article"
+      surface="elevated"
+      className={cn('mt-3.5 flex flex-col gap-[7px] px-4 py-3.5', className)}
     >
       <DappSkeleton className="h-3 w-[72px] max-w-[55%]" />
       <DappSkeleton className="mt-[9px] h-5 w-[96px] max-w-[70%]" />
-    </article>
+    </Card>
   )
 }
 
@@ -43,7 +51,10 @@ export function SeasonOptionSkeleton() {
   return (
     <div
       aria-hidden="true"
-      className={cn(dappLayout.seasonOption, 'pointer-events-none')}
+      className={cn(
+        'pointer-events-none flex items-center gap-[11px] rounded-[13px] border border-border bg-card px-3.5 py-3',
+        'max-[820px]:gap-2.5 max-[820px]:px-3.5 max-[820px]:py-3',
+      )}
     >
       <DappSkeleton className="aspect-square w-[17px] shrink-0 rounded-full" />
       <div className="min-w-0 flex-1">
@@ -104,14 +115,14 @@ export function SideCardSkeleton({
 
 export function RewardBalanceCardSkeleton() {
   return (
-    <article className={dappCardClass('rewardBalance')}>
+    <Card as="article" surface="outlined" className="mt-3.5">
       <div className="flex items-center justify-between gap-3">
         <DappSkeleton className="h-3 w-24" />
         <DappSkeleton className="h-3 w-16" />
       </div>
       <DappSkeleton className="mt-2 h-7 w-[42%]" />
       <DappSkeleton className="mt-1.5 h-3 w-[78%]" />
-    </article>
+    </Card>
   )
 }
 
@@ -140,26 +151,21 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
   const tone = dark ? 'dark' : 'surface'
 
   return (
-    <article
-      className={dappSurfaceClass({
-        gap: 'stat',
-        radius: 'lg',
-        pad: 'stat',
-        shadow: 'stat',
-        tone: dark ? 'dark' : 'surface',
-        className: cn(
-          'community-stat',
-          dark && 'is-dark',
-          dappResponsive.communityStatCard,
-          'min-h-[90px] rounded-[14px] border-0 p-[13px_12px] shadow-card',
-        ),
-      })}
+    <Card
+      as="article"
+      tone={dark ? 'dark' : undefined}
+      surface={dark ? undefined : 'elevated'}
+      className={cn(
+        'community-stat flex min-h-[90px] flex-col items-start gap-1 rounded-[14px] border-0 p-[13px_12px] shadow-card',
+        dark && 'is-dark',
+        communityStatCardResponsive,
+      )}
     >
       <DappSkeleton className="h-3 w-16" tone={tone} />
       <DappSkeleton className="mt-2 h-7 w-14" tone={tone} />
       <DappSkeleton className="mt-1 h-3 w-24" tone={tone} />
       <DappSkeleton className="mt-1 h-3 w-32" tone={tone} />
-    </article>
+    </Card>
   )
 }
 
@@ -173,10 +179,7 @@ export function TableRowSkeleton({
   return (
     <tr>
       {Array.from({ length: columns }, (_, index) => (
-        <td
-          className={cn(dappLayout.tableCell, isLast && 'border-b-0')}
-          key={index}
-        >
+        <td className={cn(TABLE_CELL, isLast && 'border-b-0')} key={index}>
           <DappSkeleton className="h-3.5 w-[min(100%,88px)]" />
         </td>
       ))}

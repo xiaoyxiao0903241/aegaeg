@@ -1,14 +1,14 @@
-import type { Locale } from '../i18n/locales'
-import { getHtmlLang } from '../i18n/locale-meta'
-import { locales } from '../i18n/locales'
-import { getHomeContent } from './content'
+import type { Locale } from '~/i18n/locales'
+import { getHtmlLang } from '~/i18n/locale-meta'
+import { locales } from '~/i18n/locales'
+import { getHomeContent } from '~/home/content'
 import { homeAssets } from './assets'
 
 const supportedLocalesJson = JSON.stringify(locales)
 
-// 首页挂载前关闭滚动恢复跳动
+// 首页挂载前关闭滚动恢复跳动；hash 由客户端 useLayoutEffect 恢复
 const bootScript =
-  "try{if('scrollRestoration' in history){history.scrollRestoration='auto'}}catch{}"
+  "try{if('scrollRestoration' in history){history.scrollRestoration='manual'}}catch{}"
 
 function escapeAttr(value: string) {
   return value

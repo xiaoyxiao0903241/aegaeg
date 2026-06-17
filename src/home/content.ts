@@ -2,7 +2,7 @@ export {
   getAllHomeLocales,
   getHomeContent,
   makeLanguageOptions,
-} from './content/index'
+} from '~/home/content/index'
 export type {
   FaqItem,
   FooterGroup,
@@ -12,7 +12,6 @@ export type {
   LanguageOption,
   Metric,
   NavigationLink,
-  ResponsiveCopy,
   RoadmapPhase,
   TokenCard,
-} from './content/index'
+} from '~/home/content/index'

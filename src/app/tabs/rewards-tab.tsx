@@ -60,8 +60,6 @@ import { ProgressMeter } from '../components/progress-meter'
 import { ResponsiveTable } from '../components/responsive-table'
 import { useDappShell } from '../dapp-shell-context'
 import { useMobileViewport } from '../../hooks/use-mobile-viewport'
-import { dappGap, dappSpacing } from '../../components/primitive-styles'
-
 const REWARDS_WIDGET_CARD_CLASS = cn(
   'rounded-2xl px-4 py-3.5 max-[820px]:mt-0',
   '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-[820px]:[&_span]:text-faint',
@@ -69,7 +67,6 @@ const REWARDS_WIDGET_CARD_CLASS = cn(
 
 const REWARDS_PROGRESS_CARD_CLASS = cn(
   REWARDS_WIDGET_CARD_CLASS,
-  dappGap.sm,
   'grid gap-1.5',
 )
 
@@ -226,7 +223,7 @@ export function RewardsWidget({
       ) : (
       <DappSideCard className={REWARDS_PROGRESS_CARD_CLASS}>
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
+          <span className="text-xs font-normal leading-[1.5] text-ink-strong">
             {personalProgressLabel}
           </span>
           <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
@@ -239,7 +236,7 @@ export function RewardsWidget({
         />
         <span aria-hidden="true" className="block h-1" />
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
+          <span className="text-xs font-normal leading-[1.5] text-ink-strong">
             {teamProgressLabel}
           </span>
           <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
@@ -372,13 +369,13 @@ export function RewardsContent() {
     : getPresaleRankHighlightedRowsForPage(2, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
 
   const tierHeaders = isMobileViewport
-    ? [t.tables.title, t.tables.personalShort, t.tables.bonusShort, t.tables.rankShort]
+    ? [t.tables.title, t.community.shareholder, t.tables.bonusRate, t.tables.postLaunchRank]
     : [
         t.tables.title,
-        t.tables.personalShort,
+        t.community.shareholder,
         t.tables.totalVolume,
-        t.tables.bonusShort,
-        t.tables.postLaunchShort,
+        t.tables.bonusRate,
+        t.tables.postLaunchRank,
       ]
 
   const tierRows = pagedTierRows.map((row, rowIndex) => {

@@ -13,7 +13,6 @@ import {
   formatReferralLinkDisplay,
   formatPresaleRank,
   formatUsd,
-  formatUsdCompact,
   mapTeamReferralToCompactRow,
   mapTeamReferralToMobileRow,
 } from '../../lib/api/format-display'
@@ -24,8 +23,6 @@ import { useReferral } from '../../hooks/use-referral'
 import { toast } from 'sonner'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
 import {
-  desktopCopyClass,
-  mobileCopyClass,
   shellContentPageClass,
   shellModulePanelClass,
 } from '../shell-layout'
@@ -43,7 +40,7 @@ import {
   SideLabel,
   SideValue,
 } from '../components/dapp-card'
-import { dappLayout, dappSpacing } from '../../components/primitive-styles'
+import { ReferrerAddressRow } from '../components/referrer-address-row'
 import { DappSection } from '../components/dapp-section'
 import { DappContentHeading } from '../components/dapp-content-heading'
 import { DappWidgetHeader } from '../components/dapp-widget-header'
@@ -76,7 +73,7 @@ const COMMUNITY_WIDGET_SHELL_CLASS = cn(
 )
 
 const SHAREHOLDER_ACTION_CLASS = cn(
-  'mt-4 min-h-12 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-[820px]:hidden',
+  'mt-4 min-h-[42px] hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-[820px]:hidden',
 )
 
 const COMMUNITY_STAT_GRID = cn(
@@ -173,7 +170,7 @@ function CommunityConnectedWidget({
           <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
             {t.community.referrer}
           </p>
-          <div className={dappLayout.referrerAddrRow}>
+          <ReferrerAddressRow>
             <div className="flex min-w-0 items-center gap-2.5">
               <span className="grid size-6 flex-none place-items-center rounded-full bg-accent text-[10px] font-semibold leading-[1.2] text-primary">
                 R
@@ -192,13 +189,13 @@ function CommunityConnectedWidget({
                 <img alt="" height="16" src={dappAssets.copy} width="16" />
               </button>
             ) : null}
-          </div>
+          </ReferrerAddressRow>
           <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
             {t.community.referralBondPermanent}
           </p>
         </DappReferrerBoundCard>
       ) : (
-        <DappSideCard className={cn(REFERRAL_CARD_CLASS, dappSpacing.stackBetweenCards, 'grid gap-2')}>
+        <DappSideCard className={cn(REFERRAL_CARD_CLASS, 'mt-2 grid gap-2')}>
           <SideLabel tone="muted">{t.community.referrer}</SideLabel>
           <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2">
             <input
@@ -404,11 +401,9 @@ export function CommunityContent({
 
   const directCount = referralChain.directCount
   const directVolume = formatUsd(performance?.direct_presale_volume ?? 0)
-  const directVolumeCompact = formatUsdCompact(performance?.direct_presale_volume ?? 0)
 
   const teamCount = String(referrals?.total ?? referralChain.directCount)
   const teamVolume = formatUsd(performance?.sales_team_market ?? 0)
-  const teamVolumeCompact = formatUsdCompact(performance?.sales_team_market ?? 0)
 
   const shareholderRank = formatPresaleRank(displayRank)
   const genesisShareholderLabel = useStatPlaceholders || isRankLoading
@@ -419,54 +414,27 @@ export function CommunityContent({
 
   const stats: CommunityStat[] = [
     {
-      label: (
-        <>
-          <span className={desktopCopyClass}>{t.community.directReferrals}</span>
-          <span className={mobileCopyClass}>{t.community.directShort}</span>
-        </>
-      ),
+      label: t.community.directReferrals,
       value: directCount,
       volume: useStatPlaceholders ? (
-        <>
-          <span className={desktopCopyClass}>{t.community.statDirectVolume}</span>
-          <span className={mobileCopyClass}>{t.community.statDirectVolumeShort}</span>
-        </>
+        t.community.statDirectVolume
       ) : (
-        <>
-          <span className={desktopCopyClass}>{t.community.volumePrefix} {directVolume}</span>
-          <span className={mobileCopyClass}>{directVolumeCompact}</span>
-        </>
+        `${t.community.volumePrefix} ${directVolume}`
       ),
       today: t.community.statDirectToday,
     },
     {
-      label: (
-        <>
-          <span className={desktopCopyClass}>{t.community.myTeam}</span>
-          <span className={mobileCopyClass}>{t.community.myTeam}</span>
-        </>
-      ),
+      label: t.community.myTeam,
       value: teamCount,
       volume: useStatPlaceholders ? (
-        <>
-          <span className={desktopCopyClass}>{t.community.statTeamVolume}</span>
-          <span className={mobileCopyClass}>{t.community.statTeamVolumeShort}</span>
-        </>
+        t.community.statTeamVolume
       ) : (
-        <>
-          <span className={desktopCopyClass}>{t.community.volumePrefix} {teamVolume}</span>
-          <span className={mobileCopyClass}>{teamVolumeCompact}</span>
-        </>
+        `${t.community.volumePrefix} ${teamVolume}`
       ),
       today: t.community.statTeamToday,
     },
     {
-      label: (
-        <>
-          <span className={desktopCopyClass}>{t.community.genesisTitle}</span>
-          <span className={mobileCopyClass}>{t.community.titleShort}</span>
-        </>
-      ),
+      label: t.community.genesisTitle,
       value: shareholderRank,
       volume: genesisShareholderLabel,
       today: t.community.statGenesisToday,
@@ -547,7 +515,7 @@ export function CommunityContent({
                       t.tables.joined,
                       t.tables.address,
                       t.tables.title,
-                      t.tables.volumeShort,
+                      t.tables.volume,
                     ]
                   : [
                       t.tables.joined,

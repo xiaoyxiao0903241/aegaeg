@@ -1,8 +1,3 @@
-export type ResponsiveCopy = {
-  desktop: string
-  mobile: string
-}
-
 export type NavigationLink = {
   href: string
   label: string
@@ -20,8 +15,7 @@ export type IconCard = {
   icon: string
   index?: string
   title: string
-  desktop: string
-  mobile: string
+  body: string
 }
 
 export type TokenCard = {
@@ -65,7 +59,7 @@ export type FooterGroup = {
   ariaLabel: string
   links: Array<{
     href: string
-    label: string | ResponsiveCopy
+    label: string
   }>
 }
 
@@ -84,9 +78,9 @@ export type HomeContent = {
   }
   hero: {
     guardianLabel: string
-    eyebrow: ResponsiveCopy
+    eyebrow: string
     title: string
-    body: ResponsiveCopy
+    body: string
     enterProtocol: string
     readWhitepaper: string
     walletBusy: string
@@ -94,20 +88,20 @@ export type HomeContent = {
   sections: {
     protocol: {
       eyebrow: string
-      title: ResponsiveCopy
-      subtitle: ResponsiveCopy
+      title: string
+      subtitle: string
       cards: IconCard[]
     }
     engine: {
       eyebrow: string
-      title: ResponsiveCopy
-      subtitle: ResponsiveCopy
+      title: string
+      subtitle: string
       cards: IconCard[]
     }
     token: {
       eyebrow: string
       title: string
-      subtitle: ResponsiveCopy
+      subtitle: string
       cards: TokenCard[]
     }
     roadmap: {
@@ -118,8 +112,8 @@ export type HomeContent = {
     security: {
       eyebrow: string
       title: string
-      subtitle: ResponsiveCopy
-      checks: Array<string | ResponsiveCopy>
+      subtitle: string
+      checks: string[]
     }
     partners: {
       title: string
@@ -133,7 +127,7 @@ export type HomeContent = {
   }
   metrics: Metric[]
   footer: {
-    brandCopy: ResponsiveCopy
+    brandCopy: string
     copyright: string
     legal: string
     languageLabel: string
@@ -156,20 +150,20 @@ export type HomeContentBundle = {
   sections: {
     protocol: {
       eyebrow: string
-      title: ResponsiveCopy
-      subtitle: ResponsiveCopy
+      title: string
+      subtitle: string
       cards: IconCardCopy[]
     }
     engine: {
       eyebrow: string
-      title: ResponsiveCopy
-      subtitle: ResponsiveCopy
+      title: string
+      subtitle: string
       cards: IconCardCopy[]
     }
     token: {
       eyebrow: string
       title: string
-      subtitle: ResponsiveCopy
+      subtitle: string
       cards: TokenCardCopy[]
     }
     roadmap: HomeContent['sections']['roadmap']

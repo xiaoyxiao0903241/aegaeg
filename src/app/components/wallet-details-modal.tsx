@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { LogOut, Wallet, X } from 'lucide-react'
 import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
-import { getWalletBalance, type GetWalletBalanceResult } from 'thirdweb/wallets'
+import { getWalletBalance } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '../../config/contracts'
 import { formatTokenAmount } from '../../lib/swap/token-amount'
 import { readErc20Balance } from '../../web3/swap-read'
@@ -12,8 +12,8 @@ import { hasWalletAccount } from '../../lib/web3/wallet-connection-state'
 import { dappAssets } from '../assets'
 import { formatAddress } from '../utils'
 import { defaultChain, thirdwebClient } from '../../web3/thirdweb'
+import { Button } from '~/components/button'
 import { cn } from '~/lib/utils'
-import { dappButtonClass } from '~/lib/dapp-styles'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
@@ -45,7 +45,9 @@ export function WalletDetailsModal({
   const { messages: t } = useI18n()
   const [copied, setCopied] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
-  const [nativeBalance, setNativeBalance] = useState<GetWalletBalanceResult | null>(null)
+  const [nativeBalance, setNativeBalance] = useState<Awaited<
+    ReturnType<typeof getWalletBalance>
+  > | null>(null)
   const [nativeBalanceLoading, setNativeBalanceLoading] = useState(false)
   const [tokenBalances, setTokenBalances] = useState<WalletTokenBalanceRow[]>([])
   const [tokensFetched, setTokensFetched] = useState(false)
@@ -156,6 +158,7 @@ export function WalletDetailsModal({
   })
 
   async function handleCopy() {
+    if (!walletAddress) return
     try {
       await navigator.clipboard.writeText(walletAddress)
       setCopied(true)
@@ -242,37 +245,34 @@ export function WalletDetailsModal({
       <div className="mt-6 grid gap-2.5">
         {!walletReady ? (
           <>
-            <button
-              className={cn(
-                dappButtonClass('capsule', 'primary'),
-                'h-[46px] gap-2 px-3 text-sm',
-              )}
+            <Button
+              className="h-[46px] gap-2 px-3 text-sm"
               onClick={() => setConnectOpen(true)}
+              size="md"
               type="button"
+              variant="primary"
             >
               {t.wallet.reconnectWallet}
-            </button>
-            <button
-              className={cn(
-                dappButtonClass('capsule', 'secondary'),
-                'h-[46px] gap-2 px-3 text-sm',
-              )}
+            </Button>
+            <Button
+              className="h-[46px] gap-2 px-3 text-sm"
               onClick={() => void handleDisconnect()}
+              size="md"
               type="button"
+              variant="secondary"
             >
               <LogOut aria-hidden className="size-[15px]" strokeWidth={2} />
               {t.wallet.disconnect}
-            </button>
+            </Button>
           </>
         ) : (
           <div className="grid grid-cols-2 gap-2.5">
-            <button
-              className={cn(
-                dappButtonClass('capsule', 'primary'),
-                'h-[46px] gap-2 px-3 text-sm',
-              )}
+            <Button
+              className="h-[46px] gap-2 px-3 text-sm"
               onClick={() => void handleCopy()}
+              size="md"
               type="button"
+              variant="primary"
             >
               <img
                 alt=""
@@ -283,18 +283,17 @@ export function WalletDetailsModal({
                 width="15"
               />
               {copied ? t.wallet.copied : t.wallet.copyAddress}
-            </button>
-            <button
-              className={cn(
-                dappButtonClass('capsule', 'secondary'),
-                'h-[46px] gap-2 px-3 text-sm',
-              )}
+            </Button>
+            <Button
+              className="h-[46px] gap-2 px-3 text-sm"
               onClick={() => void handleDisconnect()}
+              size="md"
               type="button"
+              variant="secondary"
             >
               <LogOut aria-hidden className="size-[15px]" strokeWidth={2} />
               {t.wallet.disconnect}
-            </button>
+            </Button>
           </div>
         )}
       </div>

@@ -1,7 +1,8 @@
+import { Button } from '~/components/button'
 import { useCallback, useEffect, useState } from 'react'
 import { useI18n } from '../../i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { buttonDisabledClass, dappButtonClass } from '~/lib/dapp-styles'
+import { buttonDisabledClass } from '~/components/button'
 import { revealClass } from '~/lib/reveal'
 import { toast } from 'sonner'
 import {
@@ -274,7 +275,7 @@ export function GenesisContent() {
     salesLogs?.items.map((item) => mapSalesLogToMobileRow(item, genesis.agxPriceUsd)) ?? []
   const tableRows = isMobileViewport ? mobileRows : desktopRows
   const tableHeaders = isMobileViewport
-    ? [t.tables.time, t.tables.paid, t.tables.discShort, t.tables.agxShort]
+    ? [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx]
     : [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx, t.tables.tx]
   const tableLinkColumns = isMobileViewport ? [] : [4]
   const contributionsTotal = salesLogs?.total ?? 0
@@ -353,24 +354,22 @@ export function GenesisContent() {
               {t.genesis.globalBody}
             </p>
           </div>
-          <button
-            className={dappButtonClass(
-              'capsule',
-              'light',
-              cn(
-                'absolute right-[22px] top-[43px] z-[2] !min-h-10 !gap-1.5 !border-[oklch(100%_0_0/45%)] !bg-transparent !px-[18px] !text-white',
-                'hover:!border-[oklch(100%_0_0/80%)] focus-visible:!border-[oklch(100%_0_0/80%)]',
-                '[&_img]:size-[15px] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
-              ),
+          <Button
+            className={cn(
+              'absolute right-[22px] top-[43px] z-[2] !gap-1.5 !border-[oklch(100%_0_0/45%)] !bg-transparent !px-[18px] !text-white',
+              'hover:!border-[oklch(100%_0_0/80%)] focus-visible:!border-[oklch(100%_0_0/80%)]',
+              '[&_img]:size-[15px] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
             )}
             onClick={() =>
               window.open(bscscanAddress(BSC_CONTRACTS.preSale), '_blank', 'noopener,noreferrer')
             }
+            size="md"
             type="button"
+            variant="secondary"
           >
             {t.genesis.viewContract}
             <img alt="" height="15" src={dappAssets.arrowUpRight} width="15" />
-          </button>
+          </Button>
           <img
             alt=""
             className="pointer-events-none absolute top-0 right-9 h-auto w-[min(44%,320px)] select-none opacity-[0.78]"
@@ -459,7 +458,7 @@ export function GenesisContent() {
               question: t.genesis.faqReward,
             },
             {
-              answer: t.genesis.faqfaqReleaseBody,
+              answer: t.genesis.faqReleaseBody,
               question: t.genesis.faqRelease,
             },
           ]}

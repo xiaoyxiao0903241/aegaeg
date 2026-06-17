@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { dappCardClass, dappLayout, dappTextClass } from '../../components/primitive-styles'
+import { Card } from '~/components/card'
+import { Text } from '~/components/text'
 import { cn } from '~/lib/utils'
 
 export type DappMetaListItem = {
@@ -18,22 +19,34 @@ export function DappMetaList({
   items: DappMetaListItem[]
 }) {
   return (
-    <div className={dappCardClass('metaList', { className })}>
+    <Card
+      as="div"
+      surface="outlined"
+      className={cn(
+        'mt-3.5 grid shrink-0 gap-2 rounded-[12px] px-[14px] py-[13px] tracking-[-0.26px] max-[820px]:mt-0',
+        className,
+      )}
+    >
       {items.map((item, index) => (
-        <p className={dappLayout.metaRow} key={index}>
-          <span
-            className={cn(
-              dappTextClass('body', { tone: connected ? 'body' : 'subtle' }),
-              connected && 'max-[820px]:text-faint',
-            )}
+        <p className="m-0 flex items-start justify-between gap-3" key={index}>
+          <Text
+            as="span"
+            size="sm"
+            tone={connected ? 'body' : 'subtle'}
+            className={connected ? 'max-[820px]:text-faint' : undefined}
           >
             {item.label}
-          </span>
-          <strong className={cn(dappTextClass('metaValue'), item.valueClassName)}>
+          </Text>
+          <Text
+            as="strong"
+            size="sm"
+            weight="semibold"
+            className={cn('mt-0 text-right', item.valueClassName)}
+          >
             {item.value}
-          </strong>
+          </Text>
         </p>
       ))}
-    </div>
+    </Card>
   )
 }

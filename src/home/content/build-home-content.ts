@@ -1,4 +1,4 @@
-import type { Locale } from '../../i18n/locales'
+import type { Locale } from '~/i18n/locales'
 import {
   engineIcons,
   makeLanguageOptions,

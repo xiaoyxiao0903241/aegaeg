@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { Button } from '~/components/button'
 import { ButtonLoadingIcon } from '../../components/button-loading-icon'
-import { dappButtonClass } from '../../components/primitive-styles'
 import { cn } from '~/lib/utils'
 
 type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -21,10 +21,9 @@ export function DappActionButton({
   ...props
 }: DappActionButtonProps) {
   return (
-    <button
+    <Button
       aria-busy={loading || undefined}
       className={cn(
-        dappButtonClass('action', variant === 'primary' ? 'primary' : 'secondary'),
         'gap-2',
         shape === 'inline' &&
           cn(
@@ -35,11 +34,13 @@ export function DappActionButton({
         className,
       )}
       disabled={disabled || loading}
+      size="sm"
       type={type}
+      variant={variant}
       {...props}
     >
       {loading ? <ButtonLoadingIcon /> : null}
       {children}
-    </button>
+    </Button>
   )
 }

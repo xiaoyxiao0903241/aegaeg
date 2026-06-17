@@ -1,5 +1,6 @@
 import { useI18n } from '../../i18n/use-i18n'
-import { dappCardClass } from '../../components/primitive-styles'
+import { Card } from '~/components/card'
+import { Text } from '~/components/text'
 import {
   applyMessageTemplate,
   type GenesisPromoSnapshot,
@@ -78,22 +79,27 @@ export function GenesisPromoCard({
   })()
 
   return (
-    <section
+    <Card
+      as="section"
+      tone="dark"
       className={cn(
-        dappCardClass('promo'),
         revealClass(),
+        'mt-auto grid gap-[5px] px-[18px] py-4',
+        'max-[820px]:gap-1.5 max-[820px]:rounded-2xl max-[820px]:px-[18px] max-[820px]:py-4',
         'max-[820px]:mt-0 group-data-[tab=genesis]/shell:max-[820px]:grid',
         className,
       )}
       data-reveal
     >
-      <strong className="text-[14px] font-semibold leading-[1.2] tracking-[-0.28px] text-white">
+      <Text as="strong" size="sm" weight="semibold" tone="onDark" className="tracking-[-0.28px]">
         {title}
-      </strong>
+      </Text>
       {isLoading ? (
         <GenesisPromoBodySkeleton />
       ) : (
-        <p className="m-0 text-[12px] leading-normal tracking-[-0.24px] text-on-dark">{body}</p>
+        <Text as="p" size="xs" tone="onDark" className="m-0 leading-normal tracking-[-0.24px]">
+          {body}
+        </Text>
       )}
       <DappActionButton
         className="mt-2 min-h-[38px] text-[13px] group-data-[tab=genesis]/shell:max-[820px]:min-h-[42px] group-data-[tab=genesis]/shell:max-[820px]:text-sm"
@@ -101,6 +107,6 @@ export function GenesisPromoCard({
       >
         {actionLabel ?? t.genesis.join}
       </DappActionButton>
-    </section>
+    </Card>
   )
 }

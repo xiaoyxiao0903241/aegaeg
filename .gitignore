@@ -11,3 +11,16 @@ playwright-report
 
 references/
 docs/
+tmp/
+tests/e2e/visual-*/
+
+# render-home.mjs 生成的 HTML 壳（dev/build 前自动生成）
+/index.html
+/app.html
+/en/
+/zh/
+/ko/
+/ja/
+/vi/
+/es/
+/ru/

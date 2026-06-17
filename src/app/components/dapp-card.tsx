@@ -1,13 +1,55 @@
 import type { ReactNode } from 'react'
-import {
-  dappButtonClass,
-  dappCardClass,
-  dappResponsive,
-  dappSurfaceClass,
-  dappTextClass,
-} from '../../components/primitive-styles'
+import { Button } from '~/components/button'
+import { Card } from '~/components/card'
+import { Text } from '~/components/text'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
+
+const metricCardResponsive = cn(
+  'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:rounded-[14px] group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:p-3.5',
+  'group-data-[tab=genesis]/shell:max-[820px]:min-h-0 group-data-[tab=genesis]/shell:max-[820px]:rounded-[14px] group-data-[tab=genesis]/shell:max-[820px]:p-3.5 group-data-[tab=genesis]/shell:max-[820px]:shadow-card',
+)
+
+const metricValueResponsive = cn(
+  'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:text-[13px] group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:leading-[1.2]',
+  'group-data-[tab=genesis]/shell:text-base group-data-[tab=genesis]/shell:leading-[1.3] group-data-[tab=genesis]/shell:max-[820px]:text-[15px] group-data-[tab=genesis]/shell:max-[820px]:leading-[1.2]',
+)
+
+const metricHintHiddenResponsive = cn(
+  'group-data-[tab=swap]/shell:group-data-[connected=false]/shell:py-3.5 group-data-[tab=swap]/shell:group-data-[connected=false]/shell:max-[820px]:hidden',
+  'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-[820px]:hidden',
+  'group-data-[tab=genesis]/shell:max-[820px]:hidden',
+)
+
+const communityStatCardResponsive = cn(
+  'group-data-[tab=community]/shell:max-[820px]:min-h-[70px] group-data-[tab=community]/shell:max-[820px]:rounded-xl group-data-[tab=community]/shell:max-[820px]:p-3.5',
+  'group-data-[tab=community]/shell:max-[820px]:items-center group-data-[tab=community]/shell:max-[820px]:text-center',
+  'group-data-[tab=community]/shell:max-[820px]:[&:not(.is-dark)>span]:text-xs group-data-[tab=community]/shell:max-[820px]:[&:not(.is-dark)>span]:leading-[1.35] group-data-[tab=community]/shell:max-[820px]:[&:not(.is-dark)>span]:text-faint',
+  'group-data-[tab=community]/shell:max-[820px]:[&.is-dark>span]:text-xs group-data-[tab=community]/shell:max-[820px]:[&.is-dark>span]:leading-[1.35] group-data-[tab=community]/shell:max-[820px]:[&.is-dark>span]:text-on-dark',
+  'group-data-[tab=community]/shell:max-[820px]:[&>strong]:mt-[3px] group-data-[tab=community]/shell:max-[820px]:[&>strong]:text-2xl group-data-[tab=community]/shell:max-[820px]:[&>strong]:leading-[1.05]',
+  'group-data-[tab=community]/shell:max-[820px]:[&>b]:hidden group-data-[tab=community]/shell:max-[820px]:[&>small]:hidden',
+  'group-data-[tab=community]/shell:max-[820px]:[&.is-dark>small]:hidden',
+  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:min-h-[90px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:items-start group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:rounded-[14px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:border-0 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:p-[13px_12px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:text-left group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:shadow-card',
+)
+
+const communityStatLabelResponsive =
+  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:leading-normal'
+
+const communityStatValueResponsive = cn(
+  'group-data-[tab=community]/shell:max-[820px]:mt-[3px] group-data-[tab=community]/shell:max-[820px]:text-2xl group-data-[tab=community]/shell:max-[820px]:leading-[1.05]',
+  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:text-2xl',
+)
+
+const communityStatVolumeResponsive = cn(
+  'group-data-[tab=community]/shell:max-[820px]:hidden',
+  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:leading-[1.2]',
+)
+
+const communityStatHintResponsive = cn(
+  'group-data-[tab=community]/shell:max-[820px]:hidden',
+  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:leading-[1.2]',
+  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-[820px]:[&.is-dark]:text-on-dark',
+)
 
 export function DappSideCard({
   children,
@@ -17,17 +59,14 @@ export function DappSideCard({
   className?: string
 }) {
   return (
-    <section
-      className={dappSurfaceClass({
-        border: true,
-        stack: 'header',
-        gap: 'sm',
-        className: cn(revealClass(), className),
-      })}
+    <Card
+      as="section"
+      surface="outlined"
+      className={cn(revealClass(), 'mt-3.5 flex flex-col gap-2', className)}
       data-reveal
     >
       {children}
-    </section>
+    </Card>
   )
 }
 
@@ -40,11 +79,29 @@ export function SideLabel({
   className?: string
   tone?: 'body' | 'coral' | 'muted'
 }) {
-  const role = tone === 'coral' ? 'kicker' : 'caption'
+  if (tone === 'coral') {
+    return (
+      <Text
+        as="p"
+        size="xs"
+        weight="semibold"
+        tone="coral"
+        className={cn('m-0 uppercase tracking-[0.88px] text-[11px]', className)}
+      >
+        {children}
+      </Text>
+    )
+  }
+
   return (
-    <p className={dappTextClass(role, { tone: tone === 'muted' ? 'muted' : tone, className })}>
+    <Text
+      as="p"
+      size="xs"
+      tone={tone === 'muted' ? 'muted' : 'body'}
+      className={cn('m-0', className)}
+    >
       {children}
-    </p>
+    </Text>
   )
 }
 
@@ -56,9 +113,9 @@ export function SideValue({
   className?: string
 }) {
   return (
-    <strong className={dappTextClass('valueSm', { tone: 'ink', className })}>
+    <Text as="strong" size="sm" weight="semibold" className={cn('block', className)}>
       {children}
-    </strong>
+    </Text>
   )
 }
 
@@ -72,9 +129,9 @@ export function SideHint({
   tone?: 'body' | 'muted'
 }) {
   return (
-    <small className={dappTextClass('hint', { tone, className })}>
+    <Text as="small" size="xs" tone={tone === 'body' ? 'body' : 'muted'} className={cn('block', className)}>
       {children}
-    </small>
+    </Text>
   )
 }
 
@@ -86,9 +143,9 @@ export function SideTitle({
   className?: string
 }) {
   return (
-    <strong className={dappTextClass('titleSm', { tone: 'ink', className })}>
+    <Text as="strong" size="md" weight="semibold" className={cn('block text-[17px]', className)}>
       {children}
-    </strong>
+    </Text>
   )
 }
 
@@ -100,18 +157,14 @@ export function DappReferrerBoundCard({
   className?: string
 }) {
   return (
-    <section
-      className={dappSurfaceClass({
-        border: true,
-        stack: 'between',
-        gap: 'md',
-        pad: 'uniform',
-        className: cn(revealClass(), className),
-      })}
+    <Card
+      as="section"
+      surface="outlined"
+      className={cn(revealClass(), 'mt-2 flex flex-col gap-2.5 p-4', className)}
       data-reveal
     >
       {children}
-    </section>
+    </Card>
   )
 }
 
@@ -131,28 +184,40 @@ export function MetricCard({
   valueClassName?: string
 }) {
   return (
-    <article
-      className={dappSurfaceClass({
-        stack: 'header',
-        gap: 'metric',
-        shadow: 'card',
-        className: cn(revealClass(), dappResponsive.metricCard, className),
-      })}
+    <Card
+      as="article"
+      surface="elevated"
+      className={cn(
+        revealClass(),
+        'mt-3.5 flex flex-col items-start gap-[7px]',
+        metricCardResponsive,
+        className,
+      )}
       data-reveal
     >
-      <span className={cn(dappTextClass('metricLabel', { tone: 'muted' }))}>
+      <Text size="xs" weight="medium" tone="body" className="tracking-[-0.24px]">
         {label}
-      </span>
-      <strong className={cn(dappTextClass('valueMd', { tone: 'ink' }), dappResponsive.metricValue, valueClassName)}>
+      </Text>
+      <Text
+        as="strong"
+        size="lg"
+        weight="semibold"
+        className={cn('leading-[1.2] tracking-[-0.36px]', metricValueResponsive, valueClassName)}
+      >
         {value}
-      </strong>
+      </Text>
       {hint ? (
-        <small className={cn(dappTextClass('metricHint', { tone: 'muted' }), dappResponsive.metricHintHidden)}>
+        <Text
+          as="small"
+          size="xs"
+          tone="muted"
+          className={cn('mt-[7px] block', metricHintHiddenResponsive)}
+        >
           {hint}
-        </small>
+        </Text>
       ) : null}
       {children}
-    </article>
+    </Card>
   )
 }
 
@@ -176,67 +241,67 @@ export function CommunityStatCard({
   volume?: ReactNode
 }) {
   return (
-    <article
-      className={dappSurfaceClass({
-        gap: 'stat',
-        radius: 'lg',
-        pad: 'stat',
-        shadow: 'stat',
-        tone: dark ? 'dark' : 'surface',
-        className: cn(
-          revealClass(),
-          'community-stat',
-          dark && 'is-dark',
-          image && 'relative overflow-visible',
-          dappResponsive.communityStatCard,
-          className,
-        ),
-      })}
+    <Card
+      as="article"
+      surface={dark ? undefined : 'elevated'}
+      tone={dark ? 'dark' : undefined}
+      className={cn(
+        revealClass(),
+        'community-stat flex flex-col items-start gap-1 rounded-[18px] p-[18px]',
+        !dark && 'shadow-[0_8px_24px_rgba(18,26,51,0.06)]',
+        dark && 'is-dark',
+        image && 'relative overflow-visible',
+        communityStatCardResponsive,
+        className,
+      )}
       data-reveal
     >
-      <span
+      <Text
+        as="span"
+        size="xs"
+        tone={dark ? 'onDark' : 'body'}
         className={cn(
-          dappTextClass('caption', {
-            tone: dark ? 'onDark' : 'body',
-            className: 'relative z-[1] tracking-[-0.24px]',
-          }),
-          dappResponsive.communityStatLabel,
-          dark && 'text-on-dark group-data-[tab=community]/shell:min-[821px]:text-[13px] group-data-[tab=community]/shell:min-[821px]:tracking-[-0.26px]',
+          'relative z-[1] tracking-[-0.24px]',
+          communityStatLabelResponsive,
+          dark &&
+            'text-on-dark group-data-[tab=community]/shell:min-[821px]:text-[13px] group-data-[tab=community]/shell:min-[821px]:tracking-[-0.26px]',
           !dark && 'group-data-[tab=community]/shell:max-[820px]:text-faint',
         )}
       >
         {label}
-      </span>
-      <strong
-        className={cn(
-          dappTextClass('valueStat', { tone: dark ? 'inverse' : 'ink', className: 'relative z-[1]' }),
-          dappResponsive.communityStatValue,
-        )}
+      </Text>
+      <Text
+        as="strong"
+        size="2xl"
+        weight="semibold"
+        className={cn('relative z-[1]', communityStatValueResponsive)}
       >
         {value}
-      </strong>
+      </Text>
       {volume ? (
-        <b
+        <Text
+          as="b"
+          size="sm"
+          weight="semibold"
+          tone="coral"
           className={cn(
-            dappTextClass('valueAccent', { tone: dark ? 'coralBright' : 'coral', className: 'relative z-[1]' }),
-            dappResponsive.communityStatVolume,
+            'relative z-[1] tracking-[-0.28px]',
+            dark && 'text-coral-bright',
+            communityStatVolumeResponsive,
           )}
         >
           {volume}
-        </b>
+        </Text>
       ) : null}
       {today ? (
-        <small
-          className={cn(
-            dappTextClass('hintStat', {
-              tone: dark ? 'onDark' : 'muted',
-              className: 'relative z-[1]',
-            }),
-            dappResponsive.communityStatHint,
-          )}
+        <Text
+          as="small"
+          size="xs"
+          tone={dark ? 'onDark' : 'muted'}
+          className={cn('relative z-[1] tracking-[-0.12px]', communityStatHintResponsive)}
         >
           {today}
-        </small>
+        </Text>
       ) : null}
       {children}
       {image ? (
@@ -249,7 +314,7 @@ export function CommunityStatCard({
           width="104"
         />
       ) : null}
-    </article>
+    </Card>
   )
 }
 
@@ -269,30 +334,46 @@ export function ProgramCard({
   title: ReactNode
 }) {
   return (
-    <article
-      className={dappSurfaceClass({
-        gap: 'sm',
-        pad: 'program',
-        shadow: 'card',
-        className: cn(revealClass(), dappResponsive.programCard, className),
-      })}
+    <Card
+      as="article"
+      surface="elevated"
+      className={cn(
+        revealClass(),
+        'flex flex-col gap-2 p-5',
+        'max-[820px]:rounded-[14px] max-[820px]:p-4 group-data-[tab=community]/shell:max-[820px]:gap-1.5 group-data-[tab=community]/shell:max-[820px]:py-3',
+        className,
+      )}
       data-reveal
     >
-      <span className={dappTextClass('kicker', { tone: 'coral' })}>{label}</span>
-      <h4 className={cn(dappTextClass('titleMd', { tone: 'ink', className: 'text-base tracking-[-0.48px]' }), dappResponsive.programTitle)}>
-        {title}
-      </h4>
-      <p className={cn(dappTextClass('body', { tone: 'body', className: 'max-w-[38ch] tracking-[-0.26px]' }), 'max-[820px]:hidden')}>
-        {body}
-      </p>
-      <button
-        className={dappButtonClass('link', 'text', 'mt-2 tracking-[-0.26px]')}
-        onClick={onAction}
-        type="button"
+      <Text
+        as="span"
+        size="xs"
+        weight="semibold"
+        tone="coral"
+        className="m-0 uppercase tracking-[0.88px] text-[11px]"
       >
+        {label}
+      </Text>
+      <Text
+        as="h3"
+        size="lg"
+        weight="semibold"
+        className="text-base tracking-[-0.48px] max-[820px]:text-sm group-data-[tab=community]/shell:max-[820px]:leading-[1.2]"
+      >
+        {title}
+      </Text>
+      <Text
+        as="p"
+        size="sm"
+        tone="body"
+        className="m-0 max-w-[38ch] tracking-[-0.26px] max-[820px]:hidden"
+      >
+        {body}
+      </Text>
+      <Button variant="link" className="mt-2 tracking-[-0.26px]" onClick={onAction} type="button">
         {action}
-      </button>
-    </article>
+      </Button>
+    </Card>
   )
 }
 
@@ -314,29 +395,40 @@ export function RewardBalanceCard({
   value: ReactNode
 }) {
   return (
-    <article
-      className={dappSurfaceClass({
-        border: true,
-        stack: 'header',
-        className: cn(revealClass(), className),
-      })}
+    <Card
+      as="article"
+      surface="outlined"
+      className={cn(revealClass(), 'mt-3.5', className)}
       data-reveal
     >
       <div className="flex items-center justify-between gap-3">
-        <p className={dappTextClass('caption', { tone: 'body' })}>{label}</p>
+        <Text as="p" size="xs" tone="body" className="m-0">
+          {label}
+        </Text>
         {meta ? (
-          <span className={dappTextClass('caption', { tone: 'muted' })}>{meta}</span>
+          <Text as="span" size="xs" tone="muted">
+            {meta}
+          </Text>
         ) : (
-          <em className={dappTextClass('rewardBadge', { tone: 'up' })}>{badge}</em>
+          <Text as="em" size="xs" weight="bold" tone="success" className="not-italic whitespace-nowrap">
+            {badge}
+          </Text>
         )}
       </div>
-      <strong className={dappTextClass('valueLg', { tone: 'ink' })}>{value}</strong>
+      <Text as="strong" className="mt-2 block text-[22px] font-bold leading-[1.32]">
+        {value}
+      </Text>
       {hint ? (
-        <small className={cn(dappTextClass('rewardHint', { tone: 'muted' }), dappResponsive.rewardBalanceHint)}>
+        <Text
+          as="small"
+          size="xs"
+          tone="muted"
+          className="mt-1.5 block max-w-full whitespace-nowrap tracking-[-0.24px] group-data-[tab=rewards]/shell:max-[820px]:hidden"
+        >
           {hint}
-        </small>
+        </Text>
       ) : null}
       {action}
-    </article>
+    </Card>
   )
 }

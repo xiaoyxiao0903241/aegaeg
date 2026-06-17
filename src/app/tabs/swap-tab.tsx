@@ -7,11 +7,10 @@ import {
   type CarouselApi,
 } from '../../components/carousel'
 import { cn } from '~/lib/utils'
-import { buttonDisabledClass } from '~/lib/dapp-styles'
+import { buttonDisabledClass } from '~/components/button'
 import { useI18n } from '../../i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import {
-  desktopCopyClass,
   shellContentPageClass,
   shellMobilePageTitleClass,
   shellModulePanelClass,

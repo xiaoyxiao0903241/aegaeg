@@ -1,4 +1,4 @@
-import { dappButtonClass, dappLayout } from '../../components/primitive-styles'
+import { Button } from '~/components/button'
 import { cn } from '~/lib/utils'
 
 export function DappPillTabs({
@@ -13,18 +13,20 @@ export function DappPillTabs({
   onSelect?: (index: number) => void
 }) {
   return (
-    <div className={cn(dappLayout.pillTabs, className)} role="tablist" aria-label={ariaLabel}>
+    <div className={cn('flex flex-wrap items-center gap-2', className)} role="tablist" aria-label={ariaLabel}>
       {items.map((item, index) => (
-        <button
+        <Button
           aria-selected={Boolean(item.active)}
-          className={dappButtonClass('pill', item.active ? 'active' : 'subtle')}
           key={item.label}
           onClick={() => onSelect?.(index)}
           role="tab"
+          shape="pill"
+          size="md"
           type="button"
+          variant={item.active ? 'tab' : 'ghost'}
         >
           {item.label}
-        </button>
+        </Button>
       ))}
     </div>
   )

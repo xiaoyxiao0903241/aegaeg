@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { dappHeading } from '../../lib/dapp-styles'
+import { Text } from '~/components/text'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
@@ -15,12 +15,20 @@ export function DappContentHeading({
   reveal?: boolean
 }) {
   return (
-    <h2
-      className={cn(dappHeading.contentTitle, reveal && revealClass(), className)}
+    <Text
+      as="h2"
+      size="lg"
+      weight="semibold"
+      className={cn(
+        'm-0 tracking-[-0.36px]',
+        'max-[820px]:mt-0 max-[820px]:text-[17px] max-[820px]:tracking-[-0.68px]',
+        reveal && revealClass(),
+        className,
+      )}
       data-reveal={reveal ? '' : undefined}
       id={id}
     >
       {children}
-    </h2>
+    </Text>
   )
 }

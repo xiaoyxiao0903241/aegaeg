@@ -1,6 +1,7 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -14,21 +15,33 @@ import {
   withLocalePrefix,
 } from './locale'
 import {
-  defaultMessages,
+  getMessagesSync,
   loadMessages,
   type Messages,
 } from './messages'
 import { I18nContext, type I18nContextValue } from './context'
 
+function createInitialI18nState() {
+  const locale = getInitialLocale()
+  persistLocale(locale)
+  return {
+    locale,
+    messages: getMessagesSync(locale),
+  }
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    const initialLocale = getInitialLocale()
-    persistLocale(initialLocale)
-    return initialLocale
-  })
-  const [messages, setMessages] = useState<Messages>(defaultMessages)
+  const initialState = useRef(createInitialI18nState())
+  const [locale, setLocaleState] = useState<Locale>(initialState.current.locale)
+  const [messages, setMessages] = useState<Messages>(initialState.current.messages)
+  const localeSyncedRef = useRef(true)
 
   useEffect(() => {
+    if (localeSyncedRef.current) {
+      localeSyncedRef.current = false
+      return
+    }
+
     let cancelled = false
 
     loadMessages(locale).then((nextMessages) => {

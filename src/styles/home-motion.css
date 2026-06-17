@@ -1,5 +1,224 @@
 /* Staggered home section motion — driven by data-reveal / data-visible (wallet-loader). */
 
+/* Hero — 首屏独立入场，与 scroll-reveal 分离 */
+@keyframes hero-line-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-art-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+[data-hero-enter] .hero-eyebrow {
+  animation: hero-line-enter 760ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+[data-hero-enter] .hero-title {
+  animation: hero-line-enter 760ms cubic-bezier(0.2, 0.7, 0.2, 1) 90ms both;
+}
+
+[data-hero-enter] .hero-body {
+  animation: hero-line-enter 760ms cubic-bezier(0.2, 0.7, 0.2, 1) 170ms both;
+}
+
+[data-hero-enter] .hero-actions {
+  animation: hero-line-enter 760ms cubic-bezier(0.2, 0.7, 0.2, 1) 250ms both;
+}
+
+[data-hero-art-enter] {
+  animation: hero-art-enter 880ms cubic-bezier(0.2, 0.7, 0.2, 1) 140ms both;
+}
+
+/* Protocol — 三列纵向上浮，内容自上而下依次显现 */
+@keyframes protocol-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes protocol-content-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-protocol-grid]:not([data-visible='true']) [data-protocol-card] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+[data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-icon,
+[data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-index,
+[data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-title,
+[data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-body {
+  opacity: 0;
+}
+
+[data-protocol-grid][data-visible='true'] [data-protocol-card] {
+  animation: protocol-card-enter 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 110ms);
+}
+
+[data-protocol-grid][data-visible='true'] [data-protocol-card] .feature-card-icon {
+  animation: protocol-content-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 110ms + 130ms);
+}
+
+[data-protocol-grid][data-visible='true'] [data-protocol-card] .feature-card-index,
+[data-protocol-grid][data-visible='true'] [data-protocol-card] .feature-card-title {
+  animation: protocol-content-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 110ms + 190ms);
+}
+
+[data-protocol-grid][data-visible='true'] [data-protocol-card] .feature-card-body {
+  animation: protocol-content-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 110ms + 250ms);
+}
+
+/* Engine — 四格对向滑入 + 去模糊，内容轻微弹出 */
+@keyframes engine-card-enter-left {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translateX(-16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes engine-card-enter-right {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translateX(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes engine-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+[data-engine-grid]:not([data-visible='true']) [data-engine-card] {
+  opacity: 0;
+  filter: blur(3px);
+}
+
+[data-engine-grid]:not([data-visible='true']) [data-engine-card]:nth-child(odd) {
+  transform: translateX(-16px) scale(0.985);
+}
+
+[data-engine-grid]:not([data-visible='true']) [data-engine-card]:nth-child(even) {
+  transform: translateX(16px) scale(0.985);
+}
+
+[data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-icon,
+[data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-title,
+[data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-body {
+  opacity: 0;
+}
+
+[data-engine-grid][data-visible='true'] [data-engine-card]:nth-child(odd) {
+  animation: engine-card-enter-left 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 95ms);
+}
+
+[data-engine-grid][data-visible='true'] [data-engine-card]:nth-child(even) {
+  animation: engine-card-enter-right 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 95ms);
+}
+
+[data-engine-grid][data-visible='true'] [data-engine-card] .feature-card-icon {
+  animation: engine-content-enter 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 95ms + 150ms);
+}
+
+[data-engine-grid][data-visible='true'] [data-engine-card] .feature-card-title {
+  animation: engine-content-enter 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 95ms + 220ms);
+}
+
+[data-engine-grid][data-visible='true'] [data-engine-card] .feature-card-body {
+  animation: engine-content-enter 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 95ms + 290ms);
+}
+
+/* React 挂载前：首屏保持终态，避免 refresh 时 opacity / transform 初始态闪动 */
+html:not([data-wallet-loader-ready]) [data-reveal]:not([data-reveal-manual]),
+html:not([data-wallet-loader-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel],
+html:not([data-wallet-loader-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel] article,
+html:not([data-wallet-loader-ready]) [data-token-grid]:not([data-visible='true']) [data-token-card],
+html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card],
+html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-icon,
+html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-index,
+html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-title,
+html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-body,
+html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card],
+html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-icon,
+html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-title,
+html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-body,
+html:not([data-wallet-loader-ready]) [data-timeline]:not([data-visible='true']) [data-phase-card],
+html:not([data-wallet-loader-ready]) [data-timeline]:not([data-visible='true']) [data-phase-dot],
+html:not([data-wallet-loader-ready]) [data-security-grid]:not([data-visible='true']) [data-security-art] img,
+html:not([data-wallet-loader-ready]) [data-security-grid]:not([data-visible='true']) [data-security-line],
+html:not([data-wallet-loader-ready]) [data-security-grid]:not([data-visible='true']) [data-security-check] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  clip-path: none !important;
+  transition: none !important;
+}
+
+/* boot 完成后：仅对尚未 reveal 的块隐藏（首屏已 instant 标记的保持可见） */
+html[data-wallet-loader-ready] [data-reveal]:not([data-visible='true']):not([data-reveal-manual]):not(
+    [data-protocol-grid]
+  ):not([data-engine-grid]):not([data-token-grid]) {
+  opacity: 0;
+}
+
+/* 首屏已在视口内的块：不播放 opacity 过渡 */
+[data-reveal][data-reveal-instant='true'][data-visible='true'] {
+  transition: none !important;
+}
+
 [data-metrics-reveal]:not([data-visible='true']) {
   opacity: 1;
   transform: none;
@@ -178,6 +397,20 @@
 @media (max-width: 820px) {
   [data-token-grid]:not([data-visible='true']) [data-token-card] {
     transform: translateY(18px);
+  }
+
+  [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] {
+    transform: translateY(16px);
+  }
+
+  [data-engine-grid]:not([data-visible='true']) [data-engine-card] {
+    filter: none;
+    transform: translateY(16px) scale(0.99);
+  }
+
+  [data-engine-grid][data-visible='true'] [data-engine-card]:nth-child(odd),
+  [data-engine-grid][data-visible='true'] [data-engine-card]:nth-child(even) {
+    animation-name: protocol-card-enter;
   }
 
   [data-timeline]:not([data-visible='true']) [data-phase-side='left'] [data-phase-card],

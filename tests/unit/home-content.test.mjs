@@ -77,7 +77,7 @@ test('homepage localized copy covers static HTML, wallet, and footer text', asyn
   assert.equal(en.hero.walletBusy, 'Opening wallet...')
   assert.equal(zh.hero.walletBusy, '正在打开钱包...')
   assert.equal(en.sections.token.title, 'Multi-asset flywheel')
-  assert.equal(zh.sections.token.title, '多资产飞轮')
+  assert.equal(zh.sections.token.title, '多资产价值飞轮')
   assert.match(zh.footer.copyright, /保留所有权利/)
   assert.notEqual(ko.hero.title, en.hero.title)
 })

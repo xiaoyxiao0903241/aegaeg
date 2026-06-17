@@ -1,5 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
-import { dappCardClass, dappResponsive, dappLayout, dappTextClass } from '../../components/primitive-styles'
+import { AmountInput } from '~/components/amount-input'
+import { Card } from '~/components/card'
+import { Text } from '~/components/text'
 import { cn } from '~/lib/utils'
 import { SwapAmountSkeleton } from './dapp-skeleton'
 import { TokenChip } from './token-chip'
@@ -31,47 +33,46 @@ export function SwapAmountBox({
   const disconnectedLabelClass = !connected ? 'text-xs tracking-[-0.24px]' : undefined
 
   return (
-    <section
-      className={dappCardClass('swapForm', {
-        className: cn(
-          dappResponsive.swapForm,
-          !connected && '[&_input]:text-ink-muted [&_input]:placeholder:text-ink-muted',
-          className,
-        ),
-      })}
+    <Card
+      as="section"
+      surface="outlined"
+      className={cn(
+        'mt-3.5 p-[14px]',
+        'max-[820px]:mt-3',
+        !connected && '[&_input]:text-[#c9cfda] [&_input]:placeholder:text-[#c9cfda]',
+        className,
+      )}
     >
-      <div className={dappLayout.formRow}>
-        <span
-          className={dappTextClass('body', {
-            tone: labelTone,
-            className: disconnectedLabelClass,
-          })}
+      <div className="flex items-center justify-between gap-3">
+        <Text
+          as="span"
+          size="sm"
+          tone={labelTone}
+          className={disconnectedLabelClass}
         >
           {label}
-        </span>
-        <small
-          className={dappTextClass('body', {
-            tone: connected ? 'ink' : 'subtle',
-            className: cn(connected && 'font-semibold', disconnectedLabelClass),
-          })}
+        </Text>
+        <Text
+          as="small"
+          size="sm"
+          tone={connected ? undefined : 'subtle'}
+          weight={connected ? 'semibold' : undefined}
+          className={disconnectedLabelClass}
         >
           <span>{balance}</span>
-        </small>
+        </Text>
       </div>
-      <div className={dappLayout.tokenAmountRow}>
+      <div className="mt-[9px] flex items-center justify-between gap-3 max-[820px]:items-start">
         <TokenChip icon={tokenIcon} label={tokenLabel} />
         {amountLoading ? (
           <SwapAmountSkeleton />
         ) : (
-          <input
-            className={cn(
-              dappLayout.amountInput,
-              !connected && 'text-ink-muted placeholder:text-ink-muted',
-            )}
+          <AmountInput
+            className={!connected ? 'text-[#c9cfda] placeholder:text-[#c9cfda]' : undefined}
             {...amountProps}
           />
         )}
       </div>
-    </section>
+    </Card>
   )
 }
