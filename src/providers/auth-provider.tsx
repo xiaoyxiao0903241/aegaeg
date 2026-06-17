@@ -8,26 +8,26 @@ import {
   type ReactNode,
 } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { ApiError } from '../lib/api/client'
+import { ApiError } from '~/lib/api/client'
 import {
   buildSilentLoginAttemptKey,
   shouldAttemptAutoLogin,
   shouldClearSessionForWalletMismatch,
   shouldPurgeExpiredSession,
-} from '../lib/api/auth/auth-sync'
+} from '~/lib/api/auth/auth-sync'
 import {
   isUnauthorizedError,
   loginWithWallet,
-} from '../lib/api/auth/login-with-wallet'
-import { resolveAuthStatus } from '../lib/api/auth/resolve-auth-status'
-import type { StoredAuthSession } from '../lib/api/auth/session'
-import { defaultChain } from '../web3/thirdweb'
-import { useAuthStore } from '../stores/auth-store'
+} from '~/lib/api/auth/login-with-wallet'
+import { resolveAuthStatus } from '~/lib/api/auth/resolve-auth-status'
+import type { StoredAuthSession } from '~/lib/api/auth/session'
+import { defaultChain } from '~/web3/thirdweb'
+import { useAuthStore } from '~/stores/auth-store'
 import {
   createStoreAuthSessionStorage,
   createStoreLoginSignatureStorage,
-} from '../stores/auth-storage-adapters'
-import { useDappActions } from '../stores/dapp-actions'
+} from '~/stores/auth-storage-adapters'
+import { useDappActions } from '~/stores/dapp-actions'
 
 export interface AuthContextValue {
   token: string | null

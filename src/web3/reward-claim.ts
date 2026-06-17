@@ -6,11 +6,11 @@ import {
 } from 'thirdweb'
 import type { Account } from 'thirdweb/wallets'
 import type { Chain } from 'thirdweb/chains'
-import { BSC_CONTRACTS } from '../config/contracts'
-import { confirmTeamRewardClaim, requestTeamRewardSignature } from '../lib/api/endpoints'
-import { normalizeTeamRewardClaimPayload } from '../lib/api/normalize-claim-payload'
-import { REWARD_CLAIMER_METHODS } from './abis'
-import { defaultChain, thirdwebClient } from './thirdweb'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { confirmTeamRewardClaim, requestTeamRewardSignature } from '~/lib/api/endpoints'
+import { normalizeTeamRewardClaimPayload } from '~/lib/api/normalize-claim-payload'
+import { REWARD_CLAIMER_METHODS } from '~/web3/abis'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 
 export interface TeamRewardClaimPayload {
   signature: string

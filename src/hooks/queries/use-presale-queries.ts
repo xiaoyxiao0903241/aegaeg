@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-import { BSC_CONTRACTS } from '../../config/contracts'
-import { QUERY_STALE_TIME } from '../../lib/query/query-client'
-import { queryKeys } from '../../lib/query/query-keys'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { QUERY_STALE_TIME } from '~/lib/query/query-client'
+import { queryKeys } from '~/lib/query/query-keys'
 import {
   readActivePresalePhase,
   readAllPresalePhases,
   readPresaleAgxPriceWei,
   readTotalPresalePurchased,
   readUserPresaleTotal,
-} from '../../web3/presale-read'
-import { readErc20Allowance, readErc20Balance } from '../../web3/swap-read'
+} from '~/web3/presale-read'
+import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
 
 export function usePresalePhasesQuery() {
   return useQuery({

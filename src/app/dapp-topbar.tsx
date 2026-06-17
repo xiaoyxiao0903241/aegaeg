@@ -1,11 +1,11 @@
 import { cn } from '~/lib/utils'
-import { LanguageMenu } from '../components/language-menu'
-import { withLocalePrefix } from '../i18n/locale'
-import { allLanguageOptions } from '../i18n/locales'
-import { useI18n } from '../i18n/use-i18n'
-import { homeAssets, dappAssets } from './assets'
-import { WalletTopbarActions } from './wallet-topbar-actions'
-import { useDappShell } from './dapp-shell-context'
+import { LanguageMenu } from '~/components/language-menu'
+import { withLocalePrefix } from '~/i18n/locale'
+import { allLanguageOptions } from '~/i18n/locales'
+import { useI18n } from '~/i18n/use-i18n'
+import { homeAssets, dappAssets } from '~/app/assets'
+import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
+import { useDappShell } from '~/app/dapp-shell-context'
 
 const topbarClass = cn(
   'relative flex shrink-0 min-h-[76px] w-full items-center justify-between gap-6 bg-transparent px-[26px] py-[18px]',

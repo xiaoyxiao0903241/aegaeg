@@ -1,24 +1,24 @@
 import type { Account } from 'thirdweb/wallets'
-import { login } from '../endpoints'
+import { login } from '~/lib/api/endpoints'
 import {
   buildLoginMessage,
   generateLoginNonce,
   resolveLoginMessageFormat,
-} from './build-login-message'
+} from '~/lib/api/auth/build-login-message'
 import {
   createLocalLoginSignatureStorage,
   createMemoryLoginSignatureStorage,
   readUsableLoginSignature,
   type LoginSignatureStorage,
   type StoredLoginSignature,
-} from './login-signature-cache'
-import { isJwtExpired, withJwtExpiry } from './jwt'
+} from '~/lib/api/auth/login-signature-cache'
+import { isJwtExpired, withJwtExpiry } from '~/lib/api/auth/jwt'
 import {
   createLocalAuthSessionStorage,
   isSessionForAddress,
   type AuthSessionStorage,
   type StoredAuthSession,
-} from './session'
+} from '~/lib/api/auth/session'
 
 export interface WalletLoginParams {
   account: Account

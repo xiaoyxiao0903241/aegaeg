@@ -3,8 +3,8 @@ import { Text } from '~/components/text'
 import type { HomeContent, TokenCard } from '~/home/content/types'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
-import { DeferredImage } from './home-primitives'
-import { HomeSectionHead } from './home-section-head'
+import { DeferredImage } from '~/home/components/home-primitives'
+import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const tokenClass = {
   section:

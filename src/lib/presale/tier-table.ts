@@ -1,5 +1,5 @@
-import { PERSONAL_PRESALE_RANK_THRESHOLDS_USD } from './rank'
-import { TEAM_LEG_REQUIREMENT_RANKS, TEAM_PRESALE_RANK_THRESHOLDS_USD } from './tier-progress'
+import { PERSONAL_PRESALE_RANK_THRESHOLDS_USD } from '~/lib/presale/rank'
+import { TEAM_LEG_REQUIREMENT_RANKS, TEAM_PRESALE_RANK_THRESHOLDS_USD } from '~/lib/presale/tier-progress'
 
 const TEAM_BONUS_RATES = [
   '1%',

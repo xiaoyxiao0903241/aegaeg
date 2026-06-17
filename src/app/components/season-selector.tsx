@@ -1,7 +1,7 @@
 import { Card } from '~/components/card'
 import { RadioGroup, RadioIndicator } from '~/components/radio'
 import { Text } from '~/components/text'
-import { useI18n } from '../../i18n/use-i18n'
+import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 

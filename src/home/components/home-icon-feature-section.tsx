@@ -2,8 +2,8 @@ import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import type { HomeContent, IconCard } from '~/home/content/types'
 import { cn } from '~/lib/utils'
-import { DeferredImage } from './home-primitives'
-import { HomeSectionHead } from './home-section-head'
+import { DeferredImage } from '~/home/components/home-primitives'
+import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const sectionClass = {
   protocol:

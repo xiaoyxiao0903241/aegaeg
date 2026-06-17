@@ -1,6 +1,6 @@
 import { Button } from '~/components/button'
 import { useCallback, useEffect, useState } from 'react'
-import { useI18n } from '../../i18n/use-i18n'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { buttonDisabledClass } from '~/components/button'
 import { revealClass } from '~/lib/reveal'
@@ -8,52 +8,52 @@ import { toast } from 'sonner'
 import {
   usePerformance,
   useSalesLogs,
-} from '../../hooks/use-api-data'
-import { useGenesisWidgetContext } from '../genesis-widget-context'
+} from '~/hooks/use-api-data'
+import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import {
   calcProgressPercent,
   formatUsd,
   mapSalesLogToDesktopRow,
   mapSalesLogToMobileRow,
   sumSalesLogAmountUsd,
-} from '../../lib/api/format-display'
-import { PRESALE_CONFIG } from '../../config/presale'
-import { BSC_CONTRACTS } from '../../config/contracts'
-import { bscscanAddress } from '../../config/explorer'
+} from '~/lib/api/format-display'
+import { PRESALE_CONFIG } from '~/config/presale'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { bscscanAddress } from '~/config/explorer'
 import {
   shellContentPageClass,
-  shellModulePanelClass,
-} from '../shell-layout'
-import { dappAssets } from '../assets'
-import { seasons as fallbackSeasons } from '../data'
-import type { DetailPanelControls } from '../types'
-import { DappActionButton } from '../components/dapp-action-button'
-import { DappActionRow } from '../components/dapp-action-row'
-import { DappContentHeading } from '../components/dapp-content-heading'
-import { MetricCard } from '../components/dapp-card'
-import { DappMetaList } from '../components/dapp-meta-list'
-import { DappSection } from '../components/dapp-section'
-import { DappWidgetHeader } from '../components/dapp-widget-header'
-import { FaqStack } from '../components/faq-stack'
-import { GenesisPromoCard } from '../components/genesis-promo-card'
-import { MetricGrid } from '../components/metric-grid'
-import { ProgressMeter } from '../components/progress-meter'
-import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
-import { DappTableEmptyState } from '../components/dapp-table-empty-state'
-import { DappTablePagination } from '../components/dapp-table-pagination'
-import { ResponsiveTable } from '../components/responsive-table'
-import { DAPP_TABLE_PAGE_SIZE } from '../../lib/table-pagination'
-import { SeasonSelector } from '../components/season-selector'
-import { useDappShell } from '../dapp-shell-context'
-import { useMobileViewport } from '../../hooks/use-mobile-viewport'
-import { useAuth } from '../../providers/auth-provider'
+  shellWidgetRootClass,
+} from '~/app/shell-layout'
+import { dappAssets } from '~/app/assets'
+import { seasons as fallbackSeasons } from '~/app/data'
+import type { DetailPanelControls } from '~/app/types'
+import { DappActionButton } from '~/app/components/dapp-action-button'
+import { DappActionRow } from '~/app/components/dapp-action-row'
+import { DappContentHeading } from '~/app/components/dapp-content-heading'
+import { MetricCard } from '~/app/components/dapp-card'
+import { DappMetaList } from '~/app/components/dapp-meta-list'
+import { DappSection } from '~/app/components/dapp-section'
+import { DappPanelHeader } from '~/app/components/dapp-panel-header'
+import { FaqStack } from '~/app/components/faq-stack'
+import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
+import { MetricGrid } from '~/app/components/metric-grid'
+import { ProgressMeter } from '~/app/components/progress-meter'
+import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
+import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
+import { DappTablePagination } from '~/app/components/dapp-table-pagination'
+import { ResponsiveTable } from '~/app/components/responsive-table'
+import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
+import { SeasonSelector } from '~/app/components/season-selector'
+import { useDappShell } from '~/app/dapp-shell-context'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { useAuth } from '~/providers/auth-provider'
 import {
   DappSkeleton,
   MetricCardSkeleton,
   SeasonOptionSkeleton,
-} from '../components/dapp-skeleton'
-import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '../../lib/web3/resolve-contract-error-message'
-import { formatTokenAmount } from '../../lib/swap/token-amount'
+} from '~/app/components/dapp-skeleton'
+import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/web3/resolve-contract-error-message'
+import { formatTokenAmount } from '~/lib/swap/token-amount'
 
 const MAX_SHARES = 100
 
@@ -141,15 +141,15 @@ export function GenesisWidget({
   return (
     <div
       className={cn(
-        shellModulePanelClass,
+        shellWidgetRootClass,
         'min-[821px]:[&>*]:shrink-0',
         'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
       )}
     >
-      <DappWidgetHeader
+      <DappPanelHeader
         detailCollapsed={detailPanel.collapsed}
-        intro={seasonIntro}
         onTogglePanel={detailPanel.onToggle}
+        subtitle={seasonIntro}
         title={t.genesis.title}
       />
 

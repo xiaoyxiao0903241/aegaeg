@@ -1,8 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BSC_CONTRACTS } from '../config/contracts'
-import { PRESALE_CONFIG } from '../config/presale'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { PRESALE_CONFIG } from '~/config/presale'
 import {
   buildPhaseCountdownKey,
   estimateAgxFromUsd1,
@@ -11,20 +11,20 @@ import {
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
-} from '../lib/presale/presale-math'
+} from '~/lib/presale/presale-math'
 import {
   buildSeasonOptions,
   getAirdropLabelForPhase,
-} from '../lib/presale/season-options'
-import { buildGenesisPromoSnapshot } from '../lib/presale/genesis-promo'
-import { formatTokenAmount, parseTokenAmount } from '../lib/swap/token-amount'
-import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '../web3/presale-write'
-import { MAX_UINT256 } from '../web3/abis'
-import { formatUsd } from '../lib/api/format-display'
-import { GENESIS_PURCHASE_ERROR } from '../lib/web3/resolve-contract-error-message'
-import { readErc20Allowance, readErc20Balance } from '../web3/swap-read'
-import { queryKeys } from '../lib/query/query-keys'
-import { invalidatePresaleChainQueries } from '../lib/query/invalidate'
+} from '~/lib/presale/season-options'
+import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
+import { formatTokenAmount, parseTokenAmount } from '~/lib/swap/token-amount'
+import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale-write'
+import { MAX_UINT256 } from '~/web3/abis'
+import { formatUsd } from '~/lib/api/format-display'
+import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
+import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
+import { queryKeys } from '~/lib/query/query-keys'
+import { invalidatePresaleChainQueries } from '~/lib/query/invalidate'
 import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
@@ -32,8 +32,8 @@ import {
   usePresaleTotalPurchasedQuery,
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
-} from './queries/use-presale-queries'
-import { useDappActions } from '../stores/dapp-actions'
+} from '~/hooks/queries/use-presale-queries'
+import { useDappActions } from '~/stores/dapp-actions'
 
 export interface GenesisPurchaseResult {
   success: boolean

@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { buildRewardTierRows } from '../lib/presale/tier-table'
+import { buildRewardTierRows } from '~/lib/presale/tier-table'
 import {
   formatPresaleRank,
   formatShareholderHintForRank,
-} from '../lib/api/format-display'
-import { resolveDisplayPresaleRank } from '../lib/presale/rank'
-import { formatTokenAmount } from '../lib/swap/token-amount'
-import { useAuth } from '../providers/auth-provider'
-import { usePerformance } from './use-api-data'
-import { useDappShell } from '../app/dapp-shell-context'
-import { usePresaleUserTotalQuery } from './queries/use-presale-queries'
+} from '~/lib/api/format-display'
+import { resolveDisplayPresaleRank } from '~/lib/presale/rank'
+import { formatTokenAmount } from '~/lib/swap/token-amount'
+import { useAuth } from '~/providers/auth-provider'
+import { usePerformance } from '~/hooks/use-api-data'
+import { useDappShell } from '~/app/dapp-shell-context'
+import { usePresaleUserTotalQuery } from '~/hooks/queries/use-presale-queries'
 
 export function useShareholderRank() {
   const { connected } = useDappShell()

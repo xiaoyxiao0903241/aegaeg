@@ -2,7 +2,7 @@ import { Card } from '~/components/card'
 import { StatusBadge } from '~/components/badge'
 import { Text } from '~/components/text'
 import { cn } from '~/lib/utils'
-import { TableRowSkeleton } from './dapp-skeleton'
+import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 
 const TABLE_CELL =
   'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal'

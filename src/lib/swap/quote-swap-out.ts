@@ -1,5 +1,5 @@
-import { buildSwapPaths } from './build-swap-paths'
-import { selectBestPath } from './select-best-path'
+import { buildSwapPaths } from '~/lib/swap/build-swap-paths'
+import { selectBestPath } from '~/lib/swap/select-best-path'
 
 export interface QuoteSwapOutDeps {
   amountIn: bigint

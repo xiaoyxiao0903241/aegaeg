@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { useI18n } from '../../i18n/use-i18n'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '../../components/aegis-responsive-dialog'
+} from '~/components/aegis-responsive-dialog'
 
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
 

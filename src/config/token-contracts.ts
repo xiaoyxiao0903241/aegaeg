@@ -1,4 +1,4 @@
-import { BSC_CONTRACTS } from './contracts'
+import { BSC_CONTRACTS } from '~/config/contracts'
 
 /** Carousel / About 区块可跳转 BscScan 的代币；未部署则 null */
 export const SWAP_TOKEN_CONTRACTS: Record<string, `0x${string}` | null> = {

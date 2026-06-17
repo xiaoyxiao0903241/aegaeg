@@ -1,5 +1,5 @@
-import { useI18n } from '../../i18n/use-i18n'
-import { dappAssets } from '../assets'
+import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/app/assets'
 import { cn } from '~/lib/utils'
 
 export function SwapConnectPromptCard({ className }: { className?: string }) {

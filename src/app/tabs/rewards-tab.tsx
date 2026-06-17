@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useI18n } from '../../i18n/use-i18n'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 import {
@@ -7,7 +7,7 @@ import {
   useRewardLogs,
   useTeamRewardClaimLogs,
   useTeamRewardTotal,
-} from '../../hooks/use-api-data'
+} from '~/hooks/use-api-data'
 import {
   formatClaimableAmount,
   formatPresaleRank,
@@ -16,29 +16,29 @@ import {
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
   resolveRewardTypeI18nKey,
-} from '../../lib/api/format-display'
-import { REWARDS_PROGRESS_PLACEHOLDERS } from '../../config/rewards-progress'
-import { buildNextTierProgress } from '../../lib/presale/tier-progress'
+} from '~/lib/api/format-display'
+import { REWARDS_PROGRESS_PLACEHOLDERS } from '~/config/rewards-progress'
+import { buildNextTierProgress } from '~/lib/presale/tier-progress'
 import {
   CurrentTitleCardBodySkeleton,
   ProgressCardSkeleton,
   RewardBalanceCardSkeleton,
   RewardsHeroBodySkeleton,
-} from '../components/dapp-skeleton'
-import { useAuth } from '../../providers/auth-provider'
-import { useShareholderRankLabels } from '../../hooks/use-shareholder-rank'
-import { useTeamRewardClaim } from '../../hooks/use-team-reward-claim'
+} from '~/app/components/dapp-skeleton'
+import { useAuth } from '~/providers/auth-provider'
+import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
+import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { toast } from 'sonner'
-import { toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
+import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import {
   shellContentPageClass,
-  shellModulePanelClass,
-} from '../shell-layout'
-import { dappAssets } from '../assets'
-import { buildRewardTierRows, getTeamBonusRateLabel } from '../../lib/presale/tier-table'
-import { DAPP_TABLE_PAGE_SIZE, paginateStaticRows } from '../../lib/table-pagination'
-import type { DetailPanelControls } from '../types'
-import { DappActionButton } from '../components/dapp-action-button'
+  shellWidgetRootClass,
+} from '~/app/shell-layout'
+import { dappAssets } from '~/app/assets'
+import { buildRewardTierRows, getTeamBonusRateLabel } from '~/lib/presale/tier-table'
+import { DAPP_TABLE_PAGE_SIZE, paginateStaticRows } from '~/lib/table-pagination'
+import type { DetailPanelControls } from '~/app/types'
+import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
   DappSideCard,
   RewardBalanceCard,
@@ -46,20 +46,20 @@ import {
   SideLabel,
   SideTitle,
   SideValue,
-} from '../components/dapp-card'
-import { DappCollapsibleSection } from '../components/dapp-collapsible-section'
-import { DappSection } from '../components/dapp-section'
-import { DappPillTabs } from '../components/dapp-pill-tabs'
-import { DappTablePagination } from '../components/dapp-table-pagination'
-import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
-import { DappTableEmptyState } from '../components/dapp-table-empty-state'
-import { DappWidgetHeader } from '../components/dapp-widget-header'
-import { DappContentHeading } from '../components/dapp-content-heading'
-import { FaqStack } from '../components/faq-stack'
-import { ProgressMeter } from '../components/progress-meter'
-import { ResponsiveTable } from '../components/responsive-table'
-import { useDappShell } from '../dapp-shell-context'
-import { useMobileViewport } from '../../hooks/use-mobile-viewport'
+} from '~/app/components/dapp-card'
+import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
+import { DappSection } from '~/app/components/dapp-section'
+import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
+import { DappTablePagination } from '~/app/components/dapp-table-pagination'
+import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
+import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
+import { DappPanelHeader } from '~/app/components/dapp-panel-header'
+import { DappContentHeading } from '~/app/components/dapp-content-heading'
+import { FaqStack } from '~/app/components/faq-stack'
+import { ProgressMeter } from '~/app/components/progress-meter'
+import { ResponsiveTable } from '~/app/components/responsive-table'
+import { useDappShell } from '~/app/dapp-shell-context'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 const REWARDS_WIDGET_CARD_CLASS = cn(
   'rounded-2xl px-4 py-3.5 max-[820px]:mt-0',
   '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-[820px]:[&_span]:text-faint',
@@ -185,15 +185,14 @@ export function RewardsWidget({
   return (
     <div
       className={cn(
-        shellModulePanelClass,
+        shellWidgetRootClass,
         'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
       )}
     >
-      <DappWidgetHeader
+      <DappPanelHeader
         detailCollapsed={detailPanel.collapsed}
-        intro={t.rewards.intro}
         onTogglePanel={detailPanel.onToggle}
-        showToggle
+        subtitle={t.rewards.intro}
         title={t.rewards.title}
       />
 

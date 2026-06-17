@@ -2,4 +2,4 @@ export {
   defaultChain,
   supportedChains,
   type SupportedChainId,
-} from './thirdweb'
+} from '~/web3/thirdweb'

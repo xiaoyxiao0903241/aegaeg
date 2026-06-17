@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { getInitialTab, isDappTab } from '../app/utils'
-import type { DappTab } from '../app/types'
+import { getInitialTab, isDappTab } from '~/app/utils'
+import type { DappTab } from '~/app/types'
 
 interface DappShellStore {
   activeTab: DappTab

@@ -2,7 +2,7 @@ import type { Locale } from '~/i18n/locales'
 import { getHtmlLang } from '~/i18n/locale-meta'
 import { locales } from '~/i18n/locales'
 import { getHomeContent } from '~/home/content'
-import { homeAssets } from './assets'
+import { homeAssets } from '~/home/assets'
 
 const supportedLocalesJson = JSON.stringify(locales)
 

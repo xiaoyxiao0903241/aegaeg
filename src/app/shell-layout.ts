@@ -1,5 +1,5 @@
 import { cn } from '~/lib/utils'
-import type { DappTab } from './types'
+import type { DappTab } from '~/app/types'
 
 /** Figma 设计稿窗口高度上限（px）——大屏不无限拉伸，小屏随视口收缩。 */
 const TAB_WINDOW_HEIGHT: Record<DappTab, number> = {
@@ -42,17 +42,18 @@ export function shellStageClass(state: {
       state.connected &&
       state.tab === 'swap' &&
       'min-[821px]:justify-center min-[821px]:pb-10',
-    'max-[820px]:flex-none max-[820px]:overflow-visible max-[820px]:pb-6',
-    state.mobileSwapPager &&
-      'max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-1 max-[820px]:pb-0',
+    state.mobileSwapPager
+      ? 'max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-1 max-[820px]:overflow-hidden max-[820px]:pb-0'
+      : 'max-[820px]:flex-none max-[820px]:overflow-visible max-[820px]:pb-6',
   )
 }
 
 export function shellContainerClass(mobileSwapPager = false) {
   return cn(
     'mx-auto flex h-full min-h-0 w-[min(calc(100%-48px),1320px)] flex-col',
-    'max-[820px]:h-auto max-[820px]:w-[min(calc(100%-24px),378px)]',
-    mobileSwapPager && 'max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-1',
+    mobileSwapPager
+      ? 'max-[820px]:w-[min(calc(100%-24px),378px)] max-[820px]:min-h-0 max-[820px]:flex-1'
+      : 'max-[820px]:h-auto max-[820px]:w-[min(calc(100%-24px),378px)]',
   )
 }
 
@@ -143,5 +144,8 @@ export const shellModulePanelClass = cn(
   'flex min-h-full flex-col',
   'max-[820px]:h-auto max-[820px]:min-h-0',
 )
+
+/** PC/H5 widget 根节点：布局 + tab 切换入场 */
+export const shellWidgetRootClass = cn(shellModulePanelClass, 'dapp-panel-enter')
 
 export const shellContentPageClass = 'min-w-0'

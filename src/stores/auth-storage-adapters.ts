@@ -1,6 +1,6 @@
-import type { LoginSignatureStorage } from '../lib/api/auth/login-signature-cache'
-import type { AuthSessionStorage } from '../lib/api/auth/session'
-import { useAuthStore } from './auth-store'
+import type { LoginSignatureStorage } from '~/lib/api/auth/login-signature-cache'
+import type { AuthSessionStorage } from '~/lib/api/auth/session'
+import { useAuthStore } from '~/stores/auth-store'
 
 type AuthStoreGetter = Pick<
   ReturnType<typeof useAuthStore.getState>,

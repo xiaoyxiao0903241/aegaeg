@@ -1,5 +1,5 @@
-import { ApiError } from '../api/client'
-import { isUnauthorizedError } from '../api/auth/login-with-wallet'
+import { ApiError } from '~/lib/api/client'
+import { isUnauthorizedError } from '~/lib/api/auth/login-with-wallet'
 
 export async function fetchAuthenticated<T>(
   fetcher: (token: string) => Promise<T>,

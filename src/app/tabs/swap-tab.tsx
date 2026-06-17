@@ -5,52 +5,52 @@ import {
   CarouselContent,
   CarouselItem,
   type CarouselApi,
-} from '../../components/carousel'
+} from '~/components/carousel'
 import { cn } from '~/lib/utils'
 import { buttonDisabledClass } from '~/components/button'
-import { useI18n } from '../../i18n/use-i18n'
+import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import {
   shellContentPageClass,
   shellMobilePageTitleClass,
-  shellModulePanelClass,
-} from '../shell-layout'
-import { dappAssets, tokenCarouselIcons } from '../assets'
+  shellWidgetRootClass,
+} from '~/app/shell-layout'
+import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import {
   swapTokenCardKeys,
   swapTokenKeys,
   type SwapTokenKey,
-} from '../data'
-import { WalletConnectChip } from '../wallet-connect-chip'
-import type { DetailPanelControls } from '../types'
-import { DappActionButton } from '../components/dapp-action-button'
-import { DappActionRow } from '../components/dapp-action-row'
-import { AnchoredTooltip } from '../../components/anchored-tooltip'
-import { MetricCard } from '../components/dapp-card'
-import { DappPillTabs } from '../components/dapp-pill-tabs'
-import { DappCollapsibleSection } from '../components/dapp-collapsible-section'
-import { DappSection } from '../components/dapp-section'
-import { DappContentHeading } from '../components/dapp-content-heading'
-import { DappWidgetHeader, dappWidgetTitleClassName } from '../components/dapp-widget-header'
-import { DappMetaList } from '../components/dapp-meta-list'
+} from '~/app/data'
+import { WalletConnectChip } from '~/app/wallet-connect-chip'
+import type { DetailPanelControls } from '~/app/types'
+import { DappActionButton } from '~/app/components/dapp-action-button'
+import { DappActionRow } from '~/app/components/dapp-action-row'
+import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { MetricCard } from '~/app/components/dapp-card'
+import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
+import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
+import { DappSection } from '~/app/components/dapp-section'
+import { DappContentHeading } from '~/app/components/dapp-content-heading'
+import { DappPanelHeader, dappPanelTitleClassName } from '~/app/components/dapp-panel-header'
+import { DappMetaList } from '~/app/components/dapp-meta-list'
 import {
   MetricCardSkeleton,
   SwapBalanceSkeleton,
   SwapMetaValueSkeleton,
-} from '../components/dapp-skeleton'
-import { FaqStack } from '../components/faq-stack'
-import { GenesisPromoCard } from '../components/genesis-promo-card'
-import { MetricGrid } from '../components/metric-grid'
-import { SwapConnectPromptCard } from '../components/swap-connect-prompt-card'
-import { SwapAmountBox } from '../components/swap-amount-box'
-import { SwapSlippageModal } from '../components/swap-slippage-modal'
-import { useSwapWidget } from '../../hooks/use-swap-widget'
-import { useMobileViewport } from '../../hooks/use-mobile-viewport'
-import { useGenesisWidgetContext } from '../genesis-widget-context'
-import { useAuth } from '../../providers/auth-provider'
-import { usePairSpotRate } from '../../hooks/use-pair-spot-rate'
-import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '../../config/token-contracts'
-import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
+} from '~/app/components/dapp-skeleton'
+import { FaqStack } from '~/app/components/faq-stack'
+import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
+import { MetricGrid } from '~/app/components/metric-grid'
+import { SwapConnectPromptCard } from '~/app/components/swap-connect-prompt-card'
+import { SwapAmountBox } from '~/app/components/swap-amount-box'
+import { SwapSlippageModal } from '~/app/components/swap-slippage-modal'
+import { useSwapWidget } from '~/hooks/use-swap-widget'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { useAuth } from '~/providers/auth-provider'
+import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
+import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '~/config/token-contracts'
+import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { toast } from 'sonner'
 
 const PERCENTS = [25, 50, 75, 100] as const
@@ -158,18 +158,17 @@ export function SwapWidget({
     <div
       className={cn(
         swapPager
-          ? 'flex min-h-0 flex-col max-[820px]:gap-0'
-          : shellModulePanelClass,
+          ? 'flex min-h-full flex-col max-[820px]:gap-0'
+          : shellWidgetRootClass,
         'max-[820px]:gap-0',
         '[&>:first-child]:mb-[18px]',
       )}
     >
-      <DappWidgetHeader
+      <DappPanelHeader
         detailCollapsed={detailPanel.collapsed}
-        intro={connected ? t.swap.intro : t.swap.disconnectedIntro}
-        introTone={connected ? 'body' : 'subtle'}
         onTogglePanel={detailPanel.onToggle}
         showToggle={!swapPager}
+        subtitle={connected ? t.swap.intro : t.swap.disconnectedIntro}
         title={t.swap.title}
       />
 
@@ -404,7 +403,7 @@ export function SwapContent({
 
       {swapPager ? (
         <h1
-          className={dappWidgetTitleClassName(
+          className={dappPanelTitleClassName(
             cn(shellMobilePageTitleClass, 'max-[820px]:mb-3'),
           )}
         >

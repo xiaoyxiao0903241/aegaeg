@@ -3,10 +3,10 @@ import { createPortal } from 'react-dom'
 import type { CSSProperties } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '~/lib/utils'
-import { useI18n } from '../../i18n/use-i18n'
-import type { DappTab } from '../types'
-import { railItems } from '../assets'
-import { shellMobileDrawerItemClass } from '../shell-layout'
+import { useI18n } from '~/i18n/use-i18n'
+import type { DappTab } from '~/app/types'
+import { railItems } from '~/app/assets'
+import { shellMobileDrawerItemClass } from '~/app/shell-layout'
 
 const railCopy = {
   swap: 'swap',

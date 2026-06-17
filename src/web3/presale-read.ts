@@ -1,10 +1,10 @@
 import { getContract, readContract, type ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
-import { BSC_CONTRACTS } from '../config/contracts'
-import { PRESALE_CONFIG } from '../config/presale'
-import { findActivePresalePhase, type PresalePhaseOnChain } from '../lib/presale/presale-math'
-import { PRESALE_METHODS } from './abis'
-import { defaultChain, thirdwebClient } from './thirdweb'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { PRESALE_CONFIG } from '~/config/presale'
+import { findActivePresalePhase, type PresalePhaseOnChain } from '~/lib/presale/presale-math'
+import { PRESALE_METHODS } from '~/web3/abis'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 
 function getPresaleContract(client: ThirdwebClient, chain: Chain) {
   return getContract({ client, chain, address: BSC_CONTRACTS.preSale })

@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
 import { cn } from '~/lib/utils'
-import { useI18n } from '../i18n/use-i18n'
-import { useMobileViewport } from '../hooks/use-mobile-viewport'
-import { dappAssets } from './assets'
-import { DappRail } from './dapp-rail'
-import { DappMobileNav } from './components/dapp-mobile-nav'
-import { DappRevealObserver } from './components/dapp-reveal-observer'
-import { DappTopbar } from './dapp-topbar'
-import { CommunityContent, CommunityWidget } from './tabs/community-tab'
-import { GenesisContent, GenesisWidget } from './tabs/genesis-tab'
-import { GenesisWidgetProvider } from './genesis-widget-context'
-import { RewardsContent, RewardsWidget } from './tabs/rewards-tab'
-import { SwapContent, SwapWidget } from './tabs/swap-tab'
-import { SwapMobilePager } from './components/swap-mobile-pager'
-import type { DappTab, DetailPanelControls } from './types'
-import { useDappShell } from './dapp-shell-context'
+import { useI18n } from '~/i18n/use-i18n'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { dappAssets } from '~/app/assets'
+import { DappRail } from '~/app/dapp-rail'
+import { DappMobileNav } from '~/app/components/dapp-mobile-nav'
+import { DappRevealObserver } from '~/app/components/dapp-reveal-observer'
+import { DappTopbar } from '~/app/dapp-topbar'
+import { CommunityContent, CommunityWidget } from '~/app/tabs/community-tab'
+import { GenesisContent, GenesisWidget } from '~/app/tabs/genesis-tab'
+import { GenesisWidgetProvider } from '~/app/genesis-widget-context'
+import { RewardsContent, RewardsWidget } from '~/app/tabs/rewards-tab'
+import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
+import { SwapMobilePager } from '~/app/components/swap-mobile-pager'
+import type { DappTab, DetailPanelControls } from '~/app/types'
+import { useDappShell } from '~/app/dapp-shell-context'
 import {
   shellContainerClass,
   shellContentClass,
@@ -24,9 +24,9 @@ import {
   shellStageClass,
   shellWidgetClass,
   shellWindowClass,
-} from './shell-layout'
-import { isThirdwebConfigured } from '../web3/thirdweb'
-import { useDappShellStore } from '../stores/dapp-shell-store'
+} from '~/app/shell-layout'
+import { isThirdwebConfigured } from '~/web3/thirdweb'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 export function DappShell() {
   const { messages: t } = useI18n()
@@ -65,7 +65,7 @@ export function DappShell() {
       className={cn(
         shellPageClass,
         useSwapMobilePager &&
-          'max-[820px]:flex max-[820px]:h-dvh max-[820px]:max-h-dvh max-[820px]:flex-col',
+          'max-[820px]:flex max-[820px]:h-dvh max-[820px]:max-h-dvh max-[820px]:flex-col max-[820px]:overflow-hidden',
       )}
     >
         <DappTopbar />
@@ -94,23 +94,26 @@ export function DappShell() {
           <div className={shellContainerClass(useSwapMobilePager)}>
             <GenesisWidgetProvider>
               {useSwapMobilePager ? (
-                <SwapMobilePager
-                  detailPanel={detailPanel}
-                  onSelectGenesis={() => selectTab('genesis')}
-                  windowClassName={shellWindowClass({
-                    tab: activeTab,
-                    connected: shellState.connected,
-                    detailCollapsed: effectiveDetailCollapsed,
-                    mobileSwapPager: true,
-                  })}
-                  windowDataset={{
-                    tab: activeTab,
-                    connected: shellState.connected ? 'true' : 'false',
-                    walletReady: shellState.walletReady ? 'true' : 'false',
-                    collapsed: effectiveDetailCollapsed ? 'true' : 'false',
-                  }}
-                  windowRef={setWindowNode}
-                />
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <SwapMobilePager
+                    connected={shellState.connected}
+                    detailPanel={detailPanel}
+                    onSelectGenesis={() => selectTab('genesis')}
+                    windowClassName={shellWindowClass({
+                      tab: activeTab,
+                      connected: shellState.connected,
+                      detailCollapsed: effectiveDetailCollapsed,
+                      mobileSwapPager: true,
+                    })}
+                    windowDataset={{
+                      tab: activeTab,
+                      connected: shellState.connected ? 'true' : 'false',
+                      walletReady: shellState.walletReady ? 'true' : 'false',
+                      collapsed: effectiveDetailCollapsed ? 'true' : 'false',
+                    }}
+                    windowRef={setWindowNode}
+                  />
+                </div>
               ) : (
                 <div
                   ref={setWindowNode}
@@ -147,6 +150,7 @@ export function DappShell() {
                       open={mobileNavOpen}
                     />
                     <TabWidget
+                      key={activeTab}
                       activeTab={activeTab}
                       connected={shellState.connected}
                       detailPanel={detailPanel}

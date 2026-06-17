@@ -1,6 +1,6 @@
-import { isJwtExpired } from './jwt'
-import { resolveAuthStatus } from './resolve-auth-status'
-import type { StoredAuthSession } from './session'
+import { isJwtExpired } from '~/lib/api/auth/jwt'
+import { resolveAuthStatus } from '~/lib/api/auth/resolve-auth-status'
+import type { StoredAuthSession } from '~/lib/api/auth/session'
 
 export function buildSilentLoginAttemptKey(
   walletAddress: string,

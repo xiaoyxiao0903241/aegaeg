@@ -1,4 +1,4 @@
-import type { Locale } from './locales'
+import type { Locale } from '~/i18n/locales'
 
 export type LocaleMeta = {
   /** Short label in the language switcher trigger */

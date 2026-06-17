@@ -1,5 +1,5 @@
-import { calcProgressPercent } from '../api/format-display'
-import { MAX_PRESALE_RANK, PERSONAL_PRESALE_RANK_THRESHOLDS_USD } from './rank'
+import { calcProgressPercent } from '~/lib/api/format-display'
+import { MAX_PRESALE_RANK, PERSONAL_PRESALE_RANK_THRESHOLDS_USD } from '~/lib/presale/rank'
 
 export const TEAM_PRESALE_RANK_THRESHOLDS_USD = [5000, 10_000, 30_000] as const
 

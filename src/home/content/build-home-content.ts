@@ -5,8 +5,8 @@ import {
   partners,
   protocolIcons,
   tokenCardShells,
-} from './shared'
-import type { HomeContent, HomeContentBundle } from './types'
+} from '~/home/content/shared'
+import type { HomeContent, HomeContentBundle } from '~/home/content/types'
 
 export function buildHomeContent(
   locale: Locale,

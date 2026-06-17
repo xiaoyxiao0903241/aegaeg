@@ -1,36 +1,36 @@
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { useI18n } from '../../i18n/use-i18n'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 import {
   usePerformance,
   useTeamReferrals,
-} from '../../hooks/use-api-data'
-import { useShareholderRank } from '../../hooks/use-shareholder-rank'
+} from '~/hooks/use-api-data'
+import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import {
   formatReferralLinkDisplay,
   formatPresaleRank,
   formatUsd,
   mapTeamReferralToCompactRow,
   mapTeamReferralToMobileRow,
-} from '../../lib/api/format-display'
-import { buildReferralSharePath } from '../../config/referral'
-import { CommunityStatCardSkeleton } from '../components/dapp-skeleton'
-import { useAuth } from '../../providers/auth-provider'
-import { useReferral } from '../../hooks/use-referral'
+} from '~/lib/api/format-display'
+import { buildReferralSharePath } from '~/config/referral'
+import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
+import { useAuth } from '~/providers/auth-provider'
+import { useReferral } from '~/hooks/use-referral'
 import { toast } from 'sonner'
-import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '../../lib/web3/resolve-contract-error-message'
+import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import {
   shellContentPageClass,
-  shellModulePanelClass,
-} from '../shell-layout'
-import { useDappShell } from '../dapp-shell-context'
-import { useMobileViewport } from '../../hooks/use-mobile-viewport'
-import { dappAssets } from '../assets'
-import type { DappTab, DetailPanelControls } from '../types'
-import { DappActionButton } from '../components/dapp-action-button'
+  shellWidgetRootClass,
+} from '~/app/shell-layout'
+import { useDappShell } from '~/app/dapp-shell-context'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { dappAssets } from '~/app/assets'
+import type { DappTab, DetailPanelControls } from '~/app/types'
+import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
   CommunityStatCard,
   DappReferrerBoundCard,
@@ -39,18 +39,18 @@ import {
   SideHint,
   SideLabel,
   SideValue,
-} from '../components/dapp-card'
-import { ReferrerAddressRow } from '../components/referrer-address-row'
-import { DappSection } from '../components/dapp-section'
-import { DappContentHeading } from '../components/dapp-content-heading'
-import { DappWidgetHeader } from '../components/dapp-widget-header'
-import { InviteFlow, InviteFlowStack } from '../components/invite-flow'
-import { QuickLinks } from '../components/quick-links'
-import { DappTableEmptyMessage } from '../components/dapp-table-empty-message'
-import { DappTableEmptyState } from '../components/dapp-table-empty-state'
-import { DappTablePagination } from '../components/dapp-table-pagination'
-import { ResponsiveTable } from '../components/responsive-table'
-import { DAPP_TABLE_PAGE_SIZE } from '../../lib/table-pagination'
+} from '~/app/components/dapp-card'
+import { ReferrerAddressRow } from '~/app/components/referrer-address-row'
+import { DappSection } from '~/app/components/dapp-section'
+import { DappContentHeading } from '~/app/components/dapp-content-heading'
+import { DappPanelHeader } from '~/app/components/dapp-panel-header'
+import { InviteFlow, InviteFlowStack } from '~/app/components/invite-flow'
+import { QuickLinks } from '~/app/components/quick-links'
+import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
+import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
+import { DappTablePagination } from '~/app/components/dapp-table-pagination'
+import { ResponsiveTable } from '~/app/components/responsive-table'
+import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
 
 type CommunityStat = {
   dark?: boolean
@@ -68,7 +68,7 @@ const REFERRAL_CARD_CLASS = cn(
 )
 
 const COMMUNITY_WIDGET_SHELL_CLASS = cn(
-  shellModulePanelClass,
+  shellWidgetRootClass,
   'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
 )
 
@@ -146,10 +146,10 @@ function CommunityConnectedWidget({
 
   return (
     <div className={COMMUNITY_WIDGET_SHELL_CLASS}>
-      <DappWidgetHeader
+      <DappPanelHeader
         detailCollapsed={detailPanel.collapsed}
-        intro={t.community.intro}
         onTogglePanel={detailPanel.onToggle}
+        subtitle={t.community.intro}
         title={t.community.title}
       />
 
@@ -264,10 +264,10 @@ function CommunityDisconnectedWidget({
 
   return (
     <div className={COMMUNITY_WIDGET_SHELL_CLASS}>
-      <DappWidgetHeader
+      <DappPanelHeader
         detailCollapsed={detailPanel.collapsed}
-        intro={t.community.disconnectedIntro}
         onTogglePanel={detailPanel.onToggle}
+        subtitle={t.community.disconnectedIntro}
         title={t.community.title}
       />
 

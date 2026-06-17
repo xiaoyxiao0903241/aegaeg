@@ -1,14 +1,14 @@
-import { useI18n } from '../../i18n/use-i18n'
+import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import {
   applyMessageTemplate,
   type GenesisPromoSnapshot,
-} from '../../lib/presale/genesis-promo'
+} from '~/lib/presale/genesis-promo'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
-import { DappActionButton } from './dapp-action-button'
-import { GenesisPromoBodySkeleton } from './dapp-skeleton'
+import { DappActionButton } from '~/app/components/dapp-action-button'
+import { GenesisPromoBodySkeleton } from '~/app/components/dapp-skeleton'
 
 function resolveStatusLabel(
   status: GenesisPromoSnapshot['status'],

@@ -5,16 +5,16 @@ import {
   useState,
 } from 'react'
 import { cn } from '~/lib/utils'
-import { useI18n } from '../../i18n/use-i18n'
-import { SwapContent, SwapWidget } from '../tabs/swap-tab'
-import type { DetailPanelControls } from '../types'
-import { dappAssets } from '../assets'
-import { DappMobileNav } from './dapp-mobile-nav'
+import { useI18n } from '~/i18n/use-i18n'
+import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
+import type { DetailPanelControls } from '~/app/types'
+import { dappAssets } from '~/app/assets'
+import { DappMobileNav } from '~/app/components/dapp-mobile-nav'
 import {
   shellMobileDrawerClass,
   shellMobileDrawerSummaryClass,
-} from '../shell-layout'
-import { useDappShellStore } from '../../stores/dapp-shell-store'
+} from '~/app/shell-layout'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 const SCROLL_EDGE_EPSILON_PX = 2
 const GESTURE_DEAD_ZONE_PX = 8
@@ -30,6 +30,7 @@ const pagerPageScrollClass = cn(
 )
 
 type SwapMobilePagerProps = {
+  connected: boolean
   detailPanel: DetailPanelControls
   onSelectGenesis: () => void
   windowRef: (node: HTMLDivElement | null) => void
@@ -109,6 +110,7 @@ function derivePageIndex(offset: number, pageHeight: number) {
 }
 
 export function SwapMobilePager({
+  connected,
   detailPanel,
   onSelectGenesis,
   windowRef,
@@ -446,7 +448,7 @@ export function SwapMobilePager({
                   style={{ height: viewportHeight }}
                 >
                   <SwapWidget
-                    connected
+                    connected={connected}
                     detailPanel={detailPanel}
                     onSelectGenesis={onSelectGenesis}
                     swapPager
@@ -459,7 +461,7 @@ export function SwapMobilePager({
                   className={pagerPageScrollClass}
                   style={{ height: viewportHeight }}
                 >
-                  <SwapContent connected swapPager />
+                  <SwapContent connected={connected} swapPager />
                 </div>
               </div>
             ) : null}

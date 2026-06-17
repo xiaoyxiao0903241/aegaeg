@@ -1,8 +1,8 @@
 import type { Locale } from '~/i18n/locales'
 import { locales } from '~/i18n/locales'
 import { homeMessagesByLocale } from '~/i18n/messages/home'
-import { buildHomeContent } from './build-home-content'
-import type { HomeContent } from './types'
+import { buildHomeContent } from '~/home/content/build-home-content'
+import type { HomeContent } from '~/home/content/types'
 
 export function getHomeContent(locale: Locale): HomeContent {
   return buildHomeContent(locale, homeMessagesByLocale[locale])
@@ -23,6 +23,6 @@ export type {
   NavigationLink,
   RoadmapPhase,
   TokenCard,
-} from './types'
+} from '~/home/content/types'
 
-export { makeLanguageOptions } from './shared'
+export { makeLanguageOptions } from '~/home/content/shared'

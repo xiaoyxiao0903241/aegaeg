@@ -1,6 +1,6 @@
-import { defineMessages } from './define-messages'
-import app from './app/es'
-import home from './home/es'
+import { defineMessages } from '~/i18n/messages/define-messages'
+import app from '~/i18n/messages/app/es'
+import home from '~/i18n/messages/home/es'
 
 const es = defineMessages({
   ...app,

@@ -1,4 +1,4 @@
-import { apiRequest } from './request'
+import { apiRequest } from '~/lib/api/request'
 import type {
   ClaimConfirmRequest,
   ClaimConfirmResult,
@@ -13,7 +13,7 @@ import type {
   TeamRewardClaimLogItem,
   TeamRewardSignature,
   UserPerformance,
-} from './types'
+} from '~/lib/api/types'
 
 export async function login(request: LoginRequest): Promise<LoginResponse> {
   return apiRequest<LoginResponse>('/auth/login', {

@@ -1,7 +1,7 @@
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import type { HomeContent } from '~/home/content/types'
-import { DeferredImage } from './home-primitives'
+import { DeferredImage } from '~/home/components/home-primitives'
 
 const partnerClass = {
   section:

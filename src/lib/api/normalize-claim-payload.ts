@@ -1,4 +1,4 @@
-import type { TeamRewardSignature } from './types'
+import type { TeamRewardSignature } from '~/lib/api/types'
 
 function pickString(record: Record<string, unknown>, keys: string[]): string | undefined {
   for (const key of keys) {

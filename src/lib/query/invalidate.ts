@@ -1,6 +1,6 @@
-import { queryClient } from './query-client'
-import { queryKeys } from './query-keys'
-import type { Paginated, SalesLogItem } from '../api/types'
+import { queryClient } from '~/lib/query/query-client'
+import { queryKeys } from '~/lib/query/query-keys'
+import type { Paginated, SalesLogItem } from '~/lib/api/types'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))

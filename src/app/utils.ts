@@ -1,4 +1,4 @@
-import { tabOrder, type DappTab } from './types'
+import { tabOrder, type DappTab } from '~/app/types'
 
 export function formatAddress(address: string) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`

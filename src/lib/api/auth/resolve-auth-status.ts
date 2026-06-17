@@ -1,5 +1,5 @@
-import { isJwtExpired } from './jwt'
-import { isSessionForAddress, type StoredAuthSession } from './session'
+import { isJwtExpired } from '~/lib/api/auth/jwt'
+import { isSessionForAddress, type StoredAuthSession } from '~/lib/api/auth/session'
 
 export interface ResolvedAuthStatus {
   isAuthenticated: boolean

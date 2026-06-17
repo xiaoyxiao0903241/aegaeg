@@ -8,18 +8,18 @@ import {
 import {
   localeLabels,
   type Locale,
-} from './locales'
+} from '~/i18n/locales'
 import {
   getInitialLocale,
   persistLocale,
   withLocalePrefix,
-} from './locale'
+} from '~/i18n/locale'
 import {
   getMessagesSync,
   loadMessages,
   type Messages,
-} from './messages'
-import { I18nContext, type I18nContextValue } from './context'
+} from '~/i18n/messages'
+import { I18nContext, type I18nContextValue } from '~/i18n/context'
 
 function createInitialI18nState() {
   const locale = getInitialLocale()

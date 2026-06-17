@@ -3,7 +3,7 @@ import { Card } from '~/components/card'
 import type { HomeContent } from '~/home/content/types'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
-import { HomeSectionHead } from './home-section-head'
+import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const roadmapClass = {
   section:

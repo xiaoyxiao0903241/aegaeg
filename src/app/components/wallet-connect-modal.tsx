@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { ConnectEmbed, useActiveAccount } from 'thirdweb/react'
 import { X } from 'lucide-react'
-import { useI18n } from '../../i18n/use-i18n'
-import { homeAssets } from '../assets'
-import { appMetadata, connectEmbedProps } from '../../web3/thirdweb'
+import { useI18n } from '~/i18n/use-i18n'
+import { homeAssets } from '~/app/assets'
+import { appMetadata, connectEmbedProps } from '~/web3/thirdweb'
 import { cn } from '~/lib/utils'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '../../components/aegis-responsive-dialog'
+} from '~/components/aegis-responsive-dialog'
 
 const panelShellClass = cn(
   'border-0 bg-card',

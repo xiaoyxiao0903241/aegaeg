@@ -1,6 +1,6 @@
 import { FaqList } from '~/components/faq-list'
 import type { HomeContent } from '~/home/content/types'
-import { HomeSectionHead } from './home-section-head'
+import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const sectionClass =
   'relative py-[120px] min-[821px]:min-h-[800px] max-[820px]:min-h-[529px] max-[820px]:py-14'

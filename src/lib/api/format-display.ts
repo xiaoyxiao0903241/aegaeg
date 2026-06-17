@@ -1,6 +1,6 @@
-import type { RewardLogItem, SalesLogItem, TeamReferralItem, TeamRewardClaimLogItem } from './types'
-import { estimateAgxFromUsd1 } from '../presale/presale-math'
-import { PRESALE_CONFIG } from '../../config/presale'
+import type { RewardLogItem, SalesLogItem, TeamReferralItem, TeamRewardClaimLogItem } from '~/lib/api/types'
+import { estimateAgxFromUsd1 } from '~/lib/presale/presale-math'
+import { PRESALE_CONFIG } from '~/config/presale'
 
 export function formatPresaleRank(rank: number): string {
   if (!Number.isFinite(rank) || rank <= 0) return 'S0'

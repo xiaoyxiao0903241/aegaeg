@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { FaqList } from '../../components/faq-list'
+import { FaqList } from '~/components/faq-list'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 

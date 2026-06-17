@@ -1,4 +1,4 @@
-import { BSC_CONTRACTS } from './contracts'
+import { BSC_CONTRACTS } from '~/config/contracts'
 
 export const REFERRAL_CONFIG = {
   defaultReferrer: BSC_CONTRACTS.defaultReferrer,

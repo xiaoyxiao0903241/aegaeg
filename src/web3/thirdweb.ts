@@ -2,7 +2,7 @@ import { createThirdwebClient, defineChain } from 'thirdweb'
 import { createWallet } from 'thirdweb/wallets'
 import { bsc as bscBase } from 'thirdweb/chains'
 import type { WalletId } from 'thirdweb/wallets'
-import { aegisConnectTheme } from './connect-theme'
+import { aegisConnectTheme } from '~/web3/connect-theme'
 
 /** 公开 BSC RPC — 链上读写走此 URL，不依赖 thirdweb RPC */
 export const BSC_RPC_URL =
@@ -29,24 +29,43 @@ export const thirdwebClientId = resolveThirdwebClientId()
 export const isThirdwebConfigured =
   thirdwebClientId.length > 0 && !PLACEHOLDER_CLIENT_IDS.has(thirdwebClientId)
 
-if (import.meta.env.DEV && !isThirdwebConfigured) {
-  console.error(
-    [
-      '[AEGIS] 未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
-      '1. 复制 .env.example 为 .env',
-      '2. 在 https://thirdweb.com/dashboard/settings/api-keys 创建 Client ID',
-      '3. 写入 VITE_THIRDWEB_CLIENT_ID=你的ClientId',
-      '4. 重启 pnpm dev',
-    ].join('\n'),
-  )
-}
-
 export const thirdwebClient = createThirdwebClient({
   clientId: isThirdwebConfigured ? thirdwebClientId : 'MISSING_VITE_THIRDWEB_CLIENT_ID',
 })
 
 export const walletConnectProjectId =
   import.meta.env.VITE_WALLETCONNECT_PROJECT_ID?.trim() || undefined
+
+let web3EnvWarningsLogged = false
+
+/** DEV：缺失 Web3 环境变量时提示一次（避免模块加载即刷屏）。 */
+export function warnMissingWeb3EnvConfigOnce() {
+  if (web3EnvWarningsLogged || !import.meta.env.DEV) {
+    return
+  }
+  web3EnvWarningsLogged = true
+
+  if (!isThirdwebConfigured) {
+    console.error(
+      [
+        '[AEGIS] 未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
+        '1. 复制 .env.example 为 .env',
+        '2. 在 https://thirdweb.com/dashboard/settings/api-keys 创建 Client ID',
+        '3. 写入 VITE_THIRDWEB_CLIENT_ID=你的ClientId',
+        '4. 重启 pnpm dev',
+      ].join('\n'),
+    )
+  }
+
+  if (!walletConnectProjectId) {
+    console.warn(
+      [
+        '[AEGIS] 未配置 VITE_WALLETCONNECT_PROJECT_ID，WalletConnect 与移动端 deep link 可能不可用。',
+        '在 https://cloud.walletconnect.com/ 创建 Project ID 后写入 .env。',
+      ].join('\n'),
+    )
+  }
+}
 
 export const walletConnectConfig = walletConnectProjectId
   ? { projectId: walletConnectProjectId }
@@ -59,15 +78,6 @@ export const walletListOptions = {
   hiddenWallets: hiddenWalletIds,
   showAllWallets: true as const,
   walletConnect: walletConnectConfig,
-}
-
-if (import.meta.env.DEV && !walletConnectProjectId) {
-  console.warn(
-    [
-      '[AEGIS] 未配置 VITE_WALLETCONNECT_PROJECT_ID，WalletConnect 与移动端 deep link 可能不可用。',
-      '在 https://cloud.walletconnect.com/ 创建 Project ID 后写入 .env。',
-    ].join('\n'),
-  )
 }
 
 export const supportedChains = [bsc] as const

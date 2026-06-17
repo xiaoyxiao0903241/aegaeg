@@ -3,8 +3,8 @@ import { AmountInput } from '~/components/amount-input'
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import { cn } from '~/lib/utils'
-import { SwapAmountSkeleton } from './dapp-skeleton'
-import { TokenChip } from './token-chip'
+import { SwapAmountSkeleton } from '~/app/components/dapp-skeleton'
+import { TokenChip } from '~/app/components/token-chip'
 
 type SwapAmountBoxProps = {
   amountLoading?: boolean

@@ -1,7 +1,7 @@
 import { allLanguageOptions, type Locale } from '~/i18n/locales'
 import { withLocalePrefix } from '~/i18n/locale'
 import { homeAssets } from '~/home/assets'
-import type { LanguageOption } from './types'
+import type { LanguageOption } from '~/home/content/types'
 
 export const tokenCardShells = [
   {

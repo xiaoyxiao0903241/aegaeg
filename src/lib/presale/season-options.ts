@@ -1,6 +1,6 @@
-import type { SeasonOption } from '../../app/components/season-selector'
-import { PRESALE_CONFIG } from '../../config/presale'
-import { formatPhaseDate, isPhaseActive, type PresalePhaseOnChain } from './presale-math'
+import type { SeasonOption } from '~/app/components/season-selector'
+import { PRESALE_CONFIG } from '~/config/presale'
+import { formatPhaseDate, isPhaseActive, type PresalePhaseOnChain } from '~/lib/presale/presale-math'
 
 export const AIRDROP_BY_PHASE = ['+5%', '+2%', '+1%'] as const
 

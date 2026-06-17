@@ -4,7 +4,7 @@ import {
   createAuthHeader,
   parseApiResponse,
   type ApiEnvelope,
-} from './client'
+} from '~/lib/api/client'
 
 export { ApiError }
 

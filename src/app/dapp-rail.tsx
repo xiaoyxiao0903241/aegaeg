@@ -1,9 +1,9 @@
 import { useCallback, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { cn } from '~/lib/utils'
-import type { DappTab } from './types'
-import { railItems } from './assets'
-import { useI18n } from '../i18n/use-i18n'
-import { AnchoredTooltip } from '../components/anchored-tooltip'
+import type { DappTab } from '~/app/types'
+import { railItems } from '~/app/assets'
+import { useI18n } from '~/i18n/use-i18n'
+import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import {
   shellMobileRailClass,
   shellMobileRailItemClass,
@@ -11,7 +11,7 @@ import {
   shellRailIconClass,
   shellRailIndicatorClass,
   shellRailItemClass,
-} from './shell-layout'
+} from '~/app/shell-layout'
 
 const railCopy = {
   swap: {

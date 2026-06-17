@@ -1,8 +1,8 @@
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useState } from 'react'
-import { useAuth } from '../providers/auth-provider'
-import { executeTeamRewardClaim } from '../web3/reward-claim'
-import { useDappActions } from '../stores/dapp-actions'
+import { useAuth } from '~/providers/auth-provider'
+import { executeTeamRewardClaim } from '~/web3/reward-claim'
+import { useDappActions } from '~/stores/dapp-actions'
 
 export function useTeamRewardClaim() {
   const account = useActiveAccount()

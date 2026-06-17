@@ -1,6 +1,10 @@
+import { suppressKnownConsoleNoise } from '~/lib/suppress-known-console-noise'
+
+suppressKnownConsoleNoise()
+
 import { useLayoutEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import '../styles/home.css'
+import '~/styles/home.css'
 import { I18nProvider } from '~/i18n/i18n-provider'
 import { WebRootProviders } from '~/providers/web-root-providers'
 import { HomePage } from '~/home/home-page'

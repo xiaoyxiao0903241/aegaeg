@@ -1,26 +1,26 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { calcAmountOutMin } from '../lib/swap/calc-amount-out-min'
-import { formatSwapRateColon } from '../lib/swap/format-swap-rate'
-import { resolveSwapAction } from '../lib/swap/resolve-swap-action'
+import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
+import { formatSwapRateColon } from '~/lib/swap/format-swap-rate'
+import { resolveSwapAction } from '~/lib/swap/resolve-swap-action'
 import {
   capTokenAmountInput,
   formatTokenAmount,
   parseTokenAmount,
   sanitizeTokenAmountInput,
   slippagePercentToBps,
-} from '../lib/swap/token-amount'
-import { getSwapPairTokens, type SwapDirection } from '../lib/swap/swap-pair'
-import { SWAP_CONFIG } from '../config/swap'
-import { readErc20Allowance, readErc20Balance, fetchSwapQuote } from '../web3/swap-read'
-import { approveTokenIfNeeded, executeTokenSwap } from '../web3/swap-write'
-import { QUERY_STALE_TIME } from '../lib/query/query-client'
-import { queryKeys } from '../lib/query/query-keys'
-import { useDappActions } from '../stores/dapp-actions'
-import { GENESIS_PURCHASE_ERROR } from '../lib/web3/resolve-contract-error-message'
-import { hasWalletAccount } from '../lib/web3/wallet-connection-state'
-import { useVisibleQueryInterval } from './queries/use-visible-query-interval'
+} from '~/lib/swap/token-amount'
+import { getSwapPairTokens, type SwapDirection } from '~/lib/swap/swap-pair'
+import { SWAP_CONFIG } from '~/config/swap'
+import { readErc20Allowance, readErc20Balance, fetchSwapQuote } from '~/web3/swap-read'
+import { approveTokenIfNeeded, executeTokenSwap } from '~/web3/swap-write'
+import { QUERY_STALE_TIME } from '~/lib/query/query-client'
+import { queryKeys } from '~/lib/query/query-keys'
+import { useDappActions } from '~/stores/dapp-actions'
+import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
+import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
+import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 
 /**
  * @param authenticated — SIWE session ready; gates quotes, swap submit, and amount capping.

@@ -7,7 +7,7 @@ import {
   invalidateAfterReferralBind,
   invalidateAfterSwap,
   invalidateAfterTeamClaim,
-} from '../lib/query/invalidate'
+} from '~/lib/query/invalidate'
 
 interface DappActionsState {
   afterAuthLogin: (address?: string) => void

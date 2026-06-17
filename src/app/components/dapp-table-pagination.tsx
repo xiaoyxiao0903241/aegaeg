@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { cn } from '~/lib/utils'
-import { dappAssets } from '../assets'
-import { useI18n } from '../../i18n/use-i18n'
+import { dappAssets } from '~/app/assets'
+import { useI18n } from '~/i18n/use-i18n'
 import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
 
 const PAGE_MENU_ITEM_HEIGHT_PX = 32

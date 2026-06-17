@@ -1,11 +1,11 @@
-import type { Locale } from './locales'
-import en from './messages/en'
-import zh from './messages/zh'
-import ko from './messages/ko'
-import ja from './messages/ja'
-import vi from './messages/vi'
-import es from './messages/es'
-import ru from './messages/ru'
+import type { Locale } from '~/i18n/locales'
+import en from '~/i18n/messages/en'
+import zh from '~/i18n/messages/zh'
+import ko from '~/i18n/messages/ko'
+import ja from '~/i18n/messages/ja'
+import vi from '~/i18n/messages/vi'
+import es from '~/i18n/messages/es'
+import ru from '~/i18n/messages/ru'
 
 export type Messages = typeof en
 

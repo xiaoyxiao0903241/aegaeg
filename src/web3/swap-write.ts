@@ -6,12 +6,12 @@ import {
 } from 'thirdweb'
 import type { Account } from 'thirdweb/wallets'
 import type { Chain } from 'thirdweb/chains'
-import { SWAP_CONFIG } from '../config/swap'
-import { buildSwapDeadline } from '../lib/swap/build-swap-deadline'
-import { calcAmountOutMin } from '../lib/swap/calc-amount-out-min'
-import { ERC20_METHODS, MAX_UINT256, ROUTER_V2_METHODS } from './abis'
-import { defaultChain, thirdwebClient } from './thirdweb'
-import { fetchSwapQuote, readErc20Allowance } from './swap-read'
+import { SWAP_CONFIG } from '~/config/swap'
+import { buildSwapDeadline } from '~/lib/swap/build-swap-deadline'
+import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
+import { ERC20_METHODS, MAX_UINT256, ROUTER_V2_METHODS } from '~/web3/abis'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+import { fetchSwapQuote, readErc20Allowance } from '~/web3/swap-read'
 
 export async function approveTokenIfNeeded({
   account,

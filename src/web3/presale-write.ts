@@ -6,10 +6,10 @@ import {
 } from 'thirdweb'
 import type { Account } from 'thirdweb/wallets'
 import type { Chain } from 'thirdweb/chains'
-import { BSC_CONTRACTS } from '../config/contracts'
-import { ERC20_METHODS, MAX_UINT256, PRESALE_METHODS } from './abis'
-import { defaultChain, thirdwebClient } from './thirdweb'
-import { readErc20Allowance } from './swap-read'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { ERC20_METHODS, MAX_UINT256, PRESALE_METHODS } from '~/web3/abis'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+import { readErc20Allowance } from '~/web3/swap-read'
 
 export async function approveUsd1ForPresaleIfNeeded({
   account,

@@ -1,11 +1,11 @@
 import type { Locale } from '~/i18n/locales'
-import appEn from './en'
-import appEs from './es'
-import appJa from './ja'
-import appKo from './ko'
-import appRu from './ru'
-import appVi from './vi'
-import appZh from './zh'
+import appEn from '~/i18n/messages/app/en'
+import appEs from '~/i18n/messages/app/es'
+import appJa from '~/i18n/messages/app/ja'
+import appKo from '~/i18n/messages/app/ko'
+import appRu from '~/i18n/messages/app/ru'
+import appVi from '~/i18n/messages/app/vi'
+import appZh from '~/i18n/messages/app/zh'
 
 export const appMessagesByLocale = {
   en: appEn,

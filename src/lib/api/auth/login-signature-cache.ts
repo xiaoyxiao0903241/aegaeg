@@ -1,4 +1,4 @@
-import { AUTH_SIGNATURE_STORAGE_KEY } from './session'
+import { AUTH_SIGNATURE_STORAGE_KEY } from '~/lib/api/auth/session'
 
 export interface StoredLoginSignature {
   address: string

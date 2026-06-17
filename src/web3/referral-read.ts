@@ -1,8 +1,8 @@
 import { getContract, readContract, type ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
-import { BSC_CONTRACTS } from '../config/contracts'
-import { REFERRAL_METHODS } from './abis'
-import { defaultChain, thirdwebClient } from './thirdweb'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { REFERRAL_METHODS } from '~/web3/abis'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 
 function getReferralContract(client: ThirdwebClient, chain: Chain) {
   return getContract({ client, chain, address: BSC_CONTRACTS.referral })

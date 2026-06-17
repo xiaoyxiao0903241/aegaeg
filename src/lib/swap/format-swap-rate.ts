@@ -1,4 +1,4 @@
-import { formatTokenAmount } from './token-amount'
+import { formatTokenAmount } from '~/lib/swap/token-amount'
 
 function formatRateRatioFixed(
   normalizedOut: bigint,

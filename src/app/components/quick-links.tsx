@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { QuickLink, type QuickLinkProps } from './quick-link'
+import { QuickLink, type QuickLinkProps } from '~/app/components/quick-link'
 import { cn } from '~/lib/utils'
 
 export type { QuickLinkProps as QuickLinkItem }

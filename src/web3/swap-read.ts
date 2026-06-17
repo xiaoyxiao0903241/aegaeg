@@ -1,10 +1,10 @@
 import { getContract, readContract, type ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
-import { SWAP_CONFIG } from '../config/swap'
-import { BSC_CONTRACTS } from '../config/contracts'
-import { ERC20_METHODS, PAIR_V2_METHODS, ROUTER_V2_METHODS } from './abis'
-import { defaultChain, thirdwebClient } from './thirdweb'
-import { quoteSwapOut } from '../lib/swap/quote-swap-out'
+import { SWAP_CONFIG } from '~/config/swap'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { ERC20_METHODS, PAIR_V2_METHODS, ROUTER_V2_METHODS } from '~/web3/abis'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+import { quoteSwapOut } from '~/lib/swap/quote-swap-out'
 
 export function getErc20Contract(client: ThirdwebClient, chain: Chain, address: `0x${string}`) {
   return getContract({ client, chain, address })

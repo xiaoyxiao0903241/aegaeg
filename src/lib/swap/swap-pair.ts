@@ -1,5 +1,5 @@
-import { dappAssets } from '../../app/assets'
-import { SWAP_CONFIG } from '../../config/swap'
+import { dappAssets } from '~/app/assets'
+import { SWAP_CONFIG } from '~/config/swap'
 
 export type SwapDirection = 'forward' | 'reverse'
 

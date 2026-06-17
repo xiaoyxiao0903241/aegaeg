@@ -3,22 +3,22 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { LogOut, Wallet, X } from 'lucide-react'
 import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
 import { getWalletBalance } from 'thirdweb/wallets'
-import { BSC_CONTRACTS } from '../../config/contracts'
-import { formatTokenAmount } from '../../lib/swap/token-amount'
-import { readErc20Balance } from '../../web3/swap-read'
-import { useI18n } from '../../i18n/use-i18n'
-import { useAuth } from '../../providers/auth-provider'
-import { hasWalletAccount } from '../../lib/web3/wallet-connection-state'
-import { dappAssets } from '../assets'
-import { formatAddress } from '../utils'
-import { defaultChain, thirdwebClient } from '../../web3/thirdweb'
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { formatTokenAmount } from '~/lib/swap/token-amount'
+import { readErc20Balance } from '~/web3/swap-read'
+import { useI18n } from '~/i18n/use-i18n'
+import { useAuth } from '~/providers/auth-provider'
+import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
+import { dappAssets } from '~/app/assets'
+import { formatAddress } from '~/app/utils'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { Button } from '~/components/button'
 import { cn } from '~/lib/utils'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '../../components/aegis-responsive-dialog'
-import { WalletConnectModal } from './wallet-connect-modal'
+} from '~/components/aegis-responsive-dialog'
+import { WalletConnectModal } from '~/app/components/wallet-connect-modal'
 
 interface WalletTokenBalanceRow {
   symbol: string

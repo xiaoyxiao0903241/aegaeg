@@ -4,7 +4,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/home/assets'
 import type { HomeContent } from '~/home/content/types'
 import { cn } from '~/lib/utils'
-import { labelKey, MultilineCopy, prefixedPath } from './home-primitives'
+import { labelKey, MultilineCopy, prefixedPath } from '~/home/components/home-primitives'
 
 const footerClass = {
   root:

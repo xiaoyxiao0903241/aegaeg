@@ -1,11 +1,11 @@
 import { useActiveAccount } from 'thirdweb/react'
 import { cn } from '~/lib/utils'
-import { AnchoredTooltip } from '../components/anchored-tooltip'
-import { useI18n } from '../i18n/use-i18n'
-import { useAuth } from '../providers/auth-provider'
-import { hasWalletAccount } from '../lib/web3/wallet-connection-state'
-import { dappAssets } from './assets'
-import { WalletConnectChip } from './wallet-connect-chip'
+import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { useI18n } from '~/i18n/use-i18n'
+import { useAuth } from '~/providers/auth-provider'
+import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
+import { dappAssets } from '~/app/assets'
+import { WalletConnectChip } from '~/app/wallet-connect-chip'
 
 const networkPillClass = cn(
   'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-background px-[14px]',

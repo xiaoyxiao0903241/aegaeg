@@ -1,11 +1,11 @@
 import { useActiveAccount, useIsAutoConnecting } from 'thirdweb/react'
-import { useDappShellStore } from '../stores/dapp-shell-store'
-import { useAuth } from '../providers/auth-provider'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useAuth } from '~/providers/auth-provider'
 import {
   hasWalletAccount,
   isWalletRestorePending,
-} from '../lib/web3/wallet-connection-state'
-import type { DappTab } from './types'
+} from '~/lib/web3/wallet-connection-state'
+import type { DappTab } from '~/app/types'
 
 export interface DappShellState {
   tab: DappTab

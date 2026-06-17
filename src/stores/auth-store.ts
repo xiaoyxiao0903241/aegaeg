@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { isJwtExpired, withJwtExpiry } from '../lib/api/auth/jwt'
-import type { StoredLoginSignature } from '../lib/api/auth/login-signature-cache'
+import { isJwtExpired, withJwtExpiry } from '~/lib/api/auth/jwt'
+import type { StoredLoginSignature } from '~/lib/api/auth/login-signature-cache'
 import {
   AUTH_SESSION_STORAGE_KEY,
   AUTH_SIGNATURE_STORAGE_KEY,
   type StoredAuthSession,
-} from '../lib/api/auth/session'
+} from '~/lib/api/auth/session'
 
 export const AUTH_STORE_STORAGE_KEY = 'aegis.auth.store'
 

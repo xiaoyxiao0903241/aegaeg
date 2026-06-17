@@ -4,10 +4,10 @@ export type Locale = (typeof locales)[number]
 
 export const defaultLocale: Locale = 'en'
 
-export { localeMeta, type LocaleMeta } from './locale-meta'
-export { resolveHomeContentLocale, getHtmlLang } from './locale-meta'
+export { localeMeta, type LocaleMeta } from '~/i18n/locale-meta'
+export { resolveHomeContentLocale, getHtmlLang } from '~/i18n/locale-meta'
 
-import { localeMeta } from './locale-meta'
+import { localeMeta } from '~/i18n/locale-meta'
 
 export const localeLabels: Record<Locale, string> = Object.fromEntries(
   locales.map((locale) => [locale, localeMeta[locale].label]),

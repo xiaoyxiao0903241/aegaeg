@@ -1,5 +1,5 @@
-import type { DappTab } from './types'
-import { homeAssets as canonicalHomeAssets } from '../home/assets'
+import type { DappTab } from '~/app/types'
+import { homeAssets as canonicalHomeAssets } from '~/home/assets'
 
 /** Homepage token flywheel icons — SSOT for carousel / about cards. */
 export const tokenFlywheelIcons = canonicalHomeAssets.token

@@ -1,4 +1,4 @@
-import { BSC_CONTRACTS } from './contracts'
+import { BSC_CONTRACTS } from '~/config/contracts'
 
 export interface SwapTokenConfig {
   symbol: string

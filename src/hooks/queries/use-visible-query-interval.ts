@@ -1,5 +1,5 @@
 import type { QueryObserverResult } from '@tanstack/react-query'
-import { useVisibilityAwareInterval } from '../use-visibility-aware-interval'
+import { useVisibilityAwareInterval } from '~/hooks/use-visibility-aware-interval'
 
 export function useVisibleQueryInterval<T>(
   query: Pick<QueryObserverResult<T>, 'refetch'>,

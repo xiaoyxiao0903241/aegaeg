@@ -14,11 +14,11 @@ import {
   type CarouselApi,
   type CarouselOptions,
   type CarouselPlugin,
-} from './carousel-context'
+} from '~/components/carousel-context'
 import { cn } from '~/lib/utils'
-import { useCarousel } from './use-carousel'
+import { useCarousel } from '~/components/use-carousel'
 
-export type { CarouselApi, CarouselOptions, CarouselPlugin } from './carousel-context'
+export type { CarouselApi, CarouselOptions, CarouselPlugin } from '~/components/carousel-context'
 
 type CarouselProps = {
   opts?: CarouselOptions

@@ -20,9 +20,6 @@ i18n
       escapeValue: false, // React 已经转义
     },
 
-    // 开发环境配置
-    debug: import.meta.env.DEV,
-
     // 初始资源（避免首次加载闪烁）
     resources: {
       en: {

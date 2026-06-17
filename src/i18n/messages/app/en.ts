@@ -1,4 +1,4 @@
-import { defineMessages } from '../define-messages'
+import { defineMessages } from '~/i18n/messages/define-messages'
 
 const app = defineMessages({
   common: {
