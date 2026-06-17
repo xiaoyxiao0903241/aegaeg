@@ -414,7 +414,6 @@ const vi = defineMessages({
     bonusShort: 'Thưởng',
     rankShort: 'Hạng',
     postLaunchShort: 'Sau ra mắt',
-    rankShort: 'Hạng',
     personalContribution: 'Đóng góp cá nhân',
     totalVolume: 'Tổng khối lượng',
     bonusRate: 'Tỷ lệ thưởng',

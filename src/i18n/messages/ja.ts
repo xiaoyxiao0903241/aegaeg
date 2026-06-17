@@ -412,7 +412,6 @@ const ja = defineMessages({
     bonusShort: 'ボーナス',
     rankShort: 'ランク',
     postLaunchShort: 'ローンチ後',
-    rankShort: 'ランク',
     personalContribution: '個人貢献',
     totalVolume: '総実績',
     bonusRate: 'ボーナス率',

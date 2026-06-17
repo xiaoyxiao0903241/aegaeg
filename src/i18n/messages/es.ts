@@ -414,7 +414,6 @@ const es = defineMessages({
     bonusShort: 'Bono',
     rankShort: 'Rango',
     postLaunchShort: 'Tras lanzamiento',
-    rankShort: 'Rango',
     personalContribution: 'Contribución personal',
     totalVolume: 'Volumen total',
     bonusRate: 'Tasa de bono',

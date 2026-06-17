@@ -417,7 +417,6 @@ const en = defineMessages({
     bonusShort: 'Bonus',
     rankShort: 'Rank',
     postLaunchShort: 'Post-launch',
-    rankShort: 'Rank',
     personalContribution: 'Personal contribution',
     totalVolume: 'Total volume',
     bonusRate: 'Bonus rate',

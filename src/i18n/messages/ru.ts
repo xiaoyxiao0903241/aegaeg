@@ -414,7 +414,6 @@ const ru = defineMessages({
     bonusShort: 'Бонус',
     rankShort: 'Ранг',
     postLaunchShort: 'После запуска',
-    rankShort: 'Ранг',
     personalContribution: 'Личный вклад',
     totalVolume: 'Общий объём',
     bonusRate: 'Ставка бонуса',

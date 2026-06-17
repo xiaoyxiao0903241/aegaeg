@@ -412,7 +412,6 @@ const ko = defineMessages({
     bonusShort: '보너스',
     rankShort: '순위',
     postLaunchShort: '런칭 후',
-    rankShort: '등급',
     personalContribution: '개인 기여',
     totalVolume: '총 실적',
     bonusRate: '보너스율',
