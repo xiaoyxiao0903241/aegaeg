@@ -231,10 +231,13 @@ html[data-wallet-loader-ready] [data-reveal]:not([data-visible='true']):not([dat
 
 [data-metrics-panel] {
   transform-origin: 50% 50%;
-  clip-path: inset(0 round 28px);
   transition:
     clip-path 980ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity 740ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-metrics-reveal][data-visible='true'] [data-metrics-panel] {
+  clip-path: none;
 }
 
 [data-metrics-panel] article {

@@ -6,7 +6,7 @@ import { cn } from '~/lib/utils'
 export const cardVariants = tv({
   variants: {
     context: {
-      dapp: 'overflow-hidden rounded-md bg-card px-4 py-3.5',
+      dapp: 'rounded-md bg-card px-4 py-3.5',
       home: '',
     },
     surface: {

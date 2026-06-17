@@ -88,6 +88,15 @@
   --scrollbar-thumb-dark-active: oklch(80.08% 0.0962 39.91 / 62%);
   /* ---- DApp H5 顶栏区渐变（Figma `62:2`）---- */
   --dapp-h5-gradient-top: #fbeae1;
+
+  /* 卡片阴影外扩留白：blur 半径 + H5 shell p-[18px] 上限 */
+  --shadow-bleed: 24px;
+  --shadow-bleed-subtle: 28px;
+  --shadow-bleed-h5: 18px;
+  /* Figma `103:8` / `103:81` — H5 token carousel 卡片↔指示器 */
+  --carousel-h5-viewport-pad-y: 14px;
+  --carousel-h5-indicator-pt: 12px;
+  --carousel-pc-indicator-pt: 12px;
 }
 
 /**
@@ -112,6 +121,14 @@
   --shadow-subtle: 0 10px 28px rgba(20, 28, 51, 0.1);
   --shadow-token: 0 16px 50px oklch(22% 0.04 265 / 12%);
   --shadow-faq: 0 6px 20px oklch(22% 0.04 265 / 6%);
+
+  /* 卡片阴影外扩留白 —— 滚动容器 padding 与轮播 viewport 共用 */
+  --shadow-bleed: 24px;
+  --shadow-bleed-subtle: 28px;
+  --shadow-bleed-h5: 18px;
+  --carousel-h5-viewport-pad-y: 14px;
+  --carousel-h5-indicator-pt: 12px;
+  --carousel-pc-indicator-pt: 12px;
 }
 
 /**

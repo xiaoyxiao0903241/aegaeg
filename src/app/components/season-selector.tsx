@@ -64,14 +64,9 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
                 {season.name}
               </Text>
               <Text as="small" size="xs" tone="muted" className="mt-[3px] block leading-[1.35]">
-                <span className="max-[820px]:hidden [&_b]:font-inherit [&_b]:text-primary [&_i]:not-italic [&_i]:text-on-dark">
-                  {t.genesis.discountLabel} <b>{season.desktopMeta.discount}</b>{' '}
-                  <i aria-hidden="true">|</i> {t.genesis.airdropLabel}{' '}
-                  <b>{season.desktopMeta.airdrop}</b>
-                </span>
-                <span className="hidden max-[820px]:inline [&_b]:font-inherit [&_b]:text-primary">
-                  {season.price.replace('≈ ', '')} | <b>{season.discount}</b>
-                </span>
+                {t.genesis.discountLabel} <b>{season.desktopMeta.discount}</b>{' '}
+                <i aria-hidden="true">|</i> {t.genesis.airdropLabel}{' '}
+                <b>{season.desktopMeta.airdrop}</b>
               </Text>
             </div>
             <div className="grid flex-none justify-items-end gap-1">

@@ -11,18 +11,18 @@ const tokenClass = {
     'token-section relative py-[120px] min-[821px]:min-h-[696px] max-[820px]:min-h-[902px] max-[820px]:pt-0 max-[820px]:pb-14',
   container: 'container max-[820px]:!w-[min(calc(100vw-40px),362px)]',
   grid:
-    'token-grid mt-14 grid grid-cols-4 gap-[22px] max-[1100px]:grid-cols-2 max-[820px]:mt-4 max-[820px]:grid-cols-1 max-[820px]:gap-4',
+    'token-grid mt-14 grid grid-cols-4 gap-[22px] py-[var(--shadow-bleed)] max-[1100px]:grid-cols-2 max-[820px]:mt-4 max-[820px]:grid-cols-1 max-[820px]:gap-4',
   card:
-    'token-card relative isolate h-[280px] overflow-hidden transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-[820px]:flex max-[820px]:h-auto max-[820px]:min-h-[173px] max-[820px]:flex-col max-[820px]:justify-start max-[820px]:gap-[7px] max-[820px]:rounded-[18px] max-[820px]:p-5',
+    'token-card relative isolate h-[280px] rounded-lg transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-[820px]:flex max-[820px]:h-auto max-[820px]:min-h-[173px] max-[820px]:flex-col max-[820px]:justify-start max-[820px]:gap-[7px] max-[820px]:rounded-[18px] max-[820px]:p-5',
   iconWrap:
-    'token-tile absolute left-6 top-6 z-[1] grid size-[52px] origin-center place-items-center rounded-[14px] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:static max-[820px]:size-[46px] max-[820px]:rounded-[13px] max-[820px]:border-0 max-[820px]:bg-card [&_img:not([src])]:bg-transparent',
+    'token-tile absolute left-6 top-6 z-1 grid size-[52px] origin-center place-items-center rounded-[14px] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:static max-[820px]:size-[46px] max-[820px]:rounded-[13px] max-[820px]:border-0 max-[820px]:bg-card [&_img:not([src])]:bg-transparent',
   icon:
     'size-[30px] object-contain transition-[filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:size-[26px]',
   shapeWrap:
-    'token-shape-wrap pointer-events-none absolute -z-[1] transition-[filter,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:hidden',
+    'token-shape-wrap pointer-events-none absolute -z-1 transition-[filter,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:hidden',
   shapeImg: 'token-shape block size-full [[&:not([src])]]:bg-transparent',
   info:
-    'token-info absolute left-6 top-[154px] z-[1] flex w-[min(calc(100%-48px),235px)] flex-col gap-1.5 max-[820px]:static max-[820px]:w-full',
+    'token-info absolute left-6 top-[154px] z-1 flex w-[min(calc(100%-48px),235px)] flex-col gap-1.5 max-[820px]:static max-[820px]:w-full',
 } as const
 
 const tokenCardHoverClass = cn(

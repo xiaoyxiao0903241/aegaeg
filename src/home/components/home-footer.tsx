@@ -102,7 +102,7 @@ export function HomeFooter({ content }: { content: HomeContent['footer'] }) {
       <div className={footerClass.rule} aria-hidden="true" />
       <div className={footerClass.bottom}>
         <p className="m-0 max-[820px]:whitespace-nowrap">{content.copyright}</p>
-        <p className="m-0 max-[820px]:hidden">{content.legal}</p>
+        <p className="m-0">{content.legal}</p>
       </div>
     </footer>
   )

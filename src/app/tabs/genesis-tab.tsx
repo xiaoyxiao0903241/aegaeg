@@ -20,10 +20,8 @@ import {
 import { PRESALE_CONFIG } from '~/config/presale'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import { bscscanAddress } from '~/config/explorer'
-import {
-  shellContentPageClass,
-  shellWidgetRootClass,
-} from '~/app/shell-layout'
+import { DappDetailPage } from '~/app/components/dapp-detail-page'
+import { shellWidgetRootClass } from '~/app/shell-layout'
 import { dappAssets } from '~/app/assets'
 import { seasons as fallbackSeasons } from '~/app/data'
 import type { DetailPanelControls } from '~/app/types'
@@ -290,7 +288,7 @@ export function GenesisContent() {
     apiEnabled && !salesLoading && !showSalesSyncHint && desktopRows.length === 0
 
   return (
-    <div className={shellContentPageClass}>
+    <DappDetailPage>
       <DappContentHeading id="genesis-title">{seasonStatsTitle}</DappContentHeading>
 
       <MetricGrid columns={4}>
@@ -337,7 +335,7 @@ export function GenesisContent() {
           )}
           data-reveal
         >
-          <div className="relative z-[1]">
+          <div className="relative z-1">
             <span className="text-[11px] font-bold leading-[1.3] tracking-[1.2px] text-coral-bright">
               {t.genesis.globalLabel}
             </span>
@@ -438,7 +436,7 @@ export function GenesisContent() {
         </div>
       </DappSection>
 
-      <DappSection className="max-[820px]:hidden" title={t.swap.faq}>
+      <DappSection title={t.swap.faq}>
         <FaqStack
           items={[
             {
@@ -464,6 +462,6 @@ export function GenesisContent() {
           ]}
         />
       </DappSection>
-    </div>
+    </DappDetailPage>
   )
 }

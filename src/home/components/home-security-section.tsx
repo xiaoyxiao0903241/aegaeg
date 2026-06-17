@@ -22,7 +22,7 @@ const securityClass = {
     'security-art flex w-[min(100%,330px)] aspect-[330/382] items-center justify-center overflow-hidden max-[820px]:w-[174px] max-[820px]:aspect-[174/201]',
   artImage: 'h-full w-full object-contain object-center',
   line:
-    'security-line absolute left-[267px] top-[62px] z-[1] aspect-[110/258] w-[110px] object-contain max-[1100px]:!hidden',
+    'security-line absolute left-[267px] top-[62px] z-1 aspect-[110/258] w-[110px] object-contain max-[1100px]:!hidden',
   list: 'check-list relative z-[2] grid gap-3.5 max-[820px]:w-full max-[820px]:gap-4',
   card:
     'flex items-center gap-3.5 px-[22px] py-5 text-[15px] font-medium leading-[1.4] text-foreground max-[820px]:min-h-14 max-[820px]:w-full max-[820px]:gap-3 max-[820px]:rounded-[14px] max-[820px]:px-[18px] max-[820px]:py-4 max-[820px]:text-sm max-[820px]:leading-[1.2]',

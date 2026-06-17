@@ -31,7 +31,7 @@ export function DappTableEmptyState({
       aria-hidden="true"
       className={cn(
         revealClass(),
-        'flex flex-col items-center overflow-hidden rounded-[18px] bg-card px-6 py-[30px] shadow-card',
+        'flex flex-col items-center rounded-[18px] bg-card px-6 py-[30px] shadow-card',
         'max-[820px]:border max-[820px]:border-border max-[820px]:px-4 max-[820px]:py-[22px] max-[820px]:shadow-none',
         className,
       )}

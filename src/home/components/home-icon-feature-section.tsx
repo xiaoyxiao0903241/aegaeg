@@ -14,9 +14,9 @@ const sectionClass = {
 
 const gridClass = {
   protocol:
-    'feature-card three-col mt-14 grid grid-cols-3 overflow-hidden rounded-[22px] bg-card shadow-card max-[820px]:mt-4 max-[820px]:grid-cols-1 max-[820px]:gap-4 max-[820px]:overflow-visible max-[820px]:rounded-none max-[820px]:bg-transparent max-[820px]:shadow-none',
+    'feature-card three-col mt-14 grid grid-cols-3 rounded-[22px] bg-card shadow-card max-[820px]:mt-4 max-[820px]:grid-cols-1 max-[820px]:gap-4 max-[820px]:overflow-visible max-[820px]:rounded-none max-[820px]:bg-transparent max-[820px]:shadow-none',
   engine:
-    'engine-card mt-14 grid grid-cols-2 overflow-hidden rounded-[22px] bg-card shadow-card max-[820px]:mt-6 max-[820px]:grid-cols-1 max-[820px]:gap-6 max-[820px]:overflow-visible max-[820px]:rounded-none max-[820px]:bg-transparent max-[820px]:shadow-none',
+    'engine-card mt-14 grid grid-cols-2 rounded-[22px] bg-card shadow-card max-[820px]:mt-6 max-[820px]:grid-cols-1 max-[820px]:gap-6 max-[820px]:overflow-visible max-[820px]:rounded-none max-[820px]:bg-transparent max-[820px]:shadow-none',
 } as const
 
 const cardClass = {

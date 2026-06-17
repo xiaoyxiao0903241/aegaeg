@@ -170,17 +170,19 @@ Carousel.displayName = 'Carousel'
 export const CarouselContent = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement> & {
+    spacing?: 'default' | 'none'
     viewportClassName?: string
   }
->(({ className, viewportClassName, children, ...props }, ref) => {
+>(({ className, spacing = 'default', viewportClassName, children, ...props }, ref) => {
   const { carouselRef, orientation } = useCarousel()
+  const isHorizontal = orientation === 'horizontal'
   return (
     <div ref={carouselRef} className={cn('overflow-hidden', viewportClassName)}>
       <div
         ref={ref}
         className={cn(
           'flex',
-          orientation === 'horizontal' ? '-ml-4' : '-mt-4',
+          spacing === 'default' && (isHorizontal ? '-ml-4' : '-mt-4'),
           className,
         )}
         {...props}
@@ -194,9 +196,12 @@ CarouselContent.displayName = 'CarouselContent'
 
 export const CarouselItem = forwardRef<
   HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => {
+  HTMLAttributes<HTMLDivElement> & {
+    spacing?: 'default' | 'none'
+  }
+>(({ className, spacing = 'default', children, ...props }, ref) => {
   const { orientation } = useCarousel()
+  const isHorizontal = orientation === 'horizontal'
   return (
     <div
       ref={ref}
@@ -204,7 +209,7 @@ export const CarouselItem = forwardRef<
       aria-roledescription="slide"
       className={cn(
         'min-w-0 shrink-0 grow-0 basis-full',
-        orientation === 'horizontal' ? 'pl-4' : 'pt-4',
+        spacing === 'default' && (isHorizontal ? 'pl-4' : 'pt-4'),
         className,
       )}
       {...props}

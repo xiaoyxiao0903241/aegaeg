@@ -1,9 +1,11 @@
-import { useCallback, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { cn } from '~/lib/utils'
 import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { useDappShell } from '~/app/dapp-shell-context'
+import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
 import {
   shellMobileRailClass,
   shellMobileRailItemClass,
@@ -14,22 +16,10 @@ import {
 } from '~/app/shell-layout'
 
 const railCopy = {
-  swap: {
-    label: 'swap',
-    tooltip: 'swapTooltip',
-  },
-  genesis: {
-    label: 'genesis',
-    tooltip: 'genesisTooltip',
-  },
-  rewards: {
-    label: 'rewards',
-    tooltip: 'rewardsTooltip',
-  },
-  community: {
-    label: 'community',
-    tooltip: 'communityTooltip',
-  },
+  swap: { label: 'swap' },
+  genesis: { label: 'genesis' },
+  rewards: { label: 'rewards' },
+  community: { label: 'community' },
 } as const
 
 function railIconMask(icon: string): CSSProperties {
@@ -47,6 +37,26 @@ type RailIndicator = {
   top: number
 }
 
+function useRailTooltips() {
+  const { messages: t } = useI18n()
+  const { connected } = useDappShell()
+  const { rateLabel } = usePairSpotRate(connected)
+
+  return useMemo(
+    () => ({
+      swap: !connected
+        ? t.swap.disconnectedIntro
+        : rateLabel
+          ? `${rateLabel} · ${t.swap.settlementValue}`
+          : t.swap.intro,
+      genesis: t.nav.genesisTooltip,
+      rewards: t.nav.rewardsTooltip,
+      community: t.nav.communityTooltip,
+    }),
+    [connected, rateLabel, t],
+  )
+}
+
 export function DappRail({
   activeTab,
   mobile = false,
@@ -57,6 +67,7 @@ export function DappRail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
+  const tooltips = useRailTooltips()
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
   const [indicator, setIndicator] = useState<RailIndicator | null>(null)
@@ -122,7 +133,7 @@ export function DappRail({
         const active = item.id === activeTab
 
         return (
-          <AnchoredTooltip content={t.nav[copy.tooltip]} key={item.id} position="right">
+          <AnchoredTooltip content={tooltips[item.id]} key={item.id} position="right">
             <button
               aria-label={label}
               aria-selected={active}

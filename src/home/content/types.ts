@@ -51,7 +51,6 @@ export type FaqItem = {
   question: string
   answer: string
   open?: boolean
-  optional?: boolean
 }
 
 export type FooterGroup = {

@@ -24,10 +24,18 @@ const RUBBER_BAND_FACTOR = 0.32
 const PAGE_TRANSITION_MS = 380
 const PAGE_EASING = 'cubic-bezier(0.2, 0.8, 0.2, 1)'
 
-const pagerPageScrollClass = cn(
-  'shrink-0 overflow-x-hidden overflow-y-auto overscroll-y-contain',
-  'max-[820px]:w-full',
-)
+/** 与 shell 同宽；纵向裁切 pager 位移，水平不裁切 */
+const pagerViewportClass = 'relative min-h-0 flex-1 w-full overflow-x-visible overflow-y-hidden'
+
+/** 外层滚动：全宽、只负责 scrollTop，不加 padding */
+const pagerPageScrollClass =
+  'shrink-0 min-w-0 w-full overflow-y-auto overscroll-y-contain'
+
+/**
+ * 内层与 scroll 同宽：水平/底部阴影留白；顶部由页面标题 shellMobilePageTitleClass mt-3 承担（Figma 汉堡→标题 12px）。
+ */
+const pagerPageInnerClass =
+  'box-border w-full min-w-0 px-[var(--shadow-bleed-h5)] pb-[var(--shadow-bleed-subtle)]'
 
 type SwapMobilePagerProps = {
   connected: boolean
@@ -404,10 +412,10 @@ export function SwapMobilePager({
         data-wallet-ready={windowDataset.walletReady}
       >
         <div
-          className="relative flex min-h-0 flex-1 flex-col overflow-hidden"
+          className="relative flex min-h-0 flex-1 flex-col overflow-x-visible overflow-y-hidden"
           data-swap-mobile-pager
         >
-          <div className={shellMobileDrawerClass}>
+          <div className={cn(shellMobileDrawerClass, 'px-[var(--shadow-bleed-h5)]')}>
             <button
               aria-controls={mobileNavId}
               aria-expanded={mobileNavOpen}
@@ -426,10 +434,7 @@ export function SwapMobilePager({
             open={mobileNavOpen}
           />
 
-          <div
-            ref={viewportRef}
-            className="relative min-h-0 flex-1 overflow-hidden"
-          >
+          <div ref={viewportRef} className={pagerViewportClass}>
             {viewportHeight > 0 ? (
               <div
                 className="flex flex-col will-change-transform"
@@ -447,12 +452,14 @@ export function SwapMobilePager({
                   className={pagerPageScrollClass}
                   style={{ height: viewportHeight }}
                 >
-                  <SwapWidget
-                    connected={connected}
-                    detailPanel={detailPanel}
-                    onSelectGenesis={onSelectGenesis}
-                    swapPager
-                  />
+                  <div className={pagerPageInnerClass}>
+                    <SwapWidget
+                      connected={connected}
+                      detailPanel={detailPanel}
+                      onSelectGenesis={onSelectGenesis}
+                      swapPager
+                    />
+                  </div>
                 </div>
 
                 <div
@@ -461,7 +468,9 @@ export function SwapMobilePager({
                   className={pagerPageScrollClass}
                   style={{ height: viewportHeight }}
                 >
-                  <SwapContent connected={connected} swapPager />
+                  <div className={pagerPageInnerClass}>
+                    <SwapContent connected={connected} swapPager />
+                  </div>
                 </div>
               </div>
             ) : null}

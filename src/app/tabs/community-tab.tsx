@@ -22,10 +22,8 @@ import { useAuth } from '~/providers/auth-provider'
 import { useReferral } from '~/hooks/use-referral'
 import { toast } from 'sonner'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
-import {
-  shellContentPageClass,
-  shellWidgetRootClass,
-} from '~/app/shell-layout'
+import { DappDetailPage } from '~/app/components/dapp-detail-page'
+import { shellWidgetRootClass } from '~/app/shell-layout'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { dappAssets } from '~/app/assets'
@@ -217,7 +215,7 @@ function CommunityConnectedWidget({
               {t.community.bindReferrer}
             </DappActionButton>
           </div>
-          <SideHint className="max-[820px]:hidden">{t.community.referrerHint}</SideHint>
+          <SideHint>{t.community.referrerHint}</SideHint>
         </DappSideCard>
       )}
 
@@ -386,9 +384,9 @@ export function CommunityContent({
 
   if (!connected) {
     return (
-      <div className={cn(shellContentPageClass, 'max-[820px]:pb-20')}>
+      <DappDetailPage className="max-[820px]:pb-20">
         <CommunityFlowSection isMobileViewport={isMobileViewport} onSelectTab={onSelectTab} />
-      </div>
+      </DappDetailPage>
     )
   }
 
@@ -443,7 +441,7 @@ export function CommunityContent({
   ]
 
   return (
-    <div className={shellContentPageClass}>
+    <DappDetailPage>
       <DappContentHeading id="community-title" reveal>
         {t.community.myCommunity}
       </DappContentHeading>
@@ -538,7 +536,7 @@ export function CommunityContent({
           </>
         )}
       </DappSection>
-    </div>
+    </DappDetailPage>
   )
 }
 
@@ -592,18 +590,7 @@ function CommunityFlowSection({
           connected && 'group-data-[tab=community]/shell:max-[820px]:mt-0',
           !connected && 'max-[820px]:mt-5',
         )}
-        title={
-          isMobileViewport && connected
-            ? t.community.startInvitingMobile
-            : (
-              <>
-                <span className={cn(!connected && 'max-[820px]:hidden')}>{t.community.inviteTitle}</span>
-                {!connected ? (
-                  <span className="hidden max-[820px]:inline">{t.community.startInvitingMobile}</span>
-                ) : null}
-              </>
-            )
-        }
+        title={t.community.inviteTitle}
       >
         {isMobileViewport ? (
           <InviteFlowStack items={inviteFlowItems} />
@@ -632,7 +619,7 @@ function CommunityFlowSection({
               className={cn(
                 'max-[820px]:gap-1.5 max-[820px]:py-3',
                 '[&_h4]:tracking-[-0.48px] max-[820px]:[&_h4]:mt-1.5 max-[820px]:[&_h4]:mb-0 max-[820px]:[&_h4]:text-sm max-[820px]:[&_h4]:leading-[1.2]',
-                '[&_p]:tracking-[-0.26px] max-[820px]:[&_p]:hidden',
+                '[&_p]:tracking-[-0.26px]',
                 '[&_button]:tracking-[-0.26px]',
               )}
               key={program.label}

@@ -30,10 +30,8 @@ import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { toast } from 'sonner'
 import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
-import {
-  shellContentPageClass,
-  shellWidgetRootClass,
-} from '~/app/shell-layout'
+import { DappDetailPage } from '~/app/components/dapp-detail-page'
+import { shellWidgetRootClass } from '~/app/shell-layout'
 import { dappAssets } from '~/app/assets'
 import { buildRewardTierRows, getTeamBonusRateLabel } from '~/lib/presale/tier-table'
 import { DAPP_TABLE_PAGE_SIZE, paginateStaticRows } from '~/lib/table-pagination'
@@ -70,13 +68,6 @@ const REWARDS_PROGRESS_CARD_CLASS = cn(
   'grid gap-1.5',
 )
 
-const FAQ_STACK_CLASS = cn(
-  'justify-items-start [&_[data-faq-item]]:w-full [&_[data-faq-item]]:max-w-full',
-  'max-[820px]:[&_[data-faq-item]]:rounded-[14px] max-[820px]:[&_[data-faq-item]]:border-0 max-[820px]:[&_[data-faq-item]]:px-4 max-[820px]:[&_[data-faq-item]]:shadow-faq',
-  'max-[820px]:[&_[data-faq-trigger]]:py-3.5 max-[820px]:[&_[data-faq-trigger]]:text-[13px] max-[820px]:[&_[data-faq-trigger]]:font-normal max-[820px]:[&_[data-faq-trigger]]:text-faq-text',
-  'max-[820px]:[&_[data-faq-answer]]:leading-normal',
-  '[&_[data-faq-trigger]]:text-sm [&_[data-faq-trigger]]:font-normal [&_[data-faq-trigger]]:text-faq-text',
-)
 
 export function RewardsWidget({
   detailPanel,
@@ -85,7 +76,6 @@ export function RewardsWidget({
 }) {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
-  const isMobileViewport = useMobileViewport()
   const {
     apiEnabled,
     displayRank,
@@ -162,9 +152,7 @@ export function RewardsWidget({
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
     if (teamTotal?.claimed == null) return undefined
-    const claimedTemplate = isMobileViewport ? t.rewards.claimedMobile : t.rewards.claimed
-    const claimedLine = claimedTemplate.replace('{amount}', formatUsd(teamTotal.claimed, 2))
-    if (isMobileViewport) return claimedLine
+    const claimedLine = t.rewards.claimed.replace('{amount}', formatUsd(teamTotal.claimed, 2))
     const breakdown = teamTotal.items
       ?.map((item) => {
         const pending = formatClaimableAmount(item.total, item.claimed)
@@ -421,7 +409,7 @@ export function RewardsContent() {
         ]
 
   return (
-    <div className={shellContentPageClass}>
+    <DappDetailPage>
       <DappContentHeading id="rewards-title">{t.rewards.heroTitle}</DappContentHeading>
 
       <section
@@ -432,7 +420,7 @@ export function RewardsContent() {
         )}
         data-reveal
       >
-        <div className="relative z-[1] min-w-0 flex-1 pr-[148px]">
+        <div className="relative z-1 min-w-0 flex-1 pr-[148px]">
           <span className="text-[11px] font-bold uppercase tracking-[0.88px] text-coral-bright">
             {t.rewards.heroKicker}
           </span>
@@ -467,7 +455,7 @@ export function RewardsContent() {
           'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-2',
         )}
       >
-        <div className="relative z-[1]">
+        <div className="relative z-1">
           <span className="text-[11px] font-bold uppercase tracking-[0.88px] text-coral-bright">
             {t.rewards.heroKicker}
           </span>
@@ -498,7 +486,7 @@ export function RewardsContent() {
         <DappCollapsibleSection title={t.rewards.allTiers}>{tierTable}</DappCollapsibleSection>
       )}
 
-      <DappCollapsibleSection className="max-[820px]:hidden" title={t.rewards.history}>
+      <DappCollapsibleSection title={t.rewards.history}>
         <div className={cn(revealClass(), 'mt-3.5')} data-reveal>
           <DappPillTabs
             ariaLabel={t.rewards.history}
@@ -548,11 +536,11 @@ export function RewardsContent() {
       </DappCollapsibleSection>
 
       <DappCollapsibleSection
+        bodyClassName="overflow-visible"
         className="group-data-[tab=rewards]/shell:max-[820px]:mt-0"
         title={t.swap.faq}
       >
         <FaqStack
-          className={FAQ_STACK_CLASS}
           defaultOpenFirst={false}
           items={[
             {
@@ -574,6 +562,6 @@ export function RewardsContent() {
           ]}
         />
       </DappCollapsibleSection>
-    </div>
+    </DappDetailPage>
   )
 }

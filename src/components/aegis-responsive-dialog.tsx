@@ -29,7 +29,10 @@ export function AegisResponsiveDialog({
     <DialogPrimitive.Root onOpenChange={onOpenChange} open={open}>
       <DialogPortal>
         <DialogOverlay className={cn(modalOverlayClass, overlayClassName)} />
-        <DialogPrimitive.Content className={cn(responsivePanelClass, className)}>
+        <DialogPrimitive.Content
+          aria-describedby={undefined}
+          className={cn(responsivePanelClass, className)}
+        >
           {children}
         </DialogPrimitive.Content>
       </DialogPortal>

@@ -19,8 +19,8 @@ const metricClass = {
     'metrics-wrap min-[821px]:min-h-[231px] pb-10 max-[820px]:min-h-[252px] max-[820px]:pb-12',
   container: 'container max-[820px]:!w-[min(calc(100vw-40px),362px)]',
   panel:
-    'relative isolate grid min-h-[191px] grid-cols-4 items-center justify-between overflow-hidden rounded-[28px] bg-dark px-10 py-14 text-white max-[820px]:min-h-[204px] max-[820px]:grid-cols-2 max-[820px]:gap-y-6 max-[820px]:rounded-[22px] max-[820px]:px-5 max-[820px]:py-7',
-  item: 'relative z-[1] grid justify-items-center gap-2 text-center max-[820px]:gap-1.5',
+    'relative isolate grid min-h-[191px] grid-cols-4 items-center justify-between rounded-[28px] bg-dark px-10 py-14 text-white max-[820px]:min-h-[204px] max-[820px]:grid-cols-2 max-[820px]:gap-y-6 max-[820px]:rounded-[22px] max-[820px]:px-5 max-[820px]:py-7',
+  item: 'relative z-1 grid justify-items-center gap-2 text-center max-[820px]:gap-1.5',
   value:
     'text-[44px] font-semibold leading-none text-white max-[820px]:text-[30px] max-[820px]:leading-[1.2] max-[820px]:tracking-[-0.9px]',
   label:

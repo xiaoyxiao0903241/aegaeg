@@ -261,7 +261,7 @@ export function CommunityStatCard({
         size="xs"
         tone={dark ? 'onDark' : 'body'}
         className={cn(
-          'relative z-[1] tracking-[-0.24px]',
+          'relative z-1 tracking-[-0.24px]',
           communityStatLabelResponsive,
           dark &&
             'text-on-dark group-data-[tab=community]/shell:min-[821px]:text-[13px] group-data-[tab=community]/shell:min-[821px]:tracking-[-0.26px]',
@@ -274,7 +274,7 @@ export function CommunityStatCard({
         as="strong"
         size="2xl"
         weight="semibold"
-        className={cn('relative z-[1]', communityStatValueResponsive)}
+        className={cn('relative z-1', communityStatValueResponsive)}
       >
         {value}
       </Text>
@@ -285,7 +285,7 @@ export function CommunityStatCard({
           weight="semibold"
           tone="coral"
           className={cn(
-            'relative z-[1] tracking-[-0.28px]',
+            'relative z-1 tracking-[-0.28px]',
             dark && 'text-coral-bright',
             communityStatVolumeResponsive,
           )}
@@ -298,7 +298,7 @@ export function CommunityStatCard({
           as="small"
           size="xs"
           tone={dark ? 'onDark' : 'muted'}
-          className={cn('relative z-[1] tracking-[-0.12px]', communityStatHintResponsive)}
+          className={cn('relative z-1 tracking-[-0.12px]', communityStatHintResponsive)}
         >
           {today}
         </Text>
@@ -307,7 +307,7 @@ export function CommunityStatCard({
       {image ? (
         <img
           alt=""
-          className="pointer-events-none absolute -bottom-6 -right-2.5 z-[1] h-auto w-[clamp(88px,8vw,110px)]"
+          className="pointer-events-none absolute -bottom-6 -right-2.5 z-1 h-auto w-[clamp(88px,8vw,110px)]"
           height="156"
           loading="lazy"
           src={image}
@@ -366,7 +366,7 @@ export function ProgramCard({
         as="p"
         size="sm"
         tone="body"
-        className="m-0 max-w-[38ch] tracking-[-0.26px] max-[820px]:hidden"
+        className="m-0 max-w-[38ch] tracking-[-0.26px]"
       >
         {body}
       </Text>

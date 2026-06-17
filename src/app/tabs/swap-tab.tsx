@@ -10,8 +10,8 @@ import { cn } from '~/lib/utils'
 import { buttonDisabledClass } from '~/components/button'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
+import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import {
-  shellContentPageClass,
   shellMobilePageTitleClass,
   shellWidgetRootClass,
 } from '~/app/shell-layout'
@@ -364,7 +364,10 @@ export function SwapContent({
   const faqItems = getSwapFaqItems(t, faqToken)
 
   const overviewMetrics = (
-    <MetricGrid columns={2}>
+    <MetricGrid
+      className="max-[820px]:mt-3.5 max-[820px]:[&>article]:mt-0"
+      columns={2}
+    >
       {connected && poolRateLoading && !poolRateLabel ? (
         <MetricCardSkeleton className="max-[820px]:rounded-[14px] max-[820px]:p-3.5" />
       ) : (
@@ -393,7 +396,7 @@ export function SwapContent({
   )
 
   return (
-    <div className={cn(shellContentPageClass, swapPager && 'px-0')}>
+    <DappDetailPage pager={swapPager}>
       <DappContentHeading
         className={cn('pb-4', swapPager && 'hidden')}
         id="swap-title"
@@ -404,7 +407,7 @@ export function SwapContent({
       {swapPager ? (
         <h1
           className={dappPanelTitleClassName(
-            cn(shellMobilePageTitleClass, 'max-[820px]:mb-3'),
+            cn(shellMobilePageTitleClass, 'max-[820px]:mb-0 max-[820px]:pb-4'),
           )}
         >
           {t.swap.overview}
@@ -415,7 +418,7 @@ export function SwapContent({
 
       {connected ? (
         <DappCollapsibleSection
-          bodyClassName="-mx-3"
+          bodyClassName="overflow-visible"
           className={cn(
             '!translate-y-0 !opacity-100 !transition-none',
             '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
@@ -431,12 +434,10 @@ export function SwapContent({
       ) : null}
 
       <DappSection title={t.swap.faq}>
-        <div className={cn(revealClass(), 'mt-3.5')} data-reveal>
-          <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
-          <FaqStack items={faqItems} />
-        </div>
+        <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
+        <FaqStack items={faqItems} listKey={faqToken} />
       </DappSection>
-    </div>
+    </DappDetailPage>
   )
 }
 
@@ -482,24 +483,187 @@ function getSwapFaqItems(
   return items[token]
 }
 
-function tokenCardRaysClass(key: string) {
+const TOKEN_CAROUSEL_CARD_INNER =
+  'relative min-w-0 overflow-hidden rounded-2xl bg-card'
+
+const TOKEN_CAROUSEL_CARD_SHELL = 'h-full rounded-2xl shadow-subtle'
+
+/** Figma `12:95` dcol px-28 — 与 DappDetailPage px-7 对齐，阴影伸入 padding 带 */
+const TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS =
+  'min-[821px]:-mx-7 min-[821px]:w-[calc(100%+3.5rem)] min-[821px]:px-7 min-[821px]:pb-[var(--shadow-bleed-subtle)] min-[821px]:pt-[var(--shadow-bleed-subtle)]'
+
+/** Figma `102:77` dots pt-12；viewport 无 layout pb，负 margin 收回 shadow bleed */
+const TOKEN_CAROUSEL_PC_INDICATOR_CLASS =
+  'min-[821px]:relative min-[821px]:z-1 min-[821px]:-mt-[var(--shadow-bleed-subtle)] min-[821px]:pt-[var(--carousel-pc-indicator-pt)]'
+
+const TOKEN_CAROUSEL_H5_VIEWPORT_BLEED_CLASS =
+  '-mx-[var(--shadow-bleed-h5)] w-[calc(100%+2*var(--shadow-bleed-h5))] px-[var(--shadow-bleed-h5)] pt-[var(--carousel-h5-viewport-pad-y)] pb-[var(--shadow-bleed-subtle)]'
+
+/** 视觉 gap = viewport-pad-y + indicator-pt（Figma 14+12=26px）；负 margin 收回多余 shadow bleed */
+const TOKEN_CAROUSEL_H5_INDICATOR_CLASS =
+  'relative z-1 -mt-[calc(var(--shadow-bleed-subtle)-var(--carousel-h5-viewport-pad-y))] pt-[var(--carousel-h5-indicator-pt)]'
+
+const TOKEN_CAROUSEL_SLIDE_CLASS =
+  'flex min-w-0 w-full max-w-full shrink-0 grow-0 basis-full flex-col'
+const TOKEN_CAROUSEL_TRACK_CLASS = 'flex items-stretch'
+const TOKEN_CAROUSEL_BODY_GRID_CLASS =
+  'relative z-1 grid h-full min-h-0 grid-rows-[auto_1fr] gap-2'
+
+// Figma `113:6` — H5 body text width before corner decoration
+const tokenCardMobileBodyTextClass = 'max-w-[236px]'
+
+// PC: body text stops before the vertically centered contract button.
+const tokenCardDesktopBodyTextClass = 'max-w-[570px]'
+
+function tokenCarouselBodyPadClass(variant: 'desktop' | 'mobile') {
+  return variant === 'desktop' ? 'p-4 pr-[148px]' : 'px-4 py-[14px]'
+}
+
+function tokenCarouselContractButtonClass(variant: 'desktop' | 'mobile') {
   return cn(
-    'before:pointer-events-none before:absolute before:right-0 before:top-0 before:h-[180px] before:w-[328px]',
-    'before:bg-[url("/assets/figma/dapp/token-card-rays.svg")] before:bg-cover before:bg-right before:bg-no-repeat',
-    key === 'usd1' ? 'before:opacity-95' : 'before:opacity-[0.72]',
+    'inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border bg-card whitespace-nowrap text-foreground',
+    variant === 'desktop'
+      ? cn(
+          'absolute right-4 top-1/2 z-[2] -translate-y-1/2 gap-[7px] px-4 py-2.5',
+          'text-[13px] font-semibold leading-[1.2] tracking-[-0.26px]',
+          'transition-[border-color,transform] duration-180 ease-out',
+          'hover:translate-x-px hover:border-primary',
+          'focus-visible:translate-x-px focus-visible:border-primary',
+        )
+      : 'gap-[5px] px-3 py-[7px] text-xs font-semibold leading-[1.2] tracking-[-0.24px]',
   )
 }
 
-function mobileTokenCardRaysClass(key: string) {
-  return cn(
-    'before:pointer-events-none before:absolute before:right-0 before:top-0 before:h-[72px] before:w-[118px]',
-    'before:bg-[url("/assets/figma/dapp/token-card-corner.svg")] before:bg-cover before:bg-right before:bg-no-repeat',
-    key === 'usd1' ? 'before:opacity-95' : 'before:opacity-[0.72]',
+function TokenCardDecoration({
+  tokenKey,
+  variant,
+}: {
+  tokenKey: string
+  variant: 'desktop' | 'mobile'
+}) {
+  if (variant === 'mobile') {
+    return (
+      <img
+        alt=""
+        aria-hidden
+        className={cn(
+          'pointer-events-none absolute top-0 right-0 h-[72px] w-[118px]',
+          tokenKey === 'usd1' ? 'opacity-95' : 'opacity-[0.72]',
+        )}
+        src={dappAssets.tokenCardCorner}
+      />
+    )
+  }
+
+  return (
+    <img
+      alt=""
+      aria-hidden
+      className={cn(
+        'pointer-events-none absolute inset-y-0 right-0 h-full w-[328px] object-fill',
+        tokenKey === 'usd1' ? 'opacity-95' : 'opacity-[0.72]',
+      )}
+      src={dappAssets.tokenCardRays}
+    />
   )
 }
 
-// PC: text stops before the rays SVG decoration (leftmost fill edge in viewBox).
-const tokenCardDesktopBodyTextClass = 'max-w-[calc(100%-268px)]'
+type SwapTokenCarouselItem = {
+  asset: string
+  body: string
+  key: (typeof swapTokenCardKeys)[number]
+  title: string
+}
+
+function TokenCarouselCard({
+  contractLabel,
+  contractTooltip,
+  isActive,
+  token,
+  variant,
+}: {
+  contractLabel: string
+  contractTooltip: string
+  isActive: boolean
+  token: SwapTokenCarouselItem
+  variant: 'desktop' | 'mobile'
+}) {
+  const isDesktop = variant === 'desktop'
+  const contractDisabled = !getSwapTokenContractAddress(token.key)
+
+  const contractButton = (
+    <button
+      className={cn(
+        tokenCarouselContractButtonClass(variant),
+        contractDisabled ? 'pointer-events-none opacity-45' : '',
+      )}
+      disabled={contractDisabled}
+      onClick={() => openTokenContractOnBscScan(token.key)}
+      type="button"
+    >
+      {contractLabel}
+      <img
+        alt=""
+        height={isDesktop ? 15 : 13}
+        src={dappAssets.arrowUpRight}
+        width={isDesktop ? 15 : 13}
+      />
+    </button>
+  )
+
+  return (
+    <div
+      className={cn(
+        TOKEN_CAROUSEL_CARD_SHELL,
+        isDesktop && 'min-h-[124px]',
+      )}
+    >
+      <article
+        aria-hidden={!isActive}
+        className={cn(TOKEN_CAROUSEL_CARD_INNER, 'h-full')}
+      >
+      <TokenCardDecoration tokenKey={token.key} variant={variant} />
+      <div className={cn(TOKEN_CAROUSEL_BODY_GRID_CLASS, tokenCarouselBodyPadClass(variant))}>
+        <div
+          className={cn(
+            'flex min-w-0 items-center',
+            isDesktop ? 'gap-3' : 'justify-between gap-2',
+          )}
+        >
+          <div className={cn('flex min-w-0 items-center', isDesktop ? 'gap-3' : 'gap-[9px]')}>
+            <TokenIcon size={isDesktop ? 'desktop' : 'mobile'} token={token} />
+            <strong
+              className={cn(
+                'truncate font-semibold leading-[1.2] text-foreground',
+                isDesktop
+                  ? 'text-base tracking-[-0.48px]'
+                  : 'text-[15px] tracking-[-0.45px]',
+              )}
+            >
+              {token.title}
+            </strong>
+          </div>
+          {!isDesktop ? (
+            <AnchoredTooltip content={contractTooltip}>{contractButton}</AnchoredTooltip>
+          ) : null}
+        </div>
+        <p
+          className={cn(
+            'm-0 min-w-0 text-[13px] font-normal leading-[1.5] tracking-[-0.26px]',
+            isDesktop ? 'text-ink-strong' : 'text-faq-text',
+            isDesktop ? tokenCardDesktopBodyTextClass : tokenCardMobileBodyTextClass,
+          )}
+        >
+          {token.body}
+        </p>
+      </div>
+      {isDesktop ? (
+        <AnchoredTooltip content={contractTooltip}>{contractButton}</AnchoredTooltip>
+      ) : null}
+      </article>
+    </div>
+  )
+}
 
 function TokenInfoCarousel() {
   const { messages: t } = useI18n()
@@ -540,69 +704,35 @@ function TokenInfoCarousel() {
   return (
     <Carousel
       aria-label={t.swap.tokenAbout}
-      className={cn(revealClass(), 'mt-3.5 grid gap-3 overflow-hidden')}
+      className={cn(revealClass(), 'mt-3.5 grid w-full gap-3 overflow-visible min-[821px]:gap-0')}
       data-reveal
-      opts={{ align: 'start', loop: true }}
+      opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
       plugins={[autoplay]}
       setApi={setApi}
     >
-      <CarouselContent className="flex items-stretch">
+      <CarouselContent
+        className={cn(TOKEN_CAROUSEL_TRACK_CLASS, '-ml-4')}
+        spacing="none"
+        viewportClassName={TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS}
+      >
         {tokens.map((token, index) => (
-          <CarouselItem className="shrink-0 grow-0 basis-full" key={token.key}>
-            <article
-              aria-hidden={current !== index}
-              className={cn(
-                'relative flex min-h-[104px] min-w-0 flex-col overflow-hidden rounded-2xl bg-card',
-                'shadow-[0_10px_28px_rgba(20,28,51,0.1)]',
-                tokenCardRaysClass(token.key),
-              )}
-            >
-              <div className="relative z-[1] flex min-h-0 flex-1 flex-col gap-2 p-4">
-                <div className="flex min-w-0 items-center justify-between gap-3">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <TokenIcon size="desktop" token={token} />
-                    <strong className="truncate text-base font-semibold leading-[1.2] tracking-[-0.48px] text-foreground">
-                      {token.title}
-                    </strong>
-                  </div>
-                  <AnchoredTooltip content={t.swap.tokenContractTooltip}>
-                    <button
-                      className={cn(
-                        'inline-flex shrink-0 cursor-pointer items-center gap-[7px] rounded-full',
-                        'border border-border bg-card px-4 py-2.5 text-[13px] font-semibold leading-[1.2]',
-                        'tracking-[-0.26px] whitespace-nowrap text-foreground transition-[border-color,transform] duration-180 ease-out',
-                        'hover:translate-x-px hover:border-primary',
-                        'focus-visible:translate-x-px focus-visible:border-primary',
-                        getSwapTokenContractAddress(token.key) ? '' : 'pointer-events-none opacity-45',
-                      )}
-                      disabled={!getSwapTokenContractAddress(token.key)}
-                      onClick={() => openTokenContractOnBscScan(token.key)}
-                      type="button"
-                    >
-                      {t.swap.tokenContract}
-                      <img
-                        alt=""
-                        height="15"
-                        src={dappAssets.arrowUpRight}
-                        width="15"
-                      />
-                    </button>
-                  </AnchoredTooltip>
-                </div>
-                <p
-                  className={cn(
-                    'm-0 line-clamp-2 text-[13px] font-normal leading-[1.5] tracking-[-0.26px] text-ink-strong',
-                    tokenCardDesktopBodyTextClass,
-                  )}
-                >
-                  {token.body}
-                </p>
-              </div>
-            </article>
+          <CarouselItem className={cn(TOKEN_CAROUSEL_SLIDE_CLASS, 'pl-4')} key={token.key} spacing="none">
+            <TokenCarouselCard
+              contractLabel={t.swap.tokenContract}
+              contractTooltip={t.swap.tokenContractTooltip}
+              isActive={current === index}
+              token={token}
+              variant="desktop"
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div className="inline-flex items-center justify-center gap-3.5 self-center pt-3">
+      <div
+        className={cn(
+          'inline-flex items-center justify-center gap-3.5 self-center',
+          TOKEN_CAROUSEL_PC_INDICATOR_CLASS,
+        )}
+      >
         <button
           aria-label={t.swap.tokenPrevious}
           className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint"
@@ -719,63 +849,34 @@ function MobileTokenCarousel() {
   return (
     <Carousel
       aria-label={t.swap.tokenAbout}
-      className={cn(revealClass(), 'mt-3 grid overflow-hidden max-[820px]:mt-2.5')}
+      className={cn(revealClass(), 'mt-3 grid w-full overflow-visible max-[820px]:mt-2.5')}
       data-reveal
-      opts={{ align: 'start', loop: true }}
+      opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
       setApi={setApi}
     >
       <CarouselContent
-        className="ml-0 flex h-full items-stretch gap-3"
-        viewportClassName="h-[132px] py-[14px]"
+        className={cn(TOKEN_CAROUSEL_TRACK_CLASS, '-ml-4')}
+        spacing="none"
+        viewportClassName={TOKEN_CAROUSEL_H5_VIEWPORT_BLEED_CLASS}
       >
         {tokens.map((token, index) => (
-          <CarouselItem className="h-[104px] shrink-0 grow-0 basis-full pl-0" key={token.key}>
-            <article
-              aria-hidden={current !== index}
-              className={cn(
-                'relative flex h-full min-w-0 flex-col overflow-hidden rounded-md bg-card shadow-subtle',
-                mobileTokenCardRaysClass(token.key),
-              )}
-            >
-              <div className="relative z-[1] flex min-h-0 flex-1 flex-col gap-2 px-4 py-[14px]">
-                <div className="flex min-w-0 items-center justify-between gap-2">
-                  <div className="flex min-w-0 items-center gap-[9px]">
-                    <TokenIcon size="mobile" token={token} />
-                    <strong className="truncate text-[15px] font-semibold leading-[1.2] tracking-[-0.45px] text-foreground">
-                      {token.title}
-                    </strong>
-                  </div>
-                  <AnchoredTooltip content={t.swap.tokenContractTooltip}>
-                    <button
-                      className={cn(
-                        'inline-flex shrink-0 cursor-pointer items-center gap-[5px] rounded-full',
-                        'border border-border bg-card px-3 py-[7px] text-xs font-semibold leading-[1.2]',
-                        'tracking-[-0.24px] whitespace-nowrap text-foreground',
-                        getSwapTokenContractAddress(token.key) ? '' : 'pointer-events-none opacity-45',
-                      )}
-                      disabled={!getSwapTokenContractAddress(token.key)}
-                      onClick={() => openTokenContractOnBscScan(token.key)}
-                      type="button"
-                    >
-                      {t.swap.tokenContract}
-                      <img
-                        alt=""
-                        height="13"
-                        src={dappAssets.arrowUpRight}
-                        width="13"
-                      />
-                    </button>
-                  </AnchoredTooltip>
-                </div>
-                <p className="m-0 line-clamp-2 min-w-0 text-[13px] font-normal leading-[1.5] tracking-[-0.26px] text-faq-text">
-                  {token.body}
-                </p>
-              </div>
-            </article>
+          <CarouselItem className={cn(TOKEN_CAROUSEL_SLIDE_CLASS, 'pl-4')} key={token.key} spacing="none">
+            <TokenCarouselCard
+              contractLabel={t.swap.tokenContract}
+              contractTooltip={t.swap.tokenContractTooltip}
+              isActive={current === index}
+              token={token}
+              variant="mobile"
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div className="inline-flex items-center justify-center gap-2.5 pt-3 text-muted-foreground">
+      <div
+        className={cn(
+          'inline-flex items-center justify-center gap-2.5 text-muted-foreground',
+          TOKEN_CAROUSEL_H5_INDICATOR_CLASS,
+        )}
+      >
         <button
           aria-label={t.swap.tokenPrevious}
           className="grid size-[26px] cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-faint transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground"

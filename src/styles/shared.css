@@ -92,7 +92,6 @@ video {
 
 [data-spotlight-card] {
   position: relative;
-  overflow: hidden;
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease;

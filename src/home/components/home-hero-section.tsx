@@ -47,7 +47,7 @@ const heroClass = {
   section:
     'hero relative flex min-h-[696px] items-start overflow-hidden pt-[90px] pb-24 [background:linear-gradient(180deg,var(--background),oklch(95.6%_0_0))] max-[1100px]:min-h-0 max-[1100px]:pt-16 max-[1100px]:pb-20 max-[820px]:block max-[820px]:min-h-[754px] max-[820px]:pt-9 max-[820px]:pb-12 max-[820px]:[background:var(--background)]',
   grid:
-    'container hero-grid relative z-[1] grid min-h-[510px] grid-cols-[minmax(0,660px)_438px] items-center justify-between gap-16 max-[1100px]:grid-cols-1 max-[1100px]:justify-items-center max-[1100px]:gap-8 max-[1100px]:text-center max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-col max-[820px]:items-center max-[820px]:justify-start max-[820px]:gap-4 max-[820px]:text-center',
+    'container hero-grid relative z-1 grid min-h-[510px] grid-cols-[minmax(0,660px)_438px] items-center justify-between gap-16 max-[1100px]:grid-cols-1 max-[1100px]:justify-items-center max-[1100px]:gap-8 max-[1100px]:text-center max-[820px]:flex max-[820px]:min-h-0 max-[820px]:flex-col max-[820px]:items-center max-[820px]:justify-start max-[820px]:gap-4 max-[820px]:text-center',
   copy:
     'hero-copy max-w-[660px] pt-[65px] max-[1100px]:pt-0 max-[820px]:order-2 max-[820px]:flex max-[820px]:w-full max-[820px]:max-w-[362px] max-[820px]:flex-col max-[820px]:items-center max-[820px]:pt-0',
   eyebrow:

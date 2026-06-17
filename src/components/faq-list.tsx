@@ -7,7 +7,6 @@ import { cn } from '~/lib/utils'
 export type FaqListItem = {
   answer: ReactNode
   open?: boolean
-  optional?: boolean
   question: ReactNode
 }
 
@@ -15,29 +14,27 @@ type FaqListVariant = 'home' | 'dapp'
 
 const homeItemShellClass = cn(
   cardVariants({ context: 'home', fill: 'surface', hover: 'shadow', radius: 'md' }),
-  'group overflow-hidden shadow-[0_6px_20px_oklch(22%_0.04_265_/_6%)]',
+  'group rounded-md shadow-[0_6px_20px_oklch(22%_0.04_265_/_6%)]',
   'max-[820px]:min-h-[46px] max-[820px]:rounded-[14px]',
-  'data-[state=closed]:max-[820px]:overflow-hidden',
 )
 
-const dappItemShellClass = cn(
-  'group w-full max-w-full overflow-hidden bg-card rounded-md border border-border px-[18px] shadow-card',
-  'group-data-[tab=rewards]/shell:max-[820px]:w-full group-data-[tab=rewards]/shell:max-[820px]:rounded-[14px]',
-  'group-data-[tab=rewards]/shell:max-[820px]:border-0 group-data-[tab=rewards]/shell:max-[820px]:px-4',
-  'group-data-[tab=rewards]/shell:max-[820px]:shadow-faq',
+const dappItemOuterClass = 'rounded-md shadow-card max-[820px]:rounded-[14px]'
+
+const dappItemInnerClass = cn(
+  'group h-full w-full max-w-full overflow-hidden rounded-[inherit] border border-border bg-card px-[18px]',
+  'max-[820px]:px-4',
+)
+
+const dappTriggerClass = cn(
+  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent py-4 text-left outline-none',
+  'text-sm font-normal leading-[1.3] text-faq-text',
+  'max-[820px]:py-3.5',
 )
 
 const homeTriggerClass = cn(
   'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent px-6 py-[18px] text-left outline-none',
   'text-[15px] font-semibold leading-[1.3] text-foreground',
   'max-[820px]:min-h-[18px] max-[820px]:px-4 max-[820px]:py-3.5 max-[820px]:text-sm',
-)
-
-const dappTriggerClass = cn(
-  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent py-4 text-left outline-none',
-  'text-[13px] font-semibold leading-[1.3] text-foreground',
-  'max-[820px]:py-3.5 max-[820px]:text-[13px] max-[820px]:font-normal',
-  'group-data-[tab=rewards]/shell:text-sm group-data-[tab=rewards]/shell:font-normal group-data-[tab=rewards]/shell:text-faq-text',
 )
 
 const faqArrowClass =
@@ -51,23 +48,18 @@ const variantStyles = {
     ),
     item: homeItemShellClass,
     trigger: homeTriggerClass,
-    optional: 'max-[820px]:hidden',
     question: 'min-w-0',
     answer: 'pt-3 mb-0 text-sm leading-[1.5] text-faq-text max-[820px]:text-[13px]',
     answerPad: 'px-6 pb-[18px] max-[820px]:px-4 max-[820px]:pb-3.5',
     answerContent: 'overflow-hidden',
   },
   dapp: {
-    list: cn(revealClass(), 'mt-3.5 grid gap-3'),
-    item: dappItemShellClass,
+    list: 'mt-3.5 grid w-full gap-3',
+    item: dappItemOuterClass,
+    itemInner: dappItemInnerClass,
     trigger: dappTriggerClass,
-    optional: '',
     question: 'min-w-0',
-    answer: cn(
-      'mb-4 pt-0 text-xs leading-[1.6] text-ink-strong',
-      'group-data-[tab=swap]/shell:max-[820px]:leading-normal',
-      'group-data-[tab=rewards]/shell:max-[820px]:hidden',
-    ),
+    answer: 'mb-4 pt-0 text-xs leading-[1.6] text-ink-strong max-[820px]:leading-normal',
     answerPad: 'pb-4 max-[820px]:pb-3.5',
     answerContent: 'overflow-hidden',
   },
@@ -145,14 +137,8 @@ export function FaqList({
         const wasInitiallyOpen = defaultValue.includes(itemValue)
         const motionEnabled = !wasInitiallyOpen || interacted.has(itemValue)
         const isOpen = value.includes(itemValue)
-        return (
-          <Accordion.Item
-            className={cn(styles.item, item.optional && styles.optional, itemClassName)}
-            data-faq-item
-            data-faq-motion={motionEnabled ? 'true' : 'false'}
-            key={`${index}-${String(item.question)}`}
-            value={itemValue}
-          >
+        const itemBody = (
+          <>
             <Accordion.Trigger className={styles.trigger} data-faq-trigger>
               <span className={styles.question}>{item.question}</span>
               <span className={faqArrowClass} aria-hidden="true">
@@ -199,6 +185,22 @@ export function FaqList({
                 </div>
               </div>
             </Accordion.Content>
+          </>
+        )
+
+        return (
+          <Accordion.Item
+            className={cn(styles.item, itemClassName)}
+            data-faq-item
+            data-faq-motion={motionEnabled ? 'true' : 'false'}
+            key={`${index}-${String(item.question)}`}
+            value={itemValue}
+          >
+            {'itemInner' in styles && styles.itemInner ? (
+              <div className={styles.itemInner}>{itemBody}</div>
+            ) : (
+              itemBody
+            )}
           </Accordion.Item>
         )
       })}
