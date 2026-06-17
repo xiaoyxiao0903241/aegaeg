@@ -43,7 +43,6 @@ import {
   SideHint,
   SideLabel,
   SideTitle,
-  SideValue,
 } from '~/app/components/dapp-card'
 import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
 import { DappSection } from '~/app/components/dapp-section'
@@ -59,8 +58,8 @@ import { ResponsiveTable } from '~/app/components/responsive-table'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 const REWARDS_WIDGET_CARD_CLASS = cn(
-  'rounded-2xl px-4 py-3.5 max-[820px]:mt-0',
-  '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-[820px]:[&_span]:text-faint',
+  'rounded-2xl px-4 py-3.5 max-dapp:mt-0',
+  '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-dapp:[&_span]:text-faint',
 )
 
 const REWARDS_PROGRESS_CARD_CLASS = cn(
@@ -174,7 +173,7 @@ export function RewardsWidget({
     <div
       className={cn(
         shellWidgetRootClass,
-        'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
+        'max-dapp:flex max-dapp:flex-col max-dapp:gap-3',
       )}
     >
       <DappPanelHeader
@@ -190,11 +189,11 @@ export function RewardsWidget({
           <CurrentTitleCardBodySkeleton />
         ) : (
           <>
-            <SideTitle className="max-[820px]:text-[17px] max-[820px]:tracking-[-0.34px]">
+            <SideTitle className="max-dapp:text-[17px] max-dapp:tracking-[-0.34px]">
               {titleValue}
             </SideTitle>
             <SideHint
-              className="min-h-[2.25rem] line-clamp-2 text-xs tracking-[-0.24px] max-[820px]:max-w-none max-[820px]:leading-normal max-[820px]:text-faint"
+              className="min-h-[2.25rem] line-clamp-2 text-xs tracking-[-0.24px] max-dapp:max-w-none max-dapp:leading-normal max-dapp:text-faint"
               tone="body"
             >
               {titleHint}
@@ -244,9 +243,9 @@ export function RewardsWidget({
         badge={t.rewards.autoPaidLabel}
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
-          'mt-2 max-[820px]:mt-0',
+          'mt-2 max-dapp:mt-0',
           '[&_strong]:text-[22px] [&_strong]:tracking-[-0.66px]',
-          'max-[820px]:[&_small]:hidden',
+          'max-dapp:[&_small]:hidden',
         )}
         hint={t.rewards.autoPaid}
         label={t.rewards.referralRewards}
@@ -260,7 +259,7 @@ export function RewardsWidget({
       <RewardBalanceCard
         action={
           <DappActionButton
-            className="!min-h-[42px] max-[820px]:!min-h-11 max-[820px]:!text-sm"
+            className="!min-h-[42px] max-dapp:!min-h-11 max-dapp:!text-sm"
             disabled={teamClaimable === '$0.00' || teamLoading || teamClaim.isClaiming || !teamClaim.canClaim}
             loading={teamClaim.isClaiming}
             onClick={() =>
@@ -275,9 +274,9 @@ export function RewardsWidget({
         }
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
-          'mt-3 max-[820px]:mt-0',
-          'min-[821px]:[&_strong]:text-lg min-[821px]:[&_strong]:tracking-[-0.54px]',
-          'max-[820px]:[&_strong]:text-[17px] max-[820px]:[&_strong]:tracking-[-0.51px]',
+          'mt-3 max-dapp:mt-0',
+          'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
+          'max-dapp:[&_strong]:text-[17px] max-dapp:[&_strong]:tracking-[-0.51px]',
           '[&_button]:mt-3',
         )}
         label={t.rewards.teamRewards}
@@ -416,7 +415,7 @@ export function RewardsContent() {
         className={cn(
           revealClass(),
           'relative mt-3.5 flex min-h-[145px] items-center justify-between gap-6 overflow-visible rounded-2xl bg-dark p-6 text-white shadow-card',
-          'max-[820px]:hidden',
+          'max-dapp:hidden',
         )}
         data-reveal
       >
@@ -452,7 +451,7 @@ export function RewardsContent() {
       <section
         className={cn(
           'relative mt-3.5 hidden min-h-[127px] overflow-visible rounded-2xl bg-dark p-[18px] text-white shadow-card',
-          'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-2',
+          'max-dapp:flex max-dapp:flex-col max-dapp:gap-2',
         )}
       >
         <div className="relative z-1">
@@ -477,7 +476,7 @@ export function RewardsContent() {
       </section>
 
       {isMobileViewport ? (
-        <DappSection className="group-data-[tab=rewards]/shell:max-[820px]:mt-0" title={t.rewards.allTiers}>
+        <DappSection className="group-data-[tab=rewards]/shell:max-dapp:mt-0" title={t.rewards.allTiers}>
           <div className={cn(revealClass(), 'mt-3')} data-reveal>
             {tierTable}
           </div>
@@ -537,7 +536,7 @@ export function RewardsContent() {
 
       <DappCollapsibleSection
         bodyClassName="overflow-visible"
-        className="group-data-[tab=rewards]/shell:max-[820px]:mt-0"
+        className="group-data-[tab=rewards]/shell:max-dapp:mt-0"
         title={t.swap.faq}
       >
         <FaqStack

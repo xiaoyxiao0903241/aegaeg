@@ -81,9 +81,11 @@ video {
   display: block;
 }
 
-.container {
+/* 覆盖 Tailwind v4 默认 container（会把每个 --breakpoint-* 当作 max-width 阶梯） */
+@utility container {
   width: min(calc(100% - 48px), var(--container));
   margin-inline: auto;
+  max-width: none;
 }
 
 #root {

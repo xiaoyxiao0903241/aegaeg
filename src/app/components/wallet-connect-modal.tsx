@@ -13,9 +13,9 @@ import {
 
 const panelShellClass = cn(
   'border-0 bg-card',
-  'max-[820px]:rounded-t-[24px] max-[820px]:px-5 max-[820px]:pb-[max(24px,env(safe-area-inset-bottom))] max-[820px]:pt-3',
-  'min-[821px]:w-[min(calc(100%-40px),430px)] min-[821px]:rounded-[24px] min-[821px]:p-[26px]',
-  'min-[821px]:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
+  'max-dapp:rounded-t-[24px] max-dapp:px-5 max-dapp:pb-[max(24px,env(safe-area-inset-bottom))] max-dapp:pt-3',
+  'dapp:w-[min(calc(100%-40px),430px)] dapp:rounded-[24px] dapp:p-[26px]',
+  'dapp:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
 )
 
 export function WalletConnectModal({
@@ -43,7 +43,7 @@ export function WalletConnectModal({
     >
       <AegisSheetHandle />
 
-      <div className="flex items-center justify-between max-[820px]:px-0 min-[821px]:mb-5">
+      <div className="flex items-center justify-between max-dapp:px-0 dapp:mb-5">
         <DialogPrimitive.Title className="m-0 text-[21px] font-semibold leading-[1.3] tracking-[-0.63px] text-foreground">
           {t.wallet.connectTitle}
         </DialogPrimitive.Title>

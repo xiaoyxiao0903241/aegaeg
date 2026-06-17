@@ -10,17 +10,17 @@ import { cn } from '~/lib/utils'
 export function dappPanelTitleClassName(className?: string) {
   return cn(
     'm-0 text-[21px] font-semibold leading-[1.3] text-foreground tracking-[-0.84px]',
-    'group-data-[tab=swap]/shell:min-[821px]:tracking-[-0.42px]',
-    'group-data-[tab=genesis]/shell:min-[821px]:tracking-[-0.42px]',
-    'group-data-[tab=rewards]/shell:min-[821px]:tracking-[-0.42px]',
-    'max-[820px]:text-[22px] max-[820px]:leading-[1.2] max-[820px]:tracking-[-0.88px]',
+    'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
+    'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
+    'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
+    'max-dapp:text-[22px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
     className,
   )
 }
 
 const dappPanelSubtitleClassName = cn(
   'm-0 mt-1.5 max-w-[34ch] text-[13px] leading-[1.4] tracking-[-0.26px] text-ink-strong',
-  'max-[820px]:mt-2.5 max-[820px]:max-w-none max-[820px]:leading-normal',
+  'max-dapp:mt-2.5 max-dapp:max-w-none max-dapp:leading-normal',
   '[&_strong]:font-bold [&_strong]:text-primary',
 )
 
@@ -79,9 +79,3 @@ export function DappPanelHeader({
     </div>
   )
 }
-
-/** @deprecated Use `DappPanelHeader` */
-export const DappWidgetHeader = DappPanelHeader
-
-/** @deprecated Use `dappPanelTitleClassName` */
-export const dappWidgetTitleClassName = dappPanelTitleClassName

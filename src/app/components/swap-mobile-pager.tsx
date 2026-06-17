@@ -142,8 +142,10 @@ export function SwapMobilePager({
   const viewportHeightRef = useRef(0)
   const mobileNavId = 'dapp-mobile-nav'
 
-  offsetPxRef.current = offsetPx
-  viewportHeightRef.current = viewportHeight
+  useEffect(() => {
+    offsetPxRef.current = offsetPx
+    viewportHeightRef.current = viewportHeight
+  }, [offsetPx, viewportHeight])
 
   const page = derivePageIndex(offsetPx, viewportHeight)
 

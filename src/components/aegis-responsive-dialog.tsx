@@ -7,7 +7,7 @@ export function AegisSheetHandle() {
   return (
     <div
       aria-hidden="true"
-      className="mx-auto mb-3 mt-2 hidden h-1 w-10 shrink-0 rounded-full bg-border max-[820px]:block"
+      className="mx-auto mb-3 mt-2 hidden h-1 w-10 shrink-0 rounded-full bg-border max-dapp:block"
     />
   )
 }

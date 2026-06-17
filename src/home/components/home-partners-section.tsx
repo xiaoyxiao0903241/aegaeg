@@ -5,9 +5,9 @@ import { DeferredImage } from '~/home/components/home-primitives'
 
 const partnerClass = {
   section:
-    'partners min-[821px]:min-h-52 border-b border-border bg-secondary pb-[120px] text-center max-[820px]:min-h-[262px] max-[820px]:py-12',
-  row: 'partner-row mt-6 flex flex-wrap justify-center gap-3.5 max-[820px]:mt-4',
-  chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border py-3 pl-3 pr-7 text-[15px] font-semibold text-ink-strong max-[820px]:min-h-9 max-[820px]:py-1.5 max-[820px]:pl-3 max-[820px]:pr-4 max-[820px]:text-[13px]',
+    'partners dapp:min-h-52 border-b border-border bg-secondary pb-[120px] text-center max-dapp:min-h-[262px] max-dapp:py-12',
+  row: 'partner-row mt-6 flex flex-wrap justify-center gap-3.5 max-dapp:mt-4',
+  chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border py-3 pl-3 pr-7 text-[15px] font-semibold text-ink-strong max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pl-3 max-dapp:pr-4 max-dapp:text-[13px]',
 } as const
 
 export function HomePartnersSection({
@@ -24,7 +24,7 @@ export function HomePartnersSection({
           size="sm"
           weight="semibold"
           tone="coral"
-          className="m-0 text-[13px] leading-[1.25] tracking-[1.82px] text-primary max-[820px]:text-xs max-[820px]:tracking-[1.68px]"
+          className="m-0 text-[13px] leading-[1.25] tracking-[1.82px] text-primary max-dapp:text-xs max-dapp:tracking-[1.68px]"
         >
           {content.title}
         </Text>

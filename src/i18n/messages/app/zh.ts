@@ -27,7 +27,6 @@ const app = defineMessages({
     genesis: '共建',
     rewards: '奖励',
     community: '社区',
-    swapTooltip: '按固定 1:1 兑换 USDT 与 USD1。',
     genesisTooltip: '参与 Genesis 认购季并获取股东称号。',
     rewardsTooltip: '查看推荐奖励与团队奖励。',
     communityTooltip: '邀请好友、绑定推荐人并壮大团队。',

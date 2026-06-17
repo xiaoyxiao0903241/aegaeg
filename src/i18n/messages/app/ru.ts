@@ -27,7 +27,6 @@ const app = defineMessages({
     genesis: 'Genesis',
     rewards: 'Награды',
     community: 'Сообщество',
-    swapTooltip: 'Обмен USDT и USD1 по фиксированному курсу 1:1.',
     genesisTooltip: 'Участвуйте в сезонах Genesis и получайте статусы акционеров.',
     rewardsTooltip: 'Просматривайте реферальные и командные награды.',
     communityTooltip: 'Приглашайте друзей, привязывайте рефереров и развивайте команду.',

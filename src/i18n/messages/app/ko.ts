@@ -27,7 +27,6 @@ const app = defineMessages({
     genesis: 'Genesis',
     rewards: '리워드',
     community: '커뮤니티',
-    swapTooltip: 'USDT와 USD1을 고정 1:1 비율로 스왑합니다.',
     genesisTooltip: 'Genesis 시즌에 참여하고 주주 칭호를 획득하세요.',
     rewardsTooltip: '추천 및 팀 리워드를 확인하세요.',
     communityTooltip: '친구를 초대하고 추천인을 연결해 팀을 성장시키세요.',

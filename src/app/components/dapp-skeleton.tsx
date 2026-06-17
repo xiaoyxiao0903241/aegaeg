@@ -1,4 +1,5 @@
 import { Card } from '~/components/card'
+import { communityStatCardH5Layout } from '~/app/components/dapp-card'
 import { cn } from '~/lib/utils'
 
 const skeletonSurfaceClass =
@@ -9,11 +10,6 @@ const skeletonDarkClass =
 
 const TABLE_CELL =
   'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal'
-
-const communityStatCardResponsive = cn(
-  'group-data-[tab=community]/shell:max-[820px]:min-h-[70px] group-data-[tab=community]/shell:max-[820px]:rounded-xl group-data-[tab=community]/shell:max-[820px]:p-3.5',
-  'group-data-[tab=community]/shell:max-[820px]:items-center group-data-[tab=community]/shell:max-[820px]:text-center',
-)
 
 export function DappSkeleton({
   className,
@@ -53,7 +49,7 @@ export function SeasonOptionSkeleton() {
       aria-hidden="true"
       className={cn(
         'pointer-events-none flex items-center gap-[11px] rounded-[13px] border border-border bg-card px-3.5 py-3',
-        'max-[820px]:gap-2.5 max-[820px]:px-3.5 max-[820px]:py-3',
+        'max-dapp:gap-2.5 max-dapp:px-3.5 max-dapp:py-3',
       )}
     >
       <DappSkeleton className="aspect-square w-[17px] shrink-0 rounded-full" />
@@ -158,7 +154,7 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
       className={cn(
         'community-stat flex min-h-[90px] flex-col items-start gap-1 rounded-[14px] border-0 p-[13px_12px] shadow-card',
         dark && 'is-dark',
-        communityStatCardResponsive,
+        communityStatCardH5Layout,
       )}
     >
       <DappSkeleton className="h-3 w-16" tone={tone} />

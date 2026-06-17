@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { revealClass } from '~/lib/reveal'
 import {
   usePerformance,
   useTeamReferrals,
@@ -61,23 +60,23 @@ type CommunityStat = {
 
 const REFERRAL_CARD_CLASS = cn(
   '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-  'rounded-2xl px-4 py-3.5 max-[820px]:mt-0',
+  'rounded-2xl px-4 py-3.5 max-dapp:mt-0',
   '[&_label]:text-xs [&_label]:text-faint',
 )
 
 const COMMUNITY_WIDGET_SHELL_CLASS = cn(
   shellWidgetRootClass,
-  'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
+  'max-dapp:flex max-dapp:flex-col max-dapp:gap-3',
 )
 
 const SHAREHOLDER_ACTION_CLASS = cn(
-  'mt-4 min-h-[42px] hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-[820px]:hidden',
+  'mt-4 min-h-[42px] hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',
 )
 
 const COMMUNITY_STAT_GRID = cn(
   'mt-3.5 grid grid-cols-3 gap-3.5',
   'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))]',
-  'max-[820px]:mt-3 max-[820px]:min-w-0 max-[820px]:grid-cols-3 max-[820px]:gap-2.5',
+  'max-dapp:mt-3 max-dapp:min-w-0 max-dapp:grid-cols-3 max-dapp:gap-2.5',
 )
 
 export function CommunityWidget({
@@ -155,7 +154,7 @@ function CommunityConnectedWidget({
         <SideLabel>{t.community.referralLink}</SideLabel>
         <SideValue className="text-[13px] tracking-[-0.26px]">{isAuthenticated ? referralLink : '…'}</SideValue>
         <DappActionButton
-          className="max-[820px]:min-h-11 max-[820px]:text-sm"
+          className="max-dapp:min-h-11 max-dapp:text-sm"
           disabled={!account}
           onClick={() => void copyReferralLink()}
         >
@@ -164,7 +163,7 @@ function CommunityConnectedWidget({
       </DappSideCard>
 
       {referral.isBound ? (
-        <DappReferrerBoundCard className="rounded-2xl px-4 py-3.5 max-[820px]:mt-0">
+        <DappReferrerBoundCard className="rounded-2xl px-4 py-3.5 max-dapp:mt-0">
           <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
             {t.community.referrer}
           </p>
@@ -198,7 +197,7 @@ function CommunityConnectedWidget({
           <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2">
             <input
               aria-label={t.community.referrerPlaceholder}
-              className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0 max-[820px]:h-11"
+              className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0 max-dapp:h-11"
               onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
               placeholder={t.community.referrerPlaceholder}
               value={referral.referrerInput}
@@ -219,7 +218,7 @@ function CommunityConnectedWidget({
         </DappSideCard>
       )}
 
-      <CommunityQuickLinks className="max-[820px]:mt-0" />
+      <CommunityQuickLinks className="max-dapp:mt-0" />
 
       <DappActionButton
         className={SHAREHOLDER_ACTION_CLASS}
@@ -269,7 +268,7 @@ function CommunityDisconnectedWidget({
         title={t.community.title}
       />
 
-      <DappSideCard className={cn(REFERRAL_CARD_CLASS, 'max-[820px]:mt-0')}>
+      <DappSideCard className={cn(REFERRAL_CARD_CLASS, 'max-dapp:mt-0')}>
         <SideLabel>{t.community.referrer}</SideLabel>
         <div className="mt-2 grid grid-cols-[minmax(0,1fr)_max-content] items-end gap-2">
           <label className="grid gap-2">
@@ -384,7 +383,7 @@ export function CommunityContent({
 
   if (!connected) {
     return (
-      <DappDetailPage className="max-[820px]:pb-20">
+      <DappDetailPage className="max-dapp:pb-20">
         <CommunityFlowSection isMobileViewport={isMobileViewport} onSelectTab={onSelectTab} />
       </DappDetailPage>
     )
@@ -480,7 +479,7 @@ export function CommunityContent({
       />
 
       <DappSection
-        className="group-data-[tab=community]/shell:max-[820px]:mt-0"
+        className="group-data-[tab=community]/shell:max-dapp:mt-0"
         title={inviteSectionTitle}
       >
         {showInvitesRequiresAuth ? (
@@ -495,7 +494,7 @@ export function CommunityContent({
           <>
             <ResponsiveTable
               className={cn(
-                'mt-3.5 max-[820px]:mt-3 max-[820px]:rounded-2xl max-[820px]:shadow-card',
+                'mt-3.5 max-dapp:mt-3 max-dapp:rounded-2xl max-dapp:shadow-card',
                 !isMobileViewport && [
                   '[&_table]:table-fixed',
                   '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
@@ -544,7 +543,6 @@ function CommunityFlowSection({
   connected = false,
   isMobileViewport = false,
   onSelectTab,
-  tab,
 }: {
   connected?: boolean
   isMobileViewport?: boolean
@@ -587,8 +585,8 @@ function CommunityFlowSection({
     <>
       <DappSection
         className={cn(
-          connected && 'group-data-[tab=community]/shell:max-[820px]:mt-0',
-          !connected && 'max-[820px]:mt-5',
+          connected && 'group-data-[tab=community]/shell:max-dapp:mt-0',
+          !connected && 'max-dapp:mt-5',
         )}
         title={t.community.inviteTitle}
       >
@@ -601,15 +599,15 @@ function CommunityFlowSection({
 
       <DappSection
         className={cn(
-          connected && 'group-data-[tab=community]/shell:max-[820px]:mt-0',
-          !connected && 'max-[820px]:mt-[18px]',
+          connected && 'group-data-[tab=community]/shell:max-dapp:mt-0',
+          !connected && 'max-dapp:mt-[18px]',
         )}
         title={t.community.programs}
       >
         <div
           className={cn(
             'mt-4 grid grid-cols-2 gap-3',
-            'max-[820px]:grid-cols-1 max-[820px]:gap-2.5',
+            'max-dapp:grid-cols-1 max-dapp:gap-2.5',
           )}
         >
           {programItems.map((program) => (
@@ -617,8 +615,8 @@ function CommunityFlowSection({
               action={program.link}
               body={program.body}
               className={cn(
-                'max-[820px]:gap-1.5 max-[820px]:py-3',
-                '[&_h4]:tracking-[-0.48px] max-[820px]:[&_h4]:mt-1.5 max-[820px]:[&_h4]:mb-0 max-[820px]:[&_h4]:text-sm max-[820px]:[&_h4]:leading-[1.2]',
+                'max-dapp:gap-1.5 max-dapp:py-3',
+                '[&_h4]:tracking-[-0.48px] max-dapp:[&_h4]:mt-1.5 max-dapp:[&_h4]:mb-0 max-dapp:[&_h4]:text-sm max-dapp:[&_h4]:leading-[1.2]',
                 '[&_p]:tracking-[-0.26px]',
                 '[&_button]:tracking-[-0.26px]',
               )}

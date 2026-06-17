@@ -31,7 +31,6 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
 export function DappShell() {
   const { messages: t } = useI18n()
   const activeTab = useDappShellStore((state) => state.activeTab)
-  const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
   const mobileNavOpen = useDappShellStore((state) => state.mobileNavOpen)
   const selectTab = useDappShellStore((state) => state.selectTab)
   const selectMobileTab = useDappShellStore((state) => state.selectMobileTab)
@@ -65,7 +64,7 @@ export function DappShell() {
       className={cn(
         shellPageClass,
         useSwapMobilePager &&
-          'max-[820px]:flex max-[820px]:h-dvh max-[820px]:max-h-dvh max-[820px]:flex-col max-[820px]:overflow-hidden',
+          'max-dapp:flex max-dapp:h-dvh max-dapp:max-h-dvh max-dapp:flex-col max-dapp:overflow-hidden',
       )}
     >
         <DappTopbar />

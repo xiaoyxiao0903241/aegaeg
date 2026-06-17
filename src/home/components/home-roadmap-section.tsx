@@ -7,52 +7,52 @@ import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const roadmapClass = {
   section:
-    'roadmap relative py-[120px] min-[821px]:min-h-[1215px] max-[820px]:min-h-[911px] max-[820px]:pt-0 max-[820px]:pb-14',
+    'roadmap relative py-[120px] dapp:min-h-[1215px] max-dapp:min-h-[911px] max-dapp:pt-0 max-dapp:pb-14',
   timeline:
-    'timeline relative mt-5 flex min-h-[776px] w-full flex-col gap-0 pl-0 min-[821px]:mt-12 min-[821px]:block min-[821px]:min-h-[851px]',
+    'timeline relative mt-5 flex min-h-[776px] w-full flex-col gap-0 pl-0 dapp:mt-12 dapp:block dapp:min-h-[851px]',
   rail:
-    'timeline-rail hidden min-[821px]:absolute min-[821px]:left-[calc(50%-2px)] min-[821px]:top-[58px] min-[821px]:block min-[821px]:h-[727px] min-[821px]:w-1 min-[821px]:rounded-[2px] min-[821px]:bg-border',
+    'timeline-rail hidden dapp:absolute dapp:left-[calc(50%-2px)] dapp:top-[58px] dapp:block dapp:h-[727px] dapp:w-1 dapp:rounded-[2px] dapp:bg-border',
   phase:
-    'phase relative grid min-h-[132px] grid-cols-[32px_minmax(0,1fr)] items-start gap-3.5 min-[821px]:absolute min-[821px]:block min-[821px]:min-h-0 min-[821px]:w-full',
+    'phase relative grid min-h-[132px] grid-cols-[32px_minmax(0,1fr)] items-start gap-3.5 dapp:absolute dapp:block dapp:min-h-0 dapp:w-full',
   card:
-    'phase-card w-full min-h-[116px] p-4 max-[820px]:rounded-[14px] min-[821px]:min-h-[120px] min-[821px]:w-[min(540px,calc(50%_-_60px))] min-[821px]:p-[22px_24px]',
-  cardRight: 'min-[821px]:ml-auto',
-  currentCard: 'min-h-[119px] border border-primary min-[821px]:min-h-[124px]',
+    'phase-card w-full min-h-[116px] p-4 max-dapp:rounded-[14px] dapp:min-h-[120px] dapp:w-[min(540px,calc(50%_-_60px))] dapp:p-[22px_24px]',
+  cardRight: 'dapp:ml-auto',
+  currentCard: 'min-h-[119px] border border-primary dapp:min-h-[124px]',
   header:
-    'flex items-center justify-between gap-2.5 overflow-hidden min-[821px]:justify-start',
+    'flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start',
   phaseLabel:
-    'text-[11px] font-semibold leading-[1.2] tracking-[0.72px] min-[821px]:text-xs min-[821px]:leading-normal',
+    'text-[11px] font-semibold leading-[1.2] tracking-[0.72px] dapp:text-xs dapp:leading-normal',
   phaseLabelActive: 'text-primary',
   phaseLabelMuted: 'text-ink-muted',
   now:
-    'rounded-[999px] bg-primary px-2 py-0.5 text-[10px] font-semibold not-italic text-white min-[821px]:px-2.5 min-[821px]:py-[3px] min-[821px]:text-[11px]',
+    'rounded-[999px] bg-primary px-2 py-0.5 text-[10px] font-semibold not-italic text-white dapp:px-2.5 dapp:py-[3px] dapp:text-[11px]',
   time:
-    'ml-auto text-[11px] font-semibold leading-[1.2] min-[821px]:text-xs min-[821px]:leading-[1.4]',
+    'ml-auto text-[11px] font-semibold leading-[1.2] dapp:text-xs dapp:leading-[1.4]',
   timeMuted: 'text-ink-muted',
   timeCurrent: 'text-primary',
   title:
-    'mt-1.5 text-base font-semibold leading-[1.2] tracking-[-0.64px] text-foreground min-[821px]:mt-2 min-[821px]:text-lg min-[821px]:leading-[1.4] min-[821px]:tracking-[-0.72px]',
+    'mt-1.5 text-base font-semibold leading-[1.2] tracking-[-0.64px] text-foreground dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.72px]',
   body:
-    'mt-1.5 text-[13px] font-normal leading-[1.4] tracking-[-0.26px] text-ink-muted min-[821px]:mt-2',
+    'mt-1.5 text-[13px] font-normal leading-[1.4] tracking-[-0.26px] text-ink-muted dapp:mt-2',
   dot:
-    'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-[999px] text-sm font-semibold min-[821px]:absolute min-[821px]:left-[calc(50%_-_18px)] min-[821px]:top-[42px] min-[821px]:size-9 min-[821px]:border-[3px]',
-  dotComplete: 'bg-primary text-white min-[821px]:border-primary',
+    'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-[999px] text-sm font-semibold dapp:absolute dapp:left-[calc(50%_-_18px)] dapp:top-[42px] dapp:size-9 dapp:border-[3px]',
+  dotComplete: 'bg-primary text-white dapp:border-primary',
   dotUpcoming: 'border-[3px] border-border bg-card text-ink-muted',
   dotCurrent:
-    'min-[821px]:shadow-[0_0_0_8px_oklch(94.92%_0.0224_45.6_/_96%)]',
+    'dapp:shadow-[0_0_0_8px_oklch(94.92%_0.0224_45.6_/_96%)]',
   dotConnector:
-    "after:absolute after:left-[14.5px] after:top-8 after:h-[100px] after:w-[3px] after:rounded-[2px] after:content-[''] min-[821px]:after:hidden",
+    "after:absolute after:left-[14.5px] after:top-8 after:h-[100px] after:w-[3px] after:rounded-[2px] after:content-[''] dapp:after:hidden",
   dotConnectorDone: 'after:bg-primary',
   dotConnectorUpcoming: 'after:bg-border',
 } as const
 
 const phaseTopClass = [
-  'min-[821px]:top-4',
-  'min-[821px]:top-[154px]',
-  'min-[821px]:top-[292px]',
-  'min-[821px]:top-[430px]',
-  'min-[821px]:top-[577px]',
-  'min-[821px]:top-[715px]',
+  'dapp:top-4',
+  'dapp:top-[154px]',
+  'dapp:top-[292px]',
+  'dapp:top-[430px]',
+  'dapp:top-[577px]',
+  'dapp:top-[715px]',
 ] as const
 
 export function HomeRoadmapSection({

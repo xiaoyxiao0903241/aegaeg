@@ -182,13 +182,13 @@ export function WalletDetailsModal({
       open={open}
       overlayClassName="bg-[oklch(13%_0.02_264/45%)] backdrop-blur-sm"
       className={cn(
-        'w-[min(calc(100%-40px),380px)] max-[820px]:w-full',
-        'max-[820px]:rounded-t-[24px] max-[820px]:border-x-0 max-[820px]:border-b-0 max-[820px]:border-t',
-        'max-[820px]:px-6 max-[820px]:pb-[max(24px,env(safe-area-inset-bottom))] max-[820px]:pt-3',
-        'min-[821px]:rounded-[24px] min-[821px]:border min-[821px]:border-border/80 min-[821px]:px-7 min-[821px]:pb-7 min-[821px]:pt-[34px]',
+        'w-[min(calc(100%-40px),380px)] max-dapp:w-full',
+        'max-dapp:rounded-t-[24px] max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t',
+        'max-dapp:px-6 max-dapp:pb-[max(24px,env(safe-area-inset-bottom))] max-dapp:pt-3',
+        'dapp:rounded-[24px] dapp:border dapp:border-border/80 dapp:px-7 dapp:pb-7 dapp:pt-[34px]',
         'text-center',
         'bg-[linear-gradient(165deg,oklch(100%_0_0/96%),oklch(100%_0_0/86%))] backdrop-blur-xl',
-        'min-[821px]:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
+        'dapp:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
       )}
     >
       <AegisSheetHandle />
@@ -199,7 +199,7 @@ export function WalletDetailsModal({
           'absolute right-4 top-4 grid size-[34px] cursor-pointer place-items-center rounded-full',
           'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
           'hover:-translate-y-px hover:border-foreground focus-visible:border-foreground focus-visible:outline-none',
-          'max-[820px]:top-5',
+          'max-dapp:top-5',
         )}
         type="button"
       >
@@ -208,7 +208,7 @@ export function WalletDetailsModal({
 
       <div
         aria-hidden="true"
-        className="mx-auto mb-5 mt-2 grid size-[78px] place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_14px_34px_oklch(66.83%_0.1625_36.6/40%),inset_0_1px_0_oklch(100%_0_0/50%)] min-[821px]:mt-0"
+        className="mx-auto mb-5 mt-2 grid size-[78px] place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_14px_34px_oklch(66.83%_0.1625_36.6/40%),inset_0_1px_0_oklch(100%_0_0/50%)] dapp:mt-0"
       >
         <Wallet className="size-[34px]" strokeWidth={1.75} />
       </div>

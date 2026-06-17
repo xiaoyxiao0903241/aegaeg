@@ -1,5 +1,4 @@
 import { Text } from '~/components/text'
-import { cn } from '~/lib/utils'
 
 export function TokenChip({ icon, label }: { icon: string; label: string }) {
   return (

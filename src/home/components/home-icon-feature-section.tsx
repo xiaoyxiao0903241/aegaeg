@@ -7,45 +7,45 @@ import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const sectionClass = {
   protocol:
-    'relative py-[120px] max-[820px]:min-h-[827px] max-[820px]:pt-0 max-[820px]:pb-14',
+    'relative py-[120px] max-dapp:min-h-[827px] max-dapp:pt-0 max-dapp:pb-14',
   engine:
-    'relative py-[120px] max-[820px]:min-h-[976px] max-[820px]:pt-0 max-[820px]:pb-14',
+    'relative py-[120px] max-dapp:min-h-[976px] max-dapp:pt-0 max-dapp:pb-14',
 } as const
 
 const gridClass = {
   protocol:
-    'feature-card three-col mt-14 grid grid-cols-3 rounded-[22px] bg-card shadow-card max-[820px]:mt-4 max-[820px]:grid-cols-1 max-[820px]:gap-4 max-[820px]:overflow-visible max-[820px]:rounded-none max-[820px]:bg-transparent max-[820px]:shadow-none',
+    'feature-card three-col mt-14 grid grid-cols-3 rounded-[22px] bg-card shadow-card max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
   engine:
-    'engine-card mt-14 grid grid-cols-2 rounded-[22px] bg-card shadow-card max-[820px]:mt-6 max-[820px]:grid-cols-1 max-[820px]:gap-6 max-[820px]:overflow-visible max-[820px]:rounded-none max-[820px]:bg-transparent max-[820px]:shadow-none',
+    'engine-card mt-14 grid grid-cols-2 rounded-[22px] bg-card shadow-card max-dapp:mt-6 max-dapp:grid-cols-1 max-dapp:gap-6 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
 } as const
 
 const cardClass = {
   protocol:
-    'min-h-[281px] px-[34px] py-9 max-[820px]:min-h-0 max-[820px]:rounded-[18px] max-[820px]:bg-card max-[820px]:p-[22px] max-[820px]:shadow-card max-[520px]:px-6 max-[520px]:py-7',
+    'min-h-[281px] px-[34px] py-9 max-dapp:min-h-0 max-dapp:rounded-[18px] max-dapp:bg-card max-dapp:p-[22px] max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
   engine:
-    'group/engine min-h-[265px] p-[34px] transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-[820px]:min-h-0 max-[820px]:rounded-[18px] max-[820px]:bg-card max-[820px]:p-[22px] max-[820px]:shadow-card max-[520px]:px-6 max-[520px]:py-7',
+    'group/engine min-h-[265px] p-[34px] transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:min-h-0 max-dapp:rounded-[18px] max-dapp:bg-card max-dapp:p-[22px] max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
 } as const
 
 const iconClass = {
-  protocol: 'feature-icon size-20 object-contain max-[820px]:size-11',
-  engine: 'size-20 object-cover max-[820px]:size-11 max-[820px]:object-contain',
+  protocol: 'feature-icon size-20 object-contain max-dapp:size-11',
+  engine: 'size-20 object-cover max-dapp:size-11 max-dapp:object-contain',
 } as const
 
 const protocolIndexClass =
-  'feature-index mt-2.5 hidden text-xs font-semibold leading-[1.2] tracking-[0.96px] text-faint max-[820px]:block'
+  'feature-index mt-2.5 hidden text-xs font-semibold leading-[1.2] tracking-[0.96px] text-faint max-dapp:block'
 
 function cardBorderClass(variant: 'protocol' | 'engine', index: number) {
   if (variant === 'protocol') {
     return cn(
-      index > 0 && 'min-[821px]:border-l min-[821px]:border-border',
-      index === 0 ? 'max-[820px]:min-h-[218px]' : 'max-[820px]:min-h-[197px]',
+      index > 0 && 'dapp:border-l dapp:border-border',
+      index === 0 ? 'max-dapp:min-h-[218px]' : 'max-dapp:min-h-[197px]',
     )
   }
 
   return cn(
-    index % 2 === 1 && 'min-[821px]:border-l min-[821px]:border-border',
-    index > 1 && 'min-[821px]:border-t min-[821px]:border-border',
-    index < 2 ? 'max-[820px]:min-h-[194px]' : 'max-[820px]:min-h-[173px]',
+    index % 2 === 1 && 'dapp:border-l dapp:border-border',
+    index > 1 && 'dapp:border-t dapp:border-border',
+    index < 2 ? 'max-dapp:min-h-[194px]' : 'max-dapp:min-h-[173px]',
   )
 }
 
@@ -86,9 +86,9 @@ function HomeIconCard({
         size="lg"
         weight="semibold"
         className={cn(
-          'feature-card-title mt-3 text-xl leading-[1.2] max-[820px]:mt-2.5 max-[820px]:text-[19px]',
+          'feature-card-title mt-3 text-xl leading-[1.2] max-dapp:mt-2.5 max-dapp:text-[19px]',
           variant === 'engine' &&
-            'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary max-[820px]:whitespace-nowrap',
+            'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary max-dapp:whitespace-nowrap',
         )}
       >
         {card.title}
@@ -97,7 +97,7 @@ function HomeIconCard({
         as="p"
         size="md"
         tone="body"
-        className="feature-card-body mt-3 max-w-[420px] text-[15px] leading-[1.5] max-[820px]:mt-2.5 max-[820px]:w-full max-[820px]:max-w-[318px] max-[820px]:text-sm"
+        className="feature-card-body mt-3 max-w-[420px] text-[15px] leading-[1.5] max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-[318px] max-dapp:text-sm"
       >
         {card.body}
       </Text>

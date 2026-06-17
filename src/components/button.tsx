@@ -48,13 +48,13 @@ export const buttonVariants = tv({
     size: {
       lg: 'min-h-12 px-[26px] text-[15px] leading-none',
       md: 'min-h-10 px-5 text-[13px] leading-[1.3]',
-      sm: 'min-h-[44px] text-[14px] leading-normal max-[820px]:min-h-[46px]',
+      sm: 'min-h-[44px] text-[14px] leading-normal max-dapp:min-h-[46px]',
     },
     shape: {
       pill: 'rounded-full',
       chip: [
         'h-[25px] w-full rounded-[9px] px-0 py-[5px] text-xs',
-        'max-[820px]:h-auto max-[820px]:min-h-0 max-[820px]:py-1.5 max-[820px]:text-[11px]',
+        'max-dapp:h-auto max-dapp:min-h-0 max-dapp:py-1.5 max-dapp:text-[11px]',
       ],
     },
   },

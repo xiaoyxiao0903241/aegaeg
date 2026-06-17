@@ -9,9 +9,9 @@ export function dappDetailPageClass(options?: {
 }) {
   return cn(
     'min-w-0',
-    'min-[821px]:pt-10 min-[821px]:px-7 min-[821px]:pb-[calc(30px+var(--shadow-bleed))]',
-    'max-[820px]:p-0',
-    options?.pager && 'max-[820px]:px-0',
+    'dapp:pt-10 dapp:px-7 dapp:pb-[calc(30px+var(--shadow-bleed))]',
+    'max-dapp:p-0',
+    options?.pager && 'max-dapp:px-0',
     options?.className,
   )
 }

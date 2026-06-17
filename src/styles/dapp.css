@@ -3,6 +3,7 @@
 @import './wallet.css';
 
 /* DApp shell — detail column collapse animation (CSS variable track, not swapped utilities) */
+/* @media 不支持 var() — 字面量须与 theme.css `--breakpoint-dapp` 同步 */
 @media (min-width: 821px) {
   [data-dapp-window] {
     --shell-detail-col: minmax(0, 1fr);

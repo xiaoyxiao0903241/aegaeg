@@ -1,6 +1,5 @@
 import { Card } from '~/components/card'
 import { StatusBadge } from '~/components/badge'
-import { Text } from '~/components/text'
 import { cn } from '~/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 
@@ -46,7 +45,7 @@ export function ResponsiveTable({
       )
 
   const table = (
-    <table className="w-full min-w-0 border-collapse text-[13px] leading-[1.5] max-[820px]:min-w-max">
+    <table className="w-full min-w-0 border-collapse text-[13px] leading-[1.5] max-dapp:min-w-max">
       <thead>
         <tr>
           {headers.map((header) => (

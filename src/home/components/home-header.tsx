@@ -9,24 +9,24 @@ import { cn } from '~/lib/utils'
 
 const navClass = cn(
   'fixed inset-x-0 top-0 z-50 flex h-[74px] w-full items-center border-b border-[oklch(94.87%_0.0058_264.53_/_72%)] bg-[oklch(97.29%_0.0029_264.54_/_88%)] backdrop-blur-[18px]',
-  'max-[820px]:min-h-[60px] max-[820px]:bg-background max-[820px]:py-0 max-[820px]:backdrop-blur-none',
+  'max-dapp:min-h-[60px] max-dapp:bg-background max-dapp:py-0 max-dapp:backdrop-blur-none',
 )
 
 const navInnerClass = cn(
   'flex h-[74px] w-full items-center justify-between gap-6',
-  'max-[820px]:min-h-[60px] max-[820px]:flex-nowrap max-[820px]:gap-3 max-[820px]:px-5',
+  'max-dapp:min-h-[60px] max-dapp:flex-nowrap max-dapp:gap-3 max-dapp:px-5',
 )
 
 const containerClass = 'mx-auto w-[min(calc(100%-48px),var(--container))]'
 
 const brandClass = cn(
   'inline-flex items-center gap-[11px] whitespace-nowrap text-lg font-semibold tracking-normal text-foreground',
-  'max-[820px]:gap-[9px] max-[820px]:text-base max-[820px]:leading-[1.2]',
+  'max-dapp:gap-[9px] max-dapp:text-base max-dapp:leading-[1.2]',
 )
 
 const brandMarkClass = cn(
   'h-[27px] w-7 object-contain',
-  'max-[820px]:h-[22px] max-[820px]:w-6',
+  'max-dapp:h-[22px] max-dapp:w-6',
 )
 
 const navLinksClass = cn(
@@ -38,7 +38,7 @@ const navLinksClass = cn(
 
 const navActionsClass = cn(
   'flex items-center gap-3.5',
-  'max-[820px]:w-auto max-[820px]:justify-end max-[820px]:gap-2.5',
+  'max-dapp:w-auto max-dapp:justify-end max-dapp:gap-2.5',
 )
 
 const navGhostBtnClass = cn(
@@ -48,7 +48,7 @@ const navGhostBtnClass = cn(
   'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
   'hover:opacity-[0.96] hover:shadow-card focus-visible:opacity-[0.96] focus-visible:shadow-card',
   'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
-  'max-[820px]:!hidden',
+  'max-dapp:!hidden',
 )
 
 export function HomeHeader({ content }: { content: HomeContent['nav'] }) {

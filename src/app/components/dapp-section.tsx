@@ -15,7 +15,7 @@ export function DappSection({
   return (
     <section
       className={cn(
-        'mt-8 max-[820px]:mt-6 group-data-[tab=rewards]/shell:max-[820px]:mt-[22px]',
+        'mt-8 max-dapp:mt-6 group-data-[tab=rewards]/shell:max-dapp:mt-[22px]',
         revealClass(),
         className,
       )}
@@ -25,7 +25,7 @@ export function DappSection({
         as="h3"
         size="lg"
         weight="semibold"
-        className="tracking-[-0.36px] max-[820px]:text-[17px] max-[820px]:tracking-[-0.68px]"
+        className="tracking-[-0.36px] max-dapp:text-[17px] max-dapp:tracking-[-0.68px]"
       >
         {title}
       </Text>

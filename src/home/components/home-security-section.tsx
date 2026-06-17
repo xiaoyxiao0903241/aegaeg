@@ -9,26 +9,26 @@ import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const securityClass = {
   section:
-    'relative border-y border-border bg-[#ebeef3] py-[120px] min-[821px]:min-h-[794px] max-[820px]:min-h-[711px] max-[820px]:border-y-0 max-[820px]:py-12',
-  container: 'container max-[820px]:!w-[min(calc(100vw-40px),362px)]',
-  head: 'min-[821px]:min-h-[140px]',
+    'relative border-y border-border bg-[#ebeef3] py-[120px] dapp:min-h-[794px] max-dapp:min-h-[711px] max-dapp:border-y-0 max-dapp:py-12',
+  container: 'container max-dapp:!w-[min(calc(100vw-40px),362px)]',
+  head: 'dapp:min-h-[140px]',
   title:
-    '[&&]:max-w-[420px] min-[821px]:[&&]:mt-4 min-[821px]:[&&]:leading-[1.1] max-[820px]:whitespace-nowrap',
+    '[&&]:max-w-[420px] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1] max-dapp:whitespace-nowrap',
   subtitle:
-    '[&&]:max-w-[420px] min-[821px]:[&&]:mt-4 min-[821px]:[&&]:text-base min-[821px]:[&&]:leading-[1.5]',
+    '[&&]:max-w-[420px] dapp:[&&]:mt-4 dapp:[&&]:text-base dapp:[&&]:leading-[1.5]',
   grid:
-    'security-grid relative mx-auto mt-8 grid w-[min(100%,842px)] grid-cols-[330px_1fr] items-center gap-12 max-[1100px]:grid-cols-1 max-[1100px]:justify-items-center max-[820px]:mt-4 max-[820px]:flex max-[820px]:w-full max-[820px]:flex-col max-[820px]:gap-4',
+    'security-grid relative mx-auto mt-8 grid w-[min(100%,842px)] grid-cols-[330px_1fr] items-center gap-12 max-[1100px]:grid-cols-1 max-[1100px]:justify-items-center max-dapp:mt-4 max-dapp:flex max-dapp:w-full max-dapp:flex-col max-dapp:gap-4',
   art:
-    'security-art flex w-[min(100%,330px)] aspect-[330/382] items-center justify-center overflow-hidden max-[820px]:w-[174px] max-[820px]:aspect-[174/201]',
+    'security-art flex w-[min(100%,330px)] aspect-[330/382] items-center justify-center overflow-hidden max-dapp:w-[174px] max-dapp:aspect-[174/201]',
   artImage: 'h-full w-full object-contain object-center',
   line:
     'security-line absolute left-[267px] top-[62px] z-1 aspect-[110/258] w-[110px] object-contain max-[1100px]:!hidden',
-  list: 'check-list relative z-[2] grid gap-3.5 max-[820px]:w-full max-[820px]:gap-4',
+  list: 'check-list relative z-[2] grid gap-3.5 max-dapp:w-full max-dapp:gap-4',
   card:
-    'flex items-center gap-3.5 px-[22px] py-5 text-[15px] font-medium leading-[1.4] text-foreground max-[820px]:min-h-14 max-[820px]:w-full max-[820px]:gap-3 max-[820px]:rounded-[14px] max-[820px]:px-[18px] max-[820px]:py-4 max-[820px]:text-sm max-[820px]:leading-[1.2]',
-  cardTall: 'max-[820px]:min-h-[66px]',
+    'flex items-center gap-3.5 px-[22px] py-5 text-[15px] font-medium leading-[1.4] text-foreground max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[14px] max-dapp:px-[18px] max-dapp:py-4 max-dapp:text-sm max-dapp:leading-[1.2]',
+  cardTall: 'max-dapp:min-h-[66px]',
   icon:
-    'grid size-[26px] shrink-0 place-items-center rounded-[13px] bg-accent text-[13px] text-primary max-[820px]:size-6 max-[820px]:rounded-xl',
+    'grid size-[26px] shrink-0 place-items-center rounded-[13px] bg-accent text-[13px] text-primary max-dapp:size-6 max-dapp:rounded-xl',
   iconImage: 'size-3.5 object-contain',
 } as const
 

@@ -121,6 +121,3 @@ export function AnchoredTooltip({
     </span>
   )
 }
-
-/** @deprecated Use AnchoredTooltip */
-export const Tooltip = AnchoredTooltip

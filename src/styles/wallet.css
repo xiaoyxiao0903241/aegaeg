@@ -201,7 +201,7 @@
   }
 }
 
-/* H5：bottom sheet（项目断点 820px，覆盖 thirdweb 默认 640px） */
+/* H5：bottom sheet（`--breakpoint-dapp`，覆盖 thirdweb 默认 640px） */
 @media (max-width: 820px) {
   .tw-modal {
     position: fixed !important;

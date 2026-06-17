@@ -31,9 +31,8 @@ function createInitialI18nState() {
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const initialState = useRef(createInitialI18nState())
-  const [locale, setLocaleState] = useState<Locale>(initialState.current.locale)
-  const [messages, setMessages] = useState<Messages>(initialState.current.messages)
+  const [locale, setLocaleState] = useState<Locale>(() => createInitialI18nState().locale)
+  const [messages, setMessages] = useState<Messages>(() => createInitialI18nState().messages)
   const localeSyncedRef = useRef(true)
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import type { HomeContent } from '~/home/content/types'
 import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const sectionClass =
-  'relative py-[120px] min-[821px]:min-h-[800px] max-[820px]:min-h-[529px] max-[820px]:py-14'
+  'relative py-[120px] dapp:min-h-[800px] max-dapp:min-h-[529px] max-dapp:py-14'
 
 export function HomeFaqSection({
   content,

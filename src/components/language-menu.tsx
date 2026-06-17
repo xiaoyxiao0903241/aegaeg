@@ -24,7 +24,7 @@ const langTriggerClass = cn(
   '[[open]_&]:border-coral-hover-border [[open]_&]:bg-[oklch(97%_0.014_45)] [[open]_&]:shadow-card',
   '[.is-open_&]:border-coral-hover-border [.is-open_&]:bg-[oklch(97%_0.014_45)] [.is-open_&]:shadow-card',
   '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-  'max-[820px]:min-h-[30px] max-[820px]:min-w-[58px] max-[820px]:gap-1.5 max-[820px]:px-2.5 max-[820px]:text-[11px]',
+  'max-dapp:min-h-[30px] max-dapp:min-w-[58px] max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-[11px]',
 )
 
 export type LanguageMenuOption = {

@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { ChevronIcon } from '~/components/chevron-icon'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
@@ -16,28 +17,6 @@ type DappTablePaginationProps = {
   page: number
   pageSize?: number
   total: number
-}
-
-function PaginationChevron({
-  className,
-  direction,
-}: {
-  className?: string
-  direction: 'left' | 'right' | 'up'
-}) {
-  const rotation =
-    direction === 'left' ? '-rotate-90' : direction === 'right' ? 'rotate-90' : ''
-  const mask =
-    direction === 'up'
-      ? "[mask:url('/assets/figma/dapp/ic-chevron-up.svg')_center/contain_no-repeat]"
-      : "[mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
-
-  return (
-    <span
-      aria-hidden
-      className={cn('block size-3 shrink-0 bg-current', rotation, mask, className)}
-    />
-  )
 }
 
 export function DappTablePagination({
@@ -112,7 +91,7 @@ export function DappTablePagination({
           onClick={() => onPageChange(safePage - 1)}
           type="button"
         >
-          <PaginationChevron direction="left" />
+          <ChevronIcon direction="left" />
         </button>
 
         <div className="relative">
@@ -129,7 +108,7 @@ export function DappTablePagination({
             type="button"
           >
             {safePage} / {totalPages}
-            <PaginationChevron direction="up" />
+            <ChevronIcon direction="up" />
           </button>
 
           {menuOpen ? (
@@ -183,7 +162,7 @@ export function DappTablePagination({
           onClick={() => onPageChange(safePage + 1)}
           type="button"
         >
-          <PaginationChevron direction="right" />
+          <ChevronIcon direction="right" />
         </button>
       </div>
     </div>

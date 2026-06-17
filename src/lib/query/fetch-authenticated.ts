@@ -21,7 +21,7 @@ export async function fetchAuthenticated<T>(
       throw error
     }
 
-    throw new Error('Request failed')
+    throw new Error('Request failed', { cause: error })
   }
 }
 

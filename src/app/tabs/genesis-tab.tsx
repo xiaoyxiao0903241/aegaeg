@@ -63,7 +63,7 @@ export function GenesisWidget({
   onSelectGenesis: () => void
 }) {
   const { messages: t } = useI18n()
-  const { connected, walletReady } = useDappShell()
+  const { walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()
   const seasonIntro = t.genesis.intro
     .replace('{season}', String(genesis.activeSeasonNumber))
@@ -140,8 +140,8 @@ export function GenesisWidget({
     <div
       className={cn(
         shellWidgetRootClass,
-        'min-[821px]:[&>*]:shrink-0',
-        'max-[820px]:flex max-[820px]:flex-col max-[820px]:gap-3',
+        'dapp:[&>*]:shrink-0',
+        'max-dapp:flex max-dapp:flex-col max-dapp:gap-3',
       )}
     >
       <DappPanelHeader
@@ -152,7 +152,7 @@ export function GenesisWidget({
       />
 
       {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
-        <div aria-busy="true" className={cn(revealClass(), 'mt-3.5 grid gap-2 max-[820px]:mt-0')} data-reveal>
+        <div aria-busy="true" className={cn(revealClass(), 'mt-3.5 grid gap-2 max-dapp:mt-0')} data-reveal>
           <SeasonOptionSkeleton />
           <SeasonOptionSkeleton />
           <SeasonOptionSkeleton />
@@ -163,11 +163,11 @@ export function GenesisWidget({
         />
       )}
 
-      <label className="mt-3.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground max-[820px]:mt-0">
+      <label className="mt-3.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground max-dapp:mt-0">
         <span>{t.genesis.shares}</span>
         <div className="flex gap-2">
           <input
-            className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-base font-bold text-foreground outline-none focus:border-primary max-[820px]:h-[46px] max-[820px]:min-h-[46px]"
+            className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-base font-bold text-foreground outline-none focus:border-primary max-dapp:h-[46px] max-dapp:min-h-[46px]"
             disabled={!walletReady}
             max={MAX_SHARES}
             min={1}
@@ -177,7 +177,7 @@ export function GenesisWidget({
           />
           <button
             className={cn(
-              'min-h-11 min-w-[66px] shrink-0 rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary max-[820px]:h-[46px] max-[820px]:min-h-[46px]',
+              'min-h-11 min-w-[66px] shrink-0 rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary max-dapp:h-[46px] max-dapp:min-h-[46px]',
               buttonDisabledClass,
               'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
             )}
@@ -200,7 +200,7 @@ export function GenesisWidget({
         ]}
       />
 
-      <DappActionRow className={cn(genesis.isApproved ? 'grid-cols-1' : undefined, 'max-[820px]:mt-0')}>
+      <DappActionRow className={cn(genesis.isApproved ? 'grid-cols-1' : undefined, 'max-dapp:mt-0')}>
         {!genesis.isApproved ? (
           <DappActionButton
             disabled={!walletReady || !genesis.canPurchase || genesis.isSubmitting}
@@ -222,7 +222,7 @@ export function GenesisWidget({
       </DappActionRow>
 
       <GenesisPromoCard
-        className="hidden max-[820px]:grid"
+        className="hidden max-dapp:grid"
         isLoading={genesis.isLoading}
         onClick={onSelectGenesis}
         promo={genesis.promoSnapshot}
@@ -243,7 +243,7 @@ export function GenesisContent() {
   )
   const apiEnabled = connected && isAuthenticated
   const [contributionsPage, setContributionsPage] = useState(1)
-  const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
+  const { data: performance } = usePerformance(apiEnabled)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
     { page: contributionsPage, page_size: DAPP_TABLE_PAGE_SIZE },
     apiEnabled,
@@ -294,10 +294,10 @@ export function GenesisContent() {
       <MetricGrid columns={4}>
         {genesis.isLoading && genesis.phases.length === 0 ? (
           <>
-            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
-            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
-            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
-            <MetricCardSkeleton className="max-[820px]:rounded-[14px]" />
+            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
+            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
+            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
+            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
           </>
         ) : (
           <>
@@ -326,7 +326,7 @@ export function GenesisContent() {
         )}
       </MetricGrid>
 
-      <section className="mt-8 max-[820px]:!hidden">
+      <section className="mt-8 max-dapp:!hidden">
         <div
           className={cn(
             revealClass(),
@@ -381,13 +381,13 @@ export function GenesisContent() {
       </section>
 
       <DappSection
-        className="group-data-[tab=genesis]/shell:max-[820px]:mt-0"
+        className="group-data-[tab=genesis]/shell:max-dapp:mt-0"
         title={t.genesis.myContributions}
       >
         <div
           className={cn(
             revealClass(),
-            'mt-3.5 max-[820px]:mt-3 max-[820px]:rounded-2xl max-[820px]:bg-card max-[820px]:p-4 max-[820px]:shadow-card',
+            'mt-3.5 max-dapp:mt-3 max-dapp:rounded-2xl max-dapp:bg-card max-dapp:p-4 max-dapp:shadow-card',
           )}
           data-reveal
         >

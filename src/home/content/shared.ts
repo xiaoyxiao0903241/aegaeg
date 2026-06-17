@@ -16,7 +16,7 @@ export const tokenCardShells = [
   {
     className: 'bg-token-usd1',
     icon: homeAssets.token.usd1Icon,
-    iconClassName: 'size-9 max-[820px]:size-[26px]',
+    iconClassName: 'size-9 max-dapp:size-[26px]',
     shape: homeAssets.token.usd1Shape,
     shapeWrapClassName: 'left-[133px] top-[130px] size-[170px]',
     symbol: 'USD1',
@@ -34,7 +34,7 @@ export const tokenCardShells = [
   {
     className: 'bg-token-gagx',
     icon: homeAssets.token.gagxIcon,
-    iconClassName: 'size-[34px] max-[820px]:size-[26px]',
+    iconClassName: 'size-[34px] max-dapp:size-[26px]',
     shape: homeAssets.token.gagxShape,
     shapeWrapClassName: 'left-[133px] top-[130px] size-[170px]',
     symbol: 'gAGX',

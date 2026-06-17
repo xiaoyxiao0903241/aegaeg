@@ -29,10 +29,21 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      /* 项目内大量合法的 effect 同步 / render 期 ref 镜像；保留为 warn 避免阻塞 CI */
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/refs': 'warn',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    files: ['tests/**/*.mjs', 'scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
 )

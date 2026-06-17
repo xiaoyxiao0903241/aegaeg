@@ -21,7 +21,7 @@ export function DappContentHeading({
       weight="semibold"
       className={cn(
         'm-0 tracking-[-0.36px]',
-        'max-[820px]:mt-0 max-[820px]:text-[17px] max-[820px]:tracking-[-0.68px]',
+        'max-dapp:mt-0 max-dapp:text-[17px] max-dapp:tracking-[-0.68px]',
         reveal && revealClass(),
         className,
       )}

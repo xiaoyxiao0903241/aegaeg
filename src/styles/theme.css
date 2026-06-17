@@ -77,6 +77,9 @@
 
   /* ---- 布局 ---- */
   --container: 1200px;
+  /* DApp / Home 响应式分界：H5 <= 820px，PC >= 821px（Tailwind `max-dapp:` / `dapp:`）。
+     裸 @media 须写字面量 820px/821px（规范不支持 var()），见 lib/breakpoints.ts。 */
+  --breakpoint-dapp: 821px;
 
   /* ---- 滚动条（覆盖系统默认）---- */
   --scrollbar-size: 8px;
@@ -105,6 +108,8 @@
  * 又会生成对应工具类（rounded-md、shadow-card ...）。
  */
 @theme {
+  --breakpoint-dapp: 821px;
+
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 22px;

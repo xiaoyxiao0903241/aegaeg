@@ -28,13 +28,13 @@ export type SeasonOption = {
 const seasonOptionClass = cn(
   'flex items-center gap-[11px] rounded-[13px] px-3.5 py-3',
   'data-[selected=true]:border-primary',
-  'max-[820px]:gap-2.5 max-[820px]:px-3.5 max-[820px]:py-3 max-[820px]:data-[selected=true]:border-[1.5px]',
+  'max-dapp:gap-2.5 max-dapp:px-3.5 max-dapp:py-3 max-dapp:data-[selected=true]:border-[1.5px]',
 )
 
 const seasonStatusClass = cn(
   'rounded-full bg-pill-muted-bg px-2 py-[3px] not-italic whitespace-nowrap',
   'data-[selected=true]:bg-primary data-[selected=true]:text-white',
-  'max-[820px]:px-[9px]',
+  'max-dapp:px-[9px]',
 )
 
 export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
@@ -43,7 +43,7 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
   return (
     <RadioGroup
       aria-label={t.genesis.statsTitle}
-      className={cn(revealClass(), 'mt-3.5 grid gap-2 max-[820px]:mt-0')}
+      className={cn(revealClass(), 'mt-3.5 grid gap-2 max-dapp:mt-0')}
       data-reveal
     >
       {seasons.map((season) => {
@@ -75,7 +75,7 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
                 size="xs"
                 weight="bold"
                 tone="muted"
-                className={cn(seasonStatusClass, 'text-[10px] leading-[1.2] max-[820px]:text-[11px]')}
+                className={cn(seasonStatusClass, 'text-[10px] leading-[1.2] max-dapp:text-[11px]')}
                 data-selected={selected ? 'true' : 'false'}
               >
                 {translateSeasonStatus(season.status, t)}

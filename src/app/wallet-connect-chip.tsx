@@ -20,7 +20,6 @@ const walletGlyphClass = cn(
 function ConnectedWalletChip() {
   const account = useActiveAccount()
   const { session, isAuthenticated, loginError, retryLogin } = useAuth()
-  const { messages: t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
 
   const walletReady = hasWalletAccount(account)
@@ -74,12 +73,9 @@ function WalletConnectButton({
   variant?: 'pill' | 'primary' | 'inline'
   fullWidth?: boolean
 }) {
-  const account = useActiveAccount()
-  const { isAuthenticated, isLoggingIn, login, loginError, retryLogin, needsSignIn } = useAuth()
+  const { isLoggingIn, login, loginError, retryLogin, needsSignIn } = useAuth()
   const { messages: t } = useI18n()
   const [connectOpen, setConnectOpen] = useState(false)
-
-  const walletReady = hasWalletAccount(account)
 
   const connectLabel =
     label ??

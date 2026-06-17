@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import { QuickLink, type QuickLinkProps } from '~/app/components/quick-link'
 import { cn } from '~/lib/utils'
 
@@ -12,7 +11,7 @@ export function QuickLinks({
   items: QuickLinkProps[]
 }) {
   return (
-    <div className={cn('mt-3.5 grid gap-2 max-[820px]:mt-0', className)}>
+    <div className={cn('mt-3.5 grid gap-2 max-dapp:mt-0', className)}>
       {items.map((item) => (
         <QuickLink key={item.href} {...item} />
       ))}

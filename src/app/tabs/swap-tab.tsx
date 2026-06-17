@@ -60,7 +60,7 @@ const SWAP_CARD_FLIP_ANIM =
 
 const SWAP_WIDGET_FOOTER_SPACER = 'min-h-3.5 shrink-0 grow basis-3.5'
 
-const SWAP_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 min-[821px]:mt-auto'
+const SWAP_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 dapp:mt-auto'
 
 const PERCENT_BTN_CLASS = cn(
   'flex h-[25px] cursor-pointer items-center justify-center rounded-[9px] border border-border bg-card',
@@ -69,7 +69,7 @@ const PERCENT_BTN_CLASS = cn(
   'hover:-translate-y-px hover:border-primary hover:text-primary',
   buttonDisabledClass,
   'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
-  'max-[820px]:h-auto max-[820px]:py-1.5 max-[820px]:text-[11px]',
+  'max-dapp:h-auto max-dapp:py-1.5 max-dapp:text-[11px]',
 )
 
 export function SwapWidget({
@@ -158,9 +158,9 @@ export function SwapWidget({
     <div
       className={cn(
         swapPager
-          ? 'flex min-h-full flex-col max-[820px]:gap-0'
+          ? 'flex min-h-full flex-col max-dapp:gap-0'
           : shellWidgetRootClass,
-        'max-[820px]:gap-0',
+        'max-dapp:gap-0',
         '[&>:first-child]:mb-[18px]',
       )}
     >
@@ -190,7 +190,7 @@ export function SwapWidget({
       />
 
       {connected ? (
-        <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-[820px]:mt-3 max-[820px]:py-0">
+        <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
           {PERCENTS.map((percent) => (
             <button
               className={PERCENT_BTN_CLASS}
@@ -208,7 +208,7 @@ export function SwapWidget({
       <div
         className={cn(
           'flex items-center justify-center py-[6px]',
-          'max-[820px]:h-auto max-[820px]:py-0 max-[820px]:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]',
+          'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]',
         )}
       >
         <AnchoredTooltip content={t.swap.flip}>
@@ -219,7 +219,7 @@ export function SwapWidget({
               'text-[14px] font-normal leading-normal tracking-[-0.28px] text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
               'enabled:hover:-translate-y-px enabled:hover:border-primary',
               'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
-              'max-[820px]:my-2',
+              'max-dapp:my-2',
             )}
             disabled={!swap.walletReady}
             onClick={handleFlip}
@@ -305,7 +305,7 @@ export function SwapWidget({
           </DappActionButton>
         </DappActionRow>
       ) : (
-        <div className="mt-3.5 max-[820px]:mt-3 [&_.aegis-thirdweb-button-primary]:!min-h-[50px] [&_.aegis-thirdweb-button-primary]:!h-[50px] [&_.aegis-thirdweb-button-primary]:!text-[15px]">
+        <div className="mt-3.5 max-dapp:mt-3 [&_.aegis-thirdweb-button-primary]:!min-h-[50px] [&_.aegis-thirdweb-button-primary]:!h-[50px] [&_.aegis-thirdweb-button-primary]:!text-[15px]">
           <WalletConnectChip fullWidth variant="primary" />
         </div>
       )}
@@ -320,7 +320,7 @@ export function SwapWidget({
             className={cn(
               swapPager ? 'mt-3.5 w-full shrink-0' : SWAP_BOTTOM_CARD_CLASS,
               'gap-1.5 [&_button]:min-h-[38px] [&_button]:text-[13px] [&_p]:leading-tight',
-              'max-[820px]:mt-3.5 max-[820px]:[&_button]:min-h-[42px] max-[820px]:[&_button]:text-sm',
+              'max-dapp:mt-3.5 max-dapp:[&_button]:min-h-[42px] max-dapp:[&_button]:text-sm',
             )}
             isLoading={genesis.isLoading}
             onClick={onSelectGenesis}
@@ -365,16 +365,16 @@ export function SwapContent({
 
   const overviewMetrics = (
     <MetricGrid
-      className="max-[820px]:mt-3.5 max-[820px]:[&>article]:mt-0"
+      className="max-dapp:mt-3.5 max-dapp:[&>article]:mt-0"
       columns={2}
     >
       {connected && poolRateLoading && !poolRateLabel ? (
-        <MetricCardSkeleton className="max-[820px]:rounded-[14px] max-[820px]:p-3.5" />
+        <MetricCardSkeleton className="max-dapp:rounded-[14px] max-dapp:p-3.5" />
       ) : (
         <MetricCard
           className={cn(
             connected && '[&_small]:hidden',
-            'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+            'max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
           )}
           label={t.swap.exchangeRate}
           value={
@@ -387,7 +387,7 @@ export function SwapContent({
       <MetricCard
         className={cn(
           connected && '[&_small]:hidden',
-          'max-[820px]:rounded-[14px] max-[820px]:p-3.5 max-[820px]:[&_small]:hidden max-[820px]:[&_strong]:text-[13px] max-[820px]:[&_strong]:leading-[1.2]',
+          'max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
         )}
         label={t.swap.settlement}
         value={t.swap.settlementValue}
@@ -407,7 +407,7 @@ export function SwapContent({
       {swapPager ? (
         <h1
           className={dappPanelTitleClassName(
-            cn(shellMobilePageTitleClass, 'max-[820px]:mb-0 max-[820px]:pb-4'),
+            cn(shellMobilePageTitleClass, 'max-dapp:mb-0 max-dapp:pb-4'),
           )}
         >
           {t.swap.overview}
@@ -423,8 +423,8 @@ export function SwapContent({
             '!translate-y-0 !opacity-100 !transition-none',
             '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
             '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
-            'max-[820px]:[&_h3]:pb-2.5 max-[820px]:[&_h3]:text-base max-[820px]:[&_h3]:tracking-[-0.64px]',
-            'min-[821px]:[&+section]:mt-[34px]',
+            'max-dapp:[&_h3]:pb-2.5 max-dapp:[&_h3]:text-base max-dapp:[&_h3]:tracking-[-0.64px]',
+            'dapp:[&+section]:mt-[34px]',
             '[&_h3_button]:w-full',
           )}
           title={t.swap.tokenAbout}
@@ -490,11 +490,11 @@ const TOKEN_CAROUSEL_CARD_SHELL = 'h-full rounded-2xl shadow-subtle'
 
 /** Figma `12:95` dcol px-28 — 与 DappDetailPage px-7 对齐，阴影伸入 padding 带 */
 const TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS =
-  'min-[821px]:-mx-7 min-[821px]:w-[calc(100%+3.5rem)] min-[821px]:px-7 min-[821px]:pb-[var(--shadow-bleed-subtle)] min-[821px]:pt-[var(--shadow-bleed-subtle)]'
+  'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-[var(--shadow-bleed-subtle)] dapp:pt-[var(--shadow-bleed-subtle)]'
 
 /** Figma `102:77` dots pt-12；viewport 无 layout pb，负 margin 收回 shadow bleed */
 const TOKEN_CAROUSEL_PC_INDICATOR_CLASS =
-  'min-[821px]:relative min-[821px]:z-1 min-[821px]:-mt-[var(--shadow-bleed-subtle)] min-[821px]:pt-[var(--carousel-pc-indicator-pt)]'
+  'dapp:relative dapp:z-1 dapp:-mt-[var(--shadow-bleed-subtle)] dapp:pt-[var(--carousel-pc-indicator-pt)]'
 
 const TOKEN_CAROUSEL_H5_VIEWPORT_BLEED_CLASS =
   '-mx-[var(--shadow-bleed-h5)] w-[calc(100%+2*var(--shadow-bleed-h5))] px-[var(--shadow-bleed-h5)] pt-[var(--carousel-h5-viewport-pad-y)] pb-[var(--shadow-bleed-subtle)]'
@@ -704,7 +704,7 @@ function TokenInfoCarousel() {
   return (
     <Carousel
       aria-label={t.swap.tokenAbout}
-      className={cn(revealClass(), 'mt-3.5 grid w-full gap-3 overflow-visible min-[821px]:gap-0')}
+      className={cn(revealClass(), 'mt-3.5 grid w-full gap-3 overflow-visible dapp:gap-0')}
       data-reveal
       opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
       plugins={[autoplay]}
@@ -849,7 +849,7 @@ function MobileTokenCarousel() {
   return (
     <Carousel
       aria-label={t.swap.tokenAbout}
-      className={cn(revealClass(), 'mt-3 grid w-full overflow-visible max-[820px]:mt-2.5')}
+      className={cn(revealClass(), 'mt-3 grid w-full overflow-visible max-dapp:mt-2.5')}
       data-reveal
       opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
       setApi={setApi}
@@ -928,14 +928,12 @@ function MobileTokenCarousel() {
   )
 }
 
-type SwapTokenContent = ReturnType<typeof getSwapTokenContent>[number]
-
 function TokenIcon({
   size,
   token,
 }: {
   size: 'desktop' | 'mobile'
-  token: SwapTokenContent
+  token: Pick<SwapTokenCarouselItem, 'asset' | 'title'>
 }) {
   const isDesktop = size === 'desktop'
   const dimension = isDesktop ? 32 : 30

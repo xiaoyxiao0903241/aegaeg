@@ -1,33 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import type { CSSProperties } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
+import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { shellMobileDrawerItemClass } from '~/app/shell-layout'
-
-const railCopy = {
-  swap: 'swap',
-  genesis: 'genesis',
-  rewards: 'rewards',
-  community: 'community',
-} as const
 
 const NAV_MOTION_MS = 320
 
 type NavMotion = 'enter' | 'exit'
-
-function railIconMask(icon: string): CSSProperties {
-  return {
-    maskImage: `url(${icon})`,
-    WebkitMaskImage: `url(${icon})`,
-    maskSize: 'contain',
-    maskRepeat: 'no-repeat',
-    maskPosition: 'center',
-  }
-}
 
 export function DappMobileNav({
   activeTab,
@@ -91,7 +74,7 @@ export function DappMobileNav({
     <div
       aria-hidden={!open}
       className={cn(
-        'fixed inset-0 z-[60] max-[820px]:block min-[821px]:hidden',
+        'fixed inset-0 z-[60] max-dapp:block dapp:hidden',
         open ? 'pointer-events-auto' : 'pointer-events-none',
       )}
       data-dapp-mobile-nav
@@ -132,7 +115,7 @@ export function DappMobileNav({
         </div>
 
         {railItems.map((item) => {
-          const label = t.nav[railCopy[item.id]]
+          const label = t.nav[railNavLabelKeys[item.id]]
           const active = item.id === activeTab
 
           return (

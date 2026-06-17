@@ -6,7 +6,7 @@ export const radioIndicatorVariants = tv({
   base: 'relative inline-flex flex-none items-center justify-center rounded-full border-2 border-border bg-card',
   variants: {
     size: {
-      md: 'aspect-square w-[17px] max-[820px]:size-[18px]',
+      md: 'aspect-square w-[17px] max-dapp:size-[18px]',
     },
     checked: {
       true: 'border-primary',

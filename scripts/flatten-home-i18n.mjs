@@ -57,19 +57,6 @@ function flattenNode(value, path = '') {
   return value
 }
 
-function formatHomeFile(locale, home) {
-  const json = JSON.stringify(home, null, 2)
-    .replace(/"([^"]+)":/g, '$1:')
-    .replace(/"/g, "'")
-    .replace(/'(\d+)':/g, '$1:')
-  return `import type { HomeContentBundle } from '~/home/content/types'
-
-const home: HomeContentBundle = ${json.replace(/^/gm, (line, offset) => (offset === 0 ? line : line))}
-
-export default home
-`
-}
-
 for (const locale of locales) {
   const path = resolve(root, `src/i18n/messages/home/${locale}.ts`)
   const source = readFileSync(path, 'utf8')
@@ -78,7 +65,6 @@ for (const locale of locales) {
     console.error(`skip ${locale}: parse failed`)
     continue
   }
-  // eslint-disable-next-line no-eval
   const home = eval(`(${match[1]})`)
   const flat = flattenNode(home)
   const body = `import type { HomeContentBundle } from '~/home/content/types'

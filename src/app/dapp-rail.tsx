@@ -1,7 +1,8 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '~/lib/utils'
 import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
+import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
@@ -14,23 +15,6 @@ import {
   shellRailIndicatorClass,
   shellRailItemClass,
 } from '~/app/shell-layout'
-
-const railCopy = {
-  swap: { label: 'swap' },
-  genesis: { label: 'genesis' },
-  rewards: { label: 'rewards' },
-  community: { label: 'community' },
-} as const
-
-function railIconMask(icon: string): CSSProperties {
-  return {
-    maskImage: `url(${icon})`,
-    WebkitMaskImage: `url(${icon})`,
-    maskSize: 'contain',
-    maskRepeat: 'no-repeat',
-    maskPosition: 'center',
-  }
-}
 
 type RailIndicator = {
   height: number
@@ -128,8 +112,7 @@ export function DappRail({
       ) : null}
 
       {railItems.map((item) => {
-        const copy = railCopy[item.id]
-        const label = t.nav[copy.label]
+        const label = t.nav[railNavLabelKeys[item.id]]
         const active = item.id === activeTab
 
         return (

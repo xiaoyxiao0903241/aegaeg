@@ -57,14 +57,14 @@ export function SwapSlippageModal({
       overlayClassName="bg-[oklch(0%_0_0/35%)]"
       className={cn(
         'border-0 bg-card',
-        'w-[min(calc(100%-32px),400px)] max-[820px]:w-full',
-        'max-[820px]:rounded-t-[24px] max-[820px]:px-4 max-[820px]:pb-[max(20px,env(safe-area-inset-bottom))] max-[820px]:pt-3',
-        'min-[821px]:rounded-[24px] min-[821px]:p-6',
-        'min-[821px]:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
+        'w-[min(calc(100%-32px),400px)] max-dapp:w-full',
+        'max-dapp:rounded-t-[24px] max-dapp:px-4 max-dapp:pb-[max(20px,env(safe-area-inset-bottom))] max-dapp:pt-3',
+        'dapp:rounded-[24px] dapp:p-6',
+        'dapp:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
       )}
     >
       <AegisSheetHandle />
-      <div className="flex items-center justify-between pb-5 min-[821px]:pb-5">
+      <div className="flex items-center justify-between pb-5 dapp:pb-5">
         <DialogPrimitive.Title className="m-0 text-[21px] font-semibold leading-[1.3] tracking-[-0.63px] text-foreground">
           {t.swap.slippage}
         </DialogPrimitive.Title>

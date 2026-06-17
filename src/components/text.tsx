@@ -11,9 +11,9 @@ export const textVariants = tv({
       sm: 'text-[13px]',
       md: 'text-[15px]',
       lg: 'text-lg tracking-[-0.36px]',
-      xl: 'text-[21px] tracking-[-0.84px] max-[820px]:text-[22px] max-[820px]:tracking-[-0.88px]',
+      xl: 'text-[21px] tracking-[-0.84px] max-dapp:text-[22px] max-dapp:tracking-[-0.88px]',
       '2xl': 'text-[30px] tracking-[-1.2px]',
-      display: 'text-[40px] max-[820px]:text-[26px]',
+      display: 'text-[40px] max-dapp:text-[26px]',
     },
     weight: {
       medium: 'font-medium',
@@ -34,7 +34,7 @@ export const textVariants = tv({
     { size: ['xs', 'sm'], class: 'leading-[1.5]' },
     { size: ['md', 'lg', 'xl'], class: 'leading-[1.3]' },
     { size: '2xl', class: 'leading-[1.2]' },
-    { size: 'display', class: 'leading-[1.15] max-[820px]:leading-[1.2]' },
+    { size: 'display', class: 'leading-[1.15] max-dapp:leading-[1.2]' },
   ],
   defaultVariants: {
     size: 'sm',

@@ -85,8 +85,8 @@ export function GenesisPromoCard({
       className={cn(
         revealClass(),
         'mt-auto grid gap-[5px] px-[18px] py-4',
-        'max-[820px]:gap-1.5 max-[820px]:rounded-2xl max-[820px]:px-[18px] max-[820px]:py-4',
-        'max-[820px]:mt-0 group-data-[tab=genesis]/shell:max-[820px]:grid',
+        'max-dapp:gap-1.5 max-dapp:rounded-2xl max-dapp:px-[18px] max-dapp:py-4',
+        'max-dapp:mt-0 group-data-[tab=genesis]/shell:max-dapp:grid',
         className,
       )}
       data-reveal
@@ -102,7 +102,7 @@ export function GenesisPromoCard({
         </Text>
       )}
       <DappActionButton
-        className="mt-2 min-h-[38px] text-[13px] group-data-[tab=genesis]/shell:max-[820px]:min-h-[42px] group-data-[tab=genesis]/shell:max-[820px]:text-sm"
+        className="mt-2 min-h-[38px] text-[13px] group-data-[tab=genesis]/shell:max-dapp:min-h-[42px] group-data-[tab=genesis]/shell:max-dapp:text-sm"
         onClick={onClick}
       >
         {actionLabel ?? t.genesis.join}

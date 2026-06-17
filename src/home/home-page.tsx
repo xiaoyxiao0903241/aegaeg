@@ -29,7 +29,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen overflow-x-clip">
       <HomeHeader content={content.nav} />
-      <main className="pt-[74px] max-[820px]:pt-[60px]" id="top">
+      <main className="pt-[74px] max-dapp:pt-[60px]" id="top">
         <HomeHeroSection content={content.hero} locale={locale} />
         <HomeProtocolSection content={content.sections.protocol} />
         <HomeEngineSection content={content.sections.engine} />

@@ -23,7 +23,7 @@ export function DappMetaList({
       as="div"
       surface="outlined"
       className={cn(
-        'mt-3.5 grid shrink-0 gap-2 rounded-[12px] px-[14px] py-[13px] tracking-[-0.26px] max-[820px]:mt-3',
+        'mt-3.5 grid shrink-0 gap-2 rounded-[12px] px-[14px] py-[13px] tracking-[-0.26px] max-dapp:mt-3',
         className,
       )}
     >
@@ -33,7 +33,7 @@ export function DappMetaList({
             as="span"
             size="sm"
             tone={connected ? 'body' : 'subtle'}
-            className={connected ? 'max-[820px]:text-faint' : undefined}
+            className={connected ? 'max-dapp:text-faint' : undefined}
           >
             {item.label}
           </Text>

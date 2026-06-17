@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { MOBILE_MAX_WIDTH_QUERY } from '~/lib/breakpoints'
 
-export const MOBILE_MAX_WIDTH_QUERY = '(max-width: 820px)'
+export { MOBILE_MAX_WIDTH_QUERY } from '~/lib/breakpoints'
 
 export function useMobileViewport() {
   const [isMobile, setIsMobile] = useState(

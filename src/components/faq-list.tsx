@@ -15,26 +15,26 @@ type FaqListVariant = 'home' | 'dapp'
 const homeItemShellClass = cn(
   cardVariants({ context: 'home', fill: 'surface', hover: 'shadow', radius: 'md' }),
   'group rounded-md shadow-[0_6px_20px_oklch(22%_0.04_265_/_6%)]',
-  'max-[820px]:min-h-[46px] max-[820px]:rounded-[14px]',
+  'max-dapp:min-h-[46px] max-dapp:rounded-[14px]',
 )
 
-const dappItemOuterClass = 'rounded-md shadow-card max-[820px]:rounded-[14px]'
+const dappItemOuterClass = 'rounded-md shadow-card max-dapp:rounded-[14px]'
 
 const dappItemInnerClass = cn(
   'group h-full w-full max-w-full overflow-hidden rounded-[inherit] border border-border bg-card px-[18px]',
-  'max-[820px]:px-4',
+  'max-dapp:px-4',
 )
 
 const dappTriggerClass = cn(
   'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent py-4 text-left outline-none',
   'text-sm font-normal leading-[1.3] text-faq-text',
-  'max-[820px]:py-3.5',
+  'max-dapp:py-3.5',
 )
 
 const homeTriggerClass = cn(
   'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent px-6 py-[18px] text-left outline-none',
   'text-[15px] font-semibold leading-[1.3] text-foreground',
-  'max-[820px]:min-h-[18px] max-[820px]:px-4 max-[820px]:py-3.5 max-[820px]:text-sm',
+  'max-dapp:min-h-[18px] max-dapp:px-4 max-dapp:py-3.5 max-dapp:text-sm',
 )
 
 const faqArrowClass =
@@ -44,13 +44,13 @@ const variantStyles = {
   home: {
     list: cn(
       revealClass(),
-      'mx-auto mt-10 grid w-[min(100%,960px)] gap-3 max-[820px]:mt-5 max-[820px]:gap-2.5',
+      'mx-auto mt-10 grid w-[min(100%,960px)] gap-3 max-dapp:mt-5 max-dapp:gap-2.5',
     ),
     item: homeItemShellClass,
     trigger: homeTriggerClass,
     question: 'min-w-0',
-    answer: 'pt-3 mb-0 text-sm leading-[1.5] text-faq-text max-[820px]:text-[13px]',
-    answerPad: 'px-6 pb-[18px] max-[820px]:px-4 max-[820px]:pb-3.5',
+    answer: 'pt-3 mb-0 text-sm leading-[1.5] text-faq-text max-dapp:text-[13px]',
+    answerPad: 'px-6 pb-[18px] max-dapp:px-4 max-dapp:pb-3.5',
     answerContent: 'overflow-hidden',
   },
   dapp: {
@@ -59,8 +59,8 @@ const variantStyles = {
     itemInner: dappItemInnerClass,
     trigger: dappTriggerClass,
     question: 'min-w-0',
-    answer: 'mb-4 pt-0 text-xs leading-[1.6] text-ink-strong max-[820px]:leading-normal',
-    answerPad: 'pb-4 max-[820px]:pb-3.5',
+    answer: 'mb-4 pt-0 text-xs leading-[1.6] text-ink-strong max-dapp:leading-normal',
+    answerPad: 'pb-4 max-dapp:pb-3.5',
     answerContent: 'overflow-hidden',
   },
 } as const
