@@ -10,8 +10,8 @@ export const zhBundle: HomeContentBundle = {
     sectionsLabel: '首页区块导航',
     links: [
       { href: '#protocol', label: '协议' },
-      { href: '#engine', label: '引擎' },
-      { href: '#token', label: '代币' },
+      { href: '#engine', label: '核心机制' },
+      { href: '#token', label: '生态价值' },
       { href: '#roadmap', label: '路线图' },
       { href: '#security', label: '安全' },
       { href: '#faq', label: '常见问题' },
@@ -26,14 +26,14 @@ export const zhBundle: HomeContentBundle = {
       desktop: 'AI x DeFi x USD1 · DeFi 4.0 协议',
       mobile: 'AI x DeFi x USD1 · DeFi 4.0',
     },
-    title: '守护未来价值',
+    title: '守护未来价值网络',
     body: {
       desktop:
-        '全球首个 AI x DeFi x USD1 全球支付协议，由 AI 智库系统驱动。以 USD1 作为核心结算资产，用智能化重新定义去中心化金融。',
+        '全球首个AI智库驱动的USD1生态协议。以USD1为核心结算资产，连接AI、支付与全球流动性网络。',
       mobile:
         '全球首个 AI x DeFi x USD1 全球支付协议，由 AI 智库系统驱动。',
     },
-    enterProtocol: '进入协议',
+    enterProtocol: '进入 App',
     readWhitepaper: '阅读白皮书',
     walletBusy: '正在打开钱包...',
   },
@@ -41,118 +41,118 @@ export const zhBundle: HomeContentBundle = {
     protocol: {
       eyebrow: 'AEGIS X 协议',
       title: {
-        desktop: '为下一代金融时代构建的 AI 原生基础设施',
-        mobile: 'AI 原生基础设施',
+        desktop: '下一代价值网络核心架构',
+        mobile: '下一代价值网络核心架构',
       },
       subtitle: {
-        desktop: 'AI x DeFi x USD1 - 构建下一代全球价值网络。',
-        mobile: 'AI x DeFi x USD1 - 构建下一代价值网络。',
+        desktop: 'AI x DeFi x USD1 - 驱动价值流动',
+        mobile: 'AI x DeFi x USD1 - 驱动价值流动',
       },
       cards: [
         {
           index: '01',
           title: 'AI 智库',
           desktop:
-            '自主执行风控、做市与资产配置 - 全部链上运行，全部由智能驱动。',
-          mobile: '自主执行风控、做市与资产配置 - 链上运行，智能驱动。',
+            '自主风险控制、智能做市与流动性管理全部链上执行。',
+          mobile: '自主风险控制、智能做市与流动性管理全部链上执行。',
         },
         {
           index: '02',
           title: 'USD1 结算',
           desktop:
-            '150% 超额抵押铸造，以 USD1 作为稳定 DeFi 4.0 底层的核心结算资产。',
-          mobile: '150% 超额抵押铸造，以 USD1 作为 DeFi 4.0 核心结算资产。',
+            '以 USD1 为核心结算资产，构建稳定的价值流通网络。',
+          mobile: '以 USD1 为核心结算资产，构建稳定的价值流通网络。',
         },
         {
           index: '03',
           title: '全球支付',
           desktop:
-            '将 AI Agent、DeFi 流动性与跨境支付连接为统一的全球价值网络。',
-          mobile: '连接 AI Agent、DeFi 流动性与跨境支付，形成统一价值网络。',
+            '连接 AI Agent、DeFi 与全球支付场景，构建下一代价值网络。',
+          mobile: '连接 AI Agent、DeFi 与全球支付场景，构建下一代价值网络。',
         },
       ],
     },
     engine: {
-      eyebrow: '核心引擎',
+      eyebrow: '核心机制',
       title: {
-        desktop: '四大支柱，一个智能系统',
-        mobile: '四大支柱，一个系统',
+        desktop: '四大机制，一个智能系统',
+        mobile: '四大机制，一个智能系统',
       },
       subtitle: {
-        desktop: 'AI 驱动的 DeFi 4.0 核心引擎 - 自修复价格架构。',
-        mobile: 'AI 驱动的 DeFi 4.0 核心引擎。',
+        desktop: '通过智能决策、动态调节与风险控制，构建可持续运行的价值网络。',
+        mobile: '通过智能决策、动态调节与风险控制，构建可持续运行的价值网络。',
       },
       cards: [
         {
-          title: 'AI 做市引擎',
+          title: '智能做市机制',
           desktop:
-            '动态平衡模型：上涨时累积 USD1 储备；回撤时退出 LP 并执行回购 + 销毁，实现价格自修复。',
+            '上涨阶段累积储备资产，增强协议储备能力；回调阶段执行回购与销毁机制，实现价格修复。',
           mobile:
-            '动态平衡：上涨时累积 USD1；回撤时回购 + 销毁，实现价格自修复。',
+            '上涨阶段累积储备资产，增强协议储备能力；回调阶段执行回购与销毁机制，实现价格修复。',
         },
         {
-          title: '动态波动防御',
+          title: '波动防御机制',
           desktop:
-            '日跌幅 >=5% 自动触发：卖出费率提升至 30%，储备回购与黑洞销毁启动，24 小时后自动恢复。',
+            '当日跌幅达到阈值自动触发：卖出费率提升至 30%，储备回购与黑洞销毁启动，24 小时后自动恢复。',
           mobile:
-            '日跌幅 >=5% 触发：卖出费至 30%，储备回购 + 黑洞销毁，24 小时自动恢复。',
+            '当日跌幅达到阈值自动触发：卖出费率提升至 30%，储备回购与黑洞销毁启动，24 小时后自动恢复。',
         },
         {
-          title: 'Rebase 引擎',
+          title: '收益分配机制',
           desktop:
-            '每 12 小时双周期结算，区块级线性释放。适配最高 540 天质押周期，参考 APY 535%-4,880%。',
-          mobile: '每 12 小时双周期结算，区块级释放。参考 APY 535%-4,880%。',
+            '采用区块级线性释放机制，每12小时进行一次收益结算，支持最长540天参与周期。',
+          mobile: '采用区块级线性释放机制，每12小时进行一次收益结算，支持最长540天参与周期。',
         },
         {
-          title: 'Turbo 机制',
+          title: '涡轮机制',
           desktop:
-            '买入解锁设计：1:1 买入换取卖出额度，24-96 小时自适应冷却，抑制恐慌性抛售。',
-          mobile: '1:1 买入解锁卖出额度，24-96 小时自适应冷却，抑制恐慌抛售。',
+            '通过动态买入解锁机制，优化市场流动性结构，增强生态稳定性与长期发展能力。',
+          mobile: '通过动态买入解锁机制，优化市场流动性结构，增强生态稳定性与长期发展能力。',
         },
       ],
     },
     token: {
-      eyebrow: '代币与生态',
-      title: '多资产飞轮',
+      eyebrow: '价值生态',
+      title: '多资产价值飞轮',
       subtitle: {
         desktop:
-          '四种代币，一个自强化价值循环：增长 → 流动性 → 支付 → 生态。',
-        mobile: '四种代币，一个自强化价值循环。',
+          '用户增长 → 流动性增强 → 支付扩张 → 生态增长。',
+        mobile: '用户增长 → 流动性增强 → 支付扩张 → 生态增长。',
       },
       cards: [
         {
-          label: '核心协议资产',
-          description: '150% 超额抵押 · AI 智库管理',
+          label: '核心协议资产',     
+          description: '150% 超额抵押铸造 · 收益增长引擎',
         },
         {
-          label: '稳定储备资产',
-          description: '结算层 · USD 支撑流动性',
+          label: '核心结算资产',
+          description: '生态结算层 · 价值流通基础设施',
         },
         {
           label: '生态价值代币',
-          description: '2.1 亿固定供应 · 25% 卖出销毁',
+          description: '固定总量2.1亿 · 持续价值沉淀',
         },
         {
-          label: '奖励结算代币',
-          description: '1:1 对应 AGX · 驱动 X 挖矿',
+          label: '奖励结算凭证',
+          description: '可兑换AGX · 参与生态挖矿',
         },
       ],
     },
     roadmap: {
       eyebrow: '路线图',
-      title: '通往 DeFi 4.0 的路径',
+      title: '通往下一代价值网络',
       phases: [
         {
-          phase: '阶段 01',
+          phase: 'PHASE 01',
           time: '2026 Q3',
           title: '创世启动',
           description: '协议部署 · AGX 铸造 · USD1 流动性池',
-          dot: '1',
+          dot: '✓',
           side: 'left',
           state: 'current',
         },
         {
-          phase: '阶段 02',
+          phase: 'PHASE 02',
           time: '2026 Q4',
           title: 'DeFi 核心',
           description: 'Rebase 质押 · LP 债券 · 销毁债券 · AI 做市',
@@ -160,7 +160,7 @@ export const zhBundle: HomeContentBundle = {
           side: 'right',
         },
         {
-          phase: '阶段 03',
+          phase: 'PHASE 03',
           time: '2027 Q1',
           title: 'DAO 与增长',
           description: 'X DAO 激励 · 多签治理 · 全球节点',
@@ -168,26 +168,26 @@ export const zhBundle: HomeContentBundle = {
           side: 'left',
         },
         {
-          phase: '阶段 04',
+          phase: 'PHASE 04',
           time: '2027 Q2',
           title: 'AI Agent 经济',
-          description: '自主支付 · 链上协作 · Agent 做市',
+          description: '自主支付 · 智能协作 · AI Agent经济网络',
           dot: '4',
           side: 'right',
         },
         {
-          phase: '阶段 05',
+          phase: 'PHASE 05',
           time: '2027 Q3',
           title: '全球支付',
-          description: '跨境结算 · 商户接入 · USD1 支付通道',
+          description: '全球支付网络 · 商户接入 · USD1支付场景',
           dot: '5',
           side: 'left',
         },
         {
-          phase: '阶段 06',
+          phase: 'PHASE 06',
           time: '2027 Q4',
-          title: 'DeFi 4.0',
-          description: '机构产品 · 合规框架 · 完整生态',
+          title: '未来价值网络',
+          description: '支付网络 · AI Agent经济 · 价值生态',
           dot: '6',
           side: 'right',
         },
@@ -195,59 +195,65 @@ export const zhBundle: HomeContentBundle = {
     },
     security: {
       eyebrow: '安全与信任',
-      title: 'Aegis 级安全',
+      title: 'AEGIS级安全架构',
       subtitle: {
         desktop:
-          'AEGIS 代表护盾、守护、秩序与安全。资产安全从协议底层开始内建。',
-        mobile: '资产安全从协议底层开始内建。',
+          '从协议架构到资产管理，安全贯穿每一个环节',
+        mobile: '从协议架构到资产管理，安全贯穿每一个环节',
       },
       checks: [
         {
-          desktop: '非托管 - AI 做市合约不能转出任何资产',
-          mobile: '非托管 - AI 做市合约不能转出资产',
+          desktop: '非托管架构 · 智能做市合约不具备资产转出权限',
+          mobile: '非托管架构 · 智能做市合约不具备资产转出权限',
         },
-        '多家安全机构审计',
-        '核心合约在 GitHub 开源',
         {
-          desktop: 'Safe 多签治理（升级 + 执行权限）',
-          mobile: 'Safe 多签治理（升级 + 执行）',
+          desktop:  '核心合约开源可验证 · 通过专业安全审计',
+          mobile: '核心合约开源可验证 · 通过专业安全审计',
+        },
+        {
+          desktop: '多签治理机制 · 核心权限共同管理',
+          mobile: '多签治理机制 · 核心权限共同管理',
+        },
+        {
+          desktop: '动态防御机制 · 自动应对极端波动',
+          mobile: '动态防御机制 · 自动应对极端波动',
         },
       ],
     },
     partners: {
-      title: '生态合作伙伴',
+      title: '生态基础设施',
     },
     faq: {
-      eyebrow: '常见问题',
+      eyebrow: '快速了解',
       title: '常见问题',
       items: [
         {
-          question: '什么是 AEGIS X？',
+          question: 'AEGIS X 是什么？',
           answer:
-            'AEGIS X 是全球首个由 AI 智库系统驱动的协议，将 AI 智能、DeFi 流动性与 USD1 稳定币支付融合为下一代价值网络 - DeFi 4.0。',
+            'AEGIS X 是全球首个AI智库驱动的USD1生态协议，以USD1为核心结算资产，连接AI、DeFi与全球支付网络。',
           open: true,
         },
         {
           question: 'AGX 如何铸造？',
-          answer: 'AGX 通过协议的抵押发行设计铸造，并以 USD1 作为核心结算资产。',
+          answer: 'AGX 通过150%超额抵押机制生成，是协议核心资产与价值增长的重要载体。',
         },
         {
-          question: '质押奖励如何计算？',
-          answer: '奖励遵循 AEGIS X 合约定义的质押层级、周期结算和协议参与规则。',
+          question: 'USD1 在 AEGIS X 中承担什么角色？',
+          answer: 'USD1 是协议核心结算资产，为生态提供价值流通、流动性支持与支付基础设施能力。',
         },
         {
-          question: '协议如何保证安全？',
-          answer: 'AEGIS X 结合非托管设计、安全审计、开源合约与多签治理。',
+          question: '协议如何保障安全？',
+          answer: '合约采用非托管边界、审计、开源审查与多签治理。',
         },
         {
-          question: 'X 代币如何运作？',
-          answer: 'X 是生态价值代币，具备固定供应和协议驱动的销毁机制。',
+          question: '涡轮机制是什么？',
+          answer: '涡轮机制通过动态解锁与流动性调节机制，降低集中性抛压风险，增强市场稳定性与长期发展能力。',
           optional: true,
         },
-        {
-          question: 'Turbo 机制是什么？',
-          answer: 'Turbo 将买入与卖出额度绑定，并通过自适应冷却减少恐慌抛售，同时保持流动性。',
-        },
+        // {
+        //   question: 'Turbo 机制是什么？',
+        //   answer: 'Turbo 将买入与卖出额度绑定，并通过自适应冷却减少恐慌抛售，同时保持流动性。',
+        // },
       ],
     },
   },
@@ -256,31 +262,31 @@ export const zhBundle: HomeContentBundle = {
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: '抵押率',
+      label: '超额抵押率',
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: '最高参考 APY',
+      label: 'LP永久锁定',
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: '支持链',
+      label: '动态防御机制',
     },
     {
-      value: '2.1亿',
+      value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X 总供应',
+      label: 'X固定总量',
     },
   ],
   footer: {
     brandCopy: {
-      desktop: '守护未来价值。\nAI x DeFi x USD1',
-      mobile: '守护未来价值。\nAI x DeFi x USD1',
+      desktop: '守护未来价值网络 \nAI x DeFi x USD1',
+      mobile: '守护未来价值网络 \nAI x DeFi x USD1',
     },
     copyright: '© 2026 AEGIS X DAO. 保留所有权利。',
     legal: '服务条款 · 隐私政策 · 免责声明',
@@ -292,11 +298,11 @@ export const zhBundle: HomeContentBundle = {
         links: [
           {
             href: '/app.html',
-            label: { desktop: '启动 DApp', mobile: '文档' },
+            label: { desktop: '进入 App', mobile: '文档' },
           },
           { href: '#whitepaper', label: '白皮书' },
-          { href: '#docs', label: '文档' },
-          { href: '#analytics', label: '数据分析' },
+          { href: '#docs', label: '项目文档' },
+          { href: '#analytics', label: '发展路线图' },
         ],
       },
       {
@@ -305,14 +311,14 @@ export const zhBundle: HomeContentBundle = {
         links: [
           {
             href: '#token',
-            label: { desktop: 'AGX 质押', mobile: '文档' },
+            label: { desktop: 'AGX', mobile: '文档' },
           },
           {
             href: '#token',
-            label: { desktop: 'LP 债券', mobile: '白皮书' },
+            label: { desktop: 'USD1', mobile: '白皮书' },
           },
-          { href: '#token', label: '销毁债券' },
-          { href: '#token', label: 'X 挖矿' },
+          { href: '#token', label: 'X' },
+          { href: '#token', label: 'gGAX' },
         ],
       },
       {
