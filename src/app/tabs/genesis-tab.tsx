@@ -440,6 +440,18 @@ export function GenesisContent() {
               answer: t.genesis.faqRedeemBody,
               question: t.genesis.faqRedeem,
             },
+            {
+              answer: t.genesis.faqCycleBody,
+              question: t.genesis.faqCycle,
+            },
+            {
+              answer: t.genesis.faqRewardBody,
+              question: t.genesis.faqReward,
+            },
+            {
+              answer: t.genesis.faqfaqReleaseBody,
+              question: t.genesis.faqRelease,
+            },
           ]}
         />
       </DappSection>
