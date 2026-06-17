@@ -37,7 +37,7 @@ export function formatShareholderHintForRank(
 ): string {
   if (!Number.isFinite(rank) || rank <= 0 || rank > tierRows.length) return fallback
   const row = tierRows[rank - 1]
-  if (!row) return fallback
+  if (!row || !template) return fallback
   return template.replace('{bonus}', row[3]).replace('{postLaunch}', row[4])
 }
 

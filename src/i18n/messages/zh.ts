@@ -281,6 +281,9 @@ const zh = defineMessages({
     rankSignInRequired: '请在钱包中完成签名，以加载你的 Genesis 等级',
     heroKicker: '创世等级',
     heroBody: '团队认购金额可获得 {bonus} 奖励，并在上线后获得 30 天 {postLaunch} builder 称号。',
+    heroBodyForRank:
+      '团队认购金额可获得 {bonus} 奖励，并在上线后获得 30 天 {postLaunch} builder 称号。',
+    currentTierSuffix: '当前',
     progressPersonalTo: '距离 {rank} · 个人认购',
     progressTeamTo: '距离 {rank} · 团队认购',
     progressMaxPersonal: '已达最高个人等级',
