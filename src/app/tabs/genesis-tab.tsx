@@ -62,6 +62,11 @@ export function GenesisWidget({
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()
+
+  useEffect(() => {
+    genesis.setShares(1)
+  }, [genesis.setShares])
+
   const seasonIntro = formatGenesisSeasonIntro(
     t.genesis.intro,
     genesis.activeSeasonNumber,
