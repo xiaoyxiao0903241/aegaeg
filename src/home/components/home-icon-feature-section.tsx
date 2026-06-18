@@ -1,9 +1,15 @@
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
-import type { HomeContent, IconCard } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
+import { engineIcons, protocolIcons } from '~/home/static-layout'
 import { cn } from '~/lib/utils'
 import { DeferredImage } from '~/home/components/home-primitives'
 import { HomeSectionHead } from '~/home/components/home-section-head'
+
+type IconCard = (
+  | HomeMessagesBundle['sections']['protocol']['cards'][number]
+  | HomeMessagesBundle['sections']['engine']['cards'][number]
+) & { icon: string }
 
 const sectionClass = {
   protocol:
@@ -76,7 +82,7 @@ function HomeIconCard({
         width="80"
         height="80"
       />
-      {variant === 'protocol' && card.index ? (
+      {variant === 'protocol' && 'index' in card && card.index ? (
         <Text as="span" className={cn(protocolIndexClass, 'feature-card-index')} tone="muted">
           {card.index}
         </Text>
@@ -128,13 +134,20 @@ function HomeIconCardGrid({
 
 function HomeIconFeatureSection({
   content,
+  icons,
   id,
   variant,
 }: {
-  content: HomeContent['sections']['protocol'] | HomeContent['sections']['engine']
+  content: HomeMessagesBundle['sections']['protocol'] | HomeMessagesBundle['sections']['engine']
+  icons: readonly string[]
   id: 'protocol' | 'engine'
   variant: 'protocol' | 'engine'
 }) {
+  const cards = content.cards.map((card, index) => ({
+    ...card,
+    icon: icons[index],
+  }))
+
   return (
     <section className={sectionClass[variant]} id={id} aria-labelledby={`${id}-title`}>
       <div className="container">
@@ -143,7 +156,7 @@ function HomeIconFeatureSection({
           title={content.title}
           subtitle={content.subtitle}
         />
-        <HomeIconCardGrid cards={content.cards} variant={variant} />
+        <HomeIconCardGrid cards={cards} variant={variant} />
       </div>
     </section>
   )
@@ -152,15 +165,29 @@ function HomeIconFeatureSection({
 export function HomeProtocolSection({
   content,
 }: {
-  content: HomeContent['sections']['protocol']
+  content: HomeMessagesBundle['sections']['protocol']
 }) {
-  return <HomeIconFeatureSection content={content} id="protocol" variant="protocol" />
+  return (
+    <HomeIconFeatureSection
+      content={content}
+      icons={protocolIcons}
+      id="protocol"
+      variant="protocol"
+    />
+  )
 }
 
 export function HomeEngineSection({
   content,
 }: {
-  content: HomeContent['sections']['engine']
+  content: HomeMessagesBundle['sections']['engine']
 }) {
-  return <HomeIconFeatureSection content={content} id="engine" variant="engine" />
+  return (
+    <HomeIconFeatureSection
+      content={content}
+      icons={engineIcons}
+      id="engine"
+      variant="engine"
+    />
+  )
 }

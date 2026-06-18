@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/components/card'
 import { homeAssets } from '~/home/assets'
-import type { HomeContent } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { DeferredImage } from '~/home/components/home-primitives'
@@ -35,7 +35,7 @@ const securityClass = {
 export function HomeSecuritySection({
   content,
 }: {
-  content: HomeContent['sections']['security']
+  content: HomeMessagesBundle['sections']['security']
 }) {
   return (
     <section

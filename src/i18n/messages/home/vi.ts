@@ -1,5 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeContentBundle } from '~/home/content/types'
+import type { HomeMessagesBundle } from './en'
 
 const home = defineMessages({
   meta: {
@@ -35,7 +35,6 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'Sách trắng',
-    launchDapp: 'Khởi chạy DApp',
     languageLabel: 'Ngôn ngữ'
   },
   hero: {
@@ -45,7 +44,6 @@ const home = defineMessages({
     body: 'Giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi viện nghiên cứu AI. Với USD1 là tài sản thanh toán cốt lõi, kết nối AI, thanh toán và mạng lưới thanh khoản toàn cầu.',
     enterProtocol: 'Vào giao thức',
     readWhitepaper: 'Đọc sách trắng',
-    walletBusy: 'Đang mở ví...'
   },
   sections: {
     protocol: {
@@ -190,29 +188,29 @@ const home = defineMessages({
       title: 'Câu hỏi thường gặp',
       items: [
         {
-          question: 'AEGIS X là gì?',
-          answer: 'AEGIS X là giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi viện nghiên cứu AI, với USD1 là tài sản thanh toán cốt lõi, kết nối AI, DeFi và mạng lưới thanh toán toàn cầu.',
+          q: 'AEGIS X là gì?',
+          a: 'AEGIS X là giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi viện nghiên cứu AI, với USD1 là tài sản thanh toán cốt lõi, kết nối AI, DeFi và mạng lưới thanh toán toàn cầu.',
           open: true
         },
         {
-          question: 'AGX được phát hành như thế nào?',
-          answer: 'AGX được tạo ra thông qua cơ chế thế chấp vượt mức 150%, là tài sản cốt lõi của giao thức và phương tiện quan trọng cho tăng trưởng giá trị.'
+          q: 'AGX được phát hành như thế nào?',
+          a: 'AGX được tạo ra thông qua cơ chế thế chấp vượt mức 150%, là tài sản cốt lõi của giao thức và phương tiện quan trọng cho tăng trưởng giá trị.'
         },
         {
-          question: 'USD1 đóng vai trò gì trong AEGIS X?',
-          answer: 'USD1 là tài sản thanh toán cốt lõi của giao thức, cung cấp khả năng lưu thông giá trị, hỗ trợ thanh khoản và cơ sở hạ tầng thanh toán cho hệ sinh thái.'
+          q: 'USD1 đóng vai trò gì trong AEGIS X?',
+          a: 'USD1 là tài sản thanh toán cốt lõi của giao thức, cung cấp khả năng lưu thông giá trị, hỗ trợ thanh khoản và cơ sở hạ tầng thanh toán cho hệ sinh thái.'
         },
         {
-          question: 'Giao thức đảm bảo bảo mật như thế nào?',
-          answer: 'Hợp đồng áp dụng ranh giới phi lưu ký, kiểm toán, xem xét mã nguồn mở và quản trị đa chữ ký.'
+          q: 'Giao thức đảm bảo bảo mật như thế nào?',
+          a: 'Hợp đồng áp dụng ranh giới phi lưu ký, kiểm toán, xem xét mã nguồn mở và quản trị đa chữ ký.'
         },
         {
-          question: 'Cơ chế Turbo là gì?',
-          answer: 'Cơ chế Turbo giảm rủi ro áp lực bán tập trung thông qua cơ chế mở khóa động và điều chỉnh thanh khoản, tăng cường sự ổn định thị trường và năng lực phát triển dài hạn.'
+          q: 'Cơ chế Turbo là gì?',
+          a: 'Cơ chế Turbo giảm rủi ro áp lực bán tập trung thông qua cơ chế mở khóa động và điều chỉnh thanh khoản, tăng cường sự ổn định thị trường và năng lực phát triển dài hạn.'
         },
         {
-          question: 'Token X hoạt động như thế nào?',
-          answer: 'X là token giá trị hệ sinh thái, áp dụng tổng cung cố định và cơ chế đốt được điều khiển bởi giao thức.'
+          q: 'Token X hoạt động như thế nào?',
+          a: 'X là token giá trị hệ sinh thái, áp dụng tổng cung cố định và cơ chế đốt được điều khiển bởi giao thức.'
         }
       ]
     }
@@ -247,7 +245,6 @@ const home = defineMessages({
     brandCopy: 'Bảo vệ mạng lưới giá trị tương lai \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. Bảo lưu mọi quyền.',
     legal: 'Điều khoản dịch vụ · Chính sách bảo mật · Tuyên bố miễn trừ',
-    languageLabel: 'Ngôn ngữ',
     groups: [
       {
         label: 'Giao thức',
@@ -317,6 +314,6 @@ const home = defineMessages({
       }
     ]
   }
-} satisfies HomeContentBundle)
+} satisfies HomeMessagesBundle)
 
 export default home

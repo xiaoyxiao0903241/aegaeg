@@ -1,5 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeContentBundle } from '~/home/content/types'
+import type { HomeMessagesBundle } from './en'
 
 const home = defineMessages({
   meta: {
@@ -35,7 +35,6 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'ホワイトペーパー',
-    launchDapp: 'DAppを起動',
     languageLabel: '言語'
   },
   hero: {
@@ -45,7 +44,6 @@ const home = defineMessages({
     body: '世界初のAIシンクタンク駆動型USD1エコシステムプロトコル。USD1をコア決済資産とし、AI、決済、グローバル流動性ネットワークを接続します。',
     enterProtocol: 'プロトコルに入る',
     readWhitepaper: 'ホワイトペーパーを読む',
-    walletBusy: 'ウォレットを開いています...'
   },
   sections: {
     protocol: {
@@ -190,29 +188,29 @@ const home = defineMessages({
       title: 'よくある質問',
       items: [
         {
-          question: 'AEGIS Xとは何ですか？',
-          answer: 'AEGIS Xは世界初のAIシンクタンク駆動型USD1エコシステムプロトコルで、USD1をコア決済資産とし、AI、DeFi、グローバル決済ネットワークを接続します。',
+          q: 'AEGIS Xとは何ですか？',
+          a: 'AEGIS Xは世界初のAIシンクタンク駆動型USD1エコシステムプロトコルで、USD1をコア決済資産とし、AI、DeFi、グローバル決済ネットワークを接続します。',
           open: true
         },
         {
-          question: 'AGXはどのように発行されますか？',
-          answer: 'AGXは150%超過担保メカニズムにより生成され、プロトコルのコア資産と価値成長の重要な担い手です。'
+          q: 'AGXはどのように発行されますか？',
+          a: 'AGXは150%超過担保メカニズムにより生成され、プロトコルのコア資産と価値成長の重要な担い手です。'
         },
         {
-          question: 'USD1はAEGIS Xでどのような役割を果たしますか？',
-          answer: 'USD1はプロトコルのコア決済資産であり、エコシステムに価値流通、流動性サポート、決済インフラ機能を提供します。'
+          q: 'USD1はAEGIS Xでどのような役割を果たしますか？',
+          a: 'USD1はプロトコルのコア決済資産であり、エコシステムに価値流通、流動性サポート、決済インフラ機能を提供します。'
         },
         {
-          question: 'プロトコルはどのようにセキュリティを確保しますか？',
-          answer: 'コントラクトは非カストディアル境界、監査、オープンソースレビュー、マルチシグガバナンスを採用しています。'
+          q: 'プロトコルはどのようにセキュリティを確保しますか？',
+          a: 'コントラクトは非カストディアル境界、監査、オープンソースレビュー、マルチシグガバナンスを採用しています。'
         },
         {
-          question: 'ターボメカニズムとは何ですか？',
-          answer: 'ターボメカニズムは動的アンロックと流動性調整機構により、集中売り圧力リスクを低減し、市場の安定性と長期発展力を強化します。'
+          q: 'ターボメカニズムとは何ですか？',
+          a: 'ターボメカニズムは動的アンロックと流動性調整機構により、集中売り圧力リスクを低減し、市場の安定性と長期発展力を強化します。'
         },
         {
-          question: 'Xトークンはどのように機能しますか？',
-          answer: 'Xはエコシステム価値トークンで、固定総量とプロトコル駆動のバーン機構を採用しています。'
+          q: 'Xトークンはどのように機能しますか？',
+          a: 'Xはエコシステム価値トークンで、固定総量とプロトコル駆動のバーン機構を採用しています。'
         }
       ]
     }
@@ -247,7 +245,6 @@ const home = defineMessages({
     brandCopy: '未来の価値ネットワークを守る \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. 全著作権所有。',
     legal: '利用規約 · プライバシーポリシー · 免責事項',
-    languageLabel: '言語',
     groups: [
       {
         label: 'プロトコル',
@@ -317,6 +314,6 @@ const home = defineMessages({
       }
     ]
   }
-} satisfies HomeContentBundle)
+} satisfies HomeMessagesBundle)
 
 export default home

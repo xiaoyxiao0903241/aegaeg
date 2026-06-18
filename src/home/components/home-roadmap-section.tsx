@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/components/card'
-import type { HomeContent } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { HomeSectionHead } from '~/home/components/home-section-head'
@@ -58,7 +58,7 @@ const phaseTopClass = [
 export function HomeRoadmapSection({
   content,
 }: {
-  content: HomeContent['sections']['roadmap']
+  content: HomeMessagesBundle['sections']['roadmap']
 }) {
   return (
     <section className={roadmapClass.section} id="roadmap" aria-labelledby="roadmap-title">

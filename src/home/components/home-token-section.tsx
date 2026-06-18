@@ -1,10 +1,21 @@
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
-import type { HomeContent, TokenCard } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
+import { tokenCardShells } from '~/home/static-layout'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { DeferredImage } from '~/home/components/home-primitives'
 import { HomeSectionHead } from '~/home/components/home-section-head'
+
+type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
+  className: string
+  icon: string
+  iconClassName?: string
+  shape: string
+  shapeClassName?: string
+  shapeWrapClassName: string
+  symbol: string
+}
 
 const tokenClass = {
   section:
@@ -95,8 +106,13 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
 export function HomeTokenSection({
   content,
 }: {
-  content: HomeContent['sections']['token']
+  content: HomeMessagesBundle['sections']['token']
 }) {
+  const cards = content.cards.map((card, index) => ({
+    ...tokenCardShells[index],
+    ...card,
+  }))
+
   return (
     <section className={tokenClass.section} id="token" aria-labelledby="token-title">
       <div className={tokenClass.container}>
@@ -110,7 +126,7 @@ export function HomeTokenSection({
           data-reveal
           data-token-grid
         >
-          {content.cards.map((token) => (
+          {cards.map((token) => (
             <HomeTokenCard key={token.symbol} token={token} />
           ))}
         </div>

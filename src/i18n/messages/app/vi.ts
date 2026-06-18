@@ -1,3 +1,4 @@
+import type { AppMessagesBundle } from './en'
 import { defineMessages } from '~/i18n/messages/define-messages'
 
 const app = defineMessages({
@@ -96,38 +97,50 @@ const app = defineMessages({
     settlement: 'Thanh toán',
     settlementValue: 'On-chain · vài giây',
     settlementHint: 'Chỉ BSC · phí gas do ví đã kết nối trả',
-    about: 'Giới thiệu',
-    aboutBody:
-      'Hoán đổi USDT và USD1 ngay lập tức theo tỷ lệ cố định 1:1, không trượt giá. USD1 là tài sản thanh toán cốt lõi của giao thức AEGIS X.',
-    tokenAbout: 'Về các token hệ sinh thái AEGIS X',
-    tokenUsd1: 'USD1 · Stablecoin thanh toán',
-    tokenUsd1Body:
-      'Stablecoin thanh toán cốt lõi, neo 1:1, không trượt giá, dùng xuyên suốt Genesis, staking và thanh toán.',
-    tokenAgx: 'AGX · Token quản trị',
-    tokenAgxBody: 'Token quản trị cốt lõi dùng cho bỏ phiếu, staking và khuyến khích hệ sinh thái.',
-    tokenAgxBodyDesktop:
-      'Token quản trị và giá trị cốt lõi của giao thức AEGIS X, dùng cho bỏ phiếu quản trị, staking và khuyến khích hệ sinh thái để nắm bắt tăng trưởng dài hạn.',
-    tokenGagx: 'gAGX · Biên nhận staking',
-    tokenGagxBody:
-      'Biên nhận có lãi từ staking AGX, tự động lãi kép, mở khóa trọng số quản trị.',
-    tokenGagxBodyDesktop:
-      'Biên nhận có lãi kiếm được khi staking AGX, với lợi nhuận tự động lãi kép và trọng số quản trị cấp cao hơn.',
-    tokenX: 'X · Token vốn chủ sở hữu',
-    tokenXBody:
-      'Token vốn chủ sở hữu hệ sinh thái ghi nhận đóng góp, có thể đổi lấy quyền lợi và hệ số airdrop.',
-    tokenXBodyDesktop:
-      'Token tham gia và vốn chủ sở hữu hệ sinh thái ghi nhận đóng góp on-chain, có thể đổi lấy quyền lợi, sự kiện và hệ số airdrop.',
+    about: {
+      title: 'Giới thiệu',
+      body: 'Hoán đổi USDT và USD1 ngay lập tức theo tỷ lệ cố định 1:1, không trượt giá. USD1 là tài sản thanh toán cốt lõi của giao thức AEGIS X.',
+    },
+    tokenAbout: {
+      title: 'Về các token hệ sinh thái AEGIS X',
+      items: [
+        {
+          key: 'usd1',
+          title: 'USD1 · Stablecoin thanh toán',
+          body: 'Stablecoin thanh toán cốt lõi, neo 1:1, không trượt giá, dùng xuyên suốt Genesis, staking và thanh toán.',
+        },
+        {
+          key: 'agx',
+          title: 'AGX · Token quản trị',
+          body: 'Token quản trị cốt lõi dùng cho bỏ phiếu, staking và khuyến khích hệ sinh thái.',
+          bodyDesktop: 'Token quản trị và giá trị cốt lõi của giao thức AEGIS X, dùng cho bỏ phiếu quản trị, staking và khuyến khích hệ sinh thái để nắm bắt tăng trưởng dài hạn.',
+        },
+        {
+          key: 'gagx',
+          title: 'gAGX · Biên nhận staking',
+          body: 'Biên nhận có lãi từ staking AGX, tự động lãi kép, mở khóa trọng số quản trị.',
+          bodyDesktop: 'Biên nhận có lãi kiếm được khi staking AGX, với lợi nhuận tự động lãi kép và trọng số quản trị cấp cao hơn.',
+        },
+        {
+          key: 'x',
+          title: 'X · Token vốn chủ sở hữu',
+          body: 'Token vốn chủ sở hữu hệ sinh thái ghi nhận đóng góp, có thể đổi lấy quyền lợi và hệ số airdrop.',
+          bodyDesktop: 'Token tham gia và vốn chủ sở hữu hệ sinh thái ghi nhận đóng góp on-chain, có thể đổi lấy quyền lợi, sự kiện và hệ số airdrop.',
+        },
+      ],
+    },
     tokenContract: 'Xem hợp đồng',
     tokenPrevious: 'Token trước',
     tokenNext: 'Token tiếp',
     swipeNext: 'Vuốt lên để xem trang tiếp theo',
     swipePrevious: 'Vuốt xuống để quay lại trang trước',
-    faqTabUsd1: 'USD1',
-    faqTabAgx: 'AGX',
-    faqTabGagx: 'gAGX',
-    faqTabX: 'X',
-    faqTabUsd1Items: [
-      {
+    faq: {
+      title: 'FAQ',
+      tabs: {
+        usd1: {
+          label: 'USD1',
+          items: [
+{
         q: 'USD1 là gì?',
         a: 'USD1 là stablecoin thanh toán cốt lõi của hệ sinh thái AEGIS X, được bảo chứng 1:1 và dùng xuyên suốt hoán đổi, đóng góp và phần thưởng.',
       },
@@ -139,9 +152,12 @@ const app = defineMessages({
         q: 'Có phí nào không?',
         a: 'Trang tĩnh này chỉ hiển thị phí gas mạng BSC.',
       },
-    ],
-    faqTabAgxItems: [
-      {
+          ],
+        },
+        agx: {
+          label: 'AGX',
+          items: [
+{
         q: 'AGX là gì?',
         a: 'AGX là token quản trị và giá trị của AEGIS X, dùng cho bỏ phiếu, staking và khuyến khích hệ sinh thái.',
       },
@@ -153,9 +169,12 @@ const app = defineMessages({
         q: 'USDT và USD1 được chuyển đổi như thế nào?',
         a: 'Ứng dụng định tuyến chuyển đổi qua lộ trình hoán đổi BSC được hỗ trợ và trình bày giao dịch cuối qua ví đã kết nối.',
       },
-    ],
-    faqTabGagxItems: [
-      {
+          ],
+        },
+        gagx: {
+          label: 'gAGX',
+          items: [
+{
         q: 'gAGX là gì?',
         a: 'gAGX là biên nhận staking có lãi cho AGX, mở khóa trọng số quản trị và danh hiệu cổ đông cao hơn.',
       },
@@ -167,9 +186,12 @@ const app = defineMessages({
         q: 'USDT và USD1 được chuyển đổi như thế nào?',
         a: 'Ứng dụng định tuyến chuyển đổi qua lộ trình hoán đổi BSC được hỗ trợ và trình bày giao dịch cuối qua ví đã kết nối.',
       },
-    ],
-    faqTabXItems: [
-      {
+          ],
+        },
+        x: {
+          label: 'X',
+          items: [
+{
         q: 'X là gì?',
         a: 'X là token tham gia hệ sinh thái ghi nhận đóng góp on-chain và đủ điều kiện airdrop và sự kiện.',
       },
@@ -181,34 +203,10 @@ const app = defineMessages({
         q: 'USDT và USD1 được chuyển đổi như thế nào?',
         a: 'Ứng dụng định tuyến chuyển đổi qua lộ trình hoán đổi BSC được hỗ trợ và trình bày giao dịch cuối qua ví đã kết nối.',
       },
-    ],
-    faq: 'FAQ',
-    faqRate: 'Tại sao tỷ giá cố định 1:1?',
-    faqRateBody:
-      'USD1 là stablecoin thanh toán trong giao thức. Giao diện hoán đổi giữ mô hình chuyển đổi cố định 1:1 trong giai đoạn Genesis.',
-    faqUsd1: 'USD1 là gì?',
-    faqUsd1Body:
-      'USD1 là tài sản thanh toán cốt lõi của hệ sinh thái AEGIS X. Được bảo chứng 100% bởi tài sản dự trữ gồm tiền mặt, trái phiếu Kho bạc Mỹ ngắn hạn và quỹ thị trường tiền chính phủ, với báo cáo dự trữ hàng tháng trên trang WLFI.',
-    faqFees: 'Có phí nào không?',
-    faqFeesBody: 'Trang tĩnh này chỉ hiển thị phí gas mạng BSC.',
-    faqRole: 'USD1 đóng vai trò gì trong giao thức?',
-    faqRoleBody:
-      'USD1 là kênh thanh toán xuyên suốt đóng góp, phần thưởng và hoán đổi, giữ kế toán giá trị đơn giản và có thể kiểm toán.',
-    faqConversion: 'USDT và USD1 được chuyển đổi như thế nào?',
-    faqConversionBody:
-      'Ứng dụng định tuyến chuyển đổi qua lộ trình hoán đổi BSC được hỗ trợ và trình bày giao dịch cuối qua ví đã kết nối.',
-    faqTabUsd1Q: 'USD1 là gì?',
-    faqTabUsd1A:
-      'USD1 là stablecoin thanh toán cốt lõi của hệ sinh thái AEGIS X, được bảo chứng 1:1 và dùng xuyên suốt hoán đổi, đóng góp và phần thưởng.',
-    faqTabAgxQ: 'AGX là gì?',
-    faqTabAgxA:
-      'AGX là token quản trị và giá trị của AEGIS X, dùng cho bỏ phiếu, staking và khuyến khích hệ sinh thái.',
-    faqTabGagxQ: 'gAGX là gì?',
-    faqTabGagxA:
-      'gAGX là biên nhận staking có lãi cho AGX, mở khóa trọng số quản trị và danh hiệu cổ đông cao hơn.',
-    faqTabXQ: 'X là gì?',
-    faqTabXA:
-      'X là token tham gia hệ sinh thái ghi nhận đóng góp on-chain và đủ điều kiện airdrop và sự kiện.',
+          ],
+        },
+      },
+    },
     tokenContractTooltip: 'Xem chi tiết token và hợp đồng',
   },
   genesis: {
@@ -228,11 +226,9 @@ const app = defineMessages({
     endsIn: 'Kết thúc sau',
     referencePrice: 'Giá tham chiếu AGX',
     contribution: 'Đóng góp toàn mạng',
-    discount: 'Giảm giá',
     discountLabel: 'Giảm giá',
     discountRatio: 'Tỷ lệ giảm',
     network: 'Mạng',
-    airdropRatio: 'Tỷ lệ airdrop',
     xAirdropRatio: 'Tỷ lệ airdrop X',
     airdropLabel: 'Tỷ lệ airdrop X',
     addresses: 'Địa chỉ',
@@ -244,18 +240,16 @@ const app = defineMessages({
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: 'Các builder cốt lõi trên toàn thế giới cùng phát triển hệ sinh thái toàn cầu AEGIS X.',
     viewContract: 'Xem hợp đồng',
-    faqSeason: 'FAQ1',
-    faqSeasonBody: 'Phân bổ mùa Genesis được xử lý sau khi ví phê duyệt.',
-    faqRedeem: 'FAQ2',
-    faqRedeemBody: 'Hồ sơ đóng góp được lưu on-chain để phân bổ AGX sau này.',
-    faqCycle: 'FAQ3',
-    faqCycleBody: 'AGX từ đóng góp Genesis tuân theo lịch giải phóng 540 ngày.',
-    faqReward: 'FAQ4',
-    faqRewardBody:
-      'Tài khoản có tổng đóng góp Genesis 5.000 USD đủ điều kiện nhận airdrop X theo giai đoạn 5% / 2% / 1%.',
-    faqRelease: 'FAQ5',
-    faqReleaseBody:
-      'Airdrop X vest tuyến tính 12 tháng (~8,33%/tháng); lần giải phóng đầu sau 30 ngày kể từ khi giao thức staking X ra mắt.',
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: 'Phân bổ mùa Genesis được xử lý sau khi ví phê duyệt.' },
+        { q: 'FAQ2', a: 'Hồ sơ đóng góp được lưu on-chain để phân bổ AGX sau này.' },
+        { q: 'FAQ3', a: 'AGX từ đóng góp Genesis tuân theo lịch giải phóng 540 ngày.' },
+        { q: 'FAQ4', a: 'Tài khoản có tổng đóng góp Genesis 5.000 USD đủ điều kiện nhận airdrop X theo giai đoạn 5% / 2% / 1%.' },
+        { q: 'FAQ5', a: 'Airdrop X vest tuyến tính 12 tháng (~8,33%/tháng); lần giải phóng đầu sau 30 ngày kể từ khi giao thức staking X ra mắt.' },
+      ],
+    },
     promoTitle: 'Genesis Season 1 · giảm 30%',
     promoBody: 'Đang diễn ra — hạn mức có hạn, kết thúc 07.10',
     promoTitleTemplate: 'Genesis Season {season} · {discount}',
@@ -271,7 +265,9 @@ const app = defineMessages({
     walletNotConnected: 'Ví đã ngắt kết nối. Hãy kết nối lại để ký giao dịch.',
     contributionsSyncPending:
       'Giao dịch on-chain đã xác nhận. Đang đồng bộ lịch sử — vui lòng làm mới sau.',
-    contributionsEmpty: 'Chưa có bản ghi đóng góp',
+    contributionsEmpty: {
+      title: 'Chưa có bản ghi đóng góp',
+    },
     usd1Balance: 'Số dư USD1',
     phase: 'Giai đoạn',
     phaseSeason: 'Season {season} · {discount}',
@@ -315,20 +311,23 @@ const app = defineMessages({
     history: 'Lịch sử phần thưởng',
     referralHistory: 'Phần thưởng giới thiệu',
     teamHistory: 'Phần thưởng nhóm',
-    referralHistoryEmpty: 'Chưa có bản ghi phần thưởng giới thiệu',
-    referralHistoryEmptyBody:
-      'Phần thưởng giới thiệu sẽ hiển thị tại đây sau khi người được giới thiệu đóng góp trong Genesis.',
-    teamHistoryEmpty: 'Chưa có bản ghi phần thưởng nhóm',
-    teamHistoryEmptyBody:
-      'Lịch sử quyết toán và nhận phần thưởng nhóm sẽ hiển thị tại đây khi phần thưởng phát sinh.',
-    faqSettlement: 'Thưởng nhóm được thanh toán như thế nào?',
-    faqSettlementBody: 'Thưởng nhóm được thanh toán theo epoch sau khi đóng góp đủ điều kiện được xác nhận.',
-    faqReferral: 'Thưởng giới thiệu được tính như thế nào?',
-    faqReferralBody: 'Thưởng giới thiệu được trả tự động khi người được giới thiệu đóng góp trong Genesis. Tỷ lệ phụ thuộc vào cấp cổ đông của bạn.',
-    faqTeamClaim: 'Làm sao để nhận thưởng nhóm?',
-    faqTeamClaimBody: 'Thưởng nhóm tích lũy theo epoch thanh toán. Dùng “Nhận về ví” ở panel trái khi có số dư có thể nhận.',
-    faqRank: 'Cấp cổ đông được xác định thế nào?',
-    faqRankBody: 'Cấp dựa trên đóng góp Genesis cá nhân và khối lượng nhóm. Cấp cao hơn mở khóa tỷ lệ thưởng nhóm lớn hơn.',
+    referralHistoryEmpty: {
+      title: 'Chưa có bản ghi phần thưởng giới thiệu',
+      body: 'Phần thưởng giới thiệu sẽ hiển thị tại đây sau khi người được giới thiệu đóng góp trong Genesis.',
+    },
+    teamHistoryEmpty: {
+      title: 'Chưa có bản ghi phần thưởng nhóm',
+      body: 'Lịch sử quyết toán và nhận phần thưởng nhóm sẽ hiển thị tại đây khi phần thưởng phát sinh.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'Thưởng nhóm được thanh toán như thế nào?', a: 'Thưởng nhóm được thanh toán theo epoch sau khi đóng góp đủ điều kiện được xác nhận.' },
+        { q: 'Thưởng giới thiệu được tính như thế nào?', a: 'Thưởng giới thiệu được trả tự động khi người được giới thiệu đóng góp trong Genesis. Tỷ lệ phụ thuộc vào cấp cổ đông của bạn.' },
+        { q: 'Làm sao để nhận thưởng nhóm?', a: 'Thưởng nhóm tích lũy theo epoch thanh toán. Dùng “Nhận về ví” ở panel trái khi có số dư có thể nhận.' },
+        { q: 'Cấp cổ đông được xác định thế nào?', a: 'Cấp dựa trên đóng góp Genesis cá nhân và khối lượng nhóm. Cấp cao hơn mở khóa tỷ lệ thưởng nhóm lớn hơn.' },
+      ],
+    },
     teamHistorySource: 'Thanh toán epoch',
     rewardType: {
       referralPaid: 'Thưởng giới thiệu',
@@ -366,7 +365,23 @@ const app = defineMessages({
     myTeam: 'Nhóm của tôi',
     genesisTitle: 'Danh hiệu Genesis',
     inviteTitle: 'Bắt đầu mời — khởi động vòng tăng trưởng lũy kế',
-    programs: 'Chương trình',
+    programs: {
+      title: 'Chương trình',
+      items: [
+        {
+          label: 'X DAO Genesis · Season 1',
+          title: 'Tuyển cổ đông Genesis toàn cầu đang diễn ra',
+          body: 'Giai đoạn Genesis kết nối các builder cốt lõi trên toàn cầu để cùng xây dựng hệ sinh thái AEGIS X.',
+          action: 'Tìm hiểu chương trình →',
+        },
+        {
+          label: 'X Academy',
+          title: 'Đào tạo DeFi chuyên nghiệp cho cộng đồng',
+          body: 'X Academy giúp builder trên toàn cầu tham gia XDAO một cách có hệ thống hơn.',
+          action: 'Xem yêu cầu tham gia →',
+        },
+      ],
+    },
     myInvites: 'Lời mời của tôi ({count})',
 
     referralBondActive: 'Mối quan hệ giới thiệu đã kích hoạt · mời trực tiếp {count}',
@@ -384,25 +399,34 @@ const app = defineMessages({
     statGenesisToday: 'Nâng +1 bậc khi ra mắt · hiệu lực 30 ngày',
 
     bindReferrerSuccess: 'Đã liên kết người giới thiệu',
-    inviteFlowShareTitle: 'Chia sẻ liên kết của bạn',
-    inviteFlowShareBody: 'Kết nối ví để tạo liên kết giới thiệu cá nhân.',
-    inviteFlowJoinTitle: 'Bạn bè tham gia',
-    inviteFlowJoinBody: 'Đăng ký qua liên kết của bạn sẽ kích hoạt mối quan hệ giới thiệu.',
-    inviteFlowEarnTitle: 'Nhận phần thưởng',
-    inviteFlowEarnBody: 'Khi họ đóng góp hoặc stake, phần thưởng sẽ về bạn.',
-    programGenesisLabel: 'X DAO Genesis · Season 1',
-    programGenesisTitle: 'Tuyển cổ đông Genesis toàn cầu đang diễn ra',
-    programGenesisBody:
-      'Giai đoạn Genesis kết nối các builder cốt lõi trên toàn cầu để cùng xây dựng hệ sinh thái AEGIS X.',
-    programGenesisAction: 'Tìm hiểu chương trình →',
-    programAcademyLabel: 'X Academy',
-    programAcademyTitle: 'Đào tạo DeFi chuyên nghiệp cho cộng đồng',
-    programAcademyBody:
-      'X Academy giúp builder trên toàn cầu tham gia XDAO một cách có hệ thống hơn.',
-    programAcademyAction: 'Xem yêu cầu tham gia →',
+    inviteFlow: {
+      items: [
+        {
+          title: 'Chia sẻ liên kết của bạn',
+          body: 'Kết nối ví để tạo liên kết giới thiệu cá nhân.',
+        },
+        {
+          title: 'Bạn bè tham gia',
+          body: 'Đăng ký qua liên kết của bạn sẽ kích hoạt mối quan hệ giới thiệu.',
+        },
+        {
+          title: 'Nhận phần thưởng',
+          body: 'Khi họ đóng góp hoặc stake, phần thưởng sẽ về bạn.',
+        },
+      ],
+    },
     boundTo: 'Đã liên kết với {address}',
-    invitesEmptyTitle: 'Chưa có lời mời',
-    invitesEmptyBody: 'Chia sẻ liên kết giới thiệu để mời bạn bè tham gia cộng đồng.',
+    invitesEmpty: {
+      title: 'Chưa có lời mời',
+      body: 'Chia sẻ liên kết giới thiệu để mời bạn bè tham gia cộng đồng.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: '---' },
+        { q: 'FAQ2', a: '---' },
+      ],
+    },
   },
   tables: {
     time: 'Thời gian',
@@ -437,6 +461,6 @@ const app = defineMessages({
     loading: 'Đang tải…',
     signInRequired: 'Đăng nhập để xem dữ liệu của bạn',
   },
-})
+} satisfies AppMessagesBundle)
 
 export default app

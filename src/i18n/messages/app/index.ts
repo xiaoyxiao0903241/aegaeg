@@ -7,6 +7,8 @@ import appRu from '~/i18n/messages/app/ru'
 import appVi from '~/i18n/messages/app/vi'
 import appZh from '~/i18n/messages/app/zh'
 
+export type { AppMessagesBundle } from '~/i18n/messages/app/en'
+
 export const appMessagesByLocale = {
   en: appEn,
   zh: appZh,

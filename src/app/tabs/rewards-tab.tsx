@@ -502,14 +502,14 @@ export function RewardsContent() {
             <DappTableEmptyMessage
               body={
                 historyTab === 'referral'
-                  ? t.rewards.referralHistoryEmptyBody
-                  : t.rewards.teamHistoryEmptyBody
+                  ? t.rewards.referralHistoryEmpty.body
+                  : t.rewards.teamHistoryEmpty.body
               }
               className="mt-0"
               title={
                 historyTab === 'referral'
-                  ? t.rewards.referralHistoryEmpty
-                  : t.rewards.teamHistoryEmpty
+                  ? t.rewards.referralHistoryEmpty.title
+                  : t.rewards.teamHistoryEmpty.title
               }
             />
           ) : (
@@ -537,28 +537,11 @@ export function RewardsContent() {
       <DappCollapsibleSection
         bodyClassName="overflow-visible"
         className="group-data-[tab=rewards]/shell:max-dapp:mt-0"
-        title={t.swap.faq}
+        title={t.rewards.faq.title}
       >
         <FaqStack
           defaultOpenFirst={false}
-          items={[
-            {
-              answer: t.rewards.faqSettlementBody,
-              question: t.rewards.faqSettlement,
-            },
-            {
-              answer: t.rewards.faqReferralBody,
-              question: t.rewards.faqReferral,
-            },
-            {
-              answer: t.rewards.faqTeamClaimBody,
-              question: t.rewards.faqTeamClaim,
-            },
-            {
-              answer: t.rewards.faqRankBody,
-              question: t.rewards.faqRank,
-            },
-          ]}
+          items={t.rewards.faq.items}
         />
       </DappCollapsibleSection>
     </DappDetailPage>

@@ -5,7 +5,7 @@ export type Locale = (typeof locales)[number]
 export const defaultLocale: Locale = 'en'
 
 export { localeMeta, type LocaleMeta } from '~/i18n/locale-meta'
-export { resolveHomeContentLocale, getHtmlLang } from '~/i18n/locale-meta'
+export { getHtmlLang } from '~/i18n/locale-meta'
 
 import { localeMeta } from '~/i18n/locale-meta'
 

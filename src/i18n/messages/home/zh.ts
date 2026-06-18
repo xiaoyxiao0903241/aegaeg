@@ -1,5 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeContentBundle } from '~/home/content/types'
+import type { HomeMessagesBundle } from './en'
 
 const home = defineMessages({
   meta: {
@@ -35,7 +35,6 @@ const home = defineMessages({
       }
     ],
     whitepaper: '白皮书',
-    launchDapp: '启动 DApp',
     languageLabel: '语言'
   },
   hero: {
@@ -45,7 +44,6 @@ const home = defineMessages({
     body: '全球首个AI智库驱动的USD1生态协议。以USD1为核心结算资产，连接AI、支付与全球流动性网络。',
     enterProtocol: '进入协议',
     readWhitepaper: '阅读白皮书',
-    walletBusy: '正在打开钱包...'
   },
   sections: {
     protocol: {
@@ -190,29 +188,29 @@ const home = defineMessages({
       title: '常见问题',
       items: [
         {
-          question: 'AEGIS X 是什么？',
-          answer: 'AEGIS X 是全球首个AI智库驱动的USD1生态协议，以USD1为核心结算资产，连接AI、DeFi与全球支付网络。',
+          q: 'AEGIS X 是什么？',
+          a: 'AEGIS X 是全球首个AI智库驱动的USD1生态协议，以USD1为核心结算资产，连接AI、DeFi与全球支付网络。',
           open: true
         },
         {
-          question: 'AGX 如何铸造？',
-          answer: 'AGX 通过150%超额抵押机制生成，是协议核心资产与价值增长的重要载体。'
+          q: 'AGX 如何铸造？',
+          a: 'AGX 通过150%超额抵押机制生成，是协议核心资产与价值增长的重要载体。'
         },
         {
-          question: 'USD1 在 AEGIS X 中承担什么角色？',
-          answer: 'USD1 是协议核心结算资产，为生态提供价值流通、流动性支持与支付基础设施能力。'
+          q: 'USD1 在 AEGIS X 中承担什么角色？',
+          a: 'USD1 是协议核心结算资产，为生态提供价值流通、流动性支持与支付基础设施能力。'
         },
         {
-          question: '协议如何保障安全？',
-          answer: '合约采用非托管边界、审计、开源审查与多签治理。'
+          q: '协议如何保障安全？',
+          a: '合约采用非托管边界、审计、开源审查与多签治理。'
         },
         {
-          question: '涡轮机制是什么？',
-          answer: '涡轮机制通过动态解锁与流动性调节机制，降低集中性抛压风险，增强市场稳定性与长期发展能力。'
+          q: '涡轮机制是什么？',
+          a: '涡轮机制通过动态解锁与流动性调节机制，降低集中性抛压风险，增强市场稳定性与长期发展能力。'
         },
         {
-          question: 'X 代币如何运作？',
-          answer: 'X 是生态价值代币，采用固定总量与协议驱动的销毁机制。'
+          q: 'X 代币如何运作？',
+          a: 'X 是生态价值代币，采用固定总量与协议驱动的销毁机制。'
         }
       ]
     }
@@ -247,7 +245,6 @@ const home = defineMessages({
     brandCopy: '守护未来价值网络 \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. 保留所有权利。',
     legal: '服务条款 · 隐私政策 · 免责声明',
-    languageLabel: '语言',
     groups: [
       {
         label: '协议',
@@ -317,6 +314,6 @@ const home = defineMessages({
       }
     ]
   }
-} satisfies HomeContentBundle)
+} satisfies HomeMessagesBundle)
 
 export default home

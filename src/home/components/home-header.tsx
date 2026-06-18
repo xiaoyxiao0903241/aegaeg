@@ -4,7 +4,7 @@ import { dappAssets } from '~/app/assets'
 import { allLanguageOptions } from '~/i18n/locales'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/home/assets'
-import type { HomeContent } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { cn } from '~/lib/utils'
 
 const navClass = cn(
@@ -51,7 +51,7 @@ const navGhostBtnClass = cn(
   'max-dapp:!hidden',
 )
 
-export function HomeHeader({ content }: { content: HomeContent['nav'] }) {
+export function HomeHeader({ content }: { content: HomeMessagesBundle['nav'] }) {
   const { locale, setLocale } = useI18n()
   const languageOptions = allLanguageOptions.map((option) => ({
     ...option,

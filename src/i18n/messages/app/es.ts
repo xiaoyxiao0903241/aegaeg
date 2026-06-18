@@ -1,3 +1,4 @@
+import type { AppMessagesBundle } from './en'
 import { defineMessages } from '~/i18n/messages/define-messages'
 
 const app = defineMessages({
@@ -96,38 +97,50 @@ const app = defineMessages({
     settlement: 'Liquidación',
     settlementValue: 'On-chain · segundos',
     settlementHint: 'Solo BSC · gas pagado por la billetera conectada',
-    about: 'Acerca de',
-    aboutBody:
-      'Intercambia USDT y USD1 al instante a una tasa fija de 1:1 sin deslizamiento. USD1 es el activo de liquidación central del protocolo AEGIS X.',
-    tokenAbout: 'Sobre los tokens del ecosistema AEGIS X',
-    tokenUsd1: 'USD1 · Stablecoin de liquidación',
-    tokenUsd1Body:
-      'Stablecoin de liquidación central, anclado 1:1, sin deslizamiento, usado en Genesis, staking y pagos.',
-    tokenAgx: 'AGX · Token de gobernanza',
-    tokenAgxBody: 'Token de gobernanza central para votación, staking e incentivos del ecosistema.',
-    tokenAgxBodyDesktop:
-      'Token central de gobernanza y valor del protocolo AEGIS X, usado para votación, staking e incentivos del ecosistema para capturar el crecimiento a largo plazo.',
-    tokenGagx: 'gAGX · Recibo de staking',
-    tokenGagxBody:
-      'Recibo con intereses del staking de AGX, capitalización automática, desbloquea peso de gobernanza.',
-    tokenGagxBodyDesktop:
-      'Recibo con intereses obtenido al hacer staking de AGX, con rendimientos de capitalización automática y mayor peso de gobernanza.',
-    tokenX: 'X · Token de participación',
-    tokenXBody:
-      'Token de participación del ecosistema que registra contribuciones y puede canjearse por beneficios y multiplicadores de airdrop.',
-    tokenXBodyDesktop:
-      'Token de participación y participación del ecosistema que registra contribuciones on-chain, canjeable por beneficios, eventos y multiplicadores de airdrop.',
+    about: {
+      title: 'Acerca de',
+      body: 'Intercambia USDT y USD1 al instante a una tasa fija de 1:1 sin deslizamiento. USD1 es el activo de liquidación central del protocolo AEGIS X.',
+    },
+    tokenAbout: {
+      title: 'Sobre los tokens del ecosistema AEGIS X',
+      items: [
+        {
+          key: 'usd1',
+          title: 'USD1 · Stablecoin de liquidación',
+          body: 'Stablecoin de liquidación central, anclado 1:1, sin deslizamiento, usado en Genesis, staking y pagos.',
+        },
+        {
+          key: 'agx',
+          title: 'AGX · Token de gobernanza',
+          body: 'Token de gobernanza central para votación, staking e incentivos del ecosistema.',
+          bodyDesktop: 'Token central de gobernanza y valor del protocolo AEGIS X, usado para votación, staking e incentivos del ecosistema para capturar el crecimiento a largo plazo.',
+        },
+        {
+          key: 'gagx',
+          title: 'gAGX · Recibo de staking',
+          body: 'Recibo con intereses del staking de AGX, capitalización automática, desbloquea peso de gobernanza.',
+          bodyDesktop: 'Recibo con intereses obtenido al hacer staking de AGX, con rendimientos de capitalización automática y mayor peso de gobernanza.',
+        },
+        {
+          key: 'x',
+          title: 'X · Token de participación',
+          body: 'Token de participación del ecosistema que registra contribuciones y puede canjearse por beneficios y multiplicadores de airdrop.',
+          bodyDesktop: 'Token de participación y participación del ecosistema que registra contribuciones on-chain, canjeable por beneficios, eventos y multiplicadores de airdrop.',
+        },
+      ],
+    },
     tokenContract: 'Ver contrato',
     tokenPrevious: 'Token anterior',
     tokenNext: 'Token siguiente',
     swipeNext: 'Desliza hacia arriba para la siguiente página',
     swipePrevious: 'Desliza hacia abajo para la página anterior',
-    faqTabUsd1: 'USD1',
-    faqTabAgx: 'AGX',
-    faqTabGagx: 'gAGX',
-    faqTabX: 'X',
-    faqTabUsd1Items: [
-      {
+    faq: {
+      title: 'FAQ',
+      tabs: {
+        usd1: {
+          label: 'USD1',
+          items: [
+{
         q: '¿Qué es USD1?',
         a: 'USD1 es el stablecoin de liquidación central del ecosistema AEGIS X, respaldado 1:1 y usado en swap, contribución y recompensas.',
       },
@@ -139,9 +152,12 @@ const app = defineMessages({
         q: '¿Hay comisiones?',
         a: 'Esta página estática solo muestra el gas de la red BSC.',
       },
-    ],
-    faqTabAgxItems: [
-      {
+          ],
+        },
+        agx: {
+          label: 'AGX',
+          items: [
+{
         q: '¿Qué es AGX?',
         a: 'AGX es el token de gobernanza y valor de AEGIS X, usado para votación, staking e incentivos del ecosistema.',
       },
@@ -153,9 +169,12 @@ const app = defineMessages({
         q: '¿Cómo se convierten USDT y USD1?',
         a: 'La app enruta la conversión por la ruta de swap BSC compatible y presenta la transacción final a través de la billetera conectada.',
       },
-    ],
-    faqTabGagxItems: [
-      {
+          ],
+        },
+        gagx: {
+          label: 'gAGX',
+          items: [
+{
         q: '¿Qué es gAGX?',
         a: 'gAGX es el recibo de staking con intereses de AGX, desbloquea peso de gobernanza y títulos de accionista superiores.',
       },
@@ -167,9 +186,12 @@ const app = defineMessages({
         q: '¿Cómo se convierten USDT y USD1?',
         a: 'La app enruta la conversión por la ruta de swap BSC compatible y presenta la transacción final a través de la billetera conectada.',
       },
-    ],
-    faqTabXItems: [
-      {
+          ],
+        },
+        x: {
+          label: 'X',
+          items: [
+{
         q: '¿Qué es X?',
         a: 'X es el token de participación del ecosistema que registra contribuciones on-chain y califica para airdrops y eventos.',
       },
@@ -181,34 +203,10 @@ const app = defineMessages({
         q: '¿Cómo se convierten USDT y USD1?',
         a: 'La app enruta la conversión por la ruta de swap BSC compatible y presenta la transacción final a través de la billetera conectada.',
       },
-    ],
-    faq: 'FAQ',
-    faqRate: '¿Por qué la tasa es fija 1:1?',
-    faqRateBody:
-      'USD1 es un stablecoin de liquidación del protocolo. La interfaz de swap mantiene un modelo de conversión fijo 1:1 en la fase Genesis.',
-    faqUsd1: '¿Qué es USD1?',
-    faqUsd1Body:
-      'USD1 es el activo de liquidación central del ecosistema AEGIS X. Está respaldado al 100% por activos de reserva que incluyen efectivo, bonos del Tesoro de EE. UU. a corto plazo y fondos del mercado monetario gubernamental, con informes mensuales de reservas en el sitio de WLFI.',
-    faqFees: '¿Hay comisiones?',
-    faqFeesBody: 'Esta página estática solo muestra el gas de la red BSC.',
-    faqRole: '¿Qué papel cumple USD1 en el protocolo?',
-    faqRoleBody:
-      'USD1 es el canal de liquidación en contribución, recompensas y swap, manteniendo la contabilidad de valor simple y auditable.',
-    faqConversion: '¿Cómo se convierten USDT y USD1?',
-    faqConversionBody:
-      'La app enruta la conversión por la ruta de swap BSC compatible y presenta la transacción final a través de la billetera conectada.',
-    faqTabUsd1Q: '¿Qué es USD1?',
-    faqTabUsd1A:
-      'USD1 es el stablecoin de liquidación central del ecosistema AEGIS X, respaldado 1:1 y usado en swap, contribución y recompensas.',
-    faqTabAgxQ: '¿Qué es AGX?',
-    faqTabAgxA:
-      'AGX es el token de gobernanza y valor de AEGIS X, usado para votación, staking e incentivos del ecosistema.',
-    faqTabGagxQ: '¿Qué es gAGX?',
-    faqTabGagxA:
-      'gAGX es el recibo de staking con intereses de AGX, desbloquea peso de gobernanza y títulos de accionista superiores.',
-    faqTabXQ: '¿Qué es X?',
-    faqTabXA:
-      'X es el token de participación del ecosistema que registra contribuciones on-chain y califica para airdrops y eventos.',
+          ],
+        },
+      },
+    },
     tokenContractTooltip: 'Ver detalles del token y contrato',
   },
   genesis: {
@@ -228,11 +226,9 @@ const app = defineMessages({
     endsIn: 'Termina en',
     referencePrice: 'Precio de referencia AGX',
     contribution: 'Contribución de red',
-    discount: 'Descuento',
     discountLabel: 'Descuento',
     discountRatio: 'Tasa de descuento',
     network: 'Red',
-    airdropRatio: 'Ratio de airdrop',
     xAirdropRatio: 'Ratio de airdrop X',
     airdropLabel: 'Ratio de airdrop X',
     addresses: 'Direcciones',
@@ -244,18 +240,16 @@ const app = defineMessages({
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: 'Constructores clave de todo el mundo unidos para hacer crecer el ecosistema global de AEGIS X.',
     viewContract: 'Ver contrato',
-    faqSeason: 'FAQ1',
-    faqSeasonBody: 'La asignación de temporada Genesis se procesa tras la aprobación de la billetera.',
-    faqRedeem: 'FAQ2',
-    faqRedeemBody: 'Los registros de contribución se conservan on-chain para la asignación posterior de AGX.',
-    faqCycle: 'FAQ3',
-    faqCycleBody: 'El AGX de la contribución Genesis sigue un calendario de liberación de 540 días.',
-    faqReward: 'FAQ4',
-    faqRewardBody:
-      'Las cuentas con contribución acumulada de 5.000 USD califican para airdrops X por etapas del 5% / 2% / 1%.',
-    faqRelease: 'FAQ5',
-    faqReleaseBody:
-      'Los airdrops X se liberan linealmente en 12 meses (~8,33% al mes); la primera liberación 30 días tras el lanzamiento del protocolo de staking X.',
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: 'La asignación de temporada Genesis se procesa tras la aprobación de la billetera.' },
+        { q: 'FAQ2', a: 'Los registros de contribución se conservan on-chain para la asignación posterior de AGX.' },
+        { q: 'FAQ3', a: 'El AGX de la contribución Genesis sigue un calendario de liberación de 540 días.' },
+        { q: 'FAQ4', a: 'Las cuentas con contribución acumulada de 5.000 USD califican para airdrops X por etapas del 5% / 2% / 1%.' },
+        { q: 'FAQ5', a: 'Los airdrops X se liberan linealmente en 12 meses (~8,33% al mes); la primera liberación 30 días tras el lanzamiento del protocolo de staking X.' },
+      ],
+    },
     promoTitle: 'Genesis Season 1 · 30% de descuento',
     promoBody: 'En curso — cupo limitado, termina el 07.10',
     promoTitleTemplate: 'Genesis Season {season} · {discount}',
@@ -271,7 +265,9 @@ const app = defineMessages({
     walletNotConnected: 'La billetera está desconectada. Vuelve a conectarla para firmar transacciones.',
     contributionsSyncPending:
       'Compra on-chain confirmada. Sincronizando historial; actualiza en un momento.',
-    contributionsEmpty: 'Aún no hay registros de contribución',
+    contributionsEmpty: {
+      title: 'Aún no hay registros de contribución',
+    },
     usd1Balance: 'Saldo USD1',
     phase: 'Fase',
     phaseSeason: 'Season {season} · {discount}',
@@ -315,20 +311,23 @@ const app = defineMessages({
     history: 'Historial de recompensas',
     referralHistory: 'Recompensas por referidos',
     teamHistory: 'Recompensas de equipo',
-    referralHistoryEmpty: 'Aún no hay registros de recompensas por referidos',
-    referralHistoryEmptyBody:
-      'Las recompensas por referidos aparecerán aquí cuando tus referidos contribuyan durante Genesis.',
-    teamHistoryEmpty: 'Aún no hay registros de recompensas de equipo',
-    teamHistoryEmptyBody:
-      'El historial de liquidación y reclamación del equipo aparecerá aquí cuando se acumulen recompensas.',
-    faqSettlement: '¿Cómo se liquidan las bonificaciones de equipo?',
-    faqSettlementBody: 'Las bonificaciones de equipo se liquidan por época tras confirmarse contribuciones calificadas.',
-    faqReferral: '¿Cómo se calculan las recompensas por referido?',
-    faqReferralBody: 'Las recompensas por referido se pagan automáticamente cuando tu referido contribuye durante Genesis. La tasa depende de tu rango de accionista.',
-    faqTeamClaim: '¿Cómo reclamo las recompensas de equipo?',
-    faqTeamClaimBody: 'Las recompensas de equipo se acumulan por época de liquidación. Usa “Reclamar a la wallet” en el panel izquierdo cuando haya saldo reclamable.',
-    faqRank: '¿Cómo se determina el rango de accionista?',
-    faqRankBody: 'El rango se basa en tu contribución personal en Genesis y el volumen del equipo. Rangos más altos desbloquean mayores tasas de bono de equipo.',
+    referralHistoryEmpty: {
+      title: 'Aún no hay registros de recompensas por referidos',
+      body: 'Las recompensas por referidos aparecerán aquí cuando tus referidos contribuyan durante Genesis.',
+    },
+    teamHistoryEmpty: {
+      title: 'Aún no hay registros de recompensas de equipo',
+      body: 'El historial de liquidación y reclamación del equipo aparecerá aquí cuando se acumulen recompensas.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: '¿Cómo se liquidan las bonificaciones de equipo?', a: 'Las bonificaciones de equipo se liquidan por época tras confirmarse contribuciones calificadas.' },
+        { q: '¿Cómo se calculan las recompensas por referido?', a: 'Las recompensas por referido se pagan automáticamente cuando tu referido contribuye durante Genesis. La tasa depende de tu rango de accionista.' },
+        { q: '¿Cómo reclamo las recompensas de equipo?', a: 'Las recompensas de equipo se acumulan por época de liquidación. Usa “Reclamar a la wallet” en el panel izquierdo cuando haya saldo reclamable.' },
+        { q: '¿Cómo se determina el rango de accionista?', a: 'El rango se basa en tu contribución personal en Genesis y el volumen del equipo. Rangos más altos desbloquean mayores tasas de bono de equipo.' },
+      ],
+    },
     teamHistorySource: 'Liquidación por época',
     rewardType: {
       referralPaid: 'Recompensa por referido',
@@ -366,7 +365,23 @@ const app = defineMessages({
     myTeam: 'Mi equipo',
     genesisTitle: 'Título Genesis',
     inviteTitle: 'Empieza a invitar — activa el volante de crecimiento',
-    programs: 'Programas',
+    programs: {
+      title: 'Programas',
+      items: [
+        {
+          label: 'X DAO Genesis · Season 1',
+          title: 'Reclutamiento global de accionistas Genesis en curso',
+          body: 'La fase Genesis une a constructores clave en todo el mundo para co-construir el ecosistema AEGIS X.',
+          action: 'Conocer el programa →',
+        },
+        {
+          label: 'X Academy',
+          title: 'Formación DeFi profesional para la comunidad',
+          body: 'X Academy ayuda a constructores de todo el mundo a participar en XDAO de forma más sistemática.',
+          action: 'Ver requisitos de participación →',
+        },
+      ],
+    },
     myInvites: 'Mis invitaciones ({count})',
 
     referralBondActive: 'Vínculo de referido activo · invitaciones directas {count}',
@@ -384,25 +399,34 @@ const app = defineMessages({
     statGenesisToday: 'Sube +1 nivel al lanzamiento · válido 30 días',
 
     bindReferrerSuccess: 'Referente vinculado correctamente',
-    inviteFlowShareTitle: 'Comparte tu enlace',
-    inviteFlowShareBody: 'Conecta la billetera para generar tu enlace de referido personal.',
-    inviteFlowJoinTitle: 'Los amigos se unen',
-    inviteFlowJoinBody: 'Registrarse con tu enlace activa el vínculo de referido.',
-    inviteFlowEarnTitle: 'Gana recompensas',
-    inviteFlowEarnBody: 'Cuando contribuyen o hacen stake, las recompensas llegan a ti.',
-    programGenesisLabel: 'X DAO Genesis · Season 1',
-    programGenesisTitle: 'Reclutamiento global de accionistas Genesis en curso',
-    programGenesisBody:
-      'La fase Genesis une a constructores clave en todo el mundo para co-construir el ecosistema AEGIS X.',
-    programGenesisAction: 'Conocer el programa →',
-    programAcademyLabel: 'X Academy',
-    programAcademyTitle: 'Formación DeFi profesional para la comunidad',
-    programAcademyBody:
-      'X Academy ayuda a constructores de todo el mundo a participar en XDAO de forma más sistemática.',
-    programAcademyAction: 'Ver requisitos de participación →',
+    inviteFlow: {
+      items: [
+        {
+          title: 'Comparte tu enlace',
+          body: 'Conecta la billetera para generar tu enlace de referido personal.',
+        },
+        {
+          title: 'Los amigos se unen',
+          body: 'Registrarse con tu enlace activa el vínculo de referido.',
+        },
+        {
+          title: 'Gana recompensas',
+          body: 'Cuando contribuyen o hacen stake, las recompensas llegan a ti.',
+        },
+      ],
+    },
     boundTo: 'Vinculado a {address}',
-    invitesEmptyTitle: 'Aún no hay invitaciones',
-    invitesEmptyBody: 'Comparte tu enlace de referido para invitar amigos a tu comunidad.',
+    invitesEmpty: {
+      title: 'Aún no hay invitaciones',
+      body: 'Comparte tu enlace de referido para invitar amigos a tu comunidad.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: '---' },
+        { q: 'FAQ2', a: '---' },
+      ],
+    },
   },
   tables: {
     time: 'Hora',
@@ -437,6 +461,6 @@ const app = defineMessages({
     loading: 'Cargando…',
     signInRequired: 'Inicia sesión para ver tus datos',
   },
-})
+} satisfies AppMessagesBundle)
 
 export default app

@@ -1,5 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeContentBundle } from '~/home/content/types'
+import type { HomeMessagesBundle } from './en'
 
 const home = defineMessages({
   meta: {
@@ -35,7 +35,6 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'Libro blanco',
-    launchDapp: 'Iniciar DApp',
     languageLabel: 'Idioma'
   },
   hero: {
@@ -45,7 +44,6 @@ const home = defineMessages({
     body: 'El primer protocolo de ecosistema USD1 impulsado por un think tank de IA del mundo. Con USD1 como activo de liquidación central, conecta IA, pagos y la red global de liquidez.',
     enterProtocol: 'Entrar al protocolo',
     readWhitepaper: 'Leer libro blanco',
-    walletBusy: 'Abriendo billetera...'
   },
   sections: {
     protocol: {
@@ -190,29 +188,29 @@ const home = defineMessages({
       title: 'Preguntas frecuentes',
       items: [
         {
-          question: '¿Qué es AEGIS X?',
-          answer: 'AEGIS X es el primer protocolo de ecosistema USD1 impulsado por un think tank de IA del mundo, con USD1 como activo de liquidación central, conectando IA, DeFi y la red global de pagos.',
+          q: '¿Qué es AEGIS X?',
+          a: 'AEGIS X es el primer protocolo de ecosistema USD1 impulsado por un think tank de IA del mundo, con USD1 como activo de liquidación central, conectando IA, DeFi y la red global de pagos.',
           open: true
         },
         {
-          question: '¿Cómo se acuña AGX?',
-          answer: 'AGX se genera mediante un mecanismo de sobrecolateralización del 150% y es el activo central del protocolo y un vehículo clave para el crecimiento de valor.'
+          q: '¿Cómo se acuña AGX?',
+          a: 'AGX se genera mediante un mecanismo de sobrecolateralización del 150% y es el activo central del protocolo y un vehículo clave para el crecimiento de valor.'
         },
         {
-          question: '¿Qué papel desempeña USD1 en AEGIS X?',
-          answer: 'USD1 es el activo de liquidación central del protocolo, que proporciona al ecosistema capacidades de circulación de valor, soporte de liquidez e infraestructura de pagos.'
+          q: '¿Qué papel desempeña USD1 en AEGIS X?',
+          a: 'USD1 es el activo de liquidación central del protocolo, que proporciona al ecosistema capacidades de circulación de valor, soporte de liquidez e infraestructura de pagos.'
         },
         {
-          question: '¿Cómo garantiza la seguridad el protocolo?',
-          answer: 'Los contratos adoptan límites no custodiales, auditorías, revisión de código abierto y gobernanza multisig.'
+          q: '¿Cómo garantiza la seguridad el protocolo?',
+          a: 'Los contratos adoptan límites no custodiales, auditorías, revisión de código abierto y gobernanza multisig.'
         },
         {
-          question: '¿Qué es el mecanismo Turbo?',
-          answer: 'El mecanismo Turbo reduce el riesgo de presión de venta concentrada mediante desbloqueo dinámico y ajuste de liquidez, reforzando la estabilidad del mercado y la capacidad de desarrollo a largo plazo.'
+          q: '¿Qué es el mecanismo Turbo?',
+          a: 'El mecanismo Turbo reduce el riesgo de presión de venta concentrada mediante desbloqueo dinámico y ajuste de liquidez, reforzando la estabilidad del mercado y la capacidad de desarrollo a largo plazo.'
         },
         {
-          question: '¿Cómo funciona el token X?',
-          answer: 'X es el token de valor del ecosistema, con suministro fijo y mecanismos de quema impulsados por el protocolo.'
+          q: '¿Cómo funciona el token X?',
+          a: 'X es el token de valor del ecosistema, con suministro fijo y mecanismos de quema impulsados por el protocolo.'
         }
       ]
     }
@@ -247,7 +245,6 @@ const home = defineMessages({
     brandCopy: 'Protegiendo la red de valor del futuro \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. Todos los derechos reservados.',
     legal: 'Términos de servicio · Política de privacidad · Descargo de responsabilidad',
-    languageLabel: 'Idioma',
     groups: [
       {
         label: 'Protocolo',
@@ -317,6 +314,6 @@ const home = defineMessages({
       }
     ]
   }
-} satisfies HomeContentBundle)
+} satisfies HomeMessagesBundle)
 
 export default home

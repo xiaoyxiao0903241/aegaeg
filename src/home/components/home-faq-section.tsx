@@ -1,5 +1,5 @@
 import { FaqList } from '~/components/faq-list'
-import type { HomeContent } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const sectionClass =
@@ -8,7 +8,7 @@ const sectionClass =
 export function HomeFaqSection({
   content,
 }: {
-  content: HomeContent['sections']['faq']
+  content: HomeMessagesBundle['sections']['faq']
 }) {
   return (
     <section className={sectionClass} id="faq" aria-labelledby="faq-title">

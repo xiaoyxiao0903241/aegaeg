@@ -1,3 +1,4 @@
+import type { AppMessagesBundle } from './en'
 import { defineMessages } from '~/i18n/messages/define-messages'
 
 const app = defineMessages({
@@ -96,38 +97,50 @@ const app = defineMessages({
     settlement: '정산',
     settlementValue: '온체인 · 수 초',
     settlementHint: 'BSC 전용 · 가스비는 연결된 지갑에서 지불',
-    about: '소개',
-    aboutBody:
-      'USDT와 USD1을 고정 1:1 비율로 즉시 스왑하며 슬리피지가 없습니다. USD1은 AEGIS X 프로토콜의 핵심 정산 자산입니다.',
-    tokenAbout: 'AEGIS X 생태계 토큰 소개',
-    tokenUsd1: 'USD1 · 정산 스테이블코인',
-    tokenUsd1Body:
-      '핵심 정산 스테이블코인, 1:1 페깅, 슬리피지 없이 Genesis, 스테이킹, 결제 전반에 사용됩니다.',
-    tokenAgx: 'AGX · 거버넌스 토큰',
-    tokenAgxBody: '거버넌스 투표, 스테이킹, 생태계 인센티브에 사용되는 핵심 거버넌스 토큰.',
-    tokenAgxBodyDesktop:
-      'AEGIS X 프로토콜의 핵심 거버넌스 및 가치 토큰으로, 거버넌스 투표, 스테이킹, 생태계 인센티브에 사용되어 프로토콜의 장기 성장 가치를 포착합니다.',
-    tokenGagx: 'gAGX · 스테이킹 영수증',
-    tokenGagxBody:
-      'AGX 스테이킹으로 얻는 이자형 영수증, 자동 복리, 거버넌스 가중치 해제.',
-    tokenGagxBodyDesktop:
-      'AGX 스테이킹으로 얻는 이자형 영수증으로, 자동 복리 수익과 상위 거버넌스 가중치를 제공합니다.',
-    tokenX: 'X · 지분 토큰',
-    tokenXBody:
-      '기여를 기록하는 생태계 지분 토큰으로, 혜택 및 에어드롭 배수로 교환 가능.',
-    tokenXBodyDesktop:
-      '온체인 기여를 기록하는 생태계 참여 및 지분 토큰으로, 혜택, 이벤트, 에어드롭 배수로 교환 가능합니다.',
+    about: {
+      title: '소개',
+      body: 'USDT와 USD1을 고정 1:1 비율로 즉시 스왑하며 슬리피지가 없습니다. USD1은 AEGIS X 프로토콜의 핵심 정산 자산입니다.',
+    },
+    tokenAbout: {
+      title: 'AEGIS X 생태계 토큰 소개',
+      items: [
+        {
+          key: 'usd1',
+          title: 'USD1 · 정산 스테이블코인',
+          body: '핵심 정산 스테이블코인, 1:1 페깅, 슬리피지 없이 Genesis, 스테이킹, 결제 전반에 사용됩니다.',
+        },
+        {
+          key: 'agx',
+          title: 'AGX · 거버넌스 토큰',
+          body: '거버넌스 투표, 스테이킹, 생태계 인센티브에 사용되는 핵심 거버넌스 토큰.',
+          bodyDesktop: 'AEGIS X 프로토콜의 핵심 거버넌스 및 가치 토큰으로, 거버넌스 투표, 스테이킹, 생태계 인센티브에 사용되어 프로토콜의 장기 성장 가치를 포착합니다.',
+        },
+        {
+          key: 'gagx',
+          title: 'gAGX · 스테이킹 영수증',
+          body: 'AGX 스테이킹으로 얻는 이자형 영수증, 자동 복리, 거버넌스 가중치 해제.',
+          bodyDesktop: 'AGX 스테이킹으로 얻는 이자형 영수증으로, 자동 복리 수익과 상위 거버넌스 가중치를 제공합니다.',
+        },
+        {
+          key: 'x',
+          title: 'X · 지분 토큰',
+          body: '기여를 기록하는 생태계 지분 토큰으로, 혜택 및 에어드롭 배수로 교환 가능.',
+          bodyDesktop: '온체인 기여를 기록하는 생태계 참여 및 지분 토큰으로, 혜택, 이벤트, 에어드롭 배수로 교환 가능합니다.',
+        },
+      ],
+    },
     tokenContract: '컨트랙트 보기',
     tokenPrevious: '이전 토큰',
     tokenNext: '다음 토큰',
     swipeNext: '위로 스와이프하여 다음 페이지',
     swipePrevious: '아래로 스와이프하여 이전 페이지',
-    faqTabUsd1: 'USD1',
-    faqTabAgx: 'AGX',
-    faqTabGagx: 'gAGX',
-    faqTabX: 'X',
-    faqTabUsd1Items: [
-      {
+    faq: {
+      title: 'FAQ',
+      tabs: {
+        usd1: {
+          label: 'USD1',
+          items: [
+{
         q: 'USD1이란?',
         a: 'USD1은 AEGIS X 생태계의 핵심 정산 스테이블코인으로, 1:1로 보장되며 스왑, 기여, 리워드 흐름 전반에 사용됩니다.',
       },
@@ -139,9 +152,12 @@ const app = defineMessages({
         q: '수수료가 있나요?',
         a: '이 정적 페이지에서는 BSC 네트워크 가스비만 표시됩니다.',
       },
-    ],
-    faqTabAgxItems: [
-      {
+          ],
+        },
+        agx: {
+          label: 'AGX',
+          items: [
+{
         q: 'AGX란?',
         a: 'AGX는 AEGIS X의 거버넌스 및 가치 토큰으로, 투표, 스테이킹, 생태계 인센티브에 사용됩니다.',
       },
@@ -153,9 +169,12 @@ const app = defineMessages({
         q: 'USDT와 USD1은 어떻게 전환되나요?',
         a: '앱은 지원되는 BSC 스왑 경로를 통해 전환을 라우팅하고, 연결된 지갑을 통해 최종 거래를 제시합니다.',
       },
-    ],
-    faqTabGagxItems: [
-      {
+          ],
+        },
+        gagx: {
+          label: 'gAGX',
+          items: [
+{
         q: 'gAGX란?',
         a: 'gAGX는 AGX 스테이킹 이자형 영수증으로, 거버넌스 가중치와 상위 주주 칭호를 해제합니다.',
       },
@@ -167,9 +186,12 @@ const app = defineMessages({
         q: 'USDT와 USD1은 어떻게 전환되나요?',
         a: '앱은 지원되는 BSC 스왑 경로를 통해 전환을 라우팅하고, 연결된 지갑을 통해 최종 거래를 제시합니다.',
       },
-    ],
-    faqTabXItems: [
-      {
+          ],
+        },
+        x: {
+          label: 'X',
+          items: [
+{
         q: 'X란?',
         a: 'X는 온체인 기여를 기록하는 생태계 참여 토큰으로, 에어드롭 및 이벤트 자격을 부여합니다.',
       },
@@ -181,34 +203,10 @@ const app = defineMessages({
         q: 'USDT와 USD1은 어떻게 전환되나요?',
         a: '앱은 지원되는 BSC 스왑 경로를 통해 전환을 라우팅하고, 연결된 지갑을 통해 최종 거래를 제시합니다.',
       },
-    ],
-    faq: 'FAQ',
-    faqRate: '환율이 왜 1:1로 고정되어 있나요?',
-    faqRateBody:
-      'USD1은 프로토콜의 정산 스테이블코인입니다. 스왑 화면은 Genesis 단계에서 고정 1:1 전환 모델을 유지합니다.',
-    faqUsd1: 'USD1이란?',
-    faqUsd1Body:
-      'USD1은 AEGIS X 생태계의 핵심 정산 자산입니다. 현금, 단기 미국 국채, 정부 머니마켓 펀드 등 예비 자산으로 100% 보장되며, WLFI 웹사이트에서 월간 예비금 보고서를 확인할 수 있습니다.',
-    faqFees: '수수료가 있나요?',
-    faqFeesBody: '이 정적 페이지에서는 BSC 네트워크 가스비만 표시됩니다.',
-    faqRole: 'USD1은 프로토콜에서 어떤 역할을 하나요?',
-    faqRoleBody:
-      'USD1은 기여, 리워드, 스왑 흐름 전반의 정산 레일로, 가치 회계를 단순하고 감사 가능하게 유지합니다.',
-    faqConversion: 'USDT와 USD1은 어떻게 전환되나요?',
-    faqConversionBody:
-      '앱은 지원되는 BSC 스왑 경로를 통해 전환을 라우팅하고, 연결된 지갑을 통해 최종 거래를 제시합니다.',
-    faqTabUsd1Q: 'USD1이란?',
-    faqTabUsd1A:
-      'USD1은 AEGIS X 생태계의 핵심 정산 스테이블코인으로, 1:1로 보장되며 스왑, 기여, 리워드 흐름 전반에 사용됩니다.',
-    faqTabAgxQ: 'AGX란?',
-    faqTabAgxA:
-      'AGX는 AEGIS X의 거버넌스 및 가치 토큰으로, 투표, 스테이킹, 생태계 인센티브에 사용됩니다.',
-    faqTabGagxQ: 'gAGX란?',
-    faqTabGagxA:
-      'gAGX는 AGX 스테이킹 이자형 영수증으로, 거버넌스 가중치와 상위 주주 칭호를 해제합니다.',
-    faqTabXQ: 'X란?',
-    faqTabXA:
-      'X는 온체인 기여를 기록하는 생태계 참여 토큰으로, 에어드롭 및 이벤트 자격을 부여합니다.',
+          ],
+        },
+      },
+    },
     tokenContractTooltip: '토큰 및 컨트랙트 상세 보기',
   },
   genesis: {
@@ -228,11 +226,9 @@ const app = defineMessages({
     endsIn: '종료까지',
     referencePrice: 'AGX 기준 가격',
     contribution: '네트워크 기여',
-    discount: '할인',
     discountLabel: '할인',
     discountRatio: '할인율',
     network: '네트워크',
-    airdropRatio: '에어드롭 비율',
     xAirdropRatio: 'X 에어드롭 비율',
     airdropLabel: 'X 에어드롭 비율',
     addresses: '주소 수',
@@ -244,18 +240,16 @@ const app = defineMessages({
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: '전 세계 핵심 빌더들이 함께 AEGIS X 글로벌 생태계를 성장시킵니다.',
     viewContract: '컨트랙트 보기',
-    faqSeason: 'FAQ1',
-    faqSeasonBody: 'Genesis 시즌 할당은 지갑 승인 후 처리됩니다.',
-    faqRedeem: 'FAQ2',
-    faqRedeemBody: '기여 기록은 이후 AGX 할당을 위해 온체인에 보관됩니다.',
-    faqCycle: 'FAQ3',
-    faqCycleBody: 'Genesis 기여로 받은 AGX는 540일 방출 일정을 따릅니다.',
-    faqReward: 'FAQ4',
-    faqRewardBody:
-      '누적 Genesis 기여가 5,000 USD에 도달한 계정은 단계별 X 에어드롭(5% / 2% / 1%) 자격을 얻습니다.',
-    faqRelease: 'FAQ5',
-    faqReleaseBody:
-      'X 에어드롭은 12개월 선형 방출(월 약 8.33%). X 스테이킹 프로토콜 출시 30일 후 첫 방출.',
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: 'Genesis 시즌 할당은 지갑 승인 후 처리됩니다.' },
+        { q: 'FAQ2', a: '기여 기록은 이후 AGX 할당을 위해 온체인에 보관됩니다.' },
+        { q: 'FAQ3', a: 'Genesis 기여로 받은 AGX는 540일 방출 일정을 따릅니다.' },
+        { q: 'FAQ4', a: '누적 Genesis 기여가 5,000 USD에 도달한 계정은 단계별 X 에어드롭(5% / 2% / 1%) 자격을 얻습니다.' },
+        { q: 'FAQ5', a: 'X 에어드롭은 12개월 선형 방출(월 약 8.33%). X 스테이킹 프로토콜 출시 30일 후 첫 방출.' },
+      ],
+    },
     promoTitle: 'Genesis Season 1 · 30% 할인',
     promoBody: '진행 중 — 한정 할당량, 07.10 종료',
     promoTitleTemplate: 'Genesis Season {season} · {discount}',
@@ -270,7 +264,9 @@ const app = defineMessages({
     purchaseUnavailable: '현재 참여할 수 없습니다. 지분 수량 또는 시즌 상태를 확인하세요.',
     walletNotConnected: '지갑 연결이 끊어졌습니다. 거래 서명을 위해 다시 연결하세요.',
     contributionsSyncPending: '온체인 구매가 확인되었습니다. 기록 동기화 중입니다. 잠시 후 새로고침하세요.',
-    contributionsEmpty: '아직 구매 기록이 없습니다',
+    contributionsEmpty: {
+      title: '아직 구매 기록이 없습니다',
+    },
     usd1Balance: 'USD1 잔액',
     phase: '단계',
     phaseSeason: 'Season {season} · {discount}',
@@ -314,19 +310,23 @@ const app = defineMessages({
     history: '리워드 기록',
     referralHistory: '추천 리워드',
     teamHistory: '팀 리워드',
-    referralHistoryEmpty: '추천 리워드 기록이 없습니다',
-    referralHistoryEmptyBody:
-      '피추천인이 Genesis 기간에 구매를 완료하면 추천 리워드가 여기에 표시됩니다.',
-    teamHistoryEmpty: '팀 리워드 기록이 없습니다',
-    teamHistoryEmptyBody: '팀 보상 정산 및 수령 기록은 보상이 발생한 후 여기에 표시됩니다.',
-    faqSettlement: '팀 보너스는 어떻게 정산되나요?',
-    faqSettlementBody: '팀 보너스는 자격을 갖춘 기여가 확인된 후 에포크별로 정산됩니다.',
-    faqReferral: '추천 보상은 어떻게 계산되나요?',
-    faqReferralBody: '추천인이 Genesis 기간에 기여하면 추천 보상이 자동으로 지갑에 지급됩니다. 비율은 주주 등급에 따라 달라집니다.',
-    faqTeamClaim: '팀 보상은 어떻게 수령하나요?',
-    faqTeamClaimBody: '팀 보상은 정산 에포크별로 누적됩니다. 수령 가능한 잔액이 있으면 왼쪽 패널의 “지갑으로 수령”을 사용하세요.',
-    faqRank: '주주 등급은 어떻게 결정되나요?',
-    faqRankBody: '등급은 개인 Genesis 기여액과 팀 실적을 기준으로 합니다. 등급이 높을수록 팀 보너스 비율이 커집니다.',
+    referralHistoryEmpty: {
+      title: '추천 리워드 기록이 없습니다',
+      body: '피추천인이 Genesis 기간에 구매를 완료하면 추천 리워드가 여기에 표시됩니다.',
+    },
+    teamHistoryEmpty: {
+      title: '팀 리워드 기록이 없습니다',
+      body: '팀 보상 정산 및 수령 기록은 보상이 발생한 후 여기에 표시됩니다.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: '팀 보너스는 어떻게 정산되나요?', a: '팀 보너스는 자격을 갖춘 기여가 확인된 후 에포크별로 정산됩니다.' },
+        { q: '추천 보상은 어떻게 계산되나요?', a: '추천인이 Genesis 기간에 기여하면 추천 보상이 자동으로 지갑에 지급됩니다. 비율은 주주 등급에 따라 달라집니다.' },
+        { q: '팀 보상은 어떻게 수령하나요?', a: '팀 보상은 정산 에포크별로 누적됩니다. 수령 가능한 잔액이 있으면 왼쪽 패널의 “지갑으로 수령”을 사용하세요.' },
+        { q: '주주 등급은 어떻게 결정되나요?', a: '등급은 개인 Genesis 기여액과 팀 실적을 기준으로 합니다. 등급이 높을수록 팀 보너스 비율이 커집니다.' },
+      ],
+    },
     teamHistorySource: '에포크 정산',
     rewardType: {
       referralPaid: '추천 보상',
@@ -364,7 +364,23 @@ const app = defineMessages({
     myTeam: '내 팀',
     genesisTitle: 'Genesis 칭호',
     inviteTitle: '초대를 시작하고 성장 플라이휠을 가동하세요',
-    programs: '프로그램',
+    programs: {
+      title: '프로그램',
+      items: [
+        {
+          label: 'X DAO Genesis · Season 1',
+          title: '글로벌 Genesis 주주 모집 진행 중',
+          body: 'Genesis 단계는 전 세계 핵심 빌더를 모아 AEGIS X 생태계를 함께 구축합니다.',
+          action: '프로그램 알아보기 →',
+        },
+        {
+          label: 'X Academy',
+          title: '커뮤니티를 위한 전문 DeFi 교육',
+          body: 'X Academy는 전 세계 빌더가 XDAO에 더 체계적으로 참여하도록 돕습니다.',
+          action: '참여 요건 보기 →',
+        },
+      ],
+    },
     myInvites: '내 초대 ({count})',
 
     referralBondActive: '추천 관계 활성화 · 직접 초대 {count}명',
@@ -382,25 +398,34 @@ const app = defineMessages({
     statGenesisToday: '런칭 시 +1 티어 업그레이드 · 30일 유효',
 
     bindReferrerSuccess: '추천인 연결 완료',
-    inviteFlowShareTitle: '링크 공유',
-    inviteFlowShareBody: '지갑을 연결해 개인 추천 링크를 생성하세요.',
-    inviteFlowJoinTitle: '친구 참여',
-    inviteFlowJoinBody: '내 링크로 가입하면 추천 관계가 활성화됩니다.',
-    inviteFlowEarnTitle: '리워드 획득',
-    inviteFlowEarnBody: '상대가 기여하거나 스테이킹하면 리워드가 나에게 돌아옵니다.',
-    programGenesisLabel: 'X DAO Genesis · Season 1',
-    programGenesisTitle: '글로벌 Genesis 주주 모집 진행 중',
-    programGenesisBody:
-      'Genesis 단계는 전 세계 핵심 빌더를 모아 AEGIS X 생태계를 함께 구축합니다.',
-    programGenesisAction: '프로그램 알아보기 →',
-    programAcademyLabel: 'X Academy',
-    programAcademyTitle: '커뮤니티를 위한 전문 DeFi 교육',
-    programAcademyBody:
-      'X Academy는 전 세계 빌더가 XDAO에 더 체계적으로 참여하도록 돕습니다.',
-    programAcademyAction: '참여 요건 보기 →',
+    inviteFlow: {
+      items: [
+        {
+          title: '링크 공유',
+          body: '지갑을 연결해 개인 추천 링크를 생성하세요.',
+        },
+        {
+          title: '친구 참여',
+          body: '내 링크로 가입하면 추천 관계가 활성화됩니다.',
+        },
+        {
+          title: '리워드 획득',
+          body: '상대가 기여하거나 스테이킹하면 리워드가 나에게 돌아옵니다.',
+        },
+      ],
+    },
     boundTo: '{address}에 연결됨',
-    invitesEmptyTitle: '초대 기록이 없습니다',
-    invitesEmptyBody: '추천 링크를 공유해 친구를 커뮤니티에 초대하세요.',
+    invitesEmpty: {
+      title: '초대 기록이 없습니다',
+      body: '추천 링크를 공유해 친구를 커뮤니티에 초대하세요.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: '---' },
+        { q: 'FAQ2', a: '---' },
+      ],
+    },
   },
   tables: {
     time: '시간',
@@ -435,6 +460,6 @@ const app = defineMessages({
     loading: '로딩 중…',
     signInRequired: '데이터를 보려면 로그인하세요',
   },
-})
+} satisfies AppMessagesBundle)
 
 export default app

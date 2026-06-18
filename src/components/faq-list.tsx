@@ -5,9 +5,9 @@ import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { cn } from '~/lib/utils'
 
 export type FaqListItem = {
-  answer: ReactNode
+  a: ReactNode
   open?: boolean
-  question: ReactNode
+  q: ReactNode
 }
 
 type FaqListVariant = 'home' | 'dapp'
@@ -21,7 +21,7 @@ const homeItemShellClass = cn(
 const dappItemOuterClass = 'rounded-md shadow-card max-dapp:rounded-[14px]'
 
 const dappItemInnerClass = cn(
-  'group h-full w-full max-w-full overflow-hidden rounded-[inherit] border border-border bg-card px-[18px]',
+  'h-full w-full max-w-full overflow-hidden rounded-[inherit] border border-border bg-card px-[18px]',
   'max-dapp:px-4',
 )
 
@@ -139,8 +139,8 @@ export function FaqList({
         const isOpen = value.includes(itemValue)
         const itemBody = (
           <>
-            <Accordion.Trigger className={styles.trigger} data-faq-trigger>
-              <span className={styles.question}>{item.question}</span>
+            <Accordion.Trigger className={cn(styles.trigger, 'group')} data-faq-trigger>
+              <span className={styles.question}>{item.q}</span>
               <span className={faqArrowClass} aria-hidden="true">
                 <svg
                   className="size-4"
@@ -180,7 +180,7 @@ export function FaqList({
               <div className="faq-answer-panel">
                 <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
                   <div className={styles.answerPad}>
-                    <div className={styles.answer}>{item.answer}</div>
+                    <div className={styles.answer}>{item.a}</div>
                   </div>
                 </div>
               </div>
@@ -193,7 +193,7 @@ export function FaqList({
             className={cn(styles.item, itemClassName)}
             data-faq-item
             data-faq-motion={motionEnabled ? 'true' : 'false'}
-            key={`${index}-${String(item.question)}`}
+            key={`${index}-${String(item.q)}`}
             value={itemValue}
           >
             {'itemInner' in styles && styles.itemInner ? (

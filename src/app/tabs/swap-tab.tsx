@@ -361,7 +361,7 @@ export function SwapContent({
   const isMobileViewport = useMobileViewport()
   const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
-  const faqItems = getSwapFaqItems(t, faqToken)
+  const faqItems = t.swap.faq.tabs[faqToken].items
 
   const overviewMetrics = (
     <MetricGrid
@@ -427,13 +427,13 @@ export function SwapContent({
             'dapp:[&+section]:mt-[34px]',
             '[&_h3_button]:w-full',
           )}
-          title={t.swap.tokenAbout}
+          title={t.swap.tokenAbout.title}
         >
           {isMobileViewport ? <MobileTokenCarousel /> : <TokenInfoCarousel />}
         </DappCollapsibleSection>
       ) : null}
 
-      <DappSection title={t.swap.faq}>
+      <DappSection title={t.swap.faq.title}>
         <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
         <FaqStack items={faqItems} listKey={faqToken} />
       </DappSection>
@@ -450,15 +450,15 @@ function SwapFaqTabs({
 }) {
   const { messages: t } = useI18n()
   const labels: Record<SwapTokenKey, string> = {
-    usd1: t.swap.faqTabUsd1,
-    agx: t.swap.faqTabAgx,
-    gagx: t.swap.faqTabGagx,
-    x: t.swap.faqTabX,
+    usd1: t.swap.faq.tabs.usd1.label,
+    agx: t.swap.faq.tabs.agx.label,
+    gagx: t.swap.faq.tabs.gagx.label,
+    x: t.swap.faq.tabs.x.label,
   }
 
   return (
     <DappPillTabs
-      ariaLabel={t.swap.faq}
+      ariaLabel={t.swap.faq.title}
       className="mt-4 flex flex-wrap gap-2 mb-3"
       items={swapTokenKeys.map((key) => ({
         active: key === activeToken,
@@ -467,20 +467,6 @@ function SwapFaqTabs({
       onSelect={(index) => onSelect(swapTokenKeys[index])}
     />
   )
-}
-
-function getSwapFaqItems(
-  t: ReturnType<typeof useI18n>['messages'],
-  token: SwapTokenKey,
-) {
-  const items: Record<SwapTokenKey, { answer: string; question: string }[]> = {
-    agx: t.swap.faqTabAgxItems.map(({ q, a }) => ({ question: q, answer: a })),
-    gagx: t.swap.faqTabGagxItems.map(({ q, a }) => ({ question: q, answer: a })),
-    usd1: t.swap.faqTabUsd1Items.map(({ q, a }) => ({ question: q, answer: a })),
-    x: t.swap.faqTabXItems.map(({ q, a }) => ({ question: q, answer: a })),
-  }
-
-  return items[token]
 }
 
 const TOKEN_CAROUSEL_CARD_INNER =
@@ -667,7 +653,7 @@ function TokenCarouselCard({
 
 function TokenInfoCarousel() {
   const { messages: t } = useI18n()
-  const tokens = getSwapTokenContent(t)
+  const tokens = getSwapTokenContent(t, true)
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const autoplay = useMemo(
@@ -703,7 +689,7 @@ function TokenInfoCarousel() {
 
   return (
     <Carousel
-      aria-label={t.swap.tokenAbout}
+      aria-label={t.swap.tokenAbout.title}
       className={cn(revealClass(), 'mt-3.5 grid w-full gap-3 overflow-visible dapp:gap-0')}
       data-reveal
       opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
@@ -745,14 +731,14 @@ function TokenInfoCarousel() {
           />
         </button>
         <span
-          aria-label={t.swap.tokenAbout}
+          aria-label={t.swap.tokenAbout.title}
           className="inline-flex items-center gap-[7px]"
           role="group"
         >
           {tokens.map((token, index) => (
             <button
               aria-current={current === index ? 'true' : undefined}
-              aria-label={`${t.swap.tokenAbout} ${index + 1}`}
+              aria-label={`${t.swap.tokenAbout.title} ${index + 1}`}
               className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0"
               key={token.key}
               onClick={() => goTo(index)}
@@ -784,45 +770,31 @@ function TokenInfoCarousel() {
   )
 }
 
-function getSwapTokenContent(t: ReturnType<typeof useI18n>['messages']) {
-  const tokenContent = {
-    agx: {
-      asset: tokenCarouselIcons.agxIcon,
-      key: 'agx',
-      title: t.swap.tokenAgx,
-      body: t.swap.tokenAgxBody,
-    },
-    usd1: {
-      asset: tokenCarouselIcons.usd1Icon,
-      key: 'usd1',
-      title: t.swap.tokenUsd1,
-      body: t.swap.tokenUsd1Body,
-    },
-    x: {
-      asset: tokenCarouselIcons.xIcon,
-      key: 'x',
-      title: t.swap.tokenX,
-      body: t.swap.tokenXBody,
-    },
-    gagx: {
-      asset: tokenCarouselIcons.gagxIcon,
-      key: 'gagx',
-      title: t.swap.tokenGagx,
-      body: t.swap.tokenGagxBody,
-    },
-  } satisfies Record<(typeof swapTokenCardKeys)[number], {
-    asset: string
-    body: string
-    key: (typeof swapTokenCardKeys)[number]
-    title: string
-  }>
+function getSwapTokenContent(
+  t: ReturnType<typeof useI18n>['messages'],
+  isDesktop: boolean,
+) {
+  const assets = {
+    agx: tokenCarouselIcons.agxIcon,
+    gagx: tokenCarouselIcons.gagxIcon,
+    usd1: tokenCarouselIcons.usd1Icon,
+    x: tokenCarouselIcons.xIcon,
+  } as const
 
-  return swapTokenCardKeys.map((key) => tokenContent[key])
+  return swapTokenCardKeys.map((key) => {
+    const copy = t.swap.tokenAbout.items.find((item) => item.key === key)!
+    return {
+      asset: assets[key],
+      body: isDesktop && copy.bodyDesktop ? copy.bodyDesktop : copy.body,
+      key,
+      title: copy.title,
+    }
+  })
 }
 
 function MobileTokenCarousel() {
   const { messages: t } = useI18n()
-  const tokens = getSwapTokenContent(t)
+  const tokens = getSwapTokenContent(t, false)
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
 
@@ -848,7 +820,7 @@ function MobileTokenCarousel() {
 
   return (
     <Carousel
-      aria-label={t.swap.tokenAbout}
+      aria-label={t.swap.tokenAbout.title}
       className={cn(revealClass(), 'mt-3 grid w-full overflow-visible max-dapp:mt-2.5')}
       data-reveal
       opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
@@ -889,14 +861,14 @@ function MobileTokenCarousel() {
           />
         </button>
         <span
-          aria-label={t.swap.tokenAbout}
+          aria-label={t.swap.tokenAbout.title}
           className="inline-flex items-center gap-1.5"
           role="group"
         >
           {tokens.map((token, index) => (
             <button
               aria-current={current === index ? 'true' : undefined}
-              aria-label={`${t.swap.tokenAbout} ${index + 1}`}
+              aria-label={`${t.swap.tokenAbout.title} ${index + 1}`}
               className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0"
               key={token.key}
               onClick={() => goTo(index)}

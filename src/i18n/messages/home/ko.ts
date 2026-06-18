@@ -1,5 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeContentBundle } from '~/home/content/types'
+import type { HomeMessagesBundle } from './en'
 
 const home = defineMessages({
   meta: {
@@ -35,7 +35,6 @@ const home = defineMessages({
       }
     ],
     whitepaper: '백서',
-    launchDapp: 'DApp 실행',
     languageLabel: '언어'
   },
   hero: {
@@ -45,7 +44,6 @@ const home = defineMessages({
     body: '세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜. USD1을 핵심 결제 자산으로 AI, 결제 및 글로벌 유동성 네트워크를 연결합니다.',
     enterProtocol: '프로토콜 진입',
     readWhitepaper: '백서 읽기',
-    walletBusy: '지갑 여는 중...'
   },
   sections: {
     protocol: {
@@ -190,29 +188,29 @@ const home = defineMessages({
       title: '자주 묻는 질문',
       items: [
         {
-          question: 'AEGIS X란 무엇인가요?',
-          answer: 'AEGIS X는 세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜로, USD1을 핵심 결제 자산으로 AI, DeFi 및 글로벌 결제 네트워크를 연결합니다.',
+          q: 'AEGIS X란 무엇인가요?',
+          a: 'AEGIS X는 세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜로, USD1을 핵심 결제 자산으로 AI, DeFi 및 글로벌 결제 네트워크를 연결합니다.',
           open: true
         },
         {
-          question: 'AGX는 어떻게 발행되나요?',
-          answer: 'AGX는 150% 초과 담보 메커니즘을 통해 생성되며, 프로토콜 핵심 자산과 가치 성장의 중요한 매개체입니다.'
+          q: 'AGX는 어떻게 발행되나요?',
+          a: 'AGX는 150% 초과 담보 메커니즘을 통해 생성되며, 프로토콜 핵심 자산과 가치 성장의 중요한 매개체입니다.'
         },
         {
-          question: 'USD1은 AEGIS X에서 어떤 역할을 하나요?',
-          answer: 'USD1은 프로토콜의 핵심 결제 자산으로, 생태계에 가치 유통, 유동성 지원 및 결제 인프라 역량을 제공합니다.'
+          q: 'USD1은 AEGIS X에서 어떤 역할을 하나요?',
+          a: 'USD1은 프로토콜의 핵심 결제 자산으로, 생태계에 가치 유통, 유동성 지원 및 결제 인프라 역량을 제공합니다.'
         },
         {
-          question: '프로토콜은 어떻게 보안을 보장하나요?',
-          answer: '컨트랙트는 비수탁 경계, 감사, 오픈소스 검토 및 멀티시그 거버넌스를 채택합니다.'
+          q: '프로토콜은 어떻게 보안을 보장하나요?',
+          a: '컨트랙트는 비수탁 경계, 감사, 오픈소스 검토 및 멀티시그 거버넌스를 채택합니다.'
         },
         {
-          question: '터보 메커니즘이란 무엇인가요?',
-          answer: '터보 메커니즘은 동적 해제 및 유동성 조절 메커니즘을 통해 집중 매도 압력 위험을 낮추고 시장 안정성과 장기 발전 역량을 강화합니다.'
+          q: '터보 메커니즘이란 무엇인가요?',
+          a: '터보 메커니즘은 동적 해제 및 유동성 조절 메커니즘을 통해 집중 매도 압력 위험을 낮추고 시장 안정성과 장기 발전 역량을 강화합니다.'
         },
         {
-          question: 'X 토큰은 어떻게 작동하나요?',
-          answer: 'X는 생태계 가치 토큰으로, 고정 총량과 프로토콜 기반 소각 메커니즘을 채택합니다.'
+          q: 'X 토큰은 어떻게 작동하나요?',
+          a: 'X는 생태계 가치 토큰으로, 고정 총량과 프로토콜 기반 소각 메커니즘을 채택합니다.'
         }
       ]
     }
@@ -247,7 +245,6 @@ const home = defineMessages({
     brandCopy: '미래 가치 네트워크의 수호 \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. 모든 권리 보유.',
     legal: '서비스 약관 · 개인정보 처리방침 · 면책 조항',
-    languageLabel: '언어',
     groups: [
       {
         label: '프로토콜',
@@ -317,6 +314,6 @@ const home = defineMessages({
       }
     ]
   }
-} satisfies HomeContentBundle)
+} satisfies HomeMessagesBundle)
 
 export default home

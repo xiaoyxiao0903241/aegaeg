@@ -1,7 +1,7 @@
 import type { Locale } from '~/i18n/locales'
 import { getHtmlLang } from '~/i18n/locale-meta'
 import { locales } from '~/i18n/locales'
-import { getHomeContent } from '~/home/content'
+import { homeMessagesByLocale } from '~/i18n/messages/home'
 import { homeAssets } from '~/home/assets'
 
 const supportedLocalesJson = JSON.stringify(locales)
@@ -24,14 +24,14 @@ function escapeAttr(value: string) {
  */
 export function renderHomeDocument(locale: Locale) {
   const lang = getHtmlLang(locale)
-  const content = getHomeContent(locale)
+  const meta = homeMessagesByLocale[locale].meta
 
   return `<!doctype html>
 <html lang="${lang}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="${escapeAttr(content.meta.description)}" />
+    <meta name="description" content="${escapeAttr(meta.description)}" />
     <meta name="theme-color" content="#f5f6f8" />
     <link rel="preload" as="image" href="${homeAssets.heroVideoPoster}" fetchpriority="high" />
     <link
@@ -43,7 +43,7 @@ export function renderHomeDocument(locale: Locale) {
     />
     <script>${bootScript}</script>
     <link rel="stylesheet" href="/src/styles/home.css" />
-    <title>${escapeAttr(content.meta.title)}</title>
+    <title>${escapeAttr(meta.title)}</title>
   </head>
   <body>
     <div id="root"></div>

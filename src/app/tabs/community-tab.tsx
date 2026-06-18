@@ -48,6 +48,7 @@ import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
+import { FaqStack } from '~/app/components/faq-stack'
 
 type CommunityStat = {
   dark?: boolean
@@ -385,6 +386,7 @@ export function CommunityContent({
     return (
       <DappDetailPage className="max-dapp:pb-20">
         <CommunityFlowSection isMobileViewport={isMobileViewport} onSelectTab={onSelectTab} />
+        <CommunityFaqSection />
       </DappDetailPage>
     )
   }
@@ -486,9 +488,9 @@ export function CommunityContent({
           <DappTableEmptyState className="mt-3.5" />
         ) : showInvitesQueryEmpty ? (
           <DappTableEmptyMessage
-            body={t.community.invitesEmptyBody}
+            body={t.community.invitesEmpty.body}
             className="mt-3.5"
-            title={t.community.invitesEmptyTitle}
+            title={t.community.invitesEmpty.title}
           />
         ) : (
           <>
@@ -535,7 +537,22 @@ export function CommunityContent({
           </>
         )}
       </DappSection>
+
+      <CommunityFaqSection />
     </DappDetailPage>
+  )
+}
+
+function CommunityFaqSection() {
+  const { messages: t } = useI18n()
+
+  return (
+    <DappSection
+      className="group-data-[tab=community]/shell:max-dapp:mt-0"
+      title={t.community.faq.title}
+    >
+      <FaqStack items={t.community.faq.items} />
+    </DappSection>
   )
 }
 
@@ -551,35 +568,12 @@ function CommunityFlowSection({
 }) {
   const { messages: t } = useI18n()
 
-  const inviteFlowItems = [
-    {
-      title: t.community.inviteFlowShareTitle,
-      copy: t.community.inviteFlowShareBody,
-    },
-    {
-      title: t.community.inviteFlowJoinTitle,
-      copy: t.community.inviteFlowJoinBody,
-    },
-    {
-      title: t.community.inviteFlowEarnTitle,
-      copy: t.community.inviteFlowEarnBody,
-    },
-  ]
+  const inviteFlowItems = t.community.inviteFlow.items.map(({ title, body }) => ({
+    copy: body,
+    title,
+  }))
 
-  const programItems = [
-    {
-      label: t.community.programGenesisLabel,
-      title: t.community.programGenesisTitle,
-      body: t.community.programGenesisBody,
-      link: t.community.programGenesisAction,
-    },
-    {
-      label: t.community.programAcademyLabel,
-      title: t.community.programAcademyTitle,
-      body: t.community.programAcademyBody,
-      link: t.community.programAcademyAction,
-    },
-  ]
+  const programItems = t.community.programs.items
 
   return (
     <>
@@ -602,7 +596,7 @@ function CommunityFlowSection({
           connected && 'group-data-[tab=community]/shell:max-dapp:mt-0',
           !connected && 'max-dapp:mt-[18px]',
         )}
-        title={t.community.programs}
+        title={t.community.programs.title}
       >
         <div
           className={cn(
@@ -612,7 +606,7 @@ function CommunityFlowSection({
         >
           {programItems.map((program) => (
             <ProgramCard
-              action={program.link}
+              action={program.action}
               body={program.body}
               className={cn(
                 'max-dapp:gap-1.5 max-dapp:py-3',

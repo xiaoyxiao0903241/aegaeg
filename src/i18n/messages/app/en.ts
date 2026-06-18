@@ -95,119 +95,119 @@ const app = defineMessages({
     settlement: 'Settlement',
     settlementValue: 'On-chain · seconds',
     settlementHint: 'BSC only · gas paid by connected wallet',
-    about: 'About',
-    aboutBody:
-      'Swap USDT and USD1 instantly at a fixed 1:1 rate with zero slippage. USD1 is the core settlement asset of the AEGIS X protocol.',
-    tokenAbout: 'About AEGIS X ecosystem tokens',
-    tokenUsd1: 'USD1 · Settlement stablecoin',
-    tokenUsd1Body:
-      'The core settlement stablecoin, pegged 1:1 with zero slippage across Genesis, staking, and payments.',
-    tokenAgx: 'AGX · Governance token',
-    tokenAgxBody: 'Core governance token for voting, staking, and ecosystem incentives.',
-    tokenAgxBodyDesktop:
-      'Core governance and value token of the AEGIS X protocol, used for governance voting, staking, and ecosystem incentives to capture long-term protocol growth.',
-    tokenGagx: 'gAGX · Staking receipt',
-    tokenGagxBody:
-      'Interest-bearing receipt from staking AGX, auto-compounding, unlocking governance weight.',
-    tokenGagxBodyDesktop:
-      'Interest-bearing receipt earned by staking AGX, with auto-compounding yields and higher-tier governance weight.',
-    tokenX: 'X · Equity token',
-    tokenXBody:
-      'Ecosystem equity token that records contributions and can be redeemed for benefits and airdrop multipliers.',
-    tokenXBodyDesktop:
-      'Ecosystem participation and equity token that records on-chain contributions, redeemable for benefits, events, and airdrop multipliers.',
+    about: {
+      title: 'About',
+      body: 'Swap USDT and USD1 instantly at a fixed 1:1 rate with zero slippage. USD1 is the core settlement asset of the AEGIS X protocol.',
+    },
+    tokenAbout: {
+      title: 'About AEGIS X ecosystem tokens',
+      items: [
+        {
+          key: 'usd1',
+          title: 'USD1 · Settlement stablecoin',
+          body: 'The core settlement stablecoin, pegged 1:1 with zero slippage across Genesis, staking, and payments.',
+        },
+        {
+          key: 'agx',
+          title: 'AGX · Governance token',
+          body: 'Core governance token for voting, staking, and ecosystem incentives.',
+          bodyDesktop:
+            'Core governance and value token of the AEGIS X protocol, used for governance voting, staking, and ecosystem incentives to capture long-term protocol growth.',
+        },
+        {
+          key: 'gagx',
+          title: 'gAGX · Staking receipt',
+          body: 'Interest-bearing receipt from staking AGX, auto-compounding, unlocking governance weight.',
+          bodyDesktop:
+            'Interest-bearing receipt earned by staking AGX, with auto-compounding yields and higher-tier governance weight.',
+        },
+        {
+          key: 'x',
+          title: 'X · Equity token',
+          body: 'Ecosystem equity token that records contributions and can be redeemed for benefits and airdrop multipliers.',
+          bodyDesktop:
+            'Ecosystem participation and equity token that records on-chain contributions, redeemable for benefits, events, and airdrop multipliers.',
+        },
+      ],
+    },
     tokenContract: 'View contract',
     tokenPrevious: 'Previous token',
     tokenNext: 'Next token',
     swipeNext: 'Swipe to next page',
     swipePrevious: 'Swipe to previous page',
-    faqTabUsd1: 'USD1',
-    faqTabAgx: 'AGX',
-    faqTabGagx: 'gAGX',
-    faqTabX: 'X',
-    faqTabUsd1Items: [
-      {
-        q: 'What is USD1?',
-        a: 'USD1 is the core settlement stablecoin of the AEGIS X ecosystem, backed 1:1 and used across swap, contribution, and reward flows.',
+    faq: {
+      title: 'FAQ',
+      tabs: {
+        usd1: {
+          label: 'USD1',
+          items: [
+            {
+              q: 'What is USD1?',
+              a: 'USD1 is the core settlement stablecoin of the AEGIS X ecosystem, backed 1:1 and used across swap, contribution, and reward flows.',
+            },
+            {
+              q: 'Why is the rate fixed at 1:1?',
+              a: 'USD1 is a settlement stablecoin in the protocol. The swap surface keeps a fixed 1:1 conversion model for the Genesis phase.',
+            },
+            {
+              q: 'Are there any fees?',
+              a: 'Only BSC network gas is shown for this static page.',
+            },
+          ],
+        },
+        agx: {
+          label: 'AGX',
+          items: [
+            {
+              q: 'What is AGX?',
+              a: 'AGX is the governance and value token of AEGIS X, used for voting, staking, and ecosystem incentives.',
+            },
+            {
+              q: 'What role does USD1 play in the protocol?',
+              a: 'USD1 is the settlement rail across contribution, rewards, and swap flows, keeping value accounting simple and auditable.',
+            },
+            {
+              q: 'How are USDT and USD1 converted?',
+              a: 'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
+            },
+          ],
+        },
+        gagx: {
+          label: 'gAGX',
+          items: [
+            {
+              q: 'What is gAGX?',
+              a: 'gAGX is the interest-bearing staking receipt for AGX, unlocking governance weight and higher shareholder titles.',
+            },
+            {
+              q: 'What role does USD1 play in the protocol?',
+              a: 'USD1 is the settlement rail across contribution, rewards, and swap flows, keeping value accounting simple and auditable.',
+            },
+            {
+              q: 'How are USDT and USD1 converted?',
+              a: 'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
+            },
+          ],
+        },
+        x: {
+          label: 'X',
+          items: [
+            {
+              q: 'What is X?',
+              a: 'X is the ecosystem participation token that records on-chain contributions and qualifies for airdrops and events.',
+            },
+            {
+              q: 'What role does USD1 play in the protocol?',
+              a: 'USD1 is the settlement rail across contribution, rewards, and swap flows, keeping value accounting simple and auditable.',
+            },
+            {
+              q: 'How are USDT and USD1 converted?',
+              a: 'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
+            },
+          ],
+        },
       },
-      {
-        q: 'Why is the rate fixed at 1:1?',
-        a: 'USD1 is a settlement stablecoin in the protocol. The swap surface keeps a fixed 1:1 conversion model for the Genesis phase.',
-      },
-      {
-        q: 'Are there any fees?',
-        a: 'Only BSC network gas is shown for this static page.',
-      },
-    ],
-    faqTabAgxItems: [
-      {
-        q: 'What is AGX?',
-        a: 'AGX is the governance and value token of AEGIS X, used for voting, staking, and ecosystem incentives.',
-      },
-      {
-        q: 'What role does USD1 play in the protocol?',
-        a: 'USD1 is the settlement rail across contribution, rewards, and swap flows, keeping value accounting simple and auditable.',
-      },
-      {
-        q: 'How are USDT and USD1 converted?',
-        a: 'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
-      },
-    ],
-    faqTabGagxItems: [
-      {
-        q: 'What is gAGX?',
-        a: 'gAGX is the interest-bearing staking receipt for AGX, unlocking governance weight and higher shareholder titles.',
-      },
-      {
-        q: 'What role does USD1 play in the protocol?',
-        a: 'USD1 is the settlement rail across contribution, rewards, and swap flows, keeping value accounting simple and auditable.',
-      },
-      {
-        q: 'How are USDT and USD1 converted?',
-        a: 'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
-      },
-    ],
-    faqTabXItems: [
-      {
-        q: 'What is X?',
-        a: 'X is the ecosystem participation token that records on-chain contributions and qualifies for airdrops and events.',
-      },
-      {
-        q: 'What role does USD1 play in the protocol?',
-        a: 'USD1 is the settlement rail across contribution, rewards, and swap flows, keeping value accounting simple and auditable.',
-      },
-      {
-        q: 'How are USDT and USD1 converted?',
-        a: 'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
-      },
-    ],
-    faq: 'FAQ',
-    faqRate: 'Why is the rate fixed at 1:1?',
-    faqRateBody:
-      'USD1 is a settlement stablecoin in the protocol. The swap surface keeps a fixed 1:1 conversion model for the Genesis phase.',
-    faqUsd1: 'What is USD1?',
-    faqUsd1Body:
-      'USD1 is the core settlement asset of the AEGIS X ecosystem. It is fully backed by reserve assets including cash, short-term U.S. Treasuries, and government money-market funds, with monthly reserve reports published on the WLFI website.',
-    faqFees: 'Are there any fees?',
-    faqFeesBody: 'Only BSC network gas is shown for this static page.',
-    faqRole: 'What role does USD1 play in the protocol?',
-    faqRoleBody:
-      'USD1 is the settlement rail across contribution, rewards, and swap flows, keeping value accounting simple and auditable.',
-    faqConversion: 'How are USDT and USD1 converted?',
-    faqConversionBody:
-      'The app routes conversion through the supported BSC swap path and presents the final transaction through the connected wallet.',
-    faqTabUsd1Q: 'What is USD1?',
-    faqTabUsd1A:
-      'USD1 is the core settlement stablecoin of the AEGIS X ecosystem, backed 1:1 and used across swap, contribution, and reward flows.',
-    faqTabAgxQ: 'What is AGX?',
-    faqTabAgxA:
-      'AGX is the governance and value token of AEGIS X, used for voting, staking, and ecosystem incentives.',
-    faqTabGagxQ: 'What is gAGX?',
-    faqTabGagxA:
-      'gAGX is the interest-bearing staking receipt for AGX, unlocking governance weight and higher shareholder titles.',
-    faqTabXQ: 'What is X?',
-    faqTabXA:
-      'X is the ecosystem participation token that records on-chain contributions and qualifies for airdrops and events.',
+    },
     tokenContractTooltip: 'View token & contract details',
   },
   genesis: {
@@ -227,11 +227,9 @@ const app = defineMessages({
     endsIn: 'Ends in',
     referencePrice: 'AGX reference price',
     contribution: 'Network contribution',
-    discount: 'Discount',
     discountLabel: 'Discount',
     discountRatio: 'Discount rate',
     network: 'Network',
-    airdropRatio: 'Airdrop ratio',
     xAirdropRatio: 'X airdrop ratio',
     airdropLabel: 'X airdrop ratio',
     addresses: 'Addresses',
@@ -243,18 +241,31 @@ const app = defineMessages({
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: 'Core builders worldwide are coming together to grow the AEGIS X global ecosystem.',
     viewContract: 'View contract',
-    faqSeason: 'FAQ1',
-    faqSeasonBody: 'Genesis season allocation is processed after wallet approval.',
-    faqRedeem: 'FAQ2',
-    faqRedeemBody: 'Contribution records are retained on-chain for later AGX allocation.',
-    faqCycle: 'FAQ3',
-    faqCycleBody: 'AGX from genesis contribution follows a 540-day release schedule.',
-    faqReward: 'FAQ4',
-    faqRewardBody:
-      'Accounts with cumulative genesis contribution of 5,000 USD qualify for staged X airdrops at 5% / 2% / 1%.',
-    faqRelease: 'FAQ5',
-    faqReleaseBody:
-      'X airdrops vest linearly over 12 months (~8.33% per month), with the first release 30 days after the X staking protocol launches.',
+    faq: {
+      title: 'FAQ',
+      items: [
+        {
+          q: 'FAQ1',
+          a: 'Genesis season allocation is processed after wallet approval.',
+        },
+        {
+          q: 'FAQ2',
+          a: 'Contribution records are retained on-chain for later AGX allocation.',
+        },
+        {
+          q: 'FAQ3',
+          a: 'AGX from genesis contribution follows a 540-day release schedule.',
+        },
+        {
+          q: 'FAQ4',
+          a: 'Accounts with cumulative genesis contribution of 5,000 USD qualify for staged X airdrops at 5% / 2% / 1%.',
+        },
+        {
+          q: 'FAQ5',
+          a: 'X airdrops vest linearly over 12 months (~8.33% per month), with the first release 30 days after the X staking protocol launches.',
+        },
+      ],
+    },
     promoTitle: 'Genesis Season 1 · 30% off',
     promoBody: 'Live now — limited quota, ends 07.10',
     promoTitleTemplate: 'Genesis Season {season} · {discount}',
@@ -270,7 +281,9 @@ const app = defineMessages({
     walletNotConnected: 'Wallet disconnected. Reconnect to sign transactions.',
     contributionsSyncPending:
       'On-chain purchase confirmed. History is syncing — refresh in a moment.',
-    contributionsEmpty: 'No contribution records yet',
+    contributionsEmpty: {
+      title: 'No contribution records yet',
+    },
     usd1Balance: 'USD1 balance',
     phase: 'Phase',
     phaseSeason: 'Season {season} · {discount}',
@@ -314,23 +327,35 @@ const app = defineMessages({
     history: 'Reward history',
     referralHistory: 'Referral rewards',
     teamHistory: 'Team rewards',
-    referralHistoryEmpty: 'No referral reward records yet',
-    referralHistoryEmptyBody:
-      'Referral rewards appear here after your referees contribute during Genesis.',
-    teamHistoryEmpty: 'No team reward records yet',
-    teamHistoryEmptyBody:
-      'Team settlement and claim history will appear here once rewards accrue.',
-    faqSettlement: 'How are team bonuses settled?',
-    faqSettlementBody: 'Team bonuses settle by epoch after qualified contributions clear.',
-    faqReferral: 'How are referral rewards calculated?',
-    faqReferralBody:
-      'Referral rewards are paid automatically when your referee contributes during Genesis. The reward rate depends on your shareholder tier.',
-    faqTeamClaim: 'How do I claim team rewards?',
-    faqTeamClaimBody:
-      'Team rewards accrue by settlement epoch. Use “Claim to wallet” on the left panel when a balance becomes claimable.',
-    faqRank: 'How is shareholder rank determined?',
-    faqRankBody:
-      'Rank is based on your personal Genesis contribution and team volume. Higher ranks unlock larger team bonus rates.',
+    referralHistoryEmpty: {
+      title: 'No referral reward records yet',
+      body: 'Referral rewards appear here after your referees contribute during Genesis.',
+    },
+    teamHistoryEmpty: {
+      title: 'No team reward records yet',
+      body: 'Team settlement and claim history will appear here once rewards accrue.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        {
+          q: 'How are team bonuses settled?',
+          a: 'Team bonuses settle by epoch after qualified contributions clear.',
+        },
+        {
+          q: 'How are referral rewards calculated?',
+          a: 'Referral rewards are paid automatically when your referee contributes during Genesis. The reward rate depends on your shareholder tier.',
+        },
+        {
+          q: 'How do I claim team rewards?',
+          a: 'Team rewards accrue by settlement epoch. Use “Claim to wallet” on the left panel when a balance becomes claimable.',
+        },
+        {
+          q: 'How is shareholder rank determined?',
+          a: 'Rank is based on your personal Genesis contribution and team volume. Higher ranks unlock larger team bonus rates.',
+        },
+      ],
+    },
     teamHistorySource: 'Epoch settlement',
     rewardType: {
       referralPaid: 'Referral',
@@ -368,7 +393,23 @@ const app = defineMessages({
     myTeam: 'My team',
     genesisTitle: 'Genesis title',
     inviteTitle: 'Start inviting — spin up the compounding flywheel',
-    programs: 'Programs',
+    programs: {
+      title: 'Programs',
+      items: [
+        {
+          label: 'X DAO Genesis · Season 1',
+          title: 'Global genesis shareholder recruitment is live',
+          body: 'The Genesis phase unites core builders worldwide to co-build the AEGIS X ecosystem.',
+          action: 'Learn about the program →',
+        },
+        {
+          label: 'X Academy',
+          title: 'Professional DeFi training for the community',
+          body: 'X Academy helps builders worldwide participate in XDAO more systematically.',
+          action: 'View session requirements →',
+        },
+      ],
+    },
     myInvites: 'My invites ({count})',
 
     referralBondActive: 'Referral bond active · direct invites {count}',
@@ -386,25 +427,34 @@ const app = defineMessages({
     statGenesisToday: 'Upgrades +1 tier at launch · valid 30 days',
 
     bindReferrerSuccess: 'Referrer bound successfully',
-    inviteFlowShareTitle: 'Share your link',
-    inviteFlowShareBody: 'Connect wallet to generate a personal referral link.',
-    inviteFlowJoinTitle: 'Friends join',
-    inviteFlowJoinBody: 'Registering via your link activates the bond.',
-    inviteFlowEarnTitle: 'Earn rewards',
-    inviteFlowEarnBody: 'When they contribute or stake, rewards flow to you.',
-    programGenesisLabel: 'X DAO Genesis · Season 1',
-    programGenesisTitle: 'Global genesis shareholder recruitment is live',
-    programGenesisBody:
-      'The Genesis phase unites core builders worldwide to co-build the AEGIS X ecosystem.',
-    programGenesisAction: 'Learn about the program →',
-    programAcademyLabel: 'X Academy',
-    programAcademyTitle: 'Professional DeFi training for the community',
-    programAcademyBody:
-      'X Academy helps builders worldwide participate in XDAO more systematically.',
-    programAcademyAction: 'View session requirements →',
+    inviteFlow: {
+      items: [
+        {
+          title: 'Share your link',
+          body: 'Connect wallet to generate a personal referral link.',
+        },
+        {
+          title: 'Friends join',
+          body: 'Registering via your link activates the bond.',
+        },
+        {
+          title: 'Earn rewards',
+          body: 'When they contribute or stake, rewards flow to you.',
+        },
+      ],
+    },
     boundTo: 'Bound to {address}',
-    invitesEmptyTitle: 'No invites yet',
-    invitesEmptyBody: 'Share your referral link to invite friends to your community.',
+    invitesEmpty: {
+      title: 'No invites yet',
+      body: 'Share your referral link to invite friends to your community.',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: '---' },
+        { q: 'FAQ2', a: '---' },
+      ],
+    },
   },
   tables: {
     time: 'Time',
@@ -440,5 +490,7 @@ const app = defineMessages({
     signInRequired: 'Sign in to view your data',
   },
 })
+
+export type AppMessagesBundle = typeof app
 
 export default app

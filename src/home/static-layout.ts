@@ -1,7 +1,4 @@
-import { allLanguageOptions, type Locale } from '~/i18n/locales'
-import { withLocalePrefix } from '~/i18n/locale'
 import { homeAssets } from '~/home/assets'
-import type { LanguageOption } from '~/home/content/types'
 
 export const tokenCardShells = [
   {
@@ -62,11 +59,3 @@ export const engineIcons = [
   homeAssets.engine.rebase,
   homeAssets.engine.turbo,
 ] as const
-
-export function makeLanguageOptions(activeLocale: Locale): LanguageOption[] {
-  return allLanguageOptions.map((option) => ({
-    ...option,
-    active: option.locale === activeLocale,
-    href: option.locale ? withLocalePrefix(option.locale, '/') : undefined,
-  }))
-}

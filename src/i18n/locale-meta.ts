@@ -68,8 +68,3 @@ export const localeMeta: Record<Locale, LocaleMeta> = {
 export function getHtmlLang(locale: Locale): string {
   return localeMeta[locale].htmlLang
 }
-
-/** Home static copy is fully localized for all supported locales. */
-export function resolveHomeContentLocale(locale: Locale): Locale {
-  return locale
-}

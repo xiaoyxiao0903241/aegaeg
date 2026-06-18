@@ -1,3 +1,4 @@
+import type { AppMessagesBundle } from './en'
 import { defineMessages } from '~/i18n/messages/define-messages'
 
 const app = defineMessages({
@@ -96,38 +97,50 @@ const app = defineMessages({
     settlement: '決済',
     settlementValue: 'オンチェーン · 数秒',
     settlementHint: 'BSCのみ · ガス代は接続ウォレットが負担',
-    about: '概要',
-    aboutBody:
-      'USDTとUSD1を固定1:1レートで即時スワップ、スリッページなし。USD1はAEGIS Xプロトコルの中核決済資産。',
-    tokenAbout: 'AEGIS Xエコシステムトークンについて',
-    tokenUsd1: 'USD1 · 決済ステーブルコイン',
-    tokenUsd1Body:
-      '中核決済ステーブルコイン、1:1ペッグ、スリッページなし。Genesis、ステーキング、決済全体で使用。',
-    tokenAgx: 'AGX · ガバナンストークン',
-    tokenAgxBody: 'ガバナンス投票、ステーキング、エコシステムインセンティブに使用する中核ガバナンストークン。',
-    tokenAgxBodyDesktop:
-      'AEGIS Xプロトコルの中核ガバナンス・価値トークン。ガバナンス投票、ステーキング、エコシステムインセンティブに使用し、プロトコルの長期成長価値を獲得。',
-    tokenGagx: 'gAGX · ステーキング証明',
-    tokenGagxBody:
-      'AGXステーキングの利子付き証明、自動複利、ガバナンスウェイトの解放。',
-    tokenGagxBodyDesktop:
-      'AGXステーキングで得られる利子付き証明。自動複利収益と上位ガバナンスウェイトを提供。',
-    tokenX: 'X · エクイティトークン',
-    tokenXBody:
-      '貢献を記録するエコシステムエクイティトークン。特典やエアドロップ倍率と交換可能。',
-    tokenXBodyDesktop:
-      'オンチェイン貢献を記録するエコシステム参加・エクイティトークン。特典、イベント、エアドロップ倍率と交換可能。',
+    about: {
+      title: '概要',
+      body: 'USDTとUSD1を固定1:1レートで即時スワップ、スリッページなし。USD1はAEGIS Xプロトコルの中核決済資産。',
+    },
+    tokenAbout: {
+      title: 'AEGIS Xエコシステムトークンについて',
+      items: [
+        {
+          key: 'usd1',
+          title: 'USD1 · 決済ステーブルコイン',
+          body: '中核決済ステーブルコイン、1:1ペッグ、スリッページなし。Genesis、ステーキング、決済全体で使用。',
+        },
+        {
+          key: 'agx',
+          title: 'AGX · ガバナンストークン',
+          body: 'ガバナンス投票、ステーキング、エコシステムインセンティブに使用する中核ガバナンストークン。',
+          bodyDesktop: 'AEGIS Xプロトコルの中核ガバナンス・価値トークン。ガバナンス投票、ステーキング、エコシステムインセンティブに使用し、プロトコルの長期成長価値を獲得。',
+        },
+        {
+          key: 'gagx',
+          title: 'gAGX · ステーキング証明',
+          body: 'AGXステーキングの利子付き証明、自動複利、ガバナンスウェイトの解放。',
+          bodyDesktop: 'AGXステーキングで得られる利子付き証明。自動複利収益と上位ガバナンスウェイトを提供。',
+        },
+        {
+          key: 'x',
+          title: 'X · エクイティトークン',
+          body: '貢献を記録するエコシステムエクイティトークン。特典やエアドロップ倍率と交換可能。',
+          bodyDesktop: 'オンチェイン貢献を記録するエコシステム参加・エクイティトークン。特典、イベント、エアドロップ倍率と交換可能。',
+        },
+      ],
+    },
     tokenContract: 'コントラクトを表示',
     tokenPrevious: '前のトークン',
     tokenNext: '次のトークン',
     swipeNext: '上にスワイプして次のページへ',
     swipePrevious: '下にスワイプして前のページへ',
-    faqTabUsd1: 'USD1',
-    faqTabAgx: 'AGX',
-    faqTabGagx: 'gAGX',
-    faqTabX: 'X',
-    faqTabUsd1Items: [
-      {
+    faq: {
+      title: 'FAQ',
+      tabs: {
+        usd1: {
+          label: 'USD1',
+          items: [
+{
         q: 'USD1とは？',
         a: 'USD1はAEGIS Xエコシステムの中核決済ステーブルコイン。1:1で裏付けられ、スワップ、貢献、リワードの各フローで使用。',
       },
@@ -139,9 +152,12 @@ const app = defineMessages({
         q: '手数料はありますか？',
         a: 'この静的ページではBSCネットワークのガス代のみ表示。',
       },
-    ],
-    faqTabAgxItems: [
-      {
+          ],
+        },
+        agx: {
+          label: 'AGX',
+          items: [
+{
         q: 'AGXとは？',
         a: 'AGXはAEGIS Xのガバナンス・価値トークン。投票、ステーキング、エコシステムインセンティブに使用。',
       },
@@ -153,9 +169,12 @@ const app = defineMessages({
         q: 'USDTとUSD1はどのように変換？',
         a: 'アプリは対応BSCスワップパスで変換をルーティングし、接続ウォレットで最終取引を提示。',
       },
-    ],
-    faqTabGagxItems: [
-      {
+          ],
+        },
+        gagx: {
+          label: 'gAGX',
+          items: [
+{
         q: 'gAGXとは？',
         a: 'gAGXはAGXステーキングの利子付き証明。ガバナンスウェイトと上位株主タイトルを解放。',
       },
@@ -167,9 +186,12 @@ const app = defineMessages({
         q: 'USDTとUSD1はどのように変換？',
         a: 'アプリは対応BSCスワップパスで変換をルーティングし、接続ウォレットで最終取引を提示。',
       },
-    ],
-    faqTabXItems: [
-      {
+          ],
+        },
+        x: {
+          label: 'X',
+          items: [
+{
         q: 'Xとは？',
         a: 'Xはオンチェイン貢献を記録するエコシステム参加トークン。エアドロップとイベントの資格を付与。',
       },
@@ -181,34 +203,10 @@ const app = defineMessages({
         q: 'USDTとUSD1はどのように変換？',
         a: 'アプリは対応BSCスワップパスで変換をルーティングし、接続ウォレットで最終取引を提示。',
       },
-    ],
-    faq: 'FAQ',
-    faqRate: 'レートが1:1固定なのはなぜ？',
-    faqRateBody:
-      'USD1はプロトコルの決済ステーブルコイン。スワップ画面はGenesisフェーズで固定1:1変換モデルを維持。',
-    faqUsd1: 'USD1とは？',
-    faqUsd1Body:
-      'USD1はAEGIS Xエコシステムの中核決済資産。現金、短期米国債、政府マネーマーケットファンド等の準備資産で100%裏付け。WLFIウェブサイトで月次準備金レポートを公開。',
-    faqFees: '手数料はありますか？',
-    faqFeesBody: 'この静的ページではBSCネットワークのガス代のみ表示。',
-    faqRole: 'USD1はプロトコルでどのような役割？',
-    faqRoleBody:
-      'USD1は貢献、リワード、スワップの各フローの決済レール。価値会計をシンプルかつ監査可能に維持。',
-    faqConversion: 'USDTとUSD1はどのように変換？',
-    faqConversionBody:
-      'アプリは対応BSCスワップパスで変換をルーティングし、接続ウォレットで最終取引を提示。',
-    faqTabUsd1Q: 'USD1とは？',
-    faqTabUsd1A:
-      'USD1はAEGIS Xエコシステムの中核決済ステーブルコイン。1:1で裏付けられ、スワップ、貢献、リワードの各フローで使用。',
-    faqTabAgxQ: 'AGXとは？',
-    faqTabAgxA:
-      'AGXはAEGIS Xのガバナンス・価値トークン。投票、ステーキング、エコシステムインセンティブに使用。',
-    faqTabGagxQ: 'gAGXとは？',
-    faqTabGagxA:
-      'gAGXはAGXステーキングの利子付き証明。ガバナンスウェイトと上位株主タイトルを解放。',
-    faqTabXQ: 'Xとは？',
-    faqTabXA:
-      'Xはオンチェイン貢献を記録するエコシステム参加トークン。エアドロップとイベントの資格を付与。',
+          ],
+        },
+      },
+    },
     tokenContractTooltip: 'トークン・コントラクト詳細を表示',
   },
   genesis: {
@@ -228,11 +226,9 @@ const app = defineMessages({
     endsIn: '終了まで',
     referencePrice: 'AGX参考価格',
     contribution: 'ネットワーク貢献',
-    discount: '割引',
     discountLabel: '割引',
     discountRatio: '割引率',
     network: 'ネットワーク',
-    airdropRatio: 'エアドロップ比率',
     xAirdropRatio: 'Xエアドロップ比率',
     airdropLabel: 'Xエアドロップ比率',
     addresses: 'アドレス数',
@@ -244,18 +240,16 @@ const app = defineMessages({
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: '世界中のコアビルダーが集まり、AEGIS Xグローバルエコシステムを成長させます。',
     viewContract: 'コントラクトを表示',
-    faqSeason: 'FAQ1',
-    faqSeasonBody: 'Genesisシーズン割当はウォレット承認後に処理。',
-    faqRedeem: 'FAQ2',
-    faqRedeemBody: '貢献記録はオンチェインに保持され、後続のAGX割当に使用。',
-    faqCycle: 'FAQ3',
-    faqCycleBody: 'Genesis貢献で得たAGXは540日間のリリーススケジュールに従います。',
-    faqReward: 'FAQ4',
-    faqRewardBody:
-      '累計Genesis貢献が5,000 USDに達したアカウントは、段階的なXエアドロップ（5% / 2% / 1%）の対象となります。',
-    faqRelease: 'FAQ5',
-    faqReleaseBody:
-      'Xエアドロップは12か月間の線形ベスティング（月約8.33%）。Xステーキングプロトコル開始30日後に初回リリース。',
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: 'Genesisシーズン割当はウォレット承認後に処理。' },
+        { q: 'FAQ2', a: '貢献記録はオンチェインに保持され、後続のAGX割当に使用。' },
+        { q: 'FAQ3', a: 'Genesis貢献で得たAGXは540日間のリリーススケジュールに従います。' },
+        { q: 'FAQ4', a: '累計Genesis貢献が5,000 USDに達したアカウントは、段階的なXエアドロップ（5% / 2% / 1%）の対象となります。' },
+        { q: 'FAQ5', a: 'Xエアドロップは12か月間の線形ベスティング（月約8.33%）。Xステーキングプロトコル開始30日後に初回リリース。' },
+      ],
+    },
     promoTitle: 'Genesis Season 1 · 30%オフ',
     promoBody: '開催中 — 限定枠、07.10終了',
     promoTitleTemplate: 'Genesis Season {season} · {discount}',
@@ -270,7 +264,9 @@ const app = defineMessages({
     purchaseUnavailable: '現在参加できません。シェア数またはシーズン状態を確認してください。',
     walletNotConnected: 'ウォレットが切断されました。取引に署名するには再接続してください。',
     contributionsSyncPending: 'オンチェーン購入は確認済みです。履歴を同期中です。しばらくしてから更新してください。',
-    contributionsEmpty: '購入記録はまだありません',
+    contributionsEmpty: {
+      title: '購入記録はまだありません',
+    },
     usd1Balance: 'USD1残高',
     phase: 'フェーズ',
     phaseSeason: 'Season {season} · {discount}',
@@ -314,19 +310,23 @@ const app = defineMessages({
     history: 'リワード履歴',
     referralHistory: '紹介リワード',
     teamHistory: 'チームリワード',
-    referralHistoryEmpty: '紹介リワードの記録はまだありません',
-    referralHistoryEmptyBody:
-      '紹介先が Genesis 期間中に購入すると、紹介リワードがここに表示されます。',
-    teamHistoryEmpty: 'チームリワードの記録はまだありません',
-    teamHistoryEmptyBody: 'チーム報酬の決済・受取履歴は、報酬が発生するとここに表示されます。',
-    faqSettlement: 'チームボーナスはどのように決済？',
-    faqSettlementBody: 'チームボーナスは資格のある貢献が確認された後、エポックごとに決済。',
-    faqReferral: '紹介報酬はどのように計算されますか？',
-    faqReferralBody: 'Genesis 期間中に紹介先が貢献すると、紹介報酬は自動的にウォレットへ支払われます。率は株主ランクに依存します。',
-    faqTeamClaim: 'チーム報酬はどう受け取りますか？',
-    faqTeamClaimBody: 'チーム報酬は決済エポックごとに蓄積されます。請求可能な残高があれば左パネルの「ウォレットへ請求」を使用してください。',
-    faqRank: '株主ランクはどう決まりますか？',
-    faqRankBody: 'ランクは個人の Genesis 貢献額とチームボリュームに基づきます。上位ランクほどチームボーナス率が高くなります。',
+    referralHistoryEmpty: {
+      title: '紹介リワードの記録はまだありません',
+      body: '紹介先が Genesis 期間中に購入すると、紹介リワードがここに表示されます。',
+    },
+    teamHistoryEmpty: {
+      title: 'チームリワードの記録はまだありません',
+      body: 'チーム報酬の決済・受取履歴は、報酬が発生するとここに表示されます。',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'チームボーナスはどのように決済？', a: 'チームボーナスは資格のある貢献が確認された後、エポックごとに決済。' },
+        { q: '紹介報酬はどのように計算されますか？', a: 'Genesis 期間中に紹介先が貢献すると、紹介報酬は自動的にウォレットへ支払われます。率は株主ランクに依存します。' },
+        { q: 'チーム報酬はどう受け取りますか？', a: 'チーム報酬は決済エポックごとに蓄積されます。請求可能な残高があれば左パネルの「ウォレットへ請求」を使用してください。' },
+        { q: '株主ランクはどう決まりますか？', a: 'ランクは個人の Genesis 貢献額とチームボリュームに基づきます。上位ランクほどチームボーナス率が高くなります。' },
+      ],
+    },
     teamHistorySource: 'エポック決済',
     rewardType: {
       referralPaid: '紹介報酬',
@@ -364,7 +364,23 @@ const app = defineMessages({
     myTeam: 'マイチーム',
     genesisTitle: 'Genesisタイトル',
     inviteTitle: '招待を始めて成長フライホイールを回す',
-    programs: 'プログラム',
+    programs: {
+      title: 'プログラム',
+      items: [
+        {
+          label: 'X DAO Genesis · Season 1',
+          title: 'グローバル Genesis 株主募集が開始',
+          body: 'Genesis フェーズは世界中のコアビルダーを結集し、AEGIS X エコシステムを共創します。',
+          action: 'プログラムを見る →',
+        },
+        {
+          label: 'X Academy',
+          title: 'コミュニティ向けプロフェッショナル DeFi トレーニング',
+          body: 'X Academy は世界中のビルダーが XDAO に体系的に参加できるよう支援します。',
+          action: '参加要件を見る →',
+        },
+      ],
+    },
     myInvites: '自分の招待（{count}）',
 
     referralBondActive: '紹介関係有効 · 直接招待 {count}人',
@@ -382,25 +398,34 @@ const app = defineMessages({
     statGenesisToday: 'ローンチ時に +1 ティア昇格 · 有効期間 30 日',
 
     bindReferrerSuccess: '紹介者の紐付けが完了しました',
-    inviteFlowShareTitle: 'リンクを共有',
-    inviteFlowShareBody: 'ウォレットを接続して個人紹介リンクを生成します。',
-    inviteFlowJoinTitle: '友達が参加',
-    inviteFlowJoinBody: 'あなたのリンク経由で登録すると紹介関係が有効化されます。',
-    inviteFlowEarnTitle: 'リワードを獲得',
-    inviteFlowEarnBody: '相手が貢献またはステークすると、リワードがあなたに還元されます。',
-    programGenesisLabel: 'X DAO Genesis · Season 1',
-    programGenesisTitle: 'グローバル Genesis 株主募集が開始',
-    programGenesisBody:
-      'Genesis フェーズは世界中のコアビルダーを結集し、AEGIS X エコシステムを共創します。',
-    programGenesisAction: 'プログラムを見る →',
-    programAcademyLabel: 'X Academy',
-    programAcademyTitle: 'コミュニティ向けプロフェッショナル DeFi トレーニング',
-    programAcademyBody:
-      'X Academy は世界中のビルダーが XDAO に体系的に参加できるよう支援します。',
-    programAcademyAction: '参加要件を見る →',
+    inviteFlow: {
+      items: [
+        {
+          title: 'リンクを共有',
+          body: 'ウォレットを接続して個人紹介リンクを生成します。',
+        },
+        {
+          title: '友達が参加',
+          body: 'あなたのリンク経由で登録すると紹介関係が有効化されます。',
+        },
+        {
+          title: 'リワードを獲得',
+          body: '相手が貢献またはステークすると、リワードがあなたに還元されます。',
+        },
+      ],
+    },
     boundTo: '{address}に紐付け済み',
-    invitesEmptyTitle: '招待記録はまだありません',
-    invitesEmptyBody: '紹介リンクを共有して、友達をコミュニティに招待しましょう。',
+    invitesEmpty: {
+      title: '招待記録はまだありません',
+      body: '紹介リンクを共有して、友達をコミュニティに招待しましょう。',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: '---' },
+        { q: 'FAQ2', a: '---' },
+      ],
+    },
   },
   tables: {
     time: '時間',
@@ -435,6 +460,6 @@ const app = defineMessages({
     loading: '読み込み中…',
     signInRequired: 'データを表示するにはサインイン',
   },
-})
+} satisfies AppMessagesBundle)
 
 export default app

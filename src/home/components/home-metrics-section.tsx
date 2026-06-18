@@ -1,5 +1,5 @@
 import { Text } from '~/components/text'
-import type { HomeContent } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { cn } from '~/lib/utils'
 
 const homeMetricsRaysClass = cn(
@@ -27,7 +27,7 @@ const metricClass = {
     'text-sm font-medium leading-[1.2] text-white max-dapp:text-[13px] max-dapp:font-normal max-dapp:leading-[1.5] max-dapp:text-on-dark',
 } as const
 
-export function HomeMetricsSection({ metrics }: { metrics: HomeContent['metrics'] }) {
+export function HomeMetricsSection({ metrics }: { metrics: HomeMessagesBundle['metrics'] }) {
   return (
     <section
       className={metricClass.section}

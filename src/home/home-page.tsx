@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { useHomeContent } from '~/home/use-home-content'
 import { HomeEngineSection } from '~/home/components/home-icon-feature-section'
 import { HomeFaqSection } from '~/home/components/home-faq-section'
 import { HomeFooter } from '~/home/components/home-footer'
@@ -14,33 +13,33 @@ import { HomeTokenSection } from '~/home/components/home-token-section'
 import { useI18n } from '~/i18n/use-i18n'
 
 export function HomePage() {
-  const { locale } = useI18n()
-  const content = useHomeContent()
+  const { locale, messages } = useI18n()
+  const home = messages.home
 
   useEffect(() => {
-    document.title = content.meta.title
+    document.title = home.meta.title
 
     const descriptionMeta = document.querySelector('meta[name="description"]')
     if (descriptionMeta) {
-      descriptionMeta.setAttribute('content', content.meta.description)
+      descriptionMeta.setAttribute('content', home.meta.description)
     }
-  }, [content.meta.description, content.meta.title])
+  }, [home.meta.description, home.meta.title])
 
   return (
     <div className="min-h-screen overflow-x-clip">
-      <HomeHeader content={content.nav} />
+      <HomeHeader content={home.nav} />
       <main className="pt-[74px] max-dapp:pt-[60px]" id="top">
-        <HomeHeroSection content={content.hero} locale={locale} />
-        <HomeProtocolSection content={content.sections.protocol} />
-        <HomeEngineSection content={content.sections.engine} />
-        <HomeTokenSection content={content.sections.token} />
-        <HomeMetricsSection metrics={content.metrics} />
-        <HomeRoadmapSection content={content.sections.roadmap} />
-        <HomeSecuritySection content={content.sections.security} />
-        <HomePartnersSection content={content.sections.partners} />
-        <HomeFaqSection content={content.sections.faq} />
+        <HomeHeroSection content={home.hero} locale={locale} />
+        <HomeProtocolSection content={home.sections.protocol} />
+        <HomeEngineSection content={home.sections.engine} />
+        <HomeTokenSection content={home.sections.token} />
+        <HomeMetricsSection metrics={home.metrics} />
+        <HomeRoadmapSection content={home.sections.roadmap} />
+        <HomeSecuritySection content={home.sections.security} />
+        <HomePartnersSection title={home.sections.partners.title} />
+        <HomeFaqSection content={home.sections.faq} />
       </main>
-      <HomeFooter content={content.footer} />
+      <HomeFooter content={home.footer} />
     </div>
   )
 }

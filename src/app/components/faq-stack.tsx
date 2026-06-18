@@ -12,7 +12,7 @@ export function FaqStack({
   defaultOpenFirst?: boolean
   /** 切换数据源时传入，保证展开动画与内容同步（如 Swap FAQ 分 tab） */
   listKey?: string
-  items: Array<{ answer: ReactNode; question: string }>
+  items: Array<{ a: ReactNode; open?: boolean; q: string }>
 }) {
   return (
     <FaqList

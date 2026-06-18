@@ -1,7 +1,8 @@
 import { withLocalePrefix } from '~/i18n/locale'
 import type { Locale } from '~/i18n/locales'
+import { Button } from '~/components/button'
 import { homeAssets } from '~/home/assets'
-import type { HomeContent } from '~/home/content/types'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { cn } from '~/lib/utils'
 
 const homeHeroRaysClass = cn(
@@ -24,15 +25,6 @@ const homeBtnBaseClass = cn(
   'text-[15px] font-semibold leading-none tracking-normal whitespace-nowrap',
   'transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out',
   'hover:opacity-[0.96] focus-visible:opacity-[0.96]',
-)
-
-const homeBtnPrimaryClass = cn(
-  homeBtnBaseClass,
-  'border-0 bg-primary text-primary-foreground',
-  'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
-  'shadow-[0_10px_24px_oklch(66.83%_0.1625_36.6_/_24%)]',
-  'hover:shadow-[0_14px_30px_oklch(66.83%_0.1625_36.6_/_30%)]',
-  'focus-visible:shadow-[0_14px_30px_oklch(66.83%_0.1625_36.6_/_30%)]',
 )
 
 const homeBtnSecondaryClass = cn(
@@ -81,9 +73,10 @@ function HeroPrimaryAction({
   const appHref = withLocalePrefix(locale, '/app.html')
 
   return (
-    <a className={cn(homeBtnPrimaryClass, heroClass.actionButton)} href={appHref}>
-      <span className={heroClass.actionLabel}>{enterProtocol}</span>
-      <svg
+    <Button asChild className={heroClass.actionButton} size="lg" variant="primary">
+      <a href={appHref}>
+        <span className={heroClass.actionLabel}>{enterProtocol}</span>
+        <svg
         className={heroClass.actionArrow}
         width="16"
         height="16"
@@ -107,7 +100,8 @@ function HeroPrimaryAction({
           strokeLinejoin="round"
         />
       </svg>
-    </a>
+      </a>
+    </Button>
   )
 }
 
@@ -115,7 +109,7 @@ export function HomeHeroSection({
   content,
   locale,
 }: {
-  content: HomeContent['hero']
+  content: HomeMessagesBundle['hero']
   locale: Locale
 }) {
   return (

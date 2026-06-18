@@ -1,4 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
+import type { AppMessagesBundle } from './en'
 
 const app = defineMessages({
 
@@ -96,111 +97,117 @@ const app = defineMessages({
     settlement: '结算',
     settlementValue: 'PancakeSwap · 即时到账',
     settlementHint: '仅 BSC · Gas 由连接钱包支付',
-    about: '说明',
-    aboutBody:
-      'USDT 与 USD1 按固定 1:1 汇率即时兑换，零滑点。USD1 是 AEGIS X 协议的核心结算资产。',
-    tokenAbout: '关于 AEGIS X 生态代币',
-    tokenUsd1: 'USD1 · 核心结算资产',
-    tokenUsd1Body: 'AEGIS X生态核心结算资产，连接价值流通、流动性网络与支付场景。',
-    tokenAgx: 'AGX · 核心协议资产',
-    tokenAgxBody: 'AGX 是 AEGIS X 协议核心资产，通过150%超额抵押机制生成，承担价值增长、收益分配与生态建设的重要角色。',
-    tokenAgxBodyDesktop:
-      'AGX 是 AEGIS X 协议核心资产，通过150%超额抵押机制生成，承担价值增长、收益分配与生态建设的重要角色。',
-    tokenGagx: 'gAGX · 奖励结算凭证',
-    tokenGagxBody: '协议奖励结算凭证，可兑换AGX，并参与生态挖矿与收益再循环。',
-    tokenGagxBodyDesktop: '质押 AGX 获得的生息凭证,自动复利收益,解锁治理权重与更高称号。',
-    tokenX: 'X · 生态价值代币',
-    tokenXBody: 'AEGIS X生态价值载体，固定总量2.1亿枚，承载生态增长与价值沉淀。',
-    tokenXBodyDesktop: '生态参与与权益代币,记录链上贡献,可兑换权益、参与活动并获得空投加成。',
+    about: {
+      title: '说明',
+      body: 'USDT 与 USD1 按固定 1:1 汇率即时兑换，零滑点。USD1 是 AEGIS X 协议的核心结算资产。',
+    },
+    tokenAbout: {
+      title: '关于 AEGIS X 生态代币',
+      items: [
+        {
+          key: 'usd1',
+          title: 'USD1 · 核心结算资产',
+          body: 'AEGIS X生态核心结算资产，连接价值流通、流动性网络与支付场景。',
+        },
+        {
+          key: 'agx',
+          title: 'AGX · 核心协议资产',
+          body: 'AGX 是 AEGIS X 协议核心资产，通过150%超额抵押机制生成，承担价值增长、收益分配与生态建设的重要角色。',
+          bodyDesktop:
+            'AEGIS X 协议核心治理与价值代币，用于治理投票、质押与生态激励，承载协议长期增长价值。',
+        },
+        {
+          key: 'gagx',
+          title: 'gAGX · 奖励结算凭证',
+          body: '协议奖励结算凭证，可兑换AGX，并参与生态挖矿与收益再循环。',
+          bodyDesktop: '质押 AGX 获得的生息凭证,自动复利收益,解锁治理权重与更高称号。',
+        },
+        {
+          key: 'x',
+          title: 'X · 生态价值代币',
+          body: 'AEGIS X生态价值载体，固定总量2.1亿枚，承载生态增长与价值沉淀。',
+          bodyDesktop: '生态参与与权益代币,记录链上贡献,可兑换权益、参与活动并获得空投加成。',
+        },
+      ],
+    },
     tokenContract: '查看合约',
     tokenPrevious: '上一个代币',
     tokenNext: '下一个代币',
     swipeNext: '上滑查看下一页',
     swipePrevious: '下滑返回上一页',
-    faqTabUsd1: 'USD1',
-    faqTabAgx: 'AGX',
-    faqTabGagx: 'gAGX',
-    faqTabX: 'X',
-    faqTabUsd1Items: [
-      {
-        q: 'USD1是什么？',
-        a: 'USD1 是 AEGIS X 生态的核心价值结算资产，USD1有100%的儲備資產支持，保管的等值資產包含現金、短期美國公債、政府貨幣市場基金等，每月可在WLFI官網查看金額分佈報告。',
+    faq: {
+      title: 'FAQ',
+      tabs: {
+        usd1: {
+          label: 'USD1',
+          items: [
+            {
+              q: 'USD1是什么？',
+              a: 'USD1 是 AEGIS X 生态的核心价值结算资产，USD1有100%的儲備資產支持，保管的等值資產包含現金、短期美國公債、政府貨幣市場基金等，每月可在WLFI官網查看金額分佈報告。',
+            },
+            {
+              q: 'USD1 在 AEGIS X 中承担什么角色？',
+              a: 'USD1 作为核心结算资产，连接流动性网络、支付场景与生态价值流转。',
+            },
+            {
+              q: '如何进行 USD1 兑换？',
+              a: '用户可通过链上兑换功能，将 USDT 快速兑换为 USD1，参与 AEGIS X 生态。',
+            },
+          ],
+        },
+        agx: {
+          label: 'AGX',
+          items: [
+            {
+              q: 'AGX 是什么？',
+              a: 'AGX 是 AEGIS X 的治理与价值代币，用于治理投票、质押与生态激励。',
+            },
+            {
+              q: 'USD1 在协议里扮演什么角色？',
+              a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
+            },
+            {
+              q: 'USDT 和 USD1 是如何进行兑换的？',
+              a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
+            },
+          ],
+        },
+        gagx: {
+          label: 'gAGX',
+          items: [
+            {
+              q: 'gAGX 是什么？',
+              a: 'gAGX 是质押 AGX 获得的生息凭证，可解锁治理权重与更高股东称号。',
+            },
+            {
+              q: 'USD1 在协议里扮演什么角色？',
+              a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
+            },
+            {
+              q: 'USDT 和 USD1 是如何进行兑换的？',
+              a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
+            },
+          ],
+        },
+        x: {
+          label: 'X',
+          items: [
+            {
+              q: 'X 是什么？',
+              a: 'X 是生态参与权益代币，记录链上贡献并可获得空投与活动加成。',
+            },
+            {
+              q: 'USD1 在协议里扮演什么角色？',
+              a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
+            },
+            {
+              q: 'USDT 和 USD1 是如何进行兑换的？',
+              a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
+            },
+          ],
+        },
       },
-      {
-        q: 'USD1 在 AEGIS X 中承担什么角色？',
-        a: 'USD1 作为核心结算资产，连接流动性网络、支付场景与生态价值流转。',
-      },
-      {
-        q: '如何进行 USD1 兑换？',
-        a: '用户可通过链上兑换功能，将 USDT 快速兑换为 USD1，参与 AEGIS X 生态。',
-      },
-    ],
-    faqTabAgxItems: [
-      {
-        q: 'AGX 是什么？',
-        a: 'AGX 是 AEGIS X 的治理与价值代币，用于治理投票、质押与生态激励。',
-      },
-      {
-        q: 'USD1 在协议里扮演什么角色？',
-        a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
-      },
-      {
-        q: 'USDT 和 USD1 是如何进行兑换的？',
-        a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
-      },
-    ],
-    faqTabGagxItems: [
-      {
-        q: 'gAGX 是什么？',
-        a: 'gAGX 是质押 AGX 获得的生息凭证，可解锁治理权重与更高股东称号。',
-      },
-      {
-        q: 'USD1 在协议里扮演什么角色？',
-        a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
-      },
-      {
-        q: 'USDT 和 USD1 是如何进行兑换的？',
-        a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
-      },
-    ],
-    faqTabXItems: [
-      {
-        q: 'X 是什么？',
-        a: 'X 是生态参与权益代币，记录链上贡献并可获得空投与活动加成。',
-      },
-      {
-        q: 'USD1 在协议里扮演什么角色？',
-        a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
-      },
-      {
-        q: 'USDT 和 USD1 是如何进行兑换的？',
-        a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
-      },
-    ],
-    faq: 'FAQ',
-    faqRate: '为什么汇率固定为 1:1？',
-    faqRateBody: 'USD1 是协议结算稳定币，Genesis 阶段兑换界面保持固定 1:1 模型。',
-    faqUsd1: 'USD1是什么？',
-    faqUsd1Body:
-      'USD1 是 AEGIS X 生态的核心价值结算资产，USD1有100%的儲備資產支持，保管的等值資產包含現金、短期美國公債、政府貨幣市場基金等，每月可在WLFI官網查看金額分佈報告。',
-    faqFees: '是否有手续费？',
-    faqFeesBody: '当前静态页面仅展示 BSC 网络 Gas。',
-    faqRole: 'USD1 在协议里扮演什么角色？',
-    faqRoleBody: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
-    faqConversion: 'USDT 和 USD1 是如何进行兑换的？',
-    faqConversionBody: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
-    faqTabUsd1Q: 'USD1 是什么？',
-    faqTabUsd1A:
-      'USD1 是 AEGIS X 生态的核心结算稳定币，1:1 锚定，贯穿兑换、认购与奖励流程。',
-    faqTabAgxQ: 'AGX 是什么？',
-    faqTabAgxA:
-      'AGX 是 AEGIS X 的治理与价值代币，用于治理投票、质押与生态激励。',
-    faqTabGagxQ: 'gAGX 是什么？',
-    faqTabGagxA:
-      'gAGX 是质押 AGX 获得的生息凭证，可解锁治理权重与更高股东称号。',
-    faqTabXQ: 'X 是什么？',
-    faqTabXA:
-      'X 是生态参与权益代币，记录链上贡献并可获得空投与活动加成。',
+    },
     tokenContractTooltip: '查看代币与合约详情',
   },
   genesis: {
@@ -220,11 +227,9 @@ const app = defineMessages({
     endsIn: '本期剩余时间',
     referencePrice: 'AGX 开盘参考价格',
     contribution: '全网认购',
-    discount: '折扣',
     discountLabel: '折扣',
     discountRatio: '本期折扣比例',
     network: '全网',
-    airdropRatio: '空投比例',
     xAirdropRatio: 'X空投比例',
     airdropLabel: 'X空投比例',
     addresses: '地址数',
@@ -236,16 +241,31 @@ const app = defineMessages({
     globalLabel: '全球累计共建',
     globalBody: '汇聚全球核⼼共建者，共同建设 AEGISX 全球⽣态⽹络。',
     viewContract: '查看合约',
-    faqSeason: '如何参与共建计划？',
-    faqSeasonBody: '用户使用 USD1 参与共建，可按照对应阶段折扣获得 AGX。共三期，每期开放 20 天，折扣依次为 30% / 25% / 20%。',
-    faqRedeem: '共建额度与参与要求？',
-    faqRedeemBody: '最低参与金额100 USD1，需按100 USD1整数倍参与。第一期 $100–$10,000，第二期 $100–$20,000，第三期 $100–$30,000。',
-    faqCycle: '共建周期多久？',
-    faqCycleBody: '参与共建获得的 AGX 采用540天释放周期。',
-    faqReward: '如何获得 X 空投奖励？',
-    faqRewardBody: '单账户累计参与共建金额达到5,000 USD，即可获得对应阶段 X 空投奖励资格。三期空投比例依次为 5% / 2% / 1%。',
-    faqRelease: 'X 空投奖励如何释放？',
-    faqReleaseBody: 'X 空投奖励采用12个月线性释放机制，每月释放约8.33%；首次释放时间为 X 质押协议上线后第30天，由智能合约自动执行。',
+    faq: {
+      title: 'FAQ',
+      items: [
+        {
+          q: '如何参与共建计划？',
+          a: '用户使用 USD1 参与共建，可按照对应阶段折扣获得 AGX。共三期，每期开放 20 天，折扣依次为 30% / 25% / 20%。',
+        },
+        {
+          q: '共建额度与参与要求？',
+          a: '最低参与金额100 USD1，需按100 USD1整数倍参与。第一期 $100–$10,000，第二期 $100–$20,000，第三期 $100–$30,000。',
+        },
+        {
+          q: '共建周期多久？',
+          a: '参与共建获得的 AGX 采用540天释放周期。',
+        },
+        {
+          q: '如何获得 X 空投奖励？',
+          a: '单账户累计参与共建金额达到5,000 USD，即可获得对应阶段 X 空投奖励资格。三期空投比例依次为 5% / 2% / 1%。',
+        },
+        {
+          q: 'X 空投奖励如何释放？',
+          a: 'X 空投奖励采用12个月线性释放机制，每月释放约8.33%；首次释放时间为 X 质押协议上线后第30天，由智能合约自动执行。',
+        },
+      ],
+    },
     promoTitle: 'Genesis Season 1 · 30% 折扣',
     promoBody: '正在进行中，名额有限，07.10 截止',
     promoTitleTemplate: 'Genesis Season {season} · {discount}',
@@ -260,7 +280,9 @@ const app = defineMessages({
     purchaseUnavailable: '当前无法参与认购，请检查份额或认购季状态。',
     walletNotConnected: '钱包已断开，请重新连接后再签名交易。',
     contributionsSyncPending: '链上认购已确认，历史记录正在同步，请稍后刷新。',
-    contributionsEmpty: '暂无共建记录',
+    contributionsEmpty: {
+      title: '暂无共建记录',
+    },
     usd1Balance: '共建价值',
     phase: '将获得X空投',
     phaseSeason: 'Season {season} · {discount}',
@@ -301,18 +323,35 @@ const app = defineMessages({
     history: '奖励记录',
     referralHistory: '推荐奖励',
     teamHistory: '团队奖励',
-    referralHistoryEmpty: '暂无推荐奖励记录',
-    referralHistoryEmptyBody: '被推荐人在 Genesis 期间完成认购后，推荐奖励将显示在这里。',
-    teamHistoryEmpty: '暂无团队奖励记录',
-    teamHistoryEmptyBody: '团队奖励结算与领取记录将在奖励产生后显示在这里。',
-    faqSettlement: '推荐奖励如何计算？',
-    faqSettlementBody: '推荐奖励为3%，采用压缩同等金额结算机制，仅按同等金额部分计算，空账户不计奖励层级，奖励自动结算。',
-    faqReferral: '创世等级如何晋升？',
-    faqReferralBody: '创世等级由S1至S10，根据个人共建金额与体系总业绩进行评定，高等级需满足双区晋升条件。',
-    faqTeamClaim: '什么是等级提升奖励？',
-    faqTeamClaimBody: '共建期间达成的创世等级，将于协议上线后自动提升1个等级，有效期30天，结束后恢复真实等级。',
-    faqRank: '创世团队奖励如何结算？',
-    faqRankBody: '创世团队奖励根据对应创世等级比例计算，智能合约将在每天00:00点(UTC)自动结算，用户按需手动领取到钱包。共建期结束后，当前页面将关闭，未领取的奖励不可再领取，奖励将被打入智能做市合约。',
+    referralHistoryEmpty: {
+      title: '暂无推荐奖励记录',
+      body: '被推荐人在 Genesis 期间完成认购后，推荐奖励将显示在这里。',
+    },
+    teamHistoryEmpty: {
+      title: '暂无团队奖励记录',
+      body: '团队奖励结算与领取记录将在奖励产生后显示在这里。',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        {
+          q: '推荐奖励如何计算？',
+          a: '推荐奖励为3%，采用压缩同等金额结算机制，仅按同等金额部分计算，空账户不计奖励层级，奖励自动结算。',
+        },
+        {
+          q: '创世等级如何晋升？',
+          a: '创世等级由S1至S10，根据个人共建金额与体系总业绩进行评定，高等级需满足双区晋升条件。',
+        },
+        {
+          q: '什么是等级提升奖励？',
+          a: '共建期间达成的创世等级，将于协议上线后自动提升1个等级，有效期30天，结束后恢复真实等级。',
+        },
+        {
+          q: '创世团队奖励如何结算？',
+          a: '创世团队奖励根据对应创世等级比例计算，智能合约将在每天00:00点(UTC)自动结算，用户按需手动领取到钱包。共建期结束后，当前页面将关闭，未领取的奖励不可再领取，奖励将被打入智能做市合约。',
+        },
+      ],
+    },
     teamHistorySource: '周期结算',
     rewardType: {
       referralPaid: '推荐奖励',
@@ -349,7 +388,23 @@ const app = defineMessages({
     myTeam: '社区人数',
     genesisTitle: '当前',
     inviteTitle: '开始邀请 · 共享生态成长价值',
-    programs: '生态支持计划',
+    programs: {
+      title: '生态支持计划',
+      items: [
+        {
+          label: 'X DAO 共建 · 第一期',
+          title: '全球共建计划进行中',
+          body: '汇聚全球共建者，共同参与生态建设。',
+          action: '查看计划详情 →',
+        },
+        {
+          label: 'X 学院',
+          title: '面向共建者的生态培训计划',
+          body: '帮助共建者更深入了解生态机制与发展规划。',
+          action: '查看计划详情 →',
+        },
+      ],
+    },
     myInvites: '我的社区成员（{count}）',
 
     referralBondActive: '推荐关系已激活 · 直推 {count} 人',
@@ -367,23 +422,34 @@ const app = defineMessages({
     statGenesisToday: '上线后自动提升1级',
 
     bindReferrerSuccess: '推荐人绑定成功',
-    inviteFlowShareTitle: '分享邀请链接',
-    inviteFlowShareBody: '连接钱包并填写您的邀请人后即可生成您的专属邀请链接。',
-    inviteFlowJoinTitle: '伙伴参与共建',
-    inviteFlowJoinBody: '伙伴通过您邀请链接注册后，即可参与共建。',
-    inviteFlowEarnTitle: '获得共建奖励',
-    inviteFlowEarnBody: '伙伴参与共建后，奖励由智能合约自动结算到您的钱包地址。',
-    programGenesisLabel: 'X DAO 共建 · 第一期',
-    programGenesisTitle: '全球共建计划进行中',
-    programGenesisBody: '汇聚全球共建者，共同参与生态建设。',
-    programGenesisAction: '查看计划详情 →',
-    programAcademyLabel: 'X 学院',
-    programAcademyTitle: '面向共建者的生态培训计划',
-    programAcademyBody: '帮助共建者更深入了解生态机制与发展规划。',
-    programAcademyAction: '查看计划详情 →',
+    inviteFlow: {
+      items: [
+        {
+          title: '分享邀请链接',
+          body: '连接钱包并填写您的邀请人后即可生成您的专属邀请链接。',
+        },
+        {
+          title: '伙伴参与共建',
+          body: '伙伴通过您邀请链接注册后，即可参与共建。',
+        },
+        {
+          title: '获得共建奖励',
+          body: '伙伴参与共建后，奖励由智能合约自动结算到您的钱包地址。',
+        },
+      ],
+    },
     boundTo: '已绑定 {address}',
-    invitesEmptyTitle: '暂无邀请记录',
-    invitesEmptyBody: '分享推荐链接，邀请好友加入你的社区。',
+    invitesEmpty: {
+      title: '暂无邀请记录',
+      body: '分享推荐链接，邀请好友加入你的社区。',
+    },
+    faq: {
+      title: 'FAQ',
+      items: [
+        { q: 'FAQ1', a: '---' },
+        { q: 'FAQ2', a: '---' },
+      ],
+    },
   },
   tables: {
     time: '时间',
@@ -418,6 +484,6 @@ const app = defineMessages({
     loading: '加载中…',
     signInRequired: '签名登录后查看个人数据',
   },
-})
+} satisfies AppMessagesBundle)
 
 export default app

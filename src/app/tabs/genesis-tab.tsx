@@ -413,7 +413,7 @@ export function GenesisContent() {
           {showContributionsRequiresAuth ? (
             <DappTableEmptyState />
           ) : showContributionsQueryEmpty ? (
-            <DappTableEmptyMessage title={t.genesis.contributionsEmpty} />
+            <DappTableEmptyMessage title={t.genesis.contributionsEmpty.title} />
           ) : (
             <>
               <ResponsiveTable
@@ -436,31 +436,8 @@ export function GenesisContent() {
         </div>
       </DappSection>
 
-      <DappSection title={t.swap.faq}>
-        <FaqStack
-          items={[
-            {
-              answer: t.genesis.faqSeasonBody,
-              question: t.genesis.faqSeason,
-            },
-            {
-              answer: t.genesis.faqRedeemBody,
-              question: t.genesis.faqRedeem,
-            },
-            {
-              answer: t.genesis.faqCycleBody,
-              question: t.genesis.faqCycle,
-            },
-            {
-              answer: t.genesis.faqRewardBody,
-              question: t.genesis.faqReward,
-            },
-            {
-              answer: t.genesis.faqReleaseBody,
-              question: t.genesis.faqRelease,
-            },
-          ]}
-        />
+      <DappSection title={t.genesis.faq.title}>
+        <FaqStack items={t.genesis.faq.items} />
       </DappSection>
     </DappDetailPage>
   )

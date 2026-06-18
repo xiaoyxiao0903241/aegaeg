@@ -1,6 +1,6 @@
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
-import type { HomeContent } from '~/home/content/types'
+import { partners } from '~/home/static-layout'
 import { DeferredImage } from '~/home/components/home-primitives'
 
 const partnerClass = {
@@ -10,11 +10,7 @@ const partnerClass = {
   chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border py-3 pl-3 pr-7 text-[15px] font-semibold text-ink-strong max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pl-3 max-dapp:pr-4 max-dapp:text-[13px]',
 } as const
 
-export function HomePartnersSection({
-  content,
-}: {
-  content: HomeContent['sections']['partners']
-}) {
+export function HomePartnersSection({ title }: { title: string }) {
   return (
     <section className={partnerClass.section} aria-labelledby="partners-title">
       <div className="container">
@@ -26,10 +22,10 @@ export function HomePartnersSection({
           tone="coral"
           className="m-0 text-[13px] leading-[1.25] tracking-[1.82px] text-primary max-dapp:text-xs max-dapp:tracking-[1.68px]"
         >
-          {content.title}
+          {title}
         </Text>
         <div className={partnerClass.row}>
-          {content.items.map(([name, icon]) => (
+          {partners.map(([name, icon]) => (
             <Card
               as="span"
               className={partnerClass.chip}

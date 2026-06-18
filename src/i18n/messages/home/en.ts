@@ -1,5 +1,4 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeContentBundle } from '~/home/content/types'
 
 const home = defineMessages({
   meta: {
@@ -35,7 +34,6 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'Whitepaper',
-    launchDapp: 'Launch DApp',
     languageLabel: 'Language'
   },
   hero: {
@@ -45,7 +43,6 @@ const home = defineMessages({
     body: 'The world\'s first AI x DeFi x USD1 global payment protocol, driven by an AI think-tank system. With USD1 as the core settlement asset, redefining decentralized finance through intelligence.',
     enterProtocol: 'Enter Protocol',
     readWhitepaper: 'Read Whitepaper',
-    walletBusy: 'Opening wallet...'
   },
   sections: {
     protocol: {
@@ -190,29 +187,29 @@ const home = defineMessages({
       title: 'Frequently asked questions',
       items: [
         {
-          question: 'What is AEGIS X?',
-          answer: 'The world\'s first protocol driven by an AI think-tank system, fusing AI intelligence, DeFi liquidity and USD1 stablecoin payments into a next-generation value network - DeFi 4.0.',
+          q: 'What is AEGIS X?',
+          a: 'The world\'s first protocol driven by an AI think-tank system, fusing AI intelligence, DeFi liquidity and USD1 stablecoin payments into a next-generation value network - DeFi 4.0.',
           open: true
         },
         {
-          question: 'How is AGX minted?',
-          answer: 'AGX is minted through the protocol\'s collateralized issuance design with USD1 as the core settlement asset.'
+          q: 'How is AGX minted?',
+          a: 'AGX is minted through the protocol\'s collateralized issuance design with USD1 as the core settlement asset.'
         },
         {
-          question: 'How are staking rewards calculated?',
-          answer: 'Rewards follow staking tiers, epoch settlement, and protocol participation rules defined by the AEGIS X contracts.'
+          q: 'How are staking rewards calculated?',
+          a: 'Rewards follow staking tiers, epoch settlement, and protocol participation rules defined by the AEGIS X contracts.'
         },
         {
-          question: 'How is protocol security ensured?',
-          answer: 'AEGIS X combines non-custodial design, audits, open-source contracts, and multisig governance.'
+          q: 'How is protocol security ensured?',
+          a: 'AEGIS X combines non-custodial design, audits, open-source contracts, and multisig governance.'
         },
         {
-          question: 'How does the X token work?',
-          answer: 'X is the ecosystem value token with a fixed supply and protocol-driven burn mechanics.'
+          q: 'How does the X token work?',
+          a: 'X is the ecosystem value token with a fixed supply and protocol-driven burn mechanics.'
         },
         {
-          question: 'What is the Turbo mechanism?',
-          answer: 'Turbo links buying and selling quotas with an adaptive cooldown to reduce panic selling while preserving liquidity.'
+          q: 'What is the Turbo mechanism?',
+          a: 'Turbo links buying and selling quotas with an adaptive cooldown to reduce panic selling while preserving liquidity.'
         }
       ]
     }
@@ -247,7 +244,6 @@ const home = defineMessages({
     brandCopy: 'Guarding the Future of Value.\nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. All rights reserved.',
     legal: 'Terms of Service · Privacy Policy · Disclaimer',
-    languageLabel: 'Language',
     groups: [
       {
         label: 'Protocol',
@@ -317,6 +313,8 @@ const home = defineMessages({
       }
     ]
   }
-} satisfies HomeContentBundle)
+})
+
+export type HomeMessagesBundle = typeof home
 
 export default home
