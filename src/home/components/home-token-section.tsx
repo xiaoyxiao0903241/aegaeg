@@ -2,9 +2,9 @@ import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { tokenCardShells } from '~/home/static-layout'
+import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
-import { DeferredImage } from '~/home/components/home-primitives'
 import { HomeSectionHead } from '~/home/components/home-section-head'
 
 type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
@@ -58,21 +58,23 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         className={cn(tokenClass.shapeWrap, token.shapeWrapClassName)}
         aria-hidden="true"
       >
-        <DeferredImage
+        <img
           className={cn(tokenClass.shapeImg, token.shapeClassName)}
           src={token.shape}
           alt=""
           width="170"
           height="170"
+          loading="lazy"
         />
       </div>
       <span className={tokenClass.iconWrap} aria-hidden="true">
-        <DeferredImage
+        <img
           className={cn(tokenClass.icon, token.iconClassName)}
           src={token.icon}
           alt=""
           width="30"
           height="30"
+          loading="lazy"
         />
       </span>
       <div className={tokenClass.info}>
@@ -103,11 +105,9 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
   )
 }
 
-export function HomeTokenSection({
-  content,
-}: {
-  content: HomeMessagesBundle['sections']['token']
-}) {
+export function HomeTokenSection() {
+  const { messages } = useI18n()
+  const content = messages.home.sections.token
   const cards = content.cards.map((card, index) => ({
     ...tokenCardShells[index],
     ...card,

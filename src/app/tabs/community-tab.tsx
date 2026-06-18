@@ -48,7 +48,7 @@ import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
-import { FaqStack } from '~/app/components/faq-stack'
+import { FaqList } from '~/components/faq-list'
 
 type CommunityStat = {
   dark?: boolean
@@ -551,7 +551,7 @@ function CommunityFaqSection() {
       className="group-data-[tab=community]/shell:max-dapp:mt-0"
       title={t.community.faq.title}
     >
-      <FaqStack items={t.community.faq.items} />
+      <FaqList items={t.community.faq.items} variant="dapp" />
     </DappSection>
   )
 }

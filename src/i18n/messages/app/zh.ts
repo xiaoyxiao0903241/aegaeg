@@ -237,7 +237,6 @@ const app = defineMessages({
     seasons: '认购季',
     myContributions: '我的共建记录',
     totalContributed: '累计共建',
-    global: '全球认购',
     globalLabel: '全球累计共建',
     globalBody: '汇聚全球核⼼共建者，共同建设 AEGISX 全球⽣态⽹络。',
     viewContract: '查看合约',
@@ -407,7 +406,6 @@ const app = defineMessages({
     },
     myInvites: '我的社区成员（{count}）',
 
-    referralBondActive: '推荐关系已激活 · 直推 {count} 人',
     referralBondPermanent: '推荐关系已激活 · 绑定为永久关系。',
     referralBondActiveSince: '推荐关系自 {date} 起已激活 · 绑定为永久关系。',
     volumePrefix: '业绩',

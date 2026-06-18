@@ -52,7 +52,7 @@ import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message
 import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
 import { DappPanelHeader } from '~/app/components/dapp-panel-header'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
-import { FaqStack } from '~/app/components/faq-stack'
+import { FaqList } from '~/components/faq-list'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { useDappShell } from '~/app/dapp-shell-context'
@@ -539,9 +539,10 @@ export function RewardsContent() {
         className="group-data-[tab=rewards]/shell:max-dapp:mt-0"
         title={t.rewards.faq.title}
       >
-        <FaqStack
+        <FaqList
           defaultOpenFirst={false}
           items={t.rewards.faq.items}
+          variant="dapp"
         />
       </DappCollapsibleSection>
     </DappDetailPage>

@@ -236,7 +236,6 @@ const app = defineMessages({
     seasons: 'Mùa',
     myContributions: 'Đóng góp của tôi',
     totalContributed: 'Tổng đóng góp',
-    global: 'Đóng góp toàn cầu',
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: 'Các builder cốt lõi trên toàn thế giới cùng phát triển hệ sinh thái toàn cầu AEGIS X.',
     viewContract: 'Xem hợp đồng',
@@ -384,7 +383,6 @@ const app = defineMessages({
     },
     myInvites: 'Lời mời của tôi ({count})',
 
-    referralBondActive: 'Mối quan hệ giới thiệu đã kích hoạt · mời trực tiếp {count}',
     referralBondPermanent: 'Mối quan hệ giới thiệu đã kích hoạt · liên kết là vĩnh viễn.',
     referralBondActiveSince: 'Mối quan hệ giới thiệu đã kích hoạt từ {date} · liên kết là vĩnh viễn.',
     volumePrefix: 'Khối lượng',

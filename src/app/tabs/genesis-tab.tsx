@@ -32,7 +32,7 @@ import { MetricCard } from '~/app/components/dapp-card'
 import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappPanelHeader } from '~/app/components/dapp-panel-header'
-import { FaqStack } from '~/app/components/faq-stack'
+import { FaqList } from '~/components/faq-list'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { ProgressMeter } from '~/app/components/progress-meter'
@@ -437,7 +437,7 @@ export function GenesisContent() {
       </DappSection>
 
       <DappSection title={t.genesis.faq.title}>
-        <FaqStack items={t.genesis.faq.items} />
+        <FaqList items={t.genesis.faq.items} variant="dapp" />
       </DappSection>
     </DappDetailPage>
   )

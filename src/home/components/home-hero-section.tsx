@@ -1,8 +1,7 @@
 import { withLocalePrefix } from '~/i18n/locale'
-import type { Locale } from '~/i18n/locales'
 import { Button } from '~/components/button'
 import { homeAssets } from '~/home/assets'
-import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 
 const homeHeroRaysClass = cn(
@@ -18,21 +17,6 @@ const homeArtGlowClass = cn(
   '[background:radial-gradient(circle,oklch(94%_0.035_45_/_42%),transparent_58%)]',
   'max-[1100px]:left-1/2 max-[1100px]:-translate-x-1/2',
   'max-dapp:hidden',
-)
-
-const homeBtnBaseClass = cn(
-  'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full px-[26px]',
-  'text-[15px] font-semibold leading-none tracking-normal whitespace-nowrap',
-  'transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out',
-  'hover:opacity-[0.96] focus-visible:opacity-[0.96]',
-)
-
-const homeBtnSecondaryClass = cn(
-  homeBtnBaseClass,
-  'border border-border bg-card text-foreground',
-  'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
-  'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-  'hover:shadow-card focus-visible:shadow-card',
 )
 
 const heroClass = {
@@ -63,13 +47,8 @@ const heroClass = {
     'hero-video block h-full w-full object-contain [filter:drop-shadow(0_24px_34px_oklch(25%_0.03_260_/_14%))] max-dapp:[filter:none]',
 } as const
 
-function HeroPrimaryAction({
-  enterProtocol,
-  locale,
-}: {
-  enterProtocol: string
-  locale: Locale
-}) {
+function HeroPrimaryAction({ enterProtocol }: { enterProtocol: string }) {
+  const { locale } = useI18n()
   const appHref = withLocalePrefix(locale, '/app.html')
 
   return (
@@ -105,13 +84,10 @@ function HeroPrimaryAction({
   )
 }
 
-export function HomeHeroSection({
-  content,
-  locale,
-}: {
-  content: HomeMessagesBundle['hero']
-  locale: Locale
-}) {
+export function HomeHeroSection() {
+  const { messages } = useI18n()
+  const content = messages.home.hero
+
   return (
     <section className={heroClass.section} aria-labelledby="hero-title">
       <div className={homeHeroRaysClass} aria-hidden="true" />
@@ -126,13 +102,10 @@ export function HomeHeroSection({
           </h1>
           <p className={heroClass.body}>{content.body}</p>
           <div className={heroClass.actions}>
-            <HeroPrimaryAction enterProtocol={content.enterProtocol} locale={locale} />
-            <a
-              className={cn(homeBtnSecondaryClass, heroClass.secondaryAction)}
-              href="#whitepaper"
-            >
-              {content.readWhitepaper}
-            </a>
+            <HeroPrimaryAction enterProtocol={content.enterProtocol} />
+            <Button asChild className={heroClass.secondaryAction} size="lg" variant="secondary">
+              <a href="#whitepaper">{content.readWhitepaper}</a>
+            </Button>
           </div>
         </div>
         <div

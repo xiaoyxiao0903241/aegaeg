@@ -2,14 +2,25 @@ import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { engineIcons, protocolIcons } from '~/home/static-layout'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { DeferredImage } from '~/home/components/home-primitives'
 import { HomeSectionHead } from '~/home/components/home-section-head'
 
 type IconCard = (
   | HomeMessagesBundle['sections']['protocol']['cards'][number]
   | HomeMessagesBundle['sections']['engine']['cards'][number]
 ) & { icon: string }
+
+const sectionConfig = {
+  protocol: {
+    icons: protocolIcons,
+    id: 'protocol',
+  },
+  engine: {
+    icons: engineIcons,
+    id: 'engine',
+  },
+} as const
 
 const sectionClass = {
   protocol:
@@ -75,12 +86,13 @@ function HomeIconCard({
       radius="none"
       style={{ '--card-index': index } as React.CSSProperties}
     >
-      <DeferredImage
+      <img
         className={cn(iconClass[variant], 'feature-card-icon')}
         src={card.icon}
         alt=""
         width="80"
         height="80"
+        loading="lazy"
       />
       {variant === 'protocol' && 'index' in card && card.index ? (
         <Text as="span" className={cn(protocolIndexClass, 'feature-card-index')} tone="muted">
@@ -111,38 +123,14 @@ function HomeIconCard({
   )
 }
 
-function HomeIconCardGrid({
-  cards,
+export function HomeIconFeatureSection({
   variant,
 }: {
-  cards: IconCard[]
   variant: 'protocol' | 'engine'
 }) {
-  return (
-    <div
-      className={gridClass[variant]}
-      data-engine-grid={variant === 'engine' ? true : undefined}
-      data-protocol-grid={variant === 'protocol' ? true : undefined}
-      data-reveal
-    >
-      {cards.map((card, index) => (
-        <HomeIconCard card={card} index={index} key={card.title} variant={variant} />
-      ))}
-    </div>
-  )
-}
-
-function HomeIconFeatureSection({
-  content,
-  icons,
-  id,
-  variant,
-}: {
-  content: HomeMessagesBundle['sections']['protocol'] | HomeMessagesBundle['sections']['engine']
-  icons: readonly string[]
-  id: 'protocol' | 'engine'
-  variant: 'protocol' | 'engine'
-}) {
+  const { messages } = useI18n()
+  const content = messages.home.sections[variant]
+  const { icons, id } = sectionConfig[variant]
   const cards = content.cards.map((card, index) => ({
     ...card,
     icon: icons[index],
@@ -156,38 +144,17 @@ function HomeIconFeatureSection({
           title={content.title}
           subtitle={content.subtitle}
         />
-        <HomeIconCardGrid cards={cards} variant={variant} />
+        <div
+          className={gridClass[variant]}
+          data-engine-grid={variant === 'engine' ? true : undefined}
+          data-protocol-grid={variant === 'protocol' ? true : undefined}
+          data-reveal
+        >
+          {cards.map((card, index) => (
+            <HomeIconCard card={card} index={index} key={card.title} variant={variant} />
+          ))}
+        </div>
       </div>
     </section>
-  )
-}
-
-export function HomeProtocolSection({
-  content,
-}: {
-  content: HomeMessagesBundle['sections']['protocol']
-}) {
-  return (
-    <HomeIconFeatureSection
-      content={content}
-      icons={protocolIcons}
-      id="protocol"
-      variant="protocol"
-    />
-  )
-}
-
-export function HomeEngineSection({
-  content,
-}: {
-  content: HomeMessagesBundle['sections']['engine']
-}) {
-  return (
-    <HomeIconFeatureSection
-      content={content}
-      icons={engineIcons}
-      id="engine"
-      variant="engine"
-    />
   )
 }

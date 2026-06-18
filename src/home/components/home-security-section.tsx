@@ -1,10 +1,9 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/components/card'
 import { homeAssets } from '~/home/assets'
-import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
+import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
-import { DeferredImage } from '~/home/components/home-primitives'
 import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const securityClass = {
@@ -32,11 +31,10 @@ const securityClass = {
   iconImage: 'size-3.5 object-contain',
 } as const
 
-export function HomeSecuritySection({
-  content,
-}: {
-  content: HomeMessagesBundle['sections']['security']
-}) {
+export function HomeSecuritySection() {
+  const { messages } = useI18n()
+  const content = messages.home.sections.security
+
   return (
     <section
       className={securityClass.section}
@@ -58,15 +56,16 @@ export function HomeSecuritySection({
           data-security-grid
         >
           <div className={securityClass.art} data-security-art>
-            <DeferredImage
+            <img
               className={cn(securityClass.artImage, '[[&:not([src])]]:bg-transparent')}
               src={homeAssets.securityCharacter}
               alt=""
               width="330"
               height="382"
+              loading="lazy"
             />
           </div>
-          <DeferredImage
+          <img
             className={securityClass.line}
             data-security-line
             src={homeAssets.securityConnector}
@@ -74,6 +73,7 @@ export function HomeSecuritySection({
             width="110"
             height="258"
             aria-hidden="true"
+            loading="lazy"
           />
           <div className={securityClass.list}>
             {content.checks.map((check, index) => (
@@ -90,12 +90,13 @@ export function HomeSecuritySection({
                 style={{ '--security-index': index } as CSSProperties}
               >
                 <span className={securityClass.icon}>
-                  <DeferredImage
+                  <img
                     className={securityClass.iconImage}
                     src={homeAssets.securityCheck}
                     alt=""
                     width="14"
                     height="14"
+                    loading="lazy"
                   />
                 </span>
                 {check}

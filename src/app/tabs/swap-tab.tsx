@@ -38,7 +38,7 @@ import {
   SwapBalanceSkeleton,
   SwapMetaValueSkeleton,
 } from '~/app/components/dapp-skeleton'
-import { FaqStack } from '~/app/components/faq-stack'
+import { FaqList } from '~/components/faq-list'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { SwapConnectPromptCard } from '~/app/components/swap-connect-prompt-card'
@@ -358,7 +358,6 @@ export function SwapContent({
   swapPager?: boolean
 }) {
   const { messages: t } = useI18n()
-  const isMobileViewport = useMobileViewport()
   const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
   const faqItems = t.swap.faq.tabs[faqToken].items
@@ -429,13 +428,13 @@ export function SwapContent({
           )}
           title={t.swap.tokenAbout.title}
         >
-          {isMobileViewport ? <MobileTokenCarousel /> : <TokenInfoCarousel />}
+          <TokenAboutCarousel />
         </DappCollapsibleSection>
       ) : null}
 
       <DappSection title={t.swap.faq.title}>
         <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
-        <FaqStack items={faqItems} listKey={faqToken} />
+        <FaqList key={faqToken} items={faqItems} variant="dapp" />
       </DappSection>
     </DappDetailPage>
   )
@@ -651,21 +650,8 @@ function TokenCarouselCard({
   )
 }
 
-function TokenInfoCarousel() {
-  const { messages: t } = useI18n()
-  const tokens = getSwapTokenContent(t, true)
-  const [api, setApi] = useState<CarouselApi>()
+function useCarouselSnap(api: CarouselApi | undefined) {
   const [current, setCurrent] = useState(0)
-  const autoplay = useMemo(
-    () =>
-      Autoplay({
-        delay: 4000,
-        stopOnInteraction: false,
-        stopOnMouseEnter: true,
-        stopOnFocusIn: true,
-      }),
-    [],
-  )
 
   useEffect(() => {
     if (!api) {
@@ -687,19 +673,46 @@ function TokenInfoCarousel() {
     [api],
   )
 
+  return { current, goTo }
+}
+
+function TokenAboutCarousel() {
+  const isDesktop = !useMobileViewport()
+  const variant = isDesktop ? 'desktop' : 'mobile'
+  const { messages: t } = useI18n()
+  const tokens = getSwapTokenContent(t, isDesktop)
+  const [api, setApi] = useState<CarouselApi>()
+  const { current, goTo } = useCarouselSnap(api)
+  const autoplay = useMemo(
+    () =>
+      Autoplay({
+        delay: 4000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+        stopOnFocusIn: true,
+      }),
+    [],
+  )
+
   return (
     <Carousel
       aria-label={t.swap.tokenAbout.title}
-      className={cn(revealClass(), 'mt-3.5 grid w-full gap-3 overflow-visible dapp:gap-0')}
+      className={cn(
+        revealClass(),
+        'grid w-full overflow-visible',
+        isDesktop ? 'mt-3.5 gap-3 dapp:gap-0' : 'mt-3 max-dapp:mt-2.5',
+      )}
       data-reveal
       opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
-      plugins={[autoplay]}
+      plugins={isDesktop ? [autoplay] : undefined}
       setApi={setApi}
     >
       <CarouselContent
         className={cn(TOKEN_CAROUSEL_TRACK_CLASS, '-ml-4')}
         spacing="none"
-        viewportClassName={TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS}
+        viewportClassName={
+          isDesktop ? TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS : TOKEN_CAROUSEL_H5_VIEWPORT_BLEED_CLASS
+        }
       >
         {tokens.map((token, index) => (
           <CarouselItem className={cn(TOKEN_CAROUSEL_SLIDE_CLASS, 'pl-4')} key={token.key} spacing="none">
@@ -708,31 +721,41 @@ function TokenInfoCarousel() {
               contractTooltip={t.swap.tokenContractTooltip}
               isActive={current === index}
               token={token}
-              variant="desktop"
+              variant={variant}
             />
           </CarouselItem>
         ))}
       </CarouselContent>
       <div
         className={cn(
-          'inline-flex items-center justify-center gap-3.5 self-center',
-          TOKEN_CAROUSEL_PC_INDICATOR_CLASS,
+          'inline-flex items-center justify-center',
+          isDesktop
+            ? cn('gap-3.5 self-center', TOKEN_CAROUSEL_PC_INDICATOR_CLASS)
+            : cn('gap-2.5 text-muted-foreground', TOKEN_CAROUSEL_H5_INDICATOR_CLASS),
         )}
       >
         <button
           aria-label={t.swap.tokenPrevious}
-          className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint"
+          className={cn(
+            'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
+            isDesktop
+              ? 'size-4'
+              : 'size-[26px] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+          )}
           onClick={() => api?.scrollPrev()}
           type="button"
         >
           <span
             aria-hidden="true"
-            className="block size-4 -rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
+            className={cn(
+              'block -rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
+              isDesktop ? 'size-4' : 'size-3.5',
+            )}
           />
         </button>
         <span
           aria-label={t.swap.tokenAbout.title}
-          className="inline-flex items-center gap-[7px]"
+          className={cn('inline-flex items-center', isDesktop ? 'gap-[7px]' : 'gap-1.5')}
           role="group"
         >
           {tokens.map((token, index) => (
@@ -747,8 +770,14 @@ function TokenInfoCarousel() {
               <span
                 aria-hidden="true"
                 className={cn(
-                  'block h-[7px] rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
-                  current === index ? 'w-[22px] bg-primary' : 'w-[7px]',
+                  'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
+                  current === index
+                    ? isDesktop
+                      ? 'h-[7px] w-[22px] bg-primary'
+                      : 'h-1.5 w-[18px] bg-primary'
+                    : isDesktop
+                      ? 'h-[7px] w-[7px]'
+                      : 'size-1.5',
                 )}
               />
             </button>
@@ -756,13 +785,21 @@ function TokenInfoCarousel() {
         </span>
         <button
           aria-label={t.swap.tokenNext}
-          className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint"
+          className={cn(
+            'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
+            isDesktop
+              ? 'size-4'
+              : 'size-[26px] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+          )}
           onClick={() => api?.scrollNext()}
           type="button"
         >
           <span
             aria-hidden="true"
-            className="block size-4 rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
+            className={cn(
+              'block rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
+              isDesktop ? 'size-4' : 'size-3.5',
+            )}
           />
         </button>
       </div>
@@ -790,114 +827,6 @@ function getSwapTokenContent(
       title: copy.title,
     }
   })
-}
-
-function MobileTokenCarousel() {
-  const { messages: t } = useI18n()
-  const tokens = getSwapTokenContent(t, false)
-  const [api, setApi] = useState<CarouselApi>()
-  const [current, setCurrent] = useState(0)
-
-  useEffect(() => {
-    if (!api) {
-      return
-    }
-    const handleSelect = () => {
-      setCurrent(api.selectedScrollSnap())
-    }
-    api.on('select', handleSelect)
-    return () => {
-      api.off('select', handleSelect)
-    }
-  }, [api])
-
-  const goTo = useCallback(
-    (index: number) => {
-      api?.scrollTo(index)
-    },
-    [api],
-  )
-
-  return (
-    <Carousel
-      aria-label={t.swap.tokenAbout.title}
-      className={cn(revealClass(), 'mt-3 grid w-full overflow-visible max-dapp:mt-2.5')}
-      data-reveal
-      opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
-      setApi={setApi}
-    >
-      <CarouselContent
-        className={cn(TOKEN_CAROUSEL_TRACK_CLASS, '-ml-4')}
-        spacing="none"
-        viewportClassName={TOKEN_CAROUSEL_H5_VIEWPORT_BLEED_CLASS}
-      >
-        {tokens.map((token, index) => (
-          <CarouselItem className={cn(TOKEN_CAROUSEL_SLIDE_CLASS, 'pl-4')} key={token.key} spacing="none">
-            <TokenCarouselCard
-              contractLabel={t.swap.tokenContract}
-              contractTooltip={t.swap.tokenContractTooltip}
-              isActive={current === index}
-              token={token}
-              variant="mobile"
-            />
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <div
-        className={cn(
-          'inline-flex items-center justify-center gap-2.5 text-muted-foreground',
-          TOKEN_CAROUSEL_H5_INDICATOR_CLASS,
-        )}
-      >
-        <button
-          aria-label={t.swap.tokenPrevious}
-          className="grid size-[26px] cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-faint transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground"
-          onClick={() => api?.scrollPrev()}
-          type="button"
-        >
-          <span
-            aria-hidden="true"
-            className="block size-3.5 -rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
-          />
-        </button>
-        <span
-          aria-label={t.swap.tokenAbout.title}
-          className="inline-flex items-center gap-1.5"
-          role="group"
-        >
-          {tokens.map((token, index) => (
-            <button
-              aria-current={current === index ? 'true' : undefined}
-              aria-label={`${t.swap.tokenAbout.title} ${index + 1}`}
-              className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0"
-              key={token.key}
-              onClick={() => goTo(index)}
-              type="button"
-            >
-              <span
-                aria-hidden="true"
-                className={cn(
-                  'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
-                  current === index ? 'h-1.5 w-[18px] bg-primary' : 'size-1.5',
-                )}
-              />
-            </button>
-          ))}
-        </span>
-        <button
-          aria-label={t.swap.tokenNext}
-          className="grid size-[26px] cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-faint transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground"
-          onClick={() => api?.scrollNext()}
-          type="button"
-        >
-          <span
-            aria-hidden="true"
-            className="block size-3.5 rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]"
-          />
-        </button>
-      </div>
-    </Carousel>
-  )
 }
 
 function TokenIcon({

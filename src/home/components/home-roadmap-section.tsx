@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/components/card'
-import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
+import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { HomeSectionHead } from '~/home/components/home-section-head'
@@ -55,11 +55,10 @@ const phaseTopClass = [
   'dapp:top-[715px]',
 ] as const
 
-export function HomeRoadmapSection({
-  content,
-}: {
-  content: HomeMessagesBundle['sections']['roadmap']
-}) {
+export function HomeRoadmapSection() {
+  const { messages } = useI18n()
+  const content = messages.home.sections.roadmap
+
   return (
     <section className={roadmapClass.section} id="roadmap" aria-labelledby="roadmap-title">
       <div className="container">

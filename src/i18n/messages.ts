@@ -19,23 +19,11 @@ const messagesByLocale = {
   ru,
 } satisfies Record<Locale, Messages>
 
-const messageLoaders = {
-  en: () => Promise.resolve(en),
-  zh: () => Promise.resolve(zh),
-  ko: () => Promise.resolve(ko),
-  ja: () => Promise.resolve(ja),
-  vi: () => Promise.resolve(vi),
-  es: () => Promise.resolve(es),
-  ru: () => Promise.resolve(ru),
-} satisfies Record<Locale, () => Promise<Messages>>
-
 /** 首屏同步读取，避免 async load 导致文案闪动 */
 export function getMessagesSync(locale: Locale): Messages {
   return messagesByLocale[locale]
 }
 
 export function loadMessages(locale: Locale) {
-  return messageLoaders[locale]()
+  return Promise.resolve(messagesByLocale[locale])
 }
-
-export { en as defaultMessages }

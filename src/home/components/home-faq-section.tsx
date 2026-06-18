@@ -1,15 +1,14 @@
 import { FaqList } from '~/components/faq-list'
-import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
+import { useI18n } from '~/i18n/use-i18n'
 import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const sectionClass =
   'relative py-[120px] dapp:min-h-[800px] max-dapp:min-h-[529px] max-dapp:py-14'
 
-export function HomeFaqSection({
-  content,
-}: {
-  content: HomeMessagesBundle['sections']['faq']
-}) {
+export function HomeFaqSection() {
+  const { messages } = useI18n()
+  const content = messages.home.sections.faq
+
   return (
     <section className={sectionClass} id="faq" aria-labelledby="faq-title">
       <div className="container">

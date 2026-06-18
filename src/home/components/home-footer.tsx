@@ -1,9 +1,8 @@
 import { Text } from '~/components/text'
+import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/home/assets'
-import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
 import { cn } from '~/lib/utils'
-import { labelKey, MultilineCopy, prefixedPath } from '~/home/components/home-primitives'
 
 const footerClass = {
   root:
@@ -34,8 +33,23 @@ const footerBrandMarkClass = cn(
   'max-dapp:h-[22px] max-dapp:w-6',
 )
 
-export function HomeFooter({ content }: { content: HomeMessagesBundle['footer'] }) {
-  const { locale } = useI18n()
+function FooterBrandCopy({ copy }: { copy: string }) {
+  const lines = copy.split('\n')
+  return (
+    <>
+      {lines.map((line, index) => (
+        <span key={`${line}-${index}`}>
+          {index > 0 ? <br /> : null}
+          {line}
+        </span>
+      ))}
+    </>
+  )
+}
+
+export function HomeFooter() {
+  const { locale, messages } = useI18n()
+  const content = messages.home.footer
 
   return (
     <footer className={footerClass.root}>
@@ -52,7 +66,7 @@ export function HomeFooter({ content }: { content: HomeMessagesBundle['footer'] 
             <span>AEGIS X</span>
           </a>
           <Text as="p" className={footerClass.brandCopy} tone="onDark">
-            <MultilineCopy copy={content.brandCopy} />
+            <FooterBrandCopy copy={content.brandCopy} />
           </Text>
         </div>
         {content.groups.map((group) => (
@@ -72,8 +86,8 @@ export function HomeFooter({ content }: { content: HomeMessagesBundle['footer'] 
               <Text
                 as="a"
                 className={cn(footerLinkClass, 'text-on-dark')}
-                href={prefixedPath(locale, link.href)}
-                key={`${group.label}-${link.href}-${labelKey(link.label)}`}
+                href={withLocalePrefix(locale, link.href)}
+                key={`${group.label}-${link.href}-${link.label}`}
               >
                 {link.label}
               </Text>

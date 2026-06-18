@@ -236,7 +236,6 @@ const app = defineMessages({
     seasons: 'シーズン',
     myContributions: '自分の貢献',
     totalContributed: '累計貢献',
-    global: 'グローバル貢献',
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: '世界中のコアビルダーが集まり、AEGIS Xグローバルエコシステムを成長させます。',
     viewContract: 'コントラクトを表示',
@@ -383,7 +382,6 @@ const app = defineMessages({
     },
     myInvites: '自分の招待（{count}）',
 
-    referralBondActive: '紹介関係有効 · 直接招待 {count}人',
     referralBondPermanent: '紹介関係が有効 · 紐付けは永久です。',
     referralBondActiveSince: '{date} から紹介関係が有効 · 紐付けは永久です。',
     volumePrefix: '実績',

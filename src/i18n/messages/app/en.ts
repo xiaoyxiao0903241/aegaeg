@@ -237,7 +237,6 @@ const app = defineMessages({
     seasons: 'Seasons',
     myContributions: 'My contributions',
     totalContributed: 'Total contributed',
-    global: 'Global contribution',
     globalLabel: 'GLOBAL CONTRIBUTION',
     globalBody: 'Core builders worldwide are coming together to grow the AEGIS X global ecosystem.',
     viewContract: 'View contract',
@@ -411,8 +410,6 @@ const app = defineMessages({
       ],
     },
     myInvites: 'My invites ({count})',
-
-    referralBondActive: 'Referral bond active · direct invites {count}',
     referralBondPermanent: 'Referral bond active · binding is permanent.',
     referralBondActiveSince: 'Referral bond active since {date} · binding is permanent.',
     volumePrefix: 'Volume',

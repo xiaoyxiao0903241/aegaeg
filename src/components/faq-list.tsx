@@ -68,7 +68,7 @@ const variantStyles = {
 export function FaqList({
   className,
   'data-reveal': dataReveal,
-  defaultOpenFirst = false,
+  defaultOpenFirst,
   itemClassName,
   items,
   variant = 'home',
@@ -81,16 +81,17 @@ export function FaqList({
   variant?: FaqListVariant
 }) {
   const styles = variantStyles[variant]
+  const openFirst = defaultOpenFirst ?? variant === 'dapp'
 
   const defaultValue = useMemo(
     () =>
       items.reduce<string[]>((acc, item, index) => {
-        if (item.open ?? (defaultOpenFirst && index === 0)) {
+        if (item.open ?? (openFirst && index === 0)) {
           acc.push(String(index))
         }
         return acc
       }, []),
-    [items, defaultOpenFirst],
+    [items, openFirst],
   )
 
   const [value, setValue] = useState(defaultValue)

@@ -1,8 +1,7 @@
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import { partners } from '~/home/static-layout'
-import { DeferredImage } from '~/home/components/home-primitives'
-
+import { useI18n } from '~/i18n/use-i18n'
 const partnerClass = {
   section:
     'partners dapp:min-h-52 border-b border-border bg-secondary pb-[120px] text-center max-dapp:min-h-[262px] max-dapp:py-12',
@@ -10,7 +9,10 @@ const partnerClass = {
   chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border py-3 pl-3 pr-7 text-[15px] font-semibold text-ink-strong max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pl-3 max-dapp:pr-4 max-dapp:text-[13px]',
 } as const
 
-export function HomePartnersSection({ title }: { title: string }) {
+export function HomePartnersSection() {
+  const { messages } = useI18n()
+  const title = messages.home.sections.partners.title
+
   return (
     <section className={partnerClass.section} aria-labelledby="partners-title">
       <div className="container">
@@ -34,12 +36,13 @@ export function HomePartnersSection({ title }: { title: string }) {
               key={name}
               radius="full"
             >
-              <DeferredImage
+              <img
                 className="partner-icon size-6 shrink-0 object-contain"
                 src={icon}
                 alt=""
                 width="24"
                 height="24"
+                loading="lazy"
               />
               {name}
             </Card>
