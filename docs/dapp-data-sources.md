@@ -149,7 +149,7 @@
 | `phases(i).minAmount` / `maxAmount` | 读 | ✅ | Genesis 份额上下限、quota |
 | `phases(i).discountBps` | 读 | ✅ | 折扣、AGX 估算、Season 选项 |
 | `phases(i).startTime` / `endTime` | 读 | ✅ | 阶段激活、倒计时、Season 日期 |
-| `phases(i).purchasedAmount` | 读 | ✅ | Widget `quotaLabel` 阶段池进度 `%` |
+| `phases(i).purchasedAmount` | 读 | ✅ | 链上阶段已购总量（当前 UI 未展示） |
 | `userTotalAmount(user)` | 读 | ✅ | Genesis 累计共建进度 + 空投预览（SSOT）；等级链上兜底 |
 | `totalPurchasedAmount()` | 读 | ✅ | Genesis「全球累计共建」 |
 | `agxPrice()` | 读 | ✅ | AGX 估价、Season 价格 |
@@ -301,7 +301,7 @@ const contributedUsd = Number(formatTokenAmount(genesis.userTotal, 18, 0))
 | 份额输入、USD1 余额 | 份数、余额 | 本地 state + 链上 ERC20 | 已接 |
 | 贡献价值 / AGX 估算 | USD、AGX | 链上 `agxPrice`、折扣 bps | 已接 |
 | X 空投预览 | 预估 USD | 链上 `userTotal`（SSOT）+ 本地数学 | 已接 |
-| Quota 行 | `$min–$max · N%` | 链上 phase 限额 + `purchasedAmount` 池进度 | 已接 |
+| Quota 行 | `$min–$max` | 链上 phase `minAmount` / `maxAmount` | 已接 |
 | 授权 / 认购按钮 | 状态、错误 | 链上 write | 已接 |
 | Promo 卡 | 季卖点摘要 | `buildGenesisPromoSnapshot`（链上） | 已接 |
 | Content 四季指标 | 倒计时、参考价、折扣、全球累计 | 链上 phases / agxPrice / totalPurchased | 已接 |
