@@ -10,7 +10,8 @@ playwright-report
 *.tsbuildinfo
 
 references/
-docs/
+docs/*
+!docs/dapp-data-sources.md
 tmp/
 tests/e2e/visual-*/
 
