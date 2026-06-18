@@ -15,7 +15,7 @@ test('dappTableViewState derives auth gate, empty query, and skeleton flags', as
 
   assert.deepEqual(
     dappTableViewState({
-      connected: false,
+      sessionReady: false,
       isLoggingIn: false,
       isLoading: false,
       rowCount: 0,
@@ -29,7 +29,7 @@ test('dappTableViewState derives auth gate, empty query, and skeleton flags', as
 
   assert.deepEqual(
     dappTableViewState({
-      connected: false,
+      sessionReady: false,
       isLoggingIn: true,
       isLoading: false,
       rowCount: 0,
@@ -43,7 +43,7 @@ test('dappTableViewState derives auth gate, empty query, and skeleton flags', as
 
   assert.deepEqual(
     dappTableViewState({
-      connected: true,
+      sessionReady: true,
       isLoggingIn: false,
       isLoading: true,
       rowCount: 0,
@@ -57,7 +57,7 @@ test('dappTableViewState derives auth gate, empty query, and skeleton flags', as
 
   assert.deepEqual(
     dappTableViewState({
-      connected: true,
+      sessionReady: true,
       isLoggingIn: false,
       isLoading: false,
       rowCount: 0,

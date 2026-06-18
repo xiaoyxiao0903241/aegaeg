@@ -6,20 +6,20 @@ export function tablePageQuery(page: number) {
 
 /** Authenticated DApp tables: sign-in gate, empty query, and skeleton loading. */
 export function dappTableViewState({
-  connected,
   isLoading,
   isLoggingIn,
   rowCount,
+  sessionReady,
 }: {
-  connected: boolean
   isLoading: boolean
   isLoggingIn: boolean
   rowCount: number
+  sessionReady: boolean
 }) {
   return {
-    queryEmpty: connected && !isLoading && rowCount === 0,
-    requiresAuth: !connected && !isLoggingIn,
-    showSkeleton: connected && isLoading && rowCount === 0,
+    queryEmpty: sessionReady && !isLoading && rowCount === 0,
+    requiresAuth: !sessionReady && !isLoggingIn,
+    showSkeleton: sessionReady && isLoading && rowCount === 0,
   }
 }
 

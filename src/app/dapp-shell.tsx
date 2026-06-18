@@ -49,7 +49,7 @@ export function DappShell() {
   const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = shellState.detailCollapsed
   const useSwapMobilePager =
-    isMobileViewport && activeTab === 'swap' && shellState.connected
+    isMobileViewport && activeTab === 'swap' && shellState.sessionReady
   return (
     <main
       className={cn(
@@ -75,7 +75,7 @@ export function DappShell() {
         <section
           className={shellStageClass({
             tab: activeTab,
-            connected: shellState.connected,
+            sessionReady: shellState.sessionReady,
             detailCollapsed: effectiveDetailCollapsed,
             mobileSwapPager: useSwapMobilePager,
           })}
@@ -89,13 +89,13 @@ export function DappShell() {
                     onSelectGenesis={() => selectTab('genesis')}
                     windowClassName={shellWindowClass({
                       tab: activeTab,
-                      connected: shellState.connected,
+                      sessionReady: shellState.sessionReady,
                       detailCollapsed: effectiveDetailCollapsed,
                       mobileSwapPager: true,
                     })}
                     windowDataset={{
                       tab: activeTab,
-                      connected: shellState.connected ? 'true' : 'false',
+                      sessionReady: shellState.sessionReady ? 'true' : 'false',
                       walletReady: shellState.walletReady ? 'true' : 'false',
                       collapsed: effectiveDetailCollapsed ? 'true' : 'false',
                     }}
@@ -107,11 +107,11 @@ export function DappShell() {
                   ref={setWindowNode}
                   className={shellWindowClass({
                     tab: activeTab,
-                    connected: shellState.connected,
+                    sessionReady: shellState.sessionReady,
                     detailCollapsed: effectiveDetailCollapsed,
                   })}
                   data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
-                  data-connected={shellState.connected ? 'true' : 'false'}
+                  data-session-ready={shellState.sessionReady ? 'true' : 'false'}
                   data-dapp-window
                   data-tab={activeTab}
                   data-wallet-ready={shellState.walletReady ? 'true' : 'false'}

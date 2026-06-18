@@ -68,7 +68,7 @@ const REWARDS_PROGRESS_CARD_CLASS = cn(
 
 export function RewardsWidget() {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
+  const { sessionReady } = useDappShell()
   const {
     displayRank,
     isRankLoading,
@@ -79,8 +79,8 @@ export function RewardsWidget() {
     rankHint,
     rankLabel,
   } = useShareholderRankLabels(t)
-  const { data: referralTotal, isLoading: referralLoading } = useReferralTotal(connected)
-  const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(connected)
+  const { data: referralTotal, isLoading: referralLoading } = useReferralTotal(sessionReady)
+  const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(sessionReady)
   const teamClaim = useTeamRewardClaim()
 
   useEffect(() => {
@@ -90,12 +90,12 @@ export function RewardsWidget() {
   }, [teamClaim.error])
 
   useEffect(() => {
-    if (!connected || !loginError) return
+    if (!sessionReady || !loginError) return
     const message = toWalletUserFacingMessage(loginError)
     if (message) toast.error(message)
-  }, [connected, loginError])
+  }, [sessionReady, loginError])
 
-  const useProgressPlaceholders = !connected
+  const useProgressPlaceholders = !sessionReady
   const teamVolumeUsd = Number(performance?.sales_team_market ?? 0)
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(
@@ -139,7 +139,7 @@ export function RewardsWidget() {
       ? 100
       : tierProgress.teamProgressPercent ?? 0
 
-  const showPerformanceSkeleton = connected && performanceLoading && !performance
+  const showPerformanceSkeleton = sessionReady && performanceLoading && !performance
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
@@ -156,11 +156,11 @@ export function RewardsWidget() {
       .join(' · ')
     return breakdown ? `${claimedLine} · ${breakdown}` : claimedLine
   })()
-  const showReferralSkeleton = connected && referralLoading && referralTotal == null
-  const showTeamSkeleton = connected && teamLoading && teamTotal == null
-  const showTitleSkeleton = connected && isRankLoading
-  const titleValue = !connected ? t.rewards.shareholder : rankLabel
-  const titleHint = !connected ? t.rewards.shareholderHint : rankHint
+  const showReferralSkeleton = sessionReady && referralLoading && referralTotal == null
+  const showTeamSkeleton = sessionReady && teamLoading && teamTotal == null
+  const showTitleSkeleton = sessionReady && isRankLoading
+  const titleValue = !sessionReady ? t.rewards.shareholder : rankLabel
+  const titleHint = !sessionReady ? t.rewards.shareholderHint : rankHint
 
   return (
     <DappWidgetFrame
@@ -275,11 +275,11 @@ export function RewardsWidget() {
 
 export function RewardsContent() {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
+  const { sessionReady } = useDappShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const { displayRank, heroBody, heroTitle, isRankLoading } = useShareholderRankLabels(t)
-  const showHeroSkeleton = connected && isRankLoading
+  const showHeroSkeleton = sessionReady && isRankLoading
   const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
   const [referralPage, setReferralPage] = useState(1)
   const [teamPage, setTeamPage] = useState(1)
@@ -287,11 +287,11 @@ export function RewardsContent() {
   const bonusRateLabel = getTeamBonusRateLabel(displayRank)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
     tablePageQuery(referralPage),
-    connected,
+    sessionReady,
   )
   const { data: teamClaimLogs, isLoading: teamClaimLogsLoading } = useTeamRewardClaimLogs(
     tablePageQuery(teamPage),
-    connected,
+    sessionReady,
   )
   const rewardLogLabels = useMemo(
     () => ({
@@ -323,7 +323,7 @@ export function RewardsContent() {
   const onHistoryPageChange = historyTab === 'referral' ? setReferralPage : setTeamPage
   const historyLoading = historyTab === 'referral' ? rewardLogsLoading : teamClaimLogsLoading
   const historyTable = dappTableViewState({
-    connected,
+    sessionReady,
     isLoading: historyLoading,
     isLoggingIn,
     rowCount: historyRows.length,
@@ -336,7 +336,7 @@ export function RewardsContent() {
     tierPage,
     DAPP_TABLE_PAGE_SIZE,
   )
-  const tierHighlightedRows = connected
+  const tierHighlightedRows = sessionReady
     ? getPresaleRankHighlightedRowsForPage(displayRank, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
     : getPresaleRankHighlightedRowsForPage(2, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
 

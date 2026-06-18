@@ -20,7 +20,7 @@ const topbarClass = cn(
 const brandClass = cn(
   'flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.34px] text-foreground',
   'max-dapp:text-[15px]',
-  'group-data-[tab=rewards]/shell:max-dapp:group-data-[connected=true]/shell:[&_span]:hidden',
+  'group-data-[tab=rewards]/shell:max-dapp:group-data-[session-ready=true]/shell:[&_span]:hidden',
 )
 
 const brandMarkClass = cn(
@@ -35,7 +35,7 @@ const topActionsClass = cn(
 
 export function DappTopbar() {
   const { locale, messages: t, setLocale } = useI18n()
-  const { connected, tab } = useDappShell()
+  const { sessionReady, tab } = useDappShell()
 
   const languageOptions = allLanguageOptions.map((option) => ({
     ...option,
@@ -48,8 +48,8 @@ export function DappTopbar() {
       <a
         className={cn(
           brandClass,
-          connected && tab === 'rewards' && 'max-dapp:[&_span]:hidden',
-          connected && 'max-dapp:[&_span]:hidden',
+          sessionReady && tab === 'rewards' && 'max-dapp:[&_span]:hidden',
+          sessionReady && 'max-dapp:[&_span]:hidden',
         )}
         href={withLocalePrefix(locale, '/')}
         aria-label="AEGIS X home"

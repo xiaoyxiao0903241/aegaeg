@@ -13,10 +13,10 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { usePresaleUserTotalQuery } from '~/hooks/queries/use-presale-queries'
 
 export function useShareholderRank() {
-  const { connected } = useDappShell()
+  const { sessionReady } = useDappShell()
   const account = useActiveAccount()
   const { loginError } = useAuth()
-  const { data: performance, isLoading: performanceLoading } = usePerformance(connected)
+  const { data: performance, isLoading: performanceLoading } = usePerformance(sessionReady)
 
   const address = account?.address
   const userTotalQuery = usePresaleUserTotalQuery(address)
@@ -39,11 +39,11 @@ export function useShareholderRank() {
   const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 
   const isRankLoading =
-    connected &&
+    sessionReady &&
     (isChainVolumeLoading || (performanceLoading && performance == null))
 
   return {
-    connected,
+    sessionReady,
     displayRank,
     isChainVolumeLoading,
     isRankLoading,
@@ -67,7 +67,7 @@ export function useShareholderRankLabels(t: {
   const rankState = useShareholderRank()
 
   const rankLabel = (() => {
-    if (!rankState.connected || rankState.isRankLoading) return ''
+    if (!rankState.sessionReady || rankState.isRankLoading) return ''
     if (rankState.displayRank <= 0) return '—'
     return t.rewards.shareholderTitleForRank.replace(
       '{rank}',
@@ -76,7 +76,7 @@ export function useShareholderRankLabels(t: {
   })()
 
   const rankHint = (() => {
-    if (!rankState.connected) return t.rewards.shareholderHintNoRank
+    if (!rankState.sessionReady) return t.rewards.shareholderHintNoRank
     if (rankState.isRankLoading) return ''
     return formatShareholderHintForRank(
       rankState.displayRank,
@@ -87,7 +87,7 @@ export function useShareholderRankLabels(t: {
   })()
 
   const heroTitle = (() => {
-    if (!rankState.connected) return t.rewards.shareholder
+    if (!rankState.sessionReady) return t.rewards.shareholder
     if (rankState.isRankLoading) return ''
     if (rankState.displayRank <= 0) return t.rewards.shareholderHintNoRank
     return t.rewards.shareholderTitleForRank.replace(
@@ -98,7 +98,7 @@ export function useShareholderRankLabels(t: {
 
   const heroBody = (() => {
     if (rankState.isRankLoading) return ''
-    if (!rankState.connected || rankState.displayRank <= 0) {
+    if (!rankState.sessionReady || rankState.displayRank <= 0) {
       return t.rewards.shareholderHintNoRank
     }
     return formatShareholderHintForRank(

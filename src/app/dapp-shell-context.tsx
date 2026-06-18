@@ -10,7 +10,7 @@ import type { DappTab } from '~/app/types'
 export interface DappShellState {
   tab: DappTab
   /** SIWE session ready — drives API data and logged-in UI. */
-  connected: boolean
+  sessionReady: boolean
   /** Wallet connected but JWT missing — show sign-in CTA. */
   needsSignIn: boolean
   /** thirdweb active account — drives sign / send tx. Real-time from wallet SDK. */
@@ -27,12 +27,12 @@ export function useDappShell(): DappShellState {
   const tab = useDappShellStore((state) => state.activeTab)
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
   const walletReady = hasWalletAccount(account)
-  const connected = isAuthenticated
+  const sessionReady = isAuthenticated
   const isWalletConnecting = isWalletRestorePending(account, isAutoConnecting)
 
   return {
     tab,
-    connected,
+    sessionReady,
     needsSignIn,
     walletReady,
     isWalletConnecting,

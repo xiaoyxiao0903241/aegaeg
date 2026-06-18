@@ -42,7 +42,7 @@ type SwapMobilePagerProps = {
   windowClassName: string
   windowDataset: {
     tab: string
-    connected: string
+    sessionReady: string
     walletReady: string
     collapsed: string
   }
@@ -403,7 +403,7 @@ export function SwapMobilePager({
         ref={windowRef}
         className={cn(windowClassName, 'min-h-0 flex-1')}
         data-collapsed={windowDataset.collapsed}
-        data-connected={windowDataset.connected}
+        data-session-ready={windowDataset.sessionReady}
         data-dapp-window
         data-tab={windowDataset.tab}
         data-wallet-ready={windowDataset.walletReady}

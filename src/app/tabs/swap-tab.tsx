@@ -70,8 +70,8 @@ export function SwapWidget({
   swapPager?: boolean
 }) {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
-  const swap = useSwapWidget(connected)
+  const { sessionReady } = useDappShell()
+  const swap = useSwapWidget(sessionReady)
   const genesis = useGenesisWidgetContext()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
@@ -149,27 +149,27 @@ export function SwapWidget({
           : shellWidgetRootClass
       }
       showToggle={!swapPager}
-      subtitle={connected ? t.swap.intro : t.swap.disconnectedIntro}
+      subtitle={sessionReady ? t.swap.intro : t.swap.disconnectedIntro}
       title={t.swap.title}
     >
       <SwapAmountBox
         amountProps={{
           'aria-label': `${pair.sell.symbol} sell amount`,
-          disabled: !connected,
+          disabled: !sessionReady,
           inputMode: 'decimal',
           onChange: (event) => swap.setSellAmount(event.currentTarget.value),
           placeholder: '0.00',
           value: swap.sellAmount,
         }}
         className={flipAnimClass}
-        connected={connected}
+        sessionReady={sessionReady}
         balance={sellBalanceLabel}
         label={t.swap.sell}
         tokenIcon={pair.sell.icon}
         tokenLabel={pair.sell.symbol}
       />
 
-      {connected ? (
+      {sessionReady ? (
         <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
           {PERCENTS.map((percent) => (
             <button
@@ -224,7 +224,7 @@ export function SwapWidget({
           value: swap.buyAmount,
         }}
         className={cn('mt-0', flipAnimClass)}
-        connected={connected}
+        sessionReady={sessionReady}
         balance={buyBalanceLabel}
         label={t.swap.buy}
         tokenIcon={pair.buy.icon}
@@ -232,11 +232,11 @@ export function SwapWidget({
       />
 
       <DappMetaList
-        connected={connected}
+        sessionReady={sessionReady}
         items={[
           {
             label: t.swap.rate,
-            value: !connected ? (
+            value: !sessionReady ? (
               placeholderRateLabel
             ) : showRateSkeleton ? (
               <SwapMetaValueSkeleton />
@@ -246,7 +246,7 @@ export function SwapWidget({
           },
           {
             label: t.swap.slippage,
-            value: connected ? (
+            value: sessionReady ? (
               <>
                 {swap.slippage}%
                 <button
@@ -273,7 +273,7 @@ export function SwapWidget({
         ]}
       />
 
-      {connected && swap.walletReady ? (
+      {sessionReady && swap.walletReady ? (
         <DappActionRow>
           <DappActionButton
             className="col-span-full"
@@ -290,7 +290,7 @@ export function SwapWidget({
         </div>
       )}
 
-      {connected ? (
+      {sessionReady ? (
         <>
           {!swapPager ? (
             <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
@@ -336,8 +336,8 @@ export function SwapContent({
   swapPager?: boolean
 }) {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
-  const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(connected)
+  const { sessionReady } = useDappShell()
+  const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(sessionReady)
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
   const faqItems = t.swap.faq.tabs[faqToken].items
 
@@ -346,17 +346,17 @@ export function SwapContent({
       className="max-dapp:mt-3.5 max-dapp:[&>article]:mt-0"
       columns={2}
     >
-      {connected && poolRateLoading && !poolRateLabel ? (
+      {sessionReady && poolRateLoading && !poolRateLabel ? (
         <MetricCardSkeleton className="max-dapp:rounded-[14px] max-dapp:p-3.5" />
       ) : (
         <MetricCard
           className={cn(
-            connected && '[&_small]:hidden',
+            sessionReady && '[&_small]:hidden',
             'max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
           )}
           label={t.swap.exchangeRate}
           value={
-            connected
+            sessionReady
               ? poolRateLabel ?? '—'
               : t.swap.fixedRate
           }
@@ -364,7 +364,7 @@ export function SwapContent({
       )}
       <MetricCard
         className={cn(
-          connected && '[&_small]:hidden',
+          sessionReady && '[&_small]:hidden',
           'max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
         )}
         label={t.swap.settlement}
@@ -394,7 +394,7 @@ export function SwapContent({
 
       {overviewMetrics}
 
-      {connected ? (
+      {sessionReady ? (
         <DappCollapsibleSection
           bodyClassName="overflow-visible"
           className={cn(

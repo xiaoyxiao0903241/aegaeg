@@ -81,8 +81,8 @@ export function CommunityWidget({
 }: {
   onSelectTab: (tab: DappTab) => void
 }) {
-  const { connected } = useDappShell()
-  return connected ? (
+  const { sessionReady } = useDappShell()
+  return sessionReady ? (
     <CommunityConnectedWidget onSelectTab={onSelectTab} />
   ) : (
     <CommunityDisconnectedWidget onSelectTab={onSelectTab} />
@@ -218,8 +218,8 @@ function CommunityDisconnectedWidget({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { connected, needsSignIn } = useDappShell()
-  const referral = useReferral(connected)
+  const { needsSignIn, sessionReady } = useDappShell()
+  const referral = useReferral(sessionReady)
 
   useEffect(() => {
     if (!referral.error) return
@@ -252,7 +252,7 @@ function CommunityDisconnectedWidget({
             <input
               aria-label={t.community.referrerPlaceholder}
               className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0 disabled:opacity-60"
-              disabled={!connected || referral.isBound}
+              disabled={!sessionReady || referral.isBound}
               onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
               placeholder={t.community.referrerPlaceholder}
               value={referral.referrerInput}
@@ -326,16 +326,16 @@ export function CommunityContent({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { connected, tab } = useDappShell()
+  const { sessionReady, tab } = useDappShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
-  const referralChain = useReferral(connected)
+  const referralChain = useReferral(sessionReady)
   const [invitesPage, setInvitesPage] = useState(1)
-  const { data: performance, isLoading: performanceLoading } = usePerformance(connected)
+  const { data: performance, isLoading: performanceLoading } = usePerformance(sessionReady)
   const { displayRank, isRankLoading } = useShareholderRank()
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
     tablePageQuery(invitesPage),
-    connected,
+    sessionReady,
   )
 
   const inviteRowsCompact =
@@ -345,20 +345,20 @@ export function CommunityContent({
   const compactRows = inviteRowsCompact
   const invitesTotal = referrals?.total ?? 0
   const invitesTable = dappTableViewState({
-    connected,
+    sessionReady,
     isLoading: referralsLoading,
     isLoggingIn,
     rowCount: compactRows.length,
   })
-  const inviteCount = !connected
+  const inviteCount = !sessionReady
     ? '0'
     : referralsLoading || isLoggingIn
       ? '…'
       : String(referrals?.total ?? Number(referralChain.directCount || 0))
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
-  const authPending = connected && isLoggingIn
+  const authPending = sessionReady && isLoggingIn
 
-  if (!connected) {
+  if (!sessionReady) {
     return (
       <DappDetailPage className="max-dapp:pb-20">
         <CommunityFlowSection isMobileViewport={isMobileViewport} onSelectTab={onSelectTab} />
@@ -450,7 +450,7 @@ export function CommunityContent({
       </div>
 
       <CommunityFlowSection
-        connected={connected}
+        sessionReady={sessionReady}
         isMobileViewport={isMobileViewport}
         onSelectTab={onSelectTab}
         tab={tab}
@@ -533,13 +533,13 @@ function CommunityFaqSection() {
 }
 
 function CommunityFlowSection({
-  connected = false,
   isMobileViewport = false,
   onSelectTab,
+  sessionReady = false,
 }: {
-  connected?: boolean
   isMobileViewport?: boolean
   onSelectTab: (tab: DappTab) => void
+  sessionReady?: boolean
   tab?: DappTab
 }) {
   const { messages: t } = useI18n()
@@ -555,8 +555,8 @@ function CommunityFlowSection({
     <>
       <DappSection
         className={cn(
-          connected && 'group-data-[tab=community]/shell:max-dapp:mt-0',
-          !connected && 'max-dapp:mt-5',
+          sessionReady && 'group-data-[tab=community]/shell:max-dapp:mt-0',
+          !sessionReady && 'max-dapp:mt-5',
         )}
         title={t.community.inviteTitle}
       >
@@ -569,8 +569,8 @@ function CommunityFlowSection({
 
       <DappSection
         className={cn(
-          connected && 'group-data-[tab=community]/shell:max-dapp:mt-0',
-          !connected && 'max-dapp:mt-[18px]',
+          sessionReady && 'group-data-[tab=community]/shell:max-dapp:mt-0',
+          !sessionReady && 'max-dapp:mt-[18px]',
         )}
         title={t.community.programs.title}
       >

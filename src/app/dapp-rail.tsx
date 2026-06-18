@@ -23,12 +23,12 @@ type RailIndicator = {
 
 function useRailTooltips() {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
-  const { rateLabel } = usePairSpotRate(connected)
+  const { sessionReady } = useDappShell()
+  const { rateLabel } = usePairSpotRate(sessionReady)
 
   return useMemo(
     () => ({
-      swap: !connected
+      swap: !sessionReady
         ? t.swap.disconnectedIntro
         : rateLabel
           ? `${rateLabel} · ${t.swap.settlementValue}`
@@ -37,7 +37,7 @@ function useRailTooltips() {
       rewards: t.nav.rewardsTooltip,
       community: t.nav.communityTooltip,
     }),
-    [connected, rateLabel, t],
+    [sessionReady, rateLabel, t],
   )
 }
 

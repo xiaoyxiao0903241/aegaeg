@@ -28,7 +28,7 @@ export const shellPageClass = cn(
 
 export function shellStageClass(state: {
   tab: DappTab
-  connected: boolean
+  sessionReady: boolean
   detailCollapsed: boolean
   mobileSwapPager?: boolean
 }) {
@@ -36,7 +36,7 @@ export function shellStageClass(state: {
     'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0 pb-4 dapp:pt-1',
     state.detailCollapsed && 'dapp:justify-center dapp:pb-10',
     !state.detailCollapsed &&
-      state.connected &&
+      state.sessionReady &&
       state.tab === 'swap' &&
       'dapp:justify-center dapp:pb-10',
     state.mobileSwapPager
@@ -56,18 +56,18 @@ export function shellContainerClass(mobileSwapPager = false) {
 
 export function shellWindowClass(state: {
   tab: DappTab
-  connected: boolean
+  sessionReady: boolean
   detailCollapsed: boolean
   mobileSwapPager?: boolean
 }) {
-  const { connected, mobileSwapPager } = state
+  const { sessionReady, mobileSwapPager } = state
 
   return cn(
     'group/shell mx-auto grid w-full min-h-0 max-w-[1320px] overflow-hidden border border-border bg-card shadow-window',
     'dapp:h-full',
     shellWindowMaxHeightClass(state),
     'rounded-xl',
-    !connected && 'shadow-window-compact',
+    !sessionReady && 'shadow-window-compact',
     'max-dapp:flex max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:flex-col max-dapp:gap-3',
     'max-dapp:overflow-hidden max-dapp:rounded-[24px] max-dapp:border-0 max-dapp:p-[18px] max-dapp:pb-[22px] max-dapp:shadow-card',
     mobileSwapPager &&

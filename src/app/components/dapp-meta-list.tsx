@@ -11,11 +11,11 @@ export type DappMetaListItem = {
 
 export function DappMetaList({
   className,
-  connected = true,
+  sessionReady = true,
   items,
 }: {
   className?: string
-  connected?: boolean
+  sessionReady?: boolean
   items: DappMetaListItem[]
 }) {
   return (
@@ -32,8 +32,8 @@ export function DappMetaList({
           <Text
             as="span"
             size="sm"
-            tone={connected ? 'body' : 'subtle'}
-            className={connected ? 'max-dapp:text-faint' : undefined}
+            tone={sessionReady ? 'body' : 'subtle'}
+            className={sessionReady ? 'max-dapp:text-faint' : undefined}
           >
             {item.label}
           </Text>

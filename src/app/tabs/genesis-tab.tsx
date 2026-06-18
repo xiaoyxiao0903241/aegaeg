@@ -220,7 +220,7 @@ export function GenesisWidget({
 
 export function GenesisContent() {
   const { messages: t } = useI18n()
-  const { connected } = useDappShell()
+  const { sessionReady } = useDappShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const genesis = useGenesisWidgetContext()
@@ -229,10 +229,10 @@ export function GenesisContent() {
     String(genesis.activeSeasonNumber),
   )
   const [contributionsPage, setContributionsPage] = useState(1)
-  const { data: performance } = usePerformance(connected)
+  const { data: performance } = usePerformance(sessionReady)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
     tablePageQuery(contributionsPage),
-    connected,
+    sessionReady,
   )
 
   const phaseMaxUsd1 = Number(
@@ -264,9 +264,9 @@ export function GenesisContent() {
   const tableLinkColumns = isMobileViewport ? [] : [4]
   const contributionsTotal = salesLogs?.total ?? 0
   const showSalesSyncHint =
-    connected && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
+    sessionReady && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
   const contributionsTable = dappTableViewState({
-    connected,
+    sessionReady,
     isLoading: isLoggingIn || salesLoading,
     isLoggingIn,
     rowCount: desktopRows.length,

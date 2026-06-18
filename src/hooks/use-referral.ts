@@ -14,7 +14,7 @@ import { bindReferrer } from '~/web3/referral-write'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { useDappActions } from '~/stores/dapp-actions'
 
-export function useReferral(connected: boolean) {
+export function useReferral(sessionReady: boolean) {
   const account = useActiveAccount()
   const afterReferralBind = useDappActions((state) => state.afterReferralBind)
   const pendingReferrer = useMemo(() => {
@@ -44,7 +44,7 @@ export function useReferral(connected: boolean) {
       ])
       return { isBound, referrer, directCount }
     },
-    enabled: connected && Boolean(address),
+    enabled: sessionReady && Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,
   })
 
@@ -106,7 +106,7 @@ export function useReferral(connected: boolean) {
     isLoading: referralQuery.isLoading,
     isSubmitting,
     walletReady,
-    canBind: connected && walletReady && !isBound && !isSubmitting,
+    canBind: sessionReady && walletReady && !isBound && !isSubmitting,
     error:
       error ??
       (referralQuery.error instanceof Error

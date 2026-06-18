@@ -13,7 +13,7 @@ type SwapAmountBoxProps = {
   }
   balance: ReactNode
   className?: string
-  connected?: boolean
+  sessionReady?: boolean
   label: ReactNode
   tokenIcon: string
   tokenLabel: string
@@ -24,13 +24,13 @@ export function SwapAmountBox({
   amountProps,
   balance,
   className,
-  connected = true,
+  sessionReady = true,
   label,
   tokenIcon,
   tokenLabel,
 }: SwapAmountBoxProps) {
-  const labelTone = connected ? 'body' : 'subtle'
-  const disconnectedLabelClass = !connected ? 'text-xs tracking-[-0.24px]' : undefined
+  const labelTone = sessionReady ? 'body' : 'subtle'
+  const disconnectedLabelClass = !sessionReady ? 'text-xs tracking-[-0.24px]' : undefined
 
   return (
     <Card
@@ -39,7 +39,7 @@ export function SwapAmountBox({
       className={cn(
         'mt-3.5 p-[14px]',
         'max-dapp:mt-3',
-        !connected && '[&_input]:text-[#c9cfda] [&_input]:placeholder:text-[#c9cfda]',
+        !sessionReady && '[&_input]:text-[#c9cfda] [&_input]:placeholder:text-[#c9cfda]',
         className,
       )}
     >
@@ -55,8 +55,8 @@ export function SwapAmountBox({
         <Text
           as="small"
           size="sm"
-          tone={connected ? undefined : 'subtle'}
-          weight={connected ? 'semibold' : undefined}
+          tone={sessionReady ? undefined : 'subtle'}
+          weight={sessionReady ? 'semibold' : undefined}
           className={disconnectedLabelClass}
         >
           <span>{balance}</span>
@@ -68,7 +68,7 @@ export function SwapAmountBox({
           <SwapAmountSkeleton />
         ) : (
           <AmountInput
-            className={!connected ? 'text-[#c9cfda] placeholder:text-[#c9cfda]' : undefined}
+            className={!sessionReady ? 'text-[#c9cfda] placeholder:text-[#c9cfda]' : undefined}
             {...amountProps}
           />
         )}

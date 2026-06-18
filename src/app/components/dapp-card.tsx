@@ -6,18 +6,18 @@ import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
 const metricCardResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-dapp:rounded-[14px] group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-dapp:p-3.5',
+  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-[14px] group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:p-3.5',
   'group-data-[tab=genesis]/shell:max-dapp:min-h-0 group-data-[tab=genesis]/shell:max-dapp:rounded-[14px] group-data-[tab=genesis]/shell:max-dapp:p-3.5 group-data-[tab=genesis]/shell:max-dapp:shadow-card',
 )
 
 const metricValueResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-dapp:text-[13px] group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-dapp:leading-[1.2]',
+  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[13px] group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
   'group-data-[tab=genesis]/shell:text-base group-data-[tab=genesis]/shell:leading-[1.3] group-data-[tab=genesis]/shell:max-dapp:text-[15px] group-data-[tab=genesis]/shell:max-dapp:leading-[1.2]',
 )
 
 const metricHintHiddenResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[connected=false]/shell:py-3.5 group-data-[tab=swap]/shell:group-data-[connected=false]/shell:max-dapp:hidden',
-  'group-data-[tab=swap]/shell:group-data-[connected=true]/shell:max-dapp:hidden',
+  'group-data-[tab=swap]/shell:group-data-[session-ready=false]/shell:py-3.5 group-data-[tab=swap]/shell:group-data-[session-ready=false]/shell:max-dapp:hidden',
+  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:hidden',
   'group-data-[tab=genesis]/shell:max-dapp:hidden',
 )
 
@@ -33,26 +33,26 @@ const communityStatCardResponsive = cn(
   'group-data-[tab=community]/shell:max-dapp:[&>strong]:mt-[3px] group-data-[tab=community]/shell:max-dapp:[&>strong]:text-2xl group-data-[tab=community]/shell:max-dapp:[&>strong]:leading-[1.05]',
   'group-data-[tab=community]/shell:max-dapp:[&>b]:hidden group-data-[tab=community]/shell:max-dapp:[&>small]:hidden',
   'group-data-[tab=community]/shell:max-dapp:[&.is-dark>small]:hidden',
-  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:min-h-[90px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:items-start group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:rounded-[14px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:border-0 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:p-[13px_12px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:text-left group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:shadow-card',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:min-h-[90px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:items-start group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-[14px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:border-0 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:p-[13px_12px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-left group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:shadow-card',
 )
 
 const communityStatLabelResponsive =
-  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:leading-normal'
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-normal'
 
 const communityStatValueResponsive = cn(
   'group-data-[tab=community]/shell:max-dapp:mt-[3px] group-data-[tab=community]/shell:max-dapp:text-2xl group-data-[tab=community]/shell:max-dapp:leading-[1.05]',
-  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:text-2xl',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-2xl',
 )
 
 const communityStatVolumeResponsive = cn(
   'group-data-[tab=community]/shell:max-dapp:hidden',
-  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:leading-[1.2]',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
 )
 
 const communityStatHintResponsive = cn(
   'group-data-[tab=community]/shell:max-dapp:hidden',
-  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:leading-[1.2]',
-  'group-data-[tab=community]/shell:group-data-[connected=true]/shell:max-dapp:[&.is-dark]:text-on-dark',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:[&.is-dark]:text-on-dark',
 )
 
 export function DappSideCard({
