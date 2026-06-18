@@ -285,8 +285,6 @@ const app = defineMessages({
       '{bonus} de bonificación en contribución del equipo · título {postLaunch} builder 30 días tras el lanzamiento',
     shareholderHintNoRank: 'Únete a Genesis para obtener un título de accionista',
     shareholderTitleForRank: '{rank} · Genesis Shareholder',
-    rankSigningIn: 'Iniciando sesión…',
-    rankSignInRequired: 'Completa la firma en la billetera para cargar tu rango.',
     heroKicker: 'GENESIS SHAREHOLDER',
     heroBody:
       'Obtén un 2% de bonificación sobre la contribución de tu equipo y el título A3 builder durante 30 días tras el lanzamiento.',

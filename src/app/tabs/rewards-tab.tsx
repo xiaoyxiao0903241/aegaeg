@@ -31,11 +31,9 @@ import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { toast } from 'sonner'
 import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
-import { shellWidgetRootClass } from '~/app/shell-layout'
 import { dappAssets } from '~/app/assets'
 import { buildRewardTierRows, getTeamBonusRateLabel } from '~/lib/presale/tier-table'
-import { DAPP_TABLE_PAGE_SIZE, paginateStaticRows } from '~/lib/table-pagination'
-import type { DetailPanelControls } from '~/app/types'
+import { DAPP_TABLE_PAGE_SIZE, dappTableViewState, paginateStaticRows, tablePageQuery } from '~/lib/table-pagination'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
   DappSideCard,
@@ -50,7 +48,7 @@ import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
-import { DappPanelHeader } from '~/app/components/dapp-panel-header'
+import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { FaqList } from '~/components/faq-list'
 import { ProgressMeter } from '~/app/components/progress-meter'
@@ -68,15 +66,10 @@ const REWARDS_PROGRESS_CARD_CLASS = cn(
 )
 
 
-export function RewardsWidget({
-  detailPanel,
-}: {
-  detailPanel: DetailPanelControls
-}) {
+export function RewardsWidget() {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
   const {
-    apiEnabled,
     displayRank,
     isRankLoading,
     loginError,
@@ -86,8 +79,8 @@ export function RewardsWidget({
     rankHint,
     rankLabel,
   } = useShareholderRankLabels(t)
-  const { data: referralTotal, isLoading: referralLoading } = useReferralTotal(apiEnabled)
-  const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(apiEnabled)
+  const { data: referralTotal, isLoading: referralLoading } = useReferralTotal(connected)
+  const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(connected)
   const teamClaim = useTeamRewardClaim()
 
   useEffect(() => {
@@ -102,7 +95,7 @@ export function RewardsWidget({
     if (message) toast.error(message)
   }, [connected, loginError])
 
-  const useProgressPlaceholders = !connected || !apiEnabled
+  const useProgressPlaceholders = !connected
   const teamVolumeUsd = Number(performance?.sales_team_market ?? 0)
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(
@@ -146,7 +139,7 @@ export function RewardsWidget({
       ? 100
       : tierProgress.teamProgressPercent ?? 0
 
-  const showPerformanceSkeleton = connected && apiEnabled && performanceLoading && !performance
+  const showPerformanceSkeleton = connected && performanceLoading && !performance
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
@@ -163,26 +156,18 @@ export function RewardsWidget({
       .join(' · ')
     return breakdown ? `${claimedLine} · ${breakdown}` : claimedLine
   })()
-  const showReferralSkeleton = connected && apiEnabled && referralLoading && referralTotal == null
-  const showTeamSkeleton = connected && apiEnabled && teamLoading && teamTotal == null
+  const showReferralSkeleton = connected && referralLoading && referralTotal == null
+  const showTeamSkeleton = connected && teamLoading && teamTotal == null
   const showTitleSkeleton = connected && isRankLoading
   const titleValue = !connected ? t.rewards.shareholder : rankLabel
   const titleHint = !connected ? t.rewards.shareholderHint : rankHint
 
   return (
-    <div
-      className={cn(
-        shellWidgetRootClass,
-        'max-dapp:flex max-dapp:flex-col max-dapp:gap-3',
-      )}
+    <DappWidgetFrame
+      className="max-dapp:flex max-dapp:flex-col max-dapp:gap-3"
+      subtitle={t.rewards.intro}
+      title={t.rewards.title}
     >
-      <DappPanelHeader
-        detailCollapsed={detailPanel.collapsed}
-        onTogglePanel={detailPanel.onToggle}
-        subtitle={t.rewards.intro}
-        title={t.rewards.title}
-      />
-
       <DappSideCard className={REWARDS_WIDGET_CARD_CLASS}>
         <SideLabel tone="coral">{t.rewards.currentTitle}</SideLabel>
         {showTitleSkeleton ? (
@@ -284,7 +269,7 @@ export function RewardsWidget({
         value={`${teamClaimable} ${t.common.claimable.toLowerCase()}`}
       />
       )}
-    </div>
+    </DappWidgetFrame>
   )
 }
 
@@ -292,22 +277,21 @@ export function RewardsContent() {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
   const isMobileViewport = useMobileViewport()
-  const { isAuthenticated, isLoggingIn } = useAuth()
+  const { isLoggingIn } = useAuth()
   const { displayRank, heroBody, heroTitle, isRankLoading } = useShareholderRankLabels(t)
   const showHeroSkeleton = connected && isRankLoading
   const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
   const [referralPage, setReferralPage] = useState(1)
   const [teamPage, setTeamPage] = useState(1)
   const [tierPage, setTierPage] = useState(1)
-  const apiEnabled = connected && isAuthenticated
   const bonusRateLabel = getTeamBonusRateLabel(displayRank)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
-    { page: referralPage, page_size: DAPP_TABLE_PAGE_SIZE },
-    apiEnabled,
+    tablePageQuery(referralPage),
+    connected,
   )
   const { data: teamClaimLogs, isLoading: teamClaimLogsLoading } = useTeamRewardClaimLogs(
-    { page: teamPage, page_size: DAPP_TABLE_PAGE_SIZE },
-    apiEnabled,
+    tablePageQuery(teamPage),
+    connected,
   )
   const rewardLogLabels = useMemo(
     () => ({
@@ -331,7 +315,6 @@ export function RewardsContent() {
     rewardLogs?.items.map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
   const teamHistoryRows =
     teamClaimLogs?.items.map((item) => mapTeamRewardClaimLogToRow(item, teamHistoryLabels)) ?? []
-  const showHistoryRequiresAuth = !apiEnabled && !isLoggingIn
   const historyRows = historyTab === 'referral' ? referralHistoryRows : teamHistoryRows
   const historyTotal = historyTab === 'referral'
     ? rewardLogs?.total ?? 0
@@ -339,10 +322,13 @@ export function RewardsContent() {
   const historyPage = historyTab === 'referral' ? referralPage : teamPage
   const onHistoryPageChange = historyTab === 'referral' ? setReferralPage : setTeamPage
   const historyLoading = historyTab === 'referral' ? rewardLogsLoading : teamClaimLogsLoading
-  const showHistorySkeleton =
-    isLoggingIn ||
-    (apiEnabled && historyLoading && historyRows.length === 0)
-  const showHistoryQueryEmpty = apiEnabled && !historyLoading && historyRows.length === 0
+  const historyTable = dappTableViewState({
+    connected,
+    isLoading: historyLoading,
+    isLoggingIn,
+    rowCount: historyRows.length,
+  })
+  const historyShowSkeleton = isLoggingIn || historyTable.showSkeleton
 
   const rewardTiers = buildRewardTierRows()
   const { rows: pagedTierRows, total: tierTotal } = paginateStaticRows(
@@ -496,9 +482,9 @@ export function RewardsContent() {
             ]}
             onSelect={(index) => setHistoryTab(index === 0 ? 'referral' : 'team')}
           />
-          {showHistoryRequiresAuth ? (
+          {historyTable.requiresAuth ? (
             <DappTableEmptyState className="mt-0" />
-          ) : showHistoryQueryEmpty ? (
+          ) : historyTable.queryEmpty ? (
             <DappTableEmptyMessage
               body={
                 historyTab === 'referral'
@@ -518,7 +504,7 @@ export function RewardsContent() {
                 className="[&_th]:text-faint"
                 compact
                 headers={historyHeaders}
-                isLoading={showHistorySkeleton}
+                isLoading={historyShowSkeleton}
                 loadingRowCount={4}
                 plain
                 positiveColumns={[1]}

@@ -21,17 +21,15 @@ import { PRESALE_CONFIG } from '~/config/presale'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import { bscscanAddress } from '~/config/explorer'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
-import { shellWidgetRootClass } from '~/app/shell-layout'
 import { dappAssets } from '~/app/assets'
 import { seasons as fallbackSeasons } from '~/app/data'
-import type { DetailPanelControls } from '~/app/types'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { MetricCard } from '~/app/components/dapp-card'
 import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { DappSection } from '~/app/components/dapp-section'
-import { DappPanelHeader } from '~/app/components/dapp-panel-header'
+import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
@@ -40,7 +38,7 @@ import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message
 import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/components/responsive-table'
-import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
+import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { SeasonSelector } from '~/app/components/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -56,10 +54,8 @@ import { formatTokenAmount } from '~/lib/swap/token-amount'
 const MAX_SHARES = 100
 
 export function GenesisWidget({
-  detailPanel,
   onSelectGenesis,
 }: {
-  detailPanel: DetailPanelControls
   onSelectGenesis: () => void
 }) {
   const { messages: t } = useI18n()
@@ -137,20 +133,11 @@ export function GenesisWidget({
   }, [genesis.error, t.genesis.insufficientAllowance, t.genesis.insufficientUsd1])
 
   return (
-    <div
-      className={cn(
-        shellWidgetRootClass,
-        'dapp:[&>*]:shrink-0',
-        'max-dapp:flex max-dapp:flex-col max-dapp:gap-3',
-      )}
+    <DappWidgetFrame
+      className="dapp:[&>*]:shrink-0 max-dapp:flex max-dapp:flex-col max-dapp:gap-3"
+      subtitle={seasonIntro}
+      title={t.genesis.title}
     >
-      <DappPanelHeader
-        detailCollapsed={detailPanel.collapsed}
-        onTogglePanel={detailPanel.onToggle}
-        subtitle={seasonIntro}
-        title={t.genesis.title}
-      />
-
       {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
         <div aria-busy="true" className={cn(revealClass(), 'mt-3.5 grid gap-2 max-dapp:mt-0')} data-reveal>
           <SeasonOptionSkeleton />
@@ -227,7 +214,7 @@ export function GenesisWidget({
         onClick={onSelectGenesis}
         promo={genesis.promoSnapshot}
       />
-    </div>
+    </DappWidgetFrame>
   )
 }
 
@@ -235,18 +222,17 @@ export function GenesisContent() {
   const { messages: t } = useI18n()
   const { connected } = useDappShell()
   const isMobileViewport = useMobileViewport()
-  const { isAuthenticated, isLoggingIn } = useAuth()
+  const { isLoggingIn } = useAuth()
   const genesis = useGenesisWidgetContext()
   const seasonStatsTitle = t.genesis.statsTitle.replace(
     '{season}',
     String(genesis.activeSeasonNumber),
   )
-  const apiEnabled = connected && isAuthenticated
   const [contributionsPage, setContributionsPage] = useState(1)
-  const { data: performance } = usePerformance(apiEnabled)
+  const { data: performance } = usePerformance(connected)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
-    { page: contributionsPage, page_size: DAPP_TABLE_PAGE_SIZE },
-    apiEnabled,
+    tablePageQuery(contributionsPage),
+    connected,
   )
 
   const phaseMaxUsd1 = Number(
@@ -277,15 +263,14 @@ export function GenesisContent() {
     : [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx, t.tables.tx]
   const tableLinkColumns = isMobileViewport ? [] : [4]
   const contributionsTotal = salesLogs?.total ?? 0
-  const showContributionsRequiresAuth = !apiEnabled && !isLoggingIn
   const showSalesSyncHint =
-    apiEnabled && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
-  const showContributionSkeleton =
-    apiEnabled &&
-    desktopRows.length === 0 &&
-    (isLoggingIn || salesLoading)
-  const showContributionsQueryEmpty =
-    apiEnabled && !salesLoading && !showSalesSyncHint && desktopRows.length === 0
+    connected && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
+  const contributionsTable = dappTableViewState({
+    connected,
+    isLoading: isLoggingIn || salesLoading,
+    isLoggingIn,
+    rowCount: desktopRows.length,
+  })
 
   return (
     <DappDetailPage>
@@ -410,16 +395,16 @@ export function GenesisContent() {
               {t.genesis.contributionsSyncPending}
             </p>
           ) : null}
-          {showContributionsRequiresAuth ? (
+          {contributionsTable.requiresAuth ? (
             <DappTableEmptyState />
-          ) : showContributionsQueryEmpty ? (
+          ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
             <DappTableEmptyMessage title={t.genesis.contributionsEmpty.title} />
           ) : (
             <>
               <ResponsiveTable
                 compact
                 headers={tableHeaders}
-                isLoading={showContributionSkeleton}
+                isLoading={contributionsTable.showSkeleton}
                 loadingRowCount={4}
                 plain
                 linkColumns={tableLinkColumns}

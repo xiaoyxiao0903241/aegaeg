@@ -284,8 +284,6 @@ const app = defineMessages({
       'チーム貢献{bonus}ボーナス · ローンチ後30日間{postLaunch}ビルダータイトル',
     shareholderHintNoRank: 'Genesisに参加して株主タイトルを獲得',
     shareholderTitleForRank: '{rank} · Genesis Shareholder',
-    rankSigningIn: 'サインイン中…',
-    rankSignInRequired: 'ウォレットの署名を完了してランクを読み込んでください。',
     heroKicker: 'GENESIS SHAREHOLDER',
     heroBody:
       'チーム貢献額の2%ボーナスを獲得し、ローンチ後30日間A3ビルダータイトルを受け取ります。',

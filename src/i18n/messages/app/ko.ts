@@ -284,8 +284,6 @@ const app = defineMessages({
       '팀 기여 {bonus} 보너스 · 런칭 후 30일간 {postLaunch} 빌더 칭호',
     shareholderHintNoRank: 'Genesis에 참여하여 주주 칭호를 획득하세요',
     shareholderTitleForRank: '{rank} · Genesis Shareholder',
-    rankSigningIn: '로그인 중…',
-    rankSignInRequired: '지갑 서명을 완료하면 등급이 표시됩니다.',
     heroKicker: 'GENESIS SHAREHOLDER',
     heroBody:
       '팀 기여 금액의 2% 보너스를 받고, 런칭 후 30일간 A3 빌더 칭호를 획득합니다.',

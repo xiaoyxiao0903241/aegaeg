@@ -15,9 +15,8 @@ import { usePresaleUserTotalQuery } from '~/hooks/queries/use-presale-queries'
 export function useShareholderRank() {
   const { connected } = useDappShell()
   const account = useActiveAccount()
-  const { isAuthenticated, isLoggingIn, loginError } = useAuth()
-  const apiEnabled = connected && isAuthenticated
-  const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
+  const { loginError } = useAuth()
+  const { data: performance, isLoading: performanceLoading } = usePerformance(connected)
 
   const address = account?.address
   const userTotalQuery = usePresaleUserTotalQuery(address)
@@ -37,23 +36,16 @@ export function useShareholderRank() {
     [performance?.presale_rank, personalVolumeUsd],
   )
 
-  const authPending = connected && !isAuthenticated && !loginError
   const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 
   const isRankLoading =
     connected &&
-    (isLoggingIn ||
-      isChainVolumeLoading ||
-      authPending ||
-      (apiEnabled && performanceLoading && performance == null))
+    (isChainVolumeLoading || (performanceLoading && performance == null))
 
   return {
-    apiEnabled,
     connected,
     displayRank,
-    isAuthenticated,
     isChainVolumeLoading,
-    isLoggingIn,
     isRankLoading,
     loginError,
     performance,
@@ -66,7 +58,6 @@ export function useShareholderRankLabels(t: {
   rewards: {
     heroBodyForRank: string
     heroBody: string
-    rankSignInRequired: string
     shareholder: string
     shareholderHintForRank: string
     shareholderHintNoRank: string
@@ -77,7 +68,6 @@ export function useShareholderRankLabels(t: {
 
   const rankLabel = (() => {
     if (!rankState.connected || rankState.isRankLoading) return ''
-    if (!rankState.isAuthenticated) return '—'
     if (rankState.displayRank <= 0) return '—'
     return t.rewards.shareholderTitleForRank.replace(
       '{rank}',
@@ -88,7 +78,6 @@ export function useShareholderRankLabels(t: {
   const rankHint = (() => {
     if (!rankState.connected) return t.rewards.shareholderHintNoRank
     if (rankState.isRankLoading) return ''
-    if (!rankState.isAuthenticated) return t.rewards.rankSignInRequired
     return formatShareholderHintForRank(
       rankState.displayRank,
       t.rewards.shareholderHintForRank,
@@ -100,7 +89,6 @@ export function useShareholderRankLabels(t: {
   const heroTitle = (() => {
     if (!rankState.connected) return t.rewards.shareholder
     if (rankState.isRankLoading) return ''
-    if (!rankState.isAuthenticated) return t.rewards.shareholderHintNoRank
     if (rankState.displayRank <= 0) return t.rewards.shareholderHintNoRank
     return t.rewards.shareholderTitleForRank.replace(
       '{rank}',
@@ -110,7 +98,7 @@ export function useShareholderRankLabels(t: {
 
   const heroBody = (() => {
     if (rankState.isRankLoading) return ''
-    if (!rankState.connected || !rankState.isAuthenticated || rankState.displayRank <= 0) {
+    if (!rankState.connected || rankState.displayRank <= 0) {
       return t.rewards.shareholderHintNoRank
     }
     return formatShareholderHintForRank(

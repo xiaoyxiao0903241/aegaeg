@@ -1,0 +1,71 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+import { loadModule } from './load-module.mjs'
+
+test('tablePageQuery uses DApp table page size', async () => {
+  const { DAPP_TABLE_PAGE_SIZE, tablePageQuery } = await loadModule(
+    '/src/lib/table-pagination.ts',
+  )
+
+  assert.deepEqual(tablePageQuery(2), { page: 2, page_size: DAPP_TABLE_PAGE_SIZE })
+})
+
+test('dappTableViewState derives auth gate, empty query, and skeleton flags', async () => {
+  const { dappTableViewState } = await loadModule('/src/lib/table-pagination.ts')
+
+  assert.deepEqual(
+    dappTableViewState({
+      connected: false,
+      isLoggingIn: false,
+      isLoading: false,
+      rowCount: 0,
+    }),
+    {
+      requiresAuth: true,
+      queryEmpty: false,
+      showSkeleton: false,
+    },
+  )
+
+  assert.deepEqual(
+    dappTableViewState({
+      connected: false,
+      isLoggingIn: true,
+      isLoading: false,
+      rowCount: 0,
+    }),
+    {
+      requiresAuth: false,
+      queryEmpty: false,
+      showSkeleton: false,
+    },
+  )
+
+  assert.deepEqual(
+    dappTableViewState({
+      connected: true,
+      isLoggingIn: false,
+      isLoading: true,
+      rowCount: 0,
+    }),
+    {
+      requiresAuth: false,
+      queryEmpty: false,
+      showSkeleton: true,
+    },
+  )
+
+  assert.deepEqual(
+    dappTableViewState({
+      connected: true,
+      isLoggingIn: false,
+      isLoading: false,
+      rowCount: 0,
+    }),
+    {
+      requiresAuth: false,
+      queryEmpty: true,
+      showSkeleton: false,
+    },
+  )
+})

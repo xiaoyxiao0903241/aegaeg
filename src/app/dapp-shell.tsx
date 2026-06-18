@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -13,7 +13,7 @@ import { GenesisWidgetProvider } from '~/app/genesis-widget-context'
 import { RewardsContent, RewardsWidget } from '~/app/tabs/rewards-tab'
 import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
 import { SwapMobilePager } from '~/app/components/swap-mobile-pager'
-import type { DappTab, DetailPanelControls } from '~/app/types'
+import type { DappTab } from '~/app/types'
 import { useDappShell } from '~/app/dapp-shell-context'
 import {
   shellContainerClass,
@@ -34,7 +34,6 @@ export function DappShell() {
   const mobileNavOpen = useDappShellStore((state) => state.mobileNavOpen)
   const selectTab = useDappShellStore((state) => state.selectTab)
   const selectMobileTab = useDappShellStore((state) => state.selectMobileTab)
-  const toggleDetailCollapsed = useDappShellStore((state) => state.toggleDetailCollapsed)
   const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
   const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
   const shellState = useDappShell()
@@ -46,14 +45,6 @@ export function DappShell() {
     window.addEventListener('hashchange', syncTabFromHash)
     return () => window.removeEventListener('hashchange', syncTabFromHash)
   }, [syncTabFromHash])
-
-  const detailPanel = useMemo<DetailPanelControls>(
-    () => ({
-      collapsed: shellState.detailCollapsed,
-      onToggle: toggleDetailCollapsed,
-    }),
-    [shellState.detailCollapsed, toggleDetailCollapsed],
-  )
 
   const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = shellState.detailCollapsed
@@ -95,8 +86,6 @@ export function DappShell() {
               {useSwapMobilePager ? (
                 <div className="flex min-h-0 flex-1 flex-col">
                   <SwapMobilePager
-                    connected={shellState.connected}
-                    detailPanel={detailPanel}
                     onSelectGenesis={() => selectTab('genesis')}
                     windowClassName={shellWindowClass({
                       tab: activeTab,
@@ -151,8 +140,6 @@ export function DappShell() {
                     <TabWidget
                       key={activeTab}
                       activeTab={activeTab}
-                      connected={shellState.connected}
-                      detailPanel={detailPanel}
                       onSelectTab={selectTab}
                     />
                   </aside>
@@ -164,11 +151,7 @@ export function DappShell() {
                     data-dapp-detail
                   >
                     <div className="dapp-detail-panel" key={activeTab}>
-                      <TabContent
-                        activeTab={activeTab}
-                        connected={shellState.connected}
-                        onSelectTab={selectTab}
-                      />
+                      <TabContent activeTab={activeTab} onSelectTab={selectTab} />
                     </div>
                   </section>
                 </div>
@@ -184,54 +167,31 @@ export function DappShell() {
 
 function TabWidget({
   activeTab,
-  connected,
-  detailPanel,
   onSelectTab,
 }: {
   activeTab: DappTab
-  connected: boolean
-  detailPanel: DetailPanelControls
   onSelectTab: (tab: DappTab) => void
 }) {
   if (activeTab === 'genesis') {
-    return (
-      <GenesisWidget
-        detailPanel={detailPanel}
-        onSelectGenesis={() => onSelectTab('genesis')}
-      />
-    )
+    return <GenesisWidget onSelectGenesis={() => onSelectTab('genesis')} />
   }
 
   if (activeTab === 'rewards') {
-    return <RewardsWidget detailPanel={detailPanel} />
+    return <RewardsWidget />
   }
 
   if (activeTab === 'community') {
-    return (
-      <CommunityWidget
-        connected={connected}
-        detailPanel={detailPanel}
-        onSelectTab={onSelectTab}
-      />
-    )
+    return <CommunityWidget onSelectTab={onSelectTab} />
   }
 
-  return (
-    <SwapWidget
-      connected={connected}
-      detailPanel={detailPanel}
-      onSelectGenesis={() => onSelectTab('genesis')}
-    />
-  )
+  return <SwapWidget onSelectGenesis={() => onSelectTab('genesis')} />
 }
 
 function TabContent({
   activeTab,
-  connected,
   onSelectTab,
 }: {
   activeTab: DappTab
-  connected: boolean
   onSelectTab: (tab: DappTab) => void
 }) {
   if (activeTab === 'genesis') {
@@ -243,8 +203,8 @@ function TabContent({
   }
 
   if (activeTab === 'community') {
-    return <CommunityContent connected={connected} onSelectTab={onSelectTab} />
+    return <CommunityContent onSelectTab={onSelectTab} />
   }
 
-  return <SwapContent connected={connected} />
+  return <SwapContent />
 }

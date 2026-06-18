@@ -22,11 +22,10 @@ import { useReferral } from '~/hooks/use-referral'
 import { toast } from 'sonner'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
-import { shellWidgetRootClass } from '~/app/shell-layout'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { dappAssets } from '~/app/assets'
-import type { DappTab, DetailPanelControls } from '~/app/types'
+import type { DappTab } from '~/app/types'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
   CommunityStatCard,
@@ -40,14 +39,14 @@ import {
 import { ReferrerAddressRow } from '~/app/components/referrer-address-row'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
-import { DappPanelHeader } from '~/app/components/dapp-panel-header'
+import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { InviteFlow, InviteFlowStack } from '~/app/components/invite-flow'
 import { QuickLinks } from '~/app/components/quick-links'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/components/responsive-table'
-import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
+import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { FaqList } from '~/components/faq-list'
 
 type CommunityStat = {
@@ -65,10 +64,7 @@ const REFERRAL_CARD_CLASS = cn(
   '[&_label]:text-xs [&_label]:text-faint',
 )
 
-const COMMUNITY_WIDGET_SHELL_CLASS = cn(
-  shellWidgetRootClass,
-  'max-dapp:flex max-dapp:flex-col max-dapp:gap-3',
-)
+const COMMUNITY_WIDGET_CLASS = 'max-dapp:flex max-dapp:flex-col max-dapp:gap-3'
 
 const SHAREHOLDER_ACTION_CLASS = cn(
   'mt-4 min-h-[42px] hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',
@@ -81,37 +77,25 @@ const COMMUNITY_STAT_GRID = cn(
 )
 
 export function CommunityWidget({
-  connected,
-  detailPanel,
   onSelectTab,
 }: {
-  connected: boolean
-  detailPanel: DetailPanelControls
   onSelectTab: (tab: DappTab) => void
 }) {
+  const { connected } = useDappShell()
   return connected ? (
-    <CommunityConnectedWidget
-      detailPanel={detailPanel}
-      onSelectTab={onSelectTab}
-    />
+    <CommunityConnectedWidget onSelectTab={onSelectTab} />
   ) : (
-    <CommunityDisconnectedWidget
-      detailPanel={detailPanel}
-      onSelectTab={onSelectTab}
-    />
+    <CommunityDisconnectedWidget onSelectTab={onSelectTab} />
   )
 }
 
 function CommunityConnectedWidget({
-  detailPanel,
   onSelectTab,
 }: {
-  detailPanel: DetailPanelControls
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
   const account = useActiveAccount()
-  const { isAuthenticated } = useAuth()
   const referral = useReferral(true)
   const referralLink = account ? formatReferralLinkDisplay(account.address) : '—'
 
@@ -143,17 +127,14 @@ function CommunityConnectedWidget({
   }, [referral.error])
 
   return (
-    <div className={COMMUNITY_WIDGET_SHELL_CLASS}>
-      <DappPanelHeader
-        detailCollapsed={detailPanel.collapsed}
-        onTogglePanel={detailPanel.onToggle}
-        subtitle={t.community.intro}
-        title={t.community.title}
-      />
-
+    <DappWidgetFrame
+      className={COMMUNITY_WIDGET_CLASS}
+      subtitle={t.community.intro}
+      title={t.community.title}
+    >
       <DappSideCard className={REFERRAL_CARD_CLASS}>
         <SideLabel>{t.community.referralLink}</SideLabel>
-        <SideValue className="text-[13px] tracking-[-0.26px]">{isAuthenticated ? referralLink : '…'}</SideValue>
+        <SideValue className="text-[13px] tracking-[-0.26px]">{referralLink}</SideValue>
         <DappActionButton
           className="max-dapp:min-h-11 max-dapp:text-sm"
           disabled={!account}
@@ -227,15 +208,13 @@ function CommunityConnectedWidget({
       >
         {t.community.shareholder}
       </DappActionButton>
-    </div>
+    </DappWidgetFrame>
   )
 }
 
 function CommunityDisconnectedWidget({
-  detailPanel,
   onSelectTab,
 }: {
-  detailPanel: DetailPanelControls
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
@@ -261,14 +240,11 @@ function CommunityDisconnectedWidget({
   ])
 
   return (
-    <div className={COMMUNITY_WIDGET_SHELL_CLASS}>
-      <DappPanelHeader
-        detailCollapsed={detailPanel.collapsed}
-        onTogglePanel={detailPanel.onToggle}
-        subtitle={t.community.disconnectedIntro}
-        title={t.community.title}
-      />
-
+    <DappWidgetFrame
+      className={COMMUNITY_WIDGET_CLASS}
+      subtitle={t.community.disconnectedIntro}
+      title={t.community.title}
+    >
       <DappSideCard className={cn(REFERRAL_CARD_CLASS, 'max-dapp:mt-0')}>
         <SideLabel>{t.community.referrer}</SideLabel>
         <div className="mt-2 grid grid-cols-[minmax(0,1fr)_max-content] items-end gap-2">
@@ -309,7 +285,7 @@ function CommunityDisconnectedWidget({
       >
         {t.community.shareholder}
       </DappActionButton>
-    </div>
+    </DappWidgetFrame>
   )
 }
 
@@ -345,24 +321,21 @@ function CommunityQuickLinks({ className }: { className?: string }) {
 }
 
 export function CommunityContent({
-  connected,
   onSelectTab,
 }: {
-  connected: boolean
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { tab } = useDappShell()
+  const { connected, tab } = useDappShell()
   const isMobileViewport = useMobileViewport()
-  const { isAuthenticated, isLoggingIn } = useAuth()
+  const { isLoggingIn } = useAuth()
   const referralChain = useReferral(connected)
-  const apiEnabled = connected && isAuthenticated
   const [invitesPage, setInvitesPage] = useState(1)
-  const { data: performance, isLoading: performanceLoading } = usePerformance(apiEnabled)
+  const { data: performance, isLoading: performanceLoading } = usePerformance(connected)
   const { displayRank, isRankLoading } = useShareholderRank()
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
-    { page: invitesPage, page_size: DAPP_TABLE_PAGE_SIZE },
-    apiEnabled,
+    tablePageQuery(invitesPage),
+    connected,
   )
 
   const inviteRowsCompact =
@@ -371,16 +344,19 @@ export function CommunityContent({
     ) ?? []
   const compactRows = inviteRowsCompact
   const invitesTotal = referrals?.total ?? 0
-  const showInvitesRequiresAuth = !apiEnabled && !isLoggingIn
-  const showInvitesSkeleton = apiEnabled && referralsLoading && compactRows.length === 0
-  const showInvitesQueryEmpty = apiEnabled && !referralsLoading && compactRows.length === 0
-  const inviteCount = !apiEnabled
+  const invitesTable = dappTableViewState({
+    connected,
+    isLoading: referralsLoading,
+    isLoggingIn,
+    rowCount: compactRows.length,
+  })
+  const inviteCount = !connected
     ? '0'
     : referralsLoading || isLoggingIn
       ? '…'
       : String(referrals?.total ?? Number(referralChain.directCount || 0))
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
-  const authPending = connected && (isLoggingIn || !isAuthenticated)
+  const authPending = connected && isLoggingIn
 
   if (!connected) {
     return (
@@ -484,9 +460,9 @@ export function CommunityContent({
         className="group-data-[tab=community]/shell:max-dapp:mt-0"
         title={inviteSectionTitle}
       >
-        {showInvitesRequiresAuth ? (
+        {invitesTable.requiresAuth ? (
           <DappTableEmptyState className="mt-3.5" />
-        ) : showInvitesQueryEmpty ? (
+        ) : invitesTable.queryEmpty ? (
           <DappTableEmptyMessage
             body={t.community.invitesEmpty.body}
             className="mt-3.5"
@@ -524,7 +500,7 @@ export function CommunityContent({
                       t.tables.volume,
                     ]
               }
-              isLoading={showInvitesSkeleton}
+              isLoading={invitesTable.showSkeleton}
               linkColumns={[1]}
               plain
               rows={compactRows}

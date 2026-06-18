@@ -285,8 +285,6 @@ const app = defineMessages({
       '{bonus} бонус с командного вклада · статус {postLaunch} builder на 30 дней после запуска',
     shareholderHintNoRank: 'Участвуйте в Genesis, чтобы получить статус акционера',
     shareholderTitleForRank: '{rank} · Genesis Shareholder',
-    rankSigningIn: 'Вход…',
-    rankSignInRequired: 'Завершите подпись в кошельке, чтобы загрузить ваш ранг.',
     heroKicker: 'GENESIS SHAREHOLDER',
     heroBody:
       'Получайте 2% бонус с суммы командного вклада и статус A3 builder на 30 дней после запуска.',

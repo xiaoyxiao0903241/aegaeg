@@ -285,8 +285,6 @@ const app = defineMessages({
       'Thưởng {bonus} đóng góp nhóm · danh hiệu {postLaunch} builder 30 ngày sau ra mắt',
     shareholderHintNoRank: 'Tham gia Genesis để nhận danh hiệu cổ đông',
     shareholderTitleForRank: '{rank} · Genesis Shareholder',
-    rankSigningIn: 'Đang đăng nhập…',
-    rankSignInRequired: 'Hoàn tất chữ ký ví để tải cấp bậc của bạn.',
     heroKicker: 'GENESIS SHAREHOLDER',
     heroBody:
       'Nhận thưởng 2% trên số tiền đóng góp của nhóm và danh hiệu A3 builder trong 30 ngày sau ra mắt.',

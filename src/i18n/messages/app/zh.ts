@@ -298,8 +298,6 @@ const app = defineMessages({
     shareholderHintForRank: '团队认购 {bonus} 奖励 · 上线后 {postLaunch} 称号 30 天',
     shareholderHintNoRank: '创世等级',
     shareholderTitleForRank: '{rank} · 创世股东',
-    rankSigningIn: '登录验证中…',
-    rankSignInRequired: '请在钱包中完成签名，以加载你的 Genesis 等级',
     heroKicker: '创世等级',
     heroBody: '团队认购金额可获得 {bonus} 奖励，并在上线后获得 30 天 {postLaunch} builder 称号。',
     heroBodyForRank:

@@ -301,8 +301,6 @@ const app = defineMessages({
       '{bonus} bonus on team contribution · {postLaunch} title for 30 days after launch',
     shareholderHintNoRank: 'Join Genesis to earn a shareholder title.',
     shareholderTitleForRank: '{rank} · Genesis Shareholder',
-    rankSigningIn: 'Signing in…',
-    rankSignInRequired: 'Complete the wallet signature prompt to load your rank.',
     heroKicker: 'GENESIS SHAREHOLDER',
     heroBody:
       "Earn a 2% bonus on your team's contribution amount, and receive the A3 builder title for 30 days after launch.",

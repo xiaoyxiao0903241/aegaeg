@@ -7,7 +7,6 @@ import {
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
-import type { DetailPanelControls } from '~/app/types'
 import { dappAssets } from '~/app/assets'
 import { DappMobileNav } from '~/app/components/dapp-mobile-nav'
 import {
@@ -38,8 +37,6 @@ const pagerPageInnerClass =
   'box-border w-full min-w-0 px-[var(--shadow-bleed-h5)] pb-[var(--shadow-bleed-subtle)]'
 
 type SwapMobilePagerProps = {
-  connected: boolean
-  detailPanel: DetailPanelControls
   onSelectGenesis: () => void
   windowRef: (node: HTMLDivElement | null) => void
   windowClassName: string
@@ -118,8 +115,6 @@ function derivePageIndex(offset: number, pageHeight: number) {
 }
 
 export function SwapMobilePager({
-  connected,
-  detailPanel,
   onSelectGenesis,
   windowRef,
   windowClassName,
@@ -455,12 +450,7 @@ export function SwapMobilePager({
                   style={{ height: viewportHeight }}
                 >
                   <div className={pagerPageInnerClass}>
-                    <SwapWidget
-                      connected={connected}
-                      detailPanel={detailPanel}
-                      onSelectGenesis={onSelectGenesis}
-                      swapPager
-                    />
+                    <SwapWidget onSelectGenesis={onSelectGenesis} swapPager />
                   </div>
                 </div>
 
@@ -471,7 +461,7 @@ export function SwapMobilePager({
                   style={{ height: viewportHeight }}
                 >
                   <div className={pagerPageInnerClass}>
-                    <SwapContent connected={connected} swapPager />
+                    <SwapContent swapPager />
                   </div>
                 </div>
               </div>
