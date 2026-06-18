@@ -28,6 +28,7 @@ import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
+import { GenesisConnectPromptCard } from '~/app/components/genesis-connect-prompt-card'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { ProgressMeter } from '~/app/components/progress-meter'
@@ -38,6 +39,7 @@ import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { SeasonSelector } from '~/app/components/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
+import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useAuth } from '~/providers/auth-provider'
 import {
@@ -49,6 +51,10 @@ import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/
 import { formatTokenAmount } from '~/lib/swap/token-amount'
 
 const MAX_SHARES = 100
+
+const GENESIS_WIDGET_FOOTER_SPACER = 'min-h-3.5 shrink-0 grow basis-3.5'
+
+const GENESIS_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 dapp:mt-auto'
 
 export function GenesisWidget({
   onSelectGenesis,
@@ -200,33 +206,44 @@ export function GenesisWidget({
         ]}
       />
 
-      <DappActionRow className={cn(genesis.isApproved ? 'grid-cols-1' : undefined, 'max-dapp:mt-0')}>
-        {!genesis.isApproved ? (
+      {walletReady ? (
+        <DappActionRow className={cn(genesis.isApproved ? 'grid-cols-1' : undefined, 'max-dapp:mt-0')}>
+          {!genesis.isApproved ? (
+            <DappActionButton
+              disabled={!genesis.canPurchase || genesis.isSubmitting}
+              loading={genesis.submittingAction === 'approve'}
+              onClick={() => void handleApprove()}
+              variant="secondary"
+            >
+              {t.swap.approve}
+            </DappActionButton>
+          ) : null}
           <DappActionButton
-            disabled={!walletReady || !genesis.canPurchase || genesis.isSubmitting}
-            loading={genesis.submittingAction === 'approve'}
-            onClick={() => void handleApprove()}
-            variant="secondary"
+            disabled={!genesis.canPurchase || genesis.isSubmitting}
+            loading={genesis.submittingAction === 'purchase'}
+            onClick={() => void handleParticipate()}
+            variant="primary"
           >
-            {t.swap.approve}
+            {t.genesis.join}
           </DappActionButton>
-        ) : null}
-        <DappActionButton
-          disabled={!walletReady || !genesis.canPurchase || genesis.isSubmitting}
-          loading={genesis.submittingAction === 'purchase'}
-          onClick={() => void handleParticipate()}
-          variant="primary"
-        >
-          {t.genesis.join}
-        </DappActionButton>
-      </DappActionRow>
+        </DappActionRow>
+      ) : (
+        <>
+          <div aria-hidden="true" className={GENESIS_WIDGET_FOOTER_SPACER} />
+          <GenesisConnectPromptCard className={GENESIS_BOTTOM_CARD_CLASS} />
+        </>
+      )}
 
-      <GenesisPromoCard
-        className="hidden max-dapp:grid"
-        isLoading={genesis.isLoading}
-        onClick={onSelectGenesis}
-        promo={genesis.promoSnapshot}
-      />
+      {walletReady ? (
+        <GenesisPromoCard
+          className="hidden max-dapp:grid"
+          isLoading={genesis.isLoading}
+          onClick={onSelectGenesis}
+          promo={genesis.promoSnapshot}
+        />
+      ) : (
+        <GenesisConnectPromptCard className="hidden max-dapp:grid max-dapp:mt-3.5" />
+      )}
     </DappWidgetFrame>
   )
 }
@@ -385,27 +402,39 @@ export function GenesisContent() {
           )}
           data-reveal
         >
-          <div className="mb-3 grid gap-1.5 border-0 bg-transparent p-0">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
-                {t.genesis.totalContributed}
-              </span>
-              <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
-                {contributedLabel}
-              </strong>
+          {sessionReady ? (
+            <div className="mb-3 grid gap-1.5 border-0 bg-transparent p-0">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
+                  {t.genesis.totalContributed}
+                </span>
+                <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
+                  {contributedLabel}
+                </strong>
+              </div>
+              <ProgressMeter
+                label={t.genesis.totalContributed}
+                value={contributionProgress}
+              />
             </div>
-            <ProgressMeter
-              label={t.genesis.totalContributed}
-              value={contributionProgress}
-            />
-          </div>
+          ) : null}
           {showSalesSyncHint ? (
             <p className="mb-3 text-[13px] leading-normal text-muted-foreground">
               {t.genesis.contributionsSyncPending}
             </p>
           ) : null}
           {contributionsTable.requiresAuth ? (
-            <DappTableEmptyState />
+            <DappTableEmptyState className="max-dapp:border-0 max-dapp:bg-transparent max-dapp:px-0 max-dapp:py-0 max-dapp:shadow-none">
+              <div className="grid w-full gap-1.5 text-center">
+                <p className="m-0 text-[15px] font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
+                  {t.genesis.contributionsConnectTitle}
+                </p>
+                <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-muted-foreground">
+                  {t.genesis.contributionsConnectBody}
+                </p>
+              </div>
+              <WalletConnectChip variant="primary" />
+            </DappTableEmptyState>
           ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
             <DappTableEmptyMessage title={t.genesis.contributionsEmpty.title} />
           ) : (

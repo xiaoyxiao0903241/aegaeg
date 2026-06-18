@@ -61,25 +61,29 @@ export function useShareholderRankLabels(t: {
     shareholder: string
     shareholderHintForRank: string
     shareholderHintNoRank: string
+    shareholderNoRankTitle: string
+    shareholderNoRankBody: string
     shareholderTitleForRank: string
   }
 }) {
   const rankState = useShareholderRank()
 
+  const effectiveDisplayRank = rankState.sessionReady ? rankState.displayRank : 0
+
   const rankLabel = (() => {
-    if (!rankState.sessionReady || rankState.isRankLoading) return ''
-    if (rankState.displayRank <= 0) return '—'
+    if (rankState.sessionReady && rankState.isRankLoading) return ''
+    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankTitle
     return t.rewards.shareholderTitleForRank.replace(
       '{rank}',
-      formatPresaleRank(rankState.displayRank),
+      formatPresaleRank(effectiveDisplayRank),
     )
   })()
 
   const rankHint = (() => {
-    if (!rankState.sessionReady) return t.rewards.shareholderHintNoRank
-    if (rankState.isRankLoading) return ''
+    if (rankState.sessionReady && rankState.isRankLoading) return ''
+    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankBody
     return formatShareholderHintForRank(
-      rankState.displayRank,
+      effectiveDisplayRank,
       t.rewards.shareholderHintForRank,
       t.rewards.shareholderHintNoRank,
       buildRewardTierRows(),
@@ -87,30 +91,28 @@ export function useShareholderRankLabels(t: {
   })()
 
   const heroTitle = (() => {
-    if (!rankState.sessionReady) return t.rewards.shareholder
-    if (rankState.isRankLoading) return ''
-    if (rankState.displayRank <= 0) return t.rewards.shareholderHintNoRank
+    if (rankState.sessionReady && rankState.isRankLoading) return ''
+    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankTitle
     return t.rewards.shareholderTitleForRank.replace(
       '{rank}',
-      formatPresaleRank(rankState.displayRank),
+      formatPresaleRank(effectiveDisplayRank),
     )
   })()
 
   const heroBody = (() => {
-    if (rankState.isRankLoading) return ''
-    if (!rankState.sessionReady || rankState.displayRank <= 0) {
-      return t.rewards.shareholderHintNoRank
-    }
+    if (rankState.sessionReady && rankState.isRankLoading) return ''
+    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankBody
     return formatShareholderHintForRank(
-      rankState.displayRank,
+      effectiveDisplayRank,
       t.rewards.heroBodyForRank,
-      t.rewards.shareholderHintNoRank,
+      t.rewards.shareholderNoRankBody,
       buildRewardTierRows(),
     )
   })()
 
   return {
     ...rankState,
+    displayRank: effectiveDisplayRank,
     heroBody,
     heroTitle,
     rankHint,

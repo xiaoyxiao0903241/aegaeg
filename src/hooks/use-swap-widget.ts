@@ -2,7 +2,8 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
-import { formatSwapRateColon } from '~/lib/swap/format-swap-rate'
+import { formatSwapRateApprox } from '~/lib/swap/format-swap-rate'
+import { resolvePancakeSwapDeepLink } from '~/config/pancake-swap-links'
 import { resolveSwapAction } from '~/lib/swap/resolve-swap-action'
 import {
   capTokenAmountInput,
@@ -195,21 +196,30 @@ export function useSwapWidget(authenticated: boolean) {
       return isSpotQuoting || isQuoting ? '' : '—'
     }
 
-    return formatSwapRateColon({
+    return formatSwapRateApprox({
       amountIn: rateQuote.amountIn,
       amountOut: rateQuote.amountOut,
       decimalsIn: pair.sell.decimals,
       decimalsOut: pair.buy.decimals,
+      symbolIn: pair.sell.symbol,
+      symbolOut: pair.buy.symbol,
     })
   }, [
     authenticated,
     isQuoting,
     isSpotQuoting,
     pair.buy.decimals,
+    pair.buy.symbol,
     pair.sell.decimals,
+    pair.sell.symbol,
     rateQuote.amountIn,
     rateQuote.amountOut,
   ])
+
+  const pancakeSwapUrl = useMemo(
+    () => resolvePancakeSwapDeepLink(pair.sell.symbol, pair.buy.symbol),
+    [pair.buy.symbol, pair.sell.symbol],
+  )
 
   const routeLabel = useMemo(() => {
     const path = rateQuote.path
@@ -318,6 +328,7 @@ export function useSwapWidget(authenticated: boolean) {
     buyAmount,
     rateLabel,
     routeLabel,
+    pancakeSwapUrl,
     action,
     walletReady,
     canSubmit,

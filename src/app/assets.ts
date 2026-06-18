@@ -50,6 +50,7 @@ export const dappAssets = {
   swapConnectPrompt: '/assets/figma/dapp/ic-swap-connect-prompt.svg',
   arrowUpRight: '/assets/figma/dapp/ic-arrow-up-right.svg',
   swap: '/assets/figma/dapp/ic-swap.svg',
+  swapExchange: '/assets/figma/dapp/ic-swap-exchange.svg',
   telegram: '/assets/figma/dapp/ic-telegram.svg',
   twitter: '/assets/figma/dapp/ic-twitter.svg',
   tokenCardRays: '/assets/figma/dapp/token-card-rays.svg',

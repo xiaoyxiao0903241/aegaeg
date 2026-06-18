@@ -64,3 +64,31 @@ export function formatSwapRate({
 
   return `1 ${symbolIn} = ${formattedOut} ${symbolOut}`
 }
+
+/** Connected Swap meta — `1 USDT ≈ 1.001 USD1` (Figma approx format, 3 fraction digits). */
+export function formatSwapRateApprox({
+  amountIn,
+  amountOut,
+  decimalsIn,
+  decimalsOut,
+  symbolIn,
+  symbolOut,
+  fractionDigits = 3,
+}: {
+  amountIn: bigint
+  amountOut: bigint
+  decimalsIn: number
+  decimalsOut: number
+  symbolIn: string
+  symbolOut: string
+  fractionDigits?: number
+}): string {
+  if (amountIn === 0n || amountOut === 0n) {
+    return `1 ${symbolIn} ≈ — ${symbolOut}`
+  }
+
+  const oneUnitIn = 10n ** BigInt(decimalsIn)
+  const normalizedOut = (amountOut * oneUnitIn) / amountIn
+
+  return `1 ${symbolIn} ≈ ${formatRateRatioFixed(normalizedOut, decimalsOut, fractionDigits)} ${symbolOut}`
+}

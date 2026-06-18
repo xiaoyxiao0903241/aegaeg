@@ -18,7 +18,6 @@ import {
   mapTeamRewardClaimLogToRow,
   resolveRewardTypeI18nKey,
 } from '~/lib/api/format-display'
-import { REWARDS_PROGRESS_PLACEHOLDERS } from '~/config/rewards-progress'
 import { buildNextTierProgress } from '~/lib/presale/tier-progress'
 import {
   CurrentTitleCardBodySkeleton,
@@ -36,6 +35,7 @@ import { dappAssets } from '~/app/assets'
 import { buildRewardTierRows, getTeamBonusRateLabel } from '~/lib/presale/tier-table'
 import { DAPP_TABLE_PAGE_SIZE, dappTableViewState, paginateStaticRows, tablePageQuery } from '~/lib/table-pagination'
 import { DappActionButton } from '~/app/components/dapp-action-button'
+import { GenesisConnectPromptCard } from '~/app/components/genesis-connect-prompt-card'
 import {
   DappSideCard,
   RewardBalanceCard,
@@ -55,7 +55,12 @@ import { FaqList } from '~/components/faq-list'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { useDappShell } from '~/app/dapp-shell-context'
+import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+const REWARDS_WIDGET_FOOTER_SPACER = 'min-h-3.5 shrink-0 grow basis-3.5'
+
+const REWARDS_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 dapp:mt-auto'
+
 const REWARDS_WIDGET_CARD_CLASS = cn(
   'rounded-2xl px-4 py-3.5 max-dapp:mt-0',
   '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-dapp:[&_span]:text-faint',
@@ -97,49 +102,34 @@ export function RewardsWidget() {
     if (message) toast.error(message)
   }, [sessionReady, loginError])
 
-  const useProgressPlaceholders = !sessionReady
   const teamVolumeUsd = Number(teamOverview?.sales_team_market ?? 0)
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
-  const nextRankLabel = formatPresaleRank(
-    useProgressPlaceholders ? REWARDS_PROGRESS_PLACEHOLDERS.nextRank : tierProgress.nextRank,
-  )
+  const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
 
-  const personalProgressLabel = useProgressPlaceholders
-    ? t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
-    : tierProgress.isMaxRank
-      ? t.rewards.progressMaxPersonal
-      : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
+  const personalProgressLabel = tierProgress.isMaxRank
+    ? t.rewards.progressMaxPersonal
+    : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
 
-  const teamProgressLabel = useProgressPlaceholders
-    ? t.rewards.teamVolume
-    : tierProgress.isMaxRank
-      ? t.rewards.progressMaxTeam
-      : t.rewards.teamVolume
+  const teamProgressLabel = tierProgress.isMaxRank
+    ? t.rewards.progressMaxTeam
+    : t.rewards.teamVolume
 
-  const personalProgressValue = useProgressPlaceholders
-    ? `${formatUsd(REWARDS_PROGRESS_PLACEHOLDERS.personalCurrentUsd)} / ${formatUsd(REWARDS_PROGRESS_PLACEHOLDERS.personalTargetUsd)}`
-    : `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
+  const personalProgressValue = `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
 
-  const teamProgressValue = useProgressPlaceholders
-    ? `${formatUsd(REWARDS_PROGRESS_PLACEHOLDERS.teamCurrentUsd)} / ${formatUsd(REWARDS_PROGRESS_PLACEHOLDERS.teamTargetUsd)}`
-    : tierProgress.teamLegRank != null
-      ? `${formatUsd(tierProgress.teamCurrentUsd)} · ${t.rewards.teamLegRequirement.replace(
-          '{rank}',
-          formatPresaleRank(tierProgress.teamLegRank),
-        )}`
-      : teamVolumeUsd <= 0
-        ? formatUsd(0)
-        : `${formatUsd(tierProgress.teamCurrentUsd)} / ${formatUsd(tierProgress.teamTargetUsd ?? 0)}`
+  const teamProgressValue = tierProgress.teamLegRank != null
+    ? `${formatUsd(tierProgress.teamCurrentUsd)} · ${t.rewards.teamLegRequirement.replace(
+        '{rank}',
+        formatPresaleRank(tierProgress.teamLegRank),
+      )}`
+    : teamVolumeUsd <= 0
+      ? formatUsd(0)
+      : `${formatUsd(tierProgress.teamCurrentUsd)} / ${formatUsd(tierProgress.teamTargetUsd ?? 0)}`
 
-  const personalProgressPercent = useProgressPlaceholders
-    ? REWARDS_PROGRESS_PLACEHOLDERS.personalProgressPercent
-    : tierProgress.personalProgressPercent
+  const personalProgressPercent = tierProgress.personalProgressPercent
 
-  const teamProgressPercent = useProgressPlaceholders
-    ? REWARDS_PROGRESS_PLACEHOLDERS.teamProgressPercent
-    : tierProgress.isMaxRank
-      ? 100
-      : tierProgress.teamProgressPercent ?? 0
+  const teamProgressPercent = tierProgress.isMaxRank
+    ? 100
+    : tierProgress.teamProgressPercent ?? 0
 
   const showPerformanceSkeleton =
     sessionReady &&
@@ -163,67 +153,75 @@ export function RewardsWidget() {
   const showReferralSkeleton = sessionReady && referralLoading && referralTotal == null
   const showTeamSkeleton = sessionReady && teamLoading && teamTotal == null
   const showTitleSkeleton = sessionReady && isRankLoading
-  const titleValue = !sessionReady ? t.rewards.shareholder : rankLabel
-  const titleHint = !sessionReady ? t.rewards.shareholderHint : rankHint
+  const disconnectedReferralValue = formatUsd(0, 2)
+  const disconnectedTeamValue = formatUsd(0, 2)
+  const disconnectedTeamClaimedMeta = t.rewards.claimed.replace(
+    '{amount}',
+    disconnectedTeamValue,
+  )
 
   return (
     <DappWidgetFrame
-      className="max-dapp:flex max-dapp:flex-col max-dapp:gap-3"
+      className="dapp:[&>*]:shrink-0 max-dapp:flex max-dapp:flex-col max-dapp:gap-3"
       subtitle={t.rewards.intro}
       title={t.rewards.title}
     >
-      <DappSideCard className={REWARDS_WIDGET_CARD_CLASS}>
-        <SideLabel tone="coral">{t.rewards.currentTitle}</SideLabel>
-        {showTitleSkeleton ? (
-          <CurrentTitleCardBodySkeleton />
-        ) : (
-          <>
-            <SideTitle className="max-dapp:text-[17px] max-dapp:tracking-[-0.34px]">
-              {titleValue}
-            </SideTitle>
-            <SideHint
-              className="min-h-[2.25rem] line-clamp-2 text-xs tracking-[-0.24px] max-dapp:max-w-none max-dapp:leading-normal max-dapp:text-faint"
-              tone="body"
-            >
-              {titleHint}
-            </SideHint>
-          </>
-        )}
-      </DappSideCard>
+      {sessionReady ? (
+        <>
+          <DappSideCard className={REWARDS_WIDGET_CARD_CLASS}>
+            <SideLabel tone="coral">{t.rewards.currentTitle}</SideLabel>
+            {showTitleSkeleton ? (
+              <CurrentTitleCardBodySkeleton />
+            ) : (
+              <>
+                <SideTitle className="max-dapp:text-[17px] max-dapp:tracking-[-0.34px]">
+                  {rankLabel}
+                </SideTitle>
+                <SideHint
+                  className="min-h-[2.25rem] line-clamp-2 text-xs tracking-[-0.24px] max-dapp:max-w-none max-dapp:leading-normal max-dapp:text-faint"
+                  tone="body"
+                >
+                  {rankHint}
+                </SideHint>
+              </>
+            )}
+          </DappSideCard>
 
-      {showPerformanceSkeleton ? (
-        <DappSideCard className={REWARDS_PROGRESS_CARD_CLASS}>
-          <ProgressCardSkeleton />
-        </DappSideCard>
-      ) : (
-      <DappSideCard className={REWARDS_PROGRESS_CARD_CLASS}>
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-normal leading-[1.5] text-ink-strong">
-            {personalProgressLabel}
-          </span>
-          <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
-            {personalProgressValue}
-          </strong>
-        </div>
-        <ProgressMeter
-          label={personalProgressLabel}
-          value={personalProgressPercent}
-        />
-        <span aria-hidden="true" className="block h-1" />
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-normal leading-[1.5] text-ink-strong">
-            {teamProgressLabel}
-          </span>
-          <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
-            {teamProgressValue}
-          </strong>
-        </div>
-        <ProgressMeter
-          label={teamProgressLabel}
-          value={teamProgressPercent}
-        />
-      </DappSideCard>
-      )}
+          {showPerformanceSkeleton ? (
+            <DappSideCard className={REWARDS_PROGRESS_CARD_CLASS}>
+              <ProgressCardSkeleton />
+            </DappSideCard>
+          ) : (
+            <DappSideCard className={REWARDS_PROGRESS_CARD_CLASS}>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-normal leading-[1.5] text-ink-strong">
+                  {personalProgressLabel}
+                </span>
+                <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
+                  {personalProgressValue}
+                </strong>
+              </div>
+              <ProgressMeter
+                label={personalProgressLabel}
+                value={personalProgressPercent}
+              />
+              <span aria-hidden="true" className="block h-1" />
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-normal leading-[1.5] text-ink-strong">
+                  {teamProgressLabel}
+                </span>
+                <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
+                  {teamProgressValue}
+                </strong>
+              </div>
+              <ProgressMeter
+                label={teamProgressLabel}
+                value={teamProgressPercent}
+              />
+            </DappSideCard>
+          )}
+        </>
+      ) : null}
 
       {showReferralSkeleton ? (
         <RewardBalanceCardSkeleton />
@@ -232,24 +230,29 @@ export function RewardsWidget() {
         badge={t.rewards.autoPaidLabel}
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
-          'mt-2 max-dapp:mt-0',
+          sessionReady ? 'mt-2 max-dapp:mt-0' : 'mt-0',
           '[&_strong]:text-[22px] [&_strong]:tracking-[-0.66px]',
           'max-dapp:[&_small]:hidden',
         )}
         hint={t.rewards.autoPaid}
         label={t.rewards.referralRewards}
-        value={referralValue}
+        value={sessionReady ? referralValue : disconnectedReferralValue}
       />
       )}
 
       {showTeamSkeleton ? (
         <RewardBalanceCardSkeleton />
-      ) : (
+      ) : sessionReady ? (
       <RewardBalanceCard
         action={
           <DappActionButton
             className="!min-h-[42px] max-dapp:!min-h-11 max-dapp:!text-sm"
-            disabled={teamClaimable === '$0.00' || teamLoading || teamClaim.isClaiming || !teamClaim.canClaim}
+            disabled={
+              teamClaimable === '$0.00' ||
+              teamLoading ||
+              teamClaim.isClaiming ||
+              !teamClaim.canClaim
+            }
             loading={teamClaim.isClaiming}
             onClick={() =>
               void teamClaim.claim().then((result) => {
@@ -277,7 +280,26 @@ export function RewardsWidget() {
         meta={teamRewardMeta}
         value={`${teamClaimable} ${t.common.claimable.toLowerCase()}`}
       />
+      ) : (
+      <RewardBalanceCard
+        className={cn(
+          REWARDS_WIDGET_CARD_CLASS,
+          'mt-2 max-dapp:mt-0',
+          'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
+          'max-dapp:[&_strong]:text-[17px] max-dapp:[&_strong]:tracking-[-0.51px]',
+        )}
+        label={t.rewards.teamRewards}
+        meta={disconnectedTeamClaimedMeta}
+        value={disconnectedTeamValue}
+      />
       )}
+
+      {!sessionReady ? (
+        <>
+          <div aria-hidden="true" className={REWARDS_WIDGET_FOOTER_SPACER} />
+          <GenesisConnectPromptCard className={REWARDS_BOTTOM_CARD_CLASS} />
+        </>
+      ) : null}
     </DappWidgetFrame>
   )
 }
@@ -345,9 +367,12 @@ export function RewardsContent() {
     tierPage,
     DAPP_TABLE_PAGE_SIZE,
   )
-  const tierHighlightedRows = sessionReady
-    ? getPresaleRankHighlightedRowsForPage(displayRank, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
-    : getPresaleRankHighlightedRowsForPage(2, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
+  const tierHighlightedRows = getPresaleRankHighlightedRowsForPage(
+    displayRank,
+    rewardTiers.length,
+    tierPage,
+    DAPP_TABLE_PAGE_SIZE,
+  )
 
   const tierHeaders = isMobileViewport
     ? [t.tables.title, t.community.shareholder, t.tables.postLaunchRank]
@@ -492,7 +517,17 @@ export function RewardsContent() {
             onSelect={(index) => setHistoryTab(index === 0 ? 'referral' : 'team')}
           />
           {historyTable.requiresAuth ? (
-            <DappTableEmptyState className="mt-0" />
+            <DappTableEmptyState className="mt-0">
+              <div className="grid w-full gap-1.5 text-center">
+                <p className="m-0 text-[15px] font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
+                  {t.genesis.contributionsConnectTitle}
+                </p>
+                <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-muted-foreground">
+                  {t.rewards.historyConnectBody}
+                </p>
+              </div>
+              <WalletConnectChip variant="primary" />
+            </DappTableEmptyState>
           ) : historyTable.queryEmpty ? (
             <DappTableEmptyMessage
               body={

@@ -41,7 +41,10 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
+import { openPancakeSwapDeepLink } from '~/config/pancake-swap-links'
 import { toast } from 'sonner'
+
+const SWAP_META_VALUE_ROW_CLASS = 'inline-flex items-center justify-end gap-1'
 
 const PERCENTS = [25, 50, 75, 100] as const
 
@@ -113,6 +116,15 @@ export function SwapWidget({
       setIsFlipping(false)
     }, 320)
   }, [isFlipping, swap])
+
+  const handleMetaRateFlip = useCallback(() => {
+    if (!sessionReady || isFlipping) return
+    if (!swap.walletReady) {
+      swap.flipDirection()
+      return
+    }
+    handleFlip()
+  }, [handleFlip, isFlipping, sessionReady, swap])
 
   const handleSubmit = useCallback(async () => {
     const success = await swap.submit()
@@ -235,41 +247,79 @@ export function SwapWidget({
         sessionReady={sessionReady}
         items={[
           {
-            label: t.swap.rate,
+            label: sessionReady ? t.swap.exchangePrice : t.swap.rate,
             value: !sessionReady ? (
               placeholderRateLabel
             ) : showRateSkeleton ? (
               <SwapMetaValueSkeleton />
             ) : (
-              swap.rateLabel || '—'
+              <>
+                {swap.rateLabel || '—'}
+                <button
+                  aria-label={t.swap.flip}
+                  className={cn(
+                    'grid size-[9px] shrink-0 cursor-pointer place-items-center border-0 bg-transparent p-0',
+                    'transition-opacity duration-180 ease-out hover:opacity-80',
+                  )}
+                  onClick={handleMetaRateFlip}
+                  type="button"
+                >
+                  <img alt="" className="size-full" height="8" src={dappAssets.swapExchange} width="9" />
+                </button>
+              </>
             ),
+            valueClassName: sessionReady ? SWAP_META_VALUE_ROW_CLASS : undefined,
           },
           {
-            label: t.swap.slippage,
+            label: sessionReady ? t.swap.allowedSlippage : t.swap.slippage,
             value: sessionReady ? (
               <>
                 {swap.slippage}%
                 <button
                   aria-label={t.swap.slippageSettings}
                   className={cn(
-                    'grid size-[18px] shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+                    'grid size-3 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
                     'transition-opacity duration-180 ease-out hover:opacity-80',
                   )}
                   onClick={() => setSlippageOpen(true)}
                   type="button"
                 >
-                  <img alt="" height="14" src={dappAssets.setting} width="14" />
+                  <img alt="" height="12" src={dappAssets.setting} width="12" />
                 </button>
               </>
             ) : (
               '0%'
             ),
-            valueClassName: 'inline-flex items-center justify-end gap-1',
+            valueClassName: sessionReady ? SWAP_META_VALUE_ROW_CLASS : undefined,
           },
           {
             label: t.swap.route,
             value: swap.routeLabel,
           },
+          ...(sessionReady
+            ? [
+                {
+                  label: t.swap.provider,
+                  value: (
+                    <>
+                      {t.swap.providerName}
+                      <button
+                        aria-label={t.swap.openPancakeSwap}
+                        className={cn(
+                          'grid size-[15px] shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+                          'transition-opacity duration-180 ease-out hover:opacity-80',
+                        )}
+                        onClick={() => openPancakeSwapDeepLink(swap.pancakeSwapUrl)}
+                        type="button"
+                      >
+                        <img alt="" height="15" src={dappAssets.arrowUpRight} width="15" />
+                      </button>
+                    </>
+                  ),
+                  valueClassName: SWAP_META_VALUE_ROW_CLASS,
+                },
+              ]
+            : []),
         ]}
       />
 

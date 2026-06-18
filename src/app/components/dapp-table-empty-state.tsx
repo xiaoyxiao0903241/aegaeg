@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 
@@ -22,26 +23,33 @@ function SkeletonRow({ className }: { className?: string }) {
 export function DappTableEmptyState({
   className,
   rows = 3,
+  children,
 }: {
   className?: string
   rows?: number
+  children?: ReactNode
 }) {
   return (
     <div
-      aria-hidden="true"
+      aria-hidden={children ? undefined : true}
       className={cn(
         revealClass(),
         'flex flex-col items-center rounded-[18px] bg-card px-6 py-[30px] shadow-card',
         'max-dapp:border max-dapp:border-border max-dapp:px-4 max-dapp:py-[22px] max-dapp:shadow-none',
+        children && 'gap-[18px]',
         className,
       )}
       data-reveal
     >
-      <div className="flex w-full flex-col gap-3 max-dapp:gap-[11px]">
+      <div
+        aria-hidden="true"
+        className="flex w-full flex-col gap-3 max-dapp:gap-[11px]"
+      >
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <SkeletonRow key={rowIndex} />
         ))}
       </div>
+      {children}
     </div>
   )
 }

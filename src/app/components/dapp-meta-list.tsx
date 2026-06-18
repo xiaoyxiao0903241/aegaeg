@@ -28,7 +28,7 @@ export function DappMetaList({
       )}
     >
       {items.map((item, index) => (
-        <p className="m-0 flex items-start justify-between gap-3" key={index}>
+        <p className="m-0 flex items-center justify-between gap-3" key={index}>
           <Text
             as="span"
             size="sm"
