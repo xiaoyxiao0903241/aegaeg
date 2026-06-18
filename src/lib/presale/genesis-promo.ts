@@ -85,3 +85,15 @@ export function applyMessageTemplate(
     template,
   )
 }
+
+export function formatGenesisSeasonIntro(
+  template: string,
+  season: number,
+  discount: string,
+  isLoading = false,
+): string {
+  return applyMessageTemplate(template, {
+    season: String(season),
+    discount: isLoading ? '…' : discount,
+  })
+}

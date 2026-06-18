@@ -35,7 +35,8 @@ import { dappAssets } from '~/app/assets'
 import { buildRewardTierRows, getTeamBonusRateLabel } from '~/lib/presale/tier-table'
 import { DAPP_TABLE_PAGE_SIZE, dappTableViewState, paginateStaticRows, tablePageQuery } from '~/lib/table-pagination'
 import { DappActionButton } from '~/app/components/dapp-action-button'
-import { GenesisConnectPromptCard } from '~/app/components/genesis-connect-prompt-card'
+import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
+import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import {
   DappSideCard,
   RewardBalanceCard,
@@ -48,19 +49,13 @@ import { DappSection } from '~/app/components/dapp-section'
 import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
-import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { FaqList } from '~/components/faq-list'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-const REWARDS_WIDGET_FOOTER_SPACER = 'min-h-3.5 shrink-0 grow basis-3.5'
-
-const REWARDS_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 dapp:mt-auto'
-
 const REWARDS_WIDGET_CARD_CLASS = cn(
   'rounded-2xl px-4 py-3.5 max-dapp:mt-0',
   '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-dapp:[&_span]:text-faint',
@@ -294,12 +289,7 @@ export function RewardsWidget() {
       />
       )}
 
-      {!sessionReady ? (
-        <>
-          <div aria-hidden="true" className={REWARDS_WIDGET_FOOTER_SPACER} />
-          <GenesisConnectPromptCard className={REWARDS_BOTTOM_CARD_CLASS} />
-        </>
-      ) : null}
+      {!sessionReady ? <DappWidgetConnectPromo /> : null}
     </DappWidgetFrame>
   )
 }
@@ -517,17 +507,10 @@ export function RewardsContent() {
             onSelect={(index) => setHistoryTab(index === 0 ? 'referral' : 'team')}
           />
           {historyTable.requiresAuth ? (
-            <DappTableEmptyState className="mt-0">
-              <div className="grid w-full gap-1.5 text-center">
-                <p className="m-0 text-[15px] font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
-                  {t.genesis.contributionsConnectTitle}
-                </p>
-                <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-muted-foreground">
-                  {t.rewards.historyConnectBody}
-                </p>
-              </div>
-              <WalletConnectChip variant="primary" />
-            </DappTableEmptyState>
+            <DappTableAuthPrompt
+              body={t.dapp.connect.recordsBodyRewards}
+              className="mt-0"
+            />
           ) : historyTable.queryEmpty ? (
             <DappTableEmptyMessage
               body={

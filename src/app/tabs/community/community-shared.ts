@@ -16,7 +16,8 @@ export const REFERRAL_CARD_CLASS = cn(
   '[&_label]:text-xs [&_label]:text-faint',
 )
 
-export const COMMUNITY_WIDGET_CLASS = 'max-dapp:flex max-dapp:flex-col max-dapp:gap-3'
+export const COMMUNITY_WIDGET_CLASS =
+  'dapp:[&>*]:shrink-0 max-dapp:flex max-dapp:flex-col max-dapp:gap-3'
 
 export const SHAREHOLDER_ACTION_CLASS = cn(
   'mt-4 min-h-[42px] hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',

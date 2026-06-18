@@ -12,7 +12,7 @@ import {
   swapTokenKeys,
   type SwapTokenKey,
 } from '~/app/data'
-import { WalletConnectChip } from '~/app/wallet-connect-chip'
+import { DappWidgetConnectFooter, DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
@@ -32,7 +32,6 @@ import {
 import { FaqList } from '~/components/faq-list'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
-import { SwapConnectPromptCard } from '~/app/components/swap-connect-prompt-card'
 import { SwapAmountBox } from '~/app/components/swap-amount-box'
 import { SwapSlippageModal } from '~/app/components/swap-slippage-modal'
 import { TokenAboutCarousel } from '~/app/components/swap-token-about-carousel'
@@ -50,10 +49,6 @@ const PERCENTS = [25, 50, 75, 100] as const
 
 const SWAP_CARD_FLIP_ANIM =
   '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]'
-
-const SWAP_WIDGET_FOOTER_SPACER = 'min-h-3.5 shrink-0 grow basis-3.5'
-
-const SWAP_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 dapp:mt-auto'
 
 const PERCENT_BTN_CLASS = cn(
   'flex h-[25px] cursor-pointer items-center justify-center rounded-[9px] border border-border bg-card',
@@ -82,17 +77,18 @@ export function SwapWidget({
 
   const { pair } = swap
   const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
-  const showBalanceSkeleton = swap.isBalancesLoading
-  const showRateSkeleton =
-    swap.isSpotQuoting &&
-    swap.sellAmount.trim().length === 0 &&
-    !swap.rateLabel
-  const showBuyAmountSkeleton = swap.isQuoting && swap.sellAmount.trim().length > 0
+  const swapPreview = !sessionReady
+  const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
+  const showRateSkeleton = swap.isSpotQuoting && !swap.rateLabel
+  const showBuyAmountSkeleton = sessionReady && swap.isQuoting && swap.sellAmount.trim().length > 0
+  const zeroBalanceLabel = `${t.swap.balance}: 0.00`
 
   const sellBalanceLabel = showBalanceSkeleton ? (
     <>
       {t.swap.balance}: <SwapBalanceSkeleton />
     </>
+  ) : swapPreview ? (
+    zeroBalanceLabel
   ) : (
     `${t.swap.balance}: ${swap.walletReady ? swap.sellBalanceLabel : '—'}`
   )
@@ -101,12 +97,15 @@ export function SwapWidget({
     <>
       {t.swap.balance}: <SwapBalanceSkeleton />
     </>
+  ) : swapPreview ? (
+    zeroBalanceLabel
   ) : (
     `${t.swap.balance}: ${swap.walletReady ? swap.buyBalanceLabel : '—'}`
   )
 
   const handleFlip = useCallback(() => {
-    if (!swap.walletReady || isFlipping) return
+    if (sessionReady && !swap.walletReady) return
+    if (isFlipping) return
     setIsFlipping(true)
     setRotation((prev) => prev + 180)
     window.setTimeout(() => {
@@ -115,7 +114,7 @@ export function SwapWidget({
     window.setTimeout(() => {
       setIsFlipping(false)
     }, 320)
-  }, [isFlipping, swap])
+  }, [isFlipping, sessionReady, swap])
 
   const handleMetaRateFlip = useCallback(() => {
     if (!sessionReady || isFlipping) return
@@ -154,48 +153,46 @@ export function SwapWidget({
 
   return (
     <DappWidgetFrame
-      className={cn('max-dapp:gap-0', '[&>:first-child]:mb-[18px]')}
+      className={cn('dapp:[&>*]:shrink-0 max-dapp:gap-0', '[&>:first-child]:mb-[18px]')}
       frameClass={
         swapPager
           ? 'flex min-h-full flex-col max-dapp:gap-0'
           : shellWidgetRootClass
       }
       showToggle={!swapPager}
-      subtitle={sessionReady ? t.swap.intro : t.swap.disconnectedIntro}
+      subtitle={t.swap.intro}
       title={t.swap.title}
     >
       <SwapAmountBox
         amountProps={{
           'aria-label': `${pair.sell.symbol} sell amount`,
-          disabled: !sessionReady,
+          disabled: sessionReady && !swap.walletReady,
           inputMode: 'decimal',
           onChange: (event) => swap.setSellAmount(event.currentTarget.value),
           placeholder: '0.00',
           value: swap.sellAmount,
         }}
         className={flipAnimClass}
-        sessionReady={sessionReady}
+        sessionReady
         balance={sellBalanceLabel}
         label={t.swap.sell}
         tokenIcon={pair.sell.icon}
         tokenLabel={pair.sell.symbol}
       />
 
-      {sessionReady ? (
-        <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
-          {PERCENTS.map((percent) => (
-            <button
-              className={PERCENT_BTN_CLASS}
-              disabled={!swap.walletReady}
-              key={percent}
-              onClick={() => swap.fillPercent(percent)}
-              type="button"
-            >
-              {percent}%
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <div className="m-0 grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
+        {PERCENTS.map((percent) => (
+          <button
+            className={PERCENT_BTN_CLASS}
+            disabled={!swapPreview && !swap.walletReady}
+            key={percent}
+            onClick={() => swap.fillPercent(percent)}
+            type="button"
+          >
+            {percent}%
+          </button>
+        ))}
+      </div>
 
       <div
         className={cn(
@@ -213,7 +210,7 @@ export function SwapWidget({
               'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
               'max-dapp:my-2',
             )}
-            disabled={!swap.walletReady}
+            disabled={sessionReady && !swap.walletReady}
             onClick={handleFlip}
             type="button"
           >
@@ -233,10 +230,10 @@ export function SwapWidget({
           'aria-label': `${pair.buy.symbol} receive amount`,
           placeholder: '0.00',
           readOnly: true,
-          value: swap.buyAmount,
+          value: swapPreview ? swap.buyAmount || '0.00' : swap.buyAmount,
         }}
         className={cn('mt-0', flipAnimClass)}
-        sessionReady={sessionReady}
+        sessionReady
         balance={buyBalanceLabel}
         label={t.swap.buy}
         tokenIcon={pair.buy.icon}
@@ -244,17 +241,15 @@ export function SwapWidget({
       />
 
       <DappMetaList
-        sessionReady={sessionReady}
+        sessionReady
         items={[
           {
-            label: sessionReady ? t.swap.exchangePrice : t.swap.rate,
-            value: !sessionReady ? (
-              placeholderRateLabel
-            ) : showRateSkeleton ? (
+            label: t.swap.exchangePrice,
+            value: showRateSkeleton ? (
               <SwapMetaValueSkeleton />
             ) : (
               <>
-                {swap.rateLabel || '—'}
+                {swap.rateLabel || placeholderRateLabel}
                 <button
                   aria-label={t.swap.flip}
                   className={cn(
@@ -268,11 +263,11 @@ export function SwapWidget({
                 </button>
               </>
             ),
-            valueClassName: sessionReady ? SWAP_META_VALUE_ROW_CLASS : undefined,
+            valueClassName: SWAP_META_VALUE_ROW_CLASS,
           },
           {
-            label: sessionReady ? t.swap.allowedSlippage : t.swap.slippage,
-            value: sessionReady ? (
+            label: t.swap.allowedSlippage,
+            value: (
               <>
                 {swap.slippage}%
                 <button
@@ -280,46 +275,42 @@ export function SwapWidget({
                   className={cn(
                     'grid size-3 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
                     'transition-opacity duration-180 ease-out hover:opacity-80',
+                    sessionReady && !swap.walletReady && 'pointer-events-none opacity-40',
                   )}
+                  disabled={sessionReady && !swap.walletReady}
                   onClick={() => setSlippageOpen(true)}
                   type="button"
                 >
                   <img alt="" height="12" src={dappAssets.setting} width="12" />
                 </button>
               </>
-            ) : (
-              '0%'
             ),
-            valueClassName: sessionReady ? SWAP_META_VALUE_ROW_CLASS : undefined,
+            valueClassName: SWAP_META_VALUE_ROW_CLASS,
           },
           {
             label: t.swap.route,
             value: swap.routeLabel,
           },
-          ...(sessionReady
-            ? [
-                {
-                  label: t.swap.provider,
-                  value: (
-                    <>
-                      {t.swap.providerName}
-                      <button
-                        aria-label={t.swap.openPancakeSwap}
-                        className={cn(
-                          'grid size-[15px] shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
-                          'transition-opacity duration-180 ease-out hover:opacity-80',
-                        )}
-                        onClick={() => openPancakeSwapDeepLink(swap.pancakeSwapUrl)}
-                        type="button"
-                      >
-                        <img alt="" height="15" src={dappAssets.arrowUpRight} width="15" />
-                      </button>
-                    </>
-                  ),
-                  valueClassName: SWAP_META_VALUE_ROW_CLASS,
-                },
-              ]
-            : []),
+          {
+            label: t.swap.provider,
+            value: (
+              <>
+                {t.swap.providerName}
+                <button
+                  aria-label={t.swap.openPancakeSwap}
+                  className={cn(
+                    'grid size-[15px] shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+                    'transition-opacity duration-180 ease-out hover:opacity-80',
+                  )}
+                  onClick={() => openPancakeSwapDeepLink(swap.pancakeSwapUrl)}
+                  type="button"
+                >
+                  <img alt="" height="15" src={dappAssets.arrowUpRight} width="15" />
+                </button>
+              </>
+            ),
+            valueClassName: SWAP_META_VALUE_ROW_CLASS,
+          },
         ]}
       />
 
@@ -334,21 +325,13 @@ export function SwapWidget({
             {swap.action === 'approve' ? t.swap.approve : t.swap.action}
           </DappActionButton>
         </DappActionRow>
-      ) : (
-        <div className="mt-3.5 max-dapp:mt-3 [&_.aegis-thirdweb-button-primary]:!min-h-[50px] [&_.aegis-thirdweb-button-primary]:!h-[50px] [&_.aegis-thirdweb-button-primary]:!text-[15px]">
-          <WalletConnectChip fullWidth variant="primary" />
-        </div>
-      )}
+      ) : null}
 
       {sessionReady ? (
-        <>
-          {!swapPager ? (
-            <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
-          ) : null}
+        <DappWidgetConnectFooter pager={swapPager}>
           <GenesisPromoCard
             actionLabel={t.genesis.joinGenesis}
             className={cn(
-              swapPager ? 'mt-3.5 w-full shrink-0' : SWAP_BOTTOM_CARD_CLASS,
               'gap-1.5 [&_button]:min-h-[38px] [&_button]:text-[13px] [&_p]:leading-tight',
               'max-dapp:mt-3.5 max-dapp:[&_button]:min-h-[42px] max-dapp:[&_button]:text-sm',
             )}
@@ -356,18 +339,9 @@ export function SwapWidget({
             onClick={onSelectGenesis}
             promo={genesis.promoSnapshot}
           />
-        </>
+        </DappWidgetConnectFooter>
       ) : (
-        <>
-          {!swapPager ? (
-            <div aria-hidden="true" className={SWAP_WIDGET_FOOTER_SPACER} />
-          ) : null}
-          <SwapConnectPromptCard
-            className={
-              swapPager ? 'mt-3.5 w-full shrink-0' : SWAP_BOTTOM_CARD_CLASS
-            }
-          />
-        </>
+        <DappWidgetConnectPromo pager={swapPager} />
       )}
 
       <SwapSlippageModal

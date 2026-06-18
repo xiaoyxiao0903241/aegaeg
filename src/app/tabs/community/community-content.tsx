@@ -19,7 +19,7 @@ import { CommunityStatCard } from '~/app/components/dapp-card'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
-import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
+import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
@@ -165,7 +165,10 @@ export function CommunityContent({
         title={inviteSectionTitle}
       >
         {invitesTable.requiresAuth ? (
-          <DappTableEmptyState className="mt-3.5" />
+          <DappTableAuthPrompt
+            body={t.dapp.connect.recordsBodyCommunity}
+            className="mt-3.5"
+          />
         ) : invitesTable.queryEmpty ? (
           <DappTableEmptyMessage
             body={t.community.invitesEmpty.body}

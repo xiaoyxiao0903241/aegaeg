@@ -5,7 +5,7 @@ import { Card } from '~/components/card'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
-export function GenesisConnectPromptCard({ className }: { className?: string }) {
+export function DappConnectPromoCard({ className }: { className?: string }) {
   const { messages: t } = useI18n()
 
   return (
@@ -30,10 +30,10 @@ export function GenesisConnectPromptCard({ className }: { className?: string }) 
         />
         <div className="grid min-w-0 gap-[5px]">
           <strong className="text-sm font-semibold leading-normal tracking-[-0.28px] text-white">
-            {t.swap.connectExploreTitle}
+            {t.dapp.connect.promoTitle}
           </strong>
           <p className="m-0 inline-flex items-center gap-1 text-xs leading-normal tracking-[-0.24px] text-primary">
-            {t.genesis.connectBrandLine}
+            {t.dapp.connect.promoBrandLine}
             <img
               alt=""
               className="size-[15px] shrink-0"

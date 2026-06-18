@@ -8,6 +8,7 @@ import { buildReferralSharePath } from '~/config/referral'
 import { useDappShell } from '~/app/dapp-shell-context'
 import type { DappTab } from '~/app/types'
 import { dappAssets } from '~/app/assets'
+import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
   DappReferrerBoundCard,
@@ -167,7 +168,7 @@ function CommunityConnectedWidget({
 }
 
 function CommunityDisconnectedWidget({
-  onSelectTab,
+  onSelectTab: _onSelectTab,
 }: {
   onSelectTab: (tab: DappTab) => void
 }) {
@@ -233,12 +234,7 @@ function CommunityDisconnectedWidget({
 
       <CommunityQuickLinks />
 
-      <DappActionButton
-        className={SHAREHOLDER_ACTION_CLASS}
-        onClick={() => onSelectTab('genesis')}
-      >
-        {t.community.shareholder}
-      </DappActionButton>
+      <DappWidgetConnectPromo />
     </DappWidgetFrame>
   )
 }

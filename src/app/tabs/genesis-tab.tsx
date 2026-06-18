@@ -28,18 +28,19 @@ import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
-import { GenesisConnectPromptCard } from '~/app/components/genesis-connect-prompt-card'
+import { DappConnectPromoCard } from '~/app/components/dapp-connect-promo-card'
+import { formatGenesisSeasonIntro } from '~/lib/presale/genesis-promo'
+import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
+import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
-import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { SeasonSelector } from '~/app/components/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useAuth } from '~/providers/auth-provider'
 import {
@@ -52,9 +53,6 @@ import { formatTokenAmount } from '~/lib/swap/token-amount'
 
 const MAX_SHARES = 100
 
-const GENESIS_WIDGET_FOOTER_SPACER = 'min-h-3.5 shrink-0 grow basis-3.5'
-
-const GENESIS_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 dapp:mt-auto'
 
 export function GenesisWidget({
   onSelectGenesis,
@@ -64,9 +62,12 @@ export function GenesisWidget({
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()
-  const seasonIntro = t.genesis.intro
-    .replace('{season}', String(genesis.activeSeasonNumber))
-    .replace('{discount}', genesis.isLoading ? '…' : genesis.discountLabel)
+  const seasonIntro = formatGenesisSeasonIntro(
+    t.genesis.intro,
+    genesis.activeSeasonNumber,
+    genesis.discountLabel,
+    genesis.isLoading,
+  )
 
   const handleSharesChange = (value: string) => {
     const parsed = Number.parseInt(value, 10)
@@ -228,10 +229,7 @@ export function GenesisWidget({
           </DappActionButton>
         </DappActionRow>
       ) : (
-        <>
-          <div aria-hidden="true" className={GENESIS_WIDGET_FOOTER_SPACER} />
-          <GenesisConnectPromptCard className={GENESIS_BOTTOM_CARD_CLASS} />
-        </>
+        <DappWidgetConnectPromo />
       )}
 
       {walletReady ? (
@@ -242,7 +240,7 @@ export function GenesisWidget({
           promo={genesis.promoSnapshot}
         />
       ) : (
-        <GenesisConnectPromptCard className="hidden max-dapp:grid max-dapp:mt-3.5" />
+        <DappConnectPromoCard className="hidden max-dapp:grid max-dapp:mt-3.5" />
       )}
     </DappWidgetFrame>
   )
@@ -424,17 +422,10 @@ export function GenesisContent() {
             </p>
           ) : null}
           {contributionsTable.requiresAuth ? (
-            <DappTableEmptyState className="max-dapp:border-0 max-dapp:bg-transparent max-dapp:px-0 max-dapp:py-0 max-dapp:shadow-none">
-              <div className="grid w-full gap-1.5 text-center">
-                <p className="m-0 text-[15px] font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
-                  {t.genesis.contributionsConnectTitle}
-                </p>
-                <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-muted-foreground">
-                  {t.genesis.contributionsConnectBody}
-                </p>
-              </div>
-              <WalletConnectChip variant="primary" />
-            </DappTableEmptyState>
+            <DappTableAuthPrompt
+              body={t.dapp.connect.recordsBodyGenesis}
+              className="max-dapp:border-0 max-dapp:bg-transparent max-dapp:px-0 max-dapp:py-0 max-dapp:shadow-none"
+            />
           ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
             <DappTableEmptyMessage title={t.genesis.contributionsEmpty.title} />
           ) : (

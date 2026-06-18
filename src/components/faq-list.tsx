@@ -25,16 +25,29 @@ const dappItemInnerClass = cn(
   'max-dapp:px-4',
 )
 
-const dappTriggerClass = cn(
-  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent py-4 text-left outline-none',
-  'text-sm font-normal leading-[1.3] text-faq-text',
-  'max-dapp:py-3.5',
+const faqTriggerTypographyClass = cn(
+  'text-[15px] font-semibold leading-[1.3] tracking-[-0.3px] text-foreground',
+  'max-dapp:text-sm',
 )
 
+const faqAnswerTypographyClass = cn(
+  'text-sm leading-[1.5] tracking-[-0.28px] text-faq-text',
+  'max-dapp:text-[13px]',
+)
+
+const faqTriggerBaseClass =
+  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left outline-none'
+
 const homeTriggerClass = cn(
-  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent px-6 py-[18px] text-left outline-none',
-  'text-[15px] font-semibold leading-[1.3] text-foreground',
-  'max-dapp:min-h-[18px] max-dapp:px-4 max-dapp:py-3.5 max-dapp:text-sm',
+  faqTriggerBaseClass,
+  faqTriggerTypographyClass,
+  'px-6 py-[18px] max-dapp:min-h-[18px] max-dapp:px-4 max-dapp:py-3.5',
+)
+
+const dappTriggerClass = cn(
+  faqTriggerBaseClass,
+  faqTriggerTypographyClass,
+  'py-4 max-dapp:py-3.5',
 )
 
 const faqArrowClass =
@@ -49,7 +62,7 @@ const variantStyles = {
     item: homeItemShellClass,
     trigger: homeTriggerClass,
     question: 'min-w-0',
-    answer: 'pt-3 mb-0 text-sm leading-[1.5] text-faq-text max-dapp:text-[13px]',
+    answer: cn(faqAnswerTypographyClass, 'mb-0 pt-3'),
     answerPad: 'px-6 pb-[18px] max-dapp:px-4 max-dapp:pb-3.5',
     answerContent: 'overflow-hidden',
   },
@@ -59,7 +72,7 @@ const variantStyles = {
     itemInner: dappItemInnerClass,
     trigger: dappTriggerClass,
     question: 'min-w-0',
-    answer: 'mb-4 pt-0 text-xs leading-[1.6] text-ink-strong max-dapp:leading-normal',
+    answer: cn(faqAnswerTypographyClass, 'mb-4 pt-0'),
     answerPad: 'pb-4 max-dapp:pb-3.5',
     answerContent: 'overflow-hidden',
   },

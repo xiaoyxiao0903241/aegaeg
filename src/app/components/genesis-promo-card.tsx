@@ -8,7 +8,10 @@ import {
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { DappActionButton } from '~/app/components/dapp-action-button'
-import { GenesisPromoBodySkeleton } from '~/app/components/dapp-skeleton'
+import {
+  GenesisPromoBodySkeleton,
+  GenesisPromoTitleSkeleton,
+} from '~/app/components/dapp-skeleton'
 
 function resolveStatusLabel(
   status: GenesisPromoSnapshot['status'],
@@ -21,6 +24,41 @@ function resolveStatusLabel(
   if (status === 'LIVE') return labels.seasonLive
   if (status === 'Ended') return labels.seasonEnded
   return labels.seasonUpcoming
+}
+
+function resolvePromoBody(
+  promo: GenesisPromoSnapshot,
+  labels: {
+    promoEnded: string
+    promoLive: string
+    promoUpcoming: string
+    seasonEnded: string
+    seasonLive: string
+    seasonUpcoming: string
+  },
+) {
+  const status = resolveStatusLabel(promo.status, {
+    seasonLive: labels.seasonLive,
+    seasonEnded: labels.seasonEnded,
+    seasonUpcoming: labels.seasonUpcoming,
+  })
+
+  if (promo.status === 'Ended') {
+    return applyMessageTemplate(labels.promoEnded, {
+      status,
+      date: promo.dateRange,
+    })
+  }
+
+  if (promo.status === 'Upcoming') {
+    return applyMessageTemplate(labels.promoUpcoming, {
+      startDate: promo.startDate,
+    })
+  }
+
+  return applyMessageTemplate(labels.promoLive, {
+    endDate: promo.endDate,
+  })
 }
 
 export function GenesisPromoCard({
@@ -38,45 +76,27 @@ export function GenesisPromoCard({
 }) {
   const { messages: t } = useI18n()
 
+  if (!isLoading && !promo) {
+    return null
+  }
+
+  const pending = isLoading || !promo
   const title = promo
     ? applyMessageTemplate(t.genesis.promoTitleTemplate, {
         season: String(promo.season),
         discount: promo.discount,
       })
-    : t.genesis.promoTitle
-
-  const body = (() => {
-    if (isLoading) {
-      return t.genesis.promoLoading
-    }
-
-    if (!promo) {
-      return t.genesis.promoBody
-    }
-
-    const status = resolveStatusLabel(promo.status, {
-      seasonLive: t.genesis.seasonLive,
-      seasonEnded: t.genesis.seasonEnded,
-      seasonUpcoming: t.genesis.seasonUpcoming,
-    })
-
-    if (promo.status === 'Ended') {
-      return applyMessageTemplate(t.genesis.promoEnded, {
-        status,
-        date: promo.dateRange,
+    : null
+  const body = promo
+    ? resolvePromoBody(promo, {
+        promoEnded: t.genesis.promoEnded,
+        promoLive: t.genesis.promoLive,
+        promoUpcoming: t.genesis.promoUpcoming,
+        seasonEnded: t.genesis.seasonEnded,
+        seasonLive: t.genesis.seasonLive,
+        seasonUpcoming: t.genesis.seasonUpcoming,
       })
-    }
-
-    if (promo.status === 'Upcoming') {
-      return applyMessageTemplate(t.genesis.promoUpcoming, {
-        startDate: promo.startDate,
-      })
-    }
-
-    return applyMessageTemplate(t.genesis.promoLive, {
-      endDate: promo.endDate,
-    })
-  })()
+    : null
 
   return (
     <Card
@@ -91,10 +111,14 @@ export function GenesisPromoCard({
       )}
       data-reveal
     >
-      <Text as="strong" size="sm" weight="semibold" tone="onDark" className="tracking-[-0.28px]">
-        {title}
-      </Text>
-      {isLoading ? (
+      {pending || !title ? (
+        <GenesisPromoTitleSkeleton />
+      ) : (
+        <Text as="strong" size="sm" weight="semibold" tone="onDark" className="tracking-[-0.28px]">
+          {title}
+        </Text>
+      )}
+      {pending || !body ? (
         <GenesisPromoBodySkeleton />
       ) : (
         <Text as="p" size="xs" tone="onDark" className="m-0 leading-normal tracking-[-0.24px]">

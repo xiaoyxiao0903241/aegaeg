@@ -79,7 +79,7 @@ export function useSwapWidget(authenticated: boolean) {
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
       }),
-    enabled: authenticated,
+    enabled: true,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
@@ -101,7 +101,7 @@ export function useSwapWidget(authenticated: boolean) {
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, authenticated)
+  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
   useVisibleQueryInterval(
     amountQuoteQuery,
     SWAP_CONFIG.quoteRefreshIntervalMs,
@@ -119,7 +119,7 @@ export function useSwapWidget(authenticated: boolean) {
   const isQuoting =
     authenticated && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
   const isSpotQuoting =
-    authenticated && amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
+    amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
 
   const setSellAmount = useCallback(
     (value: string) => {
@@ -188,10 +188,6 @@ export function useSwapWidget(authenticated: boolean) {
   )
 
   const rateLabel = useMemo(() => {
-    if (!authenticated) {
-      return '—'
-    }
-
     if (rateQuote.amountOut === 0n) {
       return isSpotQuoting || isQuoting ? '' : '—'
     }
@@ -205,7 +201,6 @@ export function useSwapWidget(authenticated: boolean) {
       symbolOut: pair.buy.symbol,
     })
   }, [
-    authenticated,
     isQuoting,
     isSpotQuoting,
     pair.buy.decimals,
