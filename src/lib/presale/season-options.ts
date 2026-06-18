@@ -39,12 +39,3 @@ export function buildSeasonOptions(
     }
   })
 }
-
-export function calcActivePhaseProgressPercent(
-  phase: PresalePhaseOnChain | null | undefined,
-): number {
-  if (!phase || phase.maxAmount === 0n) return 0
-  const ratio = Number(phase.purchasedAmount) / Number(phase.maxAmount)
-  if (!Number.isFinite(ratio)) return 0
-  return Math.min(100, Math.max(0, Math.round(ratio * 100)))
-}

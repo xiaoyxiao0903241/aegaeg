@@ -14,7 +14,6 @@ import {
 } from '~/lib/presale/presale-math'
 import {
   buildSeasonOptions,
-  calcActivePhaseProgressPercent,
   getAirdropLabelForPhase,
 } from '~/lib/presale/season-options'
 import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
@@ -118,8 +117,7 @@ export function useGenesisWidget() {
     payUsd1,
     phaseIndex,
   )
-  const activePhaseProgressPercent = calcActivePhaseProgressPercent(activePhase)
-  const quotaRangeLabel = `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`
+  const quotaLabel = `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
   const hasSufficientBalance = usd1Balance >= purchaseAmount
@@ -289,10 +287,7 @@ export function useGenesisWidget() {
     payUsd1Label: `${payUsd1} USD1`,
     contributionValueLabel: formatUsd(contributionValueUsd),
     xTokenAirdropLabel: xTokenAirdropUsd > 0 ? formatUsd(xTokenAirdropUsd) : '—',
-    activePhaseProgressPercent,
-    quotaLabel: activePhase
-      ? `${quotaRangeLabel} · ${activePhaseProgressPercent}%`
-      : quotaRangeLabel,
+    quotaLabel,
     referencePriceLabel: `$${agxPriceUsd.toFixed(2)}`,
     airdropLabel: getAirdropLabelForPhase(phaseIndex),
     agxPriceUsd,
