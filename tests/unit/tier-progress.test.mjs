@@ -30,20 +30,20 @@ test('buildNextTierProgress uses leg requirements from S4 onward', async () => {
 test('buildNextTierProgress marks S10 as max rank', async () => {
   const { buildNextTierProgress } = await loadModule('/src/lib/presale/tier-progress.ts')
 
-  const progress = buildNextTierProgress(10, 50_000, 100_000)
+  const progress = buildNextTierProgress(10, 20_000, 100_000)
 
   assert.equal(progress.isMaxRank, true)
   assert.equal(progress.personalProgressPercent, 100)
-  assert.equal(progress.teamLegRank, 6)
+  assert.equal(progress.teamLegRank, 9)
 })
 
-test('buildNextTierProgress uses S6 leg requirement from S7 onward', async () => {
+test('buildNextTierProgress uses ascending leg requirements from S7 onward', async () => {
   const { buildNextTierProgress } = await loadModule('/src/lib/presale/tier-progress.ts')
 
   const progress = buildNextTierProgress(6, 12_000, 100_000)
 
   assert.equal(progress.nextRank, 7)
-  assert.equal(progress.personalTargetUsd, 15_000)
+  assert.equal(progress.personalTargetUsd, 10_000)
   assert.equal(progress.teamLegRank, 6)
   assert.equal(progress.teamTargetUsd, null)
 })

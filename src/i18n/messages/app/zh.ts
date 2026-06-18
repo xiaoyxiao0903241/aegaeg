@@ -268,6 +268,7 @@ const app = defineMessages({
       progressMaxPersonal: '已达最高个人等级',
       progressMaxTeam: '已达最高团队等级',
       teamLegRequirement: '两条 {rank} 线',
+      tierDualLegRequirement: '任意双区{rank}',
       teamVolume: '体系业绩',
       referralRewards: '直推奖励',
       autoPaidLabel: '自动支付',

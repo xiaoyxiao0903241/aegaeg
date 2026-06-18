@@ -8,11 +8,11 @@ test('buildRewardTierRows aligns with tier-progress thresholds', async () => {
   const rows = buildRewardTierRows()
 
   assert.equal(rows.length, 10)
-  assert.deepEqual(rows[0], ['S1', '$500', '$5,000', '1%', 'A2'])
-  assert.deepEqual(rows[2], ['S3', '$2,000', '$30,000', '3%', 'A4'])
+  assert.deepEqual(rows[0], ['S1', '≥ $500', '$5,000', '1%', 'A2'])
+  assert.deepEqual(rows[2], ['S3', '≥ $2,000', '$30,000', '3%', 'A4'])
   assert.equal(rows[3][2], 'Two legs S3')
-  assert.deepEqual(rows[6], ['S7', '$15,000', 'Two legs S6', '7%', 'A8'])
-  assert.deepEqual(rows[9], ['S10', '$50,000', 'Two legs S6', '10%', 'A11'])
+  assert.deepEqual(rows[6], ['S7', '≥ $10,000', 'Two legs S6', '7%', 'A8'])
+  assert.deepEqual(rows[9], ['S10', '≥ $20,000', 'Two legs S9', '10%', 'A11'])
 })
 
 test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () => {

@@ -269,6 +269,7 @@ const app = defineMessages({
       progressMaxPersonal: '最高個人ランク到達',
       progressMaxTeam: '最高チームランク到達',
       teamLegRequirement: '{rank}ライン2本',
+      tierDualLegRequirement: '任意双区{rank}',
       teamVolume: '組織実績',
       referralRewards: '直接紹介リワード',
       autoPaidLabel: '自動支払',

@@ -269,6 +269,7 @@ const app = defineMessages({
       progressMaxPersonal: 'Maximum personal tier reached',
       progressMaxTeam: 'Maximum team tier reached',
       teamLegRequirement: 'Two {rank} legs',
+      tierDualLegRequirement: 'Any two zones {rank}',
       teamVolume: 'Organization volume',
       referralRewards: 'Direct referral rewards',
       autoPaidLabel: 'Auto-paid',

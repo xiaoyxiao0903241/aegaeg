@@ -32,7 +32,7 @@ import { toast } from 'sonner'
 import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { dappAssets } from '~/app/assets'
-import { buildRewardTierRows, getTeamBonusRateLabel } from '~/lib/presale/tier-table'
+import { buildRewardTierRows, getTeamBonusRateLabel, getTeamRequirementLegRank } from '~/lib/presale/tier-table'
 import { DAPP_TABLE_PAGE_SIZE, dappTableViewState, paginateStaticRows, tablePageQuery } from '~/lib/table-pagination'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
@@ -65,6 +65,17 @@ const REWARDS_PROGRESS_CARD_CLASS = cn(
   REWARDS_WIDGET_CARD_CLASS,
   'grid gap-1.5',
 )
+
+function formatTierTotalVolumeCell(
+  rankLabel: string,
+  totalVolumeValue: string,
+  tierDualLegRequirement: string,
+): string {
+  const rank = Number.parseInt(rankLabel.replace(/^S/i, ''), 10)
+  const legRank = getTeamRequirementLegRank(rank)
+  if (legRank == null) return totalVolumeValue
+  return tierDualLegRequirement.replace('{rank}', formatPresaleRank(legRank))
+}
 
 
 export function RewardsWidget() {
@@ -374,9 +385,14 @@ export function RewardsContent() {
       ]
 
   const tierRows = pagedTierRows.map((row, rowIndex) => {
+    const totalVolumeCell = formatTierTotalVolumeCell(
+      row[0],
+      row[2],
+      t.rewards.tierDualLegRequirement,
+    )
     const cells = isMobileViewport
       ? [row[0], row[1], row[4]]
-      : [row[0], row[1], row[2], row[4]]
+      : [row[0], row[1], totalVolumeCell, row[4]]
     if (tierHighlightedRows.includes(rowIndex)) {
       cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
     }

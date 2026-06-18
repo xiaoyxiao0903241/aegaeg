@@ -269,6 +269,7 @@ const app = defineMessages({
       progressMaxPersonal: '최고 개인 등급 달성',
       progressMaxTeam: '최고 팀 등급 달성',
       teamLegRequirement: '{rank} 라인 2개',
+      tierDualLegRequirement: '임의 양구 {rank}',
       teamVolume: '조직 실적',
       referralRewards: '직접 추천 리워드',
       autoPaidLabel: '자동 지급',

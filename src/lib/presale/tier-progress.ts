@@ -4,7 +4,7 @@ import { MAX_PRESALE_RANK, PERSONAL_PRESALE_RANK_THRESHOLDS_USD } from '~/lib/pr
 export const TEAM_PRESALE_RANK_THRESHOLDS_USD = [5000, 10_000, 30_000] as const
 
 /** Team leg requirements for S4–S10 (rank index 3–9). */
-export const TEAM_LEG_REQUIREMENT_RANKS = [3, 4, 5, 6, 6, 6, 6] as const
+export const TEAM_LEG_REQUIREMENT_RANKS = [3, 4, 5, 6, 7, 8, 9] as const
 
 export type NextTierProgress = {
   currentRank: number

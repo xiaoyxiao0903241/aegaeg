@@ -269,6 +269,7 @@ const app = defineMessages({
       progressMaxPersonal: 'उच्चतम व्यक्तिगत स्तर प्राप्त',
       progressMaxTeam: 'उच्चतम टीम स्तर प्राप्त',
       teamLegRequirement: 'दो {rank} लाइनें',
+      tierDualLegRequirement: 'कोई भी दो क्षेत्र {rank}',
       teamVolume: 'नेटवर्क प्रदर्शन',
       referralRewards: 'प्रत्यक्ष रेफ़रल पुरस्कार',
       autoPaidLabel: 'स्वचालित भुगतान',

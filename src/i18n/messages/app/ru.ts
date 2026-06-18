@@ -269,6 +269,7 @@ const app = defineMessages({
       progressMaxPersonal: 'Достигнут максимальный личный уровень',
       progressMaxTeam: 'Достигнут максимальный командный уровень',
       teamLegRequirement: 'Две линии {rank}',
+      tierDualLegRequirement: 'Любые две зоны {rank}',
       teamVolume: 'Объём системы',
       referralRewards: 'Прямые реферальные награды',
       autoPaidLabel: 'Автовыплата',

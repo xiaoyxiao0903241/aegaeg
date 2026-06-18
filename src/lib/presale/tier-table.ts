@@ -38,13 +38,22 @@ function formatUsdThreshold(value: number): string {
   return `$${value.toLocaleString('en-US')}`
 }
 
+function formatMinPersonalContribution(value: number): string {
+  return `≥ ${formatUsdThreshold(value)}`
+}
+
+export function getTeamRequirementLegRank(rank: number): number | null {
+  if (rank <= TEAM_PRESALE_RANK_THRESHOLDS_USD.length) return null
+  return TEAM_LEG_REQUIREMENT_RANKS[rank - TEAM_PRESALE_RANK_THRESHOLDS_USD.length - 1] ?? null
+}
+
 function formatTeamRequirement(rank: number): string {
   if (rank <= TEAM_PRESALE_RANK_THRESHOLDS_USD.length) {
     return formatUsdThreshold(TEAM_PRESALE_RANK_THRESHOLDS_USD[rank - 1])
   }
 
-  const legRank = TEAM_LEG_REQUIREMENT_RANKS[rank - TEAM_PRESALE_RANK_THRESHOLDS_USD.length - 1]
-  return `Two legs S${legRank}`
+  const legRank = getTeamRequirementLegRank(rank)
+  return legRank == null ? '—' : `Two legs S${legRank}`
 }
 
 export function buildRewardTierRows(): readonly (readonly string[])[] {
@@ -52,7 +61,7 @@ export function buildRewardTierRows(): readonly (readonly string[])[] {
     const rank = index + 1
     return [
       `S${rank}`,
-      formatUsdThreshold(personalUsd),
+      formatMinPersonalContribution(personalUsd),
       formatTeamRequirement(rank),
       TEAM_BONUS_RATES[index],
       POST_LAUNCH_RANKS[index],

@@ -269,6 +269,7 @@ const app = defineMessages({
       progressMaxPersonal: 'Level pribadi tertinggi tercapai',
       progressMaxTeam: 'Level tim tertinggi tercapai',
       teamLegRequirement: 'Dua jalur {rank}',
+      tierDualLegRequirement: 'Dua zona {rank} (sembarang)',
       teamVolume: 'Volume jaringan',
       referralRewards: 'Hadiah referral',
       autoPaidLabel: 'Dibayar otomatis',

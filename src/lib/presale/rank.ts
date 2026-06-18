@@ -6,10 +6,10 @@ export const PERSONAL_PRESALE_RANK_THRESHOLDS_USD = [
   3000,
   5000,
   10_000,
-  15_000,
+  10_000,
+  10_000,
+  10_000,
   20_000,
-  30_000,
-  50_000,
 ] as const
 
 export const MAX_PRESALE_RANK = PERSONAL_PRESALE_RANK_THRESHOLDS_USD.length

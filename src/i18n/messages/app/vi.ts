@@ -269,6 +269,7 @@ const app = defineMessages({
       progressMaxPersonal: 'Đã đạt cấp cá nhân cao nhất',
       progressMaxTeam: 'Đã đạt cấp nhóm cao nhất',
       teamLegRequirement: 'Hai nhánh {rank}',
+      tierDualLegRequirement: 'Bất kỳ hai khu vực {rank}',
       teamVolume: 'Doanh số hệ thống',
       referralRewards: 'Phần thưởng giới thiệu trực tiếp',
       autoPaidLabel: 'Tự động thanh toán',
