@@ -91,6 +91,15 @@ export interface TeamReferralItem {
   sales_team_market: string
 }
 
+export interface TeamCommunityOverview {
+  /** users 直推人数 */
+  direct_referral_count: number
+  /** referral_ancestors 所有下级数量 */
+  descendant_count: number
+  sales_team_market: string
+  direct_presale_volume: string
+}
+
 export interface TeamRewardClaimLogItem {
   /** 0=待领取, 1=已领取, 2=已过期, 3=已替换 */
   status: number

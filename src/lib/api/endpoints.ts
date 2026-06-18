@@ -9,6 +9,7 @@ import type {
   RewardLogItem,
   RewardTotals,
   SalesLogItem,
+  TeamCommunityOverview,
   TeamReferralItem,
   TeamRewardClaimLogItem,
   TeamRewardSignature,
@@ -71,6 +72,10 @@ export async function getTeamReferrals(
       page_size: params.page_size,
     },
   })
+}
+
+export async function getTeamOverview(token: string): Promise<TeamCommunityOverview> {
+  return apiRequest<TeamCommunityOverview>('/team/overview', { token })
 }
 
 export async function getTeamRewardClaimLogs(

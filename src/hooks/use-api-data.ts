@@ -3,6 +3,7 @@ import {
   getReferralTotal,
   getRewardLogs,
   getSalesLogs,
+  getTeamOverview,
   getTeamReferrals,
   getTeamRewardClaimLogs,
   getTeamRewardTotal,
@@ -69,4 +70,8 @@ export function useTeamReferrals(params: PaginationParams = {}, enabled = true) 
     enabled,
     { keepPreviousData: true },
   )
+}
+
+export function useTeamOverview(enabled = true) {
+  return useAuthenticatedQuery(queryKeys.api.teamOverview, getTeamOverview, enabled)
 }

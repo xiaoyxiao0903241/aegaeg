@@ -278,7 +278,11 @@ export function CommunityStatCard({
         as="strong"
         size="2xl"
         weight="semibold"
-        className={cn('relative z-1', communityStatValueResponsive)}
+        className={cn(
+          'relative z-1',
+          dark ? 'text-white' : 'text-ink-strong',
+          communityStatValueResponsive,
+        )}
       >
         {value}
       </Text>

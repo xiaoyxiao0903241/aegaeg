@@ -5,6 +5,7 @@ import { revealClass } from '~/lib/reveal'
 import {
   useReferralTotal,
   useRewardLogs,
+  useTeamOverview,
   useTeamRewardClaimLogs,
   useTeamRewardTotal,
 } from '~/hooks/use-api-data'
@@ -81,6 +82,7 @@ export function RewardsWidget() {
   } = useShareholderRankLabels(t)
   const { data: referralTotal, isLoading: referralLoading } = useReferralTotal(sessionReady)
   const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(sessionReady)
+  const { data: teamOverview, isLoading: teamOverviewLoading } = useTeamOverview(sessionReady)
   const teamClaim = useTeamRewardClaim()
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export function RewardsWidget() {
   }, [sessionReady, loginError])
 
   const useProgressPlaceholders = !sessionReady
-  const teamVolumeUsd = Number(performance?.sales_team_market ?? 0)
+  const teamVolumeUsd = Number(teamOverview?.sales_team_market ?? 0)
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(
     useProgressPlaceholders ? REWARDS_PROGRESS_PLACEHOLDERS.nextRank : tierProgress.nextRank,
@@ -139,7 +141,9 @@ export function RewardsWidget() {
       ? 100
       : tierProgress.teamProgressPercent ?? 0
 
-  const showPerformanceSkeleton = sessionReady && performanceLoading && !performance
+  const showPerformanceSkeleton =
+    sessionReady &&
+    ((performanceLoading && !performance) || (teamOverviewLoading && !teamOverview))
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
@@ -248,9 +252,14 @@ export function RewardsWidget() {
             disabled={teamClaimable === '$0.00' || teamLoading || teamClaim.isClaiming || !teamClaim.canClaim}
             loading={teamClaim.isClaiming}
             onClick={() =>
-              void teamClaim.claim().then((ok) => {
-                if (!ok) return
-                toast.success(t.rewards.claim)
+              void teamClaim.claim().then((result) => {
+                if (!result) return
+                const claimedAmount = result.order?.amount
+                const message =
+                  claimedAmount && Number.isFinite(Number(claimedAmount))
+                    ? `${t.rewards.claim} · +${formatUsd(claimedAmount, 2)}`
+                    : t.rewards.claim
+                toast.success(message)
               })
             }
           >
@@ -379,6 +388,7 @@ export function RewardsContent() {
           t.tables.amount,
           t.tables.from,
           t.tables.contribution,
+          t.tables.bonusRate,
           t.tables.status,
         ]
       : [
@@ -386,10 +396,11 @@ export function RewardsContent() {
           t.tables.amount,
           t.tables.source,
           t.tables.contribution,
+          t.tables.bonusRate,
           t.tables.status,
         ]
 
-  const historyTableRows = historyRows.map((row) => [row[0], row[1], row[2], row[3], row[5]])
+  const historyTableRows = historyRows.map((row) => row)
 
   return (
     <DappDetailPage>

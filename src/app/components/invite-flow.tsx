@@ -11,7 +11,7 @@ export type InviteFlowItem = {
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
   return (
-    <span className="grid aspect-square w-[30px] flex-none place-items-center rounded-[15px] bg-primary text-[13px] font-semibold text-white max-dapp:w-7 max-dapp:rounded-[14px]">
+    <span className="grid size-[30px] shrink-0 place-items-center self-start rounded-full bg-primary text-[13px] font-semibold leading-[1.2] text-white max-dapp:size-7">
       {children}
     </span>
   )
@@ -86,7 +86,7 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
       data-reveal
     >
       {items.map((item, index) => (
-        <article className="flex gap-3" key={item.title}>
+        <article className="flex items-start gap-3" key={item.title}>
           <InviteFlowStep>{index + 1}</InviteFlowStep>
           <div className="grid min-w-0 gap-0.5">
             <Text as="h4" size="sm" weight="semibold" className="m-0 leading-[1.2] tracking-[-0.28px]">

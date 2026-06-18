@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { usePerformance, useTeamReferrals } from '~/hooks/use-api-data'
+import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import {
   formatPresaleRank,
@@ -11,7 +11,6 @@ import {
 } from '~/lib/api/format-display'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useAuth } from '~/providers/auth-provider'
-import { useReferral } from '~/hooks/use-referral'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -40,9 +39,8 @@ export function CommunityContent({
   const { sessionReady, tab } = useDappShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
-  const referralChain = useReferral(sessionReady)
   const [invitesPage, setInvitesPage] = useState(1)
-  const { data: performance, isLoading: performanceLoading } = usePerformance(sessionReady)
+  const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
   const { displayRank, isRankLoading } = useShareholderRank()
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
     tablePageQuery(invitesPage),
@@ -63,9 +61,9 @@ export function CommunityContent({
   })
   const inviteCount = !sessionReady
     ? '0'
-    : referralsLoading || isLoggingIn
+    : overviewLoading || referralsLoading || isLoggingIn
       ? '…'
-      : String(referrals?.total ?? Number(referralChain.directCount || 0))
+      : String(overview?.descendant_count ?? referrals?.total ?? 0)
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
   const authPending = sessionReady && isLoggingIn
 
@@ -78,18 +76,13 @@ export function CommunityContent({
     )
   }
 
-  const useStatPlaceholders =
-    authPending ||
-    performanceLoading ||
-    referralsLoading ||
-    referralChain.isLoading ||
-    isRankLoading
+  const useStatPlaceholders = authPending || overviewLoading || isRankLoading
 
-  const directCount = referralChain.directCount
-  const directVolume = formatUsd(performance?.direct_presale_volume ?? 0)
+  const directCount = String(overview?.direct_referral_count ?? 0)
+  const directVolume = formatUsd(overview?.direct_presale_volume ?? 0)
 
-  const teamCount = String(referrals?.total ?? referralChain.directCount)
-  const teamVolume = formatUsd(performance?.sales_team_market ?? 0)
+  const teamCount = String(overview?.descendant_count ?? 0)
+  const teamVolume = formatUsd(overview?.sales_team_market ?? 0)
 
   const shareholderRank = formatPresaleRank(displayRank)
   const genesisShareholderLabel = useStatPlaceholders || isRankLoading

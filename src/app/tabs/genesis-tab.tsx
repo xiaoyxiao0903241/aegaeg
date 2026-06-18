@@ -6,17 +6,13 @@ import { cn } from '~/lib/utils'
 import { buttonDisabledClass } from '~/components/button'
 import { revealClass } from '~/lib/reveal'
 import { toast } from 'sonner'
-import {
-  usePerformance,
-  useSalesLogs,
-} from '~/hooks/use-api-data'
+import { useSalesLogs } from '~/hooks/use-api-data'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import {
   calcProgressPercent,
   formatUsd,
   mapSalesLogToDesktopRow,
   mapSalesLogToMobileRow,
-  sumSalesLogAmountUsd,
 } from '~/lib/api/format-display'
 import { PRESALE_CONFIG } from '~/config/presale'
 import { BSC_CONTRACTS } from '~/config/contracts'
@@ -246,7 +242,6 @@ export function GenesisContent() {
     String(genesis.activeSeasonNumber),
   )
   const [contributionsPage, setContributionsPage] = useState(1)
-  const { data: performance } = usePerformance(sessionReady)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
     tablePageQuery(contributionsPage),
     sessionReady,
@@ -262,10 +257,7 @@ export function GenesisContent() {
     : 0
   const maxContribution =
     chainMaxContribution > 0 ? chainMaxContribution : phaseMaxUsd1
-  const chainContributedUsd = Number(formatTokenAmount(genesis.userTotal, 18, 0))
-  const apiContributedUsd = Number(performance?.presale_volume ?? 0)
-  const salesLogsTotalUsd = sumSalesLogAmountUsd(salesLogs?.items ?? [])
-  const contributedUsd = Math.max(apiContributedUsd, chainContributedUsd, salesLogsTotalUsd)
+  const contributedUsd = Number(formatTokenAmount(genesis.userTotal, 18, 0))
   const contributed = String(contributedUsd)
   const contributionProgress = calcProgressPercent(contributed, maxContribution)
   const contributedLabel = `${formatUsd(contributed)} / ${formatUsd(maxContribution)}`

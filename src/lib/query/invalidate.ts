@@ -109,5 +109,6 @@ export function invalidateAfterReferralBind(address: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.api.performance })
   void queryClient.invalidateQueries({ queryKey: queryKeys.api.referralTotal })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamOverview })
   void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamReferralsRoot })
 }

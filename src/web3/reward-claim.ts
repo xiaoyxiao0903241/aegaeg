@@ -7,7 +7,11 @@ import {
 import type { Account } from 'thirdweb/wallets'
 import type { Chain } from 'thirdweb/chains'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { confirmTeamRewardClaim, requestTeamRewardSignature } from '~/lib/api/endpoints'
+import {
+  confirmTeamRewardClaim,
+  requestTeamRewardSignature,
+} from '~/lib/api/endpoints'
+import type { ClaimConfirmResult } from '~/lib/api/types'
 import { normalizeTeamRewardClaimPayload } from '~/lib/api/normalize-claim-payload'
 import { REWARD_CLAIMER_METHODS } from '~/web3/abis'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
@@ -69,10 +73,10 @@ export async function executeTeamRewardClaim({
     chain,
   })
 
-  await confirmTeamRewardClaim(token, {
+  const confirmResult = await confirmTeamRewardClaim(token, {
     salt: normalized.salt,
     txHash: receipt.transactionHash,
   })
 
-  return receipt
+  return { receipt, confirmResult }
 }
