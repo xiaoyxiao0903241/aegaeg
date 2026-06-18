@@ -1,8 +1,6 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { AppMessagesBundle } from './en'
 
 const app = defineMessages({
-
   common: {
     brand: 'AEGIS X',
     bsc: 'BSC',
@@ -219,7 +217,8 @@ const app = defineMessages({
     pay: '支付',
     receive: '将获得AGX',
     value: '认购价值',
-    xTokenAirdrop: 'X Token Airdrop',
+    xTokenAirdrop: '将获得X初始空投价值',
+    xTokenAirdropHint: '单账户累计参与共建金额 ≥ 5,000 USD 可获得空投奖励',
     join: '参与共建',
     joinGenesis: 'Join Genesis',
     statsTitle: '第 {season} 期共建数据',
@@ -321,12 +320,12 @@ const app = defineMessages({
     referralHistory: '推荐奖励',
     teamHistory: '团队奖励',
     referralHistoryEmpty: {
-      title: '暂无推荐奖励记录',
-      body: '被推荐人在 Genesis 期间完成认购后，推荐奖励将显示在这里。',
+      title: '暂无直推奖励记录',
+      body: '被推荐人在 Genesis 期间完成认购后，直推奖励将显示在这里。',
     },
     teamHistoryEmpty: {
-      title: '暂无团队奖励记录',
-      body: '团队奖励结算与领取记录将在奖励产生后显示在这里。',
+      title: '暂无等级奖励记录',
+      body: '等级奖励结算与领取记录将在奖励产生后显示在这里。',
     },
     faq: {
       title: 'FAQ',
@@ -480,6 +479,8 @@ const app = defineMessages({
     loading: '加载中…',
     signInRequired: '签名登录后查看个人数据',
   },
-} satisfies AppMessagesBundle)
+})
+
+export type AppMessagesBundle = typeof app
 
 export default app

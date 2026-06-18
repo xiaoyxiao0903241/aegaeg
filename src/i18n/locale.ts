@@ -12,6 +12,15 @@ export function isLocale(value: string | null | undefined): value is Locale {
 function normalizeLocaleTag(tag: string): Locale | null {
   const lower = tag.toLowerCase()
 
+  if (
+    lower.startsWith('zh-tw') ||
+    lower.startsWith('zh-hk') ||
+    lower.startsWith('zh-hant') ||
+    lower === 'zht'
+  ) {
+    return 'zht'
+  }
+
   if (lower.startsWith('zh')) {
     return 'zh'
   }

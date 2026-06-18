@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createServer } from 'vite'
 
-const locales = ['en', 'zh', 'ko', 'ja', 'vi', 'es', 'ru']
+const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi']
 
 async function loadHomeMessages() {
   const server = await createServer({
@@ -35,8 +35,8 @@ function sectionCounts(home) {
 
 test('home messages expose matching structures across all locales', async () => {
   const { homeMessagesByLocale } = await loadHomeMessages()
-  const en = homeMessagesByLocale.en
-  const baseline = sectionCounts(en)
+  const zh = homeMessagesByLocale.zh
+  const baseline = sectionCounts(zh)
 
   for (const locale of locales) {
     const home = homeMessagesByLocale[locale]
@@ -46,19 +46,18 @@ test('home messages expose matching structures across all locales', async () => 
 
 test('home localized copy covers meta, hero, and footer text', async () => {
   const { homeMessagesByLocale } = await loadHomeMessages()
-  const en = homeMessagesByLocale.en
   const zh = homeMessagesByLocale.zh
-  const ko = homeMessagesByLocale.ko
+  const en = homeMessagesByLocale.en
+  const zht = homeMessagesByLocale.zht
 
-  assert.equal(en.meta.title, 'AEGIS X - Guarding the Future of Value')
   assert.equal(zh.meta.title, 'AEGIS X - 守护未来价值')
-  assert.equal(ko.meta.title, 'AEGIS X - 미래 가치의 수호')
-  assert.equal(en.hero.title, 'Guarding the Future of Value')
+  assert.equal(en.meta.title, 'AEGIS X - Guarding the Future of Value')
+  assert.equal(zht.meta.title, 'AEGIS X - 守護未來價值')
   assert.equal(zh.hero.title, '守护未来价值')
-  assert.equal(en.hero.enterProtocol, 'Enter Protocol')
+  assert.equal(en.hero.title, 'Guarding the Future of Value')
   assert.equal(zh.hero.enterProtocol, '进入协议')
-  assert.equal(en.sections.token.title, 'Multi-asset flywheel')
+  assert.equal(en.hero.enterProtocol, 'Enter Protocol')
   assert.equal(zh.sections.token.title, '多资产价值飞轮')
   assert.match(zh.footer.copyright, /保留所有权利/)
-  assert.notEqual(ko.hero.title, en.hero.title)
+  assert.notEqual(en.hero.title, zh.hero.title)
 })

@@ -1,12 +1,13 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
+import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X is an AI-native DeFi 4.0 protocol with USD1 settlement, BSC-first wallet access, and a self-healing protocol engine.',
+    description: 'AEGIS X is an AI-native DeFi 4.0 protocol building the next-generation value network with USD1 settlement, BSC-first wallet access, and a self-healing protocol engine.',
     title: 'AEGIS X - Guarding the Future of Value'
   },
   nav: {
-    sectionsLabel: 'Homepage sections',
+    sectionsLabel: 'Homepage section navigation',
     links: [
       {
         href: '#protocol',
@@ -14,11 +15,11 @@ const home = defineMessages({
       },
       {
         href: '#engine',
-        label: 'Engine'
+        label: 'Core Mechanisms'
       },
       {
         href: '#token',
-        label: 'Token'
+        label: 'Ecosystem Value'
       },
       {
         href: '#roadmap',
@@ -37,92 +38,92 @@ const home = defineMessages({
     languageLabel: 'Language'
   },
   hero: {
-    guardianLabel: 'AEGIS X guardian',
+    guardianLabel: 'AEGIS X Guardian',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
     title: 'Guarding the Future of Value',
-    body: 'The world\'s first AI x DeFi x USD1 global payment protocol, driven by an AI think-tank system. With USD1 as the core settlement asset, redefining decentralized finance through intelligence.',
+    body: 'The world\'s first AI think-tank-driven USD1 ecosystem protocol. With USD1 as the core settlement asset, connecting AI, payments, and global liquidity networks.',
     enterProtocol: 'Enter Protocol',
     readWhitepaper: 'Read Whitepaper',
   },
   sections: {
     protocol: {
-      eyebrow: 'AEGIS X PROTOCOL',
-      title: 'AI-native infrastructure built for the next financial era',
-      subtitle: 'AI x DeFi x USD1 - building the next-generation value network.',
+      eyebrow: 'AEGIS X Protocol',
+      title: 'Core architecture of the next-generation value network',
+      subtitle: 'AI x DeFi x USD1 - Powering value flows',
       cards: [
         {
-          title: 'AI Think-Tank',
-          body: 'Autonomous risk control, market-making and asset allocation - all executed on-chain, all intelligence-driven.',
+          title: 'AI Think Tank',
+          body: 'Autonomous risk control, intelligent market-making, and liquidity management — all executed on-chain.',
           index: '01'
         },
         {
           title: 'USD1 Settlement',
-          body: '150% over-collateralized minting, with USD1 as the core settlement asset of a stable DeFi 4.0 base layer.',
+          body: 'With USD1 as the core settlement asset, building a stable value circulation network.',
           index: '02'
         },
         {
           title: 'Global Payments',
-          body: 'Connecting AI agents, DeFi liquidity and cross-border payments into one unified global value network.',
+          body: 'Connecting AI Agents, DeFi, and global payment scenarios to build the next-generation value network.',
           index: '03'
         }
       ]
     },
     engine: {
-      eyebrow: 'CORE ENGINE',
-      title: 'Four pillars, one intelligent system',
-      subtitle: 'The AI-driven DeFi 4.0 core engine - a self-healing price architecture.',
+      eyebrow: 'Core Mechanisms',
+      title: 'Four mechanisms, one intelligent system',
+      subtitle: 'Through intelligent decision-making, dynamic adjustment, and risk control, building a sustainably operating value network.',
       cards: [
         {
-          title: 'AI Market Maker',
-          body: 'Dynamic balancing model: accumulate USD1 reserves on the way up; on pullbacks, unwind LP and deploy buyback + burn for price self-repair.'
+          title: 'Intelligent Market-Making Mechanism',
+          body: 'Accumulates reserve assets during uptrends to strengthen protocol reserves; during pullbacks, executes buyback and burn mechanisms for price recovery.'
         },
         {
-          title: 'Dynamic Volatility Defense',
-          body: 'Triggers automatically on a daily drop >=5%: sell fee rises to 30%, reserve buyback and black-hole burn engage, auto-restoring after 24h.'
+          title: 'Volatility Defense Mechanism',
+          body: 'Triggers automatically when daily decline reaches threshold: sell fee rises to 30%, reserve buyback and black-hole burn activate, auto-restoring after 24 hours.'
         },
         {
-          title: 'Rebase Engine',
-          body: 'Dual-epoch settlement every 12h with block-level linear release. Flexible to 540-day staking tiers, ref. APY 535%-4,880%.'
+          title: 'Yield Distribution Mechanism',
+          body: 'Uses block-level linear release with yield settlement every 12 hours, supporting participation cycles up to 540 days.'
         },
         {
           title: 'Turbo Mechanism',
-          body: 'Buy-to-unlock design: 1:1 buy-to-sell quota with 24-96h adaptive cooldown and anti-panic selling logic.'
+          body: 'Optimizes market liquidity structure through dynamic buy-to-unlock mechanics, enhancing ecosystem stability and long-term growth capacity.'
         }
       ]
     },
     token: {
-      eyebrow: 'TOKEN & ECOSYSTEM',
-      title: 'Multi-asset flywheel',
-      subtitle: 'Four tokens, one self-reinforcing value loop: growth → liquidity → payments → ecosystem.',
+      eyebrow: 'Value Ecosystem',
+      title: 'Multi-asset value flywheel',
+      subtitle: 'User growth → Liquidity expansion → Payment growth → Ecosystem growth.',
       cards: [
         {
           label: 'Core protocol asset',
-          description: '150% over-collateralized · AI think-tank managed'
+          description: '150% over-collateralized minting · Yield growth engine'
         },
         {
-          label: 'Stable reserve asset',
-          description: 'Settlement layer · USD-backed liquidity'
+          label: 'Core settlement asset',
+          description: 'Ecosystem settlement layer · Value circulation infrastructure'
         },
         {
           label: 'Ecosystem value token',
-          description: '210M fixed · 25% sell-burn'
+          description: 'Fixed supply of 210M · Continuous value accumulation'
         },
         {
-          label: 'Reward settlement token',
-          description: '1:1 to AGX · powers X mining'
+          label: 'Reward settlement voucher',
+          description: 'Redeemable for AGX · Participate in ecosystem mining'
         }
       ]
     },
     roadmap: {
-      eyebrow: 'ROADMAP',
-      title: 'The road to DeFi 4.0',
+      eyebrow: 'Roadmap',
+      title: 'The path to the next-generation value network',
       phases: [
         {
           phase: 'PHASE 01',
           time: '2026 Q3',
           title: 'Genesis Launch',
           description: 'Protocol deployment · AGX minting · USD1 liquidity pool',
-          dot: '1',
+          dot: '✓',
           side: 'left',
           state: 'current'
         },
@@ -130,7 +131,7 @@ const home = defineMessages({
           phase: 'PHASE 02',
           time: '2026 Q4',
           title: 'DeFi Core',
-          description: 'Rebase staking · LP bonds · burn bonds · AI market-making',
+          description: 'Rebase staking · LP bonds · Burn bonds · AI market-making',
           dot: '2',
           side: 'right'
         },
@@ -138,7 +139,7 @@ const home = defineMessages({
           phase: 'PHASE 03',
           time: '2027 Q1',
           title: 'DAO & Growth',
-          description: 'X DAO incentives · multisig governance · global nodes',
+          description: 'X DAO incentives · Multisig governance · Global nodes',
           dot: '3',
           side: 'left'
         },
@@ -146,7 +147,7 @@ const home = defineMessages({
           phase: 'PHASE 04',
           time: '2027 Q2',
           title: 'AI Agent Economy',
-          description: 'Autonomous payments · on-chain collaboration · agent market-making',
+          description: 'Autonomous payments · Intelligent collaboration · AI Agent economy network',
           dot: '4',
           side: 'right'
         },
@@ -154,62 +155,62 @@ const home = defineMessages({
           phase: 'PHASE 05',
           time: '2027 Q3',
           title: 'Global Payments',
-          description: 'Cross-border settlement · merchant onboarding · USD1 rails',
+          description: 'Global payment network · Merchant onboarding · USD1 payment scenarios',
           dot: '5',
           side: 'left'
         },
         {
           phase: 'PHASE 06',
           time: '2027 Q4',
-          title: 'DeFi 4.0',
-          description: 'Institutional products · compliance framework · full ecosystem',
+          title: 'Future Value Network',
+          description: 'Payment network · AI Agent economy · Value ecosystem',
           dot: '6',
           side: 'right'
         }
       ]
     },
     security: {
-      eyebrow: 'SECURITY & TRUST',
-      title: 'Aegis-grade security',
-      subtitle: 'AEGIS = shield, guardianship, order, security. Asset safety is built in from the ground up.',
+      eyebrow: 'Security & Trust',
+      title: 'AEGIS-grade security architecture',
+      subtitle: 'From protocol architecture to asset management, security runs through every layer',
       checks: [
-        "Non-custodial - the AI market-maker contract cannot transfer out any assets",
-        "Audited by multiple security firms",
-        "Core contracts open-sourced on GitHub",
-        "Safe multisig governance (upgrade + execution rights)"
+        "Non-custodial architecture · Smart market-making contracts cannot transfer assets out",
+        "Core contracts open-source and verifiable · Professionally audited",
+        "Multisig governance · Core permissions jointly managed",
+        "Dynamic defense mechanisms · Automatically respond to extreme volatility"
       ]
     },
     partners: {
-      title: 'ECOSYSTEM PARTNERS'
+      title: 'Ecosystem infrastructure'
     },
     faq: {
-      eyebrow: 'FAQ',
+      eyebrow: 'Quick overview',
       title: 'Frequently asked questions',
       items: [
         {
           q: 'What is AEGIS X?',
-          a: 'The world\'s first protocol driven by an AI think-tank system, fusing AI intelligence, DeFi liquidity and USD1 stablecoin payments into a next-generation value network - DeFi 4.0.',
+          a: 'AEGIS X is the world\'s first AI think-tank-driven USD1 ecosystem protocol, with USD1 as the core settlement asset, connecting AI, DeFi, and global payment networks.',
           open: true
         },
         {
           q: 'How is AGX minted?',
-          a: 'AGX is minted through the protocol\'s collateralized issuance design with USD1 as the core settlement asset.'
+          a: 'AGX is generated through a 150% over-collateralization mechanism and serves as a core protocol asset and key carrier of value growth.'
         },
         {
-          q: 'How are staking rewards calculated?',
-          a: 'Rewards follow staking tiers, epoch settlement, and protocol participation rules defined by the AEGIS X contracts.'
+          q: 'What role does USD1 play in AEGIS X?',
+          a: 'USD1 is the core settlement asset of the protocol, providing value circulation, liquidity support, and payment infrastructure for the ecosystem.'
         },
         {
           q: 'How is protocol security ensured?',
-          a: 'AEGIS X combines non-custodial design, audits, open-source contracts, and multisig governance.'
-        },
-        {
-          q: 'How does the X token work?',
-          a: 'X is the ecosystem value token with a fixed supply and protocol-driven burn mechanics.'
+          a: 'Contracts use non-custodial boundaries, audits, open-source review, and multisig governance.'
         },
         {
           q: 'What is the Turbo mechanism?',
-          a: 'Turbo links buying and selling quotas with an adaptive cooldown to reduce panic selling while preserving liquidity.'
+          a: 'The Turbo mechanism uses dynamic unlock and liquidity adjustment to reduce concentrated sell pressure risk and enhance market stability and long-term growth capacity.'
+        },
+        {
+          q: 'How does the X token work?',
+          a: 'X is the ecosystem value token with a fixed supply and protocol-driven burn mechanism.'
         }
       ]
     }
@@ -219,29 +220,29 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'Collateral Ratio'
+      label: 'Over-collateralization ratio'
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'Max Ref. APY'
+      label: 'LP permanently locked'
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'Chains Supported'
+      label: 'Dynamic defense mechanism'
     },
     {
-      value: '210M',
+      value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X Total Supply'
+      label: 'X fixed total supply'
     }
   ],
   footer: {
-    brandCopy: 'Guarding the Future of Value.\nAI x DeFi x USD1',
+    brandCopy: 'Guarding the future value network \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. All rights reserved.',
     legal: 'Terms of Service · Privacy Policy · Disclaimer',
     groups: [
@@ -251,7 +252,7 @@ const home = defineMessages({
         links: [
           {
             href: '/app.html',
-            label: 'Launch DApp'
+            label: 'Launch App'
           },
           {
             href: '#whitepaper',
@@ -259,11 +260,11 @@ const home = defineMessages({
           },
           {
             href: '#docs',
-            label: 'Docs'
+            label: 'Documentation'
           },
           {
             href: '#analytics',
-            label: 'Analytics'
+            label: 'Roadmap'
           }
         ]
       },
@@ -273,19 +274,19 @@ const home = defineMessages({
         links: [
           {
             href: '#token',
-            label: 'AGX Staking'
+            label: 'AGX'
           },
           {
             href: '#token',
-            label: 'LP Bond'
+            label: 'USD1'
           },
           {
             href: '#token',
-            label: 'Burn Bond'
+            label: 'X'
           },
           {
             href: '#token',
-            label: 'X Mining'
+            label: 'gGAX'
           }
         ]
       },
@@ -313,8 +314,6 @@ const home = defineMessages({
       }
     ]
   }
-})
-
-export type HomeMessagesBundle = typeof home
+} satisfies HomeMessagesBundle)
 
 export default home

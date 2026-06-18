@@ -1,5 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeMessagesBundle } from './en'
+import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {

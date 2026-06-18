@@ -1,5 +1,4 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeMessagesBundle } from './en'
 
 const home = defineMessages({
   meta: {
@@ -314,6 +313,8 @@ const home = defineMessages({
       }
     ]
   }
-} satisfies HomeMessagesBundle)
+})
+
+export type HomeMessagesBundle = typeof home
 
 export default home

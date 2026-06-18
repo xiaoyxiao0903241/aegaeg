@@ -93,6 +93,9 @@ export function estimateAgxFromUsd1(
 
 export const AIRDROP_BPS_BY_PHASE = [500, 200, 100] as const
 
+/** Minimum single-period cumulative co-build USD to qualify for X airdrop preview. */
+export const X_AIRDROP_MIN_PERIOD_USD = 5_000
+
 export function getAirdropBpsForPhase(phaseIndex: number): number {
   return AIRDROP_BPS_BY_PHASE[phaseIndex] ?? 100
 }
@@ -114,4 +117,18 @@ export function estimateXTokenAirdropUsd(
 ): number {
   if (amountUsd1 <= 0) return 0
   return amountUsd1 * (getAirdropBpsForPhase(phaseIndex) / 10_000)
+}
+
+/**
+ * Preview X airdrop USD for the current purchase.
+ * Eligibility uses single-period cumulative (existing + this order); ratio applies to this order only.
+ */
+export function resolveXTokenAirdropUsdForPurchase(
+  periodContributedUsd: number,
+  payUsd1: number,
+  phaseIndex: number,
+): number {
+  const periodTotalUsd = periodContributedUsd + payUsd1
+  if (periodTotalUsd < X_AIRDROP_MIN_PERIOD_USD || payUsd1 <= 0) return 0
+  return estimateXTokenAirdropUsd(payUsd1, phaseIndex)
 }

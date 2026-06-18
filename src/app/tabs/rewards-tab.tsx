@@ -341,19 +341,18 @@ export function RewardsContent() {
     : getPresaleRankHighlightedRowsForPage(2, rewardTiers.length, tierPage, DAPP_TABLE_PAGE_SIZE)
 
   const tierHeaders = isMobileViewport
-    ? [t.tables.title, t.community.shareholder, t.tables.bonusRate, t.tables.postLaunchRank]
+    ? [t.tables.title, t.community.shareholder, t.tables.postLaunchRank]
     : [
         t.tables.title,
         t.community.shareholder,
         t.tables.totalVolume,
-        t.tables.bonusRate,
         t.tables.postLaunchRank,
       ]
 
   const tierRows = pagedTierRows.map((row, rowIndex) => {
     const cells = isMobileViewport
-      ? [row[0], row[1], row[3], row[4]]
-      : [...row]
+      ? [row[0], row[1], row[4]]
+      : [row[0], row[1], row[2], row[4]]
     if (tierHighlightedRows.includes(rowIndex)) {
       cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
     }
@@ -367,7 +366,6 @@ export function RewardsContent() {
         headers={tierHeaders}
         highlightedRows={tierHighlightedRows}
         plain
-        positiveColumns={[isMobileViewport ? 2 : 3]}
         rows={tierRows}
       />
       <DappTablePagination onPageChange={setTierPage} page={tierPage} total={tierTotal} />
@@ -381,7 +379,6 @@ export function RewardsContent() {
           t.tables.amount,
           t.tables.from,
           t.tables.contribution,
-          t.tables.rate,
           t.tables.status,
         ]
       : [
@@ -389,9 +386,10 @@ export function RewardsContent() {
           t.tables.amount,
           t.tables.source,
           t.tables.contribution,
-          t.tables.rate,
           t.tables.status,
         ]
+
+  const historyTableRows = historyRows.map((row) => [row[0], row[1], row[2], row[3], row[5]])
 
   return (
     <DappDetailPage>
@@ -477,8 +475,8 @@ export function RewardsContent() {
             ariaLabel={t.rewards.history}
             className="mb-2.5 flex items-center justify-start gap-2"
             items={[
-              { active: historyTab === 'referral', label: t.rewards.referralHistory },
-              { active: historyTab === 'team', label: t.rewards.teamHistory },
+              { active: historyTab === 'referral', label: t.rewards.referralRewards },
+              { active: historyTab === 'team', label: t.rewards.teamRewards },
             ]}
             onSelect={(index) => setHistoryTab(index === 0 ? 'referral' : 'team')}
           />
@@ -508,7 +506,7 @@ export function RewardsContent() {
                 loadingRowCount={4}
                 plain
                 positiveColumns={[1]}
-                rows={historyRows}
+                rows={historyTableRows}
               />
               <DappTablePagination
                 onPageChange={onHistoryPageChange}

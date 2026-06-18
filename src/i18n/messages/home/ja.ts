@@ -1,9 +1,9 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeMessagesBundle } from './en'
+import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS Xは、USD1決済、BSC優先ウォレットアクセス、自己修復プロトコルエンジンを備えたAIネイティブDeFi 4.0プロトコルで、次世代の価値ネットワークを構築します。',
+    description: 'AEGIS Xは、USD1決済、BSC優先ウォレット入口、自己修復プロトコルエンジンを備えたAIネイティブDeFi 4.0プロトコルで、次世代の価値ネットワークを構築します。',
     title: 'AEGIS X - 未来の価値を守る'
   },
   nav: {

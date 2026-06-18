@@ -1,16 +1,9 @@
 import { withLocalePrefix } from '~/i18n/locale'
 import { Button } from '~/components/button'
+import { HeroRaysBackground, heroRaysHomeClass } from '~/components/hero-rays-background'
 import { homeAssets } from '~/home/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
-
-const homeHeroRaysClass = cn(
-  'pointer-events-none absolute left-[calc(50%-358px)] top-[-477px] aspect-square w-[1500px] opacity-[0.72]',
-  '[animation:hero-rays-drift_48s_linear_infinite]',
-  '[background:repeating-conic-gradient(from_0deg,oklch(40%_0.02_260_/_13%)_0deg_0.28deg,transparent_0.28deg_4.8deg)]',
-  '[mask-image:radial-gradient(circle,black_0%,oklch(0%_0_0_/_65%)_35%,transparent_62%)]',
-  'max-dapp:hidden',
-)
 
 const homeArtGlowClass = cn(
   'pointer-events-none absolute -top-px left-[-7px] aspect-square w-[142%] max-w-[620px] rounded-full opacity-[0.28] blur-[10px]',
@@ -90,7 +83,7 @@ export function HomeHeroSection() {
 
   return (
     <section className={heroClass.section} aria-labelledby="hero-title">
-      <div className={homeHeroRaysClass} aria-hidden="true" />
+      <HeroRaysBackground className={heroRaysHomeClass} />
       <div className={heroClass.grid}>
         <div className={heroClass.copy} data-hero-enter>
           <div className={heroClass.eyebrow}>

@@ -1,6 +1,6 @@
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
-import type { HomeMessagesBundle } from '~/i18n/messages/home/en'
+import type { HomeMessagesBundle } from '~/i18n/messages/home/types'
 import { engineIcons, protocolIcons } from '~/home/static-layout'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'

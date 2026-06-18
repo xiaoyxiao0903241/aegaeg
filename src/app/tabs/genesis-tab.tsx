@@ -1,3 +1,4 @@
+import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { Button } from '~/components/button'
 import { useCallback, useEffect, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
@@ -183,7 +184,23 @@ export function GenesisWidget({
           { label: t.genesis.pay, value: genesis.payUsd1Label },
           { label: t.genesis.receive, value: `${genesis.estimatedAgxLabel} AGX` },
           { label: t.genesis.value, value: genesis.contributionValueLabel },
-          { label: t.genesis.xTokenAirdrop, value: genesis.xTokenAirdropLabel },
+          {
+            label: (
+              <span className="inline-flex items-center gap-1">
+                {t.genesis.xTokenAirdrop}
+                <AnchoredTooltip content={t.genesis.xTokenAirdropHint}>
+                  <button
+                    aria-label={t.genesis.xTokenAirdropHint}
+                    className="inline-flex size-3.5 shrink-0 items-center justify-center rounded-full border border-current text-[9px] font-bold leading-none opacity-60"
+                    type="button"
+                  >
+                    i
+                  </button>
+                </AnchoredTooltip>
+              </span>
+            ),
+            value: genesis.xTokenAirdropLabel,
+          },
         ]}
       />
 

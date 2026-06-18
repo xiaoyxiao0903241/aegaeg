@@ -7,7 +7,7 @@ import {
   buildPhaseCountdownKey,
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
-  estimateXTokenAirdropUsd,
+  resolveXTokenAirdropUsdForPurchase,
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
@@ -111,7 +111,12 @@ export function useGenesisWidget() {
     discountBps,
     agxPriceUsd,
   )
-  const xTokenAirdropUsd = estimateXTokenAirdropUsd(payUsd1, phaseIndex)
+  const periodContributedUsd = Number(formatTokenAmount(userTotal, USD1_DECIMALS, 0))
+  const xTokenAirdropUsd = resolveXTokenAirdropUsdForPurchase(
+    periodContributedUsd,
+    payUsd1,
+    phaseIndex,
+  )
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
   const hasSufficientBalance = usd1Balance >= purchaseAmount
@@ -280,7 +285,7 @@ export function useGenesisWidget() {
     estimatedAgxLabel: estimatedAgx.toFixed(2),
     payUsd1Label: `${payUsd1} USD1`,
     contributionValueLabel: formatUsd(contributionValueUsd),
-    xTokenAirdropLabel: formatUsd(xTokenAirdropUsd),
+    xTokenAirdropLabel: xTokenAirdropUsd > 0 ? formatUsd(xTokenAirdropUsd) : '—',
     quotaLabel: `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`,
     referencePriceLabel: `$${agxPriceUsd.toFixed(2)}`,
     airdropLabel: getAirdropLabelForPhase(phaseIndex),

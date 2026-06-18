@@ -13,6 +13,7 @@ import { GenesisWidgetProvider } from '~/app/genesis-widget-context'
 import { RewardsContent, RewardsWidget } from '~/app/tabs/rewards-tab'
 import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
 import { SwapMobilePager } from '~/app/components/swap-mobile-pager'
+import { HeroRaysBackground, heroRaysShellClass } from '~/components/hero-rays-background'
 import type { DappTab } from '~/app/types'
 import { useDappShell } from '~/app/dapp-shell-context'
 import {
@@ -58,6 +59,7 @@ export function DappShell() {
           'max-dapp:flex max-dapp:h-dvh max-dapp:max-h-dvh max-dapp:flex-col max-dapp:overflow-hidden',
       )}
     >
+        <HeroRaysBackground className={heroRaysShellClass} />
         <DappTopbar />
 
         {import.meta.env.DEV && !isThirdwebConfigured ? (
@@ -73,15 +75,18 @@ export function DappShell() {
         ) : null}
 
         <section
-          className={shellStageClass({
-            tab: activeTab,
-            sessionReady: shellState.sessionReady,
-            detailCollapsed: effectiveDetailCollapsed,
-            mobileSwapPager: useSwapMobilePager,
-          })}
+          className={cn(
+            shellStageClass({
+              tab: activeTab,
+              sessionReady: shellState.sessionReady,
+              detailCollapsed: effectiveDetailCollapsed,
+              mobileSwapPager: useSwapMobilePager,
+            }),
+            'dapp:overflow-visible',
+          )}
           aria-label="AEGIS X DApp"
         >
-          <div className={shellContainerClass(useSwapMobilePager)}>
+          <div className={cn(shellContainerClass(useSwapMobilePager), 'relative z-1')}>
             <GenesisWidgetProvider>
               {useSwapMobilePager ? (
                 <div className="flex min-h-0 flex-1 flex-col">
@@ -105,11 +110,14 @@ export function DappShell() {
               ) : (
                 <div
                   ref={setWindowNode}
-                  className={shellWindowClass({
-                    tab: activeTab,
-                    sessionReady: shellState.sessionReady,
-                    detailCollapsed: effectiveDetailCollapsed,
-                  })}
+                  className={cn(
+                    shellWindowClass({
+                      tab: activeTab,
+                      sessionReady: shellState.sessionReady,
+                      detailCollapsed: effectiveDetailCollapsed,
+                    }),
+                    'relative z-1',
+                  )}
                   data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
                   data-session-ready={shellState.sessionReady ? 'true' : 'false'}
                   data-dapp-window

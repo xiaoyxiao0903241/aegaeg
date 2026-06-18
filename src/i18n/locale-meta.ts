@@ -22,11 +22,25 @@ export const localeMeta: Record<Locale, LocaleMeta> = {
     menuLabel: 'English (US)',
   },
   zh: {
-    label: '中文',
+    label: '简',
     htmlLang: 'zh-CN',
     menuCode: '简',
     menuName: '简体中文',
     menuLabel: 'Chinese, Simplified',
+  },
+  zht: {
+    label: '繁',
+    htmlLang: 'zh-Hant',
+    menuCode: '繁',
+    menuName: '繁體中文',
+    menuLabel: 'Chinese, Traditional',
+  },
+  id: {
+    label: 'ID',
+    htmlLang: 'id',
+    menuCode: 'ID',
+    menuName: 'Indonesia',
+    menuLabel: 'Indonesian',
   },
   ko: {
     label: 'KO',
@@ -62,6 +76,13 @@ export const localeMeta: Record<Locale, LocaleMeta> = {
     menuCode: 'RU',
     menuName: 'Русский',
     menuLabel: 'Russian',
+  },
+  hi: {
+    label: 'HI',
+    htmlLang: 'hi',
+    menuCode: 'HI',
+    menuName: 'हिंदी',
+    menuLabel: 'Hindi',
   },
 }
 

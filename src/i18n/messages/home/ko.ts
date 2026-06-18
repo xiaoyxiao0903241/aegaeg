@@ -1,10 +1,10 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
-import type { HomeMessagesBundle } from './en'
+import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X는 USD1 결제, BSC 우선 지갑 접근, 자가 복구 프로토콜 엔진을 갖춘 AI 네이티브 DeFi 4.0 프로토콜로, 차세대 가치 네트워크를 구축합니다.',
-    title: 'AEGIS X - 미래 가치의 수호'
+    description: 'AEGIS X는 AI 네이티브 DeFi 4.0 프로토콜로, USD1 정산, BSC 우선 지갑 접근 및 자가 복구 프로토콜 엔진을 통해 차세대 가치 네트워크를 구축합니다.',
+    title: 'AEGIS X - 미래 가치를 수호'
   },
   nav: {
     sectionsLabel: '홈페이지 섹션 탐색',
@@ -40,8 +40,8 @@ const home = defineMessages({
   hero: {
     guardianLabel: 'AEGIS X 가디언',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 프로토콜',
-    title: '미래 가치의 수호',
-    body: '세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜. USD1을 핵심 결제 자산으로 AI, 결제 및 글로벌 유동성 네트워크를 연결합니다.',
+    title: '미래 가치를 수호',
+    body: '세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜. USD1을 핵심 정산 자산으로 AI, 결제 및 글로벌 유동성 네트워크를 연결합니다.',
     enterProtocol: '프로토콜 진입',
     readWhitepaper: '백서 읽기',
   },
@@ -57,8 +57,8 @@ const home = defineMessages({
           index: '01'
         },
         {
-          title: 'USD1 결제',
-          body: 'USD1을 핵심 결제 자산으로 안정적인 가치 유통 네트워크를 구축합니다.',
+          title: 'USD1 정산',
+          body: 'USD1을 핵심 정산 자산으로 안정적인 가치 유통 네트워크를 구축합니다.',
           index: '02'
         },
         {
@@ -101,15 +101,15 @@ const home = defineMessages({
           description: '150% 초과 담보 발행 · 수익 성장 엔진'
         },
         {
-          label: '핵심 결제 자산',
-          description: '생태계 결제 레이어 · 가치 유통 인프라'
+          label: '핵심 정산 자산',
+          description: '생태계 정산 레이어 · 가치 유통 인프라'
         },
         {
           label: '생태계 가치 토큰',
           description: '고정 총량 2.1억 · 지속적 가치 축적'
         },
         {
-          label: '보상 결제 증명',
+          label: '보상 정산 증명',
           description: 'AGX 교환 가능 · 생태계 마이닝 참여'
         }
       ]
@@ -189,7 +189,7 @@ const home = defineMessages({
       items: [
         {
           q: 'AEGIS X란 무엇인가요?',
-          a: 'AEGIS X는 세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜로, USD1을 핵심 결제 자산으로 AI, DeFi 및 글로벌 결제 네트워크를 연결합니다.',
+          a: 'AEGIS X는 세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜로, USD1을 핵심 정산 자산으로 AI, DeFi 및 글로벌 결제 네트워크를 연결합니다.',
           open: true
         },
         {
@@ -198,7 +198,7 @@ const home = defineMessages({
         },
         {
           q: 'USD1은 AEGIS X에서 어떤 역할을 하나요?',
-          a: 'USD1은 프로토콜의 핵심 결제 자산으로, 생태계에 가치 유통, 유동성 지원 및 결제 인프라 역량을 제공합니다.'
+          a: 'USD1은 프로토콜의 핵심 정산 자산으로, 생태계에 가치 유통, 유동성 지원 및 결제 인프라 역량을 제공합니다.'
         },
         {
           q: '프로토콜은 어떻게 보안을 보장하나요?',
@@ -242,7 +242,7 @@ const home = defineMessages({
     }
   ],
   footer: {
-    brandCopy: '미래 가치 네트워크의 수호 \nAI x DeFi x USD1',
+    brandCopy: '미래 가치 네트워크를 수호 \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. 모든 권리 보유.',
     legal: '서비스 약관 · 개인정보 처리방침 · 면책 조항',
     groups: [

@@ -1,4 +1,4 @@
-export const locales = ['en', 'zh', 'ko', 'ja', 'vi', 'es', 'ru'] as const
+export const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi'] as const
 
 export type Locale = (typeof locales)[number]
 
