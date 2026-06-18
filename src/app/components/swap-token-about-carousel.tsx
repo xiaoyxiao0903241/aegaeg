@@ -241,10 +241,7 @@ function useCarouselSnap(api: CarouselApi | undefined) {
   return { current, goTo }
 }
 
-function getSwapTokenContent(
-  t: ReturnType<typeof useI18n>['messages'],
-  isDesktop: boolean,
-) {
+function getSwapTokenContent(t: ReturnType<typeof useI18n>['messages']) {
   const assets = {
     agx: tokenCarouselIcons.agxIcon,
     gagx: tokenCarouselIcons.gagxIcon,
@@ -256,7 +253,7 @@ function getSwapTokenContent(
     const copy = t.swap.tokenAbout.items.find((item) => item.key === key)!
     return {
       asset: assets[key],
-      body: isDesktop && copy.bodyDesktop ? copy.bodyDesktop : copy.body,
+      body: copy.body,
       key,
       title: copy.title,
     }
@@ -267,7 +264,7 @@ export function TokenAboutCarousel() {
   const isDesktop = !useMobileViewport()
   const variant = isDesktop ? 'desktop' : 'mobile'
   const { messages: t } = useI18n()
-  const tokens = getSwapTokenContent(t, isDesktop)
+  const tokens = getSwapTokenContent(t)
   const [api, setApi] = useState<CarouselApi>()
   const { current, goTo } = useCarouselSnap(api)
   const autoplay = useMemo(

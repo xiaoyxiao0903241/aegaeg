@@ -1,4 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { cn } from '~/lib/utils'
 import type { DappTab } from '~/app/types'
 import { DappSection } from '~/app/components/dapp-section'
@@ -16,13 +18,22 @@ export function CommunityFlowSection({
   tab?: DappTab
 }) {
   const { messages: t } = useI18n()
+  const genesis = useGenesisWidgetContext()
 
   const inviteFlowItems = t.community.inviteFlow.items.map(({ title, body }) => ({
     copy: body,
     title,
   }))
 
-  const programItems = t.community.programs.items
+  const programItems = t.community.programs.items.map((program, index) => {
+    if (index !== 0) return program
+    return {
+      ...program,
+      label: applyMessageTemplate(program.label, {
+        season: String(genesis.activeSeasonNumber),
+      }),
+    }
+  })
 
   return (
     <>

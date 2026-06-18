@@ -9,6 +9,7 @@ import {
   mapTeamReferralToCompactRow,
   mapTeamReferralToMobileRow,
 } from '~/lib/api/format-display'
+import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useAuth } from '~/providers/auth-provider'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
@@ -29,6 +30,15 @@ import {
   COMMUNITY_STAT_GRID,
   type CommunityStat,
 } from '~/app/tabs/community/community-shared'
+
+const STAT_PLACEHOLDER = '—'
+
+function formatCommunityStatToday(template: string) {
+  return applyMessageTemplate(template, {
+    count: STAT_PLACEHOLDER,
+    amount: STAT_PLACEHOLDER,
+  })
+}
 
 export function CommunityContent({
   onSelectTab,
@@ -85,32 +95,21 @@ export function CommunityContent({
   const teamVolume = formatUsd(overview?.sales_team_market ?? 0)
 
   const shareholderRank = formatPresaleRank(displayRank)
-  const genesisShareholderLabel = useStatPlaceholders || isRankLoading
-    ? t.community.statGenesisVolume
-    : displayRank > 0
-      ? t.community.genesisShareholder
-      : t.rewards.shareholderHintNoRank
+  const genesisShareholderLabel =
+    displayRank > 0 ? t.community.genesisShareholder : t.rewards.shareholderHintNoRank
 
   const stats: CommunityStat[] = [
     {
       label: t.community.directReferrals,
       value: directCount,
-      volume: useStatPlaceholders ? (
-        t.community.statDirectVolume
-      ) : (
-        `${t.community.volumePrefix} ${directVolume}`
-      ),
-      today: t.community.statDirectToday,
+      volume: `${t.community.volumePrefix} ${directVolume}`,
+      today: formatCommunityStatToday(t.community.statToday),
     },
     {
       label: t.community.myTeam,
       value: teamCount,
-      volume: useStatPlaceholders ? (
-        t.community.statTeamVolume
-      ) : (
-        `${t.community.volumePrefix} ${teamVolume}`
-      ),
-      today: t.community.statTeamToday,
+      volume: `${t.community.volumePrefix} ${teamVolume}`,
+      today: formatCommunityStatToday(t.community.statToday),
     },
     {
       label: t.community.genesisTitle,

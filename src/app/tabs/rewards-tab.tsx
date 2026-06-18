@@ -403,7 +403,6 @@ export function RewardsContent() {
           t.tables.amount,
           t.tables.from,
           t.tables.contribution,
-          t.tables.bonusRate,
           t.tables.status,
         ]
       : [
@@ -411,7 +410,6 @@ export function RewardsContent() {
           t.tables.amount,
           t.tables.source,
           t.tables.contribution,
-          t.tables.bonusRate,
           t.tables.status,
         ]
 

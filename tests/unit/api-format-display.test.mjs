@@ -155,8 +155,7 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
   assert.equal(row[1], '+$342.18')
   assert.equal(row[2], '周期结算')
   assert.equal(row[3], '$17,109')
-  assert.equal(row[4], '2%')
-  assert.equal(row[5], '已领取')
+  assert.equal(row[4], '已领取')
 })
 
 test('formatClaimableAmount subtracts claimed from total', async () => {

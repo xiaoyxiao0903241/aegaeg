@@ -57,8 +57,6 @@ export function useShareholderRank() {
 export function useShareholderRankLabels(t: {
   rewards: {
     heroBodyForRank: string
-    heroBody: string
-    shareholder: string
     shareholderHintForRank: string
     shareholderHintNoRank: string
     shareholderNoRankTitle: string

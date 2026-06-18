@@ -1,4 +1,3 @@
-import { cardVariants } from '~/components/card'
 import { revealClass } from '~/lib/reveal'
 import * as Accordion from '@radix-ui/react-accordion'
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
@@ -12,46 +11,29 @@ export type FaqListItem = {
 
 type FaqListVariant = 'home' | 'dapp'
 
-const homeItemShellClass = cn(
-  cardVariants({ context: 'home', fill: 'surface', hover: 'shadow', radius: 'md' }),
-  'group rounded-md shadow-[0_6px_20px_oklch(22%_0.04_265_/_6%)]',
-  'max-dapp:min-h-[46px] max-dapp:rounded-[14px]',
+const faqCardClass = cn(
+  'overflow-hidden rounded-2xl bg-white shadow-[0_6px_20px_rgba(18,26,51,0.06)]',
+  'max-dapp:rounded-[14px]',
 )
 
-const dappItemOuterClass = 'rounded-md shadow-card max-dapp:rounded-[14px]'
-
-const dappItemInnerClass = cn(
-  'h-full w-full max-w-full overflow-hidden rounded-[inherit] border border-border bg-card px-[18px]',
-  'max-dapp:px-4',
+const faqCardBodyClass = cn(
+  'flex w-full flex-col items-start px-6 py-[18px]',
+  'max-dapp:px-4 max-dapp:py-3.5',
+  'group-data-[state=open]:gap-3 max-dapp:group-data-[state=open]:gap-2.5',
 )
 
-const faqTriggerTypographyClass = cn(
-  'text-[15px] font-semibold leading-[1.3] tracking-[-0.3px] text-foreground',
+const faqQuestionClass = cn(
+  'min-w-px flex-[1_0_0] text-left text-[15px] font-semibold leading-[1.3] tracking-[-0.3px] text-foreground [overflow-wrap:anywhere]',
   'max-dapp:text-sm',
 )
 
-const faqAnswerTypographyClass = cn(
-  'text-sm leading-[1.5] tracking-[-0.28px] text-faq-text',
+const faqAnswerClass = cn(
+  'w-full text-left text-[14px] font-normal leading-[1.5] tracking-[-0.28px] text-faq-text [overflow-wrap:anywhere]',
   'max-dapp:text-[13px]',
 )
 
-const faqTriggerBaseClass =
-  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left outline-none'
-
-const homeTriggerClass = cn(
-  faqTriggerBaseClass,
-  faqTriggerTypographyClass,
-  'px-6 py-[18px] max-dapp:min-h-[18px] max-dapp:px-4 max-dapp:py-3.5',
-)
-
-const dappTriggerClass = cn(
-  faqTriggerBaseClass,
-  faqTriggerTypographyClass,
-  'py-4 max-dapp:py-3.5',
-)
-
-const faqArrowClass =
-  'grid size-4 shrink-0 origin-center place-items-center text-faint transition-[color,transform] duration-200 ease-out group-data-[state=open]:text-primary group-data-[state=open]:rotate-180'
+const faqTriggerClass =
+  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent p-0 text-left outline-none'
 
 const variantStyles = {
   home: {
@@ -59,24 +41,33 @@ const variantStyles = {
       revealClass(),
       'mx-auto mt-10 grid w-[min(100%,960px)] gap-3 max-dapp:mt-5 max-dapp:gap-2.5',
     ),
-    item: homeItemShellClass,
-    trigger: homeTriggerClass,
-    question: 'min-w-0',
-    answer: cn(faqAnswerTypographyClass, 'mb-0 pt-3'),
-    answerPad: 'px-6 pb-[18px] max-dapp:px-4 max-dapp:pb-3.5',
-    answerContent: 'overflow-hidden',
   },
   dapp: {
-    list: 'mt-3.5 grid w-full gap-3',
-    item: dappItemOuterClass,
-    itemInner: dappItemInnerClass,
-    trigger: dappTriggerClass,
-    question: 'min-w-0',
-    answer: cn(faqAnswerTypographyClass, 'mb-4 pt-0'),
-    answerPad: 'pb-4 max-dapp:pb-3.5',
-    answerContent: 'overflow-hidden',
+    list: 'mt-3.5 grid w-full gap-3 max-dapp:gap-2.5',
   },
 } as const
+
+function FaqChevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={cn('size-[18px] shrink-0', open ? 'text-primary' : 'text-foreground/40')}
+      fill="none"
+      height="18"
+      viewBox="0 0 18 18"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d={open ? 'M4.5 11.25L9 6.75L13.5 11.25' : 'M13.5 6.75L9 11.25L4.5 6.75'}
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  )
+}
 
 export function FaqList({
   className,
@@ -151,70 +142,46 @@ export function FaqList({
         const wasInitiallyOpen = defaultValue.includes(itemValue)
         const motionEnabled = !wasInitiallyOpen || interacted.has(itemValue)
         const isOpen = value.includes(itemValue)
-        const itemBody = (
-          <>
-            <Accordion.Trigger className={cn(styles.trigger, 'group')} data-faq-trigger>
-              <span className={styles.question}>{item.q}</span>
-              <span className={faqArrowClass} aria-hidden="true">
-                <svg
-                  className="size-4"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4 6L8 10L12 6"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.7"
-                  />
-                </svg>
-              </span>
-            </Accordion.Trigger>
-            <Accordion.Content
-              className={styles.answerContent}
-              data-faq-answer
-              forceMount
-              onClick={() => collapseItem(itemValue)}
-              onKeyDown={(event) => {
-                if (!isOpen) {
-                  return
-                }
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  collapseItem(itemValue)
-                }
-              }}
-              role={isOpen ? 'button' : undefined}
-              tabIndex={isOpen ? 0 : undefined}
-            >
-              <div className="faq-answer-panel">
-                <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                  <div className={styles.answerPad}>
-                    <div className={styles.answer}>{item.a}</div>
-                  </div>
-                </div>
-              </div>
-            </Accordion.Content>
-          </>
-        )
 
         return (
           <Accordion.Item
-            className={cn(styles.item, itemClassName)}
+            className={cn(faqCardClass, 'group', itemClassName)}
             data-faq-item
             data-faq-motion={motionEnabled ? 'true' : 'false'}
             key={`${index}-${String(item.q)}`}
             value={itemValue}
           >
-            {'itemInner' in styles && styles.itemInner ? (
-              <div className={styles.itemInner}>{itemBody}</div>
-            ) : (
-              itemBody
-            )}
+            <div className={faqCardBodyClass}>
+              <Accordion.Header className="m-0 w-full">
+                <Accordion.Trigger className={faqTriggerClass} data-faq-trigger>
+                  <span className={faqQuestionClass}>{item.q}</span>
+                  <FaqChevron open={isOpen} />
+                </Accordion.Trigger>
+              </Accordion.Header>
+              <Accordion.Content
+                className="w-full overflow-hidden"
+                data-faq-answer
+                forceMount
+                onClick={() => collapseItem(itemValue)}
+                onKeyDown={(event) => {
+                  if (!isOpen) {
+                    return
+                  }
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    collapseItem(itemValue)
+                  }
+                }}
+                role={isOpen ? 'button' : undefined}
+                tabIndex={isOpen ? 0 : undefined}
+              >
+                <div className="faq-answer-panel">
+                  <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
+                    <p className={faqAnswerClass}>{item.a}</p>
+                  </div>
+                </div>
+              </Accordion.Content>
+            </div>
           </Accordion.Item>
         )
       })}

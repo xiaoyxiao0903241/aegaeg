@@ -330,19 +330,8 @@ export function mapRewardLogToRow(
     amountLabel,
     formatShortAddress(item.from_address),
     formatOrderAmountUsd(item.order_amount),
-    formatReferralRewardRate(item),
     formatRewardStatus(item.status, labels.logStatus),
   ]
-}
-
-function formatReferralRewardRate(item: RewardLogItem): string {
-  const amount = Number(item.amount)
-  const orderAmount = Number(item.order_amount)
-  if (orderAmount > 0 && Number.isFinite(amount) && amount > 0) {
-    const percent = Math.round((amount / orderAmount) * 100)
-    if (percent > 0) return `${percent}%`
-  }
-  return '3%'
 }
 
 function parsePercentLabel(value: string): number {
@@ -388,7 +377,6 @@ export function mapTeamRewardClaimLogToRow(
     amountLabel,
     labels.sourceLabel,
     contributionLabel,
-    labels.bonusRateLabel,
     statusLabel,
   ]
 }
