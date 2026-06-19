@@ -1,0 +1,59 @@
+variables:
+  PROJECT: test
+  SERVICE: aegis-web
+  IMAGE: $HARBOR_REGISTRY/$PROJECT/$SERVICE
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: gcr.io/kaniko-project/executor:debug
+  tags:
+    - gitlab-runner-k8s
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+  before_script:
+    - mkdir -p /kaniko/.docker
+    - |
+      cat <<EOF > /kaniko/.docker/config.json
+      {
+        "auths": {
+          "$HARBOR_REGISTRY": {
+            "username": "$HARBOR_ROBOT",
+            "password": "$HARBOR_SECRET"
+          }
+        }
+      }
+      EOF
+  script:
+    - |
+      /kaniko/executor \
+        --context $CI_PROJECT_DIR \
+        --dockerfile $CI_PROJECT_DIR/Dockerfile \
+        --destination $IMAGE:$CI_COMMIT_SHORT_SHA
+
+deploy:
+  stage: deploy
+  image:
+    name: dtzar/helm-kubectl:3.15.2
+    entrypoint: ["/bin/sh", "-lc"]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+  script:
+    - SERVER="https://kubernetes.default.svc"
+    - TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+    - CACERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    - |
+      kubectl --server=${SERVER} \
+              --token=${TOKEN} \
+              --certificate-authority=${CACERT} \
+              set image deployment/$SERVICE \
+                $SERVICE=${IMAGE}:${CI_COMMIT_SHORT_SHA} \
+                -n test
+    - |
+      kubectl --server=${SERVER} \
+              --token=${TOKEN} \
+              --certificate-authority=${CACERT} \
+              rollout status deployment/$SERVICE -n test
