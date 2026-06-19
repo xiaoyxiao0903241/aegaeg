@@ -12,12 +12,9 @@ export type CommunityStat = {
 
 export const REFERRAL_CARD_CLASS = cn(
   '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-  'rounded-2xl px-4 py-3.5 max-dapp:mt-0',
+  'rounded-2xl px-4 py-3.5',
   '[&_label]:text-xs [&_label]:text-faint',
 )
-
-export const COMMUNITY_WIDGET_CLASS =
-  'dapp:[&>*]:shrink-0 max-dapp:flex max-dapp:flex-col max-dapp:gap-3'
 
 export const SHAREHOLDER_ACTION_CLASS = cn(
   'mt-4 min-h-[42px] hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',

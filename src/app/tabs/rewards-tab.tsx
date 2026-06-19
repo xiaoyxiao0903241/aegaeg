@@ -57,7 +57,7 @@ import { ResponsiveTable } from '~/app/components/responsive-table'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 const REWARDS_WIDGET_CARD_CLASS = cn(
-  'rounded-2xl px-4 py-3.5 max-dapp:mt-0',
+  'rounded-2xl px-4 py-3.5',
   '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-dapp:[&_span]:text-faint',
 )
 
@@ -167,11 +167,7 @@ export function RewardsWidget() {
   )
 
   return (
-    <DappWidgetFrame
-      className="dapp:[&>*]:shrink-0 max-dapp:flex max-dapp:flex-col max-dapp:gap-3"
-      subtitle={t.rewards.intro}
-      title={t.rewards.title}
-    >
+    <DappWidgetFrame subtitle={t.rewards.intro} title={t.rewards.title}>
       {sessionReady ? (
         <>
           <DappSideCard className={REWARDS_WIDGET_CARD_CLASS}>
@@ -236,7 +232,6 @@ export function RewardsWidget() {
         badge={t.rewards.autoPaidLabel}
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
-          sessionReady ? 'mt-2 max-dapp:mt-0' : 'mt-0',
           '[&_strong]:text-[22px] [&_strong]:tracking-[-0.66px]',
           'max-dapp:[&_small]:hidden',
         )}
@@ -277,7 +272,6 @@ export function RewardsWidget() {
         }
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
-          'mt-3 max-dapp:mt-0',
           'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
           'max-dapp:[&_strong]:text-[17px] max-dapp:[&_strong]:tracking-[-0.51px]',
           '[&_button]:mt-3',
@@ -290,7 +284,6 @@ export function RewardsWidget() {
       <RewardBalanceCard
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
-          'mt-2 max-dapp:mt-0',
           'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
           'max-dapp:[&_strong]:text-[17px] max-dapp:[&_strong]:tracking-[-0.51px]',
         )}

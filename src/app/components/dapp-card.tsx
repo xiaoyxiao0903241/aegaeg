@@ -66,7 +66,7 @@ export function DappSideCard({
     <Card
       as="section"
       surface="outlined"
-      className={cn(revealClass(), 'mt-3.5 flex flex-col gap-2', className)}
+      className={cn(revealClass(), 'flex flex-col gap-2', className)}
       data-reveal
     >
       {children}
@@ -164,7 +164,7 @@ export function DappReferrerBoundCard({
     <Card
       as="section"
       surface="outlined"
-      className={cn(revealClass(), 'mt-2 flex flex-col gap-2.5 p-4', className)}
+      className={cn(revealClass(), 'flex flex-col gap-2.5 p-4', className)}
       data-reveal
     >
       {children}
@@ -406,7 +406,7 @@ export function RewardBalanceCard({
     <Card
       as="article"
       surface="outlined"
-      className={cn(revealClass(), 'mt-3.5', className)}
+      className={cn(revealClass(), className)}
       data-reveal
     >
       <div className="flex items-center justify-between gap-3">

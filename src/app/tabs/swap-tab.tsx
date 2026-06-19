@@ -153,7 +153,7 @@ export function SwapWidget({
 
   return (
     <DappWidgetFrame
-      className={cn('dapp:[&>*]:shrink-0 max-dapp:gap-0', '[&>:first-child]:mb-[18px]')}
+      bodyClassName="gap-0"
       frameClass={
         swapPager
           ? 'flex min-h-full flex-col max-dapp:gap-0'
@@ -241,6 +241,7 @@ export function SwapWidget({
       />
 
       <DappMetaList
+        className="mt-3.5 max-dapp:mt-3"
         sessionReady
         items={[
           {
@@ -315,7 +316,7 @@ export function SwapWidget({
       />
 
       {sessionReady && swap.walletReady ? (
-        <DappActionRow>
+        <DappActionRow className="mt-3.5 max-dapp:mt-3">
           <DappActionButton
             className="col-span-full"
             disabled={!swap.canSubmit}
@@ -371,12 +372,12 @@ export function SwapContent({
       columns={2}
     >
       {sessionReady && poolRateLoading && !poolRateLabel ? (
-        <MetricCardSkeleton className="max-dapp:rounded-[14px] max-dapp:p-3.5" />
+        <MetricCardSkeleton className="max-dapp:min-w-0 max-dapp:rounded-[14px] max-dapp:p-3.5" />
       ) : (
         <MetricCard
           className={cn(
             sessionReady && '[&_small]:hidden',
-            'max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
+            'max-dapp:min-w-0 max-dapp:gap-1.5 max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
           )}
           label={t.swap.exchangeRate}
           value={
@@ -389,7 +390,7 @@ export function SwapContent({
       <MetricCard
         className={cn(
           sessionReady && '[&_small]:hidden',
-          'max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
+          'max-dapp:min-w-0 max-dapp:gap-1.5 max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
         )}
         label={t.swap.settlement}
         value={t.swap.settlementValue}
@@ -418,22 +419,20 @@ export function SwapContent({
 
       {overviewMetrics}
 
-      {sessionReady ? (
-        <DappCollapsibleSection
-          bodyClassName="overflow-visible"
-          className={cn(
-            '!translate-y-0 !opacity-100 !transition-none',
-            '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
-            '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
-            'max-dapp:[&_h3]:pb-2.5 max-dapp:[&_h3]:text-base max-dapp:[&_h3]:tracking-[-0.64px]',
-            'dapp:[&+section]:mt-[34px]',
-            '[&_h3_button]:w-full',
-          )}
-          title={t.swap.tokenAbout.title}
-        >
-          <TokenAboutCarousel />
-        </DappCollapsibleSection>
-      ) : null}
+      <DappCollapsibleSection
+        bodyClassName="overflow-visible"
+        className={cn(
+          '!translate-y-0 !opacity-100 !transition-none',
+          '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
+          '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
+          'max-dapp:[&_h3]:pb-2.5 max-dapp:[&_h3]:text-base max-dapp:[&_h3]:tracking-[-0.64px]',
+          'dapp:[&+section]:mt-[34px]',
+          '[&_h3_button]:w-full',
+        )}
+        title={t.swap.tokenAbout.title}
+      >
+        <TokenAboutCarousel />
+      </DappCollapsibleSection>
 
       <DappSection title={t.swap.faq.title}>
         <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />

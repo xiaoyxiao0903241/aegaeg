@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { dappTableCardShellClass } from '~/app/components/dapp-table-shell'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 
@@ -34,8 +35,9 @@ export function DappTableEmptyState({
       aria-hidden={children ? undefined : true}
       className={cn(
         revealClass(),
-        'flex flex-col items-center rounded-[18px] bg-card px-6 py-[30px] shadow-card',
-        'max-dapp:border max-dapp:border-border max-dapp:px-4 max-dapp:py-[22px] max-dapp:shadow-none',
+        dappTableCardShellClass,
+        'flex flex-col items-center px-6 py-[30px]',
+        'max-dapp:px-4 max-dapp:py-[22px]',
         children && 'gap-[18px]',
         className,
       )}

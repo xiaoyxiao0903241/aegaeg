@@ -37,7 +37,7 @@ export function HomeSectionHead({
         size="display"
         weight="semibold"
         className={cn(
-          'mx-auto mt-3.5 max-w-[760px] max-dapp:mt-2.5 max-dapp:text-[26px] max-dapp:leading-[1.2]',
+          'mx-auto mt-3.5 max-w-[760px] max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-[26px] max-dapp:leading-[1.2] max-dapp:text-balance',
           titleClassName,
         )}
       >

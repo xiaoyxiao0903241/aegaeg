@@ -98,6 +98,10 @@ export interface TeamCommunityOverview {
   descendant_count: number
   sales_team_market: string
   direct_presale_volume: string
+  /** 今日新增直推人数 */
+  today_addition_direct_count?: number
+  /** 今日新增社区人数 */
+  today_addition_team_count?: number
 }
 
 export interface TeamRewardClaimLogItem {

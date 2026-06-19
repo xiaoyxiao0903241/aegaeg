@@ -1,10 +1,19 @@
 import { Card } from '~/components/card'
 import { StatusBadge } from '~/components/badge'
+import { dappTableCardShellClass } from '~/app/components/dapp-table-shell'
 import { cn } from '~/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 
 const TABLE_CELL =
-  'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal'
+  'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal tracking-[0] max-dapp:py-[9px] max-dapp:text-xs max-dapp:leading-normal max-dapp:tracking-[-0.24px]'
+
+const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
+
+const TABLE_CLASS =
+  'w-full min-w-0 table-fixed border-collapse text-[13px] leading-[1.5] max-dapp:text-xs max-dapp:leading-normal'
+
+const TABLE_WRAP_H5 =
+  'max-dapp:overflow-x-visible max-dapp:px-3.5 max-dapp:py-1.5'
 
 const HIGHLIGHTED_ROW =
   'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td:first-child]:text-primary [&_td.text-success]:text-success'
@@ -37,25 +46,26 @@ export function ResponsiveTable({
   statusColumns?: number[]
 }) {
   const wrapClass = plain
-    ? cn('overflow-x-auto', className)
+    ? cn(
+        'overflow-x-auto max-w-full min-w-0',
+        dappTableCardShellClass,
+        TABLE_WRAP_H5,
+        className,
+      )
     : cn(
         'mt-3.5 overflow-x-auto max-w-full min-w-0 px-4 py-[5.75px]',
+        dappTableCardShellClass,
+        TABLE_WRAP_H5,
         compact && '[&_table]:min-w-full',
         className,
       )
 
   const table = (
-    <table className="w-full min-w-0 border-collapse text-[13px] leading-[1.5] max-dapp:min-w-max">
+    <table className={TABLE_CLASS}>
       <thead>
         <tr>
           {headers.map((header) => (
-            <th
-              className={cn(
-                TABLE_CELL,
-                'tracking-[0] text-muted-foreground group-data-[tab=rewards]/shell:text-faint',
-              )}
-              key={header}
-            >
+            <th className={TABLE_HEAD_CELL} key={header}>
               {header}
             </th>
           ))}

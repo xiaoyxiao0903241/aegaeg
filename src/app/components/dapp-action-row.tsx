@@ -11,7 +11,7 @@ export function DappActionRow({
   return (
     <div
       className={cn(
-        'mt-3.5 grid shrink-0 grid-cols-2 gap-[9px] max-dapp:mt-3',
+        'grid shrink-0 grid-cols-2 gap-[9px]',
         className,
       )}
     >
