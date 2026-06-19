@@ -82,16 +82,6 @@ export function formatBlockTime(timestamp: number): string {
   return formatDateTimeParts(date)
 }
 
-export function formatBlockDateShort(timestamp: number): string {
-  if (!timestamp) return '—'
-
-  const date = new Date(timestamp * 1000)
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${month}-${day}`
-}
-
 export function formatPaidAmountCompact(amount: string): string {
   const num = Number(amount)
   if (!Number.isFinite(num)) return '—'
@@ -243,7 +233,7 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
 
 export function mapTeamReferralToMobileRow(item: TeamReferralItem): string[] {
   return [
-    formatRegisterDate(item.register_time).slice(5),
+    formatApiDateTime(item.register_time),
     formatShortAddress(item.address),
     formatPresaleRank(item.presale_rank),
     formatUsdCompact(item.sales_team_market),
@@ -309,7 +299,7 @@ export function mapSalesLogToMobileRow(
   agxPriceUsd = Number(PRESALE_CONFIG.agxPriceUsd),
 ): string[] {
   return [
-    formatBlockDateShort(item.block_time),
+    formatBlockTime(item.block_time),
     formatPaidAmountCompact(item.amount),
     formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
     formatSalesLogAgx(item, agxPriceUsd),
