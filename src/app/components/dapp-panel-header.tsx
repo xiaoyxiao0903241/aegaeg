@@ -19,8 +19,8 @@ export function dappPanelTitleClassName(className?: string) {
 }
 
 const dappPanelSubtitleClassName = cn(
-  'm-0 mt-1.5 max-w-[34ch] text-[13px] leading-[1.4] tracking-[-0.26px] text-ink-strong',
-  'max-dapp:mt-2.5 max-dapp:max-w-none max-dapp:leading-normal',
+  'm-0 max-w-[34ch] text-xs leading-[1.5] tracking-[-0.24px] text-ink-strong',
+  'max-dapp:max-w-none',
   '[&_strong]:font-bold [&_strong]:text-primary',
 )
 
@@ -49,9 +49,9 @@ export function DappPanelHeader({
         className,
       )}
     >
-      <div className="min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <h1 className={dappPanelTitleClassName()}>{title}</h1>
-        <Text as="p" size="sm" tone="body" className={dappPanelSubtitleClassName}>
+        <Text as="p" tone="body" className={dappPanelSubtitleClassName}>
           {subtitle}
         </Text>
       </div>

@@ -4,7 +4,17 @@ import { shellWidgetRootClass } from '~/app/shell-layout'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { cn } from '~/lib/utils'
 
+/** Figma widget column — header to first block: PC 18px, H5 30px; card stack gap 8px. */
+export const dappWidgetHeaderSpacingClass = 'mb-[18px] max-dapp:mb-[30px]'
+
+export const dappWidgetBodyClass = cn(
+  'flex min-h-0 flex-1 flex-col gap-2',
+  '[&>*:first-child]:!mt-0 max-dapp:[&>*:first-child]:!mt-0',
+  'dapp:[&>*]:shrink-0',
+)
+
 export function DappWidgetFrame({
+  bodyClassName,
   children,
   className,
   frameClass = shellWidgetRootClass,
@@ -12,6 +22,7 @@ export function DappWidgetFrame({
   subtitle,
   title,
 }: {
+  bodyClassName?: string
   children: ReactNode
   className?: string
   frameClass?: string
@@ -25,13 +36,14 @@ export function DappWidgetFrame({
   return (
     <div className={cn(frameClass, className)}>
       <DappPanelHeader
+        className={dappWidgetHeaderSpacingClass}
         detailCollapsed={collapsed}
         onTogglePanel={onToggle}
         showToggle={showToggle}
         subtitle={subtitle}
         title={title}
       />
-      {children}
+      <div className={cn(dappWidgetBodyClass, bodyClassName)}>{children}</div>
     </div>
   )
 }

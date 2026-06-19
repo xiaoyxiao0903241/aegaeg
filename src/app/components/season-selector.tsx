@@ -31,11 +31,16 @@ const seasonOptionClass = cn(
   'max-dapp:gap-2.5 max-dapp:px-3.5 max-dapp:py-3 max-dapp:data-[selected=true]:border-[1.5px]',
 )
 
-const seasonStatusClass = cn(
-  'rounded-full bg-pill-muted-bg px-2 py-[3px] not-italic whitespace-nowrap',
-  'data-[selected=true]:bg-primary data-[selected=true]:text-white',
-  'max-dapp:px-[9px]',
-)
+const seasonStatusBadgeBaseClass =
+  'rounded-full px-[9px] py-[2px] text-[10px] font-semibold leading-[1.3] not-italic whitespace-nowrap'
+
+function resolveSeasonStatusBadgeClass(status: string, selected: boolean) {
+  if (status === 'LIVE' && selected) {
+    return cn(seasonStatusBadgeBaseClass, 'bg-primary text-white')
+  }
+
+  return cn(seasonStatusBadgeBaseClass, 'border border-border bg-card text-faint')
+}
 
 export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
   const { messages: t } = useI18n()
@@ -43,7 +48,7 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
   return (
     <RadioGroup
       aria-label={t.genesis.statsTitle}
-      className={cn(revealClass(), 'mt-3.5 grid gap-2 max-dapp:mt-0')}
+      className={cn(revealClass(), 'grid gap-2')}
       data-reveal
     >
       {seasons.map((season) => {
@@ -70,16 +75,9 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
               </Text>
             </div>
             <div className="grid flex-none justify-items-end gap-1">
-              <Text
-                as="em"
-                size="xs"
-                weight="bold"
-                tone="muted"
-                className={cn(seasonStatusClass, 'text-[10px] leading-[1.2] max-dapp:text-[11px]')}
-                data-selected={selected ? 'true' : 'false'}
-              >
+              <span className={resolveSeasonStatusBadgeClass(season.status, selected)}>
                 {translateSeasonStatus(season.status, t)}
-              </Text>
+              </span>
               <time className="text-[11px] leading-[1.35] text-faint whitespace-nowrap">
                 {season.date}
               </time>

@@ -31,7 +31,7 @@ export function useSwapWidget(authenticated: boolean) {
   const account = useActiveAccount()
   const afterSwap = useDappActions((state) => state.afterSwap)
   const [sellAmount, setSellAmountRaw] = useState('')
-  const [direction, setDirection] = useState<SwapDirection>('forward')
+  const [direction, setDirection] = useState<SwapDirection>('reverse')
   const [slippage, setSlippage] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)

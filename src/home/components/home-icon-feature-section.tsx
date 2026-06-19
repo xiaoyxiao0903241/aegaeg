@@ -104,9 +104,9 @@ function HomeIconCard({
         size="lg"
         weight="semibold"
         className={cn(
-          'feature-card-title mt-3 text-xl leading-[1.2] max-dapp:mt-2.5 max-dapp:text-[19px]',
+          'feature-card-title mt-3 text-xl leading-[1.2] max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-[19px] max-dapp:text-balance',
           variant === 'engine' &&
-            'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary max-dapp:whitespace-nowrap',
+            'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary',
         )}
       >
         {card.title}

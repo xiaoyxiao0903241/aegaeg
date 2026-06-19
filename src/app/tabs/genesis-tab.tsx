@@ -30,11 +30,12 @@ import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
 import { DappConnectPromoCard } from '~/app/components/dapp-connect-promo-card'
 import { formatGenesisSeasonIntro } from '~/lib/presale/genesis-promo'
-import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
+import { dappTableNestedShellClass } from '~/app/components/dapp-table-shell'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { ProgressMeter } from '~/app/components/progress-meter'
+import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/components/responsive-table'
@@ -142,13 +143,9 @@ export function GenesisWidget({
   }, [genesis.error, t.genesis.insufficientAllowance, t.genesis.insufficientUsd1])
 
   return (
-    <DappWidgetFrame
-      className="dapp:[&>*]:shrink-0 max-dapp:flex max-dapp:flex-col max-dapp:gap-3"
-      subtitle={seasonIntro}
-      title={t.genesis.title}
-    >
+    <DappWidgetFrame subtitle={seasonIntro} title={t.genesis.title}>
       {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
-        <div aria-busy="true" className={cn(revealClass(), 'mt-3.5 grid gap-2 max-dapp:mt-0')} data-reveal>
+        <div aria-busy="true" className={cn(revealClass(), 'grid gap-2')} data-reveal>
           <SeasonOptionSkeleton />
           <SeasonOptionSkeleton />
           <SeasonOptionSkeleton />
@@ -159,7 +156,7 @@ export function GenesisWidget({
         />
       )}
 
-      <label className="mt-3.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground max-dapp:mt-0">
+      <label className="grid gap-2 text-xs leading-[1.5] text-muted-foreground">
         <span>{t.genesis.shares}</span>
         <div className="flex gap-2">
           <input
@@ -213,7 +210,7 @@ export function GenesisWidget({
       />
 
       {walletReady ? (
-        <DappActionRow className={cn(genesis.isApproved ? 'grid-cols-1' : undefined, 'max-dapp:mt-0')}>
+        <DappActionRow className={genesis.isApproved ? 'grid-cols-1' : undefined}>
           {!genesis.isApproved ? (
             <DappActionButton
               disabled={!genesis.canPurchase || genesis.isSubmitting}
@@ -406,14 +403,10 @@ export function GenesisContent() {
           data-reveal
         >
           {sessionReady ? (
-            <div className="mb-3 grid gap-1.5 border-0 bg-transparent p-0">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-xs font-normal leading-[1.5] text-muted-foreground">
-                  {t.genesis.totalContributed}
-                </span>
-                <strong className="mt-0 text-right text-xs font-bold leading-[1.4] text-foreground">
-                  {contributedLabel}
-                </strong>
+            <div className="mb-2.5 grid gap-2.5 border-0 bg-transparent p-0 max-dapp:mb-0">
+              <div className="flex items-center justify-between gap-3 text-[13px] font-semibold leading-[1.2] tracking-[-0.26px] text-foreground">
+                <span>{t.genesis.totalContributed}</span>
+                <strong className="mt-0 text-right font-semibold">{contributedLabel}</strong>
               </div>
               <ProgressMeter
                 label={t.genesis.totalContributed}
@@ -429,13 +422,17 @@ export function GenesisContent() {
           {contributionsTable.requiresAuth ? (
             <DappTableAuthPrompt
               body={t.dapp.connect.recordsBodyGenesis}
-              className="max-dapp:border-0 max-dapp:bg-transparent max-dapp:px-0 max-dapp:py-0 max-dapp:shadow-none"
+              className={dappTableNestedShellClass}
             />
           ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
-            <DappTableEmptyMessage title={t.genesis.contributionsEmpty.title} />
+            <DappTableEmptyMessage
+              className={dappTableNestedShellClass}
+              title={t.genesis.contributionsEmpty.title}
+            />
           ) : (
             <>
               <ResponsiveTable
+                className={cn(dappTableNestedShellClass, 'max-dapp:pt-1')}
                 compact
                 headers={tableHeaders}
                 isLoading={contributionsTable.showSkeleton}

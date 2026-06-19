@@ -1,3 +1,4 @@
+import { dappTableCardShellClass } from '~/app/components/dapp-table-shell'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 
@@ -14,8 +15,9 @@ export function DappTableEmptyMessage({
     <div
       className={cn(
         revealClass(),
-        'rounded-[18px] bg-card p-[30px_24px] text-center shadow-card',
-        'max-dapp:border max-dapp:border-border max-dapp:p-[22px_16px] max-dapp:shadow-none',
+        dappTableCardShellClass,
+        'p-[30px_24px] text-center',
+        'max-dapp:p-[22px_16px]',
         className,
       )}
       data-reveal

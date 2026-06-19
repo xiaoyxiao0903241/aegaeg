@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { ChevronIcon } from '~/components/chevron-icon'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { DAPP_TABLE_PAGE_SIZE } from '~/lib/table-pagination'
+import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/lib/table-pagination'
 
 const PAGE_MENU_ITEM_HEIGHT_PX = 32
 const PAGE_MENU_VISIBLE_ITEMS = 5
@@ -63,7 +63,7 @@ export function DappTablePagination({
     }
   }, [menuOpen])
 
-  if (total <= 0) return null
+  if (!shouldShowTablePagination(total, pageSize)) return null
 
   return (
     <div

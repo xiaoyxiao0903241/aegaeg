@@ -33,10 +33,14 @@ import {
 
 const STAT_PLACEHOLDER = '—'
 
-function formatCommunityStatToday(template: string) {
+function formatCommunityStatToday(
+  template: string,
+  count: number | string = STAT_PLACEHOLDER,
+  amount: number | string = STAT_PLACEHOLDER,
+) {
   return applyMessageTemplate(template, {
-    count: STAT_PLACEHOLDER,
-    amount: STAT_PLACEHOLDER,
+    count: String(count),
+    amount: typeof amount === 'number' ? formatUsd(amount, 0) : amount,
   })
 }
 
@@ -103,13 +107,21 @@ export function CommunityContent({
       label: t.community.directReferrals,
       value: directCount,
       volume: `${t.community.volumePrefix} ${directVolume}`,
-      today: formatCommunityStatToday(t.community.statToday),
+      today: formatCommunityStatToday(
+        t.community.statToday,
+        useStatPlaceholders ? STAT_PLACEHOLDER : (overview?.today_addition_direct_count ?? 0),
+        useStatPlaceholders ? STAT_PLACEHOLDER : 0,
+      ),
     },
     {
       label: t.community.myTeam,
       value: teamCount,
       volume: `${t.community.volumePrefix} ${teamVolume}`,
-      today: formatCommunityStatToday(t.community.statToday),
+      today: formatCommunityStatToday(
+        t.community.statToday,
+        useStatPlaceholders ? STAT_PLACEHOLDER : (overview?.today_addition_team_count ?? 0),
+        useStatPlaceholders ? STAT_PLACEHOLDER : 0,
+      ),
     },
     {
       label: t.community.genesisTitle,
@@ -178,7 +190,7 @@ export function CommunityContent({
           <>
             <ResponsiveTable
               className={cn(
-                'mt-3.5 max-dapp:mt-3 max-dapp:rounded-2xl max-dapp:shadow-card',
+                'mt-3.5 max-dapp:mt-3',
                 !isMobileViewport && [
                   '[&_table]:table-fixed',
                   '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',

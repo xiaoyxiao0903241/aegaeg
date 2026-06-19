@@ -11,7 +11,7 @@ export function QuickLinks({
   items: QuickLinkProps[]
 }) {
   return (
-    <div className={cn('mt-3.5 grid gap-2 max-dapp:mt-0', className)}>
+    <div className={cn('grid gap-2', className)}>
       {items.map((item) => (
         <QuickLink key={item.href} {...item} />
       ))}

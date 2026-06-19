@@ -1,5 +1,12 @@
 export const DAPP_TABLE_PAGE_SIZE = 5
 
+export function shouldShowTablePagination(
+  total: number,
+  pageSize: number = DAPP_TABLE_PAGE_SIZE,
+): boolean {
+  return total > pageSize
+}
+
 export function tablePageQuery(page: number) {
   return { page, page_size: DAPP_TABLE_PAGE_SIZE }
 }

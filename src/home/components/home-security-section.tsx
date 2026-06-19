@@ -12,7 +12,7 @@ const securityClass = {
   container: 'container max-dapp:!w-[min(calc(100vw-40px),362px)]',
   head: 'dapp:min-h-[140px]',
   title:
-    '[&&]:max-w-[420px] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1] max-dapp:whitespace-nowrap',
+    '[&&]:max-w-[420px] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1]',
   subtitle:
     '[&&]:max-w-[420px] dapp:[&&]:mt-4 dapp:[&&]:text-base dapp:[&&]:leading-[1.5]',
   grid:
