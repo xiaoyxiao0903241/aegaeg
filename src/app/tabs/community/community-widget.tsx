@@ -1,3 +1,4 @@
+import { Wallet } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '~/i18n/use-i18n'
@@ -9,6 +10,7 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import type { DappTab } from '~/app/types'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
@@ -101,8 +103,11 @@ function CommunityConnectedWidget({
           </p>
           <ReferrerAddressRow>
             <div className="flex min-w-0 items-center gap-2.5">
-              <span className="grid size-6 flex-none place-items-center rounded-full bg-accent text-xs font-semibold leading-[1.2] text-primary">
-                R
+              <span
+                aria-hidden="true"
+                className="grid size-6 flex-none place-items-center rounded-full bg-accent text-primary"
+              >
+                <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
               </span>
               <strong className="truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px] text-foreground">
                 {referral.referrerLabel ?? '—'}

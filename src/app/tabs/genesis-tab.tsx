@@ -82,32 +82,8 @@ export function GenesisWidget({
     genesis.setShares(Math.min(Math.max(parsed, 1), Math.max(genesis.maxShares, 1)))
   }
 
-  const handleApprove = useCallback(async () => {
-    const result = await genesis.approve()
-    if (result.success) {
-      toast.success(t.swap.approveSuccess)
-      return
-    }
-
-    if (!result.error) return
-    const message = resolveGenesisPurchaseError(result.error, {
-      insufficientAllowance: t.genesis.insufficientAllowance,
-      insufficientUsd1: t.genesis.insufficientUsd1,
-      purchaseUnavailable: t.genesis.purchaseUnavailable,
-      walletNotConnected: t.genesis.walletNotConnected,
-    })
-    if (message) toast.error(message)
-  }, [
-    genesis,
-    t.genesis.insufficientAllowance,
-    t.genesis.insufficientUsd1,
-    t.genesis.purchaseUnavailable,
-    t.genesis.walletNotConnected,
-    t.swap.approveSuccess,
-  ])
-
   const handleParticipate = useCallback(async () => {
-    const result = await genesis.purchase()
+    const result = await genesis.participate()
     if (result.success) {
       toast.success(t.genesis.joinSuccess)
       return
@@ -211,20 +187,10 @@ export function GenesisWidget({
       />
 
       {walletReady ? (
-        <DappActionRow className={genesis.isApproved ? 'grid-cols-1' : undefined}>
-          {!genesis.isApproved ? (
-            <DappActionButton
-              disabled={!genesis.canPurchase || genesis.isSubmitting}
-              loading={genesis.submittingAction === 'approve'}
-              onClick={() => void handleApprove()}
-              variant="secondary"
-            >
-              {t.swap.approve}
-            </DappActionButton>
-          ) : null}
+        <DappActionRow className="grid-cols-1">
           <DappActionButton
             disabled={!genesis.canPurchase || genesis.isSubmitting}
-            loading={genesis.submittingAction === 'purchase'}
+            loading={genesis.isSubmitting}
             onClick={() => void handleParticipate()}
             variant="primary"
           >

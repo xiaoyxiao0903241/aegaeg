@@ -114,19 +114,29 @@
   }
 }
 
-/* Sonner toast — third-party portal; uses shadcn semantic tokens only */
+/* Sonner toast — PC 顶部居中；H5 保持底部居中（position 由 AppToaster 控制） */
 [data-sonner-toaster] {
   --border-radius: 9999px;
-  --width: min(380px, calc(100vw - 32px));
-  --offset-bottom: 24px;
+  --width: min(23.75rem, calc(100vw - 2rem));
+  --offset-top: 1.5rem;
+  --offset-bottom: 1.5rem;
   font-family: inherit;
 }
 
 [data-sonner-toast][data-styled='true'] {
-  background: var(--card);
-  border-color: var(--border);
-  color: var(--foreground);
-  box-shadow: var(--shadow-card);
+  background: oklch(0% 0 0);
+  border-color: oklch(100% 0 0 / 12%);
+  color: oklch(100% 0 0);
+  box-shadow: 0 0.75rem 2rem oklch(0% 0 0 / 28%);
+}
+
+[data-sonner-toast][data-styled='true'] [data-title],
+[data-sonner-toast][data-styled='true'] [data-description] {
+  color: inherit;
+}
+
+[data-sonner-toast][data-styled='true'] [data-icon] {
+  color: oklch(100% 0 0);
 }
 
 /* H5 侧滑菜单（80% 宽）— keyframes 保证打开/关闭动画一致（不依赖 transition 首帧） */

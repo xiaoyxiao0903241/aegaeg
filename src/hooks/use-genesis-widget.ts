@@ -7,7 +7,7 @@ import {
   buildPhaseCountdownKey,
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
-  resolveXTokenAirdropUsdForPurchase,
+  estimateXTokenAirdropUsd,
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
@@ -128,12 +128,7 @@ export function useGenesisWidget() {
     discountBps,
     agxPriceUsd,
   )
-  const periodContributedUsd = Number(formatTokenAmount(userTotal, USD1_DECIMALS, 0))
-  const xTokenAirdropUsd = resolveXTokenAirdropUsdForPurchase(
-    periodContributedUsd,
-    payUsd1,
-    phaseIndex,
-  )
+  const xTokenAirdropUsd = estimateXTokenAirdropUsd(payUsd1, phaseIndex)
   const quotaLabel = `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
@@ -243,6 +238,16 @@ export function useGenesisWidget() {
     refresh,
   ])
 
+  const participate = useCallback(async (): Promise<GenesisPurchaseResult> => {
+    if (needsApproval) {
+      const approveResult = await approve()
+      if (!approveResult.success) {
+        return approveResult
+      }
+    }
+    return purchase()
+  }, [approve, needsApproval, purchase])
+
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
 
   useEffect(() => {
@@ -325,6 +330,7 @@ export function useGenesisWidget() {
     refresh,
     approve,
     purchase,
+    participate,
     activeSeasonNumber,
     seasonOptions: seasonOptions,
     promoSnapshot,
