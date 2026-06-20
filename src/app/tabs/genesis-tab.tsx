@@ -16,9 +16,11 @@ import {
 } from '~/lib/api/format-display'
 import { PRESALE_CONFIG } from '~/config/presale'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { bscscanAddress } from '~/config/explorer'
+import { bscscanAddress, bscscanTx } from '~/config/explorer'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/components/dapp-icon'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { seasons as fallbackSeasons } from '~/app/data'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
@@ -28,7 +30,6 @@ import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
-import { DappConnectPromoCard } from '~/app/components/dapp-connect-promo-card'
 import { formatGenesisSeasonIntro } from '~/lib/presale/genesis-promo'
 import { dappTableNestedShellClass } from '~/app/components/dapp-table-shell'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
@@ -51,9 +52,6 @@ import {
 } from '~/app/components/dapp-skeleton'
 import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/web3/resolve-contract-error-message'
 import { formatTokenAmount } from '~/lib/swap/token-amount'
-
-const MAX_SHARES = 100
-
 
 export function GenesisWidget({
   onSelectGenesis,
@@ -81,7 +79,7 @@ export function GenesisWidget({
       genesis.setShares(1)
       return
     }
-    genesis.setShares(Math.min(Math.max(parsed, 1), MAX_SHARES))
+    genesis.setShares(Math.min(Math.max(parsed, 1), Math.max(genesis.maxShares, 1)))
   }
 
   const handleApprove = useCallback(async () => {
@@ -157,12 +155,12 @@ export function GenesisWidget({
       )}
 
       <label className="grid gap-2 text-xs leading-[1.5] text-muted-foreground">
-        <span>{t.genesis.shares}</span>
+        <span>{t.genesis.shares.replace('{max}', String(genesis.maxShares))}</span>
         <div className="flex gap-2">
           <input
-            className="w-full min-w-0 min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-base font-bold text-foreground outline-none focus:border-primary max-dapp:h-[46px] max-dapp:min-h-[46px]"
+            className="w-full min-w-0 min-h-11 rounded-sm border border-border bg-card px-3.5 text-base font-bold text-foreground outline-none focus:border-primary max-dapp:h-11 max-dapp:min-h-11"
             disabled={!walletReady}
-            max={MAX_SHARES}
+            max={Math.max(genesis.maxShares, 1)}
             min={1}
             onChange={(e) => handleSharesChange(e.target.value)}
             type="number"
@@ -170,12 +168,12 @@ export function GenesisWidget({
           />
           <button
             className={cn(
-              'min-h-11 min-w-[66px] shrink-0 rounded-[11px] border border-border bg-accent px-[15px] text-xs font-bold whitespace-nowrap text-primary max-dapp:h-[46px] max-dapp:min-h-[46px]',
+              'min-h-11 min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 text-xs font-bold whitespace-nowrap text-primary max-dapp:h-11 max-dapp:min-h-11',
               buttonDisabledClass,
               'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
             )}
             disabled={!walletReady}
-            onClick={() => genesis.setShares(MAX_SHARES)}
+            onClick={() => genesis.setShares(Math.max(genesis.maxShares, 1))}
             type="button"
           >
             {t.common.max}
@@ -196,7 +194,10 @@ export function GenesisWidget({
                 <AnchoredTooltip content={t.genesis.xTokenAirdropHint}>
                   <button
                     aria-label={t.genesis.xTokenAirdropHint}
-                    className="inline-flex size-3.5 shrink-0 items-center justify-center rounded-full border border-current text-[9px] font-bold leading-none opacity-60"
+                    className={cn(
+                      'inline-flex shrink-0 items-center justify-center rounded-full border border-current text-xs font-bold leading-none opacity-60',
+                      dappIconClass.md,
+                    )}
                     type="button"
                   >
                     i
@@ -241,9 +242,7 @@ export function GenesisWidget({
           onClick={onSelectGenesis}
           promo={genesis.promoSnapshot}
         />
-      ) : (
-        <DappConnectPromoCard className="hidden max-dapp:grid max-dapp:mt-3.5" />
-      )}
+      ) : null}
     </DappWidgetFrame>
   )
 }
@@ -280,14 +279,29 @@ export function GenesisContent() {
   const contributedLabel = `${formatUsd(contributed)} / ${formatUsd(maxContribution)}`
 
   const desktopRows =
-    salesLogs?.items.map((item) => mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)) ?? []
+    salesLogs?.items.map((item) => {
+      const row = mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)
+      const txLabel = row[4]
+      if (!item.tx_hash || txLabel === '—') return row
+
+      return [
+        ...row.slice(0, 4),
+        <a
+          className="text-primary underline"
+          href={bscscanTx(item.tx_hash)}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {txLabel}
+        </a>,
+      ]
+    }) ?? []
   const mobileRows =
     salesLogs?.items.map((item) => mapSalesLogToMobileRow(item, genesis.agxPriceUsd)) ?? []
   const tableRows = isMobileViewport ? mobileRows : desktopRows
   const tableHeaders = isMobileViewport
     ? [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx]
     : [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx, t.tables.tx]
-  const tableLinkColumns = isMobileViewport ? [] : [4]
   const contributionsTotal = salesLogs?.total ?? 0
   const showSalesSyncHint =
     sessionReady && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
@@ -305,10 +319,10 @@ export function GenesisContent() {
       <MetricGrid columns={4}>
         {genesis.isLoading && genesis.phases.length === 0 ? (
           <>
-            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
-            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
-            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
-            <MetricCardSkeleton className="max-dapp:rounded-[14px]" />
+            <MetricCardSkeleton className="max-dapp:rounded-md" />
+            <MetricCardSkeleton className="max-dapp:rounded-md" />
+            <MetricCardSkeleton className="max-dapp:rounded-md" />
+            <MetricCardSkeleton className="max-dapp:rounded-md" />
           </>
         ) : (
           <>
@@ -342,15 +356,15 @@ export function GenesisContent() {
           className={cn(
             revealClass(),
             // Figma `tc` 82:683 — 780×125；Globe 190:339 288×185 @ (456,-24)；卡片 overflow:hidden 裁切，不撑出滚动
-            'relative mt-3.5 min-h-[125px] overflow-hidden rounded-md bg-dark p-6 shadow-card',
+            'relative mt-3.5 min-h-32 overflow-hidden rounded-md bg-dark p-6 shadow-card',
           )}
           data-reveal
         >
           <div className="relative z-1">
-            <span className="text-[11px] font-bold leading-[1.3] tracking-[1.2px] text-coral-bright">
+            <span className="text-xs font-bold leading-[1.3] tracking-[1.2px] text-coral-bright">
               {t.genesis.globalLabel}
             </span>
-            <strong className="mt-[7px] block text-[21px] font-bold leading-[1.25] text-white">
+            <strong className="mt-1.5 block text-xl font-bold leading-[1.25] text-white">
               {genesis.isLoading && genesis.phases.length === 0 ? (
                 <DappSkeleton className="h-6 w-40" tone="dark" />
               ) : genesis.globalPurchasedLoading ? (
@@ -359,15 +373,15 @@ export function GenesisContent() {
                 `${genesis.globalPurchasedLabel} USD1`
               )}
             </strong>
-            <p className="mt-2.5 mb-0 max-w-[70ch] text-[13px] leading-[1.5] text-white">
+            <p className="mt-2.5 mb-0 max-w-[70ch] text-xs leading-[1.5] text-white">
               {t.genesis.globalBody}
             </p>
           </div>
           <Button
             className={cn(
-              'absolute right-[22px] top-[43px] z-[2] !gap-1.5 !border-[oklch(100%_0_0/45%)] !bg-transparent !px-[18px] !text-white',
+              'absolute right-5.5 top-11 z-[2] !gap-1.5 !border-[oklch(100%_0_0/45%)] !bg-transparent !px-4.5 !text-white',
               'hover:!border-[oklch(100%_0_0/80%)] focus-visible:!border-[oklch(100%_0_0/80%)]',
-              '[&_img]:size-[15px] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
+              '[&_img]:size-[var(--dapp-icon-action)] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
             )}
             onClick={() =>
               window.open(bscscanAddress(BSC_CONTRACTS.preSale), '_blank', 'noopener,noreferrer')
@@ -377,11 +391,11 @@ export function GenesisContent() {
             variant="secondary"
           >
             {t.genesis.viewContract}
-            <img alt="" height="15" src={dappAssets.arrowUpRight} width="15" />
+            <DappIcon alt="" size="action" src={dappAssets.arrowUpRight} />
           </Button>
           <img
             alt=""
-            className="pointer-events-none absolute top-0 right-9 h-auto w-[min(44%,320px)] select-none opacity-[0.78]"
+            className="pointer-events-none absolute top-0 right-9 h-auto w-[44%] max-w-80 select-none opacity-[0.78]"
             draggable={false}
             height={250}
             loading="lazy"
@@ -404,7 +418,7 @@ export function GenesisContent() {
         >
           {sessionReady ? (
             <div className="mb-2.5 grid gap-2.5 border-0 bg-transparent p-0 max-dapp:mb-0">
-              <div className="flex items-center justify-between gap-3 text-[13px] font-semibold leading-[1.2] tracking-[-0.26px] text-foreground">
+              <div className="flex items-center justify-between gap-3 text-xs font-semibold leading-[1.2] tracking-[-0.26px] text-foreground">
                 <span>{t.genesis.totalContributed}</span>
                 <strong className="mt-0 text-right font-semibold">{contributedLabel}</strong>
               </div>
@@ -415,7 +429,7 @@ export function GenesisContent() {
             </div>
           ) : null}
           {showSalesSyncHint ? (
-            <p className="mb-3 text-[13px] leading-normal text-muted-foreground">
+            <p className="mb-3 text-xs leading-normal text-muted-foreground">
               {t.genesis.contributionsSyncPending}
             </p>
           ) : null}
@@ -438,7 +452,6 @@ export function GenesisContent() {
                 isLoading={contributionsTable.showSkeleton}
                 loadingRowCount={4}
                 plain
-                linkColumns={tableLinkColumns}
                 positiveColumns={[2]}
                 rows={tableRows}
               />

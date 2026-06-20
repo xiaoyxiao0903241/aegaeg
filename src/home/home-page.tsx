@@ -27,7 +27,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen overflow-x-clip">
       <HomeHeader />
-      <main className="pt-[74px] max-dapp:pt-[60px]" id="top">
+      <main className="pt-18 max-dapp:pt-14" id="top">
         <HomeHeroSection />
         <HomeIconFeatureSection variant="protocol" />
         <HomeIconFeatureSection variant="engine" />

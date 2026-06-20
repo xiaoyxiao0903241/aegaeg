@@ -11,7 +11,7 @@ export type InviteFlowItem = {
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
   return (
-    <span className="grid size-[30px] shrink-0 place-items-center self-start rounded-full bg-primary text-[13px] font-semibold leading-[1.2] text-white max-dapp:size-7">
+    <span className="grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary text-xs font-semibold leading-[1.2] text-white max-dapp:size-7">
       {children}
     </span>
   )
@@ -20,7 +20,7 @@ function InviteFlowStep({ children }: { children: ReactNode }) {
 function InviteFlowConnector({ tone }: { tone?: 'primary' | 'muted' }) {
   return (
     <i
-      className="h-0.5 flex-1 rounded-sm bg-border max-dapp:hidden data-[tone=primary]:!bg-primary data-[tone=muted]:!bg-border"
+      className="h-0.5 flex-1 shrink-0 rounded-sm bg-border max-dapp:hidden data-[tone=primary]:!bg-primary data-[tone=muted]:!bg-border"
       data-tone={tone}
     />
   )
@@ -33,8 +33,8 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
       surface="elevated"
       className={cn(
         revealClass(),
-        'mt-3.5 grid grid-cols-3 gap-0 p-[22px]',
-        'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,170px),1fr))] max-[1100px]:gap-4',
+        'mt-3.5 grid grid-cols-3 gap-0 p-5.5',
+        'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,10.5rem),1fr))] max-[1100px]:gap-4',
         'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-3.5 max-dapp:p-4',
         'group-data-[tab=community]/shell:gap-3.5 group-data-[tab=community]/shell:p-4 group-data-[tab=community]/shell:max-dapp:gap-3.5',
       )}
@@ -42,7 +42,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
     >
       {items.map((item, index) => (
         <article
-          className="flex min-w-0 flex-col gap-2 px-1 max-dapp:grid max-dapp:grid-cols-[28px_minmax(0,1fr)] max-dapp:gap-x-3 max-dapp:px-0"
+          className="flex min-w-0 flex-col gap-2 px-1 max-dapp:grid max-dapp:grid-cols-[7_minmax(0,1fr)] max-dapp:gap-x-3 max-dapp:px-0"
           key={item.title}
         >
           <div className="flex items-center gap-2.5 max-dapp:items-start">
@@ -65,8 +65,8 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
             tone="muted"
             className={cn(
               'm-0 max-w-[24ch] tracking-[-0.24px]',
-              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-[3px] max-dapp:max-w-none max-dapp:leading-[1.35]',
-              'group-data-[tab=community]/shell:max-dapp:line-clamp-2 group-data-[tab=community]/shell:max-dapp:text-[13px] group-data-[tab=community]/shell:max-dapp:leading-[1.28]',
+              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:leading-[1.35]',
+              'group-data-[tab=community]/shell:max-dapp:line-clamp-2 group-data-[tab=community]/shell:max-dapp:text-xs group-data-[tab=community]/shell:max-dapp:leading-[1.28]',
             )}
           >
             {item.copy}

@@ -189,7 +189,7 @@ const app = defineMessages({
     genesis: {
       title: 'Co-build Program',
       intro: 'Join the X DAO co-build program · Season {season}  ({discount} discount)',
-      shares: 'Shares (1 share = 100 USD1 · max 100)',
+      shares: 'Shares (1 share = 100 USD1 · max {max})',
       quota: 'Season co-build quota',
       pay: 'Pay',
       receive: 'You will receive AGX',

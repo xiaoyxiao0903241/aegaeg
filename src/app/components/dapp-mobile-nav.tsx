@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import type { DappTab } from '~/app/types'
@@ -83,7 +84,10 @@ export function DappMobileNav({
     >
       <button
         aria-label={t.common.close}
-        className="absolute inset-0 border-0 bg-[oklch(0%_0_0/40%)] p-0"
+        className={cn(
+          'absolute inset-0 border-0 p-0',
+          'bg-[oklch(13%_0.02_264/45%)] backdrop-blur-sm',
+        )}
         data-dapp-mobile-nav-backdrop
         onClick={onClose}
         type="button"
@@ -92,7 +96,9 @@ export function DappMobileNav({
       <nav
         aria-label="DApp sections"
         className={cn(
-          'absolute inset-0 flex flex-col gap-1 bg-card p-[18px] shadow-[20px_0_60px_oklch(18%_0.04_265/25%)]',
+          'absolute inset-y-0 left-0 flex w-[80%] max-w-[80%] flex-col gap-1 p-4.5',
+          'bg-[linear-gradient(165deg,oklch(100%_0_0/92%),oklch(100%_0_0/78%))] backdrop-blur-xl backdrop-saturate-150',
+          'shadow-[20px_0_60px_oklch(18%_0.04_265/25%)]',
           'will-change-transform',
         )}
         data-dapp-mobile-nav-panel
@@ -103,14 +109,14 @@ export function DappMobileNav({
           <button
             aria-label={t.topbar.closeMenu}
             className={cn(
-              'grid size-9 shrink-0 cursor-pointer place-items-center rounded-[18px]',
+              'grid size-9 shrink-0 cursor-pointer place-items-center rounded-md',
               'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
               'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
             )}
             onClick={onClose}
             type="button"
           >
-            <X aria-hidden className="size-3.5" strokeWidth={2} />
+            <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
           </button>
         </div>
 
@@ -131,7 +137,7 @@ export function DappMobileNav({
               <span
                 aria-hidden
                 className={cn(
-                  'size-[22px] shrink-0 bg-current',
+                  'size-5.5 shrink-0 bg-current',
                   active ? 'text-primary' : 'text-foreground',
                 )}
                 style={railIconMask(item.icon)}

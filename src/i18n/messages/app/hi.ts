@@ -189,7 +189,7 @@ const app = defineMessages({
     genesis: {
       title: 'सह-निर्माण योजना',
       intro: 'X DAO सह-निर्माण कार्यक्रम में भाग लें · सीज़न {season}  ({discount} छूट)',
-      shares: 'शेयर (1 शेयर = 100 USD1 · अधिकतम 100)',
+      shares: 'शेयर (1 शेयर = 100 USD1 · अधिकतम {max})',
       quota: 'इस सीज़न की सह-निर्माण सीमा',
       pay: 'भुगतान',
       receive: 'AGX प्राप्त होगा',

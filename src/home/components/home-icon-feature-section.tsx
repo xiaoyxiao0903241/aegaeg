@@ -24,28 +24,30 @@ const sectionConfig = {
 
 const sectionClass = {
   protocol:
-    'relative py-[120px] max-dapp:min-h-[827px] max-dapp:pt-0 max-dapp:pb-14',
+    'relative py-30 max-dapp:min-h-208 max-dapp:pt-0 max-dapp:pb-14',
   engine:
-    'relative py-[120px] max-dapp:min-h-[976px] max-dapp:pt-0 max-dapp:pb-14',
+    'relative py-30 max-dapp:min-h-240 max-dapp:pt-0 max-dapp:pb-14',
 } as const
 
 const gridClass = {
   protocol:
-    'feature-card three-col mt-14 grid grid-cols-3 rounded-[22px] bg-card shadow-card max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
+    'feature-card three-col mt-14 grid grid-cols-3 rounded-lg bg-card shadow-card max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
   engine:
-    'engine-card mt-14 grid grid-cols-2 rounded-[22px] bg-card shadow-card max-dapp:mt-6 max-dapp:grid-cols-1 max-dapp:gap-6 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
+    'engine-card mt-14 grid grid-cols-2 rounded-lg bg-card shadow-card max-dapp:mt-6 max-dapp:grid-cols-1 max-dapp:gap-6 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
 } as const
 
 const cardClass = {
   protocol:
-    'min-h-[281px] px-[34px] py-9 max-dapp:min-h-0 max-dapp:rounded-[18px] max-dapp:bg-card max-dapp:p-[22px] max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
+    'min-h-72 px-8 py-9 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
   engine:
-    'group/engine min-h-[265px] p-[34px] transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:min-h-0 max-dapp:rounded-[18px] max-dapp:bg-card max-dapp:p-[22px] max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
+    'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
 } as const
 
 const iconClass = {
-  protocol: 'feature-icon size-20 object-contain max-dapp:size-11',
-  engine: 'size-20 object-cover max-dapp:size-11 max-dapp:object-contain',
+  protocol:
+    'feature-icon size-[var(--home-feature-icon-size)] object-contain max-dapp:size-[var(--home-feature-icon-size-h5)]',
+  engine:
+    'size-[var(--home-feature-icon-size)] object-cover max-dapp:size-[var(--home-feature-icon-size-h5)] max-dapp:object-contain',
 } as const
 
 const protocolIndexClass =
@@ -55,14 +57,14 @@ function cardBorderClass(variant: 'protocol' | 'engine', index: number) {
   if (variant === 'protocol') {
     return cn(
       index > 0 && 'dapp:border-l dapp:border-border',
-      index === 0 ? 'max-dapp:min-h-[218px]' : 'max-dapp:min-h-[197px]',
+      index === 0 ? 'max-dapp:min-h-56' : 'max-dapp:min-h-48',
     )
   }
 
   return cn(
     index % 2 === 1 && 'dapp:border-l dapp:border-border',
     index > 1 && 'dapp:border-t dapp:border-border',
-    index < 2 ? 'max-dapp:min-h-[194px]' : 'max-dapp:min-h-[173px]',
+    index < 2 ? 'max-dapp:min-h-48' : 'max-dapp:min-h-44',
   )
 }
 
@@ -104,7 +106,7 @@ function HomeIconCard({
         size="lg"
         weight="semibold"
         className={cn(
-          'feature-card-title mt-3 text-xl leading-[1.2] max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-[19px] max-dapp:text-balance',
+          'feature-card-title mt-3 text-xl leading-[1.2] max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-lg max-dapp:text-balance',
           variant === 'engine' &&
             'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary',
         )}
@@ -115,7 +117,7 @@ function HomeIconCard({
         as="p"
         size="md"
         tone="body"
-        className="feature-card-body mt-3 max-w-[420px] text-[15px] leading-[1.5] max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-[318px] max-dapp:text-sm"
+        className="feature-card-body mt-3 max-w-112 text-sm leading-[1.5] max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80 max-dapp:text-sm"
       >
         {card.body}
       </Text>

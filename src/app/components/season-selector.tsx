@@ -26,13 +26,13 @@ export type SeasonOption = {
 }
 
 const seasonOptionClass = cn(
-  'flex items-center gap-[11px] rounded-[13px] px-3.5 py-3',
+  'flex items-center gap-2.5 rounded-sm px-3.5 py-3',
   'data-[selected=true]:border-primary',
   'max-dapp:gap-2.5 max-dapp:px-3.5 max-dapp:py-3 max-dapp:data-[selected=true]:border-[1.5px]',
 )
 
 const seasonStatusBadgeBaseClass =
-  'rounded-full px-[9px] py-[2px] text-[10px] font-semibold leading-[1.3] not-italic whitespace-nowrap'
+  'rounded-full px-2 py-0.5 text-xs font-semibold leading-[1.3] not-italic whitespace-nowrap'
 
 function resolveSeasonStatusBadgeClass(status: string, selected: boolean) {
   if (status === 'LIVE' && selected) {
@@ -68,7 +68,7 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
               <Text as="strong" size="sm" weight="bold" className="block leading-[1.25]">
                 {season.name}
               </Text>
-              <Text as="small" size="xs" tone="muted" className="mt-[3px] block leading-[1.35]">
+              <Text as="small" size="xs" tone="muted" className="mt-0.5 block leading-[1.35]">
                 {t.genesis.discountLabel} <b>{season.desktopMeta.discount}</b>{' '}
                 <i aria-hidden="true">|</i> {t.genesis.airdropLabel}{' '}
                 <b>{season.desktopMeta.airdrop}</b>
@@ -78,7 +78,7 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
               <span className={resolveSeasonStatusBadgeClass(season.status, selected)}>
                 {translateSeasonStatus(season.status, t)}
               </span>
-              <time className="text-[11px] leading-[1.35] text-faint whitespace-nowrap">
+              <time className="text-xs leading-[1.35] text-faint whitespace-nowrap">
                 {season.date}
               </time>
             </div>

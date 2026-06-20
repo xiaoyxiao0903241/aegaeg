@@ -6,7 +6,7 @@ const METRIC_GRID_TWO =
 
 const METRIC_GRID_FOUR = cn(
   'mt-3.5 grid grid-cols-4 gap-3',
-  'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))]',
+  'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
   'max-dapp:min-w-0 max-dapp:grid-cols-1',
   'group-data-[tab=genesis]/shell:max-dapp:mt-3 group-data-[tab=genesis]/shell:max-dapp:grid-cols-2 group-data-[tab=genesis]/shell:max-dapp:gap-3',
 )

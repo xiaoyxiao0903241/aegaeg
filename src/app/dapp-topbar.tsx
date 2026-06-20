@@ -1,3 +1,4 @@
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { cn } from '~/lib/utils'
 import { LanguageMenu } from '~/components/language-menu'
 import { withLocalePrefix } from '~/i18n/locale'
@@ -8,9 +9,9 @@ import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { useDappShell } from '~/app/dapp-shell-context'
 
 const topbarClass = cn(
-  'relative flex shrink-0 min-h-[76px] w-full items-center justify-between gap-6 bg-transparent px-[26px] py-[18px]',
+  'relative flex shrink-0 min-h-18 w-full items-center justify-between gap-6 bg-transparent px-6 py-4.5',
   'max-dapp:sticky max-dapp:top-0 max-dapp:z-20',
-  'max-dapp:min-h-[60px] max-dapp:gap-3 max-dapp:px-4 max-dapp:py-3',
+  'max-dapp:min-h-14 max-dapp:gap-3 max-dapp:px-4 max-dapp:py-3',
   'max-dapp:pt-[max(12px,env(safe-area-inset-top,0px))]',
   // H5 毛玻璃顶栏：透出页面蜜桃渐变，滚动时模糊下方内容
   'max-dapp:border-b max-dapp:border-border/40',
@@ -18,14 +19,14 @@ const topbarClass = cn(
 )
 
 const brandClass = cn(
-  'flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.34px] text-foreground',
-  'max-dapp:text-[15px]',
+  'flex items-center gap-2.5 text-lg font-semibold tracking-tight text-foreground max-dapp:text-base',
   'group-data-[tab=rewards]/shell:max-dapp:group-data-[session-ready=true]/shell:[&_span]:hidden',
 )
 
 const brandMarkClass = cn(
-  'h-6 w-[26px] object-contain',
-  'max-dapp:h-[22px] max-dapp:w-6',
+  'object-contain',
+  dappIconClass.brand,
+  'max-dapp:size-[var(--dapp-icon-lg)] max-dapp:w-[var(--dapp-icon-lg)]',
 )
 
 const topActionsClass = cn(
@@ -58,8 +59,6 @@ export function DappTopbar() {
           className={brandMarkClass}
           src={homeAssets.logoMark}
           alt=""
-          width="28"
-          height="27"
         />
         <span>{t.common.brand}</span>
       </a>

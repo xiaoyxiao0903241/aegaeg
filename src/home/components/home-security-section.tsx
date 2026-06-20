@@ -5,30 +5,20 @@ import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { HomeSectionHead } from '~/home/components/home-section-head'
+import { homeSectionContainerClass } from '~/home/home-layout'
+import { securityLayout } from '~/home/static-layout'
 
 const securityClass = {
   section:
-    'relative border-y border-border bg-[#ebeef3] py-[120px] dapp:min-h-[794px] max-dapp:min-h-[711px] max-dapp:border-y-0 max-dapp:py-12',
-  container: 'container max-dapp:!w-[min(calc(100vw-40px),362px)]',
-  head: 'dapp:min-h-[140px]',
+    'relative border-y border-border bg-[#ebeef3] py-30 dapp:min-h-[49.625rem] max-dapp:min-h-[44.4375rem] max-dapp:border-y-0 max-dapp:py-12',
+  container: homeSectionContainerClass,
+  head: 'dapp:min-h-[8.75rem]',
   title:
-    '[&&]:max-w-[420px] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1]',
+    '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1]',
   subtitle:
-    '[&&]:max-w-[420px] dapp:[&&]:mt-4 dapp:[&&]:text-base dapp:[&&]:leading-[1.5]',
-  grid:
-    'security-grid relative mx-auto mt-8 grid w-[min(100%,842px)] grid-cols-[330px_1fr] items-center gap-12 max-[1100px]:grid-cols-1 max-[1100px]:justify-items-center max-dapp:mt-4 max-dapp:flex max-dapp:w-full max-dapp:flex-col max-dapp:gap-4',
-  art:
-    'security-art flex w-[min(100%,330px)] aspect-[330/382] items-center justify-center overflow-hidden max-dapp:w-[174px] max-dapp:aspect-[174/201]',
+    '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:text-base dapp:[&&]:leading-[1.5]',
   artImage: 'h-full w-full object-contain object-center',
-  line:
-    'security-line absolute left-[267px] top-[62px] z-1 aspect-[110/258] w-[110px] object-contain max-[1100px]:!hidden',
-  list: 'check-list relative z-[2] grid gap-3.5 max-dapp:w-full max-dapp:gap-4',
-  card:
-    'flex items-center gap-3.5 px-[22px] py-5 text-[15px] font-medium leading-[1.4] text-foreground max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[14px] max-dapp:px-[18px] max-dapp:py-4 max-dapp:text-sm max-dapp:leading-[1.2]',
-  cardTall: 'max-dapp:min-h-[66px]',
-  icon:
-    'grid size-[26px] shrink-0 place-items-center rounded-[13px] bg-accent text-[13px] text-primary max-dapp:size-6 max-dapp:rounded-xl',
-  iconImage: 'size-3.5 object-contain',
+  iconImage: 'size-[var(--home-security-icon-size)] object-contain',
 } as const
 
 export function HomeSecuritySection() {
@@ -51,37 +41,39 @@ export function HomeSecuritySection() {
           subtitle={content.subtitle}
         />
         <div
-          className={cn(securityClass.grid, revealClass())}
+          className={cn(securityLayout.gridClassName, revealClass())}
           data-reveal
           data-security-grid
         >
-          <div className={securityClass.art} data-security-art>
+          <div className={securityLayout.artStageClassName}>
+            <div className={securityLayout.artClassName} data-security-art>
+              <img
+                className={cn(securityClass.artImage, '[[&:not([src])]]:bg-transparent')}
+                src={homeAssets.securityCharacter}
+                alt=""
+                width="330"
+                height="382"
+                loading="lazy"
+              />
+            </div>
             <img
-              className={cn(securityClass.artImage, '[[&:not([src])]]:bg-transparent')}
-              src={homeAssets.securityCharacter}
+              className={securityLayout.lineClassName}
+              data-security-line
+              src={homeAssets.securityConnector}
               alt=""
-              width="330"
-              height="382"
+              width="110"
+              height="258"
+              aria-hidden="true"
               loading="lazy"
             />
           </div>
-          <img
-            className={securityClass.line}
-            data-security-line
-            src={homeAssets.securityConnector}
-            alt=""
-            width="110"
-            height="258"
-            aria-hidden="true"
-            loading="lazy"
-          />
-          <div className={securityClass.list}>
+          <div className={securityLayout.listClassName}>
             {content.checks.map((check, index) => (
               <Card
                 className={cn(
-                  securityClass.card,
+                  securityLayout.cardClassName,
                   (index === 0 || index === content.checks.length - 1) &&
-                    securityClass.cardTall,
+                    securityLayout.cardTallClassName,
                 )}
                 context="home"
                 data-security-check
@@ -89,7 +81,7 @@ export function HomeSecuritySection() {
                 key={check}
                 style={{ '--security-index': index } as CSSProperties}
               >
-                <span className={securityClass.icon}>
+                <span className={securityLayout.iconClassName}>
                   <img
                     className={securityClass.iconImage}
                     src={homeAssets.securityCheck}

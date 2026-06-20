@@ -11,7 +11,7 @@ export function DappActionRow({
   return (
     <div
       className={cn(
-        'grid shrink-0 grid-cols-2 gap-[9px]',
+        'grid shrink-0 grid-cols-2 gap-2',
         className,
       )}
     >

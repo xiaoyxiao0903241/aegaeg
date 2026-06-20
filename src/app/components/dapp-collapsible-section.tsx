@@ -1,6 +1,7 @@
 import { useId, useState, type ReactNode } from 'react'
 import { cn } from '~/lib/utils'
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/components/dapp-icon'
 import { DappSection } from '~/app/components/dapp-section'
 
 const COLLAPSE_MS = 320
@@ -35,13 +36,14 @@ export function DappCollapsibleSection({
           type="button"
         >
           <span>{title}</span>
-          <img
+          <DappIcon
             alt=""
             aria-hidden
             className={cn(
-              'size-4 shrink-0 transition-transform duration-[320ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
+              'transition-transform duration-[320ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
               open ? 'rotate-0' : 'rotate-180',
             )}
+            size="base"
             src={dappAssets.chevronUp}
             style={{ transitionDuration: `${COLLAPSE_MS}ms` }}
           />

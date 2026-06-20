@@ -189,7 +189,7 @@ const app = defineMessages({
     genesis: {
       title: 'Program Co-Build',
       intro: 'Ikuti program co-build X DAO · Musim {season}  (diskon {discount})',
-      shares: 'Saham (1 saham = 100 USD1 · maks 100)',
+      shares: 'Saham (1 saham = 100 USD1 · maks {max})',
       quota: 'Kuota co-build musim ini',
       pay: 'Bayar',
       receive: 'Akan menerima AGX',

@@ -4,13 +4,14 @@ import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/providers/auth-provider'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
+import { DappIcon } from '~/app/components/dapp-icon'
 import { dappAssets } from '~/app/assets'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 
 const networkPillClass = cn(
-  'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-background px-[14px]',
-  'text-[13px] font-semibold leading-[1.2] tracking-[-0.26px] shadow-none',
-  'max-dapp:h-[30px] max-dapp:min-h-[30px] max-dapp:px-3 max-dapp:text-[11px]',
+  'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-background px-3.5',
+  'text-xs font-semibold leading-[1.2] tracking-[-0.26px] shadow-none',
+  'max-dapp:h-7.5 max-dapp:min-h-7.5 max-dapp:px-3 max-dapp:text-xs',
 )
 
 export function WalletTopbarActions() {
@@ -25,12 +26,11 @@ export function WalletTopbarActions() {
       <>
         <AnchoredTooltip content={t.nav.bscTooltip} position="bottom">
           <div className={networkPillClass} aria-label={t.topbar.currentNetwork}>
-            <img
-              className="block aspect-square w-[18px] flex-none rounded-full object-contain"
-              src={dappAssets.bsc}
+            <DappIcon
               alt=""
-              width="18"
-              height="18"
+              className="rounded-full"
+              size="lg"
+              src={dappAssets.bsc}
             />
             {t.common.bsc}
           </div>

@@ -2,18 +2,18 @@ import { createElement, type HTMLAttributes, type ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/lib/utils'
 
-/** size = 字号/字距 | weight = 字重 | tone = 语义色 */
+/** size = 字号/字距 | weight = 字重 | tone = 语义色 — PC/H5 响应式字号 SSOT */
 export const textVariants = tv({
-  base: 'font-normal tracking-[0] text-foreground',
+  base: 'font-normal tracking-normal text-foreground',
   variants: {
     size: {
       xs: 'text-xs',
-      sm: 'text-[13px]',
-      md: 'text-[15px]',
-      lg: 'text-lg tracking-[-0.36px]',
-      xl: 'text-[21px] tracking-[-0.84px] max-dapp:text-[22px] max-dapp:tracking-[-0.88px]',
-      '2xl': 'text-[30px] tracking-[-1.2px]',
-      display: 'text-[40px] max-dapp:text-[26px]',
+      sm: 'text-sm max-dapp:text-xs',
+      md: 'text-base max-dapp:text-sm',
+      lg: 'text-lg max-dapp:text-base tracking-tight',
+      xl: 'text-xl max-dapp:text-lg tracking-tight',
+      '2xl': 'text-3xl max-dapp:text-2xl tracking-tight',
+      display: 'text-4xl max-dapp:text-2xl',
     },
     weight: {
       medium: 'font-medium',
@@ -31,10 +31,10 @@ export const textVariants = tv({
     },
   },
   compoundVariants: [
-    { size: ['xs', 'sm'], class: 'leading-[1.5]' },
-    { size: ['md', 'lg', 'xl'], class: 'leading-[1.3]' },
-    { size: '2xl', class: 'leading-[1.2]' },
-    { size: 'display', class: 'leading-[1.15] max-dapp:leading-[1.2]' },
+    { size: ['xs', 'sm'], class: 'leading-normal' },
+    { size: ['md', 'lg', 'xl'], class: 'leading-snug' },
+    { size: '2xl', class: 'leading-tight' },
+    { size: 'display', class: 'leading-tight max-dapp:leading-snug' },
   ],
   defaultVariants: {
     size: 'sm',

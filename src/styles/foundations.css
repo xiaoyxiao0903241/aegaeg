@@ -1,4 +1,6 @@
 @import './theme.css';
+@import './breakpoint-scale.css';
+@import './home-scale.css';
 @import './shared.css';
 @import './scrollbars.css';
 @import './animations.css';

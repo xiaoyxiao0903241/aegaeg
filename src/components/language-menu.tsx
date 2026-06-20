@@ -15,8 +15,8 @@ const langMenuClass = cn(
 )
 
 const langTriggerClass = cn(
-  'inline-flex min-h-9 min-w-[58px] cursor-pointer items-center justify-center gap-1.5 rounded-[18px]',
-  'border border-border bg-card px-3 text-[13px] font-semibold leading-none text-foreground shadow-none',
+  'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
+  'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
   'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
   'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
   'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
@@ -24,7 +24,7 @@ const langTriggerClass = cn(
   '[[open]_&]:border-coral-hover-border [[open]_&]:bg-[oklch(97%_0.014_45)] [[open]_&]:shadow-card',
   '[.is-open_&]:border-coral-hover-border [.is-open_&]:bg-[oklch(97%_0.014_45)] [.is-open_&]:shadow-card',
   '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-  'max-dapp:min-h-[30px] max-dapp:min-w-[58px] max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-[11px]',
+  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
 )
 
 export type LanguageMenuOption = {
@@ -63,7 +63,7 @@ function MenuItem({
   onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
 }) {
   const itemClassName = cn(
-    'flex h-[42px] cursor-pointer items-center gap-2 rounded-[10px] bg-transparent px-[10px] text-left transition-colors duration-150 ease-out focus-visible:outline-none',
+    'flex h-10 cursor-pointer items-center gap-2 rounded-sm bg-transparent px-2.5 text-left transition-colors duration-150 ease-out focus-visible:outline-none',
     option.active
       ? 'bg-[var(--background)]'
       : 'hover:bg-secondary focus-visible:bg-secondary',
@@ -75,13 +75,13 @@ function MenuItem({
       <span className="min-w-0 flex-1">
         <span
           className={cn(
-            'block text-[14px] leading-[normal] text-foreground',
+            'block text-sm leading-[normal] text-foreground',
             option.active ? 'font-semibold' : 'font-normal',
           )}
         >
           {option.name}
         </span>
-        <span className="block text-[11px] font-normal leading-[normal] text-[oklch(60%_0.02_260)]">
+        <span className="block text-xs font-normal leading-[normal] text-[oklch(60%_0.02_260)]">
           {option.label}
         </span>
       </span>
@@ -91,14 +91,12 @@ function MenuItem({
             src={checkIcon}
             alt=""
             aria-hidden="true"
-            width="16"
-            height="16"
-            className="shrink-0"
+            className="size-4 shrink-0"
           />
         ) : (
           <span
             aria-hidden="true"
-            className="shrink-0 text-[13px] font-bold leading-none text-primary"
+            className="shrink-0 text-xs font-bold leading-none text-primary"
           >
             ✓
           </span>
@@ -187,14 +185,14 @@ function NativeLanguageMenu({
           data-language-trigger
           role="button"
         >
-          <img src={globeIcon} alt="" width="16" height="16" />
+          <img src={globeIcon} alt="" className="size-4 shrink-0" />
           <span>{triggerLabel ?? activeOption?.code}</span>
         </summary>
 
         <div
           className={cn(
             langMenuClass,
-            'absolute right-0 top-[calc(100%+8px)] z-[130] grid w-[264px] max-w-[calc(100vw-32px)] gap-[2px] overflow-clip rounded-[14px] border border-border bg-card p-[10px] shadow-[0_12px_32px_oklch(0%_0_0_/_12%)]',
+            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_12px_32px_oklch(0%_0_0_/_12%)]',
             menuClassName,
           )}
           role="menu"
@@ -292,14 +290,14 @@ function ReactLanguageMenu({
         onClick={() => setOpen((prev) => !prev)}
         type="button"
       >
-        <img src={globeIcon} alt="" width="16" height="16" />
+        <img src={globeIcon} alt="" className="size-4 shrink-0" />
         <span>{triggerLabel ?? activeOption?.code}</span>
       </button>
 
       <div
         className={cn(
           langMenuClass,
-          'absolute right-0 top-[calc(100%+8px)] z-[130] grid w-[264px] max-w-[calc(100vw-32px)] gap-[2px] overflow-clip rounded-[14px] border border-border bg-card p-[10px] shadow-[0_12px_32px_oklch(0%_0_0_/_12%)]',
+          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_12px_32px_oklch(0%_0_0_/_12%)]',
           !open && 'hidden',
           menuClassName,
         )}

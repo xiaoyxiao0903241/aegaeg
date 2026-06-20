@@ -23,7 +23,7 @@ export const heroRaysHomeClass = cn(
   heroRaysVisualClass,
   heroRaysHomeMaskClass,
   'absolute [animation:hero-rays-drift_48s_linear_infinite]',
-  'left-[calc(50%-358px)] top-[-477px] w-[1500px] opacity-[0.55]',
+  'left-[calc(50%-22.5rem)] -top-120 w-384 opacity-[0.55]',
 )
 
 /**

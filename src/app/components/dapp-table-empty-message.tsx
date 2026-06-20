@@ -24,7 +24,7 @@ export function DappTableEmptyMessage({
     >
       <p className="m-0 text-sm font-medium text-foreground">{title}</p>
       {body ? (
-        <p className="mb-0 mt-2 text-[13px] leading-normal text-muted-foreground">{body}</p>
+        <p className="mb-0 mt-2 text-xs leading-normal text-muted-foreground">{body}</p>
       ) : null}
     </div>
   )

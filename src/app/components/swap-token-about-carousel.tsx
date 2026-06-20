@@ -10,6 +10,7 @@ import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { swapTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -38,8 +39,8 @@ const TOKEN_CAROUSEL_TRACK_CLASS = 'flex items-stretch'
 const TOKEN_CAROUSEL_BODY_GRID_CLASS =
   'relative z-1 grid h-full min-h-0 grid-rows-[auto_1fr] gap-2'
 
-const tokenCardMobileBodyTextClass = 'max-w-[236px]'
-const tokenCardDesktopBodyTextClass = 'max-w-[570px]'
+const tokenCardMobileBodyTextClass = 'max-w-60'
+const tokenCardDesktopBodyTextClass = 'max-w-144'
 
 type SwapTokenCarouselItem = {
   asset: string
@@ -49,7 +50,7 @@ type SwapTokenCarouselItem = {
 }
 
 function tokenCarouselBodyPadClass(variant: 'desktop' | 'mobile') {
-  return variant === 'desktop' ? 'p-4 pr-[148px]' : 'px-4 py-[14px]'
+  return variant === 'desktop' ? 'p-4 pr-36' : 'px-4 py-3.5'
 }
 
 function tokenCarouselContractButtonClass(variant: 'desktop' | 'mobile') {
@@ -57,13 +58,13 @@ function tokenCarouselContractButtonClass(variant: 'desktop' | 'mobile') {
     'inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border bg-card whitespace-nowrap text-foreground',
     variant === 'desktop'
       ? cn(
-          'absolute right-4 top-1/2 z-[2] -translate-y-1/2 gap-[7px] px-4 py-2.5',
-          'text-[13px] font-semibold leading-[1.2] tracking-[-0.26px]',
+          'absolute right-4 top-1/2 z-[2] -translate-y-1/2 gap-1.5 px-4 py-2.5',
+          'text-xs font-semibold leading-[1.2] tracking-[-0.26px]',
           'transition-[border-color,transform] duration-180 ease-out',
           'hover:translate-x-px hover:border-primary',
           'focus-visible:translate-x-px focus-visible:border-primary',
         )
-      : 'gap-[5px] px-3 py-[7px] text-xs font-semibold leading-[1.2] tracking-[-0.24px]',
+      : 'gap-1 px-3 py-1.5 text-xs font-semibold leading-[1.2] tracking-[-0.24px]',
   )
 }
 
@@ -80,7 +81,7 @@ function TokenCardDecoration({
         alt=""
         aria-hidden
         className={cn(
-          'pointer-events-none absolute top-0 right-0 h-[72px] w-[118px]',
+          'pointer-events-none absolute top-0 right-0 h-18 w-30',
           tokenKey === 'usd1' ? 'opacity-95' : 'opacity-[0.72]',
         )}
         src={dappAssets.tokenCardCorner}
@@ -93,7 +94,7 @@ function TokenCardDecoration({
       alt=""
       aria-hidden
       className={cn(
-        'pointer-events-none absolute inset-y-0 right-0 h-full w-[328px] object-fill',
+        'pointer-events-none absolute inset-y-0 right-0 h-full w-80 object-fill',
         tokenKey === 'usd1' ? 'opacity-95' : 'opacity-[0.72]',
       )}
       src={dappAssets.tokenCardRays}
@@ -116,7 +117,7 @@ function TokenIcon({
       aria-hidden="true"
       className={cn(
         'grid shrink-0 overflow-hidden rounded-full',
-        isDesktop ? 'size-8' : 'size-[30px]',
+        isDesktop ? 'size-8' : 'size-7.5',
       )}
     >
       <img
@@ -167,7 +168,7 @@ function TokenCarouselCard({
   )
 
   return (
-    <div className={cn(TOKEN_CAROUSEL_CARD_SHELL, isDesktop && 'min-h-[124px]')}>
+    <div className={cn(TOKEN_CAROUSEL_CARD_SHELL, isDesktop && 'min-h-30')}>
       <article
         aria-hidden={!isActive}
         className={cn(TOKEN_CAROUSEL_CARD_INNER, 'h-full')}
@@ -180,14 +181,14 @@ function TokenCarouselCard({
               isDesktop ? 'gap-3' : 'justify-between gap-2',
             )}
           >
-            <div className={cn('flex min-w-0 items-center', isDesktop ? 'gap-3' : 'gap-[9px]')}>
+            <div className={cn('flex min-w-0 items-center', isDesktop ? 'gap-3' : 'gap-2')}>
               <TokenIcon size={isDesktop ? 'desktop' : 'mobile'} token={token} />
               <strong
                 className={cn(
                   'truncate font-semibold leading-[1.2] text-foreground',
                   isDesktop
                     ? 'text-base tracking-[-0.48px]'
-                    : 'text-[15px] tracking-[-0.45px]',
+                    : 'text-sm tracking-[-0.45px]',
                 )}
               >
                 {token.title}
@@ -199,7 +200,7 @@ function TokenCarouselCard({
           </div>
           <p
             className={cn(
-              'm-0 min-w-0 text-[13px] font-normal leading-[1.5] tracking-[-0.26px]',
+              'm-0 min-w-0 text-xs font-normal leading-[1.5] tracking-[-0.26px]',
               isDesktop ? 'text-ink-strong' : 'text-faq-text',
               isDesktop ? tokenCardDesktopBodyTextClass : tokenCardMobileBodyTextClass,
             )}
@@ -323,8 +324,10 @@ export function TokenAboutCarousel() {
           className={cn(
             'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
             isDesktop
-              ? 'size-4'
-              : 'size-[26px] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+              ? dappIconClass.base
+              : cn(
+                  'size-[var(--dapp-icon-lg)] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+                ),
           )}
           onClick={() => api?.scrollPrev()}
           type="button"
@@ -333,20 +336,23 @@ export function TokenAboutCarousel() {
             aria-hidden="true"
             className={cn(
               'block -rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
-              isDesktop ? 'size-4' : 'size-3.5',
+              isDesktop ? dappIconClass.base : dappIconClass.md,
             )}
           />
         </button>
         <span
           aria-label={t.swap.tokenAbout.title}
-          className={cn('inline-flex items-center', isDesktop ? 'gap-[7px]' : 'gap-1.5')}
+          className={cn('inline-flex items-center', isDesktop ? 'gap-1.5' : 'gap-1.5')}
           role="group"
         >
           {tokens.map((token, index) => (
             <button
               aria-current={current === index ? 'true' : undefined}
               aria-label={`${t.swap.tokenAbout.title} ${index + 1}`}
-              className="grid size-4 cursor-pointer place-items-center border-0 bg-transparent p-0"
+              className={cn(
+                'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
+                dappIconClass.base,
+              )}
               key={token.key}
               onClick={() => goTo(index)}
               type="button"
@@ -357,10 +363,10 @@ export function TokenAboutCarousel() {
                   'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
                   current === index
                     ? isDesktop
-                      ? 'h-[7px] w-[22px] bg-primary'
-                      : 'h-1.5 w-[18px] bg-primary'
+                      ? 'h-1.5 w-5.5 bg-primary'
+                      : 'h-1.5 w-4.5 bg-primary'
                     : isDesktop
-                      ? 'h-[7px] w-[7px]'
+                      ? 'h-1.5 w-1.5'
                       : 'size-1.5',
                 )}
               />
@@ -372,8 +378,10 @@ export function TokenAboutCarousel() {
           className={cn(
             'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
             isDesktop
-              ? 'size-4'
-              : 'size-[26px] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+              ? dappIconClass.base
+              : cn(
+                  'size-[var(--dapp-icon-lg)] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+                ),
           )}
           onClick={() => api?.scrollNext()}
           type="button"
@@ -382,7 +390,7 @@ export function TokenAboutCarousel() {
             aria-hidden="true"
             className={cn(
               'block rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
-              isDesktop ? 'size-4' : 'size-3.5',
+              isDesktop ? dappIconClass.base : dappIconClass.md,
             )}
           />
         </button>

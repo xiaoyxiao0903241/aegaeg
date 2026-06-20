@@ -1,0 +1,15 @@
+/**
+ * DApp 图标 rem 刻度 — Figma @ 16px，随 site-fluid 根字号同比缩放。
+ */
+:root {
+  --dapp-icon-xs: 0.75rem; /* 12 — 齿轮、分页 chevron */
+  --dapp-icon-sm: 0.8125rem; /* 13 — 小 chevron / 关闭 */
+  --dapp-icon-md: 0.875rem; /* 14 — carousel H5 chevron */
+  --dapp-icon-base: 1rem; /* 16 — 展开收起、复制、语言 */
+  --dapp-icon-action: 0.9375rem; /* 15 — 外链箭头 */
+  --dapp-icon-lg: 1.125rem; /* 18 — 菜单、面板 toggle */
+  --dapp-icon-xl: 1.25rem; /* 20 */
+  --dapp-icon-rail: 1.375rem; /* 22 — 侧栏 rail */
+  --dapp-icon-token: 1.5rem; /* 24 — token chip、滑动提示 */
+  --dapp-icon-brand: 1.75rem; /* 28 — 顶栏 logo */
+}

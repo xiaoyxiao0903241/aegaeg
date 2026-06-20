@@ -9,7 +9,7 @@ const PAGE_MENU_VISIBLE_ITEMS = 5
 const PAGE_MENU_MAX_HEIGHT = PAGE_MENU_ITEM_HEIGHT_PX * PAGE_MENU_VISIBLE_ITEMS
 
 /** Figma pagination controls ~6px; project `rounded-md` token is 16px — use explicit radius. */
-const PAGINATION_BTN_RADIUS = 'rounded-[6px]'
+const PAGINATION_BTN_RADIUS = 'rounded-sm'
 
 type DappTablePaginationProps = {
   className?: string
@@ -100,7 +100,7 @@ export function DappTablePagination({
             aria-expanded={menuOpen}
             aria-haspopup="listbox"
             className={cn(
-              'inline-flex min-w-[88px] cursor-pointer items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition-colors',
+              'inline-flex min-w-22 cursor-pointer items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition-colors',
               PAGINATION_BTN_RADIUS,
               'bg-accent text-primary',
             )}
@@ -114,7 +114,7 @@ export function DappTablePagination({
           {menuOpen ? (
             <ul
               className={cn(
-                'absolute bottom-full right-0 z-20 m-0 mb-1.5 min-w-full list-none overflow-y-auto rounded-[6px] border border-border bg-card p-0 shadow-[0_4px_16px_oklch(0_0_0/8%)]',
+                'absolute bottom-full right-0 z-20 m-0 mb-1.5 min-w-full list-none overflow-y-auto rounded-sm border border-border bg-card p-0 shadow-[0_4px_16px_oklch(0_0_0/8%)]',
               )}
               id={listId}
               role="listbox"

@@ -3,9 +3,9 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { ConnectEmbed, useActiveAccount } from 'thirdweb/react'
 import { X } from 'lucide-react'
 import { useI18n } from '~/i18n/use-i18n'
-import { homeAssets } from '~/app/assets'
 import { appMetadata, connectEmbedProps } from '~/web3/thirdweb'
 import { cn } from '~/lib/utils'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
@@ -13,8 +13,8 @@ import {
 
 const panelShellClass = cn(
   'border-0 bg-card',
-  'max-dapp:rounded-t-[24px] max-dapp:px-5 max-dapp:pb-[max(24px,env(safe-area-inset-bottom))] max-dapp:pt-3',
-  'dapp:w-[min(calc(100%-40px),430px)] dapp:rounded-[24px] dapp:p-[26px]',
+  'max-dapp:rounded-t-lg max-dapp:px-5 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))] max-dapp:pt-3',
+  'dapp:w-full dapp:max-w-md dapp:rounded-lg dapp:p-6',
   'dapp:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
 )
 
@@ -44,7 +44,7 @@ export function WalletConnectModal({
       <AegisSheetHandle />
 
       <div className="flex items-center justify-between max-dapp:px-0 dapp:mb-5">
-        <DialogPrimitive.Title className="m-0 text-[21px] font-semibold leading-[1.3] tracking-[-0.63px] text-foreground">
+        <DialogPrimitive.Title className="m-0 text-xl font-semibold leading-[1.3] tracking-[-0.63px] text-foreground">
           {t.wallet.connectTitle}
         </DialogPrimitive.Title>
         <DialogPrimitive.Close
@@ -52,15 +52,16 @@ export function WalletConnectModal({
           className="aegis-wallet-connect-close"
           type="button"
         >
-          <X aria-hidden className="size-3.5" strokeWidth={2} />
+          <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
         </DialogPrimitive.Close>
       </div>
 
       <div className="aegis-wallet-connect-body">
+        {/*
         <div className="aegis-wallet-connect-intro">
           <img
             alt=""
-            className="h-[34px] w-auto shrink-0"
+            className="h-8 w-auto shrink-0"
             height="34"
             src={homeAssets.logoMark}
           />
@@ -68,7 +69,7 @@ export function WalletConnectModal({
             <p className="m-0 text-sm font-semibold leading-[1.35] text-foreground">
               {t.wallet.connectIntroTitle}
             </p>
-            <p className="m-0 mt-[3px] text-[13px] leading-[1.4] text-muted-foreground">
+            <p className="m-0 mt-0.5 text-xs leading-[1.4] text-muted-foreground">
               <a
                 className="font-semibold text-primary transition-opacity duration-180 hover:opacity-80"
                 href="/app#swap"
@@ -78,6 +79,7 @@ export function WalletConnectModal({
             </p>
           </div>
         </div>
+        */}
 
         <div className="aegis-connect-embed">
           <ConnectEmbed

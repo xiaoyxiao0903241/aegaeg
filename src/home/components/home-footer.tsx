@@ -6,31 +6,31 @@ import { cn } from '~/lib/utils'
 
 const footerClass = {
   root:
-    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-[72px] pb-9 text-on-dark dapp:min-h-[336px] max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
+    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-on-dark dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
   top:
-    'container footer-top grid dapp:min-h-[131px] grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6',
+    'container footer-top grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6',
   brand:
     'footer-brand flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0',
   brandCopy:
-    'm-0 w-[min(100%,260px)] text-sm font-normal leading-[1.5] tracking-[-0.28px] text-on-dark max-dapp:text-[13px]',
+    'm-0 w-full max-w-64 text-sm font-normal leading-[1.5] tracking-[-0.28px] text-on-dark max-dapp:max-w-none max-dapp:text-xs',
   group:
-    'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 text-sm whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0',
+    'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 text-sm whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
   rule: 'container h-px bg-[#232323]',
   bottom:
-    'container footer-bottom flex min-h-4 items-start justify-between gap-6 overflow-hidden text-[13px] font-normal leading-4 tracking-[-0.26px] text-on-dark whitespace-nowrap max-dapp:block max-dapp:text-xs',
+    'container footer-bottom flex min-h-4 items-start justify-between gap-6 overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-on-dark whitespace-nowrap max-dapp:block max-dapp:text-xs',
 } as const
 
 const footerLinkClass =
-  'text-sm font-normal leading-[1.2] tracking-[-0.28px] max-dapp:text-[13px] max-dapp:leading-[1.5] max-dapp:nth-[n+4]:hidden'
+  'text-sm font-normal leading-[1.2] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.5]'
 
 const footerBrandClass = cn(
-  'inline-flex items-center gap-[11px] whitespace-nowrap text-lg font-semibold tracking-[-0.36px] leading-none text-primary-foreground',
-  'max-dapp:gap-[9px] max-dapp:text-base max-dapp:leading-[1.2] [&_img]:h-[26px]',
+  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-[-0.36px] leading-none text-primary-foreground',
+  'max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2] [&_img]:h-6',
 )
 
 const footerBrandMarkClass = cn(
-  'h-[27px] w-7 object-contain',
-  'max-dapp:h-[22px] max-dapp:w-6',
+  'h-7 w-7 object-contain',
+  'max-dapp:h-5.5 max-dapp:w-6',
 )
 
 function FooterBrandCopy({ copy }: { copy: string }) {
@@ -78,7 +78,7 @@ export function HomeFooter() {
             <Text
               as="h3"
               weight="semibold"
-              className="m-0 text-sm leading-[1.2] tracking-[0.56px] text-white max-dapp:text-[13px] max-dapp:leading-[1.5]"
+              className="m-0 text-sm leading-[1.2] tracking-[0.56px] text-white max-dapp:text-xs max-dapp:leading-[1.5]"
             >
               {group.label}
             </Text>

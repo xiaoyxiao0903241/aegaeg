@@ -11,6 +11,7 @@ import {
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
+  resolveGenesisMaxShares,
 } from '~/lib/presale/presale-math'
 import {
   buildSeasonOptions,
@@ -100,6 +101,22 @@ export function useGenesisWidget() {
   const maxAmount =
     activePhase?.maxAmount ??
     parseTokenAmount(PRESALE_CONFIG.phases[0]?.maxUsd1 ?? '10000', USD1_DECIMALS)
+  const maxShares = useMemo(
+    () =>
+      resolveGenesisMaxShares({
+        phaseMaxAmount: maxAmount,
+        userTotal,
+        usd1Balance,
+        walletReady,
+      }),
+    [maxAmount, userTotal, usd1Balance, walletReady],
+  )
+
+  useEffect(() => {
+    if (maxShares <= 0) return
+    setShares((current) => Math.min(Math.max(current, 1), maxShares))
+  }, [maxShares])
+
   const estimatedAgx = estimateAgxFromUsd1(
     shares * Number(PRESALE_CONFIG.sharePriceUsd1),
     discountBps,
@@ -124,8 +141,10 @@ export function useGenesisWidget() {
   const canPurchase =
     walletReady &&
     activePhase !== null &&
+    maxShares > 0 &&
     purchaseAmount >= minAmount &&
-    purchaseAmount <= maxAmount
+    purchaseAmount <= maxAmount &&
+    shares <= maxShares
   const isSubmitting = submittingAction !== null
 
   const refresh = useCallback(async () => {
@@ -267,6 +286,7 @@ export function useGenesisWidget() {
   return {
     shares,
     setShares,
+    maxShares,
     phases,
     activePhase,
     phaseIndex,

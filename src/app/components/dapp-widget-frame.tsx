@@ -5,7 +5,7 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { cn } from '~/lib/utils'
 
 /** Figma widget column — header to first block: PC 18px, H5 30px; card stack gap 8px. */
-export const dappWidgetHeaderSpacingClass = 'mb-[18px] max-dapp:mb-[30px]'
+export const dappWidgetHeaderSpacingClass = 'mb-4.5 max-dapp:mb-7.5'
 
 export const dappWidgetBodyClass = cn(
   'flex min-h-0 flex-1 flex-col gap-2',

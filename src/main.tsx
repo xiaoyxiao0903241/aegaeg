@@ -2,6 +2,10 @@ import { suppressKnownConsoleNoise } from '~/lib/suppress-known-console-noise'
 
 suppressKnownConsoleNoise()
 
+if (typeof document !== 'undefined') {
+  document.documentElement.classList.add('site-fluid', 'dapp-app')
+}
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Toaster } from 'sonner'

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { DappIcon } from '~/app/components/dapp-icon'
 import { dappAssets } from '~/app/assets'
 import { DappRail } from '~/app/dapp-rail'
 import { DappMobileNav } from '~/app/components/dapp-mobile-nav'
@@ -86,7 +87,10 @@ export function DappShell() {
           )}
           aria-label="AEGIS X DApp"
         >
-          <div className={cn(shellContainerClass(useSwapMobilePager), 'relative z-1')}>
+          <div
+            className={cn(shellContainerClass(useSwapMobilePager), 'relative z-1')}
+            data-dapp-shell-container
+          >
             <GenesisWidgetProvider>
               {useSwapMobilePager ? (
                 <div className="flex min-h-0 flex-1 flex-col">
@@ -136,7 +140,7 @@ export function DappShell() {
                         onClick={() => setMobileNavOpen(true)}
                         type="button"
                       >
-                        <img alt="" height="18" src={dappAssets.menu} width="18" />
+                        <DappIcon alt="" size="lg" src={dappAssets.menu} />
                       </button>
                     </div>
                     <DappMobileNav

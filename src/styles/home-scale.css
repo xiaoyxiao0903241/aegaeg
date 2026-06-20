@@ -1,0 +1,23 @@
+/**
+ * 首页布局 rem 刻度 — 设计基准 1920 @ 16px 根字号，随 site-fluid 同比缩放。
+ * 仅布局/间距/字号；字距 tracking 仍可用 px。
+ */
+:root {
+  --home-security-block-max: 52.625rem; /* 842 */
+  --home-security-art-w: 20.625rem; /* 330 */
+  --home-security-list-max: 29rem; /* 464 */
+  --home-security-art-h5-w: 10.875rem; /* 174 */
+
+  /* 图标容器 / 图标 — Figma @ 16px，随 site-fluid 根字号同比缩放 */
+  --home-token-tile-size: 3.25rem; /* 52 */
+  --home-token-tile-size-h5: 2.875rem; /* 46 */
+  --home-token-icon-size: 1.875rem; /* 30 */
+  --home-token-icon-size-h5: 1.625rem; /* 26 */
+  --home-feature-icon-size: 5rem; /* 80 */
+  --home-feature-icon-size-h5: 2.75rem; /* 44 */
+  --home-partner-icon-size: 1.5rem; /* 24 */
+  --home-partner-icon-size-h5: 1.25rem; /* 20 */
+  --home-security-icon-wrap-size: 1.625rem; /* 26 */
+  --home-security-icon-wrap-size-h5: 1.5rem; /* 24 */
+  --home-security-icon-size: 0.875rem; /* 14 */
+}

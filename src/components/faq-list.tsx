@@ -12,24 +12,24 @@ export type FaqListItem = {
 type FaqListVariant = 'home' | 'dapp'
 
 const faqCardClass = cn(
-  'overflow-hidden rounded-2xl bg-white shadow-[0_6px_20px_rgba(18,26,51,0.06)]',
-  'max-dapp:rounded-[14px]',
+  'overflow-hidden rounded-2xl bg-white shadow-faq',
+  'max-dapp:rounded-md',
 )
 
 const faqCardBodyClass = cn(
-  'flex w-full flex-col items-start px-6 py-[18px]',
+  'flex w-full flex-col items-start px-6 py-4.5',
   'max-dapp:px-4 max-dapp:py-3.5',
   'group-data-[state=open]:gap-3 max-dapp:group-data-[state=open]:gap-2.5',
 )
 
 const faqQuestionClass = cn(
-  'min-w-px flex-[1_0_0] text-left text-[15px] font-semibold leading-[1.3] tracking-[-0.3px] text-foreground [overflow-wrap:anywhere]',
+  'min-w-px flex-[1_0_0] text-left text-sm font-semibold leading-[1.3] tracking-[-0.3px] text-foreground [overflow-wrap:anywhere]',
   'max-dapp:text-sm',
 )
 
 const faqAnswerClass = cn(
-  'w-full text-left text-[14px] font-normal leading-[1.5] tracking-[-0.28px] text-faq-text [overflow-wrap:anywhere]',
-  'max-dapp:text-[13px]',
+  'w-full text-left text-sm font-normal leading-[1.5] tracking-[-0.28px] text-faq-text [overflow-wrap:anywhere]',
+  'max-dapp:text-xs',
 )
 
 const faqTriggerClass =
@@ -39,7 +39,7 @@ const variantStyles = {
   home: {
     list: cn(
       revealClass(),
-      'mx-auto mt-10 grid w-[min(100%,960px)] gap-3 max-dapp:mt-5 max-dapp:gap-2.5',
+      'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
     ),
   },
   dapp: {
@@ -51,11 +51,9 @@ function FaqChevron({ open }: { open: boolean }) {
   return (
     <svg
       aria-hidden="true"
-      className={cn('size-[18px] shrink-0', open ? 'text-primary' : 'text-foreground/40')}
+      className={cn('size-[1.125rem] shrink-0', open ? 'text-primary' : 'text-foreground/40')}
       fill="none"
-      height="18"
       viewBox="0 0 18 18"
-      width="18"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -87,29 +85,28 @@ export function FaqList({
   const styles = variantStyles[variant]
   const openFirst = defaultOpenFirst ?? variant === 'dapp'
 
-  const defaultValue = useMemo(
-    () =>
-      items.reduce<string[]>((acc, item, index) => {
-        if (item.open ?? (openFirst && index === 0)) {
-          acc.push(String(index))
-        }
-        return acc
-      }, []),
-    [items, openFirst],
-  )
+  const defaultValue = useMemo(() => {
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index]
+      if (item.open ?? (openFirst && index === 0)) {
+        return String(index)
+      }
+    }
+    return ''
+  }, [items, openFirst])
 
   const [value, setValue] = useState(defaultValue)
   const [interacted, setInteracted] = useState<Set<string>>(new Set())
 
   const handleValueChange = useCallback(
-    (next: string[]) => {
+    (next: string) => {
       setValue(next)
       setInteracted((prev) => {
         const changed = new Set(prev)
         for (let i = 0; i < items.length; i++) {
           const itemValue = String(i)
-          const wasOpen = defaultValue.includes(itemValue)
-          const isOpen = next.includes(itemValue)
+          const wasOpen = defaultValue === itemValue
+          const isOpen = next === itemValue
           if (wasOpen !== isOpen) {
             changed.add(itemValue)
           }
@@ -122,8 +119,8 @@ export function FaqList({
 
   const collapseItem = useCallback(
     (itemValue: string) => {
-      if (value.includes(itemValue)) {
-        handleValueChange(value.filter((entry) => entry !== itemValue))
+      if (value === itemValue) {
+        handleValueChange('')
       }
     },
     [handleValueChange, value],
@@ -132,16 +129,17 @@ export function FaqList({
   return (
     <Accordion.Root
       className={cn(styles.list, className)}
+      collapsible
       data-reveal={dataReveal ?? true}
       onValueChange={handleValueChange}
-      type="multiple"
+      type="single"
       value={value}
     >
       {items.map((item, index) => {
         const itemValue = String(index)
-        const wasInitiallyOpen = defaultValue.includes(itemValue)
+        const wasInitiallyOpen = defaultValue === itemValue
         const motionEnabled = !wasInitiallyOpen || interacted.has(itemValue)
-        const isOpen = value.includes(itemValue)
+        const isOpen = value === itemValue
 
         return (
           <Accordion.Item

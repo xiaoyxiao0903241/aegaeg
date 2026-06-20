@@ -6,7 +6,7 @@ export const radioIndicatorVariants = tv({
   base: 'relative inline-flex flex-none items-center justify-center rounded-full border-2 border-border bg-card',
   variants: {
     size: {
-      md: 'aspect-square w-[17px] max-dapp:size-[18px]',
+      md: 'aspect-square w-4 max-dapp:size-4.5',
     },
     checked: {
       true: 'border-primary',
@@ -31,7 +31,7 @@ export function RadioIndicator({ checked = false, className, size }: RadioIndica
       aria-hidden="true"
       className={cn(radioIndicatorVariants({ size, checked }), className)}
     >
-      {checked ? <span className="absolute inset-[3px] rounded-full bg-primary" /> : null}
+      {checked ? <span className="absolute inset-0.5 rounded-full bg-primary" /> : null}
     </span>
   )
 }

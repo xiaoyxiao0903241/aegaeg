@@ -35,10 +35,10 @@ export function MetricCardSkeleton({ className }: { className?: string }) {
     <Card
       as="article"
       surface="elevated"
-      className={cn('mt-3.5 flex flex-col gap-[7px] px-4 py-3.5', className)}
+      className={cn('mt-3.5 flex flex-col gap-1.5 px-4 py-3.5', className)}
     >
-      <DappSkeleton className="h-3 w-[72px] max-w-[55%]" />
-      <DappSkeleton className="mt-[9px] h-5 w-[96px] max-w-[70%]" />
+      <DappSkeleton className="h-3 w-18 max-w-[55%]" />
+      <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
     </Card>
   )
 }
@@ -48,18 +48,18 @@ export function SeasonOptionSkeleton() {
     <div
       aria-hidden="true"
       className={cn(
-        'pointer-events-none flex items-center gap-[11px] rounded-[13px] border border-border bg-card px-3.5 py-3',
+        'pointer-events-none flex items-center gap-2.5 rounded-sm border border-border bg-card px-3.5 py-3',
         'max-dapp:gap-2.5 max-dapp:px-3.5 max-dapp:py-3',
       )}
     >
-      <DappSkeleton className="aspect-square w-[17px] shrink-0 rounded-full" />
+      <DappSkeleton className="aspect-square w-4 shrink-0 rounded-full" />
       <div className="min-w-0 flex-1">
-        <DappSkeleton className="h-3.5 w-[72px]" />
-        <DappSkeleton className="mt-1.5 h-3 w-[min(100%,180px)]" />
+        <DappSkeleton className="h-3.5 w-18" />
+        <DappSkeleton className="mt-1.5 h-3 w-full max-w-45" />
       </div>
       <div className="grid flex-none justify-items-end gap-1">
-        <DappSkeleton className="h-[22px] w-[52px] rounded-full" />
-        <DappSkeleton className="h-3 w-[72px]" />
+        <DappSkeleton className="h-5.5 w-12 rounded-full" />
+        <DappSkeleton className="h-3 w-18" />
       </div>
     </div>
   )
@@ -68,7 +68,7 @@ export function SeasonOptionSkeleton() {
 export function CurrentTitleCardBodySkeleton() {
   return (
     <div aria-hidden="true" className="grid min-h-[3.75rem] gap-1.5">
-      <DappSkeleton className="h-[17px] w-[78%]" />
+      <DappSkeleton className="h-4 w-[78%]" />
       <div className="grid min-h-[2.25rem] gap-1.5">
         <DappSkeleton className="h-3 w-full" />
         <DappSkeleton className="h-3 w-[58%]" />
@@ -81,7 +81,7 @@ export function RewardsHeroBodySkeleton({ compact = false }: { compact?: boolean
   return (
     <div aria-hidden="true" className="grid gap-2">
       <DappSkeleton
-        className={cn(compact ? 'h-[18px] w-[62%]' : 'h-[21px] w-[58%]')}
+        className={cn(compact ? 'h-4.5 w-[62%]' : 'h-5 w-[58%]')}
         tone="dark"
       />
       <div className="grid gap-1.5">
@@ -102,7 +102,7 @@ export function SideCardSkeleton({
   return (
     <>
       <DappSkeleton className="h-3 w-20" />
-      <DappSkeleton className={cn('mt-2 h-[17px]', valueWidth)} />
+      <DappSkeleton className={cn('mt-2 h-4', valueWidth)} />
       <DappSkeleton className={cn('mt-1.5 h-3', hintLines === 2 ? 'w-full' : 'w-[82%]')} />
       {hintLines === 2 ? <DappSkeleton className="mt-1 h-3 w-[58%]" /> : null}
     </>
@@ -130,14 +130,14 @@ export function ProgressCardSkeleton() {
           <DappSkeleton className="h-3 w-24" />
           <DappSkeleton className="h-3 w-20" />
         </div>
-        <DappSkeleton className="h-[7px] w-full rounded-full" />
+        <DappSkeleton className="h-1.5 w-full rounded-full" />
       </div>
       <div className="grid gap-1.5">
         <div className="flex items-center justify-between gap-3">
           <DappSkeleton className="h-3 w-20" />
           <DappSkeleton className="h-3 w-24" />
         </div>
-        <DappSkeleton className="h-[7px] w-full rounded-full" />
+        <DappSkeleton className="h-1.5 w-full rounded-full" />
       </div>
     </div>
   )
@@ -152,7 +152,7 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
       tone={dark ? 'dark' : undefined}
       surface={dark ? undefined : 'elevated'}
       className={cn(
-        'community-stat flex min-h-[90px] flex-col items-start gap-1 rounded-[14px] border-0 p-[13px_12px] shadow-card',
+        'community-stat flex min-h-22 flex-col items-start gap-1 rounded-md border-0 p-[13px_12px] shadow-card',
         dark && 'is-dark',
         communityStatCardH5Layout,
       )}
@@ -176,7 +176,7 @@ export function TableRowSkeleton({
     <tr>
       {Array.from({ length: columns }, (_, index) => (
         <td className={cn(TABLE_CELL, isLast && 'border-b-0')} key={index}>
-          <DappSkeleton className="h-3.5 w-[min(100%,88px)]" />
+          <DappSkeleton className="h-3.5 w-full max-w-22" />
         </td>
       ))}
     </tr>
@@ -191,10 +191,10 @@ export function ContributionBlockSkeleton() {
           <DappSkeleton className="h-3 w-20" />
           <DappSkeleton className="h-3 w-28" />
         </div>
-        <DappSkeleton className="h-[7px] w-full rounded-full" />
+        <DappSkeleton className="h-1.5 w-full rounded-full" />
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-0 border-collapse text-[13px] leading-[1.5]">
+        <table className="w-full min-w-0 border-collapse text-xs leading-[1.5]">
           <tbody>
             <TableRowSkeleton columns={5} />
             <TableRowSkeleton columns={5} isLast />
@@ -206,15 +206,15 @@ export function ContributionBlockSkeleton() {
 }
 
 export function SwapBalanceSkeleton() {
-  return <DappSkeleton className="inline-block h-3 w-[88px]" />
+  return <DappSkeleton className="inline-block h-3 w-22" />
 }
 
 export function SwapMetaValueSkeleton({ className }: { className?: string }) {
-  return <DappSkeleton className={cn('inline-block h-3.5 w-[min(100%,148px)]', className)} />
+  return <DappSkeleton className={cn('inline-block h-3.5 w-full max-w-37', className)} />
 }
 
 export function SwapAmountSkeleton() {
-  return <DappSkeleton className="ml-auto h-7 w-[108px] max-w-[55%]" />
+  return <DappSkeleton className="ml-auto h-7 w-28 max-w-[55%]" />
 }
 
 export function GenesisPromoTitleSkeleton() {

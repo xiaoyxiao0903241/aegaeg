@@ -6,13 +6,13 @@ import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
 const metricCardResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-[14px] group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:p-3.5',
-  'group-data-[tab=genesis]/shell:max-dapp:min-h-0 group-data-[tab=genesis]/shell:max-dapp:rounded-[14px] group-data-[tab=genesis]/shell:max-dapp:p-3.5 group-data-[tab=genesis]/shell:max-dapp:shadow-card',
+  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-md group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:p-3.5',
+  'group-data-[tab=genesis]/shell:max-dapp:min-h-0 group-data-[tab=genesis]/shell:max-dapp:rounded-md group-data-[tab=genesis]/shell:max-dapp:p-3.5 group-data-[tab=genesis]/shell:max-dapp:shadow-card',
 )
 
 const metricValueResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[13px] group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
-  'group-data-[tab=genesis]/shell:text-base group-data-[tab=genesis]/shell:leading-[1.3] group-data-[tab=genesis]/shell:max-dapp:text-[15px] group-data-[tab=genesis]/shell:max-dapp:leading-[1.2]',
+  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
+  'group-data-[tab=genesis]/shell:text-base group-data-[tab=genesis]/shell:leading-[1.3] group-data-[tab=genesis]/shell:max-dapp:text-sm group-data-[tab=genesis]/shell:max-dapp:leading-[1.2]',
 )
 
 const metricHintHiddenResponsive = cn(
@@ -22,7 +22,7 @@ const metricHintHiddenResponsive = cn(
 )
 
 export const communityStatCardH5Layout = cn(
-  'group-data-[tab=community]/shell:max-dapp:min-h-[70px] group-data-[tab=community]/shell:max-dapp:rounded-xl group-data-[tab=community]/shell:max-dapp:p-3.5',
+  'group-data-[tab=community]/shell:max-dapp:min-h-18 group-data-[tab=community]/shell:max-dapp:rounded-xl group-data-[tab=community]/shell:max-dapp:p-3.5',
   'group-data-[tab=community]/shell:max-dapp:items-center group-data-[tab=community]/shell:max-dapp:text-center',
 )
 
@@ -30,28 +30,28 @@ const communityStatCardResponsive = cn(
   communityStatCardH5Layout,
   'group-data-[tab=community]/shell:max-dapp:[&:not(.is-dark)>span]:text-xs group-data-[tab=community]/shell:max-dapp:[&:not(.is-dark)>span]:leading-[1.35] group-data-[tab=community]/shell:max-dapp:[&:not(.is-dark)>span]:text-faint',
   'group-data-[tab=community]/shell:max-dapp:[&.is-dark>span]:text-xs group-data-[tab=community]/shell:max-dapp:[&.is-dark>span]:leading-[1.35] group-data-[tab=community]/shell:max-dapp:[&.is-dark>span]:text-on-dark',
-  'group-data-[tab=community]/shell:max-dapp:[&>strong]:mt-[3px] group-data-[tab=community]/shell:max-dapp:[&>strong]:text-2xl group-data-[tab=community]/shell:max-dapp:[&>strong]:leading-[1.05]',
+  'group-data-[tab=community]/shell:max-dapp:[&>strong]:mt-0.5 group-data-[tab=community]/shell:max-dapp:[&>strong]:text-2xl group-data-[tab=community]/shell:max-dapp:[&>strong]:leading-[1.05]',
   'group-data-[tab=community]/shell:max-dapp:[&>b]:hidden group-data-[tab=community]/shell:max-dapp:[&>small]:hidden',
   'group-data-[tab=community]/shell:max-dapp:[&.is-dark>small]:hidden',
-  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:min-h-[90px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:items-start group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-[14px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:border-0 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:p-[13px_12px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-left group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:shadow-card',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:min-h-22 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:items-start group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-md group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:border-0 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:p-[13px_12px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-left group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:shadow-card',
 )
 
 const communityStatLabelResponsive =
-  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-normal'
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-normal'
 
 const communityStatValueResponsive = cn(
-  'group-data-[tab=community]/shell:max-dapp:mt-[3px] group-data-[tab=community]/shell:max-dapp:text-2xl group-data-[tab=community]/shell:max-dapp:leading-[1.05]',
+  'group-data-[tab=community]/shell:max-dapp:mt-0.5 group-data-[tab=community]/shell:max-dapp:text-2xl group-data-[tab=community]/shell:max-dapp:leading-[1.05]',
   'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-2xl',
 )
 
 const communityStatVolumeResponsive = cn(
   'group-data-[tab=community]/shell:max-dapp:hidden',
-  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
 )
 
 const communityStatHintResponsive = cn(
   'group-data-[tab=community]/shell:max-dapp:hidden',
-  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-[11px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
   'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:[&.is-dark]:text-on-dark',
 )
 
@@ -90,7 +90,7 @@ export function SideLabel({
         size="xs"
         weight="semibold"
         tone="coral"
-        className={cn('m-0 uppercase tracking-[0.88px] text-[11px]', className)}
+        className={cn('m-0 uppercase tracking-[0.88px] text-xs', className)}
       >
         {children}
       </Text>
@@ -147,7 +147,7 @@ export function SideTitle({
   className?: string
 }) {
   return (
-    <Text as="strong" size="md" weight="semibold" className={cn('block text-[17px]', className)}>
+    <Text as="strong" size="md" weight="semibold" className={cn('block text-base', className)}>
       {children}
     </Text>
   )
@@ -193,7 +193,7 @@ export function MetricCard({
       surface="elevated"
       className={cn(
         revealClass(),
-        'mt-3.5 flex flex-col items-start gap-[7px]',
+        'mt-3.5 flex flex-col items-start gap-1.5',
         metricCardResponsive,
         className,
       )}
@@ -215,7 +215,7 @@ export function MetricCard({
           as="small"
           size="xs"
           tone="muted"
-          className={cn('mt-[7px] block', metricHintHiddenResponsive)}
+          className={cn('mt-1.5 block', metricHintHiddenResponsive)}
         >
           {hint}
         </Text>
@@ -251,7 +251,7 @@ export function CommunityStatCard({
       tone={dark ? 'dark' : undefined}
       className={cn(
         revealClass(),
-        'community-stat flex flex-col items-start gap-1 rounded-[18px] p-[18px]',
+        'community-stat flex flex-col items-start gap-1 rounded-md p-4.5',
         !dark && 'shadow-[0_8px_24px_rgba(18,26,51,0.06)]',
         dark && 'is-dark',
         image && 'relative overflow-visible',
@@ -268,7 +268,7 @@ export function CommunityStatCard({
           'relative z-1 tracking-[-0.24px]',
           communityStatLabelResponsive,
           dark &&
-            'text-on-dark group-data-[tab=community]/shell:dapp:text-[13px] group-data-[tab=community]/shell:dapp:tracking-[-0.26px]',
+            'text-on-dark group-data-[tab=community]/shell:dapp:text-xs group-data-[tab=community]/shell:dapp:tracking-[-0.26px]',
           !dark && 'group-data-[tab=community]/shell:max-dapp:text-faint',
         )}
       >
@@ -315,7 +315,7 @@ export function CommunityStatCard({
       {image ? (
         <img
           alt=""
-          className="pointer-events-none absolute -bottom-6 -right-2.5 z-1 h-auto w-[clamp(88px,8vw,110px)]"
+          className="pointer-events-none absolute -bottom-6 -right-2.5 z-1 h-auto w-24 max-w-28 min-w-22"
           height="156"
           loading="lazy"
           src={image}
@@ -348,7 +348,7 @@ export function ProgramCard({
       className={cn(
         revealClass(),
         'flex flex-col gap-2 p-5',
-        'max-dapp:rounded-[14px] max-dapp:p-4 group-data-[tab=community]/shell:max-dapp:gap-1.5 group-data-[tab=community]/shell:max-dapp:py-3',
+        'max-dapp:rounded-md max-dapp:p-4 group-data-[tab=community]/shell:max-dapp:gap-1.5 group-data-[tab=community]/shell:max-dapp:py-3',
         className,
       )}
       data-reveal
@@ -358,7 +358,7 @@ export function ProgramCard({
         size="xs"
         weight="semibold"
         tone="coral"
-        className="m-0 uppercase tracking-[0.88px] text-[11px]"
+        className="m-0 uppercase tracking-[0.88px] text-xs"
       >
         {label}
       </Text>
@@ -423,7 +423,7 @@ export function RewardBalanceCard({
           </Text>
         )}
       </div>
-      <Text as="strong" className="mt-2 block text-[22px] font-bold leading-[1.32]">
+      <Text as="strong" className="mt-2 block text-xl font-bold leading-[1.32]">
         {value}
       </Text>
       {hint ? (

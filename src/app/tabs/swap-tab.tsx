@@ -8,6 +8,7 @@ import {
   shellWidgetRootClass,
 } from '~/app/shell-layout'
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/components/dapp-icon'
 import {
   swapTokenKeys,
   type SwapTokenKey,
@@ -36,6 +37,7 @@ import { SwapAmountBox } from '~/app/components/swap-amount-box'
 import { SwapSlippageModal } from '~/app/components/swap-slippage-modal'
 import { TokenAboutCarousel } from '~/app/components/swap-token-about-carousel'
 import { useSwapWidget } from '~/hooks/use-swap-widget'
+import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
@@ -51,13 +53,13 @@ const SWAP_CARD_FLIP_ANIM =
   '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]'
 
 const PERCENT_BTN_CLASS = cn(
-  'flex h-[25px] cursor-pointer items-center justify-center rounded-[9px] border border-border bg-card',
-  'px-0 py-[5px] text-xs font-semibold whitespace-nowrap text-ink-strong',
+  'flex h-6 cursor-pointer items-center justify-center rounded-sm border border-border bg-card',
+  'px-0 py-1 text-xs font-semibold whitespace-nowrap text-ink-strong',
   'transition-[border-color,color,transform,background-color] duration-180 ease-out',
   'hover:-translate-y-px hover:border-primary hover:text-primary',
   buttonDisabledClass,
   'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
-  'max-dapp:h-auto max-dapp:py-1.5 max-dapp:text-[11px]',
+  'max-dapp:h-auto max-dapp:py-1.5 max-dapp:text-xs',
 )
 
 export function SwapWidget({
@@ -79,7 +81,7 @@ export function SwapWidget({
   const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
   const swapPreview = !sessionReady
   const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
-  const showRateSkeleton = swap.isSpotQuoting && !swap.rateLabel
+  const showRateSkeleton = swap.isExchangePriceQuoting && !swap.exchangePriceLabel
   const showBuyAmountSkeleton = sessionReady && swap.isQuoting && swap.sellAmount.trim().length > 0
   const zeroBalanceLabel = `${t.swap.balance}: 0.00`
 
@@ -115,15 +117,6 @@ export function SwapWidget({
       setIsFlipping(false)
     }, 320)
   }, [isFlipping, sessionReady, swap])
-
-  const handleMetaRateFlip = useCallback(() => {
-    if (!sessionReady || isFlipping) return
-    if (!swap.walletReady) {
-      swap.flipDirection()
-      return
-    }
-    handleFlip()
-  }, [handleFlip, isFlipping, sessionReady, swap])
 
   const handleSubmit = useCallback(async () => {
     const success = await swap.submit()
@@ -196,7 +189,7 @@ export function SwapWidget({
 
       <div
         className={cn(
-          'flex items-center justify-center py-[6px]',
+          'flex items-center justify-center py-1.5',
           'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]',
         )}
       >
@@ -204,8 +197,8 @@ export function SwapWidget({
           <button
             aria-label={t.swap.flip}
             className={cn(
-              'grid size-[34px] place-items-center rounded-[11px] border border-border bg-card p-0',
-              'text-[14px] font-normal leading-normal tracking-[-0.28px] text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
+              'grid size-8 place-items-center rounded-sm border border-border bg-card p-0',
+              'text-sm font-normal leading-normal tracking-[-0.28px] text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
               'enabled:hover:-translate-y-px enabled:hover:border-primary',
               'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
               'max-dapp:my-2',
@@ -249,20 +242,7 @@ export function SwapWidget({
             value: showRateSkeleton ? (
               <SwapMetaValueSkeleton />
             ) : (
-              <>
-                {swap.rateLabel || placeholderRateLabel}
-                <button
-                  aria-label={t.swap.flip}
-                  className={cn(
-                    'grid size-[9px] shrink-0 cursor-pointer place-items-center border-0 bg-transparent p-0',
-                    'transition-opacity duration-180 ease-out hover:opacity-80',
-                  )}
-                  onClick={handleMetaRateFlip}
-                  type="button"
-                >
-                  <img alt="" className="size-full" height="8" src={dappAssets.swapExchange} width="9" />
-                </button>
-              </>
+              swap.exchangePriceLabel || placeholderRateLabel
             ),
             valueClassName: SWAP_META_VALUE_ROW_CLASS,
           },
@@ -274,7 +254,7 @@ export function SwapWidget({
                 <button
                   aria-label={t.swap.slippageSettings}
                   className={cn(
-                    'grid size-3 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+                    'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
                     'transition-opacity duration-180 ease-out hover:opacity-80',
                     sessionReady && !swap.walletReady && 'pointer-events-none opacity-40',
                   )}
@@ -282,7 +262,7 @@ export function SwapWidget({
                   onClick={() => setSlippageOpen(true)}
                   type="button"
                 >
-                  <img alt="" height="12" src={dappAssets.setting} width="12" />
+                  <DappIcon alt="" size="xs" src={dappAssets.setting} />
                 </button>
               </>
             ),
@@ -300,13 +280,13 @@ export function SwapWidget({
                 <button
                   aria-label={t.swap.openPancakeSwap}
                   className={cn(
-                    'grid size-[15px] shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+                    'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
                     'transition-opacity duration-180 ease-out hover:opacity-80',
                   )}
                   onClick={() => openPancakeSwapDeepLink(swap.pancakeSwapUrl)}
                   type="button"
                 >
-                  <img alt="" height="15" src={dappAssets.arrowUpRight} width="15" />
+                  <DappIcon alt="" size="action" src={dappAssets.arrowUpRight} />
                 </button>
               </>
             ),
@@ -333,8 +313,8 @@ export function SwapWidget({
           <GenesisPromoCard
             actionLabel={t.genesis.joinGenesis}
             className={cn(
-              'gap-1.5 [&_button]:min-h-[38px] [&_button]:text-[13px] [&_p]:leading-tight',
-              'max-dapp:mt-3.5 max-dapp:[&_button]:min-h-[42px] max-dapp:[&_button]:text-sm',
+              'gap-1.5 [&_button]:min-h-9.5 [&_button]:text-xs [&_p]:leading-tight',
+              'max-dapp:mt-3.5 max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
             )}
             isLoading={genesis.isLoading}
             onClick={onSelectGenesis}
@@ -362,7 +342,11 @@ export function SwapContent({
 }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(sessionReady)
+  const swapDirection = useSwapDirectionStore((state) => state.direction)
+  const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(
+    sessionReady,
+    swapDirection,
+  )
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
   const faqItems = t.swap.faq.tabs[faqToken].items
 
@@ -372,25 +356,25 @@ export function SwapContent({
       columns={2}
     >
       {sessionReady && poolRateLoading && !poolRateLabel ? (
-        <MetricCardSkeleton className="max-dapp:min-w-0 max-dapp:rounded-[14px] max-dapp:p-3.5" />
+        <MetricCardSkeleton className="max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5" />
       ) : (
         <MetricCard
           className={cn(
             sessionReady && '[&_small]:hidden',
-            'max-dapp:min-w-0 max-dapp:gap-1.5 max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
+            'max-dapp:min-w-0 max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2]',
           )}
           label={t.swap.exchangeRate}
           value={
             sessionReady
               ? poolRateLabel ?? '—'
-              : t.swap.fixedRate
+              : '--- : ---'
           }
         />
       )}
       <MetricCard
         className={cn(
           sessionReady && '[&_small]:hidden',
-          'max-dapp:min-w-0 max-dapp:gap-1.5 max-dapp:rounded-[14px] max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-[13px] max-dapp:[&_strong]:leading-[1.2]',
+          'max-dapp:min-w-0 max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2]',
         )}
         label={t.swap.settlement}
         value={t.swap.settlementValue}
@@ -426,7 +410,7 @@ export function SwapContent({
           '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
           '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
           'max-dapp:[&_h3]:pb-2.5 max-dapp:[&_h3]:text-base max-dapp:[&_h3]:tracking-[-0.64px]',
-          'dapp:[&+section]:mt-[34px]',
+          'dapp:[&+section]:mt-8',
           '[&_h3_button]:w-full',
         )}
         title={t.swap.tokenAbout.title}

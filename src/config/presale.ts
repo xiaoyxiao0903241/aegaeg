@@ -9,6 +9,7 @@ export interface PresaleConfig {
   phaseDurationSeconds: number
   agxPriceUsd: string
   sharePriceUsd1: string
+  maxShares: number
   phases: PresalePhaseConfig[]
 }
 
@@ -18,6 +19,7 @@ export const PRESALE_CONFIG: PresaleConfig = {
   phaseDurationSeconds: 259_200,
   agxPriceUsd: '65',
   sharePriceUsd1: '100',
+  maxShares: 100,
   phases: [
     { discountBps: 3000, minUsd1: '100', maxUsd1: '10000' },
     { discountBps: 2500, minUsd1: '100', maxUsd1: '10000' },

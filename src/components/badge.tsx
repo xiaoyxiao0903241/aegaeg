@@ -16,7 +16,7 @@ export function StatusBadge({
       weight="bold"
       tone="success"
       className={cn(
-        'inline-flex items-center rounded-full bg-status-success-bg px-[9px] py-0.5 not-italic',
+        'inline-flex items-center rounded-full bg-status-success-bg px-2 py-0.5 not-italic',
         className,
       )}
     >

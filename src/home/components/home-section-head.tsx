@@ -4,7 +4,7 @@ import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
 const sectionHeadClass =
-  'section-head mx-auto max-w-[760px] text-center max-dapp:w-full max-dapp:max-w-[362px] max-dapp:pb-1'
+  'section-head mx-auto max-w-192 text-center max-dapp:w-full max-dapp:max-w-96 max-dapp:pb-1'
 
 export function HomeSectionHead({
   eyebrow,
@@ -28,7 +28,7 @@ export function HomeSectionHead({
         size="sm"
         weight="semibold"
         tone="coral"
-        className="m-0 text-[13px] leading-[1.25] tracking-[1.82px] text-primary max-dapp:text-xs max-dapp:tracking-[1.68px]"
+        className="m-0 text-xs leading-[1.25] tracking-[1.82px] text-primary max-dapp:text-xs max-dapp:tracking-[1.68px]"
       >
         {eyebrow}
       </Text>
@@ -37,7 +37,7 @@ export function HomeSectionHead({
         size="display"
         weight="semibold"
         className={cn(
-          'mx-auto mt-3.5 max-w-[760px] max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-[26px] max-dapp:leading-[1.2] max-dapp:text-balance',
+          'mx-auto mt-3.5 max-w-192 max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-2xl max-dapp:leading-[1.2] max-dapp:text-balance',
           titleClassName,
         )}
       >
@@ -49,7 +49,7 @@ export function HomeSectionHead({
           size="md"
           tone="body"
           className={cn(
-            'mx-auto mt-3.5 block max-w-[680px] text-[17px] leading-[1.5] max-dapp:mt-2.5 max-dapp:max-w-[362px] max-dapp:text-sm',
+            'mx-auto mt-3.5 block max-w-176 text-base leading-[1.5] max-dapp:mt-2.5 max-dapp:max-w-96 max-dapp:text-sm',
             subtitleClassName,
           )}
         >
