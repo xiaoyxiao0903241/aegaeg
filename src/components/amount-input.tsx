@@ -5,7 +5,7 @@ export const AmountInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTML
   ({ className, ...props }, ref) => (
     <input
       className={cn(
-        'w-full min-w-0 border-0 bg-transparent text-right text-[22px] font-semibold leading-[1.2] tracking-[-0.44px] text-foreground outline-0',
+        'w-full min-w-0 border-0 bg-transparent text-right text-xl font-semibold leading-[1.2] tracking-[-0.44px] text-foreground outline-0',
         'placeholder:text-placeholder disabled:cursor-not-allowed disabled:opacity-[.58]',
         className,
       )}

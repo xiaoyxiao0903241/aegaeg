@@ -18,6 +18,12 @@ function escapeAttr(value: string) {
     .replace(/"/g, '&quot;')
 }
 
+const faviconHead = `
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />`
+
 /**
  * 首页文档：纯客户端 SPA 薄壳（不做 SSR / 不预渲染内容）。
  * 仅内联关键引导脚本与本地化 <title>/<meta>，由 /src/home/main.tsx 客户端挂载。
@@ -33,6 +39,7 @@ export function renderHomeDocument(locale: Locale) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${escapeAttr(meta.description)}" />
     <meta name="theme-color" content="#f5f6f8" />
+${faviconHead}
     <link rel="preload" as="image" href="${homeAssets.heroVideoPoster}" fetchpriority="high" />
     <link
       rel="preload"
@@ -65,6 +72,7 @@ export function renderAppDocument(locale: Locale) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${description}" />
     <meta name="theme-color" content="#f5f6f8" />
+${faviconHead}
     <link
       rel="preload"
       href="/assets/fonts/montserrat-latin-variable.woff2"
@@ -89,6 +97,7 @@ export function renderRootRedirectDocument() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
+${faviconHead}
     <title>AEGIS X</title>
     <script>
       (() => {
@@ -121,6 +130,7 @@ export function renderAppRedirectDocument() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
+${faviconHead}
     <title>AEGIS X DApp</title>
     <script>
       (() => {

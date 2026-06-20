@@ -33,7 +33,13 @@ import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-mes
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { dappAssets } from '~/app/assets'
 import { buildRewardTierRows, getTeamBonusRateLabel, getTeamRequirementLegRank } from '~/lib/presale/tier-table'
-import { DAPP_TABLE_PAGE_SIZE, dappTableViewState, paginateStaticRows, tablePageQuery } from '~/lib/table-pagination'
+import {
+  DAPP_TABLE_PAGE_SIZE,
+  dappTableViewState,
+  paginateStaticRows,
+  shouldShowTablePagination,
+  tablePageQuery,
+} from '~/lib/table-pagination'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
@@ -176,7 +182,7 @@ export function RewardsWidget() {
               <CurrentTitleCardBodySkeleton />
             ) : (
               <>
-                <SideTitle className="max-dapp:text-[17px] max-dapp:tracking-[-0.34px]">
+                <SideTitle className="max-dapp:text-base max-dapp:tracking-[-0.34px]">
                   {rankLabel}
                 </SideTitle>
                 <SideHint
@@ -232,7 +238,7 @@ export function RewardsWidget() {
         badge={t.rewards.autoPaidLabel}
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
-          '[&_strong]:text-[22px] [&_strong]:tracking-[-0.66px]',
+          '[&_strong]:text-xl [&_strong]:tracking-[-0.66px]',
           'max-dapp:[&_small]:hidden',
         )}
         hint={t.rewards.autoPaid}
@@ -247,7 +253,7 @@ export function RewardsWidget() {
       <RewardBalanceCard
         action={
           <DappActionButton
-            className="!min-h-[42px] max-dapp:!min-h-11 max-dapp:!text-sm"
+            className="!min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm"
             disabled={
               teamClaimable === '$0.00' ||
               teamLoading ||
@@ -273,7 +279,7 @@ export function RewardsWidget() {
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
           'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
-          'max-dapp:[&_strong]:text-[17px] max-dapp:[&_strong]:tracking-[-0.51px]',
+          'max-dapp:[&_strong]:text-base max-dapp:[&_strong]:tracking-[-0.51px]',
           '[&_button]:mt-3',
         )}
         label={t.rewards.teamRewards}
@@ -285,7 +291,7 @@ export function RewardsWidget() {
         className={cn(
           REWARDS_WIDGET_CARD_CLASS,
           'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
-          'max-dapp:[&_strong]:text-[17px] max-dapp:[&_strong]:tracking-[-0.51px]',
+          'max-dapp:[&_strong]:text-base max-dapp:[&_strong]:tracking-[-0.51px]',
         )}
         label={t.rewards.teamRewards}
         meta={disconnectedTeamClaimedMeta}
@@ -356,52 +362,106 @@ export function RewardsContent() {
   const historyShowSkeleton = isLoggingIn || historyTable.showSkeleton
 
   const rewardTiers = buildRewardTierRows()
-  const { rows: pagedTierRows, total: tierTotal } = paginateStaticRows(
+  const tierTotal = rewardTiers.length
+  const tierPageCount = Math.max(1, Math.ceil(tierTotal / DAPP_TABLE_PAGE_SIZE))
+  const tierMobileSwipe = isMobileViewport && shouldShowTablePagination(tierTotal)
+  const { rows: pagedTierRows } = paginateStaticRows(
     rewardTiers,
     tierPage,
     DAPP_TABLE_PAGE_SIZE,
   )
   const tierHighlightedRows = getPresaleRankHighlightedRowsForPage(
     displayRank,
-    rewardTiers.length,
+    tierTotal,
     tierPage,
     DAPP_TABLE_PAGE_SIZE,
   )
 
-  const tierHeaders = isMobileViewport
-    ? [t.tables.title, t.community.shareholder, t.tables.postLaunchRank]
-    : [
-        t.tables.title,
-        t.community.shareholder,
-        t.tables.totalVolume,
-        t.tables.postLaunchRank,
-      ]
+  const tierHeadersMobile = [
+    t.tables.title,
+    t.community.shareholder,
+    t.tables.postLaunchRank,
+  ]
+  const tierHeadersDesktop = [
+    t.tables.title,
+    t.community.shareholder,
+    t.tables.totalVolume,
+    t.tables.postLaunchRank,
+  ]
 
-  const tierRows = pagedTierRows.map((row, rowIndex) => {
-    const totalVolumeCell = formatTierTotalVolumeCell(
-      row[0],
-      row[2],
-      t.rewards.tierDualLegRequirement,
-    )
-    const cells = isMobileViewport
-      ? [row[0], row[1], row[4]]
-      : [row[0], row[1], totalVolumeCell, row[4]]
-    if (tierHighlightedRows.includes(rowIndex)) {
-      cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
-    }
-    return cells
-  })
+  const mapTierRows = (
+    sourceRows: ReturnType<typeof buildRewardTierRows>,
+    highlightedRows: number[],
+    mobile: boolean,
+  ) =>
+    sourceRows.map((row, rowIndex) => {
+      const totalVolumeCell = formatTierTotalVolumeCell(
+        row[0],
+        row[2],
+        t.rewards.tierDualLegRequirement,
+      )
+      const cells = mobile
+        ? [row[0], row[1], row[4]]
+        : [row[0], row[1], totalVolumeCell, row[4]]
+      if (highlightedRows.includes(rowIndex)) {
+        cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
+      }
+      return cells
+    })
 
-  const tierTable = (
+  const tierTable = tierMobileSwipe ? (
+    <div
+      className={cn(
+        'max-dapp:flex max-dapp:snap-x max-dapp:snap-mandatory',
+        'max-dapp:overflow-x-scroll max-dapp:scrollbar-x-track max-dapp:pb-1.5',
+      )}
+    >
+      {Array.from({ length: tierPageCount }, (_, index) => {
+        const pageNumber = index + 1
+        const { rows: pageRows } = paginateStaticRows(
+          rewardTiers,
+          pageNumber,
+          DAPP_TABLE_PAGE_SIZE,
+        )
+        const pageHighlightedRows = getPresaleRankHighlightedRowsForPage(
+          displayRank,
+          tierTotal,
+          pageNumber,
+          DAPP_TABLE_PAGE_SIZE,
+        )
+
+        return (
+          <div
+            className="max-dapp:w-full max-dapp:shrink-0 max-dapp:snap-start"
+            key={pageNumber}
+          >
+            <ResponsiveTable
+              compact
+              headers={tierHeadersMobile}
+              highlightedRows={pageHighlightedRows}
+              plain
+              rows={mapTierRows(pageRows, pageHighlightedRows, true)}
+            />
+          </div>
+        )
+      })}
+    </div>
+  ) : (
     <>
       <ResponsiveTable
         compact
-        headers={tierHeaders}
+        headers={isMobileViewport ? tierHeadersMobile : tierHeadersDesktop}
         highlightedRows={tierHighlightedRows}
         plain
-        rows={tierRows}
+        rows={mapTierRows(
+          isMobileViewport ? paginateStaticRows(rewardTiers, 1, DAPP_TABLE_PAGE_SIZE).rows : pagedTierRows,
+          tierHighlightedRows,
+          isMobileViewport,
+        )}
       />
-      <DappTablePagination onPageChange={setTierPage} page={tierPage} total={tierTotal} />
+      {!isMobileViewport ? (
+        <DappTablePagination onPageChange={setTierPage} page={tierPage} total={tierTotal} />
+      ) : null}
     </>
   )
 
@@ -431,13 +491,13 @@ export function RewardsContent() {
       <section
         className={cn(
           revealClass(),
-          'relative mt-3.5 flex min-h-[145px] items-center justify-between gap-6 overflow-visible rounded-2xl bg-dark p-6 text-white shadow-card',
+          'relative mt-3.5 flex min-h-36 items-center justify-between gap-6 overflow-visible rounded-2xl bg-dark p-6 text-white shadow-card',
           'max-dapp:hidden',
         )}
         data-reveal
       >
-        <div className="relative z-1 min-w-0 flex-1 pr-[148px]">
-          <span className="text-[11px] font-bold uppercase tracking-[0.88px] text-coral-bright">
+        <div className="relative z-1 min-w-0 flex-1 pr-36">
+          <span className="text-xs font-bold uppercase tracking-[0.88px] text-coral-bright">
             {t.rewards.heroKicker}
           </span>
           {showHeroSkeleton ? (
@@ -446,10 +506,10 @@ export function RewardsContent() {
             </div>
           ) : (
             <>
-              <h3 className="my-2 text-[21px] font-bold leading-[1.3] tracking-[-0.63px] text-white">
+              <h3 className="my-2 text-xl font-bold leading-[1.3] tracking-[-0.63px] text-white">
                 {heroTitle}
               </h3>
-              <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-on-dark">
+              <p className="m-0 text-xs leading-normal tracking-[-0.26px] text-on-dark">
                 {heroBody}
               </p>
             </>
@@ -457,7 +517,7 @@ export function RewardsContent() {
         </div>
         <img
           alt=""
-          className="pointer-events-none absolute right-3 top-[-43px] z-0 h-[188px] w-[133px] max-w-[133px] -scale-x-100 object-contain"
+          className="pointer-events-none absolute right-3 top-[-43px] z-0 h-48 w-32 max-w-32 -scale-x-100 object-contain"
           height="156"
           loading="lazy"
           src={dappAssets.rewardsCharacter}
@@ -467,12 +527,12 @@ export function RewardsContent() {
 
       <section
         className={cn(
-          'relative mt-3.5 hidden min-h-[127px] overflow-visible rounded-2xl bg-dark p-[18px] text-white shadow-card',
+          'relative mt-3.5 hidden min-h-32 overflow-visible rounded-2xl bg-dark p-4.5 text-white shadow-card',
           'max-dapp:flex max-dapp:flex-col max-dapp:gap-2',
         )}
       >
         <div className="relative z-1">
-          <span className="text-[11px] font-bold uppercase tracking-[0.88px] text-coral-bright">
+          <span className="text-xs font-bold uppercase tracking-[0.88px] text-coral-bright">
             {t.rewards.heroKicker}
           </span>
           {showHeroSkeleton ? (
@@ -484,7 +544,7 @@ export function RewardsContent() {
               <h3 className="my-2 text-lg font-bold leading-[1.2] tracking-[-0.54px] text-white">
                 {heroTitle}
               </h3>
-              <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-on-dark">
+              <p className="m-0 text-xs leading-normal tracking-[-0.26px] text-on-dark">
                 {heroBody}
               </p>
             </>

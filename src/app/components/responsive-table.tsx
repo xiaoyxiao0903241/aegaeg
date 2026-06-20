@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Card } from '~/components/card'
 import { StatusBadge } from '~/components/badge'
 import { dappTableCardShellClass } from '~/app/components/dapp-table-shell'
@@ -5,15 +6,15 @@ import { cn } from '~/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 
 const TABLE_CELL =
-  'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal tracking-[0] max-dapp:py-[9px] max-dapp:text-xs max-dapp:leading-normal max-dapp:tracking-[-0.24px]'
+  'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal'
 
 const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
 
 const TABLE_CLASS =
-  'w-full min-w-0 table-fixed border-collapse text-[13px] leading-[1.5] max-dapp:text-xs max-dapp:leading-normal'
+  'w-full min-w-0 table-fixed border-collapse text-sm leading-normal max-dapp:text-xs'
 
-const TABLE_WRAP_H5 =
-  'max-dapp:overflow-x-visible max-dapp:px-3.5 max-dapp:py-1.5'
+const TABLE_WRAP_PADDING =
+  'dapp:px-5 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5'
 
 const HIGHLIGHTED_ROW =
   'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td:first-child]:text-primary [&_td.text-success]:text-success'
@@ -42,20 +43,20 @@ export function ResponsiveTable({
   loadingRowCount?: number
   plain?: boolean
   positiveColumns?: number[]
-  rows: string[][]
+  rows: ReactNode[][]
   statusColumns?: number[]
 }) {
   const wrapClass = plain
     ? cn(
-        'overflow-x-auto max-w-full min-w-0',
+        'overflow-x-auto max-w-full min-w-0 max-dapp:overflow-x-visible',
         dappTableCardShellClass,
-        TABLE_WRAP_H5,
+        TABLE_WRAP_PADDING,
         className,
       )
     : cn(
-        'mt-3.5 overflow-x-auto max-w-full min-w-0 px-4 py-[5.75px]',
+        'mt-3.5 overflow-x-auto max-w-full min-w-0 max-dapp:overflow-x-visible',
         dappTableCardShellClass,
-        TABLE_WRAP_H5,
+        TABLE_WRAP_PADDING,
         compact && '[&_table]:min-w-full',
         className,
       )
@@ -90,7 +91,7 @@ export function ResponsiveTable({
                     className={cn(
                       TABLE_CELL,
                       rowIndex === rows.length - 1 && 'border-b-0',
-                      'tracking-[0] text-foreground',
+                      'tracking-normal text-foreground',
                       linkColumns.includes(index) && 'text-primary',
                       emphasisColumns.includes(index) && 'font-bold text-foreground',
                       positiveColumns.includes(index) &&
@@ -99,7 +100,7 @@ export function ResponsiveTable({
                           'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
                         ),
                     )}
-                    key={`${cell}-${index}`}
+                    key={`${rowIndex}-${index}`}
                   >
                     {statusColumns.includes(index) ? (
                       <StatusBadge>{cell}</StatusBadge>

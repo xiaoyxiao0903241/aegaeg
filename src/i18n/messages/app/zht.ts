@@ -189,7 +189,7 @@ const app = defineMessages({
     genesis: {
       title: '共建計畫',
       intro: '參與 X DAO 共建計畫 · 第{season}期  ({discount} 折扣)',
-      shares: '份額（1 份 = 100 USD1 · 最大 100）',
+      shares: '份額（1 份 = 100 USD1 · 最大 {max}）',
       quota: '本期共建額度',
       pay: '支付',
       receive: '將獲得 AGX',

@@ -3,7 +3,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { HomeSectionHead } from '~/home/components/home-section-head'
 
 const sectionClass =
-  'relative py-[120px] dapp:min-h-[800px] max-dapp:min-h-[529px] max-dapp:py-14'
+  'relative py-30 dapp:min-h-192 max-dapp:min-h-128 max-dapp:py-14'
 
 export function HomeFaqSection() {
   const { messages } = useI18n()

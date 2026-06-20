@@ -7,10 +7,11 @@ import {
   buildPhaseCountdownKey,
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
-  resolveXTokenAirdropUsdForPurchase,
+  estimateXTokenAirdropUsd,
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
+  resolveGenesisMaxShares,
 } from '~/lib/presale/presale-math'
 import {
   buildSeasonOptions,
@@ -100,6 +101,22 @@ export function useGenesisWidget() {
   const maxAmount =
     activePhase?.maxAmount ??
     parseTokenAmount(PRESALE_CONFIG.phases[0]?.maxUsd1 ?? '10000', USD1_DECIMALS)
+  const maxShares = useMemo(
+    () =>
+      resolveGenesisMaxShares({
+        phaseMaxAmount: maxAmount,
+        userTotal,
+        usd1Balance,
+        walletReady,
+      }),
+    [maxAmount, userTotal, usd1Balance, walletReady],
+  )
+
+  useEffect(() => {
+    if (maxShares <= 0) return
+    setShares((current) => Math.min(Math.max(current, 1), maxShares))
+  }, [maxShares])
+
   const estimatedAgx = estimateAgxFromUsd1(
     shares * Number(PRESALE_CONFIG.sharePriceUsd1),
     discountBps,
@@ -111,12 +128,7 @@ export function useGenesisWidget() {
     discountBps,
     agxPriceUsd,
   )
-  const periodContributedUsd = Number(formatTokenAmount(userTotal, USD1_DECIMALS, 0))
-  const xTokenAirdropUsd = resolveXTokenAirdropUsdForPurchase(
-    periodContributedUsd,
-    payUsd1,
-    phaseIndex,
-  )
+  const xTokenAirdropUsd = estimateXTokenAirdropUsd(payUsd1, phaseIndex)
   const quotaLabel = `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
@@ -124,8 +136,10 @@ export function useGenesisWidget() {
   const canPurchase =
     walletReady &&
     activePhase !== null &&
+    maxShares > 0 &&
     purchaseAmount >= minAmount &&
-    purchaseAmount <= maxAmount
+    purchaseAmount <= maxAmount &&
+    shares <= maxShares
   const isSubmitting = submittingAction !== null
 
   const refresh = useCallback(async () => {
@@ -224,6 +238,16 @@ export function useGenesisWidget() {
     refresh,
   ])
 
+  const participate = useCallback(async (): Promise<GenesisPurchaseResult> => {
+    if (needsApproval) {
+      const approveResult = await approve()
+      if (!approveResult.success) {
+        return approveResult
+      }
+    }
+    return purchase()
+  }, [approve, needsApproval, purchase])
+
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
 
   useEffect(() => {
@@ -267,6 +291,7 @@ export function useGenesisWidget() {
   return {
     shares,
     setShares,
+    maxShares,
     phases,
     activePhase,
     phaseIndex,
@@ -305,6 +330,7 @@ export function useGenesisWidget() {
     refresh,
     approve,
     purchase,
+    participate,
     activeSeasonNumber,
     seasonOptions: seasonOptions,
     promoSnapshot,

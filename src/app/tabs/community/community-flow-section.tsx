@@ -54,7 +54,7 @@ export function CommunityFlowSection({
       <DappSection
         className={cn(
           sessionReady && 'group-data-[tab=community]/shell:max-dapp:mt-0',
-          !sessionReady && 'max-dapp:mt-[18px]',
+          !sessionReady && 'max-dapp:mt-4.5',
         )}
         title={t.community.programs.title}
       >

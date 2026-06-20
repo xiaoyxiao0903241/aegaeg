@@ -32,15 +32,13 @@ export function useShareholderRank() {
   }, [chainVolumeUsd, performance?.presale_volume])
 
   const displayRank = useMemo(
-    () => resolveDisplayPresaleRank(performance?.presale_rank ?? 0, personalVolumeUsd),
-    [performance?.presale_rank, personalVolumeUsd],
+    () => resolveDisplayPresaleRank(performance?.presale_rank ?? 0),
+    [performance?.presale_rank],
   )
 
   const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 
-  const isRankLoading =
-    sessionReady &&
-    (isChainVolumeLoading || (performanceLoading && performance == null))
+  const isRankLoading = sessionReady && performanceLoading && performance == null
 
   return {
     sessionReady,

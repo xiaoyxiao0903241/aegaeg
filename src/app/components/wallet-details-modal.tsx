@@ -10,6 +10,8 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/providers/auth-provider'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/components/dapp-icon'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { Button } from '~/components/button'
@@ -182,10 +184,10 @@ export function WalletDetailsModal({
       open={open}
       overlayClassName="bg-[oklch(13%_0.02_264/45%)] backdrop-blur-sm"
       className={cn(
-        'w-[min(calc(100%-40px),380px)] max-dapp:w-full',
-        'max-dapp:rounded-t-[24px] max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t',
+        'w-full max-w-md max-dapp:w-full',
+        'max-dapp:rounded-t-lg max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t',
         'max-dapp:px-6 max-dapp:pb-[max(24px,env(safe-area-inset-bottom))] max-dapp:pt-3',
-        'dapp:rounded-[24px] dapp:border dapp:border-border/80 dapp:px-7 dapp:pb-7 dapp:pt-[34px]',
+        'dapp:rounded-lg dapp:border dapp:border-border/80 dapp:px-7 dapp:pb-7 dapp:pt-8',
         'text-center',
         'bg-[linear-gradient(165deg,oklch(100%_0_0/96%),oklch(100%_0_0/86%))] backdrop-blur-xl',
         'dapp:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
@@ -196,35 +198,35 @@ export function WalletDetailsModal({
       <DialogPrimitive.Close
         aria-label={t.common.close}
         className={cn(
-          'absolute right-4 top-4 grid size-[34px] cursor-pointer place-items-center rounded-full',
+          'absolute right-4 top-4 grid size-8 cursor-pointer place-items-center rounded-full',
           'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
           'hover:-translate-y-px hover:border-foreground focus-visible:border-foreground focus-visible:outline-none',
           'max-dapp:top-5',
         )}
         type="button"
       >
-        <X aria-hidden className="size-3.5" strokeWidth={2} />
+        <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
       </DialogPrimitive.Close>
 
       <div
         aria-hidden="true"
-        className="mx-auto mb-5 mt-2 grid size-[78px] place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_14px_34px_oklch(66.83%_0.1625_36.6/40%),inset_0_1px_0_oklch(100%_0_0/50%)] dapp:mt-0"
+        className="mx-auto mb-5 mt-2 grid size-20 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_14px_34px_oklch(66.83%_0.1625_36.6/40%),inset_0_1px_0_oklch(100%_0_0/50%)] dapp:mt-0"
       >
-        <Wallet className="size-[34px]" strokeWidth={1.75} />
+        <Wallet className="size-8" strokeWidth={1.75} />
       </div>
 
-      <DialogPrimitive.Title className="m-0 text-[21px] font-extrabold leading-[1.2] tracking-[0.01em] text-foreground tabular-nums">
+      <DialogPrimitive.Title className="m-0 text-xl font-extrabold leading-[1.2] tracking-[0.01em] text-foreground tabular-nums">
         {addressLabel}
       </DialogPrimitive.Title>
 
       {!walletReady ? (
-        <p className="m-0 mt-3 text-[13px] font-medium leading-[1.45] text-primary">
+        <p className="m-0 mt-3 text-xs font-medium leading-[1.45] text-primary">
           {t.wallet.reconnectHint}
         </p>
       ) : null}
 
-      <p className="m-0 mt-3 text-[15px] font-semibold leading-none text-muted-foreground">
-        <span className="mr-1.5 text-[17px] font-bold text-primary tabular-nums">
+      <p className="m-0 mt-3 text-sm font-semibold leading-none text-muted-foreground">
+        <span className="mr-1.5 text-base font-bold text-primary tabular-nums">
           {balanceValue}
         </span>
         {balanceSymbol}
@@ -246,7 +248,7 @@ export function WalletDetailsModal({
         {!walletReady ? (
           <>
             <Button
-              className="h-[46px] gap-2 px-3 text-sm"
+              className="h-11 gap-2 px-3 text-sm"
               onClick={() => setConnectOpen(true)}
               size="md"
               type="button"
@@ -255,43 +257,41 @@ export function WalletDetailsModal({
               {t.wallet.reconnectWallet}
             </Button>
             <Button
-              className="h-[46px] gap-2 px-3 text-sm"
+              className="h-11 gap-2 px-3 text-sm"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"
               variant="secondary"
             >
-              <LogOut aria-hidden className="size-[15px]" strokeWidth={2} />
+              <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
               {t.wallet.disconnect}
             </Button>
           </>
         ) : (
           <div className="grid grid-cols-2 gap-2.5">
             <Button
-              className="h-[46px] gap-2 px-3 text-sm"
+              className="h-11 gap-2 px-3 text-sm"
               onClick={() => void handleCopy()}
               size="md"
               type="button"
               variant="primary"
             >
-              <img
+              <DappIcon
                 alt=""
                 aria-hidden="true"
-                className="size-[15px]"
-                height="15"
+                size="action"
                 src={copied ? dappAssets.check : dappAssets.copyWhite}
-                width="15"
               />
               {copied ? t.wallet.copied : t.wallet.copyAddress}
             </Button>
             <Button
-              className="h-[46px] gap-2 px-3 text-sm"
+              className="h-11 gap-2 px-3 text-sm"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"
               variant="secondary"
             >
-              <LogOut aria-hidden className="size-[15px]" strokeWidth={2} />
+              <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
               {t.wallet.disconnect}
             </Button>
           </div>

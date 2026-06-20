@@ -20,9 +20,9 @@ export const cardVariants = tv({
     },
     radius: {
       none: 'rounded-none',
-      sm: 'rounded-[14px]',
+      sm: 'rounded-md',
       md: 'rounded-md',
-      lg: 'rounded-[18px]',
+      lg: 'rounded-md',
       xl: 'rounded-lg',
       full: 'rounded-full',
     },

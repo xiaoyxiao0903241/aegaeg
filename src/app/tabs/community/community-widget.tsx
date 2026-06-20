@@ -1,3 +1,4 @@
+import { Wallet } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '~/i18n/use-i18n'
@@ -8,6 +9,8 @@ import { buildReferralSharePath } from '~/config/referral'
 import { useDappShell } from '~/app/dapp-shell-context'
 import type { DappTab } from '~/app/types'
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/components/dapp-icon'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
@@ -79,17 +82,19 @@ function CommunityConnectedWidget({
 
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>
-      <DappSideCard className={REFERRAL_CARD_CLASS}>
-        <SideLabel>{t.community.referralLink}</SideLabel>
-        <SideValue className="text-[13px] tracking-[-0.26px]">{referralLink}</SideValue>
-        <DappActionButton
-          className="max-dapp:min-h-11 max-dapp:text-sm"
-          disabled={!account}
-          onClick={() => void copyReferralLink()}
-        >
-          {t.community.shareReferral}
-        </DappActionButton>
-      </DappSideCard>
+      {referral.isBound ? (
+        <DappSideCard className={REFERRAL_CARD_CLASS}>
+          <SideLabel>{t.community.referralLink}</SideLabel>
+          <SideValue className="text-sm max-dapp:text-xs tracking-tight">{referralLink}</SideValue>
+          <DappActionButton
+            className="max-dapp:min-h-11 max-dapp:text-sm"
+            disabled={!account}
+            onClick={() => void copyReferralLink()}
+          >
+            {t.community.shareReferral}
+          </DappActionButton>
+        </DappSideCard>
+      ) : null}
 
       {referral.isBound ? (
         <DappReferrerBoundCard className="rounded-2xl px-4 py-3.5">
@@ -98,8 +103,11 @@ function CommunityConnectedWidget({
           </p>
           <ReferrerAddressRow>
             <div className="flex min-w-0 items-center gap-2.5">
-              <span className="grid size-6 flex-none place-items-center rounded-full bg-accent text-[10px] font-semibold leading-[1.2] text-primary">
-                R
+              <span
+                aria-hidden="true"
+                className="grid size-6 flex-none place-items-center rounded-full bg-accent text-primary"
+              >
+                <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
               </span>
               <strong className="truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px] text-foreground">
                 {referral.referrerLabel ?? '—'}
@@ -108,11 +116,11 @@ function CommunityConnectedWidget({
             {referral.referrer ? (
               <button
                 aria-label={t.common.copy}
-                className="grid size-[30px] shrink-0 cursor-pointer place-items-center rounded-[8px] bg-transparent"
+                className="grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent"
                 onClick={() => void copyReferrerAddress()}
                 type="button"
               >
-                <img alt="" height="16" src={dappAssets.copy} width="16" />
+                <DappIcon alt="" size="base" src={dappAssets.copy} />
               </button>
             ) : null}
           </ReferrerAddressRow>
@@ -126,7 +134,7 @@ function CommunityConnectedWidget({
           <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2">
             <input
               aria-label={t.community.referrerPlaceholder}
-              className="w-full min-h-11 rounded-[11px] border border-border bg-card px-[14px] text-[13px] tracking-[-0.26px] text-muted-foreground outline-0 max-dapp:h-11"
+              className="w-full min-h-11 rounded-sm border border-border bg-card px-3.5 text-xs tracking-[-0.26px] text-muted-foreground outline-0 max-dapp:h-11"
               onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
               placeholder={t.community.referrerPlaceholder}
               value={referral.referrerInput}

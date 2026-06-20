@@ -189,7 +189,7 @@ const app = defineMessages({
     genesis: {
       title: 'Kế hoạch cùng xây dựng',
       intro: 'Tham gia kế hoạch cùng xây dựng X DAO · Kỳ {season}  (giảm giá {discount})',
-      shares: 'Phần (1 phần = 100 USD1 · tối đa 100)',
+      shares: 'Phần (1 phần = 100 USD1 · tối đa {max})',
       quota: 'Hạn mức cùng xây dựng kỳ này',
       pay: 'Thanh toán',
       receive: 'Sẽ nhận AGX',

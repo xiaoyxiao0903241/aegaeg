@@ -6,6 +6,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { HomeSectionHead } from '~/home/components/home-section-head'
+import { homeSectionContainerClass } from '~/home/home-layout'
 
 type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
   className: string
@@ -19,21 +20,21 @@ type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
 
 const tokenClass = {
   section:
-    'token-section relative py-[120px] dapp:min-h-[696px] max-dapp:min-h-[902px] max-dapp:pt-0 max-dapp:pb-14',
-  container: 'container max-dapp:!w-[min(calc(100vw-40px),362px)]',
+    'token-section relative py-30 dapp:min-h-176 max-dapp:min-h-240 max-dapp:pt-0 max-dapp:pb-14',
+  container: homeSectionContainerClass,
   grid:
-    'token-grid mt-14 grid grid-cols-4 gap-[22px] py-[var(--shadow-bleed)] max-[1100px]:grid-cols-2 max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4',
+    'token-grid mt-14 grid grid-cols-4 gap-5.5 py-[var(--shadow-bleed)] max-[1100px]:grid-cols-2 max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4',
   card:
-    'token-card relative isolate h-[280px] rounded-lg transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-dapp:flex max-dapp:h-auto max-dapp:min-h-[173px] max-dapp:flex-col max-dapp:justify-start max-dapp:gap-[7px] max-dapp:rounded-[18px] max-dapp:p-5',
+    'token-card relative isolate h-72 overflow-hidden rounded-lg transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-dapp:flex max-dapp:h-auto max-dapp:min-h-44 max-dapp:flex-col max-dapp:justify-start max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-5',
   iconWrap:
-    'token-tile absolute left-6 top-6 z-1 grid size-[52px] origin-center place-items-center rounded-[14px] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-[46px] max-dapp:rounded-[13px] max-dapp:border-0 max-dapp:bg-card [&_img:not([src])]:bg-transparent',
+    'token-tile absolute left-6 top-6 z-1 grid size-[var(--home-token-tile-size)] origin-center place-items-center rounded-[0.875rem] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-[var(--home-token-tile-size-h5)] max-dapp:rounded-[0.8125rem] [&_img:not([src])]:bg-transparent',
   icon:
-    'size-[30px] object-contain transition-[filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:size-[26px]',
+    'size-[var(--home-token-icon-size)] object-contain transition-[filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:size-[var(--home-token-icon-size-h5)]',
   shapeWrap:
     'token-shape-wrap pointer-events-none absolute -z-1 transition-[filter,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:hidden',
   shapeImg: 'token-shape block size-full [[&:not([src])]]:bg-transparent',
   info:
-    'token-info absolute left-6 top-[154px] z-1 flex w-[min(calc(100%-48px),235px)] flex-col gap-1.5 max-dapp:static max-dapp:w-full',
+    'token-info absolute left-6 top-40 z-1 flex w-full max-w-60 flex-col gap-1.5 max-dapp:static max-dapp:w-full max-dapp:max-w-none',
 } as const
 
 const tokenCardHoverClass = cn(
@@ -62,8 +63,8 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
           className={cn(tokenClass.shapeImg, token.shapeClassName)}
           src={token.shape}
           alt=""
-          width="170"
-          height="170"
+          width={token.symbol === 'X' ? 585 : 170}
+          height={token.symbol === 'X' ? 554 : 170}
           loading="lazy"
         />
       </div>
@@ -81,7 +82,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         <Text
           as="h3"
           weight="semibold"
-          className="m-0 text-white text-[26px] leading-[1.3] tracking-[-0.78px] max-dapp:mt-0.5 max-dapp:text-[22px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]"
+          className="m-0 text-white text-2xl leading-[1.3] tracking-[-0.78px] max-dapp:mt-0.5 max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]"
         >
           {token.symbol}
         </Text>
@@ -96,7 +97,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         <Text
           as="p"
           size="sm"
-          className="w-[min(100%,235px)] font-normal text-white leading-[1.5] tracking-[-0.26px] max-dapp:w-full"
+          className="w-full max-w-60 font-normal text-white leading-[1.5] tracking-[-0.26px] max-dapp:max-w-none"
         >
           {token.description}
         </Text>

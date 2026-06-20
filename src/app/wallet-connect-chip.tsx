@@ -14,7 +14,7 @@ const walletLabelClass = 'inline-flex min-w-0 items-center gap-1.5'
 
 const walletGlyphClass = cn(
   'relative aspect-[16/13] w-4 shrink-0 rounded border-[1.5px] border-primary',
-  'after:absolute after:right-0.5 after:top-[3px] after:aspect-square after:w-[5px] after:rounded-full after:bg-primary after:content-[""]',
+  'after:absolute after:right-0.5 after:top-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
 )
 
 function ConnectedWalletChip() {

@@ -150,7 +150,7 @@ export function CommunityContent({
             <CommunityStatCard
               className={cn(
                 isMobileViewport &&
-                  'items-center text-center shadow-card [&>b]:hidden [&>small]:hidden [&>span]:text-[11px] [&>span]:tracking-[-0.11px] [&>strong]:text-lg [&>strong]:tracking-[-0.54px]',
+                  'items-center text-center shadow-card [&>b]:hidden [&>small]:hidden [&>span]:text-xs [&>span]:tracking-[-0.11px] [&>strong]:text-lg [&>strong]:tracking-[-0.54px]',
               )}
               dark={stat.dark}
               image={stat.image}

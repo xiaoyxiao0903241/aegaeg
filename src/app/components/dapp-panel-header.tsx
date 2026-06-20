@@ -3,17 +3,18 @@ import { IconButton } from '~/components/icon-button'
 import { Text } from '~/components/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/components/dapp-icon'
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/lib/utils'
 
 export function dappPanelTitleClassName(className?: string) {
   return cn(
-    'm-0 text-[21px] font-semibold leading-[1.3] text-foreground tracking-[-0.84px]',
+    'm-0 text-xl font-semibold leading-[1.3] text-foreground tracking-[-0.84px]',
     'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
     'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
     'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
-    'max-dapp:text-[22px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
+    'max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
     className,
   )
 }
@@ -63,15 +64,14 @@ export function DappPanelHeader({
             className="shrink-0"
             onClick={onTogglePanel}
           >
-            <img
+            <DappIcon
               className={cn(
                 'transition-transform duration-[260ms] ease-[cubic-bezier(.2,.8,.2,1)]',
                 detailCollapsed && 'rotate-90',
               )}
+              size="lg"
               src={dappAssets.menu}
               alt=""
-              width="18"
-              height="18"
             />
           </IconButton>
         </AnchoredTooltip>

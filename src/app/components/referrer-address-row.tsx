@@ -11,7 +11,7 @@ export function ReferrerAddressRow({
   return (
     <div
       className={cn(
-        'flex h-[46px] items-center justify-between rounded-[11px] bg-background px-[14px]',
+        'flex h-11 items-center justify-between rounded-sm bg-background px-3.5',
         className,
       )}
     >

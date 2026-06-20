@@ -1,20 +1,20 @@
-/* Thirdweb ConnectButton — external DOM requires !important overrides */
+/* Thirdweb ConnectButton — rem 随 site-fluid 根字号缩放 */
 
 .aegis-thirdweb-button {
-  block-size: 36px !important;
-  min-block-size: 36px !important;
+  block-size: 2.25rem !important;
+  min-block-size: 2.25rem !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important;
+  gap: 0.5rem !important;
   border: 1px solid var(--border) !important;
   border-radius: 999px !important;
   background: var(--surface-glass) !important;
   color: var(--foreground) !important;
   box-shadow: var(--shadow-card) !important;
-  padding: 0 16px !important;
+  padding: 0 1rem !important;
   font-family: inherit !important;
-  font-size: 13px !important;
+  font-size: 0.8125rem !important;
   font-weight: 600 !important;
   letter-spacing: 0 !important;
   line-height: 1 !important;
@@ -26,22 +26,22 @@
 }
 
 .aegis-thirdweb-button-primary {
-  block-size: 40px !important;
-  min-block-size: 40px !important;
+  block-size: 2.5rem !important;
+  min-block-size: 2.5rem !important;
   border-color: transparent !important;
   background: var(--primary) !important;
   color: var(--primary-foreground) !important;
   box-shadow: none !important;
-  padding-inline: 22px !important;
-  font-size: 14px !important;
+  padding-inline: 1.375rem !important;
+  font-size: 0.875rem !important;
 }
 
 .aegis-thirdweb-button-inline {
-  block-size: 36px !important;
-  min-block-size: 36px !important;
+  block-size: 2.25rem !important;
+  min-block-size: 2.25rem !important;
   box-shadow: var(--shadow-card) !important;
-  padding-inline: 14px !important;
-  font-size: 12px !important;
+  padding-inline: 0.875rem !important;
+  font-size: 0.75rem !important;
 }
 
 .aegis-thirdweb-button:disabled {
@@ -74,16 +74,16 @@
 .aegis-connected-wallet-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-block-size: 36px;
-  padding: 10px 16px;
+  gap: 0.5rem;
+  min-block-size: 2.25rem;
+  padding: 0.625rem 1rem;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface-glass);
   color: var(--foreground);
   box-shadow: var(--shadow-card);
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.26px;
@@ -100,8 +100,8 @@
 }
 
 .aegis-connected-wallet-chip__status {
-  inline-size: 8px;
-  block-size: 8px;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
   flex-shrink: 0;
   border-radius: 999px;
   background: var(--success);
@@ -133,6 +133,7 @@
 /* ConnectEmbed 内嵌于自定义外壳 — 去除自带边框/阴影，QR 在壳内切换 */
 .aegis-connect-embed {
   inline-size: 100%;
+  zoom: var(--fluid-scale, 1);
 }
 
 .aegis-connect-embed > div {
@@ -152,8 +153,8 @@
 
 .aegis-wallet-connect-close {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 2.125rem;
+  height: 2.125rem;
   flex-shrink: 0;
   cursor: pointer;
   place-items: center;
@@ -174,30 +175,31 @@
 .aegis-wallet-connect-intro {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px;
-  border-radius: 16px;
+  gap: 0.875rem;
+  padding: 0.875rem;
+  border-radius: 1rem;
   background: var(--surface-wash-strong);
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .aegis-wallet-connect-body {
-  max-block-size: min(68dvh, 560px);
+  max-block-size: min(68dvh, 35rem);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 /* thirdweb 独立 modal 兜底（ConnectEmbed 子屏不应再弹出，保留以防边缘 case） */
 .tw-modal {
-  border-radius: 24px !important;
+  border-radius: 1.5rem !important;
   box-shadow: 0 30px 80px oklch(15% 0.02 270 / 35%) !important;
   font-family: inherit !important;
+  zoom: var(--fluid-scale, 1);
 }
 
 @media (min-width: 821px) {
   .tw-modal {
-    max-width: 430px !important;
-    width: min(calc(100vw - 40px), 430px) !important;
+    max-width: 26.875rem !important;
+    width: min(calc(100vw - 2.5rem), 26.875rem) !important;
   }
 }
 
@@ -215,29 +217,29 @@
     transform: none !important;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
-    border-top-left-radius: 24px !important;
-    border-top-right-radius: 24px !important;
+    border-top-left-radius: 1.5rem !important;
+    border-top-right-radius: 1.5rem !important;
     animation: aegis-tw-sheet-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
   .aegis-thirdweb-button {
-    min-block-size: 30px !important;
-    block-size: 30px !important;
-    padding-inline: 12px !important;
-    font-size: 11px !important;
+    min-block-size: 1.875rem !important;
+    block-size: 1.875rem !important;
+    padding-inline: 0.75rem !important;
+    font-size: 0.6875rem !important;
   }
 
   .aegis-thirdweb-button-primary {
-    block-size: 36px !important;
-    min-block-size: 36px !important;
-    padding-inline: 16px !important;
-    font-size: 13px !important;
+    block-size: 2.25rem !important;
+    min-block-size: 2.25rem !important;
+    padding-inline: 1rem !important;
+    font-size: 0.8125rem !important;
   }
 
   .aegis-connected-wallet-chip {
-    min-block-size: 30px;
-    padding-inline: 12px;
-    font-size: 11px;
+    min-block-size: 1.875rem;
+    padding-inline: 0.75rem;
+    font-size: 0.6875rem;
   }
 }
 

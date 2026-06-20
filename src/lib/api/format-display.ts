@@ -7,6 +7,12 @@ export function formatPresaleRank(rank: number): string {
   return `S${rank}`
 }
 
+/** Community member table — S0 or missing rank shows placeholder, otherwise S1–S10. */
+export function formatMemberGenesisTitle(rank: number): string {
+  if (!Number.isFinite(rank) || rank <= 0) return '—'
+  return `S${Math.trunc(rank)}`
+}
+
 /** Maps API presale_rank (S1=1 …) to 0-based row indices in the tier table. */
 export function getPresaleRankHighlightedRows(
   rank: number | undefined,
@@ -225,7 +231,7 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
   return [
     formatRegisterDate(item.register_time),
     formatShortAddress(item.address),
-    formatPresaleRank(item.presale_rank),
+    formatMemberGenesisTitle(item.presale_rank),
     String(item.direct_referral_count ?? 0),
     formatUsd(Number(item.sales_team_market)),
   ]
@@ -235,7 +241,7 @@ export function mapTeamReferralToMobileRow(item: TeamReferralItem): string[] {
   return [
     formatApiDateTime(item.register_time),
     formatShortAddress(item.address),
-    formatPresaleRank(item.presale_rank),
+    formatMemberGenesisTitle(item.presale_rank),
     formatUsdCompact(item.sales_team_market),
   ]
 }
@@ -245,7 +251,7 @@ export function mapTeamReferralToFullRow(item: TeamReferralItem): string[] {
     formatRegisterDate(item.register_time),
     formatShortAddress(item.address),
     '—',
-    formatPresaleRank(item.presale_rank),
+    formatMemberGenesisTitle(item.presale_rank),
     '—',
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(
       Number(item.sales_team_market),

@@ -12,13 +12,14 @@ import {
   sanitizeTokenAmountInput,
   slippagePercentToBps,
 } from '~/lib/swap/token-amount'
-import { getSwapPairTokens, type SwapDirection } from '~/lib/swap/swap-pair'
+import { getSwapPairTokens } from '~/lib/swap/swap-pair'
 import { SWAP_CONFIG } from '~/config/swap'
 import { readErc20Allowance, readErc20Balance, fetchSwapQuote } from '~/web3/swap-read'
 import { approveTokenIfNeeded, executeTokenSwap } from '~/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
 import { useDappActions } from '~/stores/dapp-actions'
+import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
@@ -30,13 +31,15 @@ import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-inter
 export function useSwapWidget(authenticated: boolean) {
   const account = useActiveAccount()
   const afterSwap = useDappActions((state) => state.afterSwap)
+  const direction = useSwapDirectionStore((state) => state.direction)
+  const flipDirectionInStore = useSwapDirectionStore((state) => state.flipDirection)
   const [sellAmount, setSellAmountRaw] = useState('')
-  const [direction, setDirection] = useState<SwapDirection>('reverse')
   const [slippage, setSlippage] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
+  const usdtToUsd1Pair = useMemo(() => getSwapPairTokens('reverse'), [])
   const address = account?.address
   const walletReady = hasWalletAccount(account)
   const amountIn = useMemo(
@@ -47,6 +50,10 @@ export function useSwapWidget(authenticated: boolean) {
   const spotQuoteAmount = useMemo(
     () => 10n ** BigInt(pair.sell.decimals),
     [pair.sell.decimals],
+  )
+  const exchangeSpotAmount = useMemo(
+    () => 10n ** BigInt(usdtToUsd1Pair.sell.decimals),
+    [usdtToUsd1Pair.sell.decimals],
   )
 
   const balancesQuery = useQuery({
@@ -84,6 +91,23 @@ export function useSwapWidget(authenticated: boolean) {
     placeholderData: keepPreviousData,
   })
 
+  const exchangeSpotQuoteQuery = useQuery({
+    queryKey: queryKeys.chain.swapQuote(
+      usdtToUsd1Pair.sell.address,
+      usdtToUsd1Pair.buy.address,
+      exchangeSpotAmount.toString(),
+    ),
+    queryFn: () =>
+      fetchSwapQuote({
+        amountIn: exchangeSpotAmount,
+        tokenIn: usdtToUsd1Pair.sell.address,
+        tokenOut: usdtToUsd1Pair.buy.address,
+      }),
+    enabled: true,
+    staleTime: QUERY_STALE_TIME.quote,
+    placeholderData: keepPreviousData,
+  })
+
   const amountQuoteQuery = useQuery({
     queryKey: queryKeys.chain.swapQuote(
       pair.sell.address,
@@ -102,6 +126,7 @@ export function useSwapWidget(authenticated: boolean) {
   })
 
   useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
+  useVisibleQueryInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
   useVisibleQueryInterval(
     amountQuoteQuery,
     SWAP_CONFIG.quoteRefreshIntervalMs,
@@ -116,10 +141,13 @@ export function useSwapWidget(authenticated: boolean) {
   const quotePath = amountQuoteQuery.data?.path ?? []
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
   const spotQuotePath = spotQuoteQuery.data?.path ?? []
+  const exchangeSpotQuotedOut = exchangeSpotQuoteQuery.data?.quotedOut ?? 0n
   const isQuoting =
     authenticated && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
   const isSpotQuoting =
     amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
+  const isExchangePriceQuoting =
+    exchangeSpotQuoteQuery.isPending && exchangeSpotQuotedOut === 0n
 
   const setSellAmount = useCallback(
     (value: string) => {
@@ -187,28 +215,27 @@ export function useSwapWidget(authenticated: boolean) {
     [authenticated, pair.buy.decimals, quotedOut],
   )
 
-  const rateLabel = useMemo(() => {
-    if (rateQuote.amountOut === 0n) {
-      return isSpotQuoting || isQuoting ? '' : '—'
+  const exchangePriceLabel = useMemo(() => {
+    if (exchangeSpotQuotedOut === 0n) {
+      return isExchangePriceQuoting ? '' : '—'
     }
 
     return formatSwapRateApprox({
-      amountIn: rateQuote.amountIn,
-      amountOut: rateQuote.amountOut,
-      decimalsIn: pair.sell.decimals,
-      decimalsOut: pair.buy.decimals,
-      symbolIn: pair.sell.symbol,
-      symbolOut: pair.buy.symbol,
+      amountIn: exchangeSpotAmount,
+      amountOut: exchangeSpotQuotedOut,
+      decimalsIn: usdtToUsd1Pair.sell.decimals,
+      decimalsOut: usdtToUsd1Pair.buy.decimals,
+      symbolIn: usdtToUsd1Pair.sell.symbol,
+      symbolOut: usdtToUsd1Pair.buy.symbol,
     })
   }, [
-    isQuoting,
-    isSpotQuoting,
-    pair.buy.decimals,
-    pair.buy.symbol,
-    pair.sell.decimals,
-    pair.sell.symbol,
-    rateQuote.amountIn,
-    rateQuote.amountOut,
+    exchangeSpotAmount,
+    exchangeSpotQuotedOut,
+    isExchangePriceQuoting,
+    usdtToUsd1Pair.buy.decimals,
+    usdtToUsd1Pair.buy.symbol,
+    usdtToUsd1Pair.sell.decimals,
+    usdtToUsd1Pair.sell.symbol,
   ])
 
   const pancakeSwapUrl = useMemo(
@@ -253,9 +280,9 @@ export function useSwapWidget(authenticated: boolean) {
   )
 
   const flipDirection = useCallback(() => {
-    setDirection((current) => (current === 'forward' ? 'reverse' : 'forward'))
+    flipDirectionInStore()
     setSellAmountRaw('')
-  }, [])
+  }, [flipDirectionInStore])
 
   const submit = useCallback(async (): Promise<boolean> => {
     if (!account) {
@@ -321,7 +348,7 @@ export function useSwapWidget(authenticated: boolean) {
     sellBalanceLabel: formatTokenAmount(sellBalance, pair.sell.decimals, 4),
     buyBalanceLabel: formatTokenAmount(buyBalance, pair.buy.decimals, 4),
     buyAmount,
-    rateLabel,
+    exchangePriceLabel,
     routeLabel,
     pancakeSwapUrl,
     action,
@@ -329,6 +356,7 @@ export function useSwapWidget(authenticated: boolean) {
     canSubmit,
     isQuoting,
     isSpotQuoting,
+    isExchangePriceQuoting,
     isBalancesLoading,
     isSubmitting,
     error,

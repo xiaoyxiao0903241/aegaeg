@@ -37,7 +37,7 @@ export function SwapAmountBox({
       as="section"
       surface="outlined"
       className={cn(
-        'p-[14px]',
+        'p-3.5',
         !sessionReady && '[&_input]:text-[#c9cfda] [&_input]:placeholder:text-[#c9cfda]',
         className,
       )}
@@ -61,7 +61,7 @@ export function SwapAmountBox({
           <span>{balance}</span>
         </Text>
       </div>
-      <div className="mt-[9px] flex items-center justify-between gap-3 max-dapp:items-start">
+      <div className="mt-2 flex items-center justify-between gap-3 max-dapp:items-start">
         <TokenChip icon={tokenIcon} label={tokenLabel} />
         {amountLoading ? (
           <SwapAmountSkeleton />

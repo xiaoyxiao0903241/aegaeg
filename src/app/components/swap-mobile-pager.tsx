@@ -7,6 +7,7 @@ import {
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
+import { DappIcon } from '~/app/components/dapp-icon'
 import { dappAssets } from '~/app/assets'
 import { DappMobileNav } from '~/app/components/dapp-mobile-nav'
 import {
@@ -421,7 +422,7 @@ export function SwapMobilePager({
               onClick={() => setMobileNavOpen(true)}
               type="button"
             >
-              <img alt="" height="18" src={dappAssets.menu} width="18" />
+              <DappIcon alt="" size="lg" src={dappAssets.menu} />
             </button>
           </div>
           <DappMobileNav
@@ -488,7 +489,7 @@ function SwapMobileSwipeHint({
   return (
     <div
       className={cn(
-        'pointer-events-none relative flex h-[90px] w-[calc(100%+24px)] shrink-0 flex-col items-center justify-end',
+        'pointer-events-none relative flex h-22 w-[calc(100%+1.5rem)] shrink-0 flex-col items-center justify-end',
         '-mx-3 bg-gradient-to-b from-transparent from-[0%] to-background to-[66.827%] pb-4 pt-9',
       )}
       data-swap-mobile-swipe-hint
@@ -507,15 +508,14 @@ function SwapMobileSwipeHint({
               : '[animation:dapp-swipe-chevron-breathe-up_2.4s_ease-in-out_infinite]',
           )}
         >
-          <img
+          <DappIcon
             alt=""
-            className={cn('size-6', !isNext && 'rotate-180')}
-            height="24"
+            className={cn(!isNext && 'rotate-180')}
+            size="lg"
             src={dappAssets.swipeChevronDouble}
-            width="24"
           />
         </span>
-        <span className="mt-1.5 text-[11px] font-normal leading-normal tracking-[-0.11px] text-ink-strong">
+        <span className="mt-1.5 text-xs font-normal leading-normal tracking-[-0.11px] text-ink-strong">
           {isNext ? t.swap.swipeNext : t.swap.swipePrevious}
         </span>
       </button>

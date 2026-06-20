@@ -1,3 +1,6 @@
+import { parseTokenAmount } from '~/lib/swap/token-amount'
+import { PRESALE_CONFIG } from '~/config/presale'
+
 export interface PresalePhaseOnChain {
   index: number
   minAmount: bigint
@@ -6,6 +9,39 @@ export interface PresalePhaseOnChain {
   startTime: bigint
   endTime: bigint
   purchasedAmount: bigint
+}
+
+const USD1_DECIMALS = 18
+
+/** 份额上限 = min(余额可购份数, 本期剩余可购份数, 硬顶 100)。 */
+export function resolveGenesisMaxShares({
+  hardCapShares = PRESALE_CONFIG.maxShares,
+  phaseMaxAmount,
+  sharePriceUsd1 = PRESALE_CONFIG.sharePriceUsd1,
+  userTotal = 0n,
+  usd1Balance = 0n,
+  walletReady = false,
+}: {
+  hardCapShares?: number
+  phaseMaxAmount: bigint
+  sharePriceUsd1?: string
+  userTotal?: bigint
+  usd1Balance?: bigint
+  walletReady?: boolean
+}): number {
+  const sharePriceWei = parseTokenAmount(sharePriceUsd1, USD1_DECIMALS)
+  if (sharePriceWei === 0n) return 0
+
+  const maxFromQuota = Number(
+    (phaseMaxAmount > userTotal ? phaseMaxAmount - userTotal : 0n) / sharePriceWei,
+  )
+  const caps = [hardCapShares, maxFromQuota]
+
+  if (walletReady) {
+    caps.push(Number(usd1Balance / sharePriceWei))
+  }
+
+  return Math.max(0, Math.min(...caps))
 }
 
 export function isPhaseActive(phase: PresalePhaseOnChain, nowSeconds = Math.floor(Date.now() / 1000)): boolean {
@@ -68,14 +104,13 @@ export function formatPhaseCountdown(
   nowSeconds = Math.floor(Date.now() / 1000),
 ): string {
   const remaining = Number(targetTime) - nowSeconds
-  if (remaining <= 0) return '0D 00H 00M 00S'
+  if (remaining <= 0) return '0D 00H 00M'
 
   const days = Math.floor(remaining / 86_400)
   const hours = Math.floor((remaining % 86_400) / 3_600)
   const minutes = Math.floor((remaining % 3_600) / 60)
-  const seconds = remaining % 60
 
-  return `${days}D ${String(hours).padStart(2, '0')}H ${String(minutes).padStart(2, '0')}M ${String(seconds).padStart(2, '0')}S`
+  return `${days}D ${String(hours).padStart(2, '0')}H ${String(minutes).padStart(2, '0')}M`
 }
 
 export function estimateAgxFromUsd1(

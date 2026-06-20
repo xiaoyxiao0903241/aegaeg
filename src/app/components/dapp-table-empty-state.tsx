@@ -11,12 +11,12 @@ function SkeletonRow({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="h-3.5 w-[120px] shrink-0 rounded-[8px] bg-border max-dapp:h-3 max-dapp:w-[72px]" />
+      <span className="h-3.5 w-30 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-18" />
       <span className="flex min-w-0 flex-1 items-center">
-        <span className="h-3.5 w-2.5 rounded-[8px] bg-border max-dapp:h-3 max-dapp:w-2" />
+        <span className="h-3.5 w-2.5 rounded-sm bg-border max-dapp:h-3 max-dapp:w-2" />
       </span>
-      <span className="h-3.5 w-[90px] shrink-0 rounded-[8px] bg-border max-dapp:h-3 max-dapp:w-[54px]" />
-      <span className="h-3.5 w-[70px] shrink-0 rounded-[8px] bg-border max-dapp:h-3 max-dapp:w-[42px]" />
+      <span className="h-3.5 w-22 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-14" />
+      <span className="h-3.5 w-18 shrink-0 rounded-sm bg-border max-dapp:h-3 max-dapp:w-10" />
     </div>
   )
 }
@@ -36,16 +36,16 @@ export function DappTableEmptyState({
       className={cn(
         revealClass(),
         dappTableCardShellClass,
-        'flex flex-col items-center px-6 py-[30px]',
-        'max-dapp:px-4 max-dapp:py-[22px]',
-        children && 'gap-[18px]',
+        'flex flex-col items-center px-6 py-7.5',
+        'max-dapp:px-4 max-dapp:py-5.5',
+        children && 'gap-4.5',
         className,
       )}
       data-reveal
     >
       <div
         aria-hidden="true"
-        className="flex w-full flex-col gap-3 max-dapp:gap-[11px]"
+        className="flex w-full flex-col gap-3 max-dapp:gap-2.5"
       >
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <SkeletonRow key={rowIndex} />

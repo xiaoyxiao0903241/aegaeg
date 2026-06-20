@@ -1,4 +1,5 @@
 import { cn } from '~/lib/utils'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 
 const CHEVRON_MASK = {
   up: "[mask:url('/assets/figma/dapp/ic-chevron-up.svg')_center/contain_no-repeat]",
@@ -19,7 +20,7 @@ export function ChevronIcon({
   return (
     <span
       aria-hidden
-      className={cn('block size-3 shrink-0 bg-current', rotation, mask, className)}
+      className={cn('block shrink-0 bg-current', dappIconClass.xs, rotation, mask, className)}
     />
   )
 }

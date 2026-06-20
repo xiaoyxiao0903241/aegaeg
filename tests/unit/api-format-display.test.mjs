@@ -47,6 +47,14 @@ test('formatUsdCompact abbreviates large values', async () => {
   assert.equal(formatUsdCompact('1200'), '$1.2K')
 })
 
+test('formatMemberGenesisTitle hides S0 in community member table', async () => {
+  const { formatMemberGenesisTitle } = await loadModule('/src/lib/api/format-display.ts')
+
+  assert.equal(formatMemberGenesisTitle(0), '—')
+  assert.equal(formatMemberGenesisTitle(-1), '—')
+  assert.equal(formatMemberGenesisTitle(3), 'S3')
+})
+
 test('mapTeamReferralToCompactRow renders invite table cells', async () => {
   const { mapTeamReferralToCompactRow } = await loadModule('/src/lib/api/format-display.ts')
 

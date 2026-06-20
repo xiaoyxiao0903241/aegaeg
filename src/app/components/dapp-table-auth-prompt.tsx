@@ -15,10 +15,10 @@ export function DappTableAuthPrompt({
   return (
     <DappTableEmptyState className={cn(className)}>
       <div className="grid w-full gap-1.5 text-center">
-        <p className="m-0 text-[15px] font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
+        <p className="m-0 text-sm font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
           {t.dapp.connect.recordsTitle}
         </p>
-        <p className="m-0 text-[13px] leading-normal tracking-[-0.26px] text-muted-foreground">
+        <p className="m-0 text-xs leading-normal tracking-[-0.26px] text-muted-foreground">
           {body}
         </p>
       </div>

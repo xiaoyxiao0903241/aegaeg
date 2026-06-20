@@ -27,7 +27,7 @@ export function DappActionButton({
         'gap-2',
         shape === 'inline' &&
           cn(
-            '!w-auto shrink-0 !min-h-11 !rounded-[11px] !px-[15px] !text-[12px] !font-semibold !tracking-[-0.24px]',
+            '!w-auto shrink-0 !min-h-11 !rounded-sm !px-3.5 !text-xs !font-semibold !tracking-[-0.24px]',
             variant === 'secondary' &&
               '!border-transparent !bg-accent !text-primary hover:!-translate-y-0 hover:!shadow-none focus-visible:!-translate-y-0 focus-visible:!shadow-none',
           ),
