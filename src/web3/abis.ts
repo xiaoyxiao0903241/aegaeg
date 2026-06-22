@@ -20,11 +20,15 @@ export const PAIR_V2_METHODS = {
 } as const
 
 export const PRESALE_METHODS = {
-  phases: 'function phases(uint256 phase) view returns (uint256 minAmount, uint256 maxAmount, uint256 discountBps, uint256 startTime, uint256 endTime, uint256 purchasedAmount)',
+  phases:
+    'function phases(uint256 phase) view returns (uint256 minAmount, uint256 maxAmount, uint256 discount, uint256 airdropValueRatio, uint256 startTime, uint256 endTime, uint256 soldAmount, uint256 userPurchaseLimit)',
+  getUserPhaseRemainingAmount:
+    'function getUserPhaseRemainingAmount(address _user, uint256 _phaseIndex) view returns (uint256 remainingPhaseAmount, uint256 remainingUserAmount, uint256 userPurchaseLimit, uint256 userPhaseAmountCurrent)',
   userTotalAmount: 'function userTotalAmount(address user) view returns (uint256)',
   totalPurchasedAmount: 'function totalPurchasedAmount() view returns (uint256)',
   agxPrice: 'function agxPrice() view returns (uint256)',
-  purchase: 'function purchase(uint256 phase, uint256 amount)',
+  airdropThreshold: 'function AIRDROP_THRESHOLD() view returns (uint256)',
+  purchase: 'function purchase(uint256 _phaseIndex, uint256 _amount)',
 } as const
 
 export const REFERRAL_METHODS = {

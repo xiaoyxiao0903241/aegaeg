@@ -195,7 +195,7 @@ const app = defineMessages({
       receive: '획득 AGX',
       value: '구독 가치',
       xTokenAirdrop: '예상 X 초기 에어드랍 가치',
-      xTokenAirdropHint: '계정당 시즌 누적 공동 구축 금액 ≥ 5,000 USD 시 에어드랍 보상 자격이 부여됩니다.',
+      xTokenAirdropHint: '계정당 시즌 누적 공동 구축 금액 ≥ {threshold} 시 에어드랍 보상 자격이 부여됩니다.',
       join: '공동 구축 참여',
       joinGenesis: '창세 공동 구축 참여',
       statsTitle: '제 {season}기 공동 구축 데이터',
@@ -216,11 +216,11 @@ const app = defineMessages({
         items: [
           {
             q: '공동 구축 프로그램에 어떻게 참여하나요?',
-            a: '사용자는 USD1로 공동 구축에 참여하며, 해당 단계 할인에 따라 AGX를 획득할 수 있습니다. 총 3기이며, 각 기간 20일간 진행되고 할인은 30% / 25% / 20% 순입니다.',
+            a: '사용자는 USD1로 공동 구축에 참여하며, 해당 단계 할인에 따라 AGX를 획득할 수 있습니다. 총 {phaseCount}기, 각 {phaseDurationDays}일간 진행되고 할인은 {discounts} 순입니다.',
           },
           {
             q: '공동 구축 한도와 참여 요건은?',
-            a: '최소 참여 금액 100 USD1이며, 100 USD1 단위로 참여해야 합니다. 1기 $100–$10,000, 2기 $100–$20,000, 3기 $100–$30,000.',
+            a: '최소 {minUsd}, {shareIncrement} USD1 단위로 참여해야 합니다. 기간별 한도: {phaseQuotas}.',
           },
           {
             q: '공동 구축 기간은 얼마나 되나요?',
@@ -228,7 +228,7 @@ const app = defineMessages({
           },
           {
             q: 'X 에어드롭 리워드는 어떻게 받나요?',
-            a: '단일 계정 누적 공동 구축 금액이 5,000 USD에 도달하면 해당 단계 X 에어드롭 리워드 자격을 획득합니다. 3기 에어드롭 비율은 5% / 2% / 1% 순입니다.',
+            a: '단일 계정 누적 공동 구축 금액이 {threshold}에 도달하면 해당 단계 X 에어드롭 리워드 자격을 획득합니다. {phaseCount}기 에어드롭 비율: {airdropRatios}.',
           },
           {
             q: 'X 에어드롭 리워드는 어떻게 방출되나요?',

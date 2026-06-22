@@ -16,6 +16,13 @@ import type {
   UserPerformance,
 } from '~/lib/api/types'
 
+function paginationBody(params: PaginationParams = {}) {
+  return {
+    page: params.page ?? 1,
+    page_size: params.page_size ?? 20,
+  }
+}
+
 export async function login(request: LoginRequest): Promise<LoginResponse> {
   return apiRequest<LoginResponse>('/auth/login', {
     method: 'POST',
@@ -24,7 +31,11 @@ export async function login(request: LoginRequest): Promise<LoginResponse> {
 }
 
 export async function getPerformance(token: string): Promise<UserPerformance> {
-  return apiRequest<UserPerformance>('/performance', { token })
+  return apiRequest<UserPerformance>('/performance', {
+    method: 'POST',
+    token,
+    body: {},
+  })
 }
 
 export async function getSalesLogs(
@@ -32,11 +43,9 @@ export async function getSalesLogs(
   params: PaginationParams = {},
 ): Promise<Paginated<SalesLogItem>> {
   return apiRequest<Paginated<SalesLogItem>>('/sales/logs', {
+    method: 'POST',
     token,
-    searchParams: {
-      page: params.page,
-      page_size: params.page_size,
-    },
+    body: paginationBody(params),
   })
 }
 
@@ -45,20 +54,26 @@ export async function getRewardLogs(
   params: PaginationParams = {},
 ): Promise<Paginated<RewardLogItem>> {
   return apiRequest<Paginated<RewardLogItem>>('/rewards/logs', {
+    method: 'POST',
     token,
-    searchParams: {
-      page: params.page,
-      page_size: params.page_size,
-    },
+    body: paginationBody(params),
   })
 }
 
 export async function getReferralTotal(token: string): Promise<RewardTotals> {
-  return apiRequest<RewardTotals>('/referral/total', { token })
+  return apiRequest<RewardTotals>('/referral/total', {
+    method: 'POST',
+    token,
+    body: {},
+  })
 }
 
 export async function getTeamRewardTotal(token: string): Promise<RewardTotals> {
-  return apiRequest<RewardTotals>('/team-reward/total', { token })
+  return apiRequest<RewardTotals>('/team-reward/total', {
+    method: 'POST',
+    token,
+    body: {},
+  })
 }
 
 export async function getTeamReferrals(
@@ -66,16 +81,18 @@ export async function getTeamReferrals(
   params: PaginationParams = {},
 ): Promise<Paginated<TeamReferralItem>> {
   return apiRequest<Paginated<TeamReferralItem>>('/team/referrals', {
+    method: 'POST',
     token,
-    searchParams: {
-      page: params.page,
-      page_size: params.page_size,
-    },
+    body: paginationBody(params),
   })
 }
 
 export async function getTeamOverview(token: string): Promise<TeamCommunityOverview> {
-  return apiRequest<TeamCommunityOverview>('/team/overview', { token })
+  return apiRequest<TeamCommunityOverview>('/team/overview', {
+    method: 'POST',
+    token,
+    body: {},
+  })
 }
 
 export async function getTeamRewardClaimLogs(
@@ -83,11 +100,9 @@ export async function getTeamRewardClaimLogs(
   params: PaginationParams = {},
 ): Promise<Paginated<TeamRewardClaimLogItem>> {
   return apiRequest<Paginated<TeamRewardClaimLogItem>>('/team-reward/logs', {
+    method: 'POST',
     token,
-    searchParams: {
-      page: params.page,
-      page_size: params.page_size,
-    },
+    body: paginationBody(params),
   })
 }
 
@@ -95,6 +110,7 @@ export async function requestTeamRewardSignature(token: string): Promise<TeamRew
   return apiRequest<TeamRewardSignature>('/claim/team-reward', {
     method: 'POST',
     token,
+    body: {},
   })
 }
 

@@ -23,7 +23,11 @@ export function buildSeasonOptions(
     const effectivePrice = agxPriceUsd * (1 - discountBps / 10_000)
     const active = isPhaseActive(phase, nowSeconds)
     const ended = nowSeconds > Number(phase.endTime)
-    const airdrop = AIRDROP_BY_PHASE[index] ?? '+1%'
+    const airdropBps = Number(phase.airdropValueRatio > 0n ? phase.airdropValueRatio : 0n)
+    const airdrop =
+      airdropBps > 0
+        ? `+${(airdropBps / 100).toFixed(0)}%`
+        : (AIRDROP_BY_PHASE[index] ?? '+1%')
 
     return {
       name: `Season ${index + 1}`,

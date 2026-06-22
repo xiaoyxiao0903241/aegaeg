@@ -16,8 +16,11 @@ test('genesis countdown helpers detect elapsed boundaries', async () => {
       minAmount: 0n,
       maxAmount: 0n,
       discountBps: 0n,
+      airdropValueRatio: 500n,
       startTime: 900n,
       endTime: 1_200n,
+      soldAmount: 0n,
+      userPurchaseLimit: 10_000n * 10n ** 18n,
       purchasedAmount: 0n,
     },
     {
@@ -25,8 +28,11 @@ test('genesis countdown helpers detect elapsed boundaries', async () => {
       minAmount: 0n,
       maxAmount: 0n,
       discountBps: 0n,
+      airdropValueRatio: 200n,
       startTime: 1_500n,
       endTime: 2_000n,
+      soldAmount: 0n,
+      userPurchaseLimit: 20_000n * 10n ** 18n,
       purchasedAmount: 0n,
     },
   ]

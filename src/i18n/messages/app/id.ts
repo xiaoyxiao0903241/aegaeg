@@ -195,7 +195,7 @@ const app = defineMessages({
       receive: 'Akan menerima AGX',
       value: 'Nilai langganan',
       xTokenAirdrop: 'Estimasi nilai airdrop X awal',
-      xTokenAirdropHint: 'Hadiah airdrop memerlukan partisipasi co-build kumulatif ≥ 5.000 USD per akun per musim.',
+      xTokenAirdropHint: 'Hadiah airdrop memerlukan partisipasi co-build kumulatif ≥ {threshold} per akun per musim.',
       join: 'Ikut Co-Build',
       joinGenesis: 'Ikut co-build Genesis',
       statsTitle: 'Data co-build Musim {season}',
@@ -216,11 +216,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Bagaimana cara ikut program co-build?',
-            a: 'Pengguna berpartisipasi dengan USD1 dan mendapatkan AGX sesuai diskon fase yang berlaku. Tiga fase, masing-masing 20 hari, dengan diskon 30% / 25% / 20%.',
+            a: 'Pengguna berpartisipasi dengan USD1 dan mendapatkan AGX sesuai diskon musim yang berlaku. {phaseCount} musim, masing-masing dibuka {phaseDurationDays} hari, dengan diskon {discounts}.',
           },
           {
             q: 'Kuota co-build dan persyaratan partisipasi?',
-            a: 'Minimum 100 USD1, harus dalam kelipatan 100 USD1. Fase 1: $100–$10.000, Fase 2: $100–$20.000, Fase 3: $100–$30.000.',
+            a: 'Minimum {minUsd}, harus dalam kelipatan {shareIncrement} USD1. Kuota per musim: {phaseQuotas}.',
           },
           {
             q: 'Berapa lama siklus co-build?',
@@ -228,7 +228,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana mendapatkan hadiah airdrop X?',
-            a: 'Akun dengan total partisipasi co-build kumulatif 5.000 USD memenuhi syarat hadiah airdrop X sesuai fase. Rasio airdrop tiga fase: 5% / 2% / 1%.',
+            a: 'Akun dengan total partisipasi co-build kumulatif {threshold} memenuhi syarat hadiah airdrop X musim terkait. Rasio airdrop {phaseCount} musim: {airdropRatios}.',
           },
           {
             q: 'Bagaimana hadiah airdrop X dirilis?',

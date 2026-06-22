@@ -195,7 +195,7 @@ const app = defineMessages({
       receive: 'Recibirás AGX',
       value: 'Valor de suscripción',
       xTokenAirdrop: 'Valor estimado del airdrop inicial de X',
-      xTokenAirdropHint: 'Las recompensas de airdrop requieren una participación acumulada en co-construcción ≥ 5.000 USD por cuenta y temporada.',
+      xTokenAirdropHint: 'Las recompensas de airdrop requieren una participación acumulada en co-construcción ≥ {threshold} por cuenta y temporada.',
       join: 'Participar en la co-construcción',
       joinGenesis: 'Participar en la co-construcción Genesis',
       statsTitle: 'Datos de co-construcción de la temporada {season}',
@@ -216,11 +216,11 @@ const app = defineMessages({
         items: [
           {
             q: '¿Cómo participar en el plan de co-construcción?',
-            a: 'Los usuarios participan en la co-construcción con USD1 y pueden obtener AGX según el descuento de la fase correspondiente. Hay tres temporadas, cada una abierta 20 días, con descuentos del 30% / 25% / 20% respectivamente.',
+            a: 'Los usuarios participan en la co-construcción con USD1 y pueden obtener AGX según el descuento de la fase correspondiente. {phaseCount} temporadas, cada una abierta {phaseDurationDays} días, con descuentos de {discounts} respectivamente.',
           },
           {
             q: '¿Cuota de co-construcción y requisitos de participación?',
-            a: 'El monto mínimo de participación es 100 USD1, y debe participarse en múltiplos enteros de 100 USD1. Primera temporada: $100–$10,000; segunda temporada: $100–$20,000; tercera temporada: $100–$30,000.',
+            a: 'El monto mínimo de participación es {minUsd}, y debe participarse en múltiplos de {shareIncrement} USD1. Cuotas por temporada: {phaseQuotas}.',
           },
           {
             q: '¿Cuánto dura el ciclo de co-construcción?',
@@ -228,7 +228,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo obtener recompensas de airdrop X?',
-            a: 'Cuando el monto acumulado de participación en co-construcción de una cuenta alcanza 5,000 USD, califica para las recompensas de airdrop X de la fase correspondiente. Las proporciones de airdrop de las tres temporadas son 5% / 2% / 1% respectivamente.',
+            a: 'Cuando el monto acumulado de participación en co-construcción de una cuenta alcanza {threshold}, califica para las recompensas de airdrop X de la fase correspondiente. Proporciones de airdrop en {phaseCount} temporadas: {airdropRatios}.',
           },
           {
             q: '¿Cómo se liberan las recompensas de airdrop X?',

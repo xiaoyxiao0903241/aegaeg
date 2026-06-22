@@ -195,7 +195,7 @@ const app = defineMessages({
       receive: 'You will receive AGX',
       value: 'Subscription value',
       xTokenAirdrop: 'Est. initial X airdrop value',
-      xTokenAirdropHint: 'Airdrop rewards require cumulative co-build participation ≥ 5,000 USD per account per season.',
+      xTokenAirdropHint: 'Airdrop rewards require cumulative co-build participation ≥ {threshold} per account per season.',
       join: 'Join co-build',
       joinGenesis: 'Join Genesis co-build',
       statsTitle: 'Season {season} co-build stats',
@@ -216,11 +216,11 @@ const app = defineMessages({
         items: [
           {
             q: 'How do I join the co-build program?',
-            a: 'Users participate in co-build with USD1 and receive AGX at the corresponding season discount. There are three seasons, each open for 20 days, with discounts of 30% / 25% / 20% respectively.',
+            a: 'Users participate in co-build with USD1 and receive AGX at the corresponding season discount. {phaseCount} seasons, each open for {phaseDurationDays} days, with discounts of {discounts} respectively.',
           },
           {
             q: 'What are the quota and participation requirements?',
-            a: 'Minimum participation is 100 USD1 in increments of 100 USD1. Season 1: $100–$10,000; Season 2: $100–$20,000; Season 3: $100–$30,000.',
+            a: 'Minimum participation is {minUsd} in increments of {shareIncrement} USD1. Quotas by season: {phaseQuotas}.',
           },
           {
             q: 'How long is the co-build vesting period?',
@@ -228,7 +228,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I qualify for X airdrop rewards?',
-            a: 'Accounts with cumulative co-build participation of 5,000 USD qualify for the corresponding season X airdrop. Airdrop ratios are 5% / 2% / 1% across the three seasons.',
+            a: 'Accounts with cumulative co-build participation of {threshold} qualify for the corresponding season X airdrop. Airdrop ratios across {phaseCount} seasons: {airdropRatios}.',
           },
           {
             q: 'How are X airdrop rewards released?',

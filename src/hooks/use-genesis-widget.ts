@@ -11,6 +11,7 @@ import {
   formatPhaseCountdown,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
+  presaleAirdropThresholdToUsd,
   resolveGenesisMaxShares,
 } from '~/lib/presale/presale-math'
 import {
@@ -29,8 +30,10 @@ import { invalidatePresaleChainQueries } from '~/lib/query/invalidate'
 import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
+  usePresaleAirdropThresholdQuery,
   usePresalePhasesQuery,
   usePresaleTotalPurchasedQuery,
+  usePresaleUserPhaseRemainingQuery,
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
 } from '~/hooks/queries/use-presale-queries'
@@ -60,25 +63,38 @@ export function useGenesisWidget() {
   const activePhaseQuery = usePresaleActivePhaseQuery()
   const agxPriceQuery = usePresaleAgxPriceQuery()
   const totalPurchasedQuery = usePresaleTotalPurchasedQuery()
+  const airdropThresholdQuery = usePresaleAirdropThresholdQuery()
   const userTotalQuery = usePresaleUserTotalQuery(address)
+  const phaseRemainingQuery = usePresaleUserPhaseRemainingQuery(
+    address,
+    activePhaseQuery.data?.index,
+  )
+  const purchaseAmount = useMemo(
+    () => parseTokenAmount(String(shares * Number(PRESALE_CONFIG.sharePriceUsd1)), USD1_DECIMALS),
+    [shares],
+  )
   const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address)
 
   const phases = phasesQuery.data ?? []
   const activePhase = activePhaseQuery.data ?? null
   const userTotal = userTotalQuery.data ?? 0n
+  const phaseRemaining = phaseRemainingQuery.data ?? null
   const agxPriceWei = agxPriceQuery.data ?? 0n
+  const airdropThresholdUsd = useMemo(
+    () =>
+      airdropThresholdQuery.data !== undefined
+        ? presaleAirdropThresholdToUsd(airdropThresholdQuery.data)
+        : presaleAirdropThresholdToUsd(0n),
+    [airdropThresholdQuery.data],
+  )
 
   const isLoading =
     phasesQuery.isLoading ||
     activePhaseQuery.isLoading ||
     agxPriceQuery.isLoading ||
     totalPurchasedQuery.isLoading ||
-    (walletReady && userTotalQuery.isLoading)
-
-  const purchaseAmount = useMemo(
-    () => parseTokenAmount(String(shares * Number(PRESALE_CONFIG.sharePriceUsd1)), USD1_DECIMALS),
-    [shares],
-  )
+    (walletReady && userTotalQuery.isLoading) ||
+    (walletReady && activePhase !== null && phaseRemainingQuery.isLoading)
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -101,15 +117,21 @@ export function useGenesisWidget() {
   const maxAmount =
     activePhase?.maxAmount ??
     parseTokenAmount(PRESALE_CONFIG.phases[0]?.maxUsd1 ?? '10000', USD1_DECIMALS)
+  const remainingPhaseAmount =
+    phaseRemaining?.remainingPhaseAmount ??
+    (activePhase ? activePhase.maxAmount - activePhase.soldAmount : 0n)
+  const remainingUserAmount =
+    phaseRemaining?.remainingUserAmount ??
+    (activePhase ? activePhase.userPurchaseLimit : maxAmount)
   const maxShares = useMemo(
     () =>
       resolveGenesisMaxShares({
-        phaseMaxAmount: maxAmount,
-        userTotal,
+        remainingPhaseAmount,
+        remainingUserAmount,
         usd1Balance,
         walletReady,
       }),
-    [maxAmount, userTotal, usd1Balance, walletReady],
+    [remainingPhaseAmount, remainingUserAmount, usd1Balance, walletReady],
   )
 
   useEffect(() => {
@@ -128,7 +150,15 @@ export function useGenesisWidget() {
     discountBps,
     agxPriceUsd,
   )
-  const xTokenAirdropUsd = estimateXTokenAirdropUsd(payUsd1, phaseIndex)
+  const xTokenAirdropUsd = estimateXTokenAirdropUsd(
+    payUsd1,
+    phaseIndex,
+    activePhase ?? undefined,
+  )
+  const maxPurchasableWei =
+    remainingPhaseAmount < remainingUserAmount
+      ? remainingPhaseAmount
+      : remainingUserAmount
   const quotaLabel = `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
@@ -138,7 +168,7 @@ export function useGenesisWidget() {
     activePhase !== null &&
     maxShares > 0 &&
     purchaseAmount >= minAmount &&
-    purchaseAmount <= maxAmount &&
+    purchaseAmount <= maxPurchasableWei &&
     shares <= maxShares
   const isSubmitting = submittingAction !== null
 
@@ -286,7 +316,8 @@ export function useGenesisWidget() {
     activePhaseQuery.error ??
     agxPriceQuery.error ??
     totalPurchasedQuery.error ??
-    userTotalQuery.error
+    userTotalQuery.error ??
+    phaseRemainingQuery.error
 
   return {
     shares,
@@ -311,7 +342,9 @@ export function useGenesisWidget() {
     estimatedAgxLabel: estimatedAgx.toFixed(2),
     payUsd1Label: `${payUsd1} USD1`,
     contributionValueLabel: formatUsd(contributionValueUsd),
-    xTokenAirdropLabel: xTokenAirdropUsd > 0 ? formatUsd(xTokenAirdropUsd) : '—',
+    xTokenAirdropLabel: payUsd1 > 0 ? formatUsd(xTokenAirdropUsd) : '—',
+    airdropThresholdUsd,
+    airdropThresholdLoading: airdropThresholdQuery.isLoading,
     quotaLabel,
     referencePriceLabel: `$${agxPriceUsd.toFixed(2)}`,
     airdropLabel: getAirdropLabelForPhase(phaseIndex),

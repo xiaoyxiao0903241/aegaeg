@@ -14,8 +14,11 @@ test('buildGenesisPromoSnapshot uses active season discount and end date', async
       minAmount: 100n,
       maxAmount: 10_000n,
       discountBps: 3_000n,
+      airdropValueRatio: 500n,
       startTime: BigInt(now - 86_400),
       endTime: BigInt(now + 86_400),
+      soldAmount: 1_000n,
+      userPurchaseLimit: 10_000n,
       purchasedAmount: 1_000n,
     },
   ]
@@ -42,8 +45,11 @@ test('buildGenesisPromoSnapshot falls back to upcoming season', async () => {
       minAmount: 100n,
       maxAmount: 10_000n,
       discountBps: 2_500n,
+      airdropValueRatio: 200n,
       startTime: BigInt(now + 86_400),
       endTime: BigInt(now + 172_800),
+      soldAmount: 0n,
+      userPurchaseLimit: 20_000n,
       purchasedAmount: 0n,
     },
   ]

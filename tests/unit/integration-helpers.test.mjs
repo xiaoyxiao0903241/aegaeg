@@ -12,8 +12,11 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
       minAmount: 100n,
       maxAmount: 1000n,
       discountBps: 3000n,
+      airdropValueRatio: 500n,
       startTime: BigInt(now - 10_000),
       endTime: BigInt(now + 10_000),
+      soldAmount: 500n,
+      userPurchaseLimit: 10_000n,
       purchasedAmount: 500n,
     },
     {
@@ -21,13 +24,16 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
       minAmount: 100n,
       maxAmount: 1000n,
       discountBps: 2500n,
+      airdropValueRatio: 200n,
       startTime: BigInt(now + 20_000),
       endTime: BigInt(now + 40_000),
+      soldAmount: 0n,
+      userPurchaseLimit: 20_000n,
       purchasedAmount: 0n,
     },
   ]
 
-  const seasons = buildSeasonOptions(phases, 65, now)
+  const seasons = buildSeasonOptions(phases, 55, now)
   assert.equal(seasons[0]?.active, true)
   assert.equal(seasons[0]?.status, 'LIVE')
   assert.equal(seasons[1]?.status, 'Upcoming')

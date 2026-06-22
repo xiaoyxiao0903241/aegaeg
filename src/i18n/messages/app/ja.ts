@@ -195,7 +195,7 @@ const app = defineMessages({
       receive: '獲得予定AGX',
       value: '購入価値',
       xTokenAirdrop: '獲得予定のX初期エアドロップ価値',
-      xTokenAirdropHint: '1アカウントのシーズン累計共創参加額が5,000 USD以上でエアドロップ報酬の対象になります。',
+      xTokenAirdropHint: '1アカウントのシーズン累計共創参加額が{threshold}以上でエアドロップ報酬の対象になります。',
       join: '共創に参加',
       joinGenesis: '創世共創に参加',
       statsTitle: '第{season}期 共創データ',
@@ -216,11 +216,11 @@ const app = defineMessages({
         items: [
           {
             q: '共創プランへの参加方法は？',
-            a: 'ユーザーはUSD1で共創に参加し、対応フェーズの割引でAGXを獲得できる。全3期、各期20日間開放、割引は30% / 25% / 20%の順。',
+            a: 'ユーザーはUSD1で共創に参加し、対応フェーズの割引でAGXを獲得できる。全{phaseCount}期、各{phaseDurationDays}日間開放、割引は{discounts}の順。',
           },
           {
             q: '共創枠と参加条件は？',
-            a: '最低参加額100 USD1、100 USD1の整数倍で参加。第1期 $100–$10,000、第2期 $100–$20,000、第3期 $100–$30,000。',
+            a: '最低参加額{minUsd}、{shareIncrement} USD1の整数倍で参加。各期の枠は{phaseQuotas}。',
           },
           {
             q: '共創のリリース期間は？',
@@ -228,7 +228,7 @@ const app = defineMessages({
           },
           {
             q: 'Xエアドロップリワードの獲得方法は？',
-            a: '単一アカウントの累計共創参加額が5,000 USDに達すると、対応フェーズのXエアドロップリワード資格を獲得。3期のエアドロップ比率は5% / 2% / 1%の順。',
+            a: '単一アカウントの累計共創参加額が{threshold}に達すると、対応フェーズのXエアドロップリワード資格を獲得。{phaseCount}期のエアドロップ比率は{airdropRatios}の順。',
           },
           {
             q: 'Xエアドロップリワードのリリース方法は？',

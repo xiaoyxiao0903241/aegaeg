@@ -63,10 +63,12 @@ export function invalidatePresaleChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleActivePhase })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAgxPrice })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleTotalPurchased })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAirdropThreshold })
 
   if (!address) return
 
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
+  void queryClient.invalidateQueries({ queryKey: ['chain', 'presale', 'userPhaseRemaining', address] })
   void queryClient.invalidateQueries({ queryKey: ['chain', 'erc20'] })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.walletBalances(address) })
 }

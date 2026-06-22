@@ -1,6 +1,6 @@
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { Button } from '~/components/button'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { buttonDisabledClass } from '~/components/button'
@@ -30,7 +30,8 @@ import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
-import { formatGenesisSeasonIntro } from '~/lib/presale/genesis-promo'
+import { formatGenesisSeasonIntro, applyMessageTemplate } from '~/lib/presale/genesis-promo'
+import { buildGenesisFaqTemplateValues } from '~/lib/presale/genesis-faq'
 import { dappTableNestedShellClass } from '~/app/components/dapp-table-shell'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
@@ -72,6 +73,9 @@ export function GenesisWidget({
     genesis.discountLabel,
     genesis.isLoading,
   )
+  const xTokenAirdropHint = applyMessageTemplate(t.genesis.xTokenAirdropHint, {
+    threshold: genesis.airdropThresholdLoading ? '…' : formatUsd(genesis.airdropThresholdUsd),
+  })
 
   const handleSharesChange = (value: string) => {
     const parsed = Number.parseInt(value, 10)
@@ -167,9 +171,9 @@ export function GenesisWidget({
             label: (
               <span className="inline-flex items-center gap-1">
                 {t.genesis.xTokenAirdrop}
-                <AnchoredTooltip content={t.genesis.xTokenAirdropHint}>
+                <AnchoredTooltip content={xTokenAirdropHint}>
                   <button
-                    aria-label={t.genesis.xTokenAirdropHint}
+                    aria-label={xTokenAirdropHint}
                     className={cn(
                       'inline-flex shrink-0 items-center justify-center rounded-full border border-current text-xs font-bold leading-none opacity-60',
                       dappIconClass.md,
@@ -243,6 +247,25 @@ export function GenesisContent() {
   const contributed = String(contributedUsd)
   const contributionProgress = calcProgressPercent(contributed, maxContribution)
   const contributedLabel = `${formatUsd(contributed)} / ${formatUsd(maxContribution)}`
+
+  const genesisFaqValues = useMemo(
+    () =>
+      buildGenesisFaqTemplateValues(
+        genesis.phases,
+        genesis.airdropThresholdUsd,
+        genesis.isLoading && genesis.phases.length === 0,
+      ),
+    [genesis.airdropThresholdUsd, genesis.isLoading, genesis.phases],
+  )
+
+  const genesisFaqItems = useMemo(
+    () =>
+      t.genesis.faq.items.map((item) => ({
+        q: item.q,
+        a: applyMessageTemplate(item.a, genesisFaqValues),
+      })),
+    [genesisFaqValues, t.genesis.faq.items],
+  )
 
   const desktopRows =
     salesLogs?.items.map((item) => {
@@ -432,7 +455,7 @@ export function GenesisContent() {
       </DappSection>
 
       <DappSection title={t.genesis.faq.title}>
-        <FaqList items={t.genesis.faq.items} variant="dapp" />
+        <FaqList items={genesisFaqItems} variant="dapp" />
       </DappSection>
     </DappDetailPage>
   )

@@ -5,8 +5,8 @@ import { loadModule } from './load-module.mjs'
 test('estimateAgxFromUsd1 matches deployment example', async () => {
   const { estimateAgxFromUsd1 } = await loadModule('/src/lib/presale/presale-math.ts')
 
-  const estimated = estimateAgxFromUsd1(1000, 3000, 65)
-  assert.ok(Math.abs(estimated - 21.978) < 0.01)
+  const estimated = estimateAgxFromUsd1(1000, 3000, 55)
+  assert.ok(Math.abs(estimated - 25.974) < 0.01)
 })
 
 test('findActivePresalePhase picks phase by timestamp', async () => {
@@ -19,8 +19,11 @@ test('findActivePresalePhase picks phase by timestamp', async () => {
         minAmount: 100n,
         maxAmount: 1000n,
         discountBps: 3000n,
+        airdropValueRatio: 500n,
         startTime: 100n,
         endTime: 200n,
+        soldAmount: 0n,
+        userPurchaseLimit: 10_000n,
         purchasedAmount: 0n,
       },
       {
@@ -28,8 +31,11 @@ test('findActivePresalePhase picks phase by timestamp', async () => {
         minAmount: 100n,
         maxAmount: 1000n,
         discountBps: 2500n,
+        airdropValueRatio: 200n,
         startTime: 201n,
         endTime: 300n,
+        soldAmount: 0n,
+        userPurchaseLimit: 20_000n,
         purchasedAmount: 0n,
       },
     ],

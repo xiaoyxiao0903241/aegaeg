@@ -195,7 +195,7 @@ const app = defineMessages({
       receive: 'Sẽ nhận AGX',
       value: 'Giá trị đăng ký',
       xTokenAirdrop: 'Giá trị airdrop X ban đầu dự kiến',
-      xTokenAirdropHint: 'Phần thưởng airdrop yêu cầu tổng tham gia đồng xây ≥ 5.000 USD mỗi tài khoản mỗi mùa.',
+      xTokenAirdropHint: 'Phần thưởng airdrop yêu cầu tổng tham gia đồng xây ≥ {threshold} mỗi tài khoản mỗi mùa.',
       join: 'Tham gia cùng xây dựng',
       joinGenesis: 'Tham gia cùng xây dựng Genesis',
       statsTitle: 'Dữ liệu cùng xây dựng kỳ {season}',
@@ -216,11 +216,11 @@ const app = defineMessages({
         items: [
           {
             q: 'Làm thế nào để tham gia kế hoạch cùng xây dựng?',
-            a: 'Người dùng dùng USD1 tham gia cùng xây dựng, có thể nhận AGX theo mức giảm giá tương ứng từng giai đoạn. Ba kỳ, mỗi kỳ mở 20 ngày, mức giảm giá lần lượt 30% / 25% / 20%.',
+            a: 'Người dùng dùng USD1 tham gia cùng xây dựng, có thể nhận AGX theo mức giảm giá tương ứng từng giai đoạn. {phaseCount} kỳ, mỗi kỳ mở {phaseDurationDays} ngày, mức giảm giá lần lượt {discounts}.',
           },
           {
             q: 'Hạn mức cùng xây dựng và yêu cầu tham gia?',
-            a: 'Số tiền tham gia tối thiểu 100 USD1, phải tham gia theo bội số 100 USD1. Kỳ 1: $100–$10.000, kỳ 2: $100–$20.000, kỳ 3: $100–$30.000.',
+            a: 'Tối thiểu {minUsd}, tham gia theo bội số {shareIncrement} USD1. Hạn mức từng kỳ: {phaseQuotas}.',
           },
           {
             q: 'Chu kỳ cùng xây dựng kéo dài bao lâu?',
@@ -228,7 +228,7 @@ const app = defineMessages({
           },
           {
             q: 'Làm thế nào để nhận phần thưởng airdrop X?',
-            a: 'Tài khoản tích lũy tham gia cùng xây dựng đạt 5.000 USD sẽ đủ điều kiện nhận phần thưởng airdrop X tương ứng giai đoạn. Tỷ lệ airdrop ba kỳ lần lượt 5% / 2% / 1%.',
+            a: 'Tài khoản tích lũy tham gia cùng xây dựng đạt {threshold} sẽ đủ điều kiện nhận phần thưởng airdrop X tương ứng giai đoạn. Tỷ lệ airdrop {phaseCount} kỳ: {airdropRatios}.',
           },
           {
             q: 'Phần thưởng airdrop X được giải phóng như thế nào?',

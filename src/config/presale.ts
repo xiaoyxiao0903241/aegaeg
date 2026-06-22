@@ -9,20 +9,18 @@ export interface PresaleConfig {
   phaseDurationSeconds: number
   agxPriceUsd: string
   sharePriceUsd1: string
-  maxShares: number
   phases: PresalePhaseConfig[]
 }
 
-/** 来源 references/xuqiu/DEPLOYMENT_RESULT.md 环境变量快照 */
+/** 来源 DEPLOYMENT_RESULT.md 环境变量快照（2026-06-22） */
 export const PRESALE_CONFIG: PresaleConfig = {
   phaseCount: 3,
   phaseDurationSeconds: 259_200,
-  agxPriceUsd: '65',
+  agxPriceUsd: '55',
   sharePriceUsd1: '100',
-  maxShares: 100,
   phases: [
     { discountBps: 3000, minUsd1: '100', maxUsd1: '10000' },
-    { discountBps: 2500, minUsd1: '100', maxUsd1: '10000' },
-    { discountBps: 2000, minUsd1: '100', maxUsd1: '10000' },
+    { discountBps: 2500, minUsd1: '100', maxUsd1: '20000' },
+    { discountBps: 2000, minUsd1: '100', maxUsd1: '30000' },
   ],
 }

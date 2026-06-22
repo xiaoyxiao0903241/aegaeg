@@ -1,4 +1,4 @@
-import { parseTokenAmount } from '~/lib/swap/token-amount'
+import { formatTokenAmount, parseTokenAmount } from '~/lib/swap/token-amount'
 import { PRESALE_CONFIG } from '~/config/presale'
 
 export interface PresalePhaseOnChain {
@@ -6,36 +6,47 @@ export interface PresalePhaseOnChain {
   minAmount: bigint
   maxAmount: bigint
   discountBps: bigint
+  airdropValueRatio: bigint
   startTime: bigint
   endTime: bigint
+  soldAmount: bigint
+  userPurchaseLimit: bigint
+  /** @deprecated 使用 soldAmount */
   purchasedAmount: bigint
+}
+
+export interface PresalePhaseRemaining {
+  remainingPhaseAmount: bigint
+  remainingUserAmount: bigint
+  userPurchaseLimit: bigint
+  userPhaseAmountCurrent: bigint
 }
 
 const USD1_DECIMALS = 18
 
-/** 份额上限 = min(余额可购份数, 本期剩余可购份数, 硬顶 100)。 */
+/** 份额上限 = min(本期剩余, 用户剩余, 余额可购份数)。 */
 export function resolveGenesisMaxShares({
-  hardCapShares = PRESALE_CONFIG.maxShares,
-  phaseMaxAmount,
   sharePriceUsd1 = PRESALE_CONFIG.sharePriceUsd1,
-  userTotal = 0n,
+  remainingPhaseAmount,
+  remainingUserAmount,
   usd1Balance = 0n,
   walletReady = false,
 }: {
-  hardCapShares?: number
-  phaseMaxAmount: bigint
   sharePriceUsd1?: string
-  userTotal?: bigint
+  remainingPhaseAmount: bigint
+  remainingUserAmount: bigint
   usd1Balance?: bigint
   walletReady?: boolean
 }): number {
   const sharePriceWei = parseTokenAmount(sharePriceUsd1, USD1_DECIMALS)
   if (sharePriceWei === 0n) return 0
 
-  const maxFromQuota = Number(
-    (phaseMaxAmount > userTotal ? phaseMaxAmount - userTotal : 0n) / sharePriceWei,
-  )
-  const caps = [hardCapShares, maxFromQuota]
+  const maxPurchasableWei =
+    remainingPhaseAmount < remainingUserAmount
+      ? remainingPhaseAmount
+      : remainingUserAmount
+
+  const caps = [Number(maxPurchasableWei / sharePriceWei)]
 
   if (walletReady) {
     caps.push(Number(usd1Balance / sharePriceWei))
@@ -128,10 +139,18 @@ export function estimateAgxFromUsd1(
 
 export const AIRDROP_BPS_BY_PHASE = [500, 200, 100] as const
 
-/** Minimum single-period cumulative co-build USD to qualify for X airdrop preview. */
+/** Fallback when `AIRDROP_THRESHOLD` is unavailable — matches mainnet deployment. */
 export const X_AIRDROP_MIN_PERIOD_USD = 5_000
 
-export function getAirdropBpsForPhase(phaseIndex: number): number {
+export function presaleAirdropThresholdToUsd(thresholdWei: bigint): number {
+  if (thresholdWei <= 0n) return X_AIRDROP_MIN_PERIOD_USD
+  return Number(formatTokenAmount(thresholdWei, USD1_DECIMALS, 0))
+}
+
+export function getAirdropBpsForPhase(phaseIndex: number, phase?: PresalePhaseOnChain): number {
+  if (phase?.airdropValueRatio !== undefined && phase.airdropValueRatio > 0n) {
+    return Number(phase.airdropValueRatio)
+  }
   return AIRDROP_BPS_BY_PHASE[phaseIndex] ?? 100
 }
 
@@ -145,25 +164,23 @@ export function estimateContributionValueUsd(
   return agx * agxPriceUsd
 }
 
-/** X token airdrop value in USD from phase airdrop ratio (+5% / +2% / +1%). */
+/** X token airdrop preview USD = purchase × on-chain `airdropValueRatio` (+5% / +2% / +1%). */
 export function estimateXTokenAirdropUsd(
   amountUsd1: number,
   phaseIndex: number,
+  phase?: PresalePhaseOnChain,
 ): number {
   if (amountUsd1 <= 0) return 0
-  return amountUsd1 * (getAirdropBpsForPhase(phaseIndex) / 10_000)
+  return amountUsd1 * (getAirdropBpsForPhase(phaseIndex, phase) / 10_000)
 }
 
-/**
- * Preview X airdrop USD for the current purchase.
- * Eligibility uses single-period cumulative (existing + this order); ratio applies to this order only.
- */
 export function resolveXTokenAirdropUsdForPurchase(
   periodContributedUsd: number,
   payUsd1: number,
   phaseIndex: number,
+  phase?: PresalePhaseOnChain,
 ): number {
   const periodTotalUsd = periodContributedUsd + payUsd1
   if (periodTotalUsd < X_AIRDROP_MIN_PERIOD_USD || payUsd1 <= 0) return 0
-  return estimateXTokenAirdropUsd(payUsd1, phaseIndex)
+  return estimateXTokenAirdropUsd(payUsd1, phaseIndex, phase)
 }

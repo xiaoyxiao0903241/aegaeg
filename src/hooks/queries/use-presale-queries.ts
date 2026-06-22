@@ -6,7 +6,9 @@ import {
   readActivePresalePhase,
   readAllPresalePhases,
   readPresaleAgxPriceWei,
+  readPresaleAirdropThresholdWei,
   readTotalPresalePurchased,
+  readUserPhaseRemainingAmount,
   readUserPresaleTotal,
 } from '~/web3/presale-read'
 import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
@@ -43,11 +45,28 @@ export function usePresaleTotalPurchasedQuery() {
   })
 }
 
+export function usePresaleAirdropThresholdQuery() {
+  return useQuery({
+    queryKey: queryKeys.chain.presaleAirdropThreshold,
+    queryFn: () => readPresaleAirdropThresholdWei(),
+    staleTime: QUERY_STALE_TIME.presale,
+  })
+}
+
 export function usePresaleUserTotalQuery(address?: string) {
   return useQuery({
     queryKey: queryKeys.chain.presaleUserTotal(address ?? ''),
     queryFn: () => readUserPresaleTotal(address!),
     enabled: Boolean(address),
+    staleTime: QUERY_STALE_TIME.presale,
+  })
+}
+
+export function usePresaleUserPhaseRemainingQuery(address?: string, phaseIndex?: number) {
+  return useQuery({
+    queryKey: queryKeys.chain.presaleUserPhaseRemaining(address ?? '', phaseIndex ?? 0),
+    queryFn: () => readUserPhaseRemainingAmount(address!, phaseIndex!),
+    enabled: Boolean(address) && phaseIndex !== undefined,
     staleTime: QUERY_STALE_TIME.presale,
   })
 }

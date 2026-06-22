@@ -17,7 +17,9 @@ test('apiRequest attaches bearer token and parses envelope', async () => {
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {
     assert.match(String(url), /\/performance$/)
+    assert.equal(init?.method, 'POST')
     assert.equal(init?.headers?.Authorization, 'Bearer secret')
+    assert.deepEqual(JSON.parse(String(init?.body)), {})
 
     return Response.json({
       code: 0,
@@ -26,7 +28,7 @@ test('apiRequest attaches bearer token and parses envelope', async () => {
   }
 
   try {
-    const data = await apiRequest('/performance', { token: 'secret' })
+    const data = await apiRequest('/performance', { method: 'POST', token: 'secret', body: {} })
     assert.equal(data.address, '0x1')
   } finally {
     globalThis.fetch = originalFetch
@@ -46,7 +48,7 @@ test('apiRequest throws ApiError for business failures', async () => {
 
   try {
     await assert.rejects(
-      () => apiRequest('/performance', { token: 'bad' }),
+      () => apiRequest('/performance', { method: 'POST', token: 'bad', body: {} }),
       (error) => {
         assert.ok(error instanceof ApiError)
         assert.equal(error.code, 401)
@@ -58,13 +60,15 @@ test('apiRequest throws ApiError for business failures', async () => {
   }
 })
 
-test('getTeamRewardClaimLogs calls paginated endpoint', async () => {
+test('getTeamRewardClaimLogs posts pagination body', async () => {
   const { getTeamRewardClaimLogs } = await loadModule('/src/lib/api/endpoints.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {
-    assert.match(String(url), /\/team-reward\/logs\?page=1&page_size=5/)
+    assert.match(String(url), /\/team-reward\/logs$/)
+    assert.equal(init?.method, 'POST')
     assert.equal(init?.headers?.Authorization, 'Bearer jwt')
+    assert.deepEqual(JSON.parse(String(init?.body)), { page: 1, page_size: 5 })
 
     return Response.json({
       code: 0,
@@ -80,13 +84,15 @@ test('getTeamRewardClaimLogs calls paginated endpoint', async () => {
   }
 })
 
-test('getTeamReferrals calls paginated endpoint', async () => {
+test('getTeamReferrals posts pagination body', async () => {
   const { getTeamReferrals } = await loadModule('/src/lib/api/endpoints.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {
-    assert.match(String(url), /\/team\/referrals\?page=1&page_size=5/)
+    assert.match(String(url), /\/team\/referrals$/)
+    assert.equal(init?.method, 'POST')
     assert.equal(init?.headers?.Authorization, 'Bearer jwt')
+    assert.deepEqual(JSON.parse(String(init?.body)), { page: 1, page_size: 5 })
 
     return Response.json({
       code: 0,

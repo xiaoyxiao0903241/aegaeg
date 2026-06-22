@@ -25,7 +25,10 @@ export const queryKeys = {
     presaleActivePhase: ['chain', 'presale', 'activePhase'] as const,
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
     presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
+    presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,
     presaleUserTotal: (address: string) => ['chain', 'presale', 'userTotal', address] as const,
+    presaleUserPhaseRemaining: (address: string, phaseIndex: number) =>
+      ['chain', 'presale', 'userPhaseRemaining', address, phaseIndex] as const,
     erc20Balance: (token: string, address: string) =>
       ['chain', 'erc20', 'balance', token, address] as const,
     erc20Allowance: (token: string, owner: string, spender: string) =>

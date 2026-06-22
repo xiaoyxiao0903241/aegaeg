@@ -195,7 +195,7 @@ const app = defineMessages({
       receive: '將獲得 AGX',
       value: '認購價值',
       xTokenAirdrop: '將獲得X初始空投價值',
-      xTokenAirdropHint: '單帳戶累計參與共建金額 ≥ 5,000 USD 可獲得空投獎勵',
+      xTokenAirdropHint: '單帳戶累計參與共建金額 ≥ {threshold} 可獲得空投獎勵',
       join: '參與共建',
       joinGenesis: '參與創世共建',
       statsTitle: '第 {season} 期共建數據',
@@ -216,11 +216,11 @@ const app = defineMessages({
         items: [
           {
             q: '如何參與共建計畫？',
-            a: '用戶使用 USD1 參與共建，可按照對應階段折扣獲得 AGX。共三期，每期開放 20 天，折扣依序為 30% / 25% / 20%。',
+            a: '用戶使用 USD1 參與共建，可按照對應階段折扣獲得 AGX。共 {phaseCount} 期，每期開放 {phaseDurationDays} 天，折扣依序為 {discounts}。',
           },
           {
             q: '共建額度與參與要求？',
-            a: '最低參與金額 100 USD1，需按 100 USD1 整數倍參與。第一期 $100–$10,000，第二期 $100–$20,000，第三期 $100–$30,000。',
+            a: '最低參與金額 {minUsd}，需按 {shareIncrement} USD1 整數倍參與。各期額度依序為 {phaseQuotas}。',
           },
           {
             q: '共建週期多久？',
@@ -228,7 +228,7 @@ const app = defineMessages({
           },
           {
             q: '如何獲得 X 空投獎勵？',
-            a: '單帳戶累計參與共建金額達到 5,000 USD，即可獲得對應階段 X 空投獎勵資格。三期空投比例依序為 5% / 2% / 1%。',
+            a: '單帳戶累計參與共建金額達到 {threshold}，即可獲得對應階段 X 空投獎勵資格。{phaseCount} 期空投比例依序為 {airdropRatios}。',
           },
           {
             q: 'X 空投獎勵如何釋放？',

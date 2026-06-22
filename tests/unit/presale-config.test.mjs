@@ -7,7 +7,7 @@ test('presale config matches deployment env snapshot', async () => {
 
   assert.equal(PRESALE_CONFIG.phaseCount, 3)
   assert.equal(PRESALE_CONFIG.phaseDurationSeconds, 259_200)
-  assert.equal(PRESALE_CONFIG.agxPriceUsd, '65')
+  assert.equal(PRESALE_CONFIG.agxPriceUsd, '55')
   assert.equal(PRESALE_CONFIG.sharePriceUsd1, '100')
   assert.deepEqual(
     PRESALE_CONFIG.phases.map((phase) => phase.discountBps),
@@ -16,5 +16,9 @@ test('presale config matches deployment env snapshot', async () => {
   assert.deepEqual(
     PRESALE_CONFIG.phases.map((phase) => phase.minUsd1),
     ['100', '100', '100'],
+  )
+  assert.deepEqual(
+    PRESALE_CONFIG.phases.map((phase) => phase.maxUsd1),
+    ['10000', '20000', '30000'],
   )
 })
