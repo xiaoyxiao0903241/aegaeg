@@ -13,7 +13,7 @@ import {
   formatClaimableAmount,
   formatPresaleRank,
   formatUsd,
-  getPresaleRankHighlightedRowsForPage,
+  getPresaleRankHighlightedRows,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
   resolveRewardTypeI18nKey,
@@ -36,7 +36,6 @@ import { buildRewardTierRows, getTeamBonusRateLabel, getTeamRequirementLegRank }
 import {
   DAPP_TABLE_PAGE_SIZE,
   dappTableViewState,
-  paginateStaticRows,
   tablePageQuery,
 } from '~/lib/table-pagination'
 import { DappActionButton } from '~/app/components/dapp-action-button'
@@ -313,7 +312,6 @@ export function RewardsContent() {
   const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
   const [referralPage, setReferralPage] = useState(1)
   const [teamPage, setTeamPage] = useState(1)
-  const [tierPage, setTierPage] = useState(1)
   const bonusRateLabel = getTeamBonusRateLabel(displayRank)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
     tablePageQuery(referralPage),
@@ -362,23 +360,7 @@ export function RewardsContent() {
 
   const rewardTiers = buildRewardTierRows()
   const tierTotal = rewardTiers.length
-  const { rows: pagedTierRows } = paginateStaticRows(
-    rewardTiers,
-    tierPage,
-    DAPP_TABLE_PAGE_SIZE,
-  )
-  const tierHighlightedRows = getPresaleRankHighlightedRowsForPage(
-    displayRank,
-    tierTotal,
-    tierPage,
-    DAPP_TABLE_PAGE_SIZE,
-  )
-  const tierHighlightedRowsAll = getPresaleRankHighlightedRowsForPage(
-    displayRank,
-    tierTotal,
-    1,
-    tierTotal,
-  )
+  const tierHighlightedRows = getPresaleRankHighlightedRows(displayRank, tierTotal)
 
   const tierHeaders = [
     t.tables.title,
@@ -405,21 +387,13 @@ export function RewardsContent() {
     })
 
   const tierTable = (
-    <>
-      <ResponsiveTable
-        compact
-        headers={tierHeaders}
-        highlightedRows={isMobileViewport ? tierHighlightedRowsAll : tierHighlightedRows}
-        plain
-        rows={mapTierRows(
-          isMobileViewport ? rewardTiers : pagedTierRows,
-          isMobileViewport ? tierHighlightedRowsAll : tierHighlightedRows,
-        )}
-      />
-      {!isMobileViewport ? (
-        <DappTablePagination onPageChange={setTierPage} page={tierPage} total={tierTotal} />
-      ) : null}
-    </>
+    <ResponsiveTable
+      compact
+      headers={tierHeaders}
+      highlightedRows={tierHighlightedRows}
+      plain
+      rows={mapTierRows(rewardTiers, tierHighlightedRows)}
+    />
   )
 
   const historyHeaders =

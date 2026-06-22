@@ -38,7 +38,7 @@ const footerClass = {
     'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 text-sm whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
   rule: 'container h-px bg-[#232323]',
   bottom:
-    'container footer-bottom flex min-h-4 items-start justify-between gap-6 overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-on-dark whitespace-nowrap max-dapp:block max-dapp:text-xs',
+    'container footer-bottom flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-on-dark whitespace-nowrap max-dapp:text-xs',
 } as const
 
 const footerLinkClass =
@@ -124,7 +124,6 @@ export function HomeFooter() {
       <div className={footerClass.rule} aria-hidden="true" />
       <div className={footerClass.bottom}>
         <p className="m-0 max-dapp:whitespace-nowrap">{content.copyright}</p>
-        <p className="m-0">{content.legal}</p>
       </div>
     </footer>
   )

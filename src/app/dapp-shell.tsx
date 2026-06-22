@@ -68,11 +68,7 @@ export function DappShell() {
 
       <section
         className={cn(
-          shellStageClass({
-            tab: activeTab,
-            sessionReady: shellState.sessionReady,
-            detailCollapsed: effectiveDetailCollapsed,
-          }),
+          shellStageClass(),
           'dapp:overflow-visible',
         )}
         aria-label="AEGIS X DApp"

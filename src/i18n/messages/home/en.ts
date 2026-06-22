@@ -245,7 +245,6 @@ const home = defineMessages({
   footer: {
     brandCopy: 'Guarding the future value network \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. All rights reserved.',
-    legal: 'Terms of Service · Privacy Policy · Disclaimer',
     groups: [
       {
         label: 'Protocol',

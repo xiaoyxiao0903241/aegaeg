@@ -109,9 +109,9 @@ export function DappMobileNav({
           <button
             aria-label={t.topbar.closeMenu}
             className={cn(
-              'grid size-9 shrink-0 cursor-pointer place-items-center rounded-md',
-              'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
-              'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
+              'grid size-9 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+              'text-foreground shadow-none transition-opacity duration-180 ease-out',
+              'hover:opacity-80 focus-visible:outline-none',
             )}
             onClick={onClose}
             type="button"

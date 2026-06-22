@@ -3,6 +3,21 @@
 @import './dapp-scale.css';
 @import './wallet.css';
 
+/* PC DApp — 锁视口高度，避免装饰层撑出页面滚动 */
+@media (min-width: 821px) {
+  html.dapp-app,
+  html.dapp-app body,
+  html.dapp-app #root {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  html.dapp-app #root {
+    min-height: 0;
+  }
+}
+
 /* DApp PC shell — 设计基准 80rem（1280px @ 16px）；超宽屏随根字号同比放大 */
 /* @media 不支持 var() — 字面量须与 theme.css `--breakpoint-dapp` 同步 */
 @media (min-width: 821px) {

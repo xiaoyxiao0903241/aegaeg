@@ -26,6 +26,7 @@ import { DappActionRow } from '~/app/components/dapp-action-row'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { MetricCard } from '~/app/components/dapp-card'
 import { DappMetaList } from '~/app/components/dapp-meta-list'
+import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
@@ -447,9 +448,9 @@ export function GenesisContent() {
         </div>
       </DappSection>
 
-      <DappSection title={t.genesis.faq.title}>
+      <DappCollapsibleSection bodyClassName="overflow-visible" title={t.genesis.faq.title}>
         <FaqList items={genesisFaqItems} variant="dapp" />
-      </DappSection>
+      </DappCollapsibleSection>
     </DappDetailPage>
   )
 }

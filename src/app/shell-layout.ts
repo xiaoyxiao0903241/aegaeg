@@ -1,48 +1,24 @@
 import { cn } from '~/lib/utils'
 import type { DappTab } from '~/app/types'
 
-/** PC 窗口高度：随 dvh 放大，超宽屏用更高比例占满视口 */
-const TAB_WINDOW_DVH: Record<DappTab, number> = {
-  swap: 90,
-  genesis: 89,
-  rewards: 96,
-  community: 94,
-}
-
-const COLLAPSED_WINDOW_DVH = 90
-
-function shellWindowMaxHeightClass(state: {
-  tab: DappTab
-  detailCollapsed: boolean
-}) {
-  const dvh = state.detailCollapsed ? COLLAPSED_WINDOW_DVH : TAB_WINDOW_DVH[state.tab]
-  return `dapp:max-h-[min(${dvh}dvh,calc(100dvh_-_var(--dapp-shell-chrome-y)))] dapp:h-[min(${dvh}dvh,calc(100dvh_-_var(--dapp-shell-chrome-y)))]`
-}
-
 export const shellPageClass = cn(
   'relative flex h-dvh flex-col gap-0 bg-background pt-0 text-muted-foreground',
-  'dapp:overflow-x-clip dapp:overflow-y-visible',
+  'dapp:h-dvh dapp:overflow-hidden',
   'max-dapp:bg-[linear-gradient(180deg,var(--dapp-h5-gradient-top)_0%,var(--background)_25%,var(--background)_100%)]',
   'max-dapp:h-auto max-dapp:min-h-dvh max-dapp:overflow-x-clip max-dapp:overflow-y-visible',
 )
 
-export function shellStageClass(state: {
-  tab: DappTab
-  sessionReady: boolean
-  detailCollapsed: boolean
-}) {
-  const { detailCollapsed } = state
+export function shellStageClass() {
   return cn(
     'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0 pb-4',
-    'dapp:items-center dapp:justify-start dapp:pb-4',
-    detailCollapsed && 'dapp:justify-center dapp:pb-10',
+    'dapp:min-h-0 dapp:flex-1 dapp:items-center dapp:justify-stretch dapp:pb-4',
     'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-6',
   )
 }
 
 export function shellContainerClass() {
   return cn(
-    'mx-auto flex h-full min-h-0 w-full flex-col dapp:max-w-none dapp:items-center dapp:px-0',
+    'mx-auto flex h-full min-h-0 w-full flex-col dapp:max-w-none dapp:flex-1 dapp:items-center dapp:px-0',
     'max-dapp:h-auto max-dapp:max-w-sm max-dapp:px-3',
   )
 }
@@ -56,8 +32,7 @@ export function shellWindowClass(state: {
 
   return cn(
     'group/shell mx-auto grid w-full min-h-0 overflow-hidden border border-border bg-card shadow-window dapp:max-w-none',
-    'dapp:h-full',
-    shellWindowMaxHeightClass(state),
+    'dapp:h-full dapp:max-h-full',
     'rounded-xl',
     !sessionReady && 'shadow-window-compact',
     'max-dapp:flex max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-col max-dapp:gap-3',

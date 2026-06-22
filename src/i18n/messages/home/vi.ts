@@ -245,7 +245,6 @@ const home = defineMessages({
   footer: {
     brandCopy: 'Bảo vệ mạng lưới giá trị tương lai \nAI x DeFi x USD1',
     copyright: '© 2026 AEGIS X DAO. Bảo lưu mọi quyền.',
-    legal: 'Điều khoản dịch vụ · Chính sách bảo mật · Tuyên bố miễn trừ',
     groups: [
       {
         label: 'Giao thức',
