@@ -64,9 +64,9 @@ const app = defineMessages({
       balance: '余额',
       exchangePrice: '兑换价格',
       ratePlaceholder: '1 : 1',
-      slippage: '滑点容忍',
+      slippage: '滑点设置',
       allowedSlippage: '允许滑点',
-      slippageSettings: '滑点容忍设置',
+      slippageSettings: '允许滑点设置',
       route: '兑换路径',
       provider: '提供方',
       providerName: 'PancakeSwap',
@@ -77,7 +77,7 @@ const app = defineMessages({
       swapSuccess: '兑换成功',
       overview: '概览',
       exchangeRate: '兑换比率',
-      fixedRate: '1 : 1 固定',
+      fixedRate: '基于PancakeSwap市场汇率',
       settlement: '结算',
       settlementValue: 'PancakeSwap · 即时到账',
       tokenAbout: {
@@ -135,15 +135,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'AGX 是什么？',
-                a: 'AGX 是 AEGIS X 的治理与价值代币，用于治理投票、质押与生态激励。',
+                a: 'AGX 是 AEGIS X 协议核心资产，通过150%超额抵押机制铸造，承担价值增长、收益分配与生态建设的重要角色。',
               },
               {
-                q: 'USD1 在协议里扮演什么角色？',
-                a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
+                q: 'AGX 如何实现持续增长？',
+                a: '通过质押、债券与 Rebase 形成长期复利循环，并结合 AI 智库做市与回购销毁机制。',
               },
               {
-                q: 'USDT 和 USD1 是如何进行兑换的？',
-                a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
+                q: '如何获得AGX？',
+                a: '用户可通过参与协议生态获得AGX，也可通过协议支持的交易市场进行获取。',
               },
             ],
           },
@@ -152,15 +152,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'gAGX 是什么？',
-                a: 'gAGX 是质押 AGX 获得的生息凭证，可解锁治理权重与更高股东称号。',
+                a: 'gAGX 是协议奖励结算凭证，用于连接收益增长与生态价值，并可参与生态挖矿。',
               },
               {
-                q: 'USD1 在协议里扮演什么角色？',
-                a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
+                q: '如何获得gAGX？',
+                a: '用户参与协议收益分配后，可获得对应数量的 gAGX。',
               },
               {
-                q: 'USDT 和 USD1 是如何进行兑换的？',
-                a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
+                q: 'gAGX 和 AGX 有什么区别？',
+                a: 'AGX 是协议核心资产，承担价值增长与收益分配；gAGX 是生态收益凭证，可兑换AGX，并作为参与生态挖矿的重要入口。',
               },
             ],
           },
@@ -169,15 +169,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'X 是什么？',
-                a: 'X 是生态参与权益代币，记录链上贡献并可获得空投与活动加成。',
+                a: 'X 是 AEGIS X 生态价值代币，总量固定2.1亿枚，承载生态增长与价值沉淀。',
               },
               {
-                q: 'USD1 在协议里扮演什么角色？',
-                a: 'USD1 是认购、奖励与兑换流程的结算通道，让价值记账保持简单且可审计。',
+                q: '如何获得X？',
+                a: '用户可通过参与生态挖矿获得 X 奖励，共享生态增长价值。',
               },
               {
-                q: 'USDT 和 USD1 是如何进行兑换的？',
-                a: '应用通过支持的 BSC 兑换路径完成换算，并由连接的钱包确认最终交易。',
+                q: 'X 空投如何释放？',
+                a: 'X 的价值来源于生态增长、价值沉淀与长期发展共识，是生态价值的重要承载者。',
               },
             ],
           },
@@ -188,13 +188,13 @@ const app = defineMessages({
     genesis: {
       title: '共建计划',
       intro: '参与 X DAO 共建计划 · 第{season}期  ({discount} 折扣)',
-      shares: '份额（1 份 = 100 USD1 · 最大 {max}）',
+      shares: '份额（1 份 = 100 USD1 · 最大 100）',
       quota: '本期共建额度',
       pay: '支付',
       receive: '将获得AGX',
       value: '认购价值',
       xTokenAirdrop: '将获得X初始空投价值',
-      xTokenAirdropHint: '单账户累计参与共建金额 ≥ {threshold} 可获得空投奖励',
+      xTokenAirdropHint: '单账户累计参与共建金额 ≥ 5,000 USD 可获得空投奖励',
       join: '参与共建',
       joinGenesis: '参与创世共建',
       statsTitle: '第 {season} 期共建数据',
@@ -215,11 +215,11 @@ const app = defineMessages({
         items: [
           {
             q: '如何参与共建计划？',
-            a: '用户使用 USD1 参与共建，可按照对应阶段折扣获得 AGX。共 {phaseCount} 期，每期开放 {phaseDurationDays} 天，折扣依次为 {discounts}。',
+            a: '用户使用 USD1 参与共建，可按照对应阶段折扣获得 AGX。共三期，每期开放 20 天，折扣依次为 30% / 25% / 20%。',
           },
           {
             q: '共建额度与参与要求？',
-            a: '最低参与金额 {minUsd}，需按 {shareIncrement} USD1 整数倍参与。各期额度依次为 {phaseQuotas}。',
+            a: '最低参与金额100 USD1，需按100 USD1整数倍参与。第一期 $100–$10,000，第二期 $100–$20,000，第三期 $100–$30,000。',
           },
           {
             q: '共建周期多久？',
@@ -227,7 +227,7 @@ const app = defineMessages({
           },
           {
             q: '如何获得 X 空投奖励？',
-            a: '单账户累计参与共建金额达到 {threshold}，即可获得对应阶段 X 空投奖励资格。{phaseCount} 期空投比例依次为 {airdropRatios}。',
+            a: '单账户累计参与共建金额达到5,000 USD，即可获得对应阶段 X 空投奖励资格。三期空投比例依次为 5% / 2% / 1%。',
           },
           {
             q: 'X 空投奖励如何释放？',
@@ -268,7 +268,7 @@ const app = defineMessages({
       progressMaxPersonal: '已达最高个人等级',
       progressMaxTeam: '已达最高团队等级',
       teamLegRequirement: '两条 {rank} 线',
-      tierDualLegRequirement: '任意双区{rank}',
+      tierDualLegRequirement: '任意双分区{rank}',
       teamVolume: '体系业绩',
       referralRewards: '直推奖励',
       autoPaidLabel: '自动支付',
@@ -413,10 +413,10 @@ const app = defineMessages({
     },
     tables: {
       time: '时间',
-      paid: '支付',
+      paid: '金额',
       status: '状态',
       discount: '折扣',
-      estimatedAgx: '预计 AGX',
+      estimatedAgx: '预计获得AGX',
       tx: '交易',
       title: '创世称号',
       totalVolume: '总业绩',
