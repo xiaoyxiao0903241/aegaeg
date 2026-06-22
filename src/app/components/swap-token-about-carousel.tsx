@@ -293,14 +293,14 @@ export function TokenAboutCarousel() {
       setApi={setApi}
     >
       <CarouselContent
-        className={cn(TOKEN_CAROUSEL_TRACK_CLASS, '-ml-4')}
+        className={cn(TOKEN_CAROUSEL_TRACK_CLASS, '-ml-8')}
         spacing="none"
         viewportClassName={
           isDesktop ? TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS : TOKEN_CAROUSEL_H5_VIEWPORT_BLEED_CLASS
         }
       >
         {tokens.map((token, index) => (
-          <CarouselItem className={cn(TOKEN_CAROUSEL_SLIDE_CLASS, 'pl-4')} key={token.key} spacing="none">
+          <CarouselItem className={cn(TOKEN_CAROUSEL_SLIDE_CLASS, 'pl-8')} key={token.key} spacing="none">
             <TokenCarouselCard
               contractLabel={t.swap.tokenContract}
               contractTooltip={t.swap.tokenContractTooltip}
