@@ -12,6 +12,7 @@ import { GenesisContent, GenesisWidget } from '~/app/tabs/genesis-tab'
 import { GenesisWidgetProvider } from '~/app/genesis-widget-context'
 import { RewardsContent, RewardsWidget } from '~/app/tabs/rewards-tab'
 import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
+import { DappScrollFadeHost } from '~/app/components/dapp-scroll-fade-host'
 import { HeroRaysBackground, heroRaysShellClass } from '~/components/hero-rays-background'
 import type { DappTab } from '~/app/types'
 import { useDappShell } from '~/app/dapp-shell-context'
@@ -96,42 +97,48 @@ export function DappShell() {
             >
               <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 
-              <aside className={shellWidgetClass()}>
-                <div className={shellMobileDrawerClass}>
-                  <button
-                    aria-controls={mobileNavId}
-                    aria-expanded={mobileNavOpen}
-                    aria-label={t.topbar.openMenu}
-                    className={shellMobileDrawerSummaryClass}
-                    onClick={() => setMobileNavOpen(true)}
-                    type="button"
-                  >
-                    <DappIcon alt="" size="lg" src={dappAssets.menu} />
-                  </button>
-                </div>
-                <DappMobileNav
-                  activeTab={activeTab}
-                  onClose={() => setMobileNavOpen(false)}
-                  onSelectTab={selectMobileTab}
-                  open={mobileNavOpen}
-                />
-                <TabWidget
-                  key={activeTab}
-                  activeTab={activeTab}
-                  onSelectTab={selectTab}
-                />
-              </aside>
+              <DappScrollFadeHost>
+                <aside className={shellWidgetClass()}>
+                  <div className={shellMobileDrawerClass}>
+                    <button
+                      aria-controls={mobileNavId}
+                      aria-expanded={mobileNavOpen}
+                      aria-label={t.topbar.openMenu}
+                      className={shellMobileDrawerSummaryClass}
+                      onClick={() => setMobileNavOpen(true)}
+                      type="button"
+                    >
+                      <DappIcon alt="" size="lg" src={dappAssets.menu} />
+                    </button>
+                  </div>
+                  <DappMobileNav
+                    activeTab={activeTab}
+                    onClose={() => setMobileNavOpen(false)}
+                    onSelectTab={selectMobileTab}
+                    open={mobileNavOpen}
+                  />
+                  <TabWidget
+                    key={activeTab}
+                    activeTab={activeTab}
+                    onSelectTab={selectTab}
+                  />
+                </aside>
+              </DappScrollFadeHost>
 
-              <section
-                className={shellContentClass(effectiveDetailCollapsed)}
-                aria-hidden={effectiveDetailCollapsed}
-                aria-labelledby={`${activeTab}-title`}
-                data-dapp-detail
+              <DappScrollFadeHost
+                className={effectiveDetailCollapsed ? 'dapp:pointer-events-none' : undefined}
               >
-                <div className="dapp-detail-panel" key={activeTab}>
-                  <TabContent activeTab={activeTab} onSelectTab={selectTab} />
-                </div>
-              </section>
+                <section
+                  className={shellContentClass(effectiveDetailCollapsed)}
+                  aria-hidden={effectiveDetailCollapsed}
+                  aria-labelledby={`${activeTab}-title`}
+                  data-dapp-detail
+                >
+                  <div className="dapp-detail-panel" key={activeTab}>
+                    <TabContent activeTab={activeTab} onSelectTab={selectTab} />
+                  </div>
+                </section>
+              </DappScrollFadeHost>
             </div>
           </GenesisWidgetProvider>
         </div>

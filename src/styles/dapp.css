@@ -54,18 +54,37 @@
   animation: dapp-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* PC scroll columns — top / bottom edge fade while scrolling */
+/* PC scroll columns — edge fade overlays (see DappScrollFadeHost) */
 @media (min-width: 821px) {
-  .dapp-scroll-column {
+  .dapp-scroll-fade-host {
     --dapp-scroll-fade: 1.5rem;
-    background-color: var(--card);
-    background-image:
-      linear-gradient(to bottom, var(--card), oklch(from var(--card) l c h / 0%)),
-      linear-gradient(to top, var(--card), oklch(from var(--card) l c h / 0%));
-    background-position: top, bottom;
-    background-repeat: no-repeat;
-    background-size: 100% var(--dapp-scroll-fade);
-    background-attachment: local, local;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .dapp-scroll-fade-edge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: var(--dapp-scroll-fade);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .dapp-scroll-fade-edge-top {
+    top: 0;
+    background: linear-gradient(to bottom, var(--card) 0%, var(--card) 50%, transparent 100%);
+  }
+
+  .dapp-scroll-fade-edge-bottom {
+    bottom: 0;
+    background: linear-gradient(to top, var(--card) 0%, var(--card) 50%, transparent 100%);
+  }
+}
+
+@media (max-width: 820px) {
+  .dapp-scroll-fade-edge {
+    display: none;
   }
 }
 

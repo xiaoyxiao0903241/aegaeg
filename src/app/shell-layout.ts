@@ -90,7 +90,6 @@ export const shellRailIconClass =
 export function shellContentClass(detailCollapsed: boolean) {
   return cn(
     'min-h-0 min-w-0 max-h-full overflow-x-hidden bg-card transition-opacity duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
-    'dapp:dapp-scroll-column',
     detailCollapsed
       ? 'pointer-events-none overflow-y-hidden opacity-0'
       : 'overflow-y-auto opacity-100',
@@ -101,7 +100,6 @@ export function shellContentClass(detailCollapsed: boolean) {
 export function shellWidgetClass() {
   return cn(
     'h-full min-h-0 max-h-full overflow-y-auto overflow-x-hidden border-r border-border bg-card px-6 pb-5.5 pt-10',
-    'dapp:dapp-scroll-column',
     'max-dapp:h-auto max-dapp:max-h-none max-dapp:w-full max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
   )
 }
