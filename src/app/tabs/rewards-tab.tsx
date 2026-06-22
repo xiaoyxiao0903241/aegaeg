@@ -37,7 +37,6 @@ import {
   DAPP_TABLE_PAGE_SIZE,
   dappTableViewState,
   paginateStaticRows,
-  shouldShowTablePagination,
   tablePageQuery,
 } from '~/lib/table-pagination'
 import { DappActionButton } from '~/app/components/dapp-action-button'
@@ -363,8 +362,6 @@ export function RewardsContent() {
 
   const rewardTiers = buildRewardTierRows()
   const tierTotal = rewardTiers.length
-  const tierPageCount = Math.max(1, Math.ceil(tierTotal / DAPP_TABLE_PAGE_SIZE))
-  const tierMobileSwipe = isMobileViewport && shouldShowTablePagination(tierTotal)
   const { rows: pagedTierRows } = paginateStaticRows(
     rewardTiers,
     tierPage,
@@ -376,13 +373,14 @@ export function RewardsContent() {
     tierPage,
     DAPP_TABLE_PAGE_SIZE,
   )
+  const tierHighlightedRowsAll = getPresaleRankHighlightedRowsForPage(
+    displayRank,
+    tierTotal,
+    1,
+    tierTotal,
+  )
 
-  const tierHeadersMobile = [
-    t.tables.title,
-    t.community.shareholder,
-    t.tables.postLaunchRank,
-  ]
-  const tierHeadersDesktop = [
+  const tierHeaders = [
     t.tables.title,
     t.community.shareholder,
     t.tables.totalVolume,
@@ -392,7 +390,6 @@ export function RewardsContent() {
   const mapTierRows = (
     sourceRows: ReturnType<typeof buildRewardTierRows>,
     highlightedRows: number[],
-    mobile: boolean,
   ) =>
     sourceRows.map((row, rowIndex) => {
       const totalVolumeCell = formatTierTotalVolumeCell(
@@ -400,63 +397,23 @@ export function RewardsContent() {
         row[2],
         t.rewards.tierDualLegRequirement,
       )
-      const cells = mobile
-        ? [row[0], row[1], row[4]]
-        : [row[0], row[1], totalVolumeCell, row[4]]
+      const cells = [row[0], row[1], totalVolumeCell, row[4]]
       if (highlightedRows.includes(rowIndex)) {
         cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
       }
       return cells
     })
 
-  const tierTable = tierMobileSwipe ? (
-    <div
-      className={cn(
-        'max-dapp:flex max-dapp:snap-x max-dapp:snap-mandatory',
-        'max-dapp:overflow-x-scroll max-dapp:scrollbar-x-track max-dapp:pb-1.5',
-      )}
-    >
-      {Array.from({ length: tierPageCount }, (_, index) => {
-        const pageNumber = index + 1
-        const { rows: pageRows } = paginateStaticRows(
-          rewardTiers,
-          pageNumber,
-          DAPP_TABLE_PAGE_SIZE,
-        )
-        const pageHighlightedRows = getPresaleRankHighlightedRowsForPage(
-          displayRank,
-          tierTotal,
-          pageNumber,
-          DAPP_TABLE_PAGE_SIZE,
-        )
-
-        return (
-          <div
-            className="max-dapp:w-full max-dapp:shrink-0 max-dapp:snap-start"
-            key={pageNumber}
-          >
-            <ResponsiveTable
-              compact
-              headers={tierHeadersMobile}
-              highlightedRows={pageHighlightedRows}
-              plain
-              rows={mapTierRows(pageRows, pageHighlightedRows, true)}
-            />
-          </div>
-        )
-      })}
-    </div>
-  ) : (
+  const tierTable = (
     <>
       <ResponsiveTable
         compact
-        headers={isMobileViewport ? tierHeadersMobile : tierHeadersDesktop}
-        highlightedRows={tierHighlightedRows}
+        headers={tierHeaders}
+        highlightedRows={isMobileViewport ? tierHighlightedRowsAll : tierHighlightedRows}
         plain
         rows={mapTierRows(
-          isMobileViewport ? paginateStaticRows(rewardTiers, 1, DAPP_TABLE_PAGE_SIZE).rows : pagedTierRows,
-          tierHighlightedRows,
-          isMobileViewport,
+          isMobileViewport ? rewardTiers : pagedTierRows,
+          isMobileViewport ? tierHighlightedRowsAll : tierHighlightedRows,
         )}
       />
       {!isMobileViewport ? (
@@ -559,11 +516,13 @@ export function RewardsContent() {
           </div>
         </DappSection>
       ) : (
-        <DappCollapsibleSection title={t.rewards.allTiers}>{tierTable}</DappCollapsibleSection>
+        <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.allTiers}>
+          {tierTable}
+        </DappCollapsibleSection>
       )}
 
-      <DappCollapsibleSection title={t.rewards.history}>
-        <div className={cn(revealClass(), 'mt-3.5')} data-reveal>
+      <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.history}>
+        <div className={cn(revealClass(), 'mt-3.5 max-dapp:mt-3')} data-reveal>
           <DappPillTabs
             ariaLabel={t.rewards.history}
             className="mb-2.5 flex items-center justify-start gap-2"
@@ -576,7 +535,6 @@ export function RewardsContent() {
           {historyTable.requiresAuth ? (
             <DappTableAuthPrompt
               body={t.dapp.connect.recordsBodyRewards}
-              className="mt-0"
             />
           ) : historyTable.queryEmpty ? (
             <DappTableEmptyMessage
@@ -585,7 +543,6 @@ export function RewardsContent() {
                   ? t.rewards.referralHistoryEmpty.body
                   : t.rewards.teamHistoryEmpty.body
               }
-              className="mt-0"
               title={
                 historyTab === 'referral'
                   ? t.rewards.referralHistoryEmpty.title

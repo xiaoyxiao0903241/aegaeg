@@ -6,12 +6,12 @@ import { cn } from '~/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 
 const TABLE_CELL =
-  'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal'
+  'border-b-[0.5px] border-border px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal'
 
 const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
 
 const TABLE_CLASS =
-  'w-full min-w-0 table-fixed border-collapse text-sm leading-normal max-dapp:text-xs'
+  'w-full min-w-0 table-fixed border-collapse text-sm leading-normal max-dapp:w-max max-dapp:min-w-full max-dapp:table-auto max-dapp:text-xs'
 
 const TABLE_WRAP_PADDING =
   'dapp:px-5 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5'
@@ -48,13 +48,13 @@ export function ResponsiveTable({
 }) {
   const wrapClass = plain
     ? cn(
-        'overflow-x-auto max-w-full min-w-0 max-dapp:overflow-x-visible',
+        'overflow-x-auto max-w-full min-w-0 max-dapp:scrollbar-x-track',
         dappTableCardShellClass,
         TABLE_WRAP_PADDING,
         className,
       )
     : cn(
-        'mt-3.5 overflow-x-auto max-w-full min-w-0 max-dapp:overflow-x-visible',
+        'mt-3.5 overflow-x-auto max-w-full min-w-0 max-dapp:scrollbar-x-track',
         dappTableCardShellClass,
         TABLE_WRAP_PADDING,
         compact && '[&_table]:min-w-full',

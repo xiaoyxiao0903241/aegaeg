@@ -54,6 +54,21 @@
   animation: dapp-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* PC scroll columns — top / bottom edge fade while scrolling */
+@media (min-width: 821px) {
+  .dapp-scroll-column {
+    --dapp-scroll-fade: 1.5rem;
+    background-color: var(--card);
+    background-image:
+      linear-gradient(to bottom, var(--card), oklch(from var(--card) l c h / 0%)),
+      linear-gradient(to top, var(--card), oklch(from var(--card) l c h / 0%));
+    background-position: top, bottom;
+    background-repeat: no-repeat;
+    background-size: 100% var(--dapp-scroll-fade);
+    background-attachment: local, local;
+  }
+}
+
 [data-dapp-detail] [data-reveal] {
   opacity: 1;
   transform: none;
@@ -195,31 +210,5 @@
 
   [data-dapp-mobile-nav][data-motion='exit'] [data-dapp-mobile-nav-backdrop] {
     animation: dapp-mobile-nav-fade-out 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  }
-
-  @keyframes dapp-swipe-chevron-breathe {
-    0%,
-    100% {
-      opacity: 0.55;
-      transform: translateY(0);
-    }
-
-    50% {
-      opacity: 1;
-      transform: translateY(4px);
-    }
-  }
-
-  @keyframes dapp-swipe-chevron-breathe-up {
-    0%,
-    100% {
-      opacity: 0.55;
-      transform: translateY(0);
-    }
-
-    50% {
-      opacity: 1;
-      transform: translateY(-4px);
-    }
   }
 }

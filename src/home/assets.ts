@@ -2,6 +2,7 @@ export const homeAssets = {
   logoMark: '/assets/figma/home/icons/token-x-mark.webp',
   globe: '/assets/figma/dapp/ic-globe.svg',
   heroVideo: '/assets/figma/home/hero-ip-alpha.webm',
+  heroVideoSafari: '/assets/figma/home/hero-ip-alpha.mov',
   heroVideoPoster: '/assets/figma/home/hero-ip-alpha-poster.webp',
   securityCharacter: '/assets/figma/home/security-character-frame@2x.png',
   securityConnector: '/assets/figma/home/security-connector.svg',

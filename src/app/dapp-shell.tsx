@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { dappAssets } from '~/app/assets'
 import { DappRail } from '~/app/dapp-rail'
@@ -13,7 +12,6 @@ import { GenesisContent, GenesisWidget } from '~/app/tabs/genesis-tab'
 import { GenesisWidgetProvider } from '~/app/genesis-widget-context'
 import { RewardsContent, RewardsWidget } from '~/app/tabs/rewards-tab'
 import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
-import { SwapMobilePager } from '~/app/components/swap-mobile-pager'
 import { HeroRaysBackground, heroRaysShellClass } from '~/components/hero-rays-background'
 import type { DappTab } from '~/app/types'
 import { useDappShell } from '~/app/dapp-shell-context'
@@ -39,7 +37,6 @@ export function DappShell() {
   const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
   const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
   const shellState = useDappShell()
-  const isMobileViewport = useMobileViewport()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -50,130 +47,98 @@ export function DappShell() {
 
   const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = shellState.detailCollapsed
-  const useSwapMobilePager =
-    isMobileViewport && activeTab === 'swap' && shellState.sessionReady
+
   return (
-    <main
-      className={cn(
-        shellPageClass,
-        useSwapMobilePager &&
-          'max-dapp:flex max-dapp:h-dvh max-dapp:max-h-dvh max-dapp:flex-col max-dapp:overflow-hidden',
-      )}
-    >
-        <HeroRaysBackground className={heroRaysShellClass} />
-        <DappTopbar />
+    <main className={shellPageClass}>
+      <HeroRaysBackground className={heroRaysShellClass} />
+      <DappTopbar />
 
-        {import.meta.env.DEV && !isThirdwebConfigured ? (
-          <div
-            className="mx-4 mb-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-relaxed text-destructive"
-            role="status"
-          >
-            未配置 <code className="font-mono">VITE_THIRDWEB_CLIENT_ID</code>
-            ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code>{' '}
-            为 <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client
-            ID 后重启 <code className="font-mono">pnpm dev</code>。
-          </div>
-        ) : null}
-
-        <section
-          className={cn(
-            shellStageClass({
-              tab: activeTab,
-              sessionReady: shellState.sessionReady,
-              detailCollapsed: effectiveDetailCollapsed,
-              mobileSwapPager: useSwapMobilePager,
-            }),
-            'dapp:overflow-visible',
-          )}
-          aria-label="AEGIS X DApp"
+      {import.meta.env.DEV && !isThirdwebConfigured ? (
+        <div
+          className="mx-4 mb-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-relaxed text-destructive"
+          role="status"
         >
-          <div
-            className={cn(shellContainerClass(useSwapMobilePager), 'relative z-1')}
-            data-dapp-shell-container
-          >
-            <GenesisWidgetProvider>
-              {useSwapMobilePager ? (
-                <div className="flex min-h-0 flex-1 flex-col">
-                  <SwapMobilePager
-                    onSelectGenesis={() => selectTab('genesis')}
-                    windowClassName={shellWindowClass({
-                      tab: activeTab,
-                      sessionReady: shellState.sessionReady,
-                      detailCollapsed: effectiveDetailCollapsed,
-                      mobileSwapPager: true,
-                    })}
-                    windowDataset={{
-                      tab: activeTab,
-                      sessionReady: shellState.sessionReady ? 'true' : 'false',
-                      walletReady: shellState.walletReady ? 'true' : 'false',
-                      collapsed: effectiveDetailCollapsed ? 'true' : 'false',
-                    }}
-                    windowRef={setWindowNode}
-                  />
-                </div>
-              ) : (
-                <div
-                  ref={setWindowNode}
-                  className={cn(
-                    shellWindowClass({
-                      tab: activeTab,
-                      sessionReady: shellState.sessionReady,
-                      detailCollapsed: effectiveDetailCollapsed,
-                    }),
-                    'relative z-1',
-                  )}
-                  data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
-                  data-session-ready={shellState.sessionReady ? 'true' : 'false'}
-                  data-dapp-window
-                  data-tab={activeTab}
-                  data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
-                >
-                  <DappRail activeTab={activeTab} onSelectTab={selectTab} />
+          未配置 <code className="font-mono">VITE_THIRDWEB_CLIENT_ID</code>
+          ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code>{' '}
+          为 <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client
+          ID 后重启 <code className="font-mono">pnpm dev</code>。
+        </div>
+      ) : null}
 
-                  <aside className={shellWidgetClass()}>
-                    <div className={shellMobileDrawerClass}>
-                      <button
-                        aria-controls={mobileNavId}
-                        aria-expanded={mobileNavOpen}
-                        aria-label={t.topbar.openMenu}
-                        className={shellMobileDrawerSummaryClass}
-                        onClick={() => setMobileNavOpen(true)}
-                        type="button"
-                      >
-                        <DappIcon alt="" size="lg" src={dappAssets.menu} />
-                      </button>
-                    </div>
-                    <DappMobileNav
-                      activeTab={activeTab}
-                      onClose={() => setMobileNavOpen(false)}
-                      onSelectTab={selectMobileTab}
-                      open={mobileNavOpen}
-                    />
-                    <TabWidget
-                      key={activeTab}
-                      activeTab={activeTab}
-                      onSelectTab={selectTab}
-                    />
-                  </aside>
-
-                  <section
-                    className={shellContentClass(effectiveDetailCollapsed)}
-                    aria-hidden={effectiveDetailCollapsed}
-                    aria-labelledby={`${activeTab}-title`}
-                    data-dapp-detail
-                  >
-                    <div className="dapp-detail-panel" key={activeTab}>
-                      <TabContent activeTab={activeTab} onSelectTab={selectTab} />
-                    </div>
-                  </section>
-                </div>
+      <section
+        className={cn(
+          shellStageClass({
+            tab: activeTab,
+            sessionReady: shellState.sessionReady,
+            detailCollapsed: effectiveDetailCollapsed,
+          }),
+          'dapp:overflow-visible',
+        )}
+        aria-label="AEGIS X DApp"
+      >
+        <div className={cn(shellContainerClass(), 'relative z-1')} data-dapp-shell-container>
+          <GenesisWidgetProvider>
+            <div
+              ref={setWindowNode}
+              className={cn(
+                shellWindowClass({
+                  tab: activeTab,
+                  sessionReady: shellState.sessionReady,
+                  detailCollapsed: effectiveDetailCollapsed,
+                }),
+                'relative z-1',
               )}
-            </GenesisWidgetProvider>
-          </div>
-        </section>
+              data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
+              data-session-ready={shellState.sessionReady ? 'true' : 'false'}
+              data-dapp-window
+              data-tab={activeTab}
+              data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
+            >
+              <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 
-        <DappRevealObserver container={windowNode} />
-      </main>
+              <aside className={shellWidgetClass()}>
+                <div className={shellMobileDrawerClass}>
+                  <button
+                    aria-controls={mobileNavId}
+                    aria-expanded={mobileNavOpen}
+                    aria-label={t.topbar.openMenu}
+                    className={shellMobileDrawerSummaryClass}
+                    onClick={() => setMobileNavOpen(true)}
+                    type="button"
+                  >
+                    <DappIcon alt="" size="lg" src={dappAssets.menu} />
+                  </button>
+                </div>
+                <DappMobileNav
+                  activeTab={activeTab}
+                  onClose={() => setMobileNavOpen(false)}
+                  onSelectTab={selectMobileTab}
+                  open={mobileNavOpen}
+                />
+                <TabWidget
+                  key={activeTab}
+                  activeTab={activeTab}
+                  onSelectTab={selectTab}
+                />
+              </aside>
+
+              <section
+                className={shellContentClass(effectiveDetailCollapsed)}
+                aria-hidden={effectiveDetailCollapsed}
+                aria-labelledby={`${activeTab}-title`}
+                data-dapp-detail
+              >
+                <div className="dapp-detail-panel" key={activeTab}>
+                  <TabContent activeTab={activeTab} onSelectTab={selectTab} />
+                </div>
+              </section>
+            </div>
+          </GenesisWidgetProvider>
+        </div>
+      </section>
+
+      <DappRevealObserver container={windowNode} />
+    </main>
   )
 }
 

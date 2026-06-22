@@ -9,7 +9,7 @@ const skeletonDarkClass =
   'bg-[oklch(100%_0_0/18%)] motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
 
 const TABLE_CELL =
-  'border-b-[0.5px] border-border py-2.5 text-left whitespace-nowrap font-normal'
+  'border-b-[0.5px] border-border px-3 py-2.5 text-left whitespace-nowrap font-normal max-dapp:px-2.5 max-dapp:py-2'
 
 export function DappSkeleton({
   className,

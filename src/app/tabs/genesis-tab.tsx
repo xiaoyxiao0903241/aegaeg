@@ -12,7 +12,6 @@ import {
   calcProgressPercent,
   formatUsd,
   mapSalesLogToDesktopRow,
-  mapSalesLogToMobileRow,
 } from '~/lib/api/format-display'
 import { PRESALE_CONFIG } from '~/config/presale'
 import { BSC_CONTRACTS } from '~/config/contracts'
@@ -32,7 +31,6 @@ import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { FaqList } from '~/components/faq-list'
 import { formatGenesisSeasonIntro, applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { buildGenesisFaqTemplateValues } from '~/lib/presale/genesis-faq'
-import { dappTableNestedShellClass } from '~/app/components/dapp-table-shell'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
@@ -44,7 +42,6 @@ import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { SeasonSelector } from '~/app/components/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useAuth } from '~/providers/auth-provider'
 import {
   DappSkeleton,
@@ -220,7 +217,6 @@ export function GenesisWidget({
 export function GenesisContent() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const genesis = useGenesisWidgetContext()
   const seasonStatsTitle = t.genesis.statsTitle.replace(
@@ -285,12 +281,14 @@ export function GenesisContent() {
         </a>,
       ]
     }) ?? []
-  const mobileRows =
-    salesLogs?.items.map((item) => mapSalesLogToMobileRow(item, genesis.agxPriceUsd)) ?? []
-  const tableRows = isMobileViewport ? mobileRows : desktopRows
-  const tableHeaders = isMobileViewport
-    ? [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx]
-    : [t.tables.time, t.tables.paid, t.tables.discount, t.tables.estimatedAgx, t.tables.tx]
+  const tableRows = desktopRows
+  const tableHeaders = [
+    t.tables.time,
+    t.tables.paid,
+    t.tables.discount,
+    t.tables.estimatedAgx,
+    t.tables.tx,
+  ]
   const contributionsTotal = salesLogs?.total ?? 0
   const showSalesSyncHint =
     sessionReady && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
@@ -399,14 +397,16 @@ export function GenesisContent() {
         title={t.genesis.myContributions}
       >
         <div
-          className={cn(
-            revealClass(),
-            'mt-3.5 max-dapp:mt-3 max-dapp:rounded-2xl max-dapp:bg-card max-dapp:p-4 max-dapp:shadow-card',
-          )}
+          className={cn(revealClass(), 'mt-3.5 flex flex-col gap-3 max-dapp:mt-3')}
           data-reveal
         >
           {sessionReady ? (
-            <div className="mb-2.5 grid gap-2.5 border-0 bg-transparent p-0 max-dapp:mb-0">
+            <div
+              className={cn(
+                'grid gap-2.5',
+                'max-dapp:rounded-2xl max-dapp:bg-card max-dapp:p-4 max-dapp:shadow-card',
+              )}
+            >
               <div className="flex items-center justify-between gap-3 text-xs font-semibold leading-[1.2] tracking-[-0.26px] text-foreground">
                 <span>{t.genesis.totalContributed}</span>
                 <strong className="mt-0 text-right font-semibold">{contributedLabel}</strong>
@@ -418,24 +418,17 @@ export function GenesisContent() {
             </div>
           ) : null}
           {showSalesSyncHint ? (
-            <p className="mb-3 text-xs leading-normal text-muted-foreground">
+            <p className="m-0 text-xs leading-normal text-muted-foreground">
               {t.genesis.contributionsSyncPending}
             </p>
           ) : null}
           {contributionsTable.requiresAuth ? (
-            <DappTableAuthPrompt
-              body={t.dapp.connect.recordsBodyGenesis}
-              className={dappTableNestedShellClass}
-            />
+            <DappTableAuthPrompt body={t.dapp.connect.recordsBodyGenesis} />
           ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
-            <DappTableEmptyMessage
-              className={dappTableNestedShellClass}
-              title={t.genesis.contributionsEmpty.title}
-            />
+            <DappTableEmptyMessage title={t.genesis.contributionsEmpty.title} />
           ) : (
             <>
               <ResponsiveTable
-                className={cn(dappTableNestedShellClass, 'max-dapp:pt-1')}
                 compact
                 headers={tableHeaders}
                 isLoading={contributionsTable.showSkeleton}

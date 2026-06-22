@@ -119,6 +119,10 @@ export function HomeHeroSection() {
               width="464"
               height="640"
             >
+              <source
+                src={homeAssets.heroVideoSafari}
+                type='video/mp4; codecs="hvc1"'
+              />
               <source src={homeAssets.heroVideo} type="video/webm" />
             </video>
           </div>

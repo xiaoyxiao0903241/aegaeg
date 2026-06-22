@@ -3,10 +3,6 @@ import { cn } from '~/lib/utils'
 import { buttonDisabledClass } from '~/components/button'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
-import {
-  shellMobilePageTitleClass,
-  shellWidgetRootClass,
-} from '~/app/shell-layout'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
 import {
@@ -23,7 +19,6 @@ import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-sectio
 import { DappSection } from '~/app/components/dapp-section'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
-import { dappPanelTitleClassName } from '~/app/components/dapp-panel-header'
 import { DappMetaList } from '~/app/components/dapp-meta-list'
 import {
   MetricCardSkeleton,
@@ -64,10 +59,8 @@ const PERCENT_BTN_CLASS = cn(
 
 export function SwapWidget({
   onSelectGenesis,
-  swapPager = false,
 }: {
   onSelectGenesis: () => void
-  swapPager?: boolean
 }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
@@ -147,12 +140,6 @@ export function SwapWidget({
   return (
     <DappWidgetFrame
       bodyClassName="gap-0"
-      frameClass={
-        swapPager
-          ? 'flex min-h-full flex-col max-dapp:gap-0'
-          : shellWidgetRootClass
-      }
-      showToggle={!swapPager}
       subtitle={t.swap.intro}
       title={t.swap.title}
     >
@@ -309,7 +296,7 @@ export function SwapWidget({
       ) : null}
 
       {sessionReady ? (
-        <DappWidgetConnectFooter pager={swapPager}>
+        <DappWidgetConnectFooter>
           <GenesisPromoCard
             actionLabel={t.genesis.joinGenesis}
             className={cn(
@@ -322,7 +309,7 @@ export function SwapWidget({
           />
         </DappWidgetConnectFooter>
       ) : (
-        <DappWidgetConnectPromo pager={swapPager} />
+        <DappWidgetConnectPromo />
       )}
 
       <SwapSlippageModal
@@ -335,11 +322,7 @@ export function SwapWidget({
   )
 }
 
-export function SwapContent({
-  swapPager = false,
-}: {
-  swapPager?: boolean
-}) {
+export function SwapContent() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swapDirection = useSwapDirectionStore((state) => state.direction)
@@ -383,23 +366,10 @@ export function SwapContent({
   )
 
   return (
-    <DappDetailPage pager={swapPager}>
-      <DappContentHeading
-        className={cn('pb-4', swapPager && 'hidden')}
-        id="swap-title"
-      >
+    <DappDetailPage>
+      <DappContentHeading className="pb-4" id="swap-title">
         {t.swap.overview}
       </DappContentHeading>
-
-      {swapPager ? (
-        <h1
-          className={dappPanelTitleClassName(
-            cn(shellMobilePageTitleClass, 'max-dapp:mb-0 max-dapp:pb-4'),
-          )}
-        >
-          {t.swap.overview}
-        </h1>
-      ) : null}
 
       {overviewMetrics}
 

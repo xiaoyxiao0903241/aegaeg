@@ -23,33 +23,27 @@ export const shellPageClass = cn(
   'relative flex h-dvh flex-col gap-4 bg-background pt-0 text-muted-foreground',
   'dapp:gap-1.5 dapp:overflow-x-clip dapp:overflow-y-visible',
   'max-dapp:bg-[linear-gradient(180deg,var(--dapp-h5-gradient-top)_0%,var(--background)_25%,var(--background)_100%)]',
-  'max-dapp:h-auto max-dapp:min-h-dvh max-dapp:gap-4 max-dapp:overflow-x-clip max-dapp:overflow-y-visible',
+  'max-dapp:h-auto max-dapp:min-h-dvh max-dapp:gap-0 max-dapp:overflow-x-clip max-dapp:overflow-y-visible',
 )
 
 export function shellStageClass(state: {
   tab: DappTab
   sessionReady: boolean
   detailCollapsed: boolean
-  mobileSwapPager?: boolean
 }) {
-  const { detailCollapsed, mobileSwapPager } = state
+  const { detailCollapsed } = state
   return cn(
     'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0 pb-4',
     'dapp:items-center dapp:justify-start dapp:pb-4',
     detailCollapsed && 'dapp:justify-center dapp:pb-10',
-    mobileSwapPager
-      ? 'max-dapp:flex max-dapp:min-h-0 max-dapp:flex-1 max-dapp:overflow-x-visible max-dapp:overflow-y-hidden max-dapp:pb-0'
-      : 'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-6',
+    'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-6',
   )
 }
 
-export function shellContainerClass(mobileSwapPager = false) {
+export function shellContainerClass() {
   return cn(
     'mx-auto flex h-full min-h-0 w-full flex-col dapp:max-w-none dapp:items-center dapp:px-0',
-    'max-dapp:px-3',
-    mobileSwapPager
-      ? 'max-dapp:max-w-sm max-dapp:min-h-0 max-dapp:flex-1'
-      : 'max-dapp:h-auto max-dapp:max-w-sm',
+    'max-dapp:h-auto max-dapp:max-w-sm max-dapp:px-3',
   )
 }
 
@@ -57,9 +51,8 @@ export function shellWindowClass(state: {
   tab: DappTab
   sessionReady: boolean
   detailCollapsed: boolean
-  mobileSwapPager?: boolean
 }) {
-  const { sessionReady, mobileSwapPager } = state
+  const { sessionReady } = state
 
   return cn(
     'group/shell mx-auto grid w-full min-h-0 overflow-hidden border border-border bg-card shadow-window dapp:max-w-none',
@@ -69,8 +62,6 @@ export function shellWindowClass(state: {
     !sessionReady && 'shadow-window-compact',
     'max-dapp:flex max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-col max-dapp:gap-3',
     'max-dapp:overflow-hidden max-dapp:rounded-2xl max-dapp:border-0 max-dapp:p-4.5 max-dapp:pb-5.5 max-dapp:shadow-card',
-    mobileSwapPager &&
-      'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:flex-1 max-dapp:gap-0 max-dapp:overflow-x-visible max-dapp:overflow-y-hidden max-dapp:px-0 max-dapp:pb-4.5 max-dapp:pt-4.5',
   )
 }
 
@@ -99,6 +90,7 @@ export const shellRailIconClass =
 export function shellContentClass(detailCollapsed: boolean) {
   return cn(
     'min-h-0 min-w-0 max-h-full overflow-x-hidden bg-card transition-opacity duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+    'dapp:dapp-scroll-column',
     detailCollapsed
       ? 'pointer-events-none overflow-y-hidden opacity-0'
       : 'overflow-y-auto opacity-100',
@@ -109,6 +101,7 @@ export function shellContentClass(detailCollapsed: boolean) {
 export function shellWidgetClass() {
   return cn(
     'h-full min-h-0 max-h-full overflow-y-auto overflow-x-hidden border-r border-border bg-card px-6 pb-5.5 pt-10',
+    'dapp:dapp-scroll-column',
     'max-dapp:h-auto max-dapp:max-h-none max-dapp:w-full max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
   )
 }

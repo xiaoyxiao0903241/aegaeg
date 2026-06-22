@@ -7,7 +7,6 @@ import {
   formatPresaleRank,
   formatUsd,
   mapTeamReferralToCompactRow,
-  mapTeamReferralToMobileRow,
 } from '~/lib/api/format-display'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
@@ -62,9 +61,7 @@ export function CommunityContent({
   )
 
   const inviteRowsCompact =
-    referrals?.items.map((item) =>
-      isMobileViewport ? mapTeamReferralToMobileRow(item) : mapTeamReferralToCompactRow(item),
-    ) ?? []
+    referrals?.items.map((item) => mapTeamReferralToCompactRow(item)) ?? []
   const compactRows = inviteRowsCompact
   const invitesTotal = referrals?.total ?? 0
   const invitesTable = dappTableViewState({
@@ -191,33 +188,23 @@ export function CommunityContent({
             <ResponsiveTable
               className={cn(
                 'mt-3.5 max-dapp:mt-3',
-                !isMobileViewport && [
-                  '[&_table]:table-fixed',
-                  '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
-                  '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
-                  '[&_th:nth-child(3)]:w-[15.38%] [&_td:nth-child(3)]:w-[15.38%]',
-                  '[&_th:nth-child(4)]:w-[15.38%] [&_td:nth-child(4)]:w-[15.38%]',
-                  '[&_th:nth-child(5)]:w-[15.38%] [&_td:nth-child(5)]:w-[15.38%]',
-                ],
+                '[&_table]:table-fixed',
+                '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
+                '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
+                '[&_th:nth-child(3)]:w-[15.38%] [&_td:nth-child(3)]:w-[15.38%]',
+                '[&_th:nth-child(4)]:w-[15.38%] [&_td:nth-child(4)]:w-[15.38%]',
+                '[&_th:nth-child(5)]:w-[15.38%] [&_td:nth-child(5)]:w-[15.38%]',
+                'max-dapp:[&_table]:table-auto max-dapp:[&_table]:w-max max-dapp:[&_th]:w-auto max-dapp:[&_td]:w-auto',
               )}
               compact
-              emphasisColumns={isMobileViewport ? [] : [3]}
-              headers={
-                isMobileViewport
-                  ? [
-                      t.tables.joined,
-                      t.tables.address,
-                      t.tables.title,
-                      t.tables.volume,
-                    ]
-                  : [
-                      t.tables.joined,
-                      t.tables.address,
-                      t.tables.title,
-                      t.tables.direct,
-                      t.tables.volume,
-                    ]
-              }
+              emphasisColumns={[3]}
+              headers={[
+                t.tables.joined,
+                t.tables.address,
+                t.tables.title,
+                t.tables.direct,
+                t.tables.volume,
+              ]}
               isLoading={invitesTable.showSkeleton}
               linkColumns={[1]}
               plain

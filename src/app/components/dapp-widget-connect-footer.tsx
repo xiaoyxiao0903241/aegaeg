@@ -9,16 +9,14 @@ export const DAPP_WIDGET_BOTTOM_CARD_CLASS = 'mt-3.5 w-full shrink-0 dapp:mt-aut
 export function DappWidgetConnectFooter({
   children,
   className,
-  pager = false,
 }: {
   children: ReactNode
   className?: string
-  pager?: boolean
 }) {
   return (
     <>
-      {!pager ? <div aria-hidden="true" className={WIDGET_FOOTER_SPACER} /> : null}
-      <div className={cn('w-full', pager ? 'mt-3.5 shrink-0' : DAPP_WIDGET_BOTTOM_CARD_CLASS, className)}>
+      <div aria-hidden="true" className={WIDGET_FOOTER_SPACER} />
+      <div className={cn('w-full', DAPP_WIDGET_BOTTOM_CARD_CLASS, className)}>
         {children}
       </div>
     </>
@@ -27,13 +25,11 @@ export function DappWidgetConnectFooter({
 
 export function DappWidgetConnectPromo({
   className,
-  pager = false,
 }: {
   className?: string
-  pager?: boolean
 }) {
   return (
-    <DappWidgetConnectFooter className={className} pager={pager}>
+    <DappWidgetConnectFooter className={className}>
       <DappConnectPromoCard />
     </DappWidgetConnectFooter>
   )
