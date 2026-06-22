@@ -125,7 +125,7 @@ export function HomeHeroSection() {
             >
               <source
                 src={homeAssets.heroVideoSafari}
-                type='video/mp4; codecs="hvc1"'
+                type='video/quicktime; codecs="hvc1"'
               />
               <source src={homeAssets.heroVideo} type="video/webm" />
             </video>
