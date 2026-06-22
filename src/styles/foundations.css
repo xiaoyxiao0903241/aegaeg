@@ -4,6 +4,7 @@
 @import './shared.css';
 @import './scrollbars.css';
 @import './animations.css';
+@import './hero-rays.css';
 
 @source '../app';
 @source '../components';

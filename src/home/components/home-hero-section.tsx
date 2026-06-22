@@ -83,7 +83,7 @@ export function HomeHeroSection() {
 
   return (
     <section className={heroClass.section} aria-labelledby="hero-title">
-      <HeroRaysBackground className={heroRaysHomeClass} />
+      <HeroRaysBackground className={heroRaysHomeClass} variant="home" />
       <div className={heroClass.grid}>
         <div className={heroClass.copy} data-hero-enter>
           <div className={heroClass.eyebrow}>

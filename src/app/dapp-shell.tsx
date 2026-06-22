@@ -51,7 +51,7 @@ export function DappShell() {
 
   return (
     <main className={shellPageClass}>
-      <HeroRaysBackground className={heroRaysShellClass} />
+      <HeroRaysBackground className={heroRaysShellClass} variant="shell" />
       <DappTopbar />
 
       {import.meta.env.DEV && !isThirdwebConfigured ? (
