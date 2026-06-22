@@ -35,6 +35,7 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'Whitepaper',
+    enterApp: 'Masuk App',
     languageLabel: 'Bahasa'
   },
   hero: {
@@ -255,16 +256,16 @@ const home = defineMessages({
             label: 'Masuk App'
           },
           {
-            href: '#whitepaper',
+            linkId: 'whitepaper',
             label: 'Whitepaper'
           },
           {
-            href: '#docs',
+            linkId: 'docs',
             label: 'Dokumen Proyek'
           },
           {
-            href: '#analytics',
-            label: 'Peta Jalan'
+            linkId: 'economicModel',
+            label: 'Model Ekonomi'
           }
         ]
       },

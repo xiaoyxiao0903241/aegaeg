@@ -35,6 +35,7 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'Белая книга',
+    enterApp: 'Войти в App',
     languageLabel: 'Язык'
   },
   hero: {
@@ -255,16 +256,16 @@ const home = defineMessages({
             label: 'Войти в App'
           },
           {
-            href: '#whitepaper',
+            linkId: 'whitepaper',
             label: 'Белая книга'
           },
           {
-            href: '#docs',
+            linkId: 'docs',
             label: 'Документация проекта'
           },
           {
-            href: '#analytics',
-            label: 'Дорожная карта развития'
+            linkId: 'economicModel',
+            label: 'Экономическая модель'
           }
         ]
       },

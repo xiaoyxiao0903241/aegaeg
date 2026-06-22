@@ -1,8 +1,29 @@
 import { Text } from '~/components/text'
+import { resolveHomeNotionLink } from '~/home/notion-links'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/home/assets'
 import { cn } from '~/lib/utils'
+
+function resolveFooterLinkHref(
+  locale: ReturnType<typeof useI18n>['locale'],
+  link: { href?: string; linkId?: string },
+) {
+  if (link.linkId === 'whitepaper' || link.linkId === 'docs' || link.linkId === 'economicModel') {
+    return resolveHomeNotionLink(locale, link.linkId)
+  }
+
+  const href = link.href ?? '#'
+  if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('#')) {
+    return href
+  }
+
+  return withLocalePrefix(locale, href)
+}
+
+function isExternalHref(href: string) {
+  return href.startsWith('http://') || href.startsWith('https://')
+}
 
 const footerClass = {
   root:
@@ -82,16 +103,21 @@ export function HomeFooter() {
             >
               {group.label}
             </Text>
-            {group.links.map((link) => (
+            {group.links.map((link) => {
+              const href = resolveFooterLinkHref(locale, link)
+              return (
               <Text
                 as="a"
                 className={cn(footerLinkClass, 'text-on-dark')}
-                href={withLocalePrefix(locale, link.href)}
-                key={`${group.label}-${link.href}-${link.label}`}
+                href={href}
+                key={`${group.label}-${link.label}`}
+                rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
+                target={isExternalHref(href) ? '_blank' : undefined}
               >
                 {link.label}
               </Text>
-            ))}
+              )
+            })}
           </nav>
         ))}
       </div>

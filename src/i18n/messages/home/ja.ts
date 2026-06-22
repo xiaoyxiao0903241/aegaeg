@@ -35,6 +35,7 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'ホワイトペーパー',
+    enterApp: 'Appに入る',
     languageLabel: '言語'
   },
   hero: {
@@ -255,16 +256,16 @@ const home = defineMessages({
             label: 'Appに入る'
           },
           {
-            href: '#whitepaper',
+            linkId: 'whitepaper',
             label: 'ホワイトペーパー'
           },
           {
-            href: '#docs',
+            linkId: 'docs',
             label: 'プロジェクトドキュメント'
           },
           {
-            href: '#analytics',
-            label: '発展ロードマップ'
+            linkId: 'economicModel',
+            label: '経済モデル'
           }
         ]
       },

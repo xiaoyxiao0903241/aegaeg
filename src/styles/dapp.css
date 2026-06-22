@@ -173,7 +173,7 @@
   color: oklch(100% 0 0);
 }
 
-/* H5 侧滑菜单（80% 宽）— keyframes 保证打开/关闭动画一致（不依赖 transition 首帧） */
+/* H5 侧滑菜单（3/5 屏宽）— keyframes 保证打开/关闭动画一致（不依赖 transition 首帧） */
 @media (max-width: 820px) {
   @keyframes dapp-mobile-nav-in {
     from {

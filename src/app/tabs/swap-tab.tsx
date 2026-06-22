@@ -16,7 +16,6 @@ import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { MetricCard } from '~/app/components/dapp-card'
 import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
 import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
-import { DappSection } from '~/app/components/dapp-section'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { DappMetaList } from '~/app/components/dapp-meta-list'
@@ -41,6 +40,11 @@ import { openPancakeSwapDeepLink } from '~/config/pancake-swap-links'
 import { toast } from 'sonner'
 
 const SWAP_META_VALUE_ROW_CLASS = 'inline-flex items-center justify-end gap-1'
+
+const SWAP_META_ACTION_BTN_CLASS = cn(
+  'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
+  'transition-opacity duration-180 ease-out hover:opacity-80',
+)
 
 const PERCENTS = [25, 50, 75, 100] as const
 
@@ -69,12 +73,19 @@ export function SwapWidget({
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
   const [slippageOpen, setSlippageOpen] = useState(false)
+  const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
 
   const { pair } = swap
   const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
   const swapPreview = !sessionReady
   const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
-  const showRateSkeleton = swap.isExchangePriceQuoting && !swap.exchangePriceLabel
+  const showRateSkeleton =
+    (exchangePriceInverted
+      ? swap.isExchangePriceInvertedQuoting && !swap.exchangePriceLabelInverted
+      : swap.isExchangePriceQuoting && !swap.exchangePriceLabel)
+  const exchangePriceDisplayLabel = exchangePriceInverted
+    ? swap.exchangePriceLabelInverted
+    : swap.exchangePriceLabel
   const showBuyAmountSkeleton = sessionReady && swap.isQuoting && swap.sellAmount.trim().length > 0
   const zeroBalanceLabel = `${t.swap.balance}: 0.00`
 
@@ -229,7 +240,19 @@ export function SwapWidget({
             value: showRateSkeleton ? (
               <SwapMetaValueSkeleton />
             ) : (
-              swap.exchangePriceLabel || placeholderRateLabel
+              <>
+                {exchangePriceDisplayLabel || placeholderRateLabel}
+                <AnchoredTooltip content={t.swap.flip}>
+                  <button
+                    aria-label={t.swap.flip}
+                    className={SWAP_META_ACTION_BTN_CLASS}
+                    onClick={() => setExchangePriceInverted((inverted) => !inverted)}
+                    type="button"
+                  >
+                    <DappIcon alt="" size="xs" src={dappAssets.swapExchange} />
+                  </button>
+                </AnchoredTooltip>
+              </>
             ),
             valueClassName: SWAP_META_VALUE_ROW_CLASS,
           },
@@ -241,8 +264,7 @@ export function SwapWidget({
                 <button
                   aria-label={t.swap.slippageSettings}
                   className={cn(
-                    'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
-                    'transition-opacity duration-180 ease-out hover:opacity-80',
+                    SWAP_META_ACTION_BTN_CLASS,
                     sessionReady && !swap.walletReady && 'pointer-events-none opacity-40',
                   )}
                   disabled={sessionReady && !swap.walletReady}
@@ -266,10 +288,7 @@ export function SwapWidget({
                 {t.swap.providerName}
                 <button
                   aria-label={t.swap.openPancakeSwap}
-                  className={cn(
-                    'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0',
-                    'transition-opacity duration-180 ease-out hover:opacity-80',
-                  )}
+                  className={SWAP_META_ACTION_BTN_CLASS}
                   onClick={() => openPancakeSwapDeepLink(swap.pancakeSwapUrl)}
                   type="button"
                 >
@@ -388,10 +407,10 @@ export function SwapContent() {
         <TokenAboutCarousel />
       </DappCollapsibleSection>
 
-      <DappSection title={t.swap.faq.title}>
+      <DappCollapsibleSection bodyClassName="overflow-visible" title={t.swap.faq.title}>
         <SwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
         <FaqList key={faqToken} items={faqItems} variant="dapp" />
-      </DappSection>
+      </DappCollapsibleSection>
     </DappDetailPage>
   )
 }
@@ -414,7 +433,7 @@ function SwapFaqTabs({
   return (
     <DappPillTabs
       ariaLabel={t.swap.faq.title}
-      className="mt-4 flex flex-wrap gap-2 mb-3"
+      className="mb-3 flex flex-wrap gap-2"
       items={swapTokenKeys.map((key) => ({
         active: key === activeToken,
         label: labels[key],

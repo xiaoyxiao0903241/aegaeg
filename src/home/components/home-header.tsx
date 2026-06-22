@@ -1,8 +1,9 @@
 import { LanguageMenu } from '~/components/language-menu'
-import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { dappAssets } from '~/app/assets'
 import { allLanguageOptions } from '~/i18n/locales'
+import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
+import { getHomeNotionLinks } from '~/home/notion-links'
 import { homeAssets } from '~/home/assets'
 import { cn } from '~/lib/utils'
 
@@ -51,6 +52,8 @@ const navGhostBtnClass = cn(
 export function HomeHeader() {
   const { locale, messages, setLocale } = useI18n()
   const content = messages.home.nav
+  const notionLinks = getHomeNotionLinks(locale)
+  const appHref = withLocalePrefix(locale, '/app.html')
   const languageOptions = allLanguageOptions.map((option) => ({
     ...option,
     active: option.locale === locale,
@@ -78,10 +81,20 @@ export function HomeHeader() {
           ))}
         </nav>
         <div className={navActionsClass}>
-          <a className={navGhostBtnClass} href="#whitepaper">
+          <a
+            className={navGhostBtnClass}
+            href={notionLinks.whitepaper}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             {content.whitepaper}
           </a>
-          <WalletTopbarActions />
+          <a
+            className="aegis-thirdweb-button aegis-thirdweb-button-primary"
+            href={appHref}
+          >
+            {content.enterApp}
+          </a>
           <LanguageMenu
             checkIcon={dappAssets.check}
             globeIcon={homeAssets.globe}

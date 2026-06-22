@@ -20,10 +20,10 @@ function shellWindowMaxHeightClass(state: {
 }
 
 export const shellPageClass = cn(
-  'relative flex h-dvh flex-col gap-4 bg-background pt-0 text-muted-foreground',
-  'dapp:gap-1.5 dapp:overflow-x-clip dapp:overflow-y-visible',
+  'relative flex h-dvh flex-col gap-0 bg-background pt-0 text-muted-foreground',
+  'dapp:overflow-x-clip dapp:overflow-y-visible',
   'max-dapp:bg-[linear-gradient(180deg,var(--dapp-h5-gradient-top)_0%,var(--background)_25%,var(--background)_100%)]',
-  'max-dapp:h-auto max-dapp:min-h-dvh max-dapp:gap-0 max-dapp:overflow-x-clip max-dapp:overflow-y-visible',
+  'max-dapp:h-auto max-dapp:min-h-dvh max-dapp:overflow-x-clip max-dapp:overflow-y-visible',
 )
 
 export function shellStageClass(state: {

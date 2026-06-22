@@ -40,6 +40,7 @@ export function useSwapWidget(authenticated: boolean) {
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
   const usdtToUsd1Pair = useMemo(() => getSwapPairTokens('reverse'), [])
+  const usd1ToUsdtPair = useMemo(() => getSwapPairTokens('forward'), [])
   const address = account?.address
   const walletReady = hasWalletAccount(account)
   const amountIn = useMemo(
@@ -54,6 +55,10 @@ export function useSwapWidget(authenticated: boolean) {
   const exchangeSpotAmount = useMemo(
     () => 10n ** BigInt(usdtToUsd1Pair.sell.decimals),
     [usdtToUsd1Pair.sell.decimals],
+  )
+  const exchangeSpotAmountInverted = useMemo(
+    () => 10n ** BigInt(usd1ToUsdtPair.sell.decimals),
+    [usd1ToUsdtPair.sell.decimals],
   )
 
   const balancesQuery = useQuery({
@@ -108,6 +113,23 @@ export function useSwapWidget(authenticated: boolean) {
     placeholderData: keepPreviousData,
   })
 
+  const exchangeSpotQuoteInvertedQuery = useQuery({
+    queryKey: queryKeys.chain.swapQuote(
+      usd1ToUsdtPair.sell.address,
+      usd1ToUsdtPair.buy.address,
+      exchangeSpotAmountInverted.toString(),
+    ),
+    queryFn: () =>
+      fetchSwapQuote({
+        amountIn: exchangeSpotAmountInverted,
+        tokenIn: usd1ToUsdtPair.sell.address,
+        tokenOut: usd1ToUsdtPair.buy.address,
+      }),
+    enabled: true,
+    staleTime: QUERY_STALE_TIME.quote,
+    placeholderData: keepPreviousData,
+  })
+
   const amountQuoteQuery = useQuery({
     queryKey: queryKeys.chain.swapQuote(
       pair.sell.address,
@@ -127,6 +149,7 @@ export function useSwapWidget(authenticated: boolean) {
 
   useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
   useVisibleQueryInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
+  useVisibleQueryInterval(exchangeSpotQuoteInvertedQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
   useVisibleQueryInterval(
     amountQuoteQuery,
     SWAP_CONFIG.quoteRefreshIntervalMs,
@@ -142,12 +165,15 @@ export function useSwapWidget(authenticated: boolean) {
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
   const spotQuotePath = spotQuoteQuery.data?.path ?? []
   const exchangeSpotQuotedOut = exchangeSpotQuoteQuery.data?.quotedOut ?? 0n
+  const exchangeSpotQuotedOutInverted = exchangeSpotQuoteInvertedQuery.data?.quotedOut ?? 0n
   const isQuoting =
     authenticated && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
   const isSpotQuoting =
     amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
   const isExchangePriceQuoting =
     exchangeSpotQuoteQuery.isPending && exchangeSpotQuotedOut === 0n
+  const isExchangePriceInvertedQuoting =
+    exchangeSpotQuoteInvertedQuery.isPending && exchangeSpotQuotedOutInverted === 0n
 
   const setSellAmount = useCallback(
     (value: string) => {
@@ -236,6 +262,29 @@ export function useSwapWidget(authenticated: boolean) {
     usdtToUsd1Pair.buy.symbol,
     usdtToUsd1Pair.sell.decimals,
     usdtToUsd1Pair.sell.symbol,
+  ])
+
+  const exchangePriceLabelInverted = useMemo(() => {
+    if (exchangeSpotQuotedOutInverted === 0n) {
+      return isExchangePriceInvertedQuoting ? '' : '—'
+    }
+
+    return formatSwapRateApprox({
+      amountIn: exchangeSpotAmountInverted,
+      amountOut: exchangeSpotQuotedOutInverted,
+      decimalsIn: usd1ToUsdtPair.sell.decimals,
+      decimalsOut: usd1ToUsdtPair.buy.decimals,
+      symbolIn: usd1ToUsdtPair.sell.symbol,
+      symbolOut: usd1ToUsdtPair.buy.symbol,
+    })
+  }, [
+    exchangeSpotAmountInverted,
+    exchangeSpotQuotedOutInverted,
+    isExchangePriceInvertedQuoting,
+    usd1ToUsdtPair.buy.decimals,
+    usd1ToUsdtPair.buy.symbol,
+    usd1ToUsdtPair.sell.decimals,
+    usd1ToUsdtPair.sell.symbol,
   ])
 
   const pancakeSwapUrl = useMemo(
@@ -349,6 +398,7 @@ export function useSwapWidget(authenticated: boolean) {
     buyBalanceLabel: formatTokenAmount(buyBalance, pair.buy.decimals, 4),
     buyAmount,
     exchangePriceLabel,
+    exchangePriceLabelInverted,
     routeLabel,
     pancakeSwapUrl,
     action,
@@ -357,6 +407,7 @@ export function useSwapWidget(authenticated: boolean) {
     isQuoting,
     isSpotQuoting,
     isExchangePriceQuoting,
+    isExchangePriceInvertedQuoting,
     isBalancesLoading,
     isSubmitting,
     error,

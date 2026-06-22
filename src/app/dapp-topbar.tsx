@@ -9,10 +9,10 @@ import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { useDappShell } from '~/app/dapp-shell-context'
 
 const topbarClass = cn(
-  'relative flex shrink-0 min-h-18 w-full items-center justify-between gap-6 bg-transparent px-6 py-4.5',
+  'relative flex shrink-0 w-full items-center justify-between gap-6 bg-transparent px-6 py-4',
   'max-dapp:sticky max-dapp:top-0 max-dapp:z-20',
-  'max-dapp:min-h-14 max-dapp:gap-3 max-dapp:px-4 max-dapp:py-3',
-  'max-dapp:pt-[max(12px,env(safe-area-inset-top,0px))]',
+  'max-dapp:gap-3 max-dapp:px-4 max-dapp:pb-4',
+  'max-dapp:pt-[max(1rem,env(safe-area-inset-top,0px))]',
   // H5 毛玻璃顶栏：透出页面蜜桃渐变，滚动时模糊下方内容
   'max-dapp:border-b max-dapp:border-border/40',
   'max-dapp:bg-background/30 max-dapp:backdrop-blur-[18px] max-dapp:backdrop-saturate-150',

@@ -1,4 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { withLocalePrefix } from '~/i18n/locale'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
@@ -7,7 +8,8 @@ import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
 export function DappConnectPromoCard({ className }: { className?: string }) {
-  const { messages: t } = useI18n()
+  const { locale, messages: t } = useI18n()
+  const homeHref = withLocalePrefix(locale, '/')
 
   return (
     <Card
@@ -27,10 +29,13 @@ export function DappConnectPromoCard({ className }: { className?: string }) {
           <strong className="text-sm font-semibold leading-normal tracking-[-0.28px] text-white">
             {t.dapp.connect.promoTitle}
           </strong>
-          <p className="m-0 inline-flex items-center gap-1 text-xs leading-normal tracking-[-0.24px] text-primary">
+          <a
+            className="m-0 inline-flex items-center gap-1 text-xs leading-normal tracking-[-0.24px] text-primary transition-opacity duration-180 ease-out hover:opacity-90"
+            href={homeHref}
+          >
             {t.dapp.connect.promoBrandLine}
             <DappIcon alt="" size="action" src={dappAssets.arrowUpRight} />
-          </p>
+          </a>
         </div>
       </div>
       <div aria-hidden="true" className="h-1.5 shrink-0" />

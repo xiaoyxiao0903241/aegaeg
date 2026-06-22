@@ -35,6 +35,7 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'Sách trắng',
+    enterApp: 'Vào App',
     languageLabel: 'Ngôn ngữ'
   },
   hero: {
@@ -255,16 +256,16 @@ const home = defineMessages({
             label: 'Vào App'
           },
           {
-            href: '#whitepaper',
+            linkId: 'whitepaper',
             label: 'Sách trắng'
           },
           {
-            href: '#docs',
+            linkId: 'docs',
             label: 'Tài liệu dự án'
           },
           {
-            href: '#analytics',
-            label: 'Lộ trình phát triển'
+            linkId: 'economicModel',
+            label: 'Mô hình kinh tế'
           }
         ]
       },

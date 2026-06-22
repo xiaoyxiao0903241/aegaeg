@@ -96,7 +96,7 @@ export function DappMobileNav({
       <nav
         aria-label="DApp sections"
         className={cn(
-          'absolute inset-y-0 left-0 flex w-[80%] max-w-[80%] flex-col gap-1 p-4.5',
+          'absolute inset-y-0 left-0 flex w-3/5 max-w-3/5 flex-col gap-1 p-4.5',
           'bg-[linear-gradient(165deg,oklch(100%_0_0/92%),oklch(100%_0_0/78%))] backdrop-blur-xl backdrop-saturate-150',
           'shadow-[20px_0_60px_oklch(18%_0.04_265/25%)]',
           'will-change-transform',

@@ -3,12 +3,12 @@ import { getHtmlLang } from '~/i18n/locale-meta'
 import { locales } from '~/i18n/locales'
 import { homeMessagesByLocale } from '~/i18n/messages/home'
 import { homeAssets } from '~/home/assets'
+import { PAGE_SCROLL_RESTORATION_BOOT_SCRIPT } from '~/lib/page-scroll-restoration'
 
 const supportedLocalesJson = JSON.stringify(locales)
 
-// 首页挂载前关闭滚动恢复跳动；hash 由客户端 useLayoutEffect 恢复
-const bootScript =
-  "try{if('scrollRestoration' in history){history.scrollRestoration='manual'}}catch{}"
+// 挂载前关闭浏览器滚动恢复跳动；精确位置由客户端 useLayoutEffect 恢复
+const bootScript = PAGE_SCROLL_RESTORATION_BOOT_SCRIPT
 
 function escapeAttr(value: string) {
   return value
@@ -80,6 +80,7 @@ ${faviconHead}
       type="font/woff2"
       crossorigin
     />
+    <script>${bootScript}</script>
     <title>AEGIS X DApp — Swap · Genesis · Rewards · Community</title>
   </head>
   <body>

@@ -35,6 +35,7 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'व्हाइटपेपर',
+    enterApp: 'ऐप में प्रवेश',
     languageLabel: 'भाषा'
   },
   hero: {
@@ -255,16 +256,16 @@ const home = defineMessages({
             label: 'ऐप में प्रवेश'
           },
           {
-            href: '#whitepaper',
+            linkId: 'whitepaper',
             label: 'व्हाइटपेपर'
           },
           {
-            href: '#docs',
+            linkId: 'docs',
             label: 'प्रोजेक्ट दस्तावेज़'
           },
           {
-            href: '#analytics',
-            label: 'विकास रोडमैप'
+            linkId: 'economicModel',
+            label: 'आर्थिक मॉडल'
           }
         ]
       },

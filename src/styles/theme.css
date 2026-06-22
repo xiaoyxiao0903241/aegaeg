@@ -75,7 +75,7 @@
   --token-gagx: #7c6230;
   --token-x: #5e2a40;
 
-  --dapp-shell-chrome-y: 5rem;
+  --dapp-shell-chrome-y: 3.75rem;
 
   /* ---- 布局（rem @ 16px 根字号 = 设计稿 1920 基准；超宽屏见 breakpoint-scale.css）---- */
   --container: 75rem;

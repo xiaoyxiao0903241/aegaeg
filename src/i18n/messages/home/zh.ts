@@ -34,6 +34,7 @@ const home = defineMessages({
       }
     ],
     whitepaper: '白皮书',
+    enterApp: '进入 App',
     languageLabel: '语言'
   },
   hero: {
@@ -254,16 +255,16 @@ const home = defineMessages({
             label: '进入 App'
           },
           {
-            href: '#whitepaper',
+            linkId: 'whitepaper',
             label: '白皮书'
           },
           {
-            href: '#docs',
+            linkId: 'docs',
             label: '项目文档'
           },
           {
-            href: '#analytics',
-            label: '发展路线图'
+            linkId: 'economicModel',
+            label: '经济模型'
           }
         ]
       },
