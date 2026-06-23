@@ -27,6 +27,7 @@ import {
   shellWindowClass,
 } from '~/app/shell-layout'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
+import { scrollToGenesisPageTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 export function DappShell() {
@@ -173,7 +174,14 @@ function TabWidget({
     return <CommunityWidget onSelectTab={onSelectTab} />
   }
 
-  return <SwapWidget onSelectGenesis={() => onSelectTab('genesis')} />
+  return (
+    <SwapWidget
+      onSelectGenesis={() => {
+        onSelectTab('genesis')
+        scrollToGenesisPageTop()
+      }}
+    />
+  )
 }
 
 function TabContent({

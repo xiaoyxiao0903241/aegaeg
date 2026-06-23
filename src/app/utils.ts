@@ -13,7 +13,7 @@ export function getInitialTab(): DappTab {
   return isDappTab(hash) ? hash : 'swap'
 }
 
-/** Scroll detail column / page to Genesis top after promo navigation. */
+/** Scroll detail column / page to Genesis top after promo CTA navigation. */
 export function scrollToGenesisPageTop() {
   requestAnimationFrame(() => {
     const detail = document.querySelector('[data-dapp-detail]')
@@ -21,8 +21,7 @@ export function scrollToGenesisPageTop() {
       detail.scrollTop = 0
     }
 
-    document.getElementById('genesis-title')?.scrollIntoView({ block: 'start' })
-    window.scrollTo({ top: 0, behavior: 'auto' })
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   })
 }
 

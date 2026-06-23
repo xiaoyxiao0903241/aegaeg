@@ -24,6 +24,9 @@ const faviconHead = `
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />`
 
+const viewportContent =
+  'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+
 /**
  * 首页文档：纯客户端 SPA 薄壳（不做 SSR / 不预渲染内容）。
  * 仅内联关键引导脚本与本地化 <title>/<meta>，由 /src/home/main.tsx 客户端挂载。
@@ -36,7 +39,7 @@ export function renderHomeDocument(locale: Locale) {
 <html lang="${lang}">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="${viewportContent}" />
     <meta name="description" content="${escapeAttr(meta.description)}" />
     <meta name="theme-color" content="#f5f6f8" />
 ${faviconHead}
@@ -68,7 +71,7 @@ export function renderAppDocument(locale: Locale) {
 <html lang="${lang}">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="${viewportContent}" />
     <meta name="description" content="${escapeAttr(meta.description)}" />
     <meta name="theme-color" content="#f5f6f8" />
 ${faviconHead}
@@ -95,7 +98,7 @@ export function renderRootRedirectDocument() {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="${viewportContent}" />
     <meta name="robots" content="noindex" />
 ${faviconHead}
     <title>AEGIS X</title>
@@ -120,7 +123,7 @@ export function renderAppRedirectDocument() {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="${viewportContent}" />
     <meta name="robots" content="noindex" />
 ${faviconHead}
     <title>AEGIS X DApp</title>
