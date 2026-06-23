@@ -1,5 +1,42 @@
+export function stripTokenAmountGrouping(value: string): string {
+  return value.replace(/,/g, '')
+}
+
+function formatIntegerGrouping(digits: string): string {
+  if (!digits) return '0'
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+export function formatTokenAmountInputDisplay(value: string): string {
+  const raw = stripTokenAmountGrouping(value)
+  if (!raw) return ''
+
+  const dotIndex = raw.indexOf('.')
+  if (dotIndex === -1) {
+    if (raw === '0') return '0'
+    return formatIntegerGrouping(raw.replace(/^0+(?=\d)/, ''))
+  }
+
+  const wholePart = raw.slice(0, dotIndex)
+  const fractionPart = raw.slice(dotIndex + 1)
+  const hasTrailingDot = raw.endsWith('.')
+  const normalizedWhole =
+    wholePart === '' ? '0' : wholePart.replace(/^0+(?=\d)/, '') || '0'
+  const groupedWhole = formatIntegerGrouping(normalizedWhole)
+
+  if (hasTrailingDot && fractionPart === '') {
+    return `${groupedWhole}.`
+  }
+
+  if (fractionPart === '') {
+    return groupedWhole
+  }
+
+  return `${groupedWhole}.${fractionPart}`
+}
+
 export function parseTokenAmount(value: string, decimals: number): bigint {
-  const trimmed = value.trim()
+  const trimmed = stripTokenAmountGrouping(value.trim())
   if (!trimmed) return 0n
 
   if (!/^\d+(\.\d*)?$/.test(trimmed)) return 0n
@@ -51,7 +88,7 @@ export function sanitizeTokenAmountInput(
   let cleaned = ''
   let hasDot = false
 
-  for (const char of value) {
+  for (const char of stripTokenAmountGrouping(value)) {
     if (char >= '0' && char <= '9') {
       cleaned += char
       continue

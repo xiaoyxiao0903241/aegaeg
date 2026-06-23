@@ -1,8 +1,29 @@
-import { Card } from '~/components/card'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from '~/components/carousel'
 import { RadioGroup, RadioIndicator } from '~/components/radio'
-import { Text } from '~/components/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
+import { dappIconClass } from '~/app/dapp-icon-scale'
+import {
+  seasonCardBadgeClass,
+  seasonCardMetaClass,
+  seasonCardRadiusClass,
+  seasonCardRadioClass,
+  seasonCardSizeClass,
+  seasonCardTitleClass,
+  seasonCarouselControlsGapClass,
+  seasonCarouselEdgeBleedClass,
+  seasonCarouselEdgeFadeClass,
+  seasonCarouselMaxWidthClass,
+  seasonCarouselSlideGapClass,
+  seasonCarouselTrackBleedClass,
+  seasonCarouselViewportClass,
+} from '~/app/dapp-detail-layout'
 import { cn } from '~/lib/utils'
 
 function translateSeasonStatus(status: string, t: ReturnType<typeof useI18n>['messages']) {
@@ -25,66 +46,231 @@ export type SeasonOption = {
   status: string
 }
 
-const seasonOptionClass = cn(
-  'flex items-center gap-2.5 rounded-sm px-3.5 py-3',
-  'data-[selected=true]:border-primary',
-  'max-dapp:gap-2.5 max-dapp:px-3.5 max-dapp:py-3 max-dapp:data-[selected=true]:border-[1.5px]',
+/** Figma `4150:19854` — 8.75×7.8125rem card, 0.625rem gap, ~3.25rem peek @ 22rem viewport */
+const SEASON_CARD_CLASS = cn(
+  'flex shrink-0 flex-col gap-1.5 border bg-card p-3',
+  seasonCardRadiusClass,
+  seasonCardSizeClass,
 )
 
-const seasonStatusBadgeBaseClass =
-  'rounded-full px-2 py-0.5 text-xs font-semibold leading-[1.3] not-italic whitespace-nowrap'
+const SEASON_META_ACCENT_CLASS = 'text-[#e9785a]'
+
+const seasonStatusBadgeBaseClass = cn(
+  'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap',
+  seasonCardBadgeClass,
+)
 
 function resolveSeasonStatusBadgeClass(status: string, selected: boolean) {
   if (status === 'LIVE' && selected) {
-    return cn(seasonStatusBadgeBaseClass, 'bg-primary text-white')
+    return cn(seasonStatusBadgeBaseClass, 'bg-accent text-primary')
   }
 
-  return cn(seasonStatusBadgeBaseClass, 'border border-border bg-card text-faint')
+  return cn(seasonStatusBadgeBaseClass, 'bg-muted text-muted-foreground')
+}
+
+function useCarouselScrollState(api: CarouselApi | undefined) {
+  const [current, setCurrent] = useState(0)
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+    const handleSelect = () => {
+      setCurrent(api.selectedScrollSnap())
+      setCanScrollPrev(api.canScrollPrev())
+      setCanScrollNext(api.canScrollNext())
+    }
+    handleSelect()
+    api.on('select', handleSelect)
+    api.on('reInit', handleSelect)
+    return () => {
+      api.off('select', handleSelect)
+      api.off('reInit', handleSelect)
+    }
+  }, [api])
+
+  const goTo = useCallback(
+    (index: number) => {
+      api?.scrollTo(index)
+    },
+    [api],
+  )
+
+  return { canScrollNext, canScrollPrev, current, goTo }
+}
+
+function SeasonCard({
+  season,
+  t,
+}: {
+  season: SeasonOption
+  t: ReturnType<typeof useI18n>['messages']
+}) {
+  const selected = Boolean(season.active)
+
+  return (
+    <article
+      aria-checked={selected}
+      className={cn(SEASON_CARD_CLASS, selected ? 'border-primary' : 'border-border')}
+      role="radio"
+    >
+      <div className="flex items-start justify-between gap-1">
+        <strong className={seasonCardTitleClass}>{season.name}</strong>
+        <RadioIndicator checked={selected} className={seasonCardRadioClass} />
+      </div>
+      <p className={cn('m-0', seasonCardMetaClass)}>
+        {t.genesis.discountLabel}{' '}
+        <span className={SEASON_META_ACCENT_CLASS}>{season.desktopMeta.discount}</span>
+      </p>
+      <p className={cn('m-0', seasonCardMetaClass)}>
+        {t.genesis.airdropLabel}{' '}
+        <span className={SEASON_META_ACCENT_CLASS}>{season.desktopMeta.airdrop}</span>
+      </p>
+      <time className={seasonCardMetaClass}>{season.date}</time>
+      <div className="mt-auto w-full">
+        <span className={resolveSeasonStatusBadgeClass(season.status, selected)}>
+          {translateSeasonStatus(season.status, t)}
+        </span>
+      </div>
+    </article>
+  )
 }
 
 export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
   const { messages: t } = useI18n()
+  const [api, setApi] = useState<CarouselApi>()
+  const { canScrollNext, canScrollPrev, current, goTo } = useCarouselScrollState(api)
+  const syncedActiveIndexRef = useRef<number | null>(null)
+  const showControls = seasons.length > 1
+  const activeSeasonIndex = useMemo(
+    () => seasons.findIndex((season) => season.active),
+    [seasons],
+  )
+
+  useEffect(() => {
+    if (!api || activeSeasonIndex < 0) {
+      return
+    }
+    if (syncedActiveIndexRef.current === activeSeasonIndex) {
+      return
+    }
+    api.scrollTo(activeSeasonIndex, false)
+    syncedActiveIndexRef.current = activeSeasonIndex
+  }, [activeSeasonIndex, api])
 
   return (
     <RadioGroup
       aria-label={t.genesis.statsTitle}
-      className={cn(revealClass(), 'grid gap-2')}
+      className={cn(revealClass(), 'mb-1.5 min-w-0')}
       data-reveal
     >
-      {seasons.map((season) => {
-        const selected = Boolean(season.active)
-        return (
-          <Card
-            as="article"
-            aria-checked={selected}
-            className={seasonOptionClass}
-            data-selected={selected ? 'true' : 'false'}
-            key={season.name}
-            role="radio"
-            surface="outlined"
+      <Carousel
+        aria-label={t.genesis.statsTitle}
+        className={cn(
+          'flex min-w-0 flex-col overflow-visible',
+          seasonCarouselMaxWidthClass,
+          seasonCarouselControlsGapClass,
+        )}
+        opts={{ align: 'start', containScroll: 'trimSnaps', dragFree: false }}
+        setApi={setApi}
+      >
+        <div className={cn('relative overflow-visible', seasonCarouselEdgeBleedClass)}>
+          <CarouselContent
+            className={cn('flex items-stretch', seasonCarouselTrackBleedClass)}
+            spacing="none"
+            viewportClassName={seasonCarouselViewportClass}
           >
-            <RadioIndicator checked={selected} />
-            <div className="min-w-0 flex-1">
-              <Text as="strong" size="sm" weight="bold" className="block leading-[1.25]">
-                {season.name}
-              </Text>
-              <Text as="small" size="xs" tone="muted" className="mt-0.5 block leading-[1.35]">
-                {t.genesis.discountLabel} <b>{season.desktopMeta.discount}</b>{' '}
-                <i aria-hidden="true">|</i> {t.genesis.airdropLabel}{' '}
-                <b>{season.desktopMeta.airdrop}</b>
-              </Text>
-            </div>
-            <div className="grid flex-none justify-items-end gap-1">
-              <span className={resolveSeasonStatusBadgeClass(season.status, selected)}>
-                {translateSeasonStatus(season.status, t)}
-              </span>
-              <time className="text-xs leading-[1.35] text-faint whitespace-nowrap">
-                {season.date}
-              </time>
-            </div>
-          </Card>
-        )
-      })}
+            {seasons.map((season) => (
+              <CarouselItem
+                className={cn('shrink-0 grow-0 basis-auto', seasonCarouselSlideGapClass)}
+                key={season.name}
+                spacing="none"
+              >
+                <SeasonCard season={season} t={t} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {showControls ? (
+            <>
+              <div
+                aria-hidden="true"
+                className={seasonCarouselEdgeFadeClass('left', canScrollPrev)}
+              />
+              <div
+                aria-hidden="true"
+                className={seasonCarouselEdgeFadeClass('right', canScrollNext)}
+              />
+            </>
+          ) : null}
+        </div>
+        {showControls ? (
+          <div className="flex w-full items-center justify-center gap-3.5">
+            <button
+              aria-label={t.swap.tokenPrevious}
+              className={cn(
+                'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
+                dappIconClass.base,
+              )}
+              onClick={() => api?.scrollPrev()}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'block -rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
+                  dappIconClass.base,
+                )}
+              />
+            </button>
+            <span
+              aria-label={t.genesis.statsTitle}
+              className="inline-flex items-center gap-1.5"
+              role="group"
+            >
+              {seasons.map((season, index) => (
+                <button
+                  aria-current={current === index ? 'true' : undefined}
+                  aria-label={`${season.name}`}
+                  className={cn(
+                    'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
+                    dappIconClass.base,
+                  )}
+                  key={season.name}
+                  onClick={() => goTo(index)}
+                  type="button"
+                >
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
+                      current === index ? 'h-1.5 w-5.5 bg-primary' : 'h-1.5 w-1.5',
+                    )}
+                  />
+                </button>
+              ))}
+            </span>
+            <button
+              aria-label={t.swap.tokenNext}
+              className={cn(
+                'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
+                dappIconClass.base,
+              )}
+              onClick={() => api?.scrollNext()}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'block rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
+                  dappIconClass.base,
+                )}
+              />
+            </button>
+          </div>
+        ) : null}
+      </Carousel>
     </RadioGroup>
   )
 }

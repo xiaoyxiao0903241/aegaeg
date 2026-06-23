@@ -20,6 +20,7 @@ export const PAIR_V2_METHODS = {
 } as const
 
 export const PRESALE_METHODS = {
+  getPhaseCount: 'function getPhaseCount() view returns (uint256)',
   phases:
     'function phases(uint256 phase) view returns (uint256 minAmount, uint256 maxAmount, uint256 discount, uint256 airdropValueRatio, uint256 startTime, uint256 endTime, uint256 soldAmount, uint256 userPurchaseLimit)',
   getUserPhaseRemainingAmount:
@@ -29,6 +30,11 @@ export const PRESALE_METHODS = {
   agxPrice: 'function agxPrice() view returns (uint256)',
   airdropThreshold: 'function AIRDROP_THRESHOLD() view returns (uint256)',
   purchase: 'function purchase(uint256 _phaseIndex, uint256 _amount)',
+} as const
+
+export const MULTICALL3_METHODS = {
+  aggregate3:
+    'function aggregate3((address target, bool allowFailure, bytes callData)[] calls) payable returns ((bool success, bytes returnData)[] returnData)',
 } as const
 
 export const REFERRAL_METHODS = {

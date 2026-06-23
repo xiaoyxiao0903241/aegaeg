@@ -175,19 +175,16 @@ export function CommunityContent({
         {invitesTable.requiresAuth ? (
           <DappTableAuthPrompt
             body={t.dapp.connect.recordsBodyCommunity}
-            className="mt-3.5"
           />
         ) : invitesTable.queryEmpty ? (
           <DappTableEmptyMessage
             body={t.community.invitesEmpty.body}
-            className="mt-3.5"
             title={t.community.invitesEmpty.title}
           />
         ) : (
           <>
             <ResponsiveTable
               className={cn(
-                'mt-3.5 max-dapp:mt-3',
                 '[&_table]:table-fixed',
                 '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
                 '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',

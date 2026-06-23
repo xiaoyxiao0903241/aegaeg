@@ -43,7 +43,7 @@ const variantStyles = {
     ),
   },
   dapp: {
-    list: 'mt-3.5 grid w-full gap-3 max-dapp:gap-2.5',
+    list: 'grid w-full gap-3 max-dapp:gap-2.5',
   },
 } as const
 

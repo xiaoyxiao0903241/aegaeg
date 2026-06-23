@@ -367,6 +367,7 @@ export function RewardsContent() {
     t.community.shareholder,
     t.tables.totalVolume,
     t.tables.postLaunchRank,
+    t.tables.rewardRate,
   ]
 
   const mapTierRows = (
@@ -379,7 +380,7 @@ export function RewardsContent() {
         row[2],
         t.rewards.tierDualLegRequirement,
       )
-      const cells = [row[0], row[1], totalVolumeCell, row[4]]
+      const cells = [row[0], row[1], totalVolumeCell, row[4], row[3]]
       if (highlightedRows.includes(rowIndex)) {
         cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
       }
@@ -420,11 +421,11 @@ export function RewardsContent() {
       <DappContentHeading id="rewards-title">{t.rewards.heroTitle}</DappContentHeading>
 
       <section
-        className={cn(
-          revealClass(),
-          'relative mt-3.5 flex min-h-36 items-center justify-between gap-6 overflow-visible rounded-2xl bg-dark p-6 text-white shadow-card',
-          'max-dapp:hidden',
-        )}
+          className={cn(
+            revealClass(),
+            'relative flex min-h-36 items-center justify-between gap-6 overflow-visible rounded-2xl bg-dark p-6 text-white shadow-card',
+            'max-dapp:hidden',
+          )}
         data-reveal
       >
         <div className="relative z-1 min-w-0 flex-1 pr-36">
@@ -458,7 +459,7 @@ export function RewardsContent() {
 
       <section
         className={cn(
-          'relative mt-3.5 hidden min-h-32 overflow-visible rounded-2xl bg-dark p-4.5 text-white shadow-card',
+          'relative hidden min-h-32 overflow-visible rounded-2xl bg-dark p-4.5 text-white shadow-card',
           'max-dapp:flex max-dapp:flex-col max-dapp:gap-2',
         )}
       >
@@ -485,7 +486,7 @@ export function RewardsContent() {
 
       {isMobileViewport ? (
         <DappSection className="group-data-[tab=rewards]/shell:max-dapp:mt-0" title={t.rewards.allTiers}>
-          <div className={cn(revealClass(), 'mt-3')} data-reveal>
+          <div className={revealClass()} data-reveal>
             {tierTable}
           </div>
         </DappSection>
@@ -496,7 +497,7 @@ export function RewardsContent() {
       )}
 
       <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.history}>
-        <div className={cn(revealClass(), 'mt-3.5 max-dapp:mt-3')} data-reveal>
+        <div className={cn(revealClass(), 'max-dapp:mt-0')} data-reveal>
           <DappPillTabs
             ariaLabel={t.rewards.history}
             className="mb-2.5 flex items-center justify-start gap-2"

@@ -2,13 +2,13 @@ import type { ReactNode } from 'react'
 import { cn } from '~/lib/utils'
 
 const METRIC_GRID_TWO =
-  'mt-3.5 grid grid-cols-2 gap-3 max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5 max-dapp:[&>article]:min-w-0'
+  'grid grid-cols-2 gap-3 max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5 max-dapp:[&>article]:min-w-0'
 
 const METRIC_GRID_FOUR = cn(
-  'mt-3.5 grid grid-cols-4 gap-3',
+  'grid grid-cols-4 gap-3',
   'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
   'max-dapp:min-w-0 max-dapp:grid-cols-1',
-  'group-data-[tab=genesis]/shell:max-dapp:mt-3 group-data-[tab=genesis]/shell:max-dapp:grid-cols-2 group-data-[tab=genesis]/shell:max-dapp:gap-3',
+  'group-data-[tab=genesis]/shell:max-dapp:grid-cols-2 group-data-[tab=genesis]/shell:max-dapp:gap-3',
 )
 
 export function MetricGrid({

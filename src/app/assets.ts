@@ -52,6 +52,8 @@ export const dappAssets = {
   swapExchange: '/assets/figma/dapp/ic-swap-exchange.svg',
   telegram: '/assets/figma/dapp/ic-telegram.svg',
   twitter: '/assets/figma/dapp/ic-twitter.svg',
+  youtube: '/assets/figma/dapp/ic-youtube.svg',
+  medium: '/assets/figma/dapp/ic-medium.svg',
   tokenCardRays: '/assets/figma/dapp/token-card-rays.svg',
   tokenCardCorner: '/assets/figma/dapp/token-card-corner.svg',
   tokenAgx: tokenFlywheelIcons.agxIcon,

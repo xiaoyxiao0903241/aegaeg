@@ -1,4 +1,9 @@
 import { Text } from '~/components/text'
+import {
+  COMMUNITY_SOCIAL_LINKS,
+  resolveCommunitySocialLink,
+  type CommunitySocialLinkId,
+} from '~/config/community-links'
 import { resolveHomeNotionLink } from '~/home/notion-links'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
@@ -7,8 +12,12 @@ import { cn } from '~/lib/utils'
 
 function resolveFooterLinkHref(
   locale: ReturnType<typeof useI18n>['locale'],
-  link: { href?: string; linkId?: string },
+  link: { href?: string; linkId?: string; socialId?: string },
 ) {
+  if (link.socialId && link.socialId in COMMUNITY_SOCIAL_LINKS) {
+    return resolveCommunitySocialLink(link.socialId as CommunitySocialLinkId)
+  }
+
   if (link.linkId === 'whitepaper' || link.linkId === 'docs' || link.linkId === 'economicModel') {
     return resolveHomeNotionLink(locale, link.linkId)
   }

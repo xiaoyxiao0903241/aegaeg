@@ -54,7 +54,7 @@ export function ResponsiveTable({
         className,
       )
     : cn(
-        'mt-3.5 overflow-x-auto max-w-full min-w-0 max-dapp:scrollbar-x-track',
+        'overflow-x-auto max-w-full min-w-0 max-dapp:scrollbar-x-track',
         dappTableCardShellClass,
         TABLE_WRAP_PADDING,
         compact && '[&_table]:min-w-full',

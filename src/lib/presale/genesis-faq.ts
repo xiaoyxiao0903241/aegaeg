@@ -45,13 +45,33 @@ function formatAirdropRatioList(phases: PresalePhaseOnChain[]): string {
     .join(' / ')
 }
 
-function resolvePhaseDurationDays(phases: PresalePhaseOnChain[]): number {
-  const phase = phases[0]
-  if (!phase) {
-    return Math.round(PRESALE_CONFIG.phaseDurationSeconds / 86_400)
+function formatPhaseDurationDays(phases: PresalePhaseOnChain[]): string {
+  const dayCounts = phases.map((phase) =>
+    Math.max(1, Math.round((Number(phase.endTime) - Number(phase.startTime)) / 86_400)),
+  )
+
+  if (dayCounts.length === 0) {
+    return String(Math.round(PRESALE_CONFIG.phaseDurationSeconds / 86_400))
   }
 
-  return Math.max(1, Math.round((Number(phase.endTime) - Number(phase.startTime)) / 86_400))
+  const [firstDayCount = 0] = dayCounts
+  if (dayCounts.every((days) => days === firstDayCount)) {
+    return String(firstDayCount)
+  }
+
+  return dayCounts.join(' / ')
+}
+
+function resolveMinUsd(phases: PresalePhaseOnChain[]): number {
+  const minAmounts = phases
+    .map((phase) => Number(formatTokenAmount(phase.minAmount, USD1_DECIMALS, 0)))
+    .filter((amount) => amount > 0)
+
+  if (minAmounts.length === 0) {
+    return Number(PRESALE_CONFIG.phases[0]?.minUsd1 ?? PRESALE_CONFIG.sharePriceUsd1)
+  }
+
+  return Math.min(...minAmounts)
 }
 
 function resolveShareIncrement(phases: PresalePhaseOnChain[]): string {
@@ -83,11 +103,11 @@ export function buildGenesisFaqTemplateValues(
     }
   }
 
-  const minUsdNumber = Number(formatTokenAmount(phases[0]!.minAmount, USD1_DECIMALS, 0))
+  const minUsdNumber = resolveMinUsd(phases)
 
   return {
     phaseCount: String(phases.length),
-    phaseDurationDays: String(resolvePhaseDurationDays(phases)),
+    phaseDurationDays: formatPhaseDurationDays(phases),
     discounts: formatDiscountList(phases),
     minUsd: formatUsd(minUsdNumber),
     shareIncrement: resolveShareIncrement(phases),

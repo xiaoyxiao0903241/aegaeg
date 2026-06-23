@@ -193,7 +193,7 @@ export function MetricCard({
       surface="elevated"
       className={cn(
         revealClass(),
-        'mt-3.5 flex flex-col items-start gap-1.5',
+        'flex flex-col items-start gap-1.5',
         metricCardResponsive,
         className,
       )}

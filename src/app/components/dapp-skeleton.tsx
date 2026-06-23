@@ -1,5 +1,6 @@
 import { Card } from '~/components/card'
 import { communityStatCardH5Layout } from '~/app/components/dapp-card'
+import { seasonCardRadiusClass, seasonCardSizeClass } from '~/app/dapp-detail-layout'
 import { cn } from '~/lib/utils'
 
 const skeletonSurfaceClass =
@@ -35,7 +36,7 @@ export function MetricCardSkeleton({ className }: { className?: string }) {
     <Card
       as="article"
       surface="elevated"
-      className={cn('mt-3.5 flex flex-col gap-1.5 px-4 py-3.5', className)}
+      className={cn('flex flex-col gap-1.5 px-4 py-3.5', className)}
     >
       <DappSkeleton className="h-3 w-18 max-w-[55%]" />
       <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
@@ -48,19 +49,19 @@ export function SeasonOptionSkeleton() {
     <div
       aria-hidden="true"
       className={cn(
-        'pointer-events-none flex items-center gap-2.5 rounded-sm border border-border bg-card px-3.5 py-3',
-        'max-dapp:gap-2.5 max-dapp:px-3.5 max-dapp:py-3',
+        'flex shrink-0 flex-col gap-1.5 border border-border bg-card p-3',
+        seasonCardRadiusClass,
+        seasonCardSizeClass,
       )}
     >
-      <DappSkeleton className="aspect-square w-4 shrink-0 rounded-full" />
-      <div className="min-w-0 flex-1">
-        <DappSkeleton className="h-3.5 w-18" />
-        <DappSkeleton className="mt-1.5 h-3 w-full max-w-45" />
+      <div className="flex items-start justify-between gap-1">
+        <DappSkeleton className="h-3.5 w-16" />
+        <DappSkeleton className="size-[18px] shrink-0 rounded-[9px]" />
       </div>
-      <div className="grid flex-none justify-items-end gap-1">
-        <DappSkeleton className="h-5.5 w-12 rounded-full" />
-        <DappSkeleton className="h-3 w-18" />
-      </div>
+      <DappSkeleton className="h-3 w-full max-w-24" />
+      <DappSkeleton className="h-3 w-full max-w-28" />
+      <DappSkeleton className="h-3 w-20" />
+      <DappSkeleton className="mt-auto h-5 w-full rounded-full" />
     </div>
   )
 }
@@ -111,7 +112,7 @@ export function SideCardSkeleton({
 
 export function RewardBalanceCardSkeleton() {
   return (
-    <Card as="article" surface="outlined" className="mt-3.5">
+    <Card as="article" surface="outlined">
       <div className="flex items-center justify-between gap-3">
         <DappSkeleton className="h-3 w-24" />
         <DappSkeleton className="h-3 w-16" />

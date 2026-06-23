@@ -295,20 +295,20 @@ const home = defineMessages({
         ariaLabel: 'Community footer links',
         links: [
           {
-            href: '#discord',
-            label: 'Discord'
+            socialId: 'youtube',
+            label: 'Youtube'
           },
           {
-            href: '#twitter',
+            socialId: 'twitter',
             label: 'Twitter / X'
           },
           {
-            href: '#telegram',
+            socialId: 'telegram',
             label: 'Telegram'
           },
           {
-            href: '#github',
-            label: 'GitHub'
+            socialId: 'medium',
+            label: 'Medium'
           }
         ]
       }

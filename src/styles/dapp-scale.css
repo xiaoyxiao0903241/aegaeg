@@ -12,4 +12,11 @@
   --dapp-icon-rail: 1.375rem; /* 22 — 侧栏 rail */
   --dapp-icon-token: 1.5rem; /* 24 — token chip、滑动提示 */
   --dapp-icon-brand: 1.75rem; /* 28 — 顶栏 logo */
+
+  /* Genesis season card — Figma @ 16px，随 site-fluid 根字号同比缩放 */
+  --dapp-season-title-size: 0.8125rem; /* 13 */
+  --dapp-season-meta-size: 0.6875rem; /* 11 */
+  --dapp-season-badge-size: 0.625rem; /* 10 */
+  --dapp-season-radio-size: 1.125rem; /* 18 */
+  --dapp-season-card-radius: 0.8125rem; /* 13 */
 }

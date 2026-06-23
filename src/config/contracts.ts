@@ -6,6 +6,7 @@ export interface BscContracts {
   xxUsd1Pair: `0x${string}`
   pancakeRouter: `0x${string}`
   preSale: `0x${string}`
+  multicall3: `0x${string}`
   referral: `0x${string}`
   rewardClaimer: `0x${string}`
   defaultReferrer: `0x${string}`
@@ -20,6 +21,7 @@ export const BSC_CONTRACTS: BscContracts = {
   xxUsd1Pair: '0x606211E7e7276149fc503fe8Db858745479a9100',
   pancakeRouter: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
   preSale: '0x4F86c19945Cf64137EA31EecED5545e665B7a0f5',
+  multicall3: '0xcA11bde05977b3631167028862bE2a173976CA11',
   referral: '0xe0F3AE113dD3997982AE9ad7d5510ffA4E3Cce71',
   rewardClaimer: '0x697B55FCFBC4Cd5401f605EE4D9905816c127f07',
   defaultReferrer: '0x74A4127e0aaC45C8C23935707fE37889821029c3',

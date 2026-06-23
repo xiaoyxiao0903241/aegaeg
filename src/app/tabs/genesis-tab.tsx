@@ -121,10 +121,12 @@ export function GenesisWidget({
   return (
     <DappWidgetFrame subtitle={seasonIntro} title={t.genesis.title}>
       {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
-        <div aria-busy="true" className={cn(revealClass(), 'grid gap-2')} data-reveal>
-          <SeasonOptionSkeleton />
-          <SeasonOptionSkeleton />
-          <SeasonOptionSkeleton />
+        <div aria-busy="true" className={cn(revealClass(), 'mb-1.5 overflow-hidden')} data-reveal>
+          <div className="flex gap-2.5">
+            <SeasonOptionSkeleton />
+            <SeasonOptionSkeleton />
+            <SeasonOptionSkeleton />
+          </div>
         </div>
       ) : (
         <SeasonSelector
@@ -344,7 +346,7 @@ export function GenesisContent() {
           className={cn(
             revealClass(),
             // Figma `tc` 82:683 — 780×125；Globe 190:339 288×185 @ (456,-24)；卡片 overflow:hidden 裁切，不撑出滚动
-            'relative mt-3.5 min-h-32 overflow-hidden rounded-md bg-dark p-6 shadow-card',
+            'relative min-h-32 overflow-hidden rounded-md bg-dark p-6 shadow-card',
           )}
           data-reveal
         >
@@ -397,10 +399,7 @@ export function GenesisContent() {
         className="group-data-[tab=genesis]/shell:max-dapp:mt-0"
         title={t.genesis.myContributions}
       >
-        <div
-          className={cn(revealClass(), 'mt-3.5 flex flex-col gap-3 max-dapp:mt-3')}
-          data-reveal
-        >
+        <div className={cn(revealClass(), 'flex flex-col gap-3')} data-reveal>
           {sessionReady ? (
             <div
               className={cn(

@@ -22,7 +22,7 @@ const TOKEN_CAROUSEL_CARD_INNER =
 const TOKEN_CAROUSEL_CARD_SHELL = 'h-full rounded-2xl shadow-subtle'
 
 const TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS =
-  'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-[var(--shadow-bleed-subtle)] dapp:pt-[var(--shadow-bleed-subtle)]'
+  'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-[var(--shadow-bleed-subtle)]'
 
 const TOKEN_CAROUSEL_PC_INDICATOR_CLASS =
   'dapp:relative dapp:z-1 dapp:-mt-[var(--shadow-bleed-subtle)] dapp:pt-[var(--carousel-pc-indicator-pt)]'
@@ -285,7 +285,7 @@ export function TokenAboutCarousel() {
       className={cn(
         revealClass(),
         'grid w-full overflow-visible',
-        isDesktop ? 'mt-3.5 gap-3 dapp:gap-0' : 'mt-3 max-dapp:mt-2.5',
+        isDesktop ? 'dapp:mt-0 gap-3 dapp:gap-0' : 'max-dapp:mt-0',
       )}
       data-reveal
       opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}

@@ -1,17 +1,89 @@
 import { getContract, readContract, type ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
+import { decodeAbiParameters, encodeAbiParameters, toFunctionSelector } from 'thirdweb/utils'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { PRESALE_CONFIG } from '~/config/presale'
 import {
   findActivePresalePhase,
   type PresalePhaseOnChain,
   type PresalePhaseRemaining,
 } from '~/lib/presale/presale-math'
-import { PRESALE_METHODS } from '~/web3/abis'
+import { MULTICALL3_METHODS, PRESALE_METHODS } from '~/web3/abis'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+
+const PHASE_RETURN_TYPES = [
+  { type: 'uint256', name: 'minAmount' },
+  { type: 'uint256', name: 'maxAmount' },
+  { type: 'uint256', name: 'discount' },
+  { type: 'uint256', name: 'airdropValueRatio' },
+  { type: 'uint256', name: 'startTime' },
+  { type: 'uint256', name: 'endTime' },
+  { type: 'uint256', name: 'soldAmount' },
+  { type: 'uint256', name: 'userPurchaseLimit' },
+] as const
+
+const PHASES_CALL_SELECTOR = toFunctionSelector(PRESALE_METHODS.phases)
 
 function getPresaleContract(client: ThirdwebClient, chain: Chain) {
   return getContract({ client, chain, address: BSC_CONTRACTS.preSale })
+}
+
+function getMulticall3Contract(client: ThirdwebClient, chain: Chain) {
+  return getContract({ client, chain, address: BSC_CONTRACTS.multicall3 })
+}
+
+function encodePhaseCallData(phaseIndex: number): `0x${string}` {
+  const encodedParams = encodeAbiParameters([{ type: 'uint256' }], [BigInt(phaseIndex)])
+  return `${PHASES_CALL_SELECTOR}${encodedParams.slice(2)}`
+}
+
+function mapPhaseTupleToOnChain(
+  phaseIndex: number,
+  [
+    minAmount,
+    maxAmount,
+    discount,
+    airdropValueRatio,
+    startTime,
+    endTime,
+    soldAmount,
+    userPurchaseLimit,
+  ]: readonly [
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+  ],
+): PresalePhaseOnChain {
+  return {
+    index: phaseIndex,
+    minAmount,
+    maxAmount,
+    discountBps: discount,
+    airdropValueRatio,
+    startTime,
+    endTime,
+    soldAmount,
+    userPurchaseLimit,
+    purchasedAmount: soldAmount,
+  }
+}
+
+export async function readPresalePhaseCount(
+  client: ThirdwebClient = thirdwebClient,
+  chain: Chain = defaultChain,
+): Promise<number> {
+  const contract = getPresaleContract(client, chain)
+  const phaseCount = await readContract({
+    contract,
+    method: PRESALE_METHODS.getPhaseCount,
+    params: [],
+  })
+
+  return Number(phaseCount)
 }
 
 export async function readPresalePhase(
@@ -35,28 +107,62 @@ export async function readPresalePhase(
     params: [BigInt(phaseIndex)],
   })
 
-  return {
-    index: phaseIndex,
+  return mapPhaseTupleToOnChain(phaseIndex, [
     minAmount,
     maxAmount,
-    discountBps: discount,
+    discount,
     airdropValueRatio,
     startTime,
     endTime,
     soldAmount,
     userPurchaseLimit,
-    purchasedAmount: soldAmount,
-  }
+  ])
 }
 
 export async function readAllPresalePhases(
   client: ThirdwebClient = thirdwebClient,
   chain: Chain = defaultChain,
 ): Promise<PresalePhaseOnChain[]> {
-  return Promise.all(
-    Array.from({ length: PRESALE_CONFIG.phaseCount }, (_, index) =>
-      readPresalePhase(index, client, chain),
-    ),
+  const phaseCount = await readPresalePhaseCount(client, chain)
+  if (phaseCount <= 0) {
+    return []
+  }
+
+  const multicallContract = getMulticall3Contract(client, chain)
+  const calls = Array.from({ length: phaseCount }, (_, phaseIndex) => ({
+    target: BSC_CONTRACTS.preSale,
+    allowFailure: false,
+    callData: encodePhaseCallData(phaseIndex),
+  }))
+
+  const results = await readContract({
+    contract: multicallContract,
+    method: MULTICALL3_METHODS.aggregate3,
+    params: [calls],
+  })
+
+  return results.map(
+    (
+      result: { success: boolean; returnData: `0x${string}` },
+      phaseIndex: number,
+    ) => {
+      if (!result.success) {
+        throw new Error(`Failed to read presale phase ${phaseIndex} via multicall`)
+      }
+
+      const decoded = decodeAbiParameters(PHASE_RETURN_TYPES, result.returnData) as readonly [
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+      ]
+
+      return mapPhaseTupleToOnChain(phaseIndex, decoded)
+    },
   )
 }
 

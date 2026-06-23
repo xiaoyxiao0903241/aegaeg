@@ -67,3 +67,58 @@ test('buildGenesisFaqTemplateValues returns ellipsis while loading', async () =>
   assert.equal(values.phaseCount, '…')
   assert.equal(values.threshold, '…')
 })
+
+test('buildGenesisFaqTemplateValues supports dynamic phase count and varying durations', async () => {
+  const { buildGenesisFaqTemplateValues } = await loadModule('/src/lib/presale/genesis-faq.ts')
+
+  const sixPhases = [
+    ...samplePhases,
+    {
+      index: 3,
+      minAmount: 100n * 10n ** 18n,
+      maxAmount: 40_000n * 10n ** 18n,
+      discountBps: 2400n,
+      airdropValueRatio: 80n,
+      startTime: 0n,
+      endTime: BigInt(6 * 86_400),
+      soldAmount: 0n,
+      userPurchaseLimit: 40_000n * 10n ** 18n,
+      purchasedAmount: 0n,
+    },
+    {
+      index: 4,
+      minAmount: 100n * 10n ** 18n,
+      maxAmount: 50_000n * 10n ** 18n,
+      discountBps: 2300n,
+      airdropValueRatio: 70n,
+      startTime: 0n,
+      endTime: BigInt(5 * 86_400),
+      soldAmount: 0n,
+      userPurchaseLimit: 50_000n * 10n ** 18n,
+      purchasedAmount: 0n,
+    },
+    {
+      index: 5,
+      minAmount: 100n * 10n ** 18n,
+      maxAmount: 60_000n * 10n ** 18n,
+      discountBps: 2200n,
+      airdropValueRatio: 60n,
+      startTime: 0n,
+      endTime: BigInt(5 * 86_400),
+      soldAmount: 0n,
+      userPurchaseLimit: 60_000n * 10n ** 18n,
+      purchasedAmount: 0n,
+    },
+  ]
+
+  const values = buildGenesisFaqTemplateValues(sixPhases, 5000)
+
+  assert.equal(values.phaseCount, '6')
+  assert.equal(values.phaseDurationDays, '5 / 5 / 5 / 6 / 5 / 5')
+  assert.equal(values.discounts, '30% / 25% / 20% / 24% / 23% / 22%')
+  assert.equal(values.airdropRatios, '5% / 2% / 1% / 1% / 1% / 1%')
+  assert.equal(
+    values.phaseQuotas,
+    '$100–$10,000 / $100–$20,000 / $100–$30,000 / $100–$40,000 / $100–$50,000 / $100–$60,000',
+  )
+})

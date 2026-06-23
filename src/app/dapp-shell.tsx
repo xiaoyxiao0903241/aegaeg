@@ -30,7 +30,7 @@ import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 export function DappShell() {
-  const { messages: t } = useI18n()
+  const { messages } = useI18n()
   const activeTab = useDappShellStore((state) => state.activeTab)
   const mobileNavOpen = useDappShellStore((state) => state.mobileNavOpen)
   const selectTab = useDappShellStore((state) => state.selectTab)
@@ -45,6 +45,15 @@ export function DappShell() {
     window.addEventListener('hashchange', syncTabFromHash)
     return () => window.removeEventListener('hashchange', syncTabFromHash)
   }, [syncTabFromHash])
+
+  useEffect(() => {
+    document.title = messages.home.meta.title
+
+    const descriptionMeta = document.querySelector('meta[name="description"]')
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute('content', messages.home.meta.description)
+    }
+  }, [messages.home.meta.description, messages.home.meta.title])
 
   const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = shellState.detailCollapsed
@@ -99,7 +108,7 @@ export function DappShell() {
                     <button
                       aria-controls={mobileNavId}
                       aria-expanded={mobileNavOpen}
-                      aria-label={t.topbar.openMenu}
+                      aria-label={messages.topbar.openMenu}
                       className={shellMobileDrawerSummaryClass}
                       onClick={() => setMobileNavOpen(true)}
                       type="button"

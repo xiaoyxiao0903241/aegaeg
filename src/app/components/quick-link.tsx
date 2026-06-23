@@ -11,6 +11,8 @@ export type QuickLinkProps = {
 }
 
 export function QuickLink({ href, icon, iconTone = 'coral', label, size = 18 }: QuickLinkProps) {
+  const isExternal = href.startsWith('http://') || href.startsWith('https://')
+
   return (
     <a
       className={cn(
@@ -19,6 +21,8 @@ export function QuickLink({ href, icon, iconTone = 'coral', label, size = 18 }: 
         'hover:translate-x-0.5 hover:border-coral-hover-border',
       )}
       href={href}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      target={isExternal ? '_blank' : undefined}
     >
       <span
         className={cn(

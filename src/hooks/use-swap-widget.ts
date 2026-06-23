@@ -8,6 +8,7 @@ import { resolveSwapAction } from '~/lib/swap/resolve-swap-action'
 import {
   capTokenAmountInput,
   formatTokenAmount,
+  formatTokenAmountInputDisplay,
   parseTokenAmount,
   sanitizeTokenAmountInput,
   slippagePercentToBps,
@@ -236,8 +237,16 @@ export function useSwapWidget(authenticated: boolean) {
     spotQuotedOut,
   ])
 
+  const sellAmountDisplay = useMemo(
+    () => formatTokenAmountInputDisplay(sellAmount),
+    [sellAmount],
+  )
+
   const buyAmount = useMemo(
-    () => (authenticated && quotedOut > 0n ? formatTokenAmount(quotedOut, pair.buy.decimals, 6) : ''),
+    () =>
+      authenticated && quotedOut > 0n
+        ? formatTokenAmountInputDisplay(formatTokenAmount(quotedOut, pair.buy.decimals, 6))
+        : '',
     [authenticated, pair.buy.decimals, quotedOut],
   )
 
@@ -388,6 +397,7 @@ export function useSwapWidget(authenticated: boolean) {
 
   return {
     sellAmount,
+    sellAmountDisplay,
     setSellAmount,
     direction,
     flipDirection,

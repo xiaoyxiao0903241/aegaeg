@@ -2,7 +2,7 @@ import type { Locale } from '~/i18n/locales'
 
 const zhNotionLinks = {
   whitepaper: 'https://xdaoaegis.notion.site/37fdd8755b98809183dcdfb90e2c82ce',
-  docs: 'https://xdaoaegis.notion.site/',
+  docs: 'https://xdaoaegis.notion.site',
   economicModel: 'https://xdaoaegis.notion.site/37fdd8755b9880df8e5bc705e3438665',
 } as const
 

@@ -62,15 +62,14 @@ ${faviconHead}
 
 export function renderAppDocument(locale: Locale) {
   const lang = getHtmlLang(locale)
-  const description =
-    'AEGIS X DApp community dashboard for BSC wallet access, referral links, programs, and genesis shareholder progress.'
+  const meta = homeMessagesByLocale[locale].meta
 
   return `<!doctype html>
 <html lang="${lang}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="${description}" />
+    <meta name="description" content="${escapeAttr(meta.description)}" />
     <meta name="theme-color" content="#f5f6f8" />
 ${faviconHead}
     <link
@@ -81,7 +80,7 @@ ${faviconHead}
       crossorigin
     />
     <script>${bootScript}</script>
-    <title>AEGIS X DApp — Swap · Genesis · Rewards · Community</title>
+    <title>${escapeAttr(meta.title)}</title>
   </head>
   <body>
     <div id="root"></div>

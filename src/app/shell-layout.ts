@@ -10,16 +10,16 @@ export const shellPageClass = cn(
 
 export function shellStageClass() {
   return cn(
-    'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0 pb-4',
-    'dapp:min-h-0 dapp:flex-1 dapp:items-center dapp:justify-stretch dapp:pb-4',
-    'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-6',
+    'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0 pb-0',
+    'dapp:min-h-0 dapp:flex-1 dapp:items-center dapp:justify-stretch dapp:pb-0',
+    'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-0',
   )
 }
 
 export function shellContainerClass() {
   return cn(
     'mx-auto flex h-full min-h-0 w-full flex-col dapp:max-w-none dapp:flex-1 dapp:items-center dapp:px-0',
-    'max-dapp:h-auto max-dapp:max-w-sm max-dapp:px-3',
+    'max-dapp:h-auto max-dapp:max-w-none max-dapp:px-0',
   )
 }
 
@@ -36,7 +36,7 @@ export function shellWindowClass(state: {
     'rounded-xl',
     !sessionReady && 'shadow-window-compact',
     'max-dapp:flex max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-col max-dapp:gap-3',
-    'max-dapp:overflow-hidden max-dapp:rounded-2xl max-dapp:border-0 max-dapp:p-4.5 max-dapp:pb-5.5 max-dapp:shadow-card',
+    'max-dapp:overflow-hidden max-dapp:rounded-2xl max-dapp:border-0 max-dapp:p-4.5 max-dapp:shadow-card',
   )
 }
 

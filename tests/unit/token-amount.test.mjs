@@ -9,14 +9,25 @@ test('parseTokenAmount converts decimal input to wei', async () => {
   assert.equal(parseTokenAmount('200.5', 18), 2005n * 10n ** 17n)
   assert.equal(parseTokenAmount('100.', 18), 100n * 10n ** 18n)
   assert.equal(parseTokenAmount('', 18), 0n)
+  assert.equal(parseTokenAmount('1,234.5', 18), 12345n * 10n ** 17n)
   assert.equal(parseTokenAmount('abc', 18), 0n)
 })
 
-test('sanitizeTokenAmountInput keeps numeric format and decimal typing state', async () => {
+test('formatTokenAmountInputDisplay adds thousand separators while preserving decimals', async () => {
+  const { formatTokenAmountInputDisplay } = await loadModule('/src/lib/swap/token-amount.ts')
+
+  assert.equal(formatTokenAmountInputDisplay(''), '')
+  assert.equal(formatTokenAmountInputDisplay('100.'), '100.')
+  assert.equal(formatTokenAmountInputDisplay('1234.56'), '1,234.56')
+  assert.equal(formatTokenAmountInputDisplay('1000000'), '1,000,000')
+  assert.equal(formatTokenAmountInputDisplay('0.5'), '0.5')
+})
+
+test('sanitizeTokenAmountInput strips grouping separators', async () => {
   const { sanitizeTokenAmountInput } = await loadModule('/src/lib/swap/token-amount.ts')
 
+  assert.equal(sanitizeTokenAmountInput('1,234.5abc', 6), '1234.5')
   assert.equal(sanitizeTokenAmountInput('100.', 6), '100.')
-  assert.equal(sanitizeTokenAmountInput('100.5abc', 6), '100.5')
   assert.equal(sanitizeTokenAmountInput('1.2345678', 6), '1.234567')
   assert.equal(sanitizeTokenAmountInput('1.0000000', 6), '1.000000')
   assert.equal(sanitizeTokenAmountInput('01.20', 6), '1.20')

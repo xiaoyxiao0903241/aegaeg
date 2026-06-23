@@ -12,6 +12,7 @@ import {
 import { DappWidgetConnectFooter, DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
+import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { MetricCard } from '~/app/components/dapp-card'
 import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
@@ -161,7 +162,7 @@ export function SwapWidget({
           inputMode: 'decimal',
           onChange: (event) => swap.setSellAmount(event.currentTarget.value),
           placeholder: '0.00',
-          value: swap.sellAmount,
+          value: swap.sellAmountDisplay,
         }}
         className={flipAnimClass}
         sessionReady
@@ -232,7 +233,7 @@ export function SwapWidget({
       />
 
       <DappMetaList
-        className="mt-3.5 max-dapp:mt-3"
+        className={dappWidgetFooterTopGapClass}
         sessionReady
         items={[
           {
@@ -302,7 +303,7 @@ export function SwapWidget({
       />
 
       {sessionReady && swap.walletReady ? (
-        <DappActionRow className="mt-3.5 max-dapp:mt-3">
+        <DappActionRow className={dappWidgetFooterTopGapClass}>
           <DappActionButton
             className="col-span-full"
             disabled={!swap.canSubmit}
@@ -320,7 +321,7 @@ export function SwapWidget({
             actionLabel={t.genesis.joinGenesis}
             className={cn(
               'gap-1.5 [&_button]:min-h-9.5 [&_button]:text-xs [&_p]:leading-tight',
-              'max-dapp:mt-3.5 max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
+              'max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
             )}
             isLoading={genesis.isLoading}
             onClick={onSelectGenesis}
@@ -353,10 +354,7 @@ export function SwapContent() {
   const faqItems = t.swap.faq.tabs[faqToken].items
 
   const overviewMetrics = (
-    <MetricGrid
-      className="max-dapp:mt-3.5 max-dapp:[&>article]:mt-0"
-      columns={2}
-    >
+    <MetricGrid columns={2}>
       {sessionReady && poolRateLoading && !poolRateLabel ? (
         <MetricCardSkeleton className="max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5" />
       ) : (
@@ -386,7 +384,7 @@ export function SwapContent() {
 
   return (
     <DappDetailPage>
-      <DappContentHeading className="pb-4" id="swap-title">
+      <DappContentHeading id="swap-title">
         {t.swap.overview}
       </DappContentHeading>
 
@@ -398,8 +396,7 @@ export function SwapContent() {
           '!translate-y-0 !opacity-100 !transition-none',
           '[&_h3]:flex [&_h3]:items-center [&_h3]:justify-between [&_h3]:gap-3',
           '[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.8px]',
-          'max-dapp:[&_h3]:pb-2.5 max-dapp:[&_h3]:text-base max-dapp:[&_h3]:tracking-[-0.64px]',
-          'dapp:[&+section]:mt-8',
+          'max-dapp:[&_h3]:text-base max-dapp:[&_h3]:tracking-[-0.64px]',
           '[&_h3_button]:w-full',
         )}
         title={t.swap.tokenAbout.title}

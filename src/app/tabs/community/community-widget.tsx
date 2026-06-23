@@ -23,6 +23,7 @@ import {
 import { ReferrerAddressRow } from '~/app/components/referrer-address-row'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { QuickLinks } from '~/app/components/quick-links'
+import { buildCommunityQuickLinkItems } from '~/config/community-links'
 import { toast } from 'sonner'
 import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import {
@@ -183,32 +184,21 @@ function CommunityDisconnectedWidget({
 }
 
 function CommunityQuickLinks({ className }: { className?: string }) {
-  const { messages: t } = useI18n()
+  const { locale, messages: t } = useI18n()
 
   return (
     <QuickLinks
       className={className}
-      items={[
+      items={buildCommunityQuickLinkItems(
         {
-          href: '#docs',
-          icon: dappAssets.docs,
-          label: t.community.docs,
+          docs: t.community.docs,
+          youtube: t.community.youtube,
+          medium: t.community.medium,
+          twitter: t.community.twitter,
+          telegram: t.community.telegram,
         },
-        {
-          href: '#twitter',
-          icon: dappAssets.twitter,
-          iconTone: 'dark',
-          label: t.community.twitter,
-          size: 14,
-        },
-        {
-          href: '#telegram',
-          icon: dappAssets.telegram,
-          iconTone: 'plain',
-          label: t.community.telegram,
-          size: 30,
-        },
-      ]}
+        locale,
+      )}
     />
   )
 }

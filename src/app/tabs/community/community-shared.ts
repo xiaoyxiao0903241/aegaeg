@@ -21,7 +21,7 @@ export const SHAREHOLDER_ACTION_CLASS = cn(
 )
 
 export const COMMUNITY_STAT_GRID = cn(
-  'mt-3.5 grid grid-cols-3 gap-3.5',
+  'grid grid-cols-3 gap-3.5',
   'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
-  'max-dapp:mt-3 max-dapp:min-w-0 max-dapp:grid-cols-3 max-dapp:gap-2.5',
+  'max-dapp:min-w-0 max-dapp:grid-cols-3 max-dapp:gap-2.5',
 )
