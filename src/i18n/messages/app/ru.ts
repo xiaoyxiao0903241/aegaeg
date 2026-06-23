@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: 'Копировать',
       claimable: 'Доступно к получению',
       max: 'Макс.',
+      shareUnit: 'долей',
       confirm: 'Подтвердить',
       close: 'Закрыть',
       paginationTotal: 'Всего {total}',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: 'Программа со-строительства',
       intro: 'Участие в программе со-строительства X DAO · Сезон {season}  (скидка {discount})',
-      shares: 'Доли (1 доля = 100 USD1 · макс. {max})',
+      shares: 'Доли (1 доля = 100 USD1 · макс. {max} долей)',
       quota: 'Квота со-строительства текущего сезона',
       pay: 'Оплата',
       receive: 'Получите AGX',

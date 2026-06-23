@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: '복사',
       claimable: '수령 대기',
       max: '최대',
+      shareUnit: '지분',
       confirm: '확인',
       close: '닫기',
       paginationTotal: '총 {total}건',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: '공동 구축 프로그램',
       intro: 'X DAO 공동 구축 프로그램 참여 · 제{season}기  ({discount} 할인)',
-      shares: '지분 (1지분 = 100 USD1 · 최대 {max})',
+      shares: '지분 (1지분 = 100 USD1 · 최대 {max} 지분)',
       quota: '이번 기 공동 구축 한도',
       pay: '지불',
       receive: '획득 AGX',

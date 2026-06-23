@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: '複製',
       claimable: '待領取',
       max: '最大',
+      shareUnit: '份',
       confirm: '確認',
       close: '關閉',
       paginationTotal: '共 {total} 條',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: '共建計畫',
       intro: '參與 X DAO 共建計畫 · 第{season}期  ({discount} 折扣)',
-      shares: '份額（1 份 = 100 USD1 · 最大 {max}）',
+      shares: '份額（1 份 = 100 USD1 · 最大 {max} 份）',
       quota: '本期共建額度',
       pay: '支付',
       receive: '將獲得 AGX',

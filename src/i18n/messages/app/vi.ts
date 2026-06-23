@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: 'Sao chép',
       claimable: 'Chờ nhận',
       max: 'Tối đa',
+      shareUnit: 'phần',
       confirm: 'Xác nhận',
       close: 'Đóng',
       paginationTotal: 'Tổng {total} mục',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: 'Kế hoạch cùng xây dựng',
       intro: 'Tham gia kế hoạch cùng xây dựng X DAO · Kỳ {season}  (giảm giá {discount})',
-      shares: 'Phần (1 phần = 100 USD1 · tối đa {max})',
+      shares: 'Phần (1 phần = 100 USD1 · tối đa {max} phần)',
       quota: 'Hạn mức cùng xây dựng kỳ này',
       pay: 'Thanh toán',
       receive: 'Sẽ nhận AGX',

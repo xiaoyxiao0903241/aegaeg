@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: 'コピー',
       claimable: '受取待ち',
       max: '最大',
+      shareUnit: 'シェア',
       confirm: '確認',
       close: '閉じる',
       paginationTotal: '合計 {total} 件',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: '共創プラン',
       intro: 'X DAO共創プランに参加 · 第{season}期  ({discount} 割引)',
-      shares: 'シェア（1シェア = 100 USD1 · 最大{max}）',
+      shares: 'シェア（1シェア = 100 USD1 · 最大 {max} シェア）',
       quota: '今期の共創枠',
       pay: '支払',
       receive: '獲得予定AGX',

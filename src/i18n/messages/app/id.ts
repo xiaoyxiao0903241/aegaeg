@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: 'Salin',
       claimable: 'Dapat diklaim',
       max: 'MAKS',
+      shareUnit: 'saham',
       confirm: 'Konfirmasi',
       close: 'Tutup',
       paginationTotal: 'Total {total} entri',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: 'Program Co-Build',
       intro: 'Ikuti program co-build X DAO · Musim {season}  (diskon {discount})',
-      shares: 'Saham (1 saham = 100 USD1 · maks {max})',
+      shares: 'Saham (1 saham = 100 USD1 · maks {max} saham)',
       quota: 'Kuota co-build musim ini',
       pay: 'Bayar',
       receive: 'Akan menerima AGX',

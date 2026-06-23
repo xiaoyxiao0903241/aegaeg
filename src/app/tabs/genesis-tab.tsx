@@ -33,7 +33,6 @@ import { FaqList } from '~/components/faq-list'
 import { formatGenesisSeasonIntro, applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { buildGenesisFaqTemplateValues } from '~/lib/presale/genesis-faq'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
-import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
@@ -52,11 +51,7 @@ import {
 import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/web3/resolve-contract-error-message'
 import { formatTokenAmount } from '~/lib/swap/token-amount'
 
-export function GenesisWidget({
-  onSelectGenesis,
-}: {
-  onSelectGenesis: () => void
-}) {
+export function GenesisWidget() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()
@@ -140,15 +135,23 @@ export function GenesisWidget({
       <label className="grid gap-2 text-xs leading-[1.5] text-muted-foreground">
         <span>{t.genesis.shares.replace('{max}', String(genesis.maxShares))}</span>
         <div className="flex gap-2">
-          <input
-            className="w-full min-w-0 min-h-11 rounded-sm border border-border bg-card px-3.5 text-base font-bold text-foreground outline-none focus:border-primary max-dapp:h-11 max-dapp:min-h-11"
-            disabled={!walletReady}
-            max={Math.max(genesis.maxShares, 1)}
-            min={1}
-            onChange={(e) => handleSharesChange(e.target.value)}
-            type="number"
-            value={genesis.shares}
-          />
+          <div className="relative flex min-w-0 flex-1">
+            <input
+              className="w-full min-w-0 min-h-11 rounded-sm border border-border bg-card py-0 pl-3.5 pr-10 text-base font-bold text-foreground outline-none focus:border-primary max-dapp:h-11 max-dapp:min-h-11"
+              disabled={!walletReady}
+              max={Math.max(genesis.maxShares, 1)}
+              min={1}
+              onChange={(e) => handleSharesChange(e.target.value)}
+              type="number"
+              value={genesis.shares}
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-muted-foreground"
+            >
+              {t.common.shareUnit}
+            </span>
+          </div>
           <button
             className={cn(
               'min-h-11 min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 text-xs font-bold whitespace-nowrap text-primary max-dapp:h-11 max-dapp:min-h-11',
@@ -207,15 +210,6 @@ export function GenesisWidget({
       ) : (
         <DappWidgetConnectPromo />
       )}
-
-      {walletReady ? (
-        <GenesisPromoCard
-          className="hidden max-dapp:grid"
-          isLoading={genesis.isLoading}
-          onClick={onSelectGenesis}
-          promo={genesis.promoSnapshot}
-        />
-      ) : null}
     </DappWidgetFrame>
   )
 }

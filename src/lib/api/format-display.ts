@@ -293,7 +293,7 @@ export function mapSalesLogToDesktopRow(
 ): string[] {
   return [
     formatBlockTime(item.block_time),
-    formatAmountToken(item.amount, 'USD1'),
+    formatUsd(Number(item.amount), 0),
     formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
     formatSalesLogAgx(item, agxPriceUsd),
     item.tx_hash ? formatShortAddress(item.tx_hash) : '—',
@@ -306,7 +306,7 @@ export function mapSalesLogToMobileRow(
 ): string[] {
   return [
     formatBlockTime(item.block_time),
-    formatPaidAmountCompact(item.amount),
+    formatUsd(Number(item.amount), 0),
     formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
     formatSalesLogAgx(item, agxPriceUsd),
   ]

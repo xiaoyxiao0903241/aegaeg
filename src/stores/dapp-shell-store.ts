@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getInitialTab, isDappTab } from '~/app/utils'
+import { getInitialTab, isDappTab, scrollToGenesisPageTop } from '~/app/utils'
 import type { DappTab } from '~/app/types'
 
 interface DappShellStore {
@@ -18,12 +18,25 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
   detailCollapsed: false,
   mobileNavOpen: false,
   selectTab: (tab) => {
-    set({ activeTab: tab })
+    set((state) => ({
+      activeTab: tab,
+      ...(tab === 'genesis' ? { detailCollapsed: false } : {}),
+    }))
     window.history.replaceState(null, '', `#${tab}`)
+    if (tab === 'genesis') {
+      scrollToGenesisPageTop()
+    }
   },
   selectMobileTab: (tab) => {
-    set({ activeTab: tab, mobileNavOpen: false })
+    set({
+      activeTab: tab,
+      mobileNavOpen: false,
+      ...(tab === 'genesis' ? { detailCollapsed: false } : {}),
+    })
     window.history.replaceState(null, '', `#${tab}`)
+    if (tab === 'genesis') {
+      scrollToGenesisPageTop()
+    }
   },
   toggleDetailCollapsed: () => set((state) => ({ detailCollapsed: !state.detailCollapsed })),
   setMobileNavOpen: (open) => set({ mobileNavOpen: open }),

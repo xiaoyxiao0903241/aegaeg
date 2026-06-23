@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: 'Copy',
       claimable: 'Claimable',
       max: 'Max',
+      shareUnit: 'shares',
       confirm: 'Confirm',
       close: 'Close',
       paginationTotal: '{total} total',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: 'Co-build Program',
       intro: 'Join the X DAO co-build program · Season {season}  ({discount} discount)',
-      shares: 'Shares (1 share = 100 USD1 · max {max})',
+      shares: 'Shares (1 share = 100 USD1 · max {max} shares)',
       quota: 'Season co-build quota',
       pay: 'Pay',
       receive: 'You will receive AGX',

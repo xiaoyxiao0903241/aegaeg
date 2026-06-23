@@ -10,6 +10,7 @@ const app = defineMessages({
       copy: 'Copiar',
       claimable: 'Pendiente de reclamar',
       max: 'Máx.',
+      shareUnit: 'participaciones',
       confirm: 'Confirmar',
       close: 'Cerrar',
       paginationTotal: 'Total: {total}',
@@ -189,7 +190,7 @@ const app = defineMessages({
     genesis: {
       title: 'Plan de co-construcción',
       intro: 'Participa en el plan de co-construcción X DAO · Temporada {season}  ({discount} de descuento)',
-      shares: 'Participaciones (1 participación = 100 USD1 · máx. {max})',
+      shares: 'Participaciones (1 participación = 100 USD1 · máx. {max} participaciones)',
       quota: 'Cuota de co-construcción de esta temporada',
       pay: 'Pagar',
       receive: 'Recibirás AGX',

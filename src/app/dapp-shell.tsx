@@ -162,7 +162,7 @@ function TabWidget({
   onSelectTab: (tab: DappTab) => void
 }) {
   if (activeTab === 'genesis') {
-    return <GenesisWidget onSelectGenesis={() => onSelectTab('genesis')} />
+    return <GenesisWidget />
   }
 
   if (activeTab === 'rewards') {

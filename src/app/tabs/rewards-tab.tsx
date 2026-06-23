@@ -366,8 +366,8 @@ export function RewardsContent() {
     t.tables.title,
     t.community.shareholder,
     t.tables.totalVolume,
-    t.tables.postLaunchRank,
     t.tables.rewardRate,
+    t.tables.postLaunchRank,
   ]
 
   const mapTierRows = (
@@ -380,7 +380,7 @@ export function RewardsContent() {
         row[2],
         t.rewards.tierDualLegRequirement,
       )
-      const cells = [row[0], row[1], totalVolumeCell, row[4], row[3]]
+      const cells = [row[0], row[1], totalVolumeCell, row[3], row[4]]
       if (highlightedRows.includes(rowIndex)) {
         cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
       }
