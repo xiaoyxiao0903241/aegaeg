@@ -6,6 +6,7 @@ test('auth sync helpers gate auto login and wallet mismatch', async () => {
   const { createMemoryAuthSessionStorage } = await loadModule('/src/lib/api/auth/session.ts')
   const {
     buildSilentLoginAttemptKey,
+    readStoredSessionForWallet,
     shouldAttemptAutoLogin,
     shouldClearSessionForWalletMismatch,
     shouldPurgeExpiredSession,
@@ -30,6 +31,19 @@ test('auth sync helpers gate auto login and wallet mismatch', async () => {
     true,
   )
   assert.equal(shouldPurgeExpiredSession({ address: '0x1', token: expiredToken, savedAt: 1 }), true)
+  assert.equal(
+    readStoredSessionForWallet(
+      {
+        '0xabc': {
+          address: '0xAbC',
+          token: validToken,
+          savedAt: Date.now(),
+        },
+      },
+      '0xabc',
+    )?.token,
+    validToken,
+  )
 
   const attemptKey = buildSilentLoginAttemptKey('0xabc', null)
   assert.equal(

@@ -11,6 +11,7 @@ import { useActiveAccount } from 'thirdweb/react'
 import { ApiError } from '~/lib/api/client'
 import {
   buildSilentLoginAttemptKey,
+  readStoredSessionForWallet,
   shouldAttemptAutoLogin,
   shouldClearSessionForWalletMismatch,
   shouldPurgeExpiredSession,
@@ -59,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const hasHydrated = useAuthStore((state) => state.hasHydrated)
   const silentLoginAttemptRef = useRef<string | null>(null)
   const wasAuthenticatedRef = useRef(false)
+  const previousWalletRef = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     silentLoginAttemptRef.current = null
@@ -113,6 +115,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!hasHydrated) return
 
+    const previousAddress = previousWalletRef.current
+    if (
+      previousAddress &&
+      walletAddress &&
+      previousAddress.toLowerCase() !== walletAddress.toLowerCase()
+    ) {
+      silentLoginAttemptRef.current = null
+      useDappActions.getState().afterWalletSwitch(previousAddress, walletAddress)
+    }
+
+    previousWalletRef.current = walletAddress
+  }, [hasHydrated, walletAddress])
+
+  useEffect(() => {
+    if (!hasHydrated) return
+
     const store = useAuthStore.getState()
 
     if (shouldPurgeExpiredSession(store.session)) {
@@ -122,9 +140,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (shouldClearSessionForWalletMismatch(store.session, walletAddress)) {
-      store.clearWalletAuth()
+      if (store.session) {
+        store.upsertSessionForAddress(store.session)
+      }
+
+      store.clearSession()
       store.setLoginError(null)
       silentLoginAttemptRef.current = null
+
+      const restored = readStoredSessionForWallet(store.sessionsByAddress, walletAddress)
+      if (restored) {
+        store.setSession(restored)
+        return
+      }
+
       useDappActions.getState().afterAuthLogout()
     }
   }, [hasHydrated, session?.expiresAt, session?.token, walletAddress])
@@ -182,8 +211,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const logout = useCallback(() => {
-    const { clearWalletAuth, setLoginError } = useAuthStore.getState()
-    clearWalletAuth()
+    const { session, clearSession, removeSessionForAddress, setLoginError } = useAuthStore.getState()
+    if (session?.address) {
+      removeSessionForAddress(session.address)
+    }
+    clearSession()
     setLoginError(null)
     silentLoginAttemptRef.current = null
     useDappActions.getState().afterAuthLogout()

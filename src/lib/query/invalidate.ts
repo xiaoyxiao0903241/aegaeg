@@ -37,6 +37,27 @@ export function invalidateApiQueries() {
   return queryClient.invalidateQueries({ queryKey: queryKeys.api.all })
 }
 
+/** Wallet account changed — drop stale reads and warm the next wallet scope. */
+export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddress?: string) {
+  clearApiQueries()
+
+  if (previousAddress) {
+    void queryClient.removeQueries({ queryKey: queryKeys.chain.walletBalances(previousAddress) })
+    void queryClient.removeQueries({
+      predicate: (query) =>
+        Array.isArray(query.queryKey) &&
+        query.queryKey[0] === 'chain' &&
+        JSON.stringify(query.queryKey).includes(previousAddress.toLowerCase()),
+    })
+  }
+
+  if (nextAddress) {
+    invalidatePresaleChainQueries(nextAddress)
+    void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(nextAddress) })
+    void queryClient.invalidateQueries({ queryKey: queryKeys.chain.walletBalances(nextAddress) })
+  }
+}
+
 /** User SIWE session became active — refresh API + wallet-scoped chain reads. */
 export function invalidateAfterAuthLogin(address?: string) {
   void invalidateApiQueries()

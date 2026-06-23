@@ -67,7 +67,13 @@ test('login signature cache respects SIWE expiration', async () => {
     savedAt: Date.now(),
   })
 
-  assert.equal(isLoginSignatureUsable(storage.read(), Date.now() + 120_000), false)
+  assert.equal(
+    isLoginSignatureUsable(
+      storage.readForAddress('0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'),
+      Date.now() + 120_000,
+    ),
+    false,
+  )
 
   const futureAt = new Date(Date.now() + 3600_000).toUTCString()
   const validMessage = expiredMessage.replace(expiredAt, futureAt)
@@ -78,7 +84,10 @@ test('login signature cache respects SIWE expiration', async () => {
     savedAt: Date.now(),
   })
 
-  assert.equal(isLoginSignatureUsable(storage.read()), true)
+  assert.equal(
+    isLoginSignatureUsable(storage.readForAddress('0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb')),
+    true,
+  )
 })
 
 test('loginWithWallet reuses cached signature without re-signing', async () => {
@@ -144,6 +153,45 @@ test('loginWithWallet reuses cached signature without re-signing', async () => {
   }
 })
 
+test('login signature cache keeps entries per wallet address', async () => {
+  const { createMemoryLoginSignatureStorage, readUsableLoginSignature } = await loadModule(
+    '/src/lib/api/auth/login-signature-cache.ts',
+  )
+
+  const storage = createMemoryLoginSignatureStorage()
+  const futureAt = new Date(Date.now() + 3600_000).toUTCString()
+  const messageFor = (address) =>
+    [
+      'aegis-x.io wants you to sign in with your Ethereum account:',
+      address,
+      '',
+      'Sign in to AEGIS X',
+      '',
+      'URI: https://aegis-x.io',
+      'Version: 1',
+      'Chain ID: 56',
+      'Nonce: cached-nonce',
+      'Issued At: 2026-01-01T00:00:00.000Z',
+      `Expiration Time: ${futureAt}`,
+    ].join('\n')
+
+  storage.write({
+    address: '0x111',
+    message: messageFor('0x111'),
+    signature: '0xsig111',
+    savedAt: Date.now(),
+  })
+  storage.write({
+    address: '0x222',
+    message: messageFor('0x222'),
+    signature: '0xsig222',
+    savedAt: Date.now(),
+  })
+
+  assert.equal(readUsableLoginSignature('0x111', storage)?.signature, '0xsig111')
+  assert.equal(readUsableLoginSignature('0x222', storage)?.signature, '0xsig222')
+})
+
 test('loginWithWallet signs message and stores jwt', async () => {
   const { createMemoryAuthSessionStorage } = await loadModule('/src/lib/api/auth/session.ts')
   const { createMemoryLoginSignatureStorage } = await loadModule(
@@ -185,7 +233,10 @@ test('loginWithWallet signs message and stores jwt', async () => {
 
     assert.equal(result.token, 'jwt-from-api')
     assert.equal(storage.read()?.token, 'jwt-from-api')
-    assert.equal(signatureStorage.read()?.signature, '0xsig')
+    assert.equal(
+      signatureStorage.readForAddress(account.address)?.signature,
+      '0xsig',
+    )
     assert.equal(calls.length, 1)
   } finally {
     globalThis.fetch = originalFetch

@@ -8,48 +8,79 @@ export interface StoredLoginSignature {
 }
 
 export interface LoginSignatureStorage {
-  read(): StoredLoginSignature | null
+  readForAddress(address: string): StoredLoginSignature | null
   write(signature: StoredLoginSignature): void
-  clear(): void
+  clearForAddress(address: string): void
+}
+
+function isStoredLoginSignature(value: unknown): value is StoredLoginSignature {
+  if (!value || typeof value !== 'object') return false
+  const candidate = value as Partial<StoredLoginSignature>
+  return Boolean(candidate.address && candidate.message && candidate.signature)
+}
+
+function readSignatureMap(
+  storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>,
+): Record<string, StoredLoginSignature> {
+  const raw = storage.getItem(AUTH_SIGNATURE_STORAGE_KEY)
+  if (!raw) return {}
+
+  try {
+    const parsed = JSON.parse(raw) as unknown
+    if (isStoredLoginSignature(parsed)) {
+      return { [parsed.address.toLowerCase()]: parsed }
+    }
+
+    if (!parsed || typeof parsed !== 'object') return {}
+
+    return Object.fromEntries(
+      Object.entries(parsed as Record<string, unknown>).flatMap(([address, value]) =>
+        isStoredLoginSignature(value) ? [[address.toLowerCase(), value] as const] : [],
+      ),
+    )
+  } catch {
+    return {}
+  }
 }
 
 export function createLocalLoginSignatureStorage(
   storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>,
 ): LoginSignatureStorage {
-  return {
-    read() {
-      const raw = storage.getItem(AUTH_SIGNATURE_STORAGE_KEY)
-      if (!raw) return null
+  const writeMap = (map: Record<string, StoredLoginSignature>) => {
+    storage.setItem(AUTH_SIGNATURE_STORAGE_KEY, JSON.stringify(map))
+  }
 
-      try {
-        const parsed = JSON.parse(raw) as StoredLoginSignature
-        if (!parsed.address || !parsed.message || !parsed.signature) return null
-        return parsed
-      } catch {
-        return null
-      }
+  return {
+    readForAddress(address) {
+      const entry = readSignatureMap(storage)[address.toLowerCase()]
+      if (!entry) return null
+      return entry
     },
     write(signature) {
-      storage.setItem(AUTH_SIGNATURE_STORAGE_KEY, JSON.stringify(signature))
+      const map = readSignatureMap(storage)
+      map[signature.address.toLowerCase()] = signature
+      writeMap(map)
     },
-    clear() {
-      storage.removeItem(AUTH_SIGNATURE_STORAGE_KEY)
+    clearForAddress(address) {
+      const map = readSignatureMap(storage)
+      delete map[address.toLowerCase()]
+      writeMap(map)
     },
   }
 }
 
 export function createMemoryLoginSignatureStorage(): LoginSignatureStorage {
-  let value: StoredLoginSignature | null = null
+  const values = new Map<string, StoredLoginSignature>()
 
   return {
-    read() {
-      return value
+    readForAddress(address) {
+      return values.get(address.toLowerCase()) ?? null
     },
     write(signature) {
-      value = signature
+      values.set(signature.address.toLowerCase(), signature)
     },
-    clear() {
-      value = null
+    clearForAddress(address) {
+      values.delete(address.toLowerCase())
     },
   }
 }
@@ -84,7 +115,9 @@ export function readUsableLoginSignature(
   storage: LoginSignatureStorage,
   now = Date.now(),
 ): StoredLoginSignature | null {
-  const cached = storage.read()
+  if (!address) return null
+
+  const cached = storage.readForAddress(address)
   if (!isLoginSignatureForAddress(cached, address)) return null
   if (!isLoginSignatureUsable(cached, now)) return null
   return cached

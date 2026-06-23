@@ -98,7 +98,7 @@ export async function loginWithWallet({
         throw error
       }
 
-      signatureStorage.clear()
+      signatureStorage.clearForAddress(account.address)
     }
   }
 
@@ -150,9 +150,12 @@ export function clearAuthSession(
 export function clearWalletSession(
   storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),
   signatureStorage: LoginSignatureStorage = createLocalLoginSignatureStorage(localStorage),
+  address?: string,
 ): void {
   storage.clear()
-  signatureStorage.clear()
+  if (address) {
+    signatureStorage.clearForAddress(address)
+  }
 }
 
 export function isUnauthorizedError(error: unknown): boolean {
