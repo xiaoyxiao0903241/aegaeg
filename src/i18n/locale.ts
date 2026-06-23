@@ -9,50 +9,6 @@ export function isLocale(value: string | null | undefined): value is Locale {
   return locales.includes(normalized as Locale)
 }
 
-function normalizeLocaleTag(tag: string): Locale | null {
-  const lower = tag.toLowerCase()
-
-  if (
-    lower.startsWith('zh-tw') ||
-    lower.startsWith('zh-hk') ||
-    lower.startsWith('zh-hant') ||
-    lower === 'zht'
-  ) {
-    return 'zht'
-  }
-
-  if (lower.startsWith('zh')) {
-    return 'zh'
-  }
-
-  const direct = lower.split('-')[0]
-  if (isLocale(direct)) {
-    return direct
-  }
-
-  return null
-}
-
-export function getBrowserLocale(): Locale {
-  if (typeof navigator === 'undefined') {
-    return defaultLocale
-  }
-
-  const candidates = [
-    ...navigator.languages,
-    navigator.language,
-  ].filter(Boolean)
-
-  for (const tag of candidates) {
-    const resolved = normalizeLocaleTag(tag)
-    if (resolved) {
-      return resolved
-    }
-  }
-
-  return defaultLocale
-}
-
 export function getLocaleFromPathname(pathname: string): Locale | null {
   const [segment] = pathname.split('/').filter(Boolean)
   if (!segment) return null
@@ -102,7 +58,7 @@ export function getInitialLocale(): Locale {
   return (
     getLocaleFromPathname(window.location.pathname) ??
     getStoredLocale() ??
-    getBrowserLocale()
+    defaultLocale
   )
 }
 

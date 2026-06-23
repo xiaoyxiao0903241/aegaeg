@@ -103,15 +103,7 @@ ${faviconHead}
       (() => {
         const supported = new Set(${supportedLocalesJson})
         const stored = window.localStorage.getItem('aegis.locale')
-        const browser = (() => {
-          const tag = (navigator.language || 'en').toLowerCase()
-          if (tag.startsWith('zh')) {
-            return 'zh'
-          }
-          const direct = tag.split('-')[0]
-          return supported.has(direct) ? direct : 'en'
-        })()
-        const locale = supported.has(stored) ? stored : browser
+        const locale = supported.has(stored) ? stored : 'en'
         window.location.replace('/' + locale + '/' + window.location.search + window.location.hash)
       })()
     </script>
@@ -136,15 +128,7 @@ ${faviconHead}
       (() => {
         const supported = new Set(${supportedLocalesJson})
         const stored = window.localStorage.getItem('aegis.locale')
-        const browser = (() => {
-          const tag = (navigator.language || 'en').toLowerCase()
-          if (tag.startsWith('zh')) {
-            return 'zh'
-          }
-          const direct = tag.split('-')[0]
-          return supported.has(direct) ? direct : 'en'
-        })()
-        const locale = supported.has(stored) ? stored : browser
+        const locale = supported.has(stored) ? stored : 'en'
         window.location.replace('/' + locale + '/app.html' + window.location.search + window.location.hash)
       })()
     </script>
