@@ -68,6 +68,14 @@ function resolveSeasonStatusBadgeClass(status: string, selected: boolean) {
   return cn(seasonStatusBadgeBaseClass, 'bg-muted text-muted-foreground')
 }
 
+function resolveSeasonCarouselScrollIndex(activeIndex: number): number {
+  if (activeIndex <= 0) {
+    return 0
+  }
+  // Figma peek layout — keep the current phase as the 2nd visible card when possible.
+  return activeIndex - 1
+}
+
 function useCarouselScrollState(api: CarouselApi | undefined) {
   const [current, setCurrent] = useState(0)
   const [canScrollPrev, setCanScrollPrev] = useState(false)
@@ -138,27 +146,48 @@ function SeasonCard({
   )
 }
 
-export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
+export function SeasonSelector({
+  activePhaseIndex,
+  seasons,
+}: {
+  activePhaseIndex?: number
+  seasons: SeasonOption[]
+}) {
   const { messages: t } = useI18n()
   const [api, setApi] = useState<CarouselApi>()
   const { canScrollNext, canScrollPrev, current, goTo } = useCarouselScrollState(api)
-  const syncedActiveIndexRef = useRef<number | null>(null)
+  const syncedScrollIndexRef = useRef<number | null>(null)
   const showControls = seasons.length > 1
-  const activeSeasonIndex = useMemo(
-    () => seasons.findIndex((season) => season.active),
-    [seasons],
+  const activeSeasonIndex = useMemo(() => {
+    if (activePhaseIndex !== undefined && activePhaseIndex >= 0) {
+      return activePhaseIndex
+    }
+    return seasons.findIndex((season) => season.active)
+  }, [activePhaseIndex, seasons])
+  const initialScrollIndex = useMemo(
+    () => resolveSeasonCarouselScrollIndex(activeSeasonIndex),
+    [activeSeasonIndex],
+  )
+  const carouselOpts = useMemo(
+    () => ({
+      align: 'start' as const,
+      containScroll: 'trimSnaps' as const,
+      dragFree: false,
+      startIndex: initialScrollIndex,
+    }),
+    [initialScrollIndex],
   )
 
   useEffect(() => {
     if (!api || activeSeasonIndex < 0) {
       return
     }
-    if (syncedActiveIndexRef.current === activeSeasonIndex) {
+    if (syncedScrollIndexRef.current === initialScrollIndex) {
       return
     }
-    api.scrollTo(activeSeasonIndex, false)
-    syncedActiveIndexRef.current = activeSeasonIndex
-  }, [activeSeasonIndex, api])
+    api.scrollTo(initialScrollIndex, false)
+    syncedScrollIndexRef.current = initialScrollIndex
+  }, [activeSeasonIndex, api, initialScrollIndex])
 
   return (
     <RadioGroup
@@ -173,7 +202,7 @@ export function SeasonSelector({ seasons }: { seasons: SeasonOption[] }) {
           seasonCarouselMaxWidthClass,
           seasonCarouselControlsGapClass,
         )}
-        opts={{ align: 'start', containScroll: 'trimSnaps', dragFree: false }}
+        opts={carouselOpts}
         setApi={setApi}
       >
         <div className={cn('relative overflow-visible', seasonCarouselEdgeBleedClass)}>

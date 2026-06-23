@@ -130,6 +130,9 @@ export function GenesisWidget({
         </div>
       ) : (
         <SeasonSelector
+          activePhaseIndex={
+            genesis.seasonOptions.length > 0 ? genesis.phaseIndex : undefined
+          }
           seasons={genesis.seasonOptions.length > 0 ? genesis.seasonOptions : fallbackSeasons}
         />
       )}
