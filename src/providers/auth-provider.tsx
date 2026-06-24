@@ -86,41 +86,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return
       }
 
+      // `wallet-event`: thirdweb already knows about the new account and
+      // `useActiveAccount` will update on the next render. The previousWalletRef
+      // effect will refresh data then. Nothing to do here.
+      if (source === 'wallet-event') return
+
+      // `provider-event`: the provider reports a different address than thirdweb.
+      // Auto-reconnecting via `wallet.connect()` can deadlock some wallets (e.g.
+      // MetaMask waiting for an authorization prompt). Disconnect and let the
+      // user reconnect manually instead.
       reconnectingRef.current = true
       try {
-        // Injected wallets: the provider already reports the new address, so
-        // re-connecting the same wallet re-reads the active account without
-        // asking the user again.
-        if (wallet.id !== 'walletConnect') {
-          await wallet.connect({ client: thirdwebClient, chain: defaultChain })
-        } else {
-          // WalletConnect sessions cannot be silently refreshed — disconnect and
-          // let the user reconnect with the new account.
-          disconnect(wallet)
-          useAuthStore.getState().clearSession()
-          useAuthStore.getState().setLoginError(null)
-          silentLoginAttemptRef.current = null
-          useDappActions.getState().afterAuthLogout()
-        }
-      } catch (error) {
-        console.error('[AuthProvider] failed to reconcile wallet account:', {
-          source,
-          detectedAddress,
-          activeAddress,
-          error,
-        })
-        try {
-          disconnect(wallet)
-        } catch {
-          // ignore disconnect errors
-        }
-        useAuthStore.getState().clearSession()
-        useAuthStore.getState().setLoginError(null)
-        silentLoginAttemptRef.current = null
-        useDappActions.getState().afterAuthLogout()
+        disconnect(wallet)
+      } catch {
+        // ignore disconnect errors
       } finally {
         reconnectingRef.current = false
       }
+
+      useAuthStore.getState().clearSession()
+      useAuthStore.getState().setLoginError(null)
+      silentLoginAttemptRef.current = null
+      useDappActions.getState().afterAuthLogout()
     },
     [disconnect, wallet, walletAddress],
   )

@@ -41,9 +41,10 @@ export interface UseWalletProviderAccountChangeOptions {
   /** Only run the fallback listener for injected wallets. Defaults to true. */
   enabled?: boolean
   /**
-   * Called when the injected provider reports a different address than
-   * `activeAddress`. The consumer can decide to disconnect, refresh data, or
-   * ignore the event.
+   * Called when the injected provider emits `accountsChanged` with a different
+   * address than `activeAddress`. The initial `eth_accounts` query is only used
+   * to warm state and does not trigger this callback, to avoid disconnecting the
+   * user immediately after connection.
    */
   onMismatch: (providerAddress: string, activeAddress: string | undefined) => void
 }
@@ -70,21 +71,13 @@ export function useWalletProviderAccountChange(options: UseWalletProviderAccount
     const providers = getWalletProviders()
     if (providers.length === 0) return
 
-    // Active query: some wallets (notably MetaMask) do not emit accountsChanged
-    // when the user switches to an account that is not authorized for the current
-    // site. Querying eth_accounts on mount gives us the actual provider state.
+    // Warm state: read the current provider address without triggering a
+    // disconnect. This keeps the fallback passive until a real account change
+    // event fires.
     providers.forEach((provider) => {
       if (!provider.request) return
       provider
         .request({ method: 'eth_accounts' })
-        .then((accounts) => {
-          const accountList = Array.isArray(accounts) ? accounts : []
-          const providerAddress = normalizeWalletAddress(accountList[0])
-          if (!providerAddress) return
-          const currentActive = normalizeWalletAddress(activeAddress)
-          if (providerAddress === currentActive) return
-          onMismatchRef.current(providerAddress, activeAddress)
-        })
         .catch(() => {
           // ignore provider query errors
         })
