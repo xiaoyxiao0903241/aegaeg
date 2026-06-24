@@ -12,7 +12,10 @@ export function useAuthenticatedQuery<T>(
   const { token, invalidateSession, isAuthenticated, hasHydrated } = useAuth()
 
   const query = useQuery({
-    queryKey,
+    // Scope API queries by JWT token so that switching wallets (which changes
+    // the token) automatically fetches fresh user data. Without this, queries
+    // shared the same key across accounts and could keep serving stale data.
+    queryKey: token ? [...queryKey, token] : queryKey,
     queryFn: () => fetchAuthenticated(fetcher, token!, invalidateSession),
     enabled: enabled && hasHydrated && isAuthenticated && Boolean(token),
     staleTime: QUERY_STALE_TIME.api,
