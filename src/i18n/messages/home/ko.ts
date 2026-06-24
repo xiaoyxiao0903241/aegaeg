@@ -3,127 +3,127 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X는 AI 네이티브 DeFi 4.0 프로토콜로, USD1 정산, BSC 우선 지갑 접근 및 자가 복구 프로토콜 엔진을 통해 차세대 가치 네트워크를 구축합니다.',
+    description: 'AEGIS X는 AI Native DeFi 4.0 Protocol로, USD1 Settlement, BSC 우선 Wallet 접근, 자가 복구 Protocol Engine으로 차세대 가치 네트워크를 구축합니다.',
     title: 'AEGIS X - 미래 가치를 수호'
   },
   nav: {
-    sectionsLabel: '홈페이지 섹션 탐색',
+    sectionsLabel: '홈페이지 섹션 네비게이션',
     links: [
       {
         href: '#protocol',
-        label: '프로토콜'
+        label: 'Protocol'
       },
       {
         href: '#engine',
-        label: '핵심 메커니즘'
+        label: 'Core'
       },
       {
         href: '#token',
-        label: '생태계 가치'
+        label: 'Value'
       },
       {
         href: '#roadmap',
-        label: '로드맵'
+        label: 'Roadmap'
       },
       {
         href: '#security',
-        label: '보안'
+        label: 'Security'
       },
       {
         href: '#faq',
-        label: '자주 묻는 질문'
+        label: 'FAQ'
       }
     ],
-    whitepaper: '백서',
-    enterApp: 'App 진입',
-    languageLabel: '언어'
+    whitepaper: 'Whitepaper',
+    enterApp: 'Launch App',
+    languageLabel: 'Language'
   },
   hero: {
-    guardianLabel: 'AEGIS X 가디언',
-    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 프로토콜',
+    guardianLabel: 'AEGIS X Guardian',
+    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
     title: '미래 가치를 수호',
-    body: '세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜. USD1을 핵심 정산 자산으로 AI, 결제 및 글로벌 유동성 네트워크를 연결합니다.',
-    enterProtocol: '프로토콜 진입',
-    readWhitepaper: '백서 읽기',
+    body: '세계 최초의 AI Think Tank 기반 USD1 Ecosystem Protocol. USD1을 Core Settlement Asset으로 AI, 결제, 글로벌 유동성 네트워크를 연결합니다.',
+    enterProtocol: 'Enter Protocol',
+    readWhitepaper: 'Read Whitepaper',
   },
   sections: {
     protocol: {
-      eyebrow: 'AEGIS X 프로토콜',
+      eyebrow: 'AEGIS X Protocol',
       title: '차세대 가치 네트워크 핵심 아키텍처',
       subtitle: 'AI x DeFi x USD1 - 가치 흐름을 구동합니다',
       cards: [
         {
-          title: 'AI 싱크탱크',
-          body: '자율 리스크 관리, 지능형 마켓메이킹 및 유동성 관리가 모두 온체인에서 실행됩니다.',
+          title: 'AI Think Tank',
+          body: '자율 Risk Control, Intelligent Market Making, 유동성 관리를 모두 온체인에서 실행합니다.',
           index: '01'
         },
         {
-          title: 'USD1 정산',
-          body: 'USD1을 핵심 정산 자산으로 안정적인 가치 유통 네트워크를 구축합니다.',
+          title: 'USD1 Settlement',
+          body: 'USD1을 Core Settlement Asset으로 안정적인 가치 유통 네트워크를 구축합니다.',
           index: '02'
         },
         {
-          title: '글로벌 결제',
-          body: 'AI Agent, DeFi 및 글로벌 결제 시나리오를 연결하여 차세대 가치 네트워크를 구축합니다.',
+          title: 'Global Payments',
+          body: 'AI Agent, DeFi, 글로벌 결제 시나리오를 연결하여 차세대 가치 네트워크를 구축합니다.',
           index: '03'
         }
       ]
     },
     engine: {
-      eyebrow: '핵심 메커니즘',
-      title: '4대 메커니즘, 하나의 지능형 시스템',
-      subtitle: '지능형 의사결정, 동적 조절 및 리스크 관리를 통해 지속 가능한 가치 네트워크를 구축합니다.',
+      eyebrow: 'Core Mechanisms',
+      title: '4대 메커니즘, 하나의 Intelligent System',
+      subtitle: 'Intelligent Decision, Dynamic Adjustment, Risk Control로 지속 가능한 가치 네트워크를 구축합니다.',
       cards: [
         {
-          title: '지능형 마켓메이킹 메커니즘',
-          body: '상승 구간에서 준비금 자산을 축적하여 프로토콜 준비금 역량을 강화하고, 조정 구간에서는 매수·소각 메커니즘을 실행하여 가격을 복구합니다.'
+          title: 'Intelligent Market-Making',
+          body: '상승 구간에서 준비금 자산을 축적하여 Protocol Reserve 역량을 강화하고, 조정 구간에서는 Buyback·Burn으로 가격을 복구합니다.'
         },
         {
-          title: '변동성 방어 메커니즘',
-          body: '일일 하락률이 임계값에 도달하면 자동 발동: 매도 수수료 30%로 상향, 준비금 매수 및 블랙홀 소각이 시작되며 24시간 후 자동 복구됩니다.'
+          title: 'Volatility Defense',
+          body: '일일 하락률이 임계값에 도달하면 자동 발동: Sell Fee 30%로 상향, Reserve Buyback 및 Blackhole Burn이 시작되며 24시간 후 자동 복구됩니다.'
         },
         {
-          title: '수익 분배 메커니즘',
-          body: '블록 단위 선형 해제 메커니즘을 채택하며, 12시간마다 수익 정산이 이루어지고 최대 540일 참여 주기를 지원합니다.'
+          title: 'Yield Distribution',
+          body: 'Block-Level Linear Release를 채택하고 12시간마다 Yield Settlement가 이루어지며 최대 540일 참여 주기를 지원합니다.'
         },
         {
-          title: '터보 메커니즘',
-          body: '동적 매수 해제 메커니즘을 통해 시장 유동성 구조를 최적화하고 생태계 안정성과 장기 발전 역량을 강화합니다.'
+          title: 'Turbo Mechanism',
+          body: 'Dynamic Buy-to-Unlock 메커니즘으로 시장 유동성 구조를 최적화하고 생태계 안정성과 장기 발전 역량을 강화합니다.'
         }
       ]
     },
     token: {
-      eyebrow: '가치 생태계',
-      title: '다자산 가치 플라이휠',
+      eyebrow: 'Value Ecosystem',
+      title: 'Multi-Asset Value Flywheel',
       subtitle: '사용자 성장 → 유동성 강화 → 결제 확장 → 생태계 성장.',
       cards: [
         {
-          label: '핵심 프로토콜 자산',
-          description: '150% 초과 담보 발행 · 수익 성장 엔진'
+          label: 'Core Protocol Asset',
+          description: '150% 초과 담 보 Minting · Yield Growth Engine'
         },
         {
-          label: '핵심 정산 자산',
-          description: '생태계 정산 레이어 · 가치 유통 인프라'
+          label: 'Core Settlement Asset',
+          description: 'Ecosystem Settlement Layer · Value Circulation Infra'
         },
         {
-          label: '생태계 가치 토큰',
+          label: 'Ecosystem Value Token',
           description: '고정 총량 2.1억 · 지속적 가치 축적'
         },
         {
-          label: '보상 정산 증명',
-          description: 'AGX 교환 가능 · 생태계 마이닝 참여'
+          label: 'Reward Settlement Voucher',
+          description: 'AGX로 교환 가능 · 생태계 Mining 참여'
         }
       ]
     },
     roadmap: {
-      eyebrow: '로드맵',
+      eyebrow: 'Roadmap',
       title: '차세대 가치 네트워크로 향하는 길',
       phases: [
         {
           phase: 'PHASE 01',
           time: '2026 Q3',
-          title: '제네시스 런칭',
-          description: '프로토콜 배포 · AGX 발행 · USD1 유동성 풀',
+          title: 'Genesis Launch',
+          description: 'Protocol 배포 · AGX Minting · USD1 Liquidity Pool',
           dot: '✓',
           side: 'left',
           state: 'current'
@@ -131,87 +131,87 @@ const home = defineMessages({
         {
           phase: 'PHASE 02',
           time: '2026 Q4',
-          title: 'DeFi 핵심',
-          description: 'Rebase 스테이킹 · LP 본드 · 소각 본드 · AI 마켓메이킹',
+          title: 'DeFi Core',
+          description: 'Rebase Staking · LP Bond · Burn Bond · AI Market Making',
           dot: '2',
           side: 'right'
         },
         {
           phase: 'PHASE 03',
           time: '2027 Q1',
-          title: 'DAO 및 성장',
-          description: 'X DAO 인센티브 · 멀티시그 거버넌스 · 글로벌 노드',
+          title: 'DAO & Growth',
+          description: 'X DAO Incentives · Multisig Governance · 글로벌 노드',
           dot: '3',
           side: 'left'
         },
         {
           phase: 'PHASE 04',
           time: '2027 Q2',
-          title: 'AI Agent 경제',
-          description: '자율 결제 · 지능형 협업 · AI Agent 경제 네트워크',
+          title: 'AI Agent Economy',
+          description: '자율 결제 · Intelligent Collaboration · AI Agent Economy Network',
           dot: '4',
           side: 'right'
         },
         {
           phase: 'PHASE 05',
           time: '2027 Q3',
-          title: '글로벌 결제',
-          description: '글로벌 결제 네트워크 · 가맹점 연동 · USD1 결제 시나리오',
+          title: 'Global Payments',
+          description: 'Global Payment Network · 가맹점 연동 · USD1 결제 시나리오',
           dot: '5',
           side: 'left'
         },
         {
           phase: 'PHASE 06',
           time: '2027 Q4',
-          title: '미래 가치 네트워크',
-          description: '결제 네트워크 · AI Agent 경제 · 가치 생태계',
+          title: 'Future Value Network',
+          description: 'Payment Network · AI Agent Economy · Value Ecosystem',
           dot: '6',
           side: 'right'
         }
       ]
     },
     security: {
-      eyebrow: '보안 및 신뢰',
+      eyebrow: 'Security & Trust',
       title: 'AEGIS급 보안 아키텍처',
-      subtitle: '프로토콜 아키텍처부터 자산 관리까지, 보안이 모든 단계에 관통합니다',
+      subtitle: 'Protocol Architecture부터 Asset Management까지, 보안이 모든 단계에 관통합니다',
       checks: [
-        "비수탁 아키텍처 · 지능형 마켓메이킹 컨트랙트는 자산 이체 권한이 없습니다",
-        "핵심 컨트랙트 오픈소스 검증 가능 · 전문 보안 감사 통과",
-        "멀티시그 거버넌스 메커니즘 · 핵심 권한 공동 관리",
-        "동적 방어 메커니즘 · 극단적 변동성에 자동 대응"
+        "Non-Custodial Architecture · Smart Market-Making Contract는 자산 이체 권한이 없습니다",
+        "Core Contract 오픈소스 검증 가능 · 전문 보안 Audit 통과",
+        "Multisig Governance · Core 권한 공동 관리",
+        "Dynamic Defense Mechanism · 극단적 변동성에 자동 대응"
       ]
     },
     partners: {
-      title: '생태계 인프라'
+      title: 'Ecosystem Infrastructure'
     },
     faq: {
-      eyebrow: '빠른 이해',
-      title: '자주 묻는 질문',
+      eyebrow: 'Quick Overview',
+      title: 'FAQ',
       items: [
         {
-          q: 'AEGIS X란 무엇인가요?',
-          a: 'AEGIS X는 세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜로, USD1을 핵심 정산 자산으로 AI, DeFi 및 글로벌 결제 네트워크를 연결합니다.',
+          q: 'AEGIS X란?',
+          a: 'AEGIS X는 세계 최초의 AI Think Tank 기반 USD1 Ecosystem Protocol로, USD1을 Core Settlement Asset으로 AI, DeFi, 글로벌 결제 네트워크를 연결합니다.',
           open: true
         },
         {
-          q: 'AGX는 어떻게 발행되나요?',
-          a: 'AGX는 150% 초과 담보 메커니즘을 통해 생성되며, 프로토콜 핵심 자산과 가치 성장의 중요한 매개체입니다.'
+          q: 'AGX는 어떻게 Minting 되나요?',
+          a: 'AGX는 150% 초과 담 보 메커니즘으로 생성되며, Protocol 핵심 자산과 가치 성장의 중요한 매개체입니다.'
         },
         {
           q: 'USD1은 AEGIS X에서 어떤 역할을 하나요?',
-          a: 'USD1은 프로토콜의 핵심 정산 자산으로, 생태계에 가치 유통, 유동성 지원 및 결제 인프라 역량을 제공합니다.'
+          a: 'USD1은 Protocol의 Core Settlement Asset으로, 생태계에 가치 유통, 유동성 지원 및 결제 인프라 역량을 제공합니다.'
         },
         {
-          q: '프로토콜은 어떻게 보안을 보장하나요?',
-          a: '컨트랙트는 비수탁 경계, 감사, 오픈소스 검토 및 멀티시그 거버넌스를 채택합니다.'
+          q: 'Protocol은 어떻게 보안을 보장하나요?',
+          a: 'Contract는 Non-Custodial Boundary, Audit, 오픈소스 Review, Multisig Governance를 채택합니다.'
         },
         {
-          q: '터보 메커니즘이란 무엇인가요?',
-          a: '터보 메커니즘은 동적 해제 및 유동성 조절 메커니즘을 통해 집중 매도 압력 위험을 낮추고 시장 안정성과 장기 발전 역량을 강화합니다.'
+          q: 'Turbo Mechanism이란?',
+          a: 'Turbo Mechanism은 Dynamic Unlock과 유동성 조절 메커니즘을 통해 집중 매도 압력 리스크를 낮추고 시장 안정성과 장기 발전 역량을 강화합니다.'
         },
         {
-          q: 'X 토큰은 어떻게 작동하나요?',
-          a: 'X는 생태계 가치 토큰으로, 고정 총량과 프로토콜 기반 소각 메커니즘을 채택합니다.'
+          q: 'X Token은 어떻게 작동하나요?',
+          a: 'X는 Ecosystem Value Token으로, 고정 총량과 Protocol 기반 Burn 메커니즘을 채택합니다.'
         }
       ]
     }
@@ -221,56 +221,56 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: '초과 담보율'
+      label: 'Over-Collateralization Ratio'
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'LP 영구 잠금'
+      label: 'LP Permanently Locked'
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: '동적 방어 메커니즘'
+      label: 'Dynamic Defense Mechanism'
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X 고정 총량'
+      label: 'X Fixed Total Supply'
     }
   ],
   footer: {
     brandCopy: '미래 가치 네트워크를 수호 \nAI x DeFi x USD1',
-    copyright: '© 2026 AEGIS X DAO. 모든 권리 보유.',
+    copyright: '© 2026 AEGIS X DAO. All rights reserved.',
     groups: [
       {
-        label: '프로토콜',
-        ariaLabel: '프로토콜 푸터 링크',
+        label: 'Protocol',
+        ariaLabel: 'Protocol Footer Links',
         links: [
           {
             href: '/app.html',
-            label: 'App 진입'
+            label: 'Launch App'
           },
           {
             linkId: 'whitepaper',
-            label: '백서'
+            label: 'Whitepaper'
           },
           {
             linkId: 'docs',
-            label: '프로젝트 문서'
+            label: 'Docs'
           },
           {
             linkId: 'economicModel',
-            label: '경제 모델'
+            label: 'Economic Model'
           }
         ]
       },
       {
-        label: '생태계',
-        ariaLabel: '생태계 푸터 링크',
+        label: 'Ecosystem',
+        ariaLabel: 'Ecosystem Footer Links',
         links: [
           {
             href: '#token',
@@ -291,8 +291,8 @@ const home = defineMessages({
         ]
       },
       {
-        label: '커뮤니티',
-        ariaLabel: '커뮤니티 푸터 링크',
+        label: 'Community',
+        ariaLabel: 'Community Footer Links',
         links: [
           {
             socialId: 'youtube',

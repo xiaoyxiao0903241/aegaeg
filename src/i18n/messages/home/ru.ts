@@ -3,7 +3,7 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X — AI-нативный протокол DeFi 4.0 с расчётами в USD1, приоритетным доступом через кошельки BSC и самовосстанавливающимся движком протокола, создающий сеть ценности нового поколения.',
+    description: 'AEGIS X — AI-native протокол DeFi 4.0 с USD1 Settlement, BSC-first Wallet Access и Self-healing Protocol Engine, создающий сеть ценности нового поколения.',
     title: 'AEGIS X - Защита ценности будущего'
   },
   nav: {
@@ -11,119 +11,119 @@ const home = defineMessages({
     links: [
       {
         href: '#protocol',
-        label: 'Протокол'
+        label: 'Protocol'
       },
       {
         href: '#engine',
-        label: 'Ключевые механизмы'
+        label: 'Core Mechanisms'
       },
       {
         href: '#token',
-        label: 'Ценность экосистемы'
+        label: 'Ecosystem Value'
       },
       {
         href: '#roadmap',
-        label: 'Дорожная карта'
+        label: 'Roadmap'
       },
       {
         href: '#security',
-        label: 'Безопасность'
+        label: 'Security'
       },
       {
         href: '#faq',
-        label: 'Частые вопросы'
+        label: 'FAQ'
       }
     ],
-    whitepaper: 'Белая книга',
-    enterApp: 'Войти в App',
+    whitepaper: 'Whitepaper',
+    enterApp: 'Launch App',
     languageLabel: 'Язык'
   },
   hero: {
-    guardianLabel: 'Хранитель AEGIS X',
-    eyebrow: 'AI x DeFi x USD1 · Протокол DeFi 4.0',
+    guardianLabel: 'AEGIS X Guardian',
+    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
     title: 'Защита ценности будущего',
-    body: 'Первый в мире протокол экосистемы USD1, управляемый AI-аналитическим центром. USD1 — ключевой расчётный актив, связывающий AI, платежи и глобальную сеть ликвидности.',
-    enterProtocol: 'Войти в протокол',
-    readWhitepaper: 'Читать белую книгу',
+    body: 'Первый в мире AI Think-Tank-driven USD1 Ecosystem Protocol. USD1 как Core Settlement Asset связывает AI, Payments и Global Liquidity Network.',
+    enterProtocol: 'Enter Protocol',
+    readWhitepaper: 'Read Whitepaper',
   },
   sections: {
     protocol: {
-      eyebrow: 'Протокол AEGIS X',
-      title: 'Ключевая архитектура сети ценности нового поколения',
+      eyebrow: 'AEGIS X Protocol',
+      title: 'Core Architecture сети ценности нового поколения',
       subtitle: 'AI x DeFi x USD1 — движение ценности',
       cards: [
         {
-          title: 'AI-аналитический центр',
-          body: 'Автономный контроль рисков, интеллектуальный маркетмейкинг и управление ликвидностью — всё исполняется on-chain.',
+          title: 'AI Think Tank',
+          body: 'Autonomous Risk Control, Smart Market Making и Liquidity Management — всё исполняется On-chain.',
           index: '01'
         },
         {
-          title: 'Расчёты в USD1',
-          body: 'USD1 как ключевой расчётный актив формирует стабильную сеть обращения ценности.',
+          title: 'USD1 Settlement',
+          body: 'USD1 как Core Settlement Asset формирует стабильную сеть обращения ценности.',
           index: '02'
         },
         {
-          title: 'Глобальные платежи',
-          body: 'Связывает AI Agent, DeFi и глобальные платёжные сценарии, создавая сеть ценности нового поколения.',
+          title: 'Global Payments',
+          body: 'Связывает AI Agent, DeFi и Global Payment Scenarios, создавая сеть ценности нового поколения.',
           index: '03'
         }
       ]
     },
     engine: {
-      eyebrow: 'Ключевые механизмы',
-      title: 'Четыре механизма — одна интеллектуальная система',
-      subtitle: 'Интеллектуальные решения, динамическая регулировка и контроль рисков создают устойчивую сеть ценности.',
+      eyebrow: 'Core Mechanisms',
+      title: 'Четыре Mechanisms — одна Intelligent System',
+      subtitle: 'Intelligent Decision-making, Dynamic Adjustment и Risk Control создают устойчивую сеть ценности.',
       cards: [
         {
-          title: 'Механизм интеллектуального маркетмейкинга',
-          body: 'На росте накапливает резервные активы, усиливая резервные возможности протокола; на коррекции запускает выкуп и сжигание для восстановления цены.'
+          title: 'Smart Market-Making Mechanism',
+          body: 'На росте накапливает Reserve Assets, усиливая Protocol Reserve Capacity; на коррекции запускает Buyback и Burn Mechanism для Price Recovery.'
         },
         {
-          title: 'Механизм защиты от волатильности',
-          body: 'Автоматически срабатывает при достижении порога дневного падения: комиссия на продажу повышается до 30%, запускаются выкуп из резервов и сжигание в чёрную дыру, через 24 часа — автоматическое восстановление.'
+          title: 'Volatility Defense Mechanism',
+          body: 'Автоматически срабатывает при достижении дневного Threshold падения: Sell Fee повышается до 30%, запускаются Reserve Buyback и Black-hole Burn, через 24 часа — Auto-Restore.'
         },
         {
-          title: 'Механизм распределения доходности',
-          body: 'Линейное высвобождение на уровне блоков, расчёт доходности каждые 12 часов, максимальный период участия — 540 дней.'
+          title: 'Yield Distribution Mechanism',
+          body: 'Block-level Linear Release, Yield Settlement каждые 12 часов, максимальный Participation Cycle — 540 дней.'
         },
         {
-          title: 'Турбо-механизм',
-          body: 'Динамическое разблокирование покупок оптимизирует структуру рыночной ликвидности, усиливая стабильность экосистемы и долгосрочный потенциал развития.'
+          title: 'Turbo Mechanism',
+          body: 'Dynamic Buy-to-Unlock Mechanism оптимизирует структуру Market Liquidity, усиливая Ecosystem Stability и долгосрочный потенциал развития.'
         }
       ]
     },
     token: {
-      eyebrow: 'Экосистема ценности',
-      title: 'Мультиактивный цикл ценности',
-      subtitle: 'Рост пользователей → усиление ликвидности → расширение платежей → рост экосистемы.',
+      eyebrow: 'Value Ecosystem',
+      title: 'Multi-Asset Value Flywheel',
+      subtitle: 'Рост пользователей → расширение ликвидности → рост платежей → рост экосистемы.',
       cards: [
         {
-          label: 'Ключевой актив протокола',
-          description: 'Выпуск с 150% сверхобеспечением · движок роста доходности'
+          label: 'Core Protocol Asset',
+          description: '150% Over-Collateralized Minting · Yield Growth Engine'
         },
         {
-          label: 'Ключевой расчётный актив',
-          description: 'Расчётный слой экосистемы · инфраструктура обращения ценности'
+          label: 'Core Settlement Asset',
+          description: 'Ecosystem Settlement Layer · Value Circulation Infrastructure'
         },
         {
-          label: 'Токен ценности экосистемы',
-          description: 'Фиксированная эмиссия 210 млн · непрерывное накопление ценности'
+          label: 'Ecosystem Value Token',
+          description: '210M Fixed Supply · Continuous Value Accumulation'
         },
         {
-          label: 'Расчётный сертификат вознаграждений',
-          description: 'Обмен на AGX · участие в майнинге экосистемы'
+          label: 'Reward Settlement Voucher',
+          description: 'Redeemable for AGX · Participate in Ecosystem Mining'
         }
       ]
     },
     roadmap: {
-      eyebrow: 'Дорожная карта',
+      eyebrow: 'Roadmap',
       title: 'Путь к сети ценности нового поколения',
       phases: [
         {
           phase: 'PHASE 01',
           time: '2026 Q3',
-          title: 'Запуск Genesis',
-          description: 'Развёртывание протокола · выпуск AGX · пул ликвидности USD1',
+          title: 'Genesis Launch',
+          description: 'Protocol Deployment · AGX Minting · USD1 Liquidity Pool',
           dot: '✓',
           side: 'left',
           state: 'current'
@@ -131,87 +131,87 @@ const home = defineMessages({
         {
           phase: 'PHASE 02',
           time: '2026 Q4',
-          title: 'Ядро DeFi',
-          description: 'Rebase-стейкинг · LP-облигации · облигации сжигания · AI-маркетмейкинг',
+          title: 'DeFi Core',
+          description: 'Rebase Staking · LP Bonds · Burn Bonds · AI Market Making',
           dot: '2',
           side: 'right'
         },
         {
           phase: 'PHASE 03',
           time: '2027 Q1',
-          title: 'DAO и рост',
-          description: 'Стимулы X DAO · мультиподписное управление · глобальные ноды',
+          title: 'DAO & Growth',
+          description: 'X DAO Incentives · Multisig Governance · Global Nodes',
           dot: '3',
           side: 'left'
         },
         {
           phase: 'PHASE 04',
           time: '2027 Q2',
-          title: 'Экономика AI Agent',
-          description: 'Автономные платежи · интеллектуальное взаимодействие · экономическая сеть AI Agent',
+          title: 'AI Agent Economy',
+          description: 'Autonomous Payments · Intelligent Collaboration · AI Agent Economy Network',
           dot: '4',
           side: 'right'
         },
         {
           phase: 'PHASE 05',
           time: '2027 Q3',
-          title: 'Глобальные платежи',
-          description: 'Глобальная платёжная сеть · подключение мерчантов · платёжные сценарии USD1',
+          title: 'Global Payments',
+          description: 'Global Payment Network · Merchant Onboarding · USD1 Payment Scenarios',
           dot: '5',
           side: 'left'
         },
         {
           phase: 'PHASE 06',
           time: '2027 Q4',
-          title: 'Сеть ценности будущего',
-          description: 'Платёжная сеть · экономика AI Agent · экосистема ценности',
+          title: 'Future Value Network',
+          description: 'Payment Network · AI Agent Economy · Value Ecosystem',
           dot: '6',
           side: 'right'
         }
       ]
     },
     security: {
-      eyebrow: 'Безопасность и доверие',
+      eyebrow: 'Security & Trust',
       title: 'Архитектура безопасности уровня AEGIS',
       subtitle: 'От архитектуры протокола до управления активами — безопасность на каждом этапе',
       checks: [
-        "Некастодиальная архитектура · контракт интеллектуального маркетмейкинга не имеет прав на вывод активов",
-        "Ключевые контракты с открытым исходным кодом · профессиональный аудит безопасности",
-        "Мультиподписное управление · совместное управление ключевыми правами",
-        "Динамический защитный механизм · автоматическая реакция на экстремальную волатильность"
+        "Non-custodial Architecture · Smart Market-Making Contract не имеет права вывода активов",
+        "Core Contracts Open-source и Verifiable · пройден Professional Security Audit",
+        "Multisig Governance Mechanism · Core Permissions совместно управляются",
+        "Dynamic Defense Mechanism · Auto-response на Extreme Volatility"
       ]
     },
     partners: {
-      title: 'Инфраструктура экосистемы'
+      title: 'Ecosystem Infrastructure'
     },
     faq: {
-      eyebrow: 'Краткий обзор',
-      title: 'Частые вопросы',
+      eyebrow: 'Quick Overview',
+      title: 'FAQ',
       items: [
         {
           q: 'Что такое AEGIS X?',
-          a: 'AEGIS X — первый в мире протокол экосистемы USD1, управляемый AI-аналитическим центром. USD1 — ключевой расчётный актив, связывающий AI, DeFi и глобальную платёжную сеть.',
+          a: 'AEGIS X — первый в мире AI Think-Tank-driven USD1 Ecosystem Protocol, с USD1 как Core Settlement Asset связывает AI, DeFi и Global Payment Network.',
           open: true
         },
         {
-          q: 'Как выпускается AGX?',
-          a: 'AGX создаётся через механизм 150% сверхобеспечения и является ключевым активом протокола и важным носителем роста ценности.'
+          q: 'Как Mint происходит AGX?',
+          a: 'AGX создаётся через механизм 150% Over-Collateralization, является Core Protocol Asset и важным Carrier роста ценности.'
         },
         {
           q: 'Какую роль играет USD1 в AEGIS X?',
-          a: 'USD1 — ключевой расчётный актив протокола, обеспечивающий обращение ценности, поддержку ликвидности и платёжную инфраструктуру экосистемы.'
+          a: 'USD1 — Core Settlement Asset протокола, обеспечивающий обращение ценности, поддержку ликвидности и платёжную инфраструктуру экосистемы.'
         },
         {
-          q: 'Как протокол обеспечивает безопасность?',
-          a: 'Контракты используют некастодиальные границы, аудит, открытый исходный код и мультиподписное управление.'
+          q: 'Как обеспечивается безопасность Protocol?',
+          a: 'Контракты используют Non-custodial Boundaries, Audit, Open-source Review и Multisig Governance.'
         },
         {
-          q: 'Что такое турбо-механизм?',
-          a: 'Турбо-механизм снижает риск концентрированного давления продаж через динамическое разблокирование и регулировку ликвидности, усиливая стабильность рынка и долгосрочный потенциал развития.'
+          q: 'Что такое Turbo Mechanism?',
+          a: 'Turbo Mechanism снижает риск Concentrated Sell Pressure через Dynamic Unlock и Liquidity Adjustment, усиливая Market Stability и Long-term Growth Capacity.'
         },
         {
           q: 'Как работает токен X?',
-          a: 'X — токен ценности экосистемы с фиксированной эмиссией и механизмом сжигания, управляемым протоколом.'
+          a: 'X — Ecosystem Value Token с Fixed Supply и Protocol-driven Burn Mechanism.'
         }
       ]
     }
@@ -221,56 +221,56 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'Коэффициент сверхобеспечения'
+      label: 'Over-Collateralization Ratio'
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'Постоянная блокировка LP'
+      label: 'LP Permanently Locked'
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'Динамический защитный механизм'
+      label: 'Dynamic Defense Mechanism'
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'Фиксированный общий объём X'
+      label: 'X Fixed Supply'
     }
   ],
   footer: {
-    brandCopy: 'Защита сети ценности будущего \nAI x DeFi x USD1',
-    copyright: '© 2026 AEGIS X DAO. Все права защищены.',
+    brandCopy: 'Guarding the future value network \nAI x DeFi x USD1',
+    copyright: '© 2026 AEGIS X DAO. All rights reserved.',
     groups: [
       {
-        label: 'Протокол',
-        ariaLabel: 'Ссылки в подвале — протокол',
+        label: 'Protocol',
+        ariaLabel: 'Ссылки в подвале — Protocol',
         links: [
           {
             href: '/app.html',
-            label: 'Войти в App'
+            label: 'Launch App'
           },
           {
             linkId: 'whitepaper',
-            label: 'Белая книга'
+            label: 'Whitepaper'
           },
           {
             linkId: 'docs',
-            label: 'Документация проекта'
+            label: 'Documentation'
           },
           {
             linkId: 'economicModel',
-            label: 'Экономическая модель'
+            label: 'Economic Model'
           }
         ]
       },
       {
-        label: 'Экосистема',
-        ariaLabel: 'Ссылки в подвале — экосистема',
+        label: 'Ecosystem',
+        ariaLabel: 'Ссылки в подвале — Ecosystem',
         links: [
           {
             href: '#token',
@@ -291,8 +291,8 @@ const home = defineMessages({
         ]
       },
       {
-        label: 'Сообщество',
-        ariaLabel: 'Ссылки в подвале — сообщество',
+        label: 'Community',
+        ariaLabel: 'Ссылки в подвале — Community',
         links: [
           {
             socialId: 'youtube',
@@ -302,7 +302,7 @@ const home = defineMessages({
             socialId: 'twitter',
             label: 'Twitter / X'
           },
-          {
+            {
             socialId: 'telegram',
             label: 'Telegram'
           },

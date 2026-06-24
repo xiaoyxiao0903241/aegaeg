@@ -7,7 +7,7 @@ const home = defineMessages({
     title: 'AEGIS X - Guarding the Future of Value'
   },
   nav: {
-    sectionsLabel: 'Homepage section navigation',
+    sectionsLabel: 'Homepage sections',
     links: [
       {
         href: '#protocol',
@@ -15,11 +15,11 @@ const home = defineMessages({
       },
       {
         href: '#engine',
-        label: 'Core Mechanisms'
+        label: 'Engine'
       },
       {
         href: '#token',
-        label: 'Ecosystem Value'
+        label: 'Token'
       },
       {
         href: '#roadmap',
@@ -42,9 +42,9 @@ const home = defineMessages({
     guardianLabel: 'AEGIS X Guardian',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
     title: 'Guarding the Future of Value',
-    body: 'The world\'s first AI think-tank-driven USD1 ecosystem protocol. With USD1 as the core settlement asset, connecting AI, payments, and global liquidity networks.',
+    body: 'The first AI think-tank-driven USD1 ecosystem protocol. USD1 as core settlement asset, connecting AI, payments, and global liquidity.',
     enterProtocol: 'Enter Protocol',
-    readWhitepaper: 'Read Whitepaper',
+    readWhitepaper: 'Whitepaper',
   },
   sections: {
     protocol: {
@@ -72,18 +72,18 @@ const home = defineMessages({
     engine: {
       eyebrow: 'Core Mechanisms',
       title: 'Four mechanisms, one intelligent system',
-      subtitle: 'Through intelligent decision-making, dynamic adjustment, and risk control, building a sustainably operating value network.',
+      subtitle: 'Intelligent decisions, dynamic adjustment, and risk control for a sustainable value network.',
       cards: [
         {
-          title: 'Intelligent Market-Making Mechanism',
+          title: 'Intelligent Market Making',
           body: 'Accumulates reserve assets during uptrends to strengthen protocol reserves; during pullbacks, executes buyback and burn mechanisms for price recovery.'
         },
         {
-          title: 'Volatility Defense Mechanism',
+          title: 'Volatility Defense',
           body: 'Triggers automatically when daily decline reaches threshold: sell fee rises to 30%, reserve buyback and black-hole burn activate, auto-restoring after 24 hours.'
         },
         {
-          title: 'Yield Distribution Mechanism',
+          title: 'Yield Distribution',
           body: 'Uses block-level linear release with yield settlement every 12 hours, supporting participation cycles up to 540 days.'
         },
         {
@@ -173,7 +173,7 @@ const home = defineMessages({
     security: {
       eyebrow: 'Security & Trust',
       title: 'AEGIS-grade security architecture',
-      subtitle: 'From protocol architecture to asset management, security runs through every layer',
+      subtitle: 'Security at every layer, from protocol architecture to asset management.',
       checks: [
         "Non-custodial architecture · Smart market-making contracts cannot transfer assets out",
         "Core contracts open-source and verifiable · Professionally audited",
@@ -186,7 +186,7 @@ const home = defineMessages({
     },
     faq: {
       eyebrow: 'Quick overview',
-      title: 'Frequently asked questions',
+      title: 'FAQ',
       items: [
         {
           q: 'What is AEGIS X?',
@@ -195,7 +195,7 @@ const home = defineMessages({
         },
         {
           q: 'How is AGX minted?',
-          a: 'AGX is generated through a 150% over-collateralization mechanism and serves as a core protocol asset and key carrier of value growth.'
+          a: 'AGX is minted through a 150% over-collateralization mechanism and serves as a core protocol asset and key carrier of value growth.'
         },
         {
           q: 'What role does USD1 play in AEGIS X?',
@@ -221,7 +221,7 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'Over-collateralization ratio'
+      label: 'Over-collateralization'
     },
     {
       value: '100%',
@@ -233,13 +233,13 @@ const home = defineMessages({
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'Dynamic defense mechanism'
+      label: 'Dynamic defense'
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X fixed total supply'
+      label: 'X fixed supply'
     }
   ],
   footer: {
@@ -260,7 +260,7 @@ const home = defineMessages({
           },
           {
             linkId: 'docs',
-            label: 'Documentation'
+            label: 'Docs'
           },
           {
             linkId: 'economicModel',

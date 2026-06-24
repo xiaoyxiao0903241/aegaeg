@@ -3,127 +3,127 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X एक AI-नेटिव DeFi 4.0 प्रोटोकॉल है, USD1 निपटान, BSC-प्राथमिकता वॉलेट प्रवेश और स्व-सुधार प्रोटोकॉल इंजन के साथ अगली पीढ़ी का मूल्य नेटवर्क बनाता है।',
-    title: 'AEGIS X - भविष्य के मूल्य की रक्षा'
+    description: 'AEGIS X एक AI-native DeFi 4.0 Protocol है, USD1 Settlement, BSC-first Wallet Access और Self-healing Protocol Engine के साथ अगली पीढ़ी का Value Network बना रहा है।',
+    title: 'AEGIS X - भविष्य के Value की रक्षा'
   },
   nav: {
-    sectionsLabel: 'होमपेज अनुभाग नेविगेशन',
+    sectionsLabel: 'Homepage Section Navigation',
     links: [
       {
         href: '#protocol',
-        label: 'प्रोटोकॉल'
+        label: 'Protocol'
       },
       {
         href: '#engine',
-        label: 'मुख्य तंत्र'
+        label: 'Core Mechanisms'
       },
       {
         href: '#token',
-        label: 'इकोसिस्टम मूल्य'
+        label: 'Ecosystem Value'
       },
       {
         href: '#roadmap',
-        label: 'रोडमैप'
+        label: 'Roadmap'
       },
       {
         href: '#security',
-        label: 'सुरक्षा'
+        label: 'Security'
       },
       {
         href: '#faq',
         label: 'FAQ'
       }
     ],
-    whitepaper: 'व्हाइटपेपर',
-    enterApp: 'ऐप में प्रवेश',
+    whitepaper: 'Whitepaper',
+    enterApp: 'Launch App',
     languageLabel: 'भाषा'
   },
   hero: {
-    guardianLabel: 'AEGIS X संरक्षक',
-    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 प्रोटोकॉल',
-    title: 'भविष्य के मूल्य की रक्षा',
-    body: 'दुनिया का पहला AI थिंक-टैंक-संचालित USD1 इकोसिस्टम प्रोटोकॉल। USD1 को मुख्य निपटान संपत्ति के रूप में, AI, भुगतान और वैश्विक तरलता नेटवर्क को जोड़ता है।',
-    enterProtocol: 'प्रोटोकॉल में प्रवेश',
-    readWhitepaper: 'व्हाइटपेपर पढ़ें',
+    guardianLabel: 'AEGIS X Guardian',
+    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+    title: 'भविष्य के Value की रक्षा',
+    body: 'दुनिया का पहला AI Think-Tank-driven USD1 Ecosystem Protocol। USD1 को Core Settlement Asset बनाकर AI, Payments और Global Liquidity Network को जोड़ता है।',
+    enterProtocol: 'Enter Protocol',
+    readWhitepaper: 'Read Whitepaper',
   },
   sections: {
     protocol: {
-      eyebrow: 'AEGIS X प्रोटोकॉल',
-      title: 'अगली पीढ़ी के मूल्य नेटवर्क की मुख्य वास्तुकला',
-      subtitle: 'AI x DeFi x USD1 - मूल्य प्रवाह को संचालित करना',
+      eyebrow: 'AEGIS X Protocol',
+      title: 'अगली पीढ़ी के Value Network की Core Architecture',
+      subtitle: 'AI x DeFi x USD1 - Value Flows को Power करना',
       cards: [
         {
-          title: 'AI थिंक-टैंक',
-          body: 'स्वायत्त जोखिम नियंत्रण, स्मार्ट मार्केट मेकिंग और तरलता प्रबंधन पूर्णतः ऑन-चेन निष्पादित।',
+          title: 'AI Think Tank',
+          body: 'Autonomous Risk Control, Smart Market Making और Liquidity Management — सब On-chain Executed।',
           index: '01'
         },
         {
-          title: 'USD1 निपटान',
-          body: 'USD1 को मुख्य निपटान संपत्ति के रूप में, स्थिर मूल्य प्रवाह नेटवर्क का निर्माण।',
+          title: 'USD1 Settlement',
+          body: 'USD1 को Core Settlement Asset बनाकर Stable Value Circulation Network का निर्माण।',
           index: '02'
         },
         {
-          title: 'वैश्विक भुगतान',
-          body: 'AI Agent, DeFi और वैश्विक भुगतान परिदृश्यों को जोड़कर अगली पीढ़ी का मूल्य नेटवर्क बनाना।',
+          title: 'Global Payments',
+          body: 'AI Agent, DeFi और Global Payment Scenarios को जोड़कर अगली पीढ़ी का Value Network बनाना।',
           index: '03'
         }
       ]
     },
     engine: {
-      eyebrow: 'मुख्य तंत्र',
-      title: 'चार तंत्र, एक बुद्धिमान प्रणाली',
-      subtitle: 'बुद्धिमान निर्णय, गतिशील समायोजन और जोखिम नियंत्रण के माध्यम से, स्थायी मूल्य नेटवर्क का निर्माण।',
+      eyebrow: 'Core Mechanisms',
+      title: 'चार Mechanisms, एक Intelligent System',
+      subtitle: 'Intelligent Decision-making, Dynamic Adjustment और Risk Control से Sustainable Value Network।',
       cards: [
         {
-          title: 'स्मार्ट मार्केट मेकिंग तंत्र',
-          body: 'उच्चाई चरण में रिज़र्व संपत्ति संचय, प्रोटोकॉल रिज़र्व क्षमता बढ़ाना; सुधार चरण में रीबाय और बर्न तंत्र, मूल्य सुधार।'
+          title: 'Smart Market-Making Mechanism',
+          body: 'Uptrend में Reserve Assets संचय, Protocol Reserve Capacity मज़बूत; Pullback में Buyback और Burn Mechanism, Price Recovery।'
         },
         {
-          title: 'अस्थिरता रक्षा तंत्र',
-          body: 'दैनिक गिरावट सीमा पर स्वचालित ट्रिगर: बिक्री शुल्क 30% तक, रिज़र्व रीबाय और ब्लैक होल बर्न, 24 घंटे बाद स्वचालित पुनर्स्थापना।'
+          title: 'Volatility Defense Mechanism',
+          body: 'दैनिक गिरावट Threshold पर Auto-Trigger: Sell Fee 30% तक, Reserve Buyback और Black-hole Burn, 24 घंटे बाद Auto-Restore।'
         },
         {
-          title: 'आय वितरण तंत्र',
-          body: 'ब्लॉक-स्तरीय रैखिक रिलीज़ तंत्र, प्रत्येक 12 घंटे आय निपटान, अधिकतम 540 दिन भागीदारी अवधि।'
+          title: 'Yield Distribution Mechanism',
+          body: 'Block-level Linear Release, हर 12 घंटे Yield Settlement, अधिकतम 540 दिन Participation Cycle।'
         },
         {
-          title: 'टर्बो तंत्र',
-          body: 'गतिशील खरीद अनलॉक तंत्र के माध्यम से, बाज़ार तरलता संरचना अनुकूलन, इकोसिस्टम स्थिरता और दीर्घकालिक विकास क्षमता बढ़ाना।'
+          title: 'Turbo Mechanism',
+          body: 'Dynamic Buy-to-Unlock Mechanism के माध्यम से Market Liquidity Structure ऑप्टिमाइज़, Ecosystem Stability और Long-term Growth Capacity बढ़ाना।'
         }
       ]
     },
     token: {
-      eyebrow: 'मूल्य इकोसिस्टम',
-      title: 'बहु-संपत्ति मूल्य चक्र',
-      subtitle: 'उपयोगकर्ता वृद्धि → तरलता वृद्धि → भुगतान विस्तार → इकोसिस्टम वृद्धि।',
+      eyebrow: 'Value Ecosystem',
+      title: 'Multi-Asset Value Flywheel',
+      subtitle: 'User Growth → Liquidity Expansion → Payment Growth → Ecosystem Growth।',
       cards: [
         {
-          label: 'मुख्य प्रोटोकॉल संपत्ति',
-          description: '150% अतिरिक्त संपार्श्विक मिंटिंग · आय वृद्धि इंजन'
+          label: 'Core Protocol Asset',
+          description: '150% Over-Collateralized Minting · Yield Growth Engine'
         },
         {
-          label: 'मुख्य निपटान संपत्ति',
-          description: 'इकोसिस्टम निपटान परत · मूल्य प्रवाह बुनियादी ढाँचा'
+          label: 'Core Settlement Asset',
+          description: 'Ecosystem Settlement Layer · Value Circulation Infrastructure'
         },
         {
-          label: 'इकोसिस्टम मूल्य टोकन',
-          description: '2.1 करोड़ निश्चित आपूर्ति · निरंतर मूल्य संचय'
+          label: 'Ecosystem Value Token',
+          description: '210M Fixed Supply · Continuous Value Accumulation'
         },
         {
-          label: 'पुरस्कार निपटान प्रमाणपत्र',
-          description: 'AGX में परिवर्तन योग्य · इकोसिस्टम माइनिंग में भाग'
+          label: 'Reward Settlement Voucher',
+          description: 'Redeemable for AGX · Participate in Ecosystem Mining'
         }
       ]
     },
     roadmap: {
-      eyebrow: 'रोडमैप',
-      title: 'अगली पीढ़ी के मूल्य नेटवर्क की ओर',
+      eyebrow: 'Roadmap',
+      title: 'अगली पीढ़ी के Value Network की ओर',
       phases: [
         {
           phase: 'PHASE 01',
           time: '2026 Q3',
-          title: 'Genesis लॉन्च',
-          description: 'प्रोटोकॉल तैनाती · AGX मिंटिंग · USD1 तरलता पूल',
+          title: 'Genesis Launch',
+          description: 'Protocol Deployment · AGX Minting · USD1 Liquidity Pool',
           dot: '✓',
           side: 'left',
           state: 'current'
@@ -131,87 +131,87 @@ const home = defineMessages({
         {
           phase: 'PHASE 02',
           time: '2026 Q4',
-          title: 'DeFi कोर',
-          description: 'Rebase स्टेकिंग · LP Bond · Burn Bond · AI मार्केट मेकिंग',
+          title: 'DeFi Core',
+          description: 'Rebase Staking · LP Bonds · Burn Bonds · AI Market Making',
           dot: '2',
           side: 'right'
         },
         {
           phase: 'PHASE 03',
           time: '2027 Q1',
-          title: 'DAO और वृद्धि',
-          description: 'X DAO प्रोत्साहन · मल्टीसिग शासन · वैश्विक नोड',
+          title: 'DAO & Growth',
+          description: 'X DAO Incentives · Multisig Governance · Global Nodes',
           dot: '3',
           side: 'left'
         },
         {
           phase: 'PHASE 04',
           time: '2027 Q2',
-          title: 'AI Agent अर्थव्यवस्था',
-          description: 'स्वायत्त भुगतान · बुद्धिमान सहयोग · AI Agent अर्थव्यवस्था नेटवर्क',
+          title: 'AI Agent Economy',
+          description: 'Autonomous Payments · Intelligent Collaboration · AI Agent Economy Network',
           dot: '4',
           side: 'right'
         },
         {
           phase: 'PHASE 05',
           time: '2027 Q3',
-          title: 'वैश्विक भुगतान',
-          description: 'वैश्विक भुगतान नेटवर्क · व्यापारी एकीकरण · USD1 भुगतान परिदृश्य',
+          title: 'Global Payments',
+          description: 'Global Payment Network · Merchant Onboarding · USD1 Payment Scenarios',
           dot: '5',
           side: 'left'
         },
         {
           phase: 'PHASE 06',
           time: '2027 Q4',
-          title: 'भविष्य का मूल्य नेटवर्क',
-          description: 'भुगतान नेटवर्क · AI Agent अर्थव्यवस्था · मूल्य इकोसिस्टम',
+          title: 'Future Value Network',
+          description: 'Payment Network · AI Agent Economy · Value Ecosystem',
           dot: '6',
           side: 'right'
         }
       ]
     },
     security: {
-      eyebrow: 'सुरक्षा और विश्वास',
-      title: 'AEGIS-स्तर सुरक्षा वास्तुकला',
-      subtitle: 'प्रोटोकॉल वास्तुकाला से संपत्ति प्रबंधन तक, हर चरण में सुरक्षा',
+      eyebrow: 'Security & Trust',
+      title: 'AEGIS-स्तर Security Architecture',
+      subtitle: 'Protocol Architecture से Asset Management तक, हर चरण में Security',
       checks: [
-        "गैर-कस्टोडियल वास्तुकला · स्मार्ट मार्केट मेकर कॉन्ट्रैक्ट में संपत्ति स्थानांतरण अधिकार नहीं",
-        "मुख्य कॉन्ट्रैक्ट ओपन सोर्स सत्यापन योग्य · पेशेवर सुरक्षा ऑडिट पारित",
-        "मल्टीसिग शासन तंत्र · मुख्य अधिकार सामूहिक प्रबंधन",
-        "गतिशील रक्षा तंत्र · चरम अस्थिरता का स्वचालित प्रतिरोध"
+        "Non-custodial Architecture · Smart Market-Making Contract में Asset Transfer Right नहीं",
+        "Core Contracts Open-source और Verifiable · Professional Security Audit पारित",
+        "Multisig Governance Mechanism · Core Permissions सामूहिक प्रबंधन",
+        "Dynamic Defense Mechanism · Extreme Volatility पर Auto-Response"
       ]
     },
     partners: {
-      title: 'इकोसिस्टम बुनियादी ढाँचा'
+      title: 'Ecosystem Infrastructure'
     },
     faq: {
-      eyebrow: 'त्वरित जानकारी',
-      title: 'अक्सर पूछे जाने वाले प्रश्न',
+      eyebrow: 'Quick Overview',
+      title: 'FAQ',
       items: [
         {
           q: 'AEGIS X क्या है?',
-          a: 'AEGIS X दुनिया का पहला AI थिंक-टैंक-संचालित USD1 इकोसिस्टम प्रोटोकॉल है, USD1 को मुख्य निपटान संपत्ति के रूप में, AI, DeFi और वैश्विक भुगतान नेटवर्क को जोड़ता है।',
+          a: 'AEGIS X दुनिया का पहला AI Think-Tank-driven USD1 Ecosystem Protocol है, USD1 को Core Settlement Asset बनाकर AI, DeFi और Global Payment Network को जोड़ता है।',
           open: true
         },
         {
-          q: 'AGX कैसे मिंट होता है?',
-          a: 'AGX 150% अतिरिक्त संपार्श्विक तंत्र से जनित, प्रोटोकॉल की मुख्य संपत्ति और महत्वपूर्ण मूल्य वृद्धि वाहक।'
+          q: 'AGX कैसे Mint होता है?',
+          a: 'AGX 150% Over-Collateralization Mechanism से जनित होता है, Protocol Core Asset और Value Growth का महत्वपूर्ण Carrier।'
         },
         {
           q: 'USD1 AEGIS X में क्या भूमिका निभाता है?',
-          a: 'USD1 प्रोटोकॉल की मुख्य निपटान संपत्ति है, इकोसिस्टम को मूल्य प्रवाह, तरलता समर्थन और भुगतान बुनियादी ढाँचा प्रदान करती है।'
+          a: 'USD1 Protocol का Core Settlement Asset है, Ecosystem को Value Circulation, Liquidity Support और Payment Infrastructure Capability प्रदान करता है।'
         },
         {
-          q: 'प्रोटोकॉल सुरक्षा कैसे सुनिश्चित होती है?',
-          a: 'कॉन्ट्रैक्ट गैर-कस्टोडियल सीमा, ऑडिट, ओपन सोर्स समीक्षा और मल्टीसिग शासन का उपयोग करते हैं।'
+          q: 'Protocol Security कैसे सुनिश्चित होती है?',
+          a: 'Contracts Non-custodial Boundaries, Audit, Open-source Review और Multisig Governance का उपयोग करते हैं।'
         },
         {
-          q: 'टर्बो तंत्र क्या है?',
-          a: 'टर्बो तंत्र गतिशील अनलॉक और तरलता समायोजन के माध्यम से, केंद्रित बिक्री दबाव जोखिम कम करता है, बाज़ार स्थिरता और दीर्घकालिक विकास क्षमता बढ़ाता है।'
+          q: 'Turbo Mechanism क्या है?',
+          a: 'Turbo Mechanism Dynamic Unlock और Liquidity Adjustment के माध्यम से Concentrated Sell Pressure Risk कम करता है, Market Stability और Long-term Growth Capacity बढ़ाता है।'
         },
         {
-          q: 'X टोकन कैसे काम करता है?',
-          a: 'X इकोसिस्टम मूल्य टोकन है, निश्चित आपूर्ति और प्रोटोकॉल-संचालित बर्न तंत्र के साथ।'
+          q: 'X Token कैसे काम करता है?',
+          a: 'X Ecosystem Value Token है, Fixed Supply और Protocol-driven Burn Mechanism के साथ।'
         }
       ]
     }
@@ -221,56 +221,56 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'अतिरिक्त संपार्श्विक अनुपात'
+      label: 'Over-Collateralization Ratio'
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'LP स्थायी लॉक'
+      label: 'LP Permanently Locked'
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'गतिशील रक्षा तंत्र'
+      label: 'Dynamic Defense Mechanism'
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X निश्चित आपूर्ति'
+      label: 'X Fixed Supply'
     }
   ],
   footer: {
-    brandCopy: 'भविष्य के मूल्य नेटवर्क की रक्षा \nAI x DeFi x USD1',
-    copyright: '© 2026 AEGIS X DAO. सर्वाधिकार सुरक्षित।',
+    brandCopy: 'Guarding the future value network \nAI x DeFi x USD1',
+    copyright: '© 2026 AEGIS X DAO. All rights reserved।',
     groups: [
       {
-        label: 'प्रोटोकॉल',
-        ariaLabel: 'प्रोटोकॉल फ़ुटर लिंक',
+        label: 'Protocol',
+        ariaLabel: 'Protocol Footer Links',
         links: [
           {
             href: '/app.html',
-            label: 'ऐप में प्रवेश'
+            label: 'Launch App'
           },
           {
             linkId: 'whitepaper',
-            label: 'व्हाइटपेपर'
+            label: 'Whitepaper'
           },
           {
             linkId: 'docs',
-            label: 'प्रोजेक्ट दस्तावेज़'
+            label: 'Documentation'
           },
           {
             linkId: 'economicModel',
-            label: 'आर्थिक मॉडल'
+            label: 'Economic Model'
           }
         ]
       },
       {
-        label: 'इकोसिस्टम',
-        ariaLabel: 'इकोसिस्टम फ़ुटर लिंक',
+        label: 'Ecosystem',
+        ariaLabel: 'Ecosystem Footer Links',
         links: [
           {
             href: '#token',
@@ -291,8 +291,8 @@ const home = defineMessages({
         ]
       },
       {
-        label: 'समुदाय',
-        ariaLabel: 'समुदाय फ़ुटर लिंक',
+        label: 'Community',
+        ariaLabel: 'Community Footer Links',
         links: [
           {
             socialId: 'youtube',

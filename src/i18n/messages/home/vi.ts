@@ -3,127 +3,127 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X là giao thức DeFi 4.0 bản địa AI với thanh toán USD1, truy cập ví ưu tiên BSC và công cụ giao thức tự phục hồi, xây dựng mạng lưới giá trị thế hệ tiếp theo.',
+    description: 'AEGIS X là giao thức DeFi 4.0 native AI, xây dựng mạng lưới giá trị thế hệ tiếp theo với USD1 settlement, ví BSC-first và self-healing protocol engine.',
     title: 'AEGIS X - Bảo vệ Giá trị Tương lai'
   },
   nav: {
-    sectionsLabel: 'Điều hướng các phần trang chủ',
+    sectionsLabel: 'Điều hướng trang chủ',
     links: [
       {
         href: '#protocol',
-        label: 'Giao thức'
+        label: 'Protocol'
       },
       {
         href: '#engine',
-        label: 'Cơ chế cốt lõi'
+        label: 'Mechanisms'
       },
       {
         href: '#token',
-        label: 'Giá trị hệ sinh thái'
+        label: 'Ecosystem'
       },
       {
         href: '#roadmap',
-        label: 'Lộ trình'
+        label: 'Roadmap'
       },
       {
         href: '#security',
-        label: 'Bảo mật'
+        label: 'Security'
       },
       {
         href: '#faq',
-        label: 'Câu hỏi thường gặp'
+        label: 'FAQ'
       }
     ],
-    whitepaper: 'Sách trắng',
-    enterApp: 'Vào App',
+    whitepaper: 'Whitepaper',
+    enterApp: 'Launch App',
     languageLabel: 'Ngôn ngữ'
   },
   hero: {
-    guardianLabel: 'Người bảo vệ AEGIS X',
-    eyebrow: 'AI x DeFi x USD1 · Giao thức DeFi 4.0',
+    guardianLabel: 'AEGIS X Guardian',
+    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
     title: 'Bảo vệ Giá trị Tương lai',
-    body: 'Giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi viện nghiên cứu AI. Với USD1 là tài sản thanh toán cốt lõi, kết nối AI, thanh toán và mạng lưới thanh khoản toàn cầu.',
-    enterProtocol: 'Vào giao thức',
-    readWhitepaper: 'Đọc sách trắng',
+    body: 'Giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi AI Think Tank. Với USD1 là core settlement asset, kết nối AI, payment và global liquidity network.',
+    enterProtocol: 'Vào Protocol',
+    readWhitepaper: 'Whitepaper',
   },
   sections: {
     protocol: {
-      eyebrow: 'Giao thức AEGIS X',
+      eyebrow: 'AEGIS X Protocol',
       title: 'Kiến trúc cốt lõi mạng lưới giá trị thế hệ tiếp theo',
       subtitle: 'AI x DeFi x USD1 - Thúc đẩy dòng chảy giá trị',
       cards: [
         {
-          title: 'Viện nghiên cứu AI',
-          body: 'Kiểm soát rủi ro tự động, tạo lập thị trường thông minh và quản lý thanh khoản đều được thực thi trên chuỗi.',
+          title: 'AI Think Tank',
+          body: 'Autonomous risk control, intelligent market-making và liquidity management đều thực thi on-chain.',
           index: '01'
         },
         {
-          title: 'Thanh toán USD1',
-          body: 'Với USD1 là tài sản thanh toán cốt lõi, xây dựng mạng lưới lưu thông giá trị ổn định.',
+          title: 'USD1 Settlement',
+          body: 'Với USD1 là core settlement asset, xây dựng mạng lưới value circulation ổn định.',
           index: '02'
         },
         {
-          title: 'Thanh toán toàn cầu',
-          body: 'Kết nối AI Agent, DeFi và các kịch bản thanh toán toàn cầu, xây dựng mạng lưới giá trị thế hệ tiếp theo.',
+          title: 'Global Payments',
+          body: 'Kết nối AI Agent, DeFi và global payment scenarios, xây dựng next-gen value network.',
           index: '03'
         }
       ]
     },
     engine: {
-      eyebrow: 'Cơ chế cốt lõi',
+      eyebrow: 'Core Mechanisms',
       title: 'Bốn cơ chế, một hệ thống thông minh',
-      subtitle: 'Thông qua ra quyết định thông minh, điều chỉnh động và kiểm soát rủi ro, xây dựng mạng lưới giá trị bền vững.',
+      subtitle: 'Thông qua intelligent decision-making, dynamic adjustment và risk control, xây dựng value network bền vững.',
       cards: [
         {
-          title: 'Cơ chế tạo lập thị trường thông minh',
-          body: 'Tích lũy tài sản dự trữ trong giai đoạn tăng giá để tăng cường năng lực dự trữ của giao thức; trong giai đoạn điều chỉnh, thực hiện cơ chế mua lại và đốt để phục hồi giá.'
+          title: 'Intelligent Market-Making',
+          body: 'Tích lũy reserve assets trong giai đoạn tăng giá để tăng cường protocol reserves; trong giai đoạn điều chỉnh, thực hiện buyback và burn để phục hồi giá.'
         },
         {
-          title: 'Cơ chế phòng thủ biến động',
-          body: 'Tự động kích hoạt khi mức giảm trong ngày đạt ngưỡng: phí bán tăng lên 30%, mua lại dự trữ và đốt hố đen khởi động, tự động phục hồi sau 24 giờ.'
+          title: 'Volatility Defense',
+          body: 'Tự động kích hoạt khi mức giảm trong ngày đạt ngưỡng: sell fee tăng lên 30%, reserve buyback và black-hole burn khởi động, tự động phục hồi sau 24 giờ.'
         },
         {
-          title: 'Cơ chế phân phối lợi nhuận',
-          body: 'Áp dụng cơ chế giải phóng tuyến tính theo khối, thanh toán lợi nhuận mỗi 12 giờ, hỗ trợ chu kỳ tham gia tối đa 540 ngày.'
+          title: 'Yield Distribution',
+          body: 'Áp dụng block-level linear release, yield settlement mỗi 12 giờ, hỗ trợ participation cycle tối đa 540 ngày.'
         },
         {
-          title: 'Cơ chế Turbo',
-          body: 'Thông qua cơ chế mở khóa mua động, tối ưu hóa cấu trúc thanh khoản thị trường, tăng cường sự ổn định hệ sinh thái và năng lực phát triển dài hạn.'
+          title: 'Turbo Mechanism',
+          body: 'Thông qua dynamic buy-to-unlock, tối ưu hóa market liquidity structure, tăng cường ecosystem stability và long-term growth capacity.'
         }
       ]
     },
     token: {
-      eyebrow: 'Hệ sinh thái giá trị',
-      title: 'Bánh đà giá trị đa tài sản',
-      subtitle: 'Tăng trưởng người dùng → Tăng cường thanh khoản → Mở rộng thanh toán → Tăng trưởng hệ sinh thái.',
+      eyebrow: 'Value Ecosystem',
+      title: 'Multi-asset value flywheel',
+      subtitle: 'User growth → Liquidity expansion → Payment growth → Ecosystem growth.',
       cards: [
         {
-          label: 'Tài sản giao thức cốt lõi',
-          description: 'Phát hành thế chấp vượt mức 150% · Công cụ tăng trưởng lợi nhuận'
+          label: 'Core protocol asset',
+          description: '150% over-collateralized minting · Yield growth engine'
         },
         {
-          label: 'Tài sản thanh toán cốt lõi',
-          description: 'Lớp thanh toán hệ sinh thái · Cơ sở hạ tầng lưu thông giá trị'
+          label: 'Core settlement asset',
+          description: 'Ecosystem settlement layer · Value circulation infrastructure'
         },
         {
-          label: 'Token giá trị hệ sinh thái',
-          description: 'Tổng cung cố định 210 triệu · Tích lũy giá trị liên tục'
+          label: 'Ecosystem value token',
+          description: 'Fixed supply 210M · Continuous value accumulation'
         },
         {
-          label: 'Chứng nhận thanh toán phần thưởng',
-          description: 'Có thể đổi AGX · Tham gia khai thác hệ sinh thái'
+          label: 'Reward settlement voucher',
+          description: 'Redeemable for AGX · Participate in ecosystem mining'
         }
       ]
     },
     roadmap: {
-      eyebrow: 'Lộ trình',
-      title: 'Con đường đến mạng lưới giá trị thế hệ tiếp theo',
+      eyebrow: 'Roadmap',
+      title: 'Con đường đến next-gen value network',
       phases: [
         {
           phase: 'PHASE 01',
           time: '2026 Q3',
-          title: 'Khởi động Genesis',
-          description: 'Triển khai giao thức · Phát hành AGX · Pool thanh khoản USD1',
+          title: 'Genesis Launch',
+          description: 'Protocol deployment · AGX minting · USD1 liquidity pool',
           dot: '✓',
           side: 'left',
           state: 'current'
@@ -131,87 +131,87 @@ const home = defineMessages({
         {
           phase: 'PHASE 02',
           time: '2026 Q4',
-          title: 'DeFi cốt lõi',
-          description: 'Staking Rebase · Trái phiếu LP · Trái phiếu đốt · Tạo lập thị trường AI',
+          title: 'DeFi Core',
+          description: 'Rebase staking · LP bonds · Burn bonds · AI market-making',
           dot: '2',
           side: 'right'
         },
         {
           phase: 'PHASE 03',
           time: '2027 Q1',
-          title: 'DAO & Tăng trưởng',
-          description: 'Khuyến khích X DAO · Quản trị đa chữ ký · Nút toàn cầu',
+          title: 'DAO & Growth',
+          description: 'X DAO incentives · Multisig governance · Global nodes',
           dot: '3',
           side: 'left'
         },
         {
           phase: 'PHASE 04',
           time: '2027 Q2',
-          title: 'Kinh tế AI Agent',
-          description: 'Thanh toán tự động · Hợp tác thông minh · Mạng lưới kinh tế AI Agent',
+          title: 'AI Agent Economy',
+          description: 'Autonomous payments · Intelligent collaboration · AI Agent economy network',
           dot: '4',
           side: 'right'
         },
         {
           phase: 'PHASE 05',
           time: '2027 Q3',
-          title: 'Thanh toán toàn cầu',
-          description: 'Mạng lưới thanh toán toàn cầu · Tích hợp thương gia · Kịch bản thanh toán USD1',
+          title: 'Global Payments',
+          description: 'Global payment network · Merchant onboarding · USD1 payment scenarios',
           dot: '5',
           side: 'left'
         },
         {
           phase: 'PHASE 06',
           time: '2027 Q4',
-          title: 'Mạng lưới giá trị tương lai',
-          description: 'Mạng lưới thanh toán · Kinh tế AI Agent · Hệ sinh thái giá trị',
+          title: 'Future Value Network',
+          description: 'Payment network · AI Agent economy · Value ecosystem',
           dot: '6',
           side: 'right'
         }
       ]
     },
     security: {
-      eyebrow: 'Bảo mật & Tin cậy',
+      eyebrow: 'Security & Trust',
       title: 'Kiến trúc bảo mật cấp AEGIS',
-      subtitle: 'Từ kiến trúc giao thức đến quản lý tài sản, bảo mật xuyên suốt mọi khâu',
+      subtitle: 'Từ kiến trúc protocol đến asset management, bảo mật xuyên suốt mọi khâu',
       checks: [
-        "Kiến trúc phi lưu ký · Hợp đồng tạo lập thị trường thông minh không có quyền chuyển tài sản ra ngoài",
-        "Hợp đồng cốt lõi mã nguồn mở có thể xác minh · Đã qua kiểm toán bảo mật chuyên nghiệp",
-        "Cơ chế quản trị đa chữ ký · Quản lý chung các quyền cốt lõi",
-        "Cơ chế phòng thủ động · Tự động ứng phó với biến động cực đoan"
+        "Non-custodial architecture · Smart market-making contracts không có quyền transfer assets ra ngoài",
+        "Core contracts open-source và verifiable · Đã qua professional security audit",
+        "Multisig governance · Core permissions được quản lý chung",
+        "Dynamic defense mechanisms · Tự động ứng phó với extreme volatility"
       ]
     },
     partners: {
-      title: 'Cơ sở hạ tầng hệ sinh thái'
+      title: 'Ecosystem Infrastructure'
     },
     faq: {
-      eyebrow: 'Tìm hiểu nhanh',
+      eyebrow: 'Quick Overview',
       title: 'Câu hỏi thường gặp',
       items: [
         {
           q: 'AEGIS X là gì?',
-          a: 'AEGIS X là giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi viện nghiên cứu AI, với USD1 là tài sản thanh toán cốt lõi, kết nối AI, DeFi và mạng lưới thanh toán toàn cầu.',
+          a: 'AEGIS X là giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi AI Think Tank, với USD1 là core settlement asset, kết nối AI, DeFi và global payment network.',
           open: true
         },
         {
-          q: 'AGX được phát hành như thế nào?',
-          a: 'AGX được tạo ra thông qua cơ chế thế chấp vượt mức 150%, là tài sản cốt lõi của giao thức và phương tiện quan trọng cho tăng trưởng giá trị.'
+          q: 'AGX được mint như thế nào?',
+          a: 'AGX được tạo ra thông qua cơ chế over-collateralization 150%, là core protocol asset và phương tiện quan trọng cho value growth.'
         },
         {
           q: 'USD1 đóng vai trò gì trong AEGIS X?',
-          a: 'USD1 là tài sản thanh toán cốt lõi của giao thức, cung cấp khả năng lưu thông giá trị, hỗ trợ thanh khoản và cơ sở hạ tầng thanh toán cho hệ sinh thái.'
+          a: 'USD1 là core settlement asset của protocol, cung cấp value circulation, liquidity support và payment infrastructure cho hệ sinh thái.'
         },
         {
-          q: 'Giao thức đảm bảo bảo mật như thế nào?',
-          a: 'Hợp đồng áp dụng ranh giới phi lưu ký, kiểm toán, xem xét mã nguồn mở và quản trị đa chữ ký.'
+          q: 'Protocol đảm bảo bảo mật như thế nào?',
+          a: 'Contracts sử dụng non-custodial boundaries, audit, open-source review và multisig governance.'
         },
         {
-          q: 'Cơ chế Turbo là gì?',
-          a: 'Cơ chế Turbo giảm rủi ro áp lực bán tập trung thông qua cơ chế mở khóa động và điều chỉnh thanh khoản, tăng cường sự ổn định thị trường và năng lực phát triển dài hạn.'
+          q: 'Turbo mechanism là gì?',
+          a: 'Turbo mechanism sử dụng dynamic unlock và liquidity adjustment để giảm rủi ro concentrated sell pressure, tăng cường market stability và long-term growth capacity.'
         },
         {
           q: 'Token X hoạt động như thế nào?',
-          a: 'X là token giá trị hệ sinh thái, áp dụng tổng cung cố định và cơ chế đốt được điều khiển bởi giao thức.'
+          a: 'X là ecosystem value token với fixed supply và protocol-driven burn mechanism.'
         }
       ]
     }
@@ -221,56 +221,56 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'Tỷ lệ thế chấp vượt mức'
+      label: 'Over-collateralization ratio'
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'Khóa LP vĩnh viễn'
+      label: 'LP permanently locked'
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'Cơ chế phòng thủ động'
+      label: 'Dynamic defense mechanism'
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'Tổng cung cố định X'
+      label: 'X fixed total supply'
     }
   ],
   footer: {
     brandCopy: 'Bảo vệ mạng lưới giá trị tương lai \nAI x DeFi x USD1',
-    copyright: '© 2026 AEGIS X DAO. Bảo lưu mọi quyền.',
+    copyright: '© 2026 AEGIS X DAO. All rights reserved.',
     groups: [
       {
-        label: 'Giao thức',
-        ariaLabel: 'Liên kết chân trang giao thức',
+        label: 'Protocol',
+        ariaLabel: 'Footer links protocol',
         links: [
           {
             href: '/app.html',
-            label: 'Vào App'
+            label: 'Launch App'
           },
           {
             linkId: 'whitepaper',
-            label: 'Sách trắng'
+            label: 'Whitepaper'
           },
           {
             linkId: 'docs',
-            label: 'Tài liệu dự án'
+            label: 'Docs'
           },
           {
             linkId: 'economicModel',
-            label: 'Mô hình kinh tế'
+            label: 'Economic Model'
           }
         ]
       },
       {
-        label: 'Hệ sinh thái',
-        ariaLabel: 'Liên kết chân trang hệ sinh thái',
+        label: 'Ecosystem',
+        ariaLabel: 'Footer links ecosystem',
         links: [
           {
             href: '#token',
@@ -291,8 +291,8 @@ const home = defineMessages({
         ]
       },
       {
-        label: 'Cộng đồng',
-        ariaLabel: 'Liên kết chân trang cộng đồng',
+        label: 'Community',
+        ariaLabel: 'Footer links community',
         links: [
           {
             socialId: 'youtube',
