@@ -3,7 +3,7 @@ import { defineMessages } from '~/i18n/messages/define-messages'
 const home = defineMessages({
   meta: {
     description: 'AEGIS X 是 AI 原生 DeFi 4.0 协议，以 USD1 结算、BSC 优先钱包入口和自修复协议引擎构建下一代价值网络。',
-    title: 'AEGIS X - 守护未来价值'
+    title: 'AEGIS X - 守护未来价值网络'
   },
   nav: {
     sectionsLabel: '首页区块导航',
@@ -40,7 +40,7 @@ const home = defineMessages({
   hero: {
     guardianLabel: 'AEGIS X 守护者',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 协议',
-    title: '守护未来价值',
+    title: '守护未来价值网络',
     body: '全球首个AI智库驱动的USD1生态协议。以USD1为核心结算资产，连接AI、支付与全球流动性网络。',
     enterProtocol: '进入协议',
     readWhitepaper: '阅读白皮书',
@@ -285,7 +285,7 @@ const home = defineMessages({
           },
           {
             href: '#token',
-            label: 'gGAX'
+            label: 'gAGX'
           }
         ]
       },

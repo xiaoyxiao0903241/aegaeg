@@ -3,7 +3,7 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X adalah protokol DeFi 4.0 berbasis AI dengan USD1 settlement, BSC-first wallet access, dan mesin protocol self-healing, membangun jaringan nilai generasi berikutnya.',
+    description: 'AEGIS X adalah protokol DeFi 4.0 berbasis AI dengan penyelesaian USD1, akses dompet prioritas BSC, dan mesin protokol yang dapat memperbaiki diri, membangun jaringan nilai generasi berikutnya.',
     title: 'AEGIS X - Menjaga Nilai Masa Depan'
   },
   nav: {
@@ -11,23 +11,23 @@ const home = defineMessages({
     links: [
       {
         href: '#protocol',
-        label: 'Protocol'
+        label: 'Protokol'
       },
       {
         href: '#engine',
-        label: 'Mechanisms'
+        label: 'Mekanisme Inti'
       },
       {
         href: '#token',
-        label: 'Ecosystem'
+        label: 'Nilai Ekosistem'
       },
       {
         href: '#roadmap',
-        label: 'Roadmap'
+        label: 'Peta Jalan'
       },
       {
         href: '#security',
-        label: 'Security'
+        label: 'Keamanan'
       },
       {
         href: '#faq',
@@ -35,95 +35,95 @@ const home = defineMessages({
       }
     ],
     whitepaper: 'Whitepaper',
-    enterApp: 'Launch App',
+    enterApp: 'Masuk App',
     languageLabel: 'Bahasa'
   },
   hero: {
-    guardianLabel: 'AEGIS X Guardian',
-    eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
+    guardianLabel: 'Penjaga AEGIS X',
+    eyebrow: 'AI x DeFi x USD1 · Protokol DeFi 4.0',
     title: 'Menjaga Nilai Masa Depan',
-    body: 'Protokol ekosistem USD1 pertama di dunia yang didorong oleh AI Think Tank. Dengan USD1 sebagai core settlement asset, menghubungkan AI, payments, dan global liquidity network.',
-    enterProtocol: 'Masuk Protocol',
-    readWhitepaper: 'Whitepaper',
+    body: 'Protokol ekosistem USD1 pertama di dunia yang didorong oleh think-tank AI. Dengan USD1 sebagai aset penyelesaian inti, menghubungkan AI, pembayaran, dan jaringan likuiditas global.',
+    enterProtocol: 'Masuk Protokol',
+    readWhitepaper: 'Baca Whitepaper',
   },
   sections: {
     protocol: {
-      eyebrow: 'AEGIS X PROTOCOL',
+      eyebrow: 'PROTOKOL AEGIS X',
       title: 'Arsitektur inti jaringan nilai generasi berikutnya',
-      subtitle: 'AI x DeFi x USD1 - Menggerakkan aliran nilai',
+      subtitle: 'AI x DeFi x USD1 - menggerakkan aliran nilai',
       cards: [
         {
-          title: 'AI Think Tank',
-          body: 'Autonomous risk control, intelligent market-making, dan liquidity management dieksekusi sepenuhnya on-chain.',
+          title: 'Think-Tank AI',
+          body: 'Kontrol risiko otonom, market making, dan manajemen likuiditas dieksekusi sepenuhnya on-chain.',
           index: '01'
         },
         {
-          title: 'USD1 Settlement',
-          body: 'Dengan USD1 sebagai core settlement asset, membangun jaringan value circulation yang stabil.',
+          title: 'Penyelesaian USD1',
+          body: 'Dengan USD1 sebagai aset penyelesaian inti, membangun jaringan sirkulasi nilai yang stabil.',
           index: '02'
         },
         {
-          title: 'Global Payments',
-          body: 'Menghubungkan AI Agent, DeFi, dan global payment scenarios untuk membangun next-gen value network.',
+          title: 'Pembayaran Global',
+          body: 'Menghubungkan AI Agent, DeFi, dan skenario pembayaran global untuk membangun jaringan nilai generasi berikutnya.',
           index: '03'
         }
       ]
     },
     engine: {
-      eyebrow: 'CORE MECHANISMS',
+      eyebrow: 'MEKANISME INTI',
       title: 'Empat mekanisme, satu sistem cerdas',
-      subtitle: 'Melalui intelligent decision-making, dynamic adjustment, dan risk control, membangun value network yang berkelanjutan.',
+      subtitle: 'Melalui keputusan cerdas, penyesuaian dinamis, dan kontrol risiko, membangun jaringan nilai yang berkelanjutan.',
       cards: [
         {
-          title: 'Intelligent Market-Making',
-          body: 'Fase kenaikan mengakumulasi reserve assets untuk memperkuat protocol reserves; fase koreksi menjalankan buyback dan burn untuk perbaikan harga.'
+          title: 'Mekanisme Market Making Cerdas',
+          body: 'Fase kenaikan mengakumulasi aset cadangan untuk memperkuat cadangan protokol; fase koreksi menjalankan buyback dan burn untuk perbaikan harga.'
         },
         {
-          title: 'Volatility Defense',
-          body: 'Terpicu otomatis saat penurunan harian mencapai ambang: sell fee naik ke 30%, reserve buyback dan black-hole burn dimulai, pulih otomatis setelah 24 jam.'
+          title: 'Mekanisme Pertahanan Volatilitas',
+          body: 'Terpicu otomatis saat penurunan harian mencapai ambang: biaya jual naik ke 30%, buyback cadangan dan burn black hole dimulai, pulih otomatis setelah 24 jam.'
         },
         {
-          title: 'Yield Distribution',
-          body: 'Menggunakan block-level linear release, yield settlement setiap 12 jam, mendukung participation cycle hingga 540 hari.'
+          title: 'Mekanisme Distribusi Hasil',
+          body: 'Menggunakan pelepasan linear per blok, penyelesaian hasil setiap 12 jam, mendukung periode partisipasi hingga 540 hari.'
         },
         {
-          title: 'Turbo Mechanism',
-          body: 'Melalui dynamic buy-to-unlock, mengoptimalkan market liquidity structure dan memperkuat ecosystem stability serta long-term growth capacity.'
+          title: 'Mekanisme Turbo',
+          body: 'Melalui mekanisme unlock beli dinamis, mengoptimalkan struktur likuiditas pasar dan memperkuat stabilitas ekosistem serta kapasitas pengembangan jangka panjang.'
         }
       ]
     },
     token: {
-      eyebrow: 'VALUE ECOSYSTEM',
-      title: 'Multi-asset value flywheel',
-      subtitle: 'User growth → Liquidity expansion → Payment growth → Ecosystem growth.',
+      eyebrow: 'EKOSISTEM NILAI',
+      title: 'Roda nilai multi-aset',
+      subtitle: 'Pertumbuhan pengguna → peningkatan likuiditas → ekspansi pembayaran → pertumbuhan ekosistem.',
       cards: [
         {
-          label: 'Core protocol asset',
-          description: '150% over-collateralized minting · Yield growth engine'
+          label: 'Aset protokol inti',
+          description: 'Pencetakan jaminan berlebih 150% · mesin pertumbuhan hasil'
         },
         {
-          label: 'Core settlement asset',
-          description: 'Ecosystem settlement layer · Value circulation infrastructure'
+          label: 'Aset penyelesaian inti',
+          description: 'Lapisan penyelesaian ekosistem · infrastruktur sirkulasi nilai'
         },
         {
-          label: 'Ecosystem value token',
-          description: 'Fixed supply 210M · Continuous value accumulation'
+          label: 'Token nilai ekosistem',
+          description: 'Pasokan tetap 210 juta · akumulasi nilai berkelanjutan'
         },
         {
-          label: 'Reward settlement voucher',
-          description: 'Redeemable for AGX · Participate in ecosystem mining'
+          label: 'Bukti penyelesaian hadiah',
+          description: 'Dapat ditukar ke AGX · ikut mining ekosistem'
         }
       ]
     },
     roadmap: {
-      eyebrow: 'ROADMAP',
+      eyebrow: 'PETA JALAN',
       title: 'Menuju jaringan nilai generasi berikutnya',
       phases: [
         {
           phase: 'PHASE 01',
           time: '2026 Q3',
-          title: 'Genesis Launch',
-          description: 'Protocol deployment · AGX minting · USD1 liquidity pool',
+          title: 'Peluncuran Genesis',
+          description: 'Deployment protokol · pencetakan AGX · pool likuiditas USD1',
           dot: '✓',
           side: 'left',
           state: 'current'
@@ -131,87 +131,87 @@ const home = defineMessages({
         {
           phase: 'PHASE 02',
           time: '2026 Q4',
-          title: 'DeFi Core',
-          description: 'Rebase staking · LP bonds · Burn bonds · AI market-making',
+          title: 'Inti DeFi',
+          description: 'Staking Rebase · LP Bond · Burn Bond · AI market making',
           dot: '2',
           side: 'right'
         },
         {
           phase: 'PHASE 03',
           time: '2027 Q1',
-          title: 'DAO & Growth',
-          description: 'X DAO incentives · Multisig governance · Global nodes',
+          title: 'DAO & Pertumbuhan',
+          description: 'Insentif X DAO · tata kelola multisig · node global',
           dot: '3',
           side: 'left'
         },
         {
           phase: 'PHASE 04',
           time: '2027 Q2',
-          title: 'AI Agent Economy',
-          description: 'Autonomous payments · Intelligent collaboration · AI Agent economy network',
+          title: 'Ekonomi AI Agent',
+          description: 'Pembayaran otonom · kolaborasi cerdas · jaringan ekonomi AI Agent',
           dot: '4',
           side: 'right'
         },
         {
           phase: 'PHASE 05',
           time: '2027 Q3',
-          title: 'Global Payments',
-          description: 'Global payment network · Merchant onboarding · USD1 payment scenarios',
+          title: 'Pembayaran Global',
+          description: 'Jaringan pembayaran global · integrasi merchant · skenario pembayaran USD1',
           dot: '5',
           side: 'left'
         },
         {
           phase: 'PHASE 06',
           time: '2027 Q4',
-          title: 'Future Value Network',
-          description: 'Payment network · AI Agent economy · Value ecosystem',
+          title: 'Jaringan Nilai Masa Depan',
+          description: 'Jaringan pembayaran · ekonomi AI Agent · ekosistem nilai',
           dot: '6',
           side: 'right'
         }
       ]
     },
     security: {
-      eyebrow: 'SECURITY & TRUST',
+      eyebrow: 'KEAMANAN & KEPERCAYAAN',
       title: 'Arsitektur keamanan tingkat AEGIS',
-      subtitle: 'Dari arsitektur protocol hingga asset management, keamanan menyeluruh di setiap tahap',
+      subtitle: 'Dari arsitektur protokol hingga manajemen aset, keamanan menyeluruh di setiap tahap',
       checks: [
-        "Non-custodial architecture · Smart market-making contracts tidak memiliki izin transfer assets keluar",
-        "Core contracts open-source dan verifiable · Telah melalui professional security audit",
-        "Multisig governance · Core permissions dikelola bersama",
-        "Dynamic defense mechanisms · Merespons extreme volatility secara otomatis"
+        "Arsitektur non-kustodian · kontrak market maker tidak memiliki izin transfer aset keluar",
+        "Kontrak inti open source dan dapat diverifikasi · telah melalui audit keamanan profesional",
+        "Mekanisme tata kelola multisig · otoritas inti dikelola bersama",
+        "Mekanisme pertahanan dinamis · merespons volatilitas ekstrem secara otomatis"
       ]
     },
     partners: {
-      title: 'Ecosystem Infrastructure'
+      title: 'Infrastruktur Ekosistem'
     },
     faq: {
-      eyebrow: 'QUICK OVERVIEW',
+      eyebrow: 'PELAJARI CEPAT',
       title: 'Pertanyaan Umum',
       items: [
         {
           q: 'Apa itu AEGIS X?',
-          a: 'AEGIS X adalah protokol ekosistem USD1 pertama di dunia yang didorong oleh AI Think Tank, dengan USD1 sebagai core settlement asset, menghubungkan AI, DeFi, dan global payment network.',
+          a: 'AEGIS X adalah protokol ekosistem USD1 pertama di dunia yang didorong oleh think-tank AI, dengan USD1 sebagai aset penyelesaian inti, menghubungkan AI, DeFi, dan jaringan pembayaran global.',
           open: true
         },
         {
           q: 'Bagaimana AGX dicetak?',
-          a: 'AGX diterbitkan melalui mekanisme over-collateralization 150%, sebagai core protocol asset dan pembawa value growth penting.'
+          a: 'AGX diterbitkan melalui mekanisme jaminan berlebih 150%, sebagai aset inti protokol dan pembawa pertumbuhan nilai penting.'
         },
         {
           q: 'Peran apa yang diemban USD1 di AEGIS X?',
-          a: 'USD1 adalah core settlement asset protocol, menyediakan value circulation, liquidity support, dan payment infrastructure untuk ekosistem.'
+          a: 'USD1 adalah aset penyelesaian inti protokol, menyediakan sirkulasi nilai, dukungan likuiditas, dan infrastruktur pembayaran untuk ekosistem.'
         },
         {
-          q: 'Bagaimana protocol menjamin keamanan?',
-          a: 'Contracts menggunakan non-custodial boundaries, audit, open-source review, dan multisig governance.'
+          q: 'Bagaimana protokol menjamin keamanan?',
+          a: 'Kontrak menggunakan batas non-kustodian, audit, tinjauan open source, dan tata kelola multisig.'
         },
         {
-          q: 'Apa itu Turbo mechanism?',
-          a: 'Turbo mechanism melalui dynamic unlock dan liquidity adjustment, mengurangi risiko concentrated sell pressure dan memperkuat market stability serta long-term growth capacity.'
+          q: 'Apa itu mekanisme Turbo?',
+          a: 'Mekanisme Turbo melalui unlock dinamis dan penyesuaian likuiditas, mengurangi risiko tekanan jual terkonsentrasi dan memperkuat stabilitas pasar serta kapasitas pengembangan jangka panjang.'
         },
         {
           q: 'Bagaimana token X beroperasi?',
-          a: 'X adalah ecosystem value token dengan fixed supply dan protocol-driven burn mechanism.'
+          a: 'X adalah token nilai ekosistem dengan pasokan tetap dan mekanisme burn yang didorong protokol.'
         }
       ]
     }
@@ -221,38 +221,38 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'Over-collateralization ratio'
+      label: 'Rasio Jaminan Berlebih'
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'LP permanently locked'
+      label: 'LP Terkunci Permanen'
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'Dynamic defense mechanism'
+      label: 'Mekanisme Pertahanan Dinamis'
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X fixed total supply'
+      label: 'Pasokan Tetap X'
     }
   ],
   footer: {
     brandCopy: 'Menjaga jaringan nilai masa depan \nAI x DeFi x USD1',
-    copyright: '© 2026 AEGIS X DAO. All rights reserved.',
+    copyright: '© 2026 AEGIS X DAO. Hak cipta dilindungi.',
     groups: [
       {
-        label: 'Protocol',
-        ariaLabel: 'Footer links protocol',
+        label: 'Protokol',
+        ariaLabel: 'Tautan footer protokol',
         links: [
           {
             href: '/app.html',
-            label: 'Launch App'
+            label: 'Masuk App'
           },
           {
             linkId: 'whitepaper',
@@ -260,17 +260,17 @@ const home = defineMessages({
           },
           {
             linkId: 'docs',
-            label: 'Docs'
+            label: 'Dokumen Proyek'
           },
           {
             linkId: 'economicModel',
-            label: 'Economic Model'
+            label: 'Model Ekonomi'
           }
         ]
       },
       {
-        label: 'Ecosystem',
-        ariaLabel: 'Footer links ecosystem',
+        label: 'Ekosistem',
+        ariaLabel: 'Tautan footer ekosistem',
         links: [
           {
             href: '#token',
@@ -286,13 +286,13 @@ const home = defineMessages({
           },
           {
             href: '#token',
-            label: 'gGAX'
+            label: 'gAGX'
           }
         ]
       },
       {
-        label: 'Community',
-        ariaLabel: 'Footer links community',
+        label: 'Komunitas',
+        ariaLabel: 'Tautan footer komunitas',
         links: [
           {
             socialId: 'youtube',

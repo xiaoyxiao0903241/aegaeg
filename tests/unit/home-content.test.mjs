@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createServer } from 'vite'
 
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi']
+const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr']
 
 async function loadHomeMessages() {
   const server = await createServer({
@@ -50,11 +50,11 @@ test('home localized copy covers meta, hero, and footer text', async () => {
   const en = homeMessagesByLocale.en
   const zht = homeMessagesByLocale.zht
 
-  assert.equal(zh.meta.title, 'AEGIS X - 守护未来价值')
-  assert.equal(en.meta.title, 'AEGIS X - Guarding the Future of Value')
-  assert.equal(zht.meta.title, 'AEGIS X - 守護未來價值')
-  assert.equal(zh.hero.title, '守护未来价值')
-  assert.equal(en.hero.title, 'Guarding the Future of Value')
+  assert.equal(zh.meta.title, 'AEGIS X - 守护未来价值网络')
+  assert.equal(en.meta.title, 'AEGIS X - Guarding the Future Value Network')
+  assert.equal(zht.meta.title, 'AEGIS X - 守護未來價值網路')
+  assert.equal(zh.hero.title, '守护未来价值网络')
+  assert.equal(en.hero.title, 'Guarding the Future Value Network')
   assert.equal(zh.hero.enterProtocol, '进入协议')
   assert.equal(en.hero.enterProtocol, 'Enter Protocol')
   assert.equal(zh.sections.token.title, '多资产价值飞轮')

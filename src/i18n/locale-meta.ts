@@ -84,6 +84,13 @@ export const localeMeta: Record<Locale, LocaleMeta> = {
     menuName: 'हिंदी',
     menuLabel: 'Hindi',
   },
+  tr: {
+    label: 'TR',
+    htmlLang: 'tr',
+    menuCode: 'TR',
+    menuName: 'Türkçe',
+    menuLabel: 'Turkish',
+  },
 }
 
 export function getHtmlLang(locale: Locale): string {

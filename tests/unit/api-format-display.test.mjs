@@ -136,10 +136,6 @@ test('mapRewardLogToRow uses i18n labels for type and status', async () => {
 test('mapTeamRewardClaimLogToRow renders presale team claim history', async () => {
   const { mapTeamRewardClaimLogToRow } = await loadModule('/src/lib/api/format-display.ts')
   const labels = {
-    bonusRateLabel: '2%',
-    claimableLabel: '可领取',
-    claimedLabel: '已领取',
-    sourceLabel: '周期结算',
     logStatus: {
       pending: '待领取',
       processing: '处理中',
@@ -154,16 +150,17 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
     {
       status: 1,
       amount: '342.18',
+      presale_rank: 3,
       claimed_at: '2026-05-25T00:00:00.000Z',
       created_at: '2026-05-24T12:00:00.000Z',
     },
     labels,
   )
 
+  assert.equal(row.length, 4)
   assert.equal(row[1], '+$342.18')
-  assert.equal(row[2], '周期结算')
-  assert.equal(row[3], '$17,109')
-  assert.equal(row[4], '已领取')
+  assert.equal(row[2], 'S3')
+  assert.equal(row[3], '已领取')
 })
 
 test('formatClaimableAmount subtracts claimed from total', async () => {

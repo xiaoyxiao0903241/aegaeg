@@ -3,7 +3,7 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X es un protocolo DeFi 4.0 nativo de IA con liquidación en USD1, acceso prioritario a wallets en BSC y un motor de protocolo autorreparable que construye la red de valor de próxima generación.',
+    description: 'AEGIS X es un protocolo DeFi 4.0 nativo de IA con liquidación en USD1, acceso prioritario a billeteras en BSC y un motor de protocolo autorreparable que construye la red de valor de próxima generación.',
     title: 'AEGIS X - Protegiendo el Valor del Futuro'
   },
   nav: {
@@ -15,15 +15,15 @@ const home = defineMessages({
       },
       {
         href: '#engine',
-        label: 'Motor'
+        label: 'Mecanismos centrales'
       },
       {
         href: '#token',
-        label: 'Token'
+        label: 'Valor del ecosistema'
       },
       {
         href: '#roadmap',
-        label: 'Roadmap'
+        label: 'Hoja de ruta'
       },
       {
         href: '#security',
@@ -31,20 +31,20 @@ const home = defineMessages({
       },
       {
         href: '#faq',
-        label: 'FAQ'
+        label: 'Preguntas frecuentes'
       }
     ],
-    whitepaper: 'Whitepaper',
-    enterApp: 'Launch App',
+    whitepaper: 'Libro blanco',
+    enterApp: 'Entrar a la App',
     languageLabel: 'Idioma'
   },
   hero: {
     guardianLabel: 'Guardián de AEGIS X',
     eyebrow: 'AI x DeFi x USD1 · Protocolo DeFi 4.0',
     title: 'Protegiendo el Valor del Futuro',
-    body: 'El primer protocolo de ecosistema USD1 impulsado por un think tank de IA. Con USD1 como activo de liquidación central, conecta IA, pagos y la red global de liquidez.',
+    body: 'El primer protocolo de ecosistema USD1 impulsado por un think tank de IA del mundo. Con USD1 como activo de liquidación central, conecta IA, pagos y la red global de liquidez.',
     enterProtocol: 'Entrar al protocolo',
-    readWhitepaper: 'Whitepaper',
+    readWhitepaper: 'Leer libro blanco',
   },
   sections: {
     protocol: {
@@ -53,18 +53,18 @@ const home = defineMessages({
       subtitle: 'AI x DeFi x USD1 - Impulsando el flujo de valor',
       cards: [
         {
-          title: 'AI Think Tank',
-          body: 'Control de riesgos autónomo, market making inteligente y gestión de liquidez, todo ejecutado on-chain.',
+          title: 'Think tank de IA',
+          body: 'Control de riesgos autónomo, creación de mercado inteligente y gestión de liquidez, todo ejecutado on-chain.',
           index: '01'
         },
         {
-          title: 'USD1 Settlement',
+          title: 'Liquidación USD1',
           body: 'Con USD1 como activo de liquidación central, construye una red estable de circulación de valor.',
           index: '02'
         },
         {
-          title: 'Global Payments',
-          body: 'Conecta AI Agents, DeFi y escenarios de pago global para construir la red de valor de próxima generación.',
+          title: 'Pagos globales',
+          body: 'Conecta AI Agent, DeFi y escenarios de pago global para construir la red de valor de próxima generación.',
           index: '03'
         }
       ]
@@ -75,16 +75,16 @@ const home = defineMessages({
       subtitle: 'Mediante decisiones inteligentes, ajuste dinámico y control de riesgos, construye una red de valor sostenible.',
       cards: [
         {
-          title: 'Market Making Inteligente',
+          title: 'Mecanismo de creación de mercado inteligente',
           body: 'Acumula activos de reserva en fases alcistas para fortalecer la capacidad de reserva del protocolo; en fases de corrección, ejecuta mecanismos de recompra y quema para reparar el precio.'
         },
         {
-          title: 'Defensa contra Volatilidad',
+          title: 'Mecanismo de defensa contra la volatilidad',
           body: 'Se activa automáticamente cuando la caída diaria alcanza el umbral: la comisión de venta sube al 30%, se inician la recompra de reservas y la quema en agujero negro, con restauración automática tras 24 horas.'
         },
         {
-          title: 'Distribución de Yield',
-          body: 'Adopta un mecanismo de liberación lineal a nivel de bloque, con liquidación de yield cada 12 horas y un ciclo de participación de hasta 540 días.'
+          title: 'Mecanismo de distribución de rendimientos',
+          body: 'Adopta un mecanismo de liberación lineal a nivel de bloque, con liquidación de rendimientos cada 12 horas y un ciclo de participación de hasta 540 días.'
         },
         {
           title: 'Mecanismo Turbo',
@@ -99,7 +99,7 @@ const home = defineMessages({
       cards: [
         {
           label: 'Activo central del protocolo',
-          description: 'Emisión con sobrecolateralización del 150% · Motor de crecimiento de yield'
+          description: 'Emisión con sobrecolateralización del 150% · Motor de crecimiento de rendimientos'
         },
         {
           label: 'Activo central de liquidación',
@@ -107,23 +107,23 @@ const home = defineMessages({
         },
         {
           label: 'Token de valor del ecosistema',
-          description: 'Suministro fijo de 210M · Acumulación continua de valor'
+          description: 'Suministro fijo de 210 millones · Acumulación continua de valor'
         },
         {
-          label: 'Comprobante de liquidación de rewards',
+          label: 'Comprobante de liquidación de recompensas',
           description: 'Canjeable por AGX · Participación en minería del ecosistema'
         }
       ]
     },
     roadmap: {
-      eyebrow: 'Roadmap',
+      eyebrow: 'Hoja de ruta',
       title: 'El camino hacia la red de valor de próxima generación',
       phases: [
         {
           phase: 'PHASE 01',
           time: '2026 Q3',
-          title: 'Genesis Launch',
-          description: 'Despliegue del protocolo · Mint de AGX · Pool de liquidez USD1',
+          title: 'Lanzamiento Génesis',
+          description: 'Despliegue del protocolo · Acuñación de AGX · Pool de liquidez USD1',
           dot: '✓',
           side: 'left',
           state: 'current'
@@ -131,15 +131,15 @@ const home = defineMessages({
         {
           phase: 'PHASE 02',
           time: '2026 Q4',
-          title: 'DeFi Core',
-          description: 'Rebase staking · LP bonds · Burn bonds · AI market making',
+          title: 'Núcleo DeFi',
+          description: 'Staking Rebase · Bonos LP · Bonos de quema · Creación de mercado con IA',
           dot: '2',
           side: 'right'
         },
         {
           phase: 'PHASE 03',
           time: '2027 Q1',
-          title: 'DAO & Growth',
+          title: 'DAO y crecimiento',
           description: 'Incentivos X DAO · Gobernanza multisig · Nodos globales',
           dot: '3',
           side: 'left'
@@ -147,15 +147,15 @@ const home = defineMessages({
         {
           phase: 'PHASE 04',
           time: '2027 Q2',
-          title: 'AI Agent Economy',
-          description: 'Pagos autónomos · Colaboración inteligente · Red económica de AI Agents',
+          title: 'Economía de AI Agent',
+          description: 'Pagos autónomos · Colaboración inteligente · Red económica de AI Agent',
           dot: '4',
           side: 'right'
         },
         {
           phase: 'PHASE 05',
           time: '2027 Q3',
-          title: 'Global Payments',
+          title: 'Pagos globales',
           description: 'Red de pagos global · Integración de comercios · Escenarios de pago USD1',
           dot: '5',
           side: 'left'
@@ -163,8 +163,8 @@ const home = defineMessages({
         {
           phase: 'PHASE 06',
           time: '2027 Q4',
-          title: 'Future Value Network',
-          description: 'Red de pagos · Economía de AI Agents · Ecosistema de valor',
+          title: 'Red de valor del futuro',
+          description: 'Red de pagos · Economía de AI Agent · Ecosistema de valor',
           dot: '6',
           side: 'right'
         }
@@ -175,9 +175,9 @@ const home = defineMessages({
       title: 'Arquitectura de seguridad de nivel AEGIS',
       subtitle: 'Desde la arquitectura del protocolo hasta la gestión de activos, la seguridad atraviesa cada etapa',
       checks: [
-        "Arquitectura non-custodial · El contrato de market making inteligente no tiene permisos para transferir activos",
-        "Contratos centrales open-source verificables · Auditados profesionalmente",
-        "Gobernanza multisig · Gestión conjunta de permisos centrales",
+        "Arquitectura no custodial · El contrato de creación de mercado inteligente no tiene permisos para transferir activos",
+        "Contratos centrales de código abierto verificables · Auditados por firmas de seguridad profesionales",
+        "Mecanismo de gobernanza multisig · Gestión conjunta de permisos centrales",
         "Mecanismo de defensa dinámica · Respuesta automática ante volatilidad extrema"
       ]
     },
@@ -190,12 +190,12 @@ const home = defineMessages({
       items: [
         {
           q: '¿Qué es AEGIS X?',
-          a: 'AEGIS X es el primer protocolo de ecosistema USD1 impulsado por un think tank de IA, con USD1 como activo de liquidación central, conectando IA, DeFi y la red global de pagos.',
+          a: 'AEGIS X es el primer protocolo de ecosistema USD1 impulsado por un think tank de IA del mundo, con USD1 como activo de liquidación central, conectando IA, DeFi y la red global de pagos.',
           open: true
         },
         {
           q: '¿Cómo se acuña AGX?',
-          a: 'AGX se acuña mediante un mecanismo de sobrecolateralización del 150% y es el activo central del protocolo y un vehículo clave para el crecimiento de valor.'
+          a: 'AGX se genera mediante un mecanismo de sobrecolateralización del 150% y es el activo central del protocolo y un vehículo clave para el crecimiento de valor.'
         },
         {
           q: '¿Qué papel desempeña USD1 en AEGIS X?',
@@ -203,7 +203,7 @@ const home = defineMessages({
         },
         {
           q: '¿Cómo garantiza la seguridad el protocolo?',
-          a: 'Los contratos adoptan límites non-custodial, auditorías, revisión de código abierto y gobernanza multisig.'
+          a: 'Los contratos adoptan límites no custodiales, auditorías, revisión de código abierto y gobernanza multisig.'
         },
         {
           q: '¿Qué es el mecanismo Turbo?',
@@ -221,19 +221,19 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'Sobrecolateralización'
+      label: 'Ratio de sobrecolateralización'
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'LP permanentemente bloqueado'
+      label: 'Bloqueo permanente de LP'
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'Defensa dinámica'
+      label: 'Mecanismo de defensa dinámica'
     },
     {
       value: '2.1M',
@@ -252,15 +252,15 @@ const home = defineMessages({
         links: [
           {
             href: '/app.html',
-            label: 'Launch App'
+            label: 'Entrar a la App'
           },
           {
             linkId: 'whitepaper',
-            label: 'Whitepaper'
+            label: 'Libro blanco'
           },
           {
             linkId: 'docs',
-            label: 'Docs'
+            label: 'Documentación del proyecto'
           },
           {
             linkId: 'economicModel',
@@ -286,12 +286,12 @@ const home = defineMessages({
           },
           {
             href: '#token',
-            label: 'gGAX'
+            label: 'gAGX'
           }
         ]
       },
       {
-        label: 'Community',
+        label: 'Comunidad',
         ariaLabel: 'Enlaces de pie de página de la comunidad',
         links: [
           {

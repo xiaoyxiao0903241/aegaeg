@@ -6,7 +6,7 @@ i18n
   .init({
     lng: 'en',
     fallbackLng: 'en',
-    supportedLngs: ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi'],
+    supportedLngs: ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr'],
 
     // 命名空间分割
     ns: ['common', 'home', 'dapp'],

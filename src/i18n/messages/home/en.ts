@@ -4,10 +4,10 @@ import type { HomeMessagesBundle } from './types'
 const home = defineMessages({
   meta: {
     description: 'AEGIS X is an AI-native DeFi 4.0 protocol building the next-generation value network with USD1 settlement, BSC-first wallet access, and a self-healing protocol engine.',
-    title: 'AEGIS X - Guarding the Future of Value'
+    title: 'AEGIS X - Guarding the Future Value Network'
   },
   nav: {
-    sectionsLabel: 'Homepage sections',
+    sectionsLabel: 'Homepage section navigation',
     links: [
       {
         href: '#protocol',
@@ -15,11 +15,11 @@ const home = defineMessages({
       },
       {
         href: '#engine',
-        label: 'Engine'
+        label: 'Core Mechanisms'
       },
       {
         href: '#token',
-        label: 'Token'
+        label: 'Ecosystem Value'
       },
       {
         href: '#roadmap',
@@ -41,10 +41,10 @@ const home = defineMessages({
   hero: {
     guardianLabel: 'AEGIS X Guardian',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 Protocol',
-    title: 'Guarding the Future of Value',
-    body: 'The first AI think-tank-driven USD1 ecosystem protocol. USD1 as core settlement asset, connecting AI, payments, and global liquidity.',
+    title: 'Guarding the Future Value Network',
+    body: 'The world\'s first AI think-tank-driven USD1 ecosystem protocol. With USD1 as the core settlement asset, connecting AI, payments, and global liquidity networks.',
     enterProtocol: 'Enter Protocol',
-    readWhitepaper: 'Whitepaper',
+    readWhitepaper: 'Read Whitepaper',
   },
   sections: {
     protocol: {
@@ -72,18 +72,18 @@ const home = defineMessages({
     engine: {
       eyebrow: 'Core Mechanisms',
       title: 'Four mechanisms, one intelligent system',
-      subtitle: 'Intelligent decisions, dynamic adjustment, and risk control for a sustainable value network.',
+      subtitle: 'Through intelligent decision-making, dynamic adjustment, and risk control, building a sustainably operating value network.',
       cards: [
         {
-          title: 'Intelligent Market Making',
+          title: 'Intelligent Market-Making Mechanism',
           body: 'Accumulates reserve assets during uptrends to strengthen protocol reserves; during pullbacks, executes buyback and burn mechanisms for price recovery.'
         },
         {
-          title: 'Volatility Defense',
+          title: 'Volatility Defense Mechanism',
           body: 'Triggers automatically when daily decline reaches threshold: sell fee rises to 30%, reserve buyback and black-hole burn activate, auto-restoring after 24 hours.'
         },
         {
-          title: 'Yield Distribution',
+          title: 'Yield Distribution Mechanism',
           body: 'Uses block-level linear release with yield settlement every 12 hours, supporting participation cycles up to 540 days.'
         },
         {
@@ -173,7 +173,7 @@ const home = defineMessages({
     security: {
       eyebrow: 'Security & Trust',
       title: 'AEGIS-grade security architecture',
-      subtitle: 'Security at every layer, from protocol architecture to asset management.',
+      subtitle: 'From protocol architecture to asset management, security runs through every layer',
       checks: [
         "Non-custodial architecture · Smart market-making contracts cannot transfer assets out",
         "Core contracts open-source and verifiable · Professionally audited",
@@ -186,7 +186,7 @@ const home = defineMessages({
     },
     faq: {
       eyebrow: 'Quick overview',
-      title: 'FAQ',
+      title: 'Frequently asked questions',
       items: [
         {
           q: 'What is AEGIS X?',
@@ -195,7 +195,7 @@ const home = defineMessages({
         },
         {
           q: 'How is AGX minted?',
-          a: 'AGX is minted through a 150% over-collateralization mechanism and serves as a core protocol asset and key carrier of value growth.'
+          a: 'AGX is generated through a 150% over-collateralization mechanism and serves as a core protocol asset and key carrier of value growth.'
         },
         {
           q: 'What role does USD1 play in AEGIS X?',
@@ -221,7 +221,7 @@ const home = defineMessages({
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: 'Over-collateralization'
+      label: 'Over-collateralization ratio'
     },
     {
       value: '100%',
@@ -233,13 +233,13 @@ const home = defineMessages({
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: 'Dynamic defense'
+      label: 'Dynamic defense mechanism'
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X fixed supply'
+      label: 'X fixed total supply'
     }
   ],
   footer: {
@@ -260,7 +260,7 @@ const home = defineMessages({
           },
           {
             linkId: 'docs',
-            label: 'Docs'
+            label: 'Documentation'
           },
           {
             linkId: 'economicModel',
@@ -286,7 +286,7 @@ const home = defineMessages({
           },
           {
             href: '#token',
-            label: 'gGAX'
+            label: 'gAGX'
           }
         ]
       },

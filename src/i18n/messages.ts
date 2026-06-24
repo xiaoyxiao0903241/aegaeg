@@ -9,6 +9,7 @@ import vi from '~/i18n/messages/vi'
 import es from '~/i18n/messages/es'
 import ru from '~/i18n/messages/ru'
 import hi from '~/i18n/messages/hi'
+import tr from '~/i18n/messages/tr'
 
 export type Messages = typeof zh
 
@@ -23,6 +24,7 @@ const messagesByLocale = {
   es,
   ru,
   hi,
+  tr,
 } satisfies Record<Locale, Messages>
 
 /** 首屏同步读取，避免 async load 导致文案闪动 */

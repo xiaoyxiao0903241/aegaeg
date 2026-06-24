@@ -4,7 +4,7 @@ import type { HomeMessagesBundle } from './types'
 const home = defineMessages({
   meta: {
     description: 'AEGIS X 是 AI 原生 DeFi 4.0 協議，以 USD1 結算、BSC 優先錢包入口和自修復協議引擎構建下一代價值網路。',
-    title: 'AEGIS X - 守護未來價值'
+    title: 'AEGIS X - 守護未來價值網路'
   },
   nav: {
     sectionsLabel: '首頁區塊導航',
@@ -41,7 +41,7 @@ const home = defineMessages({
   hero: {
     guardianLabel: 'AEGIS X 守護者',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 協議',
-    title: '守護未來價值',
+    title: '守護未來價值網路',
     body: '全球首個 AI 智庫驅動的 USD1 生態協議。以 USD1 為核心結算資產，連接 AI、支付與全球流動性網路。',
     enterProtocol: '進入協議',
     readWhitepaper: '閱讀白皮書',
@@ -286,7 +286,7 @@ const home = defineMessages({
           },
           {
             href: '#token',
-            label: 'gGAX'
+            label: 'gAGX'
           }
         ]
       },
