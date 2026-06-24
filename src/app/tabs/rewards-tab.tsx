@@ -184,7 +184,7 @@ export function RewardsWidget() {
                   {rankLabel}
                 </SideTitle>
                 <SideHint
-                  className="min-h-[2.25rem] line-clamp-2 text-xs tracking-[-0.24px] max-dapp:max-w-none max-dapp:leading-normal max-dapp:text-faint"
+                  className="text-xs leading-normal tracking-[-0.24px] max-dapp:max-w-none max-dapp:text-faint"
                   tone="body"
                 >
                   {rankHint}

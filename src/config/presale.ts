@@ -15,7 +15,7 @@ export interface PresaleConfig {
 /** 来源 DEPLOYMENT_RESULT.md 环境变量快照（2026-06-22） */
 export const PRESALE_CONFIG: PresaleConfig = {
   phaseCount: 3,
-  phaseDurationSeconds: 259_200,
+  phaseDurationSeconds: 864_000,
   agxPriceUsd: '55',
   sharePriceUsd1: '100',
   phases: [

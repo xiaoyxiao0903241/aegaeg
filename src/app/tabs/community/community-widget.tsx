@@ -135,7 +135,7 @@ function CommunityConnectedWidget({
           <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2">
             <input
               aria-label={t.community.referrerPlaceholder}
-              className="w-full min-h-11 rounded-sm border border-border bg-card px-3.5 text-xs tracking-[-0.26px] text-muted-foreground outline-0 max-dapp:h-11"
+              className="w-full rounded-sm border border-border bg-card px-3.5 py-2.5 text-xs tracking-[-0.26px] text-muted-foreground outline-0"
               onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
               placeholder={t.community.referrerPlaceholder}
               value={referral.referrerInput}

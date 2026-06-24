@@ -137,11 +137,11 @@ export function GenesisWidget() {
         <div className="flex gap-2">
           <div className="relative flex min-w-0 flex-1">
             <input
-              className="w-full min-w-0 min-h-11 rounded-sm border border-border bg-card py-0 pl-3.5 pr-10 text-base font-bold text-foreground outline-none focus:border-primary max-dapp:h-11 max-dapp:min-h-11"
+              className="w-full min-w-0 rounded-sm border border-border bg-card py-2.5 pl-3.5 pr-10 text-base font-bold text-foreground outline-none [appearance:textfield] focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               disabled={!walletReady}
               max={Math.max(genesis.maxShares, 1)}
               min={1}
-              onChange={(e) => handleSharesChange(e.target.value)}
+              onChange={(e) => handleSharesChange(e.currentTarget.value)}
               type="number"
               value={genesis.shares}
             />
@@ -154,7 +154,7 @@ export function GenesisWidget() {
           </div>
           <button
             className={cn(
-              'min-h-11 min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 text-xs font-bold whitespace-nowrap text-primary max-dapp:h-11 max-dapp:min-h-11',
+              'min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 py-2.5 text-xs font-bold whitespace-nowrap text-primary',
               buttonDisabledClass,
               'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
             )}

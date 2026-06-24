@@ -6,7 +6,7 @@ test('presale config matches deployment env snapshot', async () => {
   const { PRESALE_CONFIG } = await loadModule('/src/config/presale.ts')
 
   assert.equal(PRESALE_CONFIG.phaseCount, 3)
-  assert.equal(PRESALE_CONFIG.phaseDurationSeconds, 259_200)
+  assert.equal(PRESALE_CONFIG.phaseDurationSeconds, 864_000)
   assert.equal(PRESALE_CONFIG.agxPriceUsd, '55')
   assert.equal(PRESALE_CONFIG.sharePriceUsd1, '100')
   assert.deepEqual(
