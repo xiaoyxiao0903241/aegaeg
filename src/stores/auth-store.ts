@@ -30,7 +30,6 @@ interface AuthStore extends AuthPersistState {
   upsertSignatureForAddress: (signature: StoredLoginSignature) => void
   readSignatureForAddress: (address: string | undefined) => StoredLoginSignature | null
   clearSignatureForAddress: (address: string) => void
-  clearWalletAuth: () => void
   setLoginError: (error: string | null) => void
   setIsLoggingIn: (value: boolean) => void
 }
@@ -198,7 +197,6 @@ export const useAuthStore = create<AuthStore>()(
           const { [key]: _removed, ...signaturesByAddress } = state.signaturesByAddress
           return { signaturesByAddress }
         }),
-      clearWalletAuth: () => set({ session: null }),
       setLoginError: (loginError) => set({ loginError }),
       setIsLoggingIn: (isLoggingIn) => set({ isLoggingIn }),
     }),
@@ -257,7 +255,6 @@ export function createMemoryAuthStoreState(
     upsertSignatureForAddress: () => {},
     readSignatureForAddress: () => null,
     clearSignatureForAddress: () => {},
-    clearWalletAuth: () => {},
     setLoginError: () => {},
     setIsLoggingIn: () => {},
   }

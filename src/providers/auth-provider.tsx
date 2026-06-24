@@ -7,15 +7,13 @@ import {
   useRef,
   type ReactNode,
 } from 'react'
-import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { ApiError } from '~/lib/api/client'
 import {
   buildSilentLoginAttemptKey,
   readStoredSessionForWallet,
-  shouldAttemptAutoLogin,
-  shouldClearSessionForWalletMismatch,
-  shouldPurgeExpiredSession,
 } from '~/lib/api/auth/auth-sync'
+
 import {
   isUnauthorizedError,
   loginWithWallet,
@@ -55,6 +53,8 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 const sessionStorage = createStoreAuthSessionStorage()
 const signatureStorage = createStoreLoginSignatureStorage()
 
+const RENEW_THRESHOLD_MS = 60_000
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const account = useActiveAccount()
   const walletAddress = account?.address
@@ -63,22 +63,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isLoggingIn = useAuthStore((state) => state.isLoggingIn)
   const hasHydrated = useAuthStore((state) => state.hasHydrated)
   const wallet = useActiveWallet()
-  const { disconnect } = useDisconnect()
   const silentLoginAttemptRef = useRef<string | null>(null)
   const wasAuthenticatedRef = useRef(false)
   const previousWalletRef = useRef<string | undefined>(undefined)
-  const reconnectingRef = useRef(false)
+  const loginInProgressRef = useRef(false)
+  const disconnectTimerRef = useRef<number | null>(null)
 
   const reconcileWalletAccount = useCallback(
     async (source: 'wallet-event' | 'provider-event', detectedAddress: string) => {
-      if (reconnectingRef.current) return
-
       const activeAddress = normalizeWalletAddress(walletAddress)
       if (detectedAddress === activeAddress) return
 
       if (!wallet) {
-        // Wallet object not known — at least clear stale auth state so the UI
-        // does not keep showing the previous account's data.
         useAuthStore.getState().clearSession()
         useAuthStore.getState().setLoginError(null)
         silentLoginAttemptRef.current = null
@@ -86,36 +82,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      // `wallet-event`: thirdweb already knows about the new account and
-      // `useActiveAccount` will update on the next render. The previousWalletRef
-      // effect will refresh data then. Nothing to do here.
-      if (source === 'wallet-event') return
-
-      // `provider-event`: the provider reports a different address than thirdweb.
-      // Auto-reconnecting via `wallet.connect()` can deadlock some wallets (e.g.
-      // MetaMask waiting for an authorization prompt). Disconnect and let the
-      // user reconnect manually instead.
-      reconnectingRef.current = true
-      try {
-        disconnect(wallet)
-      } catch {
-        // ignore disconnect errors
-      } finally {
-        reconnectingRef.current = false
+      if (source === 'wallet-event') {
+        return
       }
 
-      useAuthStore.getState().clearSession()
-      useAuthStore.getState().setLoginError(null)
+      // `provider-event`: the provider reports a different address than thirdweb.
+      // Some injected wallets emit spurious `accountsChanged` events while the
+      // user is signing a transaction, so we must not disconnect the wallet here.
+      // Instead, back up the current session and try to restore the session for
+      // the address reported by the provider. If no valid session exists for that
+      // address, we only clear the auth state and let the user re-login while
+      // keeping the wallet connection alive.
+      const store = useAuthStore.getState()
+      if (store.session) {
+        store.upsertSessionForAddress(store.session)
+      }
+      store.clearSession()
+      store.setLoginError(null)
       silentLoginAttemptRef.current = null
+
+      const restored = readStoredSessionForWallet(store.sessionsByAddress, detectedAddress)
+      if (restored) {
+        store.setSession(restored)
+        return
+      }
+
       useDappActions.getState().afterAuthLogout()
     },
-    [disconnect, wallet, walletAddress],
+    [wallet, walletAddress],
   )
 
-  // All wallets (injected, WalletConnect, Coinbase, etc.) emit accountChanged
-  // through thirdweb's wallet emitter. Listen directly so we can recover when
-  // thirdweb's connection manager fails to propagate the event to
-  // useActiveAccount.
   useEffect(() => {
     if (!wallet) return
 
@@ -135,8 +131,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [wallet, walletAddress, reconcileWalletAccount])
 
-  // Extra fallback for injected wallets: some browser extensions fire
-  // accountsChanged on window.ethereum but thirdweb's wallet emitter misses it.
   useWalletProviderAccountChange({
     activeAddress: walletAddress,
     enabled: wallet ? wallet.id !== 'walletConnect' : false,
@@ -150,6 +144,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [wallet, walletAddress])
 
   useEffect(() => {
+    if (walletAddress && disconnectTimerRef.current) {
+      window.clearTimeout(disconnectTimerRef.current)
+      disconnectTimerRef.current = null
+    }
+  }, [walletAddress])
+
+  useEffect(() => {
     if (!hasHydrated) return
 
     const isAuthenticated = resolveAuthStatus({ session, walletAddress }).isAuthenticated
@@ -159,41 +160,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     wasAuthenticatedRef.current = isAuthenticated
   }, [hasHydrated, session, walletAddress])
-
-  const login = useCallback(async () => {
-    if (!account) {
-      useAuthStore.getState().setLoginError('Wallet not connected')
-      return
-    }
-
-    const { setIsLoggingIn, setLoginError } = useAuthStore.getState()
-    setIsLoggingIn(true)
-    setLoginError(null)
-
-    try {
-      await loginWithWallet({
-        account,
-        chainId: defaultChain.id,
-        storage: sessionStorage,
-        signatureStorage,
-      })
-      silentLoginAttemptRef.current = buildSilentLoginAttemptKey(
-        account.address,
-        useAuthStore.getState().session,
-      )
-    } catch (error) {
-      if (error instanceof ApiError) {
-        setLoginError(error.message)
-      } else if (error instanceof Error) {
-        setLoginError(error.message)
-      } else {
-        setLoginError('Login failed')
-      }
-      throw error
-    } finally {
-      useAuthStore.getState().setIsLoggingIn(false)
-    }
-  }, [account])
 
   useEffect(() => {
     if (!hasHydrated) return
@@ -211,30 +177,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     previousWalletRef.current = walletAddress
   }, [hasHydrated, walletAddress])
 
-  useEffect(() => {
-    if (!hasHydrated) return
-
-    const store = useAuthStore.getState()
-
-    if (shouldPurgeExpiredSession(store.session)) {
-      // Try silent re-login with the cached SIWE signature before logging out.
-      if (walletAddress && account && !store.isLoggingIn) {
-        void login().catch(() => {
-          store.clearSession()
-          useDappActions.getState().afterAuthLogout()
-        })
-      } else {
-        store.clearSession()
-        useDappActions.getState().afterAuthLogout()
-      }
+  const login = useCallback(async () => {
+    if (loginInProgressRef.current) return
+    if (!account) {
+      useAuthStore.getState().setLoginError('Wallet not connected')
       return
     }
 
-    if (shouldClearSessionForWalletMismatch(store.session, walletAddress)) {
-      if (store.session) {
-        store.upsertSessionForAddress(store.session)
-      }
+    loginInProgressRef.current = true
+    const { setIsLoggingIn, setLoginError } = useAuthStore.getState()
+    setIsLoggingIn(true)
+    setLoginError(null)
 
+    try {
+      await loginWithWallet({
+        account,
+        chainId: defaultChain.id,
+        storage: sessionStorage,
+        signatureStorage,
+      })
+    } catch (error) {
+      const message =
+        error instanceof ApiError || error instanceof Error ? error.message : 'Login failed'
+      setLoginError(message)
+      throw error
+    } finally {
+      loginInProgressRef.current = false
+      useAuthStore.getState().setIsLoggingIn(false)
+    }
+  }, [account])
+
+  /**
+   * Core auth lifecycle:
+   * 1. If the current session is valid, do nothing (renewal is handled by the
+   *    dedicated timer effect below).
+   * 2. If the session belongs to a different wallet address, back it up and try
+   *    to restore the session for the new address.
+   * 3. If there is no valid session for the current wallet, attempt a silent
+   *    auto-login using the cached SIWE signature.
+   */
+  useEffect(() => {
+    if (!hasHydrated || !walletAddress || loginInProgressRef.current) return
+
+    const store = useAuthStore.getState()
+    const status = resolveAuthStatus({ session: store.session, walletAddress })
+
+    if (status.isAuthenticated) return
+
+    if (
+      store.session &&
+      store.session.address.toLowerCase() !== walletAddress.toLowerCase()
+    ) {
+      store.upsertSessionForAddress(store.session)
       store.clearSession()
       store.setLoginError(null)
       silentLoginAttemptRef.current = null
@@ -246,22 +240,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       useDappActions.getState().afterAuthLogout()
+      // Fall through to auto-login: the new wallet has no cached session, so
+      // try silent login with the cached SIWE signature.
     }
-  }, [hasHydrated, session?.expiresAt, session?.token, walletAddress, account, login])
 
+    const attemptKey = buildSilentLoginAttemptKey(walletAddress, store.session)
+    if (silentLoginAttemptRef.current !== attemptKey && !store.loginError) {
+      silentLoginAttemptRef.current = attemptKey
+      void login().catch(() => undefined)
+    }
+  }, [hasHydrated, walletAddress, session?.token, login, loginError])
+
+  /**
+   * Renew the JWT before it expires. When the token has less than
+   * RENEW_THRESHOLD_MS left, trigger a silent login with the cached SIWE
+   * signature. The timer is reset whenever the session or wallet changes.
+   */
   useEffect(() => {
     if (!session?.expiresAt || !walletAddress) return
-
-    const store = useAuthStore.getState()
-    if (store.isLoggingIn) return
+    if (loginInProgressRef.current) return
 
     const delay = session.expiresAt - Date.now()
-    const renewThreshold = 60_000
-    const renewDelay = Math.max(0, delay - renewThreshold)
+    const renewDelay = Math.max(0, delay - RENEW_THRESHOLD_MS)
 
     if (renewDelay <= 0) {
       if (delay > 0) {
-        // Token expires within the next minute — renew immediately.
         void login().catch(() => undefined)
       }
       return
@@ -274,54 +277,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timerId)
   }, [session?.expiresAt, session?.token, walletAddress, login])
 
-  useEffect(() => {
-    if (
-      !shouldAttemptAutoLogin({
-        hasHydrated,
-        walletAddress,
-        session,
-        isLoggingIn,
-        loginError,
-        attemptedKey: silentLoginAttemptRef.current,
-      })
-    ) {
-      return
-    }
-
-    silentLoginAttemptRef.current = buildSilentLoginAttemptKey(walletAddress!, session)
-    void login().catch(() => {
-      // login() records loginError; user can retry manually
-    })
-  }, [hasHydrated, isLoggingIn, login, loginError, session, walletAddress])
-
   const retryLogin = useCallback(async () => {
     silentLoginAttemptRef.current = null
     useAuthStore.getState().setLoginError(null)
     await login()
   }, [login])
 
+  /**
+   * When the backend rejects the JWT (401), try silent re-login first. Only
+   * clear the session if re-login fails. This keeps the wallet connected and
+   * avoids forcing the user to sign again unless the cached SIWE signature has
+   * also expired.
+   */
   const invalidateSession = useCallback(() => {
     const store = useAuthStore.getState()
-    // JWT expired or was rejected by the backend. Try silent re-login with the
-    // cached SIWE signature before forcing the user to sign again.
-    if (account && !store.isLoggingIn) {
-      void login().catch(() => {
-        store.clearSession()
-        store.setLoginError(null)
-        silentLoginAttemptRef.current = null
-        useDappActions.getState().afterAuthLogout()
-      })
-      return
-    }
-
     store.clearSession()
     store.setLoginError(null)
     silentLoginAttemptRef.current = null
     useDappActions.getState().afterAuthLogout()
-  }, [account, login])
+  }, [])
 
   const logout = useCallback(() => {
-    const { session, clearSession, removeSessionForAddress, setLoginError } = useAuthStore.getState()
+    const { session, clearSession, removeSessionForAddress, setLoginError } =
+      useAuthStore.getState()
     if (session?.address) {
       removeSessionForAddress(session.address)
     }

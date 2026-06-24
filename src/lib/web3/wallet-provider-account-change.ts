@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 
+const ACCOUNT_CHANGE_DEBOUNCE_MS = 500
+
 export type WalletProvider = {
   request?: (args: { method: string; params?: unknown[] }) => Promise<unknown>
   on?: (event: string, handler: (...args: unknown[]) => void) => void
@@ -60,6 +62,7 @@ export interface UseWalletProviderAccountChangeOptions {
 export function useWalletProviderAccountChange(options: UseWalletProviderAccountChangeOptions) {
   const { activeAddress, enabled = true, onMismatch } = options
   const onMismatchRef = useRef(onMismatch)
+  const debounceTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
     onMismatchRef.current = onMismatch
@@ -104,7 +107,26 @@ export function useWalletProviderAccountChange(options: UseWalletProviderAccount
         const currentActive = normalizeWalletAddress(activeAddress)
         if (providerAddress === currentActive) return
 
-        onMismatchRef.current(providerAddress, activeAddress)
+        // Some injected wallets emit spurious accountsChanged events while the
+        // user is signing a transaction. Wait a short grace period and then
+        // re-read the current address from the provider to confirm the change
+        // before notifying the rest of the app.
+        window.clearTimeout(debounceTimerRef.current ?? undefined)
+        debounceTimerRef.current = window.setTimeout(async () => {
+          try {
+            const currentAccounts = (await provider.request?.({
+              method: 'eth_accounts',
+            })) as unknown[]
+            const confirmedAddress = normalizeWalletAddress(
+              Array.isArray(currentAccounts) ? currentAccounts[0] : undefined,
+            )
+            if (!confirmedAddress) return
+            if (confirmedAddress === normalizeWalletAddress(activeAddress)) return
+            onMismatchRef.current(confirmedAddress, activeAddress)
+          } catch {
+            // ignore provider query errors
+          }
+        }, ACCOUNT_CHANGE_DEBOUNCE_MS)
       }
 
       const chainHandler = () => undefined
@@ -125,6 +147,9 @@ export function useWalletProviderAccountChange(options: UseWalletProviderAccount
     })
 
     return () => {
+      if (debounceTimerRef.current) {
+        window.clearTimeout(debounceTimerRef.current)
+      }
       handlersByProvider.forEach((handlers, provider) => {
         provider.removeListener?.('accountsChanged', handlers.accounts)
         provider.removeListener?.('chainChanged', handlers.chain)
