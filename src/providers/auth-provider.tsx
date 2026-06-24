@@ -7,7 +7,7 @@ import {
   useRef,
   type ReactNode,
 } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
 import { ApiError } from '~/lib/api/client'
 import {
   buildSilentLoginAttemptKey,
@@ -22,13 +22,17 @@ import {
 } from '~/lib/api/auth/login-with-wallet'
 import { resolveAuthStatus } from '~/lib/api/auth/resolve-auth-status'
 import type { StoredAuthSession } from '~/lib/api/auth/session'
-import { defaultChain } from '~/web3/thirdweb'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
 import {
   createStoreAuthSessionStorage,
   createStoreLoginSignatureStorage,
 } from '~/stores/auth-storage-adapters'
 import { useDappActions } from '~/stores/dapp-actions'
+import {
+  normalizeWalletAddress,
+  useWalletProviderAccountChange,
+} from '~/lib/web3/wallet-provider-account-change'
 
 export interface AuthContextValue {
   token: string | null
@@ -58,13 +62,148 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginError = useAuthStore((state) => state.loginError)
   const isLoggingIn = useAuthStore((state) => state.isLoggingIn)
   const hasHydrated = useAuthStore((state) => state.hasHydrated)
+  const wallet = useActiveWallet()
+  const { disconnect } = useDisconnect()
   const silentLoginAttemptRef = useRef<string | null>(null)
   const wasAuthenticatedRef = useRef(false)
   const previousWalletRef = useRef<string | undefined>(undefined)
+  const reconnectingRef = useRef(false)
+
+  const reconcileWalletAccount = useCallback(
+    async (source: 'wallet-event' | 'provider-event', detectedAddress: string) => {
+      console.log('[AEGIS] reconcileWalletAccount called:', {
+        source,
+        detectedAddress,
+        activeAddress: walletAddress,
+        walletId: wallet?.id,
+        reconnecting: reconnectingRef.current,
+      })
+      if (reconnectingRef.current) return
+
+      const activeAddress = normalizeWalletAddress(walletAddress)
+      if (detectedAddress === activeAddress) {
+        console.log('[AEGIS] reconcileWalletAccount: addresses match, skip')
+        return
+      }
+
+      if (!wallet) {
+        // Wallet object not known — at least clear stale auth state so the UI
+        // does not keep showing the previous account's data.
+        useAuthStore.getState().clearSession()
+        useAuthStore.getState().setLoginError(null)
+        silentLoginAttemptRef.current = null
+        useDappActions.getState().afterAuthLogout()
+        return
+      }
+
+      reconnectingRef.current = true
+      try {
+        // Injected wallets: the provider already reports the new address, so
+        // re-connecting the same wallet re-reads the active account without
+        // asking the user again.
+        if (wallet.id !== 'walletConnect') {
+          console.log('[AEGIS] reconnecting injected wallet:', wallet.id)
+          await wallet.connect({ client: thirdwebClient, chain: defaultChain })
+          console.log('[AEGIS] injected wallet reconnected')
+        } else {
+          // WalletConnect sessions cannot be silently refreshed — disconnect and
+          // let the user reconnect with the new account.
+          console.log('[AEGIS] disconnecting WalletConnect due to account mismatch')
+          disconnect(wallet)
+          useAuthStore.getState().clearSession()
+          useAuthStore.getState().setLoginError(null)
+          silentLoginAttemptRef.current = null
+          useDappActions.getState().afterAuthLogout()
+        }
+      } catch (error) {
+        console.error('[AuthProvider] failed to reconcile wallet account:', {
+          source,
+          detectedAddress,
+          activeAddress,
+          error,
+        })
+        try {
+          disconnect(wallet)
+        } catch {
+          // ignore disconnect errors
+        }
+        useAuthStore.getState().clearSession()
+        useAuthStore.getState().setLoginError(null)
+        silentLoginAttemptRef.current = null
+        useDappActions.getState().afterAuthLogout()
+      } finally {
+        reconnectingRef.current = false
+      }
+    },
+    [disconnect, wallet, walletAddress],
+  )
+
+  // All wallets (injected, WalletConnect, Coinbase, etc.) emit accountChanged
+  // through thirdweb's wallet emitter. Listen directly so we can recover when
+  // thirdweb's connection manager fails to propagate the event to
+  // useActiveAccount.
+  useEffect(() => {
+    if (!wallet) {
+      console.log('[AEGIS] no active wallet to subscribe')
+      return
+    }
+
+    console.log('[AEGIS] subscribing to wallet events:', {
+      walletId: wallet.id,
+      activeAddress: walletAddress,
+    })
+
+    const unsubAccount = wallet.subscribe('accountChanged', (newAccount) => {
+      console.log('[AEGIS] wallet accountChanged event:', {
+        walletId: wallet.id,
+        detectedAddress: newAccount.address,
+      })
+      const detectedAddress = normalizeWalletAddress(newAccount.address)
+      if (!detectedAddress) return
+      void reconcileWalletAccount('wallet-event', detectedAddress)
+    })
+
+    const unsubChain = wallet.subscribe('chainChanged', (chain) => {
+      console.log('[AEGIS] wallet chainChanged event:', {
+        walletId: wallet.id,
+        chainId: chain.id,
+        activeAddress: walletAddress,
+      })
+    })
+
+    const unsubDisconnect = wallet.subscribe('disconnect', () => {
+      console.log('[AEGIS] wallet disconnect event:', {
+        walletId: wallet.id,
+        activeAddress: walletAddress,
+      })
+    })
+
+    return () => {
+      console.log('[AEGIS] unsubscribing from wallet events:', wallet.id)
+      unsubAccount()
+      unsubChain()
+      unsubDisconnect()
+    }
+  }, [wallet, walletAddress, reconcileWalletAccount])
+
+  // Extra fallback for injected wallets: some browser extensions fire
+  // accountsChanged on window.ethereum but thirdweb's wallet emitter misses it.
+  useWalletProviderAccountChange({
+    activeAddress: walletAddress,
+    enabled: wallet ? wallet.id !== 'walletConnect' : false,
+    onMismatch: (providerAddress) => {
+      void reconcileWalletAccount('provider-event', providerAddress)
+    },
+  })
 
   useEffect(() => {
+    console.log('[AEGIS] useActiveAccount changed:', {
+      walletAddress,
+      walletId: wallet?.id,
+      isConnected: Boolean(wallet),
+    })
     silentLoginAttemptRef.current = null
-  }, [walletAddress])
+  }, [wallet, walletAddress])
 
   useEffect(() => {
     if (!hasHydrated) return
@@ -121,6 +260,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       walletAddress &&
       previousAddress.toLowerCase() !== walletAddress.toLowerCase()
     ) {
+      console.log('[AEGIS] wallet address changed, invalidate data:', {
+        previousAddress,
+        walletAddress,
+      })
       silentLoginAttemptRef.current = null
       useDappActions.getState().afterWalletSwitch(previousAddress, walletAddress)
     }

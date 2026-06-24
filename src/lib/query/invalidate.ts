@@ -37,25 +37,36 @@ export function invalidateApiQueries() {
   return queryClient.invalidateQueries({ queryKey: queryKeys.api.all })
 }
 
+function removeChainQueriesForAddress(address: string) {
+  const normalized = address.toLowerCase()
+  void queryClient.removeQueries({
+    predicate: (query) =>
+      Array.isArray(query.queryKey) &&
+      query.queryKey[0] === 'chain' &&
+      JSON.stringify(query.queryKey).includes(normalized),
+  })
+}
+
 /** Wallet account changed — drop stale reads and warm the next wallet scope. */
 export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddress?: string) {
+  console.log('[AEGIS] invalidateAfterWalletSwitch:', { previousAddress, nextAddress })
+  // API queries are user-scoped: remove them entirely so every authenticated
+  // screen fetches fresh data for the new wallet.
   clearApiQueries()
 
   if (previousAddress) {
-    void queryClient.removeQueries({ queryKey: queryKeys.chain.walletBalances(previousAddress) })
-    void queryClient.removeQueries({
-      predicate: (query) =>
-        Array.isArray(query.queryKey) &&
-        query.queryKey[0] === 'chain' &&
-        JSON.stringify(query.queryKey).includes(previousAddress.toLowerCase()),
-    })
+    removeChainQueriesForAddress(previousAddress)
   }
 
   if (nextAddress) {
-    invalidatePresaleChainQueries(nextAddress)
-    void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(nextAddress) })
-    void queryClient.invalidateQueries({ queryKey: queryKeys.chain.walletBalances(nextAddress) })
+    // Drop any cached data for the next address first so the UI never shows a
+    // flash of the previous account's values while the new fetch is in flight.
+    removeChainQueriesForAddress(nextAddress)
   }
+
+  // Refresh all chain reads (global + wallet-scoped) to guarantee no stale
+  // data from the previous account remains visible.
+  void queryClient.invalidateQueries({ queryKey: ['chain'] })
 }
 
 /** User SIWE session became active — refresh API + wallet-scoped chain reads. */
