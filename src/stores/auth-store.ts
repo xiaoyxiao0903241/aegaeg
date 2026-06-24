@@ -11,8 +11,13 @@ import {
 
 export const AUTH_STORE_STORAGE_KEY = 'aegis.auth.store'
 
+/**
+ * Persisted auth data is two pure caches keyed by wallet address: the JWT
+ * sessions and the SIWE signatures. There is no standalone "current session" —
+ * the active session is always derived as `sessionsByAddress[walletAddress]`
+ * (see `auth-machine.ts`), so switching wallets needs no backup/restore dance.
+ */
 interface AuthPersistState {
-  session: StoredAuthSession | null
   signaturesByAddress: Record<string, StoredLoginSignature>
   sessionsByAddress: Record<string, StoredAuthSession>
 }
@@ -22,10 +27,7 @@ interface AuthStore extends AuthPersistState {
   loginError: string | null
   isLoggingIn: boolean
   setHasHydrated: (value: boolean) => void
-  setSession: (session: StoredAuthSession) => void
-  clearSession: () => void
   upsertSessionForAddress: (session: StoredAuthSession) => void
-  readSessionForAddress: (address: string | undefined) => StoredAuthSession | null
   removeSessionForAddress: (address: string) => void
   upsertSignatureForAddress: (signature: StoredLoginSignature) => void
   readSignatureForAddress: (address: string | undefined) => StoredLoginSignature | null
@@ -34,6 +36,31 @@ interface AuthStore extends AuthPersistState {
   setIsLoggingIn: (value: boolean) => void
 }
 
+function normalizePersistedSession(
+  session: StoredAuthSession | null | undefined,
+): StoredAuthSession | null {
+  if (!session?.token || !session.address) return null
+  if (isJwtExpired(session.token)) return null
+  return withJwtExpiry(session)
+}
+
+function normalizePersistedSessions(
+  sessionsByAddress: Record<string, StoredAuthSession> | undefined,
+): Record<string, StoredAuthSession> {
+  if (!sessionsByAddress) return {}
+
+  return Object.fromEntries(
+    Object.entries(sessionsByAddress).flatMap(([address, session]) => {
+      const normalized = normalizePersistedSession(session)
+      return normalized ? [[normalizeAuthAddress(address), normalized] as const] : []
+    }),
+  )
+}
+
+/**
+ * Migrate the pre-v2 single-session/single-signature localStorage keys into the
+ * address-keyed tables. Runs once; the legacy keys are removed after reading.
+ */
 function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
   if (typeof localStorage === 'undefined') return null
 
@@ -68,39 +95,16 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
       sessionsByAddress[normalizeAuthAddress(normalizedSession.address)] = normalizedSession
     }
 
-    return {
-      session: normalizedSession,
-      signaturesByAddress,
-      sessionsByAddress,
-    }
+    return { signaturesByAddress, sessionsByAddress }
   } catch {
     return null
   }
 }
 
-function normalizePersistedSession(
-  session: StoredAuthSession | null,
-): StoredAuthSession | null {
-  if (!session?.token || !session.address) return null
-  if (isJwtExpired(session.token)) return null
-  return withJwtExpiry(session)
-}
-
-function normalizePersistedSessions(
-  sessionsByAddress: Record<string, StoredAuthSession> | undefined,
-): Record<string, StoredAuthSession> {
-  if (!sessionsByAddress) return {}
-
-  return Object.fromEntries(
-    Object.entries(sessionsByAddress).flatMap(([address, session]) => {
-      const normalized = normalizePersistedSession(session)
-      return normalized ? [[normalizeAuthAddress(address), normalized] as const] : []
-    }),
-  )
-}
-
-function normalizeLegacyPersistedState(
-  persistedState: Partial<AuthPersistState & { signature?: StoredLoginSignature | null }>,
+function mergePersistedState(
+  persistedState: Partial<
+    AuthPersistState & { session?: StoredAuthSession | null; signature?: StoredLoginSignature | null }
+  >,
   legacy: Partial<AuthPersistState> | null,
 ): AuthPersistState {
   const signaturesByAddress = {
@@ -118,47 +122,24 @@ function normalizeLegacyPersistedState(
     ...(persistedState.sessionsByAddress ?? {}),
   })
 
-  const session =
-    normalizePersistedSession(persistedState.session ?? null) ??
-    normalizePersistedSession(legacy?.session ?? null)
-
-  if (session) {
-    sessionsByAddress[normalizeAuthAddress(session.address)] = session
+  // Fold any leftover pre-v2 top-level session into the address table.
+  const legacySession = normalizePersistedSession(persistedState.session ?? null)
+  if (legacySession) {
+    sessionsByAddress[normalizeAuthAddress(legacySession.address)] = legacySession
   }
 
-  return {
-    session,
-    signaturesByAddress,
-    sessionsByAddress,
-  }
+  return { signaturesByAddress, sessionsByAddress }
 }
 
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
-      session: null,
       signaturesByAddress: {},
       sessionsByAddress: {},
       hasHydrated: false,
       loginError: null,
       isLoggingIn: false,
       setHasHydrated: (hasHydrated) => set({ hasHydrated }),
-      setSession: (session) => {
-        const normalized = normalizePersistedSession(session)
-        if (!normalized) {
-          set({ session: null })
-          return
-        }
-
-        set((state) => ({
-          session: normalized,
-          sessionsByAddress: {
-            ...state.sessionsByAddress,
-            [normalizeAuthAddress(normalized.address)]: normalized,
-          },
-        }))
-      },
-      clearSession: () => set({ session: null }),
       upsertSessionForAddress: (session) => {
         const normalized = normalizePersistedSession(session)
         if (!normalized) return
@@ -170,14 +151,10 @@ export const useAuthStore = create<AuthStore>()(
           },
         }))
       },
-      readSessionForAddress: (address) => {
-        if (!address) return null
-        return get().sessionsByAddress[normalizeAuthAddress(address)] ?? null
-      },
       removeSessionForAddress: (address) =>
         set((state) => {
-          const key = normalizeAuthAddress(address)
-          const { [key]: _removed, ...sessionsByAddress } = state.sessionsByAddress
+          const sessionsByAddress = { ...state.sessionsByAddress }
+          delete sessionsByAddress[normalizeAuthAddress(address)]
           return { sessionsByAddress }
         }),
       upsertSignatureForAddress: (signature) =>
@@ -193,8 +170,8 @@ export const useAuthStore = create<AuthStore>()(
       },
       clearSignatureForAddress: (address) =>
         set((state) => {
-          const key = normalizeAuthAddress(address)
-          const { [key]: _removed, ...signaturesByAddress } = state.signaturesByAddress
+          const signaturesByAddress = { ...state.signaturesByAddress }
+          delete signaturesByAddress[normalizeAuthAddress(address)]
           return { signaturesByAddress }
         }),
       setLoginError: (loginError) => set({ loginError }),
@@ -204,33 +181,21 @@ export const useAuthStore = create<AuthStore>()(
       name: AUTH_STORE_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        session: state.session,
         signaturesByAddress: state.signaturesByAddress,
         sessionsByAddress: state.sessionsByAddress,
       }),
       merge: (persisted, currentState) => {
         const legacy = readLegacyPersistedAuth()
         const persistedState = (persisted ?? {}) as Partial<
-          AuthPersistState & { signature?: StoredLoginSignature | null }
+          AuthPersistState & { session?: StoredAuthSession | null; signature?: StoredLoginSignature | null }
         >
-        const merged = normalizeLegacyPersistedState(persistedState, legacy)
-
         return {
           ...currentState,
-          ...merged,
+          ...mergePersistedState(persistedState, legacy),
         }
       },
-      onRehydrateStorage: () => (state, error) => {
-        if (error || !state) {
-          state?.setHasHydrated(true)
-          return
-        }
-
-        if (state.session && isJwtExpired(state.session.token)) {
-          state.clearSession()
-        }
-
-        state.setHasHydrated(true)
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
       },
     },
   ),
@@ -240,17 +205,13 @@ export function createMemoryAuthStoreState(
   initial: Partial<AuthPersistState> = {},
 ): AuthStore {
   return {
-    session: initial.session ?? null,
     signaturesByAddress: initial.signaturesByAddress ?? {},
     sessionsByAddress: initial.sessionsByAddress ?? {},
     hasHydrated: true,
     loginError: null,
     isLoggingIn: false,
     setHasHydrated: () => {},
-    setSession: () => {},
-    clearSession: () => {},
     upsertSessionForAddress: () => {},
-    readSessionForAddress: () => null,
     removeSessionForAddress: () => {},
     upsertSignatureForAddress: () => {},
     readSignatureForAddress: () => null,

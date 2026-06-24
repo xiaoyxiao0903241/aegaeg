@@ -4,28 +4,25 @@ import { useAuthStore } from '~/stores/auth-store'
 
 type AuthStoreGetter = Pick<
   ReturnType<typeof useAuthStore.getState>,
-  | 'session'
   | 'sessionsByAddress'
   | 'signaturesByAddress'
-  | 'setSession'
-  | 'clearSession'
   | 'upsertSessionForAddress'
   | 'upsertSignatureForAddress'
   | 'readSignatureForAddress'
   | 'clearSignatureForAddress'
-  | 'readSessionForAddress'
 >
 
 export function createStoreAuthSessionStorage(
   getStore: () => AuthStoreGetter = () => useAuthStore.getState(),
 ): AuthSessionStorage {
   return {
-    read: () => getStore().session,
+    // The address-keyed session table is the single source of truth. The active
+    // session is derived from it, so login only ever needs to `write`.
+    read: () => null,
     write: (session: StoredAuthSession) => {
-      getStore().setSession(session)
       getStore().upsertSessionForAddress(session)
     },
-    clear: () => getStore().clearSession(),
+    clear: () => {},
   }
 }
 
