@@ -20,7 +20,7 @@ export interface GenesisFaqTemplateValues extends Record<string, string> {
 }
 
 function formatUsdAmountFromWei(amount: bigint): string {
-  return Number(formatTokenAmount(amount, USD1_DECIMALS, 0)).toLocaleString('en-US')
+  return formatTokenAmount(amount, USD1_DECIMALS, 0)
 }
 
 function formatUsdRange(min: bigint, max: bigint): string {
@@ -64,7 +64,7 @@ function formatPhaseDurationDays(phases: PresalePhaseOnChain[]): string {
 
 function resolveMinUsd(phases: PresalePhaseOnChain[]): number {
   const minAmounts = phases
-    .map((phase) => Number(formatTokenAmount(phase.minAmount, USD1_DECIMALS, 0)))
+    .map((phase) => Number(phase.minAmount) / 10 ** USD1_DECIMALS)
     .filter((amount) => amount > 0)
 
   if (minAmounts.length === 0) {

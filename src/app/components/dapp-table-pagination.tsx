@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { ChevronIcon } from '~/components/chevron-icon'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
+import { formatCount } from '~/lib/api/format-display'
 import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/lib/table-pagination'
 
 const PAGE_MENU_ITEM_HEIGHT_PX = 32
@@ -73,11 +74,11 @@ export function DappTablePagination({
       )}
       ref={rootRef}
     >
-      <p>{t.common.paginationTotal.replace('{total}', String(total))}</p>
+      <p>{t.common.paginationTotal.replace('{total}', formatCount(total))}</p>
 
       <div className="flex flex-wrap items-center gap-2 sm:justify-end">
         <span className="whitespace-nowrap">
-          {t.common.paginationPerPage.replace('{size}', String(pageSize))}
+          {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
         </span>
 
         <button

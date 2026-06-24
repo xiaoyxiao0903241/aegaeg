@@ -4,6 +4,7 @@ import { cn } from '~/lib/utils'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import {
+  formatCount,
   formatPresaleRank,
   formatUsd,
   mapTeamReferralToCompactRow,
@@ -38,7 +39,7 @@ function formatCommunityStatToday(
   amount: number | string = STAT_PLACEHOLDER,
 ) {
   return applyMessageTemplate(template, {
-    count: String(count),
+    count: typeof count === 'number' ? formatCount(count) : count,
     amount: typeof amount === 'number' ? formatUsd(amount, 0) : amount,
   })
 }
@@ -71,10 +72,10 @@ export function CommunityContent({
     rowCount: compactRows.length,
   })
   const inviteCount = !sessionReady
-    ? '0'
+    ? formatCount(0)
     : overviewLoading || referralsLoading || isLoggingIn
       ? '…'
-      : String(overview?.descendant_count ?? referrals?.total ?? 0)
+      : formatCount(overview?.descendant_count ?? referrals?.total ?? 0)
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
   const authPending = sessionReady && isLoggingIn
 
@@ -89,10 +90,10 @@ export function CommunityContent({
 
   const useStatPlaceholders = authPending || overviewLoading || isRankLoading
 
-  const directCount = String(overview?.direct_referral_count ?? 0)
+  const directCount = formatCount(overview?.direct_referral_count ?? 0)
   const directVolume = formatUsd(overview?.direct_presale_volume ?? 0)
 
-  const teamCount = String(overview?.descendant_count ?? 0)
+  const teamCount = formatCount(overview?.descendant_count ?? 0)
   const teamVolume = formatUsd(overview?.sales_team_market ?? 0)
 
   const shareholderRank = formatPresaleRank(displayRank)

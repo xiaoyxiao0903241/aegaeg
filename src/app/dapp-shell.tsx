@@ -27,7 +27,7 @@ import {
   shellWindowClass,
 } from '~/app/shell-layout'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
-import { scrollToGenesisPageTop } from '~/app/utils'
+import { scrollDappPanelsToTop, scrollToGenesisPageTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 export function DappShell() {
@@ -55,6 +55,10 @@ export function DappShell() {
       descriptionMeta.setAttribute('content', messages.home.meta.description)
     }
   }, [messages.home.meta.description, messages.home.meta.title])
+
+  useEffect(() => {
+    scrollDappPanelsToTop()
+  }, [activeTab])
 
   const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = shellState.detailCollapsed
@@ -104,7 +108,7 @@ export function DappShell() {
               <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 
               <DappScrollFadeHost>
-                <aside className={shellWidgetClass()}>
+                <aside className={shellWidgetClass()} data-dapp-widget-panel>
                   <div className={shellMobileDrawerClass}>
                     <button
                       aria-controls={mobileNavId}

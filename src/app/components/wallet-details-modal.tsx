@@ -149,7 +149,13 @@ export function WalletDetailsModal({
   }
 
   const addressLabel = formatAddress(walletAddress)
-  const balanceValue = nativeBalanceLoading ? '…' : nativeBalance ? nativeBalance.displayValue : '—'
+  const balanceValue = nativeBalanceLoading
+    ? '…'
+    : nativeBalance
+      ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 }).format(
+          Number(nativeBalance.displayValue),
+        )
+      : '—'
   const balanceSymbol = nativeBalance?.symbol ?? defaultChain.nativeCurrency?.symbol ?? 'BNB'
   const displayTokenRows = WALLET_TOKEN_DEFINITIONS.map((definition) => {
     const loaded = tokenBalances.find((token) => token.symbol === definition.symbol)

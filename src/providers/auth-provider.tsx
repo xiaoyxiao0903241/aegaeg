@@ -217,8 +217,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const store = useAuthStore.getState()
 
     if (shouldPurgeExpiredSession(store.session)) {
-      store.clearSession()
-      useDappActions.getState().afterAuthLogout()
+      // Try silent re-login with the cached SIWE signature before logging out.
+      if (walletAddress && account && !store.isLoggingIn) {
+        void login().catch(() => {
+          store.clearSession()
+          useDappActions.getState().afterAuthLogout()
+        })
+      } else {
+        store.clearSession()
+        useDappActions.getState().afterAuthLogout()
+      }
       return
     }
 
@@ -239,25 +247,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       useDappActions.getState().afterAuthLogout()
     }
-  }, [hasHydrated, session?.expiresAt, session?.token, walletAddress])
+  }, [hasHydrated, session?.expiresAt, session?.token, walletAddress, account, login])
 
   useEffect(() => {
-    if (!session?.expiresAt) return
+    if (!session?.expiresAt || !walletAddress) return
+
+    const store = useAuthStore.getState()
+    if (store.isLoggingIn) return
 
     const delay = session.expiresAt - Date.now()
-    if (delay <= 0) {
-      useAuthStore.getState().clearSession()
-      useDappActions.getState().afterAuthLogout()
+    const renewThreshold = 60_000
+    const renewDelay = Math.max(0, delay - renewThreshold)
+
+    if (renewDelay <= 0) {
+      if (delay > 0) {
+        // Token expires within the next minute — renew immediately.
+        void login().catch(() => undefined)
+      }
       return
     }
 
     const timerId = window.setTimeout(() => {
-      useAuthStore.getState().clearSession()
-      useDappActions.getState().afterAuthLogout()
-    }, delay)
+      void login().catch(() => undefined)
+    }, renewDelay)
 
     return () => window.clearTimeout(timerId)
-  }, [session?.expiresAt, session?.token])
+  }, [session?.expiresAt, session?.token, walletAddress, login])
 
   useEffect(() => {
     if (
@@ -286,12 +301,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [login])
 
   const invalidateSession = useCallback(() => {
-    const { clearSession, setLoginError } = useAuthStore.getState()
-    clearSession()
-    setLoginError(null)
+    const store = useAuthStore.getState()
+    // JWT expired or was rejected by the backend. Try silent re-login with the
+    // cached SIWE signature before forcing the user to sign again.
+    if (account && !store.isLoggingIn) {
+      void login().catch(() => {
+        store.clearSession()
+        store.setLoginError(null)
+        silentLoginAttemptRef.current = null
+        useDappActions.getState().afterAuthLogout()
+      })
+      return
+    }
+
+    store.clearSession()
+    store.setLoginError(null)
     silentLoginAttemptRef.current = null
     useDappActions.getState().afterAuthLogout()
-  }, [])
+  }, [account, login])
 
   const logout = useCallback(() => {
     const { session, clearSession, removeSessionForAddress, setLoginError } = useAuthStore.getState()

@@ -8,8 +8,8 @@ export function formatPresaleRank(rank: number): string {
 }
 
 /** Community member table — S0 or missing rank shows placeholder, otherwise S1–S10. */
-export function formatMemberGenesisTitle(rank: number): string {
-  if (!Number.isFinite(rank) || rank <= 0) return '—'
+export function formatMemberGenesisTitle(rank: number | undefined): string {
+  if (rank == null || !Number.isFinite(rank) || rank <= 0) return '—'
   return `S${Math.trunc(rank)}`
 }
 
@@ -64,11 +64,11 @@ export function formatUsdCompact(value: string | number): string {
   if (!Number.isFinite(num)) return '$0'
 
   if (num >= 1_000_000) {
-    return `$${(num / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`
+    return `$${new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(num / 1_000_000)}M`
   }
 
   if (num >= 1_000) {
-    return `$${(num / 1_000).toFixed(1).replace(/\.0$/, '')}K`
+    return `$${new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(num / 1_000)}K`
   }
 
   return formatUsd(num)
@@ -86,6 +86,12 @@ export function formatBlockTime(timestamp: number): string {
 
   const date = new Date(timestamp * 1000)
   return formatDateTimeParts(date)
+}
+
+export function formatCount(value: number | string | bigint): string {
+  const num = Number(value)
+  if (!Number.isFinite(num)) return '0'
+  return new Intl.NumberFormat('en-US').format(num)
 }
 
 export function formatPaidAmountCompact(amount: string): string {
@@ -232,7 +238,7 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
     formatRegisterDate(item.register_time),
     formatShortAddress(item.address),
     formatMemberGenesisTitle(item.presale_rank),
-    String(item.direct_referral_count ?? 0),
+    formatCount(item.direct_referral_count ?? 0),
     formatUsd(Number(item.sales_team_market)),
   ]
 }
@@ -273,7 +279,10 @@ function formatSalesLogAgx(
 ): string {
   const tokens = Number(item.tokens)
   if (Number.isFinite(tokens) && tokens > 0) {
-    return tokens.toFixed(2)
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(tokens)
   }
 
   const amountUsd1 = Number(item.amount)
@@ -284,7 +293,12 @@ function formatSalesLogAgx(
     resolvePhaseDiscountBps(item.phase_id),
     agxPriceUsd,
   )
-  return estimated > 0 ? estimated.toFixed(2) : '—'
+  return estimated > 0
+    ? new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(estimated)
+    : '—'
 }
 
 export function mapSalesLogToDesktopRow(
@@ -330,11 +344,6 @@ export function mapRewardLogToRow(
   ]
 }
 
-function parsePercentLabel(value: string): number {
-  const numeric = Number(value.replace('%', '').trim())
-  return Number.isFinite(numeric) && numeric > 0 ? numeric / 100 : 0
-}
-
 function formatOrderAmountUsd(orderAmount: string | undefined): string {
   const num = Number(orderAmount)
   if (!Number.isFinite(num) || num <= 0) return '—'
@@ -344,35 +353,20 @@ function formatOrderAmountUsd(orderAmount: string | undefined): string {
 export function mapTeamRewardClaimLogToRow(
   item: TeamRewardClaimLogItem,
   labels: {
-    bonusRateLabel: string
-    claimableLabel: string
-    claimedLabel: string
     logStatus: RewardLogStatusLabels
-    sourceLabel: string
   },
 ): string[] {
   const amountNum = Number(item.amount)
   const amountLabel = Number.isFinite(amountNum)
     ? `+${formatUsd(Math.abs(amountNum), 2)}`
     : '—'
-  const rateFraction = parsePercentLabel(labels.bonusRateLabel)
-  const contributionLabel =
-    amountNum > 0 && rateFraction > 0
-      ? formatUsd(amountNum / rateFraction, 0)
-      : '—'
   const statusKey = resolveTeamRewardClaimStatusKey(item.status)
-  const statusLabel =
-    statusKey === 'paid'
-      ? labels.claimedLabel
-      : statusKey === 'pending'
-        ? labels.claimableLabel
-        : labels.logStatus[statusKey]
+  const statusLabel = labels.logStatus[statusKey]
 
   return [
     formatApiDateTime(item.claimed_at ?? item.created_at),
     amountLabel,
-    labels.sourceLabel,
-    contributionLabel,
+    formatMemberGenesisTitle(item.presale_rank),
     statusLabel,
   ]
 }

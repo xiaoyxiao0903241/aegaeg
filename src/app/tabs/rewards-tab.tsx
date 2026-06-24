@@ -32,7 +32,7 @@ import { toast } from 'sonner'
 import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { dappAssets } from '~/app/assets'
-import { buildRewardTierRows, getTeamBonusRateLabel, getTeamRequirementLegRank } from '~/lib/presale/tier-table'
+import { buildRewardTierRows, getTeamRequirementLegRank } from '~/lib/presale/tier-table'
 import {
   DAPP_TABLE_PAGE_SIZE,
   dappTableViewState,
@@ -312,7 +312,6 @@ export function RewardsContent() {
   const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
   const [referralPage, setReferralPage] = useState(1)
   const [teamPage, setTeamPage] = useState(1)
-  const bonusRateLabel = getTeamBonusRateLabel(displayRank)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
     tablePageQuery(referralPage),
     sessionReady,
@@ -330,13 +329,9 @@ export function RewardsContent() {
   )
   const teamHistoryLabels = useMemo(
     () => ({
-      bonusRateLabel,
-      claimableLabel: t.common.claimable,
-      claimedLabel: t.rewards.logStatus.claimed,
       logStatus: t.rewards.logStatus,
-      sourceLabel: t.rewards.teamHistorySource,
     }),
-    [bonusRateLabel, t.common.claimable, t.rewards.logStatus, t.rewards.teamHistorySource],
+    [t.rewards.logStatus],
   )
 
   const referralHistoryRows =
@@ -407,10 +402,9 @@ export function RewardsContent() {
           t.tables.status,
         ]
       : [
-          t.tables.time,
+          t.tables.claimTime,
           t.tables.amount,
-          t.tables.source,
-          t.tables.contribution,
+          t.tables.genesisRank,
           t.tables.status,
         ]
 

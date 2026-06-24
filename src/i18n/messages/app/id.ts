@@ -310,7 +310,6 @@ const app = defineMessages({
           },
         ],
       },
-      teamHistorySource: 'Period Settle',
       rewardType: {
         referralPaid: 'Ref Reward',
         referralWithdrawn: 'Ref Claim',
@@ -417,6 +416,7 @@ const app = defineMessages({
     },
     tables: {
       time: 'Time',
+      claimTime: 'Waktu Klaim',
       paid: 'Paid',
       status: 'Status',
       discount: 'Disc.',
@@ -429,6 +429,7 @@ const app = defineMessages({
       amount: 'Amt',
       from: 'From',
       source: 'Source',
+      genesisRank: 'Peringkat Genesis',
       joined: 'Joined',
       address: 'Address',
       direct: 'Direct',

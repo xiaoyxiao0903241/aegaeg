@@ -6,7 +6,7 @@ import {
   formatShareholderHintForRank,
 } from '~/lib/api/format-display'
 import { resolveDisplayPresaleRank } from '~/lib/presale/rank'
-import { formatTokenAmount } from '~/lib/swap/token-amount'
+import { formatTokenAmountToNumber } from '~/lib/swap/token-amount'
 import { useAuth } from '~/providers/auth-provider'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useDappShell } from '~/app/dapp-shell-context'
@@ -23,7 +23,7 @@ export function useShareholderRank() {
 
   const chainVolumeUsd = useMemo(() => {
     if (!userTotalQuery.data) return 0
-    return Number(formatTokenAmount(userTotalQuery.data, 18, 0))
+    return formatTokenAmountToNumber(userTotalQuery.data, 18)
   }, [userTotalQuery.data])
 
   const personalVolumeUsd = useMemo(() => {

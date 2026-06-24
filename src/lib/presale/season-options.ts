@@ -38,7 +38,7 @@ export function buildSeasonOptions(
         discount: `-${discountPct}%`,
         airdrop,
       },
-      price: `≈ $${effectivePrice.toFixed(2)}`,
+      price: `≈ $${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(effectivePrice)}`,
       date: formatPhaseDateRange(phase.startTime, phase.endTime),
     }
   })

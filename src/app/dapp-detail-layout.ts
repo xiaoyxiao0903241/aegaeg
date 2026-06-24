@@ -15,7 +15,7 @@ export const dappDetailSectionGapClass = 'mt-8.5 max-dapp:mt-6'
 export const dappWidgetFooterTopGapClass = 'mt-3.5 max-dapp:mt-3'
 
 /** Genesis season carousel — Figma `4150:19854` @ 16px root */
-export const seasonCarouselMaxWidthClass = 'w-full min-w-0 max-w-[22rem]'
+export const seasonCarouselMaxWidthClass = 'w-full min-w-0'
 export const seasonCardSizeClass = 'min-h-[7.8125rem] w-[8.75rem]'
 export const seasonCarouselSlideGapClass = 'pl-2.5'
 export const seasonCarouselTrackBleedClass = '-ml-2.5'

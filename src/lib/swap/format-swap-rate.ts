@@ -13,8 +13,9 @@ function formatRateRatioFixed(
     .padStart(decimalsOut, '0')
     .slice(0, fractionDigits)
     .padEnd(fractionDigits, '0')
+  const groupedWhole = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-  return `${whole}.${fractionText}`
+  return `${groupedWhole}.${fractionText}`
 }
 
 /** Swap widget rate label — `1 : 1.0010` (Figma colon format, 4 fraction digits). */

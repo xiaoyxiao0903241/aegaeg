@@ -20,7 +20,7 @@ import {
   getAirdropLabelForPhase,
 } from '~/lib/presale/season-options'
 import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
-import { formatTokenAmount, parseTokenAmount } from '~/lib/swap/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber, parseTokenAmount } from '~/lib/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale-write'
 import { MAX_UINT256 } from '~/web3/abis'
 import { formatUsd } from '~/lib/api/format-display'
@@ -107,7 +107,7 @@ export function useGenesisWidget() {
 
   const phaseIndex = activePhase?.index ?? 0
   const agxPriceUsd = useMemo(() => {
-    const fromChain = Number(formatTokenAmount(agxPriceWei, USD1_DECIMALS, 2))
+    const fromChain = formatTokenAmountToNumber(agxPriceWei, USD1_DECIMALS)
     return fromChain > 0 ? fromChain : Number(PRESALE_CONFIG.agxPriceUsd)
   }, [agxPriceWei])
   const discountBps = Number(activePhase?.discountBps ?? PRESALE_CONFIG.phases[0]?.discountBps ?? 0)
@@ -158,7 +158,7 @@ export function useGenesisWidget() {
     remainingPhaseAmount < remainingUserAmount
       ? remainingPhaseAmount
       : remainingUserAmount
-  const quotaLabel = `$${Number(formatTokenAmount(minAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')} – $${Number(formatTokenAmount(maxAmount, USD1_DECIMALS, 0)).toLocaleString('en-US')}`
+  const quotaLabel = `$${formatTokenAmount(minAmount, USD1_DECIMALS, 0)} – $${formatTokenAmount(maxAmount, USD1_DECIMALS, 0)}`
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
   const hasSufficientBalance = usd1Balance >= purchaseAmount
@@ -331,21 +331,22 @@ export function useGenesisWidget() {
       ? formatPhaseCountdown(countdownTarget.targetTime, nowSeconds)
       : '—',
     countdownMode: countdownTarget?.mode ?? null,
-    globalPurchasedLabel: Number(
-      formatTokenAmount(totalPurchasedQuery.data ?? 0n, USD1_DECIMALS, 0),
-    ).toLocaleString('en-US'),
+    globalPurchasedLabel: formatTokenAmount(totalPurchasedQuery.data ?? 0n, USD1_DECIMALS, 0),
     globalPurchasedLoading: totalPurchasedQuery.isLoading,
     userTotalLabel: formatTokenAmount(userTotal, USD1_DECIMALS, 0),
     userTotal,
     usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, 2),
-    estimatedAgxLabel: estimatedAgx.toFixed(2),
-    payUsd1Label: `${payUsd1} USD1`,
+    estimatedAgxLabel: new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(estimatedAgx),
+    payUsd1Label: `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(payUsd1)} USD1`,
     contributionValueLabel: formatUsd(contributionValueUsd),
     xTokenAirdropLabel: payUsd1 > 0 ? formatUsd(xTokenAirdropUsd) : '—',
     airdropThresholdUsd,
     airdropThresholdLoading: airdropThresholdQuery.isLoading,
     quotaLabel,
-    referencePriceLabel: `$${agxPriceUsd.toFixed(2)}`,
+    referencePriceLabel: `$${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(agxPriceUsd)}`,
     airdropLabel: getAirdropLabelForPhase(phaseIndex),
     agxPriceUsd,
     walletReady,

@@ -309,7 +309,6 @@ const app = defineMessages({
           },
         ],
       },
-      teamHistorySource: '周期结算',
       rewardType: {
         referralPaid: '推荐奖励',
         referralWithdrawn: '推荐奖励领取',
@@ -416,6 +415,7 @@ const app = defineMessages({
     },
     tables: {
       time: '时间',
+      claimTime: '领取时间',
       paid: '金额',
       status: '状态',
       discount: '折扣',
@@ -428,6 +428,7 @@ const app = defineMessages({
       amount: '金额',
       from: '来源地址',
       source: '来源',
+      genesisRank: '创世等级',
       joined: '加入时间',
       address: '地址',
       direct: '直推',

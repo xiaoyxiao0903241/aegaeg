@@ -1,4 +1,4 @@
-import { formatTokenAmount, parseTokenAmount } from '~/lib/swap/token-amount'
+import { formatTokenAmountToNumber, parseTokenAmount } from '~/lib/swap/token-amount'
 import { PRESALE_CONFIG } from '~/config/presale'
 
 export interface PresalePhaseOnChain {
@@ -170,7 +170,7 @@ export const X_AIRDROP_MIN_PERIOD_USD = 5_000
 
 export function presaleAirdropThresholdToUsd(thresholdWei: bigint): number {
   if (thresholdWei <= 0n) return X_AIRDROP_MIN_PERIOD_USD
-  return Number(formatTokenAmount(thresholdWei, USD1_DECIMALS, 0))
+  return formatTokenAmountToNumber(thresholdWei, USD1_DECIMALS)
 }
 
 export function getAirdropBpsForPhase(phaseIndex: number, phase?: PresalePhaseOnChain): number {

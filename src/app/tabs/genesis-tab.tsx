@@ -7,9 +7,12 @@ import { buttonDisabledClass } from '~/components/button'
 import { revealClass } from '~/lib/reveal'
 import { toast } from 'sonner'
 import { useSalesLogs } from '~/hooks/use-api-data'
+import { queryClient } from '~/lib/query/query-client'
+import { queryKeys } from '~/lib/query/query-keys'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import {
   calcProgressPercent,
+  formatCount,
   formatUsd,
   mapSalesLogToDesktopRow,
 } from '~/lib/api/format-display'
@@ -49,7 +52,7 @@ import {
   SeasonOptionSkeleton,
 } from '~/app/components/dapp-skeleton'
 import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/web3/resolve-contract-error-message'
-import { formatTokenAmount } from '~/lib/swap/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/lib/swap/token-amount'
 
 export function GenesisWidget() {
   const { messages: t } = useI18n()
@@ -83,6 +86,9 @@ export function GenesisWidget() {
     const result = await genesis.participate()
     if (result.success) {
       toast.success(t.genesis.joinSuccess)
+      window.setTimeout(() => {
+        void queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
+      }, 2000)
       return
     }
 
@@ -133,7 +139,7 @@ export function GenesisWidget() {
       )}
 
       <label className="grid gap-2 text-xs leading-[1.5] text-muted-foreground">
-        <span>{t.genesis.shares.replace('{max}', String(genesis.maxShares))}</span>
+        <span>{t.genesis.shares.replace('{max}', formatCount(genesis.maxShares))}</span>
         <div className="flex gap-2">
           <div className="relative flex min-w-0 flex-1">
             <input
@@ -235,11 +241,11 @@ export function GenesisContent() {
       10000,
   )
   const chainMaxContribution = genesis.activePhase
-    ? Number(formatTokenAmount(genesis.activePhase.maxAmount, 18, 0))
+    ? formatTokenAmountToNumber(genesis.activePhase.maxAmount, 18)
     : 0
   const maxContribution =
     chainMaxContribution > 0 ? chainMaxContribution : phaseMaxUsd1
-  const contributedUsd = Number(formatTokenAmount(genesis.userTotal, 18, 0))
+  const contributedUsd = formatTokenAmountToNumber(genesis.userTotal, 18)
   const contributed = String(contributedUsd)
   const contributionProgress = calcProgressPercent(contributed, maxContribution)
   const contributedLabel = `${formatUsd(contributed)} / ${formatUsd(maxContribution)}`
