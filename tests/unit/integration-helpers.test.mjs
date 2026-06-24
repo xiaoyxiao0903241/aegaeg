@@ -48,9 +48,13 @@ test('normalizeTeamRewardClaimPayload accepts snake_case fields', async () => {
     signature: '0xabc',
     salt: '0xsalt',
     amount_wei: '1000000000000000000',
+    sign_type: '1',
+    expire_time: '1735689600',
   })
 
   assert.equal(normalized.signature, '0xabc')
   assert.equal(normalized.salt, '0xsalt')
   assert.equal(normalized.amountWei, 1000000000000000000n)
+  assert.equal(normalized.signType, 1n)
+  assert.equal(normalized.expireTime, 1735689600n)
 })

@@ -46,7 +46,10 @@ export const REFERRAL_METHODS = {
 } as const
 
 export const REWARD_CLAIMER_METHODS = {
-  claim: 'function claim(bytes32 salt, uint256 amount, bytes signature)',
+  // Verified on-chain (impl 0x0265…fb7b, selector 0xf2ee58d4) and per
+  // contract.md §4.1: claimReward(signType, amount, expireTime, salt, signature).
+  claimReward:
+    'function claimReward(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes signature)',
   rewardSigner: 'function rewardSigner() view returns (address)',
 } as const
 

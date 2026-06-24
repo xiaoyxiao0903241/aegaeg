@@ -6,12 +6,15 @@ import { cn } from '~/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 
 const TABLE_CELL =
-  'border-b-[0.5px] border-border px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal'
+  'min-w-[88px] border-b-[0.5px] border-border px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal'
 
 const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
 
+// Unified across all tables: every column has a min-width + padding (TABLE_CELL),
+// the table sizes to content (w-max) but fills the container (min-w-full), and
+// the wrapper's overflow-x-auto lets it scroll horizontally when it overflows.
 const TABLE_CLASS =
-  'w-full min-w-0 table-fixed border-collapse text-sm leading-normal max-dapp:w-max max-dapp:min-w-full max-dapp:table-auto max-dapp:text-xs'
+  'w-max min-w-full table-auto border-collapse text-sm leading-normal max-dapp:text-xs'
 
 const TABLE_WRAP_PADDING =
   'dapp:px-5 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5'

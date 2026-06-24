@@ -29,7 +29,8 @@ export function useReferral(sessionReady: boolean) {
   }, [])
   const [referrerInput, setReferrerInput] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  // Store the raw error so resolveReferralBindError can read the revert selector.
+  const [error, setError] = useState<unknown>(null)
 
   const address = account?.address
   const walletReady = Boolean(address)
@@ -86,7 +87,7 @@ export function useReferral(sessionReady: boolean) {
       await referralQuery.refetch()
       return true
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Bind referral failed')
+      setError(caught)
       return false
     } finally {
       setIsSubmitting(false)

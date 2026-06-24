@@ -29,12 +29,11 @@ import { useAuth } from '~/providers/auth-provider'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { toast } from 'sonner'
-import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
+import { resolveTeamClaimError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { dappAssets } from '~/app/assets'
 import { buildRewardTierRows, getTeamRequirementLegRank } from '~/lib/presale/tier-table'
 import {
-  DAPP_TABLE_PAGE_SIZE,
   dappTableViewState,
   tablePageQuery,
 } from '~/lib/table-pagination'
@@ -102,9 +101,9 @@ export function RewardsWidget() {
 
   useEffect(() => {
     if (!teamClaim.error) return
-    const message = toWalletUserFacingMessage(teamClaim.error)
+    const message = resolveTeamClaimError(teamClaim.error, t.rewards.claimErrors)
     if (message) toast.error(message)
-  }, [teamClaim.error])
+  }, [teamClaim.error, t.rewards.claimErrors])
 
   useEffect(() => {
     if (!sessionReady || !loginError) return
@@ -120,20 +119,21 @@ export function RewardsWidget() {
     ? t.rewards.progressMaxPersonal
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
 
-  const teamProgressLabel = tierProgress.isMaxRank
-    ? t.rewards.progressMaxTeam
-    : t.rewards.teamVolume
+  // Label stays "体系业绩"; at max rank the value shows "您已达到最高等级".
+  const teamProgressLabel = t.rewards.teamVolume
 
   const personalProgressValue = `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
 
-  const teamProgressValue = tierProgress.teamLegRank != null
-    ? `${formatUsd(tierProgress.teamCurrentUsd)} · ${t.rewards.teamLegRequirement.replace(
-        '{rank}',
-        formatPresaleRank(tierProgress.teamLegRank),
-      )}`
-    : teamVolumeUsd <= 0
-      ? formatUsd(0)
-      : `${formatUsd(tierProgress.teamCurrentUsd)} / ${formatUsd(tierProgress.teamTargetUsd ?? 0)}`
+  const teamProgressValue = tierProgress.isMaxRank
+    ? t.rewards.progressMaxTeam
+    : tierProgress.teamLegRank != null
+      ? `${formatUsd(tierProgress.teamCurrentUsd)} · ${t.rewards.teamLegRequirement.replace(
+          '{rank}',
+          formatPresaleRank(tierProgress.teamLegRank),
+        )}`
+      : teamVolumeUsd <= 0
+        ? formatUsd(0)
+        : `${formatUsd(tierProgress.teamCurrentUsd)} / ${formatUsd(tierProgress.teamTargetUsd ?? 0)}`
 
   const personalProgressPercent = tierProgress.personalProgressPercent
 
@@ -265,8 +265,8 @@ export function RewardsWidget() {
                 const claimedAmount = result.order?.amount
                 const message =
                   claimedAmount && Number.isFinite(Number(claimedAmount))
-                    ? `${t.rewards.claim} · +${formatUsd(claimedAmount, 2)}`
-                    : t.rewards.claim
+                    ? `${t.rewards.claimSuccess} · +${formatUsd(claimedAmount, 2)}`
+                    : t.rewards.claimSuccess
                 toast.success(message)
               })
             }
@@ -312,14 +312,16 @@ export function RewardsContent() {
   const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
   const [referralPage, setReferralPage] = useState(1)
   const [teamPage, setTeamPage] = useState(1)
-  const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
-    tablePageQuery(referralPage),
-    sessionReady,
-  )
-  const { data: teamClaimLogs, isLoading: teamClaimLogsLoading } = useTeamRewardClaimLogs(
-    tablePageQuery(teamPage),
-    sessionReady,
-  )
+  const {
+    data: rewardLogs,
+    isLoading: rewardLogsLoading,
+    refresh: refreshReferralLogs,
+  } = useRewardLogs(tablePageQuery(referralPage), sessionReady)
+  const {
+    data: teamClaimLogs,
+    isLoading: teamClaimLogsLoading,
+    refresh: refreshTeamLogs,
+  } = useTeamRewardClaimLogs(tablePageQuery(teamPage), sessionReady)
   const rewardLogLabels = useMemo(
     () => ({
       rewardType: t.rewards.rewardType,
@@ -499,7 +501,12 @@ export function RewardsContent() {
               { active: historyTab === 'referral', label: t.rewards.referralRewards },
               { active: historyTab === 'team', label: t.rewards.teamRewards },
             ]}
-            onSelect={(index) => setHistoryTab(index === 0 ? 'referral' : 'team')}
+            onSelect={(index) => {
+              const next = index === 0 ? 'referral' : 'team'
+              setHistoryTab(next)
+              // Re-fetch the selected tab's records on every tab click.
+              void (next === 'referral' ? refreshReferralLogs() : refreshTeamLogs())
+            }}
           />
           {historyTable.requiresAuth ? (
             <DappTableAuthPrompt

@@ -10,7 +10,9 @@ export function useTeamRewardClaim() {
   const { token, isAuthenticated } = useAuth()
   const afterTeamClaim = useDappActions((state) => state.afterTeamClaim)
   const [isClaiming, setIsClaiming] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  // Store the raw error so resolveTeamClaimError can dig into cause/data for the
+  // revert selector (e.g. 0x66e6698b ErrorSignatureExpired).
+  const [error, setError] = useState<unknown>(null)
 
   const claim = useCallback(async (): Promise<ClaimConfirmResult | null> => {
     if (!account || !token || !isAuthenticated) {
@@ -26,7 +28,7 @@ export function useTeamRewardClaim() {
       afterTeamClaim()
       return confirmResult
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Claim failed')
+      setError(caught)
       return null
     } finally {
       setIsClaiming(false)

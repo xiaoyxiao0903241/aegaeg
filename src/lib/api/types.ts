@@ -116,10 +116,16 @@ export interface TeamRewardClaimLogItem {
 
 export interface TeamRewardSignature {
   signature: string
-  /** 文档未声明；若后端扩展返回则用于链上 claim */
+  /**
+   * On-chain claimReward(signType, amount, expireTime, salt, signature) needs
+   * all of these; the backend signs over them, so they must be returned here.
+   * Field names are matched flexibly in normalizeTeamRewardClaimPayload.
+   */
   salt?: string
   amount?: string
   amountWei?: string
+  signType?: string | number
+  expireTime?: string | number
 }
 
 export interface ClaimConfirmRequest {

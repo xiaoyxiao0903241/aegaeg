@@ -25,7 +25,7 @@ import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { QuickLinks } from '~/app/components/quick-links'
 import { buildCommunityQuickLinkItems } from '~/config/community-links'
 import { toast } from 'sonner'
-import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
+import { resolveReferralBindError } from '~/lib/web3/resolve-contract-error-message'
 import {
   REFERRAL_CARD_CLASS,
   SHAREHOLDER_ACTION_CLASS,
@@ -77,9 +77,9 @@ function CommunityConnectedWidget({
 
   useEffect(() => {
     if (!referral.error) return
-    const message = toWalletUserFacingMessage(referral.error)
+    const message = resolveReferralBindError(referral.error, t.community.bindErrors)
     if (message) toast.error(message)
-  }, [referral.error])
+  }, [referral.error, t.community.bindErrors])
 
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>
