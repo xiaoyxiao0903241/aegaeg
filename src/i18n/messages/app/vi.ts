@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'USD1 Allowance không đủ. Vui lòng Approve trước.',
       purchaseUnavailable: 'Hiện không thể subscribe. Kiểm tra shares hoặc season status.',
       walletNotConnected: 'Ví đã ngắt kết nối. Vui lòng reconnect để ký tx.',
+      errors: {
+        notBound: 'Hãy liên kết người giới thiệu trước khi tham gia.',
+        paused: 'Subscribe đang tạm dừng. Vui lòng thử lại sau.',
+        invalidAmount: 'Số tiền phải là bội số của 100 USD.',
+        phaseInactive: 'Season này chưa bắt đầu hoặc đã kết thúc.',
+        belowMin: 'Số tiền thấp hơn mức tối thiểu của Season.',
+        soldOut: 'Season này đã bán hết.',
+        userLimitExceeded: 'Vượt giới hạn mỗi ví của Season. Hãy giảm số tiền.',
+        invalidPhase: 'Season không hợp lệ.',
+        systemConfig: 'Lỗi cấu hình hệ thống. Vui lòng thử lại sau.',
+      },
       contributionsSyncPending: 'On-chain subscription đã confirm. Lịch sử đang sync, vui lòng refresh sau.',
       contributionsEmpty: {
         title: 'Chưa có lịch sử Genesis',

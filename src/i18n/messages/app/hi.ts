@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'USD1 Allowance अपर्याप्त। पहले Approve करें।',
       purchaseUnavailable: 'अभी Subscribe संभव नहीं। Shares या Season Status जाँचें।',
       walletNotConnected: 'Wallet Disconnect। Tx Sign करने से पहले फिर से Connect करें।',
+      errors: {
+        notBound: 'भाग लेने से पहले Referrer Bind करें।',
+        paused: 'Subscribe रुका हुआ है। कृपया बाद में पुनः प्रयास करें।',
+        invalidAmount: 'राशि 100 USD के गुणक में होनी चाहिए।',
+        phaseInactive: 'यह Season शुरू नहीं हुआ या समाप्त हो चुका है।',
+        belowMin: 'राशि इस Season की न्यूनतम सीमा से कम है।',
+        soldOut: 'यह Season बिक चुका है।',
+        userLimitExceeded: 'इस Season की प्रति Wallet सीमा से अधिक। राशि घटाएँ।',
+        invalidPhase: 'अमान्य Season।',
+        systemConfig: 'सिस्टम कॉन्फ़िगरेशन त्रुटि। कृपया बाद में पुनः प्रयास करें।',
+      },
       contributionsSyncPending: 'On-chain Subscribe कन्फर्म। History सिंक हो रही है, कृपया बाद में Refresh करें।',
       contributionsEmpty: {
         title: 'अभी कोई Genesis Record नहीं',

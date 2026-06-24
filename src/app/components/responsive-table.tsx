@@ -21,6 +21,7 @@ const HIGHLIGHTED_ROW =
 
 export function ResponsiveTable({
   className = '',
+  colWidths,
   compact = false,
   emphasisColumns = [],
   headers,
@@ -34,6 +35,8 @@ export function ResponsiveTable({
   statusColumns = [],
 }: {
   className?: string
+  /** Per-column width hints (e.g. '140px'); `undefined` leaves a column auto. */
+  colWidths?: Array<string | undefined>
   compact?: boolean
   emphasisColumns?: number[]
   headers: string[]
@@ -63,6 +66,16 @@ export function ResponsiveTable({
 
   const table = (
     <table className={TABLE_CLASS}>
+      {colWidths ? (
+        <colgroup>
+          {headers.map((header, index) => (
+            <col
+              key={header}
+              style={colWidths[index] ? { width: colWidths[index] } : undefined}
+            />
+          ))}
+        </colgroup>
+      ) : null}
       <thead>
         <tr>
           {headers.map((header) => (

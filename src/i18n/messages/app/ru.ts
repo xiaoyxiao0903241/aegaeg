@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'Недостаточно USD1 Allowance. Сначала Approve.',
       purchaseUnavailable: 'Subscribe сейчас недоступна. Проверьте Shares или Season Status.',
       walletNotConnected: 'Кошелёк отключён. Переподключите для подписи Tx.',
+      errors: {
+        notBound: 'Привяжите реферера перед участием.',
+        paused: 'Подписка приостановлена. Повторите попытку позже.',
+        invalidAmount: 'Сумма должна быть кратна 100 USD.',
+        phaseInactive: 'Этот сезон не начался или уже завершён.',
+        belowMin: 'Сумма меньше минимума этого сезона.',
+        soldOut: 'Этот сезон распродан.',
+        userLimitExceeded: 'Превышен лимит на кошелёк в этом сезоне. Уменьшите сумму.',
+        invalidPhase: 'Недействительный сезон.',
+        systemConfig: 'Ошибка конфигурации системы. Повторите попытку позже.',
+      },
       contributionsSyncPending: 'On-chain Subscribe подтверждена. История синхронизируется — обновите позже.',
       contributionsEmpty: {
         title: 'Записей Genesis пока нет',

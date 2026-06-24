@@ -12,6 +12,16 @@ import {
   readUserPresaleTotal,
 } from '~/web3/presale-read'
 import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
+import { readIsBindReferral } from '~/web3/referral-read'
+
+export function useIsBindReferralQuery(address?: string) {
+  return useQuery({
+    queryKey: ['chain', 'referral', 'isBound', address ?? ''],
+    queryFn: () => readIsBindReferral(address!),
+    enabled: Boolean(address),
+    staleTime: QUERY_STALE_TIME.balances,
+  })
+}
 
 export function usePresalePhasesQuery() {
   return useQuery({
@@ -42,6 +52,9 @@ export function usePresaleTotalPurchasedQuery() {
     queryKey: queryKeys.chain.presaleTotalPurchased,
     queryFn: () => readTotalPresalePurchased(),
     staleTime: QUERY_STALE_TIME.presale,
+    // Global cumulative contribution refreshes itself every 30s from chain.
+    refetchInterval: QUERY_STALE_TIME.presale,
+    refetchIntervalInBackground: false,
   })
 }
 

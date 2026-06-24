@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'USD1 Allowance tidak cukup. Silakan Approve terlebih dahulu.',
       purchaseUnavailable: 'Tidak dapat subscribe saat ini. Periksa shares atau season status.',
       walletNotConnected: 'Dompet terputus. Silakan reconnect untuk menandatangani tx.',
+      errors: {
+        notBound: 'Tautkan referrer sebelum ikut serta.',
+        paused: 'Subscribe sedang dijeda. Silakan coba lagi nanti.',
+        invalidAmount: 'Jumlah harus kelipatan 100 USD.',
+        phaseInactive: 'Season ini belum dimulai atau sudah berakhir.',
+        belowMin: 'Jumlah di bawah minimum Season ini.',
+        soldOut: 'Season ini sudah habis terjual.',
+        userLimitExceeded: 'Melebihi batas per wallet Season ini. Kurangi jumlahnya.',
+        invalidPhase: 'Season tidak valid.',
+        systemConfig: 'Kesalahan konfigurasi sistem. Silakan coba lagi nanti.',
+      },
       contributionsSyncPending: 'On-chain subscription telah dikonfirmasi. Riwayat sedang sync, silakan refresh sebentar.',
       contributionsEmpty: {
         title: 'Belum ada riwayat Genesis',

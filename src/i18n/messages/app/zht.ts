@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'USD1 授權不足，請先點擊授權。',
       purchaseUnavailable: '目前無法參與認購，請檢查份額或認購季狀態。',
       walletNotConnected: '錢包已斷開，請重新連接後再簽名交易。',
+      errors: {
+        notBound: '請先綁定推薦人後再參與認購。',
+        paused: '認購已暫停，請稍後再試。',
+        invalidAmount: '認購金額必須是 100 USD 的整數倍。',
+        phaseInactive: '當前認購季未開始或已結束。',
+        belowMin: '認購金額低於本季最低限額。',
+        soldOut: '當前認購季已售罄。',
+        userLimitExceeded: '超過本季單錢包認購上限，請減少金額。',
+        invalidPhase: '無效的認購季。',
+        systemConfig: '系統配置異常，請稍後再試。',
+      },
       contributionsSyncPending: '鏈上認購已確認，歷史記錄正在同步，請稍後重新整理。',
       contributionsEmpty: {
         title: '暫無共建記錄',

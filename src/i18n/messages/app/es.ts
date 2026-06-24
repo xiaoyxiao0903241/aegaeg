@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'Allowance USD1 insuficiente. Aprueba primero.',
       purchaseUnavailable: 'Suscripción no disponible. Revisa shares o el estado de la temporada.',
       walletNotConnected: 'Wallet desconectada. Reconecta antes de firmar transacciones.',
+      errors: {
+        notBound: 'Vincula un referente antes de participar.',
+        paused: 'La suscripción está pausada. Inténtalo más tarde.',
+        invalidAmount: 'El importe debe ser múltiplo de 100 USD.',
+        phaseInactive: 'Esta temporada no ha comenzado o ya terminó.',
+        belowMin: 'El importe es inferior al mínimo de la temporada.',
+        soldOut: 'Esta temporada está agotada.',
+        userLimitExceeded: 'Supera el límite por wallet de la temporada. Reduce el importe.',
+        invalidPhase: 'Temporada no válida.',
+        systemConfig: 'Error de configuración del sistema. Inténtalo más tarde.',
+      },
       contributionsSyncPending: 'Suscripción on-chain confirmada. El historial se está sincronizando; actualiza en un momento.',
       contributionsEmpty: {
         title: 'Sin registros',

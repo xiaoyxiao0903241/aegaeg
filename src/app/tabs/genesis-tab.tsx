@@ -7,8 +7,7 @@ import { buttonDisabledClass } from '~/components/button'
 import { revealClass } from '~/lib/reveal'
 import { toast } from 'sonner'
 import { useSalesLogs } from '~/hooks/use-api-data'
-import { queryClient } from '~/lib/query/query-client'
-import { queryKeys } from '~/lib/query/query-keys'
+import { invalidateGenesisPage } from '~/lib/query/invalidate'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import {
   calcProgressPercent,
@@ -52,7 +51,7 @@ import {
   SeasonOptionSkeleton,
 } from '~/app/components/dapp-skeleton'
 import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/web3/resolve-contract-error-message'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/lib/swap/token-amount'
+import { formatTokenAmountToNumber } from '~/lib/swap/token-amount'
 
 export function GenesisWidget() {
   const { messages: t } = useI18n()
@@ -62,6 +61,12 @@ export function GenesisWidget() {
   useEffect(() => {
     genesis.setShares(1)
   }, [genesis.setShares])
+
+  // Mirror shares as editable text so the input can be cleared transiently.
+  const [sharesText, setSharesText] = useState('1')
+  useEffect(() => {
+    setSharesText(String(genesis.shares))
+  }, [genesis.shares])
 
   const seasonIntro = formatGenesisSeasonIntro(
     t.genesis.intro,
@@ -74,12 +79,23 @@ export function GenesisWidget() {
   })
 
   const handleSharesChange = (value: string) => {
-    const parsed = Number.parseInt(value, 10)
-    if (Number.isNaN(parsed)) {
-      genesis.setShares(1)
+    // Allow clearing the field — keep the raw text so it can be empty.
+    if (value === '') {
+      setSharesText('')
       return
     }
-    genesis.setShares(Math.min(Math.max(parsed, 1), Math.max(genesis.maxShares, 1)))
+    const parsed = Number.parseInt(value, 10)
+    if (Number.isNaN(parsed)) return
+    const clamped = Math.min(Math.max(parsed, 1), Math.max(genesis.maxShares, 1))
+    setSharesText(String(clamped))
+    genesis.setShares(clamped)
+  }
+
+  const handleSharesBlur = () => {
+    if (sharesText === '' || Number.parseInt(sharesText, 10) < 1) {
+      genesis.setShares(1)
+      setSharesText('1')
+    }
   }
 
   const handleParticipate = useCallback(async () => {
@@ -87,7 +103,7 @@ export function GenesisWidget() {
     if (result.success) {
       toast.success(t.genesis.joinSuccess)
       window.setTimeout(() => {
-        void queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
+        invalidateGenesisPage()
       }, 2000)
       return
     }
@@ -98,11 +114,21 @@ export function GenesisWidget() {
         insufficientUsd1: t.genesis.insufficientUsd1,
         purchaseUnavailable: t.genesis.purchaseUnavailable,
         walletNotConnected: t.genesis.walletNotConnected,
+        notBound: t.genesis.errors.notBound,
+        paused: t.genesis.errors.paused,
+        invalidAmount: t.genesis.errors.invalidAmount,
+        phaseInactive: t.genesis.errors.phaseInactive,
+        belowMin: t.genesis.errors.belowMin,
+        soldOut: t.genesis.errors.soldOut,
+        userLimitExceeded: t.genesis.errors.userLimitExceeded,
+        invalidPhase: t.genesis.errors.invalidPhase,
+        systemConfig: t.genesis.errors.systemConfig,
       })
       if (message) toast.error(message)
     }
   }, [
     genesis,
+    t.genesis.errors,
     t.genesis.insufficientAllowance,
     t.genesis.insufficientUsd1,
     t.genesis.joinSuccess,
@@ -147,9 +173,10 @@ export function GenesisWidget() {
               disabled={!walletReady}
               max={Math.max(genesis.maxShares, 1)}
               min={1}
+              onBlur={handleSharesBlur}
               onChange={(e) => handleSharesChange(e.currentTarget.value)}
               type="number"
-              value={genesis.shares}
+              value={sharesText}
             />
             <span
               aria-hidden="true"
@@ -363,7 +390,7 @@ export function GenesisContent() {
               ) : genesis.globalPurchasedLoading ? (
                 <DappSkeleton className="h-6 w-40" tone="dark" />
               ) : (
-                `${genesis.globalPurchasedLabel} USD1`
+                `$${genesis.globalPurchasedLabel}`
               )}
             </strong>
             <p className="mt-2.5 mb-0 max-w-[70ch] text-xs leading-[1.5] text-white">
@@ -432,6 +459,7 @@ export function GenesisContent() {
           ) : (
             <>
               <ResponsiveTable
+                colWidths={['132px', '104px', '96px', '136px', '104px']}
                 compact
                 headers={tableHeaders}
                 isLoading={contributionsTable.showSkeleton}

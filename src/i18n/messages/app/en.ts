@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'Insufficient USD1 allowance. Approve first.',
       purchaseUnavailable: 'Subscription unavailable. Check shares or season status.',
       walletNotConnected: 'Wallet disconnected. Reconnect to sign.',
+      errors: {
+        notBound: 'Bind a referrer before joining.',
+        paused: 'Subscription is paused. Please try again later.',
+        invalidAmount: 'Amount must be a multiple of 100 USD.',
+        phaseInactive: 'This season has not started or has ended.',
+        belowMin: 'Amount is below this season\'s minimum.',
+        soldOut: 'This season is sold out.',
+        userLimitExceeded: 'Exceeds this season\'s per-wallet cap. Reduce the amount.',
+        invalidPhase: 'Invalid season.',
+        systemConfig: 'System configuration error. Please try again later.',
+      },
       contributionsSyncPending: 'On-chain subscription confirmed. History is syncing — refresh shortly.',
       contributionsEmpty: {
         title: 'No records yet',

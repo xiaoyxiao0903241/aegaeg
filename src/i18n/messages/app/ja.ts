@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'USD1 Allowanceが不足しています。先にApproveをクリックしてください。',
       purchaseUnavailable: '現在Subscribeできません。SharesまたはSeasonの状態を確認してください。',
       walletNotConnected: 'ウォレットが切断されました。Tx署名のために再接続してください。',
+      errors: {
+        notBound: '参加する前に紹介者をバインドしてください。',
+        paused: 'Subscribeは一時停止中です。後でもう一度お試しください。',
+        invalidAmount: '金額は100 USDの倍数である必要があります。',
+        phaseInactive: 'このSeasonは未開始または終了しています。',
+        belowMin: '金額がこのSeasonの最低額を下回っています。',
+        soldOut: 'このSeasonは完売しました。',
+        userLimitExceeded: 'このSeasonのウォレット上限を超えています。金額を減らしてください。',
+        invalidPhase: '無効なSeasonです。',
+        systemConfig: 'システム設定エラーです。後でもう一度お試しください。',
+      },
       contributionsSyncPending: 'オンチェーンSubscribeは確認済みです。履歴を同期中なので、しばらくしてから更新してください。',
       contributionsEmpty: {
         title: 'Genesis 記録はまだありません',

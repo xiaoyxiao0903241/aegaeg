@@ -7,7 +7,14 @@ import { QueryProvider } from '~/providers/query-provider'
 
 /**
  * Shared provider stack for Home + DApp entry points.
- * QueryProvider must wrap ThirdwebProvider — thirdweb hooks (e.g. useWalletBalance) use TanStack Query.
+ *
+ * QueryProvider MUST sit INSIDE ThirdwebProvider. thirdweb's ThirdwebProvider
+ * mounts its own QueryClientProvider; if ours were the outer one it would be
+ * shadowed, and component `useQuery`s would land on thirdweb's client while our
+ * module-level invalidation (invalidate.ts → queryClient singleton) targeted a
+ * different, orphan client — making every post-action refresh silently no-op.
+ * Nesting ours inside makes it the nearest provider, so reads and invalidations
+ * share one client.
  */
 export function WebRootProviders({ children }: { children: ReactNode }) {
   useEffect(() => {
@@ -15,11 +22,11 @@ export function WebRootProviders({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <QueryProvider>
-      <ThirdwebProvider>
+    <ThirdwebProvider>
+      <QueryProvider>
         <AutoConnect client={thirdwebClient} timeout={15_000} />
         <AuthProvider>{children}</AuthProvider>
-      </ThirdwebProvider>
-    </QueryProvider>
+      </QueryProvider>
+    </ThirdwebProvider>
   )
 }

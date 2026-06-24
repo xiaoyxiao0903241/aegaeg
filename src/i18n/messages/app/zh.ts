@@ -245,6 +245,17 @@ const app = defineMessages({
       insufficientAllowance: 'USD1 授权不足，请先点击授权。',
       purchaseUnavailable: '当前无法参与认购，请检查份额或认购季状态。',
       walletNotConnected: '钱包已断开，请重新连接后再签名交易。',
+      errors: {
+        notBound: '请先绑定推荐人后再参与认购。',
+        paused: '认购已暂停，请稍后再试。',
+        invalidAmount: '认购金额必须是 100 USD 的整数倍。',
+        phaseInactive: '当前认购季未开始或已结束。',
+        belowMin: '认购金额低于本季最低限额。',
+        soldOut: '当前认购季已售罄。',
+        userLimitExceeded: '超过本季单钱包认购上限，请减少金额。',
+        invalidPhase: '无效的认购季。',
+        systemConfig: '系统配置异常，请稍后再试。',
+      },
       contributionsSyncPending: '链上认购已确认，历史记录正在同步，请稍后刷新。',
       contributionsEmpty: {
         title: '暂无共建记录',

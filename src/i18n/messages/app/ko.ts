@@ -246,6 +246,17 @@ const app = defineMessages({
       insufficientAllowance: 'USD1 Allowance가 부족합니다. Approve를 먼저 진행하세요.',
       purchaseUnavailable: '현재 Subscribe할 수 없습니다. Shares 또는 Season 상태를 확인하세요.',
       walletNotConnected: '지갑 연결이 끊어졌습니다. Tx 서명을 위해 다시 연결하세요.',
+      errors: {
+        notBound: '참여 전에 추천인을 바인딩하세요.',
+        paused: 'Subscribe가 일시 중지되었습니다. 나중에 다시 시도하세요.',
+        invalidAmount: '금액은 100 USD의 배수여야 합니다.',
+        phaseInactive: '이 Season은 시작되지 않았거나 종료되었습니다.',
+        belowMin: '금액이 이 Season의 최소 금액보다 낮습니다.',
+        soldOut: '이 Season은 매진되었습니다.',
+        userLimitExceeded: '이 Season의 지갑당 한도를 초과했습니다. 금액을 줄이세요.',
+        invalidPhase: '유효하지 않은 Season입니다.',
+        systemConfig: '시스템 구성 오류입니다. 나중에 다시 시도하세요.',
+      },
       contributionsSyncPending: '온체인 Subscribe가 확인되었습니다. 기록 동기화 중이니 잠시 후 새로고침하세요.',
       contributionsEmpty: {
         title: 'Genesis 기록 없음',

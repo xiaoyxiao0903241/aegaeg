@@ -29,6 +29,7 @@ import {
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { scrollDappPanelsToTop, scrollToGenesisPageTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { invalidateTabQueries } from '~/lib/query/invalidate'
 
 export function DappShell() {
   const { messages } = useI18n()
@@ -58,6 +59,7 @@ export function DappShell() {
 
   useEffect(() => {
     scrollDappPanelsToTop()
+    invalidateTabQueries(activeTab)
   }, [activeTab])
 
   const mobileNavId = 'dapp-mobile-nav'

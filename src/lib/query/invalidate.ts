@@ -1,5 +1,6 @@
 import { queryClient } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
+import type { DappTab } from '~/app/types'
 import type { Paginated, SalesLogItem } from '~/lib/api/types'
 
 function sleep(ms: number) {
@@ -63,8 +64,8 @@ export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddres
     removeChainQueriesForAddress(nextAddress)
   }
 
-  // Refresh all chain reads (global + wallet-scoped) to guarantee no stale
-  // data from the previous account remains visible.
+  // Refresh every chain read so no stale data from the previous account
+  // remains visible while the new wallet reconnects.
   void queryClient.invalidateQueries({ queryKey: ['chain'] })
 }
 
@@ -110,6 +111,49 @@ export function invalidateAfterSwap(address: string, sellToken: string, buyToken
   })
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.walletBalances(address),
+  })
+}
+
+const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
+  genesis: [
+    queryKeys.api.performance,
+    queryKeys.api.salesLogsRoot,
+    queryKeys.api.referralTotal,
+    queryKeys.api.teamOverview,
+    ['chain', 'presale'],
+    ['chain', 'erc20'],
+  ],
+  rewards: [
+    queryKeys.api.performance,
+    queryKeys.api.rewardLogsRoot,
+    queryKeys.api.teamRewardTotal,
+    queryKeys.api.teamRewardClaimLogsRoot,
+    queryKeys.api.teamOverview,
+  ],
+  community: [
+    queryKeys.api.teamOverview,
+    queryKeys.api.teamReferralsRoot,
+    queryKeys.api.referralTotal,
+    queryKeys.api.performance,
+  ],
+  swap: [
+    queryKeys.chain.pairSpotRate,
+    ['chain', 'swap'],
+    ['chain', 'wallet'],
+  ],
+}
+
+/** Invalidate all queries used by a single DApp tab. Called on tab switch. */
+export function invalidateTabQueries(tab: DappTab) {
+  TAB_QUERY_KEYS[tab].forEach((key) => {
+    void queryClient.invalidateQueries({ queryKey: key })
+  })
+}
+
+/** Invalidate every query that makes up the Genesis page. */
+export function invalidateGenesisPage() {
+  TAB_QUERY_KEYS.genesis.forEach((key) => {
+    void queryClient.invalidateQueries({ queryKey: key })
   })
 }
 

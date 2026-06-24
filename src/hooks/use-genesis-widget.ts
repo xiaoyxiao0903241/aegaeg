@@ -9,16 +9,14 @@ import {
   estimateContributionValueUsd,
   estimateXTokenAirdropUsd,
   formatPhaseCountdown,
+  getAirdropBpsForPhase,
   hasPhaseCountdownElapsed,
   resolvePhaseCountdownTarget,
   presaleAirdropThresholdToUsd,
   resolveGenesisMaxShares,
   resolveRemainingUserAmount,
 } from '~/lib/presale/presale-math'
-import {
-  buildSeasonOptions,
-  getAirdropLabelForPhase,
-} from '~/lib/presale/season-options'
+import { buildSeasonOptions } from '~/lib/presale/season-options'
 import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
 import { formatTokenAmount, formatTokenAmountToNumber, parseTokenAmount } from '~/lib/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale-write'
@@ -34,6 +32,7 @@ import {
   usePresaleAirdropThresholdQuery,
   usePresalePhasesQuery,
   usePresaleTotalPurchasedQuery,
+  useIsBindReferralQuery,
   usePresaleUserPhaseRemainingQuery,
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
@@ -75,6 +74,9 @@ export function useGenesisWidget() {
     [shares],
   )
   const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address)
+  const isBoundQuery = useIsBindReferralQuery(address)
+  const isBound = isBoundQuery.data
+  const needsReferralBind = walletReady && isBound === false
 
   const phases = phasesQuery.data ?? []
   const activePhase = activePhaseQuery.data ?? null
@@ -268,6 +270,11 @@ export function useGenesisWidget() {
   ])
 
   const participate = useCallback(async (): Promise<GenesisPurchaseResult> => {
+    // Contract requires a bound referrer before purchase; block early with a
+    // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
+    if (isBound === false) {
+      return { success: false, error: GENESIS_PURCHASE_ERROR.NOT_BOUND }
+    }
     if (needsApproval) {
       const approveResult = await approve()
       if (!approveResult.success) {
@@ -275,7 +282,7 @@ export function useGenesisWidget() {
       }
     }
     return purchase()
-  }, [approve, needsApproval, purchase])
+  }, [approve, isBound, needsApproval, purchase])
 
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
 
@@ -347,9 +354,10 @@ export function useGenesisWidget() {
     airdropThresholdLoading: airdropThresholdQuery.isLoading,
     quotaLabel,
     referencePriceLabel: `$${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(agxPriceUsd)}`,
-    airdropLabel: getAirdropLabelForPhase(phaseIndex),
+    airdropLabel: `+${(getAirdropBpsForPhase(phaseIndex, activePhase ?? undefined) / 100).toFixed(0)}%`,
     agxPriceUsd,
     walletReady,
+    needsReferralBind,
     needsApproval,
     isApproved,
     hasSufficientBalance,
