@@ -41,10 +41,13 @@ export function invalidateApiQueries() {
 function removeChainQueriesForAddress(address: string) {
   const normalized = address.toLowerCase()
   void queryClient.removeQueries({
-    predicate: (query) =>
-      Array.isArray(query.queryKey) &&
-      query.queryKey[0] === 'chain' &&
-      JSON.stringify(query.queryKey).includes(normalized),
+    predicate: (query) => {
+      const key = query.queryKey
+      if (!Array.isArray(key) || key[0] !== 'chain') return false
+      return key.some(
+        (segment) => typeof segment === 'string' && segment.toLowerCase() === normalized,
+      )
+    },
   })
 }
 
@@ -77,7 +80,7 @@ export function invalidateAfterAuthLogin(address?: string) {
   if (!address) return
 
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.walletBalances(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
 }
 
 /** Genesis phase start/end boundary crossed — refresh presale + authenticated API. */
@@ -100,18 +103,8 @@ export function invalidatePresaleChainQueries(address?: string) {
   if (!address) return
 
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
-  void queryClient.invalidateQueries({ queryKey: ['chain', 'presale', 'userPhaseRemaining', address] })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserPhaseRemaining(address, 0).slice(0, 4) })
   void queryClient.invalidateQueries({ queryKey: ['chain', 'erc20'] })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.walletBalances(address) })
-}
-
-export function invalidateAfterSwap(address: string, sellToken: string, buyToken: string) {
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.swapBalances(address, sellToken, buyToken),
-  })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.walletBalances(address),
-  })
 }
 
 const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
@@ -120,8 +113,15 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.salesLogsRoot,
     queryKeys.api.referralTotal,
     queryKeys.api.teamOverview,
-    ['chain', 'presale'],
+    queryKeys.chain.presalePhases,
+    queryKeys.chain.presaleActivePhase,
+    queryKeys.chain.presaleAgxPrice,
+    queryKeys.chain.presaleTotalPurchased,
+    queryKeys.chain.presaleAirdropThreshold,
+    ['chain', 'presale', 'userTotal'],
+    ['chain', 'presale', 'userPhaseRemaining'],
     ['chain', 'erc20'],
+    ['chain', 'referral'],
   ],
   rewards: [
     queryKeys.api.performance,
@@ -135,11 +135,12 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.teamReferralsRoot,
     queryKeys.api.referralTotal,
     queryKeys.api.performance,
+    ['chain', 'referral'],
   ],
   swap: [
     queryKeys.chain.pairSpotRate,
     ['chain', 'swap'],
-    ['chain', 'wallet'],
+    ['chain', 'erc20'],
   ],
 }
 
@@ -152,9 +153,7 @@ export function invalidateTabQueries(tab: DappTab) {
 
 /** Invalidate every query that makes up the Genesis page. */
 export function invalidateGenesisPage() {
-  TAB_QUERY_KEYS.genesis.forEach((key) => {
-    void queryClient.invalidateQueries({ queryKey: key })
-  })
+  invalidateTabQueries('genesis')
 }
 
 export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?: bigint) {
@@ -170,22 +169,18 @@ export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?:
   }
 
   const salesLogBaseline = readSalesLogCount()
-  invalidatePresaleChainQueries(address)
-  void invalidateApiQueries()
+  invalidateTabQueries('genesis')
   void pollGenesisContributions(salesLogBaseline)
 }
 
 export function invalidateAfterTeamClaim() {
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamRewardTotal })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.rewardLogsRoot })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamRewardClaimLogsRoot })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.performance })
+  invalidateTabQueries('rewards')
 }
 
-export function invalidateAfterReferralBind(address: string) {
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.performance })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.referralTotal })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamOverview })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.api.teamReferralsRoot })
+export function invalidateAfterReferralBind() {
+  invalidateTabQueries('community')
+}
+
+export function invalidateAfterSwap() {
+  invalidateTabQueries('swap')
 }

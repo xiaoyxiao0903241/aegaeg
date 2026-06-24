@@ -250,7 +250,6 @@ export function useGenesisWidget() {
         amount: purchaseAmount,
       })
       afterGenesisPurchase(account.address, purchaseAmount)
-      await refresh()
       return { success: true }
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : 'Purchase failed'

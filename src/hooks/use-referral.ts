@@ -83,8 +83,7 @@ export function useReferral(sessionReady: boolean) {
 
     try {
       await bindReferrer({ account, referrer: target })
-      afterReferralBind(account.address)
-      await referralQuery.refetch()
+      afterReferralBind()
       return true
     } catch (caught) {
       setError(caught)

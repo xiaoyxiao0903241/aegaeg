@@ -16,7 +16,7 @@ import { readIsBindReferral } from '~/web3/referral-read'
 
 export function useIsBindReferralQuery(address?: string) {
   return useQuery({
-    queryKey: ['chain', 'referral', 'isBound', address ?? ''],
+    queryKey: queryKeys.chain.referralIsBound(address ?? ''),
     queryFn: () => readIsBindReferral(address!),
     enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,

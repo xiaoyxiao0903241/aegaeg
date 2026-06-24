@@ -28,6 +28,7 @@ export function useTeamRewardClaim() {
       afterTeamClaim()
       return confirmResult
     } catch (caught) {
+
       setError(caught)
       return null
     } finally {

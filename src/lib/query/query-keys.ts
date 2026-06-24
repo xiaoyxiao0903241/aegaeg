@@ -26,19 +26,21 @@ export const queryKeys = {
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
     presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
     presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,
-    presaleUserTotal: (address: string) => ['chain', 'presale', 'userTotal', address] as const,
+    presaleUserTotal: (address: string) =>
+      ['chain', 'presale', 'userTotal', address.toLowerCase()] as const,
     presaleUserPhaseRemaining: (address: string, phaseIndex: number) =>
-      ['chain', 'presale', 'userPhaseRemaining', address, phaseIndex] as const,
+      ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase(), phaseIndex] as const,
     erc20Balance: (token: string, address: string) =>
-      ['chain', 'erc20', 'balance', token, address] as const,
+      ['chain', 'erc20', 'balance', token.toLowerCase(), address.toLowerCase()] as const,
     erc20Allowance: (token: string, owner: string, spender: string) =>
-      ['chain', 'erc20', 'allowance', token, owner, spender] as const,
-    referral: (address: string) => ['chain', 'referral', address] as const,
+      ['chain', 'erc20', 'allowance', token.toLowerCase(), owner.toLowerCase(), spender.toLowerCase()] as const,
+    referral: (address: string) => ['chain', 'referral', address.toLowerCase()] as const,
+    referralIsBound: (address: string) =>
+      ['chain', 'referral', 'isBound', address.toLowerCase()] as const,
     pairSpotRate: ['chain', 'swap', 'pairSpotRate'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string) =>
-      ['chain', 'swap', 'quote', tokenIn, tokenOut, amountIn] as const,
-    walletBalances: (address: string) => ['chain', 'wallet', 'balances', address] as const,
+      ['chain', 'swap', 'quote', tokenIn.toLowerCase(), tokenOut.toLowerCase(), amountIn] as const,
     swapBalances: (address: string, sellToken: string, buyToken: string) =>
-      ['chain', 'swap', 'balances', address, sellToken, buyToken] as const,
+      ['chain', 'swap', 'balances', address.toLowerCase(), sellToken.toLowerCase(), buyToken.toLowerCase()] as const,
   },
 } as const

@@ -359,6 +359,7 @@ export function useSwapWidget(authenticated: boolean) {
           token: pair.sell.address,
           amountIn,
         })
+        afterSwap()
         await balancesQuery.refetch()
         return true
       }
@@ -371,7 +372,7 @@ export function useSwapWidget(authenticated: boolean) {
         slippageBps,
       })
       setSellAmountRaw('')
-      afterSwap(account.address, pair.sell.address, pair.buy.address)
+      afterSwap()
       await balancesQuery.refetch()
       return true
     } catch (submitError: unknown) {

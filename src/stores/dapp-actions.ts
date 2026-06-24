@@ -15,10 +15,10 @@ interface DappActionsState {
   afterAuthLogout: () => void
   afterWalletSwitch: (previousAddress?: string, nextAddress?: string) => void
   afterGenesisPhaseTransition: (address?: string) => void
-  afterSwap: (address: string, sellToken: string, buyToken: string) => void
+  afterSwap: () => void
   afterGenesisPurchase: (address: string, purchaseAmount?: bigint) => void
   afterTeamClaim: () => void
-  afterReferralBind: (address: string) => void
+  afterReferralBind: () => void
 }
 
 export const useDappActions = create<DappActionsState>(() => ({
@@ -34,8 +34,8 @@ export const useDappActions = create<DappActionsState>(() => ({
   afterWalletSwitch: (previousAddress, nextAddress) => {
     invalidateAfterWalletSwitch(previousAddress, nextAddress)
   },
-  afterSwap: (address, sellToken, buyToken) => {
-    invalidateAfterSwap(address, sellToken, buyToken)
+  afterSwap: () => {
+    invalidateAfterSwap()
   },
   afterGenesisPurchase: (address, purchaseAmount) => {
     invalidateAfterGenesisPurchase(address, purchaseAmount)
@@ -43,7 +43,7 @@ export const useDappActions = create<DappActionsState>(() => ({
   afterTeamClaim: () => {
     invalidateAfterTeamClaim()
   },
-  afterReferralBind: (address) => {
-    invalidateAfterReferralBind(address)
+  afterReferralBind: () => {
+    invalidateAfterReferralBind()
   },
 }))
