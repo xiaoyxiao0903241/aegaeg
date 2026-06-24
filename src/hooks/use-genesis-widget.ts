@@ -13,6 +13,7 @@ import {
   resolvePhaseCountdownTarget,
   presaleAirdropThresholdToUsd,
   resolveGenesisMaxShares,
+  resolveRemainingUserAmount,
 } from '~/lib/presale/presale-math'
 import {
   buildSeasonOptions,
@@ -120,9 +121,7 @@ export function useGenesisWidget() {
   const remainingPhaseAmount =
     phaseRemaining?.remainingPhaseAmount ??
     (activePhase ? activePhase.maxAmount - activePhase.soldAmount : 0n)
-  const remainingUserAmount =
-    phaseRemaining?.remainingUserAmount ??
-    (activePhase ? activePhase.userPurchaseLimit : maxAmount)
+  const remainingUserAmount = resolveRemainingUserAmount(phaseRemaining, activePhase, maxAmount)
   const maxShares = useMemo(
     () =>
       resolveGenesisMaxShares({

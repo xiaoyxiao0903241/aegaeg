@@ -49,7 +49,6 @@ function removeChainQueriesForAddress(address: string) {
 
 /** Wallet account changed — drop stale reads and warm the next wallet scope. */
 export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddress?: string) {
-  console.log('[AEGIS] invalidateAfterWalletSwitch:', { previousAddress, nextAddress })
   // API queries are user-scoped: remove them entirely so every authenticated
   // screen fetches fresh data for the new wallet.
   clearApiQueries()

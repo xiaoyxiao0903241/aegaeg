@@ -83,6 +83,7 @@ export function useReferral(sessionReady: boolean) {
     try {
       await bindReferrer({ account, referrer: target })
       afterReferralBind(account.address)
+      await referralQuery.refetch()
       return true
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Bind referral failed')
@@ -90,7 +91,7 @@ export function useReferral(sessionReady: boolean) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterReferralBind, pendingReferrer, referrerInput])
+  }, [account, afterReferralBind, pendingReferrer, referralQuery, referrerInput])
 
   const refresh = useCallback(async () => {
     await referralQuery.refetch()

@@ -48,7 +48,7 @@ export function warnMissingWeb3EnvConfigOnce() {
   if (!isThirdwebConfigured) {
     console.error(
       [
-        '[AEGIS] 未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
+        '未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
         '1. 复制 .env.example 为 .env',
         '2. 在 https://thirdweb.com/dashboard/settings/api-keys 创建 Client ID',
         '3. 写入 VITE_THIRDWEB_CLIENT_ID=你的ClientId',
@@ -60,7 +60,7 @@ export function warnMissingWeb3EnvConfigOnce() {
   if (!walletConnectProjectId) {
     console.warn(
       [
-        '[AEGIS] 未配置 VITE_WALLETCONNECT_PROJECT_ID，WalletConnect 与移动端 deep link 可能不可用。',
+        '未配置 VITE_WALLETCONNECT_PROJECT_ID，WalletConnect 与移动端 deep link 可能不可用。',
         '在 https://cloud.walletconnect.com/ 创建 Project ID 后写入 .env。',
       ].join('\n'),
     )

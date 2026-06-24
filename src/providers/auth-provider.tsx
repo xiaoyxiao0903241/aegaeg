@@ -71,20 +71,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const reconcileWalletAccount = useCallback(
     async (source: 'wallet-event' | 'provider-event', detectedAddress: string) => {
-      console.log('[AEGIS] reconcileWalletAccount called:', {
-        source,
-        detectedAddress,
-        activeAddress: walletAddress,
-        walletId: wallet?.id,
-        reconnecting: reconnectingRef.current,
-      })
       if (reconnectingRef.current) return
 
       const activeAddress = normalizeWalletAddress(walletAddress)
-      if (detectedAddress === activeAddress) {
-        console.log('[AEGIS] reconcileWalletAccount: addresses match, skip')
-        return
-      }
+      if (detectedAddress === activeAddress) return
 
       if (!wallet) {
         // Wallet object not known — at least clear stale auth state so the UI
@@ -102,13 +92,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // re-connecting the same wallet re-reads the active account without
         // asking the user again.
         if (wallet.id !== 'walletConnect') {
-          console.log('[AEGIS] reconnecting injected wallet:', wallet.id)
           await wallet.connect({ client: thirdwebClient, chain: defaultChain })
-          console.log('[AEGIS] injected wallet reconnected')
         } else {
           // WalletConnect sessions cannot be silently refreshed — disconnect and
           // let the user reconnect with the new account.
-          console.log('[AEGIS] disconnecting WalletConnect due to account mismatch')
           disconnect(wallet)
           useAuthStore.getState().clearSession()
           useAuthStore.getState().setLoginError(null)
@@ -143,43 +130,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // thirdweb's connection manager fails to propagate the event to
   // useActiveAccount.
   useEffect(() => {
-    if (!wallet) {
-      console.log('[AEGIS] no active wallet to subscribe')
-      return
-    }
-
-    console.log('[AEGIS] subscribing to wallet events:', {
-      walletId: wallet.id,
-      activeAddress: walletAddress,
-    })
+    if (!wallet) return
 
     const unsubAccount = wallet.subscribe('accountChanged', (newAccount) => {
-      console.log('[AEGIS] wallet accountChanged event:', {
-        walletId: wallet.id,
-        detectedAddress: newAccount.address,
-      })
       const detectedAddress = normalizeWalletAddress(newAccount.address)
       if (!detectedAddress) return
       void reconcileWalletAccount('wallet-event', detectedAddress)
     })
 
-    const unsubChain = wallet.subscribe('chainChanged', (chain) => {
-      console.log('[AEGIS] wallet chainChanged event:', {
-        walletId: wallet.id,
-        chainId: chain.id,
-        activeAddress: walletAddress,
-      })
-    })
-
-    const unsubDisconnect = wallet.subscribe('disconnect', () => {
-      console.log('[AEGIS] wallet disconnect event:', {
-        walletId: wallet.id,
-        activeAddress: walletAddress,
-      })
-    })
+    const unsubChain = wallet.subscribe('chainChanged', () => undefined)
+    const unsubDisconnect = wallet.subscribe('disconnect', () => undefined)
 
     return () => {
-      console.log('[AEGIS] unsubscribing from wallet events:', wallet.id)
       unsubAccount()
       unsubChain()
       unsubDisconnect()
@@ -197,11 +159,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   })
 
   useEffect(() => {
-    console.log('[AEGIS] useActiveAccount changed:', {
-      walletAddress,
-      walletId: wallet?.id,
-      isConnected: Boolean(wallet),
-    })
     silentLoginAttemptRef.current = null
   }, [wallet, walletAddress])
 
@@ -260,10 +217,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       walletAddress &&
       previousAddress.toLowerCase() !== walletAddress.toLowerCase()
     ) {
-      console.log('[AEGIS] wallet address changed, invalidate data:', {
-        previousAddress,
-        walletAddress,
-      })
       silentLoginAttemptRef.current = null
       useDappActions.getState().afterWalletSwitch(previousAddress, walletAddress)
     }

@@ -24,6 +24,32 @@ export interface PresalePhaseRemaining {
 
 const USD1_DECIMALS = 18
 
+/**
+ * 计算用户本期剩余可购金额。
+ *
+ * `userPurchaseLimit == 0n` 按合约语义表示“不限制”，此时用户剩余额度
+ * 应等于本期剩余额度，而不是 0。
+ */
+export function resolveRemainingUserAmount(
+  phaseRemaining: PresalePhaseRemaining | null | undefined,
+  activePhase: PresalePhaseOnChain | null | undefined,
+  fallbackMaxAmount: bigint,
+): bigint {
+  if (phaseRemaining) {
+    return phaseRemaining.userPurchaseLimit === 0n
+      ? phaseRemaining.remainingPhaseAmount
+      : phaseRemaining.remainingUserAmount
+  }
+
+  if (activePhase) {
+    return activePhase.userPurchaseLimit === 0n
+      ? activePhase.maxAmount - activePhase.soldAmount
+      : activePhase.userPurchaseLimit
+  }
+
+  return fallbackMaxAmount
+}
+
 /** 份额上限 = min(本期剩余, 用户剩余, 余额可购份数)。 */
 export function resolveGenesisMaxShares({
   sharePriceUsd1 = PRESALE_CONFIG.sharePriceUsd1,
