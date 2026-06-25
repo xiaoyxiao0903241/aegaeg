@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 const localeModule = await loadModule('/src/i18n/locale.ts')
 const localesModule = await loadModule('/src/i18n/locales.ts')
-const { isLocale, getLocaleFromPathname, getPathWithoutLocale, withLocalePrefix, resolveBrowserLocale, getInitialLocale } = localeModule
+const { isLocale, getLocaleFromPathname, getPathWithoutLocale, withLocalePrefix, resolveBrowserLocale, getBrowserLocale, getInitialLocale } = localeModule
 const { defaultLocale } = localesModule
 
 test('isLocale validates supported locales case-insensitively', () => {
@@ -44,8 +44,8 @@ test('resolveBrowserLocale maps navigator languages to supported locales', () =>
   assert.equal(resolveBrowserLocale('zh-HK', ['zh-HK', 'zh']), 'zht')
   assert.equal(resolveBrowserLocale('ko-KR', ['ko-KR', 'ko']), 'ko')
   assert.equal(resolveBrowserLocale('tr-TR', ['tr-TR']), 'tr')
-  assert.equal(resolveBrowserLocale('fr-FR', ['fr-FR', 'en-US']), 'en')
   assert.equal(resolveBrowserLocale('fr-FR', ['fr-FR']), null)
+  assert.equal(resolveBrowserLocale('fr-FR', ['fr-FR', 'de-DE']), null)
   assert.equal(resolveBrowserLocale('und', []), null)
   assert.equal(resolveBrowserLocale(undefined, undefined), null)
 })
@@ -83,4 +83,21 @@ test('getInitialLocale respects priority: pathname > storage > browser > default
 
   globalThis.window = originalWindow
   setNavigator(originalNavigator)
+})
+
+test('getBrowserLocale falls back to defaultLocale on unsupported languages', () => {
+  const originalNavigator = globalThis.navigator
+
+  Object.defineProperty(globalThis, 'navigator', {
+    value: { language: 'fr-FR', languages: ['fr-FR'] },
+    configurable: true,
+    writable: true,
+  })
+  assert.equal(getBrowserLocale(), defaultLocale)
+
+  Object.defineProperty(globalThis, 'navigator', {
+    value: originalNavigator,
+    configurable: true,
+    writable: true,
+  })
 })

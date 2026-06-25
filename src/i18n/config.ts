@@ -1,13 +1,11 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import { getInitialLocale } from '~/i18n/locale'
-
-const initialLocale = getInitialLocale()
+import LanguageDetector from 'i18next-browser-languagedetector'
 
 i18n
+  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng: initialLocale,
     fallbackLng: 'en',
     supportedLngs: ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr'],
 
@@ -20,6 +18,13 @@ i18n
 
     interpolation: {
       escapeValue: false, // React 已经转义
+    },
+
+    detection: {
+      // 优先级：URL path > localStorage（项目自定义 key）> navigator
+      order: ['path', 'localStorage', 'navigator'],
+      lookupLocalStorage: 'aegis.locale',
+      caches: ['localStorage'],
     },
 
     // 初始资源（避免首次加载闪烁）

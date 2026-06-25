@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import i18n from '~/i18n/config'
 import {
   localeLabels,
   type Locale,
@@ -21,9 +22,15 @@ import {
 } from '~/i18n/messages'
 import { I18nContext, type I18nContextValue } from '~/i18n/context'
 
-function createInitialI18nState() {
+function createInitialI18nState(): { locale: Locale; messages: Messages } {
   const locale = getInitialLocale()
   persistLocale(locale)
+  // Keep the standalone i18next instance in sync with the project's locale
+  // resolution (URL > storage > browser > default). This matters because some
+  // UI paths still read from react-i18next / i18n.language.
+  if (i18n.language !== locale) {
+    void i18n.changeLanguage(locale)
+  }
   return {
     locale,
     messages: getMessagesSync(locale),
@@ -48,6 +55,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         setMessages(nextMessages)
       }
     })
+
+    if (i18n.language !== locale) {
+      void i18n.changeLanguage(locale)
+    }
 
     return () => {
       cancelled = true

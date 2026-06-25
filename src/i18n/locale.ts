@@ -9,6 +9,54 @@ export function isLocale(value: string | null | undefined): value is Locale {
   return locales.includes(normalized as Locale)
 }
 
+function normalizeLocaleTag(tag: string): Locale | null {
+  const lower = tag.toLowerCase()
+
+  if (
+    lower.startsWith('zh-tw') ||
+    lower.startsWith('zh-hk') ||
+    lower.startsWith('zh-hant') ||
+    lower === 'zht'
+  ) {
+    return 'zht'
+  }
+
+  if (lower.startsWith('zh')) {
+    return 'zh'
+  }
+
+  const direct = lower.split('-')[0]
+  if (isLocale(direct)) {
+    return direct
+  }
+
+  return null
+}
+
+export function resolveBrowserLocale(
+  language: string | undefined,
+  languages: readonly string[] | undefined,
+): Locale | null {
+  const candidates = [...(languages ?? []), language].filter((tag): tag is string => Boolean(tag))
+
+  for (const tag of candidates) {
+    const resolved = normalizeLocaleTag(tag)
+    if (resolved) {
+      return resolved
+    }
+  }
+
+  return null
+}
+
+export function getBrowserLocale(): Locale {
+  if (typeof navigator === 'undefined') {
+    return defaultLocale
+  }
+
+  return resolveBrowserLocale(navigator.language, navigator.languages) ?? defaultLocale
+}
+
 export function getLocaleFromPathname(pathname: string): Locale | null {
   const [segment] = pathname.split('/').filter(Boolean)
   if (!segment) return null
@@ -50,38 +98,6 @@ export function getStoredLocale(): Locale | null {
   return null
 }
 
-export function resolveBrowserLocale(language: string | undefined, languages: readonly string[] | undefined): Locale | null {
-  const candidates = [language, ...(languages ?? [])]
-
-  for (const raw of candidates) {
-    if (!raw) continue
-    const normalized = raw.toLowerCase()
-
-    if (normalized.startsWith('zh-tw') || normalized.startsWith('zh-hk')) {
-      return 'zht'
-    }
-
-    if (normalized.startsWith('zh')) {
-      return 'zh'
-    }
-
-    const base = normalized.split('-')[0]
-    if (isLocale(base)) {
-      return base.toLowerCase() as Locale
-    }
-  }
-
-  return null
-}
-
-export function getBrowserLocale(): Locale | null {
-  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-    return null
-  }
-
-  return resolveBrowserLocale(navigator.language, navigator.languages)
-}
-
 export function getInitialLocale(): Locale {
   if (typeof window === 'undefined') {
     return defaultLocale
@@ -90,8 +106,7 @@ export function getInitialLocale(): Locale {
   return (
     getLocaleFromPathname(window.location.pathname) ??
     getStoredLocale() ??
-    getBrowserLocale() ??
-    defaultLocale
+    getBrowserLocale()
   )
 }
 
