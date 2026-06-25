@@ -281,7 +281,7 @@ const app = defineMessages({
       progressMaxPersonal: '已達最高個人等級',
       progressMaxTeam: '已達最高團隊等級',
       teamLegRequirement: '兩條 {rank} 線',
-      tierDualLegRequirement: '雙區{rank}',
+      tierDualLegRequirement: '2條{rank}線',
       teamQualifiedPartitionsLabel: '{rank}線 {count}/2',
       teamQualifiedPartitionsValue: '2條{rank}線',
       teamVolume: '體系業績',

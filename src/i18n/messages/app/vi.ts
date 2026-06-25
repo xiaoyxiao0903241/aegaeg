@@ -281,7 +281,7 @@ const app = defineMessages({
       progressMaxPersonal: 'Đã đạt cấp cá nhân cao nhất',
       progressMaxTeam: 'Đã đạt cấp nhóm cao nhất',
       teamLegRequirement: 'Hai nhánh {rank}',
-      tierDualLegRequirement: 'Bất kỳ hai khu vực {rank}',
+      tierDualLegRequirement: '2 nhánh {rank}',
       teamQualifiedPartitionsLabel: 'Nhánh {rank} {count}/2',
       teamQualifiedPartitionsValue: '2 nhánh {rank}',
       teamVolume: 'Doanh số hệ thống',

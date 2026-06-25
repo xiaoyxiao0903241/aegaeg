@@ -281,7 +281,7 @@ const app = defineMessages({
       progressMaxPersonal: 'Maximum personal tier reached',
       progressMaxTeam: 'Maximum team tier reached',
       teamLegRequirement: 'Two {rank} legs',
-      tierDualLegRequirement: 'Two zones {rank}',
+      tierDualLegRequirement: '2 {rank} legs',
       teamQualifiedPartitionsLabel: '{rank} legs {count}/2',
       teamQualifiedPartitionsValue: '2 {rank} legs',
       teamVolume: 'Organization volume',

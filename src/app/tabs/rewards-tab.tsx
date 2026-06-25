@@ -123,23 +123,18 @@ export function RewardsWidget() {
     ? t.rewards.progressMaxPersonal
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
 
-  // For S3-S9, show qualified-partitions progress instead of raw team volume.
+  // For S3-S9, show qualified-partitions progress in the team volume row.
   const qualifiedPartitionCount = qualifiedPartitions?.count ?? 0
   const showQualifiedPartitions = displayRank >= 3 && displayRank <= 9
 
-  const teamProgressLabel = showQualifiedPartitions
-    ? t.rewards.teamQualifiedPartitionsLabel
-        .replace('{rank}', formatPresaleRank(displayRank))
-        .replace('{count}', String(Math.min(qualifiedPartitionCount, 2)))
-    : t.rewards.teamVolume
+  const teamProgressLabel = t.rewards.teamVolume
 
   const personalProgressValue = `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
 
   const teamProgressValue = showQualifiedPartitions
-    ? t.rewards.teamQualifiedPartitionsValue.replace(
-        '{rank}',
-        formatPresaleRank(displayRank),
-      )
+    ? t.rewards.teamQualifiedPartitionsLabel
+        .replace('{rank}', formatPresaleRank(displayRank))
+        .replace('{count}', String(Math.min(qualifiedPartitionCount, 2)))
     : tierProgress.isMaxRank
       ? t.rewards.progressMaxTeam
       : tierProgress.teamLegRank != null

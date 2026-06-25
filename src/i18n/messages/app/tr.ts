@@ -280,7 +280,7 @@ const app = defineMessages({
       progressMaxPersonal: 'En yüksek kişisel seviyeye ulaşıldı',
       progressMaxTeam: 'En yüksek takım seviyesine ulaşıldı',
       teamLegRequirement: 'iki {rank} kolu',
-      tierDualLegRequirement: 'Çift bölge {rank}',
+      tierDualLegRequirement: '2 {rank} kolu',
       teamQualifiedPartitionsLabel: '{rank} kolu {count}/2',
       teamQualifiedPartitionsValue: '2 {rank} kolu',
       teamVolume: 'Sistem performansı',

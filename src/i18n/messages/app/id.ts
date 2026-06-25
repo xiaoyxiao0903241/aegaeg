@@ -281,7 +281,7 @@ const app = defineMessages({
       progressMaxPersonal: 'Level pribadi tertinggi tercapai',
       progressMaxTeam: 'Level tim tertinggi tercapai',
       teamLegRequirement: 'Dua jalur {rank}',
-      tierDualLegRequirement: 'Dua zona {rank} (sembarang)',
+      tierDualLegRequirement: '2 jalur {rank}',
       teamQualifiedPartitionsLabel: 'Jalur {rank} {count}/2',
       teamQualifiedPartitionsValue: '2 jalur {rank}',
       teamVolume: 'Volume jaringan',

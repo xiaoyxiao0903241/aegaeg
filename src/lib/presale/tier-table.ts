@@ -48,12 +48,16 @@ export function getTeamRequirementLegRank(rank: number): number | null {
 }
 
 function formatTeamRequirement(rank: number): string {
+  const legRank = getTeamRequirementLegRank(rank)
+  if (legRank != null) {
+    return `Two legs S${legRank}`
+  }
+
   if (rank <= TEAM_PRESALE_RANK_THRESHOLDS_USD.length) {
     return formatUsdThreshold(TEAM_PRESALE_RANK_THRESHOLDS_USD[rank - 1])
   }
 
-  const legRank = getTeamRequirementLegRank(rank)
-  return legRank == null ? '—' : `Two legs S${legRank}`
+  return '—'
 }
 
 export function buildRewardTierRows(): readonly (readonly string[])[] {

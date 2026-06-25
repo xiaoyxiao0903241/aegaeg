@@ -281,7 +281,7 @@ const app = defineMessages({
       progressMaxPersonal: 'उच्चतम व्यक्तिगत स्तर प्राप्त',
       progressMaxTeam: 'उच्चतम टीम स्तर प्राप्त',
       teamLegRequirement: 'दो {rank} लाइनें',
-      tierDualLegRequirement: 'कोई भी दो क्षेत्र {rank}',
+      tierDualLegRequirement: '2 {rank} लाइनें',
       teamQualifiedPartitionsLabel: '{rank} लाइनें {count}/2',
       teamQualifiedPartitionsValue: '2 {rank} लाइनें',
       teamVolume: 'नेटवर्क प्रदर्शन',
