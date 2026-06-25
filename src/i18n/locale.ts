@@ -50,6 +50,38 @@ export function getStoredLocale(): Locale | null {
   return null
 }
 
+export function resolveBrowserLocale(language: string | undefined, languages: readonly string[] | undefined): Locale | null {
+  const candidates = [language, ...(languages ?? [])]
+
+  for (const raw of candidates) {
+    if (!raw) continue
+    const normalized = raw.toLowerCase()
+
+    if (normalized.startsWith('zh-tw') || normalized.startsWith('zh-hk')) {
+      return 'zht'
+    }
+
+    if (normalized.startsWith('zh')) {
+      return 'zh'
+    }
+
+    const base = normalized.split('-')[0]
+    if (isLocale(base)) {
+      return base.toLowerCase() as Locale
+    }
+  }
+
+  return null
+}
+
+export function getBrowserLocale(): Locale | null {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return null
+  }
+
+  return resolveBrowserLocale(navigator.language, navigator.languages)
+}
+
 export function getInitialLocale(): Locale {
   if (typeof window === 'undefined') {
     return defaultLocale
@@ -58,6 +90,7 @@ export function getInitialLocale(): Locale {
   return (
     getLocaleFromPathname(window.location.pathname) ??
     getStoredLocale() ??
+    getBrowserLocale() ??
     defaultLocale
   )
 }

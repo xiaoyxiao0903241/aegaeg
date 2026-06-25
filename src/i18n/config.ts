@@ -1,10 +1,13 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
+import { getInitialLocale } from '~/i18n/locale'
+
+const initialLocale = getInitialLocale()
 
 i18n
   .use(initReactI18next)
   .init({
-    lng: 'en',
+    lng: initialLocale,
     fallbackLng: 'en',
     supportedLngs: ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr'],
 
