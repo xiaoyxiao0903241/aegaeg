@@ -61,7 +61,7 @@ export function useGenesisWidget() {
   const walletReady = Boolean(address)
 
   useEffect(() => {
-    setShares(0)
+    setShares(1)
     setError(null)
   }, [address])
 

@@ -62,8 +62,8 @@ export function GenesisWidget() {
     genesis.setShares(0)
   }, [genesis.setShares])
 
-  // Mirror shares as editable text; default empty so the user starts fresh.
-  const [sharesText, setSharesText] = useState('')
+  // Mirror shares as editable text; default to 1 so the widget is ready to use.
+  const [sharesText, setSharesText] = useState('1')
   useEffect(() => {
     setSharesText(genesis.shares === 0 ? '' : String(genesis.shares))
   }, [genesis.shares])
