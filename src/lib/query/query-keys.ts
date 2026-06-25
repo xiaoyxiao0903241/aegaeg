@@ -19,6 +19,7 @@ export const queryKeys = {
     teamReferrals: (params: PaginationParams = {}) =>
       ['api', 'teamReferrals', params.page ?? 1, params.page_size ?? 20] as const,
     teamOverview: ['api', 'teamOverview'] as const,
+    qualifiedPartitions: ['api', 'performance', 'qualified-partitions'] as const,
   },
   chain: {
     presalePhases: ['chain', 'presale', 'phases'] as const,

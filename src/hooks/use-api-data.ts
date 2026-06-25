@@ -1,5 +1,6 @@
 import {
   getPerformance,
+  getQualifiedPartitions,
   getReferralTotal,
   getRewardLogs,
   getSalesLogs,
@@ -14,6 +15,14 @@ import { useAuthenticatedQuery } from '~/hooks/use-authenticated-query'
 
 export function usePerformance(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.performance, getPerformance, enabled)
+}
+
+export function useQualifiedPartitions(enabled = true) {
+  return useAuthenticatedQuery(
+    queryKeys.api.qualifiedPartitions,
+    getQualifiedPartitions,
+    enabled,
+  )
 }
 
 export function useSalesLogs(params: PaginationParams = {}, enabled = true) {

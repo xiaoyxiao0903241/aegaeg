@@ -83,6 +83,10 @@ export interface UserPerformance {
   direct_presale_volume: string
 }
 
+export interface QualifiedPartitionsResponse {
+  count: number
+}
+
 export interface TeamReferralItem {
   address: string
   register_time: string | null

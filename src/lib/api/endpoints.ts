@@ -6,6 +6,7 @@ import type {
   LoginResponse,
   Paginated,
   PaginationParams,
+  QualifiedPartitionsResponse,
   RewardLogItem,
   RewardTotals,
   SalesLogItem,
@@ -32,6 +33,16 @@ export async function login(request: LoginRequest): Promise<LoginResponse> {
 
 export async function getPerformance(token: string): Promise<UserPerformance> {
   return apiRequest<UserPerformance>('/performance', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+export async function getQualifiedPartitions(
+  token: string,
+): Promise<QualifiedPartitionsResponse> {
+  return apiRequest<QualifiedPartitionsResponse>('/performance/qualified-partitions', {
     method: 'POST',
     token,
     body: {},

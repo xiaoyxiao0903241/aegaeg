@@ -3,6 +3,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 import {
+  useQualifiedPartitions,
   useReferralTotal,
   useRewardLogs,
   useTeamOverview,
@@ -10,6 +11,7 @@ import {
   useTeamRewardTotal,
 } from '~/hooks/use-api-data'
 import {
+  calcProgressPercent,
   formatClaimableAmount,
   formatPresaleRank,
   formatUsd,
@@ -97,6 +99,8 @@ export function RewardsWidget() {
   const { data: referralTotal, isLoading: referralLoading } = useReferralTotal(sessionReady)
   const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(sessionReady)
   const { data: teamOverview, isLoading: teamOverviewLoading } = useTeamOverview(sessionReady)
+  const { data: qualifiedPartitions, isLoading: qualifiedPartitionsLoading } =
+    useQualifiedPartitions(sessionReady)
   const teamClaim = useTeamRewardClaim()
 
   useEffect(() => {
@@ -120,30 +124,47 @@ export function RewardsWidget() {
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
 
   // Label stays "体系业绩"; at max rank the value shows "您已达到最高等级".
-  const teamProgressLabel = t.rewards.teamVolume
+  const qualifiedPartitionCount = qualifiedPartitions?.count ?? 0
+  const showQualifiedPartitions = displayRank >= 3 && displayRank <= 9
+
+  const teamProgressLabel = showQualifiedPartitions
+    ? t.rewards.teamQualifiedPartitionsLabel.replace(
+        '{rank}',
+        formatPresaleRank(displayRank),
+      )
+    : t.rewards.teamVolume
 
   const personalProgressValue = `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
 
-  const teamProgressValue = tierProgress.isMaxRank
-    ? t.rewards.progressMaxTeam
-    : tierProgress.teamLegRank != null
-      ? `${formatUsd(tierProgress.teamCurrentUsd)} · ${t.rewards.teamLegRequirement.replace(
-          '{rank}',
-          formatPresaleRank(tierProgress.teamLegRank),
-        )}`
-      : teamVolumeUsd <= 0
-        ? formatUsd(0)
-        : `${formatUsd(tierProgress.teamCurrentUsd)} / ${formatUsd(tierProgress.teamTargetUsd ?? 0)}`
+  const teamProgressValue = showQualifiedPartitions
+    ? t.rewards.teamQualifiedPartitionsValue.replace(
+        '{count}',
+        String(Math.min(qualifiedPartitionCount, 2)),
+      )
+    : tierProgress.isMaxRank
+      ? t.rewards.progressMaxTeam
+      : tierProgress.teamLegRank != null
+        ? `${formatUsd(tierProgress.teamCurrentUsd)} · ${t.rewards.teamLegRequirement.replace(
+            '{rank}',
+            formatPresaleRank(tierProgress.teamLegRank),
+          )}`
+        : teamVolumeUsd <= 0
+          ? formatUsd(0)
+          : `${formatUsd(tierProgress.teamCurrentUsd)} / ${formatUsd(tierProgress.teamTargetUsd ?? 0)}`
 
   const personalProgressPercent = tierProgress.personalProgressPercent
 
-  const teamProgressPercent = tierProgress.isMaxRank
-    ? 100
-    : tierProgress.teamProgressPercent ?? 0
+  const teamProgressPercent = showQualifiedPartitions
+    ? calcProgressPercent(qualifiedPartitionCount, 2)
+    : tierProgress.isMaxRank
+      ? 100
+      : tierProgress.teamProgressPercent ?? 0
 
   const showPerformanceSkeleton =
     sessionReady &&
-    ((performanceLoading && !performance) || (teamOverviewLoading && !teamOverview))
+    ((performanceLoading && !performance) ||
+      (teamOverviewLoading && !teamOverview) ||
+      (qualifiedPartitionsLoading && qualifiedPartitions == null))
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
