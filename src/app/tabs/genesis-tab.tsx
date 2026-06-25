@@ -59,7 +59,7 @@ export function GenesisWidget() {
   const genesis = useGenesisWidgetContext()
 
   useEffect(() => {
-    genesis.setShares(0)
+    genesis.setShares(1)
   }, [genesis.setShares])
 
   // Mirror shares as editable text; default to 1 so the widget is ready to use.
@@ -94,8 +94,8 @@ export function GenesisWidget() {
 
   const handleSharesBlur = () => {
     if (sharesText === '' || Number.parseInt(sharesText, 10) < 1) {
-      genesis.setShares(0)
-      setSharesText('')
+      genesis.setShares(1)
+      setSharesText('1')
     }
   }
 

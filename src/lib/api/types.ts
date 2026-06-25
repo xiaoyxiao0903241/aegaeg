@@ -106,6 +106,10 @@ export interface TeamCommunityOverview {
   today_addition_direct_count?: number
   /** 今日新增社区人数 */
   today_addition_team_count?: number
+  /** 今日增加直推业绩 */
+  today_addition_direct_presale_volume?: string
+  /** 今日增加团队业绩 */
+  today_addition_sales_team_market?: string
 }
 
 export interface TeamRewardClaimLogItem {

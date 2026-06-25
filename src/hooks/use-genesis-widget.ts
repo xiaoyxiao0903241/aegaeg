@@ -52,7 +52,7 @@ export function useGenesisWidget() {
   const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
   const afterGenesisPhaseTransition = useDappActions((state) => state.afterGenesisPhaseTransition)
   const countdownRefreshRef = useRef<string | null>(null)
-  const [shares, setShares] = useState(0)
+  const [shares, setShares] = useState(1)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [nowSeconds, setNowSeconds] = useState(() => Math.floor(Date.now() / 1000))

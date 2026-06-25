@@ -108,7 +108,9 @@ export function CommunityContent({
       today: formatCommunityStatToday(
         t.community.statToday,
         useStatPlaceholders ? STAT_PLACEHOLDER : (overview?.today_addition_direct_count ?? 0),
-        useStatPlaceholders ? STAT_PLACEHOLDER : 0,
+        useStatPlaceholders
+          ? STAT_PLACEHOLDER
+          : Number(overview?.today_addition_direct_presale_volume ?? 0),
       ),
     },
     {
@@ -118,7 +120,9 @@ export function CommunityContent({
       today: formatCommunityStatToday(
         t.community.statToday,
         useStatPlaceholders ? STAT_PLACEHOLDER : (overview?.today_addition_team_count ?? 0),
-        useStatPlaceholders ? STAT_PLACEHOLDER : 0,
+        useStatPlaceholders
+          ? STAT_PLACEHOLDER
+          : Number(overview?.today_addition_sales_team_market ?? 0),
       ),
     },
     {
