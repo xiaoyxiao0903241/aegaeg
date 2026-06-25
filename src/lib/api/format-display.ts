@@ -195,17 +195,16 @@ export function resolveRewardLogStatusKey(status: number): RewardLogStatusKey {
   }
 }
 
-/** reward_claim_orders: 0=待领取, 1=已领取, 2=已过期, 3=已替换 */
+/** reward_claim_orders: 0=待领取, 1=已领取, 2=已领取, 3=领取失败 */
 export function resolveTeamRewardClaimStatusKey(status: number): RewardLogStatusKey {
   switch (status) {
     case 0:
       return 'pending'
     case 1:
-      return 'paid'
     case 2:
-      return 'failed'
+      return 'paid'
     case 3:
-      return 'unknown'
+      return 'failed'
     default:
       return 'unknown'
   }

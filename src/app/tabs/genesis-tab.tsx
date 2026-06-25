@@ -1,6 +1,7 @@
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { Button } from '~/components/button'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { buttonDisabledClass } from '~/components/button'
@@ -56,17 +57,23 @@ import { formatTokenAmountToNumber } from '~/lib/swap/token-amount'
 export function GenesisWidget() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
+  const account = useActiveAccount()
   const genesis = useGenesisWidgetContext()
 
   useEffect(() => {
-    genesis.setShares(1)
+    genesis.setShares(0)
   }, [genesis.setShares])
 
-  // Mirror shares as editable text; default to 1 so the widget is ready to use.
-  const [sharesText, setSharesText] = useState('1')
+  // Mirror shares as editable text; default empty so the placeholder is shown.
+  const [sharesText, setSharesText] = useState('')
   useEffect(() => {
     setSharesText(genesis.shares === 0 ? '' : String(genesis.shares))
   }, [genesis.shares])
+
+  const sharesInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    sharesInputRef.current?.focus()
+  }, [])
 
   const seasonIntro = formatGenesisSeasonIntro(
     t.genesis.intro,
@@ -94,8 +101,8 @@ export function GenesisWidget() {
 
   const handleSharesBlur = () => {
     if (sharesText === '' || Number.parseInt(sharesText, 10) < 1) {
-      genesis.setShares(1)
-      setSharesText('1')
+      genesis.setShares(0)
+      setSharesText('')
     }
   }
 
@@ -170,12 +177,14 @@ export function GenesisWidget() {
         <div className="flex gap-2">
           <div className="relative flex min-w-0 flex-1">
             <input
-              className="w-full min-w-0 rounded-sm border border-border bg-card py-2.5 pl-3.5 pr-10 text-base font-bold text-foreground outline-none [appearance:textfield] focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              ref={sharesInputRef}
+              className="w-full min-w-0 rounded-sm border border-border bg-card py-2.5 pl-3.5 pr-10 text-base font-bold text-foreground outline-none placeholder:text-placeholder [appearance:textfield] focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               disabled={!walletReady}
               max={Math.max(genesis.maxShares, 1)}
               min={1}
               onBlur={handleSharesBlur}
               onChange={(e) => handleSharesChange(e.currentTarget.value)}
+              placeholder="0"
               type="number"
               value={sharesText}
             />

@@ -113,7 +113,7 @@ export interface TeamCommunityOverview {
 }
 
 export interface TeamRewardClaimLogItem {
-  /** 0=待领取, 1=已领取, 2=已过期, 3=已替换 */
+  /** 0=待领取, 1=已领取, 2=已领取, 3=领取失败 */
   status: number
   amount: string
   /** 产生该奖励时用户的创世等级（用于列表展示） */

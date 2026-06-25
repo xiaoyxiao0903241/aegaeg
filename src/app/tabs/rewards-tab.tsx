@@ -163,17 +163,7 @@ export function RewardsWidget() {
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
     if (teamTotal?.claimed == null) return undefined
-    const claimedLine = t.rewards.claimed.replace('{amount}', formatUsd(teamTotal.claimed, 2))
-    const breakdown = teamTotal.items
-      ?.map((item) => {
-        const pending = formatClaimableAmount(item.total, item.claimed)
-        const typeKey = resolveRewardTypeI18nKey(item.source_type)
-        const typeLabel = t.rewards.rewardType[typeKey]
-        return `${typeLabel} ${pending}`
-      })
-      .filter(Boolean)
-      .join(' · ')
-    return breakdown ? `${claimedLine} · ${breakdown}` : claimedLine
+    return t.rewards.claimed.replace('{amount}', formatUsd(teamTotal.claimed, 2))
   })()
   const showReferralSkeleton = sessionReady && referralLoading && referralTotal == null
   const showTeamSkeleton = sessionReady && teamLoading && teamTotal == null
