@@ -93,6 +93,37 @@ ${faviconHead}
 `
 }
 
+function renderBrowserLocaleDetectionScript(pathSuffix = '') {
+  return `
+        const supported = new Set(${supportedLocalesJson})
+        const stored = window.localStorage.getItem('aegis.locale')
+        if (supported.has(stored)) {
+          window.location.replace('/' + stored + '/${pathSuffix}' + window.location.search + window.location.hash)
+          return
+        }
+        const candidates = [navigator.language, ...(navigator.languages || [])]
+        let locale = 'en'
+        for (const raw of candidates) {
+          if (!raw) continue
+          const lower = raw.toLowerCase()
+          if (lower.startsWith('zh-tw') || lower.startsWith('zh-hk') || lower.startsWith('zh-hant')) {
+            locale = 'zht'
+            break
+          }
+          if (lower.startsWith('zh')) {
+            locale = 'zh'
+            break
+          }
+          const base = lower.split('-')[0]
+          if (supported.has(base)) {
+            locale = base
+            break
+          }
+        }
+        window.location.replace('/' + locale + '/${pathSuffix}' + window.location.search + window.location.hash)
+      `
+}
+
 export function renderRootRedirectDocument() {
   return `<!doctype html>
 <html lang="en">
@@ -103,12 +134,7 @@ export function renderRootRedirectDocument() {
 ${faviconHead}
     <title>AEGIS X</title>
     <script>
-      (() => {
-        const supported = new Set(${supportedLocalesJson})
-        const stored = window.localStorage.getItem('aegis.locale')
-        const locale = supported.has(stored) ? stored : 'en'
-        window.location.replace('/' + locale + '/' + window.location.search + window.location.hash)
-      })()
+      (() => {${renderBrowserLocaleDetectionScript()}})()
     </script>
   </head>
   <body>
@@ -128,12 +154,7 @@ export function renderAppRedirectDocument() {
 ${faviconHead}
     <title>AEGIS X DApp</title>
     <script>
-      (() => {
-        const supported = new Set(${supportedLocalesJson})
-        const stored = window.localStorage.getItem('aegis.locale')
-        const locale = supported.has(stored) ? stored : 'en'
-        window.location.replace('/' + locale + '/app.html' + window.location.search + window.location.hash)
-      })()
+      (() => {${renderBrowserLocaleDetectionScript('app.html')}})()
     </script>
   </head>
   <body>

@@ -5,7 +5,7 @@ import { createServer } from 'vite'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const placeholderHtml = '<!doctype html><html><head></head><body></body></html>\n'
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi']
+const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr']
 
 for (const locale of locales) {
   const localeRoot = resolve(root, locale)
