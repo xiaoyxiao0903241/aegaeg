@@ -1,5 +1,6 @@
 import { queryClient } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
+import { BSC_CONTRACTS } from '~/config/contracts'
 import type { DappTab } from '~/app/types'
 import type { Paginated, SalesLogItem } from '~/lib/api/types'
 
@@ -51,25 +52,31 @@ function removeChainQueriesForAddress(address: string) {
   })
 }
 
-/** Wallet account changed — drop stale reads and warm the next wallet scope. */
-export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddress?: string) {
-  // API queries are user-scoped: remove them entirely so every authenticated
-  // screen fetches fresh data for the new wallet.
-  clearApiQueries()
+function invalidateAddressScopedChainQueries(address?: string) {
+  if (!address) return
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
+  void queryClient.invalidateQueries({ queryKey: ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase()] })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.swapBalances(address, BSC_CONTRACTS.usd1, BSC_CONTRACTS.xxToken) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.swapBalances(address, BSC_CONTRACTS.xxToken, BSC_CONTRACTS.usd1) })
+}
 
-  if (previousAddress) {
-    removeChainQueriesForAddress(previousAddress)
+/** Wallet account changed — drop stale user-scoped reads; leave shared data untouched. */
+export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddress?: string, tab?: DappTab) {
+  // Address-scoped chain reads (balances, allowances, referral state, user totals)
+  // must refresh for the new account. Global phase/price data is shared and is
+  // intentionally left alone.
+  invalidateAddressScopedChainQueries(previousAddress)
+  invalidateAddressScopedChainQueries(nextAddress)
+
+  // API data is per-wallet; refresh only the currently visible tab's queries so
+  // the user sees their own records without refetching background tabs.
+  if (tab) {
+    invalidateTabQueries(tab)
   }
-
-  if (nextAddress) {
-    // Drop any cached data for the next address first so the UI never shows a
-    // flash of the previous account's values while the new fetch is in flight.
-    removeChainQueriesForAddress(nextAddress)
-  }
-
-  // Refresh every chain read so no stale data from the previous account
-  // remains visible while the new wallet reconnects.
-  void queryClient.invalidateQueries({ queryKey: ['chain'] })
 }
 
 /** User SIWE session became active — refresh API + wallet-scoped chain reads. */
@@ -90,7 +97,7 @@ export function invalidateAfterGenesisPhaseTransition(address?: string) {
 }
 
 export function clearApiQueries() {
-  return queryClient.removeQueries({ queryKey: queryKeys.api.all })
+  return queryClient.resetQueries({ queryKey: queryKeys.api.all })
 }
 
 export function invalidatePresaleChainQueries(address?: string) {

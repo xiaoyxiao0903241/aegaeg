@@ -52,13 +52,19 @@ export function useGenesisWidget() {
   const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
   const afterGenesisPhaseTransition = useDappActions((state) => state.afterGenesisPhaseTransition)
   const countdownRefreshRef = useRef<string | null>(null)
-  const [shares, setShares] = useState(1)
+  const [shares, setShares] = useState(0)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [nowSeconds, setNowSeconds] = useState(() => Math.floor(Date.now() / 1000))
 
   const address = account?.address
   const walletReady = Boolean(address)
+
+  useEffect(() => {
+    setShares(0)
+    setError(null)
+  }, [address])
+
   const phasesQuery = usePresalePhasesQuery()
   const activePhaseQuery = usePresaleActivePhaseQuery()
   const agxPriceQuery = usePresaleAgxPriceQuery()
@@ -137,7 +143,10 @@ export function useGenesisWidget() {
 
   useEffect(() => {
     if (maxShares <= 0) return
-    setShares((current) => Math.min(Math.max(current, 1), maxShares))
+    setShares((current) => {
+      if (current === 0) return 0
+      return Math.min(Math.max(current, 1), maxShares)
+    })
   }, [maxShares])
 
   const estimatedAgx = estimateAgxFromUsd1(

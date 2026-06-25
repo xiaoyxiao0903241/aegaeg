@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { ApiError } from '~/lib/api/client'
 import {
   buildLoginAttemptKey,
@@ -54,6 +55,7 @@ const RENEW_THRESHOLD_MS = 60_000
 export function AuthProvider({ children }: { children: ReactNode }) {
   const account = useActiveAccount()
   const walletAddress = account?.address
+  const activeTab = useDappShellStore((state) => state.activeTab)
   const sessionsByAddress = useAuthStore((state) => state.sessionsByAddress)
   const signaturesByAddress = useAuthStore((state) => state.signaturesByAddress)
   const hasHydrated = useAuthStore((state) => state.hasHydrated)
@@ -154,7 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   /**
    * Side channel: keep the react-query cache aligned with auth transitions.
    * Login → warm authenticated screens; logout/expiry → drop stale user data;
-   * wallet switch while authenticated → refresh for the new account.
+   * wallet switch → refresh for the new account regardless of current auth state.
    */
   const prevAuthedRef = useRef(false)
   const prevAddressRef = useRef<string | undefined>(undefined)
@@ -169,17 +171,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       actions.afterAuthLogin(walletAddress)
     } else if (!isAuthenticated && wasAuthed) {
       actions.afterAuthLogout()
-    } else if (
-      isAuthenticated &&
+    }
+
+    // Detect wallet address changes independently of auth state. Switching
+    // wallets often passes through a transient disconnected / needsLogin state,
+    // so waiting for isAuthenticated to flip would miss the transition and
+    // leave stale data on screen.
+    if (
       prevAddress &&
       walletAddress &&
       prevAddress.toLowerCase() !== walletAddress.toLowerCase()
     ) {
-      actions.afterWalletSwitch(prevAddress, walletAddress)
+      actions.afterWalletSwitch(prevAddress, walletAddress, activeTab)
     }
 
     prevAuthedRef.current = isAuthenticated
-    prevAddressRef.current = walletAddress
+    // Keep the last known connected address across transient disconnects.
+    // Wallet switches often go: A → undefined → B. If we clear the ref on
+    // disconnect, the B mount looks like a first connection and we never
+    // run the wallet-switch cleanup that refreshes user-scoped data.
+    if (walletAddress) {
+      prevAddressRef.current = walletAddress
+    }
   }, [hasHydrated, isAuthenticated, walletAddress])
 
   /** Manual login (user pressed sign-in): always allowed, may prompt a signature. */

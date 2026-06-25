@@ -9,11 +9,12 @@ import {
   invalidateAfterTeamClaim,
   invalidateAfterWalletSwitch,
 } from '~/lib/query/invalidate'
+import type { DappTab } from '~/app/types'
 
 interface DappActionsState {
   afterAuthLogin: (address?: string) => void
   afterAuthLogout: () => void
-  afterWalletSwitch: (previousAddress?: string, nextAddress?: string) => void
+  afterWalletSwitch: (previousAddress?: string, nextAddress?: string, tab?: DappTab) => void
   afterGenesisPhaseTransition: (address?: string) => void
   afterSwap: () => void
   afterGenesisPurchase: (address: string, purchaseAmount?: bigint) => void
@@ -31,8 +32,8 @@ export const useDappActions = create<DappActionsState>(() => ({
   afterAuthLogout: () => {
     clearApiQueries()
   },
-  afterWalletSwitch: (previousAddress, nextAddress) => {
-    invalidateAfterWalletSwitch(previousAddress, nextAddress)
+  afterWalletSwitch: (previousAddress, nextAddress, tab) => {
+    invalidateAfterWalletSwitch(previousAddress, nextAddress, tab)
   },
   afterSwap: () => {
     invalidateAfterSwap()

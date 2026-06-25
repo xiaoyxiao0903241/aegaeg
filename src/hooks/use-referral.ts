@@ -35,6 +35,11 @@ export function useReferral(sessionReady: boolean) {
   const address = account?.address
   const walletReady = Boolean(address)
 
+  useEffect(() => {
+    setReferrerInput(pendingReferrer ?? '')
+    setError(null)
+  }, [address, pendingReferrer])
+
   const referralQuery = useQuery({
     queryKey: queryKeys.chain.referral(address ?? ''),
     queryFn: async () => {

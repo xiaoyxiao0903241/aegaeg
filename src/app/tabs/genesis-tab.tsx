@@ -59,13 +59,13 @@ export function GenesisWidget() {
   const genesis = useGenesisWidgetContext()
 
   useEffect(() => {
-    genesis.setShares(1)
+    genesis.setShares(0)
   }, [genesis.setShares])
 
-  // Mirror shares as editable text so the input can be cleared transiently.
-  const [sharesText, setSharesText] = useState('1')
+  // Mirror shares as editable text; default empty so the user starts fresh.
+  const [sharesText, setSharesText] = useState('')
   useEffect(() => {
-    setSharesText(String(genesis.shares))
+    setSharesText(genesis.shares === 0 ? '' : String(genesis.shares))
   }, [genesis.shares])
 
   const seasonIntro = formatGenesisSeasonIntro(
@@ -82,6 +82,7 @@ export function GenesisWidget() {
     // Allow clearing the field — keep the raw text so it can be empty.
     if (value === '') {
       setSharesText('')
+      genesis.setShares(0)
       return
     }
     const parsed = Number.parseInt(value, 10)
@@ -93,8 +94,8 @@ export function GenesisWidget() {
 
   const handleSharesBlur = () => {
     if (sharesText === '' || Number.parseInt(sharesText, 10) < 1) {
-      genesis.setShares(1)
-      setSharesText('1')
+      genesis.setShares(0)
+      setSharesText('')
     }
   }
 
