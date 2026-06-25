@@ -123,23 +123,22 @@ export function RewardsWidget() {
     ? t.rewards.progressMaxPersonal
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
 
-  // Label stays "体系业绩"; at max rank the value shows "您已达到最高等级".
+  // For S3-S9, show qualified-partitions progress instead of raw team volume.
   const qualifiedPartitionCount = qualifiedPartitions?.count ?? 0
   const showQualifiedPartitions = displayRank >= 3 && displayRank <= 9
 
   const teamProgressLabel = showQualifiedPartitions
-    ? t.rewards.teamQualifiedPartitionsLabel.replace(
-        '{rank}',
-        formatPresaleRank(displayRank),
-      )
+    ? t.rewards.teamQualifiedPartitionsLabel
+        .replace('{rank}', formatPresaleRank(displayRank))
+        .replace('{count}', String(Math.min(qualifiedPartitionCount, 2)))
     : t.rewards.teamVolume
 
   const personalProgressValue = `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
 
   const teamProgressValue = showQualifiedPartitions
     ? t.rewards.teamQualifiedPartitionsValue.replace(
-        '{count}',
-        String(Math.min(qualifiedPartitionCount, 2)),
+        '{rank}',
+        formatPresaleRank(displayRank),
       )
     : tierProgress.isMaxRank
       ? t.rewards.progressMaxTeam
@@ -433,6 +432,11 @@ export function RewardsContent() {
 
   const historyTableRows = historyRows.map((row) => row)
 
+  const historyColWidths =
+    historyTab === 'referral'
+      ? ['132px', '104px', '140px', '120px', '104px']
+      : ['160px', '120px', '160px', '160px']
+
   return (
     <DappDetailPage>
       <DappContentHeading id="rewards-title">{t.rewards.heroTitle}</DappContentHeading>
@@ -513,7 +517,7 @@ export function RewardsContent() {
         </DappCollapsibleSection>
       )}
 
-      <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.history}>
+      <DappCollapsibleSection title={t.rewards.history}>
         <div className={cn(revealClass(), 'max-dapp:mt-0')} data-reveal>
           <DappPillTabs
             ariaLabel={t.rewards.history}
@@ -550,6 +554,7 @@ export function RewardsContent() {
             <>
               <ResponsiveTable
                 className="[&_th]:text-faint"
+                colWidths={historyColWidths}
                 compact
                 headers={historyHeaders}
                 isLoading={historyShowSkeleton}
