@@ -102,10 +102,10 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     { type: 'login' },
   )
 
-  // needsLogin but NO usable signature → idle (do not auto-popup a signature prompt)
+  // needsLogin + no usable signature → still auto-login (prompt once for signature)
   assert.deepEqual(
     deriveAuthAction({ ...base, hasUsableSignature: false, state: { kind: 'needsLogin' } }),
-    { type: 'idle' },
+    { type: 'login' },
   )
 
   // needsLogin while a login is in flight → idle

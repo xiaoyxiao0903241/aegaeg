@@ -85,7 +85,7 @@ export function deriveAuthAction({
   if (state.kind === 'disconnected') return { type: 'idle' }
 
   if (state.kind === 'needsLogin') {
-    if (!hasUsableSignature || isLoggingIn || loginError || lastAttemptKey === attemptKey) {
+    if (isLoggingIn || loginError || lastAttemptKey === attemptKey) {
       return { type: 'idle' }
     }
     return { type: 'login' }
