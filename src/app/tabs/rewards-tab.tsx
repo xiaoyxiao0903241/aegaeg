@@ -134,7 +134,7 @@ export function RewardsWidget() {
   const teamProgressValue = showQualifiedPartitions
     ? t.rewards.teamQualifiedPartitionsLabel
         .replace('{rank}', formatPresaleRank(displayRank))
-        .replace('{count}', String(Math.min(qualifiedPartitionCount, 2)))
+        .replace('{count}', String(qualifiedPartitionCount))
     : tierProgress.isMaxRank
       ? t.rewards.progressMaxTeam
       : tierProgress.teamLegRank != null
