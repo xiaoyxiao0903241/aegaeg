@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi'] as const
+const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr'] as const
 
 const localeEntries = Object.fromEntries(
   locales.flatMap((locale) => [
