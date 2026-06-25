@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
@@ -327,6 +327,12 @@ export function RewardsContent() {
   const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
   const [referralPage, setReferralPage] = useState(1)
   const [teamPage, setTeamPage] = useState(1)
+  const historyTableScrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    historyTableScrollRef.current?.scrollTo({ left: 0, behavior: 'instant' })
+  }, [historyTab])
+
   const {
     data: rewardLogs,
     isLoading: rewardLogsLoading,
@@ -548,6 +554,7 @@ export function RewardsContent() {
           ) : (
             <>
               <ResponsiveTable
+                ref={historyTableScrollRef}
                 className="[&_th]:text-faint"
                 colWidths={historyColWidths}
                 compact

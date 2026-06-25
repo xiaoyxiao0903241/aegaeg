@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { forwardRef, type ReactNode, type Ref } from 'react'
 import { Card } from '~/components/card'
 import { StatusBadge } from '~/components/badge'
 import { dappTableCardShellClass } from '~/app/components/dapp-table-shell'
@@ -22,21 +22,7 @@ const TABLE_WRAP_PADDING =
 const HIGHLIGHTED_ROW =
   'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td:first-child]:text-primary [&_td.text-success]:text-success'
 
-export function ResponsiveTable({
-  className = '',
-  colWidths,
-  compact = false,
-  emphasisColumns = [],
-  headers,
-  highlightedRows = [],
-  isLoading = false,
-  linkColumns = [],
-  loadingRowCount = 3,
-  plain = false,
-  positiveColumns = [],
-  rows,
-  statusColumns = [],
-}: {
+export const ResponsiveTable = forwardRef<HTMLDivElement, {
   className?: string
   /** Per-column width hints (e.g. '140px'); `undefined` leaves a column auto. */
   colWidths?: Array<string | undefined>
@@ -51,7 +37,24 @@ export function ResponsiveTable({
   positiveColumns?: number[]
   rows: ReactNode[][]
   statusColumns?: number[]
-}) {
+}>(function ResponsiveTable(
+  {
+    className = '',
+    colWidths,
+    compact = false,
+    emphasisColumns = [],
+    headers,
+    highlightedRows = [],
+    isLoading = false,
+    linkColumns = [],
+    loadingRowCount = 3,
+    plain = false,
+    positiveColumns = [],
+    rows,
+    statusColumns = [],
+  },
+  ref,
+) {
   const wrapClass = plain
     ? cn(
         'overflow-x-auto max-w-full min-w-0 max-dapp:scrollbar-x-track',
@@ -132,12 +135,16 @@ export function ResponsiveTable({
   )
 
   if (plain) {
-    return <div className={wrapClass}>{table}</div>
+    return (
+      <div ref={ref} className={wrapClass}>
+        {table}
+      </div>
+    )
   }
 
   return (
-    <Card as="div" surface="elevated" className={wrapClass}>
+    <Card ref={ref} as="div" surface="elevated" className={wrapClass}>
       {table}
     </Card>
   )
-}
+})

@@ -1,4 +1,4 @@
-import { createElement, type HTMLAttributes, type ReactNode } from 'react'
+import { createElement, forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/lib/utils'
 
@@ -46,22 +46,26 @@ export type CardProps = HTMLAttributes<HTMLElement> &
     children: ReactNode
   }
 
-export function Card({
-  as = 'article',
-  children,
-  className,
-  context = 'dapp',
-  surface,
-  fill,
-  radius,
-  tone,
-  hover,
-  ...props
-}: CardProps) {
+export const Card = forwardRef<HTMLElement, CardProps>(function Card(
+  {
+    as = 'article',
+    children,
+    className,
+    context = 'dapp',
+    surface,
+    fill,
+    radius,
+    tone,
+    hover,
+    ...props
+  },
+  ref,
+) {
   return createElement(
     as,
     {
       ...props,
+      ref,
       className: cn(
         cardVariants({
           context,
@@ -76,4 +80,4 @@ export function Card({
     },
     children,
   )
-}
+})
