@@ -16,6 +16,8 @@ import {
   shellRailIconClass,
   shellRailIndicatorClass,
   shellRailItemClass,
+  shellRailLabelClass,
+  shellRailRowLabelClass,
 } from '~/app/shell-layout'
 
 type RailIndicator = {
@@ -149,7 +151,12 @@ export function DappRail({
                 style={railIconMask(item.icon)}
                 aria-hidden="true"
               />
-              <span>{label}</span>
+              <span
+                className={mobile ? shellRailRowLabelClass : shellRailLabelClass}
+                title={label}
+              >
+                {label}
+              </span>
             </button>
           </AnchoredTooltip>
         )

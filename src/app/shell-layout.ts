@@ -61,6 +61,12 @@ export const shellRailIndicatorClass =
 export const shellRailIconClass =
   'aspect-square size-[var(--dapp-icon-rail)] bg-current'
 
+/** PC rail — single-line label with ellipsis inside the narrow column. */
+export const shellRailLabelClass = 'block w-full min-w-0 truncate text-center'
+
+/** Horizontal rail / drawer rows — label grows and truncates beside the icon. */
+export const shellRailRowLabelClass = 'min-w-0 flex-1 truncate'
+
 /** 右侧 detail 列滚动容器；内容 padding 见 DappDetailPage */
 export function shellContentClass(detailCollapsed: boolean) {
   return cn(
@@ -90,7 +96,7 @@ export const shellMobilePageTitleClass = 'max-dapp:mt-3'
 
 export function shellMobileDrawerItemClass(active: boolean) {
   return cn(
-    'flex w-full cursor-pointer items-center gap-3.5 rounded-md px-4 py-3.5',
+    'flex w-full min-w-0 cursor-pointer items-center gap-3.5 rounded-md px-4 py-3.5',
     'text-sm font-semibold leading-snug tracking-tight transition-[background-color,color] duration-180 ease-out max-dapp:text-sm',
     active ? 'bg-accent text-primary' : 'bg-transparent text-ink-strong',
   )

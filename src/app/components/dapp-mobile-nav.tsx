@@ -7,7 +7,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
-import { shellMobileDrawerItemClass } from '~/app/shell-layout'
+import { shellMobileDrawerItemClass, shellRailRowLabelClass } from '~/app/shell-layout'
 
 const NAV_MOTION_MS = 320
 
@@ -142,7 +142,9 @@ export function DappMobileNav({
                 )}
                 style={railIconMask(item.icon)}
               />
-              <span>{label}</span>
+              <span className={shellRailRowLabelClass} title={label}>
+                {label}
+              </span>
             </button>
           )
         })}
