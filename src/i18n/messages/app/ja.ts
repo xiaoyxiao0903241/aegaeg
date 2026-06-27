@@ -276,7 +276,7 @@ const app = defineMessages({
       shareholderNoRankBody: '創世株主になると、チーム共創額の1%-10%をリワードとして獲得でき、AEGIS Xローンチ後30日以内に1ランクアップできます。',
       shareholderTitleForRank: '{rank} · 創世株主',
       heroKicker: '創世ランク',
-      heroBodyForRank: 'チーム購入額の{bonus}リワードを獲得し、ローンチ後30日間{postLaunch} builderタイトルを受け取る。',
+      heroBodyForRank: 'チーム共創額の{bonus}をリワードとして獲得し、ローンチ後30日間{postLaunch}共創ランクを受け取る。',
       currentTierSuffix: '現在',
       progressPersonalTo: '{rank}まで · 個人購入',
       progressMaxPersonal: '最高個人ランク到達',
@@ -329,7 +329,7 @@ const app = defineMessages({
           },
           {
             q: '創世チームリワードの決済方法は？',
-            a: '創世チームリワードは対応する創世ランク比率で計算。スマートコントラクトが毎日00:00（UTC）に自動決済。ユーザーは必要に応じてウォレットに手動受取。共創期終了後、現在のページは閉鎖され、未受取リワードは再受取不可。リワードはスマートマーケットメイキングコントラクトに送られる。',
+            a: '創世チームリワードは対応する創世ランク比率で自動決済。ユーザーは手動でウォレットに受取が必要。共創期終了後、現在のページは閉鎖され、未受取リワードは再受取不可。リワードはスマートマーケットメイキングコントラクトに送られる。',
           },
         ],
       },

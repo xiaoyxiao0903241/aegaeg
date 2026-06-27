@@ -276,7 +276,7 @@ const app = defineMessages({
       shareholderNoRankBody: 'Become a Genesis shareholder to earn 1%-10% of team co-build volume as rewards and upgrade one tier within 30 days after AEGIS X launch.',
       shareholderTitleForRank: '{rank} · Genesis Shareholder',
       heroKicker: 'Genesis tier',
-      heroBodyForRank: 'Earn a {bonus} reward on team subscription volume and receive the {postLaunch} builder title for 30 days after launch.',
+      heroBodyForRank: 'Earn {bonus} of team co-build volume as reward and receive {postLaunch} co-build tier for 30 days after launch.',
       currentTierSuffix: 'Current',
       progressPersonalTo: 'Progress to {rank} · Personal subscription',
       progressMaxPersonal: 'Maximum personal tier reached',
@@ -329,7 +329,7 @@ const app = defineMessages({
           },
           {
             q: 'How are Genesis team rewards settled?',
-            a: 'Genesis team rewards are calculated by tier rate. Smart contracts settle automatically daily at 00:00 UTC; users claim to wallet manually as needed. After co-build ends, this page closes — unclaimed rewards cannot be claimed and are routed to the smart market-making contract.',
+            a: 'Genesis team rewards are settled automatically by tier rate; users must claim to wallet manually. After co-build ends, this page closes — unclaimed rewards cannot be claimed and are routed to the smart market-making contract.',
           },
         ],
       },

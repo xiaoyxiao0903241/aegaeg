@@ -276,7 +276,7 @@ const app = defineMessages({
       shareholderNoRankBody: '成為創世股東可獲得團隊共建金額的 1%-10% 作為獎勵，並且在 AEGIS X 上線後的 30 天內提升 1 級',
       shareholderTitleForRank: '{rank} · 創世股東',
       heroKicker: '創世等級',
-      heroBodyForRank: '團隊認購金額可獲得 {bonus} 獎勵，並在上線後獲得 30 天 {postLaunch} builder 稱號。',
+      heroBodyForRank: '獲得團隊共建金額的{bonus}作為獎勵，並且在上線後的30天內獲得{postLaunch}共建等級。',
       currentTierSuffix: '當前',
       progressPersonalTo: '距離 {rank} · 個人認購',
       progressMaxPersonal: '已達最高個人等級',
@@ -329,7 +329,7 @@ const app = defineMessages({
           },
           {
             q: '創世團隊獎勵如何結算？',
-            a: '創世團隊獎勵根據對應創世等級比例計算，智能合約將在每天 00:00 點（UTC）自動結算，用戶按需手動領取到錢包。共建期結束後，當前頁面將關閉，未領取的獎勵不可再領取，獎勵將被打入智能做市合約。',
+            a: '創世團隊獎勵根據對應創世等級比例自動結算，需用戶手動領取到錢包。共建期結束後，當前頁面將關閉，未領取的獎勵不可再領取，獎勵將被打入智能做市合約。',
           },
         ],
       },

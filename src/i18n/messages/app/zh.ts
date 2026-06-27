@@ -275,7 +275,7 @@ const app = defineMessages({
       shareholderNoRankBody: '成为创世股东可获得团队共建金额的 1%-10% 作为奖励，并且在 AEGIS X 上线后的 30 天内提升 1 级',
       shareholderTitleForRank: '{rank} · 创世股东',
       heroKicker: '创世等级',
-      heroBodyForRank: '团队认购金额可获得 {bonus} 奖励，并在上线后获得 30 天 {postLaunch} builder 称号。',
+      heroBodyForRank: '获得团队共建金额的{bonus}作为奖励，并且在上线后的30天内获得{postLaunch}共建等级。',
       currentTierSuffix: '当前',
       progressPersonalTo: '距离 {rank} · 个人认购',
       progressMaxPersonal: '已达最高个人等级',
@@ -328,7 +328,7 @@ const app = defineMessages({
           },
           {
             q: '创世团队奖励如何结算？',
-            a: '创世团队奖励根据对应创世等级比例计算，智能合约将在每天00:00点(UTC)自动结算，用户按需手动领取到钱包。共建期结束后，当前页面将关闭，未领取的奖励不可再领取，奖励将被打入智能做市合约。',
+            a: '创世团队奖励根据对应创世等级比例自动结算，需用户手动领取到钱包。共建期结束后，当前页面将关闭，未领取的奖励不可再领取，奖励将被打入智能做市合约。',
           },
         ],
       },

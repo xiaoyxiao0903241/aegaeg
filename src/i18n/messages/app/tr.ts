@@ -275,7 +275,7 @@ const app = defineMessages({
       shareholderNoRankBody: 'Genesis hissedarı olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
       shareholderTitleForRank: '{rank} · Genesis hissedarı',
       heroKicker: 'Genesis seviyesi',
-      heroBodyForRank: 'Takım abone tutarı {bonus} ödül kazandırır ve yayına girdikten sonra 30 gün boyunca {postLaunch} builder unvanı verir.',
+      heroBodyForRank: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın ve yayına girdikten sonra 30 gün boyunca {postLaunch} ortak inşa seviyesini kazanın.',
       currentTierSuffix: 'Mevcut',
       progressPersonalTo: '{rank} · kişisel aboneye mesafe',
       progressMaxPersonal: 'En yüksek kişisel seviyeye ulaşıldı',
@@ -328,7 +328,7 @@ const app = defineMessages({
           },
           {
             q: 'Genesis takım ödülü nasıl uzlaştırılır?',
-            a: 'Genesis takım ödülü, ilgili Genesis seviye oranına göre hesaplanır; akıllı sözleşme her gün 00:00’te (UTC) otomatik olarak uzlaştırır ve kullanıcılar istediklerinde manuel olarak cüzdanlarına talep eder. Ortak inşa dönemi sona erdikten sonra mevcut sayfa kapanır; talep edilmemiş ödüller artık talep edilemez ve akıllı piyasa yapıcı sözleşmesine gönderilir.',
+            a: 'Genesis takım ödülleri ilgili Genesis seviye oranına göre otomatik uzlaştırılır; kullanıcılar manuel olarak cüzdanlarına talep etmelidir. Ortak inşa dönemi sona erdikten sonra mevcut sayfa kapanır; talep edilmemiş ödüller artık talep edilemez ve akıllı piyasa yapıcı sözleşmesine gönderilir.',
           },
         ],
       },

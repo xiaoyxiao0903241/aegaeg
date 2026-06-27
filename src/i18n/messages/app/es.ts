@@ -276,7 +276,7 @@ const app = defineMessages({
       shareholderNoRankBody: 'Al convertirte en accionista Genesis, obtienes el 1%-10% del volumen de co-construcción del equipo como recompensa y subes 1 nivel dentro de los 30 días posteriores al lanzamiento de AEGIS X.',
       shareholderTitleForRank: '{rank} · Accionista Genesis',
       heroKicker: 'Nivel Genesis',
-      heroBodyForRank: 'El monto de suscripción del equipo puede obtener {bonus} de recompensa, y tras el lanzamiento obtendrás el título builder {postLaunch} durante 30 días.',
+      heroBodyForRank: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa y recibe el nivel de co-construcción {postLaunch} durante 30 días tras el lanzamiento.',
       currentTierSuffix: 'actual',
       progressPersonalTo: 'Hasta {rank} · Suscripción personal',
       progressMaxPersonal: 'Nivel personal máximo alcanzado',
@@ -329,7 +329,7 @@ const app = defineMessages({
           },
           {
             q: '¿Cómo se liquidan las recompensas de equipo Genesis?',
-            a: 'Las recompensas de equipo Genesis se calculan según la proporción del nivel Genesis correspondiente. El contrato inteligente liquida automáticamente cada día a las 00:00 (UTC), y los usuarios reclaman manualmente en la billetera según necesidad. Tras finalizar el período de co-construcción, esta página se cerrará; las recompensas no reclamadas no podrán reclamarse y se transferirán al contrato inteligente de market making.',
+            a: 'Las recompensas de equipo Genesis se liquidan automáticamente según la proporción del nivel Genesis; el usuario debe reclamar manualmente en la billetera. Tras finalizar el período de co-construcción, esta página se cerrará; las recompensas no reclamadas no podrán reclamarse y se transferirán al contrato inteligente de market making.',
           },
         ],
       },

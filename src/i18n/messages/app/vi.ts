@@ -276,7 +276,7 @@ const app = defineMessages({
       shareholderNoRankBody: 'Trở thành cổ đông sáng lập để nhận 1%-10% khối lượng đồng xây dựng của đội làm phần thưởng và nâng 1 cấp trong 30 ngày sau khi AEGIS X ra mắt.',
       shareholderTitleForRank: '{rank} · Cổ đông sáng lập',
       heroKicker: 'Cấp sáng lập',
-      heroBodyForRank: 'Số tiền đăng ký nhóm có thể nhận phần thưởng {bonus}, và sau ra mắt nhận danh hiệu builder {postLaunch} trong 30 ngày.',
+      heroBodyForRank: 'Nhận {bonus} từ khối lượng đồng xây dựng của nhóm làm phần thưởng và đạt cấp đồng xây dựng {postLaunch} trong 30 ngày sau ra mắt.',
       currentTierSuffix: 'Hiện tại',
       progressPersonalTo: 'Còn cách {rank} · Đăng ký cá nhân',
       progressMaxPersonal: 'Đã đạt cấp cá nhân cao nhất',
@@ -329,7 +329,7 @@ const app = defineMessages({
           },
           {
             q: 'Phần thưởng nhóm sáng lập được quyết toán như thế nào?',
-            a: 'Phần thưởng nhóm sáng lập tính theo tỷ lệ cấp sáng lập tương ứng, hợp đồng thông minh tự động quyết toán lúc 00:00 (UTC) mỗi ngày, người dùng tự nhận vào ví khi cần. Sau khi kỳ cùng xây dựng kết thúc, trang hiện tại sẽ đóng, phần thưởng chưa nhận không thể nhận nữa, phần thưởng sẽ chuyển vào hợp đồng market maker thông minh.',
+            a: 'Phần thưởng nhóm sáng lập được quyết toán tự động theo tỷ lệ cấp sáng lập tương ứng; người dùng phải tự nhận vào ví. Sau khi kỳ cùng xây dựng kết thúc, trang hiện tại sẽ đóng, phần thưởng chưa nhận không thể nhận nữa, phần thưởng sẽ chuyển vào hợp đồng market maker thông minh.',
           },
         ],
       },

@@ -276,7 +276,7 @@ const app = defineMessages({
       shareholderNoRankBody: 'Menjadi pemegang saham Genesis memberi hadiah 1%-10% dari volume co-build tim dan naik 1 level dalam 30 hari setelah peluncuran AEGIS X.',
       shareholderTitleForRank: '{rank} · Pemegang Saham Genesis',
       heroKicker: 'LEVEL GENESIS',
-      heroBodyForRank: 'Jumlah langganan tim mendapatkan hadiah {bonus}, dan setelah peluncuran mendapat gelar builder {postLaunch} selama 30 hari.',
+      heroBodyForRank: 'Dapatkan {bonus} dari volume co-build tim sebagai hadiah dan terima tingkat co-build {postLaunch} selama 30 hari setelah peluncuran.',
       currentTierSuffix: 'saat ini',
       progressPersonalTo: 'Menuju {rank} · Langganan pribadi',
       progressMaxPersonal: 'Level pribadi tertinggi tercapai',
@@ -329,7 +329,7 @@ const app = defineMessages({
           },
           {
             q: 'Bagaimana hadiah tim Genesis diselesaikan?',
-            a: 'Hadiah tim Genesis dihitung sesuai rasio level Genesis. Smart contract menyelesaikan otomatis setiap hari pukul 00:00 (UTC); pengguna klaim manual ke dompet sesuai kebutuhan. Setelah periode co-build berakhir, halaman ini ditutup; hadiah yang belum diklaim tidak dapat diklaim lagi dan dialihkan ke kontrak market maker.',
+            a: 'Hadiah tim Genesis diselesaikan otomatis sesuai rasio level Genesis; pengguna harus klaim manual ke dompet. Setelah periode co-build berakhir, halaman ini ditutup; hadiah yang belum diklaim tidak dapat diklaim lagi dan dialihkan ke kontrak market maker.',
           },
         ],
       },

@@ -276,7 +276,7 @@ const app = defineMessages({
       shareholderNoRankBody: '창세 주주가 되면 팀 공동 구축 금액의 1%-10%를 리워드로 받을 수 있으며, AEGIS X 출시 후 30일 이내 1단계 승급됩니다.',
       shareholderTitleForRank: '{rank} · 창세 주주',
       heroKicker: '창세 등급',
-      heroBodyForRank: '팀 구독 금액에 대해 {bonus} 리워드를 받으며, 출시 후 30일간 {postLaunch} builder 칭호를 획득합니다.',
+      heroBodyForRank: '팀 공동 구축 금액의 {bonus}를 리워드로 받으며, 출시 후 30일간 {postLaunch} 공동 구축 등급을 획득합니다.',
       currentTierSuffix: '현재',
       progressPersonalTo: '{rank}까지 · 개인 구독',
       progressMaxPersonal: '최고 개인 등급 달성',
@@ -329,7 +329,7 @@ const app = defineMessages({
           },
           {
             q: '창세 팀 리워드는 어떻게 정산되나요?',
-            a: '창세 팀 리워드는 해당 창세 등급 비율에 따라 계산되며, 스마트 컨트랙트가 매일 00:00(UTC)에 자동 정산합니다. 사용자는 필요에 따라 지갑으로 수동 수령합니다. 공동 구축 기간 종료 후 현재 페이지는 닫히며, 미수령 리워드는 더 이상 수령할 수 없고 스마트 마켓메이킹 컨트랙트로 이전됩니다.',
+            a: '창세 팀 리워드는 해당 창세 등급 비율에 따라 자동 정산되며, 사용자가 지갑으로 수동 수령해야 합니다. 공동 구축 기간 종료 후 현재 페이지는 닫히며, 미수령 리워드는 더 이상 수령할 수 없고 스마트 마켓메이킹 컨트랙트로 이전됩니다.',
           },
         ],
       },
