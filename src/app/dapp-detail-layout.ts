@@ -8,6 +8,10 @@ import { cn } from '~/lib/utils'
 /** Page / section title → first content block (Figma 16px / H5 12px) */
 export const dappDetailTitleGapClass = 'pb-4 max-dapp:pb-3'
 
+/** Detail column scroll bottom inset — PC shadow bleed only (shell window owns H5 page inset). */
+export const dappDetailPageBottomClass =
+  'dapp:pb-[calc(1.875rem+var(--shadow-bleed))]'
+
 /** Major block → next block (Figma 34px ≈ 8.5 / H5 24px) */
 export const dappDetailSectionGapClass = 'mt-8.5 max-dapp:mt-6'
 

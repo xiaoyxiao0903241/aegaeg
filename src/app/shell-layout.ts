@@ -10,9 +10,9 @@ export const shellPageClass = cn(
 
 export function shellStageClass() {
   return cn(
-    'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0 pb-0',
-    'dapp:min-h-0 dapp:flex-1 dapp:items-center dapp:justify-stretch dapp:pb-0',
-    'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-0',
+    'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0',
+    'dapp:min-h-0 dapp:flex-1 dapp:items-center dapp:justify-stretch dapp:pb-4',
+    'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]',
   )
 }
 

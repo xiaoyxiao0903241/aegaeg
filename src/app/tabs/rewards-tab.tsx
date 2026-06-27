@@ -53,6 +53,7 @@ import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-sectio
 import { DappSection } from '~/app/components/dapp-section'
 import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
+import { DappTableCard } from '~/app/components/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
@@ -396,13 +397,14 @@ export function RewardsContent() {
     })
 
   const tierTable = (
-    <ResponsiveTable
-      compact
-      headers={tierHeaders}
-      highlightedRows={tierHighlightedRows}
-      plain
-      rows={mapTierRows(rewardTiers, tierHighlightedRows)}
-    />
+    <DappTableCard>
+      <ResponsiveTable
+        compact
+        headers={tierHeaders}
+        highlightedRows={tierHighlightedRows}
+        rows={mapTierRows(rewardTiers, tierHighlightedRows)}
+      />
+    </DappTableCard>
   )
 
   const historyHeaders =
@@ -427,6 +429,78 @@ export function RewardsContent() {
     historyTab === 'referral'
       ? ['132px', '104px', '140px', '120px', '104px']
       : ['160px', '120px', '160px', '160px']
+
+  const historyPillTabs = (
+    <DappPillTabs
+      ariaLabel={t.rewards.history}
+      className="flex items-center justify-start gap-2"
+      items={[
+        { active: historyTab === 'referral', label: t.rewards.referralRewards },
+        { active: historyTab === 'team', label: t.rewards.teamRewards },
+      ]}
+      onSelect={(index) => {
+        const next = index === 0 ? 'referral' : 'team'
+        setHistoryTab(next)
+        // Re-fetch the selected tab's records on every tab click.
+        void (next === 'referral' ? refreshReferralLogs() : refreshTeamLogs())
+      }}
+    />
+  )
+
+  const historyTableBody = historyTable.requiresAuth ? (
+    <DappTableAuthPrompt body={t.dapp.connect.recordsBodyRewards} embedded />
+  ) : historyTable.queryEmpty ? (
+    <>
+      <ResponsiveTable
+        colWidths={historyColWidths}
+        compact
+        headers={historyHeaders}
+        rows={[]}
+      />
+      <DappTableEmptyMessage
+        body={
+          historyTab === 'referral'
+            ? t.rewards.referralHistoryEmpty.body
+            : t.rewards.teamHistoryEmpty.body
+        }
+        embedded
+        title={
+          historyTab === 'referral'
+            ? t.rewards.referralHistoryEmpty.title
+            : t.rewards.teamHistoryEmpty.title
+        }
+      />
+    </>
+  ) : (
+    <ResponsiveTable
+      colWidths={historyColWidths}
+      compact
+      headers={historyHeaders}
+      isLoading={historyShowSkeleton}
+      loadingRowCount={4}
+      positiveColumns={[1]}
+      rows={historyTableRows}
+    />
+  )
+
+  const historyTableCard = (
+    <DappTableCard
+      ref={historyTableScrollRef}
+      footer={
+        !historyTable.requiresAuth ? (
+          <DappTablePagination
+            embedded
+            onPageChange={onHistoryPageChange}
+            page={historyPage}
+            total={historyTotal}
+          />
+        ) : undefined
+      }
+      header={!historyTable.requiresAuth ? historyPillTabs : undefined}
+    >
+      {historyTableBody}
+    </DappTableCard>
+  )
 
   return (
     <DappDetailPage>
@@ -508,62 +582,19 @@ export function RewardsContent() {
         </DappCollapsibleSection>
       )}
 
-      <DappCollapsibleSection title={t.rewards.history}>
-        <div className={cn(revealClass(), 'max-dapp:mt-0')} data-reveal>
-          <DappPillTabs
-            ariaLabel={t.rewards.history}
-            className="mb-2.5 flex items-center justify-start gap-2"
-            items={[
-              { active: historyTab === 'referral', label: t.rewards.referralRewards },
-              { active: historyTab === 'team', label: t.rewards.teamRewards },
-            ]}
-            onSelect={(index) => {
-              const next = index === 0 ? 'referral' : 'team'
-              setHistoryTab(next)
-              // Re-fetch the selected tab's records on every tab click.
-              void (next === 'referral' ? refreshReferralLogs() : refreshTeamLogs())
-            }}
-          />
-          {historyTable.requiresAuth ? (
-            <DappTableAuthPrompt
-              body={t.dapp.connect.recordsBodyRewards}
-            />
-          ) : historyTable.queryEmpty ? (
-            <DappTableEmptyMessage
-              body={
-                historyTab === 'referral'
-                  ? t.rewards.referralHistoryEmpty.body
-                  : t.rewards.teamHistoryEmpty.body
-              }
-              title={
-                historyTab === 'referral'
-                  ? t.rewards.referralHistoryEmpty.title
-                  : t.rewards.teamHistoryEmpty.title
-              }
-            />
-          ) : (
-            <>
-              <ResponsiveTable
-                ref={historyTableScrollRef}
-                className="[&_th]:text-faint"
-                colWidths={historyColWidths}
-                compact
-                headers={historyHeaders}
-                isLoading={historyShowSkeleton}
-                loadingRowCount={4}
-                plain
-                positiveColumns={[1]}
-                rows={historyTableRows}
-              />
-              <DappTablePagination
-                onPageChange={onHistoryPageChange}
-                page={historyPage}
-                total={historyTotal}
-              />
-            </>
-          )}
-        </div>
-      </DappCollapsibleSection>
+      {isMobileViewport ? (
+        <DappSection className="group-data-[tab=rewards]/shell:max-dapp:mt-0" title={t.rewards.history}>
+          <div className={cn(revealClass(), 'max-dapp:mt-0')} data-reveal>
+            {historyTableCard}
+          </div>
+        </DappSection>
+      ) : (
+        <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.history}>
+          <div className={cn(revealClass(), 'max-dapp:mt-0')} data-reveal>
+            {historyTableCard}
+          </div>
+        </DappCollapsibleSection>
+      )}
 
       <DappCollapsibleSection
         bodyClassName="overflow-visible"

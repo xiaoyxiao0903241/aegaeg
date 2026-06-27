@@ -41,6 +41,7 @@ import { ProgressMeter } from '~/app/components/progress-meter'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
+import { DappTableCard } from '~/app/components/dapp-table-card'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { SeasonSelector } from '~/app/components/season-selector'
@@ -436,52 +437,63 @@ export function GenesisContent() {
         title={t.genesis.myContributions}
       >
         <div className={cn(revealClass(), 'flex flex-col gap-3')} data-reveal>
-          {sessionReady ? (
-            <div
-              className={cn(
-                'grid gap-2.5',
-                'max-dapp:rounded-2xl max-dapp:bg-card max-dapp:p-4 max-dapp:shadow-card',
-              )}
-            >
-              <div className="flex items-center justify-between gap-3 text-xs font-semibold leading-[1.2] tracking-[-0.26px] text-foreground">
-                <span>{t.genesis.totalContributed}</span>
-                <strong className="mt-0 text-right font-semibold">{contributedLabel}</strong>
-              </div>
-              <ProgressMeter
-                label={t.genesis.totalContributed}
-                value={contributionProgress}
-              />
-            </div>
-          ) : null}
           {showSalesSyncHint ? (
             <p className="m-0 text-xs leading-normal text-muted-foreground">
               {t.genesis.contributionsSyncPending}
             </p>
           ) : null}
-          {contributionsTable.requiresAuth ? (
-            <DappTableAuthPrompt body={t.dapp.connect.recordsBodyGenesis} />
-          ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
-            <DappTableEmptyMessage title={t.genesis.contributionsEmpty.title} />
-          ) : (
-            <>
+          <DappTableCard
+            footer={
+              sessionReady && !contributionsTable.requiresAuth ? (
+                <DappTablePagination
+                  embedded
+                  onPageChange={setContributionsPage}
+                  page={contributionsPage}
+                  summary={`${t.genesis.cumulativeContributed}${formatUsd(cumulativeContributedUsd)}`}
+                  total={contributionsTotal}
+                />
+              ) : undefined
+            }
+            header={
+              sessionReady && !contributionsTable.requiresAuth ? (
+                <div className="grid gap-2.5">
+                  <div className="flex items-center justify-between gap-3 text-xs font-semibold leading-[1.2] tracking-[-0.26px] text-foreground">
+                    <span>{t.genesis.totalContributed}</span>
+                    <strong className="mt-0 text-right font-semibold">{contributedLabel}</strong>
+                  </div>
+                  <ProgressMeter
+                    label={t.genesis.totalContributed}
+                    value={contributionProgress}
+                  />
+                </div>
+              ) : undefined
+            }
+          >
+            {contributionsTable.requiresAuth ? (
+              <DappTableAuthPrompt body={t.dapp.connect.recordsBodyGenesis} embedded />
+            ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
+              <>
+                <ResponsiveTable
+                  colWidths={['132px', '104px', '96px', '136px', '104px']}
+                  compact
+                  headers={tableHeaders}
+                  positiveColumns={[2]}
+                  rows={[]}
+                />
+                <DappTableEmptyMessage embedded title={t.genesis.contributionsEmpty.title} />
+              </>
+            ) : (
               <ResponsiveTable
                 colWidths={['132px', '104px', '96px', '136px', '104px']}
                 compact
                 headers={tableHeaders}
                 isLoading={contributionsTable.showSkeleton}
                 loadingRowCount={4}
-                plain
                 positiveColumns={[2]}
                 rows={tableRows}
               />
-              <DappTablePagination
-                onPageChange={setContributionsPage}
-                page={contributionsPage}
-                summary={`${t.genesis.cumulativeContributed}${formatUsd(cumulativeContributedUsd)}`}
-                total={contributionsTotal}
-              />
-            </>
-          )}
+            )}
+          </DappTableCard>
         </div>
       </DappSection>
 

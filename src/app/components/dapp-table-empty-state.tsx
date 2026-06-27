@@ -23,13 +23,44 @@ function SkeletonRow({ className }: { className?: string }) {
 
 export function DappTableEmptyState({
   className,
+  embedded = false,
   rows = 3,
+  showSkeleton = true,
   children,
 }: {
   className?: string
+  /** Renders inside `DappTableCard` content — no outer card shell. */
+  embedded?: boolean
   rows?: number
+  showSkeleton?: boolean
   children?: ReactNode
 }) {
+  const skeleton = showSkeleton ? (
+    <div
+      aria-hidden="true"
+      className="flex w-full flex-col gap-3 max-dapp:gap-2.5"
+    >
+      {Array.from({ length: rows }).map((_, rowIndex) => (
+        <SkeletonRow key={rowIndex} />
+      ))}
+    </div>
+  ) : null
+
+  if (embedded) {
+    return (
+      <div
+        className={cn(
+          'flex flex-col items-center py-4 max-dapp:py-3',
+          children && (showSkeleton ? 'gap-4.5' : 'gap-3'),
+          className,
+        )}
+      >
+        {skeleton}
+        {children}
+      </div>
+    )
+  }
+
   return (
     <div
       aria-hidden={children ? undefined : true}
@@ -43,14 +74,7 @@ export function DappTableEmptyState({
       )}
       data-reveal
     >
-      <div
-        aria-hidden="true"
-        className="flex w-full flex-col gap-3 max-dapp:gap-2.5"
-      >
-        {Array.from({ length: rows }).map((_, rowIndex) => (
-          <SkeletonRow key={rowIndex} />
-        ))}
-      </div>
+      {skeleton}
       {children}
     </div>
   )

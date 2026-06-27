@@ -22,6 +22,7 @@ import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
+import { DappTableCard } from '~/app/components/dapp-table-card'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { CommunityFaqSection } from '~/app/tabs/community/community-faq-section'
@@ -81,7 +82,7 @@ export function CommunityContent({
 
   if (!sessionReady) {
     return (
-      <DappDetailPage className="max-dapp:pb-20">
+      <DappDetailPage>
         <CommunityFlowSection isMobileViewport={isMobileViewport} onSelectTab={onSelectTab} />
         <CommunityFaqSection />
       </DappDetailPage>
@@ -177,17 +178,51 @@ export function CommunityContent({
         className="group-data-[tab=community]/shell:max-dapp:mt-0"
         title={inviteSectionTitle}
       >
-        {invitesTable.requiresAuth ? (
-          <DappTableAuthPrompt
-            body={t.dapp.connect.recordsBodyCommunity}
-          />
-        ) : invitesTable.queryEmpty ? (
-          <DappTableEmptyMessage
-            body={t.community.invitesEmpty.body}
-            title={t.community.invitesEmpty.title}
-          />
-        ) : (
-          <>
+        <DappTableCard
+          footer={
+            !invitesTable.requiresAuth ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setInvitesPage}
+                page={invitesPage}
+                total={invitesTotal}
+              />
+            ) : undefined
+          }
+        >
+          {invitesTable.requiresAuth ? (
+            <DappTableAuthPrompt body={t.dapp.connect.recordsBodyCommunity} embedded />
+          ) : invitesTable.queryEmpty ? (
+            <>
+              <ResponsiveTable
+                className={cn(
+                  '[&_table]:table-fixed',
+                  '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
+                  '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
+                  '[&_th:nth-child(3)]:w-[15.38%] [&_td:nth-child(3)]:w-[15.38%]',
+                  '[&_th:nth-child(4)]:w-[15.38%] [&_td:nth-child(4)]:w-[15.38%]',
+                  '[&_th:nth-child(5)]:w-[15.38%] [&_td:nth-child(5)]:w-[15.38%]',
+                  'max-dapp:[&_table]:table-auto max-dapp:[&_table]:w-max max-dapp:[&_th]:w-auto max-dapp:[&_td]:w-auto',
+                )}
+                compact
+                emphasisColumns={[3]}
+                headers={[
+                  t.tables.joined,
+                  t.tables.address,
+                  t.tables.title,
+                  t.tables.direct,
+                  t.tables.volume,
+                ]}
+                linkColumns={[1]}
+                rows={[]}
+              />
+              <DappTableEmptyMessage
+                body={t.community.invitesEmpty.body}
+                embedded
+                title={t.community.invitesEmpty.title}
+              />
+            </>
+          ) : (
             <ResponsiveTable
               className={cn(
                 '[&_table]:table-fixed',
@@ -209,16 +244,10 @@ export function CommunityContent({
               ]}
               isLoading={invitesTable.showSkeleton}
               linkColumns={[1]}
-              plain
               rows={compactRows}
             />
-            <DappTablePagination
-              onPageChange={setInvitesPage}
-              page={invitesPage}
-              total={invitesTotal}
-            />
-          </>
-        )}
+          )}
+        </DappTableCard>
       </DappSection>
 
       <CommunityFaqSection />
