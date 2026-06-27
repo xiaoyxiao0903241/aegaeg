@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { scrollDappPanelsToTop } from '~/app/utils'
 
 export type SwapView = 'hub' | 'flash' | 'trade'
 export type SwapViewDirection = 'forward' | 'back'
@@ -36,6 +37,8 @@ export const useSwapViewStore = create<SwapViewStore>((set, get) => ({
     const { view: currentView, motion } = get()
     if (view === currentView && !motion) return
     if (motion) return
+
+    scrollDappPanelsToTop()
 
     const outgoingView = currentView
     const back = view === 'hub' && outgoingView !== 'hub'
