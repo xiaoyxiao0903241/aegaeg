@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { getInitialTab, isDappTab } from '~/app/utils'
 import type { DappTab } from '~/app/types'
+import { useSwapViewStore } from '~/stores/swap-view-store'
 
 interface DappShellStore {
   activeTab: DappTab
@@ -18,6 +19,9 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
   detailCollapsed: false,
   mobileNavOpen: false,
   selectTab: (tab) => {
+    if (tab !== 'swap') {
+      useSwapViewStore.getState().backToHub()
+    }
     set((state) => ({
       activeTab: tab,
       ...(tab === 'genesis' ? { detailCollapsed: false } : {}),
@@ -25,6 +29,9 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
     window.history.replaceState(null, '', `#${tab}`)
   },
   selectMobileTab: (tab) => {
+    if (tab !== 'swap') {
+      useSwapViewStore.getState().backToHub()
+    }
     set({
       activeTab: tab,
       mobileNavOpen: false,

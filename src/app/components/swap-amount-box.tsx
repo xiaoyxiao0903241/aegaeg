@@ -37,7 +37,7 @@ export function SwapAmountBox({
       as="section"
       surface="outlined"
       className={cn(
-        'p-3.5',
+        'rounded-2xl p-3.5',
         !sessionReady && '[&_input]:text-[#c9cfda] [&_input]:placeholder:text-[#c9cfda]',
         className,
       )}

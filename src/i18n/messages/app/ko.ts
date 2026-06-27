@@ -58,7 +58,8 @@ const app = defineMessages({
       signInRequired: '서명 로그인',
     },
     swap: {
-      title: 'Swap',
+      backToHub: 'Back to Convert',
+      title: 'Convert',
       intro: '실시간 시장 환율 기준, 온체인 즉시 정산.',
       sell: 'Sell',
       buy: 'Buy',
@@ -82,6 +83,67 @@ const app = defineMessages({
       fixedRate: '1 : 1 고정',
       settlement: '정산',
       settlementValue: 'PancakeSwap · 즉시 정산',
+      hub: {
+              modes: {
+                flash: {
+                  title: 'Flash Swap',
+                  body: 'Swap USDT for USD1 with no fees and no slippage',
+                },
+                trade: {
+                  title: 'Trade',
+                  body: 'Swap mainstream tokens for AEGIS X ecosystem tokens',
+                },
+                burn: {
+                  title: 'Burn',
+                  body: 'Burn AGX to earn contribution points',
+                },
+                comingSoon: 'Coming soon',
+              },
+                                          about: {
+                title: 'About Convert',
+                body: 'Swap USDT for USD1, trade popular tokens for X DAO ecosystem tokens, or upgrade gAGX to AGX and burn AGX for contribution points.',
+              },
+              program: {
+                title: 'Get X DAO Protocol Tokens',
+                cards: [
+                { title: 'Flash Swap', body: 'Swap USDT for USD1' },
+                { title: 'Get USD1', body: 'Get USD1 at PancakeSwap market rates' },
+                { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rates' },
+                { title: 'Sell X', body: 'Swap X for AEGIS X economic tokens or mainstream coins' },
+                { title: 'Get contribution points', body: 'Burn AGX at a 1:6 ratio for contribution points' },
+                ],
+              },
+              faq: {
+                items: [
+                  {
+                    q: 'What is the difference between flash swap and trade?',
+                    a: 'Flash swap converts USDT to USD1 via the AEGIS X protocol contract with no slippage. Trade uses PancakeSwap market rates for ecosystem tokens.',
+                  },
+                  {
+                    q: 'What can I do after connecting my wallet?',
+                    a: 'After connecting and signing in, you can view balances, fetch on-chain quotes, and submit convert or trade transactions.',
+                  },
+                  {
+                    q: 'Which networks are supported?',
+                    a: 'AEGIS X DApp currently runs on BNB Smart Chain (BSC) mainnet.',
+                  },
+                ],
+              },
+            },
+            flash: {
+              title: 'Flash Swap',
+              intro: 'USDT를 USD1로 교환, 수수료 없음, 슬리피지 없음',
+              providerName: 'AEGIS X',
+              openProvider: 'BscScan에서 플래시 스왑 계약 보기',
+              settlementValue: 'On-chain · seconds',
+              tokenAboutTitle: 'About USD1',
+              action: 'Flash Swap',
+            },
+            trade: {
+              title: 'Trade',
+              intro: 'PancakeSwap real-time market rates, settled on-chain in seconds',
+              action: 'Trade',
+            },
       tokenAbout: {
         title: 'AEGIS X 생태계 토큰 소개',
         items: [
@@ -114,6 +176,7 @@ const app = defineMessages({
       swipePrevious: '아래로 스와이프하여 이전 페이지',
       faq: {
         title: 'FAQ',
+        tabsTitle: 'FAQs',
         tabs: {
           usd1: {
             label: 'USD1',

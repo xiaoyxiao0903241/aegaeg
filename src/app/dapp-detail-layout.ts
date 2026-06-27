@@ -5,8 +5,8 @@ import { cn } from '~/lib/utils'
  * All values are rem-based (@ 16px root) and scale with site-fluid.
  */
 
-/** Page / section title → first content block (Figma 16px / H5 12px) */
-export const dappDetailTitleGapClass = 'pb-4 max-dapp:pb-3'
+/** Page / section title → first content block (32px @ 16px root) */
+export const dappDetailTitleGapClass = 'pb-8'
 
 /** Detail column scroll bottom inset — PC shadow bleed only (shell window owns H5 page inset). */
 export const dappDetailPageBottomClass =

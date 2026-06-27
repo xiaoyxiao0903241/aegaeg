@@ -12,11 +12,11 @@ function formatPoolRateLabel(
 ) {
   const formatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 4,
   })
-  return direction === 'reverse'
-    ? `1 USDT ≈ ${formatter.format(rate.usd1PerXx)} USD1`
-    : `1 USD1 ≈ ${formatter.format(rate.xxPerUsd1)} USDT`
+  const value = direction === 'reverse' ? rate.usd1PerXx : rate.xxPerUsd1
+
+  return `1 : ${formatter.format(value)}`
 }
 
 export function usePairSpotRate(

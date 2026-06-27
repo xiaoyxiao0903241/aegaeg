@@ -43,5 +43,10 @@ export const queryKeys = {
       ['chain', 'swap', 'quote', tokenIn.toLowerCase(), tokenOut.toLowerCase(), amountIn] as const,
     swapBalances: (address: string, sellToken: string, buyToken: string) =>
       ['chain', 'swap', 'balances', address.toLowerCase(), sellToken.toLowerCase(), buyToken.toLowerCase()] as const,
+    flashSwapQuote: (usdtAmount: string) =>
+      ['chain', 'flashSwap', 'quote', usdtAmount] as const,
+    flashSwapBalances: (address: string) =>
+      ['chain', 'flashSwap', 'balances', address.toLowerCase()] as const,
+    flashSwapRate: ['chain', 'flashSwap', 'rate'] as const,
   },
 } as const

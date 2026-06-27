@@ -47,6 +47,7 @@ export function formatSwapRate({
   decimalsOut,
   symbolIn,
   symbolOut,
+  fractionDigits = 6,
 }: {
   amountIn: bigint
   amountOut: bigint
@@ -54,6 +55,7 @@ export function formatSwapRate({
   decimalsOut: number
   symbolIn: string
   symbolOut: string
+  fractionDigits?: number
 }): string {
   if (amountIn === 0n || amountOut === 0n) {
     return `1 ${symbolIn} = — ${symbolOut}`
@@ -61,7 +63,10 @@ export function formatSwapRate({
 
   const oneUnitIn = 10n ** BigInt(decimalsIn)
   const normalizedOut = (amountOut * oneUnitIn) / amountIn
-  const formattedOut = formatTokenAmount(normalizedOut, decimalsOut, 6)
+  const formattedOut =
+    fractionDigits === 6
+      ? formatTokenAmount(normalizedOut, decimalsOut, 6)
+      : formatRateRatioFixed(normalizedOut, decimalsOut, fractionDigits)
 
   return `1 ${symbolIn} = ${formattedOut} ${symbolOut}`
 }

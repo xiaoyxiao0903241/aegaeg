@@ -8,10 +8,12 @@ export function DappSection({
   children,
   className,
   title,
+  titleClassName,
 }: {
   children: ReactNode
   className?: string
   title: ReactNode
+  titleClassName?: string
 }) {
   return (
     <section
@@ -23,8 +25,9 @@ export function DappSection({
         size="lg"
         weight="semibold"
         className={cn(
-          'tracking-[-0.36px] max-dapp:text-base max-dapp:tracking-[-0.68px]',
+          'm-0 tracking-[-0.36px] max-dapp:text-base max-dapp:tracking-[-0.68px]',
           dappDetailTitleGapClass,
+          titleClassName,
         )}
       >
         {title}

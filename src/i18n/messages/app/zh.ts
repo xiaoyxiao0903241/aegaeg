@@ -18,7 +18,7 @@ const app = defineMessages({
       paginationNext: '下一页',
     },
     nav: {
-      swap: 'Swap',
+      swap: '兑换',
       genesis: '共建',
       rewards: '奖励',
       community: '社区',
@@ -57,8 +57,9 @@ const app = defineMessages({
       signInRequired: '签名登录',
     },
     swap: {
-      title: 'Swap',
-      intro: '基于实时市场汇率，链上秒到。',
+      title: '兑换',
+      intro: '以最优汇率获取 AEGIS X 生态代币',
+      backToHub: '返回兑换',
       sell: 'Sell',
       buy: 'Buy',
       flip: '切换兑换方向',
@@ -81,6 +82,67 @@ const app = defineMessages({
       fixedRate: '基于PancakeSwap市场汇率',
       settlement: '结算',
       settlementValue: 'PancakeSwap · 即时到账',
+      hub: {
+        modes: {
+          flash: {
+            title: '闪兑',
+            body: '将 USDT 兑换为 USD1，无手续费，无滑点',
+          },
+          trade: {
+            title: '交易',
+            body: '用主流代币兑换 AEGIS X 生态代币',
+          },
+          burn: {
+            title: '销毁',
+            body: '销毁 AGX 以获得贡献点数',
+          },
+          comingSoon: '即将推出',
+        },
+        about: {
+          title: '关于兑换',
+          body: '将USDT兑换为USD1，用热门代币交易兑换X DAO生态系统代币，或将gAGX升级为AGX、销毁AGX获得贡献值。',
+        },
+        program: {
+          title: '获取 X DAO 协议代币',
+          cards: [
+            { title: '闪兑', body: '将 USDT 兑换为 USD1' },
+            { title: '获取 USD1', body: '以 PancakeSwap 市场汇率获取 USD1' },
+            { title: '获取 AGX', body: '以 PancakeSwap 市场汇率获取 AGX' },
+            { title: '出售 X', body: '将 X 兑换为 AEGIS X 经济代币或主流代币' },
+            { title: '获取贡献点数', body: '按 1:6 比率销毁 AGX 以获得贡献点数' },
+          ],
+        },
+        faq: {
+          items: [
+            {
+              q: '兑换与交易有什么区别？',
+              a: '闪兑通过 AEGIS X 协议合约将 USDT 兑换为 USD1，无滑点；交易通过 PancakeSwap 按市场汇率兑换生态代币。',
+            },
+            {
+              q: '连接钱包后可以做什么？',
+              a: '连接并签名登录后，可查看余额、获取链上报价并提交兑换或交易。',
+            },
+            {
+              q: '支持哪些网络？',
+              a: 'AEGIS X DApp 当前运行在 BNB Smart Chain（BSC）主网。',
+            },
+          ],
+        },
+      },
+      flash: {
+        title: '闪兑',
+        intro: '将 USDT 兑换为 USD1，无手续费，无滑点',
+        providerName: 'AEGIS X',
+        openProvider: '在 BscScan 查看闪兑合约',
+        settlementValue: '链上 · 秒到',
+        tokenAboutTitle: '关于 USD1',
+        action: '闪兑',
+      },
+      trade: {
+        title: '交易',
+        intro: '基于 PancakeSwap 实时市场汇率，链上秒到',
+        action: '交易',
+      },
       tokenAbout: {
         title: '关于 AEGIS X 生态代币',
         items: [
@@ -113,6 +175,7 @@ const app = defineMessages({
       swipePrevious: '下滑返回上一页',
       faq: {
         title: 'FAQ',
+        tabsTitle: 'FAQs',
         tabs: {
           usd1: {
             label: 'USD1',

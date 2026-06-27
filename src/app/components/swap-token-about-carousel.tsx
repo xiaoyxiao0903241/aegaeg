@@ -6,7 +6,6 @@ import {
   CarouselItem,
   type CarouselApi,
 } from '~/components/carousel'
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
@@ -15,11 +14,7 @@ import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { swapTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '~/config/token-contracts'
-
-const TOKEN_CAROUSEL_CARD_INNER =
-  'relative min-w-0 overflow-hidden rounded-2xl bg-card'
-
-const TOKEN_CAROUSEL_CARD_SHELL = 'h-full rounded-2xl shadow-subtle'
+import { SwapPromoCard, swapPromoCardPillActionClass } from '~/app/components/swap-promo-card'
 
 const TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS =
   'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-[var(--shadow-bleed-subtle)]'
@@ -36,99 +31,12 @@ const TOKEN_CAROUSEL_H5_INDICATOR_CLASS =
 const TOKEN_CAROUSEL_SLIDE_CLASS =
   'flex min-w-0 w-full max-w-full shrink-0 grow-0 basis-full flex-col'
 const TOKEN_CAROUSEL_TRACK_CLASS = 'flex items-stretch'
-const TOKEN_CAROUSEL_BODY_GRID_CLASS =
-  'relative z-1 grid h-full min-h-0 grid-rows-[auto_1fr] gap-2'
-
-const tokenCardMobileBodyTextClass = 'max-w-60'
-const tokenCardDesktopBodyTextClass = 'max-w-144'
 
 type SwapTokenCarouselItem = {
   asset: string
   body: string
   key: (typeof swapTokenCardKeys)[number]
   title: string
-}
-
-function tokenCarouselBodyPadClass(variant: 'desktop' | 'mobile') {
-  return variant === 'desktop' ? 'p-4 pr-36' : 'px-4 py-3.5'
-}
-
-function tokenCarouselContractButtonClass(variant: 'desktop' | 'mobile') {
-  return cn(
-    'inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border bg-card whitespace-nowrap text-foreground',
-    variant === 'desktop'
-      ? cn(
-          'absolute right-4 top-1/2 z-[2] -translate-y-1/2 gap-1.5 px-4 py-2.5',
-          'text-xs font-semibold leading-[1.2] tracking-[-0.26px]',
-          'transition-[border-color,transform] duration-180 ease-out',
-          'hover:translate-x-px hover:border-primary',
-          'focus-visible:translate-x-px focus-visible:border-primary',
-        )
-      : 'gap-1 px-3 py-1.5 text-xs font-semibold leading-[1.2] tracking-[-0.24px]',
-  )
-}
-
-function TokenCardDecoration({
-  tokenKey,
-  variant,
-}: {
-  tokenKey: string
-  variant: 'desktop' | 'mobile'
-}) {
-  if (variant === 'mobile') {
-    return (
-      <img
-        alt=""
-        aria-hidden
-        className={cn(
-          'pointer-events-none absolute top-0 right-0 h-18 w-30',
-          tokenKey === 'usd1' ? 'opacity-95' : 'opacity-[0.72]',
-        )}
-        src={dappAssets.tokenCardCorner}
-      />
-    )
-  }
-
-  return (
-    <img
-      alt=""
-      aria-hidden
-      className={cn(
-        'pointer-events-none absolute inset-y-0 right-0 h-full w-80 object-fill',
-        tokenKey === 'usd1' ? 'opacity-95' : 'opacity-[0.72]',
-      )}
-      src={dappAssets.tokenCardRays}
-    />
-  )
-}
-
-function TokenIcon({
-  size,
-  token,
-}: {
-  size: 'desktop' | 'mobile'
-  token: Pick<SwapTokenCarouselItem, 'asset' | 'title'>
-}) {
-  const isDesktop = size === 'desktop'
-  const dimension = isDesktop ? 32 : 30
-
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        'grid shrink-0 overflow-hidden rounded-full',
-        isDesktop ? 'size-8' : 'size-7.5',
-      )}
-    >
-      <img
-        alt=""
-        className="block size-full"
-        height={dimension}
-        src={token.asset}
-        width={dimension}
-      />
-    </span>
-  )
 }
 
 function TokenCarouselCard({
@@ -150,8 +58,8 @@ function TokenCarouselCard({
   const contractButton = (
     <button
       className={cn(
-        tokenCarouselContractButtonClass(variant),
-        contractDisabled ? 'pointer-events-none opacity-45' : '',
+        swapPromoCardPillActionClass(variant, true),
+        contractDisabled && 'pointer-events-none opacity-45',
       )}
       disabled={contractDisabled}
       onClick={() => openTokenContractOnBscScan(token.key)}
@@ -168,50 +76,17 @@ function TokenCarouselCard({
   )
 
   return (
-    <div className={cn(TOKEN_CAROUSEL_CARD_SHELL, isDesktop && 'min-h-30')}>
-      <article
-        aria-hidden={!isActive}
-        className={cn(TOKEN_CAROUSEL_CARD_INNER, 'h-full')}
-      >
-        <TokenCardDecoration tokenKey={token.key} variant={variant} />
-        <div className={cn(TOKEN_CAROUSEL_BODY_GRID_CLASS, tokenCarouselBodyPadClass(variant))}>
-          <div
-            className={cn(
-              'flex min-w-0 items-center',
-              isDesktop ? 'gap-3' : 'justify-between gap-2',
-            )}
-          >
-            <div className={cn('flex min-w-0 items-center', isDesktop ? 'gap-3' : 'gap-2')}>
-              <TokenIcon size={isDesktop ? 'desktop' : 'mobile'} token={token} />
-              <strong
-                className={cn(
-                  'truncate font-semibold leading-[1.2] text-foreground',
-                  isDesktop
-                    ? 'text-base tracking-[-0.48px]'
-                    : 'text-sm tracking-[-0.45px]',
-                )}
-              >
-                {token.title}
-              </strong>
-            </div>
-            {!isDesktop ? (
-              <AnchoredTooltip content={contractTooltip}>{contractButton}</AnchoredTooltip>
-            ) : null}
-          </div>
-          <p
-            className={cn(
-              'm-0 min-w-0 text-xs font-normal leading-[1.5] tracking-[-0.26px]',
-              isDesktop ? 'text-ink-strong' : 'text-faq-text',
-              isDesktop ? tokenCardDesktopBodyTextClass : tokenCardMobileBodyTextClass,
-            )}
-          >
-            {token.body}
-          </p>
-        </div>
-        {isDesktop ? (
-          <AnchoredTooltip content={contractTooltip}>{contractButton}</AnchoredTooltip>
-        ) : null}
-      </article>
+    <div aria-hidden={!isActive}>
+      <SwapPromoCard
+        action={contractButton}
+        actionTooltip={contractTooltip}
+        body={token.body}
+        rays="muted"
+        reveal={false}
+        shellClassName={isDesktop ? 'min-h-30' : undefined}
+        title={token.title}
+        titleIconSrc={token.asset}
+      />
     </div>
   )
 }
@@ -245,7 +120,6 @@ function useCarouselSnap(api: CarouselApi | undefined) {
 function getSwapTokenContent(t: ReturnType<typeof useI18n>['messages']) {
   const assets = {
     agx: tokenCarouselIcons.agxIcon,
-    gagx: tokenCarouselIcons.gagxIcon,
     usd1: tokenCarouselIcons.usd1Icon,
     x: tokenCarouselIcons.xIcon,
   } as const

@@ -45,6 +45,15 @@ export const REFERRAL_METHODS = {
   bindReferral: 'function bindReferral(address referrer)',
 } as const
 
+export const USD1_SWAP_METHODS = {
+  quoteUsd1Out: 'function quoteUsd1Out(uint256 usdtAmount) view returns (uint256)',
+  swap: 'function swap(uint256 usdtAmount, uint256 minUsd1Out)',
+  rateBps: 'function rateBps() view returns (uint256)',
+  paused: 'function paused() view returns (bool)',
+  getConfig:
+    'function getConfig() view returns (address usdtToken, address usd1Token, address wallet, uint256 currentRateBps, uint8 usdtDec, uint8 usd1Dec, bool isPaused, uint256 minIn, uint256 maxIn, uint256 reserve)',
+} as const
+
 export const REWARD_CLAIMER_METHODS = {
   // Verified on-chain (impl 0x0265…fb7b, selector 0xf2ee58d4) and per
   // contract.md §4.1: claimReward(signType, amount, expireTime, salt, signature).

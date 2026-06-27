@@ -10,6 +10,8 @@ export interface BscContracts {
   referral: `0x${string}`
   rewardClaimer: `0x${string}`
   defaultReferrer: `0x${string}`
+  /** AegisUsd1Swap — USDT → USD1 flash swap (BSC mainnet) */
+  usd1Swap: `0x${string}`
 }
 
 /** BSC Mainnet — 来源 DEPLOYMENT_RESULT.md（2026-06-22） */
@@ -25,4 +27,5 @@ export const BSC_CONTRACTS: BscContracts = {
   referral: '0xe0F3AE113dD3997982AE9ad7d5510ffA4E3Cce71',
   rewardClaimer: '0x697B55FCFBC4Cd5401f605EE4D9905816c127f07',
   defaultReferrer: '0x74A4127e0aaC45C8C23935707fE37889821029c3',
+  usd1Swap: '0x95EA21C11dd40A7C2b7Ec2f5FBa7b124f3Dec1c0',
 }

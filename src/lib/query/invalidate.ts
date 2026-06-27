@@ -62,6 +62,8 @@ function invalidateAddressScopedChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.swapBalances(address, BSC_CONTRACTS.usd1, BSC_CONTRACTS.xxToken) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.swapBalances(address, BSC_CONTRACTS.xxToken, BSC_CONTRACTS.usd1) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapBalances(address) })
+  void queryClient.invalidateQueries({ queryKey: ['chain', 'flashSwap', 'quote'] })
 }
 
 /** Wallet account changed — drop stale user-scoped reads; leave shared data untouched. */

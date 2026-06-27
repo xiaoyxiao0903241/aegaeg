@@ -12,6 +12,25 @@ export const tokenCarouselIcons = {
   gagxIcon: '/assets/figma/dapp/carousel/token-gagx.png',
 } as const
 
+/** Flash swap — Figma `4172:1020` / `4172:1085` / `4172:1121`. */
+export const flashSwapAssets = {
+  backArrow: '/assets/figma/dapp/flash/ic-back-arrow.svg',
+  flowDivider: '/assets/figma/dapp/flash/ic-flow-divider.svg',
+  externalLink: '/assets/figma/dapp/flash/ic-external-link.svg',
+} as const
+
+/** Swap hub — Figma `4172:725` / `4172:869` / `4172:806`. */
+export const swapHubAssets = {
+  modeFlash: '/assets/figma/dapp/hub/ic-hub-mode-flash.svg',
+  modeTrade: '/assets/figma/dapp/hub/ic-hub-mode-trade.svg',
+  modeBurn: '/assets/figma/dapp/hub/ic-hub-mode-burn.svg',
+  programUsdt: '/assets/figma/dapp/hub/program-usdt.svg',
+  programUsd1: '/assets/figma/dapp/hub/program-usd1.svg',
+  programAgx: '/assets/figma/dapp/hub/program-agx.png',
+  programX: '/assets/figma/dapp/hub/program-x.png',
+  aboutRays: '/assets/figma/dapp/hub/token-card-rays-hub.svg',
+} as const
+
 export const homeAssets = {
   logoMark: canonicalHomeAssets.logoMark,
   heroCharacterTall: '/assets/figma/home/hero-character-tall.png',
