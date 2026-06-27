@@ -73,7 +73,7 @@ export function SwapSubpageHeader({
   const backToHub = useSwapViewStore((state) => state.backToHub)
 
   return (
-    <div className={cn(dappWidgetHeaderSpacingClass, 'grid gap-4.5')}>
+    <div className={cn(dappWidgetHeaderSpacingClass, 'grid gap-3.5')}>
       <div className={cn('flex items-center gap-2', shellMobilePageTitleClass)}>
         <button
           className="inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left"

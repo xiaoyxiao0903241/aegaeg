@@ -50,9 +50,6 @@ const iconClass = {
     'size-[var(--home-feature-icon-size)] object-cover max-dapp:size-[var(--home-feature-icon-size-h5)] max-dapp:object-contain',
 } as const
 
-const protocolIndexClass =
-  'feature-index mt-2.5 hidden text-xs font-semibold leading-[1.2] tracking-[0.96px] text-faint max-dapp:block'
-
 function cardBorderClass(variant: 'protocol' | 'engine', index: number) {
   if (variant === 'protocol') {
     return cn(
@@ -96,11 +93,6 @@ function HomeIconCard({
         height="80"
         loading="lazy"
       />
-      {variant === 'protocol' && 'index' in card && card.index ? (
-        <Text as="span" className={cn(protocolIndexClass, 'feature-card-index')} tone="muted">
-          {card.index}
-        </Text>
-      ) : null}
       <Text
         as="h3"
         size="lg"

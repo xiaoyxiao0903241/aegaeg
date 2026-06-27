@@ -33,7 +33,7 @@ const faqAnswerClass = cn(
 )
 
 const faqTriggerClass =
-  'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent p-0 text-left outline-none'
+  'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left text-inherit outline-none'
 
 const variantStyles = {
   home: {

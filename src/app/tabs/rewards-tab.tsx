@@ -514,7 +514,7 @@ export function RewardsContent() {
               <h3 className="my-2 text-xl font-bold leading-[1.3] tracking-[-0.63px] text-white">
                 {heroTitle}
               </h3>
-              <p className="m-0 text-xs leading-normal tracking-[-0.26px] text-on-dark">
+              <p className="m-0 text-sm leading-normal tracking-[-0.26px] text-on-dark">
                 {heroBody}
               </p>
             </>
@@ -549,7 +549,7 @@ export function RewardsContent() {
               <h3 className="my-2 text-lg font-bold leading-[1.2] tracking-[-0.54px] text-white">
                 {heroTitle}
               </h3>
-              <p className="m-0 text-xs leading-normal tracking-[-0.26px] text-on-dark">
+              <p className="m-0 text-sm leading-normal tracking-[-0.26px] text-on-dark">
                 {heroBody}
               </p>
             </>

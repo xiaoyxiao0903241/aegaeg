@@ -13,12 +13,16 @@ export const dappTableSectionDividerClass = 'border-border/50'
 export const communityInviteTableClass =
   '[&_table]:w-full [&_table]:table-fixed [&_th]:w-[16.666%] [&_td]:w-[16.666%] max-dapp:[&_table]:w-max max-dapp:[&_table]:table-auto max-dapp:[&_th]:w-auto max-dapp:[&_td]:w-auto'
 
-/** Horizontal padding for table body inside `DappTableCard`. */
+/** Horizontal padding for table body inside `DappTableCard` (no header — Figma `tbl` py 6). */
 export const dappTableContentPaddingClass =
-  'dapp:px-5 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5'
+  'dapp:px-4 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5'
+
+/** Table body when card has a header row (tabs) — Figma gap 10 below tabs. */
+export const dappTableContentBelowHeaderPaddingClass =
+  'dapp:px-4 dapp:pb-1.5 dapp:pt-0 max-dapp:px-3.5 max-dapp:pb-1.5 max-dapp:pt-0'
 
 export const dappTableHeaderPaddingClass =
-  'dapp:px-5 dapp:pt-4 dapp:pb-3 max-dapp:px-3.5 max-dapp:pt-3.5 max-dapp:pb-2.5'
+  'dapp:px-4 dapp:pt-3.5 dapp:pb-2.5 max-dapp:px-3.5 max-dapp:pt-3.5 max-dapp:pb-2.5'
 
 export const dappTableFooterPaddingClass =
-  'dapp:px-5 dapp:py-3 max-dapp:px-3.5 max-dapp:py-2.5'
+  'dapp:px-4 dapp:py-3 max-dapp:px-3.5 max-dapp:py-2.5'

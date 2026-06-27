@@ -49,7 +49,7 @@ export const swapProgramCardTitleClass =
   'text-[0.8125rem] font-semibold leading-[1.3] tracking-[0.08em] text-foreground'
 
 export const swapProgramCardBodyClass =
-  'text-xs font-normal leading-[1.3] tracking-[-0.03em] text-muted-foreground'
+  'text-[0.8125rem] font-normal leading-[1.3] tracking-[-0.03em] text-muted-foreground'
 
 export const swapMetaListClass = 'rounded-xl px-3.5 py-3.25'
 

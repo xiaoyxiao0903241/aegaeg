@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { Button } from '~/components/button'
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import { revealClass } from '~/lib/reveal'
@@ -358,15 +357,15 @@ export function ProgramCard({
         size="xs"
         weight="semibold"
         tone="coral"
-        className="m-0 uppercase tracking-[0.88px] text-xs"
+        className="m-0 uppercase tracking-[0.88px] text-xs leading-[1.3]"
       >
         {label}
       </Text>
       <Text
         as="h3"
-        size="lg"
+        size="md"
         weight="semibold"
-        className="text-base tracking-[-0.48px] max-dapp:text-sm group-data-[tab=community]/shell:max-dapp:leading-[1.2]"
+        className="m-0 leading-[1.3] tracking-[-0.48px] max-dapp:text-sm max-dapp:leading-[1.2]"
       >
         {title}
       </Text>
@@ -374,13 +373,17 @@ export function ProgramCard({
         as="p"
         size="sm"
         tone="body"
-        className="m-0 max-w-[38ch] tracking-[-0.26px]"
+        className="m-0 max-w-[38ch] leading-[1.5] tracking-[-0.26px]"
       >
         {body}
       </Text>
-      <Button variant="link" className="mt-2 tracking-[-0.26px]" onClick={onAction} type="button">
+      <button
+        className="m-0 cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold leading-[1.3] tracking-[-0.26px] text-primary max-dapp:text-xs"
+        onClick={onAction}
+        type="button"
+      >
         {action}
-      </Button>
+      </button>
     </Card>
   )
 }

@@ -39,28 +39,24 @@ export function buildCommunityQuickLinkItems(
       icon: dappAssets.youtube,
       iconTone: 'plain',
       label: labels.youtube,
-      size: 30,
     },
     {
       href: COMMUNITY_SOCIAL_LINKS.medium,
       icon: dappAssets.medium,
       iconTone: 'plain',
       label: labels.medium,
-      size: 30,
     },
     {
       href: COMMUNITY_SOCIAL_LINKS.twitter,
       icon: dappAssets.twitter,
       iconTone: 'dark',
       label: labels.twitter,
-      size: 14,
     },
     {
       href: COMMUNITY_SOCIAL_LINKS.telegram,
       icon: dappAssets.telegram,
       iconTone: 'plain',
       label: labels.telegram,
-      size: 30,
     },
   ]
 }

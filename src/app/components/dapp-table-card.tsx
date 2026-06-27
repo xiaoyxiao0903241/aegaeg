@@ -1,6 +1,7 @@
 import { forwardRef, type ReactNode } from 'react'
 import {
   dappTableCardShellClass,
+  dappTableContentBelowHeaderPaddingClass,
   dappTableContentPaddingClass,
   dappTableFooterPaddingClass,
   dappTableHeaderPaddingClass,
@@ -56,7 +57,7 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
           ref={ref}
           className={cn(
             'min-w-0 overflow-x-auto max-dapp:scrollbar-x-track',
-            dappTableContentPaddingClass,
+            header ? dappTableContentBelowHeaderPaddingClass : dappTableContentPaddingClass,
             footer && 'pb-0',
             contentClassName,
           )}

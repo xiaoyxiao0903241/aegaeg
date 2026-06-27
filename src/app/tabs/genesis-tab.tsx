@@ -175,7 +175,7 @@ export function GenesisWidget() {
         />
       )}
 
-      <label className="grid gap-2 text-xs leading-[1.5] text-muted-foreground">
+      <label className="mt-1.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground">
         <span>{t.genesis.shares.replace('{max}', formatCount(genesis.maxShares))}</span>
         <div className="flex gap-2">
           <div className="relative flex min-w-0 flex-1">
@@ -378,7 +378,7 @@ export function GenesisContent() {
         )}
       </MetricGrid>
 
-      <section className="mt-8 max-dapp:!hidden">
+      <section className="mt-8.5 max-dapp:!hidden">
         <div
           className={cn(
             revealClass(),
@@ -400,7 +400,7 @@ export function GenesisContent() {
                 `$${genesis.globalPurchasedLabel}`
               )}
             </strong>
-            <p className="mt-2.5 mb-0 max-w-[70ch] text-xs leading-[1.5] text-white">
+            <p className="mt-2.5 mb-0 max-w-[70ch] text-sm leading-[1.5] text-white">
               {t.genesis.globalBody}
             </p>
           </div>

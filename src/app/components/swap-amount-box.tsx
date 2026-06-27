@@ -45,7 +45,7 @@ export function SwapAmountBox({
       <div className="flex items-center justify-between gap-3">
         <Text
           as="span"
-          size="sm"
+          size="md"
           tone={labelTone}
           className={disconnectedLabelClass}
         >

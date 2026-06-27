@@ -57,6 +57,8 @@ summary {
 
 button {
   border: 0;
+  /* iOS Safari defaults <button> text to link-blue; inherit parent color instead. */
+  color: inherit;
 }
 
 button:not(:disabled) {
@@ -73,6 +75,7 @@ button:disabled {
 
 summary {
   cursor: pointer;
+  color: inherit;
 }
 
 img,

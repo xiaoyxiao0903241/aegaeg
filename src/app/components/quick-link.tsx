@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/components/text'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import { cn } from '~/lib/utils'
 
 export type QuickLinkProps = {
@@ -7,11 +8,12 @@ export type QuickLinkProps = {
   icon: string
   iconTone?: 'coral' | 'dark' | 'plain'
   label: ReactNode
-  size?: number
 }
 
-export function QuickLink({ href, icon, iconTone = 'coral', label, size = 18 }: QuickLinkProps) {
+export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkProps) {
   const isExternal = href.startsWith('http://') || href.startsWith('https://')
+  const isBrandIcon = iconTone === 'plain'
+  const insetIconClass = iconTone === 'dark' ? dappIconClass.md : dappIconClass.lg
 
   return (
     <a
@@ -26,12 +28,18 @@ export function QuickLink({ href, icon, iconTone = 'coral', label, size = 18 }: 
     >
       <span
         className={cn(
-          'grid aspect-square w-7.5 flex-none place-items-center rounded-full bg-primary text-white',
+          'grid size-7.5 flex-none place-items-center rounded-full',
+          iconTone === 'coral' && 'bg-primary text-white',
           iconTone === 'dark' && 'bg-foreground',
-          iconTone === 'plain' && 'bg-transparent',
+          isBrandIcon && 'bg-transparent',
         )}
       >
-        <img alt="" height={size} loading="lazy" src={icon} width={size} />
+        <img
+          alt=""
+          className={cn('block shrink-0 object-contain', isBrandIcon ? 'size-full' : insetIconClass)}
+          loading="lazy"
+          src={icon}
+        />
       </span>
       <Text as="span" size="sm" weight="semibold" className="tracking-[-0.28px]">
         {label}

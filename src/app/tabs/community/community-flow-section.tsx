@@ -43,17 +43,12 @@ export function CommunityFlowSection({
       </DappSection>
 
       <DappSection title={t.community.programs.title}>
-        <div className={cn('grid grid-cols-2 gap-3', 'max-dapp:grid-cols-1 max-dapp:gap-2.5')}>
+        <div className={cn('grid grid-cols-2 gap-2', 'max-dapp:grid-cols-1 max-dapp:gap-2')}>
           {programItems.map((program) => (
             <ProgramCard
               action={program.action}
               body={program.body}
-              className={cn(
-                'max-dapp:gap-1.5 max-dapp:py-3',
-                '[&_h4]:tracking-[-0.48px] max-dapp:[&_h4]:mt-1.5 max-dapp:[&_h4]:mb-0 max-dapp:[&_h4]:text-sm max-dapp:[&_h4]:leading-[1.2]',
-                '[&_p]:tracking-[-0.26px]',
-                '[&_button]:tracking-[-0.26px]',
-              )}
+              className="max-dapp:gap-1.5 max-dapp:py-3"
               key={program.label}
               label={program.label}
               onAction={() => onSelectTab('genesis')}
