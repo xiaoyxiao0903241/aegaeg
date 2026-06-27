@@ -59,6 +59,19 @@ export function formatUsd(value: string | number, fractionDigits = 0): string {
   }).format(num)
 }
 
+/** Tooltip / hint copy — `5,000 USD` (no leading currency symbol). */
+export function formatUsdAmountLabel(value: string | number, fractionDigits = 0): string {
+  const num = Number(value)
+  if (!Number.isFinite(num)) return '0 USD'
+
+  const amount = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: fractionDigits,
+    minimumFractionDigits: fractionDigits,
+  }).format(num)
+
+  return `${amount} USD`
+}
+
 export function formatUsdCompact(value: string | number): string {
   const num = Number(value)
   if (!Number.isFinite(num)) return '$0'

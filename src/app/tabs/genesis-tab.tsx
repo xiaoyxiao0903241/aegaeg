@@ -14,9 +14,9 @@ import {
   calcProgressPercent,
   formatCount,
   formatUsd,
+  formatUsdAmountLabel,
   mapSalesLogToDesktopRow,
 } from '~/lib/api/format-display'
-import { PRESALE_CONFIG } from '~/config/presale'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import { bscscanAddress, bscscanTx } from '~/config/explorer'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
@@ -82,7 +82,9 @@ export function GenesisWidget() {
     genesis.isLoading,
   )
   const xTokenAirdropHint = applyMessageTemplate(t.genesis.xTokenAirdropHint, {
-    threshold: genesis.airdropThresholdLoading ? '…' : formatUsd(genesis.airdropThresholdUsd),
+    threshold: genesis.airdropThresholdLoading
+      ? '…'
+      : formatUsdAmountLabel(genesis.airdropThresholdUsd),
   })
 
   const handleSharesChange = (value: string) => {
@@ -272,20 +274,14 @@ export function GenesisContent() {
     sessionReady,
   )
 
-  const phaseMaxUsd1 = Number(
-    PRESALE_CONFIG.phases[genesis.phaseIndex]?.maxUsd1 ??
-      PRESALE_CONFIG.phases[0]?.maxUsd1 ??
-      10000,
+  const seasonContributedUsd = formatTokenAmountToNumber(genesis.userPhaseAmountCurrent, 18)
+  const seasonMaxContributionUsd = formatTokenAmountToNumber(genesis.seasonContributionMaxWei, 18)
+  const cumulativeContributedUsd = formatTokenAmountToNumber(genesis.userTotal, 18)
+  const contributionProgress = calcProgressPercent(
+    String(seasonContributedUsd),
+    seasonMaxContributionUsd,
   )
-  const chainMaxContribution = genesis.activePhase
-    ? formatTokenAmountToNumber(genesis.activePhase.maxAmount, 18)
-    : 0
-  const maxContribution =
-    chainMaxContribution > 0 ? chainMaxContribution : phaseMaxUsd1
-  const contributedUsd = formatTokenAmountToNumber(genesis.userTotal, 18)
-  const contributed = String(contributedUsd)
-  const contributionProgress = calcProgressPercent(contributed, maxContribution)
-  const contributedLabel = `${formatUsd(contributed)} / ${formatUsd(maxContribution)}`
+  const contributedLabel = `${formatUsd(seasonContributedUsd)} / ${formatUsd(seasonMaxContributionUsd)}`
 
   const genesisFaqValues = useMemo(
     () =>
@@ -481,6 +477,7 @@ export function GenesisContent() {
               <DappTablePagination
                 onPageChange={setContributionsPage}
                 page={contributionsPage}
+                summary={`${t.genesis.cumulativeContributed}${formatUsd(cumulativeContributedUsd)}`}
                 total={contributionsTotal}
               />
             </>

@@ -40,6 +40,13 @@ test('formatShareholderHintForRank renders tier-specific hint', async () => {
   assert.equal(formatShareholderHintForRank(0, '{bonus}', 'fallback', tiers), 'fallback')
 })
 
+test('formatUsdAmountLabel renders amount with USD suffix for hints', async () => {
+  const { formatUsdAmountLabel } = await loadModule('/src/lib/api/format-display.ts')
+
+  assert.equal(formatUsdAmountLabel(5000), '5,000 USD')
+  assert.equal(formatUsdAmountLabel('invalid'), '0 USD')
+})
+
 test('formatUsdCompact abbreviates large values', async () => {
   const { formatUsdCompact } = await loadModule('/src/lib/api/format-display.ts')
 

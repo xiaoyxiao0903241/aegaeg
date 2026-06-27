@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { ChevronIcon } from '~/components/chevron-icon'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
@@ -14,6 +14,8 @@ const PAGINATION_BTN_RADIUS = 'rounded-sm'
 
 type DappTablePaginationProps = {
   className?: string
+  /** Left-side summary beside row count — shown even when pagination is hidden. */
+  summary?: ReactNode
   onPageChange: (page: number) => void
   page: number
   pageSize?: number
@@ -22,6 +24,7 @@ type DappTablePaginationProps = {
 
 export function DappTablePagination({
   className,
+  summary,
   onPageChange,
   page,
   pageSize = DAPP_TABLE_PAGE_SIZE,
@@ -64,7 +67,8 @@ export function DappTablePagination({
     }
   }, [menuOpen])
 
-  if (!shouldShowTablePagination(total, pageSize)) return null
+  const showPagination = shouldShowTablePagination(total, pageSize)
+  if (!showPagination && summary == null) return null
 
   return (
     <div
@@ -74,8 +78,14 @@ export function DappTablePagination({
       )}
       ref={rootRef}
     >
-      <p>{t.common.paginationTotal.replace('{total}', formatCount(total))}</p>
+      <div className="flex min-w-0 flex-row flex-nowrap items-center gap-4">
+        <p className="m-0 shrink-0 whitespace-nowrap">
+          {t.common.paginationTotal.replace('{total}', formatCount(total))}
+        </p>
+        {summary ? <p className="m-0 min-w-0 whitespace-nowrap">{summary}</p> : null}
+      </div>
 
+      {showPagination ? (
       <div className="flex flex-wrap items-center gap-2 sm:justify-end">
         <span className="whitespace-nowrap">
           {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
@@ -166,6 +176,7 @@ export function DappTablePagination({
           <ChevronIcon direction="right" />
         </button>
       </div>
+      ) : null}
     </div>
   )
 }

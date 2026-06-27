@@ -350,6 +350,11 @@ export function useGenesisWidget() {
     globalPurchasedLoading: totalPurchasedQuery.isLoading,
     userTotalLabel: formatTokenAmount(userTotal, USD1_DECIMALS, 0),
     userTotal,
+    userPhaseAmountCurrent: phaseRemaining?.userPhaseAmountCurrent ?? 0n,
+    seasonContributionMaxWei:
+      phaseRemaining && phaseRemaining.userPurchaseLimit > 0n
+        ? phaseRemaining.userPurchaseLimit
+        : maxAmount,
     usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, 2),
     estimatedAgxLabel: new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
