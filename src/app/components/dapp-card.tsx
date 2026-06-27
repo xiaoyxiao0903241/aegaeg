@@ -391,19 +391,27 @@ export function ProgramCard({
 export function RewardBalanceCard({
   action,
   badge,
+  badgeClassName,
   className,
+  headerLabelClassName,
+  headerMetaClassName,
   hint,
   label,
   meta,
   value,
+  valueClassName,
 }: {
   action?: ReactNode
   badge?: ReactNode
   className?: string
+  headerLabelClassName?: string
+  headerMetaClassName?: string
+  badgeClassName?: string
   hint?: ReactNode
   label: ReactNode
   meta?: ReactNode
   value: ReactNode
+  valueClassName?: string
 }) {
   return (
     <Card
@@ -413,11 +421,21 @@ export function RewardBalanceCard({
       data-reveal
     >
       <div className="flex items-center justify-between gap-3">
-        <Text as="p" size="xs" tone="body" className="m-0 tracking-[-0.24px]">
+        <Text
+          as="p"
+          size="xs"
+          tone="body"
+          className={cn('m-0 tracking-[-0.24px]', headerLabelClassName)}
+        >
           {label}
         </Text>
         {meta ? (
-          <Text as="span" size="xs" tone="body" className="tracking-[-0.24px]">
+          <Text
+            as="span"
+            size="xs"
+            tone="body"
+            className={cn('tracking-[-0.24px]', headerMetaClassName)}
+          >
             {meta}
           </Text>
         ) : (
@@ -426,7 +444,7 @@ export function RewardBalanceCard({
             size="xs"
             weight="medium"
             tone="success"
-            className="whitespace-nowrap tracking-[-0.24px]"
+            className={cn('whitespace-nowrap tracking-[-0.24px]', badgeClassName)}
           >
             {badge}
           </Text>
@@ -434,9 +452,11 @@ export function RewardBalanceCard({
       </div>
       <Text
         as="strong"
-        size="lg"
         weight="semibold"
-        className="mt-2 block leading-[1.3] tracking-[-0.54px]"
+        className={cn(
+          'mt-2 block text-lg leading-[1.3] tracking-[-0.54px]',
+          valueClassName,
+        )}
       >
         {value}
       </Text>

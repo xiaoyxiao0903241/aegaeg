@@ -1,12 +1,6 @@
 import { swapHubAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
-import {
-  swapProgramCardBodyClass,
-  swapProgramCardClass,
-  swapProgramCardInteractiveClass,
-  swapProgramCardTitleClass,
-} from '~/app/tabs/swap/swap-layout-tokens'
 import { cn } from '~/lib/utils'
 
 /** Cards 0–1 → flash, 2 → trade, 3–4 inactive (per product doc). */
@@ -15,8 +9,12 @@ const PROGRAM_TARGETS: Array<SwapView | null> = ['flash', 'flash', 'trade', null
 function ProgramCardCopy({ body, title }: { body: string; title: string }) {
   return (
     <span className="grid min-w-0 gap-1 text-left">
-      <strong className={swapProgramCardTitleClass}>{title}</strong>
-      <span className={swapProgramCardBodyClass}>{body}</span>
+      <strong className="text-[0.8125rem] font-semibold leading-[1.3] tracking-[0.08em] text-foreground">
+        {title}
+      </strong>
+      <span className="text-[0.8125rem] font-normal leading-[1.3] tracking-[-0.03em] text-muted-foreground">
+        {body}
+      </span>
     </span>
   )
 }
@@ -97,8 +95,9 @@ function ProgramCardButton({
   return (
     <button
       className={cn(
-        swapProgramCardClass,
-        interactive && swapProgramCardInteractiveClass,
+        'flex w-full rounded-2xl bg-card p-4 text-left shadow-card',
+        interactive &&
+          'cursor-pointer transition-[transform,box-shadow] duration-180 ease-out hover:-translate-y-px',
         textOnly ? 'flex-col items-start gap-1' : 'items-center justify-between gap-2',
       )}
       onClick={onClick}

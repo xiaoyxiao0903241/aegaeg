@@ -26,10 +26,6 @@ import { QuickLinks } from '~/app/components/quick-links'
 import { buildCommunityQuickLinkItems } from '~/config/community-links'
 import { toast } from 'sonner'
 import { resolveReferralBindError } from '~/lib/web3/resolve-contract-error-message'
-import {
-  REFERRAL_CARD_CLASS,
-  SHAREHOLDER_ACTION_CLASS,
-} from '~/app/tabs/community/community-shared'
 
 export function CommunityWidget({
   onSelectTab,
@@ -84,7 +80,13 @@ function CommunityConnectedWidget({
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>
       {referral.isBound ? (
-        <DappSideCard className={REFERRAL_CARD_CLASS}>
+        <DappSideCard
+          className={cn(
+            '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
+            'grid gap-2 rounded-2xl px-4 py-3.5',
+            '[&_label]:text-xs [&_label]:leading-[1.5] [&_label]:tracking-[-0.24px] [&_label]:text-faint',
+          )}
+        >
           <SideLabel>{t.community.referralLink}</SideLabel>
           <SideValue className="text-sm max-dapp:text-xs tracking-tight">{referralLink}</SideValue>
           <DappActionButton
@@ -98,7 +100,7 @@ function CommunityConnectedWidget({
       ) : null}
 
       {referral.isBound ? (
-        <DappReferrerBoundCard className="rounded-2xl px-4 py-3.5">
+        <DappReferrerBoundCard className="grid gap-2 rounded-2xl px-4 py-3.5">
           <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
             {t.community.referrer}
           </p>
@@ -130,7 +132,13 @@ function CommunityConnectedWidget({
           </p>
         </DappReferrerBoundCard>
       ) : (
-        <DappSideCard className={cn(REFERRAL_CARD_CLASS, 'grid gap-2')}>
+        <DappSideCard
+          className={cn(
+            '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
+            'grid gap-2 rounded-2xl px-4 py-3.5',
+            '[&_label]:text-xs [&_label]:leading-[1.5] [&_label]:tracking-[-0.24px] [&_label]:text-faint',
+          )}
+        >
           <SideLabel tone="muted">{t.community.referrer}</SideLabel>
           <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2">
             <input
@@ -159,7 +167,7 @@ function CommunityConnectedWidget({
       <CommunityQuickLinks />
 
       <DappActionButton
-        className={SHAREHOLDER_ACTION_CLASS}
+        className="mt-4 min-h-10 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden"
         onClick={() => onSelectTab('genesis')}
       >
         {t.community.shareholder}

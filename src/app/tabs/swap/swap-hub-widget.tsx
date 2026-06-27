@@ -6,7 +6,6 @@ import { dappWidgetBodyClass } from '~/app/components/dapp-widget-frame'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { shellWidgetRootClass } from '~/app/shell-layout'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 import { SwapModeCard } from '~/app/tabs/swap/swap-mode-card'
 import { SwapHubHeader, SwapWidgetBody } from '~/app/tabs/swap/swap-widget-header'
@@ -22,10 +21,10 @@ export function SwapHubWidget({
   const setView = useSwapViewStore((state) => state.setView)
 
   return (
-    <div className={shellWidgetRootClass}>
+    <>
       <SwapHubHeader subtitle={t.swap.intro} title={t.swap.title} />
       <SwapWidgetBody
-        bodyClassName={cn(dappWidgetBodyClass, 'gap-3')}
+        bodyClassName={dappWidgetBodyClass}
         footer={
           sessionReady ? (
             <DappWidgetConnectFooter>
@@ -62,6 +61,6 @@ export function SwapHubWidget({
           title={t.swap.hub.modes.burn.title}
         />
       </SwapWidgetBody>
-    </div>
+    </>
   )
 }

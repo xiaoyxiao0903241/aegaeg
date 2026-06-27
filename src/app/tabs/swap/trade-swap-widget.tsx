@@ -20,16 +20,6 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { openPancakeSwapDeepLink } from '~/config/pancake-swap-links'
-import { shellWidgetRootClass } from '~/app/shell-layout'
-import {
-  PERCENT_BTN_CLASS,
-  PERCENTS,
-  SWAP_CARD_FLIP_ANIM,
-  SWAP_META_ACTION_BTN_CLASS,
-  SWAP_META_LIST_CLASS,
-  SWAP_META_VALUE_ROW_CLASS,
-  PERCENT_TRACK_CLASS,
-} from '~/app/tabs/swap/swap-shared'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/app/tabs/swap/swap-widget-header'
 
 export function TradeSwapWidget({
@@ -47,7 +37,9 @@ export function TradeSwapWidget({
   const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
 
   const { pair } = swap
-  const flipAnimClass = isFlipping ? SWAP_CARD_FLIP_ANIM : undefined
+  const flipAnimClass = isFlipping
+    ? '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]'
+    : undefined
   const swapPreview = !sessionReady
   const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
   const showRateSkeleton =
@@ -118,7 +110,7 @@ export function TradeSwapWidget({
   ])
 
   return (
-    <div className={shellWidgetRootClass}>
+    <>
       <SwapSubpageHeader subtitle={t.swap.trade.intro} title={t.swap.trade.title} />
       <SwapWidgetBody
         bodyClassName={cn(dappWidgetBodyClass, 'gap-0')}
@@ -156,10 +148,17 @@ export function TradeSwapWidget({
           tokenLabel={pair.sell.symbol}
         />
 
-        <div className={PERCENT_TRACK_CLASS}>
-          {PERCENTS.map((percent) => (
+        <div className="grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
+          {[25, 50, 75, 100].map((percent) => (
             <button
-              className={PERCENT_BTN_CLASS}
+              className={cn(
+                'flex cursor-pointer items-center justify-center rounded-[0.5625rem] border border-border bg-card py-1.25',
+                'text-xs font-semibold leading-normal tracking-[-0.02em] text-ink-strong',
+                'transition-[border-color,color,transform] duration-180 ease-out',
+                'hover:-translate-y-px hover:border-primary hover:text-primary',
+                'disabled:pointer-events-none disabled:opacity-55',
+                'max-dapp:h-auto max-dapp:py-1.5',
+              )}
               disabled={!swapPreview && !swap.walletReady}
               key={percent}
               onClick={() => swap.fillPercent(percent)}
@@ -217,7 +216,7 @@ export function TradeSwapWidget({
         />
 
         <DappMetaList
-          className={cn(SWAP_META_LIST_CLASS, dappWidgetFooterTopGapClass)}
+          className={cn('rounded-xl px-3.5 py-3.25', dappWidgetFooterTopGapClass)}
           sessionReady
           items={[
             {
@@ -230,7 +229,7 @@ export function TradeSwapWidget({
                   <AnchoredTooltip content={t.swap.flip}>
                     <button
                       aria-label={t.swap.flip}
-                      className={SWAP_META_ACTION_BTN_CLASS}
+                      className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80"
                       onClick={() => setExchangePriceInverted((inverted) => !inverted)}
                       type="button"
                     >
@@ -239,7 +238,7 @@ export function TradeSwapWidget({
                   </AnchoredTooltip>
                 </>
               ),
-              valueClassName: SWAP_META_VALUE_ROW_CLASS,
+              valueClassName: 'inline-flex items-center justify-end gap-1',
             },
             {
               label: t.swap.allowedSlippage,
@@ -249,7 +248,7 @@ export function TradeSwapWidget({
                   <button
                     aria-label={t.swap.slippageSettings}
                     className={cn(
-                      SWAP_META_ACTION_BTN_CLASS,
+                      'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80',
                       sessionReady && !swap.walletReady && 'pointer-events-none opacity-40',
                     )}
                     disabled={sessionReady && !swap.walletReady}
@@ -260,7 +259,7 @@ export function TradeSwapWidget({
                   </button>
                 </>
               ),
-              valueClassName: SWAP_META_VALUE_ROW_CLASS,
+              valueClassName: 'inline-flex items-center justify-end gap-1',
             },
             {
               label: t.swap.route,
@@ -273,7 +272,7 @@ export function TradeSwapWidget({
                   {t.swap.providerName}
                   <button
                     aria-label={t.swap.openPancakeSwap}
-                    className={SWAP_META_ACTION_BTN_CLASS}
+                    className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80"
                     onClick={() => openPancakeSwapDeepLink(swap.pancakeSwapUrl)}
                     type="button"
                   >
@@ -281,7 +280,7 @@ export function TradeSwapWidget({
                   </button>
                 </>
               ),
-              valueClassName: SWAP_META_VALUE_ROW_CLASS,
+              valueClassName: 'inline-flex items-center justify-end gap-1',
             },
           ]}
         />
@@ -306,6 +305,6 @@ export function TradeSwapWidget({
         open={slippageOpen}
         slippage={swap.slippage}
       />
-    </div>
+    </>
   )
 }

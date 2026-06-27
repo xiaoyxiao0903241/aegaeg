@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
@@ -28,10 +28,15 @@ import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { CommunityFaqSection } from '~/app/tabs/community/community-faq-section'
 import { CommunityFlowSection } from '~/app/tabs/community/community-flow-section'
-import {
-  COMMUNITY_STAT_GRID,
-  type CommunityStat,
-} from '~/app/tabs/community/community-shared'
+
+type CommunityStat = {
+  dark?: boolean
+  image?: string
+  label: ReactNode
+  today?: ReactNode
+  value: ReactNode
+  volume?: ReactNode
+}
 
 const STAT_PLACEHOLDER = '—'
 
@@ -151,7 +156,13 @@ export function CommunityContent({
         {t.community.myCommunity}
       </DappContentHeading>
 
-      <div className={COMMUNITY_STAT_GRID}>
+      <div
+        className={cn(
+          'grid grid-cols-3 gap-3.5',
+          'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
+          'max-dapp:min-w-0 max-dapp:grid-cols-3 max-dapp:gap-2.5',
+        )}
+      >
         {useStatPlaceholders ? (
           <>
             <CommunityStatCardSkeleton />

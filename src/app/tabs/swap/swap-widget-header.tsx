@@ -8,7 +8,6 @@ import { dappWidgetHeaderSpacingClass } from '~/app/components/dapp-widget-frame
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useSwapViewStore } from '~/stores/swap-view-store'
-import { swapWidgetSubtitleClass, swapWidgetTitleClass } from '~/app/tabs/swap/swap-layout-tokens'
 import { cn } from '~/lib/utils'
 
 function SwapPanelToggle() {
@@ -54,8 +53,12 @@ export function SwapHubHeader({
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <h1 className={swapWidgetTitleClass}>{title}</h1>
-        <p className={swapWidgetSubtitleClass}>{subtitle}</p>
+        <h1 className="m-0 text-[1.3125rem] font-semibold leading-normal tracking-[-0.02625em] text-foreground">
+          {title}
+        </h1>
+        <p className="m-0 max-w-[17.5rem] text-[0.8125rem] font-normal leading-[1.4] tracking-[-0.02em] text-ink-strong max-dapp:max-w-none">
+          {subtitle}
+        </p>
       </div>
       <SwapPanelToggle />
     </div>
@@ -70,14 +73,14 @@ export function SwapSubpageHeader({
   title: string
 }) {
   const { messages: t } = useI18n()
-  const backToHub = useSwapViewStore((state) => state.backToHub)
+  const setView = useSwapViewStore((state) => state.setView)
 
   return (
     <div className={cn(dappWidgetHeaderSpacingClass, 'grid gap-3.5')}>
       <div className={cn('flex items-center gap-2', shellMobilePageTitleClass)}>
         <button
           className="inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left"
-          onClick={backToHub}
+          onClick={() => setView('hub')}
           type="button"
         >
           <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
@@ -88,8 +91,12 @@ export function SwapSubpageHeader({
         <SwapPanelToggle />
       </div>
       <div className="grid gap-1.5">
-        <h1 className={swapWidgetTitleClass}>{title}</h1>
-        <p className={swapWidgetSubtitleClass}>{subtitle}</p>
+        <h1 className="m-0 text-[1.3125rem] font-semibold leading-normal tracking-[-0.02625em] text-foreground">
+          {title}
+        </h1>
+        <p className="m-0 max-w-[17.5rem] text-[0.8125rem] font-normal leading-[1.4] tracking-[-0.02em] text-ink-strong max-dapp:max-w-none">
+          {subtitle}
+        </p>
       </div>
     </div>
   )

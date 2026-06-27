@@ -19,15 +19,6 @@ import { useFlashSwapWidget } from '~/hooks/use-flash-swap-widget'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
-import { shellWidgetRootClass } from '~/app/shell-layout'
-import {
-  PERCENT_BTN_CLASS,
-  PERCENTS,
-  SWAP_META_LIST_CLASS,
-  SWAP_META_ACTION_BTN_CLASS,
-  SWAP_META_VALUE_ROW_CLASS,
-  PERCENT_TRACK_CLASS,
-} from '~/app/tabs/swap/swap-shared'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/app/tabs/swap/swap-widget-header'
 
 export function FlashSwapWidget({
@@ -91,7 +82,7 @@ export function FlashSwapWidget({
   ])
 
   return (
-    <div className={shellWidgetRootClass}>
+    <>
       <SwapSubpageHeader subtitle={t.swap.flash.intro} title={t.swap.flash.title} />
       <SwapWidgetBody
         bodyClassName={cn(dappWidgetBodyClass, 'gap-0')}
@@ -128,10 +119,17 @@ export function FlashSwapWidget({
           tokenLabel={pair.sell.symbol}
         />
 
-        <div className={PERCENT_TRACK_CLASS}>
-          {PERCENTS.map((percent) => (
+        <div className="grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
+          {[25, 50, 75, 100].map((percent) => (
             <button
-              className={PERCENT_BTN_CLASS}
+              className={cn(
+                'flex cursor-pointer items-center justify-center rounded-[0.5625rem] border border-border bg-card py-1.25',
+                'text-xs font-semibold leading-normal tracking-[-0.02em] text-ink-strong',
+                'transition-[border-color,color,transform] duration-180 ease-out',
+                'hover:-translate-y-px hover:border-primary hover:text-primary',
+                'disabled:pointer-events-none disabled:opacity-55',
+                'max-dapp:h-auto max-dapp:py-1.5',
+              )}
               disabled={!swapPreview && !swap.walletReady}
               key={percent}
               onClick={() => swap.fillPercent(percent)}
@@ -165,7 +163,7 @@ export function FlashSwapWidget({
         />
 
         <DappMetaList
-          className={cn(SWAP_META_LIST_CLASS, dappWidgetFooterTopGapClass)}
+          className={cn('rounded-xl px-3.5 py-3.25', dappWidgetFooterTopGapClass)}
           sessionReady
           items={[
             {
@@ -187,7 +185,7 @@ export function FlashSwapWidget({
                   {t.swap.flash.providerName}
                   <button
                     aria-label={t.swap.flash.openProvider}
-                    className={SWAP_META_ACTION_BTN_CLASS}
+                    className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80"
                     onClick={() =>
                       window.open(
                         bscscanAddress(BSC_CONTRACTS.usd1Swap),
@@ -201,7 +199,7 @@ export function FlashSwapWidget({
                   </button>
                 </>
               ),
-              valueClassName: SWAP_META_VALUE_ROW_CLASS,
+              valueClassName: 'inline-flex items-center justify-end gap-1',
             },
           ]}
         />
@@ -219,6 +217,6 @@ export function FlashSwapWidget({
           </DappActionRow>
         ) : null}
       </SwapWidgetBody>
-    </div>
+    </>
   )
 }

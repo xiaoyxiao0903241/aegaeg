@@ -12,11 +12,7 @@ import { TokenAboutCarousel } from '~/app/components/swap-token-about-carousel'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
-import {
-  swapDetailBlockGapClass,
-  swapDetailSectionTitleClass,
-  swapMetricCardClass,
-} from '~/app/tabs/swap/swap-layout-tokens'
+import { dappDetailSectionGapClass, dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
 
 export function TradeSwapContent() {
   const { messages: t } = useI18n()
@@ -32,34 +28,63 @@ export function TradeSwapContent() {
   return (
     <DappDetailPage>
       <section>
-        <h2 className={swapDetailSectionTitleClass} id="swap-title">
+        <h2
+          className={cn(
+            'm-0 text-lg font-semibold leading-[1.3] tracking-[-0.04em] text-foreground',
+            'max-dapp:text-base max-dapp:tracking-[-0.04em]',
+            dappDetailTitleGapClass,
+          )}
+          id="swap-title"
+        >
           {t.swap.overview}
         </h2>
         <MetricGrid columns={2}>
           {sessionReady && poolRateLoading && !poolRateLabel ? (
-            <MetricCardSkeleton className={swapMetricCardClass} />
+            <MetricCardSkeleton className="gap-1.5 rounded-2xl px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]" />
           ) : (
             <MetricCard
-              className={cn(sessionReady && '[&_small]:hidden', swapMetricCardClass)}
+              className={cn(
+                sessionReady && '[&_small]:hidden',
+                'gap-1.5 rounded-2xl px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]',
+              )}
               label={t.swap.exchangeRate}
               value={sessionReady ? poolRateLabel ?? '—' : '--- : ---'}
             />
           )}
           <MetricCard
-            className={cn(sessionReady && '[&_small]:hidden', swapMetricCardClass)}
+            className={cn(
+              sessionReady && '[&_small]:hidden',
+              'gap-1.5 rounded-2xl px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]',
+            )}
             label={t.swap.settlement}
             value={t.swap.settlementValue}
           />
         </MetricGrid>
       </section>
 
-      <section className={swapDetailBlockGapClass}>
-        <h2 className={swapDetailSectionTitleClass}>{t.swap.tokenAbout.title}</h2>
+      <section className={dappDetailSectionGapClass}>
+        <h2
+          className={cn(
+            'm-0 text-lg font-semibold leading-[1.3] tracking-[-0.04em] text-foreground',
+            'max-dapp:text-base max-dapp:tracking-[-0.04em]',
+            dappDetailTitleGapClass,
+          )}
+        >
+          {t.swap.tokenAbout.title}
+        </h2>
         <TokenAboutCarousel />
       </section>
 
-      <section className={swapDetailBlockGapClass}>
-        <h2 className={swapDetailSectionTitleClass}>{t.swap.faq.tabsTitle}</h2>
+      <section className={dappDetailSectionGapClass}>
+        <h2
+          className={cn(
+            'm-0 text-lg font-semibold leading-[1.3] tracking-[-0.04em] text-foreground',
+            'max-dapp:text-base max-dapp:tracking-[-0.04em]',
+            dappDetailTitleGapClass,
+          )}
+        >
+          {t.swap.faq.tabsTitle}
+        </h2>
         <TradeSwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
         <FaqList defaultOpenFirst={false} items={faqItems} key={faqToken} variant="dapp" />
       </section>
