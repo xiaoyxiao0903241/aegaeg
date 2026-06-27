@@ -95,7 +95,7 @@ function ProgramCardButton({
   return (
     <button
       className={cn(
-        'flex w-full rounded-2xl bg-card p-4 text-left shadow-card',
+        'flex w-full rounded-md bg-card p-4 text-left shadow-card',
         interactive &&
           'cursor-pointer transition-[transform,box-shadow] duration-180 ease-out hover:-translate-y-px',
         textOnly ? 'flex-col items-start gap-1' : 'items-center justify-between gap-2',

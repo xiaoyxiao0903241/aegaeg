@@ -1,7 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
 import { AmountInput } from '~/components/amount-input'
 import { Card } from '~/components/card'
-import { Text } from '~/components/text'
 import { cn } from '~/lib/utils'
 import { SwapAmountSkeleton } from '~/app/components/dapp-skeleton'
 import { TokenChip } from '~/app/components/token-chip'
@@ -29,45 +28,42 @@ export function SwapAmountBox({
   tokenIcon,
   tokenLabel,
 }: SwapAmountBoxProps) {
-  const labelTone = sessionReady ? 'body' : 'subtle'
-  const disconnectedLabelClass = !sessionReady ? 'text-xs tracking-[-0.24px]' : undefined
+  const headerLabelClass = cn(
+    'text-[13px] leading-normal tracking-[-0.26px]',
+    sessionReady ? 'font-normal text-ink-strong max-dapp:text-faint' : 'text-xs tracking-[-0.24px]',
+  )
+  const balanceClass = cn(
+    headerLabelClass,
+    sessionReady && 'font-semibold text-ink-strong',
+  )
 
   return (
     <Card
       as="section"
       surface="outlined"
       className={cn(
-        'rounded-2xl p-3.5',
+        'flex flex-col gap-2 rounded-md p-3.5',
         !sessionReady && '[&_input]:text-[#c9cfda] [&_input]:placeholder:text-[#c9cfda]',
         className,
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <Text
-          as="span"
-          size="md"
-          tone={labelTone}
-          className={disconnectedLabelClass}
-        >
-          {label}
-        </Text>
-        <Text
-          as="small"
-          size="sm"
-          tone={sessionReady ? undefined : 'subtle'}
-          weight={sessionReady ? 'semibold' : undefined}
-          className={disconnectedLabelClass}
-        >
-          <span>{balance}</span>
-        </Text>
+        <span className={headerLabelClass}>{label}</span>
+        <span className={balanceClass}>
+          {balance}
+        </span>
       </div>
-      <div className="mt-2 flex items-center justify-between gap-3 max-dapp:items-start">
+      <div className="flex items-center justify-between gap-3 max-dapp:items-start">
         <TokenChip icon={tokenIcon} label={tokenLabel} />
         {amountLoading ? (
           <SwapAmountSkeleton />
         ) : (
           <AmountInput
-            className={!sessionReady ? 'text-[#c9cfda] placeholder:text-[#c9cfda]' : undefined}
+            className={cn(
+              sessionReady &&
+                'text-[22px] font-semibold leading-normal tracking-[-0.44px]',
+              !sessionReady && 'text-[#c9cfda] placeholder:text-[#c9cfda]',
+            )}
             {...amountProps}
           />
         )}

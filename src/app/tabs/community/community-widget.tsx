@@ -83,7 +83,7 @@ function CommunityConnectedWidget({
         <DappSideCard
           className={cn(
             '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-            'grid gap-2 rounded-2xl px-4 py-3.5',
+        'flex flex-col gap-2 rounded-md px-4 py-3.5',
             '[&_label]:text-xs [&_label]:leading-[1.5] [&_label]:tracking-[-0.24px] [&_label]:text-faint',
           )}
         >
@@ -100,7 +100,7 @@ function CommunityConnectedWidget({
       ) : null}
 
       {referral.isBound ? (
-        <DappReferrerBoundCard className="grid gap-2 rounded-2xl px-4 py-3.5">
+        <DappReferrerBoundCard className="grid gap-2 rounded-md px-4 py-3.5">
           <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
             {t.community.referrer}
           </p>
@@ -135,7 +135,7 @@ function CommunityConnectedWidget({
         <DappSideCard
           className={cn(
             '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-            'grid gap-2 rounded-2xl px-4 py-3.5',
+        'flex flex-col gap-2 rounded-md px-4 py-3.5',
             '[&_label]:text-xs [&_label]:leading-[1.5] [&_label]:tracking-[-0.24px] [&_label]:text-faint',
           )}
         >

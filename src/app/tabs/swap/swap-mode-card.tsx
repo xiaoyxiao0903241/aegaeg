@@ -19,7 +19,7 @@ export function SwapModeCard({
   return (
     <button
       className={cn(
-        'flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-3.5 text-left shadow-none',
+        'flex w-full items-center gap-3 rounded-md border border-border bg-card p-3.5 text-left shadow-none',
         interactive &&
           'cursor-pointer transition-[border-color,transform] duration-180 ease-out hover:-translate-y-px hover:border-primary',
       )}

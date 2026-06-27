@@ -40,12 +40,12 @@ export function TradeSwapContent() {
         </h2>
         <MetricGrid columns={2}>
           {sessionReady && poolRateLoading && !poolRateLabel ? (
-            <MetricCardSkeleton className="gap-1.5 rounded-2xl px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]" />
+            <MetricCardSkeleton className="gap-1.5 rounded-md px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]" />
           ) : (
             <MetricCard
               className={cn(
                 sessionReady && '[&_small]:hidden',
-                'gap-1.5 rounded-2xl px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]',
+                'gap-1.5 rounded-md px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]',
               )}
               label={t.swap.exchangeRate}
               value={sessionReady ? poolRateLabel ?? '—' : '--- : ---'}
@@ -54,7 +54,7 @@ export function TradeSwapContent() {
           <MetricCard
             className={cn(
               sessionReady && '[&_small]:hidden',
-              'gap-1.5 rounded-2xl px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]',
+              'gap-1.5 rounded-md px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]',
             )}
             label={t.swap.settlement}
             value={t.swap.settlementValue}
