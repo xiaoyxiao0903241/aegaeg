@@ -14,12 +14,25 @@ import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatCount } from '~/lib/api/format-display'
 import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/lib/table-pagination'
+import { cssRemVarPx } from '~/lib/root-rem-px'
 
-const PAGE_MENU_ITEM_HEIGHT_PX = 32
 const PAGE_MENU_VISIBLE_ITEMS = 5
-const PAGE_MENU_MAX_HEIGHT = PAGE_MENU_ITEM_HEIGHT_PX * PAGE_MENU_VISIBLE_ITEMS
-const PAGE_MENU_GAP_PX = 6
-const VIEWPORT_EDGE_PADDING_PX = 8
+
+function pageMenuItemHeightPx(): number {
+  return cssRemVarPx('--dapp-pagination-menu-item-height', 2)
+}
+
+function pageMenuGapPx(): number {
+  return cssRemVarPx('--dapp-pagination-menu-gap', 0.375)
+}
+
+function pageMenuViewportPaddingPx(): number {
+  return cssRemVarPx('--dapp-pagination-menu-viewport-padding', 0.5)
+}
+
+function pageMenuMaxHeightPx(): number {
+  return pageMenuItemHeightPx() * PAGE_MENU_VISIBLE_ITEMS
+}
 
 /** Figma pagination controls ~6px; project `rounded-md` token is 16px — use explicit radius. */
 const PAGINATION_BTN_RADIUS = 'rounded-sm'
@@ -42,9 +55,11 @@ function resolveMenuPlacement(
   triggerRect: DOMRect,
   menuHeight: number,
 ): MenuPlacement {
-  const spaceBelow = window.innerHeight - triggerRect.bottom - VIEWPORT_EDGE_PADDING_PX
-  const spaceAbove = triggerRect.top - VIEWPORT_EDGE_PADDING_PX
-  const needed = menuHeight + PAGE_MENU_GAP_PX
+  const viewportPadding = pageMenuViewportPaddingPx()
+  const gap = pageMenuGapPx()
+  const spaceBelow = window.innerHeight - triggerRect.bottom - viewportPadding
+  const spaceAbove = triggerRect.top - viewportPadding
+  const needed = menuHeight + gap
 
   if (spaceBelow >= needed) return 'below'
   if (spaceAbove >= needed) return 'above'
@@ -56,27 +71,29 @@ function resolveMenuStyle(
   placement: MenuPlacement,
   menuHeight: number,
 ): CSSProperties {
+  const viewportPadding = pageMenuViewportPaddingPx()
+  const gap = pageMenuGapPx()
   const maxHeight = Math.min(
     menuHeight,
-    window.innerHeight - VIEWPORT_EDGE_PADDING_PX * 2,
+    window.innerHeight - viewportPadding * 2,
   )
   const width = triggerRect.width
 
   let top =
     placement === 'below'
-      ? triggerRect.bottom + PAGE_MENU_GAP_PX
-      : triggerRect.top - PAGE_MENU_GAP_PX - maxHeight
+      ? triggerRect.bottom + gap
+      : triggerRect.top - gap - maxHeight
 
   top = Math.max(
-    VIEWPORT_EDGE_PADDING_PX,
-    Math.min(top, window.innerHeight - VIEWPORT_EDGE_PADDING_PX - maxHeight),
+    viewportPadding,
+    Math.min(top, window.innerHeight - viewportPadding - maxHeight),
   )
 
   const left = Math.max(
-    VIEWPORT_EDGE_PADDING_PX,
+    viewportPadding,
     Math.min(
       triggerRect.right - width,
-      window.innerWidth - width - VIEWPORT_EDGE_PADDING_PX,
+      window.innerWidth - width - viewportPadding,
     ),
   )
 
@@ -113,8 +130,8 @@ export function DappTablePagination({
   const canPrev = safePage > 1
   const canNext = safePage < totalPages
   const menuHeight = Math.min(
-    totalPages * PAGE_MENU_ITEM_HEIGHT_PX,
-    PAGE_MENU_MAX_HEIGHT,
+    totalPages * pageMenuItemHeightPx(),
+    pageMenuMaxHeightPx(),
   )
 
   const updateMenuPosition = useCallback(() => {
@@ -237,7 +254,8 @@ export function DappTablePagination({
             {menuOpen
               ? createPortal(
                   <ul
-                    className="m-0 list-none overflow-y-auto rounded-sm border border-border bg-card p-0 shadow-[0_4px_16px_oklch(0_0_0/8%)]"
+                    className="m-0 list-none overflow-y-auto rounded-sm border border-border bg-card p-0 text-xs shadow-[0_0.25rem_1rem_oklch(0_0_0/8%)]"
+                    data-dapp-pagination-menu
                     id={listId}
                     ref={menuRef}
                     role="listbox"
@@ -256,7 +274,7 @@ export function DappTablePagination({
                         >
                           <button
                             className={cn(
-                              'flex w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
+                              'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
                               active
                                 ? 'bg-accent font-semibold text-primary'
                                 : 'bg-card text-foreground',
@@ -267,7 +285,6 @@ export function DappTablePagination({
                               }
                               setMenuOpen(false)
                             }}
-                            style={{ height: PAGE_MENU_ITEM_HEIGHT_PX }}
                             type="button"
                           >
                             {pageNumber}

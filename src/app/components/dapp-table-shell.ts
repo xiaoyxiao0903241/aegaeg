@@ -26,3 +26,24 @@ export const dappTableHeaderPaddingClass =
 
 export const dappTableFooterPaddingClass =
   'dapp:px-4 dapp:py-3 max-dapp:px-3.5 max-dapp:py-2.5'
+
+/** Table column widths @ 16px root — scales with site-fluid. */
+export const genesisContributionsColWidths = [
+  '8.25rem',
+  '6.5rem',
+  '6rem',
+  '8.5rem',
+  '6.5rem',
+] as const
+
+export const rewardsReferralHistoryColWidths = [
+  '8.25rem',
+  '6.5rem',
+  '8.75rem',
+  '7.5rem',
+  '6.5rem',
+] as const
+
+export const rewardsTeamHistoryColWidths = ['10rem', '7.5rem', '10rem', '10rem'] as const
+
+export const dappTableCellMinWidthClass = 'min-w-[var(--dapp-table-cell-min-width)]'

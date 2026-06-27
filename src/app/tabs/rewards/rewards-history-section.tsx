@@ -12,6 +12,10 @@ import { DappTableCard } from '~/app/components/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { ResponsiveTable } from '~/app/components/responsive-table'
+import {
+  rewardsReferralHistoryColWidths,
+  rewardsTeamHistoryColWidths,
+} from '~/app/components/dapp-table-shell'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -86,8 +90,8 @@ export function RewardsHistorySection() {
 
   const historyColWidths =
     historyTab === 'referral'
-      ? ['132px', '104px', '140px', '120px', '104px']
-      : ['160px', '120px', '160px', '160px']
+      ? [...rewardsReferralHistoryColWidths]
+      : [...rewardsTeamHistoryColWidths]
 
   const historyPillTabs = (
     <DappPillTabs

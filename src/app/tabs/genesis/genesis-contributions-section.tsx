@@ -17,6 +17,11 @@ import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { DappTableCard } from '~/app/components/dapp-table-card'
 import { ResponsiveTable } from '~/app/components/responsive-table'
+import {
+  genesisContributionsColWidths,
+  rewardsReferralHistoryColWidths,
+  rewardsTeamHistoryColWidths,
+} from '~/app/components/dapp-table-shell'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useAuth } from '~/providers/auth-provider'
@@ -116,7 +121,7 @@ export function GenesisContributionsSection() {
           ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
             <>
               <ResponsiveTable
-                colWidths={['132px', '104px', '96px', '136px', '104px']}
+                colWidths={[...genesisContributionsColWidths]}
                 compact
                 headers={tableHeaders}
                 positiveColumns={[2]}
@@ -126,7 +131,7 @@ export function GenesisContributionsSection() {
             </>
           ) : (
             <ResponsiveTable
-              colWidths={['132px', '104px', '96px', '136px', '104px']}
+              colWidths={[...genesisContributionsColWidths]}
               compact
               headers={tableHeaders}
               isLoading={contributionsTable.showSkeleton}
