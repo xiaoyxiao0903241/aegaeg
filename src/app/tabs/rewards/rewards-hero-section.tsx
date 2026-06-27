@@ -3,6 +3,11 @@ import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 import { dappAssets } from '~/app/assets'
 import { RewardsHeroBodySkeleton } from '~/app/components/dapp-skeleton'
+import {
+  dappCaptionClass,
+  dappKickerClass,
+  dappTitleSmClass,
+} from '~/app/dapp-type-scale'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { useDappShell } from '~/app/dapp-shell-context'
 
@@ -23,17 +28,17 @@ export function RewardsHeroSection() {
         data-reveal
       >
         <div className="relative z-1 flex min-w-0 flex-1 flex-col gap-2 pr-36">
-          <span className="text-[11px] font-semibold uppercase leading-[1.2] tracking-[0.88px] text-coral-bright">
+          <span className={cn(dappKickerClass, 'text-coral-bright')}>
             {t.rewards.heroKicker}
           </span>
           {showHeroSkeleton ? (
             <RewardsHeroBodySkeleton />
           ) : (
             <>
-              <h3 className="m-0 text-[21px] font-semibold leading-[1.3] tracking-[-0.63px] text-white">
+              <h3 className={cn('m-0 text-white', dappTitleSmClass)}>
                 {heroTitle}
               </h3>
-              <p className="m-0 text-[13px] leading-[1.5] tracking-[-0.26px] text-on-dark">
+              <p className={cn('m-0 text-on-dark', dappCaptionClass)}>
                 {heroBody}
               </p>
             </>
@@ -41,7 +46,7 @@ export function RewardsHeroSection() {
         </div>
         <img
           alt=""
-          className="pointer-events-none absolute right-3 top-[-43px] z-0 h-48 w-32 max-w-32 -scale-x-100 object-contain"
+          className="pointer-events-none absolute right-3 top-[-2.6875rem] z-0 h-48 w-32 max-w-32 -scale-x-100 object-contain"
           height="156"
           loading="lazy"
           src={dappAssets.rewardsCharacter}
@@ -56,7 +61,7 @@ export function RewardsHeroSection() {
         )}
       >
         <div className="relative z-1 flex flex-col gap-2">
-          <span className="text-[11px] font-semibold uppercase leading-[1.2] tracking-[0.88px] text-coral-bright">
+          <span className={cn(dappKickerClass, 'text-coral-bright')}>
             {t.rewards.heroKicker}
           </span>
           {showHeroSkeleton ? (
@@ -66,7 +71,7 @@ export function RewardsHeroSection() {
               <h3 className="m-0 text-lg font-semibold leading-[1.2] tracking-[-0.54px] text-white">
                 {heroTitle}
               </h3>
-              <p className="m-0 text-[13px] leading-[1.5] tracking-[-0.26px] text-on-dark">
+              <p className={cn('m-0 text-on-dark', dappCaptionClass)}>
                 {heroBody}
               </p>
             </>

@@ -56,7 +56,7 @@ export function RewardsBalanceSection() {
           hint={t.rewards.autoPaid}
           label={t.rewards.referralRewards}
           value={sessionReady ? referralValue : disconnectedReferralValue}
-          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[22px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]"
+          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--dapp-type-amount-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]"
         />
       )}
 
@@ -99,7 +99,7 @@ export function RewardsBalanceSection() {
           label={t.rewards.teamRewards}
           meta={teamRewardMeta}
           value={`${teamClaimable} ${t.common.claimable.toLowerCase()}`}
-          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[17px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]"
+          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--dapp-type-body-lg-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]"
         />
       ) : (
         <RewardBalanceCard
@@ -112,7 +112,7 @@ export function RewardsBalanceSection() {
           label={t.rewards.teamRewards}
           meta={disconnectedTeamClaimedMeta}
           value={disconnectedTeamValue}
-          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[17px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]"
+          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--dapp-type-body-lg-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]"
         />
       )}
     </>

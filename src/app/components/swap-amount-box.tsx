@@ -2,6 +2,10 @@ import type { InputHTMLAttributes, ReactNode } from 'react'
 import { AmountInput } from '~/components/amount-input'
 import { Card } from '~/components/card'
 import { cn } from '~/lib/utils'
+import {
+  dappAmountClass,
+  dappCaptionClass,
+} from '~/app/dapp-type-scale'
 import { SwapAmountSkeleton } from '~/app/components/dapp-skeleton'
 import { TokenChip } from '~/app/components/token-chip'
 
@@ -29,7 +33,8 @@ export function SwapAmountBox({
   tokenLabel,
 }: SwapAmountBoxProps) {
   const headerLabelClass = cn(
-    'text-[13px] leading-normal tracking-[-0.26px]',
+    dappCaptionClass,
+    'leading-normal',
     sessionReady ? 'font-normal text-ink-strong max-dapp:text-faint' : 'text-xs tracking-[-0.24px]',
   )
   const balanceClass = cn(
@@ -60,8 +65,7 @@ export function SwapAmountBox({
         ) : (
           <AmountInput
             className={cn(
-              sessionReady &&
-                'text-[22px] font-semibold leading-normal tracking-[-0.44px]',
+              sessionReady && dappAmountClass,
               !sessionReady && 'text-[#c9cfda] placeholder:text-[#c9cfda]',
             )}
             {...amountProps}

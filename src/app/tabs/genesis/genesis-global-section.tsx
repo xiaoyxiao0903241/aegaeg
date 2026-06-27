@@ -9,6 +9,11 @@ import { DappIcon } from '~/app/components/dapp-icon'
 import { DappSkeleton } from '~/app/components/dapp-skeleton'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { dappDetailSectionGapClass } from '~/app/dapp-detail-layout'
+import {
+  dappCaptionClass,
+  dappKickerClass,
+  dappTitleSmClass,
+} from '~/app/dapp-type-scale'
 
 export function GenesisGlobalSection() {
   const { messages: t } = useI18n()
@@ -24,10 +29,10 @@ export function GenesisGlobalSection() {
         data-reveal
       >
         <div className="relative z-1 flex max-w-[70ch] flex-col gap-2">
-          <span className="text-[11px] font-semibold uppercase leading-[1.2] tracking-[0.88px] text-coral-bright">
+          <span className={cn(dappKickerClass, 'text-coral-bright')}>
             {t.genesis.globalLabel}
           </span>
-          <strong className="block text-[21px] font-semibold leading-[1.3] tracking-[-0.63px] text-white">
+          <strong className={cn('block text-white', dappTitleSmClass)}>
             {genesis.isLoading && genesis.phases.length === 0 ? (
               <DappSkeleton className="h-6 w-40" tone="dark" />
             ) : genesis.globalPurchasedLoading ? (
@@ -36,7 +41,7 @@ export function GenesisGlobalSection() {
               `$${genesis.globalPurchasedLabel}`
             )}
           </strong>
-          <p className="m-0 text-[13px] leading-[1.5] tracking-[-0.26px] text-on-dark">
+          <p className={cn('m-0 text-on-dark', dappCaptionClass)}>
             {t.genesis.globalBody}
           </p>
         </div>

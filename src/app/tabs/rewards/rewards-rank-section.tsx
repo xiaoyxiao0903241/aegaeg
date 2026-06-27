@@ -16,6 +16,10 @@ import {
 } from '~/app/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { DappSideCard, SideHint, SideLabel, SideTitle } from '~/app/components/dapp-card'
+import {
+  dappBodyLgClass,
+  dappKickerClass,
+} from '~/app/dapp-type-scale'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 
@@ -86,17 +90,14 @@ export function RewardsRankSection() {
           '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
         )}
       >
-        <SideLabel
-          className="text-[11px] leading-[1.2] tracking-[0.88px] max-dapp:text-[11px]"
-          tone="coral"
-        >
+        <SideLabel className={cn(dappKickerClass, 'max-dapp:text-[length:var(--dapp-type-kicker-size)]')} tone="coral">
           {t.rewards.currentTitle}
         </SideLabel>
         {showTitleSkeleton ? (
           <CurrentTitleCardBodySkeleton />
         ) : (
           <>
-            <SideTitle className="text-[17px] leading-[1.3] tracking-[-0.34px] max-dapp:text-[17px] max-dapp:leading-[1.2]">
+            <SideTitle className={cn(dappBodyLgClass, 'max-dapp:leading-[1.2]')}>
               {rankLabel}
             </SideTitle>
             <SideHint
