@@ -6,11 +6,7 @@ export function CommunityFaqSection() {
   const { messages: t } = useI18n()
 
   return (
-    <DappCollapsibleSection
-      bodyClassName="overflow-visible"
-      className="group-data-[tab=community]/shell:max-dapp:mt-0"
-      title={t.community.faq.title}
-    >
+    <DappCollapsibleSection bodyClassName="overflow-visible" title={t.community.faq.title}>
       <FaqList items={t.community.faq.items} variant="dapp" />
     </DappCollapsibleSection>
   )

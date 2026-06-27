@@ -64,7 +64,7 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 const REWARDS_WIDGET_CARD_CLASS = cn(
   'rounded-2xl px-4 py-3.5',
-  '[&_span]:text-xs [&_span]:tracking-[-0.24px] max-dapp:[&_span]:text-faint',
+  '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
 )
 
 const REWARDS_PROGRESS_CARD_CLASS = cn(
@@ -240,11 +240,7 @@ export function RewardsWidget() {
       ) : (
       <RewardBalanceCard
         badge={t.rewards.autoPaidLabel}
-        className={cn(
-          REWARDS_WIDGET_CARD_CLASS,
-          '[&_strong]:text-xl [&_strong]:tracking-[-0.66px]',
-          'max-dapp:[&_small]:hidden',
-        )}
+        className={cn(REWARDS_WIDGET_CARD_CLASS, 'max-dapp:[&_small]:hidden')}
         hint={t.rewards.autoPaid}
         label={t.rewards.referralRewards}
         value={sessionReady ? referralValue : disconnectedReferralValue}
@@ -280,23 +276,14 @@ export function RewardsWidget() {
             {t.rewards.claim}
           </DappActionButton>
         }
-        className={cn(
-          REWARDS_WIDGET_CARD_CLASS,
-          'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
-          'max-dapp:[&_strong]:text-base max-dapp:[&_strong]:tracking-[-0.51px]',
-          '[&_button]:mt-3',
-        )}
+        className={cn(REWARDS_WIDGET_CARD_CLASS, '[&_button]:mt-3')}
         label={t.rewards.teamRewards}
         meta={teamRewardMeta}
         value={`${teamClaimable} ${t.common.claimable.toLowerCase()}`}
       />
       ) : (
       <RewardBalanceCard
-        className={cn(
-          REWARDS_WIDGET_CARD_CLASS,
-          'dapp:[&_strong]:text-lg dapp:[&_strong]:tracking-[-0.54px]',
-          'max-dapp:[&_strong]:text-base max-dapp:[&_strong]:tracking-[-0.51px]',
-        )}
+        className={REWARDS_WIDGET_CARD_CLASS}
         label={t.rewards.teamRewards}
         meta={disconnectedTeamClaimedMeta}
         value={disconnectedTeamValue}
@@ -571,7 +558,7 @@ export function RewardsContent() {
       </section>
 
       {isMobileViewport ? (
-        <DappSection className="group-data-[tab=rewards]/shell:max-dapp:mt-0" title={t.rewards.allTiers}>
+        <DappSection title={t.rewards.allTiers}>
           <div className={revealClass()} data-reveal>
             {tierTable}
           </div>
@@ -583,24 +570,20 @@ export function RewardsContent() {
       )}
 
       {isMobileViewport ? (
-        <DappSection className="group-data-[tab=rewards]/shell:max-dapp:mt-0" title={t.rewards.history}>
-          <div className={cn(revealClass(), 'max-dapp:mt-0')} data-reveal>
+        <DappSection title={t.rewards.history}>
+          <div className={revealClass()} data-reveal>
             {historyTableCard}
           </div>
         </DappSection>
       ) : (
         <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.history}>
-          <div className={cn(revealClass(), 'max-dapp:mt-0')} data-reveal>
+          <div className={revealClass()} data-reveal>
             {historyTableCard}
           </div>
         </DappCollapsibleSection>
       )}
 
-      <DappCollapsibleSection
-        bodyClassName="overflow-visible"
-        className="group-data-[tab=rewards]/shell:max-dapp:mt-0"
-        title={t.rewards.faq.title}
-      >
+      <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.faq.title}>
         <FaqList
           defaultOpenFirst={false}
           items={t.rewards.faq.items}

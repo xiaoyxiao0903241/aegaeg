@@ -10,12 +10,9 @@ import { InviteFlow, InviteFlowStack } from '~/app/components/invite-flow'
 export function CommunityFlowSection({
   isMobileViewport = false,
   onSelectTab,
-  sessionReady = false,
 }: {
   isMobileViewport?: boolean
   onSelectTab: (tab: DappTab) => void
-  sessionReady?: boolean
-  tab?: DappTab
 }) {
   const { messages: t } = useI18n()
   const genesis = useGenesisWidgetContext()
@@ -37,13 +34,7 @@ export function CommunityFlowSection({
 
   return (
     <>
-      <DappSection
-        className={cn(
-          sessionReady && 'group-data-[tab=community]/shell:max-dapp:mt-0',
-          !sessionReady && 'max-dapp:mt-5',
-        )}
-        title={t.community.inviteTitle}
-      >
+      <DappSection title={t.community.inviteTitle}>
         {isMobileViewport ? (
           <InviteFlowStack items={inviteFlowItems} />
         ) : (
@@ -51,19 +42,8 @@ export function CommunityFlowSection({
         )}
       </DappSection>
 
-      <DappSection
-        className={cn(
-          sessionReady && 'group-data-[tab=community]/shell:max-dapp:mt-0',
-          !sessionReady && 'max-dapp:mt-4.5',
-        )}
-        title={t.community.programs.title}
-      >
-        <div
-          className={cn(
-            'mt-4 grid grid-cols-2 gap-3',
-            'max-dapp:grid-cols-1 max-dapp:gap-2.5',
-          )}
-        >
+      <DappSection title={t.community.programs.title}>
+        <div className={cn('grid grid-cols-2 gap-3', 'max-dapp:grid-cols-1 max-dapp:gap-2.5')}>
           {programItems.map((program) => (
             <ProgramCard
               action={program.action}

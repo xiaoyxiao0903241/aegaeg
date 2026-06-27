@@ -410,20 +410,31 @@ export function RewardBalanceCard({
       data-reveal
     >
       <div className="flex items-center justify-between gap-3">
-        <Text as="p" size="xs" tone="body" className="m-0">
+        <Text as="p" size="xs" tone="body" className="m-0 tracking-[-0.24px]">
           {label}
         </Text>
         {meta ? (
-          <Text as="span" size="xs" tone="muted">
+          <Text as="span" size="xs" tone="body" className="tracking-[-0.24px]">
             {meta}
           </Text>
         ) : (
-          <Text as="em" size="xs" weight="bold" tone="success" className="not-italic whitespace-nowrap">
+          <Text
+            as="span"
+            size="xs"
+            weight="medium"
+            tone="success"
+            className="whitespace-nowrap tracking-[-0.24px]"
+          >
             {badge}
           </Text>
         )}
       </div>
-      <Text as="strong" className="mt-2 block text-xl font-bold leading-[1.32]">
+      <Text
+        as="strong"
+        size="lg"
+        weight="semibold"
+        className="mt-2 block leading-[1.3] tracking-[-0.54px]"
+      >
         {value}
       </Text>
       {hint ? (

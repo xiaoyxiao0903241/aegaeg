@@ -432,10 +432,7 @@ export function GenesisContent() {
         </div>
       </section>
 
-      <DappSection
-        className="group-data-[tab=genesis]/shell:max-dapp:mt-0"
-        title={t.genesis.myContributions}
-      >
+      <DappSection title={t.genesis.myContributions}>
         <div className={cn(revealClass(), 'flex flex-col gap-3')} data-reveal>
           {showSalesSyncHint ? (
             <p className="m-0 text-xs leading-normal text-muted-foreground">

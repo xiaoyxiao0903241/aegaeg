@@ -1,5 +1,5 @@
 import { cn } from '~/lib/utils'
-import { dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
+import { dappDetailSectionGapClass, dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
 
 /** Figma wcol title @ 16px root — 21px / 13px */
 export const swapWidgetTitleClass =
@@ -14,7 +14,7 @@ export const swapDetailSectionTitleClass = cn(
   dappDetailTitleGapClass,
 )
 
-export const swapDetailBlockGapClass = 'mt-8.5 max-dapp:mt-6'
+export const swapDetailBlockGapClass = dappDetailSectionGapClass
 
 export const swapAboutCardOffsetClass = 'pt-2.5'
 

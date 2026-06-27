@@ -178,16 +178,11 @@ export function CommunityContent({
       </div>
 
       <CommunityFlowSection
-        sessionReady={sessionReady}
         isMobileViewport={isMobileViewport}
         onSelectTab={onSelectTab}
-        tab={tab}
       />
 
-      <DappSection
-        className="group-data-[tab=community]/shell:max-dapp:mt-0"
-        title={inviteSectionTitle}
-      >
+      <DappSection title={inviteSectionTitle}>
         <DappTableCard
           footer={
             !invitesTable.requiresAuth ? (
