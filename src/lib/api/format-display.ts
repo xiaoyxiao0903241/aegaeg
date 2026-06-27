@@ -2,14 +2,23 @@ import type { RewardLogItem, SalesLogItem, TeamReferralItem, TeamRewardClaimLogI
 import { estimateAgxFromUsd1 } from '~/lib/presale/presale-math'
 import { PRESALE_CONFIG } from '~/config/presale'
 
+/** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */
+export const TABLE_EMPTY = '-'
+
 export function formatPresaleRank(rank: number): string {
   if (!Number.isFinite(rank) || rank <= 0) return 'S0'
   return `S${rank}`
 }
 
+/** Community invite table — missing rank shows `-`, otherwise S0–S10. */
+export function formatTableGenesisRank(rank: number | undefined | null): string {
+  if (rank == null || !Number.isFinite(rank) || rank < 0) return TABLE_EMPTY
+  return `S${Math.trunc(rank)}`
+}
+
 /** Community member table — S0 or missing rank shows placeholder, otherwise S1–S10. */
 export function formatMemberGenesisTitle(rank: number | undefined): string {
-  if (rank == null || !Number.isFinite(rank) || rank <= 0) return '—'
+  if (rank == null || !Number.isFinite(rank) || rank <= 0) return TABLE_EMPTY
   return `S${Math.trunc(rank)}`
 }
 
@@ -133,11 +142,17 @@ function formatDateTimeParts(date: Date): string {
 }
 
 export function formatRegisterDate(iso: string | null): string {
-  if (!iso) return '—'
+  if (!iso) return TABLE_EMPTY
   const date = new Date(iso)
-  if (Number.isNaN(date.getTime())) return '—'
+  if (Number.isNaN(date.getTime())) return TABLE_EMPTY
 
   return date.toISOString().slice(0, 10)
+}
+
+/** Community member table address — Figma `0x05…E515` (4 chars + ellipsis + last 4). */
+export function formatInviteMemberAddress(address: string): string {
+  if (address.length < 9) return address
+  return `${address.slice(0, 4)}…${address.slice(-4)}`
 }
 
 export function formatShortAddress(address: string): string {
@@ -248,10 +263,11 @@ export function calcProgressPercent(current: string | number, target: string | n
 export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
   return [
     formatRegisterDate(item.register_time),
-    formatShortAddress(item.address),
-    formatMemberGenesisTitle(item.presale_rank),
+    formatInviteMemberAddress(item.address),
+    formatTableUsdAmount(item.presale_volume),
+    formatTableGenesisRank(item.presale_rank),
     formatCount(item.direct_referral_count ?? 0),
-    formatUsd(Number(item.sales_team_market)),
+    formatTableVolume(item.sales_team_market),
   ]
 }
 
@@ -259,7 +275,7 @@ export function mapTeamReferralToMobileRow(item: TeamReferralItem): string[] {
   return [
     formatApiDateTime(item.register_time),
     formatShortAddress(item.address),
-    formatMemberGenesisTitle(item.presale_rank),
+    formatTableGenesisRank(item.presale_rank),
     formatUsdCompact(item.sales_team_market),
   ]
 }
@@ -268,13 +284,25 @@ export function mapTeamReferralToFullRow(item: TeamReferralItem): string[] {
   return [
     formatRegisterDate(item.register_time),
     formatShortAddress(item.address),
-    '—',
-    formatMemberGenesisTitle(item.presale_rank),
-    '—',
+    formatTableUsdAmount(item.presale_volume),
+    formatTableGenesisRank(item.presale_rank),
+    formatCount(item.direct_referral_count ?? 0),
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(
       Number(item.sales_team_market),
     ),
   ]
+}
+
+function formatTableUsdAmount(value: string | number | undefined | null): string {
+  const num = Number(value)
+  if (!Number.isFinite(num) || num <= 0) return TABLE_EMPTY
+  return formatUsd(num)
+}
+
+function formatTableVolume(value: string | number | undefined | null): string {
+  const num = Number(value)
+  if (!Number.isFinite(num)) return TABLE_EMPTY
+  return formatCount(num)
 }
 
 /** Sum human-readable USD amounts from sales log rows (same unit as table display). */
@@ -298,7 +326,7 @@ function formatSalesLogAgx(
   }
 
   const amountUsd1 = Number(item.amount)
-  if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) return '—'
+  if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) return TABLE_EMPTY
 
   const estimated = estimateAgxFromUsd1(
     amountUsd1,
@@ -310,7 +338,7 @@ function formatSalesLogAgx(
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }).format(estimated)
-    : '—'
+    : TABLE_EMPTY
 }
 
 export function mapSalesLogToDesktopRow(
@@ -322,7 +350,7 @@ export function mapSalesLogToDesktopRow(
     formatUsd(Number(item.amount), 0),
     formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
     formatSalesLogAgx(item, agxPriceUsd),
-    item.tx_hash ? formatShortAddress(item.tx_hash) : '—',
+    item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
   ]
 }
 
@@ -345,7 +373,7 @@ export function mapRewardLogToRow(
   const signedAmount = Number(item.amount)
   const amountLabel = Number.isFinite(signedAmount)
     ? `+${formatUsd(Math.abs(signedAmount), 2)}`
-    : '—'
+    : TABLE_EMPTY
 
   return [
     formatBlockTime(item.block_time),
@@ -358,7 +386,7 @@ export function mapRewardLogToRow(
 
 function formatOrderAmountUsd(orderAmount: string | undefined): string {
   const num = Number(orderAmount)
-  if (!Number.isFinite(num) || num <= 0) return '—'
+  if (!Number.isFinite(num) || num <= 0) return TABLE_EMPTY
   return formatUsd(num, 0)
 }
 
@@ -371,7 +399,7 @@ export function mapTeamRewardClaimLogToRow(
   const amountNum = Number(item.amount)
   const amountLabel = Number.isFinite(amountNum)
     ? `+${formatUsd(Math.abs(amountNum), 2)}`
-    : '—'
+    : TABLE_EMPTY
   const statusKey = resolveTeamRewardClaimStatusKey(item.status)
   const statusLabel = labels.logStatus[statusKey]
 

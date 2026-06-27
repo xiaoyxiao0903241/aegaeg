@@ -11,17 +11,21 @@ export type InviteFlowItem = {
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
   return (
-    <span className="grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary text-xs font-semibold leading-[1.2] text-white max-dapp:size-7">
+    <span className="grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary text-[13px] font-semibold leading-[1.3] text-white max-dapp:size-7">
       {children}
     </span>
   )
 }
 
-function InviteFlowConnector({ tone }: { tone?: 'primary' | 'muted' }) {
+/** Figma `flow` connector — coral primary, 2px thick. */
+function InviteFlowConnector({ orientation = 'horizontal' }: { orientation?: 'horizontal' | 'vertical' }) {
   return (
     <i
-      className="h-0.5 flex-1 shrink-0 rounded-sm bg-border max-dapp:hidden data-[tone=primary]:!bg-primary data-[tone=muted]:!bg-border"
-      data-tone={tone}
+      className={cn(
+        'shrink-0 rounded-sm bg-primary',
+        orientation === 'horizontal' && 'h-0.5 flex-1 max-dapp:hidden',
+        orientation === 'vertical' && 'w-0.5 min-h-6 flex-1',
+      )}
     />
   )
 }
@@ -47,9 +51,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
         >
           <div className="flex items-center gap-2.5 max-dapp:items-start">
             <InviteFlowStep>{index + 1}</InviteFlowStep>
-            {index < items.length - 1 ? (
-              <InviteFlowConnector tone={index === 0 ? 'primary' : index === 1 ? 'muted' : undefined} />
-            ) : null}
+            {index < items.length - 1 ? <InviteFlowConnector /> : null}
           </div>
           <Text
             as="h4"
@@ -82,13 +84,16 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
     <Card
       as="div"
       surface="elevated"
-      className={cn(revealClass(), 'grid gap-3.5 p-4 max-dapp:rounded-2xl')}
+      className={cn(revealClass(), 'grid gap-0 p-4 max-dapp:rounded-2xl')}
       data-reveal
     >
       {items.map((item, index) => (
-        <article className="flex items-start gap-3" key={item.title}>
-          <InviteFlowStep>{index + 1}</InviteFlowStep>
-          <div className="grid min-w-0 gap-0.5">
+        <article className="flex items-stretch gap-3" key={item.title}>
+          <div className="flex w-7 flex-col items-center">
+            <InviteFlowStep>{index + 1}</InviteFlowStep>
+            {index < items.length - 1 ? <InviteFlowConnector orientation="vertical" /> : null}
+          </div>
+          <div className={cn('grid min-w-0 gap-0.5', index < items.length - 1 && 'pb-3.5')}>
             <Text as="h4" size="sm" weight="semibold" className="m-0 leading-[1.2] tracking-[-0.28px]">
               {item.title}
             </Text>

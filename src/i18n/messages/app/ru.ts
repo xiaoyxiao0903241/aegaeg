@@ -466,6 +466,7 @@ const app = defineMessages({
       address: 'Адрес',
       direct: 'Прямой',
       volume: 'Объём',
+      communityVolume: 'Объём сообщества',
       contribution: 'Подписка',
     },
 }) satisfies AppMessagesBundle

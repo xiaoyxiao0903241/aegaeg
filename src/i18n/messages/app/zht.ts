@@ -466,6 +466,7 @@ const app = defineMessages({
       address: '地址',
       direct: '直推',
       volume: '業績',
+      communityVolume: '社區業績',
       contribution: '認購',
     },
 }) satisfies AppMessagesBundle

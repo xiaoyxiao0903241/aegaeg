@@ -57,7 +57,7 @@ function formatTeamRequirement(rank: number): string {
     return formatUsdThreshold(TEAM_PRESALE_RANK_THRESHOLDS_USD[rank - 1])
   }
 
-  return '—'
+  return '-'
 }
 
 export function buildRewardTierRows(): readonly (readonly string[])[] {

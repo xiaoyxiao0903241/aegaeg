@@ -307,7 +307,7 @@ export function GenesisContent() {
     salesLogs?.items.map((item) => {
       const row = mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)
       const txLabel = row[4]
-      if (!item.tx_hash || txLabel === '—') return row
+      if (!item.tx_hash || txLabel === '-') return row
 
       return [
         ...row.slice(0, 4),

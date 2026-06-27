@@ -466,6 +466,7 @@ const app = defineMessages({
       address: 'Alamat',
       direct: 'Langsung',
       volume: 'Volume',
+      communityVolume: 'Volume komunitas',
       contribution: 'Langganan',
     },
 }) satisfies AppMessagesBundle

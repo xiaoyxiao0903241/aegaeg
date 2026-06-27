@@ -465,6 +465,7 @@ const app = defineMessages({
       address: 'Adres',
       direct: 'Doğrudan',
       volume: 'Performans',
+      communityVolume: 'Topluluk performansı',
       contribution: 'Abone',
     },
 })

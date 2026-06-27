@@ -23,6 +23,7 @@ import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { DappTableCard } from '~/app/components/dapp-table-card'
+import { communityInviteTableClass } from '~/app/components/dapp-table-shell'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { CommunityFaqSection } from '~/app/tabs/community/community-faq-section'
@@ -135,6 +136,15 @@ export function CommunityContent({
     },
   ]
 
+  const inviteTableHeaders = [
+    t.tables.joined,
+    t.tables.address,
+    t.community.shareholder,
+    t.tables.genesisRank,
+    t.community.directReferrals,
+    t.tables.communityVolume,
+  ]
+
   return (
     <DappDetailPage>
       <DappContentHeading id="community-title" reveal>
@@ -195,24 +205,9 @@ export function CommunityContent({
           ) : invitesTable.queryEmpty ? (
             <>
               <ResponsiveTable
-                className={cn(
-                  '[&_table]:table-fixed',
-                  '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
-                  '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
-                  '[&_th:nth-child(3)]:w-[15.38%] [&_td:nth-child(3)]:w-[15.38%]',
-                  '[&_th:nth-child(4)]:w-[15.38%] [&_td:nth-child(4)]:w-[15.38%]',
-                  '[&_th:nth-child(5)]:w-[15.38%] [&_td:nth-child(5)]:w-[15.38%]',
-                  'max-dapp:[&_table]:table-auto max-dapp:[&_table]:w-max max-dapp:[&_th]:w-auto max-dapp:[&_td]:w-auto',
-                )}
+                className={communityInviteTableClass}
                 compact
-                emphasisColumns={[3]}
-                headers={[
-                  t.tables.joined,
-                  t.tables.address,
-                  t.tables.title,
-                  t.tables.direct,
-                  t.tables.volume,
-                ]}
+                headers={inviteTableHeaders}
                 linkColumns={[1]}
                 rows={[]}
               />
@@ -224,24 +219,9 @@ export function CommunityContent({
             </>
           ) : (
             <ResponsiveTable
-              className={cn(
-                '[&_table]:table-fixed',
-                '[&_th:nth-child(1)]:w-[23.08%] [&_td:nth-child(1)]:w-[23.08%]',
-                '[&_th:nth-child(2)]:w-[30.77%] [&_td:nth-child(2)]:w-[30.77%]',
-                '[&_th:nth-child(3)]:w-[15.38%] [&_td:nth-child(3)]:w-[15.38%]',
-                '[&_th:nth-child(4)]:w-[15.38%] [&_td:nth-child(4)]:w-[15.38%]',
-                '[&_th:nth-child(5)]:w-[15.38%] [&_td:nth-child(5)]:w-[15.38%]',
-                'max-dapp:[&_table]:table-auto max-dapp:[&_table]:w-max max-dapp:[&_th]:w-auto max-dapp:[&_td]:w-auto',
-              )}
+              className={communityInviteTableClass}
               compact
-              emphasisColumns={[3]}
-              headers={[
-                t.tables.joined,
-                t.tables.address,
-                t.tables.title,
-                t.tables.direct,
-                t.tables.volume,
-              ]}
+              headers={inviteTableHeaders}
               isLoading={invitesTable.showSkeleton}
               linkColumns={[1]}
               rows={compactRows}

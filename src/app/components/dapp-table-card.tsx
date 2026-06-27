@@ -4,6 +4,7 @@ import {
   dappTableContentPaddingClass,
   dappTableFooterPaddingClass,
   dappTableHeaderPaddingClass,
+  dappTableSectionDividerClass,
 } from '~/app/components/dapp-table-shell'
 import { cn } from '~/lib/utils'
 
@@ -34,7 +35,7 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
       <div
         className={cn(
           dappTableCardShellClass,
-          'flex min-w-0 max-w-full flex-col overflow-visible',
+          'flex min-w-0 max-w-full flex-col',
           className,
         )}
       >
@@ -42,7 +43,8 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
           <div
             className={cn(
               dappTableHeaderPaddingClass,
-              'border-b border-border/50',
+              'border-b',
+              dappTableSectionDividerClass,
               headerClassName,
             )}
           >
@@ -55,6 +57,7 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
           className={cn(
             'min-w-0 overflow-x-auto max-dapp:scrollbar-x-track',
             dappTableContentPaddingClass,
+            footer && 'pb-0',
             contentClassName,
           )}
         >
@@ -65,7 +68,8 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
           <div
             className={cn(
               dappTableFooterPaddingClass,
-              'relative z-10 overflow-visible border-t border-border/50',
+              'relative z-10 overflow-visible rounded-b-2xl border-t bg-card',
+              dappTableSectionDividerClass,
               footerClassName,
             )}
           >

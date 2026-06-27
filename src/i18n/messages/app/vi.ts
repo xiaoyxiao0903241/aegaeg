@@ -466,6 +466,7 @@ const app = defineMessages({
       address: 'Địa chỉ',
       direct: 'Trực tiếp',
       volume: 'Doanh số',
+      communityVolume: 'Doanh số cộng đồng',
       contribution: 'Đăng ký',
     },
 }) satisfies AppMessagesBundle

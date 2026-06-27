@@ -1,6 +1,7 @@
 import { Card } from '~/components/card'
 import { communityStatCardH5Layout } from '~/app/components/dapp-card'
 import { seasonCardRadiusClass, seasonCardSizeClass } from '~/app/dapp-detail-layout'
+import { dappTableCellBorderClass } from '~/app/components/dapp-table-shell'
 import { cn } from '~/lib/utils'
 
 const skeletonSurfaceClass =
@@ -9,8 +10,7 @@ const skeletonSurfaceClass =
 const skeletonDarkClass =
   'bg-[oklch(100%_0_0/18%)] motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
 
-const TABLE_CELL =
-  'border-b-[0.5px] border-border px-3 py-2.5 text-left whitespace-nowrap font-normal max-dapp:px-2.5 max-dapp:py-2'
+const TABLE_CELL = `${dappTableCellBorderClass} px-3 py-2.5 text-left whitespace-nowrap font-normal max-dapp:px-2.5 max-dapp:py-2`
 
 export function DappSkeleton({
   className,

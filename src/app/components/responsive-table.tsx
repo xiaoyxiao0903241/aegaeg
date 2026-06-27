@@ -2,9 +2,10 @@ import { type ReactNode } from 'react'
 import { StatusBadge } from '~/components/badge'
 import { cn } from '~/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
+import { dappTableCellBorderClass } from '~/app/components/dapp-table-shell'
 
 const TABLE_CELL =
-  'min-w-[88px] border-b-[0.5px] border-border px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal'
+  `min-w-[88px] ${dappTableCellBorderClass} px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
 const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
 

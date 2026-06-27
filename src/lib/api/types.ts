@@ -90,6 +90,8 @@ export interface QualifiedPartitionsResponse {
 export interface TeamReferralItem {
   address: string
   register_time: string | null
+  /** Personal co-build / subscription amount (USD). */
+  presale_volume?: string
   presale_rank: number
   direct_referral_count: number
   sales_team_market: string

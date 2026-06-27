@@ -465,6 +465,7 @@ const app = defineMessages({
       address: '地址',
       direct: '直推',
       volume: '业绩',
+      communityVolume: '社区业绩',
       contribution: '认购',
     },
 })

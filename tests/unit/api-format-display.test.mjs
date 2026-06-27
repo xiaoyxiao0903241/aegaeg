@@ -57,8 +57,8 @@ test('formatUsdCompact abbreviates large values', async () => {
 test('formatMemberGenesisTitle hides S0 in community member table', async () => {
   const { formatMemberGenesisTitle } = await loadModule('/src/lib/api/format-display.ts')
 
-  assert.equal(formatMemberGenesisTitle(0), '—')
-  assert.equal(formatMemberGenesisTitle(-1), '—')
+  assert.equal(formatMemberGenesisTitle(0), '-')
+  assert.equal(formatMemberGenesisTitle(-1), '-')
   assert.equal(formatMemberGenesisTitle(3), 'S3')
 })
 
@@ -69,11 +69,12 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
     mapTeamReferralToCompactRow({
       address: '0x05A1E51500000000000000000000000000000000',
       register_time: '2026-04-12T08:00:00.000Z',
-      presale_rank: 6,
-      direct_referral_count: 3,
-      sales_team_market: '246000',
+      presale_volume: '8000',
+      presale_rank: 0,
+      direct_referral_count: 16,
+      sales_team_market: '245960',
     }),
-    ['2026-04-12', '0x05A1…0000', 'S6', '3', '$246,000'],
+    ['2026-04-12', '0x05…0000', '$8,000', 'S0', '16', '245,960'],
   )
 })
 
