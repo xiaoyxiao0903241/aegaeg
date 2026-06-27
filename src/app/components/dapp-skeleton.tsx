@@ -56,7 +56,7 @@ export function SeasonOptionSkeleton() {
     >
       <div className="flex items-start justify-between gap-1">
         <DappSkeleton className="h-3.5 w-16" />
-        <DappSkeleton className="size-[18px] shrink-0 rounded-[9px]" />
+        <DappSkeleton className="size-[var(--dapp-skeleton-chip-size)] shrink-0 rounded-[calc(var(--dapp-skeleton-chip-size)/2)]" />
       </div>
       <DappSkeleton className="h-3 w-full max-w-24" />
       <DappSkeleton className="h-3 w-full max-w-28" />
@@ -153,7 +153,7 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
       tone={dark ? 'dark' : undefined}
       surface={dark ? undefined : 'elevated'}
       className={cn(
-        'community-stat flex min-h-22 flex-col items-start gap-1 rounded-md border-0 p-[13px_12px] shadow-card',
+        'community-stat flex min-h-22 flex-col items-start gap-1 rounded-md border-0 p-[var(--dapp-community-stat-padding)] shadow-card',
         dark && 'is-dark',
         communityStatCardH5Layout,
       )}

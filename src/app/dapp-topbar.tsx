@@ -15,7 +15,7 @@ const topbarClass = cn(
   'max-dapp:pt-[max(1rem,env(safe-area-inset-top,0px))]',
   // H5 毛玻璃顶栏：透出页面蜜桃渐变，滚动时模糊下方内容
   'max-dapp:border-b max-dapp:border-border/40',
-  'max-dapp:bg-background/30 max-dapp:backdrop-blur-[18px] max-dapp:backdrop-saturate-150',
+  'max-dapp:bg-background/30 max-dapp:backdrop-blur-[1.125rem] max-dapp:backdrop-saturate-150',
 )
 
 const brandClass = cn(

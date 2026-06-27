@@ -15,7 +15,7 @@ const panelShellClass = cn(
   'border-0 bg-card',
   'max-dapp:rounded-t-lg max-dapp:px-5 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))] max-dapp:pt-3',
   'dapp:w-full dapp:max-w-md dapp:rounded-lg dapp:p-6',
-  'dapp:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
+  'dapp:shadow-[0_1.875rem_5rem_oklch(15%_0.02_270/35%)]',
 )
 
 export function WalletConnectModal({

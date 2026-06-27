@@ -32,7 +32,7 @@ const communityStatCardResponsive = cn(
   'group-data-[tab=community]/shell:max-dapp:[&>strong]:mt-0.5 group-data-[tab=community]/shell:max-dapp:[&>strong]:text-2xl group-data-[tab=community]/shell:max-dapp:[&>strong]:leading-[1.05]',
   'group-data-[tab=community]/shell:max-dapp:[&>b]:hidden group-data-[tab=community]/shell:max-dapp:[&>small]:hidden',
   'group-data-[tab=community]/shell:max-dapp:[&.is-dark>small]:hidden',
-  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:min-h-22 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:items-start group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-md group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:border-0 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:p-[13px_12px] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-left group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:shadow-card',
+  'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:min-h-22 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:items-start group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-md group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:border-0 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:p-[var(--dapp-community-stat-padding)] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-left group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:shadow-card',
 )
 
 const communityStatLabelResponsive =
@@ -251,7 +251,7 @@ export function CommunityStatCard({
       className={cn(
         revealClass(),
         'community-stat flex flex-col items-start gap-1 rounded-md p-4.5',
-        !dark && 'shadow-[0_8px_24px_rgba(18,26,51,0.06)]',
+        !dark && 'shadow-[0_0.5rem_1.5rem_rgba(18,26,51,0.06)]',
         dark && 'is-dark',
         image && 'relative overflow-visible',
         communityStatCardResponsive,

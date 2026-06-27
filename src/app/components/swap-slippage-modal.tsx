@@ -61,7 +61,7 @@ export function SwapSlippageModal({
         'w-full max-w-md max-dapp:w-full',
         'max-dapp:rounded-t-lg max-dapp:px-4 max-dapp:pb-[max(20px,env(safe-area-inset-bottom))] max-dapp:pt-3',
         'dapp:rounded-lg dapp:p-6',
-        'dapp:shadow-[0_30px_80px_oklch(15%_0.02_270/35%)]',
+        'dapp:shadow-[0_1.875rem_5rem_oklch(15%_0.02_270/35%)]',
       )}
     >
       <AegisSheetHandle />

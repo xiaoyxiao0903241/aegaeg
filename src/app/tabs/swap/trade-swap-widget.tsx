@@ -172,7 +172,7 @@ export function TradeSwapWidget({
         <div
           className={cn(
             'flex items-center justify-center py-1.5',
-            'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-[0_8px_12px_rgba(18,26,51,0.07)]',
+            'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-[0_0.5rem_0.75rem_rgba(18,26,51,0.07)]',
           )}
         >
           <AnchoredTooltip content={t.swap.flip}>

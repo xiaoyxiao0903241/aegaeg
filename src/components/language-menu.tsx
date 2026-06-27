@@ -192,7 +192,7 @@ function NativeLanguageMenu({
         <div
           className={cn(
             langMenuClass,
-            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_12px_32px_oklch(0%_0_0_/_12%)]',
+            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
             menuClassName,
           )}
           role="menu"
@@ -297,7 +297,7 @@ function ReactLanguageMenu({
       <div
         className={cn(
           langMenuClass,
-          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_12px_32px_oklch(0%_0_0_/_12%)]',
+          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
           !open && 'hidden',
           menuClassName,
         )}

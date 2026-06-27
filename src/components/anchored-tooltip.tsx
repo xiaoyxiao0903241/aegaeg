@@ -2,6 +2,7 @@ import type { CSSProperties, ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '~/lib/utils'
+import { cssRemVarPx } from '~/lib/root-rem-px'
 
 export type AnchoredTooltipPosition = 'top' | 'right' | 'bottom'
 
@@ -13,16 +14,16 @@ export interface AnchoredTooltipProps {
 
 const tooltipBaseClass = cn(
   'pointer-events-none fixed z-[9999] w-max max-w-60 rounded-sm bg-dark px-3 py-2',
-  'text-center text-xs font-medium leading-[1.45] text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)]',
+  'text-center text-xs font-medium leading-[1.45] text-white shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.18)]',
   'after:absolute after:size-0 after:border-solid after:content-[""]',
 )
 
 const tooltipArrowClass: Record<AnchoredTooltipPosition, string> = {
-  top: 'after:left-1/2 after:bottom-[-5px] after:-translate-x-1/2 after:border-[5px_5px_0] after:border-dark after:border-x-transparent after:border-b-transparent',
+  top: 'after:left-1/2 after:bottom-[-0.3125rem] after:-translate-x-1/2 after:border-[0.3125rem_0.3125rem_0] after:border-dark after:border-x-transparent after:border-b-transparent',
   bottom:
-    'after:left-1/2 after:top-[-5px] after:-translate-x-1/2 after:border-[0_5px_5px] after:border-transparent after:border-b-dark',
+    'after:left-1/2 after:top-[-0.3125rem] after:-translate-x-1/2 after:border-[0_0.3125rem_0.3125rem] after:border-transparent after:border-b-dark',
   right:
-    'after:left-[-5px] after:top-1/2 after:-translate-y-1/2 after:border-[5px_5px_5px_0] after:border-transparent after:border-r-dark',
+    'after:left-[-0.3125rem] after:top-1/2 after:-translate-y-1/2 after:border-[0.3125rem_0.3125rem_0.3125rem_0] after:border-transparent after:border-r-dark',
 }
 
 export function AnchoredTooltip({
@@ -42,7 +43,7 @@ export function AnchoredTooltip({
     if (!element) return
 
     const rect = element.getBoundingClientRect()
-    const offset = 8
+    const offset = cssRemVarPx('--dapp-tooltip-offset', 0.5)
 
     if (position === 'right') {
       setStyle({

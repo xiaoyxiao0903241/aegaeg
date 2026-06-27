@@ -31,7 +31,7 @@ export const cardVariants = tv({
     },
     hover: {
       shadow:
-        'transition-shadow duration-200 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-[0_14px_34px_oklch(22%_0.04_265_/_10%)] focus-within:shadow-[0_14px_34px_oklch(22%_0.04_265_/_10%)]',
+        'transition-shadow duration-200 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-[0_0.875rem_2.125rem_oklch(22%_0.04_265_/_10%)] focus-within:shadow-[0_0.875rem_2.125rem_oklch(22%_0.04_265_/_10%)]',
     },
   },
   defaultVariants: {
