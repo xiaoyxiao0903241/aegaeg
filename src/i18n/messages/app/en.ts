@@ -439,10 +439,6 @@ const app = defineMessages({
             q: 'How do I advance my Genesis tier?',
             a: 'Advance gradually from S1 to S10 based on your personal co-build amount and organization performance.',
           },
-          {
-            q: 'How do I qualify for the organization development fund?',
-            a: 'When cumulative organization co-build volume reaches 1,000,000 USD, you qualify for 5% organization development fund support.',
-          },
         ],
       },
     },

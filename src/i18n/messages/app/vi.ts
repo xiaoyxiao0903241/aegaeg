@@ -439,10 +439,6 @@ const app = defineMessages({
             q: 'Làm sao nâng cấp cấp Genesis của tôi?',
             a: 'Thăng tiến dần từ S1 đến S10 dựa trên số tiền cùng xây dựng cá nhân và thành tích hệ thống.',
           },
-          {
-            q: 'Làm sao đủ điều kiện quỹ phát triển hệ thống?',
-            a: 'Khi tổng thành tích cùng xây dựng của hệ thống đạt 1.000.000 USD, bạn nhận 5% hỗ trợ quỹ phát triển hệ thống.',
-          },
         ],
       },
     },

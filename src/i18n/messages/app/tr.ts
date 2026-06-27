@@ -438,10 +438,6 @@ const app = defineMessages({
             q: 'Genesis seviyemi nasıl yükseltebilirim?',
             a: 'Kişisel ortak inşa tutarı ve sistem performansı durumuna göre S1’den S10’a kadar kademeli olarak yükselirsiniz.',
           },
-          {
-            q: 'Sistem gelişim fonu niteliği nasıl kazanılır?',
-            a: 'Sistem toplam ortak inşa performansı 1.000.000 USD’a ulaştığında %5 sistem gelişim fonu desteği kazanılır.',
-          },
         ],
       },
     },

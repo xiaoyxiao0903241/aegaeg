@@ -439,10 +439,6 @@ const app = defineMessages({
             q: 'Bagaimana meningkatkan tingkat Genesis saya?',
             a: 'Naik secara bertahap dari S1 ke S10 berdasarkan jumlah co-build pribadi dan pencapaian kinerja organisasi.',
           },
-          {
-            q: 'Bagaimana memenuhi syarat dana pengembangan organisasi?',
-            a: 'Ketika volume co-build kumulatif organisasi mencapai 1.000.000 USD, Anda memenuhi syarat untuk dukungan dana pengembangan organisasi sebesar 5%.',
-          },
         ],
       },
     },

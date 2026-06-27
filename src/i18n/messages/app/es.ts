@@ -439,10 +439,6 @@ const app = defineMessages({
             q: '¿Cómo subo mi nivel Genesis?',
             a: 'Avanza gradualmente de S1 a S10 según tu monto personal de co-construcción y el rendimiento de la organización.',
           },
-          {
-            q: '¿Cómo califico para el fondo de desarrollo de la organización?',
-            a: 'Cuando el volumen acumulado de co-construcción de la organización alcanza 1.000.000 USD, calificas para un 5% de apoyo del fondo de desarrollo de la organización.',
-          },
         ],
       },
     },
