@@ -36,7 +36,7 @@ export function CommunityWidget({
   return sessionReady ? (
     <CommunityConnectedWidget onSelectTab={onSelectTab} />
   ) : (
-    <CommunityDisconnectedWidget onSelectTab={onSelectTab} />
+    <CommunityDisconnectedWidget />
   )
 }
 
@@ -176,11 +176,7 @@ function CommunityConnectedWidget({
   )
 }
 
-function CommunityDisconnectedWidget({
-  onSelectTab: _onSelectTab,
-}: {
-  onSelectTab: (tab: DappTab) => void
-}) {
+function CommunityDisconnectedWidget() {
   const { messages: t } = useI18n()
 
   return (

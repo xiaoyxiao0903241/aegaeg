@@ -66,7 +66,6 @@ export type AuthAction =
  */
 export function deriveAuthAction({
   state,
-  hasUsableSignature,
   isLoggingIn,
   loginError,
   lastAttemptKey,

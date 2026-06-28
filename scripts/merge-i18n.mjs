@@ -55,19 +55,6 @@ function collectAssignments(objLiteral) {
   return map
 }
 
-function getIndentation(objLiteral, sourceFile) {
-  const firstProp = objLiteral.properties[0]
-  if (!firstProp) return '  '
-  const fullText = firstProp.getFullText(sourceFile)
-  const match = fullText.match(/\n([\t ]*)/)
-  return match ? match[1] : '  '
-}
-
-function hasTrailingCommaAfter(prop, objLiteral, sourceFile) {
-  const text = sourceFile.getFullText().slice(prop.getEnd(), objLiteral.getEnd())
-  return /^\s*,/.test(text)
-}
-
 function normalizeNewlines(text) {
   return text.replace(/\r\n/g, '\n')
 }

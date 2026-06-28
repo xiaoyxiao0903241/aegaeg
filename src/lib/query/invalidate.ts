@@ -39,19 +39,6 @@ export function invalidateApiQueries() {
   return queryClient.invalidateQueries({ queryKey: queryKeys.api.all })
 }
 
-function removeChainQueriesForAddress(address: string) {
-  const normalized = address.toLowerCase()
-  void queryClient.removeQueries({
-    predicate: (query) => {
-      const key = query.queryKey
-      if (!Array.isArray(key) || key[0] !== 'chain') return false
-      return key.some(
-        (segment) => typeof segment === 'string' && segment.toLowerCase() === normalized,
-      )
-    },
-  })
-}
-
 function invalidateAddressScopedChainQueries(address?: string) {
   if (!address) return
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })

@@ -38,9 +38,6 @@ const ROUNDED_SCALE = [
   [40, 'rounded-3xl'],
 ]
 
-const SIZE_PREFIXES =
-  /^(?:p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|space-x|space-y|w|min-w|max-w|h|min-h|max-h|size|inset|top|right|bottom|left|translate-x|translate-y|-translate-x|-translate-y|scroll-p|scroll-m|scroll-px|scroll-py|basis|columns|border-spacing)(?:-\[[^\]]+\])?$/
-
 function closestSpacing(px) {
   const unit = px / 4
   let best = '0'
@@ -81,7 +78,7 @@ function closestRounded(px) {
   return best
 }
 
-function shouldSkipPx(px, fullMatch, prefix) {
+function shouldSkipPx(px, fullMatch) {
   if (px < 1) return true
   if (fullMatch.includes('blur-[')) return true
   if (fullMatch.includes('shadow-[')) return true
@@ -101,7 +98,7 @@ function replacePxInClasses(content) {
   // text-[Npx]
   content = content.replace(/(?<![\w-])text-\[(\d+(?:\.\d+)?)px\]/g, (match, n) => {
     const px = parseFloat(n)
-    if (shouldSkipPx(px, match, 'text')) return match
+    if (shouldSkipPx(px, match)) return match
     changes++
     return closestText(px)
   })
@@ -132,7 +129,7 @@ function replacePxInClasses(content) {
     /(?<![\w-])([a-z][\w-]*?)-\[(\d+(?:\.\d+)?)px\]/g,
     (match, prefix, n) => {
       const px = parseFloat(n)
-      if (shouldSkipPx(px, match, prefix)) return match
+      if (shouldSkipPx(px, match)) return match
       if (prefix.startsWith('text') || prefix.startsWith('rounded')) return match
       if (prefix === 'leading' || prefix === 'tracking') return match
       if (prefix.includes('aspect')) return match

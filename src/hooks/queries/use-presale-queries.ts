@@ -1,6 +1,6 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { QUERY_STALE_TIME, queryClient } from '~/lib/query/query-client'
+import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
 import {
   readActivePresalePhase,

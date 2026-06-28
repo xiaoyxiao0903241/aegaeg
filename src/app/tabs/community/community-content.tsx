@@ -57,7 +57,7 @@ export function CommunityContent({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady, tab } = useDappShell()
+  const { sessionReady } = useDappShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)

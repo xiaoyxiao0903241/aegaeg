@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
-import { DappDetailPage } from '~/app/components/dapp-detail-page'
-import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { useDappShell } from '~/app/dapp-shell-context'

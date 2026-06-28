@@ -19,8 +19,6 @@ import { DappTableCard } from '~/app/components/dapp-table-card'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import {
   genesisContributionsColWidths,
-  rewardsReferralHistoryColWidths,
-  rewardsTeamHistoryColWidths,
 } from '~/app/components/dapp-table-shell'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'

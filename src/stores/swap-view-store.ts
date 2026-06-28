@@ -17,7 +17,7 @@ interface SwapViewStore {
   backToHub: () => void
 }
 
-let transitionTimer: ReturnType<typeof setTimeout> | null = null
+let transitionTimer: number | null = null
 
 function clearTransitionTimer() {
   if (transitionTimer !== null) {

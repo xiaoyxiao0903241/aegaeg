@@ -22,7 +22,7 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
     if (tab !== 'swap') {
       useSwapViewStore.getState().backToHub()
     }
-    set((state) => ({
+    set(() => ({
       activeTab: tab,
       ...(tab === 'genesis' ? { detailCollapsed: false } : {}),
     }))
