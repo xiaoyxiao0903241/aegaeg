@@ -8,7 +8,7 @@ import { cn } from '~/lib/utils'
  * | Axis | Token | PC | H5 | Applied on |
  * |------|-------|----|----|------------|
  * | Block → block | `dappDetailSectionGapClass` | 34px (`mt-8.5`) | 24px (`mt-6`) | `<section>` / `DappSection` |
- * | Title → content | `dappDetailTitleGapClass` | 16px (`pb-4`) | 16px (`pb-4`) | headings, section titles, FAQ title → first item |
+ * | Title → content | `dappDetailTitleGapClass` | 16px (`pb-4`) | 16px (`pb-4`) | headings, section titles, FAQs title → first item |
  *
  * ## Usage
  * - `DappContentHeading` + free-form block (e.g. `MetricGrid`) = one visual section; the **next**
@@ -24,7 +24,7 @@ import { cn } from '~/lib/utils'
  * - Per-page `pb-*` on section titles — import tokens from this file.
  */
 
-/** Page / section title → first content block (16px @ 16px root); FAQ title → first item uses the same token */
+/** Page / section title → first content block (16px @ 16px root); FAQs title → first item uses the same token */
 export const dappDetailTitleGapClass = 'pb-4'
 
 /** Detail column scroll bottom inset — PC shadow bleed only (shell window owns H5 page inset). */

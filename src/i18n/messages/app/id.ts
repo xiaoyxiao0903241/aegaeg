@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: 'Geser ke halaman berikutnya',
       swipePrevious: 'Geser ke halaman sebelumnya',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: 'Mengumpulkan pembangun inti global untuk membangun jaringan ekosistem AEGIS X bersama.',
       viewContract: 'Lihat kontrak',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Bagaimana cara ikut program co-build?',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: 'Riwayat penyelesaian dan klaim hadiah tim akan muncul di sini setelah hadiah dihasilkan.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Bagaimana hadiah referral dihitung?',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: 'Bagikan tautan referral untuk mengundang teman ke komunitas Anda.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Bagaimana hubungan referral dibentuk?',

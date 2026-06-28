@@ -174,7 +174,7 @@ const app = defineMessages({
       swipeNext: 'Sonraki sayfayı görmek için yukarı kaydırın',
       swipePrevious: 'Önceki sayfaya dönmek için aşağı kaydırın',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -276,7 +276,7 @@ const app = defineMessages({
       globalBody: 'Küresel çekirdek ortak inşacıları bir araya getirerek AEGISX küresel ekosistem ağını birlikte inşa edin.',
       viewContract: 'Sözleşmeyi görüntüle',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Ortak inşa planına nasıl katılınır?',
@@ -375,7 +375,7 @@ const app = defineMessages({
         body: 'Seviye ödülü uzlaşma ve talep kayıtları, ödül oluştuktan sonra burada görüntülenecektir.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Öneri ödülleri nasıl hesaplanır?',
@@ -487,7 +487,7 @@ const app = defineMessages({
         body: 'Öneri bağlantınızı paylaşarak arkadaşlarınızı topluluğunuza davet edin.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Davet ilişkisi nasıl kurulur?',

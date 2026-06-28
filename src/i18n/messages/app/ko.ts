@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: '위로 스와이프하여 다음 페이지',
       swipePrevious: '아래로 스와이프하여 이전 페이지',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: '전 세계 핵심 공동 구축자들이 함께 AEGISX 글로벌 생태계 네트워크를 구축합니다.',
       viewContract: '컨트랙트 보기',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '공동 구축 프로그램에 어떻게 참여하나요?',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: '팀 리워드 정산 및 수령 기록은 리워드가 발생한 후 여기에 표시됩니다.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '추천 리워드는 어떻게 계산되나요?',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: '추천 링크를 공유하여 친구를 커뮤니티에 초대하세요.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '추천 관계는 어떻게 성립하나요?',

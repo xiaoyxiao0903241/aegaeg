@@ -3,8 +3,8 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
 import { cn } from '~/lib/utils'
 
-/** Cards 0–1 → flash, 2 → trade, 3–4 inactive (per product doc). */
-const PROGRAM_TARGETS: Array<SwapView | null> = ['flash', 'flash', 'trade', null, null]
+/** Cards 0 → flash, 1 → trade, 2–4 inactive (per product doc). */
+const PROGRAM_TARGETS: Array<SwapView | null> = ['flash', 'trade', null, null, null]
 
 function ProgramCardCopy({ body, title }: { body: string; title: string }) {
   return (

@@ -31,7 +31,7 @@ button[aria-busy='true'] > .aegis-btn-loading-icon,
   margin-inline-end: 0.45em;
 }
 
-/* FAQ accordion — animate inner panel; Radix zeros transition on Accordion.Content */
+/* FAQs accordion — animate inner panel; Radix zeros transition on Accordion.Content */
 .faq-answer-panel {
   display: grid;
   overflow: hidden;

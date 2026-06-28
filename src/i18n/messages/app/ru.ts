@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: 'Смахните вверх для следующей страницы',
       swipePrevious: 'Смахните вниз для предыдущей страницы',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: 'Ключевые со-строители со всего мира объединяются для развития глобальной экосистемы AEGISX.',
       viewContract: 'Просмотр контракта',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Как участвовать в программе со-строительства?',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: 'История расчёта и получения командных наград появится здесь после их начисления.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Как рассчитываются реферальные награды?',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: 'Поделитесь реферальной ссылкой, чтобы пригласить друзей в сообщество.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Как устанавливается реферальная связь?',

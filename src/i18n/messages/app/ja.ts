@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: '上にスワイプして次のページへ',
       swipePrevious: '下にスワイプして前のページへ',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: '世界中のコア共創者が集まり、AEGIS Xグローバルエコシステムネットワークを共同構築。',
       viewContract: 'コントラクトを表示',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '共創プランへの参加方法は？',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: 'チームリワードの決済・受取記録は、リワードが発生するとここに表示されます。',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '紹介リワードの計算方法は？',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: '紹介リンクを共有して、友達をコミュニティに招待しましょう。',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '紹介関係はどのように成立しますか？',

@@ -174,7 +174,7 @@ const app = defineMessages({
       swipeNext: '上滑查看下一页',
       swipePrevious: '下滑返回上一页',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -276,7 +276,7 @@ const app = defineMessages({
       globalBody: '汇聚全球核⼼共建者，共同建设 AEGISX 全球⽣态⽹络。',
       viewContract: '查看合约',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '如何参与共建计划？',
@@ -375,7 +375,7 @@ const app = defineMessages({
         body: '等级奖励结算与领取记录将在奖励产生后显示在这里。',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '推荐奖励如何计算？',
@@ -487,7 +487,7 @@ const app = defineMessages({
         body: '分享推荐链接，邀请好友加入你的社区。',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '邀请关系如何建立？',

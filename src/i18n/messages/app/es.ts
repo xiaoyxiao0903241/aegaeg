@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: 'Desliza hacia arriba para la siguiente página',
       swipePrevious: 'Desliza hacia abajo para volver a la página anterior',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: 'Reúne a constructores clave de todo el mundo para construir conjuntamente la red global del ecosistema AEGIS X.',
       viewContract: 'Ver contrato',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '¿Cómo participar en el plan de co-construcción?',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: 'Los registros de liquidación y reclamación de recompensas de equipo aparecerán aquí cuando se generen recompensas.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '¿Cómo se calculan las recompensas por referidos?',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: 'Comparte tu enlace de referido e invita a amigos a unirse a tu comunidad.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: '¿Cómo se establece la relación de referido?',

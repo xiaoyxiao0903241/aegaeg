@@ -31,7 +31,7 @@ const home = defineMessages({
       },
       {
         href: '#faq',
-        label: 'FAQ'
+        label: 'FAQs'
       }
     ],
     whitepaper: 'व्हाइटपेपर',

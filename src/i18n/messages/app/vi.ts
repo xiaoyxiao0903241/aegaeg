@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: 'Vuốt lên xem trang tiếp theo',
       swipePrevious: 'Vuốt xuống quay lại trang trước',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: 'Quy tụ các nhà cùng xây dựng cốt lõi toàn cầu, cùng xây dựng mạng lưới sinh thái toàn cầu AEGISX.',
       viewContract: 'Xem hợp đồng',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Làm thế nào để tham gia kế hoạch cùng xây dựng?',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: 'Lịch sử quyết toán và nhận phần thưởng nhóm sẽ hiển thị tại đây khi phần thưởng phát sinh.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Phần thưởng giới thiệu được tính như thế nào?',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: 'Chia sẻ liên kết giới thiệu, mời bạn bè tham gia cộng đồng của bạn.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'Quan hệ giới thiệu được thiết lập như thế nào?',

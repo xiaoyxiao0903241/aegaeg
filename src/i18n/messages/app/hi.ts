@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: 'अगले पृष्ठ पर स्वाइप करें',
       swipePrevious: 'पिछले पृष्ठ पर स्वाइप करें',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: 'वैश्विक मुख्य सह-निर्माताओं को एकत्रित कर AEGIS X वैश्विक इकोसिस्टम नेटवर्क का निर्माण करें।',
       viewContract: 'कॉन्ट्रैक्ट देखें',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'सह-निर्माण योजना में कैसे भाग लें?',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: 'टीम पुरस्कार निपटान और दावा रिकॉर्ड पुरस्कार उत्पन्न होने के बाद यहाँ दिखाई देंगे।',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'रेफ़रल पुरस्कार की गणना कैसे होती है?',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: 'रेफ़रल लिंक साझा करें, मित्रों को अपने समुदाय में आमंत्रित करें।',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'रेफ़रल संबंध कैसे बनता है?',

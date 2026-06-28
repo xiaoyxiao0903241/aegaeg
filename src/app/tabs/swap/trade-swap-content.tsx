@@ -1,9 +1,6 @@
-import { useState } from 'react'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { swapTokenKeys, type SwapTokenKey } from '~/app/data'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
-import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
 import { MetricCard } from '~/app/components/dapp-card'
 import { MetricCardSkeleton } from '~/app/components/dapp-skeleton'
 import { MetricGrid } from '~/app/components/metric-grid'
@@ -22,9 +19,6 @@ export function TradeSwapContent() {
     sessionReady,
     swapDirection,
   )
-  const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
-  const faqItems = t.swap.faq.tabs[faqToken].items
-
   return (
     <DappDetailPage>
       <section>
@@ -83,38 +77,10 @@ export function TradeSwapContent() {
             dappDetailTitleGapClass,
           )}
         >
-          {t.swap.faq.tabsTitle}
+          {t.swap.faq.title}
         </h2>
-        <TradeSwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
-        <FaqList defaultOpenFirst={false} items={faqItems} key={faqToken} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={t.swap.faq.tabs.usd1.items} variant="dapp" />
       </section>
     </DappDetailPage>
-  )
-}
-
-function TradeSwapFaqTabs({
-  activeToken,
-  onSelect,
-}: {
-  activeToken: SwapTokenKey
-  onSelect: (token: SwapTokenKey) => void
-}) {
-  const { messages: t } = useI18n()
-  const labels: Record<SwapTokenKey, string> = {
-    usd1: t.swap.faq.tabs.usd1.label,
-    agx: t.swap.faq.tabs.agx.label,
-    x: t.swap.faq.tabs.x.label,
-  }
-
-  return (
-    <DappPillTabs
-      ariaLabel={t.swap.faq.tabsTitle}
-      className="mb-3 flex flex-wrap gap-2"
-      items={swapTokenKeys.map((key) => ({
-        active: key === activeToken,
-        label: labels[key],
-      }))}
-      onSelect={(index) => onSelect(swapTokenKeys[index])}
-    />
   )
 }

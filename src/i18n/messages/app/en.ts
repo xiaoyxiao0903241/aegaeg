@@ -175,7 +175,7 @@ const app = defineMessages({
       swipeNext: 'Swipe up for next page',
       swipePrevious: 'Swipe down for previous page',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         tabsTitle: 'FAQs',
         tabs: {
           usd1: {
@@ -277,7 +277,7 @@ const app = defineMessages({
       globalBody: 'Core co-builders worldwide are coming together to build the AEGIS X global ecosystem.',
       viewContract: 'View contract',
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'How do I join the co-build program?',
@@ -376,7 +376,7 @@ const app = defineMessages({
         body: 'Tier reward settlement and claim records appear here once rewards are generated.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'How are referral rewards calculated?',
@@ -488,7 +488,7 @@ const app = defineMessages({
         body: 'Share your referral link to invite friends to your community.',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
             q: 'How is the referral relationship established?',
