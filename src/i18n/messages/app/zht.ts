@@ -116,16 +116,16 @@ const app = defineMessages({
               faq: {
                 items: [
                   {
-                    q: 'What is the difference between flash swap and trade?',
-                    a: 'Flash swap converts USDT to USD1 via the AEGIS X protocol contract with no slippage. Trade uses PancakeSwap market rates for ecosystem tokens.',
+                    q: '什麼是加密錢包，如何取得？',
+                    a: '加密錢包是用於查看和管理數位資產的軟體。您的資產記錄在區塊鏈上，而非儲存在錢包本身中。非託管錢包讓您完全掌控私鑰，意味著只有您才能簽署交易。與託管錢包不同，沒有第三方持有您的密鑰——但如果遺失私鑰或助記詞，您將永久失去對資產的存取權限。非託管錢包可以是行動應用或硬體裝置，常見選項包括 MetaMask 和 TokenPocket。',
                   },
                   {
-                    q: 'What can I do after connecting my wallet?',
-                    a: 'After connecting and signing in, you can view balances, fetch on-chain quotes, and submit convert or trade transactions.',
+                    q: '什麼是區塊鏈交易手續費？',
+                    a: '區塊鏈上的每筆交易——如購買、出售、交易或轉移數位資產——都需要 gas 費。該費用不由 AEGIS X 應用控制或收取，而是由當前網路需求和處理交易所需的計算資源決定。在 BSC 區塊鏈上，gas 費以 BNB 支付。在 AEGIS X 協議上進行交易前，請確保錢包中始終持有 BNB。',
                   },
                   {
-                    q: 'Which networks are supported?',
-                    a: 'AEGIS X DApp currently runs on BNB Smart Chain (BSC) mainnet.',
+                    q: '加密錢包如何運作？',
+                    a: '加密錢包使用一對金鑰——公鑰和私鑰——來保護和管理您的資產。設定非託管錢包時，軟體會產生助記詞（12、18 或 24 個隨機單字），可用於恢復您的密鑰。請妥善保管，切勿外洩。您的私鑰是唯一字串，授予對錢包的完全控制權，用於簽署和授權交易，必須時刻保密。公鑰由私鑰派生，可公開分享，用於產生錢包地址和接收他人轉帳。',
                   },
                 ],
               },
@@ -264,6 +264,7 @@ const app = defineMessages({
       joinGenesis: '參與創世共建',
       statsTitle: '第 {season} 期共建數據',
       startsIn: '開始倒數',
+      countdownUnits: { days: '天', hours: '時', minutes: '分' },
       endsIn: '本期剩餘時間',
       referencePrice: 'AGX 開盤參考價格',
       discountLabel: '折扣',

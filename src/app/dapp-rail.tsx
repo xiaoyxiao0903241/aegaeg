@@ -5,7 +5,6 @@ import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
-import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { formatGenesisSeasonIntro } from '~/lib/presale/genesis-promo'
 import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
@@ -27,17 +26,14 @@ type RailIndicator = {
 
 function useRailTooltips() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
-  const { rateLabel } = usePairSpotRate(sessionReady)
+  const { rateLabel } = usePairSpotRate()
   const genesis = useGenesisWidgetContext()
 
   return useMemo(
     () => ({
-      swap: !sessionReady
-        ? t.swap.intro
-        : rateLabel
-          ? `${rateLabel} · ${t.swap.settlementValue}`
-          : t.swap.intro,
+      swap: rateLabel
+        ? `${rateLabel} · ${t.swap.settlementValue}`
+        : t.swap.intro,
       genesis: formatGenesisSeasonIntro(
         t.genesis.intro,
         genesis.activeSeasonNumber,
@@ -51,7 +47,6 @@ function useRailTooltips() {
       genesis.activeSeasonNumber,
       genesis.discountLabel,
       genesis.isLoading,
-      sessionReady,
       rateLabel,
       t,
     ],

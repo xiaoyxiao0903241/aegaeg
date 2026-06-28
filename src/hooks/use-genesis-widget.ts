@@ -38,6 +38,7 @@ import {
   useUsd1PresaleWalletQuery,
 } from '~/hooks/queries/use-presale-queries'
 import { useDappActions } from '~/stores/dapp-actions'
+import { useI18n } from '~/i18n/use-i18n'
 
 export interface GenesisPurchaseResult {
   success: boolean
@@ -48,6 +49,7 @@ const USD1_DECIMALS = 18
 
 export function useGenesisWidget() {
   const account = useActiveAccount()
+  const { messages: t } = useI18n()
   const queryClient = useQueryClient()
   const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
   const afterGenesisPhaseTransition = useDappActions((state) => state.afterGenesisPhaseTransition)
@@ -343,7 +345,7 @@ export function useGenesisWidget() {
     discountLabel,
     discountBps,
     countdown: countdownTarget
-      ? formatPhaseCountdown(countdownTarget.targetTime, nowSeconds)
+      ? formatPhaseCountdown(countdownTarget.targetTime, nowSeconds, t.genesis.countdownUnits)
       : '—',
     countdownMode: countdownTarget?.mode ?? null,
     globalPurchasedLabel: formatTokenAmount(totalPurchasedQuery.data ?? 0n, USD1_DECIMALS, 0),

@@ -116,16 +116,16 @@ const app = defineMessages({
               faq: {
                 items: [
                   {
-                    q: 'What is the difference between flash swap and trade?',
-                    a: 'Flash swap converts USDT to USD1 via the AEGIS X protocol contract with no slippage. Trade uses PancakeSwap market rates for ecosystem tokens.',
+                    q: 'What is a crypto wallet, and how do I get one?',
+                    a: 'A crypto wallet is software that lets you view and manage your digital assets. Your assets are recorded on a blockchain—not stored in the wallet itself. A non-custodial wallet gives you full control over your private keys, meaning only you can sign transactions. Unlike custodial wallets, no third party holds your keys—but if you lose your private key or recovery phrase, you permanently lose access to your assets. Non-custodial wallets can be mobile apps or hardware devices. Popular options include MetaMask and TokenPocket.',
                   },
                   {
-                    q: 'What can I do after connecting my wallet?',
-                    a: 'After connecting and signing in, you can view balances, fetch on-chain quotes, and submit convert or trade transactions.',
+                    q: 'What is a blockchain transaction fee?',
+                    a: 'Every transaction on the blockchain—such as buying, selling, trading, or transferring digital assets—requires a gas fee. This fee is not controlled or collected by the AEGIS X app; it is determined by current network demand and the computational resources needed to process your transaction. On the BSC blockchain, gas fees are paid in BNB. Make sure you always have BNB in your wallet before transacting on the AEGIS X Protocol.',
                   },
                   {
-                    q: 'Which networks are supported?',
-                    a: 'AEGIS X DApp currently runs on BNB Smart Chain (BSC) mainnet.',
+                    q: 'How do crypto wallets work?',
+                    a: 'Crypto wallets use a pair of cryptographic keys—a public key and a private key—to secure and manage your assets. When setting up a non-custodial wallet, the software generates a seed phrase (12, 18, or 24 random words) that can be used to recover your keys. Store it safely and never share it. Your private key is a unique string that grants full control over your wallet. It is used to sign and authorize transactions, and must be kept secret at all times. Your public key is derived from the private key and can be shared openly. It is used to generate your wallet address and receive assets from others.',
                   },
                 ],
               },
@@ -264,6 +264,7 @@ const app = defineMessages({
       joinGenesis: 'Tham gia cùng xây dựng Genesis',
       statsTitle: 'Dữ liệu cùng xây dựng kỳ {season}',
       startsIn: 'Đếm ngược bắt đầu',
+      countdownUnits: { days: 'd', hours: 'h', minutes: 'm' },
       endsIn: 'Thời gian còn lại kỳ này',
       referencePrice: 'Giá tham chiếu mở cửa AGX',
       discountLabel: 'Giảm giá',

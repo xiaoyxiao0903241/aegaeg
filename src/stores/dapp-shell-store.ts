@@ -24,7 +24,6 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
     }
     set(() => ({
       activeTab: tab,
-      ...(tab === 'genesis' ? { detailCollapsed: false } : {}),
     }))
     window.history.replaceState(null, '', `#${tab}`)
   },
@@ -35,7 +34,6 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
     set({
       activeTab: tab,
       mobileNavOpen: false,
-      ...(tab === 'genesis' ? { detailCollapsed: false } : {}),
     })
     window.history.replaceState(null, '', `#${tab}`)
   },

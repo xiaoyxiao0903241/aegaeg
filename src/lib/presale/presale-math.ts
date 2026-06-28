@@ -136,18 +136,33 @@ export function formatPhaseDate(timestamp: bigint): string {
   return `${month}.${day}`
 }
 
+export type PhaseCountdownUnits = {
+  days: string
+  hours: string
+  minutes: string
+}
+
+export const DEFAULT_PHASE_COUNTDOWN_UNITS: PhaseCountdownUnits = {
+  days: 'd',
+  hours: 'h',
+  minutes: 'm',
+}
+
 export function formatPhaseCountdown(
   targetTime: bigint,
   nowSeconds = Math.floor(Date.now() / 1000),
+  units: PhaseCountdownUnits = DEFAULT_PHASE_COUNTDOWN_UNITS,
 ): string {
   const remaining = Number(targetTime) - nowSeconds
-  if (remaining <= 0) return '0D 00H 00M'
+  if (remaining <= 0) {
+    return `0${units.days} ${String(0).padStart(2, '0')}${units.hours} ${String(0).padStart(2, '0')}${units.minutes}`
+  }
 
   const days = Math.floor(remaining / 86_400)
   const hours = Math.floor((remaining % 86_400) / 3_600)
   const minutes = Math.floor((remaining % 3_600) / 60)
 
-  return `${days}D ${String(hours).padStart(2, '0')}H ${String(minutes).padStart(2, '0')}M`
+  return `${days}${units.days} ${String(hours).padStart(2, '0')}${units.hours} ${String(minutes).padStart(2, '0')}${units.minutes}`
 }
 
 export function estimateAgxFromUsd1(

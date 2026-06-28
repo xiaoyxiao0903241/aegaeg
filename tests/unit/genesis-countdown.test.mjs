@@ -2,6 +2,25 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
+test('formatPhaseCountdown uses localized unit labels', async () => {
+  const { formatPhaseCountdown } = await loadModule('/src/lib/presale/presale-math.ts')
+
+  const nowSeconds = 1_000
+  const targetTime = BigInt(nowSeconds + 17 * 86_400 + 3 * 3_600 + 51 * 60)
+  assert.equal(
+    formatPhaseCountdown(targetTime, nowSeconds, { days: '天', hours: '时', minutes: '分' }),
+    '17天 03时 51分',
+  )
+  assert.equal(
+    formatPhaseCountdown(targetTime, nowSeconds, { days: 'd', hours: 'h', minutes: 'm' }),
+    '17d 03h 51m',
+  )
+  assert.equal(
+    formatPhaseCountdown(1_000n, 1_000, { days: 'd', hours: 'h', minutes: 'm' }),
+    '0d 00h 00m',
+  )
+})
+
 test('genesis countdown helpers detect elapsed boundaries', async () => {
   const {
     buildPhaseCountdownKey,

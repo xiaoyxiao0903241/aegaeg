@@ -15,7 +15,7 @@ export function FlashSwapContent() {
   const { sessionReady } = useDappShell()
   const flash = useFlashSwapWidget(sessionReady)
   const usd1About = t.swap.tokenAbout.items.find((item) => item.key === 'usd1')!
-  const showRateSkeleton = sessionReady && flash.isExchangePriceQuoting && !flash.overviewRateLabel
+  const showRateSkeleton = flash.isExchangePriceQuoting && !flash.overviewRateLabel
 
   return (
     <DappDetailPage>
@@ -40,7 +40,7 @@ export function FlashSwapContent() {
                 'gap-1.5 rounded-md px-4 py-3.5 shadow-card [&_small]:text-xs [&_small]:leading-[1.5] [&_small]:tracking-[-0.24px] [&_strong]:text-lg [&_strong]:font-semibold [&_strong]:leading-[1.3] [&_strong]:tracking-[-0.54px] max-dapp:min-w-0 max-dapp:p-3.5 max-dapp:[&_small]:hidden max-dapp:[&_strong]:text-xs max-dapp:[&_strong]:leading-[1.2] max-dapp:[&_strong]:tracking-[-0.24px]',
               )}
               label={t.swap.exchangeRate}
-              value={sessionReady ? flash.overviewRateLabel || '—' : '--- : ---'}
+              value={flash.overviewRateLabel || '—'}
             />
           )}
           <MetricCard
