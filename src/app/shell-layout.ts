@@ -92,7 +92,7 @@ export const shellMobileDrawerSummaryClass = cn(
 )
 
 /** H5 — spacing from hamburger row to page / section title (Figma `62:2`, Rewards widget). */
-export const shellMobilePageTitleClass = 'max-dapp:mt-3'
+export const shellMobilePageTitleClass = 'max-dapp:mt-6'
 
 export function shellMobileDrawerItemClass(active: boolean) {
   return cn(
