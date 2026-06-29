@@ -19,6 +19,7 @@ import { SeasonSelector } from '~/app/components/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { SeasonOptionSkeleton } from '~/app/components/dapp-skeleton'
 import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/web3/resolve-contract-error-message'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
 export function GenesisPurchaseForm() {
   const { messages: t } = useI18n()
@@ -34,10 +35,12 @@ export function GenesisPurchaseForm() {
     setSharesText(genesis.shares === 0 ? '' : String(genesis.shares))
   }, [genesis.shares])
 
+  const isMobileViewport = useMobileViewport()
   const sharesInputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
+    if (isMobileViewport) return
     sharesInputRef.current?.focus()
-  }, [])
+  }, [isMobileViewport])
 
   const xTokenAirdropHint = applyMessageTemplate(t.genesis.xTokenAirdropHint, {
     threshold: genesis.airdropThresholdLoading
