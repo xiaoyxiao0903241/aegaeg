@@ -82,7 +82,7 @@ const app = defineMessages({
       exchangeRate: 'Tipo de cambio',
       fixedRate: '1 : 1 fijo',
       settlement: 'Liquidación',
-      settlementValue: 'PancakeSwap · acreditación instantánea',
+      settlementValue: 'Tipos de mercado en tiempo real, liquidación on-chain al instante.',
       hub: {
               modes: {
                 flash: {

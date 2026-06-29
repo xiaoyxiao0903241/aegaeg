@@ -82,7 +82,7 @@ const app = defineMessages({
       exchangeRate: 'Tỷ giá hoán đổi',
       fixedRate: '1 : 1 cố định',
       settlement: 'Thanh toán',
-      settlementValue: 'PancakeSwap · nhận ngay',
+      settlementValue: 'Tỷ giá thị trường thời gian thực, thanh toán on-chain tức thì.',
       hub: {
               modes: {
                 flash: {

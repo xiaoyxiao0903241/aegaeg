@@ -82,7 +82,7 @@ const app = defineMessages({
       exchangeRate: 'Курс обмена',
       fixedRate: '1 : 1 фиксированный',
       settlement: 'Расчёт',
-      settlementValue: 'PancakeSwap · мгновенное зачисление',
+      settlementValue: 'Курсы рынка в реальном времени, мгновенный расчёт on-chain.',
       hub: {
               modes: {
                 flash: {

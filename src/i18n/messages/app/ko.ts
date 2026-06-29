@@ -82,7 +82,7 @@ const app = defineMessages({
       exchangeRate: '환율',
       fixedRate: '1 : 1 고정',
       settlement: '정산',
-      settlementValue: 'PancakeSwap · 즉시 정산',
+      settlementValue: '실시간 시장 환율 기준, 온체인 즉시 정산.',
       hub: {
               modes: {
                 flash: {

@@ -81,7 +81,7 @@ const app = defineMessages({
       exchangeRate: 'Takas oranı',
       fixedRate: 'PancakeSwap piyasa kuruna dayalı',
       settlement: 'Uzlaşma',
-      settlementValue: 'PancakeSwap · Anında hesaba geçer',
+      settlementValue: 'Gerçek zamanlı piyasa kuru üzerinden, zincir üstü anında takas.',
       hub: {
               modes: {
                 flash: {

@@ -82,7 +82,7 @@ const app = defineMessages({
       exchangeRate: 'Kurs tukar',
       fixedRate: '1 : 1 tetap',
       settlement: 'Penyelesaian',
-      settlementValue: 'PancakeSwap · instan',
+      settlementValue: 'Kurs pasar real-time, penyelesaian on-chain instan.',
       hub: {
               modes: {
                 flash: {

@@ -81,7 +81,7 @@ const app = defineMessages({
       exchangeRate: '兑换比率',
       fixedRate: '基于PancakeSwap市场汇率',
       settlement: '结算',
-      settlementValue: 'PancakeSwap · 即时到账',
+      settlementValue: '以最优汇率获取 AEGIS X 生态代币',
       hub: {
         modes: {
           flash: {

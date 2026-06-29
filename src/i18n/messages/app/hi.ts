@@ -82,7 +82,7 @@ const app = defineMessages({
       exchangeRate: 'विनिमय दर',
       fixedRate: '1 : 1 निश्चित',
       settlement: 'निपटान',
-      settlementValue: 'PancakeSwap · तत्काल',
+      settlementValue: 'रीयल-टाइम बाज़ार दर, ऑन-चेन त्वरित निपटान।',
       hub: {
               modes: {
                 flash: {
