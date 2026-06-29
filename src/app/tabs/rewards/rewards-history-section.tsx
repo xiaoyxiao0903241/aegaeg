@@ -134,8 +134,8 @@ export function RewardsHistorySection() {
       compact
       headers={historyHeaders}
       isLoading={historyShowSkeleton}
+      linkColumns={[1]}
       loadingRowCount={4}
-      positiveColumns={[1]}
       rows={historyRows}
     />
   )

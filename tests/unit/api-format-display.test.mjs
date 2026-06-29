@@ -166,7 +166,7 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
   )
 
   assert.equal(row.length, 4)
-  assert.equal(row[1], '+$342.18')
+  assert.equal(row[1], '$342.18')
   assert.equal(row[2], 'S3')
   assert.equal(row[3], '已领取')
 })

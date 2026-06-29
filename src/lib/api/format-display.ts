@@ -366,7 +366,7 @@ export function mapRewardLogToRow(
 ): string[] {
   const signedAmount = Number(item.amount)
   const amountLabel = Number.isFinite(signedAmount)
-    ? `+${formatUsd(Math.abs(signedAmount), 2)}`
+    ? formatUsd(Math.abs(signedAmount), 2)
     : TABLE_EMPTY
 
   return [
@@ -392,7 +392,7 @@ export function mapTeamRewardClaimLogToRow(
 ): string[] {
   const amountNum = Number(item.amount)
   const amountLabel = Number.isFinite(amountNum)
-    ? `+${formatUsd(Math.abs(amountNum), 2)}`
+    ? formatUsd(Math.abs(amountNum), 2)
     : TABLE_EMPTY
   const statusKey = resolveTeamRewardClaimStatusKey(item.status)
   const statusLabel = labels.logStatus[statusKey]
