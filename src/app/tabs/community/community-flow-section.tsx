@@ -2,17 +2,14 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { cn } from '~/lib/utils'
-import type { DappTab } from '~/app/types'
 import { DappSection } from '~/app/components/dapp-section'
 import { ProgramCard } from '~/app/components/dapp-card'
 import { InviteFlow, InviteFlowStack } from '~/app/components/invite-flow'
 
 export function CommunityFlowSection({
   isMobileViewport = false,
-  onSelectTab,
 }: {
   isMobileViewport?: boolean
-  onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
   const genesis = useGenesisWidgetContext()
@@ -49,9 +46,9 @@ export function CommunityFlowSection({
               action={program.action}
               body={program.body}
               className="max-dapp:gap-1.5 max-dapp:py-3"
+              href={program.href}
               key={program.label}
               label={program.label}
-              onAction={() => onSelectTab('genesis')}
               title={program.title}
             />
           ))}

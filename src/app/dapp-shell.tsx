@@ -206,7 +206,7 @@ function TabContent({
   }
 
   if (activeTab === 'community') {
-    return <CommunityContent onSelectTab={onSelectTab} />
+    return <CommunityContent />
   }
 
   return <SwapContent />

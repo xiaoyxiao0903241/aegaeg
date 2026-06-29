@@ -10,13 +10,12 @@ import {
   mapTeamReferralToCompactRow,
 } from '~/lib/api/format-display'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
+import { CommunityStatCard } from '~/app/components/dapp-card'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useAuth } from '~/providers/auth-provider'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import type { DappTab } from '~/app/types'
-import { CommunityStatCard } from '~/app/components/dapp-card'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
@@ -51,11 +50,7 @@ function formatCommunityStatToday(
   })
 }
 
-export function CommunityContent({
-  onSelectTab,
-}: {
-  onSelectTab: (tab: DappTab) => void
-}) {
+export function CommunityContent() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const isMobileViewport = useMobileViewport()
@@ -89,7 +84,7 @@ export function CommunityContent({
   if (!sessionReady) {
     return (
       <DappDetailPage>
-        <CommunityFlowSection isMobileViewport={isMobileViewport} onSelectTab={onSelectTab} />
+        <CommunityFlowSection isMobileViewport={isMobileViewport} />
         <CommunityFaqSection />
       </DappDetailPage>
     )
@@ -188,10 +183,7 @@ export function CommunityContent({
         )}
       </div>
 
-      <CommunityFlowSection
-        isMobileViewport={isMobileViewport}
-        onSelectTab={onSelectTab}
-      />
+      <CommunityFlowSection isMobileViewport={isMobileViewport} />
 
       <DappSection title={inviteSectionTitle}>
         <DappTableCard

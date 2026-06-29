@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Card } from '~/components/card'
 import { Text } from '~/components/text'
 import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { cn, resolveNavigableHref } from '~/lib/utils'
 
 const metricCardResponsive = cn(
   'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-md group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:p-3.5',
@@ -329,17 +329,21 @@ export function ProgramCard({
   action,
   body,
   className,
+  href = '',
   label,
-  onAction,
   title,
 }: {
   action: string
   body: ReactNode
   className?: string
+  href?: string
   label: string
-  onAction: () => void
   title: ReactNode
 }) {
+  const navigableHref = resolveNavigableHref(href)
+  const actionClassName =
+    'm-0 cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold leading-[1.3] tracking-[-0.26px] text-primary max-dapp:text-xs'
+
   return (
     <Card
       as="article"
@@ -377,13 +381,20 @@ export function ProgramCard({
       >
         {body}
       </Text>
-      <button
-        className="m-0 cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold leading-[1.3] tracking-[-0.26px] text-primary max-dapp:text-xs"
-        onClick={onAction}
-        type="button"
-      >
-        {action}
-      </button>
+      {navigableHref ? (
+        <a
+          className={cn(actionClassName, 'no-underline hover:underline')}
+          href={navigableHref}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {action}
+        </a>
+      ) : (
+        <button className={cn(actionClassName, 'hover:underline')} type="button">
+          {action}
+        </button>
+      )}
     </Card>
   )
 }
