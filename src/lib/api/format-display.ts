@@ -10,14 +10,8 @@ export function formatPresaleRank(rank: number): string {
   return `S${rank}`
 }
 
-/** Community invite table — missing rank shows `-`, otherwise S0–S10. */
+/** Community member table — missing rank or S0 shows `-`, otherwise S1–S10. */
 export function formatTableGenesisRank(rank: number | undefined | null): string {
-  if (rank == null || !Number.isFinite(rank) || rank < 0) return TABLE_EMPTY
-  return `S${Math.trunc(rank)}`
-}
-
-/** Community member table — S0 or missing rank shows placeholder, otherwise S1–S10. */
-export function formatMemberGenesisTitle(rank: number | undefined): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return TABLE_EMPTY
   return `S${Math.trunc(rank)}`
 }
@@ -406,7 +400,7 @@ export function mapTeamRewardClaimLogToRow(
   return [
     formatApiDateTime(item.claimed_at ?? item.created_at),
     amountLabel,
-    formatMemberGenesisTitle(item.presale_rank),
+    formatTableGenesisRank(item.presale_rank),
     statusLabel,
   ]
 }

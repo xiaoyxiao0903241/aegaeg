@@ -54,12 +54,12 @@ test('formatUsdCompact abbreviates large values', async () => {
   assert.equal(formatUsdCompact('1200'), '$1.2K')
 })
 
-test('formatMemberGenesisTitle hides S0 in community member table', async () => {
-  const { formatMemberGenesisTitle } = await loadModule('/src/lib/api/format-display.ts')
+test('formatTableGenesisRank hides S0 in community member table', async () => {
+  const { formatTableGenesisRank } = await loadModule('/src/lib/api/format-display.ts')
 
-  assert.equal(formatMemberGenesisTitle(0), '-')
-  assert.equal(formatMemberGenesisTitle(-1), '-')
-  assert.equal(formatMemberGenesisTitle(3), 'S3')
+  assert.equal(formatTableGenesisRank(0), '-')
+  assert.equal(formatTableGenesisRank(-1), '-')
+  assert.equal(formatTableGenesisRank(3), 'S3')
 })
 
 test('mapTeamReferralToCompactRow renders invite table cells', async () => {
@@ -74,7 +74,7 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
       direct_referral_count: 16,
       sales_team_market: '245960',
     }),
-    ['2026-04-12', '0x05…0000', '$8,000', 'S0', '16', '245,960'],
+    ['2026-04-12', '0x05…0000', '$8,000', '-', '16', '245,960'],
   )
 })
 

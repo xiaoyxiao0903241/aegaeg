@@ -9,9 +9,15 @@ export const dappTableCellBorderClass = `border-b-[0.5px] ${dappTableGridLineCla
 
 export const dappTableSectionDividerClass = 'border-border/50'
 
-/** Community invite table — equal column widths on PC; auto on H5 scroll. */
-export const communityInviteTableClass =
-  '[&_table]:w-full [&_table]:table-fixed [&_th]:w-[16.666%] [&_td]:w-[16.666%] max-dapp:[&_table]:w-max max-dapp:[&_table]:table-auto max-dapp:[&_th]:w-auto max-dapp:[&_td]:w-auto'
+/** Community members table — column widths sized to typical cell content. */
+export const communityInviteColWidths = [
+  '6.5rem',
+  '6.5rem',
+  '6.5rem',
+  '5.5rem',
+  '6rem',
+  '7.5rem',
+] as const
 
 /** Horizontal padding for table body inside `DappTableCard` (no header — Figma `tbl` py 6). */
 export const dappTableContentPaddingClass =
