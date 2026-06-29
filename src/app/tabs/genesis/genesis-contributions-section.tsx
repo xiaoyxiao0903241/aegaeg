@@ -46,24 +46,29 @@ export function GenesisContributionsSection() {
   const contributedLabel = `${formatUsd(seasonContributedUsd)} / ${formatUsd(seasonMaxContributionUsd)}`
 
   const desktopRows =
-    salesLogs?.items.map((item) => {
-      const row = mapSalesLogToDesktopRow(item, genesis.agxPriceUsd)
-      const txLabel = row[4]
-      if (!item.tx_hash || txLabel === '-') return row
+    genesis.isPhasesLoading
+      ? []
+      : salesLogs?.items.map((item) => {
+          const row = mapSalesLogToDesktopRow(item, {
+            agxPriceUsd: genesis.agxPriceUsd,
+            phases: genesis.phases,
+          })
+          const txLabel = row[4]
+          if (!item.tx_hash || txLabel === '-') return row
 
-      return [
-        ...row.slice(0, 4),
-        <a
-          className="text-primary underline"
-          href={bscscanTx(item.tx_hash)}
-          key={item.tx_hash}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {txLabel}
-        </a>,
-      ]
-    }) ?? []
+          return [
+            ...row.slice(0, 4),
+            <a
+              className="text-primary underline"
+              href={bscscanTx(item.tx_hash)}
+              key={item.tx_hash}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {txLabel}
+            </a>,
+          ]
+        }) ?? []
 
   const tableHeaders = [
     t.tables.time,
@@ -74,13 +79,19 @@ export function GenesisContributionsSection() {
   ]
   const contributionsTotal = salesLogs?.total ?? 0
   const showSalesSyncHint =
-    sessionReady && !salesLoading && desktopRows.length === 0 && genesis.userTotal > 0n
+    sessionReady &&
+    !salesLoading &&
+    !genesis.isPhasesLoading &&
+    desktopRows.length === 0 &&
+    genesis.userTotal > 0n
   const contributionsTable = dappTableViewState({
     sessionReady,
-    isLoading: isLoggingIn || salesLoading,
+    isLoading: isLoggingIn || salesLoading || genesis.isPhasesLoading,
     isLoggingIn,
     rowCount: desktopRows.length,
   })
+  const showContributionsSkeleton =
+    contributionsTable.showSkeleton || (sessionReady && genesis.isPhasesLoading)
 
   return (
     <DappSection title={t.genesis.myContributions}>
@@ -132,7 +143,7 @@ export function GenesisContributionsSection() {
               colWidths={[...genesisContributionsColWidths]}
               compact
               headers={tableHeaders}
-              isLoading={contributionsTable.showSkeleton}
+              isLoading={showContributionsSkeleton}
               loadingRowCount={4}
               positiveColumns={[2]}
               rows={desktopRows}

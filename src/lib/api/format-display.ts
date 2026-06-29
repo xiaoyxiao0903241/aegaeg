@@ -1,9 +1,14 @@
 import type { RewardLogItem, SalesLogItem, TeamReferralItem, TeamRewardClaimLogItem } from '~/lib/api/types'
-import { estimateAgxFromUsd1 } from '~/lib/presale/presale-math'
+import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/lib/presale/presale-math'
 import { PRESALE_CONFIG } from '~/config/presale'
 
 /** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */
 export const TABLE_EMPTY = '-'
+
+export type SalesLogRowFormatOptions = {
+  agxPriceUsd?: number
+  phases?: ReadonlyArray<PresalePhaseOnChain>
+}
 
 export function formatPresaleRank(rank: number): string {
   if (!Number.isFinite(rank) || rank <= 0) return 'S0'
@@ -159,9 +164,17 @@ export function formatDiscountBps(discountBps: number): string {
   return `-${discountBps / 100}%`
 }
 
-function resolvePhaseDiscountBps(phaseId: number): number {
-  if (!Number.isFinite(phaseId) || phaseId < 0) return 0
-  return PRESALE_CONFIG.phases[phaseId]?.discountBps ?? 0
+function resolveSalesLogFormatOptions(
+  options: number | SalesLogRowFormatOptions = {},
+): Required<Pick<SalesLogRowFormatOptions, 'agxPriceUsd'>> & SalesLogRowFormatOptions {
+  if (typeof options === 'number') {
+    return { agxPriceUsd: options }
+  }
+
+  return {
+    agxPriceUsd: options.agxPriceUsd ?? Number(PRESALE_CONFIG.agxPriceUsd),
+    phases: options.phases,
+  }
 }
 
 export function formatRewardStatus(
@@ -309,8 +322,9 @@ export function sumSalesLogAmountUsd(items: readonly SalesLogItem[]): number {
 
 function formatSalesLogAgx(
   item: SalesLogItem,
-  agxPriceUsd = Number(PRESALE_CONFIG.agxPriceUsd),
+  options: number | SalesLogRowFormatOptions = {},
 ): string {
+  const { agxPriceUsd, phases } = resolveSalesLogFormatOptions(options)
   const tokens = Number(item.tokens)
   if (Number.isFinite(tokens) && tokens > 0) {
     return new Intl.NumberFormat('en-US', {
@@ -324,7 +338,7 @@ function formatSalesLogAgx(
 
   const estimated = estimateAgxFromUsd1(
     amountUsd1,
-    resolvePhaseDiscountBps(item.phase_id),
+    resolvePhaseDiscountBps(item.phase_id, phases),
     agxPriceUsd,
   )
   return estimated > 0
@@ -337,26 +351,30 @@ function formatSalesLogAgx(
 
 export function mapSalesLogToDesktopRow(
   item: SalesLogItem,
-  agxPriceUsd = Number(PRESALE_CONFIG.agxPriceUsd),
+  options: number | SalesLogRowFormatOptions = {},
 ): string[] {
+  const { phases } = resolveSalesLogFormatOptions(options)
+
   return [
     formatBlockTime(item.block_time),
     formatUsd(Number(item.amount), 0),
-    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
-    formatSalesLogAgx(item, agxPriceUsd),
+    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, phases)),
+    formatSalesLogAgx(item, options),
     item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
   ]
 }
 
 export function mapSalesLogToMobileRow(
   item: SalesLogItem,
-  agxPriceUsd = Number(PRESALE_CONFIG.agxPriceUsd),
+  options: number | SalesLogRowFormatOptions = {},
 ): string[] {
+  const { phases } = resolveSalesLogFormatOptions(options)
+
   return [
     formatBlockTime(item.block_time),
     formatUsd(Number(item.amount), 0),
-    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id)),
-    formatSalesLogAgx(item, agxPriceUsd),
+    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, phases)),
+    formatSalesLogAgx(item, options),
   ]
 }
 

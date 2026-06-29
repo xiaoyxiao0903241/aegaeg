@@ -178,6 +178,20 @@ export function estimateAgxFromUsd1(
   return amountUsd1 / effectiveAgxPrice
 }
 
+/** Resolve presale phase discount bps by API/contract phase index (0-based). */
+export function resolvePhaseDiscountBps(
+  phaseId: number,
+  phases: ReadonlyArray<Pick<PresalePhaseOnChain, 'discountBps'>> = [],
+): number {
+  if (!Number.isFinite(phaseId) || phaseId < 0) return 0
+
+  const chainPhase = phases[phaseId]
+  if (!chainPhase) return 0
+
+  const bps = Number(chainPhase.discountBps)
+  return Number.isFinite(bps) && bps > 0 ? bps : 0
+}
+
 export const AIRDROP_BPS_BY_PHASE = [500, 200, 100] as const
 
 /** Fallback when `AIRDROP_THRESHOLD` is unavailable — matches mainnet deployment. */

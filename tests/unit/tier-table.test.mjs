@@ -32,7 +32,10 @@ test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () 
       status: 2,
       created_at: null,
     },
-    65,
+    {
+      agxPriceUsd: 65,
+      phases: [{ discountBps: 3000n }],
+    },
   )
 
   assert.equal(row[2], '-30%')

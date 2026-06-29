@@ -390,5 +390,6 @@ export function useGenesisWidget() {
     activeSeasonNumber,
     seasonOptions: seasonOptions,
     promoSnapshot,
+    isPhasesLoading: phasesQuery.isLoading,
   }
 }
