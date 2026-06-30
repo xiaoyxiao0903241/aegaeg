@@ -147,7 +147,7 @@ export function DappShell() {
                   data-dapp-detail
                 >
                   <div className="dapp-detail-panel" key={activeTab}>
-                    <TabContent activeTab={activeTab} onSelectTab={selectTab} />
+                    <TabContent activeTab={activeTab} />
                   </div>
                 </section>
               </DappScrollFadeHost>
@@ -190,13 +190,7 @@ function TabWidget({
   )
 }
 
-function TabContent({
-  activeTab,
-  onSelectTab,
-}: {
-  activeTab: DappTab
-  onSelectTab: (tab: DappTab) => void
-}) {
+function TabContent({ activeTab }: { activeTab: DappTab }) {
   if (activeTab === 'genesis') {
     return <GenesisContent />
   }
