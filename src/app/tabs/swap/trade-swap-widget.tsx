@@ -88,8 +88,8 @@ export function TradeSwapWidget({
   const handleSubmit = useCallback(async () => {
     const success = await swap.submit()
     if (!success) return
-    toast.success(swap.action === 'approve' ? t.swap.approveSuccess : t.swap.swapSuccess)
-  }, [swap, t.swap.approveSuccess, t.swap.swapSuccess])
+    toast.success(t.swap.swapSuccess)
+  }, [swap, t.swap.swapSuccess])
 
   useEffect(() => {
     if (!swap.error) return
@@ -293,7 +293,7 @@ export function TradeSwapWidget({
               loading={swap.isSubmitting}
               onClick={() => void handleSubmit()}
             >
-              {swap.action === 'approve' ? t.swap.approve : t.swap.trade.action}
+              {t.swap.trade.action}
             </DappActionButton>
           </DappActionRow>
         ) : null}

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { formatSwapRateApprox } from '~/lib/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/config/pancake-swap-links'
-import { resolveSwapAction } from '~/lib/swap/resolve-swap-action'
 import {
   capTokenAmountInput,
   formatTokenAmount,
@@ -159,7 +158,6 @@ export function useSwapWidget(authenticated: boolean) {
 
   const sellBalance = balancesQuery.data?.sell ?? 0n
   const buyBalance = balancesQuery.data?.buy ?? 0n
-  const allowance = balancesQuery.data?.approved ?? 0n
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
   const quotePath = amountQuoteQuery.data?.path ?? []
@@ -317,8 +315,6 @@ export function useSwapWidget(authenticated: boolean) {
     return labels.join(' → ')
   }, [pair.buy.address, pair.buy.symbol, pair.sell.address, pair.sell.symbol, rateQuote.path])
 
-  const action =
-    walletReady && amountIn > 0n ? resolveSwapAction(allowance, amountIn) : 'swap'
   const exceedsBalance = walletReady && amountIn > sellBalance
   const canSubmit =
     walletReady &&
@@ -353,16 +349,12 @@ export function useSwapWidget(authenticated: boolean) {
     setError(null)
 
     try {
-      if (action === 'approve') {
-        await approveTokenIfNeeded({
-          account,
-          token: pair.sell.address,
-          amountIn,
-        })
-        afterSwap()
-        await balancesQuery.refetch()
-        return true
-      }
+      await approveTokenIfNeeded({
+        account,
+        token: pair.sell.address,
+        amountIn,
+      })
+      await balancesQuery.refetch()
 
       await executeTokenSwap({
         account,
@@ -383,16 +375,12 @@ export function useSwapWidget(authenticated: boolean) {
     }
   }, [
     account,
-    action,
     afterSwap,
     amountIn,
     balancesQuery,
     canSubmit,
     pair.buy.address,
-    pair.buy.decimals,
     pair.sell.address,
-    pair.sell.decimals,
-    pair.sell.symbol,
     slippageBps,
   ])
 
@@ -412,7 +400,6 @@ export function useSwapWidget(authenticated: boolean) {
     exchangePriceLabelInverted,
     routeLabel,
     pancakeSwapUrl,
-    action,
     walletReady,
     canSubmit,
     isQuoting,
