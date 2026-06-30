@@ -1,6 +1,7 @@
 import { queryClient } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
 import { BSC_CONTRACTS } from '~/config/contracts'
+import { SWAP_CONFIG } from '~/config/swap'
 import type { DappTab } from '~/app/types'
 import type { Paginated, SalesLogItem } from '~/lib/api/types'
 
@@ -47,8 +48,20 @@ function invalidateAddressScopedChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.swapBalances(address, BSC_CONTRACTS.usd1, BSC_CONTRACTS.xxToken) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.swapBalances(address, BSC_CONTRACTS.xxToken, BSC_CONTRACTS.usd1) })
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.chain.swapBalances(
+      address,
+      SWAP_CONFIG.testPair.tokenA.address,
+      SWAP_CONFIG.testPair.tokenB.address,
+    ),
+  })
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.chain.swapBalances(
+      address,
+      SWAP_CONFIG.testPair.tokenB.address,
+      SWAP_CONFIG.testPair.tokenA.address,
+    ),
+  })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapBalances(address) })
   void queryClient.invalidateQueries({ queryKey: ['chain', 'flashSwap', 'quote'] })
 }

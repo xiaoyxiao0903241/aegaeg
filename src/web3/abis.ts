@@ -12,6 +12,25 @@ export const ROUTER_V2_METHODS = {
     'function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] calldata path, address to, uint256 deadline)',
 } as const
 
+/** PancakeSwap V3 — field order matches on-chain IQuoterV2 / ISwapRouter structs */
+export const QUOTER_V3_METHODS = {
+  quoteExactInputSingle:
+    'function quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96)) external returns (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)',
+} as const
+
+export const SWAP_ROUTER_V3_METHODS = {
+  exactInputSingle:
+    'function exactInputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96)) external payable returns (uint256 amountOut)',
+} as const
+
+export const POOL_V3_METHODS = {
+  fee: 'function fee() view returns (uint24)',
+  token0: 'function token0() view returns (address)',
+  token1: 'function token1() view returns (address)',
+  slot0:
+    'function slot0() view returns (uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext, uint8 feeProtocol, bool unlocked)',
+} as const
+
 export const PAIR_V2_METHODS = {
   getReserves:
     'function getReserves() view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)',

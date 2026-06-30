@@ -30,7 +30,7 @@ interface WalletTokenBalanceRow {
 
 const WALLET_TOKEN_DEFINITIONS = [
   { symbol: 'USD1', label: 'USD1' },
-  { symbol: 'USDT', label: 'XX (USDT)' },
+  { symbol: 'USDT', label: 'USDT' },
 ] as const
 
 export function WalletDetailsModal({
@@ -109,24 +109,22 @@ export function WalletDetailsModal({
     setTokensFetched(false)
 
     void Promise.all([
-      readErc20Balance(BSC_CONTRACTS.usd1, walletAddress),
-      readErc20Balance(BSC_CONTRACTS.xxToken, walletAddress),
+      readErc20Balance(BSC_CONTRACTS.usd1Official, walletAddress),
+      readErc20Balance(BSC_CONTRACTS.usdt, walletAddress),
     ])
-      .then(([usd1, xx]) => {
+      .then(([usd1, usdt]) => {
         if (cancelled) return
 
-        setTokenBalances([
-          {
-            symbol: 'USD1',
-            label: 'USD1',
-            value: formatTokenAmount(usd1, 18, 4),
-          },
-          {
-            symbol: 'USDT',
-            label: 'XX (USDT)',
-            value: formatTokenAmount(xx, 18, 4),
-          },
-        ])
+        setTokenBalances(
+          WALLET_TOKEN_DEFINITIONS.map((token, index) => {
+            const raw = index === 0 ? usd1 : usdt
+            return {
+              symbol: token.symbol,
+              label: token.label,
+              value: formatTokenAmount(raw, 18, 4),
+            }
+          }),
+        )
       })
       .catch(() => {
         if (!cancelled) {

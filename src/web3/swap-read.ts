@@ -1,16 +1,23 @@
 import { getContract, readContract, type ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
-import { SWAP_CONFIG } from '~/config/swap'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { ERC20_METHODS, PAIR_V2_METHODS, ROUTER_V2_METHODS } from '~/web3/abis'
+import { quoteV3ExactInputSingle } from '~/lib/swap/quote-v3-exact-input'
+import { SWAP_CONFIG } from '~/config/swap'
+import { ERC20_METHODS } from '~/web3/abis'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
-import { quoteSwapOut } from '~/lib/swap/quote-swap-out'
+
+export interface SwapQuoteResult {
+  quotedOut: bigint
+  tokenIn: `0x${string}`
+  tokenOut: `0x${string}`
+  fee: number
+}
 
 export function getErc20Contract(client: ThirdwebClient, chain: Chain, address: `0x${string}`) {
   return getContract({ client, chain, address })
 }
 
-export function getRouterContract(client: ThirdwebClient, chain: Chain) {
+export function getSwapRouterContract(client: ThirdwebClient, chain: Chain) {
   return getContract({
     client,
     chain,
@@ -51,74 +58,56 @@ export async function fetchSwapQuote({
   amountIn,
   tokenIn,
   tokenOut,
-  client = thirdwebClient,
-  chain = defaultChain,
 }: {
   amountIn: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  client?: ThirdwebClient
-  chain?: Chain
-}) {
-  const router = getRouterContract(client, chain)
-
-  return quoteSwapOut({
-    amountIn,
+}): Promise<SwapQuoteResult> {
+  const quotedOut = await quoteV3ExactInputSingle({
+    quoter: SWAP_CONFIG.quoter,
     tokenIn,
     tokenOut,
-    wbnb: SWAP_CONFIG.wbnb,
-    getAmountsOut: async (input, path) =>
-      readContract({
-        contract: router,
-        method: ROUTER_V2_METHODS.getAmountsOut,
-        params: [input, path],
-      }),
+    amountIn,
+    fee: SWAP_CONFIG.feeTier,
   })
+
+  return {
+    quotedOut,
+    tokenIn,
+    tokenOut,
+    fee: SWAP_CONFIG.feeTier,
+  }
 }
 
 export async function readPairSpotRate({
-  pair = BSC_CONTRACTS.xxUsd1Pair,
-  client = thirdwebClient,
-  chain = defaultChain,
+  usdt = BSC_CONTRACTS.usdt,
+  usd1 = BSC_CONTRACTS.usd1Official,
 }: {
-  pair?: `0x${string}`
-  client?: ThirdwebClient
-  chain?: Chain
+  usdt?: `0x${string}`
+  usd1?: `0x${string}`
 } = {}): Promise<{ usd1PerXx: number; xxPerUsd1: number } | null> {
-  const contract = getContract({ client, chain, address: pair })
+  const unit = 10n ** 18n
 
   try {
-    const [reserve0, reserve1] = await readContract({
-      contract,
-      method: PAIR_V2_METHODS.getReserves,
-      params: [],
-    })
-
-    const [token0, token1] = await Promise.all([
-      readContract({ contract, method: PAIR_V2_METHODS.token0, params: [] }),
-      readContract({ contract, method: PAIR_V2_METHODS.token1, params: [] }),
+    const [usd1Out, usdtOut] = await Promise.all([
+      quoteV3ExactInputSingle({
+        quoter: SWAP_CONFIG.quoter,
+        tokenIn: usdt,
+        tokenOut: usd1,
+        amountIn: unit,
+        fee: SWAP_CONFIG.feeTier,
+      }),
+      quoteV3ExactInputSingle({
+        quoter: SWAP_CONFIG.quoter,
+        tokenIn: usd1,
+        tokenOut: usdt,
+        amountIn: unit,
+        fee: SWAP_CONFIG.feeTier,
+      }),
     ])
 
-    const usd1Addr = BSC_CONTRACTS.usd1.toLowerCase()
-    const xxAddr = BSC_CONTRACTS.xxToken.toLowerCase()
-
-    let usd1Reserve: bigint
-    let xxReserve: bigint
-
-    if (token0.toLowerCase() === usd1Addr && token1.toLowerCase() === xxAddr) {
-      usd1Reserve = reserve0
-      xxReserve = reserve1
-    } else if (token0.toLowerCase() === xxAddr && token1.toLowerCase() === usd1Addr) {
-      usd1Reserve = reserve1
-      xxReserve = reserve0
-    } else {
-      return null
-    }
-
-    if (xxReserve === 0n) return null
-
-    const usd1PerXx = Number(usd1Reserve) / Number(xxReserve)
-    const xxPerUsd1 = Number(xxReserve) / Number(usd1Reserve)
+    const usd1PerXx = Number(usd1Out) / Number(unit)
+    const xxPerUsd1 = Number(usdtOut) / Number(unit)
 
     if (!Number.isFinite(usd1PerXx) || !Number.isFinite(xxPerUsd1)) return null
 

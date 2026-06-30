@@ -19,6 +19,26 @@ test('BSC contract addresses match deployment snapshot', async () => {
     '0x10ed43c718714eb63d5aa57b78b54704e256024e',
   )
   assert.equal(
+    BSC_CONTRACTS.pancakeV3SwapRouter.toLowerCase(),
+    '0x13f4ea83d0bd40e75c8222255bc855a974568dd4',
+  )
+  assert.equal(
+    BSC_CONTRACTS.pancakeV3Quoter.toLowerCase(),
+    '0xb048bbc1ee6b733fffcfb9e9cef7375518e25997',
+  )
+  assert.equal(
+    BSC_CONTRACTS.usdtUsd1Pool.toLowerCase(),
+    '0x9c4ee895e4f6ce07ada631c508d1306db7502cce',
+  )
+  assert.equal(
+    BSC_CONTRACTS.usd1Official.toLowerCase(),
+    '0x8d0d000ee44948fc98c9b98a4fa4921476f08b0d',
+  )
+  assert.equal(
+    BSC_CONTRACTS.usdt.toLowerCase(),
+    '0x55d398326f99059ff775485246999027b3197955',
+  )
+  assert.equal(
     BSC_CONTRACTS.preSale.toLowerCase(),
     '0x4f86c19945cf64137ea31eeced5545e665b7a0f5',
   )

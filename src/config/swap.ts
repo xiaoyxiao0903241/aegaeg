@@ -10,6 +10,9 @@ export interface SwapTokenConfig {
 export interface SwapConfig {
   chainId: 56
   router: `0x${string}`
+  quoter: `0x${string}`
+  pool: `0x${string}`
+  feeTier: number
   wbnb: `0x${string}`
   defaultSlippageBps: number
   deadlineSeconds: number
@@ -19,7 +22,7 @@ export interface SwapConfig {
   spotRateRefreshIntervalMs: number
   testPair: {
     enabled: true
-    /** UI 展示名；tokenB 链上地址为 xxToken，symbol 未从链上/后端解析前固定 USDT */
+    /** Trade Swap pair — official USD1 / USDT on PancakeSwap V3 */
     symbols: ['USD1', 'USDT']
     tokenA: SwapTokenConfig
     tokenB: SwapTokenConfig
@@ -29,7 +32,10 @@ export interface SwapConfig {
 
 export const SWAP_CONFIG: SwapConfig = {
   chainId: BSC_CONTRACTS.chainId,
-  router: BSC_CONTRACTS.pancakeRouter,
+  router: BSC_CONTRACTS.pancakeV3SwapRouter,
+  quoter: BSC_CONTRACTS.pancakeV3Quoter,
+  pool: BSC_CONTRACTS.usdtUsd1Pool,
+  feeTier: 100,
   wbnb: BSC_CONTRACTS.wbnb,
   defaultSlippageBps: 50,
   deadlineSeconds: 20 * 60,
@@ -40,13 +46,13 @@ export const SWAP_CONFIG: SwapConfig = {
     symbols: ['USD1', 'USDT'],
     tokenA: {
       symbol: 'USD1',
-      address: BSC_CONTRACTS.usd1,
+      address: BSC_CONTRACTS.usd1Official,
       decimals: 18,
       enabled: true,
     },
     tokenB: {
       symbol: 'USDT',
-      address: BSC_CONTRACTS.xxToken,
+      address: BSC_CONTRACTS.usdt,
       decimals: 18,
       enabled: true,
     },
@@ -54,21 +60,21 @@ export const SWAP_CONFIG: SwapConfig = {
   tokens: {
     usd1: {
       symbol: 'USD1',
-      address: BSC_CONTRACTS.usd1,
+      address: BSC_CONTRACTS.usd1Official,
       decimals: 18,
       enabled: true,
     },
     xx: {
       symbol: 'USDT',
-      address: BSC_CONTRACTS.xxToken,
+      address: BSC_CONTRACTS.usdt,
       decimals: 18,
       enabled: true,
     },
     usdt: {
       symbol: 'USDT',
-      address: '0x0000000000000000000000000000000000000000',
+      address: BSC_CONTRACTS.usdt,
       decimals: 18,
-      enabled: false,
+      enabled: true,
     },
     agx: {
       symbol: 'AGX',

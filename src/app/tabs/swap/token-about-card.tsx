@@ -20,7 +20,7 @@ export function TokenAboutCard({
     <button
       className={swapPromoCardPillActionClass(variant, true)}
       onClick={() => {
-        window.open(bscscanToken(BSC_CONTRACTS.usd1), '_blank', 'noopener,noreferrer')
+        window.open(bscscanToken(BSC_CONTRACTS.usd1Official), '_blank', 'noopener,noreferrer')
       }}
       type="button"
     >
