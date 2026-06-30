@@ -4,7 +4,7 @@ import type { HomeMessagesBundle } from './types'
 const home = defineMessages({
   meta: {
     description: 'AEGIS X는 AI 네이티브 DeFi 4.0 프로토콜로, USD1 정산, BSC 우선 지갑 접근 및 자가 복구 프로토콜 엔진을 통해 차세대 가치 네트워크를 구축합니다.',
-    title: 'AEGIS X - 미래 가치를 수호'
+    title: 'AEGIS X - 미래 가치 네트워크를 수호'
   },
   nav: {
     sectionsLabel: '홈페이지 섹션 탐색',
@@ -41,7 +41,7 @@ const home = defineMessages({
   hero: {
     guardianLabel: 'AEGIS X 가디언',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 프로토콜',
-    title: '미래 가치를 수호',
+    title: '미래 가치 네트워크를 수호',
     body: '세계 최초의 AI 싱크탱크 기반 USD1 생태계 프로토콜. USD1을 핵심 정산 자산으로 AI, 결제 및 글로벌 유동성 네트워크를 연결합니다.',
     enterProtocol: '프로토콜 진입',
     readWhitepaper: '백서 읽기',

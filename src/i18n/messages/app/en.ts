@@ -19,12 +19,12 @@ const app = defineMessages({
       paginationNext: 'Next page',
     },
     nav: {
-      swap: 'Convert',
+      swap: 'Swap',
       genesis: 'Co-build',
       rewards: 'Rewards',
       community: 'Community',
       rewardsTooltip: 'View referral rewards and team rewards.',
-      communityTooltip: 'Invite friends, bind a referrer, and grow your team.',
+      communityTooltip: 'Invite partners to co-build and share ecosystem growth value and Genesis rewards.',
       bscTooltip: 'BSC only · AEGIS X runs on BNB Smart Chain. Network switching is not supported yet.',
     },
     topbar: {
@@ -58,9 +58,9 @@ const app = defineMessages({
       signInRequired: 'Sign in',
     },
     swap: {
-      title: 'Convert',
+      title: 'Swap',
       intro: 'Get AEGIS X ecosystem tokens at the best rates',
-      backToHub: 'Back to Convert',
+      backToHub: 'Back to Swap',
       sell: 'Sell',
       buy: 'Buy',
       flip: 'Flip swap direction',
@@ -80,52 +80,52 @@ const app = defineMessages({
       swapSuccess: 'Swap successful',
       overview: 'Overview',
       exchangeRate: 'Exchange rate',
-      fixedRate: '1 : 1 fixed',
+      fixedRate: 'Based on PancakeSwap market rate',
       settlement: 'Settlement',
       settlementValue: 'Get AEGIS X ecosystem tokens at the best rates',
       hub: {
         modes: {
           flash: {
             title: 'Flash Swap',
-            body: 'Swap USDT for USD1 with no fees and no slippage',
+            body: 'Swap USDT to USD1, no fee or slippage',
           },
           trade: {
             title: 'Trade',
-            body: 'Swap mainstream tokens for AEGIS X ecosystem tokens',
+            body: 'Swap major tokens for AEGIS X tokens',
           },
           burn: {
             title: 'Burn',
-            body: 'Burn AGX to earn contribution points',
+            body: 'Burn AGX for contribution points',
           },
           comingSoon: 'Coming soon',
         },
         about: {
-          title: 'About Convert',
-          body: 'Swap USDT for USD1, trade popular tokens for X DAO ecosystem tokens, or upgrade gAGX to AGX and burn AGX for contribution points.',
+          title: 'About Swap',
+          body: 'Swap USDT to USD1, trade major tokens for X DAO assets, upgrade gAGX to AGX, or burn AGX for points.',
         },
         program: {
-          title: 'Get X DAO Protocol Tokens',
+          title: 'Get X DAO Tokens',
           cards: [
-            { title: 'Flash Swap', body: 'Swap USDT for USD1' },
-            { title: 'Get USD1', body: 'Get USD1 at PancakeSwap market rates' },
-            { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rates' },
-            { title: 'Sell X', body: 'Swap X for AEGIS X economic tokens or mainstream coins' },
-            { title: 'Get contribution points', body: 'Burn AGX at a 1:6 ratio for contribution points' },
+            { title: 'Flash Swap', body: 'Swap USDT to USD1' },
+            { title: 'Get USD1', body: 'Get USD1 at PancakeSwap market rate' },
+            { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+            { title: 'Sell X', body: 'Swap X for AEGIS X assets or major tokens' },
+            { title: 'Get Points', body: 'Burn AGX at 1:6 for points' },
           ],
         },
         faq: {
           items: [
             {
-              q: 'What is a crypto wallet, and how do I get one?',
-              a: 'A crypto wallet is software that lets you view and manage your digital assets. Your assets are recorded on a blockchain—not stored in the wallet itself. A non-custodial wallet gives you full control over your private keys, meaning only you can sign transactions. Unlike custodial wallets, no third party holds your keys—but if you lose your private key or recovery phrase, you permanently lose access to your assets. Non-custodial wallets can be mobile apps or hardware devices. Popular options include MetaMask and TokenPocket.',
+              q: 'What is a crypto wallet?',
+              a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
             },
             {
-              q: 'What is a blockchain transaction fee?',
-              a: 'Every transaction on the blockchain—such as buying, selling, trading, or transferring digital assets—requires a gas fee. This fee is not controlled or collected by the AEGIS X app; it is determined by current network demand and the computational resources needed to process your transaction. On the BSC blockchain, gas fees are paid in BNB. Make sure you always have BNB in your wallet before transacting on the AEGIS X Protocol.',
+              q: 'What is a gas fee?',
+              a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
             },
             {
-              q: 'How do crypto wallets work?',
-              a: 'Crypto wallets use a pair of cryptographic keys—a public key and a private key—to secure and manage your assets. When setting up a non-custodial wallet, the software generates a seed phrase (12, 18, or 24 random words) that can be used to recover your keys. Store it safely and never share it. Your private key is a unique string that grants full control over your wallet. It is used to sign and authorize transactions, and must be kept secret at all times. Your public key is derived from the private key and can be shared openly. It is used to generate your wallet address and receive assets from others.',
+              q: 'How does a wallet work?',
+              a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
             },
           ],
         },
@@ -134,14 +134,14 @@ const app = defineMessages({
         title: 'Flash Swap',
         intro: 'Convert USDT to USD1, no fees, no slippage',
         providerName: 'AEGIS X',
-        openProvider: 'View flash swap contract on BscScan',
-        settlementValue: 'On-chain · seconds',
+        openProvider: 'View Flash Swap contract on BscScan',
+        settlementValue: 'On-chain · instant',
         tokenAboutTitle: 'About USD1',
         action: 'Flash Swap',
       },
       trade: {
         title: 'Trade',
-        intro: 'PancakeSwap real-time market rates, settled on-chain in seconds',
+        intro: 'PancakeSwap live rate · on-chain settlement',
         action: 'Trade',
       },
       tokenAbout: {
@@ -183,7 +183,7 @@ const app = defineMessages({
             items: [
               {
                 q: 'What is USD1?',
-                a: 'USD1 is the core value settlement asset of the AEGIS X ecosystem. USD1 is backed 100% by reserve assets, including cash, short-term U.S. Treasuries, government money market funds, and more. Monthly distribution reports are available on the WLFI website.',
+                a: 'USD1 is AEGIS X\'s core settlement asset. It is backed 100% by reserves such as cash, short-term U.S. Treasuries, and government money-market funds; monthly reports are on WLFI.',
               },
               {
                 q: 'What role does USD1 play in AEGIS X?',
@@ -200,15 +200,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'What is AGX?',
-                a: 'AGX is the governance and value token of AEGIS X, used for governance voting, staking, and ecosystem incentives.',
+                a: 'AGX is the core asset of the AEGIS X protocol, minted through a 150% over-collateralization mechanism, and plays a key role in value growth, yield distribution, and ecosystem development.',
               },
               {
-                q: 'What role does USD1 play in the protocol?',
-                a: 'USD1 is the settlement rail for subscription, rewards, and swap flows, keeping value accounting simple and auditable.',
+                q: 'How does AGX achieve sustained growth?',
+                a: 'Through staking, bonds, and Rebase, AGX forms a long-term compounding cycle, combined with AI think-tank market making and a buyback-and-burn mechanism.',
               },
               {
-                q: 'How are USDT and USD1 swapped?',
-                a: 'The app completes conversion through supported BSC swap routes, with the connected wallet confirming the final transaction.',
+                q: 'How do I get AGX?',
+                a: 'Users can obtain AGX by participating in the protocol ecosystem, or acquire it through trading markets supported by the protocol.',
               },
             ],
           },
@@ -217,15 +217,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'What is gAGX?',
-                a: 'gAGX is an interest-bearing voucher earned by staking AGX, unlocking governance weight and higher shareholder titles.',
+                a: 'gAGX is the protocol reward settlement voucher, used to connect yield growth with ecosystem value, and can participate in ecosystem mining.',
               },
               {
-                q: 'What role does USD1 play in the protocol?',
-                a: 'USD1 is the settlement rail for subscription, rewards, and swap flows, keeping value accounting simple and auditable.',
+                q: 'How do I get gAGX?',
+                a: 'After participating in protocol yield distribution, users receive a corresponding amount of gAGX.',
               },
               {
-                q: 'How are USDT and USD1 swapped?',
-                a: 'The app completes conversion through supported BSC swap routes, with the connected wallet confirming the final transaction.',
+                q: 'What is the difference between gAGX and AGX?',
+                a: 'AGX is the core protocol asset, responsible for value growth and yield distribution; gAGX is the ecosystem yield voucher, redeemable for AGX, and serves as a key entry point for participating in ecosystem mining.',
               },
             ],
           },
@@ -234,15 +234,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'What is X?',
-                a: 'X is an ecosystem participation equity token that records on-chain contributions and qualifies for airdrops and event multipliers.',
+                a: 'X is the AEGIS X ecosystem value token, with a fixed total supply of 210 million, carrying ecosystem growth and value accumulation.',
               },
               {
-                q: 'What role does USD1 play in the protocol?',
-                a: 'USD1 is the settlement rail for subscription, rewards, and swap flows, keeping value accounting simple and auditable.',
+                q: 'How do I get X?',
+                a: 'Users can earn X rewards by participating in ecosystem mining, sharing in the ecosystem growth value.',
               },
               {
-                q: 'How are USDT and USD1 swapped?',
-                a: 'The app completes conversion through supported BSC swap routes, with the connected wallet confirming the final transaction.',
+                q: 'How is the X airdrop released?',
+                a: 'X value comes from ecosystem growth, value accumulation, and long-term development consensus, making it a key carrier of ecosystem value.',
               },
             ],
           },
@@ -451,14 +451,12 @@ const app = defineMessages({
             title: 'Global co-build program is live',
             body: 'Co-builders worldwide are coming together to build the ecosystem.',
             action: 'View program details →',
-            href: '',
           },
           {
             label: 'X Academy',
             title: 'Ecosystem training program for co-builders',
             body: 'Helps co-builders gain a deeper understanding of ecosystem mechanics and development plans.',
             action: 'View program details →',
-            href: '',
           },
         ],
       },
@@ -511,7 +509,7 @@ const app = defineMessages({
     tables: {
       time: 'Time',
       claimTime: 'Claim Time',
-      paid: 'Paid',
+      paid: 'Amount',
       status: 'Status',
       discount: 'Discount',
       estimatedAgx: 'Est. AGX',

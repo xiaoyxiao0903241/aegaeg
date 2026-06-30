@@ -53,7 +53,7 @@ const home = defineMessages({
       subtitle: 'AI x DeFi x USD1 - Değer akışını yönlendirir',
       cards: [
         {
-          title: 'AI Think Tank',
+          title: 'AI Danışma Kurulu',
           body: 'Otonom risk kontrolü, akıllı piyasa yapıcılığı ve likidite yönetimi zincir üstü yürütülür.',
           index: '01'
         },
@@ -76,11 +76,11 @@ const home = defineMessages({
       cards: [
         {
           title: 'Akıllı Piyasa Yapıcılığı Mekanizması',
-          body: 'Yükseliş aşamasında rezerv varlıkları biriktirerek protokol rezerv kapasitesini güçlendirir; düzeltme aşamasında geri alım ve yakım mekanizması çalışarak fiyat onarımı sağlar.'
+          body: 'Yükseliş aşamasında rezerv varlıkları biriktirerek protokol rezerv kapasitesini güçlendirir; düşüş aşamasında geri alım ve yakım mekanizmasını çalıştırarak fiyat onarımı sağlar.'
         },
         {
           title: 'Dalgalanma Savunma Mekanizması',
-          body: 'Günlük düşüş eşiğine ulaşıldığında otomatik tetiklenir: satış ücreti %30’a çıkar, rezerv geri alımı ve kara delik yakımı başlar, 24 saat sonra otomatik olarak normale döner.'
+          body: 'Günlük düşüş eşiğe gelirse satış ücreti %30’a çıkar, geri alım ve yakım başlar; 24 saat sonra normale döner.'
         },
         {
           title: 'Getiri Dağılım Mekanizması',
@@ -286,7 +286,7 @@ const home = defineMessages({
           },
           {
             href: '#token',
-            label: 'gGAX'
+            label: 'gAGX'
           }
         ]
       },

@@ -4,7 +4,7 @@ import type { HomeMessagesBundle } from './types'
 const home = defineMessages({
   meta: {
     description: 'AEGIS Xは、USD1決済、BSC優先ウォレット入口、自己修復プロトコルエンジンを備えたAIネイティブDeFi 4.0プロトコルで、次世代の価値ネットワークを構築します。',
-    title: 'AEGIS X - 未来の価値を守る'
+    title: 'AEGIS X - 未来の価値ネットワークを守る'
   },
   nav: {
     sectionsLabel: 'ホームページセクションナビゲーション',
@@ -41,7 +41,7 @@ const home = defineMessages({
   hero: {
     guardianLabel: 'AEGIS X ガーディアン',
     eyebrow: 'AI x DeFi x USD1 · DeFi 4.0 プロトコル',
-    title: '未来の価値を守る',
+    title: '未来の価値ネットワークを守る',
     body: '世界初のAIシンクタンク駆動型USD1エコシステムプロトコル。USD1をコア決済資産とし、AI、決済、グローバル流動性ネットワークを接続します。',
     enterProtocol: 'プロトコルに入る',
     readWhitepaper: 'ホワイトペーパーを読む',

@@ -3,7 +3,7 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X adalah protokol DeFi 4.0 berbasis AI dengan penyelesaian USD1, akses dompet prioritas BSC, dan mesin protokol yang dapat memperbaiki diri, membangun jaringan nilai generasi berikutnya.',
+    description: 'AEGIS X adalah protokol DeFi 4.0 AI-native dengan settlement USD1, wallet BSC-first, dan engine self-healing untuk jaringan nilai baru.',
     title: 'AEGIS X - Menjaga Nilai Masa Depan'
   },
   nav: {
@@ -42,7 +42,7 @@ const home = defineMessages({
     guardianLabel: 'Penjaga AEGIS X',
     eyebrow: 'AI x DeFi x USD1 · Protokol DeFi 4.0',
     title: 'Menjaga Nilai Masa Depan',
-    body: 'Protokol ekosistem USD1 pertama di dunia yang didorong oleh think-tank AI. Dengan USD1 sebagai aset penyelesaian inti, menghubungkan AI, pembayaran, dan jaringan likuiditas global.',
+    body: 'Protokol USD1 pertama yang digerakkan AI Think Tank, menghubungkan AI, pembayaran, dan likuiditas global.',
     enterProtocol: 'Masuk Protokol',
     readWhitepaper: 'Baca Whitepaper',
   },

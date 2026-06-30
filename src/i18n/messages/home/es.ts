@@ -3,7 +3,7 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X es un protocolo DeFi 4.0 nativo de IA con liquidación en USD1, acceso prioritario a billeteras en BSC y un motor de protocolo autorreparable que construye la red de valor de próxima generación.',
+    description: 'AEGIS X es un protocolo DeFi 4.0 AI-native con liquidación en USD1, wallet BSC-first y motor auto-reparador para la nueva red de valor.',
     title: 'AEGIS X - Protegiendo el Valor del Futuro'
   },
   nav: {
@@ -42,7 +42,7 @@ const home = defineMessages({
     guardianLabel: 'Guardián de AEGIS X',
     eyebrow: 'AI x DeFi x USD1 · Protocolo DeFi 4.0',
     title: 'Protegiendo el Valor del Futuro',
-    body: 'El primer protocolo de ecosistema USD1 impulsado por un think tank de IA del mundo. Con USD1 como activo de liquidación central, conecta IA, pagos y la red global de liquidez.',
+    body: 'Primer protocolo del ecosistema USD1 impulsado por un think tank de IA del mundo. Con USD1 como activo de liquidación central, conecta IA, pagos y la red global de liquidez.',
     enterProtocol: 'Entrar al protocolo',
     readWhitepaper: 'Leer libro blanco',
   },
@@ -76,11 +76,11 @@ const home = defineMessages({
       cards: [
         {
           title: 'Mecanismo de creación de mercado inteligente',
-          body: 'Acumula activos de reserva en fases alcistas para fortalecer la capacidad de reserva del protocolo; en fases de corrección, ejecuta mecanismos de recompra y quema para reparar el precio.'
+          body: 'En la fase alcista acumula activos de reserva para reforzar la capacidad de reservas del protocolo; en la fase de corrección ejecuta recompras y quemas para lograr la recuperación del precio.'
         },
         {
           title: 'Mecanismo de defensa contra la volatilidad',
-          body: 'Se activa automáticamente cuando la caída diaria alcanza el umbral: la comisión de venta sube al 30%, se inician la recompra de reservas y la quema en agujero negro, con restauración automática tras 24 horas.'
+          body: 'Si la caída diaria toca el umbral, sube la comisión de venta al 30%, activa recompras y quema; se normaliza en 24 h.'
         },
         {
           title: 'Mecanismo de distribución de rendimientos',
@@ -88,7 +88,7 @@ const home = defineMessages({
         },
         {
           title: 'Mecanismo Turbo',
-          body: 'Optimiza la estructura de liquidez del mercado mediante un mecanismo dinámico de desbloqueo de compras, reforzando la estabilidad del ecosistema y la capacidad de desarrollo a largo plazo.'
+          body: 'Desbloqueo dinámico de compras para mejorar liquidez y estabilidad del ecosistema.'
         }
       ]
     },

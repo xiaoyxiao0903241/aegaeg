@@ -24,7 +24,7 @@ const app = defineMessages({
       rewards: '獎勵',
       community: '社區',
       rewardsTooltip: '查看推薦獎勵與團隊獎勵。',
-      communityTooltip: '邀請好友、綁定推薦人並壯大團隊。',
+      communityTooltip: '邀請夥伴參與共建，共享生態成長價值與創世獎勵。',
       bscTooltip: '僅 BSC · AEGIS X 運行於 BNB Smart Chain，暫不支援切換網路。',
     },
     topbar: {
@@ -38,7 +38,7 @@ const app = defineMessages({
     dapp: {
       connect: {
         promoTitle: '連接以探索 AEGIS X 功能',
-        promoBrandLine: '守護未來價值網絡',
+        promoBrandLine: '守護未來價值網路',
         recordsTitle: '請連接您的錢包以查看您的記錄',
         recordsBodyGenesis: '連接成功後，您的共建歷史記錄將顯示在此處',
         recordsBodyRewards: '連接成功後，您的獎勵歷史記錄將顯示在此處',
@@ -60,16 +60,16 @@ const app = defineMessages({
     swap: {
       backToHub: '返回兌換',
       title: '兌換',
-      intro: '基於即時市場匯率，鏈上秒到。',
+      intro: '以最優匯率取得 AEGIS X 生態代幣',
       sell: 'Sell',
       buy: 'Buy',
       flip: '切換兌換方向',
       balance: '餘額',
       exchangePrice: '兌換價格',
       ratePlaceholder: '1 : 1',
-      slippage: '滑點容忍',
+      slippage: '滑點設定',
       allowedSlippage: '允許滑點',
-      slippageSettings: '滑點容忍設定',
+      slippageSettings: '允許滑點設定',
       route: '兌換路徑',
       provider: '提供方',
       providerName: 'PancakeSwap',
@@ -80,69 +80,69 @@ const app = defineMessages({
       swapSuccess: '兌換成功',
       overview: '概覽',
       exchangeRate: '兌換比率',
-      fixedRate: '1 : 1 固定',
+      fixedRate: '基於 PancakeSwap 市場匯率',
       settlement: '結算',
-      settlementValue: '以最优汇率获取 AEGIS X 生态代币',
+      settlementValue: '以最優匯率取得 AEGIS X 生態代幣',
       hub: {
               modes: {
                 flash: {
-                  title: 'Flash Swap',
-                  body: 'Swap USDT for USD1 with no fees and no slippage',
+                  title: '閃兌',
+                  body: '將 USDT 兌換為 USD1，無手續費、無滑點',
                 },
                 trade: {
-                  title: 'Trade',
-                  body: 'Swap mainstream tokens for AEGIS X ecosystem tokens',
+                  title: '交易',
+                  body: '用主流代幣兌換 AEGIS X 生態代幣',
                 },
                 burn: {
-                  title: 'Burn',
-                  body: 'Burn AGX to earn contribution points',
+                  title: '銷毀',
+                  body: '銷毀 AGX 以獲得貢獻點數',
                 },
-                comingSoon: 'Coming soon',
+                comingSoon: '即將推出',
               },
                                           about: {
-                title: 'About Convert',
-                body: 'Swap USDT for USD1, trade popular tokens for X DAO ecosystem tokens, or upgrade gAGX to AGX and burn AGX for contribution points.',
+                title: '關於兌換',
+                body: '將 USDT 兌換為 USD1，用熱門代幣交易 X DAO 生態代幣，或將 gAGX 升級為 AGX、銷毀 AGX 取得貢獻點數。',
               },
               program: {
-                title: 'Get X DAO Protocol Tokens',
+                title: '取得 X DAO 協議代幣',
                 cards: [
-                { title: 'Flash Swap', body: 'Swap USDT for USD1' },
-                { title: 'Get USD1', body: 'Get USD1 at PancakeSwap market rates' },
-                { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rates' },
-                { title: 'Sell X', body: 'Swap X for AEGIS X economic tokens or mainstream coins' },
-                { title: 'Get contribution points', body: 'Burn AGX at a 1:6 ratio for contribution points' },
+                { title: '閃兌', body: '將 USDT 兌換為 USD1' },
+                { title: '取得 USD1', body: '以 PancakeSwap 市場匯率取得 USD1' },
+                { title: '取得 AGX', body: '以 PancakeSwap 市場匯率取得 AGX' },
+                { title: '出售 X', body: '將 X 兌換為 AEGIS X 經濟代幣或主流代幣' },
+                { title: '取得貢獻點數', body: '按 1:6 比率銷毀 AGX 以取得貢獻點數' },
                 ],
               },
               faq: {
                 items: [
                   {
-                    q: '什麼是加密錢包，如何取得？',
-                    a: '加密錢包是用於查看和管理數位資產的軟體。您的資產記錄在區塊鏈上，而非儲存在錢包本身中。非託管錢包讓您完全掌控私鑰，意味著只有您才能簽署交易。與託管錢包不同，沒有第三方持有您的密鑰——但如果遺失私鑰或助記詞，您將永久失去對資產的存取權限。非託管錢包可以是行動應用或硬體裝置，常見選項包括 MetaMask 和 TokenPocket。',
+                    q: '什麼是加密錢包？',
+                    a: '加密錢包用於管理鏈上數位資產。非託管錢包由您自行掌控私鑰或助記詞，請妥善保存。常見選項包括 MetaMask 和 TokenPocket。',
                   },
                   {
-                    q: '什麼是區塊鏈交易手續費？',
-                    a: '區塊鏈上的每筆交易——如購買、出售、交易或轉移數位資產——都需要 gas 費。該費用不由 AEGIS X 應用控制或收取，而是由當前網路需求和處理交易所需的計算資源決定。在 BSC 區塊鏈上，gas 費以 BNB 支付。在 AEGIS X 協議上進行交易前，請確保錢包中始終持有 BNB。',
+                    q: '什麼是 gas 費？',
+                    a: '鏈上買入、出售、兌換或轉帳都需要 gas 費。費用由 BSC 網路收取，非 AEGIS X 收取。交易前請在錢包保留 BNB。',
                   },
                   {
-                    q: '加密錢包如何運作？',
-                    a: '加密錢包使用一對金鑰——公鑰和私鑰——來保護和管理您的資產。設定非託管錢包時，軟體會產生助記詞（12、18 或 24 個隨機單字），可用於恢復您的密鑰。請妥善保管，切勿外洩。您的私鑰是唯一字串，授予對錢包的完全控制權，用於簽署和授權交易，必須時刻保密。公鑰由私鑰派生，可公開分享，用於產生錢包地址和接收他人轉帳。',
+                    q: '錢包如何運作？',
+                    a: '錢包使用公鑰與私鑰。私鑰或助記詞用於簽署交易，必須保密；公鑰可產生地址並接收資產。',
                   },
                 ],
               },
             },
             flash: {
-              title: 'Flash Swap',
+              title: '閃兌',
               intro: '將 USDT 兌換為 USD1，無手續費，無滑點',
               providerName: 'AEGIS X',
               openProvider: '在 BscScan 查看閃兌合約',
-              settlementValue: 'On-chain · seconds',
-              tokenAboutTitle: 'About USD1',
-              action: 'Flash Swap',
+              settlementValue: '鏈上 · 秒到',
+              tokenAboutTitle: '關於 USD1',
+              action: '閃兌',
             },
             trade: {
-              title: 'Trade',
-              intro: 'PancakeSwap real-time market rates, settled on-chain in seconds',
-              action: 'Trade',
+              title: '交易',
+              intro: '基於 PancakeSwap 即時市場匯率，鏈上秒到',
+              action: '交易',
             },
       tokenAbout: {
         title: '關於 AEGIS X 生態代幣',
@@ -200,15 +200,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'AGX 是什麼？',
-                a: 'AGX 是 AEGIS X 的治理與價值代幣，用於治理投票、質押與生態激勵。',
+                a: 'AGX 是 AEGIS X 協議核心資產，透過 150% 超額抵押機制鑄造，承擔價值增長、收益分配與生態建設的重要角色。',
               },
               {
-                q: 'USD1 在協議裡扮演什麼角色？',
-                a: 'USD1 是認購、獎勵與兌換流程的結算通道，讓價值記帳保持簡單且可審計。',
+                q: 'AGX 如何實現持續增長？',
+                a: '透過質押、債券與 Rebase 形成長期複利循環，並結合 AI 智庫做市與回購銷毀機制。',
               },
               {
-                q: 'USDT 和 USD1 是如何進行兌換的？',
-                a: '應用程式透過支援的 BSC 兌換路徑完成換算，並由連接的錢包確認最終交易。',
+                q: '如何獲得 AGX？',
+                a: '用戶可透過參與協議生態獲得 AGX，也可透過協議支援的交易市場進行取得。',
               },
             ],
           },
@@ -217,15 +217,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'gAGX 是什麼？',
-                a: 'gAGX 是質押 AGX 獲得的生息憑證，可解鎖治理權重與更高股東稱號。',
+                a: 'gAGX 是協議獎勵結算憑證，用於連接收益增長與生態價值，並可參與生態挖礦。',
               },
               {
-                q: 'USD1 在協議裡扮演什麼角色？',
-                a: 'USD1 是認購、獎勵與兌換流程的結算通道，讓價值記帳保持簡單且可審計。',
+                q: '如何獲得 gAGX？',
+                a: '用戶參與協議收益分配後，可獲得對應數量的 gAGX。',
               },
               {
-                q: 'USDT 和 USD1 是如何進行兌換的？',
-                a: '應用程式透過支援的 BSC 兌換路徑完成換算，並由連接的錢包確認最終交易。',
+                q: 'gAGX 和 AGX 有什麼區別？',
+                a: 'AGX 是協議核心資產，承擔價值增長與收益分配；gAGX 是生態收益憑證，可兌換 AGX，並作為參與生態挖礦的重要入口。',
               },
             ],
           },
@@ -234,15 +234,15 @@ const app = defineMessages({
             items: [
               {
                 q: 'X 是什麼？',
-                a: 'X 是生態參與權益代幣，記錄鏈上貢獻並可獲得空投與活動加成。',
+                a: 'X 是 AEGIS X 生態價值代幣，總量固定 2.1 億枚，承載生態增長與價值沉澱。',
               },
               {
-                q: 'USD1 在協議裡扮演什麼角色？',
-                a: 'USD1 是認購、獎勵與兌換流程的結算通道，讓價值記帳保持簡單且可審計。',
+                q: '如何獲得 X？',
+                a: '用戶可透過參與生態挖礦獲得 X 獎勵，共享生態增長價值。',
               },
               {
-                q: 'USDT 和 USD1 是如何進行兌換的？',
-                a: '應用程式透過支援的 BSC 兌換路徑完成換算，並由連接的錢包確認最終交易。',
+                q: 'X 空投如何釋放？',
+                a: 'X 的價值來源於生態增長、價值沉澱與長期發展共識，是生態價值的重要承載者。',
               },
             ],
           },
@@ -451,14 +451,12 @@ const app = defineMessages({
             title: '全球共建計畫進行中',
             body: '匯聚全球共建者，共同參與生態建設。',
             action: '查看計畫詳情 →',
-            href: '',
           },
           {
             label: 'X 學院',
             title: '面向共建者的生態培訓計畫',
             body: '幫助共建者更深入了解生態機制與發展規劃。',
             action: '查看計畫詳情 →',
-            href: '',
           },
         ],
       },
@@ -495,7 +493,7 @@ const app = defineMessages({
         items: [
           {
             q: '邀請關係如何建立？',
-            a: '伙伴透過邀請連結參與共建後，邀請關係自動建立且永久有效。',
+            a: '夥伴透過邀請連結參與共建後，邀請關係自動建立且永久有效。',
           },
           {
             q: '創世推薦獎勵如何計算？',
@@ -511,10 +509,10 @@ const app = defineMessages({
     tables: {
       time: '時間',
       claimTime: '領取時間',
-      paid: '支付',
+      paid: '金額',
       status: '狀態',
       discount: '折扣',
-      estimatedAgx: '預計 AGX',
+      estimatedAgx: '預計獲得 AGX',
       tx: '交易',
       title: '創世稱號',
       totalVolume: '總業績',

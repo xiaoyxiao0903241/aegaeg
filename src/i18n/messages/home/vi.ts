@@ -42,7 +42,7 @@ const home = defineMessages({
     guardianLabel: 'Người bảo vệ AEGIS X',
     eyebrow: 'AI x DeFi x USD1 · Giao thức DeFi 4.0',
     title: 'Bảo vệ Giá trị Tương lai',
-    body: 'Giao thức hệ sinh thái USD1 đầu tiên trên thế giới được điều khiển bởi viện nghiên cứu AI. Với USD1 là tài sản thanh toán cốt lõi, kết nối AI, thanh toán và mạng lưới thanh khoản toàn cầu.',
+    body: 'Giao thức hệ sinh thái USD1 đầu tiên trên thế giới do AI Think Tank dẫn dắt. Với USD1 là tài sản thanh toán cốt lõi, kết nối AI, thanh toán và mạng lưới thanh khoản toàn cầu.',
     enterProtocol: 'Vào giao thức',
     readWhitepaper: 'Đọc sách trắng',
   },
