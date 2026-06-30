@@ -244,10 +244,10 @@ export function useSwapWidget(authenticated: boolean) {
 
   const buyAmount = useMemo(
     () =>
-      authenticated && quotedOut > 0n
+      authenticated && amountIn > 0n && quotedOut > 0n
         ? formatTokenAmountInputDisplay(formatTokenAmount(quotedOut, pair.buy.decimals, 6))
         : '',
-    [authenticated, pair.buy.decimals, quotedOut],
+    [authenticated, amountIn, pair.buy.decimals, quotedOut],
   )
 
   const exchangePriceLabel = useMemo(() => {
