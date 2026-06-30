@@ -286,7 +286,7 @@
   }
 }
 
-/* Sonner toast — black pill on PC + H5; !important beats runtime-injected sonner defaults */
+/* Sonner — content-fit width + centering (github.com/emilkowalski/sonner/issues/678) */
 html.dapp-app [data-sonner-toaster].app-toaster {
   --border-radius: 9999px;
   --normal-bg: oklch(0% 0 0);
@@ -299,6 +299,8 @@ html.dapp-app [data-sonner-toaster].app-toaster {
   --mobile-offset-left: 1rem;
   --mobile-offset-right: 1rem;
   font-family: inherit;
+  width: max-content !important;
+  max-width: var(--width);
 }
 
 html.dapp-app [data-sonner-toast][data-styled='true'] {
@@ -310,11 +312,25 @@ html.dapp-app [data-sonner-toast][data-styled='true'] {
   padding: 1rem;
   font-size: 0.8125rem;
   gap: 0.375rem;
+  width: max-content !important;
+  max-width: var(--width);
+  min-width: max-content !important;
+  overflow-wrap: normal !important;
+  word-break: normal;
+}
+
+html.dapp-app [data-sonner-toast][data-styled='true'][data-x-position='center'],
+html.dapp-app [data-sonner-toast][data-styled='true'][data-expanded='true'][data-x-position='center'] {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) var(--y) !important;
 }
 
 html.dapp-app [data-sonner-toast][data-styled='true'] [data-title],
 html.dapp-app [data-sonner-toast][data-styled='true'] [data-description] {
   color: inherit !important;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 html.dapp-app [data-sonner-toast][data-styled='true'] [data-title] {
@@ -338,6 +354,9 @@ html.dapp-app [data-sonner-toast][data-styled='true'] [data-icon] svg {
 
 html.dapp-app [data-sonner-toast][data-styled='true'] [data-content] {
   gap: 0.125rem;
+  min-width: max-content;
+  flex: 0 1 auto;
+  overflow-wrap: normal;
 }
 
 html.dapp-app [data-sonner-toast][data-styled='true'] [data-button] {
@@ -359,20 +378,24 @@ html.dapp-app [data-sonner-toaster].app-toaster .sonner-loading-wrapper {
   --size: 1rem;
 }
 
-/* Sonner ≤600px forces full-width bar — keep centered pill on H5 */
+/* Sonner ≤600px forces full-width — keep content-fit pill on H5 (#678) */
 @media (max-width: 600px) {
+  html.dapp-app [data-sonner-toaster].app-toaster {
+    width: max-content !important;
+    max-width: var(--width) !important;
+  }
+
   html.dapp-app [data-sonner-toaster].app-toaster[data-x-position='center'] {
     left: 50% !important;
     right: auto !important;
-    width: var(--width) !important;
     transform: translateX(-50%) !important;
   }
 
   html.dapp-app [data-sonner-toaster].app-toaster [data-sonner-toast] {
-    left: 0 !important;
-    right: 0 !important;
-    width: var(--width) !important;
-    margin-inline: auto;
+    width: max-content !important;
+    max-width: min(var(--width), calc(100vw - var(--mobile-offset-left) - var(--mobile-offset-right))) !important;
+    min-width: max-content !important;
+    overflow-wrap: normal !important;
   }
 }
 
