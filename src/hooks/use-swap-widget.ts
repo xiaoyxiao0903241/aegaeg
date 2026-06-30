@@ -160,9 +160,7 @@ export function useSwapWidget(authenticated: boolean) {
   const buyBalance = balancesQuery.data?.buy ?? 0n
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
-  const quotePath = amountQuoteQuery.data?.path ?? []
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
-  const spotQuotePath = spotQuoteQuery.data?.path ?? []
   const exchangeSpotQuotedOut = exchangeSpotQuoteQuery.data?.quotedOut ?? 0n
   const exchangeSpotQuotedOutInverted = exchangeSpotQuoteInvertedQuery.data?.quotedOut ?? 0n
   const isQuoting =
@@ -216,24 +214,10 @@ export function useSwapWidget(authenticated: boolean) {
     }
   }, [amountIn, amountQuoteQuery.error])
 
-  const rateQuote = useMemo(() => {
-    if (amountIn > 0n && quotedOut > 0n) {
-      return { amountIn, amountOut: quotedOut, path: quotePath }
-    }
-
-    return {
-      amountIn: spotQuoteAmount,
-      amountOut: spotQuotedOut,
-      path: spotQuotePath,
-    }
-  }, [
-    amountIn,
-    quotePath,
-    quotedOut,
-    spotQuoteAmount,
-    spotQuotePath,
-    spotQuotedOut,
-  ])
+  const routeLabel = useMemo(
+    () => `${pair.sell.symbol} → ${pair.buy.symbol}`,
+    [pair.buy.symbol, pair.sell.symbol],
+  )
 
   const sellAmountDisplay = useMemo(
     () => formatTokenAmountInputDisplay(sellAmount),
@@ -298,22 +282,6 @@ export function useSwapWidget(authenticated: boolean) {
     () => resolvePancakeSwapDeepLink(pair.sell.symbol, pair.buy.symbol),
     [pair.buy.symbol, pair.sell.symbol],
   )
-
-  const routeLabel = useMemo(() => {
-    const path = rateQuote.path
-    if (path.length === 0) {
-      return `${pair.sell.symbol} → ${pair.buy.symbol}`
-    }
-
-    const labels = path.map((pathAddress) => {
-      if (pathAddress.toLowerCase() === pair.sell.address.toLowerCase()) return pair.sell.symbol
-      if (pathAddress.toLowerCase() === pair.buy.address.toLowerCase()) return pair.buy.symbol
-      if (pathAddress.toLowerCase() === SWAP_CONFIG.wbnb.toLowerCase()) return 'WBNB'
-      return pathAddress.slice(0, 6)
-    })
-
-    return labels.join(' → ')
-  }, [pair.buy.address, pair.buy.symbol, pair.sell.address, pair.sell.symbol, rateQuote.path])
 
   const exceedsBalance = walletReady && amountIn > sellBalance
   const canSubmit =
