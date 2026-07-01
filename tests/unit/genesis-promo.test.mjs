@@ -23,7 +23,7 @@ test('buildGenesisPromoSnapshot uses active season discount and end date', async
     },
   ]
 
-  const snapshot = buildGenesisPromoSnapshot(phases, phases[0], now)
+  const snapshot = buildGenesisPromoSnapshot(phases, phases[0], 55, now)
 
   assert.equal(snapshot?.season, 1)
   assert.equal(snapshot?.discount, '-30%')
@@ -54,7 +54,7 @@ test('buildGenesisPromoSnapshot falls back to upcoming season', async () => {
     },
   ]
 
-  const snapshot = buildGenesisPromoSnapshot(phases, null, now)
+  const snapshot = buildGenesisPromoSnapshot(phases, null, 55, now)
 
   assert.equal(snapshot?.status, 'Upcoming')
   assert.equal(snapshot?.discount, '-25%')

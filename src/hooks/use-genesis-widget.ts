@@ -2,7 +2,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { PRESALE_CONFIG } from '~/config/presale'
 import {
   buildPhaseCountdownKey,
   estimateAgxFromUsd1,
@@ -15,6 +14,7 @@ import {
   presaleAirdropThresholdToUsd,
   resolveGenesisMaxShares,
   resolveRemainingUserAmount,
+  resolveSharePriceWei,
 } from '~/lib/presale/presale-math'
 import { buildSeasonOptions } from '~/lib/presale/season-options'
 import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
@@ -77,10 +77,6 @@ export function useGenesisWidget() {
     address,
     activePhaseQuery.data?.index,
   )
-  const purchaseAmount = useMemo(
-    () => parseTokenAmount(String(shares * Number(PRESALE_CONFIG.sharePriceUsd1)), USD1_DECIMALS),
-    [shares],
-  )
   const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address)
   const isBoundQuery = useIsBindReferralQuery(address)
   const isBound = isBoundQuery.data
@@ -88,6 +84,11 @@ export function useGenesisWidget() {
 
   const phases = phasesQuery.data ?? []
   const activePhase = activePhaseQuery.data ?? null
+  const sharePriceWei = resolveSharePriceWei(activePhase)
+  const purchaseAmount = useMemo(
+    () => (sharePriceWei > 0n ? sharePriceWei * BigInt(shares) : 0n),
+    [sharePriceWei, shares],
+  )
   const userTotal = userTotalQuery.data ?? 0n
   const phaseRemaining = phaseRemainingQuery.data ?? null
   const agxPriceWei = agxPriceQuery.data ?? 0n
@@ -118,16 +119,12 @@ export function useGenesisWidget() {
   const phaseIndex = activePhase?.index ?? 0
   const agxPriceUsd = useMemo(() => {
     const fromChain = formatTokenAmountToNumber(agxPriceWei, USD1_DECIMALS)
-    return fromChain > 0 ? fromChain : Number(PRESALE_CONFIG.agxPriceUsd)
+    return fromChain > 0 ? fromChain : 0
   }, [agxPriceWei])
-  const discountBps = Number(activePhase?.discountBps ?? PRESALE_CONFIG.phases[0]?.discountBps ?? 0)
-  const discountLabel = `-${(discountBps / 100).toFixed(0)}%`
-  const minAmount =
-    activePhase?.minAmount ??
-    parseTokenAmount(PRESALE_CONFIG.phases[0]?.minUsd1 ?? '100', USD1_DECIMALS)
-  const maxAmount =
-    activePhase?.maxAmount ??
-    parseTokenAmount(PRESALE_CONFIG.phases[0]?.maxUsd1 ?? '10000', USD1_DECIMALS)
+  const discountBps = Number(activePhase?.discountBps ?? 0)
+  const discountLabel = discountBps > 0 ? `-${(discountBps / 100).toFixed(0)}%` : '—'
+  const minAmount = activePhase?.minAmount ?? 0n
+  const maxAmount = activePhase?.maxAmount ?? 0n
   const remainingPhaseAmount =
     phaseRemaining?.remainingPhaseAmount ??
     (activePhase ? activePhase.maxAmount - activePhase.soldAmount : 0n)
@@ -135,12 +132,13 @@ export function useGenesisWidget() {
   const maxShares = useMemo(
     () =>
       resolveGenesisMaxShares({
+        sharePriceWei,
         remainingPhaseAmount,
         remainingUserAmount,
         usd1Balance,
         walletReady,
       }),
-    [remainingPhaseAmount, remainingUserAmount, usd1Balance, walletReady],
+    [remainingPhaseAmount, remainingUserAmount, sharePriceWei, usd1Balance, walletReady],
   )
 
   useEffect(() => {
@@ -151,12 +149,8 @@ export function useGenesisWidget() {
     })
   }, [maxShares])
 
-  const estimatedAgx = estimateAgxFromUsd1(
-    shares * Number(PRESALE_CONFIG.sharePriceUsd1),
-    discountBps,
-    agxPriceUsd,
-  )
-  const payUsd1 = shares * Number(PRESALE_CONFIG.sharePriceUsd1)
+  const payUsd1 = formatTokenAmountToNumber(purchaseAmount, USD1_DECIMALS)
+  const estimatedAgx = estimateAgxFromUsd1(payUsd1, discountBps, agxPriceUsd)
   const contributionValueUsd = estimateContributionValueUsd(
     payUsd1,
     discountBps,
@@ -323,8 +317,8 @@ export function useGenesisWidget() {
   }, [activePhase, phaseIndex, seasonOptions])
 
   const promoSnapshot = useMemo(
-    () => buildGenesisPromoSnapshot(phases, activePhase, nowSeconds),
-    [activePhase, nowSeconds, phases],
+    () => buildGenesisPromoSnapshot(phases, activePhase, agxPriceUsd, nowSeconds),
+    [activePhase, agxPriceUsd, nowSeconds, phases],
   )
 
   const queryError =

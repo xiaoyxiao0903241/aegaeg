@@ -1,5 +1,4 @@
-import { formatTokenAmountToNumber, parseTokenAmount } from '~/lib/swap/token-amount'
-import { PRESALE_CONFIG } from '~/config/presale'
+import { formatTokenAmountToNumber } from '~/lib/swap/token-amount'
 
 export interface PresalePhaseOnChain {
   index: number
@@ -50,21 +49,28 @@ export function resolveRemainingUserAmount(
   return fallbackMaxAmount
 }
 
+/** One share equals the phase min purchase amount on-chain (typically 100 USD1). */
+export function resolveSharePriceWei(phase: PresalePhaseOnChain | null | undefined): bigint {
+  if (phase?.minAmount && phase.minAmount > 0n) {
+    return phase.minAmount
+  }
+  return 0n
+}
+
 /** 份额上限 = min(本期剩余, 用户剩余, 余额可购份数)。 */
 export function resolveGenesisMaxShares({
-  sharePriceUsd1 = PRESALE_CONFIG.sharePriceUsd1,
+  sharePriceWei,
   remainingPhaseAmount,
   remainingUserAmount,
   usd1Balance = 0n,
   walletReady = false,
 }: {
-  sharePriceUsd1?: string
+  sharePriceWei: bigint
   remainingPhaseAmount: bigint
   remainingUserAmount: bigint
   usd1Balance?: bigint
   walletReady?: boolean
 }): number {
-  const sharePriceWei = parseTokenAmount(sharePriceUsd1, USD1_DECIMALS)
   if (sharePriceWei === 0n) return 0
 
   const maxPurchasableWei =
@@ -192,21 +198,16 @@ export function resolvePhaseDiscountBps(
   return Number.isFinite(bps) && bps > 0 ? bps : 0
 }
 
-export const AIRDROP_BPS_BY_PHASE = [500, 200, 100] as const
-
-/** Fallback when `AIRDROP_THRESHOLD` is unavailable — matches mainnet deployment. */
-export const X_AIRDROP_MIN_PERIOD_USD = 5_000
-
 export function presaleAirdropThresholdToUsd(thresholdWei: bigint): number {
-  if (thresholdWei <= 0n) return X_AIRDROP_MIN_PERIOD_USD
+  if (thresholdWei <= 0n) return 0
   return formatTokenAmountToNumber(thresholdWei, USD1_DECIMALS)
 }
 
-export function getAirdropBpsForPhase(phaseIndex: number, phase?: PresalePhaseOnChain): number {
+export function getAirdropBpsForPhase(_phaseIndex: number, phase?: PresalePhaseOnChain): number {
   if (phase?.airdropValueRatio !== undefined && phase.airdropValueRatio > 0n) {
     return Number(phase.airdropValueRatio)
   }
-  return AIRDROP_BPS_BY_PHASE[phaseIndex] ?? 100
+  return 0
 }
 
 /** AGX amount at reference price — not the discounted purchase price. */
@@ -233,9 +234,10 @@ export function resolveXTokenAirdropUsdForPurchase(
   periodContributedUsd: number,
   payUsd1: number,
   phaseIndex: number,
+  minPeriodUsd: number,
   phase?: PresalePhaseOnChain,
 ): number {
   const periodTotalUsd = periodContributedUsd + payUsd1
-  if (periodTotalUsd < X_AIRDROP_MIN_PERIOD_USD || payUsd1 <= 0) return 0
+  if (minPeriodUsd <= 0 || periodTotalUsd < minPeriodUsd || payUsd1 <= 0) return 0
   return estimateXTokenAirdropUsd(payUsd1, phaseIndex, phase)
 }

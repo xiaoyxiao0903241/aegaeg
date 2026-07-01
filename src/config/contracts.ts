@@ -21,6 +21,8 @@ export interface BscContracts {
   multicall3: `0x${string}`
   referral: `0x${string}`
   rewardClaimer: `0x${string}`
+  /** Community development fund vault — claimReward signType=2 (test) */
+  communityFundVault: `0x${string}`
   defaultReferrer: `0x${string}`
   /** AegisUsd1Swap — USDT → USD1 flash swap (BSC mainnet) */
   usd1Swap: `0x${string}`
@@ -39,10 +41,11 @@ export const BSC_CONTRACTS: BscContracts = {
   pancakeV3SwapRouter: '0x13f4EA83D0bd40E75C8222255bc855a974568Dd4',
   pancakeV3Quoter: '0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997',
   usdtUsd1Pool: '0x9c4ee895e4f6ce07ada631c508d1306db7502cce',
-  preSale: '0x4F86c19945Cf64137EA31EecED5545e665B7a0f5',
+  preSale: '0xDE381f0F124d46Ab7E43629421Ac862b103fe008',
   multicall3: '0xcA11bde05977b3631167028862bE2a173976CA11',
   referral: '0xe0F3AE113dD3997982AE9ad7d5510ffA4E3Cce71',
   rewardClaimer: '0x697B55FCFBC4Cd5401f605EE4D9905816c127f07',
+  communityFundVault: '0x083441EC373E547611295e037D759084b1483a95',
   defaultReferrer: '0x74A4127e0aaC45C8C23935707fE37889821029c3',
   usd1Swap: '0x95EA21C11dd40A7C2b7Ec2f5FBa7b124f3Dec1c0',
 }

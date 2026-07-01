@@ -376,6 +376,16 @@ const app = defineMessages({
         title: 'Sin registros de recompensas de equipo',
         body: 'Los registros de liquidación y reclamación de recompensas de equipo aparecerán aquí cuando se generen recompensas.',
       },
+      communityFund: 'Fondo de desarrollo',
+      communityFundTooltip:
+        'Las supercomunidades reciben el 5% del fondo de desarrollo del sistema, dedicado a la autogestión del sistema, incluyendo pero no limitado a: construcción del sistema, operaciones diarias, reuniones del sistema y formadores del sistema.',
+      communityFundLocked: 'Bloqueado: {amount}',
+      communityFundUnlockedSuffix: 'desbloqueado',
+      communityFundHistory: 'Fondo de desarrollo',
+      communityFundHistoryEmpty: {
+        title: 'Sin registros del fondo de desarrollo',
+        body: 'Los registros de reclamación del fondo de desarrollo aparecerán aquí cuando se generen recompensas.',
+      },
       faq: {
         title: 'FAQs',
         items: [

@@ -1,9 +1,5 @@
 import { formatUsd } from '~/lib/api/format-display'
-import { PRESALE_CONFIG } from '~/config/presale'
-import {
-  AIRDROP_BPS_BY_PHASE,
-  type PresalePhaseOnChain,
-} from '~/lib/presale/presale-math'
+import { type PresalePhaseOnChain } from '~/lib/presale/presale-math'
 import { formatTokenAmount } from '~/lib/swap/token-amount'
 
 const USD1_DECIMALS = 18
@@ -35,11 +31,8 @@ function formatDiscountList(phases: PresalePhaseOnChain[]): string {
 
 function formatAirdropRatioList(phases: PresalePhaseOnChain[]): string {
   return phases
-    .map((phase, index) => {
-      const bps =
-        phase.airdropValueRatio > 0n
-          ? Number(phase.airdropValueRatio)
-          : (AIRDROP_BPS_BY_PHASE[index] ?? 100)
+    .map((phase) => {
+      const bps = Number(phase.airdropValueRatio > 0n ? phase.airdropValueRatio : 0n)
       return `${(bps / 100).toFixed(0)}%`
     })
     .join(' / ')
@@ -51,7 +44,7 @@ function formatPhaseDurationDays(phases: PresalePhaseOnChain[]): string {
   )
 
   if (dayCounts.length === 0) {
-    return String(Math.round(PRESALE_CONFIG.phaseDurationSeconds / 86_400))
+    return '—'
   }
 
   const [firstDayCount = 0] = dayCounts
@@ -68,7 +61,7 @@ function resolveMinUsd(phases: PresalePhaseOnChain[]): number {
     .filter((amount) => amount > 0)
 
   if (minAmounts.length === 0) {
-    return Number(PRESALE_CONFIG.phases[0]?.minUsd1 ?? PRESALE_CONFIG.sharePriceUsd1)
+    return 0
   }
 
   return Math.min(...minAmounts)
@@ -80,7 +73,7 @@ function resolveShareIncrement(phases: PresalePhaseOnChain[]): string {
     return formatUsdAmountFromWei(minWei)
   }
 
-  return PRESALE_CONFIG.sharePriceUsd1
+  return '—'
 }
 
 export function buildGenesisFaqTemplateValues(
@@ -109,10 +102,10 @@ export function buildGenesisFaqTemplateValues(
     phaseCount: String(phases.length),
     phaseDurationDays: formatPhaseDurationDays(phases),
     discounts: formatDiscountList(phases),
-    minUsd: formatUsd(minUsdNumber),
+    minUsd: minUsdNumber > 0 ? formatUsd(minUsdNumber) : '—',
     shareIncrement: resolveShareIncrement(phases),
     phaseQuotas: phases.map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount)).join(' / '),
-    threshold: formatUsd(airdropThresholdUsd),
+    threshold: airdropThresholdUsd > 0 ? formatUsd(airdropThresholdUsd) : '—',
     airdropRatios: formatAirdropRatioList(phases),
   }
 }

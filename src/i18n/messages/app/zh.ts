@@ -375,6 +375,16 @@ const app = defineMessages({
         title: '暂无等级奖励记录',
         body: '等级奖励结算与领取记录将在奖励产生后显示在这里。',
       },
+      communityFund: '发展基金',
+      communityFundTooltip:
+        '超级社区获得5%体系发展基金，专项用于体系自营，包括但不限于：系统建设，日常运营，体系会议，体系讲师等。',
+      communityFundLocked: '待解锁: {amount}',
+      communityFundUnlockedSuffix: '已解锁',
+      communityFundHistory: '发展基金',
+      communityFundHistoryEmpty: {
+        title: '暂无发展基金记录',
+        body: '发展基金领取记录将在奖励产生后显示在这里。',
+      },
       faq: {
         title: 'FAQs',
         items: [

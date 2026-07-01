@@ -1,6 +1,11 @@
-import type { RewardLogItem, SalesLogItem, TeamReferralItem, TeamRewardClaimLogItem } from '~/lib/api/types'
+import type {
+  CommunityFundLogItem,
+  RewardLogItem,
+  SalesLogItem,
+  TeamReferralItem,
+  TeamRewardClaimLogItem,
+} from '~/lib/api/types'
 import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/lib/presale/presale-math'
-import { PRESALE_CONFIG } from '~/config/presale'
 
 /** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */
 export const TABLE_EMPTY = '-'
@@ -172,7 +177,7 @@ function resolveSalesLogFormatOptions(
   }
 
   return {
-    agxPriceUsd: options.agxPriceUsd ?? Number(PRESALE_CONFIG.agxPriceUsd),
+    agxPriceUsd: options.agxPriceUsd ?? 0,
     phases: options.phases,
   }
 }
@@ -199,6 +204,7 @@ export type RewardLogStatusKey =
   | 'pending'
   | 'processing'
   | 'paid'
+  | 'claimed'
   | 'failed'
   | 'unknown'
 
@@ -245,6 +251,21 @@ export function resolveTeamRewardClaimStatusKey(status: number): RewardLogStatus
   }
 }
 
+export function resolveCommunityFundLogStatusKey(status: number): RewardLogStatusKey {
+  switch (status) {
+    case 0:
+      return 'pending'
+    case 1:
+      return 'claimed'
+    case 2:
+      return 'paid'
+    case 3:
+      return 'failed'
+    default:
+      return 'unknown'
+  }
+}
+
 export function formatRewardTypeLabel(
   rewardType: string,
   labels: RewardTypeLabels,
@@ -255,6 +276,18 @@ export function formatRewardTypeLabel(
 export function formatClaimableAmount(total: string, claimed: string): string {
   const pending = Math.max(0, Number(total) - Number(claimed))
   return formatUsd(pending, 2)
+}
+
+export function formatCommunityFundLockedAmount(
+  total: string,
+  claimed: string,
+  unlockedClaimable: string,
+): string {
+  const locked = Math.max(
+    0,
+    Number(total) - Number(claimed) - Number(unlockedClaimable),
+  )
+  return formatUsd(locked, 2)
 }
 
 export function calcProgressPercent(current: string | number, target: string | number): number {
@@ -417,6 +450,27 @@ export function mapTeamRewardClaimLogToRow(
 
   return [
     formatApiDateTime(item.claimed_at ?? item.created_at),
+    amountLabel,
+    formatTableGenesisRank(item.presale_rank),
+    statusLabel,
+  ]
+}
+
+export function mapCommunityFundLogToRow(
+  item: CommunityFundLogItem,
+  labels: {
+    logStatus: RewardLogStatusLabels
+  },
+): string[] {
+  const amountNum = Number(item.amount)
+  const amountLabel = Number.isFinite(amountNum)
+    ? formatUsd(Math.abs(amountNum), 2)
+    : TABLE_EMPTY
+  const statusKey = resolveCommunityFundLogStatusKey(item.status)
+  const statusLabel = labels.logStatus[statusKey]
+
+  return [
+    formatBlockTime(item.block_time),
     amountLabel,
     formatTableGenesisRank(item.presale_rank),
     statusLabel,

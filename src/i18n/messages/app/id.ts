@@ -376,6 +376,16 @@ const app = defineMessages({
         title: 'Belum ada riwayat hadiah tim',
         body: 'Riwayat penyelesaian dan klaim hadiah tim akan muncul di sini setelah hadiah dihasilkan.',
       },
+      communityFund: 'Dana pengembangan',
+      communityFundTooltip:
+        'Super komunitas menerima 5% dana pengembangan sistem, khusus untuk operasi mandiri sistem, termasuk namun tidak terbatas pada: pembangunan sistem, operasi harian, rapat sistem, dan pengajar sistem.',
+      communityFundLocked: 'Terkunci: {amount}',
+      communityFundUnlockedSuffix: 'terbuka',
+      communityFundHistory: 'Dana pengembangan',
+      communityFundHistoryEmpty: {
+        title: 'Belum ada riwayat dana pengembangan',
+        body: 'Riwayat klaim dana pengembangan akan muncul di sini setelah hadiah dihasilkan.',
+      },
       faq: {
         title: 'FAQs',
         items: [

@@ -59,14 +59,14 @@ test('resolveRemainingUserAmount falls back to active phase when phaseRemaining 
 test('resolveGenesisMaxShares ignores zero remainingUserAmount when unlimited', async () => {
   const { resolveGenesisMaxShares } = await loadModule('/src/lib/presale/presale-math.ts')
 
-  const sharePriceUsd1 = '100'
+  const sharePriceWei = 100n * 10n ** 18n
   const remainingPhaseAmount = 4000n * 10n ** 18n
   const remainingUserAmount = 4000n * 10n ** 18n
   const usd1Balance = 5000n * 10n ** 18n
 
   assert.equal(
     resolveGenesisMaxShares({
-      sharePriceUsd1,
+      sharePriceWei,
       remainingPhaseAmount,
       remainingUserAmount,
       usd1Balance,

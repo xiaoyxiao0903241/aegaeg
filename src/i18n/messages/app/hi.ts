@@ -376,6 +376,16 @@ const app = defineMessages({
         title: 'अभी कोई टीम पुरस्कार रिकॉर्ड नहीं',
         body: 'टीम पुरस्कार निपटान और दावा रिकॉर्ड पुरस्कार उत्पन्न होने के बाद यहाँ दिखाई देंगे।',
       },
+      communityFund: 'विकास कोष',
+      communityFundTooltip:
+        'सुपर समुदायों को 5% प्रणाली विकास कोष मिलता है, जो प्रणाली स्व-संचालन के लिए समर्पित है, जिसमें सिस्टम निर्माण, दैनिक संचालन, प्रणाली बैठकें और प्रणाली व्याख्याता शामिल हैं।',
+      communityFundLocked: 'लॉक: {amount}',
+      communityFundUnlockedSuffix: 'अनलॉक',
+      communityFundHistory: 'विकास कोष',
+      communityFundHistoryEmpty: {
+        title: 'अभी कोई विकास कोष रिकॉर्ड नहीं',
+        body: 'विकास कोष दावा रिकॉर्ड पुरस्कार उत्पन्न होने के बाद यहाँ दिखाई देंगे।',
+      },
       faq: {
         title: 'FAQs',
         items: [

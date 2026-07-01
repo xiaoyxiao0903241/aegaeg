@@ -12,6 +12,10 @@ export const queryKeys = {
       ['api', 'rewardLogs', params.page ?? 1, params.page_size ?? 20] as const,
     referralTotal: ['api', 'referralTotal'] as const,
     teamRewardTotal: ['api', 'teamRewardTotal'] as const,
+    communityFundTotal: ['api', 'communityFundTotal'] as const,
+    communityFundLogsRoot: ['api', 'communityFundLogs'] as const,
+    communityFundLogs: (params: PaginationParams = {}) =>
+      ['api', 'communityFundLogs', params.page ?? 1, params.page_size ?? 20] as const,
     teamRewardClaimLogsRoot: ['api', 'teamRewardClaimLogs'] as const,
     teamRewardClaimLogs: (params: PaginationParams = {}) =>
       ['api', 'teamRewardClaimLogs', params.page ?? 1, params.page_size ?? 20] as const,

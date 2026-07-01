@@ -2,6 +2,8 @@ import { apiRequest } from '~/lib/api/request'
 import type {
   ClaimConfirmRequest,
   ClaimConfirmResult,
+  CommunityFundLogItem,
+  CommunityFundTotals,
   LoginRequest,
   LoginResponse,
   Paginated,
@@ -87,6 +89,25 @@ export async function getTeamRewardTotal(token: string): Promise<RewardTotals> {
   })
 }
 
+export async function getCommunityFundTotal(token: string): Promise<CommunityFundTotals> {
+  return apiRequest<CommunityFundTotals>('/community-fund/total', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+export async function getCommunityFundLogs(
+  token: string,
+  params: PaginationParams = {},
+): Promise<Paginated<CommunityFundLogItem>> {
+  return apiRequest<Paginated<CommunityFundLogItem>>('/community-fund/logs', {
+    method: 'POST',
+    token,
+    body: paginationBody(params),
+  })
+}
+
 export async function getTeamReferrals(
   token: string,
   params: PaginationParams = {},
@@ -119,6 +140,14 @@ export async function getTeamRewardClaimLogs(
 
 export async function requestTeamRewardSignature(token: string): Promise<TeamRewardSignature> {
   return apiRequest<TeamRewardSignature>('/claim/team-reward', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+export async function requestCommunityFundClaim(token: string): Promise<TeamRewardSignature> {
+  return apiRequest<TeamRewardSignature>('/claim/community-fund', {
     method: 'POST',
     token,
     body: {},

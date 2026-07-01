@@ -376,6 +376,16 @@ const app = defineMessages({
         title: 'チームリワード記録はまだありません',
         body: 'チームリワードの決済・受取記録は、リワードが発生するとここに表示されます。',
       },
+      communityFund: '発展基金',
+      communityFundTooltip:
+        'スーパーコミュニティは体系発展基金の5%を受け取り、システム構築、日常運営、体系会議、体系講師など体系の自営に専用されます。',
+      communityFundLocked: 'ロック中: {amount}',
+      communityFundUnlockedSuffix: 'アンロック済み',
+      communityFundHistory: '発展基金',
+      communityFundHistoryEmpty: {
+        title: '発展基金の記録はまだありません',
+        body: '発展基金の受取記録は、リワードが発生するとここに表示されます。',
+      },
       faq: {
         title: 'FAQs',
         items: [

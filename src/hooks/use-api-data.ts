@@ -1,4 +1,6 @@
 import {
+  getCommunityFundLogs,
+  getCommunityFundTotal,
   getPerformance,
   getQualifiedPartitions,
   getReferralTotal,
@@ -55,6 +57,22 @@ export function useReferralTotal(enabled = true) {
 
 export function useTeamRewardTotal(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.teamRewardTotal, getTeamRewardTotal, enabled)
+}
+
+export function useCommunityFundTotal(enabled = true) {
+  return useAuthenticatedQuery(queryKeys.api.communityFundTotal, getCommunityFundTotal, enabled)
+}
+
+export function useCommunityFundLogs(params: PaginationParams = {}, enabled = true) {
+  const page = params.page
+  const pageSize = params.page_size
+
+  return useAuthenticatedQuery(
+    queryKeys.api.communityFundLogs({ page, page_size: pageSize }),
+    (token) => getCommunityFundLogs(token, { page, page_size: pageSize }),
+    enabled,
+    { keepPreviousData: true },
+  )
 }
 
 export function useTeamRewardClaimLogs(params: PaginationParams = {}, enabled = true) {

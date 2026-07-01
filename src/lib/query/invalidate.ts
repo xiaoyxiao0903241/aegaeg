@@ -136,8 +136,11 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.performance,
     queryKeys.api.qualifiedPartitions,
     queryKeys.api.rewardLogsRoot,
+    queryKeys.api.referralTotal,
     queryKeys.api.teamRewardTotal,
     queryKeys.api.teamRewardClaimLogsRoot,
+    queryKeys.api.communityFundTotal,
+    queryKeys.api.communityFundLogsRoot,
     queryKeys.api.teamOverview,
   ],
   community: [

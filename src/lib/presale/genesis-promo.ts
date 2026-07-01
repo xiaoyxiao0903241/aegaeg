@@ -1,4 +1,3 @@
-import { PRESALE_CONFIG } from '~/config/presale'
 import type { PresalePhaseOnChain } from '~/lib/presale/presale-math'
 import { formatPhaseDate } from '~/lib/presale/presale-math'
 import { buildSeasonOptions } from '~/lib/presale/season-options'
@@ -47,17 +46,14 @@ function resolveFeaturedPhaseIndex(
 export function buildGenesisPromoSnapshot(
   phases: PresalePhaseOnChain[],
   activePhase: PresalePhaseOnChain | null,
+  agxPriceUsd: number,
   nowSeconds = Math.floor(Date.now() / 1000),
 ): GenesisPromoSnapshot | null {
   if (phases.length === 0) {
     return null
   }
 
-  const seasonOptions = buildSeasonOptions(
-    phases,
-    Number(PRESALE_CONFIG.agxPriceUsd),
-    nowSeconds,
-  )
+  const seasonOptions = buildSeasonOptions(phases, agxPriceUsd, nowSeconds)
   const featuredIndex = resolveFeaturedPhaseIndex(phases, activePhase, nowSeconds)
   const featured = seasonOptions[featuredIndex]
   if (!featured) {

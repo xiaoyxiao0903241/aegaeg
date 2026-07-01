@@ -376,6 +376,16 @@ const app = defineMessages({
         title: 'Chưa có lịch sử phần thưởng nhóm',
         body: 'Lịch sử quyết toán và nhận phần thưởng nhóm sẽ hiển thị tại đây khi phần thưởng phát sinh.',
       },
+      communityFund: 'Quỹ phát triển',
+      communityFundTooltip:
+        'Siêu cộng đồng nhận 5% quỹ phát triển hệ thống, dành riêng cho vận hành tự chủ, bao gồm nhưng không giới hạn: xây dựng hệ thống, vận hành hàng ngày, họp hệ thống và giảng viên hệ thống.',
+      communityFundLocked: 'Chưa mở khóa: {amount}',
+      communityFundUnlockedSuffix: 'đã mở khóa',
+      communityFundHistory: 'Quỹ phát triển',
+      communityFundHistoryEmpty: {
+        title: 'Chưa có lịch sử quỹ phát triển',
+        body: 'Lịch sử nhận quỹ phát triển sẽ hiển thị tại đây khi phần thưởng phát sinh.',
+      },
       faq: {
         title: 'FAQs',
         items: [
