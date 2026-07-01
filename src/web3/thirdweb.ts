@@ -3,10 +3,10 @@ import { createWallet } from 'thirdweb/wallets'
 import { bsc as bscBase } from 'thirdweb/chains'
 import type { WalletId } from 'thirdweb/wallets'
 import { aegisConnectTheme } from '~/web3/connect-theme'
+import { appEnv } from '~/config/env'
 
 /** 公开 BSC RPC — 链上读写走此 URL，不依赖 thirdweb RPC */
-export const BSC_RPC_URL =
-  import.meta.env.VITE_BSC_RPC_URL ?? 'https://bsc-dataseed.binance.org'
+export const BSC_RPC_URL = appEnv.bscRpcUrl
 
 export const bsc = defineChain({
   ...bscBase,
@@ -19,11 +19,7 @@ const PLACEHOLDER_CLIENT_IDS = new Set([
   'replace-with-thirdweb-client-id',
 ])
 
-function resolveThirdwebClientId(): string {
-  return import.meta.env.VITE_THIRDWEB_CLIENT_ID?.trim() ?? ''
-}
-
-export const thirdwebClientId = resolveThirdwebClientId()
+export const thirdwebClientId = appEnv.thirdwebClientId
 
 /** thirdweb ConnectButton / SDK 需要有效的 Dashboard Client ID */
 export const isThirdwebConfigured =
@@ -33,8 +29,7 @@ export const thirdwebClient = createThirdwebClient({
   clientId: isThirdwebConfigured ? thirdwebClientId : 'MISSING_VITE_THIRDWEB_CLIENT_ID',
 })
 
-export const walletConnectProjectId =
-  import.meta.env.VITE_WALLETCONNECT_PROJECT_ID?.trim() || undefined
+export const walletConnectProjectId = appEnv.walletConnectProjectId || undefined
 
 let web3EnvWarningsLogged = false
 

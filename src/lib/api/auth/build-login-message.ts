@@ -1,3 +1,5 @@
+import { appEnv } from '~/config/env'
+
 export interface SiweLoginPayload {
   domain: string
   address: string
@@ -129,7 +131,7 @@ export function buildLoginMessage(
 }
 
 export function resolveLoginMessageFormat(): LoginMessageFormat {
-  const configured = import.meta.env.VITE_AUTH_MESSAGE_FORMAT
+  const configured = appEnv.authMessageFormat
 
   if (configured === 'simple' || configured === 'siwe') {
     return configured

@@ -1,4 +1,6 @@
-const BSCSCAN_BASE = 'https://bscscan.com'
+import { appEnv } from '~/config/env'
+
+const BSCSCAN_BASE = appEnv.bscscanBase.replace(/\/$/, '')
 
 export function bscscanAddress(address: string): string {
   return `${BSCSCAN_BASE}/address/${address}`

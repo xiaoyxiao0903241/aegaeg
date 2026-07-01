@@ -1,3 +1,5 @@
+import { resolveApiBaseUrl } from '~/lib/api/resolve-api-base-url'
+
 export interface ApiEnvelope<T> {
   code: number
   data?: T
@@ -48,7 +50,10 @@ export function createApiClient(options: { baseUrl: string }): ApiClient {
   }
 }
 
-export const DEFAULT_API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? 'https://api.xdpro.cc/api'
+export function getApiBaseUrl(): string {
+  return resolveApiBaseUrl()
+}
 
-export const apiClient = createApiClient({ baseUrl: DEFAULT_API_BASE_URL })
+export function buildApiClientUrl(path: string): string {
+  return createApiClient({ baseUrl: getApiBaseUrl() }).buildUrl(path)
+}

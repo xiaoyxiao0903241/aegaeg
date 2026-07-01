@@ -1,6 +1,6 @@
 import {
-  apiClient,
   ApiError,
+  buildApiClientUrl,
   createAuthHeader,
   parseApiResponse,
   type ApiEnvelope,
@@ -19,7 +19,7 @@ export function buildApiUrl(
   path: string,
   searchParams?: Record<string, string | number | undefined>,
 ): string {
-  const url = new URL(apiClient.buildUrl(path))
+  const url = new URL(buildApiClientUrl(path))
 
   if (searchParams) {
     for (const [key, value] of Object.entries(searchParams)) {
