@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'Super Komunitas menerima dana pengembangan khusus dan hak tata kelola.',
       shareholderHintNoRank: 'Level Genesis',
-      shareholderNoRankTitle: 'Belum menjadi pemegang saham Genesis',
-      shareholderNoRankBody: 'Menjadi pemegang saham Genesis memberi hadiah 1%-10% dari volume co-build tim dan naik 1 level dalam 30 hari setelah peluncuran AEGIS X.',
-      shareholderTitleForRank: '{rank} · Pemegang Saham Genesis',
+      shareholderNoRankTitle: 'Belum menjadi Gubernur Cadangan Genesis',
+      shareholderNoRankBody: 'Menjadi Gubernur Cadangan Genesis memberi hadiah 1%-10% dari volume co-build tim dan naik 1 level dalam 30 hari setelah peluncuran AEGIS X.',
+      shareholderTitleForRank: '{rank} · Gubernur Cadangan Genesis',
       heroKicker: 'LEVEL GENESIS',
       heroBodyForRank: 'Dapatkan {bonus} dari volume co-build tim sebagai hadiah dan terima tingkat co-build {postLaunch} selama 30 hari setelah peluncuran.',
       currentTierSuffix: 'saat ini',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: 'Terkunci: {amount}',
       communityFundUnlockedSuffix: 'terbuka',
       communityFundHistory: 'Dana pengembangan',
+      communityFundCumulativeClaimed: 'Total diklaim {amount}',
       communityFundHistoryEmpty: {
         title: 'Belum ada riwayat dana pengembangan',
         body: 'Riwayat klaim dana pengembangan akan muncul di sini setelah hadiah dihasilkan.',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: 'Anggota komunitas saya ({count})',
       referralBondPermanent: 'Hubungan referral aktif · ikatan bersifat permanen.',
       volumePrefix: 'Volume',
-      genesisShareholder: 'Pemegang Saham Genesis',
+      genesisShareholder: 'Gubernur Cadangan Genesis',
       statToday: 'Hari ini +{count} · +{amount}',
       statGenesisToday: 'Naik 1 level otomatis setelah peluncuran',
+      postLaunchRankLabel: 'Tingkat setelah peluncuran',
+      totalTeamVolume: 'Total kinerja {amount}',
+      postLaunch30DayBoost: 'Naik ke {rank} dalam 30 hari setelah peluncuran',
       bindReferrerSuccess: 'Pemberi referensi berhasil diikat',
       inviteFlow: {
         items: [

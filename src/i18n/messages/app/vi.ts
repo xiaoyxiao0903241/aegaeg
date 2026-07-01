@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'Siêu cộng đồng nhận quỹ phát triển chuyên dụng và quyền quản trị.',
       shareholderHintNoRank: 'Cấp sáng lập',
-      shareholderNoRankTitle: 'Bạn chưa trở thành cổ đông sáng lập',
-      shareholderNoRankBody: 'Trở thành cổ đông sáng lập để nhận 1%-10% khối lượng đồng xây dựng của đội làm phần thưởng và nâng 1 cấp trong 30 ngày sau khi AEGIS X ra mắt.',
-      shareholderTitleForRank: '{rank} · Cổ đông sáng lập',
+      shareholderNoRankTitle: 'Bạn chưa trở thành Thống đốc Dự trữ Sáng lập',
+      shareholderNoRankBody: 'Trở thành Thống đốc Dự trữ Sáng lập để nhận 1%-10% khối lượng đồng xây dựng của đội làm phần thưởng và nâng 1 cấp trong 30 ngày sau khi AEGIS X ra mắt.',
+      shareholderTitleForRank: '{rank} · Thống đốc Dự trữ Sáng lập',
       heroKicker: 'Cấp sáng lập',
       heroBodyForRank: 'Nhận {bonus} từ khối lượng đồng xây dựng của nhóm làm phần thưởng và đạt cấp đồng xây dựng {postLaunch} trong 30 ngày sau ra mắt.',
       currentTierSuffix: 'Hiện tại',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: 'Chưa mở khóa: {amount}',
       communityFundUnlockedSuffix: 'đã mở khóa',
       communityFundHistory: 'Quỹ phát triển',
+      communityFundCumulativeClaimed: 'Tổng đã nhận {amount}',
       communityFundHistoryEmpty: {
         title: 'Chưa có lịch sử quỹ phát triển',
         body: 'Lịch sử nhận quỹ phát triển sẽ hiển thị tại đây khi phần thưởng phát sinh.',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: 'Thành viên cộng đồng của tôi ({count})',
       referralBondPermanent: 'Quan hệ giới thiệu đã kích hoạt · Liên kết vĩnh viễn.',
       volumePrefix: 'Doanh số',
-      genesisShareholder: 'Cổ đông Genesis',
+      genesisShareholder: 'Thống đốc Dự trữ Sáng lập',
       statToday: 'Hôm nay +{count} · +{amount}',
       statGenesisToday: 'Tự động nâng 1 cấp sau ra mắt',
+      postLaunchRankLabel: 'Cấp sau ra mắt',
+      totalTeamVolume: 'Tổng hiệu suất {amount}',
+      postLaunch30DayBoost: 'Nâng lên {rank} trong 30 ngày sau ra mắt',
       bindReferrerSuccess: 'Liên kết người giới thiệu thành công',
       inviteFlow: {
         items: [

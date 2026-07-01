@@ -343,9 +343,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'Süper Topluluklar özel gelişim fonu ve yönetişim hakları alır.',
       shareholderHintNoRank: 'Genesis seviyesi',
-      shareholderNoRankTitle: 'Henüz Genesis hissedarı olmadınız',
-      shareholderNoRankBody: 'Genesis hissedarı olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
-      shareholderTitleForRank: '{rank} · Genesis hissedarı',
+      shareholderNoRankTitle: 'Henüz Genesis Rezerv Valisi olmadınız',
+      shareholderNoRankBody: 'Genesis Rezerv Valisi olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
+      shareholderTitleForRank: '{rank} · Genesis Rezerv Valisi',
       heroKicker: 'Genesis seviyesi',
       heroBodyForRank: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın ve yayına girdikten sonra 30 gün boyunca {postLaunch} ortak inşa seviyesini kazanın.',
       currentTierSuffix: 'Mevcut',
@@ -389,6 +389,7 @@ const app = defineMessages({
       communityFundLocked: 'Kilitli: {amount}',
       communityFundUnlockedSuffix: 'kilidi açıldı',
       communityFundHistory: 'Gelişim fonu',
+      communityFundCumulativeClaimed: 'Toplam talep {amount}',
       communityFundHistoryEmpty: {
         title: 'Henüz gelişim fonu kaydı yok',
         body: 'Gelişim fonu talep kayıtları ödül oluştuktan sonra burada görünecektir.',
@@ -482,9 +483,12 @@ const app = defineMessages({
       myInvites: 'Topluluk üyelerim ({count})',
       referralBondPermanent: 'Davet ilişkisi etkinleştirildi · kalıcı olarak bağlandı.',
       volumePrefix: 'Performans',
-      genesisShareholder: 'Genesis hissedarı',
+      genesisShareholder: 'Genesis Rezerv Valisi',
       statToday: 'Bugün +{count} · +{amount}',
       statGenesisToday: 'Yayına girdikten sonra otomatik olarak 1 seviye yükselir',
+      postLaunchRankLabel: 'Yayın sonrası seviye',
+      totalTeamVolume: 'Toplam hacim {amount}',
+      postLaunch30DayBoost: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine yükselin',
       bindReferrerSuccess: 'Öneren bağlama başarılı',
       inviteFlow: {
         items: [

@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'Super Communities receive a dedicated development fund and governance rights.',
       shareholderHintNoRank: 'Genesis tier',
-      shareholderNoRankTitle: 'Not yet a Genesis shareholder',
-      shareholderNoRankBody: 'Become a Genesis shareholder to earn 1%-10% of team co-build volume as rewards and upgrade one tier within 30 days after AEGIS X launch.',
-      shareholderTitleForRank: '{rank} · Genesis Shareholder',
+      shareholderNoRankTitle: 'Not yet a Genesis Reserve Governor',
+      shareholderNoRankBody: 'Become a Genesis Reserve Governor to earn 1%-10% of team co-build volume as rewards and upgrade one tier within 30 days after AEGIS X launch.',
+      shareholderTitleForRank: '{rank} · Genesis Reserve Governor',
       heroKicker: 'Genesis tier',
       heroBodyForRank: 'Earn {bonus} of team co-build volume as reward and receive {postLaunch} co-build tier for 30 days after launch.',
       currentTierSuffix: 'Current',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: 'Locked: {amount}',
       communityFundUnlockedSuffix: 'unlocked',
       communityFundHistory: 'Development fund',
+      communityFundCumulativeClaimed: 'Total claimed {amount}',
       communityFundHistoryEmpty: {
         title: 'No development fund records yet',
         body: 'Development fund claim records will appear here once rewards are generated.',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: 'My community members ({count})',
       referralBondPermanent: 'Referral relationship active · binding is permanent.',
       volumePrefix: 'Volume',
-      genesisShareholder: 'Genesis Shareholder',
+      genesisShareholder: 'Genesis Reserve Governor',
       statToday: 'Today +{count} · +{amount}',
       statGenesisToday: 'Auto-upgrade +1 tier after launch',
+      postLaunchRankLabel: 'Post-launch tier',
+      totalTeamVolume: 'Total volume {amount}',
+      postLaunch30DayBoost: 'Upgrade to {rank} within 30 days after launch',
       bindReferrerSuccess: 'Referrer bound successfully',
       inviteFlow: {
         items: [

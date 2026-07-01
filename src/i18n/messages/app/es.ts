@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'Las supercomunidades reciben un fondo de desarrollo dedicado y derechos de gobernanza.',
       shareholderHintNoRank: 'Nivel Génesis',
-      shareholderNoRankTitle: 'Aún no eres accionista Génesis',
-      shareholderNoRankBody: 'Al convertirte en accionista Génesis, obtienes el 1%-10% del volumen de co-construcción del equipo como recompensa y subes 1 nivel dentro de los 30 días posteriores al lanzamiento de AEGIS X.',
-      shareholderTitleForRank: '{rank} · Accionista Génesis',
+      shareholderNoRankTitle: 'Aún no eres Gobernador de Reserva Génesis',
+      shareholderNoRankBody: 'Al convertirte en Gobernador de Reserva Génesis, obtienes el 1%-10% del volumen de co-construcción del equipo como recompensa y subes 1 nivel dentro de los 30 días posteriores al lanzamiento de AEGIS X.',
+      shareholderTitleForRank: '{rank} · Gobernador de Reserva Génesis',
       heroKicker: 'Nivel Génesis',
       heroBodyForRank: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa y recibe el nivel de co-construcción {postLaunch} durante 30 días tras el lanzamiento.',
       currentTierSuffix: 'actual',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: 'Bloqueado: {amount}',
       communityFundUnlockedSuffix: 'desbloqueado',
       communityFundHistory: 'Fondo de desarrollo',
+      communityFundCumulativeClaimed: 'Total reclamado {amount}',
       communityFundHistoryEmpty: {
         title: 'Sin registros del fondo de desarrollo',
         body: 'Los registros de reclamación del fondo de desarrollo aparecerán aquí cuando se generen recompensas.',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: 'Miembros de mi comunidad ({count})',
       referralBondPermanent: 'Relación de referido activada · el vínculo es permanente.',
       volumePrefix: 'Volumen',
-      genesisShareholder: 'Accionista Génesis',
+      genesisShareholder: 'Gobernador de Reserva Génesis',
       statToday: 'Hoy +{count} · +{amount}',
       statGenesisToday: 'Ascenso automático de 1 nivel tras el lanzamiento',
+      postLaunchRankLabel: 'Nivel tras el lanzamiento',
+      totalTeamVolume: 'Volumen total {amount}',
+      postLaunch30DayBoost: 'Ascender a {rank} en 30 días tras el lanzamiento',
       bindReferrerSuccess: 'Referente vinculado correctamente',
       inviteFlow: {
         items: [

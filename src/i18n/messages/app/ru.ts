@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'Суперсообщества получают целевой фонд развития и права управления.',
       shareholderHintNoRank: 'Уровень Genesis',
-      shareholderNoRankTitle: 'Вы ещё не стали акционером Genesis',
-      shareholderNoRankBody: 'Став акционером Genesis, вы получаете 1%-10% от суммы командного со-строительства в виде наград и повышаете уровень на 1 в течение 30 дней после запуска AEGIS X.',
-      shareholderTitleForRank: '{rank} · Акционер Genesis',
+      shareholderNoRankTitle: 'Вы ещё не стали управляющим резервом Genesis',
+      shareholderNoRankBody: 'Став управляющим резервом Genesis, вы получаете 1%-10% от суммы командного со-строительства в виде наград и повышаете уровень на 1 в течение 30 дней после запуска AEGIS X.',
+      shareholderTitleForRank: '{rank} · Управляющий резервом Genesis',
       heroKicker: 'Уровень Genesis',
       heroBodyForRank: 'Получайте {bonus} от объёма командного со-строительства и уровень со-строительства {postLaunch} на 30 дней после запуска.',
       currentTierSuffix: 'текущий',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: 'Заблокировано: {amount}',
       communityFundUnlockedSuffix: 'разблокировано',
       communityFundHistory: 'Фонд развития',
+      communityFundCumulativeClaimed: 'Всего получено {amount}',
       communityFundHistoryEmpty: {
         title: 'Записей фонда развития пока нет',
         body: 'История получения фонда развития появится здесь после начисления наград.',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: 'Участники моего сообщества ({count})',
       referralBondPermanent: 'Реферальная связь активирована · привязка постоянна.',
       volumePrefix: 'Объём',
-      genesisShareholder: 'Акционер Genesis',
+      genesisShareholder: 'Управляющий резервом Genesis',
       statToday: 'Сегодня +{count} · +{amount}',
       statGenesisToday: 'Автоповышение на 1 уровень после запуска',
+      postLaunchRankLabel: 'Уровень после запуска',
+      totalTeamVolume: 'Общий объём {amount}',
+      postLaunch30DayBoost: 'Повышение до {rank} в течение 30 дней после запуска',
       bindReferrerSuccess: 'Реферер успешно привязан',
       inviteFlow: {
         items: [

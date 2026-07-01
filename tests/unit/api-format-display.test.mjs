@@ -171,6 +171,34 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
   assert.equal(row[3], '已领取')
 })
 
+test('mapCommunityFundLogToRow renders development fund history without genesis rank', async () => {
+  const { mapCommunityFundLogToRow } = await loadModule('/src/lib/api/format-display.ts')
+  const labels = {
+    logStatus: {
+      pending: '待处理',
+      processing: '处理中',
+      paid: '已支付',
+      claimed: '已领取',
+      failed: '失败',
+      unknown: '—',
+    },
+  }
+
+  const row = mapCommunityFundLogToRow(
+    {
+      block_time: 1_747_000_000,
+      status: 2,
+      presale_rank: 3,
+      amount: '60',
+    },
+    labels,
+  )
+
+  assert.equal(row.length, 3)
+  assert.equal(row[1], '$60.00')
+  assert.equal(row[2], '已支付')
+})
+
 test('formatClaimableAmount subtracts claimed from total', async () => {
   const { formatClaimableAmount } = await loadModule('/src/lib/api/format-display.ts')
 

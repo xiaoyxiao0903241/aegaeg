@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'スーパーコミュニティは体系発展専項基金とガバナンス権益を獲得します。',
       shareholderHintNoRank: '創世ランク',
-      shareholderNoRankTitle: 'まだ創世株主ではありません',
-      shareholderNoRankBody: '創世株主になると、チーム共創額の1%-10%をリワードとして獲得でき、AEGIS Xローンチ後30日以内に1ランクアップできます。',
-      shareholderTitleForRank: '{rank} · 創世株主',
+      shareholderNoRankTitle: 'まだ創世準備理事ではありません',
+      shareholderNoRankBody: '創世準備理事になると、チーム共創額の1%-10%をリワードとして獲得でき、AEGIS Xローンチ後30日以内に1ランクアップできます。',
+      shareholderTitleForRank: '{rank} · 創世準備理事',
       heroKicker: '創世ランク',
       heroBodyForRank: 'チーム共創額の{bonus}をリワードとして獲得し、ローンチ後30日間{postLaunch}共創ランクを受け取る。',
       currentTierSuffix: '現在',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: 'ロック中: {amount}',
       communityFundUnlockedSuffix: 'アンロック済み',
       communityFundHistory: '発展基金',
+      communityFundCumulativeClaimed: '累計受取 {amount}',
       communityFundHistoryEmpty: {
         title: '発展基金の記録はまだありません',
         body: '発展基金の受取記録は、リワードが発生するとここに表示されます。',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: 'マイコミュニティメンバー（{count}）',
       referralBondPermanent: '紹介関係が有効 · 紐付けは永久関係。',
       volumePrefix: '実績',
-      genesisShareholder: '創世株主',
+      genesisShareholder: '創世準備理事',
       statToday: '本日 +{count} · +{amount}',
       statGenesisToday: 'ローンチ後自動1ランク昇格',
+      postLaunchRankLabel: 'ローンチ後レベル',
+      totalTeamVolume: '総業績 {amount}',
+      postLaunch30DayBoost: 'ローンチ後30日以内に{rank}へ昇格',
       bindReferrerSuccess: '紹介者の紐付けが完了しました',
       inviteFlow: {
         items: [

@@ -5,7 +5,7 @@ import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 import { dappTableCellBorderClass, dappTableCellMinWidthClass } from '~/app/components/dapp-table-shell'
 
 const TABLE_CELL =
-  `${dappTableCellMinWidthClass} ${dappTableCellBorderClass} px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
+  `${dappTableCellMinWidthClass} ${dappTableCellBorderClass} tabular-nums px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
 const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
 

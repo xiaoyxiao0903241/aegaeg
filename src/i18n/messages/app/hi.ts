@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         'सुपर कम्युनिटी को समर्पित विकास कोष और शासन अधिकार प्राप्त होते हैं।',
       shareholderHintNoRank: 'Genesis स्तर',
-      shareholderNoRankTitle: 'आप अभी Genesis शेयरहोल्डर नहीं बने हैं',
-      shareholderNoRankBody: 'Genesis शेयरहोल्डर बनने पर टीम co-build राशि का 1%-10% पुरस्कार मिलता है, और AEGIS X लॉन्च के 30 दिनों में 1 स्तर अपग्रेड होता है।',
-      shareholderTitleForRank: '{rank} · Genesis शेयरहोल्डर',
+      shareholderNoRankTitle: 'आप अभी Genesis रिज़र्व गवर्नर नहीं बने हैं',
+      shareholderNoRankBody: 'Genesis रिज़र्व गवर्नर बनने पर टीम co-build राशि का 1%-10% पुरस्कार मिलता है, और AEGIS X लॉन्च के 30 दिनों में 1 स्तर अपग्रेड होता है।',
+      shareholderTitleForRank: '{rank} · Genesis रिज़र्व गवर्नर',
       heroKicker: 'GENESIS स्तर',
       heroBodyForRank: 'टीम सह-निर्माण राशि पर {bonus} पुरस्कार पाएं, और लॉन्च के बाद 30 दिनों के लिए {postLaunch} सह-निर्माण स्तर प्राप्त करें।',
       currentTierSuffix: 'वर्तमान',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: 'लॉक: {amount}',
       communityFundUnlockedSuffix: 'अनलॉक',
       communityFundHistory: 'विकास कोष',
+      communityFundCumulativeClaimed: 'कुल दावा {amount}',
       communityFundHistoryEmpty: {
         title: 'अभी कोई विकास कोष रिकॉर्ड नहीं',
         body: 'विकास कोष दावा रिकॉर्ड पुरस्कार उत्पन्न होने के बाद यहाँ दिखाई देंगे।',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: 'मेरे समुदाय सदस्य ({count})',
       referralBondPermanent: 'रेफ़रल संबंध सक्रिय · बाइंडिंग स्थायी है।',
       volumePrefix: 'प्रदर्शन',
-      genesisShareholder: 'Genesis शेयरहोल्डर',
+      genesisShareholder: 'Genesis रिज़र्व गवर्नर',
       statToday: 'आज +{count} · +{amount}',
       statGenesisToday: 'लॉन्च के बाद स्वचालित 1 स्तर वृद्धि',
+      postLaunchRankLabel: 'लॉन्च के बाद स्तर',
+      totalTeamVolume: 'कुल प्रदर्शन {amount}',
+      postLaunch30DayBoost: 'लॉन्च के 30 दिनों में {rank} तक बढ़ें',
       bindReferrerSuccess: 'रेफ़रर सफलतापूर्वक बाइंड',
       inviteFlow: {
         items: [

@@ -344,9 +344,9 @@ const app = defineMessages({
       superCommunityBenefitBody:
         '슈퍼 커뮤니티는 체계 발전 전용 기금과 거버넌스 권익을 받습니다.',
       shareholderHintNoRank: '창세 등급',
-      shareholderNoRankTitle: '아직 창세 주주가 아닙니다',
-      shareholderNoRankBody: '창세 주주가 되면 팀 공동 구축 금액의 1%-10%를 리워드로 받을 수 있으며, AEGIS X 출시 후 30일 이내 1단계 승급됩니다.',
-      shareholderTitleForRank: '{rank} · 창세 주주',
+      shareholderNoRankTitle: '아직 창세 준비금 이사가 아닙니다',
+      shareholderNoRankBody: '창세 준비금 이사가 되면 팀 공동 구축 금액의 1%-10%를 리워드로 받을 수 있으며, AEGIS X 출시 후 30일 이내 1단계 승급됩니다.',
+      shareholderTitleForRank: '{rank} · 창세 준비금 이사',
       heroKicker: '창세 등급',
       heroBodyForRank: '팀 공동 구축 금액의 {bonus}를 리워드로 받으며, 출시 후 30일간 {postLaunch} 공동 구축 등급을 획득합니다.',
       currentTierSuffix: '현재',
@@ -390,6 +390,7 @@ const app = defineMessages({
       communityFundLocked: '잠금: {amount}',
       communityFundUnlockedSuffix: '잠금 해제',
       communityFundHistory: '발전 기금',
+      communityFundCumulativeClaimed: '누적 수령 {amount}',
       communityFundHistoryEmpty: {
         title: '발전 기금 기록 없음',
         body: '발전 기금 수령 기록은 리워드가 발생한 후 여기에 표시됩니다.',
@@ -483,9 +484,12 @@ const app = defineMessages({
       myInvites: '내 커뮤니티 멤버 ({count})',
       referralBondPermanent: '추천 관계 활성화 · 연결은 영구적입니다.',
       volumePrefix: '실적',
-      genesisShareholder: '창세 주주',
+      genesisShareholder: '창세 준비금 이사',
       statToday: '오늘 +{count} · +{amount}',
       statGenesisToday: '출시 후 자동 1등급 상승',
+      postLaunchRankLabel: '출시 후 등급',
+      totalTeamVolume: '총 실적 {amount}',
+      postLaunch30DayBoost: '출시 후 30일 이내 {rank}로 승급',
       bindReferrerSuccess: '추천인 연결 완료',
       inviteFlow: {
         items: [
