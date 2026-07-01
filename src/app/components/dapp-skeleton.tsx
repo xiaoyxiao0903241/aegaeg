@@ -68,12 +68,13 @@ export function SeasonOptionSkeleton() {
 
 export function CurrentTitleCardBodySkeleton() {
   return (
-    <div aria-hidden="true" className="grid min-h-[3.75rem] gap-1.5">
-      <DappSkeleton className="h-4 w-[78%]" />
-      <div className="grid min-h-[2.25rem] gap-1.5">
-        <DappSkeleton className="h-3 w-full" />
-        <DappSkeleton className="h-3 w-[58%]" />
-      </div>
+    <div aria-hidden="true" className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+      <DappSkeleton className="h-3 w-16" />
+      <DappSkeleton className="ml-auto h-3 w-20" />
+      <DappSkeleton className="h-5 w-[78%]" />
+      <DappSkeleton className="ml-auto h-5 w-10" />
+      <DappSkeleton className="h-3 w-[58%]" />
+      <DappSkeleton className="ml-auto h-3 w-[88%]" />
     </div>
   )
 }

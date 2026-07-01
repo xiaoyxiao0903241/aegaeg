@@ -333,7 +333,15 @@ const app = defineMessages({
       title: 'Ortak İnşa Ödülleri',
       intro: 'Ortak inşaya katılın · Büyüme değerini paylaşın',
       currentTitle: 'Mevcut seviye',
-      shareholderHintForRank: 'Takım aboneliği {bonus} ödül · yayına girdikten sonra {postLaunch} unvanı 30 gün',
+      postLaunchRankTitle: 'Yayın sonrası seviye',
+      teamRewardRate: 'Takım ödülü {rate}',
+      postLaunch30DayRank: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine ulaşabilirsiniz',
+      postLaunchRankTooltip:
+        'Yayın sonrası seviye, takım ortak inşa tutarının indirimli fiyattan AGX\'e dönüştürülmesine dayalı gerçek performansa göre hesaplanır.\nMevcut seviye yalnızca performans verilerine dayanır; yayın sonrası kişisel varlıklar ve geçerli doğrudan yönlendirmeler gibi diğer faktörler etkili olabilir.\nBu bilgiler yalnızca referans içindir; nihai veri yayın sonrası gerçek verilerdir.',
+      superCommunityBadge: 'Süper Topluluk',
+      heroTierRewardBody: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın.',
+      superCommunityBenefitBody:
+        'Süper Topluluklar özel gelişim fonu ve yönetişim hakları alır.',
       shareholderHintNoRank: 'Genesis seviyesi',
       shareholderNoRankTitle: 'Henüz Genesis hissedarı olmadınız',
       shareholderNoRankBody: 'Genesis hissedarı olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',

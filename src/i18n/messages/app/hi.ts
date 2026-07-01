@@ -334,7 +334,15 @@ const app = defineMessages({
       title: 'सह-निर्माण पुरस्कार',
       intro: 'सह-निर्माण में भाग लें · वृद्धि मूल्य साझा करें',
       currentTitle: 'वर्तमान स्तर',
-      shareholderHintForRank: 'टीम सदस्यता {bonus} पुरस्कार · लॉन्च के बाद 30 दिन {postLaunch} उपाधि',
+      postLaunchRankTitle: 'लॉन्च के बाद स्तर',
+      teamRewardRate: 'टीम पुरस्कार {rate}',
+      postLaunch30DayRank: 'लॉन्च के 30 दिनों के भीतर आप {rank} तक पहुँच सकते हैं',
+      postLaunchRankTooltip:
+        'लॉन्च के बाद, स्तर टीम सह-निर्माण राशि के AGX में छूट मूल्य पर रूपांतरण के आधार पर वास्तविक प्रदर्शन से गणना होगी।\nवर्तमान स्तर केवल प्रदर्शन डेटा पर आधारित है; लॉन्च के बाद अन्य कारक भी प्रभाव डाल सकते हैं, जैसे व्यक्तिगत होल्डिंग और योग्य प्रत्यक्ष रेफरल।\nयह जानकारी केवल संदर्भ के लिए है; लॉन्च के बाद वास्तविक डेटा अंतिम होगा।',
+      superCommunityBadge: 'सुपर कम्युनिटी',
+      heroTierRewardBody: 'टीम सह-निर्माण राशि पर {bonus} पुरस्कार प्राप्त करें।',
+      superCommunityBenefitBody:
+        'सुपर कम्युनिटी को समर्पित विकास कोष और शासन अधिकार प्राप्त होते हैं।',
       shareholderHintNoRank: 'Genesis स्तर',
       shareholderNoRankTitle: 'आप अभी Genesis शेयरहोल्डर नहीं बने हैं',
       shareholderNoRankBody: 'Genesis शेयरहोल्डर बनने पर टीम co-build राशि का 1%-10% पुरस्कार मिलता है, और AEGIS X लॉन्च के 30 दिनों में 1 स्तर अपग्रेड होता है।',

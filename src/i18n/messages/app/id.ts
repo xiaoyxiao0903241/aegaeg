@@ -334,7 +334,15 @@ const app = defineMessages({
       title: 'Hadiah Co-Build',
       intro: 'Ikut co-build · bagikan nilai pertumbuhan',
       currentTitle: 'Level saat ini',
-      shareholderHintForRank: 'Hadiah langganan tim {bonus} · gelar {postLaunch} selama 30 hari setelah peluncuran',
+      postLaunchRankTitle: 'Tingkat setelah peluncuran',
+      teamRewardRate: 'Hadiah tim {rate}',
+      postLaunch30DayRank: 'Dalam 30 hari setelah peluncuran Anda dapat mencapai {rank}',
+      postLaunchRankTooltip:
+        'Setelah peluncuran, tingkat dihitung dari kinerja nyata volume co-build tim yang dikonversi ke AGX dengan harga diskon.\nTingkat saat ini hanya berdasarkan data kinerja; setelah peluncuran faktor lain dapat berlaku, seperti kepemilikan pribadi dan referral langsung yang memenuhi syarat.\nInformasi ini hanya untuk referensi; data nyata setelah peluncuran yang berlaku.',
+      superCommunityBadge: 'Super Komunitas',
+      heroTierRewardBody: 'Dapatkan {bonus} dari volume co-build tim sebagai hadiah.',
+      superCommunityBenefitBody:
+        'Super Komunitas menerima dana pengembangan khusus dan hak tata kelola.',
       shareholderHintNoRank: 'Level Genesis',
       shareholderNoRankTitle: 'Belum menjadi pemegang saham Genesis',
       shareholderNoRankBody: 'Menjadi pemegang saham Genesis memberi hadiah 1%-10% dari volume co-build tim dan naik 1 level dalam 30 hari setelah peluncuran AEGIS X.',

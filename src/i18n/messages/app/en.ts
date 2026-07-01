@@ -334,7 +334,15 @@ const app = defineMessages({
       title: 'Co-build Rewards',
       intro: 'Join co-build · Share growth value',
       currentTitle: 'Current tier',
-      shareholderHintForRank: '{bonus} team subscription reward · {postLaunch} title for 30 days after launch',
+      postLaunchRankTitle: 'Post-launch tier',
+      teamRewardRate: 'Team reward {rate}',
+      postLaunch30DayRank: 'Within 30 days after launch you can reach {rank}',
+      postLaunchRankTooltip:
+        'After launch, tiers are calculated from real performance based on team co-build volume converted to AGX at the discounted price.\nThe current tier is based on performance data only; after launch other factors may apply, such as personal holdings and qualified direct referrals.\nThis information is for reference only; post-launch on-chain data is final.',
+      superCommunityBadge: 'Super Community',
+      heroTierRewardBody: 'Earn {bonus} of team co-build volume as reward.',
+      superCommunityBenefitBody:
+        'Super Communities receive a dedicated development fund and governance rights.',
       shareholderHintNoRank: 'Genesis tier',
       shareholderNoRankTitle: 'Not yet a Genesis shareholder',
       shareholderNoRankBody: 'Become a Genesis shareholder to earn 1%-10% of team co-build volume as rewards and upgrade one tier within 30 days after AEGIS X launch.',

@@ -334,7 +334,15 @@ const app = defineMessages({
       title: '공동 구축 리워드',
       intro: '공동 구축 참여 · 성장 가치 공유',
       currentTitle: '현재 등급',
-      shareholderHintForRank: '팀 구독 {bonus} 리워드 · 출시 후 {postLaunch} 칭호 30일',
+      postLaunchRankTitle: '출시 후 등급',
+      teamRewardRate: '팀 보상 {rate}',
+      postLaunch30DayRank: '출시 후 30일 이내 {rank} 등급 획득 가능',
+      postLaunchRankTooltip:
+        '출시 후 등급은 팀 공동 구축 금액을 할인가로 AGX에 환산한 실적을 기준으로 산정됩니다.\n현재 등급은 실적 데이터만을 근거로 하며, 출시 후에는 개인 보유량·유효 직추천 계정 등 다른 요인의 영향을 받을 수 있습니다.\n본 데이터는 참고용이며, 최종적으로는 출시 후 실제 데이터가 기준입니다.',
+      superCommunityBadge: '슈퍼 커뮤니티',
+      heroTierRewardBody: '팀 공동 구축 금액의 {bonus}를 리워드로 받습니다.',
+      superCommunityBenefitBody:
+        '슈퍼 커뮤니티는 체계 발전 전용 기금과 거버넌스 권익을 받습니다.',
       shareholderHintNoRank: '창세 등급',
       shareholderNoRankTitle: '아직 창세 주주가 아닙니다',
       shareholderNoRankBody: '창세 주주가 되면 팀 공동 구축 금액의 1%-10%를 리워드로 받을 수 있으며, AEGIS X 출시 후 30일 이내 1단계 승급됩니다.',

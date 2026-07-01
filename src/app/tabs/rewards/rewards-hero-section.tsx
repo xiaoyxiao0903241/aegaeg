@@ -10,12 +10,27 @@ import {
 } from '~/app/dapp-type-scale'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { useDappShell } from '~/app/dapp-shell-context'
+import { useCommunityFundTotal } from '~/hooks/use-api-data'
+import { formatShareholderHintForRank } from '~/lib/api/format-display'
+import { buildRewardTierRows } from '~/lib/presale/tier-table'
+import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
 
 export function RewardsHeroSection() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const { heroBody, heroTitle, isRankLoading } = useShareholderRankLabels(t)
+  const { displayRank, heroTitle, isRankLoading } = useShareholderRankLabels(t)
+  const { data: communityFundTotal } = useCommunityFundTotal(sessionReady)
+  const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
   const showHeroSkeleton = sessionReady && isRankLoading
+  const hasRank = displayRank > 0
+  const heroTierRewardBody = hasRank
+    ? formatShareholderHintForRank(
+        displayRank,
+        t.rewards.heroTierRewardBody,
+        t.rewards.shareholderNoRankBody,
+        buildRewardTierRows(),
+      )
+    : t.rewards.shareholderNoRankBody
 
   return (
     <>
@@ -35,12 +50,19 @@ export function RewardsHeroSection() {
             <RewardsHeroBodySkeleton />
           ) : (
             <>
-              <h3 className={cn('m-0 text-white', dappTitleSmClass)}>
-                {heroTitle}
-              </h3>
-              <p className={cn('m-0 text-on-dark', dappCaptionClass)}>
-                {heroBody}
-              </p>
+              <RankTitleWithSuperCommunity
+                as="h3"
+                className={cn('m-0 text-white', dappTitleSmClass)}
+                isSuperCommunity={hasRank && isSuperCommunity}
+                superCommunityLabel={t.rewards.superCommunityBadge}
+                title={heroTitle}
+              />
+              <div className={cn('m-0 flex flex-col gap-0 text-on-dark', dappCaptionClass)}>
+                <p className="m-0">{heroTierRewardBody}</p>
+                {hasRank && isSuperCommunity ? (
+                  <p className="m-0">{t.rewards.superCommunityBenefitBody}</p>
+                ) : null}
+              </div>
             </>
           )}
         </div>
@@ -68,12 +90,19 @@ export function RewardsHeroSection() {
             <RewardsHeroBodySkeleton compact />
           ) : (
             <>
-              <h3 className="m-0 text-lg font-semibold leading-[1.2] tracking-[-0.54px] text-white">
-                {heroTitle}
-              </h3>
-              <p className={cn('m-0 text-on-dark', dappCaptionClass)}>
-                {heroBody}
-              </p>
+              <RankTitleWithSuperCommunity
+                as="h3"
+                className="m-0 text-lg font-semibold leading-[1.2] tracking-[-0.54px] text-white"
+                isSuperCommunity={hasRank && isSuperCommunity}
+                superCommunityLabel={t.rewards.superCommunityBadge}
+                title={heroTitle}
+              />
+              <div className={cn('m-0 flex flex-col gap-0 text-on-dark', dappCaptionClass)}>
+                <p className="m-0">{heroTierRewardBody}</p>
+                {hasRank && isSuperCommunity ? (
+                  <p className="m-0">{t.rewards.superCommunityBenefitBody}</p>
+                ) : null}
+              </div>
             </>
           )}
         </div>

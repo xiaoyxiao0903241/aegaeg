@@ -8,13 +8,14 @@ export type AnchoredTooltipPosition = 'top' | 'right' | 'bottom'
 
 export interface AnchoredTooltipProps {
   children: ReactElement
+  className?: string
   content: string
   position?: AnchoredTooltipPosition
 }
 
 const tooltipBaseClass = cn(
   'pointer-events-none fixed z-[9999] w-max max-w-60 rounded-sm bg-dark px-3 py-2',
-  'text-left text-xs font-medium leading-[1.45] text-white shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.18)]',
+  'text-left whitespace-pre-line text-xs font-medium leading-[1.45] text-white shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.18)]',
   'after:absolute after:size-0 after:border-solid after:content-[""]',
 )
 
@@ -28,6 +29,7 @@ const tooltipArrowClass: Record<AnchoredTooltipPosition, string> = {
 
 export function AnchoredTooltip({
   children,
+  className,
   content,
   position = 'top',
 }: AnchoredTooltipProps) {
@@ -111,7 +113,7 @@ export function AnchoredTooltip({
       {visible &&
         createPortal(
           <div
-            className={cn(tooltipBaseClass, tooltipArrowClass[position])}
+            className={cn(tooltipBaseClass, tooltipArrowClass[position], className)}
             role="tooltip"
             style={style}
           >

@@ -334,7 +334,15 @@ const app = defineMessages({
       title: 'Phần thưởng cùng xây dựng',
       intro: 'Tham gia cùng xây dựng · Chia sẻ giá trị tăng trưởng',
       currentTitle: 'Cấp hiện tại',
-      shareholderHintForRank: 'Phần thưởng đăng ký nhóm {bonus} · Danh hiệu {postLaunch} 30 ngày sau ra mắt',
+      postLaunchRankTitle: 'Cấp sau ra mắt',
+      teamRewardRate: 'Thưởng nhóm {rate}',
+      postLaunch30DayRank: 'Trong 30 ngày sau ra mắt bạn có thể đạt {rank}',
+      postLaunchRankTooltip:
+        'Sau ra mắt, cấp được tính theo hiệu suất thực tế dựa trên khối lượng đồng xây dựng của nhóm quy đổi sang AGX theo giá chiết khấu.\nCấp hiện tại chỉ dựa trên dữ liệu hiệu suất; sau ra mắt có thể chịu ảnh hưởng của các yếu tố khác như nắm giữ cá nhân và tài khoản giới thiệu trực tiếp hợp lệ.\nDữ liệu chỉ mang tính tham khảo; dữ liệu thực tế sau ra mắt là căn cứ cuối cùng.',
+      superCommunityBadge: 'Siêu cộng đồng',
+      heroTierRewardBody: 'Nhận {bonus} từ khối lượng đồng xây dựng của nhóm làm phần thưởng.',
+      superCommunityBenefitBody:
+        'Siêu cộng đồng nhận quỹ phát triển chuyên dụng và quyền quản trị.',
       shareholderHintNoRank: 'Cấp sáng lập',
       shareholderNoRankTitle: 'Bạn chưa trở thành cổ đông sáng lập',
       shareholderNoRankBody: 'Trở thành cổ đông sáng lập để nhận 1%-10% khối lượng đồng xây dựng của đội làm phần thưởng và nâng 1 cấp trong 30 ngày sau khi AEGIS X ra mắt.',

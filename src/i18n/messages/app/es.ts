@@ -334,7 +334,15 @@ const app = defineMessages({
       title: 'Recompensas de co-construcción',
       intro: 'Participa en la co-construcción · comparte el valor del crecimiento',
       currentTitle: 'Nivel actual',
-      shareholderHintForRank: '{bonus} de recompensa por suscripción del equipo · título {postLaunch} durante 30 días tras el lanzamiento',
+      postLaunchRankTitle: 'Nivel tras el lanzamiento',
+      teamRewardRate: 'Recompensa del equipo {rate}',
+      postLaunch30DayRank: 'Dentro de los 30 días tras el lanzamiento podrás alcanzar {rank}',
+      postLaunchRankTooltip:
+        'Tras el lanzamiento, el nivel se calculará según el rendimiento real del equipo en co-construcción convertido a AGX al precio con descuento.\nEl nivel actual se basa solo en datos de rendimiento; tras el lanzamiento pueden influir otros factores, como tenencias personales y referidos directos válidos.\nEstos datos son solo de referencia; prevalecerán los datos reales tras el lanzamiento.',
+      superCommunityBadge: 'Supercomunidad',
+      heroTierRewardBody: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa.',
+      superCommunityBenefitBody:
+        'Las supercomunidades reciben un fondo de desarrollo dedicado y derechos de gobernanza.',
       shareholderHintNoRank: 'Nivel Génesis',
       shareholderNoRankTitle: 'Aún no eres accionista Génesis',
       shareholderNoRankBody: 'Al convertirte en accionista Génesis, obtienes el 1%-10% del volumen de co-construcción del equipo como recompensa y subes 1 nivel dentro de los 30 días posteriores al lanzamiento de AEGIS X.',

@@ -1,6 +1,8 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
+import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
+  useCommunityFundTotal,
   useQualifiedPartitions,
   useTeamOverview,
 } from '~/hooks/use-api-data'
@@ -11,17 +13,27 @@ import {
 } from '~/lib/api/format-display'
 import { buildNextTierProgress } from '~/lib/presale/tier-progress'
 import {
+  getBoostedPostLaunchRankLabel,
+  getPostLaunchRankLabel,
+  getTeamBonusRateLabel,
+} from '~/lib/presale/tier-table'
+import {
   CurrentTitleCardBodySkeleton,
   ProgressCardSkeleton,
 } from '~/app/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { DappSideCard, SideHint, SideLabel, SideTitle } from '~/app/components/dapp-card'
 import {
-  dappBodyLgClass,
   dappKickerClass,
+  dappRankTitleClass,
 } from '~/app/dapp-type-scale'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
+import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
+
+const rankMetaClass =
+  'text-xs font-normal leading-normal tracking-[-0.24px] text-ink-strong max-dapp:text-faint'
 
 export function RewardsRankSection() {
   const { messages: t } = useI18n()
@@ -32,18 +44,31 @@ export function RewardsRankSection() {
     performance,
     performanceLoading,
     personalVolumeUsd,
-    rankHint,
     rankLabel,
   } = useShareholderRankLabels(t)
   const { data: teamOverview, isLoading: teamOverviewLoading } = useTeamOverview(sessionReady)
   const { data: qualifiedPartitions, isLoading: qualifiedPartitionsLoading } =
     useQualifiedPartitions(sessionReady)
+  const { data: communityFundTotal } = useCommunityFundTotal(sessionReady)
+  const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
 
   if (!sessionReady) return null
 
   const teamVolumeUsd = Number(teamOverview?.sales_team_market ?? 0)
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
+  const hasRank = displayRank > 0
+  const postLaunchRank = getPostLaunchRankLabel(displayRank)
+  const boostedPostLaunchRank = getBoostedPostLaunchRankLabel(displayRank)
+  const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
+    '{rate}',
+    getTeamBonusRateLabel(displayRank),
+  )
+  const postLaunch30DayLabel = t.rewards.postLaunch30DayRank.replace(
+    '{rank}',
+    boostedPostLaunchRank,
+  )
+  const leftBottomLabel = hasRank ? teamRewardRateLabel : t.rewards.shareholderNoRankBody
 
   const personalProgressLabel = tierProgress.isMaxRank
     ? t.rewards.progressMaxPersonal
@@ -90,23 +115,74 @@ export function RewardsRankSection() {
           '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
         )}
       >
-        <SideLabel className={cn(dappKickerClass, 'max-dapp:text-[length:var(--dapp-type-kicker-size)]')} tone="coral">
-          {t.rewards.currentTitle}
-        </SideLabel>
         {showTitleSkeleton ? (
           <CurrentTitleCardBodySkeleton />
         ) : (
-          <>
-            <SideTitle className={cn(dappBodyLgClass, 'max-dapp:leading-[1.2]')}>
-              {rankLabel}
-            </SideTitle>
-            <SideHint
-              className="text-xs leading-normal tracking-[-0.24px] max-dapp:text-faint"
-              tone="body"
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+            <SideLabel
+              className={cn(dappKickerClass, 'max-dapp:text-[length:var(--dapp-type-kicker-size)]')}
+              tone="coral"
             >
-              {rankHint}
+              {t.rewards.currentTitle}
+            </SideLabel>
+            {hasRank ? (
+              <div className="flex items-center justify-end gap-1 self-start">
+                <SideLabel
+                  className={cn(
+                    dappKickerClass,
+                    'max-dapp:text-[length:var(--dapp-type-kicker-size)]',
+                  )}
+                  tone="coral"
+                >
+                  {t.rewards.postLaunchRankTitle}
+                </SideLabel>
+                <AnchoredTooltip
+                  className="max-w-72"
+                  content={t.rewards.postLaunchRankTooltip}
+                  position="bottom"
+                >
+                  <button
+                    aria-label={t.rewards.postLaunchRankTooltip}
+                    className={cn(
+                      'inline-flex shrink-0 items-center justify-center self-center rounded-full border border-current text-xs font-bold leading-none opacity-60',
+                      dappIconClass.xs,
+                    )}
+                    type="button"
+                  >
+                    i
+                  </button>
+                </AnchoredTooltip>
+              </div>
+            ) : (
+              <span aria-hidden="true" />
+            )}
+
+            <SideTitle className={cn(dappRankTitleClass, 'max-dapp:leading-[1.2]')}>
+              <RankTitleWithSuperCommunity
+                isSuperCommunity={hasRank && isSuperCommunity}
+                superCommunityLabel={t.rewards.superCommunityBadge}
+                title={rankLabel}
+              />
+            </SideTitle>
+            {hasRank ? (
+              <SideTitle className={cn(dappRankTitleClass, 'text-right max-dapp:leading-[1.2]')}>
+                {postLaunchRank}
+              </SideTitle>
+            ) : (
+              <span aria-hidden="true" />
+            )}
+
+            <SideHint className={rankMetaClass} tone="body">
+              {leftBottomLabel}
             </SideHint>
-          </>
+            {hasRank ? (
+              <SideHint className={cn(rankMetaClass, 'text-right')} tone="body">
+                {postLaunch30DayLabel}
+              </SideHint>
+            ) : (
+              <span aria-hidden="true" />
+            )}
+          </div>
         )}
       </DappSideCard>
 

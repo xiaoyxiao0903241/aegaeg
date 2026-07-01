@@ -334,7 +334,15 @@ const app = defineMessages({
       title: '共創リワード',
       intro: '共創に参加 · 成長価値を共有',
       currentTitle: '現在のランク',
-      shareholderHintForRank: 'チーム購入{bonus}リワード · ローンチ後{postLaunch}タイトル30日間',
+      postLaunchRankTitle: 'ローンチ後ランク',
+      teamRewardRate: 'チーム報酬 {rate}',
+      postLaunch30DayRank: 'ローンチ後30日以内に{rank}に到達可能',
+      postLaunchRankTooltip:
+        'ローンチ後、ランクはチーム共創額を割引価格でAGXに換算した実績に基づいて算出されます。\n現在のランクは実績データのみに基づき、ローンチ後は個人保有量や有効な直紹介アカウントなど他の要因の影響を受ける場合があります。\n本データは参考用であり、最終的にはローンチ後の実データが優先されます。',
+      superCommunityBadge: 'スーパーコミュニティ',
+      heroTierRewardBody: 'チーム共創額の{bonus}をリワードとして獲得します。',
+      superCommunityBenefitBody:
+        'スーパーコミュニティは体系発展専項基金とガバナンス権益を獲得します。',
       shareholderHintNoRank: '創世ランク',
       shareholderNoRankTitle: 'まだ創世株主ではありません',
       shareholderNoRankBody: '創世株主になると、チーム共創額の1%-10%をリワードとして獲得でき、AEGIS Xローンチ後30日以内に1ランクアップできます。',
