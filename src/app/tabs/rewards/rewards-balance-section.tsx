@@ -19,6 +19,7 @@ import { toast } from 'sonner'
 import { resolveTeamClaimError } from '~/lib/web3/resolve-contract-error-message'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { RewardBalanceCard } from '~/app/components/dapp-card'
+import { dappReferralAmountClass } from '~/app/dapp-type-scale'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { AnchoredTooltip } from '~/components/anchored-tooltip'
 
@@ -106,7 +107,7 @@ export function RewardsBalanceSection() {
           hint={t.rewards.autoPaid}
           label={t.rewards.referralRewards}
           value={sessionReady ? referralValue : disconnectedReferralValue}
-          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--dapp-type-amount-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]"
+          valueClassName={dappReferralAmountClass}
         />
       )}
 
@@ -148,7 +149,6 @@ export function RewardsBalanceSection() {
           label={t.rewards.teamRewards}
           meta={teamRewardMeta}
           value={`${teamClaimable} ${t.common.claimable.toLowerCase()}`}
-          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--dapp-type-body-lg-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]"
         />
       ) : (
         <RewardBalanceCard
@@ -161,7 +161,6 @@ export function RewardsBalanceSection() {
           label={t.rewards.teamRewards}
           meta={disconnectedTeamClaimedMeta}
           value={disconnectedTeamValue}
-          valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--dapp-type-body-lg-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]"
         />
       )}
 
@@ -204,7 +203,6 @@ export function RewardsBalanceSection() {
             label={communityFundLabel}
             meta={communityFundLockedMeta}
             value={`${communityFundClaimable} ${t.rewards.communityFundUnlockedSuffix}`}
-            valueClassName="text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--dapp-type-body-lg-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]"
           />
         ) : null
       ) : null}

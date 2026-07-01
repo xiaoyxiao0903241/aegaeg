@@ -15,6 +15,21 @@ test('buildRewardTierRows aligns with tier-progress thresholds', async () => {
   assert.deepEqual(rows[9], ['S10', '≥ $20,000', 'Two legs S9', '10%', 'A11'])
 })
 
+test('post-launch rank labels map presale rank to A-series tiers', async () => {
+  const {
+    getPostLaunchRankLabel,
+    getBoostedPostLaunchRankLabel,
+    getTeamBonusRateLabel,
+  } = await loadModule('/src/lib/presale/tier-table.ts')
+
+  assert.equal(getPostLaunchRankLabel(2), 'A2')
+  assert.equal(getBoostedPostLaunchRankLabel(2), 'A3')
+  assert.equal(getPostLaunchRankLabel(10), 'A11')
+  assert.equal(getBoostedPostLaunchRankLabel(10), 'A11')
+  assert.equal(getTeamBonusRateLabel(0), '1%')
+  assert.equal(getTeamBonusRateLabel(2), '2%')
+})
+
 test('mapSalesLogToDesktopRow estimates AGX from amount and discount', async () => {
   const { mapSalesLogToDesktopRow } = await loadModule('/src/lib/api/format-display.ts')
 

@@ -55,7 +55,6 @@ export function useShareholderRank() {
 export function useShareholderRankLabels(t: {
   rewards: {
     heroBodyForRank: string
-    shareholderHintForRank: string
     shareholderHintNoRank: string
     shareholderNoRankTitle: string
     shareholderNoRankBody: string
@@ -72,17 +71,6 @@ export function useShareholderRankLabels(t: {
     return t.rewards.shareholderTitleForRank.replace(
       '{rank}',
       formatPresaleRank(effectiveDisplayRank),
-    )
-  })()
-
-  const rankHint = (() => {
-    if (rankState.sessionReady && rankState.isRankLoading) return ''
-    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankBody
-    return formatShareholderHintForRank(
-      effectiveDisplayRank,
-      t.rewards.shareholderHintForRank,
-      t.rewards.shareholderHintNoRank,
-      buildRewardTierRows(),
     )
   })()
 
@@ -111,7 +99,6 @@ export function useShareholderRankLabels(t: {
     displayRank: effectiveDisplayRank,
     heroBody,
     heroTitle,
-    rankHint,
     rankLabel,
   }
 }

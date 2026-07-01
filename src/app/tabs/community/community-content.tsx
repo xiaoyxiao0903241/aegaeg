@@ -10,6 +10,10 @@ import {
   mapTeamReferralToCompactRow,
 } from '~/lib/api/format-display'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
+import {
+  getBoostedPostLaunchRankLabel,
+  getPostLaunchRankLabel,
+} from '~/lib/presale/tier-table'
 import { CommunityStatCard } from '~/app/components/dapp-card'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useAuth } from '~/providers/auth-provider'
@@ -101,6 +105,19 @@ export function CommunityContent() {
   const shareholderRank = formatPresaleRank(displayRank)
   const genesisShareholderLabel =
     displayRank > 0 ? t.community.genesisShareholder : t.rewards.shareholderHintNoRank
+  const postLaunchRankValue = useStatPlaceholders
+    ? STAT_PLACEHOLDER
+    : displayRank > 0
+      ? getPostLaunchRankLabel(displayRank)
+      : '-'
+  const postLaunchVolume = t.community.totalTeamVolume.replace('{amount}', teamVolume)
+  const postLaunchBoostLabel =
+    displayRank > 0
+      ? t.community.postLaunch30DayBoost.replace(
+          '{rank}',
+          getBoostedPostLaunchRankLabel(displayRank),
+        )
+      : undefined
 
   const stats: CommunityStat[] = [
     {
@@ -134,6 +151,12 @@ export function CommunityContent() {
       today: t.community.statGenesisToday,
       dark: !isMobileViewport,
     },
+    {
+      label: t.community.postLaunchRankLabel,
+      value: postLaunchRankValue,
+      volume: postLaunchVolume,
+      today: postLaunchBoostLabel,
+    },
   ]
 
   const inviteTableHeaders = [
@@ -153,9 +176,9 @@ export function CommunityContent() {
 
       <div
         className={cn(
-          'grid grid-cols-3 gap-3.5',
+          'grid grid-cols-4 gap-3.5',
           'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
-          'max-dapp:min-w-0 max-dapp:grid-cols-3 max-dapp:gap-2.5',
+          'max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5',
         )}
       >
         {useStatPlaceholders ? (
@@ -163,6 +186,7 @@ export function CommunityContent() {
             <CommunityStatCardSkeleton />
             <CommunityStatCardSkeleton />
             <CommunityStatCardSkeleton dark />
+            <CommunityStatCardSkeleton />
           </>
         ) : (
           stats.map((stat, index) => (

@@ -33,7 +33,6 @@ export function RewardsTierSection() {
     t.community.shareholder,
     t.tables.totalVolume,
     t.tables.rewardRate,
-    t.tables.postLaunchRank,
   ]
 
   const tierRows = rewardTiers.map((row, rowIndex) => {
@@ -42,7 +41,7 @@ export function RewardsTierSection() {
       row[2],
       t.rewards.tierDualLegRequirement,
     )
-    const cells = [row[0], row[1], totalVolumeCell, row[3], row[4]]
+    const cells = [row[0], row[1], totalVolumeCell, row[3]]
     if (tierHighlightedRows.includes(rowIndex)) {
       cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
     }

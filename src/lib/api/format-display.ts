@@ -472,7 +472,6 @@ export function mapCommunityFundLogToRow(
   return [
     formatBlockTime(item.block_time),
     amountLabel,
-    formatTableGenesisRank(item.presale_rank),
     statusLabel,
   ]
 }

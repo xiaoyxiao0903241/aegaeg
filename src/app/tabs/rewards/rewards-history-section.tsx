@@ -8,6 +8,7 @@ import {
   useTeamRewardClaimLogs,
 } from '~/hooks/use-api-data'
 import {
+  formatUsd,
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
@@ -133,6 +134,10 @@ export function RewardsHistorySection() {
     rowCount: historyRows.length,
   })
   const historyShowSkeleton = isLoggingIn || historyTable.showSkeleton
+  const communityFundPaginationSummary = t.rewards.communityFundCumulativeClaimed.replace(
+    '{amount}',
+    formatUsd(communityFundTotal?.claimed ?? 0, 2),
+  )
 
   const historyHeaders =
     historyTab === 'referral'
@@ -143,7 +148,9 @@ export function RewardsHistorySection() {
           t.tables.contribution,
           t.tables.status,
         ]
-      : [t.tables.claimTime, t.tables.amount, t.tables.genesisRank, t.tables.status]
+      : historyTab === 'team'
+        ? [t.tables.claimTime, t.tables.amount, t.tables.genesisRank, t.tables.status]
+        : [t.tables.claimTime, t.tables.amount, t.tables.status]
 
   const historyColWidths =
     historyTab === 'referral'
@@ -226,6 +233,7 @@ export function RewardsHistorySection() {
             embedded
             onPageChange={onHistoryPageChange}
             page={historyPage}
+            summary={historyTab === 'communityFund' ? communityFundPaginationSummary : undefined}
             total={historyTotal}
           />
         ) : undefined

@@ -465,7 +465,7 @@ export function RewardBalanceCard({
         as="strong"
         weight="semibold"
         className={cn(
-          'mt-2 block text-lg leading-[1.3] tracking-[-0.54px]',
+          'mt-2 block text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]',
           valueClassName,
         )}
       >
