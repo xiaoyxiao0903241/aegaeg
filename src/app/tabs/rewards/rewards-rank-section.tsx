@@ -118,7 +118,9 @@ export function RewardsRankSection() {
         {showTitleSkeleton ? (
           <CurrentTitleCardBodySkeleton />
         ) : (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+          <div
+            className={cn('grid gap-x-3 gap-y-1.5', hasRank ? 'grid-cols-2' : 'grid-cols-1')}
+          >
             <SideLabel
               className={cn(dappKickerClass, 'max-dapp:text-[length:var(--dapp-type-kicker-size)]')}
               tone="coral"
@@ -153,9 +155,7 @@ export function RewardsRankSection() {
                   </button>
                 </AnchoredTooltip>
               </div>
-            ) : (
-              <span aria-hidden="true" />
-            )}
+            ) : null}
 
             <SideTitle className={cn(dappRankTitleClass, 'max-dapp:leading-[1.2]')}>
               <RankTitleWithSuperCommunity
@@ -168,9 +168,7 @@ export function RewardsRankSection() {
               <SideTitle className={cn(dappRankTitleClass, 'text-right max-dapp:leading-[1.2]')}>
                 {postLaunchRank}
               </SideTitle>
-            ) : (
-              <span aria-hidden="true" />
-            )}
+            ) : null}
 
             <SideHint className={rankMetaClass} tone="body">
               {leftBottomLabel}
@@ -179,9 +177,7 @@ export function RewardsRankSection() {
               <SideHint className={cn(rankMetaClass, 'text-right')} tone="body">
                 {postLaunch30DayLabel}
               </SideHint>
-            ) : (
-              <span aria-hidden="true" />
-            )}
+            ) : null}
           </div>
         )}
       </DappSideCard>
