@@ -18,7 +18,7 @@ import {
 } from '~/lib/presale/presale-math'
 import { buildSeasonOptions } from '~/lib/presale/season-options'
 import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
-import { formatTokenAmount, formatTokenAmountToNumber, parseTokenAmount } from '~/lib/swap/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/lib/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale-write'
 import { MAX_UINT256 } from '~/web3/abis'
 import { formatUsd } from '~/lib/api/format-display'
