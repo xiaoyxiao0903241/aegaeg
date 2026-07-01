@@ -62,14 +62,14 @@ export function RewardsBalanceSection() {
     communityFundLocked,
   )
   const communityFundLabel = (
-    <span className="inline-flex items-center gap-0.5">
+    <span className="inline-flex items-center gap-1">
       {t.rewards.communityFund}
       <AnchoredTooltip content={t.rewards.communityFundTooltip}>
         <button
           aria-label={t.rewards.communityFundTooltip}
           className={cn(
-            'inline-flex shrink-0 items-center justify-center rounded-full border border-current text-[0.625rem] font-bold leading-none opacity-60',
-            dappIconClass.sm,
+            'inline-flex shrink-0 items-center justify-center self-center rounded-full border border-current text-xs font-bold leading-none opacity-60',
+            dappIconClass.xs,
           )}
           type="button"
         >
@@ -116,7 +116,7 @@ export function RewardsBalanceSection() {
         <RewardBalanceCard
           action={
             <DappActionButton
-              className="!min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]"
+              className="mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]"
               disabled={
                 teamClaimable === '$0.00' ||
                 teamLoading ||
@@ -142,7 +142,6 @@ export function RewardsBalanceSection() {
           className={cn(
             'gap-1.5 rounded-md px-4 py-3.5',
             '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-            '[&_button]:mt-3',
           )}
           headerLabelClassName="max-dapp:text-faint"
           headerMetaClassName="max-dapp:text-faint"
@@ -173,7 +172,7 @@ export function RewardsBalanceSection() {
           <RewardBalanceCard
             action={
               <DappActionButton
-                className="!min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]"
+                className="mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]"
                 disabled={
                   communityFundClaimable === '$0.00' ||
                   communityFundLoading ||
@@ -199,7 +198,6 @@ export function RewardsBalanceSection() {
             className={cn(
               'gap-1.5 rounded-md px-4 py-3.5',
               '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-              '[&_button]:mt-3',
             )}
             headerLabelClassName="max-dapp:text-faint"
             headerMetaClassName="max-dapp:text-faint"
