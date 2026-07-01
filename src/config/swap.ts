@@ -1,4 +1,5 @@
 import { BSC_CONTRACTS } from '~/config/contracts'
+import { appEnv } from '~/config/env'
 
 export interface SwapTokenConfig {
   symbol: string
@@ -37,8 +38,8 @@ export const SWAP_CONFIG: SwapConfig = {
   pool: BSC_CONTRACTS.usdtUsd1Pool,
   feeTier: 100,
   wbnb: BSC_CONTRACTS.wbnb,
-  defaultSlippageBps: 50,
-  deadlineSeconds: 20 * 60,
+  defaultSlippageBps: appEnv.swapDefaultSlippageBps,
+  deadlineSeconds: appEnv.swapDeadlineSeconds,
   quoteRefreshIntervalMs: 10_000,
   spotRateRefreshIntervalMs: 10_000,
   testPair: {

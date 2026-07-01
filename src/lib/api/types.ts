@@ -124,6 +124,21 @@ export interface TeamRewardClaimLogItem {
   created_at: string | null
 }
 
+export interface CommunityFundTotals {
+  total: string
+  claimed: string
+  unlocked_claimable: string
+  is_presale_fund_node: boolean
+}
+
+export interface CommunityFundLogItem {
+  block_time: number
+  /** 0=pending, 1=claimed, 2=completed, 3=failed */
+  status: number
+  presale_rank: number
+  amount: string
+}
+
 export interface TeamRewardSignature {
   signature: string
   /**

@@ -376,6 +376,16 @@ const app = defineMessages({
         title: '팀 리워드 기록 없음',
         body: '팀 리워드 정산 및 수령 기록은 리워드가 발생한 후 여기에 표시됩니다.',
       },
+      communityFund: '발전 기금',
+      communityFundTooltip:
+        '슈퍼 커뮤니티는 체계 발전 기금의 5%를 받으며, 시스템 구축, 일상 운영, 체계 회의, 체계 강사 등 체계 자영에 전용됩니다.',
+      communityFundLocked: '잠금: {amount}',
+      communityFundUnlockedSuffix: '잠금 해제',
+      communityFundHistory: '발전 기금',
+      communityFundHistoryEmpty: {
+        title: '발전 기금 기록 없음',
+        body: '발전 기금 수령 기록은 리워드가 발생한 후 여기에 표시됩니다.',
+      },
       faq: {
         title: 'FAQs',
         items: [

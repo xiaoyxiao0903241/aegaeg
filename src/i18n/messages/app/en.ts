@@ -376,6 +376,16 @@ const app = defineMessages({
         title: 'No tier reward records yet',
         body: 'Tier reward settlement and claim records appear here once rewards are generated.',
       },
+      communityFund: 'Development fund',
+      communityFundTooltip:
+        'Super communities receive 5% of system development fund, dedicated to system self-operation, including but not limited to: system building, daily operations, system meetings, and system lecturers.',
+      communityFundLocked: 'Locked: {amount}',
+      communityFundUnlockedSuffix: 'unlocked',
+      communityFundHistory: 'Development fund',
+      communityFundHistoryEmpty: {
+        title: 'No development fund records yet',
+        body: 'Development fund claim records will appear here once rewards are generated.',
+      },
       faq: {
         title: 'FAQs',
         items: [

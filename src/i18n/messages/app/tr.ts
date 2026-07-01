@@ -375,6 +375,16 @@ const app = defineMessages({
         title: 'Henüz seviye ödül kaydı yok',
         body: 'Seviye ödülü uzlaşma ve talep kayıtları, ödül oluştuktan sonra burada görüntülenecektir.',
       },
+      communityFund: 'Gelişim fonu',
+      communityFundTooltip:
+        'Süper topluluklar, sistem gelişim fonunun %5\'ini alır; sistem inşası, günlük operasyonlar, sistem toplantıları ve sistem eğitmenleri dahil olmak üzere sistem öz-işletimine ayrılır.',
+      communityFundLocked: 'Kilitli: {amount}',
+      communityFundUnlockedSuffix: 'kilidi açıldı',
+      communityFundHistory: 'Gelişim fonu',
+      communityFundHistoryEmpty: {
+        title: 'Henüz gelişim fonu kaydı yok',
+        body: 'Gelişim fonu talep kayıtları ödül oluştuktan sonra burada görünecektir.',
+      },
       faq: {
         title: 'FAQs',
         items: [

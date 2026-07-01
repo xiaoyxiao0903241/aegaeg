@@ -14,7 +14,7 @@ export interface AnchoredTooltipProps {
 
 const tooltipBaseClass = cn(
   'pointer-events-none fixed z-[9999] w-max max-w-60 rounded-sm bg-dark px-3 py-2',
-  'text-center text-xs font-medium leading-[1.45] text-white shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.18)]',
+  'text-left text-xs font-medium leading-[1.45] text-white shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.18)]',
   'after:absolute after:size-0 after:border-solid after:content-[""]',
 )
 

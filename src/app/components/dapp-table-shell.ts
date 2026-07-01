@@ -52,4 +52,11 @@ export const rewardsReferralHistoryColWidths = [
 
 export const rewardsTeamHistoryColWidths = ['10rem', '7.5rem', '10rem', '10rem'] as const
 
+export const rewardsCommunityFundHistoryColWidths = [
+  '10rem',
+  '7.5rem',
+  '10rem',
+  '10rem',
+] as const
+
 export const dappTableCellMinWidthClass = 'min-w-[var(--dapp-table-cell-min-width)]'

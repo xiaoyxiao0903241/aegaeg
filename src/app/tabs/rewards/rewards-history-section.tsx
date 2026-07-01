@@ -1,8 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
-import { useRewardLogs, useTeamRewardClaimLogs } from '~/hooks/use-api-data'
-import { mapRewardLogToRow, mapTeamRewardClaimLogToRow } from '~/lib/api/format-display'
+import {
+  useCommunityFundLogs,
+  useCommunityFundTotal,
+  useRewardLogs,
+  useTeamRewardClaimLogs,
+} from '~/hooks/use-api-data'
+import {
+  mapCommunityFundLogToRow,
+  mapRewardLogToRow,
+  mapTeamRewardClaimLogToRow,
+} from '~/lib/api/format-display'
 import { useAuth } from '~/providers/auth-provider'
 import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
 import { DappSection } from '~/app/components/dapp-section'
@@ -13,6 +22,7 @@ import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import {
+  rewardsCommunityFundHistoryColWidths,
   rewardsReferralHistoryColWidths,
   rewardsTeamHistoryColWidths,
 } from '~/app/components/dapp-table-shell'
@@ -20,19 +30,30 @@ import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
+type RewardsHistoryTab = 'referral' | 'team' | 'communityFund'
+
 export function RewardsHistorySection() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
-  const [historyTab, setHistoryTab] = useState<'referral' | 'team'>('referral')
+  const [historyTab, setHistoryTab] = useState<RewardsHistoryTab>('referral')
   const [referralPage, setReferralPage] = useState(1)
   const [teamPage, setTeamPage] = useState(1)
+  const [communityFundPage, setCommunityFundPage] = useState(1)
   const historyTableScrollRef = useRef<HTMLDivElement>(null)
+  const { data: communityFundTotal } = useCommunityFundTotal(sessionReady)
+  const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
 
   useEffect(() => {
     historyTableScrollRef.current?.scrollTo({ left: 0, behavior: 'instant' })
   }, [historyTab])
+
+  useEffect(() => {
+    if (!isSuperCommunity && historyTab === 'communityFund') {
+      setHistoryTab('referral')
+    }
+  }, [historyTab, isSuperCommunity])
 
   const {
     data: rewardLogs,
@@ -44,6 +65,14 @@ export function RewardsHistorySection() {
     isLoading: teamClaimLogsLoading,
     refresh: refreshTeamLogs,
   } = useTeamRewardClaimLogs(tablePageQuery(teamPage), sessionReady)
+  const {
+    data: communityFundLogs,
+    isLoading: communityFundLogsLoading,
+    refresh: refreshCommunityFundLogs,
+  } = useCommunityFundLogs(
+    tablePageQuery(communityFundPage),
+    sessionReady && isSuperCommunity,
+  )
 
   const rewardLogLabels = useMemo(
     () => ({
@@ -63,12 +92,40 @@ export function RewardsHistorySection() {
     rewardLogs?.items.map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
   const teamHistoryRows =
     teamClaimLogs?.items.map((item) => mapTeamRewardClaimLogToRow(item, teamHistoryLabels)) ?? []
-  const historyRows = historyTab === 'referral' ? referralHistoryRows : teamHistoryRows
+  const communityFundHistoryRows =
+    communityFundLogs?.items.map((item) => mapCommunityFundLogToRow(item, teamHistoryLabels)) ??
+    []
+
+  const historyRows =
+    historyTab === 'referral'
+      ? referralHistoryRows
+      : historyTab === 'team'
+        ? teamHistoryRows
+        : communityFundHistoryRows
   const historyTotal =
-    historyTab === 'referral' ? rewardLogs?.total ?? 0 : teamClaimLogs?.total ?? 0
-  const historyPage = historyTab === 'referral' ? referralPage : teamPage
-  const onHistoryPageChange = historyTab === 'referral' ? setReferralPage : setTeamPage
-  const historyLoading = historyTab === 'referral' ? rewardLogsLoading : teamClaimLogsLoading
+    historyTab === 'referral'
+      ? rewardLogs?.total ?? 0
+      : historyTab === 'team'
+        ? teamClaimLogs?.total ?? 0
+        : communityFundLogs?.total ?? 0
+  const historyPage =
+    historyTab === 'referral'
+      ? referralPage
+      : historyTab === 'team'
+        ? teamPage
+        : communityFundPage
+  const onHistoryPageChange =
+    historyTab === 'referral'
+      ? setReferralPage
+      : historyTab === 'team'
+        ? setTeamPage
+        : setCommunityFundPage
+  const historyLoading =
+    historyTab === 'referral'
+      ? rewardLogsLoading
+      : historyTab === 'team'
+        ? teamClaimLogsLoading
+        : communityFundLogsLoading
   const historyTable = dappTableViewState({
     sessionReady,
     isLoading: historyLoading,
@@ -91,20 +148,36 @@ export function RewardsHistorySection() {
   const historyColWidths =
     historyTab === 'referral'
       ? [...rewardsReferralHistoryColWidths]
-      : [...rewardsTeamHistoryColWidths]
+      : historyTab === 'team'
+        ? [...rewardsTeamHistoryColWidths]
+        : [...rewardsCommunityFundHistoryColWidths]
+
+  const historyPillItems = [
+    { active: historyTab === 'referral', label: t.rewards.referralRewards },
+    { active: historyTab === 'team', label: t.rewards.teamRewards },
+    ...(isSuperCommunity
+      ? [{ active: historyTab === 'communityFund', label: t.rewards.communityFundHistory }]
+      : []),
+  ]
 
   const historyPillTabs = (
     <DappPillTabs
       ariaLabel={t.rewards.history}
       className="flex items-center justify-start gap-2"
-      items={[
-        { active: historyTab === 'referral', label: t.rewards.referralRewards },
-        { active: historyTab === 'team', label: t.rewards.teamRewards },
-      ]}
+      items={historyPillItems}
       onSelect={(index) => {
-        const next = index === 0 ? 'referral' : 'team'
+        const tabs: RewardsHistoryTab[] = isSuperCommunity
+          ? ['referral', 'team', 'communityFund']
+          : ['referral', 'team']
+        const next = tabs[index] ?? 'referral'
         setHistoryTab(next)
-        void (next === 'referral' ? refreshReferralLogs() : refreshTeamLogs())
+        void (
+          next === 'referral'
+            ? refreshReferralLogs()
+            : next === 'team'
+              ? refreshTeamLogs()
+              : refreshCommunityFundLogs()
+        )
       }}
     />
   )
@@ -118,13 +191,17 @@ export function RewardsHistorySection() {
         body={
           historyTab === 'referral'
             ? t.rewards.referralHistoryEmpty.body
-            : t.rewards.teamHistoryEmpty.body
+            : historyTab === 'team'
+              ? t.rewards.teamHistoryEmpty.body
+              : t.rewards.communityFundHistoryEmpty.body
         }
         embedded
         title={
           historyTab === 'referral'
             ? t.rewards.referralHistoryEmpty.title
-            : t.rewards.teamHistoryEmpty.title
+            : historyTab === 'team'
+              ? t.rewards.teamHistoryEmpty.title
+              : t.rewards.communityFundHistoryEmpty.title
         }
       />
     </>
