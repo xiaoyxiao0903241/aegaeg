@@ -13,6 +13,7 @@ import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import {
   getBoostedPostLaunchRankLabel,
   getPostLaunchRankLabel,
+  getTeamBonusRateLabel,
 } from '~/lib/presale/tier-table'
 import { CommunityStatCard } from '~/app/components/dapp-card'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
@@ -102,9 +103,16 @@ export function CommunityContent() {
   const teamCount = formatCount(overview?.descendant_count ?? 0)
   const teamVolume = formatUsd(overview?.sales_team_market ?? 0)
 
-  const shareholderRank = formatPresaleRank(displayRank)
-  const genesisShareholderLabel =
-    displayRank > 0 ? t.community.genesisShareholder : t.rewards.shareholderHintNoRank
+  const genesisRankValue = useStatPlaceholders
+    ? STAT_PLACEHOLDER
+    : displayRank > 0
+      ? formatPresaleRank(displayRank)
+      : '-'
+  const genesisRewardRateLabel = useStatPlaceholders
+    ? STAT_PLACEHOLDER
+    : displayRank > 0
+      ? `${t.tables.rewardRate} ${getTeamBonusRateLabel(displayRank)}`
+      : `${t.tables.rewardRate} -`
   const postLaunchRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0
@@ -146,9 +154,9 @@ export function CommunityContent() {
     },
     {
       label: t.community.genesisTitle,
-      value: shareholderRank,
-      volume: genesisShareholderLabel,
-      today: t.community.statGenesisToday,
+      value: genesisRankValue,
+      volume: t.tables.genesisRank,
+      today: genesisRewardRateLabel,
       dark: !isMobileViewport,
     },
     {
