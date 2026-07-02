@@ -15,7 +15,6 @@ import {
   deriveAuthAction,
   deriveAuthState,
 } from '~/lib/api/auth/auth-machine'
-import { isLoginSignatureUsable } from '~/lib/api/auth/login-signature-cache'
 import {
   isUnauthorizedError,
   loginWithWallet,
@@ -115,12 +114,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!hasHydrated || !walletAddress) return
 
     const signature = signaturesByAddress[walletAddress.toLowerCase()] ?? null
-    const hasUsableSignature = Boolean(signature && isLoginSignatureUsable(signature))
     const attemptKey = buildLoginAttemptKey(walletAddress, session, signature)
 
     const action = deriveAuthAction({
       state: authState,
-      hasUsableSignature,
       isLoggingIn,
       loginError,
       lastAttemptKey: lastAttemptRef.current,

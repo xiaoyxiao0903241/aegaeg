@@ -81,12 +81,10 @@ test('deriveAuthAction decides idle / login / renew', async () => {
   const renewThresholdMs = 60_000
   const now = 1_000_000_000
   const base = {
-    hasUsableSignature: true,
     isLoggingIn: false,
     loginError: null,
     lastAttemptKey: null,
     attemptKey: 'k1',
-    now,
     renewThresholdMs,
   }
 
@@ -96,15 +94,10 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     { type: 'idle' },
   )
 
-  // needsLogin + usable signature + clean → login (silent)
+  // needsLogin + clean guards → auto-login. Silent when a cached signature
+  // exists; prompts the wallet once when it does not (loop guard dedupes).
   assert.deepEqual(
     deriveAuthAction({ ...base, state: { kind: 'needsLogin' } }),
-    { type: 'login' },
-  )
-
-  // needsLogin + no usable signature → still auto-login (prompt once for signature)
-  assert.deepEqual(
-    deriveAuthAction({ ...base, hasUsableSignature: false, state: { kind: 'needsLogin' } }),
     { type: 'login' },
   )
 
