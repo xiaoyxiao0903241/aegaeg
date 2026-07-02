@@ -8,6 +8,9 @@ import {
 
 export { ApiError }
 
+/** Abort hung requests so callers (and react-query retries) never wait forever. */
+const REQUEST_TIMEOUT_MS = 20_000
+
 export interface ApiRequestOptions {
   method?: 'GET' | 'POST'
   body?: unknown
@@ -52,6 +55,7 @@ export async function apiRequest<T>(
     method: options.method ?? 'GET',
     headers,
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   })
 
   let payload: ApiEnvelope<T>

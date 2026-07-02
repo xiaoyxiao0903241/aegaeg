@@ -4,10 +4,14 @@ import { loadModule } from './load-module.mjs'
 
 test('buildApiUrl appends query params', async () => {
   const { buildApiUrl } = await loadModule('/src/lib/api/request.ts')
+  const { getApiBaseUrl } = await loadModule('/src/lib/api/client.ts')
 
+  // Derive the base from the same resolver the app uses so the test stays
+  // hermetic — it verifies query-param handling, not the deploy-specific host.
+  const base = getApiBaseUrl().replace(/\/$/, '')
   assert.equal(
     buildApiUrl('/sales/logs', { page: 2, page_size: 10 }),
-    'https://api.x-dao.io/api/sales/logs?page=2&page_size=10',
+    `${base}/sales/logs?page=2&page_size=10`,
   )
 })
 
