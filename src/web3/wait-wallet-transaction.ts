@@ -43,13 +43,22 @@ async function readTransaction(
   }
 }
 
+/**
+ * `failed` — the tx is definitively not going to land (never broadcast / reverted);
+ * resubmitting is safe. `unknown` — the tx was seen pending but no receipt arrived
+ * in time; it may still confirm, so resubmitting risks double execution.
+ */
+export type WalletTransactionWaitOutcome = 'failed' | 'unknown'
+
 export class WalletTransactionWaitError extends Error {
   readonly hash: Hash
+  readonly outcome: WalletTransactionWaitOutcome
 
-  constructor(hash: Hash, message: string) {
+  constructor(hash: Hash, message: string, outcome: WalletTransactionWaitOutcome = 'failed') {
     super(message)
     this.name = 'WalletTransactionWaitError'
     this.hash = hash
+    this.outcome = outcome
   }
 }
 
@@ -105,7 +114,14 @@ export async function waitForWalletTransactionConfirmation({
       )
     }
 
-    if (pendingSince > 0 && Date.now() - pendingSince >= PENDING_WITHOUT_RECEIPT_MS) {
+    // Wallet-RPC-only pending after 20s = MetaMask stale local entry → fail fast.
+    // Once the public RPC has seen the tx it is genuinely in flight; keep polling
+    // until the overall deadline instead of misreporting a live tx as failed.
+    if (
+      !seenOnPublicRpc &&
+      pendingSince > 0 &&
+      Date.now() - pendingSince >= PENDING_WITHOUT_RECEIPT_MS
+    ) {
       throw new WalletTransactionWaitError(
         hash,
         `Transaction stayed pending without confirmation (wallet may have failed after confirm). Hash: ${hash}`,
@@ -117,6 +133,7 @@ export async function waitForWalletTransactionConfirmation({
 
   throw new WalletTransactionWaitError(
     hash,
-    `Timed out waiting for transaction confirmation. Hash: ${hash}`,
+    `Transaction is still pending — do not resubmit until it settles. Check the hash on BscScan: ${hash}`,
+    'unknown',
   )
 }
