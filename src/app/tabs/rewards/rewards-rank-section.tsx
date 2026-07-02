@@ -13,6 +13,8 @@ import {
 import { buildNextTierProgress } from '~/lib/presale/tier-progress'
 import {
   getBoostedPostLaunchRankLabel,
+  getCommitmentFloorBoostedPostLaunchLabel,
+  getCommitmentFloorPostLaunchLabel,
   getPostLaunchRankLabel,
   getTeamBonusRateLabel,
 } from '~/lib/presale/tier-table'
@@ -58,9 +60,14 @@ export function RewardsRankSection() {
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
   const hasRank = displayRank > 0
-  const postLaunchPresaleRank = commitmentFloorRank > 0 ? commitmentFloorRank : displayRank
-  const postLaunchRank = getPostLaunchRankLabel(postLaunchPresaleRank)
-  const postLaunch30DayRankLabel = getBoostedPostLaunchRankLabel(postLaunchPresaleRank)
+  const postLaunchRank =
+    commitmentFloorRank > 0
+      ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
+      : getPostLaunchRankLabel(displayRank)
+  const postLaunch30DayRankLabel =
+    commitmentFloorRank > 0
+      ? getCommitmentFloorBoostedPostLaunchLabel(commitmentFloorRank)
+      : getBoostedPostLaunchRankLabel(displayRank)
   const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
     '{rate}',
     getTeamBonusRateLabel(displayRank),

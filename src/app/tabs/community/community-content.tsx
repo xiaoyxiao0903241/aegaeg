@@ -12,6 +12,8 @@ import {
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import {
   getBoostedPostLaunchRankLabel,
+  getCommitmentFloorBoostedPostLaunchLabel,
+  getCommitmentFloorPostLaunchLabel,
   getPostLaunchRankLabel,
   getTeamBonusRateLabel,
 } from '~/lib/presale/tier-table'
@@ -114,11 +116,12 @@ export function CommunityContent() {
     : displayRank > 0
       ? `${t.tables.rewardRate} ${getTeamBonusRateLabel(displayRank)}`
       : `${t.tables.rewardRate} -`
-  const postLaunchPresaleRank = commitmentFloorRank > 0 ? commitmentFloorRank : displayRank
   const postLaunchRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0
-      ? getPostLaunchRankLabel(postLaunchPresaleRank)
+      ? commitmentFloorRank > 0
+        ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
+        : getPostLaunchRankLabel(displayRank)
       : '-'
   const postLaunchVolume = t.community.totalTeamVolume.replace(
     '{amount}',
@@ -128,7 +131,9 @@ export function CommunityContent() {
     displayRank > 0
       ? t.community.postLaunch30DayBoost.replace(
           '{rank}',
-          getBoostedPostLaunchRankLabel(postLaunchPresaleRank),
+          commitmentFloorRank > 0
+            ? getCommitmentFloorBoostedPostLaunchLabel(commitmentFloorRank)
+            : getBoostedPostLaunchRankLabel(displayRank),
         )
       : undefined
 
