@@ -40,6 +40,20 @@ export function getPostLaunchRankLabel(rank: number): string {
   return POST_LAUNCH_RANKS[index]
 }
 
+/** Commitment floor rank maps 1:1 to A-tier (floor 3 → A3). */
+export function getCommitmentFloorPostLaunchLabel(floorRank: number): string {
+  if (floorRank <= 0) return ''
+  const aRank = Math.min(floorRank, POST_LAUNCH_RANKS.length)
+  return `A${aRank}`
+}
+
+/** 30-day boost after commitment floor: floor rank + 1 (floor 3 → A4). */
+export function getCommitmentFloorBoostedPostLaunchLabel(floorRank: number): string {
+  if (floorRank <= 0) return ''
+  const aRank = Math.min(floorRank + 1, POST_LAUNCH_RANKS.length)
+  return `A${aRank}`
+}
+
 export function getBoostedPostLaunchRankLabel(rank: number): string {
   if (rank <= 0) return ''
   const boostedRank = Math.min(rank + 1, POST_LAUNCH_RANKS.length)
