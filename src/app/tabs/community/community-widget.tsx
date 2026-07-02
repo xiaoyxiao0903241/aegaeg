@@ -6,6 +6,7 @@ import { cn } from '~/lib/utils'
 import { useReferral } from '~/hooks/use-referral'
 import { formatReferralLinkDisplay } from '~/lib/api/format-display'
 import { buildReferralSharePath } from '~/config/referral'
+import { getRuntimeOrigin } from '~/lib/runtime-host'
 import { useDappShell } from '~/app/dapp-shell-context'
 import type { DappTab } from '~/app/types'
 import { dappAssets } from '~/app/assets'
@@ -52,7 +53,7 @@ function CommunityConnectedWidget({
 
   const copyReferralLink = useCallback(async () => {
     if (!account) return
-    const url = `${window.location.origin}${window.location.pathname}${buildReferralSharePath(account.address)}`
+    const url = `${getRuntimeOrigin()}${window.location.pathname}${buildReferralSharePath(account.address)}`
     try {
       await navigator.clipboard.writeText(url)
       toast.success(t.wallet.copied)

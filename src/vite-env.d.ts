@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_WALLETCONNECT_PROJECT_ID?: string
   readonly VITE_BSC_RPC_URL?: string
   readonly VITE_API_BASE_URL?: string
+  readonly VITE_APP_HOST?: string
   readonly VITE_API_DERIVE_FROM_DOMAIN?: string
   readonly VITE_AUTH_MESSAGE_FORMAT?: string
   readonly VITE_BSCSCAN_BASE_URL?: string
