@@ -279,7 +279,7 @@ const app = defineMessages({
             items: [
                 {
                     q: 'Ortak inşa planına nasıl katılınır?',
-                    a: 'Kullanıcılar USD1 ile ortak inşaya katılarak ilgili aşama indirimiyle AGX kazanabilir. Toplam {phaseCount} dönem vardır; her dönem {phaseDurationDays} gün açıktır ve indirimler sırasıyla {discounts} şeklindedir.',
+                    a: 'Kullanıcılar USD1 ile ortak inşaya katılarak ilgili aşama indirimiyle AGX kazanabilir. Toplam {phaseCount} dönem vardır; indirimler sırasıyla {discounts} şeklindedir.',
                 },
                 {
                     q: 'Ortak inşa kotası ve katılım koşulları nelerdir?',

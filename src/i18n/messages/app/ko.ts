@@ -280,7 +280,7 @@ const app = defineMessages({
             items: [
                 {
                     q: '공동 구축 프로그램에 어떻게 참여하나요?',
-                    a: '사용자는 USD1로 공동 구축에 참여하며, 해당 단계 할인에 따라 AGX를 획득할 수 있습니다. 총 {phaseCount}기, 각 {phaseDurationDays}일간 진행되고 할인은 {discounts} 순입니다.',
+                    a:  '사용자는 USD1로 공동 구축에 참여하며, 해당 단계 할인에 따라 AGX를 획득할 수 있습니다. 총 {phaseCount}기, 할인은 {discounts} 순입니다.',
                 },
                 {
                     q: '공동 구축 한도와 참여 요건은?',

@@ -280,7 +280,7 @@ const app = defineMessages({
             items: [
                 {
                     q: 'Bagaimana cara ikut program co-build?',
-                    a: 'Pengguna berpartisipasi dengan USD1 dan mendapatkan AGX sesuai diskon musim yang berlaku. {phaseCount} musim, masing-masing dibuka {phaseDurationDays} hari, dengan diskon {discounts}.',
+                    a: 'Pengguna berpartisipasi dengan USD1 dan mendapatkan AGX sesuai diskon musim yang berlaku. {phaseCount} musim, dengan diskon {discounts}.',
                 },
                 {
                     q: 'Kuota co-build dan persyaratan partisipasi?',

@@ -278,7 +278,7 @@ const app = defineMessages({
         items: [
           {
             q: '如何参与共建计划？',
-            a: '用户使用 USD1 参与共建，可按照对应阶段折扣获得 AGX。共 {phaseCount} 期，每期开放 {phaseDurationDays} 天，折扣依次为 {discounts}。',
+            a: '用户使用 USD1 参与共建，可按照对应阶段折扣获得 AGX。共 {phaseCount} 期，折扣依次为 {discounts}。',
           },
           {
             q: '共建额度与参与要求？',

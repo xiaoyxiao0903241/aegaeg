@@ -280,7 +280,7 @@ const app = defineMessages({
             items: [
                 {
                     q: 'How do I join the co-build program?',
-                    a: 'Users participate in co-build with USD1 and receive AGX at the corresponding season discount. {phaseCount} seasons, each open for {phaseDurationDays} days, with discounts of {discounts} respectively.',
+                    a: 'Users participate in co-build with USD1 and receive AGX at the corresponding season discount. {phaseCount} seasons, with discounts of {discounts} respectively.',
                 },
                 {
                     q: 'What are the quota and participation requirements?',

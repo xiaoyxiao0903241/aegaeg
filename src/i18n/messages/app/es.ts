@@ -280,7 +280,7 @@ const app = defineMessages({
             items: [
                 {
                     q: '¿Cómo participar en el plan de co-construcción?',
-                    a: 'Los usuarios participan en la co-construcción con USD1 y pueden obtener AGX según el descuento de la fase correspondiente. {phaseCount} temporadas, cada una abierta {phaseDurationDays} días, con descuentos de {discounts} respectivamente.',
+                    a: 'Los usuarios participan en la co-construcción con USD1 y pueden obtener AGX según el descuento de la fase correspondiente. {phaseCount} temporadas, con descuentos de {discounts} respectivamente.',
                 },
                 {
                     q: '¿Cuota de co-construcción y requisitos de participación?',

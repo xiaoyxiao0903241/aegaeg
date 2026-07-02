@@ -280,7 +280,7 @@ const app = defineMessages({
             items: [
                 {
                     q: 'Làm thế nào để tham gia kế hoạch cùng xây dựng?',
-                    a: 'Người dùng dùng USD1 tham gia cùng xây dựng, có thể nhận AGX theo mức giảm giá tương ứng từng giai đoạn. {phaseCount} kỳ, mỗi kỳ mở {phaseDurationDays} ngày, mức giảm giá lần lượt {discounts}.',
+                    a: 'Người dùng dùng USD1 tham gia cùng xây dựng, có thể nhận AGX theo mức giảm giá tương ứng từng giai đoạn. {phaseCount} kỳ,  mức giảm giá lần lượt {discounts}.',
                 },
                 {
                     q: 'Hạn mức cùng xây dựng và yêu cầu tham gia?',

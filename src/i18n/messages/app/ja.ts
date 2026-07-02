@@ -280,7 +280,7 @@ const app = defineMessages({
             items: [
                 {
                     q: '共創プランへの参加方法は？',
-                    a: 'ユーザーはUSD1で共創に参加し、対応フェーズの割引でAGXを獲得できる。全{phaseCount}期、各{phaseDurationDays}日間開放、割引は{discounts}の順。',
+                    a: 'ユーザーはUSD1で共創に参加し、対応フェーズの割引でAGXを獲得できる。全{phaseCount}期、割引は{discounts}の順。',
                 },
                 {
                     q: '共創枠と参加条件は？',

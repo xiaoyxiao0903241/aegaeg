@@ -279,7 +279,7 @@ const app = defineMessages({
             items: [
                 {
                     q: '如何參與共建計畫？',
-                    a: '用戶使用 USD1 參與共建，可按照對應階段折扣獲得 AGX。共 {phaseCount} 期，每期開放 {phaseDurationDays} 天，折扣依序為 {discounts}。',
+                    a: '用戶使用 USD1 參與共建，可按照對應階段折扣獲得 AGX。共 {phaseCount} 期，折扣依序為 {discounts}。',
                 },
                 {
                     q: '共建額度與參與要求？',
