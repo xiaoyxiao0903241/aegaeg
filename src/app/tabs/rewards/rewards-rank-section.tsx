@@ -45,7 +45,6 @@ export function RewardsRankSection() {
     personalVolumeUsd,
     rankLabel,
     commitmentFloorRank,
-    commitmentFloorTeamUsd,
   } = useShareholderRankLabels(t)
   const { data: teamOverview, isLoading: teamOverviewLoading } = useTeamOverview(sessionReady)
   const { data: qualifiedPartitions, isLoading: qualifiedPartitionsLoading } =
@@ -55,7 +54,7 @@ export function RewardsRankSection() {
 
   if (!sessionReady) return null
 
-  const teamVolumeUsd = commitmentFloorTeamUsd
+  const teamVolumeUsd = Number(teamOverview?.sales_team_market ?? 0)
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
   const hasRank = displayRank > 0
