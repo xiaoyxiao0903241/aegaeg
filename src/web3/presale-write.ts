@@ -45,21 +45,20 @@ export async function approveUsd1ForPresaleIfNeeded({
   })
 }
 
+/**
+ * Callers are responsible for allowance (see useGenesisWidget's approve step
+ * and its pre-purchase check) — no hidden approve here, so the wallet never
+ * pops an unexpected second prompt mid-purchase.
+ */
 export async function purchasePresale({
   wallet,
   phase,
   amount,
-  client = thirdwebClient,
-  chain = defaultChain,
 }: {
   wallet: Wallet
   phase: number
   amount: bigint
-  client?: ThirdwebClient
-  chain?: Chain
 }) {
-  await approveUsd1ForPresaleIfNeeded({ wallet, amount, client, chain })
-
   return writeContractViaWallet({
     wallet,
     address: BSC_CONTRACTS.preSale,

@@ -110,9 +110,11 @@ export function useGenesisWidget() {
     (walletReady && activePhase !== null && phaseRemainingQuery.isLoading)
 
   useEffect(() => {
+    // The countdown renders minute granularity; a 15s tick keeps it accurate
+    // (and phase-transition detection prompt) without re-rendering every second.
     const timer = window.setInterval(() => {
       setNowSeconds(Math.floor(Date.now() / 1000))
-    }, 1000)
+    }, 15_000)
 
     return () => window.clearInterval(timer)
   }, [])
