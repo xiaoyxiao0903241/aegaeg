@@ -51,6 +51,7 @@ const app = defineMessages({
       connecting: '连接中…',
       copyAddress: '复制地址',
       copied: '已复制',
+      copyFailed: '复制失败，请长按手动复制',
       disconnect: '断开连接',
       reconnectWallet: '重新连接钱包',
       reconnectHint: '钱包已断开，请重新连接后再进行链上操作。',

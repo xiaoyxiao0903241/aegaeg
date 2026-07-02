@@ -52,6 +52,7 @@ const app = defineMessages({
         connecting: 'Подключение…',
         copyAddress: 'Копировать адрес',
         copied: 'Скопировано',
+        copyFailed: 'Не удалось скопировать. Удерживайте для ручного копирования.',
         disconnect: 'Отключить',
         reconnectWallet: 'Переподключить кошелёк',
         reconnectHint: 'Кошелёк отключён. Подключите его снова для операций на блокчейне.',

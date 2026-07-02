@@ -51,6 +51,7 @@ const app = defineMessages({
         connecting: 'Bağlanıyor…',
         copyAddress: 'Adresi kopyala',
         copied: 'Kopyalandı',
+        copyFailed: 'Kopyalama başarısız. Manuel kopyalamak için uzun basın.',
         disconnect: 'Bağlantıyı kes',
         reconnectWallet: 'Cüzdanı yeniden bağla',
         reconnectHint: 'Cüzdan bağlantısı kesildi, zincir üstü işlem yapmadan önce yeniden bağlanın.',

@@ -52,6 +52,7 @@ const app = defineMessages({
         connecting: 'Menghubungkan…',
         copyAddress: 'Salin alamat',
         copied: 'Disalin',
+        copyFailed: 'Gagal menyalin. Tekan lama untuk menyalin manual.',
         disconnect: 'Putuskan',
         reconnectWallet: 'Hubungkan ulang dompet',
         reconnectHint: 'Dompet terputus. Hubungkan ulang sebelum melakukan tindakan on-chain.',

@@ -52,6 +52,7 @@ const app = defineMessages({
         connecting: 'Connecting…',
         copyAddress: 'Copy address',
         copied: 'Copied',
+        copyFailed: 'Copy failed. Long-press to copy manually.',
         disconnect: 'Disconnect',
         reconnectWallet: 'Reconnect wallet',
         reconnectHint: 'Wallet disconnected. Reconnect before performing on-chain actions.',

@@ -52,6 +52,7 @@ const app = defineMessages({
         connecting: 'कनेक्ट हो रहा है…',
         copyAddress: 'पता कॉपी करें',
         copied: 'कॉपी हो गया',
+        copyFailed: 'कॉपी विफल। मैन्युअल कॉपी के लिए लंबा दबाएँ।',
         disconnect: 'डिस्कनेक्ट करें',
         reconnectWallet: 'वॉलेट पुनः कनेक्ट करें',
         reconnectHint: 'वॉलेट डिस्कनेक्ट हो गया। ऑन-चेन कार्यों के लिए पुनः कनेक्ट करें।',

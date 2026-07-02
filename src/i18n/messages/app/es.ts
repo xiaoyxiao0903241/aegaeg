@@ -52,6 +52,7 @@ const app = defineMessages({
         connecting: 'Conectando…',
         copyAddress: 'Copiar dirección',
         copied: 'Copiado',
+        copyFailed: 'Error al copiar. Mantén pulsado para copiar manualmente.',
         disconnect: 'Desconectar',
         reconnectWallet: 'Reconectar billetera',
         reconnectHint: 'La billetera está desconectada. Vuelve a conectarla antes de realizar operaciones on-chain.',

@@ -52,6 +52,7 @@ const app = defineMessages({
         connecting: 'Đang kết nối…',
         copyAddress: 'Sao chép địa chỉ',
         copied: 'Đã sao chép',
+        copyFailed: 'Sao chép thất bại. Nhấn giữ để sao chép thủ công.',
         disconnect: 'Ngắt kết nối',
         reconnectWallet: 'Kết nối lại ví',
         reconnectHint: 'Ví đã ngắt kết nối. Vui lòng kết nối lại trước khi thực hiện thao tác on-chain.',

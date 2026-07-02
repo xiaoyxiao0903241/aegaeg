@@ -52,6 +52,7 @@ const app = defineMessages({
         connecting: '接続中…',
         copyAddress: 'アドレスをコピー',
         copied: 'コピー済み',
+        copyFailed: 'コピーに失敗しました。長押しして手動でコピーしてください。',
         disconnect: '切断',
         reconnectWallet: 'ウォレットを再接続',
         reconnectHint: 'ウォレットが切断されました。オンチェーン操作のために再接続してください。',

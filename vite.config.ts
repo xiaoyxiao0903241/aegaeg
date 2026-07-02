@@ -12,7 +12,26 @@ const localeEntries = Object.fromEntries(
   ]),
 )
 
+/**
+ * CSS 兼容目标：Huawei/Vivo 等国产浏览器内核常见为 Chromium 90~110，
+ * 不支持 oklch()（Chrome 111+）与媒体查询范围语法 width >= / <（Chrome 104+）。
+ * lightningcss 按此目标降级：oklch → hex 回退 + @supports 渐进增强，
+ * 范围语法 → 经典 min-/max-width。版本编码为 major << 16。
+ */
+const cssTargets = {
+  chrome: 90 << 16,
+  android: 90 << 16,
+  safari: 14 << 16,
+  firefox: 90 << 16,
+}
+
 export default defineConfig({
+  css: {
+    transformer: 'lightningcss',
+    lightningcss: {
+      targets: cssTargets,
+    },
+  },
   resolve: {
     alias: {
       '~': resolve(__dirname, 'src'),
@@ -21,6 +40,9 @@ export default defineConfig({
     dedupe: ['@tanstack/react-query', 'react', 'react-dom'],
   },
   build: {
+    // 最终 minify 阶段以 cssTarget 为准（会覆盖 css.lightningcss.targets），须与 cssTargets 一致。
+    // esbuild 目标名不含 android；安卓系浏览器按 chrome 内核版本覆盖。
+    cssTarget: ['chrome90', 'safari14', 'ios14', 'firefox90'],
     modulePreload: false,
     rollupOptions: {
       input: {
