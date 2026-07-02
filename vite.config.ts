@@ -25,13 +25,16 @@ const cssTargets = {
   firefox: 90 << 16,
 }
 
-export default defineConfig({
-  css: {
-    transformer: 'lightningcss',
-    lightningcss: {
-      targets: cssTargets,
-    },
-  },
+export default defineConfig(({ command }) => ({
+  css:
+    command === 'build'
+      ? {
+          transformer: 'lightningcss',
+          lightningcss: {
+            targets: cssTargets,
+          },
+        }
+      : undefined,
   resolve: {
     alias: {
       '~': resolve(__dirname, 'src'),
@@ -61,4 +64,4 @@ export default defineConfig({
     ],
   },
   plugins: [react(), tailwindcss()],
-})
+}))
