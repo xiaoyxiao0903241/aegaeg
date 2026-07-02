@@ -1,0 +1,97 @@
+/**
+ * 超宽屏断点缩放 — 设计基准 1920 @ 16px；821–1919 保持浏览器默认 16px。
+ * 1920–3840 阶梯抬升 html font-size；shell / container 用 rem，随根字号同比缩放。
+ *
+ * @media 字面量须与 lib/breakpoints.ts `BREAKPOINT_ULTRA_WIDE_SCALE` 同步。
+ */
+
+@media (min-width: 1920px) {
+  html.site-fluid {
+    font-size: 16px;
+    --fluid-scale: 1;
+  }
+}
+
+@media (min-width: 2080px) {
+  html.site-fluid {
+    font-size: 18px;
+    --fluid-scale: 1.125;
+  }
+}
+
+@media (min-width: 2240px) {
+  html.site-fluid {
+    font-size: 20px;
+    --fluid-scale: 1.25;
+  }
+}
+
+@media (min-width: 2400px) {
+  html.site-fluid {
+    font-size: 22px;
+    --fluid-scale: 1.375;
+  }
+}
+
+@media (min-width: 2560px) {
+  html.site-fluid {
+    font-size: 24px;
+    --fluid-scale: 1.5;
+  }
+}
+
+@media (min-width: 2720px) {
+  html.site-fluid {
+    font-size: 26px;
+    --fluid-scale: 1.625;
+  }
+}
+
+@media (min-width: 2880px) {
+  html.site-fluid {
+    font-size: 28px;
+    --fluid-scale: 1.75;
+  }
+}
+
+@media (min-width: 3040px) {
+  html.site-fluid {
+    font-size: 30px;
+    --fluid-scale: 1.875;
+  }
+}
+
+@media (min-width: 3200px) {
+  html.site-fluid {
+    font-size: 32px;
+    --fluid-scale: 2;
+  }
+}
+
+@media (min-width: 3360px) {
+  html.site-fluid {
+    font-size: 34px;
+    --fluid-scale: 2.125;
+  }
+}
+
+@media (min-width: 3520px) {
+  html.site-fluid {
+    font-size: 36px;
+    --fluid-scale: 2.25;
+  }
+}
+
+@media (min-width: 3680px) {
+  html.site-fluid {
+    font-size: 40px;
+    --fluid-scale: 2.5;
+  }
+}
+
+@media (min-width: 3840px) {
+  html.site-fluid {
+    font-size: 48px;
+    --fluid-scale: 3;
+  }
+}

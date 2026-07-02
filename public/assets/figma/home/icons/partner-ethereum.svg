@@ -1,0 +1,32 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="24" height="24" fill="black"/>
+<g id="Homepage">
+<rect width="1440" height="6839" transform="translate(-522.5 -5547)" fill="#F5F6F8"/>
+<g id="partners">
+<mask id="path-1-inside-1_4_2" fill="white">
+<path d="M-522.5 -52H917.5V156H-522.5V-52Z"/>
+</mask>
+<path d="M-522.5 -52H917.5V156H-522.5V-52Z" fill="#EBEEF3"/>
+<path d="M917.5 156V155H-522.5V156V157H917.5V156Z" fill="#ECEEF2" mask="url(#path-1-inside-1_4_2)"/>
+<g id="prow">
+<g id="p">
+<path d="M12 -11.5H114C126.979 -11.5 137.5 -0.978688 137.5 12C137.5 24.9787 126.979 35.5 114 35.5H12C-0.978689 35.5 -11.5 24.9787 -11.5 12C-11.5 -0.978691 -0.978692 -11.5 12 -11.5Z" fill="white"/>
+<path d="M12 -11.5H114C126.979 -11.5 137.5 -0.978688 137.5 12C137.5 24.9787 126.979 35.5 114 35.5H12C-0.978689 35.5 -11.5 24.9787 -11.5 12C-11.5 -0.978691 -0.978692 -11.5 12 -11.5Z" stroke="#ECEEF2"/>
+<g id="Coin Logo">
+<g id="Ethereum (ETH)">
+<circle id="Ethereum (ETH)_2" cx="12" cy="12" r="12" fill="#7165FC"/>
+<g id="Ethereum (ETH)_3">
+<path id="Ethereum (ETH)_4" d="M11.9673 4.7998L11.8718 5.12406V14.5324L11.9673 14.6276L16.3344 12.0462L11.9673 4.7998Z" fill="#D3D3D3"/>
+<path id="Ethereum (ETH)_5" d="M11.9674 4.7998L7.6001 12.0462L11.9674 14.6276V10.0611V4.7998Z" fill="#F3F3F3"/>
+<path id="Ethereum (ETH)_6" d="M11.9674 15.4546L11.9136 15.5202V18.8716L11.9674 19.0287L16.3372 12.8745L11.9674 15.4546Z" fill="#F1F1F1"/>
+<path id="Ethereum (ETH)_7" d="M11.9674 19.0287V15.4546L7.6001 12.8745L11.9674 19.0287Z" fill="#F3F3F3"/>
+<path id="Ethereum (ETH)_8" d="M11.9673 14.6276L16.3344 12.0461L11.9673 10.061V14.6276Z" fill="#DEDEDE"/>
+<path id="Ethereum (ETH)_9" d="M7.6001 12.0461L11.9674 14.6276V10.061L7.6001 12.0461Z" fill="#E8E8E8"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

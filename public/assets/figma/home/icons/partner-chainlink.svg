@@ -1,0 +1,27 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="24" height="24" fill="black"/>
+<g id="Homepage">
+<rect width="1440" height="6839" transform="translate(-849.5 -5547)" fill="#F5F6F8"/>
+<g id="partners">
+<mask id="path-1-inside-1_4_2" fill="white">
+<path d="M-849.5 -52H590.5V156H-849.5V-52Z"/>
+</mask>
+<path d="M-849.5 -52H590.5V156H-849.5V-52Z" fill="#EBEEF3"/>
+<path d="M590.5 156V155H-849.5V156V157H590.5V156Z" fill="#ECEEF2" mask="url(#path-1-inside-1_4_2)"/>
+<g id="prow">
+<g id="p">
+<path d="M12 -11.5H109C121.979 -11.5 132.5 -0.978691 132.5 12C132.5 24.9787 121.979 35.5 109 35.5H12C-0.978692 35.5 -11.5 24.9787 -11.5 12C-11.5 -0.978691 -0.978691 -11.5 12 -11.5Z" fill="white"/>
+<path d="M12 -11.5H109C121.979 -11.5 132.5 -0.978691 132.5 12C132.5 24.9787 121.979 35.5 109 35.5H12C-0.978692 35.5 -11.5 24.9787 -11.5 12C-11.5 -0.978691 -0.978691 -11.5 12 -11.5Z" stroke="#ECEEF2"/>
+<g id="Coin Logo">
+<g id="Solana (SOL)">
+<circle id="Chainlink (LINK)" cx="12" cy="12" r="12" fill="#2A5ADA"/>
+<g id="Chainlink (LINK)_2">
+<path id="Chainlink (LINK)_3" fill-rule="evenodd" clip-rule="evenodd" d="M10.4679 4.84404L11.9358 4L13.4037 4.84404L17.4037 7.15596L18.8716 8V16L17.4037 16.844L13.4404 19.156L11.9725 20L10.5046 19.156L6.46789 16.844L5 16V8L6.46789 7.15596L10.4679 4.84404ZM7.93578 9.68807V14.3119L11.9358 16.6239L15.9358 14.3119V9.68807L11.9358 7.37615L7.93578 9.68807Z" fill="white"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

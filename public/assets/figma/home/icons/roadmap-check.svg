@@ -1,0 +1,16 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="16" height="16" fill="black"/>
+<g id="Homepage">
+<rect width="1440" height="6839" transform="translate(-712 -3798)" fill="#F5F6F8"/>
+<g id="roadmap">
+<g id="timeline">
+<g id="dot">
+<rect x="-10" y="-10" width="36" height="36" rx="18" fill="#E66A47"/>
+<g id="ic-check">
+<path id="Vector" d="M14.3334 3.66675L5.62508 12.3334L1.66675 8.39402" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>
