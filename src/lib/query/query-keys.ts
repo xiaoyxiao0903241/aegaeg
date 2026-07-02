@@ -52,6 +52,5 @@ export const queryKeys = {
       ['chain', 'flashSwap', 'quote', usdtAmount] as const,
     flashSwapBalances: (address: string) =>
       ['chain', 'flashSwap', 'balances', address.toLowerCase()] as const,
-    flashSwapRate: ['chain', 'flashSwap', 'rate'] as const,
   },
 } as const

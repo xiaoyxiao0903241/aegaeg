@@ -1,8 +1,9 @@
 import { createPublicClient, http } from 'viem'
 import { bsc } from 'viem/chains'
+import { appEnv } from '~/config/env'
 
-/** Read-only BSC client for QuoterV2 simulate calls (thirdweb readContract cannot quote V3). */
+/** Read-only BSC client — quotes, balances, receipt polling (SSOT: VITE_BSC_RPC_URL). */
 export const bscReadClient = createPublicClient({
   chain: bsc,
-  transport: http('https://bsc-dataseed1.binance.org'),
+  transport: http(appEnv.bscRpcUrl),
 })

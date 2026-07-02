@@ -75,6 +75,7 @@ const app = defineMessages({
         providerName: 'PancakeSwap',
         openPancakeSwap: 'PancakeSwap에서 열기',
         swapSuccess: '스왑 완료',
+        transactionCancelled: 'Transaction cancelled in wallet',
         overview: '개요',
         exchangeRate: '환율',
         settlement: '정산',

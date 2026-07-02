@@ -74,6 +74,7 @@ const app = defineMessages({
         providerName: 'PancakeSwap',
         openPancakeSwap: 'PancakeSwap üzerinde aç',
         swapSuccess: 'Takas başarılı',
+        transactionCancelled: 'Transaction cancelled in wallet',
         overview: 'Genel bakış',
         exchangeRate: 'Takas oranı',
         settlement: 'Uzlaşma',

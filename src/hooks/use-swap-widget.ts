@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/lib/swap/calc-sqrt-price-impact-bps'
@@ -32,6 +32,7 @@ import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-inter
  */
 export function useSwapWidget(authenticated: boolean) {
   const account = useActiveAccount()
+  const wallet = useActiveWallet()
   const afterSwap = useDappActions((state) => state.afterSwap)
   const direction = useSwapDirectionStore((state) => state.direction)
   const flipDirectionInStore = useSwapDirectionStore((state) => state.flipDirection)
@@ -333,7 +334,7 @@ export function useSwapWidget(authenticated: boolean) {
   }, [flipDirectionInStore])
 
   const submit = useCallback(async (): Promise<boolean> => {
-    if (!account) {
+    if (!account || !wallet) {
       setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
       return false
     }
@@ -344,14 +345,14 @@ export function useSwapWidget(authenticated: boolean) {
 
     try {
       await approveTokenIfNeeded({
-        account,
+        wallet,
         token: pair.sell.address,
         amountIn,
       })
       await balancesQuery.refetch()
 
       await executeTokenSwap({
-        account,
+        wallet,
         amountIn,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
@@ -376,6 +377,7 @@ export function useSwapWidget(authenticated: boolean) {
     pair.buy.address,
     pair.sell.address,
     slippageBps,
+    wallet,
   ])
 
   return {

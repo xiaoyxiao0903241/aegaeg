@@ -75,6 +75,7 @@ const app = defineMessages({
         providerName: 'PancakeSwap',
         openPancakeSwap: 'Открыть на PancakeSwap',
         swapSuccess: 'Обмен выполнен',
+        transactionCancelled: 'Transaction cancelled in wallet',
         overview: 'Обзор',
         exchangeRate: 'Курс обмена',
         settlement: 'Расчёт',

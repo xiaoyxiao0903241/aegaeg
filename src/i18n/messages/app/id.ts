@@ -75,6 +75,7 @@ const app = defineMessages({
         providerName: 'PancakeSwap',
         openPancakeSwap: 'Buka di PancakeSwap',
         swapSuccess: 'Swap berhasil',
+        transactionCancelled: 'Transaction cancelled in wallet',
         overview: 'Ringkasan',
         exchangeRate: 'Kurs tukar',
         settlement: 'Penyelesaian',

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { REFERRAL_CONFIG, parseReferrerFromSearch } from '~/config/referral'
 import { formatCount, formatShortAddress } from '~/lib/api/format-display'
@@ -16,6 +16,7 @@ import { useDappActions } from '~/stores/dapp-actions'
 
 export function useReferral(sessionReady: boolean) {
   const account = useActiveAccount()
+  const wallet = useActiveWallet()
   const afterReferralBind = useDappActions((state) => state.afterReferralBind)
   const pendingReferrer = useMemo(() => {
     const fromUrl = parseReferrerFromSearch(window.location.search)
@@ -72,7 +73,7 @@ export function useReferral(sessionReady: boolean) {
   }, [isBound, referrer])
 
   const bind = useCallback(async () => {
-    if (!account) {
+    if (!account || !wallet) {
       setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
       return false
     }
@@ -87,7 +88,7 @@ export function useReferral(sessionReady: boolean) {
     setError(null)
 
     try {
-      await bindReferrer({ account, referrer: target })
+      await bindReferrer({ wallet, referrer: target })
       afterReferralBind()
       return true
     } catch (caught) {
@@ -96,7 +97,7 @@ export function useReferral(sessionReady: boolean) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterReferralBind, pendingReferrer, referralQuery, referrerInput])
+  }, [account, afterReferralBind, pendingReferrer, referralQuery, referrerInput, wallet])
 
   const refresh = useCallback(async () => {
     await referralQuery.refetch()

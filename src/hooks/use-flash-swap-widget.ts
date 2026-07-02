@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { formatSwapRate, formatSwapRateColon } from '~/lib/swap/format-swap-rate'
 import {
@@ -17,20 +17,18 @@ import { useDappActions } from '~/stores/dapp-actions'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
-import {
-  readFlashSwapBalances,
-  readFlashSwapQuote,
-} from '~/web3/flash-swap-read'
+import { readFlashSwapBalances, readFlashSwapQuote } from '~/web3/flash-swap-read'
 import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/web3/flash-swap-write'
 
 /** One-way USDT → USD1 via AegisUsd1Swap; no slippage UI (minOut = quote). */
 export function useFlashSwapWidget(authenticated: boolean) {
   const account = useActiveAccount()
+  const wallet = useActiveWallet()
   const afterSwap = useDappActions((state) => state.afterSwap)
   const pair = useMemo(() => getSwapPairTokens('reverse'), [])
   const [sellAmount, setSellAmountRaw] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<unknown>(null)
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)
@@ -79,8 +77,8 @@ export function useFlashSwapWidget(authenticated: boolean) {
   const quotedOut = amountQuoteQuery.data ?? 0n
   const spotQuotedOut = spotQuoteQuery.data ?? 0n
   const isQuoting =
-    authenticated && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
-  const isExchangePriceQuoting = spotQuoteQuery.isPending && spotQuotedOut === 0n
+    authenticated && amountIn > 0n && amountQuoteQuery.isFetching && quotedOut === 0n
+  const isExchangePriceQuoting = spotQuoteQuery.isFetching && spotQuotedOut === 0n
 
   const setSellAmount = useCallback(
     (value: string) => {
@@ -91,6 +89,7 @@ export function useFlashSwapWidget(authenticated: boolean) {
         return
       }
 
+      setSubmitError(null)
       setSellAmountRaw(capTokenAmountInput(value, sellBalance, pair.sell.decimals, 6))
     },
     [authenticated, pair.sell.decimals, sellBalance],
@@ -102,17 +101,14 @@ export function useFlashSwapWidget(authenticated: boolean) {
     if (capped !== sellAmount) setSellAmountRaw(capped)
   }, [authenticated, pair.sell.decimals, sellAmount, sellBalance])
 
-  useEffect(() => {
-    if (amountQuoteQuery.error) {
-      setError(
-        amountQuoteQuery.error instanceof Error
-          ? amountQuoteQuery.error.message
-          : 'Quote failed',
-      )
-      return
-    }
-    if (amountIn > 0n) setError(null)
-  }, [amountIn, amountQuoteQuery.error])
+  const validationError = useMemo(() => {
+    if (!amountQuoteQuery.error) return null
+    return amountQuoteQuery.error instanceof Error
+      ? amountQuoteQuery.error.message
+      : 'Quote failed'
+  }, [amountQuoteQuery.error])
+
+  const error = submitError ?? validationError
 
   const sellAmountDisplay = useMemo(
     () => formatTokenAmountInputDisplay(sellAmount),
@@ -190,36 +186,37 @@ export function useFlashSwapWidget(authenticated: boolean) {
     [walletReady, pair.sell.decimals, sellBalance],
   )
 
-  const submit = useCallback(async (): Promise<boolean> => {
-    if (!account) {
-      setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
-      return false
+  const submit = useCallback(async (): Promise<{ ok: true } | { ok: false; error: unknown }> => {
+    if (!account || !wallet) {
+      const error = GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED
+      setSubmitError(error)
+      return { ok: false, error }
     }
-    if (!canSubmit) return false
+    if (!canSubmit) return { ok: false, error: null }
 
     setIsSubmitting(true)
-    setError(null)
+    setSubmitError(null)
 
     try {
-      await approveUsdtForFlashSwapIfNeeded({ account, amountIn })
-      await balancesQuery.refetch()
+      await approveUsdtForFlashSwapIfNeeded({ wallet, amountIn })
+      void balancesQuery.refetch()
 
       await executeFlashSwap({
-        account,
+        wallet,
         usdtAmount: amountIn,
         minUsd1Out: quotedOut,
       })
       setSellAmountRaw('')
       afterSwap()
       await balancesQuery.refetch()
-      return true
-    } catch (submitError: unknown) {
-      setError(submitError instanceof Error ? submitError.message : 'Transaction failed')
-      return false
+      return { ok: true }
+    } catch (caught: unknown) {
+      setSubmitError(caught)
+      return { ok: false, error: caught }
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterSwap, amountIn, balancesQuery, canSubmit, quotedOut])
+  }, [account, afterSwap, amountIn, balancesQuery, canSubmit, quotedOut, wallet])
 
   return {
     sellAmount,
@@ -239,6 +236,7 @@ export function useFlashSwapWidget(authenticated: boolean) {
     isBalancesLoading,
     isSubmitting,
     error,
+    validationError,
     fillPercent,
     submit,
   }

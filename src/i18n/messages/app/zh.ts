@@ -74,6 +74,7 @@ const app = defineMessages({
       providerName: 'PancakeSwap',
       openPancakeSwap: '在 PancakeSwap 打开',
       swapSuccess: '兑换成功',
+      transactionCancelled: '已在钱包中取消交易',
       overview: '概览',
       exchangeRate: '兑换比率',
       settlement: '结算',
