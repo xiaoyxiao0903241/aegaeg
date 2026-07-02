@@ -79,7 +79,7 @@ export interface UserPerformance {
   sum_invest_usdt: string
   presale_volume: string
   presale_rank: number
-  /** Presale commitment floor tier; next tier = this value + 1. */
+  /** Presale commitment floor tier (1:1 → A-tier); 30-day boost = this + 1. */
   presale_commitment_floor_rank: number
   /** Presale commitment floor team performance (USD). */
   presale_commitment_floor_performance: string
