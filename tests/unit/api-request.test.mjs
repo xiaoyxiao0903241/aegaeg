@@ -7,7 +7,7 @@ test('buildApiUrl appends query params', async () => {
 
   assert.equal(
     buildApiUrl('/sales/logs', { page: 2, page_size: 10 }),
-    'https://api.xdpro.cc/api/sales/logs?page=2&page_size=10',
+    'https://api.x-dao.io/api/sales/logs?page=2&page_size=10',
   )
 })
 

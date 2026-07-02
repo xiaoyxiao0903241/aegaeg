@@ -4,12 +4,12 @@ import { loadModule } from './load-module.mjs'
 
 test('createApiClient builds absolute URLs from base path', async () => {
   const { createApiClient } = await loadModule('/src/lib/api/client.ts')
-  const client = createApiClient({ baseUrl: 'https://api.xdpro.cc/api' })
+  const client = createApiClient({ baseUrl: 'https://api.x-dao.io/api' })
 
-  assert.equal(client.buildUrl('/auth/login'), 'https://api.xdpro.cc/api/auth/login')
+  assert.equal(client.buildUrl('/auth/login'), 'https://api.x-dao.io/api/auth/login')
   assert.equal(
     client.buildUrl('sales/logs?page=2'),
-    'https://api.xdpro.cc/api/sales/logs?page=2',
+    'https://api.x-dao.io/api/sales/logs?page=2',
   )
 })
 

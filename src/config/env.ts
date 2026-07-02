@@ -20,7 +20,7 @@ export const appEnv = {
   thirdwebClientId: readString('VITE_THIRDWEB_CLIENT_ID'),
   walletConnectProjectId: readString('VITE_WALLETCONNECT_PROJECT_ID'),
   bscRpcUrl: readString('VITE_BSC_RPC_URL', 'https://bsc-dataseed.binance.org'),
-  apiBaseUrl: readString('VITE_API_BASE_URL', 'https://api.xdpro.cc/api'),
+  apiBaseUrl: readString('VITE_API_BASE_URL', 'https://api.x-dao.io/api'),
   apiDeriveFromDomain: readBoolean('VITE_API_DERIVE_FROM_DOMAIN', true),
   authMessageFormat: readString('VITE_AUTH_MESSAGE_FORMAT', 'siwe'),
   bscscanBase: readString('VITE_BSCSCAN_BASE_URL', 'https://bscscan.com'),
