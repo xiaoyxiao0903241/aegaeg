@@ -22,7 +22,7 @@ export const appEnv = {
   bscRpcUrl: readString('VITE_BSC_RPC_URL', 'https://bsc-dataseed.binance.org'),
   apiBaseUrl: readString('VITE_API_BASE_URL', 'https://api.x-dao.io/api'),
   /** Fallback app host when `location` is unreadable (hostname only, no protocol). */
-  appHost: readString('VITE_APP_HOST', 'aegis-x.io'),
+  appHost: readString('VITE_APP_HOST', 'x-dao.io'),
   apiDeriveFromDomain: readBoolean('VITE_API_DERIVE_FROM_DOMAIN', true),
   authMessageFormat: readString('VITE_AUTH_MESSAGE_FORMAT', 'siwe'),
   bscscanBase: readString('VITE_BSCSCAN_BASE_URL', 'https://bscscan.com'),
