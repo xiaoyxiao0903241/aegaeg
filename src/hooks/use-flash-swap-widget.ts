@@ -17,10 +17,14 @@ import { useDappActions } from '~/stores/dapp-actions'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/web3/flash-swap-read'
 import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/web3/flash-swap-write'
 
-/** One-way USDT → USD1 via AegisUsd1Swap; no slippage UI (minOut = quote). */
+/** Fixed tolerance (0.5%) below the displayed quote for the on-chain floor. */
+const FLASH_SWAP_SLIPPAGE_BPS = 50
+
+/** One-way USDT → USD1 via AegisUsd1Swap; no slippage UI (fixed small tolerance). */
 export function useFlashSwapWidget(authenticated: boolean) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
@@ -73,6 +77,9 @@ export function useFlashSwapWidget(authenticated: boolean) {
 
   const sellBalance = balancesQuery.data?.usdt ?? 0n
   const buyBalance = balancesQuery.data?.usd1 ?? 0n
+  // Only cap input against a real balance; capping against the 0n fallback
+  // while balances are still loading would wipe whatever the user typed.
+  const balancesLoaded = balancesQuery.data !== undefined
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data ?? 0n
   const spotQuotedOut = spotQuoteQuery.data ?? 0n
@@ -84,7 +91,7 @@ export function useFlashSwapWidget(authenticated: boolean) {
     (value: string) => {
       const fractionLimit = Math.min(pair.sell.decimals, 6)
 
-      if (!authenticated) {
+      if (!authenticated || !balancesLoaded) {
         setSellAmountRaw(sanitizeTokenAmountInput(value, fractionLimit))
         return
       }
@@ -92,14 +99,14 @@ export function useFlashSwapWidget(authenticated: boolean) {
       setSubmitError(null)
       setSellAmountRaw(capTokenAmountInput(value, sellBalance, pair.sell.decimals, 6))
     },
-    [authenticated, pair.sell.decimals, sellBalance],
+    [authenticated, balancesLoaded, pair.sell.decimals, sellBalance],
   )
 
   useEffect(() => {
-    if (!authenticated || !sellAmount) return
+    if (!authenticated || !balancesLoaded || !sellAmount) return
     const capped = capTokenAmountInput(sellAmount, sellBalance, pair.sell.decimals, 6)
     if (capped !== sellAmount) setSellAmountRaw(capped)
-  }, [authenticated, pair.sell.decimals, sellAmount, sellBalance])
+  }, [authenticated, balancesLoaded, pair.sell.decimals, sellAmount, sellBalance])
 
   const validationError = useMemo(() => {
     if (!amountQuoteQuery.error) return null
@@ -204,7 +211,10 @@ export function useFlashSwapWidget(authenticated: boolean) {
       await executeFlashSwap({
         wallet,
         usdtAmount: amountIn,
-        minUsd1Out: quotedOut,
+        // Allow a small tolerance below the displayed quote; using the raw
+        // quote as a strict floor reverts on any price tick between quoting
+        // and execution.
+        minUsd1Out: calcAmountOutMin(quotedOut, FLASH_SWAP_SLIPPAGE_BPS),
       })
       setSellAmountRaw('')
       afterSwap()
@@ -212,6 +222,9 @@ export function useFlashSwapWidget(authenticated: boolean) {
       return { ok: true }
     } catch (caught: unknown) {
       setSubmitError(caught)
+      // The tx may still land (unknown outcome) — refresh balances so the UI
+      // re-caps the amount instead of inviting an identical resubmit.
+      void balancesQuery.refetch()
       return { ok: false, error: caught }
     } finally {
       setIsSubmitting(false)

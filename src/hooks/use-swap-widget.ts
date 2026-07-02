@@ -8,6 +8,7 @@ import { formatSwapRateApprox } from '~/lib/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/config/pancake-swap-links'
 import {
   capTokenAmountInput,
+  clampSlippagePercent,
   formatTokenAmount,
   formatTokenAmountInputDisplay,
   parseTokenAmount,
@@ -37,7 +38,11 @@ export function useSwapWidget(authenticated: boolean) {
   const direction = useSwapDirectionStore((state) => state.direction)
   const flipDirectionInStore = useSwapDirectionStore((state) => state.flipDirection)
   const [sellAmount, setSellAmountRaw] = useState('')
-  const [slippage, setSlippage] = useState(1)
+  const [slippage, setSlippageRaw] = useState(1)
+  // Clamp here so an out-of-range value can never reach calcAmountOutMin (throws ≥100%).
+  const setSlippage = useCallback((value: number) => {
+    setSlippageRaw(clampSlippagePercent(value))
+  }, [])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -167,6 +172,9 @@ export function useSwapWidget(authenticated: boolean) {
 
   const sellBalance = balancesQuery.data?.sell ?? 0n
   const buyBalance = balancesQuery.data?.buy ?? 0n
+  // Only cap input against a real balance; capping against the 0n fallback
+  // while balances are still loading would wipe whatever the user typed.
+  const balancesLoaded = balancesQuery.data !== undefined
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
   const priceImpactBps = amountQuoteQuery.data?.priceImpactBps ?? 0
@@ -188,7 +196,7 @@ export function useSwapWidget(authenticated: boolean) {
     (value: string) => {
       const fractionLimit = Math.min(pair.sell.decimals, 6)
 
-      if (!authenticated) {
+      if (!authenticated || !balancesLoaded) {
         setSellAmountRaw(sanitizeTokenAmountInput(value, fractionLimit))
         return
       }
@@ -197,11 +205,11 @@ export function useSwapWidget(authenticated: boolean) {
         capTokenAmountInput(value, sellBalance, pair.sell.decimals, 6),
       )
     },
-    [authenticated, pair.sell.decimals, sellBalance],
+    [authenticated, balancesLoaded, pair.sell.decimals, sellBalance],
   )
 
   useEffect(() => {
-    if (!authenticated || !sellAmount) {
+    if (!authenticated || !balancesLoaded || !sellAmount) {
       return
     }
 
@@ -209,7 +217,7 @@ export function useSwapWidget(authenticated: boolean) {
     if (capped !== sellAmount) {
       setSellAmountRaw(capped)
     }
-  }, [authenticated, pair.sell.decimals, sellAmount, sellBalance])
+  }, [authenticated, balancesLoaded, pair.sell.decimals, sellAmount, sellBalance])
 
   useEffect(() => {
     if (amountQuoteQuery.error) {
@@ -310,6 +318,13 @@ export function useSwapWidget(authenticated: boolean) {
   const isHighPriceImpact =
     authenticated && amountIn > 0n && priceImpactBps >= HIGH_SWAP_PRICE_IMPACT_BPS
 
+  // Single source of truth for the output floor: displayed and executed values
+  // always come from this memo, so the on-chain bound matches the UI.
+  const amountOutMin = useMemo(
+    () => (quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n),
+    [quotedOut, slippageBps],
+  )
+
   const exceedsBalance = walletReady && amountIn > sellBalance
   const canSubmit =
     walletReady &&
@@ -356,7 +371,7 @@ export function useSwapWidget(authenticated: boolean) {
         amountIn,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
-        slippageBps,
+        amountOutMin,
       })
       setSellAmountRaw('')
       afterSwap()
@@ -364,6 +379,9 @@ export function useSwapWidget(authenticated: boolean) {
       return true
     } catch (submitError: unknown) {
       setError(submitError instanceof Error ? submitError.message : 'Transaction failed')
+      // The tx may still land (unknown outcome) — refresh balances so the UI
+      // re-caps the amount instead of inviting an identical resubmit.
+      void balancesQuery.refetch()
       return false
     } finally {
       setIsSubmitting(false)
@@ -372,11 +390,11 @@ export function useSwapWidget(authenticated: boolean) {
     account,
     afterSwap,
     amountIn,
+    amountOutMin,
     balancesQuery,
     canSubmit,
     pair.buy.address,
     pair.sell.address,
-    slippageBps,
     wallet,
   ])
 
@@ -411,6 +429,6 @@ export function useSwapWidget(authenticated: boolean) {
     error,
     fillPercent,
     submit,
-    amountOutMin: quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n,
+    amountOutMin,
   }
 }

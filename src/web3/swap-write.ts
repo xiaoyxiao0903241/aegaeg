@@ -4,7 +4,6 @@ import type { ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
 import { SWAP_CONFIG } from '~/config/swap'
 import { buildSwapDeadline } from '~/lib/swap/build-swap-deadline'
-import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { ERC20_METHODS, MAX_UINT256, SWAP_ROUTER_V3_METHODS } from '~/web3/abis'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { fetchSwapQuote, readErc20Allowance } from '~/web3/swap-read'
@@ -48,21 +47,23 @@ export async function executeTokenSwap({
   amountIn,
   tokenIn,
   tokenOut,
-  slippageBps,
+  amountOutMin,
 }: {
   wallet: Wallet
   amountIn: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  slippageBps: number
+  /** Caller-computed floor — must match what the UI displayed to the user. */
+  amountOutMin: bigint
 }) {
   const account = wallet.getAccount()
   if (!account) {
     throw new Error('Wallet not connected')
   }
 
+  // Re-quote only for route params (fee tier); the output floor stays the
+  // user-approved amountOutMin so the executed bound matches the UI.
   const quote = await fetchSwapQuote({ amountIn, tokenIn, tokenOut })
-  const amountOutMin = calcAmountOutMin(quote.quotedOut, slippageBps)
   const deadline = BigInt(buildSwapDeadline(SWAP_CONFIG.deadlineSeconds))
 
   return writeContractViaWallet({
