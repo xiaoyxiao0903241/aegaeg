@@ -5,6 +5,13 @@ import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 
 const METAMASK_WALLET_ID = 'io.metamask' as WalletId
 
+/**
+ * Wallet ids that never correspond to a browser-injected provider. Routing
+ * their writes to `window.ethereum` would target a different wallet than the
+ * one the user connected (e.g. WalletConnect session + MetaMask installed).
+ */
+const NON_INJECTED_WALLET_IDS = new Set<string>(['walletConnect', 'inApp', 'embedded', 'smart'])
+
 type EthereumWindow = Window & {
   ethereum?: EIP1193Provider & { isMetaMask?: boolean; providers?: EIP1193Provider[] }
 }
@@ -53,18 +60,22 @@ function pickWindowEthereum(wallet: Wallet): EIP1193Provider | undefined {
 
 /**
  * Resolves the wallet's EIP-1193 provider for contract writes.
- * Prefer the injected MetaMask / EIP-6963 provider so rejections surface directly.
- * WalletConnect falls back to thirdweb's adapter when no injected provider exists.
+ * Injected wallets prefer the EIP-6963 provider (falling back to legacy
+ * `window.ethereum`) so rejections surface directly. Non-injected wallets
+ * (WalletConnect, in-app, smart) always use thirdweb's adapter — their
+ * transactions must go through the connected session, never `window.ethereum`.
  */
 export function resolveWalletEip1193Provider(wallet: Wallet): EIP1193Provider {
-  const injected = pickInjectedProvider(wallet.id)
-  if (injected) {
-    return injected
-  }
+  if (!NON_INJECTED_WALLET_IDS.has(wallet.id)) {
+    const injected = pickInjectedProvider(wallet.id)
+    if (injected) {
+      return injected
+    }
 
-  const legacy = pickWindowEthereum(wallet)
-  if (legacy) {
-    return legacy
+    const legacy = pickWindowEthereum(wallet)
+    if (legacy) {
+      return legacy
+    }
   }
 
   return EIP1193.toProvider({
