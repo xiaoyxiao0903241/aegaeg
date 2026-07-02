@@ -10,6 +10,11 @@ import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
 export type AnchoredTooltipPosition = 'top' | 'right' | 'bottom'
 
+type TooltipTriggerChildProps = {
+  onClick?: (event: MouseEvent<HTMLElement>) => void
+  onPointerDown?: (event: PointerEvent<HTMLElement>) => void
+}
+
 export interface AnchoredTooltipProps {
   children: ReactElement
   align?: 'start' | 'center' | 'end'
@@ -33,18 +38,19 @@ export function AnchoredTooltip({
 }: AnchoredTooltipProps) {
   const isMobileViewport = useMobileViewport()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const childOnClick = children.props.onClick as ((event: MouseEvent<HTMLElement>) => void) | undefined
+  const childProps = children.props as TooltipTriggerChildProps
+  const childOnClick = childProps.onClick
   const isInfoOnly = childOnClick == null
 
-  const trigger = cloneElement(children, {
-    onPointerDown: (event: PointerEvent<HTMLElement>) => {
-      children.props.onPointerDown?.(event)
+  const trigger = cloneElement(children as ReactElement<TooltipTriggerChildProps>, {
+    onPointerDown: (event) => {
+      childProps.onPointerDown?.(event)
       if (isMobileViewport) {
         // Block focus-toggle flash on touch; info icons open via click below.
         event.preventDefault()
       }
     },
-    onClick: (event: MouseEvent<HTMLElement>) => {
+    onClick: (event) => {
       childOnClick?.(event)
       if (isMobileViewport && isInfoOnly) {
         setMobileOpen((open) => !open)
