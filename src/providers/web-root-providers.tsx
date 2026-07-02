@@ -4,6 +4,7 @@ import { AutoConnect, ThirdwebProvider } from 'thirdweb/react'
 import { thirdwebClient, warnMissingWeb3EnvConfigOnce } from '~/web3/thirdweb'
 import { AuthProvider } from '~/providers/auth-provider'
 import { QueryProvider } from '~/providers/query-provider'
+import { TooltipProvider } from '~/components/tooltip'
 
 /**
  * Shared provider stack for Home + DApp entry points.
@@ -24,8 +25,10 @@ export function WebRootProviders({ children }: { children: ReactNode }) {
   return (
     <ThirdwebProvider>
       <QueryProvider>
-        <AutoConnect client={thirdwebClient} timeout={15_000} />
-        <AuthProvider>{children}</AuthProvider>
+        <TooltipProvider delayDuration={200} skipDelayDuration={0}>
+          <AutoConnect client={thirdwebClient} timeout={15_000} />
+          <AuthProvider>{children}</AuthProvider>
+        </TooltipProvider>
       </QueryProvider>
     </ThirdwebProvider>
   )

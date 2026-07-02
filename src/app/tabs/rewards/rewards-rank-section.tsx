@@ -139,7 +139,7 @@ export function RewardsRankSection() {
                   {t.rewards.postLaunchRankTitle}
                 </SideLabel>
                 <AnchoredTooltip
-                  className="max-w-72"
+                  align="end"
                   content={t.rewards.postLaunchRankTooltip}
                   position="bottom"
                 >
