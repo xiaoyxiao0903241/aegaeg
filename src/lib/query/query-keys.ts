@@ -26,6 +26,14 @@ export const queryKeys = {
     qualifiedPartitions: ['api', 'performance', 'qualified-partitions'] as const,
   },
   chain: {
+    // Root keys cover every query under a prefix — the single source of truth
+    // for broad invalidation (never spell these out as inline literals).
+    erc20Root: ['chain', 'erc20'] as const,
+    referralRoot: ['chain', 'referral'] as const,
+    swapRoot: ['chain', 'swap'] as const,
+    flashSwapQuoteRoot: ['chain', 'flashSwap', 'quote'] as const,
+    presaleUserTotalRoot: ['chain', 'presale', 'userTotal'] as const,
+    presaleUserPhaseRemainingRoot: ['chain', 'presale', 'userPhaseRemaining'] as const,
     presalePhases: ['chain', 'presale', 'phases'] as const,
     presaleActivePhase: ['chain', 'presale', 'activePhase'] as const,
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
@@ -33,6 +41,8 @@ export const queryKeys = {
     presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,
     presaleUserTotal: (address: string) =>
       ['chain', 'presale', 'userTotal', address.toLowerCase()] as const,
+    presaleUserPhaseRemainingByUser: (address: string) =>
+      ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase()] as const,
     presaleUserPhaseRemaining: (address: string, phaseIndex: number) =>
       ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase(), phaseIndex] as const,
     erc20Balance: (token: string, address: string) =>
