@@ -55,12 +55,6 @@ export function useReferral(sessionReady: boolean) {
     staleTime: QUERY_STALE_TIME.balances,
   })
 
-  useEffect(() => {
-    if (pendingReferrer) {
-      setReferrerInput(pendingReferrer)
-    }
-  }, [pendingReferrer])
-
   const isBound = referralQuery.data?.isBound ?? false
   const referrer = referralQuery.data?.referrer ?? null
   const directCount = referralQuery.data?.directCount ?? 0n
@@ -97,7 +91,7 @@ export function useReferral(sessionReady: boolean) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterReferralBind, pendingReferrer, referralQuery, referrerInput, wallet])
+  }, [account, afterReferralBind, pendingReferrer, referrerInput, wallet])
 
   const refresh = useCallback(async () => {
     await referralQuery.refetch()
