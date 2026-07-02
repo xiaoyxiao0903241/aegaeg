@@ -36,6 +36,18 @@ export function useShareholderRank() {
     [performance?.presale_rank],
   )
 
+  const commitmentFloorRank = useMemo(
+    () => resolveDisplayPresaleRank(performance?.presale_commitment_floor_rank ?? 0),
+    [performance?.presale_commitment_floor_rank],
+  )
+
+  const commitmentFloorTeamUsd = useMemo(() => {
+    const raw = performance?.presale_commitment_floor_performance
+    if (raw == null || raw === '') return 0
+    const parsed = Number(raw)
+    return Number.isFinite(parsed) ? Math.max(0, parsed) : 0
+  }, [performance?.presale_commitment_floor_performance])
+
   const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 
   const isRankLoading = sessionReady && performanceLoading && performance == null
@@ -49,6 +61,8 @@ export function useShareholderRank() {
     performance,
     performanceLoading,
     personalVolumeUsd,
+    commitmentFloorRank,
+    commitmentFloorTeamUsd,
   }
 }
 

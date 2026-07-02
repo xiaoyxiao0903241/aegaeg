@@ -62,7 +62,8 @@ export function CommunityContent() {
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)
   const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
-  const { displayRank, isRankLoading } = useShareholderRank()
+  const { displayRank, isRankLoading, commitmentFloorRank, commitmentFloorTeamUsd } =
+    useShareholderRank()
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
     tablePageQuery(invitesPage),
     sessionReady,
@@ -113,17 +114,21 @@ export function CommunityContent() {
     : displayRank > 0
       ? `${t.tables.rewardRate} ${getTeamBonusRateLabel(displayRank)}`
       : `${t.tables.rewardRate} -`
+  const postLaunchPresaleRank = commitmentFloorRank > 0 ? commitmentFloorRank : displayRank
   const postLaunchRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0
-      ? getPostLaunchRankLabel(displayRank)
+      ? getPostLaunchRankLabel(postLaunchPresaleRank)
       : '-'
-  const postLaunchVolume = t.community.totalTeamVolume.replace('{amount}', teamVolume)
+  const postLaunchVolume = t.community.totalTeamVolume.replace(
+    '{amount}',
+    formatUsd(commitmentFloorTeamUsd),
+  )
   const postLaunchBoostLabel =
     displayRank > 0
       ? t.community.postLaunch30DayBoost.replace(
           '{rank}',
-          getBoostedPostLaunchRankLabel(displayRank),
+          getBoostedPostLaunchRankLabel(postLaunchPresaleRank),
         )
       : undefined
 

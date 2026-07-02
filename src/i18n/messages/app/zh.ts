@@ -335,9 +335,9 @@ const app = defineMessages({
       postLaunch30DayRank: '上线30天内您可获得{rank}等级',
       postLaunchRankTooltip:
         '上线后，等级将根据团队参与共建的金额，按折扣价兑换 AGX 后计算真实业绩。\n当前等级仅以业绩数据作为统计依据，上线后可能还会受其他因素影响，例如个人持仓、直推有效账户等。\n以上数据仅供参考，最终以上线后的真实数据为准。',
-      superCommunityBadge: '超级社区',
+      superCommunityBadge: '超级体系',
       heroTierRewardBody: '获得团队共建金额的{bonus}作为奖励。',
-      superCommunityBenefitBody: '超级社区将获得体系发展专项基金以及治理权益。',
+      superCommunityBenefitBody: '超级体系将获得体系发展专项基金以及治理权益。',
       shareholderHintNoRank: '创世等级',
       shareholderNoRankTitle: '您还未成为创世储备理事',
       shareholderNoRankBody: '成为创世储备理事可获得团队共建金额的 1%-10% 作为奖励，并且在 AEGIS X 上线后的 30 天内提升 1 级',
@@ -380,7 +380,7 @@ const app = defineMessages({
       },
       communityFund: '发展基金',
       communityFundTooltip:
-        '超级社区获得5%体系发展基金，专项用于体系自营，包括但不限于：系统建设，日常运营，体系会议，体系讲师等。',
+        '超级体系获得5%体系发展基金，专项用于体系自营，包括但不限于：系统建设，日常运营，体系会议，体系讲师等。',
       communityFundLocked: '待解锁: {amount}',
       communityFundUnlockedSuffix: '已解锁',
       communityFundHistory: '发展基金',

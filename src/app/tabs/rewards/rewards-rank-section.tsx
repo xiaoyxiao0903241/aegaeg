@@ -44,6 +44,8 @@ export function RewardsRankSection() {
     performanceLoading,
     personalVolumeUsd,
     rankLabel,
+    commitmentFloorRank,
+    commitmentFloorTeamUsd,
   } = useShareholderRankLabels(t)
   const { data: teamOverview, isLoading: teamOverviewLoading } = useTeamOverview(sessionReady)
   const { data: qualifiedPartitions, isLoading: qualifiedPartitionsLoading } =
@@ -53,19 +55,20 @@ export function RewardsRankSection() {
 
   if (!sessionReady) return null
 
-  const teamVolumeUsd = Number(teamOverview?.sales_team_market ?? 0)
+  const teamVolumeUsd = commitmentFloorTeamUsd
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
   const hasRank = displayRank > 0
-  const postLaunchRank = getPostLaunchRankLabel(displayRank)
-  const boostedPostLaunchRank = getBoostedPostLaunchRankLabel(displayRank)
+  const postLaunchPresaleRank = commitmentFloorRank > 0 ? commitmentFloorRank : displayRank
+  const postLaunchRank = getPostLaunchRankLabel(postLaunchPresaleRank)
+  const postLaunch30DayRankLabel = getBoostedPostLaunchRankLabel(postLaunchPresaleRank)
   const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
     '{rate}',
     getTeamBonusRateLabel(displayRank),
   )
   const postLaunch30DayLabel = t.rewards.postLaunch30DayRank.replace(
     '{rank}',
-    boostedPostLaunchRank,
+    postLaunch30DayRankLabel,
   )
   const leftBottomLabel = hasRank ? teamRewardRateLabel : t.rewards.shareholderNoRankBody
 
