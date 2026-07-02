@@ -40,19 +40,23 @@ test('BSC contract addresses match deployment snapshot', async () => {
   )
   assert.equal(
     BSC_CONTRACTS.preSale.toLowerCase(),
-    '0xde381f0f124d46ab7e43629421ac862b103fe008',
+    '0xcb8ebebd2b4a03ab16a28021ad9ed50b125be618',
   )
   assert.equal(
     BSC_CONTRACTS.communityFundVault.toLowerCase(),
-    '0x083441ec373e547611295e037d759084b1483a95',
+    '0xef11751f13ff5578c6fa1c6e9ef99bb917a4d5e6',
   )
   assert.equal(
     BSC_CONTRACTS.referral.toLowerCase(),
-    '0xe0f3ae113dd3997982ae9ad7d5510ffa4e3cce71',
+    '0xfe7803230d11bc6fb248f1629a3353e409a2db29',
   )
   assert.equal(
     BSC_CONTRACTS.rewardClaimer.toLowerCase(),
-    '0x697b55fcfbc4cd5401f605ee4d9905816c127f07',
+    '0xc6b3d73ba06594dc78be538f65307c6eb348e13e',
+  )
+  assert.equal(
+    BSC_CONTRACTS.usd1Swap.toLowerCase(),
+    '0xae1155cf325277acce615cc310dd52da8e46c6e3',
   )
   assert.equal(
     BSC_CONTRACTS.defaultReferrer.toLowerCase(),

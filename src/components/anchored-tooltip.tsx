@@ -1,126 +1,68 @@
-import type { CSSProperties, ReactElement } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
-import { cn } from '~/lib/utils'
-import { cssRemVarPx } from '~/lib/root-rem-px'
+import {
+  cloneElement,
+  useState,
+  type MouseEvent,
+  type PointerEvent,
+  type ReactElement,
+} from 'react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/tooltip'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
 export type AnchoredTooltipPosition = 'top' | 'right' | 'bottom'
 
 export interface AnchoredTooltipProps {
   children: ReactElement
+  align?: 'start' | 'center' | 'end'
   className?: string
   content: string
   position?: AnchoredTooltipPosition
 }
 
-const tooltipBaseClass = cn(
-  'pointer-events-none fixed z-[9999] w-max max-w-60 rounded-sm bg-dark px-3 py-2',
-  'text-left whitespace-pre-line text-xs font-medium leading-[1.45] text-white shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.18)]',
-  'after:absolute after:size-0 after:border-solid after:content-[""]',
-)
-
-const tooltipArrowClass: Record<AnchoredTooltipPosition, string> = {
-  top: 'after:left-1/2 after:bottom-[-0.3125rem] after:-translate-x-1/2 after:border-[0.3125rem_0.3125rem_0] after:border-dark after:border-x-transparent after:border-b-transparent',
-  bottom:
-    'after:left-1/2 after:top-[-0.3125rem] after:-translate-x-1/2 after:border-[0_0.3125rem_0.3125rem] after:border-transparent after:border-b-dark',
-  right:
-    'after:left-[-0.3125rem] after:top-1/2 after:-translate-y-1/2 after:border-[0.3125rem_0.3125rem_0.3125rem_0] after:border-transparent after:border-r-dark',
+const positionToSide: Record<AnchoredTooltipPosition, 'top' | 'right' | 'bottom'> = {
+  top: 'top',
+  right: 'right',
+  bottom: 'bottom',
 }
 
 export function AnchoredTooltip({
+  align = 'center',
   children,
   className,
   content,
   position = 'top',
 }: AnchoredTooltipProps) {
-  const [visible, setVisible] = useState(false)
-  const [style, setStyle] = useState<CSSProperties>({})
-  const wrapperRef = useRef<HTMLSpanElement>(null)
-  const rafRef = useRef<number | null>(null)
+  const isMobileViewport = useMobileViewport()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const childOnClick = children.props.onClick as ((event: MouseEvent<HTMLElement>) => void) | undefined
+  const isInfoOnly = childOnClick == null
 
-  const updatePosition = useCallback(() => {
-    const wrapper = wrapperRef.current
-    if (!wrapper) return
-    const element = wrapper.firstElementChild as HTMLElement | null
-    if (!element) return
+  const trigger = cloneElement(children, {
+    onPointerDown: (event: PointerEvent<HTMLElement>) => {
+      children.props.onPointerDown?.(event)
+      if (isMobileViewport) {
+        // Block focus-toggle flash on touch; info icons open via click below.
+        event.preventDefault()
+      }
+    },
+    onClick: (event: MouseEvent<HTMLElement>) => {
+      childOnClick?.(event)
+      if (isMobileViewport && isInfoOnly) {
+        setMobileOpen((open) => !open)
+      }
+    },
+  })
 
-    const rect = element.getBoundingClientRect()
-    const offset = cssRemVarPx('--dapp-tooltip-offset', 0.5)
-
-    if (position === 'right') {
-      setStyle({
-        position: 'fixed',
-        left: rect.right + offset,
-        top: rect.top + rect.height / 2,
-        transform: 'translateY(-50%)',
-      })
-    } else if (position === 'bottom') {
-      setStyle({
-        position: 'fixed',
-        left: rect.left + rect.width / 2,
-        top: rect.bottom + offset,
-        transform: 'translateX(-50%)',
-      })
-    } else {
-      setStyle({
-        position: 'fixed',
-        left: rect.left + rect.width / 2,
-        top: rect.top - offset,
-        transform: 'translate(-50%, -100%)',
-      })
-    }
-  }, [position])
-
-  const show = useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    updatePosition()
-    setVisible(true)
-    rafRef.current = requestAnimationFrame(() => {
-      updatePosition()
-    })
-  }, [updatePosition])
-
-  const hide = useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    setVisible(false)
-  }, [])
-
-  useEffect(() => {
-    if (!visible) return
-
-    updatePosition()
-    const handleScroll = () => updatePosition()
-    const handleResize = () => updatePosition()
-
-    window.addEventListener('scroll', handleScroll, true)
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('scroll', handleScroll, true)
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [visible, updatePosition])
+  const mobileControlled =
+    isMobileViewport && isInfoOnly
+      ? { open: mobileOpen, onOpenChange: setMobileOpen }
+      : {}
 
   return (
-    <span
-      ref={wrapperRef}
-      onMouseEnter={show}
-      onMouseLeave={hide}
-      onFocus={show}
-      onBlur={hide}
-      style={{ display: 'contents' }}
-    >
-      {children}
-      {visible &&
-        createPortal(
-          <div
-            className={cn(tooltipBaseClass, tooltipArrowClass[position], className)}
-            role="tooltip"
-            style={style}
-          >
-            {content}
-          </div>,
-          document.body,
-        )}
-    </span>
+    <Tooltip {...mobileControlled}>
+      <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+      <TooltipContent align={align} className={className} side={positionToSide[position]}>
+        {content}
+      </TooltipContent>
+    </Tooltip>
   )
 }
