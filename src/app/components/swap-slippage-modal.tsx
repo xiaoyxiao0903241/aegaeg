@@ -3,6 +3,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { useI18n } from '~/i18n/use-i18n'
+import { MAX_SLIPPAGE_PERCENT } from '~/lib/swap/token-amount'
 import { cn } from '~/lib/utils'
 import {
   AegisResponsiveDialog,
@@ -19,7 +20,7 @@ const PRESET_BTN_CLASS = cn(
 
 function parseSlippageInput(value: string) {
   const parsed = Number.parseFloat(value)
-  if (Number.isNaN(parsed) || parsed < 0) return null
+  if (Number.isNaN(parsed) || parsed < 0 || parsed > MAX_SLIPPAGE_PERCENT) return null
   return parsed
 }
 
