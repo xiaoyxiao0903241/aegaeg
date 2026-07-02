@@ -7,6 +7,7 @@ import {
 import type { Account } from 'thirdweb/wallets'
 import type { Chain } from 'thirdweb/chains'
 import { SWAP_CONFIG } from '~/config/swap'
+import { buildSwapDeadline } from '~/lib/swap/build-swap-deadline'
 import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { ERC20_METHODS, MAX_UINT256, SWAP_ROUTER_V3_METHODS } from '~/web3/abis'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
@@ -57,6 +58,7 @@ export async function executeTokenSwap({
 }) {
   const quote = await fetchSwapQuote({ amountIn, tokenIn, tokenOut })
   const amountOutMin = calcAmountOutMin(quote.quotedOut, slippageBps)
+  const deadline = BigInt(buildSwapDeadline(SWAP_CONFIG.deadlineSeconds))
   const router = getContract({ client, chain, address: SWAP_CONFIG.router })
   const transaction = prepareContractCall({
     contract: router,
@@ -67,6 +69,7 @@ export async function executeTokenSwap({
         tokenOut: quote.tokenOut,
         fee: quote.fee,
         recipient: account.address,
+        deadline,
         amountIn,
         amountOutMinimum: amountOutMin,
         sqrtPriceLimitX96: 0n,

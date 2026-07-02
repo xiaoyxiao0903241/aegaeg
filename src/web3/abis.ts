@@ -18,9 +18,10 @@ export const QUOTER_V3_METHODS = {
     'function quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96)) external returns (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)',
 } as const
 
+/** Pancake V3 SwapRouter — includes deadline (selector 0x414bf389); 7-field tuple reverts with empty 0x */
 export const SWAP_ROUTER_V3_METHODS = {
   exactInputSingle:
-    'function exactInputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96)) external payable returns (uint256 amountOut)',
+    'function exactInputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 deadline, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96)) external payable returns (uint256 amountOut)',
 } as const
 
 export const POOL_V3_METHODS = {
