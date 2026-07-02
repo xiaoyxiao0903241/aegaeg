@@ -1,9 +1,14 @@
 import { getContract, readContract, type ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
 import { BSC_CONTRACTS } from '~/config/contracts'
+import { calcSqrtPriceImpactBps } from '~/lib/swap/calc-sqrt-price-impact-bps'
 import { quoteV3ExactInputSingle } from '~/lib/swap/quote-v3-exact-input'
 import { SWAP_CONFIG } from '~/config/swap'
 import { ERC20_METHODS } from '~/web3/abis'
+import {
+  readSwapPoolImmutableMetadata,
+  readSwapPoolSpotPrice,
+} from '~/web3/read-swap-pool'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 
 export interface SwapQuoteResult {
@@ -11,6 +16,10 @@ export interface SwapQuoteResult {
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
   fee: number
+  sqrtPriceX96After: bigint
+  initializedTicksCrossed: number
+  gasEstimate: bigint
+  priceImpactBps: number
 }
 
 export function getErc20Contract(client: ThirdwebClient, chain: Chain, address: `0x${string}`) {
@@ -63,19 +72,30 @@ export async function fetchSwapQuote({
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
 }): Promise<SwapQuoteResult> {
-  const quotedOut = await quoteV3ExactInputSingle({
+  const [pool, spot] = await Promise.all([
+    readSwapPoolImmutableMetadata(),
+    readSwapPoolSpotPrice(),
+  ])
+
+  const quote = await quoteV3ExactInputSingle({
     quoter: SWAP_CONFIG.quoter,
     tokenIn,
     tokenOut,
     amountIn,
-    fee: SWAP_CONFIG.feeTier,
+    fee: pool.fee,
   })
 
+  const priceImpactBps = calcSqrtPriceImpactBps(spot.sqrtPriceX96, quote.sqrtPriceX96After)
+
   return {
-    quotedOut,
+    quotedOut: quote.amountOut,
     tokenIn,
     tokenOut,
-    fee: SWAP_CONFIG.feeTier,
+    fee: pool.fee,
+    sqrtPriceX96After: quote.sqrtPriceX96After,
+    initializedTicksCrossed: quote.initializedTicksCrossed,
+    gasEstimate: quote.gasEstimate,
+    priceImpactBps,
   }
 }
 
@@ -89,25 +109,27 @@ export async function readPairSpotRate({
   const unit = 10n ** 18n
 
   try {
+    const pool = await readSwapPoolImmutableMetadata()
+
     const [usd1Out, usdtOut] = await Promise.all([
       quoteV3ExactInputSingle({
         quoter: SWAP_CONFIG.quoter,
         tokenIn: usdt,
         tokenOut: usd1,
         amountIn: unit,
-        fee: SWAP_CONFIG.feeTier,
+        fee: pool.fee,
       }),
       quoteV3ExactInputSingle({
         quoter: SWAP_CONFIG.quoter,
         tokenIn: usd1,
         tokenOut: usdt,
         amountIn: unit,
-        fee: SWAP_CONFIG.feeTier,
+        fee: pool.fee,
       }),
     ])
 
-    const usd1PerXx = Number(usd1Out) / Number(unit)
-    const xxPerUsd1 = Number(usdtOut) / Number(unit)
+    const usd1PerXx = Number(usd1Out.amountOut) / Number(unit)
+    const xxPerUsd1 = Number(usdtOut.amountOut) / Number(unit)
 
     if (!Number.isFinite(usd1PerXx) || !Number.isFinite(xxPerUsd1)) return null
 
@@ -116,3 +138,5 @@ export async function readPairSpotRate({
     return null
   }
 }
+
+export { readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } from '~/web3/read-swap-pool'

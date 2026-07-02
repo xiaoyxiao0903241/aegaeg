@@ -139,6 +139,10 @@ const app = defineMessages({
             title: 'Operar',
             intro: 'Precio en vivo de PancakeSwap · liquidación on-chain',
             action: 'Operar',
+            priceImpact: 'Impacto en el precio',
+            estimatedGas: 'Gas estimado',
+            highPriceImpactWarning:
+                'Esta operación puede mover mucho el precio del pool. Prueba un monto menor o sube la tolerancia de deslizamiento.',
         },
         tokenAbout: {
             title: 'Sobre los tokens del ecosistema AEGIS X',

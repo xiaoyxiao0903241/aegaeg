@@ -139,6 +139,10 @@ const app = defineMessages({
             title: 'Trade',
             intro: 'PancakeSwap live rate · on-chain settlement',
             action: 'Trade',
+            priceImpact: 'Price impact',
+            estimatedGas: 'Est. network gas',
+            highPriceImpactWarning:
+                'This trade may move the pool price significantly. Try a smaller amount or increase slippage tolerance.',
         },
         tokenAbout: {
             title: 'About AEGIS X ecosystem tokens',

@@ -139,6 +139,10 @@ const app = defineMessages({
             title: '取引',
             intro: 'PancakeSwapライブレート · オンチェーン決済',
             action: '取引',
+            priceImpact: '価格影響',
+            estimatedGas: '推定Gas',
+            highPriceImpactWarning:
+                'この取引はプール価格に大きな影響を与える可能性があります。金額を減らすかスリッページ許容を上げてください。',
         },
         tokenAbout: {
             title: 'AEGIS Xエコシステムトークンについて',

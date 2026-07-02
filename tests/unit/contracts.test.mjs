@@ -20,7 +20,7 @@ test('BSC contract addresses match deployment snapshot', async () => {
   )
   assert.equal(
     BSC_CONTRACTS.pancakeV3SwapRouter.toLowerCase(),
-    '0x13f4ea83d0bd40e75c8222255bc855a974568dd4',
+    '0x1b81d678ffb9c0263b24a97847620c99d213eb14',
   )
   assert.equal(
     BSC_CONTRACTS.pancakeV3Quoter.toLowerCase(),

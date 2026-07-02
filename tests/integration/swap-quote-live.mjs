@@ -19,8 +19,17 @@ async function loadModule(specifier) {
   }
 }
 
-const { fetchSwapQuote } = await loadModule('/src/web3/swap-read.ts')
+const { fetchSwapQuote, readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } =
+  await loadModule('/src/web3/swap-read.ts')
 const { BSC_CONTRACTS } = await loadModule('/src/config/contracts.ts')
+
+const pool = await readSwapPoolImmutableMetadata()
+assert.equal(pool.fee, 100)
+assert.equal(pool.token0.toLowerCase(), BSC_CONTRACTS.usdt.toLowerCase())
+assert.equal(pool.token1.toLowerCase(), BSC_CONTRACTS.usd1Official.toLowerCase())
+
+const spot = await readSwapPoolSpotPrice()
+assert.ok(spot.sqrtPriceX96 > 0n, 'pool sqrtPriceX96 should be positive')
 
 const oneUnit = 10n ** 18n
 
@@ -33,9 +42,13 @@ const quote = await fetchSwapQuote({
 
 assert.ok(quote.quotedOut > 0n, 'quotedOut should be positive')
 assert.equal(quote.fee, 100)
+assert.ok(quote.gasEstimate > 0n, 'gasEstimate should be positive')
+assert.ok(quote.sqrtPriceX96After > 0n, 'sqrtPriceX96After should be positive')
+assert.ok(Number.isFinite(quote.priceImpactBps), 'priceImpactBps should be finite')
 
 console.log('✓ USD1 → USDT')
 console.log(`  1 USD1 ≈ ${Number(quote.quotedOut) / 1e18} USDT (raw: ${quote.quotedOut})`)
+console.log(`  price impact: ${quote.priceImpactBps} bps, gas: ${quote.gasEstimate}`)
 
 console.log('Testing USDT → USD1 quote...')
 const reverse = await fetchSwapQuote({

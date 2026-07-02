@@ -139,6 +139,9 @@ const app = defineMessages({
             title: '交易',
             intro: '基於 PancakeSwap 即時市場匯率，鏈上秒到',
             action: '交易',
+            priceImpact: '價格影響',
+            estimatedGas: '預估 Gas',
+            highPriceImpactWarning: '當前交易額對池子價格影響較大，建議減小金額或提高滑點容忍度。',
         },
         tokenAbout: {
             title: '關於 AEGIS X 生態代幣',

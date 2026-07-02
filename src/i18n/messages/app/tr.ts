@@ -138,6 +138,10 @@ const app = defineMessages({
             title: 'Al-Sat',
             intro: 'PancakeSwap canlı fiyat · on-chain mutabakat',
             action: 'Al-Sat',
+            priceImpact: 'Fiyat etkisi',
+            estimatedGas: 'Tahmini gas',
+            highPriceImpactWarning:
+                'Bu işlem havuz fiyatını önemli ölçüde etkileyebilir. Daha küçük bir miktar deneyin veya slipaj toleransını artırın.',
         },
         tokenAbout: {
             title: 'AEGIS X ekosistem tokenları hakkında',

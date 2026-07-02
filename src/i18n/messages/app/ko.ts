@@ -139,6 +139,10 @@ const app = defineMessages({
             title: '거래',
             intro: 'PancakeSwap 실시간 시세 · 온체인 정산',
             action: '거래',
+            priceImpact: '가격 영향',
+            estimatedGas: '예상 Gas',
+            highPriceImpactWarning:
+                '이 거래는 풀 가격에 큰 영향을 줄 수 있습니다. 금액을 줄이거나 슬리피지 허용치를 높여 보세요.',
         },
         tokenAbout: {
             title: 'AEGIS X 생태계 토큰 소개',

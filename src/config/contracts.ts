@@ -15,7 +15,7 @@ export interface BscContracts {
   xxUsd1Pair: Address
   /** PancakeSwap V2 router (unused by Trade Swap after V3 migration) */
   pancakeRouter: Address
-  /** PancakeSwap V3 Smart Router — required for PCS V3 pool swaps on BSC */
+  /** PancakeSwap V3 SwapRouter — approve + exactInputSingle (per product doc) */
   pancakeV3SwapRouter: Address
   pancakeV3Quoter: Address
   usdtUsd1Pool: Address
@@ -46,7 +46,7 @@ export const BSC_CONTRACTS = {
   usdt: '0x55d398326f99059fF775485246999027B3197955',
   xxUsd1Pair: '0x606211E7e7276149fc503fe8Db858745479a9100',
   pancakeRouter: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
-  pancakeV3SwapRouter: '0x13f4EA83D0bd40E75C8222255bc855a974568Dd4',
+  pancakeV3SwapRouter: '0x1b81D678ffb9C0263b24A97847620C99d213eB14',
   pancakeV3Quoter: '0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997',
   usdtUsd1Pool: '0x9c4ee895e4f6ce07ada631c508d1306db7502cce',
   multicall3: '0xcA11bde05977b3631167028862bE2a173976CA11',

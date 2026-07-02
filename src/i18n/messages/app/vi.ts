@@ -139,6 +139,10 @@ const app = defineMessages({
             title: 'Giao dịch',
             intro: 'Giá live PancakeSwap · quyết toán on-chain',
             action: 'Giao dịch',
+            priceImpact: 'Tác động giá',
+            estimatedGas: 'Gas ước tính',
+            highPriceImpactWarning:
+                'Giao dịch này có thể làm giá pool biến động mạnh. Hãy giảm số lượng hoặc tăng dung sai trượt giá.',
         },
         tokenAbout: {
             title: 'Về token hệ sinh thái AEGIS X',

@@ -139,7 +139,7 @@ export function useFlashSwapWidget(authenticated: boolean) {
       decimalsOut: pair.buy.decimals,
       symbolIn: pair.sell.symbol,
       symbolOut: pair.buy.symbol,
-      fractionDigits: 4,
+      fractionDigits: 6,
     })
   }, [
     isExchangePriceQuoting,

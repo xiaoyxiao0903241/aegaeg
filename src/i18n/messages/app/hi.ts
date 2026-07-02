@@ -139,6 +139,10 @@ const app = defineMessages({
             title: 'ट्रेड',
             intro: 'PancakeSwap लाइव रेट · ऑन-चेन सेटलमेंट',
             action: 'ट्रेड',
+            priceImpact: 'मूल्य प्रभाव',
+            estimatedGas: 'अनुमानित gas',
+            highPriceImpactWarning:
+                'यह ट्रेड पूल की कीमत को काफी हिला सकता है। राशि घटाएं या स्लिपेज सहनशीलता बढ़ाएं।',
         },
         tokenAbout: {
             title: 'AEGIS X इकोसिस्टम टोकन के बारे में',

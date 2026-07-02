@@ -2,6 +2,8 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
+import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/lib/swap/calc-sqrt-price-impact-bps'
+import { formatGasEstimate } from '~/lib/swap/format-gas-estimate'
 import { formatSwapRateApprox } from '~/lib/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/config/pancake-swap-links'
 import {
@@ -14,7 +16,7 @@ import {
 } from '~/lib/swap/token-amount'
 import { getSwapPairTokens } from '~/lib/swap/swap-pair'
 import { SWAP_CONFIG } from '~/config/swap'
-import { readErc20Allowance, readErc20Balance, fetchSwapQuote } from '~/web3/swap-read'
+import { readErc20Allowance, readErc20Balance, fetchSwapQuote, readSwapPoolImmutableMetadata } from '~/web3/swap-read'
 import { approveTokenIfNeeded, executeTokenSwap } from '~/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
@@ -60,6 +62,12 @@ export function useSwapWidget(authenticated: boolean) {
     () => 10n ** BigInt(usd1ToUsdtPair.sell.decimals),
     [usd1ToUsdtPair.sell.decimals],
   )
+
+  const poolMetadataQuery = useQuery({
+    queryKey: queryKeys.chain.swapPoolMetadata,
+    queryFn: () => readSwapPoolImmutableMetadata(),
+    staleTime: Number.POSITIVE_INFINITY,
+  })
 
   const balancesQuery = useQuery({
     queryKey: queryKeys.chain.swapBalances(
@@ -160,6 +168,9 @@ export function useSwapWidget(authenticated: boolean) {
   const buyBalance = balancesQuery.data?.buy ?? 0n
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
+  const priceImpactBps = amountQuoteQuery.data?.priceImpactBps ?? 0
+  const gasEstimate = amountQuoteQuery.data?.gasEstimate ?? 0n
+  const poolFee = poolMetadataQuery.data?.fee ?? SWAP_CONFIG.feeTier
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
   const exchangeSpotQuotedOut = exchangeSpotQuoteQuery.data?.quotedOut ?? 0n
   const exchangeSpotQuotedOutInverted = exchangeSpotQuoteInvertedQuery.data?.quotedOut ?? 0n
@@ -244,6 +255,7 @@ export function useSwapWidget(authenticated: boolean) {
       decimalsOut: usdtToUsd1Pair.buy.decimals,
       symbolIn: usdtToUsd1Pair.sell.symbol,
       symbolOut: usdtToUsd1Pair.buy.symbol,
+      fractionDigits: 6,
     })
   }, [
     exchangeSpotAmount,
@@ -267,6 +279,7 @@ export function useSwapWidget(authenticated: boolean) {
       decimalsOut: usd1ToUsdtPair.buy.decimals,
       symbolIn: usd1ToUsdtPair.sell.symbol,
       symbolOut: usd1ToUsdtPair.buy.symbol,
+      fractionDigits: 6,
     })
   }, [
     exchangeSpotAmountInverted,
@@ -282,6 +295,19 @@ export function useSwapWidget(authenticated: boolean) {
     () => resolvePancakeSwapDeepLink(pair.sell.symbol, pair.buy.symbol),
     [pair.buy.symbol, pair.sell.symbol],
   )
+
+  const priceImpactLabel = useMemo(() => {
+    if (!authenticated || amountIn === 0n || isQuoting) return ''
+    return `${(priceImpactBps / 100).toFixed(2)}%`
+  }, [amountIn, authenticated, isQuoting, priceImpactBps])
+
+  const gasEstimateLabel = useMemo(
+    () => formatGasEstimate(gasEstimate),
+    [gasEstimate],
+  )
+
+  const isHighPriceImpact =
+    authenticated && amountIn > 0n && priceImpactBps >= HIGH_SWAP_PRICE_IMPACT_BPS
 
   const exceedsBalance = walletReady && amountIn > sellBalance
   const canSubmit =
@@ -368,6 +394,10 @@ export function useSwapWidget(authenticated: boolean) {
     exchangePriceLabelInverted,
     routeLabel,
     pancakeSwapUrl,
+    poolFee,
+    priceImpactLabel,
+    gasEstimateLabel,
+    isHighPriceImpact,
     walletReady,
     canSubmit,
     isQuoting,

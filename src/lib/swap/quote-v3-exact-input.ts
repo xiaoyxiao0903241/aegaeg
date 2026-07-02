@@ -4,6 +4,13 @@ import { bscReadClient } from '~/web3/bsc-read-client'
 
 const quoterAbi = parseAbi([QUOTER_V3_METHODS.quoteExactInputSingle])
 
+export interface V3QuoteExactInputSingleResult {
+  amountOut: bigint
+  sqrtPriceX96After: bigint
+  initializedTicksCrossed: number
+  gasEstimate: bigint
+}
+
 export async function quoteV3ExactInputSingle({
   quoter,
   tokenIn,
@@ -16,8 +23,15 @@ export async function quoteV3ExactInputSingle({
   tokenOut: `0x${string}`
   amountIn: bigint
   fee: number
-}): Promise<bigint> {
-  if (amountIn === 0n) return 0n
+}): Promise<V3QuoteExactInputSingleResult> {
+  if (amountIn === 0n) {
+    return {
+      amountOut: 0n,
+      sqrtPriceX96After: 0n,
+      initializedTicksCrossed: 0,
+      gasEstimate: 0n,
+    }
+  }
 
   const { result } = await bscReadClient.simulateContract({
     address: quoter,
@@ -34,5 +48,10 @@ export async function quoteV3ExactInputSingle({
     ],
   })
 
-  return result[0]
+  return {
+    amountOut: result[0],
+    sqrtPriceX96After: result[1],
+    initializedTicksCrossed: Number(result[2]),
+    gasEstimate: result[3],
+  }
 }

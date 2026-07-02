@@ -43,6 +43,7 @@ export const queryKeys = {
     referralIsBound: (address: string) =>
       ['chain', 'referral', 'isBound', address.toLowerCase()] as const,
     pairSpotRate: ['chain', 'swap', 'pairSpotRate'] as const,
+    swapPoolMetadata: ['chain', 'swap', 'poolMetadata'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string) =>
       ['chain', 'swap', 'quote', tokenIn.toLowerCase(), tokenOut.toLowerCase(), amountIn] as const,
     swapBalances: (address: string, sellToken: string, buyToken: string) =>

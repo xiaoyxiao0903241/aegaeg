@@ -261,6 +261,26 @@ export function TradeSwapWidget({
               ),
               valueClassName: 'inline-flex items-center justify-end gap-1',
             },
+            ...(sessionReady && swap.sellAmount.trim().length > 0
+              ? [
+                  {
+                    label: t.swap.trade.priceImpact,
+                    value: swap.isQuoting ? (
+                      <SwapMetaValueSkeleton />
+                    ) : (
+                      swap.priceImpactLabel || '—'
+                    ),
+                  },
+                  {
+                    label: t.swap.trade.estimatedGas,
+                    value: swap.isQuoting ? (
+                      <SwapMetaValueSkeleton />
+                    ) : (
+                      swap.gasEstimateLabel
+                    ),
+                  },
+                ]
+              : []),
             {
               label: t.swap.route,
               value: swap.routeLabel,
@@ -284,6 +304,12 @@ export function TradeSwapWidget({
             },
           ]}
         />
+
+        {sessionReady && swap.isHighPriceImpact ? (
+          <p className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-xs leading-relaxed text-destructive">
+            {t.swap.trade.highPriceImpactWarning}
+          </p>
+        ) : null}
 
         {sessionReady && swap.walletReady ? (
           <DappActionRow className={dappWidgetFooterTopGapClass}>

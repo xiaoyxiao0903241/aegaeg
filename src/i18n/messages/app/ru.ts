@@ -139,6 +139,10 @@ const app = defineMessages({
             title: 'Торговля',
             intro: 'Живой курс PancakeSwap · on-chain расчет',
             action: 'Торговля',
+            priceImpact: 'Влияние на цену',
+            estimatedGas: 'Оценка gas',
+            highPriceImpactWarning:
+                'Сделка может сильно сдвинуть цену пула. Уменьшите сумму или увеличьте допуск проскальзывания.',
         },
         tokenAbout: {
             title: 'О токенах экосистемы AEGIS X',

@@ -65,7 +65,7 @@ export async function executeTokenSwap({
       {
         tokenIn: quote.tokenIn,
         tokenOut: quote.tokenOut,
-        fee: SWAP_CONFIG.feeTier,
+        fee: quote.fee,
         recipient: account.address,
         amountIn,
         amountOutMinimum: amountOutMin,
