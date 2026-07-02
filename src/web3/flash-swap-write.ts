@@ -12,6 +12,8 @@ import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { readErc20Allowance } from '~/web3/swap-read'
 import { getUsd1SwapContract } from '~/web3/flash-swap-read'
 
+const FLASH_SWAP_USDT = BSC_CONTRACTS.usdt
+
 export async function approveUsdtForFlashSwapIfNeeded({
   account,
   amountIn,
@@ -24,7 +26,7 @@ export async function approveUsdtForFlashSwapIfNeeded({
   chain?: Chain
 }) {
   const allowance = await readErc20Allowance(
-    BSC_CONTRACTS.xxToken,
+    FLASH_SWAP_USDT,
     account.address,
     BSC_CONTRACTS.usd1Swap,
     client,
@@ -32,7 +34,7 @@ export async function approveUsdtForFlashSwapIfNeeded({
   )
   if (allowance >= amountIn) return null
 
-  const contract = getContract({ client, chain, address: BSC_CONTRACTS.xxToken })
+  const contract = getContract({ client, chain, address: FLASH_SWAP_USDT })
   const transaction = prepareContractCall({
     contract,
     method: ERC20_METHODS.approve,

@@ -109,7 +109,7 @@ export function WalletDetailsModal({
     setTokensFetched(false)
 
     void Promise.all([
-      readErc20Balance(BSC_CONTRACTS.usd1Official, walletAddress),
+      readErc20Balance(BSC_CONTRACTS.usd1, walletAddress),
       readErc20Balance(BSC_CONTRACTS.usdt, walletAddress),
     ])
       .then(([usd1, usdt]) => {

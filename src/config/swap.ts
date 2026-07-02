@@ -21,14 +21,13 @@ export interface SwapConfig {
   quoteRefreshIntervalMs: number
   /** Poll pair spot rate for overview metric (ms). */
   spotRateRefreshIntervalMs: number
-  testPair: {
+  tradePair: {
     enabled: true
-    /** Trade Swap pair — official USD1 / USDT on PancakeSwap V3 */
     symbols: ['USD1', 'USDT']
     tokenA: SwapTokenConfig
     tokenB: SwapTokenConfig
   }
-  tokens: Record<'usd1' | 'xx' | 'usdt' | 'agx' | 'gagx' | 'x', SwapTokenConfig>
+  tokens: Record<'usd1' | 'usdt' | 'agx' | 'gagx' | 'x', SwapTokenConfig>
 }
 
 export const SWAP_CONFIG: SwapConfig = {
@@ -42,12 +41,12 @@ export const SWAP_CONFIG: SwapConfig = {
   deadlineSeconds: appEnv.swapDeadlineSeconds,
   quoteRefreshIntervalMs: 10_000,
   spotRateRefreshIntervalMs: 10_000,
-  testPair: {
+  tradePair: {
     enabled: true,
     symbols: ['USD1', 'USDT'],
     tokenA: {
       symbol: 'USD1',
-      address: BSC_CONTRACTS.usd1Official,
+      address: BSC_CONTRACTS.usd1,
       decimals: 18,
       enabled: true,
     },
@@ -61,13 +60,7 @@ export const SWAP_CONFIG: SwapConfig = {
   tokens: {
     usd1: {
       symbol: 'USD1',
-      address: BSC_CONTRACTS.usd1Official,
-      decimals: 18,
-      enabled: true,
-    },
-    xx: {
-      symbol: 'USDT',
-      address: BSC_CONTRACTS.usdt,
+      address: BSC_CONTRACTS.usd1,
       decimals: 18,
       enabled: true,
     },

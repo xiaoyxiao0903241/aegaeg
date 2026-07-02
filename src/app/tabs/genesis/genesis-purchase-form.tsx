@@ -1,4 +1,4 @@
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
@@ -8,7 +8,6 @@ import { toast } from 'sonner'
 import { invalidateGenesisPage } from '~/lib/query/invalidate'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { formatCount, formatUsdAmountLabel } from '~/lib/api/format-display'
-import { dappIconClass } from '~/app/dapp-icon-scale'
 import { seasons as fallbackSeasons } from '~/app/data'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
@@ -182,18 +181,7 @@ export function GenesisPurchaseForm() {
             label: (
               <span className="inline-flex items-center gap-1">
                 {t.genesis.xTokenAirdrop}
-                <AnchoredTooltip content={xTokenAirdropHint}>
-                  <button
-                    aria-label={xTokenAirdropHint}
-                    className={cn(
-                      'inline-flex shrink-0 items-center justify-center rounded-full border border-current text-xs font-bold leading-none opacity-60',
-                      dappIconClass.md,
-                    )}
-                    type="button"
-                  >
-                    i
-                  </button>
-                </AnchoredTooltip>
+                <DappInfoTooltip content={xTokenAirdropHint} />
               </span>
             ),
             value: genesis.xTokenAirdropLabel,

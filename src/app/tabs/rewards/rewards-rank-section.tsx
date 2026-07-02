@@ -1,6 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   useCommunityFundTotal,
   useQualifiedPartitions,
@@ -29,7 +28,7 @@ import {
 } from '~/app/dapp-type-scale'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
 import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
 
 const rankMetaClass =
@@ -138,22 +137,11 @@ export function RewardsRankSection() {
                 >
                   {t.rewards.postLaunchRankTitle}
                 </SideLabel>
-                <AnchoredTooltip
+                <DappInfoTooltip
                   align="end"
                   content={t.rewards.postLaunchRankTooltip}
                   position="bottom"
-                >
-                  <button
-                    aria-label={t.rewards.postLaunchRankTooltip}
-                    className={cn(
-                      'inline-flex shrink-0 items-center justify-center self-center rounded-full border border-current text-xs font-bold leading-none opacity-60',
-                      dappIconClass.xs,
-                    )}
-                    type="button"
-                  >
-                    i
-                  </button>
-                </AnchoredTooltip>
+                />
               </div>
             ) : null}
 

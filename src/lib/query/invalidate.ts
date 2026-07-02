@@ -51,15 +51,15 @@ function invalidateAddressScopedChainQueries(address?: string) {
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.swapBalances(
       address,
-      SWAP_CONFIG.testPair.tokenA.address,
-      SWAP_CONFIG.testPair.tokenB.address,
+      SWAP_CONFIG.tradePair.tokenA.address,
+      SWAP_CONFIG.tradePair.tokenB.address,
     ),
   })
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.swapBalances(
       address,
-      SWAP_CONFIG.testPair.tokenB.address,
-      SWAP_CONFIG.testPair.tokenA.address,
+      SWAP_CONFIG.tradePair.tokenB.address,
+      SWAP_CONFIG.tradePair.tokenA.address,
     ),
   })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapBalances(address) })

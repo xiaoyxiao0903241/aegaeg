@@ -101,7 +101,7 @@ export async function fetchSwapQuote({
 
 export async function readPairSpotRate({
   usdt = BSC_CONTRACTS.usdt,
-  usd1 = BSC_CONTRACTS.usd1Official,
+  usd1 = BSC_CONTRACTS.usd1,
 }: {
   usdt?: `0x${string}`
   usd1?: `0x${string}`

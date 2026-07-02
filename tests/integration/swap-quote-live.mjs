@@ -26,7 +26,7 @@ const { BSC_CONTRACTS } = await loadModule('/src/config/contracts.ts')
 const pool = await readSwapPoolImmutableMetadata()
 assert.equal(pool.fee, 100)
 assert.equal(pool.token0.toLowerCase(), BSC_CONTRACTS.usdt.toLowerCase())
-assert.equal(pool.token1.toLowerCase(), BSC_CONTRACTS.usd1Official.toLowerCase())
+assert.equal(pool.token1.toLowerCase(), BSC_CONTRACTS.usd1.toLowerCase())
 
 const spot = await readSwapPoolSpotPrice()
 assert.ok(spot.sqrtPriceX96 > 0n, 'pool sqrtPriceX96 should be positive')
@@ -36,7 +36,7 @@ const oneUnit = 10n ** 18n
 console.log('Testing USD1 → USDT quote on BSC (PancakeSwap V3)...')
 const quote = await fetchSwapQuote({
   amountIn: oneUnit,
-  tokenIn: BSC_CONTRACTS.usd1Official,
+  tokenIn: BSC_CONTRACTS.usd1,
   tokenOut: BSC_CONTRACTS.usdt,
 })
 
@@ -54,7 +54,7 @@ console.log('Testing USDT → USD1 quote...')
 const reverse = await fetchSwapQuote({
   amountIn: oneUnit,
   tokenIn: BSC_CONTRACTS.usdt,
-  tokenOut: BSC_CONTRACTS.usd1Official,
+  tokenOut: BSC_CONTRACTS.usd1,
 })
 
 assert.ok(reverse.quotedOut > 0n, 'reverse quotedOut should be positive')

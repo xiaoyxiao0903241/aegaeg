@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   useCommunityFundTotal,
   useReferralTotal,
@@ -21,7 +20,7 @@ import { DappActionButton } from '~/app/components/dapp-action-button'
 import { RewardBalanceCard } from '~/app/components/dapp-card'
 import { dappReferralAmountClass } from '~/app/dapp-type-scale'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
 
 export function RewardsBalanceSection() {
   const { messages: t } = useI18n()
@@ -65,18 +64,7 @@ export function RewardsBalanceSection() {
   const communityFundLabel = (
     <span className="inline-flex items-center gap-1">
       {t.rewards.communityFund}
-      <AnchoredTooltip content={t.rewards.communityFundTooltip}>
-        <button
-          aria-label={t.rewards.communityFundTooltip}
-          className={cn(
-            'inline-flex shrink-0 items-center justify-center self-center rounded-full border border-current text-xs font-bold leading-none opacity-60',
-            dappIconClass.xs,
-          )}
-          type="button"
-        >
-          i
-        </button>
-      </AnchoredTooltip>
+      <DappInfoTooltip content={t.rewards.communityFundTooltip} />
     </span>
   )
   const showReferralSkeleton = sessionReady && referralLoading && referralTotal == null

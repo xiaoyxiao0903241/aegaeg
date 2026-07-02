@@ -66,6 +66,7 @@ export const dappAssets = {
   menu: '/assets/figma/dapp/ic-menu.svg',
   rewards: '/assets/figma/dapp/ic-rewards.svg',
   setting: '/assets/figma/dapp/ic-setting.svg',
+  infoHint: '/assets/figma/dapp/ic-info-hint.svg',
   arrowUpRight: '/assets/figma/dapp/ic-arrow-up-right.svg',
   swap: '/assets/figma/dapp/ic-swap.svg',
   swapExchange: '/assets/figma/dapp/ic-swap-exchange.svg',

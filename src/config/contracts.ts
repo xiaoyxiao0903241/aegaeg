@@ -3,18 +3,8 @@ type Address = `0x${string}`
 export interface BscContracts {
   chainId: 56
   wbnb: Address
-  /** Legacy test USD1 — Flash Swap / PreSale until migrated */
   usd1: Address
-  /** Official USD1 — PancakeSwap V3 USDT/USD1 pool */
-  usd1Official: Address
-  /** Legacy test USDT stand-in (xxToken) — Flash Swap until migrated */
-  xxToken: Address
-  /** Official BSC USDT — Trade Swap (PancakeSwap V3) */
   usdt: Address
-  /** Legacy V2 pair (test tokens) */
-  xxUsd1Pair: Address
-  /** PancakeSwap V2 router (unused by Trade Swap after V3 migration) */
-  pancakeRouter: Address
   /** PancakeSwap V3 SwapRouter — approve + exactInputSingle (per product doc) */
   pancakeV3SwapRouter: Address
   pancakeV3Quoter: Address
@@ -40,12 +30,8 @@ export interface BscContracts {
 export const BSC_CONTRACTS = {
   chainId: 56,
   wbnb: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-  usd1: '0x32Bb0be09F62bbE69764906d80e9A5782C7F7633',
-  usd1Official: '0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d',
-  xxToken: '0x558D83257Cfb97a994ACC25233fe741062F9AcC2',
+  usd1: '0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d',
   usdt: '0x55d398326f99059fF775485246999027B3197955',
-  xxUsd1Pair: '0x606211E7e7276149fc503fe8Db858745479a9100',
-  pancakeRouter: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
   pancakeV3SwapRouter: '0x1b81D678ffb9C0263b24A97847620C99d213eB14',
   pancakeV3Quoter: '0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997',
   usdtUsd1Pool: '0x9c4ee895e4f6ce07ada631c508d1306db7502cce',

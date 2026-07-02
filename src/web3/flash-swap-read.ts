@@ -5,6 +5,10 @@ import { USD1_SWAP_METHODS } from '~/web3/abis'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
 
+/** Flash Swap tokens — BSC USDT / USD1 (same as Trade Swap). */
+const FLASH_SWAP_USDT = BSC_CONTRACTS.usdt
+const FLASH_SWAP_USD1 = BSC_CONTRACTS.usd1
+
 export function getUsd1SwapContract(client: ThirdwebClient = thirdwebClient, chain: Chain = defaultChain) {
   return getContract({
     client,
@@ -45,9 +49,9 @@ export async function readFlashSwapBalances(
   chain: Chain = defaultChain,
 ) {
   const [usdt, usd1, approved] = await Promise.all([
-    readErc20Balance(BSC_CONTRACTS.xxToken, owner, client, chain),
-    readErc20Balance(BSC_CONTRACTS.usd1, owner, client, chain),
-    readErc20Allowance(BSC_CONTRACTS.xxToken, owner, BSC_CONTRACTS.usd1Swap, client, chain),
+    readErc20Balance(FLASH_SWAP_USDT, owner, client, chain),
+    readErc20Balance(FLASH_SWAP_USD1, owner, client, chain),
+    readErc20Allowance(FLASH_SWAP_USDT, owner, BSC_CONTRACTS.usd1Swap, client, chain),
   ])
   return { usdt, usd1, approved }
 }
