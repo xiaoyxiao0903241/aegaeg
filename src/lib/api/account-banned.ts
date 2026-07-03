@@ -5,8 +5,12 @@ export const ACCOUNT_BANNED_SENTINEL = 'ACCOUNT_BANNED'
 
 const ACCOUNT_BANNED_TOAST_ID = 'account-banned'
 
+/** Suppress duplicate fan-out when many APIs return 403 in the same burst. */
+const REPORT_COOLDOWN_MS = 3_000
+
 type AccountBannedListener = () => void
 const listeners = new Set<AccountBannedListener>()
+let lastReportedAt = 0
 
 export function isAccountBannedError(error: unknown): boolean {
   return (
@@ -22,8 +26,12 @@ export function subscribeAccountBanned(listener: AccountBannedListener): () => v
   return () => listeners.delete(listener)
 }
 
-/** Fan-out once per burst; UI layer dedupes the actual toast via Sonner id. */
+/** Fan-out once per burst; Sonner id + cooldown dedupe parallel 403s. */
 export function reportAccountBanned(): void {
+  const now = Date.now()
+  if (now - lastReportedAt < REPORT_COOLDOWN_MS) return
+  lastReportedAt = now
+
   for (const listener of listeners) {
     listener()
   }

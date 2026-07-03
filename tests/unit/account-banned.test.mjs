@@ -38,6 +38,28 @@ test('interceptApiError reports banned 403', async () => {
   }
 })
 
+test('reportAccountBanned throttles duplicate reports within cooldown', async () => {
+  const { interceptApiError, subscribeAccountBanned } = await loadModule(
+    '/src/lib/api/account-banned.ts',
+  )
+  const { ApiError } = await loadModule('/src/lib/api/client.ts')
+
+  let reported = 0
+  const unsubscribe = subscribeAccountBanned(() => {
+    reported += 1
+  })
+
+  const banned = new ApiError({ code: 403, error: 'FORBIDDEN', message: '账号被封' })
+
+  try {
+    interceptApiError(banned)
+    interceptApiError(banned)
+    assert.equal(reported, 1)
+  } finally {
+    unsubscribe()
+  }
+})
+
 test('resolveAuthLoginErrorMessage maps banned sentinel to i18n', async () => {
   const { ACCOUNT_BANNED_SENTINEL, resolveAuthLoginErrorMessage } = await loadModule(
     '/src/lib/api/account-banned.ts',
