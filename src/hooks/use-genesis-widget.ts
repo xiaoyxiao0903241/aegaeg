@@ -42,7 +42,8 @@ import { useI18n } from '~/i18n/use-i18n'
 
 export interface GenesisPurchaseResult {
   success: boolean
-  error?: string
+  /** Raw wallet / contract error — keep for selector-based i18n resolution. */
+  error?: unknown
 }
 
 const USD1_DECIMALS = 18
@@ -209,8 +210,7 @@ export function useGenesisWidget() {
       }
       return { success: true }
     } catch (caught) {
-      const message = caught instanceof Error ? caught.message : 'Approve failed'
-      return { success: false, error: message }
+      return { success: false, error: caught }
     } finally {
       setSubmittingAction(null)
     }
@@ -260,8 +260,7 @@ export function useGenesisWidget() {
       afterGenesisPurchase(account.address, purchaseAmount)
       return { success: true }
     } catch (caught) {
-      const message = caught instanceof Error ? caught.message : 'Purchase failed'
-      return { success: false, error: message }
+      return { success: false, error: caught }
     } finally {
       setSubmittingAction(null)
     }
