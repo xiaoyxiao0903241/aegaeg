@@ -90,48 +90,4 @@ export async function fetchSwapQuote({
   }
 }
 
-export async function readPairSpotRate({
-  usdt = BSC_CONTRACTS.usdt,
-  usd1 = BSC_CONTRACTS.usd1,
-  client = bscReadClient,
-}: {
-  usdt?: `0x${string}`
-  usd1?: `0x${string}`
-  client?: ChainReadClient
-} = {}): Promise<{ usd1PerXx: number; xxPerUsd1: number } | null> {
-  const unit = 10n ** 18n
-
-  try {
-    const pool = await readSwapPoolImmutableMetadata(SWAP_CONFIG.pool, client)
-
-    const [usd1Out, usdtOut] = await Promise.all([
-      quoteV3ExactInputSingle({
-        quoter: SWAP_CONFIG.quoter,
-        tokenIn: usdt,
-        tokenOut: usd1,
-        amountIn: unit,
-        fee: pool.fee,
-        client,
-      }),
-      quoteV3ExactInputSingle({
-        quoter: SWAP_CONFIG.quoter,
-        tokenIn: usd1,
-        tokenOut: usdt,
-        amountIn: unit,
-        fee: pool.fee,
-        client,
-      }),
-    ])
-
-    const usd1PerXx = Number(usd1Out.amountOut) / Number(unit)
-    const xxPerUsd1 = Number(usdtOut.amountOut) / Number(unit)
-
-    if (!Number.isFinite(usd1PerXx) || !Number.isFinite(xxPerUsd1)) return null
-
-    return { usd1PerXx, xxPerUsd1 }
-  } catch {
-    return null
-  }
-}
-
 export { readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } from '~/web3/read-swap-pool'

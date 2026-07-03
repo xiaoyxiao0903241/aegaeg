@@ -15,7 +15,7 @@ import { dappWidgetBodyClass } from '~/app/components/dapp-widget-frame'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { SwapAmountBox } from '~/app/components/swap-amount-box'
 import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/components/dapp-skeleton'
-import { useFlashSwapWidget } from '~/hooks/use-flash-swap-widget'
+import { useFlashSwapWidgetContext } from '~/app/tabs/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { resolveFlashSwapUserMessage } from '~/lib/web3/resolve-contract-error-message'
@@ -28,7 +28,7 @@ export function FlashSwapWidget({
 }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const swap = useFlashSwapWidget(sessionReady)
+  const swap = useFlashSwapWidgetContext()
   const genesis = useGenesisWidgetContext()
   const { pair } = swap
   const swapPreview = !sessionReady
