@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { REFERRAL_CONFIG, parseReferrerFromSearch } from '~/config/referral'
+import { parseReferrerFromSearch } from '~/config/referral'
 import { formatCount, formatShortAddress } from '~/lib/api/format-display'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
@@ -74,8 +74,8 @@ export function useReferral(sessionReady: boolean) {
       return false
     }
 
-    const target = (referrerInput.trim() || pendingReferrer || REFERRAL_CONFIG.defaultReferrer) as `0x${string}`
-    if (!/^0x[a-fA-F0-9]{40}$/.test(target)) {
+    const target = (referrerInput.trim() || pendingReferrer) as `0x${string}` | null
+    if (!target || !/^0x[a-fA-F0-9]{40}$/.test(target)) {
       setError('Invalid referrer address')
       return false
     }
@@ -115,7 +115,12 @@ export function useReferral(sessionReady: boolean) {
     isLoading: referralQuery.isLoading,
     isSubmitting,
     walletReady,
-    canBind: sessionReady && walletReady && !isBound && !isSubmitting,
+    canBind:
+      sessionReady &&
+      walletReady &&
+      !isBound &&
+      !isSubmitting &&
+      Boolean(referrerInput.trim() || pendingReferrer),
     error:
       error ??
       (referralQuery.error instanceof Error

@@ -24,9 +24,9 @@ type RailIndicator = {
   top: number
 }
 
-function useRailTooltips() {
+function useRailTooltips(activeTab: DappTab) {
   const { messages: t } = useI18n()
-  const { rateLabel } = usePairSpotRate()
+  const { rateLabel } = usePairSpotRate(activeTab === 'swap')
   const genesis = useGenesisWidgetContext()
 
   return useMemo(
@@ -63,7 +63,7 @@ export function DappRail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const tooltips = useRailTooltips()
+  const tooltips = useRailTooltips(activeTab)
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
   const [indicator, setIndicator] = useState<RailIndicator | null>(null)

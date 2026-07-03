@@ -6,14 +6,14 @@ import { MetricCardSkeleton } from '~/app/components/dapp-skeleton'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { FaqList } from '~/components/faq-list'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { useFlashSwapWidget } from '~/hooks/use-flash-swap-widget'
+import { useFlashSwapWidgetContext } from '~/app/tabs/swap/flash-swap-widget-context'
 import { TokenAboutCard } from '~/app/tabs/swap/token-about-card'
 import { dappDetailSectionGapClass, dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
 
 export function FlashSwapContent() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const flash = useFlashSwapWidget(sessionReady)
+  const flash = useFlashSwapWidgetContext()
   const usd1About = t.swap.tokenAbout.items.find((item) => item.key === 'usd1')!
   const showRateSkeleton = flash.isExchangePriceQuoting && !flash.overviewRateLabel
 

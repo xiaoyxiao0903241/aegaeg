@@ -32,7 +32,7 @@ import { useChainReadClient } from '~/hooks/use-chain-read-client'
  * @param authenticated — SIWE session ready; gates quotes, swap submit, and amount capping.
  * Balances load on wallet account presence (`walletReady`), independent of SIWE.
  */
-export function useSwapWidget(authenticated: boolean) {
+export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const afterSwap = useDappActions((state) => state.afterSwap)
@@ -74,6 +74,7 @@ export function useSwapWidget(authenticated: boolean) {
   const poolMetadataQuery = useQuery({
     queryKey: queryKeys.chain.swapPoolMetadata,
     queryFn: () => readSwapPoolImmutableMetadata(SWAP_CONFIG.pool, readClient),
+    enabled: quotesEnabled,
     staleTime: Number.POSITIVE_INFINITY,
   })
 
@@ -91,7 +92,7 @@ export function useSwapWidget(authenticated: boolean) {
       ])
       return { sell, buy, approved }
     },
-    enabled: walletReady,
+    enabled: quotesEnabled && walletReady,
     staleTime: QUERY_STALE_TIME.balances,
   })
 
@@ -108,7 +109,7 @@ export function useSwapWidget(authenticated: boolean) {
         tokenOut: pair.buy.address,
         client: readClient,
       }),
-    enabled: true,
+    enabled: quotesEnabled,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
@@ -126,7 +127,7 @@ export function useSwapWidget(authenticated: boolean) {
         tokenOut: usdtToUsd1Pair.buy.address,
         client: readClient,
       }),
-    enabled: true,
+    enabled: quotesEnabled,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
@@ -144,7 +145,7 @@ export function useSwapWidget(authenticated: boolean) {
         tokenOut: usd1ToUsdtPair.buy.address,
         client: readClient,
       }),
-    enabled: true,
+    enabled: quotesEnabled,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
@@ -162,18 +163,22 @@ export function useSwapWidget(authenticated: boolean) {
         tokenOut: pair.buy.address,
         client: readClient,
       }),
-    enabled: authenticated && amountIn > 0n,
+    enabled: quotesEnabled && authenticated && amountIn > 0n,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
-  useVisibleQueryInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
-  useVisibleQueryInterval(exchangeSpotQuoteInvertedQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
+  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleQueryInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleQueryInterval(
+    exchangeSpotQuoteInvertedQuery,
+    SWAP_CONFIG.quoteRefreshIntervalMs,
+    quotesEnabled,
+  )
   useVisibleQueryInterval(
     amountQuoteQuery,
     SWAP_CONFIG.quoteRefreshIntervalMs,
-    authenticated && amountIn > 0n,
+    quotesEnabled && authenticated && amountIn > 0n,
   )
 
   const sellBalance = balancesQuery.data?.sell ?? 0n

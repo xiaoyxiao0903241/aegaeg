@@ -1,24 +1,13 @@
+import { useMemo } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { SWAP_CONFIG } from '~/config/swap'
+import { formatSwapRateColon } from '~/lib/swap/format-swap-rate'
+import { getSwapPairTokens, type SwapDirection } from '~/lib/swap/swap-pair'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
-import type { SwapDirection } from '~/lib/swap/swap-pair'
-import { readPairSpotRate } from '~/web3/swap-read'
+import { fetchSwapQuote } from '~/web3/swap-read'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
-
-function formatPoolRateLabel(
-  rate: { usd1PerXx: number; xxPerUsd1: number },
-  direction: SwapDirection,
-) {
-  const formatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 4,
-  })
-  const value = direction === 'reverse' ? rate.usd1PerXx : rate.xxPerUsd1
-
-  return `1 : ${formatter.format(value)}`
-}
 
 export function usePairSpotRate(
   enabled = true,
@@ -26,21 +15,54 @@ export function usePairSpotRate(
   intervalMs = SWAP_CONFIG.spotRateRefreshIntervalMs,
 ) {
   const readClient = useChainReadClient()
+  const pair = useMemo(
+    () => getSwapPairTokens(direction === 'reverse' ? 'reverse' : 'forward'),
+    [direction],
+  )
+  const spotAmount = useMemo(
+    () => 10n ** BigInt(pair.sell.decimals),
+    [pair.sell.decimals],
+  )
 
-  const spotRateQuery = useQuery({
-    queryKey: queryKeys.chain.pairSpotRate,
-    queryFn: () => readPairSpotRate({ client: readClient }),
+  const spotQuoteQuery = useQuery({
+    queryKey: queryKeys.chain.swapQuote(
+      pair.sell.address,
+      pair.buy.address,
+      spotAmount.toString(),
+    ),
+    queryFn: () =>
+      fetchSwapQuote({
+        amountIn: spotAmount,
+        tokenIn: pair.sell.address,
+        tokenOut: pair.buy.address,
+        client: readClient,
+      }),
     enabled,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotRateQuery, intervalMs, enabled)
+  useVisibleQueryInterval(spotQuoteQuery, intervalMs, enabled)
 
-  const rateLabel = spotRateQuery.data ? formatPoolRateLabel(spotRateQuery.data, direction) : null
+  const rateLabel = useMemo(() => {
+    const quotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
+    if (quotedOut === 0n) return null
+
+    return formatSwapRateColon({
+      amountIn: spotAmount,
+      amountOut: quotedOut,
+      decimalsIn: pair.sell.decimals,
+      decimalsOut: pair.buy.decimals,
+    })
+  }, [
+    pair.buy.decimals,
+    pair.sell.decimals,
+    spotAmount,
+    spotQuoteQuery.data?.quotedOut,
+  ])
 
   return {
     rateLabel,
-    isLoading: spotRateQuery.isPending,
+    isLoading: spotQuoteQuery.isPending,
   }
 }

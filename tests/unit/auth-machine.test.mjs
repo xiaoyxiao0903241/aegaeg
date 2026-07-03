@@ -107,10 +107,16 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     { type: 'idle' },
   )
 
-  // needsLogin after an error → idle (no retry storm)
+  // needsLogin after a permanent error → idle (no retry storm)
   assert.deepEqual(
     deriveAuthAction({ ...base, loginError: 'User rejected', state: { kind: 'needsLogin' } }),
     { type: 'idle' },
+  )
+
+  // needsLogin after a transient error → retry login
+  assert.deepEqual(
+    deriveAuthAction({ ...base, loginError: 'Network request failed', state: { kind: 'needsLogin' } }),
+    { type: 'login' },
   )
 
   // needsLogin but this exact input was already attempted → idle (dedupe / loop guard)
@@ -129,12 +135,16 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     { type: 'renewAt', at: expiresAt - renewThresholdMs },
   )
 
-  // authenticated without exp → idle (rely on 401 fallback)
+  // authenticated without exp → renewAt from savedAt + fallback TTL
+  const savedAt = now - 30 * 60_000
   assert.deepEqual(
     deriveAuthAction({
       ...base,
-      state: { kind: 'authenticated', session: { token: 't', address: '0x1', savedAt: 0 } },
+      state: {
+        kind: 'authenticated',
+        session: { token: 't', address: '0x1', savedAt },
+      },
     }),
-    { type: 'idle' },
+    { type: 'renewAt', at: savedAt + 60 * 60_000 - renewThresholdMs },
   )
 })
