@@ -74,7 +74,7 @@ export function useReferral(sessionReady: boolean) {
       return false
     }
 
-    const target = (referrerInput.trim() || pendingReferrer || REFERRAL_CONFIG.defaultReferrer) as `0x${string}`
+    const target = (referrerInput.trim() || pendingReferrer) as `0x${string}`
     if (!/^0x[a-fA-F0-9]{40}$/.test(target)) {
       setError('Invalid referrer address')
       return false
