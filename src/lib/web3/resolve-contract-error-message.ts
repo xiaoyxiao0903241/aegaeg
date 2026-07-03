@@ -22,6 +22,7 @@ export const GENESIS_PURCHASE_ERROR = {
 } as const
 
 export const REFERRAL_BIND_ERROR = {
+  INVALID_PARENT: 'REFERRAL_INVALID_PARENT',
   PARENT_NOT_BOUND: 'REFERRAL_PARENT_NOT_BOUND',
 } as const
 
@@ -256,6 +257,7 @@ export function resolveReferralBindError(
   const s = raw.toLowerCase()
   const has = (sel: string) => s.includes(sel)
 
+  if (raw === REFERRAL_BIND_ERROR.INVALID_PARENT) return messages.invalidParent
   if (raw === REFERRAL_BIND_ERROR.PARENT_NOT_BOUND) return messages.parentNotBound
 
   // Match by decoded name OR on-chain selector (verified against impl 0xecb7…b629).
