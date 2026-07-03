@@ -59,10 +59,10 @@ export type AuthAction =
 
 /**
  * Given the derived state plus the runtime guards, decide the single side
- * effect the provider should perform. Silent login fires only when a usable
- * cached SIWE signature exists — a wallet with no signature stays idle and
- * waits for the user to press the sign-in button instead of being ambushed by
- * a signature prompt.
+ * effect the provider should perform. Auto-login fires once per attempt key:
+ * with a usable cached SIWE signature it is fully silent, without one it
+ * prompts the wallet a single time — the loop guard (attempt key) and the
+ * error latch prevent repeated prompts.
  */
 export function deriveAuthAction({
   state,
@@ -73,12 +73,10 @@ export function deriveAuthAction({
   renewThresholdMs,
 }: {
   state: AuthState
-  hasUsableSignature: boolean
   isLoggingIn: boolean
   loginError: string | null
   lastAttemptKey: string | null
   attemptKey: string
-  now?: number
   renewThresholdMs: number
 }): AuthAction {
   if (state.kind === 'disconnected') return { type: 'idle' }

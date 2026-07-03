@@ -6,6 +6,7 @@ import { cn } from '~/lib/utils'
 import { useReferral } from '~/hooks/use-referral'
 import { formatReferralLinkDisplay } from '~/lib/api/format-display'
 import { buildReferralSharePath } from '~/config/referral'
+import { getRuntimeOrigin } from '~/lib/runtime-host'
 import { useDappShell } from '~/app/dapp-shell-context'
 import type { DappTab } from '~/app/types'
 import { dappAssets } from '~/app/assets'
@@ -25,6 +26,7 @@ import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { QuickLinks } from '~/app/components/quick-links'
 import { buildCommunityQuickLinkItems } from '~/config/community-links'
 import { toast } from 'sonner'
+import { copyTextToClipboard } from '~/lib/copy-to-clipboard'
 import { resolveReferralBindError } from '~/lib/web3/resolve-contract-error-message'
 
 export function CommunityWidget({
@@ -52,24 +54,18 @@ function CommunityConnectedWidget({
 
   const copyReferralLink = useCallback(async () => {
     if (!account) return
-    const url = `${window.location.origin}${window.location.pathname}${buildReferralSharePath(account.address)}`
-    try {
-      await navigator.clipboard.writeText(url)
-      toast.success(t.wallet.copied)
-    } catch {
-      // Clipboard permission denied — no success toast.
-    }
-  }, [account, t.wallet.copied])
+    const url = `${getRuntimeOrigin()}${window.location.pathname}${buildReferralSharePath(account.address)}`
+    const result = await copyTextToClipboard(url)
+    if (result === 'copied') toast.success(t.wallet.copied)
+    else if (result === 'failed') toast.error(t.wallet.copyFailed)
+  }, [account, t.wallet.copied, t.wallet.copyFailed])
 
   const copyReferrerAddress = useCallback(async () => {
     if (!referral.referrer) return
-    try {
-      await navigator.clipboard.writeText(referral.referrer)
-      toast.success(t.wallet.copied)
-    } catch {
-      // Clipboard permission denied — no success toast.
-    }
-  }, [referral.referrer, t.wallet.copied])
+    const result = await copyTextToClipboard(referral.referrer)
+    if (result === 'copied') toast.success(t.wallet.copied)
+    else if (result === 'failed') toast.error(t.wallet.copyFailed)
+  }, [referral.referrer, t.wallet.copied, t.wallet.copyFailed])
 
   useEffect(() => {
     if (!referral.error) return

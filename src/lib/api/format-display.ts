@@ -5,6 +5,7 @@ import type {
   TeamReferralItem,
   TeamRewardClaimLogItem,
 } from '~/lib/api/types'
+import { getRuntimeHost } from '~/lib/runtime-host'
 import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/lib/presale/presale-math'
 
 /** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */
@@ -480,13 +481,7 @@ export function isReferralRewardLog(item: RewardLogItem): boolean {
   return item.reward_type === 'referral_paid' || item.reward_type === 'referral_withdrawn'
 }
 
-export function buildReferralLink(address: string): string {
-  const host = typeof window !== 'undefined' ? window.location.host : 'aegis-x.io'
-  return `${host}/r/${address}`
-}
-
 /** Sidebar display: host + shortened address (Figma `aegis-x.io/r/0x8F32…91A2`). */
 export function formatReferralLinkDisplay(address: string): string {
-  const host = typeof window !== 'undefined' ? window.location.host : 'aegis-x.io'
-  return `${host}/r/${formatShortAddress(address)}`
+  return `${getRuntimeHost()}/r/${formatShortAddress(address)}`
 }

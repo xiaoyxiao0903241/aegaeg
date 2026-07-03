@@ -1,32 +1,22 @@
-import {
-  getContract,
-  prepareContractCall,
-  sendAndConfirmTransaction,
-  type ThirdwebClient,
-} from 'thirdweb'
-import type { Account } from 'thirdweb/wallets'
-import type { Chain } from 'thirdweb/chains'
+import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import { REFERRAL_METHODS } from '~/web3/abis'
-import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
+
+const referralWriteAbi = parseWriteAbi(REFERRAL_METHODS.bindReferral)
 
 export async function bindReferrer({
-  account,
+  wallet,
   referrer,
-  client = thirdwebClient,
-  chain = defaultChain,
 }: {
-  account: Account
+  wallet: Wallet
   referrer: `0x${string}`
-  client?: ThirdwebClient
-  chain?: Chain
 }) {
-  const contract = getContract({ client, chain, address: BSC_CONTRACTS.referral })
-  const transaction = prepareContractCall({
-    contract,
-    method: REFERRAL_METHODS.bindReferral,
-    params: [referrer],
+  return writeContractViaWallet({
+    wallet,
+    address: BSC_CONTRACTS.referral,
+    abi: referralWriteAbi,
+    functionName: 'bindReferral',
+    args: [referrer],
   })
-
-  return sendAndConfirmTransaction({ account, transaction })
 }

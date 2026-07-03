@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import {
@@ -49,6 +49,7 @@ const USD1_DECIMALS = 18
 
 export function useGenesisWidget() {
   const account = useActiveAccount()
+  const wallet = useActiveWallet()
   const { messages: t } = useI18n()
   const queryClient = useQueryClient()
   const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
@@ -109,9 +110,11 @@ export function useGenesisWidget() {
     (walletReady && activePhase !== null && phaseRemainingQuery.isLoading)
 
   useEffect(() => {
+    // The countdown renders minute granularity; a 15s tick keeps it accurate
+    // (and phase-transition detection prompt) without re-rendering every second.
     const timer = window.setInterval(() => {
       setNowSeconds(Math.floor(Date.now() / 1000))
-    }, 1000)
+    }, 15_000)
 
     return () => window.clearInterval(timer)
   }, [])
@@ -183,7 +186,7 @@ export function useGenesisWidget() {
   }, [address])
 
   const approve = useCallback(async (): Promise<GenesisPurchaseResult> => {
-    if (!account) {
+    if (!account || !wallet) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED }
     }
     if (!canPurchase) {
@@ -197,7 +200,7 @@ export function useGenesisWidget() {
     setError(null)
 
     try {
-      await approveUsd1ForPresaleIfNeeded({ account, amount: purchaseAmount })
+      await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
       if (address) {
         queryClient.setQueryData(
           queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
@@ -211,10 +214,10 @@ export function useGenesisWidget() {
     } finally {
       setSubmittingAction(null)
     }
-  }, [account, address, canPurchase, isApproved, purchaseAmount, queryClient])
+  }, [account, address, canPurchase, isApproved, purchaseAmount, queryClient, wallet])
 
   const purchase = useCallback(async (): Promise<GenesisPurchaseResult> => {
-    if (!account) {
+    if (!account || !wallet) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED }
     }
     if (!activePhase || !canPurchase) {
@@ -250,7 +253,7 @@ export function useGenesisWidget() {
       }
 
       await purchasePresale({
-        account,
+        wallet,
         phase: activePhase.index,
         amount: purchaseAmount,
       })
@@ -270,7 +273,7 @@ export function useGenesisWidget() {
     canPurchase,
     purchaseAmount,
     queryClient,
-    refresh,
+    wallet,
   ])
 
   const participate = useCallback(async (): Promise<GenesisPurchaseResult> => {

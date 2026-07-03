@@ -1,4 +1,5 @@
 import { appEnv } from '~/config/env'
+import { getRuntimeHostname } from '~/lib/runtime-host'
 
 export interface SiweLoginPayload {
   domain: string
@@ -14,7 +15,6 @@ export interface SiweLoginPayload {
   resources?: string[]
 }
 
-const DEFAULT_DOMAIN = 'aegis-x.io'
 const DEFAULT_STATEMENT = 'Sign in to AEGIS X to access your account.'
 const DEFAULT_VERSION = '1'
 const DEFAULT_TTL_MS = 60 * 60 * 1000
@@ -38,11 +38,13 @@ export function createSiweLoginPayload(params: {
   const issuedAtMs = params.issuedAt ? Date.parse(params.issuedAt) : Date.now()
   const ttlMs = params.ttlMs ?? DEFAULT_TTL_MS
 
+  const domain = params.domain ?? getRuntimeHostname()
+
   return {
-    domain: params.domain ?? DEFAULT_DOMAIN,
+    domain,
     address: params.address,
     statement: DEFAULT_STATEMENT,
-    uri: `https://${params.domain ?? DEFAULT_DOMAIN}`,
+    uri: `https://${domain}`,
     version: DEFAULT_VERSION,
     chain_id: String(params.chainId),
     nonce: params.nonce ?? generateLoginNonce(),
