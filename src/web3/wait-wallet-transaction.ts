@@ -89,6 +89,7 @@ export async function waitForWalletTransactionConfirmation({
         throw new WalletTransactionWaitError(
           hash,
           `Transaction reverted on-chain (${hash})`,
+          'failed',
         )
       }
       return receipt
@@ -106,13 +107,15 @@ export async function waitForWalletTransactionConfirmation({
       throw new WalletTransactionWaitError(
         hash,
         `Transaction was not broadcast to BNB Chain (wallet may have failed locally). Hash: ${hash}`,
+        'failed',
       )
     }
 
     if (seenOnChain && pendingSince > 0 && Date.now() - pendingSince >= PENDING_WITHOUT_RECEIPT_MS) {
       throw new WalletTransactionWaitError(
         hash,
-        `Transaction stayed pending without confirmation (wallet may have failed after confirm). Hash: ${hash}`,
+        `Transaction stayed pending without confirmation. Do not resubmit until it settles. Hash: ${hash}`,
+        'unknown',
       )
     }
 

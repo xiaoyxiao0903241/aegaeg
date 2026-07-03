@@ -3,21 +3,7 @@
  * 运行: node tests/integration/swap-quote-live.mjs
  */
 import assert from 'node:assert/strict'
-import { createServer } from 'vite'
-
-async function loadModule(specifier) {
-  const server = await createServer({
-    appType: 'custom',
-    logLevel: 'error',
-    optimizeDeps: { noDiscovery: true },
-    server: { hmr: false, middlewareMode: true },
-  })
-  try {
-    return await server.ssrLoadModule(specifier)
-  } finally {
-    await server.close()
-  }
-}
+import { loadModule } from '../unit/load-module.mjs'
 
 const { fetchSwapQuote, readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } =
   await loadModule('/src/web3/swap-read.ts')

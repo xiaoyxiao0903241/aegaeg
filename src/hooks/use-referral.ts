@@ -11,7 +11,7 @@ import {
   readReferrer,
 } from '~/web3/referral-read'
 import { bindReferrer } from '~/web3/referral-write'
-import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR, REFERRAL_BIND_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { useDappActions } from '~/stores/dapp-actions'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
@@ -84,6 +84,12 @@ export function useReferral(sessionReady: boolean) {
     setError(null)
 
     try {
+      const parentBound = await readIsBindReferral(target, readClient)
+      if (!parentBound) {
+        setError(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND)
+        return false
+      }
+
       await bindReferrer({ wallet, referrer: target })
       afterReferralBind()
       return true
@@ -93,7 +99,7 @@ export function useReferral(sessionReady: boolean) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterReferralBind, pendingReferrer, referrerInput, wallet])
+  }, [account, afterReferralBind, pendingReferrer, readClient, referrerInput, wallet])
 
   const refresh = useCallback(async () => {
     await referralQuery.refetch()

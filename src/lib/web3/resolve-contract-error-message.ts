@@ -1,3 +1,8 @@
+import {
+  ContractRevertError,
+  decodeContractRevert,
+} from '~/lib/web3/decode-contract-revert'
+
 const ERC20_INSUFFICIENT_BALANCE = '0xe450d38c'
 const ERC20_INSUFFICIENT_ALLOWANCE = '0xfb8f41b2'
 
@@ -15,6 +20,62 @@ export const GENESIS_PURCHASE_ERROR = {
   WALLET_NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
   NOT_BOUND: 'GENESIS_NOT_BOUND',
 } as const
+
+export const REFERRAL_BIND_ERROR = {
+  PARENT_NOT_BOUND: 'REFERRAL_PARENT_NOT_BOUND',
+} as const
+
+export const WALLET_WRITE_ERROR = {
+  GAS_ESTIMATE_FAILED: 'WALLET_GAS_ESTIMATE_FAILED',
+} as const
+
+export interface WalletTransactionErrorMessages {
+  gasLimitTooLow: string
+  gasEstimateFailed: string
+  insufficientFunds: string
+  transactionFailed: string
+}
+
+const GAS_LIMIT_TOO_LOW_PATTERN =
+  /gasLimit is too low|given 0|intrinsic gas too low|gas required exceeds allowance/i
+const INSUFFICIENT_FUNDS_PATTERN =
+  /insufficient funds for gas|insufficient funds|insufficient balance for transfer/i
+const SIGNER_GAS_PATTERN = /signer error.*gas/i
+
+/**
+ * Map wallet / signer infrastructure failures (gas limit, estimate, BNB balance)
+ * to localized copy. Call before domain-specific resolvers so raw English gas
+ * strings are not shown to users.
+ */
+export function resolveWalletTransactionError(
+  error: unknown,
+  messages: WalletTransactionErrorMessages,
+): string | null {
+  if (isUserRejectedWalletError(error)) return null
+
+  const raw = readErrorText(error)
+
+  if (
+    raw === WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED ||
+    /Failed to estimate gas for transaction/i.test(raw)
+  ) {
+    return messages.gasEstimateFailed
+  }
+
+  if (
+    GAS_LIMIT_TOO_LOW_PATTERN.test(raw) ||
+    SIGNER_GAS_PATTERN.test(raw) ||
+    (/gas/i.test(raw) && /too low|given 0/i.test(raw))
+  ) {
+    return messages.gasLimitTooLow
+  }
+
+  if (INSUFFICIENT_FUNDS_PATTERN.test(raw)) {
+    return messages.insufficientFunds
+  }
+
+  return null
+}
 
 /**
  * Friendly i18n messages for the PreSale contract's custom errors. All optional
@@ -112,7 +173,16 @@ function collectErrorFragments(error: unknown, depth = 0, seen = new WeakSet<obj
 }
 
 function readErrorText(error: unknown): string {
-  return collectErrorFragments(error).filter(Boolean).join(' ')
+  if (error instanceof ContractRevertError) {
+    return [error.errorName, ...collectErrorFragments(error.cause)].filter(Boolean).join(' ')
+  }
+
+  const decoded = decodeContractRevert(error)
+  const fragments = collectErrorFragments(error).filter(Boolean)
+  if (decoded) {
+    fragments.unshift(decoded.errorName)
+  }
+  return fragments.join(' ')
 }
 
 export function isUserRejectedWalletError(error: unknown): boolean {
@@ -185,6 +255,8 @@ export function resolveReferralBindError(
   const raw = readErrorText(error)
   const s = raw.toLowerCase()
   const has = (sel: string) => s.includes(sel)
+
+  if (raw === REFERRAL_BIND_ERROR.PARENT_NOT_BOUND) return messages.parentNotBound
 
   // Match by decoded name OR on-chain selector (verified against impl 0xecb7…b629).
   if (/Referral__AlreadyBound|AlreadyBound/i.test(raw) || has('0xd242113b')) return messages.alreadyBound
@@ -286,6 +358,7 @@ export function resolveFlashSwapUserMessage(
     purchaseUnavailable: string
     transactionCancelled: string
   },
+  walletTransactionErrors?: WalletTransactionErrorMessages,
 ): string | null {
   if (isUserRejectedWalletError(error)) {
     return messages.transactionCancelled
@@ -300,6 +373,13 @@ export function resolveFlashSwapUserMessage(
       insufficientUsd1: messages.insufficientUsd1,
       purchaseUnavailable: messages.purchaseUnavailable,
       walletNotConnected: messages.walletNotConnected,
-    }) ?? toWalletUserFacingMessage(error)
+    }) ??
+    (walletTransactionErrors
+      ? resolveWalletTransactionError(error, walletTransactionErrors)
+      : null) ??
+    toWalletUserFacingMessage(
+      error,
+      walletTransactionErrors?.transactionFailed ?? 'Transaction failed',
+    )
   )
 }

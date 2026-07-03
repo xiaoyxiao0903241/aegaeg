@@ -10,6 +10,7 @@ import {
 import { useActiveAccount } from 'thirdweb/react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { ApiError } from '~/lib/api/client'
+import { ACCOUNT_BANNED_SENTINEL, isAccountBannedError } from '~/lib/api/account-banned'
 import {
   buildLoginAttemptKey,
   deriveAuthAction,
@@ -95,9 +96,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signatureStorage,
       })
     } catch (error) {
-      const message =
-        error instanceof ApiError || error instanceof Error ? error.message : 'Login failed'
-      setLoginError(message)
+      if (isAccountBannedError(error)) {
+        useAuthStore.getState().setLoginError(ACCOUNT_BANNED_SENTINEL)
+      } else {
+        const message =
+          error instanceof ApiError || error instanceof Error ? error.message : 'Login failed'
+        useAuthStore.getState().setLoginError(message)
+      }
       throw error
     } finally {
       loginInProgressRef.current = false

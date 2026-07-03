@@ -76,16 +76,16 @@ export function FlashSwapWidget({
 
   const showFlashSwapError = useCallback(
     (error: unknown) => {
-      const message = resolveFlashSwapUserMessage(error, flashSwapErrorMessages)
+      const message = resolveFlashSwapUserMessage(error, flashSwapErrorMessages, t.wallet.transactionErrors)
       if (message) toast.error(message)
     },
-    [flashSwapErrorMessages],
+    [flashSwapErrorMessages, t.wallet.transactionErrors],
   )
 
   const submitErrorMessage = useMemo(() => {
     if (!swap.error || swap.isSubmitting) return null
-    return resolveFlashSwapUserMessage(swap.error, flashSwapErrorMessages)
-  }, [flashSwapErrorMessages, swap.error, swap.isSubmitting])
+    return resolveFlashSwapUserMessage(swap.error, flashSwapErrorMessages, t.wallet.transactionErrors)
+  }, [flashSwapErrorMessages, swap.error, swap.isSubmitting, t.wallet.transactionErrors])
 
   const handleSubmit = useCallback(async () => {
     const result = await swap.submit()

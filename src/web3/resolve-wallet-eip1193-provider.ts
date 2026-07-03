@@ -55,32 +55,90 @@ function pickWindowEthereum(wallet: Wallet): EIP1193Provider | undefined {
     return ethereum
   }
 
-  return ethereum
+  return undefined
 }
 
-/**
- * Resolves the wallet's EIP-1193 provider for contract writes.
- * Injected wallets prefer the EIP-6963 provider (falling back to legacy
- * `window.ethereum`) so rejections surface directly. Non-injected wallets
- * (WalletConnect, in-app, smart) always use thirdweb's adapter — their
- * transactions must go through the connected session, never `window.ethereum`.
- */
-export function resolveWalletEip1193Provider(wallet: Wallet): EIP1193Provider {
-  if (!NON_INJECTED_WALLET_IDS.has(wallet.id)) {
-    const injected = pickInjectedProvider(wallet.id)
-    if (injected) {
-      return injected
-    }
-
-    const legacy = pickWindowEthereum(wallet)
-    if (legacy) {
-      return legacy
-    }
-  }
-
+function thirdwebWalletProvider(wallet: Wallet): EIP1193Provider {
   return EIP1193.toProvider({
     wallet,
     chain: defaultChain,
     client: thirdwebClient,
   }) as EIP1193Provider
+}
+
+async function providerOwnsAccount(
+  provider: EIP1193Provider,
+  address: string,
+): Promise<boolean> {
+  try {
+    const accounts = await provider.request({ method: 'eth_accounts' })
+    if (!Array.isArray(accounts)) return false
+    const wanted = address.toLowerCase()
+    return accounts.some(
+      (item) => typeof item === 'string' && item.toLowerCase() === wanted,
+    )
+  } catch {
+    return false
+  }
+}
+
+async function resolveLegacyInjectedProvider(wallet: Wallet): Promise<EIP1193Provider> {
+  const account = wallet.getAccount()?.address
+  if (!account) {
+    return thirdwebWalletProvider(wallet)
+  }
+
+  const candidates: EIP1193Provider[] = []
+  const fromPicker = pickWindowEthereum(wallet)
+  if (fromPicker) candidates.push(fromPicker)
+
+  if (typeof window !== 'undefined') {
+    const { ethereum } = window as EthereumWindow
+    if (ethereum?.request) {
+      candidates.push(ethereum)
+    }
+  }
+
+  for (const candidate of candidates) {
+    if (await providerOwnsAccount(candidate, account)) {
+      return candidate
+    }
+  }
+
+  return thirdwebWalletProvider(wallet)
+}
+
+const deferredResolutions = new WeakMap<Wallet, Promise<EIP1193Provider>>()
+
+function createDeferredWalletProvider(wallet: Wallet): EIP1193Provider {
+  return {
+    request: async (args) => {
+      let pending = deferredResolutions.get(wallet)
+      if (!pending) {
+        pending = resolveLegacyInjectedProvider(wallet)
+        deferredResolutions.set(wallet, pending)
+      }
+      const provider = await pending
+      return provider.request(args)
+    },
+  } as EIP1193Provider
+}
+
+/**
+ * Resolves the wallet's EIP-1193 provider for contract writes.
+ * Injected wallets prefer the EIP-6963 provider. Legacy `window.ethereum` is
+ * only used when `eth_accounts` includes the connected address; otherwise
+ * thirdweb's adapter routes through the active session.
+ */
+export function resolveWalletEip1193Provider(wallet: Wallet): EIP1193Provider {
+  if (NON_INJECTED_WALLET_IDS.has(wallet.id)) {
+    return thirdwebWalletProvider(wallet)
+  }
+
+  const injected = pickInjectedProvider(wallet.id)
+  if (injected) {
+    return injected
+  }
+
+  return createDeferredWalletProvider(wallet)
 }
