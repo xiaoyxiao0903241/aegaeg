@@ -1,11 +1,7 @@
 /**
- * 旧 WebView 布局兜底 — 双轨触发：
- * 1. 经典 `@media (max-width)` / `(min-width)`（Chromium 90+ 均支持）
- * 2. `html[data-viewport]`（`sync-viewport-dataset.ts`，matchMedia 仍可用时）
- *
- * 根因修复见 `legacy-breakpoints.css`（`max-dapp` 变体）。本文件覆盖：
- * - 任意断点 `max-[1100px]:`（仍可能编译为 `not all and`）
- * - `group-data-*` 等 Tailwind 无法单靠变体重写的规则
+ * 旧 WebView 布局兜底 — 仅补 Tailwind 仍无法覆盖的关键壳层（DApp shell、导航）。
+ * `dapp` / `max-dapp` 变体见 `legacy-breakpoints.css`（经典 max-width）；
+ * 首页 section 栅格与 container 由组件 Tailwind 类负责，勿在此用 !important 覆盖。
  *
  * 字面量与 `lib/breakpoints.ts` 同步。
  */
@@ -65,11 +61,6 @@
     pointer-events: auto !important;
   }
 
-  html[data-viewport='h5'] [data-dapp-mobile-nav],
-  [data-dapp-mobile-nav] {
-    display: block;
-  }
-
   html.dapp-app,
   html.dapp-app body,
   html.dapp-app #root {
@@ -83,83 +74,7 @@
     padding-top: 3.5rem;
   }
 
-  header[aria-label='Primary navigation'] nav[aria-label] {
-    display: none !important;
-  }
-
   header[aria-label='Primary navigation'] a[rel='noopener noreferrer'][target='_blank'].rounded-full {
-    display: none !important;
-  }
-
-  .hero-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    min-height: 0 !important;
-    gap: 1rem !important;
-    text-align: center;
-  }
-
-  .hero-copy {
-    order: 2;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 100% !important;
-    max-width: 24rem !important;
-    padding-top: 0 !important;
-  }
-
-  .hero-art {
-    order: 1;
-    width: 18rem !important;
-    max-width: 18rem !important;
-  }
-
-  .hero-title {
-    width: 100% !important;
-    max-width: 24rem !important;
-    font-size: var(--text-4xl, 2.25rem) !important;
-    line-height: 1.2 !important;
-  }
-
-  .hero-body {
-    width: 100% !important;
-    max-width: 24rem !important;
-  }
-
-  .hero-actions {
-    width: 100% !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  .token-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .feature-card,
-  .engine-card {
-    grid-template-columns: 1fr !important;
-  }
-
-  .metrics-wrap .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  .footer-top {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-
-  .security-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 1rem !important;
-  }
-
-  .security-line {
     display: none !important;
   }
 }
@@ -177,50 +92,9 @@
   }
 }
 
-/* ========== Tablet (<= 1100px) — 兜底 max-[1100px]:* ========== */
-
+/* max-[1100px]:hidden — 仍可能编译为 not all and (min-width:1100px) */
 @media (max-width: 1100px) {
   header[aria-label='Primary navigation'] nav[aria-label] {
-    display: none !important;
-  }
-
-  .hero-grid {
-    grid-template-columns: 1fr !important;
-    justify-items: center !important;
-    gap: 2rem !important;
-    text-align: center;
-  }
-
-  .hero-copy {
-    padding-top: 0 !important;
-  }
-
-  .hero-actions {
-    justify-content: center !important;
-  }
-
-  .hero-art {
-    width: 100% !important;
-    max-width: 27rem !important;
-  }
-
-  .hero-media {
-    left: 50% !important;
-    width: 18rem !important;
-    max-width: 18rem !important;
-    transform: translateX(-50%) !important;
-  }
-
-  .token-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  .security-grid {
-    grid-template-columns: 1fr !important;
-    justify-items: center !important;
-  }
-
-  .security-line {
     display: none !important;
   }
 }
