@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: 'ウォレットを再接続',
         reconnectHint: 'ウォレットが切断されました。オンチェーン操作のために再接続してください。',
         signInRequired: '署名ログイン',
+        accountBanned: 'アカウントが停止されています。サポートにお問い合わせください。',
     },
     swap: {
         backToHub: 'スワップへ戻る',

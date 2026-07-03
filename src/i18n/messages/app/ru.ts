@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: 'Переподключить кошелёк',
         reconnectHint: 'Кошелёк отключён. Подключите его снова для операций на блокчейне.',
         signInRequired: 'Войти с подписью',
+        accountBanned: 'Аккаунт заблокирован. Обратитесь в поддержку.',
     },
     swap: {
         backToHub: 'Назад к свопу',

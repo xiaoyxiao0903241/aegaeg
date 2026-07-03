@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: 'Reconectar billetera',
         reconnectHint: 'La billetera está desconectada. Vuelve a conectarla antes de realizar operaciones on-chain.',
         signInRequired: 'Iniciar sesión con firma',
+        accountBanned: 'Tu cuenta ha sido suspendida. Contacta con soporte.',
     },
     swap: {
         backToHub: 'Volver al Swap',

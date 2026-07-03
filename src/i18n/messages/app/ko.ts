@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: '지갑 다시 연결',
         reconnectHint: '지갑 연결이 끊어졌습니다. 온체인 작업을 위해 다시 연결하세요.',
         signInRequired: '서명 로그인',
+        accountBanned: '계정이 정지되었습니다. 고객 지원에 문의하세요.',
     },
     swap: {
         backToHub: '스왑으로 돌아가기',

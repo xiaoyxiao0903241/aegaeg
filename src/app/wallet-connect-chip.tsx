@@ -4,6 +4,11 @@ import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/providers/auth-provider'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
+import {
+  ACCOUNT_BANNED_SENTINEL,
+  isAccountBannedError,
+  resolveAuthLoginErrorMessage,
+} from '~/lib/api/account-banned'
 import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { formatAddress } from '~/app/utils'
 import { cn } from '~/lib/utils'
@@ -17,9 +22,25 @@ const walletGlyphClass = cn(
   'after:absolute after:right-0.5 after:top-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
 )
 
+function resolveLoginToastMessage(
+  error: unknown,
+  loginError: string | null,
+  accountBannedMessage: string,
+): string | null {
+  if (isAccountBannedError(error) || loginError === ACCOUNT_BANNED_SENTINEL) {
+    return null
+  }
+
+  return (
+    resolveAuthLoginErrorMessage(error instanceof Error ? error.message : null, accountBannedMessage) ??
+    toWalletUserFacingMessage(error)
+  )
+}
+
 function ConnectedWalletChip() {
   const account = useActiveAccount()
   const { session, isAuthenticated, loginError, retryLogin } = useAuth()
+  const { messages: t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
 
   const walletReady = hasWalletAccount(account)
@@ -34,7 +55,7 @@ function ConnectedWalletChip() {
       try {
         await retryLogin()
       } catch (error) {
-        const message = toWalletUserFacingMessage(error)
+        const message = resolveLoginToastMessage(error, loginError, t.wallet.accountBanned)
         if (message) {
           toast.error(message)
         }
@@ -93,7 +114,7 @@ function WalletConnectButton({
       try {
         await retryLogin()
       } catch (error) {
-        const message = toWalletUserFacingMessage(error)
+        const message = resolveLoginToastMessage(error, loginError, t.wallet.accountBanned)
         if (message) {
           toast.error(message)
         }
@@ -105,7 +126,7 @@ function WalletConnectButton({
       try {
         await login()
       } catch (error) {
-        const message = toWalletUserFacingMessage(error)
+        const message = resolveLoginToastMessage(error, loginError, t.wallet.accountBanned)
         if (message) {
           toast.error(message)
         }

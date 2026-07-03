@@ -1,4 +1,8 @@
 import { ApiError } from '~/lib/api/client'
+import {
+  isAccountBannedError,
+  reportAccountBanned,
+} from '~/lib/api/account-banned'
 import { isUnauthorizedError } from '~/lib/api/auth/login-with-wallet'
 
 export async function fetchAuthenticated<T>(
@@ -9,7 +13,9 @@ export async function fetchAuthenticated<T>(
   try {
     return await fetcher(token)
   } catch (error) {
-    if (isUnauthorizedError(error)) {
+    if (isAccountBannedError(error)) {
+      reportAccountBanned()
+    } else if (isUnauthorizedError(error)) {
       onUnauthorized()
     }
 

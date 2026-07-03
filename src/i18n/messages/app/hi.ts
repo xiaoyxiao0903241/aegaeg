@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: 'वॉलेट पुनः कनेक्ट करें',
         reconnectHint: 'वॉलेट डिस्कनेक्ट हो गया। ऑन-चेन कार्यों के लिए पुनः कनेक्ट करें।',
         signInRequired: 'साइन इन के लिए हस्ताक्षर करें',
+        accountBanned: 'आपका खाता निलंबित कर दिया गया है। सहायता से संपर्क करें।',
     },
     swap: {
         backToHub: 'Swap पर लौटें',

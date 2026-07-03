@@ -1,3 +1,8 @@
+import {
+  ContractRevertError,
+  decodeContractRevert,
+} from './decode-contract-revert'
+
 const ERC20_INSUFFICIENT_BALANCE = '0xe450d38c'
 const ERC20_INSUFFICIENT_ALLOWANCE = '0xfb8f41b2'
 
@@ -14,6 +19,10 @@ export const GENESIS_PURCHASE_ERROR = {
   UNAVAILABLE: 'GENESIS_UNAVAILABLE',
   WALLET_NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
   NOT_BOUND: 'GENESIS_NOT_BOUND',
+} as const
+
+export const REFERRAL_BIND_ERROR = {
+  PARENT_NOT_BOUND: 'REFERRAL_PARENT_NOT_BOUND',
 } as const
 
 /**
@@ -112,7 +121,16 @@ function collectErrorFragments(error: unknown, depth = 0, seen = new WeakSet<obj
 }
 
 function readErrorText(error: unknown): string {
-  return collectErrorFragments(error).filter(Boolean).join(' ')
+  if (error instanceof ContractRevertError) {
+    return [error.errorName, ...collectErrorFragments(error.cause)].filter(Boolean).join(' ')
+  }
+
+  const decoded = decodeContractRevert(error)
+  const fragments = collectErrorFragments(error).filter(Boolean)
+  if (decoded) {
+    fragments.unshift(decoded.errorName)
+  }
+  return fragments.join(' ')
 }
 
 export function isUserRejectedWalletError(error: unknown): boolean {
@@ -185,6 +203,8 @@ export function resolveReferralBindError(
   const raw = readErrorText(error)
   const s = raw.toLowerCase()
   const has = (sel: string) => s.includes(sel)
+
+  if (raw === REFERRAL_BIND_ERROR.PARENT_NOT_BOUND) return messages.parentNotBound
 
   // Match by decoded name OR on-chain selector (verified against impl 0xecb7…b629).
   if (/Referral__AlreadyBound|AlreadyBound/i.test(raw) || has('0xd242113b')) return messages.alreadyBound

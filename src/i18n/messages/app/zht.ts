@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: '重新連接錢包',
         reconnectHint: '錢包已斷開，請重新連接後再進行鏈上操作。',
         signInRequired: '簽名登入',
+        accountBanned: '帳號已被封禁，請聯絡客服。',
     },
     swap: {
         backToHub: '返回兌換',

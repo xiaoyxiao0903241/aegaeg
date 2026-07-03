@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: 'Reconnect wallet',
         reconnectHint: 'Wallet disconnected. Reconnect before performing on-chain actions.',
         signInRequired: 'Sign in',
+        accountBanned: 'Your account has been suspended. Please contact support.',
     },
     swap: {
         title: 'Swap',

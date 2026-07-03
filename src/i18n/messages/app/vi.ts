@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: 'Kết nối lại ví',
         reconnectHint: 'Ví đã ngắt kết nối. Vui lòng kết nối lại trước khi thực hiện thao tác on-chain.',
         signInRequired: 'Đăng nhập bằng chữ ký',
+        accountBanned: 'Tài khoản đã bị khóa. Vui lòng liên hệ hỗ trợ.',
     },
     swap: {
         backToHub: 'Trở lại Swap',

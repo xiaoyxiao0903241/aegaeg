@@ -57,6 +57,7 @@ const app = defineMessages({
         reconnectWallet: 'Hubungkan ulang dompet',
         reconnectHint: 'Dompet terputus. Hubungkan ulang sebelum melakukan tindakan on-chain.',
         signInRequired: 'Masuk dengan tanda tangan',
+        accountBanned: 'Akun Anda telah ditangguhkan. Hubungi dukungan.',
     },
     swap: {
         backToHub: 'Kembali ke Swap',

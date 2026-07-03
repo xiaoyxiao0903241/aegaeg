@@ -11,6 +11,18 @@ export { ApiError }
 /** Abort hung requests so callers (and react-query retries) never wait forever. */
 const REQUEST_TIMEOUT_MS = 20_000
 
+/** Wallet in-app WebViews often ship Chrome < 124 — no AbortSignal.timeout(). */
+function createRequestAbortSignal(timeoutMs: number): AbortSignal {
+  if (typeof AbortSignal.timeout === 'function') {
+    return AbortSignal.timeout(timeoutMs)
+  }
+
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  controller.signal.addEventListener('abort', () => clearTimeout(timer), { once: true })
+  return controller.signal
+}
+
 export interface ApiRequestOptions {
   method?: 'GET' | 'POST'
   body?: unknown
@@ -55,7 +67,7 @@ export async function apiRequest<T>(
     method: options.method ?? 'GET',
     headers,
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    signal: createRequestAbortSignal(REQUEST_TIMEOUT_MS),
   })
 
   let payload: ApiEnvelope<T>

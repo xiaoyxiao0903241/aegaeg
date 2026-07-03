@@ -56,6 +56,7 @@ const app = defineMessages({
         reconnectWallet: 'Cüzdanı yeniden bağla',
         reconnectHint: 'Cüzdan bağlantısı kesildi, zincir üstü işlem yapmadan önce yeniden bağlanın.',
         signInRequired: 'Giriş imzası gerekli',
+        accountBanned: 'Hesabınız askıya alındı. Destek ile iletişime geçin.',
     },
     swap: {
         backToHub: 'Swap’a dön',

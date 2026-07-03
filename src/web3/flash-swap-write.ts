@@ -1,12 +1,12 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { ERC20_METHODS, MAX_UINT256, USD1_SWAP_METHODS } from '~/web3/abis'
+import { ERC20_METHODS, MAX_UINT256, USD1_SWAP_METHODS, ERC20_ERRORS } from '~/web3/abis'
 import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/swap-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
 
 const FLASH_SWAP_USDT = BSC_CONTRACTS.usdt
-const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve)
+const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const usd1SwapWriteAbi = parseWriteAbi(USD1_SWAP_METHODS.swap)
 
 export async function approveUsdtForFlashSwapIfNeeded({
