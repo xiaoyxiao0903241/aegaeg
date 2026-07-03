@@ -58,6 +58,12 @@ const app = defineMessages({
         reconnectHint: 'ウォレットが切断されました。オンチェーン操作のために再接続してください。',
         signInRequired: '署名ログイン',
         accountBanned: 'アカウントが停止されています。サポートにお問い合わせください。',
+        transactionErrors: {
+            gasLimitTooLow: 'Gas 上限が低すぎます。ネットワーク手数料用にウォレットに十分な BNB を残して再試行してください。',
+            gasEstimateFailed: 'この取引の Gas を見積もれませんでした。ネットワークを確認して再試行してください。',
+            insufficientFunds: 'ネットワーク Gas 手数料を支払う BNB が不足しています。',
+            transactionFailed: '取引に失敗しました。しばらくしてから再試行してください。',
+        },
     },
     swap: {
         backToHub: 'スワップへ戻る',

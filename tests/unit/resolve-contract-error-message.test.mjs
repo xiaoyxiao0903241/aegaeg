@@ -133,6 +133,39 @@ test('resolveReferralBindError maps MetaMask nested revert selector', async () =
   )
 })
 
+test('resolveWalletTransactionError maps gas and estimate failures', async () => {
+  const { WALLET_WRITE_ERROR, resolveWalletTransactionError } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
+  )
+
+  const messages = {
+    gasLimitTooLow: 'Gas too low',
+    gasEstimateFailed: 'Estimate failed',
+    insufficientFunds: 'No BNB',
+    transactionFailed: 'Tx failed',
+  }
+
+  assert.equal(
+    resolveWalletTransactionError(
+      new Error('Signer Error: gasLimit is too low. given 0, need 21000'),
+      messages,
+    ),
+    'Gas too low',
+  )
+  assert.equal(
+    resolveWalletTransactionError(new Error(WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED), messages),
+    'Estimate failed',
+  )
+  assert.equal(
+    resolveWalletTransactionError(new Error('insufficient funds for gas * price + value'), messages),
+    'No BNB',
+  )
+  assert.equal(
+    resolveWalletTransactionError({ code: 4001, message: 'User rejected the request.' }, messages),
+    null,
+  )
+})
+
 test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data', async () => {
   const { resolveGenesisPurchaseError } = await loadModule(
     '/src/lib/web3/resolve-contract-error-message.ts',

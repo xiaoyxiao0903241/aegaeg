@@ -58,6 +58,12 @@ const app = defineMessages({
         reconnectHint: '지갑 연결이 끊어졌습니다. 온체인 작업을 위해 다시 연결하세요.',
         signInRequired: '서명 로그인',
         accountBanned: '계정이 정지되었습니다. 고객 지원에 문의하세요.',
+        transactionErrors: {
+            gasLimitTooLow: 'Gas 한도가 너무 낮습니다. 네트워크 수수료를 위해 지갑에 충분한 BNB를 유지한 뒤 다시 시도하세요.',
+            gasEstimateFailed: '이 거래의 Gas를 추정할 수 없습니다. 네트워크를 확인한 뒤 다시 시도하세요.',
+            insufficientFunds: '네트워크 Gas 수수료를 지불할 BNB가 부족합니다.',
+            transactionFailed: '거래에 실패했습니다. 잠시 후 다시 시도하세요.',
+        },
     },
     swap: {
         backToHub: '스왑으로 돌아가기',

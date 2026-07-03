@@ -58,6 +58,12 @@ const app = defineMessages({
         reconnectHint: 'Dompet terputus. Hubungkan ulang sebelum melakukan tindakan on-chain.',
         signInRequired: 'Masuk dengan tanda tangan',
         accountBanned: 'Akun Anda telah ditangguhkan. Hubungi dukungan.',
+        transactionErrors: {
+            gasLimitTooLow: 'Batas gas terlalu rendah. Pastikan dompet memiliki cukup BNB untuk biaya jaringan lalu coba lagi.',
+            gasEstimateFailed: 'Tidak dapat memperkirakan gas untuk transaksi ini. Periksa jaringan dan coba lagi.',
+            insufficientFunds: 'BNB tidak cukup untuk membayar biaya gas jaringan.',
+            transactionFailed: 'Transaksi gagal. Silakan coba lagi nanti.',
+        },
     },
     swap: {
         backToHub: 'Kembali ke Swap',

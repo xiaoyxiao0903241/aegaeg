@@ -57,6 +57,12 @@ const app = defineMessages({
         reconnectHint: 'Cüzdan bağlantısı kesildi, zincir üstü işlem yapmadan önce yeniden bağlanın.',
         signInRequired: 'Giriş imzası gerekli',
         accountBanned: 'Hesabınız askıya alındı. Destek ile iletişime geçin.',
+        transactionErrors: {
+            gasLimitTooLow: 'Gas limiti çok düşük. Ağ ücretleri için cüzdanda yeterli BNB bırakıp tekrar deneyin.',
+            gasEstimateFailed: 'Bu işlem için gas tahmin edilemedi. Ağı kontrol edip tekrar deneyin.',
+            insufficientFunds: 'Ağ gas ücretlerini ödemek için yeterli BNB yok.',
+            transactionFailed: 'İşlem başarısız. Lütfen daha sonra tekrar deneyin.',
+        },
     },
     swap: {
         backToHub: 'Swap’a dön',

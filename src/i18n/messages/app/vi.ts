@@ -58,6 +58,12 @@ const app = defineMessages({
         reconnectHint: 'Ví đã ngắt kết nối. Vui lòng kết nối lại trước khi thực hiện thao tác on-chain.',
         signInRequired: 'Đăng nhập bằng chữ ký',
         accountBanned: 'Tài khoản đã bị khóa. Vui lòng liên hệ hỗ trợ.',
+        transactionErrors: {
+            gasLimitTooLow: 'Giới hạn gas quá thấp. Hãy giữ đủ BNB trong ví để trả phí mạng rồi thử lại.',
+            gasEstimateFailed: 'Không thể ước tính gas cho giao dịch này. Kiểm tra mạng và thử lại.',
+            insufficientFunds: 'Không đủ BNB để trả phí gas mạng.',
+            transactionFailed: 'Giao dịch thất bại. Vui lòng thử lại sau.',
+        },
     },
     swap: {
         backToHub: 'Trở lại Swap',

@@ -58,6 +58,12 @@ const app = defineMessages({
         reconnectHint: 'वॉलेट डिस्कनेक्ट हो गया। ऑन-चेन कार्यों के लिए पुनः कनेक्ट करें।',
         signInRequired: 'साइन इन के लिए हस्ताक्षर करें',
         accountBanned: 'आपका खाता निलंबित कर दिया गया है। सहायता से संपर्क करें।',
+        transactionErrors: {
+            gasLimitTooLow: 'Gas सीमा बहुत कम है। नेटवर्क शुल्क के लिए वॉलेट में पर्याप्त BNB रखें और फिर कोशिश करें।',
+            gasEstimateFailed: 'इस लेनदेन के लिए gas का अनुमान नहीं लगाया जा सका। नेटवर्क जांचें और फिर कोशिश करें।',
+            insufficientFunds: 'नेटवर्क gas शुल्क चुकाने के लिए BNB अपर्याप्त है।',
+            transactionFailed: 'लेनदेन विफल। कृपया बाद में फिर कोशिश करें।',
+        },
     },
     swap: {
         backToHub: 'Swap पर लौटें',

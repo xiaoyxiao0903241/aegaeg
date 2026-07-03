@@ -58,6 +58,12 @@ const app = defineMessages({
         reconnectHint: 'La billetera está desconectada. Vuelve a conectarla antes de realizar operaciones on-chain.',
         signInRequired: 'Iniciar sesión con firma',
         accountBanned: 'Tu cuenta ha sido suspendida. Contacta con soporte.',
+        transactionErrors: {
+            gasLimitTooLow: 'El límite de gas es demasiado bajo. Mantén suficiente BNB en tu billetera para las comisiones de red e inténtalo de nuevo.',
+            gasEstimateFailed: 'No se pudo estimar el gas de esta transacción. Comprueba la red e inténtalo de nuevo.',
+            insufficientFunds: 'BNB insuficiente para pagar las comisiones de gas de la red.',
+            transactionFailed: 'La transacción falló. Inténtalo de nuevo más tarde.',
+        },
     },
     swap: {
         backToHub: 'Volver al Swap',

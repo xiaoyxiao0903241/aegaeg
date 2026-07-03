@@ -58,6 +58,12 @@ const app = defineMessages({
         reconnectHint: 'Wallet disconnected. Reconnect before performing on-chain actions.',
         signInRequired: 'Sign in',
         accountBanned: 'Your account has been suspended. Please contact support.',
+        transactionErrors: {
+            gasLimitTooLow: 'Gas limit is too low. Keep enough BNB in your wallet for network fees and try again.',
+            gasEstimateFailed: 'Could not estimate gas for this transaction. Check your network and try again.',
+            insufficientFunds: 'Insufficient BNB to pay network gas fees.',
+            transactionFailed: 'Transaction failed. Please try again.',
+        },
     },
     swap: {
         title: 'Swap',
