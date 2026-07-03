@@ -167,8 +167,9 @@ export function WalletDetailsModal({
 
   async function handleCopy() {
     if (!walletAddress) return
-    const ok = await copyTextToClipboard(walletAddress)
-    if (!ok) {
+    const result = await copyTextToClipboard(walletAddress)
+    if (result === 'skipped') return
+    if (result === 'failed') {
       toast.error(t.wallet.copyFailed)
       return
     }

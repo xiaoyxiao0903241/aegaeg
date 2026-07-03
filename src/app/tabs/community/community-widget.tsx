@@ -55,16 +55,16 @@ function CommunityConnectedWidget({
   const copyReferralLink = useCallback(async () => {
     if (!account) return
     const url = `${getRuntimeOrigin()}${window.location.pathname}${buildReferralSharePath(account.address)}`
-    const ok = await copyTextToClipboard(url)
-    if (ok) toast.success(t.wallet.copied)
-    else toast.error(t.wallet.copyFailed)
+    const result = await copyTextToClipboard(url)
+    if (result === 'copied') toast.success(t.wallet.copied)
+    else if (result === 'failed') toast.error(t.wallet.copyFailed)
   }, [account, t.wallet.copied, t.wallet.copyFailed])
 
   const copyReferrerAddress = useCallback(async () => {
     if (!referral.referrer) return
-    const ok = await copyTextToClipboard(referral.referrer)
-    if (ok) toast.success(t.wallet.copied)
-    else toast.error(t.wallet.copyFailed)
+    const result = await copyTextToClipboard(referral.referrer)
+    if (result === 'copied') toast.success(t.wallet.copied)
+    else if (result === 'failed') toast.error(t.wallet.copyFailed)
   }, [referral.referrer, t.wallet.copied, t.wallet.copyFailed])
 
   useEffect(() => {

@@ -1,4 +1,18 @@
 const HUAWEI_VIVO_UA = /huawei|vivo/i
+const COPY_COOLDOWN_MS = 5000
+
+export type CopyToClipboardResult = 'copied' | 'skipped' | 'failed'
+
+let lastSuccessfulCopy: { text: string; at: number } | null = null
+
+function isWithinCopyCooldown(text: string): boolean {
+  if (!lastSuccessfulCopy || lastSuccessfulCopy.text !== text) return false
+  return Date.now() - lastSuccessfulCopy.at < COPY_COOLDOWN_MS
+}
+
+function markCopySuccess(text: string): void {
+  lastSuccessfulCopy = { text, at: Date.now() }
+}
 
 type LegacyTextInput = HTMLInputElement & {
   createTextRange?: () => {
@@ -90,8 +104,12 @@ export async function fallbackCopyText(text: string): Promise<boolean> {
 }
 
 /** Clipboard API first, then legacy fallbacks — call from a user gesture (click). */
-export async function copyTextToClipboard(text: string): Promise<boolean> {
-  if (!text) return false
-  if (await copyViaClipboardApi(text)) return true
-  return fallbackCopyText(text)
+export async function copyTextToClipboard(text: string): Promise<CopyToClipboardResult> {
+  if (!text) return 'failed'
+  if (isWithinCopyCooldown(text)) return 'skipped'
+  const ok =
+    (await copyViaClipboardApi(text)) || (await fallbackCopyText(text))
+  if (!ok) return 'failed'
+  markCopySuccess(text)
+  return 'copied'
 }
