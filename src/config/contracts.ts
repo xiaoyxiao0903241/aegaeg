@@ -20,7 +20,6 @@ export interface BscContracts {
   rewardClaimer: Address
   /** CommunityFund proxy — development fund claim */
   communityFundVault: Address
-  defaultReferrer: Address
   /** Usd1Swap proxy — USDT → USD1 flash swap */
   usd1Swap: Address
 }
@@ -35,7 +34,6 @@ export const DEFAULT_BSC_CONTRACTS = {
   pancakeV3Quoter: '0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997',
   usdtUsd1Pool: '0x9c4ee895e4f6ce07ada631c508d1306db7502cce',
   multicall3: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  defaultReferrer: '0x74A4127e0aaC45C8C23935707fE37889821029c3',
   referral: '0xFe7803230D11BC6FB248f1629a3353E409a2DB29',
   preSale: '0xcb8EBEbd2B4A03AB16A28021AD9Ed50B125bE618',
   rewardClaimer: '0xC6B3D73bA06594dc78be538F65307c6eb348E13E',
@@ -65,10 +63,6 @@ export const BSC_CONTRACTS = {
     DEFAULT_BSC_CONTRACTS.usdtUsd1Pool,
   ),
   multicall3: readEnvAddress('VITE_BSC_MULTICALL3', DEFAULT_BSC_CONTRACTS.multicall3),
-  defaultReferrer: readEnvAddress(
-    'VITE_BSC_DEFAULT_REFERRER',
-    DEFAULT_BSC_CONTRACTS.defaultReferrer,
-  ),
   referral: readEnvAddress('VITE_BSC_REFERRAL', DEFAULT_BSC_CONTRACTS.referral),
   preSale: readEnvAddress('VITE_BSC_PRESALE', DEFAULT_BSC_CONTRACTS.preSale),
   rewardClaimer: readEnvAddress(
