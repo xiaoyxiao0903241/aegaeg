@@ -27,7 +27,7 @@ import { QuickLinks } from '~/app/components/quick-links'
 import { buildCommunityQuickLinkItems } from '~/config/community-links'
 import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/lib/copy-to-clipboard'
-import { resolveReferralBindError } from '~/lib/web3/resolve-contract-error-message'
+import { resolveReferralBindError, resolveWalletTransactionError } from '~/lib/web3/resolve-contract-error-message'
 
 export function CommunityWidget({
   onSelectTab,
@@ -69,9 +69,11 @@ function CommunityConnectedWidget({
 
   useEffect(() => {
     if (!referral.error) return
-    const message = resolveReferralBindError(referral.error, t.community.bindErrors)
+    const message =
+      resolveWalletTransactionError(referral.error, t.wallet.transactionErrors) ??
+      resolveReferralBindError(referral.error, t.community.bindErrors)
     if (message) toast.error(message)
-  }, [referral.error, t.community.bindErrors])
+  }, [referral.error, t.community.bindErrors, t.wallet.transactionErrors])
 
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>

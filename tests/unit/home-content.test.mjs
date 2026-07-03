@@ -1,22 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { createServer } from 'vite'
+import { loadModule } from './load-module.mjs'
 
 const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr']
 
 async function loadHomeMessages() {
-  const server = await createServer({
-    appType: 'custom',
-    logLevel: 'error',
-    optimizeDeps: { noDiscovery: true },
-    server: { hmr: false, middlewareMode: true },
-  })
-
-  try {
-    return await server.ssrLoadModule('/src/i18n/messages/home/index.ts')
-  } finally {
-    await server.close()
-  }
+  return loadModule('/src/i18n/messages/home/index.ts')
 }
 
 function sectionCounts(home) {
