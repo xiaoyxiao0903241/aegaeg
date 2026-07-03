@@ -10,7 +10,7 @@ import {
   PRESALE_ERRORS,
   REFERRAL_ERRORS,
   REWARD_CLAIMER_ERRORS,
-} from '../../web3/abis'
+} from '~/web3/abis'
 
 export interface DecodedContractRevert {
   errorName: string

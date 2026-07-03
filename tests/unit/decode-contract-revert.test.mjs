@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { encodeErrorResult, parseAbi } from 'viem'
+import { loadModule } from './load-module.mjs'
 
 test('decodeContractRevert decodes PreSaleUserNotBound by selector', async () => {
-  const { decodeContractRevert } = await import('../../src/lib/web3/decode-contract-revert.ts')
+  const { decodeContractRevert } = await loadModule('/src/lib/web3/decode-contract-revert.ts')
   const abi = parseAbi(['error PreSaleUserNotBound()'])
   const data = encodeErrorResult({ abi, errorName: 'PreSaleUserNotBound', args: [] })
 
@@ -12,9 +13,9 @@ test('decodeContractRevert decodes PreSaleUserNotBound by selector', async () =>
 })
 
 test('normalizeContractRevertError surfaces error name for UI parsers', async () => {
-  const { normalizeContractRevertError } = await import('../../src/lib/web3/decode-contract-revert.ts')
-  const { resolveGenesisPurchaseError } = await import(
-    '../../src/lib/web3/resolve-contract-error-message.ts'
+  const { normalizeContractRevertError } = await loadModule('/src/lib/web3/decode-contract-revert.ts')
+  const { resolveGenesisPurchaseError } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
   )
   const abi = parseAbi(['error PreSaleUserNotBound()'])
   const data = encodeErrorResult({ abi, errorName: 'PreSaleUserNotBound', args: [] })

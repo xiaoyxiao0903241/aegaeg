@@ -1,3 +1,4 @@
+import { interceptApiError } from '~/lib/api/account-banned'
 import {
   ApiError,
   buildApiClientUrl,
@@ -82,5 +83,10 @@ export async function apiRequest<T>(
     })
   }
 
-  return parseApiResponse(payload)
+  try {
+    return parseApiResponse(payload)
+  } catch (error) {
+    interceptApiError(error)
+    throw error
+  }
 }

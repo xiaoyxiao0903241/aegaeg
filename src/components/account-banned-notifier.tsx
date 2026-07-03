@@ -6,7 +6,7 @@ import {
 } from '~/lib/api/account-banned'
 import { useI18n } from '~/i18n/use-i18n'
 
-/** Shows a single deduped toast when any API or login flow reports account banned (403). */
+/** Shows a single deduped toast when apiRequest intercepts a banned-account 403. */
 export function AccountBannedNotifier() {
   const { messages: t } = useI18n()
 
