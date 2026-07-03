@@ -2,6 +2,9 @@ import { resolveAuthStatus } from '~/lib/api/auth/resolve-auth-status'
 import type { StoredLoginSignature } from '~/lib/api/auth/login-signature-cache'
 import type { StoredAuthSession } from '~/lib/api/auth/session'
 
+/** Matches SIWE default TTL when JWT omits `exp`. */
+export const FALLBACK_SESSION_TTL_MS = 60 * 60 * 1000
+
 /**
  * The authentication state is fully derived from two facts: the connected
  * wallet address and the `address → jwt` cache. There is no independent
@@ -57,6 +60,26 @@ export type AuthAction =
   | { type: 'login' }
   | { type: 'renewAt'; at: number }
 
+export function resolveSessionRenewAtMs(
+  session: StoredAuthSession,
+  renewThresholdMs: number,
+): number {
+  const expiresAt =
+    typeof session.expiresAt === 'number'
+      ? session.expiresAt
+      : session.savedAt + FALLBACK_SESSION_TTL_MS
+  return expiresAt - renewThresholdMs
+}
+
+/** Transient failures may retry; user rejection / ban / bad signature may not. */
+export function isPermanentLoginErrorMessage(loginError: string | null): boolean {
+  if (!loginError) return false
+  if (loginError === 'ACCOUNT_BANNED') return true
+  if (/rejected|denied|cancel/i.test(loginError)) return true
+  if (/nonce|signature|expired|invalid/i.test(loginError)) return true
+  return false
+}
+
 /**
  * Given the derived state plus the runtime guards, decide the single side
  * effect the provider should perform. Auto-login fires once per attempt key:
@@ -82,13 +105,14 @@ export function deriveAuthAction({
   if (state.kind === 'disconnected') return { type: 'idle' }
 
   if (state.kind === 'needsLogin') {
-    if (isLoggingIn || loginError || lastAttemptKey === attemptKey) {
+    if (isLoggingIn || lastAttemptKey === attemptKey) {
+      return { type: 'idle' }
+    }
+    if (isPermanentLoginErrorMessage(loginError)) {
       return { type: 'idle' }
     }
     return { type: 'login' }
   }
 
-  const expiresAt = state.session.expiresAt
-  if (typeof expiresAt !== 'number') return { type: 'idle' }
-  return { type: 'renewAt', at: expiresAt - renewThresholdMs }
+  return { type: 'renewAt', at: resolveSessionRenewAtMs(state.session, renewThresholdMs) }
 }

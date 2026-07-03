@@ -39,6 +39,31 @@ test('apiRequest attaches bearer token and parses envelope', async () => {
   }
 })
 
+test('apiRequest surfaces 403 banned as ApiError', async () => {
+  const { apiRequest, ApiError } = await loadModule('/src/lib/api/request.ts')
+
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async () =>
+    Response.json({
+      code: 403,
+      error: 'FORBIDDEN',
+      message: '账号被封',
+    })
+
+  try {
+    await assert.rejects(
+      () => apiRequest('/performance', { method: 'POST', token: 'jwt', body: {} }),
+      (error) => {
+        assert.ok(error instanceof ApiError)
+        assert.equal(error.code, 403)
+        return true
+      },
+    )
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
 test('apiRequest throws ApiError for business failures', async () => {
   const { apiRequest, ApiError } = await loadModule('/src/lib/api/request.ts')
 

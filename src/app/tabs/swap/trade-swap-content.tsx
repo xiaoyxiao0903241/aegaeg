@@ -11,17 +11,22 @@ import { FaqList } from '~/components/faq-list'
 import { TokenAboutCarousel } from '~/app/components/swap-token-about-carousel'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
+import { useTradeSwapWidgetContext } from '~/app/tabs/swap/trade-swap-widget-context'
 import { dappDetailSectionGapClass, dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
 
 export function TradeSwapContent() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swapDirection = useSwapDirectionStore((state) => state.direction)
-  const { rateLabel: poolRateLabel, isLoading: poolRateLoading } = usePairSpotRate(
-    true,
-    swapDirection,
-  )
+  const trade = useTradeSwapWidgetContext()
+  const poolRateLabel =
+    swapDirection === 'reverse'
+      ? trade.exchangePriceLabel
+      : trade.exchangePriceLabelInverted
+  const poolRateLoading =
+    swapDirection === 'reverse'
+      ? trade.isExchangePriceQuoting
+      : trade.isExchangePriceInvertedQuoting
   const [faqToken, setFaqToken] = useState<SwapTokenKey>('usd1')
   const faqItems = t.swap.faq.tabs[faqToken].items
 

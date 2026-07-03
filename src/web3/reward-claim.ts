@@ -6,10 +6,10 @@ import {
   requestTeamRewardSignature,
 } from '~/lib/api/endpoints'
 import { normalizeTeamRewardClaimPayload } from '~/lib/api/normalize-claim-payload'
-import { REWARD_CLAIMER_METHODS } from '~/web3/abis'
+import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/web3/abis'
 import { parseWriteAbi, writeContractViaWallet, type ConfirmedWalletWrite } from '~/web3/wallet-contract-write'
 
-const rewardClaimWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward)
+const rewardClaimWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
 
 export interface TeamRewardClaimPayload {
   signature: string

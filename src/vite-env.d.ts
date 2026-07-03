@@ -19,7 +19,6 @@ interface ImportMetaEnv {
   readonly VITE_BSC_PANCAKE_V3_QUOTER?: string
   readonly VITE_BSC_USDT_USD1_POOL?: string
   readonly VITE_BSC_MULTICALL3?: string
-  readonly VITE_BSC_DEFAULT_REFERRER?: string
   readonly VITE_BSC_REFERRAL?: string
   readonly VITE_BSC_PRESALE?: string
   readonly VITE_BSC_REWARD_CLAIMER?: string

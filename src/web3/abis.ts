@@ -82,4 +82,47 @@ export const REWARD_CLAIMER_METHODS = {
   rewardSigner: 'function rewardSigner() view returns (address)',
 } as const
 
+/** OpenZeppelin ERC20 custom errors — selectors verified in resolve-contract-error-message. */
+export const ERC20_ERRORS = [
+  'error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)',
+  'error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed)',
+] as const
+
+/** AegisPreSale custom errors — see docs/contract.md §3. */
+export const PRESALE_ERRORS = [
+  'error PreSalePaused()',
+  'error PreSaleUserNotBound()',
+  'error PreSaleInvalidAmount()',
+  'error PreSalePhaseIndexOutOfBounds(uint256 phaseIndex, uint256 phaseCount)',
+  'error PreSalePhaseNotActive(uint256 phaseIndex)',
+  'error PreSaleBelowMin(uint256 phaseIndex)',
+  'error PreSalePhaseSoldOut(uint256 phaseIndex)',
+  'error PreSaleZeroAddress()',
+  'error PreSaleInvalidDiscount(uint256 discount)',
+  'error PreSaleInvalidAirdropValueRatio(uint256 ratio)',
+  'error PreSaleInvalidAgxPrice(uint256 price)',
+  'error PreSaleUserPurchaseLimitExceeded(uint256 phaseIndex, uint256 limit, uint256 currentAmount, uint256 attemptedAmount)',
+] as const
+
+/** AegisReferral custom errors — see docs/contract.md §2.4. */
+export const REFERRAL_ERRORS = [
+  'error Referral__RootZero()',
+  'error Referral__UserZero()',
+  'error Referral__ParentZero()',
+  'error Referral__SelfReferral()',
+  'error Referral__AlreadyBound(address user)',
+  'error Referral__ParentNotBound(address parent)',
+  'error Referral__MigratedAccount(address account)',
+  'error Referral__NotMigrationManager(address caller)',
+] as const
+
+/** AegisPresaleRewardClaimer custom errors — see docs/contract.md §4.4. */
+export const REWARD_CLAIMER_ERRORS = [
+  'error ErrorZeroAddress()',
+  'error ErrorZeroAmount()',
+  'error ErrorInvalidSigner()',
+  'error ErrorAlreadyUsed()',
+  'error ErrorSignatureExpired()',
+] as const
+
 export const MAX_UINT256 = 2n ** 256n - 1n

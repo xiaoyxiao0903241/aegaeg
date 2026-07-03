@@ -100,29 +100,33 @@ export function CommunityContent() {
 
   const useStatPlaceholders = authPending || overviewLoading || isRankLoading
 
-  const directCount = formatCount(overview?.direct_referral_count ?? 0)
-  const directVolume = formatUsd(overview?.direct_presale_volume ?? 0)
+  const directCount = overviewLoading ? STAT_PLACEHOLDER : formatCount(overview?.direct_referral_count ?? 0)
+  const directVolume = overviewLoading
+    ? STAT_PLACEHOLDER
+    : formatUsd(overview?.direct_presale_volume ?? 0)
 
-  const teamCount = formatCount(overview?.descendant_count ?? 0)
-  const teamVolume = formatUsd(overview?.sales_team_market ?? 0)
+  const teamCount = overviewLoading ? STAT_PLACEHOLDER : formatCount(overview?.descendant_count ?? 0)
+  const teamVolume = overviewLoading
+    ? STAT_PLACEHOLDER
+    : formatUsd(overview?.sales_team_market ?? 0)
 
   const genesisRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0
       ? formatPresaleRank(displayRank)
-      : '-'
+      : STAT_PLACEHOLDER
   const genesisRewardRateLabel = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0
       ? `${t.tables.rewardRate} ${getTeamBonusRateLabel(displayRank)}`
-      : `${t.tables.rewardRate} -`
+      : `${t.tables.rewardRate} ${STAT_PLACEHOLDER}`
   const postLaunchRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0
       ? commitmentFloorRank > 0
         ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
         : getPostLaunchRankLabel(displayRank)
-      : '-'
+      : STAT_PLACEHOLDER
   const postLaunchVolume = t.community.totalTeamVolume.replace(
     '{amount}',
     formatUsd(commitmentFloorTeamUsd),

@@ -57,6 +57,13 @@ const app = defineMessages({
         reconnectWallet: '重新連接錢包',
         reconnectHint: '錢包已斷開，請重新連接後再進行鏈上操作。',
         signInRequired: '簽名登入',
+        accountBanned: '帳號已被封禁，請聯絡客服。',
+        transactionErrors: {
+            gasLimitTooLow: '交易 Gas 過低，請確保錢包有足夠 BNB 支付網路費用後重試。',
+            gasEstimateFailed: '無法估算交易 Gas，請檢查網路連線或稍後重試。',
+            insufficientFunds: 'BNB 餘額不足，無法支付網路 Gas 費用。',
+            transactionFailed: '交易失敗，請稍後重試。',
+        },
     },
     swap: {
         backToHub: '返回兌換',

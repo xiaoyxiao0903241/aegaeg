@@ -17,7 +17,7 @@ import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-foo
 import { SeasonSelector } from '~/app/components/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { SeasonOptionSkeleton } from '~/app/components/dapp-skeleton'
-import { resolveContractErrorMessage, resolveGenesisPurchaseError } from '~/lib/web3/resolve-contract-error-message'
+import { resolveContractErrorMessage, resolveGenesisPurchaseError, resolveWalletTransactionError } from '~/lib/web3/resolve-contract-error-message'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
 export function GenesisPurchaseForm() {
@@ -78,7 +78,9 @@ export function GenesisPurchaseForm() {
     }
 
     if (result.error) {
-      const message = resolveGenesisPurchaseError(result.error, {
+      const message =
+        resolveWalletTransactionError(result.error, t.wallet.transactionErrors) ??
+        resolveGenesisPurchaseError(result.error, {
         insufficientAllowance: t.genesis.insufficientAllowance,
         insufficientUsd1: t.genesis.insufficientUsd1,
         purchaseUnavailable: t.genesis.purchaseUnavailable,
@@ -103,6 +105,7 @@ export function GenesisPurchaseForm() {
     t.genesis.joinSuccess,
     t.genesis.purchaseUnavailable,
     t.genesis.walletNotConnected,
+    t.wallet.transactionErrors,
   ])
 
   useEffect(() => {

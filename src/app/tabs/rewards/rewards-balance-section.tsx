@@ -15,7 +15,7 @@ import { RewardBalanceCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { useCommunityFundClaim } from '~/hooks/use-community-fund-claim'
 import { toast } from 'sonner'
-import { resolveTeamClaimError } from '~/lib/web3/resolve-contract-error-message'
+import { resolveTeamClaimError, resolveWalletTransactionError } from '~/lib/web3/resolve-contract-error-message'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { RewardBalanceCard } from '~/app/components/dapp-card'
 import { dappReferralAmountClass } from '~/app/dapp-type-scale'
@@ -35,15 +35,19 @@ export function RewardsBalanceSection() {
 
   useEffect(() => {
     if (!teamClaim.error) return
-    const message = resolveTeamClaimError(teamClaim.error, t.rewards.claimErrors)
+    const message =
+      resolveWalletTransactionError(teamClaim.error, t.wallet.transactionErrors) ??
+      resolveTeamClaimError(teamClaim.error, t.rewards.claimErrors)
     if (message) toast.error(message)
-  }, [teamClaim.error, t.rewards.claimErrors])
+  }, [teamClaim.error, t.rewards.claimErrors, t.wallet.transactionErrors])
 
   useEffect(() => {
     if (!communityFundClaim.error) return
-    const message = resolveTeamClaimError(communityFundClaim.error, t.rewards.claimErrors)
+    const message =
+      resolveWalletTransactionError(communityFundClaim.error, t.wallet.transactionErrors) ??
+      resolveTeamClaimError(communityFundClaim.error, t.rewards.claimErrors)
     if (message) toast.error(message)
-  }, [communityFundClaim.error, t.rewards.claimErrors])
+  }, [communityFundClaim.error, t.rewards.claimErrors, t.wallet.transactionErrors])
 
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')

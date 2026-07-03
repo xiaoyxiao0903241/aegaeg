@@ -4,6 +4,7 @@ import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-foo
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { toast } from 'sonner'
+import { ACCOUNT_BANNED_SENTINEL, resolveAuthLoginErrorMessage } from '~/lib/api/account-banned'
 import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { RewardsBalanceSection } from '~/app/tabs/rewards/rewards-balance-section'
@@ -15,10 +16,12 @@ export function RewardsWidget() {
   const { loginError } = useShareholderRankLabels(t)
 
   useEffect(() => {
-    if (!sessionReady || !loginError) return
-    const message = toWalletUserFacingMessage(loginError)
+    if (!sessionReady || !loginError || loginError === ACCOUNT_BANNED_SENTINEL) return
+    const message =
+      resolveAuthLoginErrorMessage(loginError, t.wallet.accountBanned) ??
+      toWalletUserFacingMessage(loginError)
     if (message) toast.error(message)
-  }, [sessionReady, loginError])
+  }, [sessionReady, loginError, t.wallet.accountBanned])
 
   return (
     <DappWidgetFrame subtitle={t.rewards.intro} title={t.rewards.title}>

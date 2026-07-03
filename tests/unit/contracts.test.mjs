@@ -46,8 +46,4 @@ test('BSC contract addresses match deployment snapshot', async () => {
     BSC_CONTRACTS.usd1Swap.toLowerCase(),
     '0xae1155cf325277acce615cc310dd52da8e46c6e3',
   )
-  assert.equal(
-    BSC_CONTRACTS.defaultReferrer.toLowerCase(),
-    '0x74a4127e0aac45c8c23935707fe37889821029c3',
-  )
 })

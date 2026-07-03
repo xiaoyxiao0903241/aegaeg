@@ -1,12 +1,12 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/config/contracts'
-import { ERC20_METHODS, MAX_UINT256, PRESALE_METHODS } from '~/web3/abis'
+import { ERC20_METHODS, MAX_UINT256, PRESALE_METHODS, ERC20_ERRORS, PRESALE_ERRORS } from '~/web3/abis'
 import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/swap-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
 
-const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve)
-const presaleWriteAbi = parseWriteAbi(PRESALE_METHODS.purchase)
+const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
+const presaleWriteAbi = parseWriteAbi(PRESALE_METHODS.purchase, PRESALE_ERRORS)
 
 export async function approveUsd1ForPresaleIfNeeded({
   wallet,

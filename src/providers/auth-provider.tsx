@@ -10,10 +10,12 @@ import {
 import { useActiveAccount } from 'thirdweb/react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { ApiError } from '~/lib/api/client'
+import { ACCOUNT_BANNED_SENTINEL, isAccountBannedError } from '~/lib/api/account-banned'
 import {
   buildLoginAttemptKey,
   deriveAuthAction,
   deriveAuthState,
+  isPermanentLoginErrorMessage,
 } from '~/lib/api/auth/auth-machine'
 import {
   isUnauthorizedError,
@@ -95,9 +97,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signatureStorage,
       })
     } catch (error) {
-      const message =
-        error instanceof ApiError || error instanceof Error ? error.message : 'Login failed'
-      setLoginError(message)
+      if (isAccountBannedError(error)) {
+        useAuthStore.getState().setLoginError(ACCOUNT_BANNED_SENTINEL)
+      } else if (error instanceof ApiError || error instanceof Error) {
+        const message = error.message
+        if (isPermanentLoginErrorMessage(message)) {
+          useAuthStore.getState().setLoginError(message)
+        } else {
+          useAuthStore.getState().setLoginError(null)
+        }
+      } else {
+        useAuthStore.getState().setLoginError(null)
+      }
       throw error
     } finally {
       loginInProgressRef.current = false
@@ -127,7 +138,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (action.type === 'login') {
       lastAttemptRef.current = attemptKey
-      void runLogin().catch(() => undefined)
+      void runLogin().catch(() => {
+        const loginError = useAuthStore.getState().loginError
+        if (!isPermanentLoginErrorMessage(loginError)) {
+          lastAttemptRef.current = null
+        }
+      })
       return
     }
 

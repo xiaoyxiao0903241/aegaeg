@@ -26,6 +26,7 @@ describe('waitForWalletTransactionConfirmation', () => {
         }),
       (error) => {
         assert.ok(error instanceof WalletTransactionWaitError)
+        assert.equal(error.outcome, 'failed')
         assert.match(error.message, /not broadcast/i)
         return true
       },
@@ -58,6 +59,7 @@ describe('waitForWalletTransactionConfirmation', () => {
         }),
       (error) => {
         assert.ok(error instanceof WalletTransactionWaitError)
+        assert.equal(error.outcome, 'unknown')
         assert.match(error.message, /pending without confirmation/i)
         return true
       },

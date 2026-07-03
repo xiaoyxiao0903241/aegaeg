@@ -26,7 +26,7 @@ import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/web3/flash-
 const FLASH_SWAP_SLIPPAGE_BPS = 50
 
 /** One-way USDT → USD1 via AegisUsd1Swap; no slippage UI (fixed small tolerance). */
-export function useFlashSwapWidget(authenticated: boolean) {
+export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const afterSwap = useDappActions((state) => state.afterSwap)
@@ -50,14 +50,14 @@ export function useFlashSwapWidget(authenticated: boolean) {
   const balancesQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapBalances(address ?? ''),
     queryFn: () => readFlashSwapBalances(address!, readClient),
-    enabled: walletReady,
+    enabled: quotesEnabled && walletReady,
     staleTime: QUERY_STALE_TIME.balances,
   })
 
   const spotQuoteQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapQuote(spotQuoteAmount.toString()),
     queryFn: () => readFlashSwapQuote(spotQuoteAmount, readClient),
-    enabled: true,
+    enabled: quotesEnabled,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
@@ -65,16 +65,16 @@ export function useFlashSwapWidget(authenticated: boolean) {
   const amountQuoteQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapQuote(amountIn.toString()),
     queryFn: () => readFlashSwapQuote(amountIn, readClient),
-    enabled: authenticated && amountIn > 0n,
+    enabled: quotesEnabled && authenticated && amountIn > 0n,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, true)
+  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
   useVisibleQueryInterval(
     amountQuoteQuery,
     SWAP_CONFIG.quoteRefreshIntervalMs,
-    authenticated && amountIn > 0n,
+    quotesEnabled && authenticated && amountIn > 0n,
   )
 
   const sellBalance = balancesQuery.data?.usdt ?? 0n

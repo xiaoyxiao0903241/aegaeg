@@ -5,6 +5,7 @@ import {
   buildLoginMessage,
   generateLoginNonce,
   resolveLoginMessageFormat,
+  type LoginMessageFormat,
 } from '~/lib/api/auth/build-login-message'
 import {
   createLocalLoginSignatureStorage,
@@ -20,6 +21,7 @@ import {
   type AuthSessionStorage,
   type StoredAuthSession,
 } from '~/lib/api/auth/session'
+import { isUserRejectedWalletError } from '~/lib/web3/resolve-contract-error-message'
 
 export interface WalletLoginParams {
   account: Account
@@ -34,6 +36,11 @@ export interface WalletLoginResult {
   token: string
   message: string
   signature: string
+}
+
+/** SIWE first; fall back to plain text for wallets that reject EIP-4361 payloads. */
+export function resolveLoginMessageFormats(): LoginMessageFormat[] {
+  return resolveLoginMessageFormat() === 'simple' ? ['simple'] : ['siwe', 'simple']
 }
 
 /**
@@ -77,6 +84,82 @@ async function exchangeLoginSignature({
   return token
 }
 
+async function signAndExchangeLogin({
+  account,
+  chainId,
+  domain,
+  signMessage,
+  storage,
+  signatureStorage,
+}: {
+  account: Account
+  chainId: number
+  domain?: string
+  signMessage: (message: string) => Promise<string>
+  storage: AuthSessionStorage
+  signatureStorage: LoginSignatureStorage
+}): Promise<WalletLoginResult> {
+  const formats = resolveLoginMessageFormats()
+  let lastError: unknown = null
+
+  for (let index = 0; index < formats.length; index += 1) {
+    const format = formats[index]!
+    const isLastFormat = index === formats.length - 1
+    const message = buildLoginMessage(
+      {
+        address: account.address,
+        chainId,
+        domain,
+        nonce: generateLoginNonce(),
+      },
+      format,
+    )
+
+    let signature: string
+    try {
+      signature = await signMessage(message)
+    } catch (error) {
+      if (isUserRejectedWalletError(error)) {
+        throw error
+      }
+      lastError = error
+      if (isLastFormat) {
+        throw error
+      }
+      continue
+    }
+
+    try {
+      const token = await exchangeLoginSignature({
+        address: account.address,
+        message,
+        signature,
+        storage,
+      })
+
+      const cachedAttempt: StoredLoginSignature = {
+        address: account.address,
+        message,
+        signature,
+        savedAt: Date.now(),
+      }
+      signatureStorage.write(cachedAttempt)
+
+      return { token, message, signature }
+    } catch (error) {
+      if (!isLoginSignatureRejected(error)) {
+        throw error
+      }
+      lastError = error
+      if (isLastFormat) {
+        throw error
+      }
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error('Login failed')
+}
+
 export async function loginWithWallet({
   account,
   chainId,
@@ -109,33 +192,14 @@ export async function loginWithWallet({
     }
   }
 
-  const message = buildLoginMessage(
-    {
-      address: account.address,
-      chainId,
-      domain,
-      nonce: generateLoginNonce(),
-    },
-    resolveLoginMessageFormat(),
-  )
-
-  const signature = await signMessage(message)
-  const cachedAttempt: StoredLoginSignature = {
-    address: account.address,
-    message,
-    signature,
-    savedAt: Date.now(),
-  }
-  signatureStorage.write(cachedAttempt)
-
-  const token = await exchangeLoginSignature({
-    address: account.address,
-    message,
-    signature,
+  return signAndExchangeLogin({
+    account,
+    chainId,
+    domain,
+    signMessage,
     storage,
+    signatureStorage,
   })
-
-  return { token, message, signature }
 }
 
 export function readWalletSession(

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { REFERRAL_CONFIG, parseReferrerFromSearch } from '~/config/referral'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { parseReferrerFromSearch } from '~/config/referral'
 import { formatCount, formatShortAddress } from '~/lib/api/format-display'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
@@ -11,9 +11,11 @@ import {
   readReferrer,
 } from '~/web3/referral-read'
 import { bindReferrer } from '~/web3/referral-write'
-import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR, REFERRAL_BIND_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { useDappActions } from '~/stores/dapp-actions'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
+
+const BIND_COOLDOWN_MS = 5_000
 
 export function useReferral(sessionReady: boolean) {
   const account = useActiveAccount()
@@ -32,15 +34,38 @@ export function useReferral(sessionReady: boolean) {
   }, [])
   const [referrerInput, setReferrerInput] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isBindCooldown, setIsBindCooldown] = useState(false)
+  const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   // Store the raw error so resolveReferralBindError can read the revert selector.
   const [error, setError] = useState<unknown>(null)
 
   const address = account?.address
   const walletReady = Boolean(address)
 
+  const startBindCooldown = useCallback(() => {
+    setIsBindCooldown(true)
+    if (bindCooldownTimerRef.current) clearTimeout(bindCooldownTimerRef.current)
+    bindCooldownTimerRef.current = setTimeout(() => {
+      setIsBindCooldown(false)
+      setError(null)
+      bindCooldownTimerRef.current = null
+    }, BIND_COOLDOWN_MS)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (bindCooldownTimerRef.current) clearTimeout(bindCooldownTimerRef.current)
+    }
+  }, [])
+
   useEffect(() => {
     setReferrerInput(pendingReferrer ?? '')
     setError(null)
+    setIsBindCooldown(false)
+    if (bindCooldownTimerRef.current) {
+      clearTimeout(bindCooldownTimerRef.current)
+      bindCooldownTimerRef.current = null
+    }
   }, [address, pendingReferrer])
 
   const referralQuery = useQuery({
@@ -69,14 +94,18 @@ export function useReferral(sessionReady: boolean) {
   }, [isBound, referrer])
 
   const bind = useCallback(async () => {
+    if (isBindCooldown || isSubmitting) return false
+
+    startBindCooldown()
+
     if (!account || !wallet) {
       setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
       return false
     }
 
-    const target = (referrerInput.trim() || pendingReferrer) as `0x${string}`
-    if (!/^0x[a-fA-F0-9]{40}$/.test(target)) {
-      setError('Invalid referrer address')
+    const target = (referrerInput.trim() || pendingReferrer) as `0x${string}` | null
+    if (!target || !/^0x[a-fA-F0-9]{40}$/.test(target)) {
+      setError(REFERRAL_BIND_ERROR.INVALID_PARENT)
       return false
     }
 
@@ -84,6 +113,12 @@ export function useReferral(sessionReady: boolean) {
     setError(null)
 
     try {
+      const parentBound = await readIsBindReferral(target, readClient)
+      if (!parentBound) {
+        setError(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND)
+        return false
+      }
+
       await bindReferrer({ wallet, referrer: target })
       afterReferralBind()
       return true
@@ -93,7 +128,17 @@ export function useReferral(sessionReady: boolean) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterReferralBind, pendingReferrer, referrerInput, wallet])
+  }, [
+    account,
+    afterReferralBind,
+    isBindCooldown,
+    isSubmitting,
+    pendingReferrer,
+    readClient,
+    referrerInput,
+    startBindCooldown,
+    wallet,
+  ])
 
   const refresh = useCallback(async () => {
     await referralQuery.refetch()
@@ -108,8 +153,15 @@ export function useReferral(sessionReady: boolean) {
     setReferrerInput,
     isLoading: referralQuery.isLoading,
     isSubmitting,
+    isBindCooldown,
     walletReady,
-    canBind: sessionReady && walletReady && !isBound && !isSubmitting,
+    canBind:
+      sessionReady &&
+      walletReady &&
+      !isBound &&
+      !isSubmitting &&
+      !isBindCooldown &&
+      Boolean(referrerInput.trim() || pendingReferrer),
     error:
       error ??
       (referralQuery.error instanceof Error

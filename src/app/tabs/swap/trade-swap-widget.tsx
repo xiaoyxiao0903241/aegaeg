@@ -15,10 +15,10 @@ import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { SwapAmountBox } from '~/app/components/swap-amount-box'
 import { SwapSlippageModal } from '~/app/components/swap-slippage-modal'
 import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/components/dapp-skeleton'
-import { useSwapWidget } from '~/hooks/use-swap-widget'
+import { useTradeSwapWidgetContext } from '~/app/tabs/swap/trade-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
+import { resolveGenesisPurchaseError, resolveWalletTransactionError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
 import { openPancakeSwapDeepLink } from '~/config/pancake-swap-links'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/app/tabs/swap/swap-widget-header'
 
@@ -29,7 +29,7 @@ export function TradeSwapWidget({
 }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const swap = useSwapWidget(sessionReady)
+  const swap = useTradeSwapWidgetContext()
   const genesis = useGenesisWidgetContext()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
@@ -94,12 +94,14 @@ export function TradeSwapWidget({
   useEffect(() => {
     if (!swap.error) return
     const message =
+      resolveWalletTransactionError(swap.error, t.wallet.transactionErrors) ??
       resolveGenesisPurchaseError(swap.error, {
         insufficientAllowance: t.genesis.insufficientAllowance,
         insufficientUsd1: t.genesis.insufficientUsd1,
         purchaseUnavailable: t.genesis.purchaseUnavailable,
         walletNotConnected: t.genesis.walletNotConnected,
-      }) ?? toWalletUserFacingMessage(swap.error)
+      }) ??
+      toWalletUserFacingMessage(swap.error, t.wallet.transactionErrors.transactionFailed)
     if (message) toast.error(message)
   }, [
     swap.error,
@@ -107,6 +109,7 @@ export function TradeSwapWidget({
     t.genesis.insufficientUsd1,
     t.genesis.purchaseUnavailable,
     t.genesis.walletNotConnected,
+    t.wallet.transactionErrors,
   ])
 
   return (

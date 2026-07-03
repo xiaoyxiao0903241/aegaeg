@@ -28,8 +28,11 @@ function readBoolean(key: keyof ImportMetaEnv, fallback: boolean): boolean {
 }
 
 export const appEnv = {
-  thirdwebClientId: readString('VITE_THIRDWEB_CLIENT_ID'),
-  walletConnectProjectId: readString('VITE_WALLETCONNECT_PROJECT_ID'),
+  thirdwebClientId: readString('VITE_THIRDWEB_CLIENT_ID', 'a2a60413a78afb90335c14830d5affca'),
+  walletConnectProjectId: readString(
+    'VITE_WALLETCONNECT_PROJECT_ID',
+    'ce2f293d73d2550491678d9ee3c37706',
+  ),
   bscRpcUrl: readString('VITE_BSC_RPC_URL', 'https://bsc-dataseed.binance.org'),
   apiBaseUrl: readString('VITE_API_BASE_URL', 'https://api.x-dao.io/api'),
   /** Fallback app host when `location` is unreadable (hostname only, no protocol). */

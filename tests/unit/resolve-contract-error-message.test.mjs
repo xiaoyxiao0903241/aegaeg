@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { loadModule } from './load-module.mjs'
 
 test('resolveContractErrorMessage maps ERC20InsufficientBalance selector', async () => {
-  const { resolveContractErrorMessage } = await import('../../src/lib/web3/resolve-contract-error-message.ts')
+  const { resolveContractErrorMessage } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
+  )
 
   const message = resolveContractErrorMessage(new Error('Encoded error signature "0xe450d38c" not found'), {
     insufficientUsd1: 'USD1 low',
@@ -13,8 +16,8 @@ test('resolveContractErrorMessage maps ERC20InsufficientBalance selector', async
 })
 
 test('resolveGenesisPurchaseError maps validation codes to localized messages', async () => {
-  const { GENESIS_PURCHASE_ERROR, resolveGenesisPurchaseError } = await import(
-    '../../src/lib/web3/resolve-contract-error-message.ts'
+  const { GENESIS_PURCHASE_ERROR, resolveGenesisPurchaseError } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
   )
 
   const messages = {
@@ -39,7 +42,7 @@ test('resolveGenesisPurchaseError maps validation codes to localized messages', 
 
 test('isUserRejectedWalletError detects MetaMask rejection', async () => {
   const { isUserRejectedWalletError, resolveGenesisPurchaseError, resolveFlashSwapUserMessage } =
-    await import('../../src/lib/web3/resolve-contract-error-message.ts')
+    await loadModule('/src/lib/web3/resolve-contract-error-message.ts')
 
   assert.equal(isUserRejectedWalletError({ code: 4001, message: 'User rejected the request.' }), true)
   assert.equal(isUserRejectedWalletError(new Error('User rejected the request.')), true)
@@ -78,7 +81,9 @@ test('isUserRejectedWalletError detects MetaMask rejection', async () => {
 })
 
 test('resolveContractErrorMessage maps ERC20InsufficientAllowance selector', async () => {
-  const { resolveContractErrorMessage } = await import('../../src/lib/web3/resolve-contract-error-message.ts')
+  const { resolveContractErrorMessage } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
+  )
 
   const message = resolveContractErrorMessage(new Error('reverted with 0xfb8f41b2'), {
     insufficientUsd1: 'USD1 low',
@@ -89,8 +94,10 @@ test('resolveContractErrorMessage maps ERC20InsufficientAllowance selector', asy
 })
 
 test('resolveReferralBindError maps MetaMask nested revert selector', async () => {
-  const { resolveReferralBindError } = await import('../../src/lib/web3/resolve-contract-error-message.ts')
-  const { normalizeWalletRpcError } = await import('../../src/web3/wallet-write-error.ts')
+  const { resolveReferralBindError } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
+  )
+  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet-write-error.ts')
 
   const messages = {
     alreadyBound: 'Already bound',
@@ -126,9 +133,44 @@ test('resolveReferralBindError maps MetaMask nested revert selector', async () =
   )
 })
 
+test('resolveWalletTransactionError maps gas and estimate failures', async () => {
+  const { WALLET_WRITE_ERROR, resolveWalletTransactionError } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
+  )
+
+  const messages = {
+    gasLimitTooLow: 'Gas too low',
+    gasEstimateFailed: 'Estimate failed',
+    insufficientFunds: 'No BNB',
+    transactionFailed: 'Tx failed',
+  }
+
+  assert.equal(
+    resolveWalletTransactionError(
+      new Error('Signer Error: gasLimit is too low. given 0, need 21000'),
+      messages,
+    ),
+    'Gas too low',
+  )
+  assert.equal(
+    resolveWalletTransactionError(new Error(WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED), messages),
+    'Estimate failed',
+  )
+  assert.equal(
+    resolveWalletTransactionError(new Error('insufficient funds for gas * price + value'), messages),
+    'No BNB',
+  )
+  assert.equal(
+    resolveWalletTransactionError({ code: 4001, message: 'User rejected the request.' }, messages),
+    null,
+  )
+})
+
 test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data', async () => {
-  const { resolveGenesisPurchaseError } = await import('../../src/lib/web3/resolve-contract-error-message.ts')
-  const { normalizeWalletRpcError } = await import('../../src/web3/wallet-write-error.ts')
+  const { resolveGenesisPurchaseError } = await loadModule(
+    '/src/lib/web3/resolve-contract-error-message.ts',
+  )
+  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet-write-error.ts')
 
   const walletError = normalizeWalletRpcError({
     code: -32603,
