@@ -111,17 +111,21 @@ async function resolveLegacyInjectedProvider(wallet: Wallet): Promise<EIP1193Pro
 const deferredResolutions = new WeakMap<Wallet, Promise<EIP1193Provider>>()
 
 function createDeferredWalletProvider(wallet: Wallet): EIP1193Provider {
-  return {
-    request: async (args) => {
-      let pending = deferredResolutions.get(wallet)
-      if (!pending) {
-        pending = resolveLegacyInjectedProvider(wallet)
-        deferredResolutions.set(wallet, pending)
-      }
-      const provider = await pending
-      return provider.request(args)
-    },
-  } as EIP1193Provider
+  const request = async (args: { method: string; params?: unknown }): Promise<unknown> => {
+    let pending = deferredResolutions.get(wallet)
+    if (!pending) {
+      pending = resolveLegacyInjectedProvider(wallet)
+      deferredResolutions.set(wallet, pending)
+    }
+    const provider = await pending
+    const bound = provider.request.bind(provider) as (args: {
+      method: string
+      params?: unknown
+    }) => Promise<unknown>
+    return bound(args)
+  }
+
+  return { request } as unknown as EIP1193Provider
 }
 
 /**

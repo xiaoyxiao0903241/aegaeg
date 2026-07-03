@@ -10,6 +10,7 @@ import { DappTopbar } from '~/app/dapp-topbar'
 import { CommunityContent, CommunityWidget } from '~/app/tabs/community-tab'
 import { GenesisContent, GenesisWidget } from '~/app/tabs/genesis-tab'
 import { GenesisWidgetProvider } from '~/app/genesis-widget-context'
+import { SwapSubviewProviders } from '~/app/tabs/swap/swap-subview-providers'
 import { RewardsContent, RewardsWidget } from '~/app/tabs/rewards-tab'
 import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
 import { DappScrollFadeHost } from '~/app/components/dapp-scroll-fade-host'
@@ -91,6 +92,7 @@ export function DappShell() {
       >
         <div className={cn(shellContainerClass(), 'relative z-1')} data-dapp-shell-container>
           <GenesisWidgetProvider>
+            <SwapSubviewProviders activeTab={activeTab}>
             <div
               ref={setWindowNode}
               className={cn(
@@ -152,6 +154,7 @@ export function DappShell() {
                 </section>
               </DappScrollFadeHost>
             </div>
+            </SwapSubviewProviders>
           </GenesisWidgetProvider>
         </div>
       </section>

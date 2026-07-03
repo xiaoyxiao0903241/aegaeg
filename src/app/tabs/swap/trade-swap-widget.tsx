@@ -15,7 +15,7 @@ import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { SwapAmountBox } from '~/app/components/swap-amount-box'
 import { SwapSlippageModal } from '~/app/components/swap-slippage-modal'
 import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/components/dapp-skeleton'
-import { useSwapWidget } from '~/hooks/use-swap-widget'
+import { useTradeSwapWidgetContext } from '~/app/tabs/swap/trade-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { resolveGenesisPurchaseError, resolveWalletTransactionError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
@@ -29,7 +29,7 @@ export function TradeSwapWidget({
 }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const swap = useSwapWidget(sessionReady)
+  const swap = useTradeSwapWidgetContext()
   const genesis = useGenesisWidgetContext()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
