@@ -1,5 +1,4 @@
 import { parseAbi } from 'viem'
-import { BSC_CONTRACTS } from '~/config/contracts'
 import { calcSqrtPriceImpactBps } from '~/lib/swap/calc-sqrt-price-impact-bps'
 import { quoteV3ExactInputSingle } from '~/lib/swap/quote-v3-exact-input'
 import { SWAP_CONFIG } from '~/config/swap'
