@@ -75,26 +75,44 @@ function readErrorCode(error: unknown): number | string | undefined {
   return coded.code
 }
 
+/** Walk wallet / viem error trees and collect revert selectors from nested `data` hex. */
+function collectErrorFragments(error: unknown, depth = 0, seen = new WeakSet<object>()): string[] {
+  if (depth > 8) return []
+  if (error instanceof Error) {
+    return [error.message, ...collectErrorFragments(error.cause, depth + 1, seen)]
+  }
+  if (typeof error === 'string') return [error]
+  if (error == null) return []
+  if (typeof error !== 'object') return [String(error)]
+  if (seen.has(error)) return []
+  seen.add(error)
+
+  const record = error as Record<string, unknown>
+  const parts: string[] = []
+
+  for (const key of ['message', 'shortMessage', 'reason', 'details']) {
+    const value = record[key]
+    if (typeof value === 'string') parts.push(value)
+  }
+
+  if ('data' in record) {
+    const data = record.data
+    if (typeof data === 'string' && data.startsWith('0x')) {
+      parts.push(data)
+    } else if (typeof data === 'object' && data !== null) {
+      parts.push(...collectErrorFragments(data, depth + 1, seen))
+    }
+  }
+
+  if ('cause' in record) {
+    parts.push(...collectErrorFragments(record.cause, depth + 1, seen))
+  }
+
+  return parts
+}
+
 function readErrorText(error: unknown): string {
-  if (error instanceof Error) return error.message
-  if (typeof error === 'string') return error
-  if (typeof error !== 'object' || error === null) return String(error)
-
-  const record = error as {
-    message?: string
-    shortMessage?: string
-    reason?: string
-    cause?: unknown
-    data?: unknown
-  }
-
-  const parts = [record.message, record.shortMessage, record.reason]
-  if (typeof record.data === 'object' && record.data !== null) {
-    const data = record.data as { message?: string; originalError?: { message?: string } }
-    parts.push(data.message, data.originalError?.message)
-  }
-  if (record.cause) parts.push(readErrorText(record.cause))
-  return parts.filter(Boolean).join(' ')
+  return collectErrorFragments(error).filter(Boolean).join(' ')
 }
 
 export function isUserRejectedWalletError(error: unknown): boolean {

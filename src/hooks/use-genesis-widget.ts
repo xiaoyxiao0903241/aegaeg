@@ -39,10 +39,12 @@ import {
 } from '~/hooks/queries/use-presale-queries'
 import { useDappActions } from '~/stores/dapp-actions'
 import { useI18n } from '~/i18n/use-i18n'
+import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
 export interface GenesisPurchaseResult {
   success: boolean
-  error?: string
+  /** Raw wallet / contract error — keep for selector-based i18n resolution. */
+  error?: unknown
 }
 
 const USD1_DECIMALS = 18
@@ -54,6 +56,7 @@ export function useGenesisWidget() {
   const queryClient = useQueryClient()
   const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
   const afterGenesisPhaseTransition = useDappActions((state) => state.afterGenesisPhaseTransition)
+  const readClient = useChainReadClient()
   const countdownRefreshRef = useRef<string | null>(null)
   const [shares, setShares] = useState(0)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
@@ -209,8 +212,7 @@ export function useGenesisWidget() {
       }
       return { success: true }
     } catch (caught) {
-      const message = caught instanceof Error ? caught.message : 'Approve failed'
-      return { success: false, error: message }
+      return { success: false, error: caught }
     } finally {
       setSubmittingAction(null)
     }
@@ -229,8 +231,8 @@ export function useGenesisWidget() {
 
     try {
       const [balance, approved] = await Promise.all([
-        readErc20Balance(BSC_CONTRACTS.usd1, account.address),
-        readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
+        readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
+        readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale, readClient),
       ])
 
       if (address) {
@@ -260,8 +262,7 @@ export function useGenesisWidget() {
       afterGenesisPurchase(account.address, purchaseAmount)
       return { success: true }
     } catch (caught) {
-      const message = caught instanceof Error ? caught.message : 'Purchase failed'
-      return { success: false, error: message }
+      return { success: false, error: caught }
     } finally {
       setSubmittingAction(null)
     }
@@ -273,6 +274,7 @@ export function useGenesisWidget() {
     canPurchase,
     purchaseAmount,
     queryClient,
+    readClient,
     wallet,
   ])
 

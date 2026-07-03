@@ -87,3 +87,67 @@ test('resolveContractErrorMessage maps ERC20InsufficientAllowance selector', asy
 
   assert.equal(message, 'Allowance low')
 })
+
+test('resolveReferralBindError maps MetaMask nested revert selector', async () => {
+  const { resolveReferralBindError } = await import('../../src/lib/web3/resolve-contract-error-message.ts')
+  const { normalizeWalletRpcError } = await import('../../src/web3/wallet-write-error.ts')
+
+  const messages = {
+    alreadyBound: 'Already bound',
+    parentNotBound: 'Parent not bound',
+    selfReferral: 'Self referral',
+    invalidParent: 'Invalid parent',
+    migratedAccount: 'Migrated',
+    systemConfig: 'System config',
+    failed: 'Failed',
+  }
+
+  const walletError = normalizeWalletRpcError({
+    code: -32603,
+    message: 'Internal JSON-RPC error.',
+    data: {
+      code: 3,
+      message: 'execution reverted',
+      data: '0x3d50dfd50000000000000000000000000000000000000000000000000000000000000001',
+    },
+  })
+
+  assert.equal(resolveReferralBindError(walletError, messages), 'Parent not bound')
+  assert.equal(
+    resolveReferralBindError(
+      new Error('execution reverted: Referral__AlreadyBound(address)'),
+      messages,
+    ),
+    'Already bound',
+  )
+  assert.equal(
+    resolveReferralBindError(new Error('reverted with custom error 0xa7e9b6d3'), messages),
+    'Self referral',
+  )
+})
+
+test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data', async () => {
+  const { resolveGenesisPurchaseError } = await import('../../src/lib/web3/resolve-contract-error-message.ts')
+  const { normalizeWalletRpcError } = await import('../../src/web3/wallet-write-error.ts')
+
+  const walletError = normalizeWalletRpcError({
+    code: -32603,
+    message: 'Internal JSON-RPC error.',
+    data: {
+      code: 3,
+      message: 'execution reverted',
+      data: '0x43f81a81',
+    },
+  })
+
+  assert.equal(
+    resolveGenesisPurchaseError(walletError, {
+      insufficientUsd1: 'USD1 low',
+      insufficientAllowance: 'Allowance low',
+      purchaseUnavailable: 'Unavailable',
+      walletNotConnected: 'Wallet missing',
+      userLimitExceeded: 'Limit exceeded',
+    }),
+    'Limit exceeded',
+  )
+})

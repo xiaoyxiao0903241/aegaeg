@@ -17,6 +17,7 @@ import { useDappActions } from '~/stores/dapp-actions'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { useChainReadClient } from '~/hooks/use-chain-read-client'
 import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/web3/flash-swap-read'
 import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/web3/flash-swap-write'
@@ -33,6 +34,7 @@ export function useFlashSwapWidget(authenticated: boolean) {
   const [sellAmount, setSellAmountRaw] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<unknown>(null)
+  const readClient = useChainReadClient()
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)
@@ -47,14 +49,14 @@ export function useFlashSwapWidget(authenticated: boolean) {
 
   const balancesQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapBalances(address ?? ''),
-    queryFn: () => readFlashSwapBalances(address!),
+    queryFn: () => readFlashSwapBalances(address!, readClient),
     enabled: walletReady,
     staleTime: QUERY_STALE_TIME.balances,
   })
 
   const spotQuoteQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapQuote(spotQuoteAmount.toString()),
-    queryFn: () => readFlashSwapQuote(spotQuoteAmount),
+    queryFn: () => readFlashSwapQuote(spotQuoteAmount, readClient),
     enabled: true,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
@@ -62,7 +64,7 @@ export function useFlashSwapWidget(authenticated: boolean) {
 
   const amountQuoteQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapQuote(amountIn.toString()),
-    queryFn: () => readFlashSwapQuote(amountIn),
+    queryFn: () => readFlashSwapQuote(amountIn, readClient),
     enabled: authenticated && amountIn > 0n,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,

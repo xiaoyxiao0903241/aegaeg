@@ -33,7 +33,7 @@ describe('waitForWalletTransactionConfirmation', () => {
     assert.ok(Date.now() - started < 12_000)
   })
 
-  it('fails fast when wallet RPC shows pending but public RPC never sees the hash', async () => {
+  it('fails fast when wallet RPC shows pending without a receipt', async () => {
     const { waitForWalletTransactionConfirmation, WalletTransactionWaitError } = await loadModule(
       '/src/web3/wait-wallet-transaction.ts',
     )
@@ -58,10 +58,10 @@ describe('waitForWalletTransactionConfirmation', () => {
         }),
       (error) => {
         assert.ok(error instanceof WalletTransactionWaitError)
-        assert.match(error.message, /not broadcast/i)
+        assert.match(error.message, /pending without confirmation/i)
         return true
       },
     )
-    assert.ok(Date.now() - started < 12_000)
+    assert.ok(Date.now() - started < 25_000)
   })
 })

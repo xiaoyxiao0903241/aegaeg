@@ -6,7 +6,7 @@ import { aegisConnectTheme } from '~/web3/connect-theme'
 import { appEnv } from '~/config/env'
 import { getRuntimeOrigin } from '~/lib/runtime-host'
 
-/** 公开 BSC RPC — 链上读写走此 URL，不依赖 thirdweb RPC */
+/** Public BSC RPC — disconnected reads only; connected wallet uses EIP-1193 provider. */
 export const BSC_RPC_URL = appEnv.bscRpcUrl
 
 export const bsc = defineChain({

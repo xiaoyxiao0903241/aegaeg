@@ -6,7 +6,6 @@ import {
   type TransactionReceipt,
 } from 'viem'
 import { bsc } from 'viem/chains'
-import { bscReadClient } from '~/web3/bsc-read-client'
 
 const RECEIPT_POLL_MS = 2_000
 /** Max wait for a broadcast tx to mine. */
@@ -63,9 +62,7 @@ export class WalletTransactionWaitError extends Error {
 }
 
 /**
- * Waits for confirmation using wallet provider RPC first, then app read RPC.
- * Broadcast detection uses the public app RPC only — wallet RPC pending entries
- * must not suppress the not-broadcast fast-fail (MetaMask confirm on reverting txs).
+ * Waits for confirmation via the wallet's EIP-1193 provider only.
  */
 export async function waitForWalletTransactionConfirmation({
   provider,
@@ -81,12 +78,11 @@ export async function waitForWalletTransactionConfirmation({
 
   const startedAt = Date.now()
   const deadline = startedAt + RECEIPT_TIMEOUT_MS
-  let seenOnPublicRpc = false
+  let seenOnChain = false
   let pendingSince = 0
 
   while (Date.now() < deadline) {
-    const receipt =
-      (await readReceipt(walletReadClient, hash)) ?? (await readReceipt(bscReadClient, hash))
+    const receipt = await readReceipt(walletReadClient, hash)
 
     if (receipt) {
       if (receipt.status === 'reverted') {
@@ -98,30 +94,22 @@ export async function waitForWalletTransactionConfirmation({
       return receipt
     }
 
-    const onWalletRpc = await readTransaction(walletReadClient, hash)
-    const onAppRpc = await readTransaction(bscReadClient, hash)
-    seenOnPublicRpc = seenOnPublicRpc || onAppRpc
+    const onChain = await readTransaction(walletReadClient, hash)
+    seenOnChain = seenOnChain || onChain
 
-    if (onWalletRpc || onAppRpc) {
+    if (onChain) {
       pendingSince = pendingSince || Date.now()
     }
 
     const elapsed = Date.now() - startedAt
-    if (!seenOnPublicRpc && elapsed >= NOT_ON_CHAIN_FAIL_MS) {
+    if (!seenOnChain && elapsed >= NOT_ON_CHAIN_FAIL_MS) {
       throw new WalletTransactionWaitError(
         hash,
         `Transaction was not broadcast to BNB Chain (wallet may have failed locally). Hash: ${hash}`,
       )
     }
 
-    // Wallet-RPC-only pending after 20s = MetaMask stale local entry → fail fast.
-    // Once the public RPC has seen the tx it is genuinely in flight; keep polling
-    // until the overall deadline instead of misreporting a live tx as failed.
-    if (
-      !seenOnPublicRpc &&
-      pendingSince > 0 &&
-      Date.now() - pendingSince >= PENDING_WITHOUT_RECEIPT_MS
-    ) {
+    if (seenOnChain && pendingSince > 0 && Date.now() - pendingSince >= PENDING_WITHOUT_RECEIPT_MS) {
       throw new WalletTransactionWaitError(
         hash,
         `Transaction stayed pending without confirmation (wallet may have failed after confirm). Hash: ${hash}`,
