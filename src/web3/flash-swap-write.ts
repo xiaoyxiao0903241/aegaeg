@@ -1,9 +1,7 @@
 import type { Wallet } from 'thirdweb/wallets'
-import type { ThirdwebClient } from 'thirdweb'
-import type { Chain } from 'thirdweb/chains'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import { ERC20_METHODS, MAX_UINT256, USD1_SWAP_METHODS } from '~/web3/abis'
-import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/swap-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
 
@@ -14,25 +12,21 @@ const usd1SwapWriteAbi = parseWriteAbi(USD1_SWAP_METHODS.swap)
 export async function approveUsdtForFlashSwapIfNeeded({
   wallet,
   amountIn,
-  client = thirdwebClient,
-  chain = defaultChain,
 }: {
   wallet: Wallet
   amountIn: bigint
-  client?: ThirdwebClient
-  chain?: Chain
 }) {
   const account = wallet.getAccount()
   if (!account) {
     throw new Error('Wallet not connected')
   }
 
+  const readClient = createWalletReadClient(wallet)
   const allowance = await readErc20Allowance(
     FLASH_SWAP_USDT,
     account.address,
     BSC_CONTRACTS.usd1Swap,
-    client,
-    chain,
+    readClient,
   )
   if (allowance >= amountIn) return null
 

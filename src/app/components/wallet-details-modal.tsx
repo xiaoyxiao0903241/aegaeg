@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { LogOut, Wallet, X } from 'lucide-react'
 import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
-import { getWalletBalance } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import { formatTokenAmount } from '~/lib/swap/token-amount'
+import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Balance } from '~/web3/swap-read'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/providers/auth-provider'
@@ -13,7 +13,6 @@ import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
-import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { Button } from '~/components/button'
 import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/lib/copy-to-clipboard'
@@ -49,9 +48,10 @@ export function WalletDetailsModal({
   const { messages: t } = useI18n()
   const [copied, setCopied] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
-  const [nativeBalance, setNativeBalance] = useState<Awaited<
-    ReturnType<typeof getWalletBalance>
-  > | null>(null)
+  const [nativeBalance, setNativeBalance] = useState<{
+    displayValue: string
+    symbol: string
+  } | null>(null)
   const [nativeBalanceLoading, setNativeBalanceLoading] = useState(false)
   const [tokenBalances, setTokenBalances] = useState<WalletTokenBalanceRow[]>([])
   const [tokensFetched, setTokensFetched] = useState(false)
@@ -65,7 +65,7 @@ export function WalletDetailsModal({
   }, [open])
 
   useEffect(() => {
-    if (!open || !walletAddress) {
+    if (!open || !walletAddress || !wallet) {
       setNativeBalance(null)
       setNativeBalanceLoading(false)
       return
@@ -74,14 +74,15 @@ export function WalletDetailsModal({
     let cancelled = false
     setNativeBalanceLoading(true)
 
-    void getWalletBalance({
-      address: walletAddress,
-      chain: defaultChain,
-      client: thirdwebClient,
-    })
-      .then((result) => {
+    const readClient = createWalletReadClient(wallet)
+    void readClient
+      .getBalance({ address: walletAddress as `0x${string}` })
+      .then((wei) => {
         if (!cancelled) {
-          setNativeBalance(result)
+          setNativeBalance({
+            displayValue: formatTokenAmount(wei, 18, 4),
+            symbol: 'BNB',
+          })
         }
       })
       .catch(() => {
@@ -98,10 +99,10 @@ export function WalletDetailsModal({
     return () => {
       cancelled = true
     }
-  }, [open, walletAddress])
+  }, [open, wallet, walletAddress])
 
   useEffect(() => {
-    if (!open || !walletAddress) {
+    if (!open || !walletAddress || !wallet) {
       setTokenBalances([])
       setTokensFetched(false)
       return
@@ -110,9 +111,10 @@ export function WalletDetailsModal({
     let cancelled = false
     setTokensFetched(false)
 
+    const readClient = createWalletReadClient(wallet)
     void Promise.all([
-      readErc20Balance(BSC_CONTRACTS.usd1, walletAddress),
-      readErc20Balance(BSC_CONTRACTS.usdt, walletAddress),
+      readErc20Balance(BSC_CONTRACTS.usd1, walletAddress, readClient),
+      readErc20Balance(BSC_CONTRACTS.usdt, walletAddress, readClient),
     ])
       .then(([usd1, usdt]) => {
         if (cancelled) return
@@ -142,7 +144,7 @@ export function WalletDetailsModal({
     return () => {
       cancelled = true
     }
-  }, [open, walletAddress])
+  }, [open, wallet, walletAddress])
 
   if (!walletAddress) {
     return null
@@ -156,7 +158,7 @@ export function WalletDetailsModal({
           Number(nativeBalance.displayValue),
         )
       : '—'
-  const balanceSymbol = nativeBalance?.symbol ?? defaultChain.nativeCurrency?.symbol ?? 'BNB'
+  const balanceSymbol = nativeBalance?.symbol ?? 'BNB'
   const displayTokenRows = WALLET_TOKEN_DEFINITIONS.map((definition) => {
     const loaded = tokenBalances.find((token) => token.symbol === definition.symbol)
     return {

@@ -5,6 +5,7 @@ import { queryKeys } from '~/lib/query/query-keys'
 import type { SwapDirection } from '~/lib/swap/swap-pair'
 import { readPairSpotRate } from '~/web3/swap-read'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
 function formatPoolRateLabel(
   rate: { usd1PerXx: number; xxPerUsd1: number },
@@ -24,9 +25,11 @@ export function usePairSpotRate(
   direction: SwapDirection = 'reverse',
   intervalMs = SWAP_CONFIG.spotRateRefreshIntervalMs,
 ) {
+  const readClient = useChainReadClient()
+
   const spotRateQuery = useQuery({
     queryKey: queryKeys.chain.pairSpotRate,
-    queryFn: () => readPairSpotRate(),
+    queryFn: () => readPairSpotRate({ client: readClient }),
     enabled,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,

@@ -1,6 +1,7 @@
 import { parseAbi } from 'viem'
 import { QUOTER_V3_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 
 const quoterAbi = parseAbi([QUOTER_V3_METHODS.quoteExactInputSingle])
 
@@ -17,12 +18,14 @@ export async function quoteV3ExactInputSingle({
   tokenOut,
   amountIn,
   fee,
+  client = bscReadClient,
 }: {
   quoter: `0x${string}`
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
   amountIn: bigint
   fee: number
+  client?: ChainReadClient
 }): Promise<V3QuoteExactInputSingleResult> {
   if (amountIn === 0n) {
     return {
@@ -33,7 +36,7 @@ export async function quoteV3ExactInputSingle({
     }
   }
 
-  const { result } = await bscReadClient.simulateContract({
+  const { result } = await client.simulateContract({
     address: quoter,
     abi: quoterAbi,
     functionName: 'quoteExactInputSingle',

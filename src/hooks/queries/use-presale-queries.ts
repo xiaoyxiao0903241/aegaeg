@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { BSC_CONTRACTS } from '~/config/contracts'
+import { useChainReadClient } from '~/hooks/use-chain-read-client'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
 import {
@@ -15,42 +16,52 @@ import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
 import { readIsBindReferral } from '~/web3/referral-read'
 
 export function useIsBindReferralQuery(address?: string) {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.referralIsBound(address ?? ''),
-    queryFn: () => readIsBindReferral(address!),
+    queryFn: () => readIsBindReferral(address!, readClient),
     enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,
   })
 }
 
 export function usePresalePhasesQuery() {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.presalePhases,
-    queryFn: () => readAllPresalePhases(),
+    queryFn: () => readAllPresalePhases(readClient),
     staleTime: QUERY_STALE_TIME.presale,
   })
 }
 
 export function usePresaleActivePhaseQuery() {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.presaleActivePhase,
-    queryFn: () => readActivePresalePhase(),
+    queryFn: () => readActivePresalePhase(readClient),
     staleTime: QUERY_STALE_TIME.presale,
   })
 }
 
 export function usePresaleAgxPriceQuery() {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.presaleAgxPrice,
-    queryFn: () => readPresaleAgxPriceWei(),
+    queryFn: () => readPresaleAgxPriceWei(readClient),
     staleTime: QUERY_STALE_TIME.presale,
   })
 }
 
 export function usePresaleTotalPurchasedQuery() {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.presaleTotalPurchased,
-    queryFn: () => readTotalPresalePurchased(),
+    queryFn: () => readTotalPresalePurchased(readClient),
     staleTime: QUERY_STALE_TIME.presale,
     // Global cumulative contribution refreshes itself every 30s from chain.
     refetchInterval: QUERY_STALE_TIME.presale,
@@ -59,35 +70,43 @@ export function usePresaleTotalPurchasedQuery() {
 }
 
 export function usePresaleAirdropThresholdQuery() {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.presaleAirdropThreshold,
-    queryFn: () => readPresaleAirdropThresholdWei(),
+    queryFn: () => readPresaleAirdropThresholdWei(readClient),
     staleTime: QUERY_STALE_TIME.presale,
   })
 }
 
 export function usePresaleUserTotalQuery(address?: string) {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.presaleUserTotal(address ?? ''),
-    queryFn: () => readUserPresaleTotal(address!),
+    queryFn: () => readUserPresaleTotal(address!, readClient),
     enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.presale,
   })
 }
 
 export function usePresaleUserPhaseRemainingQuery(address?: string, phaseIndex?: number) {
+  const readClient = useChainReadClient()
+
   return useQuery({
     queryKey: queryKeys.chain.presaleUserPhaseRemaining(address ?? '', phaseIndex ?? 0),
-    queryFn: () => readUserPhaseRemainingAmount(address!, phaseIndex!),
+    queryFn: () => readUserPhaseRemainingAmount(address!, phaseIndex!, readClient),
     enabled: Boolean(address) && phaseIndex !== undefined,
     staleTime: QUERY_STALE_TIME.presale,
   })
 }
 
 export function useUsd1PresaleWalletQuery(address?: string) {
+  const readClient = useChainReadClient()
+
   const balanceQuery = useQuery({
     queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address ?? ''),
-    queryFn: () => readErc20Balance(BSC_CONTRACTS.usd1, address!),
+    queryFn: () => readErc20Balance(BSC_CONTRACTS.usd1, address!, readClient),
     enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,
   })
@@ -99,7 +118,7 @@ export function useUsd1PresaleWalletQuery(address?: string) {
       BSC_CONTRACTS.preSale,
     ),
     queryFn: () =>
-      readErc20Allowance(BSC_CONTRACTS.usd1, address!, BSC_CONTRACTS.preSale),
+      readErc20Allowance(BSC_CONTRACTS.usd1, address!, BSC_CONTRACTS.preSale, readClient),
     enabled: Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,
   })

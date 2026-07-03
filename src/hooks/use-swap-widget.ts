@@ -26,6 +26,7 @@ import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
 /**
  * @param authenticated — SIWE session ready; gates quotes, swap submit, and amount capping.
@@ -45,6 +46,7 @@ export function useSwapWidget(authenticated: boolean) {
   }, [])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<unknown>(null)
+  const readClient = useChainReadClient()
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
   const usdtToUsd1Pair = useMemo(() => getSwapPairTokens('reverse'), [])
@@ -71,7 +73,7 @@ export function useSwapWidget(authenticated: boolean) {
 
   const poolMetadataQuery = useQuery({
     queryKey: queryKeys.chain.swapPoolMetadata,
-    queryFn: () => readSwapPoolImmutableMetadata(),
+    queryFn: () => readSwapPoolImmutableMetadata(SWAP_CONFIG.pool, readClient),
     staleTime: Number.POSITIVE_INFINITY,
   })
 
@@ -83,9 +85,9 @@ export function useSwapWidget(authenticated: boolean) {
     ),
     queryFn: async () => {
       const [sell, buy, approved] = await Promise.all([
-        readErc20Balance(pair.sell.address, address!),
-        readErc20Balance(pair.buy.address, address!),
-        readErc20Allowance(pair.sell.address, address!, SWAP_CONFIG.router),
+        readErc20Balance(pair.sell.address, address!, readClient),
+        readErc20Balance(pair.buy.address, address!, readClient),
+        readErc20Allowance(pair.sell.address, address!, SWAP_CONFIG.router, readClient),
       ])
       return { sell, buy, approved }
     },
@@ -104,6 +106,7 @@ export function useSwapWidget(authenticated: boolean) {
         amountIn: spotQuoteAmount,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
+        client: readClient,
       }),
     enabled: true,
     staleTime: QUERY_STALE_TIME.quote,
@@ -121,6 +124,7 @@ export function useSwapWidget(authenticated: boolean) {
         amountIn: exchangeSpotAmount,
         tokenIn: usdtToUsd1Pair.sell.address,
         tokenOut: usdtToUsd1Pair.buy.address,
+        client: readClient,
       }),
     enabled: true,
     staleTime: QUERY_STALE_TIME.quote,
@@ -138,6 +142,7 @@ export function useSwapWidget(authenticated: boolean) {
         amountIn: exchangeSpotAmountInverted,
         tokenIn: usd1ToUsdtPair.sell.address,
         tokenOut: usd1ToUsdtPair.buy.address,
+        client: readClient,
       }),
     enabled: true,
     staleTime: QUERY_STALE_TIME.quote,
@@ -155,6 +160,7 @@ export function useSwapWidget(authenticated: boolean) {
         amountIn,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
+        client: readClient,
       }),
     enabled: authenticated && amountIn > 0n,
     staleTime: QUERY_STALE_TIME.quote,
