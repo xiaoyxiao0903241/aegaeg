@@ -9,6 +9,19 @@ function pickString(record: Record<string, unknown>, keys: string[]): string | u
   return undefined
 }
 
+/**
+ * Exact decimal-string → wei conversion. Going through Number()*1e18 corrupts
+ * amounts beyond 2^53 wei (~0.009 tokens of precision), which breaks the
+ * backend signature check. Fractions beyond 18 digits are truncated.
+ */
+function decimalToWei(amount: string): string | undefined {
+  const match = /^(\d+)(?:\.(\d+))?$/.exec(amount.trim())
+  if (!match) return undefined
+  const [, whole, fraction = ''] = match
+  const fractionWei = (fraction + '0'.repeat(18)).slice(0, 18)
+  return (BigInt(whole) * 10n ** 18n + BigInt(fractionWei)).toString()
+}
+
 function parseAmountWei(record: Record<string, unknown>): string | undefined {
   const direct = pickString(record, ['amountWei', 'amount_wei', 'amountWeiStr'])
   if (direct && /^\d+$/.test(direct)) return direct
@@ -18,10 +31,7 @@ function parseAmountWei(record: Record<string, unknown>): string | undefined {
 
   if (/^\d+$/.test(amount)) return amount
 
-  const parsed = Number(amount)
-  if (!Number.isFinite(parsed)) return undefined
-
-  return BigInt(Math.round(parsed * 1e18)).toString()
+  return decimalToWei(amount)
 }
 
 /** uint256 contract field (signType / expireTime). Accepts int, decimal, or ISO date (→ unix seconds). */

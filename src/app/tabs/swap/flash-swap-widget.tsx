@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
@@ -18,7 +18,7 @@ import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/components/dap
 import { useFlashSwapWidget } from '~/hooks/use-flash-swap-widget'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { resolveGenesisPurchaseError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
+import { resolveFlashSwapUserMessage } from '~/lib/web3/resolve-contract-error-message'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/app/tabs/swap/swap-widget-header'
 
 export function FlashSwapWidget({
@@ -57,29 +57,51 @@ export function FlashSwapWidget({
     `${t.swap.balance}: ${swap.walletReady ? swap.buyBalanceLabel : '—'}`
   )
 
+  const flashSwapErrorMessages = useMemo(
+    () => ({
+      walletNotConnected: t.genesis.walletNotConnected,
+      insufficientAllowance: t.genesis.insufficientAllowance,
+      insufficientUsd1: t.genesis.insufficientUsd1,
+      purchaseUnavailable: t.genesis.purchaseUnavailable,
+      transactionCancelled: t.swap.transactionCancelled,
+    }),
+    [
+      t.genesis.insufficientAllowance,
+      t.genesis.insufficientUsd1,
+      t.genesis.purchaseUnavailable,
+      t.genesis.walletNotConnected,
+      t.swap.transactionCancelled,
+    ],
+  )
+
+  const showFlashSwapError = useCallback(
+    (error: unknown) => {
+      const message = resolveFlashSwapUserMessage(error, flashSwapErrorMessages)
+      if (message) toast.error(message)
+    },
+    [flashSwapErrorMessages],
+  )
+
+  const submitErrorMessage = useMemo(() => {
+    if (!swap.error || swap.isSubmitting) return null
+    return resolveFlashSwapUserMessage(swap.error, flashSwapErrorMessages)
+  }, [flashSwapErrorMessages, swap.error, swap.isSubmitting])
+
   const handleSubmit = useCallback(async () => {
-    const success = await swap.submit()
-    if (!success) return
-    toast.success(t.swap.swapSuccess)
-  }, [swap, t.swap.swapSuccess])
+    const result = await swap.submit()
+    if (result.ok) {
+      toast.success(t.swap.swapSuccess)
+      return
+    }
+    if (result.error != null) {
+      showFlashSwapError(result.error)
+    }
+  }, [showFlashSwapError, swap, t.swap.swapSuccess])
 
   useEffect(() => {
-    if (!swap.error) return
-    const message =
-      resolveGenesisPurchaseError(swap.error, {
-        insufficientAllowance: t.genesis.insufficientAllowance,
-        insufficientUsd1: t.genesis.insufficientUsd1,
-        purchaseUnavailable: t.genesis.purchaseUnavailable,
-        walletNotConnected: t.genesis.walletNotConnected,
-      }) ?? toWalletUserFacingMessage(swap.error)
-    if (message) toast.error(message)
-  }, [
-    swap.error,
-    t.genesis.insufficientAllowance,
-    t.genesis.insufficientUsd1,
-    t.genesis.purchaseUnavailable,
-    t.genesis.walletNotConnected,
-  ])
+    if (!swap.validationError) return
+    showFlashSwapError(swap.validationError)
+  }, [showFlashSwapError, swap.validationError])
 
   return (
     <>
@@ -215,6 +237,15 @@ export function FlashSwapWidget({
               {t.swap.flash.action}
             </DappActionButton>
           </DappActionRow>
+        ) : null}
+
+        {submitErrorMessage ? (
+          <p
+            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-xs leading-relaxed text-destructive"
+            role="alert"
+          >
+            {submitErrorMessage}
+          </p>
         ) : null}
       </SwapWidgetBody>
     </>

@@ -15,6 +15,8 @@ import { dappIconClass } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { Button } from '~/components/button'
+import { toast } from 'sonner'
+import { copyTextToClipboard } from '~/lib/copy-to-clipboard'
 import { cn } from '~/lib/utils'
 import {
   AegisResponsiveDialog,
@@ -165,13 +167,13 @@ export function WalletDetailsModal({
 
   async function handleCopy() {
     if (!walletAddress) return
-    try {
-      await navigator.clipboard.writeText(walletAddress)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 1400)
-    } catch {
-      setCopied(false)
+    const ok = await copyTextToClipboard(walletAddress)
+    if (!ok) {
+      toast.error(t.wallet.copyFailed)
+      return
     }
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1400)
   }
 
   async function handleDisconnect() {

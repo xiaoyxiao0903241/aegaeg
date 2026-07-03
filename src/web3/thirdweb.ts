@@ -4,6 +4,7 @@ import { bsc as bscBase } from 'thirdweb/chains'
 import type { WalletId } from 'thirdweb/wallets'
 import { aegisConnectTheme } from '~/web3/connect-theme'
 import { appEnv } from '~/config/env'
+import { getRuntimeOrigin } from '~/lib/runtime-host'
 
 /** 公开 BSC RPC — 链上读写走此 URL，不依赖 thirdweb RPC */
 export const BSC_RPC_URL = appEnv.bscRpcUrl
@@ -114,7 +115,6 @@ export type SupportedChainId = (typeof supportedChains)[number]['id']
 
 export const appMetadata = {
   name: 'AEGIS X',
-  url:
-    typeof window === 'undefined' ? 'https://aegis.example' : window.location.origin,
+  url: getRuntimeOrigin(),
   description: 'AEGIS X BSC DApp',
 }

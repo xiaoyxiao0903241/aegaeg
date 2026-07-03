@@ -1,4 +1,5 @@
 import { appEnv } from '~/config/env'
+import { getRuntimeHostname } from '~/lib/runtime-host'
 
 function isLocalHostname(hostname: string): boolean {
   const host = hostname.toLowerCase()
@@ -23,9 +24,7 @@ export function resolveApiBaseUrl(options: {
   envBaseUrl?: string
   deriveFromDomain?: boolean
 } = {}): string {
-  const hostname =
-    options.hostname ??
-    (typeof window !== 'undefined' ? window.location.hostname : '')
+  const hostname = options.hostname ?? getRuntimeHostname()
   const isDev = options.isDev ?? import.meta.env.DEV
   const envBaseUrl = (options.envBaseUrl ?? appEnv.apiBaseUrl)?.trim()
   const deriveFromDomain = options.deriveFromDomain ?? appEnv.apiDeriveFromDomain
