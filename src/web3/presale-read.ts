@@ -1,6 +1,9 @@
-import { getContract, readContract, type ThirdwebClient } from 'thirdweb'
-import type { Chain } from 'thirdweb/chains'
-import { decodeAbiParameters, encodeAbiParameters, toFunctionSelector } from 'thirdweb/utils'
+import {
+  decodeAbiParameters,
+  encodeFunctionData,
+  parseAbi,
+  type AbiParameter,
+} from 'viem'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import {
   findActivePresalePhase,
@@ -8,7 +11,20 @@ import {
   type PresalePhaseRemaining,
 } from '~/lib/presale/presale-math'
 import { MULTICALL3_METHODS, PRESALE_METHODS } from '~/web3/abis'
-import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
+
+const presaleAbi = parseAbi([
+  PRESALE_METHODS.getPhaseCount,
+  PRESALE_METHODS.phases,
+  PRESALE_METHODS.getUserPhaseRemainingAmount,
+  PRESALE_METHODS.userTotalAmount,
+  PRESALE_METHODS.totalPurchasedAmount,
+  PRESALE_METHODS.agxPrice,
+  PRESALE_METHODS.airdropThreshold,
+])
+
+const multicallAbi = parseAbi([MULTICALL3_METHODS.aggregate3])
 
 const PHASE_RETURN_TYPES = [
   { type: 'uint256', name: 'minAmount' },
@@ -19,21 +35,14 @@ const PHASE_RETURN_TYPES = [
   { type: 'uint256', name: 'endTime' },
   { type: 'uint256', name: 'soldAmount' },
   { type: 'uint256', name: 'userPurchaseLimit' },
-] as const
-
-const PHASES_CALL_SELECTOR = toFunctionSelector(PRESALE_METHODS.phases)
-
-function getPresaleContract(client: ThirdwebClient, chain: Chain) {
-  return getContract({ client, chain, address: BSC_CONTRACTS.preSale })
-}
-
-function getMulticall3Contract(client: ThirdwebClient, chain: Chain) {
-  return getContract({ client, chain, address: BSC_CONTRACTS.multicall3 })
-}
+] as const satisfies readonly AbiParameter[]
 
 function encodePhaseCallData(phaseIndex: number): `0x${string}` {
-  const encodedParams = encodeAbiParameters([{ type: 'uint256' }], [BigInt(phaseIndex)])
-  return `${PHASES_CALL_SELECTOR}${encodedParams.slice(2)}`
+  return encodeFunctionData({
+    abi: presaleAbi,
+    functionName: 'phases',
+    args: [BigInt(phaseIndex)],
+  })
 }
 
 function mapPhaseTupleToOnChain(
@@ -73,14 +82,12 @@ function mapPhaseTupleToOnChain(
 }
 
 export async function readPresalePhaseCount(
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<number> {
-  const contract = getPresaleContract(client, chain)
-  const phaseCount = await readContract({
-    contract,
-    method: PRESALE_METHODS.getPhaseCount,
-    params: [],
+  const phaseCount = await client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'getPhaseCount',
   })
 
   return Number(phaseCount)
@@ -88,104 +95,77 @@ export async function readPresalePhaseCount(
 
 export async function readPresalePhase(
   phaseIndex: number,
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseOnChain> {
-  const contract = getPresaleContract(client, chain)
-  const [
-    minAmount,
-    maxAmount,
-    discount,
-    airdropValueRatio,
-    startTime,
-    endTime,
-    soldAmount,
-    userPurchaseLimit,
-  ] = await readContract({
-    contract,
-    method: PRESALE_METHODS.phases,
-    params: [BigInt(phaseIndex)],
+  const phase = await client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'phases',
+    args: [BigInt(phaseIndex)],
   })
 
-  return mapPhaseTupleToOnChain(phaseIndex, [
-    minAmount,
-    maxAmount,
-    discount,
-    airdropValueRatio,
-    startTime,
-    endTime,
-    soldAmount,
-    userPurchaseLimit,
-  ])
+  return mapPhaseTupleToOnChain(phaseIndex, phase)
 }
 
 export async function readAllPresalePhases(
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseOnChain[]> {
-  const phaseCount = await readPresalePhaseCount(client, chain)
+  const phaseCount = await readPresalePhaseCount(client)
   if (phaseCount <= 0) {
     return []
   }
 
-  const multicallContract = getMulticall3Contract(client, chain)
   const calls = Array.from({ length: phaseCount }, (_, phaseIndex) => ({
     target: BSC_CONTRACTS.preSale,
     allowFailure: false,
     callData: encodePhaseCallData(phaseIndex),
   }))
 
-  const results = await readContract({
-    contract: multicallContract,
-    method: MULTICALL3_METHODS.aggregate3,
-    params: [calls],
+  const results = (await client.readContract({
+    address: BSC_CONTRACTS.multicall3,
+    abi: multicallAbi,
+    functionName: 'aggregate3',
+    args: [calls],
+  })) as { success: boolean; returnData: `0x${string}` }[]
+
+  return results.map((result, phaseIndex) => {
+    if (!result.success) {
+      throw new Error(`Failed to read presale phase ${phaseIndex} via multicall`)
+    }
+
+    const decoded = decodeAbiParameters(PHASE_RETURN_TYPES, result.returnData) as readonly [
+      bigint,
+      bigint,
+      bigint,
+      bigint,
+      bigint,
+      bigint,
+      bigint,
+      bigint,
+    ]
+
+    return mapPhaseTupleToOnChain(phaseIndex, decoded)
   })
-
-  return results.map(
-    (
-      result: { success: boolean; returnData: `0x${string}` },
-      phaseIndex: number,
-    ) => {
-      if (!result.success) {
-        throw new Error(`Failed to read presale phase ${phaseIndex} via multicall`)
-      }
-
-      const decoded = decodeAbiParameters(PHASE_RETURN_TYPES, result.returnData) as readonly [
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-      ]
-
-      return mapPhaseTupleToOnChain(phaseIndex, decoded)
-    },
-  )
 }
 
 export async function readActivePresalePhase(
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseOnChain | null> {
-  const phases = await readAllPresalePhases(client, chain)
+  const phases = await readAllPresalePhases(client)
   return findActivePresalePhase(phases)
 }
 
 export async function readUserPhaseRemainingAmount(
   address: string,
   phaseIndex: number,
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseRemaining> {
-  const contract = getPresaleContract(client, chain)
   const [remainingPhaseAmount, remainingUserAmount, userPurchaseLimit, userPhaseAmountCurrent] =
-    await readContract({
-      contract,
-      method: PRESALE_METHODS.getUserPhaseRemainingAmount,
-      params: [address, BigInt(phaseIndex)],
+    await client.readContract({
+      address: BSC_CONTRACTS.preSale,
+      abi: presaleAbi,
+      functionName: 'getUserPhaseRemainingAmount',
+      args: [address as `0x${string}`, BigInt(phaseIndex)],
     })
 
   return {
@@ -198,49 +178,42 @@ export async function readUserPhaseRemainingAmount(
 
 export async function readUserPresaleTotal(
   address: string,
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  const contract = getPresaleContract(client, chain)
-  return readContract({
-    contract,
-    method: PRESALE_METHODS.userTotalAmount,
-    params: [address],
+  return client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'userTotalAmount',
+    args: [address as `0x${string}`],
   })
 }
 
 export async function readTotalPresalePurchased(
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  const contract = getPresaleContract(client, chain)
-  return readContract({
-    contract,
-    method: PRESALE_METHODS.totalPurchasedAmount,
-    params: [],
+  return client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'totalPurchasedAmount',
   })
 }
 
 export async function readPresaleAirdropThresholdWei(
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  const contract = getPresaleContract(client, chain)
-  return readContract({
-    contract,
-    method: PRESALE_METHODS.airdropThreshold,
-    params: [],
+  return client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'AIRDROP_THRESHOLD',
   })
 }
 
 export async function readPresaleAgxPriceWei(
-  client: ThirdwebClient = thirdwebClient,
-  chain: Chain = defaultChain,
+  client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  const contract = getPresaleContract(client, chain)
-  return readContract({
-    contract,
-    method: PRESALE_METHODS.agxPrice,
-    params: [],
+  return client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'agxPrice',
   })
 }

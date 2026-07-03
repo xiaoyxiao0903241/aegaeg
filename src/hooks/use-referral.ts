@@ -13,11 +13,13 @@ import {
 import { bindReferrer } from '~/web3/referral-write'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
 import { useDappActions } from '~/stores/dapp-actions'
+import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
 export function useReferral(sessionReady: boolean) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const afterReferralBind = useDappActions((state) => state.afterReferralBind)
+  const readClient = useChainReadClient()
   const pendingReferrer = useMemo(() => {
     const fromUrl = parseReferrerFromSearch(window.location.search)
     if (fromUrl) {
@@ -45,9 +47,9 @@ export function useReferral(sessionReady: boolean) {
     queryKey: queryKeys.chain.referral(address ?? ''),
     queryFn: async () => {
       const [isBound, referrer, directCount] = await Promise.all([
-        readIsBindReferral(address!),
-        readReferrer(address!),
-        readReferralCount(address!),
+        readIsBindReferral(address!, readClient),
+        readReferrer(address!, readClient),
+        readReferralCount(address!, readClient),
       ])
       return { isBound, referrer, directCount }
     },

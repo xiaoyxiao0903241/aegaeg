@@ -1,9 +1,7 @@
 import type { Wallet } from 'thirdweb/wallets'
-import type { ThirdwebClient } from 'thirdweb'
-import type { Chain } from 'thirdweb/chains'
 import { BSC_CONTRACTS } from '~/config/contracts'
 import { ERC20_METHODS, MAX_UINT256, PRESALE_METHODS } from '~/web3/abis'
-import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
+import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/swap-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
 
@@ -13,25 +11,21 @@ const presaleWriteAbi = parseWriteAbi(PRESALE_METHODS.purchase)
 export async function approveUsd1ForPresaleIfNeeded({
   wallet,
   amount,
-  client = thirdwebClient,
-  chain = defaultChain,
 }: {
   wallet: Wallet
   amount: bigint
-  client?: ThirdwebClient
-  chain?: Chain
 }) {
   const account = wallet.getAccount()
   if (!account) {
     throw new Error('Wallet not connected')
   }
 
+  const readClient = createWalletReadClient(wallet)
   const allowance = await readErc20Allowance(
     BSC_CONTRACTS.usd1,
     account.address,
     BSC_CONTRACTS.preSale,
-    client,
-    chain,
+    readClient,
   )
 
   if (allowance >= amount) return null

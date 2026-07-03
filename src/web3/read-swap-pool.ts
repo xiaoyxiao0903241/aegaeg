@@ -2,6 +2,7 @@ import { parseAbi } from 'viem'
 import { SWAP_CONFIG } from '~/config/swap'
 import { POOL_V3_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 
 const poolAbi = parseAbi([
   POOL_V3_METHODS.fee,
@@ -31,23 +32,24 @@ export function resetSwapPoolMetadataCache() {
 
 export async function readSwapPoolImmutableMetadata(
   poolAddress: `0x${string}` = SWAP_CONFIG.pool,
+  client: ChainReadClient = bscReadClient,
 ): Promise<SwapPoolImmutableMetadata> {
   const cacheKey = poolAddress.toLowerCase()
   const cached = cachedImmutablePools.get(cacheKey)
   if (cached) return cached
 
   const [fee, token0, token1] = await Promise.all([
-    bscReadClient.readContract({
+    client.readContract({
       address: poolAddress,
       abi: poolAbi,
       functionName: 'fee',
     }),
-    bscReadClient.readContract({
+    client.readContract({
       address: poolAddress,
       abi: poolAbi,
       functionName: 'token0',
     }),
-    bscReadClient.readContract({
+    client.readContract({
       address: poolAddress,
       abi: poolAbi,
       functionName: 'token1',
@@ -66,8 +68,9 @@ export async function readSwapPoolImmutableMetadata(
 
 export async function readSwapPoolSpotPrice(
   poolAddress: `0x${string}` = SWAP_CONFIG.pool,
+  client: ChainReadClient = bscReadClient,
 ): Promise<SwapPoolSpotPrice> {
-  const slot0 = await bscReadClient.readContract({
+  const slot0 = await client.readContract({
     address: poolAddress,
     abi: poolAbi,
     functionName: 'slot0',
