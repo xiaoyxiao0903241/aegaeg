@@ -14,23 +14,16 @@ export const bsc = defineChain({
   rpc: BSC_RPC_URL,
 })
 
-const PLACEHOLDER_CLIENT_IDS = new Set([
-  '',
-  'YOUR_CLIENT_ID',
-  'replace-with-thirdweb-client-id',
-])
-
 export const thirdwebClientId = appEnv.thirdwebClientId
 
-/** thirdweb ConnectButton / SDK 需要有效的 Dashboard Client ID */
-export const isThirdwebConfigured =
-  thirdwebClientId.length > 0 && !PLACEHOLDER_CLIENT_IDS.has(thirdwebClientId)
+/** thirdweb ConnectButton / SDK — env override with code fallback in `env.ts`. */
+export const isThirdwebConfigured = thirdwebClientId.length > 0
 
 export const thirdwebClient = createThirdwebClient({
-  clientId: isThirdwebConfigured ? thirdwebClientId : 'MISSING_VITE_THIRDWEB_CLIENT_ID',
+  clientId: thirdwebClientId,
 })
 
-export const walletConnectProjectId = appEnv.walletConnectProjectId || undefined
+export const walletConnectProjectId = appEnv.walletConnectProjectId
 
 let web3EnvWarningsLogged = false
 
@@ -53,19 +46,9 @@ export function warnMissingWeb3EnvConfigOnce() {
     )
   }
 
-  if (!walletConnectProjectId) {
-    console.warn(
-      [
-        '未配置 VITE_WALLETCONNECT_PROJECT_ID，WalletConnect 与移动端 deep link 可能不可用。',
-        '在 https://cloud.walletconnect.com/ 创建 Project ID 后写入 .env。',
-      ].join('\n'),
-    )
-  }
 }
 
-export const walletConnectConfig = walletConnectProjectId
-  ? { projectId: walletConnectProjectId }
-  : undefined
+export const walletConnectConfig = { projectId: walletConnectProjectId }
 
 const hiddenWalletIds = ['inApp'] satisfies WalletId[]
 
