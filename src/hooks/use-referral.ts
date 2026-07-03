@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { parseReferrerFromSearch } from '~/config/referral'
+import { parseReferrerFromSearch, resolveDisplayReferrer } from '~/config/referral'
 import { formatCount, formatShortAddress } from '~/lib/api/format-display'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
+import { usePerformance } from '~/hooks/use-api-data'
 import {
   readIsBindReferral,
   readReferralCount,
@@ -81,17 +82,21 @@ export function useReferral(sessionReady: boolean) {
     enabled: sessionReady && Boolean(address),
     staleTime: QUERY_STALE_TIME.balances,
   })
+  const performanceQuery = usePerformance(sessionReady && Boolean(address))
 
   const isBound = referralQuery.data?.isBound ?? false
   const referrer = referralQuery.data?.referrer ?? null
   const directCount = referralQuery.data?.directCount ?? 0n
 
-  const effectiveReferrer = useMemo(() => {
-    if (isBound && referrer && referrer !== '0x0000000000000000000000000000000000000000') {
-      return referrer
-    }
-    return null
-  }, [isBound, referrer])
+  const effectiveReferrer = useMemo(
+    () =>
+      resolveDisplayReferrer({
+        isBound,
+        inviteAddress: performanceQuery.data?.invite_address,
+        chainReferrer: referrer,
+      }),
+    [isBound, performanceQuery.data?.invite_address, referrer],
+  )
 
   const bind = useCallback(async () => {
     if (isBindCooldown || isSubmitting) return false
@@ -141,8 +146,8 @@ export function useReferral(sessionReady: boolean) {
   ])
 
   const refresh = useCallback(async () => {
-    await referralQuery.refetch()
-  }, [referralQuery])
+    await Promise.all([referralQuery.refetch(), performanceQuery.refresh()])
+  }, [performanceQuery, referralQuery])
 
   return {
     isBound,
