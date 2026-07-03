@@ -1,6 +1,12 @@
 /** DApp / Home layout split — keep in sync with `theme.css` `--breakpoint-dapp`. */
 export const BREAKPOINT_DAPP_PX = 821
 
+/**
+ * 响应式断点 SSOT：
+ * - `legacy-breakpoints.css` — @custom-variant 经典 MQ（禁止任意 `max-[Npx]:`）
+ * - `lib/breakpoints.ts` — TS 常量与 matchMedia 查询字符串
+ */
+
 /** 设计基准宽（根字号 16px）；PC 缩放阶梯从此起算。 */
 export const BREAKPOINT_DESIGN_BASE_PX = 1920
 
@@ -24,12 +30,26 @@ export const BREAKPOINT_ULTRA_WIDE_SCALE = [
 /** @deprecated 用 `BREAKPOINT_DESIGN_BASE_PX` */
 export const BREAKPOINT_ULTRA_WIDE_PX = BREAKPOINT_DESIGN_BASE_PX
 
+/** Home / nav 平板断点（<=1100px）— `max-tablet:` */
+export const BREAKPOINT_TABLET_MAX_PX = 1100
+
+/** 极窄屏（<=520px）— `max-narrow:` */
+export const BREAKPOINT_NARROW_MAX_PX = 520
+
 /** Raw `@media` rules cannot use CSS variables — use this constant in comments / tooling only. */
 export const BREAKPOINT_DAPP_MAX_PX = BREAKPOINT_DAPP_PX - 1
 
 export const MOBILE_MAX_WIDTH_QUERY = `(max-width: ${BREAKPOINT_DAPP_MAX_PX}px)` as const
 
 export const DESKTOP_MIN_WIDTH_QUERY = `(min-width: ${BREAKPOINT_DAPP_PX}px)` as const
+
+/** 821–1100px 平板带 — `tablet:`（避免与 `max-dapp` 栅格 cascade 冲突） */
+export const TABLET_ONLY_WIDTH_QUERY =
+  `(min-width: ${BREAKPOINT_DAPP_PX}px) and (max-width: ${BREAKPOINT_TABLET_MAX_PX}px)` as const
+
+export const TABLET_MAX_WIDTH_QUERY = `(max-width: ${BREAKPOINT_TABLET_MAX_PX}px)` as const
+
+export const NARROW_MAX_WIDTH_QUERY = `(max-width: ${BREAKPOINT_NARROW_MAX_PX}px)` as const
 
 export const ULTRA_WIDE_MIN_WIDTH_QUERY = `(min-width: ${BREAKPOINT_DESIGN_BASE_PX}px)` as const
 

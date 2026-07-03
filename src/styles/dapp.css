@@ -1,3 +1,4 @@
+@import './legacy-breakpoints.css';
 @import 'tailwindcss/utilities';
 @import './foundations.css';
 @import './dapp-scale.css';

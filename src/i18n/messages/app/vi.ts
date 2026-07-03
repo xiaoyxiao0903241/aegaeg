@@ -466,7 +466,7 @@ const app = defineMessages({
                     title: 'Kế hoạch cùng xây dựng toàn cầu đang diễn ra',
                     body: 'Quy tụ các nhà cùng xây dựng toàn cầu, cùng tham gia xây dựng hệ sinh thái.',
                     action: 'Xem chi tiết kế hoạch →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/ch-ng-tr-nh-h-i-ng-d-tr-genesis-',
                 },
                 {
                     label: 'Học viện X',

@@ -45,3 +45,18 @@
   --dapp-progress-meter-height: 0.4375rem; /* 7 */
   --dapp-sheet-max-height: 40rem; /* 640 */
 }
+
+/* H5 字号 +1 档 — 与 `mobile-type-scale.css` 同步；@media 字面量见 breakpoints.ts */
+@media (max-width: 820px) {
+  :root {
+    --dapp-type-kicker-size: 0.8125rem; /* 13, was 11 */
+    --dapp-type-caption-size: 0.875rem; /* 14, was 13 */
+    --dapp-type-title-sm-size: 1.5rem; /* 24, was 21 */
+    --dapp-type-body-lg-size: 1.125rem; /* 18, was 17 */
+    --dapp-type-amount-size: 1.5rem; /* 24, was 22 */
+
+    --dapp-season-title-size: 0.875rem; /* 14, was 13 */
+    --dapp-season-meta-size: 0.75rem; /* 12, was 11 */
+    --dapp-season-badge-size: 0.6875rem; /* 11, was 10 */
+  }
+}

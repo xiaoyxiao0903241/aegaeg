@@ -23,7 +23,7 @@ const tokenClass = {
     'token-section relative py-30 dapp:min-h-176 max-dapp:min-h-240 max-dapp:pt-0 max-dapp:pb-14',
   container: homeSectionContainerClass,
   grid:
-    'token-grid mt-14 grid grid-cols-4 gap-5.5 py-[var(--shadow-bleed)] max-[1100px]:grid-cols-2 max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4',
+    'token-grid mt-14 grid grid-cols-4 gap-5.5 py-[var(--shadow-bleed)] tablet:grid-cols-2 max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4',
   card:
     'token-card relative isolate h-72 overflow-hidden rounded-lg transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-dapp:flex max-dapp:h-auto max-dapp:min-h-44 max-dapp:flex-col max-dapp:justify-start max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-5',
   iconWrap:

@@ -39,7 +39,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
       className={cn(
         revealClass(),
         'grid grid-cols-3 gap-0 p-5.5',
-        'max-[1100px]:grid-cols-[repeat(auto-fit,minmax(min(100%,10.5rem),1fr))] max-[1100px]:gap-4',
+        'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,10.5rem),1fr))] max-tablet:gap-4',
         'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-3.5 max-dapp:p-4',
         'group-data-[tab=community]/shell:gap-3.5 group-data-[tab=community]/shell:p-4 group-data-[tab=community]/shell:max-dapp:gap-3.5',
       )}

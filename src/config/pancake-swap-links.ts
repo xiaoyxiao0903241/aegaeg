@@ -1,9 +1,21 @@
+import { BSC_CONTRACTS } from '~/config/contracts'
+import { appEnv } from '~/config/env'
+
+const pancakeSwapBase = appEnv.pancakeSwapBaseUrl.replace(/\/$/, '')
+
+function buildPancakeSwapUrl(inputCurrency: string, outputCurrency: string): string {
+  const params = new URLSearchParams({
+    chain: 'bsc',
+    inputCurrency,
+    outputCurrency,
+  })
+  return `${pancakeSwapBase}?${params.toString()}`
+}
+
 /** PancakeSwap deep links for USDT ↔ USD1 on BSC (Swap widget external open). */
 export const PANCAKE_SWAP_DEEP_LINKS = {
-  usdtToUsd1:
-    'https://pancakeswap.finance/swap?chain=bsc&inputCurrency=0x55d398326f99059fF775485246999027B3197955&outputCurrency=0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d',
-  usd1ToUsdt:
-    'https://pancakeswap.finance/swap?chain=bsc&inputCurrency=0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d&outputCurrency=0x55d398326f99059fF775485246999027B3197955',
+  usdtToUsd1: buildPancakeSwapUrl(BSC_CONTRACTS.usdt, BSC_CONTRACTS.usd1),
+  usd1ToUsdt: buildPancakeSwapUrl(BSC_CONTRACTS.usd1, BSC_CONTRACTS.usdt),
 } as const
 
 export function resolvePancakeSwapDeepLink(sellSymbol: string, buySymbol: string): string {
