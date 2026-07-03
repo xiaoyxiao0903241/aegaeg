@@ -44,7 +44,7 @@ export function useSwapWidget(authenticated: boolean) {
     setSlippageRaw(clampSlippagePercent(value))
   }, [])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<unknown>(null)
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
   const usdtToUsd1Pair = useMemo(() => getSwapPairTokens('reverse'), [])
@@ -378,7 +378,7 @@ export function useSwapWidget(authenticated: boolean) {
       await balancesQuery.refetch()
       return true
     } catch (submitError: unknown) {
-      setError(submitError instanceof Error ? submitError.message : 'Transaction failed')
+      setError(submitError)
       // The tx may still land (unknown outcome) — refresh balances so the UI
       // re-caps the amount instead of inviting an identical resubmit.
       void balancesQuery.refetch()
