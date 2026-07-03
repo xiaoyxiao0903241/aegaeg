@@ -466,7 +466,7 @@ const app = defineMessages({
                     title: 'Plan global de co-construcción en curso',
                     body: 'Reúne a constructores de todo el mundo para participar conjuntamente en la construcción del ecosistema.',
                     action: 'Ver detalles del plan →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/programa-del-consejo-de-reserva-genesis',
                 },
                 {
                     label: 'Academia X',

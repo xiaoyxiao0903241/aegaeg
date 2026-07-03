@@ -38,9 +38,9 @@ const gridClass = {
 
 const cardClass = {
   protocol:
-    'min-h-72 px-8 py-9 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
+    'min-h-72 px-8 py-9 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
   engine:
-    'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-[520px]:px-6 max-[520px]:py-7',
+    'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
 } as const
 
 const iconClass = {

@@ -135,15 +135,22 @@ export function SwapPromoCard({
       <div className={cn(BODY_GRID, bodyPadClass(variant))}>
         <div
           className={cn(
-            'flex min-w-0 items-center',
-            isDesktop ? 'gap-3' : 'justify-between gap-2',
+            'flex w-full min-w-0 items-center',
+            isDesktop ? 'gap-3' : 'flex-nowrap justify-between gap-2',
           )}
         >
-          <div className={cn('flex min-w-0 items-center', isDesktop ? 'gap-3' : 'gap-2')}>
+          <div
+            className={cn(
+              'flex min-w-0 items-center overflow-hidden',
+              isDesktop ? 'gap-3' : 'min-w-0 flex-1 gap-2',
+            )}
+          >
             {titleIconSrc ? <TitleIcon size={variant} src={titleIconSrc} /> : null}
             <strong className={titleClass(variant)}>{title}</strong>
           </div>
-          {!isDesktop ? actionNode : null}
+          {!isDesktop ? (
+            <span className="inline-flex shrink-0 self-center">{actionNode}</span>
+          ) : null}
         </div>
         <p className={bodyClass(variant)}>{body}</p>
       </div>

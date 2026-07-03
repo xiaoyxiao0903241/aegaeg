@@ -111,7 +111,7 @@ export function DappShell() {
 
               <DappScrollFadeHost>
                 <aside className={shellWidgetClass()} data-dapp-widget-panel>
-                  <div className={shellMobileDrawerClass}>
+                  <div className={shellMobileDrawerClass} data-dapp-h5-menu>
                     <button
                       aria-controls={mobileNavId}
                       aria-expanded={mobileNavOpen}

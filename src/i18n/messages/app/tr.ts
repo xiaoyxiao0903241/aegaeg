@@ -465,7 +465,7 @@ const app = defineMessages({
                     title: 'Küresel ortak inşa planı devam ediyor',
                     body: 'Küresel ortak inşacıları bir araya getirerek ekosistem inşasına katılın.',
                     action: 'Plan detaylarını görüntüle →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/genesis-rezerv-konseyi-program',
                 },
                 {
                     label: 'X Akademi',

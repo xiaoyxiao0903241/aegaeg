@@ -92,8 +92,8 @@
 
   /* ---- 布局（rem @ 16px 根字号 = 设计稿 1920 基准；超宽屏见 breakpoint-scale.css）---- */
   --container: 75rem;
-  /* DApp / Home 响应式分界：H5 <= 820px，PC >= 821px（Tailwind `max-dapp:` / `dapp:`）。
-     裸 @media 须写字面量 820px/821px（规范不支持 var()），见 lib/breakpoints.ts。 */
+  /* DApp / Home 响应式分界：H5 <= 820px，PC >= 821px，平板 <= 1100px。
+     Tailwind 变体见 `legacy-breakpoints.css`；裸 @media 须写字面量（不支持 var()），见 lib/breakpoints.ts。 */
   --breakpoint-dapp: 821px;
 
   /* ---- 滚动条（覆盖系统默认）---- */
@@ -123,7 +123,7 @@
  * 又会生成对应工具类（rounded-md、shadow-card ...）。
  */
 @theme {
-  --breakpoint-dapp: 821px;
+  /* --breakpoint-dapp 变体由 legacy-breakpoints.css @custom-variant 定义（经典 max-width） */
 
   --radius-sm: 0.625rem;
   --radius-md: 1rem;

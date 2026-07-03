@@ -466,7 +466,7 @@ const app = defineMessages({
                     title: 'Global co-build program is live',
                     body: 'Co-builders worldwide are coming together to build the ecosystem.',
                     action: 'View program details →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program',
                 },
                 {
                     label: 'X Academy',

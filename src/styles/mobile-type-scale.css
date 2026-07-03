@@ -1,0 +1,23 @@
+/**
+ * H5 字号：在默认阶梯上整体 +1 个 Tailwind 字号档（<= 820px）。
+ * 用 `:root` 覆盖 `--text-*`（兼容旧 WebView；避免 `@theme` 嵌套在 @media 内）。
+ *
+ * @media 字面量须与 `lib/breakpoints.ts` `BREAKPOINT_DAPP_MAX_PX` 同步。
+ */
+@media (max-width: 820px) {
+  :root {
+    --text-xs: 0.875rem;
+    --text-sm: 1rem;
+    --text-base: 1.125rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 1.875rem;
+    --text-3xl: 2.25rem;
+    --text-4xl: 3rem;
+    --text-5xl: 3.75rem;
+    --text-6xl: 4.5rem;
+    --text-7xl: 6rem;
+    --text-8xl: 8rem;
+    --text-9xl: 8rem;
+  }
+}

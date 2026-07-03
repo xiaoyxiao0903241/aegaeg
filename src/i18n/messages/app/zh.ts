@@ -466,7 +466,7 @@ const app = defineMessages({
             title: '全球共建计划进行中',
             body: '汇聚全球共建者，共同参与生态建设。',
             action: '查看计划详情 →',
-            href: 'https://xdaoaegis.notion.site/shareholderplan',
+            href: 'https://xdaoaegis.notion.site/390dd8755b9880ed8497ffcb02ba7301',
           },
           {
             label: 'X 学院',

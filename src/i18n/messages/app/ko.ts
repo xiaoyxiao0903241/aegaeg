@@ -466,7 +466,7 @@ const app = defineMessages({
                     title: '글로벌 공동 구축 프로그램 진행 중',
                     body: '전 세계 공동 구축자들이 함께 생태계를 구축합니다.',
                     action: '프로그램 상세 보기 →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program-kr',
                 },
                 {
                     label: 'X 아카데미',
