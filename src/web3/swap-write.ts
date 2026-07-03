@@ -1,74 +1,82 @@
-import {
-  getContract,
-  prepareContractCall,
-  sendAndConfirmTransaction,
-  type ThirdwebClient,
-} from 'thirdweb'
-import type { Account } from 'thirdweb/wallets'
+import type { Wallet } from 'thirdweb/wallets'
+import { getAddress } from 'thirdweb/utils'
+import type { ThirdwebClient } from 'thirdweb'
 import type { Chain } from 'thirdweb/chains'
 import { SWAP_CONFIG } from '~/config/swap'
 import { buildSwapDeadline } from '~/lib/swap/build-swap-deadline'
-import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { ERC20_METHODS, MAX_UINT256, SWAP_ROUTER_V3_METHODS } from '~/web3/abis'
 import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 import { fetchSwapQuote, readErc20Allowance } from '~/web3/swap-read'
+import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
+
+const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve)
+const swapRouterWriteAbi = parseWriteAbi(SWAP_ROUTER_V3_METHODS.exactInputSingle)
 
 export async function approveTokenIfNeeded({
-  account,
+  wallet,
   token,
   amountIn,
   client = thirdwebClient,
   chain = defaultChain,
 }: {
-  account: Account
+  wallet: Wallet
   token: `0x${string}`
   amountIn: bigint
   client?: ThirdwebClient
   chain?: Chain
 }) {
+  const account = wallet.getAccount()
+  if (!account) {
+    throw new Error('Wallet not connected')
+  }
+
   const allowance = await readErc20Allowance(token, account.address, SWAP_CONFIG.router, client, chain)
   if (allowance >= amountIn) return null
 
-  const contract = getContract({ client, chain, address: token })
-  const transaction = prepareContractCall({
-    contract,
-    method: ERC20_METHODS.approve,
-    params: [SWAP_CONFIG.router, MAX_UINT256],
+  return writeContractViaWallet({
+    wallet,
+    address: token,
+    abi: erc20WriteAbi,
+    functionName: 'approve',
+    args: [SWAP_CONFIG.router, MAX_UINT256],
   })
-
-  return sendAndConfirmTransaction({ account, transaction })
 }
 
 export async function executeTokenSwap({
-  account,
+  wallet,
   amountIn,
   tokenIn,
   tokenOut,
-  slippageBps,
-  client = thirdwebClient,
-  chain = defaultChain,
+  amountOutMin,
 }: {
-  account: Account
+  wallet: Wallet
   amountIn: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  slippageBps: number
-  client?: ThirdwebClient
-  chain?: Chain
+  /** Caller-computed floor — must match what the UI displayed to the user. */
+  amountOutMin: bigint
 }) {
+  const account = wallet.getAccount()
+  if (!account) {
+    throw new Error('Wallet not connected')
+  }
+
+  // Re-quote only for route params (fee tier); the output floor stays the
+  // user-approved amountOutMin so the executed bound matches the UI.
   const quote = await fetchSwapQuote({ amountIn, tokenIn, tokenOut })
-  const amountOutMin = calcAmountOutMin(quote.quotedOut, slippageBps)
   const deadline = BigInt(buildSwapDeadline(SWAP_CONFIG.deadlineSeconds))
-  const router = getContract({ client, chain, address: SWAP_CONFIG.router })
-  const transaction = prepareContractCall({
-    contract: router,
-    method: SWAP_ROUTER_V3_METHODS.exactInputSingle,
-    params: [
+
+  return writeContractViaWallet({
+    wallet,
+    address: SWAP_CONFIG.router,
+    abi: swapRouterWriteAbi,
+    functionName: 'exactInputSingle',
+    args: [
       {
         tokenIn: quote.tokenIn,
         tokenOut: quote.tokenOut,
         fee: quote.fee,
-        recipient: account.address,
+        recipient: getAddress(account.address),
         deadline,
         amountIn,
         amountOutMinimum: amountOutMin,
@@ -76,6 +84,4 @@ export async function executeTokenSwap({
       },
     ],
   })
-
-  return sendAndConfirmTransaction({ account, transaction })
 }

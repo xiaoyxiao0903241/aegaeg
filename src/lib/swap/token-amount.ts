@@ -82,6 +82,14 @@ export function formatTokenAmountToNumber(amount: bigint, decimals: number): num
   return Number(amount) / 10 ** decimals
 }
 
+/** Highest accepted slippage (%): keeps bps strictly below the 10_000 hard limit. */
+export const MAX_SLIPPAGE_PERCENT = 99
+
+export function clampSlippagePercent(percent: number): number {
+  if (!Number.isFinite(percent) || percent < 0) return 0
+  return Math.min(percent, MAX_SLIPPAGE_PERCENT)
+}
+
 export function slippagePercentToBps(percent: number): number {
   return Math.round(percent * 100)
 }

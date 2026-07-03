@@ -38,22 +38,42 @@ test('resolveGenesisPurchaseError maps validation codes to localized messages', 
 })
 
 test('isUserRejectedWalletError detects MetaMask rejection', async () => {
-  const { isUserRejectedWalletError, resolveGenesisPurchaseError } = await import(
-    '../../src/lib/web3/resolve-contract-error-message.ts'
-  )
+  const { isUserRejectedWalletError, resolveGenesisPurchaseError, resolveFlashSwapUserMessage } =
+    await import('../../src/lib/web3/resolve-contract-error-message.ts')
 
   assert.equal(isUserRejectedWalletError({ code: 4001, message: 'User rejected the request.' }), true)
   assert.equal(isUserRejectedWalletError(new Error('User rejected the request.')), true)
+  assert.equal(
+    isUserRejectedWalletError({ code: 4001, message: 'Transaction failed' }),
+    false,
+  )
+  assert.equal(
+    isUserRejectedWalletError({ code: 4001, message: 'Interaction failed' }),
+    false,
+  )
 
   const messages = {
     insufficientUsd1: 'USD1 low',
     insufficientAllowance: 'Allowance low',
     purchaseUnavailable: 'Unavailable',
+    walletNotConnected: 'Wallet missing',
+    transactionCancelled: 'Cancelled',
   }
 
   assert.equal(
     resolveGenesisPurchaseError(new Error('User rejected the request.'), messages),
     null,
+  )
+  assert.equal(
+    resolveFlashSwapUserMessage({ code: 4001, message: 'Transaction failed' }, messages),
+    'Transaction failed',
+  )
+  assert.equal(
+    resolveFlashSwapUserMessage({ code: 4001, message: 'User rejected the request.' }, {
+      ...messages,
+      transactionCancelled: 'Cancelled',
+    }),
+    'Cancelled',
   )
 })
 

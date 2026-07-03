@@ -43,7 +43,7 @@ export function invalidateApiQueries() {
 function invalidateAddressScopedChainQueries(address?: string) {
   if (!address) return
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
-  void queryClient.invalidateQueries({ queryKey: ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase()] })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
@@ -63,7 +63,7 @@ function invalidateAddressScopedChainQueries(address?: string) {
     ),
   })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapBalances(address) })
-  void queryClient.invalidateQueries({ queryKey: ['chain', 'flashSwap', 'quote'] })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapQuoteRoot })
 }
 
 /** Wallet account changed — drop stale user-scoped reads; leave shared data untouched. */
@@ -112,8 +112,8 @@ export function invalidatePresaleChainQueries(address?: string) {
   if (!address) return
 
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserPhaseRemaining(address, 0).slice(0, 4) })
-  void queryClient.invalidateQueries({ queryKey: ['chain', 'erc20'] })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Root })
 }
 
 const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
@@ -127,10 +127,10 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.presaleAgxPrice,
     queryKeys.chain.presaleTotalPurchased,
     queryKeys.chain.presaleAirdropThreshold,
-    ['chain', 'presale', 'userTotal'],
-    ['chain', 'presale', 'userPhaseRemaining'],
-    ['chain', 'erc20'],
-    ['chain', 'referral'],
+    queryKeys.chain.presaleUserTotalRoot,
+    queryKeys.chain.presaleUserPhaseRemainingRoot,
+    queryKeys.chain.erc20Root,
+    queryKeys.chain.referralRoot,
   ],
   rewards: [
     queryKeys.api.performance,
@@ -148,12 +148,11 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.teamReferralsRoot,
     queryKeys.api.referralTotal,
     queryKeys.api.performance,
-    ['chain', 'referral'],
+    queryKeys.chain.referralRoot,
   ],
   swap: [
-    queryKeys.chain.pairSpotRate,
-    ['chain', 'swap'],
-    ['chain', 'erc20'],
+    queryKeys.chain.swapRoot,
+    queryKeys.chain.erc20Root,
   ],
 }
 

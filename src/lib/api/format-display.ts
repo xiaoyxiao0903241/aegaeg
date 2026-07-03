@@ -481,10 +481,6 @@ export function isReferralRewardLog(item: RewardLogItem): boolean {
   return item.reward_type === 'referral_paid' || item.reward_type === 'referral_withdrawn'
 }
 
-export function buildReferralLink(address: string): string {
-  return `${getRuntimeHost()}/r/${address}`
-}
-
 /** Sidebar display: host + shortened address (Figma `aegis-x.io/r/0x8F32…91A2`). */
 export function formatReferralLinkDisplay(address: string): string {
   return `${getRuntimeHost()}/r/${formatShortAddress(address)}`

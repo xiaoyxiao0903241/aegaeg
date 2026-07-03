@@ -21,16 +21,20 @@ export interface SwapPoolSpotPrice {
   tick: number
 }
 
-let cachedImmutablePool: SwapPoolImmutableMetadata | null = null
+// Keyed by pool address — a single-slot cache would serve stale metadata if
+// callers ever read more than one pool.
+const cachedImmutablePools = new Map<string, SwapPoolImmutableMetadata>()
 
 export function resetSwapPoolMetadataCache() {
-  cachedImmutablePool = null
+  cachedImmutablePools.clear()
 }
 
 export async function readSwapPoolImmutableMetadata(
   poolAddress: `0x${string}` = SWAP_CONFIG.pool,
 ): Promise<SwapPoolImmutableMetadata> {
-  if (cachedImmutablePool) return cachedImmutablePool
+  const cacheKey = poolAddress.toLowerCase()
+  const cached = cachedImmutablePools.get(cacheKey)
+  if (cached) return cached
 
   const [fee, token0, token1] = await Promise.all([
     bscReadClient.readContract({
@@ -50,13 +54,14 @@ export async function readSwapPoolImmutableMetadata(
     }),
   ])
 
-  cachedImmutablePool = {
+  const metadata: SwapPoolImmutableMetadata = {
     fee: Number(fee),
     token0,
     token1,
   }
+  cachedImmutablePools.set(cacheKey, metadata)
 
-  return cachedImmutablePool
+  return metadata
 }
 
 export async function readSwapPoolSpotPrice(

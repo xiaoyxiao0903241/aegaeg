@@ -9,33 +9,48 @@
 
 :root {
   /* ---- shadcn 语义色 ---- */
+  /* Hex first: Chromium <111 WebViews (Huawei/Vivo 等) 不解析 oklch，会丢弃整条声明。 */
+  --background: #f7f8f9;
   --background: oklch(97.29% 0.0029 264.54);
+  --foreground: #252628;
   --foreground: oklch(16.35% 0.0136 264.09);
 
+  --card: #ffffff;
   --card: oklch(100% 0 89.88);
   --card-foreground: var(--foreground);
 
+  --popover: #ffffff;
   --popover: oklch(100% 0 89.88);
   --popover-foreground: var(--foreground);
 
   /* 品牌色：珊瑚 */
+  --primary: #e86a43;
   --primary: oklch(66.83% 0.1625 36.6);
+  --primary-foreground: #ffffff;
   --primary-foreground: oklch(100% 0 89.88);
 
+  --secondary: #f0f1f3;
   --secondary: oklch(94.83% 0.0075 260.73);
   --secondary-foreground: var(--foreground);
 
+  --muted: #f0f1f3;
   --muted: oklch(94.83% 0.0075 260.73);
+  --muted-foreground: rgba(0, 0, 0, 0.5);
   --muted-foreground: oklch(0% 0 0 / 50%);
 
+  --accent: #f9ece6;
   --accent: oklch(94.92% 0.0224 45.6);
   --accent-foreground: var(--primary);
 
+  --destructive: #dc2626;
   --destructive: oklch(62% 0.2 25);
+  --destructive-foreground: #ffffff;
   --destructive-foreground: oklch(100% 0 89.88);
 
+  --border: #f0f0f2;
   --border: oklch(94.87% 0.0058 264.53);
   --input: var(--border);
+  --ring: #e86a43;
   --ring: oklch(66.83% 0.1625 36.6);
 
   --radius: 1rem;

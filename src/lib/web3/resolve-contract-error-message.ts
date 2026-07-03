@@ -2,7 +2,11 @@ const ERC20_INSUFFICIENT_BALANCE = '0xe450d38c'
 const ERC20_INSUFFICIENT_ALLOWANCE = '0xfb8f41b2'
 
 const USER_REJECTED_PATTERN =
-  /user rejected|action_rejected|request rejected|user denied|rejected the request|transaction was rejected|denied transaction signature/i
+  /user rejected|action_rejected|request rejected|user denied|rejected the request|denied transaction signature/i
+
+/** Wallet send/simulation failures — must surface in the app even when code is 4001. */
+const WALLET_SEND_FAILURE_PATTERN =
+  /transaction failed|interaction failed|likely to fail|execution reverted|cannot estimate gas|intrinsic gas too low|insufficient funds|not broadcast|reverted on-chain|wallet may have failed/i
 
 export const GENESIS_PURCHASE_ERROR = {
   INSUFFICIENT_USD1: 'GENESIS_INSUFFICIENT_USD1',
@@ -81,9 +85,14 @@ function readErrorText(error: unknown): string {
     shortMessage?: string
     reason?: string
     cause?: unknown
+    data?: unknown
   }
 
   const parts = [record.message, record.shortMessage, record.reason]
+  if (typeof record.data === 'object' && record.data !== null) {
+    const data = record.data as { message?: string; originalError?: { message?: string } }
+    parts.push(data.message, data.originalError?.message)
+  }
   if (record.cause) parts.push(readErrorText(record.cause))
   return parts.filter(Boolean).join(' ')
 }
@@ -91,9 +100,15 @@ function readErrorText(error: unknown): string {
 export function isUserRejectedWalletError(error: unknown): boolean {
   if (!error) return false
 
+  const text = readErrorText(error)
+  if (WALLET_SEND_FAILURE_PATTERN.test(text)) return false
+
   const code = readErrorCode(error)
   if (code === 4001 || code === '4001' || code === 'ACTION_REJECTED') {
-    return true
+    if (!text.trim()) return true
+    if (USER_REJECTED_PATTERN.test(text)) return true
+    // Some wallets reuse 4001 for failed sends; only treat explicit cancel copy as rejection.
+    return false
   }
 
   if (typeof error === 'object' && error !== null && 'cause' in error) {
@@ -101,7 +116,7 @@ export function isUserRejectedWalletError(error: unknown): boolean {
     if (cause && isUserRejectedWalletError(cause)) return true
   }
 
-  return USER_REJECTED_PATTERN.test(readErrorText(error))
+  return USER_REJECTED_PATTERN.test(text)
 }
 
 export function toWalletUserFacingMessage(error: unknown, fallback = 'Transaction failed'): string | null {
@@ -242,4 +257,31 @@ export function resolveGenesisPurchaseError(
   if (contractMessage) return contractMessage
 
   return resolveContractErrorMessage(error, messages)
+}
+
+export function resolveFlashSwapUserMessage(
+  error: unknown,
+  messages: {
+    walletNotConnected: string
+    insufficientAllowance: string
+    insufficientUsd1: string
+    purchaseUnavailable: string
+    transactionCancelled: string
+  },
+): string | null {
+  if (isUserRejectedWalletError(error)) {
+    return messages.transactionCancelled
+  }
+
+  const raw = readErrorText(error)
+  if (raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED) return messages.walletNotConnected
+
+  return (
+    resolveGenesisPurchaseError(error, {
+      insufficientAllowance: messages.insufficientAllowance,
+      insufficientUsd1: messages.insufficientUsd1,
+      purchaseUnavailable: messages.purchaseUnavailable,
+      walletNotConnected: messages.walletNotConnected,
+    }) ?? toWalletUserFacingMessage(error)
+  )
 }

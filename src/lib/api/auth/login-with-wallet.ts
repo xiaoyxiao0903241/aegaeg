@@ -1,4 +1,5 @@
 import type { Account } from 'thirdweb/wallets'
+import { ApiError } from '~/lib/api/client'
 import { login } from '~/lib/api/endpoints'
 import {
   buildLoginMessage,
@@ -35,10 +36,16 @@ export interface WalletLoginResult {
   signature: string
 }
 
+/**
+ * Only a backend rejection of the SIWE payload should invalidate the cached
+ * signature. Network failures and other client-side errors must rethrow
+ * untouched — clearing on those would silently delete a still-valid signature
+ * and ambush the user with a wallet prompt on the next login.
+ */
 function isLoginSignatureRejected(error: unknown): boolean {
   return (
-    error instanceof Error &&
-    /nonce|signature|expired|invalid/i.test(error.message)
+    error instanceof ApiError &&
+    /nonce|signature|expired|invalid/i.test(`${error.error} ${error.message}`)
   )
 }
 
