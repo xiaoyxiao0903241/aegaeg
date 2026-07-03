@@ -1,8 +1,6 @@
 import { suppressKnownConsoleNoise } from '~/lib/suppress-known-console-noise'
-import { syncViewportDataset } from '~/lib/sync-viewport-dataset'
 
 suppressKnownConsoleNoise()
-syncViewportDataset()
 
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('site-fluid', 'home-app')
