@@ -97,6 +97,10 @@ test('resolveReferralBindError maps parent-not-bound sentinel before contract re
   }
 
   assert.equal(
+    resolveReferralBindError(REFERRAL_BIND_ERROR.INVALID_PARENT, messages),
+    'Invalid parent',
+  )
+  assert.equal(
     resolveReferralBindError(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND, messages),
     'Parent not bound',
   )
