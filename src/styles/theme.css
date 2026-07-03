@@ -123,7 +123,7 @@
  * 又会生成对应工具类（rounded-md、shadow-card ...）。
  */
 @theme {
-  --breakpoint-dapp: 821px;
+  /* --breakpoint-dapp 变体由 legacy-breakpoints.css @custom-variant 定义（经典 max-width） */
 
   --radius-sm: 0.625rem;
   --radius-md: 1rem;

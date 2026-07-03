@@ -1,2 +1,3 @@
 @import 'tailwindcss';
+@import './legacy-breakpoints.css';
 @import './foundations.css';

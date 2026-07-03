@@ -1,6 +1,13 @@
 /** DApp / Home layout split — keep in sync with `theme.css` `--breakpoint-dapp`. */
 export const BREAKPOINT_DAPP_PX = 821
 
+/**
+ * 响应式兜底：
+ * - `legacy-breakpoints.css` — @custom-variant 经典 MQ（修 max-dapp 编译）
+ * - `legacy-browser-fallback.css` — 布局 + max-[1100px] 裸 @media
+ * - `sync-viewport-dataset.ts` — html[data-viewport] 双轨
+ */
+
 /** 设计基准宽（根字号 16px）；PC 缩放阶梯从此起算。 */
 export const BREAKPOINT_DESIGN_BASE_PX = 1920
 
@@ -23,6 +30,8 @@ export const BREAKPOINT_ULTRA_WIDE_SCALE = [
 
 /** @deprecated 用 `BREAKPOINT_DESIGN_BASE_PX` */
 export const BREAKPOINT_ULTRA_WIDE_PX = BREAKPOINT_DESIGN_BASE_PX
+
+export const BREAKPOINT_TABLET_MAX_PX = 1100
 
 /** Raw `@media` rules cannot use CSS variables — use this constant in comments / tooling only. */
 export const BREAKPOINT_DAPP_MAX_PX = BREAKPOINT_DAPP_PX - 1

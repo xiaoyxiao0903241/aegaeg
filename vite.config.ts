@@ -15,8 +15,8 @@ const localeEntries = Object.fromEntries(
 /**
  * CSS 兼容目标：Huawei/Vivo 等国产浏览器内核常见为 Chromium 90~110，
  * 不支持 oklch()（Chrome 111+）与媒体查询范围语法 width >= / <（Chrome 104+）。
- * lightningcss 按此目标降级：oklch → hex 回退 + @supports 渐进增强，
- * 范围语法 → 经典 min-/max-width。版本编码为 major << 16。
+ * lightningcss 按此目标降级：oklch → hex 回退 + @supports 渐进增强。
+ * `max-dapp` / `dapp` 变体由 `legacy-breakpoints.css` 强制经典 min-/max-width（修 `not all and`）。
  */
 const cssTargets = {
   chrome: 90 << 16,

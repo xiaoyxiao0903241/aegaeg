@@ -1,5 +1,7 @@
 @import './theme.css';
 @import './breakpoint-scale.css';
+@import './mobile-type-scale.css';
+@import './legacy-browser-fallback.css';
 @import './home-scale.css';
 @import './shared.css';
 @import './scrollbars.css';
