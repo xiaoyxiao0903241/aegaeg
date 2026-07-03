@@ -466,7 +466,7 @@ const app = defineMessages({
                     title: 'Program co-build global sedang berlangsung',
                     body: 'Mengumpulkan pembangun global untuk membangun ekosistem bersama.',
                     action: 'Lihat detail program →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/program-dewan-cadangan-genesis',
                 },
                 {
                     label: 'Akademi X',

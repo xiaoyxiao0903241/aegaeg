@@ -466,7 +466,7 @@ const app = defineMessages({
                     title: 'グローバル共創プラン開催中',
                     body: '世界中の共創者が集まり、エコシステム構築に共同参加。',
                     action: 'プラン詳細を見る →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program-jp',
                 },
                 {
                     label: 'X学院',
