@@ -44,6 +44,11 @@ export function interceptApiError(error: unknown): void {
   }
 }
 
+/** Test-only: module notify state survives across ssrLoadModule when Vite server is reused. */
+export function resetAccountBannedReportCooldownForTests(): void {
+  lastReportedAt = 0
+}
+
 export function getAccountBannedToastId(): string {
   return ACCOUNT_BANNED_TOAST_ID
 }

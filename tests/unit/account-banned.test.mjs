@@ -18,10 +18,14 @@ test('isAccountBannedError matches ApiError code 403', async () => {
 })
 
 test('interceptApiError reports banned 403', async () => {
-  const { interceptApiError, subscribeAccountBanned } = await loadModule(
-    '/src/lib/api/account-banned.ts',
-  )
+  const {
+    interceptApiError,
+    resetAccountBannedReportCooldownForTests,
+    subscribeAccountBanned,
+  } = await loadModule('/src/lib/api/account-banned.ts')
   const { ApiError } = await loadModule('/src/lib/api/client.ts')
+
+  resetAccountBannedReportCooldownForTests()
 
   let reported = 0
   const unsubscribe = subscribeAccountBanned(() => {
@@ -39,10 +43,14 @@ test('interceptApiError reports banned 403', async () => {
 })
 
 test('reportAccountBanned throttles duplicate reports within cooldown', async () => {
-  const { interceptApiError, subscribeAccountBanned } = await loadModule(
-    '/src/lib/api/account-banned.ts',
-  )
+  const {
+    interceptApiError,
+    resetAccountBannedReportCooldownForTests,
+    subscribeAccountBanned,
+  } = await loadModule('/src/lib/api/account-banned.ts')
   const { ApiError } = await loadModule('/src/lib/api/client.ts')
+
+  resetAccountBannedReportCooldownForTests()
 
   let reported = 0
   const unsubscribe = subscribeAccountBanned(() => {
