@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "render:home": "node scripts/render-home.mjs",
+    "env:staging": "node scripts/switch-env.mjs staging",
+    "env:prod": "node scripts/switch-env.mjs prod",
+    "env:status": "node scripts/switch-env.mjs status",
     "dev": "pnpm render:home && vite --host 0.0.0.0 --port 5174 --strictPort",
     "build": "tsc -b && pnpm render:home && vite build",
     "lint": "eslint .",
