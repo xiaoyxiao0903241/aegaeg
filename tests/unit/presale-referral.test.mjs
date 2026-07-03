@@ -54,3 +54,55 @@ test('parseReferrerFromSearch reads ref query param', async () => {
   )
   assert.equal(parseReferrerFromSearch('?foo=bar'), null)
 })
+
+test('resolveDisplayReferrer prefers API invite_address over chain referrer', async () => {
+  const { resolveDisplayReferrer } = await loadModule('/src/config/referral.ts')
+
+  const apiAddress = '0x1111111111111111111111111111111111111111'
+  const chainAddress = '0x2222222222222222222222222222222222222222'
+
+  assert.equal(
+    resolveDisplayReferrer({
+      isBound: true,
+      inviteAddress: apiAddress,
+      chainReferrer: chainAddress,
+    }),
+    apiAddress,
+  )
+})
+
+test('resolveDisplayReferrer falls back to chain referrer when API is missing', async () => {
+  const { resolveDisplayReferrer } = await loadModule('/src/config/referral.ts')
+
+  const chainAddress = '0x2222222222222222222222222222222222222222'
+
+  assert.equal(
+    resolveDisplayReferrer({
+      isBound: true,
+      inviteAddress: null,
+      chainReferrer: chainAddress,
+    }),
+    chainAddress,
+  )
+  assert.equal(
+    resolveDisplayReferrer({
+      isBound: true,
+      inviteAddress: '',
+      chainReferrer: chainAddress,
+    }),
+    chainAddress,
+  )
+})
+
+test('resolveDisplayReferrer returns null when user is not bound', async () => {
+  const { resolveDisplayReferrer } = await loadModule('/src/config/referral.ts')
+
+  assert.equal(
+    resolveDisplayReferrer({
+      isBound: false,
+      inviteAddress: '0x1111111111111111111111111111111111111111',
+      chainReferrer: '0x2222222222222222222222222222222222222222',
+    }),
+    null,
+  )
+})

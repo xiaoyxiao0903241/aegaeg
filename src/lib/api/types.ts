@@ -85,6 +85,8 @@ export interface UserPerformance {
   presale_commitment_floor_performance: string
   presale_referral_reward: string
   direct_presale_volume: string
+  /** Inviter address from backend; preferred over on-chain referrer when present. */
+  invite_address?: string | null
 }
 
 export interface QualifiedPartitionsResponse {
