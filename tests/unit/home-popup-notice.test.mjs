@@ -172,6 +172,35 @@ test('normalizeHomePopupNotice accepts title/content without image', async () =>
   })
 })
 
+test('isHomePopupNoticeWithinSchedule excludes items outside start/end window', async () => {
+  const { isHomePopupNoticeWithinSchedule, normalizeHomePopupNotice } =
+    await loadModule('/src/home/popup-notice.ts')
+
+  const window = {
+    start_time: '2026-07-04T08:00:00.000Z',
+    end_time: '2026-07-04T18:00:00.000Z',
+  }
+
+  const inside = Date.parse('2026-07-04T12:00:00.000Z')
+  const beforeStart = Date.parse('2026-07-04T07:59:59.999Z')
+  const afterEnd = Date.parse('2026-07-04T18:00:00.001Z')
+
+  assert.equal(isHomePopupNoticeWithinSchedule(window, inside), true)
+  assert.equal(isHomePopupNoticeWithinSchedule(window, beforeStart), false)
+  assert.equal(isHomePopupNoticeWithinSchedule(window, afterEnd), false)
+  assert.equal(
+    isHomePopupNoticeWithinSchedule({ start_time: null, end_time: null }, inside),
+    true,
+  )
+
+  assert.equal(
+    normalizeHomePopupNotice({ ...sampleApiItem, ...window }, 'zh', inside)?.id,
+    2,
+  )
+  assert.equal(normalizeHomePopupNotice({ ...sampleApiItem, ...window }, 'zh', beforeStart), null)
+  assert.equal(normalizeHomePopupNotice({ ...sampleApiItem, ...window }, 'zh', afterEnd), null)
+})
+
 test('getHomePopupNotices uses POST with locale body', async () => {
   const { getHomePopupNotices } = await loadModule('/src/lib/api/endpoints.ts')
 
