@@ -24,6 +24,7 @@ export const queryKeys = {
       ['api', 'teamReferrals', params.page ?? 1, params.page_size ?? 20] as const,
     teamOverview: ['api', 'teamOverview'] as const,
     qualifiedPartitions: ['api', 'performance', 'qualified-partitions'] as const,
+    homePopupNotices: (locale: string) => ['api', 'home', 'popupNotices', locale] as const,
   },
   chain: {
     // Root keys cover every query under a prefix — the single source of truth

@@ -4,6 +4,7 @@ import type {
   ClaimConfirmResult,
   CommunityFundLogItem,
   CommunityFundTotals,
+  HomePopupNoticesResponse,
   LoginRequest,
   LoginResponse,
   Paginated,
@@ -30,6 +31,13 @@ export async function login(request: LoginRequest): Promise<LoginResponse> {
   return apiRequest<LoginResponse>('/auth/login', {
     method: 'POST',
     body: request,
+  })
+}
+
+export async function getHomePopupNotices(locale?: string): Promise<HomePopupNoticesResponse> {
+  return apiRequest<HomePopupNoticesResponse>('/home/popup-notices', {
+    method: 'POST',
+    body: locale ? { locale } : {},
   })
 }
 

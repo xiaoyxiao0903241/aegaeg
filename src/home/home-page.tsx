@@ -9,11 +9,15 @@ import { HomePartnersSection } from '~/home/components/home-partners-section'
 import { HomeRoadmapSection } from '~/home/components/home-roadmap-section'
 import { HomeSecuritySection } from '~/home/components/home-security-section'
 import { HomeTokenSection } from '~/home/components/home-token-section'
+import { HomePopupNoticeModal } from '~/home/components/home-popup-notice-modal'
+import { noticeDismissKey } from '~/home/popup-notice'
+import { useHomePopupNotice } from '~/home/use-home-popup-notice'
 import { useI18n } from '~/i18n/use-i18n'
 
 export function HomePage() {
   const { messages } = useI18n()
   const { meta } = messages.home
+  const popupNotice = useHomePopupNotice()
 
   useEffect(() => {
     document.title = meta.title
@@ -39,6 +43,15 @@ export function HomePage() {
         <HomeFaqSection />
       </main>
       <HomeFooter />
+      {popupNotice.open && popupNotice.notice ? (
+        <HomePopupNoticeModal
+          key={noticeDismissKey(popupNotice.notice)}
+          notice={popupNotice.notice}
+          onDismiss={popupNotice.onDismiss}
+          onImageLoadError={popupNotice.onImageLoadError}
+          open={popupNotice.open}
+        />
+      ) : null}
     </div>
   )
 }
