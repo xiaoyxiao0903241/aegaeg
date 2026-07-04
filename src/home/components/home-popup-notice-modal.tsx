@@ -63,7 +63,7 @@ export function HomePopupNoticeModal({
 
               <button
                 aria-label={messages.common.close}
-                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[oklch(13%_0.02_264/72%)] text-white transition-colors hover:bg-[oklch(13%_0.02_264/88%)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-black/65 focus:outline-none"
                 onClick={onDismiss}
                 type="button"
               >
