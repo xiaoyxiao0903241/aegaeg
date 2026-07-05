@@ -8,28 +8,40 @@ test('buildRewardTierRows aligns with tier-progress thresholds', async () => {
   const rows = buildRewardTierRows()
 
   assert.equal(rows.length, 10)
-  assert.deepEqual(rows[0], ['S1', '≥ $500', '$5,000', '1%', 'A2'])
-  assert.deepEqual(rows[2], ['S3', '≥ $2,000', '$30,000', '3%', 'A4'])
+  assert.deepEqual(rows[0], ['S1', '≥ $500', '$5,000', '1%'])
+  assert.deepEqual(rows[2], ['S3', '≥ $2,000', '$30,000', '3%'])
   assert.equal(rows[3][2], 'Two legs S3')
-  assert.deepEqual(rows[6], ['S7', '≥ $10,000', 'Two legs S6', '7%', 'A8'])
-  assert.deepEqual(rows[9], ['S10', '≥ $20,000', 'Two legs S9', '10%', 'A11'])
+  assert.deepEqual(rows[6], ['S7', '≥ $10,000', 'Two legs S6', '7%'])
+  assert.deepEqual(rows[9], ['S10', '≥ $20,000', 'Two legs S9', '10%'])
 })
 
-test('post-launch rank labels map presale rank to A-series tiers', async () => {
+test('commitment floor post-launch labels map API floor rank to A-tier', async () => {
   const {
-    getPostLaunchRankLabel,
-    getBoostedPostLaunchRankLabel,
     getCommitmentFloorPostLaunchLabel,
     getCommitmentFloorBoostedPostLaunchLabel,
     getTeamBonusRateLabel,
+    shouldShowCommitmentFloorBoostLabel,
+    resolveCommitmentFloorRank,
+    MAX_COMMITMENT_FLOOR_A_RANK,
   } = await loadModule('/src/lib/presale/tier-table.ts')
 
-  assert.equal(getPostLaunchRankLabel(2), 'A3')
-  assert.equal(getBoostedPostLaunchRankLabel(2), 'A4')
-  assert.equal(getPostLaunchRankLabel(10), 'A11')
-  assert.equal(getBoostedPostLaunchRankLabel(10), 'A11')
+  assert.equal(MAX_COMMITMENT_FLOOR_A_RANK, 13)
+  assert.equal(resolveCommitmentFloorRank(0), 0)
+  assert.equal(resolveCommitmentFloorRank(10), 10)
+  assert.equal(resolveCommitmentFloorRank(13), 13)
+  assert.equal(resolveCommitmentFloorRank(14), 13)
+
   assert.equal(getCommitmentFloorPostLaunchLabel(3), 'A3')
   assert.equal(getCommitmentFloorBoostedPostLaunchLabel(3), 'A4')
+  assert.equal(getCommitmentFloorBoostedPostLaunchLabel(0), '')
+  assert.equal(getCommitmentFloorPostLaunchLabel(13), 'A13')
+  assert.equal(getCommitmentFloorBoostedPostLaunchLabel(12), 'A13')
+  assert.equal(getCommitmentFloorBoostedPostLaunchLabel(13), 'A13')
+  assert.equal(getCommitmentFloorPostLaunchLabel(14), 'A13')
+  assert.equal(shouldShowCommitmentFloorBoostLabel(0), false)
+  assert.equal(shouldShowCommitmentFloorBoostLabel(3), true)
+  assert.equal(shouldShowCommitmentFloorBoostLabel(12), true)
+  assert.equal(shouldShowCommitmentFloorBoostLabel(13), false)
   assert.equal(getTeamBonusRateLabel(0), '1%')
   assert.equal(getTeamBonusRateLabel(2), '2%')
 })

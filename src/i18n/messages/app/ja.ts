@@ -353,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: '創世準備理事になると、チーム共創額の1%-10%をリワードとして獲得でき、AEGIS Xローンチ後30日以内に1ランクアップできます。',
         shareholderTitleForRank: '{rank} · 創世準備理事',
         heroKicker: '創世ランク',
-        heroBodyForRank: 'チーム共創額の{bonus}をリワードとして獲得し、ローンチ後30日間{postLaunch}共創ランクを受け取る。',
         currentTierSuffix: '現在',
         progressPersonalTo: '{rank}まで · 個人購入',
         progressMaxPersonal: '最高個人ランク到達',

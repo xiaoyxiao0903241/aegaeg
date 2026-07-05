@@ -12,11 +12,10 @@ import {
 } from '~/lib/api/format-display'
 import { buildNextTierProgress } from '~/lib/presale/tier-progress'
 import {
-  getBoostedPostLaunchRankLabel,
   getCommitmentFloorBoostedPostLaunchLabel,
   getCommitmentFloorPostLaunchLabel,
-  getPostLaunchRankLabel,
   getTeamBonusRateLabel,
+  shouldShowCommitmentFloorBoostLabel,
 } from '~/lib/presale/tier-table'
 import {
   CurrentTitleCardBodySkeleton,
@@ -60,21 +59,20 @@ export function RewardsRankSection() {
   const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
   const hasRank = displayRank > 0
-  const postLaunchRank =
-    commitmentFloorRank > 0
-      ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
-      : getPostLaunchRankLabel(displayRank)
-  const postLaunch30DayRankLabel =
-    commitmentFloorRank > 0
-      ? getCommitmentFloorBoostedPostLaunchLabel(commitmentFloorRank)
-      : getBoostedPostLaunchRankLabel(displayRank)
+  const showPostLaunchRank = commitmentFloorRank > 0
+  const postLaunchRank = showPostLaunchRank
+    ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
+    : ''
+  const postLaunch30DayLabel =
+    showPostLaunchRank && shouldShowCommitmentFloorBoostLabel(commitmentFloorRank)
+      ? t.rewards.postLaunch30DayRank.replace(
+          '{rank}',
+          getCommitmentFloorBoostedPostLaunchLabel(commitmentFloorRank),
+        )
+      : ''
   const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
     '{rate}',
     getTeamBonusRateLabel(displayRank),
-  )
-  const postLaunch30DayLabel = t.rewards.postLaunch30DayRank.replace(
-    '{rank}',
-    postLaunch30DayRankLabel,
   )
   const leftBottomLabel = hasRank ? teamRewardRateLabel : t.rewards.shareholderNoRankBody
 
@@ -127,7 +125,10 @@ export function RewardsRankSection() {
           <CurrentTitleCardBodySkeleton />
         ) : (
           <div
-            className={cn('grid gap-x-3 gap-y-1.5', hasRank ? 'grid-cols-2' : 'grid-cols-1')}
+            className={cn(
+              'grid gap-x-3 gap-y-1.5',
+              showPostLaunchRank ? 'grid-cols-2' : 'grid-cols-1',
+            )}
           >
             <SideLabel
               className={cn(dappKickerClass, 'max-dapp:text-[length:var(--dapp-type-kicker-size)]')}
@@ -135,7 +136,7 @@ export function RewardsRankSection() {
             >
               {t.rewards.currentTitle}
             </SideLabel>
-            {hasRank ? (
+            {showPostLaunchRank ? (
               <div className="flex items-center justify-end gap-1 self-start">
                 <SideLabel
                   className={cn(
@@ -161,7 +162,7 @@ export function RewardsRankSection() {
                 title={rankLabel}
               />
             </SideTitle>
-            {hasRank ? (
+            {showPostLaunchRank ? (
               <SideTitle className={cn(dappRankTitleClass, 'text-right max-dapp:leading-[1.2]')}>
                 {postLaunchRank}
               </SideTitle>
@@ -170,7 +171,7 @@ export function RewardsRankSection() {
             <SideHint className={rankMetaClass} tone="body">
               {leftBottomLabel}
             </SideHint>
-            {hasRank ? (
+            {postLaunch30DayLabel ? (
               <SideHint className={cn(rankMetaClass, 'text-right')} tone="body">
                 {postLaunch30DayLabel}
               </SideHint>

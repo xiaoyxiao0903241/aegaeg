@@ -352,7 +352,6 @@ const app = defineMessages({
       shareholderNoRankBody: '成为创世储备理事可获得团队共建金额的 1%-10% 作为奖励，并且在 AEGIS X 上线后的 30 天内提升 1 级',
       shareholderTitleForRank: '{rank} · 创世储备理事',
       heroKicker: '创世等级',
-      heroBodyForRank: '获得团队共建金额的{bonus}作为奖励，并且在上线后的30天内获得{postLaunch}共建等级。',
       currentTierSuffix: '当前',
       progressPersonalTo: '距离 {rank} · 个人认购',
       progressMaxPersonal: '已达最高个人等级',

@@ -353,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Al convertirte en Gobernador de Reserva Génesis, obtienes el 1%-10% del volumen de co-construcción del equipo como recompensa y subes 1 nivel dentro de los 30 días posteriores al lanzamiento de AEGIS X.',
         shareholderTitleForRank: '{rank} · Gobernador de Reserva Génesis',
         heroKicker: 'Nivel Génesis',
-        heroBodyForRank: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa y recibe el nivel de co-construcción {postLaunch} durante 30 días tras el lanzamiento.',
         currentTierSuffix: 'actual',
         progressPersonalTo: 'Hasta {rank} · Suscripción personal',
         progressMaxPersonal: 'Nivel personal máximo alcanzado',

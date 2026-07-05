@@ -353,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Trở thành Thống đốc Dự trữ Sáng lập để nhận 1%-10% khối lượng đồng xây dựng của đội làm phần thưởng và nâng 1 cấp trong 30 ngày sau khi AEGIS X ra mắt.',
         shareholderTitleForRank: '{rank} · Thống đốc Dự trữ Sáng lập',
         heroKicker: 'Cấp sáng lập',
-        heroBodyForRank: 'Nhận {bonus} từ khối lượng đồng xây dựng của nhóm làm phần thưởng và đạt cấp đồng xây dựng {postLaunch} trong 30 ngày sau ra mắt.',
         currentTierSuffix: 'Hiện tại',
         progressPersonalTo: 'Còn cách {rank} · Đăng ký cá nhân',
         progressMaxPersonal: 'Đã đạt cấp cá nhân cao nhất',

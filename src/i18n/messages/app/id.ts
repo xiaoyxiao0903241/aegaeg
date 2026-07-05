@@ -353,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Menjadi Gubernur Cadangan Genesis memberi hadiah 1%-10% dari volume co-build tim dan naik 1 level dalam 30 hari setelah peluncuran AEGIS X.',
         shareholderTitleForRank: '{rank} · Gubernur Cadangan Genesis',
         heroKicker: 'LEVEL GENESIS',
-        heroBodyForRank: 'Dapatkan {bonus} dari volume co-build tim sebagai hadiah dan terima tingkat co-build {postLaunch} selama 30 hari setelah peluncuran.',
         currentTierSuffix: 'saat ini',
         progressPersonalTo: 'Menuju {rank} · Langganan pribadi',
         progressMaxPersonal: 'Level pribadi tertinggi tercapai',

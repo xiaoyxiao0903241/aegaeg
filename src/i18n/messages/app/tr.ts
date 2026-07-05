@@ -352,7 +352,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Genesis Rezerv Valisi olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
         shareholderTitleForRank: '{rank} · Genesis Rezerv Valisi',
         heroKicker: 'Genesis seviyesi',
-        heroBodyForRank: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın ve yayına girdikten sonra 30 gün boyunca {postLaunch} ortak inşa seviyesini kazanın.',
         currentTierSuffix: 'Mevcut',
         progressPersonalTo: '{rank} · kişisel aboneliğe mesafe',
         progressMaxPersonal: 'En yüksek kişisel seviyeye ulaşıldı',

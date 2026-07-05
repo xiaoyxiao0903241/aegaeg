@@ -13,18 +13,14 @@ const TEAM_BONUS_RATES = [
   '9%',
   '10%',
 ] as const
-const POST_LAUNCH_RANKS = [
-  'A2',
-  'A3',
-  'A4',
-  'A5',
-  'A6',
-  'A7',
-  'A8',
-  'A9',
-  'A10',
-  'A11',
-] as const
+
+/** Caps commitment-floor A-tier from /performance presale_commitment_floor_rank (max A13; S max remains S10). */
+export const MAX_COMMITMENT_FLOOR_A_RANK = 13
+
+export function resolveCommitmentFloorRank(apiRank: number): number {
+  if (!Number.isFinite(apiRank) || apiRank <= 0) return 0
+  return Math.min(MAX_COMMITMENT_FLOOR_A_RANK, Math.trunc(apiRank))
+}
 
 export const REWARD_TIER_ROW_COUNT = PERSONAL_PRESALE_RANK_THRESHOLDS_USD.length
 
@@ -34,30 +30,23 @@ export function getTeamBonusRateLabel(rank: number): string {
   return TEAM_BONUS_RATES[index]
 }
 
-export function getPostLaunchRankLabel(rank: number): string {
-  if (rank <= 0) return ''
-  const index = Math.min(rank - 1, POST_LAUNCH_RANKS.length - 1)
-  return POST_LAUNCH_RANKS[index]
-}
-
 /** Commitment floor rank maps 1:1 to A-tier (floor 3 → A3). */
 export function getCommitmentFloorPostLaunchLabel(floorRank: number): string {
   if (floorRank <= 0) return ''
-  const aRank = Math.min(floorRank, POST_LAUNCH_RANKS.length)
+  const aRank = Math.min(floorRank, MAX_COMMITMENT_FLOOR_A_RANK)
   return `A${aRank}`
 }
 
 /** 30-day boost after commitment floor: floor rank + 1 (floor 3 → A4). */
 export function getCommitmentFloorBoostedPostLaunchLabel(floorRank: number): string {
   if (floorRank <= 0) return ''
-  const aRank = Math.min(floorRank + 1, POST_LAUNCH_RANKS.length)
+  const aRank = Math.min(floorRank + 1, MAX_COMMITMENT_FLOOR_A_RANK)
   return `A${aRank}`
 }
 
-export function getBoostedPostLaunchRankLabel(rank: number): string {
-  if (rank <= 0) return ''
-  const boostedRank = Math.min(rank + 1, POST_LAUNCH_RANKS.length)
-  return POST_LAUNCH_RANKS[boostedRank - 1]
+/** Hide 30-day boost copy when already at max A-tier (A13). */
+export function shouldShowCommitmentFloorBoostLabel(floorRank: number): boolean {
+  return floorRank > 0 && floorRank < MAX_COMMITMENT_FLOOR_A_RANK
 }
 
 function formatUsdThreshold(value: number): string {
@@ -94,7 +83,6 @@ export function buildRewardTierRows(): readonly (readonly string[])[] {
       formatMinPersonalContribution(personalUsd),
       formatTeamRequirement(rank),
       TEAM_BONUS_RATES[index],
-      POST_LAUNCH_RANKS[index],
     ]
   })
 }

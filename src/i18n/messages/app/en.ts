@@ -353,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Become a Genesis Reserve Governor to earn 1%-10% of team co-build volume as rewards and upgrade one tier within 30 days after AEGIS X launch.',
         shareholderTitleForRank: '{rank} · Genesis Reserve Governor',
         heroKicker: 'Genesis tier',
-        heroBodyForRank: 'Earn {bonus} of team co-build volume as reward and receive {postLaunch} co-build tier for 30 days after launch.',
         currentTierSuffix: 'Current',
         progressPersonalTo: 'Progress to {rank} · Personal subscription',
         progressMaxPersonal: 'Maximum personal tier reached',

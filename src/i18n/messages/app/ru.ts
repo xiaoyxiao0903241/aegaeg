@@ -353,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Став управляющим резервом Genesis, вы получаете 1%-10% от суммы командного со-строительства в виде наград и повышаете уровень на 1 в течение 30 дней после запуска AEGIS X.',
         shareholderTitleForRank: '{rank} · Управляющий резервом Genesis',
         heroKicker: 'Уровень Genesis',
-        heroBodyForRank: 'Получайте {bonus} от объёма командного со-строительства и уровень со-строительства {postLaunch} на 30 дней после запуска.',
         currentTierSuffix: 'текущий',
         progressPersonalTo: 'До {rank} · личная подписка',
         progressMaxPersonal: 'Достигнут максимальный личный уровень',

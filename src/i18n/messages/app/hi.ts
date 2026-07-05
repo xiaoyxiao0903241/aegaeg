@@ -353,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Genesis रिज़र्व गवर्नर बनने पर टीम co-build राशि का 1%-10% पुरस्कार मिलता है, और AEGIS X लॉन्च के 30 दिनों में 1 स्तर अपग्रेड होता है।',
         shareholderTitleForRank: '{rank} · Genesis रिज़र्व गवर्नर',
         heroKicker: 'GENESIS स्तर',
-        heroBodyForRank: 'टीम सह-निर्माण राशि पर {bonus} पुरस्कार पाएं, और लॉन्च के बाद 30 दिनों के लिए {postLaunch} सह-निर्माण स्तर प्राप्त करें।',
         currentTierSuffix: 'वर्तमान',
         progressPersonalTo: '{rank} तक · व्यक्तिगत सदस्यता',
         progressMaxPersonal: 'उच्चतम व्यक्तिगत स्तर प्राप्त',
