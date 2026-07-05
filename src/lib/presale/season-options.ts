@@ -20,7 +20,7 @@ export function buildSeasonOptions(
     const airdrop = airdropBps > 0 ? `+${(airdropBps / 100).toFixed(0)}%` : '—'
 
     return {
-      name: `Season ${index + 1}`,
+      name: `Phase ${index + 1}`,
       status: active ? 'LIVE' : ended ? 'Ended' : 'Upcoming',
       active,
       discount: `${discountPct}% off`,
