@@ -1,10 +1,7 @@
 import { useMemo } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { buildRewardTierRows } from '~/lib/presale/tier-table'
-import {
-  formatPresaleRank,
-  formatShareholderHintForRank,
-} from '~/lib/api/format-display'
+import { formatPresaleRank } from '~/lib/api/format-display'
+import { resolveCommitmentFloorRank } from '~/lib/presale/tier-table'
 import { resolveDisplayPresaleRank } from '~/lib/presale/rank'
 import { formatTokenAmountToNumber } from '~/lib/swap/token-amount'
 import { useAuth } from '~/providers/auth-provider'
@@ -37,7 +34,7 @@ export function useShareholderRank() {
   )
 
   const commitmentFloorRank = useMemo(
-    () => resolveDisplayPresaleRank(performance?.presale_commitment_floor_rank ?? 0),
+    () => resolveCommitmentFloorRank(performance?.presale_commitment_floor_rank ?? 0),
     [performance?.presale_commitment_floor_rank],
   )
 
@@ -68,10 +65,7 @@ export function useShareholderRank() {
 
 export function useShareholderRankLabels(t: {
   rewards: {
-    heroBodyForRank: string
-    shareholderHintNoRank: string
     shareholderNoRankTitle: string
-    shareholderNoRankBody: string
     shareholderTitleForRank: string
   }
 }) {
@@ -97,21 +91,9 @@ export function useShareholderRankLabels(t: {
     )
   })()
 
-  const heroBody = (() => {
-    if (rankState.sessionReady && rankState.isRankLoading) return ''
-    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankBody
-    return formatShareholderHintForRank(
-      effectiveDisplayRank,
-      t.rewards.heroBodyForRank,
-      t.rewards.shareholderNoRankBody,
-      buildRewardTierRows(),
-    )
-  })()
-
   return {
     ...rankState,
     displayRank: effectiveDisplayRank,
-    heroBody,
     heroTitle,
     rankLabel,
   }

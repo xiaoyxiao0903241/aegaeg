@@ -28,15 +28,12 @@ test('getPresaleRankHighlightedRows maps rank to tier table row index', async ()
 test('formatShareholderHintForRank renders tier-specific hint', async () => {
   const { formatShareholderHintForRank } = await loadModule('/src/lib/api/format-display.ts')
   const tiers = [
-    ['S1', '$500', '$5,000', '1%', 'A2'],
-    ['S2', '$1,000', '$10,000', '2%', 'A3'],
-    ['S3', '$2,000', '$30,000', '3%', 'A4'],
+    ['S1', '$500', '$5,000', '1%'],
+    ['S2', '$1,000', '$10,000', '2%'],
+    ['S3', '$2,000', '$30,000', '3%'],
   ]
 
-  assert.equal(
-    formatShareholderHintForRank(3, '{bonus} · {postLaunch}', 'fallback', tiers),
-    '3% · A4',
-  )
+  assert.equal(formatShareholderHintForRank(3, 'Reward {bonus}', 'fallback', tiers), 'Reward 3%')
   assert.equal(formatShareholderHintForRank(0, '{bonus}', 'fallback', tiers), 'fallback')
 })
 
