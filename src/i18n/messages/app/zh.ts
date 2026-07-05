@@ -342,6 +342,7 @@ const app = defineMessages({
       postLaunchRankTitle: '上线后等级',
       teamRewardRate: '团队奖励 {rate}',
       postLaunch30DayRank: '上线30天内您可获得{rank}等级',
+      postLaunchMaxRank: '您已达到最高等级',
       postLaunchRankTooltip:
         '上线后，等级将根据团队参与共建的金额，按折扣价兑换 AGX 后计算真实业绩。\n当前等级仅以业绩数据作为统计依据，上线后可能还会受其他因素影响，例如个人持仓、直推有效账户等。\n以上数据仅供参考，最终以上线后的真实数据为准。',
       superCommunityBadge: '超级体系',
@@ -492,6 +493,7 @@ const app = defineMessages({
       postLaunchRankLabel: '上线后级别',
       totalTeamVolume: '总业绩 {amount}',
       postLaunch30DayBoost: '上线后30天内提升至{rank}',
+      postLaunchMaxRank: '您已达到最高等级',
       bindReferrerSuccess: '推荐人绑定成功',
       inviteFlow: {
         items: [

@@ -343,6 +343,7 @@ const app = defineMessages({
         postLaunchRankTitle: '上線後等級',
         teamRewardRate: '團隊獎勵 {rate}',
         postLaunch30DayRank: '上線30天內您可獲得{rank}等級',
+        postLaunchMaxRank: '您已達到最高等級',
         postLaunchRankTooltip: '上線後，等級將根據團隊參與共建的金額，按折扣價兌換 AGX 後計算真實業績。\n當前等級僅以業績數據作為統計依據，上線後還可能受其他因素影響，例如個人持倉、直推有效賬戶等。\n以上數據僅供參考，最終以上線後的真實數據為準。',
         superCommunityBadge: '超級體系',
         heroTierRewardBody: '獲得團隊共建金額的{bonus}作為獎勵。',
@@ -491,6 +492,7 @@ const app = defineMessages({
         postLaunchRankLabel: '上線後級別',
         totalTeamVolume: '總業績 {amount}',
         postLaunch30DayBoost: '上線後30天內提升至{rank}',
+        postLaunchMaxRank: '您已達到最高等級',
         bindReferrerSuccess: '推薦人綁定成功',
         inviteFlow: {
             items: [

@@ -44,9 +44,20 @@ export function getCommitmentFloorBoostedPostLaunchLabel(floorRank: number): str
   return `A${aRank}`
 }
 
-/** Hide 30-day boost copy when already at max A-tier (A13). */
-export function shouldShowCommitmentFloorBoostLabel(floorRank: number): boolean {
-  return floorRank > 0 && floorRank < MAX_COMMITMENT_FLOOR_A_RANK
+/** 30-day boost / max-rank copy for commitment floor tier. */
+export function resolveCommitmentFloorBoostCopy(
+  floorRank: number,
+  options: {
+    boostTemplate: string
+    maxRankCopy: string
+  },
+): string | undefined {
+  if (floorRank <= 0) return undefined
+  if (floorRank >= MAX_COMMITMENT_FLOOR_A_RANK) return options.maxRankCopy
+  return options.boostTemplate.replace(
+    '{rank}',
+    getCommitmentFloorBoostedPostLaunchLabel(floorRank),
+  )
 }
 
 function formatUsdThreshold(value: number): string {

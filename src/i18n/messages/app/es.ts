@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'Nivel tras el lanzamiento',
         teamRewardRate: 'Recompensa del equipo {rate}',
         postLaunch30DayRank: 'Dentro de los 30 días tras el lanzamiento podrás alcanzar {rank}',
+        postLaunchMaxRank: 'Ha alcanzado el nivel máximo',
         postLaunchRankTooltip: 'Tras el lanzamiento, el nivel se calculará según el rendimiento real del equipo en co-construcción convertido a AGX al precio con descuento.\nEl nivel actual se basa solo en datos de rendimiento; tras el lanzamiento pueden influir otros factores, como tenencias personales y referidos directos válidos.\nEstos datos son solo de referencia; prevalecerán los datos reales tras el lanzamiento.',
         superCommunityBadge: 'Supersistema',
         heroTierRewardBody: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa.',
@@ -492,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'Nivel tras el lanzamiento',
         totalTeamVolume: 'Volumen total {amount}',
         postLaunch30DayBoost: 'Ascender a {rank} en 30 días tras el lanzamiento',
+        postLaunchMaxRank: 'Ha alcanzado el nivel máximo',
         bindReferrerSuccess: 'Referente vinculado correctamente',
         inviteFlow: {
             items: [

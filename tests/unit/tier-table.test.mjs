@@ -20,7 +20,7 @@ test('commitment floor post-launch labels map API floor rank to A-tier', async (
     getCommitmentFloorPostLaunchLabel,
     getCommitmentFloorBoostedPostLaunchLabel,
     getTeamBonusRateLabel,
-    shouldShowCommitmentFloorBoostLabel,
+    resolveCommitmentFloorBoostCopy,
     resolveCommitmentFloorRank,
     MAX_COMMITMENT_FLOOR_A_RANK,
   } = await loadModule('/src/lib/presale/tier-table.ts')
@@ -38,10 +38,27 @@ test('commitment floor post-launch labels map API floor rank to A-tier', async (
   assert.equal(getCommitmentFloorBoostedPostLaunchLabel(12), 'A13')
   assert.equal(getCommitmentFloorBoostedPostLaunchLabel(13), 'A13')
   assert.equal(getCommitmentFloorPostLaunchLabel(14), 'A13')
-  assert.equal(shouldShowCommitmentFloorBoostLabel(0), false)
-  assert.equal(shouldShowCommitmentFloorBoostLabel(3), true)
-  assert.equal(shouldShowCommitmentFloorBoostLabel(12), true)
-  assert.equal(shouldShowCommitmentFloorBoostLabel(13), false)
+  assert.equal(
+    resolveCommitmentFloorBoostCopy(0, {
+      boostTemplate: 'boost {rank}',
+      maxRankCopy: 'max',
+    }),
+    undefined,
+  )
+  assert.equal(
+    resolveCommitmentFloorBoostCopy(3, {
+      boostTemplate: 'boost {rank}',
+      maxRankCopy: 'max',
+    }),
+    'boost A4',
+  )
+  assert.equal(
+    resolveCommitmentFloorBoostCopy(13, {
+      boostTemplate: 'boost {rank}',
+      maxRankCopy: '您已达到最高等级',
+    }),
+    '您已达到最高等级',
+  )
   assert.equal(getTeamBonusRateLabel(0), '1%')
   assert.equal(getTeamBonusRateLabel(2), '2%')
 })

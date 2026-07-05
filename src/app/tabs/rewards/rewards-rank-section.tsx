@@ -12,10 +12,9 @@ import {
 } from '~/lib/api/format-display'
 import { buildNextTierProgress } from '~/lib/presale/tier-progress'
 import {
-  getCommitmentFloorBoostedPostLaunchLabel,
   getCommitmentFloorPostLaunchLabel,
   getTeamBonusRateLabel,
-  shouldShowCommitmentFloorBoostLabel,
+  resolveCommitmentFloorBoostCopy,
 } from '~/lib/presale/tier-table'
 import {
   CurrentTitleCardBodySkeleton,
@@ -63,13 +62,12 @@ export function RewardsRankSection() {
   const postLaunchRank = showPostLaunchRank
     ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
     : ''
-  const postLaunch30DayLabel =
-    showPostLaunchRank && shouldShowCommitmentFloorBoostLabel(commitmentFloorRank)
-      ? t.rewards.postLaunch30DayRank.replace(
-          '{rank}',
-          getCommitmentFloorBoostedPostLaunchLabel(commitmentFloorRank),
-        )
-      : ''
+  const postLaunch30DayLabel = showPostLaunchRank
+    ? resolveCommitmentFloorBoostCopy(commitmentFloorRank, {
+        boostTemplate: t.rewards.postLaunch30DayRank,
+        maxRankCopy: t.rewards.postLaunchMaxRank,
+      }) ?? ''
+    : ''
   const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
     '{rate}',
     getTeamBonusRateLabel(displayRank),

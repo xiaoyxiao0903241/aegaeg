@@ -11,10 +11,9 @@ import {
 } from '~/lib/api/format-display'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import {
-  getCommitmentFloorBoostedPostLaunchLabel,
   getCommitmentFloorPostLaunchLabel,
   getTeamBonusRateLabel,
-  shouldShowCommitmentFloorBoostLabel,
+  resolveCommitmentFloorBoostCopy,
 } from '~/lib/presale/tier-table'
 import { CommunityStatCard } from '~/app/components/dapp-card'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
@@ -128,13 +127,12 @@ export function CommunityContent() {
     '{amount}',
     formatUsd(useStatPlaceholders ? 0 : commitmentFloorTeamUsd),
   )
-  const postLaunchBoostLabel =
-    useStatPlaceholders || !shouldShowCommitmentFloorBoostLabel(commitmentFloorRank)
-      ? undefined
-      : t.community.postLaunch30DayBoost.replace(
-          '{rank}',
-          getCommitmentFloorBoostedPostLaunchLabel(commitmentFloorRank),
-        )
+  const postLaunchBoostLabel = useStatPlaceholders
+    ? undefined
+    : resolveCommitmentFloorBoostCopy(commitmentFloorRank, {
+        boostTemplate: t.community.postLaunch30DayBoost,
+        maxRankCopy: t.community.postLaunchMaxRank,
+      })
 
   const stats: CommunityStat[] = [
     {

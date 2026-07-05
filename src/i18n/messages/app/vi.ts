@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'Cấp sau ra mắt',
         teamRewardRate: 'Thưởng nhóm {rate}',
         postLaunch30DayRank: 'Trong 30 ngày sau ra mắt bạn có thể đạt {rank}',
+        postLaunchMaxRank: 'Bạn đã đạt cấp cao nhất',
         postLaunchRankTooltip: 'Sau ra mắt, cấp được tính theo hiệu suất thực tế dựa trên khối lượng đồng xây dựng của nhóm quy đổi sang AGX theo giá chiết khấu.\nCấp hiện tại chỉ dựa trên dữ liệu hiệu suất; sau ra mắt có thể chịu ảnh hưởng của các yếu tố khác như nắm giữ cá nhân và tài khoản giới thiệu trực tiếp hợp lệ.\nDữ liệu chỉ mang tính tham khảo; dữ liệu thực tế sau ra mắt là căn cứ cuối cùng.',
         superCommunityBadge: 'Siêu hệ thống',
         heroTierRewardBody: 'Nhận {bonus} từ khối lượng đồng xây dựng của nhóm làm phần thưởng.',
@@ -492,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'Cấp sau ra mắt',
         totalTeamVolume: 'Tổng hiệu suất {amount}',
         postLaunch30DayBoost: 'Nâng lên {rank} trong 30 ngày sau ra mắt',
+        postLaunchMaxRank: 'Bạn đã đạt cấp cao nhất',
         bindReferrerSuccess: 'Liên kết người giới thiệu thành công',
         inviteFlow: {
             items: [
