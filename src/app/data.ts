@@ -6,7 +6,7 @@ export type SwapTokenKey = (typeof swapTokenKeys)[number]
 /** Genesis season selector fallback when chain phases are unavailable */
 export const seasons = [
   {
-    name: 'Season 1',
+    name: 'Phase 1',
     status: 'Ended',
     discount: '30% off',
     desktopMeta: {
@@ -18,7 +18,7 @@ export const seasons = [
     quota: '$100 – $10,000',
   },
   {
-    name: 'Season 2',
+    name: 'Phase 2',
     status: 'LIVE',
     discount: '25% off',
     desktopMeta: {
@@ -31,7 +31,7 @@ export const seasons = [
     active: true,
   },
   {
-    name: 'Season 3',
+    name: 'Phase 3',
     status: 'Upcoming',
     discount: '20% off',
     desktopMeta: {
