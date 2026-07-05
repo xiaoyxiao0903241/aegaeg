@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'Nivel tras el lanzamiento',
         teamRewardRate: 'Recompensa del equipo {rate}',
         postLaunch30DayRank: 'Dentro de los 30 días tras el lanzamiento podrás alcanzar {rank}',
+        postLaunchMaxRank: 'Ha alcanzado el nivel máximo',
         postLaunchRankTooltip: 'Tras el lanzamiento, el nivel se calculará según el rendimiento real del equipo en co-construcción convertido a AGX al precio con descuento.\nEl nivel actual se basa solo en datos de rendimiento; tras el lanzamiento pueden influir otros factores, como tenencias personales y referidos directos válidos.\nEstos datos son solo de referencia; prevalecerán los datos reales tras el lanzamiento.',
         superCommunityBadge: 'Supersistema',
         heroTierRewardBody: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa.',
@@ -353,7 +354,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Al convertirte en Gobernador de Reserva Génesis, obtienes el 1%-10% del volumen de co-construcción del equipo como recompensa y subes 1 nivel dentro de los 30 días posteriores al lanzamiento de AEGIS X.',
         shareholderTitleForRank: '{rank} · Gobernador de Reserva Génesis',
         heroKicker: 'Nivel Génesis',
-        heroBodyForRank: 'Obtén {bonus} del volumen de co-construcción del equipo como recompensa y recibe el nivel de co-construcción {postLaunch} durante 30 días tras el lanzamiento.',
         currentTierSuffix: 'actual',
         progressPersonalTo: 'Hasta {rank} · Suscripción personal',
         progressMaxPersonal: 'Nivel personal máximo alcanzado',
@@ -493,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'Nivel tras el lanzamiento',
         totalTeamVolume: 'Volumen total {amount}',
         postLaunch30DayBoost: 'Ascender a {rank} en 30 días tras el lanzamiento',
+        postLaunchMaxRank: 'Ha alcanzado el nivel máximo',
         bindReferrerSuccess: 'Referente vinculado correctamente',
         inviteFlow: {
             items: [

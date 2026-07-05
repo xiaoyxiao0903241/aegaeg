@@ -342,6 +342,7 @@ const app = defineMessages({
       postLaunchRankTitle: '上线后等级',
       teamRewardRate: '团队奖励 {rate}',
       postLaunch30DayRank: '上线30天内您可获得{rank}等级',
+      postLaunchMaxRank: '您已达到最高等级',
       postLaunchRankTooltip:
         '上线后，等级将根据团队参与共建的金额，按折扣价兑换 AGX 后计算真实业绩。\n当前等级仅以业绩数据作为统计依据，上线后可能还会受其他因素影响，例如个人持仓、直推有效账户等。\n以上数据仅供参考，最终以上线后的真实数据为准。',
       superCommunityBadge: '超级体系',
@@ -352,7 +353,6 @@ const app = defineMessages({
       shareholderNoRankBody: '成为创世储备理事可获得团队共建金额的 1%-10% 作为奖励，并且在 AEGIS X 上线后的 30 天内提升 1 级',
       shareholderTitleForRank: '{rank} · 创世储备理事',
       heroKicker: '创世等级',
-      heroBodyForRank: '获得团队共建金额的{bonus}作为奖励，并且在上线后的30天内获得{postLaunch}共建等级。',
       currentTierSuffix: '当前',
       progressPersonalTo: '距离 {rank} · 个人认购',
       progressMaxPersonal: '已达最高个人等级',
@@ -493,6 +493,7 @@ const app = defineMessages({
       postLaunchRankLabel: '上线后级别',
       totalTeamVolume: '总业绩 {amount}',
       postLaunch30DayBoost: '上线后30天内提升至{rank}',
+      postLaunchMaxRank: '您已达到最高等级',
       bindReferrerSuccess: '推荐人绑定成功',
       inviteFlow: {
         items: [

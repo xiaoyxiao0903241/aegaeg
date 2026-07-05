@@ -58,7 +58,7 @@ export function formatShareholderHintForRank(
   if (!Number.isFinite(rank) || rank <= 0 || rank > tierRows.length) return fallback
   const row = tierRows[rank - 1]
   if (!row || !template) return fallback
-  return template.replace('{bonus}', row[3]).replace('{postLaunch}', row[4])
+  return template.replace('{bonus}', row[3])
 }
 
 export function formatUsd(value: string | number, fractionDigits = 0): string {

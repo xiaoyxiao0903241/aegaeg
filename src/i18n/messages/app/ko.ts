@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: '출시 후 등급',
         teamRewardRate: '팀 보상 {rate}',
         postLaunch30DayRank: '출시 후 30일 이내 {rank} 등급 획득 가능',
+        postLaunchMaxRank: '최고 등급에 도달했습니다',
         postLaunchRankTooltip: '출시 후 등급은 팀 공동 구축 금액을 할인가로 AGX에 환산한 실적을 기준으로 산정됩니다.\n현재 등급은 실적 데이터만을 근거로 하며, 출시 후에는 개인 보유량·유효 직추천 계정 등 다른 요인의 영향을 받을 수 있습니다.\n본 데이터는 참고용이며, 최종적으로는 출시 후 실제 데이터가 기준입니다.',
         superCommunityBadge: '슈퍼 체계',
         heroTierRewardBody: '팀 공동 구축 금액의 {bonus}를 리워드로 받습니다.',
@@ -353,7 +354,6 @@ const app = defineMessages({
         shareholderNoRankBody: '창세 준비금 이사가 되면 팀 공동 구축 금액의 1%-10%를 리워드로 받을 수 있으며, AEGIS X 출시 후 30일 이내 1단계 승급됩니다.',
         shareholderTitleForRank: '{rank} · 창세 준비금 이사',
         heroKicker: '창세 등급',
-        heroBodyForRank: '팀 공동 구축 금액의 {bonus}를 리워드로 받으며, 출시 후 30일간 {postLaunch} 공동 구축 등급을 획득합니다.',
         currentTierSuffix: '현재',
         progressPersonalTo: '{rank}까지 · 개인 구독',
         progressMaxPersonal: '최고 개인 등급 달성',
@@ -493,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: '출시 후 등급',
         totalTeamVolume: '총 실적 {amount}',
         postLaunch30DayBoost: '출시 후 30일 이내 {rank}로 승급',
+        postLaunchMaxRank: '최고 등급에 도달했습니다',
         bindReferrerSuccess: '추천인 연결 완료',
         inviteFlow: {
             items: [
