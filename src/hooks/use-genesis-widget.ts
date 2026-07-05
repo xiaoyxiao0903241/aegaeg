@@ -316,9 +316,9 @@ export function useGenesisWidget() {
 
   const activeSeasonNumber = useMemo(() => {
     if (activePhase) return phaseIndex + 1
-    const liveSeason = seasonOptions.find((season) => season.active)
-    const match = liveSeason?.name.match(/Season (\d+)/)
-    return match ? Number(match[1]) : 1
+    const liveIndex = seasonOptions.findIndex((season) => season.active)
+    if (liveIndex >= 0) return liveIndex + 1
+    return 1
   }, [activePhase, phaseIndex, seasonOptions])
 
   const promoSnapshot = useMemo(

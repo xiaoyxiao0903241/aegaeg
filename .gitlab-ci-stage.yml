@@ -28,6 +28,7 @@ build:
       }
       EOF
   script:
+    - cp "$ENV_STAGE" "$CI_PROJECT_DIR/.env.production"
     - |
       /kaniko/executor \
         --context $CI_PROJECT_DIR \
