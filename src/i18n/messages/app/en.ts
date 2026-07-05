@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'Post-launch tier',
         teamRewardRate: 'Team reward {rate}',
         postLaunch30DayRank: 'Within 30 days after launch you can reach {rank}',
+        postLaunchMaxRank: 'You have reached the maximum tier',
         postLaunchRankTooltip: 'After launch, tiers are calculated from real performance based on team co-build volume converted to AGX at the discounted price.\nThe current tier is based on performance data only; after launch other factors may apply, such as personal holdings and qualified direct referrals.\nThis information is for reference only; post-launch on-chain data is final.',
         superCommunityBadge: 'Super System',
         heroTierRewardBody: 'Earn {bonus} of team co-build volume as reward.',
@@ -353,7 +354,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Become a Genesis Reserve Governor to earn 1%-10% of team co-build volume as rewards and upgrade one tier within 30 days after AEGIS X launch.',
         shareholderTitleForRank: '{rank} · Genesis Reserve Governor',
         heroKicker: 'Genesis tier',
-        heroBodyForRank: 'Earn {bonus} of team co-build volume as reward and receive {postLaunch} co-build tier for 30 days after launch.',
         currentTierSuffix: 'Current',
         progressPersonalTo: 'Progress to {rank} · Personal subscription',
         progressMaxPersonal: 'Maximum personal tier reached',
@@ -493,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'Post-launch tier',
         totalTeamVolume: 'Total volume {amount}',
         postLaunch30DayBoost: 'Upgrade to {rank} within 30 days after launch',
+        postLaunchMaxRank: 'You have reached the maximum tier',
         bindReferrerSuccess: 'Referrer bound successfully',
         inviteFlow: {
             items: [

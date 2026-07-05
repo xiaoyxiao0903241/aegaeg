@@ -52,14 +52,43 @@ function pickI18nEntry(
   )
 }
 
+function readOptionalTimestamp(value: unknown): number | null | undefined {
+  if (value === null || value === undefined) return null
+
+  const raw = readString(value)
+  if (!raw) return null
+
+  const parsed = Date.parse(raw)
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
+/** 公告是否在 start_time / end_time 窗口内；null 边界表示无限制。 */
+export function isHomePopupNoticeWithinSchedule(
+  item: Pick<HomePopupNoticeApiItem, 'start_time' | 'end_time'>,
+  nowMs: number = Date.now(),
+): boolean {
+  const startMs = readOptionalTimestamp(item.start_time)
+  if (startMs === undefined) return false
+  if (startMs !== null && nowMs < startMs) return false
+
+  const endMs = readOptionalTimestamp(item.end_time)
+  if (endMs === undefined) return false
+  if (endMs !== null && nowMs > endMs) return false
+
+  return true
+}
+
 /** Normalize a single API item — resolves i18n image/title when locale is provided. */
 export function normalizeHomePopupNotice(
   raw: unknown,
   locale?: string,
+  nowMs: number = Date.now(),
 ): HomePopupNotice | null {
   if (!raw || typeof raw !== 'object') return null
 
   const item = raw as HomePopupNoticeApiItem & Record<string, unknown>
+  if (!isHomePopupNoticeWithinSchedule(item, nowMs)) return null
+
   const version = readString(item.version) || '1'
 
   const i18n = pickI18nEntry(item.i18n, locale)
@@ -86,12 +115,13 @@ export function normalizeHomePopupNotice(
 export function normalizeHomePopupNotices(
   raw: HomePopupNoticesResponse | undefined,
   locale?: string,
+  nowMs: number = Date.now(),
 ): HomePopupNotice[] {
   if (!raw?.items?.length) return []
 
   return [...raw.items]
     .sort((left, right) => readNumber(left.sort_order) - readNumber(right.sort_order))
-    .map((item) => normalizeHomePopupNotice(item, locale))
+    .map((item) => normalizeHomePopupNotice(item, locale, nowMs))
     .filter((item): item is HomePopupNotice => item !== null)
 }
 

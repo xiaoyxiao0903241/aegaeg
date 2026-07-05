@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'लॉन्च के बाद स्तर',
         teamRewardRate: 'टीम पुरस्कार {rate}',
         postLaunch30DayRank: 'लॉन्च के 30 दिनों के भीतर आप {rank} तक पहुँच सकते हैं',
+        postLaunchMaxRank: 'आप अधिकतम स्तर पर पहुँच गए हैं',
         postLaunchRankTooltip: 'लॉन्च के बाद, स्तर टीम सह-निर्माण राशि के AGX में छूट मूल्य पर रूपांतरण के आधार पर वास्तविक प्रदर्शन से गणना होगी।\nवर्तमान स्तर केवल प्रदर्शन डेटा पर आधारित है; लॉन्च के बाद अन्य कारक भी प्रभाव डाल सकते हैं, जैसे व्यक्तिगत होल्डिंग और योग्य प्रत्यक्ष रेफरल।\nयह जानकारी केवल संदर्भ के लिए है; लॉन्च के बाद वास्तविक डेटा अंतिम होगा।',
         superCommunityBadge: 'सुपर प्रणाली',
         heroTierRewardBody: 'टीम सह-निर्माण राशि पर {bonus} पुरस्कार प्राप्त करें।',
@@ -353,7 +354,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Genesis रिज़र्व गवर्नर बनने पर टीम co-build राशि का 1%-10% पुरस्कार मिलता है, और AEGIS X लॉन्च के 30 दिनों में 1 स्तर अपग्रेड होता है।',
         shareholderTitleForRank: '{rank} · Genesis रिज़र्व गवर्नर',
         heroKicker: 'GENESIS स्तर',
-        heroBodyForRank: 'टीम सह-निर्माण राशि पर {bonus} पुरस्कार पाएं, और लॉन्च के बाद 30 दिनों के लिए {postLaunch} सह-निर्माण स्तर प्राप्त करें।',
         currentTierSuffix: 'वर्तमान',
         progressPersonalTo: '{rank} तक · व्यक्तिगत सदस्यता',
         progressMaxPersonal: 'उच्चतम व्यक्तिगत स्तर प्राप्त',
@@ -493,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'लॉन्च के बाद स्तर',
         totalTeamVolume: 'कुल प्रदर्शन {amount}',
         postLaunch30DayBoost: 'लॉन्च के 30 दिनों में {rank} तक बढ़ें',
+        postLaunchMaxRank: 'आप अधिकतम स्तर पर पहुँच गए हैं',
         bindReferrerSuccess: 'रेफ़रर सफलतापूर्वक बाइंड',
         inviteFlow: {
             items: [

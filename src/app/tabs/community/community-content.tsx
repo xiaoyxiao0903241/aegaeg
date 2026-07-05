@@ -11,11 +11,9 @@ import {
 } from '~/lib/api/format-display'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import {
-  getBoostedPostLaunchRankLabel,
-  getCommitmentFloorBoostedPostLaunchLabel,
   getCommitmentFloorPostLaunchLabel,
-  getPostLaunchRankLabel,
   getTeamBonusRateLabel,
+  resolveCommitmentFloorBoostCopy,
 } from '~/lib/presale/tier-table'
 import { CommunityStatCard } from '~/app/components/dapp-card'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
@@ -122,24 +120,19 @@ export function CommunityContent() {
       : `${t.tables.rewardRate} ${STAT_PLACEHOLDER}`
   const postLaunchRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
-    : displayRank > 0
-      ? commitmentFloorRank > 0
-        ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
-        : getPostLaunchRankLabel(displayRank)
+    : commitmentFloorRank > 0
+      ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
       : STAT_PLACEHOLDER
   const postLaunchVolume = t.community.totalTeamVolume.replace(
     '{amount}',
-    formatUsd(commitmentFloorTeamUsd),
+    formatUsd(useStatPlaceholders ? 0 : commitmentFloorTeamUsd),
   )
-  const postLaunchBoostLabel =
-    displayRank > 0
-      ? t.community.postLaunch30DayBoost.replace(
-          '{rank}',
-          commitmentFloorRank > 0
-            ? getCommitmentFloorBoostedPostLaunchLabel(commitmentFloorRank)
-            : getBoostedPostLaunchRankLabel(displayRank),
-        )
-      : undefined
+  const postLaunchBoostLabel = useStatPlaceholders
+    ? undefined
+    : resolveCommitmentFloorBoostCopy(commitmentFloorRank, {
+        boostTemplate: t.community.postLaunch30DayBoost,
+        maxRankCopy: t.community.postLaunchMaxRank,
+      })
 
   const stats: CommunityStat[] = [
     {

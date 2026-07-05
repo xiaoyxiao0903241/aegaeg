@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'Уровень после запуска',
         teamRewardRate: 'Командная награда {rate}',
         postLaunch30DayRank: 'В течение 30 дней после запуска вы можете достичь {rank}',
+        postLaunchMaxRank: 'Вы достигли максимального уровня',
         postLaunchRankTooltip: 'После запуска уровень рассчитывается по реальным показателям на основе объёма командного со-строительства, конвертированного в AGX по скидочной цене.\nТекущий уровень основан только на данных о показателях; после запуска могут учитываться другие факторы, например личные активы и квалифицированные прямые рефералы.\nДанные приведены для справки; окончательными являются данные после запуска.',
         superCommunityBadge: 'Суперсистема',
         heroTierRewardBody: 'Получайте {bonus} от объёма командного со-строительства в виде награды.',
@@ -353,7 +354,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Став управляющим резервом Genesis, вы получаете 1%-10% от суммы командного со-строительства в виде наград и повышаете уровень на 1 в течение 30 дней после запуска AEGIS X.',
         shareholderTitleForRank: '{rank} · Управляющий резервом Genesis',
         heroKicker: 'Уровень Genesis',
-        heroBodyForRank: 'Получайте {bonus} от объёма командного со-строительства и уровень со-строительства {postLaunch} на 30 дней после запуска.',
         currentTierSuffix: 'текущий',
         progressPersonalTo: 'До {rank} · личная подписка',
         progressMaxPersonal: 'Достигнут максимальный личный уровень',
@@ -493,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'Уровень после запуска',
         totalTeamVolume: 'Общий объём {amount}',
         postLaunch30DayBoost: 'Повышение до {rank} в течение 30 дней после запуска',
+        postLaunchMaxRank: 'Вы достигли максимального уровня',
         bindReferrerSuccess: 'Реферер успешно привязан',
         inviteFlow: {
             items: [

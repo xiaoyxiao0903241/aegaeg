@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'ローンチ後ランク',
         teamRewardRate: 'チーム報酬 {rate}',
         postLaunch30DayRank: 'ローンチ後30日以内に{rank}に到達可能',
+        postLaunchMaxRank: '最高ランクに達しました',
         postLaunchRankTooltip: 'ローンチ後、ランクはチーム共創額を割引価格でAGXに換算した実績に基づいて算出されます。\n現在のランクは実績データのみに基づき、ローンチ後は個人保有量や有効な直紹介アカウントなど他の要因の影響を受ける場合があります。\n本データは参考用であり、最終的にはローンチ後の実データが優先されます。',
         superCommunityBadge: 'スーパー体系',
         heroTierRewardBody: 'チーム共創額の{bonus}をリワードとして獲得します。',
@@ -353,7 +354,6 @@ const app = defineMessages({
         shareholderNoRankBody: '創世準備理事になると、チーム共創額の1%-10%をリワードとして獲得でき、AEGIS Xローンチ後30日以内に1ランクアップできます。',
         shareholderTitleForRank: '{rank} · 創世準備理事',
         heroKicker: '創世ランク',
-        heroBodyForRank: 'チーム共創額の{bonus}をリワードとして獲得し、ローンチ後30日間{postLaunch}共創ランクを受け取る。',
         currentTierSuffix: '現在',
         progressPersonalTo: '{rank}まで · 個人購入',
         progressMaxPersonal: '最高個人ランク到達',
@@ -493,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'ローンチ後レベル',
         totalTeamVolume: '総業績 {amount}',
         postLaunch30DayBoost: 'ローンチ後30日以内に{rank}へ昇格',
+        postLaunchMaxRank: '最高ランクに達しました',
         bindReferrerSuccess: '紹介者の紐付けが完了しました',
         inviteFlow: {
             items: [

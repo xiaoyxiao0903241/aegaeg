@@ -344,6 +344,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'Tingkat setelah peluncuran',
         teamRewardRate: 'Hadiah tim {rate}',
         postLaunch30DayRank: 'Dalam 30 hari setelah peluncuran Anda dapat mencapai {rank}',
+        postLaunchMaxRank: 'Anda telah mencapai tingkat maksimum',
         postLaunchRankTooltip: 'Setelah peluncuran, tingkat dihitung dari kinerja nyata volume co-build tim yang dikonversi ke AGX dengan harga diskon.\nTingkat saat ini hanya berdasarkan data kinerja; setelah peluncuran faktor lain dapat berlaku, seperti kepemilikan pribadi dan referral langsung yang memenuhi syarat.\nInformasi ini hanya untuk referensi; data nyata setelah peluncuran yang berlaku.',
         superCommunityBadge: 'Super Sistem',
         heroTierRewardBody: 'Dapatkan {bonus} dari volume co-build tim sebagai hadiah.',
@@ -353,7 +354,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Menjadi Gubernur Cadangan Genesis memberi hadiah 1%-10% dari volume co-build tim dan naik 1 level dalam 30 hari setelah peluncuran AEGIS X.',
         shareholderTitleForRank: '{rank} · Gubernur Cadangan Genesis',
         heroKicker: 'LEVEL GENESIS',
-        heroBodyForRank: 'Dapatkan {bonus} dari volume co-build tim sebagai hadiah dan terima tingkat co-build {postLaunch} selama 30 hari setelah peluncuran.',
         currentTierSuffix: 'saat ini',
         progressPersonalTo: 'Menuju {rank} · Langganan pribadi',
         progressMaxPersonal: 'Level pribadi tertinggi tercapai',
@@ -493,6 +493,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'Tingkat setelah peluncuran',
         totalTeamVolume: 'Total kinerja {amount}',
         postLaunch30DayBoost: 'Naik ke {rank} dalam 30 hari setelah peluncuran',
+        postLaunchMaxRank: 'Anda telah mencapai tingkat maksimum',
         bindReferrerSuccess: 'Pemberi referensi berhasil diikat',
         inviteFlow: {
             items: [

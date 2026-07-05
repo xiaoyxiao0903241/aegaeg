@@ -343,6 +343,7 @@ const app = defineMessages({
         postLaunchRankTitle: 'Yayın sonrası seviye',
         teamRewardRate: 'Takım ödülü {rate}',
         postLaunch30DayRank: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine ulaşabilirsiniz',
+        postLaunchMaxRank: 'En yüksek seviyeye ulaştınız',
         postLaunchRankTooltip: 'Yayın sonrası seviye, takım ortak inşa tutarının indirimli fiyattan AGX\'e dönüştürülmesine dayalı gerçek performansa göre hesaplanır.\nMevcut seviye yalnızca performans verilerine dayanır; yayın sonrası kişisel varlıklar ve geçerli doğrudan yönlendirmeler gibi diğer faktörler etkili olabilir.\nBu bilgiler yalnızca referans içindir; nihai veri yayın sonrası gerçek verilerdir.',
         superCommunityBadge: 'Süper Sistem',
         heroTierRewardBody: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın.',
@@ -352,7 +353,6 @@ const app = defineMessages({
         shareholderNoRankBody: 'Genesis Rezerv Valisi olarak, takım ortak inşa tutarının %1-%10 kadarını ödül olarak alabilir ve AEGIS X yayına girdikten sonra 30 gün boyunca 1 seviye yükselirsiniz',
         shareholderTitleForRank: '{rank} · Genesis Rezerv Valisi',
         heroKicker: 'Genesis seviyesi',
-        heroBodyForRank: 'Takım ortak inşa tutarının {bonus} kadarını ödül olarak alın ve yayına girdikten sonra 30 gün boyunca {postLaunch} ortak inşa seviyesini kazanın.',
         currentTierSuffix: 'Mevcut',
         progressPersonalTo: '{rank} · kişisel aboneliğe mesafe',
         progressMaxPersonal: 'En yüksek kişisel seviyeye ulaşıldı',
@@ -492,6 +492,7 @@ const app = defineMessages({
         postLaunchRankLabel: 'Yayın sonrası seviye',
         totalTeamVolume: 'Toplam hacim {amount}',
         postLaunch30DayBoost: 'Yayına girdikten sonraki 30 gün içinde {rank} seviyesine yükselin',
+        postLaunchMaxRank: 'En yüksek seviyeye ulaştınız',
         bindReferrerSuccess: 'Öneren bağlama başarılı',
         inviteFlow: {
             items: [
