@@ -4,38 +4,32 @@ import { Button } from '~/shared/ui/button'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { DappSkeleton } from '~/app/components/dapp-skeleton'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
 import {
-  dappCaptionClass,
-  dappKickerClass,
-  dappTitleSmClass,
-} from '~/app/dapp-type-scale'
+  DappDarkBannerBody,
+  DappDarkBannerKicker,
+  DappDarkBannerTitle,
+  dappDarkBanner,
+} from '~/shared/ui/dapp-dark-banner'
+import { cn } from '~/lib/utils'
 
 const genesisGlobeWidth = 597
 const genesisGlobeHeight = 250
 
 const genesisGlobalCard = tv({
   slots: {
-    root: cn(
-      revealClass(),
-      'relative min-h-32 overflow-hidden rounded-md bg-dark p-6 shadow-card max-dapp:p-4.5',
-    ),
-    content: 'relative z-1 flex max-w-[70ch] flex-col gap-2 max-dapp:max-w-none',
-    kicker: cn(dappKickerClass, 'text-coral-bright max-dapp:block max-dapp:pr-28'),
-    value: cn(
-      'block text-white',
-      dappTitleSmClass,
-      'max-dapp:text-lg max-dapp:leading-[1.2] max-dapp:tracking-[-0.54px]',
-    ),
-    body: cn('m-0 text-on-dark', dappCaptionClass, 'max-dapp:w-full'),
+    root: cn(dappDarkBanner().root(), 'min-h-32 p-6 max-dapp:p-4.5'),
+    content: cn(dappDarkBanner().content(), 'max-w-[70ch] max-dapp:max-w-none'),
+    kicker: cn(dappDarkBanner().kicker(), 'max-dapp:block max-dapp:pr-28'),
     contractButton: cn(
       'absolute right-5.5 top-11 z-[2] max-dapp:top-4.5 max-dapp:right-4.5',
       '!gap-1.5 !border-[oklch(100%_0_0/45%)] !bg-transparent !px-4.5 !text-white',
       'hover:!border-[oklch(100%_0_0/80%)] focus-visible:!border-[oklch(100%_0_0/80%)]',
       '[&_img]:size-[var(--dapp-icon-action)] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
-    globe: 'pointer-events-none absolute top-0 right-0 h-auto max-h-full w-auto max-w-[60%] select-none opacity-[0.78]',
+    globe: cn(
+      dappDarkBanner().decoration(),
+      'top-0 right-0 h-auto max-h-full w-auto max-w-[60%] opacity-[0.78]',
+    ),
   },
 })
 
@@ -59,11 +53,11 @@ export function GenesisGlobalCard({
   return (
     <div className={styles.root()} data-reveal>
       <div className={styles.content()}>
-        <span className={styles.kicker()}>{kicker}</span>
-        <strong className={styles.value()}>
+        <DappDarkBannerKicker className={styles.kicker()}>{kicker}</DappDarkBannerKicker>
+        <DappDarkBannerTitle className="block">
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
-        </strong>
-        <p className={styles.body()}>{body}</p>
+        </DappDarkBannerTitle>
+        <DappDarkBannerBody className="max-dapp:w-full">{body}</DappDarkBannerBody>
       </div>
       <Button
         className={styles.contractButton()}

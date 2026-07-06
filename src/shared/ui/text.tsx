@@ -14,6 +14,16 @@ export const textVariants = tv({
       xl: 'text-xl max-dapp:text-lg tracking-tight',
       '2xl': 'text-3xl max-dapp:text-2xl tracking-tight',
       display: 'text-4xl max-dapp:text-2xl',
+      kicker:
+        'text-[length:var(--dapp-type-kicker-size)] font-semibold uppercase leading-[1.2] tracking-[0.88px]',
+      caption:
+        'text-[length:var(--dapp-type-caption-size)] leading-[1.5] tracking-[-0.26px]',
+      titleSm:
+        'text-[length:var(--dapp-type-title-sm-size)] font-semibold leading-[1.3] tracking-[-0.63px]',
+      bodyLg:
+        'text-[length:var(--dapp-type-body-lg-size)] leading-[1.3] tracking-[-0.34px]',
+      amount:
+        'text-[length:var(--dapp-type-amount-size)] font-semibold leading-normal tracking-[-0.44px]',
     },
     weight: {
       medium: 'font-medium',
@@ -33,6 +43,8 @@ export const textVariants = tv({
   compoundVariants: [
     { size: ['xs', 'sm'], class: 'leading-normal' },
     { size: ['md', 'lg', 'xl'], class: 'leading-snug' },
+    { size: 'amount', class: 'leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]' },
+    { size: 'bodyLg', weight: 'semibold', class: 'max-dapp:leading-[1.2]' },
     { size: '2xl', class: 'leading-tight' },
     { size: 'display', class: 'leading-tight max-dapp:leading-snug' },
   ],

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { DappSideCard } from '~/app/components/dapp-card'
-import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
+import { textVariants } from '~/shared/ui/text'
 import { cn } from '~/lib/utils'
 
 export const rewardsSideCard = tv({
@@ -70,6 +70,10 @@ export const rewardsBalanceHeaderMeta = tv({
 
 export const rewardsBalanceHint = tv({
   base: 'group-data-[tab=rewards]/shell:max-dapp:hidden',
+})
+
+export const rewardsReferralAmount = tv({
+  base: textVariants({ size: 'amount' }),
 })
 
 export function RewardsSideCard({

@@ -22,10 +22,7 @@ import {
 } from '~/app/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { SideHint, SideLabel, SideTitle } from '~/app/components/dapp-card'
-import {
-  dappKickerClass,
-  dappRankTitleClass,
-} from '~/app/dapp-type-scale'
+import { textVariants } from '~/shared/ui/text'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
@@ -125,21 +122,12 @@ export function RewardsRankSection() {
               showPostLaunchRank ? 'grid-cols-2' : 'grid-cols-1',
             )}
           >
-            <SideLabel
-              className={cn(dappKickerClass, 'max-dapp:text-[length:var(--dapp-type-kicker-size)]')}
-              tone="coral"
-            >
+            <SideLabel className={textVariants({ size: 'kicker' })} tone="coral">
               {t.rewards.currentTitle}
             </SideLabel>
             {showPostLaunchRank ? (
               <div className="flex items-center justify-end gap-1 self-start">
-                <SideLabel
-                  className={cn(
-                    dappKickerClass,
-                    'max-dapp:text-[length:var(--dapp-type-kicker-size)]',
-                  )}
-                  tone="coral"
-                >
+                <SideLabel className={textVariants({ size: 'kicker' })} tone="coral">
                   {t.rewards.postLaunchRankTitle}
                 </SideLabel>
                 <DappInfoTooltip
@@ -150,7 +138,7 @@ export function RewardsRankSection() {
               </div>
             ) : null}
 
-            <SideTitle className={cn(dappRankTitleClass, 'max-dapp:leading-[1.2]')}>
+            <SideTitle className="max-dapp:leading-[1.2]">
               <RankTitleWithSuperCommunity
                 isSuperCommunity={hasRank && isSuperCommunity}
                 superCommunityLabel={t.rewards.superCommunityBadge}
@@ -158,7 +146,7 @@ export function RewardsRankSection() {
               />
             </SideTitle>
             {showPostLaunchRank ? (
-              <SideTitle className={cn(dappRankTitleClass, 'text-right max-dapp:leading-[1.2]')}>
+              <SideTitle className="text-right max-dapp:leading-[1.2]">
                 {postLaunchRank}
               </SideTitle>
             ) : null}

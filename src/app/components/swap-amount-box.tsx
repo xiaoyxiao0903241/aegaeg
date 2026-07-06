@@ -1,11 +1,8 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
 import { AmountInput } from '~/shared/ui/amount-input'
 import { Card } from '~/shared/ui/card'
+import { textVariants } from '~/shared/ui/text'
 import { cn } from '~/lib/utils'
-import {
-  dappAmountClass,
-  dappCaptionClass,
-} from '~/app/dapp-type-scale'
 import { SwapAmountSkeleton } from '~/app/components/dapp-skeleton'
 import { TokenChip } from '~/app/components/token-chip'
 
@@ -33,7 +30,7 @@ export function SwapAmountBox({
   tokenLabel,
 }: SwapAmountBoxProps) {
   const headerLabelClass = cn(
-    dappCaptionClass,
+    textVariants({ size: 'caption' }),
     'leading-normal',
     sessionReady ? 'font-normal text-ink-strong max-dapp:text-faint' : 'text-xs tracking-[-0.24px]',
   )
@@ -65,7 +62,7 @@ export function SwapAmountBox({
         ) : (
           <AmountInput
             className={cn(
-              sessionReady && dappAmountClass,
+              sessionReady && textVariants({ size: 'amount' }),
               !sessionReady && 'text-[#c9cfda] placeholder:text-[#c9cfda]',
             )}
             {...amountProps}

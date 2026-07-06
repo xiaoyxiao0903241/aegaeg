@@ -1,9 +1,8 @@
 import type { ReactNode } from 'react'
 import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+import { Text, textVariants } from '~/shared/ui/text'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
-import { dappCaptionClass } from '~/app/dapp-type-scale'
 
 export type InviteFlowItem = {
   copy: string
@@ -12,7 +11,7 @@ export type InviteFlowItem = {
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
   return (
-    <span className={cn('grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold leading-[1.3] text-white max-dapp:size-7', dappCaptionClass)}>
+    <span className={cn('grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold leading-[1.3] text-white max-dapp:size-7', textVariants({ size: 'caption' }))}>
       {children}
     </span>
   )

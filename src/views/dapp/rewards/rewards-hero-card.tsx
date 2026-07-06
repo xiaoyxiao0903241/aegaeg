@@ -2,37 +2,35 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { dappAssets } from '~/app/assets'
 import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
 import {
-  dappCaptionClass,
-  dappKickerClass,
-  dappTitleSmClass,
-} from '~/app/dapp-type-scale'
+  DappDarkBannerBody,
+  DappDarkBannerKicker,
+  dappDarkBanner,
+} from '~/shared/ui/dapp-dark-banner'
+import { cn } from '~/lib/utils'
 
 const rewardsHeroCard = tv({
   slots: {
-    root: cn(
-      revealClass(),
-      'relative overflow-visible rounded-md bg-dark text-white shadow-card',
-    ),
-    content: 'relative z-1 flex flex-col gap-2',
-    kicker: cn(dappKickerClass, 'text-coral-bright'),
-    titleDesktop: cn('m-0 text-white', dappTitleSmClass),
+    root: dappDarkBanner().root(),
+    content: dappDarkBanner().content(),
+    kicker: dappDarkBanner().kicker(),
+    titleDesktop: cn(dappDarkBanner().title(), 'm-0'),
     titleMobile:
       'm-0 text-lg font-semibold leading-[1.2] tracking-[-0.54px] text-white',
-    body: cn('m-0 flex flex-col gap-0 text-on-dark', dappCaptionClass),
-    character:
-      'pointer-events-none absolute right-3 top-[-2.6875rem] z-0 h-48 w-32 max-w-32 -scale-x-100 object-contain',
+    body: cn(dappDarkBanner().body(), 'm-0 flex flex-col gap-0'),
+    character: cn(
+      dappDarkBanner().decoration(),
+      'right-3 top-[-2.6875rem] z-0 h-48 w-32 max-w-32 -scale-x-100 object-contain',
+    ),
   },
   variants: {
     layout: {
       desktop: {
-        root: 'flex min-h-36 items-center justify-between gap-6 p-6 max-dapp:hidden',
+        root: 'flex min-h-36 items-center justify-between gap-6 overflow-visible p-6 max-dapp:hidden',
         content: 'min-w-0 flex-1 pr-36',
       },
       mobile: {
-        root: 'hidden min-h-32 p-4.5 max-dapp:flex max-dapp:flex-col max-dapp:gap-2',
+        root: 'hidden min-h-32 overflow-visible p-4.5 max-dapp:flex max-dapp:flex-col max-dapp:gap-2',
         content: '',
       },
     },
@@ -53,7 +51,7 @@ export function RewardsHeroCard({
   return (
     <section className={styles.root()} data-reveal={layout === 'desktop' ? '' : undefined}>
       <div className={styles.content()}>
-        <span className={styles.kicker()}>{kicker}</span>
+        <DappDarkBannerKicker className={styles.kicker()}>{kicker}</DappDarkBannerKicker>
         {children}
       </div>
       {layout === 'desktop' ? (
@@ -96,5 +94,5 @@ export function RewardsHeroTitle({
 
 export function RewardsHeroBodyCopy({ children }: { children: ReactNode }) {
   const styles = rewardsHeroCard({ layout: 'desktop' })
-  return <div className={styles.body()}>{children}</div>
+  return <DappDarkBannerBody className={styles.body()}>{children}</DappDarkBannerBody>
 }

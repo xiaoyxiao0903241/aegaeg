@@ -17,13 +17,13 @@ import { toast } from 'sonner'
 import { resolveTeamClaimError, resolveWalletTransactionError } from '~/lib/web3/resolve-contract-error-message'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { RewardBalanceCard } from '~/app/components/dapp-card'
-import { dappReferralAmountClass } from '~/app/dapp-type-scale'
-import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
+import { useDappShell } from '~/app/dapp-shell-context'
 import {
   rewardsBalanceHeaderMeta,
   rewardsBalanceHint,
   rewardsClaimAction,
+  rewardsReferralAmount,
   rewardsSideCard,
 } from '~/views/dapp/rewards/rewards-widget-primitives'
 
@@ -101,7 +101,7 @@ export function RewardsBalanceSection() {
           hintClassName={rewardsBalanceHint()}
           label={t.rewards.referralRewards}
           value={sessionReady ? referralValue : disconnectedReferralValue}
-          valueClassName={dappReferralAmountClass}
+          valueClassName={rewardsReferralAmount()}
         />
       )}
 
