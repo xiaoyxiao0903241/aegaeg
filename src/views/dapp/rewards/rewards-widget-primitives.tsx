@@ -69,7 +69,7 @@ export const rewardsBalanceHeaderMeta = tv({
 })
 
 export const rewardsBalanceHint = tv({
-  base: 'group-data-[tab=rewards]/shell:max-dapp:hidden',
+  base: 'max-dapp:hidden',
 })
 
 export const rewardsReferralAmount = tv({

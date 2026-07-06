@@ -2,7 +2,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { DappSection } from '~/app/components/dapp-section'
-import { InviteFlow, InviteFlowStack } from '~/app/components/invite-flow'
+import { InviteFlow, InviteFlowStack } from '~/views/dapp/community/community-invite-flow'
 import {
   CommunityProgramCard,
   CommunityProgramGrid,
