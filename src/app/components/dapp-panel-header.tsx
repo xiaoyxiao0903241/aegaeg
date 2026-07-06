@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { IconButton } from '~/shared/ui/icon-button'
-import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
@@ -10,7 +9,10 @@ import { cn } from '~/lib/utils'
 
 export function dappPanelTitleClassName(className?: string) {
   return cn(
-    'm-0 text-xl font-semibold leading-[1.3] text-foreground tracking-[-0.84px] dapp:tracking-[-0.42px]',
+    'm-0 text-xl font-semibold leading-[1.3] text-foreground tracking-[-0.84px]',
+    'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
+    'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
+    'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
     'max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
     className,
   )
@@ -49,9 +51,7 @@ export function DappPanelHeader({
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <h1 className={dappPanelTitleClassName()}>{title}</h1>
-        <Text as="p" tone="body" className={dappPanelSubtitleClassName}>
-          {subtitle}
-        </Text>
+        <p className={dappPanelSubtitleClassName}>{subtitle}</p>
       </div>
       {showToggle ? (
         <AnchoredTooltip content={t.topbar.toggleTooltip}>

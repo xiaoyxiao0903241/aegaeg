@@ -8,7 +8,7 @@ const tableCell = dappTableCell()
 const TABLE_CELL =
   `${tableCell.minWidth()} ${tableCell.border()} tabular-nums px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
-const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground')
+const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
 
 const TABLE_CLASS =
   'w-max min-w-full table-auto border-collapse text-sm leading-normal max-dapp:text-xs'
@@ -90,7 +90,11 @@ export function ResponsiveTable({
                         'tracking-normal text-foreground',
                         linkColumns.includes(index) && 'text-primary',
                         emphasisColumns.includes(index) && 'font-bold text-foreground',
-                        positiveColumns.includes(index) && 'font-normal text-success',
+                        positiveColumns.includes(index) &&
+                          cn(
+                            'font-bold text-success',
+                            'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+                          ),
                       )}
                       key={`${rowIndex}-${index}`}
                     >

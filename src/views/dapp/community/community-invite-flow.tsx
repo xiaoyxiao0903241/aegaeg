@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
+import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
-import { Text, textVariants } from '~/shared/ui/text'
+import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
@@ -9,12 +10,16 @@ export type InviteFlowItem = {
   title: string
 }
 
+const inviteFlowStep = tv({
+  base: cn(
+    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold',
+    'text-[length:var(--dapp-type-caption-size)] leading-[1.5] tracking-[-0.26px] text-primary-foreground',
+    'max-dapp:size-7',
+  ),
+})
+
 function InviteFlowStep({ children }: { children: ReactNode }) {
-  return (
-    <span className={cn('grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold leading-[1.3] text-white max-dapp:size-7', textVariants({ size: 'caption' }))}>
-      {children}
-    </span>
-  )
+  return <span className={inviteFlowStep()}>{children}</span>
 }
 
 /** Figma `flow` connector — coral primary, 2px thick. */
