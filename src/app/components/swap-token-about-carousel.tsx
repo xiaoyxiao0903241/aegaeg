@@ -14,7 +14,10 @@ import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { swapTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '~/shared/config/token-contracts'
-import { SwapPromoCard, swapPromoCardPillActionClass } from '~/app/components/swap-promo-card'
+import {
+  SwapPromoCard,
+  SwapPromoPillAction,
+} from '~/views/dapp/swap/swap-promo-card'
 
 const TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS =
   'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-[var(--shadow-bleed-subtle)]'
@@ -56,14 +59,12 @@ function TokenCarouselCard({
   const contractDisabled = !getSwapTokenContractAddress(token.key)
 
   const contractButton = (
-    <button
-      className={cn(
-        swapPromoCardPillActionClass(variant, true),
-        contractDisabled && 'pointer-events-none opacity-45',
-      )}
+    <SwapPromoPillAction
+      className={contractDisabled ? 'pointer-events-none opacity-45' : undefined}
       disabled={contractDisabled}
+      layout={variant}
       onClick={() => openTokenContractOnBscScan(token.key)}
-      type="button"
+      withArrow
     >
       {contractLabel}
       <img
@@ -72,7 +73,7 @@ function TokenCarouselCard({
         src={dappAssets.arrowUpRight}
         width={isDesktop ? 15 : 13}
       />
-    </button>
+    </SwapPromoPillAction>
   )
 
   return (

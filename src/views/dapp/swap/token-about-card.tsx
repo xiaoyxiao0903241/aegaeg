@@ -3,7 +3,11 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanToken } from '~/shared/config/explorer'
-import { SwapPromoCard, swapPromoCardPillActionClass } from '~/app/components/swap-promo-card'
+import {
+  SwapPromoCard,
+  SwapPromoPillAction,
+  swapPromoLayoutFromViewport,
+} from '~/views/dapp/swap/swap-promo-card'
 
 export function TokenAboutCard({
   body,
@@ -14,19 +18,19 @@ export function TokenAboutCard({
 }) {
   const { messages: t } = useI18n()
   const isDesktop = !useMobileViewport()
-  const variant = isDesktop ? 'desktop' : 'mobile'
+  const layout = swapPromoLayoutFromViewport(isDesktop)
 
   const contractButton = (
-    <button
-      className={swapPromoCardPillActionClass(variant, true)}
+    <SwapPromoPillAction
+      layout={layout}
       onClick={() => {
         window.open(bscscanToken(BSC_CONTRACTS.usd1), '_blank', 'noopener,noreferrer')
       }}
-      type="button"
+      withArrow
     >
       {t.swap.tokenContract}
       <img alt="" height={isDesktop ? 15 : 13} src={dappAssets.arrowUpRight} width={isDesktop ? 15 : 13} />
-    </button>
+    </SwapPromoPillAction>
   )
 
   return (
