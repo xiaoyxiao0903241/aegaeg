@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
-import { revealClass } from '~/lib/reveal'
 import {
   useCommunityFundLogs,
   useCommunityFundTotal,
@@ -16,7 +15,6 @@ import {
 import { useAuth } from '~/providers/auth-provider'
 import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
 import { DappSection } from '~/app/components/dapp-section'
-import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { DappTableCard } from '~/app/components/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
@@ -30,6 +28,10 @@ import {
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import {
+  RewardsHistoryPillTabs,
+  RewardsHistoryReveal,
+} from '~/views/dapp/rewards/rewards-history-primitives'
 
 type RewardsHistoryTab = 'referral' | 'team' | 'communityFund'
 
@@ -168,9 +170,8 @@ export function RewardsHistorySection() {
   ]
 
   const historyPillTabs = (
-    <DappPillTabs
+    <RewardsHistoryPillTabs
       ariaLabel={t.rewards.history}
-      className="flex items-center justify-start gap-2"
       items={historyPillItems}
       onSelect={(index) => {
         const tabs: RewardsHistoryTab[] = isSuperCommunity
@@ -247,18 +248,14 @@ export function RewardsHistorySection() {
   if (isMobileViewport) {
     return (
       <DappSection title={t.rewards.history}>
-        <div className={revealClass()} data-reveal>
-          {historyTableCard}
-        </div>
+        <RewardsHistoryReveal>{historyTableCard}</RewardsHistoryReveal>
       </DappSection>
     )
   }
 
   return (
     <DappCollapsibleSection bodyClassName="overflow-visible" title={t.rewards.history}>
-      <div className={revealClass()} data-reveal>
-        {historyTableCard}
-      </div>
+      <RewardsHistoryReveal>{historyTableCard}</RewardsHistoryReveal>
     </DappCollapsibleSection>
   )
 }
