@@ -1,6 +1,6 @@
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatPhaseDate } from '~/core/presale/presale-math'
-import { buildSeasonOptions } from '~/lib/presale/season-options'
+import { buildSeasonOptions } from '~/views/dapp/genesis/season-options'
 
 export type GenesisPromoStatus = 'LIVE' | 'Ended' | 'Upcoming'
 

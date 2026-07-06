@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('buildSeasonOptions marks active phase from chain timestamps', async () => {
-  const { buildSeasonOptions } = await loadModule('/src/lib/presale/season-options.ts')
+  const { buildSeasonOptions } = await loadModule('/src/views/dapp/genesis/season-options.ts')
   const now = 1_700_000_000
 
   const phases = [

@@ -6,7 +6,7 @@ import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { formatGenesisSeasonIntro } from '~/lib/presale/genesis-promo'
+import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
 import {
   shellMobileRailClass,

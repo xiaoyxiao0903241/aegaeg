@@ -10,7 +10,7 @@ test('resolveSwapAction returns approve when allowance is insufficient', async (
 })
 
 test('formatSwapRateColon displays colon exchange rate with 4 fraction digits', async () => {
-  const { formatSwapRateColon } = await loadModule('/src/lib/swap/format-swap-rate.ts')
+  const { formatSwapRateColon } = await loadModule('/src/views/dapp/swap/format-swap-rate.ts')
 
   assert.equal(
     formatSwapRateColon({
@@ -24,7 +24,7 @@ test('formatSwapRateColon displays colon exchange rate with 4 fraction digits', 
 })
 
 test('formatSwapRate displays exchange rate between tokens', async () => {
-  const { formatSwapRate } = await loadModule('/src/lib/swap/format-swap-rate.ts')
+  const { formatSwapRate } = await loadModule('/src/views/dapp/swap/format-swap-rate.ts')
 
   assert.equal(
     formatSwapRate({

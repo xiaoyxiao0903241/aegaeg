@@ -3,8 +3,8 @@ import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-sqrt-price-impact-bps'
-import { formatGasEstimate } from '~/lib/swap/format-gas-estimate'
-import { formatSwapRateApprox } from '~/lib/swap/format-swap-rate'
+import { formatGasEstimate } from '~/views/dapp/swap/format-gas-estimate'
+import { formatSwapRateApprox } from '~/views/dapp/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   capTokenAmountInput,

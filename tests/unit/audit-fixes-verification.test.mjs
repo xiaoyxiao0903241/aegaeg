@@ -64,7 +64,7 @@ test('audit #18: transient login errors allow retry; permanent errors block', as
 })
 
 test('audit #12: formatSwapRateColon uses bigint ratio without Number()', async () => {
-  const { formatSwapRateColon } = await loadModule('/src/lib/swap/format-swap-rate.ts')
+  const { formatSwapRateColon } = await loadModule('/src/views/dapp/swap/format-swap-rate.ts')
 
   assert.equal(
     formatSwapRateColon({

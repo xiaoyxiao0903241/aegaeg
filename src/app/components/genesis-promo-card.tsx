@@ -4,7 +4,7 @@ import { WidgetPromoCard } from '~/shared/ui/widget-promo-card'
 import {
   applyMessageTemplate,
   type GenesisPromoSnapshot,
-} from '~/lib/presale/genesis-promo'
+} from '~/views/dapp/genesis/genesis-promo'
 import { cn } from '~/shared/lib/utils'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {

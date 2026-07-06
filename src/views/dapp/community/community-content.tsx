@@ -8,7 +8,7 @@ import {
   formatUsd,
   mapTeamReferralToCompactRow,
 } from '~/shared/api/format-display'
-import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
+import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import {
   getCommitmentFloorPostLaunchLabel,
   getTeamBonusRateLabel,

@@ -16,8 +16,8 @@ import {
   resolveRemainingUserAmount,
   resolveSharePriceWei,
 } from '~/core/presale/presale-math'
-import { buildSeasonOptions } from '~/lib/presale/season-options'
-import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
+import { buildSeasonOptions } from '~/views/dapp/genesis/season-options'
+import { buildGenesisPromoSnapshot } from '~/views/dapp/genesis/genesis-promo'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
 import { MAX_UINT256 } from '~/views/dapp/web3/abis'

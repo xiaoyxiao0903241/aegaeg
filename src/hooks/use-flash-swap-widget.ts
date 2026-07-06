@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { formatSwapRate, formatSwapRateColon } from '~/lib/swap/format-swap-rate'
+import { formatSwapRate, formatSwapRateColon } from '~/views/dapp/swap/format-swap-rate'
 import {
   capTokenAmountInput,
   formatTokenAmount,

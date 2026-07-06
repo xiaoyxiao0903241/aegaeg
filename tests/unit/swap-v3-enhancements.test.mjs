@@ -13,7 +13,7 @@ test('calcSqrtPriceImpactBps returns absolute move in bps', async () => {
 })
 
 test('formatGasEstimate formats bigint gas with tilde prefix', async () => {
-  const { formatGasEstimate } = await loadModule('/src/lib/swap/format-gas-estimate.ts')
+  const { formatGasEstimate } = await loadModule('/src/views/dapp/swap/format-gas-estimate.ts')
 
   assert.equal(formatGasEstimate(0n), '—')
   assert.equal(formatGasEstimate(120_000n), '~120,000')
