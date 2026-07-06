@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { tv } from 'tailwind-variants'
 import { cn } from '~/lib/utils'
 import { shellModulePanelClass } from '~/app/shell-layout'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
@@ -9,8 +10,9 @@ import { FlashSwapContent } from '~/views/dapp/swap/flash-swap-content'
 import { TradeSwapWidget } from '~/views/dapp/swap/trade-swap-widget'
 import { TradeSwapContent } from '~/views/dapp/swap/trade-swap-content'
 
-const swapTransitionStackClass =
-  'grid overflow-hidden [&>*]:col-start-1 [&>*]:row-start-1 [&>*]:min-w-0'
+const swapTransitionStack = tv({
+  base: 'grid overflow-hidden [&>*]:col-start-1 [&>*]:row-start-1 [&>*]:min-w-0',
+})
 
 function renderSwapWidget(displayView: SwapView, onSelectGenesis: () => void) {
   if (displayView === 'flash') {
@@ -77,7 +79,7 @@ export function SwapWidget({
     <div
       className={cn(
         shellModulePanelClass,
-        isTransitioning && swapTransitionStackClass,
+        isTransitioning && swapTransitionStack(),
         !hasSubviewHistory && view === 'hub' && !motion && 'dapp-panel-enter',
       )}
       data-swap-transitioning={isTransitioning ? 'true' : undefined}
@@ -108,7 +110,7 @@ export function SwapContent() {
 
   return (
     <div
-      className={cn('min-h-0', isTransitioning && swapTransitionStackClass)}
+      className={cn('min-h-0', isTransitioning && swapTransitionStack())}
       data-swap-detail-panel
       data-swap-transitioning={isTransitioning ? 'true' : undefined}
     >
