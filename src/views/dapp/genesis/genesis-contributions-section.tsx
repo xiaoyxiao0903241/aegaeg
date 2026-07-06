@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/lib/utils'
-import { revealClass } from '~/lib/reveal'
 import { useSalesLogs } from '~/hooks/use-api-data'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import {
@@ -11,7 +9,6 @@ import {
 } from '~/lib/api/format-display'
 import { bscscanTx } from '~/shared/config/explorer'
 import { DappSection } from '~/app/components/dapp-section'
-import { ProgressMeter } from '~/app/components/progress-meter'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
@@ -24,6 +21,11 @@ import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useAuth } from '~/providers/auth-provider'
 import { formatTokenAmountToNumber } from '~/lib/swap/token-amount'
+import {
+  GenesisContributionsProgressHeader,
+  GenesisContributionsReveal,
+  GenesisContributionsSyncHint,
+} from '~/views/dapp/genesis/genesis-contributions-primitives'
 
 export function GenesisContributionsSection() {
   const { messages: t } = useI18n()
@@ -95,11 +97,9 @@ export function GenesisContributionsSection() {
 
   return (
     <DappSection title={t.genesis.myContributions}>
-      <div className={cn(revealClass(), 'flex flex-col gap-3')} data-reveal>
+      <GenesisContributionsReveal>
         {showSalesSyncHint ? (
-          <p className="m-0 text-xs leading-normal text-muted-foreground">
-            {t.genesis.contributionsSyncPending}
-          </p>
+          <GenesisContributionsSyncHint>{t.genesis.contributionsSyncPending}</GenesisContributionsSyncHint>
         ) : null}
         <DappTableCard
           footer={
@@ -115,13 +115,11 @@ export function GenesisContributionsSection() {
           }
           header={
             sessionReady && !contributionsTable.requiresAuth ? (
-              <div className="grid gap-2.5">
-                <div className="flex items-center justify-between gap-3 text-xs font-semibold leading-[1.2] tracking-[-0.26px] text-foreground">
-                  <span>{t.genesis.totalContributed}</span>
-                  <strong className="mt-0 text-right font-semibold">{contributedLabel}</strong>
-                </div>
-                <ProgressMeter label={t.genesis.totalContributed} value={contributionProgress} />
-              </div>
+              <GenesisContributionsProgressHeader
+                contributedLabel={contributedLabel}
+                label={t.genesis.totalContributed}
+                progress={contributionProgress}
+              />
             ) : undefined
           }
         >
@@ -150,7 +148,7 @@ export function GenesisContributionsSection() {
             />
           )}
         </DappTableCard>
-      </div>
+      </GenesisContributionsReveal>
     </DappSection>
   )
 }

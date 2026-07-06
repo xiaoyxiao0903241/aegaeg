@@ -2,7 +2,6 @@ import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/lib/utils'
-import { buttonDisabledClass } from '~/shared/ui/button'
 import { revealClass } from '~/lib/reveal'
 import { toast } from 'sonner'
 import { invalidateGenesisPage } from '~/lib/query/invalidate'
@@ -19,6 +18,7 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { SeasonOptionSkeleton } from '~/app/components/dapp-skeleton'
 import { resolveContractErrorMessage, resolveGenesisPurchaseError, resolveWalletTransactionError } from '~/lib/web3/resolve-contract-error-message'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
 
 export function GenesisPurchaseForm() {
   const { messages: t } = useI18n()
@@ -136,43 +136,19 @@ export function GenesisPurchaseForm() {
         />
       )}
 
-      <label className="mt-1.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground">
-        <span>{t.genesis.shares.replace('{max}', formatCount(genesis.maxShares))}</span>
-        <div className="flex gap-2">
-          <div className="relative flex min-w-0 flex-1">
-            <input
-              ref={sharesInputRef}
-              className="w-full min-w-0 rounded-sm border border-border bg-card py-2.5 pl-3.5 pr-10 text-base font-bold text-foreground outline-none placeholder:text-placeholder [appearance:textfield] focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-              disabled={!walletReady}
-              max={Math.max(genesis.maxShares, 1)}
-              min={1}
-              onBlur={handleSharesBlur}
-              onChange={(e) => handleSharesChange(e.currentTarget.value)}
-              placeholder="0"
-              type="number"
-              value={sharesText}
-            />
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-muted-foreground"
-            >
-              {t.common.shareUnit}
-            </span>
-          </div>
-          <button
-            className={cn(
-              'min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 py-2.5 text-xs font-bold whitespace-nowrap text-primary',
-              buttonDisabledClass,
-              'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
-            )}
-            disabled={!walletReady}
-            onClick={() => genesis.setShares(Math.max(genesis.maxShares, 1))}
-            type="button"
-          >
-            {t.common.max}
-          </button>
-        </div>
-      </label>
+      <GenesisPurchaseSharesField
+        disabled={!walletReady}
+        inputRef={sharesInputRef}
+        label={t.genesis.shares.replace('{max}', formatCount(genesis.maxShares))}
+        max={Math.max(genesis.maxShares, 1)}
+        maxLabel={t.common.max}
+        min={1}
+        onBlur={handleSharesBlur}
+        onChange={handleSharesChange}
+        onMax={() => genesis.setShares(Math.max(genesis.maxShares, 1))}
+        shareUnit={t.common.shareUnit}
+        value={sharesText}
+      />
 
       <DappMetaList
         items={[

@@ -31,6 +31,18 @@ const swapMetaPanel = tv({
   base: 'rounded-xl px-3.5 py-3.25',
 })
 
+export const swapFlipCard = tv({
+  variants: {
+    flipping: {
+      true: '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    flipping: false,
+  },
+})
+
 export function SwapPercentButtons({
   disabled,
   onSelect,

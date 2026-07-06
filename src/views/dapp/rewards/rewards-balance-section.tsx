@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/lib/utils'
 import {
   useCommunityFundTotal,
   useReferralTotal,
@@ -21,6 +20,11 @@ import { RewardBalanceCard } from '~/app/components/dapp-card'
 import { dappReferralAmountClass } from '~/app/dapp-type-scale'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
+import {
+  rewardsBalanceHeaderMeta,
+  rewardsClaimAction,
+  rewardsSideCard,
+} from '~/views/dapp/rewards/rewards-widget-primitives'
 
 export function RewardsBalanceSection() {
   const { messages: t } = useI18n()
@@ -90,12 +94,8 @@ export function RewardsBalanceSection() {
         <RewardBalanceCard
           badge={t.rewards.autoPaidLabel}
           badgeClassName="max-dapp:font-semibold max-dapp:leading-[1.2]"
-          className={cn(
-            'gap-1.5 rounded-md px-4 py-3.5',
-            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-            'max-dapp:[&_small]:hidden',
-          )}
-          headerLabelClassName="max-dapp:text-faint"
+          className={rewardsSideCard({ referral: true })}
+          headerLabelClassName={rewardsBalanceHeaderMeta()}
           hint={t.rewards.autoPaid}
           label={t.rewards.referralRewards}
           value={sessionReady ? referralValue : disconnectedReferralValue}
@@ -109,7 +109,7 @@ export function RewardsBalanceSection() {
         <RewardBalanceCard
           action={
             <DappActionButton
-              className="mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]"
+              className={rewardsClaimAction()}
               disabled={
                 teamClaimable === '$0.00' ||
                 teamLoading ||
@@ -132,24 +132,18 @@ export function RewardsBalanceSection() {
               {t.rewards.claim}
             </DappActionButton>
           }
-          className={cn(
-            'gap-1.5 rounded-md px-4 py-3.5',
-            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-          )}
-          headerLabelClassName="max-dapp:text-faint"
-          headerMetaClassName="max-dapp:text-faint"
+          className={rewardsSideCard()}
+          headerLabelClassName={rewardsBalanceHeaderMeta()}
+          headerMetaClassName={rewardsBalanceHeaderMeta()}
           label={t.rewards.teamRewards}
           meta={teamRewardMeta}
           value={`${teamClaimable} ${t.common.claimable.toLowerCase()}`}
         />
       ) : (
         <RewardBalanceCard
-          className={cn(
-            'gap-1.5 rounded-md px-4 py-3.5',
-            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-          )}
-          headerLabelClassName="max-dapp:text-faint"
-          headerMetaClassName="max-dapp:text-faint"
+          className={rewardsSideCard()}
+          headerLabelClassName={rewardsBalanceHeaderMeta()}
+          headerMetaClassName={rewardsBalanceHeaderMeta()}
           label={t.rewards.teamRewards}
           meta={disconnectedTeamClaimedMeta}
           value={disconnectedTeamValue}
@@ -186,12 +180,9 @@ export function RewardsBalanceSection() {
                 {t.rewards.claim}
               </DappActionButton>
             }
-            className={cn(
-              'gap-1.5 rounded-md px-4 py-3.5',
-              '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-            )}
-            headerLabelClassName="max-dapp:text-faint"
-            headerMetaClassName="max-dapp:text-faint"
+            className={rewardsSideCard()}
+            headerLabelClassName={rewardsBalanceHeaderMeta()}
+            headerMetaClassName={rewardsBalanceHeaderMeta()}
             label={communityFundLabel}
             meta={communityFundLockedMeta}
             value={`${communityFundClaimable} ${t.rewards.communityFundUnlockedSuffix}`}

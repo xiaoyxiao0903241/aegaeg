@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/lib/utils'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import {
@@ -15,7 +14,6 @@ import {
   getTeamBonusRateLabel,
   resolveCommitmentFloorBoostCopy,
 } from '~/lib/presale/tier-table'
-import { CommunityStatCard } from '~/app/components/dapp-card'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useAuth } from '~/providers/auth-provider'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
@@ -32,6 +30,10 @@ import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
 import { CommunityFlowSection } from '~/views/dapp/community/community-flow-section'
+import {
+  CommunityOverviewStatCard,
+  CommunityStatGrid,
+} from '~/views/dapp/community/community-content-primitives'
 
 type CommunityStat = {
   dark?: boolean
@@ -189,13 +191,7 @@ export function CommunityContent() {
         {t.community.myCommunity}
       </DappContentHeading>
 
-      <div
-        className={cn(
-          'grid grid-cols-4 gap-3.5',
-          'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
-          'max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5',
-        )}
-      >
+      <CommunityStatGrid>
         {useStatPlaceholders ? (
           <>
             <CommunityStatCardSkeleton />
@@ -205,22 +201,19 @@ export function CommunityContent() {
           </>
         ) : (
           stats.map((stat, index) => (
-            <CommunityStatCard
-              className={cn(
-                isMobileViewport &&
-                  'items-center text-center shadow-card [&>b]:hidden [&>small]:hidden [&>span]:text-xs [&>span]:tracking-[-0.11px] [&>strong]:text-lg [&>strong]:tracking-[-0.54px]',
-              )}
+            <CommunityOverviewStatCard
               dark={stat.dark}
               image={stat.image}
               key={index}
               label={stat.label}
+              mobileCentered={isMobileViewport}
               today={stat.today}
               value={stat.value}
               volume={stat.volume}
             />
           ))
         )}
-      </div>
+      </CommunityStatGrid>
 
       <CommunityFlowSection isMobileViewport={isMobileViewport} />
 

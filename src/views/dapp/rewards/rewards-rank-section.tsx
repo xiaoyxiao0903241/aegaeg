@@ -21,7 +21,7 @@ import {
   ProgressCardSkeleton,
 } from '~/app/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
-import { DappSideCard, SideHint, SideLabel, SideTitle } from '~/app/components/dapp-card'
+import { SideHint, SideLabel, SideTitle } from '~/app/components/dapp-card'
 import {
   dappKickerClass,
   dappRankTitleClass,
@@ -30,9 +30,11 @@ import { ProgressMeter } from '~/app/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
 import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
-
-const rankMetaClass =
-  'text-xs font-normal leading-normal tracking-[-0.24px] text-ink-strong max-dapp:text-faint'
+import {
+  RewardsProgressRow,
+  rewardsRankMeta,
+  RewardsSideCard,
+} from '~/views/dapp/rewards/rewards-widget-primitives'
 
 export function RewardsRankSection() {
   const { messages: t } = useI18n()
@@ -113,12 +115,7 @@ export function RewardsRankSection() {
 
   return (
     <>
-      <DappSideCard
-        className={cn(
-          'gap-1.5 rounded-md px-4 py-3.5',
-          '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-        )}
-      >
+      <RewardsSideCard>
         {showTitleSkeleton ? (
           <CurrentTitleCardBodySkeleton />
         ) : (
@@ -166,54 +163,30 @@ export function RewardsRankSection() {
               </SideTitle>
             ) : null}
 
-            <SideHint className={rankMetaClass} tone="body">
+            <SideHint className={rewardsRankMeta()} tone="body">
               {leftBottomLabel}
             </SideHint>
             {postLaunch30DayLabel ? (
-              <SideHint className={cn(rankMetaClass, 'text-right')} tone="body">
+              <SideHint className={rewardsRankMeta({ align: 'right' })} tone="body">
                 {postLaunch30DayLabel}
               </SideHint>
             ) : null}
           </div>
         )}
-      </DappSideCard>
+      </RewardsSideCard>
 
       {showPerformanceSkeleton ? (
-        <DappSideCard
-          className={cn(
-            'grid gap-1.5 rounded-md px-4 py-3.5',
-            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-          )}
-        >
+        <RewardsSideCard layout="grid">
           <ProgressCardSkeleton />
-        </DappSideCard>
+        </RewardsSideCard>
       ) : (
-        <DappSideCard
-          className={cn(
-            'grid gap-1.5 rounded-md px-4 py-3.5',
-            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
-          )}
-        >
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong max-dapp:text-faint">
-              {personalProgressLabel}
-            </span>
-            <strong className="text-right text-xs font-semibold leading-[1.3] tracking-[-0.24px] text-foreground max-dapp:leading-[1.2]">
-              {personalProgressValue}
-            </strong>
-          </div>
+        <RewardsSideCard layout="grid">
+          <RewardsProgressRow label={personalProgressLabel} value={personalProgressValue} />
           <ProgressMeter label={personalProgressLabel} value={personalProgressPercent} />
           <span aria-hidden="true" className="block h-1" />
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong max-dapp:text-faint">
-              {teamProgressLabel}
-            </span>
-            <strong className="text-right text-xs font-semibold leading-[1.3] tracking-[-0.24px] text-foreground max-dapp:leading-[1.2]">
-              {teamProgressValue}
-            </strong>
-          </div>
+          <RewardsProgressRow label={teamProgressLabel} value={teamProgressValue} />
           <ProgressMeter label={teamProgressLabel} value={teamProgressPercent} />
-        </DappSideCard>
+        </RewardsSideCard>
       )}
     </>
   )

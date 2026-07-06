@@ -20,6 +20,7 @@ import {
   SwapGenesisFooter,
   SwapMetaPanel,
   SwapPercentButtons,
+  swapFlipCard,
 } from '~/views/dapp/swap/swap-widget-primitives'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
 
@@ -37,9 +38,7 @@ export function TradeSwapWidget({
   const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
 
   const { pair } = swap
-  const flipAnimClass = isFlipping
-    ? '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]'
-    : undefined
+  const flipCardClass = swapFlipCard({ flipping: isFlipping })
   const swapPreview = !sessionReady
   const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
   const showRateSkeleton =
@@ -130,7 +129,7 @@ export function TradeSwapWidget({
             placeholder: '0.00',
             value: swap.sellAmountDisplay,
           }}
-          className={flipAnimClass}
+          className={flipCardClass}
           sessionReady
           balance={sellBalanceLabel}
           label={t.swap.sell}
@@ -181,7 +180,7 @@ export function TradeSwapWidget({
             readOnly: true,
             value: swapPreview ? swap.buyAmount || '0.00' : swap.buyAmount,
           }}
-          className={cn('mt-0', flipAnimClass)}
+          className={cn('mt-0', flipCardClass)}
           sessionReady
           balance={buyBalanceLabel}
           label={t.swap.buy}

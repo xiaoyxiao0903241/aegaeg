@@ -1,33 +1,26 @@
-import { Wallet } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/lib/utils'
 import { useReferral } from '~/hooks/use-referral'
 import { formatReferralLinkDisplay } from '~/lib/api/format-display'
 import { buildReferralSharePath } from '~/shared/config/referral'
 import { getRuntimeOrigin } from '~/lib/runtime-host'
 import { useDappShell } from '~/app/dapp-shell-context'
 import type { DappTab } from '~/app/types'
-import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/components/dapp-icon'
-import { dappIconClass } from '~/app/dapp-icon-scale'
 import { DappWidgetConnectPromo } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
-import {
-  DappReferrerBoundCard,
-  DappSideCard,
-  SideHint,
-  SideLabel,
-  SideValue,
-} from '~/app/components/dapp-card'
-import { ReferrerAddressRow } from '~/app/components/referrer-address-row'
 import { DappWidgetFrame } from '~/app/components/dapp-widget-frame'
 import { QuickLinks } from '~/app/components/quick-links'
 import { buildCommunityQuickLinkItems } from '~/shared/config/community-links'
 import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/lib/copy-to-clipboard'
 import { resolveReferralBindError, resolveWalletTransactionError } from '~/lib/web3/resolve-contract-error-message'
+import {
+  CommunityReferralLinkCard,
+  CommunityReferrerBindCard,
+  CommunityReferrerBoundPanel,
+  communityGenesisCta,
+} from '~/views/dapp/community/community-widget-primitives'
 
 export function CommunityWidget({
   onSelectTab,
@@ -78,94 +71,45 @@ function CommunityConnectedWidget({
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>
       {referral.isBound ? (
-        <DappSideCard
-          className={cn(
-            '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-        'flex flex-col gap-2 rounded-md px-4 py-3.5',
-            '[&_label]:text-xs [&_label]:leading-[1.5] [&_label]:tracking-[-0.24px] [&_label]:text-faint',
-          )}
-        >
-          <SideLabel>{t.community.referralLink}</SideLabel>
-          <SideValue className="text-sm max-dapp:text-xs tracking-tight">{referralLink}</SideValue>
-          <DappActionButton
-            className="max-dapp:min-h-11 max-dapp:text-sm"
-            disabled={!account}
-            onClick={() => void copyReferralLink()}
-          >
-            {t.community.shareReferral}
-          </DappActionButton>
-        </DappSideCard>
+        <CommunityReferralLinkCard
+          copyLabel={t.community.shareReferral}
+          disabled={!account}
+          linkLabel={t.community.referralLink}
+          onCopy={() => void copyReferralLink()}
+          referralLink={referralLink}
+        />
       ) : null}
 
       {referral.isBound ? (
-        <DappReferrerBoundCard className="grid gap-2 rounded-md px-4 py-3.5">
-          <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
-            {t.community.referrer}
-          </p>
-          <ReferrerAddressRow>
-            <div className="flex min-w-0 items-center gap-2.5">
-              <span
-                aria-hidden="true"
-                className="grid size-6 flex-none place-items-center rounded-full bg-accent text-primary"
-              >
-                <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
-              </span>
-              <strong className="truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px] text-foreground">
-                {referral.referrerLabel ?? '—'}
-              </strong>
-            </div>
-            {referral.referrer ? (
-              <button
-                aria-label={t.common.copy}
-                className="grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent"
-                onClick={() => void copyReferrerAddress()}
-                type="button"
-              >
-                <DappIcon alt="" size="base" src={dappAssets.copy} />
-              </button>
-            ) : null}
-          </ReferrerAddressRow>
-          <p className="text-xs leading-normal tracking-[-0.24px] text-muted-foreground">
-            {t.community.referralBondPermanent}
-          </p>
-        </DappReferrerBoundCard>
+        <CommunityReferrerBoundPanel
+          addressLabel={t.community.referrer}
+          copyLabel={t.common.copy}
+          note={t.community.referralBondPermanent}
+          onCopy={() => void copyReferrerAddress()}
+          referrer={referral.referrer}
+          referrerLabel={referral.referrerLabel}
+        />
       ) : (
-        <DappSideCard
-          className={cn(
-            '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-        'flex flex-col gap-2 rounded-md px-4 py-3.5',
-            '[&_label]:text-xs [&_label]:leading-[1.5] [&_label]:tracking-[-0.24px] [&_label]:text-faint',
-          )}
-        >
-          <SideLabel tone="muted">{t.community.referrer}</SideLabel>
-          <div className="grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2">
-            <input
-              aria-label={t.community.referrerPlaceholder}
-              className="w-full rounded-sm border border-border bg-card px-3.5 py-2.5 text-xs tracking-[-0.26px] text-muted-foreground outline-0"
-              onChange={(event) => referral.setReferrerInput(event.currentTarget.value)}
-              placeholder={t.community.referrerPlaceholder}
-              value={referral.referrerInput}
-            />
-            <DappActionButton
-              disabled={!referral.canBind}
-              loading={referral.isSubmitting}
-              onClick={() =>
-                void referral.bind().then((ok) => ok && toast.success(t.community.bindReferrerSuccess))
-              }
-              shape="inline"
-              variant="secondary"
-            >
-              {t.community.bindReferrer}
-            </DappActionButton>
-          </div>
-          <SideHint>{t.community.referrerHint}</SideHint>
-        </DappSideCard>
+        <CommunityReferrerBindCard
+          bindLabel={t.community.bindReferrer}
+          canBind={referral.canBind}
+          hint={t.community.referrerHint}
+          inputLabel={t.community.referrerPlaceholder}
+          isSubmitting={referral.isSubmitting}
+          onBind={() =>
+            void referral.bind().then((ok) => ok && toast.success(t.community.bindReferrerSuccess))
+          }
+          onInputChange={referral.setReferrerInput}
+          placeholder={t.community.referrerPlaceholder}
+          referrerLabel={t.community.referrer}
+          value={referral.referrerInput}
+        />
       )}
 
       <CommunityQuickLinks />
 
       <DappActionButton
-        className="mt-4 min-h-10 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden"
+        className={communityGenesisCta()}
         onClick={() => onSelectTab('genesis')}
       >
         {t.community.shareholder}
