@@ -4,6 +4,7 @@ import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import {
   GenesisMetricCard,
   GenesisMetricCardSkeleton,
+  genesisMetricGrid,
 } from '~/views/dapp/genesis/genesis-metric-card'
 
 export function GenesisSeasonMetricsSection() {
@@ -11,7 +12,7 @@ export function GenesisSeasonMetricsSection() {
   const genesis = useGenesisWidgetContext()
 
   return (
-    <MetricGrid columns={4}>
+    <MetricGrid className={genesisMetricGrid()} columns={4}>
       {genesis.isLoading && genesis.phases.length === 0 ? (
         <>
           <GenesisMetricCardSkeleton />

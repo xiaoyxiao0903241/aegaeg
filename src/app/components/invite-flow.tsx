@@ -40,7 +40,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
         'grid grid-cols-3 gap-0 p-5.5',
         'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,10.5rem),1fr))] max-tablet:gap-4',
         'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-3.5 max-dapp:p-4',
-        'group-data-[tab=community]/shell:gap-3.5 group-data-[tab=community]/shell:p-4 group-data-[tab=community]/shell:max-dapp:gap-3.5',
+        'gap-3.5 p-4',
       )}
       data-reveal
     >
@@ -67,8 +67,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
             tone="muted"
             className={cn(
               'm-0 max-w-[24ch] tracking-[-0.24px]',
-              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:leading-[1.35]',
-              'group-data-[tab=community]/shell:max-dapp:line-clamp-2 group-data-[tab=community]/shell:max-dapp:text-xs group-data-[tab=community]/shell:max-dapp:leading-[1.28]',
+              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2 max-dapp:text-xs max-dapp:leading-[1.28]',
             )}
           >
             {item.copy}

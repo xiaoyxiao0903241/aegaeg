@@ -20,7 +20,6 @@ const topbarClass = cn(
 
 const brandClass = cn(
   'flex items-center gap-2.5 text-lg font-semibold tracking-tight text-foreground max-dapp:text-base',
-  'group-data-[tab=rewards]/shell:max-dapp:group-data-[session-ready=true]/shell:[&_span]:hidden',
 )
 
 const brandMarkClass = cn(
@@ -50,7 +49,6 @@ export function DappTopbar() {
         className={cn(
           brandClass,
           sessionReady && tab === 'rewards' && 'max-dapp:[&_span]:hidden',
-          sessionReady && 'max-dapp:[&_span]:hidden',
         )}
         href={withLocalePrefix(locale, '/')}
         aria-label="AEGIS X home"

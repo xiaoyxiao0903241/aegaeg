@@ -2,11 +2,10 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import { DappSection } from '~/app/components/dapp-section'
-import { ProgramCard } from '~/app/components/dapp-card'
 import { InviteFlow, InviteFlowStack } from '~/app/components/invite-flow'
 import {
+  CommunityProgramCard,
   CommunityProgramGrid,
-  communityProgramCard,
 } from '~/views/dapp/community/community-flow-primitives'
 
 export function CommunityFlowSection({
@@ -45,10 +44,9 @@ export function CommunityFlowSection({
       <DappSection title={t.community.programs.title}>
         <CommunityProgramGrid>
           {programItems.map((program) => (
-            <ProgramCard
+            <CommunityProgramCard
               action={program.action}
               body={program.body}
-              className={communityProgramCard()}
               href={program.href}
               key={program.label}
               label={program.label}

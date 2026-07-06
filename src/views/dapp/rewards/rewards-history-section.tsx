@@ -31,6 +31,7 @@ import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import {
   RewardsHistoryPillTabs,
   RewardsHistoryReveal,
+  rewardsHistoryTableHead,
 } from '~/views/dapp/rewards/rewards-history-primitives'
 
 type RewardsHistoryTab = 'referral' | 'team' | 'communityFund'
@@ -194,7 +195,13 @@ export function RewardsHistorySection() {
     <DappTableAuthPrompt body={t.dapp.connect.recordsBodyRewards} embedded />
   ) : historyTable.queryEmpty ? (
     <>
-      <ResponsiveTable colWidths={historyColWidths} compact headers={historyHeaders} rows={[]} />
+      <ResponsiveTable
+        colWidths={historyColWidths}
+        compact
+        headCellClassName={rewardsHistoryTableHead()}
+        headers={historyHeaders}
+        rows={[]}
+      />
       <DappTableEmptyMessage
         body={
           historyTab === 'referral'
@@ -217,6 +224,7 @@ export function RewardsHistorySection() {
     <ResponsiveTable
       colWidths={historyColWidths}
       compact
+      headCellClassName={rewardsHistoryTableHead()}
       headers={historyHeaders}
       isLoading={historyShowSkeleton}
       linkColumns={[1]}

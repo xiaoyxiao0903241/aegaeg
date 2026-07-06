@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/lib/reveal'
-import { cn, resolveNavigableHref } from '~/lib/utils'
+import { cn } from '~/lib/utils'
 
 export function DappSideCard({
   children,
@@ -167,75 +167,6 @@ export function MetricCard({
         </Text>
       ) : null}
       {children}
-    </Card>
-  )
-}
-
-export function ProgramCard({
-  action,
-  body,
-  className,
-  href = '',
-  label,
-  title,
-}: {
-  action: string
-  body: ReactNode
-  className?: string
-  href?: string
-  label: string
-  title: ReactNode
-}) {
-  const navigableHref = resolveNavigableHref(href)
-  const actionClassName =
-    'm-0 cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold leading-[1.3] tracking-[-0.26px] text-primary max-dapp:text-xs'
-
-  return (
-    <Card
-      as="article"
-      surface="elevated"
-      className={cn(revealClass(), 'flex flex-col gap-2 p-5 max-dapp:rounded-md max-dapp:p-4', className)}
-      data-reveal
-    >
-      <Text
-        as="span"
-        size="xs"
-        weight="semibold"
-        tone="coral"
-        className="m-0 uppercase tracking-[0.88px] text-xs leading-[1.3]"
-      >
-        {label}
-      </Text>
-      <Text
-        as="h3"
-        size="md"
-        weight="semibold"
-        className="m-0 leading-[1.3] tracking-[-0.48px] max-dapp:text-sm max-dapp:leading-[1.2]"
-      >
-        {title}
-      </Text>
-      <Text
-        as="p"
-        size="sm"
-        tone="body"
-        className="m-0 max-w-[38ch] leading-[1.5] tracking-[-0.26px]"
-      >
-        {body}
-      </Text>
-      {navigableHref ? (
-        <a
-          className={cn(actionClassName, 'no-underline hover:underline')}
-          href={navigableHref}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {action}
-        </a>
-      ) : (
-        <button className={cn(actionClassName, 'hover:underline')} type="button">
-          {action}
-        </button>
-      )}
     </Card>
   )
 }

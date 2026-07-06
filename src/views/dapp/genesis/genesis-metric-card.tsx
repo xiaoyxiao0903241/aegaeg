@@ -4,6 +4,10 @@ import { MetricCard } from '~/app/components/dapp-card'
 import { MetricCardSkeleton } from '~/app/components/dapp-skeleton'
 import { cn } from '~/lib/utils'
 
+export const genesisMetricGrid = tv({
+  base: 'max-dapp:grid-cols-2 max-dapp:gap-3',
+})
+
 const genesisMetricCard = tv({
   base: cn(
     'group-data-[tab=genesis]/shell:max-dapp:min-h-0 group-data-[tab=genesis]/shell:max-dapp:rounded-md group-data-[tab=genesis]/shell:max-dapp:p-3.5 group-data-[tab=genesis]/shell:max-dapp:shadow-card',

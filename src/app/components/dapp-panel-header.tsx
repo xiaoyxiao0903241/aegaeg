@@ -10,10 +10,7 @@ import { cn } from '~/lib/utils'
 
 export function dappPanelTitleClassName(className?: string) {
   return cn(
-    'm-0 text-xl font-semibold leading-[1.3] text-foreground tracking-[-0.84px]',
-    'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
-    'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
-    'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
+    'm-0 text-xl font-semibold leading-[1.3] text-foreground tracking-[-0.84px] dapp:tracking-[-0.42px]',
     'max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
     className,
   )

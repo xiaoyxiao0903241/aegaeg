@@ -8,11 +8,8 @@ const tableCell = dappTableCell()
 const TABLE_CELL =
   `${tableCell.minWidth()} ${tableCell.border()} tabular-nums px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
-const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground group-data-[tab=rewards]/shell:text-faint')
+const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground')
 
-// Unified across all tables: every column has a min-width + padding (TABLE_CELL),
-// the table sizes to content (w-max) but fills the container (min-w-full), and
-// DappTableCard's content region scrolls horizontally when it overflows.
 const TABLE_CLASS =
   'w-max min-w-full table-auto border-collapse text-sm leading-normal max-dapp:text-xs'
 
@@ -25,6 +22,7 @@ export function ResponsiveTable({
   colWidths,
   compact = false,
   emphasisColumns = [],
+  headCellClassName,
   headers,
   highlightedRows = [],
   isLoading = false,
@@ -38,6 +36,7 @@ export function ResponsiveTable({
   colWidths?: Array<string | undefined>
   compact?: boolean
   emphasisColumns?: number[]
+  headCellClassName?: string
   headers: string[]
   highlightedRows?: number[]
   isLoading?: boolean
@@ -63,7 +62,7 @@ export function ResponsiveTable({
         <thead>
           <tr>
             {headers.map((header) => (
-              <th className={TABLE_HEAD_CELL} key={header}>
+              <th className={cn(TABLE_HEAD_CELL, headCellClassName)} key={header}>
                 {header}
               </th>
             ))}
@@ -91,11 +90,7 @@ export function ResponsiveTable({
                         'tracking-normal text-foreground',
                         linkColumns.includes(index) && 'text-primary',
                         emphasisColumns.includes(index) && 'font-bold text-foreground',
-                        positiveColumns.includes(index) &&
-                          cn(
-                            'font-bold text-success',
-                            'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
-                          ),
+                        positiveColumns.includes(index) && 'font-normal text-success',
                       )}
                       key={`${rowIndex}-${index}`}
                     >

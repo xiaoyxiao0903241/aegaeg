@@ -8,7 +8,6 @@ const METRIC_GRID_FOUR = cn(
   'grid grid-cols-4 gap-3',
   'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
   'max-dapp:min-w-0 max-dapp:grid-cols-1',
-  'group-data-[tab=genesis]/shell:max-dapp:grid-cols-2 group-data-[tab=genesis]/shell:max-dapp:gap-3',
 )
 
 export function MetricGrid({

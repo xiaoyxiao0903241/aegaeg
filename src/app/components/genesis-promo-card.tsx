@@ -98,12 +98,7 @@ export function GenesisPromoCard({
     : null
 
   return (
-    <WidgetPromoCard
-      className={cn(
-        'mt-auto max-dapp:mt-0 group-data-[tab=genesis]/shell:max-dapp:grid',
-        className,
-      )}
-    >
+    <WidgetPromoCard className={cn('mt-auto max-dapp:mt-0', className)}>
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
       ) : (
@@ -118,10 +113,7 @@ export function GenesisPromoCard({
           {body}
         </Text>
       )}
-      <DappActionButton
-        className="mt-2 min-h-9.5 text-xs group-data-[tab=genesis]/shell:max-dapp:min-h-10 group-data-[tab=genesis]/shell:max-dapp:text-sm"
-        onClick={onClick}
-      >
+      <DappActionButton className="mt-2" onClick={onClick}>
         {actionLabel ?? t.genesis.join}
       </DappActionButton>
     </WidgetPromoCard>

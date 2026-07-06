@@ -23,3 +23,7 @@ export function RewardsHistoryPillTabs(props: ComponentProps<typeof DappPillTabs
   const styles = rewardsHistorySection()
   return <DappPillTabs {...props} className={styles.pillTabs()} />
 }
+
+export const rewardsHistoryTableHead = tv({
+  base: 'text-faint',
+})
