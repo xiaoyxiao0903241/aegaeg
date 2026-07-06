@@ -227,7 +227,7 @@
 | 类别 | 新归属 | 说明 |
 |------|--------|------|
 | DApp shell 列间距 | `shell-layout.ts` 内联常量 | 仅 shell 结构 |
-| 首页 nav / hero 装饰 | 各 `src/home/components/home-*.tsx` 内局部 class | 禁止 `home-chrome.ts` 式全局 dump |
+| 首页 nav / hero 装饰 | 各 `src/views/home/components/home-*.tsx` 内局部 class | 禁止 `home-chrome.ts` 式全局 dump |
 | 首页标题 | `Text` + section 组件内布局 class | 禁止 `home-typography` 角色名文件 |
 | 首页文案 | `src/i18n/messages/home/*.ts` → `useHomeContent()` | 与 DApp 同 i18n 管线 |
 | 领域布局 | 各 Layer 2 组件内 `className` | 如 `MetricGrid`、`InviteFlow` |
@@ -254,7 +254,7 @@
 | **B** | 删除 `layout.ts` + 样式 dump 文件 | ✅ |
 | **C** | DApp 领域组件迁 Layer 1 原语 | ✅ |
 | **D** | Home `home-page` → `Button`/`Card`/`Text` + `home-chrome` | ✅ |
-| **D2** | Home 区块拆为 `src/home/components/*` 领域组件 | ✅ |
+| **D2** | Home 区块拆为 `src/views/home/components/*` 领域组件 | ✅ |
 | **E** | 全站无 `dappTextClass` / `homeBtnClass` 引用 | ✅ |
 | **F** | i18n genesis FAQ 键补齐 | ✅ |
 

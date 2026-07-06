@@ -200,23 +200,27 @@ await writeContractViaWallet({ wallet, ... })
 
 | 路径 | SSOT 职责 |
 |------|-----------|
-| `src/web3/thirdweb.ts` | Client ID、链、Connect 配置 |
-| `src/config/contracts.ts` | BSC 合约（`VITE_BSC_*` env 覆盖 + code fallback） |
-| `src/config/swap.ts` | Router、Quoter、Pool、滑点、deadline、轮询间隔 |
-| `src/config/env.ts` | API base、RPC、`VITE_APP_HOST` |
-| `src/lib/api/auth/*` | SIWE、JWT、login、状态机 |
-| `src/lib/api/request.ts` | `apiRequest`、timeout、403 intercept |
-| `src/lib/api/account-banned.ts` | 封禁 sentinel、toast 节流 |
+| `src/views/dapp/web3/thirdweb.ts` | Client ID、链、Connect 配置 |
+| `src/views/dapp/web3/thirdweb-react.ts` | **thirdweb/react 网关**（depcruise 强制经此 import） |
+| `src/shared/config/contracts.ts` | BSC 合约（`VITE_BSC_*` env 覆盖 + code fallback） |
+| `src/shared/config/swap.ts` | Router、Quoter、Pool、滑点、deadline、轮询间隔 |
+| `src/shared/config/env.ts` | API base、RPC、`VITE_APP_HOST` |
+| `src/views/dapp/auth/*` | SIWE、JWT、login、状态机编排 |
+| `src/core/auth/auth-machine.ts` | 纯 auth 状态推导 |
+| `src/shared/api/request.ts` | `apiRequest`、timeout、403 intercept |
+| `src/shared/api/account-banned.ts` | 封禁 sentinel、toast 节流 |
 | `src/stores/auth-store.ts` | 持久化 JWT + 签名（按地址） |
-| `src/web3/chain-read-client.ts` | 读 RPC 路由 SSOT |
-| `src/web3/swap-read.ts` | V3 Quoter 报价（**唯一** swap quote 路径） |
-| `src/web3/wallet-contract-write.ts` | simulate → estimateGas → send |
-| `src/lib/query/query-keys.ts` | React Query key 规范 |
-| `src/lib/query/invalidate.ts` | 钱包切换 / swap / genesis 后失效 |
-| `src/lib/presale/rank.ts` | 创世 S 等级（S1–S10）、`resolveDisplayPresaleRank` |
-| `src/lib/presale/tier-table.ts` | 上线后 A 等级（A1–A13）、`resolveCommitmentFloorRank`、静态等级表 |
-| `src/home/popup-notice.ts` | 首页弹窗队列、时间窗口、dismiss 持久化 |
-| `src/lib/copy-to-clipboard.ts` | 移动端 + legacy WebView 复制 |
+| `src/views/dapp/web3/chain-read-client.ts` | 读 RPC 路由 SSOT |
+| `src/views/dapp/web3/swap-read.ts` | V3 Quoter 报价（**唯一** swap quote 路径） |
+| `src/views/dapp/web3/wallet-contract-write.ts` | simulate → estimateGas → send |
+| `src/shared/api/query/query-keys.ts` | React Query key 规范 |
+| `src/shared/api/query/invalidate.ts` | 钱包切换 / swap / genesis 后失效 |
+| `src/core/presale/rank.ts` | 创世 S 等级（S1–S10）、`resolveDisplayPresaleRank` |
+| `src/core/presale/tier-table.ts` | 上线后 A 等级（A1–A13）、`resolveCommitmentFloorRank`、静态等级表 |
+| `src/views/dapp/presale-display.ts` | 预售 sales log 行映射（DApp 展示层） |
+| `src/views/home/popup-notice.ts` | 首页弹窗队列、时间窗口、dismiss 持久化 |
+| `src/shared/lib/copy-to-clipboard.ts` | 移动端 + legacy WebView 复制 |
+| `src/app/shell/components/*` | DApp shell 共享 UI（card、table、widget frame 等） |
 | `src/i18n/messages/app/*` | DApp 文案（PC = SSOT） |
 
 **已删除、勿再引入：**
@@ -226,7 +230,7 @@ await writeContractViaWallet({ wallet, ... })
 - `buildReferralLink`（referral refactor 已删）
 - `getPostLaunchRankLabel` / S→A 查表、`heroBodyForRank`（A 等级只认 API `presale_commitment_floor_rank`）
 
-**业务数据语义**：等级、弹窗、API 字段与 UI 展示规则见本文 §0 / §6–§9 及 `src/lib/presale/`、`src/home/popup-notice.ts`。
+**业务数据语义**：等级、弹窗、API 字段与 UI 展示规则见本文 §0 / §6–§9 及 `src/core/presale/`、`src/views/home/popup-notice.ts`。
 
 ---
 
@@ -424,8 +428,8 @@ Auth 层用 `ACCOUNT_BANNED_SENTINEL` 写入 `loginError`，UI 单点展示。
 
 ### 9.4 业务 API 与等级语义
 
-- **路径与方法 SSOT**：`src/lib/api/endpoints.ts`（均为 **POST**；含 `/home/popup-notices`、`/performance` 等）。
-- **等级与弹窗展示规则**：本文 §9.4、`src/lib/presale/`、`src/home/popup-notice.ts`。
+- **路径与方法 SSOT**：`src/shared/api/endpoints.ts`（均为 **POST**；含 `/home/popup-notices`、`/performance` 等）。
+- **等级与弹窗展示规则**：本文 §9.4、`src/core/presale/`、`src/views/home/popup-notice.ts`。
 - **创世 S 等级**：`presale_rank`（max S10）；**上线后 A 等级**：`presale_commitment_floor_rank`（max A13，1:1 显示 `A{n}`）。二者独立，前端不做交叉推算。
 
 ---
@@ -617,7 +621,7 @@ codegraph context "auth session login"
 - [Viem Docs](https://viem.sh/)  
 - [TanStack Query](https://tanstack.com/query/latest)  
 - [PancakeSwap V3](https://docs.pancakeswap.finance/)  
-- 本项目：`AGENTS.md`、`src/lib/api/auth/auth-machine.ts`
+- 本项目：`AGENTS.md`、`src/core/auth/auth-machine.ts`
 
 ---
 

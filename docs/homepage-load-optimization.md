@@ -22,7 +22,7 @@
 | 与 DApp 共享 chunk | **64** | — |
 | Home 独有 | `home-main`（~44 KB） | — |
 
-**根因**：`src/home/main.tsx` 使用 `WebRootProviders`（thirdweb + AutoConnect + Auth），Home 与 DApp 共享 almost 同一依赖图。详见 [`homepage-architecture.md` §2](./homepage-architecture.md#2-现状-vs-目标agent-勿混读)。
+**根因（已修复）**：Home 曾使用 `WebRootProviders`；现 **`src/views/home/main.tsx`** 使用 **`HomeProviders`**（仅 Query）。DApp 入口 **`src/app/main.tsx`** 仍用 `WebRootProviders`。详见 [`homepage-architecture.md` §2](./homepage-architecture.md#2-现状-vs-目标agent-勿混读)。
 
 ---
 

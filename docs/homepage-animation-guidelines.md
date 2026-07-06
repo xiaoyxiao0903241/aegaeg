@@ -1,7 +1,7 @@
 # Homepage Animation Guidelines
 
-> **Runtime SSOT**：动效 boot 在 `src/wallet-loader.ts`（历史误名，**不是钱包**）— 详见 [`homepage-architecture.md` §4.1](./homepage-architecture.md#41-wallet-loaderts动效-boot)  
-> **CSS SSOT**：`src/styles/home-motion.css`（`data-reveal` / `data-visible` / `data-wallet-loader-ready`）
+> **Runtime SSOT**：动效 boot 在 `src/views/home/home-reveal-loader.ts` — 详见 [`homepage-architecture.md` §4.1](./homepage-architecture.md#41-home-reveal-loaderts动效-boot)  
+> **CSS SSOT**：`src/shared/styles/home-motion.css`（`data-reveal` / `data-visible` / `data-home-motion-ready`）
 
 Source of truth:
 
@@ -21,15 +21,15 @@ Source of truth:
 
 | Piece | Location | Notes |
 |-------|----------|-------|
-| Boot entry | `bootWalletLoader()` in `src/wallet-loader.ts` | Called from `src/home/main.tsx` `useLayoutEffect` **after** React mount |
-| Ready flag | `html[data-wallet-loader-ready]` | Set when IO observers registered; CSS hides unrevealed nodes until then |
+| Boot entry | `bootHomeReveal()` in `src/views/home/home-reveal-loader.ts` | Called from `src/views/home/main.tsx` `useLayoutEffect` **after** React mount |
+| Ready flag | `html[data-home-motion-ready]` | Set when IO observers registered; CSS hides unrevealed nodes until then |
 | Lazy images | `img[data-src]` | IntersectionObserver, `rootMargin: 320px` |
 | Section reveal | `[data-reveal]` | IO + `data-visible="true"` |
 | Count-up | `[data-count-target]`, `[data-count-panel]` | IO + rAF; metrics panel sequence in CSS |
 
-**R7 rename (planned, not done)**: `home-reveal-loader.ts` / `bootHomeReveal()` / `data-home-motion-ready` — behavior unchanged.
-
 **Do not delete** this boot script when removing wallet from Home — it has no wallet logic.
+
+> **历史命名**：原 `wallet-loader.ts` / `bootWalletLoader()` / `data-wallet-loader-ready` 已于 R7-move rename 为现名，行为不变。
 
 ## Section Rules
 

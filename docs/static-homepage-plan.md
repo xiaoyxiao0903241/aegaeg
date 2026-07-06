@@ -26,8 +26,8 @@ Figma source of truth (canonical — same as root `AGENTS.md` §8.4):
 
 | Topic | **Current (code)** | **Target (this plan)** |
 |-------|-------------------|------------------------|
-| Home entry | `src/home/main.tsx` + `{locale}/index.html` thin shell | Same routing; see architecture doc |
-| Home + thirdweb | Home uses shared `WebRootProviders` → loads thirdweb JS | Home **must not** import `thirdweb/react` or `ThirdwebProvider` |
+| Home entry | `src/views/home/main.tsx` + `{locale}/index.html` thin shell | Same routing; see architecture doc |
+| Home + thirdweb | Home uses **`HomeProviders`**（无 thirdweb） | Home **must not** import `thirdweb/react` or `ThirdwebProvider` — **已达成** |
 | Home wallet UX | CTA links to `/{locale}/app.html` (no connect on home) | Same — wallet on DApp, not home modal |
 | Wallet island on home CTA | **Not implemented** | Was spec’d for hover preload — **deferred**; use DApp entry |
 | HTML body | Empty `#root`, CSR only | Optional SSG (Phase 3 in load-optimization) |

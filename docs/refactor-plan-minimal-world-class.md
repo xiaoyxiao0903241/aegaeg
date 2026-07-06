@@ -148,7 +148,7 @@ export function isUnauthorizedError(error: unknown): boolean {
 
 - 业务 **禁止** 直接 import 8 个 auth 源文件  
 - 经 `views/dapp/auth/index.ts` 导出编排能力  
-- `auth-provider` 留 `providers/` 至 R8-refactor；R1-move 只改 import 路径
+- `auth-provider` 位于 `src/app/bootstrap/`（R8-refactor 已完成）
 
 ### 5.4 已知耦合（document，R8-refactor 前不修）
 
@@ -280,14 +280,14 @@ shared/styles/dapp.css          # dapp main 引用
 
 #### R7-move
 
-- [ ] `src/home/**` → `views/home/**`  
-- [ ] **`wallet-loader.ts`** → `views/home/home-reveal-loader.ts` + rename（**行为不变**）  
-- [ ] `scripts/render-home.mjs` 更新 SSR 路径  
-- [ ] E8：**24** HTML 入口 + redirect；reveal / 计数 / 懒图  
+- [x] `src/home/**` → `views/home/**`  
+- [x] **`wallet-loader.ts`** → `views/home/home-reveal-loader.ts` + rename（**行为不变**）
+- [x] `scripts/render-home.mjs` 更新 SSR 路径  
+- [x] E8：**24** HTML 入口 + redirect；reveal / 计数 / 懒图  
 
 #### R7-refactor
 
-- [ ] Home 去 `WebRootProviders`（[`homepage-load-optimization.md`](./homepage-load-optimization.md) Phase 1）  
+- [x] Home 去 `WebRootProviders`（[`homepage-load-optimization.md`](./homepage-load-optimization.md) Phase 1）  
 - [ ] 可选 locale inline i18n（Phase 2）  
 - [ ] section 组件抽取 / CSS 去重  
 
@@ -296,9 +296,9 @@ shared/styles/dapp.css          # dapp main 引用
 | 问题 | **现状（代码）** | **R7 / 目标** |
 |------|------------------|---------------|
 | Home 是否探测 / 连接钱包？ | **否** — CTA 为 `<a href="…/app.html">`；无 ConnectButton | 保持 |
-| Home 是否 import thirdweb？ | **是** — `home/main.tsx` → `WebRootProviders` | **R7-refactor** 移除；见 load-optimization |
-| `wallet-loader.ts` 是什么？ | **动效 boot**，非钱包 | **R7-move** rename → `home-reveal-loader` |
-| R7 应删 wallet-loader 吗？ | **否** — rename 保留动效 | 除非产品去掉 reveal/计数 |
+| Home 是否 import thirdweb？ | **否** — `views/home/main.tsx` → `HomeProviders` | ✅ 已达成 |
+| `home-reveal-loader.ts` 是什么？ | **动效 boot**，非钱包 | rename 完成 |
+| R7 应删 reveal boot 吗？ | **否** — 保留动效 | 除非产品去掉 reveal/计数 |
 
 **代码 SSOT**：[`homepage-architecture.md`](./homepage-architecture.md)
 

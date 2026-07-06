@@ -52,8 +52,8 @@ AI 工作规范
 
 ### 8.5 首页动效与性能
 
-- **首页代码 SSOT**：[`docs/homepage-architecture.md`](docs/homepage-architecture.md) — 双入口、HTML 生成、`wallet-loader` 命名、Provider 现状 vs 目标；**改 Home 前先读**。
-- **动效规则**：[`docs/homepage-animation-guidelines.md`](docs/homepage-animation-guidelines.md)；runtime boot 在 `src/wallet-loader.ts`（**动效，非钱包**），由 `src/home/main.tsx` 的 `useLayoutEffect` 调用 `bootWalletLoader()`。
+- **首页代码 SSOT**：[`docs/homepage-architecture.md`](docs/homepage-architecture.md) — 双入口、HTML 生成、`home-reveal-loader` 命名、Provider 现状 vs 目标；**改 Home 前先读**。
+- **动效规则**：[`docs/homepage-animation-guidelines.md`](docs/homepage-animation-guidelines.md)；runtime boot 在 `src/views/home/home-reveal-loader.ts`，由 `src/views/home/main.tsx` 的 `useLayoutEffect` 调用 `bootHomeReveal()`。
 - **性能目标与优化路线**：[`docs/static-homepage-plan.md`](docs/static-homepage-plan.md)（目标）、[`docs/homepage-load-optimization.md`](docs/homepage-load-optimization.md)（Phase 1–4，待实施）。
 - 参考站 `https://aegis-x5.vercel.app/` 只作为动效基准，不作为素材来源；生产素材必须来自正式 Figma 或项目 canonical public assets。
 - 首页不得为了动效引入 Framer Motion、GSAP、Anime、Lottie 等动画库；优先使用 CSS keyframes / transitions，加少量 `IntersectionObserver` / `requestAnimationFrame`。
