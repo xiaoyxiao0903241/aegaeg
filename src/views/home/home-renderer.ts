@@ -3,6 +3,7 @@ import { getHtmlLang } from '~/i18n/locale-meta'
 import { locales } from '~/i18n/locales'
 import { homeMessagesByLocale } from '~/i18n/messages/home'
 import { homeAssets } from '~/views/home/assets'
+import { themeHex } from '~/shared/styles/theme'
 import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '~/shared/lib/legacy-runtime-polyfills'
 import { PAGE_SCROLL_RESTORATION_BOOT_SCRIPT } from '~/shared/lib/page-scroll-restoration'
 
@@ -43,7 +44,7 @@ export function renderHomeDocument(locale: Locale) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="${viewportContent}" />
     <meta name="description" content="${escapeAttr(meta.description)}" />
-    <meta name="theme-color" content="#f5f6f8" />
+    <meta name="theme-color" content="${themeHex.metaTheme}" />
 ${faviconHead}
     <link rel="preload" as="image" href="${homeAssets.heroVideoPoster}" fetchpriority="high" />
     <link
@@ -76,7 +77,7 @@ export function renderAppDocument(locale: Locale) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="${viewportContent}" />
     <meta name="description" content="${escapeAttr(meta.description)}" />
-    <meta name="theme-color" content="#f5f6f8" />
+    <meta name="theme-color" content="${themeHex.metaTheme}" />
 ${faviconHead}
     <link
       rel="preload"
