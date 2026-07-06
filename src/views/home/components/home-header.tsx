@@ -41,12 +41,6 @@ const navActionsClass = cn(
 )
 
 const navGhostBtnClass = cn(
-  'inline-flex min-h-9.5 cursor-pointer items-center justify-center rounded-full border border-border bg-transparent px-4.5',
-  'text-sm font-semibold leading-none tracking-normal whitespace-nowrap text-foreground',
-  'transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out',
-  'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-  'hover:opacity-[0.96] hover:shadow-card focus-visible:opacity-[0.96] focus-visible:shadow-card',
-  'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
   'max-dapp:!hidden',
 )
 
@@ -82,14 +76,11 @@ export function HomeHeader() {
           ))}
         </nav>
         <div className={navActionsClass}>
-          <a
-            className={navGhostBtnClass}
-            href={notionLinks.whitepaper}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {content.whitepaper}
-          </a>
+          <Button asChild className={navGhostBtnClass} size="md" variant="secondary">
+            <a href={notionLinks.whitepaper} rel="noopener noreferrer" target="_blank">
+              {content.whitepaper}
+            </a>
+          </Button>
           <Button asChild size="md" variant="primary">
             <a href={appHref}>{content.enterApp}</a>
           </Button>
