@@ -1,6 +1,8 @@
-import { revealClass } from '~/lib/reveal'
+import { tv } from 'tailwind-variants'
 import * as Accordion from '@radix-ui/react-accordion'
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import { Card } from '~/shared/ui/card'
+import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 
 export type FaqListItem = {
@@ -11,41 +13,42 @@ export type FaqListItem = {
 
 type FaqListVariant = 'home' | 'dapp'
 
-const faqCardClass = cn(
-  'overflow-hidden rounded-2xl bg-white shadow-faq',
-  'max-dapp:rounded-md',
-)
-
-const faqCardBodyClass = cn(
-  'flex w-full flex-col items-start px-6 py-4.5',
-  'max-dapp:px-4 max-dapp:py-3.5',
-  'group-data-[state=open]:gap-3 max-dapp:group-data-[state=open]:gap-2.5',
-)
-
-const faqQuestionClass = cn(
-  'min-w-px flex-[1_0_0] text-left text-sm font-semibold leading-[1.3] tracking-[-0.3px] text-foreground [overflow-wrap:anywhere]',
-  'max-dapp:text-sm',
-)
-
-const faqAnswerClass = cn(
-  'w-full text-left text-sm font-normal leading-[1.5] tracking-[-0.28px] text-faq-text [overflow-wrap:anywhere]',
-  'max-dapp:text-xs',
-)
-
-const faqTriggerClass =
-  'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left text-inherit outline-none'
-
-const variantStyles = {
-  home: {
-    list: cn(
-      revealClass(),
-      'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
-    ),
+const faqList = tv({
+  slots: {
+    list: '',
+    cardBody: [
+      'flex w-full flex-col items-start px-6 py-4.5',
+      'max-dapp:px-4 max-dapp:py-3.5',
+      'group-data-[state=open]:gap-3 max-dapp:group-data-[state=open]:gap-2.5',
+    ],
+    question: [
+      'min-w-px flex-[1_0_0] text-left text-sm font-semibold leading-[1.3] tracking-[-0.3px] text-foreground [overflow-wrap:anywhere]',
+      'max-dapp:text-sm',
+    ],
+    answer: [
+      'w-full text-left text-sm font-normal leading-[1.5] tracking-[-0.28px] text-faq-text [overflow-wrap:anywhere]',
+      'max-dapp:text-xs',
+    ],
+    trigger:
+      'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left text-inherit outline-none',
   },
-  dapp: {
-    list: 'grid w-full gap-3 max-dapp:gap-2.5',
+  variants: {
+    variant: {
+      home: {
+        list: cn(
+          revealClass(),
+          'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
+        ),
+      },
+      dapp: {
+        list: 'grid w-full gap-3 max-dapp:gap-2.5',
+      },
+    },
   },
-} as const
+  defaultVariants: {
+    variant: 'home',
+  },
+})
 
 function FaqChevron({ open }: { open: boolean }) {
   return (
@@ -82,7 +85,7 @@ export function FaqList({
   items: FaqListItem[]
   variant?: FaqListVariant
 }) {
-  const styles = variantStyles[variant]
+  const styles = faqList({ variant })
   const openFirst = defaultOpenFirst ?? variant === 'dapp'
 
   const defaultValue = useMemo(() => {
@@ -128,7 +131,7 @@ export function FaqList({
 
   return (
     <Accordion.Root
-      className={cn(styles.list, className)}
+      className={cn(styles.list(), className)}
       collapsible
       data-reveal={dataReveal ?? true}
       onValueChange={handleValueChange}
@@ -142,44 +145,46 @@ export function FaqList({
         const isOpen = value === itemValue
 
         return (
-          <Accordion.Item
-            className={cn(faqCardClass, 'group', itemClassName)}
-            data-faq-item
-            data-faq-motion={motionEnabled ? 'true' : 'false'}
-            key={`${index}-${String(item.q)}`}
-            value={itemValue}
-          >
-            <div className={faqCardBodyClass}>
-              <Accordion.Header className="m-0 w-full">
-                <Accordion.Trigger className={faqTriggerClass} data-faq-trigger>
-                  <span className={faqQuestionClass}>{item.q}</span>
-                  <FaqChevron open={isOpen} />
-                </Accordion.Trigger>
-              </Accordion.Header>
-              <Accordion.Content
-                className="w-full overflow-hidden"
-                data-faq-answer
-                forceMount
-                onClick={() => collapseItem(itemValue)}
-                onKeyDown={(event) => {
-                  if (!isOpen) {
-                    return
-                  }
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault()
-                    collapseItem(itemValue)
-                  }
-                }}
-                role={isOpen ? 'button' : undefined}
-                tabIndex={isOpen ? 0 : undefined}
-              >
-                <div className="faq-answer-panel">
-                  <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                    <p className={faqAnswerClass}>{item.a}</p>
+          <Accordion.Item asChild key={`${index}-${String(item.q)}`} value={itemValue}>
+            <Card
+              as="div"
+              surface="faq"
+              className={cn('group', itemClassName)}
+              data-faq-item
+              data-faq-motion={motionEnabled ? 'true' : 'false'}
+            >
+              <div className={styles.cardBody()}>
+                <Accordion.Header className="m-0 w-full">
+                  <Accordion.Trigger className={styles.trigger()} data-faq-trigger>
+                    <span className={styles.question()}>{item.q}</span>
+                    <FaqChevron open={isOpen} />
+                  </Accordion.Trigger>
+                </Accordion.Header>
+                <Accordion.Content
+                  className="w-full overflow-hidden"
+                  data-faq-answer
+                  forceMount
+                  onClick={() => collapseItem(itemValue)}
+                  onKeyDown={(event) => {
+                    if (!isOpen) {
+                      return
+                    }
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault()
+                      collapseItem(itemValue)
+                    }
+                  }}
+                  role={isOpen ? 'button' : undefined}
+                  tabIndex={isOpen ? 0 : undefined}
+                >
+                  <div className="faq-answer-panel">
+                    <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
+                      <p className={styles.answer()}>{item.a}</p>
+                    </div>
                   </div>
-                </div>
-              </Accordion.Content>
-            </div>
+                </Accordion.Content>
+              </div>
+            </Card>
           </Accordion.Item>
         )
       })}

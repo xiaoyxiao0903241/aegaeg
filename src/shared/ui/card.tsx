@@ -6,12 +6,14 @@ import { cn } from '~/lib/utils'
 export const cardVariants = tv({
   variants: {
     context: {
-      dapp: 'rounded-md bg-card px-4 py-3.5',
+      dapp: 'bg-card',
       home: '',
     },
     surface: {
-      outlined: 'border border-border',
-      elevated: 'shadow-card',
+      outlined: 'rounded-md border border-border px-4 py-3.5',
+      elevated: 'rounded-md px-4 py-3.5 shadow-card',
+      soft: 'overflow-hidden rounded-2xl shadow-subtle',
+      faq: 'overflow-hidden rounded-2xl bg-white shadow-faq',
     },
     fill: {
       surface: 'bg-card shadow-card',

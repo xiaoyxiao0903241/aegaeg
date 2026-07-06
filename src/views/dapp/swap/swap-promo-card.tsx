@@ -1,6 +1,8 @@
 import type { ButtonHTMLAttributes, ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
+import { Button } from '~/shared/ui/button'
+import { Card } from '~/shared/ui/card'
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { revealClass } from '~/lib/reveal'
@@ -10,7 +12,6 @@ type PromoLayout = 'desktop' | 'mobile'
 
 const swapPromoCard = tv({
   slots: {
-    root: 'relative min-w-0 overflow-hidden rounded-2xl bg-card shadow-subtle',
     bodyGrid: 'relative z-1 grid gap-2',
     titleRow: 'flex w-full min-w-0 items-center',
     titleCluster: 'flex min-w-0 items-center overflow-hidden',
@@ -58,28 +59,28 @@ const swapPromoCard = tv({
 })
 
 const swapPromoPillAction = tv({
-  base: 'inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border bg-card whitespace-nowrap text-foreground text-xs font-semibold leading-[1.2] tracking-[-0.02em]',
+  base: 'shrink-0 whitespace-nowrap !text-xs !font-semibold !leading-[1.2] !tracking-[-0.02em]',
   variants: {
     layout: {
       desktop: [
-        'absolute right-4 top-1/2 z-[2] -translate-y-1/2 px-4 py-2.5',
+        'absolute right-4 top-1/2 z-[2] -translate-y-1/2 !min-h-0 !px-4 !py-2.5',
         'transition-[border-color,transform] duration-180 ease-out',
-        'hover:translate-x-px hover:border-primary',
-        'focus-visible:translate-x-px focus-visible:border-primary',
+        'hover:translate-x-px hover:!border-primary',
+        'focus-visible:translate-x-px focus-visible:!border-primary',
         'disabled:pointer-events-none disabled:opacity-45',
       ],
-      mobile: 'px-3 py-1.5',
+      mobile: '!min-h-0 !px-3 !py-1.5',
     },
     withArrow: {
-      true: 'gap-1.5',
+      true: '!gap-1.5',
       false: '',
     },
     fullWidth: {
-      true: 'w-full justify-center',
-      false: '',
+      true: '!w-full justify-center',
+      false: '!w-auto',
     },
     minConnectWidth: {
-      true: 'min-w-[7.75rem] text-[0.8125rem]',
+      true: 'min-w-[7.75rem] !text-[0.8125rem]',
       false: '',
     },
   },
@@ -104,16 +105,19 @@ export function SwapPromoPillAction({
   minConnectWidth?: boolean
 }) {
   return (
-    <button
+    <Button
       className={cn(
         swapPromoPillAction({ layout, withArrow, fullWidth, minConnectWidth }),
         className,
       )}
+      shape="pill"
+      size="md"
       type="button"
+      variant="secondary"
       {...props}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
@@ -183,8 +187,15 @@ export function SwapPromoCard({
   )
 
   return (
-    <article
-      className={cn(styles.root(), shellClassName, reveal && revealClass(), className)}
+    <Card
+      as="article"
+      surface="soft"
+      className={cn(
+        'relative min-w-0',
+        shellClassName,
+        reveal && revealClass(),
+        className,
+      )}
       data-reveal={reveal ? '' : undefined}
     >
       <CardDecoration layout={layout} rays={rays} />
@@ -199,7 +210,7 @@ export function SwapPromoCard({
         <p className={styles.body()}>{body}</p>
       </div>
       {isDesktop ? actionNode : null}
-    </article>
+    </Card>
   )
 }
 

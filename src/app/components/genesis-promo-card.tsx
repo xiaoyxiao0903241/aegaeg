@@ -1,11 +1,10 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
+import { WidgetPromoCard } from '~/shared/ui/widget-promo-card'
 import {
   applyMessageTemplate,
   type GenesisPromoSnapshot,
 } from '~/lib/presale/genesis-promo'
-import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
@@ -99,17 +98,11 @@ export function GenesisPromoCard({
     : null
 
   return (
-    <Card
-      as="section"
-      tone="dark"
+    <WidgetPromoCard
       className={cn(
-        revealClass(),
-        'mt-auto grid gap-1 px-4.5 py-4',
-        'max-dapp:gap-1.5 max-dapp:rounded-2xl max-dapp:px-4.5 max-dapp:py-4',
-        'max-dapp:mt-0 group-data-[tab=genesis]/shell:max-dapp:grid',
+        'mt-auto max-dapp:mt-0 group-data-[tab=genesis]/shell:max-dapp:grid',
         className,
       )}
-      data-reveal
     >
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
@@ -131,6 +124,6 @@ export function GenesisPromoCard({
       >
         {actionLabel ?? t.genesis.join}
       </DappActionButton>
-    </Card>
+    </WidgetPromoCard>
   )
 }
