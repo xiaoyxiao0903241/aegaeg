@@ -21,6 +21,9 @@ const contractButtonClass = cn(
   '[&_img]:size-[var(--dapp-icon-action)] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
 )
 
+const genesisGlobeWidth = 597
+const genesisGlobeHeight = 250
+
 function openPreSaleContract() {
   window.open(bscscanAddress(BSC_CONTRACTS.preSale), '_blank', 'noopener,noreferrer')
 }
@@ -81,12 +84,12 @@ export function GenesisGlobalSection() {
         </Button>
         <img
           alt=""
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-auto max-w-none select-none opacity-[0.78]"
+          className="pointer-events-none absolute top-0 right-0 h-auto max-h-full w-auto max-w-[60%] select-none opacity-[0.78]"
           draggable={false}
-          height={250}
+          height={genesisGlobeHeight}
           loading="lazy"
           src={dappAssets.genesisGlobe}
-          width={597}
+          width={genesisGlobeWidth}
         />
       </div>
     </section>
