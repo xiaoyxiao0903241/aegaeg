@@ -17,6 +17,41 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      'src/web3/**',
+      'src/views/dapp/web3/**',
+      'src/views/dapp/auth/**',
+      'src/lib/api/auth/**',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'thirdweb',
+              message:
+                'Import thirdweb only from src/web3/, src/views/dapp/web3/, or src/views/dapp/auth/.',
+            },
+            {
+              name: 'thirdweb/react',
+              message:
+                'Import thirdweb only from src/web3/, src/views/dapp/web3/, or src/views/dapp/auth/.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['thirdweb/*'],
+              message:
+                'Import thirdweb only from src/web3/, src/views/dapp/web3/, or src/views/dapp/auth/.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.{ts,tsx,mjs}'],
     languageOptions: {
       ecmaVersion: 2022,

@@ -6,6 +6,7 @@ export interface SwapTokenConfig {
   address: `0x${string}`
   decimals: number
   enabled: boolean
+  icon: string
 }
 
 export interface SwapConfig {
@@ -49,12 +50,14 @@ export const SWAP_CONFIG: SwapConfig = {
       address: BSC_CONTRACTS.usd1,
       decimals: 18,
       enabled: true,
+      icon: '/assets/figma/dapp/token-usd1.svg',
     },
     tokenB: {
       symbol: 'USDT',
       address: BSC_CONTRACTS.usdt,
       decimals: 18,
       enabled: true,
+      icon: '/assets/figma/dapp/token-usdt.svg',
     },
   },
   tokens: {
@@ -63,30 +66,35 @@ export const SWAP_CONFIG: SwapConfig = {
       address: BSC_CONTRACTS.usd1,
       decimals: 18,
       enabled: true,
+      icon: '/assets/figma/dapp/token-usd1.svg',
     },
     usdt: {
       symbol: 'USDT',
       address: BSC_CONTRACTS.usdt,
       decimals: 18,
       enabled: true,
+      icon: '/assets/figma/dapp/token-usdt.svg',
     },
     agx: {
       symbol: 'AGX',
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
       enabled: false,
+      icon: '',
     },
     gagx: {
       symbol: 'gAGX',
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
       enabled: false,
+      icon: '',
     },
     x: {
       symbol: 'X',
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
       enabled: false,
+      icon: '',
     },
   },
 }

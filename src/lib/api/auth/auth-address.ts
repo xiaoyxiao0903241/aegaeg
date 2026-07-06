@@ -1,3 +1,1 @@
-export function normalizeAuthAddress(address: string): string {
-  return address.toLowerCase()
-}
+export * from '~/core/auth/auth-address'
