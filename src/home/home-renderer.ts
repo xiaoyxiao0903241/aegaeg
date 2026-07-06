@@ -52,7 +52,7 @@ ${faviconHead}
       crossorigin
     />
     <script>${bootScript}</script>
-    <link rel="stylesheet" href="/src/styles/home.css" />
+    <link rel="stylesheet" href="/src/shared/styles/home.css" />
     <title>${escapeAttr(meta.title)}</title>
   </head>
   <body>

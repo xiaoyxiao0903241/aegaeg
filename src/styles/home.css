@@ -1,3 +1,1 @@
-@import './globals.css';
-@import './wallet.css';
-@import './home-motion.css';
+@import '../shared/styles/home.css';

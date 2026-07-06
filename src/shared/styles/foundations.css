@@ -1,4 +1,4 @@
-@import './theme.css';
+@import './tokens/theme.css';
 @import './breakpoint-scale.css';
 @import './mobile-type-scale.css';
 @import './home-scale.css';
@@ -7,7 +7,7 @@
 @import './animations.css';
 @import './hero-rays.css';
 
-@source '../app';
-@source '../components';
-@source '../home';
-@source '../wallet-loader.ts';
+@source '../../app';
+@source '../../components';
+@source '../../home';
+@source '../../wallet-loader.ts';
