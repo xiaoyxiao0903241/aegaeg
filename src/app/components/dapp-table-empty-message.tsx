@@ -1,4 +1,4 @@
-import { dappTableCardShellClass } from '~/app/components/dapp-table-shell'
+import { DappTableCardShell } from '~/app/components/dapp-table-card'
 import { cn } from '~/lib/utils'
 import { revealClass } from '~/lib/reveal'
 
@@ -32,10 +32,9 @@ export function DappTableEmptyMessage({
   }
 
   return (
-    <div
+    <DappTableCardShell
       className={cn(
         revealClass(),
-        dappTableCardShellClass,
         'p-[var(--dapp-table-empty-padding)] text-center',
         'max-dapp:p-[var(--dapp-table-empty-padding-h5)]',
         className,
@@ -43,6 +42,6 @@ export function DappTableEmptyMessage({
       data-reveal
     >
       {message}
-    </div>
+    </DappTableCardShell>
   )
 }

@@ -24,7 +24,7 @@ import {
   rewardsCommunityFundHistoryColWidths,
   rewardsReferralHistoryColWidths,
   rewardsTeamHistoryColWidths,
-} from '~/app/components/dapp-table-shell'
+} from '~/app/components/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'

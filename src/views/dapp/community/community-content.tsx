@@ -25,7 +25,7 @@ import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { DappTableCard } from '~/app/components/dapp-table-card'
-import { communityInviteColWidths } from '~/app/components/dapp-table-shell'
+import { communityInviteColWidths } from '~/app/components/dapp-table-columns'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'

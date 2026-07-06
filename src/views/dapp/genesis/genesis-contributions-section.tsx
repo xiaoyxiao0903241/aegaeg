@@ -16,7 +16,7 @@ import { DappTableCard } from '~/app/components/dapp-table-card'
 import { ResponsiveTable } from '~/app/components/responsive-table'
 import {
   genesisContributionsColWidths,
-} from '~/app/components/dapp-table-shell'
+} from '~/app/components/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useAuth } from '~/providers/auth-provider'

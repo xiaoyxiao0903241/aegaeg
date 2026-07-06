@@ -1,13 +1,26 @@
 import { forwardRef, type ReactNode } from 'react'
-import {
-  dappTableCardShellClass,
-  dappTableContentBelowHeaderPaddingClass,
-  dappTableContentPaddingClass,
-  dappTableFooterPaddingClass,
-  dappTableHeaderPaddingClass,
-  dappTableSectionDividerClass,
-} from '~/app/components/dapp-table-shell'
+import { tv } from 'tailwind-variants'
 import { cn } from '~/lib/utils'
+
+const dappTableCard = tv({
+  slots: {
+    shell: 'overflow-hidden rounded-2xl border border-border bg-card shadow-card',
+    header:
+      'dapp:px-4 dapp:pt-3.5 dapp:pb-2.5 max-dapp:px-3.5 max-dapp:pt-3.5 max-dapp:pb-2.5 border-b border-border/50',
+    content: 'dapp:px-4 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5',
+    contentBelowHeader:
+      'dapp:px-4 dapp:pb-1.5 dapp:pt-0 max-dapp:px-3.5 max-dapp:pb-1.5 max-dapp:pt-0',
+    footer:
+      'dapp:px-4 dapp:py-3 max-dapp:px-3.5 max-dapp:py-2.5 relative z-10 overflow-visible rounded-b-2xl border-t border-border/50 bg-card',
+  },
+})
+
+export const dappTableCell = tv({
+  slots: {
+    border: 'border-b-[0.5px] border-border',
+    minWidth: 'min-w-[var(--dapp-table-cell-min-width)]',
+  },
+})
 
 type DappTableCardProps = {
   children: ReactNode
@@ -32,32 +45,19 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
     },
     ref,
   ) {
+    const styles = dappTableCard()
+
     return (
-      <div
-        className={cn(
-          dappTableCardShellClass,
-          'flex min-w-0 max-w-full flex-col',
-          className,
-        )}
-      >
+      <div className={cn(styles.shell(), 'flex min-w-0 max-w-full flex-col', className)}>
         {header ? (
-          <div
-            className={cn(
-              dappTableHeaderPaddingClass,
-              'border-b',
-              dappTableSectionDividerClass,
-              headerClassName,
-            )}
-          >
-            {header}
-          </div>
+          <div className={cn(styles.header(), headerClassName)}>{header}</div>
         ) : null}
 
         <div
           ref={ref}
           className={cn(
             'min-w-0 overflow-x-auto max-dapp:scrollbar-x-track',
-            header ? dappTableContentBelowHeaderPaddingClass : dappTableContentPaddingClass,
+            header ? styles.contentBelowHeader() : styles.content(),
             footer && 'pb-0',
             contentClassName,
           )}
@@ -66,18 +66,14 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
         </div>
 
         {footer ? (
-          <div
-            className={cn(
-              dappTableFooterPaddingClass,
-              'relative z-10 overflow-visible rounded-b-2xl border-t bg-card',
-              dappTableSectionDividerClass,
-              footerClassName,
-            )}
-          >
-            {footer}
-          </div>
+          <div className={cn(styles.footer(), footerClassName)}>{footer}</div>
         ) : null}
       </div>
     )
   },
 )
+
+export function DappTableCardShell({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  const styles = dappTableCard()
+  return <div className={cn(styles.shell(), className)} {...props} />
+}
