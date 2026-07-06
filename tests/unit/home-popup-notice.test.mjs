@@ -37,7 +37,7 @@ function notice(overrides) {
 }
 
 test('normalizeHomePopupNotice resolves i18n image and title by locale', async () => {
-  const { normalizeHomePopupNotice } = await loadModule('/src/home/popup-notice.ts')
+  const { normalizeHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
 
   const result = normalizeHomePopupNotice(sampleApiItem, 'zh')
 
@@ -54,7 +54,7 @@ test('normalizeHomePopupNotice resolves i18n image and title by locale', async (
 })
 
 test('normalizeHomePopupNotices sorts by sort_order ascending', async () => {
-  const { normalizeHomePopupNotices } = await loadModule('/src/home/popup-notice.ts')
+  const { normalizeHomePopupNotices } = await loadModule('/src/views/home/popup-notice.ts')
 
   const notices = normalizeHomePopupNotices({
     items: [
@@ -71,14 +71,14 @@ test('normalizeHomePopupNotices sorts by sort_order ascending', async () => {
 })
 
 test('readShowOnceFromDisplayMode maps display_mode 1/2', async () => {
-  const { readShowOnceFromDisplayMode } = await loadModule('/src/home/popup-notice.ts')
+  const { readShowOnceFromDisplayMode } = await loadModule('/src/views/home/popup-notice.ts')
 
   assert.equal(readShowOnceFromDisplayMode(1), true)
   assert.equal(readShowOnceFromDisplayMode(2), false)
 })
 
 test('normalizeHomePopupNotice defaults version to 1', async () => {
-  const { normalizeHomePopupNotice } = await loadModule('/src/home/popup-notice.ts')
+  const { normalizeHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
 
   const result = normalizeHomePopupNotice(
     { ...sampleApiItem, version: '', display_mode: 1 },
@@ -89,7 +89,7 @@ test('normalizeHomePopupNotice defaults version to 1', async () => {
 })
 
 test('shouldShowHomePopupNotice persists by id:version for show_once', async () => {
-  const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule('/src/home/popup-notice.ts')
+  const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
 
   const first = notice({ id: 1, version: 'v2' })
   const sameIdNewVersion = notice({ id: 1, version: 'v3' })
@@ -100,7 +100,7 @@ test('shouldShowHomePopupNotice persists by id:version for show_once', async () 
 })
 
 test('shouldShowHomePopupNotice ignores dismissed keys for every-visit mode', async () => {
-  const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule('/src/home/popup-notice.ts')
+  const { noticeDismissKey, shouldShowHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
 
   const everyVisit = notice({ id: 2, show_once: false, version: 'always' })
   const dismissed = new Set([noticeDismissKey(everyVisit)])
@@ -109,7 +109,7 @@ test('shouldShowHomePopupNotice ignores dismissed keys for every-visit mode', as
 })
 
 test('selectNextHomePopupNotice walks queue after session dismiss', async () => {
-  const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule('/src/home/popup-notice.ts')
+  const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
 
   const queue = [
     notice({ id: 1, version: 'a', show_once: true }),
@@ -134,7 +134,7 @@ test('selectNextHomePopupNotice walks queue after session dismiss', async () => 
 })
 
 test('selectNextHomePopupNotice skips persistently dismissed show_once items', async () => {
-  const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule('/src/home/popup-notice.ts')
+  const { noticeDismissKey, selectNextHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
 
   const queue = [
     notice({ id: 1, version: 'seen', show_once: true }),
@@ -149,7 +149,7 @@ test('selectNextHomePopupNotice skips persistently dismissed show_once items', a
 })
 
 test('normalizeHomePopupNotice accepts title/content without image', async () => {
-  const { normalizeHomePopupNotice } = await loadModule('/src/home/popup-notice.ts')
+  const { normalizeHomePopupNotice } = await loadModule('/src/views/home/popup-notice.ts')
 
   const result = normalizeHomePopupNotice(
     {
@@ -174,7 +174,7 @@ test('normalizeHomePopupNotice accepts title/content without image', async () =>
 
 test('isHomePopupNoticeWithinSchedule excludes items outside start/end window', async () => {
   const { isHomePopupNoticeWithinSchedule, normalizeHomePopupNotice } =
-    await loadModule('/src/home/popup-notice.ts')
+    await loadModule('/src/views/home/popup-notice.ts')
 
   const window = {
     start_time: '2026-07-04T08:00:00.000Z',

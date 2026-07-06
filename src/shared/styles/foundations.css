@@ -10,4 +10,4 @@
 @source '../../app';
 @source '../../components';
 @source '../../home';
-@source '../../wallet-loader.ts';
+@source '../../views/home/home-reveal-loader.ts';

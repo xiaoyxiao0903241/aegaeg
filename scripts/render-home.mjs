@@ -27,7 +27,7 @@ try {
     renderAppDocument,
     renderHomeDocument,
     renderRootRedirectDocument,
-  } = await server.ssrLoadModule('/src/home/home-renderer.ts')
+  } = await server.ssrLoadModule('/src/views/home/home-renderer.ts')
 
   await writeFile(resolve(root, 'index.html'), renderRootRedirectDocument(), 'utf8')
   await writeFile(resolve(root, 'app.html'), renderAppRedirectDocument(), 'utf8')

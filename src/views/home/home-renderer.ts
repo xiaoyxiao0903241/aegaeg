@@ -1,0 +1,169 @@
+import type { Locale } from '~/i18n/locales'
+import { getHtmlLang } from '~/i18n/locale-meta'
+import { locales } from '~/i18n/locales'
+import { homeMessagesByLocale } from '~/i18n/messages/home'
+import { homeAssets } from '~/views/home/assets'
+import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '~/lib/legacy-runtime-polyfills'
+import { PAGE_SCROLL_RESTORATION_BOOT_SCRIPT } from '~/lib/page-scroll-restoration'
+
+const supportedLocalesJson = JSON.stringify(locales)
+
+// 挂载前：滚动恢复 + DOM 类数组 .at（须在 module 入口之前）；语言 API 见 legacy-core-js + plugin-legacy
+const bootScript = PAGE_SCROLL_RESTORATION_BOOT_SCRIPT + LEGACY_DOM_POLYFILLS_BOOT_SCRIPT
+const legacyCoreJsScript = '<script type="module" src="/src/lib/legacy-core-js.ts"></script>'
+
+function escapeAttr(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+const faviconHead = `
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />`
+
+const viewportContent =
+  'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+
+/**
+ * 首页文档：纯客户端 SPA 薄壳（不做 SSR / 不预渲染内容）。
+ * 仅内联关键引导脚本与本地化 <title>/<meta>，由 /src/views/home/main.tsx 客户端挂载。
+ */
+export function renderHomeDocument(locale: Locale) {
+  const lang = getHtmlLang(locale)
+  const meta = homeMessagesByLocale[locale].meta
+
+  return `<!doctype html>
+<html lang="${lang}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="${viewportContent}" />
+    <meta name="description" content="${escapeAttr(meta.description)}" />
+    <meta name="theme-color" content="#f5f6f8" />
+${faviconHead}
+    <link rel="preload" as="image" href="${homeAssets.heroVideoPoster}" fetchpriority="high" />
+    <link
+      rel="preload"
+      href="${homeAssets.font}"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script>${bootScript}</script>
+    <link rel="stylesheet" href="/src/shared/styles/home.css" />
+    <title>${escapeAttr(meta.title)}</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    ${legacyCoreJsScript}
+    <script type="module" src="/src/views/home/main.tsx"></script>
+  </body>
+</html>
+`
+}
+
+export function renderAppDocument(locale: Locale) {
+  const lang = getHtmlLang(locale)
+  const meta = homeMessagesByLocale[locale].meta
+
+  return `<!doctype html>
+<html lang="${lang}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="${viewportContent}" />
+    <meta name="description" content="${escapeAttr(meta.description)}" />
+    <meta name="theme-color" content="#f5f6f8" />
+${faviconHead}
+    <link
+      rel="preload"
+      href="/assets/fonts/montserrat-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script>${bootScript}</script>
+    <title>${escapeAttr(meta.title)}</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    ${legacyCoreJsScript}
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+`
+}
+
+function renderBrowserLocaleDetectionScript(pathSuffix = '') {
+  return `
+        const supported = new Set(${supportedLocalesJson})
+        const stored = window.localStorage.getItem('aegis.locale')
+        if (supported.has(stored)) {
+          window.location.replace('/' + stored + '/${pathSuffix}' + window.location.search + window.location.hash)
+          return
+        }
+        const candidates = [navigator.language, ...(navigator.languages || [])]
+        let locale = 'en'
+        for (const raw of candidates) {
+          if (!raw) continue
+          const lower = raw.toLowerCase()
+          if (lower.startsWith('zh-tw') || lower.startsWith('zh-hk') || lower.startsWith('zh-hant')) {
+            locale = 'zht'
+            break
+          }
+          if (lower.startsWith('zh')) {
+            locale = 'zh'
+            break
+          }
+          const base = lower.split('-')[0]
+          if (supported.has(base)) {
+            locale = base
+            break
+          }
+        }
+        window.location.replace('/' + locale + '/${pathSuffix}' + window.location.search + window.location.hash)
+      `
+}
+
+export function renderRootRedirectDocument() {
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="${viewportContent}" />
+    <meta name="robots" content="noindex" />
+${faviconHead}
+    <title>AEGIS X</title>
+    <script>
+      (() => {${renderBrowserLocaleDetectionScript()}})()
+    </script>
+  </head>
+  <body>
+    <a href="/en/">AEGIS X</a>
+  </body>
+</html>
+`
+}
+
+export function renderAppRedirectDocument() {
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="${viewportContent}" />
+    <meta name="robots" content="noindex" />
+${faviconHead}
+    <title>AEGIS X DApp</title>
+    <script>
+      (() => {${renderBrowserLocaleDetectionScript('app.html')}})()
+    </script>
+  </head>
+  <body>
+    <a href="/en/app.html">AEGIS X DApp</a>
+  </body>
+</html>
+`
+}

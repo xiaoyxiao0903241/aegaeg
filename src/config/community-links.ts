@@ -1,6 +1,6 @@
 import type { QuickLinkProps } from '~/app/components/quick-link'
 import { dappAssets } from '~/app/assets'
-import { resolveHomeNotionLink } from '~/home/notion-links'
+import { resolveHomeNotionLink } from '~/views/home/notion-links'
 import type { Locale } from '~/i18n/locales'
 
 export const COMMUNITY_SOCIAL_LINKS = {
