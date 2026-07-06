@@ -81,7 +81,7 @@ export function GenesisGlobalSection() {
         </Button>
         <img
           alt=""
-          className="pointer-events-none absolute top-0 right-9 h-auto w-[44%] max-w-80 select-none opacity-[0.78] max-dapp:hidden"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-auto max-w-none select-none opacity-[0.78]"
           draggable={false}
           height={250}
           loading="lazy"
