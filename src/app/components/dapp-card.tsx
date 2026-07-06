@@ -5,20 +5,14 @@ import { revealClass } from '~/lib/reveal'
 import { cn, resolveNavigableHref } from '~/lib/utils'
 
 const metricCardResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-md group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:p-3.5',
   'group-data-[tab=genesis]/shell:max-dapp:min-h-0 group-data-[tab=genesis]/shell:max-dapp:rounded-md group-data-[tab=genesis]/shell:max-dapp:p-3.5 group-data-[tab=genesis]/shell:max-dapp:shadow-card',
 )
 
 const metricValueResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
   'group-data-[tab=genesis]/shell:text-base group-data-[tab=genesis]/shell:leading-[1.3] group-data-[tab=genesis]/shell:max-dapp:text-sm group-data-[tab=genesis]/shell:max-dapp:leading-[1.2]',
 )
 
-const metricHintHiddenResponsive = cn(
-  'group-data-[tab=swap]/shell:group-data-[session-ready=false]/shell:py-3.5 group-data-[tab=swap]/shell:group-data-[session-ready=false]/shell:max-dapp:hidden',
-  'group-data-[tab=swap]/shell:group-data-[session-ready=true]/shell:max-dapp:hidden',
-  'group-data-[tab=genesis]/shell:max-dapp:hidden',
-)
+const metricHintHiddenResponsive = 'group-data-[tab=genesis]/shell:max-dapp:hidden'
 
 export const communityStatCardH5Layout = cn(
   'group-data-[tab=community]/shell:max-dapp:min-h-18 group-data-[tab=community]/shell:max-dapp:rounded-xl group-data-[tab=community]/shell:max-dapp:p-3.5',

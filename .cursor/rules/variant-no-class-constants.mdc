@@ -1,0 +1,46 @@
+---
+description: DApp/UI 样式用 tv() variant 与复合组件，禁止导出 Tailwind class 常量
+globs: "src/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Variant 优先 · 禁止 class 常量
+
+> 设计系统细则：[`docs/design-system-audit.md`](../../docs/design-system-audit.md) §2
+
+## MUST NOT
+
+- 新建或导出 Tailwind **class 常量**：`*Class`、`*ClassName`、裸字符串、`cn('…')` 模块级样式块
+- 用 `group-data-[tab=*]/shell` 在共享组件里堆 tab 响应式 — 样式归 tab 复合组件 + variant
+
+## MUST
+
+- 可复用视觉 → 组件内 **`tv()`**（与 `Button` / `Card` / `Text` 同文件或 tab 复合组件旁）
+- 语义组合 → **复合组件 + variant prop**（如 `<Card surface="elevated">`、`<SwapMetricCard />`）
+- 调用处 **`className` 仅**用于布局、间距、一次性 1–2 class 微调（audit §2）
+
+## 示例
+
+```tsx
+// ❌ 禁止
+export const swapMetricCardClass = cn('gap-1.5 rounded-md shadow-card …')
+
+// ✅ 组件内 tv + variant prop
+const swapMetricCard = tv({
+  base: 'gap-1.5 rounded-md px-4 py-3.5 shadow-card …',
+  variants: {
+    sessionReady: { true: '[&_small]:hidden', false: '' },
+  },
+})
+
+export function SwapMetricCard({ label, value }: Props) {
+  const { sessionReady } = useDappShell()
+  return (
+    <MetricCard className={swapMetricCard({ sessionReady })} label={label} value={value} />
+  )
+}
+```
+
+## 既有例外（deletion-first，不扩散）
+
+- [`src/app/dapp-detail-layout.ts`](../../src/app/dapp-detail-layout.ts) 间距 rhythm — **不新增**同类文件；新 spacing 进 variant 或组件 compound
