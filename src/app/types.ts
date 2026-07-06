@@ -1,3 +1,1 @@
-export const tabOrder = ['swap', 'genesis', 'rewards', 'community'] as const
-
-export type DappTab = (typeof tabOrder)[number]
+export { tabOrder, type DappTab } from '~/views/dapp/dapp-tab-order'

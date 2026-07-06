@@ -35,6 +35,8 @@ AI 工作规范
 ### 8.3 工具规则
 
 - 用 `rg` 搜索文本、文档、配置、生成文件和 fallback。
+- **项目文档索引**：[`docs/README.md`](docs/README.md) — Home / DApp / **重构 rev3** SSOT 入口。
+- **全仓目录迁移**：先读 [`docs/refactor-execution-playbook.md`](docs/refactor-execution-playbook.md)（**move 验 parity → refactor**）。
 - 触达代码时优先用 `agent-lsp` 做语义查询，使用最小 workspace root。
 - **CodeGraph** 是当前默认代码图谱工具。依赖结果前先运行 `codegraph status .`；索引不新时运行 `codegraph sync .`。
 - 探索概念用 `codegraph context`；查调用关系用 `codegraph callers` / `codegraph callees`；评估影响面用 `codegraph impact`；文本兜底仍用 `rg`。
@@ -50,11 +52,15 @@ AI 工作规范
 
 ### 8.5 首页动效与性能
 
+- **首页代码 SSOT**：[`docs/homepage-architecture.md`](docs/homepage-architecture.md) — 双入口、HTML 生成、`wallet-loader` 命名、Provider 现状 vs 目标；**改 Home 前先读**。
+- **动效规则**：[`docs/homepage-animation-guidelines.md`](docs/homepage-animation-guidelines.md)；runtime boot 在 `src/wallet-loader.ts`（**动效，非钱包**），由 `src/home/main.tsx` 的 `useLayoutEffect` 调用 `bootWalletLoader()`。
+- **性能目标与优化路线**：[`docs/static-homepage-plan.md`](docs/static-homepage-plan.md)（目标）、[`docs/homepage-load-optimization.md`](docs/homepage-load-optimization.md)（Phase 1–4，待实施）。
 - 参考站 `https://aegis-x5.vercel.app/` 只作为动效基准，不作为素材来源；生产素材必须来自正式 Figma 或项目 canonical public assets。
 - 首页不得为了动效引入 Framer Motion、GSAP、Anime、Lottie 等动画库；优先使用 CSS keyframes / transitions，加少量 `IntersectionObserver` / `requestAnimationFrame`。
 - 动效只动画 `opacity`、`transform`、`clip-path`、`filter`、`box-shadow` 等不触发布局重排的属性；hover 不改变卡片几何位置，使用阴影、边框和轻微背景 tint 模拟浮起。
 - 指标区动效顺序为：面板先从中线展开，数值再启动计数和轻微 pop；首页动效不根据 `prefers-reduced-motion` 降级，所有设备保持一致播放。
 - Figma SVG 导出经常包含整页背景、父容器和裁剪上下文；用于运行时的图标必须提取 leaf node / clean paths，不能直接使用污染的整卡导出。
+- **现状偏差（勿假设已优化）**：Home 仍挂载 `WebRootProviders`（含 thirdweb），首屏 JS 体积大；Home CTA **链接**到 `app.html`，不在首页弹钱包；多语言 HTML 为 **薄壳 CSR**，非 SSG。
 
 ### 8.6 AEGIS X DApp 技术约束
 
@@ -62,10 +68,10 @@ AI 工作规范
 - **页面归属规则**：页面内容归属以 Figma frame title 为准；例如 `DApp — Swap` 里的 Genesis 说明仍属于 Swap 页面展示，不迁移到 Genesis tab。连接 / 未连接状态也按对应 frame 处理。
 - **H5 响应式规则**：H5 是同一套 PC 文案与组件的响应式布局，不是独立页面。除非 Figma 明确表达为不同状态组件，否则不要为 H5 新增同义文案、独立数据表或单独业务逻辑。
 - **对齐验收重点**：DApp 对齐先看元素是否齐全、状态是否正确、组件视觉是否一致、素材是否来自 Figma、布局是否能承载未来动态数据；动态数值和 1-2px 渲染取整不作为阻塞项。
-- **当前第一版范围**：只做 EVM DApp，目标链为 **BSC + Ethereum**；不引入 Solana / Bitcoin / TON / TRON 多链能力，除非甲方明确变更范围。
+- **当前第一版范围**：只做 EVM DApp，不引入 Solana / Bitcoin / TON / TRON，除非甲方变更。**代码现状** `supportedChains` **仅 BSC**；**产品路线图**含 BSC + Ethereum，Ethereum 未接入前勿假设已支持。
 - **前端技术栈**：React + Vite + TypeScript + Tailwind CSS。
 - **钱包技术栈**：thirdweb React SDK v5；`ThirdwebProvider` / `ConnectButton` 负责连接 UI、钱包列表、自动重连、WalletConnect 和 EIP-6963 钱包发现；链上读写、签名、交易状态以 thirdweb SDK 的 client、account、wallet 和 transaction API 为 SSOT。
 - **钱包兼容策略**：必须同时保留 injected provider、WalletConnect fallback、EIP-6963 多钱包发现；移动钱包内置浏览器优先 injected，普通移动浏览器走 WalletConnect deep link / QR。
-- **链配置策略**：BSC / Ethereum chain 配置集中维护在 `src/web3/thirdweb.ts`；不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。
+- **链配置策略**：链定义集中维护在 `src/web3/thirdweb.ts`；不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。接入 Ethereum 时在此扩展 `supportedChains`。
 - **登录语义**：连接钱包不等于业务登录。涉及推荐关系、奖励记录、用户态 session 时，应增加 SIWE/nonce 签名认证闭环。
 - **UI 实现**：钱包按钮优先用 thirdweb `ConnectButton` 的 `connectButton` / `detailsButton` / `connectModal` 配置承接项目设计，不直接暴露默认按钮样式到核心界面。

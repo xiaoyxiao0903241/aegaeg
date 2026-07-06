@@ -11,8 +11,11 @@ env/.active
 *.tsbuildinfo
 
 references/
-docs/*
-!docs/dapp-data-sources.md
+# 忽略 docs 下大型归档与无关配置；SSOT markdown 可提交
+docs/figma/
+docs/figma-captures/
+docs/*.cfg
+docs/superpowers/
 tmp/
 tests/e2e/visual-*/
 

@@ -7,15 +7,8 @@ import { DappRail } from '~/app/dapp-rail'
 import { DappMobileNav } from '~/app/components/dapp-mobile-nav'
 import { DappRevealObserver } from '~/app/components/dapp-reveal-observer'
 import { DappTopbar } from '~/app/dapp-topbar'
-import { CommunityContent, CommunityWidget } from '~/app/tabs/community-tab'
-import { GenesisContent, GenesisWidget } from '~/app/tabs/genesis-tab'
-import { GenesisWidgetProvider } from '~/app/genesis-widget-context'
-import { SwapSubviewProviders } from '~/app/tabs/swap/swap-subview-providers'
-import { RewardsContent, RewardsWidget } from '~/app/tabs/rewards-tab'
-import { SwapContent, SwapWidget } from '~/app/tabs/swap-tab'
 import { DappScrollFadeHost } from '~/app/components/dapp-scroll-fade-host'
 import { HeroRaysBackground, heroRaysShellClass } from '~/components/hero-rays-background'
-import type { DappTab } from '~/app/types'
 import { useDappShell } from '~/app/dapp-shell-context'
 import {
   shellContainerClass,
@@ -28,9 +21,14 @@ import {
   shellWindowClass,
 } from '~/app/shell-layout'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
-import { scrollDappPanelsToTop, scrollToGenesisPageTop } from '~/app/utils'
+import { scrollDappPanelsToTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { invalidateTabQueries } from '~/lib/query/invalidate'
+import {
+  DappTabContent,
+  DappTabShellProviders,
+  DappTabWidget,
+} from '~/views/dapp/dapp-tabs'
 
 export function DappShell() {
   const { messages } = useI18n()
@@ -91,8 +89,7 @@ export function DappShell() {
         aria-label="AEGIS X DApp"
       >
         <div className={cn(shellContainerClass(), 'relative z-1')} data-dapp-shell-container>
-          <GenesisWidgetProvider>
-            <SwapSubviewProviders activeTab={activeTab}>
+          <DappTabShellProviders activeTab={activeTab}>
             <div
               ref={setWindowNode}
               className={cn(
@@ -131,7 +128,7 @@ export function DappShell() {
                     onSelectTab={selectMobileTab}
                     open={mobileNavOpen}
                   />
-                  <TabWidget
+                  <DappTabWidget
                     key={activeTab}
                     activeTab={activeTab}
                     onSelectTab={selectTab}
@@ -149,62 +146,16 @@ export function DappShell() {
                   data-dapp-detail
                 >
                   <div className="dapp-detail-panel" key={activeTab}>
-                    <TabContent activeTab={activeTab} />
+                    <DappTabContent activeTab={activeTab} />
                   </div>
                 </section>
               </DappScrollFadeHost>
             </div>
-            </SwapSubviewProviders>
-          </GenesisWidgetProvider>
+          </DappTabShellProviders>
         </div>
       </section>
 
       <DappRevealObserver container={windowNode} />
     </main>
   )
-}
-
-function TabWidget({
-  activeTab,
-  onSelectTab,
-}: {
-  activeTab: DappTab
-  onSelectTab: (tab: DappTab) => void
-}) {
-  if (activeTab === 'genesis') {
-    return <GenesisWidget />
-  }
-
-  if (activeTab === 'rewards') {
-    return <RewardsWidget />
-  }
-
-  if (activeTab === 'community') {
-    return <CommunityWidget onSelectTab={onSelectTab} />
-  }
-
-  return (
-    <SwapWidget
-      onSelectGenesis={() => {
-        onSelectTab('genesis')
-        scrollToGenesisPageTop()
-      }}
-    />
-  )
-}
-
-function TabContent({ activeTab }: { activeTab: DappTab }) {
-  if (activeTab === 'genesis') {
-    return <GenesisContent />
-  }
-
-  if (activeTab === 'rewards') {
-    return <RewardsContent />
-  }
-
-  if (activeTab === 'community') {
-    return <CommunityContent />
-  }
-
-  return <SwapContent />
 }
