@@ -4,10 +4,10 @@ import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { HomeSectionHead } from '~/views/home/components/home-section-head'
+import { HomeSection } from '~/views/home/components/home-section'
 
 const roadmapClass = {
-  section:
-    'roadmap relative py-30 dapp:min-h-288 max-dapp:min-h-240 max-dapp:pt-0 max-dapp:pb-14',
+  section: 'roadmap dapp:min-h-288 max-dapp:min-h-240',
   timeline:
     'timeline relative mt-5 flex min-h-192 w-full flex-col gap-0 pl-0 dapp:mt-12 dapp:block dapp:min-h-208',
   rail:
@@ -60,9 +60,14 @@ export function HomeRoadmapSection() {
   const content = messages.home.sections.roadmap
 
   return (
-    <section className={roadmapClass.section} id="roadmap" aria-labelledby="roadmap-title">
-      <div className="container">
-        <HomeSectionHead eyebrow={content.eyebrow} title={content.title} />
+    <HomeSection
+      spacing="content"
+      container="page"
+      className={roadmapClass.section}
+      id="roadmap"
+      aria-labelledby="roadmap-title"
+    >
+      <HomeSectionHead eyebrow={content.eyebrow} title={content.title} />
         <div
           className={cn(roadmapClass.timeline, revealClass())}
           data-reveal
@@ -142,7 +147,6 @@ export function HomeRoadmapSection() {
             </article>
           ))}
         </div>
-      </div>
-    </section>
+    </HomeSection>
   )
 }

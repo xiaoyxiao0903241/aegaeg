@@ -5,13 +5,12 @@ import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { HomeSectionHead } from '~/views/home/components/home-section-head'
-import { homeSectionContainerClass } from '~/views/home/home-layout'
+import { HomeSection } from '~/views/home/components/home-section'
 import { securityLayout } from '~/views/home/static-layout'
 
 const securityClass = {
   section:
-    'relative border-y border-border bg-[#ebeef3] py-30 dapp:min-h-[49.625rem] max-dapp:min-h-[44.4375rem] max-dapp:border-y-0 max-dapp:py-12',
-  container: homeSectionContainerClass,
+    'border-y border-border bg-[#ebeef3] py-30 dapp:min-h-[49.625rem] max-dapp:min-h-[44.4375rem] max-dapp:border-y-0 max-dapp:py-12',
   head: 'dapp:min-h-[8.75rem]',
   title:
     '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1]',
@@ -26,13 +25,13 @@ export function HomeSecuritySection() {
   const content = messages.home.sections.security
 
   return (
-    <section
+    <HomeSection
+      container="content"
       className={securityClass.section}
       id="security"
       aria-labelledby="security-title"
     >
-      <div className={securityClass.container}>
-        <HomeSectionHead
+      <HomeSectionHead
           className={securityClass.head}
           eyebrow={content.eyebrow}
           title={content.title}
@@ -96,7 +95,6 @@ export function HomeSecuritySection() {
             ))}
           </div>
         </div>
-      </div>
-    </section>
+    </HomeSection>
   )
 }

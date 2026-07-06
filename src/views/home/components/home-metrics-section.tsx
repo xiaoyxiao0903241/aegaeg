@@ -1,7 +1,7 @@
 import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
-import { homeSectionContainerClass } from '~/views/home/home-layout'
+import { HomeSection } from '~/views/home/components/home-section'
 
 const homeMetricsRaysClass = cn(
   'pointer-events-none absolute inset-0 z-0 opacity-[0.82]',
@@ -18,7 +18,6 @@ const homeMetricsPanelGlowClass = cn(
 const metricClass = {
   section:
     'metrics-wrap dapp:min-h-56 pb-10 max-dapp:min-h-64 max-dapp:pb-12',
-  container: homeSectionContainerClass,
   panel:
     'relative isolate grid min-h-48 grid-cols-4 items-center justify-between rounded-xl bg-dark px-10 py-14 text-white max-dapp:min-h-52 max-dapp:grid-cols-2 max-dapp:gap-y-6 max-dapp:rounded-lg max-dapp:px-5 max-dapp:py-7',
   item: 'relative z-1 grid justify-items-center gap-2 text-center max-dapp:gap-1.5',
@@ -33,7 +32,8 @@ export function HomeMetricsSection() {
   const metrics = messages.home.metrics
 
   return (
-    <section
+    <HomeSection
+      container="content"
       className={metricClass.section}
       aria-label="Protocol metrics"
       data-count-panel
@@ -41,8 +41,7 @@ export function HomeMetricsSection() {
       data-reveal
       data-reveal-manual
     >
-      <div className={metricClass.container}>
-        <div className={cn(metricClass.panel, homeMetricsPanelGlowClass)} data-metrics-panel>
+      <div className={cn(metricClass.panel, homeMetricsPanelGlowClass)} data-metrics-panel>
           <div className={homeMetricsRaysClass} aria-hidden="true" />
           {metrics.map((metric) => (
             <article className={metricClass.item} key={metric.label}>
@@ -55,7 +54,6 @@ export function HomeMetricsSection() {
             </article>
           ))}
         </div>
-      </div>
-    </section>
+    </HomeSection>
   )
 }

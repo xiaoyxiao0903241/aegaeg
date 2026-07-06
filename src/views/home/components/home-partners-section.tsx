@@ -2,6 +2,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { partners } from '~/views/home/static-layout'
 import { useI18n } from '~/i18n/use-i18n'
+import { HomeSection } from '~/views/home/components/home-section'
 const partnerClass = {
   section:
     'partners dapp:min-h-52 border-b border-border bg-secondary pb-30 text-center max-dapp:min-h-64 max-dapp:py-12',
@@ -14,8 +15,11 @@ export function HomePartnersSection() {
   const title = messages.home.sections.partners.title
 
   return (
-    <section className={partnerClass.section} aria-labelledby="partners-title">
-      <div className="container">
+    <HomeSection
+      container="page"
+      className={partnerClass.section}
+      aria-labelledby="partners-title"
+    >
         <Text
           as="h2"
           id="partners-title"
@@ -48,7 +52,6 @@ export function HomePartnersSection() {
             </Card>
           ))}
         </div>
-      </div>
-    </section>
+    </HomeSection>
   )
 }

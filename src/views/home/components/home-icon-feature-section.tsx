@@ -5,6 +5,7 @@ import { engineIcons, protocolIcons } from '~/views/home/static-layout'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
 import { HomeSectionHead } from '~/views/home/components/home-section-head'
+import { HomeSection } from '~/views/home/components/home-section'
 
 type IconCard = (
   | HomeMessagesBundle['sections']['protocol']['cards'][number]
@@ -23,10 +24,8 @@ const sectionConfig = {
 } as const
 
 const sectionClass = {
-  protocol:
-    'relative py-30 max-dapp:min-h-208 max-dapp:pt-0 max-dapp:pb-14',
-  engine:
-    'relative py-30 max-dapp:min-h-240 max-dapp:pt-0 max-dapp:pb-14',
+  protocol: 'max-dapp:min-h-208',
+  engine: 'max-dapp:min-h-240',
 } as const
 
 const gridClass = {
@@ -131,9 +130,14 @@ export function HomeIconFeatureSection({
   }))
 
   return (
-    <section className={sectionClass[variant]} id={id} aria-labelledby={`${id}-title`}>
-      <div className="container">
-        <HomeSectionHead
+    <HomeSection
+      spacing="content"
+      container="page"
+      className={sectionClass[variant]}
+      id={id}
+      aria-labelledby={`${id}-title`}
+    >
+      <HomeSectionHead
           eyebrow={content.eyebrow}
           title={content.title}
           subtitle={content.subtitle}
@@ -148,7 +152,6 @@ export function HomeIconFeatureSection({
             <HomeIconCard card={card} index={index} key={card.title} variant={variant} />
           ))}
         </div>
-      </div>
-    </section>
+    </HomeSection>
   )
 }

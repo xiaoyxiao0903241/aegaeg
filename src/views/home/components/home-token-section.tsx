@@ -6,7 +6,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { HomeSectionHead } from '~/views/home/components/home-section-head'
-import { homeSectionContainerClass } from '~/views/home/home-layout'
+import { HomeSection } from '~/views/home/components/home-section'
 
 type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
   className: string
@@ -19,9 +19,7 @@ type TokenCard = HomeMessagesBundle['sections']['token']['cards'][number] & {
 }
 
 const tokenClass = {
-  section:
-    'token-section relative py-30 dapp:min-h-176 max-dapp:min-h-240 max-dapp:pt-0 max-dapp:pb-14',
-  container: homeSectionContainerClass,
+  section: 'token-section dapp:min-h-176 max-dapp:min-h-240',
   grid:
     'token-grid mt-14 grid grid-cols-4 gap-5.5 py-[var(--shadow-bleed)] tablet:grid-cols-2 max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4',
   card:
@@ -115,23 +113,27 @@ export function HomeTokenSection() {
   }))
 
   return (
-    <section className={tokenClass.section} id="token" aria-labelledby="token-title">
-      <div className={tokenClass.container}>
-        <HomeSectionHead
-          eyebrow={content.eyebrow}
-          title={content.title}
-          subtitle={content.subtitle}
-        />
-        <div
-          className={cn(tokenClass.grid, revealClass())}
-          data-reveal
-          data-token-grid
-        >
-          {cards.map((token) => (
-            <HomeTokenCard key={token.symbol} token={token} />
-          ))}
-        </div>
+    <HomeSection
+      spacing="content"
+      container="content"
+      className={tokenClass.section}
+      id="token"
+      aria-labelledby="token-title"
+    >
+      <HomeSectionHead
+        eyebrow={content.eyebrow}
+        title={content.title}
+        subtitle={content.subtitle}
+      />
+      <div
+        className={cn(tokenClass.grid, revealClass())}
+        data-reveal
+        data-token-grid
+      >
+        {cards.map((token) => (
+          <HomeTokenCard key={token.symbol} token={token} />
+        ))}
       </div>
-    </section>
+    </HomeSection>
   )
 }
