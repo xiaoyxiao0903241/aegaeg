@@ -4,22 +4,23 @@ import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
-import { DappWidgetConnectFooter } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
-import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { dappWidgetBodyClass } from '~/app/components/dapp-widget-frame'
-import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
 import { SwapAmountBox } from '~/app/components/swap-amount-box'
 import { SwapSlippageModal } from '~/app/components/swap-slippage-modal'
 import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/components/dapp-skeleton'
-import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
+import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { resolveGenesisPurchaseError, resolveWalletTransactionError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
+import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
+import { resolveGenesisPurchaseError, resolveWalletTransactionError, toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
+import {
+  SwapGenesisFooter,
+  SwapMetaPanel,
+  SwapPercentButtons,
+} from '~/views/dapp/swap/swap-widget-primitives'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
 
 export function TradeSwapWidget({
@@ -30,7 +31,6 @@ export function TradeSwapWidget({
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swap = useTradeSwapWidgetContext()
-  const genesis = useGenesisWidgetContext()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
   const [slippageOpen, setSlippageOpen] = useState(false)
@@ -118,20 +118,7 @@ export function TradeSwapWidget({
       <SwapWidgetBody
         bodyClassName={cn(dappWidgetBodyClass, 'gap-0')}
         footer={
-          sessionReady ? (
-            <DappWidgetConnectFooter>
-              <GenesisPromoCard
-                actionLabel={t.genesis.joinGenesis}
-                className={cn(
-                  'gap-1.5 [&_button]:min-h-9.5 [&_button]:text-xs [&_p]:leading-tight',
-                  'max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
-                )}
-                isLoading={genesis.isLoading}
-                onClick={onSelectGenesis}
-                promo={genesis.promoSnapshot}
-              />
-            </DappWidgetConnectFooter>
-          ) : undefined
+          sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined
         }
       >
         <SwapAmountBox
@@ -151,26 +138,10 @@ export function TradeSwapWidget({
           tokenLabel={pair.sell.symbol}
         />
 
-        <div className="grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
-          {[25, 50, 75, 100].map((percent) => (
-            <button
-              className={cn(
-                'flex cursor-pointer items-center justify-center rounded-[0.5625rem] border border-border bg-card py-1.25',
-                'text-xs font-semibold leading-normal tracking-[-0.02em] text-ink-strong',
-                'transition-[border-color,color,transform] duration-180 ease-out',
-                'hover:-translate-y-px hover:border-primary hover:text-primary',
-                'disabled:pointer-events-none disabled:opacity-55',
-                'max-dapp:h-auto max-dapp:py-1.5',
-              )}
-              disabled={!swapPreview && !swap.walletReady}
-              key={percent}
-              onClick={() => swap.fillPercent(percent)}
-              type="button"
-            >
-              {percent}%
-            </button>
-          ))}
-        </div>
+        <SwapPercentButtons
+          disabled={!swapPreview && !swap.walletReady}
+          onSelect={(percent) => swap.fillPercent(percent)}
+        />
 
         <div
           className={cn(
@@ -218,8 +189,7 @@ export function TradeSwapWidget({
           tokenLabel={pair.buy.symbol}
         />
 
-        <DappMetaList
-          className={cn('rounded-xl px-3.5 py-3.25', dappWidgetFooterTopGapClass)}
+        <SwapMetaPanel
           sessionReady
           items={[
             {

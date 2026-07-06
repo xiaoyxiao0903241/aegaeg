@@ -6,19 +6,21 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { flashSwapAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
-import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { DappWidgetConnectFooter } from '~/app/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
-import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { dappWidgetBodyClass } from '~/app/components/dapp-widget-frame'
-import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
+import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { SwapAmountBox } from '~/app/components/swap-amount-box'
 import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/components/dapp-skeleton'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { resolveFlashSwapUserMessage } from '~/lib/web3/resolve-contract-error-message'
+import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
+import {
+  SwapGenesisFooter,
+  SwapMetaPanel,
+  SwapPercentButtons,
+} from '~/views/dapp/swap/swap-widget-primitives'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
 
 export function FlashSwapWidget({
@@ -29,7 +31,6 @@ export function FlashSwapWidget({
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swap = useFlashSwapWidgetContext()
-  const genesis = useGenesisWidgetContext()
   const { pair } = swap
   const swapPreview = !sessionReady
   const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
@@ -109,20 +110,7 @@ export function FlashSwapWidget({
       <SwapWidgetBody
         bodyClassName={cn(dappWidgetBodyClass, 'gap-0')}
         footer={
-          sessionReady ? (
-            <DappWidgetConnectFooter>
-              <GenesisPromoCard
-                actionLabel={t.genesis.joinGenesis}
-                className={cn(
-                  'gap-1.5 [&_button]:min-h-9.5 [&_button]:text-xs [&_p]:leading-tight',
-                  'max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
-                )}
-                isLoading={genesis.isLoading}
-                onClick={onSelectGenesis}
-                promo={genesis.promoSnapshot}
-              />
-            </DappWidgetConnectFooter>
-          ) : undefined
+          sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined
         }
       >
         <SwapAmountBox
@@ -141,26 +129,10 @@ export function FlashSwapWidget({
           tokenLabel={pair.sell.symbol}
         />
 
-        <div className="grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0">
-          {[25, 50, 75, 100].map((percent) => (
-            <button
-              className={cn(
-                'flex cursor-pointer items-center justify-center rounded-[0.5625rem] border border-border bg-card py-1.25',
-                'text-xs font-semibold leading-normal tracking-[-0.02em] text-ink-strong',
-                'transition-[border-color,color,transform] duration-180 ease-out',
-                'hover:-translate-y-px hover:border-primary hover:text-primary',
-                'disabled:pointer-events-none disabled:opacity-55',
-                'max-dapp:h-auto max-dapp:py-1.5',
-              )}
-              disabled={!swapPreview && !swap.walletReady}
-              key={percent}
-              onClick={() => swap.fillPercent(percent)}
-              type="button"
-            >
-              {percent}%
-            </button>
-          ))}
-        </div>
+        <SwapPercentButtons
+          disabled={!swapPreview && !swap.walletReady}
+          onSelect={(percent) => swap.fillPercent(percent)}
+        />
 
         <div aria-hidden className="flex items-center justify-center py-1.5">
           <div className="grid size-[2.125rem] place-items-center rounded-[0.6875rem] border border-border bg-card">
@@ -184,8 +156,7 @@ export function FlashSwapWidget({
           tokenLabel={pair.buy.symbol}
         />
 
-        <DappMetaList
-          className={cn('rounded-xl px-3.5 py-3.25', dappWidgetFooterTopGapClass)}
+        <SwapMetaPanel
           sessionReady
           items={[
             {
