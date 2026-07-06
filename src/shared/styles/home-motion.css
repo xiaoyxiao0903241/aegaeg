@@ -205,9 +205,7 @@ html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true'
 }
 
 /* boot 完成后：仅对尚未 reveal 的块隐藏（首屏已 instant 标记的保持可见） */
-html[data-home-motion-ready] [data-reveal]:not([data-visible='true']):not([data-reveal-manual]):not(
-    [data-protocol-grid]
-  ):not([data-engine-grid]):not([data-token-grid]) {
+html[data-home-motion-ready] [data-reveal]:not([data-visible='true'], [data-reveal-manual], [data-protocol-grid], [data-engine-grid], [data-token-grid]) {
   opacity: 0;
 }
 

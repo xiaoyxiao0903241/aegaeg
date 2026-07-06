@@ -1,8 +1,8 @@
 import { useId, useState, type ReactNode } from 'react'
 import { cn } from '~/shared/lib/utils'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/components/dapp-icon'
-import { DappSection } from '~/app/components/dapp-section'
+import { DappIcon } from '~/app/shell/components/dapp-icon'
+import { DappSection } from '~/app/shell/components/dapp-section'
 import { dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
 
 const COLLAPSE_MS = 320

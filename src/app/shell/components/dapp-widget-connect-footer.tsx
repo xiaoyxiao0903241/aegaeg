@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
-import { DappConnectPromoCard } from '~/app/components/dapp-connect-promo-card'
+import { DappConnectPromoCard } from '~/app/shell/components/dapp-connect-promo-card'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 
 const dappWidgetConnectFooter = tv({

@@ -1,7 +1,7 @@
 import { Card } from '~/shared/ui/card'
 import { communityStatCardMobileShell } from '~/views/dapp/community/community-content-primitives'
 import { seasonCardRadiusClass, seasonCardSizeClass } from '~/app/dapp-detail-layout'
-import { dappTableCell } from '~/app/components/dapp-table-card'
+import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 import { cn } from '~/shared/lib/utils'
 
 const skeletonSurfaceClass =

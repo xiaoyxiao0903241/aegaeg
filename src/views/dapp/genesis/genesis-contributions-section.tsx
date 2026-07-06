@@ -5,18 +5,18 @@ import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import {
   calcProgressPercent,
   formatUsd,
-  mapSalesLogToDesktopRow,
 } from '~/shared/api/format-display'
+import { mapSalesLogToDesktopRow } from '~/views/dapp/presale-display'
 import { bscscanTx } from '~/shared/config/explorer'
-import { DappSection } from '~/app/components/dapp-section'
-import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
-import { DappTableEmptyMessage } from '~/app/components/dapp-table-empty-message'
-import { DappTablePagination } from '~/app/components/dapp-table-pagination'
-import { DappTableCard } from '~/app/components/dapp-table-card'
-import { ResponsiveTable } from '~/app/components/responsive-table'
+import { DappSection } from '~/app/shell/components/dapp-section'
+import { DappTableAuthPrompt } from '~/app/shell/components/dapp-table-auth-prompt'
+import { DappTableEmptyMessage } from '~/app/shell/components/dapp-table-empty-message'
+import { DappTablePagination } from '~/app/shell/components/dapp-table-pagination'
+import { DappTableCard } from '~/app/shell/components/dapp-table-card'
+import { ResponsiveTable } from '~/app/shell/components/responsive-table'
 import {
   genesisContributionsColWidths,
-} from '~/app/components/dapp-table-columns'
+} from '~/app/shell/components/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useAuth } from '~/app/bootstrap/auth-provider'

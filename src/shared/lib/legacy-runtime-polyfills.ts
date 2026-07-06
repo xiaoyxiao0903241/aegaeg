@@ -70,6 +70,3 @@ export const LEGACY_DOM_POLYFILLS_BOOT_SCRIPT = [
   '}',
   '}catch{}',
 ].join('')
-
-/** @deprecated Use LEGACY_DOM_POLYFILLS_BOOT_SCRIPT */
-export const LEGACY_RUNTIME_POLYFILLS_BOOT_SCRIPT = LEGACY_DOM_POLYFILLS_BOOT_SCRIPT

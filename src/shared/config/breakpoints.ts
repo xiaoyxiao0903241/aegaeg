@@ -27,9 +27,6 @@ export const BREAKPOINT_ULTRA_WIDE_SCALE = [
   { minWidthPx: 3840, rootFontSizePx: 48 },
 ] as const
 
-/** @deprecated 用 `BREAKPOINT_DESIGN_BASE_PX` */
-export const BREAKPOINT_ULTRA_WIDE_PX = BREAKPOINT_DESIGN_BASE_PX
-
 /** Home / nav 平板断点（<=1100px）— `max-tablet:` */
 export const BREAKPOINT_TABLET_MAX_PX = 1100
 

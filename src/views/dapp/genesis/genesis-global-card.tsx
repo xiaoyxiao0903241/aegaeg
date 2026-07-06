@@ -2,8 +2,8 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Button } from '~/shared/ui/button'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/components/dapp-icon'
-import { DappSkeleton } from '~/app/components/dapp-skeleton'
+import { DappIcon } from '~/app/shell/components/dapp-icon'
+import { DappSkeleton } from '~/app/shell/components/dapp-skeleton'
 import {
   DappDarkBannerBody,
   DappDarkBannerKicker,

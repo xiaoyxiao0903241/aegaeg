@@ -1,4 +1,4 @@
-import type { SeasonOption } from '~/app/components/season-selector'
+import type { SeasonOption } from '~/app/shell/components/season-selector'
 import { formatPhaseDate, isPhaseActive, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 
 function formatPhaseDateRange(startTime: bigint, endTime: bigint): string {

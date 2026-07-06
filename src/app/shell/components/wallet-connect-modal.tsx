@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { ConnectEmbed, useActiveAccount } from 'thirdweb/react'
+import { ConnectEmbed, useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { X } from 'lucide-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { appMetadata, connectEmbedProps } from '~/views/dapp/web3/thirdweb'

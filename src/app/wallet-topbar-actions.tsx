@@ -1,10 +1,10 @@
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { cn } from '~/shared/lib/utils'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/auth-provider'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
-import { DappIcon } from '~/app/components/dapp-icon'
+import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappAssets } from '~/app/assets'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 

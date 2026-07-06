@@ -6,7 +6,7 @@ import { RewardsContent, RewardsWidget } from '~/views/dapp/rewards'
 import { SwapContent, SwapWidget } from '~/views/dapp/swap'
 import { SwapSubviewProviders } from '~/views/dapp/swap/swap-subview-providers'
 import { scrollDappPanelsToTop } from '~/app/utils'
-import { tabOrder, type DappTab } from '~/views/dapp/dapp-tab-order'
+import type { DappTab } from '~/views/dapp/dapp-tab-order'
 
 export { tabOrder, type DappTab } from '~/views/dapp/dapp-tab-order'
 
@@ -31,11 +31,11 @@ function SwapTabWidget({ onSelectTab }: TabWidgetProps) {
   )
 }
 
-function GenesisTabWidget(_props: TabWidgetProps) {
+function GenesisTabWidget() {
   return <GenesisWidget />
 }
 
-function RewardsTabWidget(_props: TabWidgetProps) {
+function RewardsTabWidget() {
   return <RewardsWidget />
 }
 

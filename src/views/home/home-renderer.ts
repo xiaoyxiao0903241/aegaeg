@@ -92,7 +92,7 @@ ${faviconHead}
   <body>
     <div id="root"></div>
     ${legacyCoreJsScript}
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/app/main.tsx"></script>
   </body>
 </html>
 `

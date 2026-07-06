@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { swapHubAssets } from '~/app/assets'
-import { dappWidgetBodyClass } from '~/app/components/dapp-widget-frame'
+import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 import { SwapGenesisFooter } from '~/views/dapp/swap/swap-widget-primitives'

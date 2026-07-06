@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
+import { DappCollapsibleSection } from '~/app/shell/components/dapp-collapsible-section'
 import { FaqList } from '~/shared/ui/faq-list'
 
 export function RewardsFaqSection() {

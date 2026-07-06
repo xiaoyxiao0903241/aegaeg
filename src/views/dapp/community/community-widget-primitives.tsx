@@ -1,8 +1,7 @@
-import type { ReactNode } from 'react'
 import { Wallet } from 'lucide-react'
 import { tv } from 'tailwind-variants'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/components/dapp-icon'
+import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   DappReferrerBoundCard,
@@ -10,9 +9,9 @@ import {
   SideHint,
   SideLabel,
   SideValue,
-} from '~/app/components/dapp-card'
-import { DappActionButton } from '~/app/components/dapp-action-button'
-import { ReferrerAddressRow } from '~/app/components/referrer-address-row'
+} from '~/app/shell/components/dapp-card'
+import { DappActionButton } from '~/app/shell/components/dapp-action-button'
+import { ReferrerAddressRow } from '~/app/shell/components/referrer-address-row'
 import { cn } from '~/shared/lib/utils'
 
 const communitySideCard = tv({

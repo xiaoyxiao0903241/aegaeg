@@ -1,4 +1,4 @@
-import { DappTableCardShell } from '~/app/components/dapp-table-card'
+import { DappTableCardShell } from '~/app/shell/components/dapp-table-card'
 import { cn } from '~/shared/lib/utils'
 import { revealClass } from '~/shared/lib/reveal'
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { dappAssets } from '~/app/assets'
-import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
+import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
 import {
   dappCaptionClass,
   dappKickerClass,

@@ -10,14 +10,14 @@ import {
   formatClaimableAmount,
   formatUsd,
 } from '~/shared/api/format-display'
-import { RewardBalanceCardSkeleton } from '~/app/components/dapp-skeleton'
+import { RewardBalanceCardSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { useCommunityFundClaim } from '~/hooks/use-community-fund-claim'
 import { toast } from 'sonner'
 import { resolveTeamClaimError, resolveWalletTransactionError } from '~/views/dapp/web3/resolve-contract-error-message'
-import { DappActionButton } from '~/app/components/dapp-action-button'
-import { RewardBalanceCard } from '~/app/components/dapp-card'
-import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
+import { DappActionButton } from '~/app/shell/components/dapp-action-button'
+import { RewardBalanceCard } from '~/app/shell/components/dapp-card'
+import { DappInfoTooltip } from '~/app/shell/components/dapp-info-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
 import {
   rewardsBalanceHeaderMeta,

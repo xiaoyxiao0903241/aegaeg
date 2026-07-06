@@ -15,18 +15,18 @@
   --foreground: #252628;
   --foreground: oklch(16.35% 0.0136 264.09);
 
-  --card: #ffffff;
+  --card: #fff;
   --card: oklch(100% 0 89.88);
   --card-foreground: var(--foreground);
 
-  --popover: #ffffff;
+  --popover: #fff;
   --popover: oklch(100% 0 89.88);
   --popover-foreground: var(--foreground);
 
   /* 品牌色：珊瑚 */
   --primary: #e86a43;
   --primary: oklch(66.83% 0.1625 36.6);
-  --primary-foreground: #ffffff;
+  --primary-foreground: #fff;
   --primary-foreground: oklch(100% 0 89.88);
 
   --secondary: #f0f1f3;
@@ -44,7 +44,7 @@
 
   --destructive: #dc2626;
   --destructive: oklch(62% 0.2 25);
-  --destructive-foreground: #ffffff;
+  --destructive-foreground: #fff;
   --destructive-foreground: oklch(100% 0 89.88);
 
   --border: #f0f0f2;

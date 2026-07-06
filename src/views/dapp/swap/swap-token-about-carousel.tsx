@@ -7,7 +7,6 @@ import {
   CarouselItem,
   type CarouselApi,
 } from '~/shared/ui/carousel'
-import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'

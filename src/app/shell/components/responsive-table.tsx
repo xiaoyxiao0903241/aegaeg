@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react'
 import { StatusBadge } from '~/shared/ui/badge'
 import { cn } from '~/shared/lib/utils'
-import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
-import { dappTableCell } from '~/app/components/dapp-table-card'
+import { TableRowSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 
 const tableCell = dappTableCell()
 const TABLE_CELL =

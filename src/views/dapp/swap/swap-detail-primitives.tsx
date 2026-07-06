@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { MetricCard } from '~/app/components/dapp-card'
-import { MetricCardSkeleton } from '~/app/components/dapp-skeleton'
+import { MetricCard } from '~/app/shell/components/dapp-card'
+import { MetricCardSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { cn } from '~/shared/lib/utils'
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/auth-provider'
@@ -12,8 +12,8 @@ import {
 import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import { formatAddress } from '~/app/utils'
 import { cn } from '~/shared/lib/utils'
-import { WalletDetailsModal } from '~/app/components/wallet-details-modal'
-import { WalletConnectModal } from '~/app/components/wallet-connect-modal'
+import { WalletDetailsModal } from '~/app/shell/components/wallet-details-modal'
+import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
 const walletLabelClass = 'inline-flex min-w-0 items-center gap-1.5'
 

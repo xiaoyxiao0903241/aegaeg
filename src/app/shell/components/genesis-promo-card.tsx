@@ -6,11 +6,11 @@ import {
   type GenesisPromoSnapshot,
 } from '~/views/dapp/genesis/genesis-promo'
 import { cn } from '~/shared/lib/utils'
-import { DappActionButton } from '~/app/components/dapp-action-button'
+import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import {
   GenesisPromoBodySkeleton,
   GenesisPromoTitleSkeleton,
-} from '~/app/components/dapp-skeleton'
+} from '~/app/shell/components/dapp-skeleton'
 
 function resolveStatusLabel(
   status: GenesisPromoSnapshot['status'],

@@ -19,17 +19,16 @@ import {
 import {
   CurrentTitleCardBodySkeleton,
   ProgressCardSkeleton,
-} from '~/app/components/dapp-skeleton'
+} from '~/app/shell/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
-import { SideHint, SideLabel, SideTitle } from '~/app/components/dapp-card'
+import { SideHint, SideLabel, SideTitle } from '~/app/shell/components/dapp-card'
 import { dappKickerClass, dappRankTitleClass } from '~/app/dapp-type-scale'
-import { ProgressMeter } from '~/app/components/progress-meter'
+import { ProgressMeter } from '~/app/shell/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
-import { RankTitleWithSuperCommunity } from '~/app/components/rank-title-with-super-community'
+import { DappInfoTooltip } from '~/app/shell/components/dapp-info-tooltip'
+import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
 import {
   RewardsProgressRow,
-  rewardsRankMeta,
   RewardsSideCard,
 } from '~/views/dapp/rewards/rewards-widget-primitives'
 

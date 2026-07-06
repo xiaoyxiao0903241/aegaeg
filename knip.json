@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/app/main.tsx",
+    "src/views/home/main.tsx",
+    "scripts/render-home.mjs",
+    "scripts/lint-hex.mjs",
+    "scripts/lint-shims.mjs",
+    "scripts/switch-env.mjs",
+    "vite.config.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": ["src/**/*.d.ts"],
+  "ignoreDependencies": ["terser", "regenerator-runtime", "core-js"],
+  "ignoreIssues": {
+    "src/views/dapp/web3/thirdweb.ts": ["duplicates"]
+  }
+}

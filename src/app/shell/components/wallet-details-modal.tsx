@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { LogOut, Wallet, X } from 'lucide-react'
-import { useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet, useDisconnect } from '~/views/dapp/web3/thirdweb-react'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { formatTokenAmount } from '~/core/swap/token-amount'
 import { createWalletReadClient } from '~/views/dapp/web3/chain-read-client'
@@ -10,7 +10,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/auth-provider'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/components/dapp-icon'
+import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { Button } from '~/shared/ui/button'
@@ -21,7 +21,7 @@ import {
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
-import { WalletConnectModal } from '~/app/components/wallet-connect-modal'
+import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
 interface WalletTokenBalanceRow {
   symbol: string

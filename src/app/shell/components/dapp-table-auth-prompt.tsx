@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { DappTableEmptyState } from '~/app/components/dapp-table-empty-state'
+import { DappTableEmptyState } from '~/app/shell/components/dapp-table-empty-state'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { cn } from '~/shared/lib/utils'
 

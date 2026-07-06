@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { DappSideCard } from '~/app/components/dapp-card'
+import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { dappReferralAmountClass } from '~/app/dapp-type-scale'
 import { cn } from '~/shared/lib/utils'
 
