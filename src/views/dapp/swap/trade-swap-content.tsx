@@ -6,7 +6,7 @@ import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
 import { MetricGrid } from '~/app/components/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
-import { TokenAboutCarousel } from '~/app/components/swap-token-about-carousel'
+import { TokenAboutCarousel } from '~/views/dapp/swap/swap-token-about-carousel'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
 import {
