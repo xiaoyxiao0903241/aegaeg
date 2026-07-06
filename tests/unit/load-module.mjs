@@ -1,6 +1,7 @@
 import { createServer } from 'vite'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import test from 'node:test'
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -9,13 +10,22 @@ function getTestCacheDir() {
   return path.join(projectRoot, 'node_modules', `.vite-test-${process.pid}`)
 }
 
+/** Avoid HMR websocket port collisions when multiple test workers run Vite. */
+function getTestHmrPort() {
+  return 24_678 + (process.pid % 4_000)
+}
+
 const testServerConfig = {
   configFile: path.join(projectRoot, 'vite.config.ts'),
   appType: 'custom',
   logLevel: 'error',
   cacheDir: getTestCacheDir(),
   optimizeDeps: { noDiscovery: true },
-  server: { hmr: false, middlewareMode: true, watch: null },
+  server: {
+    hmr: { port: getTestHmrPort() },
+    middlewareMode: true,
+    watch: null,
+  },
 }
 
 let testServerPromise = null
@@ -42,9 +52,6 @@ export async function closeTestViteServer() {
   }
 }
 
-if (!globalThis.__aegisTestViteCleanupRegistered) {
-  globalThis.__aegisTestViteCleanupRegistered = true
-  process.once('beforeExit', () => {
-    void closeTestViteServer()
-  })
-}
+test.after(async () => {
+  await closeTestViteServer()
+})
