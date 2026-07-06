@@ -6,7 +6,7 @@ import { DappWidgetConnectFooter } from '~/app/components/dapp-widget-connect-fo
 import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const swapPercentGrid = tv({
   base: 'grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0',

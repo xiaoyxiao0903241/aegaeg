@@ -2,7 +2,7 @@ import type { InputHTMLAttributes, ReactNode } from 'react'
 import { AmountInput } from '~/shared/ui/amount-input'
 import { Card } from '~/shared/ui/card'
 import { textVariants } from '~/shared/ui/text'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { SwapAmountSkeleton } from '~/app/components/dapp-skeleton'
 import { TokenChip } from '~/app/components/token-chip'
 

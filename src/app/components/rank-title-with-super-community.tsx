@@ -1,6 +1,6 @@
 import type { ElementType, ReactNode } from 'react'
 import { dappRankTitleClass } from '~/app/dapp-type-scale'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 type RankTitleWithSuperCommunityProps = {
   as?: ElementType

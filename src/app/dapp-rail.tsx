@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'

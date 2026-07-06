@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/shared/ui/card'
 import { useI18n } from '~/i18n/use-i18n'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 import { HomeSectionHead } from '~/views/home/components/home-section-head'
 
 const roadmapClass = {

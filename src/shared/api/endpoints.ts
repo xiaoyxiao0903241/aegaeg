@@ -1,4 +1,4 @@
-import { apiRequest } from '~/lib/api/request'
+import { apiRequest } from '~/shared/api/request'
 import type {
   ClaimConfirmRequest,
   ClaimConfirmResult,
@@ -18,7 +18,7 @@ import type {
   TeamRewardClaimLogItem,
   TeamRewardSignature,
   UserPerformance,
-} from '~/lib/api/types'
+} from '~/shared/api/types'
 
 function paginationBody(params: PaginationParams = {}) {
   return {

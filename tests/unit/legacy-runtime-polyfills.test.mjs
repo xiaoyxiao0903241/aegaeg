@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import vm from 'node:vm'
-import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '../../src/lib/legacy-runtime-polyfills.ts'
+import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '../../src/shared/lib/legacy-runtime-polyfills.ts'
 
 function runBootPolyfills(context) {
   vm.runInNewContext(LEGACY_DOM_POLYFILLS_BOOT_SCRIPT, context)

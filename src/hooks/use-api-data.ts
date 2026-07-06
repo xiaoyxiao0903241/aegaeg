@@ -10,9 +10,9 @@ import {
   getTeamReferrals,
   getTeamRewardClaimLogs,
   getTeamRewardTotal,
-} from '~/lib/api/endpoints'
-import type { PaginationParams } from '~/lib/api/types'
-import { queryKeys } from '~/lib/query/query-keys'
+} from '~/shared/api/endpoints'
+import type { PaginationParams } from '~/shared/api/types'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import { useAuthenticatedQuery } from '~/hooks/use-authenticated-query'
 
 export function usePerformance(enabled = true) {

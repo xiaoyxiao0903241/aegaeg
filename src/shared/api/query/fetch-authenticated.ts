@@ -1,4 +1,4 @@
-import { ApiError } from '~/lib/api/client'
+import { ApiError } from '~/shared/api/client'
 import { isUnauthorizedError } from '~/shared/api/http-errors'
 
 export async function fetchAuthenticated<T>(

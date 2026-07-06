@@ -1,5 +1,5 @@
 import { QuickLink, type QuickLinkProps } from '~/app/components/quick-link'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 export type { QuickLinkProps as QuickLinkItem }
 

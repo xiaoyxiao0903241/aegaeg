@@ -1,7 +1,7 @@
 import type { RefObject } from 'react'
 import { tv } from 'tailwind-variants'
 import { buttonDisabledClass } from '~/shared/ui/button'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const genesisSharesField = tv({
   slots: {

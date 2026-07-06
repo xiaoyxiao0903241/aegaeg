@@ -1,9 +1,9 @@
-import { queryClient } from '~/lib/query/query-client'
-import { queryKeys } from '~/lib/query/query-keys'
+import { queryClient } from '~/shared/api/query/query-client'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import type { DappTab } from '~/app/types'
-import type { Paginated, SalesLogItem } from '~/lib/api/types'
+import type { Paginated, SalesLogItem } from '~/shared/api/types'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))

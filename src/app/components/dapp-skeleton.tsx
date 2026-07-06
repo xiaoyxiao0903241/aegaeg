@@ -2,7 +2,7 @@ import { Card } from '~/shared/ui/card'
 import { communityStatCardMobileShell } from '~/views/dapp/community/community-content-primitives'
 import { seasonCardRadiusClass, seasonCardSizeClass } from '~/app/dapp-detail-layout'
 import { dappTableCell } from '~/app/components/dapp-table-card'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const skeletonSurfaceClass =
   'bg-[oklch(94.5%_0.008_260)] motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'

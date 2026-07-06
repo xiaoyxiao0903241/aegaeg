@@ -4,7 +4,7 @@ import { HeroRaysBackground, heroRaysHomeClass } from '~/shared/ui/hero-rays-bac
 import { getHomeNotionLinks } from '~/views/home/notion-links'
 import { homeAssets } from '~/views/home/assets'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const homeArtGlowClass = cn(
   'pointer-events-none absolute -top-px -left-2 aspect-square w-[142%] max-w-160 rounded-full opacity-[0.28] blur-[0.625rem]',

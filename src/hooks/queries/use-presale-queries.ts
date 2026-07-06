@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
-import { QUERY_STALE_TIME } from '~/lib/query/query-client'
-import { queryKeys } from '~/lib/query/query-keys'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import {
   readActivePresalePhase,
   readAllPresalePhases,

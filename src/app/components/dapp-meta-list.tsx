@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 export type DappMetaListItem = {
   label: ReactNode

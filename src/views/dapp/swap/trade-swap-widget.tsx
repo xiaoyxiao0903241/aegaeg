@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'

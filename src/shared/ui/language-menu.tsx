@@ -5,7 +5,7 @@ import {
   type MouseEvent,
   type ReactNode,
 } from 'react'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const langSwitcherClass = 'relative z-40 inline-flex [[open]_&]:z-[120] [.is-open_&]:z-[120]'
 

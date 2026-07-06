@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { dappDetailPageBottomClass } from '~/app/dapp-detail-layout'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 /** 右侧 detail 列内容区 —— 各 tab SSOT（PC padding 一致；H5 外边距由 shell window 承担） */
 export function dappDetailPageClass(options?: { className?: string }) {

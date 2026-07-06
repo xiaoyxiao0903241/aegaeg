@@ -3,7 +3,7 @@ import {
   type AnchoredTooltipProps,
 } from '~/shared/ui/anchored-tooltip'
 import { DappInfoIcon } from '~/app/components/dapp-info-icon'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 type DappInfoTooltipProps = Pick<AnchoredTooltipProps, 'align' | 'content' | 'position'> & {
   ariaLabel?: string

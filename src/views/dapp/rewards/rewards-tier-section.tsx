@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { revealClass } from '~/lib/reveal'
-import { formatPresaleRank, getPresaleRankHighlightedRows } from '~/lib/api/format-display'
+import { revealClass } from '~/shared/lib/reveal'
+import { formatPresaleRank, getPresaleRankHighlightedRows } from '~/shared/api/format-display'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { buildRewardTierRows, getTeamRequirementLegRank } from '~/core/presale/tier-table'
 import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'

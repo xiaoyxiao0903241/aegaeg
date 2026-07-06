@@ -1,5 +1,5 @@
 import { appEnv } from '~/shared/config/env'
-import { getRuntimeHostname } from '~/lib/runtime-host'
+import { getRuntimeHostname } from '~/shared/lib/runtime-host'
 
 export interface SiweLoginPayload {
   domain: string

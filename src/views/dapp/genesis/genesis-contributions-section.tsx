@@ -6,7 +6,7 @@ import {
   calcProgressPercent,
   formatUsd,
   mapSalesLogToDesktopRow,
-} from '~/lib/api/format-display'
+} from '~/shared/api/format-display'
 import { bscscanTx } from '~/shared/config/explorer'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'
@@ -17,7 +17,7 @@ import { ResponsiveTable } from '~/app/components/responsive-table'
 import {
   genesisContributionsColWidths,
 } from '~/app/components/dapp-table-columns'
-import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
+import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useAuth } from '~/providers/auth-provider'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'

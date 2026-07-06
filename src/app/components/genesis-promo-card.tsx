@@ -5,7 +5,7 @@ import {
   applyMessageTemplate,
   type GenesisPromoSnapshot,
 } from '~/lib/presale/genesis-promo'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import {
   GenesisPromoBodySkeleton,

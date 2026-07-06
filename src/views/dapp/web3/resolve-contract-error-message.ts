@@ -1,7 +1,7 @@
 import {
   ContractRevertError,
   decodeContractRevert,
-} from '~/lib/web3/decode-contract-revert'
+} from '~/views/dapp/web3/decode-contract-revert'
 
 const ERC20_INSUFFICIENT_BALANCE = '0xe450d38c'
 const ERC20_INSUFFICIENT_ALLOWANCE = '0xfb8f41b2'

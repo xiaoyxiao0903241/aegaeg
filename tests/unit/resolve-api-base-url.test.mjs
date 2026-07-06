@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('extractRootDomain keeps apex and strips subdomain', async () => {
-  const { extractRootDomain } = await loadModule('/src/lib/api/resolve-api-base-url.ts')
+  const { extractRootDomain } = await loadModule('/src/shared/api/resolve-api-base-url.ts')
 
   assert.equal(extractRootDomain('x-123.io'), 'x-123.io')
   assert.equal(extractRootDomain('app.x-123.io'), 'x-123.io')
@@ -13,7 +13,7 @@ test('extractRootDomain keeps apex and strips subdomain', async () => {
 })
 
 test('resolveApiBaseUrl uses env base in dev', async () => {
-  const { resolveApiBaseUrl } = await loadModule('/src/lib/api/resolve-api-base-url.ts')
+  const { resolveApiBaseUrl } = await loadModule('/src/shared/api/resolve-api-base-url.ts')
 
   assert.equal(
     resolveApiBaseUrl({
@@ -26,7 +26,7 @@ test('resolveApiBaseUrl uses env base in dev', async () => {
 })
 
 test('resolveApiBaseUrl uses env base on localhost in production build', async () => {
-  const { resolveApiBaseUrl } = await loadModule('/src/lib/api/resolve-api-base-url.ts')
+  const { resolveApiBaseUrl } = await loadModule('/src/shared/api/resolve-api-base-url.ts')
 
   assert.equal(
     resolveApiBaseUrl({
@@ -39,7 +39,7 @@ test('resolveApiBaseUrl uses env base on localhost in production build', async (
 })
 
 test('resolveApiBaseUrl derives api subdomain from apex domain', async () => {
-  const { resolveApiBaseUrl } = await loadModule('/src/lib/api/resolve-api-base-url.ts')
+  const { resolveApiBaseUrl } = await loadModule('/src/shared/api/resolve-api-base-url.ts')
 
   assert.equal(
     resolveApiBaseUrl({
@@ -52,7 +52,7 @@ test('resolveApiBaseUrl derives api subdomain from apex domain', async () => {
 })
 
 test('resolveApiBaseUrl derives api subdomain from app subdomain', async () => {
-  const { resolveApiBaseUrl } = await loadModule('/src/lib/api/resolve-api-base-url.ts')
+  const { resolveApiBaseUrl } = await loadModule('/src/shared/api/resolve-api-base-url.ts')
 
   assert.equal(
     resolveApiBaseUrl({
@@ -65,7 +65,7 @@ test('resolveApiBaseUrl derives api subdomain from app subdomain', async () => {
 })
 
 test('resolveApiBaseUrl respects fixed base when derive disabled', async () => {
-  const { resolveApiBaseUrl } = await loadModule('/src/lib/api/resolve-api-base-url.ts')
+  const { resolveApiBaseUrl } = await loadModule('/src/shared/api/resolve-api-base-url.ts')
 
   assert.equal(
     resolveApiBaseUrl({

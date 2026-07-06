@@ -1,5 +1,5 @@
 import { useId, useState, type ReactNode } from 'react'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { DappSection } from '~/app/components/dapp-section'

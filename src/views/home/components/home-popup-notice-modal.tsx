@@ -5,8 +5,8 @@ import { modalContentClass, modalOverlayClass } from '~/shared/ui/dialog'
 import { homeAssets } from '~/views/home/assets'
 import { PopupNoticeContent } from '~/views/home/popup-notice-content'
 import { useI18n } from '~/i18n/use-i18n'
-import type { HomePopupNotice } from '~/lib/api/types'
-import { cn } from '~/lib/utils'
+import type { HomePopupNotice } from '~/shared/api/types'
+import { cn } from '~/shared/lib/utils'
 
 export function HomePopupNoticeModal({
   notice,

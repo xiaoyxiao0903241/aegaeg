@@ -2,8 +2,8 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { revealClass } from '~/lib/reveal'
-import { cn, resolveNavigableHref } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn, resolveNavigableHref } from '~/shared/lib/utils'
 
 export const communityProgramGrid = tv({
   base: cn('grid grid-cols-2 gap-2', 'max-dapp:grid-cols-1 max-dapp:gap-2'),

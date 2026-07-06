@@ -4,8 +4,8 @@ import {
   confirmTeamRewardClaim,
   requestCommunityFundClaim,
   requestTeamRewardSignature,
-} from '~/lib/api/endpoints'
-import { normalizeTeamRewardClaimPayload } from '~/lib/api/normalize-claim-payload'
+} from '~/shared/api/endpoints'
+import { normalizeTeamRewardClaimPayload } from '~/shared/api/normalize-claim-payload'
 import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/views/dapp/web3/abis'
 import { parseWriteAbi, writeContractViaWallet, type ConfirmedWalletWrite } from '~/views/dapp/web3/wallet-contract-write'
 

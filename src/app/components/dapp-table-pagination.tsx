@@ -10,11 +10,11 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatCount } from '~/lib/api/format-display'
-import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/lib/table-pagination'
-import { cssRemVarPx } from '~/lib/root-rem-px'
+import { formatCount } from '~/shared/api/format-display'
+import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/table-pagination'
+import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 
 const PAGE_MENU_VISIBLE_ITEMS = 5
 

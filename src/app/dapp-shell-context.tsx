@@ -4,7 +4,7 @@ import { useAuth } from '~/providers/auth-provider'
 import {
   hasWalletAccount,
   isWalletRestorePending,
-} from '~/lib/web3/wallet-connection-state'
+} from '~/views/dapp/web3/wallet-connection-state'
 import type { DappTab } from '~/app/types'
 
 export interface DappShellState {

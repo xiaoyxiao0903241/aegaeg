@@ -1,6 +1,6 @@
 import { DappTableCardShell } from '~/app/components/dapp-table-card'
-import { cn } from '~/lib/utils'
-import { revealClass } from '~/lib/reveal'
+import { cn } from '~/shared/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
 
 export function DappTableEmptyMessage({
   body,

@@ -8,7 +8,7 @@ import {
   invalidateAfterSwap,
   invalidateAfterTeamClaim,
   invalidateAfterWalletSwitch,
-} from '~/lib/query/invalidate'
+} from '~/shared/api/query/invalidate'
 import type { DappTab } from '~/app/types'
 
 interface DappActionsState {

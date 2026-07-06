@@ -14,8 +14,8 @@ import {
   decodeContractRevert,
   isContractRevert,
   normalizeContractRevertError,
-} from '~/lib/web3/decode-contract-revert'
-import { WALLET_WRITE_ERROR } from '~/lib/web3/resolve-contract-error-message'
+} from '~/views/dapp/web3/decode-contract-revert'
+import { WALLET_WRITE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { createWalletReadClient } from '~/views/dapp/web3/chain-read-client'
 import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
 import { resolveWalletEip1193Provider } from '~/views/dapp/web3/resolve-wallet-eip1193-provider'

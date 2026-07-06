@@ -3,8 +3,8 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('buildApiUrl appends query params', async () => {
-  const { buildApiUrl } = await loadModule('/src/lib/api/request.ts')
-  const { getApiBaseUrl } = await loadModule('/src/lib/api/client.ts')
+  const { buildApiUrl } = await loadModule('/src/shared/api/request.ts')
+  const { getApiBaseUrl } = await loadModule('/src/shared/api/client.ts')
 
   // Derive the base from the same resolver the app uses so the test stays
   // hermetic — it verifies query-param handling, not the deploy-specific host.
@@ -16,7 +16,7 @@ test('buildApiUrl appends query params', async () => {
 })
 
 test('apiRequest attaches bearer token and parses envelope', async () => {
-  const { apiRequest } = await loadModule('/src/lib/api/request.ts')
+  const { apiRequest } = await loadModule('/src/shared/api/request.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {
@@ -40,7 +40,7 @@ test('apiRequest attaches bearer token and parses envelope', async () => {
 })
 
 test('apiRequest surfaces 403 banned as ApiError', async () => {
-  const { apiRequest, ApiError } = await loadModule('/src/lib/api/request.ts')
+  const { apiRequest, ApiError } = await loadModule('/src/shared/api/request.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async () =>
@@ -65,7 +65,7 @@ test('apiRequest surfaces 403 banned as ApiError', async () => {
 })
 
 test('apiRequest throws ApiError for business failures', async () => {
-  const { apiRequest, ApiError } = await loadModule('/src/lib/api/request.ts')
+  const { apiRequest, ApiError } = await loadModule('/src/shared/api/request.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async () =>
@@ -90,7 +90,7 @@ test('apiRequest throws ApiError for business failures', async () => {
 })
 
 test('getTeamRewardClaimLogs posts pagination body', async () => {
-  const { getTeamRewardClaimLogs } = await loadModule('/src/lib/api/endpoints.ts')
+  const { getTeamRewardClaimLogs } = await loadModule('/src/shared/api/endpoints.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {
@@ -114,7 +114,7 @@ test('getTeamRewardClaimLogs posts pagination body', async () => {
 })
 
 test('getTeamReferrals posts pagination body', async () => {
-  const { getTeamReferrals } = await loadModule('/src/lib/api/endpoints.ts')
+  const { getTeamReferrals } = await loadModule('/src/shared/api/endpoints.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {

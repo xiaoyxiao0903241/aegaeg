@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import {
   getAccountBannedToastId,
   subscribeAccountBanned,
-} from '~/lib/api/account-banned'
+} from '~/shared/api/account-banned'
 import { useI18n } from '~/i18n/use-i18n'
 
 /** Shows a single deduped toast when apiRequest intercepts a banned-account 403. */

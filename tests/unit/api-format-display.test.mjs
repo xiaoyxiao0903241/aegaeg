@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('formatPresaleRank maps API rank to shareholder label', async () => {
-  const { formatPresaleRank } = await loadModule('/src/lib/api/format-display.ts')
+  const { formatPresaleRank } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(formatPresaleRank(0), 'S0')
   assert.equal(formatPresaleRank(3), 'S3')
@@ -13,7 +13,7 @@ test('getPresaleRankHighlightedRows maps rank to tier table row index', async ()
   const {
     getPresaleRankHighlightedRows,
     getPresaleRankHighlightedRowsForPage,
-  } = await loadModule('/src/lib/api/format-display.ts')
+  } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.deepEqual(getPresaleRankHighlightedRows(0, 6), [])
   assert.deepEqual(getPresaleRankHighlightedRows(3, 6), [2])
@@ -26,7 +26,7 @@ test('getPresaleRankHighlightedRows maps rank to tier table row index', async ()
 })
 
 test('formatShareholderHintForRank renders tier-specific hint', async () => {
-  const { formatShareholderHintForRank } = await loadModule('/src/lib/api/format-display.ts')
+  const { formatShareholderHintForRank } = await loadModule('/src/shared/api/format-display.ts')
   const tiers = [
     ['S1', '$500', '$5,000', '1%'],
     ['S2', '$1,000', '$10,000', '2%'],
@@ -38,21 +38,21 @@ test('formatShareholderHintForRank renders tier-specific hint', async () => {
 })
 
 test('formatUsdAmountLabel renders amount with USD suffix for hints', async () => {
-  const { formatUsdAmountLabel } = await loadModule('/src/lib/api/format-display.ts')
+  const { formatUsdAmountLabel } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(formatUsdAmountLabel(5000), '5,000 USD')
   assert.equal(formatUsdAmountLabel('invalid'), '0 USD')
 })
 
 test('formatUsdCompact abbreviates large values', async () => {
-  const { formatUsdCompact } = await loadModule('/src/lib/api/format-display.ts')
+  const { formatUsdCompact } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(formatUsdCompact('412900'), '$412.9K')
   assert.equal(formatUsdCompact('1200'), '$1.2K')
 })
 
 test('formatTableGenesisRank hides S0 in community member table', async () => {
-  const { formatTableGenesisRank } = await loadModule('/src/lib/api/format-display.ts')
+  const { formatTableGenesisRank } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(formatTableGenesisRank(0), '-')
   assert.equal(formatTableGenesisRank(-1), '-')
@@ -60,7 +60,7 @@ test('formatTableGenesisRank hides S0 in community member table', async () => {
 })
 
 test('mapTeamReferralToCompactRow renders invite table cells', async () => {
-  const { mapTeamReferralToCompactRow } = await loadModule('/src/lib/api/format-display.ts')
+  const { mapTeamReferralToCompactRow } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.deepEqual(
     mapTeamReferralToCompactRow({
@@ -76,7 +76,7 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
 })
 
 test('sumSalesLogAmountUsd totals human-readable USD amounts from log rows', async () => {
-  const { sumSalesLogAmountUsd } = await loadModule('/src/lib/api/format-display.ts')
+  const { sumSalesLogAmountUsd } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(
     sumSalesLogAmountUsd([
@@ -90,7 +90,7 @@ test('sumSalesLogAmountUsd totals human-readable USD amounts from log rows', asy
 })
 
 test('resolveRewardTypeI18nKey maps API reward_type to i18n key', async () => {
-  const { resolveRewardTypeI18nKey } = await loadModule('/src/lib/api/format-display.ts')
+  const { resolveRewardTypeI18nKey } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(resolveRewardTypeI18nKey('referral_paid'), 'referralPaid')
   assert.equal(resolveRewardTypeI18nKey('MARKET'), 'marketTeam')
@@ -98,7 +98,7 @@ test('resolveRewardTypeI18nKey maps API reward_type to i18n key', async () => {
 })
 
 test('mapRewardLogToRow uses i18n labels for type and status', async () => {
-  const { mapRewardLogToRow } = await loadModule('/src/lib/api/format-display.ts')
+  const { mapRewardLogToRow } = await loadModule('/src/shared/api/format-display.ts')
   const labels = {
     rewardType: {
       referralPaid: '推荐奖励',
@@ -139,7 +139,7 @@ test('mapRewardLogToRow uses i18n labels for type and status', async () => {
 })
 
 test('mapTeamRewardClaimLogToRow renders presale team claim history', async () => {
-  const { mapTeamRewardClaimLogToRow } = await loadModule('/src/lib/api/format-display.ts')
+  const { mapTeamRewardClaimLogToRow } = await loadModule('/src/shared/api/format-display.ts')
   const labels = {
     logStatus: {
       pending: '待领取',
@@ -169,7 +169,7 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
 })
 
 test('mapCommunityFundLogToRow renders development fund history without genesis rank', async () => {
-  const { mapCommunityFundLogToRow } = await loadModule('/src/lib/api/format-display.ts')
+  const { mapCommunityFundLogToRow } = await loadModule('/src/shared/api/format-display.ts')
   const labels = {
     logStatus: {
       pending: '待处理',
@@ -197,7 +197,7 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
 })
 
 test('formatClaimableAmount subtracts claimed from total', async () => {
-  const { formatClaimableAmount } = await loadModule('/src/lib/api/format-display.ts')
+  const { formatClaimableAmount } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(formatClaimableAmount('1000', '657.82'), '$342.18')
 })

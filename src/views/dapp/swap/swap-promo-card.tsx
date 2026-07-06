@@ -5,8 +5,8 @@ import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 
 type PromoLayout = 'desktop' | 'mobile'
 

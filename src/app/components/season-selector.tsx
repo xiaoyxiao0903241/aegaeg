@@ -7,7 +7,7 @@ import {
 } from '~/shared/ui/carousel'
 import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
 import { useI18n } from '~/i18n/use-i18n'
-import { revealClass } from '~/lib/reveal'
+import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   seasonCardBadgeClass,
@@ -24,7 +24,7 @@ import {
   seasonCarouselTrackBleedClass,
   seasonCarouselViewportClass,
 } from '~/app/dapp-detail-layout'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 function translateSeasonStatus(status: string, t: ReturnType<typeof useI18n>['messages']) {
   if (status === 'LIVE') return t.genesis.seasonLive

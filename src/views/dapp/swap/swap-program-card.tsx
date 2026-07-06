@@ -1,5 +1,5 @@
 import { swapHubAssets } from '~/app/assets'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { tv } from 'tailwind-variants'
 
 const swapProgramCard = tv({

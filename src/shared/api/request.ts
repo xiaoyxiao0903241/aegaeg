@@ -1,11 +1,11 @@
-import { interceptApiError } from '~/lib/api/account-banned'
+import { interceptApiError } from '~/shared/api/account-banned'
 import {
   ApiError,
   buildApiClientUrl,
   createAuthHeader,
   parseApiResponse,
   type ApiEnvelope,
-} from '~/lib/api/client'
+} from '~/shared/api/client'
 
 export { ApiError }
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { shellModulePanelClass } from '~/app/shell-layout'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
 import { SwapHubWidget } from '~/views/dapp/swap/swap-hub-widget'

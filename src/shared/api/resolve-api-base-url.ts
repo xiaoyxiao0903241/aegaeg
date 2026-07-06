@@ -1,5 +1,5 @@
 import { appEnv } from '~/shared/config/env'
-import { getRuntimeHostname } from '~/lib/runtime-host'
+import { getRuntimeHostname } from '~/shared/lib/runtime-host'
 
 function isLocalHostname(hostname: string): boolean {
   const host = hostname.toLowerCase()

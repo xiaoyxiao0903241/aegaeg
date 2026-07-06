@@ -1,4 +1,4 @@
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 /**
  * DApp detail / widget spacing SSOT — rem @ 16px root, scales with site-fluid.

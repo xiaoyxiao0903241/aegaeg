@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('createApiClient builds absolute URLs from base path', async () => {
-  const { createApiClient } = await loadModule('/src/lib/api/client.ts')
+  const { createApiClient } = await loadModule('/src/shared/api/client.ts')
   const client = createApiClient({ baseUrl: 'https://api.x-dao.io/api' })
 
   assert.equal(client.buildUrl('/auth/login'), 'https://api.x-dao.io/api/auth/login')
@@ -14,7 +14,7 @@ test('createApiClient builds absolute URLs from base path', async () => {
 })
 
 test('parseApiResponse returns data when code is zero', async () => {
-  const { parseApiResponse } = await loadModule('/src/lib/api/client.ts')
+  const { parseApiResponse } = await loadModule('/src/shared/api/client.ts')
 
   assert.deepEqual(parseApiResponse({ code: 0, data: { token: 'jwt' } }), {
     token: 'jwt',
@@ -22,7 +22,7 @@ test('parseApiResponse returns data when code is zero', async () => {
 })
 
 test('parseApiResponse throws ApiError for business failures', async () => {
-  const { parseApiResponse, ApiError } = await loadModule('/src/lib/api/client.ts')
+  const { parseApiResponse, ApiError } = await loadModule('/src/shared/api/client.ts')
 
   assert.throws(
     () => parseApiResponse({ code: 401, error: 'UNAUTHORIZED', message: 'bad token' }),
@@ -36,7 +36,7 @@ test('parseApiResponse throws ApiError for business failures', async () => {
 })
 
 test('createAuthHeader prefixes bearer token', async () => {
-  const { createAuthHeader } = await loadModule('/src/lib/api/client.ts')
+  const { createAuthHeader } = await loadModule('/src/shared/api/client.ts')
 
   assert.deepEqual(createAuthHeader('abc'), {
     Authorization: 'Bearer abc',

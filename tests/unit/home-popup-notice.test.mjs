@@ -202,7 +202,7 @@ test('isHomePopupNoticeWithinSchedule excludes items outside start/end window', 
 })
 
 test('getHomePopupNotices uses POST with locale body', async () => {
-  const { getHomePopupNotices } = await loadModule('/src/lib/api/endpoints.ts')
+  const { getHomePopupNotices } = await loadModule('/src/shared/api/endpoints.ts')
 
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, init) => {

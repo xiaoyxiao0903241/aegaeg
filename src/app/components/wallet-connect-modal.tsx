@@ -4,7 +4,7 @@ import { ConnectEmbed, useActiveAccount } from 'thirdweb/react'
 import { X } from 'lucide-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { appMetadata, connectEmbedProps } from '~/views/dapp/web3/thirdweb'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   AegisResponsiveDialog,

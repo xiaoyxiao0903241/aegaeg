@@ -10,7 +10,7 @@ import {
   DappDarkBannerTitle,
   dappDarkBanner,
 } from '~/shared/ui/dapp-dark-banner'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const genesisGlobeWidth = 597
 const genesisGlobeHeight = 250

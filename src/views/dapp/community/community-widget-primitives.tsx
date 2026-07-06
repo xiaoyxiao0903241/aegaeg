@@ -13,7 +13,7 @@ import {
 } from '~/app/components/dapp-card'
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { ReferrerAddressRow } from '~/app/components/referrer-address-row'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const communitySideCard = tv({
   base: cn(

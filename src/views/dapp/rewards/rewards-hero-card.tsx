@@ -7,8 +7,8 @@ import {
   dappKickerClass,
   dappTitleSmClass,
 } from '~/app/dapp-type-scale'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 
 const rewardsHeroCard = tv({
   slots: {

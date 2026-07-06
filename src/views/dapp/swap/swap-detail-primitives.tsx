@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants'
 import { MetricCard } from '~/app/components/dapp-card'
 import { MetricCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 /** Swap detail overview metric card — Figma `sc`; tab-owned, not shell group-data. */
 const swapMetricCard = tv({

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { DialogOverlay, DialogPortal, modalOverlayClass, responsivePanelClass } from '~/shared/ui/dialog'
 
 export function AegisSheetHandle() {

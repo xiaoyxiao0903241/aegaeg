@@ -15,7 +15,7 @@ import {
   type CarouselOptions,
   type CarouselPlugin,
 } from '~/shared/ui/carousel-context'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { useCarousel } from '~/shared/ui/use-carousel'
 
 export type { CarouselApi, CarouselOptions, CarouselPlugin } from '~/shared/ui/carousel-context'

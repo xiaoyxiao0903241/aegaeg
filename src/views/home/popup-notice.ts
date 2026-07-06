@@ -3,7 +3,7 @@ import type {
   HomePopupNoticeApiItem,
   HomePopupNoticeI18n,
   HomePopupNoticesResponse,
-} from '~/lib/api/types'
+} from '~/shared/api/types'
 
 const DISMISSED_KEYS_STORAGE_KEY = 'aegis.home.popupNotice.dismissedKeys'
 /** @deprecated migrated to dismissedKeys */

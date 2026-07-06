@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { DappPanelHeader } from '~/app/components/dapp-panel-header'
 import { shellWidgetRootClass } from '~/app/shell-layout'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 /** Figma widget column — header to first block: PC 14px, H5 30px; card stack gap 8px. */
 export const dappWidgetHeaderSpacingClass = 'mb-3.5 max-dapp:mb-7.5'

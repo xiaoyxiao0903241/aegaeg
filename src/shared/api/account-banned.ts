@@ -1,4 +1,4 @@
-import { ApiError } from '~/lib/api/client'
+import { ApiError } from '~/shared/api/client'
 
 /** Stored in auth `loginError` when backend rejects login with 403 banned. */
 export const ACCOUNT_BANNED_SENTINEL = 'ACCOUNT_BANNED'

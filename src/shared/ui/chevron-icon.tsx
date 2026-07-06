@@ -1,4 +1,4 @@
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 
 const CHEVRON_MASK = {

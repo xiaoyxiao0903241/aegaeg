@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const METRIC_GRID_TWO =
   'grid grid-cols-2 gap-3 max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5 max-dapp:[&>article]:min-w-0'

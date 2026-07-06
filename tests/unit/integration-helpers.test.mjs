@@ -41,7 +41,7 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
 
 test('normalizeTeamRewardClaimPayload accepts snake_case fields', async () => {
   const { normalizeTeamRewardClaimPayload } = await loadModule(
-    '/src/lib/api/normalize-claim-payload.ts',
+    '/src/shared/api/normalize-claim-payload.ts',
   )
 
   const normalized = normalizeTeamRewardClaimPayload({

@@ -7,7 +7,7 @@ import {
   formatPresaleRank,
   formatUsd,
   mapTeamReferralToCompactRow,
-} from '~/lib/api/format-display'
+} from '~/shared/api/format-display'
 import { applyMessageTemplate } from '~/lib/presale/genesis-promo'
 import {
   getCommitmentFloorPostLaunchLabel,
@@ -27,7 +27,7 @@ import { DappTablePagination } from '~/app/components/dapp-table-pagination'
 import { DappTableCard } from '~/app/components/dapp-table-card'
 import { communityInviteColWidths } from '~/app/components/dapp-table-columns'
 import { ResponsiveTable } from '~/app/components/responsive-table'
-import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
+import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
 import { CommunityFlowSection } from '~/views/dapp/community/community-flow-section'
 import {

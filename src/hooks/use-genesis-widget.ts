@@ -21,11 +21,11 @@ import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
 import { MAX_UINT256 } from '~/views/dapp/web3/abis'
-import { formatUsd } from '~/lib/api/format-display'
-import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
+import { formatUsd } from '~/shared/api/format-display'
+import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { readErc20Allowance, readErc20Balance } from '~/views/dapp/web3/swap-read'
-import { queryKeys } from '~/lib/query/query-keys'
-import { invalidatePresaleChainQueries } from '~/lib/query/invalidate'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { invalidatePresaleChainQueries } from '~/shared/api/query/invalidate'
 import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,

@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 export const radioIndicatorVariants = tv({
   base: 'relative inline-flex flex-none items-center justify-center rounded-full border-2 border-border bg-card',

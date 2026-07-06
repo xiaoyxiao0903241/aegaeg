@@ -1,4 +1,4 @@
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import type { DappTab } from '~/app/types'
 
 export const shellPageClass = cn(

@@ -8,15 +8,15 @@ import { createWalletReadClient } from '~/views/dapp/web3/chain-read-client'
 import { readErc20Balance } from '~/views/dapp/web3/swap-read'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/providers/auth-provider'
-import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
+import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { Button } from '~/shared/ui/button'
 import { toast } from 'sonner'
-import { copyTextToClipboard } from '~/lib/copy-to-clipboard'
-import { cn } from '~/lib/utils'
+import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
+import { cn } from '~/shared/lib/utils'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,

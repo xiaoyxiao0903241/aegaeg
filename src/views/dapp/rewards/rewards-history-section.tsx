@@ -11,7 +11,7 @@ import {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
-} from '~/lib/api/format-display'
+} from '~/shared/api/format-display'
 import { useAuth } from '~/providers/auth-provider'
 import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
 import { DappSection } from '~/app/components/dapp-section'
@@ -25,7 +25,7 @@ import {
   rewardsReferralHistoryColWidths,
   rewardsTeamHistoryColWidths,
 } from '~/app/components/dapp-table-columns'
-import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
+import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import {

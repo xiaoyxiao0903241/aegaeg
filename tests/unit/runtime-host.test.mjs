@@ -22,7 +22,7 @@ function mockBrowserLocation(location) {
 }
 
 test('getRuntimeHostname reads browser host', async () => {
-  const { getRuntimeHostname } = await loadModule('/src/lib/runtime-host.ts')
+  const { getRuntimeHostname } = await loadModule('/src/shared/lib/runtime-host.ts')
   const restore = mockBrowserLocation({
     host: 'app.x-123.io',
     hostname: 'app.x-123.io',
@@ -37,7 +37,7 @@ test('getRuntimeHostname reads browser host', async () => {
 })
 
 test('getRuntimeHostname falls back to VITE_APP_HOST', async () => {
-  const { getRuntimeHostname, getConfiguredAppHost } = await loadModule('/src/lib/runtime-host.ts')
+  const { getRuntimeHostname, getConfiguredAppHost } = await loadModule('/src/shared/lib/runtime-host.ts')
   const restore = mockBrowserLocation({ host: '', hostname: '', origin: '' })
 
   try {
@@ -48,7 +48,7 @@ test('getRuntimeHostname falls back to VITE_APP_HOST', async () => {
 })
 
 test('resolveApiBaseUrl uses runtime hostname when option omitted', async () => {
-  const { resolveApiBaseUrl } = await loadModule('/src/lib/api/resolve-api-base-url.ts')
+  const { resolveApiBaseUrl } = await loadModule('/src/shared/api/resolve-api-base-url.ts')
   const restore = mockBrowserLocation({
     host: 'app.x-123.io',
     hostname: 'app.x-123.io',

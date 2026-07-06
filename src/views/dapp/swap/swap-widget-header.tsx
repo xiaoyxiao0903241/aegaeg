@@ -9,7 +9,7 @@ import { dappWidgetHeaderSpacingClass } from '~/app/components/dapp-widget-frame
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useSwapViewStore } from '~/stores/swap-view-store'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const swapWidgetHeader = tv({
   slots: {

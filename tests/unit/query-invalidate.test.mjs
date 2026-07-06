@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-const queryKeysModule = await loadModule('/src/lib/query/query-keys.ts')
+const queryKeysModule = await loadModule('/src/shared/api/query/query-keys.ts')
 const { queryKeys } = queryKeysModule
 
 test('query keys normalize addresses and tokens to lowercase', () => {

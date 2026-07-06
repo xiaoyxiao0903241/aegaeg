@@ -3,15 +3,15 @@ import { useActiveAccount } from 'thirdweb/react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/providers/auth-provider'
-import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
+import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import {
   ACCOUNT_BANNED_SENTINEL,
   isAccountBannedError,
   resolveAuthLoginErrorMessage,
-} from '~/lib/api/account-banned'
-import { toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
+} from '~/shared/api/account-banned'
+import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import { formatAddress } from '~/app/utils'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { WalletDetailsModal } from '~/app/components/wallet-details-modal'
 import { WalletConnectModal } from '~/app/components/wallet-connect-modal'
 

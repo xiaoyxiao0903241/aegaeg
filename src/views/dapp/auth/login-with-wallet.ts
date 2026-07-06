@@ -1,6 +1,6 @@
 import type { Account } from 'thirdweb/wallets'
-import { ApiError } from '~/lib/api/client'
-import { login } from '~/lib/api/endpoints'
+import { ApiError } from '~/shared/api/client'
+import { login } from '~/shared/api/endpoints'
 import {
   buildLoginMessage,
   generateLoginNonce,
@@ -21,7 +21,7 @@ import {
   type AuthSessionStorage,
   type StoredAuthSession,
 } from '~/views/dapp/auth/session'
-import { isUserRejectedWalletError } from '~/lib/web3/resolve-contract-error-message'
+import { isUserRejectedWalletError } from '~/views/dapp/web3/resolve-contract-error-message'
 
 export interface WalletLoginParams {
   account: Account

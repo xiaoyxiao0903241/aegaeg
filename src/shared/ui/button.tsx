@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot'
 import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 export const buttonDisabledClass = cn(
   'disabled:pointer-events-none disabled:cursor-not-allowed',

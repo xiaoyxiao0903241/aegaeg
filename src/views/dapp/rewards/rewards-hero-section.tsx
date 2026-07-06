@@ -3,7 +3,7 @@ import { RewardsHeroBodySkeleton } from '~/app/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useCommunityFundTotal } from '~/hooks/use-api-data'
-import { formatShareholderHintForRank } from '~/lib/api/format-display'
+import { formatShareholderHintForRank } from '~/shared/api/format-display'
 import { buildRewardTierRows } from '~/core/presale/tier-table'
 import {
   RewardsHeroBodyCopy,

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { StatusBadge } from '~/shared/ui/badge'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 import { dappTableCell } from '~/app/components/dapp-table-card'
 

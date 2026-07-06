@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 
 const sectionHeadClass =
   'section-head mx-auto max-w-192 text-center max-dapp:w-full max-dapp:max-w-96 max-dapp:pb-1'

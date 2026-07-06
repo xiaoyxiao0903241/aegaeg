@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { dappAssets } from '~/app/assets'
@@ -23,7 +23,7 @@ import {
 import { isThirdwebConfigured } from '~/views/dapp/web3/thirdweb'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { invalidateTabQueries } from '~/lib/query/invalidate'
+import { invalidateTabQueries } from '~/shared/api/query/invalidate'
 import {
   DappTabContent,
   DappTabShellProviders,

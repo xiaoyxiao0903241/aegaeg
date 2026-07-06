@@ -1,4 +1,4 @@
-import { resolveApiBaseUrl } from '~/lib/api/resolve-api-base-url'
+import { resolveApiBaseUrl } from '~/shared/api/resolve-api-base-url'
 
 export interface ApiEnvelope<T> {
   code: number

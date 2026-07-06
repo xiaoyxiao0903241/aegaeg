@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('tablePageQuery uses DApp table page size', async () => {
   const { DAPP_TABLE_PAGE_SIZE, tablePageQuery } = await loadModule(
-    '/src/lib/table-pagination.ts',
+    '/src/shared/lib/table-pagination.ts',
   )
 
   assert.deepEqual(tablePageQuery(2), { page: 2, page_size: DAPP_TABLE_PAGE_SIZE })
@@ -12,7 +12,7 @@ test('tablePageQuery uses DApp table page size', async () => {
 
 test('shouldShowTablePagination hides pagination when total fits one page', async () => {
   const { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } = await loadModule(
-    '/src/lib/table-pagination.ts',
+    '/src/shared/lib/table-pagination.ts',
   )
 
   assert.equal(shouldShowTablePagination(0), false)
@@ -23,7 +23,7 @@ test('shouldShowTablePagination hides pagination when total fits one page', asyn
 })
 
 test('dappTableViewState derives auth gate, empty query, and skeleton flags', async () => {
-  const { dappTableViewState } = await loadModule('/src/lib/table-pagination.ts')
+  const { dappTableViewState } = await loadModule('/src/shared/lib/table-pagination.ts')
 
   assert.deepEqual(
     dappTableViewState({

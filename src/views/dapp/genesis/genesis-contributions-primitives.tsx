@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { ProgressMeter } from '~/app/components/progress-meter'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 
 const genesisContributionsSection = tv({
   slots: {

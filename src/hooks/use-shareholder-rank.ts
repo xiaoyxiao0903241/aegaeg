@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
-import { formatPresaleRank } from '~/lib/api/format-display'
+import { formatPresaleRank } from '~/shared/api/format-display'
 import { resolveCommitmentFloorRank } from '~/core/presale/tier-table'
 import { resolveDisplayPresaleRank } from '~/core/presale/rank'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'

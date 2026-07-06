@@ -9,8 +9,8 @@ import {
 } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { ApiError } from '~/lib/api/client'
-import { ACCOUNT_BANNED_SENTINEL, isAccountBannedError } from '~/lib/api/account-banned'
+import { ApiError } from '~/shared/api/client'
+import { ACCOUNT_BANNED_SENTINEL, isAccountBannedError } from '~/shared/api/account-banned'
 import {
   buildLoginAttemptKey,
   deriveAuthAction,

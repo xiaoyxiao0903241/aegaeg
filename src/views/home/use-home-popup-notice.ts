@@ -8,9 +8,9 @@ import {
   selectNextHomePopupNotice,
 } from '~/views/home/popup-notice'
 import { useI18n } from '~/i18n/use-i18n'
-import { getHomePopupNotices } from '~/lib/api/endpoints'
-import type { HomePopupNotice } from '~/lib/api/types'
-import { queryKeys } from '~/lib/query/query-keys'
+import { getHomePopupNotices } from '~/shared/api/endpoints'
+import type { HomePopupNotice } from '~/shared/api/types'
+import { queryKeys } from '~/shared/api/query/query-keys'
 
 export function useHomePopupNotice(): {
   notice: HomePopupNotice | null

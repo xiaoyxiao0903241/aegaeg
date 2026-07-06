@@ -1,6 +1,6 @@
 import { createElement, forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 /** DApp：context=dapp + surface | Home：context=home + fill + radius */
 export const cardVariants = tv({

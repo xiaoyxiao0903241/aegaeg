@@ -1,4 +1,4 @@
-import { formatUsd } from '~/lib/api/format-display'
+import { formatUsd } from '~/shared/api/format-display'
 import { type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatTokenAmount } from '~/core/swap/token-amount'
 

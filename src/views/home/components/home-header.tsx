@@ -6,7 +6,7 @@ import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { getHomeNotionLinks } from '~/views/home/notion-links'
 import { homeAssets } from '~/views/home/assets'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 const navClass = cn(
   'fixed inset-x-0 top-0 z-50 flex h-18 w-full items-center border-b border-[oklch(94.87%_0.0058_264.53_/_72%)] bg-[oklch(97.29%_0.0029_264.54_/_88%)] backdrop-blur-[1.125rem]',

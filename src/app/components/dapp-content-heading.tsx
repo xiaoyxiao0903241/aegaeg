@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
 import { dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 
 export function DappContentHeading({
   children,

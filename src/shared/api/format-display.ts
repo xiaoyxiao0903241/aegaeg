@@ -4,8 +4,8 @@ import type {
   SalesLogItem,
   TeamReferralItem,
   TeamRewardClaimLogItem,
-} from '~/lib/api/types'
-import { getRuntimeHost } from '~/lib/runtime-host'
+} from '~/shared/api/types'
+import { getRuntimeHost } from '~/shared/lib/runtime-host'
 import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 
 /** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */

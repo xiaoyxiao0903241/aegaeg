@@ -5,7 +5,7 @@ import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 export function dappPanelTitleClassName(className?: string) {
   return cn(

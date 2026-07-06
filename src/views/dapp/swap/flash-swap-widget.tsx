@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'

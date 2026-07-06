@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 export function StatusBadge({
   children,

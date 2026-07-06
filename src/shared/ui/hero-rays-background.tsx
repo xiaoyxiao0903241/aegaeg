@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 /** Matches original CSS: `repeating-conic-gradient(... 0deg 0.2deg, transparent 0.2deg 2.5deg)`. */
 const RAY_SPACING_DEG = 2.5

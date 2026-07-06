@@ -4,7 +4,7 @@ import { bsc as bscBase } from 'thirdweb/chains'
 import type { WalletId } from 'thirdweb/wallets'
 import { aegisConnectTheme } from '~/views/dapp/web3/connect-theme'
 import { appEnv } from '~/shared/config/env'
-import { getRuntimeOrigin } from '~/lib/runtime-host'
+import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 
 /** Public BSC RPC — disconnected reads only; connected wallet uses EIP-1193 provider. */
 export const BSC_RPC_URL = appEnv.bscRpcUrl

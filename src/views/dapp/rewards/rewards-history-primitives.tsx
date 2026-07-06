@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { DappPillTabs } from '~/app/components/dapp-pill-tabs'
-import { revealClass } from '~/lib/reveal'
+import { revealClass } from '~/shared/lib/reveal'
 
 const rewardsHistorySection = tv({
   slots: {

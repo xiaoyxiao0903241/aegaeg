@@ -2,9 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { parseReferrerFromSearch, resolveDisplayReferrer } from '~/shared/config/referral'
-import { formatCount, formatShortAddress } from '~/lib/api/format-display'
-import { QUERY_STALE_TIME } from '~/lib/query/query-client'
-import { queryKeys } from '~/lib/query/query-keys'
+import { formatCount, formatShortAddress } from '~/shared/api/format-display'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import { usePerformance } from '~/hooks/use-api-data'
 import {
   readIsBindReferral,
@@ -12,7 +12,7 @@ import {
   readReferrer,
 } from '~/views/dapp/web3/referral-read'
 import { bindReferrer } from '~/views/dapp/web3/referral-write'
-import { GENESIS_PURCHASE_ERROR, REFERRAL_BIND_ERROR } from '~/lib/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR, REFERRAL_BIND_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { useDappActions } from '~/stores/dapp-actions'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 

@@ -3,8 +3,8 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('isAccountBannedError matches ApiError code 403', async () => {
-  const { isAccountBannedError } = await loadModule('/src/lib/api/account-banned.ts')
-  const { ApiError } = await loadModule('/src/lib/api/client.ts')
+  const { isAccountBannedError } = await loadModule('/src/shared/api/account-banned.ts')
+  const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   assert.equal(
     isAccountBannedError(new ApiError({ code: 403, error: 'FORBIDDEN', message: '账号被封' })),
@@ -22,8 +22,8 @@ test('interceptApiError reports banned 403', async () => {
     interceptApiError,
     resetAccountBannedReportCooldownForTests,
     subscribeAccountBanned,
-  } = await loadModule('/src/lib/api/account-banned.ts')
-  const { ApiError } = await loadModule('/src/lib/api/client.ts')
+  } = await loadModule('/src/shared/api/account-banned.ts')
+  const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   resetAccountBannedReportCooldownForTests()
 
@@ -47,8 +47,8 @@ test('reportAccountBanned throttles duplicate reports within cooldown', async ()
     interceptApiError,
     resetAccountBannedReportCooldownForTests,
     subscribeAccountBanned,
-  } = await loadModule('/src/lib/api/account-banned.ts')
-  const { ApiError } = await loadModule('/src/lib/api/client.ts')
+  } = await loadModule('/src/shared/api/account-banned.ts')
+  const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   resetAccountBannedReportCooldownForTests()
 
@@ -70,7 +70,7 @@ test('reportAccountBanned throttles duplicate reports within cooldown', async ()
 
 test('resolveAuthLoginErrorMessage maps banned sentinel to i18n', async () => {
   const { ACCOUNT_BANNED_SENTINEL, resolveAuthLoginErrorMessage } = await loadModule(
-    '/src/lib/api/account-banned.ts',
+    '/src/shared/api/account-banned.ts',
   )
 
   assert.equal(
@@ -83,7 +83,7 @@ test('resolveAuthLoginErrorMessage maps banned sentinel to i18n', async () => {
 
 test('resolveReferralBindError maps parent-not-bound sentinel before contract revert', async () => {
   const { REFERRAL_BIND_ERROR, resolveReferralBindError } = await loadModule(
-    '/src/lib/web3/resolve-contract-error-message.ts',
+    '/src/views/dapp/web3/resolve-contract-error-message.ts',
   )
 
   const messages = {

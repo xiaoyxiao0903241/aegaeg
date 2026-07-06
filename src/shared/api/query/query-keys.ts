@@ -1,4 +1,4 @@
-import type { PaginationParams } from '~/lib/api/types'
+import type { PaginationParams } from '~/shared/api/types'
 
 export const queryKeys = {
   api: {

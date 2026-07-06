@@ -2,8 +2,8 @@ import { tv } from 'tailwind-variants'
 import * as Accordion from '@radix-ui/react-accordion'
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { Card } from '~/shared/ui/card'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 
 export type FaqListItem = {
   a: ReactNode

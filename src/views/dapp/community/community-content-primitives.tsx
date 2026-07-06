@@ -2,8 +2,8 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { revealClass } from '~/lib/reveal'
-import { cn } from '~/lib/utils'
+import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
 
 export const communityStatGrid = tv({
   base: cn(

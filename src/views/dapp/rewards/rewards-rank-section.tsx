@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import {
   useCommunityFundTotal,
   useQualifiedPartitions,
@@ -9,7 +9,7 @@ import {
   calcProgressPercent,
   formatPresaleRank,
   formatUsd,
-} from '~/lib/api/format-display'
+} from '~/shared/api/format-display'
 import { buildNextTierProgress } from '~/core/presale/tier-progress'
 import {
   getCommitmentFloorPostLaunchLabel,

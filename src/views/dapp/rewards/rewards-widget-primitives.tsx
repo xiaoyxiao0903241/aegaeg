@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { DappSideCard } from '~/app/components/dapp-card'
 import { dappReferralAmountClass } from '~/app/dapp-type-scale'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 export const rewardsSideCard = tv({
   base: 'gap-1.5 rounded-md px-4 py-3.5 [&_span]:text-xs [&_span]:tracking-[-0.24px]',

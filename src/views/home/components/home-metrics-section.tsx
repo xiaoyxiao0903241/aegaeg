@@ -1,6 +1,6 @@
 import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 import { homeSectionContainerClass } from '~/views/home/home-layout'
 
 const homeMetricsRaysClass = cn(

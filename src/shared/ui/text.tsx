@@ -1,6 +1,6 @@
 import { createElement, type HTMLAttributes, type ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '~/lib/utils'
+import { cn } from '~/shared/lib/utils'
 
 /** size = 字号/字距 | weight = 字重 | tone = 语义色 — PC/H5 响应式字号 SSOT；H5 全局各档 +1px 见 `mobile-type-scale.css` */
 export const textVariants = tv({
