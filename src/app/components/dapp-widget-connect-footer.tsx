@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react'
+import { tv } from 'tailwind-variants'
 import { cn } from '~/lib/utils'
 import { DappConnectPromoCard } from '~/app/components/dapp-connect-promo-card'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 
-const WIDGET_FOOTER_SPACER = 'max-dapp:hidden min-h-3.5 shrink-0 grow basis-3.5'
-
-export const DAPP_WIDGET_BOTTOM_CARD_CLASS = cn(
-  dappWidgetFooterTopGapClass,
-  'w-full shrink-0 dapp:mt-auto',
-)
+const dappWidgetConnectFooter = tv({
+  slots: {
+    spacer: 'max-dapp:hidden min-h-3.5 shrink-0 grow basis-3.5',
+    bottom: cn(dappWidgetFooterTopGapClass, 'w-full shrink-0 dapp:mt-auto'),
+  },
+})
 
 export function DappWidgetConnectFooter({
   children,
@@ -17,12 +18,11 @@ export function DappWidgetConnectFooter({
   children: ReactNode
   className?: string
 }) {
+  const styles = dappWidgetConnectFooter()
   return (
     <>
-      <div aria-hidden="true" className={WIDGET_FOOTER_SPACER} />
-      <div className={cn('w-full', DAPP_WIDGET_BOTTOM_CARD_CLASS, className)}>
-        {children}
-      </div>
+      <div aria-hidden="true" className={styles.spacer()} />
+      <div className={cn(styles.bottom(), className)}>{children}</div>
     </>
   )
 }

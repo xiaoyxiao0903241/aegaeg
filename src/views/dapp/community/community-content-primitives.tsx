@@ -13,10 +13,11 @@ export const communityStatGrid = tv({
   ),
 })
 
-export const communityStatCardH5Layout = tv({
+/** Mobile stat card shell — stats only render when session is ready. */
+export const communityStatCardMobileShell = tv({
   base: cn(
-    'group-data-[tab=community]/shell:max-dapp:min-h-18 group-data-[tab=community]/shell:max-dapp:rounded-xl group-data-[tab=community]/shell:max-dapp:p-3.5',
-    'group-data-[tab=community]/shell:max-dapp:items-center group-data-[tab=community]/shell:max-dapp:text-center',
+    'max-dapp:min-h-22 max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
+    'max-dapp:p-[var(--dapp-community-stat-padding)] max-dapp:text-left max-dapp:shadow-card',
   ),
 })
 
@@ -25,54 +26,37 @@ const communityStatCard = tv({
     root: cn(
       revealClass(),
       'community-stat flex flex-col items-start gap-1 rounded-md p-4.5',
-      communityStatCardH5Layout(),
-      'group-data-[tab=community]/shell:max-dapp:[&:not(.is-dark)>span]:text-xs group-data-[tab=community]/shell:max-dapp:[&:not(.is-dark)>span]:leading-[1.35] group-data-[tab=community]/shell:max-dapp:[&:not(.is-dark)>span]:text-faint',
-      'group-data-[tab=community]/shell:max-dapp:[&.is-dark>span]:text-xs group-data-[tab=community]/shell:max-dapp:[&.is-dark>span]:leading-[1.35] group-data-[tab=community]/shell:max-dapp:[&.is-dark>span]:text-on-dark',
-      'group-data-[tab=community]/shell:max-dapp:[&>strong]:mt-0.5 group-data-[tab=community]/shell:max-dapp:[&>strong]:text-2xl group-data-[tab=community]/shell:max-dapp:[&>strong]:leading-[1.05]',
-      'group-data-[tab=community]/shell:max-dapp:[&>b]:hidden group-data-[tab=community]/shell:max-dapp:[&>small]:hidden',
-      'group-data-[tab=community]/shell:max-dapp:[&.is-dark>small]:hidden',
-      'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:min-h-22 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:items-start group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:rounded-md group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:border-0 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:p-[var(--dapp-community-stat-padding)] group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-left group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:shadow-card',
+      communityStatCardMobileShell(),
+      'max-dapp:[&>span]:w-full max-dapp:[&>span]:text-xs max-dapp:[&>span]:leading-normal',
+      'max-dapp:[&>strong]:mt-1 max-dapp:[&>strong]:w-full max-dapp:[&>strong]:text-2xl',
+      'max-dapp:[&>b]:mt-1 max-dapp:[&>b]:block max-dapp:[&>b]:w-full max-dapp:[&>b]:text-xs max-dapp:[&>b]:leading-[1.2]',
+      'max-dapp:[&>small]:mt-1 max-dapp:[&>small]:block max-dapp:[&>small]:w-full max-dapp:[&>small]:text-xs max-dapp:[&>small]:leading-[1.2]',
     ),
-    label: cn(
-      'relative z-1 tracking-[-0.24px]',
-      'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-normal',
-    ),
-    value: cn(
-      'relative z-1',
-      'group-data-[tab=community]/shell:max-dapp:mt-0.5 group-data-[tab=community]/shell:max-dapp:text-2xl group-data-[tab=community]/shell:max-dapp:leading-[1.05]',
-      'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-2xl',
-    ),
+    label: cn('relative z-1 tracking-[-0.24px]', 'max-dapp:w-full'),
+    value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full max-dapp:text-2xl'),
     volume: cn(
       'relative z-1 tracking-[-0.28px]',
-      'group-data-[tab=community]/shell:max-dapp:hidden',
-      'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
+      'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:text-xs max-dapp:leading-[1.2]',
     ),
     hint: cn(
       'relative z-1 tracking-[-0.12px]',
-      'group-data-[tab=community]/shell:max-dapp:hidden',
-      'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:block group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:w-full group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:mt-1 group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:text-xs group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:leading-[1.2]',
-      'group-data-[tab=community]/shell:group-data-[session-ready=true]/shell:max-dapp:[&.is-dark]:text-on-dark',
+      'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:text-xs max-dapp:leading-[1.2]',
     ),
   },
   variants: {
     dark: {
       true: {
         root: 'is-dark shadow-none border-0',
-        label: 'text-on-dark group-data-[tab=community]/shell:dapp:text-xs group-data-[tab=community]/shell:dapp:tracking-[-0.26px]',
+        label: 'text-on-dark dapp:text-xs dapp:tracking-[-0.26px]',
         value: 'text-white',
         volume: 'text-coral-bright',
+        hint: 'max-dapp:text-on-dark',
       },
       false: {
         root: 'shadow-[0_0.5rem_1.5rem_rgba(18,26,51,0.06)]',
-        label: 'group-data-[tab=community]/shell:max-dapp:text-faint',
+        label: 'max-dapp:text-faint',
         value: 'text-ink-strong',
       },
-    },
-    mobileCentered: {
-      true: {
-        root: 'items-center text-center shadow-card [&>b]:hidden [&>small]:hidden [&>span]:text-xs [&>span]:tracking-[-0.11px] [&>strong]:text-lg [&>strong]:tracking-[-0.54px]',
-      },
-      false: {},
     },
     withImage: {
       true: { root: 'relative overflow-visible' },
@@ -81,7 +65,6 @@ const communityStatCard = tv({
   },
   defaultVariants: {
     dark: false,
-    mobileCentered: false,
     withImage: false,
   },
 })
@@ -102,7 +85,6 @@ function CommunityStatCard({
   dark = false,
   image,
   label,
-  mobileCentered = false,
   today,
   value,
   volume,
@@ -112,14 +94,12 @@ function CommunityStatCard({
   dark?: boolean
   image?: string
   label: ReactNode
-  mobileCentered?: boolean
   today?: ReactNode
   value: ReactNode
   volume?: ReactNode
 }) {
   const styles = communityStatCard({
     dark,
-    mobileCentered,
     withImage: Boolean(image),
   })
 
@@ -176,7 +156,6 @@ export function CommunityOverviewStatCard({
   dark,
   image,
   label,
-  mobileCentered = false,
   today,
   value,
   volume,
@@ -184,7 +163,6 @@ export function CommunityOverviewStatCard({
   dark?: boolean
   image?: string
   label: ReactNode
-  mobileCentered?: boolean
   today?: ReactNode
   value: ReactNode
   volume?: ReactNode
@@ -194,7 +172,6 @@ export function CommunityOverviewStatCard({
       dark={dark}
       image={image}
       label={label}
-      mobileCentered={mobileCentered}
       today={today}
       value={value}
       volume={volume}

@@ -1,4 +1,4 @@
-/* Staggered home section motion — driven by data-reveal / data-visible (wallet-loader). */
+/* Staggered home section motion — driven by data-reveal / data-visible (home-reveal-loader). */
 
 /* Hero — 首屏独立入场，与 scroll-reveal 分离 */
 @keyframes hero-line-enter {
@@ -180,23 +180,23 @@
 }
 
 /* React 挂载前：首屏保持终态，避免 refresh 时 opacity / transform 初始态闪动 */
-html:not([data-wallet-loader-ready]) [data-reveal]:not([data-reveal-manual]),
-html:not([data-wallet-loader-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel],
-html:not([data-wallet-loader-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel] article,
-html:not([data-wallet-loader-ready]) [data-token-grid]:not([data-visible='true']) [data-token-card],
-html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card],
-html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-icon,
-html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-title,
-html:not([data-wallet-loader-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-body,
-html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card],
-html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-icon,
-html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-title,
-html:not([data-wallet-loader-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-body,
-html:not([data-wallet-loader-ready]) [data-timeline]:not([data-visible='true']) [data-phase-card],
-html:not([data-wallet-loader-ready]) [data-timeline]:not([data-visible='true']) [data-phase-dot],
-html:not([data-wallet-loader-ready]) [data-security-grid]:not([data-visible='true']) [data-security-art] img,
-html:not([data-wallet-loader-ready]) [data-security-grid]:not([data-visible='true']) [data-security-line],
-html:not([data-wallet-loader-ready]) [data-security-grid]:not([data-visible='true']) [data-security-check] {
+html:not([data-home-motion-ready]) [data-reveal]:not([data-reveal-manual]),
+html:not([data-home-motion-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel],
+html:not([data-home-motion-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel] article,
+html:not([data-home-motion-ready]) [data-token-grid]:not([data-visible='true']) [data-token-card],
+html:not([data-home-motion-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card],
+html:not([data-home-motion-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-icon,
+html:not([data-home-motion-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-title,
+html:not([data-home-motion-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] .feature-card-body,
+html:not([data-home-motion-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card],
+html:not([data-home-motion-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-icon,
+html:not([data-home-motion-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-title,
+html:not([data-home-motion-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] .feature-card-body,
+html:not([data-home-motion-ready]) [data-timeline]:not([data-visible='true']) [data-phase-card],
+html:not([data-home-motion-ready]) [data-timeline]:not([data-visible='true']) [data-phase-dot],
+html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true']) [data-security-art] img,
+html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true']) [data-security-line],
+html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true']) [data-security-check] {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
@@ -205,7 +205,7 @@ html:not([data-wallet-loader-ready]) [data-security-grid]:not([data-visible='tru
 }
 
 /* boot 完成后：仅对尚未 reveal 的块隐藏（首屏已 instant 标记的保持可见） */
-html[data-wallet-loader-ready] [data-reveal]:not([data-visible='true']):not([data-reveal-manual]):not(
+html[data-home-motion-ready] [data-reveal]:not([data-visible='true']):not([data-reveal-manual]):not(
     [data-protocol-grid]
   ):not([data-engine-grid]):not([data-token-grid]) {
   opacity: 0;

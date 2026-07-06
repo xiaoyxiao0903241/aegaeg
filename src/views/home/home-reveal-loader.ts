@@ -93,7 +93,7 @@ function startCountPanel(panel: HTMLElement) {
 }
 
 /** Home motion boot — call after React mount (useLayoutEffect) so [data-reveal] exists. */
-export function bootWalletLoader() {
+export function bootHomeReveal() {
   if (booted) {
     return
   }
@@ -225,5 +225,5 @@ export function bootWalletLoader() {
     countElements.forEach(animateCount)
   }
 
-  document.documentElement.dataset.walletLoaderReady = 'true'
+  document.documentElement.dataset.homeMotionReady = 'true'
 }

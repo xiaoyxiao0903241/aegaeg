@@ -10,9 +10,9 @@ import { useLayoutEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import '~/shared/styles/home.css'
 import { I18nProvider } from '~/i18n/i18n-provider'
-import { WebRootProviders } from '~/providers/web-root-providers'
+import { HomeProviders } from '~/providers/home-providers'
 import { HomePage } from '~/views/home/home-page'
-import { bootWalletLoader } from '~/views/home/home-reveal-loader'
+import { bootHomeReveal } from '~/views/home/home-reveal-loader'
 import {
   bindPageScrollPersistence,
   restorePersistedPageScroll,
@@ -25,7 +25,7 @@ bindPageScrollPersistence(HOME_SCROLL_KEY)
 function HomeApp() {
   useLayoutEffect(() => {
     restorePersistedPageScroll(HOME_SCROLL_KEY, { honorHashAnchor: true })
-    bootWalletLoader()
+    bootHomeReveal()
   }, [])
 
   return <HomePage />
@@ -33,8 +33,8 @@ function HomeApp() {
 
 createRoot(document.getElementById('root')!).render(
   <I18nProvider>
-    <WebRootProviders>
+    <HomeProviders>
       <HomeApp />
-    </WebRootProviders>
+    </HomeProviders>
   </I18nProvider>,
 )

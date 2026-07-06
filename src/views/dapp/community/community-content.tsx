@@ -206,7 +206,6 @@ export function CommunityContent() {
               image={stat.image}
               key={index}
               label={stat.label}
-              mobileCentered={isMobileViewport}
               today={stat.today}
               value={stat.value}
               volume={stat.volume}
