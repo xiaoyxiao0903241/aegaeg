@@ -1,1 +1,1 @@
-export { SwapWidget, SwapContent } from '~/app/tabs/swap/index'
+export * from '~/views/dapp/swap'

@@ -29,6 +29,23 @@ const SHIMS = [
   { path: 'src/lib/api/auth/login-signature-cache.ts', removeBy: 'R8-refactor' },
   { path: 'src/lib/api/auth/build-login-message.ts', removeBy: 'R8-refactor' },
   { path: 'src/lib/api/auth/login-with-wallet.ts', removeBy: 'R8-refactor' },
+  // views/dapp/swap
+  { path: 'src/app/tabs/swap-tab.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/index.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/flash-swap-content.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/flash-swap-widget-context.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/flash-swap-widget.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/swap-hub-about-card.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/swap-hub-content.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/swap-hub-widget.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/swap-mode-card.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/swap-program-cards.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/swap-subview-providers.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/swap-widget-header.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/token-about-card.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/trade-swap-content.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/trade-swap-widget-context.tsx', removeBy: 'R8-refactor' },
+  { path: 'src/app/tabs/swap/trade-swap-widget.tsx', removeBy: 'R8-refactor' },
 ]
 
 const SHIM_PATTERN = /^export \* from '~\/[^']+'\s*;?\s*$/
