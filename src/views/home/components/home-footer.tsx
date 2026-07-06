@@ -4,7 +4,7 @@ import {
   resolveCommunitySocialLink,
   type CommunitySocialLinkId,
 } from '~/shared/config/community-links'
-import { resolveHomeNotionLink } from '~/views/home/notion-links'
+import { resolveNotionLink } from '~/shared/config/notion-links'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/views/home/assets'
@@ -19,7 +19,7 @@ function resolveFooterLinkHref(
   }
 
   if (link.linkId === 'whitepaper' || link.linkId === 'docs' || link.linkId === 'economicModel') {
-    return resolveHomeNotionLink(locale, link.linkId)
+    return resolveNotionLink(locale, link.linkId)
   }
 
   const href = link.href ?? '#'

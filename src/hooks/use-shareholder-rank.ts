@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { formatPresaleRank } from '~/shared/api/format-display'
 import { resolveCommitmentFloorRank } from '~/core/presale/tier-table'
 import { resolveDisplayPresaleRank } from '~/core/presale/rank'

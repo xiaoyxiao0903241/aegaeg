@@ -6,15 +6,9 @@ import type {
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
-import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 
 /** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */
 export const TABLE_EMPTY = '-'
-
-export type SalesLogRowFormatOptions = {
-  agxPriceUsd?: number
-  phases?: ReadonlyArray<PresalePhaseOnChain>
-}
 
 export function formatPresaleRank(rank: number): string {
   if (!Number.isFinite(rank) || rank <= 0) return 'S0'
@@ -168,19 +162,6 @@ export function formatShortAddress(address: string): string {
 export function formatDiscountBps(discountBps: number): string {
   if (!Number.isFinite(discountBps) || discountBps <= 0) return '—'
   return `-${discountBps / 100}%`
-}
-
-function resolveSalesLogFormatOptions(
-  options: number | SalesLogRowFormatOptions = {},
-): Required<Pick<SalesLogRowFormatOptions, 'agxPriceUsd'>> & SalesLogRowFormatOptions {
-  if (typeof options === 'number') {
-    return { agxPriceUsd: options }
-  }
-
-  return {
-    agxPriceUsd: options.agxPriceUsd ?? 0,
-    phases: options.phases,
-  }
 }
 
 export function formatRewardStatus(
@@ -352,64 +333,6 @@ export function sumSalesLogAmountUsd(items: readonly SalesLogItem[]): number {
     const num = Number(item.amount)
     return Number.isFinite(num) ? total + num : total
   }, 0)
-}
-
-function formatSalesLogAgx(
-  item: SalesLogItem,
-  options: number | SalesLogRowFormatOptions = {},
-): string {
-  const { agxPriceUsd, phases } = resolveSalesLogFormatOptions(options)
-  const tokens = Number(item.tokens)
-  if (Number.isFinite(tokens) && tokens > 0) {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(tokens)
-  }
-
-  const amountUsd1 = Number(item.amount)
-  if (!Number.isFinite(amountUsd1) || amountUsd1 <= 0) return TABLE_EMPTY
-
-  const estimated = estimateAgxFromUsd1(
-    amountUsd1,
-    resolvePhaseDiscountBps(item.phase_id, phases),
-    agxPriceUsd,
-  )
-  return estimated > 0
-    ? new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(estimated)
-    : TABLE_EMPTY
-}
-
-export function mapSalesLogToDesktopRow(
-  item: SalesLogItem,
-  options: number | SalesLogRowFormatOptions = {},
-): string[] {
-  const { phases } = resolveSalesLogFormatOptions(options)
-
-  return [
-    formatBlockTime(item.block_time),
-    formatUsd(Number(item.amount), 0),
-    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, phases)),
-    formatSalesLogAgx(item, options),
-    item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
-  ]
-}
-
-export function mapSalesLogToMobileRow(
-  item: SalesLogItem,
-  options: number | SalesLogRowFormatOptions = {},
-): string[] {
-  const { phases } = resolveSalesLogFormatOptions(options)
-
-  return [
-    formatBlockTime(item.block_time),
-    formatUsd(Number(item.amount), 0),
-    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, phases)),
-    formatSalesLogAgx(item, options),
-  ]
 }
 
 export function mapRewardLogToRow(

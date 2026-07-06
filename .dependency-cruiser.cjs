@@ -18,7 +18,7 @@ module.exports = {
     },
     {
       name: 'web3-gateway',
-      severity: 'warn',
+      severity: 'error',
       from: {
         path: '^src/',
         pathNot: '^src/web3/|^src/views/dapp/web3/|^src/views/dapp/auth/',

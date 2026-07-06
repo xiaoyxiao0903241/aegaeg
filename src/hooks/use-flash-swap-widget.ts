@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { formatSwapRate, formatSwapRateColon } from '~/views/dapp/swap/format-swap-rate'
 import {
@@ -9,7 +9,7 @@ import {
   parseTokenAmount,
   sanitizeTokenAmountInput,
 } from '~/core/swap/token-amount'
-import { getSwapPairTokens } from '~/core/swap/swap-pair'
+import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'

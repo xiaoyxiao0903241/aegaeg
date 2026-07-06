@@ -1,4 +1,4 @@
-import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useState } from 'react'
 import { useAuth } from '~/app/bootstrap/auth-provider'
 import type { ClaimConfirmResult } from '~/shared/api/types'

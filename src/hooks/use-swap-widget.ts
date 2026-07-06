@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-sqrt-price-impact-bps'
@@ -15,7 +15,7 @@ import {
   sanitizeTokenAmountInput,
   slippagePercentToBps,
 } from '~/core/swap/token-amount'
-import { getSwapPairTokens } from '~/core/swap/swap-pair'
+import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { readErc20Allowance, readErc20Balance, fetchSwapQuote, readSwapPoolImmutableMetadata } from '~/views/dapp/web3/swap-read'
 import { approveTokenIfNeeded, executeTokenSwap } from '~/views/dapp/web3/swap-write'

@@ -4,7 +4,7 @@ import { dappAssets } from '~/app/assets'
 import { allLanguageOptions } from '~/i18n/locales'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
-import { getHomeNotionLinks } from '~/views/home/notion-links'
+import { getNotionLinks } from '~/shared/config/notion-links'
 import { homeAssets } from '~/views/home/assets'
 import { cn } from '~/shared/lib/utils'
 
@@ -47,7 +47,7 @@ const navGhostBtnClass = cn(
 export function HomeHeader() {
   const { locale, messages, setLocale } = useI18n()
   const content = messages.home.nav
-  const notionLinks = getHomeNotionLinks(locale)
+  const notionLinks = getNotionLinks(locale)
   const appHref = withLocalePrefix(locale, '/app.html')
   const languageOptions = allLanguageOptions.map((option) => ({
     ...option,

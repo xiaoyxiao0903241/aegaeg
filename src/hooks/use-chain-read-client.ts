@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useActiveWallet } from 'thirdweb/react'
+import { useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import {
   resolveChainReadClient,
   type ChainReadClient,

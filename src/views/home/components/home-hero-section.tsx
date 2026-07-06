@@ -1,7 +1,7 @@
 import { withLocalePrefix } from '~/i18n/locale'
 import { Button } from '~/shared/ui/button'
 import { HeroRaysBackground, heroRaysHomeClass } from '~/shared/ui/hero-rays-background'
-import { getHomeNotionLinks } from '~/views/home/notion-links'
+import { getNotionLinks } from '~/shared/config/notion-links'
 import { homeAssets } from '~/views/home/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
@@ -81,7 +81,7 @@ function HeroPrimaryAction({ enterProtocol }: { enterProtocol: string }) {
 export function HomeHeroSection() {
   const { locale, messages } = useI18n()
   const content = messages.home.hero
-  const notionLinks = getHomeNotionLinks(locale)
+  const notionLinks = getNotionLinks(locale)
 
   return (
     <section className={heroClass.section} aria-labelledby="hero-title">

@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('getSwapPairTokens maps direction to USD1 and USDT', async () => {
-  const { getSwapPairTokens } = await loadModule('/src/core/swap/swap-pair.ts')
+  const { getSwapPairTokens } = await loadModule('/src/views/dapp/swap/swap-pair.ts')
 
   const forward = getSwapPairTokens('forward')
   assert.equal(forward.sell.symbol, 'USD1')

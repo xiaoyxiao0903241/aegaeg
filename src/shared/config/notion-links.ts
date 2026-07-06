@@ -14,12 +14,12 @@ const enNotionLinks = {
     'https://xdaoaegis.notion.site/Read-Economic-Model-Analysis-37fdd8755b98807282ede05961292be2',
 } as const
 
-export type HomeNotionLinkKey = keyof typeof zhNotionLinks
+export type NotionLinkKey = keyof typeof zhNotionLinks
 
-export function getHomeNotionLinks(locale: Locale) {
+export function getNotionLinks(locale: Locale) {
   return locale === 'zh' || locale === 'zht' ? zhNotionLinks : enNotionLinks
 }
 
-export function resolveHomeNotionLink(locale: Locale, key: HomeNotionLinkKey) {
-  return getHomeNotionLinks(locale)[key]
+export function resolveNotionLink(locale: Locale, key: NotionLinkKey) {
+  return getNotionLinks(locale)[key]
 }

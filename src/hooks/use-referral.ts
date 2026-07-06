@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
+import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { parseReferrerFromSearch, resolveDisplayReferrer } from '~/shared/config/referral'
 import { formatCount, formatShortAddress } from '~/shared/api/format-display'

@@ -1,4 +1,4 @@
-import { lightTheme } from 'thirdweb/react'
+import { lightTheme } from '~/views/dapp/web3/thirdweb-react'
 import { thirdwebConnectHex } from '~/shared/styles/theme'
 
 /** thirdweb Connect Modal 主题 — 对齐 AEGIS 珊瑚色 + 白底卡片 */

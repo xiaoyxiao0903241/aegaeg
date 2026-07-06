@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
-import { AutoConnect, ThirdwebProvider } from 'thirdweb/react'
+import { AutoConnect, ThirdwebProvider } from '~/views/dapp/web3/thirdweb-react'
 import { thirdwebClient, warnMissingWeb3EnvConfigOnce } from '~/views/dapp/web3/thirdweb'
 import { AuthProvider } from '~/app/bootstrap/auth-provider'
 import { AccountBannedNotifier } from '~/shared/ui/account-banned-notifier'

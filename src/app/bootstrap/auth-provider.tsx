@@ -7,7 +7,7 @@ import {
   useRef,
   type ReactNode,
 } from 'react'
-import { useActiveAccount } from 'thirdweb/react'
+import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { ApiError } from '~/shared/api/client'
 import { ACCOUNT_BANNED_SENTINEL, isAccountBannedError } from '~/shared/api/account-banned'
@@ -18,7 +18,6 @@ import {
   isPermanentLoginErrorMessage,
 } from '~/core/auth/auth-machine'
 import { loginWithWallet } from '~/views/dapp/auth/login-with-wallet'
-import { isUnauthorizedError } from '~/shared/api/http-errors'
 import type { StoredAuthSession } from '~/views/dapp/auth/session'
 import { defaultChain } from '~/views/dapp/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
