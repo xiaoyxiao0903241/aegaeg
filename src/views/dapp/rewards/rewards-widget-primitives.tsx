@@ -68,6 +68,10 @@ export const rewardsBalanceHeaderMeta = tv({
   base: 'max-dapp:text-faint',
 })
 
+export const rewardsBalanceHint = tv({
+  base: 'group-data-[tab=rewards]/shell:max-dapp:hidden',
+})
+
 export function RewardsSideCard({
   children,
   className,

@@ -5,6 +5,11 @@ import { MetricCardSkeleton } from '~/app/components/dapp-skeleton'
 import { cn } from '~/lib/utils'
 
 const genesisMetricCard = tv({
+  base: cn(
+    'group-data-[tab=genesis]/shell:max-dapp:min-h-0 group-data-[tab=genesis]/shell:max-dapp:rounded-md group-data-[tab=genesis]/shell:max-dapp:p-3.5 group-data-[tab=genesis]/shell:max-dapp:shadow-card',
+    '[&_strong]:group-data-[tab=genesis]/shell:text-base [&_strong]:group-data-[tab=genesis]/shell:leading-[1.3] [&_strong]:group-data-[tab=genesis]/shell:max-dapp:text-sm [&_strong]:group-data-[tab=genesis]/shell:max-dapp:leading-[1.2]',
+    '[&_small]:group-data-[tab=genesis]/shell:max-dapp:hidden',
+  ),
   variants: {
     tabular: {
       true: '[&_strong]:tabular-nums',

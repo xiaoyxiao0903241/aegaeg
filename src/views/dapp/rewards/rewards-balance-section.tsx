@@ -22,6 +22,7 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/components/dapp-info-tooltip'
 import {
   rewardsBalanceHeaderMeta,
+  rewardsBalanceHint,
   rewardsClaimAction,
   rewardsSideCard,
 } from '~/views/dapp/rewards/rewards-widget-primitives'
@@ -97,6 +98,7 @@ export function RewardsBalanceSection() {
           className={rewardsSideCard({ referral: true })}
           headerLabelClassName={rewardsBalanceHeaderMeta()}
           hint={t.rewards.autoPaid}
+          hintClassName={rewardsBalanceHint()}
           label={t.rewards.referralRewards}
           value={sessionReady ? referralValue : disconnectedReferralValue}
           valueClassName={dappReferralAmountClass}

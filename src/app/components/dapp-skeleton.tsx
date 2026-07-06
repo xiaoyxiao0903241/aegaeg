@@ -1,5 +1,5 @@
 import { Card } from '~/shared/ui/card'
-import { communityStatCardH5Layout } from '~/app/components/dapp-card'
+import { communityStatCardH5Layout } from '~/views/dapp/community/community-content-primitives'
 import { seasonCardRadiusClass, seasonCardSizeClass } from '~/app/dapp-detail-layout'
 import { dappTableCellBorderClass } from '~/app/components/dapp-table-shell'
 import { cn } from '~/lib/utils'
@@ -156,7 +156,7 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
       className={cn(
         'community-stat flex min-h-22 flex-col items-start gap-1 rounded-md border-0 p-[var(--dapp-community-stat-padding)] shadow-card',
         dark && 'is-dark',
-        communityStatCardH5Layout,
+        communityStatCardH5Layout(),
       )}
     >
       <DappSkeleton className="h-3 w-16" tone={tone} />
