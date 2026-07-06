@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Text } from '~/components/text'
+import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 

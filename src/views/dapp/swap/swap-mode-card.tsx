@@ -1,6 +1,6 @@
 import { tv } from 'tailwind-variants'
 import { DappIcon } from '~/app/components/dapp-icon'
-import { Text } from '~/components/text'
+import { Text } from '~/shared/ui/text'
 
 const swapModeCard = tv({
   base: 'flex w-full items-center gap-3 rounded-md border border-border bg-card p-3.5 text-left shadow-none',

@@ -3,7 +3,7 @@ import { withLocalePrefix } from '~/i18n/locale'
 import { DappIcon } from '~/app/components/dapp-icon'
 import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
-import { Card } from '~/components/card'
+import { Card } from '~/shared/ui/card'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 

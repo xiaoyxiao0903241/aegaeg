@@ -1,6 +1,6 @@
 import { useActiveAccount } from 'thirdweb/react'
 import { cn } from '~/lib/utils'
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/providers/auth-provider'
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'

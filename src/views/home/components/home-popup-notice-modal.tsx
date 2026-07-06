@@ -1,7 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useState } from 'react'
-import { modalContentClass, modalOverlayClass } from '~/components/dialog'
+import { modalContentClass, modalOverlayClass } from '~/shared/ui/dialog'
 import { homeAssets } from '~/views/home/assets'
 import { PopupNoticeContent } from '~/views/home/popup-notice-content'
 import { useI18n } from '~/i18n/use-i18n'

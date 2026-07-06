@@ -4,8 +4,8 @@ import {
   CarouselContent,
   CarouselItem,
   type CarouselApi,
-} from '~/components/carousel'
-import { RadioGroup, RadioIndicator } from '~/components/radio'
+} from '~/shared/ui/carousel'
+import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'

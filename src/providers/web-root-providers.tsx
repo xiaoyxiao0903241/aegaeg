@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 import { AutoConnect, ThirdwebProvider } from 'thirdweb/react'
-import { thirdwebClient, warnMissingWeb3EnvConfigOnce } from '~/web3/thirdweb'
+import { thirdwebClient, warnMissingWeb3EnvConfigOnce } from '~/views/dapp/web3/thirdweb'
 import { AuthProvider } from '~/providers/auth-provider'
-import { AccountBannedNotifier } from '~/components/account-banned-notifier'
+import { AccountBannedNotifier } from '~/shared/ui/account-banned-notifier'
 import { QueryProvider } from '~/providers/query-provider'
-import { TooltipProvider } from '~/components/tooltip'
+import { TooltipProvider } from '~/shared/ui/tooltip'
 
 /**
  * Shared provider stack for Home + DApp entry points.

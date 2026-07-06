@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { Card } from '~/components/card'
-import { Text } from '~/components/text'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import {
   applyMessageTemplate,
   type GenesisPromoSnapshot,

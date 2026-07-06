@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { Card } from '~/components/card'
+import { Card } from '~/shared/ui/card'
 import { homeAssets } from '~/views/home/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'

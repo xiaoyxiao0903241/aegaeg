@@ -1,5 +1,5 @@
 import { swapHubAssets } from '~/app/assets'
-import { Text } from '~/components/text'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/lib/utils'
 import { tv } from 'tailwind-variants'
 

@@ -8,7 +8,7 @@ import { DappMobileNav } from '~/app/components/dapp-mobile-nav'
 import { DappRevealObserver } from '~/app/components/dapp-reveal-observer'
 import { DappTopbar } from '~/app/dapp-topbar'
 import { DappScrollFadeHost } from '~/app/components/dapp-scroll-fade-host'
-import { HeroRaysBackground, heroRaysShellClass } from '~/components/hero-rays-background'
+import { HeroRaysBackground, heroRaysShellClass } from '~/shared/ui/hero-rays-background'
 import { useDappShell } from '~/app/dapp-shell-context'
 import {
   shellContainerClass,
@@ -20,7 +20,7 @@ import {
   shellWidgetClass,
   shellWindowClass,
 } from '~/app/shell-layout'
-import { isThirdwebConfigured } from '~/web3/thirdweb'
+import { isThirdwebConfigured } from '~/views/dapp/web3/thirdweb'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { invalidateTabQueries } from '~/lib/query/invalidate'

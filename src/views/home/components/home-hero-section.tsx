@@ -1,6 +1,6 @@
 import { withLocalePrefix } from '~/i18n/locale'
-import { Button } from '~/components/button'
-import { HeroRaysBackground, heroRaysHomeClass } from '~/components/hero-rays-background'
+import { Button } from '~/shared/ui/button'
+import { HeroRaysBackground, heroRaysHomeClass } from '~/shared/ui/hero-rays-background'
 import { getHomeNotionLinks } from '~/views/home/notion-links'
 import { homeAssets } from '~/views/home/assets'
 import { useI18n } from '~/i18n/use-i18n'

@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { SWAP_CONFIG } from '~/config/swap'
+import { SWAP_CONFIG } from '~/shared/config/swap'
 import { formatSwapRateColon } from '~/lib/swap/format-swap-rate'
 import { getSwapPairTokens, type SwapDirection } from '~/lib/swap/swap-pair'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
-import { fetchSwapQuote } from '~/web3/swap-read'
+import { fetchSwapQuote } from '~/views/dapp/web3/swap-read'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 

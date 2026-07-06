@@ -1,4 +1,4 @@
-import { appEnv } from '~/config/env'
+import { appEnv } from '~/shared/config/env'
 import { getRuntimeHostname } from '~/lib/runtime-host'
 
 export interface SiweLoginPayload {

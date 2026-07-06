@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Text } from '~/components/text'
+import { Text } from '~/shared/ui/text'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { cn } from '~/lib/utils'
 

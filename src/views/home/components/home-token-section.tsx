@@ -1,5 +1,5 @@
-import { Card } from '~/components/card'
-import { Text } from '~/components/text'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import type { HomeMessagesBundle } from '~/i18n/messages/home/types'
 import { tokenCardShells } from '~/views/home/static-layout'
 import { useI18n } from '~/i18n/use-i18n'

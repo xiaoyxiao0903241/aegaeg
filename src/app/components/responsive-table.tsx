@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { StatusBadge } from '~/components/badge'
+import { StatusBadge } from '~/shared/ui/badge'
 import { cn } from '~/lib/utils'
 import { TableRowSkeleton } from '~/app/components/dapp-skeleton'
 import { dappTableCellBorderClass, dappTableCellMinWidthClass } from '~/app/components/dapp-table-shell'

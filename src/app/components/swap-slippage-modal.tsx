@@ -8,7 +8,7 @@ import { cn } from '~/lib/utils'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '~/components/aegis-responsive-dialog'
+} from '~/shared/ui/aegis-responsive-dialog'
 
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
 

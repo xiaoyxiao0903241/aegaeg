@@ -3,13 +3,13 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { ConnectEmbed, useActiveAccount } from 'thirdweb/react'
 import { X } from 'lucide-react'
 import { useI18n } from '~/i18n/use-i18n'
-import { appMetadata, connectEmbedProps } from '~/web3/thirdweb'
+import { appMetadata, connectEmbedProps } from '~/views/dapp/web3/thirdweb'
 import { cn } from '~/lib/utils'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
-} from '~/components/aegis-responsive-dialog'
+} from '~/shared/ui/aegis-responsive-dialog'
 
 const panelShellClass = cn(
   'border-0 bg-card',

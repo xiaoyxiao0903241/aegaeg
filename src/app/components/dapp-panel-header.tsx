@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
-import { IconButton } from '~/components/icon-button'
-import { Text } from '~/components/text'
+import { IconButton } from '~/shared/ui/icon-button'
+import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/components/dapp-icon'
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/lib/utils'
 

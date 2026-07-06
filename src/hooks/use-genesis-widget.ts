@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BSC_CONTRACTS } from '~/config/contracts'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   buildPhaseCountdownKey,
   estimateAgxFromUsd1,
@@ -19,11 +19,11 @@ import {
 import { buildSeasonOptions } from '~/lib/presale/season-options'
 import { buildGenesisPromoSnapshot } from '~/lib/presale/genesis-promo'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/lib/swap/token-amount'
-import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale-write'
-import { MAX_UINT256 } from '~/web3/abis'
+import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
+import { MAX_UINT256 } from '~/views/dapp/web3/abis'
 import { formatUsd } from '~/lib/api/format-display'
 import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-message'
-import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
+import { readErc20Allowance, readErc20Balance } from '~/views/dapp/web3/swap-read'
 import { queryKeys } from '~/lib/query/query-keys'
 import { invalidatePresaleChainQueries } from '~/lib/query/invalidate'
 import {

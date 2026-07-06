@@ -1,4 +1,4 @@
-import { SWAP_CONFIG } from '~/config/swap'
+import { SWAP_CONFIG } from '~/shared/config/swap'
 
 export type SwapDirection = 'forward' | 'reverse'
 

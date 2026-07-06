@@ -1,6 +1,6 @@
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { cn } from '~/lib/utils'
-import { LanguageMenu } from '~/components/language-menu'
+import { LanguageMenu } from '~/shared/ui/language-menu'
 import { withLocalePrefix } from '~/i18n/locale'
 import { allLanguageOptions } from '~/i18n/locales'
 import { useI18n } from '~/i18n/use-i18n'

@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
-import { AmountInput } from '~/components/amount-input'
-import { Card } from '~/components/card'
+import { AmountInput } from '~/shared/ui/amount-input'
+import { Card } from '~/shared/ui/card'
 import { cn } from '~/lib/utils'
 import {
   dappAmountClass,

@@ -1,9 +1,9 @@
-import { Text } from '~/components/text'
+import { Text } from '~/shared/ui/text'
 import {
   COMMUNITY_SOCIAL_LINKS,
   resolveCommunitySocialLink,
   type CommunitySocialLinkId,
-} from '~/config/community-links'
+} from '~/shared/config/community-links'
 import { resolveHomeNotionLink } from '~/views/home/notion-links'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'

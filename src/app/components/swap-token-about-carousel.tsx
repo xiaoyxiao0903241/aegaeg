@@ -5,7 +5,7 @@ import {
   CarouselContent,
   CarouselItem,
   type CarouselApi,
-} from '~/components/carousel'
+} from '~/shared/ui/carousel'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/lib/reveal'
@@ -13,7 +13,7 @@ import { dappIconClass } from '~/app/dapp-icon-scale'
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { swapTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '~/config/token-contracts'
+import { getSwapTokenContractAddress, openTokenContractOnBscScan } from '~/shared/config/token-contracts'
 import { SwapPromoCard, swapPromoCardPillActionClass } from '~/app/components/swap-promo-card'
 
 const TOKEN_CAROUSEL_PC_VIEWPORT_BLEED_CLASS =

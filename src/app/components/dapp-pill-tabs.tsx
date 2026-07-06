@@ -1,4 +1,4 @@
-import { Button } from '~/components/button'
+import { Button } from '~/shared/ui/button'
 import { cn } from '~/lib/utils'
 
 export function DappPillTabs({

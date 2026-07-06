@@ -1,7 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
-import { FaqList } from '~/components/faq-list'
+import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { dappDetailSectionGapClass } from '~/app/dapp-detail-layout'
 import { SwapHubAboutCard } from '~/views/dapp/swap/swap-hub-about-card'

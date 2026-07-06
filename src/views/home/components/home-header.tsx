@@ -1,4 +1,4 @@
-import { LanguageMenu } from '~/components/language-menu'
+import { LanguageMenu } from '~/shared/ui/language-menu'
 import { dappAssets } from '~/app/assets'
 import { allLanguageOptions } from '~/i18n/locales'
 import { withLocalePrefix } from '~/i18n/locale'

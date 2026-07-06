@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { ChevronIcon } from '~/components/chevron-icon'
+import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { cn } from '~/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatCount } from '~/lib/api/format-display'

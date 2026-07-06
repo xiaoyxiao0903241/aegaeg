@@ -1,8 +1,8 @@
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { BSC_CONTRACTS } from '~/config/contracts'
-import { bscscanToken } from '~/config/explorer'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { bscscanToken } from '~/shared/config/explorer'
 import { SwapPromoCard, swapPromoCardPillActionClass } from '~/app/components/swap-promo-card'
 
 export function TokenAboutCard({

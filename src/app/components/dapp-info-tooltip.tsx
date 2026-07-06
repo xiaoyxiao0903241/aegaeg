@@ -1,7 +1,7 @@
 import {
   AnchoredTooltip,
   type AnchoredTooltipProps,
-} from '~/components/anchored-tooltip'
+} from '~/shared/ui/anchored-tooltip'
 import { DappInfoIcon } from '~/app/components/dapp-info-icon'
 import { cn } from '~/lib/utils'
 

@@ -2,7 +2,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/components/dapp-content-heading'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { MetricGrid } from '~/app/components/metric-grid'
-import { FaqList } from '~/components/faq-list'
+import { FaqList } from '~/shared/ui/faq-list'
 import { dappDetailSectionGapClass } from '~/app/dapp-detail-layout'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import {

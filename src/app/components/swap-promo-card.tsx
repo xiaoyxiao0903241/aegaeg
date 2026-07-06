@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { cn } from '~/lib/utils'
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'

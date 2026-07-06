@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { Card } from '~/components/card'
-import { Text } from '~/components/text'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/lib/reveal'
 import { cn, resolveNavigableHref } from '~/lib/utils'
 

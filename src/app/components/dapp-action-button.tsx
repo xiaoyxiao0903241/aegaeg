@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import { Button } from '~/components/button'
-import { ButtonLoadingIcon } from '~/components/button-loading-icon'
+import { Button } from '~/shared/ui/button'
+import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
 import { cn } from '~/lib/utils'
 
 type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

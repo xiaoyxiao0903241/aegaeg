@@ -5,7 +5,7 @@ import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/lib/swap/calc-sqrt-price-impact-bps'
 import { formatGasEstimate } from '~/lib/swap/format-gas-estimate'
 import { formatSwapRateApprox } from '~/lib/swap/format-swap-rate'
-import { resolvePancakeSwapDeepLink } from '~/config/pancake-swap-links'
+import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   capTokenAmountInput,
   clampSlippagePercent,
@@ -16,9 +16,9 @@ import {
   slippagePercentToBps,
 } from '~/lib/swap/token-amount'
 import { getSwapPairTokens } from '~/lib/swap/swap-pair'
-import { SWAP_CONFIG } from '~/config/swap'
-import { readErc20Allowance, readErc20Balance, fetchSwapQuote, readSwapPoolImmutableMetadata } from '~/web3/swap-read'
-import { approveTokenIfNeeded, executeTokenSwap } from '~/web3/swap-write'
+import { SWAP_CONFIG } from '~/shared/config/swap'
+import { readErc20Allowance, readErc20Balance, fetchSwapQuote, readSwapPoolImmutableMetadata } from '~/views/dapp/web3/swap-read'
+import { approveTokenIfNeeded, executeTokenSwap } from '~/views/dapp/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
 import { useDappActions } from '~/stores/dapp-actions'

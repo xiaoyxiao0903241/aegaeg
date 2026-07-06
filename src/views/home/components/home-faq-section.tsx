@@ -1,4 +1,4 @@
-import { FaqList } from '~/components/faq-list'
+import { FaqList } from '~/shared/ui/faq-list'
 import { useI18n } from '~/i18n/use-i18n'
 import { HomeSectionHead } from '~/views/home/components/home-section-head'
 

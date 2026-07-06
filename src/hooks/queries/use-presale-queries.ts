@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { BSC_CONTRACTS } from '~/config/contracts'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
@@ -11,9 +11,9 @@ import {
   readTotalPresalePurchased,
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
-} from '~/web3/presale-read'
-import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
-import { readIsBindReferral } from '~/web3/referral-read'
+} from '~/views/dapp/web3/presale-read'
+import { readErc20Allowance, readErc20Balance } from '~/views/dapp/web3/swap-read'
+import { readIsBindReferral } from '~/views/dapp/web3/referral-read'
 
 export function useIsBindReferralQuery(address?: string) {
   const readClient = useChainReadClient()

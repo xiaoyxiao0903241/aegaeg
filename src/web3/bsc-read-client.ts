@@ -1,9 +1,1 @@
-import { createPublicClient, http } from 'viem'
-import { bsc } from 'viem/chains'
-import { appEnv } from '~/config/env'
-
-/** Read-only BSC client — quotes, balances, receipt polling (SSOT: VITE_BSC_RPC_URL). */
-export const bscReadClient = createPublicClient({
-  chain: bsc,
-  transport: http(appEnv.bscRpcUrl),
-})
+export * from '~/views/dapp/web3/bsc-read-client'

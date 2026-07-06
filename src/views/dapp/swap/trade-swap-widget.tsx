@@ -8,7 +8,7 @@ import { DappWidgetConnectFooter } from '~/app/components/dapp-widget-connect-fo
 import { DappActionButton } from '~/app/components/dapp-action-button'
 import { DappActionRow } from '~/app/components/dapp-action-row'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
-import { AnchoredTooltip } from '~/components/anchored-tooltip'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { DappMetaList } from '~/app/components/dapp-meta-list'
 import { dappWidgetBodyClass } from '~/app/components/dapp-widget-frame'
 import { GenesisPromoCard } from '~/app/components/genesis-promo-card'
@@ -19,7 +19,7 @@ import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-c
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { resolveGenesisPurchaseError, resolveWalletTransactionError, toWalletUserFacingMessage } from '~/lib/web3/resolve-contract-error-message'
-import { openPancakeSwapDeepLink } from '~/config/pancake-swap-links'
+import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
 
 export function TradeSwapWidget({

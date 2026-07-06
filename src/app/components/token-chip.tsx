@@ -1,4 +1,4 @@
-import { Text } from '~/components/text'
+import { Text } from '~/shared/ui/text'
 import { DappIcon } from '~/app/components/dapp-icon'
 
 export function TokenChip({ icon, label }: { icon: string; label: string }) {

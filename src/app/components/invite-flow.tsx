@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { Card } from '~/components/card'
-import { Text } from '~/components/text'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/lib/reveal'
 import { cn } from '~/lib/utils'
 import { dappCaptionClass } from '~/app/dapp-type-scale'

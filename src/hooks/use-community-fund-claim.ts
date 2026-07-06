@@ -2,7 +2,7 @@ import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useState } from 'react'
 import { useAuth } from '~/providers/auth-provider'
 import type { ClaimConfirmResult } from '~/lib/api/types'
-import { executeCommunityFundClaim } from '~/web3/reward-claim'
+import { executeCommunityFundClaim } from '~/views/dapp/web3/reward-claim'
 import { useDappActions } from '~/stores/dapp-actions'
 
 export function useCommunityFundClaim() {

@@ -10,7 +10,7 @@ import {
   sanitizeTokenAmountInput,
 } from '~/lib/swap/token-amount'
 import { getSwapPairTokens } from '~/lib/swap/swap-pair'
-import { SWAP_CONFIG } from '~/config/swap'
+import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
 import { useDappActions } from '~/stores/dapp-actions'
@@ -19,8 +19,8 @@ import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
-import { readFlashSwapBalances, readFlashSwapQuote } from '~/web3/flash-swap-read'
-import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/web3/flash-swap-write'
+import { readFlashSwapBalances, readFlashSwapQuote } from '~/views/dapp/web3/flash-swap-read'
+import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/views/dapp/web3/flash-swap-write'
 
 /** Fixed tolerance (0.5%) below the displayed quote for the on-chain floor. */
 const FLASH_SWAP_SLIPPAGE_BPS = 50

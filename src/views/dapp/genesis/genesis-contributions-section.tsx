@@ -9,7 +9,7 @@ import {
   formatUsd,
   mapSalesLogToDesktopRow,
 } from '~/lib/api/format-display'
-import { bscscanTx } from '~/config/explorer'
+import { bscscanTx } from '~/shared/config/explorer'
 import { DappSection } from '~/app/components/dapp-section'
 import { ProgressMeter } from '~/app/components/progress-meter'
 import { DappTableAuthPrompt } from '~/app/components/dapp-table-auth-prompt'

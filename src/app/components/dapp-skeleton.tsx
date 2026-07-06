@@ -1,4 +1,4 @@
-import { Card } from '~/components/card'
+import { Card } from '~/shared/ui/card'
 import { communityStatCardH5Layout } from '~/app/components/dapp-card'
 import { seasonCardRadiusClass, seasonCardSizeClass } from '~/app/dapp-detail-layout'
 import { dappTableCellBorderClass } from '~/app/components/dapp-table-shell'
