@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "lint:architecture": "depcruise src --config .dependency-cruiser.cjs",
     "lint:shims": "node scripts/lint-shims.mjs",
+    "lint:all": "pnpm lint && pnpm lint:architecture && pnpm lint:shims",
     "test:unit": "node --test --test-concurrency=1 tests/unit/*.test.mjs",
     "test:integration": "node tests/integration/swap-quote-live.mjs",
     "test:e2e": "playwright test",

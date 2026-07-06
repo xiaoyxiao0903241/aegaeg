@@ -2,9 +2,9 @@ import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 import { AutoConnect, ThirdwebProvider } from 'thirdweb/react'
 import { thirdwebClient, warnMissingWeb3EnvConfigOnce } from '~/views/dapp/web3/thirdweb'
-import { AuthProvider } from '~/providers/auth-provider'
+import { AuthProvider } from '~/app/bootstrap/auth-provider'
 import { AccountBannedNotifier } from '~/shared/ui/account-banned-notifier'
-import { QueryProvider } from '~/providers/query-provider'
+import { QueryProvider } from '~/app/bootstrap/query-provider'
 import { TooltipProvider } from '~/shared/ui/tooltip'
 
 /**

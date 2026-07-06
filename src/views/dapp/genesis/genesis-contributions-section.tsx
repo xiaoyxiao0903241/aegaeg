@@ -19,7 +19,7 @@ import {
 } from '~/app/components/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { useAuth } from '~/providers/auth-provider'
+import { useAuth } from '~/app/bootstrap/auth-provider'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import {
   GenesisContributionsProgressHeader,

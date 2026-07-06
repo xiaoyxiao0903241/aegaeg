@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/providers/auth-provider'
+import { useAuth } from '~/app/bootstrap/auth-provider'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import {
   ACCOUNT_BANNED_SENTINEL,

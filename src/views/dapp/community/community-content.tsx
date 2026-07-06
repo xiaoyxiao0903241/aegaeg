@@ -15,7 +15,7 @@ import {
   resolveCommitmentFloorBoostCopy,
 } from '~/core/presale/tier-table'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
-import { useAuth } from '~/providers/auth-provider'
+import { useAuth } from '~/app/bootstrap/auth-provider'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'

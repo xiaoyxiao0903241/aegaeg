@@ -12,7 +12,7 @@ import {
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
 } from '~/shared/api/format-display'
-import { useAuth } from '~/providers/auth-provider'
+import { useAuth } from '~/app/bootstrap/auth-provider'
 import { DappCollapsibleSection } from '~/app/components/dapp-collapsible-section'
 import { DappSection } from '~/app/components/dapp-section'
 import { DappTablePagination } from '~/app/components/dapp-table-pagination'
