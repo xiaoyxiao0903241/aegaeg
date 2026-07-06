@@ -3,12 +3,14 @@ import { getHtmlLang } from '~/i18n/locale-meta'
 import { locales } from '~/i18n/locales'
 import { homeMessagesByLocale } from '~/i18n/messages/home'
 import { homeAssets } from '~/home/assets'
+import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '~/lib/legacy-runtime-polyfills'
 import { PAGE_SCROLL_RESTORATION_BOOT_SCRIPT } from '~/lib/page-scroll-restoration'
 
 const supportedLocalesJson = JSON.stringify(locales)
 
-// 挂载前关闭浏览器滚动恢复跳动；精确位置由客户端 useLayoutEffect 恢复
-const bootScript = PAGE_SCROLL_RESTORATION_BOOT_SCRIPT
+// 挂载前：滚动恢复 + DOM 类数组 .at（须在 module 入口之前）；语言 API 见 legacy-core-js + plugin-legacy
+const bootScript = PAGE_SCROLL_RESTORATION_BOOT_SCRIPT + LEGACY_DOM_POLYFILLS_BOOT_SCRIPT
+const legacyCoreJsScript = '<script type="module" src="/src/lib/legacy-core-js.ts"></script>'
 
 function escapeAttr(value: string) {
   return value
@@ -57,6 +59,7 @@ ${faviconHead}
   </head>
   <body>
     <div id="root"></div>
+    ${legacyCoreJsScript}
     <script type="module" src="/src/home/main.tsx"></script>
   </body>
 </html>
@@ -87,6 +90,7 @@ ${faviconHead}
   </head>
   <body>
     <div id="root"></div>
+    ${legacyCoreJsScript}
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
