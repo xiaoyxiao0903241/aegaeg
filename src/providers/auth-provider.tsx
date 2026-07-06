@@ -17,10 +17,8 @@ import {
   deriveAuthState,
   isPermanentLoginErrorMessage,
 } from '~/lib/api/auth/auth-machine'
-import {
-  isUnauthorizedError,
-  loginWithWallet,
-} from '~/lib/api/auth/login-with-wallet'
+import { loginWithWallet } from '~/lib/api/auth/login-with-wallet'
+import { isUnauthorizedError } from '~/shared/api/http-errors'
 import type { StoredAuthSession } from '~/lib/api/auth/session'
 import { defaultChain } from '~/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
@@ -292,4 +290,4 @@ export function useAuth() {
   return context
 }
 
-export { isUnauthorizedError }
+export { isUnauthorizedError } from '~/shared/api/http-errors'

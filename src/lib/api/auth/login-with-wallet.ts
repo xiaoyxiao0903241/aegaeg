@@ -229,13 +229,4 @@ export function clearWalletSession(
   }
 }
 
-export function isUnauthorizedError(error: unknown): boolean {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    (error as { code: number }).code === 401
-  )
-}
-
 export { createMemoryLoginSignatureStorage }
