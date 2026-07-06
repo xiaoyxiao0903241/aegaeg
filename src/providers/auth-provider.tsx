@@ -16,10 +16,10 @@ import {
   deriveAuthAction,
   deriveAuthState,
   isPermanentLoginErrorMessage,
-} from '~/lib/api/auth/auth-machine'
-import { loginWithWallet } from '~/lib/api/auth/login-with-wallet'
+} from '~/core/auth/auth-machine'
+import { loginWithWallet } from '~/views/dapp/auth/login-with-wallet'
 import { isUnauthorizedError } from '~/shared/api/http-errors'
-import type { StoredAuthSession } from '~/lib/api/auth/session'
+import type { StoredAuthSession } from '~/views/dapp/auth/session'
 import { defaultChain } from '~/views/dapp/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
 import {

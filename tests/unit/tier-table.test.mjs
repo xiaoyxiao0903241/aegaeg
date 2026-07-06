@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('buildRewardTierRows aligns with tier-progress thresholds', async () => {
-  const { buildRewardTierRows } = await loadModule('/src/lib/presale/tier-table.ts')
+  const { buildRewardTierRows } = await loadModule('/src/core/presale/tier-table.ts')
 
   const rows = buildRewardTierRows()
 
@@ -23,7 +23,7 @@ test('commitment floor post-launch labels map API floor rank to A-tier', async (
     resolveCommitmentFloorBoostCopy,
     resolveCommitmentFloorRank,
     MAX_COMMITMENT_FLOOR_A_RANK,
-  } = await loadModule('/src/lib/presale/tier-table.ts')
+  } = await loadModule('/src/core/presale/tier-table.ts')
 
   assert.equal(MAX_COMMITMENT_FLOOR_A_RANK, 13)
   assert.equal(resolveCommitmentFloorRank(0), 0)

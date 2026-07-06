@@ -16,7 +16,7 @@ test('audit #16: legacy V2 swap quote modules removed', async () => {
 
 test('audit #11: JWT without exp schedules renewAt from savedAt + fallback TTL', async () => {
   const { deriveAuthAction, FALLBACK_SESSION_TTL_MS } = await loadModule(
-    '/src/lib/api/auth/auth-machine.ts',
+    '/src/core/auth/auth-machine.ts',
   )
   const renewThresholdMs = 60_000
   const savedAt = 1_000_000_000
@@ -40,7 +40,7 @@ test('audit #11: JWT without exp schedules renewAt from savedAt + fallback TTL',
 
 test('audit #18: transient login errors allow retry; permanent errors block', async () => {
   const { deriveAuthAction, isPermanentLoginErrorMessage } = await loadModule(
-    '/src/lib/api/auth/auth-machine.ts',
+    '/src/core/auth/auth-machine.ts',
   )
   const base = {
     isLoggingIn: false,

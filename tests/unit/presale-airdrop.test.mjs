@@ -5,7 +5,7 @@ import { loadModule } from './load-module.mjs'
 const MIN_PERIOD_USD = 5_000
 
 test('X airdrop preview is hidden below single-period cumulative threshold', async () => {
-  const { resolveXTokenAirdropUsdForPurchase } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { resolveXTokenAirdropUsdForPurchase } = await loadModule('/src/core/presale/presale-math.ts')
 
   assert.equal(resolveXTokenAirdropUsdForPurchase(0, 100, 0, MIN_PERIOD_USD), 0)
   assert.equal(
@@ -16,7 +16,7 @@ test('X airdrop preview is hidden below single-period cumulative threshold', asy
 
 test('X airdrop preview applies phase ratio to current order once eligible', async () => {
   const { resolveXTokenAirdropUsdForPurchase } = await loadModule(
-    '/src/lib/presale/presale-math.ts',
+    '/src/core/presale/presale-math.ts',
   )
 
   const phase0 = {
@@ -38,14 +38,14 @@ test('X airdrop preview applies phase ratio to current order once eligible', asy
 })
 
 test('presaleAirdropThresholdToUsd reads AIRDROP_THRESHOLD wei as USD', async () => {
-  const { presaleAirdropThresholdToUsd } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { presaleAirdropThresholdToUsd } = await loadModule('/src/core/presale/presale-math.ts')
 
   assert.equal(presaleAirdropThresholdToUsd(5000n * 10n ** 18n), 5000)
   assert.equal(presaleAirdropThresholdToUsd(0n), 0)
 })
 
 test('estimateXTokenAirdropUsd uses on-chain airdropValueRatio from phase', async () => {
-  const { estimateXTokenAirdropUsd } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { estimateXTokenAirdropUsd } = await loadModule('/src/core/presale/presale-math.ts')
 
   assert.equal(
     estimateXTokenAirdropUsd(100, 0, {

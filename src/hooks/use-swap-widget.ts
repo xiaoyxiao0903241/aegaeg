@@ -1,8 +1,8 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
-import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/lib/swap/calc-sqrt-price-impact-bps'
+import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
+import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-sqrt-price-impact-bps'
 import { formatGasEstimate } from '~/lib/swap/format-gas-estimate'
 import { formatSwapRateApprox } from '~/lib/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
@@ -14,8 +14,8 @@ import {
   parseTokenAmount,
   sanitizeTokenAmountInput,
   slippagePercentToBps,
-} from '~/lib/swap/token-amount'
-import { getSwapPairTokens } from '~/lib/swap/swap-pair'
+} from '~/core/swap/token-amount'
+import { getSwapPairTokens } from '~/core/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { readErc20Allowance, readErc20Balance, fetchSwapQuote, readSwapPoolImmutableMetadata } from '~/views/dapp/web3/swap-read'
 import { approveTokenIfNeeded, executeTokenSwap } from '~/views/dapp/web3/swap-write'

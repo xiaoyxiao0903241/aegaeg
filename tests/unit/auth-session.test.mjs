@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('auth session storage roundtrips token for address', async () => {
   const { createMemoryAuthSessionStorage, isSessionForAddress } = await loadModule(
-    '/src/lib/api/auth/session.ts',
+    '/src/views/dapp/auth/session.ts',
   )
 
   const storage = createMemoryAuthSessionStorage()
@@ -25,8 +25,8 @@ test('auth session storage roundtrips token for address', async () => {
 })
 
 test('readWalletSession ignores mismatched address', async () => {
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/lib/api/auth/session.ts')
-  const { readWalletSession } = await loadModule('/src/lib/api/auth/login-with-wallet.ts')
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
+  const { readWalletSession } = await loadModule('/src/views/dapp/auth/login-with-wallet.ts')
 
   const storage = createMemoryAuthSessionStorage()
   storage.write({
@@ -41,7 +41,7 @@ test('readWalletSession ignores mismatched address', async () => {
 
 test('login signature cache respects SIWE expiration', async () => {
   const { createMemoryLoginSignatureStorage, isLoginSignatureUsable } = await loadModule(
-    '/src/lib/api/auth/login-signature-cache.ts',
+    '/src/views/dapp/auth/login-signature-cache.ts',
   )
 
   const storage = createMemoryLoginSignatureStorage()
@@ -91,11 +91,11 @@ test('login signature cache respects SIWE expiration', async () => {
 })
 
 test('loginWithWallet reuses cached signature without re-signing', async () => {
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/lib/api/auth/session.ts')
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
   const { createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/lib/api/auth/login-signature-cache.ts',
+    '/src/views/dapp/auth/login-signature-cache.ts',
   )
-  const { loginWithWallet } = await loadModule('/src/lib/api/auth/login-with-wallet.ts')
+  const { loginWithWallet } = await loadModule('/src/views/dapp/auth/login-with-wallet.ts')
 
   const storage = createMemoryAuthSessionStorage()
   const signatureStorage = createMemoryLoginSignatureStorage()
@@ -155,7 +155,7 @@ test('loginWithWallet reuses cached signature without re-signing', async () => {
 
 test('login signature cache keeps entries per wallet address', async () => {
   const { createMemoryLoginSignatureStorage, readUsableLoginSignature } = await loadModule(
-    '/src/lib/api/auth/login-signature-cache.ts',
+    '/src/views/dapp/auth/login-signature-cache.ts',
   )
 
   const storage = createMemoryLoginSignatureStorage()
@@ -193,11 +193,11 @@ test('login signature cache keeps entries per wallet address', async () => {
 })
 
 test('loginWithWallet signs message and stores jwt', async () => {
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/lib/api/auth/session.ts')
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
   const { createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/lib/api/auth/login-signature-cache.ts',
+    '/src/views/dapp/auth/login-signature-cache.ts',
   )
-  const { loginWithWallet } = await loadModule('/src/lib/api/auth/login-with-wallet.ts')
+  const { loginWithWallet } = await loadModule('/src/views/dapp/auth/login-with-wallet.ts')
 
   const storage = createMemoryAuthSessionStorage()
   const signatureStorage = createMemoryLoginSignatureStorage()

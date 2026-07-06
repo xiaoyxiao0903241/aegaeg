@@ -60,7 +60,7 @@ function parseStagingLocalContractSnapshot() {
 }
 
 test('DEFAULT_BSC_CONTRACTS matches prod deployment snapshot', async () => {
-  const { DEFAULT_BSC_CONTRACTS } = await loadModule('/src/config/contracts.ts')
+  const { DEFAULT_BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
   assert.equal(DEFAULT_BSC_CONTRACTS.chainId, 56)
   assert.deepEqual(contractAddressSnapshot(DEFAULT_BSC_CONTRACTS), {
@@ -78,7 +78,7 @@ test('DEFAULT_BSC_CONTRACTS matches prod deployment snapshot', async () => {
 })
 
 test('BSC_CONTRACTS runtime matches prod defaults or staging env template', async () => {
-  const { BSC_CONTRACTS, DEFAULT_BSC_CONTRACTS } = await loadModule('/src/config/contracts.ts')
+  const { BSC_CONTRACTS, DEFAULT_BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
   assert.equal(BSC_CONTRACTS.chainId, 56)
 

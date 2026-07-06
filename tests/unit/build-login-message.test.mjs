@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('buildSiweLoginMessage follows EIP-4361 layout', async () => {
   const { buildSiweLoginMessage, createSiweLoginPayload } = await loadModule(
-    '/src/lib/api/auth/build-login-message.ts',
+    '/src/views/dapp/auth/build-login-message.ts',
   )
 
   const payload = createSiweLoginPayload({
@@ -27,7 +27,7 @@ test('buildSiweLoginMessage follows EIP-4361 layout', async () => {
 
 test('buildSimpleLoginMessage includes address and nonce', async () => {
   const { buildSimpleLoginMessage } = await loadModule(
-    '/src/lib/api/auth/build-login-message.ts',
+    '/src/views/dapp/auth/build-login-message.ts',
   )
 
   const message = buildSimpleLoginMessage({
@@ -49,7 +49,7 @@ test('buildSimpleLoginMessage includes address and nonce', async () => {
 })
 
 test('buildLoginMessage defaults to siwe format', async () => {
-  const { buildLoginMessage } = await loadModule('/src/lib/api/auth/build-login-message.ts')
+  const { buildLoginMessage } = await loadModule('/src/views/dapp/auth/build-login-message.ts')
 
   const message = buildLoginMessage(
     {

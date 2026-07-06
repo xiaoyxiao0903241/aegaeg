@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { SwapDirection } from '~/lib/swap/swap-pair'
+import type { SwapDirection } from '~/core/swap/swap-pair'
 
 interface SwapDirectionStore {
   direction: SwapDirection

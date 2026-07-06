@@ -1,6 +1,6 @@
 import { formatUsd } from '~/lib/api/format-display'
-import { type PresalePhaseOnChain } from '~/lib/presale/presale-math'
-import { formatTokenAmount } from '~/lib/swap/token-amount'
+import { type PresalePhaseOnChain } from '~/core/presale/presale-math'
+import { formatTokenAmount } from '~/core/swap/token-amount'
 
 const USD1_DECIMALS = 18
 

@@ -10,12 +10,12 @@ import {
   formatPresaleRank,
   formatUsd,
 } from '~/lib/api/format-display'
-import { buildNextTierProgress } from '~/lib/presale/tier-progress'
+import { buildNextTierProgress } from '~/core/presale/tier-progress'
 import {
   getCommitmentFloorPostLaunchLabel,
   getTeamBonusRateLabel,
   resolveCommitmentFloorBoostCopy,
-} from '~/lib/presale/tier-table'
+} from '~/core/presale/tier-table'
 import {
   CurrentTitleCardBodySkeleton,
   ProgressCardSkeleton,

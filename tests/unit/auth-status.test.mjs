@@ -9,7 +9,7 @@ function makeJwt(payload) {
 }
 
 test('jwt helpers decode exp and detect expiry', async () => {
-  const { getJwtExpiresAtMs, isJwtExpired } = await loadModule('/src/lib/api/auth/jwt.ts')
+  const { getJwtExpiresAtMs, isJwtExpired } = await loadModule('/src/core/auth/jwt.ts')
 
   const nowSec = Math.floor(Date.now() / 1000)
   const validToken = makeJwt({ exp: nowSec + 3600 })
@@ -22,7 +22,7 @@ test('jwt helpers decode exp and detect expiry', async () => {
 })
 
 test('resolveAuthStatus requires wallet, jwt, and matching address', async () => {
-  const { resolveAuthStatus } = await loadModule('/src/lib/api/auth/resolve-auth-status.ts')
+  const { resolveAuthStatus } = await loadModule('/src/core/auth/resolve-auth-status.ts')
 
   const nowSec = Math.floor(Date.now() / 1000)
   const token = makeJwt({ exp: nowSec + 3600 })

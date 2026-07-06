@@ -3,21 +3,21 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('calcAmountOutMin applies slippage in basis points', async () => {
-  const { calcAmountOutMin } = await loadModule('/src/lib/swap/calc-amount-out-min.ts')
+  const { calcAmountOutMin } = await loadModule('/src/core/swap/calc-amount-out-min.ts')
 
   assert.equal(calcAmountOutMin(10_000n, 50), 9_950n)
   assert.equal(calcAmountOutMin(100_000_000_000_000_000_000n, 100), 99_000_000_000_000_000_000n)
 })
 
 test('calcAmountOutMin rejects invalid slippage', async () => {
-  const { calcAmountOutMin } = await loadModule('/src/lib/swap/calc-amount-out-min.ts')
+  const { calcAmountOutMin } = await loadModule('/src/core/swap/calc-amount-out-min.ts')
 
   assert.throws(() => calcAmountOutMin(100n, -1), /slippage/i)
   assert.throws(() => calcAmountOutMin(100n, 10_000), /slippage/i)
 })
 
 test('buildSwapDeadline returns unix seconds in the future', async () => {
-  const { buildSwapDeadline } = await loadModule('/src/lib/swap/build-swap-deadline.ts')
+  const { buildSwapDeadline } = await loadModule('/src/core/swap/build-swap-deadline.ts')
   const now = 1_700_000_000
   assert.equal(buildSwapDeadline(20 * 60, now), 1_700_001_200)
 })

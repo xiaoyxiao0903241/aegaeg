@@ -1,5 +1,5 @@
-import type { PresalePhaseOnChain } from '~/lib/presale/presale-math'
-import { formatPhaseDate } from '~/lib/presale/presale-math'
+import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
+import { formatPhaseDate } from '~/core/presale/presale-math'
 import { buildSeasonOptions } from '~/lib/presale/season-options'
 
 export type GenesisPromoStatus = 'LIVE' | 'Ended' | 'Upcoming'

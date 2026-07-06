@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('calcSqrtPriceImpactBps returns absolute move in bps', async () => {
   const { calcSqrtPriceImpactBps } = await loadModule(
-    '/src/lib/swap/calc-sqrt-price-impact-bps.ts',
+    '/src/core/swap/calc-sqrt-price-impact-bps.ts',
   )
 
   assert.equal(calcSqrtPriceImpactBps(1_000_000n, 1_010_000n), 100)

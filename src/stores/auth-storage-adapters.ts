@@ -1,5 +1,5 @@
-import type { LoginSignatureStorage } from '~/lib/api/auth/login-signature-cache'
-import type { AuthSessionStorage, StoredAuthSession } from '~/lib/api/auth/session'
+import type { LoginSignatureStorage } from '~/views/dapp/auth/login-signature-cache'
+import type { AuthSessionStorage, StoredAuthSession } from '~/views/dapp/auth/session'
 import { useAuthStore } from '~/stores/auth-store'
 
 type AuthStoreGetter = Pick<

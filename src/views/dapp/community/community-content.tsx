@@ -13,7 +13,7 @@ import {
   getCommitmentFloorPostLaunchLabel,
   getTeamBonusRateLabel,
   resolveCommitmentFloorBoostCopy,
-} from '~/lib/presale/tier-table'
+} from '~/core/presale/tier-table'
 import { CommunityStatCardSkeleton } from '~/app/components/dapp-skeleton'
 import { useAuth } from '~/providers/auth-provider'
 import { DappDetailPage } from '~/app/components/dapp-detail-page'

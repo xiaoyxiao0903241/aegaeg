@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('formatPhaseCountdown uses localized unit labels', async () => {
-  const { formatPhaseCountdown } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { formatPhaseCountdown } = await loadModule('/src/core/presale/presale-math.ts')
 
   const nowSeconds = 1_000
   const targetTime = BigInt(nowSeconds + 17 * 86_400 + 3 * 3_600 + 51 * 60)
@@ -26,7 +26,7 @@ test('genesis countdown helpers detect elapsed boundaries', async () => {
     buildPhaseCountdownKey,
     hasPhaseCountdownElapsed,
     resolvePhaseCountdownTarget,
-  } = await loadModule('/src/lib/presale/presale-math.ts')
+  } = await loadModule('/src/core/presale/presale-math.ts')
 
   const nowSeconds = 1_000
   const phases = [

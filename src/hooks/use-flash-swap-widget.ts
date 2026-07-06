@@ -8,8 +8,8 @@ import {
   formatTokenAmountInputDisplay,
   parseTokenAmount,
   sanitizeTokenAmountInput,
-} from '~/lib/swap/token-amount'
-import { getSwapPairTokens } from '~/lib/swap/swap-pair'
+} from '~/core/swap/token-amount'
+import { getSwapPairTokens } from '~/core/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/lib/query/query-client'
 import { queryKeys } from '~/lib/query/query-keys'
@@ -18,7 +18,7 @@ import { GENESIS_PURCHASE_ERROR } from '~/lib/web3/resolve-contract-error-messag
 import { hasWalletAccount } from '~/lib/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
-import { calcAmountOutMin } from '~/lib/swap/calc-amount-out-min'
+import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/views/dapp/web3/flash-swap-read'
 import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/views/dapp/web3/flash-swap-write'
 

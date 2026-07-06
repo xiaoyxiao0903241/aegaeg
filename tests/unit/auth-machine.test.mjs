@@ -19,7 +19,7 @@ function makeSession(address, expSeconds) {
 }
 
 test('deriveAuthState reduces wallet + jwt cache to a single state', async () => {
-  const { deriveAuthState } = await loadModule('/src/lib/api/auth/auth-machine.ts')
+  const { deriveAuthState } = await loadModule('/src/core/auth/auth-machine.ts')
   const nowSec = 1_000_000
   const now = nowSec * 1000
   const validSession = makeSession('0xAbC', nowSec + 3600)
@@ -58,7 +58,7 @@ test('deriveAuthState reduces wallet + jwt cache to a single state', async () =>
 })
 
 test('buildLoginAttemptKey fingerprints address + token + signature', async () => {
-  const { buildLoginAttemptKey } = await loadModule('/src/lib/api/auth/auth-machine.ts')
+  const { buildLoginAttemptKey } = await loadModule('/src/core/auth/auth-machine.ts')
   const session = makeSession('0xAbC', 2_000_000)
   const signature = { address: '0xabc', message: 'm', signature: 's', savedAt: 42 }
 
@@ -77,7 +77,7 @@ test('buildLoginAttemptKey fingerprints address + token + signature', async () =
 })
 
 test('deriveAuthAction decides idle / login / renew', async () => {
-  const { deriveAuthAction } = await loadModule('/src/lib/api/auth/auth-machine.ts')
+  const { deriveAuthAction } = await loadModule('/src/core/auth/auth-machine.ts')
   const renewThresholdMs = 60_000
   const now = 1_000_000_000
   const base = {

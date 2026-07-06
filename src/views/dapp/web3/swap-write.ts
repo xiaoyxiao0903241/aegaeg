@@ -1,7 +1,7 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { getAddress } from 'thirdweb/utils'
 import { SWAP_CONFIG } from '~/shared/config/swap'
-import { buildSwapDeadline } from '~/lib/swap/build-swap-deadline'
+import { buildSwapDeadline } from '~/core/swap/build-swap-deadline'
 import { ERC20_METHODS, MAX_UINT256, SWAP_ROUTER_V3_METHODS, ERC20_ERRORS } from '~/views/dapp/web3/abis'
 import { createWalletReadClient } from '~/views/dapp/web3/chain-read-client'
 import { fetchSwapQuote, readErc20Allowance } from '~/views/dapp/web3/swap-read'

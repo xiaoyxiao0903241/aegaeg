@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('resolveSwapAction returns approve when allowance is insufficient', async () => {
-  const { resolveSwapAction } = await loadModule('/src/lib/swap/resolve-swap-action.ts')
+  const { resolveSwapAction } = await loadModule('/src/core/swap/resolve-swap-action.ts')
 
   assert.equal(resolveSwapAction(50n, 100n), 'approve')
   assert.equal(resolveSwapAction(100n, 100n), 'swap')

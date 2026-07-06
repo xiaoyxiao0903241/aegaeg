@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('resolveRemainingUserAmount treats zero userPurchaseLimit as unlimited', async () => {
-  const { resolveRemainingUserAmount } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const phaseRemaining = {
     remainingPhaseAmount: 4000n * 10n ** 18n,
@@ -19,7 +19,7 @@ test('resolveRemainingUserAmount treats zero userPurchaseLimit as unlimited', as
 })
 
 test('resolveRemainingUserAmount uses explicit remainingUserAmount when limit is set', async () => {
-  const { resolveRemainingUserAmount } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const phaseRemaining = {
     remainingPhaseAmount: 4000n * 10n ** 18n,
@@ -35,7 +35,7 @@ test('resolveRemainingUserAmount uses explicit remainingUserAmount when limit is
 })
 
 test('resolveRemainingUserAmount falls back to active phase when phaseRemaining missing', async () => {
-  const { resolveRemainingUserAmount } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const activePhase = {
     index: 0,
@@ -57,7 +57,7 @@ test('resolveRemainingUserAmount falls back to active phase when phaseRemaining 
 })
 
 test('resolveGenesisMaxShares ignores zero remainingUserAmount when unlimited', async () => {
-  const { resolveGenesisMaxShares } = await loadModule('/src/lib/presale/presale-math.ts')
+  const { resolveGenesisMaxShares } = await loadModule('/src/core/presale/presale-math.ts')
 
   const sharePriceWei = 100n * 10n ** 18n
   const remainingPhaseAmount = 4000n * 10n ** 18n

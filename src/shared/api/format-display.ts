@@ -6,7 +6,7 @@ import type {
   TeamRewardClaimLogItem,
 } from '~/lib/api/types'
 import { getRuntimeHost } from '~/lib/runtime-host'
-import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/lib/presale/presale-math'
+import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 
 /** Empty / unknown placeholder for table cells (ASCII hyphen, not em dash). */
 export const TABLE_EMPTY = '-'

@@ -9,7 +9,7 @@ import {
   findActivePresalePhase,
   type PresalePhaseOnChain,
   type PresalePhaseRemaining,
-} from '~/lib/presale/presale-math'
+} from '~/core/presale/presale-math'
 import { MULTICALL3_METHODS, PRESALE_METHODS } from '~/views/dapp/web3/abis'
 import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
 import type { ChainReadClient } from '~/views/dapp/web3/chain-read-client'

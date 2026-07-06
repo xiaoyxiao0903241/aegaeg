@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('walletProviderRequest rejects when wallet never responds', async () => {
-  const { walletProviderRequest } = await loadModule('/src/web3/wallet-provider-request.ts')
+  const { walletProviderRequest } = await loadModule('/src/views/dapp/web3/wallet-provider-request.ts')
 
   const provider = {
     request: () => new Promise(() => {}),

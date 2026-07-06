@@ -20,7 +20,7 @@ import {
 import { dappTableViewState, tablePageQuery } from '~/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useAuth } from '~/providers/auth-provider'
-import { formatTokenAmountToNumber } from '~/lib/swap/token-amount'
+import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import {
   GenesisContributionsProgressHeader,
   GenesisContributionsReveal,

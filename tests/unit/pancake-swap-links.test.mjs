@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('resolvePancakeSwapDeepLink maps USDT and USD1 directions', async () => {
   const { PANCAKE_SWAP_DEEP_LINKS, resolvePancakeSwapDeepLink } = await loadModule(
-    '/src/config/pancake-swap-links.ts',
+    '/src/shared/config/pancake-swap-links.ts',
   )
 
   assert.equal(resolvePancakeSwapDeepLink('USDT', 'USD1'), PANCAKE_SWAP_DEEP_LINKS.usdtToUsd1)

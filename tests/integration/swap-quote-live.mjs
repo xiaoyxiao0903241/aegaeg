@@ -6,8 +6,8 @@ import assert from 'node:assert/strict'
 import { loadModule } from '../unit/load-module.mjs'
 
 const { fetchSwapQuote, readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } =
-  await loadModule('/src/web3/swap-read.ts')
-const { BSC_CONTRACTS } = await loadModule('/src/config/contracts.ts')
+  await loadModule('/src/views/dapp/web3/swap-read.ts')
+const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
 const pool = await readSwapPoolImmutableMetadata()
 assert.equal(pool.fee, 100)

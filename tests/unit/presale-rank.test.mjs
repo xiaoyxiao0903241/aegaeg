@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('resolveDisplayPresaleRank normalizes API presale_rank only', async () => {
-  const { resolveDisplayPresaleRank } = await loadModule('/src/lib/presale/rank.ts')
+  const { resolveDisplayPresaleRank } = await loadModule('/src/core/presale/rank.ts')
 
   assert.equal(resolveDisplayPresaleRank(0), 0)
   assert.equal(resolveDisplayPresaleRank(2), 2)

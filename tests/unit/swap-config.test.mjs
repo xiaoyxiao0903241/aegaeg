@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('swap config exposes USD1-USDT trade pair on BSC', async () => {
-  const { SWAP_CONFIG } = await loadModule('/src/config/swap.ts')
+  const { SWAP_CONFIG } = await loadModule('/src/shared/config/swap.ts')
 
   assert.equal(SWAP_CONFIG.chainId, 56)
   assert.equal(SWAP_CONFIG.defaultSlippageBps, 50)
@@ -15,7 +15,7 @@ test('swap config exposes USD1-USDT trade pair on BSC', async () => {
 })
 
 test('swap config marks design-only tokens as disabled', async () => {
-  const { SWAP_CONFIG } = await loadModule('/src/config/swap.ts')
+  const { SWAP_CONFIG } = await loadModule('/src/shared/config/swap.ts')
 
   assert.equal(SWAP_CONFIG.tokens.usdt.enabled, true)
   assert.equal(SWAP_CONFIG.feeTier, 100)
@@ -25,8 +25,8 @@ test('swap config marks design-only tokens as disabled', async () => {
 })
 
 test('swap config uses PancakeSwap V3 for trade pair', async () => {
-  const { SWAP_CONFIG } = await loadModule('/src/config/swap.ts')
-  const { BSC_CONTRACTS } = await loadModule('/src/config/contracts.ts')
+  const { SWAP_CONFIG } = await loadModule('/src/shared/config/swap.ts')
+  const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
   assert.equal(SWAP_CONFIG.router.toLowerCase(), BSC_CONTRACTS.pancakeV3SwapRouter.toLowerCase())
   assert.equal(SWAP_CONFIG.quoter.toLowerCase(), BSC_CONTRACTS.pancakeV3Quoter.toLowerCase())
