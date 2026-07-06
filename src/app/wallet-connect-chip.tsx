@@ -86,10 +86,12 @@ function ConnectedWalletChip() {
 }
 
 function WalletConnectButton({
+  className,
   label,
   variant = 'pill',
   fullWidth = false,
 }: {
+  className?: string
   label?: string
   variant?: 'pill' | 'primary' | 'inline'
   fullWidth?: boolean
@@ -141,7 +143,7 @@ function WalletConnectButton({
     <div className={cn(fullWidth ? 'flex w-full' : 'inline-flex items-center')}>
       <button
         aria-busy={isLoggingIn}
-        className={cn(connectButtonClassName, fullWidth && 'aegis-thirdweb-button-full')}
+        className={cn(connectButtonClassName, fullWidth && 'aegis-thirdweb-button-full', className)}
         disabled={isLoggingIn}
         onClick={() => void handleClick()}
         type="button"
@@ -161,10 +163,12 @@ function WalletConnectButton({
 }
 
 export function WalletConnectChip({
+  className,
   label,
   variant = 'pill',
   fullWidth = false,
 }: {
+  className?: string
   label?: string
   variant?: 'pill' | 'primary' | 'inline' | 'connected'
   fullWidth?: boolean
@@ -179,5 +183,12 @@ export function WalletConnectChip({
     }
   }
 
-  return <WalletConnectButton fullWidth={fullWidth} label={label} variant={variant === 'connected' ? 'primary' : variant} />
+  return (
+    <WalletConnectButton
+      className={className}
+      fullWidth={fullWidth}
+      label={label}
+      variant={variant === 'connected' ? 'primary' : variant}
+    />
+  )
 }
