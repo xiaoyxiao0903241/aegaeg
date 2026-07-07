@@ -43,6 +43,64 @@ const INSUFFICIENT_FUNDS_PATTERN =
   /insufficient funds for gas|insufficient funds|insufficient balance for transfer/i
 const SIGNER_GAS_PATTERN = /signer error.*gas/i
 
+type ErrorText = { raw: string; lower: string }
+
+type ErrorRule<K extends string> = {
+  match: (text: ErrorText) => boolean
+  messageKey: K
+}
+
+function toErrorText(raw: string): ErrorText {
+  return { raw, lower: raw.toLowerCase() }
+}
+
+function hasSelector(lower: string, ...selectors: string[]): boolean {
+  return selectors.some((selector) => lower.includes(selector))
+}
+
+function nameOrSelector(
+  namePattern: RegExp,
+  ...selectors: string[]
+): (text: ErrorText) => boolean {
+  return ({ raw, lower }) => namePattern.test(raw) || hasSelector(lower, ...selectors)
+}
+
+function resolveFirstMatch<M extends Record<string, string | undefined>, K extends keyof M & string>(
+  text: ErrorText,
+  rules: Array<ErrorRule<K>>,
+  messages: M,
+): string | null {
+  for (const rule of rules) {
+    if (!rule.match(text)) continue
+    const message = messages[rule.messageKey]
+    if (message != null) return message
+    return null
+  }
+  return null
+}
+
+const WALLET_TRANSACTION_ERROR_RULES: Array<
+  ErrorRule<keyof WalletTransactionErrorMessages>
+> = [
+  {
+    match: ({ raw }) =>
+      raw === WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED ||
+      /Failed to estimate gas for transaction/i.test(raw),
+    messageKey: 'gasEstimateFailed',
+  },
+  {
+    match: ({ raw }) =>
+      GAS_LIMIT_TOO_LOW_PATTERN.test(raw) ||
+      SIGNER_GAS_PATTERN.test(raw) ||
+      (/gas/i.test(raw) && /too low|given 0/i.test(raw)),
+    messageKey: 'gasLimitTooLow',
+  },
+  {
+    match: ({ raw }) => INSUFFICIENT_FUNDS_PATTERN.test(raw),
+    messageKey: 'insufficientFunds',
+  },
+]
+
 /**
  * Map wallet / signer infrastructure failures (gas limit, estimate, BNB balance)
  * to localized copy. Call before domain-specific resolvers so raw English gas
@@ -53,29 +111,7 @@ export function resolveWalletTransactionError(
   messages: WalletTransactionErrorMessages,
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
-
-  const raw = readErrorText(error)
-
-  if (
-    raw === WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED ||
-    /Failed to estimate gas for transaction/i.test(raw)
-  ) {
-    return messages.gasEstimateFailed
-  }
-
-  if (
-    GAS_LIMIT_TOO_LOW_PATTERN.test(raw) ||
-    SIGNER_GAS_PATTERN.test(raw) ||
-    (/gas/i.test(raw) && /too low|given 0/i.test(raw))
-  ) {
-    return messages.gasLimitTooLow
-  }
-
-  if (INSUFFICIENT_FUNDS_PATTERN.test(raw)) {
-    return messages.insufficientFunds
-  }
-
-  return null
+  return resolveFirstMatch(toErrorText(readErrorText(error)), WALLET_TRANSACTION_ERROR_RULES, messages)
 }
 
 /**
@@ -94,42 +130,46 @@ export interface GenesisContractErrorMessages {
   systemConfig?: string
 }
 
-/**
- * Map a PreSale custom error (by name, as decoded into the revert text) to a
- * friendly message. Returns null when no documented error name is present or
- * the caller did not provide a message for it.
- */
-function matchPreSaleContractError(
-  raw: string,
-  messages: GenesisContractErrorMessages,
-): string | null {
-  // Reverts carry a 4-byte selector (ABI has no error defs to decode the name),
-  // so match both the decoded name AND the on-chain selector (verified against
-  // impl 0xf9f3…65a1). Order: most specific first.
-  const s = raw.toLowerCase()
-  const has = (sel: string) => s.includes(sel)
-
-  if (/PreSaleUserPurchaseLimitExceeded/i.test(raw) || has('0x43f81a81')) {
-    return messages.userLimitExceeded ?? null
-  }
-  if (/PreSaleUserNotBound/i.test(raw) || has('0x3bdd728c')) return messages.notBound ?? null
-  if (/PreSalePhaseIndexOutOfBounds/i.test(raw) || has('0x71c4dee5')) return messages.invalidPhase ?? null
-  if (/PreSalePhaseNotActive/i.test(raw) || has('0x9d024615')) return messages.phaseInactive ?? null
-  if (/PreSalePhaseSoldOut/i.test(raw) || has('0x9e6594e8')) return messages.soldOut ?? null
-  if (/PreSaleBelowMin/i.test(raw) || has('0x9468590f')) return messages.belowMin ?? null
-  if (/PreSaleInvalidAmount/i.test(raw) || has('0x52d905be')) return messages.invalidAmount ?? null
-  if (/PreSalePaused/i.test(raw) || has('0x307f3ea1')) return messages.paused ?? null
-  if (
-    /PreSale(ZeroAddress|InvalidDiscount|InvalidAirdropValueRatio|InvalidAgxPrice)/i.test(raw) ||
-    has('0xf367a6ee') ||
-    has('0xfa2d446e') ||
-    has('0x84db0e97') ||
-    has('0x76019f9f')
-  ) {
-    return messages.systemConfig ?? null
-  }
-  return null
-}
+const PRE_SALE_ERROR_RULES: Array<ErrorRule<keyof GenesisContractErrorMessages>> = [
+  {
+    match: nameOrSelector(/PreSaleUserPurchaseLimitExceeded/i, '0x43f81a81'),
+    messageKey: 'userLimitExceeded',
+  },
+  {
+    match: nameOrSelector(/PreSaleUserNotBound/i, '0x3bdd728c'),
+    messageKey: 'notBound',
+  },
+  {
+    match: nameOrSelector(/PreSalePhaseIndexOutOfBounds/i, '0x71c4dee5'),
+    messageKey: 'invalidPhase',
+  },
+  {
+    match: nameOrSelector(/PreSalePhaseNotActive/i, '0x9d024615'),
+    messageKey: 'phaseInactive',
+  },
+  {
+    match: nameOrSelector(/PreSalePhaseSoldOut/i, '0x9e6594e8'),
+    messageKey: 'soldOut',
+  },
+  {
+    match: nameOrSelector(/PreSaleBelowMin/i, '0x9468590f'),
+    messageKey: 'belowMin',
+  },
+  {
+    match: nameOrSelector(/PreSaleInvalidAmount/i, '0x52d905be'),
+    messageKey: 'invalidAmount',
+  },
+  {
+    match: nameOrSelector(/PreSalePaused/i, '0x307f3ea1'),
+    messageKey: 'paused',
+  },
+  {
+    match: ({ raw, lower }) =>
+      /PreSale(ZeroAddress|InvalidDiscount|InvalidAirdropValueRatio|InvalidAgxPrice)/i.test(raw) ||
+      hasSelector(lower, '0xf367a6ee', '0xfa2d446e', '0x84db0e97', '0x76019f9f'),
+    messageKey: 'systemConfig',
+  },
+]
 
 function readErrorCode(error: unknown): number | string | undefined {
   if (typeof error !== 'object' || error === null) return undefined
@@ -214,6 +254,21 @@ export function toWalletUserFacingMessage(error: unknown, fallback = 'Transactio
   return text || fallback
 }
 
+const ERC20_ERROR_RULES: Array<
+  ErrorRule<'insufficientUsd1' | 'insufficientAllowance'>
+> = [
+  {
+    match: ({ raw }) =>
+      raw.includes(ERC20_INSUFFICIENT_BALANCE) || /ERC20InsufficientBalance/i.test(raw),
+    messageKey: 'insufficientUsd1',
+  },
+  {
+    match: ({ raw }) =>
+      raw.includes(ERC20_INSUFFICIENT_ALLOWANCE) || /ERC20InsufficientAllowance/i.test(raw),
+    messageKey: 'insufficientAllowance',
+  },
+]
+
 export function resolveContractErrorMessage(
   error: unknown,
   messages: {
@@ -223,17 +278,11 @@ export function resolveContractErrorMessage(
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
 
-  const raw = readErrorText(error)
+  const text = toErrorText(readErrorText(error))
+  const mapped = resolveFirstMatch(text, ERC20_ERROR_RULES, messages)
+  if (mapped) return mapped
 
-  if (raw.includes(ERC20_INSUFFICIENT_BALANCE) || /ERC20InsufficientBalance/i.test(raw)) {
-    return messages.insufficientUsd1
-  }
-
-  if (raw.includes(ERC20_INSUFFICIENT_ALLOWANCE) || /ERC20InsufficientAllowance/i.test(raw)) {
-    return messages.insufficientAllowance
-  }
-
-  return raw || null
+  return text.raw || null
 }
 
 /** Friendly i18n messages for the referral-bind flow (AegisReferral errors per contract.md §2.4). */
@@ -247,31 +296,48 @@ export interface ReferralBindErrorMessages {
   failed: string
 }
 
+const REFERRAL_BIND_ERROR_RULES: Array<ErrorRule<keyof ReferralBindErrorMessages>> = [
+  {
+    match: nameOrSelector(/Referral__AlreadyBound|AlreadyBound/i, '0xd242113b'),
+    messageKey: 'alreadyBound',
+  },
+  {
+    match: nameOrSelector(/Referral__ParentNotBound|ParentNotBound/i, '0x3d50dfd5'),
+    messageKey: 'parentNotBound',
+  },
+  {
+    match: nameOrSelector(/Referral__SelfReferral|SelfReferral/i, '0xa7e9b6d3'),
+    messageKey: 'selfReferral',
+  },
+  {
+    match: nameOrSelector(/Referral__MigratedAccount|MigratedAccount/i, '0xc6dbe929'),
+    messageKey: 'migratedAccount',
+  },
+  {
+    match: nameOrSelector(/Referral__(ParentZero|UserZero)/i, '0x841bf48a', '0x55bc9184'),
+    messageKey: 'invalidParent',
+  },
+  {
+    match: nameOrSelector(/Referral__(RootZero|NotMigrationManager)/i, '0xc77b7954', '0x209f9827'),
+    messageKey: 'systemConfig',
+  },
+]
+
 export function resolveReferralBindError(
   error: unknown,
   messages: ReferralBindErrorMessages,
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
 
-  const raw = readErrorText(error)
-  const s = raw.toLowerCase()
-  const has = (sel: string) => s.includes(sel)
+  const text = toErrorText(readErrorText(error))
 
-  if (raw === REFERRAL_BIND_ERROR.INVALID_PARENT) return messages.invalidParent
-  if (raw === REFERRAL_BIND_ERROR.PARENT_NOT_BOUND) return messages.parentNotBound
+  if (text.raw === REFERRAL_BIND_ERROR.INVALID_PARENT) return messages.invalidParent
+  if (text.raw === REFERRAL_BIND_ERROR.PARENT_NOT_BOUND) return messages.parentNotBound
 
-  // Match by decoded name OR on-chain selector (verified against impl 0xecb7…b629).
-  if (/Referral__AlreadyBound|AlreadyBound/i.test(raw) || has('0xd242113b')) return messages.alreadyBound
-  if (/Referral__ParentNotBound|ParentNotBound/i.test(raw) || has('0x3d50dfd5')) return messages.parentNotBound
-  if (/Referral__SelfReferral|SelfReferral/i.test(raw) || has('0xa7e9b6d3')) return messages.selfReferral
-  if (/Referral__MigratedAccount|MigratedAccount/i.test(raw) || has('0xc6dbe929')) return messages.migratedAccount
-  if (/Referral__(ParentZero|UserZero)/i.test(raw) || has('0x841bf48a') || has('0x55bc9184')) {
-    return messages.invalidParent
-  }
-  if (/Referral__(RootZero|NotMigrationManager)/i.test(raw) || has('0xc77b7954') || has('0x209f9827')) {
-    return messages.systemConfig
-  }
-  return raw || messages.failed
+  const mapped = resolveFirstMatch(text, REFERRAL_BIND_ERROR_RULES, messages)
+  if (mapped) return mapped
+
+  return text.raw || messages.failed
 }
 
 /** Friendly i18n messages for the reward-claim flow (RewardClaimer errors + flow). */
@@ -284,6 +350,35 @@ export interface TeamClaimErrorMessages {
   failed: string
 }
 
+const TEAM_CLAIM_ERROR_RULES: Array<ErrorRule<keyof TeamClaimErrorMessages>> = [
+  {
+    match: nameOrSelector(/ErrorAlreadyUsed|AlreadyUsed|already.?(used|claimed)/i, '0xd7003173'),
+    messageKey: 'alreadyUsed',
+  },
+  {
+    match: nameOrSelector(/ErrorSignatureExpired|SignatureExpired|expired/i, '0x66e6698b'),
+    messageKey: 'expired',
+  },
+  {
+    match: nameOrSelector(/ErrorInvalidSigner|InvalidSigner|invalid.?sign/i, '0xab3834a6'),
+    messageKey: 'invalidSigner',
+  },
+  {
+    match: nameOrSelector(/ErrorZeroAmount|ZeroAmount/i, '0xc91787e4'),
+    messageKey: 'zeroAmount',
+  },
+]
+
+function isNoTeamClaimOrder(error: unknown, raw: string): boolean {
+  const code = readErrorCode(error)
+  return (
+    code === 404 ||
+    /no\s*(team\s*)?reward|available\s*to\s*claim|no.?pending|未?待领取|无可领取|not\s*found/i.test(
+      raw,
+    )
+  )
+}
+
 /**
  * Map a team-reward claim failure (RewardClaimer custom errors per contract.md
  * §4.4, or the no-pending-order API case) to a friendly message.
@@ -294,35 +389,26 @@ export function resolveTeamClaimError(
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
 
-  const raw = readErrorText(error)
-  const code = readErrorCode(error)
-  // RewardClaimer reverts with a 4-byte selector (our ABI has no error defs to
-  // decode the name), so match both the decoded name AND the on-chain selector.
-  const lower = raw.toLowerCase()
+  const text = toErrorText(readErrorText(error))
 
-  if (/ErrorAlreadyUsed|AlreadyUsed|already.?(used|claimed)/i.test(raw) || lower.includes('0xd7003173')) {
-    return messages.alreadyUsed
-  }
-  if (/ErrorSignatureExpired|SignatureExpired|expired/i.test(raw) || lower.includes('0x66e6698b')) {
-    return messages.expired
-  }
-  if (/ErrorInvalidSigner|InvalidSigner|invalid.?sign/i.test(raw) || lower.includes('0xab3834a6')) {
-    return messages.invalidSigner
-  }
-  if (/ErrorZeroAmount|ZeroAmount/i.test(raw) || lower.includes('0xc91787e4')) {
-    return messages.zeroAmount
-  }
-  if (
-    code === 404 ||
-    /no\s*(team\s*)?reward|available\s*to\s*claim|no.?pending|未?待领取|无可领取|not\s*found/i.test(
-      raw,
-    )
-  ) {
-    return messages.noOrder
-  }
+  const mapped = resolveFirstMatch(text, TEAM_CLAIM_ERROR_RULES, messages)
+  if (mapped) return mapped
 
-  return raw || messages.failed
+  if (isNoTeamClaimOrder(error, text.raw)) return messages.noOrder
+
+  return text.raw || messages.failed
 }
+
+const GENESIS_PURCHASE_SENTINEL_RULES: Array<{
+  sentinel: string
+  messageKey: keyof GenesisContractErrorMessages | 'insufficientUsd1' | 'insufficientAllowance' | 'purchaseUnavailable' | 'walletNotConnected'
+}> = [
+  { sentinel: GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1, messageKey: 'insufficientUsd1' },
+  { sentinel: GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE, messageKey: 'insufficientAllowance' },
+  { sentinel: GENESIS_PURCHASE_ERROR.UNAVAILABLE, messageKey: 'purchaseUnavailable' },
+  { sentinel: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED, messageKey: 'walletNotConnected' },
+  { sentinel: GENESIS_PURCHASE_ERROR.NOT_BOUND, messageKey: 'notBound' },
+]
 
 export function resolveGenesisPurchaseError(
   error: unknown,
@@ -335,17 +421,15 @@ export function resolveGenesisPurchaseError(
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
 
-  const raw = readErrorText(error)
+  const text = toErrorText(readErrorText(error))
 
-  // App-level sentinels thrown by the purchase flow before sending the tx.
-  if (raw === GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1) return messages.insufficientUsd1
-  if (raw === GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE) return messages.insufficientAllowance
-  if (raw === GENESIS_PURCHASE_ERROR.UNAVAILABLE) return messages.purchaseUnavailable
-  if (raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED) return messages.walletNotConnected
-  if (raw === GENESIS_PURCHASE_ERROR.NOT_BOUND) return messages.notBound ?? null
+  for (const rule of GENESIS_PURCHASE_SENTINEL_RULES) {
+    if (text.raw !== rule.sentinel) continue
+    const message = messages[rule.messageKey]
+    return message ?? null
+  }
 
-  // PreSale custom contract errors (when decoded into the revert text).
-  const contractMessage = matchPreSaleContractError(raw, messages)
+  const contractMessage = resolveFirstMatch(text, PRE_SALE_ERROR_RULES, messages)
   if (contractMessage) return contractMessage
 
   return resolveContractErrorMessage(error, messages)
