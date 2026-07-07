@@ -6,8 +6,8 @@ import {
   formatCount,
   formatPresaleRank,
   formatUsd,
-  mapTeamReferralToCompactRow,
 } from '~/shared/api/format-display'
+import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import {
   getCommitmentFloorPostLaunchLabel,

@@ -8,8 +8,8 @@ import {
 import {
   formatCommunityFundLockedAmount,
   formatClaimableAmount,
-  formatUsd,
-} from '~/shared/api/format-display'
+} from '~/views/dapp/rewards/rewards-display'
+import { formatUsd } from '~/shared/api/format-display'
 import { RewardBalanceCardSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { useCommunityFundClaim } from '~/hooks/use-community-fund-claim'

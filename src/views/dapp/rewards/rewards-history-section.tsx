@@ -6,12 +6,12 @@ import {
   useRewardLogs,
   useTeamRewardClaimLogs,
 } from '~/hooks/use-api-data'
+import { formatUsd } from '~/shared/api/format-display'
 import {
-  formatUsd,
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
-} from '~/shared/api/format-display'
+} from '~/views/dapp/rewards/rewards-display'
 import { useAuth } from '~/app/bootstrap/auth-provider'
 import { DappCollapsibleSection } from '~/app/shell/components/dapp-collapsible-section'
 import { DappSection } from '~/app/shell/components/dapp-section'
@@ -78,23 +78,17 @@ export function RewardsHistorySection() {
     sessionReady && isSuperCommunity,
   )
 
-  const rewardLogLabels = useMemo(
+  const historyStatusLabels = useMemo(
     () => t.rewards.logStatus,
-    [t.rewards.logStatus],
-  )
-  const teamHistoryLabels = useMemo(
-    () => ({
-      logStatus: t.rewards.logStatus,
-    }),
     [t.rewards.logStatus],
   )
 
   const referralHistoryRows =
-    rewardLogs?.items.map((item) => mapRewardLogToRow(item, rewardLogLabels)) ?? []
+    rewardLogs?.items.map((item) => mapRewardLogToRow(item, historyStatusLabels)) ?? []
   const teamHistoryRows =
-    teamClaimLogs?.items.map((item) => mapTeamRewardClaimLogToRow(item, teamHistoryLabels)) ?? []
+    teamClaimLogs?.items.map((item) => mapTeamRewardClaimLogToRow(item, historyStatusLabels)) ?? []
   const communityFundHistoryRows =
-    communityFundLogs?.items.map((item) => mapCommunityFundLogToRow(item, teamHistoryLabels)) ??
+    communityFundLogs?.items.map((item) => mapCommunityFundLogToRow(item, historyStatusLabels)) ??
     []
 
   const historyRows =

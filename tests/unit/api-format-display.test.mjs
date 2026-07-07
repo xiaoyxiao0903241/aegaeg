@@ -46,7 +46,7 @@ test('formatTableGenesisRank hides S0 in community member table', async () => {
 })
 
 test('mapTeamReferralToCompactRow renders invite table cells', async () => {
-  const { mapTeamReferralToCompactRow } = await loadModule('/src/shared/api/format-display.ts')
+  const { mapTeamReferralToCompactRow } = await loadModule('/src/views/dapp/community/community-display.ts')
 
   assert.deepEqual(
     mapTeamReferralToCompactRow({
@@ -62,7 +62,7 @@ test('mapTeamReferralToCompactRow renders invite table cells', async () => {
 })
 
 test('mapRewardLogToRow uses i18n labels for status', async () => {
-  const { mapRewardLogToRow } = await loadModule('/src/shared/api/format-display.ts')
+  const { mapRewardLogToRow } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
   const labels = {
     pending: '待处理',
     processing: '处理中',
@@ -95,16 +95,14 @@ test('mapRewardLogToRow uses i18n labels for status', async () => {
 })
 
 test('mapTeamRewardClaimLogToRow renders presale team claim history', async () => {
-  const { mapTeamRewardClaimLogToRow } = await loadModule('/src/shared/api/format-display.ts')
+  const { mapTeamRewardClaimLogToRow } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
   const labels = {
-    logStatus: {
-      pending: '待领取',
-      processing: '处理中',
-      paid: '已领取',
-      claimed: '已领取',
-      failed: '已过期',
-      unknown: '—',
-    },
+    pending: '待领取',
+    processing: '处理中',
+    paid: '已领取',
+    claimed: '已领取',
+    failed: '已过期',
+    unknown: '—',
   }
 
   const row = mapTeamRewardClaimLogToRow(
@@ -125,16 +123,14 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
 })
 
 test('mapCommunityFundLogToRow renders development fund history without genesis rank', async () => {
-  const { mapCommunityFundLogToRow } = await loadModule('/src/shared/api/format-display.ts')
+  const { mapCommunityFundLogToRow } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
   const labels = {
-    logStatus: {
-      pending: '待处理',
-      processing: '处理中',
-      paid: '已支付',
-      claimed: '已领取',
-      failed: '失败',
-      unknown: '—',
-    },
+    pending: '待处理',
+    processing: '处理中',
+    paid: '已支付',
+    claimed: '已领取',
+    failed: '失败',
+    unknown: '—',
   }
 
   const row = mapCommunityFundLogToRow(
@@ -153,7 +149,7 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
 })
 
 test('formatClaimableAmount subtracts claimed from total', async () => {
-  const { formatClaimableAmount } = await loadModule('/src/shared/api/format-display.ts')
+  const { formatClaimableAmount } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
 
   assert.equal(formatClaimableAmount('1000', '657.82'), '$342.18')
 })
