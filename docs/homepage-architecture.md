@@ -2,7 +2,7 @@
 
 > **读者**：后续 AI agent / 开发者 — **改 Home、动效、i18n HTML、Provider 前先读本文**  
 > **最后对齐代码**：2026-07-07  
-> **关联**：[`static-homepage-plan.md`](./static-homepage-plan.md)（目标规则）· [`homepage-load-optimization.md`](./homepage-load-optimization.md)（性能优化路线）· [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md)（动效）· [`refactor-plan-minimal-world-class.md`](./refactor-plan-minimal-world-class.md)（目录迁移 R7）
+> **关联**：[`static-homepage-plan.md`](./static-homepage-plan.md)（目标规则）· [`homepage-load-optimization.md`](./homepage-load-optimization.md)（性能优化路线）· [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md)（动效）
 
 ---
 
@@ -12,10 +12,9 @@
 |------|------|------------|
 | **本文** | **代码今天怎么做** | 路径、Provider、HTML 生成、命名陷阱 |
 | `static-homepage-plan.md` | 产品/性能 **目标** | 理想态；与现状偏差见 §2 |
-| `homepage-load-optimization.md` | **待实施**优化 | Phase 1–4，缩小现状与目标差距 |
-| `homepage-animation-guidelines.md` | 动效设计规则 | CSS + IO；runtime 见 `wallet-loader.ts` |
+| `homepage-load-optimization.md` | 性能优化路线 | Phase 1 已完成；Phase 2–4 待做 |
+| `homepage-animation-guidelines.md` | 动效设计规则 | CSS + IO；runtime 见 `home-reveal-loader.ts` |
 | `design-system-audit.md` | DApp / Home 视觉 | Figma 帧、组件 variant |
-| `refactor-plan-minimal-world-class.md` | 全仓目录重构 | R7 迁 Home；**未改代码前仍以本文路径为准** |
 | [`docs/README.md`](./README.md) | 全项目文档索引 | 含已删除文档清单 |
 
 **命名陷阱（必读）**
@@ -134,7 +133,7 @@ Home **不**渲染 `ConnectButton`；Header/Hero 仅链接到 DApp。
 | Home | `src/shared/styles/home.css` | `globals.css` + **`wallet.css`**（仅 CTA 视觉）+ `home-motion.css` |
 | DApp | `src/shared/styles/dapp.css` | `globals` / foundations + wallet + dapp 布局 |
 
-重构 **R2 目标**：home / dapp **双 bundle**，home 首屏不携带 dapp-only wallet 规则（见 refactor-plan §9 R2）。
+**CSS 双 bundle**：`shared/styles/home.css` 与 `dapp.css` 分入口；home 首屏不携带 dapp-only wallet 规则。
 
 ---
 

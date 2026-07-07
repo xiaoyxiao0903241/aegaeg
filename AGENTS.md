@@ -35,8 +35,7 @@ AI 工作规范
 ### 8.3 工具规则
 
 - 用 `rg` 搜索文本、文档、配置、生成文件和 fallback。
-- **项目文档索引**：[`docs/README.md`](docs/README.md) — Home / DApp / **重构 rev3** SSOT 入口。
-- **全仓目录迁移**：先读 [`docs/refactor-execution-playbook.md`](docs/refactor-execution-playbook.md)（**move 验 parity → refactor**）。
+- **项目文档索引**：[`docs/README.md`](docs/README.md) — Home / DApp / 设计系统 SSOT 入口。
 - 触达代码时优先用 `agent-lsp` 做语义查询，使用最小 workspace root。
 - **CodeGraph** 是当前默认代码图谱工具。依赖结果前先运行 `codegraph status .`；索引不新时运行 `codegraph sync .`。
 - 探索概念用 `codegraph context`；查调用关系用 `codegraph callers` / `codegraph callees`；评估影响面用 `codegraph impact`；文本兜底仍用 `rg`。

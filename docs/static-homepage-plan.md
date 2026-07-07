@@ -93,4 +93,3 @@ DApp: Swap · Genesis · Rewards · Community tabs via `DappShell` on `app.html`
 | [`homepage-architecture.md`](./homepage-architecture.md) | **What the code does now** |
 | [`homepage-load-optimization.md`](./homepage-load-optimization.md) | How to close the gap |
 | [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md) | Motion design |
-| [`refactor-plan-minimal-world-class.md`](./refactor-plan-minimal-world-class.md) | R7 home folder migration |

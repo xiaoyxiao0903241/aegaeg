@@ -1,7 +1,7 @@
 # 首页加载性能优化策略
 
-> **状态**：已批准 · **待实施**（代码仍以 [`homepage-architecture.md`](./homepage-architecture.md) 为准）  
-> **关联**：[`static-homepage-plan.md`](./static-homepage-plan.md) · [`refactor-plan-minimal-world-class.md`](./refactor-plan-minimal-world-class.md)（R2 / R7）
+> **状态**：Phase 1 **已完成** · Phase 2–4 待做（代码仍以 [`homepage-architecture.md`](./homepage-architecture.md) 为准）  
+> **关联**：[`static-homepage-plan.md`](./static-homepage-plan.md)
 
 ---
 
@@ -39,17 +39,17 @@
 ## 3. 分阶段方案
 
 ```
-Phase 1  Home 轻量 Provider（去 thirdweb）     ← P0，可独立于 R0
-Phase 2  i18n 按 locale 减重                   ← P1，建议与 R7 home-renderer 同 PR
+Phase 1  Home 轻量 Provider（去 thirdweb）     ← ✅ 已完成
+Phase 2  i18n 按 locale 减重                   ← P1，下一步
 Phase 3  SSG 预渲染（可选）                     ← P2
 Phase 4  CSS / redirect 细项                   ← P3
 ```
 
-### Phase 1 · Home 轻量 Provider（P0）
+### Phase 1 · Home 轻量 Provider（P0）✅
 
-- 新建 `HomeProviders`：仅 `QueryProvider`（服务 `use-home-popup-notice`）
-- `home/main.tsx` 移除 `WebRootProviders`；`main.tsx`（DApp）保留
-- **预期**：Home JS ~200–400 KB；`dist/en/index.html` 无 thirdweb chunk
+- `HomeProviders`：仅 `QueryProvider`（服务 `use-home-popup-notice`）
+- `views/home/main.tsx` 使用 `HomeProviders`；`app/main.tsx`（DApp）保留 `WebRootProviders`
+- Home 首屏不加载 thirdweb chunk
 
 **验收**：build 后 chunk 断言 · Home 动效/popup/语言切换 · DApp 连接不受影响
 
@@ -74,19 +74,7 @@ Phase 4  CSS / redirect 细项                   ← P3
 
 ---
 
-## 5. 与重构衔接
-
-| PR | 关系 |
-|----|------|
-| R2 | home/dapp CSS 双 bundle |
-| R7 | `home-renderer` + Phase 2 inline i18n；`wallet-loader` rename |
-| R8 | DApp `WebRootProviders` 终态归位 |
-
-Phase 1 **不依赖** R0 Tab Registry。
-
----
-
-## 6. 验收
+## 5. 验收
 
 ```bash
 pnpm build
@@ -104,4 +92,4 @@ Phase 1 后新增 `scripts/assert-home-bundle.mjs`（denylist thirdweb chunk 名
 
 ---
 
-**下一步**：实施 Phase 1（见 [`homepage-architecture.md` §2 差距表](./homepage-architecture.md#2-现状-vs-目标agent-勿混读)）。
+**下一步**：实施 **Phase 2**（按 locale inline i18n，见 [`homepage-architecture.md` §2](./homepage-architecture.md#2-现状-vs-目标agent-勿混读)）。
