@@ -79,6 +79,30 @@ async function setViewport(viewport) {
   })
 }
 
+/** 截图前冻结动效/视频帧，避免 hero 视频与 CSS 动画造成假 diff */
+async function freezeMotion() {
+  await wb('evaluate', {
+    code: `(() => {
+      document.querySelectorAll('video').forEach((v) => {
+        try {
+          v.pause()
+          v.currentTime = 0
+        } catch {}
+      })
+      let style = document.getElementById('__compare-freeze')
+      if (!style) {
+        style = document.createElement('style')
+        style.id = '__compare-freeze'
+        document.head.appendChild(style)
+      }
+      style.textContent =
+        '*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }'
+      return true
+    })()`,
+  })
+  await sleep(150)
+}
+
 async function scrollHome() {
   await wb('evaluate', {
     code: `(() => {
@@ -126,6 +150,7 @@ async function prepareTab(tabUrl, target) {
   await sleep(target.waitMs ?? 1000)
   await wb('evaluate', { code: '(() => { window.scrollTo(0, 0); return 0; })()' })
   await sleep(300)
+  if (target.scrollHome) await freezeMotion()
   return readMetrics()
 }
 
