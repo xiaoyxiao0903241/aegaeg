@@ -60,7 +60,7 @@ export function SwapPercentButtons({
           onClick={() => onSelect(percent)}
           type="button"
         >
-          <Text className="tracking-[-0.02em] group-hover:text-primary" tone="primary" variant="label" weight="semibold">
+          <Text className="group-hover:text-primary" tone="foreground" variant="label" weight="semibold">
             {percent}%
           </Text>
         </button>

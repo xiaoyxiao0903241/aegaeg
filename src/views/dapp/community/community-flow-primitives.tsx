@@ -56,10 +56,10 @@ export function CommunityProgramCard({
       <Text as="span" variant="kicker" tone="accent" className={styles.kicker()}>
         {label}
       </Text>
-      <Text as="h3" variant="title-lg" tone="primary" className={styles.title()}>
+      <Text as="h3" variant="title-lg" tone="foreground" className={styles.title()}>
         {title}
       </Text>
-      <Text as="p" variant="body" tone="secondary" className={styles.body()}>
+      <Text as="p" variant="body" tone="subtle" className={styles.body()}>
         {body}
       </Text>
       {navigableHref ? (

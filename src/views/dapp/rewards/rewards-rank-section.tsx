@@ -31,8 +31,6 @@ import {
   RewardsSideCard,
 } from '~/views/dapp/rewards/rewards-widget-primitives'
 
-const rankMetaClass = 'max-dapp:text-muted-foreground'
-
 export function RewardsRankSection() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
@@ -142,7 +140,7 @@ export function RewardsRankSection() {
               <Text
                 as="strong"
                 className="block min-w-0 break-words"
-                tone="primary"
+                tone="foreground"
                 variant="rank-title"
               >
                 {formatRankTitleWithBadge(
@@ -153,19 +151,19 @@ export function RewardsRankSection() {
               </Text>
             ) : null}
             {showPostLaunchRank ? (
-              <Text as="strong" className="block text-right" tone="primary" variant="rank-title">
+              <Text as="strong" className="block text-right" tone="foreground" variant="rank-title">
                 {postLaunchRank}
               </Text>
             ) : null}
 
-            <Text as="small" className={cn('block', rankMetaClass)} tone="primary" variant="hint">
+            <Text as="small" className="block" tone="subtle" variant="hint">
               {leftBottomLabel}
             </Text>
             {postLaunch30DayLabel ? (
               <Text
                 as="small"
-                className={cn('block text-right', rankMetaClass)}
-                tone="primary"
+                className="block text-right"
+                tone="subtle"
                 variant="hint"
               >
                 {postLaunch30DayLabel}

@@ -13,10 +13,8 @@ const securityClass = {
   section:
     'border-y border-border bg-[#ebeef3] py-30 dapp:min-h-[49.625rem] max-dapp:min-h-[44.4375rem] max-dapp:border-y-0 max-dapp:py-12',
   head: 'dapp:min-h-[8.75rem]',
-  title:
-    '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1]',
-  subtitle:
-    '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:text-base dapp:[&&]:leading-[1.5]',
+  title: '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4',
+  subtitle: '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4',
   artImage: 'h-full w-full object-contain object-center',
   iconImage: 'size-[var(--home-security-icon-size)] object-contain',
 } as const
@@ -91,7 +89,7 @@ export function HomeSecuritySection() {
                     loading="lazy"
                   />
                 </span>
-                <Text as="span" tone="primary" variant="body">
+                <Text as="span" tone="strong" variant="body" weight="medium">
                   {check}
                 </Text>
               </Card>

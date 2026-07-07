@@ -80,17 +80,17 @@ export function SwapHubHeader({
       <div className={styles.hubCopy()}>
         <Text
           as="h1"
-          className={cn(styles.pageTitle(), 'text-[1.3125rem] leading-normal tracking-[-0.02625em]')}
-          tone="primary"
-          variant="body-md"
+          className={styles.pageTitle()}
+          tone="foreground"
+          variant="title"
           weight="semibold"
         >
           {title}
         </Text>
         <Text
           as="p"
-          className={cn(styles.pageSubtitle(), 'leading-[1.4] tracking-[-0.02em]')}
-          tone="primary"
+          className={styles.pageSubtitle()}
+          tone="strong"
           variant="compact-body"
         >
           {subtitle}
@@ -122,8 +122,8 @@ export function SwapSubpageHeader({
         >
           <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
           <Text
-            className={cn(styles.subpageBackLabel(), 'leading-[1.4] tracking-[-0.02em]')}
-            tone="primary"
+            className={styles.subpageBackLabel()}
+            tone="strong"
             variant="body-md"
             weight="medium"
           >
@@ -135,17 +135,17 @@ export function SwapSubpageHeader({
       <div className={styles.subpageCopy()}>
         <Text
           as="h1"
-          className={cn(styles.pageTitle(), 'text-[1.3125rem] leading-normal tracking-[-0.02625em]')}
-          tone="primary"
-          variant="body-md"
+          className={styles.pageTitle()}
+          tone="foreground"
+          variant="title"
           weight="semibold"
         >
           {title}
         </Text>
         <Text
           as="p"
-          className={cn(styles.pageSubtitle(), 'leading-[1.4] tracking-[-0.02em]')}
-          tone="primary"
+          className={styles.pageSubtitle()}
+          tone="strong"
           variant="compact-body"
         >
           {subtitle}

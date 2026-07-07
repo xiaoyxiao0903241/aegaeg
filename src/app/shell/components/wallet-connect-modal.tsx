@@ -46,7 +46,7 @@ export function WalletConnectModal({
 
       <div className="flex items-center justify-between max-dapp:px-0 dapp:mb-5">
         <DialogPrimitive.Title asChild>
-          <Text as="h2" variant="title-xl" className="m-0">
+          <Text as="h2" variant="panel-title" className="m-0">
             {t.wallet.connectTitle}
           </Text>
         </DialogPrimitive.Title>

@@ -16,8 +16,8 @@ const swapPromoCard = tv({
     bodyGrid: 'relative z-1 grid gap-2',
     titleRow: 'flex w-full min-w-0 items-center',
     titleCluster: 'flex min-w-0 items-center overflow-hidden',
-    title: 'truncate leading-[1.2]',
-    body: 'm-0 min-w-0 leading-[1.5] tracking-[-0.02em]',
+    title: 'truncate',
+    body: 'm-0 min-w-0',
     titleIcon: 'grid shrink-0 overflow-hidden rounded-full',
     mobileActionWrap: 'inline-flex shrink-0 self-center',
     decorationMobile: 'pointer-events-none absolute top-0 right-0 h-18 w-30',
@@ -30,7 +30,6 @@ const swapPromoCard = tv({
         bodyGrid: 'p-4 pr-36',
         titleRow: 'gap-3',
         titleCluster: 'gap-3',
-        title: 'tracking-[-0.03em]',
         body: 'max-w-144',
         titleIcon: 'size-8',
       },
@@ -38,7 +37,6 @@ const swapPromoCard = tv({
         bodyGrid: 'px-4 py-3.5',
         titleRow: 'flex-nowrap justify-between gap-2',
         titleCluster: 'min-w-0 flex-1 gap-2',
-        title: 'tracking-[-0.028em]',
         body: 'max-w-60',
         titleIcon: 'size-7.5',
       },
@@ -207,7 +205,7 @@ export function SwapPromoCard({
             <Text
               as="strong"
               className={styles.title()}
-              tone="primary"
+              tone="foreground"
               variant={layout === 'desktop' ? 'body-md' : 'body'}
               weight="semibold"
             >
@@ -219,7 +217,7 @@ export function SwapPromoCard({
         <Text
           as="p"
           className={styles.body()}
-          tone={layout === 'desktop' ? 'primary' : 'secondary'}
+          tone={layout === 'desktop' ? 'strong' : 'subtle'}
           variant="caption"
         >
           {body}

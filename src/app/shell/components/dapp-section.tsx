@@ -22,12 +22,8 @@ export function DappSection({
     >
       <Text
         as="h3"
-        variant="lead"
-        className={cn(
-          'm-0 tracking-[-0.36px] max-dapp:text-base max-dapp:tracking-[-0.68px]',
-          dappDetailTitleGapClass,
-          titleClassName,
-        )}
+        variant="content-heading"
+        className={cn('m-0', dappDetailTitleGapClass, titleClassName)}
       >
         {title}
       </Text>

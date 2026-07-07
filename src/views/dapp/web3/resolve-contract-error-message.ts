@@ -65,7 +65,7 @@ function nameOrSelector(
   return ({ raw, lower }) => namePattern.test(raw) || hasSelector(lower, ...selectors)
 }
 
-function resolveFirstMatch<M extends Record<string, string | undefined>, K extends keyof M & string>(
+function resolveFirstMatch<M extends object, K extends keyof M & string>(
   text: ErrorText,
   rules: Array<ErrorRule<K>>,
   messages: M,
@@ -73,7 +73,7 @@ function resolveFirstMatch<M extends Record<string, string | undefined>, K exten
   for (const rule of rules) {
     if (!rule.match(text)) continue
     const message = messages[rule.messageKey]
-    if (message != null) return message
+    if (typeof message === 'string') return message
     return null
   }
   return null

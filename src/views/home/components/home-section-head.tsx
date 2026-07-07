@@ -23,7 +23,7 @@ export function HomeSectionHead({
 }) {
   return (
     <div className={cn(sectionHeadClass, revealClass(), className)} data-reveal>
-      <Text as="p" className="m-0" variant="home-eyebrow">
+      <Text as="p" className="m-0" tone="accent" variant="section-eyebrow">
         {eyebrow}
       </Text>
       <Text
@@ -32,8 +32,7 @@ export function HomeSectionHead({
           'mx-auto mt-3.5 max-w-192 max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-balance',
           titleClassName,
         )}
-        tone="primary"
-        variant="home-display"
+        variant="section-display"
         weight="semibold"
       >
         {title}
@@ -45,8 +44,8 @@ export function HomeSectionHead({
             'mx-auto mt-3.5 block max-w-176 max-dapp:mt-2.5 max-dapp:max-w-96',
             subtitleClassName,
           )}
-          tone="primary"
-          variant="home-lead"
+          tone="strong"
+          variant="section-subtitle"
         >
           {subtitle}
         </Text>

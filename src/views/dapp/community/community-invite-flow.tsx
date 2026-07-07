@@ -19,7 +19,7 @@ const inviteFlowStep = tv({
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
   return (
-    <Text as="span" variant="caption" weight="semibold" tone="primary" className={inviteFlowStep()}>
+    <Text as="span" variant="caption" weight="semibold" tone="inverse" className={inviteFlowStep()}>
       {children}
     </Text>
   )
@@ -64,19 +64,19 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           <Text
             as="h4"
             variant="body"
-            tone="primary"
+            tone="foreground"
             weight="semibold"
-            className="m-0 tracking-[-0.28px] max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
+            className="m-0 max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
           >
             {item.title}
           </Text>
           <Text
             as="p"
             variant="label"
-            tone="secondary"
+            tone="subtle"
             className={cn(
-              'm-0 max-w-[24ch] tracking-[-0.24px]',
-              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2 max-dapp:text-xs max-dapp:leading-[1.28]',
+              'm-0 max-w-[24ch]',
+              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2',
             )}
           >
             {item.copy}
@@ -105,13 +105,13 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             <Text
               as="h4"
               variant="body"
-              tone="primary"
+              tone="foreground"
               weight="semibold"
-              className="m-0 leading-[1.2] tracking-[-0.28px]"
+              className="m-0"
             >
               {item.title}
             </Text>
-            <Text as="p" variant="body" tone="secondary" className="m-0 leading-normal tracking-[-0.26px]">
+            <Text as="p" variant="body" tone="subtle" className="m-0">
               {item.copy}
             </Text>
           </div>

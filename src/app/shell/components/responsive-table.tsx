@@ -13,9 +13,6 @@ const TABLE_CLASS = 'w-max min-w-full table-auto border-collapse'
 
 const HIGHLIGHTED_ROW = 'bg-accent'
 
-const POSITIVE_WEIGHT_CLASS =
-  'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal'
-
 function getCellTextConfig(
   columnIndex: number,
   highlighted: boolean,
@@ -23,7 +20,6 @@ function getCellTextConfig(
   emphasisColumns: number[],
   positiveColumns: number[],
 ): {
-  className?: string
   tone: TextTone
   weight?: 'bold'
 } {
@@ -37,29 +33,27 @@ function getCellTextConfig(
       return {
         tone: 'success',
         weight: 'bold',
-        className: POSITIVE_WEIGHT_CLASS,
       }
     }
     if (isFirst) {
       return { tone: 'accent' }
     }
-    return { tone: 'primary' }
+    return { tone: 'foreground' }
   }
 
   if (isPositive) {
     return {
       tone: 'success',
       weight: 'bold',
-      className: POSITIVE_WEIGHT_CLASS,
     }
   }
   if (isLink) {
     return { tone: 'accent' }
   }
   if (isEmphasis) {
-    return { tone: 'primary', weight: 'bold' }
+    return { tone: 'foreground', weight: 'bold' }
   }
-  return { tone: 'primary' }
+  return { tone: 'foreground' }
 }
 
 function wrapTableCellContent(
@@ -74,11 +68,10 @@ function wrapTableCellContent(
     return (
       <Text
         as="span"
-        variant="body"
+        variant="table-cell"
         tone={textConfig.tone}
         weight={textConfig.weight}
         tabular
-        className={textConfig.className}
       >
         {cell}
       </Text>
@@ -135,7 +128,7 @@ export function ResponsiveTable({
           <tr>
             {headers.map((header) => (
               <th className={cn(TABLE_CELL, headCellClassName)} key={header}>
-                <Text variant="label" tone="secondary">
+                <Text variant="label" tone="subtle">
                   {header}
                 </Text>
               </th>

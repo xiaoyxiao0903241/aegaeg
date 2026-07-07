@@ -18,10 +18,9 @@ export function DappContentHeading({
   return (
     <Text
       as="h2"
-      variant="lead"
+      variant="content-heading"
       className={cn(
-        'm-0 tracking-[-0.36px]',
-        'max-dapp:mt-0 max-dapp:text-base max-dapp:tracking-[-0.68px]',
+        'm-0 max-dapp:mt-0',
         dappDetailTitleGapClass,
         reveal && revealClass(),
         className,

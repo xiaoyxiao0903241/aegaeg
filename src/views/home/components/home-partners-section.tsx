@@ -23,7 +23,8 @@ export function HomePartnersSection() {
         <Text
           as="h2"
           id="partners-title"
-          variant="home-eyebrow"
+          tone="accent"
+          variant="section-eyebrow"
           className="m-0"
         >
           {title}
@@ -46,7 +47,7 @@ export function HomePartnersSection() {
                 height="24"
                 loading="lazy"
               />
-              <Text as="span" tone="primary" variant="body" weight="semibold">
+              <Text as="span" tone="foreground" variant="body" weight="semibold">
                 {name}
               </Text>
             </Card>

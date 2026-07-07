@@ -24,15 +24,10 @@ export function DappTableAuthPrompt({
       showSkeleton={showSkeleton}
     >
       <div className="grid w-full gap-1.5 text-center">
-        <Text
-          as="p"
-          variant="body"
-          weight="semibold"
-          className="m-0 leading-[1.2] tracking-[-0.3px]"
-        >
+        <Text as="p" variant="body" weight="semibold" className="m-0">
           {t.dapp.connect.recordsTitle}
         </Text>
-        <Text as="p" variant="label" tone="secondary" className="m-0 tracking-[-0.26px]">
+        <Text as="p" variant="label" tone="subtle" className="m-0">
           {body}
         </Text>
       </div>

@@ -79,16 +79,15 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
       <div className={tokenClass.info}>
         <Text
           as="h3"
-          className="m-0 leading-[1.3] tracking-[-0.78px] max-dapp:mt-0.5 max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]"
+          className="m-0 max-dapp:mt-0.5"
           tone="inverse"
-          variant="title-xl"
+          variant="xl"
           weight="semibold"
         >
           {token.symbol}
         </Text>
         <Text
           as="strong"
-          className="leading-[1.3] tracking-[-0.28px] max-dapp:leading-[1.2]"
           tone="inverse"
           variant="body"
           weight="semibold"
@@ -97,7 +96,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         </Text>
         <Text
           as="p"
-          className="w-full max-w-60 leading-[1.5] tracking-[-0.26px] max-dapp:max-w-none"
+          className="w-full max-w-60 max-dapp:max-w-none"
           tone="inverse"
           variant="body"
         >

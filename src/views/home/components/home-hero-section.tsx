@@ -22,10 +22,9 @@ const heroClass = {
   copy:
     'hero-copy max-w-168 pt-16 max-tablet:pt-0 max-dapp:order-2 max-dapp:flex max-dapp:w-full max-dapp:max-w-96 max-dapp:flex-col max-dapp:items-center max-dapp:pt-0',
   eyebrow:
-    'hero-eyebrow eyebrow-pill inline-flex min-h-8 w-max max-w-full items-center gap-2 whitespace-nowrap rounded-3xl border border-border bg-card px-4 py-2 max-tablet:mx-auto max-dapp:min-h-7 max-dapp:gap-1.5 max-dapp:px-3.5 max-dapp:py-1.5 max-narrow:whitespace-normal max-narrow:text-left',
+    'hero-eyebrow eyebrow-pill inline-flex min-h-8 w-max max-w-full items-center gap-2 whitespace-nowrap rounded-3xl border border-border bg-card px-4 py-2 text-xs font-semibold leading-[1.2] text-foreground max-tablet:mx-auto max-dapp:min-h-7 max-dapp:gap-1.5 max-dapp:px-3.5 max-dapp:py-1.5 max-dapp:text-xs max-narrow:whitespace-normal max-narrow:text-left',
   statusDot: 'status-dot size-1.5 shrink-0 rounded-3xl bg-success',
-  title:
-    'hero-title mt-5.5 max-w-168 text-6xl max-dapp:mt-4 max-dapp:w-full max-dapp:text-4xl max-dapp:leading-[1.2]',
+  title: 'hero-title mt-5.5 max-w-168 max-dapp:mt-4 max-dapp:w-full',
   body:
     'hero-body mt-5.5 max-w-168 max-dapp:mt-2.5 max-dapp:w-full',
   actions:
@@ -49,9 +48,7 @@ function HeroPrimaryAction({ enterProtocol }: { enterProtocol: string }) {
   return (
     <Button asChild className={heroClass.actionButton} size="lg" variant="primary">
       <a href={appHref}>
-        <Text as="span" className={heroClass.actionLabel} variant="body">
-          {enterProtocol}
-        </Text>
+        <span className={heroClass.actionLabel}>{enterProtocol}</span>
         <svg
         className={heroClass.actionArrow}
         width="16"
@@ -93,21 +90,18 @@ export function HomeHeroSection() {
         <div className={heroClass.copy} data-hero-enter>
           <div className={heroClass.eyebrow}>
             <span className={heroClass.statusDot} aria-hidden="true" />
-            <Text as="span" variant="home-eyebrow">
-              {content.eyebrow}
-            </Text>
+            <span>{content.eyebrow}</span>
           </div>
           <Text
             as="h1"
             className={heroClass.title}
             id="hero-title"
-            tone="primary"
-            variant="home-display"
+            variant="hero-title"
             weight="semibold"
           >
             {content.title}
           </Text>
-          <Text as="p" className={heroClass.body} tone="primary" variant="home-lead">
+          <Text as="p" className={heroClass.body} tone="strong" variant="hero-body">
             {content.body}
           </Text>
           <div className={heroClass.actions}>

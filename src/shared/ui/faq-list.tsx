@@ -176,7 +176,7 @@ export function FaqList({
                 >
                   <div className="faq-answer-panel">
                     <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                      <Text as="p" variant="faq-answer" tone="secondary" className={styles.answer()}>
+                      <Text as="p" variant="faq-answer" tone="faq" className={styles.answer()}>
                         {item.a}
                       </Text>
                     </div>

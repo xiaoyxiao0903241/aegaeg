@@ -12,11 +12,9 @@ import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   seasonCardBadgeClass,
-  seasonCardMetaClass,
-  seasonCardRadiusClass,
   seasonCardRadioClass,
+  seasonCardRadiusClass,
   seasonCardSizeClass,
-  seasonCardTitleClass,
   seasonCarouselControlsGapClass,
   seasonCarouselEdgeBleedClass,
   seasonCarouselEdgeFadeClass,
@@ -126,28 +124,25 @@ function SeasonCard({
       <div className="flex items-start justify-between gap-1">
         <Text
           as="strong"
-          variant="body-md"
-          tone="primary"
-          weight="semibold"
-          className={seasonCardTitleClass}
+          variant="season-title"
         >
           {season.name}
         </Text>
         <RadioIndicator checked={selected} className={seasonCardRadioClass} />
       </div>
-      <Text as="p" variant="hint" tone="secondary" className={cn('m-0', seasonCardMetaClass)}>
+      <Text as="p" variant="season-meta" tone="subtle" className="m-0">
         {t.genesis.discountLabel}{' '}
-        <Text as="span" variant="hint" tone="accent">
+        <Text as="span" variant="season-meta" tone="accent">
           {season.desktopMeta.discount}
         </Text>
       </Text>
-      <Text as="p" variant="hint" tone="secondary" className={cn('m-0', seasonCardMetaClass)}>
+      <Text as="p" variant="season-meta" tone="subtle" className="m-0">
         {t.genesis.airdropLabel}{' '}
-        <Text as="span" variant="hint" tone="accent">
+        <Text as="span" variant="season-meta" tone="accent">
           {season.desktopMeta.airdrop}
         </Text>
       </Text>
-      <Text as="time" variant="hint" tone="secondary" className={seasonCardMetaClass}>
+      <Text as="time" variant="season-meta" tone="subtle">
         {season.date}
       </Text>
       <div className="mt-auto w-full">
@@ -155,9 +150,8 @@ function SeasonCard({
           <Text
             as="span"
             variant="label"
-            tone={season.status === 'LIVE' && selected ? 'accent' : 'secondary'}
+            tone={season.status === 'LIVE' && selected ? 'accent' : 'subtle'}
             weight="medium"
-            className={seasonCardBadgeClass}
           >
             {translateSeasonStatus(season.status, t)}
           </Text>

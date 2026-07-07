@@ -1,6 +1,5 @@
 import { LanguageMenu } from '~/shared/ui/language-menu'
 import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { allLanguageOptions } from '~/i18n/locales'
 import { withLocalePrefix } from '~/i18n/locale'
@@ -20,8 +19,8 @@ const navInnerClass = cn(
 )
 
 const brandClass = cn(
-  'inline-flex items-center gap-2.5 whitespace-nowrap',
-  'max-dapp:gap-2',
+  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-normal text-foreground',
+  'max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2]',
 )
 
 const brandMarkClass = cn(
@@ -30,10 +29,10 @@ const brandMarkClass = cn(
 )
 
 const navLinksClass = cn(
-  'flex items-center gap-8 whitespace-nowrap',
+  'flex items-center gap-8 whitespace-nowrap text-sm font-medium text-ink-strong',
   'max-tablet:hidden',
   '[&_a]:transition-[color,transform] [&_a]:duration-180 [&_a]:ease-out',
-  '[&_a:hover]:-translate-y-px',
+  '[&_a:hover]:-translate-y-px [&_a:hover]:text-foreground',
 )
 
 const navActionsClass = cn(
@@ -67,23 +66,13 @@ export function HomeHeader() {
             width="28"
             height="27"
           />
-          <Text as="span" className="max-dapp:leading-[1.2]" tone="primary" variant="lead" weight="semibold">
-            AEGIS X
-          </Text>
+          <span>AEGIS X</span>
         </a>
         <nav className={navLinksClass} aria-label={content.sectionsLabel}>
           {content.links.map((link) => (
-            <Text
-              as="a"
-              className="hover:text-foreground"
-              href={link.href}
-              key={link.href}
-              tone="primary"
-              variant="body"
-              weight="medium"
-            >
+            <a href={link.href} key={link.href}>
               {link.label}
-            </Text>
+            </a>
           ))}
         </nav>
         <div className={navActionsClass}>

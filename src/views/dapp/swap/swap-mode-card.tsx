@@ -32,20 +32,21 @@ export function SwapModeCard({
       <DappIcon alt="" className="shrink-0" size="xl" src={icon} />
       <span className="grid min-w-0 flex-1 gap-1">
         <span className="flex min-w-0 items-center gap-1.5">
-          <Text as="strong" tone="primary" variant="compact-title">
+          <Text as="strong" tone="foreground" variant="compact-title">
             {title}
           </Text>
           {badge ? (
             <Text
-              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#FF9500] px-2 py-1.5 text-[0.625rem] font-medium leading-none tracking-[-0.02em]"
+              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#FF9500] px-2 py-1.5"
               tone="inverse"
-              variant="label"
+              variant="xs"
+              weight="medium"
             >
               {badge}
             </Text>
           ) : null}
         </span>
-        <Text tone="secondary" variant="compact-body">
+        <Text tone="subtle" variant="compact-body">
           {body}
         </Text>
       </span>

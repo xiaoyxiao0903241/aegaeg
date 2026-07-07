@@ -78,11 +78,11 @@ function MenuItem({
           as="span"
           variant="body"
           weight={option.active ? 'semibold' : undefined}
-          className="block leading-[normal]"
+          className="block"
         >
           {option.name}
         </Text>
-        <Text as="span" variant="hint" tone="secondary" className="block leading-[normal]">
+        <Text as="span" variant="hint" tone="subtle" className="block">
           {option.label}
         </Text>
       </span>
@@ -100,7 +100,7 @@ function MenuItem({
             variant="label"
             weight="bold"
             tone="accent"
-            className="shrink-0 leading-none"
+            className="shrink-0"
           >
             ✓
           </Text>
@@ -190,7 +190,7 @@ function NativeLanguageMenu({
           role="button"
         >
           <img src={globeIcon} alt="" className="size-4 shrink-0" />
-          <Text variant="label" weight="semibold" className="leading-none">
+          <Text variant="label" weight="semibold">
             {triggerLabel ?? activeOption?.code}
           </Text>
         </summary>
@@ -297,7 +297,7 @@ function ReactLanguageMenu({
         type="button"
       >
         <img src={globeIcon} alt="" className="size-4 shrink-0" />
-        <Text variant="label" weight="semibold" className="leading-none">
+        <Text variant="label" weight="semibold">
           {triggerLabel ?? activeOption?.code}
         </Text>
       </button>

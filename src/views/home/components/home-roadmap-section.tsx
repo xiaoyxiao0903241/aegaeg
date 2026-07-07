@@ -21,15 +21,14 @@ const roadmapClass = {
   currentCard: 'min-h-30 border border-primary dapp:min-h-30',
   header:
     'flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start',
-  phaseLabel: 'leading-[1.2] tracking-[0.72px] dapp:leading-normal',
+  phaseLabel: '',
   now:
     'rounded-3xl bg-primary px-2 py-0.5 not-italic dapp:px-2.5 dapp:py-0.5',
-  time: 'ml-auto leading-[1.2] dapp:leading-[1.4]',
-  title:
-    'mt-1.5 leading-[1.2] tracking-[-0.64px] dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.72px]',
-  body: 'mt-1.5 leading-[1.4] tracking-[-0.26px] dapp:mt-2',
+  time: 'ml-auto',
+  title: 'mt-1.5 dapp:mt-2',
+  body: 'mt-1.5 dapp:mt-2',
   dot:
-    'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:left-1/2 dapp:top-10 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
+    'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-3xl dapp:absolute dapp:left-1/2 dapp:top-10 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
   dotComplete: 'bg-primary text-white dapp:border-primary',
   dotUpcoming: 'border-[3px] border-border bg-card',
   dotCurrent:
@@ -97,7 +96,9 @@ export function HomeRoadmapSection() {
                 data-phase-dot
                 aria-hidden="true"
               >
-                {phase.dot}
+                <Text as="span" variant="label" weight="semibold">
+                  {phase.dot}
+                </Text>
               </div>
               <Card
                 className={cn(
@@ -114,7 +115,7 @@ export function HomeRoadmapSection() {
                   <Text
                     as="span"
                     className={roadmapClass.phaseLabel}
-                    tone={phase.state ? 'accent' : 'secondary'}
+                    tone={phase.state ? 'accent' : 'subtle'}
                     variant="caption"
                     weight="semibold"
                   >
@@ -134,7 +135,7 @@ export function HomeRoadmapSection() {
                   <Text
                     as="time"
                     className={roadmapClass.time}
-                    tone={phase.state === 'current' ? 'accent' : 'secondary'}
+                    tone={phase.state === 'current' ? 'accent' : 'subtle'}
                     variant="caption"
                     weight="semibold"
                   >
@@ -144,13 +145,13 @@ export function HomeRoadmapSection() {
                 <Text
                   as="h3"
                   className={roadmapClass.title}
-                  tone="primary"
+                  tone="foreground"
                   variant="body-md"
                   weight="semibold"
                 >
                   {phase.title}
                 </Text>
-                <Text as="p" className={roadmapClass.body} tone="secondary" variant="caption">
+                <Text as="p" className={roadmapClass.body} tone="subtle" variant="caption">
                   {phase.description}
                 </Text>
               </Card>

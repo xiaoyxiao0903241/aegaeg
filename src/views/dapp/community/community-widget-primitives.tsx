@@ -59,10 +59,10 @@ export function CommunityReferralLinkCard({
 }) {
   return (
     <DappSideCard className={communitySideCard()}>
-      <Text as="p" variant="label" tone="primary" className="m-0">
+      <Text as="p" variant="label" tone="foreground" className="m-0">
         {linkLabel}
       </Text>
-      <Text as="strong" variant="value-sm" tone="primary" className="block max-w-full truncate">
+      <Text as="strong" variant="value-sm" tone="foreground" className="block max-w-full truncate">
         {referralLink}
       </Text>
       <DappActionButton className={communityShareButton()} disabled={disabled} onClick={onCopy}>
@@ -97,7 +97,7 @@ export function CommunityReferrerBindCard({
 }) {
   return (
     <DappSideCard className={communitySideCard()}>
-      <Text as="p" variant="label" tone="secondary" className="m-0">
+      <Text as="p" variant="label" tone="subtle" className="m-0">
         {referrerLabel}
       </Text>
       <div className={communityReferrerBindGrid()}>
@@ -118,7 +118,7 @@ export function CommunityReferrerBindCard({
           {bindLabel}
         </DappActionButton>
       </div>
-      <Text as="small" variant="hint" tone="secondary" className="block">
+      <Text as="small" variant="hint" tone="subtle" className="block">
         {hint}
       </Text>
     </DappSideCard>
@@ -142,7 +142,7 @@ export function CommunityReferrerBoundPanel({
 }) {
   return (
     <DappReferrerBoundCard className={communityReferrerBoundCard()}>
-      <Text as="p" variant="label" tone="secondary">
+      <Text as="p" variant="label" tone="subtle">
         {addressLabel}
       </Text>
       <ReferrerAddressRow>
@@ -150,7 +150,7 @@ export function CommunityReferrerBoundPanel({
           <span aria-hidden="true" className={communityReferrerAvatar()}>
             <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
           </span>
-          <Text as="strong" variant="value-sm" tone="primary" className={communityReferrerAddress()}>
+          <Text as="strong" variant="value-sm" tone="foreground" className={communityReferrerAddress()}>
             {referrerLabel ?? '—'}
           </Text>
         </div>
@@ -165,7 +165,7 @@ export function CommunityReferrerBoundPanel({
           </button>
         ) : null}
       </ReferrerAddressRow>
-      <Text as="p" variant="label" tone="secondary">
+      <Text as="p" variant="label" tone="subtle">
         {note}
       </Text>
     </DappReferrerBoundCard>

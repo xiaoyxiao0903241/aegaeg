@@ -36,21 +36,13 @@ export function DappPanelHeader({
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <Text
-          as="h1"
-          variant="title-xl"
-          className={cn(
-            'm-0 group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
-            'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
-            'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
-          )}
-        >
+        <Text as="h1" variant="panel-title" className="m-0">
           {title}
         </Text>
         <Text
           as="p"
-          variant="caption"
-          tone="primary"
+          variant="panel-subtitle"
+          tone="strong"
           className={dappPanelSubtitleClassName}
         >
           {subtitle}

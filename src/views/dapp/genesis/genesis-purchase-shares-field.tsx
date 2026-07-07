@@ -49,7 +49,7 @@ export function GenesisPurchaseSharesField({
 
   return (
     <label className={styles.root()}>
-      <Text tone="secondary" variant="hint" className="leading-[1.5]">
+      <Text tone="subtle" variant="hint">
         {label}
       </Text>
       <div className={styles.row()}>
@@ -66,7 +66,7 @@ export function GenesisPurchaseSharesField({
             type="number"
             value={value}
           />
-          <Text as="span" aria-hidden variant="body" tone="secondary" className={styles.unit()}>
+          <Text as="span" aria-hidden variant="body" tone="subtle" className={styles.unit()}>
             {shareUnit}
           </Text>
         </div>

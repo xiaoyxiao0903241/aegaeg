@@ -4,6 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "compare:computed": "node scripts/ui-compare-computed.mjs",
+    "compare:computed:cdp": "UI_COMPARE_CDP=http://127.0.0.1:9222 node scripts/ui-compare-computed.mjs",
+    "compare:computed:system-edge": "UI_COMPARE_USE_SYSTEM_PROFILE=1 node scripts/ui-compare-computed.mjs",
+    "compare:computed:skip-wallet": "UI_COMPARE_SKIP_WALLET=1 node scripts/ui-compare-computed.mjs",
+    "compare:screenshots": "node scripts/ui-compare-screenshot-diff.mjs",
+    "compare:webbridge:cleanup": "node scripts/kimi-webbridge-close-sessions.mjs",
     "render:home": "node scripts/render-home.mjs",
     "env:staging": "node scripts/switch-env.mjs staging",
     "env:prod": "node scripts/switch-env.mjs prod",

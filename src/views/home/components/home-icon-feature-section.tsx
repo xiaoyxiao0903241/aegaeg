@@ -94,10 +94,9 @@ function HomeIconCard({
       />
       <Text
         as="h3"
-        variant="title-xl"
-        weight="semibold"
+        variant="feature-title"
         className={cn(
-          'feature-card-title mt-3 text-xl leading-[1.2] max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-lg max-dapp:text-balance',
+          'feature-card-title mt-3 max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-balance',
           variant === 'engine' &&
             'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary',
         )}
@@ -106,9 +105,9 @@ function HomeIconCard({
       </Text>
       <Text
         as="p"
-        variant="body"
-        tone="primary"
-        className="feature-card-body mt-3 max-w-112 text-sm leading-[1.5] max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80 max-dapp:text-sm"
+        variant="body-md"
+        tone="strong"
+        className="feature-card-body mt-3 max-w-112 max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80"
       >
         {card.body}
       </Text>

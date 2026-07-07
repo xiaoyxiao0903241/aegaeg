@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappAssets } from '~/app/assets'
@@ -70,15 +71,18 @@ export function DappShell() {
       <DappTopbar />
 
       {import.meta.env.DEV && !isThirdwebConfigured ? (
-        <div
-          className="mx-4 mb-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-relaxed text-destructive"
+        <Text
+          as="div"
           role="status"
+          variant="sm"
+          tone="destructive"
+          className="mx-4 mb-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3"
         >
           未配置 <code className="font-mono">VITE_THIRDWEB_CLIENT_ID</code>
           ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code>{' '}
           为 <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client
           ID 后重启 <code className="font-mono">pnpm dev</code>。
-        </div>
+        </Text>
       ) : null}
 
       <section

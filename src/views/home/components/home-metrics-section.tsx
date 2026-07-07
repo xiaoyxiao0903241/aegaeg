@@ -21,10 +21,8 @@ const metricClass = {
   panel:
     'relative isolate grid min-h-48 grid-cols-4 items-center justify-between rounded-xl bg-dark px-10 py-14 text-white max-dapp:min-h-52 max-dapp:grid-cols-2 max-dapp:gap-y-6 max-dapp:rounded-lg max-dapp:px-5 max-dapp:py-7',
   item: 'relative z-1 grid justify-items-center gap-2 text-center max-dapp:gap-1.5',
-  value:
-    'text-5xl max-dapp:text-3xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.9px]',
-  label:
-    'max-dapp:font-normal max-dapp:leading-[1.5]',
+  value: '',
+  label: '',
 } as const
 
 export function HomeMetricsSection() {
@@ -51,19 +49,11 @@ export function HomeMetricsSection() {
                 data-count-target={metric.countTarget}
                 data-count-suffix={metric.suffix}
                 data-count-initial={metric.value}
-                tone="inverse"
-                variant="body"
-                weight="semibold"
+                variant="metric-stat"
               >
                 {metric.value}
               </Text>
-              <Text
-                as="span"
-                className={metricClass.label}
-                tone="inverse"
-                variant="body"
-                weight="medium"
-              >
+              <Text as="span" className={metricClass.label} variant="metric-label">
                 {metric.label}
               </Text>
             </article>

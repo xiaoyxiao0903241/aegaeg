@@ -29,10 +29,10 @@ const swapProgramCardBody = tv({
 function ProgramCardCopy({ body, title }: { body: string; title: string }) {
   return (
     <span className="grid min-w-0 gap-1 text-left">
-      <Text as="strong" className="tracking-[0.08em]" tone="primary" variant="compact-title">
+      <Text as="strong" tone="foreground" variant="program-title">
         {title}
       </Text>
-      <Text className="tracking-[-0.03em]" tone="secondary" variant="compact-body">
+      <Text tone="subtle" variant="program-body">
         {body}
       </Text>
     </span>

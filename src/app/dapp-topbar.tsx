@@ -1,6 +1,5 @@
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 import { LanguageMenu } from '~/shared/ui/language-menu'
 import { withLocalePrefix } from '~/i18n/locale'
 import { allLanguageOptions } from '~/i18n/locales'
@@ -19,7 +18,10 @@ const topbarClass = cn(
   'max-dapp:bg-background/30 max-dapp:backdrop-blur-[1.125rem] max-dapp:backdrop-saturate-150',
 )
 
-const brandClass = 'flex items-center gap-2.5'
+const brandClass = cn(
+  'flex items-center gap-2.5 text-lg font-semibold tracking-tight text-foreground max-dapp:text-base',
+  'group-data-[tab=rewards]/shell:max-dapp:group-data-[session-ready=true]/shell:[&_span]:hidden',
+)
 
 const brandMarkClass = cn(
   'object-contain',
@@ -48,6 +50,7 @@ export function DappTopbar() {
         className={cn(
           brandClass,
           sessionReady && tab === 'rewards' && 'max-dapp:[&_span]:hidden',
+          sessionReady && 'max-dapp:[&_span]:hidden',
         )}
         href={withLocalePrefix(locale, '/')}
         aria-label="AEGIS X home"
@@ -57,9 +60,7 @@ export function DappTopbar() {
           src={homeAssets.logoMark}
           alt=""
         />
-        <Text as="span" variant="lead" className="tracking-tight">
-          {t.common.brand}
-        </Text>
+        <span>{t.common.brand}</span>
       </a>
       <div className={topActionsClass}>
         <WalletTopbarActions />

@@ -147,7 +147,7 @@ export function DappMobileNav({
                 as="span"
                 variant="body"
                 weight="semibold"
-                tone={active ? 'accent' : 'primary'}
+                tone={active ? 'accent' : 'foreground'}
                 className={shellRailRowLabelClass}
                 title={label}
               >

@@ -29,7 +29,7 @@ export function SwapAmountBox({
   tokenIcon,
   tokenLabel,
 }: SwapAmountBoxProps) {
-  const labelTone = sessionReady ? 'primary' : 'secondary'
+  const labelTone = sessionReady ? 'strong' : 'subtle'
 
   return (
     <Card
@@ -42,12 +42,7 @@ export function SwapAmountBox({
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <Text
-          as="span"
-          variant="caption"
-          tone={labelTone}
-          className={cn('leading-normal', sessionReady && 'max-dapp:text-muted-foreground')}
-        >
+        <Text as="span" variant="caption" tone={labelTone}>
           {label}
         </Text>
         <Text
@@ -55,7 +50,6 @@ export function SwapAmountBox({
           variant="caption"
           tone={labelTone}
           weight={sessionReady ? 'semibold' : undefined}
-          className={cn('leading-normal', sessionReady && 'max-dapp:text-muted-foreground')}
         >
           {balance}
         </Text>

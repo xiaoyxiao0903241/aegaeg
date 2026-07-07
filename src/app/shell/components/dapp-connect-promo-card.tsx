@@ -15,7 +15,7 @@ export function DappConnectPromoCard({ className }: { className?: string }) {
       <div className="flex min-w-0 items-center gap-2">
         <DappIcon alt="" size="token" src={homeAssets.logoMark} />
         <div className="grid min-w-0 gap-1">
-          <Text as="strong" variant="body" weight="semibold" tone="inverse" className="tracking-[-0.28px]">
+          <Text as="strong" variant="body" weight="semibold" tone="inverse">
             {t.dapp.connect.promoTitle}
           </Text>
           <a

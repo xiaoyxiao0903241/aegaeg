@@ -68,7 +68,7 @@ export function SwapSlippageModal({
       <AegisSheetHandle />
       <div className="flex items-center justify-between pb-5 dapp:pb-5">
         <DialogPrimitive.Title asChild>
-          <Text as="h2" variant="title-xl" className="m-0">
+          <Text as="h2" variant="panel-title" className="m-0">
             {t.swap.slippage}
           </Text>
         </DialogPrimitive.Title>
@@ -123,8 +123,7 @@ export function SwapSlippageModal({
                     as="span"
                     variant="label"
                     weight="semibold"
-                    tone={active ? 'inverse' : 'primary'}
-                    className="leading-none"
+                    tone={active ? 'inverse' : 'foreground'}
                   >
                     {preset}%
                   </Text>
@@ -142,7 +141,7 @@ export function SwapSlippageModal({
           onClick={handleConfirm}
           type="button"
         >
-          <Text as="span" variant="body" tone="inverse" weight="semibold" className="tracking-[-0.28px]">
+          <Text as="span" variant="body" tone="inverse" weight="semibold">
             {t.common.confirm}
           </Text>
         </button>

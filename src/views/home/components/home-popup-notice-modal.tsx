@@ -62,7 +62,7 @@ export function HomePopupNoticeModal({
                 <Text
                   as="span"
                   className="truncate"
-                  tone="primary"
+                  tone="foreground"
                   variant="body-md"
                   weight="semibold"
                 >
@@ -104,9 +104,9 @@ export function HomePopupNoticeModal({
                   {notice.title ? (
                     <Text
                       as="h2"
-                      className="text-balance text-[1.35rem] leading-[1.25] tracking-[-0.02em]"
-                      tone="primary"
-                      variant="title-lg"
+                      className="text-balance"
+                      tone="foreground"
+                      variant="title"
                       weight="bold"
                     >
                       {notice.title}

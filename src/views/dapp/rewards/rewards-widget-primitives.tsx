@@ -33,10 +33,10 @@ export function RewardsProgressRow({
   const styles = rewardsProgressRow()
   return (
     <div className={styles.row()}>
-      <Text as="span" tone="primary" variant="hint" className="max-dapp:text-muted-foreground">
+      <Text as="span" tone="subtle" variant="hint">
         {label}
       </Text>
-      <Text as="strong" tone="primary" variant="hint" weight="semibold" className="text-right max-dapp:leading-[1.2]">
+      <Text as="strong" tone="foreground" variant="hint" weight="semibold" className="text-right">
         {value}
       </Text>
     </div>

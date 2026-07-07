@@ -66,21 +66,17 @@ export function MetricCard({
       className={cn(revealClass(), 'flex flex-col items-start gap-1.5', className)}
       data-reveal
     >
-      <Text as="p" variant="label" tone="primary" weight="medium" className="tracking-[-0.24px]">
+      <Text as="p" variant="label" tone="strong" weight="medium">
         {label}
       </Text>
-      <Text
-        as="strong"
-        variant="lead"
-        className={cn('leading-[1.2] tracking-[-0.36px]', valueClassName)}
-      >
+      <Text as="strong" variant="metric-value" className={valueClassName}>
         {value}
       </Text>
       {hint ? (
         <Text
           as="small"
           variant="hint"
-          tone="secondary"
+          tone="faint"
           className={cn('mt-1.5 block', hintClassName)}
         >
           {hint}
@@ -129,8 +125,8 @@ export function RewardBalanceCard({
         <Text
           as="p"
           variant="label"
-          tone="primary"
-          className={cn('m-0 tracking-[-0.24px]', headerLabelClassName)}
+          tone="strong"
+          className={cn('m-0', headerLabelClassName)}
         >
           {label}
         </Text>
@@ -138,8 +134,8 @@ export function RewardBalanceCard({
           <Text
             as="span"
             variant="label"
-            tone="primary"
-            className={cn('tracking-[-0.24px]', headerMetaClassName)}
+            tone="strong"
+            className={headerMetaClassName}
           >
             {meta}
           </Text>
@@ -149,7 +145,7 @@ export function RewardBalanceCard({
             variant="label"
             tone="success"
             weight="medium"
-            className={cn('whitespace-nowrap tracking-[-0.24px]', badgeClassName)}
+            className={cn('whitespace-nowrap', badgeClassName)}
           >
             {badge}
           </Text>
@@ -166,8 +162,8 @@ export function RewardBalanceCard({
         <Text
           as="small"
           variant="hint"
-          tone="secondary"
-          className={cn('mt-1.5 block max-w-full whitespace-nowrap tracking-[-0.24px]', hintClassName)}
+          tone="faint"
+          className={cn('mt-1.5 block max-w-full whitespace-nowrap', hintClassName)}
         >
           {hint}
         </Text>

@@ -41,21 +41,19 @@ const footerClass = {
     'container footer-top grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6',
   brand:
     'footer-brand flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0',
-  brandCopy:
-    'm-0 w-full max-w-64 leading-[1.5] tracking-[-0.28px] max-dapp:max-w-none',
+  brandCopy: 'm-0 w-full max-w-64 max-dapp:max-w-none',
   group:
     'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
   rule: 'container h-px bg-[#232323]',
   bottom:
-    'container footer-bottom flex min-h-4 items-start overflow-hidden leading-4 tracking-[-0.26px] whitespace-nowrap',
+    'container footer-bottom flex min-h-4 items-start overflow-hidden whitespace-nowrap',
 } as const
 
-const footerLinkClass =
-  'leading-[1.2] tracking-[-0.28px] max-dapp:leading-[1.5]'
+const footerLinkClass = ''
 
 const footerBrandClass = cn(
-  'inline-flex items-center gap-2.5 whitespace-nowrap tracking-[-0.36px] leading-none',
-  'max-dapp:gap-2 max-dapp:leading-[1.2] [&_img]:h-6',
+  'inline-flex items-center gap-2.5 whitespace-nowrap',
+  'max-dapp:gap-2 [&_img]:h-6',
 )
 
 const footerBrandMarkClass = cn(
@@ -68,7 +66,7 @@ function FooterBrandCopy({ copy }: { copy: string }) {
   return (
     <>
       {lines.map((line, index) => (
-        <Text as="span" key={`${line}-${index}`} tone="inverse" variant="body">
+        <Text as="span" key={`${line}-${index}`} tone="on-dark" variant="body">
           {index > 0 ? <br /> : null}
           {line}
         </Text>
@@ -93,14 +91,14 @@ export function HomeFooter() {
               width="28"
               height="26"
             />
-            <Text as="span" className="max-dapp:leading-[1.2]" tone="inverse" variant="lead" weight="semibold">
+            <Text as="span" tone="inverse" variant="lead" weight="semibold">
               AEGIS X
             </Text>
           </a>
           <Text
             as="p"
             className={footerClass.brandCopy}
-            tone="inverse"
+            tone="on-dark"
             variant="body"
           >
             <FooterBrandCopy copy={content.brandCopy} />
@@ -114,7 +112,7 @@ export function HomeFooter() {
           >
             <Text
               as="h3"
-              className="m-0 leading-[1.2] tracking-[0.56px] max-dapp:leading-[1.5]"
+              className="m-0"
               tone="inverse"
               variant="body"
               weight="semibold"
@@ -131,7 +129,7 @@ export function HomeFooter() {
                 key={`${group.label}-${link.label}`}
                 rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
                 target={isExternalHref(href) ? '_blank' : undefined}
-                tone="inverse"
+                tone="on-dark"
                 variant="body"
               >
                 {link.label}
@@ -146,7 +144,7 @@ export function HomeFooter() {
         <Text
           as="p"
           className="m-0 max-dapp:whitespace-nowrap"
-          tone="inverse"
+          tone="on-dark"
           variant="caption"
         >
           {content.copyright}

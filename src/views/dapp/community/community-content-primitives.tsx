@@ -97,17 +97,16 @@ function CommunityStatCard({
     >
       <Text
         as="span"
-        variant="label"
-        tone={dark ? 'inverse' : 'primary'}
-        className={cn(styles.label(), !dark && 'max-dapp:text-muted-foreground')}
+        variant={dark ? 'label' : 'meta-label'}
+        tone={dark ? 'inverse' : 'foreground'}
+        className={styles.label()}
       >
         {label}
       </Text>
       <Text
         as="strong"
-        variant="value-lg"
-        weight="semibold"
-        tone={dark ? 'inverse' : 'primary'}
+        variant="2xl"
+        tone={dark ? 'inverse' : 'foreground'}
         className={styles.value()}
       >
         {value}
@@ -121,7 +120,7 @@ function CommunityStatCard({
         <Text
           as="small"
           variant="label"
-          tone={dark ? 'inverse' : 'secondary'}
+          tone={dark ? 'inverse' : 'subtle'}
           className={styles.hint()}
         >
           {today}

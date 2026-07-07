@@ -213,9 +213,9 @@ export function FlashSwapWidget({
         {submitErrorMessage ? (
           <Text
             as="p"
-            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 leading-relaxed text-destructive"
+            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5"
             role="alert"
-            tone="primary"
+            tone="destructive"
             variant="hint"
           >
             {submitErrorMessage}

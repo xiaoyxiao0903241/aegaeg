@@ -228,17 +228,17 @@ export function WalletDetailsModal({
       <DialogPrimitive.Title asChild>
         <Text
           as="h2"
-          variant="title-xl"
+          variant="panel-title"
           weight="bold"
           tabular
-          className="m-0 leading-[1.2] tracking-[0.01em]"
+          className="m-0"
         >
           {addressLabel}
         </Text>
       </DialogPrimitive.Title>
 
       {!walletReady ? (
-        <Text as="p" variant="label" tone="accent" weight="medium" className="m-0 mt-3 leading-[1.45]">
+        <Text as="p" variant="label" tone="accent" weight="medium" className="m-0 mt-3">
           {t.wallet.reconnectHint}
         </Text>
       ) : null}
@@ -246,9 +246,9 @@ export function WalletDetailsModal({
       <Text
         as="p"
         variant="body"
-        tone="secondary"
+        tone="subtle"
         weight="semibold"
-        className="m-0 mt-3 leading-none"
+        className="m-0 mt-3"
       >
         <Text as="span" variant="body-md" tone="accent" weight="bold" tabular className="mr-1.5">
           {balanceValue}
@@ -262,7 +262,7 @@ export function WalletDetailsModal({
             className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5"
             key={token.symbol}
           >
-            <Text as="span" variant="label" tone="secondary" weight="semibold">
+            <Text as="span" variant="label" tone="subtle" weight="semibold">
               {token.label}
             </Text>
             <Text as="strong" variant="body" weight="bold" tabular>

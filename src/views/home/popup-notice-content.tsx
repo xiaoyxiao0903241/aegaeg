@@ -61,7 +61,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
   return (
     <div className="home-popup-notice-content space-y-3 leading-[1.65] text-foreground">
       {paragraphs.map((paragraph) => (
-        <Text as="p" key={paragraph} tone="primary" variant="body">
+        <Text as="p" key={paragraph} tone="foreground" variant="body">
           {linkifyPlainText(paragraph)}
         </Text>
       ))}

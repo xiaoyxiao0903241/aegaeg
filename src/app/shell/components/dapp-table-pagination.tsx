@@ -203,11 +203,11 @@ export function DappTablePagination({
       ref={rootRef}
     >
       <div className="flex min-w-0 flex-row flex-nowrap items-center gap-4">
-        <Text as="p" variant="label" tone="secondary" className="m-0 shrink-0 whitespace-nowrap">
+        <Text as="p" variant="label" tone="subtle" className="m-0 shrink-0 whitespace-nowrap">
           {t.common.paginationTotal.replace('{total}', formatCount(total))}
         </Text>
         {summary ? (
-          <Text as="p" variant="label" tone="secondary" className="m-0 min-w-0 whitespace-nowrap">
+          <Text as="p" variant="label" tone="subtle" className="m-0 min-w-0 whitespace-nowrap">
             {summary}
           </Text>
         ) : null}
@@ -215,7 +215,7 @@ export function DappTablePagination({
 
       {showPagination ? (
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <Text as="span" variant="label" tone="secondary" className="whitespace-nowrap">
+          <Text as="span" variant="label" tone="subtle" className="whitespace-nowrap">
             {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
           </Text>
 
@@ -295,7 +295,7 @@ export function DappTablePagination({
                             <Text
                               as="span"
                               variant="label"
-                              tone={active ? 'accent' : 'primary'}
+                              tone={active ? 'accent' : 'foreground'}
                               weight={active ? 'semibold' : undefined}
                               tabular
                             >

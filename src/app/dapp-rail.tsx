@@ -150,7 +150,7 @@ export function DappRail({
               <Text
                 as="span"
                 variant="label"
-                tone={active ? 'accent' : 'primary'}
+                tone={active ? 'accent' : 'foreground'}
                 className={mobile ? shellRailRowLabelClass : shellRailLabelClass}
                 title={label}
               >
