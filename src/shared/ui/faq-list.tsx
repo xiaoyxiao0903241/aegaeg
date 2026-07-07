@@ -34,9 +34,12 @@ const faqList = tv({
           revealClass(),
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
+        answer: '',
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
+        /** 4175 dapp FAQ `<p>` 靠 UA margin 撑开 answer 区；全局 reset 后用 padding 等价替代 */
+        answer: 'py-[1em]',
       },
     },
   },

@@ -4,13 +4,19 @@ import { MetricCard } from '~/app/shell/components/dapp-card'
 import { MetricCardSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { cn } from '~/shared/lib/utils'
 
-/** Swap detail overview metric card — Figma `sc`; tab-owned, not shell group-data. */
+/** Swap detail overview — 4175 flash/trade MetricCard strong/small 响应式字阶 */
 const swapMetricCard = tv({
   base: cn(
     'gap-1.5 rounded-md px-4 py-3.5 shadow-card',
     'max-dapp:min-w-0 max-dapp:p-3.5',
+    'max-dapp:[&_small]:hidden',
   ),
 })
+
+const swapMetricValueClass = cn(
+  '!text-lg !leading-[1.3] tracking-[-0.54px]',
+  'max-dapp:!text-xs max-dapp:!leading-[1.2] max-dapp:tracking-[-0.24px]',
+)
 
 export function SwapMetricCard({
   className,
@@ -31,7 +37,7 @@ export function SwapMetricCard({
       hint={hint}
       label={label}
       value={value}
-      valueClassName={valueClassName}
+      valueClassName={cn(swapMetricValueClass, valueClassName)}
     />
   )
 }

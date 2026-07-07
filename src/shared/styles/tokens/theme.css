@@ -224,4 +224,9 @@
   a {
     text-decoration: none;
   }
+
+  /* Typography layout SSOT — zero UA margins; spacing via flex gap / mt-* utilities. */
+  :where(#root) :where(p, h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+  }
 }

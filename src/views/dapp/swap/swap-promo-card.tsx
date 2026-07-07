@@ -1,13 +1,11 @@
 import type { ButtonHTMLAttributes, ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 type PromoLayout = 'desktop' | 'mobile'
 
@@ -57,38 +55,6 @@ const swapPromoCard = tv({
   },
 })
 
-const swapPromoPillAction = tv({
-  base: 'shrink-0 whitespace-nowrap !text-xs !font-semibold !leading-[1.2] !tracking-[-0.02em]',
-  variants: {
-    layout: {
-      desktop: [
-        'absolute right-4 top-1/2 z-[2] -translate-y-1/2 !min-h-0 !px-4 !py-2.5',
-        'transition-[border-color,transform] duration-180 ease-out',
-        'hover:translate-x-px hover:!border-primary',
-        'focus-visible:translate-x-px focus-visible:!border-primary',
-        'disabled:pointer-events-none disabled:opacity-45',
-      ],
-      mobile: '!min-h-0 !px-3 !py-1.5',
-    },
-    withArrow: {
-      true: '!gap-1.5',
-      false: '',
-    },
-    fullWidth: {
-      true: '!w-full justify-center',
-      false: '!w-auto',
-    },
-    minConnectWidth: {
-      true: 'min-w-[7.75rem] !text-[0.8125rem]',
-      false: '',
-    },
-  },
-  compoundVariants: [
-    { layout: 'desktop', withArrow: false, class: 'justify-center' },
-    { layout: 'mobile', withArrow: false, fullWidth: true, class: 'justify-center' },
-  ],
-})
-
 export function SwapPromoPillAction({
   children,
   className,
@@ -104,19 +70,31 @@ export function SwapPromoPillAction({
   minConnectWidth?: boolean
 }) {
   return (
-    <Button
+    <button
       className={cn(
-        swapPromoPillAction({ layout, withArrow, fullWidth, minConnectWidth }),
+        'inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border bg-card whitespace-nowrap text-foreground',
+        withArrow ? 'gap-1.5' : 'justify-center',
+        layout === 'desktop'
+          ? cn(
+              'absolute right-4 top-1/2 z-[2] -translate-y-1/2 px-4 py-2.5',
+              'text-xs font-semibold leading-[1.2] tracking-[-0.02em]',
+              !withArrow && minConnectWidth && 'min-w-[7.75rem] text-[0.8125rem]',
+              'transition-[border-color,transform] duration-180 ease-out',
+              'hover:translate-x-px hover:border-primary',
+              'focus-visible:translate-x-px focus-visible:border-primary',
+              'disabled:pointer-events-none disabled:opacity-45',
+            )
+          : cn(
+              'px-3 py-1.5 text-xs font-semibold leading-[1.2] tracking-[-0.02em]',
+              !withArrow && fullWidth && 'w-full justify-center',
+            ),
         className,
       )}
-      shape="pill"
-      size="md"
       type="button"
-      variant="secondary"
       {...props}
     >
       {children}
-    </Button>
+    </button>
   )
 }
 
@@ -202,25 +180,29 @@ export function SwapPromoCard({
         <div className={styles.titleRow()}>
           <div className={styles.titleCluster()}>
             {titleIconSrc ? <TitleIcon layout={layout} src={titleIconSrc} /> : null}
-            <Text
-              as="strong"
-              className={styles.title()}
-              tone="foreground"
-              variant="promo-title"
+            <strong
+              className={cn(
+                'truncate font-semibold leading-[1.2] text-foreground',
+                styles.title(),
+                layout === 'desktop'
+                  ? 'text-base tracking-[-0.03em]'
+                  : 'text-sm tracking-[-0.028em]',
+              )}
             >
               {title}
-            </Text>
+            </strong>
           </div>
           {!isDesktop ? <span className={styles.mobileActionWrap()}>{actionNode}</span> : null}
         </div>
-        <Text
-          as="p"
-          className={styles.body()}
-          tone={layout === 'desktop' ? 'strong' : 'subtle'}
-          variant={layout === 'desktop' ? 'panel-subtitle' : 'caption'}
+        <p
+          className={cn(
+            'm-0 min-w-0 text-xs font-normal leading-[1.5] tracking-[-0.02em]',
+            styles.body(),
+            layout === 'desktop' ? 'text-ink-strong' : 'text-faq-text',
+          )}
         >
           {body}
-        </Text>
+        </p>
       </div>
       {isDesktop ? actionNode : null}
     </Card>

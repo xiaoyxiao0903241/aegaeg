@@ -66,13 +66,26 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
 }
 
-function isRedPixel(png, idx) {
+function isHeatmapDiffPixel(png, idx) {
   const i = idx * 4
+  // diff-heatmap.png：差异像素为纯红，背景为 rgb(40,40,40)
   return png.data[i] === 255 && png.data[i + 1] === 0 && png.data[i + 2] === 0
 }
 
-/** @param {PNG} png */
-function clusterRed(png, minSize = MIN_CLUSTER_PX) {
+function resolveClusterSource(diffPath) {
+  const heatmapPath = path.join(path.dirname(diffPath), 'diff-heatmap.png')
+  if (fs.existsSync(heatmapPath)) {
+    return { pngPath: heatmapPath, isDiffPixel: isHeatmapDiffPixel, source: 'diff-heatmap.png' }
+  }
+  return {
+    pngPath: diffPath,
+    isDiffPixel: isHeatmapDiffPixel,
+    source: 'diff.png (legacy pure-red)',
+  }
+}
+
+/** @param {PNG} png @param {(png: PNG, idx: number) => boolean} isDiffPixel */
+function clusterDiff(png, isDiffPixel, minSize = MIN_CLUSTER_PX) {
   const w = png.width
   const h = png.height
   const seen = new Uint8Array(w * h)
@@ -82,7 +95,7 @@ function clusterRed(png, minSize = MIN_CLUSTER_PX) {
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const idx = y * w + x
-      if (seen[idx] || !isRedPixel(png, idx)) continue
+      if (seen[idx] || !isDiffPixel(png, idx)) continue
       let minX = x
       let maxX = x
       let minY = y
@@ -105,7 +118,7 @@ function clusterRed(png, minSize = MIN_CLUSTER_PX) {
         ]) {
           if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue
           const nidx = ny * w + nx
-          if (!seen[nidx] && isRedPixel(png, nidx)) {
+          if (!seen[nidx] && isDiffPixel(png, nidx)) {
             seen[nidx] = 1
             stack.push([nx, ny])
           }
@@ -127,13 +140,13 @@ function clusterRed(png, minSize = MIN_CLUSTER_PX) {
   return boxes.sort((a, b) => b.px - a.px)
 }
 
-/** @param {PNG} png */
-function bandStats(png) {
+/** @param {PNG} png @param {(png: PNG, idx: number) => boolean} isDiffPixel */
+function bandStats(png, isDiffPixel) {
   const w = png.width
   const bands = { header: 0, widget: 0, detail: 0 }
   for (let y = 0; y < png.height; y++) {
     for (let x = 0; x < w; x++) {
-      if (!isRedPixel(png, y * w + x)) continue
+      if (!isDiffPixel(png, y * w + x)) continue
       if (y < 80) bands.header++
       else if (x < 520) bands.widget++
       else bands.detail++
@@ -219,8 +232,12 @@ async function preparePage(page, target, root) {
 }
 
 async function probePoint(page, x, y) {
+  const vpHeight = page.viewportSize()?.height ?? 844
+  const scrollY = Math.max(0, y - Math.floor(vpHeight / 2))
   return page.evaluate(
-    ({ x, y, keys, containerTags }) => {
+    ({ x, y, scrollY, keys, containerTags }) => {
+      window.scrollTo(0, scrollY)
+      const viewY = y - scrollY
       const offsets = [
         [0, 0],
         [-4, 0],
@@ -249,7 +266,7 @@ async function probePoint(page, x, y) {
       }
 
       for (const [ox, oy] of offsets) {
-        const el = document.elementFromPoint(x + ox, y + oy)
+        const el = document.elementFromPoint(x + ox, viewY + oy)
         if (!el) continue
         const { score, styles, rect } = scoreEl(el)
         if (!best || score > best.score) {
@@ -276,7 +293,7 @@ async function probePoint(page, x, y) {
         drillScore: best.score,
       }
     },
-    { x, y, keys: STYLE_KEYS, containerTags: [...CONTAINER_TAGS] },
+    { x, y, scrollY, keys: STYLE_KEYS, containerTags: [...CONTAINER_TAGS] },
   )
 }
 
@@ -296,12 +313,13 @@ async function auditTarget(browser, target, reportRow) {
     return { target: target.id, error: `missing diff: ${diffPath}` }
   }
 
-  const png = PNG.sync.read(fs.readFileSync(diffPath))
-  const clusters = clusterRed(png).slice(0, MAX_CLUSTERS)
-  const bands = bandStats(png)
+  const { pngPath, isDiffPixel, source } = resolveClusterSource(diffPath)
+  const png = PNG.sync.read(fs.readFileSync(pngPath))
+  const clusters = clusterDiff(png, isDiffPixel).slice(0, MAX_CLUSTERS)
+  const bands = bandStats(png, isDiffPixel)
   let redPx = 0
   for (let i = 0; i < png.width * png.height; i++) {
-    if (isRedPixel(png, i)) redPx++
+    if (isDiffPixel(png, i)) redPx++
   }
 
   /** @type {import('playwright-core').Page[]} */
@@ -348,7 +366,8 @@ async function auditTarget(browser, target, reportRow) {
       clusters: audited,
       unmapped,
       styleDiffClusterCount: withStyleDiff.length,
-      paths: { diff: diffPath },
+      clusterSource: source,
+      paths: { diff: diffPath, heatmap: path.join(path.dirname(diffPath), 'diff-heatmap.png') },
     }
   } finally {
     for (const p of pages) await p.close()

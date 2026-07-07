@@ -30,8 +30,8 @@ const communityStatCard = tv({
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),
     value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full'),
-    volume: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
-    hint: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
+    volume: cn('relative z-1 tracking-[-0.28px]', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:leading-[1.2]'),
+    hint: cn('relative z-1 tracking-[-0.12px]', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
   },
   variants: {
     dark: {
@@ -97,30 +97,41 @@ function CommunityStatCard({
     >
       <Text
         as="span"
-        variant={dark ? 'label' : 'meta-label'}
-        tone={dark ? 'inverse' : 'foreground'}
-        className={styles.label()}
+        variant="xs"
+        tone={dark ? 'on-dark' : 'strong'}
+        className={cn(
+          styles.label(),
+          'tracking-[-0.24px]',
+          !dark && 'max-dapp:text-faint',
+        )}
       >
         {label}
       </Text>
       <Text
         as="strong"
         variant="2xl"
-        tone={dark ? 'inverse' : 'foreground'}
+        weight="semibold"
+        tone={dark ? 'inverse' : 'strong'}
         className={styles.value()}
       >
         {value}
       </Text>
       {volume ? (
-        <Text as="b" variant="body" weight="semibold" tone="accent" className={styles.volume()}>
+        <Text
+          as="b"
+          variant="sm"
+          weight="semibold"
+          tone="accent"
+          className={cn(styles.volume(), dark && '!text-coral-bright')}
+        >
           {volume}
         </Text>
       ) : null}
       {today ? (
         <Text
           as="small"
-          variant="label"
-          tone={dark ? 'inverse' : 'subtle'}
+          variant="xs"
+          tone={dark ? 'on-dark' : 'muted'}
           className={styles.hint()}
         >
           {today}

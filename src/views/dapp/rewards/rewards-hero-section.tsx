@@ -8,8 +8,12 @@ import {
   formatShareholderHintForRank,
 } from '~/shared/api/format-display'
 import { buildRewardTierRows } from '~/core/presale/tier-table'
-import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
-import { Text } from '~/shared/ui/text'
+import {
+  dappCaptionClass,
+  dappKickerClass,
+  dappRankTitleClass,
+  dappTitleSmClass,
+} from '~/app/dapp-type-scale'
 import { cn } from '~/shared/lib/utils'
 import { RewardsHeroCard } from '~/views/dapp/rewards/rewards-hero-card'
 
@@ -36,7 +40,6 @@ function RewardsHeroPanel({
   superCommunityBadge: string
   superCommunityBenefitBody: string
 }) {
-  const banner = dappDarkBanner()
   const showSuperBadge = hasRank && isSuperCommunity
   const title = formatRankTitleWithBadge(heroTitle, showSuperBadge, superCommunityBadge)
 
@@ -46,22 +49,22 @@ function RewardsHeroPanel({
         <RewardsHeroBodySkeleton compact={compactSkeleton} />
       ) : (
         <>
-          <Text
-            as="h3"
-            variant={layout === 'desktop' ? 'title' : 'value-lg'}
-            tone="inverse"
-            className={cn(banner.title(), 'block min-w-0 break-words')}
+          <h3
+            className={cn(
+              'm-0 min-w-0 break-words text-white',
+              layout === 'desktop'
+                ? cn(dappRankTitleClass, dappTitleSmClass)
+                : 'text-lg font-semibold leading-[1.2] tracking-[-0.54px]',
+            )}
           >
             {title}
-          </Text>
-          <Text as="p" variant="caption" tone="inverse" className={cn('m-0 opacity-[0.72]', banner.body())}>
-            {heroTierRewardBody}
-          </Text>
-          {showSuperBadge ? (
-            <Text as="p" variant="caption" tone="inverse" className={cn('m-0 opacity-[0.72]', banner.body())}>
-              {superCommunityBenefitBody}
-            </Text>
-          ) : null}
+          </h3>
+          <div className={cn('m-0 flex flex-col gap-0 text-on-dark', dappCaptionClass)}>
+            <p className="m-0">{heroTierRewardBody}</p>
+            {showSuperBadge ? (
+              <p className="m-0">{superCommunityBenefitBody}</p>
+            ) : null}
+          </div>
         </>
       )}
     </RewardsHeroCard>

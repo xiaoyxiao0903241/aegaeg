@@ -91,6 +91,7 @@ export function SwapHubHeader({
           className={styles.pageSubtitle()}
           tone="strong"
           variant="compact-body"
+          weight="normal"
         >
           {subtitle}
         </Text>
@@ -145,6 +146,7 @@ export function SwapSubpageHeader({
           className={styles.pageSubtitle()}
           tone="strong"
           variant="compact-body"
+          weight="normal"
         >
           {subtitle}
         </Text>

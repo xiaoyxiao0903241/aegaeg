@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
+import { dappCaptionClass } from '~/app/dapp-type-scale'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
@@ -12,17 +13,14 @@ export type InviteFlowItem = {
 
 const inviteFlowStep = tv({
   base: cn(
-    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary text-primary-foreground',
+    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold leading-[1.3] text-white',
     'max-dapp:size-7',
+    dappCaptionClass,
   ),
 })
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
-  return (
-    <Text as="span" variant="caption" weight="semibold" tone="inverse" className={inviteFlowStep()}>
-      {children}
-    </Text>
-  )
+  return <span className={inviteFlowStep()}>{children}</span>
 }
 
 /** Figma `flow` connector — coral primary, 2px thick. */
@@ -63,20 +61,20 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           </div>
           <Text
             as="h4"
-            variant="body"
-            tone="foreground"
+            variant="sm"
             weight="semibold"
-            className="m-0 max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
+            className="m-0 tracking-[-0.28px] max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
           >
             {item.title}
           </Text>
           <Text
             as="p"
-            variant="label"
-            tone="subtle"
+            variant="xs"
+            tone="faint"
             className={cn(
-              'm-0 max-w-[24ch]',
-              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2',
+              'm-0 max-w-[24ch] tracking-[-0.24px]',
+              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:leading-[1.35]',
+              'max-dapp:line-clamp-2 max-dapp:leading-[1.28]',
             )}
           >
             {item.copy}
@@ -102,16 +100,10 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             {index < items.length - 1 ? <InviteFlowConnector orientation="vertical" /> : null}
           </div>
           <div className={cn('grid min-w-0 gap-0.5', index < items.length - 1 && 'pb-3.5')}>
-            <Text
-              as="h4"
-              variant="body"
-              tone="foreground"
-              weight="semibold"
-              className="m-0"
-            >
+            <Text as="h4" variant="sm" weight="semibold" className="m-0 leading-[1.2] tracking-[-0.28px]">
               {item.title}
             </Text>
-            <Text as="p" variant="body" tone="subtle" className="m-0">
+            <Text as="p" variant="sm" tone="faint" className="m-0 leading-normal tracking-[-0.26px]">
               {item.copy}
             </Text>
           </div>

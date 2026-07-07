@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
+import { cn } from '~/shared/lib/utils'
 import {
   useCommunityFundTotal,
   useReferralTotal,
@@ -95,7 +96,7 @@ export function RewardsBalanceSection() {
         <RewardBalanceCard
           badge={t.rewards.autoPaidLabel}
           badgeClassName="max-dapp:font-semibold max-dapp:leading-[1.2]"
-          className={rewardsSideCard()}
+          className={cn(rewardsSideCard(), 'max-dapp:[&_small]:hidden')}
           headerLabelClassName={rewardsBalanceHeaderMeta()}
           hint={t.rewards.autoPaid}
           hintClassName={rewardsBalanceHint()}

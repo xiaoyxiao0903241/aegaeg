@@ -24,7 +24,10 @@ const swapPercentButton = tv({
 })
 
 const swapGenesisFooterCard = tv({
-  base: 'gap-1.5 [&_button]:min-h-9.5 max-dapp:[&_button]:min-h-10',
+  base: [
+    'gap-1.5 [&_button]:min-h-9.5 [&_button]:text-xs [&_p]:leading-tight',
+    'max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
+  ],
 })
 
 const swapMetaPanel = tv({

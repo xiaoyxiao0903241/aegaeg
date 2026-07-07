@@ -34,6 +34,13 @@ const TILE_SCROLL_PAUSE_MS = Number(process.env.UI_COMPARE_TILE_PAUSE_MS ?? 120)
 const CMD_TIMEOUT_MS = 120_000
 /** 固定 session，便于 close_session 清理 */
 const RUN_SESSION = process.env.UI_COMPARE_WB_SESSION ?? 'aegis-visual-compare'
+const SKIP_WALLET = process.env.UI_COMPARE_SKIP_WALLET === '1'
+/** DApp 截图前等待 SIWE 就绪（ms）；0 = 不等待。默认 120s，skip-wallet 时忽略 */
+const WAIT_WALLET_MS = SKIP_WALLET
+  ? 0
+  : Number(process.env.UI_COMPARE_WAIT_WALLET_MS ?? 120_000)
+/** 1 = 不 close_tab / 不每 target close_session；优先 find_tab 复用已登录标签 */
+const REUSE_TABS = process.env.UI_COMPARE_REUSE_TABS === '1'
 
 async function closeSessionQuiet() {
   try {
@@ -210,6 +217,66 @@ async function readPageOrigin() {
   return r?.value ?? r
 }
 
+/** 登录态 SSOT：topbar `.aegis-connected-wallet-chip` + shell `data-session-ready` */
+async function readWalletState() {
+  const r = await wb('evaluate', {
+    code: `(() => {
+      const shell = document.querySelector('[data-dapp-window]')
+      const chip = document.querySelector('.aegis-connected-wallet-chip')
+      const chipText = chip?.querySelector('span.truncate')?.textContent?.trim() ?? null
+      const connectBtn = document.querySelector('.aegis-thirdweb-button-primary')
+      const connectText = connectBtn?.textContent?.trim().replace(/\\s+/g, ' ') ?? null
+      let authedAddressCount = 0
+      try {
+        const parsed = JSON.parse(localStorage.getItem('aegis.auth.store') || '{}')
+        const state = parsed?.state ?? parsed
+        authedAddressCount = Object.keys(state?.sessionsByAddress ?? {}).length
+      } catch {}
+      const sessionReady = shell?.getAttribute('data-session-ready') === 'true'
+      const walletReady = shell?.getAttribute('data-wallet-ready') === 'true'
+      const connectedChip = !!chip
+      return {
+        sessionReady,
+        walletReady,
+        connectedChip,
+        loggedIn: sessionReady && connectedChip,
+        buttonLabel: chipText ?? connectText ?? null,
+        authedAddressCount,
+      }
+    })()`,
+  })
+  return r?.value ?? r
+}
+
+/** DApp：轮询 topbar chip + data-session-ready，避免新标签未 SIWE 就截图 */
+async function waitForWalletLogin(expectedOrigin, label, target) {
+  const wallet = await readWalletState()
+  if (SKIP_WALLET || !target.url.includes('app.html') || WAIT_WALLET_MS <= 0) {
+    return wallet
+  }
+  if (wallet.loggedIn) return wallet
+
+  console.log(`\n  ⏳ ${label}：请在 WebBridge 打开的标签连接钱包并完成 SIWE（${expectedOrigin}）`)
+  const deadline = Date.now() + WAIT_WALLET_MS
+  while (Date.now() < deadline) {
+    const page = await readPageOrigin()
+    if (page.origin !== expectedOrigin) {
+      throw new Error(`[${label}] origin 漂移：期望 ${expectedOrigin}，实际 ${page.origin}`)
+    }
+    const w = await readWalletState()
+    if (w.loggedIn) {
+      console.log(`  ✓ ${label} 已登录: ${w.buttonLabel}`)
+      return w
+    }
+    await sleep(2000)
+  }
+  const final = await readWalletState()
+  console.log(
+    `  ⚠ ${label} 等待 ${WAIT_WALLET_MS / 1000}s 后仍未登录: ${final.buttonLabel ?? '?'} (session=${final.sessionReady})`,
+  )
+  return final
+}
+
 /** find_tab 在双 localhost 标签时会误匹配端口 — 截图前必须断言 origin */
 async function assertPageOrigin(expectedOrigin, label) {
   const page = await readPageOrigin()
@@ -353,22 +420,38 @@ async function prepareTab(tabUrl, target, expectedOrigin, label) {
   await sleep(target.waitMs ?? 1000)
   if (target.scrollHome || target.scrollDapp) await freezeMotion()
   const metrics = await readMetrics()
+  let wallet = await waitForWalletLogin(expectedOrigin, label, target)
   const page = await assertPageOrigin(expectedOrigin, `${label} before screenshot`)
-  return { ...metrics, origin: page.origin, href: page.href }
+  return { ...metrics, origin: page.origin, href: page.href, wallet }
 }
 
-async function captureSide({ fullUrl, outPath, target, expectedOrigin, label }) {
+async function openSideTab(fullUrl, target, expectedOrigin, label) {
+  const needle = `${expectedOrigin}/en/app.html`
+  if (REUSE_TABS) {
+    try {
+      await wb('find_tab', { url: needle })
+      await assertPageOrigin(expectedOrigin, `${label} find_tab`)
+      return { url: needle, tabId: null, reused: true }
+    } catch {
+      /* fall through to navigate */
+    }
+  }
   const nav = await wb('navigate', {
     url: fullUrl,
     newTab: true,
     group_title: `screenshot ${target.id}`,
   })
-  const tabUrl = nav.url ?? fullUrl
+  return { url: nav.url ?? fullUrl, tabId: nav.tabId ?? null, reused: false }
+}
+
+async function captureSide({ fullUrl, outPath, target, expectedOrigin, label }) {
+  const opened = await openSideTab(fullUrl, target, expectedOrigin, label)
+  const tabUrl = opened.url
   const metrics = await prepareTab(tabUrl, target, expectedOrigin, label)
   await assertPageOrigin(expectedOrigin, `${label} immediately before screenshot`)
   const captureMeta = await captureScreenshot(outPath, target)
-  await wb('close_tab', {})
-  return { tabUrl, metrics: { ...metrics, ...captureMeta }, shotPath: outPath, tabId: nav.tabId ?? null }
+  if (!REUSE_TABS) await wb('close_tab', {})
+  return { tabUrl, metrics: { ...metrics, ...captureMeta }, shotPath: outPath, tabId: opened.tabId, reusedTab: opened.reused }
 }
 
 async function screenshotTo(outPath) {
@@ -489,7 +572,7 @@ console.log(
     ? `Capture: fullPage（WebBridge CDP captureBeyondViewport，原生整页，保留 Edge/钱包）`
     : `Capture: ${CAPTURE_MODE}（longPage = 视口滚动拼接长图）`,
 )
-console.log(`Session: ${RUN_SESSION}（每个 target 完成后关闭标签）`)
+console.log(`Session: ${RUN_SESSION}${REUSE_TABS ? '（复用已开标签 UI_COMPARE_REUSE_TABS=1）' : '（每个 target 完成后关闭标签）'}`)
 console.log(`Output: ${OUT}\n`)
 
 const report = []
@@ -501,7 +584,7 @@ if (process.env.UI_COMPARE_TARGETS) {
 try {
 for (const target of activeTargets) {
   process.stdout.write(`▶ ${target.id} … `)
-  await closeSessionQuiet()
+  if (!REUSE_TABS) await closeSessionQuiet()
 
   const baseFull = BASE + target.url
   const currFull = CURR + target.url
@@ -541,6 +624,12 @@ for (const target of activeTargets) {
   report.push(row)
 
   const flag = stats.pct === 0 && !stats.widthMismatch ? '✓' : '≠'
+  const baseWallet = baseCapture.metrics?.wallet
+  const currWallet = currCapture.metrics?.wallet
+  const walletNote =
+    baseWallet && currWallet
+      ? ` wallet[4175=${baseWallet.loggedIn ? 'in' : 'out'} 5174=${currWallet.loggedIn ? 'in' : 'out'}]`
+      : ''
   const sizeNote = stats.widthMismatch
     ? ` 尺寸 ${stats.baseSize.w}×${stats.baseSize.h} vs ${stats.currSize.w}×${stats.currSize.h}`
     : ''
@@ -551,7 +640,12 @@ for (const target of activeTargets) {
     currCapture.metrics?.captureMode === 'webbridge-fullPage'
       ? ` 长图 ${stats.baseSize.h}px`
       : ''
-  console.log(`${flag} ${stats.pct}%${sizeNote}${longNote}`)
+  console.log(`${flag} ${stats.pct}%${sizeNote}${longNote}${walletNote}`)
+  if (baseWallet && currWallet && (!baseWallet.loggedIn || !currWallet.loggedIn)) {
+    console.log(
+      `  ⚠ 登录态不一致或未登录 — 4175: ${baseWallet.buttonLabel ?? '?'} (session=${baseWallet.sessionReady}) | 5174: ${currWallet.buttonLabel ?? '?'} (session=${currWallet.sessionReady})`,
+    )
+  }
 
   const closed = await closeSessionQuiet()
   if (closed > 0) process.stdout.write(`  (已关 ${closed} 标签) `)

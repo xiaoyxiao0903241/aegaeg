@@ -49,9 +49,11 @@ export const seasonCarouselControlsGapClass = 'gap-2.5'
 export const seasonCarouselEdgeBleedClass = '-mx-5 min-w-0 w-[calc(100%+2.5rem)] px-5'
 
 export const seasonCardTitleClass =
-  'text-[length:var(--dapp-season-title-size)] font-semibold leading-[1.3] tracking-[-0.02em] text-foreground'
+  'text-[length:var(--dapp-season-title-size)] font-semibold leading-[1.3] tracking-[-0.02em] text-ink-strong'
 export const seasonCardMetaClass =
   'text-[length:var(--dapp-season-meta-size)] leading-[1.5] tracking-[-0.02em] text-muted-foreground'
+/** 4175 season card discount/airdrop accent — not primary token */
+export const seasonCardMetaAccentClass = 'text-[#e9785a]'
 export const seasonCardBadgeClass =
   'text-[length:var(--dapp-season-badge-size)] font-medium leading-[1.3]'
 export const seasonCardRadiusClass = 'rounded-[length:var(--dapp-season-card-radius)]'

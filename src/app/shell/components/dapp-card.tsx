@@ -66,7 +66,7 @@ export function MetricCard({
       className={cn(revealClass(), 'flex flex-col items-start gap-1.5', className)}
       data-reveal
     >
-      <Text as="p" variant="label" tone="strong" weight="medium">
+      <Text variant="label" tone="strong" weight="medium">
         {label}
       </Text>
       <Text as="strong" variant="metric-value" className={valueClassName}>
@@ -126,7 +126,7 @@ export function RewardBalanceCard({
           as="p"
           variant="label"
           tone="strong"
-          className={cn('m-0', headerLabelClassName)}
+          className={cn('m-0 tracking-[-0.24px]', headerLabelClassName)}
         >
           {label}
         </Text>
@@ -135,7 +135,7 @@ export function RewardBalanceCard({
             as="span"
             variant="label"
             tone="strong"
-            className={headerMetaClassName}
+            className={cn('tracking-[-0.24px]', headerMetaClassName)}
           >
             {meta}
           </Text>
@@ -145,25 +145,29 @@ export function RewardBalanceCard({
             variant="label"
             tone="success"
             weight="medium"
-            className={cn('whitespace-nowrap', badgeClassName)}
+            className={cn('whitespace-nowrap tracking-[-0.24px]', badgeClassName)}
           >
             {badge}
           </Text>
         )}
       </div>
-      <Text
-        as="strong"
-        variant="value-lg"
-        className={cn('mt-2 block', valueClassName)}
+      <strong
+        className={cn(
+          'mt-2 block text-lg font-semibold leading-[1.3] tracking-[-0.54px] text-foreground max-dapp:text-xs max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]',
+          valueClassName,
+        )}
       >
         {value}
-      </Text>
+      </strong>
       {hint ? (
         <Text
           as="small"
           variant="hint"
-          tone="faint"
-          className={cn('mt-1.5 block max-w-full whitespace-nowrap', hintClassName)}
+          tone="muted"
+          className={cn(
+            'mt-1.5 block max-w-full whitespace-nowrap tracking-[-0.24px]',
+            hintClassName,
+          )}
         >
           {hint}
         </Text>

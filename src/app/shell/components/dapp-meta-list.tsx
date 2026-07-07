@@ -22,10 +22,13 @@ export function DappMetaList({
     <Card
       as="div"
       surface="outlined"
-      className={cn('grid shrink-0 gap-2 rounded-sm px-3.5 py-3', className)}
+      className={cn(
+        'grid shrink-0 gap-2 rounded-sm px-3.5 py-3 tracking-[-0.26px]',
+        className,
+      )}
     >
       {items.map((item, index) => (
-        <div className="m-0 flex items-center justify-between gap-3" key={index}>
+        <p className="m-0 flex items-center justify-between gap-3" key={index}>
           <Text
             as="span"
             variant="meta-label"
@@ -40,7 +43,7 @@ export function DappMetaList({
           >
             {item.value}
           </Text>
-        </div>
+        </p>
       ))}
     </Card>
   )

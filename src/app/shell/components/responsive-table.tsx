@@ -1,85 +1,23 @@
 import { type ReactNode } from 'react'
 import { StatusBadge } from '~/shared/ui/badge'
-import { Text, type TextTone } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 import { TableRowSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 
 const tableCell = dappTableCell()
 const TABLE_CELL =
-  `${tableCell.minWidth()} ${tableCell.border()} tabular-nums px-3 py-2.5 text-left whitespace-nowrap max-dapp:px-2.5 max-dapp:py-2`
+  `${tableCell.minWidth()} ${tableCell.border()} tabular-nums px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
-const TABLE_CLASS = 'w-max min-w-full table-auto border-collapse'
+const TABLE_HEAD_CELL = cn(
+  TABLE_CELL,
+  'text-muted-foreground group-data-[tab=rewards]/shell:text-faint',
+)
 
-const HIGHLIGHTED_ROW = 'bg-accent'
+const TABLE_CLASS =
+  'w-max min-w-full table-auto border-collapse text-sm leading-normal max-dapp:text-xs'
 
-function getCellTextConfig(
-  columnIndex: number,
-  highlighted: boolean,
-  linkColumns: number[],
-  emphasisColumns: number[],
-  positiveColumns: number[],
-): {
-  tone: TextTone
-  weight?: 'bold'
-} {
-  const isLink = linkColumns.includes(columnIndex)
-  const isEmphasis = emphasisColumns.includes(columnIndex)
-  const isPositive = positiveColumns.includes(columnIndex)
-  const isFirst = columnIndex === 0
-
-  if (highlighted) {
-    if (isPositive) {
-      return {
-        tone: 'success',
-        weight: 'bold',
-      }
-    }
-    if (isFirst) {
-      return { tone: 'accent' }
-    }
-    return { tone: 'foreground' }
-  }
-
-  if (isPositive) {
-    return {
-      tone: 'success',
-      weight: 'bold',
-    }
-  }
-  if (isLink) {
-    return { tone: 'accent' }
-  }
-  if (isEmphasis) {
-    return { tone: 'foreground', weight: 'bold' }
-  }
-  return { tone: 'foreground' }
-}
-
-function wrapTableCellContent(
-  cell: ReactNode,
-  textConfig: ReturnType<typeof getCellTextConfig>,
-): ReactNode {
-  if (cell == null || cell === false) {
-    return cell
-  }
-
-  if (typeof cell === 'string' || typeof cell === 'number') {
-    return (
-      <Text
-        as="span"
-        variant="table-cell"
-        tone={textConfig.tone}
-        weight={textConfig.weight}
-        tabular
-      >
-        {cell}
-      </Text>
-    )
-  }
-
-  return cell
-}
+const HIGHLIGHTED_ROW =
+  'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td:first-child]:text-primary [&_td.text-success]:text-success'
 
 export function ResponsiveTable({
   className = '',
@@ -127,10 +65,8 @@ export function ResponsiveTable({
         <thead>
           <tr>
             {headers.map((header) => (
-              <th className={cn(TABLE_CELL, headCellClassName)} key={header}>
-                <Text variant="label" tone="subtle">
-                  {header}
-                </Text>
+              <th className={cn(TABLE_HEAD_CELL, headCellClassName)} key={header}>
+                {header}
               </th>
             ))}
           </tr>
@@ -144,42 +80,36 @@ export function ResponsiveTable({
                   key={`loading-${rowIndex}`}
                 />
               ))
-            : rows.map((row, rowIndex) => {
-                const highlighted = highlightedRows.includes(rowIndex)
-
-                return (
-                  <tr
-                    className={highlighted ? HIGHLIGHTED_ROW : ''}
-                    key={`${row[0]}-${rowIndex}`}
-                  >
-                    {row.map((cell, index) => {
-                      const textConfig = getCellTextConfig(
-                        index,
-                        highlighted,
-                        linkColumns,
-                        emphasisColumns,
-                        positiveColumns,
-                      )
-
-                      return (
-                        <td
-                          className={cn(
-                            TABLE_CELL,
-                            rowIndex === rows.length - 1 && 'border-b-0',
-                          )}
-                          key={`${rowIndex}-${index}`}
-                        >
-                          {statusColumns.includes(index) ? (
-                            <StatusBadge>{cell}</StatusBadge>
-                          ) : (
-                            wrapTableCellContent(cell, textConfig)
-                          )}
-                        </td>
-                      )
-                    })}
-                  </tr>
-                )
-              })}
+            : rows.map((row, rowIndex) => (
+                <tr
+                  className={highlightedRows.includes(rowIndex) ? HIGHLIGHTED_ROW : ''}
+                  key={`${row[0]}-${rowIndex}`}
+                >
+                  {row.map((cell, index) => (
+                    <td
+                      className={cn(
+                        TABLE_CELL,
+                        rowIndex === rows.length - 1 && 'border-b-0',
+                        'tracking-normal text-foreground',
+                        linkColumns.includes(index) && 'text-primary',
+                        emphasisColumns.includes(index) && 'font-bold text-foreground',
+                        positiveColumns.includes(index) &&
+                          cn(
+                            'font-bold text-success',
+                            'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+                          ),
+                      )}
+                      key={`${rowIndex}-${index}`}
+                    >
+                      {statusColumns.includes(index) ? (
+                        <StatusBadge>{cell}</StatusBadge>
+                      ) : (
+                        cell
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>

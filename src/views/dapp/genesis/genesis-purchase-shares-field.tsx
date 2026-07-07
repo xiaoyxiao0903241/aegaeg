@@ -2,16 +2,14 @@ import type { RefObject } from 'react'
 import { tv } from 'tailwind-variants'
 import { buttonDisabledClass } from '~/shared/ui/button'
 import { cn } from '~/shared/lib/utils'
-import { Text } from '~/shared/ui/text'
 
 const genesisSharesField = tv({
   slots: {
-    root: 'mt-1.5 grid gap-2',
     row: 'flex gap-2',
     inputWrap: 'relative flex min-w-0 flex-1',
     input:
       'w-full min-w-0 rounded-sm border border-border bg-card py-2.5 pl-3.5 pr-10 text-base font-bold text-foreground outline-none placeholder:text-placeholder [appearance:textfield] focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
-    unit: 'pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2',
+    unit: 'pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-muted-foreground',
     maxButton: cn(
       'min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 py-2.5 text-xs font-bold whitespace-nowrap text-primary',
       buttonDisabledClass,
@@ -48,10 +46,8 @@ export function GenesisPurchaseSharesField({
   const styles = genesisSharesField()
 
   return (
-    <label className={styles.root()}>
-      <Text tone="subtle" variant="hint">
-        {label}
-      </Text>
+    <label className="mt-1.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground">
+      <span>{label}</span>
       <div className={styles.row()}>
         <div className={styles.inputWrap()}>
           <input
@@ -66,9 +62,9 @@ export function GenesisPurchaseSharesField({
             type="number"
             value={value}
           />
-          <Text as="span" aria-hidden variant="body" tone="subtle" className={styles.unit()}>
+          <span aria-hidden className={styles.unit()}>
             {shareUnit}
-          </Text>
+          </span>
         </div>
         <button
           className={styles.maxButton()}
@@ -76,9 +72,7 @@ export function GenesisPurchaseSharesField({
           onClick={onMax}
           type="button"
         >
-          <Text tone="accent" variant="hint" weight="bold">
-            {maxLabel}
-          </Text>
+          {maxLabel}
         </button>
       </div>
     </label>

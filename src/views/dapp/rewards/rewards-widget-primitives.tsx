@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
-import { Text, textVariants } from '~/shared/ui/text'
+import { dappReferralAmountClass, dappSideCardSpanClass } from '~/app/dapp-type-scale'
 import { cn } from '~/shared/lib/utils'
 
 export const rewardsSideCard = tv({
-  base: 'gap-1.5 rounded-md px-4 py-3.5',
+  base: cn('gap-1.5 rounded-md px-4 py-3.5', dappSideCardSpanClass),
   variants: {
     layout: {
       stack: '',
@@ -33,12 +33,12 @@ export function RewardsProgressRow({
   const styles = rewardsProgressRow()
   return (
     <div className={styles.row()}>
-      <Text as="span" tone="subtle" variant="hint">
+      <span className="text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong max-dapp:text-faint">
         {label}
-      </Text>
-      <Text as="strong" tone="foreground" variant="hint" weight="semibold" className="text-right">
+      </span>
+      <strong className="text-right text-xs font-semibold leading-[1.3] tracking-[-0.24px] text-foreground max-dapp:leading-[1.2]">
         {value}
-      </Text>
+      </strong>
     </div>
   )
 }
@@ -48,7 +48,7 @@ export const rewardsClaimAction = tv({
 })
 
 export const rewardsBalanceHeaderMeta = tv({
-  base: 'max-dapp:text-muted-foreground',
+  base: 'max-dapp:text-faint',
 })
 
 export const rewardsBalanceHint = tv({
@@ -56,7 +56,7 @@ export const rewardsBalanceHint = tv({
 })
 
 export const rewardsReferralAmount = tv({
-  base: textVariants({ variant: 'amount' }),
+  base: dappReferralAmountClass,
 })
 
 export function RewardsSideCard({

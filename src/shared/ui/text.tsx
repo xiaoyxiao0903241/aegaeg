@@ -65,7 +65,7 @@ export const textVariants = tv({
       'value-sm':
         'text-sm font-semibold leading-[1.3] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.2]',
       'value-lg':
-        'text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]',
+        'text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:text-xs max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]',
       amount:
         'text-[length:var(--dapp-type-amount-size)] font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
       'referral-amount':
@@ -78,7 +78,7 @@ export const textVariants = tv({
       'program-body': 'text-[0.8125rem] font-normal leading-[1.3] tracking-[-0.03em]',
       'meta-label': 'text-sm max-dapp:text-xs leading-normal max-dapp:text-faint',
       'metric-value':
-        'text-lg max-dapp:text-base font-semibold leading-[1.2] tracking-[-0.36px]',
+        'text-lg max-dapp:text-xs font-semibold leading-[1.2] tracking-[-0.36px]',
       'meta-value': 'text-sm max-dapp:text-xs font-semibold leading-normal',
       'table-cell':
         'text-sm max-dapp:text-xs leading-normal max-dapp:leading-normal font-normal tracking-normal',

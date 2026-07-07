@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { dappAssets } from '~/app/assets'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
-import { Text } from '~/shared/ui/text'
+import { dappKickerClass } from '~/app/dapp-type-scale'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
@@ -47,14 +47,13 @@ export function RewardsHeroCard({
   layout: 'desktop' | 'mobile'
 }) {
   const styles = rewardsHeroCard({ layout })
-  const banner = dappDarkBanner()
 
   return (
     <section className={styles.root()} data-reveal={layout === 'desktop' ? '' : undefined}>
       <div className={styles.content()}>
-        <Text as="span" variant="kicker" tone="accent" className={banner.kicker()}>
+        <span className={cn(dappKickerClass, 'text-coral-bright')}>
           {kicker}
-        </Text>
+        </span>
         {children}
       </div>
       {layout === 'desktop' ? (

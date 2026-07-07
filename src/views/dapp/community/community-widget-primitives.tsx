@@ -3,17 +3,29 @@ import { tv } from 'tailwind-variants'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
-import { DappReferrerBoundCard, DappSideCard } from '~/app/shell/components/dapp-card'
+import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
-import { ReferrerAddressRow } from '~/app/shell/components/referrer-address-row'
-import { Text } from '~/shared/ui/text'
+import { cn } from '~/shared/lib/utils'
 
-const communitySideCard = tv({
-  base: 'flex flex-col gap-2 rounded-md px-4 py-3.5',
+/** Figma `4040:7261` / `4040:7267` — community widget side cards (16px radius, 16×14 padding). */
+const communityWidgetCard = tv({
+  base: 'flex flex-col rounded-2xl px-4 py-3.5',
 })
 
+/** Figma `--text/body` rgba(0,0,0,0.7) — referral link label. */
+const communityReferralLabelClass =
+  'm-0 text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong'
+
+/** Dev SideValue + Figma `--text/ink` #0b0e14 — referral URL (14px PC / 12px H5). */
+const communityReferralLinkClass =
+  'block max-w-full truncate text-sm font-semibold leading-normal tracking-tight text-[#0b0e14] max-dapp:text-xs'
+
+/** Figma `--text/muted` rgba(0,0,0,0.4) — referrer card labels & footnote. */
+const communityReferrerMetaClass =
+  'm-0 text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-muted'
+
 const communityShareButton = tv({
-  base: 'max-dapp:min-h-11 max-dapp:text-sm',
+  base: 'min-h-[42px] max-dapp:min-h-11 max-dapp:text-sm',
 })
 
 const communityReferrerInput = tv({
@@ -24,8 +36,8 @@ const communityReferrerBindGrid = tv({
   base: 'grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2',
 })
 
-const communityReferrerBoundCard = tv({
-  base: 'grid gap-2 rounded-md px-4 py-3.5',
+const communityReferrerAddressRow = tv({
+  base: 'flex h-[46px] items-center justify-between rounded-[11px] bg-[#f5f6f8] px-3.5',
 })
 
 const communityReferrerAvatar = tv({
@@ -33,11 +45,11 @@ const communityReferrerAvatar = tv({
 })
 
 const communityReferrerAddress = tv({
-  base: 'truncate',
+  base: 'truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px] text-[#0b0e14]',
 })
 
 const communityCopyButton = tv({
-  base: 'grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent',
+  base: 'grid size-[30px] shrink-0 cursor-pointer place-items-center rounded-lg bg-transparent',
 })
 
 export const communityGenesisCta = tv({
@@ -58,13 +70,9 @@ export function CommunityReferralLinkCard({
   referralLink: string
 }) {
   return (
-    <DappSideCard className={communitySideCard()}>
-      <Text as="p" variant="label" tone="foreground" className="m-0">
-        {linkLabel}
-      </Text>
-      <Text as="strong" variant="value-sm" tone="foreground" className="block max-w-full truncate">
-        {referralLink}
-      </Text>
+    <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
+      <p className={communityReferralLabelClass}>{linkLabel}</p>
+      <strong className={communityReferralLinkClass}>{referralLink}</strong>
       <DappActionButton className={communityShareButton()} disabled={disabled} onClick={onCopy}>
         {copyLabel}
       </DappActionButton>
@@ -96,10 +104,8 @@ export function CommunityReferrerBindCard({
   value: string
 }) {
   return (
-    <DappSideCard className={communitySideCard()}>
-      <Text as="p" variant="label" tone="subtle" className="m-0">
-        {referrerLabel}
-      </Text>
+    <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
+      <p className={communityReferrerMetaClass}>{referrerLabel}</p>
       <div className={communityReferrerBindGrid()}>
         <input
           aria-label={inputLabel}
@@ -118,9 +124,7 @@ export function CommunityReferrerBindCard({
           {bindLabel}
         </DappActionButton>
       </div>
-      <Text as="small" variant="hint" tone="subtle" className="block">
-        {hint}
-      </Text>
+      <small className={cn('block', communityReferrerMetaClass)}>{hint}</small>
     </DappSideCard>
   )
 }
@@ -141,18 +145,14 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    <DappReferrerBoundCard className={communityReferrerBoundCard()}>
-      <Text as="p" variant="label" tone="subtle">
-        {addressLabel}
-      </Text>
-      <ReferrerAddressRow>
+    <DappSideCard className={cn(communityWidgetCard(), 'gap-2.5')}>
+      <p className={communityReferrerMetaClass}>{addressLabel}</p>
+      <div className={communityReferrerAddressRow()}>
         <div className="flex min-w-0 items-center gap-2.5">
           <span aria-hidden="true" className={communityReferrerAvatar()}>
             <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
           </span>
-          <Text as="strong" variant="value-sm" tone="foreground" className={communityReferrerAddress()}>
-            {referrerLabel ?? '—'}
-          </Text>
+          <strong className={communityReferrerAddress()}>{referrerLabel ?? '—'}</strong>
         </div>
         {referrer ? (
           <button
@@ -164,10 +164,8 @@ export function CommunityReferrerBoundPanel({
             <DappIcon alt="" size="base" src={dappAssets.copy} />
           </button>
         ) : null}
-      </ReferrerAddressRow>
-      <Text as="p" variant="label" tone="subtle">
-        {note}
-      </Text>
-    </DappReferrerBoundCard>
+      </div>
+      <p className={communityReferrerMetaClass}>{note}</p>
+    </DappSideCard>
   )
 }

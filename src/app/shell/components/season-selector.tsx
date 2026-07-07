@@ -6,15 +6,17 @@ import {
   type CarouselApi,
 } from '~/shared/ui/carousel'
 import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
-import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   seasonCardBadgeClass,
+  seasonCardMetaAccentClass,
+  seasonCardMetaClass,
   seasonCardRadioClass,
   seasonCardRadiusClass,
   seasonCardSizeClass,
+  seasonCardTitleClass,
   seasonCarouselControlsGapClass,
   seasonCarouselEdgeBleedClass,
   seasonCarouselEdgeFadeClass,
@@ -122,39 +124,21 @@ function SeasonCard({
       role="radio"
     >
       <div className="flex items-start justify-between gap-1">
-        <Text
-          as="strong"
-          variant="season-title"
-        >
-          {season.name}
-        </Text>
+        <strong className={seasonCardTitleClass}>{season.name}</strong>
         <RadioIndicator checked={selected} className={seasonCardRadioClass} />
       </div>
-      <Text as="p" variant="season-meta" tone="subtle" className="m-0">
+      <p className={cn('m-0', seasonCardMetaClass)}>
         {t.genesis.discountLabel}{' '}
-        <Text as="span" variant="season-meta" tone="accent">
-          {season.desktopMeta.discount}
-        </Text>
-      </Text>
-      <Text as="p" variant="season-meta" tone="subtle" className="m-0">
+        <span className={seasonCardMetaAccentClass}>{season.desktopMeta.discount}</span>
+      </p>
+      <p className={cn('m-0', seasonCardMetaClass)}>
         {t.genesis.airdropLabel}{' '}
-        <Text as="span" variant="season-meta" tone="accent">
-          {season.desktopMeta.airdrop}
-        </Text>
-      </Text>
-      <Text as="time" variant="season-meta" tone="subtle">
-        {season.date}
-      </Text>
+        <span className={seasonCardMetaAccentClass}>{season.desktopMeta.airdrop}</span>
+      </p>
+      <time className={seasonCardMetaClass}>{season.date}</time>
       <div className="mt-auto w-full">
         <span className={resolveSeasonStatusBadgeClass(season.status, selected)}>
-          <Text
-            as="span"
-            variant="label"
-            tone={season.status === 'LIVE' && selected ? 'accent' : 'subtle'}
-            weight="medium"
-          >
-            {translateSeasonStatus(season.status, t)}
-          </Text>
+          {translateSeasonStatus(season.status, t)}
         </span>
       </div>
     </article>

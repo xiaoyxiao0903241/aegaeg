@@ -7,7 +7,6 @@ import {
 } from '~/hooks/use-api-data'
 import {
   calcProgressPercent,
-  formatRankTitleWithBadge,
   formatPresaleRank,
   formatUsd,
 } from '~/shared/api/format-display'
@@ -25,7 +24,13 @@ import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { ProgressMeter } from '~/app/shell/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/shell/components/dapp-info-tooltip'
-import { Text } from '~/shared/ui/text'
+import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
+import {
+  dappKickerClass,
+  dappRankMetaClass,
+  dappRankTitleClass,
+  dappSideTitleShellClass,
+} from '~/app/dapp-type-scale'
 import {
   RewardsProgressRow,
   RewardsSideCard,
@@ -120,14 +125,26 @@ export function RewardsRankSection() {
               showPostLaunchRank ? 'grid-cols-2' : 'grid-cols-1',
             )}
           >
-            <Text as="p" className="m-0" tone="accent" variant="kicker">
+            <p
+              className={cn(
+                'm-0 uppercase tracking-[0.88px] text-xs text-primary',
+                dappKickerClass,
+                'max-dapp:text-[length:var(--dapp-type-kicker-size)]',
+              )}
+            >
               {t.rewards.currentTitle}
-            </Text>
+            </p>
             {showPostLaunchRank ? (
               <div className="flex items-center justify-end gap-1 self-start">
-                <Text as="p" className="m-0" tone="accent" variant="kicker">
+                <p
+                  className={cn(
+                    'm-0 uppercase tracking-[0.88px] text-xs text-primary',
+                    dappKickerClass,
+                    'max-dapp:text-[length:var(--dapp-type-kicker-size)]',
+                  )}
+                >
                   {t.rewards.postLaunchRankTitle}
-                </Text>
+                </p>
                 <DappInfoTooltip
                   align="end"
                   content={t.rewards.postLaunchRankTooltip}
@@ -136,38 +153,36 @@ export function RewardsRankSection() {
               </div>
             ) : null}
 
-            {rankLabel ? (
-              <Text
-                as="strong"
-                className="block min-w-0 break-words"
-                tone="foreground"
-                variant="rank-title"
-              >
-                {formatRankTitleWithBadge(
-                  rankLabel,
-                  hasRank && isSuperCommunity,
-                  t.rewards.superCommunityBadge,
-                )}
-              </Text>
-            ) : null}
+            <strong
+              className={cn(
+                dappSideTitleShellClass,
+                dappRankTitleClass,
+                'max-dapp:leading-[1.2]',
+              )}
+            >
+              <RankTitleWithSuperCommunity
+                isSuperCommunity={hasRank && isSuperCommunity}
+                superCommunityLabel={t.rewards.superCommunityBadge}
+                title={rankLabel}
+              />
+            </strong>
             {showPostLaunchRank ? (
-              <Text as="strong" className="block text-right" tone="foreground" variant="rank-title">
+              <strong
+                className={cn(
+                  dappSideTitleShellClass,
+                  dappRankTitleClass,
+                  'text-right max-dapp:leading-[1.2]',
+                )}
+              >
                 {postLaunchRank}
-              </Text>
+              </strong>
             ) : null}
 
-            <Text as="small" className="block" tone="subtle" variant="hint">
-              {leftBottomLabel}
-            </Text>
+            <small className={cn('block', dappRankMetaClass)}>{leftBottomLabel}</small>
             {postLaunch30DayLabel ? (
-              <Text
-                as="small"
-                className="block text-right"
-                tone="subtle"
-                variant="hint"
-              >
+              <small className={cn('block text-right', dappRankMetaClass)}>
                 {postLaunch30DayLabel}
-              </Text>
+              </small>
             ) : null}
           </div>
         )}
