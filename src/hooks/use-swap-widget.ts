@@ -7,12 +7,9 @@ import { formatGasEstimate } from '~/views/dapp/swap/format-gas-estimate'
 import { formatSwapRateApprox } from '~/views/dapp/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
-  capTokenAmountInput,
   clampSlippagePercent,
   formatTokenAmount,
   formatTokenAmountInputDisplay,
-  parseTokenAmount,
-  sanitizeTokenAmountInput,
   slippagePercentToBps,
 } from '~/core/swap/token-amount'
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
@@ -27,6 +24,7 @@ import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
+import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 
 /**
  * @param authenticated — SIWE session ready; gates quotes, swap submit, and amount capping.
@@ -38,7 +36,6 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const afterSwap = useDappActions((state) => state.afterSwap)
   const direction = useSwapDirectionStore((state) => state.direction)
   const flipDirectionInStore = useSwapDirectionStore((state) => state.flipDirection)
-  const [sellAmount, setSellAmountRaw] = useState('')
   const [slippage, setSlippageRaw] = useState(1)
   // Clamp here so an out-of-range value can never reach calcAmountOutMin (throws ≥100%).
   const setSlippage = useCallback((value: number) => {
@@ -53,10 +50,6 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const usd1ToUsdtPair = useMemo(() => getSwapPairTokens('forward'), [])
   const address = account?.address
   const walletReady = hasWalletAccount(account)
-  const amountIn = useMemo(
-    () => parseTokenAmount(sellAmount, pair.sell.decimals),
-    [pair.sell.decimals, sellAmount],
-  )
   const slippageBps = slippagePercentToBps(slippage)
   const spotQuoteAmount = useMemo(
     () => 10n ** BigInt(pair.sell.decimals),
@@ -150,6 +143,23 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     placeholderData: keepPreviousData,
   })
 
+  const sellBalance = balancesQuery.data?.sell ?? 0n
+  const buyBalance = balancesQuery.data?.buy ?? 0n
+  const balancesLoaded = balancesQuery.data !== undefined
+
+  const {
+    amount: sellAmount,
+    amountIn,
+    setAmount: setSellAmount,
+    clearAmount,
+    fillPercent: fillSellPercent,
+  } = useCappedTokenAmountInput({
+    decimals: pair.sell.decimals,
+    balance: sellBalance,
+    balancesLoaded,
+    authenticated,
+  })
+
   const amountQuoteQuery = useQuery({
     queryKey: queryKeys.chain.swapQuote(
       pair.sell.address,
@@ -181,11 +191,6 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     quotesEnabled && authenticated && amountIn > 0n,
   )
 
-  const sellBalance = balancesQuery.data?.sell ?? 0n
-  const buyBalance = balancesQuery.data?.buy ?? 0n
-  // Only cap input against a real balance; capping against the 0n fallback
-  // while balances are still loading would wipe whatever the user typed.
-  const balancesLoaded = balancesQuery.data !== undefined
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
   const priceImpactBps = amountQuoteQuery.data?.priceImpactBps ?? 0
@@ -202,33 +207,6 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     exchangeSpotQuoteQuery.isPending && exchangeSpotQuotedOut === 0n
   const isExchangePriceInvertedQuoting =
     exchangeSpotQuoteInvertedQuery.isPending && exchangeSpotQuotedOutInverted === 0n
-
-  const setSellAmount = useCallback(
-    (value: string) => {
-      const fractionLimit = Math.min(pair.sell.decimals, 6)
-
-      if (!authenticated || !balancesLoaded) {
-        setSellAmountRaw(sanitizeTokenAmountInput(value, fractionLimit))
-        return
-      }
-
-      setSellAmountRaw(
-        capTokenAmountInput(value, sellBalance, pair.sell.decimals, 6),
-      )
-    },
-    [authenticated, balancesLoaded, pair.sell.decimals, sellBalance],
-  )
-
-  useEffect(() => {
-    if (!authenticated || !balancesLoaded || !sellAmount) {
-      return
-    }
-
-    const capped = capTokenAmountInput(sellAmount, sellBalance, pair.sell.decimals, 6)
-    if (capped !== sellAmount) {
-      setSellAmountRaw(capped)
-    }
-  }, [authenticated, balancesLoaded, pair.sell.decimals, sellAmount, sellBalance])
 
   useEffect(() => {
     if (amountQuoteQuery.error) {
@@ -347,17 +325,16 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
 
   const fillPercent = useCallback(
     (percent: number) => {
-      if (!walletReady || sellBalance === 0n) return
-      const value = (sellBalance * BigInt(percent)) / 100n
-      setSellAmountRaw(formatTokenAmount(value, pair.sell.decimals, 6))
+      if (!walletReady) return
+      fillSellPercent(percent)
     },
-    [walletReady, pair.sell.decimals, sellBalance],
+    [fillSellPercent, walletReady],
   )
 
   const flipDirection = useCallback(() => {
     flipDirectionInStore()
-    setSellAmountRaw('')
-  }, [flipDirectionInStore])
+    clearAmount()
+  }, [clearAmount, flipDirectionInStore])
 
   const submit = useCallback(async (): Promise<boolean> => {
     if (!account || !wallet) {
@@ -384,7 +361,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
         tokenOut: pair.buy.address,
         amountOutMin,
       })
-      setSellAmountRaw('')
+      clearAmount()
       afterSwap()
       await balancesQuery.refetch()
       return true
@@ -404,6 +381,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     amountOutMin,
     balancesQuery,
     canSubmit,
+    clearAmount,
     pair.buy.address,
     pair.sell.address,
     wallet,

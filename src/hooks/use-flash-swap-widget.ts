@@ -1,13 +1,10 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { formatSwapRate, formatSwapRateColon } from '~/views/dapp/swap/format-swap-rate'
 import {
-  capTokenAmountInput,
   formatTokenAmount,
   formatTokenAmountInputDisplay,
-  parseTokenAmount,
-  sanitizeTokenAmountInput,
 } from '~/core/swap/token-amount'
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
@@ -18,6 +15,7 @@ import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
+import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/views/dapp/web3/flash-swap-read'
 import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/views/dapp/web3/flash-swap-write'
@@ -31,17 +29,12 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
   const wallet = useActiveWallet()
   const afterSwap = useDappActions((state) => state.afterSwap)
   const pair = useMemo(() => getSwapPairTokens('reverse'), [])
-  const [sellAmount, setSellAmountRaw] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<unknown>(null)
   const readClient = useChainReadClient()
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)
-  const amountIn = useMemo(
-    () => parseTokenAmount(sellAmount, pair.sell.decimals),
-    [pair.sell.decimals, sellAmount],
-  )
   const spotQuoteAmount = useMemo(
     () => 10n ** BigInt(pair.sell.decimals),
     [pair.sell.decimals],
@@ -62,6 +55,28 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     placeholderData: keepPreviousData,
   })
 
+  const sellBalance = balancesQuery.data?.usdt ?? 0n
+  const buyBalance = balancesQuery.data?.usd1 ?? 0n
+  const balancesLoaded = balancesQuery.data !== undefined
+
+  const clearSubmitError = useCallback(() => {
+    setSubmitError(null)
+  }, [])
+
+  const {
+    amount: sellAmount,
+    amountIn,
+    setAmount: setSellAmount,
+    clearAmount,
+    fillPercent: fillSellPercent,
+  } = useCappedTokenAmountInput({
+    decimals: pair.sell.decimals,
+    balance: sellBalance,
+    balancesLoaded,
+    authenticated,
+    onBeforeCap: clearSubmitError,
+  })
+
   const amountQuoteQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapQuote(amountIn.toString()),
     queryFn: () => readFlashSwapQuote(amountIn, readClient),
@@ -77,38 +92,14 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     quotesEnabled && authenticated && amountIn > 0n,
   )
 
-  const sellBalance = balancesQuery.data?.usdt ?? 0n
-  const buyBalance = balancesQuery.data?.usd1 ?? 0n
   // Only cap input against a real balance; capping against the 0n fallback
   // while balances are still loading would wipe whatever the user typed.
-  const balancesLoaded = balancesQuery.data !== undefined
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   const quotedOut = amountQuoteQuery.data ?? 0n
   const spotQuotedOut = spotQuoteQuery.data ?? 0n
   const isQuoting =
     authenticated && amountIn > 0n && amountQuoteQuery.isFetching && quotedOut === 0n
   const isExchangePriceQuoting = spotQuoteQuery.isFetching && spotQuotedOut === 0n
-
-  const setSellAmount = useCallback(
-    (value: string) => {
-      const fractionLimit = Math.min(pair.sell.decimals, 6)
-
-      if (!authenticated || !balancesLoaded) {
-        setSellAmountRaw(sanitizeTokenAmountInput(value, fractionLimit))
-        return
-      }
-
-      setSubmitError(null)
-      setSellAmountRaw(capTokenAmountInput(value, sellBalance, pair.sell.decimals, 6))
-    },
-    [authenticated, balancesLoaded, pair.sell.decimals, sellBalance],
-  )
-
-  useEffect(() => {
-    if (!authenticated || !balancesLoaded || !sellAmount) return
-    const capped = capTokenAmountInput(sellAmount, sellBalance, pair.sell.decimals, 6)
-    if (capped !== sellAmount) setSellAmountRaw(capped)
-  }, [authenticated, balancesLoaded, pair.sell.decimals, sellAmount, sellBalance])
 
   const validationError = useMemo(() => {
     if (!amountQuoteQuery.error) return null
@@ -188,11 +179,10 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
 
   const fillPercent = useCallback(
     (percent: number) => {
-      if (!walletReady || sellBalance === 0n) return
-      const value = (sellBalance * BigInt(percent)) / 100n
-      setSellAmountRaw(formatTokenAmount(value, pair.sell.decimals, 6))
+      if (!walletReady) return
+      fillSellPercent(percent)
     },
-    [walletReady, pair.sell.decimals, sellBalance],
+    [fillSellPercent, walletReady],
   )
 
   const submit = useCallback(async (): Promise<{ ok: true } | { ok: false; error: unknown }> => {
@@ -218,7 +208,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
         // and execution.
         minUsd1Out: calcAmountOutMin(quotedOut, FLASH_SWAP_SLIPPAGE_BPS),
       })
-      setSellAmountRaw('')
+      clearAmount()
       afterSwap()
       await balancesQuery.refetch()
       return { ok: true }
@@ -231,7 +221,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterSwap, amountIn, balancesQuery, canSubmit, quotedOut, wallet])
+  }, [account, afterSwap, amountIn, balancesQuery, canSubmit, clearAmount, quotedOut, wallet])
 
   return {
     sellAmount,
