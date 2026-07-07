@@ -12,6 +12,7 @@ import {
 import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import { formatAddress } from '~/app/utils'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 import { WalletDetailsModal } from '~/app/shell/components/wallet-details-modal'
 import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
@@ -78,7 +79,9 @@ function ConnectedWalletChip() {
         type="button"
       >
         <span className="aegis-connected-wallet-chip__status" aria-hidden="true" />
-        <span className="truncate">{formatAddress(address)}</span>
+        <Text as="span" variant="body" className="truncate">
+          {formatAddress(address)}
+        </Text>
       </button>
       {menuOpen ? <WalletDetailsModal onOpenChange={setMenuOpen} open={menuOpen} /> : null}
     </>
@@ -152,7 +155,9 @@ function WalletConnectButton({
           {variant !== 'primary' && !needsSignIn ? (
             <span className={walletGlyphClass} aria-hidden="true" />
           ) : null}
-          {isLoggingIn ? t.wallet.connecting : connectLabel}
+          <Text as="span" variant="body">
+            {isLoggingIn ? t.wallet.connecting : connectLabel}
+          </Text>
         </span>
       </button>
       {!needsSignIn ? (

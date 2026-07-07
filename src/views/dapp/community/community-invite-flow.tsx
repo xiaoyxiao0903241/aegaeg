@@ -12,14 +12,17 @@ export type InviteFlowItem = {
 
 const inviteFlowStep = tv({
   base: cn(
-    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold',
-    'text-[length:var(--dapp-type-caption-size)] leading-[1.5] tracking-[-0.26px] text-primary-foreground',
+    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary text-primary-foreground',
     'max-dapp:size-7',
   ),
 })
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
-  return <span className={inviteFlowStep()}>{children}</span>
+  return (
+    <Text as="span" variant="caption" weight="semibold" tone="primary" className={inviteFlowStep()}>
+      {children}
+    </Text>
+  )
 }
 
 /** Figma `flow` connector — coral primary, 2px thick. */
@@ -60,7 +63,8 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           </div>
           <Text
             as="h4"
-            size="sm"
+            variant="body"
+            tone="primary"
             weight="semibold"
             className="m-0 tracking-[-0.28px] max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
           >
@@ -68,8 +72,8 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           </Text>
           <Text
             as="p"
-            size="xs"
-            tone="muted"
+            variant="label"
+            tone="secondary"
             className={cn(
               'm-0 max-w-[24ch] tracking-[-0.24px]',
               'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2 max-dapp:text-xs max-dapp:leading-[1.28]',
@@ -98,10 +102,16 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             {index < items.length - 1 ? <InviteFlowConnector orientation="vertical" /> : null}
           </div>
           <div className={cn('grid min-w-0 gap-0.5', index < items.length - 1 && 'pb-3.5')}>
-            <Text as="h4" size="sm" weight="semibold" className="m-0 leading-[1.2] tracking-[-0.28px]">
+            <Text
+              as="h4"
+              variant="body"
+              tone="primary"
+              weight="semibold"
+              className="m-0 leading-[1.2] tracking-[-0.28px]"
+            >
               {item.title}
             </Text>
-            <Text as="p" size="sm" tone="muted" className="m-0 leading-normal tracking-[-0.26px]">
+            <Text as="p" variant="body" tone="secondary" className="m-0 leading-normal tracking-[-0.26px]">
               {item.copy}
             </Text>
           </div>

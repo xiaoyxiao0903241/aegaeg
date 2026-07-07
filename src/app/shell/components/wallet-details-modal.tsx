@@ -14,6 +14,7 @@ import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { Button } from '~/shared/ui/button'
+import { Text } from '~/shared/ui/text'
 import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { cn } from '~/shared/lib/utils'
@@ -224,22 +225,36 @@ export function WalletDetailsModal({
         <Wallet className="size-8" strokeWidth={1.75} />
       </div>
 
-      <DialogPrimitive.Title className="m-0 text-xl font-extrabold leading-[1.2] tracking-[0.01em] text-foreground tabular-nums">
-        {addressLabel}
+      <DialogPrimitive.Title asChild>
+        <Text
+          as="h2"
+          variant="title-xl"
+          weight="bold"
+          tabular
+          className="m-0 leading-[1.2] tracking-[0.01em]"
+        >
+          {addressLabel}
+        </Text>
       </DialogPrimitive.Title>
 
       {!walletReady ? (
-        <p className="m-0 mt-3 text-xs font-medium leading-[1.45] text-primary">
+        <Text as="p" variant="label" tone="accent" weight="medium" className="m-0 mt-3 leading-[1.45]">
           {t.wallet.reconnectHint}
-        </p>
+        </Text>
       ) : null}
 
-      <p className="m-0 mt-3 text-sm font-semibold leading-none text-muted-foreground">
-        <span className="mr-1.5 text-base font-bold text-primary tabular-nums">
+      <Text
+        as="p"
+        variant="body"
+        tone="secondary"
+        weight="semibold"
+        className="m-0 mt-3 leading-none"
+      >
+        <Text as="span" variant="body-md" tone="accent" weight="bold" tabular className="mr-1.5">
           {balanceValue}
-        </span>
+        </Text>
         {balanceSymbol}
-      </p>
+      </Text>
 
       <div className="mt-4 grid gap-2 text-left">
         {displayTokenRows.map((token) => (
@@ -247,8 +262,12 @@ export function WalletDetailsModal({
             className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5"
             key={token.symbol}
           >
-            <span className="text-xs font-semibold text-muted-foreground">{token.label}</span>
-            <strong className="text-sm font-bold tabular-nums text-foreground">{token.value}</strong>
+            <Text as="span" variant="label" tone="secondary" weight="semibold">
+              {token.label}
+            </Text>
+            <Text as="strong" variant="body" weight="bold" tabular>
+              {token.value}
+            </Text>
           </div>
         ))}
       </div>
@@ -263,7 +282,7 @@ export function WalletDetailsModal({
               type="button"
               variant="primary"
             >
-              {t.wallet.reconnectWallet}
+              <Text as="span" variant="body">{t.wallet.reconnectWallet}</Text>
             </Button>
             <Button
               className="h-11 gap-2 px-3 text-sm"
@@ -273,7 +292,7 @@ export function WalletDetailsModal({
               variant="secondary"
             >
               <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-              {t.wallet.disconnect}
+              <Text as="span" variant="body">{t.wallet.disconnect}</Text>
             </Button>
           </>
         ) : (
@@ -291,7 +310,9 @@ export function WalletDetailsModal({
                 size="action"
                 src={copied ? dappAssets.check : dappAssets.copyWhite}
               />
-              {copied ? t.wallet.copied : t.wallet.copyAddress}
+              <Text as="span" variant="body">
+                {copied ? t.wallet.copied : t.wallet.copyAddress}
+              </Text>
             </Button>
             <Button
               className="h-11 gap-2 px-3 text-sm"
@@ -301,7 +322,7 @@ export function WalletDetailsModal({
               variant="secondary"
             >
               <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-              {t.wallet.disconnect}
+              <Text as="span" variant="body">{t.wallet.disconnect}</Text>
             </Button>
           </div>
         )}

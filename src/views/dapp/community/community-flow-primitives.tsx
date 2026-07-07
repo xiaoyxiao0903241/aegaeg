@@ -15,11 +15,11 @@ const communityProgramCard = tv({
       revealClass(),
       'flex flex-col gap-2 p-5 max-dapp:rounded-md max-dapp:p-4 max-dapp:gap-1.5 max-dapp:py-3',
     ),
-    kicker: 'm-0 uppercase tracking-[0.88px] text-xs leading-[1.3]',
-    title: 'm-0 leading-[1.3] tracking-[-0.48px] max-dapp:text-sm max-dapp:leading-[1.2]',
-    body: 'm-0 max-w-[38ch] leading-[1.5] tracking-[-0.26px]',
+    kicker: 'm-0',
+    title: 'm-0 max-w-[38ch]',
+    body: 'm-0 max-w-[38ch]',
     action:
-      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold leading-[1.3] tracking-[-0.26px] text-primary max-dapp:text-xs',
+      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left no-underline hover:underline',
   },
 })
 
@@ -53,27 +53,31 @@ export function CommunityProgramCard({
 
   return (
     <Card as="article" surface="elevated" className={cn(styles.root(), className)} data-reveal>
-      <Text as="span" size="xs" weight="semibold" tone="coral" className={styles.kicker()}>
+      <Text as="span" variant="kicker" tone="accent" className={styles.kicker()}>
         {label}
       </Text>
-      <Text as="h3" size="md" weight="semibold" className={styles.title()}>
+      <Text as="h3" variant="title-lg" tone="primary" className={styles.title()}>
         {title}
       </Text>
-      <Text as="p" size="sm" tone="body" className={styles.body()}>
+      <Text as="p" variant="body" tone="secondary" className={styles.body()}>
         {body}
       </Text>
       {navigableHref ? (
         <a
-          className={cn(styles.action(), 'no-underline hover:underline')}
+          className={styles.action()}
           href={navigableHref}
           rel="noopener noreferrer"
           target="_blank"
         >
-          {action}
+          <Text variant="body" weight="semibold" tone="accent">
+            {action}
+          </Text>
         </a>
       ) : (
-        <button className={cn(styles.action(), 'hover:underline')} type="button">
-          {action}
+        <button className={styles.action()} type="button">
+          <Text variant="body" weight="semibold" tone="accent">
+            {action}
+          </Text>
         </button>
       )}
     </Card>

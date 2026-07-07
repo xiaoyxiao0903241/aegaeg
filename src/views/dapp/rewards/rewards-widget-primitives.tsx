@@ -1,33 +1,25 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
-import { dappReferralAmountClass } from '~/app/dapp-type-scale'
+import { Text, textVariants } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 export const rewardsSideCard = tv({
-  base: 'gap-1.5 rounded-md px-4 py-3.5 [&_span]:text-xs [&_span]:tracking-[-0.24px]',
+  base: 'gap-1.5 rounded-md px-4 py-3.5',
   variants: {
     layout: {
       stack: '',
       grid: 'grid gap-1.5',
     },
-    referral: {
-      true: 'max-dapp:[&_small]:hidden',
-      false: '',
-    },
   },
   defaultVariants: {
     layout: 'stack',
-    referral: false,
   },
 })
 
 const rewardsProgressRow = tv({
   slots: {
     row: 'flex items-center justify-between gap-3',
-    label: 'text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong max-dapp:text-faint',
-    value:
-      'text-right text-xs font-semibold leading-[1.3] tracking-[-0.24px] text-foreground max-dapp:leading-[1.2]',
   },
 })
 
@@ -41,8 +33,12 @@ export function RewardsProgressRow({
   const styles = rewardsProgressRow()
   return (
     <div className={styles.row()}>
-      <span className={styles.label()}>{label}</span>
-      <strong className={styles.value()}>{value}</strong>
+      <Text as="span" tone="primary" variant="hint" className="max-dapp:text-muted-foreground">
+        {label}
+      </Text>
+      <Text as="strong" tone="primary" variant="hint" weight="semibold" className="text-right max-dapp:leading-[1.2]">
+        {value}
+      </Text>
     </div>
   )
 }
@@ -52,7 +48,7 @@ export const rewardsClaimAction = tv({
 })
 
 export const rewardsBalanceHeaderMeta = tv({
-  base: 'max-dapp:text-faint',
+  base: 'max-dapp:text-muted-foreground',
 })
 
 export const rewardsBalanceHint = tv({
@@ -60,22 +56,20 @@ export const rewardsBalanceHint = tv({
 })
 
 export const rewardsReferralAmount = tv({
-  base: dappReferralAmountClass,
+  base: textVariants({ variant: 'amount' }),
 })
 
 export function RewardsSideCard({
   children,
   className,
   layout = 'stack',
-  referral = false,
 }: {
   children: ReactNode
   className?: string
   layout?: 'stack' | 'grid'
-  referral?: boolean
 }) {
   return (
-    <DappSideCard className={cn(rewardsSideCard({ layout, referral }), className)}>
+    <DappSideCard className={cn(rewardsSideCard({ layout }), className)}>
       {children}
     </DappSideCard>
   )

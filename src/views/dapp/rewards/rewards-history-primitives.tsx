@@ -25,5 +25,5 @@ export function RewardsHistoryPillTabs(props: ComponentProps<typeof DappPillTabs
 }
 
 export const rewardsHistoryTableHead = tv({
-  base: 'text-faint',
+  base: '',
 })

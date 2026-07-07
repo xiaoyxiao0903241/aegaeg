@@ -40,7 +40,7 @@ export function DappCollapsibleSection({
           onClick={() => setOpen((value) => !value)}
           type="button"
         >
-          <span>{title}</span>
+          {title}
           <DappIcon
             alt=""
             aria-hidden

@@ -2,7 +2,8 @@
 
 > SSOT 设计稿：[AEGIS X — Website](https://www.figma.com/design/sXWXDvBrLeg5r0NnP1SMZH/AEGIS-X--Copy---Copy---Copy-)  
 > 断点：`max-[820px]` = H5，`min-[821px]` = PC  
-> 代码 SSOT：`src/components/{button,card,text}.tsx`（`tv()` 与组件同文件）
+> 代码 SSOT：`src/shared/ui/{button,card,text}.tsx`（`tv()` 与组件同文件）  
+> **样式迁移**：[`style-refactor-playbook.md`](./style-refactor-playbook.md)（强制）
 
 ---
 
@@ -49,6 +50,24 @@
 
 组件统一签名：`cn(variants({ ... }), className)` — `className` 始终最后，可覆盖。
 
+### 2.0 颜色与 CSS class（2026-07 起）
+
+> 完整约束见根 [`AGENTS.md`](../AGENTS.md) §8.7。本节为设计系统视角摘要。
+
+| 层级 | 允许 | 禁止（新代码） |
+|------|------|----------------|
+| 颜色 | shadcn 语义 utility（`text-foreground`、`text-muted-foreground`、`text-primary`…） | 遗留扩展色 `text-ink-*`、`text-faint`、`text-on-dark`、`text-faq-text`、`text-coral-bright` |
+| 深底反色 | `text-white` 或 `Text tone="inverse"` | 新加 `--color-*` 无文档理由 |
+| 字阶 | `Text variant` / 组件内 `tv()` variant 轴 | 新建 `*-type-scale.ts`、散落字阶常量 |
+| 样式来源 | `theme.css` `@theme`、Tailwind 原子类、`className` 布局 | 组件旁 `.css` 新 class、`<style>` 块 |
+| 用户可见文案 | **必须** `<Text variant tone>`（playbook §3.1） | typography React wrapper、裸 `p`/`span`/`strong` 带字阶色 |
+
+**迁移**：全仓遗留引用随 CSS 清理批次删除；单 PR 只改触达文件，不顺手全仓替换。  
+**流程**：迁移前必须完成 [`style-refactor-playbook.md`](./style-refactor-playbook.md) §1–2 样式栈表；改 `Text` / shell primitive 时 §4 验收清单逐项勾选。  
+**Text API**：仅 `variant` + `tone`（`primary` / `secondary` / `accent` / `success` / `inverse`）；**禁止** `size` prop 与 `xs`/`sm`/`body`/`muted` 等 deprecated 别名（已于 2026-07 移除）。
+
+---
+
 ### 2.1 轴职责（禁止轴污染）
 
 | 组件 | 轴 | 只放什么 | 禁止放进轴里 |
@@ -60,10 +79,11 @@
 | **Card** | `surface` | `outlined` / `elevated` | 空 `flat`、padding、圆角 |
 | | `tone` | 仅 `dark`（非默认不写） | 空 `default` |
 | | `base` | `rounded-md px-4 py-3.5 bg-card` | — |
-| **Text** | `size` | `text-*`、档内 `tracking` | `leading-*`（走 compound） |
+| **Text** | `variant` | 角色字阶、`text-*`、档内 `tracking`；含 `!` / fluid 压父级 → 专用值（如 `rank-title`，见 playbook） | `leading-*`（走 compound）；用近似 variant 冒充专用字阶 |
+| | `tone` | shadcn 语义色（`foreground` / `muted-foreground` / `primary` / `success` / `inverse`→`white`） | 遗留 `ink-*`、`faint`、`faq-text` |
 | | `weight` | 非 normal 字重 | 空 `normal` |
-| | `tone` | 非默认语义色 | 空 `default` |
-| | `base` | `font-normal text-foreground tracking-[0]` | — |
+| | `base` | `font-normal tracking-normal` | — |
+| | `compound` | variant×tone 交叉（如 kicker+accent） | — |
 
 **反模式**：boolean 轴 `true: '' / false: ''` 只为 compound 占位；应改为显式 `variant` 值（如 `tab`）或删掉。
 

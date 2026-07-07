@@ -28,24 +28,24 @@ export function DappMetaList({
       )}
     >
       {items.map((item, index) => (
-        <p className="m-0 flex items-center justify-between gap-3" key={index}>
+        <div className="m-0 flex items-center justify-between gap-3" key={index}>
           <Text
             as="span"
-            size="sm"
-            tone={sessionReady ? 'body' : 'subtle'}
-            className={sessionReady ? 'max-dapp:text-faint' : undefined}
+            variant="body"
+            tone={sessionReady ? 'primary' : 'secondary'}
+            className={sessionReady ? 'max-dapp:text-muted-foreground' : undefined}
           >
             {item.label}
           </Text>
           <Text
             as="strong"
-            size="sm"
+            variant="body"
             weight="semibold"
             className={cn('mt-0 text-right', item.valueClassName)}
           >
             {item.value}
           </Text>
-        </p>
+        </div>
       ))}
     </Card>
   )

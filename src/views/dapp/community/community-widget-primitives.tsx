@@ -3,27 +3,13 @@ import { tv } from 'tailwind-variants'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
-import {
-  DappReferrerBoundCard,
-  DappSideCard,
-  SideHint,
-  SideLabel,
-  SideValue,
-} from '~/app/shell/components/dapp-card'
+import { DappReferrerBoundCard, DappSideCard } from '~/app/shell/components/dapp-card'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { ReferrerAddressRow } from '~/app/shell/components/referrer-address-row'
-import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 const communitySideCard = tv({
-  base: cn(
-    '[&_strong]:block [&_strong]:max-w-full [&_strong]:truncate',
-    'flex flex-col gap-2 rounded-md px-4 py-3.5',
-    '[&_label]:text-xs [&_label]:leading-[1.5] [&_label]:tracking-[-0.24px] [&_label]:text-faint',
-  ),
-})
-
-const communityReferralValue = tv({
-  base: 'text-sm max-dapp:text-xs tracking-tight',
+  base: 'flex flex-col gap-2 rounded-md px-4 py-3.5',
 })
 
 const communityShareButton = tv({
@@ -42,16 +28,12 @@ const communityReferrerBoundCard = tv({
   base: 'grid gap-2 rounded-md px-4 py-3.5',
 })
 
-const communityReferrerMeta = tv({
-  base: 'text-xs leading-normal tracking-[-0.24px] text-muted-foreground',
-})
-
 const communityReferrerAvatar = tv({
   base: 'grid size-6 flex-none place-items-center rounded-full bg-accent text-primary',
 })
 
 const communityReferrerAddress = tv({
-  base: 'truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px] text-foreground',
+  base: 'truncate',
 })
 
 const communityCopyButton = tv({
@@ -77,8 +59,12 @@ export function CommunityReferralLinkCard({
 }) {
   return (
     <DappSideCard className={communitySideCard()}>
-      <SideLabel>{linkLabel}</SideLabel>
-      <SideValue className={communityReferralValue()}>{referralLink}</SideValue>
+      <Text as="p" variant="label" tone="primary" className="m-0">
+        {linkLabel}
+      </Text>
+      <Text as="strong" variant="value-sm" tone="primary" className="block max-w-full truncate">
+        {referralLink}
+      </Text>
       <DappActionButton className={communityShareButton()} disabled={disabled} onClick={onCopy}>
         {copyLabel}
       </DappActionButton>
@@ -111,7 +97,9 @@ export function CommunityReferrerBindCard({
 }) {
   return (
     <DappSideCard className={communitySideCard()}>
-      <SideLabel tone="muted">{referrerLabel}</SideLabel>
+      <Text as="p" variant="label" tone="secondary" className="m-0">
+        {referrerLabel}
+      </Text>
       <div className={communityReferrerBindGrid()}>
         <input
           aria-label={inputLabel}
@@ -130,7 +118,9 @@ export function CommunityReferrerBindCard({
           {bindLabel}
         </DappActionButton>
       </div>
-      <SideHint>{hint}</SideHint>
+      <Text as="small" variant="hint" tone="secondary" className="block">
+        {hint}
+      </Text>
     </DappSideCard>
   )
 }
@@ -152,13 +142,17 @@ export function CommunityReferrerBoundPanel({
 }) {
   return (
     <DappReferrerBoundCard className={communityReferrerBoundCard()}>
-      <p className={communityReferrerMeta()}>{addressLabel}</p>
+      <Text as="p" variant="label" tone="secondary">
+        {addressLabel}
+      </Text>
       <ReferrerAddressRow>
         <div className="flex min-w-0 items-center gap-2.5">
           <span aria-hidden="true" className={communityReferrerAvatar()}>
             <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
           </span>
-          <strong className={communityReferrerAddress()}>{referrerLabel ?? '—'}</strong>
+          <Text as="strong" variant="value-sm" tone="primary" className={communityReferrerAddress()}>
+            {referrerLabel ?? '—'}
+          </Text>
         </div>
         {referrer ? (
           <button
@@ -171,7 +165,9 @@ export function CommunityReferrerBoundPanel({
           </button>
         ) : null}
       </ReferrerAddressRow>
-      <p className={communityReferrerMeta()}>{note}</p>
+      <Text as="p" variant="label" tone="secondary">
+        {note}
+      </Text>
     </DappReferrerBoundCard>
   )
 }

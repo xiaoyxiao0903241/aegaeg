@@ -8,6 +8,7 @@ import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { shellMobileDrawerItemClass, shellRailRowLabelClass } from '~/app/shell-layout'
+import { Text } from '~/shared/ui/text'
 
 const NAV_MOTION_MS = 320
 
@@ -142,9 +143,16 @@ export function DappMobileNav({
                 )}
                 style={railIconMask(item.icon)}
               />
-              <span className={shellRailRowLabelClass} title={label}>
+              <Text
+                as="span"
+                variant="body"
+                weight="semibold"
+                tone={active ? 'accent' : 'primary'}
+                className={shellRailRowLabelClass}
+                title={label}
+              >
                 {label}
-              </span>
+              </Text>
             </button>
           )
         })}

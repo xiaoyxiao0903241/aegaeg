@@ -2,6 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useState } from 'react'
 import { modalContentClass, modalOverlayClass } from '~/shared/ui/dialog'
+import { Text } from '~/shared/ui/text'
 import { homeAssets } from '~/views/home/assets'
 import { PopupNoticeContent } from '~/views/home/popup-notice-content'
 import { useI18n } from '~/i18n/use-i18n'
@@ -49,7 +50,7 @@ export function HomePopupNoticeModal({
 
           <article className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1.5rem_5rem_oklch(15%_0.02_270/35%)]">
             <header className="relative z-10 flex shrink-0 items-center justify-between gap-3 px-4 pb-3 pt-4">
-              <div className="inline-flex min-w-0 items-center gap-2 text-base font-semibold tracking-normal text-foreground">
+              <div className="inline-flex min-w-0 items-center gap-2">
                 <img
                   alt=""
                   className="h-7 w-7 shrink-0 object-contain"
@@ -58,7 +59,15 @@ export function HomePopupNoticeModal({
                   src={homeAssets.logoMark}
                   width={28}
                 />
-                <span className="truncate">{messages.common.brand}</span>
+                <Text
+                  as="span"
+                  className="truncate"
+                  tone="primary"
+                  variant="body-md"
+                  weight="semibold"
+                >
+                  {messages.common.brand}
+                </Text>
               </div>
 
               <button
@@ -93,9 +102,15 @@ export function HomePopupNoticeModal({
                   id="home-popup-notice-body"
                 >
                   {notice.title ? (
-                    <h2 className="text-balance text-[1.35rem] font-bold leading-[1.25] tracking-[-0.02em] text-foreground">
+                    <Text
+                      as="h2"
+                      className="text-balance text-[1.35rem] leading-[1.25] tracking-[-0.02em]"
+                      tone="primary"
+                      variant="title-lg"
+                      weight="bold"
+                    >
                       {notice.title}
-                    </h2>
+                    </Text>
                   ) : null}
 
                   {notice.content ? (

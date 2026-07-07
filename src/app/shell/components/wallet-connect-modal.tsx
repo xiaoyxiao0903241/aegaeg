@@ -5,6 +5,7 @@ import { X } from 'lucide-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { appMetadata, connectEmbedProps } from '~/views/dapp/web3/thirdweb'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   AegisResponsiveDialog,
@@ -44,8 +45,10 @@ export function WalletConnectModal({
       <AegisSheetHandle />
 
       <div className="flex items-center justify-between max-dapp:px-0 dapp:mb-5">
-        <DialogPrimitive.Title className="m-0 text-xl font-semibold leading-[1.3] tracking-[-0.63px] text-foreground">
-          {t.wallet.connectTitle}
+        <DialogPrimitive.Title asChild>
+          <Text as="h2" variant="title-xl" className="m-0">
+            {t.wallet.connectTitle}
+          </Text>
         </DialogPrimitive.Title>
         <DialogPrimitive.Close
           aria-label={t.common.close}
@@ -57,30 +60,6 @@ export function WalletConnectModal({
       </div>
 
       <div className="aegis-wallet-connect-body">
-        {/*
-        <div className="aegis-wallet-connect-intro">
-          <img
-            alt=""
-            className="h-8 w-auto shrink-0"
-            height="34"
-            src={homeAssets.logoMark}
-          />
-          <div className="min-w-0">
-            <p className="m-0 text-sm font-semibold leading-[1.35] text-foreground">
-              {t.wallet.connectIntroTitle}
-            </p>
-            <p className="m-0 mt-0.5 text-xs leading-[1.4] text-muted-foreground">
-              <a
-                className="font-semibold text-primary transition-opacity duration-180 hover:opacity-80"
-                href="/app#swap"
-              >
-                {t.wallet.connectIntroLink}
-              </a>
-            </p>
-          </div>
-        </div>
-        */}
-
         <div className="aegis-connect-embed">
           <ConnectEmbed
             {...connectEmbedProps}

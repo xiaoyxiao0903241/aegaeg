@@ -18,8 +18,7 @@ export function DappContentHeading({
   return (
     <Text
       as="h2"
-      size="lg"
-      weight="semibold"
+      variant="lead"
       className={cn(
         'm-0 tracking-[-0.36px]',
         'max-dapp:mt-0 max-dapp:text-base max-dapp:tracking-[-0.68px]',

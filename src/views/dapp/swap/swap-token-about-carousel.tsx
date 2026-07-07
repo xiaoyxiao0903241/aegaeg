@@ -30,7 +30,7 @@ const swapTokenAboutCarousel = tv({
     ],
     indicatorBar: 'inline-flex items-center justify-center',
     navButton:
-      'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
+      'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
     dotGroup: 'inline-flex items-center gap-1.5',
     dotButton: [
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0',

@@ -1,5 +1,6 @@
 import { swapHubAssets } from '~/app/assets'
 import { tv } from 'tailwind-variants'
+import { Text } from '~/shared/ui/text'
 
 const swapProgramCard = tv({
   base: 'flex w-full rounded-md bg-card p-4 text-left shadow-card',
@@ -28,12 +29,12 @@ const swapProgramCardBody = tv({
 function ProgramCardCopy({ body, title }: { body: string; title: string }) {
   return (
     <span className="grid min-w-0 gap-1 text-left">
-      <strong className="text-[0.8125rem] font-semibold leading-[1.3] tracking-[0.08em] text-foreground">
+      <Text as="strong" className="tracking-[0.08em]" tone="primary" variant="compact-title">
         {title}
-      </strong>
-      <span className="text-[0.8125rem] font-normal leading-[1.3] tracking-[-0.03em] text-muted-foreground">
+      </Text>
+      <Text className="tracking-[-0.03em]" tone="secondary" variant="compact-body">
         {body}
-      </span>
+      </Text>
     </span>
   )
 }

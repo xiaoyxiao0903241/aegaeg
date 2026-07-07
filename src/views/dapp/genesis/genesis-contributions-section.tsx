@@ -26,6 +26,7 @@ import {
   GenesisContributionsReveal,
   GenesisContributionsSyncHint,
 } from '~/views/dapp/genesis/genesis-contributions-primitives'
+import { Text } from '~/shared/ui/text'
 
 export function GenesisContributionsSection() {
   const { messages: t } = useI18n()
@@ -60,15 +61,18 @@ export function GenesisContributionsSection() {
 
           return [
             ...row.slice(0, 4),
-            <a
-              className="text-primary underline"
+            <Text
+              as="a"
+              className="underline"
               href={bscscanTx(item.tx_hash)}
               key={item.tx_hash}
               rel="noopener noreferrer"
               target="_blank"
+              tone="accent"
+              variant="body"
             >
               {txLabel}
-            </a>,
+            </Text>,
           ]
         }) ?? []
 

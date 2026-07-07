@@ -23,85 +23,6 @@ export function DappSideCard({
   )
 }
 
-export function SideLabel({
-  children,
-  className,
-  tone = 'body',
-}: {
-  children: ReactNode
-  className?: string
-  tone?: 'body' | 'coral' | 'muted'
-}) {
-  if (tone === 'coral') {
-    return (
-      <Text
-        as="p"
-        size="xs"
-        weight="semibold"
-        tone="coral"
-        className={cn('m-0 uppercase tracking-[0.88px] text-xs', className)}
-      >
-        {children}
-      </Text>
-    )
-  }
-
-  return (
-    <Text
-      as="p"
-      size="xs"
-      tone={tone === 'muted' ? 'muted' : 'body'}
-      className={cn('m-0', className)}
-    >
-      {children}
-    </Text>
-  )
-}
-
-export function SideValue({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
-  return (
-    <Text as="strong" size="sm" weight="semibold" className={cn('block', className)}>
-      {children}
-    </Text>
-  )
-}
-
-export function SideHint({
-  children,
-  className,
-  tone = 'muted',
-}: {
-  children: ReactNode
-  className?: string
-  tone?: 'body' | 'muted'
-}) {
-  return (
-    <Text as="small" size="xs" tone={tone === 'body' ? 'body' : 'muted'} className={cn('block', className)}>
-      {children}
-    </Text>
-  )
-}
-
-export function SideTitle({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
-  return (
-    <Text as="strong" size="md" weight="semibold" className={cn('block text-base', className)}>
-      {children}
-    </Text>
-  )
-}
-
 export function DappReferrerBoundCard({
   children,
   className,
@@ -145,13 +66,12 @@ export function MetricCard({
       className={cn(revealClass(), 'flex flex-col items-start gap-1.5', className)}
       data-reveal
     >
-      <Text size="xs" weight="medium" tone="body" className="tracking-[-0.24px]">
+      <Text as="p" variant="label" tone="primary" weight="medium" className="tracking-[-0.24px]">
         {label}
       </Text>
       <Text
         as="strong"
-        size="lg"
-        weight="semibold"
+        variant="lead"
         className={cn('leading-[1.2] tracking-[-0.36px]', valueClassName)}
       >
         {value}
@@ -159,8 +79,8 @@ export function MetricCard({
       {hint ? (
         <Text
           as="small"
-          size="xs"
-          tone="muted"
+          variant="hint"
+          tone="secondary"
           className={cn('mt-1.5 block', hintClassName)}
         >
           {hint}
@@ -208,8 +128,8 @@ export function RewardBalanceCard({
       <div className="flex items-center justify-between gap-3">
         <Text
           as="p"
-          size="xs"
-          tone="body"
+          variant="label"
+          tone="primary"
           className={cn('m-0 tracking-[-0.24px]', headerLabelClassName)}
         >
           {label}
@@ -217,8 +137,8 @@ export function RewardBalanceCard({
         {meta ? (
           <Text
             as="span"
-            size="xs"
-            tone="body"
+            variant="label"
+            tone="primary"
             className={cn('tracking-[-0.24px]', headerMetaClassName)}
           >
             {meta}
@@ -226,9 +146,9 @@ export function RewardBalanceCard({
         ) : (
           <Text
             as="span"
-            size="xs"
-            weight="medium"
+            variant="label"
             tone="success"
+            weight="medium"
             className={cn('whitespace-nowrap tracking-[-0.24px]', badgeClassName)}
           >
             {badge}
@@ -237,19 +157,16 @@ export function RewardBalanceCard({
       </div>
       <Text
         as="strong"
-        weight="semibold"
-        className={cn(
-          'mt-2 block text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]',
-          valueClassName,
-        )}
+        variant="value-lg"
+        className={cn('mt-2 block', valueClassName)}
       >
         {value}
       </Text>
       {hint ? (
         <Text
           as="small"
-          size="xs"
-          tone="muted"
+          variant="hint"
+          tone="secondary"
           className={cn('mt-1.5 block max-w-full whitespace-nowrap tracking-[-0.24px]', hintClassName)}
         >
           {hint}

@@ -23,6 +23,7 @@ import {
   swapFlipCard,
 } from '~/views/dapp/swap/swap-widget-primitives'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
+import { Text } from '~/shared/ui/text'
 
 export function TradeSwapWidget({
   onSelectGenesis,
@@ -153,7 +154,7 @@ export function TradeSwapWidget({
               aria-label={t.swap.flip}
               className={cn(
                 'grid size-8 place-items-center rounded-sm border border-border bg-card p-0',
-                'text-sm font-normal leading-normal tracking-[-0.28px] text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
+                'text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
                 'enabled:hover:-translate-y-px enabled:hover:border-primary',
                 'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
                 'max-dapp:my-2',
@@ -278,9 +279,14 @@ export function TradeSwapWidget({
         />
 
         {sessionReady && swap.isHighPriceImpact ? (
-          <p className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-xs leading-relaxed text-destructive">
+          <Text
+            as="p"
+            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 leading-relaxed text-destructive"
+            tone="primary"
+            variant="hint"
+          >
             {t.swap.trade.highPriceImpactWarning}
-          </p>
+          </Text>
         ) : null}
 
         {sessionReady && swap.walletReady ? (

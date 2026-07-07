@@ -9,20 +9,7 @@ export const genesisMetricGrid = tv({
 })
 
 const genesisMetricCard = tv({
-  base: cn(
-    'max-dapp:min-h-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:shadow-card',
-    '[&_strong]:text-base [&_strong]:leading-[1.3] [&_strong]:max-dapp:text-sm [&_strong]:max-dapp:leading-[1.2]',
-    '[&_small]:max-dapp:hidden',
-  ),
-  variants: {
-    tabular: {
-      true: '[&_strong]:tabular-nums',
-      false: '',
-    },
-  },
-  defaultVariants: {
-    tabular: false,
-  },
+  base: 'max-dapp:min-h-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:shadow-card',
 })
 
 export function GenesisMetricCard({
@@ -42,11 +29,12 @@ export function GenesisMetricCard({
 }) {
   return (
     <MetricCard
-      className={cn(genesisMetricCard({ tabular }), className)}
+      className={cn(genesisMetricCard(), className)}
       hint={hint}
+      hintClassName={hint ? 'max-dapp:hidden' : undefined}
       label={label}
       value={value}
-      valueClassName={valueClassName}
+      valueClassName={cn(tabular && 'tabular-nums', valueClassName)}
     />
   )
 }

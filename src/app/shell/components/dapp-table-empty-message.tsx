@@ -1,4 +1,5 @@
 import { DappTableCardShell } from '~/app/shell/components/dapp-table-card'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 import { revealClass } from '~/shared/lib/reveal'
 
@@ -16,9 +17,13 @@ export function DappTableEmptyMessage({
 }) {
   const message = (
     <>
-      <p className="m-0 text-sm font-medium text-foreground">{title}</p>
+      <Text as="p" variant="body" weight="medium" className="m-0">
+        {title}
+      </Text>
       {body ? (
-        <p className="mb-0 mt-2 text-xs leading-normal text-muted-foreground">{body}</p>
+        <Text as="p" variant="label" tone="secondary" className="mb-0 mt-2">
+          {body}
+        </Text>
       ) : null}
     </>
   )

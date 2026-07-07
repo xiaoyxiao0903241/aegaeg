@@ -1,5 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { DappTableEmptyState } from '~/app/shell/components/dapp-table-empty-state'
+import { Text } from '~/shared/ui/text'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { cn } from '~/shared/lib/utils'
 
@@ -23,12 +24,17 @@ export function DappTableAuthPrompt({
       showSkeleton={showSkeleton}
     >
       <div className="grid w-full gap-1.5 text-center">
-        <p className="m-0 text-sm font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
+        <Text
+          as="p"
+          variant="body"
+          weight="semibold"
+          className="m-0 leading-[1.2] tracking-[-0.3px]"
+        >
           {t.dapp.connect.recordsTitle}
-        </p>
-        <p className="m-0 text-xs leading-normal tracking-[-0.26px] text-muted-foreground">
+        </Text>
+        <Text as="p" variant="label" tone="secondary" className="m-0 tracking-[-0.26px]">
           {body}
-        </p>
+        </Text>
       </div>
       <WalletConnectChip variant="primary" />
     </DappTableEmptyState>

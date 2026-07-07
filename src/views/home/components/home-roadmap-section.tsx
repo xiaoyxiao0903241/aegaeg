@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
@@ -20,24 +21,17 @@ const roadmapClass = {
   currentCard: 'min-h-30 border border-primary dapp:min-h-30',
   header:
     'flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start',
-  phaseLabel:
-    'text-xs font-semibold leading-[1.2] tracking-[0.72px] dapp:text-xs dapp:leading-normal',
-  phaseLabelActive: 'text-primary',
-  phaseLabelMuted: 'text-ink-muted',
+  phaseLabel: 'leading-[1.2] tracking-[0.72px] dapp:leading-normal',
   now:
-    'rounded-3xl bg-primary px-2 py-0.5 text-xs font-semibold not-italic text-white dapp:px-2.5 dapp:py-0.5 dapp:text-xs',
-  time:
-    'ml-auto text-xs font-semibold leading-[1.2] dapp:text-xs dapp:leading-[1.4]',
-  timeMuted: 'text-ink-muted',
-  timeCurrent: 'text-primary',
+    'rounded-3xl bg-primary px-2 py-0.5 not-italic dapp:px-2.5 dapp:py-0.5',
+  time: 'ml-auto leading-[1.2] dapp:leading-[1.4]',
   title:
-    'mt-1.5 text-base font-semibold leading-[1.2] tracking-[-0.64px] text-foreground dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.72px]',
-  body:
-    'mt-1.5 text-xs font-normal leading-[1.4] tracking-[-0.26px] text-ink-muted dapp:mt-2',
+    'mt-1.5 leading-[1.2] tracking-[-0.64px] dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.72px]',
+  body: 'mt-1.5 leading-[1.4] tracking-[-0.26px] dapp:mt-2',
   dot:
     'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:left-1/2 dapp:top-10 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
   dotComplete: 'bg-primary text-white dapp:border-primary',
-  dotUpcoming: 'border-[3px] border-border bg-card text-ink-muted',
+  dotUpcoming: 'border-[3px] border-border bg-card',
   dotCurrent:
     'dapp:shadow-[0_0_0_8px_oklch(94.92%_0.0224_45.6_/_96%)]',
   dotConnector:
@@ -117,32 +111,48 @@ export function HomeRoadmapSection() {
                 radius="md"
               >
                 <div className={roadmapClass.header}>
-                  <span
-                    className={cn(
-                      roadmapClass.phaseLabel,
-                      phase.state
-                        ? roadmapClass.phaseLabelActive
-                        : roadmapClass.phaseLabelMuted,
-                    )}
+                  <Text
+                    as="span"
+                    className={roadmapClass.phaseLabel}
+                    tone={phase.state ? 'accent' : 'secondary'}
+                    variant="caption"
+                    weight="semibold"
                   >
                     {phase.phase}
-                  </span>
+                  </Text>
                   {phase.state === 'current' ? (
-                    <em className={roadmapClass.now}>NOW</em>
+                    <Text
+                      as="em"
+                      className={roadmapClass.now}
+                      tone="inverse"
+                      variant="caption"
+                      weight="semibold"
+                    >
+                      NOW
+                    </Text>
                   ) : null}
-                  <time
-                    className={cn(
-                      roadmapClass.time,
-                      phase.state === 'current'
-                        ? roadmapClass.timeCurrent
-                        : roadmapClass.timeMuted,
-                    )}
+                  <Text
+                    as="time"
+                    className={roadmapClass.time}
+                    tone={phase.state === 'current' ? 'accent' : 'secondary'}
+                    variant="caption"
+                    weight="semibold"
                   >
                     {phase.time}
-                  </time>
+                  </Text>
                 </div>
-                <h3 className={roadmapClass.title}>{phase.title}</h3>
-                <p className={roadmapClass.body}>{phase.description}</p>
+                <Text
+                  as="h3"
+                  className={roadmapClass.title}
+                  tone="primary"
+                  variant="body-md"
+                  weight="semibold"
+                >
+                  {phase.title}
+                </Text>
+                <Text as="p" className={roadmapClass.body} tone="secondary" variant="caption">
+                  {phase.description}
+                </Text>
               </Card>
             </article>
           ))}

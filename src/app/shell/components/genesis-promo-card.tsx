@@ -102,14 +102,14 @@ export function GenesisPromoCard({
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
       ) : (
-        <Text as="strong" size="sm" weight="semibold" tone="onDark" className="tracking-[-0.28px]">
+        <Text as="strong" variant="body" weight="semibold" tone="inverse" className="tracking-[-0.28px]">
           {title}
         </Text>
       )}
       {pending || !body ? (
         <GenesisPromoBodySkeleton />
       ) : (
-        <Text as="p" size="xs" tone="onDark" className="m-0 leading-normal tracking-[-0.24px]">
+        <Text as="p" variant="hint" tone="inverse" className="m-0 leading-normal tracking-[-0.24px]">
           {body}
         </Text>
       )}

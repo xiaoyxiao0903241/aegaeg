@@ -1,5 +1,6 @@
 import { tv } from 'tailwind-variants'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
+import { Text } from '~/shared/ui/text'
 
 const swapModeCard = tv({
   base: 'flex w-full items-center gap-3 rounded-md border border-border bg-card p-3.5 text-left shadow-none',
@@ -31,18 +32,22 @@ export function SwapModeCard({
       <DappIcon alt="" className="shrink-0" size="xl" src={icon} />
       <span className="grid min-w-0 flex-1 gap-1">
         <span className="flex min-w-0 items-center gap-1.5">
-          <strong className="text-[0.8125rem] font-semibold leading-normal tracking-[-0.02em] text-foreground">
+          <Text as="strong" tone="primary" variant="compact-title">
             {title}
-          </strong>
+          </Text>
           {badge ? (
-            <span className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#FF9500] px-2 py-1.5 text-[0.625rem] font-medium leading-none tracking-[-0.02em] text-white">
+            <Text
+              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#FF9500] px-2 py-1.5 text-[0.625rem] font-medium leading-none tracking-[-0.02em]"
+              tone="inverse"
+              variant="label"
+            >
               {badge}
-            </span>
+            </Text>
           ) : null}
         </span>
-        <span className="text-[0.8125rem] font-normal leading-normal tracking-[-0.02em] text-muted-foreground">
+        <Text tone="secondary" variant="compact-body">
           {body}
-        </span>
+        </Text>
       </span>
     </button>
   )

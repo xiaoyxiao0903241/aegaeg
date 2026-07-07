@@ -27,35 +27,19 @@ const communityStatCard = tv({
       revealClass(),
       'community-stat flex flex-col items-start gap-1 rounded-md p-4.5',
       communityStatCardMobileShell(),
-      'max-dapp:[&>span]:w-full max-dapp:[&>span]:text-xs max-dapp:[&>span]:leading-normal',
-      'max-dapp:[&>strong]:mt-1 max-dapp:[&>strong]:w-full max-dapp:[&>strong]:text-2xl',
-      'max-dapp:[&>b]:mt-1 max-dapp:[&>b]:block max-dapp:[&>b]:w-full max-dapp:[&>b]:text-xs max-dapp:[&>b]:leading-[1.2]',
-      'max-dapp:[&>small]:mt-1 max-dapp:[&>small]:block max-dapp:[&>small]:w-full max-dapp:[&>small]:text-xs max-dapp:[&>small]:leading-[1.2]',
     ),
-    label: cn('relative z-1 tracking-[-0.24px]', 'max-dapp:w-full'),
-    value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full max-dapp:text-2xl'),
-    volume: cn(
-      'relative z-1 tracking-[-0.28px]',
-      'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:text-xs max-dapp:leading-[1.2]',
-    ),
-    hint: cn(
-      'relative z-1 tracking-[-0.12px]',
-      'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:text-xs max-dapp:leading-[1.2]',
-    ),
+    label: cn('relative z-1', 'max-dapp:w-full'),
+    value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full'),
+    volume: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
+    hint: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
   },
   variants: {
     dark: {
       true: {
         root: 'is-dark shadow-none border-0',
-        label: 'text-on-dark dapp:text-xs dapp:tracking-[-0.26px]',
-        value: 'text-white',
-        volume: 'text-coral-bright',
-        hint: 'max-dapp:text-on-dark',
       },
       false: {
         root: 'shadow-[0_0.5rem_1.5rem_rgba(18,26,51,0.06)]',
-        label: 'max-dapp:text-faint',
-        value: 'text-ink-strong',
       },
     },
     withImage: {
@@ -113,25 +97,31 @@ function CommunityStatCard({
     >
       <Text
         as="span"
-        size="xs"
-        tone={dark ? 'onDark' : 'body'}
-        className={styles.label()}
+        variant="label"
+        tone={dark ? 'inverse' : 'primary'}
+        className={cn(styles.label(), !dark && 'max-dapp:text-muted-foreground')}
       >
         {label}
       </Text>
-      <Text as="strong" size="2xl" weight="semibold" className={styles.value()}>
+      <Text
+        as="strong"
+        variant="value-lg"
+        weight="semibold"
+        tone={dark ? 'inverse' : 'primary'}
+        className={styles.value()}
+      >
         {value}
       </Text>
       {volume ? (
-        <Text as="b" size="sm" weight="semibold" tone="coral" className={styles.volume()}>
+        <Text as="b" variant="body" weight="semibold" tone="accent" className={styles.volume()}>
           {volume}
         </Text>
       ) : null}
       {today ? (
         <Text
           as="small"
-          size="xs"
-          tone={dark ? 'onDark' : 'muted'}
+          variant="label"
+          tone={dark ? 'inverse' : 'secondary'}
           className={styles.hint()}
         >
           {today}

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { IconButton } from '~/shared/ui/icon-button'
+import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
@@ -7,22 +8,7 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/shared/lib/utils'
 
-function dappPanelTitleClassName(className?: string) {
-  return cn(
-    'm-0 text-xl font-semibold leading-[1.3] text-foreground tracking-[-0.84px]',
-    'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
-    'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
-    'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
-    'max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
-    className,
-  )
-}
-
-const dappPanelSubtitleClassName = cn(
-  'm-0 max-w-[34ch] text-xs leading-[1.5] tracking-[-0.24px] text-ink-strong',
-  'max-dapp:max-w-none',
-  '[&_strong]:font-bold [&_strong]:text-primary',
-)
+const dappPanelSubtitleClassName = 'm-0 max-w-[34ch] max-dapp:max-w-none'
 
 export function DappPanelHeader({
   className,
@@ -50,8 +36,25 @@ export function DappPanelHeader({
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <h1 className={dappPanelTitleClassName()}>{title}</h1>
-        <p className={dappPanelSubtitleClassName}>{subtitle}</p>
+        <Text
+          as="h1"
+          variant="title-xl"
+          className={cn(
+            'm-0 group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
+            'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
+            'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
+          )}
+        >
+          {title}
+        </Text>
+        <Text
+          as="p"
+          variant="caption"
+          tone="primary"
+          className={dappPanelSubtitleClassName}
+        >
+          {subtitle}
+        </Text>
       </div>
       {showToggle ? (
         <AnchoredTooltip content={t.topbar.toggleTooltip}>

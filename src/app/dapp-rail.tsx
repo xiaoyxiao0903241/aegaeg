@@ -5,6 +5,7 @@ import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
+import { Text } from '~/shared/ui/text'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
@@ -146,12 +147,15 @@ export function DappRail({
                 style={railIconMask(item.icon)}
                 aria-hidden="true"
               />
-              <span
+              <Text
+                as="span"
+                variant="label"
+                tone={active ? 'accent' : 'primary'}
                 className={mobile ? shellRailRowLabelClass : shellRailLabelClass}
                 title={label}
               >
                 {label}
-              </span>
+              </Text>
             </button>
           </AnchoredTooltip>
         )

@@ -10,6 +10,7 @@ import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 const swapWidgetHeader = tv({
   slots: {
@@ -19,16 +20,13 @@ const swapWidgetHeader = tv({
       dappWidgetHeaderSpacingClass,
     ],
     hubCopy: 'flex min-w-0 flex-1 flex-col gap-1.5',
-    pageTitle:
-      'm-0 text-[1.3125rem] font-semibold leading-normal tracking-[-0.02625em] text-foreground',
-    pageSubtitle:
-      'm-0 max-w-[17.5rem] text-[0.8125rem] font-normal leading-[1.4] tracking-[-0.02em] text-ink-strong max-dapp:max-w-none',
+    pageTitle: 'm-0',
+    pageSubtitle: 'm-0 max-w-[17.5rem] max-dapp:max-w-none',
     subpageRoot: [dappWidgetHeaderSpacingClass, 'grid gap-3.5'],
     subpageNavRow: ['flex items-center gap-2', shellMobilePageTitleClass],
     subpageBackButton:
       'inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left',
-    subpageBackLabel:
-      'text-base font-medium leading-[1.4] tracking-[-0.02em] text-ink-strong',
+    subpageBackLabel: '',
     subpageCopy: 'grid gap-1.5',
     panelToggleIcon:
       'transition-transform duration-[260ms] ease-[cubic-bezier(.2,.8,.2,1)]',
@@ -80,8 +78,23 @@ export function SwapHubHeader({
   return (
     <div className={styles.hubRoot()}>
       <div className={styles.hubCopy()}>
-        <h1 className={styles.pageTitle()}>{title}</h1>
-        <p className={styles.pageSubtitle()}>{subtitle}</p>
+        <Text
+          as="h1"
+          className={cn(styles.pageTitle(), 'text-[1.3125rem] leading-normal tracking-[-0.02625em]')}
+          tone="primary"
+          variant="body-md"
+          weight="semibold"
+        >
+          {title}
+        </Text>
+        <Text
+          as="p"
+          className={cn(styles.pageSubtitle(), 'leading-[1.4] tracking-[-0.02em]')}
+          tone="primary"
+          variant="compact-body"
+        >
+          {subtitle}
+        </Text>
       </div>
       <SwapPanelToggle />
     </div>
@@ -108,13 +121,35 @@ export function SwapSubpageHeader({
           type="button"
         >
           <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
-          <span className={styles.subpageBackLabel()}>{t.swap.backToHub}</span>
+          <Text
+            className={cn(styles.subpageBackLabel(), 'leading-[1.4] tracking-[-0.02em]')}
+            tone="primary"
+            variant="body-md"
+            weight="medium"
+          >
+            {t.swap.backToHub}
+          </Text>
         </button>
         <SwapPanelToggle />
       </div>
       <div className={styles.subpageCopy()}>
-        <h1 className={styles.pageTitle()}>{title}</h1>
-        <p className={styles.pageSubtitle()}>{subtitle}</p>
+        <Text
+          as="h1"
+          className={cn(styles.pageTitle(), 'text-[1.3125rem] leading-normal tracking-[-0.02625em]')}
+          tone="primary"
+          variant="body-md"
+          weight="semibold"
+        >
+          {title}
+        </Text>
+        <Text
+          as="p"
+          className={cn(styles.pageSubtitle(), 'leading-[1.4] tracking-[-0.02em]')}
+          tone="primary"
+          variant="compact-body"
+        >
+          {subtitle}
+        </Text>
       </div>
     </div>
   )

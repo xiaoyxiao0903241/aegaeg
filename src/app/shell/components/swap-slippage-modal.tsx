@@ -5,6 +5,7 @@ import { dappIconClass } from '~/app/dapp-icon-scale'
 import { useI18n } from '~/i18n/use-i18n'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/swap/token-amount'
 import { cn } from '~/shared/lib/utils'
+import { Text, textVariants } from '~/shared/ui/text'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
@@ -14,8 +15,7 @@ const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
 
 const PRESET_BTN_CLASS = cn(
   'flex h-6 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full border border-[#e3e8ed]',
-  'bg-card px-3 text-xs font-semibold leading-none text-[#111625]',
-  'transition-[background-color,border-color,color] duration-180 ease-out',
+  'bg-card px-3 transition-[background-color,border-color,color] duration-180 ease-out',
 )
 
 function parseSlippageInput(value: string) {
@@ -67,8 +67,10 @@ export function SwapSlippageModal({
     >
       <AegisSheetHandle />
       <div className="flex items-center justify-between pb-5 dapp:pb-5">
-        <DialogPrimitive.Title className="m-0 text-xl font-semibold leading-[1.3] tracking-[-0.63px] text-foreground">
-          {t.swap.slippage}
+        <DialogPrimitive.Title asChild>
+          <Text as="h2" variant="title-xl" className="m-0">
+            {t.swap.slippage}
+          </Text>
         </DialogPrimitive.Title>
         <DialogPrimitive.Close
           aria-label={t.common.close}
@@ -88,15 +90,20 @@ export function SwapSlippageModal({
           <label className="sr-only" htmlFor="swap-slippage-input">
             {t.swap.slippage}
           </label>
-          <div className="flex h-11 items-center justify-between rounded-sm border border-border bg-card px-3.5 text-base font-semibold leading-[1.3] tracking-[-0.32px] text-foreground">
+          <div className="flex h-11 items-center justify-between rounded-sm border border-border bg-card px-3.5">
             <input
-              className="w-full min-w-0 border-0 bg-transparent p-0 text-inherit outline-none"
+              className={cn(
+                'w-full min-w-0 border-0 bg-transparent p-0 text-inherit outline-none',
+                textVariants({ variant: 'body-md', weight: 'semibold' }),
+              )}
               id="swap-slippage-input"
               inputMode="decimal"
               onChange={(event) => setDraft(event.currentTarget.value)}
               value={draft}
             />
-            <span className="shrink-0">%</span>
+            <Text as="span" variant="body-md" weight="semibold" className="shrink-0">
+              %
+            </Text>
           </div>
 
           <div className="flex gap-2">
@@ -112,7 +119,15 @@ export function SwapSlippageModal({
                   onClick={() => setDraft(String(preset))}
                   type="button"
                 >
-                  {preset}%
+                  <Text
+                    as="span"
+                    variant="label"
+                    weight="semibold"
+                    tone={active ? 'inverse' : 'primary'}
+                    className="leading-none"
+                  >
+                    {preset}%
+                  </Text>
                 </button>
               )
             })}
@@ -122,13 +137,14 @@ export function SwapSlippageModal({
         <button
           className={cn(
             'flex h-11 w-full cursor-pointer items-center justify-center rounded-full',
-            'bg-primary text-sm font-semibold leading-[1.3] tracking-[-0.28px] text-primary-foreground',
-            'transition-[transform,box-shadow] duration-180 ease-out hover:-translate-y-px hover:shadow-primary-hover',
+            'bg-primary transition-[transform,box-shadow] duration-180 ease-out hover:-translate-y-px hover:shadow-primary-hover',
           )}
           onClick={handleConfirm}
           type="button"
         >
-          {t.common.confirm}
+          <Text as="span" variant="body" tone="inverse" weight="semibold" className="tracking-[-0.28px]">
+            {t.common.confirm}
+          </Text>
         </button>
       </div>
     </AegisResponsiveDialog>

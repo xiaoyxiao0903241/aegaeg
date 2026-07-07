@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from 'react'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 const langSwitcherClass = 'relative z-40 inline-flex [[open]_&]:z-[120] [.is-open_&]:z-[120]'
 
@@ -16,7 +17,7 @@ const langMenuClass = cn(
 
 const langTriggerClass = cn(
   'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
-  'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
+  'border border-border bg-card px-3 shadow-none',
   'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
   'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
   'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
@@ -24,7 +25,7 @@ const langTriggerClass = cn(
   '[[open]_&]:border-coral-hover-border [[open]_&]:bg-[oklch(97%_0.014_45)] [[open]_&]:shadow-card',
   '[.is-open_&]:border-coral-hover-border [.is-open_&]:bg-[oklch(97%_0.014_45)] [.is-open_&]:shadow-card',
   '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
+  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5',
 )
 
 export type LanguageMenuOption = {
@@ -73,17 +74,17 @@ function MenuItem({
   const children = (
     <>
       <span className="min-w-0 flex-1">
-        <span
-          className={cn(
-            'block text-sm leading-[normal] text-foreground',
-            option.active ? 'font-semibold' : 'font-normal',
-          )}
+        <Text
+          as="span"
+          variant="body"
+          weight={option.active ? 'semibold' : undefined}
+          className="block leading-[normal]"
         >
           {option.name}
-        </span>
-        <span className="block text-xs font-normal leading-[normal] text-[oklch(60%_0.02_260)]">
+        </Text>
+        <Text as="span" variant="hint" tone="secondary" className="block leading-[normal]">
           {option.label}
-        </span>
+        </Text>
       </span>
       {option.active ? (
         checkIcon ? (
@@ -94,12 +95,15 @@ function MenuItem({
             className="size-4 shrink-0"
           />
         ) : (
-          <span
+          <Text
             aria-hidden="true"
-            className="shrink-0 text-xs font-bold leading-none text-primary"
+            variant="label"
+            weight="bold"
+            tone="accent"
+            className="shrink-0 leading-none"
           >
             ✓
-          </span>
+          </Text>
         )
       ) : null}
     </>
@@ -186,7 +190,9 @@ function NativeLanguageMenu({
           role="button"
         >
           <img src={globeIcon} alt="" className="size-4 shrink-0" />
-          <span>{triggerLabel ?? activeOption?.code}</span>
+          <Text variant="label" weight="semibold" className="leading-none">
+            {triggerLabel ?? activeOption?.code}
+          </Text>
         </summary>
 
         <div
@@ -291,7 +297,9 @@ function ReactLanguageMenu({
         type="button"
       >
         <img src={globeIcon} alt="" className="size-4 shrink-0" />
-        <span>{triggerLabel ?? activeOption?.code}</span>
+        <Text variant="label" weight="semibold" className="leading-none">
+          {triggerLabel ?? activeOption?.code}
+        </Text>
       </button>
 
       <div

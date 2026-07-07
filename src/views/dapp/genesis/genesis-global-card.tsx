@@ -5,11 +5,9 @@ import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappSkeleton } from '~/app/shell/components/dapp-skeleton'
 import {
-  DappDarkBannerBody,
-  DappDarkBannerKicker,
-  DappDarkBannerTitle,
   dappDarkBanner,
 } from '~/shared/ui/dapp-dark-banner'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 const genesisGlobeWidth = 597
@@ -49,15 +47,25 @@ export function GenesisGlobalCard({
   valueLoading?: boolean
 }) {
   const styles = genesisGlobalCard()
+  const banner = dappDarkBanner()
 
   return (
     <div className={styles.root()} data-reveal>
       <div className={styles.content()}>
-        <DappDarkBannerKicker className={styles.kicker()}>{kicker}</DappDarkBannerKicker>
-        <DappDarkBannerTitle className="block">
+        <Text as="span" variant="kicker" tone="accent" className={styles.kicker()}>
+          {kicker}
+        </Text>
+        <Text as="strong" variant="title" tone="inverse" className={cn('block', banner.title())}>
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
-        </DappDarkBannerTitle>
-        <DappDarkBannerBody className="max-dapp:w-full">{body}</DappDarkBannerBody>
+        </Text>
+        <Text
+          as="p"
+          variant="caption"
+          tone="inverse"
+          className={cn('m-0 max-dapp:w-full opacity-[0.72]', banner.body())}
+        >
+          {body}
+        </Text>
       </div>
       <Button
         className={styles.contractButton()}

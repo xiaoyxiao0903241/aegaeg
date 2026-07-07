@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
 import { AmountInput } from '~/shared/ui/amount-input'
 import { Card } from '~/shared/ui/card'
-import { textVariants } from '~/shared/ui/text'
+import { Text, textVariants } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 import { SwapAmountSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { TokenChip } from '~/app/shell/components/token-chip'
@@ -29,15 +29,7 @@ export function SwapAmountBox({
   tokenIcon,
   tokenLabel,
 }: SwapAmountBoxProps) {
-  const headerLabelClass = cn(
-    textVariants({ size: 'caption' }),
-    'leading-normal',
-    sessionReady ? 'font-normal text-ink-strong max-dapp:text-faint' : 'text-xs tracking-[-0.24px]',
-  )
-  const balanceClass = cn(
-    headerLabelClass,
-    sessionReady && 'font-semibold text-ink-strong',
-  )
+  const labelTone = sessionReady ? 'primary' : 'secondary'
 
   return (
     <Card
@@ -50,10 +42,23 @@ export function SwapAmountBox({
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <span className={headerLabelClass}>{label}</span>
-        <span className={balanceClass}>
+        <Text
+          as="span"
+          variant="caption"
+          tone={labelTone}
+          className={cn('leading-normal', sessionReady && 'max-dapp:text-muted-foreground')}
+        >
+          {label}
+        </Text>
+        <Text
+          as="span"
+          variant="caption"
+          tone={labelTone}
+          weight={sessionReady ? 'semibold' : undefined}
+          className={cn('leading-normal', sessionReady && 'max-dapp:text-muted-foreground')}
+        >
           {balance}
-        </span>
+        </Text>
       </div>
       <div className="flex items-center justify-between gap-3 max-dapp:items-start">
         <TokenChip icon={tokenIcon} label={tokenLabel} />
@@ -62,7 +67,7 @@ export function SwapAmountBox({
         ) : (
           <AmountInput
             className={cn(
-              sessionReady && textVariants({ size: 'amount' }),
+              sessionReady && textVariants({ variant: 'amount' }),
               !sessionReady && 'text-[#c9cfda] placeholder:text-[#c9cfda]',
             )}
             {...amountProps}

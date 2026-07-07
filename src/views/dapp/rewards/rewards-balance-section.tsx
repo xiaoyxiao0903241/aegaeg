@@ -95,7 +95,7 @@ export function RewardsBalanceSection() {
         <RewardBalanceCard
           badge={t.rewards.autoPaidLabel}
           badgeClassName="max-dapp:font-semibold max-dapp:leading-[1.2]"
-          className={rewardsSideCard({ referral: true })}
+          className={rewardsSideCard()}
           headerLabelClassName={rewardsBalanceHeaderMeta()}
           hint={t.rewards.autoPaid}
           hintClassName={rewardsBalanceHint()}

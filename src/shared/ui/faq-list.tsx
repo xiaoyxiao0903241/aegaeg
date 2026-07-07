@@ -2,6 +2,7 @@ import { tv } from 'tailwind-variants'
 import * as Accordion from '@radix-ui/react-accordion'
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
@@ -21,14 +22,8 @@ const faqList = tv({
       'max-dapp:px-4 max-dapp:py-3.5',
       'group-data-[state=open]:gap-3 max-dapp:group-data-[state=open]:gap-2.5',
     ],
-    question: [
-      'min-w-px flex-[1_0_0] text-left text-sm font-semibold leading-[1.3] tracking-[-0.3px] text-foreground [overflow-wrap:anywhere]',
-      'max-dapp:text-sm',
-    ],
-    answer: [
-      'w-full text-left text-sm font-normal leading-[1.5] tracking-[-0.28px] text-faq-text [overflow-wrap:anywhere]',
-      'max-dapp:text-xs',
-    ],
+    question: 'min-w-px flex-[1_0_0] text-left [overflow-wrap:anywhere]',
+    answer: 'w-full text-left [overflow-wrap:anywhere]',
     trigger:
       'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left text-inherit outline-none',
   },
@@ -156,7 +151,9 @@ export function FaqList({
               <div className={styles.cardBody()}>
                 <Accordion.Header className="m-0 w-full">
                   <Accordion.Trigger className={styles.trigger()} data-faq-trigger>
-                    <span className={styles.question()}>{item.q}</span>
+                    <Text variant="faq-question" className={styles.question()}>
+                      {item.q}
+                    </Text>
                     <FaqChevron open={isOpen} />
                   </Accordion.Trigger>
                 </Accordion.Header>
@@ -179,7 +176,9 @@ export function FaqList({
                 >
                   <div className="faq-answer-panel">
                     <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                      <p className={styles.answer()}>{item.a}</p>
+                      <Text as="p" variant="faq-answer" tone="secondary" className={styles.answer()}>
+                        {item.a}
+                      </Text>
                     </div>
                   </div>
                 </Accordion.Content>

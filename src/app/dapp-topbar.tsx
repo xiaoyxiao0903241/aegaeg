@@ -1,5 +1,6 @@
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 import { LanguageMenu } from '~/shared/ui/language-menu'
 import { withLocalePrefix } from '~/i18n/locale'
 import { allLanguageOptions } from '~/i18n/locales'
@@ -18,9 +19,7 @@ const topbarClass = cn(
   'max-dapp:bg-background/30 max-dapp:backdrop-blur-[1.125rem] max-dapp:backdrop-saturate-150',
 )
 
-const brandClass = cn(
-  'flex items-center gap-2.5 text-lg font-semibold tracking-tight text-foreground max-dapp:text-base',
-)
+const brandClass = 'flex items-center gap-2.5'
 
 const brandMarkClass = cn(
   'object-contain',
@@ -58,7 +57,9 @@ export function DappTopbar() {
           src={homeAssets.logoMark}
           alt=""
         />
-        <span>{t.common.brand}</span>
+        <Text as="span" variant="lead" className="tracking-tight">
+          {t.common.brand}
+        </Text>
       </a>
       <div className={topActionsClass}>
         <WalletTopbarActions />

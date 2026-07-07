@@ -19,6 +19,7 @@ import { SeasonOptionSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { resolveContractErrorMessage, resolveGenesisPurchaseError, resolveWalletTransactionError } from '~/views/dapp/web3/resolve-contract-error-message'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
+import { Text } from '~/shared/ui/text'
 
 export function GenesisPurchaseForm() {
   const { messages: t } = useI18n()
@@ -158,10 +159,10 @@ export function GenesisPurchaseForm() {
           { label: t.genesis.value, value: genesis.contributionValueLabel },
           {
             label: (
-              <span className="inline-flex items-center gap-1">
+              <Text as="span" className="inline-flex items-center gap-1" variant="body">
                 {t.genesis.xTokenAirdrop}
                 <DappInfoTooltip content={xTokenAirdropHint} />
-              </span>
+              </Text>
             ),
             value: genesis.xTokenAirdropLabel,
           },

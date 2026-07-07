@@ -7,6 +7,7 @@ import { DappMetaList } from '~/app/shell/components/dapp-meta-list'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 const swapPercentGrid = tv({
   base: 'grid grid-cols-4 gap-1.5 pt-2.5 max-dapp:mt-3 max-dapp:py-0',
@@ -14,8 +15,7 @@ const swapPercentGrid = tv({
 
 const swapPercentButton = tv({
   base: [
-    'flex cursor-pointer items-center justify-center rounded-[0.5625rem] border border-border bg-card py-1.25',
-    'text-xs font-semibold leading-normal tracking-[-0.02em] text-ink-strong',
+    'group flex cursor-pointer items-center justify-center rounded-[0.5625rem] border border-border bg-card py-1.25',
     'transition-[border-color,color,transform] duration-180 ease-out',
     'hover:-translate-y-px hover:border-primary hover:text-primary',
     'disabled:pointer-events-none disabled:opacity-55',
@@ -24,7 +24,7 @@ const swapPercentButton = tv({
 })
 
 const swapGenesisFooterCard = tv({
-  base: 'gap-1.5 [&_button]:min-h-9.5 [&_button]:text-xs [&_p]:leading-tight max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
+  base: 'gap-1.5 [&_button]:min-h-9.5 max-dapp:[&_button]:min-h-10',
 })
 
 const swapMetaPanel = tv({
@@ -60,7 +60,9 @@ export function SwapPercentButtons({
           onClick={() => onSelect(percent)}
           type="button"
         >
-          {percent}%
+          <Text className="tracking-[-0.02em] group-hover:text-primary" tone="primary" variant="label" weight="semibold">
+            {percent}%
+          </Text>
         </button>
       ))}
     </div>

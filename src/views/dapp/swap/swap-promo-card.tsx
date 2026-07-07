@@ -7,6 +7,7 @@ import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 type PromoLayout = 'desktop' | 'mobile'
 
@@ -15,8 +16,8 @@ const swapPromoCard = tv({
     bodyGrid: 'relative z-1 grid gap-2',
     titleRow: 'flex w-full min-w-0 items-center',
     titleCluster: 'flex min-w-0 items-center overflow-hidden',
-    title: 'truncate font-semibold leading-[1.2] text-foreground',
-    body: 'm-0 min-w-0 text-xs font-normal leading-[1.5] tracking-[-0.02em]',
+    title: 'truncate leading-[1.2]',
+    body: 'm-0 min-w-0 leading-[1.5] tracking-[-0.02em]',
     titleIcon: 'grid shrink-0 overflow-hidden rounded-full',
     mobileActionWrap: 'inline-flex shrink-0 self-center',
     decorationMobile: 'pointer-events-none absolute top-0 right-0 h-18 w-30',
@@ -29,16 +30,16 @@ const swapPromoCard = tv({
         bodyGrid: 'p-4 pr-36',
         titleRow: 'gap-3',
         titleCluster: 'gap-3',
-        title: 'text-base tracking-[-0.03em]',
-        body: 'text-ink-strong max-w-144',
+        title: 'tracking-[-0.03em]',
+        body: 'max-w-144',
         titleIcon: 'size-8',
       },
       mobile: {
         bodyGrid: 'px-4 py-3.5',
         titleRow: 'flex-nowrap justify-between gap-2',
         titleCluster: 'min-w-0 flex-1 gap-2',
-        title: 'text-sm tracking-[-0.028em]',
-        body: 'text-faq-text max-w-60',
+        title: 'tracking-[-0.028em]',
+        body: 'max-w-60',
         titleIcon: 'size-7.5',
       },
     },
@@ -203,11 +204,26 @@ export function SwapPromoCard({
         <div className={styles.titleRow()}>
           <div className={styles.titleCluster()}>
             {titleIconSrc ? <TitleIcon layout={layout} src={titleIconSrc} /> : null}
-            <strong className={styles.title()}>{title}</strong>
+            <Text
+              as="strong"
+              className={styles.title()}
+              tone="primary"
+              variant={layout === 'desktop' ? 'body-md' : 'body'}
+              weight="semibold"
+            >
+              {title}
+            </Text>
           </div>
           {!isDesktop ? <span className={styles.mobileActionWrap()}>{actionNode}</span> : null}
         </div>
-        <p className={styles.body()}>{body}</p>
+        <Text
+          as="p"
+          className={styles.body()}
+          tone={layout === 'desktop' ? 'primary' : 'secondary'}
+          variant="caption"
+        >
+          {body}
+        </Text>
       </div>
       {isDesktop ? actionNode : null}
     </Card>

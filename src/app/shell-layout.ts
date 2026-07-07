@@ -51,7 +51,7 @@ export function shellRailItemClass(active: boolean) {
   return cn(
     'relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
     'text-xs font-normal leading-snug tracking-tight transition-[color] duration-180 ease-out',
-    active ? 'text-primary' : 'text-ink-strong hover:bg-background hover:text-foreground',
+    active ? 'text-primary' : 'text-foreground hover:bg-background',
   )
 }
 
@@ -98,7 +98,7 @@ export function shellMobileDrawerItemClass(active: boolean) {
   return cn(
     'flex w-full min-w-0 cursor-pointer items-center gap-3.5 rounded-md px-4 py-3.5',
     'text-sm font-semibold leading-snug tracking-tight transition-[background-color,color] duration-180 ease-out max-dapp:text-sm',
-    active ? 'bg-accent text-primary' : 'bg-transparent text-ink-strong',
+    active ? 'bg-accent text-primary' : 'bg-transparent text-foreground',
   )
 }
 

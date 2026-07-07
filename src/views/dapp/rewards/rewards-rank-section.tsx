@@ -7,6 +7,7 @@ import {
 } from '~/hooks/use-api-data'
 import {
   calcProgressPercent,
+  formatRankTitleWithBadge,
   formatPresaleRank,
   formatUsd,
 } from '~/shared/api/format-display'
@@ -21,19 +22,16 @@ import {
   ProgressCardSkeleton,
 } from '~/app/shell/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
-import { SideHint, SideLabel, SideTitle } from '~/app/shell/components/dapp-card'
-import { dappKickerClass, dappRankTitleClass } from '~/app/dapp-type-scale'
 import { ProgressMeter } from '~/app/shell/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/shell/components/dapp-info-tooltip'
-import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
+import { Text } from '~/shared/ui/text'
 import {
   RewardsProgressRow,
   RewardsSideCard,
 } from '~/views/dapp/rewards/rewards-widget-primitives'
 
-const rankMetaClass =
-  'text-xs font-normal leading-normal tracking-[-0.24px] text-ink-strong max-dapp:text-faint'
+const rankMetaClass = 'max-dapp:text-muted-foreground'
 
 export function RewardsRankSection() {
   const { messages: t } = useI18n()
@@ -124,23 +122,14 @@ export function RewardsRankSection() {
               showPostLaunchRank ? 'grid-cols-2' : 'grid-cols-1',
             )}
           >
-            <SideLabel
-              className={cn(dappKickerClass, 'max-dapp:text-[length:var(--dapp-type-kicker-size)]')}
-              tone="coral"
-            >
+            <Text as="p" className="m-0" tone="accent" variant="kicker">
               {t.rewards.currentTitle}
-            </SideLabel>
+            </Text>
             {showPostLaunchRank ? (
               <div className="flex items-center justify-end gap-1 self-start">
-                <SideLabel
-                  className={cn(
-                    dappKickerClass,
-                    'max-dapp:text-[length:var(--dapp-type-kicker-size)]',
-                  )}
-                  tone="coral"
-                >
+                <Text as="p" className="m-0" tone="accent" variant="kicker">
                   {t.rewards.postLaunchRankTitle}
-                </SideLabel>
+                </Text>
                 <DappInfoTooltip
                   align="end"
                   content={t.rewards.postLaunchRankTooltip}
@@ -149,26 +138,38 @@ export function RewardsRankSection() {
               </div>
             ) : null}
 
-            <SideTitle className={cn(dappRankTitleClass, 'max-dapp:leading-[1.2]')}>
-              <RankTitleWithSuperCommunity
-                isSuperCommunity={hasRank && isSuperCommunity}
-                superCommunityLabel={t.rewards.superCommunityBadge}
-                title={rankLabel}
-              />
-            </SideTitle>
+            {rankLabel ? (
+              <Text
+                as="strong"
+                className="block min-w-0 break-words"
+                tone="primary"
+                variant="rank-title"
+              >
+                {formatRankTitleWithBadge(
+                  rankLabel,
+                  hasRank && isSuperCommunity,
+                  t.rewards.superCommunityBadge,
+                )}
+              </Text>
+            ) : null}
             {showPostLaunchRank ? (
-              <SideTitle className={cn(dappRankTitleClass, 'text-right max-dapp:leading-[1.2]')}>
+              <Text as="strong" className="block text-right" tone="primary" variant="rank-title">
                 {postLaunchRank}
-              </SideTitle>
+              </Text>
             ) : null}
 
-            <SideHint className={rankMetaClass} tone="body">
+            <Text as="small" className={cn('block', rankMetaClass)} tone="primary" variant="hint">
               {leftBottomLabel}
-            </SideHint>
+            </Text>
             {postLaunch30DayLabel ? (
-              <SideHint className={cn(rankMetaClass, 'text-right')} tone="body">
+              <Text
+                as="small"
+                className={cn('block text-right', rankMetaClass)}
+                tone="primary"
+                variant="hint"
+              >
                 {postLaunch30DayLabel}
-              </SideHint>
+              </Text>
             ) : null}
           </div>
         )}

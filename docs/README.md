@@ -8,7 +8,9 @@
 |------|------|
 | **改 Home / HTML / 动效 / 性能** | [`homepage-architecture.md`](./homepage-architecture.md) → [`static-homepage-plan.md`](./static-homepage-plan.md) → [`homepage-load-optimization.md`](./homepage-load-optimization.md) |
 | **改 DApp 业务 / Web3 / Auth** | [`DAPP-GUIDE.md`](./DAPP-GUIDE.md) |
-| **改 DApp / Home 视觉对齐** | 根 [`AGENTS.md`](../AGENTS.md) §8.4–8.6 + [`design-system-audit.md`](./design-system-audit.md) |
+| **改 DApp / Home 视觉对齐** | 根 [`AGENTS.md`](../AGENTS.md) §8.4–8.7 + [`design-system-audit.md`](./design-system-audit.md) |
+| **改 typography / 删 CSS class / Text·shell 样式** | **[`style-refactor-playbook.md`](./style-refactor-playbook.md)**（强制，先于写盘） |
+| **新增/改用户可见文案** | `<Text>` only — playbook §3.1 |
 | **合约 error / ABI** | [`contract.md`](./contract.md) |
 
 ## 全部 SSOT 文档
@@ -21,6 +23,7 @@
 | [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md) | 动效 + runtime boot |
 | [`DAPP-GUIDE.md`](./DAPP-GUIDE.md) | DApp 实操 |
 | [`design-system-audit.md`](./design-system-audit.md) | Figma 帧、tv()、Frame→代码 |
+| [`style-refactor-playbook.md`](./style-refactor-playbook.md) | **样式重构强制流程**（样式栈、parity、验收） |
 | [`contract.md`](./contract.md) | 链上合约 |
 
 ## 架构约定（代码即 SSOT）

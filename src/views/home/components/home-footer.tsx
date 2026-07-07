@@ -36,26 +36,26 @@ function isExternalHref(href: string) {
 
 const footerClass = {
   root:
-    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-on-dark dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
+    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
   top:
     'container footer-top grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6',
   brand:
     'footer-brand flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0',
   brandCopy:
-    'm-0 w-full max-w-64 text-sm font-normal leading-[1.5] tracking-[-0.28px] text-on-dark max-dapp:max-w-none max-dapp:text-xs',
+    'm-0 w-full max-w-64 leading-[1.5] tracking-[-0.28px] max-dapp:max-w-none',
   group:
-    'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 text-sm whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
+    'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
   rule: 'container h-px bg-[#232323]',
   bottom:
-    'container footer-bottom flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-on-dark whitespace-nowrap max-dapp:text-xs',
+    'container footer-bottom flex min-h-4 items-start overflow-hidden leading-4 tracking-[-0.26px] whitespace-nowrap',
 } as const
 
 const footerLinkClass =
-  'text-sm font-normal leading-[1.2] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.5]'
+  'leading-[1.2] tracking-[-0.28px] max-dapp:leading-[1.5]'
 
 const footerBrandClass = cn(
-  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-[-0.36px] leading-none text-primary-foreground',
-  'max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2] [&_img]:h-6',
+  'inline-flex items-center gap-2.5 whitespace-nowrap tracking-[-0.36px] leading-none',
+  'max-dapp:gap-2 max-dapp:leading-[1.2] [&_img]:h-6',
 )
 
 const footerBrandMarkClass = cn(
@@ -68,10 +68,10 @@ function FooterBrandCopy({ copy }: { copy: string }) {
   return (
     <>
       {lines.map((line, index) => (
-        <span key={`${line}-${index}`}>
+        <Text as="span" key={`${line}-${index}`} tone="inverse" variant="body">
           {index > 0 ? <br /> : null}
           {line}
-        </span>
+        </Text>
       ))}
     </>
   )
@@ -93,9 +93,16 @@ export function HomeFooter() {
               width="28"
               height="26"
             />
-            <span>AEGIS X</span>
+            <Text as="span" className="max-dapp:leading-[1.2]" tone="inverse" variant="lead" weight="semibold">
+              AEGIS X
+            </Text>
           </a>
-          <Text as="p" className={footerClass.brandCopy} tone="onDark">
+          <Text
+            as="p"
+            className={footerClass.brandCopy}
+            tone="inverse"
+            variant="body"
+          >
             <FooterBrandCopy copy={content.brandCopy} />
           </Text>
         </div>
@@ -107,8 +114,10 @@ export function HomeFooter() {
           >
             <Text
               as="h3"
+              className="m-0 leading-[1.2] tracking-[0.56px] max-dapp:leading-[1.5]"
+              tone="inverse"
+              variant="body"
               weight="semibold"
-              className="m-0 text-sm leading-[1.2] tracking-[0.56px] text-white max-dapp:text-xs max-dapp:leading-[1.5]"
             >
               {group.label}
             </Text>
@@ -117,11 +126,13 @@ export function HomeFooter() {
               return (
               <Text
                 as="a"
-                className={cn(footerLinkClass, 'text-on-dark')}
+                className={footerLinkClass}
                 href={href}
                 key={`${group.label}-${link.label}`}
                 rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
                 target={isExternalHref(href) ? '_blank' : undefined}
+                tone="inverse"
+                variant="body"
               >
                 {link.label}
               </Text>
@@ -132,7 +143,14 @@ export function HomeFooter() {
       </div>
       <div className={footerClass.rule} aria-hidden="true" />
       <div className={footerClass.bottom}>
-        <p className="m-0 max-dapp:whitespace-nowrap">{content.copyright}</p>
+        <Text
+          as="p"
+          className="m-0 max-dapp:whitespace-nowrap"
+          tone="inverse"
+          variant="caption"
+        >
+          {content.copyright}
+        </Text>
       </div>
     </footer>
   )

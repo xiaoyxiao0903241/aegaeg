@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatCount } from '~/shared/api/format-display'
@@ -195,24 +196,28 @@ export function DappTablePagination({
   return (
     <div
       className={cn(
-        'flex flex-col gap-3 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between',
+        'flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between',
         !embedded && 'mt-4',
         className,
       )}
       ref={rootRef}
     >
       <div className="flex min-w-0 flex-row flex-nowrap items-center gap-4">
-        <p className="m-0 shrink-0 whitespace-nowrap">
+        <Text as="p" variant="label" tone="secondary" className="m-0 shrink-0 whitespace-nowrap">
           {t.common.paginationTotal.replace('{total}', formatCount(total))}
-        </p>
-        {summary ? <p className="m-0 min-w-0 whitespace-nowrap">{summary}</p> : null}
+        </Text>
+        {summary ? (
+          <Text as="p" variant="label" tone="secondary" className="m-0 min-w-0 whitespace-nowrap">
+            {summary}
+          </Text>
+        ) : null}
       </div>
 
       {showPagination ? (
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <span className="whitespace-nowrap">
+          <Text as="span" variant="label" tone="secondary" className="whitespace-nowrap">
             {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
-          </span>
+          </Text>
 
           <button
             aria-label={t.common.paginationPrev}
@@ -234,7 +239,7 @@ export function DappTablePagination({
               aria-expanded={menuOpen}
               aria-haspopup="listbox"
               className={cn(
-                'inline-flex min-w-22 cursor-pointer items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition-colors',
+                'inline-flex min-w-22 cursor-pointer items-center justify-center gap-1.5 px-3 py-1.5 transition-colors',
                 PAGINATION_BTN_RADIUS,
                 'bg-accent text-primary',
               )}
@@ -244,7 +249,9 @@ export function DappTablePagination({
               ref={triggerRef}
               type="button"
             >
-              {safePage} / {totalPages}
+              <Text as="span" variant="label" tone="accent" weight="semibold" tabular>
+                {safePage} / {totalPages}
+              </Text>
               <ChevronIcon
                 className={chevronRotated ? 'rotate-180' : undefined}
                 direction="up"
@@ -274,10 +281,8 @@ export function DappTablePagination({
                         >
                           <button
                             className={cn(
-                              'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
-                              active
-                                ? 'bg-accent font-semibold text-primary'
-                                : 'bg-card text-foreground',
+                              'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center transition-colors',
+                              active ? 'bg-accent' : 'bg-card',
                             )}
                             onClick={() => {
                               if (pageNumber !== page) {
@@ -287,7 +292,15 @@ export function DappTablePagination({
                             }}
                             type="button"
                           >
-                            {pageNumber}
+                            <Text
+                              as="span"
+                              variant="label"
+                              tone={active ? 'accent' : 'primary'}
+                              weight={active ? 'semibold' : undefined}
+                              tabular
+                            >
+                              {pageNumber}
+                            </Text>
                           </button>
                         </li>
                       )

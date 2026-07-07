@@ -6,6 +6,7 @@ import {
   type CarouselApi,
 } from '~/shared/ui/carousel'
 import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
+import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'
@@ -52,8 +53,6 @@ const SEASON_CARD_CLASS = cn(
   seasonCardRadiusClass,
   seasonCardSizeClass,
 )
-
-const SEASON_META_ACCENT_CLASS = 'text-[#e9785a]'
 
 const seasonStatusBadgeBaseClass = cn(
   'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap',
@@ -125,21 +124,43 @@ function SeasonCard({
       role="radio"
     >
       <div className="flex items-start justify-between gap-1">
-        <strong className={seasonCardTitleClass}>{season.name}</strong>
+        <Text
+          as="strong"
+          variant="body-md"
+          tone="primary"
+          weight="semibold"
+          className={seasonCardTitleClass}
+        >
+          {season.name}
+        </Text>
         <RadioIndicator checked={selected} className={seasonCardRadioClass} />
       </div>
-      <p className={cn('m-0', seasonCardMetaClass)}>
+      <Text as="p" variant="hint" tone="secondary" className={cn('m-0', seasonCardMetaClass)}>
         {t.genesis.discountLabel}{' '}
-        <span className={SEASON_META_ACCENT_CLASS}>{season.desktopMeta.discount}</span>
-      </p>
-      <p className={cn('m-0', seasonCardMetaClass)}>
+        <Text as="span" variant="hint" tone="accent">
+          {season.desktopMeta.discount}
+        </Text>
+      </Text>
+      <Text as="p" variant="hint" tone="secondary" className={cn('m-0', seasonCardMetaClass)}>
         {t.genesis.airdropLabel}{' '}
-        <span className={SEASON_META_ACCENT_CLASS}>{season.desktopMeta.airdrop}</span>
-      </p>
-      <time className={seasonCardMetaClass}>{season.date}</time>
+        <Text as="span" variant="hint" tone="accent">
+          {season.desktopMeta.airdrop}
+        </Text>
+      </Text>
+      <Text as="time" variant="hint" tone="secondary" className={seasonCardMetaClass}>
+        {season.date}
+      </Text>
       <div className="mt-auto w-full">
         <span className={resolveSeasonStatusBadgeClass(season.status, selected)}>
-          {translateSeasonStatus(season.status, t)}
+          <Text
+            as="span"
+            variant="label"
+            tone={season.status === 'LIVE' && selected ? 'accent' : 'secondary'}
+            weight="medium"
+            className={seasonCardBadgeClass}
+          >
+            {translateSeasonStatus(season.status, t)}
+          </Text>
         </span>
       </div>
     </article>
@@ -239,7 +260,7 @@ export function SeasonSelector({
             <button
               aria-label={t.swap.tokenPrevious}
               className={cn(
-                'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
+                'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
                 dappIconClass.base,
               )}
               onClick={() => api?.scrollPrev()}
@@ -283,7 +304,7 @@ export function SeasonSelector({
             <button
               aria-label={t.swap.tokenNext}
               className={cn(
-                'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-faint',
+                'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
                 dappIconClass.base,
               )}
               onClick={() => api?.scrollNext()}

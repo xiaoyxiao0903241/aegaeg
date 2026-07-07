@@ -12,7 +12,7 @@ export function StatusBadge({
   return (
     <Text
       as="span"
-      size="xs"
+      variant="label"
       weight="bold"
       tone="success"
       className={cn(

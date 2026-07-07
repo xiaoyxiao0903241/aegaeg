@@ -21,6 +21,7 @@ import {
   SwapPercentButtons,
 } from '~/views/dapp/swap/swap-widget-primitives'
 import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
+import { Text } from '~/shared/ui/text'
 
 export function FlashSwapWidget({
   onSelectGenesis,
@@ -210,12 +211,15 @@ export function FlashSwapWidget({
         ) : null}
 
         {submitErrorMessage ? (
-          <p
-            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-xs leading-relaxed text-destructive"
+          <Text
+            as="p"
+            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 leading-relaxed text-destructive"
             role="alert"
+            tone="primary"
+            variant="hint"
           >
             {submitErrorMessage}
-          </p>
+          </Text>
         ) : null}
       </SwapWidgetBody>
     </>

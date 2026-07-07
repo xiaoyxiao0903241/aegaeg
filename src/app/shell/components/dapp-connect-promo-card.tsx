@@ -3,6 +3,7 @@ import { withLocalePrefix } from '~/i18n/locale'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
+import { Text } from '~/shared/ui/text'
 import { WidgetPromoCard } from '~/shared/ui/widget-promo-card'
 
 export function DappConnectPromoCard({ className }: { className?: string }) {
@@ -14,14 +15,16 @@ export function DappConnectPromoCard({ className }: { className?: string }) {
       <div className="flex min-w-0 items-center gap-2">
         <DappIcon alt="" size="token" src={homeAssets.logoMark} />
         <div className="grid min-w-0 gap-1">
-          <strong className="text-sm font-semibold leading-normal tracking-[-0.28px] text-white">
+          <Text as="strong" variant="body" weight="semibold" tone="inverse" className="tracking-[-0.28px]">
             {t.dapp.connect.promoTitle}
-          </strong>
+          </Text>
           <a
-            className="m-0 inline-flex items-center gap-1 text-xs leading-normal tracking-[-0.24px] text-primary transition-opacity duration-180 ease-out hover:opacity-90"
+            className="m-0 inline-flex items-center gap-1 transition-opacity duration-180 ease-out hover:opacity-90"
             href={homeHref}
           >
-            {t.dapp.connect.promoBrandLine}
+            <Text as="span" variant="label" tone="accent">
+              {t.dapp.connect.promoBrandLine}
+            </Text>
             <DappIcon alt="" size="action" src={dappAssets.arrowUpRight} />
           </a>
         </div>

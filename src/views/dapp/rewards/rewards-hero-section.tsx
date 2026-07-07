@@ -3,32 +3,15 @@ import { RewardsHeroBodySkeleton } from '~/app/shell/components/dapp-skeleton'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useCommunityFundTotal } from '~/hooks/use-api-data'
-import { formatShareholderHintForRank } from '~/shared/api/format-display'
-import { buildRewardTierRows } from '~/core/presale/tier-table'
 import {
-  RewardsHeroBodyCopy,
-  RewardsHeroCard,
-  RewardsHeroTitle,
-} from '~/views/dapp/rewards/rewards-hero-card'
-
-function RewardsHeroBody({
-  hasRank,
-  heroTierRewardBody,
-  isSuperCommunity,
-  superCommunityBenefitBody,
-}: {
-  hasRank: boolean
-  heroTierRewardBody: string
-  isSuperCommunity: boolean
-  superCommunityBenefitBody: string
-}) {
-  return (
-    <RewardsHeroBodyCopy>
-      <p className="m-0">{heroTierRewardBody}</p>
-      {hasRank && isSuperCommunity ? <p className="m-0">{superCommunityBenefitBody}</p> : null}
-    </RewardsHeroBodyCopy>
-  )
-}
+  formatRankTitleWithBadge,
+  formatShareholderHintForRank,
+} from '~/shared/api/format-display'
+import { buildRewardTierRows } from '~/core/presale/tier-table'
+import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
+import { Text } from '~/shared/ui/text'
+import { cn } from '~/shared/lib/utils'
+import { RewardsHeroCard } from '~/views/dapp/rewards/rewards-hero-card'
 
 function RewardsHeroPanel({
   compactSkeleton,
@@ -53,24 +36,32 @@ function RewardsHeroPanel({
   superCommunityBadge: string
   superCommunityBenefitBody: string
 }) {
+  const banner = dappDarkBanner()
+  const showSuperBadge = hasRank && isSuperCommunity
+  const title = formatRankTitleWithBadge(heroTitle, showSuperBadge, superCommunityBadge)
+
   return (
     <RewardsHeroCard kicker={kicker} layout={layout}>
       {showHeroSkeleton ? (
         <RewardsHeroBodySkeleton compact={compactSkeleton} />
       ) : (
         <>
-          <RewardsHeroTitle
-            isSuperCommunity={hasRank && isSuperCommunity}
-            layout={layout}
-            superCommunityLabel={superCommunityBadge}
-            title={heroTitle}
-          />
-          <RewardsHeroBody
-            hasRank={hasRank}
-            heroTierRewardBody={heroTierRewardBody}
-            isSuperCommunity={isSuperCommunity}
-            superCommunityBenefitBody={superCommunityBenefitBody}
-          />
+          <Text
+            as="h3"
+            variant={layout === 'desktop' ? 'title' : 'value-lg'}
+            tone="inverse"
+            className={cn(banner.title(), 'block min-w-0 break-words')}
+          >
+            {title}
+          </Text>
+          <Text as="p" variant="caption" tone="inverse" className={cn('m-0 opacity-[0.72]', banner.body())}>
+            {heroTierRewardBody}
+          </Text>
+          {showSuperBadge ? (
+            <Text as="p" variant="caption" tone="inverse" className={cn('m-0 opacity-[0.72]', banner.body())}>
+              {superCommunityBenefitBody}
+            </Text>
+          ) : null}
         </>
       )}
     </RewardsHeroCard>

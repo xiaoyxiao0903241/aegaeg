@@ -94,7 +94,7 @@ function HomeIconCard({
       />
       <Text
         as="h3"
-        size="lg"
+        variant="title-xl"
         weight="semibold"
         className={cn(
           'feature-card-title mt-3 text-xl leading-[1.2] max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-lg max-dapp:text-balance',
@@ -106,8 +106,8 @@ function HomeIconCard({
       </Text>
       <Text
         as="p"
-        size="md"
-        tone="body"
+        variant="body"
+        tone="primary"
         className="feature-card-body mt-3 max-w-112 text-sm leading-[1.5] max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80 max-dapp:text-sm"
       >
         {card.body}
