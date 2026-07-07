@@ -7,7 +7,7 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/shared/lib/utils'
 
-export function dappPanelTitleClassName(className?: string) {
+function dappPanelTitleClassName(className?: string) {
   return cn(
     'm-0 text-xl font-semibold leading-[1.3] text-foreground tracking-[-0.84px]',
     'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',

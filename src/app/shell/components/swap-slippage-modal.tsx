@@ -134,5 +134,3 @@ export function SwapSlippageModal({
     </AegisResponsiveDialog>
   )
 }
-
-export { SLIPPAGE_PRESETS }

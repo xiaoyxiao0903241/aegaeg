@@ -36,7 +36,7 @@ async function pollGenesisContributions(baselineCount: number) {
   }
 }
 
-export function invalidateApiQueries() {
+function invalidateApiQueries() {
   return queryClient.invalidateQueries({ queryKey: queryKeys.api.all })
 }
 

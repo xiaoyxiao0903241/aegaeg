@@ -3,16 +3,25 @@
   "entry": [
     "src/app/main.tsx",
     "src/views/home/main.tsx",
+    "src/shared/lib/legacy-core-js.ts",
+    "src/views/home/home-renderer.ts",
     "scripts/render-home.mjs",
-    "scripts/lint-hex.mjs",
-    "scripts/lint-shims.mjs",
-    "scripts/switch-env.mjs",
-    "vite.config.ts"
+    "tests/unit/**/*.test.mjs"
   ],
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": ["src/**/*.d.ts"],
-  "ignoreDependencies": ["terser", "regenerator-runtime", "core-js"],
+  "ignoreExportsUsedInFile": true,
+  "ignoreFiles": ["src/i18n/types.ts"],
+  "ignoreDependencies": ["terser", "regenerator-runtime", "core-js", "lightningcss"],
   "ignoreIssues": {
-    "src/views/dapp/web3/thirdweb.ts": ["duplicates"]
+    "src/views/dapp/web3/thirdweb.ts": ["duplicates", "types"],
+    "src/shared/api/account-banned.ts": ["exports"],
+    "src/stores/auth-store.ts": ["exports"],
+    "src/views/dapp/auth/login-with-wallet.ts": ["exports"],
+    "src/views/dapp/auth/session.ts": ["exports"],
+    "src/core/presale/presale-math.ts": ["exports"],
+    "src/shared/config/breakpoints.ts": ["exports"],
+    "src/i18n/messages/app/**": ["types"],
+    "src/shared/ui/text.tsx": ["types"]
   }
 }

@@ -1,7 +1,6 @@
 import type {
   CommunityFundLogItem,
   RewardLogItem,
-  SalesLogItem,
   TeamReferralItem,
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
@@ -29,18 +28,6 @@ export function getPresaleRankHighlightedRows(
   if (rank == null || !Number.isFinite(rank) || rank <= 0 || rowCount <= 0) return []
   const index = Math.min(Math.trunc(rank) - 1, rowCount - 1)
   return index >= 0 ? [index] : []
-}
-
-export function getPresaleRankHighlightedRowsForPage(
-  rank: number | undefined,
-  rowCount: number,
-  page: number,
-  pageSize: number,
-): number[] {
-  const pageStart = (page - 1) * pageSize
-  return getPresaleRankHighlightedRows(rank, rowCount)
-    .map((index) => index - pageStart)
-    .filter((index) => index >= 0 && index < pageSize)
 }
 
 export function formatShareholderHintForRank(
@@ -80,28 +67,6 @@ export function formatUsdAmountLabel(value: string | number, fractionDigits = 0)
   return `${amount} USD`
 }
 
-export function formatUsdCompact(value: string | number): string {
-  const num = Number(value)
-  if (!Number.isFinite(num)) return '$0'
-
-  if (num >= 1_000_000) {
-    return `$${new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(num / 1_000_000)}M`
-  }
-
-  if (num >= 1_000) {
-    return `$${new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(num / 1_000)}K`
-  }
-
-  return formatUsd(num)
-}
-
-export function formatAmountToken(amount: string, symbol: string): string {
-  const num = Number(amount)
-  if (!Number.isFinite(num)) return `0 ${symbol}`
-
-  return `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(num)} ${symbol}`
-}
-
 export function formatBlockTime(timestamp: number): string {
   if (!timestamp) return '—'
 
@@ -113,13 +78,6 @@ export function formatCount(value: number | string | bigint): string {
   const num = Number(value)
   if (!Number.isFinite(num)) return '0'
   return new Intl.NumberFormat('en-US').format(num)
-}
-
-export function formatPaidAmountCompact(amount: string): string {
-  const num = Number(amount)
-  if (!Number.isFinite(num)) return '—'
-
-  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(num)
 }
 
 export function formatApiDateTime(iso: string | null): string {
@@ -171,17 +129,6 @@ export function formatRewardStatus(
   return labels[resolveRewardLogStatusKey(status)]
 }
 
-export const REWARD_TYPE_I18N_KEYS = {
-  referral_paid: 'referralPaid',
-  referral_withdrawn: 'referralWithdrawn',
-  MARKET: 'marketTeam',
-  PRESALE: 'presaleTeam',
-} as const
-
-export type RewardTypeI18nKey =
-  | (typeof REWARD_TYPE_I18N_KEYS)[keyof typeof REWARD_TYPE_I18N_KEYS]
-  | 'unknown'
-
 export type RewardLogStatusKey =
   | 'pending'
   | 'processing'
@@ -190,18 +137,7 @@ export type RewardLogStatusKey =
   | 'failed'
   | 'unknown'
 
-export type RewardTypeLabels = Record<RewardTypeI18nKey, string>
 export type RewardLogStatusLabels = Record<RewardLogStatusKey, string>
-
-export interface RewardLogRowLabels {
-  rewardType: RewardTypeLabels
-  logStatus: RewardLogStatusLabels
-}
-
-export function resolveRewardTypeI18nKey(rewardType: string): RewardTypeI18nKey {
-  const key = REWARD_TYPE_I18N_KEYS[rewardType as keyof typeof REWARD_TYPE_I18N_KEYS]
-  return key ?? 'unknown'
-}
 
 export function resolveRewardLogStatusKey(status: number): RewardLogStatusKey {
   switch (status) {
@@ -248,13 +184,6 @@ export function resolveCommunityFundLogStatusKey(status: number): RewardLogStatu
   }
 }
 
-export function formatRewardTypeLabel(
-  rewardType: string,
-  labels: RewardTypeLabels,
-): string {
-  return labels[resolveRewardTypeI18nKey(rewardType)]
-}
-
 export function formatClaimableAmount(total: string, claimed: string): string {
   const pending = Math.max(0, Number(total) - Number(claimed))
   return formatUsd(pending, 2)
@@ -293,28 +222,6 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
   ]
 }
 
-export function mapTeamReferralToMobileRow(item: TeamReferralItem): string[] {
-  return [
-    formatApiDateTime(item.register_time),
-    formatShortAddress(item.address),
-    formatTableGenesisRank(item.presale_rank),
-    formatUsdCompact(item.sales_team_market),
-  ]
-}
-
-export function mapTeamReferralToFullRow(item: TeamReferralItem): string[] {
-  return [
-    formatRegisterDate(item.register_time),
-    formatShortAddress(item.address),
-    formatTableUsdAmount(item.presale_volume),
-    formatTableGenesisRank(item.presale_rank),
-    formatCount(item.direct_referral_count ?? 0),
-    new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(
-      Number(item.sales_team_market),
-    ),
-  ]
-}
-
 function formatTableUsdAmount(value: string | number | undefined | null): string {
   const num = Number(value)
   if (!Number.isFinite(num) || num <= 0) return TABLE_EMPTY
@@ -327,17 +234,9 @@ function formatTableVolume(value: string | number | undefined | null): string {
   return formatCount(num)
 }
 
-/** Sum human-readable USD amounts from sales log rows (same unit as table display). */
-export function sumSalesLogAmountUsd(items: readonly SalesLogItem[]): number {
-  return items.reduce((total, item) => {
-    const num = Number(item.amount)
-    return Number.isFinite(num) ? total + num : total
-  }, 0)
-}
-
 export function mapRewardLogToRow(
   item: RewardLogItem,
-  labels: RewardLogRowLabels,
+  labels: RewardLogStatusLabels,
 ): string[] {
   const signedAmount = Number(item.amount)
   const amountLabel = Number.isFinite(signedAmount)
@@ -349,7 +248,7 @@ export function mapRewardLogToRow(
     amountLabel,
     formatShortAddress(item.from_address),
     formatOrderAmountUsd(item.order_amount),
-    formatRewardStatus(item.status, labels.logStatus),
+    formatRewardStatus(item.status, labels),
   ]
 }
 
@@ -398,10 +297,6 @@ export function mapCommunityFundLogToRow(
     amountLabel,
     statusLabel,
   ]
-}
-
-export function isReferralRewardLog(item: RewardLogItem): boolean {
-  return item.reward_type === 'referral_paid' || item.reward_type === 'referral_withdrawn'
 }
 
 /** Sidebar display: host + shortened address (Figma `aegis-x.io/r/0x8F32…91A2`). */

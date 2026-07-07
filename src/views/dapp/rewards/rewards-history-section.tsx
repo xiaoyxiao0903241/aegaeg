@@ -79,11 +79,8 @@ export function RewardsHistorySection() {
   )
 
   const rewardLogLabels = useMemo(
-    () => ({
-      rewardType: t.rewards.rewardType,
-      logStatus: t.rewards.logStatus,
-    }),
-    [t.rewards.logStatus, t.rewards.rewardType],
+    () => t.rewards.logStatus,
+    [t.rewards.logStatus],
   )
   const teamHistoryLabels = useMemo(
     () => ({

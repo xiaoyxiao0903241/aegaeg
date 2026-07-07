@@ -93,20 +93,6 @@ export async function readPresalePhaseCount(
   return Number(phaseCount)
 }
 
-export async function readPresalePhase(
-  phaseIndex: number,
-  client: ChainReadClient = bscReadClient,
-): Promise<PresalePhaseOnChain> {
-  const phase = await client.readContract({
-    address: BSC_CONTRACTS.preSale,
-    abi: presaleAbi,
-    functionName: 'phases',
-    args: [BigInt(phaseIndex)],
-  })
-
-  return mapPhaseTupleToOnChain(phaseIndex, phase)
-}
-
 export async function readAllPresalePhases(
   client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseOnChain[]> {

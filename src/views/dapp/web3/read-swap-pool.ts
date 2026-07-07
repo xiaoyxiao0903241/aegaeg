@@ -26,10 +26,6 @@ export interface SwapPoolSpotPrice {
 // callers ever read more than one pool.
 const cachedImmutablePools = new Map<string, SwapPoolImmutableMetadata>()
 
-export function resetSwapPoolMetadataCache() {
-  cachedImmutablePools.clear()
-}
-
 export async function readSwapPoolImmutableMetadata(
   poolAddress: `0x${string}` = SWAP_CONFIG.pool,
   client: ChainReadClient = bscReadClient,

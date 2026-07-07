@@ -6,12 +6,6 @@ export const ERC20_METHODS = {
   mint: 'function mint(address to, uint256 amount)',
 } as const
 
-export const ROUTER_V2_METHODS = {
-  getAmountsOut: 'function getAmountsOut(uint256 amountIn, address[] memory path) view returns (uint256[] memory amounts)',
-  swapExactTokensForTokensSupportingFeeOnTransferTokens:
-    'function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] calldata path, address to, uint256 deadline)',
-} as const
-
 /** PancakeSwap V3 — field order matches on-chain IQuoterV2 / ISwapRouter structs */
 export const QUOTER_V3_METHODS = {
   quoteExactInputSingle:
@@ -30,13 +24,6 @@ export const POOL_V3_METHODS = {
   token1: 'function token1() view returns (address)',
   slot0:
     'function slot0() view returns (uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext, uint8 feeProtocol, bool unlocked)',
-} as const
-
-export const PAIR_V2_METHODS = {
-  getReserves:
-    'function getReserves() view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)',
-  token0: 'function token0() view returns (address)',
-  token1: 'function token1() view returns (address)',
 } as const
 
 export const PRESALE_METHODS = {

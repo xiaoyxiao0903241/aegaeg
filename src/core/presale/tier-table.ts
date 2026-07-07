@@ -22,8 +22,6 @@ export function resolveCommitmentFloorRank(apiRank: number): number {
   return Math.min(MAX_COMMITMENT_FLOOR_A_RANK, Math.trunc(apiRank))
 }
 
-export const REWARD_TIER_ROW_COUNT = PERSONAL_PRESALE_RANK_THRESHOLDS_USD.length
-
 export function getTeamBonusRateLabel(rank: number): string {
   if (rank <= 0) return TEAM_BONUS_RATES[0]
   const index = Math.min(rank - 1, TEAM_BONUS_RATES.length - 1)

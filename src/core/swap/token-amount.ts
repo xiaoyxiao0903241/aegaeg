@@ -1,4 +1,4 @@
-export function stripTokenAmountGrouping(value: string): string {
+function stripTokenAmountGrouping(value: string): string {
   return value.replace(/,/g, '')
 }
 

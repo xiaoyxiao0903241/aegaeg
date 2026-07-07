@@ -3,13 +3,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { cn } from '~/shared/lib/utils'
 
-const Dialog = DialogPrimitive.Root
-
-const DialogTrigger = DialogPrimitive.Trigger
-
 const DialogPortal = DialogPrimitive.Portal
-
-const DialogClose = DialogPrimitive.Close
 
 /** Shared Radix Dialog overlay — fade in/out */
 export const modalOverlayClass = 'aegis-modal-overlay fixed inset-0 z-50'
@@ -115,11 +109,8 @@ const DialogDescription = React.forwardRef<
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
 export {
-  Dialog,
   DialogPortal,
   DialogOverlay,
-  DialogClose,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogFooter,

@@ -27,8 +27,3 @@ export function scrollDappPanelsToTop() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   })
 }
-
-/** @deprecated Use scrollDappPanelsToTop() for all panel/page top resets. */
-export function scrollToGenesisPageTop() {
-  scrollDappPanelsToTop()
-}

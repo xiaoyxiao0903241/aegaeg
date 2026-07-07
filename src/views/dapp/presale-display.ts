@@ -69,17 +69,3 @@ export function mapSalesLogToDesktopRow(
     item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
   ]
 }
-
-export function mapSalesLogToMobileRow(
-  item: SalesLogItem,
-  options: number | SalesLogRowFormatOptions = {},
-): string[] {
-  const { phases } = resolveSalesLogFormatOptions(options)
-
-  return [
-    formatBlockTime(item.block_time),
-    formatUsd(Number(item.amount), 0),
-    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, phases)),
-    formatSalesLogAgx(item, options),
-  ]
-}

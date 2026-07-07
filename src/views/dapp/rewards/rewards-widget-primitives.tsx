@@ -22,19 +22,6 @@ export const rewardsSideCard = tv({
   },
 })
 
-export const rewardsRankMeta = tv({
-  base: 'text-xs font-normal leading-normal tracking-[-0.24px] text-ink-strong max-dapp:text-faint',
-  variants: {
-    align: {
-      left: '',
-      right: 'text-right',
-    },
-  },
-  defaultVariants: {
-    align: 'left',
-  },
-})
-
 const rewardsProgressRow = tv({
   slots: {
     row: 'flex items-center justify-between gap-3',

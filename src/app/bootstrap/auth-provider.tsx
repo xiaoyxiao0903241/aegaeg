@@ -288,5 +288,3 @@ export function useAuth() {
   }
   return context
 }
-
-export { isUnauthorizedError } from '~/shared/api/http-errors'

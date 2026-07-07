@@ -2,7 +2,7 @@ import type { DappTab } from '~/app/types'
 import { homeAssets as canonicalHomeAssets } from '~/views/home/assets'
 
 /** Homepage token flywheel icons — SSOT for carousel / about cards. */
-export const tokenFlywheelIcons = canonicalHomeAssets.token
+const tokenFlywheelIcons = canonicalHomeAssets.token
 
 /** DApp swap carousel icons — exported from Figma `130:792` / `144:20` / `130:824` / `130:840`. */
 export const tokenCarouselIcons = {

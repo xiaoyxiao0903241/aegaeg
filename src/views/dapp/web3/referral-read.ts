@@ -8,7 +8,6 @@ const referralAbi = parseAbi([
   REFERRAL_METHODS.isBindReferral,
   REFERRAL_METHODS.getReferral,
   REFERRAL_METHODS.getReferralCount,
-  REFERRAL_METHODS.getChildren,
 ])
 
 export async function readIsBindReferral(
@@ -45,18 +44,4 @@ export async function readReferralCount(
     functionName: 'getReferralCount',
     args: [address as `0x${string}`],
   })
-}
-
-export async function readReferralChildren(
-  address: string,
-  client: ChainReadClient = bscReadClient,
-): Promise<string[]> {
-  const children = await client.readContract({
-    address: BSC_CONTRACTS.referral,
-    abi: referralAbi,
-    functionName: 'getChildren',
-    args: [address as `0x${string}`],
-  })
-
-  return [...children]
 }

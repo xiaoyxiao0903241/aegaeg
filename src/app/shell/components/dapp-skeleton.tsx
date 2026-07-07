@@ -95,23 +95,6 @@ export function RewardsHeroBodySkeleton({ compact = false }: { compact?: boolean
   )
 }
 
-export function SideCardSkeleton({
-  hintLines = 2,
-  valueWidth = 'w-[68%]',
-}: {
-  hintLines?: 1 | 2
-  valueWidth?: string
-}) {
-  return (
-    <>
-      <DappSkeleton className="h-3 w-20" />
-      <DappSkeleton className={cn('mt-2 h-4', valueWidth)} />
-      <DappSkeleton className={cn('mt-1.5 h-3', hintLines === 2 ? 'w-full' : 'w-[82%]')} />
-      {hintLines === 2 ? <DappSkeleton className="mt-1 h-3 w-[58%]" /> : null}
-    </>
-  )
-}
-
 export function RewardBalanceCardSkeleton() {
   return (
     <Card as="article" surface="outlined">
@@ -183,28 +166,6 @@ export function TableRowSkeleton({
         </td>
       ))}
     </tr>
-  )
-}
-
-export function ContributionBlockSkeleton() {
-  return (
-    <div className="grid gap-3">
-      <div className="grid gap-1.5">
-        <div className="flex items-center justify-between gap-3">
-          <DappSkeleton className="h-3 w-20" />
-          <DappSkeleton className="h-3 w-28" />
-        </div>
-        <DappSkeleton className="h-1.5 w-full rounded-full" />
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-0 border-collapse text-xs leading-[1.5]">
-          <tbody>
-            <TableRowSkeleton columns={5} />
-            <TableRowSkeleton columns={5} isLast />
-          </tbody>
-        </table>
-      </div>
-    </div>
   )
 }
 
