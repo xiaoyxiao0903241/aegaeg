@@ -89,8 +89,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         <Text
           as="strong"
           tone="inverse"
-          variant="body"
-          weight="semibold"
+          variant="value-sm"
         >
           {token.label}
         </Text>

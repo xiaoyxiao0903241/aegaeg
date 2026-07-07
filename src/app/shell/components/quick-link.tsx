@@ -41,7 +41,7 @@ export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkPr
           src={icon}
         />
       </span>
-      <Text as="span" variant="body" weight="semibold">
+      <Text as="span" variant="body" weight="semibold" className="tracking-[-0.28px]">
         {label}
       </Text>
     </a>

@@ -81,8 +81,8 @@ export const securityLayout = {
   listClassName:
     'check-list relative z-[2] grid w-full max-w-[var(--home-security-list-max)] gap-3.5 max-dapp:max-w-none',
   cardClassName:
-    'flex min-h-[3.8125rem] items-center gap-3.5 px-5.5 py-5 max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-[1.125rem] max-dapp:py-4',
+    'flex min-h-[3.8125rem] items-center gap-3.5 px-5.5 py-5 text-[0.9375rem] font-medium leading-[1.4] text-foreground max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-[1.125rem] max-dapp:py-4 max-dapp:text-sm max-dapp:leading-[1.2]',
   cardTallClassName: 'max-dapp:min-h-[4.125rem]',
   iconClassName:
-    'grid size-[var(--home-security-icon-wrap-size)] shrink-0 place-items-center rounded-[0.8125rem] bg-accent max-dapp:size-[var(--home-security-icon-wrap-size-h5)] max-dapp:rounded-xl',
+    'grid size-[var(--home-security-icon-wrap-size)] shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-[0.8125rem] text-primary max-dapp:size-[var(--home-security-icon-wrap-size-h5)] max-dapp:rounded-xl',
 } as const

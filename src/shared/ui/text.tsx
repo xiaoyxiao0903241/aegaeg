@@ -11,6 +11,7 @@ const toneClass = {
   strong: 'text-ink-strong',
   faint: 'text-faint',
   subtle: 'text-ink-muted',
+  muted: 'text-muted-foreground',
   accent: 'text-primary',
   inverse: 'text-white',
   'on-dark': 'text-on-dark',
@@ -35,36 +36,46 @@ export const textVariants = tv({
 
       /* dapp-type-scale + 组件角色 */
       kicker:
-        'text-[length:var(--dapp-type-kicker-size)] font-semibold uppercase leading-[1.2] tracking-[0.88px]',
+        'text-[length:var(--dapp-type-kicker-size)] font-semibold uppercase leading-[1.2] tracking-[0.88px] text-coral-bright',
       caption:
         'text-[length:var(--dapp-type-caption-size)] leading-[1.5] tracking-[-0.26px]',
       label: 'text-xs leading-normal tracking-[-0.24px]',
+      'rail-tab-label': 'text-xs leading-snug tracking-tight',
       hint: 'text-xs leading-normal tracking-[-0.24px]',
       body: 'text-sm max-dapp:text-xs leading-normal',
       'body-md': 'text-base max-dapp:text-sm leading-snug',
+      'promo-title':
+        'text-base font-semibold leading-normal tracking-[-0.03em] max-dapp:text-sm max-dapp:leading-normal',
       lead: 'text-lg max-dapp:text-base font-semibold leading-snug tracking-tight',
       'content-heading':
         'text-lg max-dapp:text-base font-semibold leading-snug tracking-[-0.36px] max-dapp:tracking-[-0.68px]',
+      'detail-section-title':
+        'text-lg max-dapp:text-base font-semibold leading-[1.3] tracking-[-0.04em] max-dapp:tracking-[-0.04em]',
       title:
         'text-[length:var(--dapp-type-title-sm-size)] font-semibold leading-[1.3] tracking-[-0.63px]',
+      'swap-hub-title':
+        'text-[1.3125rem] font-semibold leading-normal tracking-[-0.02625em]',
       'title-lg':
-        'text-[length:var(--dapp-type-body-lg-size)] font-semibold leading-[1.3] tracking-[-0.34px] max-dapp:leading-[1.2]',
+        'text-[length:var(--dapp-type-body-lg-size)] font-semibold leading-[1.3] tracking-[-0.28px] max-dapp:leading-[1.2]',
       'panel-title':
         'text-xl font-semibold leading-[1.3] tracking-[-0.84px] group-data-[tab=swap]/shell:dapp:tracking-[-0.42px] group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px] group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px] max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
       'panel-subtitle': 'text-xs leading-[1.5] tracking-[-0.24px]',
       'rank-title':
         'text-[length:var(--dapp-type-body-lg-size)] font-semibold leading-[1.3] tracking-[-0.34px] !text-[length:var(--dapp-type-body-lg-size)] max-dapp:!text-[length:var(--dapp-type-body-lg-size)] max-dapp:leading-[1.2]',
-      'value-sm': 'text-sm font-semibold leading-[1.2] tracking-[-0.28px]',
+      'value-sm':
+        'text-sm font-semibold leading-[1.3] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.2]',
       'value-lg':
         'text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]',
       amount:
         'text-[length:var(--dapp-type-amount-size)] font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
       'referral-amount':
         'text-[length:var(--dapp-type-amount-size)] font-semibold leading-[1.3] tracking-[-0.54px] !text-[length:var(--dapp-type-amount-size)] max-dapp:!text-[length:var(--dapp-type-amount-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
-      'compact-title': 'text-[0.8125rem] font-semibold leading-[1.3] tracking-[-0.02em]',
+      'compact-title': 'text-[0.8125rem] font-semibold leading-normal tracking-[-0.02em]',
+      'mode-badge':
+        'text-[0.625rem] font-medium leading-none tracking-[-0.02em]',
       'compact-body': 'text-[0.8125rem] font-normal leading-[1.4] tracking-[-0.02em]',
       'program-title': 'text-[0.8125rem] font-semibold leading-[1.3] tracking-[0.08em]',
-      'program-body': 'text-[0.8125rem] font-normal leading-[1.4] tracking-[-0.03em]',
+      'program-body': 'text-[0.8125rem] font-normal leading-[1.3] tracking-[-0.03em]',
       'meta-label': 'text-sm max-dapp:text-xs leading-normal max-dapp:text-faint',
       'metric-value':
         'text-lg max-dapp:text-base font-semibold leading-[1.2] tracking-[-0.36px]',
@@ -84,7 +95,7 @@ export const textVariants = tv({
       'section-eyebrow':
         'text-xs font-semibold leading-[1.25] tracking-[1.82px] max-dapp:text-xs max-dapp:tracking-[1.68px]',
       'section-display':
-        'text-4xl font-semibold leading-tight max-dapp:text-2xl max-dapp:leading-snug max-dapp:text-balance',
+        'text-4xl font-semibold leading-tight max-dapp:text-2xl max-dapp:leading-[1.2] max-dapp:text-balance',
       'section-subtitle': 'text-base font-normal leading-[1.5] max-dapp:text-sm',
       'hero-eyebrow': 'text-xs font-semibold leading-[1.2]',
       'hero-title':
@@ -94,7 +105,22 @@ export const textVariants = tv({
         'text-5xl font-semibold leading-none text-white max-dapp:text-3xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.9px]',
       'metric-label':
         'text-sm font-medium leading-[1.2] text-white max-dapp:text-xs max-dapp:font-normal max-dapp:leading-[1.5] max-dapp:text-on-dark',
-      'feature-title': 'text-xl max-dapp:text-lg font-semibold leading-[1.2]',
+      'feature-title':
+        'text-xl max-dapp:text-lg font-semibold leading-[1.2] tracking-[-0.5px] max-dapp:tracking-[-0.475px]',
+      'home-feature-body': 'text-sm font-normal leading-[1.5] max-dapp:text-sm max-dapp:leading-[1.5]',
+      'roadmap-phase-label':
+        'text-xs font-semibold leading-[1.2] tracking-[0.72px] dapp:text-xs dapp:leading-normal',
+      'roadmap-title':
+        'text-base font-semibold leading-[1.2] tracking-[-0.64px] dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.72px]',
+      'roadmap-body':
+        'text-xs font-normal leading-[1.4] tracking-[-0.26px] dapp:text-xs',
+      'footer-brand-copy':
+        'text-sm font-normal leading-[1.5] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.5]',
+      'footer-group-title':
+        'text-sm font-semibold leading-[1.2] tracking-[0.56px] max-dapp:text-xs max-dapp:leading-[1.5]',
+      'footer-link':
+        'text-sm font-normal leading-[1.2] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.5]',
+      'footer-copyright': 'text-xs font-normal leading-4 tracking-[-0.26px] max-dapp:text-xs',
 
       /* 迁移别名 — 与上列同义，逐步删除 call site */
       'title-xl':
@@ -117,11 +143,24 @@ export const textVariants = tv({
     },
   },
   compoundVariants: [
-    { variant: 'home-display', class: 'leading-tight max-dapp:leading-snug' },
-    { variant: ['kicker', 'section-eyebrow', 'home-eyebrow'], tone: 'accent', class: 'text-primary' },
+    { variant: 'home-display', class: 'leading-tight max-dapp:leading-[1.2]' },
+    { variant: 'section-display', class: 'max-dapp:leading-[1.2]' },
+    { variant: 'footer-brand-copy', tone: 'on-dark', class: '!text-on-dark' },
+    { variant: 'footer-link', tone: 'on-dark', class: '!text-on-dark' },
+    { variant: 'footer-copyright', tone: 'on-dark', class: '!text-on-dark' },
+    { variant: 'footer-group-title', tone: 'inverse', class: '!text-white' },
+    { variant: 'kicker', tone: 'accent', class: '!text-coral-bright' },
+    { variant: ['section-eyebrow', 'home-eyebrow'], tone: 'accent', class: 'text-primary' },
     { variant: ['section-eyebrow', 'home-eyebrow'], tone: 'foreground', class: 'text-primary' },
     { variant: 'panel-subtitle', class: '[&_strong]:font-bold [&_strong]:text-primary' },
     { variant: 'season-meta', tone: 'subtle', class: 'text-muted-foreground' },
+    /* variant 已含语义色时，默认 tone=foreground 不得覆盖 */
+    { variant: 'metric-stat', tone: 'foreground', class: '!text-white' },
+    {
+      variant: 'metric-label',
+      tone: 'foreground',
+      class: '!text-white max-dapp:!text-on-dark',
+    },
   ],
   defaultVariants: {
     variant: 'body',

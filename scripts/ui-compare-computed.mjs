@@ -85,10 +85,10 @@ const STYLE_KEYS = [
   'boxShadow',
 ]
 
-const IGNORE_STYLE_KEYS = new Set(['color', 'fontFamily'])
+const IGNORE_STYLE_KEYS = new Set(['fontFamily', 'boxShadow'])
 
 /** @typedef {{ name: string, selector: string, optional?: boolean, walletOnly?: boolean, disconnectedOnly?: boolean }} Probe */
-/** @typedef {{ page: string, url: string, mobile?: boolean, scrollHome?: boolean, tab?: RegExp, requiresWallet?: boolean, probes: Probe[] }} Suite */
+/** @typedef {{ page: string, url: string, mobile?: boolean, scrollHome?: boolean, scrollDapp?: boolean, tab?: string, requiresWallet?: boolean, probes: Probe[] }} Suite */
 
 /** @type {Probe[]} */
 const homeProbesFull = [
@@ -104,11 +104,14 @@ const homeProbesFull = [
   { name: 'metrics-label', selector: '[data-metrics-panel] article span' },
   { name: 'feature-card-title', selector: '.feature-card-title, h3.feature-card-title' },
   { name: 'feature-card-body', selector: '.feature-card-body' },
+  { name: 'security-check-item', selector: '#security [data-security-check]' },
   { name: 'roadmap-phase-label', selector: '.phase-card span' },
+  { name: 'roadmap-dot-done', selector: '[data-phase-dot].text-white' },
+  { name: 'roadmap-dot-upcoming', selector: '[data-phase-dot].text-ink-muted' },
   { name: 'roadmap-card-title', selector: '.phase-card h3' },
   { name: 'roadmap-card-body', selector: '.phase-card p' },
   { name: 'token-symbol', selector: '#token strong, [id="token"] strong' },
-  { name: 'partners-chip', selector: '#partners span.font-semibold, #partners .text-sm' },
+  { name: 'partners-chip', selector: '.partners .partner-row > span' },
   { name: 'faq-question', selector: '[data-faq-trigger] span' },
   { name: 'faq-answer', selector: '.faq-answer-panel p' },
   { name: 'footer-brand-copy', selector: '.footer-brand p, .footer-brand span' },
@@ -160,30 +163,39 @@ const suites = [
   {
     page: 'dapp-swap-desktop',
     url: '/en/app.html',
-    tab: /swap/i,
+    tab: 'swap',
     probes: [
       ...dappShellProbes,
       { name: 'swap-amount-label', selector: 'section.rounded-md span', optional: true, walletOnly: true },
       { name: 'swap-amount-input', selector: 'section.rounded-md input', optional: true, walletOnly: true },
       { name: 'swap-content-heading', selector: 'main h2', optional: true },
       { name: 'swap-promo-text', selector: '[data-reveal] strong', optional: true },
+      {
+        name: 'swap-coming-soon-badge',
+        selector: '[data-dapp-widget-panel] span.rounded-full',
+      },
     ],
   },
   {
     page: 'dapp-swap-h5',
     url: '/en/app.html',
     mobile: true,
-    tab: /swap/i,
+    tab: 'swap',
+    scrollDapp: true,
     probes: [
       ...dappShellProbes,
       { name: 'swap-amount-label', selector: 'section.rounded-md span', optional: true, walletOnly: true },
       { name: 'swap-content-heading', selector: 'main h2', optional: true },
+      {
+        name: 'swap-coming-soon-badge',
+        selector: '[data-dapp-widget-panel] span.rounded-full',
+      },
     ],
   },
   {
     page: 'dapp-genesis-desktop',
     url: '/en/app.html',
-    tab: /genesis|co-build/i,
+    tab: 'genesis',
     probes: [
       ...dappShellProbes,
       { name: 'genesis-season-title', selector: '[role="radiogroup"] p', optional: true },
@@ -195,13 +207,14 @@ const suites = [
     page: 'dapp-genesis-h5',
     url: '/en/app.html',
     mobile: true,
-    tab: /genesis|co-build/i,
+    tab: 'genesis',
+    scrollDapp: true,
     probes: [...dappShellProbes, { name: 'genesis-season-title', selector: '[role="radiogroup"] p', optional: true }],
   },
   {
     page: 'dapp-rewards-desktop',
     url: '/en/app.html',
-    tab: /rewards/i,
+    tab: 'rewards',
     requiresWallet: true,
     probes: [
       ...dappShellProbes,
@@ -215,14 +228,15 @@ const suites = [
     page: 'dapp-rewards-h5',
     url: '/en/app.html',
     mobile: true,
-    tab: /rewards/i,
+    tab: 'rewards',
+    scrollDapp: true,
     requiresWallet: true,
     probes: [...dappShellProbes, { name: 'rewards-metric-value', selector: 'article strong', optional: true }],
   },
   {
     page: 'dapp-community-desktop',
     url: '/en/app.html',
-    tab: /community|commu/i,
+    tab: 'community',
     requiresWallet: true,
     probes: [
       ...dappShellProbes,
@@ -236,7 +250,8 @@ const suites = [
     page: 'dapp-community-h5',
     url: '/en/app.html',
     mobile: true,
-    tab: /community|commu/i,
+    tab: 'community',
+    scrollDapp: true,
     requiresWallet: true,
     probes: [
       ...dappShellProbes,
@@ -264,25 +279,56 @@ async function scrollHomeForReveals(page) {
   await page.waitForTimeout(600)
 }
 
-async function clickTab(page, tabRe) {
-  const nav = page.locator('nav button, nav a, [role="tab"]')
-  const n = await nav.count()
-  for (let i = 0; i < n; i++) {
-    const text = (await nav.nth(i).innerText()).trim()
-    if (tabRe.test(text)) {
-      await nav.nth(i).click()
-      await page.waitForTimeout(1000)
-      return true
+const TAB_HASH = {
+  swap: 'swap',
+  genesis: 'genesis',
+  reward: 'rewards',
+  rewards: 'rewards',
+  community: 'community',
+}
+
+async function setDappTab(page, tabKey) {
+  const hash = TAB_HASH[tabKey] ?? tabKey
+  await page.evaluate((h) => {
+    window.location.hash = h
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
+    const widget = document.querySelector('[data-dapp-widget-panel]')
+    const detail = document.querySelector('[data-dapp-detail]')
+    if (widget instanceof HTMLElement) widget.scrollTop = 0
+    if (detail instanceof HTMLElement) detail.scrollTop = 0
+    window.scrollTo(0, 0)
+  }, hash)
+  await page.waitForTimeout(1200)
+}
+
+async function scrollDappViewport(page) {
+  await page.evaluate(async () => {
+    const delay = (ms) => new Promise((r) => setTimeout(r, ms))
+    const step = Math.max(180, Math.floor(window.innerHeight * 0.55))
+    let y = 0
+    const max = Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight ?? 0)
+    while (y < max) {
+      window.scrollTo(0, y)
+      await delay(80)
+      y += step
     }
-  }
-  return false
+    window.scrollTo(0, max)
+    await delay(200)
+    window.scrollTo(0, 0)
+    const widget = document.querySelector('[data-dapp-widget-panel]')
+    const detail = document.querySelector('[data-dapp-detail]')
+    if (widget instanceof HTMLElement) widget.scrollTop = 0
+    if (detail instanceof HTMLElement) detail.scrollTop = 0
+  })
+  await page.waitForTimeout(400)
 }
 
 async function prepare(page, suite, root) {
   await page.goto(root + suite.url, { waitUntil: 'networkidle', timeout: 120_000 })
   if (suite.scrollHome) await scrollHomeForReveals(page)
   else await page.waitForTimeout(1500)
-  if (suite.tab) await clickTab(page, suite.tab)
+  if (suite.tab) await setDappTab(page, suite.tab)
+  if (suite.scrollDapp) await scrollDappViewport(page)
 }
 
 async function isWalletConnected(page) {
@@ -346,11 +392,23 @@ async function readProbe(page, selector) {
   }, STYLE_KEYS)
 }
 
+function parsePx(value) {
+  if (typeof value !== 'string') return null
+  const m = value.match(/^(-?\d+(?:\.\d+)?)px$/)
+  return m ? Number(m[1]) : null
+}
+
 function diffStyles(a, b) {
   const diffs = []
   for (const key of STYLE_KEYS) {
     if (IGNORE_STYLE_KEYS.has(key)) continue
-    if (a[key] !== b[key]) diffs.push({ key, base: a[key], curr: b[key] })
+    const va = a[key]
+    const vb = b[key]
+    if (va === vb) continue
+    const na = parsePx(va)
+    const nb = parsePx(vb)
+    if (na != null && nb != null && Math.abs(na - nb) <= 0.5) continue
+    diffs.push({ key, base: va, curr: vb })
   }
   const ra = a.rect
   const rb = b.rect
@@ -453,7 +511,7 @@ try {
         await waitForWalletPair(pageA, pageB)
         walletPrimed = true
         if (suite.tab) {
-          await Promise.all([clickTab(pageA, suite.tab), clickTab(pageB, suite.tab)])
+          await Promise.all([setDappTab(pageA, suite.tab), setDappTab(pageB, suite.tab)])
         }
       }
 

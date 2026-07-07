@@ -33,7 +33,7 @@ export function TradeSwapContent() {
   return (
     <DappDetailPage>
       <section>
-        <DappContentHeading id="swap-title">{t.swap.overview}</DappContentHeading>
+        <DappContentHeading id="swap-title" variant="detail-section-title">{t.swap.overview}</DappContentHeading>
         <MetricGrid columns={2}>
           {poolRateLoading && !poolRateLabel ? (
             <SwapMetricCardSkeleton />
@@ -45,12 +45,12 @@ export function TradeSwapContent() {
       </section>
 
       <section className={dappDetailSectionGapClass}>
-        <DappContentHeading>{t.swap.tokenAbout.title}</DappContentHeading>
+        <DappContentHeading variant="detail-section-title">{t.swap.tokenAbout.title}</DappContentHeading>
         <TokenAboutCarousel />
       </section>
 
       <section className={dappDetailSectionGapClass}>
-        <DappContentHeading>{t.swap.faq.tabsTitle}</DappContentHeading>
+        <DappContentHeading variant="detail-section-title">{t.swap.faq.tabsTitle}</DappContentHeading>
         <TradeSwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
         <FaqList defaultOpenFirst={false} items={faqItems} key={faqToken} variant="dapp" />
       </section>

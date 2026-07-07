@@ -206,8 +206,7 @@ export function SwapPromoCard({
               as="strong"
               className={styles.title()}
               tone="foreground"
-              variant={layout === 'desktop' ? 'body-md' : 'body'}
-              weight="semibold"
+              variant="promo-title"
             >
               {title}
             </Text>
@@ -218,7 +217,7 @@ export function SwapPromoCard({
           as="p"
           className={styles.body()}
           tone={layout === 'desktop' ? 'strong' : 'subtle'}
-          variant="caption"
+          variant={layout === 'desktop' ? 'panel-subtitle' : 'caption'}
         >
           {body}
         </Text>

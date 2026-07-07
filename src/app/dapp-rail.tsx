@@ -149,8 +149,8 @@ export function DappRail({
               />
               <Text
                 as="span"
-                variant="label"
-                tone={active ? 'accent' : 'foreground'}
+                variant="rail-tab-label"
+                tone={active ? 'accent' : 'strong'}
                 className={mobile ? shellRailRowLabelClass : shellRailLabelClass}
                 title={label}
               >

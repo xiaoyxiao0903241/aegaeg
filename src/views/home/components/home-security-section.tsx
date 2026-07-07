@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { homeAssets } from '~/views/home/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
@@ -89,9 +88,7 @@ export function HomeSecuritySection() {
                     loading="lazy"
                   />
                 </span>
-                <Text as="span" tone="strong" variant="body" weight="medium">
-                  {check}
-                </Text>
+                {check}
               </Card>
             ))}
           </div>

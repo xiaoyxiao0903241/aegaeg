@@ -124,9 +124,14 @@ H5 有效样式:  (同上，标注 max-dapp 差异)
 
 ## 4. 验收（Phase D — 必做）
 
+> **4175 vs 5174 parity 主路径**：[`visual-parity-workflow.md`](./visual-parity-workflow.md) — `compare:screenshots` → `compare:diff-audit` → 按 audit 修代码 → 重跑。`compare:computed` 仅为已晋升探针的回归网。
+
 ### 4.1 自动
 
 ```bash
+pnpm compare:screenshots          # 发现 WHERE
+pnpm compare:diff-audit           # 标红 → DOM → computed（有 diff 的 target）
+UI_COMPARE_SKIP_WALLET=1 pnpm compare:computed   # 探针回归（不替代 diff-audit）
 pnpm test:unit
 pnpm lint:all
 # 若改动了共享 Text / 大量 views：
@@ -144,6 +149,8 @@ pnpm build   # 或至少 tsc -b，说明已知无关失败
 ### 4.3 人工（UI 角色）
 
 Rewards 等级卡、深色 Banner、Swap 金额框等 **高对比 typographic 角色** — 改后需人眼确认或截图对比。
+
+**不在 parity 范围**：动画、过渡、视频帧、hover 中间态 — 见 [`visual-parity-workflow.md`](./visual-parity-workflow.md) §5。
 
 ---
 
@@ -199,4 +206,5 @@ SideTitle (strong, size=md → text-base, semibold)
 | DApp fluid 字号变量 | `src/shared/styles/dapp-scale.css`（及引用处） |
 | Theme 色 | `src/shared/styles/tokens/theme.css` |
 | variant 判定 | `docs/design-system-audit.md` §2 |
+| 4175 vs 5174 视觉验收 | `docs/visual-parity-workflow.md` |
 | Tailwind 约束 | `AGENTS.md` §8.7 |

@@ -21,16 +21,15 @@ const roadmapClass = {
   currentCard: 'min-h-30 border border-primary dapp:min-h-30',
   header:
     'flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start',
-  phaseLabel: '',
   now:
     'rounded-3xl bg-primary px-2 py-0.5 not-italic dapp:px-2.5 dapp:py-0.5',
   time: 'ml-auto',
   title: 'mt-1.5 dapp:mt-2',
   body: 'mt-1.5 dapp:mt-2',
   dot:
-    'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-3xl dapp:absolute dapp:left-1/2 dapp:top-10 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
+    'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:left-1/2 dapp:top-10 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
   dotComplete: 'bg-primary text-white dapp:border-primary',
-  dotUpcoming: 'border-[3px] border-border bg-card',
+  dotUpcoming: 'border-[3px] border-border bg-card text-ink-muted',
   dotCurrent:
     'dapp:shadow-[0_0_0_8px_oklch(94.92%_0.0224_45.6_/_96%)]',
   dotConnector:
@@ -96,9 +95,7 @@ export function HomeRoadmapSection() {
                 data-phase-dot
                 aria-hidden="true"
               >
-                <Text as="span" variant="label" weight="semibold">
-                  {phase.dot}
-                </Text>
+                {phase.dot}
               </div>
               <Card
                 className={cn(
@@ -114,10 +111,8 @@ export function HomeRoadmapSection() {
                 <div className={roadmapClass.header}>
                   <Text
                     as="span"
-                    className={roadmapClass.phaseLabel}
                     tone={phase.state ? 'accent' : 'subtle'}
-                    variant="caption"
-                    weight="semibold"
+                    variant="roadmap-phase-label"
                   >
                     {phase.phase}
                   </Text>
@@ -126,7 +121,7 @@ export function HomeRoadmapSection() {
                       as="em"
                       className={roadmapClass.now}
                       tone="inverse"
-                      variant="caption"
+                      variant="xs"
                       weight="semibold"
                     >
                       NOW
@@ -136,8 +131,7 @@ export function HomeRoadmapSection() {
                     as="time"
                     className={roadmapClass.time}
                     tone={phase.state === 'current' ? 'accent' : 'subtle'}
-                    variant="caption"
-                    weight="semibold"
+                    variant="roadmap-phase-label"
                   >
                     {phase.time}
                   </Text>
@@ -146,12 +140,11 @@ export function HomeRoadmapSection() {
                   as="h3"
                   className={roadmapClass.title}
                   tone="foreground"
-                  variant="body-md"
-                  weight="semibold"
+                  variant="roadmap-title"
                 >
                   {phase.title}
                 </Text>
-                <Text as="p" className={roadmapClass.body} tone="subtle" variant="caption">
+                <Text as="p" className={roadmapClass.body} tone="subtle" variant="roadmap-body">
                   {phase.description}
                 </Text>
               </Card>

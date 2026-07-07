@@ -7,7 +7,7 @@ const partnerClass = {
   section:
     'partners dapp:min-h-52 border-b border-border bg-secondary pb-30 text-center max-dapp:min-h-64 max-dapp:py-12',
   row: 'partner-row mt-6 flex flex-wrap justify-center gap-3.5 max-dapp:mt-4',
-  chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border bg-card py-3 pl-3 pr-7 shadow-none max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pl-3 max-dapp:pr-4',
+  chip: 'inline-flex min-h-12 items-center gap-2.5 border border-border bg-card py-3 pl-3 pr-7 text-sm font-semibold text-ink-strong shadow-none max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pl-3 max-dapp:pr-4 max-dapp:text-xs',
 } as const
 
 export function HomePartnersSection() {
@@ -47,9 +47,7 @@ export function HomePartnersSection() {
                 height="24"
                 loading="lazy"
               />
-              <Text as="span" tone="foreground" variant="body" weight="semibold">
-                {name}
-              </Text>
+              {name}
             </Card>
           ))}
         </div>

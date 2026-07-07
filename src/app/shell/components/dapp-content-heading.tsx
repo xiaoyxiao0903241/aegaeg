@@ -9,16 +9,18 @@ export function DappContentHeading({
   className,
   id,
   reveal = false,
+  variant = 'content-heading',
 }: {
   children: ReactNode
   className?: string
   id?: string
   reveal?: boolean
+  variant?: 'content-heading' | 'detail-section-title'
 }) {
   return (
     <Text
       as="h2"
-      variant="content-heading"
+      variant={variant}
       className={cn(
         'm-0 max-dapp:mt-0',
         dappDetailTitleGapClass,

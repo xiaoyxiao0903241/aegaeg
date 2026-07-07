@@ -36,7 +36,7 @@ function isExternalHref(href: string) {
 
 const footerClass = {
   root:
-    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
+    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-on-dark dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
   top:
     'container footer-top grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6',
   brand:
@@ -46,14 +46,12 @@ const footerClass = {
     'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
   rule: 'container h-px bg-[#232323]',
   bottom:
-    'container footer-bottom flex min-h-4 items-start overflow-hidden whitespace-nowrap',
+    'container footer-bottom flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-on-dark whitespace-nowrap max-dapp:text-xs',
 } as const
 
-const footerLinkClass = ''
-
 const footerBrandClass = cn(
-  'inline-flex items-center gap-2.5 whitespace-nowrap',
-  'max-dapp:gap-2 [&_img]:h-6',
+  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-[-0.36px] leading-none text-primary-foreground',
+  'max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2] [&_img]:h-6',
 )
 
 const footerBrandMarkClass = cn(
@@ -66,10 +64,10 @@ function FooterBrandCopy({ copy }: { copy: string }) {
   return (
     <>
       {lines.map((line, index) => (
-        <Text as="span" key={`${line}-${index}`} tone="on-dark" variant="body">
+        <span key={`${line}-${index}`}>
           {index > 0 ? <br /> : null}
           {line}
-        </Text>
+        </span>
       ))}
     </>
   )
@@ -91,16 +89,9 @@ export function HomeFooter() {
               width="28"
               height="26"
             />
-            <Text as="span" tone="inverse" variant="lead" weight="semibold">
-              AEGIS X
-            </Text>
+            <span>AEGIS X</span>
           </a>
-          <Text
-            as="p"
-            className={footerClass.brandCopy}
-            tone="on-dark"
-            variant="body"
-          >
+          <Text as="p" className={footerClass.brandCopy} tone="on-dark" variant="footer-brand-copy">
             <FooterBrandCopy copy={content.brandCopy} />
           </Text>
         </div>
@@ -110,13 +101,7 @@ export function HomeFooter() {
             aria-label={group.ariaLabel}
             key={group.label}
           >
-            <Text
-              as="h3"
-              className="m-0"
-              tone="inverse"
-              variant="body"
-              weight="semibold"
-            >
+            <Text as="h3" className="m-0" tone="inverse" variant="footer-group-title">
               {group.label}
             </Text>
             {group.links.map((link) => {
@@ -124,13 +109,12 @@ export function HomeFooter() {
               return (
               <Text
                 as="a"
-                className={footerLinkClass}
                 href={href}
                 key={`${group.label}-${link.label}`}
                 rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
                 target={isExternalHref(href) ? '_blank' : undefined}
                 tone="on-dark"
-                variant="body"
+                variant="footer-link"
               >
                 {link.label}
               </Text>
@@ -141,14 +125,7 @@ export function HomeFooter() {
       </div>
       <div className={footerClass.rule} aria-hidden="true" />
       <div className={footerClass.bottom}>
-        <Text
-          as="p"
-          className="m-0 max-dapp:whitespace-nowrap"
-          tone="on-dark"
-          variant="caption"
-        >
-          {content.copyright}
-        </Text>
+        <p className="m-0 max-dapp:whitespace-nowrap">{content.copyright}</p>
       </div>
     </footer>
   )

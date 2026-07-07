@@ -51,7 +51,7 @@ export function shellRailItemClass(active: boolean) {
   return cn(
     'relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
     'text-xs font-normal leading-snug tracking-tight transition-[color] duration-180 ease-out',
-    active ? 'text-primary' : 'text-foreground hover:bg-background',
+    active ? 'text-primary' : 'text-ink-strong hover:bg-background hover:text-foreground',
   )
 }
 

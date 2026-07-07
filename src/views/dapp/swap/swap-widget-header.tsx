@@ -82,8 +82,7 @@ export function SwapHubHeader({
           as="h1"
           className={styles.pageTitle()}
           tone="foreground"
-          variant="title"
-          weight="semibold"
+          variant="swap-hub-title"
         >
           {title}
         </Text>
@@ -137,8 +136,7 @@ export function SwapSubpageHeader({
           as="h1"
           className={styles.pageTitle()}
           tone="foreground"
-          variant="title"
-          weight="semibold"
+          variant="swap-hub-title"
         >
           {title}
         </Text>

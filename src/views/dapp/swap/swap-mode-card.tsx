@@ -37,16 +37,16 @@ export function SwapModeCard({
           </Text>
           {badge ? (
             <Text
+              as="span"
               className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#FF9500] px-2 py-1.5"
               tone="inverse"
-              variant="xs"
-              weight="medium"
+              variant="mode-badge"
             >
               {badge}
             </Text>
           ) : null}
         </span>
-        <Text tone="subtle" variant="compact-body">
+        <Text tone="muted" variant="compact-body" className="leading-normal">
           {body}
         </Text>
       </span>

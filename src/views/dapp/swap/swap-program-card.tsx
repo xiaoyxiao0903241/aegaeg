@@ -32,7 +32,7 @@ function ProgramCardCopy({ body, title }: { body: string; title: string }) {
       <Text as="strong" tone="foreground" variant="program-title">
         {title}
       </Text>
-      <Text tone="subtle" variant="program-body">
+      <Text tone="muted" variant="program-body">
         {body}
       </Text>
     </span>
