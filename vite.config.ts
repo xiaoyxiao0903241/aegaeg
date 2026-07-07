@@ -67,7 +67,6 @@ export default defineConfig(({ command }) => ({
   build: {
     target: 'chrome90',
     // 最终 minify 阶段以 cssTarget 为准（会覆盖 css.lightningcss.targets），须与 cssTargets 一致。
-    // esbuild 目标名不含 android；安卓系浏览器按 chrome 内核版本覆盖。
     cssTarget: ['chrome90', 'safari14', 'ios14', 'firefox90'],
     modulePreload: false,
     rollupOptions: {
