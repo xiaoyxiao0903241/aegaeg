@@ -1,4 +1,4 @@
-/** Figma typography @ 16px root — scales with site-fluid via dapp-scale.css vars. */
+/** Figma typography — px-lock vars in `tokens/theme.css` (`--type-*`). */
 
 export const dappKickerClass =
   'text-[length:var(--dapp-type-kicker-size)] font-semibold uppercase leading-[1.2] tracking-[0.88px]'

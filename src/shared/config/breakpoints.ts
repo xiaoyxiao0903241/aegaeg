@@ -2,10 +2,9 @@
 export const BREAKPOINT_DAPP_PX = 821
 
 /**
- * 响应式断点 SSOT（CSS @media 字面量须与此文件注释/常量保持同步）：
+ * Responsive breakpoints — CSS @media literals must stay in sync with:
+ * - `tokens/theme.css` — site-fluid + H5 typography
  * - `legacy-breakpoints.css` — @custom-variant
- * - `breakpoint-scale.css` — 1920→3840 根字号阶梯
- * - `mobile-type-scale.css` — `BREAKPOINT_DAPP_MAX_PX`
  */
 export const BREAKPOINT_DESIGN_BASE_PX = 1920
 

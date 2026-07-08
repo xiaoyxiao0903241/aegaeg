@@ -81,10 +81,10 @@ P3       清债（alias · 常量 · shell 断点集中）
 | 校准 `--foreground` → Figma ink `#0b0e14`（hex 先行） | [`theme.css`](../src/shared/styles/tokens/theme.css) |
 | Tier B hex 收编 | theme.css |
 | **E1–E6** shadow · radius pill/sm/md/lg/xl | theme.css `@theme` |
-| **10 档 px-locked** `--dapp-type-{variant}-size` | [`dapp-scale.css`](../src/shared/styles/dapp-scale.css) |
-| H5 **逐 variant** `@media (max-width:820px)` | dapp-scale.css |
-| DApp **禁用** `mobile-type-scale` blanket +1 | scope 拆分 |
-| site-fluid typography **纯 px-lock**（见上） | dapp-scale + [`breakpoint-scale.css`](../src/shared/styles/breakpoint-scale.css) |
+| **10 档 px-locked** `--type-*` + legacy `--dapp-type-*` alias | [`tokens/theme.css`](../src/shared/styles/tokens/theme.css) |
+| H5 **逐 variant** `@media (max-width:820px)` | theme.css |
+| DApp **禁用** Home blanket `--text-*` +1 | `html:not(.dapp-app)` in theme.css |
+| site-fluid typography **纯 px-lock** | theme.css site-fluid `@media` |
 | Card/Button/Input/FAQ **anatomy token** 文档 | [`component-anatomy.md`](./component-anatomy.md) |
 
 **验证**：`pnpm lint:all` · token 单元测试 · **Legacy WebView**（下）· **不改 call site**

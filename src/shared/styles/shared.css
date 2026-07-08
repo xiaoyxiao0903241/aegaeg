@@ -1,4 +1,16 @@
-@import 'tailwindcss/theme.css';
+/**
+ * Shared base — fonts, reset, tokens, breakpoints, scrollbars, animations.
+ * Imported by app.css and home.css entry bundles.
+ */
+@source '../../app';
+@source '../../components';
+@source '../../home';
+@source '../../views/home/home-reveal-loader.ts';
+
+@import './tokens/theme.css';
+@import './legacy-breakpoints.css';
+@import './scrollbars.css';
+@import './animations.css';
 
 @font-face {
   font-family: Montserrat;
@@ -57,7 +69,6 @@ summary {
 
 button {
   border: 0;
-  /* iOS Safari defaults <button> text to link-blue; inherit parent color instead. */
   color: inherit;
 }
 
@@ -84,7 +95,6 @@ video {
   display: block;
 }
 
-/* 覆盖 Tailwind v4 默认 container（会把每个 --breakpoint-* 当作 max-width 阶梯） */
 @utility container {
   width: min(calc(100% - 3rem), var(--container));
   margin-inline: auto;

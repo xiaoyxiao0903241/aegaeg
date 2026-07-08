@@ -1,7 +1,5 @@
-@import './legacy-breakpoints.css';
 @import 'tailwindcss/utilities';
-@import './foundations.css';
-@import './dapp-scale.css';
+@import './shared.css';
 @import './wallet.css';
 
 /* PC DApp — 锁视口高度，避免装饰层撑出页面滚动 */
@@ -20,7 +18,6 @@
 }
 
 /* DApp PC shell — 设计基准 80rem（1280px @ 16px）；超宽屏随根字号同比放大 */
-/* @media 不支持 var() — 字面量须与 theme.css `--breakpoint-dapp` 同步 */
 @media (min-width: 821px) {
   [data-dapp-window] {
     --shell-detail-col: minmax(0, 1fr);
@@ -46,7 +43,6 @@
   }
 }
 
-/* Right / left DApp columns — restrained tab switch enter */
 @keyframes dapp-detail-enter {
   from {
     opacity: 0;
@@ -59,7 +55,6 @@
   }
 }
 
-/* Swap subview — cross-slide layers (hub ↔ flash / trade), no opacity flash */
 @keyframes swap-widget-enter-from-right {
   from {
     transform: translate3d(1.5rem, 0, 0);
@@ -120,7 +115,6 @@
   }
 }
 
-/* Left widget column — tab switch enter (keep full height for mt-auto footer) */
 .dapp-panel-enter {
   animation: dapp-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -187,16 +181,14 @@
   animation: swap-detail-exit 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Right detail column — tab switch enter */
 .dapp-detail-panel {
   min-height: 0;
   animation: dapp-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* PC scroll columns — edge fade overlays (see DappScrollFadeHost) */
 @media (min-width: 821px) {
   .dapp-scroll-fade-host {
-    --dapp-scroll-fade: 1.5rem;
+    --dapp-scroll-fade: var(--app-scroll-fade);
     position: relative;
     isolation: isolate;
   }
@@ -205,7 +197,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    height: var(--dapp-scroll-fade);
+    height: var(--app-scroll-fade);
     pointer-events: none;
     z-index: 10;
   }
@@ -233,11 +225,10 @@
   transition: none;
 }
 
-/* Genesis / Rewards contribution progress — use brand primary token directly */
 .dapp-progress-meter {
   display: block;
   width: 100%;
-  height: var(--dapp-progress-meter-height);
+  height: var(--app-progress-meter-height);
   overflow: hidden;
   border-radius: 9999px;
   background: var(--border);
@@ -251,7 +242,6 @@
   transition: width 300ms ease-out;
 }
 
-/* Collapsible DApp sections — shared expand/collapse animation */
 .dapp-collapsible-body {
   display: grid;
   grid-template-rows: 0fr;
@@ -267,12 +257,10 @@
   overflow: hidden;
 }
 
-/* 展开淡入；默认 overflow:hidden 才能让 grid 0fr↔1fr 双向过渡 */
 .dapp-collapsible-body[data-open='true'] .dapp-collapsible-inner {
   animation: dapp-collapsible-content-in 240ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-/* Token carousel 等：负 margin 出血到外层 padding 边缘（Swap tab bodyClassName） */
 .dapp-collapsible-body[data-open='true'] .dapp-collapsible-inner.overflow-visible {
   overflow: visible;
 }
@@ -287,7 +275,6 @@
   }
 }
 
-/* Sonner — content-fit width + centering (github.com/emilkowalski/sonner/issues/678) */
 html.dapp-app [data-sonner-toaster].app-toaster {
   --border-radius: 9999px;
   --normal-bg: oklch(0% 0 0);
@@ -379,7 +366,6 @@ html.dapp-app [data-sonner-toaster].app-toaster .sonner-loading-wrapper {
   --size: 1rem;
 }
 
-/* Sonner ≤600px forces full-width — keep content-fit pill on H5 (#678) */
 @media (max-width: 600px) {
   html.dapp-app [data-sonner-toaster].app-toaster {
     width: max-content !important;
@@ -400,7 +386,6 @@ html.dapp-app [data-sonner-toaster].app-toaster .sonner-loading-wrapper {
   }
 }
 
-/* H5 侧滑菜单（3/5 屏宽）— keyframes 保证打开/关闭动画一致（不依赖 transition 首帧） */
 @media (max-width: 820px) {
   @keyframes dapp-mobile-nav-in {
     from {

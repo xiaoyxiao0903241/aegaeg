@@ -1,15 +1,15 @@
-/** DApp 图标尺寸工具类 — 对应 `dapp-scale.css` 变量 */
+/** DApp icon sizes — `tokens/theme.css` (`--app-icon-*`). */
 export const dappIconClass = {
-  xs: 'size-[var(--dapp-icon-xs)]',
-  sm: 'size-[var(--dapp-icon-sm)]',
-  md: 'size-[var(--dapp-icon-md)]',
-  base: 'size-[var(--dapp-icon-base)]',
-  action: 'size-[var(--dapp-icon-action)]',
-  lg: 'size-[var(--dapp-icon-lg)]',
-  xl: 'size-[var(--dapp-icon-xl)]',
-  rail: 'size-[var(--dapp-icon-rail)]',
-  token: 'size-[var(--dapp-icon-token)]',
-  brand: 'size-[var(--dapp-icon-brand)]',
+  xs: 'size-[var(--app-icon-xs)]',
+  sm: 'size-[var(--app-icon-sm)]',
+  md: 'size-[var(--app-icon-md)]',
+  base: 'size-[var(--app-icon-base)]',
+  action: 'size-[var(--app-icon-action)]',
+  lg: 'size-[var(--app-icon-lg)]',
+  xl: 'size-[var(--app-icon-xl)]',
+  rail: 'size-[var(--app-icon-rail)]',
+  token: 'size-[var(--app-icon-token)]',
+  brand: 'size-[var(--app-icon-brand)]',
 } as const
 
 export type DappIconSize = keyof typeof dappIconClass

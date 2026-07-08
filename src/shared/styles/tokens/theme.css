@@ -1,19 +1,19 @@
 /**
- * 设计系统主题 —— 唯一真源 (single source of truth)
+ * Design system tokens — single source of truth
  *
- * 全部采用 shadcn 语义命名 + oklch 色彩空间。
- * - :root 定义源变量（运行时可读、可主题切换）
- * - @theme inline 将源变量映射为 Tailwind 工具类（bg-*, text-*, shadow-* ...）
+ * - :root — semantic colors, typography (px-lock), app/home namespaces, layout
+ * - @theme — radius, elevation shadows, Tailwind utilities
+ * - @media — H5 typography, Home text scale, site-fluid root rem
  *
+ * Entry CSS: shared.css (base) · app.css · home.css
  */
 
 :root {
-  /* ---- shadcn 语义色 ---- */
-  /* Hex first: Chromium <111 WebViews (Huawei/Vivo 等) 不解析 oklch，会丢弃整条声明。 */
+  /* ---- shadcn semantic colors (hex first for Chromium <111) ---- */
   --background: #f7f8f9;
   --background: oklch(97.29% 0.0029 264.54);
-  --foreground: #252628;
-  --foreground: oklch(16.35% 0.0136 264.09);
+  --foreground: #0b0e14;
+  --foreground: oklch(14.5% 0.02 264);
 
   --card: #fff;
   --card: oklch(100% 0 89.88);
@@ -23,7 +23,6 @@
   --popover: oklch(100% 0 89.88);
   --popover-foreground: var(--foreground);
 
-  /* 品牌色：珊瑚 */
   --primary: #e86a43;
   --primary: oklch(66.83% 0.1625 36.6);
   --primary-foreground: #fff;
@@ -55,94 +54,343 @@
 
   --radius: 1rem;
 
-  /* ---- 扩展品牌色 ---- */
+  /* ---- brand / neutral (hex first where missing) ---- */
+  --success: #2bab6a;
   --success: oklch(69.46% 0.1551 159.22);
+  --coral-bright: #f0a88a;
   --coral-bright: oklch(80.08% 0.0962 39.91);
+  --dark: #111625;
   --dark: oklch(19.25% 0.0189 270.25);
   --on-dark: #b8c0ce;
+  --bsc: #f0b429;
   --bsc: oklch(81.94% 0.1561 84.2);
+  --bsc-foreground: #1a1a1a;
   --bsc-foreground: oklch(22.21% 0 89.88);
 
-  /* ---- 中性/辅助色 ---- */
+  --faint: rgba(0, 0, 0, 0.3);
   --faint: oklch(0% 0 0 / 30%);
+  --ink-muted: rgba(0, 0, 0, 0.4);
   --ink-muted: oklch(0% 0 0 / 40%);
+  --ink-strong: rgba(0, 0, 0, 0.7);
   --ink-strong: oklch(0% 0 0 / 70%);
+  --subtle-ink: #5b6472;
   --subtle-ink: oklch(45% 0.02 260);
   --faq-text: #5b6472;
+  --placeholder: #c9cfda;
   --placeholder: oklch(82% 0.011 264);
+  --focus-border: #4a5060;
   --focus-border: oklch(35% 0.02 260);
+  --border-subtle: #e8eaef;
   --border-subtle: oklch(92% 0.01 263);
 
-  /* ---- 表面（带透明度）---- */
+  --surface-glass: rgba(255, 255, 255, 0.82);
   --surface-glass: oklch(100% 0 0 / 82%);
+  --surface-wash: rgba(255, 255, 255, 0.56);
   --surface-wash: oklch(100% 0 0 / 56%);
+  --surface-wash-strong: rgba(255, 255, 255, 0.62);
   --surface-wash-strong: oklch(100% 0 0 / 62%);
+  --pill-muted-bg: #f4f5f7;
   --pill-muted-bg: oklch(96% 0.006 264);
 
-  /* ---- 状态/描边（带透明度）---- */
+  --coral-hover-border: rgba(232, 106, 67, 0.38);
   --coral-hover-border: oklch(66.83% 0.1625 36.6 / 38%);
+  --coral-strong-border: rgba(232, 106, 67, 0.55);
   --coral-strong-border: oklch(66.83% 0.1625 36.6 / 55%);
+  --status-success-bg: rgba(43, 171, 106, 0.7);
   --status-success-bg: oklch(91% 0.075 159 / 70%);
 
-  /* ---- 代币品牌色 ---- */
   --token-usd1: #e86a43;
   --token-agx: #232833;
   --token-gagx: #7c6230;
   --token-x: #5e2a40;
 
-  /* ---- 布局（rem @ 16px 根字号 = 设计稿 1920 基准；超宽屏见 breakpoint-scale.css）---- */
+  /* ---- layout ---- */
   --container: 75rem;
-  /* DApp / Home 响应式分界：H5 <= 820px，PC >= 821px，平板 <= 1100px。
-     Tailwind 变体见 `legacy-breakpoints.css`；裸 @media 须写字面量（不支持 var()），见 lib/breakpoints.ts。 */
   --breakpoint-dapp: 821px;
+  --fluid-scale: 1;
 
-  /* ---- 滚动条（覆盖系统默认）---- */
-  --scrollbar-size: 8px;
-  --scrollbar-thumb: oklch(0% 0 0 / 14%);
-  --scrollbar-thumb-hover: oklch(0% 0 0 / 26%);
-  --scrollbar-thumb-active: oklch(66.83% 0.1625 36.6 / 52%);
-  --scrollbar-thumb-dark: oklch(100% 0 0 / 18%);
-  --scrollbar-thumb-dark-hover: oklch(100% 0 0 / 32%);
-  --scrollbar-thumb-dark-active: oklch(80.08% 0.0962 39.91 / 62%);
-  /* ---- DApp H5 顶栏区渐变（Figma `62:2`）---- */
-  --dapp-h5-gradient-top: #fbeae1;
+  --app-h5-gradient-top: #fbeae1;
+  --dapp-h5-gradient-top: var(--app-h5-gradient-top);
 
-  /* 卡片阴影外扩留白：blur 半径 + H5 shell p-4.5 上限 */
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;
   --shadow-bleed-h5: 1.125rem;
-  /* Figma `103:8` / `103:81` — H5 token carousel 卡片↔指示器 */
   --carousel-h5-viewport-pad-y: 0.875rem;
   --carousel-h5-indicator-pt: 0.75rem;
   --carousel-pc-indicator-pt: 0.75rem;
+
+  /* ---- Typography Tier A (px-lock; site-fluid does not scale) ---- */
+  --type-rail-size: 10px;
+  --type-kicker-size: 11px;
+  --type-meta-size: 13px;
+  --type-detail-size: 14px;
+  --type-question-size: 15px;
+  --type-headline-size: 16px;
+  --type-brand-size: 17px;
+  --type-section-size: 18px;
+  --type-widget-title-size: 21px;
+  --type-amount-size: 22px;
+
+  /* Legacy aliases — remove in P3 */
+  --dapp-type-kicker-size: var(--type-kicker-size);
+  --dapp-type-caption-size: var(--type-meta-size);
+  --dapp-type-title-sm-size: var(--type-widget-title-size);
+  --dapp-type-body-lg-size: var(--type-brand-size);
+  --dapp-type-amount-size: var(--type-amount-size);
+
+  /* ---- App chrome (rem @ 16px; scales with site-fluid) ---- */
+  --app-icon-xs: 0.75rem;
+  --app-icon-sm: 0.8125rem;
+  --app-icon-md: 0.875rem;
+  --app-icon-base: 1rem;
+  --app-icon-action: 0.9375rem;
+  --app-icon-lg: 1.125rem;
+  --app-icon-xl: 1.25rem;
+  --app-icon-rail: 1.375rem;
+  --app-icon-token: 1.5rem;
+  --app-icon-brand: 1.75rem;
+
+  --dapp-icon-xs: var(--app-icon-xs);
+  --dapp-icon-sm: var(--app-icon-sm);
+  --dapp-icon-md: var(--app-icon-md);
+  --dapp-icon-base: var(--app-icon-base);
+  --dapp-icon-action: var(--app-icon-action);
+  --dapp-icon-lg: var(--app-icon-lg);
+  --dapp-icon-xl: var(--app-icon-xl);
+  --dapp-icon-rail: var(--app-icon-rail);
+  --dapp-icon-token: var(--app-icon-token);
+  --dapp-icon-brand: var(--app-icon-brand);
+
+  --app-season-title-size: 0.8125rem;
+  --app-season-meta-size: 0.6875rem;
+  --app-season-badge-size: 0.625rem;
+  --app-season-radio-size: 1.125rem;
+  --app-season-card-radius: 0.8125rem;
+
+  --dapp-season-title-size: var(--app-season-title-size);
+  --dapp-season-meta-size: var(--app-season-meta-size);
+  --dapp-season-badge-size: var(--app-season-badge-size);
+  --dapp-season-radio-size: var(--app-season-radio-size);
+  --dapp-season-card-radius: var(--app-season-card-radius);
+
+  --app-pagination-menu-item-height: 2rem;
+  --app-pagination-menu-gap: 0.375rem;
+  --app-pagination-menu-viewport-padding: 0.5rem;
+  --app-pagination-menu-max-visible: 5;
+
+  --dapp-pagination-menu-item-height: var(--app-pagination-menu-item-height);
+  --dapp-pagination-menu-gap: var(--app-pagination-menu-gap);
+  --dapp-pagination-menu-viewport-padding: var(--app-pagination-menu-viewport-padding);
+  --dapp-pagination-menu-max-visible: var(--app-pagination-menu-max-visible);
+
+  --app-table-cell-min-width: 5.5rem;
+  --app-table-empty-padding: 1.875rem 1.5rem;
+  --app-table-empty-padding-h5: 1.375rem 1rem;
+  --app-community-stat-padding: 0.8125rem 0.75rem;
+  --app-skeleton-chip-size: 1.125rem;
+  --app-tooltip-offset: 0.5rem;
+  --app-progress-meter-height: 0.4375rem;
+  --app-sheet-max-height: 40rem;
+  --app-scroll-fade: 1.5rem;
+
+  --dapp-table-cell-min-width: var(--app-table-cell-min-width);
+  --dapp-table-empty-padding: var(--app-table-empty-padding);
+  --dapp-table-empty-padding-h5: var(--app-table-empty-padding-h5);
+  --dapp-community-stat-padding: var(--app-community-stat-padding);
+  --dapp-skeleton-chip-size: var(--app-skeleton-chip-size);
+  --dapp-tooltip-offset: var(--app-tooltip-offset);
+  --dapp-progress-meter-height: var(--app-progress-meter-height);
+  --dapp-sheet-max-height: var(--app-sheet-max-height);
+  --dapp-scroll-fade: var(--app-scroll-fade);
+
+  /* ---- Home layout namespace ---- */
+  --home-security-block-max: 52.625rem;
+  --home-security-art-w: 20.625rem;
+  --home-security-list-max: 29rem;
+  --home-security-art-h5-w: 10.875rem;
+  --home-token-tile-size: 3.25rem;
+  --home-token-tile-size-h5: 2.875rem;
+  --home-token-icon-size: 1.875rem;
+  --home-token-icon-size-h5: 1.625rem;
+  --home-feature-icon-size: 5rem;
+  --home-feature-icon-size-h5: 2.75rem;
+  --home-partner-icon-size: 1.5rem;
+  --home-partner-icon-size-h5: 1.25rem;
+  --home-security-icon-wrap-size: 1.625rem;
+  --home-security-icon-wrap-size-h5: 1.5rem;
+  --home-security-icon-size: 0.875rem;
+
+  /* ---- scrollbars ---- */
+  --scrollbar-size: 8px;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.14);
+  --scrollbar-thumb: oklch(0% 0 0 / 14%);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.26);
+  --scrollbar-thumb-hover: oklch(0% 0 0 / 26%);
+  --scrollbar-thumb-active: rgba(232, 106, 67, 0.52);
+  --scrollbar-thumb-active: oklch(66.83% 0.1625 36.6 / 52%);
+  --scrollbar-thumb-dark: rgba(255, 255, 255, 0.18);
+  --scrollbar-thumb-dark: oklch(100% 0 0 / 18%);
+  --scrollbar-thumb-dark-hover: rgba(255, 255, 255, 0.32);
+  --scrollbar-thumb-dark-hover: oklch(100% 0 0 / 32%);
+  --scrollbar-thumb-dark-active: rgba(240, 168, 138, 0.62);
+  --scrollbar-thumb-dark-active: oklch(80.08% 0.0962 39.91 / 62%);
+
+  /* ---- elevation primitives (E1–E6) ---- */
+  --elevation-e1: 0 6px 20px rgba(18, 26, 51, 0.06);
+  --elevation-e2: 0 8px 24px rgba(18, 26, 51, 0.07);
+  --elevation-e3: 0 10px 28px rgba(20, 28, 51, 0.1);
+  --elevation-e4: 0 18px 48px rgba(18, 26, 51, 0.12);
+  --elevation-e5: 0 12px 80px rgba(18, 26, 51, 0.16);
+  --elevation-e6: 0 30px 80px rgba(15, 18, 31, 0.35);
 }
 
-/**
- * 圆角与阴影：用非 inline 的 @theme 定义。
- * 这样既会输出到 :root（裸 var(--shadow-card)、var(--radius-md) 可解析），
- * 又会生成对应工具类（rounded-md、shadow-card ...）。
- */
-@theme {
-  /* --breakpoint-dapp 变体由 legacy-breakpoints.css @custom-variant 定义（经典 max-width） */
+/* H5 typography — per-variant Figma table (not blanket +1) */
+@media (max-width: 820px) {
+  :root {
+    --type-kicker-size: 12px;
+    --type-headline-size: 15px;
+    --type-brand-size: 18px;
+    --type-section-size: 16px;
+    --type-widget-title-size: 22px;
+    --type-amount-size: 23px;
 
-  --radius-sm: 0.625rem;
+    --app-season-title-size: 0.875rem;
+    --app-season-meta-size: 0.75rem;
+    --app-season-badge-size: 0.6875rem;
+  }
+}
+
+/* Home-only Tailwind text scale bump (+1px); DApp uses --type-* above */
+@media (max-width: 820px) {
+  html:not(.dapp-app) {
+    --text-xs: 0.8125rem;
+    --text-sm: 0.9375rem;
+    --text-base: 1.0625rem;
+    --text-lg: 1.1875rem;
+    --text-xl: 1.3125rem;
+    --text-2xl: 1.5625rem;
+    --text-3xl: 1.9375rem;
+    --text-4xl: 2.3125rem;
+    --text-5xl: 3.0625rem;
+    --text-6xl: 3.8125rem;
+    --text-7xl: 4.5625rem;
+    --text-8xl: 6.0625rem;
+    --text-9xl: 8.0625rem;
+  }
+}
+
+/* site-fluid — layout/icon rem scales; typography stays px-lock */
+@media (min-width: 1920px) {
+  html.site-fluid {
+    font-size: 16px;
+    --fluid-scale: 1;
+  }
+}
+
+@media (min-width: 2080px) {
+  html.site-fluid {
+    font-size: 18px;
+    --fluid-scale: 1.125;
+  }
+}
+
+@media (min-width: 2240px) {
+  html.site-fluid {
+    font-size: 20px;
+    --fluid-scale: 1.25;
+  }
+}
+
+@media (min-width: 2400px) {
+  html.site-fluid {
+    font-size: 22px;
+    --fluid-scale: 1.375;
+  }
+}
+
+@media (min-width: 2560px) {
+  html.site-fluid {
+    font-size: 24px;
+    --fluid-scale: 1.5;
+  }
+}
+
+@media (min-width: 2720px) {
+  html.site-fluid {
+    font-size: 26px;
+    --fluid-scale: 1.625;
+  }
+}
+
+@media (min-width: 2880px) {
+  html.site-fluid {
+    font-size: 28px;
+    --fluid-scale: 1.75;
+  }
+}
+
+@media (min-width: 3040px) {
+  html.site-fluid {
+    font-size: 30px;
+    --fluid-scale: 1.875;
+  }
+}
+
+@media (min-width: 3200px) {
+  html.site-fluid {
+    font-size: 32px;
+    --fluid-scale: 2;
+  }
+}
+
+@media (min-width: 3360px) {
+  html.site-fluid {
+    font-size: 34px;
+    --fluid-scale: 2.125;
+  }
+}
+
+@media (min-width: 3520px) {
+  html.site-fluid {
+    font-size: 36px;
+    --fluid-scale: 2.25;
+  }
+}
+
+@media (min-width: 3680px) {
+  html.site-fluid {
+    font-size: 40px;
+    --fluid-scale: 2.5;
+  }
+}
+
+@media (min-width: 3840px) {
+  html.site-fluid {
+    font-size: 48px;
+    --fluid-scale: 3;
+  }
+}
+
+@theme {
+  --radius-sm: 0.875rem;
   --radius-md: 1rem;
-  --radius-lg: 1.375rem;
+  --radius-lg: 1.125rem;
   --radius-xl: 1.75rem;
 
-  --shadow-card: 0 0.5rem 1.5rem oklch(22% 0.04 265 / 7%);
-  --shadow-card-strong: 0 1.125rem 3rem oklch(22% 0.04 265 / 12%);
-  --shadow-window: 0 0.75rem 5rem oklch(22% 0.04 265 / 16%);
-  --shadow-window-compact: 0 1rem 2.5rem oklch(22% 0.04 265 / 10%);
-  --shadow-primary-hover: 0 0.625rem 1.5rem oklch(66.83% 0.1625 36.6 / 24%);
-  --shadow-primary-hover-lg: 0 0.75rem 1.5rem oklch(66.83% 0.1625 36.6 / 24%);
-  --shadow-primary-hover-xl: 0 0.875rem 1.75rem oklch(22% 0.04 265 / 18%);
-  --shadow-coral-sm: 0 0.5rem 1.375rem oklch(66.83% 0.1625 36.6 / 14%);
-  --shadow-subtle: 0 0.625rem 1.75rem rgba(20, 28, 51, 0.1);
-  --shadow-token: 0 1rem 3.125rem oklch(22% 0.04 265 / 12%);
-  --shadow-faq: 0 0.375rem 1.25rem oklch(22% 0.04 265 / 6%);
+  --shadow-faq: var(--elevation-e1);
+  --shadow-card: var(--elevation-e2);
+  --shadow-subtle: var(--elevation-e3);
+  --shadow-card-strong: var(--elevation-e4);
+  --shadow-window: var(--elevation-e5);
+  --shadow-window-compact: 0 1rem 2.5rem rgba(18, 26, 51, 0.1);
+  --shadow-modal: var(--elevation-e6);
 
-  /* 卡片阴影外扩留白 —— 滚动容器 padding 与轮播 viewport 共用 */
+  --shadow-primary-hover: 0 0.625rem 1.5rem rgba(232, 106, 67, 0.24);
+  --shadow-primary-hover-lg: 0 0.75rem 1.5rem rgba(232, 106, 67, 0.24);
+  --shadow-primary-hover-xl: 0 0.875rem 1.75rem rgba(18, 26, 51, 0.18);
+  --shadow-coral-sm: 0 0.5rem 1.375rem rgba(232, 106, 67, 0.14);
+  --shadow-token: 0 1rem 3.125rem rgba(18, 26, 51, 0.12);
+
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;
   --shadow-bleed-h5: 1.125rem;
@@ -151,10 +399,6 @@
   --carousel-pc-indicator-pt: 0.75rem;
 }
 
-/**
- * @theme inline —— 把源变量暴露为 Tailwind v4 工具类。
- * inline 表示工具类在使用处解析 var()，保留运行时主题能力。
- */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -176,7 +420,6 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* 扩展品牌色 */
   --color-success: var(--success);
   --color-coral-bright: var(--coral-bright);
   --color-dark: var(--dark);
@@ -184,7 +427,6 @@
   --color-bsc: var(--bsc);
   --color-bsc-foreground: var(--bsc-foreground);
 
-  /* 中性/辅助 */
   --color-faint: var(--faint);
   --color-ink-muted: var(--ink-muted);
   --color-ink-strong: var(--ink-strong);
@@ -194,7 +436,6 @@
   --color-focus-border: var(--focus-border);
   --color-border-subtle: var(--border-subtle);
 
-  /* 表面/状态 */
   --color-surface-glass: var(--surface-glass);
   --color-surface-wash: var(--surface-wash);
   --color-surface-wash-strong: var(--surface-wash-strong);
@@ -203,9 +444,8 @@
   --color-coral-strong-border: var(--coral-strong-border);
   --color-status-success-bg: var(--status-success-bg);
 
-  --color-dapp-h5-gradient-top: var(--dapp-h5-gradient-top);
+  --color-dapp-h5-gradient-top: var(--app-h5-gradient-top);
 
-  /* 代币 */
   --color-token-usd1: var(--token-usd1);
   --color-token-agx: var(--token-agx);
   --color-token-gagx: var(--token-gagx);
@@ -225,7 +465,6 @@
     text-decoration: none;
   }
 
-  /* Typography layout SSOT — zero UA margins; spacing via flex gap / mt-* utilities. */
   :where(#root) :where(p, h1, h2, h3, h4, h5, h6) {
     margin: 0;
   }
