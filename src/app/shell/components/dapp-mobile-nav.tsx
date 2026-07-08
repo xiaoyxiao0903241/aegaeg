@@ -145,7 +145,7 @@ export function DappMobileNav({
               />
               <Text
                 as="span"
-                variant="rail"
+                variant="caption"
                 tone={active ? 'primary' : 'foreground'}
                 className={shellRailRowLabelClass}
                 title={label}

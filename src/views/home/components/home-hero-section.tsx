@@ -97,11 +97,11 @@ export function HomeHeroSection() {
             as="h1"
             className={heroClass.title}
             id="hero-title"
-            variant="panel-title"
+            variant="panel"
           >
             {content.title}
           </Text>
-          <Text as="p" className={heroClass.body} tone="foreground" variant="meta">
+          <Text as="p" className={heroClass.body} tone="foreground" variant="copy">
             {content.body}
           </Text>
           <div className={heroClass.actions}>

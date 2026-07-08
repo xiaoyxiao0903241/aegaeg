@@ -42,12 +42,12 @@ export function SwapAmountBox({
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <Text as="span" variant="meta" tone={labelTone}>
+        <Text as="span" variant="copy" tone={labelTone}>
           {label}
         </Text>
         <Text
           as="span"
-          variant={sessionReady ? 'amount' : 'meta'}
+          variant={sessionReady ? 'figure' : 'copy'}
           tone={labelTone}
         >
           {balance}
@@ -60,7 +60,7 @@ export function SwapAmountBox({
         ) : (
           <AmountInput
             className={cn(
-              sessionReady && textVariants({ variant: 'amount' }),
+              sessionReady && textVariants({ variant: 'figure' }),
               !sessionReady && 'text-[#c9cfda] placeholder:text-[#c9cfda]',
             )}
             {...amountProps}

@@ -31,7 +31,7 @@ function linkifyPlainText(text: string) {
         rel="noopener noreferrer"
         target="_blank"
         tone="primary"
-        variant="meta"
+        variant="copy"
         className="font-medium underline decoration-primary/35 underline-offset-2 hover:decoration-primary/70"
       >
         {part}
@@ -60,7 +60,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
   return (
     <div className="home-popup-notice-content space-y-3 leading-[1.65] text-foreground">
       {paragraphs.map((paragraph) => (
-        <Text as="p" key={paragraph} tone="foreground" variant="meta">
+        <Text as="p" key={paragraph} tone="foreground" variant="copy">
           {linkifyPlainText(paragraph)}
         </Text>
       ))}

@@ -88,7 +88,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         <Text
           as="strong"
           tone="inverse"
-          variant="amount"
+          variant="figure"
         >
           {token.label}
         </Text>
@@ -96,7 +96,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
           as="p"
           className="w-full max-w-60 max-dapp:max-w-none"
           tone="inverse"
-          variant="meta"
+          variant="copy"
         >
           {token.description}
         </Text>

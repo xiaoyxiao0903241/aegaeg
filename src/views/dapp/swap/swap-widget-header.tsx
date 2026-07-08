@@ -82,7 +82,7 @@ export function SwapHubHeader({
           as="h1"
           className={styles.pageTitle()}
           tone="foreground"
-          variant="widget-title"
+          variant="panel"
         >
           {title}
         </Text>
@@ -90,7 +90,7 @@ export function SwapHubHeader({
           as="p"
           className={styles.pageSubtitle()}
           tone="muted-foreground"
-          variant="meta"
+          variant="copy"
         >
           {subtitle}
         </Text>
@@ -123,7 +123,7 @@ export function SwapSubpageHeader({
           <Text
             className={styles.subpageBackLabel()}
             tone="muted-foreground"
-            variant="meta"
+            variant="copy"
           >
             {t.swap.backToHub}
           </Text>
@@ -135,7 +135,7 @@ export function SwapSubpageHeader({
           as="h1"
           className={styles.pageTitle()}
           tone="foreground"
-          variant="widget-title"
+          variant="panel"
         >
           {title}
         </Text>
@@ -143,7 +143,7 @@ export function SwapSubpageHeader({
           as="p"
           className={styles.pageSubtitle()}
           tone="muted-foreground"
-          variant="meta"
+          variant="copy"
         >
           {subtitle}
         </Text>

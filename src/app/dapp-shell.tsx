@@ -74,7 +74,7 @@ export function DappShell() {
         <Text
           as="div"
           role="status"
-          variant="meta"
+          variant="copy"
           tone="foreground"
           className="mx-4 mb-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive"
         >

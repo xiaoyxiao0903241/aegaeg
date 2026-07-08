@@ -107,7 +107,7 @@ function HomeIconCard({
         as="p"
         className="feature-card-body mt-3 max-w-112 max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80"
         tone="foreground"
-        variant="meta"
+        variant="copy"
       >
         {card.body}
       </Text>

@@ -76,12 +76,12 @@ function MenuItem({
       <span className="min-w-0 flex-1">
         <Text
           as="span"
-          variant={option.active ? 'headline' : 'meta'}
+          variant={option.active ? 'headline' : 'copy'}
           className="block"
         >
           {option.name}
         </Text>
-        <Text as="span" variant="meta" tone="muted-foreground" className="block">
+        <Text as="span" variant="copy" tone="muted-foreground" className="block">
           {option.label}
         </Text>
       </span>
@@ -96,7 +96,7 @@ function MenuItem({
         ) : (
           <Text
             aria-hidden="true"
-            variant="meta"
+            variant="copy"
             tone="primary"
             className="shrink-0 font-bold"
           >

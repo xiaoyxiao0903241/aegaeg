@@ -112,7 +112,7 @@ export function HomeRoadmapSection() {
                   <Text
                     as="span"
                     tone={phase.state ? 'primary' : 'muted-foreground'}
-                    variant="kicker"
+                    variant="eyebrow"
                   >
                     {phase.phase}
                   </Text>
@@ -121,7 +121,7 @@ export function HomeRoadmapSection() {
                       as="em"
                       className={roadmapClass.now}
                       tone="inverse"
-                      variant="meta"
+                      variant="copy"
                     >
                       NOW
                     </Text>
@@ -130,7 +130,7 @@ export function HomeRoadmapSection() {
                     as="time"
                     className={roadmapClass.time}
                     tone={phase.state === 'current' ? 'primary' : 'muted-foreground'}
-                    variant="kicker"
+                    variant="eyebrow"
                   >
                     {phase.time}
                   </Text>
@@ -143,7 +143,7 @@ export function HomeRoadmapSection() {
                 >
                   {phase.title}
                 </Text>
-                <Text as="p" className={roadmapClass.body} tone="muted-foreground" variant="meta">
+                <Text as="p" className={roadmapClass.body} tone="muted-foreground" variant="copy">
                   {phase.description}
                 </Text>
               </Card>

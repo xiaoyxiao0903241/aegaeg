@@ -69,7 +69,7 @@ export function GenesisContributionsSection() {
               rel="noopener noreferrer"
               target="_blank"
               tone="primary"
-              variant="meta"
+              variant="copy"
             >
               {txLabel}
             </Text>,

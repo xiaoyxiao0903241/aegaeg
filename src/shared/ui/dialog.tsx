@@ -47,7 +47,7 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
         <X className="h-4 w-4" />
-        <Text variant="meta" className="sr-only">
+        <Text variant="copy" className="sr-only">
           Close
         </Text>
       </DialogPrimitive.Close>
@@ -101,7 +101,7 @@ const DialogDescription = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, children, ...props }, ref) => (
   <DialogPrimitive.Description ref={ref} asChild {...props}>
-    <Text as="p" variant="meta" tone="muted-foreground" className={className}>
+    <Text as="p" variant="copy" tone="muted-foreground" className={className}>
       {children}
     </Text>
   </DialogPrimitive.Description>

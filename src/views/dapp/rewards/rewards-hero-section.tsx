@@ -10,7 +10,6 @@ import {
 import { buildRewardTierRows } from '~/core/presale/tier-table'
 import {
   dappCaptionClass,
-  dappKickerClass,
   dappRankTitleClass,
   dappTitleSmClass,
 } from '~/app/dapp-type-scale'

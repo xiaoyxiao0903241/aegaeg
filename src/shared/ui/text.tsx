@@ -4,37 +4,33 @@ import { cn } from '~/shared/lib/utils'
 
 /**
  * tone = 语义色 | variant = 字阶/角色（字号/行高/字重由 --type-* token 驱动）
- * SSOT：docs/foundation/api.md §3 · 流程：docs/foundation/runbook.md
+ * SSOT：docs/foundation/api.md §2 · 流程：docs/foundation/runbook.md
  *
  * Primitive 只覆盖高频语义；页面/section 用 className 微调（design-system-audit §2）。
+ * 10 variant × 5 tone；无 weight prop；无 alias。
  */
 const toneClass = {
   foreground: 'text-foreground',
   'muted-foreground': 'text-muted-foreground',
   primary: 'text-primary',
   success: 'text-success',
-  inverse: 'text-white',
-  'on-dark': 'text-on-dark',
+  inverse: 'text-inverse',
 } as const
 
 export const textVariants = tv({
   variants: {
     variant: {
-      rail: 'text-[length:var(--type-rail-size)] font-medium leading-snug',
-      kicker:
-        'text-[length:var(--type-kicker-size)] font-semibold uppercase leading-snug tracking-wide',
-      meta: 'text-[length:var(--type-meta-size)] font-normal leading-normal',
+      caption: 'text-[length:var(--type-caption-size)] font-medium leading-snug',
+      eyebrow:
+        'text-[length:var(--type-eyebrow-size)] font-semibold uppercase leading-snug tracking-wide',
+      copy: 'text-[length:var(--type-copy-size)] font-normal leading-normal',
       detail: 'text-[length:var(--type-detail-size)] font-normal leading-normal',
       question: 'text-[length:var(--type-question-size)] font-semibold leading-snug',
       headline: 'text-[length:var(--type-headline-size)] font-semibold leading-snug',
       brand: 'text-[length:var(--type-brand-size)] font-semibold leading-snug',
       section: 'text-[length:var(--type-section-size)] font-semibold leading-tight',
-      'widget-title':
-        'text-[length:var(--type-widget-title-size)] font-semibold leading-snug tracking-tight',
-      amount: 'text-[length:var(--type-amount-size)] font-semibold leading-snug',
-      'panel-title':
-        'text-[length:var(--type-widget-title-size)] font-semibold leading-snug tracking-tight',
-      'table-cell': 'text-[length:var(--type-meta-size)] font-normal leading-normal',
+      panel: 'text-[length:var(--type-panel-size)] font-semibold leading-snug tracking-tight',
+      figure: 'text-[length:var(--type-figure-size)] font-semibold leading-snug',
     },
     tone: toneClass,
     tabular: {
@@ -43,11 +39,11 @@ export const textVariants = tv({
     },
   },
   compoundVariants: [
-    { variant: 'kicker', tone: 'primary', class: 'text-primary' },
-    { variant: 'panel-title', class: '[&_strong]:font-bold [&_strong]:text-primary' },
+    { variant: 'eyebrow', tone: 'primary', class: 'text-primary' },
+    { variant: 'panel', class: '[&_strong]:font-bold [&_strong]:text-primary' },
   ],
   defaultVariants: {
-    variant: 'meta',
+    variant: 'copy',
     tone: 'foreground',
     tabular: false,
   },
@@ -80,7 +76,7 @@ export function Text({
       ...props,
       className: cn(
         textVariants({
-          variant: variant ?? 'meta',
+          variant: variant ?? 'copy',
           tone: tone ?? 'foreground',
           tabular,
         }),

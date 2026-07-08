@@ -97,8 +97,8 @@ function CommunityStatCard({
     >
       <Text
         as="span"
-        variant="meta"
-        tone={dark ? 'on-dark' : 'foreground'}
+        variant="copy"
+        tone={dark ? 'inverse' : 'foreground'}
         className={cn(
           styles.label(),
           'tracking-[-0.24px]',
@@ -109,7 +109,7 @@ function CommunityStatCard({
       </Text>
       <Text
         as="strong"
-        variant="amount"
+        variant="figure"
         tone={dark ? 'inverse' : 'foreground'}
         className={styles.value()}
       >
@@ -128,8 +128,8 @@ function CommunityStatCard({
       {today ? (
         <Text
           as="small"
-          variant="meta"
-          tone={dark ? 'on-dark' : 'muted-foreground'}
+          variant="copy"
+          tone={dark ? 'inverse' : 'muted-foreground'}
           className={styles.hint()}
         >
           {today}

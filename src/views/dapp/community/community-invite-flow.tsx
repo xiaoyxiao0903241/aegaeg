@@ -68,7 +68,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           </Text>
           <Text
             as="p"
-            variant="meta"
+            variant="copy"
             tone="muted-foreground"
             className={cn(
               'm-0 max-w-[24ch] tracking-[-0.24px]',
@@ -102,7 +102,7 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             <Text as="h4" variant="headline" className="m-0 leading-[1.2] tracking-[-0.28px]">
               {item.title}
             </Text>
-            <Text as="p" variant="meta" tone="muted-foreground" className="m-0 leading-normal tracking-[-0.26px]">
+            <Text as="p" variant="copy" tone="muted-foreground" className="m-0 leading-normal tracking-[-0.26px]">
               {item.copy}
             </Text>
           </div>

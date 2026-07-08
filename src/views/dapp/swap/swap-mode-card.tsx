@@ -39,7 +39,7 @@ export function SwapModeCard({
           {badge ? (
             <Text
               as="span"
-              variant="kicker"
+              variant="eyebrow"
               className="normal-case rounded-full bg-primary px-2 py-1.5 text-[length:var(--type-rail-size)] leading-none tracking-tight text-primary-foreground"
             >
               {badge}

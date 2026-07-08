@@ -23,7 +23,7 @@ export function HomeSectionHead({
 }) {
   return (
     <div className={cn(sectionHeadClass, revealClass(), className)} data-reveal>
-      <Text as="p" className="m-0 normal-case tracking-[1.82px] max-dapp:tracking-[1.68px]" tone="primary" variant="kicker">
+      <Text as="p" className="m-0 normal-case tracking-[1.82px] max-dapp:tracking-[1.68px]" tone="primary" variant="eyebrow">
         {eyebrow}
       </Text>
       <Text
@@ -44,7 +44,7 @@ export function HomeSectionHead({
             subtitleClassName,
           )}
           tone="foreground"
-          variant="meta"
+          variant="copy"
         >
           {subtitle}
         </Text>

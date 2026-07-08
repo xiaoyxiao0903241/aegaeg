@@ -68,7 +68,7 @@ export function SwapSlippageModal({
       <AegisSheetHandle />
       <div className="flex items-center justify-between pb-5 dapp:pb-5">
         <DialogPrimitive.Title asChild>
-          <Text as="h2" variant="panel-title" className="m-0">
+          <Text as="h2" variant="panel" className="m-0">
             {t.swap.slippage}
           </Text>
         </DialogPrimitive.Title>

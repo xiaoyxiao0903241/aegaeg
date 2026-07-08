@@ -31,14 +31,14 @@ export function DappMetaList({
         <p className="m-0 flex items-center justify-between gap-3" key={index}>
           <Text
             as="span"
-            variant="meta"
+            variant="copy"
             tone={sessionReady ? 'foreground' : 'muted-foreground'}
           >
             {item.label}
           </Text>
           <Text
             as="strong"
-            variant="amount"
+            variant="figure"
             className={cn('mt-0 text-right', item.valueClassName)}
           >
             {item.value}

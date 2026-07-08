@@ -36,12 +36,12 @@ export function DappPanelHeader({
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <Text as="h1" variant="panel-title" className="m-0">
+        <Text as="h1" variant="panel" className="m-0">
           {title}
         </Text>
         <Text
           as="p"
-          variant="meta"
+          variant="copy"
           tone="muted-foreground"
           className={dappPanelSubtitleClassName}
         >

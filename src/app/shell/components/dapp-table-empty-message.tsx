@@ -17,11 +17,11 @@ export function DappTableEmptyMessage({
 }) {
   const message = (
     <>
-      <Text as="p" variant="meta" className="m-0 font-medium">
+      <Text as="p" variant="copy" className="m-0 font-medium">
         {title}
       </Text>
       {body ? (
-        <Text as="p" variant="meta" tone="muted-foreground" className="mb-0 mt-2">
+        <Text as="p" variant="copy" tone="muted-foreground" className="mb-0 mt-2">
           {body}
         </Text>
       ) : null}

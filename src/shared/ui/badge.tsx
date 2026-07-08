@@ -12,7 +12,7 @@ export function StatusBadge({
   return (
     <Text
       as="span"
-      variant="meta"
+      variant="copy"
       tone="success"
       className={cn(
         'inline-flex items-center rounded-full bg-status-success-bg px-2 py-0.5 not-italic',

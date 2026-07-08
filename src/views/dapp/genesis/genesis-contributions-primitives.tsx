@@ -31,7 +31,7 @@ export function GenesisContributionsReveal({
 export function GenesisContributionsSyncHint({ children }: { children: string }) {
   const styles = genesisContributionsSection()
   return (
-    <Text as="p" className={styles.syncHint()} tone="muted-foreground" variant="meta">
+    <Text as="p" className={styles.syncHint()} tone="muted-foreground" variant="copy">
       {children}
     </Text>
   )

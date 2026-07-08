@@ -117,7 +117,7 @@ function Title({ className, ...props }: Omit<TextProps, 'variant'>) {
 function Description({ className, ...props }: Omit<TextProps, 'variant' | 'tone'>) {
   return (
     <Text
-      variant="meta"
+      variant="copy"
       tone="muted-foreground"
       className={cn('m-0', className)}
       {...props}
@@ -135,7 +135,7 @@ function Footer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 
 /** Tier B · metric / meta 行标签 */
 function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
-  return <Text variant="meta" tone="foreground" className={className} {...props} />
+  return <Text variant="copy" tone="foreground" className={className} {...props} />
 }
 
 /** Tier B · 数值（默认 amount 字阶；stat 大卡可 className 微调） */
@@ -143,7 +143,7 @@ function Value({ className, tabular = true, ...props }: Omit<TextProps, 'variant
   return (
     <Text
       as="strong"
-      variant="amount"
+      variant="figure"
       tabular={tabular}
       className={cn('block', className)}
       {...props}
