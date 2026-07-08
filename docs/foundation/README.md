@@ -12,7 +12,8 @@
 3. docs/foundation/api.md                             ← 改什么（六组件公开 API）
 ```
 
-写盘前若涉及验收命令 → 加读 [`verification.md`](./verification.md)。
+写盘前若涉及验收命令 → 加读 [`verification.md`](./verification.md)。  
+自主重构方向 → [`world-class-goals.md`](./world-class-goals.md)（North Star；探针 PASS alone ≠ DONE）。
 
 **禁止**再读已废止文档（见 [`../README.md`](../README.md) 「已废止」表）。
 
