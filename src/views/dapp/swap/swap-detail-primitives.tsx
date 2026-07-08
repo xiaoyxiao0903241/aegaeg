@@ -36,6 +36,7 @@ export function SwapMetricCard({
       className={cn(swapMetricCard(), className)}
       hint={hint}
       label={label}
+      tabular={false}
       value={value}
       valueClassName={cn(swapMetricValueClass, valueClassName)}
     />

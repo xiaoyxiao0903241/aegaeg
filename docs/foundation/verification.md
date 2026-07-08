@@ -173,6 +173,8 @@ Figma 层: <layer>
 | Buy Balance 数值差异 | IGNORE | 链上余额 |
 | FAQ question 14/1.3 | 已对齐 | `variant="question"` ≡ 4175 `text-sm` |
 | Trade FAQ pill tabs（USD1 active） | REGRESSION→fixed | `DappPillTabs`：`soft`+`primary`+`lg`（`leading-snug`）；禁 `solid`+percent `md`；Chip `md` 去误挂 `bg-card`，`outlined` 自带 `bg-card`；`soft` 透明 1px border 对齐盒模型 |
+| Convert/Trade TokenChip USDT/USD1 lh 21→16.8 | REGRESSION→fixed | `TokenChip` `leading-[1.2] tracking-[-0.28px]`（≡ 4175） |
+| Convert Exchange rate `tabular-nums` 宽 89→70 | REGRESSION→fixed | `SwapMetricCard` → `MetricCard tabular={false}`（禁默认 Card.Value tabular） |
 | muted-foreground 0.5→0.7（hub/子页正文） | INTENTIONAL | 同 §5；禁贴回 4175 50% |
 | hub 底栏 / promo 1px Y / coral 级联细带 | IGNORE | 滚动/抗锯齿；非结构回归 |
 | Convert 右栏 peach 卡顶边细带 | IGNORE | 1–2px 圆角抗锯齿 |
