@@ -8,7 +8,6 @@ import { resolveNotionLink } from '~/shared/config/notion-links'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets } from '~/views/home/assets'
-import { cn } from '~/shared/lib/utils'
 
 function resolveFooterLinkHref(
   locale: ReturnType<typeof useI18n>['locale'],
@@ -34,31 +33,6 @@ function isExternalHref(href: string) {
   return href.startsWith('http://') || href.startsWith('https://')
 }
 
-const footerClass = {
-  root:
-    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-white dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
-  top:
-    'container footer-top grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6',
-  brand:
-    'footer-brand flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0',
-  brandCopy: 'm-0 w-full max-w-64 max-dapp:max-w-none',
-  group:
-    'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
-  rule: 'container h-px bg-[#232323]',
-  bottom:
-    'container footer-bottom flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-white/70 whitespace-nowrap max-dapp:text-xs',
-} as const
-
-const footerBrandClass = cn(
-  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-[-0.36px] leading-none text-primary-foreground',
-  'max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2] [&_img]:h-6',
-)
-
-const footerBrandMarkClass = cn(
-  'h-7 w-7 object-contain',
-  'max-dapp:h-5.5 max-dapp:w-6',
-)
-
 function FooterBrandCopy({ copy }: { copy: string }) {
   const lines = copy.split('\n')
   return (
@@ -78,12 +52,18 @@ export function HomeFooter() {
   const content = messages.home.footer
 
   return (
-    <footer className={footerClass.root}>
-      <div className={footerClass.top}>
-        <div className={footerClass.brand}>
-          <a className={footerBrandClass} href="#top">
+    <footer className="flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-[#b8c0ce] dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8">
+      <div className="container grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6">
+        <div
+          className="flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0"
+          data-footer-brand
+        >
+          <a
+            className="inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-[-0.36px] leading-none text-primary-foreground max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2] [&_img]:h-6"
+            href="#top"
+          >
             <img
-              className={footerBrandMarkClass}
+              className="h-7 w-7 object-contain max-dapp:h-5.5 max-dapp:w-6"
               src={homeAssets.logoMark}
               alt=""
               width="28"
@@ -91,40 +71,51 @@ export function HomeFooter() {
             />
             <span>AEGIS X</span>
           </a>
-          <Text as="p" className={footerClass.brandCopy} tone="inverse" variant="copy">
+          <Text
+            as="p"
+            className="m-0 w-full max-w-64 text-sm font-normal leading-[1.5] tracking-[-0.28px] text-[#b8c0ce] max-dapp:max-w-none max-dapp:text-xs"
+            variant="copy"
+          >
             <FooterBrandCopy copy={content.brandCopy} />
           </Text>
         </div>
         {content.groups.map((group) => (
           <nav
-            className={footerClass.group}
+            className="grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal"
             aria-label={group.ariaLabel}
             key={group.label}
           >
-            <Text as="h3" className="m-0" tone="inverse" variant="headline">
+            <Text
+              as="h3"
+              className="m-0 text-sm font-semibold leading-[1.2] tracking-[0.56px] text-primary-foreground max-dapp:text-xs max-dapp:leading-[1.5]"
+              variant="headline"
+            >
               {group.label}
             </Text>
             {group.links.map((link) => {
               const href = resolveFooterLinkHref(locale, link)
               return (
-              <Text
-                as="a"
-                href={href}
-                key={`${group.label}-${link.label}`}
-                rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
-                target={isExternalHref(href) ? '_blank' : undefined}
-                tone="inverse"
-                variant="copy"
-              >
-                {link.label}
-              </Text>
+                <Text
+                  as="a"
+                  className="text-sm font-normal leading-[1.2] tracking-[-0.28px] text-[#b8c0ce] max-dapp:text-xs max-dapp:leading-[1.5]"
+                  href={href}
+                  key={`${group.label}-${link.label}`}
+                  rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
+                  target={isExternalHref(href) ? '_blank' : undefined}
+                  variant="copy"
+                >
+                  {link.label}
+                </Text>
               )
             })}
           </nav>
         ))}
       </div>
-      <div className={footerClass.rule} aria-hidden="true" />
-      <div className={footerClass.bottom}>
+      <div className="container h-px bg-[#232323]" aria-hidden="true" />
+      <div
+        className="container flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-[#b8c0ce] whitespace-nowrap max-dapp:text-xs"
+        data-footer-copyright
+      >
         <p className="m-0 max-dapp:whitespace-nowrap">{content.copyright}</p>
       </div>
     </footer>

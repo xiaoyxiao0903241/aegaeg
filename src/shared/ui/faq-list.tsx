@@ -38,8 +38,7 @@ const faqList = tv({
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        /** 4175 dapp FAQ `<p>` 靠 UA margin 撑开 answer 区；全局 reset 后用 padding 等价替代 */
-        answer: 'py-[1em]',
+        answer: '',
       },
     },
   },
@@ -179,7 +178,13 @@ export function FaqList({
                 >
                   <div className="faq-answer-panel">
                     <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                      <Text as="p" variant="detail" tone="muted-foreground" className={styles.answer()}>
+                      {/* 4175 raw <p> kept UA margin (~1em); Tailwind preflight zeros it — restore via py. */}
+                      <Text
+                        as="p"
+                        variant="detail"
+                        tone="muted-foreground"
+                        className={cn(styles.answer(), 'my-0 py-[1em]')}
+                      >
                         {item.a}
                       </Text>
                     </div>

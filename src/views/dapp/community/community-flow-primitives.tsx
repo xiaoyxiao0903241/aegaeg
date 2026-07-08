@@ -50,14 +50,19 @@ export function CommunityProgramCard({
 
   return (
     <Card as="article" surface="elevated" className={cn(styles.root(), className)} data-reveal>
-      <Text as="span" variant="eyebrow" tone="primary" className="m-0">
+      <Text
+        as="span"
+        variant="eyebrow"
+        tone="primary"
+        className="m-0 text-xs leading-[1.3] tracking-[0.88px]"
+      >
         {label}
       </Text>
       <Text
         as="h3"
         variant="headline"
         tone="foreground"
-        className="m-0 max-w-[38ch] max-dapp:text-sm max-dapp:leading-[1.2]"
+        className="m-0 max-w-[38ch] leading-[1.3] tracking-[-0.48px] max-dapp:text-sm max-dapp:leading-[1.2]"
       >
         {title}
       </Text>
@@ -65,7 +70,7 @@ export function CommunityProgramCard({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="m-0 max-w-[38ch] max-dapp:text-xs"
+        className="m-0 max-w-[38ch] text-sm leading-[1.5] tracking-[-0.26px] max-dapp:text-xs"
       >
         {body}
       </Text>

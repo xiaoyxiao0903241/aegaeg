@@ -8,7 +8,7 @@ const widgetPromoCard = tv({
   base: [
     revealClass(),
     'grid gap-1 px-4.5 py-4',
-    'max-dapp:gap-1.5 max-dapp:rounded-2xl max-dapp:px-4.5 max-dapp:py-4',
+    'max-dapp:rounded-2xl max-dapp:px-4.5 max-dapp:py-4',
   ],
 })
 

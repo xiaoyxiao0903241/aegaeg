@@ -8,9 +8,10 @@ const tableCell = dappTableCell()
 const TABLE_CELL =
   `${tableCell.minWidth()} ${tableCell.border()} tabular-nums px-3 py-2.5 text-left whitespace-nowrap font-normal tracking-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
+// 4175 rewards head used `text-faint` (30%); Foundation deleted faint → foreground/30.
 const TABLE_HEAD_CELL = cn(
   TABLE_CELL,
-  'text-muted-foreground group-data-[tab=rewards]/shell:text-muted-foreground',
+  'text-muted-foreground group-data-[tab=rewards]/shell:text-foreground/30',
 )
 
 const TABLE_CLASS =

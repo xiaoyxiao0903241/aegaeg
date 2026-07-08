@@ -16,17 +16,25 @@ export const chipVariants = tv({
   ],
   variants: {
     variant: {
-      solid: 'border border-transparent',
-      soft: 'border border-transparent',
+      /** no layout border — solid/soft fill only; outlined owns 1px border */
+      solid: 'border-0',
+      soft: 'border-0',
       outlined: 'border bg-transparent',
     },
     size: {
-      sm: 'min-h-6 px-2 text-[length:var(--type-caption-size)] font-semibold leading-normal tracking-[var(--type-caption-tracking)]',
-      md: 'min-h-8 px-3 text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-[var(--type-copy-tracking)]',
+      /** caption + py-1.5 → ~22px (dev Coming soon / compact badge) */
+      sm: 'px-2 py-1.5 text-[length:var(--type-caption-size)] font-[var(--type-caption-weight)] leading-none tracking-[var(--type-caption-tracking)]',
+      /**
+       * Percent / segment row — match 4175 flash percent buttons:
+       * text-xs · semibold · py-1.25 · bg-card · ~30×83
+       * (not min-h-8 / copy 13px — that was a REGRESSION vs swap pct probe)
+       */
+      md: 'justify-center bg-card px-1.5 py-1.25 text-xs font-semibold leading-normal tracking-[-0.02em] max-dapp:py-1.5',
     },
     shape: {
       pill: 'rounded-full',
-      rounded: 'rounded-sm',
+      /** 0.5625rem = 9px — swap percent SSOT (not radius-sm 14px) */
+      rounded: 'rounded-[0.5625rem]',
     },
     tone: {
       default: '',
@@ -35,13 +43,18 @@ export const chipVariants = tv({
     },
   },
   compoundVariants: [
-    { variant: 'solid', tone: 'default', class: 'bg-card text-foreground border-border' },
+    { variant: 'solid', tone: 'default', class: 'bg-card text-foreground' },
     { variant: 'solid', tone: 'primary', class: 'bg-primary text-primary-foreground' },
     { variant: 'solid', tone: 'success', class: 'bg-success text-success-foreground' },
     { variant: 'soft', tone: 'default', class: 'bg-muted text-foreground' },
     { variant: 'soft', tone: 'primary', class: 'bg-accent text-primary' },
     { variant: 'soft', tone: 'success', class: 'bg-[rgba(43,171,106,0.12)] text-success' },
-    { variant: 'outlined', tone: 'default', class: 'border-border text-muted-foreground hover:bg-muted hover:text-foreground' },
+    {
+      variant: 'outlined',
+      tone: 'default',
+      class:
+        'border-border text-muted-foreground hover:-translate-y-px hover:border-primary hover:bg-card hover:text-primary',
+    },
     { variant: 'outlined', tone: 'primary', class: 'border-primary text-primary hover:bg-accent' },
     { variant: 'outlined', tone: 'success', class: 'border-success text-success hover:bg-[rgba(43,171,106,0.12)]' },
   ],

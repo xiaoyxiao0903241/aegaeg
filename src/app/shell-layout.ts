@@ -50,7 +50,8 @@ export function shellRailClass() {
 export function shellRailItemClass(active: boolean) {
   return cn(
     'relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
-    'font-normal leading-normal transition-[color] duration-180 ease-out',
+    // Typography lives on the button (dev SSOT) so icon+label inherit; label Text only truncates.
+    'text-xs font-normal leading-snug tracking-tight transition-[color] duration-180 ease-out',
     active ? 'text-primary' : 'text-muted-foreground hover:bg-background hover:text-foreground',
   )
 }

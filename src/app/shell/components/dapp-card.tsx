@@ -65,7 +65,12 @@ export function MetricCard({
       className={cn(revealClass(), 'flex flex-col items-start gap-1.5', className)}
       data-reveal
     >
-      <Card.Label>{label}</Card.Label>
+      <Card.Label
+        className="text-[12px]/[18px] font-medium tracking-[-0.24px]"
+        tone="muted-foreground"
+      >
+        {label}
+      </Card.Label>
       <Card.Value className={valueClassName}>{value}</Card.Value>
       {hint ? (
         <Card.Description className={cn('mt-1.5', hintClassName)}>{hint}</Card.Description>
@@ -106,26 +111,61 @@ export function RewardBalanceCard({
     <Card
       as="article"
       surface="outlined"
-      className={cn(revealClass(), className)}
+      className={cn(revealClass(), 'text-muted-foreground', className)}
       data-reveal
     >
       <Card.Header className="flex-row items-center justify-between gap-3">
-        <Card.Label as="p" className={cn('m-0', headerLabelClassName)}>
+        <Card.Label
+          as="p"
+          tone="muted-foreground"
+          className={cn(
+            'm-0 text-[12px]/[18px] font-normal tracking-[-0.24px]',
+            headerLabelClassName,
+          )}
+        >
           {label}
         </Card.Label>
         {meta ? (
-          <Card.Label as="span" className={headerMetaClassName}>
+          <Card.Label
+            as="span"
+            tone="muted-foreground"
+            className={cn(
+              'text-[12px]/[18px] font-normal tracking-[-0.24px]',
+              headerMetaClassName,
+            )}
+          >
             {meta}
           </Card.Label>
         ) : (
-          <Card.Label as="span" tone="success" className={cn('whitespace-nowrap', badgeClassName)}>
+          <Card.Label
+            as="span"
+            tone="success"
+            className={cn(
+              'whitespace-nowrap text-[12px]/[18px] font-medium tracking-[-0.24px]',
+              badgeClassName,
+            )}
+          >
             {badge}
           </Card.Label>
         )}
       </Card.Header>
-      <Card.Value className={cn('mt-2', valueClassName)}>{value}</Card.Value>
+      {/* Default matches 4175 text-lg/1.3; referral overrides via valueClassName (amount token). */}
+      <Card.Value
+        className={cn(
+          'mt-2 text-lg font-semibold leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.51px]',
+          valueClassName,
+        )}
+      >
+        {value}
+      </Card.Value>
       {hint ? (
-        <Card.Description as="small" className={cn('mt-1.5 whitespace-nowrap', hintClassName)}>
+        <Card.Description
+          as="small"
+          className={cn(
+            'mt-1.5 block max-w-full whitespace-nowrap text-xs leading-normal tracking-[-0.24px]',
+            hintClassName,
+          )}
+        >
           {hint}
         </Card.Description>
       ) : null}

@@ -51,7 +51,7 @@ async function closeSessionQuiet() {
   }
 }
 
-/** @typedef {{ id: string, url: string, viewport: { width: number, height: number }, tab?: string, scrollHome?: boolean, scrollDapp?: boolean, waitMs?: number, capture?: 'longPage' | 'viewport' }} Target */
+/** @typedef {{ id: string, url: string, viewport: { width: number, height: number }, tab?: string, swapView?: 'hub' | 'flash' | 'trade', scrollHome?: boolean, scrollDapp?: boolean, waitMs?: number, capture?: 'longPage' | 'viewport' }} Target */
 
 /** @type {Target[]} */
 const TARGETS = [
@@ -59,6 +59,11 @@ const TARGETS = [
   { id: 'home-h5', url: '/en/', viewport: { width: 390, height: 844 }, scrollHome: true, waitMs: 1200, capture: 'longPage' },
   { id: 'dapp-swap-desktop', url: '/en/app.html', viewport: { width: 1440, height: 900 }, tab: 'swap', waitMs: 1500, capture: 'longPage' },
   { id: 'dapp-swap-h5', url: '/en/app.html', viewport: { width: 390, height: 844 }, tab: 'swap', scrollDapp: true, waitMs: 1500, capture: 'longPage' },
+  /** Swap subpages: hub → Convert(flash) / Trade via mode-card click (store not on window). */
+  { id: 'dapp-swap-convert-desktop', url: '/en/app.html', viewport: { width: 1440, height: 900 }, tab: 'swap', swapView: 'flash', waitMs: 1500, capture: 'longPage' },
+  { id: 'dapp-swap-convert-h5', url: '/en/app.html', viewport: { width: 390, height: 844 }, tab: 'swap', swapView: 'flash', scrollDapp: true, waitMs: 1500, capture: 'longPage' },
+  { id: 'dapp-swap-trade-desktop', url: '/en/app.html', viewport: { width: 1440, height: 900 }, tab: 'swap', swapView: 'trade', waitMs: 1500, capture: 'longPage' },
+  { id: 'dapp-swap-trade-h5', url: '/en/app.html', viewport: { width: 390, height: 844 }, tab: 'swap', swapView: 'trade', scrollDapp: true, waitMs: 1500, capture: 'longPage' },
   { id: 'dapp-genesis-desktop', url: '/en/app.html', viewport: { width: 1440, height: 900 }, tab: 'genesis', waitMs: 1200, capture: 'longPage' },
   { id: 'dapp-genesis-h5', url: '/en/app.html', viewport: { width: 390, height: 844 }, tab: 'genesis', scrollDapp: true, waitMs: 1200, capture: 'longPage' },
   { id: 'dapp-rewards-desktop', url: '/en/app.html', viewport: { width: 1440, height: 900 }, tab: 'rewards', waitMs: 1200, capture: 'longPage' },
@@ -112,7 +117,11 @@ async function setViewport(viewport) {
   })
 }
 
-/** 截图前冻结动效/视频帧，避免 hero 视频与 CSS 动画造成假 diff（Home only）。parity 修复阶段不对齐动效。 */
+/**
+ * 截图前：强制 reveal 终态，再冻结动效/视频。
+ * 否则 scroll 未触发的 [data-reveal] / timeline cards 会停在 opacity:0，
+ * freeze 后再截图会把整段 roadmap/security 打成假红块。
+ */
 async function freezeMotion() {
   await wb('evaluate', {
     code: `(() => {
@@ -122,6 +131,19 @@ async function freezeMotion() {
           v.currentTime = 0
         } catch {}
       })
+      // Eager-load lazy images so freeze doesn't capture empty icon tiles.
+      document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+        img.loading = 'eager'
+        if (!img.complete) {
+          try {
+            img.decode?.()
+          } catch {}
+        }
+      })
+      document.querySelectorAll('[data-reveal], [data-metrics-reveal], [data-timeline], [data-security-grid], [data-protocol-grid], [data-engine-grid], [data-token-grid]').forEach((el) => {
+        el.setAttribute('data-visible', 'true')
+        el.setAttribute('data-reveal-instant', 'true')
+      })
       let style = document.getElementById('__compare-freeze')
       if (!style) {
         style = document.createElement('style')
@@ -129,7 +151,8 @@ async function freezeMotion() {
         document.head.appendChild(style)
       }
       style.textContent =
-        '*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }'
+        '*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }' +
+        '[data-timeline] [data-phase-card], [data-timeline] [data-phase-dot], [data-security-grid] > *, [data-security-grid] [data-security-art] img, [data-security-grid] [data-security-check], [data-security-grid] [data-security-line], [data-metrics-reveal] [data-metrics-panel], [data-metrics-reveal] [data-metrics-panel] article { opacity: 1 !important; transform: none !important; filter: none !important; clip-path: none !important; }'
       return true
     })()`,
   })
@@ -208,6 +231,36 @@ async function setDappTab(tabKey) {
     })()`,
   })
   await sleep(1200)
+}
+
+/**
+ * Swap hub → Convert(flash) / Trade：点左侧 mode card（zustand 不挂 window）。
+ * flash = 第 1 张可点 mode card，trade = 第 2 张（与 SwapHubWidget 顺序一致）。
+ */
+async function setSwapView(swapView) {
+  if (!swapView || swapView === 'hub') return
+  const index = swapView === 'flash' ? 0 : swapView === 'trade' ? 1 : -1
+  if (index < 0) throw new Error(`unknown swapView: ${swapView}`)
+  const r = await wb('evaluate', {
+    code: `(() => {
+      const panel = document.querySelector('[data-dapp-widget-panel]')
+      if (!panel) return { ok: false, reason: 'no-panel' }
+      // Mode cards are full-width outlined Card-as-button rows (not IconButton / toggle).
+      const cards = [...panel.querySelectorAll('button')].filter((btn) => {
+        const cls = btn.className?.toString?.() ?? ''
+        return cls.includes('rounded-md') && cls.includes('w-full')
+      })
+      const card = cards[${index}]
+      if (!card) return { ok: false, reason: 'no-card', count: cards.length }
+      card.click()
+      return { ok: true, title: (card.innerText || '').trim().slice(0, 48), count: cards.length }
+    })()`,
+  })
+  const value = r?.value ?? r
+  if (!value?.ok) {
+    throw new Error(`setSwapView(${swapView}) failed: ${JSON.stringify(value)}`)
+  }
+  await sleep(900)
 }
 
 async function readPageOrigin() {
@@ -416,6 +469,7 @@ async function prepareTab(tabUrl, target, expectedOrigin, label) {
   await setViewport(target.viewport)
   if (target.scrollHome) await scrollHome()
   if (target.tab) await setDappTab(target.tab)
+  if (target.swapView) await setSwapView(target.swapView)
   if (target.scrollDapp) await scrollDappViewport()
   await sleep(target.waitMs ?? 1000)
   if (target.scrollHome || target.scrollDapp) await freezeMotion()

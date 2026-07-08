@@ -20,11 +20,13 @@ export const inputVariants = tv({
   ],
   variants: {
     variant: {
-      default: 'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-normal leading-normal tracking-[var(--type-copy-tracking)]',
+      default:
+        'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-normal leading-normal tracking-normal',
       numeric:
-        'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-[var(--type-copy-tracking)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+        'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-normal [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
       amount:
-        'border-0 bg-transparent px-0 py-0 text-right text-[length:var(--type-figure-size)] font-semibold leading-[var(--type-figure-leading)] tracking-[var(--type-figure-tracking)] placeholder:text-muted-foreground',
+        // Match 4175 dappAmountClass: figure size + leading-normal (22→33) + tracking -0.44px
+        'border-0 bg-transparent text-right text-[length:var(--type-figure-size)] font-semibold leading-normal tracking-[-0.44px] outline-0 placeholder:text-muted-foreground',
     },
     size: {
       sm: '',
@@ -36,7 +38,7 @@ export const inputVariants = tv({
     {
       variant: ['default', 'numeric'],
       size: 'sm',
-      class: 'px-3 py-2 text-[length:var(--type-caption-size)]',
+      class: 'px-3 py-2 text-[length:var(--type-copy-size)]',
     },
     {
       variant: ['default', 'numeric'],

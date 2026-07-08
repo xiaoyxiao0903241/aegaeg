@@ -46,13 +46,15 @@ export const rewardsClaimAction = tv({
 })
 
 export const rewardsBalanceHeaderMeta = tv({
-  base: 'text-xs tracking-[-0.24px] max-dapp:text-muted-foreground',
+  base: 'tracking-[-0.24px]',
 })
 
+/** 4175 `tone="muted"` = faint 30%；Foundation 无 faint → foreground/30 */
 export const rewardsBalanceHint = tv({
-  base: 'max-dapp:hidden',
+  base: 'max-dapp:hidden text-foreground/30',
 })
 
+/** Referral amount: 4175 used amount token + leading 1.3 / tracking -0.54 (overrides Card.Value text-lg default). */
 export const rewardsReferralAmount = tv({
-  base: 'text-[length:var(--dapp-type-amount-size)] font-semibold leading-normal tracking-[-0.44px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
+  base: 'text-[length:var(--dapp-type-amount-size)] leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
 })

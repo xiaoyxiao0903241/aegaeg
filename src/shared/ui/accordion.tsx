@@ -38,7 +38,7 @@ const accordionStyles = tv({
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        content: 'py-[1em]',
+        content: '',
       },
     },
   },
@@ -180,7 +180,13 @@ export function Accordion({
                 >
                   <div className="faq-answer-panel">
                     <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                      <Text as="p" variant="detail" tone="muted-foreground" className={styles.content()}>
+                      {/* 4175 raw <p> kept UA margin (~1em); Tailwind preflight zeros it — restore via py. */}
+                      <Text
+                        as="p"
+                        variant="detail"
+                        tone="muted-foreground"
+                        className={cn(styles.content(), 'my-0 py-[1em]')}
+                      >
                         {item.content}
                       </Text>
                     </div>

@@ -51,14 +51,14 @@ export function GenesisContributionsProgressHeader({
   return (
     <div className={styles.progressHeader()}>
       <div className={styles.progressRow()}>
-        <Text tone="foreground" variant="headline">
+        <Text className="font-semibold leading-[1.2] tracking-[-0.26px]" tone="foreground" variant="copy">
           {label}
         </Text>
         <Text
           as="strong"
-          className={styles.progressValue()}
+          className={cn(styles.progressValue(), 'font-semibold leading-[1.2] tracking-[-0.26px]')}
           tone="foreground"
-          variant="headline"
+          variant="copy"
         >
           {contributedLabel}
         </Text>

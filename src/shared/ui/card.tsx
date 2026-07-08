@@ -24,8 +24,8 @@ export const cardVariants = tv({
         'rounded-md border border-border p-3.5',
       elevated:
         'rounded-md bg-card p-3.5 shadow-card',
-      soft:
-        'rounded-lg bg-card p-5 shadow-faq',
+      /** FAQ / Accordion shell — elevation + radius only; body owns px/py (dev: rounded-2xl, no card pad). */
+      soft: 'overflow-hidden rounded-2xl bg-card shadow-faq',
       inverse:
         'rounded-md bg-dark p-4 text-white shadow-subtle',
     },

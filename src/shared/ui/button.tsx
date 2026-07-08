@@ -23,15 +23,16 @@ const liftHoverClass = 'hover:-translate-y-px focus-visible:-translate-y-px'
  */
 export const buttonVariants = tv({
   base: [
-    'inline-flex cursor-pointer items-center justify-center gap-2 font-semibold whitespace-nowrap',
+    'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
     'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-[180ms] ease-out',
     buttonDisabledClass,
   ],
   variants: {
     variant: {
       primary: [
-        'border border-transparent bg-primary text-primary-foreground',
+        'border-0 bg-primary text-primary-foreground',
         `${liftHoverClass} hover:shadow-primary-hover focus-visible:shadow-primary-hover`,
+        'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
         disabledMutedClass,
       ],
       secondary: [
@@ -41,7 +42,7 @@ export const buttonVariants = tv({
         'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
       ],
       ghost: [
-        'border border-border bg-card text-muted-foreground',
+        'gap-2 border border-border bg-card text-muted-foreground',
         'hover:border-primary hover:text-primary',
         disabledMutedClass,
       ],
@@ -50,10 +51,11 @@ export const buttonVariants = tv({
         'disabled:text-muted-foreground disabled:opacity-100',
       ],
     },
+    /** Size typography is display scale (not Text copy token) — lg=16 / md·sm=14 matches 4175 CTA. */
     size: {
-      lg: 'min-h-12 px-6 text-[length:var(--type-copy-size)] leading-none',
-      md: 'min-h-10 px-5 text-[length:var(--type-copy-size)] leading-none',
-      sm: 'min-h-9 px-4 text-[length:var(--type-copy-size)] leading-none',
+      lg: 'min-h-12 px-6 text-base leading-none',
+      md: 'min-h-10 px-5 text-sm leading-none',
+      sm: 'min-h-9 px-4 text-sm leading-none',
     },
     shape: {
       pill: 'rounded-full',

@@ -10,13 +10,13 @@ export const genesisMetricGrid = tv({
 })
 
 const genesisMetricCard = tv({
-  base: 'max-dapp:min-h-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:shadow-card',
+  base: 'px-4 py-3.5 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:shadow-card',
 })
 
 /** 4175 genesis MetricCard：desktop text-base / H5 text-sm */
 const genesisMetricValueClass = cn(
-  '!text-base !leading-[1.3] tracking-[-0.36px]',
-  'max-dapp:!text-sm max-dapp:!leading-[1.2]',
+  'text-base leading-[1.3] tracking-[-0.36px]',
+  'max-dapp:text-sm max-dapp:leading-[1.2]',
 )
 
 export function GenesisMetricCard({

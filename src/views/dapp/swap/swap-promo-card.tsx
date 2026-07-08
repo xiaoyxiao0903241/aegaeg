@@ -2,6 +2,7 @@ import type { ButtonHTMLAttributes, ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { revealClass } from '~/shared/lib/reveal'
@@ -77,7 +78,8 @@ export function SwapPromoPillAction({
         layout === 'desktop'
           ? cn(
               'absolute right-4 top-1/2 z-[2] -translate-y-1/2 px-4 py-2.5',
-              'text-xs font-semibold leading-[1.2] tracking-[-0.02em]',
+              // 4175 pill: text-xs / leading-normal; connect uses 0.8125rem.
+              'text-xs font-semibold leading-normal tracking-[-0.02em]',
               !withArrow && minConnectWidth && 'min-w-[7.75rem] text-[0.8125rem]',
               'transition-[border-color,transform] duration-180 ease-out',
               'hover:translate-x-px hover:border-primary',
@@ -180,29 +182,34 @@ export function SwapPromoCard({
         <div className={styles.titleRow()}>
           <div className={styles.titleCluster()}>
             {titleIconSrc ? <TitleIcon layout={layout} src={titleIconSrc} /> : null}
-            <strong
+            <Text
+              as="strong"
+              variant="headline"
               className={cn(
-                'truncate font-semibold leading-[1.2] text-foreground',
                 styles.title(),
+                // 4175 desktop title = text-base + leading-normal (16→24); not headline 1.2.
                 layout === 'desktop'
-                  ? 'text-base tracking-[-0.03em]'
-                  : 'text-sm tracking-[-0.028em]',
+                  ? 'text-base font-semibold leading-normal tracking-[-0.03em]'
+                  : 'text-sm font-semibold leading-[1.2] tracking-[-0.028em]',
               )}
             >
               {title}
-            </strong>
+            </Text>
           </div>
           {!isDesktop ? <span className={styles.mobileActionWrap()}>{actionNode}</span> : null}
         </div>
-        <p
+        <Text
+          as="p"
+          variant="copy"
+          tone="muted-foreground"
           className={cn(
-            'm-0 min-w-0 text-xs font-normal leading-[1.5] tracking-[-0.02em]',
             styles.body(),
-            'text-muted-foreground',
+            // 4175 promo body = text-xs (12); copy token alone is 13 and cascades FAQ.
+            'text-xs leading-[1.5] tracking-[-0.02em]',
           )}
         >
           {body}
-        </p>
+        </Text>
       </div>
       {isDesktop ? actionNode : null}
     </Card>

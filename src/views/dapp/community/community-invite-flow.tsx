@@ -10,9 +10,10 @@ export type InviteFlowItem = {
   title: string
 }
 
+// 4175 `dappCaptionClass`: caption size + leading 1.5 / tracking -0.26px (not copy leading 1.3).
 const inviteFlowStep = tv({
   base: [
-    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold leading-[1.3] text-white',
+    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold text-white',
     'max-dapp:size-7',
     'text-[length:var(--type-copy-size)] leading-[1.5] tracking-[-0.26px]',
   ],
@@ -61,7 +62,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           <Text
             as="h4"
             variant="headline"
-            className="m-0 tracking-[-0.28px] max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
+            className="m-0 text-sm leading-normal tracking-[-0.28px] max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0 max-dapp:text-xs"
           >
             {item.title}
           </Text>
@@ -70,9 +71,9 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
             variant="copy"
             tone="muted-foreground"
             className={cn(
-              'm-0 max-w-[24ch] tracking-[-0.24px]',
+              'm-0 max-w-[24ch] text-xs leading-normal tracking-[-0.24px] text-foreground/30',
               'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:leading-[1.35]',
-              'group-data-[tab=community]/shell:max-dapp:line-clamp-2 group-data-[tab=community]/shell:max-dapp:text-xs group-data-[tab=community]/shell:max-dapp:leading-[1.28]',
+              'group-data-[tab=community]/shell:max-dapp:line-clamp-2 group-data-[tab=community]/shell:max-dapp:leading-[1.28]',
             )}
           >
             {item.copy}
@@ -98,10 +99,19 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             {index < items.length - 1 ? <InviteFlowConnector orientation="vertical" /> : null}
           </div>
           <div className={cn('grid min-w-0 gap-0.5', index < items.length - 1 && 'pb-3.5')}>
-            <Text as="h4" variant="headline" className="m-0 leading-[1.2] tracking-[-0.28px]">
+            <Text
+              as="h4"
+              variant="headline"
+              className="m-0 text-sm leading-[1.2] tracking-[-0.28px] max-dapp:text-xs"
+            >
               {item.title}
             </Text>
-            <Text as="p" variant="copy" tone="muted-foreground" className="m-0 leading-normal tracking-[-0.26px]">
+            <Text
+              as="p"
+              variant="copy"
+              tone="muted-foreground"
+              className="m-0 text-sm leading-normal tracking-[-0.26px] max-dapp:text-xs"
+            >
               {item.copy}
             </Text>
           </div>

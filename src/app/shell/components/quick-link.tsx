@@ -41,7 +41,11 @@ export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkPr
           src={icon}
         />
       </span>
-      <Text as="span" variant="headline" className="tracking-[-0.28px]">
+      <Text
+        as="span"
+        variant="headline"
+        className="text-sm leading-normal tracking-[-0.28px] max-dapp:text-xs"
+      >
         {label}
       </Text>
     </a>

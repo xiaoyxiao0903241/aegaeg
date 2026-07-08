@@ -14,8 +14,8 @@ const swapMetricCard = tv({
 })
 
 const swapMetricValueClass = cn(
-  '!text-lg !leading-[1.3] tracking-[-0.54px]',
-  'max-dapp:!text-xs max-dapp:!leading-[1.2] max-dapp:tracking-[-0.24px]',
+  'text-lg leading-[1.3] tracking-[-0.54px]',
+  'max-dapp:text-xs max-dapp:leading-[1.2] max-dapp:tracking-[-0.24px]',
 )
 
 export function SwapMetricCard({

@@ -11,11 +11,9 @@ export type DappMetaListItem = {
 
 export function DappMetaList({
   className,
-  sessionReady = true,
   items,
 }: {
   className?: string
-  sessionReady?: boolean
   items: DappMetaListItem[]
 }) {
   return (
@@ -29,17 +27,13 @@ export function DappMetaList({
     >
       {items.map((item, index) => (
         <p className="m-0 flex items-center justify-between gap-3" key={index}>
-          <Text
-            as="span"
-            variant="copy"
-            tone={sessionReady ? 'foreground' : 'muted-foreground'}
-          >
+          <Text as="span" variant="detail" tone="muted-foreground" className="leading-normal tracking-normal">
             {item.label}
           </Text>
           <Text
             as="strong"
-            variant="figure"
-            className={cn('mt-0 text-right', item.valueClassName)}
+            variant="detail"
+            className={cn('mt-0 text-right font-semibold leading-normal tracking-normal', item.valueClassName)}
           >
             {item.value}
           </Text>

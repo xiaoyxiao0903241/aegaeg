@@ -1,6 +1,6 @@
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+import { chipVariants } from '~/shared/ui/chip'
 import { cn } from '~/shared/lib/utils'
 
 export function SwapModeCard({
@@ -23,7 +23,7 @@ export function SwapModeCard({
       as="button"
       surface="outlined"
       className={cn(
-        'flex w-full items-center gap-3 text-left shadow-none',
+        'flex w-full items-center gap-3 text-left text-muted-foreground shadow-none',
         interactive &&
           'cursor-pointer transition-[border-color,transform] duration-180 ease-out hover:-translate-y-px hover:border-primary',
       )}
@@ -33,20 +33,33 @@ export function SwapModeCard({
       <DappIcon alt="" className="shrink-0" size="xl" src={icon} />
       <Card.Content className="grid min-w-0 flex-1 gap-1">
         <Card.Header className="flex-row items-center gap-1.5">
-          <Card.Label as="span" className="font-semibold">
+          {/* Mode row locks 13px on PC+H5 (dev parity); copy token alone is 12 on H5 */}
+          <Card.Label
+            as="span"
+            className="text-[0.8125rem] font-semibold leading-normal tracking-[-0.02em] text-foreground"
+          >
             {title}
           </Card.Label>
           {badge ? (
-            <Text
-              as="span"
-              variant="caption"
-              className="normal-case rounded-full bg-primary px-2 py-1.5 text-[10px] font-medium leading-none tracking-[-0.02em] text-primary-foreground"
+            <span
+              className={cn(
+                chipVariants({
+                  variant: 'solid',
+                  tone: 'primary',
+                  size: 'sm',
+                  shape: 'pill',
+                }),
+                // 4175 Coming soon = #FF9500 (not primary coral) — intentional product badge.
+                'pointer-events-none shrink-0 bg-[#FF9500] text-white',
+              )}
             >
               {badge}
-            </Text>
+            </span>
           ) : null}
         </Card.Header>
-        <Card.Description>{body}</Card.Description>
+        <Card.Description className="text-[0.8125rem] leading-normal tracking-[-0.02em]">
+          {body}
+        </Card.Description>
       </Card.Content>
     </Card>
   )

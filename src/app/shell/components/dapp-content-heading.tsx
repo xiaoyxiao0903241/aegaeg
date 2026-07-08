@@ -22,7 +22,15 @@ export function DappContentHeading({
       as="h2"
       variant={variant}
       className={cn(
-        'm-0 max-dapp:mt-0',
+        'm-0 max-dapp:mt-0 max-dapp:text-base',
+        // 4175 detail h2: Swap tracking -0.04em; Genesis/Rewards/Community leading-snug + tracking -0.36px.
+        'group-data-[tab=swap]/shell:tracking-[-0.04em] group-data-[tab=swap]/shell:max-dapp:tracking-[-0.04em]',
+        'group-data-[tab=genesis]/shell:leading-snug group-data-[tab=genesis]/shell:tracking-[-0.36px]',
+        'group-data-[tab=genesis]/shell:max-dapp:tracking-[-0.68px]',
+        'group-data-[tab=rewards]/shell:leading-snug group-data-[tab=rewards]/shell:tracking-[-0.36px]',
+        'group-data-[tab=rewards]/shell:max-dapp:tracking-[-0.68px]',
+        'group-data-[tab=community]/shell:leading-snug group-data-[tab=community]/shell:tracking-[-0.36px]',
+        'group-data-[tab=community]/shell:max-dapp:tracking-[-0.68px]',
         dappDetailTitleGapClass,
         reveal && revealClass(),
         className,

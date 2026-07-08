@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import type { HomeMessagesBundle } from '~/i18n/messages/home/types'
@@ -21,32 +22,6 @@ const sectionConfig = {
     icons: engineIcons,
     id: 'engine',
   },
-} as const
-
-const sectionClass = {
-  protocol: 'max-dapp:min-h-208',
-  engine: 'max-dapp:min-h-240',
-} as const
-
-const gridClass = {
-  protocol:
-    'feature-card three-col mt-14 grid grid-cols-3 rounded-lg bg-card shadow-card max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
-  engine:
-    'engine-card mt-14 grid grid-cols-2 rounded-lg bg-card shadow-card max-dapp:mt-6 max-dapp:grid-cols-1 max-dapp:gap-6 max-dapp:overflow-visible max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none',
-} as const
-
-const cardClass = {
-  protocol:
-    'min-h-72 px-8 py-9 transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
-  engine:
-    'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
-} as const
-
-const iconClass = {
-  protocol:
-    'feature-icon size-[var(--home-feature-icon-size)] object-contain max-dapp:size-[var(--home-feature-icon-size-h5)]',
-  engine:
-    'size-[var(--home-feature-icon-size)] object-cover max-dapp:size-[var(--home-feature-icon-size-h5)] max-dapp:object-contain',
 } as const
 
 function cardBorderClass(variant: 'protocol' | 'engine', index: number) {
@@ -73,38 +48,53 @@ function HomeIconCard({
   index: number
   variant: 'protocol' | 'engine'
 }) {
+  const isEngine = variant === 'engine'
+
   return (
     <Card
-      className={cn(cardClass[variant], cardBorderClass(variant, index))}
+      className={cn(
+        'rounded-none bg-transparent p-0 shadow-none',
+        isEngine
+          ? 'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7'
+          : 'min-h-72 px-8 py-9 transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
+        cardBorderClass(variant, index),
+      )}
       surface="outlined"
-      data-engine-card={variant === 'engine' ? true : undefined}
+      data-engine-card={isEngine ? true : undefined}
       data-protocol-card={variant === 'protocol' ? true : undefined}
-      style={{ '--card-index': index } as React.CSSProperties}
+      style={{ '--card-index': index } as CSSProperties}
     >
       <img
-        className={cn(iconClass[variant], 'feature-card-icon')}
+        className={
+          isEngine
+            ? 'size-[var(--home-feature-icon-size)] object-cover max-dapp:size-[var(--home-feature-icon-size-h5)] max-dapp:object-contain'
+            : 'size-[var(--home-feature-icon-size)] object-contain max-dapp:size-[var(--home-feature-icon-size-h5)]'
+        }
         src={card.icon}
         alt=""
         width="80"
         height="80"
         loading="lazy"
+        data-feature-line="icon"
       />
       <Text
         as="h3"
         variant="headline"
         className={cn(
-          'feature-card-title mt-3 max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-balance',
-          variant === 'engine' &&
+          'mt-3 text-xl leading-[1.2] tracking-tight max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-lg max-dapp:text-balance',
+          isEngine &&
             'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary',
         )}
+        data-feature-line="title"
       >
         {card.title}
       </Text>
       <Text
         as="p"
-        className="feature-card-body mt-3 max-w-112 max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80"
-        tone="foreground"
+        className="mt-3 max-w-112 text-sm leading-[1.5] max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80"
+        tone="muted-foreground"
         variant="copy"
+        data-feature-line="body"
       >
         {card.body}
       </Text>
@@ -124,30 +114,35 @@ export function HomeIconFeatureSection({
     ...card,
     icon: icons[index],
   }))
+  const isEngine = variant === 'engine'
 
   return (
     <HomeSection
       spacing="content"
       container="page"
-      className={sectionClass[variant]}
+      className={isEngine ? 'max-dapp:min-h-240' : 'max-dapp:min-h-208'}
       id={id}
       aria-labelledby={`${id}-title`}
     >
       <HomeSectionHead
-          eyebrow={content.eyebrow}
-          title={content.title}
-          subtitle={content.subtitle}
-        />
-        <div
-          className={gridClass[variant]}
-          data-engine-grid={variant === 'engine' ? true : undefined}
-          data-protocol-grid={variant === 'protocol' ? true : undefined}
-          data-reveal
-        >
-          {cards.map((card, index) => (
-            <HomeIconCard card={card} index={index} key={card.title} variant={variant} />
-          ))}
-        </div>
+        eyebrow={content.eyebrow}
+        title={content.title}
+        subtitle={content.subtitle}
+      />
+      <div
+        className={
+          isEngine
+            ? 'mt-14 grid grid-cols-2 rounded-lg bg-card shadow-card max-dapp:mt-6 max-dapp:grid-cols-1 max-dapp:gap-6 max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none'
+            : 'mt-14 grid grid-cols-3 rounded-lg bg-card shadow-card max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4 max-dapp:rounded-none max-dapp:bg-transparent max-dapp:shadow-none'
+        }
+        data-engine-grid={isEngine ? true : undefined}
+        data-protocol-grid={variant === 'protocol' ? true : undefined}
+        data-reveal
+      >
+        {cards.map((card, index) => (
+          <HomeIconCard card={card} index={index} key={card.title} variant={variant} />
+        ))}
+      </div>
     </HomeSection>
   )
 }

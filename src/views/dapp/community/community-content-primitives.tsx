@@ -119,7 +119,7 @@ export function CommunityStatCard({
           as="b"
           variant="headline"
           tone="primary"
-          className={cn(styles.volume(), dark && '!text-coral-bright')}
+          className={styles.volume()}
         >
           {volume}
         </Text>
