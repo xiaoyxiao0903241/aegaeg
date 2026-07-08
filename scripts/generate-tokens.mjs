@@ -88,7 +88,7 @@ function buildColorVars(colors) {
  */
 function buildTypeVars(type) {
   const props = ['size', 'weight', 'leading', 'tracking']
-  const lines = ['  /* ---- Typography Tier A (px-lock; site-fluid does not scale) ---- */']
+  const lines = ['  /* ---- Typography Tier A (rem @16px; scales with html.site-fluid) ---- */']
   for (const [key, token] of Object.entries(type)) {
     for (const prop of props) {
       const value = token.pc[prop]
@@ -360,7 +360,7 @@ function staticEngineeringVars() {
   --scrollbar-thumb-dark-active: oklch(80.08% 0.0962 39.91 / 62%);
 }
 
-/* site-fluid — layout/icon rem scales; typography stays px-lock */
+/* site-fluid — layout/icon rem scales; typography rem @16px also scales */
 @media (min-width: 1920px) {
   html.site-fluid {
     font-size: 16px;
@@ -590,7 +590,7 @@ function buildThemeCss(tokens) {
  * Source: src/shared/styles/tokens/tokens.json
  * Do not edit manually; run: pnpm build:tokens
  *
- * - :root — semantic colors, typography (px-lock), space, radius, elevation
+ * - :root — semantic colors, typography (rem @16px), space, radius, elevation
  * - @theme — radius, elevation shadows, Tailwind utilities
  * - @theme inline — color utility mappings
  * - @layer base — global reset

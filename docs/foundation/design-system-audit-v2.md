@@ -71,7 +71,7 @@ token/x       #5e2a40   → token-x
 
 **删除**：`ink-strong`、`ink-muted`、`faint`、`faq-text`、`on-dark`、`coral-bright`、`subtle-ink`、`placeholder`、`focus-border`、`border-subtle`、`surface-glass/wash`、`pill-muted-bg` 等。
 
-### 2.2 Typography（10 个业务 variant，px-lock）
+### 2.2 Typography（10 个业务 variant，rem @16px；随 `html.site-fluid` 缩放）
 
 | variant | PC | H5 | weight | leading | tracking | 用途 |
 |---------|----|----|--------|---------|----------|------|

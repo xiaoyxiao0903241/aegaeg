@@ -68,8 +68,8 @@
 - [ ] 人工对照表确认（用户后续进行）
 
 ### P8 清债
-- [ ] 全站 `dapp-type-scale.ts` 删除
-- [ ] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中
+- [x] 全站 `dapp-type-scale.ts` 删除
+- [x] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中
 - [ ] 删除 `theme.css` 中 `@deprecated legacy colors` 与 `legacy type aliases` 静态块
 - [ ] 删除 `.stylelintrc.json` 中为生成文件临时禁用的规则（若不再需要）
 - [ ] `docs/foundation/` 与 `SKILL.md` 命名与 api.md 一致
@@ -114,10 +114,54 @@ Figma 层: <layer>
 
 ---
 
-## 5. 修订
+## 5. dapp-genesis-desktop 视觉标签（4175 vs 5174）
+
+| 红块 / 节点 | 标签 | 说明 |
+|-------------|------|------|
+| y191–232 Phase / Metric | REGRESSION→fixed | `Text` 误把 `max-dapp:text-*` 当字号覆盖；panel leading 1.5→1.3 |
+| y299–377 Global 卡数值 | REGRESSION→fixed | 同上；`fs/lh/ls` 已对齐 21px / 27.3px / -0.63px |
+| y378–412 Shares input tracking | REGRESSION→fixed | `Input` default/numeric `tracking-normal` |
+| y473–490 MetaList | REGRESSION→fixed | `DappMetaList` `copy`→`detail`（14px） |
+| muted-foreground 0.5→0.7 | INTENTIONAL | Foundation token（Figma body 70%）；禁贴回 4175 50% |
+| radius-sm 10→14 | INTENTIONAL | Foundation `--radius-sm: 0.875rem`（api Card outlined） |
+| globalBody `on-dark`→`inverse`+opacity-70 | INTENTIONAL | 禁贴回 `text-on-dark`；语义等价 |
+| FAQ answer `faq-text`→`muted-foreground` | INTENTIONAL | 禁贴回 `text-faq-text` |
+| panel 20→21 / subtitle 12→13 | INTENTIONAL | Foundation `--type-panel` / `--type-copy` vs 4175 fluid |
+| section lh snug(24.75)→1.3(23.4) | INTENTIONAL | Foundation `--type-section-leading` |
+| FAQ answer box h 42→70 | INTENTIONAL | UA margin→`py-[1em]` 等价撑开（盒模型含 padding） |
+| 动态数值 / 倒计时文案 | IGNORE | 非静态对齐重点 |
+
+## 5b. dapp-rewards / dapp-community 视觉标签（4175 vs 5174）
+
+| 红块 / 节点 | 标签 | 说明 |
+|-------------|------|------|
+| Rewards h2 `Current tier` leading-snug + tracking -0.36px | REGRESSION→fixed | `DappContentHeading` 补 `group-data-[tab=rewards]` |
+| Rewards table head faint 30% | REGRESSION→fixed | `ResponsiveTable` `text-foreground/30`（禁贴回 `text-faint`） |
+| FAQ answer 盒高 42→70 | REGRESSION→fixed | `FaqList` / `Accordion` answer `py-[1em]`（preflight 清掉 UA margin） |
+| Invite step leading 1.3→1.5 | REGRESSION→fixed | 对齐 4175 `dappCaptionClass` |
+| Community/Rewards `DappSection` h3 lh 24.75→23.4 | INTENTIONAL | 同 §5 section leading；级联 Y 偏移会染红整段 |
+| Hero kicker `coral-bright`→`primary` | INTENTIONAL | 禁贴回 `text-coral-bright` |
+| Hero body `on-dark`→`inverse`+opacity-70 | INTENTIONAL | 语义等价 |
+| Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT（见 p7-swap-delta） |
+| Phase 日期 / 累计共建额 | IGNORE | 动态 |
+| Community 左卡 padding | INTENTIONAL | 用户确认满意；禁按 4175/dev 改回 |
+
+## 5c. 登录态四 tab 共享 chrome（4175 vs 5174）
+
+| 红块 / 节点 | 标签 | 说明 |
+|-------------|------|------|
+| Topbar brand 17→18 / lh / tracking | REGRESSION→fixed | `DappTopbar` `text-lg leading-7 tracking-tight` |
+| Language menu item headline/copy 溢出叠字 | REGRESSION→fixed | `LanguageMenu` 行内 `text-sm`/`text-xs` + `leading-normal` |
+| `--type-*-size` px-lock 高分屏不随 site-fluid | REGRESSION→fixed | `tokens.json` size → rem @16px；`generate-tokens.mjs` 注释同步 |
+| Language menu item radius 10→14 | INTENTIONAL | Foundation `--radius-sm`；禁贴回 4175 10px |
+| muted / section leading / FAQ 色 | INTENTIONAL | 同 §5 / §5b |
+| 动态报价 / 余额 / 成员数 | IGNORE | 非静态对齐重点 |
+
+## 6. 修订
 
 | 版本 | 说明 |
 |------|------|
 | v1.0 | 合并 parity / slice 验收流程 |
 | v2.0 | 更新为 P0–P7，增加人工对照表优先、Chip/Input/Composite gate |
 | v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
+| v2.2 | dapp-genesis-desktop 红块标签 + panel leading 1.3 / Text max-dapp 覆盖修复 |

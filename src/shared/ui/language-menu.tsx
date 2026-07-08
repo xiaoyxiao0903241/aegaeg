@@ -17,7 +17,7 @@ const langMenuClass = cn(
 
 const langTriggerClass = cn(
   'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
-  'border border-border bg-card px-3 shadow-none',
+  'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
   'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
   'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
   'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
@@ -25,7 +25,7 @@ const langTriggerClass = cn(
   '[[open]_&]:border-coral-hover-border [[open]_&]:bg-[oklch(97%_0.014_45)] [[open]_&]:shadow-card',
   '[.is-open_&]:border-coral-hover-border [.is-open_&]:bg-[oklch(97%_0.014_45)] [.is-open_&]:shadow-card',
   '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5',
+  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
 )
 
 export type LanguageMenuOption = {
@@ -71,17 +71,27 @@ function MenuItem({
     option.disabled && 'cursor-not-allowed opacity-60',
   )
 
+  // 4175 menu rows: text-sm name + text-xs label, leading-normal — not headline/copy tokens
+  // (those overflow h-10 and cause ghosting against page content behind the panel).
   const children = (
     <>
       <span className="min-w-0 flex-1">
         <Text
           as="span"
-          variant={option.active ? 'headline' : 'copy'}
-          className="block"
+          variant="headline"
+          className={cn(
+            'block text-sm leading-normal',
+            option.active ? 'font-semibold' : 'font-normal',
+          )}
         >
           {option.name}
         </Text>
-        <Text as="span" variant="copy" tone="muted-foreground" className="block">
+        <Text
+          as="span"
+          variant="caption"
+          tone="muted-foreground"
+          className="block text-xs font-normal leading-normal"
+        >
           {option.label}
         </Text>
       </span>
@@ -91,14 +101,14 @@ function MenuItem({
             src={checkIcon}
             alt=""
             aria-hidden="true"
-            className="size-4 shrink-0"
+            className="relative z-1 size-4 shrink-0"
           />
         ) : (
           <Text
             aria-hidden="true"
-            variant="copy"
+            variant="caption"
             tone="primary"
-            className="shrink-0 font-bold"
+            className="relative z-1 shrink-0 text-xs font-bold leading-none"
           >
             ✓
           </Text>
@@ -188,9 +198,7 @@ function NativeLanguageMenu({
           role="button"
         >
           <img src={globeIcon} alt="" className="size-4 shrink-0" />
-          <Text variant="headline">
-            {triggerLabel ?? activeOption?.code}
-          </Text>
+          <span>{triggerLabel ?? activeOption?.code}</span>
         </summary>
 
         <div
@@ -295,9 +303,7 @@ function ReactLanguageMenu({
         type="button"
       >
         <img src={globeIcon} alt="" className="size-4 shrink-0" />
-        <Text variant="headline">
-          {triggerLabel ?? activeOption?.code}
-        </Text>
+        <span>{triggerLabel ?? activeOption?.code}</span>
       </button>
 
       <div
