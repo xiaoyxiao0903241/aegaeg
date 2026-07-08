@@ -29,7 +29,7 @@ const roadmapClass = {
   dot:
     'phase-dot relative left-0 top-0 z-[2] grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:left-1/2 dapp:top-10 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
   dotComplete: 'bg-primary text-white dapp:border-primary',
-  dotUpcoming: 'border-[3px] border-border bg-card text-ink-muted',
+  dotUpcoming: 'border-[3px] border-border bg-card text-muted-foreground',
   dotCurrent:
     'dapp:shadow-[0_0_0_8px_oklch(94.92%_0.0224_45.6_/_96%)]',
   dotConnector:

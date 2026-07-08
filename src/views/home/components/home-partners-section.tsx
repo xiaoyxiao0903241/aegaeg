@@ -7,7 +7,7 @@ const partnerClass = {
   section:
     'partners dapp:min-h-52 border-b border-border bg-secondary pb-30 text-center max-dapp:min-h-64 max-dapp:py-12',
   row: 'partner-row mt-6 flex flex-wrap justify-center gap-3.5 max-dapp:mt-4',
-  chip: 'inline-flex min-h-12 items-center gap-2.5 rounded-full border border-border bg-card py-3 pl-3 pr-7 text-sm font-semibold text-ink-strong shadow-none transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pl-3 max-dapp:pr-4 max-dapp:text-xs',
+  chip: 'inline-flex min-h-12 items-center gap-2.5 rounded-full border border-border bg-card py-3 pl-3 pr-7 text-sm font-semibold text-foreground shadow-none transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pl-3 max-dapp:pr-4 max-dapp:text-xs',
 } as const
 
 export function HomePartnersSection() {

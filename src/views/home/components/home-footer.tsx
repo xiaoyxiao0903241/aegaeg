@@ -36,7 +36,7 @@ function isExternalHref(href: string) {
 
 const footerClass = {
   root:
-    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-on-dark dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
+    'site-footer flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-white dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8',
   top:
     'container footer-top grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6',
   brand:
@@ -46,7 +46,7 @@ const footerClass = {
     'grid min-w-0 content-start gap-2.5 overflow-hidden pb-1.5 whitespace-nowrap max-dapp:gap-2 max-dapp:pb-0 max-dapp:whitespace-normal',
   rule: 'container h-px bg-[#232323]',
   bottom:
-    'container footer-bottom flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-on-dark whitespace-nowrap max-dapp:text-xs',
+    'container footer-bottom flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-white/70 whitespace-nowrap max-dapp:text-xs',
 } as const
 
 const footerBrandClass = cn(

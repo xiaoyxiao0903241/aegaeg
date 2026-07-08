@@ -28,7 +28,7 @@ const brandMarkClass = cn(
 )
 
 const navLinksClass = cn(
-  'flex items-center gap-8 whitespace-nowrap text-sm font-medium text-ink-strong',
+  'flex items-center gap-8 whitespace-nowrap text-sm font-medium text-foreground',
   'max-tablet:hidden',
   '[&_a]:transition-[color,transform] [&_a]:duration-180 [&_a]:ease-out',
   '[&_a:hover]:-translate-y-px [&_a:hover]:text-foreground',

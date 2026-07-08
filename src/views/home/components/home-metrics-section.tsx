@@ -24,7 +24,7 @@ const metricClass = {
   value:
     'text-5xl font-semibold leading-none text-white max-dapp:text-3xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.9px]',
   label:
-    'text-sm font-medium leading-[1.2] text-white max-dapp:text-xs max-dapp:font-normal max-dapp:leading-[1.5] max-dapp:text-on-dark',
+    'text-sm font-medium leading-[1.2] text-white max-dapp:text-xs max-dapp:font-normal max-dapp:leading-[1.5] max-dapp:text-white/70',
 } as const
 
 export function HomeMetricsSection() {
