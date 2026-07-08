@@ -1,13 +1,14 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { swapHubAssets } from '~/app/assets'
-import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useSwapViewStore } from '~/stores/swap-view-store'
-import { SwapGenesisFooter } from '~/views/dapp/swap/swap-promo-card'
 import { SwapModeCard } from '~/views/dapp/swap/swap-mode-card'
-import { SwapPanelToggle } from '~/views/dapp/swap/swap-panel-toggle'
+import {
+  SwapGenesisFooter,
+  SwapPanelToggle,
+  SwapWidgetBody,
+} from '~/views/dapp/swap/swap-widget-composites'
 import { WidgetHeader } from '~/shared/ui/widget-header'
-import { cn } from '~/shared/lib/utils'
 
 export function SwapHubWidget({
   onSelectGenesis,
@@ -25,7 +26,9 @@ export function SwapHubWidget({
         subtitle={t.swap.intro}
         title={t.swap.title}
       />
-      <div className={cn(dappWidgetBodyClass)}>
+      <SwapWidgetBody
+        footer={sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined}
+      >
         <SwapModeCard
           body={t.swap.hub.modes.flash.body}
           icon={swapHubAssets.modeFlash}
@@ -44,12 +47,7 @@ export function SwapHubWidget({
           icon={swapHubAssets.modeBurn}
           title={t.swap.hub.modes.burn.title}
         />
-        {sessionReady ? (
-          <div className="mt-auto w-full shrink-0">
-            <SwapGenesisFooter onSelectGenesis={onSelectGenesis} />
-          </div>
-        ) : null}
-      </div>
+      </SwapWidgetBody>
     </>
   )
 }

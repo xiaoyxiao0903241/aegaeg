@@ -8,9 +8,9 @@ import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { cn } from '~/shared/lib/utils'
 
-/** Figma `4040:7261` / `4040:7267` — community widget side cards (16px radius, 16×14 padding). */
+/** Aligns with dev community widget side cards (`rounded-md px-4 py-3.5`). */
 const communityWidgetCard = tv({
-  base: 'flex flex-col rounded-2xl px-4 py-3.5',
+  base: 'flex flex-col rounded-md px-4 py-3.5',
 })
 
 const communityShareButton = tv({

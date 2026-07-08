@@ -10,7 +10,7 @@ const TABLE_CELL =
 
 const TABLE_HEAD_CELL = cn(
   TABLE_CELL,
-  'text-muted-foreground group-data-[tab=rewards]/shell:text-faint',
+  'text-muted-foreground group-data-[tab=rewards]/shell:text-muted-foreground',
 )
 
 const TABLE_CLASS =

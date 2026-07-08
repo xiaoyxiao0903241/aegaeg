@@ -21,7 +21,7 @@ export const cardVariants = tv({
   variants: {
     surface: {
       outlined:
-        'rounded-sm border border-border p-3.5',
+        'rounded-md border border-border p-3.5',
       elevated:
         'rounded-md bg-card p-3.5 shadow-card',
       soft:

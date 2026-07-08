@@ -31,7 +31,7 @@ import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-paginatio
 import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
 import { CommunityFlowSection } from '~/views/dapp/community/community-flow-section'
 import {
-  CommunityOverviewStatCard,
+  CommunityStatCard,
   CommunityStatGrid,
 } from '~/views/dapp/community/community-content-primitives'
 
@@ -201,7 +201,7 @@ export function CommunityContent() {
           </>
         ) : (
           stats.map((stat, index) => (
-            <CommunityOverviewStatCard
+            <CommunityStatCard
               dark={stat.dark}
               image={stat.image}
               key={index}

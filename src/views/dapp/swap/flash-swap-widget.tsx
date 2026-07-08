@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
-import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -8,22 +7,19 @@ import { flashSwapAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { DappActionRow } from '~/app/shell/components/dapp-action-row'
-import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
+import { SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
-import { SwapAmountSkeleton, SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import {
+  SwapAmountFlow,
   SwapGenesisFooter,
   SwapMetaPanel,
-} from '~/views/dapp/swap/swap-promo-card'
-import { SwapPanelToggle } from '~/views/dapp/swap/swap-panel-toggle'
-import { useSwapViewStore } from '~/stores/swap-view-store'
-import { TokenChip } from '~/app/shell/components/token-chip'
-import { AmountBox } from '~/shared/ui/amount-box'
-import { PercentButtonRow } from '~/shared/ui/segment'
-import { WidgetSubpageHeader } from '~/shared/ui/widget-header'
+  SwapSubpageHeader,
+  SwapWidgetBody,
+  useSwapBalanceLabels,
+} from '~/views/dapp/swap/swap-widget-composites'
 import { Text } from '~/shared/ui/text'
 
 export function FlashSwapWidget({
@@ -35,31 +31,16 @@ export function FlashSwapWidget({
   const { sessionReady } = useDappShell()
   const swap = useFlashSwapWidgetContext()
   const { pair } = swap
-  const swapPreview = !sessionReady
-  const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
   const showRateSkeleton = swap.isExchangePriceQuoting && !swap.exchangePriceLabel
   const showBuyAmountSkeleton = sessionReady && swap.isQuoting && swap.sellAmount.trim().length > 0
-  const zeroBalanceLabel = `${t.swap.balance}: 0.00`
 
-  const sellBalanceLabel = showBalanceSkeleton ? (
-    <>
-      {t.swap.balance}: <SwapBalanceSkeleton />
-    </>
-  ) : swapPreview ? (
-    zeroBalanceLabel
-  ) : (
-    `${t.swap.balance}: ${swap.walletReady ? swap.sellBalanceLabel : '—'}`
-  )
-
-  const buyBalanceLabel = showBalanceSkeleton ? (
-    <>
-      {t.swap.balance}: <SwapBalanceSkeleton />
-    </>
-  ) : swapPreview ? (
-    zeroBalanceLabel
-  ) : (
-    `${t.swap.balance}: ${swap.walletReady ? swap.buyBalanceLabel : '—'}`
-  )
+  const { buyLabel, sellLabel } = useSwapBalanceLabels({
+    buyBalanceLabel: swap.buyBalanceLabel,
+    isBalancesLoading: swap.isBalancesLoading,
+    sellBalanceLabel: swap.sellBalanceLabel,
+    sessionReady,
+    walletReady: swap.walletReady,
+  })
 
   const flashSwapErrorMessages = useMemo(
     () => ({
@@ -107,63 +88,31 @@ export function FlashSwapWidget({
     showFlashSwapError(swap.validationError)
   }, [showFlashSwapError, swap.validationError])
 
-  const setSwapView = useSwapViewStore((state) => state.setView)
-
   return (
     <>
-      <WidgetSubpageHeader
-        action={<SwapPanelToggle />}
-        backLabel={
-          <>
-            <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
-            <Text tone="muted-foreground" variant="copy">
-              {t.swap.backToHub}
-            </Text>
-          </>
-        }
-        onBack={() => setSwapView('hub')}
-        subtitle={t.swap.flash.intro}
-        title={t.swap.flash.title}
-      />
-      <div className={cn(dappWidgetBodyClass, 'gap-0')}>
-        <AmountBox
-          amountProps={{
-            'aria-label': `${pair.sell.symbol} sell amount`,
-            disabled: sessionReady && !swap.walletReady,
-            inputMode: 'decimal',
-            onChange: (event) => swap.setSellAmount(event.currentTarget.value),
-            placeholder: '0.00',
-            value: swap.sellAmountDisplay,
-          }}
-          balance={sellBalanceLabel}
-          label={t.swap.sell}
-          startAdornment={<TokenChip icon={pair.sell.icon} label={pair.sell.symbol} />}
-        />
-
-        <PercentButtonRow
-          disabled={!swapPreview && !swap.walletReady}
-          onSelect={(percent) => swap.fillPercent(percent)}
-        />
-
-        <div aria-hidden className="flex items-center justify-center py-1.5">
-          <div className="grid size-[2.125rem] place-items-center rounded-[0.6875rem] border border-border bg-card">
-            <DappIcon alt="" className="size-4" src={flashSwapAssets.flowDivider} />
-          </div>
-        </div>
-
-        <AmountBox
-          amountProps={{
-            'aria-label': `${pair.buy.symbol} receive amount`,
-            placeholder: '0.00',
-            readOnly: true,
-            value: swapPreview ? swap.buyAmount || '0.00' : swap.buyAmount,
-          }}
-          balance={buyBalanceLabel}
-          className="mt-0"
-          label={t.swap.buy}
-          loading={showBuyAmountSkeleton}
-          loadingSkeleton={<SwapAmountSkeleton />}
-          startAdornment={<TokenChip icon={pair.buy.icon} label={pair.buy.symbol} />}
+      <SwapSubpageHeader subtitle={t.swap.flash.intro} title={t.swap.flash.title} />
+      <SwapWidgetBody
+        bodyClassName="gap-0"
+        footer={sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined}
+      >
+        <SwapAmountFlow
+          buy={pair.buy}
+          buyAmount={swap.buyAmount}
+          buyBalance={buyLabel}
+          middleSlot={
+            <div aria-hidden className="flex items-center justify-center py-1.5">
+              <div className="grid size-[2.125rem] place-items-center rounded-[0.6875rem] border border-border bg-card">
+                <DappIcon alt="" className="size-4" src={flashSwapAssets.flowDivider} />
+              </div>
+            </div>
+          }
+          onFillPercent={(percent) => swap.fillPercent(percent)}
+          onSellAmountChange={swap.setSellAmount}
+          sell={pair.sell}
+          sellAmountDisplay={swap.sellAmountDisplay}
+          sessionReady={sessionReady}
+          showBuyAmountSkeleton={showBuyAmountSkeleton}
+          walletReady={swap.walletReady}
         />
 
         <SwapMetaPanel
@@ -231,13 +180,7 @@ export function FlashSwapWidget({
             {submitErrorMessage}
           </Text>
         ) : null}
-
-        {sessionReady ? (
-          <div className="mt-auto w-full shrink-0">
-            <SwapGenesisFooter onSelectGenesis={onSelectGenesis} />
-          </div>
-        ) : null}
-      </div>
+      </SwapWidgetBody>
     </>
   )
 }

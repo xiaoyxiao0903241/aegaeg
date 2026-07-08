@@ -98,18 +98,33 @@ export function GenesisPromoCard({
     : null
 
   return (
-    <WidgetPromoCard className={cn('mt-auto max-dapp:mt-0', className)}>
+    <WidgetPromoCard
+      className={cn(
+        'mt-auto max-dapp:mt-0 group-data-[tab=genesis]/shell:max-dapp:grid',
+        className,
+      )}
+    >
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
       ) : (
-        <Text as="strong" variant="brand" tone="inverse" className="block">
+        <Text
+          as="strong"
+          variant="brand"
+          tone="inverse"
+          className="block tracking-[-0.28px]"
+        >
           {title}
         </Text>
       )}
       {pending || !body ? (
         <GenesisPromoBodySkeleton />
       ) : (
-        <Text as="p" variant="copy" tone="inverse" className="m-0">
+        <Text
+          as="p"
+          variant="copy"
+          tone="inverse"
+          className="m-0 leading-normal tracking-[-0.24px]"
+        >
           {body}
         </Text>
       )}

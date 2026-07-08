@@ -2,15 +2,10 @@ import type { ButtonHTMLAttributes, ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { useI18n } from '~/i18n/use-i18n'
-import { GenesisPromoCard } from '~/app/shell/components/genesis-promo-card'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
-import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 
 type PromoLayout = 'desktop' | 'mobile'
 
@@ -173,7 +168,7 @@ export function SwapPromoCard({
       as="article"
       surface="soft"
       className={cn(
-        'relative min-w-0',
+        'relative min-w-0 overflow-hidden rounded-2xl p-0 shadow-subtle',
         shellClassName,
         reveal && revealClass(),
         className,
@@ -216,75 +211,4 @@ export function SwapPromoCard({
 
 export function swapPromoLayoutFromViewport(isDesktop: boolean): PromoLayout {
   return isDesktop ? 'desktop' : 'mobile'
-}
-
-export const swapFlipCard = tv({
-  variants: {
-    flipping: {
-      true: '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]',
-      false: '',
-    },
-  },
-  defaultVariants: {
-    flipping: false,
-  },
-})
-
-export function SwapGenesisFooter({ onSelectGenesis }: { onSelectGenesis: () => void }) {
-  const { messages: t } = useI18n()
-  const genesis = useGenesisWidgetContext()
-
-  return (
-    <GenesisPromoCard
-      actionLabel={t.genesis.joinGenesis}
-      className="mt-auto max-dapp:mt-0"
-      isLoading={genesis.isLoading}
-      onClick={onSelectGenesis}
-      promo={genesis.promoSnapshot}
-    />
-  )
-}
-
-export function SwapMetaPanel({
-  className,
-  sessionReady = true,
-  items,
-}: {
-  className?: string
-  sessionReady?: boolean
-  items: Array<{
-    label: React.ReactNode
-    value: React.ReactNode
-    valueClassName?: string
-  }>}) {
-  return (
-    <Card
-      as="div"
-      surface="outlined"
-      className={cn(
-        'grid shrink-0 gap-2 rounded-sm px-3.5 py-3 tracking-[-0.26px]',
-        dappWidgetFooterTopGapClass,
-        className,
-      )}
-    >
-      {items.map((item, index) => (
-        <p className="m-0 flex items-center justify-between gap-3" key={index}>
-          <Text
-            as="span"
-            variant="copy"
-            tone={sessionReady ? 'foreground' : 'muted-foreground'}
-          >
-            {item.label}
-          </Text>
-          <Text
-            as="strong"
-            variant="figure"
-            className={cn('mt-0 text-right', item.valueClassName)}
-          >
-            {item.value}
-          </Text>
-        </p>
-      ))}
-    </Card>
-  )
 }

@@ -63,7 +63,7 @@ export function CommunityStatGrid({
   return <div className={cn(communityStatGrid(), className)}>{children}</div>
 }
 
-function CommunityStatCard({
+export function CommunityStatCard({
   children,
   className,
   dark = false,
@@ -101,7 +101,7 @@ function CommunityStatCard({
         className={cn(
           styles.label(),
           'tracking-[-0.24px]',
-          !dark && 'max-dapp:text-faint',
+          !dark && 'max-dapp:text-muted-foreground',
         )}
       >
         {label}
@@ -149,29 +149,3 @@ function CommunityStatCard({
   )
 }
 
-export function CommunityOverviewStatCard({
-  dark,
-  image,
-  label,
-  today,
-  value,
-  volume,
-}: {
-  dark?: boolean
-  image?: string
-  label: ReactNode
-  today?: ReactNode
-  value: ReactNode
-  volume?: ReactNode
-}) {
-  return (
-    <CommunityStatCard
-      dark={dark}
-      image={image}
-      label={label}
-      today={today}
-      value={value}
-      volume={volume}
-    />
-  )
-}

@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 
 export const rewardsSideCard = tv({
   base: 'gap-1.5 rounded-md px-4 py-3.5',
@@ -48,7 +46,7 @@ export const rewardsClaimAction = tv({
 })
 
 export const rewardsBalanceHeaderMeta = tv({
-  base: 'max-dapp:text-faint',
+  base: 'text-xs tracking-[-0.24px] max-dapp:text-muted-foreground',
 })
 
 export const rewardsBalanceHint = tv({
@@ -56,21 +54,5 @@ export const rewardsBalanceHint = tv({
 })
 
 export const rewardsReferralAmount = tv({
-  base: 'text-[length:var(--dapp-type-amount-size)] font-semibold leading-normal tracking-[-0.44px]',
+  base: 'text-[length:var(--dapp-type-amount-size)] font-semibold leading-normal tracking-[-0.44px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
 })
-
-export function RewardsSideCard({
-  children,
-  className,
-  layout = 'stack',
-}: {
-  children: ReactNode
-  className?: string
-  layout?: 'stack' | 'grid'
-}) {
-  return (
-    <DappSideCard className={cn(rewardsSideCard({ layout }), className)}>
-      {children}
-    </DappSideCard>
-  )
-}

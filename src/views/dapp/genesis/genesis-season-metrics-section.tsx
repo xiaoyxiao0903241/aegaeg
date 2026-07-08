@@ -28,7 +28,9 @@ export function GenesisSeasonMetricsSection() {
             value={genesis.countdown}
           />
           <GenesisMetricCard
-            label={t.genesis.referencePrice}
+            label={
+              <span className="text-muted-foreground">{t.genesis.referencePrice}</span>
+            }
             tabular
             value={genesis.referencePriceLabel}
           />

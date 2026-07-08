@@ -26,9 +26,10 @@ import { ProgressMeter } from '~/app/shell/components/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/shell/components/dapp-info-tooltip'
 import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
+import { DappSideCard } from '~/app/shell/components/dapp-card'
 import {
   RewardsProgressRow,
-  RewardsSideCard,
+  rewardsSideCard,
 } from '~/views/dapp/rewards/rewards-widget-primitives'
 
 export function RewardsRankSection() {
@@ -110,7 +111,7 @@ export function RewardsRankSection() {
 
   return (
     <>
-      <RewardsSideCard>
+      <DappSideCard className={rewardsSideCard()}>
         {showTitleSkeleton ? (
           <CurrentTitleCardBodySkeleton />
         ) : (
@@ -184,20 +185,20 @@ export function RewardsRankSection() {
             ) : null}
           </div>
         )}
-      </RewardsSideCard>
+      </DappSideCard>
 
       {showPerformanceSkeleton ? (
-        <RewardsSideCard layout="grid">
+        <DappSideCard className={rewardsSideCard({ layout: 'grid' })}>
           <ProgressCardSkeleton />
-        </RewardsSideCard>
+        </DappSideCard>
       ) : (
-        <RewardsSideCard layout="grid">
+        <DappSideCard className={rewardsSideCard({ layout: 'grid' })}>
           <RewardsProgressRow label={personalProgressLabel} value={personalProgressValue} />
           <ProgressMeter label={personalProgressLabel} value={personalProgressPercent} />
           <span aria-hidden="true" className="block h-1" />
           <RewardsProgressRow label={teamProgressLabel} value={teamProgressValue} />
           <ProgressMeter label={teamProgressLabel} value={teamProgressPercent} />
-        </RewardsSideCard>
+        </DappSideCard>
       )}
     </>
   )

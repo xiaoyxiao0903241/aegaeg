@@ -96,7 +96,10 @@ export function RewardsBalanceSection() {
         <RewardBalanceCard
           badge={t.rewards.autoPaidLabel}
           badgeClassName="max-dapp:font-semibold max-dapp:leading-[1.2]"
-          className={cn(rewardsSideCard(), 'max-dapp:[&_small]:hidden')}
+          className={cn(
+            rewardsSideCard(),
+            'max-dapp:[&_small]:hidden [&_span]:text-xs [&_span]:tracking-[-0.24px]',
+          )}
           headerLabelClassName={rewardsBalanceHeaderMeta()}
           hint={t.rewards.autoPaid}
           hintClassName={rewardsBalanceHint()}
@@ -135,7 +138,10 @@ export function RewardsBalanceSection() {
               {t.rewards.claim}
             </DappActionButton>
           }
-          className={rewardsSideCard()}
+          className={cn(
+            rewardsSideCard(),
+            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
+          )}
           headerLabelClassName={rewardsBalanceHeaderMeta()}
           headerMetaClassName={rewardsBalanceHeaderMeta()}
           label={t.rewards.teamRewards}
@@ -144,7 +150,10 @@ export function RewardsBalanceSection() {
         />
       ) : (
         <RewardBalanceCard
-          className={rewardsSideCard()}
+          className={cn(
+            rewardsSideCard(),
+            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
+          )}
           headerLabelClassName={rewardsBalanceHeaderMeta()}
           headerMetaClassName={rewardsBalanceHeaderMeta()}
           label={t.rewards.teamRewards}
@@ -183,7 +192,10 @@ export function RewardsBalanceSection() {
                 {t.rewards.claim}
               </DappActionButton>
             }
-            className={rewardsSideCard()}
+            className={cn(
+            rewardsSideCard(),
+            '[&_span]:text-xs [&_span]:tracking-[-0.24px]',
+          )}
             headerLabelClassName={rewardsBalanceHeaderMeta()}
             headerMetaClassName={rewardsBalanceHeaderMeta()}
             label={communityFundLabel}

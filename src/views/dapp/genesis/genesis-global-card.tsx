@@ -5,6 +5,7 @@ import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 const genesisGlobeWidth = 597
@@ -44,7 +45,7 @@ export function GenesisGlobalCard({
   const styles = genesisGlobalCard()
 
   return (
-    <div className={styles.root()} data-reveal>
+    <div className={cn(revealClass(), styles.root())} data-reveal>
       <div className={styles.content()}>
         <span className={styles.kicker()}>{kicker}</span>
         <Text

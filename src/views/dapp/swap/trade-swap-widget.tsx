@@ -2,30 +2,31 @@ import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { dappAssets, flashSwapAssets } from '~/app/assets'
+import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { DappActionRow } from '~/app/shell/components/dapp-action-row'
-import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
 import { SwapSlippageModal } from '~/app/shell/components/swap-slippage-modal'
-import { SwapAmountSkeleton, SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
-import { resolveGenesisPurchaseError, resolveWalletTransactionError, toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
+import {
+  resolveGenesisPurchaseError,
+  resolveWalletTransactionError,
+  toWalletUserFacingMessage,
+} from '~/views/dapp/web3/resolve-contract-error-message'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
+  SwapAmountFlow,
   SwapGenesisFooter,
   SwapMetaPanel,
+  SwapSubpageHeader,
+  SwapWidgetBody,
   swapFlipCard,
-} from '~/views/dapp/swap/swap-promo-card'
-import { SwapPanelToggle } from '~/views/dapp/swap/swap-panel-toggle'
-import { useSwapViewStore } from '~/stores/swap-view-store'
-import { TokenChip } from '~/app/shell/components/token-chip'
-import { AmountBox } from '~/shared/ui/amount-box'
-import { PercentButtonRow } from '~/shared/ui/segment'
-import { WidgetSubpageHeader } from '~/shared/ui/widget-header'
+  useSwapBalanceLabels,
+} from '~/views/dapp/swap/swap-widget-composites'
 import { Text } from '~/shared/ui/text'
 
 export function TradeSwapWidget({
@@ -43,37 +44,21 @@ export function TradeSwapWidget({
 
   const { pair } = swap
   const flipCardClass = swapFlipCard({ flipping: isFlipping })
-  const swapPreview = !sessionReady
-  const showBalanceSkeleton = !swapPreview && swap.isBalancesLoading
-  const showRateSkeleton =
-    exchangePriceInverted
-      ? swap.isExchangePriceInvertedQuoting && !swap.exchangePriceLabelInverted
-      : swap.isExchangePriceQuoting && !swap.exchangePriceLabel
+  const showRateSkeleton = exchangePriceInverted
+    ? swap.isExchangePriceInvertedQuoting && !swap.exchangePriceLabelInverted
+    : swap.isExchangePriceQuoting && !swap.exchangePriceLabel
   const exchangePriceDisplayLabel = exchangePriceInverted
     ? swap.exchangePriceLabelInverted
     : swap.exchangePriceLabel
   const showBuyAmountSkeleton = sessionReady && swap.isQuoting && swap.sellAmount.trim().length > 0
-  const zeroBalanceLabel = `${t.swap.balance}: 0.00`
 
-  const sellBalanceLabel = showBalanceSkeleton ? (
-    <>
-      {t.swap.balance}: <SwapBalanceSkeleton />
-    </>
-  ) : swapPreview ? (
-    zeroBalanceLabel
-  ) : (
-    `${t.swap.balance}: ${swap.walletReady ? swap.sellBalanceLabel : '—'}`
-  )
-
-  const buyBalanceLabel = showBalanceSkeleton ? (
-    <>
-      {t.swap.balance}: <SwapBalanceSkeleton />
-    </>
-  ) : swapPreview ? (
-    zeroBalanceLabel
-  ) : (
-    `${t.swap.balance}: ${swap.walletReady ? swap.buyBalanceLabel : '—'}`
-  )
+  const { buyLabel, sellLabel } = useSwapBalanceLabels({
+    buyBalanceLabel: swap.buyBalanceLabel,
+    isBalancesLoading: swap.isBalancesLoading,
+    sellBalanceLabel: swap.sellBalanceLabel,
+    sessionReady,
+    walletReady: swap.walletReady,
+  })
 
   const handleFlip = useCallback(() => {
     if (sessionReady && !swap.walletReady) return
@@ -115,88 +100,56 @@ export function TradeSwapWidget({
     t.wallet.transactionErrors,
   ])
 
-  const setSwapView = useSwapViewStore((state) => state.setView)
-
   return (
     <>
-      <WidgetSubpageHeader
-        action={<SwapPanelToggle />}
-        backLabel={
-          <>
-            <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
-            <Text tone="muted-foreground" variant="copy">
-              {t.swap.backToHub}
-            </Text>
-          </>
-        }
-        onBack={() => setSwapView('hub')}
-        subtitle={t.swap.trade.intro}
-        title={t.swap.trade.title}
-      />
-      <div className={cn(dappWidgetBodyClass, 'gap-0')}>
-        <AmountBox
-          amountProps={{
-            'aria-label': `${pair.sell.symbol} sell amount`,
-            disabled: sessionReady && !swap.walletReady,
-            inputMode: 'decimal',
-            onChange: (event) => swap.setSellAmount(event.currentTarget.value),
-            placeholder: '0.00',
-            value: swap.sellAmountDisplay,
-          }}
-          balance={sellBalanceLabel}
-          className={flipCardClass}
-          label={t.swap.sell}
-          startAdornment={<TokenChip icon={pair.sell.icon} label={pair.sell.symbol} />}
-        />
-
-        <PercentButtonRow
-          disabled={!swapPreview && !swap.walletReady}
-          onSelect={(percent) => swap.fillPercent(percent)}
-        />
-
-        <div
-          className={cn(
-            'flex items-center justify-center py-1.5',
-            'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-[0_0.5rem_0.75rem_rgba(18,26,51,0.07)]',
-          )}
-        >
-          <AnchoredTooltip content={t.swap.flip}>
-            <button
-              aria-label={t.swap.flip}
+      <SwapSubpageHeader subtitle={t.swap.trade.intro} title={t.swap.trade.title} />
+      <SwapWidgetBody
+        bodyClassName="gap-0"
+        footer={sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined}
+      >
+        <SwapAmountFlow
+          amountBoxClassName={flipCardClass}
+          buy={pair.buy}
+          buyAmount={swap.buyAmount}
+          buyBalance={buyLabel}
+          middleSlot={
+            <div
               className={cn(
-                'grid size-8 place-items-center rounded-sm border border-border bg-card p-0',
-                'text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
-                'enabled:hover:-translate-y-px enabled:hover:border-primary',
-                'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
-                'max-dapp:my-2',
+                'flex items-center justify-center py-1.5',
+                'max-dapp:h-auto max-dapp:py-0 max-dapp:drop-shadow-[0_0.5rem_0.75rem_rgba(18,26,51,0.07)]',
               )}
-              disabled={sessionReady && !swap.walletReady}
-              onClick={handleFlip}
-              type="button"
             >
-              <span
-                className="grid place-items-center transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
-                style={{ transform: `rotate(${rotation}deg)` }}
-              >
-                ⇅
-              </span>
-            </button>
-          </AnchoredTooltip>
-        </div>
-
-        <AmountBox
-          amountProps={{
-            'aria-label': `${pair.buy.symbol} receive amount`,
-            placeholder: '0.00',
-            readOnly: true,
-            value: swapPreview ? swap.buyAmount || '0.00' : swap.buyAmount,
-          }}
-          balance={buyBalanceLabel}
-          className={cn('mt-0', flipCardClass)}
-          label={t.swap.buy}
-          loading={showBuyAmountSkeleton}
-          loadingSkeleton={<SwapAmountSkeleton />}
-          startAdornment={<TokenChip icon={pair.buy.icon} label={pair.buy.symbol} />}
+              <AnchoredTooltip content={t.swap.flip}>
+                <button
+                  aria-label={t.swap.flip}
+                  className={cn(
+                    'grid size-8 place-items-center rounded-sm border border-border bg-card p-0',
+                    'text-foreground shadow-none transition-[border-color,transform] duration-180 ease-out',
+                    'enabled:hover:-translate-y-px enabled:hover:border-primary',
+                    'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
+                    'max-dapp:my-2',
+                  )}
+                  disabled={sessionReady && !swap.walletReady}
+                  onClick={handleFlip}
+                  type="button"
+                >
+                  <span
+                    className="grid place-items-center transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
+                    style={{ transform: `rotate(${rotation}deg)` }}
+                  >
+                    ⇅
+                  </span>
+                </button>
+              </AnchoredTooltip>
+            </div>
+          }
+          onFillPercent={(percent) => swap.fillPercent(percent)}
+          onSellAmountChange={swap.setSellAmount}
+          sell={pair.sell}
+          sellAmountDisplay={swap.sellAmountDisplay}
+          sessionReady={sessionReady}
+          showBuyAmountSkeleton={showBuyAmountSkeleton}
+          walletReady={swap.walletReady}
         />
 
         <SwapMetaPanel
@@ -311,12 +264,7 @@ export function TradeSwapWidget({
             </DappActionButton>
           </DappActionRow>
         ) : null}
-        {sessionReady ? (
-          <div className="mt-auto w-full shrink-0">
-            <SwapGenesisFooter onSelectGenesis={onSelectGenesis} />
-          </div>
-        ) : null}
-      </div>
+      </SwapWidgetBody>
 
       <SwapSlippageModal
         onConfirm={swap.setSlippage}

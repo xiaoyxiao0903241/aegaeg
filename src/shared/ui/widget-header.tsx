@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
+import { dappWidgetHeaderSpacingClass } from '~/app/shell/components/dapp-widget-frame'
+import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -11,7 +13,11 @@ import { cn } from '~/shared/lib/utils'
  */
 export const widgetHeader = tv({
   slots: {
-    root: 'flex items-start justify-between gap-4',
+    root: cn(
+      'flex items-start justify-between gap-4',
+      shellMobilePageTitleClass,
+      dappWidgetHeaderSpacingClass,
+    ),
     copy: 'flex min-w-0 flex-1 flex-col gap-1.5',
     title: 'm-0',
     subtitle: 'm-0 max-w-[17.5rem] max-dapp:max-w-none',
@@ -40,7 +46,12 @@ export function WidgetHeader({
           {title}
         </Text>
         {subtitle ? (
-          <Text as="p" variant="copy" tone="muted-foreground" className={styles.subtitle()}>
+          <Text
+            as="p"
+            variant="copy"
+            tone="foreground"
+            className={cn(styles.subtitle(), 'text-foreground/80 [&_strong]:font-bold [&_strong]:text-primary')}
+          >
             {subtitle}
           </Text>
         ) : null}
@@ -55,8 +66,8 @@ export function WidgetHeader({
  */
 export const widgetSubpageHeader = tv({
   slots: {
-    root: 'grid gap-3.5',
-    navRow: 'flex items-center gap-2',
+    root: cn(dappWidgetHeaderSpacingClass, 'grid gap-3.5'),
+    navRow: cn('flex items-center gap-2', shellMobilePageTitleClass),
     backButton:
       'inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left',
     backLabel: '',
@@ -102,7 +113,12 @@ export function WidgetSubpageHeader({
           {title}
         </Text>
         {subtitle ? (
-          <Text as="p" variant="copy" tone="muted-foreground" className={styles.subtitle()}>
+          <Text
+            as="p"
+            variant="copy"
+            tone="foreground"
+            className={cn(styles.subtitle(), 'text-foreground/80 [&_strong]:font-bold [&_strong]:text-primary')}
+          >
             {subtitle}
           </Text>
         ) : null}

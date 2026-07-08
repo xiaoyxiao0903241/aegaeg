@@ -8,7 +8,10 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/shared/lib/utils'
 
-const dappPanelSubtitleClassName = 'm-0 max-w-[34ch] max-dapp:max-w-none'
+const dappPanelSubtitleClassName = cn(
+  'm-0 max-w-[34ch] max-dapp:max-w-none text-foreground/80',
+  '[&_strong]:font-bold [&_strong]:text-primary',
+)
 
 export function DappPanelHeader({
   className,
@@ -42,7 +45,7 @@ export function DappPanelHeader({
         <Text
           as="p"
           variant="copy"
-          tone="muted-foreground"
+          tone="foreground"
           className={dappPanelSubtitleClassName}
         >
           {subtitle}
