@@ -3,7 +3,7 @@
 > **版本**：v1.0 · **2026-07-08**  
 > **数据源**：[`figma-export/token-usage-audit.json`](./figma-export/token-usage-audit.json)（raw 导出统计）· [`tokens-aggregated.json`](./figma-export/tokens-aggregated.json)  
 > **版本**：v1.0 · **2026-07-08**  
-> **对抗审查汇总**：[`design-token-audit-synthesis.md`](./design-token-audit-synthesis.md) v2（**Composer 2.5 ×5**）  
+> **对抗审查汇总（归档）**：[`archive/design-token-audit-synthesis.md`](./archive/design-token-audit-synthesis.md)  
 > **上位文档**：[`aegis-design-system.md`](./aegis-design-system.md)
 
 ---
@@ -28,7 +28,7 @@
 | **≤820 H5** | **逐 variant** `@media` 覆写 `--dapp-type-*`；**禁止** DApp 使用 `mobile-type-scale` blanket +1 |
 | **≥1920 site-fluid** | 根 rem 阶梯放大 **layout/shell**；**Typography px-locked 不跟根缩放** |
 
-详见 [`aegis-design-system-spec.md`](./aegis-design-system-spec.md) §11 · [`design-token-audit-synthesis.md`](./design-token-audit-synthesis.md) §4。
+详见 [`aegis-design-system-spec.md`](./aegis-design-system-spec.md) §11 · [`archive/design-token-audit-synthesis.md`](./archive/design-token-audit-synthesis.md) §4。
 
 ---
 

@@ -1,11 +1,10 @@
-# Design Token 收束 — 五路 Agent 审查与汇总
-
+> **归档 · 只读背景** — 执行 SSOT：[`../foundation/README.md`](../foundation/README.md)  
 > **版本**：v3.0 · **2026-07-08**  
 > **方法**：5 路 Composer 2.5 专项 **独立盲评** → 主 Agent 仲裁  
-> **数据 SSOT**：[`figma-export/token-usage-audit.json`](./figma-export/token-usage-audit.json)  
-> **定稿输出**：[`design-token-tiers.md`](./design-token-tiers.md) · [`aegis-design-system-spec.md`](./aegis-design-system-spec.md) · [`design-system-migration-plan.md`](./design-system-migration-plan.md)
+> **数据 SSOT**：[`../figma-export/token-usage-audit.json`](../figma-export/token-usage-audit.json)  
+> **定稿输出**：[`../design-token-tiers.md`](../design-token-tiers.md) · [`../aegis-design-system-spec.md`](../aegis-design-system-spec.md) · [`../foundation/`](../foundation/README.md)
 
-**用户裁决**：验收 **Figma 为准** + 每切片 **dev diff 可回滚**；实施顺序 **tokens-first**。
+> **2026-07-08**：执行已收束至 **foundation 三核**；本文不再作为 agent 必读。
 
 ---
 
@@ -33,7 +32,7 @@
 
 - **Tier A 14 semantic**（text/ink → foreground 等）
 - **Tier B 收编**：#5b6472、#8b93a1、#c9cfda、#111625、#e9785a
-- **tone 收敛**：deprecated `strong`/`faint`/`subtle`/`faq`/`accent`
+- **tone 收敛**（背景）：旧 `strong`/`faint`/`subtle`/`faq`/`accent` → 语义 tone；**执行**：P1 各 Foundation PR 同 PR 删 call site，无 alias 层
 - **风险**：`--foreground #252628` vs Figma ink `#0b0e14` **系统性偏浅**
 - **缺口**：surface elevation + state（hover/disabled）矩阵
 

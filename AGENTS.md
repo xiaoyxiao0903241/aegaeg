@@ -11,7 +11,7 @@ AI 工作规范
 - **暴露不确定性**：写代码前暴露会影响数据所有权、同步正确性、schema / API、性能目标或平台语义的不确定性；禁止静默假设。
 - **优先最小闭环**：优先做能验证目标的最小闭环。切片必须绑定一个用户可判断 case 或一个证明边界。
 - **找根因不用补丁**：找根因，不用补丁掩盖症状；失败来自流程时，同步修改文档或本文件，不靠聊天记忆。
-- **样式重构**：触达 typography / `Text` variant / shell primitive 样式时，**强制** [`docs/style-refactor-playbook.md`](docs/style-refactor-playbook.md)（基线 → 样式栈 → 单一 owner → 验收）；禁止跳过栈分析直接换 API。
+- **样式重构**：触达 Foundation / typography / shell primitive 时，**只读** [`docs/foundation/README.md`](docs/foundation/README.md) 三核 + [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)；**六组件全部**在 scope；探针 PASS ≠ 完成。
 - **小而精准**：保持小而精准的改动；不要机会主义重写、重命名、格式化或清理无关代码。
 - **最终报告必须说明**：改了什么、为什么、如何验证、剩余风险。
 
@@ -88,6 +88,6 @@ AI 工作规范
   3. **不引用**遗留 theme 扩展色（`ink-strong`、`ink-muted`、`faint`、`on-dark`、`faq-text`、`coral-bright` 等）——存量迁移完成前旧文件可暂留，新 diff 不得新增引用。
 - **允许例外**（须 PR 说明理由）：第三方组件默认样式 override（如 sonner）；必须在 `theme.css` 新增 `--color-*` token 的设计/工程依据。
 - **字阶**：走 [`src/shared/ui/text.tsx`](src/shared/ui/text.tsx) 的 `variant` + `tone`（`tv()`）；禁止新建 `*-type-scale.ts` 或散落字阶 class 常量。
-- **全站文本**：用户可见文案 **必须** `<Text>` 包装；禁止 typography React wrapper 与拼串组件。流程见 [`docs/style-refactor-playbook.md`](docs/style-refactor-playbook.md) §3.1–3.2。
+- **全站文本**：用户可见文案 **必须** `<Text>` 包装；流程见 [`docs/foundation/runbook.md`](docs/foundation/runbook.md) §5。
 - **布局**：间距、栅格、`max-w`、定位等用 Tailwind 原子类或调用处 `className`；细则见 [`docs/design-system-audit.md`](docs/design-system-audit.md) §2。
-- **样式重构强制流程**：凡改 typography / 删 class 常量 / 动 `Text` 或 shell primitive 样式，**必须先走** [`docs/style-refactor-playbook.md`](docs/style-refactor-playbook.md) Phase A–D；未填样式栈表不得写盘。
+- **样式重构强制流程**：凡改 Foundation / typography / shell primitive，**只走** [`docs/foundation/`](docs/foundation/README.md)；未填 runbook 映射表不得写盘。

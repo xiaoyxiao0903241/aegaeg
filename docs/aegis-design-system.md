@@ -2,9 +2,9 @@
 
 > **版本**：v1.3 · **2026-07-08**  
 > **规范全书**：[`aegis-design-system-spec.md`](./aegis-design-system-spec.md)  
-> **迁移计划**：[`design-system-migration-plan.md`](./design-system-migration-plan.md)  
+> **迁移执行**：[`foundation/runbook.md`](./foundation/runbook.md)  
 > **Token 收束 SSOT**：[`design-token-tiers.md`](./design-token-tiers.md)（Tier A/B/C）  
-> **五路审查**：[`design-token-audit-synthesis.md`](./design-token-audit-synthesis.md) v2（Composer 2.5 ×5）
+> **五路审查（归档）**：[`archive/design-token-audit-synthesis.md`](./archive/design-token-audit-synthesis.md)
 
 ---
 
@@ -265,7 +265,7 @@ topbar (h76/60) → stage → app-window (r28/24)
 | 7 | `dl` 区块 | `section` 18px | 可能 17px |
 | 8 | Text variant 名 | §3.3 表 | ~48 角色名 + caption/title 编号 |
 
-实施路径：[`text-refactor-plan.md`](./text-refactor-plan.md)
+实施路径：[`foundation/runbook.md`](./foundation/runbook.md) + [`foundation/api.md`](./foundation/api.md)
 
 ---
 
@@ -273,10 +273,10 @@ topbar (h76/60) → stage → app-window (r28/24)
 
 | 文档 | 用途 |
 |------|------|
-| [`inferred-design-spec.md`](./inferred-design-spec.md) | Figma 逆向推断（输入） |
 | [`design-token-tiers.md`](./design-token-tiers.md) | **Tier A/B/C 收束 SSOT** |
-| [`design-token-audit-synthesis.md`](./design-token-audit-synthesis.md) | 五路审查汇总 |
-| [`text-refactor-plan.md`](./text-refactor-plan.md) | 工程 Phase 1–3 |
+| [`archive/design-token-audit-synthesis.md`](./archive/design-token-audit-synthesis.md) | 五路审查汇总（归档） |
+| [`foundation/api.md`](./foundation/api.md) | Foundation 六组件 API |
+| [`foundation/runbook.md`](./foundation/runbook.md) | 迁移执行 |
 
 ---
 

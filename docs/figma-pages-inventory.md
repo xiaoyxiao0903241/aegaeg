@@ -4,18 +4,18 @@
 > **提取**：`get_metadata` 全 canvas + `get_design_context` 逐帧（**不含**图标/图片 asset URL）
 > **用途**：与当前应用 / **dev 分支 4175 computed** 对比前的设计稿侧 SSOT
 > **冲突裁决**：**以 dev 分支现有代码 effective 样式为 SSOT**；本文记录 Figma 目标，差异记为「Figma→dev delta」待多 agent 讨论
-> **关联**：[`aegis-design-system.md`](./aegis-design-system.md) · [`figma-export/README.md`](./figma-export/README.md) · 工程映射 [`typography-baseline.md`](./typography-baseline.md)
+> **关联**：[`aegis-design-system.md`](./aegis-design-system.md) · [`figma-export/README.md`](./figma-export/README.md) · parity [`baselines/`](./baselines/README.md) · API [`foundation/api.md`](./foundation/api.md)
 
 **UI 页面帧**：31（已排除 LOGO / 代币导出 / Group / viewport 切片）
 
 ---
 
-## 1. SSOT 与对比流程（预定）
+## 1. SSOT 与对比流程
 
 1. **本文**：Figma 每帧的结构 / 字阶抽样 / 间距抽样
-2. **dev 4175**：[`typography-baseline.md`](./typography-baseline.md) + `compare:computed`
-3. **当前分支 5174**：重构目标；与 Figma 不一致时 **先对齐 dev**，再决定是否改 dev
-4. **多 agent 对抗**（已完成）：[`design-spec-adversarial-review.md`](./design-spec-adversarial-review.md) — 10 flat variant + 5 parity + delta 表；**dev 优先**
+2. **dev 4175**：`docs/baselines/` + `compare:style-baseline` / `compare:computed`
+3. **当前分支 5174**：重构目标；**回归迁移先对齐 4175 computed**，再开 Figma 切片
+4. **Foundation API**：[`foundation/api.md`](./foundation/api.md) — 六组件对称，无 alias
 
 ---
 

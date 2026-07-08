@@ -1,0 +1,1008 @@
+{
+  "pageId": "dapp-swap-desktop",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "source": "http://127.0.0.1:4175",
+  "capturedAt": "2026-07-08T08:38:55.487Z",
+  "catalog": [
+    {
+      "id": "rail-tab-swap-active",
+      "group": "rail",
+      "owner": "dapp-rail.tsx + shellRailItemClass",
+      "selector": "nav[aria-label=\"DApp sections\"] button[role=\"tab\"] span[title]",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "rail-tab-cobuild-inactive",
+      "group": "rail",
+      "owner": "dapp-rail.tsx + shellRailItemClass",
+      "selector": "nav[aria-label=\"DApp sections\"] button[role=\"tab\"] span[title]",
+      "nth": 1,
+      "optional": false
+    },
+    {
+      "id": "rail-tab-rewards-inactive",
+      "group": "rail",
+      "owner": "dapp-rail.tsx + shellRailItemClass",
+      "selector": "nav[aria-label=\"DApp sections\"] button[role=\"tab\"] span[title]",
+      "nth": 2,
+      "optional": false
+    },
+    {
+      "id": "rail-tab-community-inactive",
+      "group": "rail",
+      "owner": "dapp-rail.tsx + shellRailItemClass",
+      "selector": "nav[aria-label=\"DApp sections\"] button[role=\"tab\"] span[title]",
+      "nth": 3,
+      "optional": false
+    },
+    {
+      "id": "rail-tab-btn-cobuild",
+      "group": "rail-layout",
+      "owner": "shellRailItemClass",
+      "selector": "nav[aria-label=\"DApp sections\"] button[role=\"tab\"]",
+      "nth": 1,
+      "optional": false
+    },
+    {
+      "id": "topbar-brand",
+      "group": "shell",
+      "owner": "header brand Text/link",
+      "selector": "header a[aria-label*=\"home\"] span, header .container > a span",
+      "nth": null,
+      "optional": false
+    },
+    {
+      "id": "topbar-connect",
+      "group": "shell",
+      "owner": ".aegis-thirdweb-button-primary",
+      "selector": ".aegis-thirdweb-button-primary, .aegis-thirdweb-button",
+      "nth": null,
+      "optional": false
+    },
+    {
+      "id": "topbar-lang",
+      "group": "shell",
+      "owner": "header lang pill",
+      "selector": "header button.rounded-full, header .rounded-full.border-border",
+      "nth": null,
+      "optional": false
+    },
+    {
+      "id": "widget-h1",
+      "group": "widget-text",
+      "owner": "swap-widget-header / widget-title",
+      "selector": "[data-dapp-widget-panel] h1",
+      "nth": null,
+      "optional": false
+    },
+    {
+      "id": "widget-subtitle",
+      "group": "widget-text",
+      "owner": "swap-widget-header / meta",
+      "selector": "[data-dapp-widget-panel] h1 ~ p",
+      "nth": null,
+      "optional": false
+    },
+    {
+      "id": "mode-card-convert-title",
+      "group": "widget-card",
+      "owner": "swap-mode-card / headline",
+      "selector": "[data-dapp-widget-panel] button.rounded-md strong, [data-dapp-widget-panel] button.rounded-md span.font-semibold",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "mode-card-convert-body",
+      "group": "widget-card",
+      "owner": "swap-mode-card / meta",
+      "selector": "[data-dapp-widget-panel] button.rounded-md p, [data-dapp-widget-panel] button.rounded-md span.text-muted-foreground, [data-dapp-widget-panel] button.rounded-md span.text-ink-muted",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "mode-card-trade-title",
+      "group": "widget-card",
+      "owner": "swap-mode-card / headline",
+      "selector": "[data-dapp-widget-panel] button.rounded-md strong, [data-dapp-widget-panel] button.rounded-md span.font-semibold",
+      "nth": 1,
+      "optional": false
+    },
+    {
+      "id": "mode-card-trade-body",
+      "group": "widget-card",
+      "owner": "swap-mode-card / meta",
+      "selector": "[data-dapp-widget-panel] button.rounded-md p, [data-dapp-widget-panel] button.rounded-md span.text-muted-foreground, [data-dapp-widget-panel] button.rounded-md span.text-ink-muted",
+      "nth": 1,
+      "optional": false
+    },
+    {
+      "id": "mode-card-burn-title",
+      "group": "widget-card",
+      "owner": "swap-mode-card / headline",
+      "selector": "[data-dapp-widget-panel] button.rounded-md strong, [data-dapp-widget-panel] button.rounded-md span.font-semibold",
+      "nth": 2,
+      "optional": false
+    },
+    {
+      "id": "mode-card-burn-body",
+      "group": "widget-card",
+      "owner": "swap-mode-card / meta",
+      "selector": "[data-dapp-widget-panel] button.rounded-md p, [data-dapp-widget-panel] button.rounded-md span.text-muted-foreground, [data-dapp-widget-panel] button.rounded-md span.text-ink-muted",
+      "nth": 2,
+      "optional": false
+    },
+    {
+      "id": "mode-card-burn-badge",
+      "group": "widget-card",
+      "owner": "swap-mode-card / mode-badge",
+      "selector": "[data-dapp-widget-panel] span.rounded-full.bg-\\[\\#FF9500\\], [data-dapp-widget-panel] .rounded-full[class*=\"FF9500\"]",
+      "nth": null,
+      "optional": false
+    },
+    {
+      "id": "mode-card-root-convert",
+      "group": "widget-card-layout",
+      "owner": "swapModeCard tv",
+      "selector": "[data-dapp-widget-panel] button.rounded-md.border-border",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "widget-connect-promo-title",
+      "group": "widget-card",
+      "owner": "dapp-connect-promo-card",
+      "selector": "[data-dapp-widget-panel] section strong, [data-dapp-widget-panel] [data-reveal] strong",
+      "nth": null,
+      "optional": true
+    },
+    {
+      "id": "detail-h2-program",
+      "group": "detail-text",
+      "owner": "swap-hub-content / section",
+      "selector": "[data-dapp-detail] h2, main h2",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "detail-h2-faq",
+      "group": "detail-text",
+      "owner": "swap-hub-content / section",
+      "selector": "[data-dapp-detail] h2, main h2",
+      "nth": 1,
+      "optional": false
+    },
+    {
+      "id": "program-card-0-title",
+      "group": "detail-card",
+      "owner": "swap-program-card / ProgramCard",
+      "selector": "[data-dapp-detail] article h3, [data-dapp-detail] article strong",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "program-card-0-body",
+      "group": "detail-card",
+      "owner": "swap-promo-card / meta",
+      "selector": "[data-dapp-detail] article p",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "program-card-0-kicker",
+      "group": "detail-card",
+      "owner": "swap-program-card / kicker",
+      "selector": "[data-dapp-detail] article span.uppercase, [data-dapp-detail] article .uppercase",
+      "nth": 0,
+      "optional": true
+    },
+    {
+      "id": "about-card-title",
+      "group": "detail-card",
+      "owner": "swap-promo-card / headline",
+      "selector": "[data-dapp-detail] [data-reveal] strong",
+      "nth": null,
+      "optional": true
+    },
+    {
+      "id": "program-section-grid",
+      "group": "detail-layout",
+      "owner": "swap-program-cards",
+      "selector": "[data-dapp-detail] section:nth-of-type(2) .grid.gap-2",
+      "nth": null,
+      "optional": false
+    },
+    {
+      "id": "program-card-hero",
+      "group": "detail-card",
+      "owner": "swap-program-card / program-body",
+      "selector": "[data-dapp-detail] section:nth-of-type(2) button",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "faq-question-0",
+      "group": "detail-card",
+      "owner": "faq-list / question",
+      "selector": "[data-dapp-detail] [data-faq-item] [data-faq-trigger] span",
+      "nth": 0,
+      "optional": false
+    },
+    {
+      "id": "detail-page-root",
+      "group": "detail-layout",
+      "owner": "DappDetailPage",
+      "selector": "[data-dapp-detail]",
+      "nth": null,
+      "optional": false
+    }
+  ],
+  "probes": {
+    "rail-tab-swap-active": {
+      "missing": false,
+      "tag": "span",
+      "cls": "block w-full min-w-0 truncate text-center",
+      "text": "Swap",
+      "rect": {
+        "x": 93,
+        "y": 123,
+        "w": 59,
+        "h": 16.5
+      },
+      "styles": {
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16.5px",
+        "letterSpacing": "-0.3px",
+        "color": "oklch(0.6683 0.1625 36.6)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "59px",
+        "height": "16.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "rail-tab-cobuild-inactive": {
+      "missing": false,
+      "tag": "span",
+      "cls": "block w-full min-w-0 truncate text-center",
+      "text": "Co-build",
+      "rect": {
+        "x": 93,
+        "y": 191.5,
+        "w": 59,
+        "h": 16.5
+      },
+      "styles": {
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16.5px",
+        "letterSpacing": "-0.3px",
+        "color": "oklch(0 0 0 / 0.7)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "59px",
+        "height": "16.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "rail-tab-rewards-inactive": {
+      "missing": false,
+      "tag": "span",
+      "cls": "block w-full min-w-0 truncate text-center",
+      "text": "Rewards",
+      "rect": {
+        "x": 93,
+        "y": 260,
+        "w": 59,
+        "h": 16.5
+      },
+      "styles": {
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16.5px",
+        "letterSpacing": "-0.3px",
+        "color": "oklch(0 0 0 / 0.7)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "59px",
+        "height": "16.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "rail-tab-community-inactive": {
+      "missing": false,
+      "tag": "span",
+      "cls": "block w-full min-w-0 truncate text-center",
+      "text": "Community",
+      "rect": {
+        "x": 93,
+        "y": 328.5,
+        "w": 59,
+        "h": 16.5
+      },
+      "styles": {
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16.5px",
+        "letterSpacing": "-0.3px",
+        "color": "oklch(0 0 0 / 0.7)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "59px",
+        "height": "16.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "rail-tab-btn-cobuild": {
+      "missing": false,
+      "tag": "button",
+      "cls": "relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5 text-xs font-normal leading-sn",
+      "text": "Co-build",
+      "rect": {
+        "x": 89,
+        "y": 155.5,
+        "w": 67,
+        "h": 62.5
+      },
+      "styles": {
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16.5px",
+        "letterSpacing": "-0.3px",
+        "color": "oklch(0 0 0 / 0.7)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "10px",
+        "paddingRight": "4px",
+        "paddingBottom": "10px",
+        "paddingLeft": "4px",
+        "gap": "4px",
+        "width": "67px",
+        "height": "62.5px",
+        "borderRadius": "16px",
+        "display": "flex"
+      }
+    },
+    "topbar-brand": {
+      "missing": false,
+      "tag": "span",
+      "cls": "",
+      "text": "AEGIS X",
+      "rect": {
+        "x": 62,
+        "y": 22,
+        "w": 70.78125,
+        "h": 28
+      },
+      "styles": {
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px",
+        "letterSpacing": "-0.45px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "70.7812px",
+        "height": "28px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "topbar-connect": {
+      "missing": false,
+      "tag": "button",
+      "cls": "aegis-thirdweb-button aegis-thirdweb-button-primary",
+      "text": "Connect Wallet",
+      "rect": {
+        "x": 1180.96875,
+        "y": 16,
+        "w": 157.25,
+        "h": 40
+      },
+      "styles": {
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "lineHeight": "14px",
+        "letterSpacing": "normal",
+        "color": "oklch(1 0 89.88)",
+        "backgroundColor": "oklch(0.6683 0.1625 36.6)",
+        "paddingTop": "0px",
+        "paddingRight": "22px",
+        "paddingBottom": "0px",
+        "paddingLeft": "22px",
+        "gap": "8px",
+        "width": "157.25px",
+        "height": "40px",
+        "borderRadius": "999px",
+        "display": "flex"
+      }
+    },
+    "topbar-lang": {
+      "missing": true
+    },
+    "widget-h1": {
+      "missing": false,
+      "tag": "h1",
+      "cls": "m-0 text-[1.3125rem] font-semibold leading-normal tracking-[-0.02625em] text-foreground",
+      "text": "Swap",
+      "rect": {
+        "x": 189,
+        "y": 113,
+        "w": 295,
+        "h": 31.5
+      },
+      "styles": {
+        "fontSize": "21px",
+        "fontWeight": "600",
+        "lineHeight": "31.5px",
+        "letterSpacing": "-0.55125px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "295px",
+        "height": "31.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "widget-subtitle": {
+      "missing": false,
+      "tag": "p",
+      "cls": "m-0 max-w-[17.5rem] text-[0.8125rem] font-normal leading-[1.4] tracking-[-0.02em] text-ink-strong max-dapp:max-w-none",
+      "text": "Get AEGIS X ecosystem tokens at the best rates",
+      "rect": {
+        "x": 189,
+        "y": 150.5,
+        "w": 280,
+        "h": 36.375
+      },
+      "styles": {
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "lineHeight": "18.2px",
+        "letterSpacing": "-0.26px",
+        "color": "oklch(0 0 0 / 0.7)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "280px",
+        "height": "36.375px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "mode-card-convert-title": {
+      "missing": false,
+      "tag": "strong",
+      "cls": "text-[0.8125rem] font-semibold leading-normal tracking-[-0.02em] text-foreground",
+      "text": "Convert",
+      "rect": {
+        "x": 236,
+        "y": 215.875,
+        "w": 51,
+        "h": 19.5
+      },
+      "styles": {
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "lineHeight": "19.5px",
+        "letterSpacing": "-0.26px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "51px",
+        "height": "19.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "mode-card-convert-body": {
+      "missing": false,
+      "tag": "span",
+      "cls": "text-[0.8125rem] font-normal leading-normal tracking-[-0.02em] text-muted-foreground",
+      "text": "Convert USDT to USD1, no fee or slippage",
+      "rect": {
+        "x": 236,
+        "y": 239.375,
+        "w": 289,
+        "h": 19.5
+      },
+      "styles": {
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "lineHeight": "19.5px",
+        "letterSpacing": "-0.26px",
+        "color": "oklch(0 0 0 / 0.5)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "289px",
+        "height": "19.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "mode-card-trade-title": {
+      "missing": false,
+      "tag": "strong",
+      "cls": "text-[0.8125rem] font-semibold leading-normal tracking-[-0.02em] text-foreground",
+      "text": "Trade",
+      "rect": {
+        "x": 236,
+        "y": 296.875,
+        "w": 36.1875,
+        "h": 19.5
+      },
+      "styles": {
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "lineHeight": "19.5px",
+        "letterSpacing": "-0.26px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "36.1875px",
+        "height": "19.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "mode-card-trade-body": {
+      "missing": false,
+      "tag": "span",
+      "cls": "text-[0.8125rem] font-normal leading-normal tracking-[-0.02em] text-muted-foreground",
+      "text": "Swap major tokens for AEGIS X tokens",
+      "rect": {
+        "x": 236,
+        "y": 320.375,
+        "w": 289,
+        "h": 19.5
+      },
+      "styles": {
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "lineHeight": "19.5px",
+        "letterSpacing": "-0.26px",
+        "color": "oklch(0 0 0 / 0.5)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "289px",
+        "height": "19.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "mode-card-burn-title": {
+      "missing": false,
+      "tag": "strong",
+      "cls": "text-[0.8125rem] font-semibold leading-normal tracking-[-0.02em] text-foreground",
+      "text": "Burn",
+      "rect": {
+        "x": 236,
+        "y": 379.125,
+        "w": 32.03125,
+        "h": 19.5
+      },
+      "styles": {
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "lineHeight": "19.5px",
+        "letterSpacing": "-0.26px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "32.0312px",
+        "height": "19.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "mode-card-burn-body": {
+      "missing": false,
+      "tag": "span",
+      "cls": "text-[0.8125rem] font-normal leading-normal tracking-[-0.02em] text-muted-foreground",
+      "text": "Burn AGX for contribution points",
+      "rect": {
+        "x": 236,
+        "y": 403.875,
+        "w": 289,
+        "h": 19.5
+      },
+      "styles": {
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "lineHeight": "19.5px",
+        "letterSpacing": "-0.26px",
+        "color": "oklch(0 0 0 / 0.5)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "289px",
+        "height": "19.5px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "mode-card-burn-badge": {
+      "missing": false,
+      "tag": "span",
+      "cls": "inline-flex shrink-0 items-center justify-center rounded-full bg-[#FF9500] px-2 py-1.5 text-[0.625rem] font-medium leading-none tracking-[-0.02em] text-white",
+      "text": "Coming soon",
+      "rect": {
+        "x": 274.03125,
+        "y": 377.875,
+        "w": 81.34375,
+        "h": 22
+      },
+      "styles": {
+        "fontSize": "10px",
+        "fontWeight": "500",
+        "lineHeight": "10px",
+        "letterSpacing": "-0.2px",
+        "color": "rgb(255, 255, 255)",
+        "backgroundColor": "rgb(255, 149, 0)",
+        "paddingTop": "6px",
+        "paddingRight": "8px",
+        "paddingBottom": "6px",
+        "paddingLeft": "8px",
+        "gap": "normal",
+        "width": "81.3438px",
+        "height": "22px",
+        "borderRadius": "3.35544e+07px",
+        "display": "flex"
+      }
+    },
+    "mode-card-root-convert": {
+      "missing": false,
+      "tag": "button",
+      "cls": "grid aspect-square w-10 cursor-pointer list-none place-items-center rounded-md border border-border bg-card",
+      "text": "",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "styles": {
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "letterSpacing": "normal",
+        "color": "oklch(0 0 0 / 0.5)",
+        "backgroundColor": "oklch(1 0 89.88)",
+        "paddingTop": "1px",
+        "paddingRight": "6px",
+        "paddingBottom": "1px",
+        "paddingLeft": "6px",
+        "gap": "normal",
+        "width": "40px",
+        "height": "auto",
+        "borderRadius": "16px",
+        "display": "grid"
+      }
+    },
+    "widget-connect-promo-title": {
+      "missing": true
+    },
+    "detail-h2-program": {
+      "missing": false,
+      "tag": "h2",
+      "cls": "m-0 text-lg font-semibold leading-[1.3] tracking-[-0.04em] text-foreground max-dapp:text-base max-dapp:tracking-[-0.04em] pb-4",
+      "text": "Get X DAO Tokens",
+      "rect": {
+        "x": 593,
+        "y": 257,
+        "w": 738,
+        "h": 39.390625
+      },
+      "styles": {
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "23.4px",
+        "letterSpacing": "-0.72px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "16px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "738px",
+        "height": "39.3906px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "detail-h2-faq": {
+      "missing": false,
+      "tag": "h2",
+      "cls": "m-0 text-lg font-semibold leading-[1.3] tracking-[-0.04em] text-foreground max-dapp:text-base max-dapp:tracking-[-0.04em] pb-4",
+      "text": "FAQs",
+      "rect": {
+        "x": 593,
+        "y": 555.734375,
+        "w": 738,
+        "h": 39.390625
+      },
+      "styles": {
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "23.4px",
+        "letterSpacing": "-0.72px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "16px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "738px",
+        "height": "39.3906px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "program-card-0-title": {
+      "missing": false,
+      "tag": "strong",
+      "cls": "truncate font-semibold text-foreground text-base tracking-[-0.03em]",
+      "text": "About Swap",
+      "rect": {
+        "x": 609,
+        "y": 139,
+        "w": 95.515625,
+        "h": 24
+      },
+      "styles": {
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "letterSpacing": "-0.48px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "95.5156px",
+        "height": "24px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "program-card-0-body": {
+      "missing": false,
+      "tag": "p",
+      "cls": "m-0 min-w-0 text-xs font-normal leading-[1.5] tracking-[-0.02em] text-ink-strong max-w-144",
+      "text": "Swap USDT to USD1, trade major tokens for X DAO ",
+      "rect": {
+        "x": 609,
+        "y": 171,
+        "w": 576,
+        "h": 36
+      },
+      "styles": {
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "18px",
+        "letterSpacing": "-0.24px",
+        "color": "oklch(0 0 0 / 0.7)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "576px",
+        "height": "36px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "program-card-0-kicker": {
+      "missing": true
+    },
+    "about-card-title": {
+      "missing": false,
+      "tag": "strong",
+      "cls": "truncate font-semibold text-foreground text-base tracking-[-0.03em]",
+      "text": "About Swap",
+      "rect": {
+        "x": 609,
+        "y": 139,
+        "w": 95.515625,
+        "h": 24
+      },
+      "styles": {
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "letterSpacing": "-0.48px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "95.5156px",
+        "height": "24px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "program-section-grid": {
+      "missing": false,
+      "tag": "div",
+      "cls": "grid gap-2",
+      "text": "ConvertConvert USDT to USD1Get USD1Get USD1 at P",
+      "rect": {
+        "x": 593,
+        "y": 296.390625,
+        "w": 738,
+        "h": 225.34375
+      },
+      "styles": {
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "letterSpacing": "normal",
+        "color": "oklch(0 0 0 / 0.5)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "8px",
+        "width": "738px",
+        "height": "225.344px",
+        "borderRadius": "0px",
+        "display": "grid"
+      }
+    },
+    "program-card-hero": {
+      "missing": false,
+      "tag": "button",
+      "cls": "flex w-full rounded-md bg-card p-4 text-left shadow-card cursor-pointer transition-[transform,box-shadow] duration-180 ease-out hover:-translate-y-px items-cent",
+      "text": "ConvertConvert USDT to USD1",
+      "rect": {
+        "x": 593,
+        "y": 296.390625,
+        "w": 738,
+        "h": 69.78125
+      },
+      "styles": {
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "letterSpacing": "normal",
+        "color": "oklch(0 0 0 / 0.5)",
+        "backgroundColor": "oklch(1 0 89.88)",
+        "paddingTop": "16px",
+        "paddingRight": "16px",
+        "paddingBottom": "16px",
+        "paddingLeft": "16px",
+        "gap": "8px",
+        "width": "738px",
+        "height": "69.7812px",
+        "borderRadius": "16px",
+        "display": "flex"
+      }
+    },
+    "faq-question-0": {
+      "missing": false,
+      "tag": "span",
+      "cls": "min-w-px flex-[1_0_0] text-left text-sm font-semibold leading-[1.3] tracking-[-0.3px] text-foreground [overflow-wrap:anywhere] max-dapp:text-sm",
+      "text": "What is a crypto wallet?",
+      "rect": {
+        "x": 617,
+        "y": 613.125,
+        "w": 672,
+        "h": 18.1875
+      },
+      "styles": {
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "lineHeight": "18.2px",
+        "letterSpacing": "-0.3px",
+        "color": "oklch(0.1635 0.0136 264.09)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "672px",
+        "height": "18.1875px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    },
+    "detail-page-root": {
+      "missing": false,
+      "tag": "section",
+      "cls": "min-h-0 min-w-0 max-h-full overflow-x-hidden bg-card transition-opacity duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] overflow-y-auto opacity-100 max-dapp",
+      "text": "About SwapSwap USDT to USD1, trade major tokens ",
+      "rect": {
+        "x": 565,
+        "y": 73,
+        "w": 794,
+        "h": 762.6875
+      },
+      "styles": {
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "letterSpacing": "normal",
+        "color": "oklch(0 0 0 / 0.5)",
+        "backgroundColor": "oklch(1 0 89.88)",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "gap": "normal",
+        "width": "794px",
+        "height": "762.688px",
+        "borderRadius": "0px",
+        "display": "block"
+      }
+    }
+  }
+}

@@ -2,8 +2,8 @@
 
 > **版本**：v1.2 · **2026-07-08**  
 > **性质**：世界级设计规范 **执行 SSOT**（Figma 31 帧 + Tier A/B/C + rem 架构）  
-> **审查**：Composer 2.5 ×5 → [`design-token-audit-synthesis.md`](./design-token-audit-synthesis.md)  
-> **迁移**：[`design-system-migration-plan.md`](./design-system-migration-plan.md)  
+> **审查（归档）**：[`archive/design-token-audit-synthesis.md`](./archive/design-token-audit-synthesis.md)  
+> **迁移执行**：[`foundation/runbook.md`](./foundation/runbook.md)  
 > **Token 详表**：[`design-token-tiers.md`](./design-token-tiers.md)
 
 ---
@@ -113,8 +113,9 @@ Role          rit, qhd, dl — 迁移映射 only
 
 ### 5.3 Text tone（收敛目标）
 
-`foreground` · `muted-foreground` · `primary` · `success` · `inverse` · `on-dark`  
-Deprecated：`strong` · `faint` · `subtle` · `faq` · `accent`（迁移期 alias）
+`foreground` · `muted-foreground` · `primary` · `success` · `inverse` · `on-dark`
+
+**一步到位**：旧 tone 在 **P1 Foundation 各 PR** 同 PR 改 call site — **禁止** primitive 内 alias 映射。
 
 ---
 
@@ -187,7 +188,7 @@ topbar → stage → app-window
 
 ## 9. 组件 Anatomy（Tier B 摘要）
 
-> **详表**：[`component-anatomy.md`](./component-anatomy.md)
+> **详表**：[`foundation/api.md`](./foundation/api.md)
 
 ### 9.1 Card surface（收束）
 
@@ -246,11 +247,8 @@ Home：`fill=surface|token|transparent` namespace 隔离。
 
 ## 12. 迁移与验收
 
-- **顺序**：Phase 0–6 → [`design-system-migration-plan.md`](./design-system-migration-plan.md)
-- **Playbook**：[`style-refactor-playbook.md`](./style-refactor-playbook.md)
-- **dev diff 模板**：见 migration plan §Phase 1
-- **回归网**：`compare:computed`（非主验收）
-- **Legacy WebView**：Chrome 90–91 · hex-first · px-lock typography · prod build 验收 → [`design-system-migration-plan.md`](./design-system-migration-plan.md) Phase 1
+- **执行**：[`foundation/runbook.md`](./foundation/runbook.md) · [`foundation/verification.md`](./foundation/verification.md)
+- **Legacy WebView**：Chrome 90–91 · hex-first · px-lock typography · prod build 验收
 
 ### 待补（世界级缺口）
 
