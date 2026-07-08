@@ -1,0 +1,122 @@
+{
+  "nodeId": "40:56",
+  "frameName": "Modal — Wallet Detail",
+  "sourceFile": "40-56.tsx",
+  "exportKind": "react",
+  "typography": [
+    {
+      "node": "40:68",
+      "layer": "",
+      "sizePx": 21.0,
+      "weight": "SemiBold",
+      "leading": "1.3",
+      "tracking": "0.21px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "40:70",
+      "layer": "",
+      "sizePx": 17.0,
+      "weight": "",
+      "leading": null,
+      "tracking": "-0.34px",
+      "colorVar": [
+        "accent\\/primary-\\(coral\\"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "40:71",
+      "layer": "",
+      "sizePx": 15.0,
+      "weight": "",
+      "leading": null,
+      "tracking": "-0.3px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "40:77",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.3",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/inverse,white"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "40:79",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.3",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    }
+  ],
+  "typographySizeHistogram": {
+    "21": 1,
+    "17": 1,
+    "15": 1,
+    "14": 2
+  },
+  "gaps": {
+    "5": 1,
+    "10": 1,
+    "8": 1
+  },
+  "paddings": {
+    "24": 2,
+    "20": 1,
+    "6": 1,
+    "5": 1,
+    "12": 1,
+    "10": 1,
+    "8": 1
+  },
+  "rounded": {
+    "24": 1,
+    "17": 1,
+    "39": 1,
+    "999": 2
+  },
+  "colorVars": {
+    "text\\/ink,#0b0e14": 2,
+    "accent\\/primary-\\(coral\\": 1,
+    "text\\/muted,rgba(0,0,0,0.4": 1,
+    "text\\/inverse,white": 1,
+    "bg\\/surface,white": 3,
+    "accent\\/coral-button,#e66a47": 2,
+    "border\\/default,#eceef2": 2
+  },
+  "colorHex": {},
+  "shadows": [
+    "0px_30px_80px_0px_rgba(15,18,31,0.35)",
+    "0px_14px_34px_0px_rgba(229,107,71,0.4)"
+  ],
+  "layers": {
+    "Modal — Wallet Detail": 1,
+    "card": 1,
+    "xrow": 1,
+    "wm-x": 1,
+    "icw": 1,
+    "wd-ico": 1,
+    "addr": 1,
+    "bal": 1,
+    "btns": 1,
+    "cp": 1,
+    "out": 1
+  },
+  "textNodeCount": 5
+}

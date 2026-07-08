@@ -5,17 +5,21 @@
 
 ## Text API
 
+> **目标态 SSOT**：[`text-refactor-plan.md`](./text-refactor-plan.md)。下表在 Phase 1 完成前仍描述**现状**（含待删 `weight`）。
+
 ```tsx
-<Text variant="body" tone="strong" weight="semibold" tabular>
+<Text variant="body" tone="strong" tabular>
+// 罕见字重（目标态）：
+<Text variant="body" tone="strong" className="font-semibold" tabular>
 ```
 
 | 轴 | 职责 | 禁止 |
 |---|---|---|
-| `variant` | 字号 + 行高 + 字距 + 默认字重 | 在 call site 写 `text-*` / `leading-*` / `tracking-*` |
-| `tone` | 语义色 | 在 call site 写 `text-foreground` / `text-primary` 等 |
-| `weight` | 覆盖 variant 默认字重（可选） | — |
+| `variant` | 字号 + 行高 + 字距 + **默认字重** | call site 写 `text-*` / `leading-*` / `tracking-*` |
+| `tone` | 语义色 | call site 写 `text-foreground` / `text-primary` 等 |
 | `tabular` | 等宽数字（可选） | — |
-| `className` | **仅布局/状态**（`m-0`、`truncate`、`max-w-*`、`group-data-*`） | 字体样式 |
+| `className` | **布局/状态**；目标态允许**单字重** utility（§4 refactor plan） | 整包 typography |
+| ~~`weight`~~ | **删除**（迁移 Phase 1） | — |
 
 ## Tone 映射（dev → refactor）
 
@@ -114,8 +118,8 @@
 ## Call site 替换规则
 
 1. 读 `git show dev:<mapped-path>`，提取**字体** class（不含 margin/width）。
-2. 查上表选 `variant` + `tone` + `weight`。
-3. 删除 call site 上的 `text-*`、`leading-*`、`tracking-*`、`font-*`（已由 variant/weight 覆盖）。
+2. 查上表选 `variant` + `tone`（[`text-refactor-plan.md`](./text-refactor-plan.md) §8）。
+3. 删除 call site 上的 `text-*`、`leading-*`、`tracking-*`、`font-*`（variant 已覆盖；罕见字重见 refactor plan §4）。
 4. 保留布局 class：`m-0`、`mt-*`、`max-w-*`、`truncate`、`block`、`text-right` 等。
 5. dev 用裸 `<h1>`/`<span>` 且字阶稳定 → 改用 `<Text variant=…>`。
 

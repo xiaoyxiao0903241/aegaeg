@@ -1,0 +1,326 @@
+{
+  "nodeId": "77:2",
+  "frameName": "H5 — Swap · 未连接钱包",
+  "sourceFile": "77-2.tsx",
+  "exportKind": "react",
+  "typography": [
+    {
+      "node": "77:6",
+      "layer": "",
+      "sizePx": 15.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.45px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "77:9",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.13px",
+      "colorVar": [
+        "text\\/inverse,white"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "77:15",
+      "layer": "",
+      "sizePx": 22.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.88px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "77:16",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.26px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "140:16",
+      "layer": "",
+      "sizePx": 10.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [],
+      "colorHex": [
+        "3a4150"
+      ]
+    },
+    {
+      "node": "140:17",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "140:18",
+      "layer": "",
+      "sizePx": 22.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.44px",
+      "colorVar": [],
+      "colorHex": [
+        "c9cfda"
+      ]
+    },
+    {
+      "node": "140:21",
+      "layer": "",
+      "sizePx": 11.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "140:23",
+      "layer": "",
+      "sizePx": 11.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "140:25",
+      "layer": "",
+      "sizePx": 11.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "140:27",
+      "layer": "",
+      "sizePx": 11.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "140:39",
+      "layer": "",
+      "sizePx": 10.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [],
+      "colorHex": [
+        "3a4150"
+      ]
+    },
+    {
+      "node": "140:40",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "140:41",
+      "layer": "",
+      "sizePx": 22.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.44px",
+      "colorVar": [],
+      "colorHex": [
+        "c9cfda"
+      ]
+    },
+    {
+      "node": "77:51",
+      "layer": "",
+      "sizePx": 15.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.3px",
+      "colorVar": [
+        "text\\/inverse,white"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "77:53",
+      "layer": "",
+      "sizePx": 17.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.68px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "77:72",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "77:73",
+      "layer": "",
+      "sizePx": 12.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.24px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "77:75",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/inverse,white"
+      ],
+      "colorHex": []
+    }
+  ],
+  "typographySizeHistogram": {
+    "15": 2,
+    "13": 2,
+    "22": 3,
+    "10": 2,
+    "14": 4,
+    "11": 4,
+    "17": 1,
+    "12": 1
+  },
+  "gaps": {
+    "8": 4,
+    "12": 1,
+    "9": 2,
+    "6": 1,
+    "14": 1,
+    "11": 1,
+    "10": 3,
+    "5": 1
+  },
+  "paddings": {
+    "16": 3,
+    "8": 4,
+    "9": 3,
+    "24": 2,
+    "12": 2,
+    "22": 2,
+    "18": 2,
+    "14": 5,
+    "6": 5,
+    "13": 1,
+    "11": 1,
+    "10": 3,
+    "5": 1
+  },
+  "rounded": {
+    "999": 3,
+    "24": 1,
+    "13": 1,
+    "16": 3,
+    "12": 3,
+    "9": 4,
+    "11": 1,
+    "8": 9
+  },
+  "colorVars": {
+    "text\\/ink,#0b0e14": 9,
+    "text\\/inverse,white": 3,
+    "text\\/muted,rgba(0,0,0,0.4": 7,
+    "text\\/body,rgba(0,0,0,0.7": 4,
+    "accent\\/coral-button,#e66a47": 3,
+    "bg\\/surface,white": 11,
+    "border\\/default,#eceef2": 21
+  },
+  "colorHex": {
+    "3a4150": 2,
+    "c9cfda": 2
+  },
+  "shadows": [
+    "0px_8px_24px_0px_rgba(18,26,51,0.07)",
+    "0px_8px_12px_rgba(18,26,51,0.07)"
+  ],
+  "layers": {
+    "r": 5,
+    "pct": 4,
+    "skrow": 3,
+    "g": 3,
+    "cw": 2,
+    "box": 2,
+    "r2": 2,
+    "tk": 2,
+    "tc": 2,
+    "H5 — Swap · 未连接钱包": 1,
+    "topbar": 1,
+    "bb": 1,
+    "topR": 1,
+    "stage": 1,
+    "app-window": 1,
+    "ham": 1,
+    "pcts": 1,
+    "fl": 1,
+    "flb": 1,
+    "meta": 1,
+    "dl": 1,
+    "empty": 1,
+    "sk": 1,
+    "hint": 1,
+    "cwi": 1
+  },
+  "textNodeCount": 19
+}

@@ -77,7 +77,7 @@ H5 有效样式:  (同上，标注 max-dapp 差异)
 1. **单一 owner**：一个视觉角色 → 一个 `variant`（或一个 primitive），样式只在一层声明。
 2. **先 parity，后简化**：第一刀行为与改前一致；删 wrapper / 合并 variant 放第二 PR（若需要）。
 3. **专用 variant 优于超长 className**：同一字阶 ≥2 处且含 `!` 或 fluid var → 进 `text.tsx`（如 `rank-title`）。
-4. **tone 与 variant 正交**：字号进 `variant`；颜色进 `tone`；layout 进 `className`。
+4. **tone 与 variant 正交**：字号进 `variant`；颜色进 `tone`；layout 进 `className`；字重进 variant 默认或 [`text-refactor-plan.md`](./text-refactor-plan.md) §4 例外。
 5. **deprecated 别名**：旧 API 仅做映射，不删到无 call site 为止。
 6. **颜色**：遵守 §8.7 — 新代码不用遗留 `ink-*` / `faint` 等。
 7. **deletion-first**：内联成功后删常量文件；`rg` 零命中再删文件。

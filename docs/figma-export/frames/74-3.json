@@ -1,0 +1,442 @@
+{
+  "nodeId": "74:3",
+  "frameName": "DApp — Swap · 未连接钱包 (Desktop)",
+  "sourceFile": "74-3.tsx",
+  "exportKind": "react",
+  "typography": [
+    {
+      "node": "74:7",
+      "layer": "",
+      "sizePx": 18.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.54px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:10",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/inverse,white"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "159:26",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "SemiBold",
+      "leading": "normal",
+      "tracking": null,
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:25",
+      "layer": "",
+      "sizePx": 12.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.12px",
+      "colorVar": [
+        "accent\\/primary-\\(coral\\"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:31",
+      "layer": "",
+      "sizePx": 12.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.12px",
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:38",
+      "layer": "",
+      "sizePx": 12.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.12px",
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:45",
+      "layer": "",
+      "sizePx": 12.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.12px",
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:48",
+      "layer": "",
+      "sizePx": 26.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-1.04px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:49",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.26px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:57",
+      "layer": "",
+      "sizePx": 10.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [
+        "accent\\/primary-\\(coral\\"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:58",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:59",
+      "layer": "",
+      "sizePx": 22.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.66px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:62",
+      "layer": "",
+      "sizePx": 15.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": null,
+      "colorVar": [
+        "text\\/body,rgba(0,0,0,0.7"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:70",
+      "layer": "",
+      "sizePx": 10.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": null,
+      "colorVar": [
+        "accent\\/primary-\\(coral\\"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:71",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:72",
+      "layer": "",
+      "sizePx": 22.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.66px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:84",
+      "layer": "",
+      "sizePx": 15.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.3px",
+      "colorVar": [
+        "text\\/inverse,white"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:92",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:93",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.26px",
+      "colorVar": [
+        "accent\\/primary-\\(coral\\"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:96",
+      "layer": "",
+      "sizePx": 20.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.8px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:99",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.26px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:100",
+      "layer": "",
+      "sizePx": 18.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.54px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:102",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.26px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:103",
+      "layer": "",
+      "sizePx": 18.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.54px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:105",
+      "layer": "",
+      "sizePx": 20.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.8px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:127",
+      "layer": "",
+      "sizePx": 15.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.3px",
+      "colorVar": [
+        "text\\/ink,#0b0e14"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:128",
+      "layer": "",
+      "sizePx": 13.0,
+      "weight": "Regular",
+      "leading": "1.5",
+      "tracking": "-0.26px",
+      "colorVar": [
+        "text\\/muted,rgba(0,0,0,0.4"
+      ],
+      "colorHex": []
+    },
+    {
+      "node": "74:130",
+      "layer": "",
+      "sizePx": 14.0,
+      "weight": "SemiBold",
+      "leading": "1.2",
+      "tracking": "-0.28px",
+      "colorVar": [
+        "text\\/inverse,white"
+      ],
+      "colorHex": []
+    }
+  ],
+  "typographySizeHistogram": {
+    "18": 3,
+    "14": 5,
+    "13": 6,
+    "12": 4,
+    "26": 1,
+    "10": 2,
+    "22": 2,
+    "15": 3,
+    "20": 2
+  },
+  "gaps": {
+    "10": 3,
+    "12": 3,
+    "6": 6,
+    "5": 4,
+    "14": 4,
+    "11": 2,
+    "8": 3,
+    "18": 1
+  },
+  "paddings": {
+    "26": 1,
+    "10": 3,
+    "12": 4,
+    "22": 1,
+    "6": 7,
+    "48": 1,
+    "40": 3,
+    "14": 9,
+    "5": 4,
+    "28": 4,
+    "24": 2,
+    "11": 2,
+    "8": 3,
+    "16": 5,
+    "34": 1,
+    "18": 1,
+    "30": 1
+  },
+  "rounded": {
+    "999": 6,
+    "18": 2,
+    "28": 1,
+    "14": 6,
+    "16": 3,
+    "8": 12
+  },
+  "colorVars": {
+    "text\\/ink,#0b0e14": 14,
+    "text\\/inverse,white": 3,
+    "accent\\/primary-\\(coral\\": 4,
+    "text\\/body,rgba(0,0,0,0.7": 4,
+    "text\\/muted,rgba(0,0,0,0.4": 11,
+    "bg\\/page,#f5f6f8": 1,
+    "accent\\/coral-button,#e66a47": 3,
+    "bg\\/surface,white": 8,
+    "accent\\/coral-soft,#fceae2": 4,
+    "border\\/default,#eceef2": 17
+  },
+  "colorHex": {},
+  "shadows": [
+    "0px_16px_40px_0px_rgba(18,26,51,0.1)",
+    "0px_8px_24px_0px_rgba(18,26,51,0.06)"
+  ],
+  "layers": {
+    "r": 5,
+    "rit": 4,
+    "skrow": 3,
+    "g": 3,
+    "box": 2,
+    "rr": 2,
+    "tk": 2,
+    "tc": 2,
+    "dl": 2,
+    "ovc": 2,
+    "DApp — Swap · 未连接钱包 (Desktop)": 1,
+    "topbar": 1,
+    "tb": 1,
+    "tr": 1,
+    "btn-connect": 1,
+    "lang": 1,
+    "globe": 1,
+    "stage": 1,
+    "app-window": 1,
+    "rail": 1,
+    "wcol": 1,
+    "wh": 1,
+    "fl": 1,
+    "flb": 1,
+    "meta": 1,
+    "cw-big": 1,
+    "sp": 1,
+    "promo": 1,
+    "pr": 1,
+    "dcol": 1
+  },
+  "textNodeCount": 28
+}

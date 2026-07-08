@@ -1,0 +1,70 @@
+          <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex gap-[12px] items-center overflow-clip px-[14px] py-[13px] relative rounded-[13px] shrink-0 w-full" data-node-id="133:2" data-name="qlink">
+            <div className="bg-[var(--accent\/coral-button,#e66a47)] content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[1000px] shrink-0 size-[30px]" data-node-id="141:38" data-name="qi">
+              <div className="overflow-clip relative shrink-0 size-[18px]" data-node-id="141:39" data-name="Frame">
+                <div className="absolute contents inset-[4.17%_16.67%]" data-node-id="141:40" data-name="Mask group">
+                  <div className="absolute inset-[4.17%_16.67%_0_16.67%] mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-size-[12px_16.5px]" data-node-id="141:43" style={{ maskImage: `url("${imgGroup}")` }} data-name="Group">
+                    <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup1} />
+                  </div>
+                </div>
+                <div className="absolute inset-[4.17%_19.27%_67.19%_52.08%]" data-node-id="141:47" data-name="Vector">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector} />
+                </div>
+                <div className="absolute inset-[59.38%_33.33%_34.38%_33.33%]" data-node-id="141:48" data-name="Vector">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector1} />
+                </div>
+                <div className="absolute inset-[74.48%_41.67%_19.27%_33.33%]" data-node-id="141:49" data-name="Vector">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector2} />
+                </div>
+              </div>
+            </div>
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.3] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] whitespace-nowrap" data-node-id="133:15">{`Docs & Whitepaper`}</p>
+          </div>
+          <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex gap-[12px] items-center overflow-clip px-[14px] py-[13px] relative rounded-[13px] shrink-0 w-full" data-node-id="133:16" data-name="qlink">
+            <div className="bg-[var(--text\/ink,#0b0e14)] content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[1000px] shrink-0 size-[30px]" data-node-id="141:50" data-name="qi">
+              <div className="relative shrink-0 size-[14px]" data-node-id="141:51" data-name="Frame">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame1} />
+              </div>
+            </div>
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.3] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] whitespace-nowrap" data-node-id="133:20">
+              Twitter / X
+            </p>
+          </div>
+          <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex gap-[12px] items-center overflow-clip px-[14px] py-[13px] relative rounded-[13px] shrink-0 w-full" data-node-id="133:21" data-name="qlink">
+            <div className="relative shrink-0 size-[30px]" data-node-id="141:53" data-name="qi">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgQi} />
+            </div>
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.3] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] whitespace-nowrap" data-node-id="133:25">
+              Telegram
+            </p>
+          </div>
+          <div className="content-stretch flex flex-col items-start overflow-clip pt-[14px] relative shrink-0 w-full" data-node-id="64:141" data-name="dl">
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.68px] whitespace-nowrap" data-node-id="64:142">
+              My community
+            </p>
+          </div>
+          <div className="[word-break:break-word] content-stretch drop-shadow-[0px_8px_12px_rgba(18,26,51,0.07)] flex gap-[10px] items-start relative shrink-0 w-full whitespace-nowrap" data-node-id="64:143" data-name="cs">
+            <div className="bg-[var(--bg\/surface,white)] content-stretch flex flex-[1_0_0] flex-col gap-[5px] items-center min-w-px overflow-clip px-[16px] py-[14px] relative rounded-[14px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)]" data-node-id="64:144" data-name="sc">
+              <p className="font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[18px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.54px]" data-node-id="64:145">
+                0
+              </p>
+              <p className="font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[11px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.11px]" data-node-id="64:146">
+                Direct refs
+              </p>
+            </div>
+            <div className="bg-[var(--bg\/surface,white)] content-stretch flex flex-[1_0_0] flex-col gap-[5px] items-center min-w-px overflow-clip px-[16px] py-[14px] relative rounded-[14px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)]" data-node-id="64:147" data-name="sc">
+              <p className="font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[18px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.54px]" data-node-id="64:148">
+                0
+              </p>
+              <p className="font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[11px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.11px]" data-node-id="64:149">
+                My team
+              </p>
+            </div>
+            <div className="bg-[var(--bg\/surface,white)] content-stretch flex flex-[1_0_0] flex-col gap-[5px] items-center min-w-px overflow-clip px-[16px] py-[14px] relative rounded-[14px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)]" data-node-id="64:150" data-name="sc">
+              <p className="font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[18px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.54px]" data-node-id="64:151">
+                S3
+              </p>
+              <p className="font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[11px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.11px]" data-node-id="64:152">
+                Title
+              </p>
+            </div>
+          </div>

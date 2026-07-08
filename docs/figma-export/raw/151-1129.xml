@@ -1,0 +1,833 @@
+<frame id="151:1129" name="Homepage" x="-2931" y="-107" width="1440" height="1080">
+  <frame id="151:1130" name="nav" x="0" y="0" width="1440" height="74">
+    <frame id="151:1131" name="brand" x="120" y="23.739727020263672" width="111" height="26.520545959472656">
+      <rounded-rectangle id="151:1132" name="_prev_1 1" x="0" y="0" width="28" height="26.520545959472656" />
+      <text id="151:1133" name="AEGIS X" x="39" y="2.260272979736328" width="72" height="22" />
+    </frame>
+    <frame id="151:1134" name="links" x="395" y="28" width="495" height="18">
+      <text id="151:1135" name="Protocol" x="0" y="0" width="62" height="18" />
+      <text id="151:1136" name="Engine" x="96" y="0" width="53" height="18" />
+      <text id="151:1137" name="Token" x="183" y="0" width="45" height="18" />
+      <text id="151:1138" name="Roadmap" x="262" y="0" width="73" height="18" />
+      <text id="151:1139" name="Security" x="369" y="0" width="60" height="18" />
+      <text id="151:1140" name="FAQ" x="463" y="0" width="32" height="18" />
+    </frame>
+    <frame id="151:1141" name="ncta" x="1054" y="17.5" width="266" height="39">
+      <frame id="151:1142" name="wp" x="0" y="0" width="120" height="39">
+        <text id="151:1143" name="Whitepaper" x="18" y="11" width="84" height="17" />
+      </frame>
+      <frame id="151:1144" name="ld" x="134" y="0" width="132" height="39">
+        <text id="151:1145" name="Launch DApp" x="18" y="11" width="96" height="17" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1146" name="hero" x="0" y="74" width="1440" height="696">
+    <ellipse id="151:1147" name="hero-glow" x="763" y="-1" width="620" height="620" hidden="true" />
+    <frame id="151:1148" name="hero-rays" x="362" y="-477" width="1500" height="1500">
+      <vector id="151:1149" name="Vector" x="750" y="750" width="750" height="0" />
+      <vector id="151:1150" name="Vector" x="750" y="750" width="749.300048828125" height="31.4000244140625" />
+      <vector id="151:1151" name="Vector" x="750" y="750" width="747.4000244140625" height="62.79998779296875" />
+      <vector id="151:1152" name="Vector" x="750" y="750" width="744.0999755859375" height="94" />
+      <vector id="151:1153" name="Vector" x="750" y="750" width="739.5" height="125.0999755859375" />
+      <vector id="151:1154" name="Vector" x="750" y="750" width="733.5999755859375" height="155.9000244140625" />
+      <vector id="151:1155" name="Vector" x="750" y="750" width="726.4000244140625" height="186.5" />
+      <vector id="151:1156" name="Vector" x="750" y="750" width="718" height="216.79998779296875" />
+      <vector id="151:1157" name="Vector" x="750" y="750" width="708.300048828125" height="246.5999755859375" />
+      <vector id="151:1158" name="Vector" x="750" y="750" width="697.300048828125" height="276.0999755859375" />
+      <vector id="151:1159" name="Vector" x="750" y="750" width="685.199951171875" height="305.0999755859375" />
+      <vector id="151:1160" name="Vector" x="750" y="750" width="671.800048828125" height="333.5" />
+      <vector id="151:1161" name="Vector" x="750" y="750" width="657.199951171875" height="361.300048828125" />
+      <vector id="151:1162" name="Vector" x="750" y="750" width="641.5" height="388.5" />
+      <vector id="151:1163" name="Vector" x="750" y="750" width="624.699951171875" height="415" />
+      <vector id="151:1164" name="Vector" x="750" y="750" width="606.800048828125" height="440.800048828125" />
+      <vector id="151:1165" name="Vector" x="750" y="750" width="587.800048828125" height="465.9000244140625" />
+      <vector id="151:1166" name="Vector" x="750" y="750" width="567.699951171875" height="490.0999755859375" />
+      <vector id="151:1167" name="Vector" x="750" y="750" width="546.699951171875" height="513.4000244140625" />
+      <vector id="151:1168" name="Vector" x="750" y="750" width="524.699951171875" height="535.9000244140625" />
+      <vector id="151:1169" name="Vector" x="750" y="750" width="501.800048828125" height="557.4000244140625" />
+      <vector id="151:1170" name="Vector" x="750" y="750" width="478.0999755859375" height="577.9000244140625" />
+      <vector id="151:1171" name="Vector" x="750" y="750" width="453.4000244140625" height="597.4000244140625" />
+      <vector id="151:1172" name="Vector" x="750" y="750" width="428" height="615.9000244140625" />
+      <vector id="151:1173" name="Vector" x="750" y="750" width="401.9000244140625" height="633.199951171875" />
+      <vector id="151:1174" name="Vector" x="750" y="750" width="375" height="649.5" />
+      <vector id="151:1175" name="Vector" x="750" y="750" width="347.5" height="664.699951171875" />
+      <vector id="151:1176" name="Vector" x="750" y="750" width="319.300048828125" height="678.5999755859375" />
+      <vector id="151:1177" name="Vector" x="750" y="750" width="290.5999755859375" height="691.4000244140625" />
+      <vector id="151:1178" name="Vector" x="750" y="750" width="261.4000244140625" height="703" />
+      <vector id="151:1179" name="Vector" x="750" y="750" width="231.79998779296875" height="713.300048828125" />
+      <vector id="151:1180" name="Vector" x="750" y="750" width="201.70001220703125" height="722.4000244140625" />
+      <vector id="151:1181" name="Vector" x="750" y="750" width="171.29998779296875" height="730.199951171875" />
+      <vector id="151:1182" name="Vector" x="750" y="750" width="140.5" height="736.699951171875" />
+      <vector id="151:1183" name="Vector" x="750" y="750" width="109.5999755859375" height="742" />
+      <vector id="151:1184" name="Vector" x="750" y="750" width="78.4000244140625" height="745.9000244140625" />
+      <vector id="151:1185" name="Vector" x="750" y="750" width="47.0999755859375" height="748.5" />
+      <vector id="151:1186" name="Vector" x="750" y="750" width="15.70001220703125" height="749.800048828125" />
+      <vector id="151:1187" name="Vector" x="734.2999877929688" y="750" width="15.70001220703125" height="749.800048828125" />
+      <vector id="151:1188" name="Vector" x="702.9000244140625" y="750" width="47.0999755859375" height="748.5" />
+      <vector id="151:1189" name="Vector" x="671.5999755859375" y="750" width="78.4000244140625" height="745.9000244140625" />
+      <vector id="151:1190" name="Vector" x="640.4000244140625" y="750" width="109.5999755859375" height="742" />
+      <vector id="151:1191" name="Vector" x="609.5" y="750" width="140.5" height="736.699951171875" />
+      <vector id="151:1192" name="Vector" x="578.7000122070312" y="750" width="171.29998779296875" height="730.199951171875" />
+      <vector id="151:1193" name="Vector" x="548.2999877929688" y="750" width="201.70001220703125" height="722.4000244140625" />
+      <vector id="151:1194" name="Vector" x="518.2000122070312" y="750" width="231.79998779296875" height="713.300048828125" />
+      <vector id="151:1195" name="Vector" x="488.6000061035156" y="750" width="261.3999938964844" height="703" />
+      <vector id="151:1196" name="Vector" x="459.3999938964844" y="750" width="290.6000061035156" height="691.4000244140625" />
+      <vector id="151:1197" name="Vector" x="430.70001220703125" y="750" width="319.29998779296875" height="678.5999755859375" />
+      <vector id="151:1198" name="Vector" x="402.5" y="750" width="347.5" height="664.699951171875" />
+      <vector id="151:1199" name="Vector" x="375" y="750" width="375" height="649.5" />
+      <vector id="151:1200" name="Vector" x="348.1000061035156" y="750" width="401.8999938964844" height="633.199951171875" />
+      <vector id="151:1201" name="Vector" x="322" y="750" width="428" height="615.9000244140625" />
+      <vector id="151:1202" name="Vector" x="296.6000061035156" y="750" width="453.3999938964844" height="597.4000244140625" />
+      <vector id="151:1203" name="Vector" x="271.8999938964844" y="750" width="478.1000061035156" height="577.9000244140625" />
+      <vector id="151:1204" name="Vector" x="248.1999969482422" y="750" width="501.79998779296875" height="557.4000244140625" />
+      <vector id="151:1205" name="Vector" x="225.3000030517578" y="750" width="524.7000122070312" height="535.9000244140625" />
+      <vector id="151:1206" name="Vector" x="203.3000030517578" y="750" width="546.7000122070312" height="513.4000244140625" />
+      <vector id="151:1207" name="Vector" x="182.3000030517578" y="750" width="567.7000122070312" height="490.0999755859375" />
+      <vector id="151:1208" name="Vector" x="162.1999969482422" y="750" width="587.7999877929688" height="465.9000244140625" />
+      <vector id="151:1209" name="Vector" x="143.1999969482422" y="750" width="606.7999877929688" height="440.800048828125" />
+      <vector id="151:1210" name="Vector" x="125.30000305175781" y="750" width="624.7000122070312" height="415" />
+      <vector id="151:1211" name="Vector" x="108.5" y="750" width="641.5" height="388.5" />
+      <vector id="151:1212" name="Vector" x="92.80000305175781" y="750" width="657.2000122070312" height="361.300048828125" />
+      <vector id="151:1213" name="Vector" x="78.19999694824219" y="750" width="671.7999877929688" height="333.5" />
+      <vector id="151:1214" name="Vector" x="64.80000305175781" y="750" width="685.2000122070312" height="305.0999755859375" />
+      <vector id="151:1215" name="Vector" x="52.70000076293945" y="750" width="697.2999877929688" height="276.0999755859375" />
+      <vector id="151:1216" name="Vector" x="41.70000076293945" y="750" width="708.2999877929688" height="246.5999755859375" />
+      <vector id="151:1217" name="Vector" x="32" y="750" width="718" height="216.79998779296875" />
+      <vector id="151:1218" name="Vector" x="23.600000381469727" y="750" width="726.4000244140625" height="186.5" />
+      <vector id="151:1219" name="Vector" x="16.399999618530273" y="750" width="733.5999755859375" height="155.9000244140625" />
+      <vector id="151:1220" name="Vector" x="10.5" y="750" width="739.5" height="125.0999755859375" />
+      <vector id="151:1221" name="Vector" x="5.900000095367432" y="750" width="744.0999755859375" height="94" />
+      <vector id="151:1222" name="Vector" x="2.5999999046325684" y="750" width="747.4000244140625" height="62.79998779296875" />
+      <vector id="151:1223" name="Vector" x="0.699999988079071" y="750" width="749.2999877929688" height="31.4000244140625" />
+      <vector id="151:1224" name="Vector" x="0" y="750" width="750" height="0" />
+      <vector id="151:1225" name="Vector" x="0.699999988079071" y="718.5999755859375" width="749.2999877929688" height="31.4000244140625" />
+      <vector id="151:1226" name="Vector" x="2.5999999046325684" y="687.2000122070312" width="747.4000244140625" height="62.79998779296875" />
+      <vector id="151:1227" name="Vector" x="5.900000095367432" y="656" width="744.0999755859375" height="94" />
+      <vector id="151:1228" name="Vector" x="10.5" y="624.9000244140625" width="739.5" height="125.0999755859375" />
+      <vector id="151:1229" name="Vector" x="16.399999618530273" y="594.0999755859375" width="733.5999755859375" height="155.9000244140625" />
+      <vector id="151:1230" name="Vector" x="23.600000381469727" y="563.5" width="726.4000244140625" height="186.5" />
+      <vector id="151:1231" name="Vector" x="32" y="533.2000122070312" width="718" height="216.79998779296875" />
+      <vector id="151:1232" name="Vector" x="41.70000076293945" y="503.3999938964844" width="708.2999877929688" height="246.60000610351562" />
+      <vector id="151:1233" name="Vector" x="52.70000076293945" y="473.8999938964844" width="697.2999877929688" height="276.1000061035156" />
+      <vector id="151:1234" name="Vector" x="64.80000305175781" y="444.8999938964844" width="685.2000122070312" height="305.1000061035156" />
+      <vector id="151:1235" name="Vector" x="78.19999694824219" y="416.5" width="671.7999877929688" height="333.5" />
+      <vector id="151:1236" name="Vector" x="92.80000305175781" y="388.70001220703125" width="657.2000122070312" height="361.29998779296875" />
+      <vector id="151:1237" name="Vector" x="108.5" y="361.5" width="641.5" height="388.5" />
+      <vector id="151:1238" name="Vector" x="125.30000305175781" y="335" width="624.7000122070312" height="415" />
+      <vector id="151:1239" name="Vector" x="143.1999969482422" y="309.20001220703125" width="606.7999877929688" height="440.79998779296875" />
+      <vector id="151:1240" name="Vector" x="162.1999969482422" y="284.1000061035156" width="587.7999877929688" height="465.8999938964844" />
+      <vector id="151:1241" name="Vector" x="182.3000030517578" y="259.8999938964844" width="567.7000122070312" height="490.1000061035156" />
+      <vector id="151:1242" name="Vector" x="203.3000030517578" y="236.60000610351562" width="546.7000122070312" height="513.4000244140625" />
+      <vector id="151:1243" name="Vector" x="225.3000030517578" y="214.10000610351562" width="524.7000122070312" height="535.9000244140625" />
+      <vector id="151:1244" name="Vector" x="248.1999969482422" y="192.60000610351562" width="501.79998779296875" height="557.4000244140625" />
+      <vector id="151:1245" name="Vector" x="271.8999938964844" y="172.10000610351562" width="478.1000061035156" height="577.9000244140625" />
+      <vector id="151:1246" name="Vector" x="296.6000061035156" y="152.60000610351562" width="453.3999938964844" height="597.4000244140625" />
+      <vector id="151:1247" name="Vector" x="322" y="134.10000610351562" width="428" height="615.9000244140625" />
+      <vector id="151:1248" name="Vector" x="348.1000061035156" y="116.80000305175781" width="401.8999938964844" height="633.2000122070312" />
+      <vector id="151:1249" name="Vector" x="375" y="100.5" width="375" height="649.5" />
+      <vector id="151:1250" name="Vector" x="402.5" y="85.30000305175781" width="347.5" height="664.7000122070312" />
+      <vector id="151:1251" name="Vector" x="430.70001220703125" y="71.4000015258789" width="319.29998779296875" height="678.5999755859375" />
+      <vector id="151:1252" name="Vector" x="459.3999938964844" y="58.599998474121094" width="290.6000061035156" height="691.4000244140625" />
+      <vector id="151:1253" name="Vector" x="488.6000061035156" y="47" width="261.3999938964844" height="703" />
+      <vector id="151:1254" name="Vector" x="518.2000122070312" y="36.70000076293945" width="231.79998779296875" height="713.2999877929688" />
+      <vector id="151:1255" name="Vector" x="548.2999877929688" y="27.600000381469727" width="201.70001220703125" height="722.4000244140625" />
+      <vector id="151:1256" name="Vector" x="578.7000122070312" y="19.799999237060547" width="171.29998779296875" height="730.2000122070312" />
+      <vector id="151:1257" name="Vector" x="609.5" y="13.300000190734863" width="140.5" height="736.7000122070312" />
+      <vector id="151:1258" name="Vector" x="640.4000244140625" y="8" width="109.5999755859375" height="742" />
+      <vector id="151:1259" name="Vector" x="671.5999755859375" y="4.099999904632568" width="78.4000244140625" height="745.9000244140625" />
+      <vector id="151:1260" name="Vector" x="702.9000244140625" y="1.5" width="47.0999755859375" height="748.5" />
+      <vector id="151:1261" name="Vector" x="734.2999877929688" y="0.20000000298023224" width="15.70001220703125" height="749.7999877929688" />
+      <vector id="151:1262" name="Vector" x="750" y="0.20000000298023224" width="15.70001220703125" height="749.7999877929688" />
+      <vector id="151:1263" name="Vector" x="750" y="1.5" width="47.0999755859375" height="748.5" />
+      <vector id="151:1264" name="Vector" x="750" y="4.099999904632568" width="78.4000244140625" height="745.9000244140625" />
+      <vector id="151:1265" name="Vector" x="750" y="8" width="109.5999755859375" height="742" />
+      <vector id="151:1266" name="Vector" x="750" y="13.300000190734863" width="140.5" height="736.7000122070312" />
+      <vector id="151:1267" name="Vector" x="750" y="19.799999237060547" width="171.29998779296875" height="730.2000122070312" />
+      <vector id="151:1268" name="Vector" x="750" y="27.600000381469727" width="201.70001220703125" height="722.4000244140625" />
+      <vector id="151:1269" name="Vector" x="750" y="36.70000076293945" width="231.79998779296875" height="713.2999877929688" />
+      <vector id="151:1270" name="Vector" x="750" y="47" width="261.4000244140625" height="703" />
+      <vector id="151:1271" name="Vector" x="750" y="58.599998474121094" width="290.5999755859375" height="691.4000244140625" />
+      <vector id="151:1272" name="Vector" x="750" y="71.4000015258789" width="319.300048828125" height="678.5999755859375" />
+      <vector id="151:1273" name="Vector" x="750" y="85.30000305175781" width="347.5" height="664.7000122070312" />
+      <vector id="151:1274" name="Vector" x="750" y="100.5" width="375" height="649.5" />
+      <vector id="151:1275" name="Vector" x="750" y="116.80000305175781" width="401.9000244140625" height="633.2000122070312" />
+      <vector id="151:1276" name="Vector" x="750" y="134.10000610351562" width="428" height="615.9000244140625" />
+      <vector id="151:1277" name="Vector" x="750" y="152.60000610351562" width="453.4000244140625" height="597.4000244140625" />
+      <vector id="151:1278" name="Vector" x="750" y="172.10000610351562" width="478.0999755859375" height="577.9000244140625" />
+      <vector id="151:1279" name="Vector" x="750" y="192.60000610351562" width="501.800048828125" height="557.4000244140625" />
+      <vector id="151:1280" name="Vector" x="750" y="214.10000610351562" width="524.699951171875" height="535.9000244140625" />
+      <vector id="151:1281" name="Vector" x="750" y="236.60000610351562" width="546.699951171875" height="513.4000244140625" />
+      <vector id="151:1282" name="Vector" x="750" y="259.8999938964844" width="567.699951171875" height="490.1000061035156" />
+      <vector id="151:1283" name="Vector" x="750" y="284.1000061035156" width="587.800048828125" height="465.8999938964844" />
+      <vector id="151:1284" name="Vector" x="750" y="309.20001220703125" width="606.800048828125" height="440.79998779296875" />
+      <vector id="151:1285" name="Vector" x="750" y="335" width="624.699951171875" height="415" />
+      <vector id="151:1286" name="Vector" x="750" y="361.5" width="641.5" height="388.5" />
+      <vector id="151:1287" name="Vector" x="750" y="388.70001220703125" width="657.199951171875" height="361.29998779296875" />
+      <vector id="151:1288" name="Vector" x="750" y="416.5" width="671.800048828125" height="333.5" />
+      <vector id="151:1289" name="Vector" x="750" y="444.8999938964844" width="685.199951171875" height="305.1000061035156" />
+      <vector id="151:1290" name="Vector" x="750" y="473.8999938964844" width="697.300048828125" height="276.1000061035156" />
+      <vector id="151:1291" name="Vector" x="750" y="503.3999938964844" width="708.300048828125" height="246.60000610351562" />
+      <vector id="151:1292" name="Vector" x="750" y="533.2000122070312" width="718" height="216.79998779296875" />
+      <vector id="151:1293" name="Vector" x="750" y="563.5" width="726.4000244140625" height="186.5" />
+      <vector id="151:1294" name="Vector" x="750" y="594.0999755859375" width="733.5999755859375" height="155.9000244140625" />
+      <vector id="151:1295" name="Vector" x="750" y="624.9000244140625" width="739.5" height="125.0999755859375" />
+      <vector id="151:1296" name="Vector" x="750" y="656" width="744.0999755859375" height="94" />
+      <vector id="151:1297" name="Vector" x="750" y="687.2000122070312" width="747.4000244140625" height="62.79998779296875" />
+      <vector id="151:1298" name="Vector" x="750" y="718.5999755859375" width="749.300048828125" height="31.4000244140625" />
+    </frame>
+    <frame id="151:1299" name="Frame 2" x="120" y="90" width="1200" height="510">
+      <frame id="151:1300" name="Frame 1" x="0" y="65.5" width="660" height="379">
+        <frame id="151:1301" name="badge" x="0" y="0" width="273" height="32">
+          <ellipse id="151:1302" name="Ellipse" x="16" y="12.5" width="7" height="7" />
+          <text id="151:1303" name="AI × DeFi × USD1 · DeFi 4.0 Protocol" x="31" y="8" width="226" height="16" />
+        </frame>
+        <text id="151:1304" name="Guarding the Future of Value" x="0" y="54" width="660" height="138" />
+        <text id="151:1305" name="The world&#39;s first AI × DeFi × USD1 global payment protocol, driven by an AI think-tank system. With USD1 as the core settlement asset, redefining decentralized finance through intelligence." x="0" y="214" width="660" height="81" />
+        <frame id="151:1306" name="hcta" x="0" y="317" width="370" height="62">
+          <frame id="151:1307" name="b1" x="0" y="14" width="172" height="48">
+            <text id="151:1308" name="Enter Protocol →" x="26" y="15" width="120" height="18" />
+          </frame>
+          <frame id="151:1309" name="b2" x="186" y="14" width="184" height="48">
+            <text id="151:1310" name="Read Whitepaper" x="26" y="15" width="132" height="18" />
+          </frame>
+        </frame>
+      </frame>
+      <frame id="151:1311" name="Frame 3" x="762" y="0" width="438" height="510">
+        <rounded-rectangle id="151:1312" name="IP动作3 1" x="10" y="0" width="338" height="510" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1313" name="protocol" x="0" y="770" width="1440" height="739">
+    <frame id="151:1314" name="sechead" x="340" y="120" width="760" height="162">
+      <text id="151:1315" name="AEGIS X PROTOCOL" x="299.5" y="0" width="161" height="16" />
+      <text id="151:1316" name="AI-native infrastructure built for the next financial era" x="0" y="30" width="760" height="92" />
+      <text id="151:1317" name="AI × DeFi × USD1 — building the next-generation value network." x="40" y="136" width="680" height="26" />
+    </frame>
+    <frame id="151:1318" name="onecard" x="120" y="338" width="1200" height="281">
+      <frame id="151:1319" name="col" x="0" y="0" width="400" height="281">
+        <rounded-rectangle id="151:1320" name="IP动作6 2" x="34" y="36" width="80" height="80" />
+        <frame id="151:1321" name="Frame 12" x="34" y="140" width="300" height="105">
+          <text id="151:1322" name="AI Think-Tank" x="0" y="0" width="137" height="24" />
+          <text id="151:1323" name="Autonomous risk control, market-making and asset allocation — all executed on-chain, all intelligence-driven." x="0" y="36" width="300" height="69" />
+        </frame>
+      </frame>
+      <frame id="151:1324" name="col" x="400" y="0" width="400" height="281">
+        <frame id="151:1325" name="Frame 1000002642" x="34" y="36" width="80" height="80">
+          <rounded-rectangle id="151:1326" name="image 1" x="3" y="3" width="74" height="74" />
+        </frame>
+        <frame id="151:1327" name="Frame 13" x="34" y="140" width="300" height="105">
+          <text id="151:1328" name="USD1 Settlement" x="0" y="0" width="168" height="24" />
+          <text id="151:1329" name="150% over-collateralized minting, with USD1 as the core settlement asset of a stable DeFi 4.0 base layer." x="0" y="36" width="300" height="69" />
+        </frame>
+      </frame>
+      <frame id="151:1330" name="col" x="800" y="0" width="400" height="281">
+        <frame id="151:1331" name="Frame 1000002643" x="34" y="36" width="80" height="80">
+          <rounded-rectangle id="151:1332" name="image 3" x="4" y="4" width="72" height="72" />
+        </frame>
+        <frame id="151:1333" name="Frame 14" x="34" y="140" width="300" height="105">
+          <text id="151:1334" name="Global Payments" x="0" y="0" width="170" height="24" />
+          <text id="151:1335" name="Connecting AI agents, DeFi liquidity and cross-border payments into one unified global value network." x="0" y="36" width="300" height="69" />
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1336" name="engine" x="0" y="1509" width="1440" height="874">
+    <frame id="151:1337" name="sechead" x="340" y="120" width="760" height="116">
+      <text id="151:1338" name="CORE ENGINE" x="323.5" y="0" width="113" height="16" />
+      <text id="151:1339" name="Four pillars, one intelligent system" x="0" y="30" width="760" height="46" />
+      <text id="151:1340" name="The AI-driven DeFi 4.0 core engine — a self-healing price architecture." x="40" y="90" width="680" height="26" />
+    </frame>
+    <frame id="151:1341" name="engine-card" x="120" y="292" width="1200" height="462">
+      <frame id="151:1342" name="r1" x="0" y="0" width="1200" height="231">
+        <frame id="151:1343" name="ecol" x="0" y="0" width="600" height="231">
+          <frame id="151:1344" name="Frame" x="34" y="34" width="46" height="46" />
+          <text id="151:1346" name="AI Market Maker" x="34" y="92" width="164" height="24" />
+          <text id="151:1347" name="Dynamic balancing model: accumulate USD1 reserves on the way up; on pullbacks, unwind LP and deploy buyback + burn for price self-repair." x="34" y="128" width="420" height="69" />
+        </frame>
+        <frame id="151:1348" name="ecol" x="600" y="0" width="600" height="231">
+          <frame id="151:1349" name="Frame" x="34" y="34" width="46" height="46" />
+          <text id="151:1351" name="Dynamic Volatility Defense" x="34" y="92" width="269" height="24" />
+          <text id="151:1352" name="Triggers automatically on a daily drop ≥5%: sell fee rises to 30%, reserve buyback and black-hole burn engage, auto-restoring after 24h." x="34" y="128" width="420" height="69" />
+        </frame>
+      </frame>
+      <frame id="151:1353" name="r2" x="0" y="231" width="1200" height="231">
+        <frame id="151:1354" name="ecol" x="0" y="0" width="600" height="231">
+          <frame id="151:1355" name="Frame" x="34" y="34" width="46" height="46" />
+          <text id="151:1357" name="Rebase Engine" x="34" y="92" width="150" height="24" />
+          <text id="151:1358" name="Dual-epoch settlement every 12h with block-level linear release. Flexible to 540-day staking tiers, ref. APY 535%–4,880%." x="34" y="128" width="420" height="69" />
+        </frame>
+        <frame id="151:1359" name="ecol" x="600" y="0" width="600" height="231">
+          <frame id="151:1360" name="Frame" x="34" y="34" width="46" height="46" />
+          <text id="151:1362" name="Turbo Mechanism" x="34" y="92" width="180" height="24" />
+          <text id="151:1363" name="A 1:1 buy unlocks sell quota, with a 24–96h adaptive cooldown — eliminating panic selling while keeping liquidity healthy." x="34" y="128" width="420" height="69" />
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1364" name="token" x="0" y="2383" width="1440" height="804">
+    <frame id="151:1365" name="sechead" x="340" y="120" width="760" height="149">
+      <text id="151:1366" name="TOKEN &amp; ECOSYSTEM" x="292" y="0" width="176" height="17" />
+      <text id="151:1367" name="Multi-asset flywheel" x="0" y="31" width="760" height="52" />
+      <text id="151:1368" name="Four tokens, one self-reinforcing value loop: growth → liquidity → payments → ecosystem." x="40" y="97" width="680" height="52" />
+    </frame>
+    <frame id="151:1369" name="tokens" x="120" y="325" width="1200" height="280">
+      <frame id="151:1370" name="tcard" x="0" y="0" width="283" height="280">
+        <frame id="151:1371" name="Frame" x="133" y="130" width="170" height="170" />
+        <frame id="151:1373" name="tile" x="24" y="24" width="52" height="52">
+          <frame id="151:1374" name="Frame" x="11" y="11" width="30" height="30" />
+        </frame>
+        <frame id="151:1376" name="info" x="24" y="154" width="235" height="104">
+          <text id="151:1377" name="AGX" x="0" y="0" width="56" height="34" />
+          <text id="151:1378" name="Core protocol asset" x="0" y="40" width="235" height="18" />
+          <text id="151:1379" name="150% over-collateralized · AI think-tank managed" x="0" y="64" width="235" height="40" />
+        </frame>
+      </frame>
+      <frame id="151:1380" name="tcard" x="305" y="0" width="283" height="280">
+        <frame id="151:1381" name="Frame" x="133" y="130" width="170" height="170" />
+        <frame id="151:1384" name="tile" x="24" y="24" width="52" height="52">
+          <frame id="151:1385" name="Frame" x="11" y="11" width="30" height="30" />
+        </frame>
+        <frame id="151:1388" name="info" x="24" y="154" width="235" height="104">
+          <text id="151:1389" name="USD1" x="0" y="0" width="66" height="34" />
+          <text id="151:1390" name="Stable reserve asset" x="0" y="40" width="235" height="18" />
+          <text id="151:1391" name="Settlement layer · USD-backed liquidity" x="0" y="64" width="235" height="40" />
+        </frame>
+      </frame>
+      <frame id="151:1392" name="tcard" x="610" y="0" width="283" height="280">
+        <frame id="151:1393" name="Frame" x="133" y="130" width="170" height="170" />
+        <frame id="151:1396" name="tile" x="24" y="24" width="52" height="52">
+          <frame id="151:1397" name="Frame" x="11" y="11" width="30" height="30" />
+        </frame>
+        <frame id="151:1400" name="info" x="24" y="173" width="235" height="84">
+          <text id="151:1401" name="X" x="0" y="0" width="19" height="34" />
+          <text id="151:1402" name="Ecosystem value token" x="0" y="40" width="235" height="18" />
+          <text id="151:1403" name="210M fixed · 25% sell-burn" x="0" y="64" width="235" height="20" />
+        </frame>
+      </frame>
+      <frame id="151:1404" name="tcard" x="915" y="0" width="283" height="280">
+        <frame id="151:1405" name="Frame" x="133" y="130" width="170" height="170" />
+        <frame id="151:1407" name="tile" x="24" y="24" width="52" height="52">
+          <frame id="151:1408" name="Frame" x="11" y="11" width="30" height="30" />
+        </frame>
+        <frame id="151:1410" name="info" x="24" y="173" width="235" height="84">
+          <text id="151:1411" name="gAGX" x="0" y="0" width="74" height="34" />
+          <text id="151:1412" name="Reward settlement token" x="0" y="40" width="235" height="18" />
+          <text id="151:1413" name="1:1 to AGX · powers X mining" x="0" y="64" width="235" height="20" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="151:1414" name="flywheel" x="526" y="661" width="388" height="23">
+      <text id="151:1415" name="Users → Liquidity → Payments → Growth → ∞" x="0" y="0" width="388" height="23" />
+    </frame>
+  </frame>
+  <frame id="151:1416" name="metrics-wrap" x="0" y="3187" width="1440" height="231">
+    <frame id="151:1417" name="metrics" x="120" y="0" width="1200" height="191">
+      <frame id="151:1418" name="metrics-rays" x="0" y="0" width="1200" height="700">
+        <vector id="151:1419" name="Vector" x="600" y="-10" width="714.800048828125" height="86.80000305175781" />
+        <vector id="151:1420" name="Vector" x="600" y="-10" width="712.800048828125" height="101.69999694824219" />
+        <vector id="151:1421" name="Vector" x="600" y="-10" width="710.5" height="116.5" />
+        <vector id="151:1422" name="Vector" x="600" y="-10" width="707.9000244140625" height="131.3000030517578" />
+        <vector id="151:1423" name="Vector" x="600" y="-10" width="705" height="146" />
+        <vector id="151:1424" name="Vector" x="600" y="-10" width="701.800048828125" height="160.6999969482422" />
+        <vector id="151:1425" name="Vector" x="600" y="-10" width="698.300048828125" height="175.3000030517578" />
+        <vector id="151:1426" name="Vector" x="600" y="-10" width="694.5" height="189.89999389648438" />
+        <vector id="151:1427" name="Vector" x="600" y="-10" width="690.4000244140625" height="204.3000030517578" />
+        <vector id="151:1428" name="Vector" x="600" y="-10" width="686" height="218.6999969482422" />
+        <vector id="151:1429" name="Vector" x="600" y="-10" width="681.300048828125" height="232.89999389648438" />
+        <vector id="151:1430" name="Vector" x="600" y="-10" width="676.300048828125" height="247.10000610351562" />
+        <vector id="151:1431" name="Vector" x="600" y="-10" width="671" height="261.1000061035156" />
+        <vector id="151:1432" name="Vector" x="600" y="-10" width="665.4000244140625" height="275.1000061035156" />
+        <vector id="151:1433" name="Vector" x="600" y="-10" width="659.5" height="288.8999938964844" />
+        <vector id="151:1434" name="Vector" x="600" y="-10" width="653.300048828125" height="302.6000061035156" />
+        <vector id="151:1435" name="Vector" x="600" y="-10" width="646.9000244140625" height="316.20001220703125" />
+        <vector id="151:1436" name="Vector" x="600" y="-10" width="640.0999755859375" height="329.6000061035156" />
+        <vector id="151:1437" name="Vector" x="600" y="-10" width="633.0999755859375" height="342.8999938964844" />
+        <vector id="151:1438" name="Vector" x="600" y="-10" width="625.800048828125" height="356" />
+        <vector id="151:1439" name="Vector" x="600" y="-10" width="618.300048828125" height="369" />
+        <vector id="151:1440" name="Vector" x="600" y="-10" width="610.4000244140625" height="381.79998779296875" />
+        <vector id="151:1441" name="Vector" x="600" y="-10" width="602.300048828125" height="394.5" />
+        <vector id="151:1442" name="Vector" x="600" y="-10" width="594" height="406.8999938964844" />
+        <vector id="151:1443" name="Vector" x="600" y="-10" width="585.4000244140625" height="419.20001220703125" />
+        <vector id="151:1444" name="Vector" x="600" y="-10" width="576.5" height="431.3999938964844" />
+        <vector id="151:1445" name="Vector" x="600" y="-10" width="567.4000244140625" height="443.29998779296875" />
+        <vector id="151:1446" name="Vector" x="600" y="-10" width="558" height="455" />
+        <vector id="151:1447" name="Vector" x="600" y="-10" width="548.4000244140625" height="466.6000061035156" />
+        <vector id="151:1448" name="Vector" x="600" y="-10" width="538.5" height="477.8999938964844" />
+        <vector id="151:1449" name="Vector" x="600" y="-10" width="528.4000244140625" height="489" />
+        <vector id="151:1450" name="Vector" x="600" y="-10" width="518.0999755859375" height="500" />
+        <vector id="151:1451" name="Vector" x="600" y="-10" width="507.5999755859375" height="510.70001220703125" />
+        <vector id="151:1452" name="Vector" x="600" y="-10" width="496.800048828125" height="521.0999755859375" />
+        <vector id="151:1453" name="Vector" x="600" y="-10" width="485.800048828125" height="531.4000244140625" />
+        <vector id="151:1454" name="Vector" x="600" y="-10" width="474.5999755859375" height="541.4000244140625" />
+        <vector id="151:1455" name="Vector" x="600" y="-10" width="463.199951171875" height="551.2000122070312" />
+        <vector id="151:1456" name="Vector" x="600" y="-10" width="451.5999755859375" height="560.7000122070312" />
+        <vector id="151:1457" name="Vector" x="600" y="-10" width="439.800048828125" height="570" />
+        <vector id="151:1458" name="Vector" x="600" y="-10" width="427.9000244140625" height="579.0999755859375" />
+        <vector id="151:1459" name="Vector" x="600" y="-10" width="415.70001220703125" height="587.9000244140625" />
+        <vector id="151:1460" name="Vector" x="600" y="-10" width="403.29998779296875" height="596.4000244140625" />
+        <vector id="151:1461" name="Vector" x="600" y="-10" width="390.79998779296875" height="604.7000122070312" />
+        <vector id="151:1462" name="Vector" x="600" y="-10" width="378.0999755859375" height="612.7000122070312" />
+        <vector id="151:1463" name="Vector" x="600" y="-10" width="365.20001220703125" height="620.5" />
+        <vector id="151:1464" name="Vector" x="600" y="-10" width="352.20001220703125" height="628" />
+        <vector id="151:1465" name="Vector" x="600" y="-10" width="339" height="635.2000122070312" />
+        <vector id="151:1466" name="Vector" x="600" y="-10" width="325.70001220703125" height="642.0999755859375" />
+        <vector id="151:1467" name="Vector" x="600" y="-10" width="312.20001220703125" height="648.7999877929688" />
+        <vector id="151:1468" name="Vector" x="600" y="-10" width="298.5999755859375" height="655.0999755859375" />
+        <vector id="151:1469" name="Vector" x="600" y="-10" width="284.9000244140625" height="661.2000122070312" />
+        <vector id="151:1470" name="Vector" x="600" y="-10" width="271.0999755859375" height="667" />
+        <vector id="151:1471" name="Vector" x="600" y="-10" width="257.0999755859375" height="672.5" />
+        <vector id="151:1472" name="Vector" x="600" y="-10" width="243" height="677.7999877929688" />
+        <vector id="151:1473" name="Vector" x="600" y="-10" width="228.79998779296875" height="682.7000122070312" />
+        <vector id="151:1474" name="Vector" x="600" y="-10" width="214.5" height="687.2999877929688" />
+        <vector id="151:1475" name="Vector" x="600" y="-10" width="200.0999755859375" height="691.5999755859375" />
+        <vector id="151:1476" name="Vector" x="600" y="-10" width="185.5999755859375" height="695.7000122070312" />
+        <vector id="151:1477" name="Vector" x="600" y="-10" width="171.0999755859375" height="699.4000244140625" />
+        <vector id="151:1478" name="Vector" x="600" y="-10" width="156.5" height="702.7999877929688" />
+        <vector id="151:1479" name="Vector" x="600" y="-10" width="141.79998779296875" height="705.9000244140625" />
+        <vector id="151:1480" name="Vector" x="600" y="-10" width="127" height="708.7000122070312" />
+        <vector id="151:1481" name="Vector" x="600" y="-10" width="112.20001220703125" height="711.2000122070312" />
+        <vector id="151:1482" name="Vector" x="600" y="-10" width="97.29998779296875" height="713.4000244140625" />
+        <vector id="151:1483" name="Vector" x="600" y="-10" width="82.4000244140625" height="715.2999877929688" />
+        <vector id="151:1484" name="Vector" x="600" y="-10" width="67.5" height="716.7999877929688" />
+        <vector id="151:1485" name="Vector" x="600" y="-10" width="52.5" height="718.0999755859375" />
+        <vector id="151:1486" name="Vector" x="600" y="-10" width="37.5" height="719" />
+        <vector id="151:1487" name="Vector" x="600" y="-10" width="22.5" height="719.5999755859375" />
+        <vector id="151:1488" name="Vector" x="600" y="-10" width="7.5" height="720" />
+        <vector id="151:1489" name="Vector" x="592.5" y="-10" width="7.5" height="720" />
+        <vector id="151:1490" name="Vector" x="577.5" y="-10" width="22.5" height="719.5999755859375" />
+        <vector id="151:1491" name="Vector" x="562.5" y="-10" width="37.5" height="719" />
+        <vector id="151:1492" name="Vector" x="547.5" y="-10" width="52.5" height="718.0999755859375" />
+        <vector id="151:1493" name="Vector" x="532.5" y="-10" width="67.5" height="716.7999877929688" />
+        <vector id="151:1494" name="Vector" x="517.5999755859375" y="-10" width="82.4000244140625" height="715.2999877929688" />
+        <vector id="151:1495" name="Vector" x="502.70001220703125" y="-10" width="97.29998779296875" height="713.4000244140625" />
+        <vector id="151:1496" name="Vector" x="487.79998779296875" y="-10" width="112.20001220703125" height="711.2000122070312" />
+        <vector id="151:1497" name="Vector" x="473" y="-10" width="127" height="708.7000122070312" />
+        <vector id="151:1498" name="Vector" x="458.20001220703125" y="-10" width="141.79998779296875" height="705.9000244140625" />
+        <vector id="151:1499" name="Vector" x="443.5" y="-10" width="156.5" height="702.7999877929688" />
+        <vector id="151:1500" name="Vector" x="428.8999938964844" y="-10" width="171.10000610351562" height="699.4000244140625" />
+        <vector id="151:1501" name="Vector" x="414.3999938964844" y="-10" width="185.60000610351562" height="695.7000122070312" />
+        <vector id="151:1502" name="Vector" x="399.8999938964844" y="-10" width="200.10000610351562" height="691.5999755859375" />
+        <vector id="151:1503" name="Vector" x="385.5" y="-10" width="214.5" height="687.2999877929688" />
+        <vector id="151:1504" name="Vector" x="371.20001220703125" y="-10" width="228.79998779296875" height="682.7000122070312" />
+        <vector id="151:1505" name="Vector" x="357" y="-10" width="243" height="677.7999877929688" />
+        <vector id="151:1506" name="Vector" x="342.8999938964844" y="-10" width="257.1000061035156" height="672.5" />
+        <vector id="151:1507" name="Vector" x="328.8999938964844" y="-10" width="271.1000061035156" height="667" />
+        <vector id="151:1508" name="Vector" x="315.1000061035156" y="-10" width="284.8999938964844" height="661.2000122070312" />
+        <vector id="151:1509" name="Vector" x="301.3999938964844" y="-10" width="298.6000061035156" height="655.0999755859375" />
+        <vector id="151:1510" name="Vector" x="287.79998779296875" y="-10" width="312.20001220703125" height="648.7999877929688" />
+        <vector id="151:1511" name="Vector" x="274.29998779296875" y="-10" width="325.70001220703125" height="642.0999755859375" />
+        <vector id="151:1512" name="Vector" x="261" y="-10" width="339" height="635.2000122070312" />
+        <vector id="151:1513" name="Vector" x="247.8000030517578" y="-10" width="352.20001220703125" height="628" />
+        <vector id="151:1514" name="Vector" x="234.8000030517578" y="-10" width="365.20001220703125" height="620.5" />
+        <vector id="151:1515" name="Vector" x="221.89999389648438" y="-10" width="378.1000061035156" height="612.7000122070312" />
+        <vector id="151:1516" name="Vector" x="209.1999969482422" y="-10" width="390.79998779296875" height="604.7000122070312" />
+        <vector id="151:1517" name="Vector" x="196.6999969482422" y="-10" width="403.29998779296875" height="596.4000244140625" />
+        <vector id="151:1518" name="Vector" x="184.3000030517578" y="-10" width="415.70001220703125" height="587.9000244140625" />
+        <vector id="151:1519" name="Vector" x="172.10000610351562" y="-10" width="427.8999938964844" height="579.0999755859375" />
+        <vector id="151:1520" name="Vector" x="160.1999969482422" y="-10" width="439.79998779296875" height="570" />
+        <vector id="151:1521" name="Vector" x="148.39999389648438" y="-10" width="451.6000061035156" height="560.7000122070312" />
+        <vector id="151:1522" name="Vector" x="136.8000030517578" y="-10" width="463.20001220703125" height="551.2000122070312" />
+        <vector id="151:1523" name="Vector" x="125.4000015258789" y="-10" width="474.6000061035156" height="541.4000244140625" />
+        <vector id="151:1524" name="Vector" x="114.19999694824219" y="-10" width="485.79998779296875" height="531.4000244140625" />
+        <vector id="151:1525" name="Vector" x="103.19999694824219" y="-10" width="496.79998779296875" height="521.0999755859375" />
+        <vector id="151:1526" name="Vector" x="92.4000015258789" y="-10" width="507.6000061035156" height="510.70001220703125" />
+        <vector id="151:1527" name="Vector" x="81.9000015258789" y="-10" width="518.0999755859375" height="500" />
+        <vector id="151:1528" name="Vector" x="71.5999984741211" y="-10" width="528.4000244140625" height="489" />
+        <vector id="151:1529" name="Vector" x="61.5" y="-10" width="538.5" height="477.8999938964844" />
+        <vector id="151:1530" name="Vector" x="51.599998474121094" y="-10" width="548.4000244140625" height="466.6000061035156" />
+        <vector id="151:1531" name="Vector" x="42" y="-10" width="558" height="455" />
+        <vector id="151:1532" name="Vector" x="32.599998474121094" y="-10" width="567.4000244140625" height="443.29998779296875" />
+        <vector id="151:1533" name="Vector" x="23.5" y="-10" width="576.5" height="431.3999938964844" />
+        <vector id="151:1534" name="Vector" x="14.600000381469727" y="-10" width="585.4000244140625" height="419.20001220703125" />
+        <vector id="151:1535" name="Vector" x="6" y="-10" width="594" height="406.8999938964844" />
+        <vector id="151:1536" name="Vector" x="-2.299999952316284" y="-10" width="602.2999877929688" height="394.5" />
+        <vector id="151:1537" name="Vector" x="-10.399999618530273" y="-10" width="610.4000244140625" height="381.79998779296875" />
+        <vector id="151:1538" name="Vector" x="-18.299999237060547" y="-10" width="618.2999877929688" height="369" />
+        <vector id="151:1539" name="Vector" x="-25.799999237060547" y="-10" width="625.7999877929688" height="356" />
+        <vector id="151:1540" name="Vector" x="-33.099998474121094" y="-10" width="633.0999755859375" height="342.8999938964844" />
+        <vector id="151:1541" name="Vector" x="-40.099998474121094" y="-10" width="640.0999755859375" height="329.6000061035156" />
+        <vector id="151:1542" name="Vector" x="-46.900001525878906" y="-10" width="646.9000244140625" height="316.20001220703125" />
+        <vector id="151:1543" name="Vector" x="-53.29999923706055" y="-10" width="653.2999877929688" height="302.6000061035156" />
+        <vector id="151:1544" name="Vector" x="-59.5" y="-10" width="659.5" height="288.8999938964844" />
+        <vector id="151:1545" name="Vector" x="-65.4000015258789" y="-10" width="665.4000244140625" height="275.1000061035156" />
+        <vector id="151:1546" name="Vector" x="-71" y="-10" width="671" height="261.1000061035156" />
+        <vector id="151:1547" name="Vector" x="-76.30000305175781" y="-10" width="676.2999877929688" height="247.10000610351562" />
+        <vector id="151:1548" name="Vector" x="-81.30000305175781" y="-10" width="681.2999877929688" height="232.89999389648438" />
+        <vector id="151:1549" name="Vector" x="-86" y="-10" width="686" height="218.6999969482422" />
+        <vector id="151:1550" name="Vector" x="-90.4000015258789" y="-10" width="690.4000244140625" height="204.3000030517578" />
+        <vector id="151:1551" name="Vector" x="-94.5" y="-10" width="694.5" height="189.89999389648438" />
+        <vector id="151:1552" name="Vector" x="-98.30000305175781" y="-10" width="698.2999877929688" height="175.3000030517578" />
+        <vector id="151:1553" name="Vector" x="-101.80000305175781" y="-10" width="701.7999877929688" height="160.6999969482422" />
+        <vector id="151:1554" name="Vector" x="-105" y="-10" width="705" height="146" />
+        <vector id="151:1555" name="Vector" x="-107.9000015258789" y="-10" width="707.9000244140625" height="131.3000030517578" />
+        <vector id="151:1556" name="Vector" x="-110.5" y="-10" width="710.5" height="116.5" />
+        <vector id="151:1557" name="Vector" x="-112.80000305175781" y="-10" width="712.7999877929688" height="101.69999694824219" />
+        <vector id="151:1558" name="Vector" x="-114.80000305175781" y="-10" width="714.7999877929688" height="86.80000305175781" />
+      </frame>
+      <frame id="151:1559" name="m" x="40" y="56" width="280" height="79">
+        <text id="151:1560" name="150%" x="87.5" y="0" width="105" height="54" />
+        <text id="151:1561" name="Collateral Ratio" x="88" y="62" width="104" height="17" />
+      </frame>
+      <frame id="151:1562" name="m" x="320" y="56" width="280" height="79">
+        <text id="151:1563" name="4,880%" x="61" y="0" width="158" height="54" />
+        <text id="151:1564" name="Max Ref. APY" x="95" y="62" width="90" height="17" />
+      </frame>
+      <frame id="151:1565" name="m" x="600" y="56" width="280" height="79">
+        <text id="151:1566" name="2+" x="115" y="0" width="50" height="54" />
+        <text id="151:1567" name="Chains Supported" x="78" y="62" width="124" height="17" />
+      </frame>
+      <frame id="151:1568" name="m" x="880" y="56" width="280" height="79">
+        <text id="151:1569" name="210M" x="85.5" y="0" width="109" height="54" />
+        <text id="151:1570" name="X Total Supply" x="91.5" y="62" width="97" height="17" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1571" name="roadmap" x="0" y="3418" width="1440" height="1215">
+    <frame id="151:1572" name="sechead" x="340" y="120" width="760" height="76">
+      <text id="151:1573" name="ROADMAP" x="338" y="0" width="84" height="16" />
+      <text id="151:1574" name="The road to DeFi 4.0" x="0" y="30" width="760" height="46" />
+    </frame>
+    <frame id="151:1575" name="timeline" x="120" y="244" width="1200" height="851">
+      <rounded-rectangle id="151:1576" name="rail" x="598" y="58" width="4" height="727" />
+      <rounded-rectangle id="151:1577" name="progress" x="598" y="58" width="4" height="576" />
+      <frame id="151:1578" name="scard" x="0" y="16" width="540" height="120">
+        <frame id="151:1579" name="hd" x="24" y="22" width="492" height="17">
+          <frame id="151:1580" name="Frame" x="0" y="0" width="64" height="17">
+            <text id="151:1581" name="PHASE 01" x="0" y="0" width="64" height="17" />
+          </frame>
+          <text id="151:1582" name="2025 Q3" x="442" y="0" width="50" height="17" />
+        </frame>
+        <text id="151:1583" name="Genesis Launch" x="24" y="47" width="137" height="25" />
+        <text id="151:1584" name="Protocol deployment · AGX minting · USD1 liquidity pool" x="24" y="80" width="492" height="18" />
+      </frame>
+      <frame id="151:1585" name="dot" x="582" y="58" width="36" height="36">
+        <frame id="151:1586" name="ic-check" x="10" y="10" width="16" height="16" />
+      </frame>
+      <frame id="151:1588" name="scard" x="660" y="154" width="540" height="120">
+        <frame id="151:1589" name="hd" x="24" y="22" width="492" height="17">
+          <frame id="151:1590" name="Frame" x="0" y="0" width="67" height="17">
+            <text id="151:1591" name="PHASE 02" x="0" y="0" width="67" height="17" />
+          </frame>
+          <text id="151:1592" name="2025 Q4" x="441" y="0" width="51" height="17" />
+        </frame>
+        <text id="151:1593" name="DeFi Core" x="24" y="47" width="85" height="25" />
+        <text id="151:1594" name="Rebase staking · LP bonds · burn bonds · AI market-making" x="24" y="80" width="492" height="18" />
+      </frame>
+      <frame id="151:1595" name="dot" x="582" y="196" width="36" height="36">
+        <frame id="151:1596" name="ic-check" x="10" y="10" width="16" height="16" />
+      </frame>
+      <frame id="151:1598" name="scard" x="0" y="292" width="540" height="120">
+        <frame id="151:1599" name="hd" x="24" y="22" width="492" height="17">
+          <frame id="151:1600" name="Frame" x="0" y="0" width="67" height="17">
+            <text id="151:1601" name="PHASE 03" x="0" y="0" width="67" height="17" />
+          </frame>
+          <text id="151:1602" name="2026 Q1" x="444" y="0" width="48" height="17" />
+        </frame>
+        <text id="151:1603" name="DAO &amp; Growth" x="24" y="47" width="128" height="25" />
+        <text id="151:1604" name="X DAO incentives · multisig governance · global nodes" x="24" y="80" width="492" height="18" />
+      </frame>
+      <frame id="151:1605" name="dot" x="582" y="334" width="36" height="36">
+        <frame id="151:1606" name="ic-check" x="10" y="10" width="16" height="16" />
+      </frame>
+      <frame id="151:1608" name="scard" x="660" y="430" width="540" height="124">
+        <frame id="151:1609" name="hd" x="24" y="22" width="492" height="21">
+          <frame id="151:1610" name="Frame" x="0" y="0" width="129" height="21">
+            <text id="151:1611" name="PHASE 04" x="0" y="2" width="68" height="17" />
+            <frame id="151:1612" name="Frame" x="78" y="0" width="51" height="21">
+              <text id="151:1613" name="NOW" x="10" y="3" width="31" height="15" />
+            </frame>
+          </frame>
+          <text id="151:1614" name="2026 Q2" x="442" y="2" width="50" height="17" />
+        </frame>
+        <text id="151:1615" name="AI Agent Economy" x="24" y="51" width="163" height="25" />
+        <text id="151:1616" name="Autonomous payments · on-chain collaboration · agent market-making" x="24" y="84" width="492" height="18" />
+      </frame>
+      <ellipse id="151:1617" name="Ellipse" x="576" y="468" width="48" height="48" />
+      <frame id="151:1618" name="dot" x="582" y="474" width="36" height="36">
+        <text id="151:1619" name="4" x="13" y="8" width="10" height="20" />
+      </frame>
+      <frame id="151:1620" name="scard" x="0" y="577" width="540" height="120">
+        <frame id="151:1621" name="hd" x="24" y="22" width="492" height="17">
+          <frame id="151:1622" name="Frame" x="0" y="0" width="67" height="17">
+            <text id="151:1623" name="PHASE 05" x="0" y="0" width="67" height="17" />
+          </frame>
+          <text id="151:1624" name="2026 Q3" x="442" y="0" width="50" height="17" />
+        </frame>
+        <text id="151:1625" name="Global Payments" x="24" y="47" width="148" height="25" />
+        <text id="151:1626" name="Cross-border settlement · merchant onboarding · USD1 rails" x="24" y="80" width="492" height="18" />
+      </frame>
+      <frame id="151:1627" name="dot" x="582" y="619" width="36" height="36">
+        <text id="151:1628" name="5" x="13.5" y="8" width="9" height="20" />
+      </frame>
+      <frame id="151:1629" name="scard" x="660" y="715" width="540" height="120">
+        <frame id="151:1630" name="hd" x="24" y="22" width="492" height="17">
+          <frame id="151:1631" name="Frame" x="0" y="0" width="67" height="17">
+            <text id="151:1632" name="PHASE 06" x="0" y="0" width="67" height="17" />
+          </frame>
+          <text id="151:1633" name="2026 Q4" x="440" y="0" width="52" height="17" />
+        </frame>
+        <text id="151:1634" name="DeFi 4.0" x="24" y="47" width="72" height="25" />
+        <text id="151:1635" name="Institutional products · compliance framework · full ecosystem" x="24" y="80" width="492" height="18" />
+      </frame>
+      <frame id="151:1636" name="dot" x="582" y="757" width="36" height="36">
+        <text id="151:1637" name="6" x="13.5" y="8" width="9" height="20" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1638" name="security" x="0" y="4633" width="1440" height="794">
+    <frame id="151:1639" name="sgrid" x="120" y="120" width="1200" height="554">
+      <frame id="151:1640" name="sleft" x="0" y="0" width="1200" height="554">
+        <frame id="151:1641" name="Frame 1000002644" x="0" y="0" width="1200" height="140">
+          <text id="151:1642" name="SECURITY &amp; TRUST" x="523" y="0" width="154" height="16" />
+          <text id="151:1643" name="Aegis-grade security" x="390" y="32" width="420" height="44" />
+          <text id="151:1644" name="AEGIS = shield, guardianship, order, security. Asset safety is built in from the ground up." x="390" y="92" width="420" height="48" />
+        </frame>
+        <frame id="151:1645" name="Frame 1000002645" x="0" y="172" width="1200" height="382">
+          <rounded-rectangle id="151:1646" name="IP动作3 1" x="179" y="0" width="330" height="382" />
+          <frame id="151:1647" name="sright" x="557" y="22" width="464" height="338">
+            <frame id="151:1648" name="check" x="0" y="0" width="464" height="82">
+              <frame id="151:1649" name="tk" x="22" y="28" width="26" height="26">
+                <frame id="151:1650" name="ic-check" x="6" y="6" width="14" height="14" />
+              </frame>
+              <text id="151:1652" name="Non-custodial — the AI market-maker contract cannot transfer out any assets" x="62" y="20" width="380" height="42" />
+            </frame>
+            <frame id="151:1653" name="check" x="0" y="96" width="464" height="66">
+              <frame id="151:1654" name="tk" x="22" y="20" width="26" height="26">
+                <frame id="151:1655" name="ic-check" x="6" y="6" width="14" height="14" />
+              </frame>
+              <text id="151:1657" name="Audited by multiple security firms" x="62" y="22.5" width="380" height="21" />
+            </frame>
+            <frame id="151:1658" name="check" x="0" y="176" width="464" height="66">
+              <frame id="151:1659" name="tk" x="22" y="20" width="26" height="26">
+                <frame id="151:1660" name="ic-check" x="6" y="6" width="14" height="14" />
+              </frame>
+              <text id="151:1662" name="Core contracts open-sourced on GitHub" x="62" y="22.5" width="380" height="21" />
+            </frame>
+            <frame id="151:1663" name="check" x="0" y="256" width="464" height="82">
+              <frame id="151:1664" name="tk" x="22" y="28" width="26" height="26">
+                <frame id="151:1665" name="ic-check" x="6" y="6" width="14" height="14" />
+              </frame>
+              <text id="151:1667" name="Safe multisig governance (upgrade + execution rights)" x="62" y="20" width="380" height="42" />
+            </frame>
+          </frame>
+          <frame id="151:1668" name="Frame 1000002646" x="446" y="62" width="110" height="258">
+            <vector id="151:1669" name="Vector 3" x="1" y="1.5" width="107.5" height="255" />
+            <rounded-rectangle id="151:1670" name="Rectangle 1379" x="0" y="129" width="10" height="3" />
+            <rounded-rectangle id="151:1671" name="Rectangle 1380" x="100" y="90" width="10" height="3" />
+            <rounded-rectangle id="151:1672" name="Rectangle 1381" x="100" y="168" width="10" height="3" />
+            <rounded-rectangle id="151:1673" name="Rectangle 1382" x="100" y="255" width="10" height="3" />
+            <rounded-rectangle id="151:1674" name="Rectangle 1383" x="100" y="0" width="10" height="3" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1675" name="partners" x="0" y="5427" width="1440" height="208">
+    <text id="151:1676" name="ECOSYSTEM PARTNERS" x="625" y="0" width="190" height="16" />
+    <frame id="151:1677" name="prow" x="263.5" y="40" width="913" height="48">
+      <frame id="151:1678" name="p" x="0" y="0" width="113" height="48">
+        <frame id="151:1679" name="pico" x="12" y="12" width="24" height="24">
+          <text id="151:1680" name="$" x="8.5" y="5.5" width="7" height="13" />
+        </frame>
+        <text id="151:1681" name="USD1" x="46" y="15" width="39" height="18" />
+      </frame>
+      <frame id="151:1682" name="p" x="127" y="0" width="106" height="48">
+        <frame id="151:1683" name="pico" x="12" y="12" width="24" height="24">
+          <text id="151:1684" name="B" x="7.5" y="5.5" width="9" height="13" />
+        </frame>
+        <text id="151:1685" name="BSC" x="46" y="15" width="32" height="18" />
+      </frame>
+      <frame id="151:1686" name="p" x="247" y="0" width="150" height="48">
+        <frame id="151:1687" name="pico" x="12" y="12" width="24" height="24">
+          <text id="151:1688" name="Ξ" x="8.5" y="5.5" width="7" height="13" />
+        </frame>
+        <text id="151:1689" name="Ethereum" x="46" y="15" width="76" height="18" />
+      </frame>
+      <frame id="151:1690" name="p" x="411" y="0" width="149" height="48">
+        <frame id="151:1691" name="pico" x="12" y="12" width="24" height="24">
+          <text id="151:1692" name="L" x="8.5" y="5.5" width="7" height="13" />
+        </frame>
+        <text id="151:1693" name="LayerZero" x="46" y="15" width="75" height="18" />
+      </frame>
+      <frame id="151:1694" name="p" x="574" y="0" width="145" height="48">
+        <frame id="151:1695" name="pico" x="12" y="12" width="24" height="24">
+          <text id="151:1696" name="C" x="8" y="5.5" width="8" height="13" />
+        </frame>
+        <text id="151:1697" name="Chainlink" x="46" y="15" width="71" height="18" />
+      </frame>
+      <frame id="151:1698" name="p" x="733" y="0" width="180" height="48">
+        <frame id="151:1699" name="pico" x="12" y="12" width="24" height="24">
+          <text id="151:1700" name="P" x="8" y="5.5" width="8" height="13" />
+        </frame>
+        <text id="151:1701" name="PancakeSwap" x="46" y="15" width="106" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1702" name="faq" x="0" y="5635" width="1440" height="800">
+    <frame id="151:1703" name="sechead" x="340" y="120" width="760" height="76">
+      <text id="151:1704" name="FAQ" x="363.5" y="0" width="33" height="16" />
+      <text id="151:1705" name="Frequently asked questions" x="0" y="30" width="760" height="46" />
+    </frame>
+    <frame id="151:1706" name="faqcol" x="240" y="236" width="960" height="444">
+      <frame id="151:1707" name="qa" x="0" y="0" width="960" height="109">
+        <frame id="151:1708" name="qhd" x="24" y="18" width="912" height="19">
+          <text id="151:1709" name="What is AEGIS X?" x="0" y="0" width="894" height="19" />
+          <frame id="151:1710" name="ic-chevron" x="894" y="0.5" width="18" height="18" />
+        </frame>
+        <text id="151:1712" name="The world&#39;s first protocol driven by an AI think-tank system, fusing AI intelligence, DeFi liquidity and USD1 stablecoin payments into a next-generation value network — DeFi 4.0." x="24" y="49" width="912" height="42" />
+      </frame>
+      <frame id="151:1713" name="qa" x="0" y="121" width="960" height="55">
+        <frame id="151:1714" name="qhd" x="24" y="18" width="912" height="19">
+          <text id="151:1715" name="How is AGX minted?" x="0" y="0" width="894" height="19" />
+          <frame id="151:1716" name="ic-chevron" x="894" y="0.5" width="18" height="18" />
+        </frame>
+      </frame>
+      <frame id="151:1718" name="qa" x="0" y="188" width="960" height="55">
+        <frame id="151:1719" name="qhd" x="24" y="18" width="912" height="19">
+          <text id="151:1720" name="How are staking rewards calculated?" x="0" y="0" width="894" height="19" />
+          <frame id="151:1721" name="ic-chevron" x="894" y="0.5" width="18" height="18" />
+        </frame>
+      </frame>
+      <frame id="151:1723" name="qa" x="0" y="255" width="960" height="55">
+        <frame id="151:1724" name="qhd" x="24" y="18" width="912" height="19">
+          <text id="151:1725" name="How is protocol security ensured?" x="0" y="0" width="894" height="19" />
+          <frame id="151:1726" name="ic-chevron" x="894" y="0.5" width="18" height="18" />
+        </frame>
+      </frame>
+      <frame id="151:1728" name="qa" x="0" y="322" width="960" height="55">
+        <frame id="151:1729" name="qhd" x="24" y="18" width="912" height="19">
+          <text id="151:1730" name="How does the X token work?" x="0" y="0" width="894" height="19" />
+          <frame id="151:1731" name="ic-chevron" x="894" y="0.5" width="18" height="18" />
+        </frame>
+      </frame>
+      <frame id="151:1733" name="qa" x="0" y="389" width="960" height="55">
+        <frame id="151:1734" name="qhd" x="24" y="18" width="912" height="19">
+          <text id="151:1735" name="What is the Turbo mechanism?" x="0" y="0" width="894" height="19" />
+          <frame id="151:1736" name="ic-chevron" x="894" y="0.5" width="18" height="18" />
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="151:1738" name="footer" x="0" y="6435" width="1440" height="336">
+    <frame id="151:1739" name="ftop" x="120" y="72" width="1200" height="131">
+      <frame id="151:1740" name="fb" x="0" y="0" width="270" height="82">
+        <frame id="151:1741" name="fbr" x="0" y="0" width="111" height="26">
+          <rounded-rectangle id="151:1742" name="_prev_1 1" x="0" y="0" width="28" height="26" />
+          <text id="151:1743" name="AEGIS X" x="39" y="2" width="72" height="22" />
+        </frame>
+        <text id="151:1744" name="Guarding the Future of Value. AI × DeFi × USD1" x="0" y="40" width="260" height="42" />
+      </frame>
+      <frame id="151:1745" name="fcol" x="310" y="0" width="270" height="131">
+        <text id="151:1746" name="Protocol" x="0" y="0" width="65" height="17" />
+        <text id="151:1747" name="Launch DApp" x="0" y="27" width="94" height="17" />
+        <text id="151:1748" name="Whitepaper" x="0" y="54" width="82" height="17" />
+        <text id="151:1749" name="Docs" x="0" y="81" width="35" height="17" />
+        <text id="151:1750" name="Analytics" x="0" y="108" width="62" height="17" />
+      </frame>
+      <frame id="151:1751" name="fcol" x="620" y="0" width="270" height="131">
+        <text id="151:1752" name="Ecosystem" x="0" y="0" width="83" height="17" />
+        <text id="151:1753" name="AGX Staking" x="0" y="27" width="85" height="17" />
+        <text id="151:1754" name="LP Bond" x="0" y="54" width="59" height="17" />
+        <text id="151:1755" name="Burn Bond" x="0" y="81" width="75" height="17" />
+        <text id="151:1756" name="X Mining" x="0" y="108" width="61" height="17" />
+      </frame>
+      <frame id="151:1757" name="fcol" x="930" y="0" width="270" height="131">
+        <text id="151:1758" name="Community" x="0" y="0" width="90" height="17" />
+        <text id="151:1759" name="Discord" x="0" y="27" width="52" height="17" />
+        <text id="151:1760" name="Twitter / X" x="0" y="54" width="68" height="17" />
+        <text id="151:1761" name="Telegram" x="0" y="81" width="64" height="17" />
+        <text id="151:1762" name="GitHub" x="0" y="108" width="50" height="17" />
+      </frame>
+    </frame>
+    <rounded-rectangle id="151:1763" name="Rectangle" x="120" y="243" width="1200" height="1" />
+    <frame id="151:1764" name="fbot" x="120" y="284" width="1200" height="16">
+      <text id="151:1765" name="© 2026 AEGIS X DAO. All rights reserved." x="0" y="0" width="251" height="16" />
+      <text id="151:1766" name="Terms of Service · Privacy Policy · Disclaimer" x="927" y="0" width="273" height="16" />
+    </frame>
+  </frame>
+  <frame id="151:1821" name="Modal — Connect Wallet" x="0" y="0" width="1440" height="1080">
+    <frame id="151:1822" name="card" x="505" y="256" width="430" height="568">
+      <frame id="151:1823" name="hdr" x="24" y="24" width="382" height="54">
+        <text id="151:1824" name="Connect your wallet" x="0" y="3.5" width="207" height="27" />
+        <frame id="151:1825" name="wm-x" x="348" y="0" width="34" height="34">
+          <frame id="151:1826" name="Frame" x="10" y="10" width="14" height="14" />
+        </frame>
+      </frame>
+      <frame id="151:1828" name="intro" x="24" y="78" width="382" height="66">
+        <frame id="151:1829" name="Frame 10" x="14" y="15" width="36" height="36">
+          <rounded-rectangle id="151:1830" name="_prev_1 1" x="4" y="5" width="28" height="26.520545959472656" />
+        </frame>
+        <frame id="151:1831" name="it" x="64" y="14" width="304" height="38">
+          <text id="151:1832" name="Connect to explore AEGIS X features" x="0" y="0" width="260" height="18" />
+          <text id="151:1833" name="AEGIS X features ↗" x="0" y="21" width="119" height="17" />
+        </frame>
+      </frame>
+      <frame id="151:1834" name="l" x="24" y="144" width="382" height="40">
+        <text id="151:1835" name="INSTALLED WALLETS" x="0" y="18" width="155" height="16" />
+      </frame>
+      <frame id="151:1836" name="wrow" x="24" y="184" width="382" height="58">
+        <frame id="151:1924" name="wico" x="0" y="9" width="40" height="40">
+          <frame id="151:1941" name="Layer_1" x="4" y="4" width="32" height="32" />
+        </frame>
+        <frame id="151:1839" name="nm" x="52" y="19.5" width="226" height="19">
+          <text id="151:1840" name="MetaMask" x="0" y="0" width="78" height="19" />
+        </frame>
+        <frame id="151:1841" name="wbtn" x="290" y="12" width="92" height="34">
+          <text id="151:1842" name="Connect" x="18" y="8.5" width="56" height="17" />
+        </frame>
+      </frame>
+      <frame id="151:1843" name="terms" x="24" y="242" width="382" height="30">
+        <text id="151:1844" name="By connecting, you agree to our Terms of Service" x="0" y="12" width="360" height="18" />
+      </frame>
+      <frame id="151:1845" name="l" x="24" y="272" width="382" height="40">
+        <text id="151:1846" name="SUGGESTED WALLETS" x="0" y="18" width="162" height="16" />
+      </frame>
+      <frame id="151:1847" name="wrow" x="24" y="312" width="382" height="58">
+        <frame id="151:1848" name="wico" x="0" y="9" width="40" height="40">
+          <rounded-rectangle id="151:1923" name="Rectangle 1384" x="13.5" y="13.5" width="13" height="13" />
+        </frame>
+        <frame id="151:1850" name="nm" x="52" y="19.5" width="226" height="19">
+          <text id="151:1851" name="Base Account" x="0" y="0" width="104" height="19" />
+        </frame>
+        <frame id="151:1852" name="wbtn" x="290" y="12" width="92" height="34">
+          <text id="151:1853" name="Connect" x="18" y="8.5" width="56" height="17" />
+        </frame>
+      </frame>
+      <frame id="151:1854" name="wrow" x="24" y="370" width="382" height="58">
+        <frame id="151:1918" name="wico" x="0" y="9" width="40" height="40">
+          <vector id="151:1921" name="Vector" x="9" y="9" width="22" height="22" />
+        </frame>
+        <frame id="151:1857" name="nm" x="52" y="19.5" width="226" height="19">
+          <text id="151:1858" name="Coinbase Wallet" x="0" y="0" width="121" height="19" />
+        </frame>
+        <frame id="151:1859" name="wbtn" x="290" y="12" width="92" height="34">
+          <text id="151:1860" name="Connect" x="18" y="8.5" width="56" height="17" />
+        </frame>
+      </frame>
+      <frame id="151:1861" name="wrow" x="24" y="428" width="382" height="58">
+        <frame id="151:1862" name="wico" x="0" y="9" width="40" height="40">
+          <frame id="151:1909" name="Frame" x="8" y="8" width="24" height="24" />
+        </frame>
+        <frame id="151:1864" name="nm" x="52" y="19.5" width="226" height="19">
+          <text id="151:1865" name="WalletConnect" x="0" y="0" width="112" height="19" />
+        </frame>
+        <frame id="151:1866" name="wbtn" x="290" y="12" width="92" height="34">
+          <text id="151:1867" name="Connect" x="18" y="8.5" width="56" height="17" />
+        </frame>
+      </frame>
+      <frame id="151:1868" name="wrow" x="24" y="486" width="382" height="58">
+        <frame id="151:1869" name="wico" x="0" y="9" width="40" height="40">
+          <vector id="151:1916" name="Vector" x="8.000106811523438" y="8.003978729248047" width="23.999893188476562" height="23.992027282714844" />
+        </frame>
+        <frame id="151:1871" name="nm" x="52" y="19.5" width="226" height="19">
+          <text id="151:1872" name="Binance Wallet" x="0" y="0" width="114" height="19" />
+        </frame>
+        <frame id="151:1873" name="wbtn" x="290" y="12" width="92" height="34">
+          <text id="151:1874" name="Connect" x="18" y="8.5" width="56" height="17" />
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+</frame>
+
+IMPORTANT: The design was too large to fit into context with get_design_context. Instead you have received a sparse metadata response, you MUST call get_design_context on the IDs of the sublayers to get the full code. Split up the calls to ensure the sublayers do not also exceed the context limit.

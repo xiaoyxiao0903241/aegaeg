@@ -1,0 +1,182 @@
+          <div className="content-stretch flex flex-col items-start overflow-clip pt-[14px] relative shrink-0 w-full" data-node-id="64:153" data-name="dl">
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.68px] whitespace-nowrap" data-node-id="64:154">
+              Start inviting
+            </p>
+          </div>
+          <div className="bg-[var(--bg\/surface,white)] content-stretch flex flex-col gap-[14px] items-start overflow-clip p-[16px] relative rounded-[16px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)] shrink-0 w-full" data-node-id="64:155" data-name="fl">
+            <div className="content-stretch flex gap-[12px] items-start overflow-clip relative shrink-0 w-full" data-node-id="64:156" data-name="frow">
+              <div className="bg-[var(--accent\/coral-button,#e66a47)] content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[14px] shrink-0 size-[28px]" data-node-id="64:157" data-name="num">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[13px] text-[color:var(--text\/inverse,white)] whitespace-nowrap" data-node-id="64:158">
+                  1
+                </p>
+              </div>
+              <div className="[word-break:break-word] content-stretch flex flex-[1_0_0] flex-col gap-[3px] items-start min-w-px overflow-clip relative" data-node-id="64:159" data-name="tx">
+                <p className="font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] w-[292px]" data-node-id="64:160">
+                  Share your link
+                </p>
+                <p className="font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[13px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.26px] w-[292px]" data-node-id="64:161">
+                  Connect wallet to generate a referral link.
+                </p>
+              </div>
+            </div>
+            <div className="content-stretch flex gap-[12px] items-start overflow-clip relative shrink-0 w-full" data-node-id="64:162" data-name="frow">
+              <div className="bg-[var(--accent\/coral-button,#e66a47)] content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[14px] shrink-0 size-[28px]" data-node-id="64:163" data-name="num">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[13px] text-[color:var(--text\/inverse,white)] whitespace-nowrap" data-node-id="64:164">
+                  2
+                </p>
+              </div>
+              <div className="[word-break:break-word] content-stretch flex flex-[1_0_0] flex-col gap-[3px] items-start min-w-px overflow-clip relative" data-node-id="64:165" data-name="tx">
+                <p className="font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] w-[292px]" data-node-id="64:166">
+                  Friends join
+                </p>
+                <p className="font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[13px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.26px] w-[292px]" data-node-id="64:167">
+                  Registering via your link activates the bond.
+                </p>
+              </div>
+            </div>
+            <div className="content-stretch flex gap-[12px] items-start overflow-clip relative shrink-0 w-full" data-node-id="64:168" data-name="frow">
+              <div className="bg-[var(--accent\/coral-button,#e66a47)] content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[14px] shrink-0 size-[28px]" data-node-id="64:169" data-name="num">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[13px] text-[color:var(--text\/inverse,white)] whitespace-nowrap" data-node-id="64:170">
+                  3
+                </p>
+              </div>
+              <div className="[word-break:break-word] content-stretch flex flex-[1_0_0] flex-col gap-[3px] items-start min-w-px overflow-clip relative" data-node-id="64:171" data-name="tx">
+                <p className="font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] w-[292px]" data-node-id="64:172">
+                  Earn rewards
+                </p>
+                <p className="font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[13px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.26px] w-[292px]" data-node-id="64:173">
+                  When they contribute or stake, rewards flow to you.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="content-stretch flex flex-col items-start overflow-clip pt-[14px] relative shrink-0 w-full" data-node-id="64:174" data-name="dl">
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.68px] whitespace-nowrap" data-node-id="64:175">
+              Programs
+            </p>
+          </div>
+          <div className="[word-break:break-word] bg-[var(--bg\/surface,white)] content-stretch flex flex-col font-['Montserrat:SemiBold'] font-semibold gap-[6px] items-start leading-[1.2] overflow-clip p-[16px] relative rounded-[14px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)] shrink-0 w-full" data-node-id="64:176" data-name="pc">
+            <p className="relative shrink-0 text-[11px] text-[color:var(--accent\/primary-\(coral\),#c85c3f)] tracking-[0.88px] whitespace-nowrap" data-node-id="64:177">
+              X DAO Genesis · Season 1
+            </p>
+            <p className="relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] w-[310px]" data-node-id="64:178">
+              Global genesis shareholder recruitment is live.
+            </p>
+            <p className="relative shrink-0 text-[13px] text-[color:var(--accent\/primary-\(coral\),#c85c3f)] tracking-[-0.26px] whitespace-nowrap" data-node-id="64:179">
+              Learn about the program →
+            </p>
+          </div>
+          <div className="[word-break:break-word] bg-[var(--bg\/surface,white)] content-stretch flex flex-col font-['Montserrat:SemiBold'] font-semibold gap-[6px] items-start leading-[1.2] overflow-clip p-[16px] relative rounded-[14px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)] shrink-0 w-full" data-node-id="64:180" data-name="pc">
+            <p className="relative shrink-0 text-[11px] text-[color:var(--accent\/primary-\(coral\),#c85c3f)] tracking-[0.88px] whitespace-nowrap" data-node-id="64:181">
+              X Academy
+            </p>
+            <p className="relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] w-[310px]" data-node-id="64:182">
+              Professional DeFi training for the community.
+            </p>
+            <p className="relative shrink-0 text-[13px] text-[color:var(--accent\/primary-\(coral\),#c85c3f)] tracking-[-0.26px] whitespace-nowrap" data-node-id="64:183">
+              View session requirements →
+            </p>
+          </div>
+          <div className="content-stretch flex flex-col items-start overflow-clip pt-[14px] relative shrink-0 w-full" data-node-id="64:184" data-name="dl">
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.68px] whitespace-nowrap" data-node-id="64:185">
+              My invites (5)
+            </p>
+          </div>
+          <div className="bg-[var(--bg\/surface,white)] content-stretch flex flex-col items-start overflow-clip px-[14px] py-[6px] relative rounded-[16px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)] shrink-0 w-full" data-node-id="64:186" data-name="iv">
+            <div className="content-stretch flex items-start overflow-clip py-[9px] relative shrink-0 w-full" data-node-id="64:187" data-name="trow">
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:188" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:189">
+                  Joined
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:190" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:191">
+                  Address
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:192" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:193">
+                  Title
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:194" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:195">
+                  Vol.
+                </p>
+              </div>
+            </div>
+            <div className="bg-[var(--border\/default,#eceef2)] h-[0.5px] relative shrink-0 w-full" data-node-id="64:196" data-name="Rectangle" />
+            <div className="content-stretch flex items-start overflow-clip py-[9px] relative shrink-0 w-full" data-node-id="64:197" data-name="trow">
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:198" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:199">
+                  04-12
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:200" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--accent\/primary-\(coral\),#c85c3f)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:201">
+                  0x05…E515
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:202" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:203">
+                  S6
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:204" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:205">
+                  246K
+                </p>
+              </div>
+            </div>
+            <div className="bg-[var(--border\/default,#eceef2)] h-[0.5px] relative shrink-0 w-full" data-node-id="64:206" data-name="Rectangle" />
+            <div className="content-stretch flex items-start overflow-clip py-[9px] relative shrink-0 w-full" data-node-id="64:207" data-name="trow">
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:208" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:209">
+                  04-28
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:210" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--accent\/primary-\(coral\),#c85c3f)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:211">
+                  0x94…A2BF
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:212" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:213">
+                  S3
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:214" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:215">
+                  82K
+                </p>
+              </div>
+            </div>
+            <div className="bg-[var(--border\/default,#eceef2)] h-[0.5px] relative shrink-0 w-full" data-node-id="64:216" data-name="Rectangle" />
+            <div className="content-stretch flex items-start overflow-clip py-[9px] relative shrink-0 w-full" data-node-id="64:217" data-name="trow">
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:218" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:219">
+                  05-02
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:220" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--accent\/primary-\(coral\),#c85c3f)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:221">
+                  0xc4…9C6a
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:222" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:223">
+                  S3
+                </p>
+              </div>
+              <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px overflow-clip relative" data-node-id="64:224" data-name="cell">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.24px] whitespace-nowrap" data-node-id="64:225">
+                  45K
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

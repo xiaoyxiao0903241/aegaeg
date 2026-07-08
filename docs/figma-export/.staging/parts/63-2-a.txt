@@ -1,0 +1,58 @@
+const imgPrev11 = "https://www.figma.com/api/mcp/asset/de90f1c6-29e1-4a9b-94e9-ff4ea823bde8";
+const imgBinanceCoinBnb = "https://www.figma.com/api/mcp/asset/b5b89bff-16f2-44f4-91f9-feae52c7e6ca";
+const imgEllipse = "https://www.figma.com/api/mcp/asset/5ca6092c-9213-4f5d-85b1-57c22ce694e0";
+const imgGlobe = "https://www.figma.com/api/mcp/asset/3462efb3-104a-482b-9edb-cb90a13470bb";
+const imgFrame = "https://www.figma.com/api/mcp/asset/893528bd-7a6c-4abd-b713-1c5c4ec4f403";
+const imgRd = "https://www.figma.com/api/mcp/asset/c118c5ce-f487-48bd-b6cb-3c1cdf1daa8c";
+
+export default function H5Genesis() {
+  return (
+    <div className="bg-gradient-to-b content-stretch flex flex-col from-[#fbeae1] items-start relative size-full to-[#f2f3f6] via-1/4 via-[#f2f3f6]" data-node-id="63:2" data-name="H5 — Genesis">
+      <div className="content-stretch flex h-[60px] items-center justify-between overflow-clip px-[16px] relative shrink-0 w-full" data-node-id="226:92" data-name="topbar">
+        <div className="content-stretch flex items-center overflow-clip relative shrink-0" data-node-id="226:93" data-name="bb">
+          <div className="h-[22px] relative shrink-0 w-[24px]" data-node-id="226:94" data-name="_prev_1 1">
+            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgPrev11} />
+          </div>
+        </div>
+        <div className="content-stretch flex gap-[8px] items-center overflow-clip relative shrink-0" data-node-id="226:198" data-name="topR">
+          <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex gap-[6px] h-[36px] items-center overflow-clip px-[12px] py-[8px] relative rounded-[999px] shrink-0" data-node-id="226:199" data-name="net">
+            <div className="relative rounded-[50px] shrink-0 size-[18px]" data-node-id="226:200" data-name="Coin Logo">
+              <div className="absolute inset-[0_0.01%_0_0]" data-node-id="I226:200;1:27" data-name="Binance Coin (BNB)">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgBinanceCoinBnb} />
+              </div>
+            </div>
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.12px] whitespace-nowrap" data-node-id="226:201">
+              BSC
+            </p>
+          </div>
+          <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex gap-[6px] h-[36px] items-center overflow-clip px-[12px] py-[8px] relative rounded-[999px] shrink-0" data-node-id="226:202" data-name="wal">
+            <div className="relative shrink-0 size-[8px]" data-node-id="226:203" data-name="Ellipse">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgEllipse} />
+            </div>
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.12px] whitespace-nowrap" data-node-id="226:204">
+              0x8F32…91A2
+            </p>
+          </div>
+          <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex gap-[6px] h-[36px] items-center justify-center overflow-clip px-[12px] relative rounded-[18px] shrink-0" data-node-id="226:205" data-name="lang">
+            <div className="relative shrink-0 size-[16px]" data-node-id="226:206" data-name="globe">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGlobe} />
+            </div>
+            <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[12px] text-[color:var(--text\/ink,#0b0e14)] whitespace-nowrap" data-node-id="226:210">
+              EN
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="content-stretch flex flex-col items-start overflow-clip pb-[24px] px-[12px] relative shrink-0 w-full" data-node-id="63:13" data-name="stage">
+        <div className="bg-[var(--bg\/surface,white)] content-stretch flex flex-col gap-[12px] items-start overflow-clip pb-[22px] pt-[18px] px-[18px] relative rounded-[24px] shadow-[0px_8px_24px_0px_rgba(18,26,51,0.07)] shrink-0 w-full" data-node-id="63:14" data-name="app-window">
+          <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[13px] shrink-0 size-[42px]" data-node-id="63:15" data-name="ham">
+            <div className="relative shrink-0 size-[18px]" data-node-id="63:16" data-name="Frame">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame} />
+            </div>
+          </div>
+          <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[1.2] relative shrink-0 text-[22px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.88px] whitespace-nowrap" data-node-id="63:18">
+            Genesis Contribution
+          </p>
+          <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[13px] text-[color:var(--text\/muted,rgba(0,0,0,0.4))] tracking-[-0.26px] w-[342px]" data-node-id="63:19">
+            Join the X DAO genesis program · Season 1 (30% off)
+          </p>

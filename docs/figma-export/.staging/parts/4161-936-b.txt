@@ -1,0 +1,160 @@
+          <div className="bg-[var(--bg\/surface,white)] border-[var(--border\/default,#eceef2)] border-r border-solid content-stretch flex flex-col h-[826px] items-start overflow-clip pb-[22px] pt-[20px] px-[24px] relative shrink-0 w-[400px]" data-node-id="4161:984" data-name="wcol">
+            <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full" data-node-id="4172:204">
+              <div className="relative shrink-0 size-[18px]" data-node-id="4172:205" data-name="Frame">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame} />
+              </div>
+              <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:Medium'] font-medium leading-[1.4] min-w-px relative text-[16px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.32px]" data-node-id="4172:208">
+                Back to Convert
+              </p>
+              <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[13px] shrink-0 size-[42px]" data-node-id="4172:209" data-name="ham">
+                <div className="relative shrink-0 size-[18px]" data-node-id="4172:210" data-name="Frame">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame1} />
+                </div>
+              </div>
+            </div>
+            <div className="h-[18px] relative shrink-0 w-full" data-node-id="4172:221" data-name="g" />
+            <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0 w-full" data-node-id="4161:985" data-name="wh">
+              <div className="[word-break:break-word] content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-[351px]" data-node-id="4161:986">
+                <p className="font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[21px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.42px] whitespace-nowrap" data-node-id="4161:987">
+                  Conversion
+                </p>
+                <p className="font-['Montserrat:Regular'] font-normal leading-[1.4] relative shrink-0 text-[13px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.26px] w-[275px]" data-node-id="4161:988">
+                  Convert USDT to USD1, with no swap fees and no slippage
+                </p>
+              </div>
+            </div>
+            <div className="h-[18px] relative shrink-0 w-full" data-node-id="4161:992" data-name="g" />
+            <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-col gap-[9px] items-start overflow-clip p-[14px] relative rounded-[var(--radius\/md,16px)] shrink-0 w-full" data-node-id="4161:993" data-name="box">
+              <div className="[word-break:break-word] content-stretch flex items-center justify-between leading-[normal] overflow-clip relative shrink-0 text-[13px] tracking-[-0.26px] w-full whitespace-nowrap" data-node-id="4161:994" data-name="r">
+                <p className="font-['Montserrat:Regular'] font-normal relative shrink-0 text-[color:var(--text\/body,rgba(0,0,0,0.7))]" data-node-id="4161:995">
+                  Sell
+                </p>
+                <p className="font-['Montserrat:SemiBold'] font-semibold relative shrink-0 text-[color:var(--text\/ink,#0b0e14)]" data-node-id="4161:996">
+                  Balance: 2,860.12
+                </p>
+              </div>
+              <div className="content-stretch flex items-center justify-between overflow-clip relative shrink-0 w-full" data-node-id="4161:997" data-name="rr">
+                <div className="content-stretch flex gap-[8px] items-center overflow-clip relative shrink-0" data-node-id="4161:998" data-name="tk">
+                  <div className="overflow-clip relative shrink-0 size-[24px]" data-node-id="4161:999" data-name="usdt-svgrepo-com 1">
+                    <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgUsdtSvgrepoCom1} />
+                  </div>
+                  <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] whitespace-nowrap" data-node-id="4161:1003">
+                    USDT
+                  </p>
+                </div>
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[22px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.44px] whitespace-nowrap" data-node-id="4161:1004">
+                  200.00
+                </p>
+              </div>
+            </div>
+            <div className="content-stretch flex gap-[6px] items-start overflow-clip pt-[10px] relative shrink-0 w-full" data-node-id="4161:1005" data-name="pcts">
+              <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-[1_0_0] flex-col items-center justify-center min-w-px overflow-clip py-[5px] relative rounded-[9px]" data-node-id="4161:1006" data-name="pct">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[12px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.24px] whitespace-nowrap" data-node-id="4161:1007">
+                  25%
+                </p>
+              </div>
+              <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-[1_0_0] flex-col items-center justify-center min-w-px overflow-clip py-[5px] relative rounded-[9px]" data-node-id="4161:1008" data-name="pct">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[12px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.24px] whitespace-nowrap" data-node-id="4161:1009">
+                  50%
+                </p>
+              </div>
+              <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-[1_0_0] flex-col items-center justify-center min-w-px overflow-clip py-[5px] relative rounded-[9px]" data-node-id="4161:1010" data-name="pct">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[12px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.24px] whitespace-nowrap" data-node-id="4161:1011">
+                  75%
+                </p>
+              </div>
+              <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-[1_0_0] flex-col items-center justify-center min-w-px overflow-clip py-[5px] relative rounded-[9px]" data-node-id="4161:1012" data-name="pct">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[12px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.24px] whitespace-nowrap" data-node-id="4161:1013">
+                  100%
+                </p>
+              </div>
+            </div>
+            <div className="content-stretch flex flex-col items-center justify-center overflow-clip py-[6px] relative shrink-0 w-full" data-node-id="4161:1014" data-name="fl">
+              <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[11px] shrink-0 size-[34px]" data-node-id="4161:1015" data-name="flb">
+                <div className="relative shrink-0 size-[16px]" data-node-id="4166:274" data-name="Frame">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame2} />
+                </div>
+              </div>
+            </div>
+            <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-col gap-[9px] items-start overflow-clip p-[14px] relative rounded-[var(--radius\/md,16px)] shrink-0 w-full" data-node-id="4161:1017" data-name="box">
+              <div className="[word-break:break-word] content-stretch flex items-center justify-between leading-[normal] overflow-clip relative shrink-0 text-[13px] tracking-[-0.26px] w-full whitespace-nowrap" data-node-id="4161:1018" data-name="r">
+                <p className="font-['Montserrat:Regular'] font-normal relative shrink-0 text-[color:var(--text\/body,rgba(0,0,0,0.7))]" data-node-id="4161:1019">
+                  Buy
+                </p>
+                <p className="font-['Montserrat:SemiBold'] font-semibold relative shrink-0 text-[color:var(--text\/ink,#0b0e14)]" data-node-id="4161:1020">
+                  Balance: 3,200.46
+                </p>
+              </div>
+              <div className="content-stretch flex items-center justify-between overflow-clip relative shrink-0 w-full" data-node-id="4161:1021" data-name="rr">
+                <div className="content-stretch flex gap-[8px] items-center overflow-clip relative shrink-0" data-node-id="4161:1022" data-name="tk">
+                  <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-node-id="4161:1023" data-name="Clip path group">
+                    <div className="col-1 mask-alpha mask-intersect mask-no-clip mask-no-repeat mask-size-[24px_24px] ml-0 mt-0 relative row-1 size-[24px]" data-node-id="4161:1026" style={{ maskImage: `url("${imgGroup}")` }} data-name="Group">
+                      <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup1} />
+                    </div>
+                  </div>
+                  <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[14px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.28px] whitespace-nowrap" data-node-id="4161:1037">
+                    USD1
+                  </p>
+                </div>
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[22px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.44px] whitespace-nowrap" data-node-id="4161:1038">
+                  200.00
+                </p>
+              </div>
+            </div>
+            <div className="h-[14px] relative shrink-0 w-full" data-node-id="4161:1039" data-name="g" />
+            <div className="bg-[var(--bg\/surface,white)] border border-[var(--border\/default,#eceef2)] border-solid content-stretch flex flex-col gap-[8px] items-start overflow-clip px-[14px] py-[13px] relative rounded-[12px] shrink-0 w-full" data-node-id="4161:1267" data-name="meta">
+              <div className="content-stretch flex items-center justify-between overflow-clip relative shrink-0 w-full" data-node-id="4161:1268" data-name="r">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[normal] relative shrink-0 text-[13px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.26px] whitespace-nowrap" data-node-id="4161:1269">
+                  兑换价格
+                </p>
+                <div className="content-stretch flex items-center justify-end relative shrink-0 w-[118.5px]" data-node-id="4161:1270">
+                  <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[13px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.26px] whitespace-nowrap" data-node-id="4161:1271">
+                    1 USDT = 0.9995 USD1
+                  </p>
+                </div>
+              </div>
+              <div className="[word-break:break-word] content-stretch flex items-center justify-between leading-[normal] overflow-clip relative shrink-0 text-[13px] tracking-[-0.26px] w-full whitespace-nowrap" data-node-id="4161:1280" data-name="r">
+                <p className="font-['Montserrat:Regular'] font-normal relative shrink-0 text-[color:var(--text\/body,rgba(0,0,0,0.7))]" data-node-id="4161:1281">
+                  兑换路径
+                </p>
+                <p className="font-['Montserrat:SemiBold'] font-semibold relative shrink-0 text-[color:var(--text\/ink,#0b0e14)]" data-node-id="4161:1282">
+                  USDT → USD1
+                </p>
+              </div>
+              <div className="content-stretch flex items-center justify-between overflow-clip relative shrink-0 w-full" data-node-id="4161:1283" data-name="r">
+                <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[normal] relative shrink-0 text-[13px] text-[color:var(--text\/body,rgba(0,0,0,0.7))] tracking-[-0.26px] whitespace-nowrap" data-node-id="4161:1284">
+                  提供方
+                </p>
+                <div className="content-stretch flex gap-[4px] items-center justify-end relative shrink-0 w-[118.5px]" data-node-id="4161:1285">
+                  <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[13px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.26px] whitespace-nowrap" data-node-id="4161:1286">
+                    AEGIS X
+                  </p>
+                  <div className="relative shrink-0 size-[15px]" data-node-id="4161:1287" data-name="Frame">
+                    <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame3} />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex items-start overflow-clip pt-[14px] relative shrink-0 w-full" data-node-id="4161:1054" data-name="steps">
+              <div className="bg-[var(--accent\/coral-button,#e66a47)] content-stretch flex flex-[1_0_0] flex-col h-[44px] items-center justify-center min-w-px overflow-clip relative rounded-[var(--radius\/pill,999px)]" data-node-id="4161:1055" data-name="s2">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[14px] text-[color:var(--text\/inverse,white)] tracking-[-0.28px] whitespace-nowrap" data-node-id="4161:1056">
+                  Swap
+                </p>
+              </div>
+            </div>
+            <div className="flex-[1_0_0] min-h-px relative w-full" data-node-id="4161:1057" data-name="sp" />
+            <div className="bg-[var(--bg\/dark,#11141d)] content-stretch flex flex-col gap-[5px] items-start overflow-clip px-[18px] py-[16px] relative rounded-[var(--radius\/md,16px)] shrink-0 w-full" data-node-id="4161:1058" data-name="promo">
+              <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[14px] text-[color:var(--text\/inverse,white)] tracking-[-0.28px] whitespace-nowrap" data-node-id="4161:1059">
+                Genesis Season 1 · 30% off
+              </p>
+              <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[normal] relative shrink-0 text-[12px] text-[color:var(--text\/inverse,white)] tracking-[-0.24px] whitespace-nowrap" data-node-id="4161:1060">
+                Live now — limited quota, ends 07.10
+              </p>
+              <div className="h-[6px] relative shrink-0 w-full" data-node-id="4161:1061" data-name="pg" />
+              <div className="bg-[var(--accent\/coral-button,#e66a47)] content-stretch flex flex-col h-[38px] items-center justify-center overflow-clip relative rounded-[var(--radius\/pill,999px)] shrink-0 w-full" data-node-id="4161:1062" data-name="pj">
+                <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[13px] text-[color:var(--text\/inverse,white)] tracking-[-0.26px] whitespace-nowrap" data-node-id="4161:1063">
+                  Join Genesis
+                </p>
+              </div>
+            </div>
+          </div>

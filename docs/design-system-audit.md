@@ -79,9 +79,9 @@
 | **Card** | `surface` | `outlined` / `elevated` | 空 `flat`、padding、圆角 |
 | | `tone` | 仅 `dark`（非默认不写） | 空 `default` |
 | | `base` | `rounded-md px-4 py-3.5 bg-card` | — |
-| **Text** | `variant` | 角色字阶、`text-*`、档内 `tracking`；含 `!` / fluid 压父级 → 专用值（如 `rank-title`，见 playbook） | `leading-*`（走 compound）；用近似 variant 冒充专用字阶 |
-| | `tone` | shadcn 语义色（`foreground` / `muted-foreground` / `primary` / `success` / `inverse`→`white`） | 遗留 `ink-*`、`faint`、`faq-text` |
-| | `weight` | 非 normal 字重 | 空 `normal` |
+| **Text** | `variant` | 角色字阶、`text-*`、档内 `tracking`、**默认字重**；含 `!` / fluid 压父级 → 专用值（如 `rank-title`，见 playbook） | `leading-*`（走 compound）；用近似 variant 冒充专用字阶 |
+| | `tone` | shadcn 语义色（`foreground` / `muted-foreground` / `primary` / `success` / `inverse`→`white`） | 遗留 `ink-*`、`faint`、`faq-text`；**字重** |
+| | `className` | 布局；**极少数** `font-medium` / `font-semibold` / `font-bold`（见 [`text-refactor-plan.md`](./text-refactor-plan.md) §4） | 整包 typography |
 | | `base` | `font-normal tracking-normal` | — |
 | | `compound` | variant×tone 交叉（如 kicker+accent） | — |
 
@@ -212,11 +212,15 @@
 
 ### 5.2 保留的 variant
 
+> **已 supersede**：目标态见 [`text-refactor-plan.md`](./text-refactor-plan.md) — `variant`+`tone`，无 `weight`；iOS flat 字阶替代 `size` 轴。
+
 | 轴 | 值 | 默认 |
 |----|-----|------|
-| `size` | xs \| sm \| md \| lg \| xl \| 2xl \| display | sm |
-| `weight` | normal \| medium \| semibold \| bold | normal |
-| `tone` | default \| muted \| body \| subtle \| coral \| success \| onDark \| faq | default |
+| `variant` | flat 字阶（`footnote`、`title2`…）+ Home namespace | `footnote` |
+| `tone` | `foreground` \| `subtle` \| `accent` \| `inverse` … | `foreground` |
+| `className` | 布局；极少数 `font-semibold` 等 | — |
+
+（历史草案：`size` + `weight` + `tone` — 勿在新代码使用。）
 
 ### 5.3 用 className，不做 variant
 
@@ -227,7 +231,7 @@
 | Eyebrow 大写+字距 | `uppercase tracking-[1.82px]` |
 | FAQ 答案间距 | `mb-4 mt-0` |
 | 右对齐 meta 值 | `text-right` |
-| 旧 `dappTextClass('caption')` 等 20+ 角色名 | **删除**；改为 `size`+`weight`+`className` |
+| 旧 `dappTextClass('caption')` 等 20+ 角色名 | **删除**；改为 `variant`+`tone`+布局 `className`（见 [`text-refactor-plan.md`](./text-refactor-plan.md)） |
 
 ### 5.4 标题（不进 Text variant）
 

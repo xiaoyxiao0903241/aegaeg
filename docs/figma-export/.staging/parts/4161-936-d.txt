@@ -1,0 +1,47 @@
+            <div className="content-stretch flex flex-col items-start overflow-clip pb-[16px] pt-[34px] relative shrink-0 w-full" data-node-id="4161:1155" data-name="dl">
+              <p className="[word-break:break-word] font-['Montserrat:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[18px] text-[color:var(--text\/ink,#0b0e14)] tracking-[-0.36px] whitespace-nowrap" data-node-id="4161:1156">
+                FAQs
+              </p>
+            </div>
+            <div className="bg-white content-stretch flex flex-col gap-[12px] items-start overflow-clip px-[24px] py-[18px] relative rounded-[16px] shadow-[0px_6px_20px_0px_rgba(18,26,51,0.06)] shrink-0 w-full" data-node-id="4161:1167" data-name="qa">
+              <div className="content-stretch flex items-center justify-between overflow-clip relative shrink-0 w-full" data-node-id="4161:1168" data-name="qhd">
+                <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:SemiBold'] font-semibold leading-[1.3] min-w-px relative text-[#0b0e14] text-[15px] tracking-[-0.3px]" data-node-id="4161:1169">
+                  USD1是什么？
+                </p>
+                <div className="relative shrink-0 size-[18px]" data-node-id="4161:1170" data-name="ic-chevron">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIcChevron} />
+                </div>
+              </div>
+              <p className="[word-break:break-word] font-['Montserrat:Regular'] font-normal leading-[1.5] relative shrink-0 text-[#5b6472] text-[14px] tracking-[-0.28px] w-full" data-node-id="4161:1172">
+                USD1 是 AEGIS X 生态的核心价值结算资产，USD1有100%的儲備資產支持，保管的等值資產包含現金、短期美國公債、政府貨幣市場基金等，每月可在WLFI官網查看金額分佈報告。
+              </p>
+            </div>
+            <div className="h-[12px] relative shrink-0 w-full" data-node-id="4161:1173" data-name="gq" />
+            <div className="bg-white content-stretch flex flex-col items-start overflow-clip px-[24px] py-[18px] relative rounded-[16px] shadow-[0px_6px_20px_0px_rgba(18,26,51,0.06)] shrink-0 w-full" data-node-id="4161:1174" data-name="qa">
+              <div className="content-stretch flex items-center justify-between overflow-clip relative shrink-0 w-full" data-node-id="4161:1175" data-name="qhd">
+                <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:SemiBold'] font-semibold leading-[1.3] min-w-px relative text-[#0b0e14] text-[15px] tracking-[-0.3px]" data-node-id="4161:1176">
+                  USD1在协议里扮演什么角色？
+                </p>
+                <div className="relative shrink-0 size-[18px]" data-node-id="4161:1177" data-name="ic-chevron">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIcChevron1} />
+                </div>
+              </div>
+            </div>
+            <div className="h-[12px] relative shrink-0 w-full" data-node-id="4161:1179" data-name="gq" />
+            <div className="bg-white content-stretch flex flex-col items-start overflow-clip px-[24px] py-[18px] relative rounded-[16px] shadow-[0px_6px_20px_0px_rgba(18,26,51,0.06)] shrink-0 w-full" data-node-id="4161:1180" data-name="qa">
+              <div className="content-stretch flex items-center justify-between overflow-clip relative shrink-0 w-full" data-node-id="4161:1181" data-name="qhd">
+                <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:SemiBold'] font-semibold leading-[1.3] min-w-px relative text-[#0b0e14] text-[15px] tracking-[-0.3px]" data-node-id="4161:1182">
+                  USDT和USD1是如何进行兑换的？
+                </p>
+                <div className="relative shrink-0 size-[18px]" data-node-id="4161:1183" data-name="ic-chevron">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgIcChevron1} />
+                </div>
+              </div>
+            </div>
+            <div className="h-[12px] relative shrink-0 w-full" data-node-id="4161:1185" data-name="gq" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
