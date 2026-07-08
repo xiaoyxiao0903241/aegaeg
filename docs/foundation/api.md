@@ -1,145 +1,180 @@
-# Foundation 公开 API（L1 · 六组件对称 SSOT）
+# Foundation 公开 API（L2 · 十组件对称 SSOT）
 
-> **流程**：[`runbook.md`](./runbook.md) · **验收**：[`verification.md`](./verification.md)  
-> **原则**：每组件 **键数 = 类型字面量数** · **无 alias 层** · Tier B 不进 Text
+> **流程**：[`runbook.md`](./runbook.md) · **验收**：[`verification.md`](./verification.md) · **设计审计**：[`design-system-audit-v2.md`](./design-system-audit-v2.md)
+>
+> **原则**：每组件 **键数 = 类型字面量数** · **无 alias 层** · **无场景分叉（context）** · Tier B 不进 Text
 
 每节结构一致：**公开轴 · 禁止 · 依赖 · Swap 探针 · API gate**
 
 ---
 
-## §1 Card
+## §1 Token（源 SSOT）
+
+`src/shared/styles/tokens/tokens.json` 为唯一真源，CI 生成 `theme.css` 与 `tokens.ts`。
+
+| 维度 | 集合 | 键数 |
+|------|------|------|
+| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `success` · `border` · `dark` · `inverse` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 16 |
+| type | `rail` · `kicker` · `meta` · `detail` · `question` · `headline` · `brand` · `section` · `widget-title` · `amount` | 10 |
+| space | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)` | 9 |
+| radius | `sm(8)` · `md(10)` · `lg(12)` · `xl(16)` · `full` | 5 |
+| shadow | `faq(E1)` · `card(E2)` · `subtle(E3)` · `elevated-strong(E4)` · `window(E5)` · `modal(E6)` | 6 |
+
+**禁止**：新增 `--ink-strong`、`--faq-text`、`--on-dark`、`--coral-bright` 等代码臆造色。
+
+---
+
+## §2 Text
+
+| 公开轴 | 值 |
+|--------|-----|
+| `variant` | **10 键**：`rail` · `kicker` · `meta` · `detail` · `question` · `headline` · `brand` · `section` · `widget-title` · `amount` |
+| `tone` | `foreground` · `muted-foreground` · `primary` · `success` · `inverse` |
+| 可选 | `as` · `tabular` |
+
+### 10 variant（仅此）
+
+| variant | PC | H5 | weight | 用途 |
+|---------|----|----|--------|------|
+| rail | 10 | 10 | medium | rail label |
+| kicker | 11 | 12 | semibold | eyebrow / badge label |
+| meta | 13 | 12 | normal | **默认**正文、label、table cell |
+| detail | 14 | 14 | normal | FAQ 答案、长说明 |
+| question | 15 | 14 | semibold | FAQ 问题 |
+| headline | 16 | 15 | semibold | 卡小标题 |
+| brand | 17 | 18 | semibold | topbar brand / rank |
+| section | 18 | 16 | semibold | section heading (dl) |
+| widget-title | 21 | 22 | semibold | widget / page header |
+| amount | 22 | 23 | semibold | 金额、数值 |
+
+**禁止**：`weight` prop · `panel-title` / `table-cell` / `on-dark` · `deprecatedAliases`
+**依赖**：P0 token
+**探针**：Swap catalog 全部 Text owner 行
+**Gate**：`text.tsx` variant 键 = **10** · `TextVariant` 联合 = 10 · `tone` = 5
+
+---
+
+## §3 Button
+
+| 公开轴 | 值 |
+|--------|-----|
+| `variant` | `primary` · `secondary` · `ghost` · `link` |
+| `size` | `sm` · `md` · `lg` |
+| `shape` | `pill` · `rect` |
+
+**Typography**：`link` 内部自动用 `Text variant="meta" tone="primary"`，不 hand-roll class
+**禁止**：call site `max-dapp:` typography · `shape="chip"`（拆到 Chip）
+**依赖**：P1-Text
+**探针**：topbar-connect · swap CTA · mode tab
+**Gate**：`variant` = **4**；`size` = **3**；`shape` = **2**
+
+---
+
+## §4 Chip（新增）
+
+| 公开轴 | 值 |
+|--------|-----|
+| `variant` | `solid` · `soft` · `outlined` |
+| `size` | `sm` · `md` |
+| `shape` | `pill` · `rounded` |
+| `tone` | `default` · `primary` · `success` |
+| 可选 | `onRemove` |
+
+覆盖：percent buttons、badges、tabs、tags。
+
+**禁止**：在 Chip 内 hand-roll typography
+**依赖**：P1-Text
+**探针**：swap percent · season badge · htab
+**Gate**：`variant` = **3**；`size` = **2**；`shape` = **2**；`tone` = **3**
+
+---
+
+## §5 Card
 
 | 公开轴 | 值 |
 |--------|-----|
 | `surface` | `outlined` · `elevated` · `faq` · `promo` · `window` · `modal` |
-| Home `fill`（namespace） | `surface` · `token` · `transparent` |
+| `tone` | `dark`（用于 promo） |
+| `as` | `article` · `button` · `div` · `section` · `details` · `span` |
 
 | surface | Elevation | radius | padding | 用途 |
 |---------|-----------|--------|---------|------|
-| outlined | — | md | inset-card | 标准边框卡 |
-| elevated | E2 | md | inset-card | MetricCard |
-| faq | E1 | xl | faq inset | FaqList item |
-| promo | E3 | lg | 组件内 | promo / season |
-| window | E5 | xl | shell | app-window |
-| modal | E6 | lg | 组件内 | dialog / sheet |
+| outlined | — | xl | 14/16 | 标准边框卡（box、meta） |
+| elevated | E2 | xl | 14/16 | MetricCard、DataTable |
+| faq | E1 | xl | 18/24 | FAQ item |
+| promo | E3 | xl | 16/18 | 深色 CTA 卡 |
+| window | E5 | 2xl | shell | app-window |
+| modal | E6 | xl | 组件内 | dialog / sheet |
 
-**禁止**：call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认  
-**依赖**：无  
-**探针**：mode-card-root · program-card · faq card layout  
-**Gate**：`surface` 键 = **6**；Swap layout 行 diff=0
+**子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`
+
+**禁止**：`context` · `fill` · `radius` 轴 · call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认
+**依赖**：P1-Text
+**探针**：mode-card-root · program-card · faq card layout · metric-card
+**Gate**：`surface` 键 = **6**
 
 ---
 
-## §2 Button
+## §6 Input
 
-| 轴 | 值 |
-|----|-----|
-| `variant` | `primary` · `secondary` · `ghost` · `tab` · `link` |
+| 公开轴 | 值 |
+|--------|-----|
+| `variant` | `default` · `amount` · `shares` |
 | `size` | `sm` · `md` · `lg` |
-| `shape` | `pill` · `chip` |
+| 可选 | `startAdornment` · `endAdornment` · `error` |
 
-**Typography**：在 `buttonVariants` + token；H5 在 primitive CSS var  
-**禁止**：call site `max-dapp:` typography  
-**依赖**：无（可与 Text 并行，但 typography 独立）  
-**探针**：topbar-connect · swap CTA · mode tab  
-**Gate**：`variant` = **5**；`size` = **3**；`shape` = **2**
+覆盖：普通表单输入、swap amount、genesis shares。
 
----
-
-## §3 Text
-
-| 轴 | 值 |
-|----|-----|
-| `variant` | **12 键**（下表） |
-| `tone` | `foreground` · `muted-foreground` · `primary` · `success` · `inverse` · `on-dark` |
-| 可选 | `tabular` · `as` |
-
-**禁止**：`weight` prop · 第 13 variant · `deprecatedAliases`
-
-### 12 variant（仅此）
-
-| variant | PC→H5 | 字重 | 用途 |
-|---------|------|------|------|
-| rail | 10→10 | medium | 仅 rail 四 Tab |
-| kicker | 11→12 | semibold | eyebrow |
-| meta | 13→13 | normal | **默认**（省略 variant） |
-| detail | 14→14 | normal | FAQ 答案 |
-| question | 15→15 | semibold | FAQ 问题 |
-| headline | 16→15 | semibold | 卡小标题 |
-| brand | 17→18 | semibold | 顶栏 / rank |
-| section | 18→16 | semibold | 区块 dl |
-| widget-title | 21→22 | semibold | widget wh |
-| amount | 22→23 | semibold | 金额 |
-| panel-title | compound | semibold | 面板 h1 |
-| table-cell | compound | normal/medium | 表格 |
-
-**旧名映射（写盘前表，代码里不保留旧名）**：`faq-question`→`question` · `body`/`caption`→`meta`/`detail` · `title-lg`→`brand` · `swap-hub-title` 等→上表之一，**不新增键**
-
-**依赖**：无  
-**探针**：Swap catalog 全部 Text owner 行  
-**Gate**：`text.tsx` 键 = **12** · `TextVariant` 联合 = 12
+**禁止**：call site 输入框内 hand-roll amount typography
+**依赖**：P0 token
+**探针**：swap amount 输入区 · genesis shares 输入区
+**Gate**：`variant` = **3**
 
 ---
 
-## §4 FaqList
+## §7 FaqList
 
-| 轴 | 值 |
-|----|-----|
+| 公开轴 | 值 |
+|--------|-----|
 | `variant` | `home` · `dapp`（layout only） |
 | 内部 Text | `question` · `detail` |
 | 内部 Card | `surface="faq"` |
 
-| 部分 | owner |
-|------|-------|
-| gap | stack-faq 12 · H5 10 组件内 |
-| chevron | 18px · primary |
-
-**依赖**：P1-Text · P1-Card  
-**探针**：faq-question-* · faq answer  
-**Gate**：无 `faq-question` variant 名；`variant` = **2**
+**依赖**：P1-Text · P1-Card
+**探针**：faq-question-* · faq answer
+**Gate**：`variant` = **2**
 
 ---
 
-## §5 AmountInput
+## §8 Composite（业务组件）
 
-| 属性 | SSOT |
-|------|------|
-| 字号 | `--type-amount-size` px-lock |
-| 字重 | semibold |
-| 对齐 | text-right |
-| placeholder | `--placeholder` |
+按 Figma 高频层提取，**不满足 3 调用点或纯视觉容器不提**。
 
-**Tier B**：`swap-amount-box` chrome — border/bg，不进 Input primitive  
-**依赖**：P0 token  
-**探针**：swap amount 输入区  
-**Gate**：无 call site amount typography class
+| Composite | Figma 层 | 核心 props | 提升理由 |
+|-----------|----------|------------|----------|
+| `TopBar` | topbar / tb / tr | `wallet`, `network`, `locale` | 全局 shell |
+| `AppRail` | rail / rit | `items`, `activeTab`, `onSelect` | 4 页共用 |
+| `WidgetHeader` | wh | `title`, `subtitle`, `action` | 4 页共用 |
+| `TokenAmountInput` | box / tk / rr / mx | `token`, `value`, `balance`, `onMax` | 真实交互行为 |
+| `PercentChipGroup` | pcts / pct | `options`, `value`, `onChange` | 高频模式 |
+| `MetricCard` | sc / mc | `label`, `value`, `hint`, `tone` | 跨页指标 |
+| `DataTable` | tbl / trow / cell | `columns`, `rows`, `empty` | cell 614 次 |
+| `FAQList` | qa / qhd | `items`, `variant` | 折叠行为 + a11y |
+| `PromoCard` | promo / pcard / tc | `title`, `description`, `cta` | 深色 CTA 卡 |
 
----
-
-## §6 Shell cards（Tier B）
-
-| 组件 | label | value |
-|------|-------|-------|
-| MetricCard | 12px Tier B | 30px Tier B |
-| StatCard | 12 | 30 |
-| WidgetHeader | 21 / 12 / 26 disc | Tier B |
-
-**禁止**：hand-rolled `<strong>` + 散落 typography；不用 Text stat variant  
-**依赖**：P1-Text（周边文案）· P1-Card（surface）  
-**探针**：按组件扩 SWAP_CATALOG 后 gate  
-**Gate**：typography 内化组件 token
+**禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
 
 ---
 
-## §7 断点白名单
+## §9 断点白名单
 
 允许 `max-dapp:` / `dapp:` **仅 layout** 的文件：
 
-- `shell-layout.ts` · `dapp-shell.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`  
-- `dapp-widget-frame.tsx` · `dapp-detail-layout.ts` · `responsive-table.tsx` · `dapp-table-*`  
-- `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `aegis-responsive-dialog.tsx`  
-- `home-layout.ts` · `static-layout.ts` · `views/home/components/*`  
-- Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `faq-list.tsx` · `card.tsx`
+- `shell-layout.ts` · `dapp-shell.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
+- `dapp-widget-frame.tsx` · `dapp-detail-layout.ts` · `responsive-table.tsx` · `dapp-table-*`
+- `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `aegis-responsive-dialog.tsx`
+- `home-layout.ts` · `static-layout.ts` · `views/home/components/*`
+- Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx` · `faq-list.tsx`
 
 **禁止**：上述以外 `max-dapp:(text-|font-|leading-|tracking-)`
 
@@ -147,16 +182,18 @@
 
 ---
 
-## §8 P1 交付矩阵
+## §10 P0-P7 交付矩阵
 
-| 组件 | primitive | 键数 gate | 同 PR |
-|------|-----------|-----------|-------|
-| Text | text.tsx | 12 variant | 全仓 `variant=` |
-| Button | button.tsx | 5×3×2 | 全仓 Button props |
-| Card | card.tsx | 6 surface | 全仓 `surface=` |
-| FaqList | faq-list.tsx | 2 layout | 全仓 FaqList |
-| AmountInput | amount-input.tsx | token | 全仓 Input |
-| shell cards | views/shell | Tier B | 删 scattered class |
+| 阶段 | 组件/任务 | 键数 gate | 同 PR 范围 |
+|------|-----------|-----------|------------|
+| P0 | Token JSON + 生成 CSS/TS | 见 §1 | theme.css / tokens.ts / 删 legacy color class |
+| P1 | Text | 10 variant · 5 tone | 全仓 `variant=` / `tone=` |
+| P2 | Card | 6 surface | 全仓 `surface=` |
+| P3 | Chip（新增） | 3×2×2×3 | 替换 pct / badge / tab |
+| P4 | Input | 3 variant | 替换 amount-input、shares field |
+| P5 | Button | 4×3×2 | 全仓 Button props |
+| P6 | Composite | 9 个 | 按依赖顺序逐个提取 |
+| P7 | 按页替换 | — | Swap → Genesis → Rewards → Community → Home |
 
 ---
 
@@ -165,3 +202,4 @@
 | 版本 | 说明 |
 |------|------|
 | v1.0 | 合并 component-anatomy + text-refactor-plan；六节对称 |
+| v2.0 | Figma 审计后收敛：10 Text variant · 6 Card surface · 新增 Chip/Input · Composite 清单 |
