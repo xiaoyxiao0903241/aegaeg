@@ -94,14 +94,14 @@ export function SwapSlippageModal({
             <input
               className={cn(
                 'w-full min-w-0 border-0 bg-transparent p-0 text-inherit outline-none',
-                textVariants({ variant: 'body-md', weight: 'semibold' }),
+                textVariants({ variant: 'headline' }),
               )}
               id="swap-slippage-input"
               inputMode="decimal"
               onChange={(event) => setDraft(event.currentTarget.value)}
               value={draft}
             />
-            <Text as="span" variant="body-md" weight="semibold" className="shrink-0">
+            <Text as="span" variant="headline" className="shrink-0">
               %
             </Text>
           </div>
@@ -121,8 +121,7 @@ export function SwapSlippageModal({
                 >
                   <Text
                     as="span"
-                    variant="label"
-                    weight="semibold"
+                    variant="headline"
                     tone={active ? 'inverse' : 'foreground'}
                   >
                     {preset}%
@@ -141,7 +140,7 @@ export function SwapSlippageModal({
           onClick={handleConfirm}
           type="button"
         >
-          <Text as="span" variant="body" tone="inverse" weight="semibold">
+          <Text as="span" variant="headline" tone="inverse">
             {t.common.confirm}
           </Text>
         </button>

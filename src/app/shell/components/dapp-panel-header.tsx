@@ -41,8 +41,8 @@ export function DappPanelHeader({
         </Text>
         <Text
           as="p"
-          variant="panel-subtitle"
-          tone="strong"
+          variant="meta"
+          tone="muted-foreground"
           className={dappPanelSubtitleClassName}
         >
           {subtitle}

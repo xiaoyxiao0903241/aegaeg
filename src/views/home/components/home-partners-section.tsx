@@ -23,9 +23,9 @@ export function HomePartnersSection() {
         <Text
           as="h2"
           id="partners-title"
-          tone="accent"
-          variant="section-eyebrow"
-          className="m-0"
+          tone="foreground"
+          variant="section"
+          className="m-0 text-4xl leading-tight max-dapp:text-2xl"
         >
           {title}
         </Text>

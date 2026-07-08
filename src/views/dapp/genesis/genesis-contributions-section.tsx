@@ -68,8 +68,8 @@ export function GenesisContributionsSection() {
               key={item.tx_hash}
               rel="noopener noreferrer"
               target="_blank"
-              tone="accent"
-              variant="body"
+              tone="primary"
+              variant="meta"
             >
               {txLabel}
             </Text>,

@@ -61,16 +61,15 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           </div>
           <Text
             as="h4"
-            variant="sm"
-            weight="semibold"
+            variant="headline"
             className="m-0 tracking-[-0.28px] max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
           >
             {item.title}
           </Text>
           <Text
             as="p"
-            variant="xs"
-            tone="faint"
+            variant="meta"
+            tone="muted-foreground"
             className={cn(
               'm-0 max-w-[24ch] tracking-[-0.24px]',
               'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:leading-[1.35]',
@@ -100,10 +99,10 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             {index < items.length - 1 ? <InviteFlowConnector orientation="vertical" /> : null}
           </div>
           <div className={cn('grid min-w-0 gap-0.5', index < items.length - 1 && 'pb-3.5')}>
-            <Text as="h4" variant="sm" weight="semibold" className="m-0 leading-[1.2] tracking-[-0.28px]">
+            <Text as="h4" variant="headline" className="m-0 leading-[1.2] tracking-[-0.28px]">
               {item.title}
             </Text>
-            <Text as="p" variant="sm" tone="faint" className="m-0 leading-normal tracking-[-0.26px]">
+            <Text as="p" variant="meta" tone="muted-foreground" className="m-0 leading-normal tracking-[-0.26px]">
               {item.copy}
             </Text>
           </div>

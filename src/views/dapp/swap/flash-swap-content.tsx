@@ -20,7 +20,7 @@ export function FlashSwapContent() {
   return (
     <DappDetailPage>
       <section>
-        <DappContentHeading id="swap-title" variant="detail-section-title">{t.swap.overview}</DappContentHeading>
+        <DappContentHeading id="swap-title">{t.swap.overview}</DappContentHeading>
         <MetricGrid columns={2}>
           {showRateSkeleton ? (
             <SwapMetricCardSkeleton />
@@ -32,12 +32,12 @@ export function FlashSwapContent() {
       </section>
 
       <section className={dappDetailSectionGapClass}>
-        <DappContentHeading variant="detail-section-title">{t.swap.flash.tokenAboutTitle}</DappContentHeading>
+        <DappContentHeading>{t.swap.flash.tokenAboutTitle}</DappContentHeading>
         <TokenAboutCard body={usd1About.body} title={usd1About.title} />
       </section>
 
       <section className={dappDetailSectionGapClass}>
-        <DappContentHeading variant="detail-section-title">{t.swap.faq.title}</DappContentHeading>
+        <DappContentHeading>{t.swap.faq.title}</DappContentHeading>
         <FaqList defaultOpenFirst={false} items={t.swap.faq.tabs.usd1.items} variant="dapp" />
       </section>
     </DappDetailPage>

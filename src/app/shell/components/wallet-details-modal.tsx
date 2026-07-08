@@ -229,7 +229,6 @@ export function WalletDetailsModal({
         <Text
           as="h2"
           variant="panel-title"
-          weight="bold"
           tabular
           className="m-0"
         >
@@ -238,19 +237,18 @@ export function WalletDetailsModal({
       </DialogPrimitive.Title>
 
       {!walletReady ? (
-        <Text as="p" variant="label" tone="accent" weight="medium" className="m-0 mt-3">
+        <Text as="p" variant="meta" tone="primary" className="m-0 mt-3">
           {t.wallet.reconnectHint}
         </Text>
       ) : null}
 
       <Text
         as="p"
-        variant="body"
-        tone="subtle"
-        weight="semibold"
+        variant="meta"
+        tone="muted-foreground"
         className="m-0 mt-3"
       >
-        <Text as="span" variant="body-md" tone="accent" weight="bold" tabular className="mr-1.5">
+        <Text as="span" variant="amount" tone="primary" tabular className="mr-1.5">
           {balanceValue}
         </Text>
         {balanceSymbol}
@@ -262,10 +260,10 @@ export function WalletDetailsModal({
             className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5"
             key={token.symbol}
           >
-            <Text as="span" variant="label" tone="subtle" weight="semibold">
+            <Text as="span" variant="meta" tone="muted-foreground">
               {token.label}
             </Text>
-            <Text as="strong" variant="body" weight="bold" tabular>
+            <Text as="strong" variant="amount" tabular>
               {token.value}
             </Text>
           </div>
@@ -282,7 +280,7 @@ export function WalletDetailsModal({
               type="button"
               variant="primary"
             >
-              <Text as="span" variant="body">{t.wallet.reconnectWallet}</Text>
+              <Text as="span" variant="meta">{t.wallet.reconnectWallet}</Text>
             </Button>
             <Button
               className="h-11 gap-2 px-3 text-sm"
@@ -292,7 +290,7 @@ export function WalletDetailsModal({
               variant="secondary"
             >
               <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-              <Text as="span" variant="body">{t.wallet.disconnect}</Text>
+              <Text as="span" variant="meta">{t.wallet.disconnect}</Text>
             </Button>
           </>
         ) : (
@@ -310,7 +308,7 @@ export function WalletDetailsModal({
                 size="action"
                 src={copied ? dappAssets.check : dappAssets.copyWhite}
               />
-              <Text as="span" variant="body">
+              <Text as="span" variant="meta">
                 {copied ? t.wallet.copied : t.wallet.copyAddress}
               </Text>
             </Button>
@@ -322,7 +320,7 @@ export function WalletDetailsModal({
               variant="secondary"
             >
               <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-              <Text as="span" variant="body">{t.wallet.disconnect}</Text>
+              <Text as="span" variant="meta">{t.wallet.disconnect}</Text>
             </Button>
           </div>
         )}

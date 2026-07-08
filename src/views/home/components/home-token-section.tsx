@@ -81,15 +81,14 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
           as="h3"
           className="m-0 max-dapp:mt-0.5"
           tone="inverse"
-          variant="xl"
-          weight="semibold"
+          variant="headline"
         >
           {token.symbol}
         </Text>
         <Text
           as="strong"
           tone="inverse"
-          variant="value-sm"
+          variant="amount"
         >
           {token.label}
         </Text>
@@ -97,7 +96,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
           as="p"
           className="w-full max-w-60 max-dapp:max-w-none"
           tone="inverse"
-          variant="body"
+          variant="meta"
         >
           {token.description}
         </Text>

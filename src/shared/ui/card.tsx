@@ -1,8 +1,18 @@
-import { createElement, forwardRef, type HTMLAttributes, type ReactNode } from 'react'
+import {
+  createElement,
+  forwardRef,
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type ReactNode,
+} from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
+import { Text, type TextProps } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/** DApp：context=dapp + surface | Home：context=home + fill + radius */
+/**
+ * Primitive：surface / fill / radius · 组合式子组件（shadcn 风格）内化 Text 字阶。
+ * SSOT：docs/foundation/api.md §1 · 页面只组合 Card.* + 布局 className。
+ */
 export const cardVariants = tv({
   variants: {
     context: {
@@ -42,13 +52,15 @@ export const cardVariants = tv({
   },
 })
 
-export type CardProps = HTMLAttributes<HTMLElement> &
+type CardElement = 'article' | 'button' | 'div' | 'section' | 'details' | 'span'
+
+export type CardProps = (HTMLAttributes<HTMLElement> | ButtonHTMLAttributes<HTMLButtonElement>) &
   VariantProps<typeof cardVariants> & {
-    as?: 'article' | 'div' | 'section' | 'details' | 'span'
+    as?: CardElement
     children: ReactNode
   }
 
-export const Card = forwardRef<HTMLElement, CardProps>(function Card(
+function CardRoot(
   {
     as = 'article',
     children,
@@ -60,8 +72,8 @@ export const Card = forwardRef<HTMLElement, CardProps>(function Card(
     tone,
     hover,
     ...props
-  },
-  ref,
+  }: CardProps,
+  ref: React.Ref<HTMLElement>,
 ) {
   return createElement(
     as,
@@ -82,4 +94,67 @@ export const Card = forwardRef<HTMLElement, CardProps>(function Card(
     },
     children,
   )
+}
+
+export const Card = Object.assign(forwardRef(CardRoot), {
+  Header,
+  Title,
+  Description,
+  Content,
+  Footer,
+  Label,
+  Value,
 })
+
+function Header({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('flex flex-col gap-1.5', className)} {...props} />
+}
+
+function Title({ className, ...props }: Omit<TextProps, 'variant'>) {
+  return <Text as="h3" variant="headline" className={cn('m-0', className)} {...props} />
+}
+
+function Description({ className, ...props }: Omit<TextProps, 'variant' | 'tone'>) {
+  return (
+    <Text
+      variant="meta"
+      tone="muted-foreground"
+      className={cn('m-0', className)}
+      {...props}
+    />
+  )
+}
+
+function Content({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('min-w-0', className)} {...props} />
+}
+
+function Footer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('flex items-center gap-3', className)} {...props} />
+}
+
+/** Tier B · metric / meta 行标签 */
+function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
+  return <Text variant="meta" tone="foreground" className={className} {...props} />
+}
+
+/** Tier B · 数值（默认 amount 字阶；stat 大卡可 className 微调） */
+function Value({ className, tabular = true, ...props }: Omit<TextProps, 'variant'>) {
+  return (
+    <Text
+      as="strong"
+      variant="amount"
+      tabular={tabular}
+      className={cn('block', className)}
+      {...props}
+    />
+  )
+}
+
+export { Header as CardHeader }
+export { Title as CardTitle }
+export { Description as CardDescription }
+export { Content as CardContent }
+export { Footer as CardFooter }
+export { Label as CardLabel }
+export { Value as CardValue }

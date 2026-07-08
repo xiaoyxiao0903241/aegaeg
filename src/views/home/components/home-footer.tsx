@@ -91,7 +91,7 @@ export function HomeFooter() {
             />
             <span>AEGIS X</span>
           </a>
-          <Text as="p" className={footerClass.brandCopy} tone="on-dark" variant="footer-brand-copy">
+          <Text as="p" className={footerClass.brandCopy} tone="on-dark" variant="meta">
             <FooterBrandCopy copy={content.brandCopy} />
           </Text>
         </div>
@@ -101,7 +101,7 @@ export function HomeFooter() {
             aria-label={group.ariaLabel}
             key={group.label}
           >
-            <Text as="h3" className="m-0" tone="inverse" variant="footer-group-title">
+            <Text as="h3" className="m-0" tone="inverse" variant="headline">
               {group.label}
             </Text>
             {group.links.map((link) => {
@@ -114,7 +114,7 @@ export function HomeFooter() {
                 rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
                 target={isExternalHref(href) ? '_blank' : undefined}
                 tone="on-dark"
-                variant="footer-link"
+                variant="meta"
               >
                 {link.label}
               </Text>

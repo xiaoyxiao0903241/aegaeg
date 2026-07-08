@@ -26,14 +26,13 @@ function linkifyPlainText(text: string) {
     return (
       <Text
         as="a"
-        className="underline decoration-primary/35 underline-offset-2 hover:decoration-primary/70"
         href={part}
         key={`${index}-${part}`}
         rel="noopener noreferrer"
         target="_blank"
-        tone="accent"
-        variant="body"
-        weight="medium"
+        tone="primary"
+        variant="meta"
+        className="font-medium underline decoration-primary/35 underline-offset-2 hover:decoration-primary/70"
       >
         {part}
       </Text>
@@ -61,7 +60,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
   return (
     <div className="home-popup-notice-content space-y-3 leading-[1.65] text-foreground">
       {paragraphs.map((paragraph) => (
-        <Text as="p" key={paragraph} tone="foreground" variant="body">
+        <Text as="p" key={paragraph} tone="foreground" variant="meta">
           {linkifyPlainText(paragraph)}
         </Text>
       ))}

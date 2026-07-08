@@ -76,13 +76,12 @@ function MenuItem({
       <span className="min-w-0 flex-1">
         <Text
           as="span"
-          variant="body"
-          weight={option.active ? 'semibold' : undefined}
+          variant={option.active ? 'headline' : 'meta'}
           className="block"
         >
           {option.name}
         </Text>
-        <Text as="span" variant="hint" tone="subtle" className="block">
+        <Text as="span" variant="meta" tone="muted-foreground" className="block">
           {option.label}
         </Text>
       </span>
@@ -97,10 +96,9 @@ function MenuItem({
         ) : (
           <Text
             aria-hidden="true"
-            variant="label"
-            weight="bold"
-            tone="accent"
-            className="shrink-0"
+            variant="meta"
+            tone="primary"
+            className="shrink-0 font-bold"
           >
             ✓
           </Text>
@@ -190,7 +188,7 @@ function NativeLanguageMenu({
           role="button"
         >
           <img src={globeIcon} alt="" className="size-4 shrink-0" />
-          <Text variant="label" weight="semibold">
+          <Text variant="headline">
             {triggerLabel ?? activeOption?.code}
           </Text>
         </summary>
@@ -297,7 +295,7 @@ function ReactLanguageMenu({
         type="button"
       >
         <img src={globeIcon} alt="" className="size-4 shrink-0" />
-        <Text variant="label" weight="semibold">
+        <Text variant="headline">
           {triggerLabel ?? activeOption?.code}
         </Text>
       </button>

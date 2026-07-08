@@ -154,7 +154,7 @@ export function FaqList({
               <div className={styles.cardBody()}>
                 <Accordion.Header className="m-0 w-full">
                   <Accordion.Trigger className={styles.trigger()} data-faq-trigger>
-                    <Text variant="faq-question" className={styles.question()}>
+                    <Text variant="question" className={styles.question()}>
                       {item.q}
                     </Text>
                     <FaqChevron open={isOpen} />
@@ -179,7 +179,7 @@ export function FaqList({
                 >
                   <div className="faq-answer-panel">
                     <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                      <Text as="p" variant="faq-answer" tone="faq" className={styles.answer()}>
+                      <Text as="p" variant="detail" tone="muted-foreground" className={styles.answer()}>
                         {item.a}
                       </Text>
                     </div>

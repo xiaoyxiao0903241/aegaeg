@@ -31,7 +31,7 @@ export function GenesisContributionsReveal({
 export function GenesisContributionsSyncHint({ children }: { children: string }) {
   const styles = genesisContributionsSection()
   return (
-    <Text as="p" className={styles.syncHint()} tone="subtle" variant="hint">
+    <Text as="p" className={styles.syncHint()} tone="muted-foreground" variant="meta">
       {children}
     </Text>
   )
@@ -51,15 +51,14 @@ export function GenesisContributionsProgressHeader({
   return (
     <div className={styles.progressHeader()}>
       <div className={styles.progressRow()}>
-        <Text tone="foreground" variant="hint" weight="semibold">
+        <Text tone="foreground" variant="headline">
           {label}
         </Text>
         <Text
           as="strong"
           className={styles.progressValue()}
           tone="foreground"
-          variant="hint"
-          weight="semibold"
+          variant="headline"
         >
           {contributedLabel}
         </Text>

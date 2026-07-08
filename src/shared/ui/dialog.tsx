@@ -47,7 +47,7 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
         <X className="h-4 w-4" />
-        <Text variant="label" className="sr-only">
+        <Text variant="meta" className="sr-only">
           Close
         </Text>
       </DialogPrimitive.Close>
@@ -89,7 +89,7 @@ const DialogTitle = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, children, ...props }, ref) => (
   <DialogPrimitive.Title ref={ref} asChild {...props}>
-    <Text as="h2" variant="lead" className={className}>
+    <Text as="h2" variant="section" className={className}>
       {children}
     </Text>
   </DialogPrimitive.Title>
@@ -101,7 +101,7 @@ const DialogDescription = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, children, ...props }, ref) => (
   <DialogPrimitive.Description ref={ref} asChild {...props}>
-    <Text as="p" variant="body" tone="subtle" className={className}>
+    <Text as="p" variant="meta" tone="muted-foreground" className={className}>
       {children}
     </Text>
   </DialogPrimitive.Description>

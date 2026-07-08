@@ -63,8 +63,7 @@ export function HomePopupNoticeModal({
                   as="span"
                   className="truncate"
                   tone="foreground"
-                  variant="body-md"
-                  weight="semibold"
+                  variant="headline"
                 >
                   {messages.common.brand}
                 </Text>
@@ -106,8 +105,7 @@ export function HomePopupNoticeModal({
                       as="h2"
                       className="text-balance"
                       tone="foreground"
-                      variant="title"
-                      weight="bold"
+                      variant="headline"
                     >
                       {notice.title}
                     </Text>

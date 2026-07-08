@@ -111,8 +111,8 @@ export function HomeRoadmapSection() {
                 <div className={roadmapClass.header}>
                   <Text
                     as="span"
-                    tone={phase.state ? 'accent' : 'subtle'}
-                    variant="roadmap-phase-label"
+                    tone={phase.state ? 'primary' : 'muted-foreground'}
+                    variant="kicker"
                   >
                     {phase.phase}
                   </Text>
@@ -121,8 +121,7 @@ export function HomeRoadmapSection() {
                       as="em"
                       className={roadmapClass.now}
                       tone="inverse"
-                      variant="xs"
-                      weight="semibold"
+                      variant="meta"
                     >
                       NOW
                     </Text>
@@ -130,8 +129,8 @@ export function HomeRoadmapSection() {
                   <Text
                     as="time"
                     className={roadmapClass.time}
-                    tone={phase.state === 'current' ? 'accent' : 'subtle'}
-                    variant="roadmap-phase-label"
+                    tone={phase.state === 'current' ? 'primary' : 'muted-foreground'}
+                    variant="kicker"
                   >
                     {phase.time}
                   </Text>
@@ -140,11 +139,11 @@ export function HomeRoadmapSection() {
                   as="h3"
                   className={roadmapClass.title}
                   tone="foreground"
-                  variant="roadmap-title"
+                  variant="headline"
                 >
                   {phase.title}
                 </Text>
-                <Text as="p" className={roadmapClass.body} tone="subtle" variant="roadmap-body">
+                <Text as="p" className={roadmapClass.body} tone="muted-foreground" variant="meta">
                   {phase.description}
                 </Text>
               </Card>

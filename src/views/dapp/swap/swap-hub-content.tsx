@@ -20,12 +20,12 @@ export function SwapHubContent() {
       ) : null}
 
       <section className={sessionReady ? undefined : dappDetailSectionGapClass}>
-        <DappContentHeading variant="detail-section-title">{t.swap.hub.program.title}</DappContentHeading>
+        <DappContentHeading>{t.swap.hub.program.title}</DappContentHeading>
         <SwapProgramCards />
       </section>
 
       <section className={dappDetailSectionGapClass}>
-        <DappContentHeading variant="detail-section-title">{t.swap.faq.title}</DappContentHeading>
+        <DappContentHeading>{t.swap.faq.title}</DappContentHeading>
         <FaqList defaultOpenFirst={false} items={t.swap.hub.faq.items} variant="dapp" />
       </section>
     </DappDetailPage>

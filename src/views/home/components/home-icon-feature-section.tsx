@@ -94,7 +94,7 @@ function HomeIconCard({
       />
       <Text
         as="h3"
-        variant="feature-title"
+        variant="headline"
         className={cn(
           'feature-card-title mt-3 max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-balance',
           variant === 'engine' &&
@@ -106,8 +106,8 @@ function HomeIconCard({
       <Text
         as="p"
         className="feature-card-body mt-3 max-w-112 max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80"
-        tone="strong"
-        variant="home-feature-body"
+        tone="foreground"
+        variant="meta"
       >
         {card.body}
       </Text>

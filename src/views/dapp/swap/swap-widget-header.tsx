@@ -82,16 +82,15 @@ export function SwapHubHeader({
           as="h1"
           className={styles.pageTitle()}
           tone="foreground"
-          variant="swap-hub-title"
+          variant="widget-title"
         >
           {title}
         </Text>
         <Text
           as="p"
           className={styles.pageSubtitle()}
-          tone="strong"
-          variant="compact-body"
-          weight="normal"
+          tone="muted-foreground"
+          variant="meta"
         >
           {subtitle}
         </Text>
@@ -123,9 +122,8 @@ export function SwapSubpageHeader({
           <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
           <Text
             className={styles.subpageBackLabel()}
-            tone="strong"
-            variant="body-md"
-            weight="medium"
+            tone="muted-foreground"
+            variant="meta"
           >
             {t.swap.backToHub}
           </Text>
@@ -137,16 +135,15 @@ export function SwapSubpageHeader({
           as="h1"
           className={styles.pageTitle()}
           tone="foreground"
-          variant="swap-hub-title"
+          variant="widget-title"
         >
           {title}
         </Text>
         <Text
           as="p"
           className={styles.pageSubtitle()}
-          tone="strong"
-          variant="compact-body"
-          weight="normal"
+          tone="muted-foreground"
+          variant="meta"
         >
           {subtitle}
         </Text>

@@ -159,7 +159,7 @@ export function GenesisPurchaseForm() {
           { label: t.genesis.value, value: genesis.contributionValueLabel },
           {
             label: (
-              <Text as="span" className="inline-flex items-center gap-1" variant="body">
+              <Text as="span" className="inline-flex items-center gap-1" variant="meta">
                 {t.genesis.xTokenAirdrop}
                 <DappInfoTooltip content={xTokenAirdropHint} />
               </Text>

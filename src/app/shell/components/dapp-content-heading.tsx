@@ -9,13 +9,13 @@ export function DappContentHeading({
   className,
   id,
   reveal = false,
-  variant = 'content-heading',
+  variant = 'section',
 }: {
   children: ReactNode
   className?: string
   id?: string
   reveal?: boolean
-  variant?: 'content-heading' | 'detail-section-title'
+  variant?: 'section'
 }) {
   return (
     <Text

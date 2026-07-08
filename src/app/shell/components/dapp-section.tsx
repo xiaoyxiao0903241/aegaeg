@@ -22,7 +22,7 @@ export function DappSection({
     >
       <Text
         as="h3"
-        variant="content-heading"
+        variant="section"
         className={cn('m-0', dappDetailTitleGapClass, titleClassName)}
       >
         {title}

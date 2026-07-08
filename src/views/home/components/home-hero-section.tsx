@@ -24,7 +24,8 @@ const heroClass = {
   eyebrow:
     'hero-eyebrow eyebrow-pill inline-flex min-h-8 w-max max-w-full items-center gap-2 whitespace-nowrap rounded-3xl border border-border bg-card px-4 py-2 text-xs font-semibold leading-[1.2] text-foreground max-tablet:mx-auto max-dapp:min-h-7 max-dapp:gap-1.5 max-dapp:px-3.5 max-dapp:py-1.5 max-dapp:text-xs max-narrow:whitespace-normal max-narrow:text-left',
   statusDot: 'status-dot size-1.5 shrink-0 rounded-3xl bg-success',
-  title: 'hero-title mt-5.5 max-w-168 max-dapp:mt-4 max-dapp:w-full',
+  title:
+    'hero-title mt-5.5 max-w-168 text-6xl leading-tight max-dapp:mt-4 max-dapp:w-full max-dapp:text-4xl max-dapp:leading-tight',
   body:
     'hero-body mt-5.5 max-w-168 max-dapp:mt-2.5 max-dapp:w-full',
   actions:
@@ -96,12 +97,11 @@ export function HomeHeroSection() {
             as="h1"
             className={heroClass.title}
             id="hero-title"
-            variant="hero-title"
-            weight="semibold"
+            variant="panel-title"
           >
             {content.title}
           </Text>
-          <Text as="p" className={heroClass.body} tone="strong" variant="hero-body">
+          <Text as="p" className={heroClass.body} tone="foreground" variant="meta">
             {content.body}
           </Text>
           <div className={heroClass.actions}>

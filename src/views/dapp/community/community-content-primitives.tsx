@@ -97,8 +97,8 @@ function CommunityStatCard({
     >
       <Text
         as="span"
-        variant="xs"
-        tone={dark ? 'on-dark' : 'strong'}
+        variant="meta"
+        tone={dark ? 'on-dark' : 'foreground'}
         className={cn(
           styles.label(),
           'tracking-[-0.24px]',
@@ -109,9 +109,8 @@ function CommunityStatCard({
       </Text>
       <Text
         as="strong"
-        variant="2xl"
-        weight="semibold"
-        tone={dark ? 'inverse' : 'strong'}
+        variant="amount"
+        tone={dark ? 'inverse' : 'foreground'}
         className={styles.value()}
       >
         {value}
@@ -119,9 +118,8 @@ function CommunityStatCard({
       {volume ? (
         <Text
           as="b"
-          variant="sm"
-          weight="semibold"
-          tone="accent"
+          variant="headline"
+          tone="primary"
           className={cn(styles.volume(), dark && '!text-coral-bright')}
         >
           {volume}
@@ -130,8 +128,8 @@ function CommunityStatCard({
       {today ? (
         <Text
           as="small"
-          variant="xs"
-          tone={dark ? 'on-dark' : 'muted'}
+          variant="meta"
+          tone={dark ? 'on-dark' : 'muted-foreground'}
           className={styles.hint()}
         >
           {today}
