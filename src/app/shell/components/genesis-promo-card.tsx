@@ -1,5 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { WidgetPromoCard } from '~/shared/ui/widget-promo-card'
+import { Text } from '~/shared/ui/text'
 import {
   applyMessageTemplate,
   type GenesisPromoSnapshot,
@@ -10,10 +11,6 @@ import {
   GenesisPromoBodySkeleton,
   GenesisPromoTitleSkeleton,
 } from '~/app/shell/components/dapp-skeleton'
-import {
-  dappGenesisPromoBodyClass,
-  dappGenesisPromoTitleClass,
-} from '~/app/dapp-type-scale'
 
 function resolveStatusLabel(
   status: GenesisPromoSnapshot['status'],
@@ -105,12 +102,16 @@ export function GenesisPromoCard({
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
       ) : (
-        <strong className={dappGenesisPromoTitleClass}>{title}</strong>
+        <Text as="strong" variant="brand" tone="inverse" className="block">
+          {title}
+        </Text>
       )}
       {pending || !body ? (
         <GenesisPromoBodySkeleton />
       ) : (
-        <p className={cn('m-0', dappGenesisPromoBodyClass)}>{body}</p>
+        <Text as="p" variant="copy" tone="inverse" className="m-0">
+          {body}
+        </Text>
       )}
       <DappActionButton
         className="mt-2 min-h-9.5 text-xs group-data-[tab=genesis]/shell:max-dapp:min-h-10 group-data-[tab=genesis]/shell:max-dapp:text-sm"
