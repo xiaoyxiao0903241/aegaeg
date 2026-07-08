@@ -79,7 +79,7 @@
 | 公开轴 | 值 |
 |--------|-----|
 | `variant` | `solid` · `soft` · `outlined` |
-| `size` | `sm` · `md` |
+| `size` | `sm` · `md` · `lg` |
 | `shape` | `pill` · `rounded` |
 | `tone` | `default` · `primary` · `success` |
 | 可选 | `onRemove` |
@@ -89,7 +89,7 @@
 **禁止**：在 Chip 内 hand-roll typography
 **依赖**：P1-Text
 **探针**：swap percent · season badge · htab
-**Gate**：`variant` = **3**；`size` = **2**；`shape` = **2**；`tone` = **3**
+**Gate**：`variant` = **3**；`size` = **3**；`shape` = **2**；`tone` = **3**
 
 ---
 

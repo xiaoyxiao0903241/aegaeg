@@ -21,10 +21,10 @@ export function DappPillTabs({
           onClick={() => onSelect?.(index)}
           role="tab"
           shape="pill"
-          size="md"
+          size="lg"
           type="button"
-          variant={item.active ? 'solid' : 'outlined'}
-          tone="default"
+          variant={item.active ? 'soft' : 'outlined'}
+          tone={item.active ? 'primary' : 'default'}
         >
           {item.label}
         </Chip>

@@ -16,9 +16,9 @@ export const chipVariants = tv({
   ],
   variants: {
     variant: {
-      /** no layout border — solid/soft fill only; outlined owns 1px border */
+      /** no layout border — solid fill only; soft keeps 1px transparent for tab row height parity with outlined */
       solid: 'border-0',
-      soft: 'border-0',
+      soft: 'border border-transparent',
       outlined: 'border bg-transparent',
     },
     size: {
@@ -26,10 +26,15 @@ export const chipVariants = tv({
       sm: 'px-2 py-1.5 text-[length:var(--type-caption-size)] font-[var(--type-caption-weight)] leading-none tracking-[var(--type-caption-tracking)]',
       /**
        * Percent / segment row — match 4175 flash percent buttons:
-       * text-xs · semibold · py-1.25 · bg-card · ~30×83
-       * (not min-h-8 / copy 13px — that was a REGRESSION vs swap pct probe)
+       * text-xs · semibold · py-1.25 · ~30×83
+       * (fill comes from variant×tone — do not put bg-card on size)
        */
-      md: 'justify-center bg-card px-1.5 py-1.25 text-xs font-semibold leading-normal tracking-[-0.02em] max-dapp:py-1.5',
+      md: 'justify-center px-1.5 py-1.25 text-xs font-semibold leading-normal tracking-[-0.02em] max-dapp:py-1.5',
+      /**
+       * FAQ / pill tabs — match 4175 Trade FAQ USD1|AGX|X:
+       * text-sm · semibold · leading-snug (19.25) · px-4 py-2 · ~37px
+       */
+      lg: 'justify-center px-4 py-2 text-sm font-semibold leading-snug tracking-[-0.02em]',
     },
     shape: {
       pill: 'rounded-full',
@@ -53,10 +58,14 @@ export const chipVariants = tv({
       variant: 'outlined',
       tone: 'default',
       class:
-        'border-border text-muted-foreground hover:-translate-y-px hover:border-primary hover:bg-card hover:text-primary',
+        'border-border bg-card text-muted-foreground hover:-translate-y-px hover:border-primary hover:text-primary',
     },
-    { variant: 'outlined', tone: 'primary', class: 'border-primary text-primary hover:bg-accent' },
-    { variant: 'outlined', tone: 'success', class: 'border-success text-success hover:bg-[rgba(43,171,106,0.12)]' },
+    { variant: 'outlined', tone: 'primary', class: 'border-primary bg-card text-primary hover:bg-accent' },
+    {
+      variant: 'outlined',
+      tone: 'success',
+      class: 'border-success bg-card text-success hover:bg-[rgba(43,171,106,0.12)]',
+    },
   ],
   defaultVariants: {
     variant: 'outlined',

@@ -77,7 +77,8 @@
 | Lang item radius 10→14 | INTENTIONAL（radius-sm） |
 | muted / section lh / FAQ 色 | INTENTIONAL |
 | Community 左卡 padding | 用户锁定，不改 |
-| Swap Convert/Trade 红块 | 待收敛 |
+| Trade FAQ pill tabs soft/primary/lg | fixed（本切片） |
+| Swap Convert/Trade 其余红块 | 继续扫 |
 | Home brand 仍裸 span | 待收 |
 | 硬编码色未清零 | 待扫 |
 

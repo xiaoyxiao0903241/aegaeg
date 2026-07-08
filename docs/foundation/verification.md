@@ -147,6 +147,9 @@ Figma 层: <layer>
 | Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT（见 p7-swap-delta） |
 | Phase 日期 / 累计共建额 | IGNORE | 动态 |
 | Community 左卡 padding | INTENTIONAL | 用户确认满意；禁按 4175/dev 改回 |
+| Rewards 表行 1px 边框带（y831+/y913+） | IGNORE | section leading 级联 + 抗锯齿；非结构回归 |
+| Community 推荐链 URL 端口 4175↔5174 | IGNORE | 环境 host，非 UI SSOT |
+| Community Copy link 按钮 Y 细带 | IGNORE | 上文动态文案/级联；禁改左卡 padding |
 
 ## 5c. 登录态四 tab 共享 chrome（4175 vs 5174）
 
@@ -169,8 +172,21 @@ Figma 层: <layer>
 | Exchange price 数值 1.0001 vs 1.001 | IGNORE | 动态报价 |
 | Buy Balance 数值差异 | IGNORE | 链上余额 |
 | FAQ question 14/1.3 | 已对齐 | `variant="question"` ≡ 4175 `text-sm` |
+| Trade FAQ pill tabs（USD1 active） | REGRESSION→fixed | `DappPillTabs`：`soft`+`primary`+`lg`（`leading-snug`）；禁 `solid`+percent `md`；Chip `md` 去误挂 `bg-card`，`outlined` 自带 `bg-card`；`soft` 透明 1px border 对齐盒模型 |
+| muted-foreground 0.5→0.7（hub/子页正文） | INTENTIONAL | 同 §5；禁贴回 4175 50% |
+| hub 底栏 / promo 1px Y / coral 级联细带 | IGNORE | 滚动/抗锯齿；非结构回归 |
+| Convert 右栏 peach 卡顶边细带 | IGNORE | 1–2px 圆角抗锯齿 |
 
 入口：hub → 点 **Convert**（`flash`）/ **Trade**；脚本 `swapView: 'flash'|'trade'`。
+
+## 5e. Swap hub 登录态 heatmap 标签（env-aligned · 2026-07-09）
+
+| 红块 | 标签 | 说明 |
+|------|------|------|
+| b5/b6/b9–b11 正文灰阶 | INTENTIONAL | muted 0.5→0.7 |
+| b7/b8 promo↔FAQ 交界 | IGNORE | 1px Y + 抗锯齿；promo computed 已对齐 |
+| b0–b4 底栏 / coral 细带 | IGNORE | 视口底 / 级联 |
+| Convert/Trade 模式卡正文 | INTENTIONAL | 同 muted |
 
 ## 6. 修订
 
