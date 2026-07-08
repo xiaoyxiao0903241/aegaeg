@@ -10,17 +10,20 @@ import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { DappActionRow } from '~/app/shell/components/dapp-action-row'
 import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
-import { SwapAmountBox } from '~/app/shell/components/swap-amount-box'
-import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { SwapAmountSkeleton, SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import {
   SwapGenesisFooter,
   SwapMetaPanel,
-  SwapPercentButtons,
 } from '~/views/dapp/swap/swap-widget-primitives'
-import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
+import { SwapPanelToggle } from '~/views/dapp/swap/swap-widget-header'
+import { useSwapViewStore } from '~/stores/swap-view-store'
+import { TokenChip } from '~/app/shell/components/token-chip'
+import { AmountBox } from '~/shared/ui/amount-box'
+import { PercentButtonRow } from '~/shared/ui/segment'
+import { WidgetSubpageHeader } from '~/shared/ui/widget-header'
 import { Text } from '~/shared/ui/text'
 
 export function FlashSwapWidget({
@@ -104,16 +107,26 @@ export function FlashSwapWidget({
     showFlashSwapError(swap.validationError)
   }, [showFlashSwapError, swap.validationError])
 
+  const setSwapView = useSwapViewStore((state) => state.setView)
+
   return (
     <>
-      <SwapSubpageHeader subtitle={t.swap.flash.intro} title={t.swap.flash.title} />
-      <SwapWidgetBody
-        bodyClassName={cn(dappWidgetBodyClass, 'gap-0')}
-        footer={
-          sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined
+      <WidgetSubpageHeader
+        action={<SwapPanelToggle />}
+        backLabel={
+          <>
+            <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
+            <Text tone="muted-foreground" variant="copy">
+              {t.swap.backToHub}
+            </Text>
+          </>
         }
-      >
-        <SwapAmountBox
+        onBack={() => setSwapView('hub')}
+        subtitle={t.swap.flash.intro}
+        title={t.swap.flash.title}
+      />
+      <div className={cn(dappWidgetBodyClass, 'gap-0')}>
+        <AmountBox
           amountProps={{
             'aria-label': `${pair.sell.symbol} sell amount`,
             disabled: sessionReady && !swap.walletReady,
@@ -122,14 +135,12 @@ export function FlashSwapWidget({
             placeholder: '0.00',
             value: swap.sellAmountDisplay,
           }}
-          sessionReady
           balance={sellBalanceLabel}
           label={t.swap.sell}
-          tokenIcon={pair.sell.icon}
-          tokenLabel={pair.sell.symbol}
+          startAdornment={<TokenChip icon={pair.sell.icon} label={pair.sell.symbol} />}
         />
 
-        <SwapPercentButtons
+        <PercentButtonRow
           disabled={!swapPreview && !swap.walletReady}
           onSelect={(percent) => swap.fillPercent(percent)}
         />
@@ -140,20 +151,19 @@ export function FlashSwapWidget({
           </div>
         </div>
 
-        <SwapAmountBox
-          amountLoading={showBuyAmountSkeleton}
+        <AmountBox
           amountProps={{
             'aria-label': `${pair.buy.symbol} receive amount`,
             placeholder: '0.00',
             readOnly: true,
             value: swapPreview ? swap.buyAmount || '0.00' : swap.buyAmount,
           }}
-          className="mt-0"
-          sessionReady
           balance={buyBalanceLabel}
+          className="mt-0"
           label={t.swap.buy}
-          tokenIcon={pair.buy.icon}
-          tokenLabel={pair.buy.symbol}
+          loading={showBuyAmountSkeleton}
+          loadingSkeleton={<SwapAmountSkeleton />}
+          startAdornment={<TokenChip icon={pair.buy.icon} label={pair.buy.symbol} />}
         />
 
         <SwapMetaPanel
@@ -221,7 +231,13 @@ export function FlashSwapWidget({
             {submitErrorMessage}
           </Text>
         ) : null}
-      </SwapWidgetBody>
+
+        {sessionReady ? (
+          <div className="mt-auto w-full shrink-0">
+            <SwapGenesisFooter onSelectGenesis={onSelectGenesis} />
+          </div>
+        ) : null}
+      </div>
     </>
   )
 }

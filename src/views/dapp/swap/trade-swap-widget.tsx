@@ -2,14 +2,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { dappAssets } from '~/app/assets'
+import { dappAssets, flashSwapAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { DappActionRow } from '~/app/shell/components/dapp-action-row'
 import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
-import { SwapAmountBox } from '~/app/shell/components/swap-amount-box'
 import { SwapSlippageModal } from '~/app/shell/components/swap-slippage-modal'
-import { SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { SwapAmountSkeleton, SwapBalanceSkeleton, SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
@@ -19,10 +18,14 @@ import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   SwapGenesisFooter,
   SwapMetaPanel,
-  SwapPercentButtons,
   swapFlipCard,
 } from '~/views/dapp/swap/swap-widget-primitives'
-import { SwapSubpageHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
+import { SwapPanelToggle } from '~/views/dapp/swap/swap-widget-header'
+import { useSwapViewStore } from '~/stores/swap-view-store'
+import { TokenChip } from '~/app/shell/components/token-chip'
+import { AmountBox } from '~/shared/ui/amount-box'
+import { PercentButtonRow } from '~/shared/ui/segment'
+import { WidgetSubpageHeader } from '~/shared/ui/widget-header'
 import { Text } from '~/shared/ui/text'
 
 export function TradeSwapWidget({
@@ -112,16 +115,26 @@ export function TradeSwapWidget({
     t.wallet.transactionErrors,
   ])
 
+  const setSwapView = useSwapViewStore((state) => state.setView)
+
   return (
     <>
-      <SwapSubpageHeader subtitle={t.swap.trade.intro} title={t.swap.trade.title} />
-      <SwapWidgetBody
-        bodyClassName={cn(dappWidgetBodyClass, 'gap-0')}
-        footer={
-          sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined
+      <WidgetSubpageHeader
+        action={<SwapPanelToggle />}
+        backLabel={
+          <>
+            <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
+            <Text tone="muted-foreground" variant="copy">
+              {t.swap.backToHub}
+            </Text>
+          </>
         }
-      >
-        <SwapAmountBox
+        onBack={() => setSwapView('hub')}
+        subtitle={t.swap.trade.intro}
+        title={t.swap.trade.title}
+      />
+      <div className={cn(dappWidgetBodyClass, 'gap-0')}>
+        <AmountBox
           amountProps={{
             'aria-label': `${pair.sell.symbol} sell amount`,
             disabled: sessionReady && !swap.walletReady,
@@ -130,15 +143,13 @@ export function TradeSwapWidget({
             placeholder: '0.00',
             value: swap.sellAmountDisplay,
           }}
-          className={flipCardClass}
-          sessionReady
           balance={sellBalanceLabel}
+          className={flipCardClass}
           label={t.swap.sell}
-          tokenIcon={pair.sell.icon}
-          tokenLabel={pair.sell.symbol}
+          startAdornment={<TokenChip icon={pair.sell.icon} label={pair.sell.symbol} />}
         />
 
-        <SwapPercentButtons
+        <PercentButtonRow
           disabled={!swapPreview && !swap.walletReady}
           onSelect={(percent) => swap.fillPercent(percent)}
         />
@@ -173,20 +184,19 @@ export function TradeSwapWidget({
           </AnchoredTooltip>
         </div>
 
-        <SwapAmountBox
-          amountLoading={showBuyAmountSkeleton}
+        <AmountBox
           amountProps={{
             'aria-label': `${pair.buy.symbol} receive amount`,
             placeholder: '0.00',
             readOnly: true,
             value: swapPreview ? swap.buyAmount || '0.00' : swap.buyAmount,
           }}
-          className={cn('mt-0', flipCardClass)}
-          sessionReady
           balance={buyBalanceLabel}
+          className={cn('mt-0', flipCardClass)}
           label={t.swap.buy}
-          tokenIcon={pair.buy.icon}
-          tokenLabel={pair.buy.symbol}
+          loading={showBuyAmountSkeleton}
+          loadingSkeleton={<SwapAmountSkeleton />}
+          startAdornment={<TokenChip icon={pair.buy.icon} label={pair.buy.symbol} />}
         />
 
         <SwapMetaPanel
@@ -301,7 +311,12 @@ export function TradeSwapWidget({
             </DappActionButton>
           </DappActionRow>
         ) : null}
-      </SwapWidgetBody>
+        {sessionReady ? (
+          <div className="mt-auto w-full shrink-0">
+            <SwapGenesisFooter onSelectGenesis={onSelectGenesis} />
+          </div>
+        ) : null}
+      </div>
 
       <SwapSlippageModal
         onConfirm={swap.setSlippage}

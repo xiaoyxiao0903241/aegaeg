@@ -41,7 +41,7 @@ const swapWidgetHeader = tv({
   },
 })
 
-function SwapPanelToggle() {
+export function SwapPanelToggle() {
   const { messages: t } = useI18n()
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
   const onToggle = useDappShellStore((state) => state.toggleDetailCollapsed)
