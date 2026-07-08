@@ -12,13 +12,13 @@
 
 | 问题 | 现状 | 目标 |
 |------|------|------|
-| Text variant | 12 个，其中 `panel-title` 和 `widget-title` 是 alias，`table-cell` 和 `meta` 是 alias | **10 个**真正独立的视觉角色 |
+| Text variant | 12 个，其中 `panel-title` 和 `widget-title` 是 alias，`table-cell` 和 `meta` 是 alias | **10 个**真正独立的视觉角色（caption/eyebrow/copy/detail/question/headline/brand/section/panel/figure） |
 | Text tone | 含 `on-dark` 场景色 | 只保留语义色，深色卡用 `inverse` |
-| Card | `context` 分叉 Home/DApp，`fill`/`radius` 轴冗余 | 6 个 surface，无 context |
-| Button | `link` 直接写死 typography class，`shape=chip` 和 size 冲突 | link 走 Text 组合，chip 拆为独立 `Chip` |
-| Input | 只有 `AmountInput`，无通用 Input | 统一 `Input` primitive |
-| CSS 文件 | 10 个，且 `dapp-type-scale.ts` 等散落 | **2 个**（`theme.css` + `legacy-breakpoints.css`） |
-| 业务组件 | 各页重复 hand-roll | 提取 8-10 个高频 Composite |
+| Card | `context` 分叉 Home/DApp，`fill`/`radius` 轴冗余 | **4 个 surface**（outlined/elevated/soft/inverse），无 context |
+| Button | `link` 直接写死 typography class，`shape=chip` 和 size 冲突 | link 走 Text 组合，chip 拆为独立 `Chip`，shape = pill/rounded |
+| Input | 只有 `AmountInput`，无通用 Input | 统一 `Input` primitive：default/numeric/amount |
+| CSS 文件 | 10 个，且 `dapp-type-scale.ts` 等散落 | **4 个**（theme.css + shared/app/home + legacy-breakpoints.css）；theme.css 由 JSON 生成 |
+| 业务组件 | 各页重复 hand-roll | 提取 9 个高频 Composite |
 
 ---
 
@@ -75,18 +75,18 @@ token/x       #5e2a40   → token-x
 
 | variant | PC | H5 | weight | leading | tracking | 用途 |
 |---------|----|----|--------|---------|----------|------|
-| rail | 10 | 10 | medium | snug | tight | rail label |
-| kicker | 11 | 12 | semibold | snug | wide uppercase | eyebrow / badge label |
-| meta | 13 | 12 | normal | normal | -0.24/-0.26 | 默认正文、label、table cell |
+| caption | 10 | 10 | medium | snug | tight | rail label |
+| eyebrow | 11 | 12 | semibold | snug | wide uppercase | kicker / badge label |
+| copy | 13 | 12 | normal | normal | -0.24/-0.26 | 默认正文、label、table cell |
 | detail | 14 | 14 | normal | normal | -0.28 | FAQ 答案、长说明 |
 | question | 15 | 14 | semibold | snug | -0.3/-0.28 | FAQ 问题 |
 | headline | 16 | 15 | semibold | snug | -0.48/-0.45 | 卡标题 |
 | brand | 17 | 18 | semibold | snug | -0.68/-0.72 | topbar brand / rank |
 | section | 18 | 16 | semibold | tight | -0.72/-0.64 | section heading (dl) |
-| widget-title | 21 | 22 | semibold | snug | -0.84/-0.88 | widget/page header |
-| amount | 22 | 23 | semibold | snug | -0.44/-0.54 | 金额、数值 |
+| panel | 21 | 22 | semibold | snug | -0.84/-0.88 | widget / page header |
+| figure | 22 | 23 | semibold | snug | -0.44/-0.54 | 金额、数值 |
 
-**删除**：`panel-title`、`table-cell`。
+**删除**：`panel-title`、`table-cell`、`rail`、`kicker`、`meta`、`widget-title`、`amount`。
 
 ### 2.3 间距（7 阶 + 2 特殊）
 
@@ -139,7 +139,7 @@ shadow-modal  = E6
 
 ### 3.1 Text
 ```ts
-variant:  'rail' | 'kicker' | 'meta' | 'detail' | 'question' | 'headline' | 'brand' | 'section' | 'widget-title' | 'amount'
+variant:  'caption' | 'eyebrow' | 'copy' | 'detail' | 'question' | 'headline' | 'brand' | 'section' | 'panel' | 'figure'
 tone:     'foreground' | 'muted-foreground' | 'primary' | 'success' | 'inverse'
 as?:      'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'strong' | 'small' | 'em' | 'b' | 'a' | 'div' | 'time'
 tabular?: boolean
@@ -149,10 +149,10 @@ tabular?: boolean
 ```ts
 variant:  'primary' | 'secondary' | 'ghost' | 'link'
 size:     'sm' | 'md' | 'lg'
-shape?:   'pill' | 'rect'    // chip 拆出
+shape?:   'pill' | 'rounded'
 loading?: boolean
 ```
-**变更**：删除 `tab` variant（用 Chip），`link` 内部自动用 Text `meta`/`primary`。
+**变更**：删除 `tab` variant（用 Chip），`link` 内部自动用 Text `copy`/`primary`。
 
 ### 3.3 Chip（新增）
 ```ts
@@ -166,42 +166,38 @@ onRemove?: () => void
 
 ### 3.4 Card
 ```ts
-surface:  'outlined' | 'elevated' | 'faq' | 'promo' | 'window' | 'modal'
-tone?:    'dark'    // for promo
+surface:  'outlined' | 'elevated' | 'soft' | 'inverse'
 as?:      'article' | 'button' | 'div' | 'section' | 'details' | 'span'
 ```
-**子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`。
-**删除**：`context`、`fill`、`radius`。
+**子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`。  
+**删除**：`context`、`fill`、`radius`、`tone`（promo 用 `surface="inverse"`）。
 
 ### 3.5 Input
 ```ts
-variant:  'default' | 'amount' | 'shares'
+variant:  'default' | 'numeric' | 'amount'
 size?:    'sm' | 'md' | 'lg'
 error?:   boolean
 startAdornment?: ReactNode
 endAdornment?: ReactNode
 ```
-覆盖 swap amount、genesis shares、普通表单输入。
+覆盖 swap amount、genesis shares（numeric）、普通表单输入。
 
-### 3.6 FaqList
-```ts
-variant:  'home' | 'dapp'
-items:    { question: ReactNode; answer: ReactNode }[]
-```
+### 3.6 Dialog / Drawer（已有，小改）
+用 Card `surface="inverse"` 或不依赖 Card surface，由 Dialog/Sheet primitive 负责外壳。
 
-### 3.7 Dialog / Drawer（已有，小改）
-用 Card `surface="modal"`。
-
-### 3.8 TokenIcon（已有）
+### 3.7 TokenIcon（已有）
 ```ts
 symbol: string
 src?: string
 size?: 'xs' | 'sm' | 'md' | 'lg'
 ```
 
-### 3.9 Spinner / Loading（已有）
+### 3.8 Spinner / Loading（已有）
 
-### 3.10 Link（已有）
+### 3.9 Link（已有）
+
+### 3.10 Accordion（由 FaqList 演进）
+原 `FaqList` 更名为 `Accordion` 并归入 Composite；内部仍使用 Text `question`/`detail` 和 Card `surface="soft"`。
 
 ---
 
@@ -212,14 +208,16 @@ size?: 'xs' | 'sm' | 'md' | 'lg'
 | Composite | Figma 层来源 | 理由 | 核心 props |
 |-----------|--------------|------|------------|
 | `TopBar` | topbar/tb/tr/net/wal/lang | 全局 shell，状态槽 | `wallet`, `network`, `locale` |
-| `AppRail` | rail/rit | 4 页都有，active 状态 | `items`, `activeTab`, `onSelect` |
-| `WidgetHeader` | wh | 4 页 widget 列都有 | `title`, `subtitle`, `action` |
-| `TokenAmountInput` | box + tk + rr + mx | 真实交互：金额 + token + max | `token`, `value`, `balance`, `onMax` |
-| `PercentChipGroup` | pcts/pct | 4 页出现或类似模式 | `options`, `value`, `onChange` |
+| `NavRail` | rail/rit | 4 页都有，active 状态 | `items`, `activeTab`, `onSelect` |
+| `PanelHeader` | wh | 4 页 widget 列都有 | `title`, `subtitle`, `action` |
+| `AmountInput` | box + tk + rr + mx | 真实交互：金额 + token + max | `token`, `value`, `balance`, `onMax` |
+| `Segment` | pcts/pct / htab | 4 页出现或类似模式 | `options`, `value`, `onChange` |
 | `MetricCard` | sc/mc | 跨页指标卡 | `label`, `value`, `hint`, `tone` |
 | `DataTable` | tbl/trow/cell | cell 614 次高频 | `columns`, `rows`, `empty` |
-| `FAQList` | qa/qhd | 82 次，accordion 行为 | `items`, `variant` |
-| `PromoCard` | promo/pcard/tc | 深色 CTA 卡 | `title`, `description`, `cta` |
+| `Accordion` | qa/qhd | 82 次，accordion 行为 | `items`, `variant` |
+| `CalloutCard` | promo/pcard/tc | 深色 CTA / 提示卡 | `title`, `description`, `cta` |
+
+`PromoCard` 由 `CalloutCard` 覆盖，不再单独保留。
 
 ### 4.2 不提为 Composite，用 Primitive + className 组合
 
@@ -246,21 +244,20 @@ src/shared/ui/
     chip.tsx          # 新增
     card.tsx
     input.tsx         # 新增/合并 amount-input
-    faq-list.tsx
-    dialog.tsx        # 复用 Card modal
+    dialog.tsx        # 复用 Card inverse 或不依赖 Card surface
     token-icon.tsx
     spinner.tsx
     link.tsx
   composite/
     top-bar.tsx
-    app-rail.tsx
-    widget-header.tsx
-    token-amount-input.tsx
-    percent-chip-group.tsx
+    nav-rail.tsx
+    panel-header.tsx
+    amount-input.tsx
+    segment.tsx
     metric-card.tsx
     data-table.tsx
-    faq-list.tsx      # 可复用 primitive
-    promo-card.tsx
+    accordion.tsx     # 由 FaqList 演进
+    callout-card.tsx  # 覆盖原 promo-card
 src/shared/styles/
   tokens/
     tokens.json       # SSOT
@@ -295,12 +292,13 @@ src/shared/styles/
 
 1. **P0 — Token 重构**：`tokens.json` + 生成 `theme.css`/`tokens.ts`，删 legacy color class
 2. **P1 — Text 收敛**：10 variant + 5 tone，全仓迁移
-3. **P2 — Card 重构**：6 surface，删 context/fill/radius
+3. **P2 — Card 重构**：4 surface（outlined/elevated/soft/inverse），删 context/fill/radius
 4. **P3 — Chip 新增**：替换 pct/badge/tab
-5. **P4 — Input 统一**：default/amount/shares
+5. **P4 — Input 统一**：default/numeric/amount
 6. **P5 — Button 修复**：link 走 Text，chip 拆出
-7. **P6 — Composite 提取**：按 WidgetHeader → TokenAmountInput → MetricCard → DataTable → FAQList → PromoCard → AppRail → TopBar 顺序
+7. **P6 — Composite 提取**：按 PanelHeader → AmountInput → Segment → MetricCard → DataTable → Accordion → CalloutCard → NavRail → TopBar 顺序
 8. **P7 — 按页替换**：Swap → Genesis → Rewards → Community → Home sections
+9. **P8 — 清债**：删 `dapp-type-scale.ts`、旧 color class、同步文档
 
 ---
 
@@ -308,22 +306,16 @@ src/shared/styles/
 
 确认本规范后，应更新/新增：
 
-- `docs/foundation/api.md` → 按本规范重写
-- `docs/foundation/tokens.md` → token 集合与生成说明
-- `docs/foundation/composite-components.md` → Composite 清单与取舍
+- `docs/foundation/api.md` → 按最终命名重写
+- `docs/foundation/runbook.md` → 阶段与 gate 同步
+- `docs/foundation/verification.md` → 验收清单同步
+- `docs/foundation/design-system-audit-v2.md` → 本文
+- `.cursor/skills/aegis-component-refactor/SKILL.md` → 门禁摘要同步
 - `src/shared/styles/tokens/tokens.json` → 新增
 - `scripts/generate-tokens.mjs` → 新增
 
 ---
 
-## 9. 需要你确认
+## 9. 状态
 
-1. 是否同意 **Text 10 variant + 5 tone**？
-2. 是否同意 **Card 6 surface 无 context**？
-3. 是否同意 **新增 Chip 独立组件**？
-4. 是否同意 **Input 统一 default/amount/shares**？
-5. 是否同意 **Composite 清单（8-10 个）**？
-6. 是否同意 **token 用 JSON 源 + CI 生成 CSS/TS**？
-7. 是否同意我按 **P0 → P7 顺序**开始实施？
-
-确认后我立刻落盘并开始第一个切片（Token 重构）。
+本规范已按用户最终命名偏好（caption/eyebrow/copy/panel/figure、4 Card surface、Composite 精简名、Input default/numeric/amount）定稿，进入执行阶段。

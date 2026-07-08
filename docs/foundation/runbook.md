@@ -6,18 +6,19 @@
 
 ## 1. 边界
 
-**In scope（P0–P7 · 全部）**
+**In scope（P0–P8 · 全部）**
 
 | 阶段 | 组件/任务 | 文件 | 说明 |
 |------|-----------|------|------|
 | P0 | Token 架构 | `src/shared/styles/tokens/tokens.json` + 生成 | JSON 源 SSOT，CI 生成 CSS/TS |
 | P1 | Text | `src/shared/ui/text.tsx` | 10 variant × 5 tone |
-| P2 | Card | `src/shared/ui/card.tsx` | 6 surface，无 context/fill/radius |
+| P2 | Card | `src/shared/ui/card.tsx` | 4 surface，无 context/fill/radius |
 | P3 | Chip（新增） | `src/shared/ui/chip.tsx` | 替换 pct / badge / tab |
-| P4 | Input | `src/shared/ui/input.tsx` | 合并 amount-input，3 variant |
+| P4 | Input | `src/shared/ui/input.tsx` | 合并 amount-input，3 variant：default/numeric/amount |
 | P5 | Button | `src/shared/ui/button.tsx` | 4 variant × 3 size × 2 shape |
 | P6 | Composite | `src/shared/ui/composite/*.tsx` | 9 个高频业务组件 |
 | P7 | 页面替换 | `src/views/**` | Swap → Genesis → Rewards → Community → Home |
+| P8 | 清债 | — | 删 dapp-type-scale.ts / 旧 color class / 文档同步 |
 
 **Out of scope（P2 后续或独立切片）**：Home 动效 · Web3 · 全站 Figma 像素级 · 暗色模式
 
@@ -29,22 +30,23 @@
 Phase 0   基线入库（只读）→ docs/baselines/
 P0        Token JSON + 生成 theme.css/tokens.ts（不动 call site）
 P1        Text     — 10 variant × 5 tone
-P2        Card     — 6 surface 无 context
+P2        Card     — 4 surface 无 context
 P3        Chip     — 新增，替换 pct/badge/tab
-P4        Input    — 合并 amount-input
+P4        Input    — 合并 amount-input，default/numeric/amount
 P5        Button   — 4 variant × 3 size × 2 shape
 P6        Composite — 9 个高频业务组件
 P7        页面替换 — Swap → Genesis → Rewards → Community → Home
+P8        清债     — 删 dapp-type-scale.ts / 旧 color class / 文档同步
 ```
 
-**P0–P7 顺序**（依赖）：Token → Text → Card → Chip → Input → Button → Composite → 页面替换
+**P0–P8 顺序**（依赖）：Token → Text → Card → Chip → Input → Button → Composite → 页面替换 → 清债
 
 ---
 
 ## 2.1 与旧 handoff 的差异
 
 - 原 handoff 顺序：Text → Button → Card → FaqList → AmountInput → shell cards
-- 当前定稿：Token 架构先行，新增 Chip，Input 合并 AmountInput，Button 在 Input 之后（因 Button 依赖 Text，link 要走 Text），Composite 在 primitives 稳定后提取。
+- 当前定稿：Token 架构先行，新增 Chip，Input 合并 AmountInput（variant 为 default/numeric/amount），Button 在 Input 之后（因 Button 依赖 Text，link 要走 Text），Composite 在 primitives 稳定后提取（Accordion / CalloutCard / Segment / NavRail / PanelHeader 等最终命名）。
 
 ---
 
@@ -102,14 +104,14 @@ H5: (同上)
 - 无 Phase 0 基线写 P1
 - 无映射表改 primitive
 - 改 `--foreground` 等非 P0 切片凑 parity
-- call site `max-dapp:(text-|font-|leading-|tracking-)`（白名单见 api §7）
+- call site `max-dapp:(text-|font-|leading-|tracking-)`（白名单见 api §8）
 
 ---
 
 ## 7. PR 报告模板
 
 ```text
-Slice: p1-<token|text|button|card|chip|input|composite|page>
+Slice: p<N>-<token|text|button|card|chip|input|composite|page|cleanup>
 API: <api.md §N 公开枚举>
 Mapping: N nodes
 Parity: compare:style-baseline PC diff=0 H5 diff=n 或人工对照表确认
@@ -130,7 +132,7 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 
 **P0**：`tokens.json` 为源 → 生成 `theme.css` / `tokens.ts`。收敛颜色/字号/间距/圆角/阴影，删除代码臆造 token。不改 call site。
 
-**P1–P7**：见 §2 阶段表。
+**P1–P8**：见 §2 阶段表。
 
 ---
 
@@ -140,3 +142,4 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 |------|------|
 | v1.0 | 合并 migration-plan + playbook 执行面；对抗仲裁定稿 |
 | v2.0 | 按 Figma 审计更新为 P0–P7，新增 Token/Chip/Input/Composite 阶段 |
+| v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |

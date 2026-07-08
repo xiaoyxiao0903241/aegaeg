@@ -1,4 +1,4 @@
-# Foundation 验收（L2 · P0–P7）
+# Foundation 验收（L2 · P0–P8）
 
 > **流程**：[`runbook.md`](./runbook.md) · **API**：[`api.md`](./api.md) · **审计**：[`design-system-audit-v2.md`](./design-system-audit-v2.md)
 
@@ -30,8 +30,8 @@
 - [ ] 人工对照表确认每个子组件样式对齐
 
 ### P2 Card
-- [ ] `card.tsx` 只有 6 surface，无 `context`/`fill`/`radius` 轴
-- [ ] `rg 'surface="soft"|context=|fill=' src --glob '*.{tsx,ts}'` 零命中
+- [ ] `card.tsx` 只有 4 surface（outlined/elevated/soft/inverse），无 `context`/`fill`/`radius` 轴
+- [ ] `rg 'surface="faq"|surface="promo"|surface="window"|surface="modal"|context=|fill=' src --glob '*.{tsx,ts}'` 零命中
 - [ ] 全仓 call site 迁移到新 surface
 
 ### P3 Chip
@@ -40,9 +40,9 @@
 - [ ] `rg 'shape="chip"|variant="tab"' src --glob '*.{tsx,ts}'`（Button 的 tab）零命中
 
 ### P4 Input
-- [ ] `input.tsx` 存在，3 variant：default/amount/shares
+- [ ] `input.tsx` 存在，3 variant：default/numeric/amount
 - [ ] `amount-input.tsx` 已合并或删除
-- [ ] genesis shares field 使用 Input
+- [ ] genesis shares field 使用 `Input variant="numeric"`
 
 ### P5 Button
 - [ ] `button.tsx` 4 variant × 3 size × 2 shape
@@ -50,15 +50,14 @@
 - [ ] link 内部使用 Text
 
 ### P6 Composite
-- [ ] 9 个 Composite 文件存在：`top-bar.tsx` · `app-rail.tsx` · `widget-header.tsx` · `token-amount-input.tsx` · `percent-chip-group.tsx` · `metric-card.tsx` · `data-table.tsx` · `faq-list.tsx` · `promo-card.tsx`
+- [ ] 9 个 Composite 文件存在：`top-bar.tsx` · `nav-rail.tsx` · `panel-header.tsx` · `amount-input.tsx` · `segment.tsx` · `metric-card.tsx` · `data-table.tsx` · `accordion.tsx` · `callout-card.tsx`
 - [ ] 每个 Composite 都有 ≥2 个 call site 或明确的全局 shell 职责
 - [ ] 无把 `box` / `dl` / `r` 等纯视觉层包装成 Composite
 
-### P7 页面替换
-- [ ] Swap → Genesis → Rewards → Community → Home 逐个完成
-- [ ] 每个页面替换后有人工对照表
+### P8 清债
 - [ ] 全站 `dapp-type-scale.ts` 删除
 - [ ] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中
+- [ ] `docs/foundation/` 与 `SKILL.md` 命名与 api.md 一致
 
 ---
 
@@ -78,7 +77,7 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 
 # legacy API 检查
 rg 'panel-title|table-cell|on-dark|text-ink-|text-faq-text|coral-bright' src --glob '*.{tsx,ts}'
-rg 'surface="soft"|context=|fill=' src --glob '*.{tsx,ts}'
+rg 'surface="faq"|surface="promo"|surface="window"|surface="modal"|context=|fill=' src --glob '*.{tsx,ts}'
 rg 'variant="tab"|shape="chip"' src/shared/ui/button.tsx
 ```
 
@@ -106,3 +105,4 @@ Figma 层: <layer>
 |------|------|
 | v1.0 | 合并 parity / slice 验收流程 |
 | v2.0 | 更新为 P0–P7，增加人工对照表优先、Chip/Input/Composite gate |
+| v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
