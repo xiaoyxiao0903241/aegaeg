@@ -11,8 +11,6 @@ import { buildRewardTierRows } from '~/core/presale/tier-table'
 import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
 import { RewardsHeroCard } from '~/views/dapp/rewards/rewards-hero-card'
-import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
-import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
 
 function RewardsHeroPanel({
   compactSkeleton,

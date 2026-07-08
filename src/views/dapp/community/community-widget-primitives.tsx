@@ -33,10 +33,6 @@ const communityReferrerAvatar = tv({
   base: 'grid size-6 flex-none place-items-center rounded-full bg-accent text-primary',
 })
 
-const communityReferrerAddress = tv({
-  base: 'truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px] text-[#0b0e14]',
-})
-
 const communityCopyButton = tv({
   base: 'grid size-[30px] shrink-0 cursor-pointer place-items-center rounded-lg bg-transparent',
 })
