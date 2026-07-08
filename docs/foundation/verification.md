@@ -157,6 +157,19 @@ Figma 层: <layer>
 | muted / section leading / FAQ 色 | INTENTIONAL | 同 §5 / §5b |
 | 动态报价 / 余额 / 成员数 | IGNORE | 非静态对齐重点 |
 
+## 5d. Swap hub 左下 Genesis promo + Convert/Trade 子页
+
+| 红块 / 节点 | 标签 | 说明 |
+|-------------|------|------|
+| Genesis promo title/body 纯白 | REGRESSION→fixed | `GenesisPromoCard`：`text-sm`/`text-xs` + `inverse` + `opacity-70`（禁贴回 `text-on-dark`） |
+| AmountBox Balance 满色 foreground | REGRESSION→fixed | `AmountBox` balance → `muted-foreground`（≡ 4175 `ink-strong` 70%） |
+| SwapMetaPanel label/value 13px | REGRESSION→fixed | `copy`→`detail`（14）+ `tracking-normal` |
+| Exchange price 数值 1.0001 vs 1.001 | IGNORE | 动态报价 |
+| Buy Balance 数值差异 | IGNORE | 链上余额 |
+| FAQ question 14/1.3 | 已对齐 | `variant="question"` ≡ 4175 `text-sm` |
+
+入口：hub → 点 **Convert**（`flash`）/ **Trade**；脚本 `swapView: 'flash'|'trade'`。
+
 ## 6. 修订
 
 | 版本 | 说明 |
