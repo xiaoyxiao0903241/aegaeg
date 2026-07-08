@@ -1,5 +1,5 @@
 import type { ElementType, ReactNode } from 'react'
-import { dappRankTitleClass } from '~/app/dapp-type-scale'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 type RankTitleWithSuperCommunityProps = {
@@ -23,8 +23,10 @@ export function RankTitleWithSuperCommunity({
   const label = isSuperCommunity ? `${title} · ${superCommunityLabel}` : title
 
   return (
-    <Component className={cn(dappRankTitleClass, 'min-w-0 break-words', className)}>
-      {label}
+    <Component className={cn('min-w-0 break-words', className)}>
+      <Text as="span" variant="headline" tone="foreground">
+        {label}
+      </Text>
     </Component>
   )
 }

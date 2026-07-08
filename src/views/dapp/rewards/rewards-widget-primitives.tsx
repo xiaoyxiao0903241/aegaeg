@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
-import { dappReferralAmountClass } from '~/app/dapp-type-scale'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -57,7 +56,7 @@ export const rewardsBalanceHint = tv({
 })
 
 export const rewardsReferralAmount = tv({
-  base: dappReferralAmountClass,
+  base: 'text-[length:var(--dapp-type-amount-size)] font-semibold leading-normal tracking-[-0.44px]',
 })
 
 export function RewardsSideCard({
