@@ -97,11 +97,12 @@ export function CommunityStatCard({
       <Text
         as="span"
         variant="copy"
-        tone={dark ? 'inverse' : 'foreground'}
+        tone={dark ? 'inverse' : 'muted-foreground'}
         className={cn(
           styles.label(),
           'tracking-[-0.24px]',
-          !dark && 'max-dapp:text-muted-foreground',
+          // 4175 community stats: text-xs · ink-strong (12/18); keep PC xs for label rhythm
+          !dark && 'text-xs leading-normal',
         )}
       >
         {label}

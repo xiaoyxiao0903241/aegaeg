@@ -14,7 +14,8 @@ const communityWidgetCard = tv({
 })
 
 const communityShareButton = tv({
-  base: 'min-h-[42px] max-dapp:min-h-11 max-dapp:text-sm',
+  // 4175 Copy link: min-h-11 · leading-normal · w-full (not Button sm 36 / 42px override)
+  base: 'min-h-11 w-full leading-normal max-dapp:min-h-11 max-dapp:text-sm',
 })
 
 const communityReferrerInput = tv({
@@ -56,7 +57,7 @@ export function CommunityReferralLinkCard({
 }) {
   return (
     <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
-      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs leading-normal">
         {linkLabel}
       </Text>
       <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold max-dapp:text-xs">

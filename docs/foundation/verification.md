@@ -147,9 +147,11 @@ Figma 层: <layer>
 | Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT（见 p7-swap-delta） |
 | Phase 日期 / 累计共建额 | IGNORE | 动态 |
 | Community 左卡 padding | INTENTIONAL | 用户确认满意；禁按 4175/dev 改回 |
+| CommunityStatCard label foreground 13px | REGRESSION→fixed | `muted-foreground` + PC `text-xs leading-normal`（≡ 4175 ink-strong/xs） |
+| Community Copy link min-h 42 / leading-none | REGRESSION→fixed | `communityShareButton` → `min-h-11 w-full leading-normal` |
 | Rewards 表行 1px 边框带（y831+/y913+） | IGNORE | section leading 级联 + 抗锯齿；非结构回归 |
 | Community 推荐链 URL 端口 4175↔5174 | IGNORE | 环境 host，非 UI SSOT |
-| Community Copy link 按钮 Y 细带 | IGNORE | 上文动态文案/级联；禁改左卡 padding |
+| Community section lh 级联 Y | INTENTIONAL | 同 §5 section leading；禁改左卡 padding |
 
 ## 5c. 登录态四 tab 共享 chrome（4175 vs 5174）
 
