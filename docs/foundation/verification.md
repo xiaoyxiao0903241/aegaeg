@@ -56,6 +56,17 @@
 - [ ] 每个 Composite 都有 ≥2 个 call site 或明确的全局 shell 职责
 - [ ] 无把 `box` / `dl` / `r` 等纯视觉层包装成 Composite
 
+### P7 按页替换
+- [x] Swap 页应用 Composite：`WidgetHeader` / `WidgetSubpageHeader` + `AmountBox` + `Segment` + `MetricCard` + `CalloutCard`
+- [x] Genesis 页应用 Composite：`WidgetHeader` + `AmountBox` + `Segment` + `MetricCard` + `DataTable` + `CalloutCard`
+- [x] Rewards 页应用 Composite：`WidgetHeader` + `DataTable` + `CalloutCard` + `Accordion`
+- [x] Community 页应用 Composite：`WidgetHeader` + `DataTable` + `CalloutCard`
+- [x] Home 页应用 Composite：`HomeSection` + `Text`/`Card` 新 API
+- [x] 已删除旧组件：`swap-amount-box.tsx` · `swap-widget-header.tsx` · `swap-widget-primitives.tsx`
+- [x] `pnpm exec tsc --noEmit` 通过
+- [x] `pnpm run build` 通过
+- [ ] 人工对照表确认（用户后续进行）
+
 ### P8 清债
 - [ ] 全站 `dapp-type-scale.ts` 删除
 - [ ] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中

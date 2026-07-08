@@ -17,8 +17,8 @@ import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-
 import {
   SwapGenesisFooter,
   SwapMetaPanel,
-} from '~/views/dapp/swap/swap-widget-primitives'
-import { SwapPanelToggle } from '~/views/dapp/swap/swap-widget-header'
+} from '~/views/dapp/swap/swap-promo-card'
+import { SwapPanelToggle } from '~/views/dapp/swap/swap-panel-toggle'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 import { TokenChip } from '~/app/shell/components/token-chip'
 import { AmountBox } from '~/shared/ui/amount-box'

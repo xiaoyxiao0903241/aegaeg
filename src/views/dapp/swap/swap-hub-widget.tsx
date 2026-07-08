@@ -3,9 +3,11 @@ import { swapHubAssets } from '~/app/assets'
 import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useSwapViewStore } from '~/stores/swap-view-store'
-import { SwapGenesisFooter } from '~/views/dapp/swap/swap-widget-primitives'
+import { SwapGenesisFooter } from '~/views/dapp/swap/swap-promo-card'
 import { SwapModeCard } from '~/views/dapp/swap/swap-mode-card'
-import { SwapHubHeader, SwapWidgetBody } from '~/views/dapp/swap/swap-widget-header'
+import { SwapPanelToggle } from '~/views/dapp/swap/swap-panel-toggle'
+import { WidgetHeader } from '~/shared/ui/widget-header'
+import { cn } from '~/shared/lib/utils'
 
 export function SwapHubWidget({
   onSelectGenesis,
@@ -18,11 +20,12 @@ export function SwapHubWidget({
 
   return (
     <>
-      <SwapHubHeader subtitle={t.swap.intro} title={t.swap.title} />
-      <SwapWidgetBody
-        bodyClassName={dappWidgetBodyClass}
-        footer={sessionReady ? <SwapGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined}
-      >
+      <WidgetHeader
+        action={<SwapPanelToggle />}
+        subtitle={t.swap.intro}
+        title={t.swap.title}
+      />
+      <div className={cn(dappWidgetBodyClass)}>
         <SwapModeCard
           body={t.swap.hub.modes.flash.body}
           icon={swapHubAssets.modeFlash}
@@ -41,7 +44,12 @@ export function SwapHubWidget({
           icon={swapHubAssets.modeBurn}
           title={t.swap.hub.modes.burn.title}
         />
-      </SwapWidgetBody>
+        {sessionReady ? (
+          <div className="mt-auto w-full shrink-0">
+            <SwapGenesisFooter onSelectGenesis={onSelectGenesis} />
+          </div>
+        ) : null}
+      </div>
     </>
   )
 }
