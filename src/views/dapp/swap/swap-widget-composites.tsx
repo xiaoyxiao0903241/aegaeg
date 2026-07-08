@@ -100,7 +100,11 @@ export function SwapSubpageHeader({
       backLabel={
         <>
           <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
-          <Text tone="muted-foreground" variant="detail" className="font-medium leading-[1.4]">
+          <Text
+            tone="muted-foreground"
+            variant="headline"
+            className="text-base font-medium leading-[1.4] tracking-[-0.02em]"
+          >
             {t.swap.backToHub}
           </Text>
         </>
@@ -259,18 +263,22 @@ export function SwapMetaPanel({
     >
       {items.map((item, index) => (
         <p className="m-0 flex items-center justify-between gap-3" key={index}>
+          {/* 4175 meta rows: text-sm (14) + tracking-normal — not copy 13 */}
           <Text
             as="span"
-            variant="copy"
+            variant="detail"
             tone="muted-foreground"
-            className="leading-normal"
+            className="leading-normal tracking-normal"
           >
             {item.label}
           </Text>
           <Text
             as="strong"
-            variant="copy"
-            className={cn('mt-0 text-right font-semibold leading-normal', item.valueClassName)}
+            variant="detail"
+            className={cn(
+              'mt-0 text-right font-semibold leading-normal tracking-normal',
+              item.valueClassName,
+            )}
           >
             {item.value}
           </Text>

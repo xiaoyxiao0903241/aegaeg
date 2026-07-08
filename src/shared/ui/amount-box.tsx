@@ -57,10 +57,11 @@ export function AmountBox({
           {label}
         </Text>
         {balance ? (
+          // 4175: text-ink-strong ≡ muted-foreground 70% (not full foreground)
           <Text
             as="span"
             variant="copy"
-            tone={disabled ? 'muted-foreground' : 'foreground'}
+            tone="muted-foreground"
             className={cn(styles.balance(), 'leading-normal', !disabled && 'font-semibold')}
           >
             {balance}

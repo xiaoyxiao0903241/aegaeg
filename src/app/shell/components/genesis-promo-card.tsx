@@ -107,18 +107,25 @@ export function GenesisPromoCard({
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
       ) : (
-        <Text as="strong" variant="detail" tone="inverse" className="block leading-normal">
+        // 4175: text-sm / semibold / text-on-dark — use inverse+opacity-70 (禁贴回 on-dark)
+        <Text
+          as="strong"
+          variant="detail"
+          tone="inverse"
+          className="block text-sm font-semibold leading-normal tracking-[-0.28px] opacity-70"
+        >
           {title}
         </Text>
       )}
       {pending || !body ? (
         <GenesisPromoBodySkeleton />
       ) : (
+        // 4175: text-xs / normal / on-dark — caption token is 10px; lock 12px + opacity-70
         <Text
           as="p"
-          variant="caption"
+          variant="copy"
           tone="inverse"
-          className="m-0 leading-normal"
+          className="m-0 text-xs font-normal leading-normal tracking-[-0.24px] opacity-70"
         >
           {body}
         </Text>
