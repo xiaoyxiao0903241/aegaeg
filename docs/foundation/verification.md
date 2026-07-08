@@ -86,6 +86,8 @@ pnpm exec tsc --noEmit
 pnpm lint:all
 
 # 4175 parity（用户不强制，作为辅助）
+# `dev:baseline` 会把当前仓库 `.env` / `.env.local` 同步到 worktree，再启 4175。
+# 改 env 后必须重启 baseline（Vite 只在启动时注入）。跳过同步：AEGIS_DEV_BASELINE_SKIP_ENV_SYNC=1
 pnpm dev:baseline
 pnpm capture:phase0-baseline
 pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
