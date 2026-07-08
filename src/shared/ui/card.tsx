@@ -10,47 +10,32 @@ import { Text, type TextProps } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Primitive：surface / fill / radius · 组合式子组件（shadcn 风格）内化 Text 字阶。
- * SSOT：docs/foundation/api.md §1 · 页面只组合 Card.* + 布局 className。
+ * Primitive：4 surface × 组合式子组件。
+ * SSOT：docs/foundation/api.md §5
+ *
+ * 禁止：context / fill / radius / tone / hover 轴；call site 叠 shadow-* / rounded-* 覆盖 surface 默认。
+ * 细微差异（间距、圆角）用 className 抹平，不新增 surface。
  */
 export const cardVariants = tv({
+  base: 'bg-card text-card-foreground',
   variants: {
-    context: {
-      dapp: 'bg-card',
-      home: '',
-    },
     surface: {
-      outlined: 'rounded-md border border-border px-4 py-3.5',
-      elevated: 'rounded-md px-4 py-3.5 shadow-card',
-      soft: 'overflow-hidden rounded-2xl shadow-subtle',
-      faq: 'overflow-hidden rounded-2xl bg-white shadow-faq',
-    },
-    fill: {
-      surface: 'bg-card shadow-card',
-      transparent: '',
-      token: 'text-white shadow-token',
-    },
-    radius: {
-      none: 'rounded-none',
-      sm: 'rounded-md',
-      md: 'rounded-md',
-      lg: 'rounded-md',
-      xl: 'rounded-lg',
-      full: 'rounded-full',
-    },
-    tone: {
-      dark: 'border-0 bg-dark text-white',
-    },
-    hover: {
-      shadow:
-        'transition-shadow duration-200 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-[0_0.875rem_2.125rem_oklch(22%_0.04_265_/_10%)] focus-within:shadow-[0_0.875rem_2.125rem_oklch(22%_0.04_265_/_10%)]',
+      outlined:
+        'rounded-sm border border-border p-3.5',
+      elevated:
+        'rounded-md bg-card p-3.5 shadow-card',
+      soft:
+        'rounded-lg bg-card p-5 shadow-faq',
+      inverse:
+        'rounded-md bg-dark p-4 text-white shadow-subtle',
     },
   },
   defaultVariants: {
-    context: 'dapp',
     surface: 'outlined',
   },
 })
+
+export type CardSurface = keyof typeof cardVariants.variants.surface
 
 type CardElement = 'article' | 'button' | 'div' | 'section' | 'details' | 'span'
 
@@ -61,18 +46,7 @@ export type CardProps = (HTMLAttributes<HTMLElement> | ButtonHTMLAttributes<HTML
   }
 
 function CardRoot(
-  {
-    as = 'article',
-    children,
-    className,
-    context = 'dapp',
-    surface,
-    fill,
-    radius,
-    tone,
-    hover,
-    ...props
-  }: CardProps,
+  { as = 'article', children, className, surface, ...props }: CardProps,
   ref: React.Ref<HTMLElement>,
 ) {
   return createElement(
@@ -80,17 +54,7 @@ function CardRoot(
     {
       ...props,
       ref,
-      className: cn(
-        cardVariants({
-          context,
-          surface: context === 'dapp' ? (surface ?? 'outlined') : undefined,
-          fill: context === 'home' ? (fill ?? 'surface') : undefined,
-          radius: context === 'home' ? (radius ?? 'md') : undefined,
-          tone,
-          hover,
-        }),
-        className,
-      ),
+      className: cn(cardVariants({ surface }), className),
     },
     children,
   )
@@ -138,7 +102,7 @@ function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
   return <Text variant="copy" tone="foreground" className={className} {...props} />
 }
 
-/** Tier B · 数值（默认 amount 字阶；stat 大卡可 className 微调） */
+/** Tier B · 数值（默认 figure 字阶；stat 大卡可 className 微调） */
 function Value({ className, tabular = true, ...props }: Omit<TextProps, 'variant'>) {
   return (
     <Text

@@ -87,9 +87,15 @@ function buildColorVars(colors) {
  * @returns {string}
  */
 function buildTypeVars(type) {
+  const props = ['size', 'weight', 'leading', 'tracking']
   const lines = ['  /* ---- Typography Tier A (px-lock; site-fluid does not scale) ---- */']
   for (const [key, token] of Object.entries(type)) {
-    lines.push(`  --type-${key}-size: ${token.pc.size};`)
+    for (const prop of props) {
+      const value = token.pc[prop]
+      if (value !== undefined) {
+        lines.push(`  --type-${key}-${prop}: ${value};`)
+      }
+    }
   }
   return lines.join('\n')
 }
@@ -100,11 +106,19 @@ function buildTypeVars(type) {
  * @returns {string}
  */
 function buildH5TypeMedia(type) {
-  const lines = Object.entries(type)
-    .filter(([, token]) => token.h5.size !== token.pc.size)
-    .map(([key, token]) => `    --type-${key}-size: ${token.h5.size};`)
-  if (lines.length === 0) return ''
-  return `/* H5 typography — per-variant Figma table (not blanket +1) */\n@media (max-width: 820px) {\n  :root {\n${lines.join('\n')}\n  }\n}\n`
+  const props = ['size', 'weight', 'leading', 'tracking']
+  const overrides = []
+  for (const [key, token] of Object.entries(type)) {
+    for (const prop of props) {
+      const pcValue = token.pc[prop]
+      const h5Value = token.h5[prop]
+      if (h5Value !== undefined && h5Value !== pcValue) {
+        overrides.push(`    --type-${key}-${prop}: ${h5Value};`)
+      }
+    }
+  }
+  if (overrides.length === 0) return ''
+  return `/* H5 typography — per-variant Figma table (not blanket +1) */\n@media (max-width: 820px) {\n  :root {\n${overrides.join('\n')}\n  }\n}\n`
 }
 
 /**
@@ -133,7 +147,7 @@ function buildRadiusVars(radius) {
  * @returns {string}
  */
 function buildElevationVars(shadows) {
-  const lines = Object.entries(shadows).map(([key, token], index) => {
+  const lines = Object.entries(shadows).map(([, token], index) => {
     const value = `${token.x} ${token.y} ${token.blur} ${token.color}`
     return `  --elevation-e${index + 1}: ${value};`
   })

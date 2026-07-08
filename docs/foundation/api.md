@@ -2,7 +2,7 @@
 
 > **流程**：[`runbook.md`](./runbook.md) · **验收**：[`verification.md`](./verification.md) · **设计审计**：[`design-system-audit-v2.md`](./design-system-audit-v2.md)
 >
-> **原则**：每组件 **键数 = 类型字面量数** · **无 alias 层** · **无场景分叉（context）** · Tier B 不进 Text
+> **原则**：每组件 **键数 = 类型字面量数** · **无 alias 层** · **无场景分叉（context）** · Tier B 不进 Text · **细微差异用 className 抹平，不扩轴**
 
 每节结构一致：**公开轴 · 禁止 · 依赖 · Swap 探针 · API gate**
 
@@ -98,14 +98,14 @@
 
 | surface | Elevation | radius | padding | 用途 |
 |---------|-----------|--------|---------|------|
-| outlined | — | xl | 14/16 | 标准边框卡（box、meta） |
-| elevated | E2 | xl | 14/16 | MetricCard、DataTable |
-| soft | E1 | xl | 18/24 | FAQ / Accordion 项 |
-| inverse | E3 | xl | 16/18 | 深色 CTA 卡（CalloutCard） |
+| outlined | — | `rounded-sm` (14px) | `p-3.5` (14px) | 标准边框卡（box、meta、mode card） |
+| elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、ProgramCard |
+| soft | E1 (`shadow-faq`) | `rounded-lg` (18px) | `p-5` (20px) | FAQ / Accordion 项 |
+| inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（CalloutCard、WidgetPromoCard） |
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`
 
-**禁止**：`context` · `fill` · `radius` 轴 · call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认
+**禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认。
 **依赖**：P1-Text
 **探针**：mode-card-root · program-card · faq card layout · metric-card
 **Gate**：`surface` 键 = **4**

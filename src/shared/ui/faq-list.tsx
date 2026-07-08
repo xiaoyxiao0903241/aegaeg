@@ -146,7 +146,7 @@ export function FaqList({
           <Accordion.Item asChild key={`${index}-${String(item.q)}`} value={itemValue}>
             <Card
               as="div"
-              surface="faq"
+              surface="soft"
               className={cn('group', itemClassName)}
               data-faq-item
               data-faq-motion={motionEnabled ? 'true' : 'false'}

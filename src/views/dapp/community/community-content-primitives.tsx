@@ -90,8 +90,7 @@ function CommunityStatCard({
   return (
     <Card
       as="article"
-      surface={dark ? undefined : 'elevated'}
-      tone={dark ? 'dark' : undefined}
+      surface={dark ? 'inverse' : 'elevated'}
       className={cn(styles.root(), className)}
       data-reveal
     >

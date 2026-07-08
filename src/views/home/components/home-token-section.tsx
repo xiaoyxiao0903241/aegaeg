@@ -47,11 +47,9 @@ const tokenCardHoverClass = cn(
 function HomeTokenCard({ token }: { token: TokenCard }) {
   return (
     <Card
+      surface="outlined"
       className={cn(tokenClass.card, token.className, tokenCardHoverClass)}
-      context="home"
       data-token-card
-      fill="token"
-      radius="xl"
     >
       <div
         className={cn(tokenClass.shapeWrap, token.shapeWrapClassName)}

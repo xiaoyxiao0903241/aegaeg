@@ -20,7 +20,7 @@ export function WidgetPromoCard({
   return (
     <Card
       as="section"
-      tone="dark"
+      surface="inverse"
       className={cn(widgetPromoCard(), className)}
       data-reveal
       {...props}

@@ -1,15 +1,13 @@
 import type { RefObject } from 'react'
 import { tv } from 'tailwind-variants'
 import { buttonDisabledClass } from '~/shared/ui/button'
+import { Input } from '~/shared/ui/input'
 import { cn } from '~/shared/lib/utils'
 
 const genesisSharesField = tv({
   slots: {
     row: 'flex gap-2',
     inputWrap: 'relative flex min-w-0 flex-1',
-    input:
-      'w-full min-w-0 rounded-sm border border-border bg-card py-2.5 pl-3.5 pr-10 text-base font-bold text-foreground outline-none placeholder:text-placeholder [appearance:textfield] focus:border-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
-    unit: 'pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-muted-foreground',
     maxButton: cn(
       'min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 py-2.5 text-xs font-bold whitespace-nowrap text-primary',
       buttonDisabledClass,
@@ -50,9 +48,10 @@ export function GenesisPurchaseSharesField({
       <span>{label}</span>
       <div className={styles.row()}>
         <div className={styles.inputWrap()}>
-          <input
+          <Input
             ref={inputRef}
-            className={styles.input()}
+            variant="numeric"
+            className="pr-10 text-base font-bold"
             disabled={disabled}
             max={max}
             min={min}
@@ -62,7 +61,7 @@ export function GenesisPurchaseSharesField({
             type="number"
             value={value}
           />
-          <span aria-hidden className={styles.unit()}>
+          <span aria-hidden className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-muted-foreground">
             {shareUnit}
           </span>
         </div>

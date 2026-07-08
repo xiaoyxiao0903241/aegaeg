@@ -1,4 +1,4 @@
-import { Button } from '~/shared/ui/button'
+import { Chip } from '~/shared/ui/chip'
 import { cn } from '~/shared/lib/utils'
 
 export function DappPillTabs({
@@ -15,7 +15,7 @@ export function DappPillTabs({
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)} role="tablist" aria-label={ariaLabel}>
       {items.map((item, index) => (
-        <Button
+        <Chip
           aria-selected={Boolean(item.active)}
           key={item.label}
           onClick={() => onSelect?.(index)}
@@ -23,10 +23,11 @@ export function DappPillTabs({
           shape="pill"
           size="md"
           type="button"
-          variant={item.active ? 'tab' : 'ghost'}
+          variant={item.active ? 'solid' : 'outlined'}
+          tone="default"
         >
           {item.label}
-        </Button>
+        </Chip>
       ))}
     </div>
   )

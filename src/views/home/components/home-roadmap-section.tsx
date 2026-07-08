@@ -16,7 +16,7 @@ const roadmapClass = {
   phase:
     'phase relative grid min-h-32 grid-cols-[auto_minmax(0,1fr)] items-start gap-3.5 dapp:absolute dapp:block dapp:min-h-0 dapp:w-full',
   card:
-    'phase-card w-full min-h-28 p-4 max-dapp:rounded-md dapp:min-h-30 dapp:w-[calc(50%-15)] dapp:max-w-128 dapp:px-6 dapp:py-5.5',
+    'phase-card w-full min-h-28 rounded-md border border-border bg-card p-4 transition-shadow duration-200 ease-out hover:shadow-card max-dapp:rounded-md dapp:min-h-30 dapp:w-[calc(50%-15)] dapp:max-w-128 dapp:px-6 dapp:py-5.5',
   cardRight: 'dapp:ml-auto',
   currentCard: 'min-h-30 border border-primary dapp:min-h-30',
   header:
@@ -103,10 +103,9 @@ export function HomeRoadmapSection() {
                   phase.side === 'right' && roadmapClass.cardRight,
                   phase.state === 'current' && roadmapClass.currentCard,
                 )}
-                context="home"
+                surface="outlined"
                 data-phase-card
-                hover="shadow"
-                radius="md"
+                key={`${phase.phase}-${index}`}
               >
                 <div className={roadmapClass.header}>
                   <Text

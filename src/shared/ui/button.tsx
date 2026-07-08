@@ -14,10 +14,16 @@ const disabledMutedClass =
 
 const liftHoverClass = 'hover:-translate-y-px focus-visible:-translate-y-px'
 
-/** variant = 语义色 | size = 尺寸 | shape = 轮廓；交叉组合走 compound */
+/**
+ * Primitive：按钮。
+ * SSOT：docs/foundation/api.md §3
+ *
+ * 公开轴：variant × size × shape = 4 × 3 × 2
+ * 禁止：tab / chip / link 异位；Chip 负责小控件。
+ */
 export const buttonVariants = tv({
   base: [
-    'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
+    'inline-flex cursor-pointer items-center justify-center gap-2 font-semibold whitespace-nowrap',
     'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-[180ms] ease-out',
     buttonDisabledClass,
   ],
@@ -39,32 +45,22 @@ export const buttonVariants = tv({
         'hover:border-primary hover:text-primary',
         disabledMutedClass,
       ],
-      tab: 'border border-transparent bg-accent text-primary',
       link: [
-        'min-h-0 w-auto justify-start border-0 bg-transparent p-0 text-left font-[inherit] text-sm leading-snug text-primary whitespace-normal max-dapp:text-xs',
+        'min-h-0 w-auto justify-start border-0 bg-transparent p-0 text-left font-normal text-primary whitespace-normal',
         'disabled:text-muted-foreground disabled:opacity-100',
       ],
     },
     size: {
-      lg: 'min-h-12 px-6 text-base leading-none max-dapp:px-5 max-dapp:text-sm',
-      md: 'min-h-10 px-5 text-sm leading-snug max-dapp:text-xs',
-      sm: 'min-h-11 text-sm leading-normal max-dapp:min-h-12 max-dapp:text-xs',
+      lg: 'min-h-12 px-6 text-[length:var(--type-copy-size)] leading-none',
+      md: 'min-h-10 px-5 text-[length:var(--type-copy-size)] leading-none',
+      sm: 'min-h-9 px-4 text-[length:var(--type-copy-size)] leading-none',
     },
     shape: {
       pill: 'rounded-full',
-      chip: [
-        'h-6 w-full rounded-sm px-0 py-1.5 text-xs',
-        'max-dapp:h-auto max-dapp:min-h-0 max-dapp:py-1.5 max-dapp:text-xs',
-      ],
+      rounded: 'rounded-sm',
     },
   },
   compoundVariants: [
-    {
-      variant: 'primary',
-      size: 'lg',
-      class:
-        'border-0 visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
-    },
     {
       variant: ['secondary', 'ghost'],
       size: 'lg',
@@ -72,16 +68,14 @@ export const buttonVariants = tv({
         'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
     },
     {
-      variant: ['ghost', 'tab'],
-      shape: 'pill',
-      size: 'md',
-      class: '!min-h-0 w-auto px-4 py-2 tracking-tight',
+      variant: 'link',
+      size: ['sm', 'md', 'lg'],
+      class: '!min-h-0 px-0',
     },
-    { size: 'sm', shape: 'pill', class: 'w-full' },
   ],
   defaultVariants: {
     variant: 'primary',
-    size: 'sm',
+    size: 'md',
     shape: 'pill',
   },
 })

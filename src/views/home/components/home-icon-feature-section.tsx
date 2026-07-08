@@ -37,9 +37,9 @@ const gridClass = {
 
 const cardClass = {
   protocol:
-    'min-h-72 px-8 py-9 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
+    'min-h-72 px-8 py-9 transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
   engine:
-    'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
+    'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
 } as const
 
 const iconClass = {
@@ -76,12 +76,9 @@ function HomeIconCard({
   return (
     <Card
       className={cn(cardClass[variant], cardBorderClass(variant, index))}
-      context="home"
+      surface="outlined"
       data-engine-card={variant === 'engine' ? true : undefined}
       data-protocol-card={variant === 'protocol' ? true : undefined}
-      fill="transparent"
-      hover="shadow"
-      radius="none"
       style={{ '--card-index': index } as React.CSSProperties}
     >
       <img

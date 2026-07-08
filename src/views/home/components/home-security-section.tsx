@@ -16,6 +16,7 @@ const securityClass = {
   subtitle: '[&&]:max-w-[26.25rem] dapp:[&&]:mt-4',
   artImage: 'h-full w-full object-contain object-center',
   iconImage: 'size-[var(--home-security-icon-size)] object-contain',
+  cardHover: 'transition-shadow duration-200 ease-out hover:shadow-card',
 } as const
 
 export function HomeSecuritySection() {
@@ -69,12 +70,12 @@ export function HomeSecuritySection() {
               <Card
                 className={cn(
                   securityLayout.cardClassName,
+                  securityClass.cardHover,
                   (index === 0 || index === content.checks.length - 1) &&
                     securityLayout.cardTallClassName,
                 )}
-                context="home"
+                surface="outlined"
                 data-security-check
-                hover="shadow"
                 key={check}
                 style={{ '--security-index': index } as CSSProperties}
               >

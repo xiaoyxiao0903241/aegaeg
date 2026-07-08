@@ -5,6 +5,7 @@ import { dappIconClass } from '~/app/dapp-icon-scale'
 import { useI18n } from '~/i18n/use-i18n'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/swap/token-amount'
 import { cn } from '~/shared/lib/utils'
+import { Input } from '~/shared/ui/input'
 import { Text, textVariants } from '~/shared/ui/text'
 import {
   AegisResponsiveDialog,
@@ -91,9 +92,10 @@ export function SwapSlippageModal({
             {t.swap.slippage}
           </label>
           <div className="flex h-11 items-center justify-between rounded-sm border border-border bg-card px-3.5">
-            <input
+            <Input
+              variant="default"
               className={cn(
-                'w-full min-w-0 border-0 bg-transparent p-0 text-inherit outline-none',
+                'border-0 bg-transparent p-0 text-inherit',
                 textVariants({ variant: 'headline' }),
               )}
               id="swap-slippage-input"
