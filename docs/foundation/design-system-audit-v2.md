@@ -13,7 +13,7 @@
 | 问题 | 现状 | 目标 |
 |------|------|------|
 | Text variant | 12 个，其中 `panel-title` 和 `widget-title` 是 alias，`table-cell` 和 `meta` 是 alias | **10 个**真正独立的视觉角色（caption/eyebrow/copy/detail/question/headline/brand/section/panel/figure） |
-| Text tone | 含 `on-dark` 场景色 | 只保留语义色，深色卡用 `inverse` |
+| Text tone | 含 `on-dark` 场景色 | 语义色含 `inverse-muted`（`#b8c0ce`）；禁 opacity 近似 |
 | Card | `context` 分叉 Home/DApp，`fill`/`radius` 轴冗余 | **4 个 surface**（outlined/elevated/soft/inverse），无 context |
 | Button | `link` 直接写死 typography class，`shape=chip` 和 size 冲突 | link 走 Text 组合，chip 拆为独立 `Chip`，shape = pill/rounded |
 | Input | 只有 `AmountInput`，无通用 Input | 统一 `Input` primitive：default/numeric/amount |
@@ -291,7 +291,7 @@ src/shared/styles/
 ## 7. 实施顺序
 
 1. **P0 — Token 重构**：`tokens.json` + 生成 `theme.css`/`tokens.ts`，删 legacy color class
-2. **P1 — Text 收敛**：10 variant + 5 tone，全仓迁移
+2. **P1 — Text 收敛**：10 variant + 6 tone，全仓迁移
 3. **P2 — Card 重构**：4 surface（outlined/elevated/soft/inverse），删 context/fill/radius
 4. **P3 — Chip 新增**：替换 pct/badge/tab
 5. **P4 — Input 统一**：default/numeric/amount

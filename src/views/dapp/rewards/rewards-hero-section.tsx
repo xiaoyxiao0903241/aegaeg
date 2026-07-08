@@ -8,7 +8,6 @@ import {
   formatShareholderHintForRank,
 } from '~/shared/api/format-display'
 import { buildRewardTierRows } from '~/core/presale/tier-table'
-import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
 import { RewardsHeroCard } from '~/views/dapp/rewards/rewards-hero-card'
 
@@ -46,21 +45,33 @@ function RewardsHeroPanel({
         <>
           <Text
             as="h3"
-            variant="panel"
+            variant="brand"
             tone="inverse"
-            className={cn(
-              'm-0 min-w-0 break-words',
-              layout === 'mobile' && 'text-lg leading-[1.2] tracking-[-0.54px]',
-            )}
+            className={
+              layout === 'desktop'
+                ? // 4175: body-lg lock + tracking -0.63px (not brand token -0.02em)
+                  'm-0 min-w-0 break-words leading-[1.3] tracking-[-0.63px]'
+                : 'm-0 min-w-0 break-words text-lg leading-[1.2] tracking-[-0.54px]'
+            }
           >
             {title}
           </Text>
-          <div className="flex flex-col gap-0 opacity-70">
-            <Text as="p" variant="copy" tone="inverse" className="m-0">
+          <div className="flex flex-col gap-0">
+            <Text
+              as="p"
+              variant="copy"
+              tone="inverse-muted"
+              className="m-0 leading-[1.5] tracking-[-0.26px]"
+            >
               {heroTierRewardBody}
             </Text>
             {showSuperBadge ? (
-              <Text as="p" variant="copy" tone="inverse" className="m-0">
+              <Text
+                as="p"
+                variant="copy"
+                tone="inverse-muted"
+                className="m-0 leading-[1.5] tracking-[-0.26px]"
+              >
                 {superCommunityBenefitBody}
               </Text>
             ) : null}

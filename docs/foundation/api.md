@@ -14,7 +14,7 @@
 
 | 维度 | 集合 | 键数 |
 |------|------|------|
-| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `success` · `border` · `dark` · `inverse` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 16 |
+| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `success` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 17 |
 | type | `caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` | 10 |
 | space | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)` | 9 |
 | radius | `sm(8)` · `md(10)` · `lg(12)` · `xl(16)` · `full` | 5 |
@@ -29,7 +29,7 @@
 | 公开轴 | 值 |
 |--------|-----|
 | `variant` | **10 键**：`caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` |
-| `tone` | `foreground` · `muted-foreground` · `primary` · `success` · `inverse` |
+| `tone` | `foreground` · `muted-foreground` · `primary` · `success` · `inverse` · `inverse-muted` |
 | 可选 | `as` · `tabular` |
 
 ### 10 variant（仅此）
@@ -40,7 +40,7 @@
 | eyebrow | 11 | 12 | semibold | uppercase kicker |
 | copy | 13 | 12 | normal | **默认**正文、label、table cell |
 | detail | 14 | 14 | normal | FAQ 答案、长说明 |
-| question | 15 | 14 | semibold | FAQ 问题 |
+| question | 14 | 14 | semibold | FAQ 问题 |
 | headline | 16 | 15 | semibold | 卡小标题 |
 | brand | 17 | 18 | semibold | topbar brand / rank |
 | section | 18 | 16 | semibold | section heading (dl) |
@@ -48,9 +48,12 @@
 | figure | 22 | 23 | semibold | 金额、数值 |
 
 **禁止**：`weight` prop · `panel-title` / `table-cell` / `on-dark` · `deprecatedAliases`
+**className 显示阶覆盖**：若 `className` 含字号 utility（`text-xs`…`text-9xl` / `text-[…]`，含 `max-*:text-*` / `!text-*`），`Text` 剥掉 size / leading / tracking type token，**保留** `font-[var(--type-*-weight)]`（call site 通常只覆盖字号/行高）。避免残留 tracking 把标题挤窄，同时不丢 variant 字重。
 **依赖**：P0 token
-**探针**：Swap catalog 全部 Text owner 行
-**Gate**：`text.tsx` variant 键 = **10** · `TextVariant` 联合 = 10 · `tone` = 5
+**探针**：Swap catalog 全部 Text owner 行 · Home section titles
+**Gate**：`text.tsx` variant 键 = **10** · `TextVariant` 联合 = 10 · `tone` = 6
+
+`inverse-muted` = 深底次级文案（Figma/dev `#b8c0ce`）。**禁止**用 `inverse` + `opacity-*` 近似；**禁止** call site `text-on-dark`（legacy alias 仅过渡）。
 
 ---
 
@@ -62,10 +65,11 @@
 | `size` | `sm` · `md` · `lg` |
 | `shape` | `pill` · `rounded` |
 
-**Typography**：`link` 内部自动用 `Text variant="copy" tone="primary"`，不 hand-roll class
-**禁止**：call site `max-dapp:` typography · `shape="chip"`（拆到 Chip）
+**Size 字阶**（按钮显示阶，**不是** Text `copy` token）：`lg` = `text-base`（16）· `md`/`sm` = `text-sm`（14）；`leading-none`
+**Typography**：`link` 用 `font-normal text-primary`，不 hand-roll 平行字阶文件
+**禁止**：call site `max-dapp:` typography · `shape="chip"`（拆到 Chip）· 用 `!text-*` 绕过 size
 **依赖**：P1-Text
-**探针**：topbar-connect · swap CTA · mode tab
+**探针**：home hero CTA · topbar-connect · swap CTA
 **Gate**：`variant` = **4**；`size` = **3**；`shape` = **2**
 
 ---
@@ -100,7 +104,7 @@
 |---------|-----------|--------|---------|------|
 | outlined | — | `rounded-sm` (14px) | `p-3.5` (14px) | 标准边框卡（box、meta、mode card） |
 | elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、ProgramCard |
-| soft | E1 (`shadow-faq`) | `rounded-lg` (18px) | `p-5` (20px) | FAQ / Accordion 项 |
+| soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion 项 |
 | inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（CalloutCard、WidgetPromoCard） |
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`
@@ -160,7 +164,7 @@
 - `shell-layout.ts` · `dapp-shell.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
 - `dapp-widget-frame.tsx` · `dapp-detail-layout.ts` · `responsive-table.tsx` · `dapp-table-*`
 - `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `aegis-responsive-dialog.tsx`
-- `home-layout.ts` · `static-layout.ts` · `views/home/components/*`
+- `static-layout.ts` · `views/home/components/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`
 
 **禁止**：上述以外 `max-dapp:(text-|font-|leading-|tracking-)`
@@ -174,7 +178,7 @@
 | 阶段 | 组件/任务 | 键数 gate | 同 PR 范围 |
 |------|-----------|-----------|------------|
 | P0 | Token JSON + 生成 CSS/TS | 见 §1 | theme.css / tokens.ts / 删 legacy color class |
-| P1 | Text | 10 variant · 5 tone | 全仓 `variant=` / `tone=` |
+| P1 | Text | 10 variant · 6 tone | 全仓 `variant=` / `tone=` |
 | P2 | Card | 4 surface | 全仓 `surface=` |
 | P3 | Chip（新增） | 3×2×2×3 | 替换 pct / badge / tab |
 | P4 | Input | 3 variant | 替换 amount-input、shares field |

@@ -11,7 +11,7 @@
 | 阶段 | 组件/任务 | 文件 | 说明 |
 |------|-----------|------|------|
 | P0 | Token 架构 | `src/shared/styles/tokens/tokens.json` + 生成 | JSON 源 SSOT，CI 生成 CSS/TS |
-| P1 | Text | `src/shared/ui/text.tsx` | 10 variant × 5 tone |
+| P1 | Text | `src/shared/ui/text.tsx` | 10 variant × 6 tone |
 | P2 | Card | `src/shared/ui/card.tsx` | 4 surface，无 context/fill/radius |
 | P3 | Chip（新增） | `src/shared/ui/chip.tsx` | 替换 pct / badge / tab |
 | P4 | Input | `src/shared/ui/input.tsx` | 合并 amount-input，3 variant：default/numeric/amount |
@@ -29,7 +29,7 @@
 ```text
 Phase 0   基线入库（只读）→ docs/baselines/
 P0        Token JSON + 生成 theme.css/tokens.ts（不动 call site）
-P1        Text     — 10 variant × 5 tone
+P1        Text     — 10 variant × 6 tone
 P2        Card     — 4 surface 无 context
 P3        Chip     — 新增，替换 pct/badge/tab
 P4        Input    — 合并 amount-input，default/numeric/amount
@@ -106,6 +106,24 @@ H5: (同上)
 - 改 `--foreground` 等非 P0 切片凑 parity
 - call site `max-dapp:(text-|font-|leading-|tracking-)`（白名单见 api §8）
 
+### 6.1 Class / CSS 减法
+
+> 详述亦见 [`.cursor/skills/aegis-component-refactor/SKILL.md`](../../.cursor/skills/aegis-component-refactor/SKILL.md)。
+
+**`dev` = 视觉对照，≠ 结构模板。** `dev` 有冗余不构成保留理由；重构就是消冗余。对照 `dev` 只验「看起来对不对」。
+
+| MUST | 说明 |
+|------|------|
+| 无 `*Class = {…} as const` / 顶部长 `cn()` 样式表 | 一次性布局写在 JSX `className` |
+| 无空装饰 class | 仅当 CSS/脚本真正选择该名；否则删（即使 `dev` 有同名） |
+| 动效用 `data-*` | 同步改选择器；禁止为动效保留空 class |
+| 以「是否影响样式」删冗余 | 重复断点、被 Foundation 覆盖的手写、无 computed 影响的 utility — **不看** `dev` 是否保留 |
+| 视觉收敛 &lt;1px | 有偏差 → 对照 `dev` **同位置代码**找根因，改 SSOT/call site；禁止 `!` / 局部特判补丁 |
+| heatmap 红块清单 | 截图后按红块列清单并归因；整页 `%` 不作收工条件（见 skill） |
+| 禁止贴回平行样式体系 | 不为截图恢复已删 hand-roll / 遗留色 / type-scale；根因在 token 则改 token |
+
+**偏离标签**：结构债清理标 **INTENTIONAL**；误删导致塌陷标 **REGRESSION** 并修回。
+
 ---
 
 ## 7. PR 报告模板
@@ -143,3 +161,4 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 | v1.0 | 合并 migration-plan + playbook 执行面；对抗仲裁定稿 |
 | v2.0 | 按 Figma 审计更新为 P0–P7，新增 Token/Chip/Input/Composite 阶段 |
 | v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
+| v2.2 | 新增 §6.1 Class / CSS 减法；明确 `dev` 仅视觉对照、非结构 SSOT |

@@ -25,6 +25,7 @@ export const colors = [
   "success",
   "dark",
   "inverse",
+  "inverse-muted",
   "token-usd1",
   "token-agx",
   "token-gagx",

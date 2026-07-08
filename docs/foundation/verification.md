@@ -26,7 +26,7 @@
 - [ ] 确认 legacy color/type alias 迁移计划写入 P8
 
 ### P1 Text
-- [ ] `text.tsx` 只有 10 variant + 5 tone
+- [ ] `text.tsx` 只有 10 variant + 6 tone
 - [ ] `rg 'panel-title|table-cell|on-dark' src --glob '*.{tsx,ts}'` 零命中
 - [ ] 全仓 `variant=` / `tone=` 已迁移
 - [ ] 人工对照表确认每个子组件样式对齐
@@ -124,7 +124,7 @@ Figma 层: <layer>
 | y473–490 MetaList | REGRESSION→fixed | `DappMetaList` `copy`→`detail`（14px） |
 | muted-foreground 0.5→0.7 | INTENTIONAL | Foundation token（Figma body 70%）；禁贴回 4175 50% |
 | radius-sm 10→14 | INTENTIONAL | Foundation `--radius-sm: 0.875rem`（api Card outlined） |
-| globalBody `on-dark`→`inverse`+opacity-70 | INTENTIONAL | 禁贴回 `text-on-dark`；语义等价 |
+| globalBody `on-dark`→`inverse-muted` | REGRESSION→fixed | 正式 tone；禁 `inverse`+opacity 近似 |
 | FAQ answer `faq-text`→`muted-foreground` | INTENTIONAL | 禁贴回 `text-faq-text` |
 | panel 20→21 / subtitle 12→13 | INTENTIONAL | Foundation `--type-panel` / `--type-copy` vs 4175 fluid |
 | section lh snug(24.75)→1.3(23.4) | INTENTIONAL | Foundation `--type-section-leading` |
@@ -141,7 +141,7 @@ Figma 层: <layer>
 | Invite step leading 1.3→1.5 | REGRESSION→fixed | 对齐 4175 `dappCaptionClass` |
 | Community/Rewards `DappSection` h3 lh 24.75→23.4 | INTENTIONAL | 同 §5 section leading；级联 Y 偏移会染红整段 |
 | Hero kicker `coral-bright`→`primary` | INTENTIONAL | 禁贴回 `text-coral-bright` |
-| Hero body `on-dark`→`inverse`+opacity-70 | INTENTIONAL | 语义等价 |
+| Hero body `on-dark`→`inverse-muted` | REGRESSION→fixed | 正式 tone；禁 `inverse`+opacity 近似 |
 | Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT（见 p7-swap-delta） |
 | Phase 日期 / 累计共建额 | IGNORE | 动态 |
 | Community 左卡 padding | INTENTIONAL | 用户确认满意；禁按 4175/dev 改回 |
@@ -161,7 +161,7 @@ Figma 层: <layer>
 
 | 红块 / 节点 | 标签 | 说明 |
 |-------------|------|------|
-| Genesis promo title/body 纯白 | REGRESSION→fixed | `GenesisPromoCard`：`text-sm`/`text-xs` + `inverse` + `opacity-70`（禁贴回 `text-on-dark`） |
+| Genesis promo title/body | REGRESSION→fixed | `tone="inverse-muted"` ≡ `#b8c0ce`（禁 `inverse`+opacity-70） |
 | AmountBox Balance 满色 foreground | REGRESSION→fixed | `AmountBox` balance → `muted-foreground`（≡ 4175 `ink-strong` 70%） |
 | SwapMetaPanel label/value 13px | REGRESSION→fixed | `copy`→`detail`（14）+ `tracking-normal` |
 | Exchange price 数值 1.0001 vs 1.001 | IGNORE | 动态报价 |

@@ -55,6 +55,8 @@
   --dark: oklch(19.25% 0.0189 270.25);
   --inverse: #fff;
   --inverse: oklch(100% 0 89.88);
+  --inverse-muted: #b8c0ce;
+  --inverse-muted: oklch(80.5% 0.022 262);
   --token-usd1: #e86a43;
   --token-agx: #232833;
   --token-gagx: #7c6230;
@@ -218,6 +220,7 @@
   --color-success: var(--success);
   --color-dark: var(--dark);
   --color-inverse: var(--inverse);
+  --color-inverse-muted: var(--inverse-muted);
   --color-token-usd1: var(--token-usd1);
   --color-token-agx: var(--token-agx);
   --color-token-gagx: var(--token-gagx);
@@ -274,7 +277,8 @@
 :root {
   --coral-bright: #f0a88a;
   --coral-bright: oklch(80.08% 0.0962 39.91);
-  --on-dark: #b8c0ce;
+  /* Alias to Tier A inverse-muted during P8 cleanup window */
+  --on-dark: var(--inverse-muted);
   --bsc: #f0b429;
   --bsc: oklch(81.94% 0.1561 84.2);
   --bsc-foreground: #1a1a1a;

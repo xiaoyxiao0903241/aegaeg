@@ -15,11 +15,11 @@ const genesisGlobalCard = tv({
   slots: {
     root: 'relative min-h-32 overflow-hidden rounded-md bg-dark p-6 shadow-card max-dapp:p-4.5',
     content: 'relative z-1 flex max-w-[70ch] flex-col gap-2 max-dapp:max-w-none',
-    kicker: 'text-sm font-semibold uppercase leading-[1.2] tracking-[0.88px] text-coral-bright max-dapp:block max-dapp:pr-28',
+    kicker: 'max-dapp:block max-dapp:pr-28',
     contractButton: cn(
       'absolute right-5.5 top-11 z-[2] max-dapp:top-4.5 max-dapp:right-4.5',
-      '!gap-1.5 !border-[oklch(100%_0_0/45%)] !bg-transparent !px-4.5 !text-white',
-      'hover:!border-[oklch(100%_0_0/80%)] focus-visible:!border-[oklch(100%_0_0/80%)]',
+      'gap-1.5 border-[oklch(100%_0_0/45%)] bg-transparent px-4.5 text-white',
+      'hover:border-[oklch(100%_0_0/80%)] focus-visible:border-[oklch(100%_0_0/80%)]',
       '[&_img]:size-[var(--dapp-icon-action)] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
     globe:
@@ -47,21 +47,18 @@ export function GenesisGlobalCard({
   return (
     <div className={cn(revealClass(), styles.root())} data-reveal>
       <div className={styles.content()}>
-        <span className={styles.kicker()}>{kicker}</span>
+        <Text as="span" variant="eyebrow" tone="primary" className={styles.kicker()}>
+          {kicker}
+        </Text>
         <Text
           as="strong"
           tone="inverse"
           variant="panel"
-          className="block max-dapp:text-lg max-dapp:leading-[1.2] max-dapp:tracking-[-0.54px]"
+          className="block tracking-[-0.63px]"
         >
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
         </Text>
-        <Text
-          as="p"
-          variant="copy"
-          tone="inverse"
-          className="m-0 max-dapp:w-full opacity-70"
-        >
+        <Text as="p" variant="copy" tone="inverse-muted" className="m-0 max-dapp:w-full">
           {body}
         </Text>
       </div>

@@ -530,7 +530,8 @@ function staticLegacyColors() {
 :root {
   --coral-bright: #f0a88a;
   --coral-bright: oklch(80.08% 0.0962 39.91);
-  --on-dark: #b8c0ce;
+  /* Alias to Tier A inverse-muted during P8 cleanup window */
+  --on-dark: var(--inverse-muted);
   --bsc: #f0b429;
   --bsc: oklch(81.94% 0.1561 84.2);
   --bsc-foreground: #1a1a1a;
