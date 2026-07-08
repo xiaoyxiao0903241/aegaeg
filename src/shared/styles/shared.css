@@ -7,10 +7,12 @@
 @source '../../home';
 @source '../../views/home/home-reveal-loader.ts';
 
+@import 'tailwindcss/theme.css';
 @import './tokens/theme.css';
 @import './legacy-breakpoints.css';
 @import './scrollbars.css';
 @import './animations.css';
+@import './hero-rays.css';
 
 @font-face {
   font-family: Montserrat;
