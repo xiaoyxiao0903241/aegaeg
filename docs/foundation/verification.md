@@ -18,10 +18,12 @@
 ## 2. 每阶段验收清单
 
 ### P0 Token
-- [ ] `tokens.json` 源文件存在且结构合法
-- [ ] `theme.css` / `tokens.ts` 可由脚本生成
-- [ ] 已删除 `--ink-strong`、`--faq-text`、`--on-dark`、`--coral-bright` 等臆造色
-- [ ] `pnpm exec tsc --noEmit` 通过
+- [x] `tokens.json` 源文件存在且结构合法
+- [x] `theme.css` / `tokens.ts` 可由脚本生成
+- [x] 臆造色已标记 `@deprecated`，`@theme inline` 仍保留映射以兼容现有 source（P8 删除）
+- [x] `pnpm exec tsc --noEmit` 通过
+- [x] `pnpm exec stylelint src/shared/styles/tokens/theme.css` 通过
+- [ ] 确认 legacy color/type alias 迁移计划写入 P8
 
 ### P1 Text
 - [ ] `text.tsx` 只有 10 variant + 5 tone
@@ -57,6 +59,8 @@
 ### P8 清债
 - [ ] 全站 `dapp-type-scale.ts` 删除
 - [ ] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中
+- [ ] 删除 `theme.css` 中 `@deprecated legacy colors` 与 `legacy type aliases` 静态块
+- [ ] 删除 `.stylelintrc.json` 中为生成文件临时禁用的规则（若不再需要）
 - [ ] `docs/foundation/` 与 `SKILL.md` 命名与 api.md 一致
 
 ---
