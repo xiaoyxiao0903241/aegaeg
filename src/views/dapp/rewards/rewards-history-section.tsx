@@ -26,13 +26,14 @@ import {
   rewardsTeamHistoryColWidths,
 } from '~/app/shell/components/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/dapp/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import {
   RewardsHistoryPillTabs,
   RewardsHistoryReveal,
   rewardsHistoryTableHead,
 } from '~/views/dapp/rewards/rewards-history-primitives'
+import type { SegmentOption } from '~/shared/ui/segment'
 
 type RewardsHistoryTab = 'referral' | 'team' | 'communityFund'
 
@@ -153,23 +154,22 @@ export function RewardsHistorySection() {
         ? [...rewardsTeamHistoryColWidths]
         : [...rewardsCommunityFundHistoryColWidths]
 
-  const historyPillItems = [
-    { active: historyTab === 'referral', label: t.rewards.referralRewards },
-    { active: historyTab === 'team', label: t.rewards.teamRewards },
+  const historyPillItems: SegmentOption[] = [
+    { label: t.rewards.referralRewards, value: 'referral' },
+    { label: t.rewards.teamRewards, value: 'team' },
     ...(isSuperCommunity
-      ? [{ active: historyTab === 'communityFund', label: t.rewards.communityFundHistory }]
+      ? [{ label: t.rewards.communityFundHistory, value: 'communityFund' }]
       : []),
   ]
 
   const historyPillTabs = (
     <RewardsHistoryPillTabs
-      ariaLabel={t.rewards.history}
-      items={historyPillItems}
-      onSelect={(index) => {
+      aria-label={t.rewards.history}
+      onChange={(value) => {
         const tabs: RewardsHistoryTab[] = isSuperCommunity
           ? ['referral', 'team', 'communityFund']
           : ['referral', 'team']
-        const next = tabs[index] ?? 'referral'
+        const next = tabs.find((tab) => tab === value) ?? 'referral'
         setHistoryTab(next)
         void (
           next === 'referral'
@@ -179,6 +179,8 @@ export function RewardsHistorySection() {
               : refreshCommunityFundLogs()
         )
       }}
+      options={historyPillItems}
+      value={historyTab}
     />
   )
 

@@ -8,13 +8,11 @@ import {
   formatShareholderHintForRank,
 } from '~/shared/api/format-display'
 import { buildRewardTierRows } from '~/core/presale/tier-table'
-import {
-  dappCaptionClass,
-  dappRankTitleClass,
-  dappTitleSmClass,
-} from '~/app/dapp-type-scale'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 import { RewardsHeroCard } from '~/views/dapp/rewards/rewards-hero-card'
+import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
+import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
 
 function RewardsHeroPanel({
   compactSkeleton,
@@ -48,20 +46,25 @@ function RewardsHeroPanel({
         <RewardsHeroBodySkeleton compact={compactSkeleton} />
       ) : (
         <>
-          <h3
+          <Text
+            as="h3"
+            variant="panel"
+            tone="inverse"
             className={cn(
-              'm-0 min-w-0 break-words text-white',
-              layout === 'desktop'
-                ? cn(dappRankTitleClass, dappTitleSmClass)
-                : 'text-lg font-semibold leading-[1.2] tracking-[-0.54px]',
+              'm-0 min-w-0 break-words',
+              layout === 'mobile' && 'text-lg leading-[1.2] tracking-[-0.54px]',
             )}
           >
             {title}
-          </h3>
-          <div className={cn('m-0 flex flex-col gap-0 text-on-dark', dappCaptionClass)}>
-            <p className="m-0">{heroTierRewardBody}</p>
+          </Text>
+          <div className="flex flex-col gap-0 opacity-70">
+            <Text as="p" variant="copy" tone="inverse" className="m-0">
+              {heroTierRewardBody}
+            </Text>
             {showSuperBadge ? (
-              <p className="m-0">{superCommunityBenefitBody}</p>
+              <Text as="p" variant="copy" tone="inverse" className="m-0">
+                {superCommunityBenefitBody}
+              </Text>
             ) : null}
           </div>
         </>

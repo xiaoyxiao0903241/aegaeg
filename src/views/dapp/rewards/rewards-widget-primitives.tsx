@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
-import { dappReferralAmountClass, dappSideCardSpanClass } from '~/app/dapp-type-scale'
+import { dappReferralAmountClass } from '~/app/dapp-type-scale'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 export const rewardsSideCard = tv({
-  base: cn('gap-1.5 rounded-md px-4 py-3.5', dappSideCardSpanClass),
+  base: 'gap-1.5 rounded-md px-4 py-3.5',
   variants: {
     layout: {
       stack: '',
@@ -33,12 +34,12 @@ export function RewardsProgressRow({
   const styles = rewardsProgressRow()
   return (
     <div className={styles.row()}>
-      <span className="text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong max-dapp:text-faint">
+      <Text variant="copy" tone="muted-foreground" className="text-xs">
         {label}
-      </span>
-      <strong className="text-right text-xs font-semibold leading-[1.3] tracking-[-0.24px] text-foreground max-dapp:leading-[1.2]">
+      </Text>
+      <Text as="strong" variant="copy" tone="foreground" className="text-right text-xs">
         {value}
-      </strong>
+      </Text>
     </div>
   )
 }

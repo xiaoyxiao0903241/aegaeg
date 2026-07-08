@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { DappPillTabs } from '~/app/shell/components/dapp-pill-tabs'
+import { Segment } from '~/shared/ui/segment'
 import { revealClass } from '~/shared/lib/reveal'
 
 const rewardsHistorySection = tv({
@@ -19,9 +19,9 @@ export function RewardsHistoryReveal({ children }: { children: ReactNode }) {
   )
 }
 
-export function RewardsHistoryPillTabs(props: ComponentProps<typeof DappPillTabs>) {
+export function RewardsHistoryPillTabs(props: ComponentProps<typeof Segment>) {
   const styles = rewardsHistorySection()
-  return <DappPillTabs {...props} className={styles.pillTabs()} />
+  return <Segment {...props} className={styles.pillTabs()} />
 }
 
 export const rewardsHistoryTableHead = tv({

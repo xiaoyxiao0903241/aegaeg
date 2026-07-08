@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
+import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
-import { dappKickerClass } from '~/app/dapp-type-scale'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
@@ -51,9 +51,9 @@ export function RewardsHeroCard({
   return (
     <section className={styles.root()} data-reveal={layout === 'desktop' ? '' : undefined}>
       <div className={styles.content()}>
-        <span className={cn(dappKickerClass, 'text-coral-bright')}>
+        <Text as="span" variant="eyebrow" tone="primary" className="text-coral-bright">
           {kicker}
-        </span>
+        </Text>
         {children}
       </div>
       {layout === 'desktop' ? (
