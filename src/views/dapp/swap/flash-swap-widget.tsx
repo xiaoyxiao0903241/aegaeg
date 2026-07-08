@@ -110,6 +110,7 @@ export function FlashSwapWidget({
           onSellAmountChange={swap.setSellAmount}
           sell={pair.sell}
           sellAmountDisplay={swap.sellAmountDisplay}
+          sellBalance={sellLabel}
           sessionReady={sessionReady}
           showBuyAmountSkeleton={showBuyAmountSkeleton}
           walletReady={swap.walletReady}

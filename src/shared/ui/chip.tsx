@@ -21,8 +21,8 @@ export const chipVariants = tv({
       outlined: 'border bg-transparent',
     },
     size: {
-      sm: 'min-h-6 px-2 text-[length:var(--type-caption-size)] font-semibold leading-none',
-      md: 'min-h-8 px-3 text-[length:var(--type-copy-size)] font-semibold leading-none',
+      sm: 'min-h-6 px-2 text-[length:var(--type-caption-size)] font-semibold leading-normal tracking-[var(--type-caption-tracking)]',
+      md: 'min-h-8 px-3 text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-[var(--type-copy-tracking)]',
     },
     shape: {
       pill: 'rounded-full',
@@ -41,7 +41,7 @@ export const chipVariants = tv({
     { variant: 'soft', tone: 'default', class: 'bg-muted text-foreground' },
     { variant: 'soft', tone: 'primary', class: 'bg-accent text-primary' },
     { variant: 'soft', tone: 'success', class: 'bg-[rgba(43,171,106,0.12)] text-success' },
-    { variant: 'outlined', tone: 'default', class: 'border-border text-foreground hover:bg-muted' },
+    { variant: 'outlined', tone: 'default', class: 'border-border text-muted-foreground hover:bg-muted hover:text-foreground' },
     { variant: 'outlined', tone: 'primary', class: 'border-primary text-primary hover:bg-accent' },
     { variant: 'outlined', tone: 'success', class: 'border-success text-success hover:bg-[rgba(43,171,106,0.12)]' },
   ],

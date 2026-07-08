@@ -48,20 +48,20 @@ export function AmountBox({
   startAdornment,
 }: AmountBoxProps) {
   const styles = amountBox()
-  const labelTone = disabled ? 'muted-foreground' : 'foreground'
+  const labelTone = 'muted-foreground' as const
 
   return (
     <Card as="section" surface="outlined" className={cn(styles.root(), className)}>
       <div className={styles.header()}>
-        <Text as="span" variant="copy" tone={labelTone} className={styles.label()}>
+        <Text as="span" variant="copy" tone={labelTone} className={cn(styles.label(), 'leading-normal')}>
           {label}
         </Text>
         {balance ? (
           <Text
             as="span"
-            variant={disabled ? 'copy' : 'figure'}
-            tone={labelTone}
-            className={styles.balance()}
+            variant="copy"
+            tone={disabled ? 'muted-foreground' : 'foreground'}
+            className={cn(styles.balance(), 'leading-normal', !disabled && 'font-semibold')}
           >
             {balance}
           </Text>

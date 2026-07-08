@@ -9,7 +9,7 @@ import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/shared/lib/utils'
 
 const dappPanelSubtitleClassName = cn(
-  'm-0 max-w-[34ch] max-dapp:max-w-none text-foreground/80',
+  'm-0 max-w-[34ch] max-dapp:max-w-none leading-[1.4]',
   '[&_strong]:font-bold [&_strong]:text-primary',
 )
 
@@ -45,7 +45,7 @@ export function DappPanelHeader({
         <Text
           as="p"
           variant="copy"
-          tone="foreground"
+          tone="muted-foreground"
           className={dappPanelSubtitleClassName}
         >
           {subtitle}

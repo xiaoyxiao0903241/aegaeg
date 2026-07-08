@@ -49,8 +49,8 @@ export function WidgetHeader({
           <Text
             as="p"
             variant="copy"
-            tone="foreground"
-            className={cn(styles.subtitle(), 'text-foreground/80 [&_strong]:font-bold [&_strong]:text-primary')}
+            tone="muted-foreground"
+            className={cn(styles.subtitle(), 'leading-[1.4] [&_strong]:font-bold [&_strong]:text-primary')}
           >
             {subtitle}
           </Text>
@@ -116,8 +116,8 @@ export function WidgetSubpageHeader({
           <Text
             as="p"
             variant="copy"
-            tone="foreground"
-            className={cn(styles.subtitle(), 'text-foreground/80 [&_strong]:font-bold [&_strong]:text-primary')}
+            tone="muted-foreground"
+            className={cn(styles.subtitle(), 'leading-[1.4] [&_strong]:font-bold [&_strong]:text-primary')}
           >
             {subtitle}
           </Text>

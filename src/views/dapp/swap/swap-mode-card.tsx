@@ -39,8 +39,8 @@ export function SwapModeCard({
           {badge ? (
             <Text
               as="span"
-              variant="eyebrow"
-              className="normal-case rounded-full bg-primary px-2 py-1.5 text-[length:var(--type-rail-size)] leading-none tracking-tight text-primary-foreground"
+              variant="caption"
+              className="normal-case rounded-full bg-primary px-2 py-1.5 text-[10px] font-medium leading-none tracking-[-0.02em] text-primary-foreground"
             >
               {badge}
             </Text>

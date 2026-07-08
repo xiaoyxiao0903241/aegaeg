@@ -198,7 +198,7 @@ export function SwapPromoCard({
           className={cn(
             'm-0 min-w-0 text-xs font-normal leading-[1.5] tracking-[-0.02em]',
             styles.body(),
-            layout === 'desktop' ? 'text-foreground/80' : 'text-foreground/60',
+            'text-muted-foreground',
           )}
         >
           {body}

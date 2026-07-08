@@ -107,12 +107,7 @@ export function GenesisPromoCard({
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
       ) : (
-        <Text
-          as="strong"
-          variant="brand"
-          tone="inverse"
-          className="block tracking-[-0.28px]"
-        >
+        <Text as="strong" variant="detail" tone="inverse" className="block leading-normal">
           {title}
         </Text>
       )}
@@ -121,9 +116,9 @@ export function GenesisPromoCard({
       ) : (
         <Text
           as="p"
-          variant="copy"
+          variant="caption"
           tone="inverse"
-          className="m-0 leading-normal tracking-[-0.24px]"
+          className="m-0 leading-normal"
         >
           {body}
         </Text>

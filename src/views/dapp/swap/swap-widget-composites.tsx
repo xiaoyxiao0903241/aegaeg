@@ -100,7 +100,7 @@ export function SwapSubpageHeader({
       backLabel={
         <>
           <DappIcon alt="" size="sm" src={flashSwapAssets.backArrow} />
-          <Text tone="foreground" variant="copy" className="text-foreground/80">
+          <Text tone="muted-foreground" variant="detail" className="font-medium leading-[1.4]">
             {t.swap.backToHub}
           </Text>
         </>
@@ -165,6 +165,7 @@ export function SwapAmountFlow({
   onSellAmountChange,
   sell,
   sellAmountDisplay,
+  sellBalance,
   sessionReady,
   showBuyAmountSkeleton,
   walletReady,
@@ -178,6 +179,7 @@ export function SwapAmountFlow({
   onSellAmountChange: (value: string) => void
   sell: AmountToken
   sellAmountDisplay: string
+  sellBalance: ReactNode
   sessionReady: boolean
   showBuyAmountSkeleton: boolean
   walletReady: boolean
@@ -250,7 +252,7 @@ export function SwapMetaPanel({
       as="div"
       surface="outlined"
       className={cn(
-        'grid shrink-0 gap-2 rounded-xl px-3.5 py-3.25 tracking-[-0.26px]',
+        'grid shrink-0 gap-2 rounded-xl px-3.5 py-3.25',
         dappWidgetFooterTopGapClass,
         className,
       )}
@@ -260,14 +262,15 @@ export function SwapMetaPanel({
           <Text
             as="span"
             variant="copy"
-            tone={sessionReady ? 'foreground' : 'muted-foreground'}
+            tone="muted-foreground"
+            className="leading-normal"
           >
             {item.label}
           </Text>
           <Text
             as="strong"
-            variant="figure"
-            className={cn('mt-0 text-right', item.valueClassName)}
+            variant="copy"
+            className={cn('mt-0 text-right font-semibold leading-normal', item.valueClassName)}
           >
             {item.value}
           </Text>

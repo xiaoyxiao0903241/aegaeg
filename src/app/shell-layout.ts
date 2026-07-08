@@ -50,8 +50,8 @@ export function shellRailClass() {
 export function shellRailItemClass(active: boolean) {
   return cn(
     'relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
-    'text-xs font-normal leading-snug tracking-tight transition-[color] duration-180 ease-out',
-    active ? 'text-primary' : 'text-foreground/80 hover:bg-background hover:text-foreground',
+    'font-normal leading-normal transition-[color] duration-180 ease-out',
+    active ? 'text-primary' : 'text-muted-foreground hover:bg-background hover:text-foreground',
   )
 }
 
@@ -105,7 +105,7 @@ export function shellMobileDrawerItemClass(active: boolean) {
 export const shellMobileRailClass = cn('grid gap-0 border-0 p-2', 'flex h-auto max-h-none min-h-0')
 
 export function shellMobileRailItemClass(active: boolean) {
-  return cn(shellRailItemClass(active), 'min-h-12 flex-row justify-start px-3 text-xs')
+  return cn(shellRailItemClass(active), 'min-h-12 flex-row justify-start px-3')
 }
 
 export const shellModulePanelClass = cn(
