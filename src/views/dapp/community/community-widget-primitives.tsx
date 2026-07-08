@@ -1,5 +1,6 @@
 import { Wallet } from 'lucide-react'
 import { tv } from 'tailwind-variants'
+import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
@@ -11,18 +12,6 @@ import { cn } from '~/shared/lib/utils'
 const communityWidgetCard = tv({
   base: 'flex flex-col rounded-2xl px-4 py-3.5',
 })
-
-/** Figma `--text/body` rgba(0,0,0,0.7) — referral link label. */
-const communityReferralLabelClass =
-  'm-0 text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-strong'
-
-/** Dev SideValue + Figma `--text/ink` #0b0e14 — referral URL (14px PC / 12px H5). */
-const communityReferralLinkClass =
-  'block max-w-full truncate text-sm font-semibold leading-normal tracking-tight text-[#0b0e14] max-dapp:text-xs'
-
-/** Figma `--text/muted` rgba(0,0,0,0.4) — referrer card labels & footnote. */
-const communityReferrerMetaClass =
-  'm-0 text-xs font-normal leading-[1.5] tracking-[-0.24px] text-ink-muted'
 
 const communityShareButton = tv({
   base: 'min-h-[42px] max-dapp:min-h-11 max-dapp:text-sm',
@@ -71,8 +60,12 @@ export function CommunityReferralLinkCard({
 }) {
   return (
     <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
-      <p className={communityReferralLabelClass}>{linkLabel}</p>
-      <strong className={communityReferralLinkClass}>{referralLink}</strong>
+      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+        {linkLabel}
+      </Text>
+      <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold max-dapp:text-xs">
+        {referralLink}
+      </Text>
       <DappActionButton className={communityShareButton()} disabled={disabled} onClick={onCopy}>
         {copyLabel}
       </DappActionButton>
@@ -105,7 +98,9 @@ export function CommunityReferrerBindCard({
 }) {
   return (
     <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
-      <p className={communityReferrerMetaClass}>{referrerLabel}</p>
+      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+        {referrerLabel}
+      </Text>
       <div className={communityReferrerBindGrid()}>
         <input
           aria-label={inputLabel}
@@ -124,7 +119,9 @@ export function CommunityReferrerBindCard({
           {bindLabel}
         </DappActionButton>
       </div>
-      <small className={cn('block', communityReferrerMetaClass)}>{hint}</small>
+      <Text as="small" variant="copy" tone="muted-foreground" className="block text-xs">
+        {hint}
+      </Text>
     </DappSideCard>
   )
 }
@@ -146,13 +143,17 @@ export function CommunityReferrerBoundPanel({
 }) {
   return (
     <DappSideCard className={cn(communityWidgetCard(), 'gap-2.5')}>
-      <p className={communityReferrerMetaClass}>{addressLabel}</p>
+      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+        {addressLabel}
+      </Text>
       <div className={communityReferrerAddressRow()}>
         <div className="flex min-w-0 items-center gap-2.5">
           <span aria-hidden="true" className={communityReferrerAvatar()}>
             <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
           </span>
-          <strong className={communityReferrerAddress()}>{referrerLabel ?? '—'}</strong>
+          <Text as="strong" variant="copy" tone="foreground" className="truncate text-sm font-semibold">
+            {referrerLabel ?? '—'}
+          </Text>
         </div>
         {referrer ? (
           <button
@@ -165,7 +166,9 @@ export function CommunityReferrerBoundPanel({
           </button>
         ) : null}
       </div>
-      <p className={communityReferrerMetaClass}>{note}</p>
+      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+        {note}
+      </Text>
     </DappSideCard>
   )
 }

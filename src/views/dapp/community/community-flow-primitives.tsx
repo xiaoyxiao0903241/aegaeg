@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn, resolveNavigableHref } from '~/shared/lib/utils'
 
@@ -49,15 +50,25 @@ export function CommunityProgramCard({
 
   return (
     <Card as="article" surface="elevated" className={cn(styles.root(), className)} data-reveal>
-      <span className="m-0 text-xs font-semibold uppercase leading-[1.3] tracking-[0.88px] text-primary">
+      <Text as="span" variant="eyebrow" tone="primary" className="m-0">
         {label}
-      </span>
-      <h3 className="m-0 max-w-[38ch] text-base font-semibold leading-[1.3] tracking-[-0.48px] text-foreground max-dapp:text-sm max-dapp:leading-[1.2]">
+      </Text>
+      <Text
+        as="h3"
+        variant="headline"
+        tone="foreground"
+        className="m-0 max-w-[38ch] max-dapp:text-sm max-dapp:leading-[1.2]"
+      >
         {title}
-      </h3>
-      <p className="m-0 max-w-[38ch] text-sm leading-[1.5] tracking-[-0.26px] text-ink-strong max-dapp:text-xs">
+      </Text>
+      <Text
+        as="p"
+        variant="copy"
+        tone="muted-foreground"
+        className="m-0 max-w-[38ch] max-dapp:text-xs"
+      >
         {body}
-      </p>
+      </Text>
       {navigableHref ? (
         <a
           className={cn(styles.action(), 'no-underline hover:underline')}

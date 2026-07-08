@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { dappCaptionClass } from '~/app/dapp-type-scale'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
@@ -12,11 +11,11 @@ export type InviteFlowItem = {
 }
 
 const inviteFlowStep = tv({
-  base: cn(
+  base: [
     'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold leading-[1.3] text-white',
     'max-dapp:size-7',
-    dappCaptionClass,
-  ),
+    'text-[length:var(--type-copy-size)] leading-[1.5] tracking-[-0.26px]',
+  ],
 })
 
 function InviteFlowStep({ children }: { children: ReactNode }) {
