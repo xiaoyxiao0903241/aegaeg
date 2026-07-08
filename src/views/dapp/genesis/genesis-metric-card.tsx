@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { MetricCard } from '~/app/shell/components/dapp-card'
-import { MetricCardSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { MetricCard } from '~/shared/ui/metric-card'
+import { DappSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { cn } from '~/shared/lib/utils'
 
 export const genesisMetricGrid = tv({
@@ -46,5 +46,14 @@ export function GenesisMetricCard({
 }
 
 export function GenesisMetricCardSkeleton({ className }: { className?: string }) {
-  return <MetricCardSkeleton className={cn('max-dapp:rounded-md', className)} />
+  return (
+    <Card
+      as="article"
+      surface="elevated"
+      className={cn('flex flex-col gap-1.5 px-4 py-3.5', className)}
+    >
+      <DappSkeleton className="h-3 w-18 max-w-[55%]" />
+      <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
+    </Card>
+  )
 }
