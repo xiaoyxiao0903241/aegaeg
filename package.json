@@ -12,6 +12,7 @@
     "dev": "pnpm build:tokens && pnpm render:home && vite --host 0.0.0.0 --port 5174 --strictPort",
     "build": "pnpm build:tokens && tsc -b && pnpm render:home && vite build",
     "lint": "eslint .",
+    "lint:src": "eslint src --quiet",
     "lint:css": "stylelint \"src/**/*.css\"",
     "lint:architecture": "depcruise src --config .dependency-cruiser.cjs",
     "lint:hex": "node scripts/lint-hex.mjs",
@@ -25,7 +26,7 @@
     "test:integration": "node tests/integration/swap-quote-live.mjs",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
-    "check": "tsc -b && pnpm lint:architecture && pnpm test:unit",
+    "check": "tsc -b && pnpm lint:src && pnpm lint:architecture && pnpm test:unit",
     "dev:e2e": "pnpm render:home && vite --host 127.0.0.1 --port 5175 --strictPort --force",
     "preview": "vite preview",
     "prepare": "husky"

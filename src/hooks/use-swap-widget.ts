@@ -340,6 +340,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     amountIn,
     sellBalance,
     quotedOut,
+    isPlaceholderData: amountQuoteQuery.isPlaceholderData,
     isQuotePending: amountQuoteQuery.isPending,
     isSubmitting,
   })

@@ -93,6 +93,7 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
       amountIn: 10n,
       sellBalance: 100n,
       quotedOut: live,
+      isPlaceholderData: false,
       isQuotePending: false,
       isSubmitting: false,
     }),
@@ -104,6 +105,19 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
       amountIn: 10n,
       sellBalance: 100n,
       quotedOut: stale,
+      isPlaceholderData: false,
+      isQuotePending: false,
+      isSubmitting: false,
+    }),
+    false,
+  )
+  assert.equal(
+    canSubmitQuotedSwap({
+      walletReady: true,
+      amountIn: 10n,
+      sellBalance: 100n,
+      quotedOut: 100n,
+      isPlaceholderData: true,
       isQuotePending: false,
       isSubmitting: false,
     }),
@@ -115,6 +129,7 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
       amountIn: 10n,
       sellBalance: 100n,
       quotedOut: live,
+      isPlaceholderData: false,
       isQuotePending: true,
       isSubmitting: false,
     }),
@@ -126,11 +141,27 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
       amountIn: 200n,
       sellBalance: 100n,
       quotedOut: live,
+      isPlaceholderData: false,
       isQuotePending: false,
       isSubmitting: false,
     }),
     false,
   )
+})
+
+test('resolveWalletRemountKey clears draft identity on address change', async () => {
+  const { resolveWalletRemountKey } = await loadModule(
+    '/src/shared/lib/resolve-wallet-remount-key.ts',
+  )
+
+  assert.equal(resolveWalletRemountKey(undefined), 'disconnected')
+  assert.equal(resolveWalletRemountKey(null), 'disconnected')
+  assert.equal(resolveWalletRemountKey('0xAbC'), '0xabc')
+  assert.notEqual(
+    resolveWalletRemountKey('0xaaa'),
+    resolveWalletRemountKey('0xbbb'),
+  )
+  assert.notEqual(resolveWalletRemountKey('0xaaa'), resolveWalletRemountKey(undefined))
 })
 
 test('resolveCappedTokenAmountRaw does not wipe draft while balances loading', async () => {

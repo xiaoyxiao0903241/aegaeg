@@ -77,6 +77,7 @@
 | `exhaustive-deps` | **error**（计数 0） |
 | `set-state-in-effect` | **warn**；登记债：`dapp-mobile-nav`、`dapp-rail`、`use-referral`、`use-home-popup-notice` |
 | `only-export-components` | **off**（项目允许组件文件同导出 `tv()` / helper；不作为门禁） |
+| `pnpm check` | 含 `lint:src`（`eslint src --quiet`）— hooks **error** 进收工 |
 | Compiler | 仍 **annotation**；全量待 Chrome90 冒烟勾选后 |
 
 门禁：`pnpm check`。

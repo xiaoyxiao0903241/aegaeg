@@ -8,12 +8,13 @@
 2. **链读写 / 钱包 / thirdweb** → `src/views/dapp/web3/`（Home **禁止**依赖）
 3. **跨面无业务 primitive**（Button、Text、Card…）→ `src/shared/ui/`
 4. **跨 Tab chrome**（rail、table shell、钱包弹层…）→ `src/app/shell/`（平铺，无 `components/`）
-5. **单面 UI** → `src/views/<面>/` 平铺  
+5. **单 Tab 业务卡 / 页专属弹层** → 对应 `src/views/dapp/<tab>/`（例：`genesis-promo-card`、`swap-slippage-modal`）
+6. **单面 UI** → `src/views/<面>/` 平铺  
    - Home：`src/views/home/`  
    - DApp 页：`src/views/dapp/{swap,genesis,rewards,community,auth}/`
-6. **跨面 hook** → `src/hooks/`；页专属 hook 优先与页袋同目录
-7. **全局 store** → `src/stores/`
-8. **文案** → `src/i18n/messages/{home,app}/`
+7. **跨面 hook** → `src/hooks/`；页专属 hook 优先与页袋同目录
+8. **全局 store** → `src/stores/`
+9. **文案** → `src/i18n/messages/{home,app}/`
 
 不确定时：**宁放页袋，勿放 `shared`**。仅 ≥2 面复用且无页语义才进 `shared`。
 

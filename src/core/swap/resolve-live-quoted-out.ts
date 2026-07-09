@@ -16,13 +16,17 @@ export function canSubmitQuotedSwap({
   amountIn,
   sellBalance,
   quotedOut,
+  isPlaceholderData,
   isQuotePending,
   isSubmitting,
 }: {
   walletReady: boolean
   amountIn: bigint
   sellBalance: bigint
+  /** Prefer `resolveLiveQuotedOut(...)` so placeholders are already zeroed. */
   quotedOut: bigint
+  /** Fail-closed even if a caller forgets to zero placeholder quotedOut. */
+  isPlaceholderData: boolean
   isQuotePending: boolean
   isSubmitting: boolean
 }): boolean {
@@ -31,6 +35,7 @@ export function canSubmitQuotedSwap({
     walletReady &&
     amountIn > 0n &&
     !exceedsBalance &&
+    !isPlaceholderData &&
     quotedOut > 0n &&
     !isQuotePending &&
     !isSubmitting
