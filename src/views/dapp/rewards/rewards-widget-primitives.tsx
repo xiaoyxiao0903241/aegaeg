@@ -32,18 +32,14 @@ export function RewardsProgressRow({
   const styles = rewardsProgressRow()
   return (
     <div className={styles.row()}>
-      <Text
-        variant="copy"
-        tone="muted-foreground"
-        className="text-xs"
-      >
+      <Text variant="copy" tone="muted-foreground">
         {label}
       </Text>
       <Text
         as="strong"
         variant="copy"
         tone="foreground"
-        className="text-right text-xs font-semibold leading-[1.3]"
+        className="text-right font-semibold"
       >
         {value}
       </Text>

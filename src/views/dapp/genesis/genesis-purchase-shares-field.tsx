@@ -29,8 +29,8 @@ export function GenesisPurchaseSharesField({
   value: string
 }) {
   return (
-    <label className="mt-1.5 grid gap-2 text-xs leading-[1.5]">
-      <Text as="span" variant="copy" tone="muted-foreground" className="text-xs leading-[1.5] tracking-[-0.02em]">
+    <label className="mt-1.5 grid gap-2">
+      <Text as="span" variant="copy" tone="muted-foreground">
         {label}
       </Text>
       <div className="flex gap-2">

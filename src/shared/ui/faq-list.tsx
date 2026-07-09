@@ -24,8 +24,9 @@ const faqList = tv({
     ],
     question: 'min-w-px flex-[1_0_0] text-left [overflow-wrap:anywhere]',
     answer: 'w-full text-left [overflow-wrap:anywhere]',
+    // font-normal: reset button UA bold so Text `question` weight is the owner
     trigger:
-      'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left text-inherit outline-none',
+      'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left font-normal text-inherit outline-none',
   },
   variants: {
     variant: {
@@ -34,11 +35,13 @@ const faqList = tv({
           revealClass(),
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
-        answer: 'text-sm font-normal leading-[1.5] text-faq max-dapp:text-xs',
+        // Color only — size/weight from Text `copy`
+        answer: 'text-faq',
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        answer: 'my-0 py-[1em] leading-[1.5] text-faq max-dapp:text-xs',
+        // Color + sheet pad — size/weight from Text `detail`
+        answer: 'my-0 py-[1em] text-faq',
       },
     },
   },

@@ -61,7 +61,7 @@ export function RewardBalanceCard({
         <Card.Label
           as="p"
           tone="muted-foreground"
-          className={cn('m-0 text-xs font-normal', headerLabelClassName)}
+          className={cn('m-0', headerLabelClassName)}
         >
           {label}
         </Card.Label>
@@ -69,7 +69,7 @@ export function RewardBalanceCard({
           <Card.Label
             as="span"
             tone="muted-foreground"
-            className={cn('text-xs font-normal', headerMetaClassName)}
+            className={cn(headerMetaClassName)}
           >
             {meta}
           </Card.Label>
@@ -77,7 +77,7 @@ export function RewardBalanceCard({
           <Card.Label
             as="span"
             tone="success"
-            className={cn('whitespace-nowrap text-xs font-medium', badgeClassName)}
+            className={cn('whitespace-nowrap font-medium', badgeClassName)}
           >
             {badge}
           </Card.Label>

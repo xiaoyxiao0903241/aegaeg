@@ -14,10 +14,12 @@ const responsiveTable = tv({
     cell: [
       tableCell.minWidth(),
       tableCell.border(),
-      'px-3 py-2.5 text-left whitespace-nowrap max-dapp:px-2.5 max-dapp:py-2',
+      // font-normal resets UA `th { font-weight: bold }` so Text copy weight wins
+      'px-3 py-2.5 text-left font-normal whitespace-nowrap max-dapp:px-2.5 max-dapp:py-2',
     ],
     headCell: '',
-    text: 'max-dapp:text-xs max-dapp:leading-normal',
+    // Size/weight from Text `copy` — do not cover with text-xs (H5 utility ≠ copy token)
+    text: '',
   },
   variants: {
     compact: {

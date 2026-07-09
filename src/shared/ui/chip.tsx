@@ -78,7 +78,9 @@ Chip.displayName = 'Chip'
 const fieldActionChip = tv({
   extend: chipVariants,
   base: [
+    // Enabled: soft coral (bg-accent / text-coral). Disabled: muted chrome, full opacity.
     'h-11 min-w-16 shrink-0 gap-1.5 rounded-control px-[0.9375rem] text-xs font-semibold',
+    'bg-accent text-coral',
     'disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
   ],
   defaultVariants: {
