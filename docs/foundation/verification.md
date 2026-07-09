@@ -311,6 +311,15 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | 暗色 CommunityStat `inverse` + `shadow-none` | KEEP | 艺术卡清影 |
 | H5 `max-dapp:shadow-card` | KEEP | 既有移动壳 |
 
+## 5n. 暗色横幅 dappDarkBanner（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `RewardsHeroCard` 去重复 `bg-dark+shadow-card` 基槽 | INTENTIONAL | layout 变体只叠 pad/flex；chrome 来自 `dappDarkBanner` |
+| `GenesisGlobalCard` 接入 `dappDarkBanner` | INTENTIONAL | 删手写 dark chrome；pad 仍 composite |
+| 未并入 Card `inverse` | KEEP | banner E2 ≠ CalloutCard E3 |
+| Text tracking on banner titles | DEFER | A7 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -330,3 +339,4 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.11 | §5k 标题跨 tab 统一；MetricCard overview chrome SSOT |
 | v2.12 | §5l `DappInlineAlert`；Text A7 另切片 |
 | v2.13 | §5m Card surface 契约：promo / CommunityStat 消叠影 |
+| v2.14 | §5n `dappDarkBanner` 暗色横幅 SSOT |

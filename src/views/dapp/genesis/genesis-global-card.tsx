@@ -5,7 +5,7 @@ import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappSkeleton } from '~/app/shell/components/dapp-skeleton'
-import { revealClass } from '~/shared/lib/reveal'
+import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { cn } from '~/shared/lib/utils'
 
 const genesisGlobeWidth = 597
@@ -13,8 +13,9 @@ const genesisGlobeHeight = 250
 
 const genesisGlobalCard = tv({
   slots: {
-    root: 'relative min-h-32 overflow-hidden rounded-md bg-dark p-6 shadow-card max-dapp:p-4.5',
-    content: 'relative z-1 flex max-w-[70ch] flex-col gap-2 max-dapp:max-w-none',
+    // Chrome SSOT: dappDarkBanner (≠ Card inverse / CalloutCard).
+    root: cn(dappDarkBanner().root(), 'min-h-32 p-6 max-dapp:p-4.5'),
+    content: cn(dappDarkBanner().content(), 'max-w-[70ch] max-dapp:max-w-none'),
     kicker: 'max-dapp:block max-dapp:pr-28',
     contractButton: cn(
       'absolute right-5.5 top-11 z-[2] max-dapp:top-4.5 max-dapp:right-4.5',
@@ -45,7 +46,7 @@ export function GenesisGlobalCard({
   const styles = genesisGlobalCard()
 
   return (
-    <div className={cn(revealClass(), styles.root())} data-reveal>
+    <div className={styles.root()} data-reveal>
       <div className={styles.content()}>
         <Text as="span" variant="eyebrow" tone="primary-bright" className={styles.kicker()}>
           {kicker}

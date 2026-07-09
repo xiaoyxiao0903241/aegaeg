@@ -166,6 +166,7 @@
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
 - `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `CalloutCard` / `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
+- `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / CalloutCard）。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
 
@@ -213,3 +214,4 @@
 | v2.3 | Button size 高度：sm **42**（卡内）· md **44**（外部）· lg **48**；暗色 promo 38 走 `DappActionButton density="inverse"` |
 | v2.4 | `DappInlineAlert`：destructive 内联 chrome SSOT；`compact` / `comfortable`；禁并 CalloutCard |
 | v2.5 | Card surface 契约：`SwapPromoCard` 去叠 `shadow-subtle`；浅色 `CommunityStatCard` → `soft`（sc≠ovc） |
+| v2.6 | `dappDarkBanner`：RewardsHero / GenesisGlobal 唯一暗色横幅 chrome；≠ Card inverse |

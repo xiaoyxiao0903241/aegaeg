@@ -3,16 +3,13 @@ import { tv } from 'tailwind-variants'
 import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
-import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 const rewardsHeroCard = tv({
   slots: {
-    root: cn(
-      revealClass(),
-      'relative overflow-hidden rounded-md bg-dark text-white shadow-card',
-    ),
-    content: 'relative z-1 flex flex-col gap-2',
+    // Chrome SSOT: dappDarkBanner (not Card inverse). Layout-only extras below.
+    root: '',
+    content: '',
     character: cn(
       'pointer-events-none absolute right-3 top-[-2.6875rem] z-0 h-48 w-32 max-w-32 -scale-x-100 select-none object-contain',
     ),
