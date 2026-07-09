@@ -119,7 +119,6 @@ export function FlashSwapWidget({
         />
 
         <SwapMetaPanel
-          sessionReady
           items={[
             {
               label: t.swap.exchangePrice,
