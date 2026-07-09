@@ -25,7 +25,7 @@ import {
   SwapSubpageHeader,
   SwapWidgetBody,
   swapFlipCard,
-  swapFlowButtonClass,
+  swapFlowButtonInteractiveClass,
   useSwapBalanceLabels,
 } from '~/views/dapp/swap/swap-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
@@ -123,14 +123,7 @@ export function TradeSwapWidget({
               <AnchoredTooltip content={t.swap.flip}>
                 <button
                   aria-label={t.swap.flip}
-                  className={cn(
-                    swapFlowButtonClass,
-                    'transition-[border-color,transform] duration-180 ease-out',
-                    'enabled:cursor-pointer enabled:hover:-translate-y-px enabled:hover:border-primary',
-                    'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
-                    'disabled:cursor-not-allowed disabled:opacity-60',
-                    'max-dapp:my-2',
-                  )}
+                  className={cn(swapFlowButtonInteractiveClass, 'max-dapp:my-2')}
                   disabled={sessionReady && !swap.walletReady}
                   onClick={handleFlip}
                   type="button"

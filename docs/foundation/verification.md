@@ -458,6 +458,14 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | InviteFlow desc 去 `text-foreground/30` | REGRESSION→fixed | Figma `4040:7330` text/body 70% = `muted-foreground` |
 | `DappTableCard` shell `border-0` | INTENTIONAL | 仅阴影；内部分隔线保留 |
 
+## 5ac. Button / flb 平滑 hover + 按下（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| Button 过渡 `180ms ease-out` → `220ms cubic-bezier(.2,.8,.2,1)` | INTENTIONAL | 去生硬 snap |
+| `active:translate-y-0` + 清影 | INTENTIONAL | 按下回落；hover 仍 lift |
+| flb `swapFlowButtonInteractiveClass` 同曲线 + active | INTENTIONAL | Trade flip 与 Button 手感一致 |
+
 ## 6. 修订
 
 | 版本 | 说明 |

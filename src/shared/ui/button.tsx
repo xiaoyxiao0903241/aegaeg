@@ -7,12 +7,17 @@ export const buttonDisabledClass = cn(
   'disabled:pointer-events-none disabled:cursor-not-allowed',
   'disabled:translate-y-0 disabled:shadow-none',
   'disabled:hover:translate-y-0 disabled:hover:shadow-none',
+  'disabled:active:translate-y-0 disabled:active:shadow-none',
 )
 
 const disabledMutedClass =
   'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100'
 
-const liftHoverClass = 'hover:-translate-y-px focus-visible:-translate-y-px'
+/** Smooth lift — hover up 1px; press settles (no snap). */
+const liftMotionClass = cn(
+  'hover:-translate-y-px focus-visible:-translate-y-px',
+  'active:translate-y-0 active:shadow-none',
+)
 
 /**
  * Primitive：按钮。
@@ -24,7 +29,8 @@ const liftHoverClass = 'hover:-translate-y-px focus-visible:-translate-y-px'
 export const buttonVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
-    'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-[180ms] ease-out',
+    // Soft ease — avoid linear ease-out snap on hover/press.
+    'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-220 ease-[cubic-bezier(.2,.8,.2,1)]',
     buttonDisabledClass,
   ],
   variants: {
@@ -32,19 +38,19 @@ export const buttonVariants = tv({
       primary: [
         // 4175: transparent border keeps box model; lg drops border via compound
         'border border-transparent bg-primary text-primary-foreground',
-        `${liftHoverClass} hover:shadow-primary-hover focus-visible:shadow-primary-hover`,
+        `${liftMotionClass} hover:shadow-primary-hover focus-visible:shadow-primary-hover`,
         'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
         disabledMutedClass,
       ],
       secondary: [
         'gap-2 border border-border bg-card text-foreground',
-        `${liftHoverClass} hover:shadow-card focus-visible:shadow-card`,
+        `${liftMotionClass} hover:shadow-card focus-visible:shadow-card`,
         'disabled:border-border disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-100',
         'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
       ],
       ghost: [
         'gap-2 border border-border bg-card text-muted-foreground',
-        `${liftHoverClass} hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:text-primary`,
+        `${liftMotionClass} hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:text-primary`,
         disabledMutedClass,
       ],
       link: [
