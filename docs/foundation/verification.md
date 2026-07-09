@@ -227,6 +227,24 @@ Figma 层: <layer>
 
 **裁决**：PC 文案色 SSOT = `text/body` 70% → `--muted-foreground`；4175 50% = IGNORE。H5 帧大量 `text/muted` 40% 与 PC 不一致；按 AGENTS「H5 是 PC 响应式 / PC 文案 SSOT」**当前不跟 H5 40%**，除非产品明确要求 H5 分叉。暗色卡珊瑚强调 = `primary-bright`（≡ coral-bright），浅底强调仍用 `primary`。
 
+## 5g. 视觉 SSOT（2026-07-09）
+
+**视觉真相只有两处，禁止第三套：**
+
+| 角色 | SSOT | 用途 |
+|------|------|------|
+| **设计意图** | 正式 Figma 画板**实节点**（`sXWXDvBrLeg5r0NnP1SMZH`）+ 帧导出 `docs/figma-export/raw|frames` | 色 / 字 / 间距 / 组件结构；变量以节点绑定为准（见 §5f） |
+| **回归基线** | `dev` @ **4175**（`pnpm dev:baseline`） | heatmap / 截图 diff；回答「视觉是否坏了」 |
+
+**已删除、禁止再参考**（曾与画板冲突的口号规范）：
+
+- `docs/figma-export/AEGIS X · Color.json`
+- `docs/figma-export/AEGIS X · Layoutjson.json`
+- `docs/figma-export/AEGIS X · Typography.json`
+- `docs/figma-export/AEGIS X · 验收规范 Spec.json`
+
+实现与验收时：不引用上述文件、不按其「验收 0x / card.padding=24 / 行高 1.2」等口号改码。冲突时以**画板实节点**定意图，以 **4175** 验回归；`dev` 仍不是结构 / class 字典 SSOT（见 skill）。
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -238,3 +256,5 @@ Figma 层: <layer>
 | v2.3 | 视觉 gate：红块优先；探针降级；Chip size=3；Community/Convert 标签同步 |
 | v2.4 | P8：legacy 静态块删除；工程色迁入 tokens.json；dappPanelTitle 内联 |
 | v2.5 | muted：INTENTIONAL→IGNORE（Figma PC body 70%；4175 50%）；§5f Figma MCP 色阶表；暗色卡 `primary-bright` |
+| v2.6 | §5g 曾记规范 vs 画板对照表 |
+| v2.7 | 删除四份 Spec JSON；§5g 改为视觉 SSOT = 画板实节点 + 4175；禁止再参考口号规范 |

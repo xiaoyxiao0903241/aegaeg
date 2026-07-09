@@ -27,8 +27,8 @@
   --popover-foreground: var(--foreground);
   --primary: #e86a43;
   --primary: oklch(66.83% 0.1625 36.6);
-  --primary-soft: #f9ece6;
-  --primary-soft: oklch(94.92% 0.0224 45.6);
+  --primary-soft: #fceae2;
+  --primary-soft: oklch(95.4% 0.025 45);
   --primary-foreground: #fff;
   --primary-foreground: oklch(100% 0 89.88);
   --primary-bright: #f4a98f;
@@ -43,8 +43,8 @@
   --placeholder: #cfd3db;
   --placeholder: oklch(82% 0.011 264);
   --amount-muted: #c9cfda;
-  --accent: #f9ece6;
-  --accent: oklch(94.92% 0.0224 45.6);
+  --accent: #fceae2;
+  --accent: oklch(95.4% 0.025 45);
   --accent-foreground: var(--primary);
   --destructive: #dc2626;
   --destructive: oklch(62% 0.2 25);

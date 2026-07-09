@@ -12,10 +12,14 @@ import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import {
   seasonCardBadgeClass,
+  seasonCardEndedBadgeClass,
   seasonCardMetaAccentClass,
   seasonCardMetaClass,
+  seasonCardPrimaryCoralClass,
   seasonCardRadioClass,
+  seasonCardRadioSelectedClass,
   seasonCardRadiusClass,
+  seasonCardSelectedBorderClass,
   seasonCardSizeClass,
   seasonCardTitleClass,
   seasonCarouselControlsGapClass,
@@ -61,11 +65,12 @@ const seasonStatusBadgeBaseClass = cn(
 )
 
 function resolveSeasonStatusBadgeClass(status: string, selected: boolean) {
+  // Figma `4150:19877` LIVE = coral-soft + primary(coral); Ended = band + body
   if (status === 'LIVE' && selected) {
-    return cn(seasonStatusBadgeBaseClass, 'bg-accent text-primary')
+    return cn(seasonStatusBadgeBaseClass, 'bg-accent', seasonCardPrimaryCoralClass)
   }
 
-  return cn(seasonStatusBadgeBaseClass, 'bg-muted text-muted-foreground')
+  return cn(seasonStatusBadgeBaseClass, seasonCardEndedBadgeClass)
 }
 
 function resolveSeasonCarouselScrollIndex(activeIndex: number): number {
@@ -121,30 +126,42 @@ function SeasonCard({
   return (
     <article
       aria-checked={selected}
-      className={cn(SEASON_CARD_CLASS, selected ? 'border-primary' : 'border-border')}
+      className={cn(
+        SEASON_CARD_CLASS,
+        selected ? seasonCardSelectedBorderClass : 'border-border',
+      )}
       role="radio"
     >
-      <div className="flex items-start justify-between gap-1">
-        <Text as="strong" variant="copy" className={seasonCardTitleClass}>
-          {season.name}
+      {/* Figma `st` gap 3px; card → badge gap 6px via SEASON_CARD_CLASS */}
+      <div className="flex w-full flex-col gap-0.75 overflow-hidden">
+        <div className="flex h-[1.125rem] items-center justify-between gap-1">
+          <Text as="strong" variant="copy" className={seasonCardTitleClass}>
+            {season.name}
+          </Text>
+          <RadioIndicator
+            checked={selected}
+            className={cn(
+              seasonCardRadioClass,
+              selected && seasonCardRadioSelectedClass,
+            )}
+          />
+        </div>
+        <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
+          {t.genesis.discountLabel}{' '}
+          <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
+            {season.desktopMeta.discount}
+          </Text>
         </Text>
-        <RadioIndicator checked={selected} className={seasonCardRadioClass} />
+        <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
+          {t.genesis.airdropLabel}{' '}
+          <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
+            {season.desktopMeta.airdrop}
+          </Text>
+        </Text>
+        <Text as="time" variant="caption" className={seasonCardMetaClass}>
+          {season.date}
+        </Text>
       </div>
-      <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
-        {t.genesis.discountLabel}{' '}
-        <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
-          {season.desktopMeta.discount}
-        </Text>
-      </Text>
-      <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
-        {t.genesis.airdropLabel}{' '}
-        <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
-          {season.desktopMeta.airdrop}
-        </Text>
-      </Text>
-      <Text as="time" variant="caption" className={seasonCardMetaClass}>
-        {season.date}
-      </Text>
       <div className="mt-auto w-full">
         <Text as="span" variant="caption" className={resolveSeasonStatusBadgeClass(season.status, selected)}>
           {translateSeasonStatus(season.status, t)}
@@ -281,8 +298,9 @@ export function SeasonSelector({
                   <span
                     aria-hidden="true"
                     className={cn(
+                      // Figma `4150:5890` active = coral-button pill 22×7; idle = border dot 7
                       'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
-                      current === index ? 'h-1.5 w-5.5 bg-primary' : 'h-1.5 w-1.5',
+                      current === index ? 'h-1.75 w-5.5 bg-primary' : 'size-1.75',
                     )}
                   />
                 </button>

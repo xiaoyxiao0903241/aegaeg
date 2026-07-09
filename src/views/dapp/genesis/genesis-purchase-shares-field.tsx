@@ -9,10 +9,11 @@ const genesisSharesField = tv({
   slots: {
     row: 'flex gap-2',
     inputWrap: 'relative flex min-w-0 flex-1',
+    // Figma `4150:3234` mx — coral-soft fill, primary(coral) label, h-44, r-11, no border
     maxButton: cn(
-      'min-w-16 shrink-0 rounded-sm border border-border bg-accent px-3.5 py-2.5 text-xs font-bold whitespace-nowrap text-primary',
+      'h-11 min-w-16 shrink-0 rounded-[0.6875rem] border-0 bg-accent px-[0.9375rem] text-xs font-semibold whitespace-nowrap text-[#c85c3f]',
       buttonDisabledClass,
-      'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+      'disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
     ),
   },
 })

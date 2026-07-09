@@ -48,13 +48,27 @@ export const seasonCarouselControlsGapClass = 'gap-2.5'
 /** w-5 fade sits in px gutter — not over card edges (same bleed pattern as token carousel) */
 export const seasonCarouselEdgeBleedClass = '-mx-5 min-w-0 w-[calc(100%+2.5rem)] px-5'
 
+/** Figma `4150:19858` — Season title ink · SemiBold 13 */
 export const seasonCardTitleClass =
-  // 4175: text-ink-strong ≡ muted-foreground 70% (not foreground/80)
-  'text-[length:var(--dapp-season-title-size)] font-semibold leading-[1.3] tracking-[-0.02em] text-muted-foreground'
+  'text-[length:var(--dapp-season-title-size)] font-semibold leading-[1.3] tracking-[-0.02em] text-foreground'
+/** Figma `4150:19860` — meta Regular 11（覆盖 Text caption 默认 Medium） */
 export const seasonCardMetaClass =
-  'text-[length:var(--dapp-season-meta-size)] leading-[1.5] tracking-[-0.02em] text-muted-foreground'
-/** 4175 season card discount/airdrop accent — not primary token */
-export const seasonCardMetaAccentClass = 'text-[#e9785a]'
+  'text-[length:var(--dapp-season-meta-size)] font-normal leading-[1.5] tracking-[-0.02em] text-muted-foreground'
+/** Figma — discount/airdrop 字面量 `accent/coral`（非选中边框色） */
+export const seasonCardMetaAccentClass = 'font-normal text-[#e9785a]'
+/**
+ * Figma `accent/primary (coral)` `#c85c3f`
+ * 用途：选中卡边框 · 选中 radio 环/内点 · LIVE 字 · MAX 字
+ * 勿与 `#e9785a`（折扣强调）或 token `primary` `#e86a43` 混用
+ */
+export const seasonCardPrimaryCoralClass = 'text-[#c85c3f]'
+export const seasonCardSelectedBorderClass = 'border-[#c85c3f]'
+/** 选中 radio — 同 primary (coral)，覆盖 RadioIndicator 默认 `border-primary` / `bg-primary` */
+export const seasonCardRadioSelectedClass =
+  'border-[#c85c3f] [&_span]:bg-[#c85c3f]'
+/** Figma `bg/band` — Ended / Upcoming pill */
+export const seasonCardEndedBadgeClass = 'bg-[#ebeef3] text-muted-foreground'
+/** Figma LIVE/Ended badge — Medium 10 */
 export const seasonCardBadgeClass =
   'text-[length:var(--dapp-season-badge-size)] font-medium leading-[1.3]'
 export const seasonCardRadiusClass = 'rounded-[length:var(--dapp-season-card-radius)]'

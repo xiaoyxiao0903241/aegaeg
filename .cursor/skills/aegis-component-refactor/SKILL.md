@@ -31,9 +31,11 @@ description: >-
 
 ## Class / CSS 减法（MUST）
 
-视觉优先级：Figma > Foundation > `dev`（**仅视觉**回归探测器）。
+视觉 SSOT：**Figma 画板实节点**（设计意图）+ **`dev` @ 4175**（回归基线）。见 [`verification.md`](../../docs/foundation/verification.md) §5g。
 
-**`dev` 不是结构 SSOT。** `dev` 里同样有 class 字典、空装饰名、重复断点、平行色——重构目标就是消掉这些冗余；**禁止**以「dev 也有」为由保留结构债。对照 `dev` 只回答「视觉是否坏了」，不回答「代码该不该长这样」。
+**禁止**参考已删除的口号规范：`docs/figma-export/AEGIS X · {Color,Layoutjson,Typography,验收规范 Spec}.json`。
+
+**`dev` 不是结构 SSOT。** `dev` 里同样有 class 字典、空装饰名、重复断点、平行色——重构目标就是消掉这些冗余；**禁止**以「dev 也有」为由保留结构债。对照 `dev` 只回答「视觉是否坏了」，不回答「代码该不该长这样」。Foundation API / token 仍以 `docs/foundation/` 为准。
 
 ```
 1. 禁止 *Class = { ... } as const / 顶部长 cn() 样式表；一次性布局写在 JSX className。
