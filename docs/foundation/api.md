@@ -172,7 +172,8 @@
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
 - `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `CalloutCard` / `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
 - `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / CalloutCard）。
-- `aegisDialogCloseClass`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立。
+- `aegisDialogCloseClass`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
+- `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
 
@@ -224,3 +225,4 @@
 | v2.7 | `SwapProgramCard` / `DappTableCard` 走 Card `elevated`；表壳保留 2xl+border；thirdweb 按钮迁 Button 另切片 |
 | v2.8 | Button hover SSOT：去 Community `shadow-primary-hover-xl`；ghost 对齐 lift；slippage Confirm → Button |
 | v2.9 | 隐藏面：WalletDetails 去 `h-11`/内嵌 Text；`aegisDialogCloseClass`；token 行 → Card outlined |
+| v2.10 | LanguageMenu DRY；mobile-nav 标签 ≡ `dev` text-sm；删未用 `shadow-primary-hover-xl` |

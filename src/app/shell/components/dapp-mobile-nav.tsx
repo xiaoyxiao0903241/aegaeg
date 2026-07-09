@@ -107,6 +107,7 @@ export function DappMobileNav({
         role="tablist"
       >
         <div className="flex items-start justify-end pb-2">
+          {/* Drawer close ≠ modal `aegisDialogCloseClass` — 4175/dev: ghost X, no border. */}
           <button
             aria-label={t.topbar.closeMenu}
             className={cn(
@@ -143,11 +144,15 @@ export function DappMobileNav({
                 )}
                 style={railIconMask(item.icon)}
               />
+              {/* 4175/dev: inherit drawer text-sm semibold — not Text caption (10px). */}
               <Text
                 as="span"
-                variant="caption"
+                variant="copy"
                 tone={active ? 'primary' : 'foreground'}
-                className={shellRailRowLabelClass}
+                className={cn(
+                  shellRailRowLabelClass,
+                  'text-sm font-semibold leading-snug tracking-tight',
+                )}
                 title={label}
               >
                 {label}

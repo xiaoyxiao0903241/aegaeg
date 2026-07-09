@@ -345,8 +345,33 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | WalletDetails CTA 去 `h-11 text-sm` + 内嵌 Text | INTENTIONAL | 高度/字阶走 Button `md`；连接/未连接两态保留 |
 | Token 行 → `Card outlined` | INTENTIONAL | 抹 `rounded-xl` + 浅边/底 |
 | `aegisDialogCloseClass`（details + slippage） | INTENTIONAL | Connect / Home popup / mobile-nav close KEEP 分轨 |
-| LanguageMenu / mobile-nav / ConnectEmbed | DEFER | 下一切片 |
 | glass modal/drawer ≠ Card surface | KEEP | 禁并轴 |
+
+## 5r. LanguageMenu + mobile-nav vs `dev`（2026-07-09）
+
+对照 worktree `dev` @ `/private/tmp/aegis-dev-baseline`（路径已迁 `shared/ui` / `shell/components`）。
+
+| 面 | vs `dev` | 标签 | 说明 |
+|----|----------|------|------|
+| LanguageMenu trigger | 视觉对齐 | INTENTIONAL | `coral-wash` / `shadow-card` ≡ 原 oklch wash；DRY `languageTriggerClass` |
+| LanguageMenu panel | 视觉对齐 | INTENTIONAL | `shadow-menu` ≡ 原 arbitrary 菜单影 |
+| LanguageMenu 行 | 视觉对齐 | KEEP | `text-sm`/`text-xs` 覆盖（防 headline 溢出） |
+| mobile-nav 标签 | **REGRESSION→fixed** | 曾用 Text `caption`(10px)；改回 `copy`+`text-sm font-semibold` ≡ `dev` 继承 |
+| drawer item 行 | INTENTIONAL | 字阶只在 Text；`shellMobileDrawerItemClass` 只留色/间距 |
+| drawer close | KEEP | 透明 X ≠ `aegisDialogCloseClass`（modal 圆框） |
+| `data-dapp-mobile-nav*` | KEEP | 动效钩子 |
+| 删 `--shadow-primary-hover-xl` | INTENTIONAL | 无 call site；`*-lg` 仍给 wallet.css |
+| ConnectEmbed / thirdweb button | DEFER | 另切片 |
+| Text tracking A7 | DEFER | 另切片 |
+
+## 5s. Genesis 全球卡「查看合约」按钮（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `contractButton` 恢复 `!` 覆盖 secondary | REGRESSION→fixed | `dev`：透明底 + 白边；无 `!` 时被 `bg-card`/`border-border`/coral lift 盖掉 |
+| `!w-auto` 压掉 md+pill `w-full` | REGRESSION→fixed | `dev` 仅 sm+pill 全宽；现 sm\|md+pill→`w-full` 把 absolute 钮拉满，看起来不靠右 |
+| 额外压掉 secondary hover lift/shadow | INTENTIONAL | 暗色横幅上勿抬升/灰影 |
+| 未新增 Button variant | KEEP | 单 call site；用 className 抹平 |
 
 ## 6. 修订
 
@@ -371,3 +396,5 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.15 | §5o ProgramCard / DappTableCard → elevated；thirdweb→Button DEFER |
 | v2.16 | §5p Button hover SSOT |
 | v2.17 | §5q 隐藏面第一刀：WalletDetails / dialog close |
+| v2.18 | §5r LanguageMenu DRY + mobile-nav 字阶对齐 `dev`；删 hover-xl |
+| v2.19 | §5s Genesis 全球卡合约按钮 vs `dev` 回归修复 |

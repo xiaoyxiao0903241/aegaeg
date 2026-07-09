@@ -98,7 +98,8 @@ export const shellMobilePageTitleClass = 'max-dapp:mt-6'
 export function shellMobileDrawerItemClass(active: boolean) {
   return cn(
     'flex w-full min-w-0 cursor-pointer items-center gap-3.5 rounded-md px-4 py-3.5',
-    'text-sm font-semibold leading-snug tracking-tight transition-[background-color,color] duration-180 ease-out max-dapp:text-sm',
+    // Color only on row — label type owned by Text (text-sm semibold ≡ 4175/dev).
+    'transition-[background-color,color] duration-180 ease-out',
     active ? 'bg-accent text-primary' : 'bg-transparent text-foreground',
   )
 }

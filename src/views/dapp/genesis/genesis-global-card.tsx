@@ -17,10 +17,13 @@ const genesisGlobalCard = tv({
     root: cn(dappDarkBanner().root(), 'min-h-32 p-6 max-dapp:p-4.5'),
     content: cn(dappDarkBanner().content(), 'max-w-[70ch] max-dapp:max-w-none'),
     kicker: 'max-dapp:block max-dapp:pr-28',
+    // Dark-banner outline CTA — must beat Button secondary + md/pill `w-full` (≡ 4175/dev hug + right).
+    // dev: md+pill had NO w-full; current Button compounds sm|md+pill → w-full (stretches absolute).
     contractButton: cn(
       'absolute right-5.5 top-11 z-[2] max-dapp:top-4.5 max-dapp:right-4.5',
-      'gap-1.5 border-white/45 bg-transparent px-4.5 text-white',
-      'hover:border-white/80 focus-visible:border-white/80',
+      '!w-auto !gap-1.5 !border-white/45 !bg-transparent !px-4.5 !text-white',
+      'hover:!border-white/80 hover:!shadow-none hover:!translate-y-0',
+      'focus-visible:!border-white/80 focus-visible:!shadow-none focus-visible:!translate-y-0',
       '[&_img]:size-[var(--dapp-icon-action)] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
     globe:

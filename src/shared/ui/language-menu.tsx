@@ -11,8 +11,30 @@ import { Text } from '~/shared/ui/text'
 /** Open-state: native `<details open>` + React ancestor `[data-open]`. */
 const openGrid =
   'hidden [[open]_&]:grid [[data-open]_&]:grid [[open]_&]:animate-[language-menu-in_180ms_ease_both] [[data-open]_&]:animate-[language-menu-in_180ms_ease_both]'
+
 const openTrigger =
   '[[open]_&]:border-coral-hover-border [[open]_&]:bg-coral-wash [[open]_&]:shadow-card [[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-coral-wash [[data-open]_&]:shadow-card'
+
+/**
+ * Trigger chrome — matches 4175/dev pill (min-h-9 / H5 7.5).
+ * Not Button secondary: glass-free card + coral-wash hover (topbar density).
+ */
+const languageTriggerClass = cn(
+  'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
+  'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
+  'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
+  'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
+  'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
+  'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
+  openTrigger,
+  '[&::-webkit-details-marker]:hidden [&_img]:size-4',
+  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
+)
+
+const languagePanelClass = cn(
+  openGrid,
+  'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
+)
 
 export type LanguageMenuOption = {
   code: string
@@ -57,8 +79,7 @@ function MenuItem({
     option.disabled && 'cursor-not-allowed opacity-60',
   )
 
-  // 4175 menu rows: text-sm name + text-xs label, leading-normal — not headline/copy tokens
-  // (those overflow h-10 and cause ghosting against page content behind the panel).
+  // 4175/dev rows: text-sm name + text-xs label, leading-normal — not raw headline/copy size.
   const children = (
     <>
       <span className="min-w-0 flex-1">
@@ -176,18 +197,7 @@ function NativeLanguageMenu({
         <summary
           aria-haspopup="menu"
           aria-label={label}
-          className={cn(
-            'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
-            'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
-            'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
-            'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-            'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
-            'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
-            openTrigger,
-            '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-            'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
-            triggerClassName,
-          )}
+          className={cn(languageTriggerClass, triggerClassName)}
           data-language-trigger
           role="button"
         >
@@ -195,14 +205,7 @@ function NativeLanguageMenu({
           <span>{triggerLabel ?? activeOption?.code}</span>
         </summary>
 
-        <div
-          className={cn(
-            openGrid,
-            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
-            menuClassName,
-          )}
-          role="menu"
-        >
+        <div className={cn(languagePanelClass, menuClassName)} role="menu">
           {options.map((option) => (
             <MenuItem key={option.code} option={option} checkIcon={checkIcon} />
           ))}
@@ -292,18 +295,7 @@ function ReactLanguageMenu({
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={label}
-        className={cn(
-          'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
-          'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
-          'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
-          'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-          'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
-          'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
-          openTrigger,
-          '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-          'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
-          triggerClassName,
-        )}
+        className={cn(languageTriggerClass, triggerClassName)}
         data-language-trigger
         onClick={() => setOpen((prev) => !prev)}
         type="button"
@@ -313,12 +305,7 @@ function ReactLanguageMenu({
       </button>
 
       <div
-        className={cn(
-          openGrid,
-          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
-          !open && 'hidden',
-          menuClassName,
-        )}
+        className={cn(languagePanelClass, !open && 'hidden', menuClassName)}
         role="menu"
       >
         {options.map((option) => (
