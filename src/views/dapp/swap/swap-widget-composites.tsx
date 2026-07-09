@@ -31,13 +31,14 @@ export const swapFlowButtonClass = cn(
   'text-sm leading-none tracking-[-0.28px] text-foreground shadow-none',
 )
 
-/** Interactive flb (Trade flip) — scale press (H5-friendly; no translate lift). */
+/** Interactive flb (Trade flip) — soft scale press (match Button motion SSOT). */
 export const swapFlowButtonInteractiveClass = cn(
   swapFlowButtonClass,
-  'transition-[border-color,background-color,box-shadow,transform,opacity] duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)]',
-  'enabled:cursor-pointer enabled:hover:scale-[1.04] enabled:hover:border-primary',
-  'enabled:focus-visible:scale-[1.04] enabled:focus-visible:border-primary',
-  'enabled:active:scale-[0.94] enabled:active:border-primary',
+  'origin-center will-change-transform',
+  'transition-[border-color,background-color,box-shadow,transform,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
+  'enabled:cursor-pointer enabled:hover:scale-[1.03] enabled:hover:border-primary',
+  'enabled:focus-visible:scale-[1.03] enabled:focus-visible:border-primary',
+  'enabled:active:scale-[0.96] enabled:active:duration-100 enabled:active:border-primary',
   'disabled:cursor-not-allowed disabled:scale-100 disabled:opacity-60',
 )
 

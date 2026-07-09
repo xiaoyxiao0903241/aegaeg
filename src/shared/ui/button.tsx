@@ -14,12 +14,13 @@ const disabledMutedClass =
   'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100'
 
 /**
- * Scale press — works on H5 touch (hover lift does not).
- * Hover: slight grow; active: slight shrink; no translate-y.
+ * Scale press — H5-friendly (no translate lift).
+ * Small deltas + soft ease; active settles faster so press doesn't feel laggy.
  */
 const pressMotionClass = cn(
-  'hover:scale-[1.02] focus-visible:scale-[1.02]',
-  'active:scale-[0.97] active:shadow-none',
+  'origin-center will-change-transform',
+  'hover:scale-[1.015] focus-visible:scale-[1.015]',
+  'active:scale-[0.98] active:duration-100',
 )
 
 /**
@@ -32,8 +33,8 @@ const pressMotionClass = cn(
 export const buttonVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
-    // Soft ease — avoid linear ease-out snap on hover/press.
-    'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)]',
+    // Soft decelerate — color/shadow 200ms; press uses active:duration-100.
+    'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
     buttonDisabledClass,
   ],
   variants: {

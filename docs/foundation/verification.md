@@ -512,6 +512,14 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | 箭头只跟 `menuOpen`：关下 / 开上 | REGRESSION→fixed | 不再跟 menuPlacement 翻转 |
 | `transition-transform` 220ms | INTENTIONAL | 与 Button / FAQ 手感一致 |
 
+## 5aj. Button / flb 平滑 scale（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| scale `1.02/0.97` → `1.015/0.98` | INTENTIONAL | 减小幅度，去顿挫 |
+| ease → `cubic-bezier(0.22,1,0.36,1)` · 200ms | INTENTIONAL | 软减速；`active:duration-100` 按下更快 |
+| 去掉 `active:shadow-none` | REGRESSION→fixed | 阴影硬切是不平滑主因之一 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -553,3 +561,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.33 | §5ag 恢复 collapsible overflow-visible 覆盖（表卡阴影） |
 | v2.34 | §5ah FAQ chevron CSS rotate + color |
 | v2.35 | §5ai Pagination 页码箭头关下开上 + 动画 |
+| v2.36 | §5aj Button/flb 更平滑 scale |
