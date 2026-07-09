@@ -3,13 +3,12 @@ import { useCallback, useState } from 'react'
 import { useAuth } from '~/app/bootstrap/auth-provider'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import { executeTeamRewardClaim } from '~/views/dapp/web3/reward-claim'
-import { useDappActions } from '~/stores/dapp-actions'
+import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 
 export function useTeamRewardClaim() {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { token, isAuthenticated } = useAuth()
-  const afterTeamClaim = useDappActions((state) => state.afterTeamClaim)
   const [isClaiming, setIsClaiming] = useState(false)
   // Store the raw error so resolveTeamClaimError can dig into cause/data for the
   // revert selector (e.g. 0x66e6698b ErrorSignatureExpired).
@@ -26,7 +25,7 @@ export function useTeamRewardClaim() {
 
     try {
       const { confirmResult } = await executeTeamRewardClaim({ wallet, token })
-      afterTeamClaim()
+      invalidateAfterTeamClaim()
       return confirmResult
     } catch (caught) {
 
@@ -35,7 +34,7 @@ export function useTeamRewardClaim() {
     } finally {
       setIsClaiming(false)
     }
-  }, [account, afterTeamClaim, isAuthenticated, token, wallet])
+  }, [account, isAuthenticated, token, wallet])
 
   return { claim, isClaiming, error, canClaim: Boolean(account && token && isAuthenticated) }
 }

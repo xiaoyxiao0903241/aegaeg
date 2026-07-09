@@ -9,7 +9,7 @@ import {
 } from '~/shared/ui/carousel'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
-import { dappIcon } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { swapTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'

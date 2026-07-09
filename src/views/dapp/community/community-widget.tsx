@@ -6,7 +6,7 @@ import { formatReferralLinkDisplay } from '~/views/dapp/community/community-disp
 import { buildReferralSharePath } from '~/shared/config/referral'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { useDappShell } from '~/app/dapp-shell-context'
-import type { DappTab } from '~/app/types'
+import type { DappTab } from '~/shared/config/dapp-tabs'
 import { DappWidgetConnectPromo } from '~/app/shell/components/dapp-widget-connect-footer'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { DappWidgetFrame } from '~/app/shell/components/dapp-widget-frame'

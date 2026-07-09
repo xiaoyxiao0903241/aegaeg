@@ -13,7 +13,7 @@ import {
 } from '~/views/dapp/web3/referral-read'
 import { bindReferrer } from '~/views/dapp/web3/referral-write'
 import { GENESIS_PURCHASE_ERROR, REFERRAL_BIND_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
-import { useDappActions } from '~/stores/dapp-actions'
+import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
 const BIND_COOLDOWN_MS = 5_000
@@ -21,7 +21,6 @@ const BIND_COOLDOWN_MS = 5_000
 export function useReferral(sessionReady: boolean) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
-  const afterReferralBind = useDappActions((state) => state.afterReferralBind)
   const readClient = useChainReadClient()
   const pendingReferrer = useMemo(() => {
     const fromUrl = parseReferrerFromSearch(window.location.search)
@@ -125,7 +124,7 @@ export function useReferral(sessionReady: boolean) {
       }
 
       await bindReferrer({ wallet, referrer: target })
-      afterReferralBind()
+      invalidateAfterReferralBind()
       return true
     } catch (caught) {
       setError(caught)
@@ -135,7 +134,6 @@ export function useReferral(sessionReady: boolean) {
     }
   }, [
     account,
-    afterReferralBind,
     isBindCooldown,
     isSubmitting,
     pendingReferrer,

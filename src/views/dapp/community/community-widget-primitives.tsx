@@ -6,7 +6,7 @@ import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
-import { dappIcon } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 

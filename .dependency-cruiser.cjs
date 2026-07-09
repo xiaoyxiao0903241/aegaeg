@@ -17,11 +17,17 @@ module.exports = {
       to: { path: '^src/(views|core)/' },
     },
     {
+      name: 'shared-no-app',
+      severity: 'error',
+      from: { path: '^src/shared/' },
+      to: { path: '^src/app/' },
+    },
+    {
       name: 'web3-gateway',
       severity: 'error',
       from: {
         path: '^src/',
-        pathNot: '^src/web3/|^src/views/dapp/web3/|^src/views/dapp/auth/',
+        pathNot: '^src/views/dapp/web3/|^src/views/dapp/auth/',
       },
       to: { path: '^thirdweb' },
     },
@@ -29,7 +35,7 @@ module.exports = {
       name: 'ui-is-dumb',
       severity: 'warn',
       from: { path: '^src/shared/ui/' },
-      to: { path: '^src/(views|core)/' },
+      to: { path: '^src/(views|core|app)/' },
     },
   ],
   options: {

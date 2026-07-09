@@ -1,7 +1,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
-import type { DappTab } from '~/app/types'
+import type { DappTab } from '~/shared/config/dapp-tabs'
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'

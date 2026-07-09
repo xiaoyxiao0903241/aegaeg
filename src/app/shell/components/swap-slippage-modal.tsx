@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { dappIcon } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { useI18n } from '~/i18n/use-i18n'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/swap/token-amount'
 import { cn } from '~/shared/lib/utils'

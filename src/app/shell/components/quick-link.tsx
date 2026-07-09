@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
-import { dappIcon } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { cn } from '~/shared/lib/utils'
 
 export type QuickLinkProps = {

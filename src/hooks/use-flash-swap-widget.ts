@@ -10,7 +10,7 @@ import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useDappActions } from '~/stores/dapp-actions'
+import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
@@ -27,7 +27,6 @@ const FLASH_SWAP_SLIPPAGE_BPS = 50
 export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
-  const afterSwap = useDappActions((state) => state.afterSwap)
   const pair = useMemo(() => getSwapPairTokens('reverse'), [])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<unknown>(null)
@@ -209,7 +208,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
         minUsd1Out: calcAmountOutMin(quotedOut, FLASH_SWAP_SLIPPAGE_BPS),
       })
       clearAmount()
-      afterSwap()
+      invalidateAfterSwap()
       await balancesQuery.refetch()
       return { ok: true }
     } catch (caught: unknown) {
@@ -221,7 +220,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, afterSwap, amountIn, balancesQuery, canSubmit, clearAmount, quotedOut, wallet])
+  }, [account, amountIn, balancesQuery, canSubmit, clearAmount, quotedOut, wallet])
 
   return {
     sellAmount,

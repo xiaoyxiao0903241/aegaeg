@@ -5,7 +5,7 @@ import {
   hasWalletAccount,
   isWalletRestorePending,
 } from '~/views/dapp/web3/wallet-connection-state'
-import type { DappTab } from '~/app/types'
+import type { DappTab } from '~/shared/config/dapp-tabs'
 
 export interface DappShellState {
   tab: DappTab

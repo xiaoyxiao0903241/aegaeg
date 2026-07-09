@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { getInitialTab, isDappTab } from '~/app/utils'
-import type { DappTab } from '~/app/types'
+import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 
 interface DappShellStore {

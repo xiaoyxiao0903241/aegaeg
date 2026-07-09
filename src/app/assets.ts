@@ -1,4 +1,4 @@
-import type { DappTab } from '~/app/types'
+import type { DappTab } from '~/shared/config/dapp-tabs'
 import { homeAssets as canonicalHomeAssets } from '~/views/home/assets'
 
 /** Homepage token flywheel icons. */

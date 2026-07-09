@@ -37,7 +37,10 @@ import {
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
 } from '~/hooks/queries/use-presale-queries'
-import { useDappActions } from '~/stores/dapp-actions'
+import {
+  invalidateAfterGenesisPhaseTransition,
+  invalidateAfterGenesisPurchase,
+} from '~/shared/api/query/invalidate'
 import { useI18n } from '~/i18n/use-i18n'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
@@ -54,8 +57,6 @@ export function useGenesisWidget() {
   const wallet = useActiveWallet()
   const { messages: t } = useI18n()
   const queryClient = useQueryClient()
-  const afterGenesisPurchase = useDappActions((state) => state.afterGenesisPurchase)
-  const afterGenesisPhaseTransition = useDappActions((state) => state.afterGenesisPhaseTransition)
   const readClient = useChainReadClient()
   const countdownRefreshRef = useRef<string | null>(null)
   const [shares, setShares] = useState(0)
@@ -259,7 +260,7 @@ export function useGenesisWidget() {
         phase: activePhase.index,
         amount: purchaseAmount,
       })
-      afterGenesisPurchase(account.address, purchaseAmount)
+      invalidateAfterGenesisPurchase(account.address, purchaseAmount)
       return { success: true }
     } catch (caught) {
       return { success: false, error: caught }
@@ -270,7 +271,6 @@ export function useGenesisWidget() {
     account,
     activePhase,
     address,
-    afterGenesisPurchase,
     canPurchase,
     purchaseAmount,
     queryClient,
@@ -306,8 +306,8 @@ export function useGenesisWidget() {
     }
 
     countdownRefreshRef.current = countdownKey
-    afterGenesisPhaseTransition(address)
-  }, [address, afterGenesisPhaseTransition, countdownTarget, nowSeconds])
+    invalidateAfterGenesisPhaseTransition(address)
+  }, [address, countdownTarget, nowSeconds])
 
   const seasonOptions = useMemo(
     () => buildSeasonOptions(phases, agxPriceUsd, nowSeconds),

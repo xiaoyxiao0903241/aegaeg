@@ -18,7 +18,7 @@ import { readErc20Allowance, readErc20Balance, fetchSwapQuote, readSwapPoolImmut
 import { approveTokenIfNeeded, executeTokenSwap } from '~/views/dapp/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useDappActions } from '~/stores/dapp-actions'
+import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
@@ -33,7 +33,6 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
-  const afterSwap = useDappActions((state) => state.afterSwap)
   const direction = useSwapDirectionStore((state) => state.direction)
   const flipDirectionInStore = useSwapDirectionStore((state) => state.flipDirection)
   const [slippage, setSlippageRaw] = useState(1)
@@ -362,7 +361,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
         amountOutMin,
       })
       clearAmount()
-      afterSwap()
+      invalidateAfterSwap()
       await balancesQuery.refetch()
       return true
     } catch (submitError: unknown) {
@@ -376,7 +375,6 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     }
   }, [
     account,
-    afterSwap,
     amountIn,
     amountOutMin,
     balancesQuery,

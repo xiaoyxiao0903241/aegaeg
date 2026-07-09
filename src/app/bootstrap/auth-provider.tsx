@@ -25,7 +25,11 @@ import {
   createStoreAuthSessionStorage,
   createStoreLoginSignatureStorage,
 } from '~/stores/auth-storage-adapters'
-import { useDappActions } from '~/stores/dapp-actions'
+import {
+  clearApiQueries,
+  invalidateAfterAuthLogin,
+  invalidateAfterWalletSwitch,
+} from '~/shared/api/query/invalidate'
 
 export interface AuthContextValue {
   token: string | null
@@ -175,12 +179,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const wasAuthed = prevAuthedRef.current
     const prevAddress = prevAddressRef.current
-    const actions = useDappActions.getState()
-
     if (isAuthenticated && !wasAuthed) {
-      actions.afterAuthLogin(walletAddress)
+      invalidateAfterAuthLogin(walletAddress)
     } else if (!isAuthenticated && wasAuthed) {
-      actions.afterAuthLogout()
+      clearApiQueries()
     }
 
     // Detect wallet address changes independently of auth state. Switching
@@ -192,7 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       walletAddress &&
       prevAddress.toLowerCase() !== walletAddress.toLowerCase()
     ) {
-      actions.afterWalletSwitch(prevAddress, walletAddress, activeTab)
+      invalidateAfterWalletSwitch(prevAddress, walletAddress, activeTab)
     }
 
     prevAuthedRef.current = isAuthenticated

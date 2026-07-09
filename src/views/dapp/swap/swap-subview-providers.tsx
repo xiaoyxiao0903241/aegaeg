@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { DappTab } from '~/app/types'
+import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { FlashSwapWidgetProvider } from '~/views/dapp/swap/flash-swap-widget-context'
 import { TradeSwapWidgetProvider } from '~/views/dapp/swap/trade-swap-widget-context'

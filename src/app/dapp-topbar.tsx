@@ -1,5 +1,5 @@
 import { tv } from 'tailwind-variants'
-import { dappIcon } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { LanguageMenu } from '~/shared/ui/language-menu'
 import { Text } from '~/shared/ui/text'
 import { withLocalePrefix } from '~/i18n/locale'
