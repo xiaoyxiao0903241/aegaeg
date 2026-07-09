@@ -552,3 +552,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.32 | §5af Button/flb 轻微 scale（替 translate lift） |
 | v2.33 | §5ag 恢复 collapsible overflow-visible 覆盖（表卡阴影） |
 | v2.34 | §5ah FAQ chevron CSS rotate + color |
+| v2.35 | §5ai Pagination 页码箭头关下开上 + 动画 |

@@ -123,7 +123,6 @@ export function DappTablePagination({
   const triggerRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [menuPlacement, setMenuPlacement] = useState<MenuPlacement>('above')
   const [menuStyle, setMenuStyle] = useState<CSSProperties>({})
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
@@ -141,7 +140,6 @@ export function DappTablePagination({
 
     const rect = trigger.getBoundingClientRect()
     const placement = resolveMenuPlacement(rect, menuHeight)
-    setMenuPlacement(placement)
     setMenuStyle(resolveMenuStyle(rect, placement, menuHeight))
   }, [menuHeight])
 
