@@ -136,13 +136,16 @@ H5: (同上)
 
 **`group-data-[tab=*]`**：仅合并**同值重复**；伪守卫仅当组件**确认只挂在该 tab** 时可内联。跨 tab 复用（如 `GenesisPromoCard` 在 Swap + Genesis）**必须保留** tab 守卫。真差异保留：`data-tab` 属性、Rewards topbar 品牌隐藏、`responsive-table` rewards fork、`dapp-detail-layout` gap SSOT。
 
-**跨 tab 左列 / CTA（MUST 统一）**
+**跨 tab 左列 / CTA / 标题（MUST 统一）**
 
 | 面 | SSOT | 禁止 |
 |----|------|------|
 | wcol 左卡 padding/圆角 | Card `outlined` / `DappSideCard`（`p-3.5` · `rounded-md`） | per-tab `px-4 py-3.5` |
 | 标题→内容 / 块间距 | `dapp-detail-layout.ts` + `DappWidgetFrame` | 页面私有 `mt-*`/`pb-*` 字典 |
+| Detail / widget 标题字阶 | Text `section` / `panel` + `copy` | `group-data-[tab=*]` tracking/leading/size |
 | 主 pill 按钮高度 | `DappActionButton` density：card **42** · external **44** · inverse **38** | call site `min-h-*` 分叉 |
+| Overview MetricCard（Swap/Genesis） | `MetricCard` + `metricCardChromeClass` | 页级平行 `px-4 py-3.5` 字典 |
+| Community `sc` / Rewards hero | 独立组件（多行 / 暗色横幅） | 强行并进 MetricCard |
 
 **偏离标签**：结构债清理标 **INTENTIONAL**；误删导致塌陷标 **REGRESSION** 并修回。
 

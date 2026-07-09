@@ -18,7 +18,8 @@
 |------|------|
 | 用整页 screenshot % 当收工 | 动态数 / INTENTIONAL token 会永久染红 |
 | 把 INTENTIONAL 贴回 4175 | muted 0.7、radius-sm 14、section lh 1.3 等是 Foundation 定稿 |
-| 左卡 per-tab `px-4 py-3.5` / pill `min-h` 分叉 | 统一 Card outlined + Button `sm`；见 runbook / dapp-detail-layout |
+| 左卡 / 标题 / pill 分叉 | 统一 Card outlined + Text section/panel + density；见 runbook |
+| 设计稿跨 tab 标题 tracking 不一致 | **规范优先**：代码不跟稿分叉；标 INTENTIONAL |
 | 为 H5 分叉文案 / 平行组件 | PC 文案 SSOT；H5 只是响应式 |
 | 引入动画库 / 新设计语言 | 保持现有品牌与 CSS 动效栈 |
 | 默认全页 DOM 探针找问题 | 发现靠红块；探针只确认 |

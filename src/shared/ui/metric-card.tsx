@@ -4,11 +4,12 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Composite：Figma `sc` 层 — 指标卡。
+ * Composite：detail-column overview metric (`ovc`) — Swap / Genesis season stats.
  *
- * 结构：label + value + hint。
- * 内部用 Card surface="elevated" + Card.Label/Value/Description。
- * 页级字阶差异（Swap vs Genesis value）用 valueClassName 抹平，不扩轴。
+ * Chrome SSOT (all overview cards): `px-4 py-3.5` · elevated · gap-1.5.
+ * Value default ≈ Figma ovc 18px; override only for true content-scale needs.
+ *
+ * Not for: Community multi-line `sc` → `CommunityStatCard`; Rewards dark banner → `RewardsHeroCard`.
  */
 export type MetricCardProps = {
   children?: ReactNode
@@ -16,11 +17,17 @@ export type MetricCardProps = {
   hint?: ReactNode
   hintClassName?: string
   label: ReactNode
-  /** Default true; Swap rate `1 : 1.0010` matches 4175 proportional digits (tabular=false). */
+  /** Default true; Swap rate `1 : 1.0010` matches proportional digits (tabular=false). */
   tabular?: boolean
   value: ReactNode
   valueClassName?: string
 }
+
+/** Overview metric chrome — Figma `ovc` 16×14 pad / radius-md / elevated shadow. */
+export const metricCardChromeClass = 'gap-1.5 rounded-md px-4 py-3.5'
+
+const metricCardValueClass =
+  'text-lg leading-[1.3] tracking-[-0.36px] max-dapp:text-sm max-dapp:leading-[1.2]'
 
 export function MetricCard({
   children,
@@ -36,13 +43,13 @@ export function MetricCard({
     <Card
       as="article"
       surface="elevated"
-      className={cn(revealClass(), 'flex flex-col items-start gap-1.5', className)}
+      className={cn(revealClass(), 'flex flex-col items-start', metricCardChromeClass, className)}
       data-reveal
     >
       <Card.Label className="text-xs font-medium" tone="muted-foreground">
         {label}
       </Card.Label>
-      <Card.Value className={valueClassName} tabular={tabular}>
+      <Card.Value className={cn(metricCardValueClass, valueClassName)} tabular={tabular}>
         {value}
       </Card.Value>
       {hint ? (

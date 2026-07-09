@@ -34,28 +34,15 @@ export function DappPanelHeader({
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        {/* Detail title: 20px (text-xl), not hub 21px panel token. */}
-        <Text
-          as="h1"
-          variant="panel"
-          className={cn(
-            'm-0 text-xl font-semibold leading-[1.3] tracking-[-0.84px]',
-            // Cross-tab PC title tracking (Figma wh); Community keeps base -0.84px.
-            'dapp:tracking-[-0.42px]',
-            // PC: text-xl (20px) overrides panel token. H5 title = 21px / leading 1.2.
-            'max-dapp:text-[21px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
-          )}
-        >
+        {/* Widget title/desc — Text panel + copy; same on every tab (no per-tab tracking). */}
+        <Text as="h1" variant="panel" className="m-0">
           {title}
         </Text>
         <Text
           as="p"
           variant="copy"
           tone="muted-foreground"
-          className={cn(
-            'm-0 max-w-[34ch] max-dapp:max-w-none text-xs',
-            '[&_strong]:font-bold [&_strong]:text-primary',
-          )}
+          className="m-0 max-w-[34ch] max-dapp:max-w-none [&_strong]:font-bold [&_strong]:text-primary"
         >
           {subtitle}
         </Text>

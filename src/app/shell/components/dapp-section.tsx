@@ -4,6 +4,10 @@ import { dappDetailSectionGapClass, dappDetailTitleGapClass } from '~/app/dapp-d
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * Detail section block — title uses Text `section` (same as DappContentHeading).
+ * Block gap + title→content gap from dapp-detail-layout SSOT.
+ */
 export function DappSection({
   children,
   className,
@@ -23,14 +27,7 @@ export function DappSection({
       <Text
         as="h3"
         variant="section"
-        className={cn(
-          'm-0',
-          // Genesis/Rewards/Community only (DappSection is not used on Swap).
-          // Swap keeps global --type-section-leading 1.3 — do not widen the token.
-          'leading-snug tracking-[-0.36px]',
-          dappDetailTitleGapClass,
-          titleClassName,
-        )}
+        className={cn('m-0', dappDetailTitleGapClass, titleClassName)}
       >
         {title}
       </Text>

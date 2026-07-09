@@ -283,6 +283,15 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | 暗色 promo（Join Genesis / Connect） | **38** | `density="inverse"` / thirdweb `min-h-9.5` |
 | Home hero | **48** | Button `lg`（未改语义） |
 
+## 5k. 标题 / MetricCard 角色收敛（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `DappContentHeading` / `DappSection` 去 tab tracking/leading | INTENTIONAL | 一律 Text `section`；设计稿分叉不进代码 |
+| `DappPanelHeader` 去 text-xl / H5 21px / tracking 分叉 | INTENTIONAL | 一律 Text `panel` + `copy` |
+| Swap/Genesis MetricCard 共用 `metricCardChromeClass` | INTENTIONAL | overview 同档；value 默认 text-lg |
+| CommunityStatCard / RewardsHeroCard | KEEP 分档 | 多行 `sc` / 暗色横幅 ≠ overview `ovc` |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -299,3 +308,4 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.8 | §5h CSS 瘦身切片标签；motion/wallet 保留规则指向 runbook §6.1 |
 | v2.9 | §5i 左卡/标题/pill CTA 跨 tab 统一 |
 | v2.10 | §5j Button 高度三档：card 42 / external 44 / inverse 38 |
+| v2.11 | §5k 标题跨 tab 统一；MetricCard overview chrome SSOT |

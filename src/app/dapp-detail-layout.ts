@@ -9,7 +9,8 @@
  * | Title → content | `dappDetailTitleGapClass` | 16px (`pb-4`) | 16px (`pb-4`) | headings, section titles, FAQs |
  * | Widget header → body | `dappWidgetHeaderSpacingClass` | 14px | 30px | `DappWidgetFrame` |
  * | Widget stack | `dappWidgetBodyClass` | 8px (`gap-2`) | same | left-column children |
- * | Left card chrome | Card `outlined` / `DappSideCard` | `p-3.5` + `rounded-md` | same | wcol boxes |
+ * | Detail section title | Text `section` via `DappContentHeading` / `DappSection` | token | token | **no** per-tab tracking/leading |
+ * | Widget title / desc | Text `panel` + `copy` via `DappPanelHeader` | token | token | **no** per-tab size/tracking |
  * | Primary pill CTA | `DappActionButton` density | card **42** · external **44** · inverse **38** | same | Claim/Copy / Swap·Join / dark promo |
  *
  * ## Usage
@@ -22,7 +23,8 @@
  * ## Anti-patterns
  * - `group-data-[tab=*]/shell:max-dapp:mt-0` on `DappSection` to “tighten H5”.
  * - Extra `mt-*` inside `DappSection` for title→content — use `pb-4` on title.
- * - Per-tab title tracking / left-card padding forks.
+ * - Per-tab title tracking / leading / size forks on headings or panel header.
+ * - Parallel MetricCard chrome on Swap vs Genesis — use `metricCardChromeClass` / MetricCard defaults.
  *
  * Season card / carousel styles live in `season-card.ts` (`tv()`), not here.
  */

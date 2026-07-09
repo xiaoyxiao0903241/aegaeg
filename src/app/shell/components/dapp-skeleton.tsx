@@ -37,7 +37,7 @@ export function MetricCardSkeleton({ className }: { className?: string }) {
     <Card
       as="article"
       surface="elevated"
-      className={cn('flex flex-col gap-1.5 px-4 py-3.5', className)}
+      className={cn('flex flex-col items-start gap-1.5 rounded-md px-4 py-3.5', className)}
     >
       <DappSkeleton className="h-3 w-18 max-w-[55%]" />
       <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
