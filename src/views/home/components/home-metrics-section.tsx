@@ -21,7 +21,7 @@ export function HomeMetricsSection() {
         data-metrics-panel
       >
         <div
-          className="pointer-events-none absolute inset-0 z-0 opacity-[0.82] [background:radial-gradient(18rem_7rem_at_50%_-2%,oklch(100%_0_0_/_16%),transparent_72%),repeating-conic-gradient(from_-90deg_at_50%_-12%,oklch(100%_0_0_/_10%)_0deg_0.28deg,transparent_0.28deg_2.4deg)] [mask-image:radial-gradient(ellipse_88%_160%_at_50%_0%,black_0%,black_54%,rgb(0_0_0_/_76%)_76%,transparent_100%)] max-dapp:hidden"
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.82] [background:var(--home-metrics-rays)] [mask-image:radial-gradient(ellipse_88%_160%_at_50%_0%,black_0%,black_54%,rgb(0_0_0_/_76%)_76%,transparent_100%)] max-dapp:hidden"
           aria-hidden="true"
         />
         {metrics.map((metric) => (

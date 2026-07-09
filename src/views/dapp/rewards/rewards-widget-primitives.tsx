@@ -53,7 +53,7 @@ export function RewardsProgressRow({
 
 /** sm+pill already w-full via Button SSOT; lock min-h to 4175 40px (sm default 36). */
 export const rewardsClaimAction = tv({
-  base: 'mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!',
+  base: 'mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2]',
 })
 
 export const rewardsBalanceHeaderMeta = tv({

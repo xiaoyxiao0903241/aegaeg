@@ -23,11 +23,11 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
     <Card
       surface="outlined"
       className={cn(
-        'relative isolate h-72 overflow-hidden rounded-lg border-0 p-0 text-white shadow-token transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(135deg,oklch(100%_0_0_/_16%),transparent_58%)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-dapp:flex max-dapp:h-auto max-dapp:min-h-44 max-dapp:flex-col max-dapp:justify-start max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-5',
+        'relative isolate h-72 overflow-hidden rounded-lg border-0 p-0 text-white shadow-token transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[image:var(--home-token-sheen)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-dapp:flex max-dapp:h-auto max-dapp:min-h-44 max-dapp:flex-col max-dapp:justify-start max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-5',
         'max-dapp:hover:shadow-none',
-        'hover:shadow-[0_20px_56px_oklch(22%_0.04_265_/_18%)] hover:saturate-[1.02]',
+        'hover:shadow-[var(--home-token-hover-shadow)] hover:saturate-[1.02]',
         'hover:before:opacity-100',
-        'hover:[&_[data-token-tile]]:border-white/50 hover:[&_[data-token-tile]]:bg-white/20 hover:[&_[data-token-tile]]:shadow-[0_10px_26px_oklch(0%_0_0_/_12%)]',
+        'hover:[&_[data-token-tile]]:border-white/50 hover:[&_[data-token-tile]]:bg-white/20 hover:[&_[data-token-tile]]:shadow-[var(--home-token-tile-shadow)]',
         'hover:[&_[data-token-tile]_img]:saturate-[1.08] hover:[&_[data-token-tile]_img]:contrast-[1.04]',
         'hover:[&_[data-token-shape-wrap]]:opacity-100 hover:[&_[data-token-shape-wrap]]:saturate-[1.08]',
         token.className,

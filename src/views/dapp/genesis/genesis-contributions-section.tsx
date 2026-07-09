@@ -109,8 +109,8 @@ export function GenesisContributionsSection() {
           footer={
             sessionReady && !contributionsTable.requiresAuth ? (
               <DappTablePagination
-                // 4175 footer: plain text-xs → computed lh 16 (not leading-normal 18)
-                className="[&_p]:!text-xs [&_p]:!leading-[16px] [&_p]:!tracking-normal [&_span]:!text-xs [&_span]:!leading-[16px] [&_span]:!tracking-normal"
+                // 4175 footer: text-xs / lh 16 — caption size + leading-4 (no ! override)
+                className="[&_p]:text-xs [&_p]:leading-4 [&_span]:text-xs [&_span]:leading-4"
                 embedded
                 onPageChange={setContributionsPage}
                 page={contributionsPage}

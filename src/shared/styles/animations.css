@@ -145,10 +145,10 @@ button[aria-busy='true'] > .aegis-btn-loading-icon,
 @keyframes roadmap-active-ripple {
   0%,
   100% {
-    box-shadow: 0 0 0 6px oklch(94.92% 0.0224 45.6 / 68%);
+    box-shadow: var(--roadmap-ripple-68);
   }
   48% {
-    box-shadow: 0 0 0 9px oklch(94.92% 0.0224 45.6 / 100%);
+    box-shadow: var(--roadmap-ripple-100);
   }
 }
 

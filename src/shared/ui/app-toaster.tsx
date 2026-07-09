@@ -9,9 +9,9 @@ const toasterStyle = {
   '--gap': '0.875rem',
   '--width': toastMaxWidth,
   '--border-radius': '9999px',
-  '--normal-bg': 'oklch(0% 0 0)',
-  '--normal-border': 'oklch(100% 0 0 / 12%)',
-  '--normal-text': 'oklch(100% 0 0)',
+  '--normal-bg': 'var(--toaster-bg)',
+  '--normal-border': 'var(--toaster-border)',
+  '--normal-text': 'var(--toaster-text)',
 } as CSSProperties
 
 const toastStyle = {

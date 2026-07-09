@@ -244,6 +244,9 @@
   --shadow-primary-hover-xl: 0 0.875rem 1.75rem rgba(18, 26, 51, 0.18);
   --shadow-coral-sm: 0 0.5rem 1.375rem rgba(232, 106, 67, 0.14);
   --shadow-token: 0 1rem 3.125rem rgba(18, 26, 51, 0.12);
+  --shadow-drawer: var(--app-shadow-drawer);
+  --shadow-primary-orb: var(--app-shadow-primary-orb);
+  --shadow-roadmap-ring: var(--app-shadow-roadmap-ring);
 
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;
@@ -395,6 +398,26 @@
   --app-progress-meter-height: 0.4375rem;
   --app-sheet-max-height: 40rem;
   --app-scroll-fade: 1.5rem;
+
+  /* Glass / drawer / wallet chrome (engineering — not Figma color axes) */
+  --glass-drawer: linear-gradient(165deg, oklch(100% 0 0 / 92%), oklch(100% 0 0 / 78%));
+  --glass-panel: linear-gradient(165deg, oklch(100% 0 0 / 96%), oklch(100% 0 0 / 86%));
+  --app-shadow-drawer: 1.25rem 0 3.75rem oklch(18% 0.04 265 / 25%);
+  --app-shadow-primary-orb: 0 0.875rem 2.125rem oklch(66.83% 0.1625 36.6 / 40%), inset 0 1px 0 oklch(100% 0 0 / 50%);
+  --app-shadow-roadmap-ring: 0 0 0 8px oklch(94.92% 0.0224 45.6 / 96%);
+  --roadmap-ripple-68: 0 0 0 6px oklch(94.92% 0.0224 45.6 / 68%);
+  --roadmap-ripple-100: 0 0 0 9px oklch(94.92% 0.0224 45.6 / 100%);
+  --toaster-bg: oklch(0% 0 0);
+  --toaster-border: oklch(100% 0 0 / 12%);
+  --toaster-text: oklch(100% 0 0);
+  --icon-info-disc: #9999a6;
+  --icon-info-glyph: #4d4d59;
+  --home-token-sheen: linear-gradient(135deg, oklch(100% 0 0 / 16%), transparent 58%);
+  --home-token-hover-shadow: 0 20px 56px oklch(22% 0.04 265 / 18%);
+  --home-token-tile-shadow: 0 10px 26px oklch(0% 0 0 / 12%);
+  --home-hero-wash: linear-gradient(180deg, var(--background), oklch(95.6% 0 0));
+  --home-hero-glow: radial-gradient(circle, oklch(94% 0.035 45 / 42%), transparent 58%);
+  --home-metrics-rays: radial-gradient(18rem 7rem at 50% -2%, oklch(100% 0 0 / 16%), transparent 72%), repeating-conic-gradient(from -90deg at 50% -12%, oklch(100% 0 0 / 10%) 0deg 0.28deg, transparent 0.28deg 2.4deg);
 
   --dapp-table-cell-min-width: var(--app-table-cell-min-width);
   --dapp-table-empty-padding: var(--app-table-empty-padding);

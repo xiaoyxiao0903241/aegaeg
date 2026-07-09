@@ -50,7 +50,7 @@ export function HomeHeroSection() {
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative flex min-h-176 items-start overflow-hidden bg-[linear-gradient(180deg,var(--background),oklch(95.6%_0_0))] pt-22 pb-24 max-tablet:min-h-0 max-tablet:pt-16 max-tablet:pb-20 max-dapp:block max-dapp:min-h-192 max-dapp:bg-background max-dapp:pt-9 max-dapp:pb-12"
+      className="relative flex min-h-176 items-start overflow-hidden bg-[image:var(--home-hero-wash)] pt-22 pb-24 max-tablet:min-h-0 max-tablet:pt-16 max-tablet:pb-20 max-dapp:block max-dapp:min-h-192 max-dapp:bg-background max-dapp:pt-9 max-dapp:pb-12"
     >
       <HeroRaysBackground className={heroRaysHomeClass} variant="home" />
       <div className="container relative z-1 grid min-h-128 grid-cols-[minmax(0,1fr)_auto] items-center justify-between gap-16 max-tablet:grid-cols-1 max-tablet:justify-items-center max-tablet:gap-8 max-tablet:text-center max-dapp:flex max-dapp:min-h-0 max-dapp:flex-col max-dapp:items-center max-dapp:gap-4 max-dapp:text-center">
@@ -100,7 +100,7 @@ export function HomeHeroSection() {
         >
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-px -left-2 aspect-square w-[142%] max-w-160 rounded-full bg-[radial-gradient(circle,oklch(94%_0.035_45_/_42%),transparent_58%)] opacity-[0.28] blur-[0.625rem] max-tablet:left-1/2 max-tablet:-translate-x-1/2 max-dapp:hidden"
+            className="pointer-events-none absolute -top-px -left-2 aspect-square w-[142%] max-w-160 rounded-full bg-[image:var(--home-hero-glow)] opacity-[0.28] blur-[0.625rem] max-tablet:left-1/2 max-tablet:-translate-x-1/2 max-dapp:hidden"
           />
           <div className="absolute top-0 left-2.5 aspect-[338/510] w-11/12 max-w-84 [animation:character-float_6s_ease-in-out_infinite] max-tablet:left-1/2 max-tablet:aspect-[278/420] max-tablet:w-72 max-tablet:max-w-72 max-tablet:-translate-x-1/2 max-tablet:[animation-name:character-float-centered] max-dapp:top-0 max-dapp:left-0 max-dapp:aspect-[294/342] max-dapp:w-72 max-dapp:translate-x-0 max-dapp:[animation-name:character-float-mobile]">
             <video

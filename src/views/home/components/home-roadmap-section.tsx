@@ -60,8 +60,7 @@ export function HomeRoadmapSection() {
                 phase.state === 'done' || phase.state === 'current'
                   ? 'bg-primary text-white dapp:border-primary'
                   : 'border-[3px] border-border bg-card text-muted-foreground',
-                phase.state === 'current' &&
-                  'dapp:shadow-[0_0_0_8px_oklch(94.92%_0.0224_45.6_/_96%)]',
+                phase.state === 'current' && 'dapp:shadow-roadmap-ring',
                 index < content.phases.length - 1 &&
                   "after:absolute after:left-3.5 after:top-8 after:h-24 after:w-[3px] after:rounded-[0.125rem] after:content-[''] dapp:after:hidden",
                 index < content.phases.length - 1 &&

@@ -199,7 +199,7 @@ export function WalletDetailsModal({
         'max-dapp:px-6 max-dapp:pb-[max(24px,env(safe-area-inset-bottom))] max-dapp:pt-3',
         'dapp:rounded-lg dapp:border dapp:border-border/80 dapp:px-7 dapp:pb-7 dapp:pt-8',
         'text-center',
-        'bg-[linear-gradient(165deg,oklch(100%_0_0/96%),oklch(100%_0_0/86%))] backdrop-blur-xl',
+        'bg-[image:var(--glass-panel)] backdrop-blur-xl',
         'dapp:shadow-modal-panel',
       )}
     >
@@ -220,7 +220,7 @@ export function WalletDetailsModal({
 
       <div
         aria-hidden="true"
-        className="mx-auto mb-5 mt-2 grid size-20 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_0.875rem_2.125rem_oklch(66.83%_0.1625_36.6/40%),inset_0_1px_0_oklch(100%_0_0/50%)] dapp:mt-0"
+        className="mx-auto mb-5 mt-2 grid size-20 place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb dapp:mt-0"
       >
         <Wallet className="size-8" strokeWidth={1.75} />
       </div>
