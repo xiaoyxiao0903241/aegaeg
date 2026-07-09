@@ -49,19 +49,16 @@ const faqList = tv({
   },
 })
 
-function FaqChevron({ open }: { open: boolean }) {
+/** Chevron motion SSOT: CSS via `[data-faq-item][data-state]` — rotate + color; do not swap path. */
+function FaqChevron() {
   return (
     <svg
       aria-hidden="true"
-      className={cn(
-        'size-[1.125rem] shrink-0 transition-[transform,color] duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)]',
-        open ? 'rotate-180 text-primary' : 'rotate-0 text-foreground/40',
-      )}
+      className="faq-chevron size-[1.125rem] shrink-0"
       fill="none"
       viewBox="0 0 18 18"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Closed = chevron down; open rotates 180° to point up — do not swap path. */}
       <path
         d="M4.5 6.75L9 11.25L13.5 6.75"
         stroke="currentColor"
@@ -162,7 +159,7 @@ export function FaqList({
                     <Text variant="question" className={styles.question()}>
                       {item.q}
                     </Text>
-                    <FaqChevron open={isOpen} />
+                    <FaqChevron />
                   </Accordion.Trigger>
                 </Accordion.Header>
                 <Accordion.Content

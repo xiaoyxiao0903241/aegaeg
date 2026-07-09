@@ -498,6 +498,13 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | 恢复 `[data-open=true] .overflow-visible { overflow: visible }` | REGRESSION→fixed | 基类 `overflow:hidden` 盖住 Tailwind；Rewards 表卡 `shadow-card` 被裁 |
 | settle 后再挂 `overflow-visible` | KEEP | 展开高度动画仍可用 |
 
+## 5ah. FAQ chevron rotate + color（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| Chevron 改 CSS `.faq-chevron` + `[data-state=open]` | REGRESSION→fixed | 旋转 + 颜色同 280ms；不靠 React 条件 class |
+| 关态 `foreground@40%` → 开态 `primary` | INTENTIONAL | 与展开态强调色一致 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -537,3 +544,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.31 | §5ae flb → `rounded-control`；全表表头 ≡ Community muted |
 | v2.32 | §5af Button/flb 轻微 scale（替 translate lift） |
 | v2.33 | §5ag 恢复 collapsible overflow-visible 覆盖（表卡阴影） |
+| v2.34 | §5ah FAQ chevron CSS rotate + color |

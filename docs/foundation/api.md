@@ -175,7 +175,7 @@
 | `CalloutCard` | promo / pcard / tc | `title`, `description`, `cta` | 深色 CTA / 提示卡 |
 
 **内部约定**：
-- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron **固定 path + `rotate-180`**（禁换 path）；展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
+- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron：固定 path + CSS `.faq-chevron`（`[data-faq-item][data-state=open]` → `rotate(180deg)` + `color: var(--primary)`；关态 `foreground@40%`）；禁换 path / 禁 React 条件 class 切旋转。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · label `eyebrow` 11/`tracking-[0.88px]`/`normal-case` · title `headline` 16/`-0.48px` · body/cta `13px` · CTA `text-primary` semibold（禁 H5 平行字阶）。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
@@ -250,3 +250,4 @@
 | v2.18 | flb → `rounded-control`（禁 `rounded-[11px]`）；全表表头 ≡ Community muted |
 | v2.19 | Button / flb：translate lift → 轻微 scale（H5 按下可感知） |
 | v2.20 | Collapsible：恢复 overflow-visible CSS 覆盖（表卡阴影） |
+| v2.21 | FAQ chevron：CSS data-state 驱动 rotate + color |
