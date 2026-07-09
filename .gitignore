@@ -9,6 +9,8 @@ playwright-report
 env/.active
 .DS_Store
 *.tsbuildinfo
+__pycache__/
+*.pyc
 
 references/
 # 忽略 docs 下大型归档与无关配置；SSOT markdown 可提交

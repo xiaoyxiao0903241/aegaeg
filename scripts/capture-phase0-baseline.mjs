@@ -173,7 +173,7 @@ function buildStyleStackMarkdown(captures) {
     '| Button | `src/shared/ui/button.tsx` | variant × size × shape |',
     '| Card | `src/shared/ui/card.tsx` surface | 见 docs/foundation/api.md |',
     '| FaqList | `src/shared/ui/faq-list.tsx` | question + detail |',
-    '| AmountInput | `src/shared/ui/amount-input.tsx` | amount token |',
+    '| AmountBox | `src/shared/ui/amount-box.tsx` | amount token |',
     '',
     '## Swap 探针 call site（top 20+）',
     '',

@@ -11,7 +11,7 @@
 | Home / 动效 / 性能 | [`homepage-architecture.md`](./homepage-architecture.md) → animation / static-plan / load-optimization |
 | DApp 业务 / Web3 | [`DAPP-GUIDE.md`](./DAPP-GUIDE.md) |
 | 合约 | [`contract.md`](./contract.md) |
-| Figma 导出（可选） | [`figma-export/README.md`](./figma-export/README.md) |
+| Figma 导出归档（只读） | [`figma-export/README.md`](./figma-export/README.md) — 历史 raw/frames；不再维护提取脚本 |
 
 ## Foundation 双核
 

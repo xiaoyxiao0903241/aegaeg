@@ -128,7 +128,7 @@
 | surface | Elevation | radius | padding | 用途 |
 |---------|-----------|--------|---------|------|
 | outlined | — | `rounded-md` (16px) | `p-3.5` (14px) | 标准边框卡（wcol box、meta、mode card、`DappSideCard`） |
-| elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、`SwapProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影） |
+| elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、`SwapProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影） |
 | soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18） |
 | inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（`WidgetPromoCard`） |
 
@@ -171,10 +171,10 @@
 | `TopBar` | topbar / tb / tr | `wallet`, `network`, `locale` | 全局 shell |
 | `NavRail` | rail / rit | `items`, `activeTab`, `onSelect` | 4 页共用 |
 | `PanelHeader` | wh | `title`, `subtitle`, `action` | 4 页共用 |
-| `AmountInput` | box / tk / rr / mx | `token`, `value`, `balance`, `onMax` | 真实交互行为 |
+| `AmountBox` | box / tk / rr / mx | `token`, `value`, `balance`, `sessionReady` | 金额输入卡 |
 | `Segment` | pcts / pct / htab | `options`, `value`, `onChange` | 高频模式 |
 | `MetricCard` | sc / mc | `label`, `value`, `hint`, `tone` | 跨页指标 |
-| `DataTable` | tbl / trow / cell | `columns`, `rows`, `empty` | cell 614 次 |
+| `ResponsiveTable` | tbl / trow / cell | `headers`, `rows`, … | DApp 表；壳见 `DappTableCard` |
 | `Accordion` | qa / qhd | `items`, `variant` | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`） |
 | `WidgetPromoCard` | promo / pcard | children | 深色 CTA 卡（`Card inverse`）；替代已删 `CalloutCard` |
 
@@ -190,7 +190,7 @@
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
 - `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-[6px]` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button；下拉菜单不在该节点，保留 portal。
 - `SwapFlowButton`（`swap-widget-composites.tsx`）：Figma `flb` — 34×34 · `rounded-control` · border · card；Trade flip（`interactive`）/ Flash divider 共用；**不是** `IconButton`（详情折叠）。禁 call site 再写 `rounded-[11px]`。
-- `ResponsiveTable` / `DataTable` 表头：≡ Community「我的社区成员」— `text-muted-foreground`；禁 tab 特判 `text-foreground/30` / `headCellClassName` 分叉。
+- `ResponsiveTable` 表头：≡ Community「我的社区成员」— `text-muted-foreground`；禁 tab 特判 `text-foreground/30` / `headCellClassName` 分叉。
 - `DappTableCard`：外框 **无** `border`（仅 `shadow-card`）；表头/行/页脚内部分隔线保留。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
@@ -233,6 +233,7 @@
 
 | 版本 | 说明 |
 |------|------|
+| v3.4 | 删死文件 `DataTable` / `AmountInput`；Composite 表改 `AmountBox` + `ResponsiveTable` |
 | v3.3 | `FieldActionChip` / `AegisDialogClose` 替代 `*Class` 常量；模块级样式改 `tv()` |
 | v3.2 | `SwapFlowButton`；断点白名单无 `shell-layout.ts` |
 | v3.1 | panel/section tracking `-0.04em`（≡ Figma Genesis 标题）；正文保持 `-0.02em` |

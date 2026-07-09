@@ -110,10 +110,3 @@ function Value({ className, ...props }: Omit<TextProps, 'variant'>) {
   )
 }
 
-export { Header as CardHeader }
-export { Title as CardTitle }
-export { Description as CardDescription }
-export { Content as CardContent }
-export { Footer as CardFooter }
-export { Label as CardLabel }
-export { Value as CardValue }
