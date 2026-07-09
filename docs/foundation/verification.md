@@ -472,7 +472,7 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 |------|------|------|
 | `CommunityProgramCard` ≡ Figma `4040:7354` | REGRESSION→fixed | pad/gap/字阶/字距；去 H5 平行字阶与 underline CTA |
 | FAQ `FaqChevron` 换 path → 固定 path + `rotate-180` | REGRESSION→fixed | 箭头转动；色仍 open=`primary` |
-| Collapsible `overflow-visible` 打断 `0fr→1fr` | REGRESSION→fixed | settle 后再挂 overflow；删 CSS 永久 `overflow-visible` 覆盖 |
+| Collapsible `overflow-visible` 打断 `0fr→1fr` | INTENTIONAL | settle 后再挂；CSS 覆盖见 §5ag（删覆盖会裁表卡阴影） |
 
 ## 5ae. flb `rounded-control` + 全表表头 ≡ Community（2026-07-09）
 
