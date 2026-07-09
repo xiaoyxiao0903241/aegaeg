@@ -44,7 +44,7 @@ export const buttonVariants = tv({
       ],
       ghost: [
         'gap-2 border border-border bg-card text-muted-foreground',
-        'hover:border-primary hover:text-primary',
+        `${liftHoverClass} hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:text-primary`,
         disabledMutedClass,
       ],
       link: [

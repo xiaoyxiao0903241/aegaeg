@@ -5,6 +5,7 @@ import { dappIconClass } from '~/app/dapp-icon-scale'
 import { useI18n } from '~/i18n/use-i18n'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/swap/token-amount'
 import { cn } from '~/shared/lib/utils'
+import { Button } from '~/shared/ui/button'
 import { Input } from '~/shared/ui/input'
 import { Text, textVariants } from '~/shared/ui/text'
 import {
@@ -134,18 +135,9 @@ export function SwapSlippageModal({
           </div>
         </div>
 
-        <button
-          className={cn(
-            'flex h-11 w-full cursor-pointer items-center justify-center rounded-full',
-            'bg-primary transition-[transform,box-shadow] duration-180 ease-out hover:-translate-y-px hover:shadow-primary-hover',
-          )}
-          onClick={handleConfirm}
-          type="button"
-        >
-          <Text as="span" variant="headline" tone="inverse">
-            {t.common.confirm}
-          </Text>
-        </button>
+        <Button onClick={handleConfirm} shape="pill" size="md" type="button" variant="primary">
+          {t.common.confirm}
+        </Button>
       </div>
     </AegisResponsiveDialog>
   )

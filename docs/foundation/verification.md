@@ -329,6 +329,15 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | `DappTableCard` / Shell → `Card elevated` | INTENTIONAL | elevation 来自 surface；壳抹 `rounded-2xl`+border+`p-0`（≠ soft E1） |
 | `aegis-thirdweb-button*` → `Button` | DEFER | 可迁；高度 36/40 vs sm/md 42/44、玻璃底需 density 或 className；另切片 |
 
+## 5p. Button hover 统一（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| Community shareholder 去 `shadow-primary-hover-xl` | INTENTIONAL | 与 Swap/Claim 同用 `shadow-primary-hover` |
+| `ghost` 补 lift + focus-visible | INTENTIONAL | 与 primary/secondary 同 lift 契约 |
+| Slippage Confirm → `Button primary md pill` | INTENTIONAL | 删手写 hover |
+| wallet `shadow-primary-hover-lg` | DEFER | thirdweb CSS 另切片 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -350,3 +359,4 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.13 | §5m Card surface 契约：promo / CommunityStat 消叠影 |
 | v2.14 | §5n `dappDarkBanner` 暗色横幅 SSOT |
 | v2.15 | §5o ProgramCard / DappTableCard → elevated；thirdweb→Button DEFER |
+| v2.16 | §5p Button hover SSOT |

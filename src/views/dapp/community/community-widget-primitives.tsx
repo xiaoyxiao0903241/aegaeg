@@ -29,9 +29,9 @@ const communityCopyButton = tv({
   base: 'grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent',
 })
 
-/** Spacing / visibility only — height from Button `sm` + `pill`. */
+/** Spacing / visibility only — hover from Button `primary` SSOT. */
 export const communityGenesisCta = tv({
-  base: 'mt-4 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',
+  base: 'mt-4 max-dapp:hidden',
 })
 
 export function CommunityReferralLinkCard({

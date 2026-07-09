@@ -72,10 +72,15 @@
 - `lg` = **48**（`min-h-12`）· Home hero 等 · `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
 **暗色 promo CTA**：**38**（`min-h-9.5`）— 走 `DappActionButton density="inverse"`，**不是**第 4 个 size
 **Compound**：`size=sm|md` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
+**Hover SSOT**（全 variant 一致，禁 call site 叠 `shadow-primary-hover-*`）：
+- `primary`：lift `-translate-y-px` + `shadow-primary-hover`
+- `secondary`：lift + `shadow-card` + `border-coral-hover-border`
+- `ghost`：lift + `border-primary` / `text-primary`（无额外影）
+- `link`：无 lift / 无影
 **Typography**：`link` 用 `font-normal text-primary`，不 hand-roll 平行字阶文件
-**禁止**：call site 用 `!min-h-*` / `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 勿再叠平行 `max-dapp:min-h-*` 改高度
+**禁止**：call site 用 `!min-h-*` / `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 勿再叠平行 `max-dapp:min-h-*` 改高度；call site 叠 `hover:shadow-primary-hover-xl` 等改 hover
 **依赖**：P1-Text
-**探针**：home hero CTA · swap CTA · claim · genesis promo Join · connect promo
+**探针**：home hero CTA · swap CTA · claim · genesis promo Join · connect promo · community shareholder
 **Gate**：`variant` = **4**；`size` = **3**；`shape` = **2**
 
 ---
@@ -216,3 +221,4 @@
 | v2.5 | Card surface 契约：`SwapPromoCard` 去叠 `shadow-subtle`；浅色 `CommunityStatCard` → `soft`（sc≠ovc） |
 | v2.6 | `dappDarkBanner`：RewardsHero / GenesisGlobal 唯一暗色横幅 chrome；≠ Card inverse |
 | v2.7 | `SwapProgramCard` / `DappTableCard` 走 Card `elevated`；表壳保留 2xl+border；thirdweb 按钮迁 Button 另切片 |
+| v2.8 | Button hover SSOT：去 Community `shadow-primary-hover-xl`；ghost 对齐 lift；slippage Confirm → Button |
