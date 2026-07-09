@@ -36,6 +36,10 @@
 
 生产构建目标见 `vite.config.ts`（`chrome90`、`@vitejs/plugin-legacy`、lightningcss targets）。**勿删除** legacy polyfill / cascade-layer flatten / `legacy-breakpoints.css`。
 
+## React Runtime
+
+约定与质量切片门禁（Compiler / hooks / i18n / S5b）：[`docs/react-runtime.md`](../react-runtime.md)。
+
 ## 路径 SSOT（行为）
 
 | 主题 | 路径 |

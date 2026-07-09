@@ -21,18 +21,18 @@ import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
 
 export function GenesisPurchaseForm() {
+  'use memo'
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()
+  const setShares = genesis.setShares
+  const shares = genesis.shares
 
-  useEffect(() => {
-    genesis.setShares(0)
-  }, [genesis.setShares])
-
+  // Local input mirror of genesis.shares (widget resets shares on address change).
   const [sharesText, setSharesText] = useState('')
   useEffect(() => {
-    setSharesText(genesis.shares === 0 ? '' : String(genesis.shares))
-  }, [genesis.shares])
+    setSharesText(shares === 0 ? '' : String(shares))
+  }, [shares])
 
   const isMobileViewport = useMobileViewport()
   const sharesInputRef = useRef<HTMLInputElement>(null)
@@ -50,24 +50,24 @@ export function GenesisPurchaseForm() {
   const handleSharesChange = (value: string) => {
     if (value === '') {
       setSharesText('')
-      genesis.setShares(0)
+      setShares(0)
       return
     }
     if (genesis.maxShares <= 0) {
       setSharesText('')
-      genesis.setShares(0)
+      setShares(0)
       return
     }
     const parsed = Number.parseInt(value, 10)
     if (Number.isNaN(parsed)) return
     const clamped = Math.min(Math.max(parsed, 1), genesis.maxShares)
     setSharesText(String(clamped))
-    genesis.setShares(clamped)
+    setShares(clamped)
   }
 
   const handleSharesBlur = () => {
     if (sharesText === '' || Number.parseInt(sharesText, 10) < 1) {
-      genesis.setShares(0)
+      setShares(0)
       setSharesText('')
     }
   }
@@ -152,11 +152,11 @@ export function GenesisPurchaseForm() {
         onChange={handleSharesChange}
         onMax={() => {
           if (genesis.maxShares <= 0) {
-            genesis.setShares(0)
+            setShares(0)
             setSharesText('')
             return
           }
-          genesis.setShares(genesis.maxShares)
+          setShares(genesis.maxShares)
           setSharesText(String(genesis.maxShares))
         }}
         shareUnit={t.common.shareUnit}

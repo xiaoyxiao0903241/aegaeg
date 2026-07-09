@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { dappIcon } from '~/shared/ui/dapp-icon-scale'
@@ -35,13 +35,33 @@ export function SwapSlippageModal({
   onConfirm: (value: number) => void
 }) {
   const { messages: t } = useI18n()
-  const [draft, setDraft] = useState(String(slippage))
+  // Remount when opened so draft resets from current slippage without an effect.
+  return open ? (
+    <SwapSlippageModalOpen
+      key={slippage}
+      onConfirm={onConfirm}
+      onOpenChange={onOpenChange}
+      open={open}
+      slippage={slippage}
+      t={t}
+    />
+  ) : null
+}
 
-  useEffect(() => {
-    if (open) {
-      setDraft(String(slippage))
-    }
-  }, [open, slippage])
+function SwapSlippageModalOpen({
+  onConfirm,
+  onOpenChange,
+  open,
+  slippage,
+  t,
+}: {
+  open: boolean
+  slippage: number
+  onOpenChange: (open: boolean) => void
+  onConfirm: (value: number) => void
+  t: ReturnType<typeof useI18n>['messages']
+}) {
+  const [draft, setDraft] = useState(String(slippage))
 
   const draftValue = parseSlippageInput(draft)
 

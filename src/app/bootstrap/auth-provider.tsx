@@ -205,7 +205,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (walletAddress) {
       prevAddressRef.current = walletAddress
     }
-  }, [hasHydrated, isAuthenticated, walletAddress])
+  }, [hasHydrated, isAuthenticated, walletAddress, activeTab])
 
   /** Manual login (user pressed sign-in): always allowed, may prompt a signature. */
   const login = useCallback(async () => {

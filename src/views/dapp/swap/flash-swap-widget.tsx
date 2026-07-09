@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -27,6 +27,7 @@ export function FlashSwapWidget({
 }: {
   onSelectGenesis: () => void
 }) {
+  'use memo'
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swap = useFlashSwapWidgetContext()
@@ -42,35 +43,35 @@ export function FlashSwapWidget({
     walletReady: swap.walletReady,
   })
 
-  const flashSwapErrorMessages = useMemo(
-    () => ({
-      walletNotConnected: t.genesis.walletNotConnected,
-      insufficientAllowance: t.genesis.insufficientAllowance,
-      insufficientUsd1: t.genesis.insufficientUsd1,
-      purchaseUnavailable: t.genesis.purchaseUnavailable,
-      transactionCancelled: t.swap.transactionCancelled,
-    }),
-    [
-      t.genesis.insufficientAllowance,
-      t.genesis.insufficientUsd1,
-      t.genesis.purchaseUnavailable,
-      t.genesis.walletNotConnected,
-      t.swap.transactionCancelled,
-    ],
-  )
+  const flashSwapErrorMessages = {
+    walletNotConnected: t.genesis.walletNotConnected,
+    insufficientAllowance: t.genesis.insufficientAllowance,
+    insufficientUsd1: t.genesis.insufficientUsd1,
+    purchaseUnavailable: t.genesis.purchaseUnavailable,
+    transactionCancelled: t.swap.transactionCancelled,
+  }
 
   const showFlashSwapError = useCallback(
     (error: unknown) => {
-      const message = resolveFlashSwapUserMessage(error, flashSwapErrorMessages, t.wallet.transactionErrors)
+      const message = resolveFlashSwapUserMessage(
+        error,
+        flashSwapErrorMessages,
+        t.wallet.transactionErrors,
+      )
       if (message) toast.error(message)
     },
-    [flashSwapErrorMessages, t.wallet.transactionErrors],
+    // messages object is rebuilt each render; resolve is cheap — depend on t
+    [t],
   )
 
-  const submitErrorMessage = useMemo(() => {
-    if (!swap.error || swap.isSubmitting) return null
-    return resolveFlashSwapUserMessage(swap.error, flashSwapErrorMessages, t.wallet.transactionErrors)
-  }, [flashSwapErrorMessages, swap.error, swap.isSubmitting, t.wallet.transactionErrors])
+  const submitErrorMessage =
+    !swap.error || swap.isSubmitting
+      ? null
+      : resolveFlashSwapUserMessage(
+          swap.error,
+          flashSwapErrorMessages,
+          t.wallet.transactionErrors,
+        )
 
   const handleSubmit = useCallback(async () => {
     const result = await swap.submit()

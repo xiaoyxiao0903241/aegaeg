@@ -1,6 +1,7 @@
 import legacy from '@vitejs/plugin-legacy'
+import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 import { flattenCssCascadeLayersPlugin } from './vite-plugins/flatten-css-cascade-layers'
@@ -90,6 +91,11 @@ export default defineConfig(({ command }) => ({
   },
   plugins: [
     react(),
+    // React Compiler — annotation mode first (S2 canary); flip to default after Chrome90 smoke.
+    // See docs/react-runtime.md. Must not share a PR with auth/home-reveal/memo deletion.
+    babel({
+      presets: [reactCompilerPreset({ compilationMode: 'annotation' })],
+    }),
     tailwindcss(),
     flattenCssCascadeLayersPlugin(),
     legacyBootFirstPlugin(),

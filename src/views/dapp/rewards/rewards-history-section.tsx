@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import {
   useCommunityFundLogs,
@@ -78,10 +78,7 @@ export function RewardsHistorySection() {
     sessionReady && isSuperCommunity,
   )
 
-  const historyStatusLabels = useMemo(
-    () => t.rewards.logStatus,
-    [t.rewards.logStatus],
-  )
+  const historyStatusLabels = t.rewards.logStatus
 
   const referralHistoryRows =
     rewardLogs?.items.map((item) => mapRewardLogToRow(item, historyStatusLabels)) ?? []

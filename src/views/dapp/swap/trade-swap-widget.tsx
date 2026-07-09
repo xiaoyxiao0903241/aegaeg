@@ -34,6 +34,7 @@ export function TradeSwapWidget({
 }: {
   onSelectGenesis: () => void
 }) {
+  'use memo'
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swap = useTradeSwapWidgetContext()

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Wallet, X } from 'lucide-react'
 import { useActiveAccount, useActiveWallet, useDisconnect } from '~/views/dapp/web3/thirdweb-react'
@@ -48,11 +48,10 @@ export function WalletDetailsModal({
     open ? walletAddress : undefined,
   )
 
-  useEffect(() => {
-    if (!open) {
-      setCopied(false)
-    }
-  }, [open])
+  const handleOpenChange = (next: boolean) => {
+    if (!next) setCopied(false)
+    onOpenChange(next)
+  }
 
   if (!walletAddress) {
     return null
@@ -93,7 +92,7 @@ export function WalletDetailsModal({
 
   return (
     <AegisResponsiveDialog
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay backdrop-blur-sm"
       className={cn(

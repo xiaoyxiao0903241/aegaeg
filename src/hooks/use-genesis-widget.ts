@@ -88,7 +88,7 @@ export function useGenesisWidget() {
   const isBound = isBoundQuery.data
   const needsReferralBind = walletReady && isBound === false
 
-  const phases = phasesQuery.data ?? []
+  const phases = useMemo(() => phasesQuery.data ?? [], [phasesQuery.data])
   const activePhase = activePhaseQuery.data ?? null
   const sharePriceWei = resolveSharePriceWei(activePhase)
   const purchaseAmount = useMemo(

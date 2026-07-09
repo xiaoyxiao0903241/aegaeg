@@ -9,7 +9,6 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Text } from '~/shared/ui/text'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
-import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
 
 type RailIndicator = {
   height: number
@@ -33,9 +32,8 @@ const railItem = tv({
   },
 })
 
-function useRailTooltips(activeTab: DappTab) {
+function useRailTooltips() {
   const { messages: t } = useI18n()
-  const { rateLabel } = usePairSpotRate(activeTab === 'swap')
   const genesis = useGenesisWidgetContext()
 
   return useMemo(
@@ -54,7 +52,6 @@ function useRailTooltips(activeTab: DappTab) {
       genesis.activeSeasonNumber,
       genesis.discountLabel,
       genesis.isLoading,
-      rateLabel,
       t,
     ],
   )
@@ -70,7 +67,7 @@ export function DappRail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const tooltips = useRailTooltips(activeTab)
+  const tooltips = useRailTooltips()
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
   const [indicator, setIndicator] = useState<RailIndicator | null>(null)

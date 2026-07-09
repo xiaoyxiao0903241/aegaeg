@@ -66,7 +66,7 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      ...reactHooks.configs['recommended-latest'].rules,
       /* 项目内大量合法的 effect 同步 / render 期 ref 镜像；保留为 warn 避免阻塞 CI */
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/refs': 'warn',
