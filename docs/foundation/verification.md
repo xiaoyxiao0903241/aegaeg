@@ -1,124 +1,80 @@
-# Foundation 验收（L2 · P0–P8）
+# Foundation 验收（SSOT）
 
 > **流程**：[`runbook.md`](./runbook.md) · **API**：[`api.md`](./api.md)  
-> **Baseline**：当前分支 + Figma 正式稿（不再以 Phase0 / 4175 快照为结构 SSOT）
+> **Baseline**：当前分支 + Figma 正式稿
 
 ---
 
-## 1. 双 Gate
+## 1. 双 Gate（每个切片）
 
-| Gate | 含义 | 命令 |
-|------|------|------|
-| **API gate** | 代码键数 = api.md 键数，无 legacy API 命中 | `rg` 检查 + tsc |
-| **视觉 gate** | heatmap 红块标签 + 人工对照表；scoped 探针仅确认 | `pnpm compare:screenshots` / 登录态 heatmap |
+| Gate | 含义 | 怎么验 |
+|------|------|--------|
+| **API** | 公开轴 / 键数与 api.md 一致；无 legacy API | `rg` + `tsc` |
+| **视觉** | 红块标签清零或已标；人工对照 Figma / 当前 UI | heatmap 或肉眼；scoped 探针仅确认 |
 
-用户已确认：**红块 + 同位置源码优先**；整页 `%` 与全页 DOM 探针不作发现工具；scoped 探针仅肉眼分不清或修完硬验收。
+**发现序**：红块 + 同位置源码优先。整页 `%`、全页 DOM 探针不作发现工具。
 
----
-
-## 2. 每阶段验收清单
-
-### P0 Token
-- [x] `tokens.json` 源文件存在且结构合法
-- [x] `theme.css` / `tokens.ts` 可由脚本生成
-- [x] 工程色（border-subtle / surface-glass / pill-muted-bg / coral-hover-border / status-success-bg / surface-wash-strong）已迁入 `tokens.json`；死 legacy（ink/faint/on-dark 等）已从生成器删除
-- [x] `pnpm exec tsc --noEmit` 通过
-- [x] `pnpm exec stylelint src/shared/styles/tokens/theme.css` 通过
-- [x] legacy color/type alias 已在 P8 删除（见下）
-
-### P1 Text
-- [ ] `text.tsx` 只有 10 variant + 7 tone
-- [ ] `rg 'panel-title|table-cell|on-dark' src --glob '*.{tsx,ts}'` 零命中
-- [ ] 全仓 `variant=` / `tone=` 已迁移
-- [ ] 人工对照表确认每个子组件样式对齐
-
-### P2 Card
-- [ ] `card.tsx` 只有 4 surface（outlined/elevated/soft/inverse），无 `context`/`fill`/`radius` 轴
-- [ ] `rg 'surface="faq"|surface="promo"|surface="window"|surface="modal"|context=|fill=' src --glob '*.{tsx,ts}'` 零命中
-- [ ] 全仓 call site 迁移到新 surface
-
-### P3 Chip
-- [ ] `chip.tsx` 存在，3 variant × **3** size（sm/md/lg）× 2 shape × **4** tone（default/primary/coral/success）
-- [ ] pct / badge / tab 已替换为 Chip
-- [ ] `rg 'shape="chip"|variant="tab"' src --glob '*.{tsx,ts}'`（Button 的 tab）零命中
-- [ ] LIVE/MAX 用 `tone="coral"`，勿用 `tone="primary"` 冒充 `#c85c3f`
-
-### P4 Input
-- [ ] `input.tsx` 存在，3 variant：default/numeric/amount
-- [ ] `amount-input.tsx` 已合并或删除
-- [ ] genesis shares field 使用 `Input variant="numeric"`
-
-### P5 Button
-- [ ] `button.tsx` 4 variant × 3 size × 2 shape
-- [ ] `rg 'variant="tab"|shape="chip"' src/shared/ui/button.tsx` 零命中
-- [ ] link 内部使用 Text
-
-### P6 Composite
-- [ ] 9 个 Composite 文件存在：`top-bar.tsx` · `nav-rail.tsx` · `panel-header.tsx` · `amount-input.tsx` · `segment.tsx` · `metric-card.tsx` · `data-table.tsx` · `faq-list.tsx`（Accordion 行为）· `callout-card.tsx`
-- [ ] 每个 Composite 都有 ≥2 个 call site 或明确的全局 shell 职责
-- [ ] 无把 `box` / `dl` / `r` 等纯视觉层包装成 Composite
-
-### P7 按页替换
-- [x] Swap 页应用 Composite：`WidgetHeader` / `WidgetSubpageHeader` + `AmountBox` + `Segment` + `MetricCard` + `CalloutCard`
-- [x] Genesis 页应用 Composite：`WidgetHeader` + `AmountBox` + `Segment` + `MetricCard` + `DataTable` + `CalloutCard`
-- [x] Rewards 页应用 Composite：`WidgetHeader` + `DataTable` + `CalloutCard` + `Accordion`
-- [x] Community 页应用 Composite：`WidgetHeader` + `DataTable` + `CalloutCard`
-- [x] Home 页应用 Composite：`HomeSection` + `Text`/`Card` 新 API
-- [x] 已删除旧组件：`swap-amount-box.tsx` · `swap-widget-header.tsx` · `swap-widget-primitives.tsx`
-- [x] `pnpm exec tsc --noEmit` 通过
-- [x] `pnpm run build` 通过
-- [ ] 人工对照表确认（用户后续进行）
-
-### P8 清债
-- [x] 全站 `dapp-type-scale.ts` 删除
-- [x] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中（仅注释）
-- [x] 删除 `theme.css` 中 `@deprecated legacy colors` 与 `legacy type aliases` 静态块（`generate-tokens.mjs` 已移除；仍用色进 `tokens.json`）
-- [x] `.stylelintrc.json` 临时规则保留：生成文件 hex+oklch 双声明仍需（非临时债）
-- [ ] `docs/foundation/` 与 `SKILL.md` 命名与 api.md 一致（持续）
+**标签**：`REGRESSION` 必修 · `INTENTIONAL` 须理由 · `IGNORE`（动态数 / 1–2px 取整 / 环境差）。
 
 ---
 
-## 3. 常用命令
+## 2. 日常最小命令
 
 ```bash
-# TypeScript
+pnpm build:tokens          # 改 tokens.json 后
 pnpm exec tsc --noEmit
-
-# Lint（关注 src/ 错误，tmp/ 脚本错误可后续清理）
-pnpm lint:all
-
-# 4175 parity（用户不强制，作为辅助）
-# `dev:baseline` 会把当前仓库 `.env` / `.env.local` 同步到 worktree，再启 4175。
-# 改 env 后必须重启 baseline（Vite 只在启动时注入）。跳过同步：AEGIS_DEV_BASELINE_SKIP_ENV_SYNC=1
-pnpm dev:baseline
-pnpm capture:phase0-baseline
-pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
-
-# legacy API 检查
-rg 'panel-title|table-cell|on-dark|text-ink-|text-faq-text|coral-bright' src --glob '*.{tsx,ts}'
-rg 'surface="faq"|surface="promo"|surface="window"|surface="modal"|context=|fill=' src --glob '*.{tsx,ts}'
-rg 'variant="tab"|shape="chip"' src/shared/ui/button.tsx
+pnpm exec eslint <paths>
+# 可选视觉：pnpm compare:screenshots
 ```
 
 ---
 
-## 4. 人工对照表模板
+## 3. 切片记录（历史 + 增量）
 
-每个页面/组件替换后填写：
+> 以下 §5* 为已落地切片标签，**保留作回归记忆**。新切片追加一节，勿改旧结论除非回滚。
+
+### 快速索引
+
+| 主题 | 节 |
+|------|-----|
+| 视觉 SSOT / baseline | §5g |
+| Button / flb 动效 | §5ac · §5af · §5aj · §5ak |
+| 表头 / flb radius | §5ae |
+| FAQ / Collapsible / Pagination | §5ad · §5ag · §5ah · §5ai |
+| CommunityProgramCard coral | §5al |
+| Text tracking（panel/section） | §5am |
+| 分页 Figma | §5u |
+| Card / Metric / dark banner | §5m–§5o |
+
+---
+
+## 5. 历史切片标签
+
+> 已落地切片的回归记忆。新切片追加一节；勿改旧结论除非回滚。
+
+### 对照表模板（新切片）
 
 ```text
 组件: <path>
-Figma 层: <layer>
-变更前: <className / 旧 API>
-变更后: <新 Component + props/className>
-样式对齐: Y / N / 差异说明
-差异位置: <具体 selector 或 class>
-是否可接受: <用户勾选>
+Figma: <node>
+变更: <旧 → 新>
+标签: REGRESSION|INTENTIONAL|IGNORE
+可接受: Y/N
+```
+
+### 可选回归命令
+
+```bash
+pnpm exec tsc --noEmit
+pnpm lint:all
+# 可选：相对旧 worktree
+pnpm compare:screenshots
+rg 'panel-title|table-cell|on-dark|text-ink-|text-faq-text|coral-bright' src --glob '*.{tsx,ts}'
 ```
 
 ---
 
-## 5. dapp-genesis-desktop 视觉标签（4175 vs 5174）
+## 5a. dapp-genesis-desktop 视觉标签（历史）
 
 | 红块 / 节点 | 标签 | 说明 |
 |-------------|------|------|
@@ -142,7 +98,7 @@ Figma 层: <layer>
 | 红块 / 节点 | 标签 | 说明 |
 |-------------|------|------|
 | Rewards h2 `Current tier` leading-snug + tracking -0.36px | REGRESSION→fixed | `DappContentHeading` 补 `group-data-[tab=rewards]` |
-| Rewards table head faint 30% | REGRESSION→fixed | `ResponsiveTable` `text-foreground/30`（禁贴回 `text-faint`） |
+| Rewards table head faint 30% | REGRESSION→fixed | 曾用 `foreground/30`；现统一 `muted-foreground`（见 §5ae） |
 | FAQ answer 盒高 42→70 | REGRESSION→fixed | DApp `FaqList`/`Accordion` answer `py-[1em]` + H5 `max-dapp:text-xs`（≡4175 text-sm/xs）；Home `variant=home` 无 py、H5 `text-xs` |
 | Invite step leading 1.3→1.5 | REGRESSION→fixed | 对齐 4175 `dappCaptionClass` |
 | Community/Rewards `DappSection` h3 lh 24.75→23.4 | REGRESSION→fixed | 同 §5 section leading 已对齐 1.3 |
@@ -249,7 +205,7 @@ Figma 层: <layer>
 | heading/section/panel-header 同值 tab 类合并 | INTENTIONAL | 视觉等价；Swap heading 仍 `-0.04em`；panel H5 swap `leading-[1.5]` 保留 |
 | InviteFlow 去 `group-data-[tab=community]` | INTENTIONAL | 仅 Community 挂载；布局数值不变 |
 | GenesisPromoCard `group-data-[tab=genesis]` | **KEEP** | 亦挂在 Swap footer；删守卫会污染 Swap |
-| `home-motion` / `wallet.css` 主路径 | **KEEP** | 见 runbook §6.1 保留清单 |
+| `home-motion` / `wallet.css` 主路径 | **KEEP** | 见 runbook §5 保留清单 |
 
 ## 5i. 左卡 / 标题 / pill CTA 统一（2026-07-09）
 
@@ -292,7 +248,7 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | trade / flash / shell DEV 警告抽 `DappInlineAlert` | INTENTIONAL | destructive border/wash/pad 一处；间距仍 call site |
 | `density=compact` vs `comfortable` | INTENTIONAL | widget `px-3.5 py-2.5` · shell `px-4 py-3` |
 | 未并入 CalloutCard / Card inverse | KEEP | 浅底告警 ≠ 深色 CTA 卡 |
-| Text tracking / tone 轴（标题等） | DEFER | A7 另切片；数字等宽已删（§5w） |
+| Text tracking / tone 轴（标题等） | INTENTIONAL | §5am：panel/section `-0.04em`；正文 `-0.02em` |
 
 ## 5m. Card surface / shadow 契约（2026-07-09）
 
@@ -527,6 +483,17 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | label/CTA `primary` → `text-coral` | REGRESSION→fixed | Figma `4040:7354` accent `#c85c3f`（≠ primary `#e86a43`） |
 | 锁 `11` / `16` / `13` 字阶 | INTENTIONAL | 对齐稿面；禁 H5 平行缩字 |
 
+## 5am. Text tracking ≡ Figma Genesis（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `panel` / `section` token `-0.02em` → `-0.04em` | REGRESSION→fixed | ≡ Figma `31:2` 标题（21→`-0.84px`、18→`-0.72px`） |
+| `WidgetHeader` 去 `tracking-[-0.02625em]` | REGRESSION→fixed | 跟 panel token；禁半档覆盖 |
+| MetaList / SwapMeta / Shares label 去 `tracking-normal` | REGRESSION→fixed | 正文 `-0.02em`；禁抹成 0 |
+| `ResponsiveTable` cell `tracking-[-0.02em]` | REGRESSION→fixed | ≡ 表单元格 `-0.26px` @13 |
+| copy/detail/caption 等保持 `-0.02em` | INTENTIONAL | 已对齐稿面；非偏宽根因 |
+| Input / Button 内 `tracking-normal` | INTENTIONAL | 控件 chrome；不跟正文 token |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -540,7 +507,7 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.5 | muted：INTENTIONAL→IGNORE（Figma PC body 70%；4175 50%）；§5f Figma MCP 色阶表；暗色卡 `primary-bright` |
 | v2.6 | §5g 曾记规范 vs 画板对照表 |
 | v2.7 | 删除四份 Spec JSON；§5g 改为视觉 SSOT = 画板实节点 + 4175；禁止再参考口号规范 |
-| v2.8 | §5h CSS 瘦身切片标签；motion/wallet 保留规则指向 runbook §6.1 |
+| v2.8 | §5h CSS 瘦身切片标签；motion/wallet 保留规则指向 runbook §5 |
 | v2.9 | §5i 左卡/标题/pill CTA 跨 tab 统一 |
 | v2.10 | §5j Button 高度三档：card 42 / external 44 / inverse 38 |
 | v2.11 | §5k 标题跨 tab 统一；MetricCard overview chrome SSOT |
@@ -572,3 +539,5 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.37 | §5ak Button/flb 极轻 scale `1.008`/`0.992` |
 | v2.38 | §5al CommunityProgramCard label/CTA → coral |
 | v2.39 | 当前分支 = baseline；删过时文档 / Phase0 baselines / archive |
+| v3.0 | 规范收束：双 gate + 日常命令 + 切片索引前置；历史 §5* 仅作回归记忆；对齐 runbook/api v3.0 |
+| v3.1 | §5am Text tracking：panel/section → `-0.04em`；去 meta/table `tracking-normal` |

@@ -1,11 +1,10 @@
-# Foundation 公开 API（L2 · 十组件对称 SSOT）
+# Foundation 公开 API（SSOT）
 
 > **流程**：[`runbook.md`](./runbook.md) · **验收**：[`verification.md`](./verification.md)  
-> **Baseline**：当前分支 + Figma 正式稿
->
-> **原则**：每组件 **键数 = 类型字面量数** · **无 alias 层** · **无场景分叉（context）** · Tier B 不进 Text · **细微差异用 className 抹平，不扩轴**
+> **Baseline**：当前分支 + Figma 正式稿  
+> **原则**：键数 = 类型字面量数 · 无 alias · 无 context 分叉轴 · 细微差异用 `className` 抹平
 
-每节结构一致：**公开轴 · 禁止 · 依赖 · Swap 探针 · API gate**
+每节：**公开轴 · 禁止 · 依赖 · Gate**
 
 ---
 
@@ -43,16 +42,18 @@
 | eyebrow | 11 | 12 | semibold | uppercase kicker |
 | copy | 13 | 12 | normal | **默认**正文、label、table cell |
 | detail | 14 | 14 | normal | FAQ 答案、长说明 |
-| question | 14 | 15 | semibold | FAQ 问题（H5 ≡ 4175 `text-sm`） |
+| question | 14 | 15 | semibold | FAQ 问题 |
 | headline | 16 | 15 | semibold | 卡小标题 |
 | brand | 17 | 18 | semibold | topbar brand / rank |
-| section | 18 | 16 | semibold | section heading (dl) |
-| panel | 21 | 22 | semibold | widget / page header |
+| section | 18 | 16 | semibold | section heading (dl)；tracking **-0.04em** |
+| panel | 21 | 22 | semibold | widget / page header；tracking **-0.04em** |
 | figure | 22 | 23 | semibold | 金额、数值 |
+
+**字距（Figma Genesis `31:2`）**：正文档（caption/copy/detail/…）**-0.02em**；`section`/`panel` 标题 **-0.04em**（≡ 18→`-0.72px`、21→`-0.84px`）；`headline` **-0.03em**；`eyebrow` **+0.08em**。禁 call site `tracking-normal` 抹平正文/标题字距（Input/Button 控件内文除外）。
 
 **禁止**：`weight` prop · `panel-title` / `table-cell` / `on-dark` · `deprecatedAliases`
 **className 显示阶覆盖**：若 `className` 含字号 utility（`text-xs`…`text-9xl` / `text-[…]`，含 `max-*:text-*` / `!text-*`），`Text` 剥掉 size / leading / tracking type token，**保留** `font-[var(--type-*-weight)]`（call site 通常只覆盖字号/行高）。避免残留 tracking 把标题挤窄，同时不丢 variant 字重。
-**依赖**：P0 token
+**依赖**：Token（§1）
 **探针**：Swap catalog 全部 Text owner 行 · Home section titles
 **Gate**：`text.tsx` variant 键 = **10** · `TextVariant` 联合 = 10 · `tone` = 7
 
@@ -86,13 +87,13 @@
 - `link`：无 scale / 无影
 **Typography**：`link` 用 `font-normal text-primary`，不 hand-roll 平行字阶文件
 **禁止**：call site 用 `!min-h-*` / `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 勿再叠平行 `max-dapp:min-h-*` 改高度；call site 叠 `hover:shadow-primary-hover-xl` 等改 hover
-**依赖**：P1-Text
+**依赖**：Text（§2）
 **探针**：home hero CTA · swap CTA · claim · genesis promo Join · connect promo · community shareholder
 **Gate**：`variant` = **4**；`size` = **3**；`shape` = **2**
 
 ---
 
-## §4 Chip（新增）
+## §4 Chip
 
 | 公开轴 | 值 |
 |--------|-----|
@@ -109,7 +110,7 @@
 **Field-adjacent action**：Genesis MAX · Community Bind → `Chip variant="soft" tone="coral"` + `fieldActionChipClass`（`h-11` / `rounded-control`）；**不是** `DappActionButton` / Button secondary。
 
 **禁止**：在 Chip 内 hand-roll typography
-**依赖**：P1-Text
+**依赖**：Text（§2）
 **探针**：swap percent · season badge · htab · genesis MAX · community Bind
 **Gate**：`variant` = **3**；`size` = **3**；`shape` = **2**；`tone` = **4**
 
@@ -133,7 +134,7 @@
 
 **禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认。
 **Composite 豁免（须文档）**：`CommunityStatCard` / `SwapPromoCard` 可用 className 抹平 radius/pad，**禁止**再叠 `shadow-*` 改 elevation。
-**依赖**：P1-Text
+**依赖**：Text（§2）
 **探针**：mode-card-root · program-card · faq card layout · metric-card · community-stat · swap-promo
 **Gate**：`surface` 键 = **4**
 
@@ -153,7 +154,7 @@
 **未连接金额预览**：`AmountBox` 在 `sessionReady=false` 时用 `text-amount-muted` / `placeholder:text-amount-muted`（≡ 4175 `#c9cfda`）。
 
 **禁止**：call site 手写平行 `<input>` / 输入框内 hand-roll amount typography（社区邀请人等须走 `Input`）
-**依赖**：P0 token
+**依赖**：Token（§1）
 **探针**：swap amount · genesis shares · community referrer bind
 **Gate**：`variant` = **3**
 
@@ -210,19 +211,19 @@
 
 ---
 
-## §9 P0-P7 交付矩阵
+## §9 组件地图（实现已落地）
 
-| 阶段 | 组件/任务 | 键数 gate | 同 PR 范围 |
-|------|-----------|-----------|------------|
-| P0 | Token JSON + 生成 CSS/TS | 见 §1 | theme.css / tokens.ts / 删 legacy color class |
-| P1 | Text | 10 variant · 7 tone | 全仓 `variant=` / `tone=` |
-| P2 | Card | 4 surface | 全仓 `surface=` |
-| P3 | Chip（新增） | 3×2×2×4 | 替换 pct / badge / tab；tone 含 coral |
-| P4 | Input | 3 variant | 替换 amount-input、shares field |
-| P5 | Button | 4×3×2 | 全仓 Button props |
-| P6 | Composite | 9 个 | 按依赖顺序逐个提取 |
-| P7 | 按页替换 | — | Swap → Genesis → Rewards → Community → Home |
-| P8 | 清债 | — | 删 dapp-type-scale.ts / 旧 color class / 文档同步 |
+| 层 | 文件 / 入口 | Gate |
+|----|-------------|------|
+| Token | `tokens.json` → `theme.css` / `tokens.ts` | §1 |
+| Text | `shared/ui/text.tsx` | 10 variant · 7 tone |
+| Button | `shared/ui/button.tsx` | 4×3×2 |
+| Chip | `shared/ui/chip.tsx` | 3×3×2×4 |
+| Card | `shared/ui/card.tsx` | 4 surface |
+| Input | `shared/ui/input.tsx` | default / numeric / amount |
+| Composite | FaqList · CalloutCard · MetricCard · Segment · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome |
+
+新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。
 
 ---
 
@@ -230,29 +231,8 @@
 
 | 版本 | 说明 |
 |------|------|
-| v1.0 | 合并 component-anatomy + text-refactor-plan；六节对称 |
-| v2.1 | 按用户最终命名调整：Text caption/eyebrow/copy/panel/figure；Card 4 surface；Composite NavRail/PanelHeader/AmountInput/Segment/Accordion/CalloutCard；Input default/numeric/amount；Button shape rounded |
-| v2.2 | P7 完成：按页替换 Swap / Genesis / Rewards / Community / Home；删除旧 swap 组件；新增 `swap-panel-toggle.tsx` 承接 PC 详情面板切换 |
-| v2.3 | Button size 高度：sm **42**（卡内）· md **44**（外部）· lg **48**；暗色 promo 38 走 `DappActionButton density="inverse"` |
-| v2.4 | `DappInlineAlert`：destructive 内联 chrome SSOT；`compact` / `comfortable`；禁并 CalloutCard |
-| v2.5 | Card surface 契约：`SwapPromoCard` 去叠 `shadow-subtle`；浅色 `CommunityStatCard` → `soft`（sc≠ovc） |
-| v2.6 | `dappDarkBanner`：RewardsHero / GenesisGlobal 唯一暗色横幅 chrome；≠ Card inverse |
-| v2.7 | `SwapProgramCard` / `DappTableCard` 走 Card `elevated`；表壳保留 2xl+border；thirdweb 按钮迁 Button 另切片 |
-| v2.8 | Button hover SSOT：去 Community `shadow-primary-hover-xl`；ghost 对齐 lift；slippage Confirm → Button |
-| v2.9 | 隐藏面：WalletDetails 去 `h-11`/内嵌 Text；`aegisDialogCloseClass`；token 行 → Card outlined |
-| v2.10 | LanguageMenu DRY；mobile-nav 标签 ≡ `dev` text-sm；删未用 `shadow-primary-hover-xl` |
-| v2.11 | 删除 Text `tabular`；数字定稿比例字（禁 `tabular-nums`） |
-| v2.12 | Community Bind：`Input` + `fieldActionChipClass`（≡ Genesis MAX）；删 `DappActionButton` `shape=inline` |
-| v2.13 | CommunityStat 浅色 sc ≡ Figma `4040:7313`（ink / coral / radius-lg） |
-| v2.14 | `swapFlowButtonClass` ≡ Figma flb；Trade/Flash 中间钮共用 |
-| v2.15 | flb 显式 `rounded-[11px]`；InviteFlow desc = muted 70%；表壳去外边框 |
-| v2.16 | Button / flb：220ms soft ease + active 按下回落 |
-| v2.17 | CommunityProgramCard ≡ Figma `4040:7354`；FAQ chevron rotate；Collapsible 展开 settle overflow |
-| v2.18 | flb → `rounded-control`（禁 `rounded-[11px]`）；全表表头 ≡ Community muted |
-| v2.19 | Button / flb：translate lift → 轻微 scale（H5 按下可感知） |
-| v2.20 | Collapsible：恢复 overflow-visible CSS 覆盖（表卡阴影） |
-| v2.21 | FAQ chevron：CSS data-state 驱动 rotate + color |
-| v2.22 | Pagination 页码箭头：关下开上 + 旋转动画 |
-| v2.23 | Button / flb：更小 scale + 软 ease + 更快 active |
-| v2.24 | Button / flb：极轻 scale `1.008` / `0.992` · 160ms ease-out |
+| v3.0 | Baseline 维护态：去掉 P0–P8 交付矩阵叙事；入口与 runbook 对齐 |
+| v3.1 | panel/section tracking `-0.04em`（≡ Figma Genesis 标题）；正文保持 `-0.02em` |
 | v2.25 | CommunityProgramCard：label/CTA `text-coral` ≡ Figma `#c85c3f` |
+| v2.11–v2.24 | 见 git 历史（tabular 删除 · flb · Button scale · FAQ/Pagination 动效等） |
+| v2.1–v2.10 | 命名定稿 · Card/Button/Chip/Input/Composite 收束 |

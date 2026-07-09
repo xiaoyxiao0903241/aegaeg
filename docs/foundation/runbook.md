@@ -1,185 +1,117 @@
-# Foundation 重构 Runbook（L1 · 执行 SSOT）
+# Foundation Runbook（执行 SSOT）
 
-> **API SSOT**：[`api.md`](./api.md) · **验收 SSOT**：[`verification.md`](./verification.md)
-
----
-
-## 1. 边界
-
-**In scope（P0–P8 · 全部）**
-
-| 阶段 | 组件/任务 | 文件 | 说明 |
-|------|-----------|------|------|
-| P0 | Token 架构 | `src/shared/styles/tokens/tokens.json` + 生成 | JSON 源 SSOT，CI 生成 CSS/TS |
-| P1 | Text | `src/shared/ui/text.tsx` | 10 variant × 7 tone |
-| P2 | Card | `src/shared/ui/card.tsx` | 4 surface，无 context/fill/radius |
-| P3 | Chip（新增） | `src/shared/ui/chip.tsx` | 替换 pct / badge / tab |
-| P4 | Input | `src/shared/ui/input.tsx` | 合并 amount-input，3 variant：default/numeric/amount |
-| P5 | Button | `src/shared/ui/button.tsx` | 4 variant × 3 size × 2 shape |
-| P6 | Composite | `src/shared/ui/composite/*.tsx` | 9 个高频业务组件 |
-| P7 | 页面替换 | `src/views/**` | Swap → Genesis → Rewards → Community → Home |
-| P8 | 清债 | — | 删 dapp-type-scale.ts / 旧 color class / 文档同步 |
-
-**Out of scope（P2 后续或独立切片）**：Home 动效 · Web3 · 全站 Figma 像素级 · 暗色模式
+> **API**：[`api.md`](./api.md) · **验收**：[`verification.md`](./verification.md)  
+> **Baseline**：当前分支 + Figma 正式稿
 
 ---
 
-## 2. 阶段
+## 1. 何时走本 runbook
 
-```text
-P0        Token JSON + 生成 theme.css/tokens.ts（不动 call site）
-P1        Text     — 10 variant × 7 tone
-P2        Card     — 4 surface 无 context
-P3        Chip     — 新增，替换 pct/badge/tab
-P4        Input    — 合并 amount-input，default/numeric/amount
-P5        Button   — 4 variant × 3 size × 2 shape
-P6        Composite — 9 个高频业务组件
-P7        页面替换 — Swap → Genesis → Rewards → Community → Home
-P8        清债     — 删 dapp-type-scale.ts / 旧 color class / 文档同步
-```
-
-**P0–P8 顺序**（依赖）：Token → Text → Card → Chip → Input → Button → Composite → 页面替换 → 清债
+触达 **Token / Text / Button / Card / Chip / Input / Composite / shell primitive** 时必走。  
+纯业务逻辑、Web3、Home 动效脚本 → 各自文档，不扩 Foundation 轴。
 
 ---
 
-## 2.1 与旧 handoff 的差异
-
-- 原 handoff 顺序：Text → Button → Card → FaqList → AmountInput → shell cards
-- 当前定稿：Token 架构先行，新增 Chip，Input 合并 AmountInput（variant 为 default/numeric/amount），Button 在 Input 之后（因 Button 依赖 Text，link 要走 Text），Composite 在 primitives 稳定后提取（Accordion / CalloutCard / Segment / NavRail / PanelHeader 等最终命名）。
-
----
-
-## 3. 单组件六步（写盘前 1–2，写盘 3–4，写盘后 5–6）
+## 2. 单切片流程（写盘前 → 写盘后）
 
 | Step | 动作 | 产出 |
 |------|------|------|
-| **1** | 公开 API 表 | [`api.md`](./api.md) 对应 § — 键数定死 |
-| **2** | 视觉映射表 | Figma + 当前分支 heatmap 红块 / 同位置源码（探针仅确认）+ `rg` 全仓旧 API → 新 prop |
-| **3** | 样式栈（七维） | 每改动 call site 一张栈表（§4） |
-| **4** | 同 PR 实现 | primitive 收束 + **全仓 call site** |
-| **5** | 双 gate | [`verification.md`](./verification.md) |
-| **6** | 报告 | §7 模板 |
+| **1** | 对 [`api.md`](./api.md) 确认公开轴；键数定死 | 不扩轴 / 不新增 alias |
+| **2** | Figma 节点 + 当前分支同位置源码 | 根因一句 + REGRESSION \| INTENTIONAL \| IGNORE |
+| **3** | 样式栈（字号·字重·行高·字距·色·`!`·`as`） | 单一 owner |
+| **4** | primitive 收束 + **全仓 call site**（同 PR） | 无半迁移 |
+| **5** | 双 gate | API + 人工对照（见 verification） |
+| **6** | 更新 verification 切片标签 | 可回滚说明 |
 
----
-
-## 4. 样式栈（Step 3 必填）
-
-### 4.1 七维
-
-字号 · 字重 · 行高 · 字距 · 颜色 · 优先级（`!`）· 语义元素（`as`）
-
-### 4.2 模板
+### 报告模板
 
 ```text
-Call site: <path> — <UI>
-├─ Layer … effective: …
-PC: size · weight · leading · tracking · color
-H5: (同上)
-单一 owner: <Component + prop/variant>
+Slice: <area>-<intent>
+API: api.md §N
+Root cause: …
+Label: REGRESSION|INTENTIONAL|IGNORE
+Verify: …
+Risk: …
 ```
 
-### 4.3 反模式
+---
 
-| 禁止 | 正确 |
-|------|------|
-| 只改 leaf 留 wrapper 默认字号 | wrapper 零 typography 或去掉 |
-| theme / shell 补丁凑 diff=0 | 映射表 → api 轴 |
-| primitive alias 过渡 | 同 PR 全仓 rename |
-| 探针 PASS 但 API 键数超标 | 双 gate 都 PASS |
-| P1 只改 Swap 文件 | 全仓 call site 同 PR |
-| 新增 context / fill / radius 等场景分叉轴 | 用 surface + className 微调 |
+## 3. 全站文本
+
+- 用户可见文案 **必须** `<Text variant tone>`。
+- `Button` / `Chip` 内字由自身 typography 管。
+- 布局-only 用 `div` / `section`，禁止平行 typography wrapper。
 
 ---
 
-## 5. 全站文本规则
-
-用户可见文案 **必须** `<Text>`（`Button` 内字由 button typography 自管）。禁止 typography React wrapper。布局-only 用 `div`/`section`。
-
----
-
-## 6. MUST NOT（全局）
+## 4. MUST NOT
 
 - `deprecatedAliases` / runtime 旧名映射
-- 无映射表改 primitive
-- 改 `--foreground` 等非 P0 切片凑 parity
+- 无映射 / 无根因就改 primitive
+- 为凑截图改 `--foreground` 等全局 token
 - call site `max-dapp:(text-|font-|leading-|tracking-)`（白名单见 api §8）
+- call site `!min-h-*` / `!text-*` 绕过 Button size
+- 新增 `ink-*` / `faint` / `on-dark` / `coral-bright` 等遗留色
+- 把 `dev` 结构当保留理由（`dev` 有冗余 ≠ 该留）
 
-### 6.1 Class / CSS 减法
+---
 
-> 详述亦见 [`.cursor/skills/aegis-component-refactor/SKILL.md`](../../.cursor/skills/aegis-component-refactor/SKILL.md)。
-
-**`dev` = 视觉对照，≠ 结构模板。** `dev` 有冗余不构成保留理由；重构就是消冗余。对照 `dev` 只验「看起来对不对」。
+## 5. Class / CSS 减法
 
 | MUST | 说明 |
 |------|------|
-| 无 `*Class = {…} as const` / 顶部长 `cn()` 样式表 | 一次性布局写在 JSX `className` |
-| 无空装饰 class | 仅当 CSS/脚本真正选择该名；否则删（即使 `dev` 有同名） |
-| 动效用 `data-*` | 同步改选择器；禁止为动效保留空 class |
-| 以「是否影响样式」删冗余 | 重复断点、被 Foundation 覆盖的手写、无 computed 影响的 utility — **不看** `dev` 是否保留 |
-| 视觉收敛 &lt;1px | 有偏差 → 对照 `dev` **同位置代码**找根因，改 SSOT/call site；禁止 `!` / 局部特判补丁 |
-| heatmap 红块优先 | 发现/归因：红块裁切 + 同位置源码；整页 `%` 不作收工（见 skill） |
-| 探针降级 | 禁止默认全页 DOM dump；仅肉眼分不清或修完硬验收时，对 1–2 节点 scoped 取 computed |
-| 禁止贴回平行样式体系 | 不为截图恢复已删 hand-roll / 遗留色 / type-scale；根因在 token 则改 token |
+| 无 `*Class = {…} as const` / 顶部长样式表 | 一次性布局写在 JSX `className` |
+| 无空装饰 class | 仅当 CSS/脚本真正选择该名 |
+| 动效用 `data-*` | 同步改选择器 |
+| 以「是否影响样式」删冗余 | 不看旧 worktree 是否保留 |
+| 视觉偏差找根因 | 改 SSOT / call site；禁 `!important` / 局部特判 |
+| 红块优先 | 整页 `%` 不作收工 |
+| 探针降级 | 仅肉眼分不清或硬验收时 scoped 取 computed |
 
-**CSS 瘦身 — 保留清单（禁止当「死 CSS」删）**
+### 禁止当死 CSS 删
 
-| 区域 | 路径 / 选择器 | 为何保留 |
-|------|---------------|----------|
-| Home 动效 | `home-motion.css`；`data-home-motion-ready` / `data-reveal` / `data-visible` | 首页 reveal 运行时 SSOT；见 `docs/homepage-animation-guidelines.md` |
-| 钱包 / thirdweb | `wallet.css`：`.aegis-connected-wallet-chip` · `.aegis-thirdweb-button*` · `.aegis-connect-embed*` · `.aegis-wallet-connect-*`（除已删 intro）· `.tw-modal` | Home CTA 视觉 + DApp ConnectEmbed；`ui-compare` / `phase-v-matrix` 绑定类名。**可迁** `Button`（pill/primary），但高度 36/40 vs sm/md 42/44、玻璃底需 density/className；**另切片**，本轮勿当死 CSS 删 |
-| DApp 动效钩子 | `dapp-panel-enter` · `swap-view-layer*` · `faq-answer-panel*` · `dapp-collapsible-*` · `dapp-progress-meter*` · `hero-rays*` · modal/sheet keyframes · `[data-dapp-window]` · `[data-reveal]` | 有 DOM/`data-*` 或脚本选择器；删 = 动效/折叠回归 |
-| 滚动条基建 | `scrollbars.css` 全局块 + `scrollbar-x-track` | 表卡横向滚动在用；`scrollbar-dark` / `scrollbar-none` 为公开 utility，可另议删 utility，**不删全局规则** |
+| 区域 | 为何 |
+|------|------|
+| `home-motion.css` + reveal `data-*` | Home 动效运行时 |
+| `wallet.css` 主路径（chip / thirdweb / connect-embed） | Connect UI；迁 Button 另切片 |
+| DApp 动效钩子（`faq-answer-panel*` · `dapp-collapsible-*` · panel-enter · modal/sheet …） | 有 DOM/`data-*` 绑定 |
+| `scrollbars.css` 全局 + `scrollbar-x-track` | 表卡横向滚动 |
 
-**可删前提**：`rg` 全仓（含 `scripts/`）零命中，且不在上表。示例已删：`.aegis-btn-loading-icon`（改 lucide `animate-spin`）、`.aegis-wallet-connect-intro`、`[data-spotlight-card]`。
+可删前提：`rg` 全仓（含 `scripts/`）零命中，且不在上表。
 
-**`group-data-[tab=*]`**：仅合并**同值重复**；伪守卫仅当组件**确认只挂在该 tab** 时可内联。跨 tab 复用（如 `GenesisPromoCard` 在 Swap + Genesis）**必须保留** tab 守卫。真差异保留：`data-tab` 属性、Rewards topbar 品牌隐藏、`responsive-table` rewards fork、`dapp-detail-layout` gap SSOT。
+### 跨 tab 统一
 
-**跨 tab 左列 / CTA / 标题（MUST 统一）**
+| 面 | SSOT |
+|----|------|
+| 左卡 padding/圆角 | Card `outlined` / `DappSideCard` |
+| 标题→内容间距 | `dapp-detail-layout.ts` + `DappWidgetFrame` |
+| 标题字阶 | Text `section` / `panel` + `copy` |
+| 主 pill 高度 | `DappActionButton`：card 42 · external 44 · inverse 38 |
+| Overview 指标 | `MetricCard`；Community `sc` / Rewards hero **不并** |
 
-| 面 | SSOT | 禁止 |
-|----|------|------|
-| wcol 左卡 padding/圆角 | Card `outlined` / `DappSideCard`（`p-3.5` · `rounded-md`） | per-tab `px-4 py-3.5` |
-| 标题→内容 / 块间距 | `dapp-detail-layout.ts` + `DappWidgetFrame` | 页面私有 `mt-*`/`pb-*` 字典 |
-| Detail / widget 标题字阶 | Text `section` / `panel` + `copy` | `group-data-[tab=*]` tracking/leading/size |
-| 主 pill 按钮高度 | `DappActionButton` density：card **42** · external **44** · inverse **38** | call site `min-h-*` 分叉 |
-| Overview MetricCard（Swap/Genesis） | `MetricCard` + `metricCardChromeClass` | 页级平行 `px-4 py-3.5` 字典 |
-| Community `sc` / Rewards hero | 独立组件（多行 / 暗色横幅） | 强行并进 MetricCard |
+`group-data-[tab=*]`：只合并同值重复；跨 tab 复用组件必须保留守卫。
 
-**偏离标签**：结构债清理标 **INTENTIONAL**；误删导致塌陷标 **REGRESSION** 并修回。
+---
 
-### 6.2 视觉诊断序（登录态 / 子页）
+## 6. 视觉诊断序
 
 ```text
-heatmap 红块清单
-  → 裁切肉眼分类（色/字/布局/动态/抗锯齿）
-  → 同位置源码根因 + REGRESSION|INTENTIONAL|IGNORE
+红块清单 → 裁切肉眼（色/字/布局/动态/抗锯齿）
+  → 同位置源码根因 + 标签
   → 改 SSOT / call site
-  → （可选）scoped 探针确认
-  → 重跑 heatmap
+  → （可选）scoped 探针
+  → 重跑对照
 ```
+
+1–2px 渲染取整、动态数值内容 → 通常 IGNORE。
 
 ---
 
-## 7. PR 报告模板
+## 7. Token 提醒
 
-```text
-Slice: p<N>-<token|text|button|card|chip|input|composite|page|cleanup>
-API: <api.md §N 公开枚举>
-Mapping: N nodes
-Parity: Figma + 当前分支人工对照表 / heatmap 红块标签
-Call sites: full repo same PR
-Rollback: git revert <sha>
-```
-
----
-
-## 8. P0 摘要
-
-**P0**：`tokens.json` 为源 → 生成 `theme.css` / `tokens.ts`。收敛颜色/字号/间距/圆角/阴影，删除代码臆造 token。不改 call site。
-
-**P1–P8**：见 §2 阶段表。
-
-**Baseline**：当前分支 + Figma 正式稿（Phase0 `docs/baselines/` 已删除）。
+- 源：`src/shared/styles/tokens/tokens.json` → 生成 `theme.css` / `tokens.ts`
+- 改 token 后跑 `pnpm build:tokens`
+- 新色必须有设计/工程依据，并进 `tokens.json`（禁组件内硬编码 hex）
 
 ---
 
@@ -187,11 +119,4 @@ Rollback: git revert <sha>
 
 | 版本 | 说明 |
 |------|------|
-| v1.0 | 合并 migration-plan + playbook 执行面；对抗仲裁定稿 |
-| v2.0 | 按 Figma 审计更新为 P0–P7，新增 Token/Chip/Input/Composite 阶段 |
-| v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
-| v2.2 | 新增 §6.1 Class / CSS 减法；明确 `dev` 仅视觉对照、非结构 SSOT |
-| v2.3 | §6.1–6.2：红块优先；探针降级为确认工具 |
-| v2.4 | §6.1：CSS 瘦身保留清单（home-motion / wallet / DApp 动效钩子）；tab 守卫合并规则 |
-| v2.5 | §6.1：跨 tab 左卡 / 标题间距 / pill CTA 统一规则 |
-| v2.6 | 当前分支 = baseline；删 Phase0 baselines / 过时文档引用 |
+| v3.0 | 收束为 baseline 维护手册；去掉 P0–P8 迁移叙事与 Phase0 依赖 |

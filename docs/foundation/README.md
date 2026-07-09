@@ -1,36 +1,34 @@
-# Foundation — 文档入口
+# Foundation — 入口
 
-> **当前分支 = baseline**（2026-07-09）。不再维护 4175 Phase0 快照为结构 SSOT。  
+> **Baseline**：当前分支（实现）+ [Figma 正式稿](https://www.figma.com/design/sXWXDvBrLeg5r0NnP1SMZH/AEGIS-X--Copy---Copy---Copy-)（设计意图）  
 > **范围**：Token · Text · Button · Card · Chip · Input · Composite · shell
 
-## Agent 必读链（仅 3 步）
+## 必读链
 
 ```text
-1. .cursor/skills/aegis-component-refactor/SKILL.md   ← 触发器 + 硬门禁摘要
-2. docs/foundation/runbook.md                         ← 怎么改
-3. docs/foundation/api.md                             ← 改什么
+1. .cursor/skills/aegis-component-refactor/SKILL.md
+2. docs/foundation/runbook.md   ← 怎么改
+3. docs/foundation/api.md       ← 改什么
+4. docs/foundation/verification.md  ← 写盘后怎么验
 ```
 
-写盘后验收 → [`verification.md`](./verification.md)。
-
-## 三核职责（唯一 SSOT）
-
-| 文档 | 职责 |
-|------|------|
-| [`runbook.md`](./runbook.md) | 流程 · 样式栈 · MUST NOT · CSS 保留清单 |
-| [`api.md`](./api.md) | 公开 API · 键数 gate · 断点白名单 |
-| [`verification.md`](./verification.md) | 切片标签 · 命令 · 回归记录 |
-
-## 用户定稿
+## 定稿（不可改）
 
 | 项 | 定稿 |
 |----|------|
-| 策略 | **一步到位** — 无 `deprecatedAliases` |
-| 视觉 SSOT | **Figma 正式稿画板** + **当前分支**（人工 / heatmap）；`dev` 仅作可选回归对照 |
-| 完成定义 | **API gate + 人工对照** — 探针 alone ≠ DONE |
-| 交付物 | 世界级最小公开 API |
+| 策略 | 一步到位；无 `deprecatedAliases` |
+| 视觉 | Figma 定意图；当前分支是实现真相；`dev` 仅可选回归 |
+| 完成 | API gate + 人工对照；探针 alone ≠ DONE |
+| 文本 | 用户可见文案必须 `<Text>` |
+| 颜色 | `tokens.json` → `theme.css`；禁新遗留色 / 平行语义 class |
+| H5 | PC 文案 SSOT；H5 只做响应式布局 |
 
 ## 易混
 
-- **Figma** = 设计意图 · **当前分支** = 实现 baseline
-- `dev` @ 4175 = 可选回归对照，**不是**结构模板
+| 说法 | 含义 |
+|------|------|
+| Figma | 设计意图 |
+| 当前分支 | 实现 baseline |
+| `dev` @ 4175 | 可选旧 worktree 对照，**不是**结构模板 |
+| `primary` `#e86a43` | 主 CTA 橙 |
+| `coral` `#c85c3f` | 强调 / LIVE / 页码 / 部分 label（≠ primary） |
