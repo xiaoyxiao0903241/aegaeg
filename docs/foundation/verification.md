@@ -491,6 +491,13 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | hover `scale-[1.02]` · active `scale-[0.97]` | INTENTIONAL | 按下缩放触控可感知；PC 仍有轻微 hover 放大 |
 | flb Interactive 同策略（1.04 / 0.94） | INTENTIONAL | 小钮略大一点幅度 |
 
+## 5ag. Collapsible 恢复 overflow-visible 覆盖（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 恢复 `[data-open=true] .overflow-visible { overflow: visible }` | REGRESSION→fixed | 基类 `overflow:hidden` 盖住 Tailwind；Rewards 表卡 `shadow-card` 被裁 |
+| settle 后再挂 `overflow-visible` | KEEP | 展开高度动画仍可用 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -529,3 +536,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.30 | §5ad CommunityProgramCard ≡ `4040:7354`；FAQ rotate；Collapsible settle overflow |
 | v2.31 | §5ae flb → `rounded-control`；全表表头 ≡ Community muted |
 | v2.32 | §5af Button/flb 轻微 scale（替 translate lift） |
+| v2.33 | §5ag 恢复 collapsible overflow-visible 覆盖（表卡阴影） |

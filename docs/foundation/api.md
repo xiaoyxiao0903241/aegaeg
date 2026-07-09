@@ -177,7 +177,7 @@
 **内部约定**：
 - `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron **固定 path + `rotate-180`**（禁换 path）；展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · label `eyebrow` 11/`tracking-[0.88px]`/`normal-case` · title `headline` 16/`-0.48px` · body/cta `13px` · CTA `text-primary` semibold（禁 H5 平行字阶）。
-- `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip，否则高度动画失效）。
+- `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
 - `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `CalloutCard` / `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
@@ -249,3 +249,4 @@
 | v2.17 | CommunityProgramCard ≡ Figma `4040:7354`；FAQ chevron rotate；Collapsible 展开 settle overflow |
 | v2.18 | flb → `rounded-control`（禁 `rounded-[11px]`）；全表表头 ≡ Community muted |
 | v2.19 | Button / flb：translate lift → 轻微 scale（H5 按下可感知） |
+| v2.20 | Collapsible：恢复 overflow-visible CSS 覆盖（表卡阴影） |
