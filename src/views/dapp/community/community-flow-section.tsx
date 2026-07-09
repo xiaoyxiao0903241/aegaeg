@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { DappSection } from '~/app/shell/components/dapp-section'
 import { InviteFlow, InviteFlowStack } from '~/views/dapp/community/community-invite-flow'

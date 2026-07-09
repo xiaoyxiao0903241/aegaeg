@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/app/bootstrap/auth-provider'
+import { useAuth } from '~/app/bootstrap/use-auth'
 import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import {

@@ -1,6 +1,6 @@
 import { useActiveAccount, useIsAutoConnecting } from '~/views/dapp/web3/thirdweb-react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { useAuth } from '~/app/bootstrap/auth-provider'
+import { useAuth } from '~/app/bootstrap/use-auth'
 import {
   hasWalletAccount,
   isWalletRestorePending,

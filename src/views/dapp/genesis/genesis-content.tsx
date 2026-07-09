@@ -1,7 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/components/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/components/dapp-content-heading'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import { GenesisContributionsSection } from '~/views/dapp/genesis/genesis-contributions-section'
 import { GenesisFaqSection } from '~/views/dapp/genesis/genesis-faq-section'
 import { GenesisGlobalSection } from '~/views/dapp/genesis/genesis-global-section'

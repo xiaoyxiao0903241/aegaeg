@@ -1,7 +1,5 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -18,7 +16,6 @@ import {
   isPermanentLoginErrorMessage,
 } from '~/core/auth/auth-machine'
 import { loginWithWallet } from '~/views/dapp/auth/login-with-wallet'
-import type { StoredAuthSession } from '~/views/dapp/auth/session'
 import { defaultChain } from '~/views/dapp/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
 import {
@@ -30,24 +27,7 @@ import {
   invalidateAfterAuthLogin,
   invalidateAfterWalletSwitch,
 } from '~/shared/api/query/invalidate'
-
-export interface AuthContextValue {
-  token: string | null
-  session: StoredAuthSession | null
-  isAuthenticated: boolean
-  needsSignIn: boolean
-  hasHydrated: boolean
-  isLoggingIn: boolean
-  loginError: string | null
-  login: () => Promise<void>
-  retryLogin: () => Promise<void>
-  logout: () => void
-  clearAuthOnDisconnect: () => void
-  invalidateSession: () => void
-  clearLoginError: () => void
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null)
+import { AuthContext, type AuthContextValue } from '~/app/bootstrap/use-auth'
 
 const sessionStorage = createStoreAuthSessionStorage()
 const signatureStorage = createStoreLoginSignatureStorage()
@@ -281,12 +261,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
-  }
-  return context
 }

@@ -1,7 +1,7 @@
 import { useQuery, type QueryKey } from '@tanstack/react-query'
 import { fetchAuthenticated, toQueryErrorMessage } from '~/shared/api/query/fetch-authenticated'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
-import { useAuth } from '~/app/bootstrap/auth-provider'
+import { useAuth } from '~/app/bootstrap/use-auth'
 
 export function useAuthenticatedQuery<T>(
   queryKey: QueryKey,

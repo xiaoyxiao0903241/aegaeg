@@ -5,7 +5,7 @@ import { useActiveAccount, useActiveWallet, useDisconnect } from '~/views/dapp/w
 import { formatTokenAmount } from '~/core/swap/token-amount'
 import { useUsd1PresaleWalletQuery } from '~/hooks/queries/use-presale-queries'
 import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/app/bootstrap/auth-provider'
+import { useAuth } from '~/app/bootstrap/use-auth'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'

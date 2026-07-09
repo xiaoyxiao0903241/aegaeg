@@ -4,7 +4,7 @@ import { DappCollapsibleSection } from '~/app/shell/components/dapp-collapsible-
 import { FaqList } from '~/shared/ui/faq-list'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { buildGenesisFaqTemplateValues } from '~/views/dapp/genesis/genesis-faq'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 
 export function GenesisFaqSection() {
   const { messages: t } = useI18n()

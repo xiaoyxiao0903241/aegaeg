@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useSalesLogs } from '~/hooks/use-api-data'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import {
   calcProgressPercent,
   formatUsd,
@@ -19,7 +19,7 @@ import {
 } from '~/app/shell/components/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { useAuth } from '~/app/bootstrap/auth-provider'
+import { useAuth } from '~/app/bootstrap/use-auth'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import {
   GenesisContributionsProgressHeader,

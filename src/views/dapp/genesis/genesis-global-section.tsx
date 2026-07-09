@@ -1,7 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import { DappDetailBlock } from '~/app/shell/components/dapp-detail-block'
 import { GenesisGlobalCard } from '~/views/dapp/genesis/genesis-global-card'
 

@@ -3,7 +3,7 @@ import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/app/bootstrap/auth-provider'
+import { useAuth } from '~/app/bootstrap/use-auth'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import {
   ACCOUNT_BANNED_SENTINEL,

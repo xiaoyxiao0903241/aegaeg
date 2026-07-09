@@ -7,7 +7,7 @@ import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Text } from '~/shared/ui/text'
-import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
+import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 
 type RailIndicator = {

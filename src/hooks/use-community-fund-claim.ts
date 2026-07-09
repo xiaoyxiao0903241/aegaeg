@@ -1,6 +1,6 @@
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useState } from 'react'
-import { useAuth } from '~/app/bootstrap/auth-provider'
+import { useAuth } from '~/app/bootstrap/use-auth'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import { executeCommunityFundClaim } from '~/views/dapp/web3/reward-claim'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
