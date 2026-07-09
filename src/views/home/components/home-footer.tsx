@@ -52,8 +52,8 @@ export function HomeFooter() {
   const content = messages.home.footer
 
   return (
-    // Footer canvas #161514 is brand-specific (≠ --dark #111625); keep until footer token exists.
-    <footer className="flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-inverse-muted dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8">
+    // Footer canvas = token `footer` (≠ --dark).
+    <footer className="flex flex-col items-center gap-10 bg-footer pt-18 pb-9 text-inverse-muted dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8">
       <div className="container grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6">
         <div
           className="flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0"
@@ -82,7 +82,7 @@ export function HomeFooter() {
           <Text
             as="p"
             tone="inverse-muted"
-            className="m-0 w-full max-w-64 text-sm font-normal leading-[1.5] tracking-[-0.28px] max-dapp:max-w-none max-dapp:text-xs"
+            className="m-0 w-full max-w-64 text-sm font-normal leading-[1.5] max-dapp:max-w-none max-dapp:text-xs"
             variant="copy"
           >
             <FooterBrandCopy copy={content.brandCopy} />
@@ -108,7 +108,7 @@ export function HomeFooter() {
                 <Text
                   as="a"
                   tone="inverse-muted"
-                  className="text-sm font-normal leading-[1.2] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.5]"
+                  className="text-sm font-normal leading-[1.2] max-dapp:text-xs max-dapp:leading-[1.5]"
                   href={href}
                   key={`${group.label}-${link.label}`}
                   rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
@@ -127,7 +127,7 @@ export function HomeFooter() {
         as="div"
         tone="inverse-muted"
         variant="caption"
-        className="container flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
+        className="container flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
         data-footer-copyright
       >
         {content.copyright}

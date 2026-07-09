@@ -38,8 +38,8 @@ export const chipVariants = tv({
     },
     shape: {
       pill: 'rounded-full',
-      /** 0.5625rem = 9px — swap percent SSOT (not radius-sm 14px) */
-      rounded: 'rounded-[0.5625rem]',
+      /** swap percent SSOT — radius-chip 9px（≠ radius-sm 14px） */
+      rounded: 'rounded-chip',
     },
     tone: {
       default: '',
@@ -57,7 +57,7 @@ export const chipVariants = tv({
     { variant: 'soft', tone: 'default', class: 'bg-muted text-foreground' },
     { variant: 'soft', tone: 'primary', class: 'bg-accent text-primary' },
     { variant: 'soft', tone: 'coral', class: 'bg-accent text-coral' },
-    { variant: 'soft', tone: 'success', class: 'bg-[rgba(43,171,106,0.12)] text-success' },
+    { variant: 'soft', tone: 'success', class: 'bg-success-soft text-success' },
     {
       variant: 'outlined',
       tone: 'default',
@@ -69,7 +69,7 @@ export const chipVariants = tv({
     {
       variant: 'outlined',
       tone: 'success',
-      class: 'border-success bg-card text-success hover:bg-[rgba(43,171,106,0.12)]',
+      class: 'border-success bg-card text-success hover:bg-success-soft',
     },
   ],
   defaultVariants: {

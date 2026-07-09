@@ -57,13 +57,13 @@ export function SwapSlippageModal({
     <AegisResponsiveDialog
       onOpenChange={onOpenChange}
       open={open}
-      overlayClassName="bg-[oklch(0%_0_0/35%)]"
+      overlayClassName="bg-modal-overlay-dim"
       className={cn(
         'border-0 bg-card',
         'w-full max-w-md max-dapp:w-full',
         'max-dapp:rounded-t-lg max-dapp:px-4 max-dapp:pb-[max(20px,env(safe-area-inset-bottom))] max-dapp:pt-3',
         'dapp:rounded-lg dapp:p-6',
-        'dapp:shadow-[0_1.875rem_5rem_oklch(15%_0.02_270/35%)]',
+        'dapp:shadow-modal-panel',
       )}
     >
       <AegisSheetHandle />

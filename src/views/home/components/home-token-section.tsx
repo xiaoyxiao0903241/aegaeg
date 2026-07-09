@@ -81,14 +81,14 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         </Text>
         <Text
           as="strong"
-          className="text-sm font-semibold leading-[1.3] tracking-[-0.28px] text-white max-dapp:text-xs max-dapp:leading-[1.2]"
+          className="text-sm font-semibold leading-[1.3] text-white max-dapp:text-xs max-dapp:leading-[1.2]"
           variant="copy"
         >
           {token.label}
         </Text>
         <Text
           as="p"
-          className="w-full max-w-60 text-sm font-normal leading-[1.5] tracking-[-0.26px] text-white max-dapp:max-w-none max-dapp:text-xs"
+          className="w-full max-w-60 text-sm font-normal text-white max-dapp:max-w-none max-dapp:text-xs"
           variant="copy"
         >
           {token.description}

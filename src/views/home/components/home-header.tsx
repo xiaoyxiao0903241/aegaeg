@@ -20,7 +20,7 @@ export function HomeHeader() {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 flex h-18 w-full items-center border-b border-[oklch(94.87%_0.0058_264.53_/_72%)] bg-[oklch(97.29%_0.0029_264.54_/_88%)] backdrop-blur-[1.125rem] max-dapp:min-h-14 max-dapp:bg-background max-dapp:py-0 max-dapp:backdrop-blur-none"
+      className="fixed inset-x-0 top-0 z-50 flex h-18 w-full items-center border-b border-border/70 bg-background/90 backdrop-blur-[1.125rem] max-dapp:min-h-14 max-dapp:bg-background max-dapp:py-0 max-dapp:backdrop-blur-none"
       aria-label="Primary navigation"
     >
       <div className="container flex h-18 items-center justify-between gap-6 max-dapp:min-h-14 max-dapp:flex-nowrap max-dapp:gap-3">

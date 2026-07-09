@@ -170,7 +170,7 @@ export function RewardsRankSection() {
               as="small"
               variant="copy"
               tone="muted-foreground"
-              className="block text-xs leading-normal tracking-[-0.24px]"
+              className="block text-xs leading-normal"
             >
               {leftBottomLabel}
             </Text>
@@ -179,7 +179,7 @@ export function RewardsRankSection() {
                 as="small"
                 variant="copy"
                 tone="muted-foreground"
-                className="block text-right text-xs leading-normal tracking-[-0.24px]"
+                className="block text-right text-xs leading-normal"
               >
                 {postLaunch30DayLabel}
               </Text>

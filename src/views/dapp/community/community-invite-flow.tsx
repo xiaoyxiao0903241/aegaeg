@@ -15,7 +15,7 @@ const inviteFlowStep = tv({
   base: [
     'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold text-white',
     'max-dapp:size-7',
-    'text-[length:var(--type-copy-size)] leading-[1.5] tracking-[-0.26px]',
+    'text-[length:var(--type-copy-size)]',
   ],
 })
 
@@ -62,7 +62,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
           <Text
             as="h4"
             variant="headline"
-            className="m-0 text-sm leading-normal tracking-[-0.28px] max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0 max-dapp:text-xs"
+            className="m-0 text-sm leading-normal max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0 max-dapp:text-xs"
           >
             {item.title}
           </Text>
@@ -71,7 +71,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
             variant="copy"
             tone="muted-foreground"
             className={cn(
-              'm-0 max-w-[24ch] text-xs leading-normal tracking-[-0.24px] text-foreground/30',
+              'm-0 max-w-[24ch] text-xs leading-normal text-foreground/30',
               'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:leading-[1.35]',
               'group-data-[tab=community]/shell:max-dapp:line-clamp-2 group-data-[tab=community]/shell:max-dapp:leading-[1.28]',
             )}
@@ -102,7 +102,7 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             <Text
               as="h4"
               variant="headline"
-              className="m-0 text-sm leading-[1.2] tracking-[-0.28px] max-dapp:text-xs"
+              className="m-0 text-sm leading-[1.2] max-dapp:text-xs"
             >
               {item.title}
             </Text>
@@ -110,7 +110,7 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
               as="p"
               variant="copy"
               tone="muted-foreground"
-              className="m-0 text-sm leading-normal tracking-[-0.26px] max-dapp:text-xs"
+              className="m-0 text-sm leading-normal max-dapp:text-xs"
             >
               {item.copy}
             </Text>

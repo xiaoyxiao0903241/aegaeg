@@ -26,7 +26,7 @@ export function DappTableAuthPrompt({
         <p className="m-0 text-sm font-semibold leading-[1.2] tracking-[-0.3px] text-foreground">
           {t.dapp.connect.recordsTitle}
         </p>
-        <p className="m-0 text-xs leading-normal tracking-[-0.26px] text-muted-foreground">
+        <p className="m-0 text-xs leading-normal text-muted-foreground">
           {body}
         </p>
       </div>

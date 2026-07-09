@@ -109,7 +109,7 @@ Phase T — 技术债（视觉收敛后再开）
 | Genesis / Rewards / Community 未登录厚红块 | 多为 IGNORE（section lh 级联 / 抗锯齿 / 1px 边）或 INTENTIONAL |
 | **未登录态全矩阵** | **PASS** Swap ≤0.6%；其他 ≤2.3%（2026-07-09 full-both） |
 | **登录态全滚动（双侧）** | **PASS**（钱包已连）；Swap/Rewards ≤2.3%；Community ≤3.5%；Genesis mid~4.6% = INTENTIONAL/IGNORE |
-| 硬编码色 / Coming soon `#FF9500` 等 | 收敛中：footer 文案→`inverse-muted`；slippage→`border-border`；AGX icon→`bg-dark`；security→`bg-muted`；**保留** `#FF9500` Coming soon、footer `#161514`、season `#e9785a` |
+| 硬编码色 / Coming soon 等 | **T2 收敛**：FAQ/`footer`/`warning`/`modal-overlay`/`skeleton`/`coral-wash`/`success-soft` 进 tokens；Coming soon → `bg-warning`；footer → `bg-footer` |
 | 结构债：`dappPanelTitleClassName` 等 | **fixed**（内联 JSX `className`） |
 | P8 legacy theme / 死 alias | **fixed**（死块删除；工程色进 `tokens.json`） |
 | 全站 Text 覆盖审计 | **partial**：season card / shares label / genesis referencePrice / footer copyright 已收；钱包地址 chip、collapsible title 槽、装饰 wrapper 保留 |

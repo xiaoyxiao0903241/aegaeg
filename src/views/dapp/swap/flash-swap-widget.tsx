@@ -101,7 +101,7 @@ export function FlashSwapWidget({
           buyBalance={buyLabel}
           middleSlot={
             <div aria-hidden className="flex items-center justify-center py-1.5">
-              <div className="grid size-[2.125rem] place-items-center rounded-[0.6875rem] border border-border bg-card">
+              <div className="grid size-[2.125rem] place-items-center rounded-control border border-border bg-card">
                 <DappIcon alt="" className="size-4" src={flashSwapAssets.flowDivider} />
               </div>
             </div>

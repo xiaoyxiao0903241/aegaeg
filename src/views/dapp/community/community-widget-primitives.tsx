@@ -19,7 +19,7 @@ const communityShareButton = tv({
 })
 
 const communityReferrerInput = tv({
-  base: 'w-full rounded-sm border border-border bg-card px-3.5 py-2.5 text-xs tracking-[-0.26px] text-muted-foreground outline-0',
+  base: 'w-full rounded-sm border border-border bg-card px-3.5 py-2.5 text-xs text-muted-foreground outline-0',
 })
 
 const communityReferrerBindGrid = tv({
@@ -102,7 +102,7 @@ export function CommunityReferrerBindCard({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="m-0 text-xs leading-normal tracking-[-0.24px]"
+        className="m-0 text-xs leading-normal"
       >
         {referrerLabel}
       </Text>
@@ -128,7 +128,7 @@ export function CommunityReferrerBindCard({
         as="small"
         variant="copy"
         tone="muted-foreground"
-        className="block text-xs leading-normal tracking-[-0.24px]"
+        className="block text-xs leading-normal"
       >
         {hint}
       </Text>
@@ -159,7 +159,7 @@ export function CommunityReferrerBoundPanel({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="my-3 text-xs leading-normal tracking-[-0.24px]"
+        className="my-3 text-xs leading-normal"
       >
         {addressLabel}
       </Text>
@@ -172,7 +172,7 @@ export function CommunityReferrerBoundPanel({
             as="strong"
             variant="copy"
             tone="foreground"
-            className="truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px]"
+            className="truncate text-sm font-semibold leading-[1.2]"
           >
             {referrerLabel ?? '—'}
           </Text>
@@ -192,7 +192,7 @@ export function CommunityReferrerBoundPanel({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="my-3 text-xs leading-normal tracking-[-0.24px]"
+        className="my-3 text-xs leading-normal"
       >
         {note}
       </Text>

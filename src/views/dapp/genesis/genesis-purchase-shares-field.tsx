@@ -58,7 +58,7 @@ export function GenesisPurchaseSharesField({
         {/* Figma `4150:3234` — soft coral Chip; box model matches h-11 / r-11 */}
         <Chip
           className={cn(
-            'h-11 min-w-16 shrink-0 rounded-[0.6875rem] px-[0.9375rem] text-xs font-semibold',
+            'h-11 min-w-16 shrink-0 rounded-control px-[0.9375rem] text-xs font-semibold',
             buttonDisabledClass,
             'disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
           )}

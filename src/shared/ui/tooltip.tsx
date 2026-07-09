@@ -30,7 +30,7 @@ const TooltipContent = React.forwardRef<
         'z-[9999] overflow-visible',
         'w-max max-w-[min(18rem,calc(100vw-2rem))] rounded-sm bg-dark px-3 py-2',
         'text-left text-xs font-medium leading-[1.45] whitespace-pre-line text-white',
-        'shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.18)]',
+        'shadow-tooltip',
         'animate-[aegis-tooltip-in_140ms_ease-out]',
         'data-[state=closed]:animate-[aegis-tooltip-out_100ms_ease-in]',
         'data-[side=bottom]:[&>svg]:-mt-px',

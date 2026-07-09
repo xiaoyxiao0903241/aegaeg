@@ -192,7 +192,7 @@ export function WalletDetailsModal({
     <AegisResponsiveDialog
       onOpenChange={onOpenChange}
       open={open}
-      overlayClassName="bg-[oklch(13%_0.02_264/45%)] backdrop-blur-sm"
+      overlayClassName="bg-modal-overlay backdrop-blur-sm"
       className={cn(
         'w-full max-w-md max-dapp:w-full',
         'max-dapp:rounded-t-lg max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t',
@@ -200,7 +200,7 @@ export function WalletDetailsModal({
         'dapp:rounded-lg dapp:border dapp:border-border/80 dapp:px-7 dapp:pb-7 dapp:pt-8',
         'text-center',
         'bg-[linear-gradient(165deg,oklch(100%_0_0/96%),oklch(100%_0_0/86%))] backdrop-blur-xl',
-        'dapp:shadow-[0_1.875rem_5rem_oklch(15%_0.02_270/35%)]',
+        'dapp:shadow-modal-panel',
       )}
     >
       <AegisSheetHandle />

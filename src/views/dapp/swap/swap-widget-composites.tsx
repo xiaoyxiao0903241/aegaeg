@@ -103,7 +103,7 @@ export function SwapSubpageHeader({
           <Text
             tone="muted-foreground"
             variant="headline"
-            className="text-base font-medium leading-[1.4] tracking-[-0.02em]"
+            className="text-base font-medium leading-[1.4]"
           >
             {t.swap.backToHub}
           </Text>

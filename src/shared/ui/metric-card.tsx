@@ -39,10 +39,7 @@ export function MetricCard({
       className={cn(revealClass(), 'flex flex-col items-start gap-1.5', className)}
       data-reveal
     >
-      <Card.Label
-        className="text-xs font-medium leading-[18px] tracking-[-0.24px]"
-        tone="muted-foreground"
-      >
+      <Card.Label className="text-xs font-medium" tone="muted-foreground">
         {label}
       </Card.Label>
       <Card.Value className={valueClassName} tabular={tabular}>

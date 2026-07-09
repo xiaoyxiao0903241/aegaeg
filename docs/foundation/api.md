@@ -14,7 +14,7 @@
 
 | 维度 | 集合 | 键数 |
 |------|------|------|
-| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `success` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 21（公开语义；生成文件另含 engineering 色） |
+| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `faq` · `skeleton` · `modal-overlay` · `warning` · `footer` · `success` · `success-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*` | 公开语义；工程色见 tokens.json |
 | type | `caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` | 10 |
 | space | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)` | 9 |
 | radius | `sm(8)` · `md(10)` · `lg(12)` · `xl(16)` · `full` | 5 |
@@ -160,7 +160,7 @@
 | `CalloutCard` | promo / pcard / tc | `title`, `description`, `cta` | 深色 CTA / 提示卡 |
 
 **内部约定**：
-- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-[#5b6472]`（单处场景，**不进** Text `tone`，禁复活 `faq-text` token）。
+- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
 

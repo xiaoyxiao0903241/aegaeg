@@ -55,7 +55,7 @@ export function DappPanelHeader({
           variant="copy"
           tone="muted-foreground"
           className={cn(
-            'm-0 max-w-[34ch] max-dapp:max-w-none text-xs leading-[1.5] tracking-[-0.24px]',
+            'm-0 max-w-[34ch] max-dapp:max-w-none text-xs',
             '[&_strong]:font-bold [&_strong]:text-primary',
           )}
         >

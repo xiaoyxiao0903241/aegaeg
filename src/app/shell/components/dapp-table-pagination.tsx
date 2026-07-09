@@ -261,7 +261,7 @@ export function DappTablePagination({
             {menuOpen
               ? createPortal(
                   <ul
-                    className="m-0 list-none overflow-y-auto rounded-sm border border-border bg-card p-0 text-xs shadow-[0_0.25rem_1rem_oklch(0_0_0/8%)]"
+                    className="m-0 list-none overflow-y-auto rounded-sm border border-border bg-card p-0 text-xs shadow-dropdown"
                     data-dapp-pagination-menu
                     id={listId}
                     ref={menuRef}

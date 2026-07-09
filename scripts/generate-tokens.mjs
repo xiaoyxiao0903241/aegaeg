@@ -157,11 +157,16 @@ function buildElevationVars(shadows) {
 /**
  * Build @theme block.
  * @param {Record<string, ShadowToken>} shadows
+ * @param {Record<string, string>} radius
  * @returns {string}
  */
-function buildThemeBlock(shadows) {
-  const shadowLines = Object.entries(shadows).map(([key]) => `  --shadow-${key}: var(--elevation-e${Object.keys(shadows).indexOf(key) + 1});`)
-  return `@theme {\n  --radius-sm: var(--radius-sm);\n  --radius-md: var(--radius-md);\n  --radius-lg: var(--radius-lg);\n  --radius-xl: var(--radius-xl);\n\n${shadowLines.join('\n')}\n}\n`
+function buildThemeBlock(shadows, radius) {
+  const radiusLines = Object.keys(radius).map((key) => `  --radius-${key}: var(--radius-${key});`)
+  const shadowKeys = Object.keys(shadows)
+  const shadowLines = shadowKeys.map(
+    (key, index) => `  --shadow-${key}: var(--elevation-e${index + 1});`,
+  )
+  return `@theme {\n${radiusLines.join('\n')}\n\n${shadowLines.join('\n')}\n}\n`
 }
 
 /**
@@ -471,7 +476,7 @@ function buildThemeCss(tokens) {
   const radiusBlock = buildRadiusVars(tokens.radius)
   const elevationBlock = buildElevationVars(tokens.shadows)
   const h5Media = buildH5TypeMedia(tokens.type)
-  const themeBlock = buildThemeBlock(tokens.shadows)
+  const themeBlock = buildThemeBlock(tokens.shadows, tokens.radius)
   const themeInline = buildThemeInline(tokens.colors)
 
   return `/**

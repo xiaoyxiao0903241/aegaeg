@@ -16,7 +16,7 @@ const communityProgramCard = tv({
       'flex flex-col gap-2 p-5 max-dapp:rounded-md max-dapp:p-4 max-dapp:gap-1.5 max-dapp:py-3',
     ),
     action:
-      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold leading-[1.3] tracking-[-0.26px] text-primary max-dapp:text-xs',
+      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold leading-[1.3] text-primary max-dapp:text-xs',
   },
 })
 
@@ -70,7 +70,7 @@ export function CommunityProgramCard({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="m-0 max-w-[38ch] text-sm leading-[1.5] tracking-[-0.26px] max-dapp:text-xs"
+        className="m-0 max-w-[38ch] text-sm max-dapp:text-xs"
       >
         {body}
       </Text>

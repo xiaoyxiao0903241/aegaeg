@@ -30,7 +30,7 @@ const communityStatCard = tv({
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),
     value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full'),
-    volume: cn('relative z-1 tracking-[-0.28px]', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:leading-[1.2]'),
+    volume: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:leading-[1.2]'),
     hint: cn('relative z-1 tracking-[-0.12px]', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
   },
   variants: {
@@ -39,7 +39,7 @@ const communityStatCard = tv({
         root: 'is-dark shadow-none border-0',
       },
       false: {
-        root: 'shadow-[0_0.5rem_1.5rem_rgba(18,26,51,0.06)]',
+        root: 'shadow-faq',
       },
     },
     withImage: {
@@ -101,7 +101,7 @@ export function CommunityStatCard({
         tone={dark ? 'inverse-muted' : 'muted-foreground'}
         className={cn(
           styles.label(),
-          'tracking-[-0.24px]',
+          '',
           // 4175 community stats: text-xs · leading-normal (12/18)
           'text-xs leading-normal',
           dark && 'tracking-[-0.26px]',

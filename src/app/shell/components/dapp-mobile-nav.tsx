@@ -87,7 +87,7 @@ export function DappMobileNav({
         aria-label={t.common.close}
         className={cn(
           'absolute inset-0 border-0 p-0',
-          'bg-[oklch(13%_0.02_264/45%)] backdrop-blur-sm',
+          'bg-modal-overlay backdrop-blur-sm',
         )}
         data-dapp-mobile-nav-backdrop
         onClick={onClose}

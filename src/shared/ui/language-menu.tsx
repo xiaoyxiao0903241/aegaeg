@@ -12,7 +12,7 @@ import { Text } from '~/shared/ui/text'
 const openGrid =
   'hidden [[open]_&]:grid [[data-open]_&]:grid [[open]_&]:animate-[language-menu-in_180ms_ease_both] [[data-open]_&]:animate-[language-menu-in_180ms_ease_both]'
 const openTrigger =
-  '[[open]_&]:border-coral-hover-border [[open]_&]:bg-[oklch(97%_0.014_45)] [[open]_&]:shadow-card [[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-[oklch(97%_0.014_45)] [[data-open]_&]:shadow-card'
+  '[[open]_&]:border-coral-hover-border [[open]_&]:bg-coral-wash [[open]_&]:shadow-card [[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-coral-wash [[data-open]_&]:shadow-card'
 
 export type LanguageMenuOption = {
   code: string
@@ -181,8 +181,8 @@ function NativeLanguageMenu({
             'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
             'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
             'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-            'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
-            'focus-visible:-translate-y-px focus-visible:bg-[oklch(97%_0.014_45)] focus-visible:shadow-card',
+            'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
+            'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
             openTrigger,
             '[&::-webkit-details-marker]:hidden [&_img]:size-4',
             'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
@@ -198,7 +198,7 @@ function NativeLanguageMenu({
         <div
           className={cn(
             openGrid,
-            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
+            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
             menuClassName,
           )}
           role="menu"
@@ -297,8 +297,8 @@ function ReactLanguageMenu({
           'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
           'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
           'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-          'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
-          'focus-visible:-translate-y-px focus-visible:bg-[oklch(97%_0.014_45)] focus-visible:shadow-card',
+          'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
+          'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
           openTrigger,
           '[&::-webkit-details-marker]:hidden [&_img]:size-4',
           'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
@@ -315,7 +315,7 @@ function ReactLanguageMenu({
       <div
         className={cn(
           openGrid,
-          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
+          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
           !open && 'hidden',
           menuClassName,
         )}

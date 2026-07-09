@@ -79,15 +79,15 @@ export function SwapPromoPillAction({
           ? cn(
               'absolute right-4 top-1/2 z-[2] -translate-y-1/2 px-4 py-2.5',
               // 4175 pill: text-xs / leading-normal; connect uses 0.8125rem.
-              'text-xs font-semibold leading-normal tracking-[-0.02em]',
-              !withArrow && minConnectWidth && 'min-w-[7.75rem] text-[0.8125rem]',
+              'text-xs font-semibold leading-normal',
+              !withArrow && minConnectWidth && 'min-w-[7.75rem] text-xs',
               'transition-[border-color,transform] duration-180 ease-out',
               'hover:translate-x-px hover:border-primary',
               'focus-visible:translate-x-px focus-visible:border-primary',
               'disabled:pointer-events-none disabled:opacity-45',
             )
           : cn(
-              'px-3 py-1.5 text-xs font-semibold leading-[1.2] tracking-[-0.02em]',
+              'px-3 py-1.5 text-xs font-semibold leading-[1.2]',
               !withArrow && fullWidth && 'w-full justify-center',
             ),
         className,
@@ -189,8 +189,8 @@ export function SwapPromoCard({
                 styles.title(),
                 // 4175 desktop title = text-base + leading-normal (16→24); not headline 1.2.
                 layout === 'desktop'
-                  ? 'text-base font-semibold leading-normal tracking-[-0.03em]'
-                  : 'text-sm font-semibold leading-[1.2] tracking-[-0.028em]',
+                  ? 'text-base font-semibold leading-normal'
+                  : 'text-sm font-semibold leading-[1.2]',
               )}
             >
               {title}
@@ -205,7 +205,7 @@ export function SwapPromoCard({
           className={cn(
             styles.body(),
             // 4175 promo body = text-xs (12); copy token alone is 13 and cascades FAQ.
-            'text-xs leading-[1.5] tracking-[-0.02em]',
+            'text-xs leading-[1.5]',
           )}
         >
           {body}

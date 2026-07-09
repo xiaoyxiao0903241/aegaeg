@@ -72,7 +72,7 @@ export function HomeSecuritySection() {
               key={check}
               style={{ '--security-index': index } as CSSProperties}
             >
-              <span className="grid size-[var(--home-security-icon-wrap-size)] shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-[0.8125rem] text-primary max-dapp:size-[var(--home-security-icon-wrap-size-h5)] max-dapp:rounded-xl">
+              <span className="grid size-[var(--home-security-icon-wrap-size)] shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-xs text-primary max-dapp:size-[var(--home-security-icon-wrap-size-h5)] max-dapp:rounded-xl">
                 <img
                   className="size-[var(--home-security-icon-size)] object-contain"
                   src={homeAssets.securityCheck}

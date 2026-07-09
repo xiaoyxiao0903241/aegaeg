@@ -48,7 +48,7 @@ export function HomePopupNoticeModal({
             {notice.title || messages.home.meta.title}
           </DialogPrimitive.Title>
 
-          <article className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1.5rem_5rem_oklch(15%_0.02_270/35%)]">
+          <article className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-2xl bg-card shadow-modal-panel">
             <header className="relative z-10 flex shrink-0 items-center justify-between gap-3 px-4 pb-3 pt-4">
               <div className="inline-flex min-w-0 items-center gap-2">
                 <img

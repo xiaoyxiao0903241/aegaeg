@@ -35,7 +35,7 @@ export function RewardsProgressRow({
       <Text
         variant="copy"
         tone="muted-foreground"
-        className="text-xs leading-[1.5] tracking-[-0.24px]"
+        className="text-xs"
       >
         {label}
       </Text>
@@ -43,7 +43,7 @@ export function RewardsProgressRow({
         as="strong"
         variant="copy"
         tone="foreground"
-        className="text-right text-xs font-semibold leading-[1.3] tracking-[-0.24px] max-dapp:leading-[1.2]"
+        className="text-right text-xs font-semibold leading-[1.3] max-dapp:leading-[1.2]"
       >
         {value}
       </Text>
@@ -53,11 +53,11 @@ export function RewardsProgressRow({
 
 /** sm+pill already w-full via Button SSOT; lock min-h to 4175 40px (sm default 36). */
 export const rewardsClaimAction = tv({
-  base: 'mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]',
+  base: 'mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!',
 })
 
 export const rewardsBalanceHeaderMeta = tv({
-  base: 'tracking-[-0.24px]',
+  base: '',
 })
 
 /** 4175 `tone="muted"` = faint 30%；Foundation 无 faint → foreground/30 */

@@ -119,7 +119,7 @@ export function HomeRoadmapSection() {
               </Text>
               <Text
                 as="p"
-                className="mt-1.5 text-xs font-normal leading-[1.4] tracking-[-0.26px] dapp:mt-2"
+                className="mt-1.5 text-xs font-normal leading-[1.4] dapp:mt-2"
                 tone="muted-foreground"
                 variant="copy"
               >

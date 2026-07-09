@@ -21,7 +21,7 @@ export function DappMetaList({
       as="div"
       surface="outlined"
       className={cn(
-        'grid shrink-0 gap-2 rounded-sm px-3.5 py-3 tracking-[-0.26px]',
+        'grid shrink-0 gap-2 rounded-sm px-3.5 py-3',
         className,
       )}
     >

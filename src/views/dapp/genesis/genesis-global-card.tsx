@@ -18,8 +18,8 @@ const genesisGlobalCard = tv({
     kicker: 'max-dapp:block max-dapp:pr-28',
     contractButton: cn(
       'absolute right-5.5 top-11 z-[2] max-dapp:top-4.5 max-dapp:right-4.5',
-      'gap-1.5 border-[oklch(100%_0_0/45%)] bg-transparent px-4.5 text-white',
-      'hover:border-[oklch(100%_0_0/80%)] focus-visible:border-[oklch(100%_0_0/80%)]',
+      'gap-1.5 border-white/45 bg-transparent px-4.5 text-white',
+      'hover:border-white/80 focus-visible:border-white/80',
       '[&_img]:size-[var(--dapp-icon-action)] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
     globe:
@@ -62,7 +62,7 @@ export function GenesisGlobalCard({
           as="p"
           variant="copy"
           tone="inverse-muted"
-          className="m-0 max-dapp:w-full text-[0.8125rem] leading-[1.5] tracking-[-0.26px] max-dapp:text-[0.875rem]"
+          className="m-0 max-dapp:w-full text-xs max-dapp:text-[0.875rem]"
         >
           {body}
         </Text>

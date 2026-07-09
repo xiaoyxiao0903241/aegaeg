@@ -5,10 +5,10 @@ import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 import { cn } from '~/shared/lib/utils'
 
 const skeletonSurfaceClass =
-  'bg-[oklch(94.5%_0.008_260)] motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
+  'bg-skeleton motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
 
 const skeletonDarkClass =
-  'bg-[oklch(100%_0_0/18%)] motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
+  'bg-skeleton-on-dark motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
 
 const tableCell = dappTableCell()
 const TABLE_CELL = `${tableCell.border()} ${tableCell.minWidth()} px-3 py-2.5 text-left whitespace-nowrap font-normal max-dapp:px-2.5 max-dapp:py-2`

@@ -62,7 +62,7 @@ function RewardsHeroPanel({
               as="p"
               variant="copy"
               tone="inverse-muted"
-              className="m-0 leading-[1.5] tracking-[-0.26px] max-dapp:text-[0.875rem]"
+              className="m-0 max-dapp:text-[0.875rem]"
             >
               {heroTierRewardBody}
             </Text>
@@ -71,7 +71,7 @@ function RewardsHeroPanel({
                 as="p"
                 variant="copy"
                 tone="inverse-muted"
-                className="m-0 leading-[1.5] tracking-[-0.26px] max-dapp:text-[0.875rem]"
+                className="m-0 max-dapp:text-[0.875rem]"
               >
                 {superCommunityBenefitBody}
               </Text>

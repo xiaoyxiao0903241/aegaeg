@@ -41,7 +41,17 @@ export const colors = [
   "surface-wash-strong",
   "pill-muted-bg",
   "coral-hover-border",
-  "status-success-bg"
+  "status-success-bg",
+  "success-soft",
+  "faq",
+  "skeleton",
+  "skeleton-on-dark",
+  "modal-overlay",
+  "modal-overlay-strong",
+  "coral-wash",
+  "modal-overlay-dim",
+  "warning",
+  "footer"
 ] as const
 
 export type ColorToken = (typeof colors)[number]
@@ -76,6 +86,8 @@ export const space = [
 export type SpaceToken = (typeof space)[number]
 
 export const radii = [
+  "chip",
+  "control",
   "sm",
   "md",
   "lg",
@@ -91,7 +103,11 @@ export const shadows = [
   "subtle",
   "elevated-strong",
   "window",
-  "modal"
+  "modal",
+  "modal-panel",
+  "tooltip",
+  "menu",
+  "dropdown"
 ] as const
 
 export type ShadowToken = (typeof shadows)[number]
