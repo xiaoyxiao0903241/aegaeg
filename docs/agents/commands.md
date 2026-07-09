@@ -15,7 +15,8 @@
 | 命令 | 用途 |
 |------|------|
 | **`pnpm check`** | **收工最小门禁**：`tsc -b` + `lint:architecture` + `test:unit` |
-| `pnpm lint` | ESLint（含 `eslint-plugin-better-tailwindcss`，规则均为 **warn**，不阻断） |
+| `pnpm lint` | ESLint（含 `eslint-plugin-better-tailwindcss`；多数 Tailwind / 登记债为 **warn**，不阻断） |
+| **git pre-commit**（husky） | staged `*.{ts,tsx,js,mjs,cjs}` → `eslint`；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。`pnpm install` 后 `prepare` 会挂上 hook |
 | `pnpm lint:all` | ESLint + Stylelint + hex + depcruise + knip |
 | `pnpm format` / `pnpm format:check` | Prettier + `prettier-plugin-tailwindcss`（class 排序；**未**进 `check`） |
 | `pnpm format:classnames` | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序） |
