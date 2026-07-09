@@ -13,7 +13,7 @@
 ```
 
 写盘前若涉及验收命令 → 加读 [`verification.md`](./verification.md)。  
-自主重构方向 → [`world-class-goals.md`](./world-class-goals.md)（North Star；探针 PASS alone ≠ DONE）。
+自主重构方向 → [`world-class-goals.md`](./world-class-goals.md)（North Star；红块优先；探针 PASS alone ≠ DONE）。
 
 **禁止**再读已废止文档（见 [`../README.md`](../README.md) 「已废止」表）。
 
@@ -25,7 +25,7 @@
 |------|------|------|
 | [`runbook.md`](./runbook.md) | Phase 0→P2 · 单组件 6 步 · 样式栈 · MUST NOT | 执行 refactor 的 agent |
 | [`api.md`](./api.md) | 六组件对称 API · 键数 gate · Tier B 边界 | 定 API / 改 primitive |
-| [`verification.md`](./verification.md) | 4175/5174 · 双 gate · 命令 · 切片验收模板 | 收工 / 探针 |
+| [`verification.md`](./verification.md) | 4175/5174 · 双 gate · 红块标签 · 命令 | 收工 / 可选 scoped 探针 |
 
 ---
 
@@ -36,9 +36,10 @@
 | 策略 | **一步到位** — 无 `deprecatedAliases` / legacy variant |
 | P1 scope | **六类全部**做完；顺序 Text→…→shell cards = **先后**，不是「只做 Text」 |
 | 每 PR | primitive API 收束 + **全仓 call site** |
-| 视觉 SSOT | dev **4175** computed |
-| Parity gate | Swap PC/H5（`12:2` / `62:2`）`compare:style-baseline` |
-| 完成定义 | **API gate + 探针** — 探针 PASS alone = NOT DONE |
+| 视觉 SSOT | 登录态 **4175** heatmap + Figma；同位置源码归因 |
+| 诊断序 | 红块 → 裁切肉眼 → 源码根因 →（可选）scoped 探针 |
+| Parity gate | 红块标签清零/已标；`compare:style-baseline` 辅助 |
+| 完成定义 | **API gate + 红块人工对照** — 探针 PASS alone = NOT DONE |
 | 交付物 | 世界级最小公开 API，不是 parity 补丁 |
 
 ---

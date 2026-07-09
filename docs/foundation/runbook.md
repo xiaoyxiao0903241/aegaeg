@@ -55,7 +55,7 @@ P8        清债     — 删 dapp-type-scale.ts / 旧 color class / 文档同步
 | Step | 动作 | 产出 |
 |------|------|------|
 | **1** | 公开 API 表 | [`api.md`](./api.md) 对应 § — 键数定死 |
-| **2** | dev @4175 computed 映射表 | 探针节点 + `rg` 全仓旧 API → 新 prop |
+| **2** | 4175 视觉映射表 | heatmap 红块 / 同位置源码（探针仅确认）+ `rg` 全仓旧 API → 新 prop |
 | **3** | 样式栈（七维） | 每改动 call site 一张栈表（§4） |
 | **4** | 同 PR 实现 | primitive 收束 + **全仓 call site** |
 | **5** | 双 gate | [`verification.md`](./verification.md) |
@@ -119,10 +119,22 @@ H5: (同上)
 | 动效用 `data-*` | 同步改选择器；禁止为动效保留空 class |
 | 以「是否影响样式」删冗余 | 重复断点、被 Foundation 覆盖的手写、无 computed 影响的 utility — **不看** `dev` 是否保留 |
 | 视觉收敛 &lt;1px | 有偏差 → 对照 `dev` **同位置代码**找根因，改 SSOT/call site；禁止 `!` / 局部特判补丁 |
-| heatmap 红块清单 | 截图后按红块列清单并归因；整页 `%` 不作收工条件（见 skill） |
+| heatmap 红块优先 | 发现/归因：红块裁切 + 同位置源码；整页 `%` 不作收工（见 skill） |
+| 探针降级 | 禁止默认全页 DOM dump；仅肉眼分不清或修完硬验收时，对 1–2 节点 scoped 取 computed |
 | 禁止贴回平行样式体系 | 不为截图恢复已删 hand-roll / 遗留色 / type-scale；根因在 token 则改 token |
 
 **偏离标签**：结构债清理标 **INTENTIONAL**；误删导致塌陷标 **REGRESSION** 并修回。
+
+### 6.2 视觉诊断序（登录态 / 子页）
+
+```text
+heatmap 红块清单
+  → 裁切肉眼分类（色/字/布局/动态/抗锯齿）
+  → 同位置源码根因 + REGRESSION|INTENTIONAL|IGNORE
+  → 改 SSOT / call site
+  → （可选）scoped 探针确认
+  → 重跑 heatmap
+```
 
 ---
 
@@ -162,3 +174,4 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 | v2.0 | 按 Figma 审计更新为 P0–P7，新增 Token/Chip/Input/Composite 阶段 |
 | v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
 | v2.2 | 新增 §6.1 Class / CSS 减法；明确 `dev` 仅视觉对照、非结构 SSOT |
+| v2.3 | §6.1–6.2：红块优先；探针降级为确认工具 |

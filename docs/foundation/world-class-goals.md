@@ -1,8 +1,8 @@
 # 世界级重构目标（North Star）
 
 > **定稿时机**：`b1ad39b` 之后 · 登录态四 tab 对照后  
-> **视觉基线**：登录态 4175（`pnpm dev:baseline`）computed + Figma SSOT  
-> **完成定义**：API gate + 人工对照表 + 探针；**探针 PASS alone ≠ DONE**
+> **视觉基线**：登录态 4175（`pnpm dev:baseline`）heatmap + Figma SSOT  
+> **完成定义**：API gate + 人工对照表（红块标签）+ 可选 scoped 探针；**探针 PASS alone ≠ DONE**
 
 ---
 
@@ -21,6 +21,7 @@
 | 改 Community 左卡 padding | 用户已确认满意 |
 | 为 H5 分叉文案 / 平行组件 | PC 文案 SSOT；H5 只是响应式 |
 | 引入动画库 / 新设计语言 | 保持现有品牌与 CSS 动效栈 |
+| 默认全页 DOM 探针找问题 | 发现靠红块；探针只确认 |
 
 ---
 
@@ -42,50 +43,68 @@
 
 1. Swap / Genesis / Rewards / Community **共享** topbar · rail · card · heading · table · FAQ 行为一致。
 2. 登录态对照只标 **REGRESSION / INTENTIONAL / IGNORE**；修 REGRESSION，不修 IGNORE。
-3. 子页（Convert / Trade）按 heatmap **红块**收敛，不用整页 %。
+3. 子页按 heatmap **红块**收敛，不用整页 %；诊断序见 skill / runbook §6.2。
 
 ### D. 工程
 
 1. Foundation 六组件 API 与 `api.md` 键数一致；无 legacy alias。
 2. 改 primitive → 全仓 call site 同 PR；runbook 映射表先于写盘。
 3. `pnpm exec tsc --noEmit` + 相关 `compare:style-baseline` 切片可复跑。
+4. Class / CSS 减法：无顶部长 `*ClassName` / 空装饰 class（见 skill）。
 
 ---
 
 ## 4. 推进顺序（自主重构时遵守）
 
 ```text
-1. 共享 chrome 回归清零（topbar / lang / rail / heading）← 本提交已收一刀
-2. Swap 子页 Convert/Trade heatmap 红块
-3. Genesis / Rewards / Community 剩余 REGRESSION（不动 Community 左 padding）
+1. 共享 chrome 回归清零（topbar / lang / rail / heading）← 已收
+2. Swap 子页 Convert/Trade heatmap 红块 ← 主 REGRESSION 已收（pill / TokenChip / rate）
+3. Genesis / Rewards / Community 剩余 REGRESSION（不动 Community 左 padding）← Community 主项已收；Rewards 多为 IGNORE
 4. Home header 与 DApp chrome 对齐（语言按钮、brand 走 Text）
 5. 硬编码色/尺寸清扫 + 全站 Text 覆盖审计
-6. P8 删 legacy theme 块与死 alias
+6. P8 删 legacy theme 块与死 alias + 结构债（dappPanelTitleClassName 等）
 ```
 
-每步：**最小闭环** → 登录态截图/DOM 标签 → 需要时再 commit。
+每步：**heatmap 红块** → 源码根因 → 最小闭环 → 需要时 scoped 探针 → commit。
 
 ---
 
-## 5. 当前已知差距（对照后）
+## 5. 当前已知差距（2026-07-09）
 
 | 项 | 状态 |
 |----|------|
-| Topbar brand 18/28/-0.45 | fixed (`b1ad39b`) |
-| Language menu 叠字 | fixed |
-| Type size px-lock → rem | fixed |
-| Lang item radius 10→14 | INTENTIONAL（radius-sm） |
-| muted / section lh / FAQ 色 | INTENTIONAL |
+| Topbar brand / Language menu / type rem | fixed |
+| Lang item radius 10→14 · muted 0.7 · section lh | INTENTIONAL |
 | Community 左卡 padding | 用户锁定，不改 |
-| Trade FAQ pill tabs soft/primary/lg | fixed（本切片） |
-| Swap Convert/Trade 其余红块 | 继续扫 |
-| Home brand 仍裸 span | 待收 |
-| 硬编码色未清零 | 待扫 |
+| Trade FAQ pill · TokenChip lh · Convert rate tabular | fixed |
+| Community stat label · Copy link min-h | fixed |
+| Genesis / Rewards 细带红块 | 多为 IGNORE（级联 / 抗锯齿 / 动态） |
+| Home brand 仍裸 span | **待收** |
+| 硬编码色 / Coming soon `#FF9500` 等 | **待扫**（产品 badge 可保留并注明） |
+| 结构债：`dappPanelTitleClassName` 等顶部长 cn | **视觉收敛后再清** |
+| P8 legacy theme / 死 alias | **待做** |
+| 全站 Text 覆盖审计 | **待做** |
 
 ---
 
-## 6. 修订
+## 6. 「离世界级有多远」（粗标尺）
+
+| 维度 | 约进度 | 说明 |
+|------|--------|------|
+| DApp 登录态视觉 REGRESSION | ~85% | 主红块已修或已标；剩 IGNORE/INTENTIONAL |
+| Token / 语义色纪律 | ~70% | `inverse-muted` 已立；硬编码与遗留 class 未清零 |
+| Typography / Text 全覆盖 | ~60% | DApp 主路径较好；Home brand / 裸节点未清 |
+| Class / CSS 减法 | ~40% | 门禁已写；结构债延后 |
+| P8 清债 | ~10% | 未开刀 |
+| **综合（North Star）** | **~55–65%** | 视觉主战场过半；工程清债与 Home 仍是大头 |
+
+「世界级」≠ 整页红像素 0%。达标看：§3 四条可判定 + 红块清单无未标 REGRESSION。
+
+---
+
+## 7. 修订
 
 | 版本 | 说明 |
 |------|------|
 | v1.0 | 登录态四 tab 对照后首版 North Star |
+| v1.1 | 红块优先诊断；进度表与「离世界级」粗标尺（2026-07-09） |

@@ -45,16 +45,20 @@ description: >-
 7. deletion-first · 代码极简 · 第一性原理。
 ```
 
-## 截图 / heatmap 验收（MUST · 防漏红块）
+## 视觉诊断（MUST · 红块优先）
 
 整页 `%` **只作趋势，不作收工条件**。漏看 hero CTA 的根因是「修完高度就停」。
 
+**发现与归因**靠 heatmap + 源码；**探针是降级确认工具**，不是默认第一步。禁止先全页 DOM dump 再猜红块是什么。
+
 ```
 1. 打开 heatmap / diff.png，按红块列清单（不按整页 %）
-2. 每块：4175 vs 5174 computed + 同位置源码 → 根因一句 + REGRESSION|INTENTIONAL|IGNORE
-3. 共享 primitive 导致 → 改 SSOT（Button/Text/Card…），禁止 call site ! 补丁
-4. 修完重跑；红块清零或每块已标注
-5. 禁止「diff 从 17%→4%」当作完成；未扫完红块 = NOT DONE
+2. 裁切 4175 vs 5174 → 肉眼定：色 / 字 / 布局 / 动态文案 / 抗锯齿
+3. 同位置打开当前源码（必要时 baseline 同文件）→ 根因一句 + REGRESSION|INTENTIONAL|IGNORE
+4. 共享 primitive 导致 → 改 SSOT（Button/Text/Card…），禁止 call site ! 补丁
+5. 探针（可选）：仅当肉眼分不清色/字号档，或修完要对 1–2 个节点硬验收时，scoped 取 computed
+6. 修完重跑 heatmap；红块清零或每块已标注
+7. 禁止「diff 从 17%→4%」当作完成；未扫完红块 = NOT DONE
 ```
 
 ---

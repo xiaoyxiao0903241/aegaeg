@@ -9,9 +9,9 @@
 | Gate | 含义 | 命令 |
 |------|------|------|
 | **API gate** | 代码键数 = api.md 键数，无 legacy API 命中 | `rg` 检查 + tsc |
-| **视觉 gate** | 人工对照表确认 或 4175 parity 探针 | `pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5` |
+| **视觉 gate** | heatmap 红块标签 + 人工对照表；scoped 探针仅确认 | `pnpm compare:screenshots` / 登录态 heatmap；可选 `compare:style-baseline` |
 
-用户已确认：**人工对照表优先**，4175 parity 作为辅助。
+用户已确认：**红块 + 同位置源码优先**；整页 `%` 与全页 DOM 探针不作发现工具；scoped 探针仅肉眼分不清或修完硬验收。
 
 ---
 
@@ -37,7 +37,7 @@
 - [ ] 全仓 call site 迁移到新 surface
 
 ### P3 Chip
-- [ ] `chip.tsx` 存在，3 variant × 2 size × 2 shape × 3 tone
+- [ ] `chip.tsx` 存在，3 variant × **3** size（sm/md/lg）× 2 shape × 3 tone
 - [ ] pct / badge / tab 已替换为 Chip
 - [ ] `rg 'shape="chip"|variant="tab"' src --glob '*.{tsx,ts}'`（Button 的 tab）零命中
 
@@ -200,3 +200,4 @@ Figma 层: <layer>
 | v2.0 | 更新为 P0–P7，增加人工对照表优先、Chip/Input/Composite gate |
 | v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
 | v2.2 | dapp-genesis-desktop 红块标签 + panel leading 1.3 / Text max-dapp 覆盖修复 |
+| v2.3 | 视觉 gate：红块优先；探针降级；Chip size=3；Community/Convert 标签同步 |
