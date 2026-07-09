@@ -10,7 +10,7 @@ import { WalletConnectChip } from '~/app/wallet-connect-chip'
 
 const networkPill = tv({
   base: [
-    'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-background px-3.5',
+    'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-transparent px-3.5',
     'text-xs font-semibold leading-[1.2] shadow-none',
     'max-dapp:h-7.5 max-dapp:min-h-7.5 max-dapp:px-3 max-dapp:text-xs',
   ],

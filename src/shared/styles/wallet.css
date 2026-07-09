@@ -91,7 +91,7 @@
   place-items: center;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: var(--card);
+  background: transparent;
   color: var(--foreground);
   transition:
     border-color 160ms ease,
@@ -99,7 +99,7 @@
 }
 
 .aegis-wallet-connect-close:hover {
-  border-color: var(--foreground);
+  border-color: var(--primary);
   transform: scale(1.008);
 }
 

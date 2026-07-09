@@ -378,6 +378,32 @@
   --dapp-season-radio-size: var(--app-season-radio-size);
   --dapp-season-card-radius: var(--app-season-card-radius);
 
+  /* Language menu — Figma lang-popup 4140:286 @ 16px root; scales with site-fluid */
+  --app-lang-menu-width: 16.5rem;
+  --app-lang-menu-row-height: 2.625rem;
+  --app-lang-menu-row-radius: 0.625rem;
+  --app-lang-menu-meta-size: 0.6875rem;
+
+  --dapp-lang-menu-width: var(--app-lang-menu-width);
+  --dapp-lang-menu-row-height: var(--app-lang-menu-row-height);
+  --dapp-lang-menu-row-radius: var(--app-lang-menu-row-radius);
+  --dapp-lang-menu-meta-size: var(--app-lang-menu-meta-size);
+
+  /* Wallet details modal — Figma 4040:5234 @ 16px root */
+  --app-wallet-modal-max-width: 22.5rem;
+  --app-wallet-modal-close-size: 2.125rem;
+  --app-wallet-modal-orb-size: 4.875rem;
+  --app-wallet-modal-orb-icon: 2.125rem;
+  --app-wallet-modal-balance-size: 1.0625rem;
+  --app-wallet-modal-unit-size: 0.9375rem;
+
+  --dapp-wallet-modal-max-width: var(--app-wallet-modal-max-width);
+  --dapp-wallet-modal-close-size: var(--app-wallet-modal-close-size);
+  --dapp-wallet-modal-orb-size: var(--app-wallet-modal-orb-size);
+  --dapp-wallet-modal-orb-icon: var(--app-wallet-modal-orb-icon);
+  --dapp-wallet-modal-balance-size: var(--app-wallet-modal-balance-size);
+  --dapp-wallet-modal-unit-size: var(--app-wallet-modal-unit-size);
+
   --app-pagination-menu-item-height: 2rem;
   --app-pagination-menu-gap: 0.375rem;
   --app-pagination-menu-viewport-padding: 0.5rem;

@@ -1,4 +1,5 @@
-export const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr'] as const
+/** Order matches Figma `lang-popup` (4140:286). */
+export const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'tr', 'ru', 'hi'] as const
 
 export type Locale = (typeof locales)[number]
 

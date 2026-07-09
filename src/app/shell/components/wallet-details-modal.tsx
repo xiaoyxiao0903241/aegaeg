@@ -1,20 +1,16 @@
 import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { LogOut, Wallet, X } from 'lucide-react'
+import { Wallet, X } from 'lucide-react'
 import { useActiveAccount, useActiveWallet, useDisconnect } from '~/views/dapp/web3/thirdweb-react'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { formatTokenAmount } from '~/core/swap/token-amount'
-import { createWalletReadClient } from '~/views/dapp/web3/chain-read-client'
-import { readErc20Balance } from '~/views/dapp/web3/swap-read'
+import { useUsd1PresaleWalletQuery } from '~/hooks/queries/use-presale-queries'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/auth-provider'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
-import { dappIcon } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { Button } from '~/shared/ui/button'
-import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
@@ -26,17 +22,12 @@ import {
 } from '~/shared/ui/aegis-responsive-dialog'
 import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
-interface WalletTokenBalanceRow {
-  symbol: string
-  label: string
-  value: string
-}
+const USD1_DECIMALS = 18
 
-const WALLET_TOKEN_DEFINITIONS = [
-  { symbol: 'USD1', label: 'USD1' },
-  { symbol: 'USDT', label: 'USDT' },
-] as const
-
+/**
+ * Wallet details / disconnect modal — Figma `4040:5234`.
+ * Address + USD1 balance + Copy / Disconnect. No token list rows.
+ */
 export function WalletDetailsModal({
   onOpenChange,
   open,
@@ -51,15 +42,11 @@ export function WalletDetailsModal({
   const { messages: t } = useI18n()
   const [copied, setCopied] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
-  const [nativeBalance, setNativeBalance] = useState<{
-    displayValue: string
-    symbol: string
-  } | null>(null)
-  const [nativeBalanceLoading, setNativeBalanceLoading] = useState(false)
-  const [tokenBalances, setTokenBalances] = useState<WalletTokenBalanceRow[]>([])
-  const [tokensFetched, setTokensFetched] = useState(false)
   const walletAddress = account?.address
   const walletReady = hasWalletAccount(account)
+  const { balanceQuery, usd1Balance } = useUsd1PresaleWalletQuery(
+    open ? walletAddress : undefined,
+  )
 
   useEffect(() => {
     if (!open) {
@@ -67,108 +54,16 @@ export function WalletDetailsModal({
     }
   }, [open])
 
-  useEffect(() => {
-    if (!open || !walletAddress || !wallet) {
-      setNativeBalance(null)
-      setNativeBalanceLoading(false)
-      return
-    }
-
-    let cancelled = false
-    setNativeBalanceLoading(true)
-
-    const readClient = createWalletReadClient(wallet)
-    void readClient
-      .getBalance({ address: walletAddress as `0x${string}` })
-      .then((wei) => {
-        if (!cancelled) {
-          setNativeBalance({
-            displayValue: formatTokenAmount(wei, 18, 4),
-            symbol: 'BNB',
-          })
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setNativeBalance(null)
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setNativeBalanceLoading(false)
-        }
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [open, wallet, walletAddress])
-
-  useEffect(() => {
-    if (!open || !walletAddress || !wallet) {
-      setTokenBalances([])
-      setTokensFetched(false)
-      return
-    }
-
-    let cancelled = false
-    setTokensFetched(false)
-
-    const readClient = createWalletReadClient(wallet)
-    void Promise.all([
-      readErc20Balance(BSC_CONTRACTS.usd1, walletAddress, readClient),
-      readErc20Balance(BSC_CONTRACTS.usdt, walletAddress, readClient),
-    ])
-      .then(([usd1, usdt]) => {
-        if (cancelled) return
-
-        setTokenBalances(
-          WALLET_TOKEN_DEFINITIONS.map((token, index) => {
-            const raw = index === 0 ? usd1 : usdt
-            return {
-              symbol: token.symbol,
-              label: token.label,
-              value: formatTokenAmount(raw, 18, 4),
-            }
-          }),
-        )
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setTokenBalances([])
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setTokensFetched(true)
-        }
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [open, wallet, walletAddress])
-
   if (!walletAddress) {
     return null
   }
 
   const addressLabel = formatAddress(walletAddress)
-  const balanceValue = nativeBalanceLoading
+  const balanceValue = balanceQuery.isPending
     ? '…'
-    : nativeBalance
-      ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 }).format(
-          Number(nativeBalance.displayValue),
-        )
-      : '—'
-  const balanceSymbol = nativeBalance?.symbol ?? 'BNB'
-  const displayTokenRows = WALLET_TOKEN_DEFINITIONS.map((definition) => {
-    const loaded = tokenBalances.find((token) => token.symbol === definition.symbol)
-    return {
-      ...definition,
-      value: !tokensFetched ? '…' : loaded?.value ?? '—',
-    }
-  })
+    : balanceQuery.isError
+      ? '—'
+      : formatTokenAmount(usd1Balance, USD1_DECIMALS, 2)
 
   async function handleCopy() {
     if (!walletAddress) return
@@ -196,33 +91,32 @@ export function WalletDetailsModal({
       open={open}
       overlayClassName="bg-modal-overlay backdrop-blur-sm"
       className={cn(
-        'w-full max-w-md max-dapp:w-full',
-        'max-dapp:rounded-t-lg max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t',
-        'max-dapp:px-6 max-dapp:pb-[max(24px,env(safe-area-inset-bottom))] max-dapp:pt-3',
-        'dapp:rounded-lg dapp:border dapp:border-border/80 dapp:px-7 dapp:pb-7 dapp:pt-8',
-        'text-center',
-        'bg-[image:var(--glass-panel)] backdrop-blur-xl',
-        'dapp:shadow-modal-panel',
+        'w-full max-w-[length:var(--dapp-wallet-modal-max-width)] max-dapp:w-full',
+        'rounded-2xl border-0 bg-card p-6 text-center shadow-modal-panel',
+        'max-dapp:rounded-t-2xl max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t max-dapp:border-border',
+        'max-dapp:px-6 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))] max-dapp:pt-3',
       )}
     >
       <AegisSheetHandle />
 
-      <AegisDialogClose
-        aria-label={t.common.close}
-        className="absolute right-4 top-4 max-dapp:top-5"
-      >
-        <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
-      </AegisDialogClose>
+      <div className="relative flex w-full items-start justify-end">
+        <AegisDialogClose aria-label={t.common.close}>
+          <X aria-hidden className="size-3.5 shrink-0" strokeWidth={2} />
+        </AegisDialogClose>
+      </div>
 
       <div
         aria-hidden="true"
-        className="mx-auto mb-5 mt-2 grid size-20 place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb dapp:mt-0"
+        className="mx-auto mt-1.5 mb-5 grid size-[length:var(--dapp-wallet-modal-orb-size)] place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb"
       >
-        <Wallet className="size-8" strokeWidth={1.75} />
+        <Wallet
+          className="size-[length:var(--dapp-wallet-modal-orb-icon)]"
+          strokeWidth={1.75}
+        />
       </div>
 
       <DialogPrimitive.Title asChild>
-        <Text as="h2" variant="panel" className="m-0">
+        <Text as="h2" variant="panel" className="m-0 tracking-[0.01em]">
           {addressLabel}
         </Text>
       </DialogPrimitive.Title>
@@ -231,43 +125,29 @@ export function WalletDetailsModal({
         <Text as="p" variant="copy" tone="primary" className="m-0 mt-3">
           {t.wallet.reconnectHint}
         </Text>
-      ) : null}
-
-      <Text
-        as="p"
-        variant="copy"
-        tone="muted-foreground"
-        className="m-0 mt-3"
-      >
-        <Text as="span" variant="figure" tone="primary" className="mr-1.5">
-          {balanceValue}
-        </Text>
-        {balanceSymbol}
-      </Text>
-
-      <div className="mt-4 grid gap-2 text-left">
-        {displayTokenRows.map((token) => (
-          <Card
-            as="div"
-            surface="outlined"
-            className="flex items-center justify-between gap-3 rounded-xl border-border/70 bg-card/60 px-3.5 py-2.5"
-            key={token.symbol}
+      ) : (
+        <div className="mt-3 mb-6 flex items-baseline justify-center gap-1">
+          <Text
+            as="span"
+            variant="figure"
+            className="text-[length:var(--dapp-wallet-modal-balance-size)] leading-none tracking-[-0.02em] text-coral"
           >
-            <Text as="span" variant="copy" tone="muted-foreground">
-              {token.label}
-            </Text>
-            <Text as="strong" variant="figure">
-              {token.value}
-            </Text>
-          </Card>
-        ))}
-      </div>
+            {balanceValue}
+          </Text>
+          <Text
+            as="span"
+            variant="copy"
+            className="text-[length:var(--dapp-wallet-modal-unit-size)] leading-none font-semibold tracking-[-0.02em] text-black/40"
+          >
+            USD1
+          </Text>
+        </div>
+      )}
 
-      <div className="mt-6 grid gap-2.5">
+      <div className={cn('grid gap-2.5', walletReady && 'mt-0', !walletReady && 'mt-6')}>
         {!walletReady ? (
           <>
             <Button
-              className="gap-2"
               onClick={() => setConnectOpen(true)}
               size="md"
               type="button"
@@ -276,13 +156,11 @@ export function WalletDetailsModal({
               {t.wallet.reconnectWallet}
             </Button>
             <Button
-              className="gap-2"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"
               variant="secondary"
             >
-              <LogOut aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
               {t.wallet.disconnect}
             </Button>
           </>
@@ -304,13 +182,11 @@ export function WalletDetailsModal({
               {copied ? t.wallet.copied : t.wallet.copyAddress}
             </Button>
             <Button
-              className="gap-2"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"
               variant="secondary"
             >
-              <LogOut aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
               {t.wallet.disconnect}
             </Button>
           </div>

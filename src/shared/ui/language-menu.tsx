@@ -22,23 +22,27 @@ const languageMenu = tv({
       '[&::-webkit-details-marker]:hidden [&_img]:size-4',
       'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
     ],
+    /** Figma `lang-popup` 4140:286 — sizes via `--dapp-lang-menu-*` (rem / site-fluid). */
     panel: [
-      'hidden [[open]_&]:grid [[data-open]_&]:grid',
+      'hidden [[open]_&]:flex [[data-open]_&]:flex [[open]_&]:flex-col [[data-open]_&]:flex-col',
       '[[open]_&]:animate-[language-menu-in_180ms_ease_both] [[data-open]_&]:animate-[language-menu-in_180ms_ease_both]',
-      'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-1.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
+      'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-[length:var(--dapp-lang-menu-width)] max-w-[calc(100dvw-2rem)] overflow-clip',
+      'rounded-sm border border-border-subtle bg-card p-2.5 shadow-menu',
     ],
+    list: 'flex w-full flex-col gap-0.5 overflow-clip',
   },
 })
 
 const languageMenuItem = tv({
   base: [
-    'flex h-10 cursor-pointer items-center gap-2 rounded-sm bg-transparent px-2.5 text-left',
+    'flex h-[length:var(--dapp-lang-menu-row-height)] w-full cursor-pointer items-center gap-2 bg-transparent px-2.5 text-left',
+    'rounded-[length:var(--dapp-lang-menu-row-radius)]',
     'transition-colors duration-150 ease-out focus-visible:outline-none',
   ],
   variants: {
     active: {
-      true: 'bg-[var(--background)]',
-      false: 'hover:bg-secondary focus-visible:bg-secondary',
+      true: 'bg-background',
+      false: 'hover:bg-background focus-visible:bg-background',
     },
     disabled: {
       true: 'cursor-not-allowed opacity-60',
@@ -48,7 +52,7 @@ const languageMenuItem = tv({
 })
 
 const languageMenuItemName = tv({
-  base: 'block text-sm leading-normal',
+  base: 'block text-sm leading-normal text-foreground',
   variants: {
     active: {
       true: 'font-semibold',
@@ -99,10 +103,10 @@ function MenuItem({
 
   const children = (
     <>
-      <span className="min-w-0 flex-1">
+      <span className="flex min-w-0 flex-1 flex-col gap-px overflow-hidden whitespace-nowrap">
         <Text
           as="span"
-          variant="headline"
+          variant="copy"
           className={languageMenuItemName({ active: Boolean(option.active) })}
         >
           {option.name}
@@ -111,7 +115,7 @@ function MenuItem({
           as="span"
           variant="caption"
           tone="muted-foreground"
-          className="block text-xs font-normal leading-normal"
+          className="block text-[length:var(--dapp-lang-menu-meta-size)] font-normal leading-normal"
         >
           {option.label}
         </Text>
@@ -223,9 +227,11 @@ function NativeLanguageMenu({
         </summary>
 
         <div className={styles.panel({ class: menuClassName })} role="menu">
-          {options.map((option) => (
-            <MenuItem key={option.code} option={option} checkIcon={checkIcon} />
-          ))}
+          <div className={styles.list()}>
+            {options.map((option) => (
+              <MenuItem key={option.code} option={option} checkIcon={checkIcon} />
+            ))}
+          </div>
         </div>
       </details>
       <script dangerouslySetInnerHTML={{ __html: nativeLanguageMenuScript }} />
@@ -328,14 +334,16 @@ function ReactLanguageMenu({
         className={styles.panel({ class: [!open && 'hidden', menuClassName] })}
         role="menu"
       >
-        {options.map((option) => (
-          <MenuItem
-            key={option.code}
-            option={option}
-            checkIcon={checkIcon}
-            onClick={(event) => selectOption(option, event)}
-          />
-        ))}
+        <div className={styles.list()}>
+          {options.map((option) => (
+            <MenuItem
+              key={option.code}
+              option={option}
+              checkIcon={checkIcon}
+              onClick={(event) => selectOption(option, event)}
+            />
+          ))}
+        </div>
       </div>
     </span>
   )

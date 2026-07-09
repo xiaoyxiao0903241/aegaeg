@@ -3,11 +3,12 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { tv } from 'tailwind-variants'
 import { DialogOverlay, DialogPortal, dialogChrome } from '~/shared/ui/dialog'
 
-const dialogClose = tv({
+/** Shared close control — wallet modal, slippage, H5 drawer, etc. */
+export const aegisDialogClose = tv({
   base: [
-    'grid size-8 shrink-0 cursor-pointer place-items-center rounded-full',
-    'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
-    'hover:-translate-y-px hover:border-foreground focus-visible:border-foreground focus-visible:outline-none',
+    'grid size-[length:var(--dapp-wallet-modal-close-size)] shrink-0 cursor-pointer place-items-center rounded-full',
+    'border border-border bg-transparent text-foreground transition-[border-color,transform] duration-180 ease-out',
+    'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
   ],
 })
 
@@ -17,7 +18,7 @@ export function AegisDialogClose({
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <DialogPrimitive.Close
-      className={dialogClose({ class: className })}
+      className={aegisDialogClose({ class: className })}
       type="button"
       {...props}
     />
