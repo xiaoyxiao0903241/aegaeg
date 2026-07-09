@@ -1,6 +1,6 @@
-import type { ComponentProps, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { Segment } from '~/shared/ui/segment'
+import { DappPillTabs } from '~/app/shell/components/dapp-pill-tabs'
 import { revealClass } from '~/shared/lib/reveal'
 
 const rewardsHistorySection = tv({
@@ -19,9 +19,33 @@ export function RewardsHistoryReveal({ children }: { children: ReactNode }) {
   )
 }
 
-export function RewardsHistoryPillTabs(props: ComponentProps<typeof Segment>) {
+/** 4175 used DappPillTabs (soft/outlined pill)；禁 Segment percent Chip 网格。 */
+export function RewardsHistoryPillTabs({
+  'aria-label': ariaLabel,
+  onChange,
+  options,
+  value,
+}: {
+  'aria-label': string
+  onChange: (value: string) => void
+  options: Array<{ label: string; value: string }>
+  value: string
+}) {
   const styles = rewardsHistorySection()
-  return <Segment {...props} className={styles.pillTabs()} />
+  return (
+    <DappPillTabs
+      ariaLabel={ariaLabel}
+      className={styles.pillTabs()}
+      items={options.map((option) => ({
+        active: option.value === value,
+        label: option.label,
+      }))}
+      onSelect={(index) => {
+        const next = options[index]
+        if (next) onChange(next.value)
+      }}
+    />
+  )
 }
 
 export const rewardsHistoryTableHead = tv({

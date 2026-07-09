@@ -29,7 +29,13 @@ export const colors = [
   "token-usd1",
   "token-agx",
   "token-gagx",
-  "token-x"
+  "token-x",
+  "border-subtle",
+  "surface-glass",
+  "surface-wash-strong",
+  "pill-muted-bg",
+  "coral-hover-border",
+  "status-success-bg"
 ] as const
 
 export type ColorToken = (typeof colors)[number]

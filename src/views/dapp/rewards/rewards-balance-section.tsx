@@ -163,7 +163,7 @@ export function RewardsBalanceSection() {
           <RewardBalanceCard
             action={
               <DappActionButton
-                className="mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]"
+                className={rewardsClaimAction()}
                 disabled={
                   communityFundClaimable === '$0.00' ||
                   communityFundLoading ||

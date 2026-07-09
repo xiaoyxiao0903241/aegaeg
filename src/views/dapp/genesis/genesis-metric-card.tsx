@@ -10,7 +10,8 @@ export const genesisMetricGrid = tv({
 })
 
 const genesisMetricCard = tv({
-  base: 'px-4 py-3.5 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:p-3.5 max-dapp:shadow-card',
+  // 4175 H5 keeps px-4 py-3.5 (not p-3.5) — padding drives ~91px card height.
+  base: 'px-4 py-3.5 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:shadow-card',
 })
 
 /** 4175 genesis MetricCard：desktop text-base / H5 text-sm */

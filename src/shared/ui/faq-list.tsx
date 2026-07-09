@@ -34,11 +34,15 @@ const faqList = tv({
           revealClass(),
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
-        answer: '',
+        // 4175 home FAQ answer: text-sm / H5 text-xs, leading 1.5, no UA-margin restore.
+        answer:
+          'text-sm font-normal leading-[1.5] tracking-[-0.28px] max-dapp:text-xs',
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        answer: '',
+        // 4175: text-sm / H5 text-xs + tracking -0.28px；UA margin → py。
+        answer:
+          'my-0 py-[1em] leading-[1.5] tracking-[-0.28px] max-dapp:text-xs',
       },
     },
   },
@@ -178,12 +182,11 @@ export function FaqList({
                 >
                   <div className="faq-answer-panel">
                     <div className={cn('faq-answer-panel-inner', isOpen && 'cursor-pointer')}>
-                      {/* 4175 raw <p> kept UA margin (~1em); Tailwind preflight zeros it — restore via py. */}
                       <Text
                         as="p"
-                        variant="detail"
+                        variant={variant === 'home' ? 'copy' : 'detail'}
                         tone="muted-foreground"
-                        className={cn(styles.answer(), 'my-0 py-[1em]')}
+                        className={styles.answer()}
                       >
                         {item.a}
                       </Text>

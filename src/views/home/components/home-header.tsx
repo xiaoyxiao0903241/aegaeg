@@ -1,4 +1,5 @@
 import { LanguageMenu } from '~/shared/ui/language-menu'
+import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { allLanguageOptions } from '~/i18n/locales'
 import { withLocalePrefix } from '~/i18n/locale'
@@ -35,7 +36,10 @@ export function HomeHeader() {
             width="28"
             height="27"
           />
-          <span>AEGIS X</span>
+          {/* Keep text-lg — brand token is 17px; header lock is 18px / H5 16px */}
+          <Text as="span" variant="brand" className="text-lg max-dapp:text-base max-dapp:leading-[1.2]">
+            AEGIS X
+          </Text>
         </a>
         <nav
           className="flex items-center gap-8 whitespace-nowrap text-sm font-medium text-muted-foreground max-tablet:hidden [&_a]:transition-[color,transform] [&_a]:duration-180 [&_a]:ease-out [&_a:hover]:-translate-y-px [&_a:hover]:text-foreground"

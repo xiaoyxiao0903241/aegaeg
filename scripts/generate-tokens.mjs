@@ -211,30 +211,6 @@ export type ShadowToken = (typeof shadows)[number]
 `
 }
 
-/**
- * Legacy type aliases so existing source can still resolve old names during P0–P1.
- * Remove in P1 after text.tsx and call sites are migrated to new variant names.
- * @returns {string}
- */
-function staticLegacyTypeAliases() {
-  return `
-/* ---- @deprecated legacy type aliases ---- */
-/* Map old Text variant names to new token names; remove in P1. */
-
-:root {
-  --type-rail-size: var(--type-caption-size);
-  --type-kicker-size: var(--type-eyebrow-size);
-  --type-meta-size: var(--type-copy-size);
-  --type-widget-title-size: var(--type-panel-size);
-  --type-amount-size: var(--type-figure-size);
-  --dapp-type-kicker-size: var(--type-eyebrow-size);
-  --dapp-type-caption-size: var(--type-copy-size);
-  --dapp-type-title-sm-size: var(--type-panel-size);
-  --dapp-type-body-lg-size: var(--type-brand-size);
-  --dapp-type-amount-size: var(--type-figure-size);
-}
-`
-}
 
 /**
  * Static engineering variables that are not design tokens.
@@ -482,92 +458,6 @@ function staticExtraTheme() {
 `
 }
 
-/**
- * Legacy @theme inline mappings so existing Tailwind utility classes keep working.
- * Remove in P8 when legacy colors are deleted.
- * @returns {string}
- */
-function staticLegacyThemeInline() {
-  return `
-
-/* ---- @deprecated legacy color utility mappings ---- */
-/* Remove in P8 when source no longer uses text-ink-*, text-on-dark, etc. */
-
-@theme inline {
-  --color-coral-bright: var(--coral-bright);
-  --color-on-dark: var(--on-dark);
-  --color-bsc: var(--bsc);
-  --color-bsc-foreground: var(--bsc-foreground);
-  --color-faint: var(--faint);
-  --color-ink-muted: var(--ink-muted);
-  --color-ink-strong: var(--ink-strong);
-  --color-subtle-ink: var(--subtle-ink);
-  --color-faq-text: var(--faq-text);
-  --color-placeholder: var(--placeholder);
-  --color-focus-border: var(--focus-border);
-  --color-border-subtle: var(--border-subtle);
-  --color-surface-glass: var(--surface-glass);
-  --color-surface-wash: var(--surface-wash);
-  --color-surface-wash-strong: var(--surface-wash-strong);
-  --color-pill-muted-bg: var(--pill-muted-bg);
-  --color-coral-hover-border: var(--coral-hover-border);
-  --color-coral-strong-border: var(--coral-strong-border);
-  --color-status-success-bg: var(--status-success-bg);
-}
-`
-}
-
-/**
- * Legacy color variables that are still referenced by source.
- * They are kept during P1–P7 migration and will be removed in P8.
- * @returns {string}
- */
-function staticLegacyColors() {
-  return `
-/* ---- @deprecated legacy colors ---- */
-/* Still used by source during P1–P7 migration; remove in P8. */
-
-:root {
-  --coral-bright: #f0a88a;
-  --coral-bright: oklch(80.08% 0.0962 39.91);
-  /* Alias to Tier A inverse-muted during P8 cleanup window */
-  --on-dark: var(--inverse-muted);
-  --bsc: #f0b429;
-  --bsc: oklch(81.94% 0.1561 84.2);
-  --bsc-foreground: #1a1a1a;
-  --bsc-foreground: oklch(22.21% 0 89.88);
-  --faint: rgba(0, 0, 0, 0.3);
-  --faint: oklch(0% 0 0 / 30%);
-  --ink-muted: rgba(0, 0, 0, 0.4);
-  --ink-muted: oklch(0% 0 0 / 40%);
-  --ink-strong: rgba(0, 0, 0, 0.7);
-  --ink-strong: oklch(0% 0 0 / 70%);
-  --subtle-ink: #5b6472;
-  --subtle-ink: oklch(45% 0.02 260);
-  --faq-text: #5b6472;
-  --placeholder: #c9cfda;
-  --placeholder: oklch(82% 0.011 264);
-  --focus-border: #4a5060;
-  --focus-border: oklch(35% 0.02 260);
-  --border-subtle: #e8eaef;
-  --border-subtle: oklch(92% 0.01 263);
-  --surface-glass: rgba(255, 255, 255, 0.82);
-  --surface-glass: oklch(100% 0 0 / 82%);
-  --surface-wash: rgba(255, 255, 255, 0.56);
-  --surface-wash: oklch(100% 0 0 / 56%);
-  --surface-wash-strong: rgba(255, 255, 255, 0.62);
-  --surface-wash-strong: oklch(100% 0 0 / 62%);
-  --pill-muted-bg: #f4f5f7;
-  --pill-muted-bg: oklch(96% 0.006 264);
-  --coral-hover-border: rgba(232, 106, 67, 0.38);
-  --coral-hover-border: oklch(66.83% 0.1625 36.6 / 38%);
-  --coral-strong-border: rgba(232, 106, 67, 0.55);
-  --coral-strong-border: oklch(66.83% 0.1625 36.6 / 55%);
-  --status-success-bg: rgba(43, 171, 106, 0.7);
-  --status-success-bg: oklch(91% 0.075 159 / 70%);
-}
-`
-}
 
 /**
  * Build full theme.css content.
@@ -611,9 +501,9 @@ ${radiusBlock}
 ${elevationBlock}
 }
 
-${h5Media}/* Home-only Tailwind text scale bump (+1px); DApp uses --type-* above */
+${h5Media}/* H5 Tailwind text scale bump (+1px) — ≡ 4175 mobile-type-scale.css (:root, Home+DApp) */
 @media (max-width: 820px) {
-  html:not(.dapp-app) {
+  :root {
     --text-xs: 0.8125rem;
     --text-sm: 0.9375rem;
     --text-base: 1.0625rem;
@@ -632,7 +522,7 @@ ${h5Media}/* Home-only Tailwind text scale bump (+1px); DApp uses --type-* above
 
 ${themeBlock}
 ${staticExtraTheme()}${themeInline}
-${staticLegacyThemeInline()}@layer base {
+@layer base {
   * {
     @apply border-border;
   }
@@ -649,7 +539,16 @@ ${staticLegacyThemeInline()}@layer base {
     margin: 0;
   }
 }
-${staticLegacyColors()}${staticLegacyTypeAliases()}${staticEngineeringVars()}`
+${staticEngineeringVars()}
+/* H5 Genesis season card — ≡ 4175 dapp-scale.css (+1px); must follow engineering :root */
+@media (max-width: 820px) {
+  :root {
+    --app-season-title-size: 0.875rem;
+    --app-season-meta-size: 0.75rem;
+    --app-season-badge-size: 0.6875rem;
+  }
+}
+`
 }
 
 /**

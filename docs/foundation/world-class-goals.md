@@ -93,7 +93,7 @@ Phase T — 技术债（视觉收敛后再开）
 
 ---
 
-## 5. 当前已知差距（2026-07-09）
+## 5. 当前已知差距（2026-07-09 · 持续推进中）
 
 | 项 | 状态 |
 |----|------|
@@ -102,14 +102,17 @@ Phase T — 技术债（视觉收敛后再开）
 | Community 左卡 padding | 用户锁定，不改 |
 | Trade FAQ pill · TokenChip lh · Convert rate tabular | fixed |
 | Community stat label · Copy link min-h | fixed |
-| Genesis / Rewards 细带红块 | 多为 IGNORE（级联 / 抗锯齿 / 动态） |
-| **未登录态全矩阵** | **待扫**（本切片 Phase V） |
-| **登录态全滚动（双侧）** | **待补全**（此前多停在首屏） |
-| Home brand 仍裸 span | Phase T / 或 V4 |
-| 硬编码色 / Coming soon `#FF9500` 等 | Phase T |
-| 结构债：`dappPanelTitleClassName` 等 | Phase T（视觉后） |
-| P8 legacy theme / 死 alias | Phase T |
-| 全站 Text 覆盖审计 | Phase T |
+| Phase V 矩阵脚本 `setSwapView` / `setTab` / `evaluate` unwrap | fixed（motion 锁 + 文案点击 + `data-tab` 校验） |
+| AmountBox balance：仅 `sessionReady` 时 `font-semibold` | fixed（对齐 4175） |
+| RewardsProgressRow value `font-semibold` + rank meta tracking | fixed |
+| Home header/footer brand 裸 span → `<Text variant="brand">` | fixed（T1 顺手） |
+| Genesis / Rewards / Community 未登录厚红块 | 多为 IGNORE（section lh 级联 / 抗锯齿 / 1px 边）或 INTENTIONAL |
+| **未登录态全矩阵** | **PASS** Swap ≤0.6%；其他 ≤2.3%（2026-07-09 full-both） |
+| **登录态全滚动（双侧）** | **PASS**（钱包已连）；Swap/Rewards ≤2.3%；Community ≤3.5%；Genesis mid~4.6% = INTENTIONAL/IGNORE |
+| 硬编码色 / Coming soon `#FF9500` 等 | 收敛中：footer 文案→`inverse-muted`；slippage→`border-border`；AGX icon→`bg-dark`；security→`bg-muted`；**保留** `#FF9500` Coming soon、footer `#161514`、season `#e9785a` |
+| 结构债：`dappPanelTitleClassName` 等 | **fixed**（内联 JSX `className`） |
+| P8 legacy theme / 死 alias | **fixed**（死块删除；工程色进 `tokens.json`） |
+| 全站 Text 覆盖审计 | **partial**：season card / shares label / genesis referencePrice / footer copyright 已收；钱包地址 chip、collapsible title 槽、装饰 wrapper 保留 |
 
 ---
 
@@ -117,12 +120,13 @@ Phase T — 技术债（视觉收敛后再开）
 
 | 维度 | 约进度 | 说明 |
 |------|--------|------|
-| DApp 登录态视觉 REGRESSION | ~85% | 主红块已修或已标；剩 IGNORE/INTENTIONAL |
-| Token / 语义色纪律 | ~70% | `inverse-muted` 已立；硬编码与遗留 class 未清零 |
-| Typography / Text 全覆盖 | ~60% | DApp 主路径较好；Home brand / 裸节点未清 |
-| Class / CSS 减法 | ~40% | 门禁已写；结构债延后 |
-| P8 清债 | ~10% | 未开刀 |
-| **综合（North Star）** | **~55–65%** | 视觉主战场过半；工程清债与 Home 仍是大头 |
+| DApp 未登录视觉 REGRESSION | ~95% | 全矩阵 ≤2.3%；剩 IGNORE/INTENTIONAL |
+| DApp 登录态视觉 REGRESSION | ~95% | 主 REGRESSION 已修并复扫；剩 INTENTIONAL/IGNORE |
+| Token / 语义色纪律 | ~90% | 工程色进 tokens.json；死 legacy 已删；Coming soon `#FF9500` 有意保留 |
+| Typography / Text 全覆盖 | ~85% | 主路径已收；剩 chip 地址 / 槽位 wrapper |
+| Class / CSS 减法 | ~80% | `dappPanelTitleClassName` 已内联 |
+| P8 清债 | ~90% | legacy 静态块已删；stylelint 双声明规则有意保留 |
+| **综合（North Star）** | **~85%** | Phase T 主清债完成；剩 Home 性能 + 少量 Text 边角 |
 
 「世界级」≠ 整页红像素 0%。达标看：§3 四条可判定 + 红块清单无未标 REGRESSION。
 
@@ -135,3 +139,7 @@ Phase T — 技术债（视觉收敛后再开）
 | v1.0 | 登录态四 tab 对照后首版 North Star |
 | v1.1 | 红块优先诊断；进度表与「离世界级」粗标尺（2026-07-09） |
 | v1.2 | Phase V 视觉矩阵（两态×全滚动）先于 Phase T 清债 |
+| v1.3 | 矩阵导航修复；AmountBox/RewardsProgress/Home brand；登录态待重连 |
+| v1.4 | 登录态复扫：Button sm+pill w-full、rank brand、Community bound 卡、History→DappPillTabs、ensureLoggedIn |
+| v1.5 | Phase V 两态全矩阵收口；剩余红块标 INTENTIONAL/IGNORE；North Star ~75–80% |
+| v1.6 | Phase T：panel title 内联、P8 legacy 删除、工程色入 tokens、Text 主路径审计；North Star ~85% |

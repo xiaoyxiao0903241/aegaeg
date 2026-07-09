@@ -54,11 +54,16 @@ export function GenesisGlobalCard({
           as="strong"
           tone="inverse"
           variant="panel"
-          className="block tracking-[-0.63px]"
+          className="block tracking-[-0.63px] max-dapp:text-lg max-dapp:leading-[1.2] max-dapp:tracking-[-0.54px]"
         >
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
         </Text>
-        <Text as="p" variant="copy" tone="inverse-muted" className="m-0 max-dapp:w-full">
+        <Text
+          as="p"
+          variant="copy"
+          tone="inverse-muted"
+          className="m-0 max-dapp:w-full text-[0.8125rem] leading-[1.5] tracking-[-0.26px] max-dapp:text-[0.875rem]"
+        >
           {body}
         </Text>
       </div>

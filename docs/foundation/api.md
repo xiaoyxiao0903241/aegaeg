@@ -40,7 +40,7 @@
 | eyebrow | 11 | 12 | semibold | uppercase kicker |
 | copy | 13 | 12 | normal | **默认**正文、label、table cell |
 | detail | 14 | 14 | normal | FAQ 答案、长说明 |
-| question | 14 | 14 | semibold | FAQ 问题 |
+| question | 14 | 15 | semibold | FAQ 问题（H5 ≡ 4175 `text-sm`） |
 | headline | 16 | 15 | semibold | 卡小标题 |
 | brand | 17 | 18 | semibold | topbar brand / rank |
 | section | 18 | 16 | semibold | section heading (dl) |
@@ -65,9 +65,13 @@
 | `size` | `sm` · `md` · `lg` |
 | `shape` | `pill` · `rounded` |
 
-**Size 字阶**（按钮显示阶，**不是** Text `copy` token）：`lg` = `text-base`（16）· `md`/`sm` = `text-sm`（14）；`leading-none`
+**Size 字阶**（按钮显示阶，**不是** Text `copy` token；对齐 4175 box model）：
+- `lg` = `min-h-12` · `text-base` · `leading-none` · `px-6`（H5：`px-5` / `text-sm`）
+- `md` = `min-h-10` · `text-sm` · `leading-snug` · `px-5`（H5：`text-xs`）
+- `sm` = `min-h-11` · `text-sm` · `leading-normal` · **无默认 px**（H5：`min-h-12` / `text-xs`）
+**Compound**：`size=sm` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
 **Typography**：`link` 用 `font-normal text-primary`，不 hand-roll 平行字阶文件
-**禁止**：call site `max-dapp:` typography · `shape="chip"`（拆到 Chip）· 用 `!text-*` 绕过 size
+**禁止**：call site 用 `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 字阶已在 size 轴，勿再叠 `max-dapp:text-*`
 **依赖**：P1-Text
 **探针**：home hero CTA · topbar-connect · swap CTA
 **Gate**：`variant` = **4**；`size` = **3**；`shape` = **2**

@@ -2,6 +2,7 @@ import type { RefObject } from 'react'
 import { tv } from 'tailwind-variants'
 import { buttonDisabledClass } from '~/shared/ui/button'
 import { Input } from '~/shared/ui/input'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 const genesisSharesField = tv({
@@ -44,8 +45,11 @@ export function GenesisPurchaseSharesField({
   const styles = genesisSharesField()
 
   return (
-    <label className="mt-1.5 grid gap-2 text-xs leading-[1.5] text-muted-foreground">
-      <span>{label}</span>
+    // 4175 H5 LABEL: text-xs (13 via mobile bump) / leading 1.5.
+    <label className="mt-1.5 grid gap-2 text-xs leading-[1.5] tracking-normal">
+      <Text as="span" variant="copy" tone="muted-foreground" className="text-xs leading-[1.5] tracking-normal">
+        {label}
+      </Text>
       <div className={styles.row()}>
         <div className={styles.inputWrap()}>
           <Input

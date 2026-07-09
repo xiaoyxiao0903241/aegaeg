@@ -27,13 +27,21 @@ export function DappMetaList({
     >
       {items.map((item, index) => (
         <p className="m-0 flex items-center justify-between gap-3" key={index}>
-          <Text as="span" variant="detail" tone="muted-foreground" className="leading-normal tracking-normal">
+          <Text
+            as="span"
+            variant="detail"
+            tone="muted-foreground"
+            className="leading-normal tracking-normal max-dapp:text-xs"
+          >
             {item.label}
           </Text>
           <Text
             as="strong"
             variant="detail"
-            className={cn('mt-0 text-right font-semibold leading-normal tracking-normal', item.valueClassName)}
+            className={cn(
+              'mt-0 text-right font-semibold leading-normal tracking-normal max-dapp:text-xs',
+              item.valueClassName,
+            )}
           >
             {item.value}
           </Text>

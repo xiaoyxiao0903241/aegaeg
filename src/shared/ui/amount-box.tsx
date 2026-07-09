@@ -32,6 +32,8 @@ export type AmountBoxProps = {
   label: ReactNode
   loading?: boolean
   loadingSkeleton?: ReactNode
+  /** 4175: balance is font-semibold only when sessionReady (logged-in). */
+  sessionReady?: boolean
   startAdornment: ReactNode
 }
 
@@ -45,6 +47,7 @@ export function AmountBox({
   label,
   loading = false,
   loadingSkeleton,
+  sessionReady = true,
   startAdornment,
 }: AmountBoxProps) {
   const styles = amountBox()
@@ -57,12 +60,16 @@ export function AmountBox({
           {label}
         </Text>
         {balance ? (
-          // 4175: text-ink-strong ≡ muted-foreground 70% (not full foreground)
+          // 4175: text-ink-strong ≡ muted-foreground 70%; semibold only when sessionReady
           <Text
             as="span"
             variant="copy"
             tone="muted-foreground"
-            className={cn(styles.balance(), 'leading-normal', !disabled && 'font-semibold')}
+            className={cn(
+              styles.balance(),
+              'leading-normal',
+              sessionReady && !disabled && 'font-semibold',
+            )}
           >
             {balance}
           </Text>

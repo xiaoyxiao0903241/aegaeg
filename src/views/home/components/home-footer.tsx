@@ -52,7 +52,8 @@ export function HomeFooter() {
   const content = messages.home.footer
 
   return (
-    <footer className="flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-[#b8c0ce] dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8">
+    // Footer canvas #161514 is brand-specific (≠ --dark #111625); keep until footer token exists.
+    <footer className="flex flex-col items-center gap-10 bg-[#161514] pt-18 pb-9 text-inverse-muted dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8">
       <div className="container grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6">
         <div
           className="flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0"
@@ -69,11 +70,19 @@ export function HomeFooter() {
               width="28"
               height="26"
             />
-            <span>AEGIS X</span>
+            <Text
+              as="span"
+              variant="brand"
+              tone="inverse"
+              className="text-lg max-dapp:text-base max-dapp:leading-[1.2]"
+            >
+              AEGIS X
+            </Text>
           </a>
           <Text
             as="p"
-            className="m-0 w-full max-w-64 text-sm font-normal leading-[1.5] tracking-[-0.28px] text-[#b8c0ce] max-dapp:max-w-none max-dapp:text-xs"
+            tone="inverse-muted"
+            className="m-0 w-full max-w-64 text-sm font-normal leading-[1.5] tracking-[-0.28px] max-dapp:max-w-none max-dapp:text-xs"
             variant="copy"
           >
             <FooterBrandCopy copy={content.brandCopy} />
@@ -87,7 +96,8 @@ export function HomeFooter() {
           >
             <Text
               as="h3"
-              className="m-0 text-sm font-semibold leading-[1.2] tracking-[0.56px] text-primary-foreground max-dapp:text-xs max-dapp:leading-[1.5]"
+              tone="inverse"
+              className="m-0 text-sm font-semibold leading-[1.2] tracking-[0.56px] max-dapp:text-xs max-dapp:leading-[1.5]"
               variant="headline"
             >
               {group.label}
@@ -97,7 +107,8 @@ export function HomeFooter() {
               return (
                 <Text
                   as="a"
-                  className="text-sm font-normal leading-[1.2] tracking-[-0.28px] text-[#b8c0ce] max-dapp:text-xs max-dapp:leading-[1.5]"
+                  tone="inverse-muted"
+                  className="text-sm font-normal leading-[1.2] tracking-[-0.28px] max-dapp:text-xs max-dapp:leading-[1.5]"
                   href={href}
                   key={`${group.label}-${link.label}`}
                   rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
@@ -111,13 +122,16 @@ export function HomeFooter() {
           </nav>
         ))}
       </div>
-      <div className="container h-px bg-[#232323]" aria-hidden="true" />
-      <div
-        className="container flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] text-[#b8c0ce] whitespace-nowrap max-dapp:text-xs"
+      <div className="container h-px bg-white/10" aria-hidden="true" />
+      <Text
+        as="div"
+        tone="inverse-muted"
+        variant="caption"
+        className="container flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 tracking-[-0.26px] whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
         data-footer-copyright
       >
-        <p className="m-0 max-dapp:whitespace-nowrap">{content.copyright}</p>
-      </div>
+        {content.copyright}
+      </Text>
     </footer>
   )
 }

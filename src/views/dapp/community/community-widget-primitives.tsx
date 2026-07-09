@@ -27,7 +27,8 @@ const communityReferrerBindGrid = tv({
 })
 
 const communityReferrerAddressRow = tv({
-  base: 'flex h-[46px] items-center justify-between rounded-[11px] bg-[#f5f6f8] px-3.5',
+  // 4175 ReferrerAddressRow: h-11 · rounded-sm · bg-background（左卡 padding 用户锁定，不改）
+  base: 'flex h-11 items-center justify-between rounded-sm bg-background px-3.5',
 })
 
 const communityReferrerAvatar = tv({
@@ -39,6 +40,7 @@ const communityCopyButton = tv({
 })
 
 export const communityGenesisCta = tv({
+  // 4175 Community Join = 40px (min-h-10), not Button sm default 44px.
   base: 'mt-4 min-h-10 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',
 })
 
@@ -60,7 +62,7 @@ export function CommunityReferralLinkCard({
       <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs leading-normal">
         {linkLabel}
       </Text>
-      <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold max-dapp:text-xs">
+      <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold tracking-tight max-dapp:text-xs">
         {referralLink}
       </Text>
       <DappActionButton className={communityShareButton()} disabled={disabled} onClick={onCopy}>
@@ -95,7 +97,12 @@ export function CommunityReferrerBindCard({
 }) {
   return (
     <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
-      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+      <Text
+        as="p"
+        variant="copy"
+        tone="muted-foreground"
+        className="m-0 text-xs leading-normal tracking-[-0.24px]"
+      >
         {referrerLabel}
       </Text>
       <div className={communityReferrerBindGrid()}>
@@ -116,7 +123,12 @@ export function CommunityReferrerBindCard({
           {bindLabel}
         </DappActionButton>
       </div>
-      <Text as="small" variant="copy" tone="muted-foreground" className="block text-xs">
+      <Text
+        as="small"
+        variant="copy"
+        tone="muted-foreground"
+        className="block text-xs leading-normal tracking-[-0.24px]"
+      >
         {hint}
       </Text>
     </DappSideCard>
@@ -139,8 +151,15 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    <DappSideCard className={cn(communityWidgetCard(), 'gap-2.5')}>
-      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+    // 4175 bound card: gap-2 + 裸 <p> UA my≈12；左卡 padding 用户锁定
+    <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
+      {/* 4175: labels leading-normal tracking -0.24; address leading 1.2 tracking -0.28 */}
+      <Text
+        as="p"
+        variant="copy"
+        tone="muted-foreground"
+        className="my-3 text-xs leading-normal tracking-[-0.24px]"
+      >
         {addressLabel}
       </Text>
       <div className={communityReferrerAddressRow()}>
@@ -148,7 +167,12 @@ export function CommunityReferrerBoundPanel({
           <span aria-hidden="true" className={communityReferrerAvatar()}>
             <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
           </span>
-          <Text as="strong" variant="copy" tone="foreground" className="truncate text-sm font-semibold">
+          <Text
+            as="strong"
+            variant="copy"
+            tone="foreground"
+            className="truncate text-sm font-semibold leading-[1.2] tracking-[-0.28px]"
+          >
             {referrerLabel ?? '—'}
           </Text>
         </div>
@@ -163,7 +187,12 @@ export function CommunityReferrerBoundPanel({
           </button>
         ) : null}
       </div>
-      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs">
+      <Text
+        as="p"
+        variant="copy"
+        tone="muted-foreground"
+        className="my-3 text-xs leading-normal tracking-[-0.24px]"
+      >
         {note}
       </Text>
     </DappSideCard>

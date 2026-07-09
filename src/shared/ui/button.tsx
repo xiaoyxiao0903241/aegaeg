@@ -30,7 +30,8 @@ export const buttonVariants = tv({
   variants: {
     variant: {
       primary: [
-        'border-0 bg-primary text-primary-foreground',
+        // 4175: transparent border keeps box model; lg drops border via compound
+        'border border-transparent bg-primary text-primary-foreground',
         `${liftHoverClass} hover:shadow-primary-hover focus-visible:shadow-primary-hover`,
         'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
         disabledMutedClass,
@@ -51,11 +52,12 @@ export const buttonVariants = tv({
         'disabled:text-muted-foreground disabled:opacity-100',
       ],
     },
-    /** Size typography is display scale (not Text copy token) — lg=16 / md·sm=14 matches 4175 CTA. */
+    /** Size display scale — match 4175 CTA box model (not Text copy token). */
     size: {
-      lg: 'min-h-12 px-6 text-base leading-none',
-      md: 'min-h-10 px-5 text-sm leading-none',
-      sm: 'min-h-9 px-4 text-sm leading-none',
+      lg: 'min-h-12 px-6 text-base leading-none max-dapp:px-5 max-dapp:text-sm',
+      md: 'min-h-10 px-5 text-sm leading-snug max-dapp:text-xs',
+      // 4175 sm: min-h-11 · leading-normal · no px (UA ~6px); H5 min-h-12
+      sm: 'min-h-11 text-sm leading-normal max-dapp:min-h-12 max-dapp:text-xs',
     },
     shape: {
       pill: 'rounded-full',
@@ -63,6 +65,11 @@ export const buttonVariants = tv({
     },
   },
   compoundVariants: [
+    {
+      variant: 'primary',
+      size: 'lg',
+      class: 'border-0',
+    },
     {
       variant: ['secondary', 'ghost'],
       size: 'lg',
@@ -74,10 +81,16 @@ export const buttonVariants = tv({
       size: ['sm', 'md', 'lg'],
       class: '!min-h-0 px-0',
     },
+    /** 4175: sm+pill DApp CTAs stretch to container (Claim / Convert / Bind). */
+    {
+      size: 'sm',
+      shape: 'pill',
+      class: 'w-full',
+    },
   ],
   defaultVariants: {
     variant: 'primary',
-    size: 'md',
+    size: 'sm',
     shape: 'pill',
   },
 })

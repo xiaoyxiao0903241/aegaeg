@@ -239,28 +239,61 @@ async function setDappTab(tabKey) {
  */
 async function setSwapView(swapView) {
   if (!swapView || swapView === 'hub') return
-  const index = swapView === 'flash' ? 0 : swapView === 'trade' ? 1 : -1
-  if (index < 0) throw new Error(`unknown swapView: ${swapView}`)
-  const r = await wb('evaluate', {
+  const label = swapView === 'flash' ? 'Convert' : swapView === 'trade' ? 'Trade' : null
+  if (!label) throw new Error(`unknown swapView: ${swapView}`)
+  // Leave any subview first; store ignores setView while motion=true (320ms).
+  await wb('evaluate', {
     code: `(() => {
-      const panel = document.querySelector('[data-dapp-widget-panel]')
-      if (!panel) return { ok: false, reason: 'no-panel' }
-      // Mode cards are full-width outlined Card-as-button rows (not IconButton / toggle).
-      const cards = [...panel.querySelectorAll('button')].filter((btn) => {
-        const cls = btn.className?.toString?.() ?? ''
-        return cls.includes('rounded-md') && cls.includes('w-full')
-      })
-      const card = cards[${index}]
-      if (!card) return { ok: false, reason: 'no-card', count: cards.length }
-      card.click()
-      return { ok: true, title: (card.innerText || '').trim().slice(0, 48), count: cards.length }
+      for (let i = 0; i < 4; i++) {
+        const b = [...document.querySelectorAll('button')].find((x) =>
+          /Back|返回/.test(x.textContent || ''),
+        )
+        if (b) b.click()
+        else break
+      }
+      return 1
     })()`,
   })
-  const value = r?.value ?? r
-  if (!value?.ok) {
-    throw new Error(`setSwapView(${swapView}) failed: ${JSON.stringify(value)}`)
+  await sleep(700)
+  let last = null
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const r = await wb('evaluate', {
+      code: `(() => {
+        const panel = document.querySelector('[data-dapp-widget-panel]')
+        if (!panel) return { ok: false, reason: 'no-panel' }
+        const label = ${JSON.stringify(label)}
+        let card = [...panel.querySelectorAll('button')].find((btn) => {
+          const t = (btn.innerText || '').trim()
+          return t === label || t.startsWith(label + '\\n') || t.startsWith(label + ' ')
+        })
+        if (!card) {
+          const rows = [...panel.querySelectorAll('button')].filter((btn) => {
+            const cls = btn.className?.toString?.() ?? ''
+            return cls.includes('rounded-md') && cls.includes('w-full')
+          })
+          card = rows[label === 'Convert' ? 0 : 1]
+          if (!card) return { ok: false, reason: 'no-card', count: rows.length, label }
+        }
+        card.click()
+        return { ok: true, title: (card.innerText || '').trim().slice(0, 48), attempt: ${attempt} }
+      })()`,
+    })
+    last = r?.value ?? r
+    if (!last?.ok) throw new Error(`setSwapView(${swapView}) failed: ${JSON.stringify(last)}`)
+    await sleep(900)
+    const verify = await wb('evaluate', {
+      code: `(() => {
+        const back = [...document.querySelectorAll('button')].some((b) =>
+          /Back|返回/.test(b.textContent || ''),
+        )
+        return { back, hash: location.hash }
+      })()`,
+    })
+    const v = verify?.value ?? verify
+    if (v?.back) return
+    await sleep(400)
   }
-  await sleep(900)
+  throw new Error(`setSwapView(${swapView}) did not leave hub after retries: ${JSON.stringify(last)}`)
 }
 
 async function readPageOrigin() {

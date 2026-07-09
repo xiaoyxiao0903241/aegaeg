@@ -125,7 +125,7 @@ export function RewardsRankSection() {
               as="p"
               variant="eyebrow"
               tone="primary"
-              className="m-0 max-dapp:text-[length:var(--dapp-type-kicker-size)]"
+              className="m-0 max-dapp:text-[length:var(--type-eyebrow-size)]"
             >
               {t.rewards.currentTitle}
             </Text>
@@ -135,7 +135,7 @@ export function RewardsRankSection() {
                   as="p"
                   variant="eyebrow"
                   tone="primary"
-                  className="m-0 max-dapp:text-[length:var(--dapp-type-kicker-size)]"
+                  className="m-0 max-dapp:text-[length:var(--type-eyebrow-size)]"
                 >
                   {t.rewards.postLaunchRankTitle}
                 </Text>
@@ -147,30 +147,31 @@ export function RewardsRankSection() {
               </div>
             ) : null}
 
-            <Text
+            <RankTitleWithSuperCommunity
               as="strong"
-              variant="headline"
-              tone="foreground"
               className="block max-dapp:leading-[1.2]"
-            >
-              <RankTitleWithSuperCommunity
-                isSuperCommunity={hasRank && isSuperCommunity}
-                superCommunityLabel={t.rewards.superCommunityBadge}
-                title={rankLabel}
-              />
-            </Text>
+              isSuperCommunity={hasRank && isSuperCommunity}
+              superCommunityLabel={t.rewards.superCommunityBadge}
+              title={rankLabel}
+            />
             {showPostLaunchRank ? (
               <Text
                 as="strong"
-                variant="headline"
+                variant="brand"
                 tone="foreground"
-                className="block text-right max-dapp:leading-[1.2]"
+                className="block text-right leading-[1.3] tracking-[-0.34px] max-dapp:leading-[1.2]"
               >
                 {postLaunchRank}
               </Text>
             ) : null}
 
-            <Text as="small" variant="copy" tone="muted-foreground" className="block text-xs">
+            {/* 4175 rankMeta: text-xs / leading-normal / tracking -0.24 */}
+            <Text
+              as="small"
+              variant="copy"
+              tone="muted-foreground"
+              className="block text-xs leading-normal tracking-[-0.24px]"
+            >
               {leftBottomLabel}
             </Text>
             {postLaunch30DayLabel ? (
@@ -178,7 +179,7 @@ export function RewardsRankSection() {
                 as="small"
                 variant="copy"
                 tone="muted-foreground"
-                className="block text-right text-xs"
+                className="block text-right text-xs leading-normal tracking-[-0.24px]"
               >
                 {postLaunch30DayLabel}
               </Text>

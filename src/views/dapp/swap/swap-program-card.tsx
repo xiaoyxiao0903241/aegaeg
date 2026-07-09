@@ -68,7 +68,7 @@ function ProgramCardIcon({ index }: { index: number }) {
 
   if (index === 2) {
     return (
-      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#232833]">
+      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-dark">
         <img
           alt=""
           className="h-[1.09375rem] w-[1.3125rem] object-contain"

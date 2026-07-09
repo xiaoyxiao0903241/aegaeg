@@ -20,10 +20,10 @@
 ### P0 Token
 - [x] `tokens.json` 源文件存在且结构合法
 - [x] `theme.css` / `tokens.ts` 可由脚本生成
-- [x] 臆造色已标记 `@deprecated`，`@theme inline` 仍保留映射以兼容现有 source（P8 删除）
+- [x] 工程色（border-subtle / surface-glass / pill-muted-bg / coral-hover-border / status-success-bg / surface-wash-strong）已迁入 `tokens.json`；死 legacy（ink/faint/on-dark 等）已从生成器删除
 - [x] `pnpm exec tsc --noEmit` 通过
 - [x] `pnpm exec stylelint src/shared/styles/tokens/theme.css` 通过
-- [ ] 确认 legacy color/type alias 迁移计划写入 P8
+- [x] legacy color/type alias 已在 P8 删除（见下）
 
 ### P1 Text
 - [ ] `text.tsx` 只有 10 variant + 6 tone
@@ -69,10 +69,10 @@
 
 ### P8 清债
 - [x] 全站 `dapp-type-scale.ts` 删除
-- [x] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中
-- [ ] 删除 `theme.css` 中 `@deprecated legacy colors` 与 `legacy type aliases` 静态块
-- [ ] 删除 `.stylelintrc.json` 中为生成文件临时禁用的规则（若不再需要）
-- [ ] `docs/foundation/` 与 `SKILL.md` 命名与 api.md 一致
+- [x] `rg 'text-ink-|text-faq-text|text-on-dark|coral-bright' src --glob '*.{tsx,ts}'` 零命中（仅注释）
+- [x] 删除 `theme.css` 中 `@deprecated legacy colors` 与 `legacy type aliases` 静态块（`generate-tokens.mjs` 已移除；仍用色进 `tokens.json`）
+- [x] `.stylelintrc.json` 临时规则保留：生成文件 hex+oklch 双声明仍需（非临时债）
+- [ ] `docs/foundation/` 与 `SKILL.md` 命名与 api.md 一致（持续）
 
 ---
 
@@ -120,7 +120,9 @@ Figma 层: <layer>
 
 | 红块 / 节点 | 标签 | 说明 |
 |-------------|------|------|
-| y191–232 Phase / Metric | REGRESSION→fixed | `Text` 误把 `max-dapp:text-*` 当字号覆盖；panel leading 1.5→1.3 |
+| Rewards hero H5 title 19→18 | REGRESSION→fixed | mobile `text-[1.125rem]`（禁 `text-lg` H5 bump→19） |
+| Rewards hero body H5 12→14 | REGRESSION→fixed | `max-dapp:text-[0.875rem]`（4175 raw `<p>` 吃 text-sm bump） |
+| RewardBalanceCard H5 label 12→13 / amount | REGRESSION→fixed | label `text-xs`；value `max-dapp:text-xs`；referral 保留 figure |
 | y299–377 Global 卡数值 | REGRESSION→fixed | 同上；`fs/lh/ls` 已对齐 21px / 27.3px / -0.63px |
 | y378–412 Shares input tracking | REGRESSION→fixed | `Input` default/numeric `tracking-normal` |
 | y473–490 MetaList | REGRESSION→fixed | `DappMetaList` `copy`→`detail`（14px） |
@@ -129,7 +131,7 @@ Figma 层: <layer>
 | globalBody `on-dark`→`inverse-muted` | REGRESSION→fixed | 正式 tone；禁 `inverse`+opacity 近似 |
 | FAQ answer `faq-text`→`muted-foreground` | INTENTIONAL | 禁贴回 `text-faq-text` |
 | panel 20→21 / subtitle 12→13 | INTENTIONAL | Foundation `--type-panel` / `--type-copy` vs 4175 fluid |
-| section lh snug(24.75)→1.3(23.4) | INTENTIONAL | Foundation `--type-section-leading` |
+| section lh 1.375(24.75)→1.3(23.4) | REGRESSION→fixed | `--type-section-leading` 对齐 4175；禁回 1.375 |
 | FAQ answer box h 42→70 | INTENTIONAL | UA margin→`py-[1em]` 等价撑开（盒模型含 padding） |
 | 动态数值 / 倒计时文案 | IGNORE | 非静态对齐重点 |
 
@@ -139,9 +141,9 @@ Figma 层: <layer>
 |-------------|------|------|
 | Rewards h2 `Current tier` leading-snug + tracking -0.36px | REGRESSION→fixed | `DappContentHeading` 补 `group-data-[tab=rewards]` |
 | Rewards table head faint 30% | REGRESSION→fixed | `ResponsiveTable` `text-foreground/30`（禁贴回 `text-faint`） |
-| FAQ answer 盒高 42→70 | REGRESSION→fixed | `FaqList` / `Accordion` answer `py-[1em]`（preflight 清掉 UA margin） |
+| FAQ answer 盒高 42→70 | REGRESSION→fixed | DApp `FaqList`/`Accordion` answer `py-[1em]` + H5 `max-dapp:text-xs`（≡4175 text-sm/xs）；Home `variant=home` 无 py、H5 `text-xs` |
 | Invite step leading 1.3→1.5 | REGRESSION→fixed | 对齐 4175 `dappCaptionClass` |
-| Community/Rewards `DappSection` h3 lh 24.75→23.4 | INTENTIONAL | 同 §5 section leading；级联 Y 偏移会染红整段 |
+| Community/Rewards `DappSection` h3 lh 24.75→23.4 | REGRESSION→fixed | 同 §5 section leading 已对齐 1.3 |
 | Hero kicker `coral-bright`→`primary` | INTENTIONAL | 禁贴回 `text-coral-bright` |
 | Hero body `on-dark`→`inverse-muted` | REGRESSION→fixed | 正式 tone；禁 `inverse`+opacity 近似 |
 | Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT（见 p7-swap-delta） |
@@ -151,7 +153,19 @@ Figma 层: <layer>
 | Community Copy link min-h 42 / leading-none | REGRESSION→fixed | `communityShareButton` → `min-h-11 w-full leading-normal` |
 | Rewards 表行 1px 边框带（y831+/y913+） | IGNORE | section leading 级联 + 抗锯齿；非结构回归 |
 | Community 推荐链 URL 端口 4175↔5174 | IGNORE | 环境 host，非 UI SSOT |
-| Community section lh 级联 Y | INTENTIONAL | 同 §5 section leading；禁改左卡 padding |
+| Community section lh 级联 Y | REGRESSION→fixed | 同 §5 section leading 已对齐；禁改左卡 padding |
+| Community referrer label/address lh·tracking | REGRESSION→fixed | `CommunityReferrer*` → `leading-normal tracking-[-0.24px]`；地址 `leading-[1.2] tracking-[-0.28px]` |
+| Community bound 地址行 h46/r11/gap-2.5 | REGRESSION→fixed | ≡ 4175 `ReferrerAddressRow`：`h-11 rounded-sm bg-background` + 卡 `gap-2`（左卡 padding 仍锁定） |
+| Community bound 卡高 126→174 | REGRESSION→fixed | 标签/note `my-3` ≡ 4175 裸 `<p>` UA margin（禁只靠 `m-0`+gap-2） |
+| Rewards rank title 16→17 / lh 1.2→1.3 | REGRESSION→fixed | `RankTitleWithSuperCommunity` + post-launch → `variant="brand"` + tracking -0.34 |
+| Claim CTA 宽 140→full | REGRESSION→fixed | Button `sm`+`pill` compound `w-full`（≡ 4175） |
+| Rewards history tabs 用 Segment percent 网格 | REGRESSION→fixed | `RewardsHistoryPillTabs` → `DappPillTabs`（soft/outlined pill ≡ Trade FAQ） |
+| Community referral URL tracking | REGRESSION→fixed | `tracking-tight` ≡ 4175 `-0.35px` |
+| Genesis top ~13%（倒计时/报价） | IGNORE | 动态 Time remaining / 价格；非静态对齐 |
+| Genesis mid/bottom 级联细带 | INTENTIONAL | radius-sm 14；section lh 已对齐 1.3；禁贴回 10px |
+| Community 右栏 program 标题 Y 偏移 | REGRESSION→fixed | 同 §5 section leading 已对齐 |
+| Rewards 表行细红带 | IGNORE | section lh 级联 + 抗锯齿（同既有表行标签） |
+| Community 推荐链 URL 端口 | IGNORE | 环境 host |
 
 ## 5c. 登录态四 tab 共享 chrome（4175 vs 5174）
 
@@ -161,7 +175,7 @@ Figma 层: <layer>
 | Language menu item headline/copy 溢出叠字 | REGRESSION→fixed | `LanguageMenu` 行内 `text-sm`/`text-xs` + `leading-normal` |
 | `--type-*-size` px-lock 高分屏不随 site-fluid | REGRESSION→fixed | `tokens.json` size → rem @16px；`generate-tokens.mjs` 注释同步 |
 | Language menu item radius 10→14 | INTENTIONAL | Foundation `--radius-sm`；禁贴回 4175 10px |
-| muted / section leading / FAQ 色 | INTENTIONAL | 同 §5 / §5b |
+| muted / FAQ 色 | INTENTIONAL | 同 §5 / §5b；section leading 已 REGRESSION→fixed |
 | 动态报价 / 余额 / 成员数 | IGNORE | 非静态对齐重点 |
 
 ## 5d. Swap hub 左下 Genesis promo + Convert/Trade 子页
@@ -173,7 +187,7 @@ Figma 层: <layer>
 | SwapMetaPanel label/value 13px | REGRESSION→fixed | `copy`→`detail`（14）+ `tracking-normal` |
 | Exchange price 数值 1.0001 vs 1.001 | IGNORE | 动态报价 |
 | Buy Balance 数值差异 | IGNORE | 链上余额 |
-| FAQ question 14/1.3 | 已对齐 | `variant="question"` ≡ 4175 `text-sm` |
+| FAQ question 14/1.3（PC）· H5 15/1.3 | REGRESSION→fixed | `variant="question"` H5 `--type-question-size: 0.9375rem` ≡ 4175 `text-sm` |
 | Trade FAQ pill tabs（USD1 active） | REGRESSION→fixed | `DappPillTabs`：`soft`+`primary`+`lg`（`leading-snug`）；禁 `solid`+percent `md`；Chip `md` 去误挂 `bg-card`，`outlined` 自带 `bg-card`；`soft` 透明 1px border 对齐盒模型 |
 | Convert/Trade TokenChip USDT/USD1 lh 21→16.8 | REGRESSION→fixed | `TokenChip` `leading-[1.2] tracking-[-0.28px]`（≡ 4175） |
 | Convert Exchange rate `tabular-nums` 宽 89→70 | REGRESSION→fixed | `SwapMetricCard` → `MetricCard tabular={false}`（禁默认 Card.Value tabular） |
@@ -201,3 +215,4 @@ Figma 层: <layer>
 | v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
 | v2.2 | dapp-genesis-desktop 红块标签 + panel leading 1.3 / Text max-dapp 覆盖修复 |
 | v2.3 | 视觉 gate：红块优先；探针降级；Chip size=3；Community/Convert 标签同步 |
+| v2.4 | P8：legacy 静态块删除；工程色迁入 tokens.json；dappPanelTitle 内联 |

@@ -15,7 +15,7 @@ import {
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
 
 const PRESET_BTN_CLASS = cn(
-  'flex h-6 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full border border-[#e3e8ed]',
+  'flex h-6 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full border border-border',
   'bg-card px-3 transition-[background-color,border-color,color] duration-180 ease-out',
 )
 

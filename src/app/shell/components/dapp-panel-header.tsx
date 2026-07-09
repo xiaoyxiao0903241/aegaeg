@@ -8,20 +8,6 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/shared/lib/utils'
 
-const dappPanelTitleClassName = cn(
-  // Detail-column title matches 4175 dappPanelTitleClassName (20px), not hub 21px panel token.
-  'm-0 text-xl font-semibold leading-[1.3] tracking-[-0.84px]',
-  'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
-  'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
-  'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
-  'max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
-)
-
-const dappPanelSubtitleClassName = cn(
-  'm-0 max-w-[34ch] max-dapp:max-w-none text-xs leading-[1.5] tracking-[-0.24px]',
-  '[&_strong]:font-bold [&_strong]:text-primary',
-)
-
 export function DappPanelHeader({
   className,
   detailCollapsed,
@@ -48,14 +34,30 @@ export function DappPanelHeader({
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <Text as="h1" variant="panel" className={dappPanelTitleClassName}>
+        {/* Detail title: 20px (text-xl), not hub 21px panel token. */}
+        <Text
+          as="h1"
+          variant="panel"
+          className={cn(
+            'm-0 text-xl font-semibold leading-[1.3] tracking-[-0.84px]',
+            'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
+            'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
+            'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
+            // PC: text-xl (20px) overrides panel token. H5 4175 title = 21px / Swap lh 1.5.
+            'max-dapp:text-[21px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
+            'group-data-[tab=swap]/shell:max-dapp:leading-[1.5]',
+          )}
+        >
           {title}
         </Text>
         <Text
           as="p"
           variant="copy"
           tone="muted-foreground"
-          className={dappPanelSubtitleClassName}
+          className={cn(
+            'm-0 max-w-[34ch] max-dapp:max-w-none text-xs leading-[1.5] tracking-[-0.24px]',
+            '[&_strong]:font-bold [&_strong]:text-primary',
+          )}
         >
           {subtitle}
         </Text>

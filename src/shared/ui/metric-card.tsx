@@ -36,7 +36,7 @@ export function MetricCard({
       data-reveal
     >
       <Card.Label
-        className="text-[12px]/[18px] font-medium tracking-[-0.24px]"
+        className="text-xs font-medium leading-normal tracking-[-0.24px]"
         tone="muted-foreground"
       >
         {label}

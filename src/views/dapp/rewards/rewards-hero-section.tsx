@@ -51,7 +51,8 @@ function RewardsHeroPanel({
               layout === 'desktop'
                 ? // 4175: body-lg lock + tracking -0.63px (not brand token -0.02em)
                   'm-0 min-w-0 break-words leading-[1.3] tracking-[-0.63px]'
-                : 'm-0 min-w-0 break-words text-lg leading-[1.2] tracking-[-0.54px]'
+                : // 4175 H5 body-lg 18px — 禁 text-lg（H5 bump→19px）
+                  'm-0 min-w-0 break-words text-[1.125rem] leading-[1.2] tracking-[-0.54px]'
             }
           >
             {title}
@@ -61,7 +62,7 @@ function RewardsHeroPanel({
               as="p"
               variant="copy"
               tone="inverse-muted"
-              className="m-0 leading-[1.5] tracking-[-0.26px]"
+              className="m-0 leading-[1.5] tracking-[-0.26px] max-dapp:text-[0.875rem]"
             >
               {heroTierRewardBody}
             </Text>
@@ -70,7 +71,7 @@ function RewardsHeroPanel({
                 as="p"
                 variant="copy"
                 tone="inverse-muted"
-                className="m-0 leading-[1.5] tracking-[-0.26px]"
+                className="m-0 leading-[1.5] tracking-[-0.26px] max-dapp:text-[0.875rem]"
               >
                 {superCommunityBenefitBody}
               </Text>

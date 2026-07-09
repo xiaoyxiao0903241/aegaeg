@@ -33,9 +33,9 @@ import {
   RewardsHistoryReveal,
   rewardsHistoryTableHead,
 } from '~/views/dapp/rewards/rewards-history-primitives'
-import type { SegmentOption } from '~/shared/ui/segment'
 
 type RewardsHistoryTab = 'referral' | 'team' | 'communityFund'
+type HistoryPillOption = { label: string; value: RewardsHistoryTab }
 
 export function RewardsHistorySection() {
   const { messages: t } = useI18n()
@@ -154,11 +154,11 @@ export function RewardsHistorySection() {
         ? [...rewardsTeamHistoryColWidths]
         : [...rewardsCommunityFundHistoryColWidths]
 
-  const historyPillItems: SegmentOption[] = [
+  const historyPillItems: HistoryPillOption[] = [
     { label: t.rewards.referralRewards, value: 'referral' },
     { label: t.rewards.teamRewards, value: 'team' },
     ...(isSuperCommunity
-      ? [{ label: t.rewards.communityFundHistory, value: 'communityFund' }]
+      ? [{ label: t.rewards.communityFundHistory, value: 'communityFund' as const }]
       : []),
   ]
 

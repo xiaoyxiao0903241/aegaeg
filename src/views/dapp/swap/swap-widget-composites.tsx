@@ -209,6 +209,7 @@ export function SwapAmountFlow({
         balance={sellBalance}
         className={amountBoxClassName}
         label={t.swap.sell}
+        sessionReady={sessionReady}
         startAdornment={<TokenChip icon={sell.icon} label={sell.symbol} />}
       />
 
@@ -232,6 +233,7 @@ export function SwapAmountFlow({
         label={t.swap.buy}
         loading={showBuyAmountSkeleton}
         loadingSkeleton={<SwapAmountSkeleton />}
+        sessionReady={sessionReady}
         startAdornment={<TokenChip icon={buy.icon} label={buy.symbol} />}
       />
     </>

@@ -97,30 +97,38 @@ export function CommunityStatCard({
       <Text
         as="span"
         variant="copy"
-        tone={dark ? 'inverse' : 'muted-foreground'}
+        // 4175: light=ink-strong(70%) · dark=on-dark(#b8c0ce) — not full inverse white
+        tone={dark ? 'inverse-muted' : 'muted-foreground'}
         className={cn(
           styles.label(),
           'tracking-[-0.24px]',
-          // 4175 community stats: text-xs · ink-strong (12/18); keep PC xs for label rhythm
-          !dark && 'text-xs leading-normal',
+          // 4175 community stats: text-xs · leading-normal (12/18)
+          'text-xs leading-normal',
+          dark && 'tracking-[-0.26px]',
         )}
       >
         {label}
       </Text>
       <Text
         as="strong"
+        // 4175 size=2xl → text-3xl / leading-tight / tracking-tight (30/37.5); figure(22) was REGRESSION
+        // 4175 light value = ink-strong (70%) → muted-foreground, not full foreground
         variant="figure"
-        tone={dark ? 'inverse' : 'foreground'}
-        className={styles.value()}
+        tone={dark ? 'inverse' : 'muted-foreground'}
+        className={cn(
+          styles.value(),
+          'text-3xl leading-tight tracking-tight max-dapp:text-2xl max-dapp:leading-[1.05]',
+        )}
       >
         {value}
       </Text>
       {volume ? (
         <Text
           as="b"
+          // 4175 size=sm → text-sm / leading-normal (14/21); headline(16) was REGRESSION
           variant="headline"
           tone="primary"
-          className={styles.volume()}
+          className={cn(styles.volume(), 'text-sm leading-normal')}
         >
           {volume}
         </Text>
@@ -129,8 +137,13 @@ export function CommunityStatCard({
         <Text
           as="small"
           variant="copy"
-          tone={dark ? 'inverse' : 'muted-foreground'}
-          className={styles.hint()}
+          // 4175: light=faint(30%) · dark=on-dark
+          tone={dark ? 'inverse-muted' : 'muted-foreground'}
+          className={cn(
+            styles.hint(),
+            'text-xs leading-normal',
+            !dark && 'text-foreground/30',
+          )}
         >
           {today}
         </Text>

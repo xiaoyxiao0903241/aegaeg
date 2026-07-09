@@ -6,6 +6,7 @@ import {
   type CarouselApi,
 } from '~/shared/ui/carousel'
 import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
+import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'
@@ -124,22 +125,30 @@ function SeasonCard({
       role="radio"
     >
       <div className="flex items-start justify-between gap-1">
-        <strong className={seasonCardTitleClass}>{season.name}</strong>
+        <Text as="strong" variant="copy" className={seasonCardTitleClass}>
+          {season.name}
+        </Text>
         <RadioIndicator checked={selected} className={seasonCardRadioClass} />
       </div>
-      <p className={cn('m-0', seasonCardMetaClass)}>
+      <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
         {t.genesis.discountLabel}{' '}
-        <span className={seasonCardMetaAccentClass}>{season.desktopMeta.discount}</span>
-      </p>
-      <p className={cn('m-0', seasonCardMetaClass)}>
+        <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
+          {season.desktopMeta.discount}
+        </Text>
+      </Text>
+      <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
         {t.genesis.airdropLabel}{' '}
-        <span className={seasonCardMetaAccentClass}>{season.desktopMeta.airdrop}</span>
-      </p>
-      <time className={seasonCardMetaClass}>{season.date}</time>
+        <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
+          {season.desktopMeta.airdrop}
+        </Text>
+      </Text>
+      <Text as="time" variant="caption" className={seasonCardMetaClass}>
+        {season.date}
+      </Text>
       <div className="mt-auto w-full">
-        <span className={resolveSeasonStatusBadgeClass(season.status, selected)}>
+        <Text as="span" variant="caption" className={resolveSeasonStatusBadgeClass(season.status, selected)}>
           {translateSeasonStatus(season.status, t)}
-        </span>
+        </Text>
       </div>
     </article>
   )

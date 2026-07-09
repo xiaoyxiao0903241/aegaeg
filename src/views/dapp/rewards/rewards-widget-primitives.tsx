@@ -31,16 +31,27 @@ export function RewardsProgressRow({
   const styles = rewardsProgressRow()
   return (
     <div className={styles.row()}>
-      <Text variant="copy" tone="muted-foreground" className="text-xs">
+      {/* 4175: label font-normal leading 1.5 / tracking -0.24; value font-semibold leading 1.3 */}
+      <Text
+        variant="copy"
+        tone="muted-foreground"
+        className="text-xs leading-[1.5] tracking-[-0.24px]"
+      >
         {label}
       </Text>
-      <Text as="strong" variant="copy" tone="foreground" className="text-right text-xs">
+      <Text
+        as="strong"
+        variant="copy"
+        tone="foreground"
+        className="text-right text-xs font-semibold leading-[1.3] tracking-[-0.24px] max-dapp:leading-[1.2]"
+      >
         {value}
       </Text>
     </div>
   )
 }
 
+/** sm+pill already w-full via Button SSOT; lock min-h to 4175 40px (sm default 36). */
 export const rewardsClaimAction = tv({
   base: 'mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2] max-dapp:!tracking-[-0.28px]',
 })
@@ -54,7 +65,7 @@ export const rewardsBalanceHint = tv({
   base: 'max-dapp:hidden text-foreground/30',
 })
 
-/** Referral amount: 4175 used amount token + leading 1.3 / tracking -0.54 (overrides Card.Value text-lg default). */
+/** Referral amount: 4175 amount token + leading 1.3 / tracking -0.54；H5 保持 figure（禁吃 Card.Value 的 max-dapp:text-xs）。 */
 export const rewardsReferralAmount = tv({
-  base: 'text-[length:var(--dapp-type-amount-size)] leading-[1.3] tracking-[-0.54px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
+  base: 'text-[length:var(--type-figure-size)] leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--type-figure-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
 })

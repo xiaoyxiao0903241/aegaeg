@@ -23,10 +23,17 @@ export function RankTitleWithSuperCommunity({
   const label = isSuperCommunity ? `${title} · ${superCommunityLabel}` : title
 
   return (
-    <Component className={cn('min-w-0 break-words', className)}>
-      <Text as="span" variant="headline" tone="foreground">
-        {label}
-      </Text>
-    </Component>
+    <Text
+      as={Component}
+      variant="brand"
+      tone="foreground"
+      className={cn(
+        // 4175 dappRankTitleClass: body-lg 17px / lh 1.3 / tracking -0.34 (api brand)
+        'min-w-0 break-words leading-[1.3] tracking-[-0.34px]',
+        className,
+      )}
+    >
+      {label}
+    </Text>
   )
 }
