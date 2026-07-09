@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
-import { dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 /**
  * Detail-column section title — same Text `section` token on every tab.
- * Spacing via `dappDetailTitleGapClass` only; no per-tab tracking/leading forks.
+ * Title→content gap `pb-4`; no per-tab tracking/leading forks.
  */
 export function DappContentHeading({
   children,
@@ -24,8 +23,7 @@ export function DappContentHeading({
       as="h2"
       variant="section"
       className={cn(
-        'm-0 max-dapp:mt-0',
-        dappDetailTitleGapClass,
+        'm-0 pb-4 max-dapp:mt-0',
         reveal && revealClass(),
         className,
       )}

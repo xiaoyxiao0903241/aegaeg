@@ -1,10 +1,11 @@
 # Foundation 公开 API（SSOT）
 
-> **流程**：[`runbook.md`](./runbook.md) · **验收**：[`verification.md`](./verification.md)  
+> **流程**：[`runbook.md`](./runbook.md)  
 > **Baseline**：当前分支 + Figma 正式稿  
 > **原则**：键数 = 类型字面量数 · 无 alias · 无 context 分叉轴 · 细微差异用 `className` 抹平
 
 每节：**公开轴 · 禁止 · 依赖 · Gate**
+
 
 ---
 
@@ -72,7 +73,7 @@
 | `shape` | `pill` · `rounded` |
 
 **Size 高度 SSOT**（按钮显示阶，**不是** Text `copy` token）：
-- `sm` = **42**（`min-h-[2.625rem]`）· 卡内 CTA · `text-sm` · leading-normal · **无默认 px**
+- `sm` = **36**（`min-h-9` · `px-4.5`）· 默认 pill / 卡内 CTA / Connect / Enter App · `text-sm` · leading-none — Figma `4040:220`
 - `md` = **44**（`min-h-11`）· 卡外 / widget 栈主 CTA · `text-sm` · leading-snug · `px-5`
 - `lg` = **48**（`min-h-12`）· Home hero 等 · `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
 **暗色 promo CTA**：**38**（`min-h-9.5`）— 走 `DappActionButton density="inverse"`，**不是**第 4 个 size
@@ -201,7 +202,7 @@
 允许 `max-dapp:` / `dapp:` **仅 layout** 的文件：
 
 - `shell-layout.ts` · `dapp-shell.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
-- `dapp-widget-frame.tsx` · `dapp-detail-layout.ts` · `responsive-table.tsx` · `dapp-table-*`
+- `dapp-widget-frame.tsx` · `dapp-detail-page.tsx` · `dapp-detail-block.tsx` · `responsive-table.tsx` · `dapp-table-*`
 - `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `aegis-responsive-dialog.tsx`
 - `static-layout.ts` · `views/home/components/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`

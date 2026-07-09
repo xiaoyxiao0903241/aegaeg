@@ -145,9 +145,7 @@ function WalletConnectButton({
       {variant !== 'primary' && !needsSignIn ? (
         <span className={walletGlyphClass} aria-hidden="true" />
       ) : null}
-      <Text as="span" variant="copy" className="truncate font-semibold leading-none">
-        {isLoggingIn ? t.wallet.connecting : connectLabel}
-      </Text>
+      <span className="truncate">{isLoggingIn ? t.wallet.connecting : connectLabel}</span>
     </span>
   )
 

@@ -3,11 +3,10 @@ import { tv } from 'tailwind-variants'
 import { dappAssets, flashSwapAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappWidgetConnectFooter } from '~/app/shell/components/dapp-widget-connect-footer'
-import { dappWidgetBodyClass } from '~/app/shell/components/dapp-widget-frame'
+import { DappWidgetStack } from '~/app/shell/components/dapp-widget-frame'
 import { GenesisPromoCard } from '~/app/shell/components/genesis-promo-card'
 import { SwapAmountSkeleton, SwapBalanceSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { TokenChip } from '~/app/shell/components/token-chip'
-import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { useI18n } from '~/i18n/use-i18n'
 import { AmountBox } from '~/shared/ui/amount-box'
@@ -91,10 +90,10 @@ export function SwapWidgetBody({
   footer?: ReactNode
 }) {
   return (
-    <div className={cn(dappWidgetBodyClass, bodyClassName)}>
+    <DappWidgetStack className={bodyClassName}>
       {children}
       {footer ? <div className="mt-auto w-full shrink-0">{footer}</div> : null}
-    </div>
+    </DappWidgetStack>
   )
 }
 
@@ -271,8 +270,7 @@ export function SwapMetaPanel({
       surface="outlined"
       className={cn(
         // Chrome from Card outlined (`p-3.5` / `rounded-md`); ≡ DappMetaList — do not re-pad.
-        'grid shrink-0 gap-2',
-        dappWidgetFooterTopGapClass,
+        'mt-3.5 grid shrink-0 gap-2 max-dapp:mt-3',
         className,
       )}
     >

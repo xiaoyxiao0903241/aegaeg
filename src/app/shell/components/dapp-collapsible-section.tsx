@@ -3,7 +3,6 @@ import { cn } from '~/shared/lib/utils'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappSection } from '~/app/shell/components/dapp-section'
-import { dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
 
 const COLLAPSE_MS = 320
 
@@ -63,10 +62,7 @@ export function DappCollapsibleSection({
         <button
           aria-controls={bodyId}
           aria-expanded={open}
-          className={cn(
-            'flex w-full cursor-pointer appearance-none items-center justify-between gap-3 border-0 bg-transparent p-0 text-left text-inherit hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 active:bg-transparent',
-            dappDetailTitleGapClass,
-          )}
+          className="flex w-full cursor-pointer appearance-none items-center justify-between gap-3 border-0 bg-transparent p-0 pb-4 text-left text-inherit hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 active:bg-transparent"
           onClick={handleToggle}
           type="button"
         >

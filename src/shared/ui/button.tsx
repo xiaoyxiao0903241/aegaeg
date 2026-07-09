@@ -63,14 +63,15 @@ export const buttonVariants = tv({
       ],
     },
     /**
-     * Size = DApp CTA height SSOT (not Text copy token):
-     * sm 42 (in card) · md 44 (external / widget stack) · lg 48 (home hero).
+     * Size = CTA height SSOT (not Text copy token):
+     * sm 36 (Figma `4040:220` ld / Enter App · Connect · card CTA)
+     * md 44 (external / widget stack) · lg 48 (home hero).
      * Dark promo CTAs use DappActionButton density="inverse" (38), not a 4th size.
      */
     size: {
       lg: 'min-h-12 px-6 text-base leading-none max-dapp:px-5 max-dapp:text-sm',
       md: 'min-h-11 px-5 text-sm leading-snug max-dapp:text-xs',
-      sm: 'min-h-[2.625rem] text-sm leading-normal max-dapp:text-xs',
+      sm: 'min-h-9 px-4.5 text-sm leading-none max-dapp:text-xs',
     },
     shape: {
       pill: 'rounded-full',

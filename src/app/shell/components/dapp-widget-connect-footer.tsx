@@ -2,12 +2,11 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 import { DappConnectPromoCard } from '~/app/shell/components/dapp-connect-promo-card'
-import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 
 const dappWidgetConnectFooter = tv({
   slots: {
     spacer: 'max-dapp:hidden min-h-3.5 shrink-0 grow basis-3.5',
-    bottom: cn(dappWidgetFooterTopGapClass, 'w-full shrink-0 dapp:mt-auto'),
+    bottom: 'mt-3.5 w-full shrink-0 max-dapp:mt-3 dapp:mt-auto',
   },
 })
 

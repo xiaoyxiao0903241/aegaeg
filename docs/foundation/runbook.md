@@ -1,6 +1,6 @@
 # Foundation Runbook（执行 SSOT）
 
-> **API**：[`api.md`](./api.md) · **验收**：[`verification.md`](./verification.md)  
+> **API**：[`api.md`](./api.md)  
 > **Baseline**：当前分支 + Figma 正式稿
 
 ---
@@ -20,8 +20,7 @@
 | **2** | Figma 节点 + 当前分支同位置源码 | 根因一句 + REGRESSION \| INTENTIONAL \| IGNORE |
 | **3** | 样式栈（字号·字重·行高·字距·色·`!`·`as`） | 单一 owner |
 | **4** | primitive 收束 + **全仓 call site**（同 PR） | 无半迁移 |
-| **5** | 双 gate | API + 人工对照（见 verification） |
-| **6** | 更新 verification 切片标签 | 可回滚说明 |
+| **5** | 双 gate | API + 人工对照（`tsc` / 肉眼；可选 `pnpm compare:screenshots`） |
 
 ### 报告模板
 
@@ -56,6 +55,7 @@ Risk: …
 - call site `!min-h-*` / `!text-*` 绕过 Button size
 - 新增 `ink-*` / `faint` / `on-dark` / `coral-bright` 等遗留色
 - 把 `dev` 结构当保留理由（`dev` 有冗余 ≠ 该留）
+- **导出 Tailwind class 常量**（`*Class` / 平行 `*-layout.ts` 间距表）；单用处写在 JSX；多处复用 → **抽组件** 或组件内 `tv()`
 
 ---
 
@@ -87,9 +87,9 @@ Risk: …
 | 面 | SSOT |
 |----|------|
 | 左卡 padding/圆角 | Card `outlined` / `DappSideCard` |
-| 标题→内容间距 | `dapp-detail-layout.ts` + `DappWidgetFrame` |
+| 块间距 / 标题→内容 | `DappDetailBlock` · `DappSection` / `DappContentHeading`（`pb-4`）· `DappWidgetFrame` |
 | 标题字阶 | Text `section` / `panel` + `copy` |
-| 主 pill 高度 | `DappActionButton`：card 42 · external 44 · inverse 38 |
+| 主 pill 高度 | `DappActionButton`：card 36 · external 44 · inverse 38 |
 | Overview 指标 | `MetricCard`；Community `sc` / Rewards hero **不并** |
 
 `group-data-[tab=*]`：只合并同值重复；跨 tab 复用组件必须保留守卫。
@@ -123,3 +123,4 @@ Risk: …
 | 版本 | 说明 |
 |------|------|
 | v3.0 | 收束为 baseline 维护手册；去掉 P0–P8 迁移叙事与 Phase0 依赖 |
+| v3.1 | 删 verification.md；禁 class 常量 / `dapp-detail-layout`；多处复用抽组件 |

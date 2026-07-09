@@ -11,7 +11,7 @@ AI 工作规范
 - **暴露不确定性**：写代码前暴露会影响数据所有权、同步正确性、schema / API、性能目标或平台语义的不确定性；禁止静默假设。
 - **优先最小闭环**：优先做能验证目标的最小闭环。切片必须绑定一个用户可判断 case 或一个证明边界。
 - **找根因不用补丁**：找根因，不用补丁掩盖症状；失败来自流程时，同步修改文档或本文件，不靠聊天记忆。
-- **样式重构**：触达 Foundation / typography / shell primitive 时，**只读** [`docs/foundation/README.md`](docs/foundation/README.md) 三核 + [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)。**当前分支 = baseline**；探针 PASS ≠ 完成。
+- **样式重构**：触达 Foundation / typography / shell primitive 时，**只读** [`docs/foundation/README.md`](docs/foundation/README.md) 双核（runbook · api）+ [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)。**当前分支 = baseline**；探针 PASS ≠ 完成。禁导出 `*Class` 常量；多处复用抽组件。
 - **小而精准**：保持小而精准的改动；不要机会主义重写、重命名、格式化或清理无关代码。
 - **最终报告必须说明**：改了什么、为什么、如何验证、剩余风险。
 

@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { dappWidgetHeaderSpacingClass } from '~/app/shell/components/dapp-widget-frame'
 import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
@@ -14,9 +13,8 @@ import { cn } from '~/shared/lib/utils'
 export const widgetHeader = tv({
   slots: {
     root: cn(
-      'flex items-start justify-between gap-4',
+      'mb-3.5 flex items-start justify-between gap-4 max-dapp:mb-7.5',
       shellMobilePageTitleClass,
-      dappWidgetHeaderSpacingClass,
     ),
     copy: 'flex min-w-0 flex-1 flex-col gap-1.5',
     // Size/weight/tracking from Text panel token (21/600 / -0.04em ≡ Figma wh).
@@ -72,7 +70,7 @@ export function WidgetHeader({
  */
 export const widgetSubpageHeader = tv({
   slots: {
-    root: cn(dappWidgetHeaderSpacingClass, 'grid gap-3.5'),
+    root: 'mb-3.5 grid gap-3.5 max-dapp:mb-7.5',
     navRow: cn('flex items-center gap-2', shellMobilePageTitleClass),
     backButton:
       'inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left',

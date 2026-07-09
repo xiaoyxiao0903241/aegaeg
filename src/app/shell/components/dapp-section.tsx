@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
-import { dappDetailSectionGapClass, dappDetailTitleGapClass } from '~/app/dapp-detail-layout'
+import { DappDetailBlock } from '~/app/shell/components/dapp-detail-block'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 /**
  * Detail section block — title uses Text `section` (same as DappContentHeading).
- * Block gap + title→content gap from dapp-detail-layout SSOT.
+ * Block gap via DappDetailBlock; title→content `pb-4`.
  */
 export function DappSection({
   children,
@@ -20,18 +20,15 @@ export function DappSection({
   titleClassName?: string
 }) {
   return (
-    <section
-      className={cn(dappDetailSectionGapClass, revealClass(), className)}
-      data-reveal
-    >
+    <DappDetailBlock className={cn(revealClass(), className)} data-reveal>
       <Text
         as="h3"
         variant="section"
-        className={cn('m-0', dappDetailTitleGapClass, titleClassName)}
+        className={cn('m-0 pb-4', titleClassName)}
       >
         {title}
       </Text>
       {children}
-    </section>
+    </DappDetailBlock>
   )
 }

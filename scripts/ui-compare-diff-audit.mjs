@@ -10,7 +10,7 @@
  *
  * 输出：tmp/visual-diff-audit/<target>.json + summary.json
  *
- * SSOT：docs/foundation/verification.md
+ * SSOT：docs/foundation/runbook.md
  */
 import { chromium } from '@playwright/test'
 import fs from 'node:fs'

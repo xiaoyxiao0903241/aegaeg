@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { swapTokenKeys, type SwapTokenKey } from '~/app/data'
 import { DappContentHeading } from '~/app/shell/components/dapp-content-heading'
+import { DappDetailBlock } from '~/app/shell/components/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/components/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/components/dapp-pill-tabs'
 import { MetricGrid } from '~/app/shell/components/metric-grid'
@@ -13,7 +14,6 @@ import {
   SwapMetricCard,
   SwapMetricCardSkeleton,
 } from '~/views/dapp/swap/swap-detail-primitives'
-import { dappDetailSectionGapClass } from '~/app/dapp-detail-layout'
 
 export function TradeSwapContent() {
   const { messages: t } = useI18n()
@@ -44,16 +44,16 @@ export function TradeSwapContent() {
         </MetricGrid>
       </section>
 
-      <section className={dappDetailSectionGapClass}>
+      <DappDetailBlock>
         <DappContentHeading>{t.swap.tokenAbout.title}</DappContentHeading>
         <TokenAboutCarousel />
-      </section>
+      </DappDetailBlock>
 
-      <section className={dappDetailSectionGapClass}>
+      <DappDetailBlock>
         <DappContentHeading>{t.swap.faq.tabsTitle}</DappContentHeading>
         <TradeSwapFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
         <FaqList defaultOpenFirst={false} items={faqItems} key={faqToken} variant="dapp" />
-      </section>
+      </DappDetailBlock>
     </DappDetailPage>
   )
 }

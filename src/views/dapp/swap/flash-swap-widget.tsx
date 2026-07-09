@@ -8,7 +8,6 @@ import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { DappActionRow } from '~/app/shell/components/dapp-action-row'
 import { SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
-import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
@@ -159,7 +158,7 @@ export function FlashSwapWidget({
         />
 
         {sessionReady && swap.walletReady ? (
-          <DappActionRow className={dappWidgetFooterTopGapClass}>
+          <DappActionRow className="mt-3.5 max-dapp:mt-3">
             <DappActionButton
               className="col-span-full"
               density="external"

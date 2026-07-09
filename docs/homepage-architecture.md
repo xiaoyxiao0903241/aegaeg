@@ -14,7 +14,7 @@
 | `static-homepage-plan.md` | 产品/性能 **目标** | 理想态；与现状偏差见 §2 |
 | `homepage-load-optimization.md` | 性能优化路线 | Phase 1 已完成；Phase 2–4 待做 |
 | `homepage-animation-guidelines.md` | 动效设计规则 | CSS + IO；runtime 见 `home-reveal-loader.ts` |
-| [`foundation/`](./foundation/README.md) | DApp / Foundation 视觉与 API | 三核 runbook · api · verification |
+| [`foundation/`](./foundation/README.md) | DApp / Foundation 视觉与 API | 双核 runbook · api |
 | [`docs/README.md`](./README.md) | 全项目文档索引 | 当前分支 = baseline |
 
 **命名陷阱（必读）**

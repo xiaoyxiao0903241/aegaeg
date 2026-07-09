@@ -8,7 +8,6 @@ import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { DappActionRow } from '~/app/shell/components/dapp-action-row'
 import { SwapSlippageModal } from '~/app/shell/components/swap-slippage-modal'
 import { SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
-import { dappWidgetFooterTopGapClass } from '~/app/dapp-detail-layout'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
@@ -243,7 +242,7 @@ export function TradeSwapWidget({
         ) : null}
 
         {sessionReady && swap.walletReady ? (
-          <DappActionRow className={dappWidgetFooterTopGapClass}>
+          <DappActionRow className="mt-3.5 max-dapp:mt-3">
             <DappActionButton
               className="col-span-full"
               density="external"

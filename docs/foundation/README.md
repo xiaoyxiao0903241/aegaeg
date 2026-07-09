@@ -9,7 +9,6 @@
 1. .cursor/skills/aegis-component-refactor/SKILL.md
 2. docs/foundation/runbook.md   ← 怎么改
 3. docs/foundation/api.md       ← 改什么
-4. docs/foundation/verification.md  ← 写盘后怎么验
 ```
 
 ## 定稿（不可改）
@@ -21,6 +20,7 @@
 | 完成 | API gate + 人工对照；探针 alone ≠ DONE |
 | 文本 | 用户可见文案必须 `<Text>` |
 | 颜色 | `tokens.json` → `theme.css`；禁新遗留色 / 平行语义 class |
+| 样式复用 | 禁导出 `*Class` 常量；单用处 inline；多处 → 抽组件 / `tv()` |
 | H5 | PC 文案 SSOT；H5 只做响应式布局 |
 
 ## 易混
