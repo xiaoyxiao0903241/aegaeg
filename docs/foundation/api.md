@@ -112,14 +112,15 @@
 |---------|-----------|--------|---------|------|
 | outlined | — | `rounded-md` (16px) | `p-3.5` (14px) | 标准边框卡（wcol box、meta、mode card、`DappSideCard`） |
 | elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、ProgramCard |
-| soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion 项 |
+| soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-md` + `p-4.5` 抹平） |
 | inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（CalloutCard、WidgetPromoCard） |
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`
 
 **禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认。
+**Composite 豁免（须文档）**：`CommunityStatCard` / `SwapPromoCard` 可用 className 抹平 radius/pad，**禁止**再叠 `shadow-*` 改 elevation。
 **依赖**：P1-Text
-**探针**：mode-card-root · program-card · faq card layout · metric-card
+**探针**：mode-card-root · program-card · faq card layout · metric-card · community-stat · swap-promo
 **Gate**：`surface` 键 = **4**
 
 ---
@@ -164,6 +165,7 @@
 - `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
+- `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `CalloutCard` / `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
 
@@ -209,3 +211,5 @@
 | v2.1 | 按用户最终命名调整：Text caption/eyebrow/copy/panel/figure；Card 4 surface；Composite NavRail/PanelHeader/AmountInput/Segment/Accordion/CalloutCard；Input default/numeric/amount；Button shape rounded |
 | v2.2 | P7 完成：按页替换 Swap / Genesis / Rewards / Community / Home；删除旧 swap 组件；新增 `swap-panel-toggle.tsx` 承接 PC 详情面板切换 |
 | v2.3 | Button size 高度：sm **42**（卡内）· md **44**（外部）· lg **48**；暗色 promo 38 走 `DappActionButton density="inverse"` |
+| v2.4 | `DappInlineAlert`：destructive 内联 chrome SSOT；`compact` / `comfortable`；禁并 CalloutCard |
+| v2.5 | Card surface 契约：`SwapPromoCard` 去叠 `shadow-subtle`；浅色 `CommunityStatCard` → `soft`（sc≠ovc） |

@@ -170,7 +170,8 @@ export function SwapPromoCard({
       as="article"
       surface="soft"
       className={cn(
-        'relative min-w-0 overflow-hidden rounded-2xl p-0 shadow-subtle',
+        // soft owns radius + shadow-faq; body owns pad (p-0 here).
+        'relative min-w-0 p-0',
         shellClassName,
         reveal && revealClass(),
         className,

@@ -27,7 +27,7 @@ import {
   swapFlipCard,
   useSwapBalanceLabels,
 } from '~/views/dapp/swap/swap-widget-composites'
-import { Text } from '~/shared/ui/text'
+import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 
 export function TradeSwapWidget({
   onSelectGenesis,
@@ -243,14 +243,9 @@ export function TradeSwapWidget({
         />
 
         {sessionReady && swap.isHighPriceImpact ? (
-          <Text
-            as="p"
-            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-destructive"
-            tone="foreground"
-            variant="copy"
-          >
+          <DappInlineAlert className="mt-3">
             {t.swap.trade.highPriceImpactWarning}
-          </Text>
+          </DappInlineAlert>
         ) : null}
 
         {sessionReady && swap.walletReady ? (

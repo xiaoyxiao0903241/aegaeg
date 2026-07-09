@@ -36,11 +36,10 @@ const communityStatCard = tv({
   variants: {
     dark: {
       true: {
+        // inverse surface owns elevation; dark sc clears shadow for art.
         root: 'is-dark shadow-none border-0',
       },
-      false: {
-        root: 'shadow-faq',
-      },
+      false: {},
     },
     withImage: {
       true: { root: 'relative overflow-visible' },
@@ -90,7 +89,8 @@ export function CommunityStatCard({
   return (
     <Card
       as="article"
-      surface={dark ? 'inverse' : 'elevated'}
+      // light sc: soft (E1) ≠ overview elevated (E2). Composite owns md radius + p-4.5.
+      surface={dark ? 'inverse' : 'soft'}
       className={cn(styles.root(), className)}
       data-reveal
     >

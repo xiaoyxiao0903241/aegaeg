@@ -292,6 +292,25 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | Swap/Genesis MetricCard 共用 `metricCardChromeClass` | INTENTIONAL | overview 同档；value 默认 text-lg |
 | CommunityStatCard / RewardsHeroCard | KEEP 分档 | 多行 `sc` / 暗色横幅 ≠ overview `ovc` |
 
+## 5l. DappInlineAlert chrome（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| trade / flash / shell DEV 警告抽 `DappInlineAlert` | INTENTIONAL | destructive border/wash/pad 一处；间距仍 call site |
+| `density=compact` vs `comfortable` | INTENTIONAL | widget `px-3.5 py-2.5` · shell `px-4 py-3` |
+| 未并入 CalloutCard / Card inverse | KEEP | 浅底告警 ≠ 深色 CTA 卡 |
+| Text tracking / tone 轴 | DEFER | A7 另切片 |
+
+## 5m. Card surface / shadow 契约（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `SwapPromoCard` 去 `shadow-subtle` + 重复 `rounded-2xl` | INTENTIONAL | 保留 `soft` → E1；禁 call-site 改 elevation |
+| 浅色 `CommunityStatCard`：`elevated`+`shadow-faq` → `soft` | INTENTIONAL | sc = E1；ovc MetricCard 仍 elevated E2 |
+| composite 仍 `rounded-md` / `p-4.5` | KEEP | 抹平 soft 默认 2xl；非第 5 surface |
+| 暗色 CommunityStat `inverse` + `shadow-none` | KEEP | 艺术卡清影 |
+| H5 `max-dapp:shadow-card` | KEEP | 既有移动壳 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -309,3 +328,5 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.9 | §5i 左卡/标题/pill CTA 跨 tab 统一 |
 | v2.10 | §5j Button 高度三档：card 42 / external 44 / inverse 38 |
 | v2.11 | §5k 标题跨 tab 统一；MetricCard overview chrome SSOT |
+| v2.12 | §5l `DappInlineAlert`；Text A7 另切片 |
+| v2.13 | §5m Card surface 契约：promo / CommunityStat 消叠影 |

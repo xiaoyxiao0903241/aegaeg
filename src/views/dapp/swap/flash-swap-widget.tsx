@@ -20,7 +20,7 @@ import {
   SwapWidgetBody,
   useSwapBalanceLabels,
 } from '~/views/dapp/swap/swap-widget-composites'
-import { Text } from '~/shared/ui/text'
+import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 
 export function FlashSwapWidget({
   onSelectGenesis,
@@ -172,15 +172,9 @@ export function FlashSwapWidget({
         ) : null}
 
         {submitErrorMessage ? (
-          <Text
-            as="p"
-            className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-destructive"
-            role="alert"
-            tone="foreground"
-            variant="copy"
-          >
+          <DappInlineAlert className="mt-3" role="alert">
             {submitErrorMessage}
-          </Text>
+          </DappInlineAlert>
         ) : null}
       </SwapWidgetBody>
     </>
