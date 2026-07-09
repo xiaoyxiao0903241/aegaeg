@@ -477,10 +477,10 @@ const app = defineMessages({
                 },
                 {
                     label: 'X Academy',
-                    title: 'Ecosystem training program for co-builders',
-                    body: 'Helps co-builders gain a deeper understanding of ecosystem mechanics and development plans.',
+                    title: 'Global DeFi Academy · Global Leadership Academy for the Digital Economy Era',
+                    body: 'Cultivating leaders for the era · Reserving talent for the future',
                     action: 'View program details →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/x-academy-en',
                 },
             ],
         },

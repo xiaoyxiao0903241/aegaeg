@@ -476,10 +476,10 @@ const app = defineMessages({
                 },
                 {
                     label: 'X Akademi',
-                    title: 'Ortak inşacılar için ekosistem eğitim programı',
-                    body: 'Ortak inşacıların ekosistem mekanizmaları ve gelişim planlarını daha derinden anlamasına yardımcı olur.',
+                    title: 'Küresel DeFi Akademisi · Dijital Ekonomi Çağında Küresel Liderlik Akademisi',
+                    body: 'Çağ için lider yetiştirmek · Gelecek için yetenek rezervi',
                     action: 'Plan detaylarını görüntüle →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/x-akademisi-tur',
                 },
             ],
         },

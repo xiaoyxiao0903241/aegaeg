@@ -477,10 +477,10 @@ const app = defineMessages({
                 },
                 {
                     label: 'Academia X',
-                    title: 'Programa de formación del ecosistema para constructores',
-                    body: 'Ayuda a los constructores a comprender más a fondo los mecanismos del ecosistema y el plan de desarrollo.',
+                    title: 'Academia Global DeFi · Academia de Liderazgo Global para la Era de la Economía Digital',
+                    body: 'Formar líderes para la era · Reservar talento para el futuro',
                     action: 'Ver detalles del plan →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/academia-x-esp',
                 },
             ],
         },
