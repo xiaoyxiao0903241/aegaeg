@@ -1,17 +1,69 @@
+import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { communityStatCardMobileShell } from '~/views/dapp/community/community-content-primitives'
 import { seasonCard } from '~/app/shell/components/season-card'
 import { dappTableCell } from '~/app/shell/components/dapp-table-card'
-import { cn } from '~/shared/lib/utils'
 
-const skeletonSurfaceClass =
-  'bg-skeleton motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
+const metricCardSkeleton = tv({
+  base: 'flex flex-col items-start gap-1.5 rounded-md px-4 py-3.5',
+})
 
-const skeletonDarkClass =
-  'bg-skeleton-on-dark motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'
+const dappSkeleton = tv({
+  base: [
+    'block rounded-md',
+    'motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]',
+  ],
+  variants: {
+    tone: {
+      surface: 'bg-skeleton',
+      dark: 'bg-skeleton-on-dark',
+    },
+  },
+  defaultVariants: {
+    tone: 'surface',
+  },
+})
+
+const rewardsHeroTitleSkeleton = tv({
+  variants: {
+    compact: {
+      true: 'h-4.5 w-[62%]',
+      false: 'h-5 w-[58%]',
+    },
+  },
+})
+
+const communityStatSkeleton = tv({
+  base: [
+    'community-stat flex min-h-22 flex-col items-start gap-1 rounded-lg p-4.5',
+    communityStatCardMobileShell(),
+  ],
+  variants: {
+    dark: {
+      true: 'is-dark rounded-md',
+      false: '',
+    },
+  },
+})
 
 const tableCell = dappTableCell()
-const TABLE_CELL = `${tableCell.border()} ${tableCell.minWidth()} px-3 py-2.5 text-left whitespace-nowrap font-normal max-dapp:px-2.5 max-dapp:py-2`
+const tableRowSkeletonCell = tv({
+  base: [
+    tableCell.border(),
+    tableCell.minWidth(),
+    'px-3 py-2.5 text-left whitespace-nowrap font-normal max-dapp:px-2.5 max-dapp:py-2',
+  ],
+  variants: {
+    last: {
+      true: 'border-b-0',
+      false: '',
+    },
+  },
+})
+
+const swapMetaValueSkeleton = tv({
+  base: 'inline-block h-3.5 w-full max-w-37',
+})
 
 export function DappSkeleton({
   className,
@@ -23,11 +75,7 @@ export function DappSkeleton({
   return (
     <span
       aria-hidden="true"
-      className={cn(
-        'block rounded-md',
-        tone === 'dark' ? skeletonDarkClass : skeletonSurfaceClass,
-        className,
-      )}
+      className={dappSkeleton({ tone, class: className })}
     />
   )
 }
@@ -37,7 +85,7 @@ export function MetricCardSkeleton({ className }: { className?: string }) {
     <Card
       as="article"
       surface="elevated"
-      className={cn('flex flex-col items-start gap-1.5 rounded-md px-4 py-3.5', className)}
+      className={metricCardSkeleton({ class: className })}
     >
       <DappSkeleton className="h-3 w-18 max-w-[55%]" />
       <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
@@ -80,7 +128,7 @@ export function RewardsHeroBodySkeleton({ compact = false }: { compact?: boolean
   return (
     <div aria-hidden="true" className="grid gap-2">
       <DappSkeleton
-        className={cn(compact ? 'h-4.5 w-[62%]' : 'h-5 w-[58%]')}
+        className={rewardsHeroTitleSkeleton({ compact })}
         tone="dark"
       />
       <div className="grid gap-1.5">
@@ -132,11 +180,7 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
     <Card
       as="article"
       surface={dark ? 'inverse' : 'soft'}
-      className={cn(
-        'community-stat flex min-h-22 flex-col items-start gap-1 rounded-lg p-4.5',
-        dark && 'is-dark rounded-md',
-        communityStatCardMobileShell(),
-      )}
+      className={communityStatSkeleton({ dark })}
     >
       <DappSkeleton className="h-3 w-16" tone={tone} />
       <DappSkeleton className="mt-2 h-7 w-14" tone={tone} />
@@ -156,7 +200,7 @@ export function TableRowSkeleton({
   return (
     <tr>
       {Array.from({ length: columns }, (_, index) => (
-        <td className={cn(TABLE_CELL, isLast && 'border-b-0')} key={index}>
+        <td className={tableRowSkeletonCell({ last: isLast })} key={index}>
           <DappSkeleton className="h-3.5 w-full max-w-22" />
         </td>
       ))}
@@ -169,7 +213,7 @@ export function SwapBalanceSkeleton() {
 }
 
 export function SwapMetaValueSkeleton({ className }: { className?: string }) {
-  return <DappSkeleton className={cn('inline-block h-3.5 w-full max-w-37', className)} />
+  return <DappSkeleton className={swapMetaValueSkeleton({ class: className })} />
 }
 
 export function SwapAmountSkeleton() {

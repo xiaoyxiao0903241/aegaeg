@@ -1,9 +1,9 @@
-import type { ElementType, ReactNode } from 'react'
-import { Text } from '~/shared/ui/text'
+import type { ReactNode } from 'react'
+import { Text, type TextProps } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 type RankTitleWithSuperCommunityProps = {
-  as?: ElementType
+  as?: NonNullable<TextProps['as']>
   children?: ReactNode
   className?: string
   isSuperCommunity?: boolean
@@ -27,11 +27,7 @@ export function RankTitleWithSuperCommunity({
       as={Component}
       variant="brand"
       tone="foreground"
-      className={cn(
-        // 4175 dappRankTitleClass: body-lg 17px / lh 1.3 / tracking -0.34 (api brand)
-        'min-w-0 break-words leading-[1.3] tracking-[-0.02em]',
-        className,
-      )}
+      className={cn('min-w-0 break-words leading-[1.3] tracking-[-0.02em]', className)}
     >
       {label}
     </Text>

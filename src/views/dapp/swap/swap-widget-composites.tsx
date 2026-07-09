@@ -20,27 +20,6 @@ import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 
-const swapGenesisFooterCardClass = 'gap-1.5 [&_p]:leading-tight'
-
-export const swapPercentRowClass = 'pt-2.5 max-dapp:mt-3 max-dapp:py-0'
-
-/** Figma `flb` — 34×34 · `rounded-control` · border · card. Trade flip + Flash divider. */
-export const swapFlowButtonClass = cn(
-  'grid size-[2.125rem] shrink-0 place-items-center rounded-control border border-border bg-card p-0',
-  'text-sm leading-none tracking-[-0.02em] text-foreground shadow-none',
-)
-
-/** Interactive flb (Trade flip) — very light scale (match Button motion SSOT). */
-export const swapFlowButtonInteractiveClass = cn(
-  swapFlowButtonClass,
-  'origin-center',
-  'transition-[border-color,background-color,box-shadow,transform,opacity] duration-160 ease-out',
-  'enabled:cursor-pointer enabled:hover:scale-[1.02] enabled:hover:border-primary',
-  'enabled:focus-visible:scale-[1.02] enabled:focus-visible:border-primary',
-  'enabled:active:scale-[0.985] enabled:active:duration-75 enabled:active:border-primary',
-  'disabled:cursor-not-allowed disabled:scale-100 disabled:opacity-60',
-)
-
 export const swapFlipCard = tv({
   variants: {
     flipping: {
@@ -52,6 +31,69 @@ export const swapFlipCard = tv({
     flipping: false,
   },
 })
+
+const swapFlowButton = tv({
+  base: cn(
+    'grid size-[2.125rem] shrink-0 place-items-center rounded-control border border-border bg-card p-0',
+    'text-sm leading-none tracking-[-0.02em] text-foreground shadow-none',
+  ),
+  variants: {
+    interactive: {
+      true: cn(
+        'origin-center',
+        'transition-[border-color,background-color,box-shadow,transform,opacity] duration-160 ease-out',
+        'enabled:cursor-pointer enabled:hover:scale-[1.02] enabled:hover:border-primary',
+        'enabled:focus-visible:scale-[1.02] enabled:focus-visible:border-primary',
+        'enabled:active:scale-[0.985] enabled:active:duration-75 enabled:active:border-primary',
+        'disabled:cursor-not-allowed disabled:scale-100 disabled:opacity-60',
+      ),
+      false: '',
+    },
+  },
+  defaultVariants: {
+    interactive: false,
+  },
+})
+
+type SwapFlowButtonProps = {
+  'aria-hidden'?: boolean
+  'aria-label'?: string
+  children: ReactNode
+  className?: string
+  disabled?: boolean
+  interactive?: boolean
+  onClick?: () => void
+}
+
+/** Trade flip / Flash divider — 34×34 control chrome. */
+export function SwapFlowButton({
+  children,
+  className,
+  disabled,
+  interactive = false,
+  onClick,
+  ...aria
+}: SwapFlowButtonProps) {
+  if (interactive) {
+    return (
+      <button
+        {...aria}
+        className={cn(swapFlowButton({ interactive: true }), className)}
+        disabled={disabled}
+        onClick={onClick}
+        type="button"
+      >
+        {children}
+      </button>
+    )
+  }
+
+  return (
+    <div {...aria} className={cn(swapFlowButton({ interactive: false }), className)}>
+      {children}
+    </div>
+  )
+}
 
 export function SwapPanelToggle() {
   const { messages: t } = useI18n()
@@ -227,7 +269,7 @@ export function SwapAmountFlow({
       />
 
       <PercentButtonRow
-        className={swapPercentRowClass}
+        className="pt-2.5 max-dapp:mt-3 max-dapp:py-0"
         disabled={!swapPreview && !walletReady}
         onSelect={onFillPercent}
       />
@@ -268,15 +310,10 @@ export function SwapMetaPanel({
     <Card
       as="div"
       surface="outlined"
-      className={cn(
-        // Chrome from Card outlined (`p-3.5` / `rounded-md`); ≡ DappMetaList — do not re-pad.
-        'mt-3.5 grid shrink-0 gap-2 max-dapp:mt-3',
-        className,
-      )}
+      className={cn('mt-3.5 grid shrink-0 gap-2 max-dapp:mt-3', className)}
     >
       {items.map((item, index) => (
         <p className="m-0 flex items-center justify-between gap-3" key={index}>
-          {/* Meta rows: detail 14 + token tracking -0.02em ≡ Figma */}
           <Text
             as="span"
             variant="detail"
@@ -309,7 +346,7 @@ export function SwapGenesisFooter({ onSelectGenesis }: { onSelectGenesis: () => 
     <DappWidgetConnectFooter>
       <GenesisPromoCard
         actionLabel={t.genesis.joinGenesis}
-        className={swapGenesisFooterCardClass}
+        className="gap-1.5 [&_p]:leading-tight"
         isLoading={genesis.isLoading}
         onClick={onSelectGenesis}
         promo={genesis.promoSnapshot}

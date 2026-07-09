@@ -18,7 +18,7 @@ function formatRateRatioFixed(
   return `${groupedWhole}.${fractionText}`
 }
 
-/** Swap widget rate label — `1 : 1.0010` (Figma colon format, 4 fraction digits). */
+/** Swap widget rate label — `1 : 1.0010` (4 fraction digits). */
 export function formatSwapRateColon({
   amountIn,
   amountOut,
@@ -71,7 +71,7 @@ export function formatSwapRate({
   return `1 ${symbolIn} = ${formattedOut} ${symbolOut}`
 }
 
-/** Connected Swap meta — `1 USDT ≈ 1.001 USD1` (Figma approx format, 3 fraction digits). */
+/** Connected Swap meta — `1 USDT ≈ 1.001 USD1` (3 fraction digits). */
 export function formatSwapRateApprox({
   amountIn,
   amountOut,

@@ -1,7 +1,7 @@
 /**
  * thirdweb `useActiveWalletConnectionStatus()` often stays `'unknown'` while the
  * wallet is already usable. Never treat `'unknown'` as a blocking handshake.
- * Active account address is the SSOT for on-chain readiness.
+ * Active account address is the source of truth for on-chain readiness.
  */
 export function hasWalletAccount(
   account: { address: string } | undefined | null,

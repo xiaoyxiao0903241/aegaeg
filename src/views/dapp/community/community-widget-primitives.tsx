@@ -1,12 +1,12 @@
 import { Wallet } from 'lucide-react'
 import { tv } from 'tailwind-variants'
 import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
-import { Chip, fieldActionChipClass } from '~/shared/ui/chip'
+import { FieldActionChip } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 
@@ -15,7 +15,6 @@ const communityReferrerBindGrid = tv({
 })
 
 const communityReferrerAddressRow = tv({
-  // ReferrerAddressRow: h-11 · rounded-sm · bg-background
   base: 'flex h-11 items-center justify-between rounded-sm bg-background px-3.5',
 })
 
@@ -24,11 +23,10 @@ const communityReferrerAvatar = tv({
 })
 
 const communityCopyButton = tv({
-  // size-7.5 rem — scales with site-fluid; do not lock px
   base: 'grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent',
 })
 
-/** Spacing / visibility only — hover from Button `primary` SSOT. */
+/** Spacing / visibility only. */
 export const communityGenesisCta = tv({
   base: 'mt-4 max-dapp:hidden',
 })
@@ -102,21 +100,14 @@ export function CommunityReferrerBindCard({
           placeholder={placeholder}
           value={value}
         />
-        {/* Same field-adjacent Chip as Genesis MAX (`fieldActionChipClass`). */}
-        <Chip
+        <FieldActionChip
           aria-busy={isSubmitting || undefined}
-          className={fieldActionChipClass}
           disabled={!canBind || isSubmitting}
           onClick={onBind}
-          shape="rounded"
-          size="md"
-          tone="coral"
-          type="button"
-          variant="soft"
         >
           {isSubmitting ? <ButtonLoadingIcon /> : null}
           {bindLabel}
-        </Chip>
+        </FieldActionChip>
       </div>
       <Text
         as="small"
@@ -146,7 +137,6 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    // Same chrome as ReferralLinkCard (DappSideCard). Figma bound gap≈10 → gap-2.5.
     <DappSideCard className="gap-2.5">
       <Text
         as="p"
@@ -159,7 +149,7 @@ export function CommunityReferrerBoundPanel({
       <div className={communityReferrerAddressRow()}>
         <div className="flex min-w-0 items-center gap-2.5">
           <span aria-hidden="true" className={communityReferrerAvatar()}>
-            <Wallet className={dappIconClass.xs} strokeWidth={1.75} />
+            <Wallet className={dappIcon({ size: 'xs' })} strokeWidth={1.75} />
           </span>
           <Text
             as="strong"

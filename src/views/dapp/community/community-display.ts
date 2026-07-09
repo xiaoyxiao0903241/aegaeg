@@ -33,7 +33,7 @@ export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {
   ]
 }
 
-/** Sidebar display: host + shortened address (Figma `aegis-x.io/r/0x8F32…91A2`). */
+/** Sidebar display: host + shortened address. */
 export function formatReferralLinkDisplay(address: string): string {
   return `${getRuntimeHost()}/r/${formatShortAddress(address)}`
 }

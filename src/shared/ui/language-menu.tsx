@@ -5,37 +5,57 @@ import {
   type MouseEvent,
   type ReactNode,
 } from 'react'
-import { cn } from '~/shared/lib/utils'
+import { tv } from 'tailwind-variants'
 import { Text } from '~/shared/ui/text'
 
-/** Open-state: native `<details open>` + React ancestor `[data-open]`. */
-const openGrid =
-  'hidden [[open]_&]:grid [[data-open]_&]:grid [[open]_&]:animate-[language-menu-in_180ms_ease_both] [[data-open]_&]:animate-[language-menu-in_180ms_ease_both]'
+const languageMenu = tv({
+  slots: {
+    trigger: [
+      'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
+      'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
+      'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
+      'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
+      'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
+      'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
+      '[[open]_&]:border-coral-hover-border [[open]_&]:bg-coral-wash [[open]_&]:shadow-card',
+      '[[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-coral-wash [[data-open]_&]:shadow-card',
+      '[&::-webkit-details-marker]:hidden [&_img]:size-4',
+      'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
+    ],
+    panel: [
+      'hidden [[open]_&]:grid [[data-open]_&]:grid',
+      '[[open]_&]:animate-[language-menu-in_180ms_ease_both] [[data-open]_&]:animate-[language-menu-in_180ms_ease_both]',
+      'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-1.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
+    ],
+  },
+})
 
-const openTrigger =
-  '[[open]_&]:border-coral-hover-border [[open]_&]:bg-coral-wash [[open]_&]:shadow-card [[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-coral-wash [[data-open]_&]:shadow-card'
+const languageMenuItem = tv({
+  base: [
+    'flex h-10 cursor-pointer items-center gap-2 rounded-sm bg-transparent px-2.5 text-left',
+    'transition-colors duration-150 ease-out focus-visible:outline-none',
+  ],
+  variants: {
+    active: {
+      true: 'bg-[var(--background)]',
+      false: 'hover:bg-secondary focus-visible:bg-secondary',
+    },
+    disabled: {
+      true: 'cursor-not-allowed opacity-60',
+      false: '',
+    },
+  },
+})
 
-/**
- * Trigger chrome — matches 4175/dev pill (min-h-9 / H5 7.5).
- * Not Button secondary: glass-free card + coral-wash hover (topbar density).
- */
-const languageTriggerClass = cn(
-  'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
-  'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
-  'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
-  'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-  'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
-  'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
-  openTrigger,
-  '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
-)
-
-const languagePanelClass = cn(
-  openGrid,
-  // Item gap: was gap-0.5 (too tight); gap-1.5 keeps rows readable without growing panel much.
-  'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-1.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
-)
+const languageMenuItemName = tv({
+  base: 'block text-sm leading-normal',
+  variants: {
+    active: {
+      true: 'font-semibold',
+      false: 'font-normal',
+    },
+  },
+})
 
 export type LanguageMenuOption = {
   code: string
@@ -72,25 +92,18 @@ function MenuItem({
   checkIcon?: string
   onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
 }) {
-  const itemClassName = cn(
-    'flex h-10 cursor-pointer items-center gap-2 rounded-sm bg-transparent px-2.5 text-left transition-colors duration-150 ease-out focus-visible:outline-none',
-    option.active
-      ? 'bg-[var(--background)]'
-      : 'hover:bg-secondary focus-visible:bg-secondary',
-    option.disabled && 'cursor-not-allowed opacity-60',
-  )
+  const itemClassName = languageMenuItem({
+    active: Boolean(option.active),
+    disabled: Boolean(option.disabled),
+  })
 
-  // 4175/dev rows: text-sm name + text-xs label, leading-normal — not raw headline/copy size.
   const children = (
     <>
       <span className="min-w-0 flex-1">
         <Text
           as="span"
           variant="headline"
-          className={cn(
-            'block text-sm leading-normal',
-            option.active ? 'font-semibold' : 'font-normal',
-          )}
+          className={languageMenuItemName({ active: Boolean(option.active) })}
         >
           {option.name}
         </Text>
@@ -190,6 +203,7 @@ function NativeLanguageMenu({
   triggerLabel,
   menuClassName,
 }: Omit<LanguageMenuProps, 'native'>) {
+  const styles = languageMenu()
   const activeOption = options.find((option) => option.active) ?? options[0]
 
   return (
@@ -198,7 +212,7 @@ function NativeLanguageMenu({
         <summary
           aria-haspopup="menu"
           aria-label={label}
-          className={cn(languageTriggerClass, triggerClassName)}
+          className={styles.trigger({ class: triggerClassName })}
           data-language-trigger
           role="button"
         >
@@ -208,7 +222,7 @@ function NativeLanguageMenu({
           </Text>
         </summary>
 
-        <div className={cn(languagePanelClass, menuClassName)} role="menu">
+        <div className={styles.panel({ class: menuClassName })} role="menu">
           {options.map((option) => (
             <MenuItem key={option.code} option={option} checkIcon={checkIcon} />
           ))}
@@ -231,6 +245,7 @@ function ReactLanguageMenu({
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLSpanElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const styles = languageMenu()
   const activeOption = options.find((option) => option.active) ?? options[0]
 
   useEffect(() => {
@@ -298,7 +313,7 @@ function ReactLanguageMenu({
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={label}
-        className={cn(languageTriggerClass, triggerClassName)}
+        className={styles.trigger({ class: triggerClassName })}
         data-language-trigger
         onClick={() => setOpen((prev) => !prev)}
         type="button"
@@ -310,7 +325,7 @@ function ReactLanguageMenu({
       </button>
 
       <div
-        className={cn(languagePanelClass, !open && 'hidden', menuClassName)}
+        className={styles.panel({ class: [!open && 'hidden', menuClassName] })}
         role="menu"
       >
         {options.map((option) => (

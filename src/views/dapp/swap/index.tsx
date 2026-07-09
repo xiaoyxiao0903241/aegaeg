@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
-import { shellModulePanelClass } from '~/app/shell-layout'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
 import { SwapHubWidget } from '~/views/dapp/swap/swap-hub-widget'
 import { SwapHubContent } from '~/views/dapp/swap/swap-hub-content'
@@ -78,7 +77,7 @@ export function SwapWidget({
   return (
     <div
       className={cn(
-        shellModulePanelClass,
+        'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
         isTransitioning && swapTransitionStack(),
         !hasSubviewHistory && view === 'hub' && !motion && 'dapp-panel-enter',
       )}

@@ -34,12 +34,10 @@ const faqList = tv({
           revealClass(),
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
-        // 4175 home FAQ answer: text-sm / H5 text-xs；色 token `faq`（不进 Text tone）。
         answer: 'text-sm font-normal leading-[1.5] text-faq max-dapp:text-xs',
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        // 4175: text-sm / H5 text-xs；色 token `faq`（不进 Text tone）。
         answer: 'my-0 py-[1em] leading-[1.5] text-faq max-dapp:text-xs',
       },
     },
@@ -49,7 +47,7 @@ const faqList = tv({
   },
 })
 
-/** Chevron motion SSOT: CSS via `[data-faq-item][data-state]` — rotate + color; do not swap path. */
+/** FAQ chevron — CSS rotate/color via `[data-faq-item][data-state]`. */
 function FaqChevron() {
   return (
     <svg

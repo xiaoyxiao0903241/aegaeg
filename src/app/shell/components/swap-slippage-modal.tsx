@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { useI18n } from '~/i18n/use-i18n'
 import { MAX_SLIPPAGE_PERCENT } from '~/core/swap/token-amount'
 import { cn } from '~/shared/lib/utils'
@@ -10,9 +10,9 @@ import { Chip } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
 import { Text, textVariants } from '~/shared/ui/text'
 import {
+  AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
-  aegisDialogCloseClass,
 } from '~/shared/ui/aegis-responsive-dialog'
 
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
@@ -71,13 +71,9 @@ export function SwapSlippageModal({
             {t.swap.slippage}
           </Text>
         </DialogPrimitive.Title>
-        <DialogPrimitive.Close
-          aria-label={t.common.close}
-          className={aegisDialogCloseClass}
-          type="button"
-        >
-          <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-        </DialogPrimitive.Close>
+        <AegisDialogClose aria-label={t.common.close}>
+          <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
+        </AegisDialogClose>
       </div>
 
       <div className="grid gap-4">

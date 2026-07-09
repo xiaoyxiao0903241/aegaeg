@@ -10,7 +10,7 @@ type DappInfoTooltipProps = Pick<AnchoredTooltipProps, 'align' | 'content' | 'po
   className?: string
 }
 
-/** SSOT for hint tooltip triggers — Genesis xTokenAirdrop icon. */
+/** Hint tooltip trigger (e.g. Genesis xTokenAirdrop icon). */
 export function DappInfoTooltip({
   align,
   ariaLabel,

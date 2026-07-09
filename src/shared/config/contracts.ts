@@ -42,7 +42,7 @@ export const DEFAULT_BSC_CONTRACTS = {
 } as const satisfies BscContracts
 
 /**
- * BSC mainnet contract addresses (SSOT).
+ * BSC mainnet contract addresses.
  * `VITE_BSC_*` overrides at build time; redeploy without env change uses DEFAULT_BSC_CONTRACTS.
  */
 export const BSC_CONTRACTS = {

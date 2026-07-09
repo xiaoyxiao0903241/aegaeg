@@ -5,12 +5,7 @@ import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/**
- * Composite：Figma `box` 层 — 金额输入卡。
- *
- * 结构：label + balance / amount row + token selector + input。
- * 内部用 Card surface="outlined" + Input variant="amount" + Text。
- */
+/** Amount input card — label + balance / amount row + token selector + input. */
 export const amountBox = tv({
   slots: {
     root: 'flex flex-col gap-2',
@@ -32,7 +27,7 @@ export type AmountBoxProps = {
   label: ReactNode
   loading?: boolean
   loadingSkeleton?: ReactNode
-  /** 4175: balance is font-semibold only when sessionReady (logged-in). */
+  /** Balance uses semibold only when logged in. */
   sessionReady?: boolean
   startAdornment: ReactNode
 }
@@ -60,7 +55,6 @@ export function AmountBox({
           {label}
         </Text>
         {balance ? (
-          // 4175: text-ink-strong ≡ muted-foreground 70%; semibold only when sessionReady
           <Text
             as="span"
             variant="copy"
@@ -85,7 +79,6 @@ export function AmountBox({
             disabled={disabled}
             className={cn(
               styles.input(),
-              // 4175 disconnected preview: text + placeholder #c9cfda
               !sessionReady && 'text-amount-muted placeholder:text-amount-muted',
               inputClassName,
             )}

@@ -1,7 +1,6 @@
 import { useId } from 'react'
-import { cn } from '~/shared/lib/utils'
+import { tv } from 'tailwind-variants'
 
-/** Matches original CSS: `repeating-conic-gradient(... 0deg 0.2deg, transparent 0.2deg 2.5deg)`. */
 const RAY_SPACING_DEG = 2.5
 const RAY_WIDTH_DEG = 0.2
 const RAY_COUNT = 360 / RAY_SPACING_DEG
@@ -27,11 +26,18 @@ function buildRayWedgePath(index: number) {
 
 const RAY_WEDGES = Array.from({ length: RAY_COUNT }, (_, index) => buildRayWedgePath(index))
 
-/** Homepage hero — large square behind art; mask fade inside hero clip. */
-export const heroRaysHomeClass = 'hero-rays--home'
-
-/** DApp — viewport-centered circle; perimeter fades to transparent. */
-export const heroRaysShellClass = 'hero-rays--shell'
+const heroRays = tv({
+  base: 'hero-rays',
+  variants: {
+    variant: {
+      home: 'hero-rays--home',
+      shell: 'hero-rays--shell',
+    },
+  },
+  defaultVariants: {
+    variant: 'shell',
+  },
+})
 
 export function HeroRaysBackground({
   className,
@@ -49,7 +55,7 @@ export function HeroRaysBackground({
   return (
     <div
       aria-hidden="true"
-      className={cn('hero-rays', className)}
+      className={heroRays({ variant, class: className })}
       data-variant={variant}
     >
       <svg

@@ -10,7 +10,6 @@ export type InviteFlowItem = {
   title: string
 }
 
-// 4175 `dappCaptionClass`: caption size + leading 1.5 / tracking -0.26px (not copy leading 1.3).
 const inviteFlowStep = tv({
   base: [
     'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold text-white',
@@ -23,7 +22,7 @@ function InviteFlowStep({ children }: { children: ReactNode }) {
   return <span className={inviteFlowStep()}>{children}</span>
 }
 
-/** Figma `flow` connector — coral primary, 2px thick. */
+/** Invite flow connector — coral, 2px thick. */
 function InviteFlowConnector({ orientation = 'horizontal' }: { orientation?: 'horizontal' | 'vertical' }) {
   return (
     <i
@@ -47,7 +46,6 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
       surface="elevated"
       className={cn(
         revealClass(),
-        // Community-only mount — layout values locked (do not change left-card padding elsewhere).
         'grid grid-cols-3 gap-x-0 gap-y-3.5 p-4',
         'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,10.5rem),1fr))] max-tablet:gap-4',
         'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-3.5',

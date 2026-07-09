@@ -1,24 +1,12 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/**
- * Composite：Figma `wh` 层 — Widget / Panel / Page 标题区。
- *
- * 结构：标题 + 副标题 + 右侧 action。
- * 内部消化 typography 与间距；call site 只负责布局和传入 action。
- */
 export const widgetHeader = tv({
   slots: {
-    root: cn(
-      'mb-3.5 flex items-start justify-between gap-4 max-dapp:mb-7.5',
-      shellMobilePageTitleClass,
-    ),
+    root: 'mb-3.5 flex items-start justify-between gap-4 max-dapp:mb-7.5 max-dapp:mt-6',
     copy: 'flex min-w-0 flex-1 flex-col gap-1.5',
-    // Size/weight/tracking from Text panel token (21/600 / -0.04em ≡ Figma wh).
-    // Do NOT use text-xl (20px) — strips panel size.
     title: 'm-0',
     subtitle: 'm-0 max-w-[17.5rem] max-dapp:max-w-none',
   },
@@ -52,7 +40,6 @@ export function WidgetHeader({
             tone="muted-foreground"
             className={cn(
               styles.subtitle(),
-              // copy token = 13px; leading 1.4 matches 4175 hub subtitle (not text-xs 12px).
               'leading-[1.4] [&_strong]:font-bold [&_strong]:text-primary',
             )}
           >
@@ -65,13 +52,10 @@ export function WidgetHeader({
   )
 }
 
-/**
- * Composite：Figma `wh` subpage 模式 — 返回 + 标题 + 副标题。
- */
 export const widgetSubpageHeader = tv({
   slots: {
     root: 'mb-3.5 grid gap-3.5 max-dapp:mb-7.5',
-    navRow: cn('flex items-center gap-2', shellMobilePageTitleClass),
+    navRow: 'flex items-center gap-2 max-dapp:mt-6',
     backButton:
       'inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left',
     backLabel: '',

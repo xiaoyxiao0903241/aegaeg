@@ -32,7 +32,6 @@ export function RewardsProgressRow({
   const styles = rewardsProgressRow()
   return (
     <div className={styles.row()}>
-      {/* 4175: label font-normal leading 1.5 / tracking -0.24; value font-semibold leading 1.3 */}
       <Text
         variant="copy"
         tone="muted-foreground"
@@ -52,7 +51,7 @@ export function RewardsProgressRow({
   )
 }
 
-/** Spacing only — height/type from Button `sm` + `pill` SSOT. */
+/** Spacing only — height/type from Button `sm` + `pill`. */
 export const rewardsClaimAction = tv({
   base: 'mt-3',
 })
@@ -61,12 +60,10 @@ export const rewardsBalanceHeaderMeta = tv({
   base: '',
 })
 
-/** 4175 `tone="muted"` = faint 30%；Foundation 无 faint → foreground/30 */
 export const rewardsBalanceHint = tv({
   base: 'max-dapp:hidden text-foreground/30',
 })
 
-/** Referral amount: 4175 amount token + leading 1.3 / tracking -0.54；H5 走 figure Text token。 */
 export const rewardsReferralAmount = tv({
   base: 'text-[length:var(--type-figure-size)] leading-[1.3] tracking-[-0.03em]',
 })

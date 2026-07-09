@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '~/shared/lib/utils'
 
-/** 右侧 detail 列内容区 —— 各 tab SSOT（PC padding 一致；H5 外边距由 shell window 承担） */
+/** Right detail column content area (PC padding; H5 margin from shell window). */
 export function DappDetailPage({
   children,
   className,

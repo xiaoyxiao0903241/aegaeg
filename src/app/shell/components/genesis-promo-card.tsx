@@ -107,7 +107,6 @@ export function GenesisPromoCard({
       {pending || !title ? (
         <GenesisPromoTitleSkeleton />
       ) : (
-        // 4175/dev: text-sm / semibold / text-on-dark (#b8c0ce) — tone inverse-muted
         <Text
           as="strong"
           variant="detail"
@@ -120,7 +119,6 @@ export function GenesisPromoCard({
       {pending || !body ? (
         <GenesisPromoBodySkeleton />
       ) : (
-        // 4175/dev: text-xs / normal / on-dark — caption token is 10px; lock 12px
         <Text
           as="p"
           variant="copy"

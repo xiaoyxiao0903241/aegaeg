@@ -1,6 +1,6 @@
 import { withLocalePrefix } from '~/i18n/locale'
 import { Button } from '~/shared/ui/button'
-import { HeroRaysBackground, heroRaysHomeClass } from '~/shared/ui/hero-rays-background'
+import { HeroRaysBackground } from '~/shared/ui/hero-rays-background'
 import { Text } from '~/shared/ui/text'
 import { getNotionLinks } from '~/shared/config/notion-links'
 import { homeAssets } from '~/views/home/assets'
@@ -52,7 +52,7 @@ export function HomeHeroSection() {
       aria-labelledby="hero-title"
       className="relative flex min-h-176 items-start overflow-hidden bg-[image:var(--home-hero-wash)] pt-22 pb-24 max-tablet:min-h-0 max-tablet:pt-16 max-tablet:pb-20 max-dapp:block max-dapp:min-h-192 max-dapp:bg-background max-dapp:pt-9 max-dapp:pb-12"
     >
-      <HeroRaysBackground className={heroRaysHomeClass} variant="home" />
+      <HeroRaysBackground variant="home" />
       <div className="container relative z-1 grid min-h-128 grid-cols-[minmax(0,1fr)_auto] items-center justify-between gap-16 max-tablet:grid-cols-1 max-tablet:justify-items-center max-tablet:gap-8 max-tablet:text-center max-dapp:flex max-dapp:min-h-0 max-dapp:flex-col max-dapp:items-center max-dapp:gap-4 max-dapp:text-center">
         <div
           className="max-w-168 pt-16 max-tablet:pt-0 max-dapp:order-2 max-dapp:flex max-dapp:w-full max-dapp:max-w-96 max-dapp:flex-col max-dapp:items-center max-dapp:pt-0"

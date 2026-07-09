@@ -1,10 +1,8 @@
 import type { ReactNode } from 'react'
 import { DappPanelHeader } from '~/app/shell/components/dapp-panel-header'
-import { shellWidgetRootClass } from '~/app/shell-layout'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { cn } from '~/shared/lib/utils'
 
-/** Left-column card stack — gap 8; first child clears top margin. */
 export function DappWidgetStack({
   children,
   className,
@@ -30,7 +28,6 @@ export function DappWidgetFrame({
   bodyClassName,
   children,
   className,
-  frameClass = shellWidgetRootClass,
   showToggle = true,
   subtitle,
   title,
@@ -38,7 +35,6 @@ export function DappWidgetFrame({
   bodyClassName?: string
   children: ReactNode
   className?: string
-  frameClass?: string
   showToggle?: boolean
   subtitle: ReactNode
   title: string
@@ -47,7 +43,12 @@ export function DappWidgetFrame({
   const onToggle = useDappShellStore((state) => state.toggleDetailCollapsed)
 
   return (
-    <div className={cn(frameClass, className)}>
+    <div
+      className={cn(
+        'dapp-panel-enter flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
+        className,
+      )}
+    >
       <DappPanelHeader
         className="mb-3.5 max-dapp:mb-7.5"
         detailCollapsed={collapsed}

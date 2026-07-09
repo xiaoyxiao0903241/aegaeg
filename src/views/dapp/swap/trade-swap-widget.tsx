@@ -19,12 +19,12 @@ import {
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   SwapAmountFlow,
+  SwapFlowButton,
   SwapGenesisFooter,
   SwapMetaPanel,
   SwapSubpageHeader,
   SwapWidgetBody,
   swapFlipCard,
-  swapFlowButtonInteractiveClass,
   useSwapBalanceLabels,
 } from '~/views/dapp/swap/swap-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
@@ -120,12 +120,12 @@ export function TradeSwapWidget({
               )}
             >
               <AnchoredTooltip content={t.swap.flip}>
-                <button
+                <SwapFlowButton
                   aria-label={t.swap.flip}
-                  className={cn(swapFlowButtonInteractiveClass, 'max-dapp:my-2')}
+                  className="max-dapp:my-2"
                   disabled={sessionReady && !swap.walletReady}
+                  interactive
                   onClick={handleFlip}
-                  type="button"
                 >
                   <span
                     className="grid place-items-center transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
@@ -133,7 +133,7 @@ export function TradeSwapWidget({
                   >
                     ⇅
                   </span>
-                </button>
+                </SwapFlowButton>
               </AnchoredTooltip>
             </div>
           }

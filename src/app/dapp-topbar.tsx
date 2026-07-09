@@ -1,5 +1,5 @@
-import { dappIconClass } from '~/app/dapp-icon-scale'
-import { cn } from '~/shared/lib/utils'
+import { tv } from 'tailwind-variants'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { LanguageMenu } from '~/shared/ui/language-menu'
 import { Text } from '~/shared/ui/text'
 import { withLocalePrefix } from '~/i18n/locale'
@@ -9,35 +9,46 @@ import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { useDappShell } from '~/app/dapp-shell-context'
 
-const topbarClass = cn(
-  'relative flex shrink-0 w-full items-center justify-between gap-6 bg-transparent px-6 py-4',
-  'max-dapp:sticky max-dapp:top-0 max-dapp:z-20',
-  'max-dapp:gap-3 max-dapp:px-4 max-dapp:pb-4',
-  'max-dapp:pt-[max(1rem,env(safe-area-inset-top,0px))]',
-  // H5 毛玻璃顶栏：透出页面蜜桃渐变，滚动时模糊下方内容
-  'max-dapp:border-b max-dapp:border-border/40',
-  'max-dapp:bg-background/30 max-dapp:backdrop-blur-[1.125rem] max-dapp:backdrop-saturate-150',
-)
-
-const brandClass = cn(
-  'flex items-center gap-2.5',
-  'group-data-[tab=rewards]/shell:max-dapp:group-data-[session-ready=true]/shell:[&_span]:hidden',
-)
-
-const brandMarkClass = cn(
-  'object-contain',
-  dappIconClass.brand,
-  'max-dapp:size-[var(--dapp-icon-lg)] max-dapp:w-[var(--dapp-icon-lg)]',
-)
-
-const topActionsClass = cn(
-  'flex items-center gap-3',
-  'max-dapp:min-w-0 max-dapp:flex-1 max-dapp:justify-end max-dapp:gap-2',
-)
+const topbar = tv({
+  slots: {
+    root: [
+      'relative flex shrink-0 w-full items-center justify-between gap-6 bg-transparent px-6 py-4',
+      'max-dapp:sticky max-dapp:top-0 max-dapp:z-20',
+      'max-dapp:gap-3 max-dapp:px-4 max-dapp:pb-4',
+      'max-dapp:pt-[max(1rem,env(safe-area-inset-top,0px))]',
+      'max-dapp:border-b max-dapp:border-border/40',
+      'max-dapp:bg-background/30 max-dapp:backdrop-blur-[1.125rem] max-dapp:backdrop-saturate-150',
+    ],
+    brand: 'flex items-center gap-2.5',
+    brandMark: [
+      'object-contain',
+      dappIcon({ size: 'brand' }),
+      'max-dapp:size-[var(--dapp-icon-lg)] max-dapp:w-[var(--dapp-icon-lg)]',
+    ],
+    actions: [
+      'flex items-center gap-3',
+      'max-dapp:min-w-0 max-dapp:flex-1 max-dapp:justify-end max-dapp:gap-2',
+    ],
+  },
+  variants: {
+    hideBrandLabel: {
+      true: {
+        brand: 'max-dapp:[&_span]:hidden',
+      },
+      false: {
+        brand: '',
+      },
+    },
+  },
+  defaultVariants: {
+    hideBrandLabel: false,
+  },
+})
 
 export function DappTopbar() {
   const { locale, messages: t, setLocale } = useI18n()
   const { sessionReady, tab } = useDappShell()
+  const styles = topbar({ hideBrandLabel: sessionReady })
 
   const languageOptions = allLanguageOptions.map((option) => ({
     ...option,
@@ -46,27 +57,19 @@ export function DappTopbar() {
   }))
 
   return (
-    <header className={topbarClass}>
+    <header className={styles.root()}>
       <a
-        className={cn(
-          brandClass,
-          sessionReady && tab === 'rewards' && 'max-dapp:[&_span]:hidden',
-          sessionReady && 'max-dapp:[&_span]:hidden',
-        )}
+        className={styles.brand()}
         href={withLocalePrefix(locale, '/')}
         aria-label="AEGIS X home"
+        data-tab={tab}
       >
-        <img
-          className={brandMarkClass}
-          src={homeAssets.logoMark}
-          alt=""
-        />
-        {/* 4175/dev: text-lg (18/28) + tracking-tight — not brand token 17/normal. */}
+        <img className={styles.brandMark()} src={homeAssets.logoMark} alt="" />
         <Text as="span" variant="brand" className="text-lg leading-7 tracking-tight">
           {t.common.brand}
         </Text>
       </a>
-      <div className={topActionsClass}>
+      <div className={styles.actions()}>
         <WalletTopbarActions />
         <LanguageMenu
           checkIcon={dappAssets.check}

@@ -109,7 +109,7 @@
 
 **`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。
 
-**Field-adjacent action**：Genesis MAX · Community Bind → `Chip variant="soft" tone="coral"` + `fieldActionChipClass`（`h-11` / `rounded-control`）；**不是** `DappActionButton` / Button secondary。
+**Field-adjacent action**：Genesis MAX · Community Bind → `FieldActionChip`（`Chip soft` + `coral` · `h-11` / `rounded-control`）；**不是** `DappActionButton` / Button secondary。
 
 **禁止**：在 Chip 内 hand-roll typography
 **依赖**：Text（§2）
@@ -186,10 +186,10 @@
 - `WidgetPromoCard` 内部使用 `Card surface="inverse"`（深色 CTA；原 `CalloutCard` 已删，零 call site）。
 - `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
 - `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
-- `aegisDialogCloseClass`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
+- `AegisDialogClose`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
 - `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-[6px]` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button；下拉菜单不在该节点，保留 portal。
-- `swapFlowButtonClass`（`swap-widget-composites.tsx`）：Figma `flb` — 34×34 · `rounded-control` · border · card；Trade flip / Flash divider 共用；**不是** `IconButton`（详情折叠）。禁 call site / SSOT 再写 `rounded-[11px]`。
+- `SwapFlowButton`（`swap-widget-composites.tsx`）：Figma `flb` — 34×34 · `rounded-control` · border · card；Trade flip（`interactive`）/ Flash divider 共用；**不是** `IconButton`（详情折叠）。禁 call site 再写 `rounded-[11px]`。
 - `ResponsiveTable` / `DataTable` 表头：≡ Community「我的社区成员」— `text-muted-foreground`；禁 tab 特判 `text-foreground/30` / `headCellClassName` 分叉。
 - `DappTableCard`：外框 **无** `border`（仅 `shadow-card`）；表头/行/页脚内部分隔线保留。
 
@@ -201,7 +201,7 @@
 
 允许 `max-dapp:` / `dapp:` **仅 layout** 的文件：
 
-- `shell-layout.ts` · `dapp-shell.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
+- `dapp-shell.tsx` · `dapp-rail.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
 - `dapp-widget-frame.tsx` · `dapp-detail-page.tsx` · `dapp-detail-block.tsx` · `responsive-table.tsx` · `dapp-table-*`
 - `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `aegis-responsive-dialog.tsx`
 - `static-layout.ts` · `views/home/components/*`
@@ -233,8 +233,10 @@
 
 | 版本 | 说明 |
 |------|------|
-| v3.0 | Baseline 维护态：去掉 P0–P8 交付矩阵叙事；入口与 runbook 对齐 |
+| v3.3 | `FieldActionChip` / `AegisDialogClose` 替代 `*Class` 常量；模块级样式改 `tv()` |
+| v3.2 | `SwapFlowButton`；断点白名单无 `shell-layout.ts` |
 | v3.1 | panel/section tracking `-0.04em`（≡ Figma Genesis 标题）；正文保持 `-0.02em` |
+| v3.0 | Baseline 维护态：去掉 P0–P8 交付矩阵叙事；入口与 runbook 对齐 |
 | v2.25 | CommunityProgramCard：label/CTA `text-coral` ≡ Figma `#c85c3f` |
 | v2.11–v2.24 | 见 git 历史（tabular 删除 · flb · Button scale · FAQ/Pagination 动效等） |
 | v2.1–v2.10 | 命名定稿 · Card/Button/Chip/Input/Composite 收束 |

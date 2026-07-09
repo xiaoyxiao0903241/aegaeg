@@ -1,16 +1,8 @@
 import type { ReactNode } from 'react'
+import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { revealClass } from '~/shared/lib/reveal'
-import { cn } from '~/shared/lib/utils'
 
-/**
- * Composite：detail-column overview metric (`ovc`) — Swap / Genesis season stats.
- *
- * Chrome SSOT (all overview cards): `px-4 py-3.5` · elevated · gap-1.5.
- * Value default ≈ Figma ovc 18px; override only for true content-scale needs.
- *
- * Not for: Community multi-line `sc` → `CommunityStatCard`; Rewards dark banner → `RewardsHeroCard`.
- */
 export type MetricCardProps = {
   children?: ReactNode
   className?: string
@@ -21,11 +13,14 @@ export type MetricCardProps = {
   valueClassName?: string
 }
 
-/** Overview metric chrome — Figma `ovc` 16×14 pad / radius-md / elevated shadow. */
-export const metricCardChromeClass = 'gap-1.5 rounded-md px-4 py-3.5'
-
-const metricCardValueClass =
-  'text-lg leading-[1.3] tracking-[-0.02em] max-dapp:text-sm max-dapp:leading-[1.2]'
+const metricCard = tv({
+  slots: {
+    root: [revealClass(), 'flex flex-col items-start gap-1.5 rounded-md px-4 py-3.5'],
+    value:
+      'text-lg leading-[1.3] tracking-[-0.02em] max-dapp:text-sm max-dapp:leading-[1.2]',
+    hint: 'mt-1.5',
+  },
+})
 
 export function MetricCard({
   children,
@@ -36,21 +31,25 @@ export function MetricCard({
   value,
   valueClassName,
 }: MetricCardProps) {
+  const styles = metricCard()
+
   return (
     <Card
       as="article"
       surface="elevated"
-      className={cn(revealClass(), 'flex flex-col items-start', metricCardChromeClass, className)}
+      className={styles.root({ class: className })}
       data-reveal
     >
       <Card.Label className="text-xs font-medium" tone="muted-foreground">
         {label}
       </Card.Label>
-      <Card.Value className={cn(metricCardValueClass, valueClassName)}>
+      <Card.Value className={styles.value({ class: valueClassName })}>
         {value}
       </Card.Value>
       {hint ? (
-        <Card.Description className={cn('mt-1.5', hintClassName)}>{hint}</Card.Description>
+        <Card.Description className={styles.hint({ class: hintClassName })}>
+          {hint}
+        </Card.Description>
       ) : null}
       {children}
     </Card>

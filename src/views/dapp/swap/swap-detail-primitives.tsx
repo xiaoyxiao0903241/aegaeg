@@ -1,9 +1,13 @@
 import type { ReactNode } from 'react'
-import { MetricCard, metricCardChromeClass } from '~/shared/ui/metric-card'
+import { tv } from 'tailwind-variants'
+import { MetricCard } from '~/shared/ui/metric-card'
 import { MetricCardSkeleton } from '~/app/shell/components/dapp-skeleton'
-import { cn } from '~/shared/lib/utils'
 
-/** Swap overview — chrome from MetricCard SSOT; H5 hides hint line. */
+const swapMetricCard = tv({
+  base: 'max-dapp:min-w-0 max-dapp:[&_small]:hidden',
+})
+
+/** Swap overview metric; H5 hides hint line. */
 export function SwapMetricCard({
   className,
   hint,
@@ -19,7 +23,7 @@ export function SwapMetricCard({
 }) {
   return (
     <MetricCard
-      className={cn('max-dapp:min-w-0 max-dapp:[&_small]:hidden', className)}
+      className={swapMetricCard({ class: className })}
       hint={hint}
       label={label}
       value={value}
@@ -29,5 +33,5 @@ export function SwapMetricCard({
 }
 
 export function SwapMetricCardSkeleton({ className }: { className?: string }) {
-  return <MetricCardSkeleton className={cn(metricCardChromeClass, className)} />
+  return <MetricCardSkeleton className={className} />
 }

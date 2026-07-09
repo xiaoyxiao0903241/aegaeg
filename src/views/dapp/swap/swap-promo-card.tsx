@@ -75,10 +75,9 @@ export function SwapPromoPillAction({
       className={cn(
         'inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border bg-card whitespace-nowrap text-foreground',
         withArrow ? 'gap-1.5' : 'justify-center',
-        layout === 'desktop'
+            layout === 'desktop'
           ? cn(
               'absolute right-4 top-1/2 z-[2] -translate-y-1/2 px-4 py-2.5',
-              // 4175 pill: text-xs / leading-normal; connect uses 0.8125rem.
               'text-xs font-semibold leading-normal',
               !withArrow && minConnectWidth && 'min-w-[7.75rem] text-xs',
               'transition-[border-color,transform] duration-180 ease-out',
@@ -188,7 +187,6 @@ export function SwapPromoCard({
               variant="headline"
               className={cn(
                 styles.title(),
-                // 4175 desktop title = text-base + leading-normal (16→24); not headline 1.2.
                 layout === 'desktop'
                   ? 'text-base font-semibold leading-normal'
                   : 'text-sm font-semibold leading-[1.2]',
@@ -205,7 +203,6 @@ export function SwapPromoCard({
           tone="muted-foreground"
           className={cn(
             styles.body(),
-            // 4175 promo body = text-xs (12); copy token alone is 13 and cascades FAQ.
             'text-xs leading-[1.5]',
           )}
         >

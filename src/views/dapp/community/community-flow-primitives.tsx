@@ -9,11 +9,7 @@ export const communityProgramGrid = tv({
   base: cn('grid grid-cols-2 gap-2', 'max-dapp:grid-cols-1 max-dapp:gap-2'),
 })
 
-/**
- * Figma `pcard` `4040:7354`
- * — elevated · pad 20 · gap 8 · coral accent（≠ primary）
- * — type via Text tokens（rem / site-fluid）；禁 px 字号与 max-w ch 锁宽
- */
+/** Community program card — elevated, coral accent. */
 const communityProgramCard = tv({
   slots: {
     root: cn(revealClass(), 'flex w-full min-w-0 flex-col gap-2 p-5'),

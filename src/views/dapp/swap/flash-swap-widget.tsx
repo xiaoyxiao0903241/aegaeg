@@ -13,11 +13,11 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import {
   SwapAmountFlow,
+  SwapFlowButton,
   SwapGenesisFooter,
   SwapMetaPanel,
   SwapSubpageHeader,
   SwapWidgetBody,
-  swapFlowButtonClass,
   useSwapBalanceLabels,
 } from '~/views/dapp/swap/swap-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
@@ -101,10 +101,9 @@ export function FlashSwapWidget({
           buyBalance={buyLabel}
           middleSlot={
             <div aria-hidden className="flex items-center justify-center py-1.5">
-              {/* Same Figma `flb` chrome as Trade flip; Flash keeps chevron divider glyph. */}
-              <div className={swapFlowButtonClass}>
+              <SwapFlowButton aria-hidden>
                 <DappIcon alt="" className="size-4" src={flashSwapAssets.flowDivider} />
-              </div>
+              </SwapFlowButton>
             </div>
           }
           onFillPercent={(percent) => swap.fillPercent(percent)}

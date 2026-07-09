@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { MetricCard, metricCardChromeClass } from '~/shared/ui/metric-card'
+import { MetricCard } from '~/shared/ui/metric-card'
 import { MetricCardSkeleton } from '~/app/shell/components/dapp-skeleton'
-import { cn } from '~/shared/lib/utils'
 
 export const genesisMetricGrid = tv({
   base: 'max-dapp:grid-cols-2 max-dapp:gap-3',
@@ -35,5 +34,5 @@ export function GenesisMetricCard({
 }
 
 export function GenesisMetricCardSkeleton({ className }: { className?: string }) {
-  return <MetricCardSkeleton className={cn(metricCardChromeClass, className)} />
+  return <MetricCardSkeleton className={className} />
 }

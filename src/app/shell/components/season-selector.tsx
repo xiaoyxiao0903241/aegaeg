@@ -9,7 +9,7 @@ import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
 import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { seasonCard, seasonCarousel } from '~/app/shell/components/season-card'
 import { cn } from '~/shared/lib/utils'
 
@@ -37,7 +37,7 @@ function resolveSeasonCarouselScrollIndex(activeIndex: number): number {
   if (activeIndex <= 0) {
     return 0
   }
-  // Figma peek layout — keep the current phase as the 2nd visible card when possible.
+  // Keep the current phase as the 2nd visible card when possible.
   return activeIndex - 1
 }
 
@@ -82,7 +82,6 @@ function SeasonCard({
   t: ReturnType<typeof useI18n>['messages']
 }) {
   const selected = Boolean(season.active)
-  // Figma `4150:19877` LIVE selected = coral-soft + coral; else band + muted
   const liveSelected = season.status === 'LIVE' && selected
   const styles = seasonCard({
     selected,
@@ -95,7 +94,6 @@ function SeasonCard({
       className={styles.root()}
       role="radio"
     >
-      {/* Figma `st` gap 3px; card → badge gap 6px via root gap */}
       <div className="flex w-full flex-col gap-0.75 overflow-hidden">
         <div className="flex h-[1.125rem] items-center justify-between gap-1">
           <Text as="strong" variant="headline" className={styles.title()}>
@@ -221,7 +219,7 @@ export function SeasonSelector({
               aria-label={t.swap.tokenPrevious}
               className={cn(
                 'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
-                dappIconClass.base,
+                dappIcon({ size: 'base' }),
               )}
               onClick={() => api?.scrollPrev()}
               type="button"
@@ -230,7 +228,7 @@ export function SeasonSelector({
                 aria-hidden="true"
                 className={cn(
                   'block -rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
-                  dappIconClass.base,
+                  dappIcon({ size: 'base' }),
                 )}
               />
             </button>
@@ -245,7 +243,7 @@ export function SeasonSelector({
                   aria-label={`${season.name}`}
                   className={cn(
                     'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
-                    dappIconClass.base,
+                    dappIcon({ size: 'base' }),
                   )}
                   key={season.name}
                   onClick={() => goTo(index)}
@@ -254,7 +252,6 @@ export function SeasonSelector({
                   <span
                     aria-hidden="true"
                     className={cn(
-                      // Figma `4150:5890` active = coral-button pill 22×7; idle = border dot 7
                       'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
                       current === index ? 'h-1.75 w-5.5 bg-primary' : 'size-1.75',
                     )}
@@ -266,7 +263,7 @@ export function SeasonSelector({
               aria-label={t.swap.tokenNext}
               className={cn(
                 'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
-                dappIconClass.base,
+                dappIcon({ size: 'base' }),
               )}
               onClick={() => api?.scrollNext()}
               type="button"
@@ -275,7 +272,7 @@ export function SeasonSelector({
                 aria-hidden="true"
                 className={cn(
                   'block rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
-                  dappIconClass.base,
+                  dappIcon({ size: 'base' }),
                 )}
               />
             </button>

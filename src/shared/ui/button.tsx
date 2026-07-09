@@ -1,73 +1,46 @@
 import { Slot } from '@radix-ui/react-slot'
 import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
-import { cn } from '~/shared/lib/utils'
 
-export const buttonDisabledClass = cn(
-  'disabled:pointer-events-none disabled:cursor-not-allowed',
-  'disabled:scale-100 disabled:shadow-none',
-  'disabled:hover:scale-100 disabled:hover:shadow-none',
-  'disabled:active:scale-100 disabled:active:shadow-none',
-)
-
-const disabledMutedClass =
-  'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100'
-
-/**
- * Very light scale — H5-friendly (no translate lift).
- * Tiny deltas so hover/press feel soft, not punchy.
- */
-const pressMotionClass = cn(
-  'origin-center',
-  'hover:scale-[1.008] focus-visible:scale-[1.008]',
-  'active:scale-[0.992] active:duration-75',
-)
-
-/**
- * Primitive：按钮。
- * SSOT：docs/foundation/api.md §3
- *
- * 公开轴：variant × size × shape = 4 × 3 × 2
- * 禁止：tab / chip / link 异位；Chip 负责小控件。
- */
 export const buttonVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
-    // Gentle ease — color/shadow 160ms; press settles in 75ms.
     'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-160 ease-out',
-    buttonDisabledClass,
+    'disabled:pointer-events-none disabled:cursor-not-allowed',
+    'disabled:scale-100 disabled:shadow-none',
+    'disabled:hover:scale-100 disabled:hover:shadow-none',
+    'disabled:active:scale-100 disabled:active:shadow-none',
   ],
   variants: {
     variant: {
       primary: [
-        // 4175: transparent border keeps box model; lg drops border via compound
         'border border-transparent bg-primary text-primary-foreground',
-        `${pressMotionClass} hover:shadow-primary-hover focus-visible:shadow-primary-hover`,
+        'origin-center hover:scale-[1.008] focus-visible:scale-[1.008]',
+        'active:scale-[0.992] active:duration-75',
+        'hover:shadow-primary-hover focus-visible:shadow-primary-hover',
         'visited:text-primary-foreground hover:text-primary-foreground focus-visible:text-primary-foreground',
-        disabledMutedClass,
+        'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
       ],
       secondary: [
         'gap-2 border border-border bg-card text-foreground',
-        `${pressMotionClass} hover:shadow-card focus-visible:shadow-card`,
+        'origin-center hover:scale-[1.008] focus-visible:scale-[1.008]',
+        'active:scale-[0.992] active:duration-75',
+        'hover:shadow-card focus-visible:shadow-card',
         'disabled:border-border disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-100',
         'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
       ],
       ghost: [
         'gap-2 border border-border bg-card text-muted-foreground',
-        `${pressMotionClass} hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:text-primary`,
-        disabledMutedClass,
+        'origin-center hover:scale-[1.008] focus-visible:scale-[1.008]',
+        'active:scale-[0.992] active:duration-75',
+        'hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:text-primary',
+        'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
       ],
       link: [
         'min-h-0 w-auto justify-start border-0 bg-transparent p-0 text-left font-normal text-primary whitespace-normal',
         'disabled:text-muted-foreground disabled:opacity-100',
       ],
     },
-    /**
-     * Size = CTA height SSOT (not Text copy token):
-     * sm 36 (Figma `4040:220` ld / Enter App · Connect · card CTA)
-     * md 44 (external / widget stack) · lg 48 (home hero).
-     * Dark promo CTAs use DappActionButton density="inverse" (38), not a 4th size.
-     */
     size: {
       lg: 'min-h-12 px-6 text-base leading-none max-dapp:px-5 max-dapp:text-sm',
       md: 'min-h-11 px-5 text-sm leading-snug max-dapp:text-xs',
@@ -95,7 +68,6 @@ export const buttonVariants = tv({
       size: ['sm', 'md', 'lg'],
       class: '!min-h-0 px-0',
     },
-    /** sm/md + pill DApp CTAs stretch to container (Claim / Convert / Bind / Join). */
     {
       size: ['sm', 'md'],
       shape: 'pill',
@@ -119,7 +91,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button'
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, shape }), className)}
+        className={buttonVariants({ variant, size, shape, class: className })}
         ref={ref}
         {...props}
       />

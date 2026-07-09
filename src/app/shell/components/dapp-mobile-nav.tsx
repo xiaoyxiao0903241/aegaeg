@@ -1,14 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { tv } from 'tailwind-variants'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
-import { shellMobileDrawerItemClass, shellRailRowLabelClass } from '~/app/shell-layout'
 import { Text } from '~/shared/ui/text'
+
+const drawerItem = tv({
+  base: cn(
+    'flex w-full min-w-0 cursor-pointer items-center gap-3.5 rounded-md px-4 py-3.5',
+    'transition-[background-color,color] duration-180 ease-out',
+  ),
+  variants: {
+    active: {
+      true: 'bg-accent text-primary',
+      false: 'bg-transparent text-foreground',
+    },
+  },
+})
 
 const NAV_MOTION_MS = 320
 
@@ -107,7 +120,6 @@ export function DappMobileNav({
         role="tablist"
       >
         <div className="flex items-start justify-end pb-2">
-          {/* Drawer close ≠ modal `aegisDialogCloseClass` — 4175/dev: ghost X, no border. */}
           <button
             aria-label={t.topbar.closeMenu}
             className={cn(
@@ -118,7 +130,7 @@ export function DappMobileNav({
             onClick={onClose}
             type="button"
           >
-            <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
+            <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
           </button>
         </div>
 
@@ -130,7 +142,7 @@ export function DappMobileNav({
             <button
               aria-label={label}
               aria-selected={active}
-              className={shellMobileDrawerItemClass(active)}
+              className={drawerItem({ active })}
               key={item.id}
               onClick={() => onSelectTab(item.id)}
               role="tab"
@@ -144,15 +156,11 @@ export function DappMobileNav({
                 )}
                 style={railIconMask(item.icon)}
               />
-              {/* 4175/dev: inherit drawer text-sm semibold — not Text caption (10px). */}
               <Text
                 as="span"
                 variant="copy"
                 tone={active ? 'primary' : 'foreground'}
-                className={cn(
-                  shellRailRowLabelClass,
-                  'text-sm font-semibold leading-snug tracking-tight',
-                )}
+                className="min-w-0 flex-1 truncate text-sm font-semibold leading-snug tracking-tight"
                 title={label}
               >
                 {label}

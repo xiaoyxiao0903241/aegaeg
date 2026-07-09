@@ -1,6 +1,6 @@
 /**
  * JS runtime color helpers — hex from tokens.json via generated `colorHex`.
- * CSS / Tailwind SSOT remains theme.css. thirdweb Connect needs a JS object.
+ * CSS / Tailwind live in theme.css; thirdweb Connect needs a JS object.
  */
 import { colorHex } from '~/shared/styles/tokens/tokens'
 

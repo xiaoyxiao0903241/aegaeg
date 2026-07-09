@@ -1,10 +1,10 @@
 import type { DappTab } from '~/app/types'
 import { homeAssets as canonicalHomeAssets } from '~/views/home/assets'
 
-/** Homepage token flywheel icons — SSOT for carousel / about cards. */
+/** Homepage token flywheel icons. */
 const tokenFlywheelIcons = canonicalHomeAssets.token
 
-/** DApp swap carousel icons — exported from Figma `130:792` / `144:20` / `130:824` / `130:840`. */
+/** DApp swap carousel icons. */
 export const tokenCarouselIcons = {
   agxIcon: '/assets/figma/dapp/carousel/token-agx.png',
   usd1Icon: '/assets/figma/dapp/carousel/token-usd1.png',
@@ -12,14 +12,14 @@ export const tokenCarouselIcons = {
   gagxIcon: '/assets/figma/dapp/carousel/token-gagx.png',
 } as const
 
-/** Flash swap — Figma `4172:1020` / `4172:1085` / `4172:1121`. */
+/** Flash swap icons. */
 export const flashSwapAssets = {
   backArrow: '/assets/figma/dapp/flash/ic-back-arrow.svg',
   flowDivider: '/assets/figma/dapp/flash/ic-flow-divider.svg',
   externalLink: '/assets/figma/dapp/flash/ic-external-link.svg',
 } as const
 
-/** Swap hub — Figma `4172:725` / `4172:869` / `4172:806`. */
+/** Swap hub icons. */
 export const swapHubAssets = {
   modeFlash: '/assets/figma/dapp/hub/ic-hub-mode-flash.svg',
   modeTrade: '/assets/figma/dapp/hub/ic-hub-mode-trade.svg',
@@ -58,7 +58,7 @@ export const dappAssets = {
   check: '/assets/figma/dapp/ic-check.svg',
   chevron: '/assets/figma/dapp/ic-chevron.svg',
   chevronUp: '/assets/figma/dapp/ic-chevron-up.svg',
-  /** H5 Swap pager — Figma `101:344` / `136:3` double chevron (down); rotate 180° for previous page. */
+  /** H5 Swap pager — double chevron (down); rotate 180° for previous page. */
   swipeChevronDouble: '/assets/figma/dapp/ic-swipe-chevron-double.svg',
   community: '/assets/figma/dapp/ic-community.svg',
   genesis: '/assets/figma/dapp/ic-genesis.svg',

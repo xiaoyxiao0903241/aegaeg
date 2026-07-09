@@ -27,14 +27,16 @@ const sectionConfig = {
 function cardBorderClass(variant: 'protocol' | 'engine', index: number) {
   if (variant === 'protocol') {
     return cn(
-      index > 0 && 'dapp:border-l dapp:border-border',
+      'border-0',
+      index > 0 && 'dapp:border-l-[0.5px] dapp:border-border',
       index === 0 ? 'max-dapp:min-h-56' : 'max-dapp:min-h-48',
     )
   }
 
   return cn(
-    index % 2 === 1 && 'dapp:border-l dapp:border-border',
-    index > 1 && 'dapp:border-t dapp:border-border',
+    'border-0',
+    index % 2 === 1 && 'dapp:border-l-[0.5px] dapp:border-border',
+    index > 1 && 'dapp:border-t-[0.5px] dapp:border-border',
     index < 2 ? 'max-dapp:min-h-48' : 'max-dapp:min-h-44',
   )
 }

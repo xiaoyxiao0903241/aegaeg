@@ -40,7 +40,7 @@ Risk: …
 - 用户可见文案 **必须** `<Text variant tone>`。
 - `Button` / `Chip` 内字由自身 typography 管（含 `asChild` 链）。
 - 布局-only 用 `div` / `section`，禁止平行 typography wrapper。
-- **`shell-layout.ts` 禁止字阶**：只留布局 / 色 / 间距；`text-*` / `font-*` / `leading-*` / `tracking-*` 不得进 shell class。
+- **Shell 布局禁止字阶**：`dapp-shell` / rail / mobile-nav 等只留布局 / 色 / 间距；`text-*` / `font-*` / `leading-*` / `tracking-*` 不得进 shell chrome（字阶归 `<Text>`）。
 - **禁止组件硬编码**：`text-[Npx]`、`tracking-[Npx]`、`max-w-[Nch]`、组件内 `#hex` / `rgb()`（色进 `tokens.json` 或 engineering `:root`；字距用 em 或 `--type-*-tracking`）。
 - **JS 色值**：`theme.ts` 从生成的 `colorHex` 取 brand 色；thirdweb Connect 可保留 chrome-only hex（非产品轴）。Toaster / scrollbar / wallet 阴影走 engineering CSS vars，禁在 `app.css` / `scrollbars.css` 再写裸 `oklch(...)`。
 
@@ -124,3 +124,4 @@ Risk: …
 |------|------|
 | v3.0 | 收束为 baseline 维护手册；去掉 P0–P8 迁移叙事与 Phase0 依赖 |
 | v3.1 | 删 verification.md；禁 class 常量 / `dapp-detail-layout`；多处复用抽组件 |
+| v3.2 | 删 `shell-layout.ts`；布局进 `dapp-shell` / rail / widget 组件；`SwapFlowButton` 替代 class 常量 |

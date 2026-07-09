@@ -165,7 +165,6 @@ export function RewardsRankSection() {
               </Text>
             ) : null}
 
-            {/* 4175 rankMeta: text-xs / leading-normal / tracking -0.24 */}
             <Text
               as="small"
               variant="copy"

@@ -1,6 +1,5 @@
 import type { ImgHTMLAttributes } from 'react'
-import { cn } from '~/shared/lib/utils'
-import { dappIconClass, type DappIconSize } from '~/app/dapp-icon-scale'
+import { dappIcon, type DappIconSize } from '~/app/dapp-icon-scale'
 
 type DappIconProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'width' | 'height'> & {
   size?: DappIconSize
@@ -17,7 +16,7 @@ export function DappIcon({
   return (
     <img
       alt={alt}
-      className={cn('block shrink-0 object-contain', dappIconClass[size], className)}
+      className={dappIcon({ size, class: ['block object-contain', className] })}
       src={src}
       {...props}
     />

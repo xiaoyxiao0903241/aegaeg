@@ -9,7 +9,7 @@ import {
 } from '~/shared/ui/carousel'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { swapTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -34,7 +34,7 @@ const swapTokenAboutCarousel = tv({
     dotGroup: 'inline-flex items-center gap-1.5',
     dotButton: [
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
-      dappIconClass.base,
+      dappIcon({ size: 'base' }),
     ],
     dot: 'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
     chevron:
@@ -50,8 +50,8 @@ const swapTokenAboutCarousel = tv({
           'gap-3.5 self-center',
           'dapp:relative dapp:z-1 dapp:-mt-[var(--shadow-bleed-subtle)] dapp:pt-[var(--carousel-pc-indicator-pt)]',
         ],
-        navButton: dappIconClass.base,
-        chevron: dappIconClass.base,
+        navButton: dappIcon({ size: 'base' }),
+        chevron: dappIcon({ size: 'base' }),
       },
       mobile: {
         root: 'max-dapp:mt-0',
@@ -63,7 +63,7 @@ const swapTokenAboutCarousel = tv({
         ],
         navButton:
           'size-[var(--dapp-icon-lg)] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
-        chevron: dappIconClass.md,
+        chevron: dappIcon({ size: 'md' }),
       },
     },
     chevronDirection: {

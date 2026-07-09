@@ -50,8 +50,7 @@ function RewardsHeroPanel({
             className={
               layout === 'desktop'
                 ? 'm-0 min-w-0 break-words leading-[1.3]'
-                : // brand H5 = 1.125rem — 禁 text-lg（H5 bump→19px）
-                  'm-0 min-w-0 break-words leading-[1.2]'
+                : 'm-0 min-w-0 break-words leading-[1.2]'
             }
           >
             {title}

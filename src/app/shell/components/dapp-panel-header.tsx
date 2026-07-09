@@ -5,7 +5,6 @@ import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { shellMobilePageTitleClass } from '~/app/shell-layout'
 import { cn } from '~/shared/lib/utils'
 
 export function DappPanelHeader({
@@ -28,13 +27,11 @@ export function DappPanelHeader({
   return (
     <div
       className={cn(
-        'flex items-start justify-between gap-4',
-        shellMobilePageTitleClass,
+        'flex items-start justify-between gap-4 max-dapp:mt-6',
         className,
       )}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        {/* Widget title/desc — Text panel + copy; same on every tab (no per-tab tracking). */}
         <Text as="h1" variant="panel" className="m-0">
           {title}
         </Text>

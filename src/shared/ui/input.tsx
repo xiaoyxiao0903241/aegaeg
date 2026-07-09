@@ -3,18 +3,12 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * Primitive：输入框。
- * SSOT：docs/foundation/api.md §6
- *
- * 公开轴：variant × size
- * - default：普通表单输入
- * - numeric：数字输入（shares）
- * - amount：金额输入（swap / token），大号右对齐
+ * Input — variant × size.
+ * default: form · numeric: shares · amount: swap/token, large right-aligned.
  */
 export const inputVariants = tv({
   base: [
     'w-full min-w-0 border border-border bg-card text-foreground outline-none',
-    // 4175: --placeholder oklch(82% 0.011 264) — 非 muted-foreground（黑 70%）
     'placeholder:text-placeholder',
     'disabled:cursor-not-allowed disabled:opacity-60',
     'focus:border-primary',
@@ -26,7 +20,6 @@ export const inputVariants = tv({
       numeric:
         'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-normal [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
       amount:
-        // Match 4175 dappAmountClass: figure size + leading-normal (22→33) + tracking -0.44px
         'border-0 bg-transparent text-right text-[length:var(--type-figure-size)] font-semibold leading-normal tracking-[-0.02em] outline-0',
     },
     size: {

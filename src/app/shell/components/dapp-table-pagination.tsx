@@ -35,7 +35,7 @@ function pageMenuMaxHeightPx(): number {
   return pageMenuItemHeightPx() * PAGE_MENU_VISIBLE_ITEMS
 }
 
-/** Figma `4067:258` control radius 6px — project `rounded-sm` is 14px. */
+/** Pagination control radius (6px; project `rounded-sm` is larger). */
 const PAGINATION_BTN_RADIUS = 'rounded-[6px]'
 
 type MenuPlacement = 'above' | 'below'
@@ -220,7 +220,6 @@ export function DappTablePagination({
       </div>
 
       {showPagination ? (
-        // Figma 4067:258 — label · 16px · [prev · 4px · page(80×32) · 4px · next]; radius 6px; coral page pill.
         <div className="flex flex-wrap items-center gap-4 sm:justify-end">
           <Text
             as="span"
@@ -252,7 +251,6 @@ export function DappTablePagination({
                 aria-expanded={menuOpen}
                 aria-haspopup="listbox"
                 className={cn(
-                  // Figma page-indicator: w80 h32 px12 gap2 · bg coral@10% · text #c85c3f SemiBold 12.
                   'inline-flex h-8 w-20 cursor-pointer items-center justify-center gap-0.5 px-3 text-xs font-semibold text-coral transition-colors',
                   PAGINATION_BTN_RADIUS,
                   'bg-accent',
@@ -303,7 +301,6 @@ export function DappTablePagination({
                           >
                             <button
                               className={cn(
-                                // Active ≡ Chip soft coral: accent wash + text-coral.
                                 'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
                                 active
                                   ? 'bg-accent font-semibold text-coral'

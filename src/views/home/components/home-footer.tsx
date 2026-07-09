@@ -52,7 +52,6 @@ export function HomeFooter() {
   const content = messages.home.footer
 
   return (
-    // Footer canvas = token `footer` (≠ --dark).
     <footer className="flex flex-col items-center gap-10 bg-footer pt-18 pb-9 text-inverse-muted dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8">
       <div className="container grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6">
         <div

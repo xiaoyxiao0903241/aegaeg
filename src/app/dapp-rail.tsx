@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 import type { DappTab } from '~/app/types'
 import { railItems } from '~/app/assets'
@@ -9,21 +10,28 @@ import { Text } from '~/shared/ui/text'
 import { useGenesisWidgetContext } from '~/app/genesis-widget-context'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 import { usePairSpotRate } from '~/hooks/use-pair-spot-rate'
-import {
-  shellMobileRailClass,
-  shellMobileRailItemClass,
-  shellRailClass,
-  shellRailIconClass,
-  shellRailIndicatorClass,
-  shellRailItemClass,
-  shellRailLabelClass,
-  shellRailRowLabelClass,
-} from '~/app/shell-layout'
 
 type RailIndicator = {
   height: number
   top: number
 }
+
+const railItem = tv({
+  base: cn(
+    'relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
+    'transition-[color,background-color] duration-180 ease-out',
+  ),
+  variants: {
+    active: {
+      true: 'text-primary',
+      false: 'text-muted-foreground hover:bg-background hover:text-foreground',
+    },
+    mobile: {
+      true: 'min-h-12 flex-row justify-start px-3',
+      false: '',
+    },
+  },
+})
 
 function useRailTooltips(activeTab: DappTab) {
   const { messages: t } = useI18n()
@@ -103,7 +111,11 @@ export function DappRail({
 
   return (
     <nav
-      className={cn(shellRailClass(), mobile && shellMobileRailClass)}
+      className={cn(
+        'relative flex h-full min-h-0 max-h-full flex-col gap-1.5 border-r border-border bg-card px-2 py-3.5',
+        'max-dapp:hidden',
+        mobile && 'grid h-auto max-h-none min-h-0 gap-0 border-0 p-2',
+      )}
       aria-label="DApp sections"
       ref={navRef}
     >
@@ -111,7 +123,7 @@ export function DappRail({
         <span
           aria-hidden
           className={cn(
-            shellRailIndicatorClass,
+            'pointer-events-none absolute inset-x-2 top-0 z-0 rounded-md bg-accent will-change-[transform,height]',
             indicatorReady &&
               'transition-[transform,height] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
           )}
@@ -131,7 +143,7 @@ export function DappRail({
             <button
               aria-label={label}
               aria-selected={active}
-              className={mobile ? shellMobileRailItemClass(active) : shellRailItemClass(active)}
+              className={railItem({ active, mobile })}
               onClick={() => onSelectTab(item.id)}
               ref={(node) => {
                 if (node) itemRefs.current.set(item.id, node)
@@ -141,7 +153,7 @@ export function DappRail({
               type="button"
             >
               <span
-                className={shellRailIconClass}
+                className="aspect-square size-[var(--dapp-icon-rail)] bg-current"
                 style={railIconMask(item.icon)}
                 aria-hidden="true"
               />
@@ -150,8 +162,7 @@ export function DappRail({
                 variant="caption"
                 tone={active ? 'primary' : 'muted-foreground'}
                 className={cn(
-                  mobile ? shellRailRowLabelClass : shellRailLabelClass,
-                  // Rail label lock: 12/400/snug/tight (not caption 10/500).
+                  mobile ? 'min-w-0 flex-1 truncate' : 'block w-full min-w-0 truncate text-center',
                   'text-xs font-normal leading-snug tracking-tight',
                 )}
                 title={label}

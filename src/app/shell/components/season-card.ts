@@ -1,10 +1,10 @@
 import { tv } from 'tailwind-variants'
 
 /**
- * Genesis season card — Figma `4150:19854` @ 16px root.
- * Layout / color only — typography via `<Text>` (runbook: no parallel type scale).
+ * Genesis season card.
+ * Layout / color only — typography via `<Text>`.
  * Colors: `coral` selected/LIVE · `coral-emphasis` discount · `band` Ended.
- * H5 sizes via `--dapp-season-*` (+1 KEEP) as display-size overrides on Text.
+ * H5 sizes via `--dapp-season-*` as display-size overrides on Text.
  */
 export const seasonCard = tv({
   slots: {

@@ -23,7 +23,6 @@ export const communityStatCardMobileShell = tv({
 
 const communityStatCard = tv({
   slots: {
-    // Figma `sc` 4040:7313 — gap 4 · pad 18 · radius 18 (lg); soft surface owns E1 shadow.
     root: cn(
       revealClass(),
       'community-stat flex flex-col items-start gap-1 rounded-lg p-4.5',
@@ -90,7 +89,6 @@ export function CommunityStatCard({
   return (
     <Card
       as="article"
-      // light sc: soft (E1) ≠ overview elevated (E2). Composite owns lg radius + p-4.5 (Figma 18).
       surface={dark ? 'inverse' : 'soft'}
       className={cn(styles.root(), className)}
       data-reveal
@@ -98,7 +96,6 @@ export function CommunityStatCard({
       <Text
         as="span"
         variant="copy"
-        // light: Figma text/body 70%; dark: inverse-muted
         tone={dark ? 'inverse-muted' : 'muted-foreground'}
         className={cn(
           styles.label(),
@@ -109,7 +106,6 @@ export function CommunityStatCard({
       </Text>
       <Text
         as="strong"
-        // Figma sc value 30 / lh 1.2 / tracking ~-0.04em · ink (not muted 70%)
         variant="figure"
         tone={dark ? 'inverse' : 'foreground'}
         className={cn(
@@ -122,7 +118,6 @@ export function CommunityStatCard({
       {volume ? (
         <Text
           as="b"
-          // light: coral; dark: coral-bright
           variant="headline"
           tone={dark ? 'primary-bright' : undefined}
           className={cn(
@@ -138,7 +133,6 @@ export function CommunityStatCard({
         <Text
           as="small"
           variant="copy"
-          // light: Figma text/muted 40% → foreground/40; dark: inverse-muted
           tone={dark ? 'inverse-muted' : undefined}
           className={cn(
             styles.hint(),

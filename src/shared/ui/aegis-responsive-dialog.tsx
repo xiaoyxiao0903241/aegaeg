@@ -1,14 +1,28 @@
-import type { ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { cn } from '~/shared/lib/utils'
-import { DialogOverlay, DialogPortal, modalOverlayClass, responsivePanelClass } from '~/shared/ui/dialog'
+import { tv } from 'tailwind-variants'
+import { DialogOverlay, DialogPortal, dialogChrome } from '~/shared/ui/dialog'
 
-/** DApp modal/sheet close — details / slippage. Connect keeps `.aegis-wallet-connect-close`. */
-export const aegisDialogCloseClass = cn(
-  'grid size-8 shrink-0 cursor-pointer place-items-center rounded-full',
-  'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
-  'hover:-translate-y-px hover:border-foreground focus-visible:border-foreground focus-visible:outline-none',
-)
+const dialogClose = tv({
+  base: [
+    'grid size-8 shrink-0 cursor-pointer place-items-center rounded-full',
+    'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
+    'hover:-translate-y-px hover:border-foreground focus-visible:border-foreground focus-visible:outline-none',
+  ],
+})
+
+export function AegisDialogClose({
+  className,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <DialogPrimitive.Close
+      className={dialogClose({ class: className })}
+      type="button"
+      {...props}
+    />
+  )
+}
 
 export function AegisSheetHandle() {
   return (
@@ -32,13 +46,15 @@ export function AegisResponsiveDialog({
   open: boolean
   overlayClassName?: string
 }) {
+  const styles = dialogChrome()
+
   return (
     <DialogPrimitive.Root onOpenChange={onOpenChange} open={open}>
       <DialogPortal>
-        <DialogOverlay className={cn(modalOverlayClass, overlayClassName)} />
+        <DialogOverlay className={overlayClassName} />
         <DialogPrimitive.Content
           aria-describedby={undefined}
-          className={cn(responsivePanelClass, className)}
+          className={styles.panel({ class: className })}
         >
           {children}
         </DialogPrimitive.Content>

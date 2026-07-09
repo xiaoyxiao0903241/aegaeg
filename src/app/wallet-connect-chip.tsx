@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { toast } from 'sonner'
+import { tv } from 'tailwind-variants'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/auth-provider'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
@@ -11,19 +12,45 @@ import {
 } from '~/shared/api/account-banned'
 import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import { formatAddress } from '~/app/utils'
-import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
 import { Button } from '~/shared/ui/button'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { WalletDetailsModal } from '~/app/shell/components/wallet-details-modal'
 import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
-const walletLabelClass = 'inline-flex min-w-0 items-center gap-1.5'
-
-const walletGlyphClass = cn(
-  'relative aspect-[16/13] w-4 shrink-0 rounded border-[1.5px] border-primary',
-  'after:absolute after:right-0.5 after:top-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
-)
+const walletConnectChip = tv({
+  slots: {
+    label: 'inline-flex min-w-0 items-center gap-1.5',
+    glyph: [
+      'relative aspect-[16/13] w-4 shrink-0 rounded border-[1.5px] border-primary',
+      'after:absolute after:right-0.5 after:top-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
+    ],
+    connected: 'aegis-connected-wallet-chip',
+    shell: '',
+    action: '',
+  },
+  variants: {
+    reconnect: {
+      true: {
+        connected: 'aegis-connected-wallet-chip--reconnect',
+      },
+    },
+    fullWidth: {
+      true: {
+        shell: 'flex w-full',
+        action: 'w-full',
+      },
+      false: {
+        shell: 'inline-flex items-center',
+        action: 'w-auto',
+      },
+    },
+  },
+  defaultVariants: {
+    reconnect: false,
+    fullWidth: false,
+  },
+})
 
 function resolveLoginToastMessage(
   error: unknown,
@@ -45,6 +72,7 @@ function ConnectedWalletChip() {
   const { session, isAuthenticated, loginError, retryLogin } = useAuth()
   const { messages: t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
+  const styles = walletConnectChip({ reconnect: Boolean(loginError) })
 
   const walletReady = hasWalletAccount(account)
   const address = account?.address ?? session?.address
@@ -73,10 +101,7 @@ function ConnectedWalletChip() {
     <>
       <button
         aria-label={formatAddress(address)}
-        className={cn(
-          'aegis-connected-wallet-chip',
-          loginError && 'aegis-connected-wallet-chip--reconnect',
-        )}
+        className={styles.connected()}
         onClick={() => void handleClick()}
         type="button"
       >
@@ -107,6 +132,7 @@ function WalletConnectButton({
   const { isLoggingIn, login, loginError, retryLogin, needsSignIn } = useAuth()
   const { messages: t } = useI18n()
   const [connectOpen, setConnectOpen] = useState(false)
+  const styles = walletConnectChip({ fullWidth })
 
   const connectLabel =
     label ??
@@ -141,22 +167,20 @@ function WalletConnectButton({
   }
 
   const labelNode = (
-    <span className={walletLabelClass}>
+    <span className={styles.label()}>
       {variant !== 'primary' && !needsSignIn ? (
-        <span className={walletGlyphClass} aria-hidden="true" />
+        <span className={styles.glyph()} aria-hidden="true" />
       ) : null}
       <span className="truncate">{isLoggingIn ? t.wallet.connecting : connectLabel}</span>
     </span>
   )
 
-  const widthClass = fullWidth ? 'w-full' : 'w-auto'
-
   return (
-    <div className={cn(fullWidth ? 'flex w-full' : 'inline-flex items-center')}>
+    <div className={styles.shell()}>
       {variant === 'primary' ? (
         <DappActionButton
           aria-busy={isLoggingIn || undefined}
-          className={cn(widthClass, className)}
+          className={styles.action({ class: className })}
           density={density}
           disabled={isLoggingIn}
           onClick={() => void handleClick()}
@@ -167,7 +191,7 @@ function WalletConnectButton({
       ) : (
         <Button
           aria-busy={isLoggingIn || undefined}
-          className={cn(widthClass, className)}
+          className={styles.action({ class: className })}
           disabled={isLoggingIn}
           onClick={() => void handleClick()}
           shape="pill"

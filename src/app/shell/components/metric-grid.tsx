@@ -1,14 +1,22 @@
 import type { ReactNode } from 'react'
-import { cn } from '~/shared/lib/utils'
+import { tv } from 'tailwind-variants'
 
-const METRIC_GRID_TWO =
-  'grid grid-cols-2 gap-3 max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5 max-dapp:[&>article]:min-w-0'
-
-const METRIC_GRID_FOUR = cn(
-  'grid grid-cols-4 gap-3',
-  'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
-  'max-dapp:min-w-0 max-dapp:grid-cols-1',
-)
+const metricGrid = tv({
+  base: 'grid gap-3',
+  variants: {
+    columns: {
+      2: 'grid-cols-2 max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5 max-dapp:[&>article]:min-w-0',
+      4: [
+        'grid-cols-4',
+        'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
+        'max-dapp:min-w-0 max-dapp:grid-cols-1',
+      ],
+    },
+  },
+  defaultVariants: {
+    columns: 4,
+  },
+})
 
 export function MetricGrid({
   children,
@@ -19,9 +27,5 @@ export function MetricGrid({
   className?: string
   columns?: 2 | 4
 }) {
-  return (
-    <div className={cn(columns === 2 ? METRIC_GRID_TWO : METRIC_GRID_FOUR, className)}>
-      {children}
-    </div>
-  )
+  return <div className={metricGrid({ columns, class: className })}>{children}</div>
 }

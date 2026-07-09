@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { cn } from '~/shared/lib/utils'
 
 export type QuickLinkProps = {
@@ -13,7 +13,7 @@ export type QuickLinkProps = {
 export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkProps) {
   const isExternal = href.startsWith('http://') || href.startsWith('https://')
   const isBrandIcon = iconTone === 'plain'
-  const insetIconClass = iconTone === 'dark' ? dappIconClass.md : dappIconClass.lg
+  const insetIconClass = dappIcon({ size: iconTone === 'dark' ? 'md' : 'lg' })
 
   return (
     <a

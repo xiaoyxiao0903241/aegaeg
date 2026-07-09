@@ -3,10 +3,7 @@ import { Card } from '~/shared/ui/card'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
-/**
- * Left-column (wcol) outlined card — padding/radius from Card `outlined` SSOT (`p-3.5` / `rounded-md`).
- * Do not re-apply `px-4 py-3.5` at call sites; stack gap stays `gap-2` unless layout needs `gap-*` override.
- */
+/** Left-column outlined card (`p-3.5` / `rounded-md`); stack gap defaults to `gap-2`. */
 export function DappSideCard({
   children,
   className,

@@ -7,7 +7,6 @@ import { cn } from '~/shared/lib/utils'
 
 const rewardsHeroCard = tv({
   slots: {
-    // Chrome SSOT: dappDarkBanner (not Card inverse). Layout-only extras below.
     root: '',
     content: '',
     character: cn(

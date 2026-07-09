@@ -51,7 +51,6 @@ export function GenesisContributionsProgressHeader({
   return (
     <div className={styles.progressHeader()}>
       <div className={styles.progressRow()}>
-        {/* 4175 Phase co-build: 12px / lh14.4 — copy token is 13; override display size */}
         <Text
           className="text-xs font-semibold leading-[1.2]"
           tone="foreground"

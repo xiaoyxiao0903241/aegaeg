@@ -1,12 +1,7 @@
 import { Chip } from '~/shared/ui/chip'
 import { cn } from '~/shared/lib/utils'
 
-/**
- * Composite：Figma `pcts/pct` 层 — 百分比按钮组 / 分段控件。
- *
- * 公开轴：options / value / onChange / disabled
- * 内部用 Chip variant="outlined" size="md" shape="rounded"（percent ≈ text-xs）。
- */
+/** Percent / segment control group. */
 export type SegmentOption = {
   label: string
   value: string

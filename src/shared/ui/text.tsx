@@ -3,25 +3,22 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 
 /**
- * tone = 语义色 | variant = 字阶/角色（字号/行高/字重由 --type-* token 驱动）
- * SSOT：docs/foundation/api.md §2 · 流程：docs/foundation/runbook.md
+ * tone = 语义色 | variant = 字阶/角色（字号/行高/字重由 --type-* token 驱动）。
+ * 高频语义；页面可用 className 微调。10 variant × 7 tone；无 weight prop。
  *
- * Primitive 只覆盖高频语义；页面/section 用 className 微调（foundation/api · runbook）。
- * 10 variant × 7 tone；无 weight prop；无 alias。
- *
- * 若 className 含字号 utility（`text-4xl` / `text-[…]`），视为「显示阶覆盖」：
+ * 若 className 含字号 utility（`text-4xl` / `text-[…]`），视为显示阶覆盖：
  * 剥掉 size / leading / tracking type token（twMerge 对 arbitrary tracking 冲突不全），
- * **保留** weight——call site 通常只覆盖字号/行高，字重仍走 variant token。
+ * 保留 weight——call site 通常只覆盖字号/行高。
  */
 const toneClass = {
   foreground: 'text-foreground',
   'muted-foreground': 'text-muted-foreground',
   primary: 'text-primary',
-  /** Dark-surface coral accent — Figma `accent/coral-bright` `#f4a98f` (not primary). */
+  /** Dark-surface coral accent (not primary). */
   'primary-bright': 'text-primary-bright',
   success: 'text-success',
   inverse: 'text-inverse',
-  /** Secondary copy on dark / inverse surfaces — Figma/dev `#b8c0ce` (not white@opacity). */
+  /** Secondary copy on dark / inverse surfaces. */
   'inverse-muted': 'text-inverse-muted',
 } as const
 
@@ -67,15 +64,16 @@ export type TextProps = HTMLAttributes<HTMLElement> & {
   as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'strong' | 'a' | 'small' | 'em' | 'b' | 'div' | 'time' | 'label'
   children: ReactNode
   href?: string
+  htmlFor?: string
   rel?: string
   target?: string
 } & VariantProps<typeof textVariants>
 
 /**
  * Unprefixed Tailwind font-size utility (or `!text-*`).
- * Responsive prefixes (`max-dapp:text-lg`) must NOT strip base `--type-*` size —
+ * Responsive prefixes (`max-dapp:text-lg`) must not strip base `--type-*` size —
  * otherwise desktop keeps the override flag while the media query is inactive,
- * collapsing panel/section figures to inherited 16px (genesis global value REGRESSION).
+ * collapsing panel/section figures to inherited 16px.
  */
 /** Named sizes + size-like arbitrary (`text-[14px]` / `text-[length:…]`). Not `text-[#hex]` colors. */
 const FONT_SIZE_UTILITY_RE =

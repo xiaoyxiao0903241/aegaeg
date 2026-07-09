@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import { Chip, fieldActionChipClass } from '~/shared/ui/chip'
+import { FieldActionChip } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 
@@ -29,7 +29,6 @@ export function GenesisPurchaseSharesField({
   value: string
 }) {
   return (
-    // Figma Shares label: 12px / lh 1.5 / tracking -0.02em
     <label className="mt-1.5 grid gap-2 text-xs leading-[1.5]">
       <Text as="span" variant="copy" tone="muted-foreground" className="text-xs leading-[1.5] tracking-[-0.02em]">
         {label}
@@ -53,19 +52,9 @@ export function GenesisPurchaseSharesField({
             {shareUnit}
           </span>
         </div>
-        {/* Figma `4150:3234` — soft coral Chip; SSOT `fieldActionChipClass` (Bind shares this). */}
-        <Chip
-          className={fieldActionChipClass}
-          disabled={disabled}
-          onClick={onMax}
-          shape="rounded"
-          size="md"
-          tone="coral"
-          type="button"
-          variant="soft"
-        >
+        <FieldActionChip disabled={disabled} onClick={onMax}>
           {maxLabel}
-        </Chip>
+        </FieldActionChip>
       </div>
     </label>
   )

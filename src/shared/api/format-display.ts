@@ -108,7 +108,7 @@ export function formatRegisterDate(iso: string | null): string {
   return date.toISOString().slice(0, 10)
 }
 
-/** Community member table address — Figma `0x05…E515` (4 chars + ellipsis + last 4). */
+/** Community member table address — 4 chars + ellipsis + last 4. */
 export function formatInviteMemberAddress(address: string): string {
   if (address.length < 9) return address
   return `${address.slice(0, 4)}…${address.slice(-4)}`

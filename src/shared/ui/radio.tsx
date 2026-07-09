@@ -24,7 +24,7 @@ export type RadioIndicatorProps = {
   className?: string
 } & VariantProps<typeof radioIndicatorVariants>
 
-/** 圆形单选指示器 — 视觉 SSOT；成组语义用 RadioGroup */
+/** Circular radio indicator; use RadioGroup for group semantics. */
 export function RadioIndicator({ checked = false, className, size }: RadioIndicatorProps) {
   return (
     <span

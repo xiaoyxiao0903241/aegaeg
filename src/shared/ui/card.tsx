@@ -9,13 +9,7 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { Text, type TextProps } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/**
- * Primitive：4 surface × 组合式子组件。
- * SSOT：docs/foundation/api.md §5
- *
- * 禁止：context / fill / radius / tone / hover 轴；call site 叠 shadow-* / rounded-* 覆盖 surface 默认。
- * 细微差异（间距、圆角）用 className 抹平，不新增 surface。
- */
+/** Card — four surfaces; fine-tune spacing/radius via className. */
 export const cardVariants = tv({
   base: 'bg-card text-card-foreground',
   variants: {
@@ -24,7 +18,7 @@ export const cardVariants = tv({
         'rounded-md border border-border p-3.5',
       elevated:
         'rounded-md bg-card p-3.5 shadow-card',
-      /** FAQ / Accordion shell — elevation + radius only; body owns px/py (dev: rounded-2xl, no card pad). */
+      /** FAQ / Accordion shell — elevation + radius; body owns padding. */
       soft: 'overflow-hidden rounded-2xl bg-card shadow-faq',
       inverse:
         'rounded-md bg-dark p-4 text-white shadow-subtle',

@@ -19,7 +19,6 @@ export function RewardsHistoryReveal({ children }: { children: ReactNode }) {
   )
 }
 
-/** 4175 used DappPillTabs (soft/outlined pill)；禁 Segment percent Chip 网格。 */
 export function RewardsHistoryPillTabs({
   'aria-label': ariaLabel,
   onChange,

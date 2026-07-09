@@ -6,7 +6,6 @@ import { cn } from '~/shared/lib/utils'
 /**
  * Inline destructive alert chrome (border / wash / pad / color).
  * Typography stays Text `copy`; spacing (mt/mx/mb) stays at call site.
- * Not a Card surface — do not fold into WidgetPromoCard / inverse.
  */
 export const dappInlineAlert = tv({
   base: 'rounded-xl border border-destructive/30 bg-destructive/10 text-destructive',

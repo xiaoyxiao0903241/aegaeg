@@ -5,8 +5,8 @@ import { cn } from '~/shared/lib/utils'
 
 /**
  * DApp primary CTA wrapper.
- * density → height SSOT: card 36 · external 44 · inverse (dark promo) 38.
- * Field-adjacent actions (MAX / Bind) → Chip soft coral + `fieldActionChipClass`, not this.
+ * density → height: card 36 · external 44 · inverse (dark promo) 38.
+ * Field-adjacent actions (MAX / Bind) → FieldActionChip.
  */
 type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode

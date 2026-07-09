@@ -37,7 +37,7 @@ export function reportAccountBanned(): void {
   }
 }
 
-/** Global API response interceptor — call from `apiRequest` SSOT before rethrowing. */
+/** Global API response interceptor — call from `apiRequest` before rethrowing. */
 export function interceptApiError(error: unknown): void {
   if (isAccountBannedError(error)) {
     reportAccountBanned()

@@ -11,7 +11,7 @@ import { useAuth } from '~/app/bootstrap/auth-provider'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
@@ -20,9 +20,9 @@ import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { cn } from '~/shared/lib/utils'
 import {
+  AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
-  aegisDialogCloseClass,
 } from '~/shared/ui/aegis-responsive-dialog'
 import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
@@ -207,13 +207,12 @@ export function WalletDetailsModal({
     >
       <AegisSheetHandle />
 
-      <DialogPrimitive.Close
+      <AegisDialogClose
         aria-label={t.common.close}
-        className={cn(aegisDialogCloseClass, 'absolute right-4 top-4 max-dapp:top-5')}
-        type="button"
+        className="absolute right-4 top-4 max-dapp:top-5"
       >
-        <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-      </DialogPrimitive.Close>
+        <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
+      </AegisDialogClose>
 
       <div
         aria-hidden="true"
@@ -283,7 +282,7 @@ export function WalletDetailsModal({
               type="button"
               variant="secondary"
             >
-              <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
+              <LogOut aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
               {t.wallet.disconnect}
             </Button>
           </>
@@ -311,7 +310,7 @@ export function WalletDetailsModal({
               type="button"
               variant="secondary"
             >
-              <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
+              <LogOut aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
               {t.wallet.disconnect}
             </Button>
           </div>

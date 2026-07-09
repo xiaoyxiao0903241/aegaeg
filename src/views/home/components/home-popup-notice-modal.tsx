@@ -1,7 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useState } from 'react'
-import { modalContentClass, modalOverlayClass } from '~/shared/ui/dialog'
+import { dialogChrome } from '~/shared/ui/dialog'
 import { Text } from '~/shared/ui/text'
 import { homeAssets } from '~/views/home/assets'
 import { PopupNoticeContent } from '~/views/home/popup-notice-content'
@@ -25,22 +25,19 @@ export function HomePopupNoticeModal({
 
   const showHero = Boolean(notice.image_url) && !heroHidden
   const hasBody = Boolean(notice.title || notice.content)
+  const styles = dialogChrome()
 
   return (
     <DialogPrimitive.Root open={open}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay
-          className={cn(
-            modalOverlayClass,
-            'bg-black/55 backdrop-blur-sm',
-          )}
+          className={styles.overlay({ class: 'bg-black/55 backdrop-blur-sm' })}
         />
         <DialogPrimitive.Content
           aria-describedby={hasBody ? 'home-popup-notice-body' : undefined}
-          className={cn(
-            modalContentClass,
-            'w-[min(92vw,26rem)] max-w-none border-0 bg-transparent p-0 shadow-none',
-          )}
+          className={styles.content({
+            class: 'w-[min(92vw,26rem)] max-w-none border-0 bg-transparent p-0 shadow-none',
+          })}
           onEscapeKeyDown={(event) => event.preventDefault()}
           onPointerDownOutside={(event) => event.preventDefault()}
         >

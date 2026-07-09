@@ -2,22 +2,24 @@ import { useEffect } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { ConnectEmbed, useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { X } from 'lucide-react'
+import { tv } from 'tailwind-variants'
 import { useI18n } from '~/i18n/use-i18n'
 import { appMetadata, connectEmbedProps } from '~/views/dapp/web3/thirdweb'
-import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
-import { dappIconClass } from '~/app/dapp-icon-scale'
+import { dappIcon } from '~/app/dapp-icon-scale'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
 
-const panelShellClass = cn(
-  'border-0 bg-card',
-  'max-dapp:rounded-t-lg max-dapp:px-5 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))] max-dapp:pt-3',
-  'dapp:w-full dapp:max-w-md dapp:rounded-lg dapp:p-6',
-  'dapp:shadow-modal-panel',
-)
+const walletConnectPanel = tv({
+  base: [
+    'border-0 bg-card',
+    'max-dapp:rounded-t-lg max-dapp:px-5 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))] max-dapp:pt-3',
+    'dapp:w-full dapp:max-w-md dapp:rounded-lg dapp:p-6',
+    'dapp:shadow-modal-panel',
+  ],
+})
 
 export function WalletConnectModal({
   onOpenChange,
@@ -40,7 +42,7 @@ export function WalletConnectModal({
       onOpenChange={onOpenChange}
       open={open}
       overlayClassName="bg-modal-overlay-strong backdrop-blur-sm"
-      className={panelShellClass}
+      className={walletConnectPanel()}
     >
       <AegisSheetHandle />
 
@@ -55,7 +57,7 @@ export function WalletConnectModal({
           className="aegis-wallet-connect-close"
           type="button"
         >
-          <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
+          <X aria-hidden className={dappIcon({ size: 'sm' })} strokeWidth={2} />
         </DialogPrimitive.Close>
       </div>
 

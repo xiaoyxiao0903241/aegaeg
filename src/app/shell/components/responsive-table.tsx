@@ -1,26 +1,69 @@
 import { type ReactNode } from 'react'
+import { tv } from 'tailwind-variants'
 import { StatusBadge } from '~/shared/ui/badge'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 import { TableRowSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 
 const tableCell = dappTableCell()
-/** Cell chrome only — copy type owned by <Text variant="copy">. */
-const TABLE_CELL =
-  `${tableCell.minWidth()} ${tableCell.border()} px-3 py-2.5 text-left whitespace-nowrap max-dapp:px-2.5 max-dapp:py-2`
 
-/** SSOT ≡ Community「我的社区成员」表头 — muted only; no tab-specific faint override. */
-const TABLE_HEAD_CELL = cn(TABLE_CELL)
+const responsiveTable = tv({
+  slots: {
+    root: '',
+    table: 'w-max min-w-full table-auto border-collapse',
+    cell: [
+      tableCell.minWidth(),
+      tableCell.border(),
+      'px-3 py-2.5 text-left whitespace-nowrap max-dapp:px-2.5 max-dapp:py-2',
+    ],
+    headCell: '',
+    text: 'max-dapp:text-xs max-dapp:leading-normal',
+  },
+  variants: {
+    compact: {
+      true: { root: '[&_table]:min-w-full' },
+      false: { root: '' },
+    },
+    lastRow: {
+      true: { cell: 'border-b-0' },
+      false: { cell: '' },
+    },
+    highlighted: {
+      true: {
+        cell: '',
+      },
+      false: {},
+    },
+    link: {
+      true: { cell: 'text-primary', text: 'text-primary' },
+      false: {},
+    },
+    emphasis: {
+      true: { cell: 'font-bold text-foreground', text: 'font-bold' },
+      false: {},
+    },
+    positive: {
+      true: {
+        cell: 'font-bold text-success group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+        text: 'font-bold text-success group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+      },
+      false: {},
+    },
+  },
+  defaultVariants: {
+    compact: false,
+    lastRow: false,
+    link: false,
+    emphasis: false,
+    positive: false,
+  },
+})
 
-const TABLE_CLASS = 'w-max min-w-full table-auto border-collapse'
-
-const HIGHLIGHTED_ROW =
+const highlightedRow =
   'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td:first-child]:text-primary [&_td.text-success]:text-success'
 
 export function ResponsiveTable({
   className = '',
-  /** Per-column width hints (e.g. '8.25rem'); `undefined` leaves a column auto. */
   colWidths,
   compact = false,
   emphasisColumns = [],
@@ -46,9 +89,11 @@ export function ResponsiveTable({
   rows: ReactNode[][]
   statusColumns?: number[]
 }) {
+  const styles = responsiveTable({ compact })
+
   return (
-    <div className={cn(compact && '[&_table]:min-w-full', className)}>
-      <table className={TABLE_CLASS}>
+    <div className={styles.root({ class: className })}>
+      <table className={styles.table()}>
         {colWidths ? (
           <colgroup>
             {headers.map((header, index) => (
@@ -62,12 +107,12 @@ export function ResponsiveTable({
         <thead>
           <tr>
             {headers.map((header) => (
-              <th className={TABLE_HEAD_CELL} key={header}>
+              <th className={styles.cell()} key={header}>
                 <Text
                   as="span"
                   variant="copy"
                   tone="muted-foreground"
-                  className="max-dapp:text-xs max-dapp:leading-normal"
+                  className={styles.text()}
                 >
                   {header}
                 </Text>
@@ -86,50 +131,46 @@ export function ResponsiveTable({
               ))
             : rows.map((row, rowIndex) => (
                 <tr
-                  className={highlightedRows.includes(rowIndex) ? HIGHLIGHTED_ROW : ''}
+                  className={highlightedRows.includes(rowIndex) ? highlightedRow : ''}
                   key={`${row[0]}-${rowIndex}`}
                 >
-                  {row.map((cell, index) => (
-                    <td
-                      className={cn(
-                        TABLE_CELL,
-                        rowIndex === rows.length - 1 && 'border-b-0',
-                        typeof cell !== 'string' &&
-                          typeof cell !== 'number' &&
-                          !statusColumns.includes(index) &&
-                          cn(
-                            linkColumns.includes(index) && 'text-primary',
-                            emphasisColumns.includes(index) && 'font-bold text-foreground',
-                            positiveColumns.includes(index) &&
-                              cn(
-                                'font-bold text-success',
-                                'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
-                              ),
-                          ),
-                      )}
-                      key={`${rowIndex}-${index}`}
-                    >
-                      {statusColumns.includes(index) ? (
-                        <StatusBadge>{cell}</StatusBadge>
-                      ) : typeof cell === 'string' || typeof cell === 'number' ? (
-                        <Text
-                          as="span"
-                          variant="copy"
-                          className={cn(
-                            'max-dapp:text-xs max-dapp:leading-normal',
-                            linkColumns.includes(index) && 'text-primary',
-                            emphasisColumns.includes(index) && 'font-bold',
-                            positiveColumns.includes(index) &&
-                              'font-bold text-success group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
-                          )}
-                        >
-                          {cell}
-                        </Text>
-                      ) : (
-                        cell
-                      )}
-                    </td>
-                  ))}
+                  {row.map((cell, index) => {
+                    const isStatus = statusColumns.includes(index)
+                    const isPlain = typeof cell === 'string' || typeof cell === 'number'
+                    const cellStyles = responsiveTable({
+                      lastRow: rowIndex === rows.length - 1,
+                      link: !isStatus && isPlain === false && linkColumns.includes(index),
+                      emphasis:
+                        !isStatus && isPlain === false && emphasisColumns.includes(index),
+                      positive:
+                        !isStatus && isPlain === false && positiveColumns.includes(index),
+                    })
+
+                    return (
+                      <td
+                        className={cellStyles.cell()}
+                        key={`${rowIndex}-${index}`}
+                      >
+                        {isStatus ? (
+                          <StatusBadge>{cell}</StatusBadge>
+                        ) : isPlain ? (
+                          <Text
+                            as="span"
+                            variant="copy"
+                            className={responsiveTable({
+                              link: linkColumns.includes(index),
+                              emphasis: emphasisColumns.includes(index),
+                              positive: positiveColumns.includes(index),
+                            }).text()}
+                          >
+                            {cell}
+                          </Text>
+                        ) : (
+                          cell
+                        )}
+                      </td>
+                    )
+                  })}
                 </tr>
               ))}
         </tbody>
