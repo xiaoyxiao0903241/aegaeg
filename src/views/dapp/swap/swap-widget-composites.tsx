@@ -245,11 +245,9 @@ export function SwapAmountFlow({
 
 export function SwapMetaPanel({
   className,
-  sessionReady = true,
   items,
 }: {
   className?: string
-  sessionReady?: boolean
   items: Array<{
     label: React.ReactNode
     value: React.ReactNode

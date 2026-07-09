@@ -156,7 +156,6 @@ export function TradeSwapWidget({
         />
 
         <SwapMetaPanel
-          sessionReady
           items={[
             {
               label: t.swap.exchangePrice,
