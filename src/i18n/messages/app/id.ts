@@ -87,7 +87,7 @@ const app = defineMessages({
         overview: 'Ringkasan',
         exchangeRate: 'Kurs tukar',
         settlement: 'Penyelesaian',
-        settlementValue: 'Dapatkan token ekosistem AEGIS X dengan kurs terbaik.',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {
