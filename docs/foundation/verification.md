@@ -446,9 +446,17 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 
 | 变更 | 标签 | 说明 |
 |------|------|------|
-| `swapFlowButtonClass` SSOT | INTENTIONAL | 34×34 · `rounded-control`(11) · border · card · text-sm/-0.28 |
+| `swapFlowButtonClass` SSOT | INTENTIONAL | 34×34 · `rounded-[11px]` · border · card · text-sm/-0.28 |
 | Trade flip：`size-8`/`rounded-sm` → `swapFlowButtonClass` | REGRESSION→fixed | ≡ Figma flb；保留 hover lift + 旋转 |
 | Flash divider 共用同一 chrome | INTENTIONAL | 仍用 chevron SVG；壳与 Trade 一致 |
+
+## 5ab. flb 圆角 / InviteFlow desc / 表壳无边框（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| flb `rounded-control` → `rounded-[11px]` | REGRESSION→fixed | Figma 明确 11px；避免 token 未进 utility 时圆角落空 |
+| InviteFlow desc 去 `text-foreground/30` | REGRESSION→fixed | Figma `4040:7330` text/body 70% = `muted-foreground` |
+| `DappTableCard` shell `border-0` | INTENTIONAL | 仅阴影；内部分隔线保留 |
 
 ## 6. 修订
 
@@ -483,3 +491,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.25 | §5y InviteFlow 步骤线等距；Detail 首段 `mt-0` |
 | v2.26 | §5z CommunityStat 浅色 sc ≡ Figma `4040:7313` |
 | v2.27 | §5aa Swap flb 中间钮 ≡ Figma `4040:1662` |
+| v2.28 | §5ab flb 11px；InviteFlow desc 70%；表壳无外边框 |
