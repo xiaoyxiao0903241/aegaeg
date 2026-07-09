@@ -89,7 +89,7 @@ Risk: …
 | 左卡 padding/圆角 | Card `outlined` / `DappSideCard` |
 | 块间距 / 标题→内容 | `DappDetailBlock` · `DappSection` / `DappContentHeading`（`pb-4`）· `DappWidgetFrame` |
 | 标题字阶 | Text `section` / `panel` + `copy` |
-| 主 pill 高度 | `DappActionButton`：card 36 · external 44 · inverse 38 |
+| 主 pill 高度 | `DappActionButton`：inverse 38 · card 42 · external 44 · modal 46 · hero 48；Home hero / topbar Connect = Button `lg` 48 / `sm` 36 |
 | Overview 指标 | `MetricCard`；Community `sc` / Rewards hero **不并** |
 
 `group-data-[tab=*]`：只合并同值重复；跨 tab 复用组件必须保留守卫。

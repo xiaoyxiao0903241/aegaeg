@@ -62,7 +62,7 @@ const responsiveTable = tv({
 })
 
 const highlightedRow =
-  'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td:first-child]:text-primary [&_td.text-success]:text-success'
+  'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td.text-success]:text-success'
 
 export function ResponsiveTable({
   className = '',
@@ -163,7 +163,12 @@ export function ResponsiveTable({
                               link: linkColumns.includes(index),
                               emphasis: emphasisColumns.includes(index),
                               positive: positiveColumns.includes(index),
-                            }).text()}
+                            }).text({
+                              class:
+                                highlightedRows.includes(rowIndex) && index === 0
+                                  ? 'text-coral'
+                                  : undefined,
+                            })}
                           >
                             {cell}
                           </Text>

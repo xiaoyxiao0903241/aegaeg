@@ -36,7 +36,7 @@ export function WidgetHeader({
         {subtitle ? (
           <Text
             as="p"
-            variant="copy"
+            variant="support"
             tone="muted-foreground"
             className={cn(
               styles.subtitle(),
@@ -103,7 +103,7 @@ export function WidgetSubpageHeader({
         {subtitle ? (
           <Text
             as="p"
-            variant="copy"
+            variant="support"
             tone="muted-foreground"
             className={cn(
               styles.subtitle(),

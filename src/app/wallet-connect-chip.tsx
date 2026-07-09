@@ -131,7 +131,7 @@ function WalletConnectButton({
   label?: string
   variant?: 'pill' | 'primary' | 'inline'
   fullWidth?: boolean
-  /** primary only — inverse = dark promo 38; card/external = Button sm/md */
+  /** primary only — inverse = dark promo 38; card = white-card 42; external = Button md 44 */
   density?: 'card' | 'external' | 'inverse'
 }) {
   const { isLoggingIn, login, loginError, retryLogin, needsSignIn } = useAuth()

@@ -140,7 +140,14 @@ function SwapSlippageModalOpen({
           </div>
         </div>
 
-        <Button onClick={handleConfirm} shape="pill" size="md" type="button" variant="primary">
+        <Button
+          className="min-h-11.5"
+          onClick={handleConfirm}
+          shape="pill"
+          size="md"
+          type="button"
+          variant="primary"
+        >
           {t.common.confirm}
         </Button>
       </div>

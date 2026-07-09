@@ -121,9 +121,9 @@ export function GenesisPromoCard({
       ) : (
         <Text
           as="p"
-          variant="copy"
+          variant="support"
           tone="inverse-muted"
-          className="m-0 text-xs/normal font-normal"
+          className="m-0 font-normal"
         >
           {body}
         </Text>

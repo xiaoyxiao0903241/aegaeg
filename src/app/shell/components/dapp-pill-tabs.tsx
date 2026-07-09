@@ -2,11 +2,14 @@ import { Chip } from '~/shared/ui/chip'
 import { cn } from '~/shared/lib/utils'
 
 export function DappPillTabs({
+  activeTone = 'primary',
   ariaLabel,
   className,
   items,
   onSelect,
 }: {
+  /** Active pill text/bg tone — Rewards history uses `coral` (Figma #c85c3f). */
+  activeTone?: 'primary' | 'coral'
   ariaLabel: string
   className?: string
   items: Array<{ active?: boolean; label: string }>
@@ -24,7 +27,7 @@ export function DappPillTabs({
           size="lg"
           type="button"
           variant={item.active ? 'soft' : 'outlined'}
-          tone={item.active ? 'primary' : 'default'}
+          tone={item.active ? activeTone : 'default'}
         >
           {item.label}
         </Chip>

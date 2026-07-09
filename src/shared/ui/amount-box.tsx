@@ -51,13 +51,13 @@ export function AmountBox({
   return (
     <Card as="section" surface="outlined" className={cn(styles.root(), className)}>
       <div className={styles.header()}>
-        <Text as="span" variant="copy" tone={labelTone} className={cn(styles.label(), 'leading-normal')}>
+        <Text as="span" variant="support" tone={labelTone} className={cn(styles.label(), 'leading-normal')}>
           {label}
         </Text>
         {balance ? (
           <Text
             as="span"
-            variant="copy"
+            variant="support"
             tone="muted-foreground"
             className={cn(
               styles.balance(),

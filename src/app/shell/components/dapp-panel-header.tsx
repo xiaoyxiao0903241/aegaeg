@@ -37,7 +37,7 @@ export function DappPanelHeader({
         </Text>
         <Text
           as="p"
-          variant="copy"
+          variant="support"
           tone="muted-foreground"
           className="m-0 max-dapp:max-w-none [&_strong]:font-bold [&_strong]:text-primary"
         >

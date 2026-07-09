@@ -201,18 +201,18 @@ export function DappTablePagination({
       <div className="flex min-w-0 flex-row flex-nowrap items-center gap-4">
         <Text
           as="p"
-          variant="copy"
+          variant="support"
           tone="muted-foreground"
-          className="m-0 shrink-0 whitespace-nowrap text-xs font-normal leading-none"
+          className="m-0 shrink-0 whitespace-nowrap font-normal leading-none"
         >
           {t.common.paginationTotal.replace('{total}', formatCount(total))}
         </Text>
         {summary ? (
           <Text
             as="p"
-            variant="copy"
+            variant="support"
             tone="muted-foreground"
-            className="m-0 min-w-0 whitespace-nowrap text-xs font-normal leading-none"
+            className="m-0 min-w-0 whitespace-nowrap font-normal leading-none"
           >
             {summary}
           </Text>
@@ -223,9 +223,9 @@ export function DappTablePagination({
         <div className="flex flex-wrap items-center gap-4 sm:justify-end">
           <Text
             as="span"
-            variant="copy"
+            variant="support"
             tone="muted-foreground"
-            className="whitespace-nowrap text-xs font-normal leading-none"
+            className="whitespace-nowrap font-normal leading-none"
           >
             {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
           </Text>
@@ -263,8 +263,8 @@ export function DappTablePagination({
               >
                 <Text
                   as="span"
-                  variant="copy"
-                  className="text-xs font-semibold leading-none text-coral"
+                  variant="support"
+                  className="font-semibold leading-none text-coral"
                 >
                   {safePage} / {totalPages}
                 </Text>
@@ -316,10 +316,10 @@ export function DappTablePagination({
                             >
                               <Text
                                 as="span"
-                                variant="copy"
+                                variant="support"
                                 tone={active ? undefined : 'foreground'}
                                 className={cn(
-                                  'text-xs leading-none',
+                                  'leading-none',
                                   active ? 'font-semibold text-coral' : 'font-normal',
                                 )}
                               >

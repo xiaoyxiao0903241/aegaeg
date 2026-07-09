@@ -115,6 +115,7 @@ export type ColorHexToken = keyof typeof colorHex
 export const typeVariants = [
   "caption",
   "eyebrow",
+  "support",
   "copy",
   "detail",
   "question",

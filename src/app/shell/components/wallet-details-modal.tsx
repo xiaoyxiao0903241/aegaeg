@@ -158,6 +158,7 @@ export function WalletDetailsModal({
         {!walletReady ? (
           <>
             <Button
+              className="min-h-11.5"
               onClick={() => setConnectOpen(true)}
               size="md"
               type="button"
@@ -166,6 +167,7 @@ export function WalletDetailsModal({
               {t.wallet.reconnectWallet}
             </Button>
             <Button
+              className="min-h-11.5"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"
@@ -177,7 +179,7 @@ export function WalletDetailsModal({
         ) : (
           <div className="grid grid-cols-2 gap-2.5">
             <Button
-              className="gap-2"
+              className="min-h-11.5 gap-2"
               onClick={() => void handleCopy()}
               size="md"
               type="button"
@@ -192,6 +194,7 @@ export function WalletDetailsModal({
               {copied ? t.wallet.copied : t.wallet.copyAddress}
             </Button>
             <Button
+              className="min-h-11.5"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"

@@ -29,7 +29,7 @@ export function DappMetaList({
         <p className="m-0 flex items-center justify-between gap-3" key={index}>
           <Text
             as="span"
-            variant="copy"
+            variant="support"
             tone="muted-foreground"
             className="leading-normal"
           >
@@ -37,7 +37,7 @@ export function DappMetaList({
           </Text>
           <Text
             as="strong"
-            variant="copy"
+            variant="support"
             className={cn(
               'mt-0 text-right font-semibold leading-normal',
               item.valueClassName,

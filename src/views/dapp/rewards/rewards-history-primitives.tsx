@@ -33,6 +33,7 @@ export function RewardsHistoryPillTabs({
   const styles = rewardsHistorySection()
   return (
     <DappPillTabs
+      activeTone="coral"
       ariaLabel={ariaLabel}
       className={styles.pillTabs()}
       items={options.map((option) => ({

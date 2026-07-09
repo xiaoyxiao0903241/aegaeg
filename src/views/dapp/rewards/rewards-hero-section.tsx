@@ -58,7 +58,7 @@ function RewardsHeroPanel({
           <div className="flex flex-col gap-0">
             <Text
               as="p"
-              variant="detail"
+              variant="copy"
               tone="inverse-muted"
               className="m-0"
             >
@@ -67,7 +67,7 @@ function RewardsHeroPanel({
             {showSuperBadge ? (
               <Text
                 as="p"
-                variant="detail"
+                variant="copy"
                 tone="inverse-muted"
                 className="m-0"
               >

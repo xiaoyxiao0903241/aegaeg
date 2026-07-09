@@ -114,6 +114,10 @@
   --type-eyebrow-weight: 600;
   --type-eyebrow-leading: 1.2;
   --type-eyebrow-tracking: 0.08em;
+  --type-support-size: 0.75rem;
+  --type-support-weight: 400;
+  --type-support-leading: 1.5;
+  --type-support-tracking: -0.02em;
   --type-copy-size: 0.8125rem;
   --type-copy-weight: 400;
   --type-copy-leading: 1.5;
@@ -185,7 +189,6 @@
 @media (max-width: 820px) {
   :root {
     --type-eyebrow-size: 0.75rem;
-    --type-copy-size: 0.75rem;
     --type-question-size: 0.9375rem;
     --type-headline-size: 0.9375rem;
     --type-brand-size: 1.125rem;

@@ -5,31 +5,12 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react'
-import { tv, type VariantProps } from 'tailwind-variants'
+import { type VariantProps } from 'tailwind-variants'
 import { Text, type TextProps } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
+import { cardVariants } from '~/shared/ui/card-variants'
 
-/** Card — four surfaces; fine-tune spacing/radius via className. */
-export const cardVariants = tv({
-  base: 'bg-card text-card-foreground',
-  variants: {
-    surface: {
-      outlined:
-        'rounded-md border border-border p-3.5',
-      elevated:
-        'rounded-md bg-card p-3.5 shadow-card',
-      /** FAQ / Accordion shell — elevation + radius; body owns padding. */
-      soft: 'overflow-hidden rounded-2xl bg-card shadow-faq',
-      inverse:
-        'rounded-md bg-dark p-4 text-white shadow-subtle',
-    },
-  },
-  defaultVariants: {
-    surface: 'outlined',
-  },
-})
-
-export type CardSurface = keyof typeof cardVariants.variants.surface
+export type { CardSurface } from '~/shared/ui/card-variants'
 
 type CardElement = 'article' | 'button' | 'div' | 'section' | 'details' | 'span'
 
@@ -75,7 +56,7 @@ function Title({ className, ...props }: Omit<TextProps, 'variant'>) {
 function Description({ className, ...props }: Omit<TextProps, 'variant' | 'tone'>) {
   return (
     <Text
-      variant="copy"
+      variant="support"
       tone="muted-foreground"
       className={cn('m-0 leading-normal', className)}
       {...props}
@@ -91,10 +72,10 @@ function Footer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('flex items-center gap-3', className)} {...props} />
 }
 
-/** Tier B · metric / meta 行标签 */
+/** Tier B · metric / meta 行标签（Figma 12px support） */
 function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
   return (
-    <Text variant="copy" tone="foreground" className={cn('leading-normal', className)} {...props} />
+    <Text variant="support" tone="foreground" className={cn('leading-normal', className)} {...props} />
   )
 }
 
@@ -109,4 +90,3 @@ function Value({ className, ...props }: Omit<TextProps, 'variant'>) {
     />
   )
 }
-

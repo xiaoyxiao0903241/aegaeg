@@ -34,7 +34,7 @@ function ProgramCardCopy({ body, title }: { body: string; title: string }) {
     <span className="grid min-w-0 gap-1 text-left">
       <Text
         as="strong"
-        variant="copy"
+        variant="support"
         className="font-semibold leading-[1.3]"
       >
         {title}

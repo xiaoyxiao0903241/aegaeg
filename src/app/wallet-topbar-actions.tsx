@@ -49,5 +49,5 @@ export function WalletTopbarActions() {
       : t.wallet.signInRequired
     : t.common.connectWallet
 
-  return <WalletConnectChip label={label} variant="primary" />
+  return <WalletConnectChip className="min-h-9" label={label} variant="primary" />
 }

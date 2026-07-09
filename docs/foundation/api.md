@@ -29,19 +29,20 @@
 
 | 公开轴 | 值 |
 |--------|-----|
-| `variant` | **10 键**：`caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` |
+| `variant` | **11 键**：`caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` |
 | `tone` | `foreground` · `muted-foreground` · `primary` · `primary-bright` · `success` · `inverse` · `inverse-muted` |
 | 可选 | `as` |
 
 **数字**：比例字（Montserrat 默认字形）。**禁止** `tabular` prop / `tabular-nums`（等宽偏疏，已删）。列对齐若需要，用布局/表格，不靠等宽数字。
 
-### 10 variant（仅此）
+### 11 variant（仅此）
 
 | variant | PC | H5 | weight | 用途 |
 |---------|----|----|--------|------|
 | caption | 10 | 10 | normal | meta / rail label；badge 等 Medium 在 call site `font-medium` |
 | eyebrow | 11 | 12 | semibold | uppercase kicker |
-| copy | 13 | 12 | normal | **默认**正文、label、table cell |
+| support | 12 | 12 | normal | 次级说明：等级卡底栏、进度/余额 meta、widget 副标题、分页 chrome |
+| copy | 13 | 13 | normal | **默认**正文：表头/单元格、pill、主说明、控件旁文案 |
 | detail | 14 | 14 | normal | FAQ 答案、长说明 |
 | question | 14 | 15 | semibold | FAQ 问题 |
 | headline | 16 | 15 | semibold | 卡小标题 |
@@ -50,14 +51,14 @@
 | panel | 21 | 22 | semibold | widget / page header；tracking **-0.04em** |
 | figure | 22 | 23 | semibold | 金额、数值 |
 
-**字距（Figma Genesis `31:2`）**：正文档（caption/copy/detail/…）**-0.02em**；`section`/`panel` 标题 **-0.04em**（≡ 18→`-0.72px`、21→`-0.84px`）；`headline` **-0.03em**；`eyebrow` **+0.08em**。禁 call site `tracking-normal` 抹平正文/标题字距（Input/Button 控件内文除外）。
+**字距（Figma Genesis `31:2`）**：正文档（caption/support/copy/detail/…）**-0.02em**；`section`/`panel` 标题 **-0.04em**（≡ 18→`-0.72px`、21→`-0.84px`）；`headline` **-0.03em**；`eyebrow` **+0.08em**。禁 call site `tracking-normal` 抹平正文/标题字距（Input/Button 控件内文除外）。
 
 **可选 `as`**：含 `label`（form a11y，如 sr-only）。
 **禁止**：`weight` prop · `panel-title` / `table-cell` / `on-dark` · `deprecatedAliases`
 **className 显示阶覆盖**：若 `className` 含字号 utility（`text-xs`…`text-9xl` / `text-[…]`，含 `max-*:text-*` / `!text-*`），`Text` 剥掉 size / leading / tracking type token，**保留** `font-[var(--type-*-weight)]`（call site 通常只覆盖字号/行高）。避免残留 tracking 把标题挤窄，同时不丢 variant 字重。
 **依赖**：Token（§1）
 **探针**：Swap catalog 全部 Text owner 行 · Home section titles
-**Gate**：`text.tsx` variant 键 = **10** · `TextVariant` 联合 = 10 · `tone` = 7
+**Gate**：`text.tsx` variant 键 = **11** · `TextVariant` 联合 = 11 · `tone` = 7
 
 `inverse-muted` = 深底次级文案（Figma/dev `#b8c0ce`）。**禁止**用 `inverse` + `opacity-*` 近似；**禁止** call site `text-on-dark`（legacy alias 仅过渡）。
 `primary-bright` = 深底珊瑚强调（Figma `accent/coral-bright` `#f4a98f`）。暗色卡 kicker / volume 用此 tone；**禁止**用 `primary` 近似，**禁止** call site `text-coral-bright`。
@@ -73,10 +74,17 @@
 | `shape` | `pill` · `rounded` |
 
 **Size 高度 SSOT**（按钮显示阶，**不是** Text `copy` token）：
-- `sm` = **36**（`min-h-9` · `px-4.5`）· 默认 pill / 卡内 CTA / Connect / Enter App · `text-sm` · leading-none — Figma `4040:220`
+- `sm` = **36**（`min-h-9` · `px-4.5`）· 默认 pill / topbar Connect / Enter App · `text-sm` · leading-none — Figma `4040:220`
 - `md` = **44**（`min-h-11`）· 卡外 / widget 栈主 CTA · `text-sm` · leading-snug · `px-5`
-- `lg` = **48**（`min-h-12`）· Home hero 等 · `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
-**暗色 promo CTA**：**38**（`min-h-9.5`）— 走 `DappActionButton density="inverse"`，**不是**第 4 个 size
+- `lg` = **48**（`min-h-12`）· Home hero · Community「参与共建」· `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
+**`DappActionButton` density 高度**（叠在 size 上，**不是**第 4 个 size）：
+- `inverse` = **38**（`min-h-9.5`）· 暗色 promo CTA
+- `card` = **42**（`min-h-10.5`）· 白卡 / outlined·elevated 卡内 CTA — Figma claim `4040:4904`
+- `external` = **44**（→ `size=md`）· 卡外主 CTA（Swap / Genesis 认购等）
+- `modal` = **46**（`min-h-11.5`）· Dialog / wallet modal 主按钮 — Figma `62:70` / `74:129`
+- `hero` = **48**（→ `size=lg`）· Community 左栏「参与共建」— Figma `4040:7307`；与 Home hero `Button size="lg"` 同高
+**Topbar Connect** 保持 **36**（`Button sm`），不走 `density="card"`。
+**Modal 内 raw `Button`**：须 `className="min-h-11.5"`（与 `density="modal"` 同高），勿只写 `size="md"`。
 **Compound**：`size=sm|md` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
 **Hover / press SSOT**（全 variant 一致，禁 call site 叠 `shadow-primary-hover-*`）：
 - 过渡：`duration-160 ease-out`；`active:duration-75`
@@ -218,7 +226,7 @@
 | 层 | 文件 / 入口 | Gate |
 |----|-------------|------|
 | Token | `tokens.json` → `theme.css` / `tokens.ts` | §1 |
-| Text | `shared/ui/text.tsx` | 10 variant · 7 tone |
+| Text | `shared/ui/text.tsx` | 11 variant · 7 tone |
 | Button | `shared/ui/button.tsx` | 4×3×2 |
 | Chip | `shared/ui/chip.tsx` | 3×3×2×4 |
 | Card | `shared/ui/card.tsx` | 4 surface |

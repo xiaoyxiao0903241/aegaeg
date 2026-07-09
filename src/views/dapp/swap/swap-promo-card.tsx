@@ -201,7 +201,7 @@ export function SwapPromoCard({
           as="p"
           variant="copy"
           tone="muted-foreground"
-          className={cn(styles.body(), 'text-xs/normal')}
+          className={styles.body()}
         >
           {body}
         </Text>

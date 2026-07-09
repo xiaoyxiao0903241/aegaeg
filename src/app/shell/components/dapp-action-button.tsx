@@ -5,13 +5,19 @@ import { cn } from '~/shared/lib/utils'
 
 /**
  * DApp primary CTA wrapper.
- * density → height: card 36 · external 44 · inverse (dark promo) 38.
+ * density → height:
+ *   inverse 38 · card 42 · external 44 · modal 46 · hero 48
  * Field-adjacent actions (MAX / Bind) → FieldActionChip.
+ * Header / topbar Connect stays Button `sm` (36) — not this density map.
+ * Home hero uses Button `size="lg"` (48) directly — same height as density="hero".
  */
 type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode
-  /** card = in outlined/elevated card; external = widget stack / page; inverse = dark promo */
-  density?: 'card' | 'external' | 'inverse'
+  /**
+   * card = white-card CTA · external = widget stack · inverse = dark promo ·
+   * modal = dialog footer · hero = community / page banner CTA (≡ Button lg)
+   */
+  density?: 'card' | 'external' | 'inverse' | 'modal' | 'hero'
   loading?: boolean
   variant?: 'primary' | 'secondary'
 }
@@ -26,12 +32,19 @@ export function DappActionButton({
   variant = 'primary',
   ...props
 }: DappActionButtonProps) {
-  const size = density === 'external' ? 'md' : 'sm'
+  const size = density === 'hero' ? 'lg' : density === 'external' ? 'md' : 'sm'
 
   return (
     <Button
       aria-busy={loading || undefined}
-      className={cn('gap-2', density === 'inverse' && 'min-h-9.5 text-xs', className)}
+      className={cn(
+        'gap-2',
+        density === 'card' && 'min-h-10.5',
+        density === 'inverse' && 'min-h-9.5 text-xs',
+        density === 'modal' && 'min-h-11.5',
+        density === 'hero' && 'w-full',
+        className,
+      )}
       disabled={disabled || loading}
       size={size}
       type={type}

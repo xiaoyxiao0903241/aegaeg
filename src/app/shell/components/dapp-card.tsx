@@ -92,7 +92,7 @@ export function RewardBalanceCard({
       {hint ? (
         <Card.Description
           as="small"
-          className={cn('mt-1.5 block max-w-full whitespace-nowrap text-xs', hintClassName)}
+          className={cn('mt-1.5 block max-w-full whitespace-nowrap', hintClassName)}
         >
           {hint}
         </Card.Description>

@@ -21,7 +21,7 @@ export function DappTableEmptyMessage({
         {title}
       </Text>
       {body ? (
-        <Text as="p" variant="copy" tone="muted-foreground" className="mb-0 mt-2">
+        <Text as="p" variant="support" tone="muted-foreground" className="mb-0 mt-2">
           {body}
         </Text>
       ) : null}

@@ -56,7 +56,7 @@ export function GenesisGlobalCard({
         <Text as="strong" tone="inverse" variant="panel" className="block">
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
         </Text>
-        <Text as="p" variant="detail" tone="inverse-muted" className="m-0 max-dapp:w-full">
+        <Text as="p" variant="copy" tone="inverse-muted" className="m-0 max-dapp:w-full">
           {body}
         </Text>
       </div>

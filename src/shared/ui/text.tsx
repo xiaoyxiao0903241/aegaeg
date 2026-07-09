@@ -4,7 +4,7 @@ import { cn } from '~/shared/lib/utils'
 
 /**
  * tone = 语义色 | variant = 字阶/角色（字号/行高/字重由 --type-* token 驱动）。
- * 高频语义；页面可用 className 微调。10 variant × 7 tone；无 weight prop。
+ * 高频语义；页面可用 className 微调。11 variant × 7 tone；无 weight prop。
  *
  * 若 className 含字号 utility（`text-4xl` / `text-[…]`），视为显示阶覆盖：
  * 剥掉 size / leading / tracking type token（twMerge 对 arbitrary tracking 冲突不全），
@@ -29,6 +29,8 @@ export const textVariants = tv({
         'text-(length:--type-caption-size) font-(--type-caption-weight) leading-(--type-caption-leading) tracking-(--type-caption-tracking)',
       eyebrow:
         'text-(length:--type-eyebrow-size) font-(--type-eyebrow-weight) leading-(--type-eyebrow-leading) tracking-(--type-eyebrow-tracking) uppercase',
+      support:
+        'text-(length:--type-support-size) font-(--type-support-weight) leading-(--type-support-leading) tracking-(--type-support-tracking)',
       copy: 'text-(length:--type-copy-size) font-(--type-copy-weight) leading-(--type-copy-leading) tracking-(--type-copy-tracking)',
       detail:
         'text-(length:--type-detail-size) font-(--type-detail-weight) leading-(--type-detail-leading) tracking-(--type-detail-tracking)',

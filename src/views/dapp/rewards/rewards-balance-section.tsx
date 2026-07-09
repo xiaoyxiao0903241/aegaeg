@@ -26,7 +26,7 @@ import {
   rewardsClaimAction,
   rewardsReferralAmount,
   rewardsSideCard,
-} from '~/views/dapp/rewards/rewards-widget-primitives'
+} from '~/views/dapp/rewards/rewards-widget-styles'
 
 export function RewardsBalanceSection() {
   const { messages: t } = useI18n()

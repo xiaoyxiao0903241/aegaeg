@@ -83,10 +83,10 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
             </Text>
             <Text
               as="p"
-              variant="copy"
+              variant="support"
               tone="muted-foreground"
               className={cn(
-                'm-0 text-xs/normal',
+                'm-0',
                 'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:line-clamp-2 max-dapp:max-w-none',
               )}
             >

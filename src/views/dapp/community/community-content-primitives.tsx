@@ -95,9 +95,9 @@ export function CommunityStatCard({
     >
       <Text
         as="span"
-        variant="copy"
+        variant="support"
         tone={dark ? 'inverse-muted' : 'muted-foreground'}
-        className={cn(styles.label(), 'text-xs/normal')}
+        className={styles.label()}
       >
         {label}
       </Text>
@@ -122,11 +122,11 @@ export function CommunityStatCard({
       {today ? (
         <Text
           as="small"
-          variant="copy"
+          variant="support"
           tone={dark ? 'inverse-muted' : undefined}
           className={cn(
             styles.hint(),
-            'text-xs/normal tracking-[-0.01em]',
+            'tracking-[-0.01em]',
             !dark && 'text-foreground/40',
           )}
         >

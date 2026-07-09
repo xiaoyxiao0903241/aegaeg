@@ -27,10 +27,8 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/shell/components/dapp-info-tooltip'
 import { RankTitleWithSuperCommunity } from '~/app/shell/components/rank-title-with-super-community'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
-import {
-  RewardsProgressRow,
-  rewardsSideCard,
-} from '~/views/dapp/rewards/rewards-widget-primitives'
+import { RewardsProgressRow } from '~/views/dapp/rewards/rewards-widget-primitives'
+import { rewardsSideCard } from '~/views/dapp/rewards/rewards-widget-styles'
 
 export function RewardsRankSection() {
   const { messages: t } = useI18n()
@@ -167,7 +165,7 @@ export function RewardsRankSection() {
 
             <Text
               as="small"
-              variant="copy"
+              variant="support"
               tone="muted-foreground"
               className="block leading-normal"
             >
@@ -176,7 +174,7 @@ export function RewardsRankSection() {
             {postLaunch30DayLabel ? (
               <Text
                 as="small"
-                variant="copy"
+                variant="support"
                 tone="muted-foreground"
                 className="block text-right leading-normal"
               >

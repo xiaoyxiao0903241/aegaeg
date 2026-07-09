@@ -31,7 +31,7 @@ export function DappTableAuthPrompt({
         >
           {t.dapp.connect.recordsTitle}
         </Text>
-        <Text as="p" variant="caption" tone="muted-foreground" className="m-0 text-xs/normal">
+        <Text as="p" variant="support" tone="muted-foreground" className="m-0">
           {body}
         </Text>
       </div>
