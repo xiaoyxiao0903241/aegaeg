@@ -469,9 +469,9 @@ const app = defineMessages({
             title: 'エコシステム支援プラン',
             items: [
                 {
-                    label: 'X DAO共創 · フェーズ{season}',
-                    title: 'グローバル共創プラン開催中',
-                    body: '世界中の共創者が集まり、エコシステム構築に共同参加。',
+                    label: '創世共創 · フェーズ{season}',
+                    title: '創世準備理事プログラム',
+                    body: '世界初の共創席位を開放',
                     action: 'プラン詳細を見る →',
                     href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program-jp',
                 },

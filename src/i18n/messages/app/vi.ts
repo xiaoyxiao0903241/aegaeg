@@ -469,9 +469,9 @@ const app = defineMessages({
             title: 'Kế hoạch hỗ trợ hệ sinh thái',
             items: [
                 {
-                    label: 'X DAO cùng xây dựng · Giai đoạn {season}',
-                    title: 'Kế hoạch cùng xây dựng toàn cầu đang diễn ra',
-                    body: 'Quy tụ các nhà cùng xây dựng toàn cầu, cùng tham gia xây dựng hệ sinh thái.',
+                    label: 'Cùng xây dựng Sáng lập · Giai đoạn {season}',
+                    title: 'Chương trình Thống đốc Dự trữ Sáng lập',
+                    body: 'Mở ghế cùng xây dựng toàn cầu đầu tiên',
                     action: 'Xem chi tiết kế hoạch →',
                     href: 'https://xdaoaegis.notion.site/ch-ng-tr-nh-h-i-ng-d-tr-genesis-',
                 },
