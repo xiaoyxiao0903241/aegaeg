@@ -51,7 +51,7 @@ export function RewardsHeroCard({
   return (
     <section className={styles.root()} data-reveal={layout === 'desktop' ? '' : undefined}>
       <div className={styles.content()}>
-        <Text as="span" variant="eyebrow" tone="primary">
+        <Text as="span" variant="eyebrow" tone="primary-bright">
           {kicker}
         </Text>
         {children}

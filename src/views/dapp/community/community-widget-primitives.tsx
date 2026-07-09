@@ -36,7 +36,8 @@ const communityReferrerAvatar = tv({
 })
 
 const communityCopyButton = tv({
-  base: 'grid size-[30px] shrink-0 cursor-pointer place-items-center rounded-lg bg-transparent',
+  // 4175: size-7.5 (1.875rem) — rem，随 site-fluid 高分屏缩放；禁 size-[30px] px 锁死
+  base: 'grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent',
 })
 
 export const communityGenesisCta = tv({

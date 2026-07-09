@@ -26,7 +26,7 @@
 - [x] legacy color/type alias 已在 P8 删除（见下）
 
 ### P1 Text
-- [ ] `text.tsx` 只有 10 variant + 6 tone
+- [ ] `text.tsx` 只有 10 variant + 7 tone
 - [ ] `rg 'panel-title|table-cell|on-dark' src --glob '*.{tsx,ts}'` 零命中
 - [ ] 全仓 `variant=` / `tone=` 已迁移
 - [ ] 人工对照表确认每个子组件样式对齐
@@ -126,10 +126,10 @@ Figma 层: <layer>
 | y299–377 Global 卡数值 | REGRESSION→fixed | 同上；`fs/lh/ls` 已对齐 21px / 27.3px / -0.63px |
 | y378–412 Shares input tracking | REGRESSION→fixed | `Input` default/numeric `tracking-normal` |
 | y473–490 MetaList | REGRESSION→fixed | `DappMetaList` `copy`→`detail`（14px） |
-| muted-foreground 0.5→0.7 | INTENTIONAL | Foundation token（Figma body 70%）；禁贴回 4175 50% |
+| muted-foreground vs 4175 50% | IGNORE | 对齐 Figma PC `text/body` 70%（`#000000b2`）；4175 全局 50% 为实现漂移，禁贴回 |
 | radius-sm 10→14 | INTENTIONAL | Foundation `--radius-sm: 0.875rem`（api Card outlined） |
 | globalBody `on-dark`→`inverse-muted` | REGRESSION→fixed | 正式 tone；禁 `inverse`+opacity 近似 |
-| FAQ answer `faq-text`→`muted-foreground` | INTENTIONAL | 禁贴回 `text-faq-text` |
+| FAQ answer `faq-text`→`muted-foreground` | REGRESSION→fixed | 单处色 `text-[#5b6472]`（≡4175），不进 Text tone；禁复活 `--faq-text` token |
 | panel 20→21 / subtitle 12→13 | INTENTIONAL | Foundation `--type-panel` / `--type-copy` vs 4175 fluid |
 | section lh 1.375(24.75)→1.3(23.4) | REGRESSION→fixed | `--type-section-leading` 对齐 4175；禁回 1.375 |
 | FAQ answer box h 42→70 | INTENTIONAL | UA margin→`py-[1em]` 等价撑开（盒模型含 padding） |
@@ -144,7 +144,7 @@ Figma 层: <layer>
 | FAQ answer 盒高 42→70 | REGRESSION→fixed | DApp `FaqList`/`Accordion` answer `py-[1em]` + H5 `max-dapp:text-xs`（≡4175 text-sm/xs）；Home `variant=home` 无 py、H5 `text-xs` |
 | Invite step leading 1.3→1.5 | REGRESSION→fixed | 对齐 4175 `dappCaptionClass` |
 | Community/Rewards `DappSection` h3 lh 24.75→23.4 | REGRESSION→fixed | 同 §5 section leading 已对齐 1.3 |
-| Hero kicker `coral-bright`→`primary` | INTENTIONAL | 禁贴回 `text-coral-bright` |
+| Hero / Global kicker `coral-bright`→`primary` | REGRESSION→fixed | 正式 tone `primary-bright` ≡ Figma `#f4a98f`；禁 `primary` 近似、禁 `text-coral-bright` |
 | Hero body `on-dark`→`inverse-muted` | REGRESSION→fixed | 正式 tone；禁 `inverse`+opacity 近似 |
 | Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT（见 p7-swap-delta） |
 | Phase 日期 / 累计共建额 | IGNORE | 动态 |
@@ -175,7 +175,7 @@ Figma 层: <layer>
 | Language menu item headline/copy 溢出叠字 | REGRESSION→fixed | `LanguageMenu` 行内 `text-sm`/`text-xs` + `leading-normal` |
 | `--type-*-size` px-lock 高分屏不随 site-fluid | REGRESSION→fixed | `tokens.json` size → rem @16px；`generate-tokens.mjs` 注释同步 |
 | Language menu item radius 10→14 | INTENTIONAL | Foundation `--radius-sm`；禁贴回 4175 10px |
-| muted / FAQ 色 | INTENTIONAL | 同 §5 / §5b；section leading 已 REGRESSION→fixed |
+| muted / FAQ 色 | IGNORE / REGRESSION→fixed | muted：同 §5（Figma PC `text/body` 70%；4175 50% IGNORE）；FAQ answer：单处 `#5b6472` |
 | 动态报价 / 余额 / 成员数 | IGNORE | 非静态对齐重点 |
 
 ## 5d. Swap hub 左下 Genesis promo + Convert/Trade 子页
@@ -184,6 +184,8 @@ Figma 层: <layer>
 |-------------|------|------|
 | Genesis promo title/body | REGRESSION→fixed | `tone="inverse-muted"` ≡ `#b8c0ce`（禁 `inverse`+opacity-70） |
 | AmountBox Balance 满色 foreground | REGRESSION→fixed | `AmountBox` balance → `muted-foreground`（≡ 4175 `ink-strong` 70%） |
+| Input placeholder 黑 70% | REGRESSION→fixed | `placeholder:text-placeholder`（`--placeholder` ≡ 4175）；禁 `muted-foreground` |
+| AmountBox 未连接金额色 | REGRESSION→fixed | `sessionReady=false` → `text-amount-muted` / `placeholder:text-amount-muted`（≡ `#c9cfda`） |
 | SwapMetaPanel label/value 13px | REGRESSION→fixed | `copy`→`detail`（14）+ `tracking-normal` |
 | Exchange price 数值 1.0001 vs 1.001 | IGNORE | 动态报价 |
 | Buy Balance 数值差异 | IGNORE | 链上余额 |
@@ -191,7 +193,7 @@ Figma 层: <layer>
 | Trade FAQ pill tabs（USD1 active） | REGRESSION→fixed | `DappPillTabs`：`soft`+`primary`+`lg`（`leading-snug`）；禁 `solid`+percent `md`；Chip `md` 去误挂 `bg-card`，`outlined` 自带 `bg-card`；`soft` 透明 1px border 对齐盒模型 |
 | Convert/Trade TokenChip USDT/USD1 lh 21→16.8 | REGRESSION→fixed | `TokenChip` `leading-[1.2] tracking-[-0.28px]`（≡ 4175） |
 | Convert Exchange rate `tabular-nums` 宽 89→70 | REGRESSION→fixed | `SwapMetricCard` → `MetricCard tabular={false}`（禁默认 Card.Value tabular） |
-| muted-foreground 0.5→0.7（hub/子页正文） | INTENTIONAL | 同 §5；禁贴回 4175 50% |
+| muted-foreground vs 4175 50%（hub/子页正文） | IGNORE | 同 §5：Figma PC `text/body` 70%；4175 50% IGNORE |
 | hub 底栏 / promo 1px Y / coral 级联细带 | IGNORE | 滚动/抗锯齿；非结构回归 |
 | Convert 右栏 peach 卡顶边细带 | IGNORE | 1–2px 圆角抗锯齿 |
 
@@ -201,10 +203,29 @@ Figma 层: <layer>
 
 | 红块 | 标签 | 说明 |
 |------|------|------|
-| b5/b6/b9–b11 正文灰阶 | INTENTIONAL | muted 0.5→0.7 |
+| b5/b6/b9–b11 正文灰阶 | IGNORE | 同 §5：Figma PC `text/body` 70%；4175 50% IGNORE |
 | b7/b8 promo↔FAQ 交界 | IGNORE | 1px Y + 抗锯齿；promo computed 已对齐 |
 | b0–b4 底栏 / coral 细带 | IGNORE | 视口底 / 级联 |
-| Convert/Trade 模式卡正文 | INTENTIONAL | 同 muted |
+| Convert/Trade 模式卡正文 | IGNORE | 同 muted（Figma PC 70%） |
+
+## 5f. Figma 色阶复核（MCP · 2026-07-09）
+
+正式稿：`sXWXDvBrLeg5r0NnP1SMZH`。变量：`text/body`=`#000000b2`（70%）· `text/muted`=`#00000066`（40%）· `accent/coral-bright`=`#f4a98f` · `accent/primary (coral)`=`#c85c3f`。
+
+| 帧 | 节点 | 文案 | Figma variable |
+|----|------|------|----------------|
+| **DApp — Genesis** `31:2` | `31:70` Shares · `31:68` Upcoming · `31:79` Season quota · `31:126` Discount · `101:756` 日期 | 次级 | **`text/body` 70%** |
+| **DApp — Genesis** `31:2` | `82:684` GLOBAL CONTRIBUTION | 暗色卡 kicker | **`accent/coral-bright`** |
+| **DApp — Rewards** `32:2` | `32:83` GENESIS SHAREHOLDER | 暗色卡 kicker | **`accent/coral-bright`** |
+| **DApp — Rewards** `32:2` | `32:47` CURRENT TITLE | 浅底侧栏 eyebrow | `accent/primary (coral)`（非 bright） |
+| **H5 — Genesis** `63:2` | `63:42` Shares · `63:50` Season quota · `63:76` Starts in · `63:83` 折扣 · `63:86` 空投比例 · `63:19` 副标题 | 次级 | **`text/muted` 40%** |
+| **H5 — Genesis** `63:2` | `63:79` AGX reference price | label | `text/body` 70%（同帧混用） |
+| **H5 — Rewards** `64:2` | `64:50` GENESIS SHAREHOLDER | 暗色卡 kicker | **`accent/coral-bright`** |
+| **H5 — Rewards** `64:2` | `64:21` CURRENT TITLE | 浅底 eyebrow | `accent/primary (coral)` |
+| **H5 — Rewards** `64:2` | `64:19` / `64:23` 副文案 | 次级 | `text/muted` 40% |
+| **H5 — Swap** `62:2` / **H5 — Community** `64:111` | 帧汇总 | 次级以 `text/muted` 为主 | 40% 居多 |
+
+**裁决**：PC 文案色 SSOT = `text/body` 70% → `--muted-foreground`；4175 50% = IGNORE。H5 帧大量 `text/muted` 40% 与 PC 不一致；按 AGENTS「H5 是 PC 响应式 / PC 文案 SSOT」**当前不跟 H5 40%**，除非产品明确要求 H5 分叉。暗色卡珊瑚强调 = `primary-bright`（≡ coral-bright），浅底强调仍用 `primary`。
 
 ## 6. 修订
 
@@ -216,3 +237,4 @@ Figma 层: <layer>
 | v2.2 | dapp-genesis-desktop 红块标签 + panel leading 1.3 / Text max-dapp 覆盖修复 |
 | v2.3 | 视觉 gate：红块优先；探针降级；Chip size=3；Community/Convert 标签同步 |
 | v2.4 | P8：legacy 静态块删除；工程色迁入 tokens.json；dappPanelTitle 内联 |
+| v2.5 | muted：INTENTIONAL→IGNORE（Figma PC body 70%；4175 50%）；§5f Figma MCP 色阶表；暗色卡 `primary-bright` |

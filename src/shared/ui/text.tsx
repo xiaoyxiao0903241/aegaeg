@@ -7,7 +7,7 @@ import { cn } from '~/shared/lib/utils'
  * SSOT：docs/foundation/api.md §2 · 流程：docs/foundation/runbook.md
  *
  * Primitive 只覆盖高频语义；页面/section 用 className 微调（design-system-audit §2）。
- * 10 variant × 6 tone；无 weight prop；无 alias。
+ * 10 variant × 7 tone；无 weight prop；无 alias。
  *
  * 若 className 含字号 utility（`text-4xl` / `text-[…]`），视为「显示阶覆盖」：
  * 剥掉 size / leading / tracking type token（twMerge 对 arbitrary tracking 冲突不全），
@@ -17,6 +17,8 @@ const toneClass = {
   foreground: 'text-foreground',
   'muted-foreground': 'text-muted-foreground',
   primary: 'text-primary',
+  /** Dark-surface coral accent — Figma `accent/coral-bright` `#f4a98f` (not primary). */
+  'primary-bright': 'text-primary-bright',
   success: 'text-success',
   inverse: 'text-inverse',
   /** Secondary copy on dark / inverse surfaces — Figma/dev `#b8c0ce` (not white@opacity). */
@@ -81,8 +83,9 @@ export type TextProps = HTMLAttributes<HTMLElement> & {
  * otherwise desktop keeps the override flag while the media query is inactive,
  * collapsing panel/section figures to inherited 16px (genesis global value REGRESSION).
  */
+/** Named sizes + size-like arbitrary (`text-[14px]` / `text-[length:…]`). Not `text-[#hex]` colors. */
 const FONT_SIZE_UTILITY_RE =
-  /(?:^|[\s])!?text-(?:xs|sm|base|lg|xl|[2-9]xl|(?:\[[^\]]+\]))(?:\/[^\s]*)?(?=[\s]|$)/
+  /(?:^|[\s])!?text-(?:xs|sm|base|lg|xl|[2-9]xl|(?:\[(?:length:|\d|\.\d)[^\]]*\]))(?:\/[^\s]*)?(?=[\s]|$)/
 
 /** Type tokens to drop on display-size override (keep font-weight). */
 const VARIANT_TYPE_TOKEN_RE =

@@ -83,7 +83,12 @@ export function AmountBox({
           <Input
             variant="amount"
             disabled={disabled}
-            className={cn(styles.input(), inputClassName)}
+            className={cn(
+              styles.input(),
+              // 4175 disconnected preview: text + placeholder #c9cfda
+              !sessionReady && 'text-amount-muted placeholder:text-amount-muted',
+              inputClassName,
+            )}
             {...amountProps}
           />
         )}

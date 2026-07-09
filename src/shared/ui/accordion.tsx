@@ -34,11 +34,12 @@ const accordionStyles = tv({
           revealClass(),
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
-        content: '',
+        // 单处色 ≡4175 faq-text；不进 Text tone（text-[#…] 由 twMerge 盖掉默认 foreground）
+        content: 'text-[#5b6472]',
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        content: '',
+        content: 'text-[#5b6472]',
       },
     },
   },
@@ -184,7 +185,6 @@ export function Accordion({
                       <Text
                         as="p"
                         variant="detail"
-                        tone="muted-foreground"
                         className={cn(styles.content(), 'my-0 py-[1em]')}
                       >
                         {item.content}

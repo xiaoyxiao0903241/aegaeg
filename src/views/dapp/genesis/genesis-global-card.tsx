@@ -47,7 +47,7 @@ export function GenesisGlobalCard({
   return (
     <div className={cn(revealClass(), styles.root())} data-reveal>
       <div className={styles.content()}>
-        <Text as="span" variant="eyebrow" tone="primary" className={styles.kicker()}>
+        <Text as="span" variant="eyebrow" tone="primary-bright" className={styles.kicker()}>
           {kicker}
         </Text>
         <Text

@@ -14,13 +14,13 @@
 
 | 维度 | 集合 | 键数 |
 |------|------|------|
-| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `success` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 17 |
+| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `success` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 18 |
 | type | `caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` | 10 |
 | space | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)` | 9 |
 | radius | `sm(8)` · `md(10)` · `lg(12)` · `xl(16)` · `full` | 5 |
 | shadow | `faq(E1)` · `card(E2)` · `subtle(E3)` · `elevated-strong(E4)` · `window(E5)` · `modal(E6)` | 6 |
 
-**禁止**：新增 `--ink-strong`、`--faq-text`、`--on-dark`、`--coral-bright` 等代码臆造色。
+**禁止**：新增 `--ink-strong`、`--faq-text`、`--on-dark`、`--coral-bright` 等代码臆造色（深底亮珊瑚用正式 token `primary-bright` ≡ Figma `accent/coral-bright`）。
 
 ---
 
@@ -29,7 +29,7 @@
 | 公开轴 | 值 |
 |--------|-----|
 | `variant` | **10 键**：`caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` |
-| `tone` | `foreground` · `muted-foreground` · `primary` · `success` · `inverse` · `inverse-muted` |
+| `tone` | `foreground` · `muted-foreground` · `primary` · `primary-bright` · `success` · `inverse` · `inverse-muted` |
 | 可选 | `as` · `tabular` |
 
 ### 10 variant（仅此）
@@ -51,9 +51,10 @@
 **className 显示阶覆盖**：若 `className` 含字号 utility（`text-xs`…`text-9xl` / `text-[…]`，含 `max-*:text-*` / `!text-*`），`Text` 剥掉 size / leading / tracking type token，**保留** `font-[var(--type-*-weight)]`（call site 通常只覆盖字号/行高）。避免残留 tracking 把标题挤窄，同时不丢 variant 字重。
 **依赖**：P0 token
 **探针**：Swap catalog 全部 Text owner 行 · Home section titles
-**Gate**：`text.tsx` variant 键 = **10** · `TextVariant` 联合 = 10 · `tone` = 6
+**Gate**：`text.tsx` variant 键 = **10** · `TextVariant` 联合 = 10 · `tone` = 7
 
 `inverse-muted` = 深底次级文案（Figma/dev `#b8c0ce`）。**禁止**用 `inverse` + `opacity-*` 近似；**禁止** call site `text-on-dark`（legacy alias 仅过渡）。
+`primary-bright` = 深底珊瑚强调（Figma `accent/coral-bright` `#f4a98f`）。暗色卡 kicker / volume 用此 tone；**禁止**用 `primary` 近似，**禁止** call site `text-coral-bright`。
 
 ---
 
@@ -130,6 +131,9 @@
 
 覆盖：普通表单输入、swap amount、genesis shares（numeric）。
 
+**Placeholder**：`placeholder:text-placeholder`（`--placeholder` ≡ 4175 `oklch(82% 0.011 264)`）。**禁止** `placeholder:text-muted-foreground`。
+**未连接金额预览**：`AmountBox` 在 `sessionReady=false` 时用 `text-amount-muted` / `placeholder:text-amount-muted`（≡ 4175 `#c9cfda`）。
+
 **禁止**：call site 输入框内 hand-roll amount typography
 **依赖**：P0 token
 **探针**：swap amount 输入区 · genesis shares 输入区
@@ -154,7 +158,8 @@
 | `CalloutCard` | promo / pcard / tc | `title`, `description`, `cta` | 深色 CTA / 提示卡 |
 
 **内部约定**：
-- `Accordion` 内部使用 `Text variant="question"` / `Text variant="detail" tone="muted-foreground"` 和 `Card surface="soft"`。
+- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-[#5b6472]`（单处场景，**不进** Text `tone`，禁复活 `faq-text` token）。
+- `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
@@ -182,7 +187,7 @@
 | 阶段 | 组件/任务 | 键数 gate | 同 PR 范围 |
 |------|-----------|-----------|------------|
 | P0 | Token JSON + 生成 CSS/TS | 见 §1 | theme.css / tokens.ts / 删 legacy color class |
-| P1 | Text | 10 variant · 6 tone | 全仓 `variant=` / `tone=` |
+| P1 | Text | 10 variant · 7 tone | 全仓 `variant=` / `tone=` |
 | P2 | Card | 4 surface | 全仓 `surface=` |
 | P3 | Chip（新增） | 3×2×2×3 | 替换 pct / badge / tab |
 | P4 | Input | 3 variant | 替换 amount-input、shares field |

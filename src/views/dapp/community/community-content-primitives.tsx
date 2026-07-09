@@ -126,8 +126,9 @@ export function CommunityStatCard({
         <Text
           as="b"
           // 4175 size=sm → text-sm / leading-normal (14/21); headline(16) was REGRESSION
+          // dark: Figma accent/coral-bright（≡4175 text-coral-bright），非 primary
           variant="headline"
-          tone="primary"
+          tone={dark ? 'primary-bright' : 'primary'}
           className={cn(styles.volume(), 'text-sm leading-normal')}
         >
           {volume}

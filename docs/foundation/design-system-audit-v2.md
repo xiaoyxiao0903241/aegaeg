@@ -36,7 +36,7 @@ text/inverse  white     → inverse
 accent/primary(coral) #e66a47  → primary
 accent/coral-soft     #fceae2  → primary/soft
 accent/coral-button   #e66a47  → primary（与 accent/primary 合并）
-accent/coral-bright   #f4a98f  → 删除，用 primary  lighter
+accent/coral-bright   #f4a98f  → primary-bright（深底强调；禁用 primary 近似）
 bg/page       #f5f6f8   → background
 bg/surface    white     → card
 bg/dark       #11141d   → dark
@@ -291,7 +291,7 @@ src/shared/styles/
 ## 7. 实施顺序
 
 1. **P0 — Token 重构**：`tokens.json` + 生成 `theme.css`/`tokens.ts`，删 legacy color class
-2. **P1 — Text 收敛**：10 variant + 6 tone，全仓迁移
+2. **P1 — Text 收敛**：10 variant + 7 tone，全仓迁移
 3. **P2 — Card 重构**：4 surface（outlined/elevated/soft/inverse），删 context/fill/radius
 4. **P3 — Chip 新增**：替换 pct/badge/tab
 5. **P4 — Input 统一**：default/numeric/amount

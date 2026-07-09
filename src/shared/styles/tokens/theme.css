@@ -31,6 +31,8 @@
   --primary-soft: oklch(94.92% 0.0224 45.6);
   --primary-foreground: #fff;
   --primary-foreground: oklch(100% 0 89.88);
+  --primary-bright: #f4a98f;
+  --primary-bright: oklch(80.08% 0.0962 39.91);
   --secondary: #f0f1f3;
   --secondary: oklch(94.83% 0.0075 260.73);
   --secondary-foreground: var(--foreground);
@@ -38,6 +40,9 @@
   --muted: oklch(94.83% 0.0075 260.73);
   --muted-foreground: rgba(0, 0, 0, 0.7);
   --muted-foreground: oklch(0% 0 0 / 70%);
+  --placeholder: #cfd3db;
+  --placeholder: oklch(82% 0.011 264);
+  --amount-muted: #c9cfda;
   --accent: #f9ece6;
   --accent: oklch(94.92% 0.0224 45.6);
   --accent-foreground: var(--primary);
@@ -218,10 +223,13 @@
   --color-primary: var(--primary);
   --color-primary-soft: var(--primary-soft);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-bright: var(--primary-bright);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-placeholder: var(--placeholder);
+  --color-amount-muted: var(--amount-muted);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);

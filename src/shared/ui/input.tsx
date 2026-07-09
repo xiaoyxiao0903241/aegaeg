@@ -14,7 +14,8 @@ import { cn } from '~/shared/lib/utils'
 export const inputVariants = tv({
   base: [
     'w-full min-w-0 border border-border bg-card text-foreground outline-none',
-    'placeholder:text-muted-foreground',
+    // 4175: --placeholder oklch(82% 0.011 264) — 非 muted-foreground（黑 70%）
+    'placeholder:text-placeholder',
     'disabled:cursor-not-allowed disabled:opacity-60',
     'focus:border-primary',
   ],
@@ -26,7 +27,7 @@ export const inputVariants = tv({
         'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-normal [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
       amount:
         // Match 4175 dappAmountClass: figure size + leading-normal (22→33) + tracking -0.44px
-        'border-0 bg-transparent text-right text-[length:var(--type-figure-size)] font-semibold leading-normal tracking-[-0.44px] outline-0 placeholder:text-muted-foreground',
+        'border-0 bg-transparent text-right text-[length:var(--type-figure-size)] font-semibold leading-normal tracking-[-0.44px] outline-0',
     },
     size: {
       sm: '',

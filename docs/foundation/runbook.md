@@ -11,7 +11,7 @@
 | 阶段 | 组件/任务 | 文件 | 说明 |
 |------|-----------|------|------|
 | P0 | Token 架构 | `src/shared/styles/tokens/tokens.json` + 生成 | JSON 源 SSOT，CI 生成 CSS/TS |
-| P1 | Text | `src/shared/ui/text.tsx` | 10 variant × 6 tone |
+| P1 | Text | `src/shared/ui/text.tsx` | 10 variant × 7 tone |
 | P2 | Card | `src/shared/ui/card.tsx` | 4 surface，无 context/fill/radius |
 | P3 | Chip（新增） | `src/shared/ui/chip.tsx` | 替换 pct / badge / tab |
 | P4 | Input | `src/shared/ui/input.tsx` | 合并 amount-input，3 variant：default/numeric/amount |
@@ -29,7 +29,7 @@
 ```text
 Phase 0   基线入库（只读）→ docs/baselines/
 P0        Token JSON + 生成 theme.css/tokens.ts（不动 call site）
-P1        Text     — 10 variant × 6 tone
+P1        Text     — 10 variant × 7 tone
 P2        Card     — 4 surface 无 context
 P3        Chip     — 新增，替换 pct/badge/tab
 P4        Input    — 合并 amount-input，default/numeric/amount

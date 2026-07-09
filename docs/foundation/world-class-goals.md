@@ -31,7 +31,7 @@
 
 1. 业务色只来自 `tokens.json` → `theme.css`；组件内 **零新增** hex / 任意 `oklch(...)` / `#FF9500` 类硬编码（SVG stop / 第三方 override 须 PR 注明）。
 2. `oklch` + hex 双写是 **有意 fallback**（Chromium &lt;111），不是混用 bug；禁止再发明第三套色。
-3. 零命中遗留 class：`text-ink-*` / `text-faint` / `text-on-dark` / `text-faq-text` / `coral-bright`（新 diff）。深底次级文案用 `tone="inverse-muted"`（`#b8c0ce`），禁止 `inverse`+opacity 近似。
+3. 零命中遗留 class：`text-ink-*` / `text-faint` / `text-on-dark` / `text-faq-text` / `text-coral-bright`（新 diff）。深底次级文案用 `tone="inverse-muted"`（`#b8c0ce`）；深底珊瑚强调用 `tone="primary-bright"`（`#f4a98f`），禁止 `primary` 近似、禁止 `inverse`+opacity 近似。
 
 ### B. Typography
 

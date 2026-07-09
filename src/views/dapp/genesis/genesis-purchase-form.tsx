@@ -19,7 +19,6 @@ import { SeasonOptionSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { resolveContractErrorMessage, resolveGenesisPurchaseError, resolveWalletTransactionError } from '~/views/dapp/web3/resolve-contract-error-message'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
-import { Text } from '~/shared/ui/text'
 
 export function GenesisPurchaseForm() {
   const { messages: t } = useI18n()
@@ -158,11 +157,12 @@ export function GenesisPurchaseForm() {
           { label: t.genesis.receive, value: `${genesis.estimatedAgxLabel} AGX` },
           { label: t.genesis.value, value: genesis.contributionValueLabel },
           {
+            // 与同级 MetaList label 同阶：外层已是 detail + muted；内层勿再套 Text variant/tone
             label: (
-              <Text as="span" className="inline-flex items-center gap-1" variant="copy">
+              <span className="inline-flex items-center gap-1">
                 {t.genesis.xTokenAirdrop}
                 <DappInfoTooltip content={xTokenAirdropHint} />
-              </Text>
+              </span>
             ),
             value: genesis.xTokenAirdropLabel,
           },
