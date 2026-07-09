@@ -15,7 +15,7 @@ export function HomeSecuritySection() {
   return (
     <HomeSection
       container="content"
-      className="border-y border-border bg-muted py-30 dapp:min-h-[49.625rem] max-dapp:min-h-[44.4375rem] max-dapp:border-y-0 max-dapp:py-12"
+      className="border-y border-border bg-muted py-30 dapp:min-h-[var(--home-security-section-min-h)] max-dapp:min-h-[var(--home-security-section-min-h-h5)] max-dapp:border-y-0 max-dapp:py-12"
       id="security"
       aria-labelledby="security-title"
     >

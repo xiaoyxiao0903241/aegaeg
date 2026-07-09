@@ -1,30 +1,36 @@
 /**
- * JS/TS 色值 SSOT — hex 与 theme.css :root 回退行对齐。
- * Tailwind 语义色以 theme.css 为准；此处供 thirdweb 主题与 runtime 读取。
+ * JS runtime color helpers — hex from tokens.json via generated `colorHex`.
+ * CSS / Tailwind SSOT remains theme.css. thirdweb Connect needs a JS object.
  */
+import { colorHex } from '~/shared/styles/tokens/tokens'
+
+/** Brand / chrome hex for meta theme-color and non-CSS consumers. */
 export const themeHex = {
-  background: '#f7f8f9',
-  foreground: '#0b0e14',
-  card: '#ffffff',
-  primary: '#e86a43',
-  primaryForeground: '#ffffff',
-  secondary: '#f0f1f3',
-  border: '#f0f0f2',
-  success: '#2bab6a',
-  onDark: '#b8c0ce',
-  faq: '#5b6472',
+  background: colorHex.background,
+  foreground: colorHex.foreground,
+  card: colorHex.card,
+  primary: colorHex.primary,
+  primaryForeground: colorHex['primary-foreground'],
+  secondary: colorHex.secondary,
+  border: colorHex.border,
+  success: colorHex.success,
+  onDark: colorHex['inverse-muted'],
+  faq: colorHex.faq,
   /** @deprecated use `faq` */
-  faqText: '#5b6472',
-  metaTheme: '#f7f8f9',
-  coral: '#c85c3f',
-  coralEmphasis: '#e9785a',
-  warning: '#ff9500',
-  footer: '#161514',
-  modalOverlay: 'oklch(13% 0.02 264 / 45%)',
-  modalOverlayStrong: 'oklch(13% 0.02 264 / 50%)',
+  faqText: colorHex.faq,
+  metaTheme: colorHex.background,
+  coral: colorHex.coral,
+  coralEmphasis: colorHex['coral-emphasis'],
+  warning: colorHex.warning,
+  footer: colorHex.footer,
+  modalOverlay: colorHex['modal-overlay'],
+  modalOverlayStrong: colorHex['modal-overlay-strong'],
 } as const
 
-/** thirdweb Connect Modal — 对齐 AEGIS 珊瑚色 + 白底卡片 */
+/**
+ * thirdweb Connect Modal palette.
+ * Token aliases where 1:1; remaining hexes are Connect-chrome-only (not product axes).
+ */
 export const thirdwebConnectHex = {
   accentButtonBg: themeHex.coralEmphasis,
   accentButtonText: '#3A201A',
@@ -36,20 +42,20 @@ export const thirdwebConnectHex = {
   modalOverlayBg: themeHex.modalOverlayStrong,
   primaryButtonBg: themeHex.coralEmphasis,
   primaryButtonText: '#3A201A',
-  primaryText: '#111625',
+  primaryText: colorHex.dark,
   secondaryButtonBg: '#F4F6F8',
   secondaryButtonHoverBg: '#EEF1F5',
-  secondaryButtonText: '#111625',
+  secondaryButtonText: colorHex.dark,
   secondaryIconColor: '#6B7280',
   secondaryIconHoverBg: '#F4F6F8',
-  secondaryIconHoverColor: '#111625',
+  secondaryIconHoverColor: colorHex.dark,
   secondaryText: '#6B7280',
   selectedTextBg: themeHex.coralEmphasis,
   selectedTextColor: '#3A201A',
   separatorLine: '#E3E8ED',
   skeletonBg: '#EEF1F5',
-  success: '#22A06B',
+  success: themeHex.success,
   tertiaryBg: '#F4F6F8',
-  tooltipBg: '#111625',
-  tooltipText: '#FFFFFF',
+  tooltipBg: colorHex.dark,
+  tooltipText: colorHex.inverse,
 } as const

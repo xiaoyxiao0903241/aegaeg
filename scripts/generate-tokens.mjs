@@ -151,7 +151,7 @@ function buildElevationVars(shadows) {
     const value = `${token.x} ${token.y} ${token.blur} ${token.color}`
     return `  --elevation-e${index + 1}: ${value};`
   })
-  return ['  /* ---- elevation primitives (E1–E6) ---- */', ...lines].join('\n')
+  return ['  /* ---- elevation primitives (E1–En from tokens.json shadows) ---- */', ...lines].join('\n')
 }
 
 /**
@@ -180,6 +180,35 @@ function buildThemeInline(colors) {
 }
 
 /**
+ * Resolve hex for a color key (follows `ref`).
+ * @param {Record<string, ColorToken>} colors
+ * @param {string} key
+ * @returns {string | undefined}
+ */
+function resolveColorHex(colors, key) {
+  const token = colors[key]
+  if (!token) return undefined
+  if (token.hex) return token.hex
+  if (token.ref) return resolveColorHex(colors, token.ref)
+  return undefined
+}
+
+/**
+ * Build kebab→hex map for JS runtime (theme-color meta, thirdweb, etc.).
+ * @param {Record<string, ColorToken>} colors
+ * @returns {Record<string, string>}
+ */
+function buildColorHexMap(colors) {
+  /** @type {Record<string, string>} */
+  const map = {}
+  for (const key of Object.keys(colors)) {
+    const hex = resolveColorHex(colors, key)
+    if (hex) map[key] = hex
+  }
+  return map
+}
+
+/**
  * Build tokens.ts content.
  * @param {TokenSet} tokens
  * @returns {string}
@@ -190,6 +219,7 @@ function buildTokensTs(tokens) {
   const spaceKeys = Object.keys(tokens.space)
   const radiusKeys = Object.keys(tokens.radius)
   const shadowKeys = Object.keys(tokens.shadows)
+  const colorHex = buildColorHexMap(tokens.colors)
 
   return `// Auto-generated from src/shared/styles/tokens/tokens.json
 // Do not edit manually. Run: pnpm build:tokens
@@ -197,6 +227,11 @@ function buildTokensTs(tokens) {
 export const colors = ${JSON.stringify(colorKeys, null, 2)} as const
 
 export type ColorToken = (typeof colors)[number]
+
+/** Hex (or rgba) from tokens.json — JS runtime SSOT; CSS prefers oklch in theme.css */
+export const colorHex = ${JSON.stringify(colorHex, null, 2)} as const
+
+export type ColorHexToken = keyof typeof colorHex
 
 export const typeVariants = ${JSON.stringify(typeKeys, null, 2)} as const
 
@@ -309,6 +344,7 @@ function staticEngineeringVars() {
   --toaster-bg: oklch(0% 0 0);
   --toaster-border: oklch(100% 0 0 / 12%);
   --toaster-text: oklch(100% 0 0);
+  --toaster-shadow: 0 0.75rem 2rem oklch(0% 0 0 / 28%);
   --icon-info-disc: #9999a6;
   --icon-info-glyph: #4d4d59;
   --hero-rays-hub: #8a8f98;
@@ -331,6 +367,8 @@ function staticEngineeringVars() {
   --dapp-scroll-fade: var(--app-scroll-fade);
 
   /* Home layout namespace */
+  --home-security-section-min-h: 49.625rem;
+  --home-security-section-min-h-h5: 44.4375rem;
   --home-security-block-max: 52.625rem;
   --home-security-art-w: 20.625rem;
   --home-security-list-max: 29rem;
@@ -355,12 +393,18 @@ function staticEngineeringVars() {
   --scrollbar-thumb-hover: oklch(0% 0 0 / 26%);
   --scrollbar-thumb-active: rgba(232, 106, 67, 0.52);
   --scrollbar-thumb-active: oklch(66.83% 0.1625 36.6 / 52%);
+  --scrollbar-thumb-idle: rgba(0, 0, 0, 0.09);
+  --scrollbar-thumb-idle: oklch(0% 0 0 / 9%);
   --scrollbar-thumb-dark: rgba(255, 255, 255, 0.18);
   --scrollbar-thumb-dark: oklch(100% 0 0 / 18%);
   --scrollbar-thumb-dark-hover: rgba(255, 255, 255, 0.32);
   --scrollbar-thumb-dark-hover: oklch(100% 0 0 / 32%);
   --scrollbar-thumb-dark-active: rgba(240, 168, 138, 0.62);
   --scrollbar-thumb-dark-active: oklch(80.08% 0.0962 39.91 / 62%);
+  --scrollbar-thumb-dark-idle: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-dark-idle: oklch(100% 0 0 / 10%);
+  --scrollbar-track: rgba(0, 0, 0, 0.1);
+  --scrollbar-track: oklch(0% 0 0 / 10%);
 }
 
 /* site-fluid — layout/icon rem scales; typography rem @16px also scales */

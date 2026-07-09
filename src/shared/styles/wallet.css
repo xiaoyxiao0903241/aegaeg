@@ -109,7 +109,7 @@
 
 .aegis-connected-wallet-chip--reconnect .aegis-connected-wallet-chip__status {
   background: var(--primary);
-  box-shadow: 0 0 0 2px oklch(66.83% 0.1625 36.6 / 22%);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 22%, transparent);
 }
 
 .aegis-connected-wallet-chip[aria-busy='true'] .aegis-connected-wallet-chip__status {
@@ -181,7 +181,7 @@
 /* thirdweb 独立 modal 兜底（ConnectEmbed 子屏不应再弹出，保留以防边缘 case） */
 .tw-modal {
   border-radius: 1.5rem !important;
-  box-shadow: 0 30px 80px oklch(15% 0.02 270 / 35%) !important;
+  box-shadow: var(--elevation-e7) !important;
   font-family: inherit !important;
   zoom: var(--fluid-scale, 1);
 }

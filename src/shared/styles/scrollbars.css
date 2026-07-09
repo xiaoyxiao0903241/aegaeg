@@ -24,7 +24,7 @@
   @media (hover: hover) and (pointer: fine) {
     body,
     :where(:root) :where(*:not(.scrollbar-none)) {
-      scrollbar-color: oklch(0% 0 0 / 9%) transparent;
+      scrollbar-color: var(--scrollbar-thumb-idle) transparent;
     }
 
     body:hover,
@@ -39,7 +39,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     :where([data-scrollbar='dark'], .scrollbar-dark):not(.scrollbar-none) {
-      scrollbar-color: oklch(100% 0 0 / 10%) transparent;
+      scrollbar-color: var(--scrollbar-thumb-dark-idle) transparent;
     }
 
     :where([data-scrollbar='dark'], .scrollbar-dark):not(.scrollbar-none):hover {
@@ -70,7 +70,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     :where(:root) :where(*:not(.scrollbar-none))::-webkit-scrollbar-thumb {
-      background-color: oklch(0% 0 0 / 9%);
+      background-color: var(--scrollbar-thumb-idle);
     }
 
     :where(:root) :where(*:not(.scrollbar-none)):hover::-webkit-scrollbar-thumb {
@@ -92,7 +92,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     :where([data-scrollbar='dark'], .scrollbar-dark):not(.scrollbar-none)::-webkit-scrollbar-thumb {
-      background-color: oklch(100% 0 0 / 10%);
+      background-color: var(--scrollbar-thumb-dark-idle);
     }
 
     :where([data-scrollbar='dark'], .scrollbar-dark):not(.scrollbar-none):hover::-webkit-scrollbar-thumb {
@@ -136,10 +136,10 @@
 }
 
 @utility scrollbar-x-track {
-  scrollbar-color: var(--scrollbar-thumb) oklch(0% 0 0 / 10%);
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
   &::-webkit-scrollbar-track {
-    background: oklch(0% 0 0 / 10%);
+    background: var(--scrollbar-track);
     border-radius: 9999px;
   }
 

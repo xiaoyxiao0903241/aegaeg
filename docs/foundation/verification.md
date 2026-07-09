@@ -46,6 +46,7 @@ pnpm exec eslint <paths>
 | Text wrap + shell-layout 去字阶 | §5an |
 | CommunityProgramCard fluid | §5ao |
 | 去硬编码 px tracking / ch / rays hex | §5ap |
+| themeHex / toaster / scrollbar 收束 | §5aq |
 | 分页 Figma | §5u |
 | Card / Metric / dark banner | §5m–§5o |
 
@@ -529,7 +530,17 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | hero-rays `#8a8f98`/`#868b94` → `--hero-rays-*` | REGRESSION→fixed | engineering vars in generate-tokens |
 | Rewards/Genesis `text-[1.125rem]`/`[0.875rem]` → type token / brand | REGRESSION→fixed | 禁 rem 字号字面量盖 Text |
 | security check `text-[0.9375rem]` → detail token | REGRESSION→fixed | |
-| `theme.ts` / wallet CSS oklch | DEFER | thirdweb + chrome；另切片收束到 tokens |
+| `theme.ts` / wallet CSS oklch | → §5aq | 见下节 |
+
+## 5aq. themeHex / toaster / scrollbar 收束（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `tokens.ts` 生成 `colorHex`；`themeHex` 从中取 brand 色 | INTENTIONAL | JS runtime SSOT ≡ tokens.json；禁平行 hex 表 |
+| thirdweb Connect 灰阶 / `#3A201A` 保留字面量 | INTENTIONAL | Connect chrome-only，非产品色轴；`dark`/`inverse`/`success`/`coral-emphasis` 已 alias |
+| toaster / scrollbar idle·track / wallet ring·modal shadow → CSS vars | REGRESSION→fixed | engineering `:root`；E7–E10 已在 tokens.json shadows |
+| home security section `min-h` → `--home-security-section-min-h*` | INTENTIONAL | 布局 rem 进 engineering vars |
+| Button `sm` `min-h-[2.625rem]`、widget subtitle `max-w-[17.5rem]`、season card rem | INTENTIONAL | API / 布局字面量；非色硬编码 |
 
 ## 6. 修订
 
@@ -581,3 +592,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v3.2 | §5an 全站 Text 包裹；`shell-layout` 去平行字阶 |
 | v3.3 | §5ao CommunityProgramCard：去 px/ch 锁，跟 site-fluid |
 | v3.4 | §5ap 去硬编码 px tracking / ch / hero-rays hex |
+| v3.5 | §5aq themeHex←colorHex；toaster/scrollbar/wallet 色影走 vars |
