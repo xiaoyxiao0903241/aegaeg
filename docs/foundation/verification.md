@@ -500,3 +500,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.26 | §5z CommunityStat 浅色 sc ≡ Figma `4040:7313` |
 | v2.27 | §5aa Swap flb 中间钮 ≡ Figma `4040:1662` |
 | v2.28 | §5ab flb 11px；InviteFlow desc 70%；表壳无外边框 |
+| v2.29 | §5ac Button/flb 平滑 hover + active 按下 |

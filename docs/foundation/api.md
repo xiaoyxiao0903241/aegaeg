@@ -238,3 +238,4 @@
 | v2.13 | CommunityStat 浅色 sc ≡ Figma `4040:7313`（ink / coral / radius-lg） |
 | v2.14 | `swapFlowButtonClass` ≡ Figma flb；Trade/Flash 中间钮共用 |
 | v2.15 | flb 显式 `rounded-[11px]`；InviteFlow desc = muted 70%；表壳去外边框 |
+| v2.16 | Button / flb：220ms soft ease + active 按下回落 |
