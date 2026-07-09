@@ -6,8 +6,9 @@ import { DialogOverlay, DialogPortal, dialogChrome } from '~/shared/ui/dialog'
 /** Shared close control — wallet modal, slippage, H5 drawer, etc. */
 export const aegisDialogClose = tv({
   base: [
+    // Figma wm-x 4040:5236 — 34px circle, white surface
     'grid size-[length:var(--dapp-wallet-modal-close-size)] shrink-0 cursor-pointer place-items-center rounded-full',
-    'border border-border bg-transparent text-foreground transition-[border-color,transform] duration-180 ease-out',
+    'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
     'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
   ],
 })

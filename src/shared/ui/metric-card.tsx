@@ -40,7 +40,7 @@ export function MetricCard({
       className={styles.root({ class: className })}
       data-reveal
     >
-      <Card.Label className="text-xs font-medium" tone="muted-foreground">
+      <Card.Label className="text-xs font-normal" tone="muted-foreground">
         {label}
       </Card.Label>
       <Card.Value className={styles.value({ class: valueClassName })}>

@@ -107,7 +107,7 @@
 
   /* ---- Typography Tier A (rem @16px; scales with html.site-fluid) ---- */
   --type-caption-size: 0.625rem;
-  --type-caption-weight: 500;
+  --type-caption-weight: 400;
   --type-caption-leading: normal;
   --type-caption-tracking: -0.02em;
   --type-eyebrow-size: 0.6875rem;

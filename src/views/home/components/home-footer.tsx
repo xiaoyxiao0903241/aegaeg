@@ -126,7 +126,7 @@ export function HomeFooter() {
         as="div"
         tone="inverse-muted"
         variant="caption"
-        className="container flex min-h-4 items-start overflow-hidden text-xs font-normal leading-4 whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
+        className="container flex min-h-4 items-start overflow-hidden text-xs leading-4 whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
         data-footer-copyright
       >
         {content.copyright}

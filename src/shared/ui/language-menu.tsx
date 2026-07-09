@@ -11,7 +11,8 @@ import { Text } from '~/shared/ui/text'
 const languageMenu = tv({
   slots: {
     trigger: [
-      'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
+      // Figma topbar lang — h 36, pill, white (H5 226:205 / PC 12:14)
+      'inline-flex h-9 min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-full',
       'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
       'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
       'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
@@ -20,7 +21,7 @@ const languageMenu = tv({
       '[[open]_&]:border-coral-hover-border [[open]_&]:bg-coral-wash [[open]_&]:shadow-card',
       '[[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-coral-wash [[data-open]_&]:shadow-card',
       '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-      'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
+      'max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-3 max-dapp:text-xs',
     ],
     /** Figma `lang-popup` 4140:286 — sizes via `--dapp-lang-menu-*` (rem / site-fluid). */
     panel: [
@@ -115,7 +116,7 @@ function MenuItem({
           as="span"
           variant="caption"
           tone="muted-foreground"
-          className="block text-[length:var(--dapp-lang-menu-meta-size)] font-normal leading-normal"
+          className="block text-[length:var(--dapp-lang-menu-meta-size)] leading-normal"
         >
           {option.label}
         </Text>

@@ -136,10 +136,14 @@
     animation: aegis-tw-sheet-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   }
 
+  /* Figma H5 wal — h 36, 12px SemiBold, white surface (226:202) */
   .aegis-connected-wallet-chip {
-    min-block-size: 1.875rem;
+    min-block-size: 2.25rem;
+    padding-block: 0.5rem;
     padding-inline: 0.75rem;
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
+    background: var(--card);
+    box-shadow: none;
   }
 }
 

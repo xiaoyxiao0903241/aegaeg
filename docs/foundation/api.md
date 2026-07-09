@@ -39,7 +39,7 @@
 
 | variant | PC | H5 | weight | 用途 |
 |---------|----|----|--------|------|
-| caption | 10 | 10 | medium | rail label |
+| caption | 10 | 10 | normal | meta / rail label；badge 等 Medium 在 call site `font-medium` |
 | eyebrow | 11 | 12 | semibold | uppercase kicker |
 | copy | 13 | 12 | normal | **默认**正文、label、table cell |
 | detail | 14 | 14 | normal | FAQ 答案、长说明 |

@@ -13,14 +13,15 @@ export const seasonCard = tv({
       'min-h-[7.8125rem] w-[8.75rem]',
       'rounded-[length:var(--dapp-season-card-radius)]',
     ],
-    /** Display size only — weight/leading/tracking from Text variant. */
+    /** Display size only — weight/leading/tracking from Text variant unless noted. */
     title: 'text-[length:var(--dapp-season-title-size)] text-foreground',
+    // Figma 4151:340 — meta Regular (400) via caption; badge Medium (500) override.
     meta: 'm-0 text-[length:var(--dapp-season-meta-size)] text-muted-foreground',
     metaAccent: 'text-coral-emphasis',
     radio:
       'size-[length:var(--dapp-season-radio-size)] rounded-[calc(var(--dapp-season-radio-size)/2)]',
     badge:
-      'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap text-[length:var(--dapp-season-badge-size)]',
+      'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap text-[length:var(--dapp-season-badge-size)] font-medium',
   },
   variants: {
     selected: {

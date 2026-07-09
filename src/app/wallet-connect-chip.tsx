@@ -106,11 +106,16 @@ function ConnectedWalletChip() {
         type="button"
       >
         <span className="aegis-connected-wallet-chip__status" aria-hidden="true" />
-        <Text as="span" variant="copy" className="truncate text-sm font-semibold leading-none">
+        <Text
+          as="span"
+          variant="copy"
+          className="truncate text-xs font-semibold leading-[1.2] tracking-[-0.01em] max-dapp:text-xs"
+        >
           {formatAddress(address)}
         </Text>
       </button>
-      {menuOpen ? <WalletDetailsModal onOpenChange={setMenuOpen} open={menuOpen} /> : null}
+      {/* Keep mounted so Radix can play the closed-state exit animation (same as connect modal). */}
+      <WalletDetailsModal onOpenChange={setMenuOpen} open={menuOpen} />
     </>
   )
 }

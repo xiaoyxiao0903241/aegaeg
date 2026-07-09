@@ -78,11 +78,17 @@ export function WalletDetailsModal({
   }
 
   async function handleDisconnect() {
-    if (wallet) {
-      await disconnect(wallet)
-    }
-    clearAuthOnDisconnect()
+    // Close first so Radix can play data-state=closed exit animation (same as connect modal).
+    // Teardown after the longest sheet/modal out duration in animations.css.
     onOpenChange(false)
+    window.setTimeout(() => {
+      void (async () => {
+        if (wallet) {
+          await disconnect(wallet)
+        }
+        clearAuthOnDisconnect()
+      })()
+    }, 280)
   }
 
   return (
@@ -91,15 +97,20 @@ export function WalletDetailsModal({
       open={open}
       overlayClassName="bg-modal-overlay backdrop-blur-sm"
       className={cn(
-        'w-full max-w-[length:var(--dapp-wallet-modal-max-width)] max-dapp:w-full',
-        'rounded-2xl border-0 bg-card p-6 text-center shadow-modal-panel',
-        'max-dapp:rounded-t-2xl max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t max-dapp:border-border',
+        // PC centered card (Figma 4040:5234) — same responsive shell as slippage / connect
+        'border-0 bg-card text-center shadow-modal-panel',
+        'w-full max-w-[length:var(--dapp-wallet-modal-max-width)] p-6',
+        'dapp:rounded-2xl',
+        // H5 bottom sheet — full bleed, top radius only
+        'max-dapp:max-w-none max-dapp:w-full',
+        'max-dapp:rounded-t-2xl max-dapp:rounded-b-none',
+        'max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t max-dapp:border-border',
         'max-dapp:px-6 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))] max-dapp:pt-3',
       )}
     >
       <AegisSheetHandle />
 
-      <div className="relative flex w-full items-start justify-end">
+      <div className="relative flex w-full shrink-0 items-start justify-end">
         <AegisDialogClose aria-label={t.common.close}>
           <X aria-hidden className="size-3.5 shrink-0" strokeWidth={2} />
         </AegisDialogClose>
@@ -107,10 +118,10 @@ export function WalletDetailsModal({
 
       <div
         aria-hidden="true"
-        className="mx-auto mt-1.5 mb-5 grid size-[length:var(--dapp-wallet-modal-orb-size)] place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb"
+        className="mx-auto mt-1.5 mb-5 grid size-[length:var(--dapp-wallet-modal-orb-size)] shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb"
       >
         <Wallet
-          className="size-[length:var(--dapp-wallet-modal-orb-icon)]"
+          className="size-[length:var(--dapp-wallet-modal-orb-icon)] shrink-0"
           strokeWidth={1.75}
         />
       </div>

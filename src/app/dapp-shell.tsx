@@ -58,12 +58,19 @@ export function DappShell() {
   return (
     <main
       className={cn(
-        'relative flex h-dvh flex-col gap-0 bg-background pt-0 text-muted-foreground',
-        'dapp:h-dvh dapp:overflow-hidden',
-        'max-dapp:bg-[linear-gradient(180deg,var(--dapp-h5-gradient-top)_0%,var(--background)_25%,var(--background)_100%)]',
-        'max-dapp:h-auto max-dapp:min-h-dvh max-dapp:overflow-x-clip max-dapp:overflow-y-visible',
+        'relative flex h-dvh flex-col gap-0 overflow-hidden bg-background pt-0 text-muted-foreground',
+        'max-dapp:bg-transparent',
       )}
     >
+      {/* H5: peach→background wash fixed to the viewport (not the scrolling card). */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          'pointer-events-none fixed inset-0 z-0',
+          'hidden max-dapp:block',
+          'bg-[linear-gradient(180deg,var(--dapp-h5-gradient-top)_0%,var(--background)_25%,var(--background)_100%)]',
+        )}
+      />
       <HeroRaysBackground variant="shell" />
       <DappTopbar />
 
@@ -72,7 +79,7 @@ export function DappShell() {
           as="div"
           density="comfortable"
           role="status"
-          className="mx-4 mb-2"
+          className="relative z-1 mx-4 mb-2"
         >
           未配置 <code className="font-mono">VITE_THIRDWEB_CLIENT_ID</code>
           ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code>{' '}
@@ -83,17 +90,16 @@ export function DappShell() {
 
       <section
         className={cn(
-          'relative z-1 flex min-h-0 flex-1 flex-col overflow-visible px-0',
-          'dapp:min-h-0 dapp:flex-1 dapp:items-center dapp:justify-stretch dapp:overflow-visible dapp:pb-4',
-          'max-dapp:flex-none max-dapp:overflow-visible max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]',
+          'relative z-1 flex min-h-0 flex-1 flex-col overflow-hidden px-0',
+          'dapp:items-center dapp:justify-stretch dapp:overflow-visible dapp:pb-4',
         )}
         aria-label="AEGIS X DApp"
       >
         <div
           className={cn(
-            'relative z-1 mx-auto flex h-full min-h-0 w-full flex-col',
-            'dapp:max-w-none dapp:flex-1 dapp:items-center dapp:px-0',
-            'max-dapp:h-auto max-dapp:max-w-none max-dapp:px-0',
+            'relative z-1 mx-auto flex h-full min-h-0 w-full flex-1 flex-col',
+            'dapp:max-w-none dapp:items-center dapp:px-0',
+            'max-dapp:max-w-none max-dapp:px-0',
           )}
           data-dapp-shell-container
         >
@@ -101,11 +107,12 @@ export function DappShell() {
             <div
               ref={setWindowNode}
               className={cn(
-                'group/shell relative z-1 mx-auto grid w-full min-h-0 overflow-hidden border border-border bg-card shadow-window',
-                'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none',
+                'group/shell relative z-1 mx-auto grid w-full min-h-0 border border-border bg-card shadow-window',
+                'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
                 !shellState.sessionReady && 'shadow-window-compact',
-                'max-dapp:flex max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-col max-dapp:gap-3',
-                'max-dapp:overflow-hidden max-dapp:rounded-2xl max-dapp:border-0 max-dapp:p-4.5 max-dapp:shadow-card',
+                'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:flex-1 max-dapp:max-w-none max-dapp:flex-col max-dapp:gap-3',
+                'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
+                'max-dapp:px-4.5 max-dapp:pt-4.5 max-dapp:pb-8 max-dapp:shadow-card',
               )}
               data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
               data-session-ready={shellState.sessionReady ? 'true' : 'false'}
@@ -118,8 +125,11 @@ export function DappShell() {
               <DappScrollFadeHost>
                 <aside
                   className={cn(
-                    'h-full min-h-0 max-h-full overflow-y-auto overflow-x-hidden border-r border-border bg-card px-6 pb-5.5 pt-10',
-                    'max-dapp:h-auto max-dapp:max-h-none max-dapp:w-full max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
+                    'overflow-x-hidden border-r border-border bg-card px-6 pb-5.5 pt-10',
+                    // PC: fill column and scroll inside the panel
+                    'dapp:h-full dapp:min-h-0 dapp:max-h-full dapp:overflow-y-auto',
+                    // H5: size to content; window is the only scroller (avoid flex-shrink overlap)
+                    'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
                   )}
                   data-dapp-widget-panel
                 >
@@ -154,11 +164,14 @@ export function DappShell() {
               >
                 <section
                   className={cn(
-                    'min-h-0 min-w-0 max-h-full overflow-x-hidden bg-card transition-opacity duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+                    'min-w-0 overflow-x-hidden bg-card transition-opacity duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+                    // PC: fill column and scroll inside the panel
+                    'dapp:min-h-0 dapp:max-h-full',
                     effectiveDetailCollapsed
                       ? 'pointer-events-none overflow-y-hidden opacity-0'
-                      : 'overflow-y-auto opacity-100',
-                    'max-dapp:pointer-events-auto max-dapp:w-full max-dapp:min-h-0 max-dapp:overflow-visible max-dapp:opacity-100',
+                      : 'dapp:overflow-y-auto opacity-100',
+                    // H5: size to content under the shared window scroller
+                    'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:opacity-100',
                   )}
                   aria-hidden={effectiveDetailCollapsed}
                   aria-labelledby={`${activeTab}-title`}

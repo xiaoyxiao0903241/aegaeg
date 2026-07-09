@@ -163,7 +163,7 @@ export function DappRail({
                 tone={active ? 'primary' : 'muted-foreground'}
                 className={cn(
                   mobile ? 'min-w-0 flex-1 truncate' : 'block w-full min-w-0 truncate text-center',
-                  'text-xs font-normal leading-snug tracking-tight',
+                  'text-xs leading-snug tracking-tight',
                 )}
                 title={label}
               >

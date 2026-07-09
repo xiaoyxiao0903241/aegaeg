@@ -13,9 +13,11 @@ export function DappWidgetStack({
   return (
     <div
       className={cn(
-        'flex min-h-0 flex-1 flex-col gap-2',
+        'flex flex-col gap-2',
         '[&>*:first-child]:!mt-0 max-dapp:[&>*:first-child]:!mt-0',
-        'dapp:[&>*]:shrink-0',
+        // PC: fill remaining column height; H5: hug content (shell window scrolls)
+        'dapp:min-h-0 dapp:flex-1 dapp:[&>*]:shrink-0',
+        'max-dapp:min-h-0 max-dapp:flex-none',
         className,
       )}
     >

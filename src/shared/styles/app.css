@@ -2,18 +2,28 @@
 @import 'tailwindcss/utilities';
 @import './wallet.css';
 
-/* PC DApp — 锁视口高度，避免装饰层撑出页面滚动 */
-@media (min-width: 821px) {
-  html.dapp-app,
-  html.dapp-app body,
-  html.dapp-app #root {
-    height: 100dvh;
-    max-height: 100dvh;
-    overflow: hidden;
-  }
+/* DApp — 锁视口高度；H5 底色与 shell 固定渐变一致，避免安全区/刘海外露黑底 */
+html.dapp-app,
+html.dapp-app body,
+html.dapp-app #root {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
 
-  html.dapp-app #root {
-    min-height: 0;
+html.dapp-app #root {
+  min-height: 0;
+}
+
+@media (max-width: 820px) {
+  html.dapp-app,
+  html.dapp-app body {
+    background: linear-gradient(
+      180deg,
+      var(--dapp-h5-gradient-top) 0%,
+      var(--background) 25%,
+      var(--background) 100%
+    );
   }
 }
 
