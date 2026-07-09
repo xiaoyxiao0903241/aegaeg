@@ -31,7 +31,6 @@ import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import {
   RewardsHistoryPillTabs,
   RewardsHistoryReveal,
-  rewardsHistoryTableHead,
 } from '~/views/dapp/rewards/rewards-history-primitives'
 
 type RewardsHistoryTab = 'referral' | 'team' | 'communityFund'
@@ -191,7 +190,6 @@ export function RewardsHistorySection() {
       <ResponsiveTable
         colWidths={historyColWidths}
         compact
-        headCellClassName={rewardsHistoryTableHead()}
         headers={historyHeaders}
         rows={[]}
       />
@@ -217,7 +215,6 @@ export function RewardsHistorySection() {
     <ResponsiveTable
       colWidths={historyColWidths}
       compact
-      headCellClassName={rewardsHistoryTableHead()}
       headers={historyHeaders}
       isLoading={historyShowSkeleton}
       linkColumns={[1]}

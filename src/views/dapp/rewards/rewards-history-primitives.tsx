@@ -47,7 +47,3 @@ export function RewardsHistoryPillTabs({
     />
   )
 }
-
-export const rewardsHistoryTableHead = tv({
-  base: '',
-})

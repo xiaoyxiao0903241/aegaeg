@@ -446,7 +446,7 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 
 | 变更 | 标签 | 说明 |
 |------|------|------|
-| `swapFlowButtonClass` SSOT | INTENTIONAL | 34×34 · `rounded-[11px]` · border · card · text-sm/-0.28 |
+| `swapFlowButtonClass` SSOT | INTENTIONAL | 34×34 · `rounded-control` · border · card · text-sm/-0.28 |
 | Trade flip：`size-8`/`rounded-sm` → `swapFlowButtonClass` | REGRESSION→fixed | ≡ Figma flb；保留 hover lift + 旋转 |
 | Flash divider 共用同一 chrome | INTENTIONAL | 仍用 chevron SVG；壳与 Trade 一致 |
 
@@ -454,7 +454,7 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 
 | 变更 | 标签 | 说明 |
 |------|------|------|
-| flb `rounded-control` → `rounded-[11px]` | REGRESSION→fixed | Figma 明确 11px；避免 token 未进 utility 时圆角落空 |
+| flb `rounded-control` → `rounded-[11px]` | SUPERSEDED | 见 §5ae：用户定稿回 `rounded-control` |
 | InviteFlow desc 去 `text-foreground/30` | REGRESSION→fixed | Figma `4040:7330` text/body 70% = `muted-foreground` |
 | `DappTableCard` shell `border-0` | INTENTIONAL | 仅阴影；内部分隔线保留 |
 
@@ -473,6 +473,15 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | `CommunityProgramCard` ≡ Figma `4040:7354` | REGRESSION→fixed | pad/gap/字阶/字距；去 H5 平行字阶与 underline CTA |
 | FAQ `FaqChevron` 换 path → 固定 path + `rotate-180` | REGRESSION→fixed | 箭头转动；色仍 open=`primary` |
 | Collapsible `overflow-visible` 打断 `0fr→1fr` | REGRESSION→fixed | settle 后再挂 overflow；删 CSS 永久 `overflow-visible` 覆盖 |
+
+## 5ae. flb `rounded-control` + 全表表头 ≡ Community（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `swapFlowButtonClass`：`rounded-[11px]` → `rounded-control` | INTENTIONAL | 用户允许的 control radius；禁再写 11px 字面量 |
+| 基线 class 去掉 transition（交互态只在 Interactive） | INTENTIONAL | 静态 Flash divider 不带 hover 过渡 |
+| `ResponsiveTable` 表头去 Rewards `foreground/30` | REGRESSION→fixed | ≡ Community「我的社区成员」`muted-foreground` |
+| 删 `headCellClassName` / `rewardsHistoryTableHead` | INTENTIONAL | 表头无 call-site 分叉 |
 
 ## 6. 修订
 
@@ -510,3 +519,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.28 | §5ab flb 11px；InviteFlow desc 70%；表壳无外边框 |
 | v2.29 | §5ac Button/flb 平滑 hover + active 按下 |
 | v2.30 | §5ad CommunityProgramCard ≡ `4040:7354`；FAQ rotate；Collapsible settle overflow |
+| v2.31 | §5ae flb → `rounded-control`；全表表头 ≡ Community muted |

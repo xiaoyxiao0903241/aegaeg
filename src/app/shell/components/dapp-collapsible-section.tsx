@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { cn } from '~/shared/lib/utils'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
@@ -28,27 +28,31 @@ export function DappCollapsibleSection({
   const settleTimerRef = useRef<number | null>(null)
   const bodyId = useId()
 
-  const clearSettleTimer = () => {
+  useEffect(() => {
+    return () => {
+      if (settleTimerRef.current != null) {
+        window.clearTimeout(settleTimerRef.current)
+      }
+    }
+  }, [])
+
+  const handleToggle = () => {
     if (settleTimerRef.current != null) {
       window.clearTimeout(settleTimerRef.current)
       settleTimerRef.current = null
     }
-  }
 
-  const handleToggle = () => {
-    clearSettleTimer()
-    setOpen((value) => {
-      const next = !value
-      if (next) {
-        settleTimerRef.current = window.setTimeout(() => {
-          setOverflowSettled(true)
-          settleTimerRef.current = null
-        }, COLLAPSE_MS)
-      } else {
-        setOverflowSettled(false)
-      }
-      return next
-    })
+    if (open) {
+      setOpen(false)
+      setOverflowSettled(false)
+      return
+    }
+
+    setOpen(true)
+    settleTimerRef.current = window.setTimeout(() => {
+      setOverflowSettled(true)
+      settleTimerRef.current = null
+    }, COLLAPSE_MS)
   }
 
   return (

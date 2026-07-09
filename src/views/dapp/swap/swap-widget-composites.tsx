@@ -25,17 +25,16 @@ const swapGenesisFooterCardClass = 'gap-1.5 [&_p]:leading-tight'
 
 export const swapPercentRowClass = 'pt-2.5 max-dapp:mt-3 max-dapp:py-0'
 
-/** Figma `flb` 4040:1662 — 34×34 · radius 11px · border · card fill. Trade flip + Flash divider. */
+/** Figma `flb` — 34×34 · `rounded-control` · border · card. Trade flip + Flash divider. */
 export const swapFlowButtonClass = cn(
-  'grid size-[2.125rem] shrink-0 place-items-center rounded-[11px] border border-border bg-card p-0',
+  'grid size-[2.125rem] shrink-0 place-items-center rounded-control border border-border bg-card p-0',
   'text-sm leading-none tracking-[-0.28px] text-foreground shadow-none',
-  // Match Button lift motion SSOT (smooth hover + press settle).
-  'transition-[border-color,background-color,box-shadow,transform,opacity] duration-220 ease-[cubic-bezier(.2,.8,.2,1)]',
 )
 
 /** Interactive flb (Trade flip) — hover lift + active press. */
 export const swapFlowButtonInteractiveClass = cn(
   swapFlowButtonClass,
+  'transition-[border-color,background-color,box-shadow,transform,opacity] duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)]',
   'enabled:cursor-pointer enabled:hover:-translate-y-px enabled:hover:border-primary',
   'enabled:focus-visible:-translate-y-px enabled:focus-visible:border-primary',
   'enabled:active:translate-y-0 enabled:active:border-primary',

@@ -8,11 +8,8 @@ const tableCell = dappTableCell()
 const TABLE_CELL =
   `${tableCell.minWidth()} ${tableCell.border()} px-3 py-2.5 text-left whitespace-nowrap font-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
-// 4175 rewards head used `text-faint` (30%); Foundation deleted faint → foreground/30.
-const TABLE_HEAD_CELL = cn(
-  TABLE_CELL,
-  'text-muted-foreground group-data-[tab=rewards]/shell:text-foreground/30',
-)
+/** SSOT ≡ Community「我的社区成员」表头 — muted only; no tab-specific faint override. */
+const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground')
 
 const TABLE_CLASS =
   'w-max min-w-full table-auto border-collapse text-sm leading-normal max-dapp:text-xs'
@@ -26,7 +23,6 @@ export function ResponsiveTable({
   colWidths,
   compact = false,
   emphasisColumns = [],
-  headCellClassName,
   headers,
   highlightedRows = [],
   isLoading = false,
@@ -40,7 +36,6 @@ export function ResponsiveTable({
   colWidths?: Array<string | undefined>
   compact?: boolean
   emphasisColumns?: number[]
-  headCellClassName?: string
   headers: string[]
   highlightedRows?: number[]
   isLoading?: boolean
@@ -66,7 +61,7 @@ export function ResponsiveTable({
         <thead>
           <tr>
             {headers.map((header) => (
-              <th className={cn(TABLE_HEAD_CELL, headCellClassName)} key={header}>
+              <th className={TABLE_HEAD_CELL} key={header}>
                 {header}
               </th>
             ))}
