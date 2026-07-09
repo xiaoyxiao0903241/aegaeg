@@ -3,6 +3,13 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { cn } from '~/shared/lib/utils'
 import { DialogOverlay, DialogPortal, modalOverlayClass, responsivePanelClass } from '~/shared/ui/dialog'
 
+/** DApp modal/sheet close — details / slippage. Connect keeps `.aegis-wallet-connect-close`. */
+export const aegisDialogCloseClass = cn(
+  'grid size-8 shrink-0 cursor-pointer place-items-center rounded-full',
+  'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
+  'hover:-translate-y-px hover:border-foreground focus-visible:border-foreground focus-visible:outline-none',
+)
+
 export function AegisSheetHandle() {
   return (
     <div

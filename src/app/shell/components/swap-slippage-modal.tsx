@@ -11,6 +11,7 @@ import { Text, textVariants } from '~/shared/ui/text'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
+  aegisDialogCloseClass,
 } from '~/shared/ui/aegis-responsive-dialog'
 
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
@@ -76,11 +77,7 @@ export function SwapSlippageModal({
         </DialogPrimitive.Title>
         <DialogPrimitive.Close
           aria-label={t.common.close}
-          className={cn(
-            'grid size-8 shrink-0 cursor-pointer place-items-center rounded-md',
-            'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
-            'hover:-translate-y-px hover:border-primary focus-visible:border-primary focus-visible:outline-none',
-          )}
+          className={aegisDialogCloseClass}
           type="button"
         >
           <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />

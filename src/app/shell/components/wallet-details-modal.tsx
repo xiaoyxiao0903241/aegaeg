@@ -14,6 +14,7 @@ import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { formatAddress } from '~/app/utils'
 import { Button } from '~/shared/ui/button'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
@@ -21,6 +22,7 @@ import { cn } from '~/shared/lib/utils'
 import {
   AegisResponsiveDialog,
   AegisSheetHandle,
+  aegisDialogCloseClass,
 } from '~/shared/ui/aegis-responsive-dialog'
 import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
@@ -207,12 +209,7 @@ export function WalletDetailsModal({
 
       <DialogPrimitive.Close
         aria-label={t.common.close}
-        className={cn(
-          'absolute right-4 top-4 grid size-8 cursor-pointer place-items-center rounded-full',
-          'border border-border bg-card text-foreground transition-[border-color,transform] duration-180 ease-out',
-          'hover:-translate-y-px hover:border-foreground focus-visible:border-foreground focus-visible:outline-none',
-          'max-dapp:top-5',
-        )}
+        className={cn(aegisDialogCloseClass, 'absolute right-4 top-4 max-dapp:top-5')}
         type="button"
       >
         <X aria-hidden className={dappIconClass.sm} strokeWidth={2} />
@@ -256,8 +253,10 @@ export function WalletDetailsModal({
 
       <div className="mt-4 grid gap-2 text-left">
         {displayTokenRows.map((token) => (
-          <div
-            className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5"
+          <Card
+            as="div"
+            surface="outlined"
+            className="flex items-center justify-between gap-3 rounded-xl border-border/70 bg-card/60 px-3.5 py-2.5"
             key={token.symbol}
           >
             <Text as="span" variant="copy" tone="muted-foreground">
@@ -266,7 +265,7 @@ export function WalletDetailsModal({
             <Text as="strong" variant="figure" tabular>
               {token.value}
             </Text>
-          </div>
+          </Card>
         ))}
       </div>
 
@@ -274,29 +273,29 @@ export function WalletDetailsModal({
         {!walletReady ? (
           <>
             <Button
-              className="h-11 gap-2 px-3 text-sm"
+              className="gap-2"
               onClick={() => setConnectOpen(true)}
               size="md"
               type="button"
               variant="primary"
             >
-              <Text as="span" variant="copy">{t.wallet.reconnectWallet}</Text>
+              {t.wallet.reconnectWallet}
             </Button>
             <Button
-              className="h-11 gap-2 px-3 text-sm"
+              className="gap-2"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"
               variant="secondary"
             >
               <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-              <Text as="span" variant="copy">{t.wallet.disconnect}</Text>
+              {t.wallet.disconnect}
             </Button>
           </>
         ) : (
           <div className="grid grid-cols-2 gap-2.5">
             <Button
-              className="h-11 gap-2 px-3 text-sm"
+              className="gap-2"
               onClick={() => void handleCopy()}
               size="md"
               type="button"
@@ -308,19 +307,17 @@ export function WalletDetailsModal({
                 size="action"
                 src={copied ? dappAssets.check : dappAssets.copyWhite}
               />
-              <Text as="span" variant="copy">
-                {copied ? t.wallet.copied : t.wallet.copyAddress}
-              </Text>
+              {copied ? t.wallet.copied : t.wallet.copyAddress}
             </Button>
             <Button
-              className="h-11 gap-2 px-3 text-sm"
+              className="gap-2"
               onClick={() => void handleDisconnect()}
               size="md"
               type="button"
               variant="secondary"
             >
               <LogOut aria-hidden className={dappIconClass.sm} strokeWidth={2} />
-              <Text as="span" variant="copy">{t.wallet.disconnect}</Text>
+              {t.wallet.disconnect}
             </Button>
           </div>
         )}

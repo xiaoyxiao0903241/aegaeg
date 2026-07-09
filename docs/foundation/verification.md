@@ -338,6 +338,16 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | Slippage Confirm → `Button primary md pill` | INTENTIONAL | 删手写 hover |
 | wallet `shadow-primary-hover-lg` | DEFER | thirdweb CSS 另切片 |
 
+## 5q. 隐藏面（modal / drawer）第一刀（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| WalletDetails CTA 去 `h-11 text-sm` + 内嵌 Text | INTENTIONAL | 高度/字阶走 Button `md`；连接/未连接两态保留 |
+| Token 行 → `Card outlined` | INTENTIONAL | 抹 `rounded-xl` + 浅边/底 |
+| `aegisDialogCloseClass`（details + slippage） | INTENTIONAL | Connect / Home popup / mobile-nav close KEEP 分轨 |
+| LanguageMenu / mobile-nav / ConnectEmbed | DEFER | 下一切片 |
+| glass modal/drawer ≠ Card surface | KEEP | 禁并轴 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -360,3 +370,4 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.14 | §5n `dappDarkBanner` 暗色横幅 SSOT |
 | v2.15 | §5o ProgramCard / DappTableCard → elevated；thirdweb→Button DEFER |
 | v2.16 | §5p Button hover SSOT |
+| v2.17 | §5q 隐藏面第一刀：WalletDetails / dialog close |
