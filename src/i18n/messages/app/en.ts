@@ -87,7 +87,7 @@ const app = defineMessages({
         overview: 'Overview',
         exchangeRate: 'Exchange rate',
         settlement: 'Settlement',
-        settlementValue: 'Get AEGIS X ecosystem tokens at the best rates',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {

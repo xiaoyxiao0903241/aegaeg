@@ -87,7 +87,7 @@ const app = defineMessages({
         overview: 'Resumen',
         exchangeRate: 'Tipo de cambio',
         settlement: 'Liquidación',
-        settlementValue: 'Obtén tokens del ecosistema AEGIS X al mejor tipo de cambio',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {

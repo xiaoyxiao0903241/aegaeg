@@ -87,7 +87,7 @@ const app = defineMessages({
         overview: 'अवलोकन',
         exchangeRate: 'विनिमय दर',
         settlement: 'निपटान',
-        settlementValue: 'सर्वोत्तम दर पर AEGIS X इकोसिस्टम टोकन प्राप्त करें',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {

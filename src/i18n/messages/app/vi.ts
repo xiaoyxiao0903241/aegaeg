@@ -87,7 +87,7 @@ const app = defineMessages({
         overview: 'Tổng quan',
         exchangeRate: 'Tỷ giá hoán đổi',
         settlement: 'Thanh toán',
-        settlementValue: 'Nhận token hệ sinh thái AEGIS X với tỷ giá tốt nhất',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {

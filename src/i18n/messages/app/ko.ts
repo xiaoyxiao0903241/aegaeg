@@ -87,7 +87,7 @@ const app = defineMessages({
         overview: '개요',
         exchangeRate: '환율',
         settlement: '정산',
-        settlementValue: '최적 환율로 AEGIS X 생태계 토큰을 획득하세요',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {

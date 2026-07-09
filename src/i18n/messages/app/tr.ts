@@ -86,7 +86,7 @@ const app = defineMessages({
         overview: 'Genel bakış',
         exchangeRate: 'Takas oranı',
         settlement: 'Uzlaşma',
-        settlementValue: 'AEGIS X ekosistem tokenlarını en iyi kur ile edinin',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {
