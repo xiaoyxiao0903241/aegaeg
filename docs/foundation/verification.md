@@ -483,6 +483,14 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | `ResponsiveTable` 表头去 Rewards `foreground/30` | REGRESSION→fixed | ≡ Community「我的社区成员」`muted-foreground` |
 | 删 `headCellClassName` / `rewardsHistoryTableHead` | INTENTIONAL | 表头无 call-site 分叉 |
 
+## 5af. Button / flb 轻微缩放（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 去 `-translate-y-px` lift | REGRESSION→fixed | H5 无 hover，抬起无效 |
+| hover `scale-[1.02]` · active `scale-[0.97]` | INTENTIONAL | 按下缩放触控可感知；PC 仍有轻微 hover 放大 |
+| flb Interactive 同策略（1.04 / 0.94） | INTENTIONAL | 小钮略大一点幅度 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -520,3 +528,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.29 | §5ac Button/flb 平滑 hover + active 按下 |
 | v2.30 | §5ad CommunityProgramCard ≡ `4040:7354`；FAQ rotate；Collapsible settle overflow |
 | v2.31 | §5ae flb → `rounded-control`；全表表头 ≡ Community muted |
+| v2.32 | §5af Button/flb 轻微 scale（替 translate lift） |

@@ -75,12 +75,14 @@
 **暗色 promo CTA**：**38**（`min-h-9.5`）— 走 `DappActionButton density="inverse"`，**不是**第 4 个 size
 **Compound**：`size=sm|md` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
 **Hover / press SSOT**（全 variant 一致，禁 call site 叠 `shadow-primary-hover-*`）：
-- 过渡：`duration-220` + `cubic-bezier(.2,.8,.2,1)`（颜色 / 边框 / 阴影 / transform）
-- `active`：`translate-y-0` + 清 hover 影（按下回落，非继续抬起）
-- `primary`：hover lift `-translate-y-px` + `shadow-primary-hover`
-- `secondary`：hover lift + `shadow-card` + `border-coral-hover-border`
-- `ghost`：hover lift + `border-primary` / `text-primary`（无额外影）
-- `link`：无 lift / 无影
+- 过渡：`duration-[220ms]` + `cubic-bezier(.2,.8,.2,1)`（颜色 / 边框 / 阴影 / transform）
+- 动效：**轻微缩放**（禁 `translate-y` lift — H5 无 hover 时抬起无效）
+  - hover / focus-visible：`scale-[1.02]`
+  - active：`scale-[0.97]` + 清 hover 影（触控按下可感知）
+- `primary`：scale + `shadow-primary-hover`
+- `secondary`：scale + `shadow-card` + `border-coral-hover-border`
+- `ghost`：scale + `border-primary` / `text-primary`（无额外影）
+- `link`：无 scale / 无影
 **Typography**：`link` 用 `font-normal text-primary`，不 hand-roll 平行字阶文件
 **禁止**：call site 用 `!min-h-*` / `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 勿再叠平行 `max-dapp:min-h-*` 改高度；call site 叠 `hover:shadow-primary-hover-xl` 等改 hover
 **依赖**：P1-Text
@@ -246,3 +248,4 @@
 | v2.16 | Button / flb：220ms soft ease + active 按下回落 |
 | v2.17 | CommunityProgramCard ≡ Figma `4040:7354`；FAQ chevron rotate；Collapsible 展开 settle overflow |
 | v2.18 | flb → `rounded-control`（禁 `rounded-[11px]`）；全表表头 ≡ Community muted |
+| v2.19 | Button / flb：translate lift → 轻微 scale（H5 按下可感知） |
