@@ -74,10 +74,12 @@
 - `lg` = **48**（`min-h-12`）· Home hero 等 · `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
 **暗色 promo CTA**：**38**（`min-h-9.5`）— 走 `DappActionButton density="inverse"`，**不是**第 4 个 size
 **Compound**：`size=sm|md` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
-**Hover SSOT**（全 variant 一致，禁 call site 叠 `shadow-primary-hover-*`）：
-- `primary`：lift `-translate-y-px` + `shadow-primary-hover`
-- `secondary`：lift + `shadow-card` + `border-coral-hover-border`
-- `ghost`：lift + `border-primary` / `text-primary`（无额外影）
+**Hover / press SSOT**（全 variant 一致，禁 call site 叠 `shadow-primary-hover-*`）：
+- 过渡：`duration-220` + `cubic-bezier(.2,.8,.2,1)`（颜色 / 边框 / 阴影 / transform）
+- `active`：`translate-y-0` + 清 hover 影（按下回落，非继续抬起）
+- `primary`：hover lift `-translate-y-px` + `shadow-primary-hover`
+- `secondary`：hover lift + `shadow-card` + `border-coral-hover-border`
+- `ghost`：hover lift + `border-primary` / `text-primary`（无额外影）
 - `link`：无 lift / 无影
 **Typography**：`link` 用 `font-normal text-primary`，不 hand-roll 平行字阶文件
 **禁止**：call site 用 `!min-h-*` / `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 勿再叠平行 `max-dapp:min-h-*` 改高度；call site 叠 `hover:shadow-primary-hover-xl` 等改 hover
