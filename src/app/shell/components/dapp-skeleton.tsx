@@ -1,6 +1,6 @@
 import { Card } from '~/shared/ui/card'
 import { communityStatCardMobileShell } from '~/views/dapp/community/community-content-primitives'
-import { seasonCardRadiusClass, seasonCardSizeClass } from '~/app/dapp-detail-layout'
+import { seasonCard } from '~/app/shell/components/season-card'
 import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 import { cn } from '~/shared/lib/utils'
 
@@ -49,11 +49,7 @@ export function SeasonOptionSkeleton() {
   return (
     <div
       aria-hidden="true"
-      className={cn(
-        'flex shrink-0 flex-col gap-1.5 border border-border bg-card p-3',
-        seasonCardRadiusClass,
-        seasonCardSizeClass,
-      )}
+      className={seasonCard({ selected: false }).root()}
     >
       <div className="flex items-start justify-between gap-1">
         <DappSkeleton className="h-3.5 w-16" />

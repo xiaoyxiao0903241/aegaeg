@@ -8,6 +8,7 @@ import { cn } from '~/shared/lib/utils'
  *
  * 结构：label + value + hint。
  * 内部用 Card surface="elevated" + Card.Label/Value/Description。
+ * 页级字阶差异（Swap vs Genesis value）用 valueClassName 抹平，不扩轴。
  */
 export type MetricCardProps = {
   children?: ReactNode
@@ -15,6 +16,8 @@ export type MetricCardProps = {
   hint?: ReactNode
   hintClassName?: string
   label: ReactNode
+  /** Default true; Swap rate `1 : 1.0010` matches 4175 proportional digits (tabular=false). */
+  tabular?: boolean
   value: ReactNode
   valueClassName?: string
 }
@@ -25,6 +28,7 @@ export function MetricCard({
   hint,
   hintClassName,
   label,
+  tabular = true,
   value,
   valueClassName,
 }: MetricCardProps) {
@@ -36,13 +40,17 @@ export function MetricCard({
       data-reveal
     >
       <Card.Label
-        className="text-xs font-medium leading-normal tracking-[-0.24px]"
+        className="text-xs font-medium leading-[18px] tracking-[-0.24px]"
         tone="muted-foreground"
       >
         {label}
       </Card.Label>
-      <Card.Value className={valueClassName}>{value}</Card.Value>
-      {hint ? <Card.Description className={hintClassName}>{hint}</Card.Description> : null}
+      <Card.Value className={valueClassName} tabular={tabular}>
+        {value}
+      </Card.Value>
+      {hint ? (
+        <Card.Description className={cn('mt-1.5', hintClassName)}>{hint}</Card.Description>
+      ) : null}
       {children}
     </Card>
   )

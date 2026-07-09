@@ -37,9 +37,10 @@
 - [ ] 全仓 call site 迁移到新 surface
 
 ### P3 Chip
-- [ ] `chip.tsx` 存在，3 variant × **3** size（sm/md/lg）× 2 shape × 3 tone
+- [ ] `chip.tsx` 存在，3 variant × **3** size（sm/md/lg）× 2 shape × **4** tone（default/primary/coral/success）
 - [ ] pct / badge / tab 已替换为 Chip
 - [ ] `rg 'shape="chip"|variant="tab"' src --glob '*.{tsx,ts}'`（Button 的 tab）零命中
+- [ ] LIVE/MAX 用 `tone="coral"`，勿用 `tone="primary"` 冒充 `#c85c3f`
 
 ### P4 Input
 - [ ] `input.tsx` 存在，3 variant：default/numeric/amount
@@ -52,7 +53,7 @@
 - [ ] link 内部使用 Text
 
 ### P6 Composite
-- [ ] 9 个 Composite 文件存在：`top-bar.tsx` · `nav-rail.tsx` · `panel-header.tsx` · `amount-input.tsx` · `segment.tsx` · `metric-card.tsx` · `data-table.tsx` · `accordion.tsx` · `callout-card.tsx`
+- [ ] 9 个 Composite 文件存在：`top-bar.tsx` · `nav-rail.tsx` · `panel-header.tsx` · `amount-input.tsx` · `segment.tsx` · `metric-card.tsx` · `data-table.tsx` · `faq-list.tsx`（Accordion 行为）· `callout-card.tsx`
 - [ ] 每个 Composite 都有 ≥2 个 call site 或明确的全局 shell 职责
 - [ ] 无把 `box` / `dl` / `r` 等纯视觉层包装成 Composite
 

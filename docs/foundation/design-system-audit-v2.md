@@ -256,7 +256,7 @@ src/shared/ui/
     segment.tsx
     metric-card.tsx
     data-table.tsx
-    accordion.tsx     # 由 FaqList 演进
+    faq-list.tsx      # Accordion 行为（导出 FaqList；无平行 accordion.tsx）
     callout-card.tsx  # 覆盖原 promo-card
 src/shared/styles/
   tokens/

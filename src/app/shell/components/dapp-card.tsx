@@ -41,50 +41,6 @@ export function DappReferrerBoundCard({
   )
 }
 
-export function MetricCard({
-  children,
-  className,
-  hint,
-  hintClassName,
-  label,
-  tabular = true,
-  value,
-  valueClassName,
-}: {
-  children?: ReactNode
-  className?: string
-  hint?: ReactNode
-  hintClassName?: string
-  label: ReactNode
-  /** Default true; Swap rate `1 : 1.0010` matches 4175 proportional digits (tabular=false). */
-  tabular?: boolean
-  value: ReactNode
-  valueClassName?: string
-}) {
-  return (
-    <Card
-      as="article"
-      surface="elevated"
-      className={cn(revealClass(), 'flex flex-col items-start gap-1.5', className)}
-      data-reveal
-    >
-      <Card.Label
-        className="text-[12px]/[18px] font-medium tracking-[-0.24px]"
-        tone="muted-foreground"
-      >
-        {label}
-      </Card.Label>
-      <Card.Value className={valueClassName} tabular={tabular}>
-        {value}
-      </Card.Value>
-      {hint ? (
-        <Card.Description className={cn('mt-1.5', hintClassName)}>{hint}</Card.Description>
-      ) : null}
-      {children}
-    </Card>
-  )
-}
-
 export function RewardBalanceCard({
   action,
   badge,

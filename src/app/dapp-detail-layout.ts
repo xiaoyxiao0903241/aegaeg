@@ -1,5 +1,3 @@
-import { cn } from '~/shared/lib/utils'
-
 /**
  * DApp detail / widget spacing SSOT — rem @ 16px root, scales with site-fluid.
  *
@@ -22,6 +20,8 @@ import { cn } from '~/shared/lib/utils'
  *   fix shell/widget stacking instead.
  * - Extra `mt-*` on content wrappers inside `DappSection` for title→content gap — use `pb-4` on title.
  * - Per-page `pb-*` on section titles — import tokens from this file.
+ *
+ * Season card / carousel styles live in `season-selector.tsx` (`tv()`), not here.
  */
 
 /** Page / section title → first content block (16px @ 16px root); FAQs title → first item uses the same token */
@@ -36,49 +36,3 @@ export const dappDetailSectionGapClass = 'mt-8.5 max-dapp:mt-6'
 
 /** Widget connect / promo card top gap — same rhythm as title→content */
 export const dappWidgetFooterTopGapClass = 'mt-3.5 max-dapp:mt-3'
-
-/** Genesis season carousel — Figma `4150:19854` @ 16px root */
-export const seasonCarouselMaxWidthClass = 'w-full min-w-0'
-export const seasonCardSizeClass = 'min-h-[7.8125rem] w-[8.75rem]'
-export const seasonCarouselSlideGapClass = 'pl-2.5'
-export const seasonCarouselTrackBleedClass = '-ml-2.5'
-export const seasonCarouselViewportClass = 'w-full min-w-0 overflow-x-hidden overflow-y-visible'
-export const seasonCarouselControlsGapClass = 'gap-2.5'
-
-/** w-5 fade sits in px gutter — not over card edges (same bleed pattern as token carousel) */
-export const seasonCarouselEdgeBleedClass = '-mx-5 min-w-0 w-[calc(100%+2.5rem)] px-5'
-
-/** Figma `4150:19858` — Season title ink · SemiBold 13 */
-export const seasonCardTitleClass =
-  'text-[length:var(--dapp-season-title-size)] font-semibold leading-[1.3] tracking-[-0.02em] text-foreground'
-/** Figma `4150:19860` — meta Regular 11（覆盖 Text caption 默认 Medium） */
-export const seasonCardMetaClass =
-  'text-[length:var(--dapp-season-meta-size)] font-normal leading-[1.5] tracking-[-0.02em] text-muted-foreground'
-/** Figma — discount/airdrop 字面量 `accent/coral`（非选中边框色） */
-export const seasonCardMetaAccentClass = 'font-normal text-[#e9785a]'
-/**
- * Figma `accent/primary (coral)` `#c85c3f`
- * 用途：选中卡边框 · 选中 radio 环/内点 · LIVE 字 · MAX 字
- * 勿与 `#e9785a`（折扣强调）或 token `primary` `#e86a43` 混用
- */
-export const seasonCardPrimaryCoralClass = 'text-[#c85c3f]'
-export const seasonCardSelectedBorderClass = 'border-[#c85c3f]'
-/** 选中 radio — 同 primary (coral)，覆盖 RadioIndicator 默认 `border-primary` / `bg-primary` */
-export const seasonCardRadioSelectedClass =
-  'border-[#c85c3f] [&_span]:bg-[#c85c3f]'
-/** Figma `bg/band` — Ended / Upcoming pill */
-export const seasonCardEndedBadgeClass = 'bg-[#ebeef3] text-muted-foreground'
-/** Figma LIVE/Ended badge — Medium 10 */
-export const seasonCardBadgeClass =
-  'text-[length:var(--dapp-season-badge-size)] font-medium leading-[1.3]'
-export const seasonCardRadiusClass = 'rounded-[length:var(--dapp-season-card-radius)]'
-export const seasonCardRadioClass =
-  'size-[length:var(--dapp-season-radio-size)] rounded-[calc(var(--dapp-season-radio-size)/2)]'
-
-export function seasonCarouselEdgeFadeClass(side: 'left' | 'right', visible: boolean) {
-  return cn(
-    'pointer-events-none absolute inset-y-0 z-[1] w-5 from-card to-transparent transition-opacity duration-200',
-    side === 'left' ? 'left-0 bg-gradient-to-r' : 'right-0 bg-gradient-to-l',
-    visible ? 'opacity-100' : 'opacity-0',
-  )
-}

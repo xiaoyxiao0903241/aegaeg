@@ -1,22 +1,9 @@
 import type { RefObject } from 'react'
-import { tv } from 'tailwind-variants'
 import { buttonDisabledClass } from '~/shared/ui/button'
+import { Chip } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
-
-const genesisSharesField = tv({
-  slots: {
-    row: 'flex gap-2',
-    inputWrap: 'relative flex min-w-0 flex-1',
-    // Figma `4150:3234` mx — coral-soft fill, primary(coral) label, h-44, r-11, no border
-    maxButton: cn(
-      'h-11 min-w-16 shrink-0 rounded-[0.6875rem] border-0 bg-accent px-[0.9375rem] text-xs font-semibold whitespace-nowrap text-[#c85c3f]',
-      buttonDisabledClass,
-      'disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
-    ),
-  },
-})
 
 export function GenesisPurchaseSharesField({
   disabled,
@@ -43,16 +30,14 @@ export function GenesisPurchaseSharesField({
   shareUnit: string
   value: string
 }) {
-  const styles = genesisSharesField()
-
   return (
     // 4175 H5 LABEL: text-xs (13 via mobile bump) / leading 1.5.
     <label className="mt-1.5 grid gap-2 text-xs leading-[1.5] tracking-normal">
       <Text as="span" variant="copy" tone="muted-foreground" className="text-xs leading-[1.5] tracking-normal">
         {label}
       </Text>
-      <div className={styles.row()}>
-        <div className={styles.inputWrap()}>
+      <div className="flex gap-2">
+        <div className="relative flex min-w-0 flex-1">
           <Input
             ref={inputRef}
             variant="numeric"
@@ -70,14 +55,23 @@ export function GenesisPurchaseSharesField({
             {shareUnit}
           </span>
         </div>
-        <button
-          className={styles.maxButton()}
+        {/* Figma `4150:3234` — soft coral Chip; box model matches h-11 / r-11 */}
+        <Chip
+          className={cn(
+            'h-11 min-w-16 shrink-0 rounded-[0.6875rem] px-[0.9375rem] text-xs font-semibold',
+            buttonDisabledClass,
+            'disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+          )}
           disabled={disabled}
           onClick={onMax}
+          shape="rounded"
+          size="md"
+          tone="coral"
           type="button"
+          variant="soft"
         >
           {maxLabel}
-        </button>
+        </Chip>
       </div>
     </label>
   )

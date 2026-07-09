@@ -10,26 +10,7 @@ import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { dappIconClass } from '~/app/dapp-icon-scale'
-import {
-  seasonCardBadgeClass,
-  seasonCardEndedBadgeClass,
-  seasonCardMetaAccentClass,
-  seasonCardMetaClass,
-  seasonCardPrimaryCoralClass,
-  seasonCardRadioClass,
-  seasonCardRadioSelectedClass,
-  seasonCardRadiusClass,
-  seasonCardSelectedBorderClass,
-  seasonCardSizeClass,
-  seasonCardTitleClass,
-  seasonCarouselControlsGapClass,
-  seasonCarouselEdgeBleedClass,
-  seasonCarouselEdgeFadeClass,
-  seasonCarouselMaxWidthClass,
-  seasonCarouselSlideGapClass,
-  seasonCarouselTrackBleedClass,
-  seasonCarouselViewportClass,
-} from '~/app/dapp-detail-layout'
+import { seasonCard, seasonCarousel } from '~/app/shell/components/season-card'
 import { cn } from '~/shared/lib/utils'
 
 function translateSeasonStatus(status: string, t: ReturnType<typeof useI18n>['messages']) {
@@ -50,27 +31,6 @@ export type SeasonOption = {
   name: string
   price: string
   status: string
-}
-
-/** Figma `4150:19854` — 8.75×7.8125rem card, 0.625rem gap, ~3.25rem peek @ 22rem viewport */
-const SEASON_CARD_CLASS = cn(
-  'flex shrink-0 flex-col gap-1.5 border bg-card p-3',
-  seasonCardRadiusClass,
-  seasonCardSizeClass,
-)
-
-const seasonStatusBadgeBaseClass = cn(
-  'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap',
-  seasonCardBadgeClass,
-)
-
-function resolveSeasonStatusBadgeClass(status: string, selected: boolean) {
-  // Figma `4150:19877` LIVE = coral-soft + primary(coral); Ended = band + body
-  if (status === 'LIVE' && selected) {
-    return cn(seasonStatusBadgeBaseClass, 'bg-accent', seasonCardPrimaryCoralClass)
-  }
-
-  return cn(seasonStatusBadgeBaseClass, seasonCardEndedBadgeClass)
 }
 
 function resolveSeasonCarouselScrollIndex(activeIndex: number): number {
@@ -122,48 +82,45 @@ function SeasonCard({
   t: ReturnType<typeof useI18n>['messages']
 }) {
   const selected = Boolean(season.active)
+  // Figma `4150:19877` LIVE selected = coral-soft + coral; else band + muted
+  const liveSelected = season.status === 'LIVE' && selected
+  const styles = seasonCard({
+    selected,
+    status: liveSelected ? 'live' : 'ended',
+  })
 
   return (
     <article
       aria-checked={selected}
-      className={cn(
-        SEASON_CARD_CLASS,
-        selected ? seasonCardSelectedBorderClass : 'border-border',
-      )}
+      className={styles.root()}
       role="radio"
     >
-      {/* Figma `st` gap 3px; card → badge gap 6px via SEASON_CARD_CLASS */}
+      {/* Figma `st` gap 3px; card → badge gap 6px via root gap */}
       <div className="flex w-full flex-col gap-0.75 overflow-hidden">
         <div className="flex h-[1.125rem] items-center justify-between gap-1">
-          <Text as="strong" variant="copy" className={seasonCardTitleClass}>
+          <Text as="strong" variant="copy" className={styles.title()}>
             {season.name}
           </Text>
-          <RadioIndicator
-            checked={selected}
-            className={cn(
-              seasonCardRadioClass,
-              selected && seasonCardRadioSelectedClass,
-            )}
-          />
+          <RadioIndicator checked={selected} className={styles.radio()} />
         </div>
-        <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
+        <Text as="p" variant="caption" className={styles.meta()}>
           {t.genesis.discountLabel}{' '}
-          <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
+          <Text as="span" variant="caption" className={styles.metaAccent()}>
             {season.desktopMeta.discount}
           </Text>
         </Text>
-        <Text as="p" variant="caption" className={cn('m-0', seasonCardMetaClass)}>
+        <Text as="p" variant="caption" className={styles.meta()}>
           {t.genesis.airdropLabel}{' '}
-          <Text as="span" variant="caption" className={seasonCardMetaAccentClass}>
+          <Text as="span" variant="caption" className={styles.metaAccent()}>
             {season.desktopMeta.airdrop}
           </Text>
         </Text>
-        <Text as="time" variant="caption" className={seasonCardMetaClass}>
+        <Text as="time" variant="caption" className={styles.meta()}>
           {season.date}
         </Text>
       </div>
       <div className="mt-auto w-full">
-        <Text as="span" variant="caption" className={resolveSeasonStatusBadgeClass(season.status, selected)}>
+        <Text as="span" variant="caption" className={styles.badge()}>
           {translateSeasonStatus(season.status, t)}
         </Text>
       </div>
@@ -183,6 +140,7 @@ export function SeasonSelector({
   const { canScrollNext, canScrollPrev, current, goTo } = useCarouselScrollState(api)
   const syncedScrollIndexRef = useRef<number | null>(null)
   const showControls = seasons.length > 1
+  const carousel = seasonCarousel()
   const activeSeasonIndex = useMemo(() => {
     if (activePhaseIndex !== undefined && activePhaseIndex >= 0) {
       return activePhaseIndex
@@ -222,26 +180,18 @@ export function SeasonSelector({
     >
       <Carousel
         aria-label={t.genesis.statsTitle}
-        className={cn(
-          'flex min-w-0 flex-col overflow-visible',
-          seasonCarouselMaxWidthClass,
-          seasonCarouselControlsGapClass,
-        )}
+        className={carousel.root()}
         opts={carouselOpts}
         setApi={setApi}
       >
-        <div className={cn('relative overflow-visible', seasonCarouselEdgeBleedClass)}>
+        <div className={carousel.bleed()}>
           <CarouselContent
-            className={cn('flex items-stretch', seasonCarouselTrackBleedClass)}
+            className={carousel.track()}
             spacing="none"
-            viewportClassName={seasonCarouselViewportClass}
+            viewportClassName={carousel.viewport()}
           >
             {seasons.map((season) => (
-              <CarouselItem
-                className={cn('shrink-0 grow-0 basis-auto', seasonCarouselSlideGapClass)}
-                key={season.name}
-                spacing="none"
-              >
+              <CarouselItem className={carousel.slide()} key={season.name} spacing="none">
                 <SeasonCard season={season} t={t} />
               </CarouselItem>
             ))}
@@ -250,11 +200,17 @@ export function SeasonSelector({
             <>
               <div
                 aria-hidden="true"
-                className={seasonCarouselEdgeFadeClass('left', canScrollPrev)}
+                className={seasonCarousel({
+                  fadeSide: 'left',
+                  fadeVisible: canScrollPrev,
+                }).fade()}
               />
               <div
                 aria-hidden="true"
-                className={seasonCarouselEdgeFadeClass('right', canScrollNext)}
+                className={seasonCarousel({
+                  fadeSide: 'right',
+                  fadeVisible: canScrollNext,
+                }).fade()}
               />
             </>
           ) : null}

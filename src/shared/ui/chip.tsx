@@ -44,15 +44,19 @@ export const chipVariants = tv({
     tone: {
       default: '',
       primary: '',
+      /** Figma `accent/primary (coral)` — LIVE/MAX; ≠ token `primary` `#e86a43` */
+      coral: '',
       success: '',
     },
   },
   compoundVariants: [
     { variant: 'solid', tone: 'default', class: 'bg-card text-foreground' },
     { variant: 'solid', tone: 'primary', class: 'bg-primary text-primary-foreground' },
+    { variant: 'solid', tone: 'coral', class: 'bg-coral text-primary-foreground' },
     { variant: 'solid', tone: 'success', class: 'bg-success text-success-foreground' },
     { variant: 'soft', tone: 'default', class: 'bg-muted text-foreground' },
     { variant: 'soft', tone: 'primary', class: 'bg-accent text-primary' },
+    { variant: 'soft', tone: 'coral', class: 'bg-accent text-coral' },
     { variant: 'soft', tone: 'success', class: 'bg-[rgba(43,171,106,0.12)] text-success' },
     {
       variant: 'outlined',
@@ -61,6 +65,7 @@ export const chipVariants = tv({
         'border-border bg-card text-muted-foreground hover:-translate-y-px hover:border-primary hover:text-primary',
     },
     { variant: 'outlined', tone: 'primary', class: 'border-primary bg-card text-primary hover:bg-accent' },
+    { variant: 'outlined', tone: 'coral', class: 'border-coral bg-card text-coral hover:bg-accent' },
     {
       variant: 'outlined',
       tone: 'success',

@@ -8,25 +8,11 @@ import {
 import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
 
-const langSwitcherClass = 'relative z-40 inline-flex [[open]_&]:z-[120] [.is-open_&]:z-[120]'
-
-const langMenuClass = cn(
-  'hidden [[open]_&]:grid [.is-open_&]:grid',
-  '[[open]_&]:animate-[language-menu-in_180ms_ease_both] [.is-open_&]:animate-[language-menu-in_180ms_ease_both]',
-)
-
-const langTriggerClass = cn(
-  'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
-  'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
-  'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
-  'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
-  'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
-  'focus-visible:-translate-y-px focus-visible:bg-[oklch(97%_0.014_45)] focus-visible:shadow-card',
-  '[[open]_&]:border-coral-hover-border [[open]_&]:bg-[oklch(97%_0.014_45)] [[open]_&]:shadow-card',
-  '[.is-open_&]:border-coral-hover-border [.is-open_&]:bg-[oklch(97%_0.014_45)] [.is-open_&]:shadow-card',
-  '[&::-webkit-details-marker]:hidden [&_img]:size-4',
-  'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
-)
+/** Open-state: native `<details open>` + React ancestor `[data-open]`. */
+const openGrid =
+  'hidden [[open]_&]:grid [[data-open]_&]:grid [[open]_&]:animate-[language-menu-in_180ms_ease_both] [[data-open]_&]:animate-[language-menu-in_180ms_ease_both]'
+const openTrigger =
+  '[[open]_&]:border-coral-hover-border [[open]_&]:bg-[oklch(97%_0.014_45)] [[open]_&]:shadow-card [[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-[oklch(97%_0.014_45)] [[data-open]_&]:shadow-card'
 
 export type LanguageMenuOption = {
   code: string
@@ -186,14 +172,22 @@ function NativeLanguageMenu({
 
   return (
     <>
-      <details
-        className={langSwitcherClass}
-        data-language-switcher
-      >
+      <details className="relative z-40 inline-flex open:z-[120]" data-language-switcher>
         <summary
           aria-haspopup="menu"
           aria-label={label}
-          className={cn(langTriggerClass, triggerClassName)}
+          className={cn(
+            'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
+            'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
+            'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
+            'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
+            'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
+            'focus-visible:-translate-y-px focus-visible:bg-[oklch(97%_0.014_45)] focus-visible:shadow-card',
+            openTrigger,
+            '[&::-webkit-details-marker]:hidden [&_img]:size-4',
+            'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
+            triggerClassName,
+          )}
           data-language-trigger
           role="button"
         >
@@ -203,8 +197,8 @@ function NativeLanguageMenu({
 
         <div
           className={cn(
-            langMenuClass,
-            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
+            openGrid,
+            'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
             menuClassName,
           )}
           role="menu"
@@ -289,15 +283,27 @@ function ReactLanguageMenu({
   return (
     <span
       ref={wrapRef}
-      className={cn(langSwitcherClass, open && 'is-open')}
+      className="relative z-40 inline-flex data-[open]:z-[120]"
       data-language-switcher
+      data-open={open ? '' : undefined}
     >
       <button
         ref={triggerRef}
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={label}
-        className={cn(langTriggerClass, triggerClassName)}
+        className={cn(
+          'inline-flex min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-md',
+          'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
+          'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
+          'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
+          'hover:-translate-y-px hover:bg-[oklch(97%_0.014_45)] hover:shadow-card',
+          'focus-visible:-translate-y-px focus-visible:bg-[oklch(97%_0.014_45)] focus-visible:shadow-card',
+          openTrigger,
+          '[&::-webkit-details-marker]:hidden [&_img]:size-4',
+          'max-dapp:min-h-7.5 max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-2.5 max-dapp:text-xs',
+          triggerClassName,
+        )}
         data-language-trigger
         onClick={() => setOpen((prev) => !prev)}
         type="button"
@@ -308,8 +314,8 @@ function ReactLanguageMenu({
 
       <div
         className={cn(
-          langMenuClass,
-          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] grid w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
+          openGrid,
+          'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-[0_0.75rem_2rem_oklch(0%_0_0_/_12%)]',
           !open && 'hidden',
           menuClassName,
         )}

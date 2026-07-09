@@ -33,6 +33,12 @@
   --primary-foreground: oklch(100% 0 89.88);
   --primary-bright: #f4a98f;
   --primary-bright: oklch(80.08% 0.0962 39.91);
+  --coral: #c85c3f;
+  --coral: oklch(58.5% 0.145 35);
+  --coral-emphasis: #e9785a;
+  --coral-emphasis: oklch(68.5% 0.145 38);
+  --band: #ebeef3;
+  --band: oklch(94.2% 0.006 264);
   --secondary: #f0f1f3;
   --secondary: oklch(94.83% 0.0075 260.73);
   --secondary-foreground: var(--foreground);
@@ -224,6 +230,9 @@
   --color-primary-soft: var(--primary-soft);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-bright: var(--primary-bright);
+  --color-coral: var(--coral);
+  --color-coral-emphasis: var(--coral-emphasis);
+  --color-band: var(--band);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);

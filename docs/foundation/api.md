@@ -14,7 +14,7 @@
 
 | 维度 | 集合 | 键数 |
 |------|------|------|
-| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `success` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 18 |
+| color | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `success` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-usd1` · `token-agx` · `token-gagx` · `token-x` | 21（公开语义；生成文件另含 engineering 色） |
 | type | `caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` | 10 |
 | space | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)` | 9 |
 | radius | `sm(8)` · `md(10)` · `lg(12)` · `xl(16)` · `full` | 5 |
@@ -86,15 +86,17 @@
 | `variant` | `solid` · `soft` · `outlined` |
 | `size` | `sm` · `md` · `lg` |
 | `shape` | `pill` · `rounded` |
-| `tone` | `default` · `primary` · `success` |
+| `tone` | `default` · `primary` · `coral` · `success` |
 | 可选 | `onRemove` |
 
 覆盖：percent buttons、badges、tabs、tags。
 
+**`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。
+
 **禁止**：在 Chip 内 hand-roll typography
 **依赖**：P1-Text
-**探针**：swap percent · season badge · htab
-**Gate**：`variant` = **3**；`size` = **3**；`shape` = **2**；`tone` = **3**
+**探针**：swap percent · season badge · htab · genesis MAX
+**Gate**：`variant` = **3**；`size` = **3**；`shape` = **2**；`tone` = **4**
 
 ---
 
@@ -154,7 +156,7 @@
 | `Segment` | pcts / pct / htab | `options`, `value`, `onChange` | 高频模式 |
 | `MetricCard` | sc / mc | `label`, `value`, `hint`, `tone` | 跨页指标 |
 | `DataTable` | tbl / trow / cell | `columns`, `rows`, `empty` | cell 614 次 |
-| `Accordion` | qa / qhd | `items`, `variant` | 折叠行为 + a11y |
+| `Accordion` | qa / qhd | `items`, `variant` | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`） |
 | `CalloutCard` | promo / pcard / tc | `title`, `description`, `cta` | 深色 CTA / 提示卡 |
 
 **内部约定**：
@@ -189,7 +191,7 @@
 | P0 | Token JSON + 生成 CSS/TS | 见 §1 | theme.css / tokens.ts / 删 legacy color class |
 | P1 | Text | 10 variant · 7 tone | 全仓 `variant=` / `tone=` |
 | P2 | Card | 4 surface | 全仓 `surface=` |
-| P3 | Chip（新增） | 3×2×2×3 | 替换 pct / badge / tab |
+| P3 | Chip（新增） | 3×2×2×4 | 替换 pct / badge / tab；tone 含 coral |
 | P4 | Input | 3 variant | 替换 amount-input、shares field |
 | P5 | Button | 4×3×2 | 全仓 Button props |
 | P6 | Composite | 9 个 | 按依赖顺序逐个提取 |

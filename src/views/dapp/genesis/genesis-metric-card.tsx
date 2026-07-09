@@ -41,8 +41,9 @@ export function GenesisMetricCard({
       hint={hint}
       hintClassName={hint ? 'max-dapp:hidden' : undefined}
       label={label}
+      tabular={tabular}
       value={value}
-      valueClassName={cn(genesisMetricValueClass, tabular && 'tabular-nums', valueClassName)}
+      valueClassName={cn(genesisMetricValueClass, valueClassName)}
     />
   )
 }
