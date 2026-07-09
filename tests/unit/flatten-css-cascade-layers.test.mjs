@@ -10,7 +10,7 @@ test('flattenCssCascadeLayers: unwraps @layer blocks and drops layer statements'
     '@layer components;',
     '@layer utilities{.flex{display:flex}.hidden{display:none}}',
     ':root{--primary:#e66a47}',
-    '.aegis-thirdweb-button{background:var(--primary)}',
+    '.example-cta{background:var(--primary)}',
   ].join('')
 
   const out = flattenCssCascadeLayers(input)
@@ -19,7 +19,7 @@ test('flattenCssCascadeLayers: unwraps @layer blocks and drops layer statements'
   assert.match(out, /\.flex\{display:flex\}/)
   assert.match(out, /\.hidden\{display:none\}/)
   assert.match(out, /:root\{--primary:#e66a47\}/)
-  assert.match(out, /\.aegis-thirdweb-button\{background:var\(--primary\)\}/)
+  assert.match(out, /\.example-cta\{background:var\(--primary\)\}/)
 })
 
 test('flattenCssCascadeLayers: preserves nested braces inside a layer', () => {
@@ -54,5 +54,4 @@ test('flattenCssCascadeLayers: production Home bundle keeps flex utilities', () 
 
   assert.equal(out.includes('@layer'), false)
   assert.match(out, /\.flex\{display:flex\}/)
-  assert.match(out, /\.aegis-thirdweb-button-primary\{/)
 })

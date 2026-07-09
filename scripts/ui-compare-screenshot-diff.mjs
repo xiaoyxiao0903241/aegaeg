@@ -310,7 +310,9 @@ async function readWalletState() {
       const shell = document.querySelector('[data-dapp-window]')
       const chip = document.querySelector('.aegis-connected-wallet-chip')
       const chipText = chip?.querySelector('span.truncate')?.textContent?.trim() ?? null
-      const connectBtn = document.querySelector('.aegis-thirdweb-button-primary')
+      const connectBtn = [...document.querySelectorAll('header button')].find((b) =>
+        /Connect Wallet|连接钱包|Connect/i.test((b.textContent || '').trim()),
+      )
       const connectText = connectBtn?.textContent?.trim().replace(/\\s+/g, ' ') ?? null
       let authedAddressCount = 0
       try {

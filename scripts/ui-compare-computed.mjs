@@ -125,7 +125,7 @@ const dappShellProbes = [
   { name: 'topbar-actions', selector: 'header .flex.items-center.gap-3' },
   {
     name: 'connect-button',
-    selector: '.aegis-thirdweb-button-primary, .aegis-thirdweb-button',
+    selector: 'header button.bg-primary',
     disconnectedOnly: true,
     optional: true,
   },

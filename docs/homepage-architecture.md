@@ -24,7 +24,7 @@
 | `src/views/home/home-reveal-loader.ts` | 首页 **动效 boot**（reveal / 计数 / 懒图） | 钱包连接、地址探测 |
 | `bootHomeReveal()` | React mount 后启动 IO | 加载 thirdweb |
 | `data-home-motion-ready` | 动效脚本已就绪，CSS 可播放入场 | 钱包已连接 |
-| `wallet.css`（被 `home.css` import） | CTA 按钮 **样式 token**（`.aegis-thirdweb-button`） | 钱包 SDK |
+| `wallet.css`（被 `home.css` / `app.css` import） | connected chip · ConnectEmbed · tw-modal shell | Connect CTA（已走 `Button` / `DappActionButton`） |
 
 ---
 

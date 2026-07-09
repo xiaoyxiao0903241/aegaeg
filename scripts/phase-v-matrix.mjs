@@ -241,11 +241,9 @@ async function ensureLoggedIn(session, { timeoutMs = 45000 } = {}) {
   const clicked = await evaluate(
     session,
     `(() => {
-      const btn =
-        document.querySelector('.aegis-thirdweb-button-primary') ||
-        [...document.querySelectorAll('button')].find((b) =>
-          /Connect Wallet|连接钱包|Connect/i.test((b.textContent || '').trim()),
-        );
+      const btn = [...document.querySelectorAll('header button, button')].find((b) =>
+        /Connect Wallet|连接钱包|Connect/i.test((b.textContent || '').trim()),
+      );
       if (btn instanceof HTMLElement) {
         btn.click();
         return { clicked: true, label: (btn.textContent || '').trim().slice(0, 40) };

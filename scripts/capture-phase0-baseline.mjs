@@ -63,7 +63,7 @@ const SWAP_CATALOG = [
   { id: 'rail-tab-community-inactive', group: 'rail', owner: 'dapp-rail.tsx + shellRailItemClass', selector: 'nav[aria-label="DApp sections"] button[role="tab"] span[title]', nth: 3 },
   { id: 'rail-tab-btn-cobuild', group: 'rail-layout', owner: 'shellRailItemClass', selector: 'nav[aria-label="DApp sections"] button[role="tab"]', nth: 1 },
   { id: 'topbar-brand', group: 'shell', owner: 'header brand Text/link', selector: 'header a[aria-label*="home"] span, header .container > a span' },
-  { id: 'topbar-connect', group: 'shell', owner: '.aegis-thirdweb-button-primary', selector: '.aegis-thirdweb-button-primary, .aegis-thirdweb-button' },
+  { id: 'topbar-connect', group: 'shell', owner: 'WalletConnectChip / Button primary', selector: 'header button.bg-primary' },
   { id: 'topbar-lang', group: 'shell', owner: 'header lang pill', selector: 'header button.rounded-full, header .rounded-full.border-border' },
   { id: 'widget-h1', group: 'widget-text', owner: 'swap-widget-header / widget-title', selector: '[data-dapp-widget-panel] h1' },
   { id: 'widget-subtitle', group: 'widget-text', owner: 'swap-widget-header / meta', selector: '[data-dapp-widget-panel] h1 ~ p' },
