@@ -1,5 +1,5 @@
 import { parseAbi } from 'viem'
-import { calcSqrtPriceImpactBps } from '~/core/swap/calc-sqrt-price-impact-bps'
+import { calcPriceImpactBps } from '~/core/swap/calc-price-impact-bps'
 import { quoteV3ExactInputSingle } from '~/views/dapp/web3/quote-v3-exact-input'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { ERC20_METHODS } from '~/views/dapp/web3/abis'
@@ -75,7 +75,7 @@ export async function fetchSwapQuote({
     client,
   })
 
-  const priceImpactBps = calcSqrtPriceImpactBps(spot.sqrtPriceX96, quote.sqrtPriceX96After)
+  const priceImpactBps = calcPriceImpactBps(spot.sqrtPriceX96, quote.sqrtPriceX96After)
 
   return {
     quotedOut: quote.amountOut,

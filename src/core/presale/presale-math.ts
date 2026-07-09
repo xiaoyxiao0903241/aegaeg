@@ -23,11 +23,28 @@ export interface PresalePhaseRemaining {
 
 const USD1_DECIMALS = 18
 
+/** Phase inventory left from `phases()` fields; never negative when sold ≫ max. */
+export function resolveRemainingPhaseAmount(
+  phaseRemaining: PresalePhaseRemaining | null | undefined,
+  activePhase: PresalePhaseOnChain | null | undefined,
+): bigint {
+  if (phaseRemaining) {
+    return phaseRemaining.remainingPhaseAmount
+  }
+
+  if (!activePhase) return 0n
+  if (activePhase.soldAmount >= activePhase.maxAmount) return 0n
+  return activePhase.maxAmount - activePhase.soldAmount
+}
+
 /**
  * 计算用户本期剩余可购金额。
  *
  * `userPurchaseLimit == 0n` 按合约语义表示“不限制”，此时用户剩余额度
  * 应等于本期剩余额度，而不是 0。
+ *
+ * Without `getUserPhaseRemainingAmount`, a per-user limit cannot be reduced by
+ * prior purchases — fail closed (0) instead of returning the full limit.
  */
 export function resolveRemainingUserAmount(
   phaseRemaining: PresalePhaseRemaining | null | undefined,
@@ -41,9 +58,8 @@ export function resolveRemainingUserAmount(
   }
 
   if (activePhase) {
-    return activePhase.userPurchaseLimit === 0n
-      ? activePhase.maxAmount - activePhase.soldAmount
-      : activePhase.userPurchaseLimit
+    if (activePhase.userPurchaseLimit > 0n) return 0n
+    return resolveRemainingPhaseAmount(null, activePhase)
   }
 
   return fallbackMaxAmount

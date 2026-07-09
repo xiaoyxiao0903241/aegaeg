@@ -34,7 +34,7 @@ test('resolveRemainingUserAmount uses explicit remainingUserAmount when limit is
   )
 })
 
-test('resolveRemainingUserAmount falls back to active phase when phaseRemaining missing', async () => {
+test('resolveRemainingUserAmount falls back to phase inventory when unlimited', async () => {
   const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const activePhase = {
@@ -53,6 +53,56 @@ test('resolveRemainingUserAmount falls back to active phase when phaseRemaining 
   assert.equal(
     resolveRemainingUserAmount(null, activePhase, 0n),
     4000n * 10n ** 18n,
+  )
+})
+
+test('resolveRemainingUserAmount fails closed when limit set but remaining unread', async () => {
+  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
+
+  const activePhase = {
+    index: 0,
+    minAmount: 100n * 10n ** 18n,
+    maxAmount: 10000n * 10n ** 18n,
+    discountBps: 3000n,
+    airdropValueRatio: 500n,
+    startTime: 0n,
+    endTime: 0n,
+    soldAmount: 6000n * 10n ** 18n,
+    userPurchaseLimit: 10000n * 10n ** 18n,
+    purchasedAmount: 6000n * 10n ** 18n,
+  }
+
+  assert.equal(resolveRemainingUserAmount(null, activePhase, 0n), 0n)
+})
+
+test('resolveRemainingPhaseAmount clamps oversold inventory to zero', async () => {
+  const { resolveRemainingPhaseAmount } = await loadModule('/src/core/presale/presale-math.ts')
+
+  const oversold = {
+    index: 0,
+    minAmount: 100n * 10n ** 18n,
+    maxAmount: 10000n * 10n ** 18n,
+    discountBps: 3000n,
+    airdropValueRatio: 1000n,
+    startTime: 0n,
+    endTime: 0n,
+    soldAmount: 4_016_300n * 10n ** 18n,
+    userPurchaseLimit: 10000n * 10n ** 18n,
+    purchasedAmount: 4_016_300n * 10n ** 18n,
+  }
+
+  assert.equal(resolveRemainingPhaseAmount(null, oversold), 0n)
+  assert.equal(
+    resolveRemainingPhaseAmount(
+      {
+        remainingPhaseAmount: 10000n * 10n ** 18n,
+        remainingUserAmount: 5000n * 10n ** 18n,
+        userPurchaseLimit: 10000n * 10n ** 18n,
+        userPhaseAmountCurrent: 5000n * 10n ** 18n,
+      },
+      oversold,
+    ),
+    10000n * 10n ** 18n,
   )
 })
 

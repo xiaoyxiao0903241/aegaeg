@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
-import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-sqrt-price-impact-bps'
+import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-price-impact-bps'
 import { formatGasEstimate } from '~/views/dapp/swap/format-gas-estimate'
 import { formatSwapRateApprox } from '~/views/dapp/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
@@ -191,15 +191,21 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   )
 
   const isBalancesLoading = walletReady && balancesQuery.isLoading
-  const quotedOut = amountQuoteQuery.data?.quotedOut ?? 0n
-  const priceImpactBps = amountQuoteQuery.data?.priceImpactBps ?? 0
-  const gasEstimate = amountQuoteQuery.data?.gasEstimate ?? 0n
+  // keepPreviousData must not drive submit/UI: placeholder is a prior amountIn's quote.
+  const amountQuote = amountQuoteQuery.isPlaceholderData ? undefined : amountQuoteQuery.data
+  const quotedOut = amountQuote?.quotedOut ?? 0n
+  const priceImpactBps = amountQuote?.priceImpactBps ?? 0
+  const gasEstimate = amountQuote?.gasEstimate ?? 0n
   const poolFee = poolMetadataQuery.data?.fee ?? SWAP_CONFIG.feeTier
   const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
   const exchangeSpotQuotedOut = exchangeSpotQuoteQuery.data?.quotedOut ?? 0n
   const exchangeSpotQuotedOutInverted = exchangeSpotQuoteInvertedQuery.data?.quotedOut ?? 0n
   const isQuoting =
-    authenticated && amountIn > 0n && amountQuoteQuery.isPending && quotedOut === 0n
+    authenticated &&
+    amountIn > 0n &&
+    (amountQuoteQuery.isPending ||
+      amountQuoteQuery.isPlaceholderData ||
+      (amountQuoteQuery.isFetching && quotedOut === 0n))
   const isSpotQuoting =
     amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
   const isExchangePriceQuoting =

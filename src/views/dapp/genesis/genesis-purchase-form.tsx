@@ -53,9 +53,14 @@ export function GenesisPurchaseForm() {
       genesis.setShares(0)
       return
     }
+    if (genesis.maxShares <= 0) {
+      setSharesText('')
+      genesis.setShares(0)
+      return
+    }
     const parsed = Number.parseInt(value, 10)
     if (Number.isNaN(parsed)) return
-    const clamped = Math.min(Math.max(parsed, 1), Math.max(genesis.maxShares, 1))
+    const clamped = Math.min(Math.max(parsed, 1), genesis.maxShares)
     setSharesText(String(clamped))
     genesis.setShares(clamped)
   }
@@ -137,7 +142,7 @@ export function GenesisPurchaseForm() {
       )}
 
       <GenesisPurchaseSharesField
-        disabled={!walletReady}
+        disabled={!walletReady || genesis.maxShares <= 0}
         inputRef={sharesInputRef}
         label={t.genesis.shares.replace('{max}', formatCount(genesis.maxShares))}
         max={Math.max(genesis.maxShares, 1)}
@@ -145,7 +150,15 @@ export function GenesisPurchaseForm() {
         min={1}
         onBlur={handleSharesBlur}
         onChange={handleSharesChange}
-        onMax={() => genesis.setShares(Math.max(genesis.maxShares, 1))}
+        onMax={() => {
+          if (genesis.maxShares <= 0) {
+            genesis.setShares(0)
+            setSharesText('')
+            return
+          }
+          genesis.setShares(genesis.maxShares)
+          setSharesText(String(genesis.maxShares))
+        }}
         shareUnit={t.common.shareUnit}
         value={sharesText}
       />

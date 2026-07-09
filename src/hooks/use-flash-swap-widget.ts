@@ -94,11 +94,19 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
   // Only cap input against a real balance; capping against the 0n fallback
   // while balances are still loading would wipe whatever the user typed.
   const isBalancesLoading = walletReady && balancesQuery.isLoading
-  const quotedOut = amountQuoteQuery.data ?? 0n
-  const spotQuotedOut = spotQuoteQuery.data ?? 0n
+  // keepPreviousData must not drive submit/UI: placeholder is a prior amountIn's quote.
+  const quotedOut = amountQuoteQuery.isPlaceholderData ? 0n : (amountQuoteQuery.data ?? 0n)
+  const spotQuotedOut = spotQuoteQuery.isPlaceholderData ? 0n : (spotQuoteQuery.data ?? 0n)
   const isQuoting =
-    authenticated && amountIn > 0n && amountQuoteQuery.isFetching && quotedOut === 0n
-  const isExchangePriceQuoting = spotQuoteQuery.isFetching && spotQuotedOut === 0n
+    authenticated &&
+    amountIn > 0n &&
+    (amountQuoteQuery.isPending ||
+      amountQuoteQuery.isPlaceholderData ||
+      (amountQuoteQuery.isFetching && quotedOut === 0n))
+  const isExchangePriceQuoting =
+    spotQuoteQuery.isPending ||
+    spotQuoteQuery.isPlaceholderData ||
+    (spotQuoteQuery.isFetching && spotQuotedOut === 0n)
 
   const validationError = useMemo(() => {
     if (!amountQuoteQuery.error) return null
