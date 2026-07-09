@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
 import { cn } from '~/shared/lib/utils'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
@@ -23,7 +23,33 @@ export function DappCollapsibleSection({
   title,
 }: DappCollapsibleSectionProps) {
   const [open, setOpen] = useState(defaultOpen)
+  /** Overflow (e.g. table menus) only after height settle — visible overflow kills 0fr→1fr clip. */
+  const [overflowSettled, setOverflowSettled] = useState(defaultOpen)
+  const settleTimerRef = useRef<number | null>(null)
   const bodyId = useId()
+
+  const clearSettleTimer = () => {
+    if (settleTimerRef.current != null) {
+      window.clearTimeout(settleTimerRef.current)
+      settleTimerRef.current = null
+    }
+  }
+
+  const handleToggle = () => {
+    clearSettleTimer()
+    setOpen((value) => {
+      const next = !value
+      if (next) {
+        settleTimerRef.current = window.setTimeout(() => {
+          setOverflowSettled(true)
+          settleTimerRef.current = null
+        }, COLLAPSE_MS)
+      } else {
+        setOverflowSettled(false)
+      }
+      return next
+    })
+  }
 
   return (
     <DappSection
@@ -37,7 +63,7 @@ export function DappCollapsibleSection({
             'flex w-full cursor-pointer appearance-none items-center justify-between gap-3 border-0 bg-transparent p-0 text-left text-inherit hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 active:bg-transparent',
             dappDetailTitleGapClass,
           )}
-          onClick={() => setOpen((value) => !value)}
+          onClick={handleToggle}
           type="button"
         >
           <span>{title}</span>
@@ -45,7 +71,7 @@ export function DappCollapsibleSection({
             alt=""
             aria-hidden
             className={cn(
-              'transition-transform duration-[320ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none',
+              'transition-transform duration-[320ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]',
               open ? 'rotate-0' : 'rotate-180',
             )}
             size="base"
@@ -61,7 +87,9 @@ export function DappCollapsibleSection({
         id={bodyId}
         style={{ transitionDuration: `${COLLAPSE_MS}ms` }}
       >
-        <div className={cn('dapp-collapsible-inner', bodyClassName)}>{children}</div>
+        <div className={cn('dapp-collapsible-inner', overflowSettled ? bodyClassName : undefined)}>
+          {children}
+        </div>
       </div>
     </DappSection>
   )

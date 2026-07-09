@@ -466,6 +466,14 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | `active:translate-y-0` + 清影 | INTENTIONAL | 按下回落；hover 仍 lift |
 | flb `swapFlowButtonInteractiveClass` 同曲线 + active | INTENTIONAL | Trade flip 与 Button 手感一致 |
 
+## 5ad. CommunityProgramCard / FAQ chevron / Collapsible 展开（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `CommunityProgramCard` ≡ Figma `4040:7354` | REGRESSION→fixed | pad/gap/字阶/字距；去 H5 平行字阶与 underline CTA |
+| FAQ `FaqChevron` 换 path → 固定 path + `rotate-180` | REGRESSION→fixed | 箭头转动；色仍 open=`primary` |
+| Collapsible `overflow-visible` 打断 `0fr→1fr` | REGRESSION→fixed | settle 后再挂 overflow；删 CSS 永久 `overflow-visible` 覆盖 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -501,3 +509,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.27 | §5aa Swap flb 中间钮 ≡ Figma `4040:1662` |
 | v2.28 | §5ab flb 11px；InviteFlow desc 70%；表壳无外边框 |
 | v2.29 | §5ac Button/flb 平滑 hover + active 按下 |
+| v2.30 | §5ad CommunityProgramCard ≡ `4040:7354`；FAQ rotate；Collapsible settle overflow |

@@ -53,13 +53,17 @@ function FaqChevron({ open }: { open: boolean }) {
   return (
     <svg
       aria-hidden="true"
-      className={cn('size-[1.125rem] shrink-0', open ? 'text-primary' : 'text-foreground/40')}
+      className={cn(
+        'size-[1.125rem] shrink-0 transition-[transform,color] duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)]',
+        open ? 'rotate-180 text-primary' : 'rotate-0 text-foreground/40',
+      )}
       fill="none"
       viewBox="0 0 18 18"
       xmlns="http://www.w3.org/2000/svg"
     >
+      {/* Closed = chevron down; open rotates 180° to point up — do not swap path. */}
       <path
-        d={open ? 'M4.5 11.25L9 6.75L13.5 11.25' : 'M13.5 6.75L9 11.25L4.5 6.75'}
+        d="M4.5 6.75L9 11.25L13.5 6.75"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
