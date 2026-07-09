@@ -277,12 +277,12 @@ export function SwapMetaPanel({
     >
       {items.map((item, index) => (
         <p className="m-0 flex items-center justify-between gap-3" key={index}>
-          {/* 4175 meta rows: text-sm (14) + tracking-normal — not copy 13 */}
+          {/* Meta rows: detail 14 + token tracking -0.02em ≡ Figma */}
           <Text
             as="span"
             variant="detail"
             tone="muted-foreground"
-            className="leading-normal tracking-normal"
+            className="leading-normal"
           >
             {item.label}
           </Text>
@@ -290,7 +290,7 @@ export function SwapMetaPanel({
             as="strong"
             variant="detail"
             className={cn(
-              'mt-0 text-right font-semibold leading-normal tracking-normal',
+              'mt-0 text-right font-semibold leading-normal',
               item.valueClassName,
             )}
           >

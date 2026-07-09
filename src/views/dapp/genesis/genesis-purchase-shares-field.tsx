@@ -29,9 +29,9 @@ export function GenesisPurchaseSharesField({
   value: string
 }) {
   return (
-    // 4175 H5 LABEL: text-xs (13 via mobile bump) / leading 1.5.
-    <label className="mt-1.5 grid gap-2 text-xs leading-[1.5] tracking-normal">
-      <Text as="span" variant="copy" tone="muted-foreground" className="text-xs leading-[1.5] tracking-normal">
+    // Figma Shares label: 12px / lh 1.5 / tracking -0.02em
+    <label className="mt-1.5 grid gap-2 text-xs leading-[1.5]">
+      <Text as="span" variant="copy" tone="muted-foreground" className="text-xs leading-[1.5] tracking-[-0.02em]">
         {label}
       </Text>
       <div className="flex gap-2">

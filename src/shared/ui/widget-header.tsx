@@ -19,9 +19,9 @@ export const widgetHeader = tv({
       dappWidgetHeaderSpacingClass,
     ),
     copy: 'flex min-w-0 flex-1 flex-col gap-1.5',
-    // Size/weight from Text panel token (21/600). Do NOT use text-xl (20px) — strips panel size.
-    // leading-normal + hub tracking match 4175 SwapHubHeader (21 / 31.5 / -0.55125).
-    title: 'm-0 leading-normal tracking-[-0.02625em]',
+    // Size/weight/tracking from Text panel token (21/600 / -0.04em ≡ Figma wh).
+    // Do NOT use text-xl (20px) — strips panel size.
+    title: 'm-0',
     subtitle: 'm-0 max-w-[17.5rem] max-dapp:max-w-none',
   },
 })
@@ -78,7 +78,7 @@ export const widgetSubpageHeader = tv({
       'inline-flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left',
     backLabel: '',
     copy: 'grid gap-1.5',
-    title: 'm-0 leading-normal tracking-[-0.02625em]',
+    title: 'm-0',
     subtitle: 'm-0 max-w-[17.5rem] max-dapp:max-w-none',
   },
 })

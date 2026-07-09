@@ -6,7 +6,7 @@ import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 
 const tableCell = dappTableCell()
 const TABLE_CELL =
-  `${tableCell.minWidth()} ${tableCell.border()} px-3 py-2.5 text-left whitespace-nowrap font-normal text-sm max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
+  `${tableCell.minWidth()} ${tableCell.border()} px-3 py-2.5 text-left whitespace-nowrap font-normal text-sm tracking-[-0.02em] max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
 
 /** SSOT ≡ Community「我的社区成员」表头 — muted only; no tab-specific faint override. */
 const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground')
@@ -86,7 +86,7 @@ export function ResponsiveTable({
                       className={cn(
                         TABLE_CELL,
                         rowIndex === rows.length - 1 && 'border-b-0',
-                        'tracking-normal text-foreground',
+                        'text-foreground',
                         linkColumns.includes(index) && 'text-primary',
                         emphasisColumns.includes(index) && 'font-bold text-foreground',
                         positiveColumns.includes(index) &&
