@@ -36,7 +36,7 @@
 
 ## Chrome 90+ / 国产 WebView
 
-生产构建目标见 `vite.config.ts`（`chrome90`、`@vitejs/plugin-legacy`、lightningcss targets）。**勿删除** legacy polyfill / cascade-layer flatten / `legacy-breakpoints.css`。
+生产构建目标见 `vite.config.ts`（`chrome90`、`@vitejs/plugin-legacy`、lightningcss targets）。**勿删除** legacy polyfill / cascade-layer flatten / viewport-unit fallbacks（`dvh`→`vh`）/ `legacy-breakpoints.css`。lightningcss **不会**降级 `dvh`（#534），由 `vite-plugins/viewport-unit-fallbacks.ts` 注入。
 
 ## React Runtime
 

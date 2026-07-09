@@ -5,6 +5,7 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 import { flattenCssCascadeLayersPlugin } from './vite-plugins/flatten-css-cascade-layers'
+import { viewportUnitFallbacksPlugin } from './vite-plugins/viewport-unit-fallbacks'
 
 /** Inline boot polyfill must parse before plugin-legacy module polyfills in <head>. */
 function legacyBootFirstPlugin(): Plugin {
@@ -98,6 +99,8 @@ export default defineConfig(({ command }) => ({
     }),
     tailwindcss(),
     flattenCssCascadeLayersPlugin(),
+    // lightningcss does not rewrite dvh→vh (chrome90); inject classic fallbacks post-build.
+    viewportUnitFallbacksPlugin(),
     legacyBootFirstPlugin(),
     legacy({
       targets: legacyBrowserTargets,
