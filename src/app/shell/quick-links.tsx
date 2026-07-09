@@ -1,4 +1,4 @@
-import { QuickLink, type QuickLinkProps } from '~/app/shell/components/quick-link'
+import { QuickLink, type QuickLinkProps } from '~/app/shell/quick-link'
 import { cn } from '~/shared/lib/utils'
 
 export type { QuickLinkProps as QuickLinkItem }

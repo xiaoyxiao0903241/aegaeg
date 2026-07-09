@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   buildPhaseCountdownKey,
+  clampGenesisShares,
+  canPurchaseGenesis,
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
   estimateXTokenAirdropUsd,
@@ -60,18 +62,13 @@ export function useGenesisWidget() {
   const queryClient = useQueryClient()
   const readClient = useChainReadClient()
   const countdownRefreshRef = useRef<string | null>(null)
-  const [shares, setShares] = useState(0)
+  const [sharesDraft, setSharesDraft] = useState(0)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [nowSeconds, setNowSeconds] = useState(() => Math.floor(Date.now() / 1000))
 
   const address = account?.address
   const walletReady = Boolean(address)
-
-  useEffect(() => {
-    setShares(0)
-    setError(null)
-  }, [address])
 
   const phasesQuery = usePresalePhasesQuery()
   const activePhaseQuery = usePresaleActivePhaseQuery()
@@ -91,10 +88,6 @@ export function useGenesisWidget() {
   const phases = useMemo(() => phasesQuery.data ?? [], [phasesQuery.data])
   const activePhase = activePhaseQuery.data ?? null
   const sharePriceWei = resolveSharePriceWei(activePhase)
-  const purchaseAmount = useMemo(
-    () => (sharePriceWei > 0n ? sharePriceWei * BigInt(shares) : 0n),
-    [sharePriceWei, shares],
-  )
   const userTotal = userTotalQuery.data ?? 0n
   const phaseRemaining = phaseRemainingQuery.data ?? null
   const agxPriceWei = agxPriceQuery.data ?? 0n
@@ -147,14 +140,15 @@ export function useGenesisWidget() {
     [remainingPhaseAmount, remainingUserAmount, sharePriceWei, usd1Balance, walletReady],
   )
 
-  useEffect(() => {
-    if (maxShares <= 0) return
-    setShares((current) => {
-      if (current === 0) return 0
-      return Math.min(Math.max(current, 1), maxShares)
-    })
-  }, [maxShares])
+  const shares = clampGenesisShares(sharesDraft, maxShares)
+  const setShares = useCallback((next: number) => {
+    setSharesDraft(next)
+  }, [])
 
+  const purchaseAmount = useMemo(
+    () => (sharePriceWei > 0n ? sharePriceWei * BigInt(shares) : 0n),
+    [sharePriceWei, shares],
+  )
   const payUsd1 = formatTokenAmountToNumber(purchaseAmount, USD1_DECIMALS)
   const estimatedAgx = estimateAgxFromUsd1(payUsd1, discountBps, agxPriceUsd)
   const contributionValueUsd = estimateContributionValueUsd(
@@ -175,13 +169,15 @@ export function useGenesisWidget() {
   const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
   const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
   const hasSufficientBalance = usd1Balance >= purchaseAmount
-  const canPurchase =
-    walletReady &&
-    activePhase !== null &&
-    maxShares > 0 &&
-    purchaseAmount >= minAmount &&
-    purchaseAmount <= maxPurchasableWei &&
-    shares <= maxShares
+  const canPurchase = canPurchaseGenesis({
+    walletReady,
+    hasActivePhase: activePhase !== null,
+    maxShares,
+    shares,
+    purchaseAmount,
+    minAmount,
+    maxPurchasableWei,
+  })
   const isSubmitting = submittingAction !== null
 
   const refresh = useCallback(async () => {

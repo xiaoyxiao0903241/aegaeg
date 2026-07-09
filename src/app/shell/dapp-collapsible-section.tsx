@@ -1,8 +1,8 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { cn } from '~/shared/lib/utils'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/components/dapp-icon'
-import { DappSection } from '~/app/shell/components/dapp-section'
+import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappSection } from '~/app/shell/dapp-section'
 
 const COLLAPSE_MS = 320
 

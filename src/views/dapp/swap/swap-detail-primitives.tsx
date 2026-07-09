@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { MetricCard } from '~/shared/ui/metric-card'
-import { MetricCardSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { MetricCardSkeleton } from '~/app/shell/dapp-skeleton'
 
 const swapMetricCard = tv({
   base: 'max-dapp:min-w-0 max-dapp:[&_small]:hidden',

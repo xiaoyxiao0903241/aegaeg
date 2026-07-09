@@ -3,7 +3,7 @@ import { IconButton } from '~/shared/ui/icon-button'
 import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/components/dapp-icon'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { cn } from '~/shared/lib/utils'
 

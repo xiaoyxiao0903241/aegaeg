@@ -1,6 +1,6 @@
 import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
-import { HomeSection } from '~/views/home/components/home-section'
+import { HomeSection } from '~/views/home/home-section'
 
 export function HomeMetricsSection() {
   const { messages } = useI18n()

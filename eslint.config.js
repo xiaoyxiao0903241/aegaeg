@@ -67,10 +67,27 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs['recommended-latest'].rules,
-      /* 项目内大量合法的 effect 同步 / render 期 ref 镜像；保留为 warn 避免阻塞 CI */
+      /* S8: exhaustive-deps 已清零 → error；set-state-in-effect / refs 仍有登记债 → warn */
+      'react-hooks/exhaustive-deps': 'error',
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/refs': 'warn',
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      /*
+       * Project co-locates tv()/helpers with components (intentional).
+       * Fast Refresh purity is not a gate — off globally.
+       */
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  /* Registered set-state-in-effect debt (animation / external sync) — keep warn, do not escalate */
+  {
+    files: [
+      'src/app/shell/dapp-mobile-nav.tsx',
+      'src/app/dapp-rail.tsx',
+      'src/hooks/use-referral.ts',
+      'src/views/home/use-home-popup-notice.ts',
+    ],
+    rules: {
+      'react-hooks/set-state-in-effect': 'warn',
     },
   },
   {

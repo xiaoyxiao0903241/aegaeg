@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
-import { DappDetailBlock } from '~/app/shell/components/dapp-detail-block'
+import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 

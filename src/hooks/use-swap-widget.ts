@@ -1,8 +1,12 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-price-impact-bps'
+import {
+  canSubmitQuotedSwap,
+  resolveLiveQuotedOut,
+} from '~/core/swap/resolve-live-quoted-out'
 import { formatGasEstimate } from '~/views/dapp/swap/format-gas-estimate'
 import { formatSwapRateApprox } from '~/views/dapp/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
@@ -41,7 +45,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     setSlippageRaw(clampSlippagePercent(value))
   }, [])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<unknown>(null)
+  const [submitError, setSubmitError] = useState<unknown>(null)
   const readClient = useChainReadClient()
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
@@ -157,6 +161,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     balance: sellBalance,
     balancesLoaded,
     authenticated,
+    onBeforeCap: () => setSubmitError(null),
   })
 
   const amountQuoteQuery = useQuery({
@@ -193,13 +198,25 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   // keepPreviousData must not drive submit/UI: placeholder is a prior amountIn's quote.
   const amountQuote = amountQuoteQuery.isPlaceholderData ? undefined : amountQuoteQuery.data
-  const quotedOut = amountQuote?.quotedOut ?? 0n
+  const quotedOut = resolveLiveQuotedOut(
+    amountQuoteQuery.isPlaceholderData,
+    amountQuoteQuery.data?.quotedOut,
+  )
   const priceImpactBps = amountQuote?.priceImpactBps ?? 0
   const gasEstimate = amountQuote?.gasEstimate ?? 0n
   const poolFee = poolMetadataQuery.data?.fee ?? SWAP_CONFIG.feeTier
-  const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
-  const exchangeSpotQuotedOut = exchangeSpotQuoteQuery.data?.quotedOut ?? 0n
-  const exchangeSpotQuotedOutInverted = exchangeSpotQuoteInvertedQuery.data?.quotedOut ?? 0n
+  const spotQuotedOut = resolveLiveQuotedOut(
+    spotQuoteQuery.isPlaceholderData,
+    spotQuoteQuery.data?.quotedOut,
+  )
+  const exchangeSpotQuotedOut = resolveLiveQuotedOut(
+    exchangeSpotQuoteQuery.isPlaceholderData,
+    exchangeSpotQuoteQuery.data?.quotedOut,
+  )
+  const exchangeSpotQuotedOutInverted = resolveLiveQuotedOut(
+    exchangeSpotQuoteInvertedQuery.isPlaceholderData,
+    exchangeSpotQuoteInvertedQuery.data?.quotedOut,
+  )
   const isQuoting =
     authenticated &&
     amountIn > 0n &&
@@ -207,26 +224,25 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
       amountQuoteQuery.isPlaceholderData ||
       (amountQuoteQuery.isFetching && quotedOut === 0n))
   const isSpotQuoting =
-    amountIn === 0n && spotQuoteQuery.isPending && spotQuotedOut === 0n
+    amountIn === 0n &&
+    (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) &&
+    spotQuotedOut === 0n
   const isExchangePriceQuoting =
-    exchangeSpotQuoteQuery.isPending && exchangeSpotQuotedOut === 0n
+    (exchangeSpotQuoteQuery.isPending || exchangeSpotQuoteQuery.isPlaceholderData) &&
+    exchangeSpotQuotedOut === 0n
   const isExchangePriceInvertedQuoting =
-    exchangeSpotQuoteInvertedQuery.isPending && exchangeSpotQuotedOutInverted === 0n
+    (exchangeSpotQuoteInvertedQuery.isPending ||
+      exchangeSpotQuoteInvertedQuery.isPlaceholderData) &&
+    exchangeSpotQuotedOutInverted === 0n
 
-  useEffect(() => {
-    if (amountQuoteQuery.error) {
-      setError(
-        amountQuoteQuery.error instanceof Error
-          ? amountQuoteQuery.error.message
-          : 'Quote failed',
-      )
-      return
-    }
+  const validationError = useMemo(() => {
+    if (!amountQuoteQuery.error) return null
+    return amountQuoteQuery.error instanceof Error
+      ? amountQuoteQuery.error.message
+      : 'Quote failed'
+  }, [amountQuoteQuery.error])
 
-    if (amountIn > 0n) {
-      setError(null)
-    }
-  }, [amountIn, amountQuoteQuery.error])
+  const error = submitError ?? validationError
 
   const routeLabel = useMemo(
     () => `${pair.sell.symbol} → ${pair.buy.symbol}`,
@@ -319,14 +335,14 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     [quotedOut, slippageBps],
   )
 
-  const exceedsBalance = walletReady && amountIn > sellBalance
-  const canSubmit =
-    walletReady &&
-    amountIn > 0n &&
-    !exceedsBalance &&
-    quotedOut > 0n &&
-    !amountQuoteQuery.isPending &&
-    !isSubmitting
+  const canSubmit = canSubmitQuotedSwap({
+    walletReady,
+    amountIn,
+    sellBalance,
+    quotedOut,
+    isQuotePending: amountQuoteQuery.isPending,
+    isSubmitting,
+  })
 
   const fillPercent = useCallback(
     (percent: number) => {
@@ -343,13 +359,13 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
 
   const submit = useCallback(async (): Promise<boolean> => {
     if (!account || !wallet) {
-      setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
+      setSubmitError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
       return false
     }
     if (!canSubmit) return false
 
     setIsSubmitting(true)
-    setError(null)
+    setSubmitError(null)
 
     try {
       await approveTokenIfNeeded({
@@ -370,8 +386,8 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
       invalidateAfterSwap()
       await balancesQuery.refetch()
       return true
-    } catch (submitError: unknown) {
-      setError(submitError)
+    } catch (caught: unknown) {
+      setSubmitError(caught)
       // The tx may still land (unknown outcome) — refresh balances so the UI
       // re-caps the amount instead of inviting an identical resubmit.
       void balancesQuery.refetch()

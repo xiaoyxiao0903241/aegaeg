@@ -4,10 +4,10 @@ import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { flashSwapAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/components/dapp-icon'
-import { DappActionButton } from '~/app/shell/components/dapp-action-button'
-import { DappActionRow } from '~/app/shell/components/dapp-action-row'
-import { SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappActionRow } from '~/app/shell/dapp-action-row'
+import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
@@ -43,24 +43,22 @@ export function FlashSwapWidget({
     walletReady: swap.walletReady,
   })
 
-  const flashSwapErrorMessages = {
-    walletNotConnected: t.genesis.walletNotConnected,
-    insufficientAllowance: t.genesis.insufficientAllowance,
-    insufficientUsd1: t.genesis.insufficientUsd1,
-    purchaseUnavailable: t.genesis.purchaseUnavailable,
-    transactionCancelled: t.swap.transactionCancelled,
-  }
-
+  // Kept as useCallback: effect dependency (Compiler does not replace effect identity needs).
   const showFlashSwapError = useCallback(
     (error: unknown) => {
       const message = resolveFlashSwapUserMessage(
         error,
-        flashSwapErrorMessages,
+        {
+          walletNotConnected: t.genesis.walletNotConnected,
+          insufficientAllowance: t.genesis.insufficientAllowance,
+          insufficientUsd1: t.genesis.insufficientUsd1,
+          purchaseUnavailable: t.genesis.purchaseUnavailable,
+          transactionCancelled: t.swap.transactionCancelled,
+        },
         t.wallet.transactionErrors,
       )
       if (message) toast.error(message)
     },
-    // messages object is rebuilt each render; resolve is cheap — depend on t
     [t],
   )
 
@@ -69,11 +67,17 @@ export function FlashSwapWidget({
       ? null
       : resolveFlashSwapUserMessage(
           swap.error,
-          flashSwapErrorMessages,
+          {
+            walletNotConnected: t.genesis.walletNotConnected,
+            insufficientAllowance: t.genesis.insufficientAllowance,
+            insufficientUsd1: t.genesis.insufficientUsd1,
+            purchaseUnavailable: t.genesis.purchaseUnavailable,
+            transactionCancelled: t.swap.transactionCancelled,
+          },
           t.wallet.transactionErrors,
         )
 
-  const handleSubmit = useCallback(async () => {
+  async function handleSubmit() {
     const result = await swap.submit()
     if (result.ok) {
       toast.success(t.swap.swapSuccess)
@@ -82,7 +86,7 @@ export function FlashSwapWidget({
     if (result.error != null) {
       showFlashSwapError(result.error)
     }
-  }, [showFlashSwapError, swap, t.swap.swapSuccess])
+  }
 
   useEffect(() => {
     if (!swap.validationError) return

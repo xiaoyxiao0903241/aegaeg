@@ -1,8 +1,8 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { DappContentHeading } from '~/app/shell/components/dapp-content-heading'
-import { DappDetailBlock } from '~/app/shell/components/dapp-detail-block'
-import { DappDetailPage } from '~/app/shell/components/dapp-detail-page'
-import { MetricGrid } from '~/app/shell/components/metric-grid'
+import { DappContentHeading } from '~/app/shell/dapp-content-heading'
+import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
+import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import {

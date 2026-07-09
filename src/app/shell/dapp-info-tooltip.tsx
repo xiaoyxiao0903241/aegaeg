@@ -2,7 +2,7 @@ import {
   AnchoredTooltip,
   type AnchoredTooltipProps,
 } from '~/shared/ui/anchored-tooltip'
-import { DappInfoIcon } from '~/app/shell/components/dapp-info-icon'
+import { DappInfoIcon } from '~/app/shell/dapp-info-icon'
 import { cn } from '~/shared/lib/utils'
 
 type DappInfoTooltipProps = Pick<AnchoredTooltipProps, 'align' | 'content' | 'position'> & {

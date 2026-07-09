@@ -1,5 +1,5 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { MetricGrid } from '~/app/shell/components/metric-grid'
+import { MetricGrid } from '~/app/shell/metric-grid'
 import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import {
   GenesisMetricCard,

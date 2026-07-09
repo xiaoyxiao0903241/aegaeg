@@ -17,6 +17,10 @@ import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-inter
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
+import {
+  canSubmitQuotedSwap,
+  resolveLiveQuotedOut,
+} from '~/core/swap/resolve-live-quoted-out'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/views/dapp/web3/flash-swap-read'
 import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/views/dapp/web3/flash-swap-write'
 
@@ -95,8 +99,14 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
   // while balances are still loading would wipe whatever the user typed.
   const isBalancesLoading = walletReady && balancesQuery.isLoading
   // keepPreviousData must not drive submit/UI: placeholder is a prior amountIn's quote.
-  const quotedOut = amountQuoteQuery.isPlaceholderData ? 0n : (amountQuoteQuery.data ?? 0n)
-  const spotQuotedOut = spotQuoteQuery.isPlaceholderData ? 0n : (spotQuoteQuery.data ?? 0n)
+  const quotedOut = resolveLiveQuotedOut(
+    amountQuoteQuery.isPlaceholderData,
+    amountQuoteQuery.data,
+  )
+  const spotQuotedOut = resolveLiveQuotedOut(
+    spotQuoteQuery.isPlaceholderData,
+    spotQuoteQuery.data,
+  )
   const isQuoting =
     authenticated &&
     amountIn > 0n &&
@@ -175,14 +185,14 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
 
   const routeLabel = `${pair.sell.symbol} → ${pair.buy.symbol}`
 
-  const exceedsBalance = walletReady && amountIn > sellBalance
-  const canSubmit =
-    walletReady &&
-    amountIn > 0n &&
-    !exceedsBalance &&
-    quotedOut > 0n &&
-    !amountQuoteQuery.isPending &&
-    !isSubmitting
+  const canSubmit = canSubmitQuotedSwap({
+    walletReady,
+    amountIn,
+    sellBalance,
+    quotedOut,
+    isQuotePending: amountQuoteQuery.isPending,
+    isSubmitting,
+  })
 
   const fillPercent = useCallback(
     (percent: number) => {

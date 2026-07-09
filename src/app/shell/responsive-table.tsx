@@ -2,8 +2,8 @@ import { type ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { StatusBadge } from '~/shared/ui/badge'
 import { Text } from '~/shared/ui/text'
-import { TableRowSkeleton } from '~/app/shell/components/dapp-skeleton'
-import { dappTableCell } from '~/app/shell/components/dapp-table-card'
+import { TableRowSkeleton } from '~/app/shell/dapp-skeleton'
+import { dappTableCell } from '~/app/shell/dapp-table-card'
 
 const tableCell = dappTableCell()
 

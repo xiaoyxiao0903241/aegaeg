@@ -103,6 +103,49 @@ export function resolveGenesisMaxShares({
   return Math.max(0, Math.min(...caps))
 }
 
+/**
+ * Clamp draft share count against maxShares for display / submit.
+ * Empty draft (0) stays 0; when maxShares is 0, force 0 (fail-closed).
+ * S6 may tighten vs legacy effect (which early-returned when maxShares≤0).
+ */
+export function clampGenesisShares(shares: number, maxShares: number): number {
+  if (maxShares <= 0 || shares <= 0) return 0
+  return Math.min(Math.max(shares, 1), maxShares)
+}
+
+/** Controlled input mirror of numeric shares (empty when zero). */
+export function formatGenesisSharesText(shares: number): string {
+  return shares === 0 ? '' : String(shares)
+}
+
+/** Genesis purchase submit gate (chain + draft). */
+export function canPurchaseGenesis({
+  walletReady,
+  hasActivePhase,
+  maxShares,
+  shares,
+  purchaseAmount,
+  minAmount,
+  maxPurchasableWei,
+}: {
+  walletReady: boolean
+  hasActivePhase: boolean
+  maxShares: number
+  shares: number
+  purchaseAmount: bigint
+  minAmount: bigint
+  maxPurchasableWei: bigint
+}): boolean {
+  return (
+    walletReady &&
+    hasActivePhase &&
+    maxShares > 0 &&
+    purchaseAmount >= minAmount &&
+    purchaseAmount <= maxPurchasableWei &&
+    shares <= maxShares
+  )
+}
+
 export function isPhaseActive(phase: PresalePhaseOnChain, nowSeconds = Math.floor(Date.now() / 1000)): boolean {
   const now = BigInt(nowSeconds)
   return now >= phase.startTime && now <= phase.endTime

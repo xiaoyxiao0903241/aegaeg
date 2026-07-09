@@ -1,4 +1,4 @@
-import { DappIcon } from '~/app/shell/components/dapp-icon'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { Card } from '~/shared/ui/card'
 import { chipVariants } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'

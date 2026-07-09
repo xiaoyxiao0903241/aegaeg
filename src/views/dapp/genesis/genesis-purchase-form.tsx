@@ -1,5 +1,5 @@
-import { DappInfoTooltip } from '~/app/shell/components/dapp-info-tooltip'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
+import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
 import { revealClass } from '~/shared/lib/reveal'
@@ -8,31 +8,43 @@ import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
 import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import { formatCount, formatUsdAmountLabel } from '~/shared/api/format-display'
 import { seasons as fallbackSeasons } from '~/app/data'
-import { DappActionButton } from '~/app/shell/components/dapp-action-button'
-import { DappActionRow } from '~/app/shell/components/dapp-action-row'
-import { DappMetaList } from '~/app/shell/components/dapp-meta-list'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappActionRow } from '~/app/shell/dapp-action-row'
+import { DappMetaList } from '~/app/shell/dapp-meta-list'
+import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
-import { DappWidgetConnectPromo } from '~/app/shell/components/dapp-widget-connect-footer'
-import { SeasonSelector } from '~/app/shell/components/season-selector'
+import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { SeasonSelector } from '~/app/shell/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { SeasonOptionSkeleton } from '~/app/shell/components/dapp-skeleton'
-import { resolveContractErrorMessage, resolveGenesisPurchaseError, resolveWalletTransactionError } from '~/views/dapp/web3/resolve-contract-error-message'
+import { SeasonOptionSkeleton } from '~/app/shell/dapp-skeleton'
+import {
+  resolveContractErrorMessage,
+  resolveGenesisPurchaseError,
+  resolveWalletTransactionError,
+} from '~/views/dapp/web3/resolve-contract-error-message'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
 
+/**
+ * Remount via `key={address}` from parent when wallet changes — clears draft text
+ * without an effect that mirrors genesis.shares.
+ */
 export function GenesisPurchaseForm() {
   'use memo'
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()
   const setShares = genesis.setShares
-  const shares = genesis.shares
 
-  // Local input mirror of genesis.shares (widget resets shares on address change).
   const [sharesText, setSharesText] = useState('')
-  useEffect(() => {
-    setSharesText(shares === 0 ? '' : String(shares))
-  }, [shares])
+
+  // Derive display when maxShares drops under the typed draft (no setState-in-effect).
+  const sharesTextDisplay =
+    sharesText === ''
+      ? ''
+      : formatGenesisSharesText(
+          clampGenesisShares(Number.parseInt(sharesText, 10) || 0, genesis.maxShares),
+        )
 
   const isMobileViewport = useMobileViewport()
   const sharesInputRef = useRef<HTMLInputElement>(null)
@@ -60,19 +72,24 @@ export function GenesisPurchaseForm() {
     }
     const parsed = Number.parseInt(value, 10)
     if (Number.isNaN(parsed)) return
-    const clamped = Math.min(Math.max(parsed, 1), genesis.maxShares)
-    setSharesText(String(clamped))
+    const clamped = clampGenesisShares(parsed, genesis.maxShares)
+    setSharesText(formatGenesisSharesText(clamped))
     setShares(clamped)
   }
 
   const handleSharesBlur = () => {
-    if (sharesText === '' || Number.parseInt(sharesText, 10) < 1) {
+    if (sharesTextDisplay === '' || Number.parseInt(sharesTextDisplay, 10) < 1) {
       setShares(0)
       setSharesText('')
+      return
+    }
+    if (sharesTextDisplay !== sharesText) {
+      setSharesText(sharesTextDisplay)
+      setShares(Number.parseInt(sharesTextDisplay, 10))
     }
   }
 
-  const handleParticipate = useCallback(async () => {
+  async function handleParticipate() {
     const result = await genesis.participate()
     if (result.success) {
       toast.success(t.genesis.joinSuccess)
@@ -86,32 +103,23 @@ export function GenesisPurchaseForm() {
       const message =
         resolveWalletTransactionError(result.error, t.wallet.transactionErrors) ??
         resolveGenesisPurchaseError(result.error, {
-        insufficientAllowance: t.genesis.insufficientAllowance,
-        insufficientUsd1: t.genesis.insufficientUsd1,
-        purchaseUnavailable: t.genesis.purchaseUnavailable,
-        walletNotConnected: t.genesis.walletNotConnected,
-        notBound: t.genesis.errors.notBound,
-        paused: t.genesis.errors.paused,
-        invalidAmount: t.genesis.errors.invalidAmount,
-        phaseInactive: t.genesis.errors.phaseInactive,
-        belowMin: t.genesis.errors.belowMin,
-        soldOut: t.genesis.errors.soldOut,
-        userLimitExceeded: t.genesis.errors.userLimitExceeded,
-        invalidPhase: t.genesis.errors.invalidPhase,
-        systemConfig: t.genesis.errors.systemConfig,
-      })
+          insufficientAllowance: t.genesis.insufficientAllowance,
+          insufficientUsd1: t.genesis.insufficientUsd1,
+          purchaseUnavailable: t.genesis.purchaseUnavailable,
+          walletNotConnected: t.genesis.walletNotConnected,
+          notBound: t.genesis.errors.notBound,
+          paused: t.genesis.errors.paused,
+          invalidAmount: t.genesis.errors.invalidAmount,
+          phaseInactive: t.genesis.errors.phaseInactive,
+          belowMin: t.genesis.errors.belowMin,
+          soldOut: t.genesis.errors.soldOut,
+          userLimitExceeded: t.genesis.errors.userLimitExceeded,
+          invalidPhase: t.genesis.errors.invalidPhase,
+          systemConfig: t.genesis.errors.systemConfig,
+        })
       if (message) toast.error(message)
     }
-  }, [
-    genesis,
-    t.genesis.errors,
-    t.genesis.insufficientAllowance,
-    t.genesis.insufficientUsd1,
-    t.genesis.joinSuccess,
-    t.genesis.purchaseUnavailable,
-    t.genesis.walletNotConnected,
-    t.wallet.transactionErrors,
-  ])
+  }
 
   useEffect(() => {
     if (!genesis.error) return
@@ -160,7 +168,7 @@ export function GenesisPurchaseForm() {
           setSharesText(String(genesis.maxShares))
         }}
         shareUnit={t.common.shareUnit}
-        value={sharesText}
+        value={sharesTextDisplay}
       />
 
       <DappMetaList

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { DappPanelHeader } from '~/app/shell/components/dapp-panel-header'
+import { DappPanelHeader } from '~/app/shell/dapp-panel-header'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { cn } from '~/shared/lib/utils'
 

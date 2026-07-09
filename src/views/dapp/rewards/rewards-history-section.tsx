@@ -13,18 +13,18 @@ import {
   mapTeamRewardClaimLogToRow,
 } from '~/views/dapp/rewards/rewards-display'
 import { useAuth } from '~/app/bootstrap/use-auth'
-import { DappCollapsibleSection } from '~/app/shell/components/dapp-collapsible-section'
-import { DappSection } from '~/app/shell/components/dapp-section'
-import { DappTablePagination } from '~/app/shell/components/dapp-table-pagination'
-import { DappTableCard } from '~/app/shell/components/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/components/dapp-table-empty-message'
-import { DappTableAuthPrompt } from '~/app/shell/components/dapp-table-auth-prompt'
-import { ResponsiveTable } from '~/app/shell/components/responsive-table'
+import { DappCollapsibleSection } from '~/app/shell/dapp-collapsible-section'
+import { DappSection } from '~/app/shell/dapp-section'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { DappTableCard } from '~/app/shell/dapp-table-card'
+import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
+import { ResponsiveTable } from '~/app/shell/responsive-table'
 import {
   rewardsCommunityFundHistoryColWidths,
   rewardsReferralHistoryColWidths,
   rewardsTeamHistoryColWidths,
-} from '~/app/shell/components/dapp-table-columns'
+} from '~/app/shell/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'

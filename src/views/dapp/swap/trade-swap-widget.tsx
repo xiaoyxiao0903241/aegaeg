@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/components/dapp-icon'
-import { DappActionButton } from '~/app/shell/components/dapp-action-button'
-import { DappActionRow } from '~/app/shell/components/dapp-action-row'
-import { SwapSlippageModal } from '~/app/shell/components/swap-slippage-modal'
-import { SwapMetaValueSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappActionRow } from '~/app/shell/dapp-action-row'
+import { SwapSlippageModal } from '~/app/shell/swap-slippage-modal'
+import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
@@ -61,7 +61,7 @@ export function TradeSwapWidget({
     walletReady: swap.walletReady,
   })
 
-  const handleFlip = useCallback(() => {
+  function handleFlip() {
     if (sessionReady && !swap.walletReady) return
     if (isFlipping) return
     setIsFlipping(true)
@@ -72,13 +72,13 @@ export function TradeSwapWidget({
     window.setTimeout(() => {
       setIsFlipping(false)
     }, 320)
-  }, [isFlipping, sessionReady, swap])
+  }
 
-  const handleSubmit = useCallback(async () => {
+  async function handleSubmit() {
     const success = await swap.submit()
     if (!success) return
     toast.success(t.swap.swapSuccess)
-  }, [swap, t.swap.swapSuccess])
+  }
 
   useEffect(() => {
     if (!swap.error) return

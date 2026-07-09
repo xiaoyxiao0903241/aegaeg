@@ -1,8 +1,8 @@
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { communityStatCardMobileShell } from '~/views/dapp/community/community-content-primitives'
-import { seasonCard } from '~/app/shell/components/season-card'
-import { dappTableCell } from '~/app/shell/components/dapp-table-card'
+import { seasonCard } from '~/app/shell/season-card'
+import { dappTableCell } from '~/app/shell/dapp-table-card'
 
 const metricCardSkeleton = tv({
   base: 'flex flex-col items-start gap-1.5 rounded-md px-4 py-3.5',

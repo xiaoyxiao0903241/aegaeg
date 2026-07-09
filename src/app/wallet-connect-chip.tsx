@@ -14,9 +14,9 @@ import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-er
 import { formatAddress } from '~/app/utils'
 import { Text } from '~/shared/ui/text'
 import { Button } from '~/shared/ui/button'
-import { DappActionButton } from '~/app/shell/components/dapp-action-button'
-import { WalletDetailsModal } from '~/app/shell/components/wallet-details-modal'
-import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { WalletDetailsModal } from '~/app/shell/wallet-details-modal'
+import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
 
 const walletConnectChip = tv({
   slots: {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/use-auth'
-import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
+import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import {
   SwapPromoPillAction,

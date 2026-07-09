@@ -4,8 +4,8 @@ import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { HomeSectionHead } from '~/views/home/components/home-section-head'
-import { HomeSection } from '~/views/home/components/home-section'
+import { HomeSectionHead } from '~/views/home/home-section-head'
+import { HomeSection } from '~/views/home/home-section'
 
 /** PC absolute top offsets per phase index (timeline layout data). */
 const phaseTopOffsets = [

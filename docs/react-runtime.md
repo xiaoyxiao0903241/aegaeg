@@ -49,13 +49,58 @@
 - `exhaustive-deps`：`auth-provider`（`activeTab`）、`dapp-rail`（删死依赖 `rateLabel`）、`use-genesis-widget`（`phases` 稳定化）、`genesis-purchase-form`（deps 收窄）
 - `set-state-in-effect` 改写：`swap-slippage-modal`（open 时 remount）、`wallet-details-modal`（`onOpenChange` 清 copied）
 
-**保留（契约登记，S6/动画类）：**
+**保留（契约登记，动画类 — 勿机械消 lint）：**
 
 - `dapp-mobile-nav` 进出场 mount
 - `dapp-rail` indicator / `rAF`
-- `use-genesis-widget`：换地址重置 shares；`maxShares` 钳制
-- `genesis-purchase-form`：`sharesText` 与 `shares` 镜像（输入草稿）
-- `use-capped-token-amount-input`、quote error effect 等 → S6 派生/写入时 cap
+
+### S6 进度（2026-07-10）
+
+**已改（派生 / remount，无镜像 effect）：**
+
+- Genesis：`shares = clampGenesisShares(draft, maxShares)`；Provider `key={address}` 清草稿；表单 `key={address}` + 显示派生，删 shares↔text effect
+- Cap input：返回 `resolveCappedTokenAmountRaw(draft)`，删余额 sync effect
+- Swap：报价错误派生（对齐 Flash）；`resolveLiveQuotedOut` / `canSubmitQuotedSwap` 已接入
+
+### S7 进度（2026-07-10）
+
+**范围**：仅 `"use memo"` 金丝雀叶子（`FlashSwapWidget` / `TradeSwapWidget` / `GenesisPurchaseForm`）。
+
+- 删除 onClick / 提交上冗余 `useCallback`（Compiler 已覆盖）
+- **保留** effect 依赖上的 `useCallback`（Flash `showFlashSwapError`）
+- **未**切 Compiler 全量；**未**盲删 hooks / Provider 内存量 memo
+
+### S8 进度（2026-07-10）
+
+| 规则 | 收口 |
+|------|------|
+| `exhaustive-deps` | **error**（计数 0） |
+| `set-state-in-effect` | **warn**；登记债：`dapp-mobile-nav`、`dapp-rail`、`use-referral`、`use-home-popup-notice` |
+| `only-export-components` | **off**（项目允许组件文件同导出 `tv()` / helper；不作为门禁） |
+| Compiler | 仍 **annotation**；全量待 Chrome90 冒烟勾选后 |
+
+门禁：`pnpm check`。
+
+### S5 进度（2026-07-10）
+
+**已修：**
+
+- `cardVariants` → [`src/shared/ui/card-variants.ts`](../src/shared/ui/card-variants.ts)；`card.tsx` 仅复合组件
+- Rewards tv 常量 → [`rewards-widget-styles.ts`](../src/views/dapp/rewards/rewards-widget-styles.ts)；组件留在 `rewards-widget-primitives.tsx`
+- Tab registry → [`dapp-tab-registry.tsx`](../src/views/dapp/dapp-tab-registry.tsx)；`dapp-tabs.tsx` 仅 Widget/Content
+- `only-export-components`：S8 全局 **off**（`tv()`/helper 与组件同文件为项目约定）
+
+### S5b 进度（2026-07-10）
+
+表征测试：[`tests/unit/react-quality-gates.test.mjs`](../tests/unit/react-quality-gates.test.mjs)
+
+| 门禁 | SSOT |
+|------|------|
+| Genesis shares clamp / 空草稿 / maxShares=0 | `clampGenesisShares` · `formatGenesisSharesText` · `canPurchaseGenesis` |
+| Token amount 余额下降 re-cap / loading 不误清 | `resolveCappedTokenAmountRaw` |
+| Stale quote 不驱动 submit | `resolveLiveQuotedOut` · `canSubmitQuotedSwap`（Swap/Flash 已接入） |
+
+子 agent 盲评见 §6。
 
 ### Chrome90 / 行为冒烟清单（S2+ 必跑）
 
@@ -88,6 +133,7 @@
 | 新代码 + Compiler 已开 | 默认不写；需要精确控制（尤其 **effect 依赖**、第三方边界）再写 |
 | 存量 | 先留；Compiler 稳定后逐文件测再删（S7） |
 | 未开 Compiler | **禁止**为「React 19」删 memo |
+| `"use memo"` 金丝雀 | 可删 onClick 包装；**勿**删 effect 依赖上的 `useCallback` |
 
 ---
 
@@ -137,4 +183,9 @@
 
 ## 6. S5b 审核记录
 
-（执行 S5b 时追加子 agent 结论与仲裁。）
+| 轮次 | 极简派 | 安全派 | 仲裁 |
+|------|--------|--------|------|
+| 1 | FAIL（缺 sharesText/余额下降/canSubmit 组合；Swap 未统一 `resolveLiveQuotedOut`） | FAIL（同） | 补测 + 接线后复审 |
+| 2（2026-07-10） | **PASS**（Grok） | **PASS**（Grok） | **解锁 S6** |
+
+**S6 须守住**：`keepPreviousData` / `maxShares≤0` fail-closed；空草稿与 balances loading 不误清；余额下降 re-cap；shares 空串镜像语义。

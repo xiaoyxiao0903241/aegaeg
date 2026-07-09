@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { DappPillTabs } from '~/app/shell/components/dapp-pill-tabs'
+import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { revealClass } from '~/shared/lib/reveal'
 
 const rewardsHistorySection = tv({

@@ -5,8 +5,8 @@ import type { HomeMessagesBundle } from '~/i18n/messages/home/types'
 import { engineIcons, protocolIcons } from '~/views/home/static-layout'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
-import { HomeSectionHead } from '~/views/home/components/home-section-head'
-import { HomeSection } from '~/views/home/components/home-section'
+import { HomeSectionHead } from '~/views/home/home-section-head'
+import { HomeSection } from '~/views/home/home-section'
 
 type IconCard = (
   | HomeMessagesBundle['sections']['protocol']['cards'][number]

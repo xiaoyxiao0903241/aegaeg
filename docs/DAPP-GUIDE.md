@@ -220,7 +220,7 @@ await writeContractViaWallet({ wallet, ... })
 | `src/views/dapp/presale-display.ts` | 预售 sales log 行映射（DApp 展示层） |
 | `src/views/home/popup-notice.ts` | 首页弹窗队列、时间窗口、dismiss 持久化 |
 | `src/shared/lib/copy-to-clipboard.ts` | 移动端 + legacy WebView 复制 |
-| `src/app/shell/components/*` | DApp shell 共享 UI（card、table、widget frame 等） |
+| `src/app/shell/*` | DApp shell 共享 UI（card、table、widget frame 等） |
 | `src/i18n/messages/app/*` | DApp 文案（PC = SSOT） |
 
 **已删除、勿再引入：**

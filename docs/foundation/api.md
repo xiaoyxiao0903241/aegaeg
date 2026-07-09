@@ -214,7 +214,7 @@
 - `dapp-shell.tsx` · `dapp-rail.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
 - `dapp-widget-frame.tsx` · `dapp-detail-page.tsx` · `dapp-detail-block.tsx` · `responsive-table.tsx` · `dapp-table-*`
 - `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `aegis-responsive-dialog.tsx`
-- `static-layout.ts` · `views/home/components/*`
+- `static-layout.ts` · `views/home/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`
 
 **禁止**：上述以外 `max-dapp:(text-|font-|leading-|tracking-)`

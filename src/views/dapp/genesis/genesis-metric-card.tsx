@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { MetricCard } from '~/shared/ui/metric-card'
-import { MetricCardSkeleton } from '~/app/shell/components/dapp-skeleton'
+import { MetricCardSkeleton } from '~/app/shell/dapp-skeleton'
 
 export const genesisMetricGrid = tv({
   base: 'max-dapp:grid-cols-2 max-dapp:gap-3',

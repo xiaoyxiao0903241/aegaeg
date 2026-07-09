@@ -8,7 +8,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/components/dapp-icon'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { formatAddress } from '~/app/utils'
 import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
@@ -20,7 +20,7 @@ import {
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
-import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
+import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
 
 const USD1_DECIMALS = 18
 

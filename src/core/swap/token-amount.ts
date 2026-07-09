@@ -171,3 +171,28 @@ export function capTokenAmountInput(
 
   return formatTokenAmount(maxAmount, decimals, maxFractionDigits)
 }
+
+/**
+ * Balance re-cap policy for controlled sell amount.
+ * Do not wipe draft while unauthenticated or balances still loading.
+ */
+export function resolveCappedTokenAmountRaw({
+  amount,
+  authenticated,
+  balancesLoaded,
+  balance,
+  decimals,
+  maxFractionDigits = 6,
+}: {
+  amount: string
+  authenticated: boolean
+  balancesLoaded: boolean
+  balance: bigint
+  decimals: number
+  maxFractionDigits?: number
+}): string {
+  if (!authenticated || !balancesLoaded || !amount) {
+    return amount
+  }
+  return capTokenAmountInput(amount, balance, decimals, maxFractionDigits)
+}

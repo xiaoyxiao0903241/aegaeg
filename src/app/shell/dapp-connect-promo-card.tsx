@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { withLocalePrefix } from '~/i18n/locale'
-import { DappIcon } from '~/app/shell/components/dapp-icon'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { Text } from '~/shared/ui/text'
