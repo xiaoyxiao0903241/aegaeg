@@ -477,10 +477,10 @@ const app = defineMessages({
                 },
                 {
                     label: 'Học viện X',
-                    title: 'Kế hoạch đào tạo hệ sinh thái dành cho nhà cùng xây dựng',
-                    body: 'Giúp nhà cùng xây dựng hiểu sâu hơn về cơ chế hệ sinh thái và kế hoạch phát triển.',
+                    title: 'Học viện DeFi toàn cầu · Học viện lãnh đạo toàn cầu thời đại kinh tế số',
+                    body: 'Đào tạo lãnh đạo cho thời đại · Dự trữ nhân tài cho tương lai',
                     action: 'Xem chi tiết kế hoạch →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/h-c-vi-n-x-vn',
                 },
             ],
         },

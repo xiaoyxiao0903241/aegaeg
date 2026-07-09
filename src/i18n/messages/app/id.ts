@@ -477,10 +477,10 @@ const app = defineMessages({
                 },
                 {
                     label: 'Akademi X',
-                    title: 'Program pelatihan ekosistem untuk pembangun',
-                    body: 'Membantu pembangun memahami mekanisme ekosistem dan rencana pengembangan lebih dalam.',
+                    title: 'Akademi DeFi Global · Akademi Kepemimpinan Global Era Ekonomi Digital',
+                    body: 'Mencetak pemimpin untuk zaman · Menyimpan talenta untuk masa depan',
                     action: 'Lihat detail program →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/akademi-x-id',
                 },
             ],
         },

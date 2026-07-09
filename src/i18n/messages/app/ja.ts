@@ -477,10 +477,10 @@ const app = defineMessages({
                 },
                 {
                     label: 'X学院',
-                    title: '共創者向けエコシステム研修プラン',
-                    body: '共創者がエコシステムの仕組みと発展計画をより深く理解できるよう支援。',
+                    title: 'グローバルDeFi学院·デジタル経済時代のグローバルリーダーシップ学院',
+                    body: '時代のためにリーダーを育て·未来のために人材を備える',
                     action: 'プラン詳細を見る →',
-                    href: '',
+                    href: 'https://xdaoaegis.notion.site/x-jp',
                 },
             ],
         },
