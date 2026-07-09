@@ -131,10 +131,10 @@ export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) 
   return (
     <Card
       as="article"
-      surface={dark ? 'inverse' : 'elevated'}
+      surface={dark ? 'inverse' : 'soft'}
       className={cn(
-        'community-stat flex min-h-22 flex-col items-start gap-1 p-[var(--dapp-community-stat-padding)]',
-        dark && 'is-dark',
+        'community-stat flex min-h-22 flex-col items-start gap-1 rounded-lg p-4.5',
+        dark && 'is-dark rounded-md',
         communityStatCardMobileShell(),
       )}
     >

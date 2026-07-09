@@ -23,21 +23,22 @@ export const communityStatCardMobileShell = tv({
 
 const communityStatCard = tv({
   slots: {
+    // Figma `sc` 4040:7313 — gap 4 · pad 18 · radius 18 (lg); soft surface owns E1 shadow.
     root: cn(
       revealClass(),
-      'community-stat flex flex-col items-start gap-1 rounded-md p-4.5',
+      'community-stat flex flex-col items-start gap-1 rounded-lg p-4.5',
       communityStatCardMobileShell(),
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),
     value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full'),
-    volume: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full max-dapp:leading-[1.2]'),
-    hint: cn('relative z-1 tracking-[-0.12px]', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
+    volume: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
+    hint: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
   },
   variants: {
     dark: {
       true: {
         // inverse surface owns elevation; dark sc clears shadow for art.
-        root: 'is-dark shadow-none border-0',
+        root: 'is-dark rounded-md shadow-none border-0',
       },
       false: {},
     },
@@ -89,7 +90,7 @@ export function CommunityStatCard({
   return (
     <Card
       as="article"
-      // light sc: soft (E1) ≠ overview elevated (E2). Composite owns md radius + p-4.5.
+      // light sc: soft (E1) ≠ overview elevated (E2). Composite owns lg radius + p-4.5 (Figma 18).
       surface={dark ? 'inverse' : 'soft'}
       className={cn(styles.root(), className)}
       data-reveal
@@ -97,13 +98,11 @@ export function CommunityStatCard({
       <Text
         as="span"
         variant="copy"
-        // 4175: light=ink-strong(70%) · dark=on-dark(#b8c0ce) — not full inverse white
+        // light: Figma text/body 70%; dark: inverse-muted
         tone={dark ? 'inverse-muted' : 'muted-foreground'}
         className={cn(
           styles.label(),
-          '',
-          // 4175 community stats: text-xs · leading-normal (12/18)
-          'text-xs leading-normal',
+          'text-xs leading-[1.5] tracking-[-0.24px]',
           dark && 'tracking-[-0.26px]',
         )}
       >
@@ -111,13 +110,12 @@ export function CommunityStatCard({
       </Text>
       <Text
         as="strong"
-        // 4175 size=2xl → text-3xl / leading-tight / tracking-tight (30/37.5); figure(22) was REGRESSION
-        // 4175 light value = ink-strong (70%) → muted-foreground, not full foreground
+        // Figma sc value 30 / lh 1.2 / tracking -1.2px · ink (not muted 70%)
         variant="figure"
-        tone={dark ? 'inverse' : 'muted-foreground'}
+        tone={dark ? 'inverse' : 'foreground'}
         className={cn(
           styles.value(),
-          'text-3xl leading-tight tracking-tight max-dapp:text-2xl max-dapp:leading-[1.05]',
+          'text-3xl leading-[1.2] tracking-[-1.2px] max-dapp:text-2xl max-dapp:leading-[1.05] max-dapp:tracking-tight',
         )}
       >
         {value}
@@ -125,11 +123,14 @@ export function CommunityStatCard({
       {volume ? (
         <Text
           as="b"
-          // 4175 size=sm → text-sm / leading-normal (14/21); headline(16) was REGRESSION
-          // dark: Figma accent/coral-bright（≡4175 text-coral-bright），非 primary
+          // light: Figma accent/coral #c85c3f; dark: coral-bright
           variant="headline"
-          tone={dark ? 'primary-bright' : 'primary'}
-          className={cn(styles.volume(), 'text-sm leading-normal')}
+          tone={dark ? 'primary-bright' : undefined}
+          className={cn(
+            styles.volume(),
+            'text-sm leading-[1.2] tracking-[-0.28px]',
+            !dark && 'text-coral',
+          )}
         >
           {volume}
         </Text>
@@ -138,12 +139,12 @@ export function CommunityStatCard({
         <Text
           as="small"
           variant="copy"
-          // 4175: light=faint(30%) · dark=on-dark
-          tone={dark ? 'inverse-muted' : 'muted-foreground'}
+          // light: Figma text/muted 40% → foreground/40; dark: inverse-muted
+          tone={dark ? 'inverse-muted' : undefined}
           className={cn(
             styles.hint(),
-            'text-xs leading-normal',
-            !dark && 'text-foreground/30',
+            'text-xs leading-[1.5] tracking-[-0.12px]',
+            !dark && 'text-foreground/40',
           )}
         >
           {today}

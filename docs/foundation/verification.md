@@ -426,8 +426,21 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 
 | 变更 | 标签 | 说明 |
 |------|------|------|
-| InviteFlow PC：连续 step 行 `gap-2.5` | REGRESSION→fixed | 横线两端与序号间距相等；不再靠列 `gap-3.5`+`px-1` 拼线 |
+| InviteFlow PC：`gap-x-0` + 线两侧各 `gap-2.5`/`pr-2.5` | REGRESSION→fixed | 横线两端与序号间距相等；去掉列 `gap-3.5`+`px-1` 造成的不对称 |
 | `DappDetailPage` `[&>section:first-child]:mt-0` | INTENTIONAL | 未登录「开始邀请」为首段时去掉 `DappSection` 的 `mt-8.5` |
+
+## 5z. CommunityStat 浅色 sc ↔ Figma `4040:7313`（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| value `muted-foreground` → `foreground` | REGRESSION→fixed | Figma ink `#0b0e14`，非 70% body |
+| volume `primary` → `text-coral` | REGRESSION→fixed | Figma accent/coral `#c85c3f`（≠ primary `#e86a43`） |
+| today `foreground/30` → `/40` | INTENTIONAL | Figma text/muted 40% |
+| value `tracking-[-1.2px]` · `leading-[1.2]` | INTENTIONAL | Figma 30px 字距/行高 |
+| volume / label / today tracking+leading | INTENTIONAL | Figma -0.28 / -0.24 / -0.12 · lh 1.2/1.5 |
+| radius `rounded-md` → `rounded-lg` (18) | INTENTIONAL | Figma sc `rounded-[18px]` |
+| skeleton light → `soft` + 同 chrome | REGRESSION→fixed | 曾用 elevated；与 sc soft 不一致 |
+| 暗色 sc | KEEP | inverse + coral-bright；艺术卡清影 |
 
 ## 6. 修订
 
@@ -460,3 +473,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.23 | §5w 删除 `tabular` / `tabular-nums`；数字定稿比例字 |
 | v2.24 | §5x Community Bind → Input + fieldActionChip（≡ Genesis MAX） |
 | v2.25 | §5y InviteFlow 步骤线等距；Detail 首段 `mt-0` |
+| v2.26 | §5z CommunityStat 浅色 sc ≡ Figma `4040:7313` |
