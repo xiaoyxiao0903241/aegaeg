@@ -326,7 +326,7 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 |------|------|------|
 | `SwapProgramCard` 裸 div → `Card as="button" elevated` | INTENTIONAL | 去手写 `shadow-card`；pad 仍 `p-4` |
 | `CommunityProgramCard` | KEEP | 已是 elevated；文案结构不并 Swap |
-| `DappTableCard` / Shell → `Card elevated` | INTENTIONAL | elevation 来自 surface；壳抹 `rounded-2xl`+border+`p-0`（≠ soft E1） |
+| `DappTableCard` / Shell → `Card elevated` | INTENTIONAL | elevation 来自 surface；壳抹 `rounded-2xl`+`p-0`（§5ab 去外边框） |
 | `aegis-thirdweb-button*` → `Button` | DEFER | 可迁；高度 36/40 vs sm/md 42/44、玻璃底需 density 或 className；另切片 |
 
 ## 5p. Button hover 统一（2026-07-09）

@@ -84,7 +84,8 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
               variant="copy"
               tone="muted-foreground"
               className={cn(
-                'm-0 max-w-[24ch] text-xs leading-normal text-foreground/30',
+                // Figma flow desc: text/body 70% (= muted-foreground); not faint 30%.
+                'm-0 max-w-[24ch] text-xs leading-[1.5] tracking-[-0.24px]',
                 'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2 max-dapp:leading-[1.28]',
               )}
             >

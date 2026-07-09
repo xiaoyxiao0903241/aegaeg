@@ -5,12 +5,13 @@ import { cn } from '~/shared/lib/utils'
 
 /**
  * Table shell chrome on Card `elevated` (E2).
- * INTENTIONAL vs MetricCard: `rounded-2xl` + `border` + `p-0` (header/body/footer own pad).
- * Not Card `soft` (E1 / FAQ) — table elevation stays shadow-card.
+ * INTENTIONAL vs MetricCard: `rounded-2xl` + `p-0` (header/body/footer own pad).
+ * No outer border — elevation only (`shadow-card`); row/header dividers stay inside.
+ * Not Card `soft` (E1 / FAQ).
  */
 const dappTableCard = tv({
   slots: {
-    shell: 'overflow-hidden rounded-2xl border border-border p-0',
+    shell: 'overflow-hidden rounded-2xl border-0 p-0',
     header:
       'dapp:px-4 dapp:pt-3.5 dapp:pb-2.5 max-dapp:px-3.5 max-dapp:pt-3.5 max-dapp:pb-2.5 border-b border-border/50',
     content: 'dapp:px-4 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5',

@@ -120,7 +120,7 @@
 | surface | Elevation | radius | padding | 用途 |
 |---------|-----------|--------|---------|------|
 | outlined | — | `rounded-md` (16px) | `p-3.5` (14px) | 标准边框卡（wcol box、meta、mode card、`DappSideCard`） |
-| elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、`SwapProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+border+`p-0`） |
+| elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、`SwapProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影） |
 | soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18） |
 | inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（CalloutCard、WidgetPromoCard） |
 
@@ -235,3 +235,4 @@
 | v2.11 | 删除 Text `tabular`；数字定稿比例字（禁 `tabular-nums`） |
 | v2.12 | Community Bind：`Input` + `fieldActionChipClass`（≡ Genesis MAX）；删 `DappActionButton` `shape=inline` |
 | v2.13 | CommunityStat 浅色 sc ≡ Figma `4040:7313`（ink / coral / radius-lg） |
+| v2.14 | `swapFlowButtonClass` ≡ Figma flb；Trade/Flash 中间钮共用 |
