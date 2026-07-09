@@ -22,7 +22,6 @@ export function SwapMetricCard({
       className={cn('max-dapp:min-w-0 max-dapp:[&_small]:hidden', className)}
       hint={hint}
       label={label}
-      tabular={false}
       value={value}
       valueClassName={valueClassName}
     />

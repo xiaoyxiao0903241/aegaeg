@@ -140,10 +140,10 @@ shadow-modal  = E6
 ### 3.1 Text
 ```ts
 variant:  'caption' | 'eyebrow' | 'copy' | 'detail' | 'question' | 'headline' | 'brand' | 'section' | 'panel' | 'figure'
-tone:     'foreground' | 'muted-foreground' | 'primary' | 'success' | 'inverse'
+tone:     'foreground' | 'muted-foreground' | 'primary' | 'primary-bright' | 'success' | 'inverse' | 'inverse-muted'
 as?:      'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'strong' | 'small' | 'em' | 'b' | 'a' | 'div' | 'time'
-tabular?: boolean
 ```
+**数字**：比例字；**禁止** `tabular` / `tabular-nums`。
 
 ### 3.2 Button
 ```ts

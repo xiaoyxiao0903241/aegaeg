@@ -104,13 +104,12 @@ function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
   )
 }
 
-/** Tier B · 数值（默认 figure 字阶；stat 大卡可 className 微调） */
-function Value({ className, tabular = true, ...props }: Omit<TextProps, 'variant'>) {
+/** Tier B · 数值（默认 figure 字阶；比例字，无 tabular-nums） */
+function Value({ className, ...props }: Omit<TextProps, 'variant'>) {
   return (
     <Text
       as="strong"
       variant="figure"
-      tabular={tabular}
       className={cn('block leading-normal', className)}
       {...props}
     />

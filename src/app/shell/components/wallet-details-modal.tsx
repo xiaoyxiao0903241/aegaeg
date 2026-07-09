@@ -223,12 +223,7 @@ export function WalletDetailsModal({
       </div>
 
       <DialogPrimitive.Title asChild>
-        <Text
-          as="h2"
-          variant="panel"
-          tabular
-          className="m-0"
-        >
+        <Text as="h2" variant="panel" className="m-0">
           {addressLabel}
         </Text>
       </DialogPrimitive.Title>
@@ -245,7 +240,7 @@ export function WalletDetailsModal({
         tone="muted-foreground"
         className="m-0 mt-3"
       >
-        <Text as="span" variant="figure" tone="primary" tabular className="mr-1.5">
+        <Text as="span" variant="figure" tone="primary" className="mr-1.5">
           {balanceValue}
         </Text>
         {balanceSymbol}
@@ -262,7 +257,7 @@ export function WalletDetailsModal({
             <Text as="span" variant="copy" tone="muted-foreground">
               {token.label}
             </Text>
-            <Text as="strong" variant="figure" tabular>
+            <Text as="strong" variant="figure">
               {token.value}
             </Text>
           </Card>

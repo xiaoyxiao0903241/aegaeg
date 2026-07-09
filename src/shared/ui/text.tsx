@@ -49,10 +49,6 @@ export const textVariants = tv({
         'text-[length:var(--type-figure-size)] font-[var(--type-figure-weight)] leading-[var(--type-figure-leading)] tracking-[var(--type-figure-tracking)]',
     },
     tone: toneClass,
-    tabular: {
-      true: 'tabular-nums',
-      false: '',
-    },
   },
   compoundVariants: [
     { variant: 'eyebrow', tone: 'primary', class: 'text-primary' },
@@ -61,7 +57,6 @@ export const textVariants = tv({
   defaultVariants: {
     variant: 'copy',
     tone: 'foreground',
-    tabular: false,
   },
 })
 
@@ -74,7 +69,6 @@ export type TextProps = HTMLAttributes<HTMLElement> & {
   href?: string
   rel?: string
   target?: string
-  tabular?: boolean
 } & VariantProps<typeof textVariants>
 
 /**
@@ -109,13 +103,11 @@ export function Text({
   className,
   variant,
   tone,
-  tabular,
   ...props
 }: TextProps) {
   const variantClassName = textVariants({
     variant: variant ?? 'copy',
     tone: tone ?? 'foreground',
-    tabular,
   })
   const resolvedVariant = classNameOverridesFontSize(className)
     ? stripVariantTypeTokens(variantClassName)

@@ -33,7 +33,8 @@ const languageTriggerClass = cn(
 
 const languagePanelClass = cn(
   openGrid,
-  'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-0.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
+  // Item gap: was gap-0.5 (too tight); gap-1.5 keeps rows readable without growing panel much.
+  'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-64 max-w-[calc(100dvw-2rem)] gap-1.5 overflow-clip rounded-md border border-border bg-card p-2.5 shadow-menu',
 )
 
 export type LanguageMenuOption = {

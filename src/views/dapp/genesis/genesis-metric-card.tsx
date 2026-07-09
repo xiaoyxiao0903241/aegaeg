@@ -13,14 +13,12 @@ export function GenesisMetricCard({
   className,
   hint,
   label,
-  tabular = false,
   value,
   valueClassName,
 }: {
   className?: string
   hint?: ReactNode
   label: ReactNode
-  tabular?: boolean
   value: ReactNode
   valueClassName?: string
 }) {
@@ -30,7 +28,6 @@ export function GenesisMetricCard({
       hint={hint}
       hintClassName={hint ? 'max-dapp:hidden' : undefined}
       label={label}
-      tabular={tabular}
       value={value}
       valueClassName={valueClassName}
     />

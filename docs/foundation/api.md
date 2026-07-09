@@ -30,7 +30,9 @@
 |--------|-----|
 | `variant` | **10 键**：`caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` |
 | `tone` | `foreground` · `muted-foreground` · `primary` · `primary-bright` · `success` · `inverse` · `inverse-muted` |
-| 可选 | `as` · `tabular` |
+| 可选 | `as` |
+
+**数字**：比例字（Montserrat 默认字形）。**禁止** `tabular` prop / `tabular-nums`（等宽偏疏，已删）。列对齐若需要，用布局/表格，不靠等宽数字。
 
 ### 10 variant（仅此）
 
@@ -174,6 +176,7 @@
 - `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / CalloutCard）。
 - `aegisDialogCloseClass`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
+- `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-[6px]` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；**不是** Button；下拉菜单不在该节点，保留 portal。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
 
@@ -226,3 +229,4 @@
 | v2.8 | Button hover SSOT：去 Community `shadow-primary-hover-xl`；ghost 对齐 lift；slippage Confirm → Button |
 | v2.9 | 隐藏面：WalletDetails 去 `h-11`/内嵌 Text；`aegisDialogCloseClass`；token 行 → Card outlined |
 | v2.10 | LanguageMenu DRY；mobile-nav 标签 ≡ `dev` text-sm；删未用 `shadow-primary-hover-xl` |
+| v2.11 | 删除 Text `tabular`；数字定稿比例字（禁 `tabular-nums`） |

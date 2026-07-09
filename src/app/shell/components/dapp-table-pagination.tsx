@@ -35,8 +35,8 @@ function pageMenuMaxHeightPx(): number {
   return pageMenuItemHeightPx() * PAGE_MENU_VISIBLE_ITEMS
 }
 
-/** Figma pagination controls ~6px; project `rounded-md` token is 16px — use explicit radius. */
-const PAGINATION_BTN_RADIUS = 'rounded-sm'
+/** Figma `4067:258` control radius 6px — project `rounded-sm` is 14px. */
+const PAGINATION_BTN_RADIUS = 'rounded-[6px]'
 
 type MenuPlacement = 'above' | 'below'
 
@@ -203,126 +203,155 @@ export function DappTablePagination({
       ref={rootRef}
     >
       <div className="flex min-w-0 flex-row flex-nowrap items-center gap-4">
-        <Text as="p" variant="copy" tone="muted-foreground" className="m-0 shrink-0 whitespace-nowrap">
+        <Text
+          as="p"
+          variant="copy"
+          tone="muted-foreground"
+          className="m-0 shrink-0 whitespace-nowrap text-xs font-normal leading-none tracking-normal"
+        >
           {t.common.paginationTotal.replace('{total}', formatCount(total))}
         </Text>
         {summary ? (
-          <Text as="p" variant="copy" tone="muted-foreground" className="m-0 min-w-0 whitespace-nowrap">
+          <Text
+            as="p"
+            variant="copy"
+            tone="muted-foreground"
+            className="m-0 min-w-0 whitespace-nowrap text-xs font-normal leading-none tracking-normal"
+          >
             {summary}
           </Text>
         ) : null}
       </div>
 
       {showPagination ? (
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <Text as="span" variant="copy" tone="muted-foreground" className="whitespace-nowrap">
+        // Figma 4067:258 — label · 16px · [prev · 4px · page(80×32) · 4px · next]; radius 6px; coral page pill.
+        <div className="flex flex-wrap items-center gap-4 sm:justify-end">
+          <Text
+            as="span"
+            variant="copy"
+            tone="muted-foreground"
+            className="whitespace-nowrap text-xs font-normal leading-none tracking-normal"
+          >
             {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
           </Text>
 
-          <button
-            aria-label={t.common.paginationPrev}
-            className={cn(
-              'inline-flex size-8 cursor-pointer items-center justify-center bg-pill-muted-bg text-primary transition-colors',
-              PAGINATION_BTN_RADIUS,
-              canPrev ? 'hover:bg-border/80' : 'cursor-default opacity-40',
-            )}
-            disabled={!canPrev}
-            onClick={() => onPageChange(safePage - 1)}
-            type="button"
-          >
-            <ChevronIcon direction="left" />
-          </button>
-
-          <div className="relative">
+          <div className="flex items-center gap-1">
             <button
-              aria-controls={listId}
-              aria-expanded={menuOpen}
-              aria-haspopup="listbox"
+              aria-label={t.common.paginationPrev}
               className={cn(
-                'inline-flex min-w-22 cursor-pointer items-center justify-center gap-1.5 px-3 py-1.5 transition-colors',
+                'inline-flex size-8 cursor-pointer items-center justify-center bg-pill-muted-bg text-coral transition-colors',
                 PAGINATION_BTN_RADIUS,
-                'bg-accent text-primary',
+                canPrev ? 'hover:bg-border/80' : 'cursor-default opacity-40',
               )}
-              onClick={() => {
-                setMenuOpen((value) => !value)
-              }}
-              ref={triggerRef}
+              disabled={!canPrev}
+              onClick={() => onPageChange(safePage - 1)}
               type="button"
             >
-              <Text as="span" variant="headline" tone="primary" tabular>
-                {safePage} / {totalPages}
-              </Text>
-              <ChevronIcon
-                className={chevronRotated ? 'rotate-180' : undefined}
-                direction="up"
-              />
+              <ChevronIcon direction="left" />
             </button>
 
-            {menuOpen
-              ? createPortal(
-                  <ul
-                    className="m-0 list-none overflow-y-auto rounded-sm border border-border bg-card p-0 text-xs shadow-dropdown"
-                    data-dapp-pagination-menu
-                    id={listId}
-                    ref={menuRef}
-                    role="listbox"
-                    style={menuStyle}
-                  >
-                    {Array.from({ length: totalPages }, (_, index) => {
-                      const pageNumber = index + 1
-                      const active = pageNumber === safePage
+            <div className="relative">
+              <button
+                aria-controls={listId}
+                aria-expanded={menuOpen}
+                aria-haspopup="listbox"
+                className={cn(
+                  // Figma page-indicator: w80 h32 px12 gap2 · bg coral@10% · text #c85c3f SemiBold 12.
+                  'inline-flex h-8 w-20 cursor-pointer items-center justify-center gap-0.5 px-3 text-xs font-semibold text-coral transition-colors',
+                  PAGINATION_BTN_RADIUS,
+                  'bg-accent',
+                )}
+                onClick={() => {
+                  setMenuOpen((value) => !value)
+                }}
+                ref={triggerRef}
+                type="button"
+              >
+                <Text
+                  as="span"
+                  variant="copy"
+                  className="text-xs font-semibold leading-none tracking-normal text-coral"
+                >
+                  {safePage} / {totalPages}
+                </Text>
+                <ChevronIcon
+                  className={chevronRotated ? 'rotate-180' : undefined}
+                  direction="up"
+                />
+              </button>
 
-                      return (
-                        <li
-                          className="m-0 p-0"
-                          key={pageNumber}
-                          role="option"
-                          aria-selected={active}
-                        >
-                          <button
-                            className={cn(
-                              'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center transition-colors',
-                              active ? 'bg-accent' : 'bg-card',
-                            )}
-                            onClick={() => {
-                              if (pageNumber !== page) {
-                                onPageChange(pageNumber)
-                              }
-                              setMenuOpen(false)
-                            }}
-                            type="button"
+              {menuOpen
+                ? createPortal(
+                    <ul
+                      className="m-0 list-none overflow-y-auto rounded-[6px] border border-border bg-card p-0 text-xs shadow-dropdown"
+                      data-dapp-pagination-menu
+                      id={listId}
+                      ref={menuRef}
+                      role="listbox"
+                      style={menuStyle}
+                    >
+                      {Array.from({ length: totalPages }, (_, index) => {
+                        const pageNumber = index + 1
+                        const active = pageNumber === safePage
+
+                        return (
+                          <li
+                            className="m-0 p-0"
+                            key={pageNumber}
+                            role="option"
+                            aria-selected={active}
                           >
-                            <Text
-                              as="span"
-                              variant={active ? 'headline' : 'copy'}
-                              tone={active ? 'primary' : 'foreground'}
-                              tabular
+                            <button
+                              className={cn(
+                                // Active ≡ Chip soft coral: accent wash + text-coral.
+                                'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
+                                active
+                                  ? 'bg-accent font-semibold text-coral'
+                                  : 'bg-card text-foreground',
+                              )}
+                              onClick={() => {
+                                if (pageNumber !== page) {
+                                  onPageChange(pageNumber)
+                                }
+                                setMenuOpen(false)
+                              }}
+                              type="button"
                             >
-                              {pageNumber}
-                            </Text>
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>,
-                  document.body,
-                )
-              : null}
-          </div>
+                              <Text
+                                as="span"
+                                variant="copy"
+                                tone={active ? undefined : 'foreground'}
+                                className={cn(
+                                  'text-xs leading-none tracking-normal',
+                                  active ? 'font-semibold text-coral' : 'font-normal',
+                                )}
+                              >
+                                {pageNumber}
+                              </Text>
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>,
+                    document.body,
+                  )
+                : null}
+            </div>
 
-          <button
-            aria-label={t.common.paginationNext}
-            className={cn(
-              'inline-flex size-8 cursor-pointer items-center justify-center bg-pill-muted-bg text-primary transition-colors',
-              PAGINATION_BTN_RADIUS,
-              canNext ? 'hover:bg-border/80' : 'cursor-default opacity-40',
-            )}
-            disabled={!canNext}
-            onClick={() => onPageChange(safePage + 1)}
-            type="button"
-          >
-            <ChevronIcon direction="right" />
-          </button>
+            <button
+              aria-label={t.common.paginationNext}
+              className={cn(
+                'inline-flex size-8 cursor-pointer items-center justify-center bg-pill-muted-bg text-coral transition-colors',
+                PAGINATION_BTN_RADIUS,
+                canNext ? 'hover:bg-border/80' : 'cursor-default opacity-40',
+              )}
+              disabled={!canNext}
+              onClick={() => onPageChange(safePage + 1)}
+              type="button"
+            >
+              <ChevronIcon direction="right" />
+            </button>
+          </div>
         </div>
       ) : null}
     </div>

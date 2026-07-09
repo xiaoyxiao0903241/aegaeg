@@ -181,13 +181,12 @@ role/          → Figma data-name（rit、qhd、tb、dl…）— 文档/迁移�
 <Text variant="meta" tone="subtle" />
 <Text variant="question">FAQ title</Text>
 <Text variant="brand">AEGIS X</Text>
-<Text variant="amount" tabular>1,234.56</Text>
-<Text variant="meta" className="font-semibold" />  // 罕见字重
+<Text variant="figure">1,234.56</Text>
+<Text variant="copy" className="font-semibold" />  // 罕见字重
 ```
 
-- 仅 `variant` + `tone`（+ `tabular` / `as`）；**无 `weight` prop**
-- 默认省略 `variant` → **`meta`**（13px）
-- Shell（net、tooltip、ConnectButton）**自管 typography**，不包 `<Text>`
+- 仅 `variant` + `tone`（+ `as`）；**无 `weight` / `tabular` prop**
+- 数字用比例字；**禁止** `tabular-nums`
 
 ### 3.4 Role → Semantic 映射（迁移用）
 

@@ -17,8 +17,6 @@ export type MetricCardProps = {
   hint?: ReactNode
   hintClassName?: string
   label: ReactNode
-  /** Default true; Swap rate `1 : 1.0010` matches proportional digits (tabular=false). */
-  tabular?: boolean
   value: ReactNode
   valueClassName?: string
 }
@@ -35,7 +33,6 @@ export function MetricCard({
   hint,
   hintClassName,
   label,
-  tabular = true,
   value,
   valueClassName,
 }: MetricCardProps) {
@@ -49,7 +46,7 @@ export function MetricCard({
       <Card.Label className="text-xs font-medium" tone="muted-foreground">
         {label}
       </Card.Label>
-      <Card.Value className={cn(metricCardValueClass, valueClassName)} tabular={tabular}>
+      <Card.Value className={cn(metricCardValueClass, valueClassName)}>
         {value}
       </Card.Value>
       {hint ? (

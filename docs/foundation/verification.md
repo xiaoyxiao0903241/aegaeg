@@ -299,7 +299,7 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | trade / flash / shell DEV 警告抽 `DappInlineAlert` | INTENTIONAL | destructive border/wash/pad 一处；间距仍 call site |
 | `density=compact` vs `comfortable` | INTENTIONAL | widget `px-3.5 py-2.5` · shell `px-4 py-3` |
 | 未并入 CalloutCard / Card inverse | KEEP | 浅底告警 ≠ 深色 CTA 卡 |
-| Text tracking / tone 轴 | DEFER | A7 另切片 |
+| Text tracking / tone 轴（标题等） | DEFER | A7 另切片；数字等宽已删（§5w） |
 
 ## 5m. Card surface / shadow 契约（2026-07-09）
 
@@ -370,8 +370,48 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 |------|------|------|
 | `contractButton` 恢复 `!` 覆盖 secondary | REGRESSION→fixed | `dev`：透明底 + 白边；无 `!` 时被 `bg-card`/`border-border`/coral lift 盖掉 |
 | `!w-auto` 压掉 md+pill `w-full` | REGRESSION→fixed | `dev` 仅 sm+pill 全宽；现 sm\|md+pill→`w-full` 把 absolute 钮拉满，看起来不靠右 |
+| content `pr-36` / H5 `pr-28` | REGRESSION→fixed | 见 §5v：非 flex gap；H5 预留应在 kicker 且够 EN 钮宽 |
 | 额外压掉 secondary hover lift/shadow | INTENTIONAL | 暗色横幅上勿抬升/灰影 |
 | 未新增 Button variant | KEEP | 单 call site；用 className 抹平 |
+
+## 5v. Genesis 全球卡 H5 标题↔合约钮间距（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 去掉 content `pr-36` / `max-dapp:pr-28` | REGRESSION→fixed | CTA `absolute`，不是兄弟 flex `gap`；整块 content 右垫会误伤 value/body |
+| kicker `max-dapp:pr-44` | INTENTIONAL | ≡ `dev` 把预留放 kicker；`pr-28` 对 EN “View contract”(~150px) 不够，换行顶到钮 |
+| PC 不强制 kicker pr | KEEP | 宽卡上标题单行自然让位；与 `dev` 一致 |
+
+## 5t. LanguageMenu 间距 + 分页菜单字阶（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| LanguageMenu panel `gap-0.5` → `gap-1.5` | INTENTIONAL | 项间距过挤；trigger/行高仍 ≡ `dev` |
+| 分页 trigger/菜单项恢复 `text-xs` | REGRESSION→fixed | 曾用 Text `headline`(16) 撑大；≡ `dev` `text-xs font-semibold` |
+| 分页去 `tabular` + `min-w-22`→hug | INTENTIONAL | 过渡态；已被 §5u Figma 固定宽覆盖 |
+| 菜单项 active 色回 `font-semibold text-primary` | REGRESSION→fixed | 过渡态；已被 §5u `text-coral` 覆盖 |
+
+## 5u. 分页 ↔ Figma `4067:258`（2026-07-09）
+
+SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 控件圆角 `rounded-[6px]` | INTENTIONAL | Figma 6px；`rounded-sm` token=14px 不可用 |
+| 页码 pill `w-20 h-8 px-3` + `gap-0.5` | INTENTIONAL | Figma 80×32 · px12 · gap2 |
+| 页码/chevron/菜单 active → `text-coral` + `bg-accent` | INTENTIONAL | Figma `#c85c3f` / coral@10%；≡ Chip soft coral（非 `primary`） |
+| 控件簇 `gap-1`；「每页」↔控件 `gap-4` | INTENTIONAL | Figma 4px / 16px |
+| 左右文案 `text-xs` muted | INTENTIONAL | Figma 12 Regular body@70% |
+| prev/next `text-coral` on `pill-muted-bg` | INTENTIONAL | Figma 灰底 + coral 箭头 |
+| 下拉菜单不在本节点 | KEEP | 保留 portal 菜单；圆角/active 色跟控件收敛 |
+
+## 5w. 数字比例字 SSOT（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 删除 `Text` / `Card.Value` / `MetricCard` `tabular` prop | INTENTIONAL | 等宽偏疏；定稿比例字 |
+| 全仓去掉 `tabular` / `tabular-nums` | INTENTIONAL | wallet / Genesis metrics / SwapMetricCard / responsive-table |
+| tracking 收紧实验 | DEFER | 不跟等宽一起做；A7 标题另切片 |
 
 ## 6. 修订
 
@@ -398,3 +438,7 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.17 | §5q 隐藏面第一刀：WalletDetails / dialog close |
 | v2.18 | §5r LanguageMenu DRY + mobile-nav 字阶对齐 `dev`；删 hover-xl |
 | v2.19 | §5s Genesis 全球卡合约按钮 vs `dev` 回归修复 |
+| v2.20 | §5t LanguageMenu gap；分页菜单 text-xs；全球卡 content pr |
+| v2.21 | §5u 分页对齐 Figma `4067:258`（6px / coral / 80×32 / 4·16 gap） |
+| v2.22 | §5v Genesis 全球卡 H5：kicker `pr-44` 预留绝对定位 CTA（非 flex gap） |
+| v2.23 | §5w 删除 `tabular` / `tabular-nums`；数字定稿比例字 |

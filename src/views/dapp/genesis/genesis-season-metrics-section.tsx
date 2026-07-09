@@ -24,17 +24,14 @@ export function GenesisSeasonMetricsSection() {
         <>
           <GenesisMetricCard
             label={genesis.countdownMode === 'ends' ? t.genesis.endsIn : t.genesis.startsIn}
-            tabular
             value={genesis.countdown}
           />
           <GenesisMetricCard
             label={t.genesis.referencePrice}
-            tabular
             value={genesis.referencePriceLabel}
           />
           <GenesisMetricCard
             label={t.genesis.discountRatio}
-            tabular
             value={genesis.discountLabel}
           />
           <GenesisMetricCard label={t.genesis.xAirdropRatio} value={genesis.airdropLabel} />

@@ -102,7 +102,7 @@ Phase T — 技术债（视觉收敛后再开）
 | Topbar brand / Language menu / type rem | fixed |
 | Lang item radius 10→14 · muted 0.7 · section lh | INTENTIONAL |
 | Community / Rewards 左卡 chrome | **统一** Card `outlined`（`p-3.5` / `rounded-md`）；旧「用户锁定」已解除 |
-| Trade FAQ pill · TokenChip lh · Convert rate tabular | fixed |
+| Trade FAQ pill · TokenChip lh · Convert rate 比例字 | fixed |
 | Community stat label · Copy link min-h | fixed |
 | Phase V 矩阵脚本 `setSwapView` / `setTab` / `evaluate` unwrap | fixed（motion 锁 + 文案点击 + `data-tab` 校验） |
 | AmountBox balance：仅 `sessionReady` 时 `font-semibold` | fixed（对齐 4175） |

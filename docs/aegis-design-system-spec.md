@@ -81,7 +81,7 @@ Role          rit, qhd, dl — 迁移映射 only
 <Text variant="meta" tone="foreground" />
 ```
 
-- 轴：`variant` + `tone`（+ `tabular` / `as`）
+- 轴：`variant` + `tone`（+ `as`）；**无 `tabular`**
 - 无 `weight` prop
 - Shell 自管：net · tooltip · ConnectButton
 
