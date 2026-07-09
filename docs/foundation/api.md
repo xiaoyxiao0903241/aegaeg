@@ -39,17 +39,19 @@
 
 | variant | PC | H5 | weight | 用途 |
 |---------|----|----|--------|------|
-| caption | 10 | 10 | normal | meta / rail label；badge 等 Medium 在 call site `font-medium` |
+| caption | 10 | 11 | normal | meta / rail label；badge 等 Medium 在 call site `font-medium` |
 | eyebrow | 11 | 12 | semibold | uppercase kicker |
-| support | 12 | 12 | normal | 次级说明：等级卡底栏、进度/余额 meta、widget 副标题、分页 chrome |
-| copy | 13 | 13 | normal | **默认**正文：表头/单元格、pill、主说明、控件旁文案 |
-| detail | 14 | 14 | normal | FAQ 答案、长说明 |
+| support | 12 | 13 | normal | 次级说明：等级卡底栏、进度/余额 meta、widget 副标题、分页 chrome |
+| copy | 13 | 14 | normal | **默认**正文：表头/单元格、pill、主说明、控件旁文案 |
+| detail | 14 | 15 | normal | FAQ 答案、长说明 |
 | question | 14 | 15 | semibold | FAQ 问题 |
-| headline | 16 | 15 | semibold | 卡小标题 |
+| headline | 16 | 17 | semibold | 卡小标题 |
 | brand | 17 | 18 | semibold | topbar brand / rank |
-| section | 18 | 16 | semibold | section heading (dl)；tracking **-0.04em** |
+| section | 18 | 19 | semibold | section heading (dl)；tracking **-0.04em** |
 | panel | 21 | 22 | semibold | widget / page header；tracking **-0.04em** |
 | figure | 22 | 23 | semibold | 金额、数值 |
+
+**H5 字号策略（≡ `dev` `mobile-type-scale` / `dapp-scale`）**：语义 `--type-*` 与 Tailwind `--text-*` 在 `max-width: 820px` 上均为 **PC +1px**；不以 Figma H5 偏小稿为准。
 
 **字距（Figma Genesis `31:2`）**：正文档（caption/support/copy/detail/…）**-0.02em**；`section`/`panel` 标题 **-0.04em**（≡ 18→`-0.72px`、21→`-0.84px`）；`headline` **-0.03em**；`eyebrow` **+0.08em**。禁 call site `tracking-normal` 抹平正文/标题字距（Input/Button 控件内文除外）。
 
