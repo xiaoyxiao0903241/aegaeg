@@ -246,6 +246,18 @@ Figma 层: <layer>
 
 实现与验收时：不引用上述文件、不按其「验收 0x / card.padding=24 / 行高 1.2」等口号改码。冲突时以**画板实节点**定意图，以 **4175** 验回归；`dev` 仍不是结构 / class 字典 SSOT（见 skill）。
 
+## 5h. CSS 瘦身切片（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 删 `.aegis-btn-loading-icon` / `aegis-btn-spin` | INTENTIONAL | `ButtonLoadingIcon` → lucide `animate-spin` |
+| 删 `.aegis-wallet-connect-intro` | INTENTIONAL | 零 call site |
+| 删 `[data-spotlight-card]` | INTENTIONAL | 零属性绑定 |
+| heading/section/panel-header 同值 tab 类合并 | INTENTIONAL | 视觉等价；Swap heading 仍 `-0.04em`；panel H5 swap `leading-[1.5]` 保留 |
+| InviteFlow 去 `group-data-[tab=community]` | INTENTIONAL | 仅 Community 挂载；布局数值不变 |
+| GenesisPromoCard `group-data-[tab=genesis]` | **KEEP** | 亦挂在 Swap footer；删守卫会污染 Swap |
+| `home-motion` / `wallet.css` 主路径 | **KEEP** | 见 runbook §6.1 保留清单 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -259,3 +271,4 @@ Figma 层: <layer>
 | v2.5 | muted：INTENTIONAL→IGNORE（Figma PC body 70%；4175 50%）；§5f Figma MCP 色阶表；暗色卡 `primary-bright` |
 | v2.6 | §5g 曾记规范 vs 画板对照表 |
 | v2.7 | 删除四份 Spec JSON；§5g 改为视觉 SSOT = 画板实节点 + 4175；禁止再参考口号规范 |
+| v2.8 | §5h CSS 瘦身切片标签；motion/wallet 保留规则指向 runbook §6.1 |

@@ -123,6 +123,19 @@ H5: (同上)
 | 探针降级 | 禁止默认全页 DOM dump；仅肉眼分不清或修完硬验收时，对 1–2 节点 scoped 取 computed |
 | 禁止贴回平行样式体系 | 不为截图恢复已删 hand-roll / 遗留色 / type-scale；根因在 token 则改 token |
 
+**CSS 瘦身 — 保留清单（禁止当「死 CSS」删）**
+
+| 区域 | 路径 / 选择器 | 为何保留 |
+|------|---------------|----------|
+| Home 动效 | `home-motion.css`；`data-home-motion-ready` / `data-reveal` / `data-visible` | 首页 reveal 运行时 SSOT；见 `docs/homepage-animation-guidelines.md` |
+| 钱包 / thirdweb | `wallet.css`：`.aegis-connected-wallet-chip` · `.aegis-thirdweb-button*` · `.aegis-connect-embed*` · `.aegis-wallet-connect-*`（除已删 intro）· `.tw-modal` | Home CTA 视觉 + DApp ConnectEmbed；`ui-compare` / `phase-v-matrix` 绑定类名 |
+| DApp 动效钩子 | `dapp-panel-enter` · `swap-view-layer*` · `faq-answer-panel*` · `dapp-collapsible-*` · `dapp-progress-meter*` · `hero-rays*` · modal/sheet keyframes · `[data-dapp-window]` · `[data-reveal]` | 有 DOM/`data-*` 或脚本选择器；删 = 动效/折叠回归 |
+| 滚动条基建 | `scrollbars.css` 全局块 + `scrollbar-x-track` | 表卡横向滚动在用；`scrollbar-dark` / `scrollbar-none` 为公开 utility，可另议删 utility，**不删全局规则** |
+
+**可删前提**：`rg` 全仓（含 `scripts/`）零命中，且不在上表。示例已删：`.aegis-btn-loading-icon`（改 lucide `animate-spin`）、`.aegis-wallet-connect-intro`、`[data-spotlight-card]`。
+
+**`group-data-[tab=*]`**：仅合并**同值重复**；伪守卫仅当组件**确认只挂在该 tab** 时可内联。跨 tab 复用（如 `GenesisPromoCard` 在 Swap + Genesis）**必须保留** tab 守卫。真差异保留：`data-tab` 属性、Rewards topbar 品牌隐藏、`responsive-table` rewards fork、`dapp-detail-layout` gap SSOT。
+
 **偏离标签**：结构债清理标 **INTENTIONAL**；误删导致塌陷标 **REGRESSION** 并修回。
 
 ### 6.2 视觉诊断序（登录态 / 子页）
@@ -175,3 +188,4 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 | v2.1 | 同步最终命名：4 Card surface、Input default/numeric/amount、Composite 最终名、P8 清债 |
 | v2.2 | 新增 §6.1 Class / CSS 减法；明确 `dev` 仅视觉对照、非结构 SSOT |
 | v2.3 | §6.1–6.2：红块优先；探针降级为确认工具 |
+| v2.4 | §6.1：CSS 瘦身保留清单（home-motion / wallet / DApp 动效钩子）；tab 守卫合并规则 |

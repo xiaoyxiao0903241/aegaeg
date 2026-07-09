@@ -40,9 +40,8 @@ export function DappPanelHeader({
           variant="panel"
           className={cn(
             'm-0 text-xl font-semibold leading-[1.3] tracking-[-0.84px]',
-            'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px]',
-            'group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px]',
-            'group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
+            // PC detail title tracking (swap/genesis/rewards share; community uses base -0.84px).
+            'group-data-[tab=swap]/shell:dapp:tracking-[-0.42px] group-data-[tab=genesis]/shell:dapp:tracking-[-0.42px] group-data-[tab=rewards]/shell:dapp:tracking-[-0.42px]',
             // PC: text-xl (20px) overrides panel token. H5 4175 title = 21px / Swap lh 1.5.
             'max-dapp:text-[21px] max-dapp:leading-[1.2] max-dapp:tracking-[-0.88px]',
             'group-data-[tab=swap]/shell:max-dapp:leading-[1.5]',

@@ -45,6 +45,7 @@ description: >-
 5. 视觉收敛：布局/字号/色/间距相对 4175 须 <1px（或无肉眼可辨色差）。有偏差 → 打开 dev 与当前**对应代码位置**，找根因，全面修；禁止 !important / 局部特判补丁。
 6. 禁止为凑截图贴回已删平行样式体系 / 遗留色 / type-scale；根因在 token/primitive 则改 SSOT 并全仓受益。
 7. deletion-first · 代码极简 · 第一性原理。
+8. **禁止当死 CSS 删**：`home-motion.css`、`wallet.css` 主路径（chip / thirdweb / connect-embed）、DApp 动效钩子（panel-enter / swap-view-layer / faq-answer / collapsible / progress-meter / hero-rays / modal-sheet / data-dapp-*）。清单见 [`runbook.md`](../../docs/foundation/runbook.md) §6.1。
 ```
 
 ## 视觉诊断（MUST · 红块优先）

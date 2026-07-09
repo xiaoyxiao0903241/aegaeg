@@ -107,19 +107,6 @@ video {
   min-height: 100vh;
 }
 
-[data-spotlight-card] {
-  position: relative;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  [data-spotlight-card]:hover {
-    box-shadow: 0 14px 34px oklch(22% 0.04 265 / 10%);
-  }
-}
-
 @media (max-width: 820px) {
   html {
     scroll-padding-top: 3.75rem;

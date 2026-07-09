@@ -172,16 +172,6 @@
   transform: translateY(-1px);
 }
 
-.aegis-wallet-connect-intro {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  padding: 0.875rem;
-  border-radius: 1rem;
-  background: var(--surface-wash-strong);
-  margin-bottom: 0.5rem;
-}
-
 .aegis-wallet-connect-body {
   max-block-size: min(68dvh, 35rem);
   overflow-y: auto;
