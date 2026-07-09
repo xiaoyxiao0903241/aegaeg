@@ -75,10 +75,10 @@
 **暗色 promo CTA**：**38**（`min-h-9.5`）— 走 `DappActionButton density="inverse"`，**不是**第 4 个 size
 **Compound**：`size=sm|md` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
 **Hover / press SSOT**（全 variant 一致，禁 call site 叠 `shadow-primary-hover-*`）：
-- 过渡：`duration-200` + `cubic-bezier(0.22,1,0.36,1)`；`active:duration-100`（按下更快 settle）
-- 动效：**轻微缩放**（禁 `translate-y` lift — H5 无 hover 时抬起无效）
-  - hover / focus-visible：`scale-[1.015]`
-  - active：`scale-[0.98]`（不硬清影，避免阴影 snap）
+- 过渡：`duration-160 ease-out`；`active:duration-75`
+- 动效：**极轻缩放**（禁 `translate-y` lift）
+  - hover / focus-visible：`scale-[1.008]`
+  - active：`scale-[0.992]`（不硬清影）
 - `primary`：scale + `shadow-primary-hover`
 - `secondary`：scale + `shadow-card` + `border-coral-hover-border`
 - `ghost`：scale + `border-primary` / `text-primary`（无额外影）
@@ -253,3 +253,4 @@
 | v2.21 | FAQ chevron：CSS data-state 驱动 rotate + color |
 | v2.22 | Pagination 页码箭头：关下开上 + 旋转动画 |
 | v2.23 | Button / flb：更小 scale + 软 ease + 更快 active |
+| v2.24 | Button / flb：极轻 scale `1.008` / `0.992` · 160ms ease-out |

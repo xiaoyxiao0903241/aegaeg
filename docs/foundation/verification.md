@@ -516,9 +516,16 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 
 | 变更 | 标签 | 说明 |
 |------|------|------|
-| scale `1.02/0.97` → `1.015/0.98` | INTENTIONAL | 减小幅度，去顿挫 |
-| ease → `cubic-bezier(0.22,1,0.36,1)` · 200ms | INTENTIONAL | 软减速；`active:duration-100` 按下更快 |
+| scale `1.02/0.97` → `1.015/0.98` | SUPERSEDED | 见 §5ak |
+| ease → `cubic-bezier(0.22,1,0.36,1)` · 200ms | SUPERSEDED | 见 §5ak |
 | 去掉 `active:shadow-none` | REGRESSION→fixed | 阴影硬切是不平滑主因之一 |
+
+## 5ak. Button / flb 极轻 scale（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| scale → `1.008` / `0.992` | INTENTIONAL | 用户要更轻；几乎无弹感 |
+| `duration-160 ease-out` · `active:duration-75` | INTENTIONAL | 短、直、不抢戏 |
 
 ## 6. 修订
 
@@ -562,3 +569,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.34 | §5ah FAQ chevron CSS rotate + color |
 | v2.35 | §5ai Pagination 页码箭头关下开上 + 动画 |
 | v2.36 | §5aj Button/flb 更平滑 scale |
+| v2.37 | §5ak Button/flb 极轻 scale `1.008`/`0.992` |

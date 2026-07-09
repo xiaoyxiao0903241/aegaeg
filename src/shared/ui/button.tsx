@@ -14,13 +14,13 @@ const disabledMutedClass =
   'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100'
 
 /**
- * Scale press — H5-friendly (no translate lift).
- * Small deltas + soft ease; active settles faster so press doesn't feel laggy.
+ * Very light scale — H5-friendly (no translate lift).
+ * Tiny deltas so hover/press feel soft, not punchy.
  */
 const pressMotionClass = cn(
-  'origin-center will-change-transform',
-  'hover:scale-[1.015] focus-visible:scale-[1.015]',
-  'active:scale-[0.98] active:duration-100',
+  'origin-center',
+  'hover:scale-[1.008] focus-visible:scale-[1.008]',
+  'active:scale-[0.992] active:duration-75',
 )
 
 /**
@@ -33,8 +33,8 @@ const pressMotionClass = cn(
 export const buttonVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center font-semibold tracking-normal whitespace-nowrap',
-    // Soft decelerate — color/shadow 200ms; press uses active:duration-100.
-    'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]',
+    // Gentle ease — color/shadow 160ms; press settles in 75ms.
+    'transition-[border-color,background-color,box-shadow,transform,opacity,color] duration-160 ease-out',
     buttonDisabledClass,
   ],
   variants: {
