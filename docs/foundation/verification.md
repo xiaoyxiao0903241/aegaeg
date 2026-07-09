@@ -413,6 +413,15 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | 全仓去掉 `tabular` / `tabular-nums` | INTENTIONAL | wallet / Genesis metrics / SwapMetricCard / responsive-table |
 | tracking 收紧实验 | DEFER | 不跟等宽一起做；A7 标题另切片 |
 
+## 5x. Community 邀请人 Bind ↔ Input / MAX Chip（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 未绑定 input → `Input` default | REGRESSION→fixed | 删手写 `communityReferrerInput`（muted 字色 / 无 placeholder token / 无 focus） |
+| Bind → Chip soft coral + `fieldActionChipClass` | INTENTIONAL | ≡ Genesis MAX；删 `DappActionButton shape="inline"` |
+| `fieldActionChipClass` 抽到 `chip.tsx` | INTENTIONAL | MAX / Bind 共用 field-adjacent chrome |
+| 布局 `flex gap-2` | INTENTIONAL | ≡ shares 行（input + chip） |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -442,3 +451,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.21 | §5u 分页对齐 Figma `4067:258`（6px / coral / 80×32 / 4·16 gap） |
 | v2.22 | §5v Genesis 全球卡 H5：kicker `pr-44` 预留绝对定位 CTA（非 flex gap） |
 | v2.23 | §5w 删除 `tabular` / `tabular-nums`；数字定稿比例字 |
+| v2.24 | §5x Community Bind → Input + fieldActionChip（≡ Genesis MAX） |

@@ -1,5 +1,8 @@
 import { Wallet } from 'lucide-react'
 import { tv } from 'tailwind-variants'
+import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
+import { Chip, fieldActionChipClass } from '~/shared/ui/chip'
+import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/components/dapp-icon'
@@ -7,12 +10,8 @@ import { dappIconClass } from '~/app/dapp-icon-scale'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 
-const communityReferrerInput = tv({
-  base: 'w-full rounded-sm border border-border bg-card px-3.5 py-2.5 text-xs text-muted-foreground outline-0',
-})
-
 const communityReferrerBindGrid = tv({
-  base: 'grid grid-cols-[minmax(0,1fr)_max-content] items-center gap-2',
+  base: 'flex gap-2',
 })
 
 const communityReferrerAddressRow = tv({
@@ -96,22 +95,28 @@ export function CommunityReferrerBindCard({
         {referrerLabel}
       </Text>
       <div className={communityReferrerBindGrid()}>
-        <input
+        <Input
           aria-label={inputLabel}
-          className={communityReferrerInput()}
+          className="min-w-0 flex-1"
           onChange={(event) => onInputChange(event.currentTarget.value)}
           placeholder={placeholder}
           value={value}
         />
-        <DappActionButton
-          disabled={!canBind}
-          loading={isSubmitting}
+        {/* Same field-adjacent Chip as Genesis MAX (`fieldActionChipClass`). */}
+        <Chip
+          aria-busy={isSubmitting || undefined}
+          className={fieldActionChipClass}
+          disabled={!canBind || isSubmitting}
           onClick={onBind}
-          shape="inline"
-          variant="secondary"
+          shape="rounded"
+          size="md"
+          tone="coral"
+          type="button"
+          variant="soft"
         >
+          {isSubmitting ? <ButtonLoadingIcon /> : null}
           {bindLabel}
-        </DappActionButton>
+        </Chip>
       </div>
       <Text
         as="small"

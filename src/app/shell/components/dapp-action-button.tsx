@@ -6,13 +6,13 @@ import { cn } from '~/shared/lib/utils'
 /**
  * DApp primary CTA wrapper.
  * density → height SSOT: card 42 · external 44 · inverse (dark promo) 38.
+ * Field-adjacent actions (MAX / Bind) → Chip soft coral + `fieldActionChipClass`, not this.
  */
 type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode
   /** card = in outlined/elevated card; external = widget stack / page; inverse = dark promo */
   density?: 'card' | 'external' | 'inverse'
   loading?: boolean
-  shape?: 'pill' | 'inline'
   variant?: 'primary' | 'secondary'
 }
 
@@ -22,7 +22,6 @@ export function DappActionButton({
   density = 'card',
   disabled,
   loading = false,
-  shape = 'pill',
   type = 'button',
   variant = 'primary',
   ...props
@@ -32,17 +31,7 @@ export function DappActionButton({
   return (
     <Button
       aria-busy={loading || undefined}
-      className={cn(
-        'gap-2',
-        density === 'inverse' && 'min-h-9.5 text-xs',
-        shape === 'inline' &&
-          cn(
-            '!w-auto shrink-0 !min-h-[2.625rem] !rounded-sm !px-3.5 !text-xs !font-semibold',
-            variant === 'secondary' &&
-              '!border-transparent !bg-accent !text-primary hover:!-translate-y-0 hover:!shadow-none focus-visible:!-translate-y-0 focus-visible:!shadow-none',
-          ),
-        className,
-      )}
+      className={cn('gap-2', density === 'inverse' && 'min-h-9.5 text-xs', className)}
       disabled={disabled || loading}
       size={size}
       type={type}

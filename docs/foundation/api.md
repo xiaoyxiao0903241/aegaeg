@@ -101,9 +101,11 @@
 
 **`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。
 
+**Field-adjacent action**：Genesis MAX · Community Bind → `Chip variant="soft" tone="coral"` + `fieldActionChipClass`（`h-11` / `rounded-control`）；**不是** `DappActionButton` / Button secondary。
+
 **禁止**：在 Chip 内 hand-roll typography
 **依赖**：P1-Text
-**探针**：swap percent · season badge · htab · genesis MAX
+**探针**：swap percent · season badge · htab · genesis MAX · community Bind
 **Gate**：`variant` = **3**；`size` = **3**；`shape` = **2**；`tone` = **4**
 
 ---
@@ -140,14 +142,14 @@
 | `size` | `sm` · `md` · `lg` |
 | 可选 | `startAdornment` · `endAdornment` · `error` |
 
-覆盖：普通表单输入、swap amount、genesis shares（numeric）。
+覆盖：普通表单输入、swap amount、genesis shares（numeric）、community referrer（default）。
 
 **Placeholder**：`placeholder:text-placeholder`（`--placeholder` ≡ 4175 `oklch(82% 0.011 264)`）。**禁止** `placeholder:text-muted-foreground`。
 **未连接金额预览**：`AmountBox` 在 `sessionReady=false` 时用 `text-amount-muted` / `placeholder:text-amount-muted`（≡ 4175 `#c9cfda`）。
 
-**禁止**：call site 输入框内 hand-roll amount typography
+**禁止**：call site 手写平行 `<input>` / 输入框内 hand-roll amount typography（社区邀请人等须走 `Input`）
 **依赖**：P0 token
-**探针**：swap amount 输入区 · genesis shares 输入区
+**探针**：swap amount · genesis shares · community referrer bind
 **Gate**：`variant` = **3**
 
 ---
@@ -230,3 +232,4 @@
 | v2.9 | 隐藏面：WalletDetails 去 `h-11`/内嵌 Text；`aegisDialogCloseClass`；token 行 → Card outlined |
 | v2.10 | LanguageMenu DRY；mobile-nav 标签 ≡ `dev` text-sm；删未用 `shadow-primary-hover-xl` |
 | v2.11 | 删除 Text `tabular`；数字定稿比例字（禁 `tabular-nums`） |
+| v2.12 | Community Bind：`Input` + `fieldActionChipClass`（≡ Genesis MAX）；删 `DappActionButton` `shape=inline` |

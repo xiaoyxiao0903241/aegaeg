@@ -1,9 +1,7 @@
 import type { RefObject } from 'react'
-import { buttonDisabledClass } from '~/shared/ui/button'
-import { Chip } from '~/shared/ui/chip'
+import { Chip, fieldActionChipClass } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 
 export function GenesisPurchaseSharesField({
   disabled,
@@ -55,13 +53,9 @@ export function GenesisPurchaseSharesField({
             {shareUnit}
           </span>
         </div>
-        {/* Figma `4150:3234` — soft coral Chip; box model matches h-11 / r-11 */}
+        {/* Figma `4150:3234` — soft coral Chip; SSOT `fieldActionChipClass` (Bind shares this). */}
         <Chip
-          className={cn(
-            'h-11 min-w-16 shrink-0 rounded-control px-[0.9375rem] text-xs font-semibold',
-            buttonDisabledClass,
-            'disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
-          )}
+          className={fieldActionChipClass}
           disabled={disabled}
           onClick={onMax}
           shape="rounded"

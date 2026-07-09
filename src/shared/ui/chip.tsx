@@ -83,6 +83,15 @@ export const chipVariants = tv({
 export type ChipProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof chipVariants>
 
+/**
+ * Field-adjacent action (Genesis MAX · Community Bind) — soft coral Chip chrome.
+ * Pair with `variant="soft" tone="coral" size="md" shape="rounded"`.
+ */
+export const fieldActionChipClass = cn(
+  'h-11 min-w-16 shrink-0 gap-1.5 rounded-control px-[0.9375rem] text-xs font-semibold',
+  'disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
+)
+
 export const Chip = forwardRef<HTMLButtonElement, ChipProps>(
   ({ className, variant, size, shape, tone, ...props }, ref) => (
     <button
