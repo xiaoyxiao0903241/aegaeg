@@ -18,16 +18,16 @@ const languageMenu = tv({
       'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
       'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
       'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
-      '[[open]_&]:border-coral-hover-border [[open]_&]:bg-coral-wash [[open]_&]:shadow-card',
-      '[[data-open]_&]:border-coral-hover-border [[data-open]_&]:bg-coral-wash [[data-open]_&]:shadow-card',
+      'in-[[open]]:border-coral-hover-border in-[[open]]:bg-coral-wash in-[[open]]:shadow-card',
+      'in-data-open:border-coral-hover-border in-data-open:bg-coral-wash in-data-open:shadow-card',
       '[&::-webkit-details-marker]:hidden [&_img]:size-4',
       'max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-3 max-dapp:text-xs',
     ],
     /** Figma `lang-popup` 4140:286 — sizes via `--dapp-lang-menu-*` (rem / site-fluid). */
     panel: [
-      'hidden [[open]_&]:flex [[data-open]_&]:flex [[open]_&]:flex-col [[data-open]_&]:flex-col',
-      '[[open]_&]:animate-[language-menu-in_180ms_ease_both] [[data-open]_&]:animate-[language-menu-in_180ms_ease_both]',
-      'absolute right-0 top-[calc(100%+0.5rem)] z-[130] w-[length:var(--dapp-lang-menu-width)] max-w-[calc(100dvw-2rem)] overflow-clip',
+      'hidden in-[[open]]:flex in-data-open:flex in-[[open]]:flex-col in-data-open:flex-col',
+      'in-[[open]]:animate-[language-menu-in_180ms_ease_both] in-data-open:animate-[language-menu-in_180ms_ease_both]',
+      'absolute right-0 top-[calc(100%+0.5rem)] z-130 w-(--dapp-lang-menu-width) max-w-[calc(100dvw-2rem)] overflow-clip',
       'rounded-sm border border-border-subtle bg-card p-2.5 shadow-menu',
     ],
     list: 'flex w-full flex-col gap-0.5 overflow-clip',
@@ -36,8 +36,8 @@ const languageMenu = tv({
 
 const languageMenuItem = tv({
   base: [
-    'flex h-[length:var(--dapp-lang-menu-row-height)] w-full cursor-pointer items-center gap-2 bg-transparent px-2.5 text-left',
-    'rounded-[length:var(--dapp-lang-menu-row-radius)]',
+    'flex h-(--dapp-lang-menu-row-height) w-full cursor-pointer items-center gap-2 bg-transparent px-2.5 text-left',
+    'rounded-(--dapp-lang-menu-row-radius)',
     'transition-colors duration-150 ease-out focus-visible:outline-none',
   ],
   variants: {
@@ -53,7 +53,7 @@ const languageMenuItem = tv({
 })
 
 const languageMenuItemName = tv({
-  base: 'block text-sm leading-normal text-foreground',
+  base: 'block text-sm/normal text-foreground',
   variants: {
     active: {
       true: 'font-semibold',
@@ -116,7 +116,7 @@ function MenuItem({
           as="span"
           variant="caption"
           tone="muted-foreground"
-          className="block text-[length:var(--dapp-lang-menu-meta-size)] leading-normal"
+          className="block text-(length:--dapp-lang-menu-meta-size) leading-normal"
         >
           {option.label}
         </Text>
@@ -213,7 +213,7 @@ function NativeLanguageMenu({
 
   return (
     <>
-      <details className="relative z-40 inline-flex open:z-[120]" data-language-switcher>
+      <details className="relative z-40 inline-flex open:z-120" data-language-switcher>
         <summary
           aria-haspopup="menu"
           aria-label={label}
@@ -311,7 +311,7 @@ function ReactLanguageMenu({
   return (
     <span
       ref={wrapRef}
-      className="relative z-40 inline-flex data-[open]:z-[120]"
+      className="relative z-40 inline-flex data-open:z-120"
       data-language-switcher
       data-open={open ? '' : undefined}
     >

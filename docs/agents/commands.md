@@ -15,11 +15,22 @@
 | 命令 | 用途 |
 |------|------|
 | **`pnpm check`** | **收工最小门禁**：`tsc -b` + `lint:architecture` + `test:unit` |
+| `pnpm lint` | ESLint（含 `eslint-plugin-better-tailwindcss`，规则均为 **warn**，不阻断） |
 | `pnpm lint:all` | ESLint + Stylelint + hex + depcruise + knip |
+| `pnpm format` / `pnpm format:check` | Prettier + `prettier-plugin-tailwindcss`（class 排序；**未**进 `check`） |
+| `pnpm format:classnames` | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序） |
+| `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等 |
 | `pnpm test:unit` | Node 内置 test runner（`tests/unit/*.test.mjs`） |
 | `pnpm test:e2e` | Playwright 视觉 + 契约（需本机浏览器） |
 | `pnpm test:e2e:update` | 更新视觉快照 |
 | `pnpm test:integration` | 可选 live BSC quote（非 CI 门禁） |
+
+### Tailwind 工具链
+
+- **CSS 入口（IntelliSense / Prettier / ESLint）**：`src/shared/styles/app.css`
+- **Canonical lint**：`better-tailwindcss/enforce-canonical-classes`（与 IDE `suggestCanonicalClasses` 同源；IDE 该项已 `ignore`，避免双报）
+- **IDE**：`.vscode/settings.json` 已忽略未知 at-rule（`@theme` / `@source` / `@custom-variant`）
+- **策略**：早装晚收紧 — Tailwind 规则保持 `warn`；`pnpm check` 不因 class 警告失败
 
 ## Chrome 90+ / 国产 WebView
 

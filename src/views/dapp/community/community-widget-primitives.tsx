@@ -46,7 +46,7 @@ export function CommunityReferralLinkCard({
 }) {
   return (
     <DappSideCard className="gap-2">
-      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs leading-normal">
+      <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs/normal">
         {linkLabel}
       </Text>
       <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold tracking-tight">
@@ -88,7 +88,7 @@ export function CommunityReferrerBindCard({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="m-0 text-xs leading-normal"
+        className="m-0 text-xs/normal"
       >
         {referrerLabel}
       </Text>
@@ -113,7 +113,7 @@ export function CommunityReferrerBindCard({
         as="small"
         variant="copy"
         tone="muted-foreground"
-        className="block text-xs leading-normal"
+        className="block text-xs/normal"
       >
         {hint}
       </Text>
@@ -142,7 +142,7 @@ export function CommunityReferrerBoundPanel({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="m-0 text-xs leading-normal"
+        className="m-0 text-xs/normal"
       >
         {addressLabel}
       </Text>
@@ -175,7 +175,7 @@ export function CommunityReferrerBoundPanel({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="m-0 text-xs leading-normal"
+        className="m-0 text-xs/normal"
       >
         {note}
       </Text>

@@ -39,7 +39,7 @@ export function HomeRoadmapSection() {
         data-timeline
       >
         <div
-          className="hidden dapp:absolute dapp:left-1/2 dapp:top-14 dapp:block dapp:h-176 dapp:w-1 dapp:-translate-x-1/2 dapp:rounded-[0.125rem] dapp:bg-border"
+          className="hidden dapp:absolute dapp:top-14 dapp:left-1/2 dapp:block dapp:h-176 dapp:w-1 dapp:-translate-x-1/2 dapp:rounded-xs dapp:bg-border"
           data-timeline-rail
           aria-hidden="true"
         />
@@ -56,13 +56,13 @@ export function HomeRoadmapSection() {
           >
             <div
               className={cn(
-                'relative z-[2] grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:left-1/2 dapp:top-10 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
+                'relative z-2 grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:top-10 dapp:left-1/2 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
                 phase.state === 'done' || phase.state === 'current'
                   ? 'bg-primary text-white dapp:border-primary'
                   : 'border-[3px] border-border bg-card text-muted-foreground',
                 phase.state === 'current' && 'dapp:shadow-roadmap-ring',
                 index < content.phases.length - 1 &&
-                  "after:absolute after:left-3.5 after:top-8 after:h-24 after:w-[3px] after:rounded-[0.125rem] after:content-[''] dapp:after:hidden",
+                  "after:absolute after:top-8 after:left-3.5 after:h-24 after:w-[3px] after:rounded-xs after:content-[''] dapp:after:hidden",
                 index < content.phases.length - 1 &&
                   (phase.state === 'done' ? 'after:bg-primary' : 'after:bg-border'),
               )}
@@ -73,7 +73,7 @@ export function HomeRoadmapSection() {
             </div>
             <Card
               className={cn(
-                'w-full min-h-28 border-0 p-4 transition-shadow duration-200 ease-out max-dapp:rounded-md dapp:min-h-30 dapp:w-[calc(50%-15)] dapp:max-w-128 dapp:px-6 dapp:py-5.5',
+                'min-h-28 w-full border-0 p-4 transition-shadow duration-200 ease-out dapp:min-h-30 dapp:w-[calc(50%-15)] dapp:max-w-lg dapp:px-6 dapp:py-5.5 max-dapp:rounded-md',
                 phase.side === 'right' && 'dapp:ml-auto',
                 phase.state === 'current' && 'min-h-30 border border-primary',
               )}
@@ -83,7 +83,7 @@ export function HomeRoadmapSection() {
               <div className="flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start">
                 <Text
                   as="span"
-                  className="text-xs font-semibold leading-[1.2] normal-case dapp:leading-normal"
+                  className="text-xs leading-[1.2] font-semibold normal-case dapp:leading-normal"
                   tone={phase.state ? 'primary' : 'muted-foreground'}
                   variant="eyebrow"
                 >
@@ -101,7 +101,7 @@ export function HomeRoadmapSection() {
                 ) : null}
                 <Text
                   as="time"
-                  className="ml-auto text-xs font-semibold leading-[1.2] dapp:leading-[1.4]"
+                  className="ml-auto text-xs leading-[1.2] font-semibold dapp:leading-[1.4]"
                   tone={phase.state === 'current' ? 'primary' : 'muted-foreground'}
                   variant="eyebrow"
                 >
@@ -110,7 +110,7 @@ export function HomeRoadmapSection() {
               </div>
               <Text
                 as="h3"
-                className="mt-1.5 text-base font-semibold leading-[1.2] tracking-[-0.04em] dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.04em]"
+                className="mt-1.5 text-base leading-[1.2] font-semibold tracking-[-0.04em] dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.04em]"
                 tone="foreground"
                 variant="headline"
               >
@@ -118,7 +118,7 @@ export function HomeRoadmapSection() {
               </Text>
               <Text
                 as="p"
-                className="mt-1.5 text-xs font-normal leading-[1.4] dapp:mt-2"
+                className="mt-1.5 text-xs leading-[1.4] font-normal dapp:mt-2"
                 tone="muted-foreground"
                 variant="copy"
               >

@@ -36,7 +36,7 @@ export function SwapModeCard({
           {/* Mode row locks 13px on PC+H5 (dev parity); copy token alone is 12 on H5 */}
           <Card.Label
             as="span"
-            className="text-[length:var(--type-copy-size)] font-semibold leading-normal text-foreground"
+            className="text-(length:--type-copy-size) font-semibold leading-normal text-foreground"
           >
             {title}
           </Card.Label>
@@ -57,7 +57,7 @@ export function SwapModeCard({
             </span>
           ) : null}
         </Card.Header>
-        <Card.Description className="text-[length:var(--type-copy-size)] leading-normal">
+        <Card.Description className="text-(length:--type-copy-size) leading-normal">
           {body}
         </Card.Description>
       </Card.Content>

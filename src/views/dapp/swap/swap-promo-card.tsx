@@ -29,7 +29,7 @@ const swapPromoCard = tv({
         bodyGrid: 'p-4 pr-36',
         titleRow: 'gap-3',
         titleCluster: 'gap-3',
-        body: 'max-w-144',
+        body: 'max-w-xl',
         titleIcon: 'size-8',
       },
       mobile: {
@@ -75,18 +75,18 @@ export function SwapPromoPillAction({
       className={cn(
         'inline-flex shrink-0 cursor-pointer items-center rounded-full border border-border bg-card whitespace-nowrap text-foreground',
         withArrow ? 'gap-1.5' : 'justify-center',
-            layout === 'desktop'
+        layout === 'desktop'
           ? cn(
-              'absolute right-4 top-1/2 z-[2] -translate-y-1/2 px-4 py-2.5',
-              'text-xs font-semibold leading-normal',
-              !withArrow && minConnectWidth && 'min-w-[7.75rem] text-xs',
+              'absolute top-1/2 right-4 z-2 -translate-y-1/2 px-4 py-2.5',
+              'text-xs/normal font-semibold',
+              !withArrow && minConnectWidth && 'min-w-31 text-xs',
               'transition-[border-color,transform] duration-180 ease-out',
               'hover:translate-x-px hover:border-primary',
               'focus-visible:translate-x-px focus-visible:border-primary',
               'disabled:pointer-events-none disabled:opacity-45',
             )
           : cn(
-              'px-3 py-1.5 text-xs font-semibold leading-[1.2]',
+              'px-3 py-1.5 text-xs leading-[1.2] font-semibold',
               !withArrow && fullWidth && 'w-full justify-center',
             ),
         className,
@@ -188,8 +188,8 @@ export function SwapPromoCard({
               className={cn(
                 styles.title(),
                 layout === 'desktop'
-                  ? 'text-base font-semibold leading-normal'
-                  : 'text-sm font-semibold leading-[1.2]',
+                  ? 'text-base/normal font-semibold'
+                  : 'text-sm leading-[1.2] font-semibold',
               )}
             >
               {title}
@@ -201,10 +201,7 @@ export function SwapPromoCard({
           as="p"
           variant="copy"
           tone="muted-foreground"
-          className={cn(
-            styles.body(),
-            'text-xs leading-[1.5]',
-          )}
+          className={cn(styles.body(), 'text-xs/normal')}
         >
           {body}
         </Text>

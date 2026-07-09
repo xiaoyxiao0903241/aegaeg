@@ -271,7 +271,7 @@ export function DappTablePagination({
                 {/* Closed → down; open → up. Base asset points up. */}
                 <ChevronIcon
                   className={cn(
-                    'transition-transform duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)]',
+                    'transition-transform duration-220 ease-[cubic-bezier(.2,.8,.2,1)]',
                     menuOpen ? 'rotate-0' : 'rotate-180',
                   )}
                   direction="up"
@@ -301,7 +301,7 @@ export function DappTablePagination({
                           >
                             <button
                               className={cn(
-                                'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
+                                'flex h-(--dapp-pagination-menu-item-height) w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
                                 active
                                   ? 'bg-accent font-semibold text-coral'
                                   : 'bg-card text-foreground',

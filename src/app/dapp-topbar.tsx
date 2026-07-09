@@ -23,7 +23,7 @@ const topbar = tv({
     brandMark: [
       'object-contain',
       dappIcon({ size: 'brand' }),
-      'max-dapp:size-[var(--dapp-icon-lg)] max-dapp:w-[var(--dapp-icon-lg)]',
+      'max-dapp:size-(--dapp-icon-lg) max-dapp:w-(--dapp-icon-lg)',
     ],
     actions: [
       'flex items-center gap-3',
@@ -65,7 +65,7 @@ export function DappTopbar() {
         data-tab={tab}
       >
         <img className={styles.brandMark()} src={homeAssets.logoMark} alt="" />
-        <Text as="span" variant="brand" className="text-lg leading-7 tracking-tight">
+        <Text as="span" variant="brand" className="text-lg/7 tracking-tight">
           {t.common.brand}
         </Text>
       </a>

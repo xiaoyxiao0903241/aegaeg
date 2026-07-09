@@ -15,33 +15,33 @@ export function HomeSecuritySection() {
   return (
     <HomeSection
       container="content"
-      className="border-y border-border bg-muted py-30 dapp:min-h-[var(--home-security-section-min-h)] max-dapp:min-h-[var(--home-security-section-min-h-h5)] max-dapp:border-y-0 max-dapp:py-12"
+      className="border-y border-border bg-muted py-30 dapp:min-h-(--home-security-section-min-h) max-dapp:min-h-(--home-security-section-min-h-h5) max-dapp:border-y-0 max-dapp:py-12"
       id="security"
       aria-labelledby="security-title"
     >
       <HomeSectionHead
-        className="dapp:min-h-[8.75rem]"
+        className="dapp:min-h-35"
         eyebrow={content.eyebrow}
         title={content.title}
         titleClassName="[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:leading-[1.1]"
-        subtitleClassName="[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:text-base dapp:[&&]:leading-[1.5]"
+        subtitleClassName="[&&]:max-w-[26.25rem] dapp:[&&]:mt-4 dapp:[&&]:text-base dapp:[&&]:leading-normal"
         subtitle={content.subtitle}
       />
       <div
         className={cn(
-          'relative mx-auto mt-8 grid w-full max-w-[var(--home-security-block-max)] grid-cols-[var(--home-security-art-w)_minmax(0,1fr)] items-center gap-12 max-tablet:grid-cols-1 max-tablet:justify-items-center max-dapp:mt-4 max-dapp:flex max-dapp:w-full max-dapp:flex-col max-dapp:gap-4',
+          'relative mx-auto mt-8 grid w-full max-w-(--home-security-block-max) grid-cols-[var(--home-security-art-w)_minmax(0,1fr)] items-center gap-12 max-tablet:grid-cols-1 max-tablet:justify-items-center max-dapp:mt-4 max-dapp:flex max-dapp:w-full max-dapp:flex-col max-dapp:gap-4',
           revealClass(),
         )}
         data-reveal
         data-security-grid
       >
-        <div className="relative w-full max-w-[var(--home-security-art-w)] shrink-0 max-dapp:max-w-[var(--home-security-art-h5-w)]">
+        <div className="relative w-full max-w-(--home-security-art-w) shrink-0 max-dapp:max-w-(--home-security-art-h5-w)">
           <div
-            className="flex w-full aspect-[330/382] items-center justify-center overflow-hidden max-dapp:aspect-[174/201]"
+            className="flex aspect-330/382 w-full items-center justify-center overflow-hidden max-dapp:aspect-174/201"
             data-security-art
           >
             <img
-              className="h-full w-full object-contain object-center [[&:not([src])]]:bg-transparent"
+              className="size-full object-contain object-center [[&:not([src])]]:bg-transparent"
               src={homeAssets.securityCharacter}
               alt=""
               width="330"
@@ -50,7 +50,7 @@ export function HomeSecuritySection() {
             />
           </div>
           <img
-            className="pointer-events-none absolute left-[80.91%] top-[16.23%] z-1 aspect-[110/258] w-[33.33%] object-contain max-tablet:!hidden"
+            className="pointer-events-none absolute top-[16.23%] left-[80.91%] z-1 aspect-110/258 w-[33.33%] object-contain max-tablet:hidden!"
             data-security-line
             src={homeAssets.securityConnector}
             alt=""
@@ -60,22 +60,21 @@ export function HomeSecuritySection() {
             loading="lazy"
           />
         </div>
-        <div className="relative z-[2] grid w-full max-w-[var(--home-security-list-max)] gap-3.5 max-dapp:max-w-none">
+        <div className="relative z-2 grid w-full max-w-(--home-security-list-max) gap-3.5 max-dapp:max-w-none">
           {content.checks.map((check, index) => (
             <Card
               className={cn(
-                'flex min-h-[3.8125rem] items-center gap-3.5 px-5.5 py-5 transition-shadow duration-200 ease-out max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-[1.125rem] max-dapp:py-4',
-                (index === 0 || index === content.checks.length - 1) &&
-                  'max-dapp:min-h-[4.125rem]',
+                'flex min-h-15.25 items-center gap-3.5 px-5.5 py-5 transition-shadow duration-200 ease-out max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-4.5 max-dapp:py-4',
+                (index === 0 || index === content.checks.length - 1) && 'max-dapp:min-h-16.5',
               )}
               surface="elevated"
               data-security-check
               key={check}
               style={{ '--security-index': index } as CSSProperties}
             >
-              <span className="grid size-[var(--home-security-icon-wrap-size)] shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-primary max-dapp:size-[var(--home-security-icon-wrap-size-h5)] max-dapp:rounded-xl">
+              <span className="grid size-(--home-security-icon-wrap-size) shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-primary max-dapp:size-(--home-security-icon-wrap-size-h5) max-dapp:rounded-xl">
                 <img
-                  className="size-[var(--home-security-icon-size)] object-contain"
+                  className="size-(--home-security-icon-size) object-contain"
                   src={homeAssets.securityCheck}
                   alt=""
                   width="14"
@@ -86,7 +85,7 @@ export function HomeSecuritySection() {
               <Text
                 as="span"
                 variant="detail"
-                className="font-medium leading-[1.4] max-dapp:text-sm max-dapp:leading-[1.2]"
+                className="leading-[1.4] font-medium max-dapp:text-sm max-dapp:leading-[1.2]"
               >
                 {check}
               </Text>

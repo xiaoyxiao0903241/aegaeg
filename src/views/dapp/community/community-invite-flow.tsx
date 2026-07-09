@@ -14,7 +14,7 @@ const inviteFlowStep = tv({
   base: [
     'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold text-white',
     'max-dapp:size-7',
-    'text-[length:var(--type-copy-size)]',
+    'text-(length:--type-copy-size)',
   ],
 })
 
@@ -23,13 +23,17 @@ function InviteFlowStep({ children }: { children: ReactNode }) {
 }
 
 /** Invite flow connector — coral, 2px thick. */
-function InviteFlowConnector({ orientation = 'horizontal' }: { orientation?: 'horizontal' | 'vertical' }) {
+function InviteFlowConnector({
+  orientation = 'horizontal',
+}: {
+  orientation?: 'horizontal' | 'vertical'
+}) {
   return (
     <i
       className={cn(
         'shrink-0 rounded-sm bg-primary',
         orientation === 'horizontal' && 'h-0.5 flex-1 max-dapp:hidden',
-        orientation === 'vertical' && 'w-0.5 min-h-6 flex-1',
+        orientation === 'vertical' && 'min-h-6 w-0.5 flex-1',
       )}
     />
   )
@@ -73,7 +77,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
             <Text
               as="h4"
               variant="headline"
-              className="m-0 text-sm leading-normal max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
+              className="m-0 text-sm/normal max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0"
             >
               {item.title}
             </Text>
@@ -82,8 +86,8 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
               variant="copy"
               tone="muted-foreground"
               className={cn(
-                'm-0 text-xs leading-[1.5]',
-                'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2',
+                'm-0 text-xs/normal',
+                'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:line-clamp-2 max-dapp:max-w-none',
               )}
             >
               {item.copy}
@@ -110,18 +114,14 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             {index < items.length - 1 ? <InviteFlowConnector orientation="vertical" /> : null}
           </div>
           <div className={cn('grid min-w-0 gap-0.5', index < items.length - 1 && 'pb-3.5')}>
-            <Text
-              as="h4"
-              variant="headline"
-              className="m-0 text-sm leading-[1.2]"
-            >
+            <Text as="h4" variant="headline" className="m-0 text-sm leading-[1.2]">
               {item.title}
             </Text>
             <Text
               as="p"
               variant="copy"
               tone="muted-foreground"
-              className="m-0 text-sm leading-normal"
+              className="m-0 text-sm/normal"
             >
               {item.copy}
             </Text>

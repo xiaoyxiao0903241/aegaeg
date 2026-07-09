@@ -99,7 +99,7 @@ export function WalletDetailsModal({
       className={cn(
         // PC centered card (Figma 4040:5234) — same responsive shell as slippage / connect
         'border-0 bg-card text-center shadow-modal-panel',
-        'w-full max-w-[length:var(--dapp-wallet-modal-max-width)] p-6',
+        'w-full max-w-(--dapp-wallet-modal-max-width) p-6',
         'dapp:rounded-2xl',
         // H5 bottom sheet — full bleed, top radius only
         'max-dapp:max-w-none max-dapp:w-full',
@@ -118,10 +118,10 @@ export function WalletDetailsModal({
 
       <div
         aria-hidden="true"
-        className="mx-auto mt-1.5 mb-5 grid size-[length:var(--dapp-wallet-modal-orb-size)] shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb"
+        className="mx-auto mt-1.5 mb-5 grid size-(--dapp-wallet-modal-orb-size) shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb"
       >
         <Wallet
-          className="size-[length:var(--dapp-wallet-modal-orb-icon)] shrink-0"
+          className="size-(--dapp-wallet-modal-orb-icon) shrink-0"
           strokeWidth={1.75}
         />
       </div>
@@ -141,14 +141,14 @@ export function WalletDetailsModal({
           <Text
             as="span"
             variant="figure"
-            className="text-[length:var(--dapp-wallet-modal-balance-size)] leading-none tracking-[-0.02em] text-coral"
+            className="text-(length:--dapp-wallet-modal-balance-size) leading-none tracking-[-0.02em] text-coral"
           >
             {balanceValue}
           </Text>
           <Text
             as="span"
             variant="copy"
-            className="text-[length:var(--dapp-wallet-modal-unit-size)] leading-none font-semibold tracking-[-0.02em] text-black/40"
+            className="text-(length:--dapp-wallet-modal-unit-size) leading-none font-semibold tracking-[-0.02em] text-black/40"
           >
             USD1
           </Text>

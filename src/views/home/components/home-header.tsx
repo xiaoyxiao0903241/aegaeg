@@ -25,20 +25,24 @@ export function HomeHeader() {
       aria-label="Primary navigation"
     >
       <div className="container flex h-18 items-center justify-between gap-6 max-dapp:min-h-14 max-dapp:flex-nowrap max-dapp:gap-3">
-          <a
-            className="inline-flex items-center gap-2.5 whitespace-nowrap max-dapp:gap-2"
-            href="#top"
-            aria-label="AEGIS X home"
-          >
+        <a
+          className="inline-flex items-center gap-2.5 whitespace-nowrap max-dapp:gap-2"
+          href="#top"
+          aria-label="AEGIS X home"
+        >
           <img
-            className="h-7 w-7 object-contain max-dapp:h-5.5 max-dapp:w-6"
+            className="size-7 object-contain max-dapp:h-5.5 max-dapp:w-6"
             src={homeAssets.logoMark}
             alt=""
             width="28"
             height="27"
           />
           {/* Keep text-lg — brand token is 17px; header lock is 18px / H5 16px */}
-          <Text as="span" variant="brand" className="text-lg max-dapp:text-base max-dapp:leading-[1.2]">
+          <Text
+            as="span"
+            variant="brand"
+            className="text-lg max-dapp:text-base max-dapp:leading-[1.2]"
+          >
             AEGIS X
           </Text>
         </a>
@@ -62,7 +66,7 @@ export function HomeHeader() {
         <div className="flex items-center gap-3.5 max-dapp:w-auto max-dapp:justify-end max-dapp:gap-2.5">
           <Text
             as="a"
-            className="inline-flex min-h-9.5 cursor-pointer items-center justify-center rounded-full border border-border bg-transparent px-4.5 text-sm font-semibold leading-none tracking-normal whitespace-nowrap transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out hover:border-coral-hover-border focus-visible:border-coral-hover-border hover:opacity-[0.96] hover:shadow-card focus-visible:opacity-[0.96] focus-visible:shadow-card visited:text-foreground hover:text-foreground focus-visible:text-foreground max-dapp:!hidden"
+            className="inline-flex min-h-9.5 cursor-pointer items-center justify-center rounded-full border border-border bg-transparent px-4.5 text-sm leading-none font-semibold tracking-normal whitespace-nowrap transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out visited:text-foreground hover:border-coral-hover-border hover:text-foreground hover:opacity-[0.96] hover:shadow-card focus-visible:border-coral-hover-border focus-visible:text-foreground focus-visible:opacity-[0.96] focus-visible:shadow-card max-dapp:hidden!"
             href={notionLinks.whitepaper}
             rel="noopener noreferrer"
             target="_blank"

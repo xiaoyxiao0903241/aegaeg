@@ -26,24 +26,24 @@ export const textVariants = tv({
   variants: {
     variant: {
       caption:
-        'text-[length:var(--type-caption-size)] font-[var(--type-caption-weight)] leading-[var(--type-caption-leading)] tracking-[var(--type-caption-tracking)]',
+        'text-(length:--type-caption-size) font-(--type-caption-weight) leading-(--type-caption-leading) tracking-(--type-caption-tracking)',
       eyebrow:
-        'text-[length:var(--type-eyebrow-size)] font-[var(--type-eyebrow-weight)] leading-[var(--type-eyebrow-leading)] tracking-[var(--type-eyebrow-tracking)] uppercase',
-      copy: 'text-[length:var(--type-copy-size)] font-[var(--type-copy-weight)] leading-[var(--type-copy-leading)] tracking-[var(--type-copy-tracking)]',
+        'text-(length:--type-eyebrow-size) font-(--type-eyebrow-weight) leading-(--type-eyebrow-leading) tracking-(--type-eyebrow-tracking) uppercase',
+      copy: 'text-(length:--type-copy-size) font-(--type-copy-weight) leading-(--type-copy-leading) tracking-(--type-copy-tracking)',
       detail:
-        'text-[length:var(--type-detail-size)] font-[var(--type-detail-weight)] leading-[var(--type-detail-leading)] tracking-[var(--type-detail-tracking)]',
+        'text-(length:--type-detail-size) font-(--type-detail-weight) leading-(--type-detail-leading) tracking-(--type-detail-tracking)',
       question:
-        'text-[length:var(--type-question-size)] font-[var(--type-question-weight)] leading-[var(--type-question-leading)] tracking-[var(--type-question-tracking)]',
+        'text-(length:--type-question-size) font-(--type-question-weight) leading-(--type-question-leading) tracking-(--type-question-tracking)',
       headline:
-        'text-[length:var(--type-headline-size)] font-[var(--type-headline-weight)] leading-[var(--type-headline-leading)] tracking-[var(--type-headline-tracking)]',
+        'text-(length:--type-headline-size) font-(--type-headline-weight) leading-(--type-headline-leading) tracking-(--type-headline-tracking)',
       brand:
-        'text-[length:var(--type-brand-size)] font-[var(--type-brand-weight)] leading-[var(--type-brand-leading)] tracking-[var(--type-brand-tracking)]',
+        'text-(length:--type-brand-size) font-(--type-brand-weight) leading-(--type-brand-leading) tracking-(--type-brand-tracking)',
       section:
-        'text-[length:var(--type-section-size)] font-[var(--type-section-weight)] leading-[var(--type-section-leading)] tracking-[var(--type-section-tracking)]',
+        'text-(length:--type-section-size) font-(--type-section-weight) leading-(--type-section-leading) tracking-(--type-section-tracking)',
       panel:
-        'text-[length:var(--type-panel-size)] font-[var(--type-panel-weight)] leading-[var(--type-panel-leading)] tracking-[var(--type-panel-tracking)]',
+        'text-(length:--type-panel-size) font-(--type-panel-weight) leading-(--type-panel-leading) tracking-(--type-panel-tracking)',
       figure:
-        'text-[length:var(--type-figure-size)] font-[var(--type-figure-weight)] leading-[var(--type-figure-leading)] tracking-[var(--type-figure-tracking)]',
+        'text-(length:--type-figure-size) font-(--type-figure-weight) leading-(--type-figure-leading) tracking-(--type-figure-tracking)',
     },
     tone: toneClass,
   },
@@ -70,18 +70,18 @@ export type TextProps = HTMLAttributes<HTMLElement> & {
 } & VariantProps<typeof textVariants>
 
 /**
- * Unprefixed Tailwind font-size utility (or `!text-*`).
+ * Unprefixed Tailwind font-size utility (`text-*`, `!text-*`, or TW4 `text-*!`).
  * Responsive prefixes (`max-dapp:text-lg`) must not strip base `--type-*` size —
  * otherwise desktop keeps the override flag while the media query is inactive,
  * collapsing panel/section figures to inherited 16px.
  */
-/** Named sizes + size-like arbitrary (`text-[14px]` / `text-[length:…]`). Not `text-[#hex]` colors. */
+/** Named sizes + size-like arbitrary / CSS-var shorthand. Not `text-[#hex]` colors. */
 const FONT_SIZE_UTILITY_RE =
-  /(?:^|[\s])!?text-(?:xs|sm|base|lg|xl|[2-9]xl|(?:\[(?:length:|\d|\.\d)[^\]]*\]))(?:\/[^\s]*)?(?=[\s]|$)/
+  /(?:^|[\s])!?text-(?:xs|sm|base|lg|xl|[2-9]xl|(?:\[(?:length:|\d|\.\d)[^\]]*\]|\((?:length:)?--[^)]+\)))(?:\/[^\s]*)?!?(?=[\s]|$)/
 
 /** Type tokens to drop on display-size override (keep font-weight). */
 const VARIANT_TYPE_TOKEN_RE =
-  /^(?:text-\[length:|leading-\[var\(--type-|tracking-\[var\(--type-)/
+  /^(?:text-(?:\[length:|\(length:--)|leading-(?:\[var\(--type-|\(--type-)|tracking-(?:\[var\(--type-|\(--type-))/
 
 function classNameOverridesFontSize(className: string | undefined): boolean {
   if (!className) return false

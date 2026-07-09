@@ -16,11 +16,11 @@ export const inputVariants = tv({
   variants: {
     variant: {
       default:
-        'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-normal leading-normal tracking-normal',
+        'rounded-sm px-3.5 py-2.5 text-left text-(length:--type-copy-size) font-normal leading-normal tracking-normal',
       numeric:
-        'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-normal [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+        'rounded-sm px-3.5 py-2.5 text-left text-(length:--type-copy-size) font-semibold leading-normal tracking-normal [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
       amount:
-        'border-0 bg-transparent text-right text-[length:var(--type-figure-size)] font-semibold leading-normal tracking-[-0.02em] outline-0',
+        'border-0 bg-transparent text-right text-(length:--type-figure-size) font-semibold leading-normal tracking-[-0.02em] outline-0',
     },
     size: {
       sm: '',
@@ -32,12 +32,12 @@ export const inputVariants = tv({
     {
       variant: ['default', 'numeric'],
       size: 'sm',
-      class: 'px-3 py-2 text-[length:var(--type-copy-size)]',
+      class: 'px-3 py-2 text-(length:--type-copy-size)',
     },
     {
       variant: ['default', 'numeric'],
       size: 'lg',
-      class: 'px-4 py-3 text-[length:var(--type-detail-size)]',
+      class: 'px-4 py-3 text-(length:--type-detail-size)',
     },
   ],
   defaultVariants: {

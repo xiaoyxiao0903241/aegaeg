@@ -27,7 +27,7 @@ const TooltipContent = React.forwardRef<
       avoidCollisions
       sticky="partial"
       className={cn(
-        'z-[9999] overflow-visible',
+        'z-9999 overflow-visible',
         'w-max max-w-[min(18rem,calc(100vw-2rem))] rounded-sm bg-dark px-3 py-2',
         'text-left text-xs font-medium leading-[1.45] whitespace-pre-line text-white',
         'shadow-tooltip',

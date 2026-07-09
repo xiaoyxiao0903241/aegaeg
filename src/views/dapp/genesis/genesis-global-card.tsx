@@ -19,14 +19,14 @@ const genesisGlobalCard = tv({
     kicker: 'max-dapp:block max-dapp:pr-44',
     // Outline CTA must beat Button secondary + md/pill `w-full` (absolute hug + right).
     contractButton: cn(
-      'absolute right-5.5 top-11 z-[2] max-dapp:top-4.5 max-dapp:right-4.5',
-      '!w-auto !gap-1.5 !border-white/45 !bg-transparent !px-4.5 !text-white',
-      'hover:!border-white/80 hover:!shadow-none hover:!translate-y-0',
-      'focus-visible:!border-white/80 focus-visible:!shadow-none focus-visible:!translate-y-0',
-      '[&_img]:size-[var(--dapp-icon-action)] [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
+      'absolute top-11 right-5.5 z-2 max-dapp:top-4.5 max-dapp:right-4.5',
+      'w-auto! gap-1.5! border-white/45! bg-transparent! px-4.5! text-white!',
+      'hover:translate-y-0! hover:border-white/80! hover:shadow-none!',
+      'focus-visible:translate-y-0! focus-visible:border-white/80! focus-visible:shadow-none!',
+      '[&_img]:size-(--dapp-icon-action) [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
     globe:
-      'pointer-events-none absolute top-0 right-0 h-auto max-h-full w-auto max-w-[60%] select-none opacity-[0.78]',
+      'pointer-events-none absolute top-0 right-0 size-auto max-h-full max-w-[60%] opacity-[0.78] select-none',
   },
 })
 
@@ -53,20 +53,10 @@ export function GenesisGlobalCard({
         <Text as="span" variant="eyebrow" tone="primary-bright" className={styles.kicker()}>
           {kicker}
         </Text>
-        <Text
-          as="strong"
-          tone="inverse"
-          variant="panel"
-          className="block"
-        >
+        <Text as="strong" tone="inverse" variant="panel" className="block">
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
         </Text>
-        <Text
-          as="p"
-          variant="detail"
-          tone="inverse-muted"
-          className="m-0 max-dapp:w-full"
-        >
+        <Text as="p" variant="detail" tone="inverse-muted" className="m-0 max-dapp:w-full">
           {body}
         </Text>
       </div>

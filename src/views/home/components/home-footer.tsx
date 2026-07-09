@@ -53,7 +53,7 @@ export function HomeFooter() {
 
   return (
     <footer className="flex flex-col items-center gap-10 bg-footer pt-18 pb-9 text-inverse-muted dapp:min-h-80 max-dapp:gap-6 max-dapp:pt-12 max-dapp:pb-8">
-      <div className="container grid dapp:min-h-32 grid-cols-4 items-start gap-10 overflow-hidden max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6">
+      <div className="container grid grid-cols-4 items-start gap-10 overflow-hidden dapp:min-h-32 max-dapp:grid-cols-3 max-dapp:gap-x-3.5 max-dapp:gap-y-6">
         <div
           className="flex min-w-0 flex-col items-start gap-3.5 overflow-hidden max-dapp:col-span-full max-dapp:min-h-0"
           data-footer-brand
@@ -63,7 +63,7 @@ export function HomeFooter() {
             href="#top"
           >
             <img
-              className="h-7 w-7 object-contain max-dapp:h-5.5 max-dapp:w-6"
+              className="size-7 object-contain max-dapp:h-5.5 max-dapp:w-6"
               src={homeAssets.logoMark}
               alt=""
               width="28"
@@ -81,7 +81,7 @@ export function HomeFooter() {
           <Text
             as="p"
             tone="inverse-muted"
-            className="m-0 w-full max-w-64 text-sm font-normal leading-[1.5] max-dapp:max-w-none max-dapp:text-xs"
+            className="m-0 w-full max-w-64 text-sm/normal font-normal max-dapp:max-w-none max-dapp:text-xs"
             variant="copy"
           >
             <FooterBrandCopy copy={content.brandCopy} />
@@ -96,7 +96,7 @@ export function HomeFooter() {
             <Text
               as="h3"
               tone="inverse"
-              className="m-0 text-sm font-semibold leading-[1.2] max-dapp:text-xs max-dapp:leading-[1.5]"
+              className="m-0 text-sm leading-[1.2] font-semibold max-dapp:text-xs/normal"
               variant="headline"
             >
               {group.label}
@@ -107,7 +107,7 @@ export function HomeFooter() {
                 <Text
                   as="a"
                   tone="inverse-muted"
-                  className="text-sm font-normal leading-[1.2] max-dapp:text-xs max-dapp:leading-[1.5]"
+                  className="text-sm leading-[1.2] font-normal max-dapp:text-xs/normal"
                   href={href}
                   key={`${group.label}-${link.label}`}
                   rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
@@ -126,7 +126,7 @@ export function HomeFooter() {
         as="div"
         tone="inverse-muted"
         variant="caption"
-        className="container flex min-h-4 items-start overflow-hidden text-xs leading-4 whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
+        className="container flex min-h-4 items-start overflow-hidden text-xs/4 whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
         data-footer-copyright
       >
         {content.copyright}

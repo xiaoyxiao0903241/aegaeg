@@ -45,10 +45,10 @@ const swapTokenAboutCarousel = tv({
       desktop: {
         root: 'dapp:mt-0 gap-3 dapp:gap-0',
         viewport:
-          'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-[var(--shadow-bleed-subtle)]',
+          'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-(--shadow-bleed-subtle)',
         indicatorBar: [
           'gap-3.5 self-center',
-          'dapp:relative dapp:z-1 dapp:-mt-[var(--shadow-bleed-subtle)] dapp:pt-[var(--carousel-pc-indicator-pt)]',
+          'dapp:relative dapp:z-1 dapp:-mt-(--shadow-bleed-subtle) dapp:pt-(--carousel-pc-indicator-pt)',
         ],
         navButton: dappIcon({ size: 'base' }),
         chevron: dappIcon({ size: 'base' }),
@@ -56,13 +56,13 @@ const swapTokenAboutCarousel = tv({
       mobile: {
         root: 'max-dapp:mt-0',
         viewport:
-          '-mx-[var(--shadow-bleed-h5)] w-[calc(100%+2*var(--shadow-bleed-h5))] px-[var(--shadow-bleed-h5)] pt-[var(--carousel-h5-viewport-pad-y)] pb-[var(--shadow-bleed-subtle)]',
+          '-mx-(--shadow-bleed-h5) w-[calc(100%+2*var(--shadow-bleed-h5))] px-(--shadow-bleed-h5) pt-(--carousel-h5-viewport-pad-y) pb-(--shadow-bleed-subtle)',
         indicatorBar: [
           'gap-2.5 text-muted-foreground',
-          'relative z-1 -mt-[calc(var(--shadow-bleed-subtle)-var(--carousel-h5-viewport-pad-y))] pt-[var(--carousel-h5-indicator-pt)]',
+          'relative z-1 -mt-[calc(var(--shadow-bleed-subtle)-var(--carousel-h5-viewport-pad-y))] pt-(--carousel-h5-indicator-pt)',
         ],
         navButton:
-          'size-[var(--dapp-icon-lg)] rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+          'size-(--dapp-icon-lg) rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
         chevron: dappIcon({ size: 'md' }),
       },
     },
@@ -89,7 +89,7 @@ const swapTokenAboutCarousel = tv({
     {
       layout: 'desktop',
       dotActive: false,
-      class: { dot: 'h-1.5 w-1.5' },
+      class: { dot: 'size-1.5' },
     },
     {
       layout: 'mobile',

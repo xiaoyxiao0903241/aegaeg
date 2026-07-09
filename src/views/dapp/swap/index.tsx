@@ -10,7 +10,7 @@ import { TradeSwapWidget } from '~/views/dapp/swap/trade-swap-widget'
 import { TradeSwapContent } from '~/views/dapp/swap/trade-swap-content'
 
 const swapTransitionStack = tv({
-  base: 'grid overflow-hidden [&>*]:col-start-1 [&>*]:row-start-1 [&>*]:min-w-0',
+  base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
 })
 
 function renderSwapWidget(displayView: SwapView, onSelectGenesis: () => void) {

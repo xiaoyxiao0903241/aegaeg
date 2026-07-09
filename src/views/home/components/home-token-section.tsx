@@ -23,20 +23,20 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
     <Card
       surface="outlined"
       className={cn(
-        'relative isolate h-72 overflow-hidden rounded-lg border-0 p-0 text-white shadow-token transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[image:var(--home-token-sheen)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-dapp:flex max-dapp:h-auto max-dapp:min-h-44 max-dapp:flex-col max-dapp:justify-start max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-5',
+        'relative isolate h-72 overflow-hidden rounded-lg border-0 p-0 text-white shadow-token transition-[box-shadow,filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-(image:--home-token-sheen) before:opacity-0 before:transition-opacity before:duration-300 before:ease-[cubic-bezier(0.2,0.7,0.2,1)] before:content-[""] max-dapp:flex max-dapp:h-auto max-dapp:min-h-44 max-dapp:flex-col max-dapp:justify-start max-dapp:gap-1.5 max-dapp:rounded-md max-dapp:p-5',
         'max-dapp:hover:shadow-none',
-        'hover:shadow-[var(--home-token-hover-shadow)] hover:saturate-[1.02]',
+        'hover:shadow-(--home-token-hover-shadow) hover:saturate-[1.02]',
         'hover:before:opacity-100',
-        'hover:[&_[data-token-tile]]:border-white/50 hover:[&_[data-token-tile]]:bg-white/20 hover:[&_[data-token-tile]]:shadow-[var(--home-token-tile-shadow)]',
+        'hover:**:data-token-tile:border-white/50 hover:**:data-token-tile:bg-white/20 hover:**:data-token-tile:shadow-(--home-token-tile-shadow)',
         'hover:[&_[data-token-tile]_img]:saturate-[1.08] hover:[&_[data-token-tile]_img]:contrast-[1.04]',
-        'hover:[&_[data-token-shape-wrap]]:opacity-100 hover:[&_[data-token-shape-wrap]]:saturate-[1.08]',
+        'hover:**:data-token-shape-wrap:opacity-100 hover:**:data-token-shape-wrap:saturate-[1.08]',
         token.className,
       )}
       data-token-card
     >
       <div
         className={cn(
-          'pointer-events-none absolute -z-1 transition-[filter,opacity] duration-[420ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:hidden',
+          'pointer-events-none absolute -z-1 transition-[filter,opacity] duration-420 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:hidden',
           token.shapeWrapClassName,
         )}
         data-token-shape-wrap
@@ -55,13 +55,13 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         />
       </div>
       <span
-        className="absolute left-6 top-6 z-1 grid size-[var(--home-token-tile-size)] origin-center place-items-center rounded-[0.875rem] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-[var(--home-token-tile-size-h5)] max-dapp:rounded-[0.8125rem] [&_img:not([src])]:bg-transparent"
+        className="absolute left-6 top-6 z-1 grid size-(--home-token-tile-size) origin-center place-items-center rounded-[0.875rem] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-(--home-token-tile-size-h5) max-dapp:rounded-[0.8125rem] [&_img:not([src])]:bg-transparent"
         data-token-tile
         aria-hidden="true"
       >
         <img
           className={cn(
-            'size-[var(--home-token-icon-size)] object-contain transition-[filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:size-[var(--home-token-icon-size-h5)]',
+            'size-(--home-token-icon-size) object-contain transition-[filter] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:size-(--home-token-icon-size-h5)',
             token.iconClassName,
           )}
           src={token.icon}
@@ -121,7 +121,7 @@ export function HomeTokenSection() {
       />
       <div
         className={cn(
-          'mt-14 grid grid-cols-4 gap-5.5 py-[var(--shadow-bleed)] tablet:grid-cols-2 max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4',
+          'mt-14 grid grid-cols-4 gap-5.5 py-(--shadow-bleed) tablet:grid-cols-2 max-dapp:mt-4 max-dapp:grid-cols-1 max-dapp:gap-4',
           revealClass(),
         )}
         data-reveal

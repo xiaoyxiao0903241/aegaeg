@@ -23,7 +23,7 @@ import { useSwapViewStore } from '~/stores/swap-view-store'
 export const swapFlipCard = tv({
   variants: {
     flipping: {
-      true: '[animation:swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]',
+      true: 'animate-[swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]',
       false: '',
     },
   },
@@ -34,7 +34,7 @@ export const swapFlipCard = tv({
 
 const swapFlowButton = tv({
   base: cn(
-    'grid size-[2.125rem] shrink-0 place-items-center rounded-control border border-border bg-card p-0',
+    'grid size-8.5 shrink-0 place-items-center rounded-control border border-border bg-card p-0',
     'text-sm leading-none tracking-[-0.02em] text-foreground shadow-none',
   ),
   variants: {
@@ -110,7 +110,7 @@ export function SwapPanelToggle() {
       >
         <DappIcon
           className={cn(
-            'transition-transform duration-[260ms] ease-[cubic-bezier(.2,.8,.2,1)]',
+            'transition-transform duration-260 ease-[cubic-bezier(.2,.8,.2,1)]',
             detailCollapsed && 'rotate-90',
           )}
           size="lg"

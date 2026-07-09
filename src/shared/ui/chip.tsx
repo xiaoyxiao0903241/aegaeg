@@ -15,9 +15,9 @@ export const chipVariants = tv({
       outlined: 'border bg-transparent',
     },
     size: {
-      sm: 'px-2 py-1.5 text-[length:var(--type-caption-size)] font-[var(--type-caption-weight)] leading-none tracking-[var(--type-caption-tracking)]',
-      md: 'justify-center px-1.5 py-1.25 text-xs font-semibold leading-normal tracking-[-0.02em] max-dapp:py-1.5',
-      lg: 'justify-center px-4 py-2 text-sm font-semibold leading-snug tracking-[-0.02em]',
+      sm: 'px-2 py-1.5 text-(length:--type-caption-size) leading-none font-(--type-caption-weight) tracking-(--type-caption-tracking)',
+      md: 'justify-center px-1.5 py-1.25 text-xs/normal font-semibold tracking-[-0.02em] max-dapp:py-1.5',
+      lg: 'justify-center px-4 py-2 text-sm/snug font-semibold tracking-[-0.02em]',
     },
     shape: {
       pill: 'rounded-full',
@@ -34,7 +34,7 @@ export const chipVariants = tv({
     { variant: 'solid', tone: 'default', class: 'bg-card text-foreground' },
     { variant: 'solid', tone: 'primary', class: 'bg-primary text-primary-foreground' },
     { variant: 'solid', tone: 'coral', class: 'bg-coral text-primary-foreground' },
-    { variant: 'solid', tone: 'success', class: 'bg-success text-success-foreground' },
+    { variant: 'solid', tone: 'success', class: 'bg-success text-primary-foreground' },
     { variant: 'soft', tone: 'default', class: 'bg-muted text-foreground' },
     { variant: 'soft', tone: 'primary', class: 'bg-accent text-primary' },
     { variant: 'soft', tone: 'coral', class: 'bg-accent text-coral' },
@@ -44,8 +44,16 @@ export const chipVariants = tv({
       tone: 'default',
       class: 'border-border bg-card text-muted-foreground hover:border-primary hover:text-primary',
     },
-    { variant: 'outlined', tone: 'primary', class: 'border-primary bg-card text-primary hover:bg-accent' },
-    { variant: 'outlined', tone: 'coral', class: 'border-coral bg-card text-coral hover:bg-accent' },
+    {
+      variant: 'outlined',
+      tone: 'primary',
+      class: 'border-primary bg-card text-primary hover:bg-accent',
+    },
+    {
+      variant: 'outlined',
+      tone: 'coral',
+      class: 'border-coral bg-card text-coral hover:bg-accent',
+    },
     {
       variant: 'outlined',
       tone: 'success',
@@ -60,8 +68,7 @@ export const chipVariants = tv({
   },
 })
 
-export type ChipProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof chipVariants>
+export type ChipProps = ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof chipVariants>
 
 export const Chip = forwardRef<HTMLButtonElement, ChipProps>(
   ({ className, variant, size, shape, tone, ...props }, ref) => (
@@ -79,7 +86,7 @@ const fieldActionChip = tv({
   extend: chipVariants,
   base: [
     // Enabled: soft coral (bg-accent / text-coral). Disabled: muted chrome, full opacity.
-    'h-11 min-w-16 shrink-0 gap-1.5 rounded-control px-[0.9375rem] text-xs font-semibold',
+    'h-11 min-w-16 shrink-0 gap-1.5 rounded-control px-3.75 text-xs font-semibold',
     'bg-accent text-coral',
     'disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
   ],
@@ -91,20 +98,12 @@ const fieldActionChip = tv({
   },
 })
 
-export type FieldActionChipProps = Omit<
-  ChipProps,
-  'variant' | 'size' | 'shape' | 'tone'
->
+export type FieldActionChipProps = Omit<ChipProps, 'variant' | 'size' | 'shape' | 'tone'>
 
 /** Genesis MAX / Community Bind — field-adjacent soft coral chip. */
 export const FieldActionChip = forwardRef<HTMLButtonElement, FieldActionChipProps>(
   ({ className, ...props }, ref) => (
-    <button
-      type="button"
-      className={fieldActionChip({ class: className })}
-      ref={ref}
-      {...props}
-    />
+    <button type="button" className={fieldActionChip({ class: className })} ref={ref} {...props} />
   ),
 )
 FieldActionChip.displayName = 'FieldActionChip'

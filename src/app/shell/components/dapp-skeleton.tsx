@@ -101,7 +101,7 @@ export function SeasonOptionSkeleton() {
     >
       <div className="flex items-start justify-between gap-1">
         <DappSkeleton className="h-3.5 w-16" />
-        <DappSkeleton className="size-[var(--dapp-skeleton-chip-size)] shrink-0 rounded-[calc(var(--dapp-skeleton-chip-size)/2)]" />
+        <DappSkeleton className="size-(--dapp-skeleton-chip-size) shrink-0 rounded-[calc(var(--dapp-skeleton-chip-size)/2)]" />
       </div>
       <DappSkeleton className="h-3 w-full max-w-24" />
       <DappSkeleton className="h-3 w-full max-w-28" />

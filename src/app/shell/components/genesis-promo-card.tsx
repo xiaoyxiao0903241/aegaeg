@@ -111,7 +111,7 @@ export function GenesisPromoCard({
           as="strong"
           variant="detail"
           tone="inverse-muted"
-          className="block text-sm font-semibold leading-normal"
+          className="block text-sm/normal font-semibold"
         >
           {title}
         </Text>
@@ -123,7 +123,7 @@ export function GenesisPromoCard({
           as="p"
           variant="copy"
           tone="inverse-muted"
-          className="m-0 text-xs font-normal leading-normal"
+          className="m-0 text-xs/normal font-normal"
         >
           {body}
         </Text>

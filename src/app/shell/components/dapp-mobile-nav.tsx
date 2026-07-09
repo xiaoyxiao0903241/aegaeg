@@ -90,7 +90,7 @@ export function DappMobileNav({
     <div
       aria-hidden={!open}
       className={cn(
-        'fixed inset-0 z-[60] max-dapp:block dapp:hidden',
+        'fixed inset-0 z-60 max-dapp:block dapp:hidden',
         open ? 'pointer-events-auto' : 'pointer-events-none',
       )}
       data-dapp-mobile-nav
@@ -112,7 +112,7 @@ export function DappMobileNav({
         aria-label="DApp sections"
         className={cn(
           'absolute inset-y-0 left-0 flex w-3/5 max-w-3/5 flex-col gap-1 p-4.5',
-          'bg-[image:var(--glass-drawer)] backdrop-blur-xl backdrop-saturate-150',
+          'bg-(image:--glass-drawer) backdrop-blur-xl backdrop-saturate-150',
           'shadow-drawer',
           'will-change-transform',
         )}
@@ -157,7 +157,7 @@ export function DappMobileNav({
                 as="span"
                 variant="copy"
                 tone={active ? 'primary' : 'foreground'}
-                className="min-w-0 flex-1 truncate text-sm font-semibold leading-snug tracking-tight"
+                className="min-w-0 flex-1 truncate text-sm/snug font-semibold tracking-tight"
                 title={label}
               >
                 {label}

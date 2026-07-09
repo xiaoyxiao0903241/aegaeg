@@ -43,7 +43,7 @@ export const buttonVariants = tv({
     },
     size: {
       lg: 'min-h-12 px-6 text-base leading-none max-dapp:px-5 max-dapp:text-sm',
-      md: 'min-h-11 px-5 text-sm leading-snug max-dapp:text-xs',
+      md: 'min-h-11 px-5 text-sm/snug max-dapp:text-xs',
       sm: 'min-h-9 px-4.5 text-sm leading-none max-dapp:text-xs',
     },
     shape: {
@@ -66,7 +66,7 @@ export const buttonVariants = tv({
     {
       variant: 'link',
       size: ['sm', 'md', 'lg'],
-      class: '!min-h-0 px-0',
+      class: 'min-h-0! px-0',
     },
     {
       size: ['sm', 'md'],

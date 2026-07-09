@@ -40,8 +40,8 @@ export function DappTableEmptyMessage({
     <DappTableCardShell
       className={cn(
         revealClass(),
-        'p-[var(--dapp-table-empty-padding)] text-center',
-        'max-dapp:p-[var(--dapp-table-empty-padding-h5)]',
+        'p-(--dapp-table-empty-padding) text-center',
+        'max-dapp:p-(--dapp-table-empty-padding-h5)',
         className,
       )}
       data-reveal

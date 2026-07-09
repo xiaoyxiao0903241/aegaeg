@@ -17,7 +17,7 @@ export const communityStatGrid = tv({
 export const communityStatCardMobileShell = tv({
   base: cn(
     'max-dapp:min-h-22 max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
-    'max-dapp:p-[var(--dapp-community-stat-padding)] max-dapp:text-left max-dapp:shadow-card',
+    'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
   ),
 })
 
@@ -37,7 +37,7 @@ const communityStatCard = tv({
     dark: {
       true: {
         // inverse surface owns elevation; dark sc clears shadow for art.
-        root: 'is-dark rounded-md shadow-none border-0',
+        root: 'is-dark rounded-md border-0 shadow-none',
       },
       false: {},
     },
@@ -97,10 +97,7 @@ export function CommunityStatCard({
         as="span"
         variant="copy"
         tone={dark ? 'inverse-muted' : 'muted-foreground'}
-        className={cn(
-          styles.label(),
-          'text-xs leading-[1.5]',
-        )}
+        className={cn(styles.label(), 'text-xs/normal')}
       >
         {label}
       </Text>
@@ -108,10 +105,7 @@ export function CommunityStatCard({
         as="strong"
         variant="figure"
         tone={dark ? 'inverse' : 'foreground'}
-        className={cn(
-          styles.value(),
-          'text-3xl leading-[1.2] tracking-[-0.04em]',
-        )}
+        className={cn(styles.value(), 'text-3xl leading-[1.2] tracking-[-0.04em]')}
       >
         {value}
       </Text>
@@ -120,11 +114,7 @@ export function CommunityStatCard({
           as="b"
           variant="headline"
           tone={dark ? 'primary-bright' : undefined}
-          className={cn(
-            styles.volume(),
-            'text-sm leading-[1.2]',
-            !dark && 'text-coral',
-          )}
+          className={cn(styles.volume(), 'text-sm leading-[1.2]', !dark && 'text-coral')}
         >
           {volume}
         </Text>
@@ -136,7 +126,7 @@ export function CommunityStatCard({
           tone={dark ? 'inverse-muted' : undefined}
           className={cn(
             styles.hint(),
-            'text-xs leading-[1.5] tracking-[-0.01em]',
+            'text-xs/normal tracking-[-0.01em]',
             !dark && 'text-foreground/40',
           )}
         >
@@ -147,7 +137,7 @@ export function CommunityStatCard({
       {image ? (
         <img
           alt=""
-          className="pointer-events-none absolute -bottom-6 -right-2.5 z-1 h-auto w-24 max-w-28 min-w-22"
+          className="pointer-events-none absolute -right-2.5 -bottom-6 z-1 h-auto w-24 max-w-28 min-w-22"
           height="156"
           loading="lazy"
           src={image}
@@ -157,4 +147,3 @@ export function CommunityStatCard({
     </Card>
   )
 }
-

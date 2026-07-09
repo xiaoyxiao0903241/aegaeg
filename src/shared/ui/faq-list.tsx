@@ -22,8 +22,8 @@ const faqList = tv({
       'max-dapp:px-4 max-dapp:py-3.5',
       'group-data-[state=open]:gap-3 max-dapp:group-data-[state=open]:gap-2.5',
     ],
-    question: 'min-w-px flex-[1_0_0] text-left [overflow-wrap:anywhere]',
-    answer: 'w-full text-left [overflow-wrap:anywhere]',
+    question: 'min-w-px flex-[1_0_0] text-left wrap-anywhere',
+    answer: 'w-full text-left wrap-anywhere',
     // font-normal: reset button UA bold so Text `question` weight is the owner
     trigger:
       'flex w-full cursor-pointer items-center justify-between gap-0 border-0 bg-transparent p-0 text-left font-normal text-inherit outline-none',
@@ -55,7 +55,7 @@ function FaqChevron() {
   return (
     <svg
       aria-hidden="true"
-      className="faq-chevron size-[1.125rem] shrink-0"
+      className="faq-chevron size-4.5 shrink-0"
       fill="none"
       viewBox="0 0 18 18"
       xmlns="http://www.w3.org/2000/svg"

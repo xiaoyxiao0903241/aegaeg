@@ -46,22 +46,17 @@ export function HomePopupNoticeModal({
           </DialogPrimitive.Title>
 
           <article className="relative flex max-h-[min(92dvh,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-2xl bg-card shadow-modal-panel">
-            <header className="relative z-10 flex shrink-0 items-center justify-between gap-3 px-4 pb-3 pt-4">
+            <header className="relative z-10 flex shrink-0 items-center justify-between gap-3 px-4 pt-4 pb-3">
               <div className="inline-flex min-w-0 items-center gap-2">
                 <img
                   alt=""
-                  className="h-7 w-7 shrink-0 object-contain"
+                  className="size-7 shrink-0 object-contain"
                   decoding="async"
                   height={27}
                   src={homeAssets.logoMark}
                   width={28}
                 />
-                <Text
-                  as="span"
-                  className="truncate"
-                  tone="foreground"
-                  variant="headline"
-                >
+                <Text as="span" className="truncate" tone="foreground" variant="headline">
                   {messages.common.brand}
                 </Text>
               </div>
@@ -98,12 +93,7 @@ export function HomePopupNoticeModal({
                   id="home-popup-notice-body"
                 >
                   {notice.title ? (
-                    <Text
-                      as="h2"
-                      className="text-balance"
-                      tone="foreground"
-                      variant="headline"
-                    >
+                    <Text as="h2" className="text-balance" tone="foreground" variant="headline">
                       {notice.title}
                     </Text>
                   ) : null}

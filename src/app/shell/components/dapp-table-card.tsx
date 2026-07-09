@@ -25,7 +25,7 @@ const dappTableCard = tv({
 export const dappTableCell = tv({
   slots: {
     border: 'border-b-[0.5px] border-border',
-    minWidth: 'min-w-[var(--dapp-table-cell-min-width)]',
+    minWidth: 'min-w-(--dapp-table-cell-min-width)',
   },
 })
 

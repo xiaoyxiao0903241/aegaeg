@@ -49,8 +49,8 @@ function RewardsHeroPanel({
             tone="inverse"
             className={
               layout === 'desktop'
-                ? 'm-0 min-w-0 break-words leading-[1.3]'
-                : 'm-0 min-w-0 break-words leading-[1.2]'
+                ? 'm-0 min-w-0 wrap-break-word leading-[1.3]'
+                : 'm-0 min-w-0 wrap-break-word leading-[1.2]'
             }
           >
             {title}

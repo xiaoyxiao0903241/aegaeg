@@ -52,7 +52,7 @@ function ProgramCardIcon({ index }: { index: number }) {
       <span className="flex shrink-0 items-center justify-end">
         <img
           alt=""
-          className="size-7 shrink-0 -mr-[0.4375rem]"
+          className="size-7 shrink-0 -mr-1.75"
           height={28}
           src={swapHubAssets.programUsdt}
           width={28}
@@ -79,7 +79,7 @@ function ProgramCardIcon({ index }: { index: number }) {
       <span className="grid size-7 shrink-0 place-items-center rounded-full bg-dark">
         <img
           alt=""
-          className="h-[1.09375rem] w-[1.3125rem] object-contain"
+          className="h-[1.09375rem] w-5.25 object-contain"
           height={17.5}
           src={swapHubAssets.programAgx}
           width={21}
@@ -93,7 +93,7 @@ function ProgramCardIcon({ index }: { index: number }) {
       <span className="grid size-7 shrink-0 place-items-center rounded-full bg-dark">
         <img
           alt=""
-          className="h-[1.0625rem] w-[1.125rem] object-contain"
+          className="h-4.25 w-4.5 object-contain"
           height={17}
           src={swapHubAssets.programX}
           width={18}

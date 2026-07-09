@@ -61,5 +61,5 @@ export const rewardsBalanceHint = tv({
 })
 
 export const rewardsReferralAmount = tv({
-  base: 'text-[length:var(--type-figure-size)] leading-[1.3] tracking-[-0.03em]',
+  base: 'text-(length:--type-figure-size) leading-[1.3] tracking-[-0.03em]',
 })

@@ -15,11 +15,7 @@ import { isThirdwebConfigured } from '~/views/dapp/web3/thirdweb'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { invalidateTabQueries } from '~/shared/api/query/invalidate'
-import {
-  DappTabContent,
-  DappTabShellProviders,
-  DappTabWidget,
-} from '~/views/dapp/dapp-tabs'
+import { DappTabContent, DappTabShellProviders, DappTabWidget } from '~/views/dapp/dapp-tabs'
 
 export function DappShell() {
   const { messages } = useI18n()
@@ -82,9 +78,9 @@ export function DappShell() {
           className="relative z-1 mx-4 mb-2"
         >
           未配置 <code className="font-mono">VITE_THIRDWEB_CLIENT_ID</code>
-          ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code>{' '}
-          为 <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client
-          ID 后重启 <code className="font-mono">pnpm dev</code>。
+          ，钱包连接会 401。请复制 <code className="font-mono">.env.example</code> 为{' '}
+          <code className="font-mono">.env</code>，填入 thirdweb Dashboard 的 Client ID 后重启{' '}
+          <code className="font-mono">pnpm dev</code>。
         </DappInlineAlert>
       ) : null}
 
@@ -97,7 +93,7 @@ export function DappShell() {
       >
         <div
           className={cn(
-            'relative z-1 mx-auto flex h-full min-h-0 w-full flex-1 flex-col',
+            'relative z-1 mx-auto flex size-full min-h-0 flex-1 flex-col',
             'dapp:max-w-none dapp:items-center dapp:px-0',
             'max-dapp:max-w-none max-dapp:px-0',
           )}
@@ -107,10 +103,10 @@ export function DappShell() {
             <div
               ref={setWindowNode}
               className={cn(
-                'group/shell relative z-1 mx-auto grid w-full min-h-0 border border-border bg-card shadow-window',
+                'group/shell relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
                 'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
                 !shellState.sessionReady && 'shadow-window-compact',
-                'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:flex-1 max-dapp:max-w-none max-dapp:flex-col max-dapp:gap-3',
+                'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
                 'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
                 'max-dapp:px-4.5 max-dapp:pt-4.5 max-dapp:pb-8 max-dapp:shadow-card',
               )}
@@ -125,9 +121,9 @@ export function DappShell() {
               <DappScrollFadeHost>
                 <aside
                   className={cn(
-                    'overflow-x-hidden border-r border-border bg-card px-6 pb-5.5 pt-10',
+                    'overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
                     // PC: fill column and scroll inside the panel
-                    'dapp:h-full dapp:min-h-0 dapp:max-h-full dapp:overflow-y-auto',
+                    'dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:overflow-y-auto',
                     // H5: size to content; window is the only scroller (avoid flex-shrink overlap)
                     'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
                   )}
@@ -151,11 +147,7 @@ export function DappShell() {
                     onSelectTab={selectMobileTab}
                     open={mobileNavOpen}
                   />
-                  <DappTabWidget
-                    key={activeTab}
-                    activeTab={activeTab}
-                    onSelectTab={selectTab}
-                  />
+                  <DappTabWidget key={activeTab} activeTab={activeTab} onSelectTab={selectTab} />
                 </aside>
               </DappScrollFadeHost>
 
@@ -164,12 +156,12 @@ export function DappShell() {
               >
                 <section
                   className={cn(
-                    'min-w-0 overflow-x-hidden bg-card transition-opacity duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+                    'min-w-0 overflow-x-hidden bg-card transition-opacity duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]',
                     // PC: fill column and scroll inside the panel
-                    'dapp:min-h-0 dapp:max-h-full',
+                    'dapp:max-h-full dapp:min-h-0',
                     effectiveDetailCollapsed
                       ? 'pointer-events-none overflow-y-hidden opacity-0'
-                      : 'dapp:overflow-y-auto opacity-100',
+                      : 'opacity-100 dapp:overflow-y-auto',
                     // H5: size to content under the shared window scroller
                     'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:opacity-100',
                   )}

@@ -15,14 +15,14 @@ export function DappConnectPromoCard({ className }: { className?: string }) {
       <div className="flex min-w-0 items-center gap-2">
         <DappIcon alt="" size="token" src={homeAssets.logoMark} />
         <div className="grid min-w-0 gap-1">
-          <Text as="strong" variant="headline" tone="inverse" className="text-sm leading-normal">
+          <Text as="strong" variant="headline" tone="inverse" className="text-sm/normal">
             {t.dapp.connect.promoTitle}
           </Text>
           <Text
             as="a"
             variant="caption"
             tone="primary"
-            className="m-0 inline-flex items-center gap-1 text-xs leading-normal transition-opacity duration-180 ease-out hover:opacity-90"
+            className="m-0 inline-flex items-center gap-1 text-xs/normal transition-opacity duration-180 ease-out hover:opacity-90"
             href={homeHref}
           >
             {t.dapp.connect.promoBrandLine}

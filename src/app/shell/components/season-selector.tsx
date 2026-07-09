@@ -95,7 +95,7 @@ function SeasonCard({
       role="radio"
     >
       <div className="flex w-full flex-col gap-0.75 overflow-hidden">
-        <div className="flex h-[1.125rem] items-center justify-between gap-1">
+        <div className="flex h-4.5 items-center justify-between gap-1">
           <Text as="strong" variant="headline" className={styles.title()}>
             {season.name}
           </Text>

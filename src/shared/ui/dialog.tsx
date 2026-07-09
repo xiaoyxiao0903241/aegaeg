@@ -9,7 +9,7 @@ const DialogPortal = DialogPrimitive.Portal
 export const dialogChrome = tv({
   slots: {
     overlay: 'aegis-modal-overlay fixed inset-0 z-50',
-    content: 'aegis-modal-content fixed left-1/2 top-1/2 z-50 focus:outline-none',
+    content: 'aegis-modal-content fixed top-1/2 left-1/2 z-50 focus:outline-none',
     panel: 'aegis-responsive-panel focus:outline-none',
     header: 'flex flex-col space-y-1.5 text-center sm:text-left',
     footer: 'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
@@ -51,8 +51,8 @@ const DialogContent = React.forwardRef<
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-          <X className="h-4 w-4" />
+        <DialogPrimitive.Close className="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          <X className="size-4" />
           <Text variant="copy" className="sr-only">
             Close
           </Text>
@@ -63,19 +63,13 @@ const DialogContent = React.forwardRef<
 })
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
-const DialogHeader = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => {
+const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
   const styles = dialogChrome()
   return <div className={styles.header({ class: className })} {...props} />
 }
 DialogHeader.displayName = 'DialogHeader'
 
-const DialogFooter = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => {
+const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
   const styles = dialogChrome()
   return <div className={styles.footer({ class: className })} {...props} />
 }

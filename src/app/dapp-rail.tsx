@@ -125,7 +125,7 @@ export function DappRail({
           className={cn(
             'pointer-events-none absolute inset-x-2 top-0 z-0 rounded-md bg-accent will-change-[transform,height]',
             indicatorReady &&
-              'transition-[transform,height] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+              'transition-[transform,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]',
           )}
           style={{
             height: indicator.height,
@@ -153,7 +153,7 @@ export function DappRail({
               type="button"
             >
               <span
-                className="aspect-square size-[var(--dapp-icon-rail)] bg-current"
+                className="aspect-square size-(--dapp-icon-rail) bg-current"
                 style={railIconMask(item.icon)}
                 aria-hidden="true"
               />
@@ -163,7 +163,7 @@ export function DappRail({
                 tone={active ? 'primary' : 'muted-foreground'}
                 className={cn(
                   mobile ? 'min-w-0 flex-1 truncate' : 'block w-full min-w-0 truncate text-center',
-                  'text-xs leading-snug tracking-tight',
+                  'text-xs/snug tracking-tight',
                 )}
                 title={label}
               >

@@ -57,8 +57,8 @@ function HomeIconCard({
       className={cn(
         'rounded-none bg-transparent p-0 shadow-none',
         isEngine
-          ? 'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7'
-          : 'min-h-72 px-8 py-9 transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card max-narrow:px-6 max-narrow:py-7',
+          ? 'group/engine min-h-64 p-8 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:shadow-card max-narrow:px-6 max-narrow:py-7 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card'
+          : 'min-h-72 px-8 py-9 transition-shadow duration-200 ease-out hover:shadow-card max-narrow:px-6 max-narrow:py-7 max-dapp:min-h-0 max-dapp:rounded-md max-dapp:bg-card max-dapp:p-5.5 max-dapp:shadow-card',
         cardBorderClass(variant, index),
       )}
       surface="outlined"
@@ -69,8 +69,8 @@ function HomeIconCard({
       <img
         className={
           isEngine
-            ? 'size-[var(--home-feature-icon-size)] object-cover max-dapp:size-[var(--home-feature-icon-size-h5)] max-dapp:object-contain'
-            : 'size-[var(--home-feature-icon-size)] object-contain max-dapp:size-[var(--home-feature-icon-size-h5)]'
+            ? 'size-(--home-feature-icon-size) object-cover max-dapp:size-(--home-feature-icon-size-h5) max-dapp:object-contain'
+            : 'size-(--home-feature-icon-size) object-contain max-dapp:size-(--home-feature-icon-size-h5)'
         }
         src={card.icon}
         alt=""
@@ -85,7 +85,7 @@ function HomeIconCard({
         className={cn(
           'mt-3 text-xl leading-[1.2] tracking-tight max-dapp:mt-2.5 max-dapp:min-w-0 max-dapp:text-lg max-dapp:text-balance',
           isEngine &&
-            'transition-colors duration-300 ease-out group-hover/engine:text-primary group-focus-within/engine:text-primary',
+            'transition-colors duration-300 ease-out group-focus-within/engine:text-primary group-hover/engine:text-primary',
         )}
         data-feature-line="title"
       >
@@ -93,7 +93,7 @@ function HomeIconCard({
       </Text>
       <Text
         as="p"
-        className="mt-3 max-w-112 text-sm leading-[1.5] max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80"
+        className="mt-3 max-w-md text-sm/normal max-dapp:mt-2.5 max-dapp:w-full max-dapp:max-w-80"
         tone="muted-foreground"
         variant="copy"
         data-feature-line="body"
@@ -104,11 +104,7 @@ function HomeIconCard({
   )
 }
 
-export function HomeIconFeatureSection({
-  variant,
-}: {
-  variant: 'protocol' | 'engine'
-}) {
+export function HomeIconFeatureSection({ variant }: { variant: 'protocol' | 'engine' }) {
   const { messages } = useI18n()
   const content = messages.home.sections[variant]
   const { icons, id } = sectionConfig[variant]

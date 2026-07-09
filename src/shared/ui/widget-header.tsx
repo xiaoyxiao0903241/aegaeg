@@ -8,7 +8,7 @@ export const widgetHeader = tv({
     root: 'mb-3.5 flex items-start justify-between gap-4 max-dapp:mb-7.5 max-dapp:mt-6',
     copy: 'flex min-w-0 flex-1 flex-col gap-1.5',
     title: 'm-0',
-    subtitle: 'm-0 max-w-[17.5rem] max-dapp:max-w-none',
+    subtitle: 'm-0 max-w-70 max-dapp:max-w-none',
   },
 })
 
@@ -61,7 +61,7 @@ export const widgetSubpageHeader = tv({
     backLabel: '',
     copy: 'grid gap-1.5',
     title: 'm-0',
-    subtitle: 'm-0 max-w-[17.5rem] max-dapp:max-w-none',
+    subtitle: 'm-0 max-w-70 max-dapp:max-w-none',
   },
 })
 

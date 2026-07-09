@@ -10,18 +10,18 @@ export const seasonCard = tv({
   slots: {
     root: [
       'flex shrink-0 flex-col gap-1.5 border bg-card p-3',
-      'min-h-[7.8125rem] w-[8.75rem]',
-      'rounded-[length:var(--dapp-season-card-radius)]',
+      'min-h-31.25 w-35',
+      'rounded-(--dapp-season-card-radius)',
     ],
     /** Display size only — weight/leading/tracking from Text variant unless noted. */
-    title: 'text-[length:var(--dapp-season-title-size)] text-foreground',
+    title: 'text-(length:--dapp-season-title-size) text-foreground',
     // Figma 4151:340 — meta Regular (400) via caption; badge Medium (500) override.
-    meta: 'm-0 text-[length:var(--dapp-season-meta-size)] text-muted-foreground',
+    meta: 'm-0 text-(length:--dapp-season-meta-size) text-muted-foreground',
     metaAccent: 'text-coral-emphasis',
     radio:
-      'size-[length:var(--dapp-season-radio-size)] rounded-[calc(var(--dapp-season-radio-size)/2)]',
+      'size-(--dapp-season-radio-size) rounded-[calc(var(--dapp-season-radio-size)/2)]',
     badge:
-      'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap text-[length:var(--dapp-season-badge-size)] font-medium',
+      'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap text-(length:--dapp-season-badge-size) font-medium',
   },
   variants: {
     selected: {
@@ -51,12 +51,12 @@ export const seasonCarousel = tv({
     track: 'flex -ml-2.5 items-stretch',
     viewport: 'w-full min-w-0 overflow-x-hidden overflow-y-visible',
     slide: 'shrink-0 grow-0 basis-auto pl-2.5',
-    fade: 'pointer-events-none absolute inset-y-0 z-[1] w-5 from-card to-transparent transition-opacity duration-200',
+    fade: 'pointer-events-none absolute inset-y-0 z-1 w-5 from-card to-transparent transition-opacity duration-200',
   },
   variants: {
     fadeSide: {
-      left: { fade: 'left-0 bg-gradient-to-r' },
-      right: { fade: 'right-0 bg-gradient-to-l' },
+      left: { fade: 'left-0 bg-linear-to-r' },
+      right: { fade: 'right-0 bg-linear-to-l' },
     },
     fadeVisible: {
       true: { fade: 'opacity-100' },

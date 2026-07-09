@@ -71,7 +71,7 @@ export function DappCollapsibleSection({
             alt=""
             aria-hidden
             className={cn(
-              'transition-transform duration-[320ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]',
+              'transition-transform duration-320 ease-[cubic-bezier(0.2,0.8,0.2,1)]',
               open ? 'rotate-0' : 'rotate-180',
             )}
             size="base"
