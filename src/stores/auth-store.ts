@@ -101,7 +101,8 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
   }
 }
 
-function mergePersistedState(
+/** Merge persisted + legacy address-keyed auth tables (exported for unit tests). */
+export function mergePersistedState(
   persistedState: Partial<
     AuthPersistState & { session?: StoredAuthSession | null; signature?: StoredLoginSignature | null }
   >,
@@ -201,22 +202,3 @@ export const useAuthStore = create<AuthStore>()(
   ),
 )
 
-export function createMemoryAuthStoreState(
-  initial: Partial<AuthPersistState> = {},
-): AuthStore {
-  return {
-    signaturesByAddress: initial.signaturesByAddress ?? {},
-    sessionsByAddress: initial.sessionsByAddress ?? {},
-    hasHydrated: true,
-    loginError: null,
-    isLoggingIn: false,
-    setHasHydrated: () => {},
-    upsertSessionForAddress: () => {},
-    removeSessionForAddress: () => {},
-    upsertSignatureForAddress: () => {},
-    readSignatureForAddress: () => null,
-    clearSignatureForAddress: () => {},
-    setLoginError: () => {},
-    setIsLoggingIn: () => {},
-  }
-}

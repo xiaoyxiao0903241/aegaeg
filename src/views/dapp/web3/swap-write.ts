@@ -10,6 +10,11 @@ import { parseWriteAbi, writeContractViaWallet } from '~/views/dapp/web3/wallet-
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const swapRouterWriteAbi = parseWriteAbi(SWAP_ROUTER_V3_METHODS.exactInputSingle)
 
+/** True when router allowance is below the intended spend — approve before swap. */
+export function needsTokenApproval(allowance: bigint, amountIn: bigint): boolean {
+  return allowance < amountIn
+}
+
 export async function approveTokenIfNeeded({
   wallet,
   token,
@@ -31,7 +36,7 @@ export async function approveTokenIfNeeded({
     SWAP_CONFIG.router,
     readClient,
   )
-  if (allowance >= amountIn) return null
+  if (!needsTokenApproval(allowance, amountIn)) return null
 
   return writeContractViaWallet({
     wallet,

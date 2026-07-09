@@ -2,11 +2,12 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('resolveSwapAction returns approve when allowance is insufficient', () => {
-  const resolveSwapAction = (allowance, amountIn) => (allowance >= amountIn ? 'swap' : 'approve')
+test('needsTokenApproval is true when allowance is below amountIn', async () => {
+  const { needsTokenApproval } = await loadModule('/src/views/dapp/web3/swap-write.ts')
 
-  assert.equal(resolveSwapAction(50n, 100n), 'approve')
-  assert.equal(resolveSwapAction(100n, 100n), 'swap')
+  assert.equal(needsTokenApproval(50n, 100n), true)
+  assert.equal(needsTokenApproval(100n, 100n), false)
+  assert.equal(needsTokenApproval(101n, 100n), false)
 })
 
 test('formatSwapRateColon displays colon exchange rate with 4 fraction digits', async () => {

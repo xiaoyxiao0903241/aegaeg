@@ -16,7 +16,10 @@ import {
   normalizeContractRevertError,
 } from '~/views/dapp/web3/decode-contract-revert'
 import { WALLET_WRITE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
-import { createWalletReadClient } from '~/views/dapp/web3/chain-read-client'
+import {
+  createWalletReadClient,
+  type ChainReadClient,
+} from '~/views/dapp/web3/chain-read-client'
 import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
 import { resolveWalletEip1193Provider } from '~/views/dapp/web3/resolve-wallet-eip1193-provider'
 import { assertWalletTransactionHash } from '~/views/dapp/web3/wallet-write-error'
@@ -37,7 +40,7 @@ function requireWalletAccount(wallet: Wallet) {
   return account
 }
 
-type WriteCallParams = {
+export type WriteCallParams = {
   account: Address
   address: Address
   abi: Abi
@@ -79,9 +82,15 @@ export function applyGasBuffer(estimatedGas: bigint): bigint {
   return (estimatedGas * GAS_BUFFER_NUMERATOR) / GAS_BUFFER_DENOMINATOR
 }
 
-async function estimateWriteGasLimit(
+/**
+ * Simulate → gas (+20% buffer); on non-revert simulate failure, fall back to
+ * wallet then public `estimateContractGas`. Reverts surface before the wallet prompt.
+ * Exported for unit tests with injected clients.
+ */
+export async function estimateWriteGasLimit(
   call: WriteCallParams,
-  walletClient: ReturnType<typeof createWalletReadClient>,
+  walletClient: ChainReadClient,
+  fallbackClient: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
   const callRequest = call as never
 
@@ -104,8 +113,7 @@ async function estimateWriteGasLimit(
     }
   }
 
-  const estimators = [walletClient, bscReadClient] as const
-  for (const client of estimators) {
+  for (const client of [walletClient, fallbackClient]) {
     try {
       const estimated = await client.estimateContractGas(callRequest)
       return applyGasBuffer(estimated)

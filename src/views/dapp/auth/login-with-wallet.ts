@@ -212,21 +212,4 @@ export function readWalletSession(
   return session
 }
 
-export function clearAuthSession(
-  storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),
-): void {
-  storage.clear()
-}
-
-export function clearWalletSession(
-  storage: AuthSessionStorage = createLocalAuthSessionStorage(localStorage),
-  signatureStorage: LoginSignatureStorage = createLocalLoginSignatureStorage(localStorage),
-  address?: string,
-): void {
-  storage.clear()
-  if (address) {
-    signatureStorage.clearForAddress(address)
-  }
-}
-
 export { createMemoryLoginSignatureStorage }
