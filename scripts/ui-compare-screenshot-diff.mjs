@@ -12,7 +12,7 @@
  *   5174: cd aegis && pnpm dev --host 127.0.0.1 --port 5174 --strictPort
  *
  * 每个 target：顺序截图（4175 → close_tab → 5174），origin 门禁；禁止双标签 + find_tab。
- * 流程 SSOT：docs/visual-parity-workflow.md
+ * 流程 SSOT：docs/foundation/verification.md
  * 用法：pnpm compare:screenshots
  *       UI_COMPARE_CAPTURE=longPage  # legacy 视口拼接
  *       UI_COMPARE_CAPTURE=viewport  # 强制单视口（不推荐）

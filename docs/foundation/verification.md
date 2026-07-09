@@ -1,6 +1,7 @@
 # Foundation 验收（L2 · P0–P8）
 
-> **流程**：[`runbook.md`](./runbook.md) · **API**：[`api.md`](./api.md) · **审计**：[`design-system-audit-v2.md`](./design-system-audit-v2.md)
+> **流程**：[`runbook.md`](./runbook.md) · **API**：[`api.md`](./api.md)  
+> **Baseline**：当前分支 + Figma 正式稿（不再以 Phase0 / 4175 快照为结构 SSOT）
 
 ---
 
@@ -9,7 +10,7 @@
 | Gate | 含义 | 命令 |
 |------|------|------|
 | **API gate** | 代码键数 = api.md 键数，无 legacy API 命中 | `rg` 检查 + tsc |
-| **视觉 gate** | heatmap 红块标签 + 人工对照表；scoped 探针仅确认 | `pnpm compare:screenshots` / 登录态 heatmap；可选 `compare:style-baseline` |
+| **视觉 gate** | heatmap 红块标签 + 人工对照表；scoped 探针仅确认 | `pnpm compare:screenshots` / 登录态 heatmap |
 
 用户已确认：**红块 + 同位置源码优先**；整页 `%` 与全页 DOM 探针不作发现工具；scoped 探针仅肉眼分不清或修完硬验收。
 
@@ -147,7 +148,7 @@ Figma 层: <layer>
 | Community/Rewards `DappSection` h3 lh 24.75→23.4 | REGRESSION→fixed | 同 §5 section leading 已对齐 1.3 |
 | Hero / Global kicker `coral-bright`→`primary` | REGRESSION→fixed | 正式 tone `primary-bright` ≡ Figma `#f4a98f`；禁 `primary` 近似、禁 `text-coral-bright` |
 | Hero body `on-dark`→`inverse-muted` | REGRESSION→fixed | 正式 tone；禁 `inverse`+opacity 近似 |
-| Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT（见 p7-swap-delta） |
+| Input disabled opacity 50→60 | INTENTIONAL | Foundation Input SSOT |
 | Phase 日期 / 累计共建额 | IGNORE | 动态 |
 | Community 左卡 padding | INTENTIONAL | 用户确认满意；禁按 4175/dev 改回 |
 | CommunityStatCard label foreground 13px | REGRESSION→fixed | `muted-foreground` + PC `text-xs leading-normal`（≡ 4175 ink-strong/xs） |
@@ -228,23 +229,15 @@ Figma 层: <layer>
 
 **裁决**：PC 文案色 SSOT = `text/body` 70% → `--muted-foreground`；4175 50% = IGNORE。H5 帧大量 `text/muted` 40% 与 PC 不一致；按 AGENTS「H5 是 PC 响应式 / PC 文案 SSOT」**当前不跟 H5 40%**，除非产品明确要求 H5 分叉。暗色卡珊瑚强调 = `primary-bright`（≡ coral-bright），浅底强调仍用 `primary`。
 
-## 5g. 视觉 SSOT（2026-07-09）
-
-**视觉真相只有两处，禁止第三套：**
+## 5g. 视觉 SSOT（2026-07-09 · 定稿：当前 = baseline）
 
 | 角色 | SSOT | 用途 |
 |------|------|------|
-| **设计意图** | 正式 Figma 画板**实节点**（`sXWXDvBrLeg5r0NnP1SMZH`）+ 帧导出 `docs/figma-export/raw|frames` | 色 / 字 / 间距 / 组件结构；变量以节点绑定为准（见 §5f） |
-| **回归基线** | `dev` @ **4175**（`pnpm dev:baseline`） | heatmap / 截图 diff；回答「视觉是否坏了」 |
+| **设计意图** | 正式 Figma 画板**实节点** + 可选 `docs/figma-export/raw|frames` | 色 / 字 / 间距 / 组件结构 |
+| **实现 baseline** | **当前分支** | 代码与人工验收真相；不再以 Phase0 / 4175 快照为结构 SSOT |
+| **可选回归** | `dev` @ 4175 / `compare:*` | 仅回答「相对旧 worktree 是否坏了」 |
 
-**已删除、禁止再参考**（曾与画板冲突的口号规范）：
-
-- `docs/figma-export/AEGIS X · Color.json`
-- `docs/figma-export/AEGIS X · Layoutjson.json`
-- `docs/figma-export/AEGIS X · Typography.json`
-- `docs/figma-export/AEGIS X · 验收规范 Spec.json`
-
-实现与验收时：不引用上述文件、不按其「验收 0x / card.padding=24 / 行高 1.2」等口号改码。冲突时以**画板实节点**定意图，以 **4175** 验回归；`dev` 仍不是结构 / class 字典 SSOT（见 skill）。
+**已删除、禁止再引用**：Phase0 `docs/baselines/`、`docs/archive/`、旧规范全书、audit-v2、world-class-goals、废止 stub、口号 Spec JSON。
 
 ## 5h. CSS 瘦身切片（2026-07-09）
 
@@ -266,7 +259,7 @@ Figma 层: <layer>
 | Claim / Copy / Join Genesis / Connect promo pill | INTENTIONAL | density：card **42** · external **44** · inverse **38**（Connect/Join Genesis） |
 | `DappPanelHeader` PC tracking | INTENTIONAL | 四 tab 共用 `dapp:tracking-[-0.42px]` |
 | `DappMetaList` | INTENTIONAL | 不再叠 `rounded-sm px-3.5 py-3`；用 Card 默认 |
-| Community 左卡 padding 旧锁 | **解除** | 用户要求跨 tab 统一；见 world-class-goals |
+| Community 左卡 padding 旧锁 | **解除** | 用户要求跨 tab 统一 |
 | `CommunityReferrerBoundPanel` 去 `my-3`；删死包装 `DappReferrerBoundCard` | INTENTIONAL | 与 ReferralLink 同 `DappSideCard`；内部 `gap-2.5`（Figma bound≈10） |
 | Detail 列 MetricCard `px-4 py-3.5` | KEEP（本切片） | 非 wcol 左卡；另切片再收 |
 
@@ -470,7 +463,7 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 
 | 变更 | 标签 | 说明 |
 |------|------|------|
-| `CommunityProgramCard` ≡ Figma `4040:7354` | REGRESSION→fixed | pad/gap/字阶/字距；去 H5 平行字阶与 underline CTA |
+| `CommunityProgramCard` ≡ Figma `4040:7354` | REGRESSION→fixed | pad/gap/字阶；accent 见 §5al（coral，非 primary） |
 | FAQ `FaqChevron` 换 path → 固定 path + `rotate-180` | REGRESSION→fixed | 箭头转动；色仍 open=`primary` |
 | Collapsible `overflow-visible` 打断 `0fr→1fr` | INTENTIONAL | settle 后再挂；CSS 覆盖见 §5ag（删覆盖会裁表卡阴影） |
 
@@ -578,3 +571,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.36 | §5aj Button/flb 更平滑 scale |
 | v2.37 | §5ak Button/flb 极轻 scale `1.008`/`0.992` |
 | v2.38 | §5al CommunityProgramCard label/CTA → coral |
+| v2.39 | 当前分支 = baseline；删过时文档 / Phase0 baselines / archive |

@@ -6,7 +6,7 @@
  * 用法：pnpm compare:style-baseline
  *       pnpm compare:style-baseline -- dapp-swap-desktop
  *
- * SSOT：docs/visual-parity-workflow.md
+ * SSOT：docs/foundation/verification.md（可选回归；当前分支 = baseline）
  * 输出：tmp/parity-baseline/<page>.json + .md
  */
 import { chromium } from '@playwright/test'

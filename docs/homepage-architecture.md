@@ -14,8 +14,8 @@
 | `static-homepage-plan.md` | 产品/性能 **目标** | 理想态；与现状偏差见 §2 |
 | `homepage-load-optimization.md` | 性能优化路线 | Phase 1 已完成；Phase 2–4 待做 |
 | `homepage-animation-guidelines.md` | 动效设计规则 | CSS + IO；runtime 见 `home-reveal-loader.ts` |
-| `design-system-audit.md` | DApp / Home 视觉 | Figma 帧、组件 variant |
-| [`docs/README.md`](./README.md) | 全项目文档索引 | 含已删除文档清单 |
+| [`foundation/`](./foundation/README.md) | DApp / Foundation 视觉与 API | 三核 runbook · api · verification |
+| [`docs/README.md`](./README.md) | 全项目文档索引 | 当前分支 = baseline |
 
 **命名陷阱（必读）**
 

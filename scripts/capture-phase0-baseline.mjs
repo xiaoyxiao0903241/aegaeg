@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 /**
- * Phase 0 — Swap PC/H5 computed 基线入库（只读，4175 dev SSOT）
+ * Optional — Swap PC/H5 computed snapshot（legacy Phase0 helper）。
  *
  * 用法：pnpm capture:phase0-baseline
- * 产出：docs/baselines/swap-pc-computed.json
- *       docs/baselines/swap-h5-computed.json
- *       docs/baselines/swap-style-stack.md
+ * 产出：tmp/baselines/swap-pc-computed.json（默认；docs/baselines 已删除）
  *
- * SSOT：docs/design-system-migration-plan.md Phase 0
+ * 视觉 SSOT：当前分支 + Figma（docs/foundation/）。本脚本仅可选回归对照。
  */
 import { chromium } from '@playwright/test'
 import fs from 'node:fs'
@@ -16,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const BASE = process.env.UI_COMPARE_BASE ?? 'http://127.0.0.1:4175'
-const OUT_DIR = path.join(ROOT, 'docs/baselines')
+const OUT_DIR = path.join(ROOT, process.env.UI_COMPARE_BASELINE_DIR ?? 'tmp/baselines')
 const CHANNEL = process.env.UI_COMPARE_CHANNEL ?? 'msedge'
 
 const STYLE_KEYS = [
@@ -171,9 +169,9 @@ function buildStyleStackMarkdown(captures) {
     '',
     '| 组件 | 单一 owner | 说明 |',
     '|------|-----------|------|',
-    '| Text | `src/shared/ui/text.tsx` variant + tone | 10 + 3 compound（见 text-refactor-plan.md） |',
+    '| Text | `src/shared/ui/text.tsx` variant + tone | 见 docs/foundation/api.md |',
     '| Button | `src/shared/ui/button.tsx` | variant × size × shape |',
-    '| Card | `src/shared/ui/card.tsx` surface | padding/gap 见 component-anatomy.md |',
+    '| Card | `src/shared/ui/card.tsx` surface | 见 docs/foundation/api.md |',
     '| FaqList | `src/shared/ui/faq-list.tsx` | question + detail |',
     '| AmountInput | `src/shared/ui/amount-input.tsx` | amount token |',
     '',

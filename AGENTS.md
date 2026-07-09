@@ -89,5 +89,5 @@ AI 工作规范
 - **允许例外**（须 PR 说明理由）：第三方组件默认样式 override（如 sonner）；必须在 `theme.css` 新增 `--color-*` token 的设计/工程依据。
 - **字阶**：走 [`src/shared/ui/text.tsx`](src/shared/ui/text.tsx) 的 `variant` + `tone`（`tv()`）；禁止新建 `*-type-scale.ts` 或散落字阶 class 常量。
 - **全站文本**：用户可见文案 **必须** `<Text>` 包装；流程见 [`docs/foundation/runbook.md`](docs/foundation/runbook.md) §5。
-- **布局**：间距、栅格、`max-w`、定位等用 Tailwind 原子类或调用处 `className`；细则见 [`docs/design-system-audit.md`](docs/design-system-audit.md) §2。
-- **样式重构强制流程**：凡改 Foundation / typography / shell primitive，**只走** [`docs/foundation/`](docs/foundation/README.md)；未填 runbook 映射表不得写盘。
+- **布局**：间距、栅格、`max-w`、定位等用 Tailwind 原子类或调用处 `className`；细则见 [`docs/foundation/api.md`](docs/foundation/api.md) / [`runbook.md`](docs/foundation/runbook.md)。
+- **样式重构强制流程**：凡改 Foundation / typography / shell primitive，**只走** [`docs/foundation/`](docs/foundation/README.md)；未填 runbook 映射表不得写盘。**当前分支 = baseline**（Figma 正式稿为设计意图）。

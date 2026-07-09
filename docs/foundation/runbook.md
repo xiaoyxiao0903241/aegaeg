@@ -27,7 +27,6 @@
 ## 2. 阶段
 
 ```text
-Phase 0   基线入库（只读）→ docs/baselines/
 P0        Token JSON + 生成 theme.css/tokens.ts（不动 call site）
 P1        Text     — 10 variant × 7 tone
 P2        Card     — 4 surface 无 context
@@ -55,7 +54,7 @@ P8        清债     — 删 dapp-type-scale.ts / 旧 color class / 文档同步
 | Step | 动作 | 产出 |
 |------|------|------|
 | **1** | 公开 API 表 | [`api.md`](./api.md) 对应 § — 键数定死 |
-| **2** | 4175 视觉映射表 | heatmap 红块 / 同位置源码（探针仅确认）+ `rg` 全仓旧 API → 新 prop |
+| **2** | 视觉映射表 | Figma + 当前分支 heatmap 红块 / 同位置源码（探针仅确认）+ `rg` 全仓旧 API → 新 prop |
 | **3** | 样式栈（七维） | 每改动 call site 一张栈表（§4） |
 | **4** | 同 PR 实现 | primitive 收束 + **全仓 call site** |
 | **5** | 双 gate | [`verification.md`](./verification.md) |
@@ -101,7 +100,6 @@ H5: (同上)
 ## 6. MUST NOT（全局）
 
 - `deprecatedAliases` / runtime 旧名映射
-- 无 Phase 0 基线写 P1
 - 无映射表改 primitive
 - 改 `--foreground` 等非 P0 切片凑 parity
 - call site `max-dapp:(text-|font-|leading-|tracking-)`（白名单见 api §8）
@@ -168,25 +166,20 @@ heatmap 红块清单
 Slice: p<N>-<token|text|button|card|chip|input|composite|page|cleanup>
 API: <api.md §N 公开枚举>
 Mapping: N nodes
-Parity: compare:style-baseline PC diff=0 H5 diff=n 或人工对照表确认
+Parity: Figma + 当前分支人工对照表 / heatmap 红块标签
 Call sites: full repo same PR
 Rollback: git revert <sha>
 ```
 
 ---
 
-## 8. Phase 0 / P0 摘要
-
-**Phase 0**
-
-```bash
-pnpm capture:phase0-baseline
-pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
-```
+## 8. P0 摘要
 
 **P0**：`tokens.json` 为源 → 生成 `theme.css` / `tokens.ts`。收敛颜色/字号/间距/圆角/阴影，删除代码臆造 token。不改 call site。
 
 **P1–P8**：见 §2 阶段表。
+
+**Baseline**：当前分支 + Figma 正式稿（Phase0 `docs/baselines/` 已删除）。
 
 ---
 
@@ -201,3 +194,4 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 | v2.3 | §6.1–6.2：红块优先；探针降级为确认工具 |
 | v2.4 | §6.1：CSS 瘦身保留清单（home-motion / wallet / DApp 动效钩子）；tab 守卫合并规则 |
 | v2.5 | §6.1：跨 tab 左卡 / 标题间距 / pill CTA 统一规则 |
+| v2.6 | 当前分支 = baseline；删 Phase0 baselines / 过时文档引用 |

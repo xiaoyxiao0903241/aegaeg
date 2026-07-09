@@ -1,6 +1,7 @@
 # Foundation 公开 API（L2 · 十组件对称 SSOT）
 
-> **流程**：[`runbook.md`](./runbook.md) · **验收**：[`verification.md`](./verification.md) · **设计审计**：[`design-system-audit-v2.md`](./design-system-audit-v2.md)
+> **流程**：[`runbook.md`](./runbook.md) · **验收**：[`verification.md`](./verification.md)  
+> **Baseline**：当前分支 + Figma 正式稿
 >
 > **原则**：每组件 **键数 = 类型字面量数** · **无 alias 层** · **无场景分叉（context）** · Tier B 不进 Text · **细微差异用 className 抹平，不扩轴**
 

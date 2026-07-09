@@ -10,7 +10,7 @@
  *
  * 输出：tmp/visual-diff-audit/<target>.json + summary.json
  *
- * SSOT：docs/visual-parity-workflow.md §4
+ * SSOT：docs/foundation/verification.md
  */
 import { chromium } from '@playwright/test'
 import fs from 'node:fs'

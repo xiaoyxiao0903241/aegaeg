@@ -5,8 +5,8 @@
 > **提取脚本**：[`scripts/extract-figma-design-tokens.py`](../../scripts/extract-figma-design-tokens.py) · **用法审计**：[`scripts/extract-token-usage-audit.py`](../../scripts/extract-token-usage-audit.py) → [`token-usage-audit.json`](./token-usage-audit.json)
 > **不含**：图标 / 图片 asset URL
 >
-> **视觉 SSOT**：画板实节点 + `dev` @ 4175（见 [`docs/foundation/verification.md`](../foundation/verification.md) §5g）。
-> **勿恢复 / 勿参考**已删除的 `AEGIS X · {Color,Layoutjson,Typography,验收规范 Spec}.json`。
+> **视觉 SSOT**：Figma 画板实节点 + **当前分支**（见 [`docs/foundation/`](../foundation/README.md)）。
+> **勿恢复**已删除的口号 Spec JSON / Phase0 baselines。
 
 **清单帧**：31 · **已提取**：31 · **缺失**：0
 

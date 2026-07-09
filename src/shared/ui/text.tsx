@@ -6,7 +6,7 @@ import { cn } from '~/shared/lib/utils'
  * tone = 语义色 | variant = 字阶/角色（字号/行高/字重由 --type-* token 驱动）
  * SSOT：docs/foundation/api.md §2 · 流程：docs/foundation/runbook.md
  *
- * Primitive 只覆盖高频语义；页面/section 用 className 微调（design-system-audit §2）。
+ * Primitive 只覆盖高频语义；页面/section 用 className 微调（foundation/api · runbook）。
  * 10 variant × 7 tone；无 weight prop；无 alias。
  *
  * 若 className 含字号 utility（`text-4xl` / `text-[…]`），视为「显示阶覆盖」：
