@@ -51,7 +51,7 @@ export function AmountBox({
   return (
     <Card as="section" surface="outlined" className={cn(styles.root(), className)}>
       <div className={styles.header()}>
-        <Text as="span" variant="support" tone={labelTone} className={cn(styles.label(), 'leading-normal')}>
+        <Text as="span" variant="support" tone={labelTone} className={styles.label()}>
           {label}
         </Text>
         {balance ? (
@@ -61,7 +61,6 @@ export function AmountBox({
             tone="muted-foreground"
             className={cn(
               styles.balance(),
-              'leading-normal',
               sessionReady && !disabled && 'font-semibold',
             )}
           >

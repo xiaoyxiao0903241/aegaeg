@@ -29,7 +29,7 @@ export function HomePartnersSection() {
           <Card
             as="span"
             surface="outlined"
-            className="inline-flex min-h-12 items-center gap-2.5 rounded-full border border-border bg-card p-0 py-3 pr-7 pl-3 text-sm font-semibold text-muted-foreground shadow-none transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pr-4 max-dapp:pl-3 max-dapp:text-xs"
+            className="inline-flex min-h-12 items-center gap-2.5 rounded-full border border-border bg-card p-0 py-3 pr-7 pl-3 text-sm font-semibold text-muted-foreground shadow-none transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-9 max-dapp:py-1.5 max-dapp:pr-4 max-dapp:text-xs"
             key={name}
           >
             <img

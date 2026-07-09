@@ -123,7 +123,7 @@ export function GenesisPromoCard({
           as="p"
           variant="support"
           tone="inverse-muted"
-          className="m-0 font-normal"
+          className="m-0"
         >
           {body}
         </Text>

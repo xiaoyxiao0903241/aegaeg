@@ -81,7 +81,7 @@ export function HomeFooter() {
           <Text
             as="p"
             tone="inverse-muted"
-            className="m-0 w-full max-w-64 text-sm/normal font-normal max-dapp:max-w-none max-dapp:text-xs"
+            className="m-0 w-full max-w-64 text-sm/normal max-dapp:max-w-none max-dapp:text-xs"
             variant="copy"
           >
             <FooterBrandCopy copy={content.brandCopy} />
@@ -96,7 +96,7 @@ export function HomeFooter() {
             <Text
               as="h3"
               tone="inverse"
-              className="m-0 text-sm leading-[1.2] font-semibold max-dapp:text-xs/normal"
+              className="m-0 text-sm leading-[1.2] max-dapp:text-xs/normal"
               variant="headline"
             >
               {group.label}
@@ -107,7 +107,7 @@ export function HomeFooter() {
                 <Text
                   as="a"
                   tone="inverse-muted"
-                  className="text-sm leading-[1.2] font-normal max-dapp:text-xs/normal"
+                  className="text-sm leading-[1.2] max-dapp:text-xs/normal"
                   href={href}
                   key={`${group.label}-${link.label}`}
                   rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
@@ -126,7 +126,7 @@ export function HomeFooter() {
         as="div"
         tone="inverse-muted"
         variant="caption"
-        className="container flex min-h-4 items-start overflow-hidden text-xs/4 whitespace-nowrap max-dapp:text-xs max-dapp:whitespace-nowrap"
+        className="container flex min-h-4 items-start overflow-hidden text-xs/4 whitespace-nowrap max-dapp:text-xs"
         data-footer-copyright
       >
         {content.copyright}

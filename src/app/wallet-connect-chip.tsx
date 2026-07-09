@@ -109,7 +109,7 @@ function ConnectedWalletChip() {
         <Text
           as="span"
           variant="copy"
-          className="truncate text-xs font-semibold leading-[1.2] tracking-[-0.01em] max-dapp:text-xs"
+          className="truncate text-xs font-semibold leading-[1.2] tracking-[-0.01em]"
         >
           {formatAddress(address)}
         </Text>

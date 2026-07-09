@@ -203,7 +203,7 @@ export function DappTablePagination({
           as="p"
           variant="support"
           tone="muted-foreground"
-          className="m-0 shrink-0 whitespace-nowrap font-normal leading-none"
+          className="m-0 shrink-0 whitespace-nowrap leading-none"
         >
           {t.common.paginationTotal.replace('{total}', formatCount(total))}
         </Text>
@@ -212,7 +212,7 @@ export function DappTablePagination({
             as="p"
             variant="support"
             tone="muted-foreground"
-            className="m-0 min-w-0 whitespace-nowrap font-normal leading-none"
+            className="m-0 min-w-0 whitespace-nowrap leading-none"
           >
             {summary}
           </Text>
@@ -225,7 +225,7 @@ export function DappTablePagination({
             as="span"
             variant="support"
             tone="muted-foreground"
-            className="whitespace-nowrap font-normal leading-none"
+            className="whitespace-nowrap leading-none"
           >
             {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
           </Text>

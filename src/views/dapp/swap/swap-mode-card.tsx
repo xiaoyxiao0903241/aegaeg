@@ -36,7 +36,7 @@ export function SwapModeCard({
         <Card.Header className="flex-row items-center gap-1.5">
           <Card.Label
             as="span"
-            className="font-semibold leading-normal text-foreground"
+            className="font-semibold text-foreground"
           >
             {title}
           </Card.Label>
@@ -57,7 +57,7 @@ export function SwapModeCard({
             </span>
           ) : null}
         </Card.Header>
-        <Text as="p" variant="copy" tone="muted-foreground" className="m-0 leading-normal">
+        <Text as="p" variant="copy" tone="muted-foreground" className="m-0">
           {body}
         </Text>
       </Card.Content>

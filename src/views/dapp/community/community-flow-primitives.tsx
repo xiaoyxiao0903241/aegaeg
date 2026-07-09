@@ -6,7 +6,7 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn, resolveNavigableHref } from '~/shared/lib/utils'
 
 export const communityProgramGrid = tv({
-  base: cn('grid grid-cols-2 gap-2', 'max-dapp:grid-cols-1 max-dapp:gap-2'),
+  base: cn('grid grid-cols-2 gap-2', 'max-dapp:grid-cols-1'),
 })
 
 /** Community program card — elevated, coral accent. */

@@ -58,7 +58,7 @@ function Description({ className, ...props }: Omit<TextProps, 'variant' | 'tone'
     <Text
       variant="support"
       tone="muted-foreground"
-      className={cn('m-0 leading-normal', className)}
+      className={cn('m-0', className)}
       {...props}
     />
   )
@@ -75,7 +75,7 @@ function Footer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 /** Tier B · metric / meta 行标签（Figma 12px support） */
 function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
   return (
-    <Text variant="support" tone="foreground" className={cn('leading-normal', className)} {...props} />
+    <Text variant="support" tone="foreground" className={className} {...props} />
   )
 }
 

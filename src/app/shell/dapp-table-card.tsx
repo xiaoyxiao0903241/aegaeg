@@ -14,10 +14,9 @@ const dappTableCard = tv({
   slots: {
     shell: 'overflow-hidden rounded-2xl border-0 p-0',
     header:
-      'dapp:px-4 dapp:pt-3.5 dapp:pb-2.5 max-dapp:px-3.5 max-dapp:pt-3.5 max-dapp:pb-2.5 border-b border-border/50',
-    content: 'dapp:px-4 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5',
-    contentBelowHeader:
-      'dapp:px-4 dapp:pb-1.5 dapp:pt-0 max-dapp:px-3.5 max-dapp:pb-1.5 max-dapp:pt-0',
+      'px-4 pt-3.5 pb-2.5 max-dapp:px-3.5 border-b border-border/50',
+    content: 'px-4 py-1.5 max-dapp:px-3.5',
+    contentBelowHeader: 'px-4 pt-0 pb-1.5 max-dapp:px-3.5',
     footer:
       'dapp:px-4 dapp:py-3 max-dapp:px-3.5 max-dapp:py-2.5 relative z-10 overflow-visible rounded-b-2xl border-t border-border/50 bg-card',
   },

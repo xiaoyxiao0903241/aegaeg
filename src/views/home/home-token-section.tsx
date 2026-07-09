@@ -74,7 +74,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
       <div className="absolute left-6 top-40 z-1 flex w-full max-w-60 flex-col gap-1.5 max-dapp:static max-dapp:w-full max-dapp:max-w-none">
         <Text
           as="h3"
-          className="m-0 text-2xl leading-[1.3] tracking-[-0.03em] text-white max-dapp:mt-0.5 max-dapp:text-xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.03em]"
+          className="m-0 text-2xl leading-[1.3] tracking-[-0.03em] text-white max-dapp:mt-0.5 max-dapp:text-xl max-dapp:leading-[1.2]"
           variant="headline"
         >
           {token.symbol}
@@ -88,7 +88,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         </Text>
         <Text
           as="p"
-          className="w-full max-w-60 text-sm font-normal text-white max-dapp:max-w-none max-dapp:text-xs"
+          className="w-full max-w-60 text-sm text-white max-dapp:max-w-none max-dapp:text-xs"
           variant="copy"
         >
           {token.description}

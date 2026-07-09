@@ -188,8 +188,8 @@ export function SwapPromoCard({
               className={cn(
                 styles.title(),
                 layout === 'desktop'
-                  ? 'text-base/normal font-semibold'
-                  : 'text-sm leading-[1.2] font-semibold',
+                  ? 'text-base/normal'
+                  : 'text-sm leading-[1.2]',
               )}
             >
               {title}

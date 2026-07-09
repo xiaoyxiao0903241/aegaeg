@@ -83,7 +83,7 @@ export function HomeRoadmapSection() {
               <div className="flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start">
                 <Text
                   as="span"
-                  className="text-xs leading-[1.2] font-semibold normal-case dapp:leading-normal"
+                  className="text-xs leading-[1.2] normal-case dapp:leading-normal"
                   tone={phase.state ? 'primary' : 'muted-foreground'}
                   variant="eyebrow"
                 >
@@ -92,7 +92,7 @@ export function HomeRoadmapSection() {
                 {phase.state === 'current' ? (
                   <Text
                     as="em"
-                    className="rounded-3xl bg-primary px-2 py-0.5 text-xs font-semibold not-italic dapp:px-2.5 dapp:py-0.5"
+                    className="rounded-3xl bg-primary px-2 py-0.5 text-xs font-semibold not-italic dapp:px-2.5"
                     tone="inverse"
                     variant="copy"
                   >
@@ -101,7 +101,7 @@ export function HomeRoadmapSection() {
                 ) : null}
                 <Text
                   as="time"
-                  className="ml-auto text-xs leading-[1.2] font-semibold dapp:leading-[1.4]"
+                  className="ml-auto text-xs leading-[1.2] dapp:leading-[1.4]"
                   tone={phase.state === 'current' ? 'primary' : 'muted-foreground'}
                   variant="eyebrow"
                 >
@@ -110,7 +110,7 @@ export function HomeRoadmapSection() {
               </div>
               <Text
                 as="h3"
-                className="mt-1.5 text-base leading-[1.2] font-semibold tracking-[-0.04em] dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.04em]"
+                className="mt-1.5 text-base leading-[1.2] tracking-[-0.04em] dapp:mt-2 dapp:text-lg dapp:leading-[1.4]"
                 tone="foreground"
                 variant="headline"
               >
@@ -118,7 +118,7 @@ export function HomeRoadmapSection() {
               </Text>
               <Text
                 as="p"
-                className="mt-1.5 text-xs leading-[1.4] font-normal dapp:mt-2"
+                className="mt-1.5 text-xs leading-[1.4] dapp:mt-2"
                 tone="muted-foreground"
                 variant="copy"
               >

@@ -32,7 +32,7 @@ export const inputVariants = tv({
     {
       variant: ['default', 'numeric'],
       size: 'sm',
-      class: 'px-3 py-2 text-(length:--type-copy-size)',
+      class: 'px-3 py-2',
     },
     {
       variant: ['default', 'numeric'],
