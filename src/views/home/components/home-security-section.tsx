@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { homeAssets } from '~/views/home/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
@@ -63,7 +64,7 @@ export function HomeSecuritySection() {
           {content.checks.map((check, index) => (
             <Card
               className={cn(
-                'flex min-h-[3.8125rem] items-center gap-3.5 px-5.5 py-5 text-[0.9375rem] font-medium leading-[1.4] text-foreground shadow-card transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-[1.125rem] max-dapp:py-4 max-dapp:text-sm max-dapp:leading-[1.2]',
+                'flex min-h-[3.8125rem] items-center gap-3.5 px-5.5 py-5 shadow-card transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-[1.125rem] max-dapp:py-4',
                 (index === 0 || index === content.checks.length - 1) &&
                   'max-dapp:min-h-[4.125rem]',
               )}
@@ -72,7 +73,7 @@ export function HomeSecuritySection() {
               key={check}
               style={{ '--security-index': index } as CSSProperties}
             >
-              <span className="grid size-[var(--home-security-icon-wrap-size)] shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-xs text-primary max-dapp:size-[var(--home-security-icon-wrap-size-h5)] max-dapp:rounded-xl">
+              <span className="grid size-[var(--home-security-icon-wrap-size)] shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-primary max-dapp:size-[var(--home-security-icon-wrap-size-h5)] max-dapp:rounded-xl">
                 <img
                   className="size-[var(--home-security-icon-size)] object-contain"
                   src={homeAssets.securityCheck}
@@ -82,7 +83,13 @@ export function HomeSecuritySection() {
                   loading="lazy"
                 />
               </span>
-              {check}
+              <Text
+                as="span"
+                variant="detail"
+                className="font-medium leading-[1.4] max-dapp:text-sm max-dapp:leading-[1.2]"
+              >
+                {check}
+              </Text>
             </Card>
           ))}
         </div>

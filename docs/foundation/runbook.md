@@ -39,8 +39,10 @@ Risk: …
 ## 3. 全站文本
 
 - 用户可见文案 **必须** `<Text variant tone>`。
-- `Button` / `Chip` 内字由自身 typography 管。
+- `Button` / `Chip` 内字由自身 typography 管（含 `asChild` 链）。
 - 布局-only 用 `div` / `section`，禁止平行 typography wrapper。
+- **`shell-layout.ts` 禁止字阶**：只留布局 / 色 / 间距；`text-*` / `font-*` / `leading-*` / `tracking-*` 不得进 shell class。
+- **禁止组件硬编码**：`text-[Npx]`、`tracking-[Npx]`、`max-w-[Nch]`、组件内 `#hex` / `rgb()`（色进 `tokens.json` 或 engineering `:root`；字距用 em 或 `--type-*-tracking`）。
 
 ---
 

@@ -64,7 +64,7 @@ export type TextVariant = keyof typeof textVariants.variants.variant
 export type TextTone = keyof typeof toneClass
 
 export type TextProps = HTMLAttributes<HTMLElement> & {
-  as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'strong' | 'a' | 'small' | 'em' | 'b' | 'div' | 'time'
+  as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'strong' | 'a' | 'small' | 'em' | 'b' | 'div' | 'time' | 'label'
   children: ReactNode
   href?: string
   rel?: string

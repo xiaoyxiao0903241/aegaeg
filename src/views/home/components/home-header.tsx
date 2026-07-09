@@ -24,11 +24,11 @@ export function HomeHeader() {
       aria-label="Primary navigation"
     >
       <div className="container flex h-18 items-center justify-between gap-6 max-dapp:min-h-14 max-dapp:flex-nowrap max-dapp:gap-3">
-        <a
-          className="inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-normal text-foreground max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2]"
-          href="#top"
-          aria-label="AEGIS X home"
-        >
+          <a
+            className="inline-flex items-center gap-2.5 whitespace-nowrap max-dapp:gap-2"
+            href="#top"
+            aria-label="AEGIS X home"
+          >
           <img
             className="h-7 w-7 object-contain max-dapp:h-5.5 max-dapp:w-6"
             src={homeAssets.logoMark}
@@ -42,30 +42,41 @@ export function HomeHeader() {
           </Text>
         </a>
         <nav
-          className="flex items-center gap-8 whitespace-nowrap text-sm font-medium text-muted-foreground max-tablet:hidden [&_a]:transition-[color,transform] [&_a]:duration-180 [&_a]:ease-out [&_a:hover]:-translate-y-px [&_a:hover]:text-foreground"
+          className="flex items-center gap-8 whitespace-nowrap max-tablet:hidden [&_a]:transition-[color,transform] [&_a]:duration-180 [&_a]:ease-out [&_a:hover]:-translate-y-px [&_a:hover]:text-foreground"
           aria-label={content.sectionsLabel}
         >
           {content.links.map((link) => (
-            <a href={link.href} key={link.href}>
+            <Text
+              as="a"
+              href={link.href}
+              key={link.href}
+              variant="detail"
+              tone="muted-foreground"
+              className="text-sm font-medium"
+            >
               {link.label}
-            </a>
+            </Text>
           ))}
         </nav>
         <div className="flex items-center gap-3.5 max-dapp:w-auto max-dapp:justify-end max-dapp:gap-2.5">
-          <a
-            className="inline-flex min-h-9.5 cursor-pointer items-center justify-center rounded-full border border-border bg-transparent px-4.5 text-sm font-semibold leading-none tracking-normal whitespace-nowrap text-foreground transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out hover:border-coral-hover-border focus-visible:border-coral-hover-border hover:opacity-[0.96] hover:shadow-card focus-visible:opacity-[0.96] focus-visible:shadow-card visited:text-foreground hover:text-foreground focus-visible:text-foreground max-dapp:!hidden"
+          <Text
+            as="a"
+            className="inline-flex min-h-9.5 cursor-pointer items-center justify-center rounded-full border border-border bg-transparent px-4.5 text-sm font-semibold leading-none tracking-normal whitespace-nowrap transition-[box-shadow,border-color,background-color,opacity,color] duration-180 ease-out hover:border-coral-hover-border focus-visible:border-coral-hover-border hover:opacity-[0.96] hover:shadow-card focus-visible:opacity-[0.96] focus-visible:shadow-card visited:text-foreground hover:text-foreground focus-visible:text-foreground max-dapp:!hidden"
             href={notionLinks.whitepaper}
             rel="noopener noreferrer"
             target="_blank"
+            variant="detail"
           >
             {content.whitepaper}
-          </a>
-          <a
+          </Text>
+          <Text
+            as="a"
             className="aegis-thirdweb-button aegis-thirdweb-button-primary"
             href={appHref}
+            variant="detail"
           >
             {content.enterApp}
-          </a>
+          </Text>
           <LanguageMenu
             checkIcon={dappAssets.check}
             globeIcon={homeAssets.globe}

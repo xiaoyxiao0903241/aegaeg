@@ -60,7 +60,7 @@ export function HomeFooter() {
           data-footer-brand
         >
           <a
-            className="inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-semibold tracking-[-0.36px] leading-none text-primary-foreground max-dapp:gap-2 max-dapp:text-base max-dapp:leading-[1.2] [&_img]:h-6"
+            className="inline-flex items-center gap-2.5 whitespace-nowrap max-dapp:gap-2 [&_img]:h-6"
             href="#top"
           >
             <img
@@ -74,7 +74,7 @@ export function HomeFooter() {
               as="span"
               variant="brand"
               tone="inverse"
-              className="text-lg max-dapp:text-base max-dapp:leading-[1.2]"
+              className="text-lg leading-none tracking-[-0.02em] max-dapp:text-base max-dapp:leading-[1.2]"
             >
               AEGIS X
             </Text>
@@ -97,7 +97,7 @@ export function HomeFooter() {
             <Text
               as="h3"
               tone="inverse"
-              className="m-0 text-sm font-semibold leading-[1.2] tracking-[0.56px] max-dapp:text-xs max-dapp:leading-[1.5]"
+              className="m-0 text-sm font-semibold leading-[1.2] tracking-[0.04em] max-dapp:text-xs max-dapp:leading-[1.5]"
               variant="headline"
             >
               {group.label}

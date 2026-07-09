@@ -1,18 +1,19 @@
 import { type ReactNode } from 'react'
 import { StatusBadge } from '~/shared/ui/badge'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 import { TableRowSkeleton } from '~/app/shell/components/dapp-skeleton'
 import { dappTableCell } from '~/app/shell/components/dapp-table-card'
 
 const tableCell = dappTableCell()
+/** Cell chrome only — copy type owned by <Text variant="copy">. */
 const TABLE_CELL =
-  `${tableCell.minWidth()} ${tableCell.border()} px-3 py-2.5 text-left whitespace-nowrap font-normal text-sm tracking-[-0.02em] max-dapp:px-2.5 max-dapp:py-2 max-dapp:text-xs max-dapp:leading-normal`
+  `${tableCell.minWidth()} ${tableCell.border()} px-3 py-2.5 text-left whitespace-nowrap max-dapp:px-2.5 max-dapp:py-2`
 
 /** SSOT ≡ Community「我的社区成员」表头 — muted only; no tab-specific faint override. */
-const TABLE_HEAD_CELL = cn(TABLE_CELL, 'text-muted-foreground')
+const TABLE_HEAD_CELL = cn(TABLE_CELL)
 
-const TABLE_CLASS =
-  'w-max min-w-full table-auto border-collapse text-sm leading-normal max-dapp:text-xs'
+const TABLE_CLASS = 'w-max min-w-full table-auto border-collapse'
 
 const HIGHLIGHTED_ROW =
   'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td:first-child]:text-primary [&_td.text-success]:text-success'
@@ -62,7 +63,14 @@ export function ResponsiveTable({
           <tr>
             {headers.map((header) => (
               <th className={TABLE_HEAD_CELL} key={header}>
-                {header}
+                <Text
+                  as="span"
+                  variant="copy"
+                  tone="muted-foreground"
+                  className="max-dapp:text-xs max-dapp:leading-normal"
+                >
+                  {header}
+                </Text>
               </th>
             ))}
           </tr>
@@ -86,19 +94,37 @@ export function ResponsiveTable({
                       className={cn(
                         TABLE_CELL,
                         rowIndex === rows.length - 1 && 'border-b-0',
-                        'text-foreground',
-                        linkColumns.includes(index) && 'text-primary',
-                        emphasisColumns.includes(index) && 'font-bold text-foreground',
-                        positiveColumns.includes(index) &&
+                        typeof cell !== 'string' &&
+                          typeof cell !== 'number' &&
+                          !statusColumns.includes(index) &&
                           cn(
-                            'font-bold text-success',
-                            'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+                            linkColumns.includes(index) && 'text-primary',
+                            emphasisColumns.includes(index) && 'font-bold text-foreground',
+                            positiveColumns.includes(index) &&
+                              cn(
+                                'font-bold text-success',
+                                'group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+                              ),
                           ),
                       )}
                       key={`${rowIndex}-${index}`}
                     >
                       {statusColumns.includes(index) ? (
                         <StatusBadge>{cell}</StatusBadge>
+                      ) : typeof cell === 'string' || typeof cell === 'number' ? (
+                        <Text
+                          as="span"
+                          variant="copy"
+                          className={cn(
+                            'max-dapp:text-xs max-dapp:leading-normal',
+                            linkColumns.includes(index) && 'text-primary',
+                            emphasisColumns.includes(index) && 'font-bold',
+                            positiveColumns.includes(index) &&
+                              'font-bold text-success group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+                          )}
+                        >
+                          {cell}
+                        </Text>
                       ) : (
                         cell
                       )}

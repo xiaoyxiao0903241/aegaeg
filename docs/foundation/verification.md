@@ -43,6 +43,9 @@ pnpm exec eslint <paths>
 | FAQ / Collapsible / Pagination | §5ad · §5ag · §5ah · §5ai |
 | CommunityProgramCard coral | §5al |
 | Text tracking（panel/section） | §5am |
+| Text wrap + shell-layout 去字阶 | §5an |
+| CommunityProgramCard fluid | §5ao |
+| 去硬编码 px tracking / ch / rays hex | §5ap |
 | 分页 Figma | §5u |
 | Card / Metric / dark banner | §5m–§5o |
 
@@ -494,6 +497,40 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | copy/detail/caption 等保持 `-0.02em` | INTENTIONAL | 已对齐稿面；非偏宽根因 |
 | Input / Button 内 `tracking-normal` | INTENTIONAL | 控件 chrome；不跟正文 token |
 
+## 5an. 全站 Text 包裹 + shell-layout 去平行字阶（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `shellRailItemClass` 去掉 `text-xs/font/leading/tracking` | REGRESSION→fixed | 布局+色 only；字阶在 rail `Text` |
+| auth-prompt / connect-promo → `Text` | REGRESSION→fixed | 禁裸 `<p>`/`<strong>` 自管字阶 |
+| collapsible title | INTENTIONAL | `DappSection` 已 `<Text section>`；内层 span 仅布局 |
+| `ResponsiveTable` / `DataTable` 表头与标量 cell → `Text copy` | REGRESSION→fixed | th/td chrome 不带 type scale |
+| swap-program-card / language trigger / wallet chip → `Text` | REGRESSION→fixed | |
+| Home header nav·CTA / hero eyebrow / security checks → `Text` | REGRESSION→fixed | brand 链布局壳保留；字在 `Text` |
+| `Text as="label"` | INTENTIONAL | form a11y（slippage sr-only） |
+| Button `asChild` 内链文案 | INTENTIONAL | Button 自管字阶（runbook §3） |
+| MetaList label 内联 tooltip 文案 | INTENTIONAL | 外层 `Text detail` 已包；内层勿叠 |
+
+## 5ao. CommunityProgramCard 去 px / ch 锁（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 去掉 `text-[11px]`/`[13px]`/`max-w-[38ch]` | REGRESSION→fixed | 高分屏 `site-fluid` 下 px 不随根 rem；ch 限宽挤窄 |
+| 字阶改走 Text eyebrow/headline/copy token | INTENTIONAL | ≡ Figma 11/16/13 @16px；fluid 时同比放大 |
+| CTA 进 `Text copy` + coral | INTENTIONAL | 与正文同 token；禁 action 手写 px |
+| 去 `overflow-hidden` | INTENTIONAL | 避免 fluid 后裁切；卡高随内容 |
+
+## 5ap. 去硬编码 px tracking / ch / rays hex（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 全仓 `tracking-[…px]` → `em` 或删（跟 Text token） | REGRESSION→fixed | px 不随 `site-fluid`；相对字号用 em |
+| 去掉 `max-w-[24\|34\|70ch]` | REGRESSION→fixed | 禁 ch 锁宽；布局用 max-w-none / 容器 |
+| hero-rays `#8a8f98`/`#868b94` → `--hero-rays-*` | REGRESSION→fixed | engineering vars in generate-tokens |
+| Rewards/Genesis `text-[1.125rem]`/`[0.875rem]` → type token / brand | REGRESSION→fixed | 禁 rem 字号字面量盖 Text |
+| security check `text-[0.9375rem]` → detail token | REGRESSION→fixed | |
+| `theme.ts` / wallet CSS oklch | DEFER | thirdweb + chrome；另切片收束到 tokens |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -541,3 +578,6 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.39 | 当前分支 = baseline；删过时文档 / Phase0 baselines / archive |
 | v3.0 | 规范收束：双 gate + 日常命令 + 切片索引前置；历史 §5* 仅作回归记忆；对齐 runbook/api v3.0 |
 | v3.1 | §5am Text tracking：panel/section → `-0.04em`；去 meta/table `tracking-normal` |
+| v3.2 | §5an 全站 Text 包裹；`shell-layout` 去平行字阶 |
+| v3.3 | §5ao CommunityProgramCard：去 px/ch 锁，跟 site-fluid |
+| v3.4 | §5ap 去硬编码 px tracking / ch / hero-rays hex |

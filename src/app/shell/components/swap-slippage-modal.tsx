@@ -86,9 +86,9 @@ export function SwapSlippageModal({
 
       <div className="grid gap-4">
         <div className="grid gap-2">
-          <label className="sr-only" htmlFor="swap-slippage-input">
+          <Text as="label" className="sr-only" htmlFor="swap-slippage-input" variant="copy">
             {t.swap.slippage}
-          </label>
+          </Text>
           <div className="flex h-11 items-center justify-between rounded-sm border border-border bg-card px-3.5">
             <Input
               variant="default"

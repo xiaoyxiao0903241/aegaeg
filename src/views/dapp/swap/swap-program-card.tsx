@@ -1,6 +1,7 @@
 import { swapHubAssets } from '~/app/assets'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
 /** Layout only — chrome from Card `elevated` (shadow-card / rounded-md). Pad `p-4` INTENTIONAL vs elevated `p-3.5`. */
@@ -31,12 +32,16 @@ const swapProgramCardBody = tv({
 function ProgramCardCopy({ body, title }: { body: string; title: string }) {
   return (
     <span className="grid min-w-0 gap-1 text-left">
-      <strong className="text-[length:var(--type-copy-size)] font-semibold leading-[1.3] tracking-[0.08em] text-foreground">
+      <Text
+        as="strong"
+        variant="copy"
+        className="font-semibold leading-[1.3] tracking-[0.08em]"
+      >
         {title}
-      </strong>
-      <span className="text-[length:var(--type-copy-size)] font-normal leading-[1.3] text-muted-foreground">
+      </Text>
+      <Text as="span" variant="copy" tone="muted-foreground" className="leading-[1.3]">
         {body}
-      </span>
+      </Text>
     </span>
   )
 }

@@ -153,7 +153,7 @@ export function DappRail({
                 tone={active ? 'primary' : 'muted-foreground'}
                 className={cn(
                   mobile ? shellRailRowLabelClass : shellRailLabelClass,
-                  // Match button type scale (12/400/snug/tight); strip caption 10/500 tokens.
+                  // Rail label lock: 12/400/snug/tight (not caption 10/500).
                   'text-xs font-normal leading-snug tracking-tight',
                 )}
                 title={label}

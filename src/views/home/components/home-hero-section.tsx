@@ -59,11 +59,13 @@ export function HomeHeroSection() {
           data-hero-enter
         >
           <div
-            className="inline-flex min-h-8 w-max max-w-full items-center gap-2 whitespace-nowrap rounded-3xl border border-border bg-card px-4 py-2 text-xs font-semibold leading-[1.2] max-tablet:mx-auto max-dapp:min-h-7 max-dapp:gap-1.5 max-dapp:px-3.5 max-dapp:py-1.5 max-narrow:whitespace-normal max-narrow:text-left"
+            className="inline-flex min-h-8 w-max max-w-full items-center gap-2 whitespace-nowrap rounded-3xl border border-border bg-card px-4 py-2 max-tablet:mx-auto max-dapp:min-h-7 max-dapp:gap-1.5 max-dapp:px-3.5 max-dapp:py-1.5 max-narrow:whitespace-normal max-narrow:text-left"
             data-hero-line="eyebrow"
           >
             <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-success" />
-            {content.eyebrow}
+            <Text as="span" variant="caption" className="text-xs font-semibold leading-[1.2]">
+              {content.eyebrow}
+            </Text>
           </div>
           <Text
             as="h1"

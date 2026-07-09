@@ -51,6 +51,7 @@
 
 **字距（Figma Genesis `31:2`）**：正文档（caption/copy/detail/…）**-0.02em**；`section`/`panel` 标题 **-0.04em**（≡ 18→`-0.72px`、21→`-0.84px`）；`headline` **-0.03em**；`eyebrow` **+0.08em**。禁 call site `tracking-normal` 抹平正文/标题字距（Input/Button 控件内文除外）。
 
+**可选 `as`**：含 `label`（form a11y，如 sr-only）。
 **禁止**：`weight` prop · `panel-title` / `table-cell` / `on-dark` · `deprecatedAliases`
 **className 显示阶覆盖**：若 `className` 含字号 utility（`text-xs`…`text-9xl` / `text-[…]`，含 `max-*:text-*` / `!text-*`），`Text` 剥掉 size / leading / tracking type token，**保留** `font-[var(--type-*-weight)]`（call site 通常只覆盖字号/行高）。避免残留 tracking 把标题挤窄，同时不丢 variant 字重。
 **依赖**：Token（§1）
@@ -178,7 +179,7 @@
 
 **内部约定**：
 - `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron：固定 path + CSS `.faq-chevron`（`[data-faq-item][data-state=open]` → `rotate(180deg)` + `color: var(--primary)`；关态 `foreground@40%`）；禁换 path / 禁 React 条件 class 切旋转。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
-- `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · label `11`/`tracking-[0.88px]`/`normal-case`/`text-coral` · title `16`/`-0.48px` · body/cta `13px` · CTA `text-coral` semibold（accent = `#c85c3f`，**≠** `primary`；禁 H5 平行字阶）。
+- `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。

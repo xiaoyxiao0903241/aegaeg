@@ -203,7 +203,9 @@ function NativeLanguageMenu({
           role="button"
         >
           <img src={globeIcon} alt="" className="size-4 shrink-0" />
-          <span>{triggerLabel ?? activeOption?.code}</span>
+          <Text as="span" variant="copy" className="text-sm font-semibold leading-none">
+            {triggerLabel ?? activeOption?.code}
+          </Text>
         </summary>
 
         <div className={cn(languagePanelClass, menuClassName)} role="menu">
@@ -302,7 +304,9 @@ function ReactLanguageMenu({
         type="button"
       >
         <img src={globeIcon} alt="" className="size-4 shrink-0" />
-        <span>{triggerLabel ?? activeOption?.code}</span>
+        <Text as="span" variant="copy" className="text-sm font-semibold leading-none">
+          {triggerLabel ?? activeOption?.code}
+        </Text>
       </button>
 
       <div

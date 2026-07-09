@@ -29,21 +29,25 @@ export type DataTableProps<T> = {
 }
 
 const TABLE_CELL = cn(
-  'px-3 py-2.5 text-left whitespace-nowrap font-normal',
-  'text-[length:var(--type-copy-size)] leading-[var(--type-copy-leading)] tracking-[var(--type-copy-tracking)]',
+  'px-3 py-2.5 text-left whitespace-nowrap',
   'border-b-[0.5px] border-border',
   'max-dapp:px-2.5 max-dapp:py-2',
 )
 
-const TABLE_HEAD_CELL = cn(
-  TABLE_CELL,
-  'text-muted-foreground',
-)
+const TABLE_HEAD_CELL = cn(TABLE_CELL)
 
-const TABLE_CLASS = cn(
-  'w-max min-w-full table-auto border-collapse',
-  'text-[length:var(--type-copy-size)] leading-[var(--type-copy-leading)]',
-)
+const TABLE_CLASS = cn('w-max min-w-full table-auto border-collapse')
+
+function renderDataTableCell(value: ReactNode) {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return (
+      <Text as="span" variant="copy">
+        {value}
+      </Text>
+    )
+  }
+  return value
+}
 
 export const DataTable = forwardRef(function DataTable<T extends Record<string, ReactNode>>(
   {
@@ -85,7 +89,13 @@ export const DataTable = forwardRef(function DataTable<T extends Record<string, 
                       col.align === 'right' && 'text-right',
                     )}
                   >
-                    {col.header}
+                    {typeof col.header === 'string' || typeof col.header === 'number' ? (
+                      <Text as="span" variant="copy" tone="muted-foreground">
+                        {col.header}
+                      </Text>
+                    ) : (
+                      col.header
+                    )}
                   </th>
                 ))}
               </tr>
@@ -119,7 +129,9 @@ export const DataTable = forwardRef(function DataTable<T extends Record<string, 
                             col.align === 'right' && 'text-right',
                           )}
                         >
-                          {col.accessor ? col.accessor(row, rowIndex) : row[col.key]}
+                          {renderDataTableCell(
+                            col.accessor ? col.accessor(row, rowIndex) : row[col.key],
+                          )}
                         </td>
                       ))}
                     </tr>
