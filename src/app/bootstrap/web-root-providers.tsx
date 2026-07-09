@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 import { AutoConnect, ThirdwebProvider } from '~/views/dapp/web3/thirdweb-react'
-import { thirdwebClient, warnMissingWeb3EnvConfigOnce } from '~/views/dapp/web3/thirdweb'
+import { thirdwebClient, assertWeb3EnvConfigured } from '~/views/dapp/web3/thirdweb'
 import { AuthProvider } from '~/app/bootstrap/auth-provider'
 import { AccountBannedNotifier } from '~/shared/ui/account-banned-notifier'
 import { QueryProvider } from '~/app/bootstrap/query-provider'
 import { TooltipProvider } from '~/shared/ui/tooltip'
 
 /**
- * Shared provider stack for Home + DApp entry points.
+ * DApp-only provider stack (`app.html` / `src/app/main.tsx`).
+ * Home uses `HomeProviders` (Query only — no thirdweb).
  *
  * QueryProvider MUST sit INSIDE ThirdwebProvider. thirdweb's ThirdwebProvider
  * mounts its own QueryClientProvider; if ours were the outer one it would be
@@ -20,7 +21,7 @@ import { TooltipProvider } from '~/shared/ui/tooltip'
  */
 export function WebRootProviders({ children }: { children: ReactNode }) {
   useEffect(() => {
-    warnMissingWeb3EnvConfigOnce()
+    assertWeb3EnvConfigured()
   }, [])
 
   return (

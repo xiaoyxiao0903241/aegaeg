@@ -27,25 +27,35 @@ export const walletConnectProjectId = appEnv.walletConnectProjectId
 
 let web3EnvWarningsLogged = false
 
-/** DEV：缺失 Web3 环境变量时提示一次（避免模块加载即刷屏）。 */
-export function warnMissingWeb3EnvConfigOnce() {
-  if (web3EnvWarningsLogged || !import.meta.env.DEV) {
-    return
-  }
-  web3EnvWarningsLogged = true
+const THIRDWEB_SETUP_HINT = [
+  '未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
+  '1. 复制 .env.example 为 .env',
+  '2. 在 https://thirdweb.com/dashboard/settings/api-keys 创建 Client ID',
+  '3. 写入 VITE_THIRDWEB_CLIENT_ID=你的ClientId',
+  '4. 重启 pnpm dev',
+].join('\n')
 
-  if (!isThirdwebConfigured) {
-    console.error(
-      [
-        '未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
-        '1. 复制 .env.example 为 .env',
-        '2. 在 https://thirdweb.com/dashboard/settings/api-keys 创建 Client ID',
-        '3. 写入 VITE_THIRDWEB_CLIENT_ID=你的ClientId',
-        '4. 重启 pnpm dev',
-      ].join('\n'),
+/**
+ * Production boot: require an explicit `VITE_THIRDWEB_CLIENT_ID` (not only the code fallback).
+ * Dev: log once so local work is not blocked.
+ */
+export function assertWeb3EnvConfigured() {
+  const fromEnv = typeof import.meta.env.VITE_THIRDWEB_CLIENT_ID === 'string'
+    ? import.meta.env.VITE_THIRDWEB_CLIENT_ID.trim()
+    : ''
+
+  if (import.meta.env.PROD && !fromEnv) {
+    throw new Error(
+      'VITE_THIRDWEB_CLIENT_ID is required in production builds. Set it in .env before `pnpm build`.',
     )
   }
 
+  if (web3EnvWarningsLogged || !import.meta.env.DEV) return
+  web3EnvWarningsLogged = true
+
+  if (!fromEnv) {
+    console.error(THIRDWEB_SETUP_HINT)
+  }
 }
 
 export const walletConnectConfig = { projectId: walletConnectProjectId }

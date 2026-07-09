@@ -5,13 +5,20 @@ function readString(key: keyof ImportMetaEnv, fallback = ''): string {
 
 const EVM_ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/
 
-/** Env override for `0x` addresses; invalid or missing values use `fallback`. */
+/**
+ * Env override for `0x` addresses.
+ * Missing → `fallback`. Present but invalid → throw (misconfiguration must not silently ship).
+ */
 export function readEnvAddress(
   key: keyof ImportMetaEnv,
   fallback: `0x${string}`,
 ): `0x${string}` {
   const raw = readString(key)
-  return EVM_ADDRESS_RE.test(raw) ? (raw as `0x${string}`) : fallback
+  if (!raw) return fallback
+  if (!EVM_ADDRESS_RE.test(raw)) {
+    throw new Error(`Invalid ${String(key)} address: ${raw}`)
+  }
+  return raw as `0x${string}`
 }
 
 function readNumber(key: keyof ImportMetaEnv, fallback: number): number {
