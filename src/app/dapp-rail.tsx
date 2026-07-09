@@ -32,9 +32,7 @@ function useRailTooltips(activeTab: DappTab) {
 
   return useMemo(
     () => ({
-      swap: rateLabel
-        ? `${t.swap.settlementValue}`
-        : t.swap.intro,
+      swap: t.swap.intro,
       genesis: formatGenesisSeasonIntro(
         t.genesis.intro,
         genesis.activeSeasonNumber,
