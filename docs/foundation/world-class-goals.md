@@ -57,15 +57,39 @@
 ## 4. 推进顺序（自主重构时遵守）
 
 ```text
-1. 共享 chrome 回归清零（topbar / lang / rail / heading）← 已收
-2. Swap 子页 Convert/Trade heatmap 红块 ← 主 REGRESSION 已收（pill / TokenChip / rate）
-3. Genesis / Rewards / Community 剩余 REGRESSION（不动 Community 左 padding）← Community 主项已收；Rewards 多为 IGNORE
-4. Home header 与 DApp chrome 对齐（语言按钮、brand 走 Text）
-5. 硬编码色/尺寸清扫 + 全站 Text 覆盖审计
-6. P8 删 legacy theme 块与死 alias + 结构债（dappPanelTitleClassName 等）
+Phase V — 视觉对齐（本切片 · 先于清债）
+  V0  矩阵截图：未登录 × 登录 × 全滚动（左栏+右栏）
+  V1  共享 chrome（两态）
+  V2  Swap hub + Convert + Trade（两态 · 全滚动）
+  V3  Genesis / Rewards / Community（两态 · 全滚动；Community 左 padding 锁定）
+  V4  Home（若纳入本轮）
+  每步：红块清单 → 源码根因 → 修 REGRESSION → 重跑该页
+
+Phase T — 技术债（视觉收敛后再开）
+  T1  Home brand / 语言走 Text
+  T2  硬编码色清扫 + Text 覆盖审计
+  T3  Class/CSS 减法（dappPanelTitleClassName 等）
+  T4  P8 legacy theme / 死 alias
 ```
 
 每步：**heatmap 红块** → 源码根因 → 最小闭环 → 需要时 scoped 探针 → commit。
+
+### 4.1 Phase V 审查矩阵（MUST）
+
+| 轴 | 取值 | 说明 |
+|----|------|------|
+| 会话 | **未登录** · **登录** | 连接/未连接 frame 不同；禁止只扫登录态 |
+| 页面 | Swap hub · Convert · Trade · Genesis · Rewards · Community（+ Home 若本轮） | 子页从 hub 点入 |
+| 滚动 | **顶** · **中** · **底**（必要时左栏/右栏分别滚） | DApp 双侧独立滚动；一屏截不全 = 漏审 |
+| 标签 | REGRESSION / INTENTIONAL / IGNORE | 修 REGRESSION；INTENTIONAL 不贴回 4175；IGNORE=动态数/端口/抗锯齿 |
+
+**「与基线不同的数据」边界**：
+
+- **纳入**：布局、字阶、色、间距、组件状态（空态/连接 CTA/disabled）、可承载真实数据的槽位样式。
+- **不纳入（IGNORE）**：余额、汇率、倒计时、成员数等链上/API 动态值本身；两端 host 端口文案（`4175`↔`5174`）。
+- **环境**：两端须同 `.env`（`dev:baseline` 已 sync）；登录用独立 session（`aegis-port-*`）。
+
+**收工（Phase V）**：矩阵每格红块已标完；无未处理 REGRESSION；整页 `%` 只作趋势。
 
 ---
 
@@ -79,11 +103,13 @@
 | Trade FAQ pill · TokenChip lh · Convert rate tabular | fixed |
 | Community stat label · Copy link min-h | fixed |
 | Genesis / Rewards 细带红块 | 多为 IGNORE（级联 / 抗锯齿 / 动态） |
-| Home brand 仍裸 span | **待收** |
-| 硬编码色 / Coming soon `#FF9500` 等 | **待扫**（产品 badge 可保留并注明） |
-| 结构债：`dappPanelTitleClassName` 等顶部长 cn | **视觉收敛后再清** |
-| P8 legacy theme / 死 alias | **待做** |
-| 全站 Text 覆盖审计 | **待做** |
+| **未登录态全矩阵** | **待扫**（本切片 Phase V） |
+| **登录态全滚动（双侧）** | **待补全**（此前多停在首屏） |
+| Home brand 仍裸 span | Phase T / 或 V4 |
+| 硬编码色 / Coming soon `#FF9500` 等 | Phase T |
+| 结构债：`dappPanelTitleClassName` 等 | Phase T（视觉后） |
+| P8 legacy theme / 死 alias | Phase T |
+| 全站 Text 覆盖审计 | Phase T |
 
 ---
 
@@ -108,3 +134,4 @@
 |------|------|
 | v1.0 | 登录态四 tab 对照后首版 North Star |
 | v1.1 | 红块优先诊断；进度表与「离世界级」粗标尺（2026-07-09） |
+| v1.2 | Phase V 视觉矩阵（两态×全滚动）先于 Phase T 清债 |
