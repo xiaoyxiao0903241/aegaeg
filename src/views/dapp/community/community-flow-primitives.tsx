@@ -9,12 +9,20 @@ export const communityProgramGrid = tv({
   base: cn('grid grid-cols-2 gap-2', 'max-dapp:grid-cols-1 max-dapp:gap-2'),
 })
 
-/** Figma `pcard` `4040:7354` — elevated · pad 20 · gap 8 · label 11 / title 16 / body+cta 13. */
+/**
+ * Figma `pcard` `4040:7354`
+ * — elevated · 16 radius · E2 · pad 20 · gap 8
+ * — label/CTA accent = coral `#c85c3f`（≠ primary `#e86a43`）
+ * — label 11 / title 16 / body+cta 13
+ */
 const communityProgramCard = tv({
   slots: {
-    root: cn(revealClass(), 'flex flex-col gap-2 p-5'),
-    action:
-      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left text-[13px] font-semibold leading-[1.3] tracking-[-0.26px] text-primary transition-opacity duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)] hover:opacity-80',
+    root: cn(revealClass(), 'flex flex-col gap-2 overflow-hidden p-5'),
+    action: cn(
+      'm-0 cursor-pointer border-0 bg-transparent p-0 text-left',
+      'text-[13px] font-semibold leading-[1.3] tracking-[-0.26px] text-coral',
+      'transition-opacity duration-160 ease-out hover:opacity-80',
+    ),
   },
 })
 
@@ -51,8 +59,7 @@ export function CommunityProgramCard({
       <Text
         as="span"
         variant="eyebrow"
-        tone="primary"
-        className="m-0 normal-case leading-[1.3] tracking-[0.88px]"
+        className="m-0 text-[11px] font-semibold normal-case leading-[1.3] tracking-[0.88px] text-coral"
       >
         {label}
       </Text>
@@ -60,7 +67,7 @@ export function CommunityProgramCard({
         as="h3"
         variant="headline"
         tone="foreground"
-        className="m-0 max-w-[38ch] leading-[1.3] tracking-[-0.48px]"
+        className="m-0 max-w-[38ch] text-base leading-[1.3] tracking-[-0.48px]"
       >
         {title}
       </Text>

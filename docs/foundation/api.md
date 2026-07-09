@@ -176,7 +176,7 @@
 
 **内部约定**：
 - `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron：固定 path + CSS `.faq-chevron`（`[data-faq-item][data-state=open]` → `rotate(180deg)` + `color: var(--primary)`；关态 `foreground@40%`）；禁换 path / 禁 React 条件 class 切旋转。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
-- `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · label `eyebrow` 11/`tracking-[0.88px]`/`normal-case` · title `headline` 16/`-0.48px` · body/cta `13px` · CTA `text-primary` semibold（禁 H5 平行字阶）。
+- `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · label `11`/`tracking-[0.88px]`/`normal-case`/`text-coral` · title `16`/`-0.48px` · body/cta `13px` · CTA `text-coral` semibold（accent = `#c85c3f`，**≠** `primary`；禁 H5 平行字阶）。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
 - `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
@@ -254,3 +254,4 @@
 | v2.22 | Pagination 页码箭头：关下开上 + 旋转动画 |
 | v2.23 | Button / flb：更小 scale + 软 ease + 更快 active |
 | v2.24 | Button / flb：极轻 scale `1.008` / `0.992` · 160ms ease-out |
+| v2.25 | CommunityProgramCard：label/CTA `text-coral` ≡ Figma `#c85c3f` |
