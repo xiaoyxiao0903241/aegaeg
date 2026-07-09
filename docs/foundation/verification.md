@@ -505,6 +505,13 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | Chevron 改 CSS `.faq-chevron` + `[data-state=open]` | REGRESSION→fixed | 旋转 + 颜色同 280ms；不靠 React 条件 class |
 | 关态 `foreground@40%` → 开态 `primary` | INTENTIONAL | 与展开态强调色一致 |
 
+## 5ai. Pagination 页码箭头随菜单开关旋转（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 箭头只跟 `menuOpen`：关下 / 开上 | REGRESSION→fixed | 不再跟 menuPlacement 翻转 |
+| `transition-transform` 220ms | INTENTIONAL | 与 Button / FAQ 手感一致 |
+
 ## 6. 修订
 
 | 版本 | 说明 |

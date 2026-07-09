@@ -191,8 +191,6 @@ export function DappTablePagination({
   const showPagination = shouldShowTablePagination(total, pageSize)
   if (!showPagination && summary == null) return null
 
-  const chevronRotated = (menuPlacement === 'below') !== menuOpen
-
   return (
     <div
       className={cn(
@@ -274,8 +272,12 @@ export function DappTablePagination({
                 >
                   {safePage} / {totalPages}
                 </Text>
+                {/* Closed → down; open → up. Base asset points up. */}
                 <ChevronIcon
-                  className={chevronRotated ? 'rotate-180' : undefined}
+                  className={cn(
+                    'transition-transform duration-[220ms] ease-[cubic-bezier(.2,.8,.2,1)]',
+                    menuOpen ? 'rotate-0' : 'rotate-180',
+                  )}
                   direction="up"
                 />
               </button>
