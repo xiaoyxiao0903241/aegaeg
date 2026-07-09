@@ -128,7 +128,7 @@ H5: (同上)
 | 区域 | 路径 / 选择器 | 为何保留 |
 |------|---------------|----------|
 | Home 动效 | `home-motion.css`；`data-home-motion-ready` / `data-reveal` / `data-visible` | 首页 reveal 运行时 SSOT；见 `docs/homepage-animation-guidelines.md` |
-| 钱包 / thirdweb | `wallet.css`：`.aegis-connected-wallet-chip` · `.aegis-thirdweb-button*` · `.aegis-connect-embed*` · `.aegis-wallet-connect-*`（除已删 intro）· `.tw-modal` | Home CTA 视觉 + DApp ConnectEmbed；`ui-compare` / `phase-v-matrix` 绑定类名 |
+| 钱包 / thirdweb | `wallet.css`：`.aegis-connected-wallet-chip` · `.aegis-thirdweb-button*` · `.aegis-connect-embed*` · `.aegis-wallet-connect-*`（除已删 intro）· `.tw-modal` | Home CTA 视觉 + DApp ConnectEmbed；`ui-compare` / `phase-v-matrix` 绑定类名。**可迁** `Button`（pill/primary），但高度 36/40 vs sm/md 42/44、玻璃底需 density/className；**另切片**，本轮勿当死 CSS 删 |
 | DApp 动效钩子 | `dapp-panel-enter` · `swap-view-layer*` · `faq-answer-panel*` · `dapp-collapsible-*` · `dapp-progress-meter*` · `hero-rays*` · modal/sheet keyframes · `[data-dapp-window]` · `[data-reveal]` | 有 DOM/`data-*` 或脚本选择器；删 = 动效/折叠回归 |
 | 滚动条基建 | `scrollbars.css` 全局块 + `scrollbar-x-track` | 表卡横向滚动在用；`scrollbar-dark` / `scrollbar-none` 为公开 utility，可另议删 utility，**不删全局规则** |
 

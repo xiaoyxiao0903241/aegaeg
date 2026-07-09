@@ -1,10 +1,16 @@
-import { forwardRef, type ReactNode } from 'react'
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
+import { Card, cardVariants } from '~/shared/ui/card'
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * Table shell chrome on Card `elevated` (E2).
+ * INTENTIONAL vs MetricCard: `rounded-2xl` + `border` + `p-0` (header/body/footer own pad).
+ * Not Card `soft` (E1 / FAQ) — table elevation stays shadow-card.
+ */
 const dappTableCard = tv({
   slots: {
-    shell: 'overflow-hidden rounded-2xl border border-border bg-card shadow-card',
+    shell: 'overflow-hidden rounded-2xl border border-border p-0',
     header:
       'dapp:px-4 dapp:pt-3.5 dapp:pb-2.5 max-dapp:px-3.5 max-dapp:pt-3.5 max-dapp:pb-2.5 border-b border-border/50',
     content: 'dapp:px-4 dapp:py-1.5 max-dapp:px-3.5 max-dapp:py-1.5',
@@ -48,7 +54,11 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
     const styles = dappTableCard()
 
     return (
-      <div className={cn(styles.shell(), 'flex min-w-0 max-w-full flex-col', className)}>
+      <Card
+        as="article"
+        surface="elevated"
+        className={cn(styles.shell(), 'flex min-w-0 max-w-full flex-col', className)}
+      >
         {header ? (
           <div className={cn(styles.header(), headerClassName)}>{header}</div>
         ) : null}
@@ -68,12 +78,17 @@ export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
         {footer ? (
           <div className={cn(styles.footer(), footerClassName)}>{footer}</div>
         ) : null}
-      </div>
+      </Card>
     )
   },
 )
 
-export function DappTableCardShell({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function DappTableCardShell({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   const styles = dappTableCard()
-  return <div className={cn(styles.shell(), className)} {...props} />
+  return (
+    <div
+      className={cn(cardVariants({ surface: 'elevated' }), styles.shell(), className)}
+      {...props}
+    />
+  )
 }

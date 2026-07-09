@@ -1,8 +1,11 @@
 import { swapHubAssets } from '~/app/assets'
 import { tv } from 'tailwind-variants'
+import { Card } from '~/shared/ui/card'
+import { cn } from '~/shared/lib/utils'
 
+/** Layout only — chrome from Card `elevated` (shadow-card / rounded-md). Pad `p-4` INTENTIONAL vs elevated `p-3.5`. */
 const swapProgramCard = tv({
-  base: 'flex w-full rounded-md bg-card p-4 text-left shadow-card',
+  base: 'flex w-full p-4 text-left',
   variants: {
     layout: {
       text: 'flex-col items-start gap-1',
@@ -112,11 +115,15 @@ export function SwapProgramCard({
   const interactive = Boolean(onClick)
 
   return (
-    <button
-      className={swapProgramCard({
-        layout: textOnly ? 'text' : 'split',
-        interactive,
-      })}
+    <Card
+      as="button"
+      surface="elevated"
+      className={cn(
+        swapProgramCard({
+          layout: textOnly ? 'text' : 'split',
+          interactive,
+        }),
+      )}
       onClick={onClick}
       type="button"
     >
@@ -130,6 +137,6 @@ export function SwapProgramCard({
           <ProgramCardIcon index={index} />
         </>
       )}
-    </button>
+    </Card>
   )
 }

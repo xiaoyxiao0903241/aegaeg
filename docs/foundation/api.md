@@ -111,7 +111,7 @@
 | surface | Elevation | radius | padding | 用途 |
 |---------|-----------|--------|---------|------|
 | outlined | — | `rounded-md` (16px) | `p-3.5` (14px) | 标准边框卡（wcol box、meta、mode card、`DappSideCard`） |
-| elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、ProgramCard |
+| elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、`SwapProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+border+`p-0`） |
 | soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-md` + `p-4.5` 抹平） |
 | inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（CalloutCard、WidgetPromoCard） |
 
@@ -215,3 +215,4 @@
 | v2.4 | `DappInlineAlert`：destructive 内联 chrome SSOT；`compact` / `comfortable`；禁并 CalloutCard |
 | v2.5 | Card surface 契约：`SwapPromoCard` 去叠 `shadow-subtle`；浅色 `CommunityStatCard` → `soft`（sc≠ovc） |
 | v2.6 | `dappDarkBanner`：RewardsHero / GenesisGlobal 唯一暗色横幅 chrome；≠ Card inverse |
+| v2.7 | `SwapProgramCard` / `DappTableCard` 走 Card `elevated`；表壳保留 2xl+border；thirdweb 按钮迁 Button 另切片 |

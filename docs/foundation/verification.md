@@ -320,6 +320,15 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | 未并入 Card `inverse` | KEEP | banner E2 ≠ CalloutCard E3 |
 | Text tracking on banner titles | DEFER | A7 |
 
+## 5o. ProgramCard / DappTableCard → Card elevated（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `SwapProgramCard` 裸 div → `Card as="button" elevated` | INTENTIONAL | 去手写 `shadow-card`；pad 仍 `p-4` |
+| `CommunityProgramCard` | KEEP | 已是 elevated；文案结构不并 Swap |
+| `DappTableCard` / Shell → `Card elevated` | INTENTIONAL | elevation 来自 surface；壳抹 `rounded-2xl`+border+`p-0`（≠ soft E1） |
+| `aegis-thirdweb-button*` → `Button` | DEFER | 可迁；高度 36/40 vs sm/md 42/44、玻璃底需 density 或 className；另切片 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -340,3 +349,4 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | v2.12 | §5l `DappInlineAlert`；Text A7 另切片 |
 | v2.13 | §5m Card surface 契约：promo / CommunityStat 消叠影 |
 | v2.14 | §5n `dappDarkBanner` 暗色横幅 SSOT |
+| v2.15 | §5o ProgramCard / DappTableCard → elevated；thirdweb→Button DEFER |
