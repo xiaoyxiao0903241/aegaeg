@@ -83,7 +83,7 @@ export function HomeRoadmapSection() {
               <div className="flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start">
                 <Text
                   as="span"
-                  className="text-xs font-semibold leading-[1.2] tracking-[0.72px] normal-case dapp:leading-normal"
+                  className="text-xs font-semibold leading-[1.2] tracking-[0.06em] normal-case dapp:leading-normal"
                   tone={phase.state ? 'primary' : 'muted-foreground'}
                   variant="eyebrow"
                 >
@@ -110,7 +110,7 @@ export function HomeRoadmapSection() {
               </div>
               <Text
                 as="h3"
-                className="mt-1.5 text-base font-semibold leading-[1.2] tracking-[-0.64px] dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.72px]"
+                className="mt-1.5 text-base font-semibold leading-[1.2] tracking-[-0.04em] dapp:mt-2 dapp:text-lg dapp:leading-[1.4] dapp:tracking-[-0.04em]"
                 tone="foreground"
                 variant="headline"
               >

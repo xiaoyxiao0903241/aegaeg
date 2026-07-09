@@ -29,7 +29,7 @@ export function RankTitleWithSuperCommunity({
       tone="foreground"
       className={cn(
         // 4175 dappRankTitleClass: body-lg 17px / lh 1.3 / tracking -0.34 (api brand)
-        'min-w-0 break-words leading-[1.3] tracking-[-0.34px]',
+        'min-w-0 break-words leading-[1.3] tracking-[-0.02em]',
         className,
       )}
     >

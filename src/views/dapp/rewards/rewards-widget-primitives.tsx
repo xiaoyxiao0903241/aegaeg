@@ -68,5 +68,5 @@ export const rewardsBalanceHint = tv({
 
 /** Referral amount: 4175 amount token + leading 1.3 / tracking -0.54；H5 保持 figure（禁吃 Card.Value 的 max-dapp:text-xs）。 */
 export const rewardsReferralAmount = tv({
-  base: 'text-[length:var(--type-figure-size)] leading-[1.3] tracking-[-0.54px] max-dapp:text-[length:var(--type-figure-size)] max-dapp:leading-[1.2] max-dapp:tracking-[-0.66px]',
+  base: 'text-[length:var(--type-figure-size)] leading-[1.3] tracking-[-0.03em] max-dapp:text-[length:var(--type-figure-size)] max-dapp:leading-[1.2]',
 })

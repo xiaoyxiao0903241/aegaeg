@@ -28,7 +28,7 @@ export const swapPercentRowClass = 'pt-2.5 max-dapp:mt-3 max-dapp:py-0'
 /** Figma `flb` — 34×34 · `rounded-control` · border · card. Trade flip + Flash divider. */
 export const swapFlowButtonClass = cn(
   'grid size-[2.125rem] shrink-0 place-items-center rounded-control border border-border bg-card p-0',
-  'text-sm leading-none tracking-[-0.28px] text-foreground shadow-none',
+  'text-sm leading-none tracking-[-0.02em] text-foreground shadow-none',
 )
 
 /** Interactive flb (Trade flip) — very light scale (match Button motion SSOT). */

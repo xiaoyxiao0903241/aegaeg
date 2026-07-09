@@ -102,20 +102,19 @@ export function CommunityStatCard({
         tone={dark ? 'inverse-muted' : 'muted-foreground'}
         className={cn(
           styles.label(),
-          'text-xs leading-[1.5] tracking-[-0.24px]',
-          dark && 'tracking-[-0.26px]',
+          'text-xs leading-[1.5]',
         )}
       >
         {label}
       </Text>
       <Text
         as="strong"
-        // Figma sc value 30 / lh 1.2 / tracking -1.2px · ink (not muted 70%)
+        // Figma sc value 30 / lh 1.2 / tracking ~-0.04em · ink (not muted 70%)
         variant="figure"
         tone={dark ? 'inverse' : 'foreground'}
         className={cn(
           styles.value(),
-          'text-3xl leading-[1.2] tracking-[-1.2px] max-dapp:text-2xl max-dapp:leading-[1.05] max-dapp:tracking-tight',
+          'text-3xl leading-[1.2] tracking-[-0.04em] max-dapp:text-2xl max-dapp:leading-[1.05] max-dapp:tracking-tight',
         )}
       >
         {value}
@@ -123,12 +122,12 @@ export function CommunityStatCard({
       {volume ? (
         <Text
           as="b"
-          // light: Figma accent/coral #c85c3f; dark: coral-bright
+          // light: coral; dark: coral-bright
           variant="headline"
           tone={dark ? 'primary-bright' : undefined}
           className={cn(
             styles.volume(),
-            'text-sm leading-[1.2] tracking-[-0.28px]',
+            'text-sm leading-[1.2]',
             !dark && 'text-coral',
           )}
         >
@@ -143,7 +142,7 @@ export function CommunityStatCard({
           tone={dark ? 'inverse-muted' : undefined}
           className={cn(
             styles.hint(),
-            'text-xs leading-[1.5] tracking-[-0.12px]',
+            'text-xs leading-[1.5] tracking-[-0.01em]',
             !dark && 'text-foreground/40',
           )}
         >

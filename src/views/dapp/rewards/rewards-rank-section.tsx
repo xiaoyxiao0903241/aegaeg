@@ -159,7 +159,7 @@ export function RewardsRankSection() {
                 as="strong"
                 variant="brand"
                 tone="foreground"
-                className="block text-right leading-[1.3] tracking-[-0.34px] max-dapp:leading-[1.2]"
+                className="block text-right leading-[1.3] tracking-[-0.02em] max-dapp:leading-[1.2]"
               >
                 {postLaunchRank}
               </Text>

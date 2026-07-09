@@ -30,7 +30,7 @@ export function HomeSectionHead({
     >
       <Text
         as="p"
-        className="m-0 text-xs leading-[1.25] tracking-[1.82px] normal-case max-dapp:tracking-[1.68px]"
+        className="m-0 text-xs leading-[1.25] tracking-[0.15em] normal-case max-dapp:tracking-[0.14em]"
         tone="primary"
         variant="eyebrow"
       >

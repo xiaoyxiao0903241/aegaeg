@@ -16,7 +16,7 @@ const genesisGlobalCard = tv({
     // Chrome SSOT: dappDarkBanner (≠ Card inverse / CalloutCard).
     root: cn(dappDarkBanner().root(), 'min-h-32 p-6 max-dapp:p-4.5'),
     // CTA is absolute — not flex gap. Reserve width on the kicker only (≡ 4175/dev).
-    content: cn(dappDarkBanner().content(), 'max-w-[70ch] max-dapp:max-w-none'),
+    content: cn(dappDarkBanner().content(), 'max-dapp:max-w-none'),
     // H5: EN "View contract" ~150px; pr-28 was too tight → title wrapped into the button.
     kicker: 'max-dapp:block max-dapp:pr-44',
     // Dark-banner outline CTA — must beat Button secondary + md/pill `w-full` (≡ 4175/dev hug + right).
@@ -60,7 +60,7 @@ export function GenesisGlobalCard({
           as="strong"
           tone="inverse"
           variant="panel"
-          className="block tracking-[-0.63px] max-dapp:text-lg max-dapp:leading-[1.2] max-dapp:tracking-[-0.54px]"
+          className="block max-dapp:text-lg max-dapp:leading-[1.2]"
         >
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
         </Text>
@@ -68,7 +68,7 @@ export function GenesisGlobalCard({
           as="p"
           variant="copy"
           tone="inverse-muted"
-          className="m-0 max-dapp:w-full text-xs max-dapp:text-[0.875rem]"
+          className="m-0 max-dapp:w-full text-xs max-dapp:text-[length:var(--type-detail-size)]"
         >
           {body}
         </Text>

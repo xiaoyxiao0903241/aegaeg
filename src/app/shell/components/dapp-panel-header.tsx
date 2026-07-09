@@ -42,7 +42,7 @@ export function DappPanelHeader({
           as="p"
           variant="copy"
           tone="muted-foreground"
-          className="m-0 max-w-[34ch] max-dapp:max-w-none [&_strong]:font-bold [&_strong]:text-primary"
+          className="m-0 max-dapp:max-w-none [&_strong]:font-bold [&_strong]:text-primary"
         >
           {subtitle}
         </Text>

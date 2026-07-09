@@ -25,7 +25,7 @@ export type MetricCardProps = {
 export const metricCardChromeClass = 'gap-1.5 rounded-md px-4 py-3.5'
 
 const metricCardValueClass =
-  'text-lg leading-[1.3] tracking-[-0.36px] max-dapp:text-sm max-dapp:leading-[1.2]'
+  'text-lg leading-[1.3] tracking-[-0.02em] max-dapp:text-sm max-dapp:leading-[1.2]'
 
 export function MetricCard({
   children,

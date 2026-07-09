@@ -61,9 +61,9 @@ export function HeroRaysBackground({
       >
         <defs>
           <radialGradient cx="50%" cy="50%" id={hubGradientId} r="50%">
-            <stop offset="0%" stopColor="#8a8f98" stopOpacity="0.06" />
-            <stop offset="32%" stopColor="#868b94" stopOpacity="0.025" />
-            <stop offset="58%" stopColor="#868b94" stopOpacity="0" />
+            <stop offset="0%" stopColor="var(--hero-rays-hub)" stopOpacity="0.06" />
+            <stop offset="32%" stopColor="var(--hero-rays-wedge)" stopOpacity="0.025" />
+            <stop offset="58%" stopColor="var(--hero-rays-wedge)" stopOpacity="0" />
           </radialGradient>
           <radialGradient cx="50%" cy="50%" id={maskGradientId} r="50%">
             <stop offset="0%" stopColor="white" stopOpacity="1" />
@@ -76,7 +76,7 @@ export function HeroRaysBackground({
         </defs>
         <g mask={`url(#${maskId})`}>
           <rect fill={`url(#${hubGradientId})`} height="100" width="100" />
-          <g fill="#868b94" fillOpacity="0.08">
+          <g fill="var(--hero-rays-wedge)" fillOpacity="0.08">
             {RAY_WEDGES.map((path, index) => (
               <path d={path} key={index} />
             ))}

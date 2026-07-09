@@ -27,7 +27,7 @@ export const inputVariants = tv({
         'rounded-sm px-3.5 py-2.5 text-left text-[length:var(--type-copy-size)] font-semibold leading-normal tracking-normal [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
       amount:
         // Match 4175 dappAmountClass: figure size + leading-normal (22→33) + tracking -0.44px
-        'border-0 bg-transparent text-right text-[length:var(--type-figure-size)] font-semibold leading-normal tracking-[-0.44px] outline-0',
+        'border-0 bg-transparent text-right text-[length:var(--type-figure-size)] font-semibold leading-normal tracking-[-0.02em] outline-0',
     },
     size: {
       sm: '',

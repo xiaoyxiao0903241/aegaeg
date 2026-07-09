@@ -31,7 +31,7 @@ export function HomeMetricsSection() {
           >
             <Text
               as="strong"
-              className="text-5xl font-semibold leading-none text-white max-dapp:text-3xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.9px]"
+              className="text-5xl font-semibold leading-none text-white max-dapp:text-3xl max-dapp:leading-[1.2] max-dapp:tracking-[-0.03em]"
               data-count-target={metric.countTarget}
               data-count-suffix={metric.suffix}
               data-count-initial={metric.value}
