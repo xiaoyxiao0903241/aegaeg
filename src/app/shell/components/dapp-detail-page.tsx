@@ -9,6 +9,8 @@ function dappDetailPageClass(options?: { className?: string }) {
     'dapp:pt-10 dapp:px-7',
     dappDetailPageBottomClass,
     'max-dapp:p-0',
+    // First DappSection carries mt-8.5 for block rhythm — drop it at page top (e.g. Community disconnected).
+    '[&>section:first-child]:mt-0',
     options?.className,
   )
 }

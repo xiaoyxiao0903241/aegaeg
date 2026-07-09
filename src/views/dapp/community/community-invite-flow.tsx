@@ -36,6 +36,10 @@ function InviteFlowConnector({ orientation = 'horizontal' }: { orientation?: 'ho
   )
 }
 
+/**
+ * PC: column `gap-x-0` + equal `gap-2.5` on both sides of each connector
+ * (old `gap-3.5` + `px-1` made left/right of the line unequal).
+ */
 export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
   return (
     <Card
@@ -44,41 +48,50 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
       className={cn(
         revealClass(),
         // Community-only mount — layout values locked (do not change left-card padding elsewhere).
-        'grid grid-cols-3 gap-3.5 p-4',
+        'grid grid-cols-3 gap-x-0 gap-y-3.5 p-4',
         'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,10.5rem),1fr))] max-tablet:gap-4',
-        'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-3.5 max-dapp:p-4',
+        'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-3.5',
       )}
       data-reveal
     >
-      {items.map((item, index) => (
-        <article
-          className="flex min-w-0 flex-col gap-2 px-1 max-dapp:grid max-dapp:grid-cols-[7_minmax(0,1fr)] max-dapp:gap-x-3 max-dapp:px-0"
-          key={item.title}
-        >
-          <div className="flex items-center gap-2.5 max-dapp:items-start">
-            <InviteFlowStep>{index + 1}</InviteFlowStep>
-            {index < items.length - 1 ? <InviteFlowConnector /> : null}
-          </div>
-          <Text
-            as="h4"
-            variant="headline"
-            className="m-0 text-sm leading-normal max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0 max-dapp:text-xs"
+      {items.map((item, index) => {
+        const showConnector = index < items.length - 1
+
+        return (
+          <article
+            className="flex min-w-0 flex-col gap-2 max-dapp:grid max-dapp:grid-cols-[auto_minmax(0,1fr)] max-dapp:gap-x-3"
+            key={item.title}
           >
-            {item.title}
-          </Text>
-          <Text
-            as="p"
-            variant="copy"
-            tone="muted-foreground"
-            className={cn(
-              'm-0 max-w-[24ch] text-xs leading-normal text-foreground/30',
-              'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2 max-dapp:leading-[1.28]',
-            )}
-          >
-            {item.copy}
-          </Text>
-        </article>
-      ))}
+            <div
+              className={cn(
+                'flex items-center max-dapp:items-start',
+                showConnector ? 'gap-2.5 pr-2.5' : undefined,
+              )}
+            >
+              <InviteFlowStep>{index + 1}</InviteFlowStep>
+              {showConnector ? <InviteFlowConnector /> : null}
+            </div>
+            <Text
+              as="h4"
+              variant="headline"
+              className="m-0 text-sm leading-normal max-dapp:col-start-2 max-dapp:row-start-1 max-dapp:mt-0 max-dapp:text-xs"
+            >
+              {item.title}
+            </Text>
+            <Text
+              as="p"
+              variant="copy"
+              tone="muted-foreground"
+              className={cn(
+                'm-0 max-w-[24ch] text-xs leading-normal text-foreground/30',
+                'max-dapp:col-start-2 max-dapp:row-start-2 max-dapp:mt-0.5 max-dapp:max-w-none max-dapp:line-clamp-2 max-dapp:leading-[1.28]',
+              )}
+            >
+              {item.copy}
+            </Text>
+          </article>
+        )
+      })}
     </Card>
   )
 }

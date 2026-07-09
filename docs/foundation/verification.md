@@ -422,6 +422,13 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | `fieldActionChipClass` 抽到 `chip.tsx` | INTENTIONAL | MAX / Bind 共用 field-adjacent chrome |
 | 布局 `flex gap-2` | INTENTIONAL | ≡ shares 行（input + chip） |
 
+## 5y. Community 开始邀请步骤线 + 未登录顶距（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| InviteFlow PC：连续 step 行 `gap-2.5` | REGRESSION→fixed | 横线两端与序号间距相等；不再靠列 `gap-3.5`+`px-1` 拼线 |
+| `DappDetailPage` `[&>section:first-child]:mt-0` | INTENTIONAL | 未登录「开始邀请」为首段时去掉 `DappSection` 的 `mt-8.5` |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -452,3 +459,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.22 | §5v Genesis 全球卡 H5：kicker `pr-44` 预留绝对定位 CTA（非 flex gap） |
 | v2.23 | §5w 删除 `tabular` / `tabular-nums`；数字定稿比例字 |
 | v2.24 | §5x Community Bind → Input + fieldActionChip（≡ Genesis MAX） |
+| v2.25 | §5y InviteFlow 步骤线等距；Detail 首段 `mt-0` |

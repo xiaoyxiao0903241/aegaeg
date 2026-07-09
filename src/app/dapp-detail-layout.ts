@@ -7,7 +7,7 @@
  * |------|-------|----|----|------------|
  * | Block → block | `dappDetailSectionGapClass` | 34px (`mt-8.5`) | 24px (`mt-6`) | `<section>` / `DappSection` |
  * | Title → content | `dappDetailTitleGapClass` | 16px (`pb-4`) | 16px (`pb-4`) | headings, section titles, FAQs |
- * | Widget header → body | `dappWidgetHeaderSpacingClass` | 14px | 30px | `DappWidgetFrame` |
+ * | Detail page top | `DappDetailPage` `[&>section:first-child]:mt-0` | 0 | 0 | first `DappSection` (e.g. Community invite when disconnected) |
  * | Widget stack | `dappWidgetBodyClass` | 8px (`gap-2`) | same | left-column children |
  * | Detail section title | Text `section` via `DappContentHeading` / `DappSection` | token | token | **no** per-tab tracking/leading |
  * | Widget title / desc | Text `panel` + `copy` via `DappPanelHeader` | token | token | **no** per-tab size/tracking |
