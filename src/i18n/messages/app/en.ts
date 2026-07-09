@@ -469,9 +469,9 @@ const app = defineMessages({
             title: 'Ecosystem support programs',
             items: [
                 {
-                    label: 'X DAO Co-build · Phase {season}',
-                    title: 'Global co-build program is live',
-                    body: 'Co-builders worldwide are coming together to build the ecosystem.',
+                    label: 'Genesis Co-build · Phase {season}',
+                    title: 'Genesis Reserve Governor Program',
+                    body: 'First global co-build seats now open',
                     action: 'View program details →',
                     href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program',
                 },

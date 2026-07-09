@@ -469,9 +469,9 @@ const app = defineMessages({
             title: 'Program dukungan ekosistem',
             items: [
                 {
-                    label: 'Pembangunan Bersama X DAO · Fase {season}',
-                    title: 'Program pembangunan bersama global sedang berlangsung',
-                    body: 'Mengumpulkan pembangun global untuk membangun ekosistem bersama.',
+                    label: 'Pembangunan Bersama Genesis · Fase {season}',
+                    title: 'Program Gubernur Cadangan Genesis',
+                    body: 'Kursi pembangunan bersama global pertama dibuka',
                     action: 'Lihat detail program →',
                     href: 'https://xdaoaegis.notion.site/program-dewan-cadangan-genesis',
                 },

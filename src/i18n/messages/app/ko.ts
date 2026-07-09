@@ -469,9 +469,9 @@ const app = defineMessages({
             title: '생태계 지원 프로그램',
             items: [
                 {
-                    label: 'X DAO 공동 구축 · 페이즈 {season}',
-                    title: '글로벌 공동 구축 프로그램 진행 중',
-                    body: '전 세계 공동 구축자들이 함께 생태계를 구축합니다.',
+                    label: '창세 공동 구축 · 페이즈 {season}',
+                    title: '창세 준비금 이사 프로그램',
+                    body: '글로벌 최초 공동 구축 좌석 개방',
                     action: '프로그램 상세 보기 →',
                     href: 'https://xdaoaegis.notion.site/genesis-reserve-council-program-kr',
                 },

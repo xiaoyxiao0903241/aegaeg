@@ -468,9 +468,9 @@ const app = defineMessages({
             title: '生態支持計畫',
             items: [
                 {
-                    label: 'X DAO 共建 · 第{season}期',
-                    title: '全球共建計畫進行中',
-                    body: '匯聚全球共建者，共同參與生態建設。',
+                    label: '創世共建 · 第{season}期',
+                    title: '創世儲備理事計畫',
+                    body: '全球首批共建席位開放',
                     action: '查看計畫詳情 →',
                     href: 'https://xdaoaegis.notion.site/390dd8755b9880ed8497ffcb02ba7301',
                 },

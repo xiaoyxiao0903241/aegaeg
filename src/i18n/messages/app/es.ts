@@ -469,9 +469,9 @@ const app = defineMessages({
             title: 'Programas de apoyo al ecosistema',
             items: [
                 {
-                    label: 'Co-construcción X DAO · Fase {season}',
-                    title: 'Plan global de co-construcción en curso',
-                    body: 'Reúne a constructores de todo el mundo para participar conjuntamente en la construcción del ecosistema.',
+                    label: 'Co-construcción Génesis · Fase {season}',
+                    title: 'Programa de Gobernadores de Reserva Génesis',
+                    body: 'Abiertas las primeras plazas globales de co-construcción',
                     action: 'Ver detalles del plan →',
                     href: 'https://xdaoaegis.notion.site/programa-del-consejo-de-reserva-genesis',
                 },

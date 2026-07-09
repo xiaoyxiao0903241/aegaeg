@@ -468,9 +468,9 @@ const app = defineMessages({
             title: 'Ekosistem destek programları',
             items: [
                 {
-                    label: 'X DAO Ortak İnşa · Faz {season}',
-                    title: 'Küresel ortak inşa planı devam ediyor',
-                    body: 'Küresel ortak inşacıları bir araya getirerek ekosistem inşasına katılın.',
+                    label: 'Genesis Ortak İnşa · Faz {season}',
+                    title: 'Genesis Rezerv Valisi Programı',
+                    body: 'İlk küresel ortak inşa koltukları açıldı',
                     action: 'Plan detaylarını görüntüle →',
                     href: 'https://xdaoaegis.notion.site/genesis-rezerv-konseyi-program',
                 },
