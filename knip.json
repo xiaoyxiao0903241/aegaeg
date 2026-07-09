@@ -11,14 +11,7 @@
   "ignore": ["src/**/*.d.ts"],
   "ignoreExportsUsedInFile": true,
   "ignoreFiles": ["src/i18n/types.ts"],
-  "ignoreDependencies": [
-    "terser",
-    "regenerator-runtime",
-    "core-js",
-    "lightningcss",
-    "pngjs",
-    "playwright-core"
-  ],
+  "ignoreDependencies": ["terser", "regenerator-runtime", "core-js", "lightningcss"],
   "ignoreIssues": {
     "src/views/dapp/web3/thirdweb.ts": ["duplicates", "types"],
     "src/shared/api/account-banned.ts": ["exports"],

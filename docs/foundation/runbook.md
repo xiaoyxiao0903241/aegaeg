@@ -20,7 +20,7 @@
 | **2** | Figma 节点 + 当前分支同位置源码 | 根因一句 + REGRESSION \| INTENTIONAL \| IGNORE |
 | **3** | 样式栈（字号·字重·行高·字距·色·`!`·`as`） | 单一 owner |
 | **4** | primitive 收束 + **全仓 call site**（同 PR） | 无半迁移 |
-| **5** | 双 gate | API + 人工对照（`tsc` / 肉眼；可选 `pnpm compare:screenshots`） |
+| **5** | 双 gate | API + 人工对照（`tsc` / 肉眼） |
 
 ### 报告模板
 
