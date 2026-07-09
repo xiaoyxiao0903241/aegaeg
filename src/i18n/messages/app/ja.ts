@@ -87,7 +87,7 @@ const app = defineMessages({
         overview: '概要',
         exchangeRate: '交換レート',
         settlement: '決済',
-        settlementValue: '最適なレートでAEGIS Xエコシステムトークンを入手',
+        settlementValue: 'PancakeSwap',
         hub: {
             modes: {
                 flash: {
