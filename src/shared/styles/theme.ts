@@ -16,8 +16,6 @@ export const themeHex = {
   success: colorHex.success,
   onDark: colorHex['inverse-muted'],
   faq: colorHex.faq,
-  /** @deprecated use `faq` */
-  faqText: colorHex.faq,
   metaTheme: colorHex.background,
   coral: colorHex.coral,
   coralEmphasis: colorHex['coral-emphasis'],

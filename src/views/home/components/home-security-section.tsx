@@ -64,11 +64,11 @@ export function HomeSecuritySection() {
           {content.checks.map((check, index) => (
             <Card
               className={cn(
-                'flex min-h-[3.8125rem] items-center gap-3.5 px-5.5 py-5 shadow-card transition-shadow duration-200 ease-out hover:shadow-card max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-[1.125rem] max-dapp:py-4',
+                'flex min-h-[3.8125rem] items-center gap-3.5 px-5.5 py-5 transition-shadow duration-200 ease-out max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-[1.125rem] max-dapp:py-4',
                 (index === 0 || index === content.checks.length - 1) &&
                   'max-dapp:min-h-[4.125rem]',
               )}
-              surface="outlined"
+              surface="elevated"
               data-security-check
               key={check}
               style={{ '--security-index': index } as CSSProperties}

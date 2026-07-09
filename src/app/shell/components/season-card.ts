@@ -2,8 +2,9 @@ import { tv } from 'tailwind-variants'
 
 /**
  * Genesis season card — Figma `4150:19854` @ 16px root.
- * Colors: `coral` (#c85c3f) selected/LIVE · `coral-emphasis` (#e9785a) discount · `band` Ended.
- * H5 sizes via `--dapp-season-*` (+1 KEEP).
+ * Layout / color only — typography via `<Text>` (runbook: no parallel type scale).
+ * Colors: `coral` selected/LIVE · `coral-emphasis` discount · `band` Ended.
+ * H5 sizes via `--dapp-season-*` (+1 KEEP) as display-size overrides on Text.
  */
 export const seasonCard = tv({
   slots: {
@@ -12,14 +13,14 @@ export const seasonCard = tv({
       'min-h-[7.8125rem] w-[8.75rem]',
       'rounded-[length:var(--dapp-season-card-radius)]',
     ],
-    title:
-      'text-[length:var(--dapp-season-title-size)] font-semibold leading-[1.3] tracking-[-0.02em] text-foreground',
-    meta: 'm-0 text-[length:var(--dapp-season-meta-size)] font-normal leading-[1.5] tracking-[-0.02em] text-muted-foreground',
-    metaAccent: 'font-normal text-coral-emphasis',
+    /** Display size only — weight/leading/tracking from Text variant. */
+    title: 'text-[length:var(--dapp-season-title-size)] text-foreground',
+    meta: 'm-0 text-[length:var(--dapp-season-meta-size)] text-muted-foreground',
+    metaAccent: 'text-coral-emphasis',
     radio:
       'size-[length:var(--dapp-season-radio-size)] rounded-[calc(var(--dapp-season-radio-size)/2)]',
     badge:
-      'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap text-[length:var(--dapp-season-badge-size)] font-medium leading-[1.3]',
+      'flex w-full items-center justify-center rounded-full px-2.25 py-0.5 whitespace-nowrap text-[length:var(--dapp-season-badge-size)]',
   },
   variants: {
     selected: {

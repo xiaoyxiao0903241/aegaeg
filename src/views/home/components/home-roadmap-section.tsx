@@ -73,17 +73,17 @@ export function HomeRoadmapSection() {
             </div>
             <Card
               className={cn(
-                'w-full min-h-28 border-0 p-4 shadow-card transition-shadow duration-200 ease-out hover:shadow-card max-dapp:rounded-md dapp:min-h-30 dapp:w-[calc(50%-15)] dapp:max-w-128 dapp:px-6 dapp:py-5.5',
+                'w-full min-h-28 border-0 p-4 transition-shadow duration-200 ease-out max-dapp:rounded-md dapp:min-h-30 dapp:w-[calc(50%-15)] dapp:max-w-128 dapp:px-6 dapp:py-5.5',
                 phase.side === 'right' && 'dapp:ml-auto',
                 phase.state === 'current' && 'min-h-30 border border-primary',
               )}
-              surface="outlined"
+              surface="elevated"
               data-phase-card
             >
               <div className="flex items-center justify-between gap-2.5 overflow-hidden dapp:justify-start">
                 <Text
                   as="span"
-                  className="text-xs font-semibold leading-[1.2] tracking-[0.06em] normal-case dapp:leading-normal"
+                  className="text-xs font-semibold leading-[1.2] normal-case dapp:leading-normal"
                   tone={phase.state ? 'primary' : 'muted-foreground'}
                   variant="eyebrow"
                 >

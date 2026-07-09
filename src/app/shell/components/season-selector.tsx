@@ -98,7 +98,7 @@ function SeasonCard({
       {/* Figma `st` gap 3px; card → badge gap 6px via root gap */}
       <div className="flex w-full flex-col gap-0.75 overflow-hidden">
         <div className="flex h-[1.125rem] items-center justify-between gap-1">
-          <Text as="strong" variant="copy" className={styles.title()}>
+          <Text as="strong" variant="headline" className={styles.title()}>
             {season.name}
           </Text>
           <RadioIndicator checked={selected} className={styles.radio()} />

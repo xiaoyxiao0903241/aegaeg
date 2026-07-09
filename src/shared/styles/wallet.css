@@ -57,12 +57,12 @@
 
 .aegis-thirdweb-button:hover {
   border-color: var(--coral-hover-border) !important;
-  transform: translateY(-1px);
+  transform: scale(1.008);
 }
 
 .aegis-thirdweb-button-primary:hover {
   border-color: transparent !important;
-  box-shadow: var(--shadow-primary-hover-lg) !important;
+  box-shadow: var(--shadow-primary-hover) !important;
 }
 
 .aegis-thirdweb-button-full {
@@ -96,7 +96,7 @@
 
 .aegis-connected-wallet-chip:hover {
   border-color: var(--coral-hover-border);
-  transform: translateY(-1px);
+  transform: scale(1.008);
 }
 
 .aegis-connected-wallet-chip__status {
@@ -169,7 +169,7 @@
 
 .aegis-wallet-connect-close:hover {
   border-color: var(--foreground);
-  transform: translateY(-1px);
+  transform: scale(1.008);
 }
 
 .aegis-wallet-connect-body {

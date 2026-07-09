@@ -270,7 +270,8 @@ export function SwapMetaPanel({
       as="div"
       surface="outlined"
       className={cn(
-        'grid shrink-0 gap-2 rounded-xl px-3.5 py-3.25',
+        // Chrome from Card outlined (`p-3.5` / `rounded-md`); ≡ DappMetaList — do not re-pad.
+        'grid shrink-0 gap-2',
         dappWidgetFooterTopGapClass,
         className,
       )}

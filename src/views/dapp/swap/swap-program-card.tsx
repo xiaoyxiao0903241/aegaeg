@@ -13,7 +13,7 @@ const swapProgramCard = tv({
       split: 'items-center justify-between gap-2',
     },
     interactive: {
-      true: 'cursor-pointer transition-[transform,box-shadow] duration-180 ease-out hover:-translate-y-px',
+      true: 'cursor-pointer transition-[transform,box-shadow] duration-160 ease-out hover:scale-[1.008] active:scale-[0.992]',
       false: '',
     },
   },
@@ -35,7 +35,7 @@ function ProgramCardCopy({ body, title }: { body: string; title: string }) {
       <Text
         as="strong"
         variant="copy"
-        className="font-semibold leading-[1.3] tracking-[0.08em]"
+        className="font-semibold leading-[1.3]"
       >
         {title}
       </Text>

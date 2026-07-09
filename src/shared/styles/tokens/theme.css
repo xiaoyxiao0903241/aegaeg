@@ -336,6 +336,8 @@
 
   --app-h5-gradient-top: #fbeae1;
   --dapp-h5-gradient-top: var(--app-h5-gradient-top);
+  /* Home/DApp body wash — was bare oklch in shared.css */
+  --app-body-wash: oklch(96% 0.028 45 / 70%);
 
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;

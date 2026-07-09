@@ -20,7 +20,7 @@ export function HomePartnersSection() {
         id="partners-title"
         tone="primary"
         variant="eyebrow"
-        className="m-0 text-xs leading-[1.25] tracking-[0.15em] normal-case max-dapp:tracking-[0.14em]"
+        className="m-0 text-xs leading-[1.25] normal-case"
       >
         {title}
       </Text>
@@ -43,7 +43,9 @@ export function HomePartnersSection() {
               height="24"
               loading="lazy"
             />
-            {name}
+            <Text as="span" variant="copy" tone="muted-foreground" className="font-semibold max-dapp:text-xs">
+              {name}
+            </Text>
           </Card>
         ))}
       </div>

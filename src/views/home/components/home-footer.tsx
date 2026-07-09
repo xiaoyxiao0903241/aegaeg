@@ -97,7 +97,7 @@ export function HomeFooter() {
             <Text
               as="h3"
               tone="inverse"
-              className="m-0 text-sm font-semibold leading-[1.2] tracking-[0.04em] max-dapp:text-xs max-dapp:leading-[1.5]"
+              className="m-0 text-sm font-semibold leading-[1.2] max-dapp:text-xs max-dapp:leading-[1.5]"
               variant="headline"
             >
               {group.label}

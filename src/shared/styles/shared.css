@@ -52,7 +52,7 @@ body {
   min-width: 20rem;
   overflow-x: hidden;
   background:
-    radial-gradient(900px 520px at 78% -8%, oklch(96% 0.028 45 / 70%), transparent 58%),
+    radial-gradient(900px 520px at 78% -8%, var(--app-body-wash), transparent 58%),
     var(--background);
   color: var(--muted-foreground);
   letter-spacing: 0;

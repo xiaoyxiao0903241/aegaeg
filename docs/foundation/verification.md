@@ -47,6 +47,7 @@ pnpm exec eslint <paths>
 | CommunityProgramCard fluid | §5ao |
 | 去硬编码 px tracking / ch / rays hex | §5ap |
 | themeHex / toaster / scrollbar 收束 | §5aq |
+| 对抗审核共识优化（Chip/Card/字距） | §5ar |
 | 分页 Figma | §5u |
 | Card / Metric / dark banner | §5m–§5o |
 
@@ -542,6 +543,23 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | home security section `min-h` → `--home-security-section-min-h*` | INTENTIONAL | 布局 rem 进 engineering vars |
 | Button `sm` `min-h-[2.625rem]`、widget subtitle `max-w-[17.5rem]`、season card rem | INTENTIONAL | API / 布局字面量；非色硬编码 |
 
+## 5ar. 对抗审核共识优化（2026-07-09）
+
+5 agent（3×Grok + 2×Composer）独立审 UI/样式/组件后仲裁。**共识 Verdict：NEAR / 未达世界级** — primitive/shell 强；call-site 半迁移 + 交互语言分叉。
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| Chip press ≡ Button scale `1.008`/`0.992`；去 `translate-y`；duration 160 | REGRESSION→fixed | 交互语言统一（审核 B/E） |
+| `SwapMetaPanel` 去叠 `rounded-xl`/pad → Card outlined 默认 | REGRESSION→fixed | ≡ `DappMetaList`（审核 C） |
+| Home security/roadmap Card `outlined`+`shadow-card` → `elevated` | REGRESSION→fixed | 禁 call site 改 elevation（审核 E） |
+| Home eyebrow / partners / footer / roadmap / program-card 去手写 tracking | REGRESSION→fixed | 跟 Text token（审核 A） |
+| partners 名包 `<Text>`；分页去 `tracking-normal` | REGRESSION→fixed | |
+| `season-card` 槽位去平行 font/leading/tracking；title→`headline` | REGRESSION→fixed | 字阶交 Text（审核 A/C） |
+| `shared.css` body wash → `--app-body-wash`；删 `themeHex.faqText` | REGRESSION→fixed | 工程洁癖（审核 D） |
+| wallet hover `translateY`→scale；`*-hover-lg`→`shadow-primary-hover` | REGRESSION→fixed | 手感对齐；全量 thirdweb→Button 仍 DEFER |
+| Home hero 6xl / DApp views 非法 `max-dapp` 字阶 / slippage preset 手写钮 | DEFER | 需 marketing type 轴或另切片；本轮不扩 Text 轴 |
+| `staticExtraTheme` 平行影 / CalloutCard 死码 / composite 豁免收窄 | DEFER | 另切片 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -593,3 +611,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v3.3 | §5ao CommunityProgramCard：去 px/ch 锁，跟 site-fluid |
 | v3.4 | §5ap 去硬编码 px tracking / ch / hero-rays hex |
 | v3.5 | §5aq themeHex←colorHex；toaster/scrollbar/wallet 色影走 vars |
+| v3.6 | §5ar 对抗审核共识：Chip/Card/字距/wallet hover；世界级仍 NEAR |

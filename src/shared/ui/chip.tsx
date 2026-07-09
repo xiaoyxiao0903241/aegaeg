@@ -8,11 +8,16 @@ import { cn } from '~/shared/lib/utils'
  *
  * 公开轴：variant × size × shape × tone
  */
+/** Align press language with Button (§3) — scale, not translate lift. */
+const chipPressMotionClass =
+  'origin-center hover:scale-[1.008] focus-visible:scale-[1.008] active:scale-[0.992] active:duration-75'
+
 export const chipVariants = tv({
   base: [
     'inline-flex cursor-pointer items-center justify-center whitespace-nowrap',
-    'transition-[border-color,background-color,color,box-shadow,transform] duration-180 ease-out',
+    'transition-[border-color,background-color,color,box-shadow,transform] duration-160 ease-out',
     'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60',
+    chipPressMotionClass,
   ],
   variants: {
     variant: {
@@ -61,8 +66,7 @@ export const chipVariants = tv({
     {
       variant: 'outlined',
       tone: 'default',
-      class:
-        'border-border bg-card text-muted-foreground hover:-translate-y-px hover:border-primary hover:text-primary',
+      class: 'border-border bg-card text-muted-foreground hover:border-primary hover:text-primary',
     },
     { variant: 'outlined', tone: 'primary', class: 'border-primary bg-card text-primary hover:bg-accent' },
     { variant: 'outlined', tone: 'coral', class: 'border-coral bg-card text-coral hover:bg-accent' },
