@@ -65,7 +65,8 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
             <div
               className={cn(
                 'flex items-center max-dapp:items-start',
-                showConnector ? 'gap-2.5 pr-2.5' : undefined,
+                // Equal inset on both ends of the line; drop when connector is H5-hidden.
+                showConnector && 'gap-2.5 pr-2.5 max-dapp:gap-0 max-dapp:pr-0',
               )}
             >
               <InviteFlowStep>{index + 1}</InviteFlowStep>

@@ -307,7 +307,7 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 |------|------|------|
 | `SwapPromoCard` 去 `shadow-subtle` + 重复 `rounded-2xl` | INTENTIONAL | 保留 `soft` → E1；禁 call-site 改 elevation |
 | 浅色 `CommunityStatCard`：`elevated`+`shadow-faq` → `soft` | INTENTIONAL | sc = E1；ovc MetricCard 仍 elevated E2 |
-| composite 仍 `rounded-md` / `p-4.5` | KEEP | 抹平 soft 默认 2xl；非第 5 surface |
+| composite 仍 `rounded-lg` / `p-4.5` | KEEP | 抹平 soft 默认 2xl；≡ Figma sc 18（§5z） |
 | 暗色 CommunityStat `inverse` + `shadow-none` | KEEP | 艺术卡清影 |
 | H5 `max-dapp:shadow-card` | KEEP | 既有移动壳 |
 
