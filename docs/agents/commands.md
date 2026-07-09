@@ -17,13 +17,13 @@
 | **`pnpm check`** | **收工最小门禁**：`tsc -b` + `lint:src`（eslint **error** only）+ `lint:architecture` + `test:unit` |
 | `pnpm lint:src` | `eslint src --quiet`（仅 error；`exhaustive-deps` 等进收工） |
 | `pnpm lint` | ESLint 全仓（含 Tailwind / 登记债 **warn**，不阻断 `check`） |
-| **git pre-commit**（husky） | staged `*.{ts,tsx,js,mjs,cjs}` → `eslint`；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。`pnpm install` 后 `prepare` 会挂上 hook |
+| **git pre-commit**（husky） | staged `*.{ts,tsx,js,mjs,cjs}` → `eslint`；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。`pnpm install` 后 `prepare` 会挂上 hook。**禁止**把 `test:e2e` / Playwright 挂进 hook 或 `pnpm check` |
 | `pnpm lint:all` | ESLint + Stylelint + hex + depcruise + knip |
 | `pnpm format` / `pnpm format:check` | Prettier + `prettier-plugin-tailwindcss`（class 排序；**未**进 `check`） |
 | `pnpm format:classnames` | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序） |
 | `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等 |
 | `pnpm test:unit` | Node 内置 test runner（`tests/unit/*.test.mjs`） |
-| `pnpm test:e2e` | Playwright 视觉 + 契约（需本机浏览器） |
+| `pnpm test:e2e` | Playwright 视觉 + 契约（需本机浏览器；**手动 / 可选**，不进 husky、不进 `pnpm check`） |
 | `pnpm test:e2e:update` | 更新视觉快照 |
 | `pnpm test:integration` | 可选 live BSC quote（非 CI 门禁） |
 
@@ -40,7 +40,7 @@
 
 ## React Runtime
 
-约定与质量切片门禁（Compiler / hooks / i18n / S5b）：[`docs/react-runtime.md`](../react-runtime.md)。
+约定与质量门禁（Compiler / hooks / i18n）：[`docs/react-runtime.md`](../react-runtime.md)。
 
 ## 路径 SSOT（行为）
 

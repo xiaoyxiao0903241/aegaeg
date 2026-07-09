@@ -9,7 +9,7 @@
 |------|-----|
 | 命令 / CI / 收工门禁 | [`agents/commands.md`](./agents/commands.md) |
 | `src/` 目录落点 / 扁平约定 | [`src-layout.md`](./src-layout.md) |
-| React 19 / Compiler / hooks / i18n 渲染 | [`react-runtime.md`](./react-runtime.md) |
+| React 19 / Compiler（全量）/ hooks / i18n | [`react-runtime.md`](./react-runtime.md) |
 | Foundation / 样式 / shell | [`foundation/README.md`](./foundation/README.md) → runbook · api |
 | Home / 动效 / 性能 | [`homepage-architecture.md`](./homepage-architecture.md) → animation / static-plan / load-optimization |
 | DApp 业务 / Web3（行为 SSOT） | [`DAPP-GUIDE.md`](./DAPP-GUIDE.md) — **以代码为准** |

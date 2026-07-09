@@ -25,7 +25,7 @@ import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { ProgressMeter } from '~/app/shell/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { RankTitleWithSuperCommunity } from '~/app/shell/rank-title-with-super-community'
+import { RankTitleWithSuperCommunity } from '~/views/dapp/rewards/rank-title-with-super-community'
 import { DappSideCard } from '~/app/shell/dapp-card'
 import { RewardsProgressRow } from '~/views/dapp/rewards/rewards-widget-primitives'
 import { rewardsSideCard } from '~/views/dapp/rewards/rewards-widget-styles'
@@ -157,7 +157,7 @@ export function RewardsRankSection() {
                 as="strong"
                 variant="brand"
                 tone="foreground"
-                className="block text-right leading-[1.3] tracking-[-0.02em]"
+                className="block text-right leading-[1.3]"
               >
                 {postLaunchRank}
               </Text>
@@ -167,7 +167,7 @@ export function RewardsRankSection() {
               as="small"
               variant="support"
               tone="muted-foreground"
-              className="block leading-normal"
+              className="block"
             >
               {leftBottomLabel}
             </Text>
@@ -176,7 +176,7 @@ export function RewardsRankSection() {
                 as="small"
                 variant="support"
                 tone="muted-foreground"
-                className="block text-right leading-normal"
+                className="block text-right"
               >
                 {postLaunch30DayLabel}
               </Text>

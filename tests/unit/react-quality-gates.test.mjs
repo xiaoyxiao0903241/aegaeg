@@ -62,10 +62,28 @@ test('canPurchaseGenesis requires live phase, share cap, and amount bounds', asy
 
   assert.equal(canPurchaseGenesis(base), true)
   assert.equal(canPurchaseGenesis({ ...base, hasActivePhase: false }), false)
+  assert.equal(canPurchaseGenesis({ ...base, shares: 0 }), false)
   assert.equal(canPurchaseGenesis({ ...base, shares: 41 }), false)
   assert.equal(canPurchaseGenesis({ ...base, purchaseAmount: 50n * 10n ** 18n }), false)
   assert.equal(
     canPurchaseGenesis({ ...base, purchaseAmount: 5000n * 10n ** 18n }),
+    false,
+  )
+})
+
+test('canPurchaseGenesis requires at least one share', async () => {
+  const { canPurchaseGenesis } = await loadModule('/src/core/presale/presale-math.ts')
+
+  assert.equal(
+    canPurchaseGenesis({
+      walletReady: true,
+      hasActivePhase: true,
+      maxShares: 40,
+      shares: 0,
+      purchaseAmount: 0n,
+      minAmount: 100n * 10n ** 18n,
+      maxPurchasableWei: 4000n * 10n ** 18n,
+    }),
     false,
   )
 })

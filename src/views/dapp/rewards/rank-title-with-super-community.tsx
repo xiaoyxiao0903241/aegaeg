@@ -27,7 +27,7 @@ export function RankTitleWithSuperCommunity({
       as={Component}
       variant="brand"
       tone="foreground"
-      className={cn('min-w-0 wrap-break-word leading-[1.3] tracking-[-0.02em]', className)}
+      className={cn('min-w-0 wrap-break-word leading-[1.3]', className)}
     >
       {label}
     </Text>

@@ -37,7 +37,7 @@ AI 工作规范
 
 - 用 `rg` 搜索文本、文档、配置、生成文件和 fallback。
 - **项目文档索引**：[`docs/README.md`](docs/README.md) — Home / DApp / 设计系统 SSOT 入口；命令与收工门禁见 [`docs/agents/commands.md`](docs/agents/commands.md)。
-- **React 运行时**：[`docs/react-runtime.md`](docs/react-runtime.md) — Compiler（非 React 19 内置）、hooks/effect、i18n 渲染、S5b 门禁；改 hooks/memo/i18n 前先读。
+- **React 运行时**：[`docs/react-runtime.md`](docs/react-runtime.md) — Compiler（全量）、hooks/effect、i18n 渲染、质量门禁；改 hooks/memo/i18n 前先读。
 - 触达代码时优先用 `agent-lsp` 做语义查询，使用最小 workspace root。
 - **CodeGraph** 是当前默认代码图谱工具。依赖结果前先运行 `codegraph status .`；索引不新时运行 `codegraph sync .`。
 - 探索概念用 `codegraph context`；查调用关系用 `codegraph callers` / `codegraph callees`；评估影响面用 `codegraph impact`；文本兜底仍用 `rg`。

@@ -91,10 +91,10 @@ export default defineConfig(({ command }) => ({
   },
   plugins: [
     react(),
-    // React Compiler — annotation mode first (S2 canary); flip to default after Chrome90 smoke.
-    // See docs/react-runtime.md. Must not share a PR with auth/home-reveal/memo deletion.
+    // React Compiler — full mode after Chrome90 build smoke (docs/react-runtime.md).
+    // Must not share a PR with auth/home-reveal/blind memo deletion.
     babel({
-      presets: [reactCompilerPreset({ compilationMode: 'annotation' })],
+      presets: [reactCompilerPreset()],
     }),
     tailwindcss(),
     flattenCssCascadeLayersPlugin(),

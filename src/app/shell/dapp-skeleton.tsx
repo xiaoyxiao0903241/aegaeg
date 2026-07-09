@@ -1,7 +1,6 @@
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { communityStatCardMobileShell } from '~/views/dapp/community/community-content-primitives'
-import { seasonCard } from '~/app/shell/season-card'
 import { dappTableCell } from '~/app/shell/dapp-table-card'
 
 const metricCardSkeleton = tv({
@@ -90,24 +89,6 @@ export function MetricCardSkeleton({ className }: { className?: string }) {
       <DappSkeleton className="h-3 w-18 max-w-[55%]" />
       <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
     </Card>
-  )
-}
-
-export function SeasonOptionSkeleton() {
-  return (
-    <div
-      aria-hidden="true"
-      className={seasonCard({ selected: false }).root()}
-    >
-      <div className="flex items-start justify-between gap-1">
-        <DappSkeleton className="h-3.5 w-16" />
-        <DappSkeleton className="size-(--dapp-skeleton-chip-size) shrink-0 rounded-[calc(var(--dapp-skeleton-chip-size)/2)]" />
-      </div>
-      <DappSkeleton className="h-3 w-full max-w-24" />
-      <DappSkeleton className="h-3 w-full max-w-28" />
-      <DappSkeleton className="h-3 w-20" />
-      <DappSkeleton className="mt-auto h-5 w-full rounded-full" />
-    </div>
   )
 }
 

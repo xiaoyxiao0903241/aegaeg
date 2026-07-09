@@ -140,9 +140,10 @@ export function canPurchaseGenesis({
     walletReady &&
     hasActivePhase &&
     maxShares > 0 &&
+    shares >= 1 &&
+    shares <= maxShares &&
     purchaseAmount >= minAmount &&
-    purchaseAmount <= maxPurchasableWei &&
-    shares <= maxShares
+    purchaseAmount <= maxPurchasableWei
   )
 }
 

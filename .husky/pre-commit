@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # Block commit on ESLint errors (staged) + TypeScript project errors.
 # ESLint warnings (Tailwind / set-state-in-effect) do not fail — matches repo lint policy.
+# Do NOT run Playwright / pnpm test:e2e here (or in pnpm check) — e2e is manual/optional.
 pnpm exec lint-staged
 pnpm exec tsc -b
