@@ -7,9 +7,10 @@
 
 | 任务 | 读 |
 |------|-----|
+| 命令 / CI / 收工门禁 | [`agents/commands.md`](./agents/commands.md) |
 | Foundation / 样式 / shell | [`foundation/README.md`](./foundation/README.md) → runbook · api |
 | Home / 动效 / 性能 | [`homepage-architecture.md`](./homepage-architecture.md) → animation / static-plan / load-optimization |
-| DApp 业务 / Web3 | [`DAPP-GUIDE.md`](./DAPP-GUIDE.md) |
+| DApp 业务 / Web3（行为 SSOT） | [`DAPP-GUIDE.md`](./DAPP-GUIDE.md) — **以代码为准** |
 | 合约 | [`contract.md`](./contract.md) |
 | Figma 导出归档（只读） | [`figma-export/README.md`](./figma-export/README.md) — 历史 raw/frames；不再维护提取脚本 |
 

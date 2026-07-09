@@ -36,12 +36,12 @@ Figma source of truth (canonical — same as root `AGENTS.md` §8.4):
 
 ## Performance Rules (target)
 
-- The homepage must not import `thirdweb/react` or wrap the full app with `ThirdwebProvider`. → **Gap: not met today** — fix in [`homepage-load-optimization.md` Phase 1](./homepage-load-optimization.md).
+- The homepage must not import `thirdweb/react` or wrap the full app with `ThirdwebProvider`. → **Met** (`HomeProviders`).
 - Homepage CTA buttons are static UI at first paint. → **Met** (`<a href="…/app.html">` + button CSS classes).
 - Wallet connection happens on **DApp** (`app.html`) via thirdweb `ConnectButton` / connect modal — not on marketing home.
 - ~~On CTA hover/focus/touch/click, preload wallet island on home~~ → **Deferred**; do not implement on home until product revisits.
-- Keep BSC chain configuration centralized in `src/web3/thirdweb.ts`.
-- Animations: CSS + small IO/rAF via `src/wallet-loader.ts` (**home motion boot**, misnamed — not wallet). See [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md).
+- Keep BSC chain configuration centralized in `src/views/dapp/web3/thirdweb.ts`.
+- Animations: CSS + small IO/rAF via `src/views/home/home-reveal-loader.ts` (`bootHomeReveal`). See [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md).
 - Hero video: WebM alpha + poster; do not preload video body.
 
 ## Token Strategy
@@ -74,17 +74,17 @@ DApp: Swap · Genesis · Rewards · Community tabs via `DappShell` on `app.html`
 
 ## Verification
 
-### Today (before Phase 1)
+### Today (Phase 1 done)
 
-- `pnpm build` — **expect** thirdweb chunks in `dist/en/index.html` until Phase 1 lands.
-- Home: sections, motion (`bootWalletLoader`), locale switch, CTA navigates to `/{locale}/app.html`.
+- `pnpm build` — Home entry (`HomeProviders`) **must not** preload thirdweb wallet chunks; DApp `app.html` may.
+- Home: sections, motion (`bootHomeReveal`), locale switch, CTA navigates to `/{locale}/app.html`.
 - DApp: thirdweb connect modal works on `app.html`.
-- Screenshots: `pnpm test:e2e` vs Figma structure.
+- Screenshots / contracts: `pnpm test:e2e`.
+- Behavior gate: `pnpm check` (see [`docs/agents/commands.md`](./agents/commands.md)).
 
-### Target (after Phase 1+)
+### Remaining (Phase 2+)
 
-- `pnpm build` — Home entry **does not** preload thirdweb wallet chunks.
-- Same functional checks; add bundle assert script (load-optimization §6).
+- Per-locale i18n split / optional SSG — see load-optimization.
 
 ## Related docs
 

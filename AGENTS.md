@@ -36,7 +36,7 @@ AI 工作规范
 ### 8.3 工具规则
 
 - 用 `rg` 搜索文本、文档、配置、生成文件和 fallback。
-- **项目文档索引**：[`docs/README.md`](docs/README.md) — Home / DApp / 设计系统 SSOT 入口。
+- **项目文档索引**：[`docs/README.md`](docs/README.md) — Home / DApp / 设计系统 SSOT 入口；命令与收工门禁见 [`docs/agents/commands.md`](docs/agents/commands.md)。
 - 触达代码时优先用 `agent-lsp` 做语义查询，使用最小 workspace root。
 - **CodeGraph** 是当前默认代码图谱工具。依赖结果前先运行 `codegraph status .`；索引不新时运行 `codegraph sync .`。
 - 探索概念用 `codegraph context`；查调用关系用 `codegraph callers` / `codegraph callees`；评估影响面用 `codegraph impact`；文本兜底仍用 `rg`。
@@ -60,7 +60,7 @@ AI 工作规范
 - 动效只动画 `opacity`、`transform`、`clip-path`、`filter`、`box-shadow` 等不触发布局重排的属性；hover 不改变卡片几何位置，使用阴影、边框和轻微背景 tint 模拟浮起。
 - 指标区动效顺序为：面板先从中线展开，数值再启动计数和轻微 pop；首页动效不根据 `prefers-reduced-motion` 降级，所有设备保持一致播放。
 - Figma SVG 导出经常包含整页背景、父容器和裁剪上下文；用于运行时的图标必须提取 leaf node / clean paths，不能直接使用污染的整卡导出。
-- **现状偏差（勿假设已优化）**：Home 仍挂载 `WebRootProviders`（含 thirdweb），首屏 JS 体积大；Home CTA **链接**到 `app.html`，不在首页弹钱包；多语言 HTML 为 **薄壳 CSR**，非 SSG。
+- **现状（代码 SSOT）**：Home 使用 `HomeProviders`（仅 Query，**无** thirdweb）；DApp `app.html` 使用 `WebRootProviders`。Home CTA **链接**到 `app.html`，不在首页弹钱包；多语言 HTML 为 **薄壳 CSR**，非 SSG。首屏体积与 chunk 拆分见 [`docs/homepage-architecture.md`](docs/homepage-architecture.md)。
 
 ### 8.6 AEGIS X DApp 技术约束
 
@@ -72,8 +72,8 @@ AI 工作规范
 - **前端技术栈**：React + Vite + TypeScript + Tailwind CSS。
 - **钱包技术栈**：thirdweb React SDK v5；`ThirdwebProvider` / `ConnectButton` 负责连接 UI、钱包列表、自动重连、WalletConnect 和 EIP-6963 钱包发现；链上读写、签名、交易状态以 thirdweb SDK 的 client、account、wallet 和 transaction API 为 SSOT。
 - **钱包兼容策略**：必须同时保留 injected provider、WalletConnect fallback、EIP-6963 多钱包发现；移动钱包内置浏览器优先 injected，普通移动浏览器走 WalletConnect deep link / QR。
-- **链配置策略**：链定义集中维护在 `src/web3/thirdweb.ts`；不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。接入 Ethereum 时在此扩展 `supportedChains`。
-- **登录语义**：连接钱包不等于业务登录。涉及推荐关系、奖励记录、用户态 session 时，应增加 SIWE/nonce 签名认证闭环。
+- **链配置策略**：链定义集中维护在 `src/views/dapp/web3/thirdweb.ts`；合约地址在 `src/shared/config/contracts.ts`。不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。接入 Ethereum 时在此扩展 `supportedChains`。
+- **登录语义**：连接钱包不等于业务登录。SIWE/nonce + JWT session 已由 `AuthProvider` + `src/views/dapp/auth/login-with-wallet.ts` 落地；推荐关系 / 奖励记录依赖 `sessionReady`。
 - **UI 实现**：钱包按钮优先用 thirdweb `ConnectButton` 的 `connectButton` / `detailsButton` / `connectModal` 配置承接项目设计，不直接暴露默认按钮样式到核心界面。
 
 ### 8.7 样式与 Tailwind 约束

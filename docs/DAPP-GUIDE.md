@@ -111,7 +111,7 @@
 | 原则 | 含义 | 本仓库对应 |
 |------|------|------------|
 | **Simulate before send** | 写链前 simulate，revert 拦在钱包弹窗前 | `wallet-contract-write.ts` |
-| **Human-readable signing** | SIWE 让用户看懂签的是什么 | `auth/siwe-message.ts` |
+| **Human-readable signing** | SIWE 让用户看懂签的是什么 | `src/views/dapp/auth/build-login-message.ts` |
 | **Explicit slippage & deadline** | `amountOutMin` + deadline 与 UI 同源 | `calcAmountOutMin` + `SWAP_CONFIG.deadline` |
 | **Fail gracefully** | 区分拒签 / transient / revert / 封禁 | auth-machine + `interceptApiError` |
 | **Don't spam RPC** | 只在需要的 tab / 子视图轮询 | `SwapSubviewProviders` gate |
@@ -359,16 +359,17 @@ queryKeys.api.teamOverview
 
 API query **必须**带 token scope，防换钱包仍显示旧用户数据。
 
-### 7.2 失效入口（SSOT：`invalidate.ts` / `dapp-actions.ts`）
+### 7.2 失效入口（SSOT：`src/shared/api/query/invalidate.ts`）
 
 | 事件 | 调用 |
 |------|------|
-| 登录成功 | `afterAuthLogin(address)` |
-| 登出 | `afterAuthLogout()` |
-| 换钱包 | `afterWalletSwitch(prev, next, tab)` |
-| Swap 成功 | `afterSwap()` |
-| Genesis 购买 | `afterGenesisPurchase(...)` |
-| 绑定推荐人 | `afterReferralBind()` |
+| 登录成功 | `invalidateAfterAuthLogin(address)` |
+| 登出 | `clearApiQueries()` |
+| 换钱包 | `invalidateAfterWalletSwitch(prev, next, tab)` |
+| Swap 成功 | `invalidateAfterSwap()` |
+| Genesis 购买 | `invalidateAfterGenesisPurchase(...)` |
+| 绑定推荐人 | `invalidateAfterReferralBind()` |
+| Team / Community claim | `invalidateAfterTeamClaim()` |
 
 ### 7.3 staleTime 参考
 
@@ -607,7 +608,7 @@ codegraph context "auth session login"
 - [ ] `walletReady` / `sessionReady` 分清  
 - [ ] query key 来自 `query-keys.ts`  
 - [ ] 链上读 `useChainReadClient`；写 `writeContractViaWallet`  
-- [ ] 成功后 `dapp-actions` invalidate  
+- [ ] 成功后 `invalidate.ts` 对应入口  
 - [ ] 复杂 widget → Context 单例  
 - [ ] 无数据 `—`  
 - [ ] 单测覆盖 math / 状态机 / calldata

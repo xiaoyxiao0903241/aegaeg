@@ -1,7 +1,7 @@
 # 首页架构与入口（代码现状 SSOT）
 
 > **读者**：后续 AI agent / 开发者 — **改 Home、动效、i18n HTML、Provider 前先读本文**  
-> **最后对齐代码**：2026-07-07  
+> **最后对齐代码**：2026-07-09  
 > **关联**：[`static-homepage-plan.md`](./static-homepage-plan.md)（目标规则）· [`homepage-load-optimization.md`](./homepage-load-optimization.md)（性能优化路线）· [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md)（动效）
 
 ---
@@ -152,10 +152,9 @@ Home **不**渲染 `ConnectButton`；Header/Hero 仅链接到 DApp。
 ## 7. 验证（现状）
 
 ```bash
-pnpm build
-# Home 不应再是「目标态」断言；当前 thirdweb chunk 仍会出现在 dist/en/index.html
-pnpm test:unit          # 含 home-content 等
-pnpm test:e2e           # 视觉回归
+pnpm check              # tsc + architecture + unit（收工门禁）
+pnpm build              # Home 入口不应预载 thirdweb；DApp 可
+pnpm test:e2e           # 视觉 + Swap 行为契约
 ```
 
 **手工**：
@@ -165,7 +164,7 @@ pnpm test:e2e           # 视觉回归
 - [ ] DApp 内 Connect 正常  
 - [ ] popup notice（依赖 API 时）
 
-**目标态验收**（Phase 1 完成后）：见 `homepage-load-optimization.md` §6。
+**后续性能**：见 `homepage-load-optimization.md` Phase 2–4。
 
 ---
 
