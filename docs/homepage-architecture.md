@@ -24,7 +24,7 @@
 | `src/views/home/home-reveal-loader.ts` | 首页 **动效 boot**（reveal / 计数 / 懒图） | 钱包连接、地址探测 |
 | `bootHomeReveal()` | React mount 后启动 IO | 加载 thirdweb |
 | `data-home-motion-ready` | 动效脚本已就绪，CSS 可播放入场 | 钱包已连接 |
-| `wallet.css`（被 `home.css` / `app.css` import） | connected chip · ConnectEmbed · tw-modal shell | Connect CTA（已走 `Button` / `DappActionButton`） |
+| `wallet.css`（仅 `app.css` import） | connected chip · ConnectEmbed · tw-modal shell | Connect CTA（已走 `Button` / `DappActionButton`） |
 
 ---
 
@@ -120,7 +120,7 @@ src/views/home/main.tsx
 | `HomeProviders` | 仅 React Query（popup notice 等 API） |
 | `@tanstack/react-query` | `use-home-popup-notice.ts` 拉 popup API |
 | `I18nProvider` | 文案；首屏 `getMessagesSync(locale)` |
-| `wallet.css` 类名 | Header/Hero CTA 外观 |
+| `Button` | Header/Hero CTA 外观（不依赖 `wallet.css`） |
 
 Home **不**渲染 `ConnectButton`；Header/Hero 仅链接到 DApp。
 
@@ -130,10 +130,10 @@ Home **不**渲染 `ConnectButton`；Header/Hero 仅链接到 DApp。
 
 | 入口 | 文件 | 内容 |
 |------|------|------|
-| Home | `src/shared/styles/home.css` | `globals.css` + **`wallet.css`**（仅 CTA 视觉）+ `home-motion.css` |
-| DApp | `src/shared/styles/dapp.css` | `globals` / foundations + wallet + dapp 布局 |
+| Home | `src/shared/styles/home.css` | `tailwindcss` + `shared.css` + `home-motion.css`（**不含** `wallet.css`） |
+| DApp | `src/shared/styles/app.css` | `shared.css` + utilities + `wallet.css` + DApp shell |
 
-**CSS 双 bundle**：`shared/styles/home.css` 与 `dapp.css` 分入口；home 首屏不携带 dapp-only wallet 规则。
+**CSS 双 bundle**：`home.css` 与 `app.css` 分入口；Home 首屏不携带 Connect / `tw-modal` 壳规则。
 
 ---
 

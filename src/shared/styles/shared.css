@@ -3,9 +3,8 @@
  * Imported by app.css and home.css entry bundles.
  */
 @source '../../app';
-@source '../../components';
-@source '../../home';
-@source '../../views/home/home-reveal-loader.ts';
+@source '../../views';
+@source '../../shared';
 
 @import 'tailwindcss/theme.css';
 @import './tokens/theme.css';

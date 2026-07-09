@@ -50,7 +50,7 @@ Figma source of truth (canonical — same as root `AGENTS.md` §8.4):
 - Use shadcn-compatible semantic token names for UI consistency.
 - Map token values from Figma, using `oklch()` values in CSS variables where practical.
 - Keep AEGIS-specific tokens for brand accents, section bands, and token-card colors.
-- `home.css` imports `wallet.css` for **CTA button visuals only** — not wallet SDK (see architecture doc).
+- Home CTA visuals use Foundation `Button` — **not** `wallet.css` (Connect shell CSS is DApp-only via `app.css`).
 
 ## Implemented Pages
 

@@ -78,7 +78,7 @@ Risk: …
 | `home-motion.css` + reveal `data-*` | Home 动效运行时 |
 | `wallet.css` 主路径（connected chip / connect-embed / tw-modal） | Connect shell；CTA 已迁 Button |
 | DApp 动效钩子（`faq-answer-panel*` · `dapp-collapsible-*` · panel-enter · modal/sheet …） | 有 DOM/`data-*` 绑定 |
-| `scrollbars.css` 全局 + `scrollbar-x-track` | 表卡横向滚动 |
+| `scrollbars.css` 全局 + `scrollbar-x-track` | 表卡横向滚动（`scrollbar-none` / `scrollbar-dark` 已删：零 call site） |
 
 可删前提：`rg` 全仓（含 `scripts/`）零命中，且不在上表。
 
