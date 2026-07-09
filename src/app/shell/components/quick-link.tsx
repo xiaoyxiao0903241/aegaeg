@@ -44,7 +44,7 @@ export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkPr
       <Text
         as="span"
         variant="headline"
-        className="text-sm leading-normal max-dapp:text-xs"
+        className="text-sm leading-normal"
       >
         {label}
       </Text>

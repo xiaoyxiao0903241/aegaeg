@@ -31,9 +31,7 @@ export function DappConnectPromoCard({ className }: { className?: string }) {
         </div>
       </div>
       <div aria-hidden="true" className="h-1.5 shrink-0" />
-      <div className="[&_.aegis-thirdweb-button-primary]:!min-h-9.5 [&_.aegis-thirdweb-button-primary]:!h-9.5 [&_.aegis-thirdweb-button-primary]:!text-xs">
-        <WalletConnectChip fullWidth variant="primary" />
-      </div>
+      <WalletConnectChip density="inverse" fullWidth variant="primary" />
     </WidgetPromoCard>
   )
 }

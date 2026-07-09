@@ -240,9 +240,6 @@
   --shadow-card-strong: var(--elevation-e4);
   --shadow-window-compact: 0 1rem 2.5rem rgba(18, 26, 51, 0.1);
   --shadow-primary-hover: 0 0.625rem 1.5rem rgba(232, 106, 67, 0.24);
-  /* wallet.css Connect primary hover — keep until thirdweb→Button slice */
-  --shadow-primary-hover-lg: 0 0.75rem 1.5rem rgba(232, 106, 67, 0.24);
-  --shadow-coral-sm: 0 0.5rem 1.375rem rgba(232, 106, 67, 0.14);
   --shadow-token: 0 1rem 3.125rem rgba(18, 26, 51, 0.12);
   --shadow-drawer: var(--app-shadow-drawer);
   --shadow-primary-orb: var(--app-shadow-primary-orb);

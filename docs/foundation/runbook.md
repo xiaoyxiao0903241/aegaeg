@@ -76,7 +76,7 @@ Risk: …
 | 区域 | 为何 |
 |------|------|
 | `home-motion.css` + reveal `data-*` | Home 动效运行时 |
-| `wallet.css` 主路径（chip / thirdweb / connect-embed） | Connect UI；迁 Button 另切片 |
+| `wallet.css` 主路径（connected chip / connect-embed / tw-modal） | Connect shell；CTA 已迁 Button |
 | DApp 动效钩子（`faq-answer-panel*` · `dapp-collapsible-*` · panel-enter · modal/sheet …） | 有 DOM/`data-*` 绑定 |
 | `scrollbars.css` 全局 + `scrollbar-x-track` | 表卡横向滚动 |
 

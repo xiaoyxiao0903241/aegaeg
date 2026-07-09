@@ -13,6 +13,8 @@ import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-er
 import { formatAddress } from '~/app/utils'
 import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
+import { Button } from '~/shared/ui/button'
+import { DappActionButton } from '~/app/shell/components/dapp-action-button'
 import { WalletDetailsModal } from '~/app/shell/components/wallet-details-modal'
 import { WalletConnectModal } from '~/app/shell/components/wallet-connect-modal'
 
@@ -93,11 +95,14 @@ function WalletConnectButton({
   label,
   variant = 'pill',
   fullWidth = false,
+  density = 'card',
 }: {
   className?: string
   label?: string
   variant?: 'pill' | 'primary' | 'inline'
   fullWidth?: boolean
+  /** primary only — inverse = dark promo 38; card/external = Button sm/md */
+  density?: 'card' | 'external' | 'inverse'
 }) {
   const { isLoggingIn, login, loginError, retryLogin, needsSignIn } = useAuth()
   const { messages: t } = useI18n()
@@ -106,13 +111,6 @@ function WalletConnectButton({
   const connectLabel =
     label ??
     (needsSignIn ? t.wallet.signInRequired : t.common.connectWallet)
-
-  const connectButtonClassName =
-    variant === 'primary'
-      ? 'aegis-thirdweb-button aegis-thirdweb-button-primary'
-      : variant === 'inline'
-        ? 'aegis-thirdweb-button aegis-thirdweb-button-inline'
-        : 'aegis-thirdweb-button'
 
   async function handleClick() {
     if (loginError) {
@@ -142,24 +140,46 @@ function WalletConnectButton({
     setConnectOpen(true)
   }
 
+  const labelNode = (
+    <span className={walletLabelClass}>
+      {variant !== 'primary' && !needsSignIn ? (
+        <span className={walletGlyphClass} aria-hidden="true" />
+      ) : null}
+      <Text as="span" variant="copy" className="truncate font-semibold leading-none">
+        {isLoggingIn ? t.wallet.connecting : connectLabel}
+      </Text>
+    </span>
+  )
+
+  const widthClass = fullWidth ? 'w-full' : 'w-auto'
+
   return (
     <div className={cn(fullWidth ? 'flex w-full' : 'inline-flex items-center')}>
-      <button
-        aria-busy={isLoggingIn}
-        className={cn(connectButtonClassName, fullWidth && 'aegis-thirdweb-button-full', className)}
-        disabled={isLoggingIn}
-        onClick={() => void handleClick()}
-        type="button"
-      >
-        <span className={walletLabelClass}>
-          {variant !== 'primary' && !needsSignIn ? (
-            <span className={walletGlyphClass} aria-hidden="true" />
-          ) : null}
-          <Text as="span" variant="copy" className="truncate text-sm font-semibold leading-none">
-            {isLoggingIn ? t.wallet.connecting : connectLabel}
-          </Text>
-        </span>
-      </button>
+      {variant === 'primary' ? (
+        <DappActionButton
+          aria-busy={isLoggingIn || undefined}
+          className={cn(widthClass, className)}
+          density={density}
+          disabled={isLoggingIn}
+          onClick={() => void handleClick()}
+          type="button"
+        >
+          {labelNode}
+        </DappActionButton>
+      ) : (
+        <Button
+          aria-busy={isLoggingIn || undefined}
+          className={cn(widthClass, className)}
+          disabled={isLoggingIn}
+          onClick={() => void handleClick()}
+          shape="pill"
+          size="sm"
+          type="button"
+          variant={variant === 'inline' ? 'ghost' : 'secondary'}
+        >
+          {labelNode}
+        </Button>
+      )}
       {!needsSignIn ? (
         <WalletConnectModal onOpenChange={setConnectOpen} open={connectOpen} />
       ) : null}
@@ -172,11 +192,13 @@ export function WalletConnectChip({
   label,
   variant = 'pill',
   fullWidth = false,
+  density = 'card',
 }: {
   className?: string
   label?: string
   variant?: 'pill' | 'primary' | 'inline' | 'connected'
   fullWidth?: boolean
+  density?: 'card' | 'external' | 'inverse'
 }) {
   const account = useActiveAccount()
   const { isAuthenticated } = useAuth()
@@ -191,6 +213,7 @@ export function WalletConnectChip({
   return (
     <WalletConnectButton
       className={className}
+      density={density}
       fullWidth={fullWidth}
       label={label}
       variant={variant === 'connected' ? 'primary' : variant}

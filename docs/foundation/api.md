@@ -129,7 +129,7 @@
 | outlined | — | `rounded-md` (16px) | `p-3.5` (14px) | 标准边框卡（wcol box、meta、mode card、`DappSideCard`） |
 | elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、`SwapProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影） |
 | soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18） |
-| inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（CalloutCard、WidgetPromoCard） |
+| inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（`WidgetPromoCard`） |
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`
 
@@ -175,16 +175,16 @@
 | `MetricCard` | sc / mc | `label`, `value`, `hint`, `tone` | 跨页指标 |
 | `DataTable` | tbl / trow / cell | `columns`, `rows`, `empty` | cell 614 次 |
 | `Accordion` | qa / qhd | `items`, `variant` | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`） |
-| `CalloutCard` | promo / pcard / tc | `title`, `description`, `cta` | 深色 CTA / 提示卡 |
+| `WidgetPromoCard` | promo / pcard | children | 深色 CTA 卡（`Card inverse`）；替代已删 `CalloutCard` |
 
 **内部约定**：
 - `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron：固定 path + CSS `.faq-chevron`（`[data-faq-item][data-state=open]` → `rotate(180deg)` + `color: var(--primary)`；关态 `foreground@40%`）；禁换 path / 禁 React 条件 class 切旋转。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
-- `CalloutCard` 内部使用 `Card surface="inverse"` + `Text tone="inverse"`。
-- `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `CalloutCard` / `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
-- `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / CalloutCard）。
+- `WidgetPromoCard` 内部使用 `Card surface="inverse"`（深色 CTA；原 `CalloutCard` 已删，零 call site）。
+- `DappInlineAlert`（`src/shared/ui/dapp-inline-alert.tsx`）：destructive 内联提示 chrome（border / wash / pad / `text-destructive`）；`density` = `compact` | `comfortable`；字阶仍走 Text `copy`；**不是** Card surface，**勿**并入 `inverse`。间距（`mt`/`mx`/`mb`）留 call site。
+- `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
 - `aegisDialogCloseClass`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
 - `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-[6px]` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button；下拉菜单不在该节点，保留 portal。
@@ -222,7 +222,7 @@
 | Chip | `shared/ui/chip.tsx` | 3×3×2×4 |
 | Card | `shared/ui/card.tsx` | 4 surface |
 | Input | `shared/ui/input.tsx` | default / numeric / amount |
-| Composite | FaqList · CalloutCard · MetricCard · Segment · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome |
+| Composite | FaqList · WidgetPromoCard · MetricCard · Segment · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome |
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。
 

@@ -48,6 +48,7 @@ pnpm exec eslint <paths>
 | 去硬编码 px tracking / ch / rays hex | §5ap |
 | themeHex / toaster / scrollbar 收束 | §5aq |
 | 对抗审核共识优化（Chip/Card/字距） | §5ar |
+| DApp max-dapp 字阶 / Connect→Button / slippage Chip | §5as |
 | 分页 Figma | §5u |
 | Card / Metric / dark banner | §5m–§5o |
 
@@ -281,7 +282,8 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | `SwapProgramCard` 裸 div → `Card as="button" elevated` | INTENTIONAL | 去手写 `shadow-card`；pad 仍 `p-4` |
 | `CommunityProgramCard` | KEEP | 已是 elevated；文案结构不并 Swap |
 | `DappTableCard` / Shell → `Card elevated` | INTENTIONAL | elevation 来自 surface；壳抹 `rounded-2xl`+`p-0`（§5ab 去外边框） |
-| `aegis-thirdweb-button*` → `Button` | DEFER | 可迁；高度 36/40 vs sm/md 42/44、玻璃底需 density 或 className；另切片 |
+| `aegis-thirdweb-button*` → `Button` | → §5as | |
+| wallet `shadow-primary-hover-lg` | → §5as | |
 
 ## 5p. Button hover 统一（2026-07-09）
 
@@ -557,8 +559,20 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | `season-card` 槽位去平行 font/leading/tracking；title→`headline` | REGRESSION→fixed | 字阶交 Text（审核 A/C） |
 | `shared.css` body wash → `--app-body-wash`；删 `themeHex.faqText` | REGRESSION→fixed | 工程洁癖（审核 D） |
 | wallet hover `translateY`→scale；`*-hover-lg`→`shadow-primary-hover` | REGRESSION→fixed | 手感对齐；全量 thirdweb→Button 仍 DEFER |
-| Home hero 6xl / DApp views 非法 `max-dapp` 字阶 / slippage preset 手写钮 | DEFER | 需 marketing type 轴或另切片；本轮不扩 Text 轴 |
-| `staticExtraTheme` 平行影 / CalloutCard 死码 / composite 豁免收窄 | DEFER | 另切片 |
+| Home hero 6xl / DApp views 非法 `max-dapp` 字阶 / slippage preset 手写钮 | → §5as | |
+| `staticExtraTheme` 平行影 / CalloutCard 死码 / composite 豁免收窄 | → §5as | |
+
+## 5as. DApp max-dapp 字阶 / Connect→Button / slippage·影·Callout（2026-07-09）
+
+对抗审核 DEFER 2–4。
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| 清 `views/dapp/**` + shell（card/meta/quick-link）非法 `max-dapp` 字阶 | REGRESSION→fixed | H5 走 Text token；`responsive-table` 白名单保留 |
+| `WalletConnectChip` → `Button` / `DappActionButton` density | REGRESSION→fixed | 删 `.aegis-thirdweb-button*`；promo `density=inverse`；Home Enter App → Button |
+| Slippage presets → `Chip` solid/outlined | REGRESSION→fixed | 删手写 `PRESET_BTN_CLASS` |
+| 删 `shadow-primary-hover-lg` / `shadow-coral-sm`；CalloutCard 死码 | REGRESSION→fixed | 零消费；`WidgetPromoCard` 为 inverse CTA SSOT |
+| ConnectEmbed / tw-modal / connected chip CSS | INTENTIONAL | 仍留 `wallet.css`（非 CTA 平行 chrome） |
 
 ## 6. 修订
 
@@ -612,3 +626,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v3.4 | §5ap 去硬编码 px tracking / ch / hero-rays hex |
 | v3.5 | §5aq themeHex←colorHex；toaster/scrollbar/wallet 色影走 vars |
 | v3.6 | §5ar 对抗审核共识：Chip/Card/字距/wallet hover；世界级仍 NEAR |
+| v3.7 | §5as 清 DApp max-dapp 字阶；Connect→Button；slippage Chip；删 CalloutCard / 死影 |

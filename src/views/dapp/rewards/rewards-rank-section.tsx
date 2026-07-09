@@ -125,7 +125,7 @@ export function RewardsRankSection() {
               as="p"
               variant="eyebrow"
               tone="primary"
-              className="m-0 max-dapp:text-[length:var(--type-eyebrow-size)]"
+              className="m-0"
             >
               {t.rewards.currentTitle}
             </Text>
@@ -135,7 +135,7 @@ export function RewardsRankSection() {
                   as="p"
                   variant="eyebrow"
                   tone="primary"
-                  className="m-0 max-dapp:text-[length:var(--type-eyebrow-size)]"
+                  className="m-0"
                 >
                   {t.rewards.postLaunchRankTitle}
                 </Text>
@@ -149,7 +149,7 @@ export function RewardsRankSection() {
 
             <RankTitleWithSuperCommunity
               as="strong"
-              className="block max-dapp:leading-[1.2]"
+              className="block"
               isSuperCommunity={hasRank && isSuperCommunity}
               superCommunityLabel={t.rewards.superCommunityBadge}
               title={rankLabel}
@@ -159,7 +159,7 @@ export function RewardsRankSection() {
                 as="strong"
                 variant="brand"
                 tone="foreground"
-                className="block text-right leading-[1.3] tracking-[-0.02em] max-dapp:leading-[1.2]"
+                className="block text-right leading-[1.3] tracking-[-0.02em]"
               >
                 {postLaunchRank}
               </Text>

@@ -59,18 +59,18 @@ function RewardsHeroPanel({
           <div className="flex flex-col gap-0">
             <Text
               as="p"
-              variant="copy"
+              variant="detail"
               tone="inverse-muted"
-              className="m-0 max-dapp:text-[length:var(--type-detail-size)]"
+              className="m-0"
             >
               {heroTierRewardBody}
             </Text>
             {showSuperBadge ? (
               <Text
                 as="p"
-                variant="copy"
+                variant="detail"
                 tone="inverse-muted"
-                className="m-0 max-dapp:text-[length:var(--type-detail-size)]"
+                className="m-0"
               >
                 {superCommunityBenefitBody}
               </Text>

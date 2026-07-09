@@ -114,7 +114,7 @@ export function CommunityStatCard({
         tone={dark ? 'inverse' : 'foreground'}
         className={cn(
           styles.value(),
-          'text-3xl leading-[1.2] tracking-[-0.04em] max-dapp:text-2xl max-dapp:leading-[1.05] max-dapp:tracking-tight',
+          'text-3xl leading-[1.2] tracking-[-0.04em]',
         )}
       >
         {value}

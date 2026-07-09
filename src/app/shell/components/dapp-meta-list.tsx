@@ -32,7 +32,7 @@ export function DappMetaList({
             as="span"
             variant="detail"
             tone="muted-foreground"
-            className="leading-normal max-dapp:text-xs"
+            className="leading-normal"
           >
             {item.label}
           </Text>
@@ -40,7 +40,7 @@ export function DappMetaList({
             as="strong"
             variant="detail"
             className={cn(
-              'mt-0 text-right font-semibold leading-normal max-dapp:text-xs',
+              'mt-0 text-right font-semibold leading-normal',
               item.valueClassName,
             )}
           >

@@ -13,7 +13,7 @@ const genesisGlobeHeight = 250
 
 const genesisGlobalCard = tv({
   slots: {
-    // Chrome SSOT: dappDarkBanner (≠ Card inverse / CalloutCard).
+    // Chrome SSOT: dappDarkBanner (≠ Card inverse / WidgetPromoCard).
     root: cn(dappDarkBanner().root(), 'min-h-32 p-6 max-dapp:p-4.5'),
     // CTA is absolute — not flex gap. Reserve width on the kicker only (≡ 4175/dev).
     content: cn(dappDarkBanner().content(), 'max-dapp:max-w-none'),
@@ -60,15 +60,15 @@ export function GenesisGlobalCard({
           as="strong"
           tone="inverse"
           variant="panel"
-          className="block max-dapp:text-lg max-dapp:leading-[1.2]"
+          className="block"
         >
           {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
         </Text>
         <Text
           as="p"
-          variant="copy"
+          variant="detail"
           tone="inverse-muted"
-          className="m-0 max-dapp:w-full text-xs max-dapp:text-[length:var(--type-detail-size)]"
+          className="m-0 max-dapp:w-full"
         >
           {body}
         </Text>

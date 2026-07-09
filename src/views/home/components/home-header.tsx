@@ -1,4 +1,5 @@
 import { LanguageMenu } from '~/shared/ui/language-menu'
+import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { allLanguageOptions } from '~/i18n/locales'
@@ -69,14 +70,9 @@ export function HomeHeader() {
           >
             {content.whitepaper}
           </Text>
-          <Text
-            as="a"
-            className="aegis-thirdweb-button aegis-thirdweb-button-primary"
-            href={appHref}
-            variant="detail"
-          >
-            {content.enterApp}
-          </Text>
+          <Button asChild className="w-auto" shape="pill" size="sm" variant="primary">
+            <a href={appHref}>{content.enterApp}</a>
+          </Button>
           <LanguageMenu
             checkIcon={dappAssets.check}
             globeIcon={homeAssets.globe}

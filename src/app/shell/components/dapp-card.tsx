@@ -86,9 +86,9 @@ export function RewardBalanceCard({
           </Card.Label>
         )}
       </Card.Header>
-      {/* Default: text-lg；H5 text-xs；referral 用 figure 覆盖 */}
+      {/* Default: text-lg；H5 走 Text variant token；referral 用 figure 覆盖 */}
       <Card.Value
-        className={cn('mt-2 text-lg font-semibold leading-[1.3] max-dapp:text-xs', valueClassName)}
+        className={cn('mt-2 text-lg font-semibold leading-[1.3]', valueClassName)}
       >
         {value}
       </Card.Value>

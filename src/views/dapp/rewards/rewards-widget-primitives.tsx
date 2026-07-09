@@ -44,7 +44,7 @@ export function RewardsProgressRow({
         as="strong"
         variant="copy"
         tone="foreground"
-        className="text-right text-xs font-semibold leading-[1.3] max-dapp:leading-[1.2]"
+        className="text-right text-xs font-semibold leading-[1.3]"
       >
         {value}
       </Text>
@@ -66,7 +66,7 @@ export const rewardsBalanceHint = tv({
   base: 'max-dapp:hidden text-foreground/30',
 })
 
-/** Referral amount: 4175 amount token + leading 1.3 / tracking -0.54；H5 保持 figure（禁吃 Card.Value 的 max-dapp:text-xs）。 */
+/** Referral amount: 4175 amount token + leading 1.3 / tracking -0.54；H5 走 figure Text token。 */
 export const rewardsReferralAmount = tv({
-  base: 'text-[length:var(--type-figure-size)] leading-[1.3] tracking-[-0.03em] max-dapp:text-[length:var(--type-figure-size)] max-dapp:leading-[1.2]',
+  base: 'text-[length:var(--type-figure-size)] leading-[1.3] tracking-[-0.03em]',
 })

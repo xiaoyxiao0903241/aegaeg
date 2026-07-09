@@ -95,7 +95,6 @@ export function RewardsBalanceSection() {
       ) : (
         <RewardBalanceCard
           badge={t.rewards.autoPaidLabel}
-          badgeClassName="max-dapp:font-semibold max-dapp:leading-[1.2]"
           className={cn(
             rewardsSideCard(),
             'max-dapp:[&_small]:hidden',

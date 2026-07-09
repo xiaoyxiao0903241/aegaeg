@@ -51,7 +51,7 @@ export function CommunityReferralLinkCard({
       <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs leading-normal">
         {linkLabel}
       </Text>
-      <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold tracking-tight max-dapp:text-xs">
+      <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold tracking-tight">
         {referralLink}
       </Text>
       <DappActionButton disabled={disabled} onClick={onCopy}>
