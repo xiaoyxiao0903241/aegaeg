@@ -179,6 +179,7 @@
 - `aegisDialogCloseClass`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
 - `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-[6px]` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；**不是** Button；下拉菜单不在该节点，保留 portal。
+- `swapFlowButtonClass`（`swap-widget-composites.tsx`）：Figma `flb` `4040:1662` — 34×34 · `rounded-control` · border · card；Trade flip / Flash divider 共用；**不是** `IconButton`（详情折叠）。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
 

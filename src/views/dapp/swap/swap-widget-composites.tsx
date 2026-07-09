@@ -25,6 +25,12 @@ const swapGenesisFooterCardClass = 'gap-1.5 [&_p]:leading-tight'
 
 export const swapPercentRowClass = 'pt-2.5 max-dapp:mt-3 max-dapp:py-0'
 
+/** Figma `flb` 4040:1662 — 34×34 · radius-control 11 · border · card fill. Trade flip + Flash divider. */
+export const swapFlowButtonClass = cn(
+  'grid size-[2.125rem] shrink-0 place-items-center rounded-control border border-border bg-card p-0',
+  'text-sm leading-none tracking-[-0.28px] text-foreground shadow-none',
+)
+
 export const swapFlipCard = tv({
   variants: {
     flipping: {

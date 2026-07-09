@@ -18,6 +18,7 @@ import {
   SwapMetaPanel,
   SwapSubpageHeader,
   SwapWidgetBody,
+  swapFlowButtonClass,
   useSwapBalanceLabels,
 } from '~/views/dapp/swap/swap-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
@@ -101,7 +102,8 @@ export function FlashSwapWidget({
           buyBalance={buyLabel}
           middleSlot={
             <div aria-hidden className="flex items-center justify-center py-1.5">
-              <div className="grid size-[2.125rem] place-items-center rounded-control border border-border bg-card">
+              {/* Same Figma `flb` chrome as Trade flip; Flash keeps chevron divider glyph. */}
+              <div className={swapFlowButtonClass}>
                 <DappIcon alt="" className="size-4" src={flashSwapAssets.flowDivider} />
               </div>
             </div>

@@ -442,6 +442,14 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | skeleton light → `soft` + 同 chrome | REGRESSION→fixed | 曾用 elevated；与 sc soft 不一致 |
 | 暗色 sc | KEEP | inverse + coral-bright；艺术卡清影 |
 
+## 5aa. Swap `flb` 中间钮 ↔ Figma `4040:1662`（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `swapFlowButtonClass` SSOT | INTENTIONAL | 34×34 · `rounded-control`(11) · border · card · text-sm/-0.28 |
+| Trade flip：`size-8`/`rounded-sm` → `swapFlowButtonClass` | REGRESSION→fixed | ≡ Figma flb；保留 hover lift + 旋转 |
+| Flash divider 共用同一 chrome | INTENTIONAL | 仍用 chevron SVG；壳与 Trade 一致 |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -474,3 +482,4 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | v2.24 | §5x Community Bind → Input + fieldActionChip（≡ Genesis MAX） |
 | v2.25 | §5y InviteFlow 步骤线等距；Detail 首段 `mt-0` |
 | v2.26 | §5z CommunityStat 浅色 sc ≡ Figma `4040:7313` |
+| v2.27 | §5aa Swap flb 中间钮 ≡ Figma `4040:1662` |
