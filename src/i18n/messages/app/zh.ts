@@ -469,16 +469,16 @@ const app = defineMessages({
         title: '生态支持计划',
         items: [
           {
-            label: 'X DAO 共建 · 第{season}期',
-            title: '全球共建计划进行中',
-            body: '汇聚全球共建者，共同参与生态建设。',
+            label: '创世共建 · 第{season}期',
+            title: '创世储备理事计划',
+            body: '全球首批共建席位开放',
             action: '查看计划详情 →',
             href: 'https://xdaoaegis.notion.site/390dd8755b9880ed8497ffcb02ba7301',
           },
           {
-            label: 'X 学院',
-            title: '面向共建者的生态培训计划',
-            body: '帮助共建者更深入了解生态机制与发展规划。',
+            label: 'X学院',
+            title: '全球DeFi学院·数字经济时代全球领导力学院',
+            body: '为时代培养领袖·为未来储备人才',
             action: '查看计划详情 →',
             href: 'https://xdaoaegis.notion.site/xacademy',
           },
