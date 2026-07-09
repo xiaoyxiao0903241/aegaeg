@@ -292,7 +292,7 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | Community shareholder 去 `shadow-primary-hover-xl` | INTENTIONAL | 与 Swap/Claim 同用 `shadow-primary-hover` |
 | `ghost` 补 lift + focus-visible | INTENTIONAL | 与 primary/secondary 同 lift 契约 |
 | Slippage Confirm → `Button primary md pill` | INTENTIONAL | 删手写 hover |
-| wallet `shadow-primary-hover-lg` | DEFER | thirdweb CSS 另切片 |
+| wallet `shadow-primary-hover-lg` | → §5as | |
 
 ## 5q. 隐藏面（modal / drawer）第一刀（2026-07-09）
 
@@ -317,7 +317,7 @@ SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` de
 | drawer close | KEEP | 透明 X ≠ `aegisDialogCloseClass`（modal 圆框） |
 | `data-dapp-mobile-nav*` | KEEP | 动效钩子 |
 | 删 `--shadow-primary-hover-xl` | INTENTIONAL | 无 call site；`*-lg` 仍给 wallet.css |
-| ConnectEmbed / thirdweb button | DEFER | 另切片 |
+| ConnectEmbed / tw-modal shell | INTENTIONAL | CTA 已迁 Button；embed/modal CSS 仍 wallet.css（§5as） |
 | Text tracking A7 | DEFER | 另切片 |
 
 ## 5s. Genesis 全球卡「查看合约」按钮（2026-07-09）
@@ -558,7 +558,7 @@ SSOT：`n8nD6qqAtikNhP3xuH8PRS` node `4067:258`（非 4175/`dev` 结构）。
 | partners 名包 `<Text>`；分页去 `tracking-normal` | REGRESSION→fixed | |
 | `season-card` 槽位去平行 font/leading/tracking；title→`headline` | REGRESSION→fixed | 字阶交 Text（审核 A/C） |
 | `shared.css` body wash → `--app-body-wash`；删 `themeHex.faqText` | REGRESSION→fixed | 工程洁癖（审核 D） |
-| wallet hover `translateY`→scale；`*-hover-lg`→`shadow-primary-hover` | REGRESSION→fixed | 手感对齐；全量 thirdweb→Button 仍 DEFER |
+| wallet hover `translateY`→scale；`*-hover-lg`→`shadow-primary-hover` | REGRESSION→fixed | 手感对齐；全量 Connect→Button 见 §5as |
 | Home hero 6xl / DApp views 非法 `max-dapp` 字阶 / slippage preset 手写钮 | → §5as | |
 | `staticExtraTheme` 平行影 / CalloutCard 死码 / composite 豁免收窄 | → §5as | |
 
