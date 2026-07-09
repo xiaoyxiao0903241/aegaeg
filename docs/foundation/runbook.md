@@ -136,6 +136,14 @@ H5: (同上)
 
 **`group-data-[tab=*]`**：仅合并**同值重复**；伪守卫仅当组件**确认只挂在该 tab** 时可内联。跨 tab 复用（如 `GenesisPromoCard` 在 Swap + Genesis）**必须保留** tab 守卫。真差异保留：`data-tab` 属性、Rewards topbar 品牌隐藏、`responsive-table` rewards fork、`dapp-detail-layout` gap SSOT。
 
+**跨 tab 左列 / CTA（MUST 统一）**
+
+| 面 | SSOT | 禁止 |
+|----|------|------|
+| wcol 左卡 padding/圆角 | Card `outlined` / `DappSideCard`（`p-3.5` · `rounded-md`） | per-tab `px-4 py-3.5` |
+| 标题→内容 / 块间距 | `dapp-detail-layout.ts` + `DappWidgetFrame` | 页面私有 `mt-*`/`pb-*` 字典 |
+| 主 pill 按钮高度 | `DappActionButton` density：card **42** · external **44** · inverse **38** | call site `min-h-*` 分叉 |
+
 **偏离标签**：结构债清理标 **INTENTIONAL**；误删导致塌陷标 **REGRESSION** 并修回。
 
 ### 6.2 视觉诊断序（登录态 / 子页）
@@ -189,3 +197,4 @@ pnpm compare:style-baseline -- dapp-swap-desktop dapp-swap-h5
 | v2.2 | 新增 §6.1 Class / CSS 减法；明确 `dev` 仅视觉对照、非结构 SSOT |
 | v2.3 | §6.1–6.2：红块优先；探针降级为确认工具 |
 | v2.4 | §6.1：CSS 瘦身保留清单（home-motion / wallet / DApp 动效钩子）；tab 守卫合并规则 |
+| v2.5 | §6.1：跨 tab 左卡 / 标题间距 / pill CTA 统一规则 |

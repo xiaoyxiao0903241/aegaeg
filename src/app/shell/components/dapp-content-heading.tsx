@@ -25,7 +25,7 @@ export function DappContentHeading({
         'm-0 max-dapp:mt-0',
         // H5 uses --type-section-size (17px); do not lock to text-base (16px).
         'max-dapp:text-[length:var(--type-section-size)]',
-        // Non-swap tabs share leading/tracking; Swap keeps token leading + -0.04em only.
+        // Default = Genesis/Rewards/Community (Figma dl). Swap: keep section leading, tracking -0.04em only.
         'group-data-[tab=swap]/shell:tracking-[-0.04em] group-data-[tab=swap]/shell:max-dapp:tracking-[-0.04em]',
         'group-data-[tab=genesis]/shell:leading-snug group-data-[tab=rewards]/shell:leading-snug group-data-[tab=community]/shell:leading-snug',
         'group-data-[tab=genesis]/shell:tracking-[-0.36px] group-data-[tab=rewards]/shell:tracking-[-0.36px] group-data-[tab=community]/shell:tracking-[-0.36px]',

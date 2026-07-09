@@ -110,6 +110,7 @@ function CommunityConnectedWidget({
 
       <DappActionButton
         className={communityGenesisCta()}
+        density="external"
         onClick={() => onSelectTab('genesis')}
       >
         {t.community.shareholder}

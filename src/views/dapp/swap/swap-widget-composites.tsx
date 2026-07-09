@@ -21,10 +21,7 @@ import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 
-const swapGenesisFooterCardClass = cn(
-  'gap-1.5 [&_button]:min-h-9.5 [&_button]:text-xs [&_p]:leading-tight',
-  'max-dapp:[&_button]:min-h-10 max-dapp:[&_button]:text-sm',
-)
+const swapGenesisFooterCardClass = 'gap-1.5 [&_p]:leading-tight'
 
 export const swapPercentRowClass = 'pt-2.5 max-dapp:mt-3 max-dapp:py-0'
 

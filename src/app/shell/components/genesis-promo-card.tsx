@@ -130,10 +130,7 @@ export function GenesisPromoCard({
           {body}
         </Text>
       )}
-      <DappActionButton
-        className="mt-2 min-h-9.5 text-xs group-data-[tab=genesis]/shell:max-dapp:min-h-10 group-data-[tab=genesis]/shell:max-dapp:text-sm"
-        onClick={onClick}
-      >
+      <DappActionButton className="mt-2" density="inverse" onClick={onClick}>
         {actionLabel ?? t.genesis.join}
       </DappActionButton>
     </WidgetPromoCard>

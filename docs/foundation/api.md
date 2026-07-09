@@ -66,15 +66,16 @@
 | `size` | `sm` · `md` · `lg` |
 | `shape` | `pill` · `rounded` |
 
-**Size 字阶**（按钮显示阶，**不是** Text `copy` token；对齐 4175 box model）：
-- `lg` = `min-h-12` · `text-base` · `leading-none` · `px-6`（H5：`px-5` / `text-sm`）
-- `md` = `min-h-10` · `text-sm` · `leading-snug` · `px-5`（H5：`text-xs`）
-- `sm` = `min-h-11` · `text-sm` · `leading-normal` · **无默认 px**（H5：`min-h-12` / `text-xs`）
-**Compound**：`size=sm` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
+**Size 高度 SSOT**（按钮显示阶，**不是** Text `copy` token）：
+- `sm` = **42**（`min-h-[2.625rem]`）· 卡内 CTA · `text-sm` · leading-normal · **无默认 px**
+- `md` = **44**（`min-h-11`）· 卡外 / widget 栈主 CTA · `text-sm` · leading-snug · `px-5`
+- `lg` = **48**（`min-h-12`）· Home hero 等 · `text-base` · leading-none · `px-6`（H5：`px-5` / `text-sm`）
+**暗色 promo CTA**：**38**（`min-h-9.5`）— 走 `DappActionButton density="inverse"`，**不是**第 4 个 size
+**Compound**：`size=sm|md` + `shape=pill` → `w-full`；`primary` + `lg` → `border-0`（其余 primary 为 `border-transparent`）
 **Typography**：`link` 用 `font-normal text-primary`，不 hand-roll 平行字阶文件
-**禁止**：call site 用 `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 字阶已在 size 轴，勿再叠 `max-dapp:text-*`
+**禁止**：call site 用 `!min-h-*` / `!text-*` 绕过 size · `shape="chip"`（拆到 Chip）；H5 勿再叠平行 `max-dapp:min-h-*` 改高度
 **依赖**：P1-Text
-**探针**：home hero CTA · topbar-connect · swap CTA
+**探针**：home hero CTA · swap CTA · claim · genesis promo Join · connect promo
 **Gate**：`variant` = **4**；`size` = **3**；`shape` = **2**
 
 ---
@@ -109,7 +110,7 @@
 
 | surface | Elevation | radius | padding | 用途 |
 |---------|-----------|--------|---------|------|
-| outlined | — | `rounded-sm` (14px) | `p-3.5` (14px) | 标准边框卡（box、meta、mode card） |
+| outlined | — | `rounded-md` (16px) | `p-3.5` (14px) | 标准边框卡（wcol box、meta、mode card、`DappSideCard`） |
 | elevated | E2 (`shadow-card`) | `rounded-md` (16px) | `p-3.5` (14px) | MetricCard、DataTable、ProgramCard |
 | soft | E1 (`shadow-faq`) | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion 项 |
 | inverse | E3 (`shadow-subtle`) | `rounded-md` (16px) | `p-4` (16px) | 深色 CTA 卡（CalloutCard、WidgetPromoCard） |
@@ -207,3 +208,4 @@
 | v1.0 | 合并 component-anatomy + text-refactor-plan；六节对称 |
 | v2.1 | 按用户最终命名调整：Text caption/eyebrow/copy/panel/figure；Card 4 surface；Composite NavRail/PanelHeader/AmountInput/Segment/Accordion/CalloutCard；Input default/numeric/amount；Button shape rounded |
 | v2.2 | P7 完成：按页替换 Swap / Genesis / Rewards / Community / Home；删除旧 swap 组件；新增 `swap-panel-toggle.tsx` 承接 PC 详情面板切换 |
+| v2.3 | Button size 高度：sm **42**（卡内）· md **44**（外部）· lg **48**；暗色 promo 38 走 `DappActionButton density="inverse"` |

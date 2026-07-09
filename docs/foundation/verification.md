@@ -258,6 +258,31 @@ Figma 层: <layer>
 | GenesisPromoCard `group-data-[tab=genesis]` | **KEEP** | 亦挂在 Swap footer；删守卫会污染 Swap |
 | `home-motion` / `wallet.css` 主路径 | **KEEP** | 见 runbook §6.1 保留清单 |
 
+## 5i. 左卡 / 标题 / pill CTA 统一（2026-07-09）
+
+| 变更 | 标签 | 说明 |
+|------|------|------|
+| `DappSideCard` / Rewards·Community 左卡去 `px-4 py-3.5` | INTENTIONAL | 统一 Card `outlined` = `p-3.5` + `rounded-md`（Figma box 14px） |
+| Claim / Copy / Join Genesis / Connect promo pill | INTENTIONAL | density：card **42** · external **44** · inverse **38**（Connect/Join Genesis） |
+| `DappPanelHeader` PC tracking | INTENTIONAL | 四 tab 共用 `dapp:tracking-[-0.42px]` |
+| `DappMetaList` | INTENTIONAL | 不再叠 `rounded-sm px-3.5 py-3`；用 Card 默认 |
+| Community 左卡 padding 旧锁 | **解除** | 用户要求跨 tab 统一；见 world-class-goals |
+| `CommunityReferrerBoundPanel` 去 `my-3`；删死包装 `DappReferrerBoundCard` | INTENTIONAL | 与 ReferralLink 同 `DappSideCard`；内部 `gap-2.5`（Figma bound≈10） |
+| Detail 列 MetricCard `px-4 py-3.5` | KEEP（本切片） | 非 wcol 左卡；另切片再收 |
+
+**Figma 对照（Community `82:430`）**：referral `box` 与 `box-referrer-bound` **同圆角 16**；水平 inset 均为 **16**（referral 垂直 14）。Swap `box` 多为 **14** inset。跨 tab 代码 SSOT 取 Card `outlined` **`p-3.5`**（≈14，对齐 Swap/meta）；Community 画板 16 标 INTENTIONAL 收敛，不回 per-card `p-4`。
+
+SSOT：`src/app/dapp-detail-layout.ts` + Card `outlined` + `DappActionButton` density（card 42 / external 44 / inverse 38）。
+
+## 5j. Button 高度三档（2026-07-09）
+
+| 场景 | 高度 | 实现 |
+|------|------|------|
+| 浅色卡内（Claim / Copy / Bind） | **42** | `DappActionButton` 默认 `density="card"` → Button `sm` |
+| 卡外主 CTA（Swap / Genesis Join / Community shareholder） | **44** | `density="external"` → Button `md` |
+| 暗色 promo（Join Genesis / Connect） | **38** | `density="inverse"` / thirdweb `min-h-9.5` |
+| Home hero | **48** | Button `lg`（未改语义） |
+
 ## 6. 修订
 
 | 版本 | 说明 |
@@ -272,3 +297,5 @@ Figma 层: <layer>
 | v2.6 | §5g 曾记规范 vs 画板对照表 |
 | v2.7 | 删除四份 Spec JSON；§5g 改为视觉 SSOT = 画板实节点 + 4175；禁止再参考口号规范 |
 | v2.8 | §5h CSS 瘦身切片标签；motion/wallet 保留规则指向 runbook §6.1 |
+| v2.9 | §5i 左卡/标题/pill CTA 跨 tab 统一 |
+| v2.10 | §5j Button 高度三档：card 42 / external 44 / inverse 38 |

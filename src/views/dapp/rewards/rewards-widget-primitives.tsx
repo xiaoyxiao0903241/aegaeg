@@ -2,8 +2,9 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Text } from '~/shared/ui/text'
 
+/** Layout-only — chrome from `DappSideCard` / Card outlined (`p-3.5` / `rounded-md`). */
 export const rewardsSideCard = tv({
-  base: 'gap-1.5 rounded-md px-4 py-3.5',
+  base: 'gap-1.5',
   variants: {
     layout: {
       stack: '',
@@ -51,9 +52,9 @@ export function RewardsProgressRow({
   )
 }
 
-/** sm+pill already w-full via Button SSOT; lock min-h to 4175 40px (sm default 36). */
+/** Spacing only — height/type from Button `sm` + `pill` SSOT. */
 export const rewardsClaimAction = tv({
-  base: 'mt-3 !min-h-10 max-dapp:!min-h-11 max-dapp:!text-sm max-dapp:!leading-[1.2]',
+  base: 'mt-3',
 })
 
 export const rewardsBalanceHeaderMeta = tv({

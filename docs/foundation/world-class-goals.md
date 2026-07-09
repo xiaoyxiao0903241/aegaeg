@@ -18,7 +18,7 @@
 |------|------|
 | 用整页 screenshot % 当收工 | 动态数 / INTENTIONAL token 会永久染红 |
 | 把 INTENTIONAL 贴回 4175 | muted 0.7、radius-sm 14、section lh 1.3 等是 Foundation 定稿 |
-| 改 Community 左卡 padding | 用户已确认满意 |
+| 左卡 per-tab `px-4 py-3.5` / pill `min-h` 分叉 | 统一 Card outlined + Button `sm`；见 runbook / dapp-detail-layout |
 | 为 H5 分叉文案 / 平行组件 | PC 文案 SSOT；H5 只是响应式 |
 | 引入动画库 / 新设计语言 | 保持现有品牌与 CSS 动效栈 |
 | 默认全页 DOM 探针找问题 | 发现靠红块；探针只确认 |
@@ -100,7 +100,7 @@ Phase T — 技术债（视觉收敛后再开）
 |----|------|
 | Topbar brand / Language menu / type rem | fixed |
 | Lang item radius 10→14 · muted 0.7 · section lh | INTENTIONAL |
-| Community 左卡 padding | 用户锁定，不改 |
+| Community / Rewards 左卡 chrome | **统一** Card `outlined`（`p-3.5` / `rounded-md`）；旧「用户锁定」已解除 |
 | Trade FAQ pill · TokenChip lh · Convert rate tabular | fixed |
 | Community stat label · Copy link min-h | fixed |
 | Phase V 矩阵脚本 `setSwapView` / `setTab` / `evaluate` unwrap | fixed（motion 锁 + 文案点击 + `data-tab` 校验） |

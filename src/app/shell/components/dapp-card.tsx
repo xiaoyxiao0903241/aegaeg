@@ -3,6 +3,10 @@ import { Card } from '~/shared/ui/card'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
+/**
+ * Left-column (wcol) outlined card — padding/radius from Card `outlined` SSOT (`p-3.5` / `rounded-md`).
+ * Do not re-apply `px-4 py-3.5` at call sites; stack gap stays `gap-2` unless layout needs `gap-*` override.
+ */
 export function DappSideCard({
   children,
   className,
@@ -15,25 +19,6 @@ export function DappSideCard({
       as="section"
       surface="outlined"
       className={cn(revealClass(), 'flex flex-col gap-2', className)}
-      data-reveal
-    >
-      {children}
-    </Card>
-  )
-}
-
-export function DappReferrerBoundCard({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
-  return (
-    <Card
-      as="section"
-      surface="outlined"
-      className={cn(revealClass(), 'flex flex-col gap-2.5 p-4', className)}
       data-reveal
     >
       {children}

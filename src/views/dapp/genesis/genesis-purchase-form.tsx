@@ -172,6 +172,7 @@ export function GenesisPurchaseForm() {
       {walletReady ? (
         <DappActionRow className="grid-cols-1">
           <DappActionButton
+            density="external"
             disabled={!genesis.canPurchase || genesis.isSubmitting}
             loading={genesis.isSubmitting}
             onClick={() => void handleParticipate()}

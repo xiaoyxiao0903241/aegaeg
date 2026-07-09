@@ -257,6 +257,7 @@ export function TradeSwapWidget({
           <DappActionRow className={dappWidgetFooterTopGapClass}>
             <DappActionButton
               className="col-span-full"
+              density="external"
               disabled={!swap.canSubmit}
               loading={swap.isSubmitting}
               onClick={() => void handleSubmit()}

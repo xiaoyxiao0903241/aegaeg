@@ -52,12 +52,15 @@ export const buttonVariants = tv({
         'disabled:text-muted-foreground disabled:opacity-100',
       ],
     },
-    /** Size display scale — match 4175 CTA box model (not Text copy token). */
+    /**
+     * Size = DApp CTA height SSOT (not Text copy token):
+     * sm 42 (in card) · md 44 (external / widget stack) · lg 48 (home hero).
+     * Dark promo CTAs use DappActionButton density="inverse" (38), not a 4th size.
+     */
     size: {
       lg: 'min-h-12 px-6 text-base leading-none max-dapp:px-5 max-dapp:text-sm',
-      md: 'min-h-10 px-5 text-sm leading-snug max-dapp:text-xs',
-      // 4175 sm: min-h-11 · leading-normal · no px (UA ~6px); H5 min-h-12
-      sm: 'min-h-11 text-sm leading-normal max-dapp:min-h-12 max-dapp:text-xs',
+      md: 'min-h-11 px-5 text-sm leading-snug max-dapp:text-xs',
+      sm: 'min-h-[2.625rem] text-sm leading-normal max-dapp:text-xs',
     },
     shape: {
       pill: 'rounded-full',
@@ -81,9 +84,9 @@ export const buttonVariants = tv({
       size: ['sm', 'md', 'lg'],
       class: '!min-h-0 px-0',
     },
-    /** 4175: sm+pill DApp CTAs stretch to container (Claim / Convert / Bind). */
+    /** sm/md + pill DApp CTAs stretch to container (Claim / Convert / Bind / Join). */
     {
-      size: 'sm',
+      size: ['sm', 'md'],
       shape: 'pill',
       class: 'w-full',
     },

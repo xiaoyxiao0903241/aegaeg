@@ -6,17 +6,6 @@ import { DappIcon } from '~/app/shell/components/dapp-icon'
 import { dappIconClass } from '~/app/dapp-icon-scale'
 import { DappSideCard } from '~/app/shell/components/dapp-card'
 import { DappActionButton } from '~/app/shell/components/dapp-action-button'
-import { cn } from '~/shared/lib/utils'
-
-/** Aligns with dev community widget side cards (`rounded-md px-4 py-3.5`). */
-const communityWidgetCard = tv({
-  base: 'flex flex-col rounded-md px-4 py-3.5',
-})
-
-const communityShareButton = tv({
-  // 4175 Copy link: min-h-11 · leading-normal · w-full (not Button sm 36 / 42px override)
-  base: 'min-h-11 w-full leading-normal max-dapp:min-h-11 max-dapp:text-sm',
-})
 
 const communityReferrerInput = tv({
   base: 'w-full rounded-sm border border-border bg-card px-3.5 py-2.5 text-xs text-muted-foreground outline-0',
@@ -27,7 +16,7 @@ const communityReferrerBindGrid = tv({
 })
 
 const communityReferrerAddressRow = tv({
-  // 4175 ReferrerAddressRow: h-11 · rounded-sm · bg-background（左卡 padding 用户锁定，不改）
+  // ReferrerAddressRow: h-11 · rounded-sm · bg-background
   base: 'flex h-11 items-center justify-between rounded-sm bg-background px-3.5',
 })
 
@@ -36,13 +25,13 @@ const communityReferrerAvatar = tv({
 })
 
 const communityCopyButton = tv({
-  // 4175: size-7.5 (1.875rem) — rem，随 site-fluid 高分屏缩放；禁 size-[30px] px 锁死
+  // size-7.5 rem — scales with site-fluid; do not lock px
   base: 'grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent',
 })
 
+/** Spacing / visibility only — height from Button `sm` + `pill`. */
 export const communityGenesisCta = tv({
-  // 4175 Community Join = 40px (min-h-10), not Button sm default 44px.
-  base: 'mt-4 min-h-10 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',
+  base: 'mt-4 hover:shadow-primary-hover-xl focus-visible:shadow-primary-hover-xl max-dapp:hidden',
 })
 
 export function CommunityReferralLinkCard({
@@ -59,14 +48,14 @@ export function CommunityReferralLinkCard({
   referralLink: string
 }) {
   return (
-    <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
+    <DappSideCard className="gap-2">
       <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-xs leading-normal">
         {linkLabel}
       </Text>
       <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold tracking-tight max-dapp:text-xs">
         {referralLink}
       </Text>
-      <DappActionButton className={communityShareButton()} disabled={disabled} onClick={onCopy}>
+      <DappActionButton disabled={disabled} onClick={onCopy}>
         {copyLabel}
       </DappActionButton>
     </DappSideCard>
@@ -97,7 +86,7 @@ export function CommunityReferrerBindCard({
   value: string
 }) {
   return (
-    <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
+    <DappSideCard className="gap-2">
       <Text
         as="p"
         variant="copy"
@@ -152,14 +141,13 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    // 4175 bound card: gap-2 + 裸 <p> UA my≈12；左卡 padding 用户锁定
-    <DappSideCard className={cn(communityWidgetCard(), 'gap-2')}>
-      {/* 4175: labels leading-normal tracking -0.24; address leading 1.2 tracking -0.28 */}
+    // Same chrome as ReferralLinkCard (DappSideCard). Figma bound gap≈10 → gap-2.5.
+    <DappSideCard className="gap-2.5">
       <Text
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="my-3 text-xs leading-normal"
+        className="m-0 text-xs leading-normal"
       >
         {addressLabel}
       </Text>
@@ -192,7 +180,7 @@ export function CommunityReferrerBoundPanel({
         as="p"
         variant="copy"
         tone="muted-foreground"
-        className="my-3 text-xs leading-normal"
+        className="m-0 text-xs leading-normal"
       >
         {note}
       </Text>

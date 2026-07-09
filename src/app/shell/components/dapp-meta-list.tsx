@@ -21,7 +21,8 @@ export function DappMetaList({
       as="div"
       surface="outlined"
       className={cn(
-        'grid shrink-0 gap-2 rounded-sm px-3.5 py-3',
+        // Chrome from Card outlined (`p-3.5` / `rounded-md`); do not re-pad.
+        'grid shrink-0 gap-2',
         className,
       )}
     >
