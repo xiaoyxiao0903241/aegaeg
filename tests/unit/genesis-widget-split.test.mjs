@@ -9,7 +9,8 @@ test('genesis purchase actions keep post-approve gate and in-flight latch', asyn
   )
 
   assert.match(source, /genesisPurchaseGate/)
-  assert.match(source, /evaluateGenesisPostApproveGate/)
+  assert.match(source, /fetchLiveGenesisPostApproveGate/)
+  assert.match(source, /staleTime:\s*0/)
   assert.match(source, /submitPurchase/)
   assert.match(source, /GENESIS_PURCHASE_ERROR\.NOT_BOUND/)
 })

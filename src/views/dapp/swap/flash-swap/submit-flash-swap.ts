@@ -12,7 +12,7 @@ type FlashQuotedSubmitCore = {
   setSubmitError: (error: unknown) => void
   runQuotedSubmit: (
     run: (helpers: {
-      assertStillSubmittable: () => Promise<bigint>
+      assertStillSubmittable: (live?: { sellBalance: bigint }) => Promise<bigint>
     }) => Promise<void>,
   ) => Promise<{ ok: true } | { ok: false; error: unknown }>
 }
@@ -22,7 +22,7 @@ export async function submitFlashSwap(args: {
   account: ActiveAccount
   wallet: ActiveWallet
   core: FlashQuotedSubmitCore
-  balancesQuery: { refetch: () => Promise<QueryObserverResult> }
+  balancesQuery: { refetch: () => Promise<QueryObserverResult<{ usdt: bigint }>> }
 }): Promise<{ ok: true } | { ok: false; error: unknown }> {
   const { account, wallet, core, balancesQuery } = args
   if (!account || !wallet) {
@@ -33,8 +33,13 @@ export async function submitFlashSwap(args: {
 
   const result = await core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
     await approveUsdtForFlashSwapIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
-    await balancesQuery.refetch()
-    const minUsd1Out = await assertStillSubmittable()
+    const refreshed = await balancesQuery.refetch()
+    if (refreshed.error || refreshed.data === undefined) {
+      throw new Error('SWAP_SUBMIT_GATE_FAILED')
+    }
+    const minUsd1Out = await assertStillSubmittable({
+      sellBalance: refreshed.data.usdt,
+    })
 
     await flashSwap({
       wallet,

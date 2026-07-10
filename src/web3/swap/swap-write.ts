@@ -58,7 +58,7 @@ export async function swapTokens({
   amountIn: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  /** Caller-computed floor — must match what the UI displayed to the user. */
+  /** Live post-approve floor from assertStillSubmittable — not recomputed here. */
   amountOutMin: bigint
 }) {
   const account = wallet.getAccount()
@@ -67,8 +67,8 @@ export async function swapTokens({
   }
 
   const readClient = createWalletReadClient(wallet)
-  // Re-quote only for route params (fee tier); the output floor stays the
-  // user-approved amountOutMin so the executed bound matches the UI.
+  // Re-quote only for route params (fee tier). amountOutMinimum stays the
+  // caller-supplied live floor from the post-approve submit gate.
   const quote = await fetchSwapQuote({ amountIn, tokenIn, tokenOut, client: readClient })
   const deadline = BigInt(buildSwapDeadline(SWAP_CONFIG.deadlineSeconds))
 

@@ -24,6 +24,7 @@ test('submitTradeSwap owns approve + swap + invalidate path', async () => {
   assert.match(source, /runQuotedSubmit/)
   assert.match(source, /approveTokenIfNeeded/)
   assert.match(source, /swapTokens/)
+  assert.match(source, /sellBalance:\s*refreshed\.data\.sell/)
 })
 
 test('useSwapQuote keeps live re-gate after approve', async () => {
@@ -35,6 +36,7 @@ test('useSwapQuote keeps live re-gate after approve', async () => {
   assert.match(source, /assertStillSubmittable/)
   assert.match(source, /staleTime:\s*0/)
   assert.match(source, /assertQuotedSwapStillSubmittable/)
+  assert.match(source, /live\.sellBalance/)
 })
 
 test('useFlashSwapWidget assembles quote core and spot rates', async () => {

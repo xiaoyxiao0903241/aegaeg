@@ -13,7 +13,7 @@ type TradeQuotedSubmitCore = {
   setSubmitError: (error: unknown) => void
   runQuotedSubmit: (
     run: (helpers: {
-      assertStillSubmittable: () => Promise<bigint>
+      assertStillSubmittable: (live?: { sellBalance: bigint }) => Promise<bigint>
     }) => Promise<void>,
   ) => Promise<{ ok: true } | { ok: false; error: unknown }>
 }
@@ -24,7 +24,7 @@ export async function submitTradeSwap(args: {
   wallet: ActiveWallet
   pair: SwapPairTokens
   core: TradeQuotedSubmitCore
-  balancesQuery: { refetch: () => Promise<QueryObserverResult> }
+  balancesQuery: { refetch: () => Promise<QueryObserverResult<{ sell: bigint }>> }
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { account, wallet, pair, core, balancesQuery } = args
   if (!account || !wallet) {
@@ -39,8 +39,13 @@ export async function submitTradeSwap(args: {
       token: pair.sell.address,
       amountIn: core.debouncedAmountIn,
     })
-    await balancesQuery.refetch()
-    const amountOutMin = await assertStillSubmittable()
+    const refreshed = await balancesQuery.refetch()
+    if (refreshed.error || refreshed.data === undefined) {
+      throw new Error('SWAP_SUBMIT_GATE_FAILED')
+    }
+    const amountOutMin = await assertStillSubmittable({
+      sellBalance: refreshed.data.sell,
+    })
 
     await swapTokens({
       wallet,

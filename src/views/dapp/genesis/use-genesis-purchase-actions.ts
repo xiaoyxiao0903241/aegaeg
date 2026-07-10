@@ -1,7 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
-import { evaluateGenesisPostApproveGate } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale-write'
 import { MAX_UINT256 } from '~/web3/abis'
@@ -11,6 +10,9 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterGenesisPurchase, invalidatePresaleChainQueries } from '~/shared/api/query/invalidate'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { readIsBindReferral } from '~/web3/referral-read'
+import { readPresalePaused } from '~/web3/presale-read'
+import { fetchLiveGenesisPostApproveGate } from '~/views/dapp/genesis/fetch-live-genesis-post-approve-gate'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
@@ -176,10 +178,21 @@ export function useGenesisPurchaseActions({
         if (!approveResult.success) {
           return approveResult
         }
-        const gate = evaluateGenesisPostApproveGate({
-          isBound: isBoundQueryData,
-          isPaused,
-          isPausedUnknown,
+        // Live re-gate: bind/pause may flip while the user signs approve.
+        const gate = await fetchLiveGenesisPostApproveGate({
+          address,
+          fetchIsBound: (addr) =>
+            queryClient.fetchQuery({
+              queryKey: queryKeys.chain.referralIsBound(addr),
+              queryFn: () => readIsBindReferral(addr, readClient),
+              staleTime: 0,
+            }),
+          fetchPaused: () =>
+            queryClient.fetchQuery({
+              queryKey: queryKeys.chain.presalePaused,
+              queryFn: () => readPresalePaused(readClient),
+              staleTime: 0,
+            }),
         })
         if (!gate.ok) {
           return {

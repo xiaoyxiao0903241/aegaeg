@@ -180,7 +180,7 @@ export function useSwapQuote<TQuote>({
 
   async function runQuotedSubmit(
     execute: (helpers: {
-      assertStillSubmittable: () => Promise<bigint>
+      assertStillSubmittable: (live?: { sellBalance: bigint }) => Promise<bigint>
     }) => Promise<void>,
   ): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
     // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
@@ -193,7 +193,13 @@ export function useSwapQuote<TQuote>({
 
     // Live re-gate: force-refresh quote after approve (may exceed maxQuoteAgeMs),
     // then read from query cache — not the render snapshot that started submit.
-    const assertStillSubmittable = async (): Promise<bigint> => {
+    // Callers must pass post-refetch sellBalance; render-closure balance is stale.
+    const assertStillSubmittable = async (live?: {
+      sellBalance: bigint
+    }): Promise<bigint> => {
+      if (live === undefined) {
+        throw new Error('SWAP_SUBMIT_GATE_FAILED')
+      }
       const queryKey = getQuoteQueryKey(debouncedAmountIn)
       await queryClient.fetchQuery({
         queryKey,
@@ -208,12 +214,12 @@ export function useSwapQuote<TQuote>({
       assertQuotedSwapStillSubmittable({
         walletReady: writeReady,
         amountIn: debouncedAmountIn,
-        sellBalance,
+        sellBalance: live.sellBalance,
         quotedOut: liveQuotedOut,
         amountOutMin: liveAmountOutMin,
         isPlaceholderData: false,
         isQuotePending: queryState?.status === 'pending',
-        isBalancesLoading,
+        isBalancesLoading: false,
         isSubmitting: false,
         blockResubmit,
         quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
