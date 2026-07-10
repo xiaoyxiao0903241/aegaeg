@@ -17,13 +17,17 @@
 
 ## 3. 目录与 SSOT
 
+落点细则见 [`src-layout.md`](./src-layout.md)。
+
 | 主题 | 路径 |
 |------|------|
-| 链 / thirdweb | `src/web3/thirdweb.ts`（经 `thirdweb-react.ts` 网关） |
+| 链 / thirdweb | `src/web3/thirdweb.ts`（经 `thirdweb-react.ts`） |
+| 写链 plumbing | `src/web3/wallet/wallet-contract-write.ts` |
+| Swap 读/写 | `src/web3/swap/*` |
+| Presale / referral / claim | `src/web3/presale-*`、`referral-*`、`reward-claim.ts` |
 | 合约地址 | `src/shared/config/contracts.ts` |
 | Query key / 失效 | `src/shared/api/query/*` |
 | Auth | `src/app/bootstrap/auth-provider.tsx`、`src/core/auth/*`、`src/views/dapp/auth/*` |
-| Swap / Genesis / Claim 写链 | `src/web3/swap/*-write.ts`、`presale-write.ts`、`referral-write.ts`、`reward-claim.ts` |
 | 颜色 / 字阶 | `theme.css`、`src/shared/ui/text.tsx` |
 
 ## 4. 链上读写

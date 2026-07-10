@@ -36,7 +36,7 @@ AI 工作规范
 ### 8.3 工具规则
 
 - 用 `rg` 搜索文本、文档、配置、生成文件和 fallback。
-- **项目文档索引**：[`docs/README.md`](docs/README.md) — Home / DApp / 设计系统 SSOT 入口；命令与收工门禁见 [`docs/agents/commands.md`](docs/agents/commands.md)。
+- **项目文档索引**：[`docs/README.md`](docs/README.md) — 仅现状 SSOT；命令门禁 [`docs/agents/commands.md`](docs/agents/commands.md)；目录落点 [`docs/src-layout.md`](docs/src-layout.md)。
 - **React 运行时**：[`docs/react-runtime.md`](docs/react-runtime.md) — Compiler（全量）、hooks/effect、i18n 渲染、质量门禁；改 hooks/memo/i18n 前先读。
 - 触达代码时优先用 `agent-lsp` 做语义查询，使用最小 workspace root。
 - **CodeGraph** 是当前默认代码图谱工具。依赖结果前先运行 `codegraph status .`；索引不新时运行 `codegraph sync .`。

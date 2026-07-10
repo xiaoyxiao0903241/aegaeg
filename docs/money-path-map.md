@@ -36,8 +36,8 @@ Claim:  签名 API → 链上 claim → confirm(重试) → success: invalidate
 
 | UI / 产品 | 链上 / core |
 |-----------|-------------|
-| Genesis tab / `use-genesis-widget` | `core/presale/*`、`use-presale-*`、query keys `presale*` |
-| `submitPurchase` / approve | PreSale write + `evaluateGenesisPostApproveGate` |
+| Genesis tab / `use-genesis-widget` | `core/presale/*`、`src/web3/use-presale-queries`、`src/web3/presale-*`、query keys `presale*` |
+| `submitPurchase` / approve | `presale-write` + `evaluateGenesisPostApproveGate` |
 
 ## 不变量
 

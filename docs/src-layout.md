@@ -71,8 +71,10 @@ src/
 
 | 袋 | hook |
 |----|------|
-| `views/dapp/swap/`（含子袋） | `use-swap-widget` · `use-flash-swap-widget` · `use-swap-quote` · `use-swap-pool-reads` |
-| `views/dapp/genesis/` | `use-genesis-widget` |
+| `views/dapp/swap/` | `use-swap-quote` · `use-swap-pool-reads`（跨子袋共享） |
+| `views/dapp/swap/trade-swap/` | `use-swap-widget` · `use-swap-balances` · `use-swap-spot-rates` |
+| `views/dapp/swap/flash-swap/` | `use-flash-swap-widget` |
+| `views/dapp/genesis/` | `use-genesis-widget` · `use-genesis-chain-reads` · `use-genesis-purchase-actions` |
 | `views/dapp/rewards/` | `use-reward-claim` · `use-shareholder-rank` |
 | `views/dapp/community/` | `use-referral` |
 | `web3/` | `use-chain-read-client` · `use-presale-queries` |

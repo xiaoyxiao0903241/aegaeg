@@ -50,8 +50,11 @@
 | 主题 | 路径 |
 |------|------|
 | 链 / thirdweb | `src/web3/thirdweb.ts` |
+| 写链 | `src/web3/wallet/wallet-contract-write.ts` |
+| Swap 链 IO | `src/web3/swap/` |
 | 合约地址 | `src/shared/config/contracts.ts` |
 | Query 失效 | `src/shared/api/query/invalidate.ts` |
 | Auth | `src/app/bootstrap/auth-provider.tsx` + `src/views/dapp/auth/*` + `src/core/auth/*` |
 | Home providers | `src/app/bootstrap/home-providers.tsx`（无 thirdweb） |
 | DApp providers | `src/app/bootstrap/web-root-providers.tsx` |
+| 目录落点 | [`docs/src-layout.md`](../src-layout.md) |

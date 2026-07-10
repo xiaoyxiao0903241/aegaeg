@@ -23,9 +23,7 @@ export default tseslint.config(
     files: ['src/**/*.{ts,tsx}'],
     ignores: [
       'src/web3/**',
-      'src/views/dapp/web3/**',
       'src/views/dapp/auth/**',
-      'src/lib/api/auth/**',
     ],
     rules: {
       'no-restricted-imports': [
@@ -34,20 +32,17 @@ export default tseslint.config(
           paths: [
             {
               name: 'thirdweb',
-              message:
-                'Import thirdweb only from src/web3/, src/views/dapp/web3/, or src/views/dapp/auth/.',
+              message: 'Import thirdweb only from src/web3/ or src/views/dapp/auth/.',
             },
             {
               name: 'thirdweb/react',
-              message:
-                'Import thirdweb only from src/web3/, src/views/dapp/web3/, or src/views/dapp/auth/.',
+              message: 'Import thirdweb only from src/web3/ or src/views/dapp/auth/.',
             },
           ],
           patterns: [
             {
               group: ['thirdweb/*'],
-              message:
-                'Import thirdweb only from src/web3/, src/views/dapp/web3/, or src/views/dapp/auth/.',
+              message: 'Import thirdweb only from src/web3/ or src/views/dapp/auth/.',
             },
           ],
         },
