@@ -48,6 +48,7 @@ function CommunityConnectedWidget({
   const { messages: t } = useI18n()
   const account = useActiveAccount()
   const referral = useReferral(true)
+  const { error: referralError, clearError: clearReferralError } = referral
   const referralLink = account ? formatReferralLinkDisplay(account.address) : '—'
 
   const copyReferralLink = useCallback(async () => {
@@ -66,15 +67,20 @@ function CommunityConnectedWidget({
   }, [referral.referrer, t.wallet.copied, t.wallet.copyFailed])
 
   useEffect(() => {
-    if (!referral.error) return
-    presentUserFacingError(referral.error, (error) =>
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-      resolveReferralBindError(error, t.community.bindErrors) ??
-      resolveApiUserFacingError(error, t.errors.api) ??
-      t.community.bindErrors.failed,
+    if (!referralError) return
+    presentUserFacingError(
+      referralError,
+      (error) =>
+        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
+        resolveReferralBindError(error, t.community.bindErrors) ??
+        resolveApiUserFacingError(error, t.errors.api) ??
+        t.community.bindErrors.failed,
+      { id: 'community-referral-error' },
     )
+    clearReferralError()
   }, [
-    referral.error,
+    referralError,
+    clearReferralError,
     t.community.bindErrors,
     t.errors.api,
     t.wallet.transactionErrors,

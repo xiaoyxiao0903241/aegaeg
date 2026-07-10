@@ -22,7 +22,7 @@ export function RewardsWidget() {
       loginFailed: t.errors.loginFailed,
       loginSignatureRejected: t.errors.loginSignatureRejected,
     })
-    if (message) toast.error(message)
+    if (message) toast.error(message, { id: `rewards-login:${loginError}` })
   }, [sessionReady, loginError, t.errors, t.wallet.accountBanned])
 
   return (

@@ -18,6 +18,8 @@ import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
+import { useAuthStore } from '~/stores/auth-store'
+import { normalizeAuthAddress } from '~/core/auth/types'
 
 function useAuthenticatedQuery<T>(
   queryKey: QueryKey,
@@ -25,13 +27,23 @@ function useAuthenticatedQuery<T>(
   enabled = true,
   options?: { keepPreviousData?: boolean },
 ) {
-  const { token, invalidateSession, sessionReady, hasHydrated } = useAuth()
+  const { token, invalidateSession, sessionReady, hasHydrated, session } = useAuth()
   const { messages: t } = useI18n()
+  // Address-scoped key: JWT renew keeps cache; wallet switch isolates accounts.
+  const scopeKey = session?.address ? normalizeAuthAddress(session.address) : undefined
 
   const query = useQuery({
-    // 用 JWT 作用域 key：切钱包换 token 时自动拉新数据，避免跨账户脏缓存。
-    queryKey: token ? [...queryKey, token] : queryKey,
-    queryFn: () => requestWithSession(fetcher, token!, invalidateSession),
+    queryKey: scopeKey ? [...queryKey, scopeKey] : queryKey,
+    queryFn: () => {
+      // Prefer store token so silent renew updates mid-flight refetch without waiting for re-render.
+      const latestToken = scopeKey
+        ? (useAuthStore.getState().sessionsByAddress[scopeKey]?.token ?? token)
+        : token
+      if (!latestToken) {
+        throw new Error('Authenticated query ran without a session token')
+      }
+      return requestWithSession(fetcher, latestToken, invalidateSession)
+    },
     enabled: canRunAuthenticatedQuery({
       enabled,
       hasHydrated,
@@ -40,7 +52,13 @@ function useAuthenticatedQuery<T>(
     }),
     staleTime: QUERY_STALE_TIME.api,
     placeholderData: options?.keepPreviousData
-      ? (previousData) => previousData
+      ? (previousData, previousQuery) => {
+          if (previousData == null || !scopeKey) return undefined
+          if (previousQuery == null) return undefined
+          const previousScope = previousQuery.queryKey.at(-1)
+          if (previousScope !== scopeKey) return undefined
+          return previousData
+        }
       : undefined,
   })
 

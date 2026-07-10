@@ -131,3 +131,29 @@ test('canRunAuthenticatedQuery requires hydrate + session + token', async () => 
     false,
   )
 })
+
+test('salesLogAdvanced detects new purchase by total or first id', async () => {
+  const { salesLogAdvanced, pickSalesLogFingerprint } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  assert.equal(
+    salesLogAdvanced({ total: 20, firstId: 1 }, { total: 21, firstId: 99 }),
+    true,
+  )
+  assert.equal(
+    salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 99 }),
+    true,
+  )
+  assert.equal(
+    salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 1 }),
+    false,
+  )
+
+  const fingerprint = pickSalesLogFingerprint([
+    { total: 20, page: 1, page_size: 20, items: [{ id: 5 }] },
+    { total: 20, page: 1, page_size: 20, items: [] },
+  ])
+  assert.equal(fingerprint.total, 20)
+  assert.equal(fingerprint.firstId, 5)
+})

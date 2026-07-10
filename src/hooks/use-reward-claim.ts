@@ -64,7 +64,17 @@ export function useRewardClaim(execute: RewardClaimExecutor) {
     }
   }, [account, execute, invalidateSession, sessionReady, token, wallet])
 
-  return { claim, isClaiming, error, canClaim: Boolean(account && token && sessionReady) }
+  const clearError = useCallback(() => {
+    setError(null)
+  }, [])
+
+  return {
+    claim,
+    isClaiming,
+    error,
+    clearError,
+    canClaim: Boolean(account && token && sessionReady),
+  }
 }
 
 export function useTeamRewardClaim() {

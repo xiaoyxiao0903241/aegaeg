@@ -146,13 +146,13 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
 
     const result = await core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
       await approveUsdtForFlashSwapIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
-      void balancesQuery.refetch()
-      assertStillSubmittable()
+      await balancesQuery.refetch()
+      const minUsd1Out = await assertStillSubmittable()
 
       await flashSwap({
         wallet,
         usdtAmount: core.debouncedAmountIn,
-        minUsd1Out: core.amountOutMin,
+        minUsd1Out,
       })
       invalidateAfterSwap()
       await balancesQuery.refetch()

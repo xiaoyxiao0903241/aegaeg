@@ -35,7 +35,9 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const wallet = useActiveWallet()
   const direction = useSwapDirectionStore((state) => state.direction)
   const flipDirectionInStore = useSwapDirectionStore((state) => state.flipDirection)
-  const [slippage, setSlippageRaw] = useState(1)
+  const [slippage, setSlippageRaw] = useState(() =>
+    clampSlippagePercent(SWAP_CONFIG.defaultSlippageBps / 100),
+  )
   const setSlippage = useCallback((value: number) => {
     setSlippageRaw(clampSlippagePercent(value))
   }, [])
@@ -274,14 +276,14 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
         amountIn: core.debouncedAmountIn,
       })
       await balancesQuery.refetch()
-      assertStillSubmittable()
+      const amountOutMin = await assertStillSubmittable()
 
       await swapTokens({
         wallet,
         amountIn: core.debouncedAmountIn,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
-        amountOutMin: core.amountOutMin,
+        amountOutMin,
       })
       invalidateAfterSwap()
       await balancesQuery.refetch()

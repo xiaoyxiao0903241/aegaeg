@@ -9,6 +9,7 @@ import {
 import {
   formatCommunityFundLockedAmount,
   formatClaimableAmount,
+  claimableAmountValue,
 } from '~/views/dapp/rewards/rewards-display'
 import { formatUsd } from '~/shared/api/format-display'
 import { RewardBalanceCardSkeleton } from '~/app/shell/dapp-skeleton'
@@ -40,39 +41,61 @@ export function RewardsBalanceSection() {
     useCommunityFundTotal(sessionReady)
   const teamClaim = useTeamRewardClaim()
   const communityFundClaim = useCommunityFundClaim()
+  const { error: teamClaimError, clearError: clearTeamClaimError } = teamClaim
+  const { error: communityFundClaimError, clearError: clearCommunityFundClaimError } =
+    communityFundClaim
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
 
   useEffect(() => {
-    if (!teamClaim.error) return
-    presentUserFacingError(teamClaim.error, (error) =>
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-      resolveTeamClaimError(error, {
-        ...t.rewards.claimErrors,
-        walletNotConnected: t.errors.walletNotConnected,
-      }) ??
-      t.errors.chain.fallback,
+    if (!teamClaimError) return
+    presentUserFacingError(
+      teamClaimError,
+      (error) =>
+        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
+        resolveTeamClaimError(error, {
+          ...t.rewards.claimErrors,
+          walletNotConnected: t.errors.walletNotConnected,
+        }) ??
+        t.errors.chain.fallback,
+      { id: 'team-claim-error' },
     )
-  }, [teamClaim.error, t.errors, t.rewards.claimErrors, t.wallet.transactionErrors])
+    clearTeamClaimError()
+  }, [teamClaimError, clearTeamClaimError, t.errors, t.rewards.claimErrors, t.wallet.transactionErrors])
 
   useEffect(() => {
-    if (!communityFundClaim.error) return
-    presentUserFacingError(communityFundClaim.error, (error) =>
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-      resolveTeamClaimError(error, {
-        ...t.rewards.claimErrors,
-        walletNotConnected: t.errors.walletNotConnected,
-      }) ??
-      t.errors.chain.fallback,
+    if (!communityFundClaimError) return
+    presentUserFacingError(
+      communityFundClaimError,
+      (error) =>
+        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
+        resolveTeamClaimError(error, {
+          ...t.rewards.claimErrors,
+          walletNotConnected: t.errors.walletNotConnected,
+        }) ??
+        t.errors.chain.fallback,
+      { id: 'community-fund-claim-error' },
     )
-  }, [communityFundClaim.error, t.errors, t.rewards.claimErrors, t.wallet.transactionErrors])
+    clearCommunityFundClaimError()
+  }, [
+    communityFundClaimError,
+    clearCommunityFundClaimError,
+    t.errors,
+    t.rewards.claimErrors,
+    t.wallet.transactionErrors,
+  ])
 
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
+  const teamClaimableValue = claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
     if (teamTotal?.claimed == null) return undefined
     return t.rewards.claimed.replace('{amount}', formatUsd(teamTotal.claimed, 2))
   })()
-  const communityFundClaimable = formatUsd(communityFundTotal?.unlocked_claimable ?? 0, 2)
+  const communityFundClaimableValue = Number(communityFundTotal?.unlocked_claimable ?? 0)
+  const communityFundClaimable = formatUsd(
+    Number.isFinite(communityFundClaimableValue) ? communityFundClaimableValue : 0,
+    2,
+  )
   const communityFundLocked = formatCommunityFundLockedAmount(
     communityFundTotal?.total ?? '0',
     communityFundTotal?.claimed ?? '0',
@@ -127,7 +150,7 @@ export function RewardsBalanceSection() {
             <DappActionButton
               className={rewardsClaimAction()}
               disabled={
-                teamClaimable === '$0.00' ||
+                teamClaimableValue <= 0 ||
                 teamLoading ||
                 teamClaim.isClaiming ||
                 !teamClaim.canClaim
@@ -181,7 +204,7 @@ export function RewardsBalanceSection() {
               <DappActionButton
                 className={rewardsClaimAction()}
                 disabled={
-                  communityFundClaimable === '$0.00' ||
+                  !(communityFundClaimableValue > 0) ||
                   communityFundLoading ||
                   communityFundClaim.isClaiming ||
                   !communityFundClaim.canClaim

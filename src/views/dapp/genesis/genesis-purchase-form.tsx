@@ -128,6 +128,7 @@ export function GenesisPurchaseForm() {
     presentUserFacingError(
       genesis.error,
       (error) => resolveApiUserFacingError(error, t.errors.api) ?? t.errors.loadFailed,
+      { id: 'genesis-query-error' },
     )
   }, [genesis.error, t.errors.api, t.errors.loadFailed])
 

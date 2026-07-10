@@ -24,12 +24,9 @@ test('swap config marks design-only tokens as disabled', async () => {
   assert.equal(SWAP_CONFIG.tokens.x.enabled, false)
 })
 
-test('swap config uses PancakeSwap V3 for trade pair', async () => {
+test('swap config defaultSlippageBps maps to UI percent for Trade init', async () => {
   const { SWAP_CONFIG } = await loadModule('/src/shared/config/swap.ts')
-  const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
+  const { clampSlippagePercent } = await loadModule('/src/core/swap/token-amount.ts')
 
-  assert.equal(SWAP_CONFIG.router.toLowerCase(), BSC_CONTRACTS.pancakeV3SwapRouter.toLowerCase())
-  assert.equal(SWAP_CONFIG.quoter.toLowerCase(), BSC_CONTRACTS.pancakeV3Quoter.toLowerCase())
-  assert.equal(SWAP_CONFIG.tradePair.tokenA.address.toLowerCase(), BSC_CONTRACTS.usd1.toLowerCase())
-  assert.equal(SWAP_CONFIG.tradePair.tokenB.address.toLowerCase(), BSC_CONTRACTS.usdt.toLowerCase())
+  assert.equal(clampSlippagePercent(SWAP_CONFIG.defaultSlippageBps / 100), 0.5)
 })

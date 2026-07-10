@@ -43,9 +43,11 @@ async function readTransaction(
 }
 
 /**
- * `failed` — the tx is definitively not going to land (never broadcast / reverted);
- * resubmitting is safe. `unknown` — the tx was seen pending but no receipt arrived
- * in time; it may still confirm, so resubmitting risks double execution.
+ * `failed` — the tx definitively will not land (on-chain revert); resubmitting is safe.
+ * `unknown` — confirmation is inconclusive (not yet visible, pending without receipt,
+ * or timed out); it may still confirm, so resubmitting risks double execution.
+ * Slow wallet RPC must not be classified as `failed` — a missing hash for a few seconds
+ * is not proof the tx was never broadcast.
  */
 export type WalletTransactionWaitOutcome = 'failed' | 'unknown'
 
@@ -106,8 +108,8 @@ export async function waitForWalletTransactionConfirmation({
     if (!seenOnChain && elapsed >= NOT_ON_CHAIN_FAIL_MS) {
       throw new WalletTransactionWaitError(
         hash,
-        `Transaction was not broadcast to BNB Chain (wallet may have failed locally). Hash: ${hash}`,
-        'failed',
+        `Transaction was not seen on BNB Chain yet — do not resubmit until it settles. Hash: ${hash}`,
+        'unknown',
       )
     }
 

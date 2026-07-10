@@ -9,19 +9,58 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function readSalesLogCount(): number {
+export type SalesLogFingerprint = { total: number; firstId: number | null }
+
+/** Pure: pick the strongest sales-log fingerprint from cached pages. */
+export function pickSalesLogFingerprint(
+  pages: Array<Paginated<SalesLogItem> | undefined | null>,
+): SalesLogFingerprint {
+  let best: SalesLogFingerprint = { total: 0, firstId: null }
+  for (const data of pages) {
+    if (!data) continue
+    const firstId = data.items[0]?.id ?? null
+    if (data.total > best.total) {
+      best = { total: data.total, firstId }
+      continue
+    }
+    if (data.total === best.total && firstId != null && best.firstId == null) {
+      best = { total: data.total, firstId }
+    }
+  }
+  return best
+}
+
+/** Pure: whether polling should stop because a newer sales log appeared. */
+export function salesLogAdvanced(
+  baseline: SalesLogFingerprint,
+  current: SalesLogFingerprint,
+): boolean {
+  if (current.total > baseline.total) return true
+  if (
+    current.firstId != null &&
+    baseline.firstId != null &&
+    current.firstId !== baseline.firstId
+  ) {
+    return true
+  }
+  return false
+}
+
+function readSalesLogFingerprint(): SalesLogFingerprint {
   const entries = queryClient.getQueriesData<Paginated<SalesLogItem>>({
     queryKey: queryKeys.api.salesLogsRoot,
   })
-
-  return entries.reduce((max, [, data]) => Math.max(max, data?.items?.length ?? 0), 0)
+  return pickSalesLogFingerprint(entries.map(([, data]) => data))
 }
 
-async function pollGenesisContributions(baselineCount: number) {
+async function pollGenesisContributions(baseline: {
+  total: number
+  firstId: number | null
+}) {
   await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
   await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
 
-  if (readSalesLogCount() > baselineCount) {
+  if (salesLogAdvanced(baseline, readSalesLogFingerprint())) {
     return
   }
 
@@ -30,7 +69,7 @@ async function pollGenesisContributions(baselineCount: number) {
     await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
     await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
 
-    if (readSalesLogCount() > baselineCount) {
+    if (salesLogAdvanced(baseline, readSalesLogFingerprint())) {
       return
     }
   }
@@ -177,7 +216,7 @@ export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?:
     })
   }
 
-  const salesLogBaseline = readSalesLogCount()
+  const salesLogBaseline = readSalesLogFingerprint()
   invalidateTabQueries('genesis')
   void pollGenesisContributions(salesLogBaseline)
 }

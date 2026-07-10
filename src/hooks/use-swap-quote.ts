@@ -10,7 +10,7 @@ import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/to
 import { SWAP_QUOTE_FAILED } from '~/views/dapp/web3/resolve-contract-error-message'
 import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 import { needsTokenApproval } from '~/views/dapp/web3/swap-write'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
+import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 
@@ -185,7 +185,9 @@ export function useSwapQuote<TQuote>({
 
   const runQuotedSubmit = useCallback(
     async (
-      execute: (helpers: { assertStillSubmittable: () => void }) => Promise<void>,
+      execute: (helpers: {
+        assertStillSubmittable: () => Promise<bigint>
+      }) => Promise<void>,
     ): Promise<{ ok: true } | { ok: false; error: unknown | null }> => {
       // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
       if (!canSubmit || amountIn !== debouncedAmountIn) {
@@ -195,29 +197,35 @@ export function useSwapQuote<TQuote>({
       setIsSubmitting(true)
       setSubmitError(null)
 
-      const assertStillSubmittable = () => {
-        const liveQuotedOut = resolveLiveQuotedOut(
-          amountQuoteQuery.isPlaceholderData,
-          selectQuotedOut(amountQuoteQuery.data),
-        )
+      // Live re-gate: force-refresh quote after approve (may exceed maxQuoteAgeMs),
+      // then read from query cache — not the render snapshot that started submit.
+      const assertStillSubmittable = async (): Promise<bigint> => {
+        const queryKey = getQuoteQueryKey(debouncedAmountIn)
+        await queryClient.fetchQuery({
+          queryKey,
+          queryFn: () => fetchQuote(debouncedAmountIn),
+          staleTime: 0,
+        })
+        const queryState = queryClient.getQueryState<TQuote>(queryKey)
+        const data = queryClient.getQueryData<TQuote>(queryKey)
+        const liveQuotedOut = resolveLiveQuotedOut(false, selectQuotedOut(data))
         const liveAmountOutMin =
           liveQuotedOut > 0n ? calcAmountOutMin(liveQuotedOut, slippageBps) : 0n
-        // Mid-submit re-gate: ignore in-flight latch (already submitting). Check quote age /
-        // balance / placeholder only — passing isSubmitting:true would always fail the gate.
         assertQuotedSwapStillSubmittable({
           walletReady,
           amountIn: debouncedAmountIn,
           sellBalance,
           quotedOut: liveQuotedOut,
           amountOutMin: liveAmountOutMin,
-          isPlaceholderData: amountQuoteQuery.isPlaceholderData,
-          isQuotePending: amountQuoteQuery.isPending,
+          isPlaceholderData: false,
+          isQuotePending: queryState?.status === 'pending',
           isBalancesLoading,
           isSubmitting: false,
           blockResubmit,
-          quoteUpdatedAt: amountQuoteQuery.dataUpdatedAt,
+          quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
           maxQuoteAgeMs: QUERY_STALE_TIME.quote,
         })
+        return liveAmountOutMin
       }
 
       try {
@@ -237,14 +245,12 @@ export function useSwapQuote<TQuote>({
     },
     [
       amountIn,
-      amountQuoteQuery.data,
-      amountQuoteQuery.dataUpdatedAt,
-      amountQuoteQuery.isPending,
-      amountQuoteQuery.isPlaceholderData,
       blockResubmit,
       canSubmit,
       clearAmount,
       debouncedAmountIn,
+      fetchQuote,
+      getQuoteQueryKey,
       isBalancesLoading,
       selectQuotedOut,
       sellBalance,

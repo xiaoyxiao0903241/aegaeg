@@ -90,6 +90,22 @@ test('login signature cache respects SIWE expiration', async () => {
   )
 })
 
+test('login signature without Expiration Time expires after 5 minutes', async () => {
+  const { isLoginSignatureUsable } = await loadModule(
+    '/src/views/dapp/auth/login-signature-cache.ts',
+  )
+
+  const cached = {
+    address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+    message: 'Sign in to AEGIS X\nNonce: x',
+    signature: '0xsig',
+    savedAt: 1_000_000,
+  }
+
+  assert.equal(isLoginSignatureUsable(cached, 1_000_000 + 4 * 60_000), true)
+  assert.equal(isLoginSignatureUsable(cached, 1_000_000 + 6 * 60_000), false)
+})
+
 test('loginWithWallet reuses cached signature without re-signing', async () => {
   const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
   const { createMemoryLoginSignatureStorage } = await loadModule(

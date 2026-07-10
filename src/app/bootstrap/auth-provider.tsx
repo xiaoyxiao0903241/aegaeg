@@ -93,8 +93,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     loginInProgressRef.current = true
-    const { setIsLoggingIn, setLoginError } = useAuthStore.getState()
-    setIsLoggingIn(true)
+    const { setIsLoggingIn, setLoginError, sessionsByAddress } = useAuthStore.getState()
+    const existingSession = sessionsByAddress[account.address.toLowerCase()]
+    const isSilentRenew = Boolean(existingSession?.token)
+    // Renew must not flip isLoggingIn — pages treat it as full-page skeleton.
+    if (!isSilentRenew) {
+      setIsLoggingIn(true)
+    }
     setLoginError(null)
 
     try {
@@ -109,7 +114,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error
     } finally {
       loginInProgressRef.current = false
-      useAuthStore.getState().setIsLoggingIn(false)
+      if (!isSilentRenew) {
+        useAuthStore.getState().setIsLoggingIn(false)
+      }
     }
   }, [account])
 

@@ -77,9 +77,13 @@ function formatOrderAmountUsd(orderAmount: string | undefined): string {
   return formatUsd(num, 0)
 }
 
-export function formatClaimableAmount(total: string, claimed: string): string {
+export function claimableAmountValue(total: string, claimed: string): number {
   const pending = Math.max(0, Number(total) - Number(claimed))
-  return formatUsd(pending, 2)
+  return Number.isFinite(pending) ? pending : 0
+}
+
+export function formatClaimableAmount(total: string, claimed: string): string {
+  return formatUsd(claimableAmountValue(total, claimed), 2)
 }
 
 export function formatCommunityFundLockedAmount(

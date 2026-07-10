@@ -36,10 +36,16 @@ test('sanitizeTokenAmountInput strips grouping separators', async () => {
 })
 
 test('formatTokenAmount renders human readable balance', async () => {
-  const { formatTokenAmount } = await loadModule('/src/core/swap/token-amount.ts')
+  const { formatTokenAmount, parseTokenAmount } = await loadModule('/src/core/swap/token-amount.ts')
 
   assert.equal(formatTokenAmount(10n ** 18n, 18), '1')
   assert.equal(formatTokenAmount(1234567890000000000n, 18, 4), '1.2345')
+
+  // 100% fill path: full decimals must round-trip to exact balance (no dust).
+  const dusty = 1234567890123456789n
+  const full = formatTokenAmount(dusty, 18, 18)
+  assert.equal(parseTokenAmount(full, 18), dusty)
+  assert.notEqual(parseTokenAmount(formatTokenAmount(dusty, 18, 6), 18), dusty)
 })
 
 test('slippagePercentToBps converts UI percent to basis points', async () => {

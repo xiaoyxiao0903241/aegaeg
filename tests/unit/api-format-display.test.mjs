@@ -149,7 +149,11 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
 })
 
 test('formatClaimableAmount subtracts claimed from total', async () => {
-  const { formatClaimableAmount } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
+  const { formatClaimableAmount, claimableAmountValue } = await loadModule(
+    '/src/views/dapp/rewards/rewards-display.ts',
+  )
 
   assert.equal(formatClaimableAmount('1000', '657.82'), '$342.18')
+  assert.ok(claimableAmountValue('0.004', '0') > 0)
+  assert.equal(formatClaimableAmount('0.004', '0'), '$0.00')
 })

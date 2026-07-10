@@ -147,6 +147,10 @@ export function useReferral(sessionReady: boolean) {
     await Promise.all([referralQuery.refetch(), performanceQuery.refresh()])
   }, [performanceQuery, referralQuery])
 
+  const clearError = useCallback(() => {
+    setError(null)
+  }, [])
+
   return {
     isBound,
     referrer: effectiveReferrer,
@@ -166,6 +170,7 @@ export function useReferral(sessionReady: boolean) {
       !isBindCooldown &&
       Boolean(referrerInput.trim() || pendingReferrer),
     error,
+    clearError,
     bind,
     refresh,
   }
