@@ -1,7 +1,5 @@
-import { useQueryClient } from '@tanstack/react-query'
-import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { useEffect, useRef, useState } from 'react'
+import { useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import {
   USD1_DECIMALS,
   buildPhaseCountdownKey,
@@ -10,326 +8,85 @@ import {
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
   estimateXTokenAirdropUsd,
-  evaluateGenesisPostApproveGate,
   formatPhaseCountdown,
   getAirdropBpsForPhase,
   hasPhaseCountdownElapsed,
-  resolvePhaseCountdownTarget,
-  presaleAirdropThresholdToUsd,
-  resolveGenesisMaxShares,
-  resolveRemainingPhaseAmount,
-  resolveRemainingUserAmount,
-  resolveSharePriceWei,
 } from '~/core/presale/presale-math'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
-import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
-import { MAX_UINT256 } from '~/views/dapp/web3/abis'
 import { formatUsd } from '~/shared/api/format-display'
-import { GENESIS_PURCHASE_ERROR, WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
-import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
-import { readErc20Allowance, readErc20Balance } from '~/views/dapp/web3/swap-read'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import {
-  usePresaleActivePhaseQuery,
-  usePresaleAgxPriceQuery,
-  usePresaleAirdropThresholdQuery,
-  usePresalePausedQuery,
-  usePresalePhasesQuery,
-  usePresaleTotalPurchasedQuery,
-  useIsBindReferralQuery,
-  usePresaleUserPhaseRemainingQuery,
-  usePresaleUserTotalQuery,
-  useUsd1PresaleWalletQuery,
-} from '~/views/dapp/web3/use-presale-queries'
-import {
-  invalidateAfterGenesisPhaseTransition,
-  invalidateAfterGenesisPurchase,
-  invalidatePresaleChainQueries,
-} from '~/shared/api/query/invalidate'
+import { invalidateAfterGenesisPhaseTransition } from '~/shared/api/query/invalidate'
 import { useI18n } from '~/i18n/use-i18n'
-import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
+import {
+  useGenesisPurchaseActions,
+  type GenesisPurchaseResult,
+} from '~/views/dapp/genesis/use-genesis-purchase-actions'
 
-export interface GenesisPurchaseResult {
-  success: boolean
-  /** Raw wallet / contract error — keep for selector-based i18n resolution. */
-  error?: unknown
-}
+export type { GenesisPurchaseResult }
 
-/** Survives GenesisWidgetProvider unmount when user switches tabs mid-tx. */
-const genesisPurchaseGate = { inFlight: false }
-
+/** Assembles Genesis reads + purchase actions; public API unchanged for context consumers. */
 export function useGenesisWidget() {
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { messages: t } = useI18n()
-  const queryClient = useQueryClient()
-  const readClient = useChainReadClient()
+  const wallet = useActiveWallet()
+  const reads = useGenesisChainReads()
   const countdownRefreshRef = useRef<string | null>(null)
   const [sharesDraft, setSharesDraft] = useState(0)
-  const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
-  // Clock + chrome SSOT: GenesisPromoSync derives once into the store.
-  const nowSeconds = useGenesisPromoStore((state) => state.nowSeconds)
-  const activeSeasonNumber = useGenesisPromoStore((state) => state.activeSeasonNumber)
-  const discountLabel = useGenesisPromoStore((state) => state.discountLabel)
-  const seasonOptions = useGenesisPromoStore((state) => state.seasonOptions)
 
-  const address = account?.address
-  const walletReady = Boolean(address)
-  const purchaseQueriesEnabled = useDappShellStore((state) => state.activeTab === 'genesis')
-
-  // Provider only mounts on Genesis tab; keep enabled flags as belt-and-suspenders.
-  const phasesQuery = usePresalePhasesQuery()
-  const activePhaseQuery = usePresaleActivePhaseQuery()
-  const agxPriceQuery = usePresaleAgxPriceQuery()
-  const totalPurchasedQuery = usePresaleTotalPurchasedQuery({
-    enabled: purchaseQueriesEnabled,
-  })
-  const airdropThresholdQuery = usePresaleAirdropThresholdQuery({
-    enabled: purchaseQueriesEnabled,
-  })
-  const pausedQuery = usePresalePausedQuery({ enabled: purchaseQueriesEnabled })
-  const userTotalQuery = usePresaleUserTotalQuery(address, { enabled: purchaseQueriesEnabled })
-  const phaseRemainingQuery = usePresaleUserPhaseRemainingQuery(
-    address,
-    activePhaseQuery.data?.index,
-    { enabled: purchaseQueriesEnabled },
-  )
-  const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address, {
-    enabled: purchaseQueriesEnabled,
-  })
-  const isBoundQuery = useIsBindReferralQuery(address, { enabled: purchaseQueriesEnabled })
-  const isBound = isBoundQuery.data === true
-  const needsReferralBind = walletReady && isBoundQuery.data === false
-  const isPaused = pausedQuery.data === true
-  // Fail-closed while pause status is unknown (loading, error, or never fetched).
-  const isPausedUnknown = walletReady && !(pausedQuery.isSuccess && pausedQuery.data !== undefined)
-
-  const phases = useMemo(() => phasesQuery.data ?? [], [phasesQuery.data])
-  const activePhase = activePhaseQuery.data ?? null
-  const sharePriceWei = resolveSharePriceWei(activePhase)
-  const userTotal = userTotalQuery.data ?? 0n
-  const phaseRemaining = phaseRemainingQuery.data ?? null
-  const agxPriceWei = agxPriceQuery.data ?? 0n
-  const airdropThresholdUsd = useMemo(
-    () =>
-      airdropThresholdQuery.data !== undefined
-        ? presaleAirdropThresholdToUsd(airdropThresholdQuery.data)
-        : presaleAirdropThresholdToUsd(0n),
-    [airdropThresholdQuery.data],
-  )
-
-  const isLoading =
-    phasesQuery.isLoading ||
-    activePhaseQuery.isLoading ||
-    agxPriceQuery.isLoading ||
-    totalPurchasedQuery.isLoading ||
-    (purchaseQueriesEnabled && walletReady && userTotalQuery.isLoading) ||
-    (purchaseQueriesEnabled &&
-      walletReady &&
-      activePhase !== null &&
-      phaseRemainingQuery.isLoading)
-
-  const phaseIndex = activePhase?.index ?? 0
-  const agxPriceUsd = useMemo(() => {
-    const fromChain = formatTokenAmountToNumber(agxPriceWei, USD1_DECIMALS)
-    return fromChain > 0 ? fromChain : 0
-  }, [agxPriceWei])
-  const discountBps = Number(activePhase?.discountBps ?? 0)
-  const minAmount = activePhase?.minAmount ?? 0n
-  const maxAmount = activePhase?.maxAmount ?? 0n
-  const remainingPhaseAmount = resolveRemainingPhaseAmount(phaseRemaining, activePhase)
-  const remainingUserAmount = resolveRemainingUserAmount(phaseRemaining, activePhase, maxAmount)
-  const maxShares = useMemo(
-    () =>
-      resolveGenesisMaxShares({
-        sharePriceWei,
-        remainingPhaseAmount,
-        remainingUserAmount,
-        usd1Balance,
-        walletReady,
-      }),
-    [remainingPhaseAmount, remainingUserAmount, sharePriceWei, usd1Balance, walletReady],
-  )
-
-  const shares = clampGenesisShares(sharesDraft, maxShares)
-  const setShares = useCallback((next: number) => {
+  const shares = clampGenesisShares(sharesDraft, reads.maxShares)
+  function setShares(next: number) {
     setSharesDraft(next)
-  }, [])
+  }
 
-  const purchaseAmount = useMemo(
-    () => (sharePriceWei > 0n ? sharePriceWei * BigInt(shares) : 0n),
-    [sharePriceWei, shares],
-  )
+  const purchaseAmount =
+    reads.sharePriceWei > 0n ? reads.sharePriceWei * BigInt(shares) : 0n
   const payUsd1 = formatTokenAmountToNumber(purchaseAmount, USD1_DECIMALS)
-  const estimatedAgx = estimateAgxFromUsd1(payUsd1, discountBps, agxPriceUsd)
+  const estimatedAgx = estimateAgxFromUsd1(payUsd1, reads.discountBps, reads.agxPriceUsd)
   const contributionValueUsd = estimateContributionValueUsd(
     payUsd1,
-    discountBps,
-    agxPriceUsd,
+    reads.discountBps,
+    reads.agxPriceUsd,
   )
   const xTokenAirdropUsd = estimateXTokenAirdropUsd(
     payUsd1,
-    phaseIndex,
-    activePhase ?? undefined,
+    reads.phaseIndex,
+    reads.activePhase ?? undefined,
   )
-  const maxPurchasableWei =
-    remainingPhaseAmount < remainingUserAmount
-      ? remainingPhaseAmount
-      : remainingUserAmount
-  const quotaLabel = `$${formatTokenAmount(minAmount, USD1_DECIMALS, 0)} – $${formatTokenAmount(maxAmount, USD1_DECIMALS, 0)}`
-  const isApproved = walletReady && purchaseAmount > 0n && allowance >= purchaseAmount
-  const needsApproval = walletReady && purchaseAmount > 0n && !isApproved
-  const hasSufficientBalance = usd1Balance >= purchaseAmount
+  const quotaLabel = `$${formatTokenAmount(reads.minAmount, USD1_DECIMALS, 0)} – $${formatTokenAmount(reads.maxAmount, USD1_DECIMALS, 0)}`
+  const isApproved = reads.walletReady && purchaseAmount > 0n && reads.allowance >= purchaseAmount
+  const needsApproval = reads.walletReady && purchaseAmount > 0n && !isApproved
+  const hasSufficientBalance = reads.usd1Balance >= purchaseAmount
   const canPurchase = canPurchaseGenesis({
-    walletReady,
-    hasActivePhase: activePhase !== null,
-    isBound,
-    isPaused: isPaused || isPausedUnknown,
-    maxShares,
+    walletReady: reads.walletReady,
+    hasActivePhase: reads.activePhase !== null,
+    isBound: reads.isBound,
+    isPaused: reads.isPaused || reads.isPausedUnknown,
+    maxShares: reads.maxShares,
     shares,
     purchaseAmount,
-    minAmount,
-    maxPurchasableWei,
+    minAmount: reads.minAmount,
+    maxPurchasableWei: reads.maxPurchasableWei,
   })
-  const isSubmitting = submittingAction !== null
 
-  const refresh = useCallback(async () => {
-    invalidatePresaleChainQueries(address)
-  }, [address])
-
-  const approve = useCallback(async (): Promise<GenesisPurchaseResult> => {
-    if (!account || !wallet) {
-      return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
-    }
-    if (!canPurchase) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
-    if (isApproved) {
-      return { success: true }
-    }
-
-    setSubmittingAction('approve')
-    try {
-      await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
-      if (address) {
-        queryClient.setQueryData(
-          queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
-          MAX_UINT256,
-        )
-      }
-      return { success: true }
-    } catch (caught) {
-      return { success: false, error: caught }
-    } finally {
-      setSubmittingAction(null)
-    }
-  }, [account, address, canPurchase, isApproved, purchaseAmount, queryClient, wallet])
-
-  const purchase = useCallback(async (): Promise<GenesisPurchaseResult> => {
-    if (!account || !wallet) {
-      return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
-    }
-    if (!activePhase || !canPurchase) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
-
-    setSubmittingAction('purchase')
-    try {
-      const [balance, approved] = await Promise.all([
-        readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
-        readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale, readClient),
-      ])
-
-      if (address) {
-        queryClient.setQueryData(
-          queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address),
-          balance,
-        )
-        queryClient.setQueryData(
-          queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
-          approved,
-        )
-      }
-
-      if (approved < purchaseAmount) {
-        return { success: false, error: GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE }
-      }
-
-      if (balance < purchaseAmount) {
-        return { success: false, error: GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1 }
-      }
-
-      await purchasePresale({
-        wallet,
-        phase: activePhase.index,
-        amount: purchaseAmount,
-      })
-      invalidateAfterGenesisPurchase(account.address, purchaseAmount)
-      return { success: true }
-    } catch (caught) {
-      return { success: false, error: caught }
-    } finally {
-      setSubmittingAction(null)
-    }
-  }, [
-    account,
-    activePhase,
-    address,
-    canPurchase,
-    purchaseAmount,
-    queryClient,
-    readClient,
+  const actions = useGenesisPurchaseActions({
+    account: reads.account,
     wallet,
-  ])
-
-  const submitPurchase = useCallback(async (): Promise<GenesisPurchaseResult> => {
-    if (genesisPurchaseGate.inFlight) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
-
-    // Contract requires a bound referrer before purchase; block early with a
-    // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
-    // Fail-closed while bind status is still loading (`undefined`).
-    if (isBoundQuery.data !== true) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.NOT_BOUND }
-    }
-    if (isPaused || isPausedUnknown) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
-
-    genesisPurchaseGate.inFlight = true
-    try {
-      if (needsApproval) {
-        const approveResult = await approve()
-        if (!approveResult.success) {
-          return approveResult
-        }
-        const gate = evaluateGenesisPostApproveGate({
-          isBound: isBoundQuery.data,
-          isPaused,
-          isPausedUnknown,
-        })
-        if (!gate.ok) {
-          return {
-            success: false,
-            error:
-              gate.reason === 'not_bound'
-                ? GENESIS_PURCHASE_ERROR.NOT_BOUND
-                : GENESIS_PURCHASE_ERROR.UNAVAILABLE,
-          }
-        }
-      }
-      return await purchase()
-    } finally {
-      genesisPurchaseGate.inFlight = false
-    }
-  }, [approve, isBoundQuery.data, isPaused, isPausedUnknown, needsApproval, purchase])
-
-  const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
+    address: reads.address,
+    activePhase: reads.activePhase,
+    canPurchase,
+    isApproved,
+    needsApproval,
+    purchaseAmount,
+    isBoundQueryData: reads.isBoundQueryData,
+    isPaused: reads.isPaused,
+    isPausedUnknown: reads.isPausedUnknown,
+  })
 
   useEffect(() => {
-    if (!countdownTarget || !hasPhaseCountdownElapsed(countdownTarget.targetTime, nowSeconds)) {
+    const countdownTarget = reads.countdownTarget
+    if (
+      !countdownTarget ||
+      !hasPhaseCountdownElapsed(countdownTarget.targetTime, reads.nowSeconds)
+    ) {
       return
     }
 
@@ -339,40 +96,33 @@ export function useGenesisWidget() {
     }
 
     countdownRefreshRef.current = countdownKey
-    invalidateAfterGenesisPhaseTransition(address)
-  }, [address, countdownTarget, nowSeconds])
-
-  const queryError =
-    phasesQuery.error ??
-    activePhaseQuery.error ??
-    agxPriceQuery.error ??
-    totalPurchasedQuery.error ??
-    (purchaseQueriesEnabled ? userTotalQuery.error : null) ??
-    (purchaseQueriesEnabled ? phaseRemainingQuery.error : null)
+    invalidateAfterGenesisPhaseTransition(reads.address)
+  }, [reads.address, reads.countdownTarget, reads.nowSeconds])
 
   return {
     shares,
     setShares,
-    maxShares,
-    phases,
-    activePhase,
-    phaseIndex,
-    discountLabel,
-    discountBps,
-    countdown: countdownTarget
-      ? formatPhaseCountdown(countdownTarget.targetTime, nowSeconds, t.genesis.countdownUnits)
+    maxShares: reads.maxShares,
+    phases: reads.phases,
+    activePhase: reads.activePhase,
+    phaseIndex: reads.phaseIndex,
+    discountLabel: reads.discountLabel,
+    discountBps: reads.discountBps,
+    countdown: reads.countdownTarget
+      ? formatPhaseCountdown(
+          reads.countdownTarget.targetTime,
+          reads.nowSeconds,
+          t.genesis.countdownUnits,
+        )
       : '—',
-    countdownMode: countdownTarget?.mode ?? null,
-    globalPurchasedLabel: formatTokenAmount(totalPurchasedQuery.data ?? 0n, USD1_DECIMALS, 0),
-    globalPurchasedLoading: totalPurchasedQuery.isLoading,
-    userTotalLabel: formatTokenAmount(userTotal, USD1_DECIMALS, 0),
-    userTotal,
-    userPhaseAmountCurrent: phaseRemaining?.userPhaseAmountCurrent ?? 0n,
-    seasonContributionMaxWei:
-      phaseRemaining && phaseRemaining.userPurchaseLimit > 0n
-        ? phaseRemaining.userPurchaseLimit
-        : maxAmount,
-    usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, 2),
+    countdownMode: reads.countdownTarget?.mode ?? null,
+    globalPurchasedLabel: formatTokenAmount(reads.totalPurchased, USD1_DECIMALS, 0),
+    globalPurchasedLoading: reads.globalPurchasedLoading,
+    userTotalLabel: formatTokenAmount(reads.userTotal, USD1_DECIMALS, 0),
+    userTotal: reads.userTotal,
+    userPhaseAmountCurrent: reads.userPhaseAmountCurrent,
+    seasonContributionMaxWei: reads.seasonContributionMaxWei,
+    usd1BalanceLabel: formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, 2),
     estimatedAgxLabel: new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -380,28 +130,28 @@ export function useGenesisWidget() {
     payUsd1Label: `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(payUsd1)} USD1`,
     contributionValueLabel: formatUsd(contributionValueUsd),
     xTokenAirdropLabel: payUsd1 > 0 ? formatUsd(xTokenAirdropUsd) : '—',
-    airdropThresholdUsd,
-    airdropThresholdLoading: airdropThresholdQuery.isLoading,
+    airdropThresholdUsd: reads.airdropThresholdUsd,
+    airdropThresholdLoading: reads.airdropThresholdLoading,
     quotaLabel,
-    referencePriceLabel: `$${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(agxPriceUsd)}`,
-    airdropLabel: `+${(getAirdropBpsForPhase(phaseIndex, activePhase ?? undefined) / 100).toFixed(0)}%`,
-    agxPriceUsd,
-    walletReady,
-    needsReferralBind,
+    referencePriceLabel: `$${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(reads.agxPriceUsd)}`,
+    airdropLabel: `+${(getAirdropBpsForPhase(reads.phaseIndex, reads.activePhase ?? undefined) / 100).toFixed(0)}%`,
+    agxPriceUsd: reads.agxPriceUsd,
+    walletReady: reads.walletReady,
+    needsReferralBind: reads.needsReferralBind,
     needsApproval,
     isApproved,
     hasSufficientBalance,
     canPurchase,
-    isLoading,
-    isSubmitting,
-    submittingAction,
-    error: queryError,
-    refresh,
-    approve,
-    purchase,
-    submitPurchase,
-    activeSeasonNumber,
-    seasonOptions,
-    isPhasesLoading: phasesQuery.isLoading,
+    isLoading: reads.isLoading,
+    isSubmitting: actions.isSubmitting,
+    submittingAction: actions.submittingAction,
+    error: reads.error,
+    refresh: actions.refresh,
+    approve: actions.approve,
+    purchase: actions.purchase,
+    submitPurchase: actions.submitPurchase,
+    activeSeasonNumber: reads.activeSeasonNumber,
+    seasonOptions: reads.seasonOptions,
+    isPhasesLoading: reads.isPhasesLoading,
   }
 }
