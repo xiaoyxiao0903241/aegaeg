@@ -3,26 +3,8 @@ import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { FlashSwapWidgetProvider } from '~/views/dapp/swap/flash-swap-widget-context'
 import { TradeSwapWidgetProvider } from '~/views/dapp/swap/trade-swap-widget-context'
-import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
-
-function viewsNeedingProvider(
-  view: SwapView,
-  motion: boolean,
-  outgoingView: SwapView | null,
-  incomingView: SwapView | null,
-): { flash: boolean; trade: boolean } {
-  const active = new Set<SwapView>()
-  if (motion) {
-    if (outgoingView) active.add(outgoingView)
-    if (incomingView) active.add(incomingView)
-  } else {
-    active.add(view)
-  }
-  return {
-    flash: active.has('flash'),
-    trade: active.has('trade'),
-  }
-}
+import { useSwapViewStore } from '~/stores/swap-view-store'
+import { viewsNeedingProvider } from '~/views/dapp/swap/views-needing-provider'
 
 export function SwapSubviewProviders({
   activeTab,

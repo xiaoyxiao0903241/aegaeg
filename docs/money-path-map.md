@@ -44,4 +44,4 @@ Claim:  签名 API → 链上 claim → confirm(重试) → success: invalidate
 3. Approve 等待后必须再跑 submit/purchase 门闸（`assertQuotedSwapStillSubmittable` / Genesis post-approve gate）。
 4. UI `confirm_failed` status 与 resolver 哨兵 `CLAIM_CONFIRM_SYNC_FAILED` 是两条路径：claim hook 用 status + warning toast，**不**经 `setError(CLAIM_CONFIRM_SYNC_FAILED)`。
 5. `genesisPurchaseGate.inFlight` 为模块级单例（跨 tab remount 保活）；勿改成仅 React state。
-6. Swap Trade/Flash Provider 按需挂载；离开子视图会丢 quote/submit 本地状态（刻意设计）。
+6. Swap Trade/Flash Provider 按需挂载（`viewsNeedingProvider`）；离开子视图会丢 quote/submit 本地状态（刻意设计）。motion 期间可双挂。

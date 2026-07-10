@@ -286,3 +286,30 @@ test('resolveEmptySpotRatePlaceholder gates empty vs format', async () => {
   assert.equal(resolveEmptySpotRatePlaceholder(1n, false), null)
   assert.equal(resolveEmptySpotRatePlaceholder(1n, true), null)
 })
+
+test('viewsNeedingProvider mounts only active swap subviews', async () => {
+  const { viewsNeedingProvider } = await loadModule(
+    '/src/views/dapp/swap/views-needing-provider.ts',
+  )
+
+  assert.deepEqual(viewsNeedingProvider('hub', false, null, null), {
+    flash: false,
+    trade: false,
+  })
+  assert.deepEqual(viewsNeedingProvider('trade', false, null, null), {
+    flash: false,
+    trade: true,
+  })
+  assert.deepEqual(viewsNeedingProvider('flash', false, null, null), {
+    flash: true,
+    trade: false,
+  })
+  assert.deepEqual(viewsNeedingProvider('hub', true, 'trade', 'flash'), {
+    flash: true,
+    trade: true,
+  })
+  assert.deepEqual(viewsNeedingProvider('trade', true, 'trade', 'hub'), {
+    flash: false,
+    trade: true,
+  })
+})
