@@ -25,6 +25,10 @@ function createRequestAbortSignal(timeoutMs: number): AbortSignal {
 }
 
 export interface ApiRequestOptions {
+  /**
+   * Defaults to POST — matches DApp business API SSOT (see endpoints.ts).
+   * Pass GET only for rare non-envelope probes; never omit and expect GET.
+   */
   method?: 'GET' | 'POST'
   body?: unknown
   token?: string | null
@@ -48,6 +52,11 @@ export function buildApiUrl(
   return url.toString()
 }
 
+function rethrowAfterIntercept(error: unknown): never {
+  interceptApiError(error)
+  throw error
+}
+
 export async function apiRequest<T>(
   path: string,
   options: ApiRequestOptions = {},
@@ -65,7 +74,7 @@ export async function apiRequest<T>(
   }
 
   const response = await fetch(buildApiUrl(path, options.searchParams), {
-    method: options.method ?? 'GET',
+    method: options.method ?? 'POST',
     headers,
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
     signal: createRequestAbortSignal(REQUEST_TIMEOUT_MS),
@@ -76,17 +85,19 @@ export async function apiRequest<T>(
   try {
     payload = (await response.json()) as ApiEnvelope<T>
   } catch {
-    throw new ApiError({
-      code: response.status,
-      error: 'INVALID_JSON',
-      message: `API returned non-JSON response (${response.status})`,
-    })
+    // Gateway HTML / empty body — map HTTP status so 401/403 still hit auth + ban hooks.
+    rethrowAfterIntercept(
+      new ApiError({
+        code: response.status,
+        error: 'INVALID_JSON',
+        message: `API returned non-JSON response (${response.status})`,
+      }),
+    )
   }
 
   try {
     return parseApiResponse(payload)
   } catch (error) {
-    interceptApiError(error)
-    throw error
+    rethrowAfterIntercept(error)
   }
 }

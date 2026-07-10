@@ -89,6 +89,61 @@ test('apiRequest throws ApiError for business failures', async () => {
   }
 })
 
+test('apiRequest defaults to POST when method is omitted', async () => {
+  const { apiRequest } = await loadModule('/src/shared/api/request.ts')
+
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (_url, init) => {
+    assert.equal(init?.method, 'POST')
+    return Response.json({ code: 0, data: { ok: true } })
+  }
+
+  try {
+    const data = await apiRequest('/performance', { token: 'secret', body: {} })
+    assert.equal(data.ok, true)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('apiRequest non-JSON 403 still reports account banned', async () => {
+  const { apiRequest, ApiError } = await loadModule('/src/shared/api/request.ts')
+  const {
+    resetAccountBannedReportCooldownForTests,
+    subscribeAccountBanned,
+  } = await loadModule('/src/shared/api/account-banned.ts')
+
+  resetAccountBannedReportCooldownForTests()
+  let bannedReports = 0
+  const unsubscribe = subscribeAccountBanned(() => {
+    bannedReports += 1
+  })
+
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async () =>
+    new Response('<html>forbidden</html>', {
+      status: 403,
+      headers: { 'Content-Type': 'text/html' },
+    })
+
+  try {
+    await assert.rejects(
+      () => apiRequest('/performance', { token: 'jwt', body: {} }),
+      (error) => {
+        assert.ok(error instanceof ApiError)
+        assert.equal(error.code, 403)
+        assert.equal(error.error, 'INVALID_JSON')
+        return true
+      },
+    )
+    assert.equal(bannedReports, 1)
+  } finally {
+    unsubscribe()
+    globalThis.fetch = originalFetch
+    resetAccountBannedReportCooldownForTests()
+  }
+})
+
 test('getTeamRewardClaimLogs posts pagination body', async () => {
   const { getTeamRewardClaimLogs } = await loadModule('/src/shared/api/endpoints.ts')
 

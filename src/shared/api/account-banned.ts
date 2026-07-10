@@ -13,6 +13,7 @@ const listeners = new Set<AccountBannedListener>()
 let lastReportedAt = 0
 
 export function isAccountBannedError(error: unknown): boolean {
+  if (error instanceof ApiError) return error.code === 403
   return (
     error instanceof Error &&
     error.name === 'ApiError' &&
