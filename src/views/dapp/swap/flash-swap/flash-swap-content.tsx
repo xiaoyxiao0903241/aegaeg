@@ -4,16 +4,15 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
-import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap/flash-swap-widget-context'
+import type { FlashSwapState } from '~/views/dapp/swap/swap-session-hosts'
 import {
   SwapMetricCard,
   SwapMetricCardSkeleton,
 } from '~/views/dapp/swap/swap-detail-primitives'
 import { TokenAboutCard } from '~/views/dapp/swap/flash-swap/swap-token-about-card'
 
-export function FlashSwapContent() {
+export function FlashSwapContent({ flash }: { flash: FlashSwapState }) {
   const { messages: t } = useI18n()
-  const flash = useFlashSwapWidgetContext()
   const usd1About = t.swap.tokenAbout.items.find((item) => item.key === 'usd1')!
   const showRateSkeleton = flash.isExchangePriceQuoting && !flash.overviewRateLabel
 

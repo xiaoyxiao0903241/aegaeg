@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import type { DappTab } from '~/shared/config/dapp-tabs'
+import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
 import { CommunityContent } from '~/views/dapp/community/community-content'
 import { CommunityWidget } from '~/views/dapp/community/community-widget'
 import { GenesisContent } from '~/views/dapp/genesis/genesis-content'
@@ -16,31 +17,53 @@ export { tabOrder } from '~/shared/config/dapp-tabs'
 
 type TabWidgetProps = {
   onSelectTab: (tab: DappTab) => void
-}
+} & DappTabSessions
+
+type TabContentProps = DappTabSessions
 
 export type DappTabEntry = {
   id: DappTab
   Widget: ComponentType<TabWidgetProps>
-  Content: ComponentType
+  Content: ComponentType<TabContentProps>
 }
 
-function SwapTabWidget({ onSelectTab }: TabWidgetProps) {
+function SwapTabWidget({ onSelectTab, trade, flash }: TabWidgetProps) {
   return (
     <SwapWidget
+      flash={flash}
       onSelectGenesis={() => {
         onSelectTab('genesis')
         scrollDappPanelsToTop()
       }}
+      trade={trade}
     />
   )
 }
 
-function GenesisTabWidget() {
-  return <GenesisWidget />
+function SwapTabContent({ trade, flash }: TabContentProps) {
+  return <SwapContent flash={flash} trade={trade} />
+}
+
+function GenesisTabWidget({ genesis }: TabWidgetProps) {
+  if (!genesis) {
+    throw new Error('GenesisWidget requires a lifted genesis session')
+  }
+  return <GenesisWidget genesis={genesis} />
+}
+
+function GenesisTabContent({ genesis }: TabContentProps) {
+  if (!genesis) {
+    throw new Error('GenesisContent requires a lifted genesis session')
+  }
+  return <GenesisContent genesis={genesis} />
 }
 
 function RewardsTabWidget() {
   return <RewardsWidget />
+}
+
+function RewardsTabContent() {
+  return <RewardsContent />
 }
 
 function CommunityTabWidget({ onSelectTab }: TabWidgetProps) {
@@ -49,12 +72,16 @@ function CommunityTabWidget({ onSelectTab }: TabWidgetProps) {
   return <CommunityWidget key={remountKey} onSelectTab={onSelectTab} />
 }
 
+function CommunityTabContent() {
+  return <CommunityContent />
+}
+
 /** Sync registry — loading UX is data-driven inside tabs, not code-split Suspense. */
 export const dappTabEntries: readonly DappTabEntry[] = [
-  { id: 'swap', Widget: SwapTabWidget, Content: SwapContent },
-  { id: 'genesis', Widget: GenesisTabWidget, Content: GenesisContent },
-  { id: 'rewards', Widget: RewardsTabWidget, Content: RewardsContent },
-  { id: 'community', Widget: CommunityTabWidget, Content: CommunityContent },
+  { id: 'swap', Widget: SwapTabWidget, Content: SwapTabContent },
+  { id: 'genesis', Widget: GenesisTabWidget, Content: GenesisTabContent },
+  { id: 'rewards', Widget: RewardsTabWidget, Content: RewardsTabContent },
+  { id: 'community', Widget: CommunityTabWidget, Content: CommunityTabContent },
 ]
 
 const dappTabEntryById = Object.fromEntries(

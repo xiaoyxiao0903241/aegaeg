@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
+import type { FlashSwapState, TradeSwapState } from '~/views/dapp/swap/swap-session-hosts'
 import { SwapHubWidget } from '~/views/dapp/swap/hub/swap-hub-widget'
 import { SwapHubContent } from '~/views/dapp/swap/hub/swap-hub-content'
 import { FlashSwapWidget } from '~/views/dapp/swap/flash-swap/flash-swap-widget'
@@ -13,25 +14,48 @@ const swapTransitionStack = tv({
   base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
 })
 
-function renderSwapWidget(displayView: SwapView, onSelectGenesis: () => void) {
+function requireTrade(trade: TradeSwapState | null): TradeSwapState {
+  if (!trade) {
+    throw new Error('TradeSwap view requires a lifted trade session')
+  }
+  return trade
+}
+
+function requireFlash(flash: FlashSwapState | null): FlashSwapState {
+  if (!flash) {
+    throw new Error('FlashSwap view requires a lifted flash session')
+  }
+  return flash
+}
+
+function renderSwapWidget(
+  displayView: SwapView,
+  onSelectGenesis: () => void,
+  trade: TradeSwapState | null,
+  flash: FlashSwapState | null,
+) {
   if (displayView === 'flash') {
-    return <FlashSwapWidget onSelectGenesis={onSelectGenesis} />
+    return <FlashSwapWidget onSelectGenesis={onSelectGenesis} swap={requireFlash(flash)} />
   }
 
   if (displayView === 'trade') {
-    return <TradeSwapWidget onSelectGenesis={onSelectGenesis} />
+    return <TradeSwapWidget onSelectGenesis={onSelectGenesis} swap={requireTrade(trade)} />
   }
 
   return <SwapHubWidget onSelectGenesis={onSelectGenesis} />
 }
 
-function renderSwapContent(displayView: SwapView) {
+function renderSwapContent(
+  displayView: SwapView,
+  trade: TradeSwapState | null,
+  flash: FlashSwapState | null,
+) {
   if (displayView === 'flash') {
-    return <FlashSwapContent />
+    return <FlashSwapContent flash={requireFlash(flash)} />
   }
 
   if (displayView === 'trade') {
-    return <TradeSwapContent />
+    return <TradeSwapContent trade={requireTrade(trade)} />
   }
 
   return <SwapHubContent />
@@ -62,8 +86,12 @@ function SwapTransitionLayers({
 
 export function SwapWidget({
   onSelectGenesis,
+  trade,
+  flash,
 }: {
   onSelectGenesis: () => void
+  trade: TradeSwapState | null
+  flash: FlashSwapState | null
 }) {
   const view = useSwapViewStore((state) => state.view)
   const motion = useSwapViewStore((state) => state.motion)
@@ -89,16 +117,24 @@ export function SwapWidget({
           direction={direction}
           incoming={incomingView}
           outgoing={outgoingView}
-          render={(displayView) => renderSwapWidget(displayView, onSelectGenesis)}
+          render={(displayView) =>
+            renderSwapWidget(displayView, onSelectGenesis, trade, flash)
+          }
         />
       ) : (
-        renderSwapWidget(view, onSelectGenesis)
+        renderSwapWidget(view, onSelectGenesis, trade, flash)
       )}
     </div>
   )
 }
 
-export function SwapContent() {
+export function SwapContent({
+  trade,
+  flash,
+}: {
+  trade: TradeSwapState | null
+  flash: FlashSwapState | null
+}) {
   const view = useSwapViewStore((state) => state.view)
   const motion = useSwapViewStore((state) => state.motion)
   const direction = useSwapViewStore((state) => state.direction)
@@ -118,10 +154,10 @@ export function SwapContent() {
           direction={direction}
           incoming={incomingView}
           outgoing={outgoingView}
-          render={renderSwapContent}
+          render={(displayView) => renderSwapContent(displayView, trade, flash)}
         />
       ) : (
-        renderSwapContent(view)
+        renderSwapContent(view, trade, flash)
       )}
     </div>
   )

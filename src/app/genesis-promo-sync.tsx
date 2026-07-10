@@ -12,7 +12,7 @@ import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 
 /**
  * Shell-resident syncer: light presale reads → genesis-promo-store.
- * Mount once under DApp shell; do not mount inside GenesisWidgetProvider.
+ * Mount once under DApp shell; do not mount inside GenesisSessionHost.
  */
 export function GenesisPromoSync() {
   const setPromo = useGenesisPromoStore((state) => state.setPromo)

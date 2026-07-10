@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useSalesLogs } from '~/hooks/use-api-data'
-import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import {
   calcProgressPercent,
   formatUsd,
@@ -28,11 +28,14 @@ import {
 } from '~/views/dapp/genesis/genesis-contributions-primitives'
 import { Text } from '~/shared/ui/text'
 
-export function GenesisContributionsSection() {
+export function GenesisContributionsSection({
+  genesis,
+}: {
+  genesis: GenesisWidgetState
+}) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const { isLoggingIn } = useAuth()
-  const genesis = useGenesisWidgetContext()
   const [contributionsPage, setContributionsPage] = useState(1)
   const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
     tablePageQuery(contributionsPage),

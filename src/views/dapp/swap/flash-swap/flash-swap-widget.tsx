@@ -8,7 +8,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
-import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap/flash-swap-widget-context'
+import type { FlashSwapState } from '~/views/dapp/swap/swap-session-hosts'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { resolveSwapUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
@@ -25,12 +25,13 @@ import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 
 export function FlashSwapWidget({
   onSelectGenesis,
+  swap,
 }: {
   onSelectGenesis: () => void
+  swap: FlashSwapState
 }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const swap = useFlashSwapWidgetContext()
   const { pair } = swap
   const showRateSkeleton = swap.isExchangePriceQuoting && !swap.exchangePriceLabel
   const showBuyAmountSkeleton = sessionReady && swap.isQuoting && swap.sellAmount.trim().length > 0

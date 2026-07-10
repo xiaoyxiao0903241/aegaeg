@@ -5,7 +5,7 @@ import { cn } from '~/shared/lib/utils'
 import { revealClass } from '~/shared/lib/reveal'
 import { toast } from 'sonner'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
-import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { formatCount, formatUsdAmountLabel } from '~/shared/api/format-display'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -29,10 +29,9 @@ import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchas
  * Remount via `key={address}` from parent when wallet changes — clears draft text
  * without an effect that mirrors genesis.shares.
  */
-export function GenesisPurchaseForm() {
+export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
-  const genesis = useGenesisWidgetContext()
   const setShares = genesis.setShares
 
   const [sharesText, setSharesText] = useState('')

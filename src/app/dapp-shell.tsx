@@ -16,7 +16,9 @@ import { scrollDappPanelsToTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 import { invalidateTabQueries } from '~/shared/api/query/invalidate'
-import { DappTabShellProviders } from '~/views/dapp/dapp-tab-shell-providers'
+import { GenesisPromoSync } from '~/app/genesis-promo-sync'
+import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
+import { SwapSessionHosts } from '~/views/dapp/swap/swap-session-hosts'
 import { DappTabContent, DappTabWidget } from '~/views/dapp/dapp-tabs'
 
 function replaceTabHash(tab: string) {
@@ -127,83 +129,102 @@ export function DappShell() {
           )}
           data-dapp-shell-container
         >
-          <DappTabShellProviders activeTab={activeTab}>
-            <div
-              ref={setWindowNode}
-              className={cn(
-                'group/shell relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
-                'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
-                !shellState.sessionReady && 'shadow-window-compact',
-                'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
-                'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
-                'max-dapp:px-4.5 max-dapp:pt-4.5 max-dapp:pb-8 max-dapp:shadow-card',
-              )}
-              data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
-              data-session-ready={shellState.sessionReady ? 'true' : 'false'}
-              data-dapp-window
-              data-tab={activeTab}
-              data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
-            >
-              <DappRail activeTab={activeTab} onSelectTab={selectTab} />
+          <GenesisPromoSync />
+          <GenesisSessionHost active={activeTab === 'genesis'}>
+            {(genesis) => (
+              <SwapSessionHosts activeTab={activeTab}>
+                {({ trade, flash }) => (
+                  <div
+                    ref={setWindowNode}
+                    className={cn(
+                      'group/shell relative z-1 mx-auto grid min-h-0 w-full border border-border bg-card shadow-window',
+                      'rounded-xl dapp:h-full dapp:max-h-full dapp:max-w-none dapp:overflow-hidden',
+                      !shellState.sessionReady && 'shadow-window-compact',
+                      'max-dapp:flex max-dapp:h-full max-dapp:max-h-full max-dapp:min-h-0 max-dapp:max-w-none max-dapp:flex-1 max-dapp:flex-col max-dapp:gap-3',
+                      'max-dapp:overflow-x-hidden max-dapp:overflow-y-auto max-dapp:rounded-t-2xl max-dapp:rounded-b-none max-dapp:border-0',
+                      'max-dapp:px-4.5 max-dapp:pt-4.5 max-dapp:pb-8 max-dapp:shadow-card',
+                    )}
+                    data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
+                    data-session-ready={shellState.sessionReady ? 'true' : 'false'}
+                    data-dapp-window
+                    data-tab={activeTab}
+                    data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
+                  >
+                    <DappRail activeTab={activeTab} onSelectTab={selectTab} />
 
-              <DappScrollFadeHost>
-                <aside
-                  className={cn(
-                    'overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
-                    // PC: fill column and scroll inside the panel
-                    'dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:overflow-y-auto',
-                    // H5: size to content; window is the only scroller (avoid flex-shrink overlap)
-                    'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
-                  )}
-                  data-dapp-widget-panel
-                >
-                  <div className="relative hidden max-dapp:block" data-dapp-h5-menu>
-                    <button
-                      aria-controls={mobileNavId}
-                      aria-expanded={mobileNavOpen}
-                      aria-label={messages.topbar.openMenu}
-                      className="grid aspect-square w-10 cursor-pointer list-none place-items-center rounded-md border border-border bg-card"
-                      onClick={() => setMobileNavOpen(true)}
-                      type="button"
+                    <DappScrollFadeHost>
+                      <aside
+                        className={cn(
+                          'overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
+                          // PC: fill column and scroll inside the panel
+                          'dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:overflow-y-auto',
+                          // H5: size to content; window is the only scroller (avoid flex-shrink overlap)
+                          'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
+                        )}
+                        data-dapp-widget-panel
+                      >
+                        <div className="relative hidden max-dapp:block" data-dapp-h5-menu>
+                          <button
+                            aria-controls={mobileNavId}
+                            aria-expanded={mobileNavOpen}
+                            aria-label={messages.topbar.openMenu}
+                            className="grid aspect-square w-10 cursor-pointer list-none place-items-center rounded-md border border-border bg-card"
+                            onClick={() => setMobileNavOpen(true)}
+                            type="button"
+                          >
+                            <DappIcon alt="" size="lg" src={dappAssets.menu} />
+                          </button>
+                        </div>
+                        <DappMobileNav
+                          activeTab={activeTab}
+                          onClose={() => setMobileNavOpen(false)}
+                          onSelectTab={selectMobileTab}
+                          open={mobileNavOpen}
+                        />
+                        <DappTabWidget
+                          key={activeTab}
+                          activeTab={activeTab}
+                          flash={flash}
+                          genesis={genesis}
+                          onSelectTab={selectTab}
+                          trade={trade}
+                        />
+                      </aside>
+                    </DappScrollFadeHost>
+
+                    <DappScrollFadeHost
+                      className={effectiveDetailCollapsed ? 'dapp:pointer-events-none' : undefined}
                     >
-                      <DappIcon alt="" size="lg" src={dappAssets.menu} />
-                    </button>
+                      <section
+                        className={cn(
+                          'min-w-0 overflow-x-hidden bg-card transition-opacity duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                          // PC: fill column and scroll inside the panel
+                          'dapp:max-h-full dapp:min-h-0',
+                          effectiveDetailCollapsed
+                            ? 'pointer-events-none overflow-y-hidden opacity-0'
+                            : 'opacity-100 dapp:overflow-y-auto',
+                          // H5: size to content under the shared window scroller
+                          'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:opacity-100',
+                        )}
+                        aria-hidden={effectiveDetailCollapsed}
+                        aria-labelledby={`${activeTab}-title`}
+                        data-dapp-detail
+                      >
+                        <div className="dapp-detail-panel" key={activeTab}>
+                          <DappTabContent
+                            activeTab={activeTab}
+                            flash={flash}
+                            genesis={genesis}
+                            trade={trade}
+                          />
+                        </div>
+                      </section>
+                    </DappScrollFadeHost>
                   </div>
-                  <DappMobileNav
-                    activeTab={activeTab}
-                    onClose={() => setMobileNavOpen(false)}
-                    onSelectTab={selectMobileTab}
-                    open={mobileNavOpen}
-                  />
-                  <DappTabWidget key={activeTab} activeTab={activeTab} onSelectTab={selectTab} />
-                </aside>
-              </DappScrollFadeHost>
-
-              <DappScrollFadeHost
-                className={effectiveDetailCollapsed ? 'dapp:pointer-events-none' : undefined}
-              >
-                <section
-                  className={cn(
-                    'min-w-0 overflow-x-hidden bg-card transition-opacity duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]',
-                    // PC: fill column and scroll inside the panel
-                    'dapp:max-h-full dapp:min-h-0',
-                    effectiveDetailCollapsed
-                      ? 'pointer-events-none overflow-y-hidden opacity-0'
-                      : 'opacity-100 dapp:overflow-y-auto',
-                    // H5: size to content under the shared window scroller
-                    'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:opacity-100',
-                  )}
-                  aria-hidden={effectiveDetailCollapsed}
-                  aria-labelledby={`${activeTab}-title`}
-                  data-dapp-detail
-                >
-                  <div className="dapp-detail-panel" key={activeTab}>
-                    <DappTabContent activeTab={activeTab} />
-                  </div>
-                </section>
-              </DappScrollFadeHost>
-            </div>
-          </DappTabShellProviders>
+                )}
+              </SwapSessionHosts>
+            )}
+          </GenesisSessionHost>
         </div>
       </section>
 

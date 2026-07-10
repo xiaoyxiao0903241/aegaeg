@@ -1,14 +1,13 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { GenesisPurchaseForm } from '~/views/dapp/genesis/genesis-purchase-form'
 import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
-export function GenesisWidget() {
+export function GenesisWidget({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
-  const genesis = useGenesisWidgetContext()
   const account = useActiveAccount()
   const formKey = resolveWalletRemountKey(account?.address)
 
@@ -21,7 +20,7 @@ export function GenesisWidget() {
 
   return (
     <DappWidgetFrame subtitle={seasonIntro} title={t.genesis.title}>
-      <GenesisPurchaseForm key={formKey} />
+      <GenesisPurchaseForm key={formKey} genesis={genesis} />
     </DappWidgetFrame>
   )
 }

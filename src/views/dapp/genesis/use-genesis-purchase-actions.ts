@@ -18,7 +18,7 @@ export interface GenesisPurchaseResult {
   error?: unknown
 }
 
-/** Survives GenesisWidgetProvider unmount when user switches tabs mid-tx. */
+/** Survives Genesis session unmount when user switches tabs mid-tx. */
 const genesisPurchaseGate = { inFlight: false }
 
 type UseGenesisPurchaseActionsArgs = {

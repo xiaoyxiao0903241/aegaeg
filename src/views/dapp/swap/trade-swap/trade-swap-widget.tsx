@@ -10,7 +10,7 @@ import { SwapSlippageModal } from '~/views/dapp/swap/trade-swap/swap-slippage-mo
 import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap/trade-swap-widget-context'
+import type { TradeSwapState } from '~/views/dapp/swap/swap-session-hosts'
 import {
   resolveSwapUserFacingMessage,
 } from '~/web3/resolve-contract-error-message'
@@ -30,12 +30,13 @@ import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 
 export function TradeSwapWidget({
   onSelectGenesis,
+  swap,
 }: {
   onSelectGenesis: () => void
+  swap: TradeSwapState
 }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const swap = useTradeSwapWidgetContext()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
   const [slippageOpen, setSlippageOpen] = useState(false)

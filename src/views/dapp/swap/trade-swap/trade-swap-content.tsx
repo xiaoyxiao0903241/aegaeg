@@ -9,16 +9,15 @@ import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import { TokenAboutCarousel } from '~/views/dapp/swap/trade-swap/swap-token-about-carousel'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
-import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap/trade-swap-widget-context'
+import type { TradeSwapState } from '~/views/dapp/swap/swap-session-hosts'
 import {
   SwapMetricCard,
   SwapMetricCardSkeleton,
 } from '~/views/dapp/swap/swap-detail-primitives'
 
-export function TradeSwapContent() {
+export function TradeSwapContent({ trade }: { trade: TradeSwapState }) {
   const { messages: t } = useI18n()
   const swapDirection = useSwapDirectionStore((state) => state.direction)
-  const trade = useTradeSwapWidgetContext()
   const poolRateLabel =
     swapDirection === 'reverse'
       ? trade.exchangePriceLabel

@@ -3,11 +3,10 @@ import { DappCollapsibleSection } from '~/app/shell/dapp-collapsible-section'
 import { FaqList } from '~/shared/ui/faq-list'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { buildGenesisFaqTemplateValues } from '~/views/dapp/genesis/genesis-faq'
-import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 
-export function GenesisFaqSection() {
+export function GenesisFaqSection({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
-  const genesis = useGenesisWidgetContext()
 
   const genesisFaqValues = buildGenesisFaqTemplateValues(
     genesis.phases,

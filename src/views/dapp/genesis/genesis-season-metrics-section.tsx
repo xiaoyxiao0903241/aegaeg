@@ -1,15 +1,18 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { MetricGrid } from '~/app/shell/metric-grid'
-import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import {
   GenesisMetricCard,
   GenesisMetricCardSkeleton,
   genesisMetricGrid,
 } from '~/views/dapp/genesis/genesis-metric-card'
 
-export function GenesisSeasonMetricsSection() {
+export function GenesisSeasonMetricsSection({
+  genesis,
+}: {
+  genesis: GenesisWidgetState
+}) {
   const { messages: t } = useI18n()
-  const genesis = useGenesisWidgetContext()
 
   return (
     <MetricGrid className={genesisMetricGrid()} columns={4}>
