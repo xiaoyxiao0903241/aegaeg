@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { tv } from 'tailwind-variants'
@@ -40,28 +40,29 @@ export function DappMobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
-  const wasOpenRef = useRef(open)
-  const [mounted, setMounted] = useState(false)
-  const [motion, setMotion] = useState<NavMotion | null>(null)
+  const [mounted, setMounted] = useState(open)
+  const [motion, setMotion] = useState<NavMotion | null>(open ? 'enter' : null)
+  const [prevOpen, setPrevOpen] = useState(open)
 
-  useEffect(() => {
+  // Adjust mount/motion during render when `open` flips (React “adjust state from props”).
+  if (open !== prevOpen) {
+    setPrevOpen(open)
     if (open) {
-      wasOpenRef.current = true
       setMounted(true)
       setMotion('enter')
-      return
+    } else {
+      setMotion('exit')
     }
+  }
 
-    if (!wasOpenRef.current) return
-    wasOpenRef.current = false
-
-    setMotion('exit')
+  useEffect(() => {
+    if (motion !== 'exit') return
     const timer = window.setTimeout(() => {
       setMounted(false)
       setMotion(null)
     }, NAV_MOTION_MS)
     return () => window.clearTimeout(timer)
-  }, [open])
+  }, [motion])
 
   useEffect(() => {
     if (!mounted) return

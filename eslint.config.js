@@ -73,13 +73,10 @@ export default tseslint.config(
       'react-refresh/only-export-components': 'off',
     },
   },
-  /* Registered set-state-in-effect debt (animation / external sync) — keep warn, do not escalate */
-  {
-    files: ['src/app/shell/dapp-mobile-nav.tsx'],
-    rules: {
-      'react-hooks/set-state-in-effect': 'warn',
-    },
-  },
+  /*
+   * set-state-in-effect stays warn globally (see react-hooks block above).
+   * Per-file debt allowlist cleared — do not reintroduce overrides.
+   */
   {
     files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
