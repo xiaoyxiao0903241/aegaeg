@@ -53,15 +53,12 @@ AI 工作规范
 
 ### 8.5 首页动效与性能
 
-- **首页代码 SSOT**：[`docs/homepage-architecture.md`](docs/homepage-architecture.md) — 双入口、HTML 生成、`home-reveal-loader` 命名、Provider 现状 vs 目标；**改 Home 前先读**。
-- **动效规则**：[`docs/homepage-animation-guidelines.md`](docs/homepage-animation-guidelines.md)；runtime boot 在 `src/views/home/home-reveal-loader.ts`，由 `src/views/home/main.tsx` 的 `useLayoutEffect` 调用 `bootHomeReveal()`。
-- **性能目标与优化路线**：[`docs/static-homepage-plan.md`](docs/static-homepage-plan.md)（目标）、[`docs/homepage-load-optimization.md`](docs/homepage-load-optimization.md)（Phase 1–4，待实施）。
-- 参考站 `https://aegis-x5.vercel.app/` 只作为动效基准，不作为素材来源；生产素材必须来自正式 Figma 或项目 canonical public assets。
-- 首页不得为了动效引入 Framer Motion、GSAP、Anime、Lottie 等动画库；优先使用 CSS keyframes / transitions，加少量 `IntersectionObserver` / `requestAnimationFrame`。
-- 动效只动画 `opacity`、`transform`、`clip-path`、`filter`、`box-shadow` 等不触发布局重排的属性；hover 不改变卡片几何位置，使用阴影、边框和轻微背景 tint 模拟浮起。
-- 指标区动效顺序为：面板先从中线展开，数值再启动计数和轻微 pop；首页动效不根据 `prefers-reduced-motion` 降级，所有设备保持一致播放。
-- Figma SVG 导出经常包含整页背景、父容器和裁剪上下文；用于运行时的图标必须提取 leaf node / clean paths，不能直接使用污染的整卡导出。
-- **现状（代码 SSOT）**：Home 使用 `HomeProviders`（仅 Query，**无** thirdweb）；DApp `app.html` 使用 `WebRootProviders`。Home CTA **链接**到 `app.html`，不在首页弹钱包；多语言 HTML 为 **薄壳 CSR**，非 SSG。首屏体积与 chunk 拆分见 [`docs/homepage-architecture.md`](docs/homepage-architecture.md)。
+- **首页 SSOT**：[`docs/homepage-architecture.md`](docs/homepage-architecture.md)（双入口、HTML、Provider、`home-reveal-loader`）；动效规则 [`docs/homepage-animation-guidelines.md`](docs/homepage-animation-guidelines.md)。`bootHomeReveal()` 由 `views/home/main.tsx` 的 `useLayoutEffect` 调用。
+- 参考站 `https://aegis-x5.vercel.app/` 只作动效基准，非素材源；生产素材来自正式 Figma 或 canonical public assets。
+- 禁 Framer / GSAP / Anime / Lottie；CSS + 少量 IO / rAF。只动画 `opacity` / `transform` / `clip-path` / `filter` / `box-shadow`；hover 不改卡片几何。
+- 指标区：面板中线展开 → 计数 + pop；首页动效不按 `prefers-reduced-motion` 降级。
+- Figma SVG 须抽 leaf paths，禁整卡污染导出。
+- **现状**：`HomeProviders`（无 thirdweb）；DApp 用 `WebRootProviders`；Home CTA 链到 `app.html`；多语言 HTML 为薄壳 CSR（非 SSG）。
 
 ### 8.6 AEGIS X DApp 技术约束
 

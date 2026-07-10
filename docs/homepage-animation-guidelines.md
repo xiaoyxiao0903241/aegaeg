@@ -1,46 +1,39 @@
 # Homepage Animation Guidelines
 
-> **Runtime SSOT**：动效 boot 在 `src/views/home/home-reveal-loader.ts` — 详见 [`homepage-architecture.md` §4.1](./homepage-architecture.md#41-home-reveal-loaderts动效-boot)  
-> **CSS SSOT**：`src/shared/styles/home-motion.css`（`data-reveal` / `data-visible` / `data-home-motion-ready`）
+> Boot：`src/views/home/home-reveal-loader.ts`（见 [`homepage-architecture.md`](./homepage-architecture.md)）  
+> CSS：`src/shared/styles/home-motion.css`
 
-Source of truth:
-
-- **Figma (canonical)**：`https://www.figma.com/design/sXWXDvBrLeg5r0NnP1SMZH/AEGIS-X--Copy---Copy---Copy-`（同根 `AGENTS.md`）
-- Reference site `https://aegis-x5.vercel.app/` is an animation benchmark only, not an asset source.
+Figma SSOT 同根 `AGENTS.md`。参考站 `https://aegis-x5.vercel.app/` 仅动效基准，非素材源。
 
 ## Principles
 
-- Use CSS transitions/keyframes plus small `IntersectionObserver` / `requestAnimationFrame` helpers. Do not add Framer Motion, GSAP, Anime, Lottie, or other runtime animation libraries.
-- Animate low-cost properties: `opacity`, `transform`, `clip-path`, `filter`, and `box-shadow`. Do not animate layout-driving width, height, top, left, margin, padding, or grid tracks for normal entrance/hover motion.
-- Motion should be restrained and continuous: one clear entrance idea per section, no decorative multi-stage choreography.
-- Homepage motion intentionally ignores `prefers-reduced-motion`; all devices keep the same animation semantics.
-- Hover must not move card geometry. Card hover may use stronger shadow, border emphasis, subtle saturation/filter, or a very light tint when explicitly required.
-- Keep animation state class-driven. Runtime code only toggles visibility/counting state; CSS owns visual timing.
+- CSS + 少量 IO / rAF；禁 Framer / GSAP / Anime / Lottie。
+- 只动画 `opacity` / `transform` / `clip-path` / `filter` / `box-shadow`。
+- 每区一个入场主意；首页**不**按 `prefers-reduced-motion` 降级。
+- Hover 不改卡片几何（阴影 / 边框 / 轻 tint）。
+- Runtime 只切状态；视觉时序归 CSS。
 
-## Runtime boot (today)
+## Runtime
 
-| Piece | Location | Notes |
-|-------|----------|-------|
-| Boot entry | `bootHomeReveal()` in `src/views/home/home-reveal-loader.ts` | Called from `src/views/home/main.tsx` `useLayoutEffect` **after** React mount |
-| Ready flag | `html[data-home-motion-ready]` | Set when IO observers registered; CSS hides unrevealed nodes until then |
-| Lazy images | `img[data-src]` | IntersectionObserver, `rootMargin: 320px` |
-| Section reveal | `[data-reveal]` | IO + `data-visible="true"` |
-| Count-up | `[data-count-target]`, `[data-count-panel]` | IO + rAF; metrics panel sequence in CSS |
+| 件 | 位置 |
+|----|------|
+| `bootHomeReveal()` | `home-reveal-loader.ts`；`main.tsx` `useLayoutEffect` |
+| Ready | `html[data-home-motion-ready]` |
+| 懒图 | `img[data-src]` |
+| Reveal | `[data-reveal]` → `data-visible` |
+| 计数 | `[data-count-target]` / `[data-count-panel]` |
 
-**Do not delete** this boot script when removing wallet from Home — it has no wallet logic.
+删 Home 钱包时**勿删**此 boot（无钱包逻辑）。
 
-> **历史命名**：原 `wallet-loader.ts` / `bootWalletLoader()` / `data-wallet-loader-ready` 已于 R7-move rename 为现名，行为不变。
+## Section
 
-## Section Rules
+- Hero rays：背景层连续旋转；媒体轻微 transform。
+- Metrics：面板中线展开 → 数值入场 → count + pop。
+- Token / flywheel：opacity/transform 入场；hover 阴影/滤镜。
+- Roadmap：轨自上而下；点按 index 延迟；当前点可 breathe。
+- Security：角色/连线先，卡片 index 延迟；hover 仅阴影。
+- FAQ：答案 max-height/opacity；箭头绕心旋转。
 
-- Hero rays: continuous background rotation on a pseudo/vector layer behind the media. The media float is subtle and transform-only.
-- Metrics: when entering viewport, the dark panel expands from the center first, then metrics fade/raise in, then numbers count and run a small pop animation.
-- Token/flywheel cards: entrance can fan cards into place with opacity/transform. Hover uses shadow/filter and image emphasis, not layout movement.
-- Roadmap: when the timeline enters viewport, the vertical rail reveals from top to bottom; each dot scales in by index delay; the current dot may breathe after the reveal completes.
-- Security: character and connector reveal first, then cards enter with index delay. Card hover uses shadow only.
-- FAQ: answer expansion changes max-height/opacity; the arrow rotates around its center without shifting.
+## DApp
 
-## DApp Carryover
-
-- DApp may reuse the same motion language only where it helps state clarity: panel collapse, tab surfaces, drawer/menu, and small hover/focus states.
-- DApp content alignment has priority over animation. Do not introduce motion that changes measured layout or affects Figma comparison screenshots.
+可复用同一动效语言于折叠 / tab / drawer；内容对齐优先于动效，勿改测量布局。

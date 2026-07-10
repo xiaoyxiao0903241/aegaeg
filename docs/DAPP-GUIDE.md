@@ -58,7 +58,7 @@
 
 - JWT 仅内存/持久化 store（非 HttpOnly cookie，产品未要求前不改）。
 - 不把后端 `ApiError.message` 直接给用户；走 i18n sentinel。
-- CMS HTML 消毒：产品未要求前不做。
+- 首页 popup 仍 `dangerouslySetInnerHTML`（未 sanitize；已知同源 JWT 风险）。
 
 ## 10. 反模式
 
