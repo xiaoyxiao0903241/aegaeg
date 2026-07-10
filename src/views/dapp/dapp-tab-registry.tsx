@@ -8,6 +8,8 @@ import { RewardsContent } from '~/views/dapp/rewards/rewards-content'
 import { RewardsWidget } from '~/views/dapp/rewards/rewards-widget'
 import { SwapContent, SwapWidget } from '~/views/dapp/swap'
 import { scrollDappPanelsToTop } from '~/app/utils'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
 
 export type { DappTab } from '~/shared/config/dapp-tabs'
 export { tabOrder } from '~/shared/config/dapp-tabs'
@@ -42,7 +44,9 @@ function RewardsTabWidget() {
 }
 
 function CommunityTabWidget({ onSelectTab }: TabWidgetProps) {
-  return <CommunityWidget onSelectTab={onSelectTab} />
+  const account = useActiveAccount()
+  const remountKey = resolveWalletRemountKey(account?.address)
+  return <CommunityWidget key={remountKey} onSelectTab={onSelectTab} />
 }
 
 /** Sync registry — loading UX is data-driven inside tabs, not code-split Suspense. */

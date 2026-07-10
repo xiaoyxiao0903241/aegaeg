@@ -17,22 +17,23 @@ import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 
 const BIND_COOLDOWN_MS = 5_000
+const PENDING_REFERRER_KEY = 'aegis.pendingReferrer'
+
+function readStoredPendingReferrer(): `0x${string}` | null {
+  const stored = sessionStorage.getItem(PENDING_REFERRER_KEY)
+  return stored && /^0x[a-fA-F0-9]{40}$/.test(stored) ? (stored as `0x${string}`) : null
+}
+
+function readPendingReferrerFromEnvironment(): `0x${string}` | null {
+  return parseReferrerFromSearch(window.location.search) ?? readStoredPendingReferrer()
+}
 
 export function useReferral(sessionReady: boolean) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const readClient = useChainReadClient()
-  const pendingReferrer = useMemo(() => {
-    const fromUrl = parseReferrerFromSearch(window.location.search)
-    if (fromUrl) {
-      sessionStorage.setItem('aegis.pendingReferrer', fromUrl)
-      return fromUrl
-    }
-
-    const stored = sessionStorage.getItem('aegis.pendingReferrer')
-    return stored && /^0x[a-fA-F0-9]{40}$/.test(stored) ? (stored as `0x${string}`) : null
-  }, [])
-  const [referrerInput, setReferrerInput] = useState('')
+  const [pendingReferrer] = useState(readPendingReferrerFromEnvironment)
+  const [referrerInput, setReferrerInput] = useState(() => pendingReferrer ?? '')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isBindCooldown, setIsBindCooldown] = useState(false)
   const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -41,6 +42,13 @@ export function useReferral(sessionReady: boolean) {
 
   const address = account?.address
   const walletReady = Boolean(address)
+
+  useEffect(() => {
+    const fromUrl = parseReferrerFromSearch(window.location.search)
+    if (fromUrl) {
+      sessionStorage.setItem(PENDING_REFERRER_KEY, fromUrl)
+    }
+  }, [])
 
   const startBindCooldown = useCallback(() => {
     setIsBindCooldown(true)
@@ -57,16 +65,6 @@ export function useReferral(sessionReady: boolean) {
       if (bindCooldownTimerRef.current) clearTimeout(bindCooldownTimerRef.current)
     }
   }, [])
-
-  useEffect(() => {
-    setReferrerInput(pendingReferrer ?? '')
-    setError(null)
-    setIsBindCooldown(false)
-    if (bindCooldownTimerRef.current) {
-      clearTimeout(bindCooldownTimerRef.current)
-      bindCooldownTimerRef.current = null
-    }
-  }, [address, pendingReferrer])
 
   const referralQuery = useQuery({
     queryKey: queryKeys.chain.referral(address ?? ''),
