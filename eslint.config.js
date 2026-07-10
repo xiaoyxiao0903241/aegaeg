@@ -75,12 +75,7 @@ export default tseslint.config(
   },
   /* Registered set-state-in-effect debt (animation / external sync) — keep warn, do not escalate */
   {
-    files: [
-      'src/app/shell/dapp-mobile-nav.tsx',
-      'src/app/dapp-rail.tsx',
-      'src/hooks/use-referral.ts',
-      'src/views/home/use-home-popup-notice.ts',
-    ],
+    files: ['src/app/shell/dapp-mobile-nav.tsx'],
     rules: {
       'react-hooks/set-state-in-effect': 'warn',
     },

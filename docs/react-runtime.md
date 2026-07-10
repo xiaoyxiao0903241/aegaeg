@@ -24,7 +24,7 @@
 2. 能算就不存；禁 `useEffect` + `setState` 镜像 props
 3. Effect 只同步外部系统；弹窗草稿用 `key` / `onOpenChange`
 4. `exhaustive-deps` = **error**；禁 `eslint-disable`
-5. `set-state-in-effect` = **warn**（登记债：`dapp-mobile-nav`、`dapp-rail`、`use-referral`、`use-home-popup-notice`）
+5. `set-state-in-effect` = **warn**（登记债仅 `dapp-mobile-nav`；已清：`use-referral`、`rewards-history`、`use-home-popup-notice`、`dapp-rail`）
 6. `only-export-components` = **off**
 
 Money-path 表征测：`tests/unit/react-quality-gates.test.mjs`（Genesis clamp / capped amount / stale quote）。
