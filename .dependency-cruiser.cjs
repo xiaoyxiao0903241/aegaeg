@@ -38,6 +38,18 @@ module.exports = {
       to: { path: '^src/views/' },
     },
     {
+      name: 'hooks-no-views',
+      severity: 'error',
+      from: { path: '^src/hooks/' },
+      to: { path: '^src/views/' },
+    },
+    {
+      name: 'home-no-web3',
+      severity: 'error',
+      from: { path: '^src/views/home/' },
+      to: { path: '(^src/views/dapp/web3/|^thirdweb)' },
+    },
+    {
       name: 'ui-is-dumb',
       severity: 'warn',
       from: { path: '^src/shared/ui/' },
