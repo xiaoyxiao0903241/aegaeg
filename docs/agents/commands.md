@@ -15,7 +15,8 @@
 
 | 命令 | 用途 |
 |------|------|
-| **`pnpm check`** | **收工最小门禁**：`tsc -b` + `lint:src`（eslint **error** only）+ `lint:architecture` + `lint:hex` + `test:unit` |
+| **`pnpm check`** | **收工最小门禁**：`tsc -b` + `lint:src`（eslint **error** only）+ `lint:architecture` + `lint:hex` + `lint:css` + `test:unit` |
+| `pnpm lint:css` | Stylelint `src/**/*.css`（进 `check`） |
 | `pnpm lint:src` | `eslint src --quiet`（仅 error；`exhaustive-deps` 等进收工） |
 | `pnpm lint` | ESLint 全仓（含 Tailwind / 登记债 **warn**，不阻断 `check`） |
 | `pnpm lint:hex` | 禁止 scoped TS 模块硬编码 hex（须走 `theme.ts`） |

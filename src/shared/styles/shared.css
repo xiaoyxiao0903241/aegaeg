@@ -1,17 +1,18 @@
 /**
  * Shared base — fonts, reset, tokens, breakpoints, scrollbars, animations.
  * Imported by app.css and home.css entry bundles.
+ * `@import` must precede `@source` (stylelint no-invalid-position-at-import-rule).
  */
-@source '../../app';
-@source '../../views';
-@source '../../shared';
-
 @import 'tailwindcss/theme.css';
 @import './tokens/theme.css';
 @import './legacy-breakpoints.css';
 @import './scrollbars.css';
 @import './animations.css';
 @import './hero-rays.css';
+
+@source '../../app';
+@source '../../views';
+@source '../../shared';
 
 @font-face {
   font-family: Montserrat;
