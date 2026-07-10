@@ -9,7 +9,7 @@ import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap/flash-swap-widget-context'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { resolveSwapUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import {
@@ -28,7 +28,6 @@ export function FlashSwapWidget({
 }: {
   onSelectGenesis: () => void
 }) {
-  'use memo'
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swap = useFlashSwapWidgetContext()

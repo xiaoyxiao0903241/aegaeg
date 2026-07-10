@@ -23,7 +23,7 @@ import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { RewardBalanceCard } from '~/app/shell/dapp-card'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import {
   rewardsBalanceHeaderMeta,
   rewardsBalanceHint,

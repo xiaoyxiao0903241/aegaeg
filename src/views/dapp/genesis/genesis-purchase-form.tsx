@@ -14,7 +14,7 @@ import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/pres
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { SeasonSelector } from '~/views/dapp/genesis/season/genesis-season-selector'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season/genesis-season-option-skeleton'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
 import {
@@ -30,7 +30,6 @@ import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchas
  * without an effect that mirrors genesis.shares.
  */
 export function GenesisPurchaseForm() {
-  'use memo'
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const genesis = useGenesisWidgetContext()

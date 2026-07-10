@@ -9,7 +9,7 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { SwapSlippageModal } from '~/views/dapp/swap/trade-swap/swap-slippage-modal'
 import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap/trade-swap-widget-context'
 import {
   resolveSwapUserFacingMessage,
@@ -33,7 +33,6 @@ export function TradeSwapWidget({
 }: {
   onSelectGenesis: () => void
 }) {
-  'use memo'
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const swap = useTradeSwapWidgetContext()

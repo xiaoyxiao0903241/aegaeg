@@ -33,13 +33,13 @@ export const swapHubAssets = {
 
 export const homeAssets = {
   logoMark: canonicalHomeAssets.logoMark,
-  heroCharacterTall: '/assets/figma/home/hero-character-tall.png',
-  heroCharacterFull: '/assets/figma/home/hero-character-full.png',
+  heroCharacterTall: '/assets/figma/home/hero-character-tall.webp',
+  heroCharacterFull: '/assets/figma/home/hero-character-full.webp',
   heroSparkle: '/assets/figma/home/hero-character.png',
-  engineMarketMaker: '/assets/figma/home/engine-market-maker.png',
-  engineVolatility: '/assets/figma/home/engine-volatility.png',
-  engineRebase: '/assets/figma/home/engine-rebase.png',
-  engineTurbo: '/assets/figma/home/engine-turbo.png',
+  engineMarketMaker: canonicalHomeAssets.engine.marketMaker,
+  engineVolatility: canonicalHomeAssets.engine.volatility,
+  engineRebase: canonicalHomeAssets.engine.rebase,
+  engineTurbo: canonicalHomeAssets.engine.turbo,
   tokenAgxIcon: tokenFlywheelIcons.agxIcon,
   tokenAgxShape: tokenFlywheelIcons.agxShape,
   tokenUsd1Icon: tokenFlywheelIcons.usd1Icon,
@@ -82,8 +82,8 @@ export const dappAssets = {
   tokenX: tokenFlywheelIcons.xIcon,
   usdt: '/assets/figma/dapp/token-usdt.svg',
   usd1: '/assets/figma/dapp/token-usd1.svg',
-  genesisGlobe: '/assets/figma/dapp/genesis-globe.png',
-  rewardsCharacter: '/assets/figma/dapp/rewards-character.png',
+  genesisGlobe: '/assets/figma/dapp/genesis-globe.webp',
+  rewardsCharacter: '/assets/figma/dapp/rewards-character.webp',
 } as const
 
 export const railItems: Array<{

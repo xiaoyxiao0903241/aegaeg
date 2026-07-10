@@ -26,7 +26,7 @@ import {
   rewardsTeamHistoryColWidths,
 } from '~/app/shell/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import {
   RewardsHistoryPillTabs,

@@ -5,7 +5,7 @@ import { resolveDisplayPresaleRank } from '~/core/presale/rank'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import { usePerformance } from '~/hooks/use-api-data'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { usePresaleUserTotalQuery } from '~/web3/use-presale-queries'
 
 export function useShareholderRank() {

@@ -23,7 +23,7 @@ import {
 } from '~/app/shell/dapp-skeleton'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { ProgressMeter } from '~/app/shell/progress-meter'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { RankTitleWithSuperCommunity } from '~/views/dapp/rewards/rewards-rank-title-with-super-community'
 import { DappSideCard } from '~/app/shell/dapp-card'

@@ -7,7 +7,7 @@ import { allLanguageOptions } from '~/i18n/locales'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 
 const topbar = tv({
   slots: {
