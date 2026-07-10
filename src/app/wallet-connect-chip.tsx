@@ -7,10 +7,16 @@ import { useAuth } from '~/app/bootstrap/use-auth'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import {
   ACCOUNT_BANNED_SENTINEL,
+  LOGIN_ERROR,
   isAccountBannedError,
   resolveAuthLoginErrorMessage,
 } from '~/shared/api/account-banned'
-import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
+import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
+import {
+  isUserRejectedWalletError,
+  toWalletUserFacingMessage,
+} from '~/views/dapp/web3/resolve-contract-error-message'
+import { useAuthStore } from '~/stores/auth-store'
 import { formatAddress } from '~/app/utils'
 import { Text } from '~/shared/ui/text'
 import { Button } from '~/shared/ui/button'
@@ -55,16 +61,44 @@ const walletConnectChip = tv({
 function resolveLoginToastMessage(
   error: unknown,
   loginError: string | null,
-  accountBannedMessage: string,
+  messages: {
+    accountBanned: string
+    walletNotConnected: string
+    loginFailed: string
+    loginSignatureRejected: string
+    api: {
+      network: string
+      timeout: string
+      unavailable: string
+      badResponse: string
+      fallback: string
+    }
+  },
 ): string | null {
   if (isAccountBannedError(error) || loginError === ACCOUNT_BANNED_SENTINEL) {
     return null
   }
+  if (isUserRejectedWalletError(error) || loginError === LOGIN_ERROR.USER_REJECTED) {
+    return null
+  }
+
+  const fromLogin = resolveAuthLoginErrorMessage(loginError, messages)
+  if (fromLogin) return fromLogin
 
   return (
-    resolveAuthLoginErrorMessage(error instanceof Error ? error.message : null, accountBannedMessage) ??
-    toWalletUserFacingMessage(error)
+    resolveApiUserFacingError(error, messages.api) ??
+    toWalletUserFacingMessage(error, messages.loginFailed)
   )
+}
+
+function loginToastCopy(t: ReturnType<typeof useI18n>['messages']) {
+  return {
+    accountBanned: t.wallet.accountBanned,
+    walletNotConnected: t.errors.walletNotConnected,
+    loginFailed: t.errors.loginFailed,
+    loginSignatureRejected: t.errors.loginSignatureRejected,
+    api: t.errors.api,
+  }
 }
 
 function ConnectedWalletChip() {
@@ -86,7 +120,11 @@ function ConnectedWalletChip() {
       try {
         await retryLogin()
       } catch (error) {
-        const message = resolveLoginToastMessage(error, loginError, t.wallet.accountBanned)
+        const message = resolveLoginToastMessage(
+          error,
+          useAuthStore.getState().loginError,
+          loginToastCopy(t),
+        )
         if (message) {
           toast.error(message)
         }
@@ -148,7 +186,11 @@ function WalletConnectButton({
       try {
         await retryLogin()
       } catch (error) {
-        const message = resolveLoginToastMessage(error, loginError, t.wallet.accountBanned)
+        const message = resolveLoginToastMessage(
+          error,
+          useAuthStore.getState().loginError,
+          loginToastCopy(t),
+        )
         if (message) {
           toast.error(message)
         }
@@ -160,7 +202,11 @@ function WalletConnectButton({
       try {
         await login()
       } catch (error) {
-        const message = resolveLoginToastMessage(error, loginError, t.wallet.accountBanned)
+        const message = resolveLoginToastMessage(
+          error,
+          useAuthStore.getState().loginError,
+          loginToastCopy(t),
+        )
         if (message) {
           toast.error(message)
         }

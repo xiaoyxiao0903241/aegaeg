@@ -385,9 +385,7 @@ export function useGenesisWidget() {
     isLoading,
     isSubmitting,
     submittingAction,
-    error:
-      error ??
-      (queryError instanceof Error ? queryError.message : queryError ? 'Failed to load presale data' : null),
+    error: queryError ?? error,
     refresh,
     approve,
     purchase,

@@ -8,7 +8,11 @@ import {
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { ApiError } from '~/shared/api/client'
-import { ACCOUNT_BANNED_SENTINEL, isAccountBannedError } from '~/shared/api/account-banned'
+import {
+  ACCOUNT_BANNED_SENTINEL,
+  LOGIN_ERROR,
+  isAccountBannedError,
+} from '~/shared/api/account-banned'
 import {
   buildLoginAttemptKey,
   deriveAuthAction,
@@ -28,6 +32,7 @@ import {
   invalidateAfterWalletSwitch,
 } from '~/shared/api/query/invalidate'
 import { AuthContext, type AuthContextValue } from '~/app/bootstrap/use-auth'
+import { isUserRejectedWalletError } from '~/views/dapp/web3/resolve-contract-error-message'
 
 const sessionStorage = createStoreAuthSessionStorage()
 const signatureStorage = createStoreLoginSignatureStorage()
@@ -61,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const runLogin = useCallback(async () => {
     if (loginInProgressRef.current) return
     if (!account) {
-      useAuthStore.getState().setLoginError('Wallet not connected')
+      useAuthStore.getState().setLoginError(LOGIN_ERROR.WALLET_NOT_CONNECTED)
       return
     }
 
@@ -80,10 +85,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       if (isAccountBannedError(error)) {
         useAuthStore.getState().setLoginError(ACCOUNT_BANNED_SENTINEL)
-      } else if (error instanceof ApiError || error instanceof Error) {
-        const message = error.message
-        if (isPermanentLoginErrorMessage(message)) {
-          useAuthStore.getState().setLoginError(message)
+      } else if (isUserRejectedWalletError(error)) {
+        useAuthStore.getState().setLoginError(LOGIN_ERROR.USER_REJECTED)
+      } else if (
+        error instanceof ApiError &&
+        /nonce|signature|expired|invalid/i.test(`${error.error} ${error.message}`)
+      ) {
+        useAuthStore.getState().setLoginError(LOGIN_ERROR.SIGNATURE_REJECTED)
+      } else if (error instanceof ApiError) {
+        // Transport / unknown business codes — allow retry (transient).
+        useAuthStore.getState().setLoginError(null)
+      } else if (error instanceof Error) {
+        const text = error.message
+        if (/rejected|denied|cancel/i.test(text)) {
+          useAuthStore.getState().setLoginError(LOGIN_ERROR.USER_REJECTED)
+        } else if (/nonce|signature|expired|invalid/i.test(text)) {
+          useAuthStore.getState().setLoginError(LOGIN_ERROR.SIGNATURE_REJECTED)
+        } else if (isPermanentLoginErrorMessage(text)) {
+          useAuthStore.getState().setLoginError(LOGIN_ERROR.FAILED)
         } else {
           useAuthStore.getState().setLoginError(null)
         }

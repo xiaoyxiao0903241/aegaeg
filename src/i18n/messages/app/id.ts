@@ -18,6 +18,26 @@ const app = defineMessages({
         paginationPrev: 'Halaman sebelumnya',
         paginationNext: 'Halaman berikutnya',
     },
+    errors: {
+        api: {
+            network: 'Koneksi jaringan gagal. Periksa koneksi dan coba lagi.',
+            timeout: 'Permintaan habis waktu. Silakan coba lagi nanti.',
+            unavailable: 'Layanan sementara tidak tersedia. Silakan coba lagi nanti.',
+            badResponse: 'Respons server tidak terduga. Silakan coba lagi nanti.',
+            fallback: 'Terjadi kesalahan. Silakan coba lagi nanti.',
+        },
+        chain: {
+            fallback: 'Aksi on-chain gagal. Silakan coba lagi nanti.',
+        },
+        walletNotConnected: 'Hubungkan dompet dan masuk terlebih dahulu.',
+        quoteFailed: 'Kutipan gagal. Silakan coba lagi nanti.',
+        loadFailed: 'Gagal memuat. Silakan coba lagi nanti.',
+        loginFailed: 'Gagal masuk. Silakan coba lagi nanti.',
+        loginSignatureRejected: 'Tanda tangan login tidak valid atau kedaluwarsa. Silakan tanda tangani lagi.',
+        pageLoadFailed: 'Halaman gagal dimuat',
+        pageLoadFailedBody: 'Terjadi kesalahan saat merender. Muat ulang untuk melanjutkan — dompet tetap terhubung.',
+        reloadPage: 'Muat ulang halaman',
+    },
     nav: {
         swap: 'Swap',
         genesis: 'Bangun Bersama',

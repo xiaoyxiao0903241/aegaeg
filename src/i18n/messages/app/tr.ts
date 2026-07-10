@@ -17,6 +17,26 @@ const app = defineMessages({
         paginationPrev: 'Önceki',
         paginationNext: 'Sonraki',
     },
+    errors: {
+        api: {
+            network: 'Ağ bağlantısı başarısız. Bağlantınızı kontrol edip tekrar deneyin.',
+            timeout: 'İstek zaman aşımına uğradı. Lütfen daha sonra tekrar deneyin.',
+            unavailable: 'Hizmet geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin.',
+            badResponse: 'Beklenmeyen sunucu yanıtı. Lütfen daha sonra tekrar deneyin.',
+            fallback: 'Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin.',
+        },
+        chain: {
+            fallback: 'Zincir üstü işlem başarısız. Lütfen daha sonra tekrar deneyin.',
+        },
+        walletNotConnected: 'Önce cüzdanınızı bağlayın ve oturum açın.',
+        quoteFailed: 'Teklif başarısız. Lütfen daha sonra tekrar deneyin.',
+        loadFailed: 'Yükleme başarısız. Lütfen daha sonra tekrar deneyin.',
+        loginFailed: 'Oturum açma başarısız. Lütfen daha sonra tekrar deneyin.',
+        loginSignatureRejected: 'Giriş imzası geçersiz veya süresi dolmuş. Lütfen yeniden imzalayın.',
+        pageLoadFailed: 'Sayfa yüklenemedi',
+        pageLoadFailedBody: 'İşleme sırasında bir hata oluştu. Devam etmek için yenileyin — cüzdan bağlı kalır.',
+        reloadPage: 'Sayfayı yenile',
+    },
     nav: {
         swap: 'Swap',
         genesis: 'Ortak İnşa',

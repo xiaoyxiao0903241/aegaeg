@@ -2,6 +2,7 @@ import { useQuery, type QueryKey } from '@tanstack/react-query'
 import { fetchAuthenticated, toQueryErrorMessage } from '~/shared/api/query/fetch-authenticated'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { useAuth } from '~/app/bootstrap/use-auth'
+import { useI18n } from '~/i18n/use-i18n'
 
 export function useAuthenticatedQuery<T>(
   queryKey: QueryKey,
@@ -10,6 +11,7 @@ export function useAuthenticatedQuery<T>(
   options?: { keepPreviousData?: boolean },
 ) {
   const { token, invalidateSession, isAuthenticated, hasHydrated } = useAuth()
+  const { messages: t } = useI18n()
 
   const query = useQuery({
     // Scope API queries by JWT token so that switching wallets (which changes
@@ -26,7 +28,7 @@ export function useAuthenticatedQuery<T>(
 
   return {
     data: query.data ?? null,
-    error: toQueryErrorMessage(query.error),
+    error: toQueryErrorMessage(query.error, t.errors.api),
     isLoading: query.isLoading,
     refresh: async () => {
       await query.refetch()

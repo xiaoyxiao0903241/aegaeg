@@ -68,17 +68,33 @@ test('reportAccountBanned throttles duplicate reports within cooldown', async ()
   }
 })
 
-test('resolveAuthLoginErrorMessage maps banned sentinel to i18n', async () => {
-  const { ACCOUNT_BANNED_SENTINEL, resolveAuthLoginErrorMessage } = await loadModule(
+test('resolveAuthLoginErrorMessage maps sentinels and never returns raw copy', async () => {
+  const { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR, resolveAuthLoginErrorMessage } = await loadModule(
     '/src/shared/api/account-banned.ts',
   )
 
+  const messages = {
+    accountBanned: 'Account suspended',
+    walletNotConnected: 'Connect wallet',
+    loginFailed: 'Login failed',
+    loginSignatureRejected: 'Bad signature',
+  }
+
   assert.equal(
-    resolveAuthLoginErrorMessage(ACCOUNT_BANNED_SENTINEL, 'Account suspended'),
+    resolveAuthLoginErrorMessage(ACCOUNT_BANNED_SENTINEL, messages),
     'Account suspended',
   )
-  assert.equal(resolveAuthLoginErrorMessage('other', 'Account suspended'), 'other')
-  assert.equal(resolveAuthLoginErrorMessage(null, 'Account suspended'), null)
+  assert.equal(
+    resolveAuthLoginErrorMessage(LOGIN_ERROR.WALLET_NOT_CONNECTED, messages),
+    'Connect wallet',
+  )
+  assert.equal(resolveAuthLoginErrorMessage(LOGIN_ERROR.USER_REJECTED, messages), null)
+  assert.equal(
+    resolveAuthLoginErrorMessage(LOGIN_ERROR.SIGNATURE_REJECTED, messages),
+    'Bad signature',
+  )
+  assert.equal(resolveAuthLoginErrorMessage('raw english leak', messages), 'Login failed')
+  assert.equal(resolveAuthLoginErrorMessage(null, messages), null)
 })
 
 test('resolveReferralBindError maps parent-not-bound sentinel before contract revert', async () => {

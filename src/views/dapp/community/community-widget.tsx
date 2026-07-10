@@ -14,7 +14,12 @@ import { QuickLinks } from '~/app/shell/quick-links'
 import { buildCommunityQuickLinkItems } from '~/shared/config/community-links'
 import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
-import { resolveReferralBindError, resolveWalletTransactionError } from '~/views/dapp/web3/resolve-contract-error-message'
+import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
+import {
+  isUserRejectedWalletError,
+  resolveReferralBindError,
+  resolveWalletTransactionError,
+} from '~/views/dapp/web3/resolve-contract-error-message'
 import {
   CommunityReferralLinkCard,
   CommunityReferrerBindCard,
@@ -62,11 +67,19 @@ function CommunityConnectedWidget({
 
   useEffect(() => {
     if (!referral.error) return
+    if (isUserRejectedWalletError(referral.error)) return
     const message =
       resolveWalletTransactionError(referral.error, t.wallet.transactionErrors) ??
-      resolveReferralBindError(referral.error, t.community.bindErrors)
+      resolveReferralBindError(referral.error, t.community.bindErrors) ??
+      resolveApiUserFacingError(referral.error, t.errors.api) ??
+      t.community.bindErrors.failed
     if (message) toast.error(message)
-  }, [referral.error, t.community.bindErrors, t.wallet.transactionErrors])
+  }, [
+    referral.error,
+    t.community.bindErrors,
+    t.errors.api,
+    t.wallet.transactionErrors,
+  ])
 
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>

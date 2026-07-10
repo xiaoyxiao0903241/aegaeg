@@ -18,6 +18,26 @@ const app = defineMessages({
         paginationPrev: '前のページ',
         paginationNext: '次のページ',
     },
+    errors: {
+        api: {
+            network: 'ネットワーク接続に失敗しました。接続を確認して再試行してください。',
+            timeout: 'リクエストがタイムアウトしました。しばらくしてから再試行してください。',
+            unavailable: 'サービスは一時的に利用できません。しばらくしてから再試行してください。',
+            badResponse: 'サーバー応答が不正です。しばらくしてから再試行してください。',
+            fallback: '操作に失敗しました。しばらくしてから再試行してください。',
+        },
+        chain: {
+            fallback: 'オンチェーン操作に失敗しました。しばらくしてから再試行してください。',
+        },
+        walletNotConnected: '先にウォレットを接続してサインインしてください。',
+        quoteFailed: '見積もりに失敗しました。しばらくしてから再試行してください。',
+        loadFailed: '読み込みに失敗しました。しばらくしてから再試行してください。',
+        loginFailed: 'サインインに失敗しました。しばらくしてから再試行してください。',
+        loginSignatureRejected: 'ログイン署名が無効または期限切れです。再度署名してください。',
+        pageLoadFailed: 'ページの読み込みに失敗しました',
+        pageLoadFailedBody: 'レンダリング中に問題が発生しました。再読み込みしてください。ウォレット接続は維持されます。',
+        reloadPage: 'ページを再読み込み',
+    },
     nav: {
         swap: 'Swap',
         genesis: '共創',

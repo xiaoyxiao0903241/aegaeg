@@ -9,6 +9,7 @@ interface ErrorBoundaryProps {
   name?: string
   fallbackTitle?: string
   fallbackBody?: string
+  reloadLabel?: string
 }
 
 interface ErrorBoundaryState {
@@ -66,7 +67,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           type="button"
           variant="primary"
         >
-          Reload page
+          {this.props.reloadLabel ?? 'Reload page'}
         </Button>
       </div>
     )

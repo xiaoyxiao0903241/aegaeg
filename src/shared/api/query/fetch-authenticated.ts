@@ -1,5 +1,9 @@
 import { ApiError } from '~/shared/api/client'
 import { isUnauthorizedError } from '~/shared/api/http-errors'
+import {
+  resolveApiUserFacingError,
+  type ApiUserFacingErrorMessages,
+} from '~/shared/api/resolve-api-user-facing-error'
 
 export async function fetchAuthenticated<T>(
   fetcher: (token: string) => Promise<T>,
@@ -25,9 +29,14 @@ export async function fetchAuthenticated<T>(
   }
 }
 
-export function toQueryErrorMessage(error: unknown): string | null {
+/**
+ * Resolve authenticated-query failures for UI. Requires i18n `errors.api` messages.
+ * Never returns backend `ApiError.message`.
+ */
+export function toQueryErrorMessage(
+  error: unknown,
+  messages: ApiUserFacingErrorMessages,
+): string | null {
   if (!error) return null
-  if (error instanceof ApiError) return error.message
-  if (error instanceof Error) return error.message
-  return 'Request failed'
+  return resolveApiUserFacingError(error, messages) ?? messages.fallback
 }

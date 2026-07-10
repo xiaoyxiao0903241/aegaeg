@@ -15,7 +15,11 @@ import { RewardBalanceCardSkeleton } from '~/app/shell/dapp-skeleton'
 import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
 import { useCommunityFundClaim } from '~/hooks/use-community-fund-claim'
 import { toast } from 'sonner'
-import { resolveTeamClaimError, resolveWalletTransactionError } from '~/views/dapp/web3/resolve-contract-error-message'
+import {
+  isUserRejectedWalletError,
+  resolveTeamClaimError,
+  resolveWalletTransactionError,
+} from '~/views/dapp/web3/resolve-contract-error-message'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { RewardBalanceCard } from '~/app/shell/dapp-card'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
@@ -41,19 +45,29 @@ export function RewardsBalanceSection() {
 
   useEffect(() => {
     if (!teamClaim.error) return
+    if (isUserRejectedWalletError(teamClaim.error)) return
     const message =
       resolveWalletTransactionError(teamClaim.error, t.wallet.transactionErrors) ??
-      resolveTeamClaimError(teamClaim.error, t.rewards.claimErrors)
+      resolveTeamClaimError(teamClaim.error, {
+        ...t.rewards.claimErrors,
+        walletNotConnected: t.errors.walletNotConnected,
+      }) ??
+      t.errors.chain.fallback
     if (message) toast.error(message)
-  }, [teamClaim.error, t.rewards.claimErrors, t.wallet.transactionErrors])
+  }, [teamClaim.error, t.errors, t.rewards.claimErrors, t.wallet.transactionErrors])
 
   useEffect(() => {
     if (!communityFundClaim.error) return
+    if (isUserRejectedWalletError(communityFundClaim.error)) return
     const message =
       resolveWalletTransactionError(communityFundClaim.error, t.wallet.transactionErrors) ??
-      resolveTeamClaimError(communityFundClaim.error, t.rewards.claimErrors)
+      resolveTeamClaimError(communityFundClaim.error, {
+        ...t.rewards.claimErrors,
+        walletNotConnected: t.errors.walletNotConnected,
+      }) ??
+      t.errors.chain.fallback
     if (message) toast.error(message)
-  }, [communityFundClaim.error, t.rewards.claimErrors, t.wallet.transactionErrors])
+  }, [communityFundClaim.error, t.errors, t.rewards.claimErrors, t.wallet.transactionErrors])
 
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')

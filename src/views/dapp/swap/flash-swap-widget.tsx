@@ -54,8 +54,10 @@ export function FlashSwapWidget({
           insufficientUsd1: t.genesis.insufficientUsd1,
           purchaseUnavailable: t.genesis.purchaseUnavailable,
           transactionCancelled: t.swap.transactionCancelled,
+          quoteFailed: t.errors.quoteFailed,
         },
         t.wallet.transactionErrors,
+        t.errors.chain.fallback,
       )
       if (message) toast.error(message)
     },
@@ -73,8 +75,10 @@ export function FlashSwapWidget({
             insufficientUsd1: t.genesis.insufficientUsd1,
             purchaseUnavailable: t.genesis.purchaseUnavailable,
             transactionCancelled: t.swap.transactionCancelled,
+            quoteFailed: t.errors.quoteFailed,
           },
           t.wallet.transactionErrors,
+          t.errors.chain.fallback,
         )
 
   async function handleSubmit() {

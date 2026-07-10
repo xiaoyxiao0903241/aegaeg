@@ -5,7 +5,6 @@ import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { toast } from 'sonner'
 import { ACCOUNT_BANNED_SENTINEL, resolveAuthLoginErrorMessage } from '~/shared/api/account-banned'
-import { toWalletUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
 import { RewardsBalanceSection } from '~/views/dapp/rewards/rewards-balance-section'
 import { RewardsRankSection } from '~/views/dapp/rewards/rewards-rank-section'
@@ -17,11 +16,14 @@ export function RewardsWidget() {
 
   useEffect(() => {
     if (!sessionReady || !loginError || loginError === ACCOUNT_BANNED_SENTINEL) return
-    const message =
-      resolveAuthLoginErrorMessage(loginError, t.wallet.accountBanned) ??
-      toWalletUserFacingMessage(loginError)
+    const message = resolveAuthLoginErrorMessage(loginError, {
+      accountBanned: t.wallet.accountBanned,
+      walletNotConnected: t.errors.walletNotConnected,
+      loginFailed: t.errors.loginFailed,
+      loginSignatureRejected: t.errors.loginSignatureRejected,
+    })
     if (message) toast.error(message)
-  }, [sessionReady, loginError, t.wallet.accountBanned])
+  }, [sessionReady, loginError, t.errors, t.wallet.accountBanned])
 
   return (
     <DappWidgetFrame subtitle={t.rewards.intro} title={t.rewards.title}>

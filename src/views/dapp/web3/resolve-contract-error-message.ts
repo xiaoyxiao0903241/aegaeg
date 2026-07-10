@@ -37,6 +37,9 @@ export const WALLET_WRITE_ERROR = {
   GAS_ESTIMATE_FAILED: 'WALLET_GAS_ESTIMATE_FAILED',
 } as const
 
+/** Quote RPC / router failure — map via i18n `errors.quoteFailed`. */
+export const SWAP_QUOTE_FAILED = 'SWAP_QUOTE_FAILED'
+
 export interface WalletTransactionErrorMessages {
   gasLimitTooLow: string
   gasEstimateFailed: string
@@ -264,10 +267,21 @@ export function isUserRejectedWalletError(error: unknown): boolean {
   return USER_REJECTED_PATTERN.test(text)
 }
 
-export function toWalletUserFacingMessage(error: unknown, fallback = 'Transaction failed'): string | null {
+/**
+ * Last-resort wallet toast copy. Never returns raw RPC / backend English —
+ * callers must pass an i18n fallback (e.g. `errors.chain.fallback`).
+ */
+export function toWalletUserFacingMessage(error: unknown, fallback: string): string | null {
   if (isUserRejectedWalletError(error)) return null
+  if (error == null) return null
   const text = readErrorText(error).trim()
-  return text || fallback
+  if (
+    text === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED ||
+    /wallet not connected/i.test(text)
+  ) {
+    return fallback
+  }
+  return fallback
 }
 
 const ERC20_ERROR_RULES: Array<
@@ -298,7 +312,7 @@ export function resolveContractErrorMessage(
   const mapped = resolveFirstMatch(text, ERC20_ERROR_RULES, messages)
   if (mapped) return mapped
 
-  return text.raw || null
+  return null
 }
 
 /** Friendly i18n messages for the referral-bind flow (AegisReferral errors per contract.md §2.4). */
@@ -353,7 +367,7 @@ export function resolveReferralBindError(
   const mapped = resolveFirstMatch(text, REFERRAL_BIND_ERROR_RULES, messages)
   if (mapped) return mapped
 
-  return text.raw || messages.failed
+  return null
 }
 
 /** Friendly i18n messages for the reward-claim flow (RewardClaimer errors + flow). */
@@ -366,6 +380,7 @@ export interface TeamClaimErrorMessages {
   failed: string
   /** On-chain claim succeeded; backend confirm failed. */
   confirmSyncFailed?: string
+  walletNotConnected?: string
 }
 
 const TEAM_CLAIM_ERROR_RULES: Array<ErrorRule<keyof TeamClaimErrorMessages>> = [
@@ -416,9 +431,16 @@ export function resolveTeamClaimError(
   const mapped = resolveFirstMatch(text, TEAM_CLAIM_ERROR_RULES, messages)
   if (mapped) return mapped
 
+  if (
+    text.raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED ||
+    /please connect wallet/i.test(text.raw)
+  ) {
+    return messages.walletNotConnected ?? messages.failed
+  }
+
   if (isNoTeamClaimOrder(error, text.raw)) return messages.noOrder
 
-  return text.raw || messages.failed
+  return messages.failed
 }
 
 const GENESIS_PURCHASE_SENTINEL_RULES: Array<{
@@ -465,15 +487,28 @@ export function resolveFlashSwapUserMessage(
     insufficientUsd1: string
     purchaseUnavailable: string
     transactionCancelled: string
+    quoteFailed?: string
   },
   walletTransactionErrors?: WalletTransactionErrorMessages,
+  chainFallback?: string,
 ): string | null {
   if (isUserRejectedWalletError(error)) {
     return messages.transactionCancelled
   }
 
   const raw = readErrorText(error)
-  if (raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED) return messages.walletNotConnected
+  if (raw === SWAP_QUOTE_FAILED && messages.quoteFailed) return messages.quoteFailed
+  if (
+    raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED ||
+    /wallet not connected/i.test(raw)
+  ) {
+    return messages.walletNotConnected
+  }
+
+  const fallback =
+    chainFallback ??
+    walletTransactionErrors?.transactionFailed ??
+    messages.purchaseUnavailable
 
   return (
     resolveGenesisPurchaseError(error, {
@@ -485,9 +520,6 @@ export function resolveFlashSwapUserMessage(
     (walletTransactionErrors
       ? resolveWalletTransactionError(error, walletTransactionErrors)
       : null) ??
-    toWalletUserFacingMessage(
-      error,
-      walletTransactionErrors?.transactionFailed ?? 'Transaction failed',
-    )
+    toWalletUserFacingMessage(error, fallback)
   )
 }

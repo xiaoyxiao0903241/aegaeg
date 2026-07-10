@@ -14,6 +14,7 @@ import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-c
 import {
   resolveGenesisPurchaseError,
   resolveWalletTransactionError,
+  SWAP_QUOTE_FAILED,
   toWalletUserFacingMessage,
 } from '~/views/dapp/web3/resolve-contract-error-message'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
@@ -82,6 +83,10 @@ export function TradeSwapWidget({
 
   useEffect(() => {
     if (!swap.error) return
+    if (swap.error === SWAP_QUOTE_FAILED) {
+      toast.error(t.errors.quoteFailed)
+      return
+    }
     const message =
       resolveWalletTransactionError(swap.error, t.wallet.transactionErrors) ??
       resolveGenesisPurchaseError(swap.error, {
@@ -90,10 +95,12 @@ export function TradeSwapWidget({
         purchaseUnavailable: t.genesis.purchaseUnavailable,
         walletNotConnected: t.genesis.walletNotConnected,
       }) ??
-      toWalletUserFacingMessage(swap.error, t.wallet.transactionErrors.transactionFailed)
+      toWalletUserFacingMessage(swap.error, t.errors.chain.fallback)
     if (message) toast.error(message)
   }, [
     swap.error,
+    t.errors.chain.fallback,
+    t.errors.quoteFailed,
     t.genesis.insufficientAllowance,
     t.genesis.insufficientUsd1,
     t.genesis.purchaseUnavailable,

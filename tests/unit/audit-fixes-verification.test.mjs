@@ -51,6 +51,8 @@ test('audit #18: transient login errors allow retry; permanent errors block', as
   }
 
   assert.equal(isPermanentLoginErrorMessage('User rejected'), true)
+  assert.equal(isPermanentLoginErrorMessage('LOGIN_FAILED'), true)
+  assert.equal(isPermanentLoginErrorMessage('LOGIN_SIGNATURE_REJECTED'), true)
   assert.equal(isPermanentLoginErrorMessage('Network request failed'), false)
 
   assert.deepEqual(

@@ -17,6 +17,26 @@ const app = defineMessages({
       paginationPrev: '上一页',
       paginationNext: '下一页',
     },
+    errors: {
+      api: {
+        network: '网络连接失败，请检查网络后重试。',
+        timeout: '请求超时，请稍后重试。',
+        unavailable: '服务暂时不可用，请稍后重试。',
+        badResponse: '服务器响应异常，请稍后重试。',
+        fallback: '操作失败，请稍后重试。',
+      },
+      chain: {
+        fallback: '链上操作失败，请稍后重试。',
+      },
+      walletNotConnected: '请先连接钱包并完成登录。',
+      quoteFailed: '报价失败，请稍后重试。',
+      loadFailed: '加载失败，请稍后重试。',
+      loginFailed: '登录失败，请稍后重试。',
+      loginSignatureRejected: '登录签名无效或已过期，请重新签名。',
+      pageLoadFailed: '页面加载失败',
+      pageLoadFailedBody: '渲染出错，请刷新页面继续。钱包连接不会丢失。',
+      reloadPage: '刷新页面',
+    },
     nav: {
       swap: '兑换',
       genesis: '共建',

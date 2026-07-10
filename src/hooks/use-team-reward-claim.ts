@@ -1,3 +1,4 @@
+import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useState } from 'react'
 import { useAuth } from '~/app/bootstrap/use-auth'
@@ -21,7 +22,7 @@ export function useTeamRewardClaim() {
     confirmResult: ClaimConfirmResult | null
   } | null> => {
     if (!account || !wallet || !token || !isAuthenticated) {
-      setError('Please connect wallet and sign in first')
+      setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
       return null
     }
 

@@ -74,6 +74,10 @@ export function resolveSessionRenewAtMs(
 export function isPermanentLoginErrorMessage(loginError: string | null): boolean {
   if (!loginError) return false
   if (loginError === 'ACCOUNT_BANNED') return true
+  if (loginError === 'LOGIN_USER_REJECTED') return true
+  if (loginError === 'LOGIN_SIGNATURE_REJECTED') return true
+  if (loginError === 'LOGIN_FAILED') return true
+  // Legacy raw English latches (pre-sentinel) — keep classifying until purged.
   if (/rejected|denied|cancel/i.test(loginError)) return true
   if (/nonce|signature|expired|invalid/i.test(loginError)) return true
   return false

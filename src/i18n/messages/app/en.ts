@@ -18,6 +18,27 @@ const app = defineMessages({
         paginationPrev: 'Previous page',
         paginationNext: 'Next page',
     },
+    errors: {
+        api: {
+            network: 'Network connection failed. Check your connection and try again.',
+            timeout: 'Request timed out. Please try again later.',
+            unavailable: 'Service temporarily unavailable. Please try again later.',
+            badResponse: 'Unexpected server response. Please try again later.',
+            fallback: 'Something went wrong. Please try again later.',
+        },
+        chain: {
+            fallback: 'On-chain action failed. Please try again later.',
+        },
+        walletNotConnected: 'Please connect your wallet and sign in first.',
+        quoteFailed: 'Quote failed. Please try again later.',
+        loadFailed: 'Failed to load. Please try again later.',
+        loginFailed: 'Sign-in failed. Please try again later.',
+        loginSignatureRejected: 'Login signature is invalid or expired. Please sign again.',
+        pageLoadFailed: 'Page failed to load',
+        pageLoadFailedBody:
+            'Something broke while rendering. Reload to continue — your wallet stays connected.',
+        reloadPage: 'Reload page',
+    },
     nav: {
         swap: 'Swap',
         genesis: 'Co-build',

@@ -69,7 +69,7 @@ test('isUserRejectedWalletError detects MetaMask rejection', async () => {
   )
   assert.equal(
     resolveFlashSwapUserMessage({ code: 4001, message: 'Transaction failed' }, messages),
-    'Transaction failed',
+    'Unavailable',
   )
   assert.equal(
     resolveFlashSwapUserMessage({ code: 4001, message: 'User rejected the request.' }, {
@@ -191,5 +191,41 @@ test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data'
       userLimitExceeded: 'Limit exceeded',
     }),
     'Limit exceeded',
+  )
+})
+
+test('resolveReferralBindError falls back to null when unmapped (no raw passthrough)', async () => {
+  const { resolveReferralBindError } = await loadModule(
+    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+  )
+
+  const messages = {
+    alreadyBound: 'Already bound',
+    parentNotBound: 'Parent not bound',
+    selfReferral: 'Self referral',
+    invalidParent: 'Invalid parent',
+    migratedAccount: 'Migrated',
+    systemConfig: 'System config',
+    failed: 'Failed',
+  }
+
+  assert.equal(resolveReferralBindError(new Error('weird rpc english leak'), messages), null)
+})
+
+test('toWalletUserFacingMessage never returns raw RPC text', async () => {
+  const { toWalletUserFacingMessage } = await loadModule(
+    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+  )
+
+  assert.equal(
+    toWalletUserFacingMessage(new Error('execution reverted: 0xdead'), 'Chain fallback'),
+    'Chain fallback',
+  )
+  assert.equal(
+    toWalletUserFacingMessage(
+      { code: 4001, message: 'User rejected the request.' },
+      'Chain fallback',
+    ),
+    null,
   )
 })

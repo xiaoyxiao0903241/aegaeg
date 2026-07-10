@@ -6,6 +6,10 @@ import {
   parseApiResponse,
   type ApiEnvelope,
 } from '~/shared/api/client'
+import {
+  apiErrorFromHttpStatus,
+  toTransportApiError,
+} from '~/shared/api/resolve-api-user-facing-error'
 
 export { ApiError }
 
@@ -73,12 +77,17 @@ export async function apiRequest<T>(
     Object.assign(headers, createAuthHeader(options.token))
   }
 
-  const response = await fetch(buildApiUrl(path, options.searchParams), {
-    method: options.method ?? 'POST',
-    headers,
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
-    signal: createRequestAbortSignal(REQUEST_TIMEOUT_MS),
-  })
+  let response: Response
+  try {
+    response = await fetch(buildApiUrl(path, options.searchParams), {
+      method: options.method ?? 'POST',
+      headers,
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      signal: createRequestAbortSignal(REQUEST_TIMEOUT_MS),
+    })
+  } catch (error) {
+    rethrowAfterIntercept(toTransportApiError(error))
+  }
 
   let payload: ApiEnvelope<T>
 
@@ -86,13 +95,7 @@ export async function apiRequest<T>(
     payload = (await response.json()) as ApiEnvelope<T>
   } catch {
     // Gateway HTML / empty body — map HTTP status so 401/403 still hit auth + ban hooks.
-    rethrowAfterIntercept(
-      new ApiError({
-        code: response.status,
-        error: 'INVALID_JSON',
-        message: `API returned non-JSON response (${response.status})`,
-      }),
-    )
+    rethrowAfterIntercept(apiErrorFromHttpStatus(response.status))
   }
 
   try {

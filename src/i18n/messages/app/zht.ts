@@ -18,6 +18,26 @@ const app = defineMessages({
         paginationPrev: '上一頁',
         paginationNext: '下一頁',
     },
+    errors: {
+        api: {
+            network: '網路連線失敗，請檢查網路後重試。',
+            timeout: '請求逾時，請稍後重試。',
+            unavailable: '服務暫時無法使用，請稍後重試。',
+            badResponse: '伺服器回應異常，請稍後重試。',
+            fallback: '操作失敗，請稍後重試。',
+        },
+        chain: {
+            fallback: '鏈上操作失敗，請稍後重試。',
+        },
+        walletNotConnected: '請先連接錢包並完成登入。',
+        quoteFailed: '報價失敗，請稍後重試。',
+        loadFailed: '載入失敗，請稍後重試。',
+        loginFailed: '登入失敗，請稍後重試。',
+        loginSignatureRejected: '登入簽名無效或已過期，請重新簽名。',
+        pageLoadFailed: '頁面載入失敗',
+        pageLoadFailedBody: '渲染出錯，請重新整理頁面繼續。錢包連線不會遺失。',
+        reloadPage: '重新整理頁面',
+    },
     nav: {
         swap: '兌換',
         genesis: '共建',

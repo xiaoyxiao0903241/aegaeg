@@ -165,13 +165,7 @@ export function useReferral(sessionReady: boolean) {
       !isSubmitting &&
       !isBindCooldown &&
       Boolean(referrerInput.trim() || pendingReferrer),
-    error:
-      error ??
-      (referralQuery.error instanceof Error
-        ? referralQuery.error.message
-        : referralQuery.error
-          ? 'Failed to load referral data'
-          : null),
+    error,
     bind,
     refresh,
   }

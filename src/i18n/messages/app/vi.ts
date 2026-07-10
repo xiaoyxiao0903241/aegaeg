@@ -18,6 +18,26 @@ const app = defineMessages({
         paginationPrev: 'Trang trước',
         paginationNext: 'Trang sau',
     },
+    errors: {
+        api: {
+            network: 'Kết nối mạng thất bại. Kiểm tra mạng và thử lại.',
+            timeout: 'Yêu cầu hết thời gian. Vui lòng thử lại sau.',
+            unavailable: 'Dịch vụ tạm thời không khả dụng. Vui lòng thử lại sau.',
+            badResponse: 'Phản hồi máy chủ không hợp lệ. Vui lòng thử lại sau.',
+            fallback: 'Thao tác thất bại. Vui lòng thử lại sau.',
+        },
+        chain: {
+            fallback: 'Thao tác on-chain thất bại. Vui lòng thử lại sau.',
+        },
+        walletNotConnected: 'Vui lòng kết nối ví và đăng nhập trước.',
+        quoteFailed: 'Báo giá thất bại. Vui lòng thử lại sau.',
+        loadFailed: 'Tải thất bại. Vui lòng thử lại sau.',
+        loginFailed: 'Đăng nhập thất bại. Vui lòng thử lại sau.',
+        loginSignatureRejected: 'Chữ ký đăng nhập không hợp lệ hoặc đã hết hạn. Vui lòng ký lại.',
+        pageLoadFailed: 'Không tải được trang',
+        pageLoadFailedBody: 'Đã xảy ra lỗi khi render. Tải lại để tiếp tục — ví vẫn được kết nối.',
+        reloadPage: 'Tải lại trang',
+    },
     nav: {
         swap: 'Swap',
         genesis: 'Cùng xây dựng',

@@ -18,6 +18,26 @@ const app = defineMessages({
         paginationPrev: 'Página anterior',
         paginationNext: 'Página siguiente',
     },
+    errors: {
+        api: {
+            network: 'Error de conexión. Comprueba tu red e inténtalo de nuevo.',
+            timeout: 'La solicitud agotó el tiempo de espera. Inténtalo más tarde.',
+            unavailable: 'Servicio temporalmente no disponible. Inténtalo más tarde.',
+            badResponse: 'Respuesta inesperada del servidor. Inténtalo más tarde.',
+            fallback: 'Algo salió mal. Inténtalo más tarde.',
+        },
+        chain: {
+            fallback: 'La acción on-chain falló. Inténtalo más tarde.',
+        },
+        walletNotConnected: 'Conecta tu billetera e inicia sesión primero.',
+        quoteFailed: 'La cotización falló. Inténtalo más tarde.',
+        loadFailed: 'Error al cargar. Inténtalo más tarde.',
+        loginFailed: 'Error al iniciar sesión. Inténtalo más tarde.',
+        loginSignatureRejected: 'La firma de inicio de sesión no es válida o expiró. Firma de nuevo.',
+        pageLoadFailed: 'Error al cargar la página',
+        pageLoadFailedBody: 'Algo falló al renderizar. Recarga para continuar: tu billetera sigue conectada.',
+        reloadPage: 'Recargar página',
+    },
     nav: {
         swap: 'Swap',
         genesis: 'Co-construcción',

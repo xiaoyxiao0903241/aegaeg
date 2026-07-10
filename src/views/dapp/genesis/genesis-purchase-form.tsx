@@ -17,8 +17,9 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { SeasonSelector } from '~/views/dapp/genesis/season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season-option-skeleton'
+import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
 import {
-  resolveContractErrorMessage,
+  isUserRejectedWalletError,
   resolveGenesisPurchaseError,
   resolveWalletTransactionError,
 } from '~/views/dapp/web3/resolve-contract-error-message'
@@ -100,6 +101,7 @@ export function GenesisPurchaseForm() {
     }
 
     if (result.error) {
+      if (isUserRejectedWalletError(result.error)) return
       const message =
         resolveWalletTransactionError(result.error, t.wallet.transactionErrors) ??
         resolveGenesisPurchaseError(result.error, {
@@ -116,19 +118,20 @@ export function GenesisPurchaseForm() {
           userLimitExceeded: t.genesis.errors.userLimitExceeded,
           invalidPhase: t.genesis.errors.invalidPhase,
           systemConfig: t.genesis.errors.systemConfig,
-        })
+        }) ??
+        resolveApiUserFacingError(result.error, t.errors.api) ??
+        t.errors.chain.fallback
       if (message) toast.error(message)
     }
   }
 
   useEffect(() => {
     if (!genesis.error) return
-    const message = resolveContractErrorMessage(genesis.error, {
-      insufficientAllowance: t.genesis.insufficientAllowance,
-      insufficientUsd1: t.genesis.insufficientUsd1,
-    })
+    if (isUserRejectedWalletError(genesis.error)) return
+    const message =
+      resolveApiUserFacingError(genesis.error, t.errors.api) ?? t.errors.loadFailed
     if (message) toast.error(message)
-  }, [genesis.error, t.genesis.insufficientAllowance, t.genesis.insufficientUsd1])
+  }, [genesis.error, t.errors.api, t.errors.loadFailed])
 
   return (
     <>

@@ -24,7 +24,7 @@ import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
-import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR, SWAP_QUOTE_FAILED } from '~/views/dapp/web3/resolve-contract-error-message'
 import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
@@ -240,9 +240,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
 
   const validationError = useMemo(() => {
     if (!amountQuoteQuery.error) return null
-    return amountQuoteQuery.error instanceof Error
-      ? amountQuoteQuery.error.message
-      : 'Quote failed'
+    return SWAP_QUOTE_FAILED
   }, [amountQuoteQuery.error])
 
   const error = submitError ?? validationError
