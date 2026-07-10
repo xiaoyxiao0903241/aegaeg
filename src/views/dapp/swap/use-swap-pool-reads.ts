@@ -1,5 +1,4 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -32,10 +31,10 @@ export function useSwapPoolReads(quotesEnabled = true) {
 
   useVisibleInterval(spotQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
-  const poolContext = useMemo((): SwapPoolReadContext | undefined => {
-    if (!metadataQuery.data || !spotQuery.data) return undefined
-    return { pool: metadataQuery.data, spot: spotQuery.data }
-  }, [metadataQuery.data, spotQuery.data])
+  const poolContext: SwapPoolReadContext | undefined =
+    metadataQuery.data && spotQuery.data
+      ? { pool: metadataQuery.data, spot: spotQuery.data }
+      : undefined
 
   return {
     poolContext,

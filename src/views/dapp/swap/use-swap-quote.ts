@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery, type QueryKey } from '@tanstack/react-query'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import {
   assertQuotedSwapStillSubmittable,
@@ -70,9 +70,9 @@ export function useSwapQuote<TQuote>({
   /** Blocks re-submit after a pending tx with unknown confirmation outcome. */
   const [blockResubmit, setBlockResubmit] = useState(false)
 
-  const clearSubmitError = useCallback(() => {
+  function clearSubmitError() {
     setSubmitError(null)
-  }, [])
+  }
 
   const {
     amount: sellAmount,
@@ -118,33 +118,21 @@ export function useSwapQuote<TQuote>({
       amountQuoteQuery.isPlaceholderData ||
       (amountQuoteQuery.isFetching && quotedOut === 0n))
 
-  const validationError = useMemo(() => {
-    if (!amountQuoteQuery.error) return null
-    return SWAP_QUOTE_FAILED
-  }, [amountQuoteQuery.error])
+  const validationError = amountQuoteQuery.error ? SWAP_QUOTE_FAILED : null
 
   /** Bumps on each failed quote fetch so UI can re-toast the same sentinel. */
   const quoteErrorUpdatedAt = amountQuoteQuery.error ? amountQuoteQuery.errorUpdatedAt : 0
 
   const error = submitError ?? validationError
 
-  const sellAmountDisplay = useMemo(
-    () => formatTokenAmountInputDisplay(sellAmount),
-    [sellAmount],
-  )
+  const sellAmountDisplay = formatTokenAmountInputDisplay(sellAmount)
 
-  const buyAmount = useMemo(
-    () =>
-      sessionReady && amountIn > 0n && quotedOut > 0n && !isAmountDebouncing
-        ? formatTokenAmountInputDisplay(formatTokenAmount(quotedOut, buyDecimals, 6))
-        : '',
-    [sessionReady, amountIn, buyDecimals, isAmountDebouncing, quotedOut],
-  )
+  const buyAmount =
+    sessionReady && amountIn > 0n && quotedOut > 0n && !isAmountDebouncing
+      ? formatTokenAmountInputDisplay(formatTokenAmount(quotedOut, buyDecimals, 6))
+      : ''
 
-  const amountOutMin = useMemo(
-    () => (quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n),
-    [quotedOut, slippageBps],
-  )
+  const amountOutMin = quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n
 
   const needsMaxApproval =
     walletReady && amountIn > 0n && needsTokenApproval(allowance, amountIn)
@@ -166,98 +154,76 @@ export function useSwapQuote<TQuote>({
       maxQuoteAgeMs: QUERY_STALE_TIME.quote,
     })
 
-  const setSellAmountAndUnlock = useCallback(
-    (value: string) => {
+  function setSellAmountAndUnlock(value: string) {
+    setBlockResubmit(false)
+    setSellAmount(value)
+  }
+
+  function fillPercent(percent: number) {
+    if (!walletReady) return
+    setBlockResubmit(false)
+    fillSellPercent(percent)
+  }
+
+  async function runQuotedSubmit(
+    execute: (helpers: {
+      assertStillSubmittable: () => Promise<bigint>
+    }) => Promise<void>,
+  ): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
+    // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
+    if (!canSubmit || amountIn !== debouncedAmountIn) {
+      return { ok: false, error: null }
+    }
+
+    setIsSubmitting(true)
+    setSubmitError(null)
+
+    // Live re-gate: force-refresh quote after approve (may exceed maxQuoteAgeMs),
+    // then read from query cache — not the render snapshot that started submit.
+    const assertStillSubmittable = async (): Promise<bigint> => {
+      const queryKey = getQuoteQueryKey(debouncedAmountIn)
+      await queryClient.fetchQuery({
+        queryKey,
+        queryFn: () => fetchQuote(debouncedAmountIn),
+        staleTime: 0,
+      })
+      const queryState = queryClient.getQueryState<TQuote>(queryKey)
+      const data = queryClient.getQueryData<TQuote>(queryKey)
+      const liveQuotedOut = resolveLiveQuotedOut(false, selectQuotedOut(data))
+      const liveAmountOutMin =
+        liveQuotedOut > 0n ? calcAmountOutMin(liveQuotedOut, slippageBps) : 0n
+      assertQuotedSwapStillSubmittable({
+        walletReady,
+        amountIn: debouncedAmountIn,
+        sellBalance,
+        quotedOut: liveQuotedOut,
+        amountOutMin: liveAmountOutMin,
+        isPlaceholderData: false,
+        isQuotePending: queryState?.status === 'pending',
+        isBalancesLoading,
+        isSubmitting: false,
+        blockResubmit,
+        quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
+        maxQuoteAgeMs: QUERY_STALE_TIME.quote,
+      })
+      return liveAmountOutMin
+    }
+
+    try {
+      await execute({ assertStillSubmittable })
       setBlockResubmit(false)
-      setSellAmount(value)
-    },
-    [setSellAmount],
-  )
-
-  const fillPercent = useCallback(
-    (percent: number) => {
-      if (!walletReady) return
-      setBlockResubmit(false)
-      fillSellPercent(percent)
-    },
-    [fillSellPercent, walletReady],
-  )
-
-  const runQuotedSubmit = useCallback(
-    async (
-      execute: (helpers: {
-        assertStillSubmittable: () => Promise<bigint>
-      }) => Promise<void>,
-    ): Promise<{ ok: true } | { ok: false; error: unknown | null }> => {
-      // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
-      if (!canSubmit || amountIn !== debouncedAmountIn) {
-        return { ok: false, error: null }
+      clearAmount()
+      return { ok: true }
+    } catch (caught: unknown) {
+      if (caught instanceof WalletTransactionWaitError && caught.outcome === 'unknown') {
+        setBlockResubmit(true)
       }
-
-      setIsSubmitting(true)
-      setSubmitError(null)
-
-      // Live re-gate: force-refresh quote after approve (may exceed maxQuoteAgeMs),
-      // then read from query cache — not the render snapshot that started submit.
-      const assertStillSubmittable = async (): Promise<bigint> => {
-        const queryKey = getQuoteQueryKey(debouncedAmountIn)
-        await queryClient.fetchQuery({
-          queryKey,
-          queryFn: () => fetchQuote(debouncedAmountIn),
-          staleTime: 0,
-        })
-        const queryState = queryClient.getQueryState<TQuote>(queryKey)
-        const data = queryClient.getQueryData<TQuote>(queryKey)
-        const liveQuotedOut = resolveLiveQuotedOut(false, selectQuotedOut(data))
-        const liveAmountOutMin =
-          liveQuotedOut > 0n ? calcAmountOutMin(liveQuotedOut, slippageBps) : 0n
-        assertQuotedSwapStillSubmittable({
-          walletReady,
-          amountIn: debouncedAmountIn,
-          sellBalance,
-          quotedOut: liveQuotedOut,
-          amountOutMin: liveAmountOutMin,
-          isPlaceholderData: false,
-          isQuotePending: queryState?.status === 'pending',
-          isBalancesLoading,
-          isSubmitting: false,
-          blockResubmit,
-          quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
-          maxQuoteAgeMs: QUERY_STALE_TIME.quote,
-        })
-        return liveAmountOutMin
-      }
-
-      try {
-        await execute({ assertStillSubmittable })
-        setBlockResubmit(false)
-        clearAmount()
-        return { ok: true }
-      } catch (caught: unknown) {
-        if (caught instanceof WalletTransactionWaitError && caught.outcome === 'unknown') {
-          setBlockResubmit(true)
-        }
-        setSubmitError(caught)
-        return { ok: false, error: caught }
-      } finally {
-        setIsSubmitting(false)
-      }
-    },
-    [
-      amountIn,
-      blockResubmit,
-      canSubmit,
-      clearAmount,
-      debouncedAmountIn,
-      fetchQuote,
-      getQuoteQueryKey,
-      isBalancesLoading,
-      selectQuotedOut,
-      sellBalance,
-      slippageBps,
-      walletReady,
-    ],
-  )
+      setSubmitError(caught)
+      return { ok: false, error: caught }
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return {
     sellAmount,

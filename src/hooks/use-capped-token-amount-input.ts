@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   capTokenAmountInput,
   formatTokenAmount,
@@ -28,80 +28,52 @@ export function useCappedTokenAmountInput({
   const [amountDraft, setAmountDraft] = useState('')
   const fractionLimit = Math.min(decimals, maxFractionDigits)
 
-  const exactDraftAmountIn = useMemo(() => {
-    if (!sessionReady || !balancesLoaded || !amountDraft) return 0n
-    return parseTokenAmount(sanitizeTokenAmountInput(amountDraft, decimals), decimals)
-  }, [amountDraft, balancesLoaded, decimals, sessionReady])
+  const exactDraftAmountIn =
+    !sessionReady || !balancesLoaded || !amountDraft
+      ? 0n
+      : parseTokenAmount(sanitizeTokenAmountInput(amountDraft, decimals), decimals)
 
   const isFullBalanceDraft = balance > 0n && exactDraftAmountIn === balance
 
-  const amount = useMemo(() => {
-    // 100% fill: keep full on-chain precision (do not re-cap through display digits).
-    if (isFullBalanceDraft) {
-      return sanitizeTokenAmountInput(amountDraft, decimals)
+  // 100% fill: keep full on-chain precision (do not re-cap through display digits).
+  const amount = isFullBalanceDraft
+    ? sanitizeTokenAmountInput(amountDraft, decimals)
+    : resolveCappedTokenAmountRaw({
+        amount: amountDraft,
+        sessionReady,
+        balancesLoaded,
+        balance,
+        decimals,
+        maxFractionDigits,
+      })
+
+  const amountIn = isFullBalanceDraft ? balance : parseTokenAmount(amount, decimals)
+
+  function setAmount(value: string) {
+    if (!sessionReady || !balancesLoaded) {
+      setAmountDraft(sanitizeTokenAmountInput(value, fractionLimit))
+      return
     }
-    return resolveCappedTokenAmountRaw({
-      amount: amountDraft,
-      sessionReady,
-      balancesLoaded,
-      balance,
-      decimals,
-      maxFractionDigits,
-    })
-  }, [
-    amountDraft,
-    balance,
-    balancesLoaded,
-    decimals,
-    isFullBalanceDraft,
-    maxFractionDigits,
-    sessionReady,
-  ])
 
-  const amountIn = useMemo(() => {
-    if (isFullBalanceDraft) return balance
-    return parseTokenAmount(amount, decimals)
-  }, [amount, balance, decimals, isFullBalanceDraft])
+    onBeforeCap?.()
+    setAmountDraft(capTokenAmountInput(value, balance, decimals, maxFractionDigits))
+  }
 
-  const setAmount = useCallback(
-    (value: string) => {
-      if (!sessionReady || !balancesLoaded) {
-        setAmountDraft(sanitizeTokenAmountInput(value, fractionLimit))
-        return
-      }
-
-      onBeforeCap?.()
-      setAmountDraft(capTokenAmountInput(value, balance, decimals, maxFractionDigits))
-    },
-    [
-      sessionReady,
-      balance,
-      balancesLoaded,
-      decimals,
-      fractionLimit,
-      maxFractionDigits,
-      onBeforeCap,
-    ],
-  )
-
-  const clearAmount = useCallback(() => {
+  function clearAmount() {
     setAmountDraft('')
-  }, [])
+  }
 
-  const fillPercent = useCallback(
-    (percent: number) => {
-      if (balance === 0n) return
-      onBeforeCap?.()
-      // 100%: write full on-chain precision so amountIn === balance (no dust from display digits).
-      if (percent >= 100) {
-        setAmountDraft(formatTokenAmount(balance, decimals, decimals))
-        return
-      }
-      const value = (balance * BigInt(percent)) / 100n
-      setAmountDraft(formatTokenAmount(value, decimals, maxFractionDigits))
-    },
-    [balance, decimals, maxFractionDigits, onBeforeCap],
-  )
+  function fillPercent(percent: number) {
+    if (balance === 0n) return
+    onBeforeCap?.()
+    // 100%: write full on-chain precision so amountIn === balance (no dust from display digits).
+    if (percent >= 100) {
+      setAmountDraft(formatTokenAmount(balance, decimals, decimals))
+      return
+    }
+    const value = (balance * BigInt(percent)) / 100n
+    setAmountDraft(formatTokenAmount(value, decimals, maxFractionDigits))
+  }
 
   return {
     amount,
