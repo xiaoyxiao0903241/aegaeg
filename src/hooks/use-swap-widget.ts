@@ -25,6 +25,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
@@ -46,6 +47,8 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   }, [])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<unknown>(null)
+  /** Blocks re-submit after a pending tx with unknown confirmation outcome. */
+  const [blockResubmit, setBlockResubmit] = useState(false)
   const readClient = useChainReadClient()
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
@@ -340,20 +343,35 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     amountIn,
     sellBalance,
     quotedOut,
+    amountOutMin,
     isPlaceholderData: amountQuoteQuery.isPlaceholderData,
     isQuotePending: amountQuoteQuery.isPending,
+    isBalancesLoading,
     isSubmitting,
+    blockResubmit,
+    quoteUpdatedAt: amountQuoteQuery.dataUpdatedAt,
+    maxQuoteAgeMs: QUERY_STALE_TIME.quote,
   })
+
+  const setSellAmountAndUnlock = useCallback(
+    (value: string) => {
+      setBlockResubmit(false)
+      setSellAmount(value)
+    },
+    [setSellAmount],
+  )
 
   const fillPercent = useCallback(
     (percent: number) => {
       if (!walletReady) return
+      setBlockResubmit(false)
       fillSellPercent(percent)
     },
     [fillSellPercent, walletReady],
   )
 
   const flipDirection = useCallback(() => {
+    setBlockResubmit(false)
     flipDirectionInStore()
     clearAmount()
   }, [clearAmount, flipDirectionInStore])
@@ -383,14 +401,17 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
         tokenOut: pair.buy.address,
         amountOutMin,
       })
+      setBlockResubmit(false)
       clearAmount()
       invalidateAfterSwap()
       await balancesQuery.refetch()
       return true
     } catch (caught: unknown) {
+      if (caught instanceof WalletTransactionWaitError && caught.outcome === 'unknown') {
+        setBlockResubmit(true)
+      }
       setSubmitError(caught)
-      // The tx may still land (unknown outcome) — refresh balances so the UI
-      // re-caps the amount instead of inviting an identical resubmit.
+      // Refresh balances for display; do not unlock resubmit on unknown outcome.
       void balancesQuery.refetch()
       return false
     } finally {
@@ -411,7 +432,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   return {
     sellAmount,
     sellAmountDisplay,
-    setSellAmount,
+    setSellAmount: setSellAmountAndUnlock,
     direction,
     flipDirection,
     slippage,

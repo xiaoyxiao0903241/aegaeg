@@ -62,6 +62,7 @@ const app = defineMessages({
             gasEstimateFailed: 'Bu işlem için gas tahmin edilemedi. Ağı kontrol edip tekrar deneyin.',
             insufficientFunds: 'Ağ gas ücretlerini ödemek için yeterli BNB yok.',
             transactionFailed: 'İşlem başarısız. Lütfen daha sonra tekrar deneyin.',
+            transactionUnknown: 'İşlem durumu bilinmiyor. Tekrar göndermeyin — önce cüzdanınızı veya blok gezginini kontrol edin.',
         },
     },
     swap: {
@@ -142,6 +143,7 @@ const app = defineMessages({
             settlementValue: 'On-chain · anında',
             tokenAboutTitle: 'USD1 hakkında',
             action: 'Dönüştür',
+            minReceived: 'Minimum alınan',
         },
         trade: {
             title: 'Al-Sat',
@@ -375,6 +377,7 @@ const app = defineMessages({
             expired: 'İmza süresi doldu, lütfen yenileyin ve tekrar talep edin.',
             noOrder: 'Şu anda talep edilecek ödül yok.',
             failed: 'Talep başarısız, lütfen daha sonra tekrar deneyin.',
+            confirmSyncFailed: 'Ödül zincirde alındı ancak senkron başarısız. Sayfayı yenileyin — tekrar talep etmeyin.',
         },
         heroTitle: 'Mevcut seviye',
         allTiers: 'Genesis onur sistemi',

@@ -136,6 +136,10 @@ export function FlashSwapWidget({
               value: swap.routeLabel,
             },
             {
+              label: t.swap.flash.minReceived,
+              value: swap.minUsd1OutLabel,
+            },
+            {
               label: t.swap.provider,
               value: (
                 <>

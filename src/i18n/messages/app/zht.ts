@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: '無法估算交易 Gas，請檢查網路連線或稍後重試。',
             insufficientFunds: 'BNB 餘額不足，無法支付網路 Gas 費用。',
             transactionFailed: '交易失敗，請稍後重試。',
+            transactionUnknown: '交易狀態未知，請勿重複提交。請先在錢包或區塊瀏覽器確認結果。',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: '鏈上 · 秒到',
             tokenAboutTitle: '關於 USD1',
             action: '閃兌',
+            minReceived: '最少獲得',
         },
         trade: {
             title: '交易',
@@ -375,6 +377,7 @@ const app = defineMessages({
             expired: '簽名已過期，請刷新後重新領取。',
             noOrder: '暫無可領取的獎勵。',
             failed: '領取失敗，請稍後再試。',
+            confirmSyncFailed: '獎勵已在鏈上領取成功，但同步失敗。請重新整理頁面，請勿重複領取。',
         },
         heroTitle: '當前等級',
         allTiers: '創世榮譽體系',

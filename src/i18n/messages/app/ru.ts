@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: 'Не удалось оценить gas для этой транзакции. Проверьте сеть и повторите попытку.',
             insufficientFunds: 'Недостаточно BNB для оплаты сетевой комиссии gas.',
             transactionFailed: 'Транзакция не удалась. Повторите попытку позже.',
+            transactionUnknown: 'Статус транзакции неизвестен. Не отправляйте повторно — сначала проверьте кошелёк или обозреватель блоков.',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: 'On-chain · мгновенно',
             tokenAboutTitle: 'О USD1',
             action: 'Конвертация',
+            minReceived: 'Минимум к получению',
         },
         trade: {
             title: 'Торговля',
@@ -376,6 +378,7 @@ const app = defineMessages({
             expired: 'Срок подписи истёк, обновите и повторите.',
             noOrder: 'Нет наград для получения.',
             failed: 'Не удалось получить. Повторите позже.',
+            confirmSyncFailed: 'Награда уже получена в сети, но синхронизация не удалась. Обновите страницу — не запрашивайте снова.',
         },
         heroTitle: 'Текущий уровень',
         allTiers: 'Система почёта Genesis',

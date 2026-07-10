@@ -36,6 +36,7 @@ export const PRESALE_METHODS = {
   totalPurchasedAmount: 'function totalPurchasedAmount() view returns (uint256)',
   agxPrice: 'function agxPrice() view returns (uint256)',
   airdropThreshold: 'function AIRDROP_THRESHOLD() view returns (uint256)',
+  paused: 'function paused() view returns (bool)',
   purchase: 'function purchase(uint256 _phaseIndex, uint256 _amount)',
 } as const
 

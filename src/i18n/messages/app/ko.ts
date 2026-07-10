@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: '이 거래의 Gas를 추정할 수 없습니다. 네트워크를 확인한 뒤 다시 시도하세요.',
             insufficientFunds: '네트워크 Gas 수수료를 지불할 BNB가 부족합니다.',
             transactionFailed: '거래에 실패했습니다. 잠시 후 다시 시도하세요.',
+            transactionUnknown: '거래 상태를 확인할 수 없습니다. 다시 제출하지 마세요. 먼저 지갑 또는 블록 탐색기에서 확인하세요.',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: '온체인 · 즉시',
             tokenAboutTitle: 'USD1 안내',
             action: '전환',
+            minReceived: '최소 수령',
         },
         trade: {
             title: '거래',
@@ -376,6 +378,7 @@ const app = defineMessages({
             expired: '서명이 만료되었습니다. 새로고침 후 다시 시도하세요.',
             noOrder: '수령 가능한 리워드가 없습니다.',
             failed: '수령에 실패했습니다. 나중에 다시 시도하세요.',
+            confirmSyncFailed: '온체인 수령은 완료됐지만 동기화에 실패했습니다. 페이지를 새로고침하세요. 다시 수령하지 마세요.',
         },
         heroTitle: '현재 등급',
         allTiers: '창세 명예 체계',

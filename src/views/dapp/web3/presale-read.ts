@@ -22,6 +22,7 @@ const presaleAbi = parseAbi([
   PRESALE_METHODS.totalPurchasedAmount,
   PRESALE_METHODS.agxPrice,
   PRESALE_METHODS.airdropThreshold,
+  PRESALE_METHODS.paused,
 ])
 
 const multicallAbi = parseAbi([MULTICALL3_METHODS.aggregate3])
@@ -201,5 +202,15 @@ export async function readPresaleAgxPriceWei(
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'agxPrice',
+  })
+}
+
+export async function readPresalePaused(
+  client: ChainReadClient = bscReadClient,
+): Promise<boolean> {
+  return client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'paused',
   })
 }

@@ -108,6 +108,7 @@ export function invalidatePresaleChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAgxPrice })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleTotalPurchased })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAirdropThreshold })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presalePaused })
 
   if (!address) return
 
@@ -127,6 +128,7 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.presaleAgxPrice,
     queryKeys.chain.presaleTotalPurchased,
     queryKeys.chain.presaleAirdropThreshold,
+    queryKeys.chain.presalePaused,
     queryKeys.chain.presaleUserTotalRoot,
     queryKeys.chain.presaleUserPhaseRemainingRoot,
     queryKeys.chain.erc20Root,

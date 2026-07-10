@@ -38,6 +38,7 @@ test('canPurchaseGenesis fails closed when maxShares is zero', async () => {
     canPurchaseGenesis({
       walletReady: true,
       hasActivePhase: true,
+      isBound: true,
       maxShares: 0,
       shares: 5,
       purchaseAmount: 500n * 10n ** 18n,
@@ -53,6 +54,7 @@ test('canPurchaseGenesis requires live phase, share cap, and amount bounds', asy
   const base = {
     walletReady: true,
     hasActivePhase: true,
+    isBound: true,
     maxShares: 40,
     shares: 10,
     purchaseAmount: 1000n * 10n ** 18n,
@@ -78,6 +80,7 @@ test('canPurchaseGenesis requires at least one share', async () => {
     canPurchaseGenesis({
       walletReady: true,
       hasActivePhase: true,
+      isBound: true,
       maxShares: 40,
       shares: 0,
       purchaseAmount: 0n,
@@ -86,6 +89,25 @@ test('canPurchaseGenesis requires at least one share', async () => {
     }),
     false,
   )
+})
+
+test('canPurchaseGenesis fails closed when unbound or paused', async () => {
+  const { canPurchaseGenesis } = await loadModule('/src/core/presale/presale-math.ts')
+  const base = {
+    walletReady: true,
+    hasActivePhase: true,
+    isBound: true,
+    isPaused: false,
+    maxShares: 40,
+    shares: 10,
+    purchaseAmount: 1000n * 10n ** 18n,
+    minAmount: 100n * 10n ** 18n,
+    maxPurchasableWei: 4000n * 10n ** 18n,
+  }
+
+  assert.equal(canPurchaseGenesis(base), true)
+  assert.equal(canPurchaseGenesis({ ...base, isBound: false }), false)
+  assert.equal(canPurchaseGenesis({ ...base, isPaused: true }), false)
 })
 
 test('resolveLiveQuotedOut ignores placeholder keepPreviousData', async () => {
@@ -104,67 +126,32 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
 
   const live = resolveLiveQuotedOut(false, 100n)
   const stale = resolveLiveQuotedOut(true, 100n)
+  const nowMs = 1_000_000
 
-  assert.equal(
-    canSubmitQuotedSwap({
-      walletReady: true,
-      amountIn: 10n,
-      sellBalance: 100n,
-      quotedOut: live,
-      isPlaceholderData: false,
-      isQuotePending: false,
-      isSubmitting: false,
-    }),
-    true,
-  )
-  assert.equal(
-    canSubmitQuotedSwap({
-      walletReady: true,
-      amountIn: 10n,
-      sellBalance: 100n,
-      quotedOut: stale,
-      isPlaceholderData: false,
-      isQuotePending: false,
-      isSubmitting: false,
-    }),
-    false,
-  )
-  assert.equal(
-    canSubmitQuotedSwap({
-      walletReady: true,
-      amountIn: 10n,
-      sellBalance: 100n,
-      quotedOut: 100n,
-      isPlaceholderData: true,
-      isQuotePending: false,
-      isSubmitting: false,
-    }),
-    false,
-  )
-  assert.equal(
-    canSubmitQuotedSwap({
-      walletReady: true,
-      amountIn: 10n,
-      sellBalance: 100n,
-      quotedOut: live,
-      isPlaceholderData: false,
-      isQuotePending: true,
-      isSubmitting: false,
-    }),
-    false,
-  )
-  assert.equal(
-    canSubmitQuotedSwap({
-      walletReady: true,
-      amountIn: 200n,
-      sellBalance: 100n,
-      quotedOut: live,
-      isPlaceholderData: false,
-      isQuotePending: false,
-      isSubmitting: false,
-    }),
-    false,
-  )
+  const base = {
+    walletReady: true,
+    amountIn: 10n,
+    sellBalance: 100n,
+    quotedOut: live,
+    amountOutMin: 99n,
+    isPlaceholderData: false,
+    isQuotePending: false,
+    isBalancesLoading: false,
+    isSubmitting: false,
+    quoteUpdatedAt: nowMs,
+    maxQuoteAgeMs: 10_000,
+    nowMs,
+  }
+
+  assert.equal(canSubmitQuotedSwap(base), true)
+  assert.equal(canSubmitQuotedSwap({ ...base, quotedOut: stale, amountOutMin: 0n }), false)
+  assert.equal(canSubmitQuotedSwap({ ...base, isPlaceholderData: true }), false)
+  assert.equal(canSubmitQuotedSwap({ ...base, isQuotePending: true }), false)
+  assert.equal(canSubmitQuotedSwap({ ...base, amountIn: 200n }), false)
+  assert.equal(canSubmitQuotedSwap({ ...base, blockResubmit: true }), false)
+  assert.equal(canSubmitQuotedSwap({ ...base, isBalancesLoading: true }), false)
+  assert.equal(canSubmitQuotedSwap({ ...base, amountOutMin: 0n }), false)
+  assert.equal(canSubmitQuotedSwap({ ...base, nowMs: nowMs + 10_001 }), false)
 })
 
 test('resolveWalletRemountKey clears draft identity on address change', async () => {
@@ -247,6 +234,7 @@ test('calcAmountOutMin rejects invalid slippage and floors with valid bps', asyn
   const { calcAmountOutMin } = await loadModule('/src/core/swap/calc-amount-out-min.ts')
 
   assert.equal(calcAmountOutMin(10_000n, 50), 9950n)
+  assert.equal(calcAmountOutMin(1n, 9900), 1n)
   assert.throws(() => calcAmountOutMin(10_000n, -1))
   assert.throws(() => calcAmountOutMin(10_000n, 10_000))
 })

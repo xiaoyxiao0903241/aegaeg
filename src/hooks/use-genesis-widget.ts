@@ -33,6 +33,7 @@ import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
   usePresaleAirdropThresholdQuery,
+  usePresalePausedQuery,
   usePresalePhasesQuery,
   usePresaleTotalPurchasedQuery,
   useIsBindReferralQuery,
@@ -75,6 +76,7 @@ export function useGenesisWidget() {
   const agxPriceQuery = usePresaleAgxPriceQuery()
   const totalPurchasedQuery = usePresaleTotalPurchasedQuery()
   const airdropThresholdQuery = usePresaleAirdropThresholdQuery()
+  const pausedQuery = usePresalePausedQuery()
   const userTotalQuery = usePresaleUserTotalQuery(address)
   const phaseRemainingQuery = usePresaleUserPhaseRemainingQuery(
     address,
@@ -82,8 +84,11 @@ export function useGenesisWidget() {
   )
   const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address)
   const isBoundQuery = useIsBindReferralQuery(address)
-  const isBound = isBoundQuery.data
-  const needsReferralBind = walletReady && isBound === false
+  const isBound = isBoundQuery.data === true
+  const needsReferralBind = walletReady && isBoundQuery.data === false
+  const isPaused = pausedQuery.data === true
+  // Fail-closed while pause status is unknown (loading, error, or never fetched).
+  const isPausedUnknown = walletReady && !(pausedQuery.isSuccess && pausedQuery.data !== undefined)
 
   const phases = useMemo(() => phasesQuery.data ?? [], [phasesQuery.data])
   const activePhase = activePhaseQuery.data ?? null
@@ -172,6 +177,8 @@ export function useGenesisWidget() {
   const canPurchase = canPurchaseGenesis({
     walletReady,
     hasActivePhase: activePhase !== null,
+    isBound,
+    isPaused: isPaused || isPausedUnknown,
     maxShares,
     shares,
     purchaseAmount,
@@ -276,8 +283,12 @@ export function useGenesisWidget() {
   const participate = useCallback(async (): Promise<GenesisPurchaseResult> => {
     // Contract requires a bound referrer before purchase; block early with a
     // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
-    if (isBound === false) {
+    // Fail-closed while bind status is still loading (`undefined`).
+    if (isBoundQuery.data !== true) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.NOT_BOUND }
+    }
+    if (isPaused || isPausedUnknown) {
+      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
     if (needsApproval) {
       const approveResult = await approve()
@@ -286,7 +297,7 @@ export function useGenesisWidget() {
       }
     }
     return purchase()
-  }, [approve, isBound, needsApproval, purchase])
+  }, [approve, isBoundQuery.data, isPaused, isPausedUnknown, needsApproval, purchase])
 
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
 

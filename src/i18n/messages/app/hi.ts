@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: 'इस लेनदेन के लिए gas का अनुमान नहीं लगाया जा सका। नेटवर्क जांचें और फिर कोशिश करें।',
             insufficientFunds: 'नेटवर्क gas शुल्क चुकाने के लिए BNB अपर्याप्त है।',
             transactionFailed: 'लेनदेन विफल। कृपया बाद में फिर कोशिश करें।',
+            transactionUnknown: 'लेनदेन की स्थिति अज्ञात है। दोबारा सबमिट न करें — पहले वॉलेट या ब्लॉक एक्सप्लोरर जाँचें।',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: 'On-chain · तुरंत',
             tokenAboutTitle: 'USD1 के बारे में',
             action: 'कन्वर्ट',
+            minReceived: 'न्यूनतम प्राप्ति',
         },
         trade: {
             title: 'ट्रेड',
@@ -376,6 +378,7 @@ const app = defineMessages({
             expired: 'हस्ताक्षर समाप्त हो गया, रिफ़्रेश करके पुनः प्रयास करें।',
             noOrder: 'दावा के लिए कोई रिवॉर्ड नहीं है।',
             failed: 'दावा विफल। कृपया बाद में पुनः प्रयास करें।',
+            confirmSyncFailed: 'इनाम ऑन-चेन क्लेम हो चुका है, लेकिन सिंक विफल। पेज रिफ़्रेश करें — दोबारा क्लेम न करें।',
         },
         heroTitle: 'वर्तमान स्तर',
         allTiers: 'Genesis सम्मान प्रणाली',

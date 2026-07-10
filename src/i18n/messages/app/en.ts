@@ -63,6 +63,8 @@ const app = defineMessages({
             gasEstimateFailed: 'Could not estimate gas for this transaction. Check your network and try again.',
             insufficientFunds: 'Insufficient BNB to pay network gas fees.',
             transactionFailed: 'Transaction failed. Please try again.',
+            transactionUnknown:
+                'Transaction status is unknown. Do not submit again — check your wallet or the block explorer first.',
         },
     },
     swap: {
@@ -143,6 +145,7 @@ const app = defineMessages({
             settlementValue: 'On-chain · instant',
             tokenAboutTitle: 'About USD1',
             action: 'Convert',
+            minReceived: 'Minimum received',
         },
         trade: {
             title: 'Trade',
@@ -376,6 +379,8 @@ const app = defineMessages({
             expired: 'Signature expired, please refresh and claim again.',
             noOrder: 'No reward available to claim.',
             failed: 'Claim failed. Please try again later.',
+            confirmSyncFailed:
+                'Reward was claimed on-chain, but sync failed. Refresh the page — do not claim again.',
         },
         heroTitle: 'Current tier',
         allTiers: 'Genesis honor system',

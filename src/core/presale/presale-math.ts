@@ -118,10 +118,12 @@ export function formatGenesisSharesText(shares: number): string {
   return shares === 0 ? '' : String(shares)
 }
 
-/** Genesis purchase submit gate (chain + draft). */
+/** Genesis purchase submit gate (chain + draft). Bind + pause are fail-closed. */
 export function canPurchaseGenesis({
   walletReady,
   hasActivePhase,
+  isBound,
+  isPaused = false,
   maxShares,
   shares,
   purchaseAmount,
@@ -130,6 +132,10 @@ export function canPurchaseGenesis({
 }: {
   walletReady: boolean
   hasActivePhase: boolean
+  /** Only `true` may purchase; `false` / loading must not open the CTA. */
+  isBound: boolean
+  /** On-chain `paused()` — when true, block before the wallet prompt. */
+  isPaused?: boolean
   maxShares: number
   shares: number
   purchaseAmount: bigint
@@ -139,6 +145,8 @@ export function canPurchaseGenesis({
   return (
     walletReady &&
     hasActivePhase &&
+    isBound &&
+    !isPaused &&
     maxShares > 0 &&
     shares >= 1 &&
     shares <= maxShares &&

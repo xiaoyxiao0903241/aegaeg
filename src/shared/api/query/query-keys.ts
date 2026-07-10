@@ -40,6 +40,7 @@ export const queryKeys = {
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
     presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
     presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,
+    presalePaused: ['chain', 'presale', 'paused'] as const,
     presaleUserTotal: (address: string) =>
       ['chain', 'presale', 'userTotal', address.toLowerCase()] as const,
     presaleUserPhaseRemainingByUser: (address: string) =>

@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: 'この取引の Gas を見積もれませんでした。ネットワークを確認して再試行してください。',
             insufficientFunds: 'ネットワーク Gas 手数料を支払う BNB が不足しています。',
             transactionFailed: '取引に失敗しました。しばらくしてから再試行してください。',
+            transactionUnknown: '取引状態が不明です。再送信しないでください。先にウォレットまたはブロックエクスプローラーで確認してください。',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: 'オンチェーン · 即時',
             tokenAboutTitle: 'USD1について',
             action: '変換',
+            minReceived: '最小受取額',
         },
         trade: {
             title: '取引',
@@ -376,6 +378,7 @@ const app = defineMessages({
             expired: '署名の有効期限が切れました。更新して再度お試しください。',
             noOrder: '受け取れる報酬がありません。',
             failed: '受け取りに失敗しました。後でもう一度お試しください。',
+            confirmSyncFailed: 'オンチェーンでは受取済みですが同期に失敗しました。ページを更新してください。再請求しないでください。',
         },
         heroTitle: '現在のランク',
         allTiers: '創世栄誉体系',

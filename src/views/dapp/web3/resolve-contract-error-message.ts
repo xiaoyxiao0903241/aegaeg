@@ -2,6 +2,7 @@ import {
   ContractRevertError,
   decodeContractRevert,
 } from '~/views/dapp/web3/decode-contract-revert'
+import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 
 const ERC20_INSUFFICIENT_BALANCE = '0xe450d38c'
 const ERC20_INSUFFICIENT_ALLOWANCE = '0xfb8f41b2'
@@ -26,6 +27,12 @@ export const REFERRAL_BIND_ERROR = {
   PARENT_NOT_BOUND: 'REFERRAL_PARENT_NOT_BOUND',
 } as const
 
+/** Local claim expire precheck — maps to claimErrors.expired. */
+export const CLAIM_SIGNATURE_EXPIRED = 'ErrorSignatureExpired'
+
+/** On-chain claim succeeded but `/claim/confirm` failed. */
+export const CLAIM_CONFIRM_SYNC_FAILED = 'CLAIM_CONFIRM_SYNC_FAILED'
+
 export const WALLET_WRITE_ERROR = {
   GAS_ESTIMATE_FAILED: 'WALLET_GAS_ESTIMATE_FAILED',
 } as const
@@ -35,6 +42,8 @@ export interface WalletTransactionErrorMessages {
   gasEstimateFailed: string
   insufficientFunds: string
   transactionFailed: string
+  /** Pending tx timed out without receipt — do not resubmit. */
+  transactionUnknown?: string
 }
 
 const GAS_LIMIT_TOO_LOW_PATTERN =
@@ -111,6 +120,13 @@ export function resolveWalletTransactionError(
   messages: WalletTransactionErrorMessages,
 ): string | null {
   if (isUserRejectedWalletError(error)) return null
+  if (
+    error instanceof WalletTransactionWaitError &&
+    error.outcome === 'unknown' &&
+    messages.transactionUnknown
+  ) {
+    return messages.transactionUnknown
+  }
   return resolveFirstMatch(toErrorText(readErrorText(error)), WALLET_TRANSACTION_ERROR_RULES, messages)
 }
 
@@ -348,6 +364,8 @@ export interface TeamClaimErrorMessages {
   expired: string
   noOrder: string
   failed: string
+  /** On-chain claim succeeded; backend confirm failed. */
+  confirmSyncFailed?: string
 }
 
 const TEAM_CLAIM_ERROR_RULES: Array<ErrorRule<keyof TeamClaimErrorMessages>> = [
@@ -390,6 +408,10 @@ export function resolveTeamClaimError(
   if (isUserRejectedWalletError(error)) return null
 
   const text = toErrorText(readErrorText(error))
+
+  if (text.raw === CLAIM_CONFIRM_SYNC_FAILED && messages.confirmSyncFailed) {
+    return messages.confirmSyncFailed
+  }
 
   const mapped = resolveFirstMatch(text, TEAM_CLAIM_ERROR_RULES, messages)
   if (mapped) return mapped

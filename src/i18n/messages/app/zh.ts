@@ -62,6 +62,7 @@ const app = defineMessages({
         gasEstimateFailed: '无法估算交易 Gas，请检查网络连接或稍后重试。',
         insufficientFunds: 'BNB 余额不足，无法支付网络 Gas 费用。',
         transactionFailed: '交易失败，请稍后重试。',
+        transactionUnknown: '交易状态未知，请勿重复提交。请先在钱包或区块浏览器确认结果。',
       },
     },
     swap: {
@@ -142,6 +143,7 @@ const app = defineMessages({
         settlementValue: '链上 · 秒到',
         tokenAboutTitle: '关于 USD1',
         action: '闪兑',
+        minReceived: '最少获得',
       },
       trade: {
         title: '交易',
@@ -375,6 +377,7 @@ const app = defineMessages({
         expired: '签名已过期，请刷新后重新领取。',
         noOrder: '暂无可领取的奖励。',
         failed: '领取失败，请稍后再试。',
+        confirmSyncFailed: '奖励已在链上领取成功，但同步失败。请刷新页面，请勿重复领取。',
       },
       heroTitle: '当前等级',
       allTiers: '创世荣誉体系',

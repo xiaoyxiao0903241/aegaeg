@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: 'Tidak dapat memperkirakan gas untuk transaksi ini. Periksa jaringan dan coba lagi.',
             insufficientFunds: 'BNB tidak cukup untuk membayar biaya gas jaringan.',
             transactionFailed: 'Transaksi gagal. Silakan coba lagi nanti.',
+            transactionUnknown: 'Status transaksi tidak diketahui. Jangan kirim ulang — periksa dulu dompet atau block explorer.',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: 'On-chain · instan',
             tokenAboutTitle: 'Tentang USD1',
             action: 'Konversi',
+            minReceived: 'Minimum diterima',
         },
         trade: {
             title: 'Dagang',
@@ -376,6 +378,7 @@ const app = defineMessages({
             expired: 'Tanda tangan kedaluwarsa, segarkan dan coba lagi.',
             noOrder: 'Tidak ada hadiah untuk diklaim.',
             failed: 'Klaim gagal. Silakan coba lagi nanti.',
+            confirmSyncFailed: 'Hadiah sudah diklaim on-chain, tetapi sinkron gagal. Muat ulang halaman — jangan klaim lagi.',
         },
         heroTitle: 'Level saat ini',
         allTiers: 'Sistem kehormatan Genesis',

@@ -7,6 +7,7 @@ test('calcAmountOutMin applies slippage in basis points', async () => {
 
   assert.equal(calcAmountOutMin(10_000n, 50), 9_950n)
   assert.equal(calcAmountOutMin(100_000_000_000_000_000_000n, 100), 99_000_000_000_000_000_000n)
+  assert.equal(calcAmountOutMin(1n, 9900), 1n)
 })
 
 test('calcAmountOutMin rejects invalid slippage', async () => {

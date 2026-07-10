@@ -12,7 +12,10 @@ export function useCommunityFundClaim() {
   const [isClaiming, setIsClaiming] = useState(false)
   const [error, setError] = useState<unknown>(null)
 
-  const claim = useCallback(async (): Promise<ClaimConfirmResult | null> => {
+  const claim = useCallback(async (): Promise<{
+    status: 'success' | 'confirm_failed'
+    confirmResult: ClaimConfirmResult | null
+  } | null> => {
     if (!account || !wallet || !token || !isAuthenticated) {
       setError('Please connect wallet and sign in first')
       return null
@@ -22,9 +25,13 @@ export function useCommunityFundClaim() {
     setError(null)
 
     try {
-      const { confirmResult } = await executeCommunityFundClaim({ wallet, token })
+      const result = await executeCommunityFundClaim({ wallet, token })
       invalidateAfterTeamClaim()
-      return confirmResult
+      if (result.confirmError) {
+        // Status-driven toast only — avoid setError double toast with the error effect.
+        return { status: 'confirm_failed', confirmResult: null }
+      }
+      return { status: 'success', confirmResult: result.confirmResult }
     } catch (caught) {
       setError(caught)
       return null

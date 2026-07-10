@@ -125,7 +125,13 @@ export function RewardsBalanceSection() {
               onClick={() =>
                 void teamClaim.claim().then((result) => {
                   if (!result) return
-                  const claimedAmount = result.order?.amount
+                  if (result.status === 'confirm_failed') {
+                    toast.warning(
+                      t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimSuccess,
+                    )
+                    return
+                  }
+                  const claimedAmount = result.confirmResult?.order?.amount
                   const message =
                     claimedAmount && Number.isFinite(Number(claimedAmount))
                       ? `${t.rewards.claimSuccess} · +${formatUsd(claimedAmount, 2)}`
@@ -173,7 +179,13 @@ export function RewardsBalanceSection() {
                 onClick={() =>
                   void communityFundClaim.claim().then((result) => {
                     if (!result) return
-                    const claimedAmount = result.order?.amount
+                    if (result.status === 'confirm_failed') {
+                      toast.warning(
+                        t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimSuccess,
+                      )
+                      return
+                    }
+                    const claimedAmount = result.confirmResult?.order?.amount
                     const message =
                       claimedAmount && Number.isFinite(Number(claimedAmount))
                         ? `${t.rewards.claimSuccess} · +${formatUsd(claimedAmount, 2)}`

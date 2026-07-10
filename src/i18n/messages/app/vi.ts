@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: 'Không thể ước tính gas cho giao dịch này. Kiểm tra mạng và thử lại.',
             insufficientFunds: 'Không đủ BNB để trả phí gas mạng.',
             transactionFailed: 'Giao dịch thất bại. Vui lòng thử lại sau.',
+            transactionUnknown: 'Trạng thái giao dịch chưa rõ. Đừng gửi lại — hãy kiểm tra ví hoặc trình duyệt khối trước.',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: 'On-chain · tức thì',
             tokenAboutTitle: 'Về USD1',
             action: 'Chuyển đổi',
+            minReceived: 'Nhận tối thiểu',
         },
         trade: {
             title: 'Giao dịch',
@@ -376,6 +378,7 @@ const app = defineMessages({
             expired: 'Chữ ký đã hết hạn, hãy làm mới và thử lại.',
             noOrder: 'Không có phần thưởng để nhận.',
             failed: 'Nhận thất bại. Vui lòng thử lại sau.',
+            confirmSyncFailed: 'Phần thưởng đã nhận on-chain nhưng đồng bộ thất bại. Hãy làm mới trang — đừng nhận lại.',
         },
         heroTitle: 'Cấp hiện tại',
         allTiers: 'Hệ thống danh dự sáng lập',

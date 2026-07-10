@@ -5,8 +5,10 @@ import {
   requestCommunityFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
+import type { ClaimConfirmResult } from '~/shared/api/types'
 import { normalizeTeamRewardClaimPayload } from '~/shared/api/normalize-claim-payload'
 import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/views/dapp/web3/abis'
+import { CLAIM_SIGNATURE_EXPIRED } from '~/views/dapp/web3/resolve-contract-error-message'
 import { parseWriteAbi, writeContractViaWallet, type ConfirmedWalletWrite } from '~/views/dapp/web3/wallet-contract-write'
 
 const rewardClaimWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
@@ -20,6 +22,12 @@ export interface TeamRewardClaimPayload {
   saltHash?: string
   signType?: string | number
   expireTime?: string | number
+}
+
+export type SignedRewardClaimResult = {
+  receipt: ConfirmedWalletWrite
+  confirmResult: ClaimConfirmResult | null
+  confirmError?: unknown
 }
 
 export async function claimRewardOnChain({
@@ -100,6 +108,12 @@ export async function claimCommunityFundOnChain({
   })
 }
 
+function assertClaimSignatureNotExpired(expireTime: bigint, nowSeconds = Math.floor(Date.now() / 1000)) {
+  if (expireTime <= BigInt(nowSeconds)) {
+    throw new Error(CLAIM_SIGNATURE_EXPIRED)
+  }
+}
+
 async function executeSignedRewardClaim({
   wallet,
   token,
@@ -117,9 +131,10 @@ async function executeSignedRewardClaim({
     salt: `0x${string}`
     signature: `0x${string}`
   }) => Promise<ConfirmedWalletWrite>
-}) {
+}): Promise<SignedRewardClaimResult> {
   const payload = (await requestSignature(token)) as TeamRewardClaimPayload
   const normalized = normalizeTeamRewardClaimPayload(payload)
+  assertClaimSignatureNotExpired(normalized.expireTime)
 
   const receipt = await claimOnChain({
     wallet,
@@ -130,12 +145,16 @@ async function executeSignedRewardClaim({
     signature: normalized.signature,
   })
 
-  const confirmResult = await confirmTeamRewardClaim(token, {
-    salt: normalized.salt,
-    txHash: receipt.transactionHash,
-  })
-
-  return { receipt, confirmResult }
+  try {
+    const confirmResult = await confirmTeamRewardClaim(token, {
+      salt: normalized.salt,
+      txHash: receipt.transactionHash,
+    })
+    return { receipt, confirmResult }
+  } catch (confirmError) {
+    // Funds already moved on-chain — surface sync failure without discarding the receipt.
+    return { receipt, confirmResult: null, confirmError }
+  }
 }
 
 export async function executeTeamRewardClaim({

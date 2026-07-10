@@ -8,6 +8,7 @@ import {
   readAllPresalePhases,
   readPresaleAgxPriceWei,
   readPresaleAirdropThresholdWei,
+  readPresalePaused,
   readTotalPresalePurchased,
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
@@ -76,6 +77,18 @@ export function usePresaleAirdropThresholdQuery() {
     queryKey: queryKeys.chain.presaleAirdropThreshold,
     queryFn: () => readPresaleAirdropThresholdWei(readClient),
     staleTime: QUERY_STALE_TIME.presale,
+  })
+}
+
+export function usePresalePausedQuery() {
+  const readClient = useChainReadClient()
+
+  return useQuery({
+    queryKey: queryKeys.chain.presalePaused,
+    queryFn: () => readPresalePaused(readClient),
+    staleTime: QUERY_STALE_TIME.presale,
+    refetchInterval: QUERY_STALE_TIME.presale,
+    refetchIntervalInBackground: false,
   })
 }
 

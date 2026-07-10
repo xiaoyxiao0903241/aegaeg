@@ -12,6 +12,7 @@ import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
@@ -34,6 +35,8 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
   const pair = useMemo(() => getSwapPairTokens('reverse'), [])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<unknown>(null)
+  /** Blocks re-submit after a pending tx with unknown confirmation outcome. */
+  const [blockResubmit, setBlockResubmit] = useState(false)
   const readClient = useChainReadClient()
 
   const address = account?.address
@@ -185,19 +188,46 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
 
   const routeLabel = `${pair.sell.symbol} → ${pair.buy.symbol}`
 
+  const amountOutMin = useMemo(
+    () => (quotedOut > 0n ? calcAmountOutMin(quotedOut, FLASH_SWAP_SLIPPAGE_BPS) : 0n),
+    [quotedOut],
+  )
+
+  const minUsd1OutLabel = useMemo(
+    () =>
+      authenticated && amountIn > 0n && amountOutMin > 0n
+        ? formatTokenAmountInputDisplay(formatTokenAmount(amountOutMin, pair.buy.decimals, 6))
+        : '—',
+    [amountIn, amountOutMin, authenticated, pair.buy.decimals],
+  )
+
   const canSubmit = canSubmitQuotedSwap({
     walletReady,
     amountIn,
     sellBalance,
     quotedOut,
+    amountOutMin,
     isPlaceholderData: amountQuoteQuery.isPlaceholderData,
     isQuotePending: amountQuoteQuery.isPending,
+    isBalancesLoading,
     isSubmitting,
+    blockResubmit,
+    quoteUpdatedAt: amountQuoteQuery.dataUpdatedAt,
+    maxQuoteAgeMs: QUERY_STALE_TIME.quote,
   })
+
+  const setSellAmountAndUnlock = useCallback(
+    (value: string) => {
+      setBlockResubmit(false)
+      setSellAmount(value)
+    },
+    [setSellAmount],
+  )
 
   const fillPercent = useCallback(
     (percent: number) => {
       if (!walletReady) return
+      setBlockResubmit(false)
       fillSellPercent(percent)
     },
     [fillSellPercent, walletReady],
@@ -221,30 +251,29 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
       await executeFlashSwap({
         wallet,
         usdtAmount: amountIn,
-        // Allow a small tolerance below the displayed quote; using the raw
-        // quote as a strict floor reverts on any price tick between quoting
-        // and execution.
-        minUsd1Out: calcAmountOutMin(quotedOut, FLASH_SWAP_SLIPPAGE_BPS),
+        minUsd1Out: amountOutMin,
       })
+      setBlockResubmit(false)
       clearAmount()
       invalidateAfterSwap()
       await balancesQuery.refetch()
       return { ok: true }
     } catch (caught: unknown) {
+      if (caught instanceof WalletTransactionWaitError && caught.outcome === 'unknown') {
+        setBlockResubmit(true)
+      }
       setSubmitError(caught)
-      // The tx may still land (unknown outcome) — refresh balances so the UI
-      // re-caps the amount instead of inviting an identical resubmit.
       void balancesQuery.refetch()
       return { ok: false, error: caught }
     } finally {
       setIsSubmitting(false)
     }
-  }, [account, amountIn, balancesQuery, canSubmit, clearAmount, quotedOut, wallet])
+  }, [account, amountIn, amountOutMin, balancesQuery, canSubmit, clearAmount, wallet])
 
   return {
     sellAmount,
     sellAmountDisplay,
-    setSellAmount,
+    setSellAmount: setSellAmountAndUnlock,
     pair,
     sellBalanceLabel: formatTokenAmount(sellBalance, pair.sell.decimals, 4),
     buyBalanceLabel: formatTokenAmount(buyBalance, pair.buy.decimals, 4),
@@ -252,6 +281,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     exchangePriceLabel,
     routeLabel,
     overviewRateLabel,
+    minUsd1OutLabel,
     walletReady,
     canSubmit,
     isQuoting,

@@ -63,6 +63,7 @@ const app = defineMessages({
             gasEstimateFailed: 'No se pudo estimar el gas de esta transacción. Comprueba la red e inténtalo de nuevo.',
             insufficientFunds: 'BNB insuficiente para pagar las comisiones de gas de la red.',
             transactionFailed: 'La transacción falló. Inténtalo de nuevo más tarde.',
+            transactionUnknown: 'El estado de la transacción es desconocido. No vuelva a enviar: revise primero la billetera o el explorador.',
         },
     },
     swap: {
@@ -143,6 +144,7 @@ const app = defineMessages({
             settlementValue: 'On-chain · instantáneo',
             tokenAboutTitle: 'Sobre USD1',
             action: 'Convertir',
+            minReceived: 'Mínimo recibido',
         },
         trade: {
             title: 'Operar',
@@ -376,6 +378,7 @@ const app = defineMessages({
             expired: 'La firma expiró, actualiza y reclama de nuevo.',
             noOrder: 'No hay recompensa para reclamar.',
             failed: 'Error al reclamar. Inténtalo más tarde.',
+            confirmSyncFailed: 'La recompensa se reclamó en cadena, pero falló la sincronización. Actualice la página; no vuelva a reclamar.',
         },
         heroTitle: 'Nivel actual',
         allTiers: 'Sistema de honor Génesis',
