@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
-import { useReferral } from '~/hooks/use-referral'
+import { useReferral } from '~/views/dapp/community/use-referral'
 import { formatReferralLinkDisplay } from '~/views/dapp/community/community-display'
 import { buildReferralSharePath } from '~/shared/config/referral'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
