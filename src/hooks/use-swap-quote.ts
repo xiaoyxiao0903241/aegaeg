@@ -10,7 +10,7 @@ import { SWAP_QUOTE_FAILED, SWAP_SUBMIT_GATE_FAILED } from '~/views/dapp/web3/re
 import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 import { needsTokenApproval } from '~/views/dapp/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
-import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 
 const DEFAULT_QUOTE_DEBOUNCE_MS = 400
@@ -27,8 +27,8 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
   return debounced
 }
 
-export type UseQuotedSwapCoreOptions<TQuote> = {
-  authenticated: boolean
+export type UseSwapQuoteOptions<TQuote> = {
+  sessionReady: boolean
   quotesEnabled: boolean
   decimals: number
   buyDecimals: number
@@ -46,8 +46,8 @@ export type UseQuotedSwapCoreOptions<TQuote> = {
   onBeforeCap?: () => void
 }
 
-export function useQuotedSwapCore<TQuote>({
-  authenticated,
+export function useSwapQuote<TQuote>({
+  sessionReady,
   quotesEnabled,
   decimals,
   buyDecimals,
@@ -63,7 +63,7 @@ export function useQuotedSwapCore<TQuote>({
   fetchQuote,
   selectQuotedOut,
   onBeforeCap,
-}: UseQuotedSwapCoreOptions<TQuote>) {
+}: UseSwapQuoteOptions<TQuote>) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<unknown>(null)
   /** Blocks re-submit after a pending tx with unknown confirmation outcome. */
@@ -83,7 +83,7 @@ export function useQuotedSwapCore<TQuote>({
     decimals,
     balance: sellBalance,
     balancesLoaded,
-    authenticated,
+    sessionReady,
     onBeforeCap: onBeforeCap ?? clearSubmitError,
   })
 
@@ -93,15 +93,15 @@ export function useQuotedSwapCore<TQuote>({
   const amountQuoteQuery = useQuery({
     queryKey: getQuoteQueryKey(debouncedAmountIn),
     queryFn: () => fetchQuote(debouncedAmountIn),
-    enabled: quotesEnabled && authenticated && debouncedAmountIn > 0n,
+    enabled: quotesEnabled && sessionReady && debouncedAmountIn > 0n,
     staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(
+  useVisibleInterval(
     amountQuoteQuery,
     quoteRefreshIntervalMs,
-    quotesEnabled && authenticated && debouncedAmountIn > 0n,
+    quotesEnabled && sessionReady && debouncedAmountIn > 0n,
   )
 
   const quotedOut = resolveLiveQuotedOut(
@@ -110,7 +110,7 @@ export function useQuotedSwapCore<TQuote>({
   )
 
   const isQuoting =
-    authenticated &&
+    sessionReady &&
     amountIn > 0n &&
     (isAmountDebouncing ||
       amountQuoteQuery.isPending ||
@@ -134,10 +134,10 @@ export function useQuotedSwapCore<TQuote>({
 
   const buyAmount = useMemo(
     () =>
-      authenticated && amountIn > 0n && quotedOut > 0n && !isAmountDebouncing
+      sessionReady && amountIn > 0n && quotedOut > 0n && !isAmountDebouncing
         ? formatTokenAmountInputDisplay(formatTokenAmount(quotedOut, buyDecimals, 6))
         : '',
-    [authenticated, amountIn, buyDecimals, isAmountDebouncing, quotedOut],
+    [sessionReady, amountIn, buyDecimals, isAmountDebouncing, quotedOut],
   )
 
   const amountOutMin = useMemo(

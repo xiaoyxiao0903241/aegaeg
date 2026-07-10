@@ -4,7 +4,8 @@ import type { StoredAuthSession } from '~/views/dapp/auth/session'
 export interface AuthContextValue {
   token: string | null
   session: StoredAuthSession | null
-  isAuthenticated: boolean
+  /** 业务已登录：钱包已连且当前地址 JWT 有效。 */
+  sessionReady: boolean
   needsSignIn: boolean
   hasHydrated: boolean
   isLoggingIn: boolean

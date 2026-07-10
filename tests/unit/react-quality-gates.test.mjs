@@ -176,7 +176,7 @@ test('resolveCappedTokenAmountRaw does not wipe draft while balances loading', a
   assert.equal(
     resolveCappedTokenAmountRaw({
       amount: '9',
-      authenticated: true,
+      sessionReady: true,
       balancesLoaded: false,
       balance: 0n,
       decimals: 18,
@@ -186,7 +186,7 @@ test('resolveCappedTokenAmountRaw does not wipe draft while balances loading', a
   assert.equal(
     resolveCappedTokenAmountRaw({
       amount: '9',
-      authenticated: false,
+      sessionReady: false,
       balancesLoaded: true,
       balance,
       decimals: 18,
@@ -202,7 +202,7 @@ test('resolveCappedTokenAmountRaw re-caps when balance drops below draft', async
   assert.equal(
     resolveCappedTokenAmountRaw({
       amount: '9',
-      authenticated: true,
+      sessionReady: true,
       balancesLoaded: true,
       balance,
       decimals: 18,
@@ -212,7 +212,7 @@ test('resolveCappedTokenAmountRaw re-caps when balance drops below draft', async
   assert.equal(
     resolveCappedTokenAmountRaw({
       amount: '3',
-      authenticated: true,
+      sessionReady: true,
       balancesLoaded: true,
       balance,
       decimals: 18,

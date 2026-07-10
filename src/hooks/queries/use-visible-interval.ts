@@ -33,7 +33,7 @@ function useVisibilityAwareInterval(
   }, [enabled, intervalMs])
 }
 
-export function useVisibleQueryInterval<T>(
+export function useVisibleInterval<T>(
   query: Pick<QueryObserverResult<T>, 'refetch'>,
   intervalMs: number,
   enabled: boolean,

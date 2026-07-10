@@ -89,8 +89,8 @@ export function GenesisPurchaseForm() {
     }
   }
 
-  async function handleParticipate() {
-    const result = await genesis.participate()
+  async function handlePurchase() {
+    const result = await genesis.submitPurchase()
     if (result.success) {
       toast.success(t.genesis.joinSuccess)
       window.setTimeout(() => {
@@ -195,7 +195,7 @@ export function GenesisPurchaseForm() {
             density="external"
             disabled={!genesis.canPurchase || genesis.isSubmitting}
             loading={genesis.isSubmitting}
-            onClick={() => void handleParticipate()}
+            onClick={() => void handlePurchase()}
             variant="primary"
           >
             {t.genesis.join}

@@ -289,7 +289,7 @@ export function useGenesisWidget() {
     wallet,
   ])
 
-  const participate = useCallback(async (): Promise<GenesisPurchaseResult> => {
+  const submitPurchase = useCallback(async (): Promise<GenesisPurchaseResult> => {
     if (genesisPurchaseGate.inFlight) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
@@ -405,7 +405,7 @@ export function useGenesisWidget() {
     refresh,
     approve,
     purchase,
-    participate,
+    submitPurchase,
     activeSeasonNumber,
     seasonOptions,
     isPhasesLoading: phasesQuery.isLoading,

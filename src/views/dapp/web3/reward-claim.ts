@@ -5,9 +5,9 @@ import {
   requestCommunityFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
-import { authenticatedMutation } from '~/shared/api/query/fetch-authenticated'
+import { requestWithSession } from '~/shared/api/query/session-request'
 import type { ClaimConfirmResult } from '~/shared/api/types'
-import { normalizeTeamRewardClaimPayload } from '~/shared/api/normalize-claim-payload'
+import { normalizeTeamRewardClaim } from '~/shared/api/normalize-team-reward-claim'
 import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/views/dapp/web3/abis'
 import { CLAIM_SIGNATURE_EXPIRED } from '~/views/dapp/web3/resolve-contract-error-message'
 import { parseWriteAbi, writeContractViaWallet, type ConfirmedWalletWrite } from '~/views/dapp/web3/wallet-contract-write'
@@ -17,7 +17,7 @@ const rewardClaimWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward, RE
 const CONFIRM_RETRY_ATTEMPTS = 3
 const CONFIRM_RETRY_DELAY_MS = 800
 
-export interface TeamRewardClaimPayload {
+export interface TeamRewardClaimSignature {
   signature: string
   salt?: string
   amount?: string
@@ -137,9 +137,9 @@ export async function confirmClaimWithRetry(
 
   for (let i = 0; i < attempts; i += 1) {
     try {
-      return await authenticatedMutation(
-        token,
+      return await requestWithSession(
         (t) => confirmTeamRewardClaim(t, request),
+        token,
         onUnauthorized,
       )
     } catch (error) {
@@ -153,7 +153,7 @@ export async function confirmClaimWithRetry(
   throw lastError instanceof Error ? lastError : new Error('Claim confirm failed', { cause: lastError })
 }
 
-async function executeSignedRewardClaim({
+async function claimSignedReward({
   wallet,
   token,
   onUnauthorized,
@@ -163,7 +163,7 @@ async function executeSignedRewardClaim({
   wallet: Wallet
   token: string
   onUnauthorized: () => void
-  requestSignature: (token: string) => Promise<TeamRewardClaimPayload>
+  requestSignature: (token: string) => Promise<TeamRewardClaimSignature>
   claimOnChain: (args: {
     wallet: Wallet
     signType: bigint
@@ -173,12 +173,12 @@ async function executeSignedRewardClaim({
     signature: `0x${string}`
   }) => Promise<ConfirmedWalletWrite>
 }): Promise<SignedRewardClaimResult> {
-  const payload = (await authenticatedMutation(
-    token,
+  const payload = (await requestWithSession(
     requestSignature,
+    token,
     onUnauthorized,
-  )) as TeamRewardClaimPayload
-  const normalized = normalizeTeamRewardClaimPayload(payload)
+  )) as TeamRewardClaimSignature
+  const normalized = normalizeTeamRewardClaim(payload)
   assertClaimSignatureNotExpired(normalized.expireTime)
 
   const receipt = await claimOnChain({
@@ -204,7 +204,7 @@ async function executeSignedRewardClaim({
   }
 }
 
-export async function executeTeamRewardClaim({
+export async function claimTeamReward({
   wallet,
   token,
   onUnauthorized,
@@ -213,7 +213,7 @@ export async function executeTeamRewardClaim({
   token: string
   onUnauthorized: () => void
 }) {
-  return executeSignedRewardClaim({
+  return claimSignedReward({
     wallet,
     token,
     onUnauthorized,
@@ -222,7 +222,7 @@ export async function executeTeamRewardClaim({
   })
 }
 
-export async function executeCommunityFundClaim({
+export async function claimCommunityFund({
   wallet,
   token,
   onUnauthorized,
@@ -231,7 +231,7 @@ export async function executeCommunityFundClaim({
   token: string
   onUnauthorized: () => void
 }) {
-  return executeSignedRewardClaim({
+  return claimSignedReward({
     wallet,
     token,
     onUnauthorized,

@@ -39,12 +39,12 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
   assert.equal(seasons[1]?.status, 'Upcoming')
 })
 
-test('normalizeTeamRewardClaimPayload accepts snake_case fields', async () => {
-  const { normalizeTeamRewardClaimPayload } = await loadModule(
-    '/src/shared/api/normalize-claim-payload.ts',
+test('normalizeTeamRewardClaim accepts snake_case fields', async () => {
+  const { normalizeTeamRewardClaim } = await loadModule(
+    '/src/shared/api/normalize-team-reward-claim.ts',
   )
 
-  const normalized = normalizeTeamRewardClaimPayload({
+  const normalized = normalizeTeamRewardClaim({
     signature: '0xabc',
     salt: '0xsalt',
     amount_wei: '1000000000000000000',

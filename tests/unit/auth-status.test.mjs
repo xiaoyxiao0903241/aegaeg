@@ -33,19 +33,19 @@ test('resolveAuthStatus requires wallet, jwt, and matching address', async () =>
   }
 
   assert.deepEqual(resolveAuthStatus({ session, walletAddress: undefined }), {
-    isAuthenticated: false,
+    sessionReady: false,
     needsSignIn: false,
     token: null,
   })
 
   assert.deepEqual(resolveAuthStatus({ session, walletAddress: '0xabc' }), {
-    isAuthenticated: true,
+    sessionReady: true,
     needsSignIn: false,
     token,
   })
 
   assert.deepEqual(resolveAuthStatus({ session, walletAddress: '0xdef' }), {
-    isAuthenticated: false,
+    sessionReady: false,
     needsSignIn: true,
     token: null,
   })

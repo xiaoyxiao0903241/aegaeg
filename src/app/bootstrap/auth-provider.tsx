@@ -81,8 +81,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => deriveAuthState({ walletAddress, sessionsByAddress }),
     [walletAddress, sessionsByAddress],
   )
-  const session = authState.kind === 'authenticated' ? authState.session : null
-  const isAuthenticated = authState.kind === 'authenticated'
+  const session = authState.kind === 'sessionReady' ? authState.session : null
+  const sessionReady = authState.kind === 'sessionReady'
   const token = session?.token ?? null
 
   const runLogin = useCallback(async () => {
@@ -167,9 +167,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const wasAuthed = prevAuthedRef.current
     const prevAddress = prevAddressRef.current
-    if (isAuthenticated && !wasAuthed) {
+    if (sessionReady && !wasAuthed) {
       invalidateAfterAuthLogin(walletAddress)
-    } else if (!isAuthenticated && wasAuthed) {
+    } else if (!sessionReady && wasAuthed) {
       clearApiQueries()
     }
 
@@ -181,12 +181,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       invalidateAfterWalletSwitch(prevAddress, walletAddress, activeTab)
     }
 
-    prevAuthedRef.current = isAuthenticated
+    prevAuthedRef.current = sessionReady
     // 切钱包常为 A → undefined → B；断开时保留上一地址，才能识别真正的切换。
     if (walletAddress) {
       prevAddressRef.current = walletAddress
     }
-  }, [hasHydrated, isAuthenticated, walletAddress, activeTab])
+  }, [hasHydrated, sessionReady, walletAddress, activeTab])
 
   /** 用户点击登录：清闩锁，可弹出签名。 */
   const login = useCallback(async () => {
@@ -232,7 +232,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       token,
       session,
-      isAuthenticated,
+      sessionReady,
       needsSignIn: authState.kind === 'needsLogin' && !isLoggingIn,
       hasHydrated,
       isLoggingIn,
@@ -249,7 +249,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearLoginErrorOnDisconnect,
       hasHydrated,
       invalidateSession,
-      isAuthenticated,
+      sessionReady,
       isLoggingIn,
       login,
       loginError,

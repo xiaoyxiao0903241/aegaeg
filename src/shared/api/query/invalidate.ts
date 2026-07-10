@@ -87,7 +87,7 @@ export function invalidateAfterAuthLogin(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
 }
 
-/** Genesis phase start/end boundary crossed — refresh presale + authenticated API. */
+/** Genesis phase start/end boundary crossed — refresh presale + session API. */
 export function invalidateAfterGenesisPhaseTransition(address?: string) {
   invalidatePresaleChainQueries(address)
   void invalidateApiQueries()

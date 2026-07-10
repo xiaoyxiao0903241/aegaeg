@@ -47,7 +47,7 @@ export async function approveTokenIfNeeded({
   })
 }
 
-export async function executeTokenSwap({
+export async function swapTokens({
   wallet,
   amountIn,
   tokenIn,

@@ -23,11 +23,10 @@ export interface DappShellState {
 export function useDappShell(): DappShellState {
   const account = useActiveAccount()
   const isAutoConnecting = useIsAutoConnecting()
-  const { isAuthenticated, needsSignIn } = useAuth()
+  const { sessionReady, needsSignIn } = useAuth()
   const tab = useDappShellStore((state) => state.activeTab)
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
   const walletReady = hasWalletAccount(account)
-  const sessionReady = isAuthenticated
   const isWalletConnecting = isWalletRestorePending(account, isAutoConnecting)
 
   return {

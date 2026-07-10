@@ -39,7 +39,7 @@ export async function approveUsdtForFlashSwapIfNeeded({
   })
 }
 
-export async function executeFlashSwap({
+export async function flashSwap({
   wallet,
   usdtAmount,
   minUsd1Out,

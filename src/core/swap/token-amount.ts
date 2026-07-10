@@ -174,24 +174,24 @@ export function capTokenAmountInput(
 
 /**
  * Balance re-cap policy for controlled sell amount.
- * Do not wipe draft while unauthenticated or balances still loading.
+ * Do not wipe draft while session not ready or balances still loading.
  */
 export function resolveCappedTokenAmountRaw({
   amount,
-  authenticated,
+  sessionReady,
   balancesLoaded,
   balance,
   decimals,
   maxFractionDigits = 6,
 }: {
   amount: string
-  authenticated: boolean
+  sessionReady: boolean
   balancesLoaded: boolean
   balance: bigint
   decimals: number
   maxFractionDigits?: number
 }): string {
-  if (!authenticated || !balancesLoaded || !amount) {
+  if (!sessionReady || !balancesLoaded || !amount) {
     return amount
   }
   return capTokenAmountInput(amount, balance, decimals, maxFractionDigits)

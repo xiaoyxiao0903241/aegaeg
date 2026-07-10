@@ -8,7 +8,7 @@ import {
   readSwapPoolImmutableMetadata,
   readSwapPoolSpotPrice,
 } from '~/views/dapp/web3/read-swap-pool'
-import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
 /** Shared pool metadata + slot0 spot — short-stale spot reused across swap quotes. */
@@ -30,7 +30,7 @@ export function useSwapPoolReads(quotesEnabled = true) {
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleInterval(spotQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
   const poolContext = useMemo((): SwapPoolReadContext | undefined => {
     if (!metadataQuery.data || !spotQuery.data) return undefined

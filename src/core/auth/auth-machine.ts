@@ -12,7 +12,7 @@ export const FALLBACK_SESSION_TTL_MS = 60 * 60 * 1000
  */
 export type AuthState =
   | { kind: 'disconnected' }
-  | { kind: 'authenticated'; session: StoredAuthSession }
+  | { kind: 'sessionReady'; session: StoredAuthSession }
   | { kind: 'needsLogin' }
 
 export function deriveAuthState({
@@ -29,8 +29,8 @@ export function deriveAuthState({
   const session = sessionsByAddress[walletAddress.toLowerCase()] ?? null
   const status = resolveAuthStatus({ session, walletAddress, now })
 
-  if (status.isAuthenticated && session) {
-    return { kind: 'authenticated', session }
+  if (status.sessionReady && session) {
+    return { kind: 'sessionReady', session }
   }
   return { kind: 'needsLogin' }
 }

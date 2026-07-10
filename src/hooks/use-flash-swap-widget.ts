@@ -10,18 +10,18 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
-import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
-import { useQuotedSwapCore } from '~/hooks/use-quoted-swap-core'
+import { useSwapQuote } from '~/hooks/use-swap-quote'
 import { resolveLiveQuotedOut } from '~/core/swap/resolve-live-quoted-out'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/views/dapp/web3/flash-swap-read'
-import { approveUsdtForFlashSwapIfNeeded, executeFlashSwap } from '~/views/dapp/web3/flash-swap-write'
+import { approveUsdtForFlashSwapIfNeeded, flashSwap } from '~/views/dapp/web3/flash-swap-write'
 
 /** Fixed tolerance (0.5%) below the displayed quote for the on-chain floor. */
 const FLASH_SWAP_SLIPPAGE_BPS = 50
 
 /** One-way USDT → USD1 via AegisUsd1Swap; no slippage UI (fixed small tolerance). */
-export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true) {
+export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const pair = useMemo(() => getSwapPairTokens('reverse'), [])
@@ -51,8 +51,8 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     [readClient],
   )
 
-  const core = useQuotedSwapCore({
-    authenticated,
+  const core = useSwapQuote({
+    sessionReady,
     quotesEnabled,
     decimals: pair.sell.decimals,
     buyDecimals: pair.buy.decimals,
@@ -76,7 +76,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
   const spotQuotedOut = resolveLiveQuotedOut(
     spotQuoteQuery.isPlaceholderData,
@@ -134,12 +134,12 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
 
   const minUsd1OutLabel = useMemo(
     () =>
-      authenticated && core.amountIn > 0n && core.amountOutMin > 0n
+      sessionReady && core.amountIn > 0n && core.amountOutMin > 0n
         ? formatTokenAmountInputDisplay(
             formatTokenAmount(core.amountOutMin, pair.buy.decimals, 6),
           )
         : '—',
-    [authenticated, core.amountIn, core.amountOutMin, pair.buy.decimals],
+    [sessionReady, core.amountIn, core.amountOutMin, pair.buy.decimals],
   )
 
   const submit = useCallback(async (): Promise<{ ok: true } | { ok: false; error: unknown }> => {
@@ -154,7 +154,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
       void balancesQuery.refetch()
       assertStillSubmittable()
 
-      await executeFlashSwap({
+      await flashSwap({
         wallet,
         usdtAmount: core.debouncedAmountIn,
         minUsd1Out: core.amountOutMin,

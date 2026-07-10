@@ -8,8 +8,8 @@
     → JWT 写入 auth-store
     → sessionReady
 
-读 API ──fetchAuthenticated──→ 401 → invalidateSession
-写 API ──authenticatedMutation──→ 401 → invalidateSession
+读 API ──requestWithSession──→ 401 → invalidateSession
+写 API ──requestWithSession──→ 401 → invalidateSession
 
 Swap:  quote → canSubmit → [approve?] → 二次门闸(quote age) → swap → invalidateAfterSwap
 Genesis: bind/pause 门闸 → [approve?] → 二次门闸 → purchase → invalidateAfterGenesisPurchase

@@ -14,23 +14,23 @@ import {
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { readErc20Balance, readErc20Allowance, fetchSwapQuote } from '~/views/dapp/web3/swap-read'
-import { approveTokenIfNeeded, executeTokenSwap } from '~/views/dapp/web3/swap-write'
+import { approveTokenIfNeeded, swapTokens } from '~/views/dapp/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
-import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
+import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
-import { useQuotedSwapCore } from '~/hooks/use-quoted-swap-core'
+import { useSwapQuote } from '~/hooks/use-swap-quote'
 import { useSwapPoolReads } from '~/hooks/queries/use-swap-pool-reads'
 
 /**
- * @param authenticated — SIWE session ready; gates quotes, swap submit, and amount capping.
+ * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.
  * Balances load on wallet account presence (`walletReady`), independent of SIWE.
  */
-export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
+export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const direction = useSwapDirectionStore((state) => state.direction)
@@ -97,8 +97,8 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const allowance = balancesQuery.data?.approved ?? 0n
   const isBalancesLoading = walletReady && balancesQuery.isLoading
 
-  const core = useQuotedSwapCore({
-    authenticated,
+  const core = useSwapQuote({
+    sessionReady,
     quotesEnabled,
     decimals: pair.sell.decimals,
     buyDecimals: pair.buy.decimals,
@@ -159,8 +159,8 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     placeholderData: keepPreviousData,
   })
 
-  useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
-  useVisibleQueryInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
   const amountQuote = amountQuoteQuery.isPlaceholderData
     ? undefined
@@ -248,9 +248,9 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   )
 
   const priceImpactLabel = useMemo(() => {
-    if (!authenticated || core.amountIn === 0n || core.isQuoting) return ''
+    if (!sessionReady || core.amountIn === 0n || core.isQuoting) return ''
     return `${(priceImpactBps / 100).toFixed(2)}%`
-  }, [authenticated, core.amountIn, core.isQuoting, priceImpactBps])
+  }, [sessionReady, core.amountIn, core.isQuoting, priceImpactBps])
 
   const gasEstimateLabel = useMemo(
     () => formatGasEstimate(gasEstimate),
@@ -258,7 +258,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   )
 
   const isHighPriceImpact =
-    authenticated && core.amountIn > 0n && priceImpactBps >= HIGH_SWAP_PRICE_IMPACT_BPS
+    sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_SWAP_PRICE_IMPACT_BPS
 
   const flipDirection = useCallback(() => {
     core.setBlockResubmit(false)
@@ -284,7 +284,7 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
       await balancesQuery.refetch()
       assertStillSubmittable()
 
-      await executeTokenSwap({
+      await swapTokens({
         wallet,
         amountIn: core.debouncedAmountIn,
         tokenIn: pair.sell.address,

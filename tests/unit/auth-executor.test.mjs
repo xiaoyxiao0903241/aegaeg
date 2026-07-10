@@ -81,7 +81,7 @@ test('renewAt schedules before expiry threshold', async () => {
   assert.deepEqual(
     deriveAuthAction({
       state: {
-        kind: 'authenticated',
+        kind: 'sessionReady',
         session: {
           address: '0x1',
           token: makeToken(Math.floor(expiresAt / 1000)),

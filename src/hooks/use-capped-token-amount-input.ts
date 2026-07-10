@@ -11,7 +11,7 @@ type UseCappedTokenAmountInputOptions = {
   decimals: number
   balance: bigint
   balancesLoaded: boolean
-  authenticated: boolean
+  sessionReady: boolean
   maxFractionDigits?: number
   /** Called before applying balance cap (e.g. clear submit/validation error). */
   onBeforeCap?: () => void
@@ -21,7 +21,7 @@ export function useCappedTokenAmountInput({
   decimals,
   balance,
   balancesLoaded,
-  authenticated,
+  sessionReady,
   maxFractionDigits = 6,
   onBeforeCap,
 }: UseCappedTokenAmountInputOptions) {
@@ -30,7 +30,7 @@ export function useCappedTokenAmountInput({
 
   const amount = resolveCappedTokenAmountRaw({
     amount: amountDraft,
-    authenticated,
+    sessionReady,
     balancesLoaded,
     balance,
     decimals,
@@ -41,7 +41,7 @@ export function useCappedTokenAmountInput({
 
   const setAmount = useCallback(
     (value: string) => {
-      if (!authenticated || !balancesLoaded) {
+      if (!sessionReady || !balancesLoaded) {
         setAmountDraft(sanitizeTokenAmountInput(value, fractionLimit))
         return
       }
@@ -50,7 +50,7 @@ export function useCappedTokenAmountInput({
       setAmountDraft(capTokenAmountInput(value, balance, decimals, maxFractionDigits))
     },
     [
-      authenticated,
+      sessionReady,
       balance,
       balancesLoaded,
       decimals,

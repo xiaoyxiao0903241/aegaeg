@@ -2,7 +2,7 @@ import { isJwtExpired } from '~/core/auth/jwt'
 import { isSessionForAddress, type StoredAuthSession } from '~/core/auth/types'
 
 export interface ResolvedAuthStatus {
-  isAuthenticated: boolean
+  sessionReady: boolean
   needsSignIn: boolean
   token: string | null
 }
@@ -20,7 +20,7 @@ export function resolveAuthStatus({
 
   if (!session?.token || isJwtExpired(session.token, now)) {
     return {
-      isAuthenticated: false,
+      sessionReady: false,
       needsSignIn: walletReady,
       token: null,
     }
@@ -28,14 +28,14 @@ export function resolveAuthStatus({
 
   if (!walletReady || !isSessionForAddress(session, walletAddress)) {
     return {
-      isAuthenticated: false,
+      sessionReady: false,
       needsSignIn: walletReady,
       token: null,
     }
   }
 
   return {
-    isAuthenticated: true,
+    sessionReady: true,
     needsSignIn: false,
     token: session.token,
   }

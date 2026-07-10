@@ -150,7 +150,7 @@ export interface TeamRewardSignature {
   /**
    * On-chain claimReward(signType, amount, expireTime, salt, signature) needs
    * all of these; the backend signs over them, so they must be returned here.
-   * Field names are matched flexibly in normalizeTeamRewardClaimPayload.
+   * Field names are matched flexibly in normalizeTeamRewardClaim.
    */
   salt?: string
   amount?: string

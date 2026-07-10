@@ -19,10 +19,10 @@ const networkPill = tv({
 
 export function WalletTopbarActions() {
   const account = useActiveAccount()
-  const { isAuthenticated, needsSignIn, isLoggingIn } = useAuth()
+  const { sessionReady, needsSignIn, isLoggingIn } = useAuth()
   const { messages: t } = useI18n()
   const walletReady = hasWalletAccount(account)
-  const fullyConnected = walletReady && isAuthenticated
+  const fullyConnected = walletReady && sessionReady
 
   if (fullyConnected) {
     return (

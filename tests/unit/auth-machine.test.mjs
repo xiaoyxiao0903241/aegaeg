@@ -31,13 +31,13 @@ test('deriveAuthState reduces wallet + jwt cache to a single state', async () =>
     { kind: 'disconnected' },
   )
 
-  // Wallet + valid cached jwt → authenticated (session is derived from the table)
+  // Wallet + valid cached jwt → sessionReady (session is derived from the table)
   const authed = deriveAuthState({
     walletAddress: '0xabc',
     sessionsByAddress: { '0xabc': validSession },
     now,
   })
-  assert.equal(authed.kind, 'authenticated')
+  assert.equal(authed.kind, 'sessionReady')
   assert.equal(authed.session.token, validSession.token)
 
   // Wallet but no cached jwt → needsLogin
@@ -125,23 +125,23 @@ test('deriveAuthAction decides idle / login / renew', async () => {
     { type: 'idle' },
   )
 
-  // authenticated with exp → renewAt = expiresAt - threshold
+  // sessionReady with exp → renewAt = expiresAt - threshold
   const expiresAt = now + 10 * 60_000
   assert.deepEqual(
     deriveAuthAction({
       ...base,
-      state: { kind: 'authenticated', session: { token: 't', address: '0x1', savedAt: 0, expiresAt } },
+      state: { kind: 'sessionReady', session: { token: 't', address: '0x1', savedAt: 0, expiresAt } },
     }),
     { type: 'renewAt', at: expiresAt - renewThresholdMs },
   )
 
-  // authenticated without exp → renewAt from savedAt + fallback TTL
+  // sessionReady without exp → renewAt from savedAt + fallback TTL
   const savedAt = now - 30 * 60_000
   assert.deepEqual(
     deriveAuthAction({
       ...base,
       state: {
-        kind: 'authenticated',
+        kind: 'sessionReady',
         session: { token: 't', address: '0x1', savedAt },
       },
     }),

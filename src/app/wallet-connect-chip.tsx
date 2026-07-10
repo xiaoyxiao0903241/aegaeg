@@ -103,7 +103,7 @@ function loginToastCopy(t: ReturnType<typeof useI18n>['messages']) {
 
 function ConnectedWalletChip() {
   const account = useActiveAccount()
-  const { session, isAuthenticated, loginError, login } = useAuth()
+  const { session, sessionReady, loginError, login } = useAuth()
   const { messages: t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
   const styles = walletConnectChip({ reconnect: Boolean(loginError) })
@@ -111,7 +111,7 @@ function ConnectedWalletChip() {
   const walletReady = hasWalletAccount(account)
   const address = account?.address ?? session?.address
 
-  if (!isAuthenticated || !walletReady || !address) {
+  if (!sessionReady || !walletReady || !address) {
     return null
   }
 
@@ -274,11 +274,11 @@ export function WalletConnectChip({
   density?: 'card' | 'external' | 'inverse'
 }) {
   const account = useActiveAccount()
-  const { isAuthenticated } = useAuth()
+  const { sessionReady } = useAuth()
   const walletReady = hasWalletAccount(account)
 
-  if (variant === 'connected' || (walletReady && isAuthenticated)) {
-    if (walletReady && isAuthenticated) {
+  if (variant === 'connected' || (walletReady && sessionReady)) {
+    if (walletReady && sessionReady) {
       return <ConnectedWalletChip />
     }
   }

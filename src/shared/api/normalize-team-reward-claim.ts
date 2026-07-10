@@ -55,7 +55,7 @@ function parseUintField(record: Record<string, unknown>, keys: string[]): bigint
  * must match exactly. If a field is missing we throw with the actual payload
  * keys so the real API shape is visible.
  */
-export function normalizeTeamRewardClaimPayload(payload: TeamRewardSignature): {
+export function normalizeTeamRewardClaim(payload: TeamRewardSignature): {
   signature: `0x${string}`
   salt: `0x${string}`
   signType: bigint

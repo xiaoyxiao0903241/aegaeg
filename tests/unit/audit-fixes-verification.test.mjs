@@ -22,7 +22,7 @@ test('audit #11: JWT without exp schedules renewAt from savedAt + fallback TTL',
   const savedAt = 1_000_000_000
   const action = deriveAuthAction({
     state: {
-      kind: 'authenticated',
+      kind: 'sessionReady',
       session: { token: 't', address: '0x1', savedAt },
     },
     isLoggingIn: false,

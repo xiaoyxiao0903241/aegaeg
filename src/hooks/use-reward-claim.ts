@@ -5,8 +5,8 @@ import { useAuth } from '~/app/bootstrap/use-auth'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import {
-  executeCommunityFundClaim,
-  executeTeamRewardClaim,
+  claimCommunityFund,
+  claimTeamReward,
 } from '~/views/dapp/web3/reward-claim'
 
 type RewardClaimExecuteResult = {
@@ -26,7 +26,7 @@ export type RewardClaimStatus = 'success' | 'confirm_failed' | null
 export function useRewardClaim(execute: RewardClaimExecutor) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
-  const { token, isAuthenticated, invalidateSession } = useAuth()
+  const { token, sessionReady, invalidateSession } = useAuth()
   const [isClaiming, setIsClaiming] = useState(false)
   const [error, setError] = useState<unknown>(null)
 
@@ -35,7 +35,7 @@ export function useRewardClaim(execute: RewardClaimExecutor) {
     confirmResult: ClaimConfirmResult | null
     txHash?: string
   } | null> => {
-    if (!account || !wallet || !token || !isAuthenticated) {
+    if (!account || !wallet || !token || !sessionReady) {
       setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
       return null
     }
@@ -65,14 +65,14 @@ export function useRewardClaim(execute: RewardClaimExecutor) {
     } finally {
       setIsClaiming(false)
     }
-  }, [account, execute, invalidateSession, isAuthenticated, token, wallet])
+  }, [account, execute, invalidateSession, sessionReady, token, wallet])
 
-  return { claim, isClaiming, error, canClaim: Boolean(account && token && isAuthenticated) }
+  return { claim, isClaiming, error, canClaim: Boolean(account && token && sessionReady) }
 }
 
 export function useTeamRewardClaim() {
   const execute = useCallback(
-    (args: Parameters<typeof executeTeamRewardClaim>[0]) => executeTeamRewardClaim(args),
+    (args: Parameters<typeof claimTeamReward>[0]) => claimTeamReward(args),
     [],
   )
   return useRewardClaim(execute)
@@ -80,7 +80,7 @@ export function useTeamRewardClaim() {
 
 export function useCommunityFundClaim() {
   const execute = useCallback(
-    (args: Parameters<typeof executeCommunityFundClaim>[0]) => executeCommunityFundClaim(args),
+    (args: Parameters<typeof claimCommunityFund>[0]) => claimCommunityFund(args),
     [],
   )
   return useRewardClaim(execute)
