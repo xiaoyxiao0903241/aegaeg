@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useReferral } from '~/views/dapp/community/use-referral'
@@ -51,40 +51,38 @@ function CommunityConnectedWidget({
   const { error: referralError, clearError: clearReferralError } = referral
   const referralLink = account ? formatReferralLinkDisplay(account.address) : '—'
 
-  const copyReferralLink = useCallback(async () => {
+  async function copyReferralLink() {
     if (!account) return
     const url = `${getRuntimeOrigin()}${window.location.pathname}${buildReferralSharePath(account.address)}`
     const result = await copyTextToClipboard(url)
     if (result === 'copied') toast.success(t.wallet.copied)
     else if (result === 'failed') toast.error(t.wallet.copyFailed)
-  }, [account, t.wallet.copied, t.wallet.copyFailed])
+  }
 
-  const copyReferrerAddress = useCallback(async () => {
+  async function copyReferrerAddress() {
     if (!referral.referrer) return
     const result = await copyTextToClipboard(referral.referrer)
     if (result === 'copied') toast.success(t.wallet.copied)
     else if (result === 'failed') toast.error(t.wallet.copyFailed)
-  }, [referral.referrer, t.wallet.copied, t.wallet.copyFailed])
+  }
 
-  useEffect(() => {
-    if (!referralError) return
+  const presentReferralError = useEffectEvent((error: unknown) => {
     presentUserFacingError(
-      referralError,
-      (error) =>
-        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-        resolveReferralBindError(error, t.community.bindErrors) ??
-        resolveApiUserFacingError(error, t.errors.api) ??
+      error,
+      (err) =>
+        resolveWalletTransactionError(err, t.wallet.transactionErrors) ??
+        resolveReferralBindError(err, t.community.bindErrors) ??
+        resolveApiUserFacingError(err, t.errors.api) ??
         t.community.bindErrors.failed,
       { id: 'community-referral-error' },
     )
     clearReferralError()
-  }, [
-    referralError,
-    clearReferralError,
-    t.community.bindErrors,
-    t.errors.api,
-    t.wallet.transactionErrors,
-  ])
+  })
+
+  useEffect(() => {
+    if (!referralError) return
+    presentReferralError(referralError)
+  }, [referralError])
 
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>

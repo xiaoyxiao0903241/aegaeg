@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -44,23 +44,21 @@ export function FlashSwapWidget({
     walletReady: swap.walletReady,
   })
 
-  const resolveFlashMessage = useCallback(
-    (error: unknown) =>
-      resolveSwapUserFacingMessage(
-        error,
-        {
-          walletNotConnected: t.genesis.walletNotConnected,
-          insufficientAllowance: t.genesis.insufficientAllowance,
-          insufficientUsd1: t.genesis.insufficientUsd1,
-          purchaseUnavailable: t.genesis.purchaseUnavailable,
-          transactionCancelled: t.swap.transactionCancelled,
-          quoteFailed: t.errors.quoteFailed,
-        },
-        t.wallet.transactionErrors,
-        t.errors.chain.fallback,
-      ),
-    [t],
-  )
+  function resolveFlashMessage(error: unknown) {
+    return resolveSwapUserFacingMessage(
+      error,
+      {
+        walletNotConnected: t.genesis.walletNotConnected,
+        insufficientAllowance: t.genesis.insufficientAllowance,
+        insufficientUsd1: t.genesis.insufficientUsd1,
+        purchaseUnavailable: t.genesis.purchaseUnavailable,
+        transactionCancelled: t.swap.transactionCancelled,
+        quoteFailed: t.errors.quoteFailed,
+      },
+      t.wallet.transactionErrors,
+      t.errors.chain.fallback,
+    )
+  }
 
   const submitErrorMessage =
     !swap.error || swap.isSubmitting ? null : resolveFlashMessage(swap.error)
@@ -76,12 +74,16 @@ export function FlashSwapWidget({
     }
   }
 
-  useEffect(() => {
-    if (!swap.validationError) return
-    presentUserFacingError(swap.validationError, resolveFlashMessage, {
+  const presentValidationError = useEffectEvent((error: unknown) => {
+    presentUserFacingError(error, resolveFlashMessage, {
       id: 'flash-swap-quote-error',
     })
-  }, [resolveFlashMessage, swap.quoteErrorUpdatedAt, swap.validationError])
+  })
+
+  useEffect(() => {
+    if (!swap.validationError) return
+    presentValidationError(swap.validationError)
+  }, [swap.quoteErrorUpdatedAt, swap.validationError])
 
   return (
     <>

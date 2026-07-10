@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { formatPresaleRank } from '~/shared/api/format-display'
 import { resolveCommitmentFloorRank } from '~/core/presale/tier-table'
@@ -18,32 +17,24 @@ export function useShareholderRank() {
   const address = account?.address
   const userTotalQuery = usePresaleUserTotalQuery(address)
 
-  const chainVolumeUsd = useMemo(() => {
-    if (!userTotalQuery.data) return 0
-    return formatTokenAmountToNumber(userTotalQuery.data, 18)
-  }, [userTotalQuery.data])
+  const chainVolumeUsd = userTotalQuery.data
+    ? formatTokenAmountToNumber(userTotalQuery.data, 18)
+    : 0
 
-  const personalVolumeUsd = useMemo(() => {
-    const apiVolume = Number(performance?.presale_volume ?? 0)
-    return Math.max(apiVolume, chainVolumeUsd)
-  }, [chainVolumeUsd, performance?.presale_volume])
+  const apiVolume = Number(performance?.presale_volume ?? 0)
+  const personalVolumeUsd = Math.max(apiVolume, chainVolumeUsd)
 
-  const displayRank = useMemo(
-    () => resolveDisplayPresaleRank(performance?.presale_rank ?? 0),
-    [performance?.presale_rank],
+  const displayRank = resolveDisplayPresaleRank(performance?.presale_rank ?? 0)
+  const commitmentFloorRank = resolveCommitmentFloorRank(
+    performance?.presale_commitment_floor_rank ?? 0,
   )
 
-  const commitmentFloorRank = useMemo(
-    () => resolveCommitmentFloorRank(performance?.presale_commitment_floor_rank ?? 0),
-    [performance?.presale_commitment_floor_rank],
-  )
-
-  const commitmentFloorTeamUsd = useMemo(() => {
+  const commitmentFloorTeamUsd = (() => {
     const raw = performance?.presale_commitment_floor_performance
     if (raw == null || raw === '') return 0
     const parsed = Number(raw)
     return Number.isFinite(parsed) ? Math.max(0, parsed) : 0
-  }, [performance?.presale_commitment_floor_performance])
+  })()
 
   const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 

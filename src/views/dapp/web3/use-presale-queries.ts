@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { findActivePresalePhase, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -51,12 +50,8 @@ type PresaleActivePhaseQueryResult = Pick<
 export function usePresaleActivePhaseQuery(): PresaleActivePhaseQueryResult {
   const phasesQuery = usePresalePhasesQuery()
 
-  const data = useMemo(() => {
-    if (phasesQuery.data === undefined) {
-      return undefined
-    }
-    return findActivePresalePhase(phasesQuery.data)
-  }, [phasesQuery.data])
+  const data =
+    phasesQuery.data === undefined ? undefined : findActivePresalePhase(phasesQuery.data)
 
   return {
     data,

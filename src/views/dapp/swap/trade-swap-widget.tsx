@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
@@ -73,23 +73,21 @@ export function TradeSwapWidget({
     }, 320)
   }
 
-  const resolveTradeMessage = useCallback(
-    (error: unknown) =>
-      resolveSwapUserFacingMessage(
-        error,
-        {
-          walletNotConnected: t.genesis.walletNotConnected,
-          insufficientAllowance: t.genesis.insufficientAllowance,
-          insufficientUsd1: t.genesis.insufficientUsd1,
-          purchaseUnavailable: t.genesis.purchaseUnavailable,
-          transactionCancelled: t.swap.transactionCancelled,
-          quoteFailed: t.errors.quoteFailed,
-        },
-        t.wallet.transactionErrors,
-        t.errors.chain.fallback,
-      ),
-    [t],
-  )
+  function resolveTradeMessage(error: unknown) {
+    return resolveSwapUserFacingMessage(
+      error,
+      {
+        walletNotConnected: t.genesis.walletNotConnected,
+        insufficientAllowance: t.genesis.insufficientAllowance,
+        insufficientUsd1: t.genesis.insufficientUsd1,
+        purchaseUnavailable: t.genesis.purchaseUnavailable,
+        transactionCancelled: t.swap.transactionCancelled,
+        quoteFailed: t.errors.quoteFailed,
+      },
+      t.wallet.transactionErrors,
+      t.errors.chain.fallback,
+    )
+  }
 
   async function handleSubmit() {
     const result = await swap.submit()
@@ -104,12 +102,16 @@ export function TradeSwapWidget({
 
   // Quote/validation only — submit errors toast in handleSubmit so same sentinel re-fires.
   // quoteErrorUpdatedAt re-triggers when RQ fails again with the same SWAP_QUOTE_FAILED sentinel.
-  useEffect(() => {
-    if (!swap.validationError) return
-    presentUserFacingError(swap.validationError, resolveTradeMessage, {
+  const presentValidationError = useEffectEvent((error: unknown) => {
+    presentUserFacingError(error, resolveTradeMessage, {
       id: 'trade-swap-quote-error',
     })
-  }, [resolveTradeMessage, swap.quoteErrorUpdatedAt, swap.validationError])
+  })
+
+  useEffect(() => {
+    if (!swap.validationError) return
+    presentValidationError(swap.validationError)
+  }, [swap.quoteErrorUpdatedAt, swap.validationError])
 
   return (
     <>

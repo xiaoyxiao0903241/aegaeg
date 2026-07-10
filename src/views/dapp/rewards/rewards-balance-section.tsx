@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
 import {
@@ -46,13 +46,12 @@ export function RewardsBalanceSection() {
     communityFundClaim
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
 
-  useEffect(() => {
-    if (!teamClaimError) return
+  const presentTeamClaimError = useEffectEvent((error: unknown) => {
     presentUserFacingError(
-      teamClaimError,
-      (error) =>
-        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-        resolveTeamClaimError(error, {
+      error,
+      (err) =>
+        resolveWalletTransactionError(err, t.wallet.transactionErrors) ??
+        resolveTeamClaimError(err, {
           ...t.rewards.claimErrors,
           walletNotConnected: t.errors.walletNotConnected,
         }) ??
@@ -60,15 +59,14 @@ export function RewardsBalanceSection() {
       { id: 'team-claim-error' },
     )
     clearTeamClaimError()
-  }, [teamClaimError, clearTeamClaimError, t.errors, t.rewards.claimErrors, t.wallet.transactionErrors])
+  })
 
-  useEffect(() => {
-    if (!communityFundClaimError) return
+  const presentCommunityFundClaimError = useEffectEvent((error: unknown) => {
     presentUserFacingError(
-      communityFundClaimError,
-      (error) =>
-        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-        resolveTeamClaimError(error, {
+      error,
+      (err) =>
+        resolveWalletTransactionError(err, t.wallet.transactionErrors) ??
+        resolveTeamClaimError(err, {
           ...t.rewards.claimErrors,
           walletNotConnected: t.errors.walletNotConnected,
         }) ??
@@ -76,13 +74,17 @@ export function RewardsBalanceSection() {
       { id: 'community-fund-claim-error' },
     )
     clearCommunityFundClaimError()
-  }, [
-    communityFundClaimError,
-    clearCommunityFundClaimError,
-    t.errors,
-    t.rewards.claimErrors,
-    t.wallet.transactionErrors,
-  ])
+  })
+
+  useEffect(() => {
+    if (!teamClaimError) return
+    presentTeamClaimError(teamClaimError)
+  }, [teamClaimError])
+
+  useEffect(() => {
+    if (!communityFundClaimError) return
+    presentCommunityFundClaimError(communityFundClaimError)
+  }, [communityFundClaimError])
 
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
   const teamClaimableValue = claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')

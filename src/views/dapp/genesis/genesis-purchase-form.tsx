@@ -1,5 +1,5 @@
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
 import { revealClass } from '~/shared/lib/reveal'
@@ -123,14 +123,18 @@ export function GenesisPurchaseForm() {
     }
   }
 
-  useEffect(() => {
-    if (!genesis.error) return
+  const presentGenesisQueryError = useEffectEvent((error: unknown) => {
     presentUserFacingError(
-      genesis.error,
-      (error) => resolveApiUserFacingError(error, t.errors.api) ?? t.errors.loadFailed,
+      error,
+      (err) => resolveApiUserFacingError(err, t.errors.api) ?? t.errors.loadFailed,
       { id: 'genesis-query-error' },
     )
-  }, [genesis.error, t.errors.api, t.errors.loadFailed])
+  })
+
+  useEffect(() => {
+    if (!genesis.error) return
+    presentGenesisQueryError(genesis.error)
+  }, [genesis.error])
 
   return (
     <>
