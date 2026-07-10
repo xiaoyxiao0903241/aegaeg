@@ -59,4 +59,12 @@ home/main.tsx → home-boot → I18nProvider → HomeProviders → HomeApp
 
 `pnpm check` · `pnpm build`（Home 不预载 thirdweb；`modulePreload: false` 有意保留）· 可选 `pnpm test:e2e`
 
-> Bundle 债：`manualChunks` / Rolldown `codeSplitting` 拆 `thirdweb`/`viem` 在多入口下会污染 Home 或打坏 entry（`includeDependenciesRecursively: false` 曾导致 sync JS 仅 13KB）；暂不拆，另开 epic。
+> Bundle 债（S6，2026-07-10 复测）：多入口下拆 `thirdweb`/`viem` 仍无绿路径。
+>
+> | 策略 | Home | DApp |
+> |------|------|------|
+> | `manualChunks` → `thirdweb`/`viem` | 污染 ~3.5MB sync（共享 `LocalizedErrorBoundary` 从 thirdweb chunk 取被吸收的共享依赖） | main 变小，总 sync 膨胀 |
+> | `codeSplitting` + `includeDependenciesRecursively: false`（仅 tw/viem） | 绿 ~435KB、无 thirdweb | 总 sync ~1.6MB→~4.6MB（thirdweb 内部 async 被压成单 sync chunk） |
+> | 全量 groups + `false` + `strictExecutionOrder` | 图打穿（slippage 泄漏进 Home） | 不可用 |
+>
+> 下一条可行路径：DApp 对 `WebRootProviders`/thirdweb **动态 import**（结构拆图），或分 build；勿再盲加 named vendor chunk。

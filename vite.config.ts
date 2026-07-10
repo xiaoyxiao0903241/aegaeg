@@ -81,6 +81,12 @@ export default defineConfig(({ command }) => ({
         /**
          * Prefer several parallel vendor chunks over one opaque shared bag.
          * Match `/node_modules/<pkg>/` only — never substring `/react/` inside other packages.
+         *
+         * thirdweb/viem: do not add here. Named chunks absorb shared deps; Home then
+         * sync-loads ~3.5MB via LocalizedErrorBoundary. codeSplitting +
+         * includeDependenciesRecursively:false keeps Home clean but inflates DApp
+         * sync (~1.6MB→~4.6MB) by collapsing thirdweb async splits. Debt:
+         * docs/homepage-architecture.md (S6).
          */
         manualChunks(id) {
           if (!id.includes('node_modules')) return
