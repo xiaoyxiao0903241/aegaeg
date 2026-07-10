@@ -59,4 +59,4 @@ home/main.tsx → home-boot → I18nProvider → HomeProviders → HomeApp
 
 `pnpm check` · `pnpm build`（Home 不预载 thirdweb；`modulePreload: false` 有意保留）· 可选 `pnpm test:e2e`
 
-> Bundle 债：对 `thirdweb`/`viem` 做 `manualChunks` 会在当前多入口图里把共享模块吸进 vendor，导致 Home sync 误载巨包；暂不拆，另开 epic。
+> Bundle 债：`manualChunks` / Rolldown `codeSplitting` 拆 `thirdweb`/`viem` 在多入口下会污染 Home 或打坏 entry（`includeDependenciesRecursively: false` 曾导致 sync JS 仅 13KB）；暂不拆，另开 epic。
