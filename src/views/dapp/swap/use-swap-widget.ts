@@ -1,10 +1,7 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-price-impact-bps'
-import { resolveLiveQuotedOut } from '~/core/swap/resolve-live-quoted-out'
 import { formatGasEstimate } from '~/views/dapp/swap/format-gas-estimate'
-import { formatSwapRateApprox, resolveEmptySpotRatePlaceholder } from '~/views/dapp/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   clampSlippagePercent,
@@ -13,18 +10,18 @@ import {
 } from '~/core/swap/token-amount'
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
-import { readErc20Balance, readErc20Allowance, fetchSwapQuote } from '~/views/dapp/web3/swap-read'
+import { fetchSwapQuote } from '~/views/dapp/web3/swap-read'
 import { approveTokenIfNeeded, swapTokens } from '~/views/dapp/web3/swap-write'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
 import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
-import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
 import { useSwapQuote } from '~/views/dapp/swap/use-swap-quote'
 import { useSwapPoolReads } from '~/views/dapp/swap/use-swap-pool-reads'
+import { useSwapBalances } from '~/views/dapp/swap/use-swap-balances'
+import { useSwapSpotRates } from '~/views/dapp/swap/use-swap-spot-rates'
 
 /**
  * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.
@@ -38,57 +35,31 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const [slippage, setSlippageRaw] = useState(() =>
     clampSlippagePercent(SWAP_CONFIG.defaultSlippageBps / 100),
   )
-  const setSlippage = useCallback((value: number) => {
+  function setSlippage(value: number) {
     setSlippageRaw(clampSlippagePercent(value))
-  }, [])
+  }
   const readClient = useChainReadClient()
   const { poolContext, poolFee } = useSwapPoolReads(quotesEnabled)
 
-  const pair = useMemo(() => getSwapPairTokens(direction), [direction])
-  const usdtToUsd1Pair = getSwapPairTokens('reverse')
-  const usd1ToUsdtPair = getSwapPairTokens('forward')
+  const pair = getSwapPairTokens(direction)
   const address = account?.address
   const walletReady = hasWalletAccount(account)
   const slippageBps = slippagePercentToBps(slippage)
-  const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
-  const exchangeSpotAmount = 10n ** BigInt(usdtToUsd1Pair.sell.decimals)
-  const exchangeSpotAmountInverted = 10n ** BigInt(usd1ToUsdtPair.sell.decimals)
 
-  const balancesQuery = useQuery({
-    queryKey: queryKeys.chain.swapBalances(
-      address ?? '',
-      pair.sell.address,
-      pair.buy.address,
-    ),
-    queryFn: async () => {
-      const [sell, buy, approved] = await Promise.all([
-        readErc20Balance(pair.sell.address, address!, readClient),
-        readErc20Balance(pair.buy.address, address!, readClient),
-        readErc20Allowance(pair.sell.address, address!, SWAP_CONFIG.router, readClient),
-      ])
-      return { sell, buy, approved }
-    },
-    enabled: quotesEnabled && walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
+  const {
+    balancesQuery,
+    sellBalance,
+    buyBalance,
+    allowance,
+    balancesLoaded,
+    isBalancesLoading,
+  } = useSwapBalances({
+    address,
+    sellAddress: pair.sell.address,
+    buyAddress: pair.buy.address,
+    quotesEnabled,
+    walletReady,
   })
-
-  const fetchTradeQuote = useCallback(
-    (amountIn: bigint) =>
-      fetchSwapQuote({
-        amountIn,
-        tokenIn: pair.sell.address,
-        tokenOut: pair.buy.address,
-        client: readClient,
-        poolContext,
-      }),
-    [pair.buy.address, pair.sell.address, poolContext, readClient],
-  )
-
-  const sellBalance = balancesQuery.data?.sell ?? 0n
-  const buyBalance = balancesQuery.data?.buy ?? 0n
-  const balancesLoaded = balancesQuery.data !== undefined
-  const allowance = balancesQuery.data?.approved ?? 0n
-  const isBalancesLoading = walletReady && balancesQuery.isLoading
 
   const core = useSwapQuote({
     sessionReady,
@@ -103,166 +74,48 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
     slippageBps,
     quoteRefreshIntervalMs: SWAP_CONFIG.quoteRefreshIntervalMs,
     getQuoteQueryKey: (amountIn) =>
-      queryKeys.chain.swapQuote(
-        pair.sell.address,
-        pair.buy.address,
-        amountIn.toString(),
-      ),
-    fetchQuote: fetchTradeQuote,
-    selectQuotedOut: (quote) => quote?.quotedOut ?? 0n,
-  })
-
-  const { amountIn, amountQuoteQuery } = core
-
-  const spotQuoteQuery = useQuery({
-    queryKey: queryKeys.chain.swapQuote(
-      pair.sell.address,
-      pair.buy.address,
-      spotQuoteAmount.toString(),
-    ),
-    queryFn: () =>
+      queryKeys.chain.swapQuote(pair.sell.address, pair.buy.address, amountIn.toString()),
+    fetchQuote: (amountIn) =>
       fetchSwapQuote({
-        amountIn: spotQuoteAmount,
+        amountIn,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
         client: readClient,
         poolContext,
       }),
-    enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
-    placeholderData: keepPreviousData,
+    selectQuotedOut: (quote) => quote?.quotedOut ?? 0n,
   })
 
-  const exchangeSpotQuoteQuery = useQuery({
-    queryKey: queryKeys.chain.swapQuote(
-      usdtToUsd1Pair.sell.address,
-      usdtToUsd1Pair.buy.address,
-      exchangeSpotAmount.toString(),
-    ),
-    queryFn: () =>
-      fetchSwapQuote({
-        amountIn: exchangeSpotAmount,
-        tokenIn: usdtToUsd1Pair.sell.address,
-        tokenOut: usdtToUsd1Pair.buy.address,
-        client: readClient,
-        poolContext,
-      }),
-    enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
-    placeholderData: keepPreviousData,
+  const spot = useSwapSpotRates({
+    pair,
+    quotesEnabled,
+    poolContext,
+    amountIn: core.amountIn,
   })
 
-  useVisibleInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
-  useVisibleInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
-
-  const amountQuote = amountQuoteQuery.isPlaceholderData
+  const amountQuote = core.amountQuoteQuery.isPlaceholderData
     ? undefined
-    : amountQuoteQuery.data
+    : core.amountQuoteQuery.data
   const priceImpactBps = amountQuote?.priceImpactBps ?? 0
   const gasEstimate = amountQuote?.gasEstimate ?? 0n
-  const spotQuotedOut = resolveLiveQuotedOut(
-    spotQuoteQuery.isPlaceholderData,
-    spotQuoteQuery.data?.quotedOut,
-  )
-  const exchangeSpotQuotedOut = resolveLiveQuotedOut(
-    exchangeSpotQuoteQuery.isPlaceholderData,
-    exchangeSpotQuoteQuery.data?.quotedOut,
-  )
-  const isSpotQuoting =
-    amountIn === 0n &&
-    (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) &&
-    spotQuotedOut === 0n
-  const isExchangePriceQuoting =
-    (exchangeSpotQuoteQuery.isPending || exchangeSpotQuoteQuery.isPlaceholderData) &&
-    exchangeSpotQuotedOut === 0n
-  /** 反方向汇率由正向 quote 反推，不再单独轮询。 */
-  const isExchangePriceInvertedQuoting = isExchangePriceQuoting
 
-  const routeLabel = useMemo(
-    () => `${pair.sell.symbol} → ${pair.buy.symbol}`,
-    [pair.buy.symbol, pair.sell.symbol],
-  )
-
-  const exchangePriceLabel = useMemo(() => {
-    const empty = resolveEmptySpotRatePlaceholder(exchangeSpotQuotedOut, isExchangePriceQuoting)
-    if (empty !== null) return empty
-
-    return formatSwapRateApprox({
-      amountIn: exchangeSpotAmount,
-      amountOut: exchangeSpotQuotedOut,
-      decimalsIn: usdtToUsd1Pair.sell.decimals,
-      decimalsOut: usdtToUsd1Pair.buy.decimals,
-      symbolIn: usdtToUsd1Pair.sell.symbol,
-      symbolOut: usdtToUsd1Pair.buy.symbol,
-      fractionDigits: 6,
-    })
-  }, [
-    exchangeSpotAmount,
-    exchangeSpotQuotedOut,
-    isExchangePriceQuoting,
-    usdtToUsd1Pair.buy.decimals,
-    usdtToUsd1Pair.buy.symbol,
-    usdtToUsd1Pair.sell.decimals,
-    usdtToUsd1Pair.sell.symbol,
-  ])
-
-  const exchangePriceLabelInverted = useMemo(() => {
-    const empty = resolveEmptySpotRatePlaceholder(
-      exchangeSpotQuotedOut,
-      isExchangePriceInvertedQuoting,
-    )
-    if (empty !== null) return empty
-    const amountOut =
-      (exchangeSpotAmountInverted * exchangeSpotAmount) / exchangeSpotQuotedOut
-    if (amountOut === 0n) return '—'
-
-    return formatSwapRateApprox({
-      amountIn: exchangeSpotAmountInverted,
-      amountOut,
-      decimalsIn: usd1ToUsdtPair.sell.decimals,
-      decimalsOut: usd1ToUsdtPair.buy.decimals,
-      symbolIn: usd1ToUsdtPair.sell.symbol,
-      symbolOut: usd1ToUsdtPair.buy.symbol,
-      fractionDigits: 6,
-    })
-  }, [
-    exchangeSpotAmount,
-    exchangeSpotAmountInverted,
-    exchangeSpotQuotedOut,
-    isExchangePriceInvertedQuoting,
-    usd1ToUsdtPair.buy.decimals,
-    usd1ToUsdtPair.buy.symbol,
-    usd1ToUsdtPair.sell.decimals,
-    usd1ToUsdtPair.sell.symbol,
-  ])
-
-  const pancakeSwapUrl = useMemo(
-    () => resolvePancakeSwapDeepLink(pair.sell.symbol, pair.buy.symbol),
-    [pair.buy.symbol, pair.sell.symbol],
-  )
-
-  const priceImpactLabel = useMemo(() => {
-    if (!sessionReady || core.amountIn === 0n || core.isQuoting) return ''
-    return `${(priceImpactBps / 100).toFixed(2)}%`
-  }, [sessionReady, core.amountIn, core.isQuoting, priceImpactBps])
-
-  const gasEstimateLabel = useMemo(
-    () => formatGasEstimate(gasEstimate),
-    [gasEstimate],
-  )
-
+  const routeLabel = `${pair.sell.symbol} → ${pair.buy.symbol}`
+  const pancakeSwapUrl = resolvePancakeSwapDeepLink(pair.sell.symbol, pair.buy.symbol)
+  const priceImpactLabel =
+    !sessionReady || core.amountIn === 0n || core.isQuoting
+      ? ''
+      : `${(priceImpactBps / 100).toFixed(2)}%`
+  const gasEstimateLabel = formatGasEstimate(gasEstimate)
   const isHighPriceImpact =
     sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_SWAP_PRICE_IMPACT_BPS
 
-  const flipDirection = useCallback(() => {
+  function flipDirection() {
     core.setBlockResubmit(false)
     flipDirectionInStore()
     core.clearAmount()
-  }, [core, flipDirectionInStore])
+  }
 
-  const submit = useCallback(async (): Promise<
-    { ok: true } | { ok: false; error: unknown | null }
-  > => {
+  async function submit(): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
     if (!account || !wallet) {
       const error = WALLET_GATE_ERROR.NOT_CONNECTED
       core.setSubmitError(error)
@@ -290,14 +143,7 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
     })
     if (result.ok) return { ok: true }
     return { ok: false, error: result.error }
-  }, [
-    account,
-    balancesQuery,
-    core,
-    pair.buy.address,
-    pair.sell.address,
-    wallet,
-  ])
+  }
 
   return {
     sellAmount: core.sellAmount,
@@ -311,8 +157,8 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
     sellBalanceLabel: formatTokenAmount(sellBalance, pair.sell.decimals, 4),
     buyBalanceLabel: formatTokenAmount(buyBalance, pair.buy.decimals, 4),
     buyAmount: core.buyAmount,
-    exchangePriceLabel,
-    exchangePriceLabelInverted,
+    exchangePriceLabel: spot.exchangePriceLabel,
+    exchangePriceLabelInverted: spot.exchangePriceLabelInverted,
     routeLabel,
     pancakeSwapUrl,
     poolFee,
@@ -323,9 +169,9 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
     canSubmit: core.canSubmit,
     needsMaxApproval: core.needsMaxApproval,
     isQuoting: core.isQuoting,
-    isSpotQuoting,
-    isExchangePriceQuoting,
-    isExchangePriceInvertedQuoting,
+    isSpotQuoting: spot.isSpotQuoting,
+    isExchangePriceQuoting: spot.isExchangePriceQuoting,
+    isExchangePriceInvertedQuoting: spot.isExchangePriceInvertedQuoting,
     isBalancesLoading,
     isSubmitting: core.isSubmitting,
     error: core.error,

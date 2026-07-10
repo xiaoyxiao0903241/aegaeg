@@ -1,7 +1,10 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
-import { useCallback, useMemo } from 'react'
-import { formatSwapRate, formatSwapRateColon, resolveEmptySpotRatePlaceholder } from '~/views/dapp/swap/format-swap-rate'
+import {
+  formatSwapRate,
+  formatSwapRateColon,
+  resolveEmptySpotRatePlaceholder,
+} from '~/views/dapp/swap/format-swap-rate'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/token-amount'
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
@@ -43,11 +46,6 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
   const balancesLoaded = balancesQuery.data !== undefined
   const isBalancesLoading = walletReady && balancesQuery.isLoading
 
-  const fetchFlashQuote = useCallback(
-    (amountIn: bigint) => readFlashSwapQuote(amountIn, readClient),
-    [readClient],
-  )
-
   const core = useSwapQuote({
     sessionReady,
     quotesEnabled,
@@ -61,7 +59,7 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
     slippageBps: FLASH_SWAP_SLIPPAGE_BPS,
     quoteRefreshIntervalMs: SWAP_CONFIG.quoteRefreshIntervalMs,
     getQuoteQueryKey: (amountIn) => queryKeys.chain.flashSwapQuote(amountIn.toString()),
-    fetchQuote: fetchFlashQuote,
+    fetchQuote: (amountIn) => readFlashSwapQuote(amountIn, readClient),
     selectQuotedOut: (quote) => quote ?? 0n,
   })
 
@@ -84,60 +82,43 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
     spotQuoteQuery.isPlaceholderData ||
     (spotQuoteQuery.isFetching && spotQuotedOut === 0n)
 
-  const exchangePriceLabel = useMemo(() => {
-    const empty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
-    if (empty !== null) return empty
-
-    return formatSwapRate({
-      amountIn: spotQuoteAmount,
-      amountOut: spotQuotedOut,
-      decimalsIn: pair.sell.decimals,
-      decimalsOut: pair.buy.decimals,
-      symbolIn: pair.sell.symbol,
-      symbolOut: pair.buy.symbol,
-      fractionDigits: 6,
-    })
-  }, [
-    isExchangePriceQuoting,
-    pair.buy.decimals,
-    pair.buy.symbol,
-    pair.sell.decimals,
-    pair.sell.symbol,
-    spotQuoteAmount,
+  const exchangePriceEmpty = resolveEmptySpotRatePlaceholder(
     spotQuotedOut,
-  ])
-
-  const overviewRateLabel = useMemo(() => {
-    const empty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
-    if (empty !== null) return empty
-
-    return formatSwapRateColon({
-      amountIn: spotQuoteAmount,
-      amountOut: spotQuotedOut,
-      decimalsIn: pair.sell.decimals,
-      decimalsOut: pair.buy.decimals,
-    })
-  }, [
     isExchangePriceQuoting,
-    pair.buy.decimals,
-    pair.sell.decimals,
-    spotQuoteAmount,
-    spotQuotedOut,
-  ])
+  )
+  const exchangePriceLabel =
+    exchangePriceEmpty !== null
+      ? exchangePriceEmpty
+      : formatSwapRate({
+          amountIn: spotQuoteAmount,
+          amountOut: spotQuotedOut,
+          decimalsIn: pair.sell.decimals,
+          decimalsOut: pair.buy.decimals,
+          symbolIn: pair.sell.symbol,
+          symbolOut: pair.buy.symbol,
+          fractionDigits: 6,
+        })
+
+  const overviewRateLabel =
+    exchangePriceEmpty !== null
+      ? exchangePriceEmpty
+      : formatSwapRateColon({
+          amountIn: spotQuoteAmount,
+          amountOut: spotQuotedOut,
+          decimalsIn: pair.sell.decimals,
+          decimalsOut: pair.buy.decimals,
+        })
 
   const routeLabel = `${pair.sell.symbol} → ${pair.buy.symbol}`
 
-  const minUsd1OutLabel = useMemo(
-    () =>
-      sessionReady && core.amountIn > 0n && core.amountOutMin > 0n
-        ? formatTokenAmountInputDisplay(
-            formatTokenAmount(core.amountOutMin, pair.buy.decimals, 6),
-          )
-        : '—',
-    [sessionReady, core.amountIn, core.amountOutMin, pair.buy.decimals],
-  )
+  const minUsd1OutLabel =
+    sessionReady && core.amountIn > 0n && core.amountOutMin > 0n
+      ? formatTokenAmountInputDisplay(
+          formatTokenAmount(core.amountOutMin, pair.buy.decimals, 6),
+        )
+      : '—'
 
-  const submit = useCallback(async (): Promise<{ ok: true } | { ok: false; error: unknown }> => {
+  async function submit(): Promise<{ ok: true } | { ok: false; error: unknown }> {
     if (!account || !wallet) {
       const error = WALLET_GATE_ERROR.NOT_CONNECTED
       core.setSubmitError(error)
@@ -160,7 +141,7 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
 
     if (result.ok) return { ok: true }
     return { ok: false, error: result.error }
-  }, [account, balancesQuery, core, wallet])
+  }
 
   return {
     sellAmount: core.sellAmount,
