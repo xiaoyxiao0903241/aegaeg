@@ -21,7 +21,7 @@
 | `pnpm lint:hex` | 禁止 scoped TS 模块硬编码 hex（须走 `theme.ts`） |
 | **git pre-commit**（husky） | staged `*.{ts,tsx,js,mjs,cjs}` → `eslint`；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。`pnpm install` 后 `prepare` 会挂上 hook。**禁止**把 `test:e2e` / Playwright 挂进 hook 或 `pnpm check` |
 | `pnpm lint:all` | ESLint + Stylelint + hex + depcruise + knip |
-| `pnpm lint:deadcode` | knip（死代码；分期收紧，**尚未**进 `check`） |
+| `pnpm lint:deadcode` | knip（死代码；`tests/unit/knip-traced-exports.ts` 承接 `loadModule` 动态引用；**尚未**进 `check`） |
 | `pnpm format` / `pnpm format:check` | Prettier + `prettier-plugin-tailwindcss`（class 排序；**未**进 `check`） |
 | `pnpm format:classnames` | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序） |
 | `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等 |
