@@ -8,20 +8,26 @@ export const BREAKPOINT_DAPP_PX = 821
  */
 export const BREAKPOINT_DESIGN_BASE_PX = 1920
 
+/** site-fluid continuous clamp — min width (CSS px) at scale 1 / 16px root. */
+export const BREAKPOINT_FLUID_MIN_WIDTH_PX = BREAKPOINT_DESIGN_BASE_PX
+
+/** site-fluid continuous clamp — max width (CSS px) at scale cap. */
+export const BREAKPOINT_FLUID_MAX_WIDTH_PX = 3840
+
+export const BREAKPOINT_FLUID_MIN_ROOT_PX = 16
+
+export const BREAKPOINT_FLUID_MAX_ROOT_PX = 48
+
+/** `--fluid-scale` at `BREAKPOINT_FLUID_MAX_WIDTH_PX` (3× design root). */
+export const BREAKPOINT_FLUID_MAX_SCALE = 3
+
+/**
+ * site-fluid endpoints only (continuous clamp between these in theme.css).
+ * Kept as a 2-row table for docs / knip / unit contract.
+ */
 export const BREAKPOINT_ULTRA_WIDE_SCALE = [
-  { minWidthPx: 1920, rootFontSizePx: 16 },
-  { minWidthPx: 2080, rootFontSizePx: 18 },
-  { minWidthPx: 2240, rootFontSizePx: 20 },
-  { minWidthPx: 2400, rootFontSizePx: 22 },
-  { minWidthPx: 2560, rootFontSizePx: 24 },
-  { minWidthPx: 2720, rootFontSizePx: 26 },
-  { minWidthPx: 2880, rootFontSizePx: 28 },
-  { minWidthPx: 3040, rootFontSizePx: 30 },
-  { minWidthPx: 3200, rootFontSizePx: 32 },
-  { minWidthPx: 3360, rootFontSizePx: 34 },
-  { minWidthPx: 3520, rootFontSizePx: 36 },
-  { minWidthPx: 3680, rootFontSizePx: 40 },
-  { minWidthPx: 3840, rootFontSizePx: 48 },
+  { minWidthPx: BREAKPOINT_FLUID_MIN_WIDTH_PX, rootFontSizePx: BREAKPOINT_FLUID_MIN_ROOT_PX },
+  { minWidthPx: BREAKPOINT_FLUID_MAX_WIDTH_PX, rootFontSizePx: BREAKPOINT_FLUID_MAX_ROOT_PX },
 ] as const
 
 export const BREAKPOINT_TABLET_MAX_PX = 1100

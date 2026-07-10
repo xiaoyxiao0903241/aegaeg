@@ -521,96 +521,12 @@
   --scrollbar-track: oklch(0% 0 0 / 10%);
 }
 
-/* site-fluid — layout/icon rem scales; typography rem @16px also scales */
-@media (min-width: 1920px) {
-  html.site-fluid {
-    font-size: 16px;
-    --fluid-scale: 1;
-  }
-}
-
-@media (min-width: 2080px) {
-  html.site-fluid {
-    font-size: 18px;
-    --fluid-scale: 1.125;
-  }
-}
-
-@media (min-width: 2240px) {
-  html.site-fluid {
-    font-size: 20px;
-    --fluid-scale: 1.25;
-  }
-}
-
-@media (min-width: 2400px) {
-  html.site-fluid {
-    font-size: 22px;
-    --fluid-scale: 1.375;
-  }
-}
-
-@media (min-width: 2560px) {
-  html.site-fluid {
-    font-size: 24px;
-    --fluid-scale: 1.5;
-  }
-}
-
-@media (min-width: 2720px) {
-  html.site-fluid {
-    font-size: 26px;
-    --fluid-scale: 1.625;
-  }
-}
-
-@media (min-width: 2880px) {
-  html.site-fluid {
-    font-size: 28px;
-    --fluid-scale: 1.75;
-  }
-}
-
-@media (min-width: 3040px) {
-  html.site-fluid {
-    font-size: 30px;
-    --fluid-scale: 1.875;
-  }
-}
-
-@media (min-width: 3200px) {
-  html.site-fluid {
-    font-size: 32px;
-    --fluid-scale: 2;
-  }
-}
-
-@media (min-width: 3360px) {
-  html.site-fluid {
-    font-size: 34px;
-    --fluid-scale: 2.125;
-  }
-}
-
-@media (min-width: 3520px) {
-  html.site-fluid {
-    font-size: 36px;
-    --fluid-scale: 2.25;
-  }
-}
-
-@media (min-width: 3680px) {
-  html.site-fluid {
-    font-size: 40px;
-    --fluid-scale: 2.5;
-  }
-}
-
-@media (min-width: 3840px) {
-  html.site-fluid {
-    font-size: 48px;
-    --fluid-scale: 3;
-  }
+/* site-fluid — continuous rem scale (endpoints ≡ breakpoints.ts)
+ * ≤1920: 16px / scale 1 · 1920→3840: linear 16→48px / 1→3 · ≥3840: cap
+ */
+html.site-fluid {
+  font-size: clamp(16px, calc(16px + (100vw - 1920px) / 60), 48px);
+  --fluid-scale: clamp(1, calc(1 + (100vw - 1920px) / 960px), 3);
 }
 
 /* H5 Genesis season card — ≡ 4175 dapp-scale.css (+1px); must follow engineering :root */

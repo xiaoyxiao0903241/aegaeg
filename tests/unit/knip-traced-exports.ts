@@ -7,6 +7,11 @@ export { resolveXTokenAirdropUsdForPurchase } from '../../src/core/presale/presa
 export { resetAccountBannedReportCooldownForTests } from '../../src/shared/api/account-banned'
 export {
   BREAKPOINT_DESIGN_BASE_PX,
+  BREAKPOINT_FLUID_MAX_ROOT_PX,
+  BREAKPOINT_FLUID_MAX_SCALE,
+  BREAKPOINT_FLUID_MAX_WIDTH_PX,
+  BREAKPOINT_FLUID_MIN_ROOT_PX,
+  BREAKPOINT_FLUID_MIN_WIDTH_PX,
   BREAKPOINT_NARROW_MAX_PX,
   BREAKPOINT_TABLET_MAX_PX,
   BREAKPOINT_ULTRA_WIDE_SCALE,
