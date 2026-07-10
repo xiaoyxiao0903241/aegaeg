@@ -48,16 +48,12 @@ export function RewardsHistorySection() {
   const historyTableScrollRef = useRef<HTMLDivElement>(null)
   const { data: communityFundTotal } = useCommunityFundTotal(sessionReady)
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
+  const activeTab: RewardsHistoryTab =
+    !isSuperCommunity && historyTab === 'communityFund' ? 'referral' : historyTab
 
   useEffect(() => {
     historyTableScrollRef.current?.scrollTo({ left: 0, behavior: 'instant' })
-  }, [historyTab])
-
-  useEffect(() => {
-    if (!isSuperCommunity && historyTab === 'communityFund') {
-      setHistoryTab('referral')
-    }
-  }, [historyTab, isSuperCommunity])
+  }, [activeTab])
 
   const {
     data: rewardLogs,
@@ -89,33 +85,33 @@ export function RewardsHistorySection() {
     []
 
   const historyRows =
-    historyTab === 'referral'
+    activeTab === 'referral'
       ? referralHistoryRows
-      : historyTab === 'team'
+      : activeTab === 'team'
         ? teamHistoryRows
         : communityFundHistoryRows
   const historyTotal =
-    historyTab === 'referral'
+    activeTab === 'referral'
       ? rewardLogs?.total ?? 0
-      : historyTab === 'team'
+      : activeTab === 'team'
         ? teamClaimLogs?.total ?? 0
         : communityFundLogs?.total ?? 0
   const historyPage =
-    historyTab === 'referral'
+    activeTab === 'referral'
       ? referralPage
-      : historyTab === 'team'
+      : activeTab === 'team'
         ? teamPage
         : communityFundPage
   const onHistoryPageChange =
-    historyTab === 'referral'
+    activeTab === 'referral'
       ? setReferralPage
-      : historyTab === 'team'
+      : activeTab === 'team'
         ? setTeamPage
         : setCommunityFundPage
   const historyLoading =
-    historyTab === 'referral'
+    activeTab === 'referral'
       ? rewardLogsLoading
-      : historyTab === 'team'
+      : activeTab === 'team'
         ? teamClaimLogsLoading
         : communityFundLogsLoading
   const historyTable = dappTableViewState({
@@ -131,7 +127,7 @@ export function RewardsHistorySection() {
   )
 
   const historyHeaders =
-    historyTab === 'referral'
+    activeTab === 'referral'
       ? [
           t.tables.time,
           t.tables.amount,
@@ -139,14 +135,14 @@ export function RewardsHistorySection() {
           t.tables.contribution,
           t.tables.status,
         ]
-      : historyTab === 'team'
+      : activeTab === 'team'
         ? [t.tables.claimTime, t.tables.amount, t.tables.genesisRank, t.tables.status]
         : [t.tables.claimTime, t.tables.amount, t.tables.status]
 
   const historyColWidths =
-    historyTab === 'referral'
+    activeTab === 'referral'
       ? [...rewardsReferralHistoryColWidths]
-      : historyTab === 'team'
+      : activeTab === 'team'
         ? [...rewardsTeamHistoryColWidths]
         : [...rewardsCommunityFundHistoryColWidths]
 
@@ -176,7 +172,7 @@ export function RewardsHistorySection() {
         )
       }}
       options={historyPillItems}
-      value={historyTab}
+      value={activeTab}
     />
   )
 
@@ -192,17 +188,17 @@ export function RewardsHistorySection() {
       />
       <DappTableEmptyMessage
         body={
-          historyTab === 'referral'
+          activeTab === 'referral'
             ? t.rewards.referralHistoryEmpty.body
-            : historyTab === 'team'
+            : activeTab === 'team'
               ? t.rewards.teamHistoryEmpty.body
               : t.rewards.communityFundHistoryEmpty.body
         }
         embedded
         title={
-          historyTab === 'referral'
+          activeTab === 'referral'
             ? t.rewards.referralHistoryEmpty.title
-            : historyTab === 'team'
+            : activeTab === 'team'
               ? t.rewards.teamHistoryEmpty.title
               : t.rewards.communityFundHistoryEmpty.title
         }
@@ -229,7 +225,7 @@ export function RewardsHistorySection() {
             embedded
             onPageChange={onHistoryPageChange}
             page={historyPage}
-            summary={historyTab === 'communityFund' ? communityFundPaginationSummary : undefined}
+            summary={activeTab === 'communityFund' ? communityFundPaginationSummary : undefined}
             total={historyTotal}
           />
         ) : undefined
