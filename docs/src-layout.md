@@ -26,7 +26,7 @@
 | 条件 | 规则 |
 |------|------|
 | 阈值 | 同能力 ≥4 文件、有单一入口语义 |
-| 命名 | 能力名：`flash-swap/` · `trade-swap/` · `hub/` · `season/` |
+| 命名 | 能力名：`flash-swap/` · `trade-swap/` · `hub/` · `season/` · `web3/swap/` · `web3/wallet/` |
 | 禁止 | `components/` · `hooks/` · `libs/` · `utils/` · `helpers/` |
 | 共享 | 跨子袋复用的 quote / pool / pair 等留在页袋根 |
 
@@ -45,7 +45,9 @@ views/dapp/genesis/
 ```text
 src/
   core/{auth,swap,presale}/
-  web3/                           # 链网关 + 读适配（thirdweb、*-read/write、use-presale-queries）
+  web3/                           # 链网关根：thirdweb、abis、presale/referral/reward、error present
+    swap/                         # trade + flash 读/写、pool、quoter
+    wallet/                       # 写链 plumbing、provider、wait、connection state
   app/{bootstrap,shell}/          # shell 内平铺
   shared/{ui,config,styles,lib,api}/
   hooks/  stores/  i18n/messages/{home,app}/

@@ -97,7 +97,7 @@ test('resolveReferralBindError maps MetaMask nested revert selector', async () =
   const { resolveReferralBindError } = await loadModule(
     '/src/web3/resolve-contract-error-message.ts',
   )
-  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet-write-error.ts')
+  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet/wallet-write-error.ts')
 
   const messages = {
     alreadyBound: 'Already bound',
@@ -170,7 +170,7 @@ test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data'
   const { resolveGenesisPurchaseError } = await loadModule(
     '/src/web3/resolve-contract-error-message.ts',
   )
-  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet-write-error.ts')
+  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet/wallet-write-error.ts')
 
   const walletError = normalizeWalletRpcError({
     code: -32603,

@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/use-auth'
-import { hasWalletAccount } from '~/web3/wallet-connection-state'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import {
   ACCOUNT_BANNED_SENTINEL,
   LOGIN_ERROR,

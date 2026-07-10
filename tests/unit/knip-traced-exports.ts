@@ -13,4 +13,4 @@ export {
 } from '../../src/shared/config/breakpoints'
 export { readWalletSession } from '../../src/views/dapp/auth/login-with-wallet'
 export { createMemoryAuthSessionStorage } from '../../src/views/dapp/auth/session'
-export { clearSwapPoolImmutableCache } from '../../src/web3/read-swap-pool'
+export { clearSwapPoolImmutableCache } from '../../src/web3/swap/read-swap-pool'

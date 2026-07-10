@@ -12,7 +12,7 @@ const CALL = {
 
 test('estimateWriteGasLimit uses simulate gas with 20% buffer', async () => {
   const { estimateWriteGasLimit } = await loadModule(
-    '/src/web3/wallet-contract-write.ts',
+    '/src/web3/wallet/wallet-contract-write.ts',
   )
 
   const walletClient = {
@@ -29,7 +29,7 @@ test('estimateWriteGasLimit uses simulate gas with 20% buffer', async () => {
 
 test('estimateWriteGasLimit falls back to estimateContractGas after non-revert simulate failure', async () => {
   const { estimateWriteGasLimit } = await loadModule(
-    '/src/web3/wallet-contract-write.ts',
+    '/src/web3/wallet/wallet-contract-write.ts',
   )
 
   const walletClient = {
@@ -46,7 +46,7 @@ test('estimateWriteGasLimit falls back to estimateContractGas after non-revert s
 
 test('estimateWriteGasLimit throws GAS_ESTIMATE_FAILED when all estimators fail non-revert', async () => {
   const { estimateWriteGasLimit } = await loadModule(
-    '/src/web3/wallet-contract-write.ts',
+    '/src/web3/wallet/wallet-contract-write.ts',
   )
 
   const dead = {

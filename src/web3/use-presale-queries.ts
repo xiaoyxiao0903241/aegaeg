@@ -13,7 +13,7 @@ import {
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
 } from '~/web3/presale-read'
-import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
+import { readErc20Allowance, readErc20Balance } from '~/web3/swap/swap-read'
 import { readIsBindReferral } from '~/web3/referral-read'
 
 type PresaleQueryOptions = {

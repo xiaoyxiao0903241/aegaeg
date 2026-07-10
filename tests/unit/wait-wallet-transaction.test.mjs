@@ -5,7 +5,7 @@ import { loadModule } from './load-module.mjs'
 describe('waitForWalletTransactionConfirmation', () => {
   it('fails fast when hash never appears on any RPC', async () => {
     const { waitForWalletTransactionConfirmation, WalletTransactionWaitError } = await loadModule(
-      '/src/web3/wait-wallet-transaction.ts',
+      '/src/web3/wallet/wait-wallet-transaction.ts',
     )
 
     const hash = `0x${'ab'.repeat(32)}`
@@ -36,7 +36,7 @@ describe('waitForWalletTransactionConfirmation', () => {
 
   it('fails fast when wallet RPC shows pending without a receipt', async () => {
     const { waitForWalletTransactionConfirmation, WalletTransactionWaitError } = await loadModule(
-      '/src/web3/wait-wallet-transaction.ts',
+      '/src/web3/wallet/wait-wallet-transaction.ts',
     )
 
     const hash = `0x${'cd'.repeat(32)}`

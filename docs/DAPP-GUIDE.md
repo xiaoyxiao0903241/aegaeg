@@ -23,7 +23,7 @@
 | 合约地址 | `src/shared/config/contracts.ts` |
 | Query key / 失效 | `src/shared/api/query/*` |
 | Auth | `src/app/bootstrap/auth-provider.tsx`、`src/core/auth/*`、`src/views/dapp/auth/*` |
-| Swap / Genesis / Claim 写链 | `src/web3/*-write.ts`、`reward-claim.ts` |
+| Swap / Genesis / Claim 写链 | `src/web3/swap/*-write.ts`、`presale-write.ts`、`referral-write.ts`、`reward-claim.ts` |
 | 颜色 / 字阶 | `theme.css`、`src/shared/ui/text.tsx` |
 
 ## 4. 链上读写

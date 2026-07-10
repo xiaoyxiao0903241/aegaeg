@@ -4,8 +4,8 @@ import { SWAP_CONFIG } from '~/shared/config/swap'
 import { buildSwapDeadline } from '~/core/swap/build-swap-deadline'
 import { ERC20_METHODS, MAX_UINT256, SWAP_ROUTER_V3_METHODS, ERC20_ERRORS } from '~/web3/abis'
 import { createWalletReadClient } from '~/web3/chain-read-client'
-import { fetchSwapQuote, readErc20Allowance } from '~/web3/swap-read'
-import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
+import { fetchSwapQuote, readErc20Allowance } from '~/web3/swap/swap-read'
+import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const swapRouterWriteAbi = parseWriteAbi(SWAP_ROUTER_V3_METHODS.exactInputSingle)

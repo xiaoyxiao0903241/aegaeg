@@ -6,7 +6,7 @@ import assert from 'node:assert/strict'
 import { loadModule } from '../unit/load-module.mjs'
 
 const { fetchSwapQuote, readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } =
-  await loadModule('/src/web3/swap-read.ts')
+  await loadModule('/src/web3/swap/swap-read.ts')
 const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
 const pool = await readSwapPoolImmutableMetadata()

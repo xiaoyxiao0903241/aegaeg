@@ -10,7 +10,7 @@ import type { ClaimConfirmResult } from '~/shared/api/types'
 import { normalizeTeamRewardClaim } from '~/shared/api/normalize-team-reward-claim'
 import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/web3/abis'
 import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/resolve-contract-error-message'
-import { parseWriteAbi, writeContractViaWallet, type ConfirmedWalletWrite } from '~/web3/wallet-contract-write'
+import { parseWriteAbi, writeContractViaWallet, type ConfirmedWalletWrite } from '~/web3/wallet/wallet-contract-write'
 
 const rewardClaimWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
 

@@ -34,8 +34,8 @@ function createMockClient({ fee = 100, sqrtBefore = 1_000_000n, quote } = {}) {
 }
 
 test('fetchSwapQuote wires pool fee, quoter out, and price impact bps', async () => {
-  const { fetchSwapQuote } = await loadModule('/src/web3/swap-read.ts')
-  const { clearSwapPoolImmutableCache } = await loadModule('/src/web3/read-swap-pool.ts')
+  const { fetchSwapQuote } = await loadModule('/src/web3/swap/swap-read.ts')
+  const { clearSwapPoolImmutableCache } = await loadModule('/src/web3/swap/read-swap-pool.ts')
   clearSwapPoolImmutableCache()
 
   const client = createMockClient({
@@ -63,7 +63,7 @@ test('fetchSwapQuote wires pool fee, quoter out, and price impact bps', async ()
 })
 
 test('quoteV3ExactInputSingle returns zeros for zero amountIn without RPC', async () => {
-  const { quoteV3ExactInputSingle } = await loadModule('/src/web3/quote-v3-exact-input.ts')
+  const { quoteV3ExactInputSingle } = await loadModule('/src/web3/swap/quote-v3-exact-input.ts')
   const client = createMockClient()
 
   const result = await quoteV3ExactInputSingle({
