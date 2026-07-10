@@ -11,17 +11,15 @@ import {
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { fetchSwapQuote } from '~/web3/swap/swap-read'
-import { approveTokenIfNeeded, swapTokens } from '~/web3/swap/swap-write'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useSwapQuote } from '~/views/dapp/swap/use-swap-quote'
 import { useSwapPoolReads } from '~/views/dapp/swap/use-swap-pool-reads'
 import { useSwapBalances } from '~/views/dapp/swap/trade-swap/use-swap-balances'
 import { useSwapSpotRates } from '~/views/dapp/swap/trade-swap/use-swap-spot-rates'
+import { submitTradeSwap } from '~/views/dapp/swap/trade-swap/submit-trade-swap'
 
 /**
  * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.
@@ -116,33 +114,7 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   }
 
   async function submit(): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-    if (!account || !wallet) {
-      const error = WALLET_GATE_ERROR.NOT_CONNECTED
-      core.setSubmitError(error)
-      return { ok: false, error }
-    }
-
-    const result = await core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
-      await approveTokenIfNeeded({
-        wallet,
-        token: pair.sell.address,
-        amountIn: core.debouncedAmountIn,
-      })
-      await balancesQuery.refetch()
-      const amountOutMin = await assertStillSubmittable()
-
-      await swapTokens({
-        wallet,
-        amountIn: core.debouncedAmountIn,
-        tokenIn: pair.sell.address,
-        tokenOut: pair.buy.address,
-        amountOutMin,
-      })
-      invalidateAfterSwap()
-      await balancesQuery.refetch()
-    })
-    if (result.ok) return { ok: true }
-    return { ok: false, error: result.error }
+    return submitTradeSwap({ account, wallet, pair, core, balancesQuery })
   }
 
   return {
