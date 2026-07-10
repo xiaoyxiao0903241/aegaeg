@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { useGenesisWidget } from '~/hooks/use-genesis-widget'
+import { useGenesisWidget } from '~/views/dapp/genesis/use-genesis-widget'
 import { GenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'

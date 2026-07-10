@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { useGenesisWidget } from '~/hooks/use-genesis-widget'
+import type { useGenesisWidget } from '~/views/dapp/genesis/use-genesis-widget'
 
 export type GenesisWidgetContextValue = ReturnType<typeof useGenesisWidget>
 
