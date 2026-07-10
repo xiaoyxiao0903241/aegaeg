@@ -2,9 +2,16 @@
 /**
  * Home / DApp entry JS size probe (post `pnpm build`).
  * Usage: node scripts/probe-home-bundle.mjs [distDir]
+ *
+ * Exits 1 when Home sync graph looks polluted (web3 markers / size / copy leak).
  */
 import { readFileSync, statSync, existsSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import {
+  HOME_WEB3_POLLUTION_MARKERS,
+  collectHomeBundleFailures,
+  matchBundleMarkers,
+} from './lib/home-bundle-assertions.mjs'
 
 const distDir = resolve(process.argv[2] ?? 'dist')
 const reportPath = resolve(distDir, 'bundle-probe.json')
@@ -31,6 +38,22 @@ function summarize(scripts) {
   return { totalBytes: total, scripts: rows, count: rows.length }
 }
 
+/** @param {string[]} scripts */
+function readSyncScriptTexts(scripts) {
+  /** @type {string[]} */
+  const texts = []
+  for (const src of scripts) {
+    const file = resolve(distDir, src.slice(1))
+    if (!existsSync(file)) continue
+    try {
+      texts.push(readFileSync(file, 'utf8'))
+    } catch {
+      // ignore unreadable assets
+    }
+  }
+  return texts
+}
+
 /** @param {string} label @param {string} htmlRel */
 function probeEntry(label, htmlRel) {
   const htmlPath = resolve(distDir, htmlRel)
@@ -41,27 +64,16 @@ function probeEntry(label, htmlRel) {
   const summary = summarize(scriptSrcs(htmlPath))
   const html = readFileSync(htmlPath, 'utf8')
   const injected = html.includes('id="aegis-messages"')
-  const hasJa = summary.scripts.some(({ path }) => {
-    try {
-      return readFileSync(resolve(distDir, path.slice(1)), 'utf8').includes('未来の価値')
-    } catch {
-      return false
-    }
-  })
-  const hasSlippage = summary.scripts.some(({ path }) => {
-    try {
-      return readFileSync(resolve(distDir, path.slice(1)), 'utf8').includes('slippage')
-    } catch {
-      return false
-    }
-  })
-  const hasThirdweb = summary.scripts.some(({ path }) => {
-    try {
-      return readFileSync(resolve(distDir, path.slice(1)), 'utf8').includes('thirdweb/react')
-    } catch {
-      return false
-    }
-  })
+  const texts = readSyncScriptTexts(summary.scripts.map((r) => r.path))
+  const joined = texts.join('\n')
+
+  const hasJa = joined.includes('未来の価値')
+  const hasSlippage = joined.includes('slippage')
+  const hasThirdwebReact = joined.includes('thirdweb/react')
+  const matchedPollutionMarkers = [
+    ...new Set(matchBundleMarkers(joined, HOME_WEB3_POLLUTION_MARKERS)),
+  ]
+
   return {
     label,
     html: htmlRel,
@@ -78,17 +90,22 @@ function probeEntry(label, htmlRel) {
     syncContainsJapaneseCopy: hasJa,
     /** Home should ideally avoid DApp-only copy; DApp may contain it */
     syncContainsSlippage: hasSlippage,
-    syncContainsThirdwebReact: hasThirdweb,
+    /** Legacy single-string probe — insufficient alone (often minified away). */
+    syncContainsThirdwebReact: hasThirdwebReact,
+    matchedPollutionMarkers,
   }
 }
 
 const home = probeEntry('home-en', 'en/index.html')
 const dapp = probeEntry('dapp-en', 'en/app.html')
+const homeFailures = collectHomeBundleFailures(home)
 const report = {
   generatedAt: new Date().toISOString(),
   distDir,
   home,
   dapp,
+  homeFailures,
+  ok: homeFailures.length === 0,
 }
 
 writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`)
@@ -103,6 +120,13 @@ function print(entry) {
   console.log(
     `  sync has JP copy: ${entry.syncContainsJapaneseCopy} · slippage: ${entry.syncContainsSlippage} · thirdweb/react: ${entry.syncContainsThirdwebReact}`,
   )
+  console.log(
+    `  pollution markers: ${
+      entry.matchedPollutionMarkers.length > 0
+        ? entry.matchedPollutionMarkers.join(', ')
+        : '(none)'
+    }`,
+  )
   for (const row of entry.top) {
     console.log(`    ${String(row.kb).padStart(5)} KB  ${row.path}`)
   }
@@ -111,3 +135,13 @@ function print(entry) {
 print(home)
 print(dapp)
 console.log(`\nWrote ${reportPath}`)
+
+if (homeFailures.length > 0) {
+  console.error('\nHome bundle probe FAILED:')
+  for (const failure of homeFailures) {
+    console.error(`  - ${failure}`)
+  }
+  process.exit(1)
+}
+
+console.log('\nHome bundle probe OK')

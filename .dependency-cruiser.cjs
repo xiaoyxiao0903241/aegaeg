@@ -47,7 +47,7 @@ module.exports = {
       name: 'home-no-web3',
       severity: 'error',
       from: { path: '^src/views/home/' },
-      to: { path: '(^src/web3/|^thirdweb)' },
+      to: { path: '(^src/web3/|^thirdweb|^viem)' },
     },
     {
       name: 'ui-is-dumb',

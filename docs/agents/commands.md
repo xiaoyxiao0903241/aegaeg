@@ -8,7 +8,7 @@
 |------|------|
 | `pnpm dev` | tokens + render-home + Vite `:5174` |
 | `pnpm build` | tokens + `tsc -b` + render-home + Vite production build |
-| `pnpm probe:bundle` | 读 `dist/*/index.html` / `app.html` 同步 JS 体积与文案泄漏探针 |
+| `pnpm probe:bundle` | 读 `dist/*/index.html` / `app.html` 同步 JS；**Home 污染标记 / 体积上限失败则 exit 1** |
 | `pnpm env:staging` / `pnpm env:prod` / `pnpm env:status` | 切换 `.env.local` staging 覆盖 |
 
 ## 验证门禁

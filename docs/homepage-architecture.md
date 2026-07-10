@@ -57,7 +57,7 @@ home/main.tsx → home-boot → I18nProvider → HomeProviders → HomeApp
 
 ## 验证
 
-`pnpm check` · `pnpm build`（Home 不预载 thirdweb；`modulePreload: false` 有意保留）· 可选 `pnpm test:e2e`
+`pnpm check` · `pnpm build`（Home 不预载 thirdweb；`modulePreload: false` 有意保留）· `pnpm probe:bundle`（Home sync 污染标记 / 体积上限 **fail**；勿只靠 `thirdweb/react` 字符串）· 可选 `pnpm test:e2e`
 
 > Bundle 债（S6，2026-07-10 复测）：多入口下拆 `thirdweb`/`viem` 仍无绿路径。
 >
@@ -67,4 +67,4 @@ home/main.tsx → home-boot → I18nProvider → HomeProviders → HomeApp
 > | `codeSplitting` + `includeDependenciesRecursively: false`（仅 tw/viem） | 绿 ~435KB、无 thirdweb | 总 sync ~1.6MB→~4.6MB（thirdweb 内部 async 被压成单 sync chunk） |
 > | 全量 groups + `false` + `strictExecutionOrder` | 图打穿（slippage 泄漏进 Home） | 不可用 |
 >
-> 下一条可行路径：DApp 对 `WebRootProviders`/thirdweb **动态 import**（结构拆图），或分 build；勿再盲加 named vendor chunk。
+> 下一条可行路径：对整棵 `WebRootProviders` + `DappShell` 树做 lazy（结构拆图），或分 build；勿再盲加 named vendor chunk / 勿只 lazy Provider。

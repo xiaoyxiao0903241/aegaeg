@@ -14,4 +14,7 @@ test('dependency-cruiser config defines required rules', () => {
   assert.ok(ruleNames.includes('home-no-web3'))
   assert.ok(ruleNames.includes('web3-gateway'))
   assert.ok(ruleNames.includes('ui-is-dumb'))
+
+  const homeNoWeb3 = config.forbidden.find((rule) => rule.name === 'home-no-web3')
+  assert.match(homeNoWeb3.to.path, /viem/)
 })
