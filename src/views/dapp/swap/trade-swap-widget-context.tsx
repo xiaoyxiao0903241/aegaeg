@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react'
-import { useSwapWidget } from '~/hooks/use-swap-widget'
+import { useSwapWidget } from '~/views/dapp/swap/use-swap-widget'
 
 type TradeSwapWidgetContextValue = ReturnType<typeof useSwapWidget>
 

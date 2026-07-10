@@ -23,8 +23,8 @@ import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-mess
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
-import { useSwapQuote } from '~/hooks/use-swap-quote'
-import { useSwapPoolReads } from '~/hooks/queries/use-swap-pool-reads'
+import { useSwapQuote } from '~/views/dapp/swap/use-swap-quote'
+import { useSwapPoolReads } from '~/views/dapp/swap/use-swap-pool-reads'
 
 /**
  * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.

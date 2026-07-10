@@ -12,7 +12,7 @@ import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-mess
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
-import { useSwapQuote } from '~/hooks/use-swap-quote'
+import { useSwapQuote } from '~/views/dapp/swap/use-swap-quote'
 import { resolveLiveQuotedOut } from '~/core/swap/resolve-live-quoted-out'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/views/dapp/web3/flash-swap-read'
 import { approveUsdtForFlashSwapIfNeeded, flashSwap } from '~/views/dapp/web3/flash-swap-write'
