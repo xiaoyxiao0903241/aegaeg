@@ -12,6 +12,7 @@ import {
   useGenesisPurchaseActions,
   type GenesisPurchaseResult,
 } from '~/views/dapp/genesis/use-genesis-purchase-actions'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 export type { GenesisPurchaseResult }
 
@@ -19,6 +20,7 @@ export type { GenesisPurchaseResult }
 export function useGenesisWidget() {
   const { messages: t } = useI18n()
   const wallet = useActiveWallet()
+  const { writeReady } = useWriteReadiness()
   const reads = useGenesisChainReads()
   const countdownRefreshRef = useRef<string | null>(null)
   const [sharesDraft, setSharesDraft] = useState(0)
@@ -28,6 +30,7 @@ export function useGenesisWidget() {
     sharesDraft,
     countdownUnits: t.genesis.countdownUnits,
   })
+  const canPurchase = model.canPurchase && writeReady
 
   function setShares(next: number) {
     setSharesDraft(next)
@@ -38,7 +41,7 @@ export function useGenesisWidget() {
     wallet,
     address: reads.address,
     activePhase: reads.activePhase,
-    canPurchase: model.canPurchase,
+    canPurchase,
     isApproved: model.isApproved,
     needsApproval: model.needsApproval,
     purchaseAmount: model.purchaseAmount,
@@ -78,7 +81,7 @@ export function useGenesisWidget() {
     needsApproval: model.needsApproval,
     isApproved: model.isApproved,
     hasSufficientBalance: model.hasSufficientBalance,
-    canPurchase: model.canPurchase,
+    canPurchase,
     isLoading: reads.isLoading,
     isSubmitting: actions.isSubmitting,
     submittingAction: actions.submittingAction,

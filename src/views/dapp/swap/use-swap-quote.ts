@@ -37,6 +37,8 @@ export type UseSwapQuoteOptions<TQuote> = {
   allowance: bigint
   balancesLoaded: boolean
   walletReady: boolean
+  /** When set, gates submit (not balance reads). Defaults to `walletReady`. */
+  writeReady?: boolean
   isBalancesLoading: boolean
   slippageBps: number
   debounceMs?: number
@@ -56,6 +58,7 @@ export function useSwapQuote<TQuote>({
   allowance,
   balancesLoaded,
   walletReady,
+  writeReady = walletReady,
   isBalancesLoading,
   slippageBps,
   debounceMs = DEFAULT_QUOTE_DEBOUNCE_MS,
@@ -140,7 +143,7 @@ export function useSwapQuote<TQuote>({
   const canSubmit =
     !isAmountDebouncing &&
     canSubmitQuotedSwap({
-      walletReady,
+      walletReady: writeReady,
       amountIn: debouncedAmountIn,
       sellBalance,
       quotedOut,
@@ -193,7 +196,7 @@ export function useSwapQuote<TQuote>({
       const liveAmountOutMin =
         liveQuotedOut > 0n ? calcAmountOutMin(liveQuotedOut, slippageBps) : 0n
       assertQuotedSwapStillSubmittable({
-        walletReady,
+        walletReady: writeReady,
         amountIn: debouncedAmountIn,
         sellBalance,
         quotedOut: liveQuotedOut,

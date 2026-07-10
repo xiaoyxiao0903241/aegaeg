@@ -25,6 +25,12 @@ export const CLAIM_CONFIRM_SYNC_FAILED = 'CLAIM_CONFIRM_SYNC_FAILED'
 
 export const WALLET_WRITE_ERROR = {
   GAS_ESTIMATE_FAILED: 'WALLET_GAS_ESTIMATE_FAILED',
+  /** Live wallet address ≠ intent captured at write start. */
+  INTENT_ADDRESS_MISMATCH: 'WALLET_INTENT_ADDRESS_MISMATCH',
+  /** Live chain id ≠ expected app chain (BSC). */
+  WRONG_CHAIN: 'WALLET_WRONG_CHAIN',
+  /** eth_sendTransaction timed out before a hash — may still broadcast; treat as unknown. */
+  SUBMIT_UNKNOWN: 'WALLET_SUBMIT_UNKNOWN',
 } as const
 
 /** Quote RPC / router failure — map via i18n `errors.quoteFailed`. */

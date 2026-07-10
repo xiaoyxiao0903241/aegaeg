@@ -20,6 +20,7 @@ import { useSwapPoolReads } from '~/views/dapp/swap/use-swap-pool-reads'
 import { useSwapBalances } from '~/views/dapp/swap/trade-swap/use-swap-balances'
 import { useSwapSpotRates } from '~/views/dapp/swap/trade-swap/use-swap-spot-rates'
 import { submitTradeSwap } from '~/views/dapp/swap/trade-swap/submit-trade-swap'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 /**
  * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.
@@ -28,6 +29,7 @@ import { submitTradeSwap } from '~/views/dapp/swap/trade-swap/submit-trade-swap'
 export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
+  const { writeReady } = useWriteReadiness()
   const direction = useSwapDirectionStore((state) => state.direction)
   const flipDirectionInStore = useSwapDirectionStore((state) => state.flipDirection)
   const [slippage, setSlippageRaw] = useState(() =>
@@ -68,6 +70,7 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
     allowance,
     balancesLoaded,
     walletReady,
+    writeReady,
     isBalancesLoading,
     slippageBps,
     quoteRefreshIntervalMs: SWAP_CONFIG.quoteRefreshIntervalMs,

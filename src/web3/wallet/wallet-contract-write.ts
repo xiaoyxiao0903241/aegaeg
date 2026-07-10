@@ -7,7 +7,6 @@ import {
   type Hash,
   type TransactionReceipt,
 } from 'viem'
-import { bsc } from 'viem/chains'
 import type { Wallet } from 'thirdweb/wallets'
 import { getAddress } from 'thirdweb/utils'
 import {
@@ -25,6 +24,13 @@ import { resolveWalletEip1193Provider } from '~/web3/wallet/resolve-wallet-eip11
 import { assertWalletTransactionHash } from '~/web3/wallet/wallet-write-error'
 import { walletProviderRequest } from '~/web3/wallet/wallet-provider-request'
 import { waitForWalletTransactionConfirmation } from '~/web3/wallet/wait-wallet-transaction'
+import {
+  assertWriteIntentMatches,
+  createWriteIntent,
+  parseEip1193ChainId,
+} from '~/web3/wallet/assert-write-intent'
+import { defaultChain } from '~/web3/thirdweb'
+import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
 
 export type ConfirmedWalletWrite = TransactionReceipt & { transactionHash: Hash }
 
@@ -167,6 +173,7 @@ export async function writeContractViaWallet({
   value?: bigint
 }): Promise<ConfirmedWalletWrite> {
   const account = requireWalletAccount(wallet)
+  const intent = createWriteIntent(account.address, defaultChain.id)
   const provider = resolveWalletEip1193Provider(wallet)
 
   const gasLimit = await preflightContractWrite({
@@ -178,27 +185,47 @@ export async function writeContractViaWallet({
     value,
   })
 
+  const liveAccount = requireWalletAccount(wallet)
+  const chainIdHex = await walletProviderRequest<string>({
+    provider,
+    method: 'eth_chainId',
+  })
+  assertWriteIntentMatches({
+    intent,
+    liveAddress: liveAccount.address,
+    liveChainId: parseEip1193ChainId(chainIdHex),
+  })
+
   const data = encodeFunctionData({
     abi,
     functionName,
     args,
   } as Parameters<typeof encodeFunctionData>[0])
 
-  const hash = await walletProviderRequest<Hash>({
-    provider,
-    method: 'eth_sendTransaction',
-    params: [
-      {
-        chainId: numberToHex(bsc.id),
-        data,
-        from: getAddress(account.address),
-        gas: numberToHex(gasLimit),
-        to: address,
-        ...(value ? { value: numberToHex(value) } : {}),
-      },
-    ],
-    timeoutMessage: 'Wallet closed or did not complete the transaction request',
-  })
+  let hash: Hash
+  try {
+    hash = await walletProviderRequest<Hash>({
+      provider,
+      method: 'eth_sendTransaction',
+      params: [
+        {
+          chainId: numberToHex(defaultChain.id),
+          data,
+          from: intent.expectedAddress,
+          gas: numberToHex(gasLimit),
+          to: address,
+          ...(value ? { value: numberToHex(value) } : {}),
+        },
+      ],
+      timeoutMessage: 'Wallet closed or did not complete the transaction request',
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    if (/did not (respond|complete)|timed out|timeout/i.test(message)) {
+      throw new WalletSubmitUnknownError(WALLET_WRITE_ERROR.SUBMIT_UNKNOWN)
+    }
+    throw error
+  }
 
   assertWalletTransactionHash(hash)
 

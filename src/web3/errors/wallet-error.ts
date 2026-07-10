@@ -1,4 +1,5 @@
 import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
+import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
 import { WALLET_GATE_ERROR, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 import {
   type ErrorRule,
@@ -69,7 +70,22 @@ export function resolveWalletTransactionError(
   ) {
     return messages.transactionUnknown
   }
-  return resolveFirstMatch(toErrorText(readErrorText(error)), WALLET_TRANSACTION_ERROR_RULES, messages)
+  if (
+    error instanceof WalletSubmitUnknownError &&
+    messages.transactionUnknown
+  ) {
+    return messages.transactionUnknown
+  }
+  const rawEarly = readErrorText(error)
+  if (
+    (rawEarly === WALLET_WRITE_ERROR.WRONG_CHAIN ||
+      rawEarly === WALLET_WRITE_ERROR.INTENT_ADDRESS_MISMATCH ||
+      rawEarly === WALLET_WRITE_ERROR.SUBMIT_UNKNOWN) &&
+    messages.transactionUnknown
+  ) {
+    return messages.transactionUnknown
+  }
+  return resolveFirstMatch(toErrorText(rawEarly), WALLET_TRANSACTION_ERROR_RULES, messages)
 }
 
 export function isUserRejectedWalletError(error: unknown): boolean {

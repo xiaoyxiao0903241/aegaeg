@@ -6,6 +6,7 @@ export {
   lightTheme,
   useActiveAccount,
   useActiveWallet,
+  useActiveWalletChain,
   useDisconnect,
   useIsAutoConnecting,
 } from 'thirdweb/react'

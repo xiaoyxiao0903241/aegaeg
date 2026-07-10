@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 import { readFlashSwapBalances, readFlashSwapQuote } from '~/web3/swap/flash-swap-read'
 import { useFlashSwapSpotRates } from '~/views/dapp/swap/flash-swap/use-flash-swap-spot-rates'
 import { submitFlashSwap } from '~/views/dapp/swap/flash-swap/submit-flash-swap'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 /** Fixed tolerance (0.5%) below the displayed quote for the on-chain floor. */
 const FLASH_SWAP_SLIPPAGE_BPS = 50
@@ -19,6 +20,7 @@ const FLASH_SWAP_SLIPPAGE_BPS = 50
 export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
+  const { writeReady } = useWriteReadiness()
   const pair = getSwapPairTokens('reverse')
   const readClient = useChainReadClient()
 
@@ -46,6 +48,7 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
     allowance: 0n,
     balancesLoaded,
     walletReady,
+    writeReady,
     isBalancesLoading,
     slippageBps: FLASH_SWAP_SLIPPAGE_BPS,
     quoteRefreshIntervalMs: SWAP_CONFIG.quoteRefreshIntervalMs,
