@@ -7,7 +7,7 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { GenesisPromoCard } from '~/views/dapp/genesis/genesis-promo-card'
 import { SwapAmountSkeleton, SwapBalanceSkeleton } from '~/app/shell/dapp-skeleton'
 import { TokenChip } from '~/app/shell/token-chip'
-import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
+import { useGenesisPromo } from '~/hooks/use-genesis-promo'
 import { useI18n } from '~/i18n/use-i18n'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
@@ -228,6 +228,7 @@ export function SwapAmountFlow({
   sessionReady,
   showBuyAmountSkeleton,
   walletReady,
+  amountLocked = false,
 }: {
   amountBoxClassName?: string
   buy: AmountToken
@@ -242,15 +243,18 @@ export function SwapAmountFlow({
   sessionReady: boolean
   showBuyAmountSkeleton: boolean
   walletReady: boolean
+  /** Lock sell input / percent while a tx is in flight (amount already snapshotted). */
+  amountLocked?: boolean
 }) {
   const { messages: t } = useI18n()
   const swapPreview = !sessionReady
+  const sellDisabled = (sessionReady && !walletReady) || amountLocked
 
   const sellAmountProps: Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
     'aria-label': string
   } = {
     'aria-label': `${sell.symbol} sell amount`,
-    disabled: sessionReady && !walletReady,
+    disabled: sellDisabled,
     inputMode: 'decimal',
     onChange: (event) => onSellAmountChange(event.currentTarget.value),
     placeholder: '0.00',
@@ -270,7 +274,7 @@ export function SwapAmountFlow({
 
       <PercentButtonRow
         className="pt-2.5 max-dapp:mt-3 max-dapp:py-0"
-        disabled={!swapPreview && !walletReady}
+        disabled={(!swapPreview && !walletReady) || amountLocked}
         onSelect={onFillPercent}
       />
 
@@ -332,7 +336,7 @@ export function SwapMetaPanel({
 
 export function SwapGenesisFooter({ onSelectGenesis }: { onSelectGenesis: () => void }) {
   const { messages: t } = useI18n()
-  const genesis = useGenesisWidgetContext()
+  const genesis = useGenesisPromo()
 
   return (
     <DappWidgetConnectFooter>

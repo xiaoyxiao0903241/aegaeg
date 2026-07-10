@@ -11,6 +11,7 @@ import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
 import {
   SwapAmountFlow,
   SwapFlowButton,
@@ -43,10 +44,9 @@ export function FlashSwapWidget({
     walletReady: swap.walletReady,
   })
 
-  // Kept as useCallback: effect dependency (Compiler does not replace effect identity needs).
-  const showFlashSwapError = useCallback(
-    (error: unknown) => {
-      const message = resolveFlashSwapUserMessage(
+  const resolveFlashMessage = useCallback(
+    (error: unknown) =>
+      resolveFlashSwapUserMessage(
         error,
         {
           walletNotConnected: t.genesis.walletNotConnected,
@@ -58,28 +58,12 @@ export function FlashSwapWidget({
         },
         t.wallet.transactionErrors,
         t.errors.chain.fallback,
-      )
-      if (message) toast.error(message)
-    },
+      ),
     [t],
   )
 
   const submitErrorMessage =
-    !swap.error || swap.isSubmitting
-      ? null
-      : resolveFlashSwapUserMessage(
-          swap.error,
-          {
-            walletNotConnected: t.genesis.walletNotConnected,
-            insufficientAllowance: t.genesis.insufficientAllowance,
-            insufficientUsd1: t.genesis.insufficientUsd1,
-            purchaseUnavailable: t.genesis.purchaseUnavailable,
-            transactionCancelled: t.swap.transactionCancelled,
-            quoteFailed: t.errors.quoteFailed,
-          },
-          t.wallet.transactionErrors,
-          t.errors.chain.fallback,
-        )
+    !swap.error || swap.isSubmitting ? null : resolveFlashMessage(swap.error)
 
   async function handleSubmit() {
     const result = await swap.submit()
@@ -88,14 +72,14 @@ export function FlashSwapWidget({
       return
     }
     if (result.error != null) {
-      showFlashSwapError(result.error)
+      presentUserFacingError(result.error, resolveFlashMessage)
     }
   }
 
   useEffect(() => {
     if (!swap.validationError) return
-    showFlashSwapError(swap.validationError)
-  }, [showFlashSwapError, swap.validationError])
+    presentUserFacingError(swap.validationError, resolveFlashMessage)
+  }, [resolveFlashMessage, swap.validationError])
 
   return (
     <>
@@ -123,6 +107,7 @@ export function FlashSwapWidget({
           sessionReady={sessionReady}
           showBuyAmountSkeleton={showBuyAmountSkeleton}
           walletReady={swap.walletReady}
+          amountLocked={swap.isSubmitting}
         />
 
         <SwapMetaPanel

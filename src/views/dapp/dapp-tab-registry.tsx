@@ -42,7 +42,7 @@ function CommunityTabWidget({ onSelectTab }: TabWidgetProps) {
   return <CommunityWidget onSelectTab={onSelectTab} />
 }
 
-/** Static tab registry — R3-move updates module paths here only. */
+/** Sync registry — loading UX is data-driven inside tabs, not code-split Suspense. */
 export const dappTabEntries: readonly DappTabEntry[] = [
   { id: 'swap', Widget: SwapTabWidget, Content: SwapContent },
   { id: 'genesis', Widget: GenesisTabWidget, Content: GenesisContent },

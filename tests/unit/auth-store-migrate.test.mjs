@@ -48,3 +48,37 @@ test('mergePersistedState drops expired JWT sessions', async () => {
 
   assert.deepEqual(merged.sessionsByAddress, {})
 })
+
+test('mergePersistedState prefers store tables over legacy and keeps signatures', async () => {
+  const { mergePersistedState } = await loadModule('/src/stores/auth-store.ts')
+
+  const header = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64url')
+  const payload = Buffer.from(JSON.stringify({ exp: 9_999_999_999 })).toString('base64url')
+  const storeToken = `${header}.${payload}.store`
+  const legacyToken = `${header}.${payload}.legacy`
+  const address = '0xAbC0000000000000000000000000000000000001'
+  const key = address.toLowerCase()
+
+  const merged = mergePersistedState(
+    {
+      sessionsByAddress: {
+        [key]: { address, token: storeToken, savedAt: 2 },
+      },
+      signaturesByAddress: {
+        [key]: { address, message: 'siwe', signature: '0xsig', savedAt: 9 },
+      },
+    },
+    {
+      sessionsByAddress: {
+        [key]: { address, token: legacyToken, savedAt: 1 },
+      },
+      signaturesByAddress: {
+        [key]: { address, message: 'old', signature: '0xold', savedAt: 1 },
+      },
+    },
+  )
+
+  assert.equal(merged.sessionsByAddress[key].token, storeToken)
+  assert.equal(merged.signaturesByAddress[key].signature, '0xsig')
+  assert.equal(merged.signaturesByAddress[key].savedAt, 9)
+})

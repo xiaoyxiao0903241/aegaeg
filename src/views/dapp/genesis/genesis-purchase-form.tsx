@@ -19,10 +19,10 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season-option-skeleton'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
 import {
-  isUserRejectedWalletError,
   resolveGenesisPurchaseError,
   resolveWalletTransactionError,
 } from '~/views/dapp/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
 
@@ -101,10 +101,9 @@ export function GenesisPurchaseForm() {
     }
 
     if (result.error) {
-      if (isUserRejectedWalletError(result.error)) return
-      const message =
-        resolveWalletTransactionError(result.error, t.wallet.transactionErrors) ??
-        resolveGenesisPurchaseError(result.error, {
+      presentUserFacingError(result.error, (error) =>
+        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
+        resolveGenesisPurchaseError(error, {
           insufficientAllowance: t.genesis.insufficientAllowance,
           insufficientUsd1: t.genesis.insufficientUsd1,
           purchaseUnavailable: t.genesis.purchaseUnavailable,
@@ -119,18 +118,18 @@ export function GenesisPurchaseForm() {
           invalidPhase: t.genesis.errors.invalidPhase,
           systemConfig: t.genesis.errors.systemConfig,
         }) ??
-        resolveApiUserFacingError(result.error, t.errors.api) ??
-        t.errors.chain.fallback
-      if (message) toast.error(message)
+        resolveApiUserFacingError(error, t.errors.api) ??
+        t.errors.chain.fallback,
+      )
     }
   }
 
   useEffect(() => {
     if (!genesis.error) return
-    if (isUserRejectedWalletError(genesis.error)) return
-    const message =
-      resolveApiUserFacingError(genesis.error, t.errors.api) ?? t.errors.loadFailed
-    if (message) toast.error(message)
+    presentUserFacingError(
+      genesis.error,
+      (error) => resolveApiUserFacingError(error, t.errors.api) ?? t.errors.loadFailed,
+    )
   }, [genesis.error, t.errors.api, t.errors.loadFailed])
 
   return (

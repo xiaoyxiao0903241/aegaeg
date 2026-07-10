@@ -16,10 +16,10 @@ import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
 import {
-  isUserRejectedWalletError,
   resolveReferralBindError,
   resolveWalletTransactionError,
 } from '~/views/dapp/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
 import {
   CommunityReferralLinkCard,
   CommunityReferrerBindCard,
@@ -67,13 +67,12 @@ function CommunityConnectedWidget({
 
   useEffect(() => {
     if (!referral.error) return
-    if (isUserRejectedWalletError(referral.error)) return
-    const message =
-      resolveWalletTransactionError(referral.error, t.wallet.transactionErrors) ??
-      resolveReferralBindError(referral.error, t.community.bindErrors) ??
-      resolveApiUserFacingError(referral.error, t.errors.api) ??
-      t.community.bindErrors.failed
-    if (message) toast.error(message)
+    presentUserFacingError(referral.error, (error) =>
+      resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
+      resolveReferralBindError(error, t.community.bindErrors) ??
+      resolveApiUserFacingError(error, t.errors.api) ??
+      t.community.bindErrors.failed,
+    )
   }, [
     referral.error,
     t.community.bindErrors,

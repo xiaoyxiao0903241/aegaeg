@@ -77,6 +77,7 @@ export function isPermanentLoginErrorMessage(loginError: string | null): boolean
   if (loginError === 'LOGIN_USER_REJECTED') return true
   if (loginError === 'LOGIN_SIGNATURE_REJECTED') return true
   if (loginError === 'LOGIN_FAILED') return true
+  // WALLET_NOT_CONNECTED is transient (account may appear on next tick) — do not latch.
   // Legacy raw English latches (pre-sentinel) — keep classifying until purged.
   if (/rejected|denied|cancel/i.test(loginError)) return true
   if (/nonce|signature|expired|invalid/i.test(loginError)) return true

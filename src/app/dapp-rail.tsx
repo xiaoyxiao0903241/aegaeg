@@ -7,7 +7,7 @@ import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Text } from '~/shared/ui/text'
-import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
+import { useGenesisPromo } from '~/hooks/use-genesis-promo'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 
 type RailIndicator = {
@@ -34,7 +34,7 @@ const railItem = tv({
 
 function useRailTooltips() {
   const { messages: t } = useI18n()
-  const genesis = useGenesisWidgetContext()
+  const genesis = useGenesisPromo()
 
   return useMemo(
     () => ({

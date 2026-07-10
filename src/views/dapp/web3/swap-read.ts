@@ -6,7 +6,14 @@ import { ERC20_METHODS } from '~/views/dapp/web3/abis'
 import {
   readSwapPoolImmutableMetadata,
   readSwapPoolSpotPrice,
+  type SwapPoolImmutableMetadata,
+  type SwapPoolSpotPrice,
 } from '~/views/dapp/web3/read-swap-pool'
+
+export type SwapPoolReadContext = {
+  pool: SwapPoolImmutableMetadata
+  spot: SwapPoolSpotPrice
+}
 import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
 import type { ChainReadClient } from '~/views/dapp/web3/chain-read-client'
 
@@ -55,16 +62,21 @@ export async function fetchSwapQuote({
   tokenIn,
   tokenOut,
   client = bscReadClient,
+  poolContext,
 }: {
   amountIn: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
   client?: ChainReadClient
+  /** Reuse short-stale pool reads from React Query when available. */
+  poolContext?: SwapPoolReadContext
 }): Promise<SwapQuoteResult> {
-  const [pool, spot] = await Promise.all([
-    readSwapPoolImmutableMetadata(SWAP_CONFIG.pool, client),
-    readSwapPoolSpotPrice(SWAP_CONFIG.pool, client),
-  ])
+  const [pool, spot] = poolContext
+    ? [poolContext.pool, poolContext.spot]
+    : await Promise.all([
+        readSwapPoolImmutableMetadata(SWAP_CONFIG.pool, client),
+        readSwapPoolSpotPrice(SWAP_CONFIG.pool, client),
+      ])
 
   const quote = await quoteV3ExactInputSingle({
     quoter: SWAP_CONFIG.quoter,

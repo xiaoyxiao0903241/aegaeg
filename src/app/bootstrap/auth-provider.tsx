@@ -13,6 +13,7 @@ import {
   LOGIN_ERROR,
   isAccountBannedError,
 } from '~/shared/api/account-banned'
+import { shouldClearLoginAttemptAfterFailure } from '~/core/auth/auth-executor'
 import {
   buildLoginAttemptKey,
   deriveAuthAction,
@@ -140,7 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       lastAttemptRef.current = attemptKey
       void runLogin().catch(() => {
         const loginError = useAuthStore.getState().loginError
-        if (!isPermanentLoginErrorMessage(loginError)) {
+        if (shouldClearLoginAttemptAfterFailure(loginError)) {
           lastAttemptRef.current = null
         }
       })

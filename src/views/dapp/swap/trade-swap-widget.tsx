@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
@@ -17,6 +17,7 @@ import {
   SWAP_QUOTE_FAILED,
   toWalletUserFacingMessage,
 } from '~/views/dapp/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   SwapAmountFlow,
@@ -75,38 +76,47 @@ export function TradeSwapWidget({
     }, 320)
   }
 
-  async function handleSubmit() {
-    const success = await swap.submit()
-    if (!success) return
-    toast.success(t.swap.swapSuccess)
-  }
+  const resolveTradeMessage = useCallback(
+    (error: unknown) => {
+      if (error === SWAP_QUOTE_FAILED) return t.errors.quoteFailed
+      return (
+        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
+        resolveGenesisPurchaseError(error, {
+          insufficientAllowance: t.genesis.insufficientAllowance,
+          insufficientUsd1: t.genesis.insufficientUsd1,
+          purchaseUnavailable: t.genesis.purchaseUnavailable,
+          walletNotConnected: t.genesis.walletNotConnected,
+        }) ??
+        toWalletUserFacingMessage(error, t.errors.chain.fallback)
+      )
+    },
+    [
+      t.errors.chain.fallback,
+      t.errors.quoteFailed,
+      t.genesis.insufficientAllowance,
+      t.genesis.insufficientUsd1,
+      t.genesis.purchaseUnavailable,
+      t.genesis.walletNotConnected,
+      t.wallet.transactionErrors,
+    ],
+  )
 
-  useEffect(() => {
-    if (!swap.error) return
-    if (swap.error === SWAP_QUOTE_FAILED) {
-      toast.error(t.errors.quoteFailed)
+  async function handleSubmit() {
+    const result = await swap.submit()
+    if (result.ok) {
+      toast.success(t.swap.swapSuccess)
       return
     }
-    const message =
-      resolveWalletTransactionError(swap.error, t.wallet.transactionErrors) ??
-      resolveGenesisPurchaseError(swap.error, {
-        insufficientAllowance: t.genesis.insufficientAllowance,
-        insufficientUsd1: t.genesis.insufficientUsd1,
-        purchaseUnavailable: t.genesis.purchaseUnavailable,
-        walletNotConnected: t.genesis.walletNotConnected,
-      }) ??
-      toWalletUserFacingMessage(swap.error, t.errors.chain.fallback)
-    if (message) toast.error(message)
-  }, [
-    swap.error,
-    t.errors.chain.fallback,
-    t.errors.quoteFailed,
-    t.genesis.insufficientAllowance,
-    t.genesis.insufficientUsd1,
-    t.genesis.purchaseUnavailable,
-    t.genesis.walletNotConnected,
-    t.wallet.transactionErrors,
-  ])
+    if (result.error != null) {
+      presentUserFacingError(result.error, resolveTradeMessage)
+    }
+  }
+
+  // Quote/validation only — submit errors toast in handleSubmit so same sentinel re-fires.
+  useEffect(() => {
+    if (!swap.validationError) return
+    presentUserFacingError(swap.validationError, resolveTradeMessage)
+  }, [resolveTradeMessage, swap.validationError])
 
   return (
     <>
@@ -131,7 +141,7 @@ export function TradeSwapWidget({
                 <SwapFlowButton
                   aria-label={t.swap.flip}
                   className="max-dapp:my-2"
-                  disabled={sessionReady && !swap.walletReady}
+                  disabled={sessionReady && (!swap.walletReady || swap.isSubmitting)}
                   interactive
                   onClick={handleFlip}
                 >
@@ -153,6 +163,7 @@ export function TradeSwapWidget({
           sessionReady={sessionReady}
           showBuyAmountSkeleton={showBuyAmountSkeleton}
           walletReady={swap.walletReady}
+          amountLocked={swap.isSubmitting}
         />
 
         <SwapMetaPanel

@@ -26,6 +26,7 @@ import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web
 import { MAX_UINT256 } from '~/views/dapp/web3/abis'
 import { formatUsd } from '~/shared/api/format-display'
 import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 import { readErc20Allowance, readErc20Balance } from '~/views/dapp/web3/swap-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidatePresaleChainQueries } from '~/shared/api/query/invalidate'
@@ -47,6 +48,7 @@ import {
 } from '~/shared/api/query/invalidate'
 import { useI18n } from '~/i18n/use-i18n'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 export interface GenesisPurchaseResult {
   success: boolean
@@ -55,6 +57,9 @@ export interface GenesisPurchaseResult {
 }
 
 const USD1_DECIMALS = 18
+
+/** Survives GenesisWidgetProvider unmount when user switches tabs mid-tx. */
+const genesisPurchaseGate = { inFlight: false }
 
 export function useGenesisWidget() {
   const account = useActiveAccount()
@@ -66,24 +71,34 @@ export function useGenesisWidget() {
   const [sharesDraft, setSharesDraft] = useState(0)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [nowSeconds, setNowSeconds] = useState(() => Math.floor(Date.now() / 1000))
+  // Clock SSOT: GenesisPromoSync ticks store every 15s (minute-granularity countdown).
+  const nowSeconds = useGenesisPromoStore((state) => state.nowSeconds)
 
   const address = account?.address
   const walletReady = Boolean(address)
+  const purchaseQueriesEnabled = useDappShellStore((state) => state.activeTab === 'genesis')
 
+  // Provider only mounts on Genesis tab; keep enabled flags as belt-and-suspenders.
   const phasesQuery = usePresalePhasesQuery()
   const activePhaseQuery = usePresaleActivePhaseQuery()
   const agxPriceQuery = usePresaleAgxPriceQuery()
-  const totalPurchasedQuery = usePresaleTotalPurchasedQuery()
-  const airdropThresholdQuery = usePresaleAirdropThresholdQuery()
-  const pausedQuery = usePresalePausedQuery()
-  const userTotalQuery = usePresaleUserTotalQuery(address)
+  const totalPurchasedQuery = usePresaleTotalPurchasedQuery({
+    enabled: purchaseQueriesEnabled,
+  })
+  const airdropThresholdQuery = usePresaleAirdropThresholdQuery({
+    enabled: purchaseQueriesEnabled,
+  })
+  const pausedQuery = usePresalePausedQuery({ enabled: purchaseQueriesEnabled })
+  const userTotalQuery = usePresaleUserTotalQuery(address, { enabled: purchaseQueriesEnabled })
   const phaseRemainingQuery = usePresaleUserPhaseRemainingQuery(
     address,
     activePhaseQuery.data?.index,
+    { enabled: purchaseQueriesEnabled },
   )
-  const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address)
-  const isBoundQuery = useIsBindReferralQuery(address)
+  const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address, {
+    enabled: purchaseQueriesEnabled,
+  })
+  const isBoundQuery = useIsBindReferralQuery(address, { enabled: purchaseQueriesEnabled })
   const isBound = isBoundQuery.data === true
   const needsReferralBind = walletReady && isBoundQuery.data === false
   const isPaused = pausedQuery.data === true
@@ -109,18 +124,11 @@ export function useGenesisWidget() {
     activePhaseQuery.isLoading ||
     agxPriceQuery.isLoading ||
     totalPurchasedQuery.isLoading ||
-    (walletReady && userTotalQuery.isLoading) ||
-    (walletReady && activePhase !== null && phaseRemainingQuery.isLoading)
-
-  useEffect(() => {
-    // The countdown renders minute granularity; a 15s tick keeps it accurate
-    // (and phase-transition detection prompt) without re-rendering every second.
-    const timer = window.setInterval(() => {
-      setNowSeconds(Math.floor(Date.now() / 1000))
-    }, 15_000)
-
-    return () => window.clearInterval(timer)
-  }, [])
+    (purchaseQueriesEnabled && walletReady && userTotalQuery.isLoading) ||
+    (purchaseQueriesEnabled &&
+      walletReady &&
+      activePhase !== null &&
+      phaseRemainingQuery.isLoading)
 
   const phaseIndex = activePhase?.index ?? 0
   const agxPriceUsd = useMemo(() => {
@@ -281,6 +289,10 @@ export function useGenesisWidget() {
   ])
 
   const participate = useCallback(async (): Promise<GenesisPurchaseResult> => {
+    if (genesisPurchaseGate.inFlight) {
+      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
+    }
+
     // Contract requires a bound referrer before purchase; block early with a
     // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
     // Fail-closed while bind status is still loading (`undefined`).
@@ -290,13 +302,19 @@ export function useGenesisWidget() {
     if (isPaused || isPausedUnknown) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
-    if (needsApproval) {
-      const approveResult = await approve()
-      if (!approveResult.success) {
-        return approveResult
+
+    genesisPurchaseGate.inFlight = true
+    try {
+      if (needsApproval) {
+        const approveResult = await approve()
+        if (!approveResult.success) {
+          return approveResult
+        }
       }
+      return await purchase()
+    } finally {
+      genesisPurchaseGate.inFlight = false
     }
-    return purchase()
   }, [approve, isBoundQuery.data, isPaused, isPausedUnknown, needsApproval, purchase])
 
   const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
@@ -337,8 +355,8 @@ export function useGenesisWidget() {
     activePhaseQuery.error ??
     agxPriceQuery.error ??
     totalPurchasedQuery.error ??
-    userTotalQuery.error ??
-    phaseRemainingQuery.error
+    (purchaseQueriesEnabled ? userTotalQuery.error : null) ??
+    (purchaseQueriesEnabled ? phaseRemainingQuery.error : null)
 
   return {
     shares,

@@ -4,13 +4,6 @@ import { Text } from '~/shared/ui/text'
 const HTML_CONTENT_RE = /<[a-z][\s\S]*>/i
 const URL_RE = /(https?:\/\/[^\s<>"']+)/g
 
-function stripUnsafeHtml(html: string): string {
-  return html
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/javascript:/gi, '')
-}
-
 export function isPopupNoticeHtmlContent(content: string): boolean {
   return HTML_CONTENT_RE.test(content)
 }
@@ -40,6 +33,10 @@ function linkifyPlainText(text: string) {
   })
 }
 
+/**
+ * Popup HTML is authored by our backend/CMS and rendered as-is (including
+ * embedded script/style). Do not sanitize or strip — trust the admin channel.
+ */
 export function PopupNoticeContent({ content }: { content: string }) {
   if (!content.trim()) return null
 
@@ -47,7 +44,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
     return (
       <div
         className="home-popup-notice-content space-y-3 leading-[1.65] text-foreground [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:decoration-primary/35 [&_a]:underline-offset-2 [&_li]:ms-4 [&_li]:list-disc [&_ol]:list-decimal [&_p+p]:mt-3 [&_strong]:font-semibold [&_ul]:space-y-1.5"
-        dangerouslySetInnerHTML={{ __html: stripUnsafeHtml(content) }}
+        dangerouslySetInnerHTML={{ __html: content }}
       />
     )
   }

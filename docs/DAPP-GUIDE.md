@@ -130,12 +130,15 @@
 │    ├─ QueryProvider (TanStack Query)                        │
 │    └─ AuthProvider (SIWE + JWT)                             │
 │         └─ DappShell                                        │
-│              ├─ GenesisWidgetProvider  (单例 genesis 状态)   │
+│              ├─ GenesisPromoSync (rail/promo 轻量派生)       │
+│              ├─ GenesisWidgetProvider（仅 Genesis tab）      │
 │              ├─ SwapSubviewProviders   (flash/trade 单例)   │
 │              ├─ DappRail + TabWidget + TabContent           │
 │              └─ useDappShell() → sessionReady / walletReady │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+Genesis 购买态（shares draft / paused / totalPurchased）只在 `activeTab === 'genesis'` 时挂载 `GenesisWidgetProvider`；跨 tab 的 season/promo 文案由 `GenesisPromoSync` → `genesis-promo-store` 供给。
 
 **数据流三层：**
 
