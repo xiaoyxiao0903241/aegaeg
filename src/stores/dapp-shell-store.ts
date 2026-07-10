@@ -14,6 +14,7 @@ interface DappShellStore {
   syncTabFromHash: () => void
 }
 
+/** Pure tab state — URL hash sync lives in the shell (external system). */
 export const useDappShellStore = create<DappShellStore>((set) => ({
   activeTab: getInitialTab(),
   detailCollapsed: false,
@@ -25,7 +26,6 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
     set(() => ({
       activeTab: tab,
     }))
-    window.history.replaceState(null, '', `#${tab}`)
   },
   selectMobileTab: (tab) => {
     if (tab !== 'swap') {
@@ -35,7 +35,6 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
       activeTab: tab,
       mobileNavOpen: false,
     })
-    window.history.replaceState(null, '', `#${tab}`)
   },
   toggleDetailCollapsed: () => set((state) => ({ detailCollapsed: !state.detailCollapsed })),
   setMobileNavOpen: (open) => set({ mobileNavOpen: open }),

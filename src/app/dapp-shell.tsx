@@ -10,24 +10,38 @@ import { DappRevealObserver } from '~/app/shell/dapp-reveal-observer'
 import { DappTopbar } from '~/app/dapp-topbar'
 import { DappScrollFadeHost } from '~/app/shell/dapp-scroll-fade-host'
 import { HeroRaysBackground } from '~/shared/ui/hero-rays-background'
-import { useDappShell } from '~/app/dapp-shell-context'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { useSwapViewStore } from '~/stores/swap-view-store'
 import { invalidateTabQueries } from '~/shared/api/query/invalidate'
 import { DappTabShellProviders } from '~/views/dapp/dapp-tab-shell-providers'
 import { DappTabContent, DappTabWidget } from '~/views/dapp/dapp-tabs'
+
+function replaceTabHash(tab: string) {
+  window.history.replaceState(null, '', `#${tab}`)
+}
 
 export function DappShell() {
   const { messages } = useI18n()
   const activeTab = useDappShellStore((state) => state.activeTab)
   const mobileNavOpen = useDappShellStore((state) => state.mobileNavOpen)
-  const selectTab = useDappShellStore((state) => state.selectTab)
-  const selectMobileTab = useDappShellStore((state) => state.selectMobileTab)
+  const selectTabInStore = useDappShellStore((state) => state.selectTab)
+  const selectMobileTabInStore = useDappShellStore((state) => state.selectMobileTab)
   const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
   const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
   const shellState = useDappShell()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
+
+  const selectTab = (tab: typeof activeTab) => {
+    selectTabInStore(tab)
+    replaceTabHash(tab)
+  }
+  const selectMobileTab = (tab: typeof activeTab) => {
+    selectMobileTabInStore(tab)
+    replaceTabHash(tab)
+  }
 
   useEffect(() => {
     syncTabFromHash()
@@ -48,6 +62,19 @@ export function DappShell() {
     scrollDappPanelsToTop()
     invalidateTabQueries(activeTab)
   }, [activeTab])
+
+  // Mirror former store-side scroll: fire when a swap subview transition starts.
+  useEffect(() => {
+    let prevView = useSwapViewStore.getState().view
+    let prevMotion = useSwapViewStore.getState().motion
+    return useSwapViewStore.subscribe((state) => {
+      if (state.motion && !prevMotion && state.view !== prevView) {
+        scrollDappPanelsToTop()
+      }
+      prevView = state.view
+      prevMotion = state.motion
+    })
+  }, [])
 
   const mobileNavId = 'dapp-mobile-nav'
   const effectiveDetailCollapsed = shellState.detailCollapsed

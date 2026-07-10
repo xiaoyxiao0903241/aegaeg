@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { scrollDappPanelsToTop } from '~/app/utils'
 
 export type SwapView = 'hub' | 'flash' | 'trade'
 export type SwapViewDirection = 'forward' | 'back'
@@ -26,6 +25,7 @@ function clearTransitionTimer() {
   }
 }
 
+/** Pure view/motion state — panel scroll lives in the shell (DOM side effect). */
 export const useSwapViewStore = create<SwapViewStore>((set, get) => ({
   view: 'hub',
   motion: false,
@@ -37,8 +37,6 @@ export const useSwapViewStore = create<SwapViewStore>((set, get) => ({
     const { view: currentView, motion } = get()
     if (view === currentView && !motion) return
     if (motion) return
-
-    scrollDappPanelsToTop()
 
     const outgoingView = currentView
     const back = view === 'hub' && outgoingView !== 'hub'
