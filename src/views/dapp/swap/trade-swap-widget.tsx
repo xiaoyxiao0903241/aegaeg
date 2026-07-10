@@ -113,10 +113,11 @@ export function TradeSwapWidget({
   }
 
   // Quote/validation only — submit errors toast in handleSubmit so same sentinel re-fires.
+  // quoteErrorUpdatedAt re-triggers when RQ fails again with the same SWAP_QUOTE_FAILED sentinel.
   useEffect(() => {
     if (!swap.validationError) return
     presentUserFacingError(swap.validationError, resolveTradeMessage)
-  }, [resolveTradeMessage, swap.validationError])
+  }, [resolveTradeMessage, swap.quoteErrorUpdatedAt, swap.validationError])
 
   return (
     <>

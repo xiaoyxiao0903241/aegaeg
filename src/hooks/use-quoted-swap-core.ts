@@ -111,6 +111,9 @@ export function useQuotedSwapCore<TQuote>({
     return SWAP_QUOTE_FAILED
   }, [amountQuoteQuery.error])
 
+  /** Bumps on each failed quote fetch so UI can re-toast the same sentinel. */
+  const quoteErrorUpdatedAt = amountQuoteQuery.error ? amountQuoteQuery.errorUpdatedAt : 0
+
   const error = submitError ?? validationError
 
   const sellAmountDisplay = useMemo(
@@ -220,6 +223,7 @@ export function useQuotedSwapCore<TQuote>({
     blockResubmit,
     setBlockResubmit,
     validationError,
+    quoteErrorUpdatedAt,
     error,
     amountQuoteQuery,
     runQuotedSubmit,

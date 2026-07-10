@@ -19,8 +19,6 @@ import {
   resolveRemainingUserAmount,
   resolveSharePriceWei,
 } from '~/core/presale/presale-math'
-import { buildSeasonOptions } from '~/views/dapp/genesis/season-options'
-import { buildGenesisPromoSnapshot } from '~/views/dapp/genesis/genesis-promo'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
 import { MAX_UINT256 } from '~/views/dapp/web3/abis'
@@ -71,8 +69,11 @@ export function useGenesisWidget() {
   const [sharesDraft, setSharesDraft] = useState(0)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
   const [error, setError] = useState<string | null>(null)
-  // Clock SSOT: GenesisPromoSync ticks store every 15s (minute-granularity countdown).
+  // Clock + chrome SSOT: GenesisPromoSync derives once into the store.
   const nowSeconds = useGenesisPromoStore((state) => state.nowSeconds)
+  const activeSeasonNumber = useGenesisPromoStore((state) => state.activeSeasonNumber)
+  const discountLabel = useGenesisPromoStore((state) => state.discountLabel)
+  const seasonOptions = useGenesisPromoStore((state) => state.seasonOptions)
 
   const address = account?.address
   const walletReady = Boolean(address)
@@ -136,7 +137,6 @@ export function useGenesisWidget() {
     return fromChain > 0 ? fromChain : 0
   }, [agxPriceWei])
   const discountBps = Number(activePhase?.discountBps ?? 0)
-  const discountLabel = discountBps > 0 ? `-${(discountBps / 100).toFixed(0)}%` : '—'
   const minAmount = activePhase?.minAmount ?? 0n
   const maxAmount = activePhase?.maxAmount ?? 0n
   const remainingPhaseAmount = resolveRemainingPhaseAmount(phaseRemaining, activePhase)
@@ -333,23 +333,6 @@ export function useGenesisWidget() {
     invalidateAfterGenesisPhaseTransition(address)
   }, [address, countdownTarget, nowSeconds])
 
-  const seasonOptions = useMemo(
-    () => buildSeasonOptions(phases, agxPriceUsd, nowSeconds),
-    [agxPriceUsd, nowSeconds, phases],
-  )
-
-  const activeSeasonNumber = useMemo(() => {
-    if (activePhase) return phaseIndex + 1
-    const liveIndex = seasonOptions.findIndex((season) => season.active)
-    if (liveIndex >= 0) return liveIndex + 1
-    return 1
-  }, [activePhase, phaseIndex, seasonOptions])
-
-  const promoSnapshot = useMemo(
-    () => buildGenesisPromoSnapshot(phases, activePhase, agxPriceUsd, nowSeconds),
-    [activePhase, agxPriceUsd, nowSeconds, phases],
-  )
-
   const queryError =
     phasesQuery.error ??
     activePhaseQuery.error ??
@@ -409,8 +392,7 @@ export function useGenesisWidget() {
     purchase,
     participate,
     activeSeasonNumber,
-    seasonOptions: seasonOptions,
-    promoSnapshot,
+    seasonOptions,
     isPhasesLoading: phasesQuery.isLoading,
   }
 }

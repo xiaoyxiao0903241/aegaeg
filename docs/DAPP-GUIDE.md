@@ -138,7 +138,7 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
-Genesis 购买态（shares draft / paused / totalPurchased）只在 `activeTab === 'genesis'` 时挂载 `GenesisWidgetProvider`；跨 tab 的 season/promo 文案由 `GenesisPromoSync` → `genesis-promo-store` 供给。
+Genesis 购买态（shares draft / paused / totalPurchased）只在 `activeTab === 'genesis'` 时挂载 `GenesisWidgetProvider`；跨 tab 的 season/promo 文案由 `GenesisPromoSync` → `genesis-promo-store` 供给（**唯一派生源**；购买页 chrome 字段也读 store，不再二次 derive）。
 
 **数据流三层：**
 

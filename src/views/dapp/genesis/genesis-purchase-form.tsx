@@ -7,7 +7,6 @@ import { toast } from 'sonner'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
 import { useGenesisWidgetContext } from '~/app/use-genesis-widget-context'
 import { formatCount, formatUsdAmountLabel } from '~/shared/api/format-display'
-import { seasons as fallbackSeasons } from '~/app/data'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappMetaList } from '~/app/shell/dapp-meta-list'
@@ -134,7 +133,7 @@ export function GenesisPurchaseForm() {
 
   return (
     <>
-      {genesis.isLoading && genesis.seasonOptions.length === 0 ? (
+      {genesis.seasonOptions.length === 0 ? (
         <div aria-busy="true" className={cn(revealClass(), 'mb-1.5 overflow-hidden')} data-reveal>
           <div className="flex gap-2.5">
             <SeasonOptionSkeleton />
@@ -144,10 +143,8 @@ export function GenesisPurchaseForm() {
         </div>
       ) : (
         <SeasonSelector
-          activePhaseIndex={
-            genesis.seasonOptions.length > 0 ? genesis.phaseIndex : undefined
-          }
-          seasons={genesis.seasonOptions.length > 0 ? genesis.seasonOptions : fallbackSeasons}
+          activePhaseIndex={genesis.phaseIndex}
+          seasons={genesis.seasonOptions}
         />
       )}
 

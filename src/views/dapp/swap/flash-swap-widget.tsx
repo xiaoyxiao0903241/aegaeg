@@ -79,7 +79,7 @@ export function FlashSwapWidget({
   useEffect(() => {
     if (!swap.validationError) return
     presentUserFacingError(swap.validationError, resolveFlashMessage)
-  }, [resolveFlashMessage, swap.validationError])
+  }, [resolveFlashMessage, swap.quoteErrorUpdatedAt, swap.validationError])
 
   return (
     <>

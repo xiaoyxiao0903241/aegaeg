@@ -69,8 +69,9 @@ export function GenesisPromoSync() {
       discountLabel,
       isLoading,
       promoSnapshot,
+      seasonOptions,
     })
-  }, [activeSeasonNumber, discountLabel, isLoading, promoSnapshot, setPromo])
+  }, [activeSeasonNumber, discountLabel, isLoading, promoSnapshot, seasonOptions, setPromo])
 
   return null
 }

@@ -186,6 +186,7 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
     isSubmitting: core.isSubmitting,
     error: core.error,
     validationError: core.validationError,
+    quoteErrorUpdatedAt: core.quoteErrorUpdatedAt,
     fillPercent: core.fillPercent,
     submit,
   }
