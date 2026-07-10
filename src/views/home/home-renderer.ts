@@ -22,7 +22,19 @@ function escapeAttr(value: string) {
     .replace(/"/g, '&quot;')
 }
 
-/** JSON in <script> — neutralize `</script>` breakouts. */
+/** JSON in <script> — 中和 `</script>` 断出。首页只注入 home+common+errors。 */
+function serializeHomeMessagesBootstrap(locale: Locale) {
+  const full = getMessagesForRender(locale)
+  const bag = {
+    common: full.common,
+    errors: full.errors,
+    home: full.home,
+  }
+  const json = JSON.stringify(bag).replace(/</g, '\\u003c')
+  return `<script type="application/json" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}">${json}</script>`
+}
+
+/** DApp 注入完整文案袋。 */
 function serializeMessagesBootstrap(locale: Locale) {
   const json = JSON.stringify(getMessagesForRender(locale)).replace(/</g, '\\u003c')
   return `<script type="application/json" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}">${json}</script>`
@@ -66,7 +78,7 @@ ${faviconHead}
     <title>${escapeAttr(meta.title)}</title>
   </head>
   <body>
-    ${serializeMessagesBootstrap(locale)}
+    ${serializeHomeMessagesBootstrap(locale)}
     <div id="root"></div>
     ${legacyCoreJsScript}
     <script type="module" src="/src/views/home/main.tsx"></script>

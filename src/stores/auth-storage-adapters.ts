@@ -1,5 +1,5 @@
-import type { LoginSignatureStorage } from '~/views/dapp/auth/login-signature-cache'
-import type { AuthSessionStorage, StoredAuthSession } from '~/views/dapp/auth/session'
+import type { AuthSessionStorage, LoginSignatureStorage } from '~/core/auth/storage'
+import type { StoredAuthSession } from '~/core/auth/types'
 import { useAuthStore } from '~/stores/auth-store'
 
 type AuthStoreGetter = Pick<
@@ -12,12 +12,14 @@ type AuthStoreGetter = Pick<
   | 'clearSignatureForAddress'
 >
 
+/**
+ * 将 loginWithWallet 的 session 写入适配到按地址 Zustand 表。
+ * read/clear 为空操作：活跃会话由 sessionsByAddress 派生，不经单槽 storage。
+ */
 export function createStoreAuthSessionStorage(
   getStore: () => AuthStoreGetter = () => useAuthStore.getState(),
 ): AuthSessionStorage {
   return {
-    // The address-keyed session table is the single source of truth. The active
-    // session is derived from it, so login only ever needs to `write`.
     read: () => null,
     write: (session: StoredAuthSession) => {
       getStore().upsertSessionForAddress(session)

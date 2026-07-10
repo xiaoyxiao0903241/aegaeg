@@ -66,16 +66,11 @@ function invalidateAddressScopedChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapQuoteRoot })
 }
 
-/** Wallet account changed — drop stale user-scoped reads; leave shared data untouched. */
+/** 钱包账户切换：刷新新地址链上读；旧地址缓存保留至自然过期。 */
 export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddress?: string, tab?: DappTab) {
-  // Address-scoped chain reads (balances, allowances, referral state, user totals)
-  // must refresh for the new account. Global phase/price data is shared and is
-  // intentionally left alone.
-  invalidateAddressScopedChainQueries(previousAddress)
+  void previousAddress
   invalidateAddressScopedChainQueries(nextAddress)
 
-  // API data is per-wallet; refresh only the currently visible tab's queries so
-  // the user sees their own records without refetching background tabs.
   if (tab) {
     invalidateTabQueries(tab)
   }
@@ -158,10 +153,10 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
   ],
 }
 
-/** Invalidate all queries used by a single DApp tab. Called on tab switch. */
+/** 使当前 Tab 相关 query 标记过期，并只 refetch 已挂载的观察者。 */
 export function invalidateTabQueries(tab: DappTab) {
   TAB_QUERY_KEYS[tab].forEach((key) => {
-    void queryClient.invalidateQueries({ queryKey: key })
+    void queryClient.invalidateQueries({ queryKey: key, refetchType: 'active' })
   })
 }
 

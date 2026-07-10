@@ -9,6 +9,7 @@ test('dependency-cruiser config defines required rules', () => {
   const ruleNames = config.forbidden.map((rule) => rule.name)
   assert.ok(ruleNames.includes('core-is-pure'))
   assert.ok(ruleNames.includes('shared-no-views'))
+  assert.ok(ruleNames.includes('stores-no-views'))
   assert.ok(ruleNames.includes('web3-gateway'))
   assert.ok(ruleNames.includes('ui-is-dumb'))
 })

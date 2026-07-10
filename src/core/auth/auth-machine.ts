@@ -120,3 +120,8 @@ export function deriveAuthAction({
 
   return { type: 'renewAt', at: resolveSessionRenewAtMs(state.session, renewThresholdMs) }
 }
+
+/** 静默登录失败后是否清除 attempt 闩锁，允许下一轮输入变化后重试。 */
+export function shouldClearLoginAttemptAfterFailure(loginError: string | null): boolean {
+  return !isPermanentLoginErrorMessage(loginError)
+}

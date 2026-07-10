@@ -1,13 +1,9 @@
-import { AUTH_SIGNATURE_STORAGE_KEY } from '~/views/dapp/auth/session'
+import { AUTH_SIGNATURE_STORAGE_KEY } from '~/core/auth/types'
 import type { StoredLoginSignature } from '~/core/auth/types'
+import type { LoginSignatureStorage } from '~/core/auth/storage'
 
 export type { StoredLoginSignature } from '~/core/auth/types'
-
-export interface LoginSignatureStorage {
-  readForAddress(address: string): StoredLoginSignature | null
-  write(signature: StoredLoginSignature): void
-  clearForAddress(address: string): void
-}
+export type { LoginSignatureStorage } from '~/core/auth/storage'
 
 function isStoredLoginSignature(value: unknown): value is StoredLoginSignature {
   if (!value || typeof value !== 'object') return false

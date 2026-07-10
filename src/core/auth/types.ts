@@ -2,7 +2,7 @@ export interface StoredAuthSession {
   address: string
   token: string
   savedAt: number
-  /** JWT exp claim in ms — cached for proactive expiry checks. */
+  /** JWT exp（毫秒），用于主动续期。 */
   expiresAt?: number
 }
 
@@ -12,6 +12,9 @@ export interface StoredLoginSignature {
   signature: string
   savedAt: number
 }
+
+export const AUTH_SESSION_STORAGE_KEY = 'aegis.auth.session'
+export const AUTH_SIGNATURE_STORAGE_KEY = 'aegis.auth.signature'
 
 export function isSessionForAddress(
   session: StoredAuthSession | null,

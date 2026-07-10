@@ -5,13 +5,23 @@ import { FlashSwapWidgetProvider } from '~/views/dapp/swap/flash-swap-widget-con
 import { TradeSwapWidgetProvider } from '~/views/dapp/swap/trade-swap-widget-context'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
 
-function resolveEffectiveSwapView(
+function viewsNeedingProvider(
   view: SwapView,
   motion: boolean,
+  outgoingView: SwapView | null,
   incomingView: SwapView | null,
-): SwapView {
-  if (motion && incomingView) return incomingView
-  return view
+): { flash: boolean; trade: boolean } {
+  const active = new Set<SwapView>()
+  if (motion) {
+    if (outgoingView) active.add(outgoingView)
+    if (incomingView) active.add(incomingView)
+  } else {
+    active.add(view)
+  }
+  return {
+    flash: active.has('flash'),
+    trade: active.has('trade'),
+  }
 }
 
 export function SwapSubviewProviders({
@@ -24,23 +34,28 @@ export function SwapSubviewProviders({
   const { sessionReady } = useDappShell()
   const view = useSwapViewStore((state) => state.view)
   const motion = useSwapViewStore((state) => state.motion)
+  const outgoingView = useSwapViewStore((state) => state.outgoingView)
   const incomingView = useSwapViewStore((state) => state.incomingView)
   const swapTabActive = activeTab === 'swap'
-  const effectiveView = resolveEffectiveSwapView(view, motion, incomingView)
-  const flashQuotesEnabled = swapTabActive && effectiveView === 'flash'
-  const tradeQuotesEnabled = swapTabActive && effectiveView === 'trade'
+  const needed = viewsNeedingProvider(view, motion, outgoingView, incomingView)
+  const flashQuotesEnabled = swapTabActive && needed.flash
+  const tradeQuotesEnabled = swapTabActive && needed.trade
 
-  return (
-    <FlashSwapWidgetProvider
-      quotesEnabled={flashQuotesEnabled}
-      sessionReady={sessionReady}
-    >
-      <TradeSwapWidgetProvider
-        quotesEnabled={tradeQuotesEnabled}
-        sessionReady={sessionReady}
-      >
-        {children}
+  let tree = children
+  if (needed.trade) {
+    tree = (
+      <TradeSwapWidgetProvider quotesEnabled={tradeQuotesEnabled} sessionReady={sessionReady}>
+        {tree}
       </TradeSwapWidgetProvider>
-    </FlashSwapWidgetProvider>
-  )
+    )
+  }
+  if (needed.flash) {
+    tree = (
+      <FlashSwapWidgetProvider quotesEnabled={flashQuotesEnabled} sessionReady={sessionReady}>
+        {tree}
+      </FlashSwapWidgetProvider>
+    )
+  }
+
+  return tree
 }

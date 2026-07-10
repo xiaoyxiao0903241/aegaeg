@@ -2,20 +2,17 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { normalizeAuthAddress } from '~/core/auth/auth-address'
 import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
-import type { StoredLoginSignature } from '~/views/dapp/auth/login-signature-cache'
+import type { StoredLoginSignature, StoredAuthSession } from '~/core/auth/types'
 import {
   AUTH_SESSION_STORAGE_KEY,
   AUTH_SIGNATURE_STORAGE_KEY,
-  type StoredAuthSession,
-} from '~/views/dapp/auth/session'
+} from '~/core/auth/types'
 
 export const AUTH_STORE_STORAGE_KEY = 'aegis.auth.store'
 
 /**
- * Persisted auth data is two pure caches keyed by wallet address: the JWT
- * sessions and the SIWE signatures. There is no standalone "current session" —
- * the active session is always derived as `sessionsByAddress[walletAddress]`
- * (see `auth-machine.ts`), so switching wallets needs no backup/restore dance.
+ * 按地址缓存的 JWT 与 SIWE 签名。无独立「当前会话」对象——
+ * 活跃会话始终派生为 sessionsByAddress[walletAddress]。
  */
 interface AuthPersistState {
   signaturesByAddress: Record<string, StoredLoginSignature>

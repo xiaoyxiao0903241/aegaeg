@@ -2,13 +2,17 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('isAccountBannedError matches ApiError code 403', async () => {
+test('isAccountBannedError requires 403 plus ban signal', async () => {
   const { isAccountBannedError } = await loadModule('/src/shared/api/account-banned.ts')
   const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   assert.equal(
     isAccountBannedError(new ApiError({ code: 403, error: 'FORBIDDEN', message: '账号被封' })),
     true,
+  )
+  assert.equal(
+    isAccountBannedError(new ApiError({ code: 403, error: 'FORBIDDEN', message: 'no access' })),
+    false,
   )
   assert.equal(
     isAccountBannedError(new ApiError({ code: 401, error: 'UNAUTHORIZED', message: 'bad token' })),

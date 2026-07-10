@@ -1,15 +1,16 @@
-import type { StoredAuthSession } from '~/core/auth/types'
+import {
+  AUTH_SESSION_STORAGE_KEY,
+  type StoredAuthSession,
+} from '~/core/auth/types'
+import type { AuthSessionStorage } from '~/core/auth/storage'
+
 export type { StoredAuthSession } from '~/core/auth/types'
-export { isSessionForAddress } from '~/core/auth/types'
-
-export interface AuthSessionStorage {
-  read(): StoredAuthSession | null
-  write(session: StoredAuthSession): void
-  clear(): void
-}
-
-export const AUTH_SESSION_STORAGE_KEY = 'aegis.auth.session'
-export const AUTH_SIGNATURE_STORAGE_KEY = 'aegis.auth.signature'
+export type { AuthSessionStorage } from '~/core/auth/storage'
+export {
+  isSessionForAddress,
+  AUTH_SESSION_STORAGE_KEY,
+  AUTH_SIGNATURE_STORAGE_KEY,
+} from '~/core/auth/types'
 
 export function createLocalAuthSessionStorage(
   storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>,

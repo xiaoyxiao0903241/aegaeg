@@ -1,5 +1,4 @@
 import type { Account } from 'thirdweb/wallets'
-import { ApiError } from '~/shared/api/client'
 import { login } from '~/shared/api/endpoints'
 import {
   buildLoginMessage,
@@ -14,6 +13,7 @@ import {
   type LoginSignatureStorage,
   type StoredLoginSignature,
 } from '~/views/dapp/auth/login-signature-cache'
+import { shouldClearCachedLoginSignature } from '~/core/auth/classify-login-failure'
 import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
 import {
   createLocalAuthSessionStorage,
@@ -43,17 +43,9 @@ export function resolveLoginMessageFormats(): LoginMessageFormat[] {
   return resolveLoginMessageFormat() === 'simple' ? ['simple'] : ['siwe', 'simple']
 }
 
-/**
- * Only a backend rejection of the SIWE payload should invalidate the cached
- * signature. Network failures and other client-side errors must rethrow
- * untouched — clearing on those would silently delete a still-valid signature
- * and ambush the user with a wallet prompt on the next login.
- */
+/** 仅后端拒绝 SIWE 载荷时清除签名缓存；网络错误保留缓存以免反复弹窗。 */
 function isLoginSignatureRejected(error: unknown): boolean {
-  return (
-    error instanceof ApiError &&
-    /nonce|signature|expired|invalid/i.test(`${error.error} ${error.message}`)
-  )
+  return shouldClearCachedLoginSignature(error)
 }
 
 async function exchangeLoginSignature({

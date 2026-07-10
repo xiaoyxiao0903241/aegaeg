@@ -1,17 +1,12 @@
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatPhaseDate } from '~/core/presale/presale-math'
 import { buildSeasonOptions } from '~/views/dapp/genesis/season-options'
+import type {
+  GenesisPromoSnapshot,
+  GenesisPromoStatus,
+} from '~/core/presale/genesis-promo-types'
 
-export type GenesisPromoStatus = 'LIVE' | 'Ended' | 'Upcoming'
-
-export type GenesisPromoSnapshot = {
-  season: number
-  discount: string
-  status: GenesisPromoStatus
-  dateRange: string
-  endDate: string
-  startDate: string
-}
+export type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
 function resolveFeaturedPhaseIndex(
   phases: PresalePhaseOnChain[],

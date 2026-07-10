@@ -6,7 +6,7 @@ import {
   resolveLiveQuotedOut,
 } from '~/core/swap/resolve-live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/token-amount'
-import { SWAP_QUOTE_FAILED } from '~/views/dapp/web3/resolve-contract-error-message'
+import { SWAP_QUOTE_FAILED, SWAP_SUBMIT_GATE_FAILED } from '~/views/dapp/web3/resolve-contract-error-message'
 import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 import { needsTokenApproval } from '~/views/dapp/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
@@ -173,9 +173,9 @@ export function useQuotedSwapCore<TQuote>({
 
   const runQuotedSubmit = useCallback(
     async (
-      execute: () => Promise<void>,
+      execute: (helpers: { assertStillSubmittable: () => void }) => Promise<void>,
     ): Promise<{ ok: true } | { ok: false; error: unknown | null }> => {
-      // canSubmit already requires !isAmountDebouncing ⇒ amountIn === debouncedAmountIn.
+      // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
       if (!canSubmit || amountIn !== debouncedAmountIn) {
         return { ok: false, error: null }
       }
@@ -183,8 +183,34 @@ export function useQuotedSwapCore<TQuote>({
       setIsSubmitting(true)
       setSubmitError(null)
 
+      const assertStillSubmittable = () => {
+        const liveQuotedOut = resolveLiveQuotedOut(
+          amountQuoteQuery.isPlaceholderData,
+          selectQuotedOut(amountQuoteQuery.data),
+        )
+        const liveAmountOutMin =
+          liveQuotedOut > 0n ? calcAmountOutMin(liveQuotedOut, slippageBps) : 0n
+        const ok = canSubmitQuotedSwap({
+          walletReady,
+          amountIn: debouncedAmountIn,
+          sellBalance,
+          quotedOut: liveQuotedOut,
+          amountOutMin: liveAmountOutMin,
+          isPlaceholderData: amountQuoteQuery.isPlaceholderData,
+          isQuotePending: amountQuoteQuery.isPending,
+          isBalancesLoading,
+          isSubmitting: true,
+          blockResubmit,
+          quoteUpdatedAt: amountQuoteQuery.dataUpdatedAt,
+          maxQuoteAgeMs: QUERY_STALE_TIME.quote,
+        })
+        if (!ok) {
+          throw new Error(SWAP_SUBMIT_GATE_FAILED)
+        }
+      }
+
       try {
-        await execute()
+        await execute({ assertStillSubmittable })
         setBlockResubmit(false)
         clearAmount()
         return { ok: true }
@@ -198,7 +224,22 @@ export function useQuotedSwapCore<TQuote>({
         setIsSubmitting(false)
       }
     },
-    [amountIn, canSubmit, clearAmount, debouncedAmountIn],
+    [
+      amountIn,
+      amountQuoteQuery.data,
+      amountQuoteQuery.dataUpdatedAt,
+      amountQuoteQuery.isPending,
+      amountQuoteQuery.isPlaceholderData,
+      blockResubmit,
+      canSubmit,
+      clearAmount,
+      debouncedAmountIn,
+      isBalancesLoading,
+      selectQuotedOut,
+      sellBalance,
+      slippageBps,
+      walletReady,
+    ],
   )
 
   return {

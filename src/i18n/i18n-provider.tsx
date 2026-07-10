@@ -3,7 +3,6 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import i18n from '~/i18n/config'
 import {
   localeLabels,
   type Locale,
@@ -23,18 +22,13 @@ import { I18nContext, type I18nContextValue } from '~/i18n/context'
 function createInitialI18nState(): { locale: Locale; messages: Messages } {
   const locale = getInitialLocale()
   persistLocale(locale)
-  // Keep the standalone i18next instance in sync with the project's locale
-  // resolution (URL > storage > browser > default). This matters because some
-  // UI paths still read from react-i18next / i18n.language.
-  if (i18n.language !== locale) {
-    void i18n.changeLanguage(locale)
-  }
   return {
     locale,
     messages: getMessagesSync(locale),
   }
 }
 
+/** 全站文案 SSOT：仅走本 Provider，不再同步独立 i18next 实例。 */
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [{ locale, messages }, setState] = useState(createInitialI18nState)
 
@@ -52,12 +46,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Load first, then commit locale + messages together to avoid stale copy flash.
+      // 先加载再提交，避免语言切换闪旧文案。
       void loadMessages(nextLocale).then((nextMessages) => {
         setState({ locale: nextLocale, messages: nextMessages })
-        if (i18n.language !== nextLocale) {
-          void i18n.changeLanguage(nextLocale)
-        }
       })
     }
 

@@ -10,9 +10,9 @@ export interface AuthContextValue {
   isLoggingIn: boolean
   loginError: string | null
   login: () => Promise<void>
-  retryLogin: () => Promise<void>
   logout: () => void
-  clearAuthOnDisconnect: () => void
+  /** 钱包断开时清登录错误与静默 attempt，不清 JWT 表。 */
+  clearLoginErrorOnDisconnect: () => void
   invalidateSession: () => void
   clearLoginError: () => void
 }

@@ -7,18 +7,13 @@ import {
 } from 'react'
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { ApiError } from '~/shared/api/client'
-import {
-  ACCOUNT_BANNED_SENTINEL,
-  LOGIN_ERROR,
-  isAccountBannedError,
-} from '~/shared/api/account-banned'
-import { shouldClearLoginAttemptAfterFailure } from '~/core/auth/auth-executor'
+import { LOGIN_ERROR } from '~/shared/api/account-banned'
+import { toLoginErrorSentinel } from '~/views/dapp/auth/login-error-sentinel'
 import {
   buildLoginAttemptKey,
   deriveAuthAction,
   deriveAuthState,
-  isPermanentLoginErrorMessage,
+  shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
 import { loginWithWallet } from '~/views/dapp/auth/login-with-wallet'
 import { defaultChain } from '~/views/dapp/web3/thirdweb'
@@ -33,7 +28,6 @@ import {
   invalidateAfterWalletSwitch,
 } from '~/shared/api/query/invalidate'
 import { AuthContext, type AuthContextValue } from '~/app/bootstrap/use-auth'
-import { isUserRejectedWalletError } from '~/views/dapp/web3/resolve-contract-error-message'
 
 const sessionStorage = createStoreAuthSessionStorage()
 const signatureStorage = createStoreLoginSignatureStorage()
@@ -51,11 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginError = useAuthStore((state) => state.loginError)
 
   const loginInProgressRef = useRef(false)
-  /** Fingerprint of the last fired silent-login; the loop guard (see machine). */
+  /** 最近一次静默登录的 attempt 指纹，防止同指纹死循环。 */
   const lastAttemptRef = useRef<string | null>(null)
 
-  // Single source of truth: the whole auth status is derived from the connected
-  // wallet plus the address-keyed JWT cache. No standalone session to sync.
+  /** 会话状态由「当前钱包 + 按地址 JWT 表」派生，无独立 session 对象可同步。 */
   const authState = useMemo(
     () => deriveAuthState({ walletAddress, sessionsByAddress }),
     [walletAddress, sessionsByAddress],
@@ -84,32 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signatureStorage,
       })
     } catch (error) {
-      if (isAccountBannedError(error)) {
-        useAuthStore.getState().setLoginError(ACCOUNT_BANNED_SENTINEL)
-      } else if (isUserRejectedWalletError(error)) {
-        useAuthStore.getState().setLoginError(LOGIN_ERROR.USER_REJECTED)
-      } else if (
-        error instanceof ApiError &&
-        /nonce|signature|expired|invalid/i.test(`${error.error} ${error.message}`)
-      ) {
-        useAuthStore.getState().setLoginError(LOGIN_ERROR.SIGNATURE_REJECTED)
-      } else if (error instanceof ApiError) {
-        // Transport / unknown business codes — allow retry (transient).
-        useAuthStore.getState().setLoginError(null)
-      } else if (error instanceof Error) {
-        const text = error.message
-        if (/rejected|denied|cancel/i.test(text)) {
-          useAuthStore.getState().setLoginError(LOGIN_ERROR.USER_REJECTED)
-        } else if (/nonce|signature|expired|invalid/i.test(text)) {
-          useAuthStore.getState().setLoginError(LOGIN_ERROR.SIGNATURE_REJECTED)
-        } else if (isPermanentLoginErrorMessage(text)) {
-          useAuthStore.getState().setLoginError(LOGIN_ERROR.FAILED)
-        } else {
-          useAuthStore.getState().setLoginError(null)
-        }
-      } else {
-        useAuthStore.getState().setLoginError(null)
-      }
+      useAuthStore.getState().setLoginError(toLoginErrorSentinel(error))
       throw error
     } finally {
       loginInProgressRef.current = false
@@ -117,11 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [account])
 
-  /**
-   * The one and only auth executor. Reads the action the machine derives and
-   * performs it: a silent login now, or a renewal timer before expiry. Renewal
-   * resets the loop guard so the post-renewal cycle can silently recover once.
-   */
+  /** 执行机：按派生 action 发起静默登录，或在到期前安排续期。 */
   useEffect(() => {
     if (!hasHydrated || !walletAddress) return
 
@@ -140,8 +104,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (action.type === 'login') {
       lastAttemptRef.current = attemptKey
       void runLogin().catch(() => {
-        const loginError = useAuthStore.getState().loginError
-        if (shouldClearLoginAttemptAfterFailure(loginError)) {
+        const nextError = useAuthStore.getState().loginError
+        if (shouldClearLoginAttemptAfterFailure(nextError)) {
           lastAttemptRef.current = null
         }
       })
@@ -167,11 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     runLogin,
   ])
 
-  /**
-   * Side channel: keep the react-query cache aligned with auth transitions.
-   * Login → warm authenticated screens; logout/expiry → drop stale user data;
-   * wallet switch → refresh for the new account regardless of current auth state.
-   */
+  /** 登录/登出/切钱包时对齐 React Query 缓存。 */
   const prevAuthedRef = useRef(false)
   const prevAddressRef = useRef<string | undefined>(undefined)
   useEffect(() => {
@@ -185,10 +145,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearApiQueries()
     }
 
-    // Detect wallet address changes independently of auth state. Switching
-    // wallets often passes through a transient disconnected / needsLogin state,
-    // so waiting for isAuthenticated to flip would miss the transition and
-    // leave stale data on screen.
     if (
       prevAddress &&
       walletAddress &&
@@ -198,16 +154,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     prevAuthedRef.current = isAuthenticated
-    // Keep the last known connected address across transient disconnects.
-    // Wallet switches often go: A → undefined → B. If we clear the ref on
-    // disconnect, the B mount looks like a first connection and we never
-    // run the wallet-switch cleanup that refreshes user-scoped data.
+    // 切钱包常为 A → undefined → B；断开时保留上一地址，才能识别真正的切换。
     if (walletAddress) {
       prevAddressRef.current = walletAddress
     }
   }, [hasHydrated, isAuthenticated, walletAddress, activeTab])
 
-  /** Manual login (user pressed sign-in): always allowed, may prompt a signature. */
+  /** 用户点击登录：清闩锁，可弹出签名。 */
   const login = useCallback(async () => {
     lastAttemptRef.current = null
     useAuthStore.getState().setLoginError(null)
@@ -215,10 +168,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [runLogin])
 
   /**
-   * 401 handler. Purge only the current address's JWT and keep the signature so
-   * the executor can mint a fresh one silently. We deliberately do NOT reset the
-   * loop guard here: if the freshly-minted token is rejected again the attempt
-   * key is unchanged, so the silent retry stops and the user is asked to re-sign.
+   * 401：只清当前地址 JWT，保留签名以便静默换票。
+   * 故意不重置 attempt 闩锁——新票再被拒时同指纹停止静默重试。
    */
   const invalidateSession = useCallback(() => {
     const store = useAuthStore.getState()
@@ -228,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     store.setLoginError(null)
   }, [walletAddress])
 
-  /** User-initiated logout: drop both JWT and signature so we don't auto re-login. */
+  /** 用户登出：JWT 与签名一并清除，避免自动再登录。 */
   const logout = useCallback(() => {
     const store = useAuthStore.getState()
     if (walletAddress) {
@@ -239,7 +190,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     lastAttemptRef.current = null
   }, [walletAddress])
 
-  const clearAuthOnDisconnect = useCallback(() => {
+  /** 钱包断开时仅清登录错误与 attempt，不清会话表。 */
+  const clearLoginErrorOnDisconnect = useCallback(() => {
     useAuthStore.getState().setLoginError(null)
     lastAttemptRef.current = null
   }, [])
@@ -258,16 +210,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoggingIn,
       loginError,
       login,
-      retryLogin: login,
       logout,
-      clearAuthOnDisconnect,
+      clearLoginErrorOnDisconnect,
       invalidateSession,
       clearLoginError,
     }),
     [
       authState.kind,
-      clearAuthOnDisconnect,
       clearLoginError,
+      clearLoginErrorOnDisconnect,
       hasHydrated,
       invalidateSession,
       isAuthenticated,

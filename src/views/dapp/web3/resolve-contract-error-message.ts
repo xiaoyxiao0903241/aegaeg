@@ -40,6 +40,9 @@ export const WALLET_WRITE_ERROR = {
 /** Quote RPC / router failure — map via i18n `errors.quoteFailed`. */
 export const SWAP_QUOTE_FAILED = 'SWAP_QUOTE_FAILED'
 
+/** Approve 后二次门闸失败（quote 过期等）— 与 quoteFailed 同文案。 */
+export const SWAP_SUBMIT_GATE_FAILED = 'SWAP_SUBMIT_GATE_FAILED'
+
 export interface WalletTransactionErrorMessages {
   gasLimitTooLow: string
   gasEstimateFailed: string
@@ -497,7 +500,12 @@ export function resolveFlashSwapUserMessage(
   }
 
   const raw = readErrorText(error)
-  if (raw === SWAP_QUOTE_FAILED && messages.quoteFailed) return messages.quoteFailed
+  if (
+    (raw === SWAP_QUOTE_FAILED || raw === SWAP_SUBMIT_GATE_FAILED) &&
+    messages.quoteFailed
+  ) {
+    return messages.quoteFailed
+  }
   if (
     raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED ||
     /wallet not connected/i.test(raw)

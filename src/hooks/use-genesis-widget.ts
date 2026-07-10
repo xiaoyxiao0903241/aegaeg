@@ -19,6 +19,7 @@ import {
   resolveRemainingUserAmount,
   resolveSharePriceWei,
 } from '~/core/presale/presale-math'
+import { evaluateGenesisPostApproveGate } from '~/core/presale/evaluate-genesis-post-approve-gate'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
 import { MAX_UINT256 } from '~/views/dapp/web3/abis'
@@ -309,6 +310,20 @@ export function useGenesisWidget() {
         const approveResult = await approve()
         if (!approveResult.success) {
           return approveResult
+        }
+        const gate = evaluateGenesisPostApproveGate({
+          isBound: isBoundQuery.data,
+          isPaused,
+          isPausedUnknown,
+        })
+        if (!gate.ok) {
+          return {
+            success: false,
+            error:
+              gate.reason === 'not_bound'
+                ? GENESIS_PURCHASE_ERROR.NOT_BOUND
+                : GENESIS_PURCHASE_ERROR.UNAVAILABLE,
+          }
         }
       }
       return await purchase()

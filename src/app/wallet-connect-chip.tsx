@@ -103,7 +103,7 @@ function loginToastCopy(t: ReturnType<typeof useI18n>['messages']) {
 
 function ConnectedWalletChip() {
   const account = useActiveAccount()
-  const { session, isAuthenticated, loginError, retryLogin } = useAuth()
+  const { session, isAuthenticated, loginError, login } = useAuth()
   const { messages: t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
   const styles = walletConnectChip({ reconnect: Boolean(loginError) })
@@ -118,7 +118,7 @@ function ConnectedWalletChip() {
   async function handleClick() {
     if (loginError) {
       try {
-        await retryLogin()
+        await login()
       } catch (error) {
         const message = resolveLoginToastMessage(
           error,
@@ -172,7 +172,7 @@ function WalletConnectButton({
   /** primary only — inverse = dark promo 38; card = white-card 42; external = Button md 44 */
   density?: 'card' | 'external' | 'inverse'
 }) {
-  const { isLoggingIn, login, loginError, retryLogin, needsSignIn } = useAuth()
+  const { isLoggingIn, login, loginError, needsSignIn } = useAuth()
   const { messages: t } = useI18n()
   const [connectOpen, setConnectOpen] = useState(false)
   const styles = walletConnectChip({ fullWidth })
@@ -184,7 +184,7 @@ function WalletConnectButton({
   async function handleClick() {
     if (loginError) {
       try {
-        await retryLogin()
+        await login()
       } catch (error) {
         const message = resolveLoginToastMessage(
           error,

@@ -1,4 +1,4 @@
-import type { SeasonOption } from '~/views/dapp/genesis/season-selector'
+import type { SeasonOption } from '~/core/presale/genesis-promo-types'
 import { formatPhaseDate, isPhaseActive, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 
 function formatPhaseDateRange(startTime: bigint, endTime: bigint): string {

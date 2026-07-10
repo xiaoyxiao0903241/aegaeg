@@ -20,18 +20,9 @@ function translateSeasonStatus(status: string, t: ReturnType<typeof useI18n>['me
   return status
 }
 
-export type SeasonOption = {
-  active?: boolean
-  date: string
-  desktopMeta: {
-    airdrop: string
-    discount: string
-  }
-  discount: string
-  name: string
-  price: string
-  status: string
-}
+import type { SeasonOption } from '~/core/presale/genesis-promo-types'
+
+export type { SeasonOption } from '~/core/presale/genesis-promo-types'
 
 function resolveSeasonCarouselScrollIndex(activeIndex: number): number {
   if (activeIndex <= 0) {

@@ -149,9 +149,10 @@ export function useFlashSwapWidget(authenticated: boolean, quotesEnabled = true)
       return { ok: false, error }
     }
 
-    const result = await core.runQuotedSubmit(async () => {
+    const result = await core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
       await approveUsdtForFlashSwapIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
       void balancesQuery.refetch()
+      assertStillSubmittable()
 
       await executeFlashSwap({
         wallet,

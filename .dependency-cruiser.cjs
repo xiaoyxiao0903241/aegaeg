@@ -32,6 +32,12 @@ module.exports = {
       to: { path: '^thirdweb' },
     },
     {
+      name: 'stores-no-views',
+      severity: 'error',
+      from: { path: '^src/stores/' },
+      to: { path: '^src/views/' },
+    },
+    {
       name: 'ui-is-dumb',
       severity: 'warn',
       from: { path: '^src/shared/ui/' },

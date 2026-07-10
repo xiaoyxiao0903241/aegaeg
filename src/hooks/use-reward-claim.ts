@@ -8,11 +8,13 @@ import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 type RewardClaimExecuteResult = {
   confirmError?: unknown
   confirmResult: ClaimConfirmResult | null
+  txHash: string
 }
 
 type RewardClaimExecutor = (args: {
   wallet: NonNullable<ReturnType<typeof useActiveWallet>>
   token: string
+  onUnauthorized: () => void
 }) => Promise<RewardClaimExecuteResult>
 
 export type RewardClaimStatus = 'success' | 'confirm_failed' | null
@@ -20,13 +22,14 @@ export type RewardClaimStatus = 'success' | 'confirm_failed' | null
 export function useRewardClaim(execute: RewardClaimExecutor) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
-  const { token, isAuthenticated } = useAuth()
+  const { token, isAuthenticated, invalidateSession } = useAuth()
   const [isClaiming, setIsClaiming] = useState(false)
   const [error, setError] = useState<unknown>(null)
 
   const claim = useCallback(async (): Promise<{
     status: Exclude<RewardClaimStatus, null>
     confirmResult: ClaimConfirmResult | null
+    txHash?: string
   } | null> => {
     if (!account || !wallet || !token || !isAuthenticated) {
       setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
@@ -37,19 +40,28 @@ export function useRewardClaim(execute: RewardClaimExecutor) {
     setError(null)
 
     try {
-      const result = await execute({ wallet, token })
-      invalidateAfterTeamClaim()
+      const result = await execute({
+        wallet,
+        token,
+        onUnauthorized: invalidateSession,
+      })
       if (result.confirmError) {
-        return { status: 'confirm_failed', confirmResult: null }
+        // 链上已成功：不乐观清空余额/日志；仅提示后端同步失败。
+        return {
+          status: 'confirm_failed',
+          confirmResult: null,
+          txHash: result.txHash,
+        }
       }
-      return { status: 'success', confirmResult: result.confirmResult }
+      invalidateAfterTeamClaim()
+      return { status: 'success', confirmResult: result.confirmResult, txHash: result.txHash }
     } catch (caught) {
       setError(caught)
       return null
     } finally {
       setIsClaiming(false)
     }
-  }, [account, execute, isAuthenticated, token, wallet])
+  }, [account, execute, invalidateSession, isAuthenticated, token, wallet])
 
   return { claim, isClaiming, error, canClaim: Boolean(account && token && isAuthenticated) }
 }

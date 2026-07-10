@@ -106,7 +106,7 @@ test('apiRequest defaults to POST when method is omitted', async () => {
   }
 })
 
-test('apiRequest non-JSON 403 still reports account banned', async () => {
+test('apiRequest non-JSON 403 does not treat bare 403 as banned', async () => {
   const { apiRequest, ApiError } = await loadModule('/src/shared/api/request.ts')
   const {
     resetAccountBannedReportCooldownForTests,
@@ -136,7 +136,7 @@ test('apiRequest non-JSON 403 still reports account banned', async () => {
         return true
       },
     )
-    assert.equal(bannedReports, 1)
+    assert.equal(bannedReports, 0)
   } finally {
     unsubscribe()
     globalThis.fetch = originalFetch

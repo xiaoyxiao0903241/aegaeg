@@ -22,13 +22,14 @@ const listeners = new Set<AccountBannedListener>()
 let lastReportedAt = 0
 
 export function isAccountBannedError(error: unknown): boolean {
-  if (error instanceof ApiError) return error.code === 403
-  return (
-    error instanceof Error &&
-    error.name === 'ApiError' &&
-    'code' in error &&
-    (error as ApiError).code === 403
-  )
+  if (!(error instanceof ApiError) && !(error instanceof Error && error.name === 'ApiError')) {
+    return false
+  }
+  const apiError = error as ApiError
+  if (apiError.code !== 403) return false
+  const blob = `${apiError.error ?? ''} ${apiError.message ?? ''}`
+  // 裸 403 不视为封禁；需业务码/文案指向封禁。
+  return /ban|封|ACCOUNT_BANNED|account.?disabled|forbidden.?account/i.test(blob)
 }
 
 export function subscribeAccountBanned(listener: AccountBannedListener): () => void {

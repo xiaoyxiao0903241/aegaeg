@@ -1,6 +1,7 @@
 import { SWAP_CONFIG } from '~/shared/config/swap'
+import type { SwapDirection } from '~/core/swap/swap-direction'
 
-export type SwapDirection = 'forward' | 'reverse'
+export type { SwapDirection } from '~/core/swap/swap-direction'
 
 export interface SwapPairToken {
   key: 'usd1' | 'usdt'

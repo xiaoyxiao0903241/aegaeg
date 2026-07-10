@@ -1,9 +1,11 @@
 import { create } from 'zustand'
-import type { GenesisPromoSnapshot } from '~/views/dapp/genesis/genesis-promo'
-import type { SeasonOption } from '~/views/dapp/genesis/season-selector'
+import type {
+  GenesisPromoSnapshot,
+  SeasonOption,
+} from '~/core/presale/genesis-promo-types'
 
 export type GenesisPromoState = {
-  /** Shell clock SSOT (15s tick from GenesisPromoSync). */
+  /** Shell 时钟 SSOT（GenesisPromoSync 15s tick）。 */
   nowSeconds: number
   activeSeasonNumber: number
   discountLabel: string
@@ -21,10 +23,8 @@ export type GenesisPromoState = {
 }
 
 /**
- * Cross-tab Genesis chrome (rail / swap footer / community / purchase season UI).
- * Not persisted — React Query remains the chain-read SSOT; this store only
- * holds derived UI fields so consumers can selector-subscribe without mounting
- * the full purchase widget. GenesisPromoSync is the sole derive writer.
+ * 跨 Tab Genesis chrome（rail / swap footer / community / 购买季选择）。
+ * 不持久化；链上读仍以 React Query 为 SSOT。GenesisPromoSync 是唯一写入方。
  */
 export const useGenesisPromoStore = create<GenesisPromoState>((set) => ({
   nowSeconds: Math.floor(Date.now() / 1000),

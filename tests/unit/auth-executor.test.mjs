@@ -27,7 +27,7 @@ test('isPermanentLoginErrorMessage covers all LOGIN_ERROR sentinels', async () =
 
 test('shouldClearLoginAttemptAfterFailure mirrors permanent latch', async () => {
   const { shouldClearLoginAttemptAfterFailure } = await loadModule(
-    '/src/core/auth/auth-executor.ts',
+    '/src/core/auth/auth-machine.ts',
   )
   const { LOGIN_ERROR } = await loadModule('/src/shared/api/account-banned.ts')
 

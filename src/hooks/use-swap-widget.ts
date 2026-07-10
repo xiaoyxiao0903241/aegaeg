@@ -159,32 +159,8 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     placeholderData: keepPreviousData,
   })
 
-  const exchangeSpotQuoteInvertedQuery = useQuery({
-    queryKey: queryKeys.chain.swapQuote(
-      usd1ToUsdtPair.sell.address,
-      usd1ToUsdtPair.buy.address,
-      exchangeSpotAmountInverted.toString(),
-    ),
-    queryFn: () =>
-      fetchSwapQuote({
-        amountIn: exchangeSpotAmountInverted,
-        tokenIn: usd1ToUsdtPair.sell.address,
-        tokenOut: usd1ToUsdtPair.buy.address,
-        client: readClient,
-        poolContext,
-      }),
-    enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
-    placeholderData: keepPreviousData,
-  })
-
   useVisibleQueryInterval(spotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
   useVisibleQueryInterval(exchangeSpotQuoteQuery, SWAP_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
-  useVisibleQueryInterval(
-    exchangeSpotQuoteInvertedQuery,
-    SWAP_CONFIG.quoteRefreshIntervalMs,
-    quotesEnabled,
-  )
 
   const amountQuote = amountQuoteQuery.isPlaceholderData
     ? undefined
@@ -199,10 +175,6 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
     exchangeSpotQuoteQuery.isPlaceholderData,
     exchangeSpotQuoteQuery.data?.quotedOut,
   )
-  const exchangeSpotQuotedOutInverted = resolveLiveQuotedOut(
-    exchangeSpotQuoteInvertedQuery.isPlaceholderData,
-    exchangeSpotQuoteInvertedQuery.data?.quotedOut,
-  )
   const isSpotQuoting =
     amountIn === 0n &&
     (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) &&
@@ -210,10 +182,8 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   const isExchangePriceQuoting =
     (exchangeSpotQuoteQuery.isPending || exchangeSpotQuoteQuery.isPlaceholderData) &&
     exchangeSpotQuotedOut === 0n
-  const isExchangePriceInvertedQuoting =
-    (exchangeSpotQuoteInvertedQuery.isPending ||
-      exchangeSpotQuoteInvertedQuery.isPlaceholderData) &&
-    exchangeSpotQuotedOutInverted === 0n
+  /** 反方向汇率由正向 quote 反推，不再单独轮询。 */
+  const isExchangePriceInvertedQuoting = isExchangePriceQuoting
 
   const routeLabel = useMemo(
     () => `${pair.sell.symbol} → ${pair.buy.symbol}`,
@@ -245,13 +215,16 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
   ])
 
   const exchangePriceLabelInverted = useMemo(() => {
-    if (exchangeSpotQuotedOutInverted === 0n) {
+    if (exchangeSpotQuotedOut === 0n) {
       return isExchangePriceInvertedQuoting ? '' : '—'
     }
+    const amountOut =
+      (exchangeSpotAmountInverted * exchangeSpotAmount) / exchangeSpotQuotedOut
+    if (amountOut === 0n) return '—'
 
     return formatSwapRateApprox({
       amountIn: exchangeSpotAmountInverted,
-      amountOut: exchangeSpotQuotedOutInverted,
+      amountOut,
       decimalsIn: usd1ToUsdtPair.sell.decimals,
       decimalsOut: usd1ToUsdtPair.buy.decimals,
       symbolIn: usd1ToUsdtPair.sell.symbol,
@@ -259,8 +232,9 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
       fractionDigits: 6,
     })
   }, [
+    exchangeSpotAmount,
     exchangeSpotAmountInverted,
-    exchangeSpotQuotedOutInverted,
+    exchangeSpotQuotedOut,
     isExchangePriceInvertedQuoting,
     usd1ToUsdtPair.buy.decimals,
     usd1ToUsdtPair.buy.symbol,
@@ -301,13 +275,14 @@ export function useSwapWidget(authenticated: boolean, quotesEnabled = true) {
       return { ok: false, error }
     }
 
-    const result = await core.runQuotedSubmit(async () => {
+    const result = await core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
       await approveTokenIfNeeded({
         wallet,
         token: pair.sell.address,
         amountIn: core.debouncedAmountIn,
       })
       await balancesQuery.refetch()
+      assertStillSubmittable()
 
       await executeTokenSwap({
         wallet,
