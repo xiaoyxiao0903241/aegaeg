@@ -154,6 +154,28 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
   assert.equal(canSubmitQuotedSwap({ ...base, nowMs: nowMs + 10_001 }), false)
 })
 
+test('canSubmitQuotedSwap blockResubmit models unknown-tx double-submit latch', async () => {
+  const { canSubmitQuotedSwap } = await loadModule('/src/core/swap/resolve-live-quoted-out.ts')
+
+  const base = {
+    walletReady: true,
+    amountIn: 10n,
+    sellBalance: 100n,
+    quotedOut: 100n,
+    amountOutMin: 99n,
+    isPlaceholderData: false,
+    isQuotePending: false,
+    isBalancesLoading: false,
+    isSubmitting: false,
+    quoteUpdatedAt: 1_000_000,
+    maxQuoteAgeMs: 10_000,
+    nowMs: 1_000_000,
+  }
+
+  assert.equal(canSubmitQuotedSwap(base), true)
+  assert.equal(canSubmitQuotedSwap({ ...base, blockResubmit: true }), false)
+})
+
 test('assertQuotedSwapStillSubmittable throws SWAP_SUBMIT_GATE_FAILED when gate fails', async () => {
   const { assertQuotedSwapStillSubmittable, canSubmitQuotedSwap } = await loadModule(
     '/src/core/swap/resolve-live-quoted-out.ts',

@@ -35,13 +35,13 @@ const faqList = tv({
           revealClass(),
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
-        // Color only — size/weight from Text `copy`
-        answer: 'text-faq',
+        // Color only — size/weight from Text `copy` (shadcn semantic; replaces legacy text-faq)
+        answer: 'text-muted-foreground',
       },
       dapp: {
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
         // Color + sheet pad — size/weight from Text `detail`
-        answer: 'my-0 py-[1em] text-faq',
+        answer: 'my-0 py-[1em] text-muted-foreground',
       },
     },
   },

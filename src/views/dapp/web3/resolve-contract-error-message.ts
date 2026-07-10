@@ -537,6 +537,3 @@ export function resolveSwapUserFacingMessage(
     toWalletUserFacingMessage(error, fallback)
   )
 }
-
-/** @deprecated Use `resolveSwapUserFacingMessage` — same Trade/Flash toast chain. */
-export const resolveFlashSwapUserMessage = resolveSwapUserFacingMessage

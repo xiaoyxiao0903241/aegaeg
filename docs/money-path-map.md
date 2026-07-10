@@ -23,12 +23,14 @@ Claim:  签名 API → 链上 claim → confirm(重试) → success: invalidate
 |------|------|
 | 登录分类 / 裸 403 | `classify-login-failure.test.mjs`、`account-banned.test.mjs` |
 | Auth 闩锁 / renew | `auth-executor.test.mjs`（machine） |
-| Quote 门闸 / approve 后二次门闸 | `react-quality-gates.test.mjs`（`canSubmitQuotedSwap`、`assertQuotedSwapStillSubmittable`） |
+| Quote 门闸 / approve 后二次门闸 / unknown 闩锁 | `react-quality-gates.test.mjs` |
 | Claim confirm 重试 / 401 | `reward-claim-confirm.test.mjs` |
 | Claim `confirm_failed` 不 invalidate | `resolve-reward-claim-outcome.test.mjs` |
 | Claim 签名 normalize（snake/camel/精度） | `integration-helpers.test.mjs` |
 | Genesis approve 后门闸 | `reward-claim-confirm.test.mjs`（`evaluateGenesisPostApproveGate`） |
 | Swap/Claim 错误目录不泄漏 raw | `resolve-contract-error-message.test.mjs`、`resolve-api-user-facing-error.test.mjs` |
+| Invalidate 乐观加额 / wallet switch / auth query enabled | `query-invalidate.test.mjs` |
+| Swap Provider 挂载矩阵 | `react-quality-gates.test.mjs`（`viewsNeedingProvider`） |
 
 ## 产品面 vs 链上域（双层，勿整目录 rename）
 

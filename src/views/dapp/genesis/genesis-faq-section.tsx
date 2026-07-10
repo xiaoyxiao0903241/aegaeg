@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappCollapsibleSection } from '~/app/shell/dapp-collapsible-section'
 import { FaqList } from '~/shared/ui/faq-list'
@@ -10,24 +9,16 @@ export function GenesisFaqSection() {
   const { messages: t } = useI18n()
   const genesis = useGenesisWidgetContext()
 
-  const genesisFaqValues = useMemo(
-    () =>
-      buildGenesisFaqTemplateValues(
-        genesis.phases,
-        genesis.airdropThresholdUsd,
-        genesis.isLoading && genesis.phases.length === 0,
-      ),
-    [genesis.airdropThresholdUsd, genesis.isLoading, genesis.phases],
+  const genesisFaqValues = buildGenesisFaqTemplateValues(
+    genesis.phases,
+    genesis.airdropThresholdUsd,
+    genesis.isLoading && genesis.phases.length === 0,
   )
 
-  const genesisFaqItems = useMemo(
-    () =>
-      t.genesis.faq.items.map((item) => ({
-        q: item.q,
-        a: applyMessageTemplate(item.a, genesisFaqValues),
-      })),
-    [genesisFaqValues, t.genesis.faq.items],
-  )
+  const genesisFaqItems = t.genesis.faq.items.map((item) => ({
+    q: item.q,
+    a: applyMessageTemplate(item.a, genesisFaqValues),
+  }))
 
   return (
     <DappCollapsibleSection bodyClassName="overflow-visible" title={t.genesis.faq.title}>

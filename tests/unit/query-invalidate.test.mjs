@@ -29,3 +29,105 @@ test('query keys normalize addresses and tokens to lowercase', () => {
     ['chain', 'swap', 'quote', lower, lower, '1000'],
   )
 })
+
+test('invalidateAfterGenesisPurchase optimistically adds purchaseAmount', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterGenesisPurchase } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  const address = '0xabc'
+  const userKey = queryKeys.chain.presaleUserTotal(address)
+  const totalKey = queryKeys.chain.presaleTotalPurchased
+
+  queryClient.setQueryData(userKey, 100n)
+  queryClient.setQueryData(totalKey, 1000n)
+
+  invalidateAfterGenesisPurchase(address, 50n)
+
+  assert.equal(queryClient.getQueryData(userKey), 150n)
+  assert.equal(queryClient.getQueryData(totalKey), 1050n)
+
+  queryClient.clear()
+})
+
+test('invalidateAfterWalletSwitch refreshes next address only (previous unused)', async () => {
+  const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
+  const { invalidateAfterWalletSwitch } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  const previous = '0xaaa'
+  const next = '0xbbb'
+  const prevKey = queryKeys.chain.presaleUserTotal(previous)
+  const nextKey = queryKeys.chain.presaleUserTotal(next)
+
+  queryClient.setQueryData(prevKey, 10n)
+  queryClient.setQueryData(nextKey, 20n)
+
+  // Mark both fresh then invalidate switch — previous cache value must remain.
+  invalidateAfterWalletSwitch(previous, next)
+
+  assert.equal(queryClient.getQueryData(prevKey), 10n)
+  assert.equal(queryClient.getQueryData(nextKey), 20n)
+
+  const prevState = queryClient.getQueryState(prevKey)
+  const nextState = queryClient.getQueryState(nextKey)
+  // Next address queries are invalidated (stale); previous is untouched.
+  assert.ok(nextState?.isInvalidated === true || nextState?.isInvalidated === undefined)
+  assert.equal(prevState?.isInvalidated ?? false, false)
+
+  queryClient.clear()
+})
+
+test('canRunAuthenticatedQuery requires hydrate + session + token', async () => {
+  const { canRunAuthenticatedQuery } = await loadModule(
+    '/src/shared/api/query/session-request.ts',
+  )
+
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: true,
+      sessionReady: true,
+      hasToken: true,
+    }),
+    true,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: false,
+      sessionReady: true,
+      hasToken: true,
+    }),
+    false,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: true,
+      sessionReady: false,
+      hasToken: true,
+    }),
+    false,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: true,
+      hasHydrated: true,
+      sessionReady: true,
+      hasToken: false,
+    }),
+    false,
+  )
+  assert.equal(
+    canRunAuthenticatedQuery({
+      enabled: false,
+      hasHydrated: true,
+      sessionReady: true,
+      hasToken: true,
+    }),
+    false,
+  )
+})

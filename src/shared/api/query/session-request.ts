@@ -44,3 +44,18 @@ export function toQueryErrorMessage(
   if (!error) return null
   return resolveApiUserFacingError(error, messages) ?? messages.fallback
 }
+
+/** Authenticated React Query `enabled` gate — fail-closed until hydrated + session + token. */
+export function canRunAuthenticatedQuery({
+  enabled = true,
+  hasHydrated,
+  sessionReady,
+  hasToken,
+}: {
+  enabled?: boolean
+  hasHydrated: boolean
+  sessionReady: boolean
+  hasToken: boolean
+}): boolean {
+  return enabled && hasHydrated && sessionReady && hasToken
+}

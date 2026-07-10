@@ -43,23 +43,14 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const { poolContext, poolFee } = useSwapPoolReads(quotesEnabled)
 
   const pair = useMemo(() => getSwapPairTokens(direction), [direction])
-  const usdtToUsd1Pair = useMemo(() => getSwapPairTokens('reverse'), [])
-  const usd1ToUsdtPair = useMemo(() => getSwapPairTokens('forward'), [])
+  const usdtToUsd1Pair = getSwapPairTokens('reverse')
+  const usd1ToUsdtPair = getSwapPairTokens('forward')
   const address = account?.address
   const walletReady = hasWalletAccount(account)
   const slippageBps = slippagePercentToBps(slippage)
-  const spotQuoteAmount = useMemo(
-    () => 10n ** BigInt(pair.sell.decimals),
-    [pair.sell.decimals],
-  )
-  const exchangeSpotAmount = useMemo(
-    () => 10n ** BigInt(usdtToUsd1Pair.sell.decimals),
-    [usdtToUsd1Pair.sell.decimals],
-  )
-  const exchangeSpotAmountInverted = useMemo(
-    () => 10n ** BigInt(usd1ToUsdtPair.sell.decimals),
-    [usd1ToUsdtPair.sell.decimals],
-  )
+  const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
+  const exchangeSpotAmount = 10n ** BigInt(usdtToUsd1Pair.sell.decimals)
+  const exchangeSpotAmountInverted = 10n ** BigInt(usd1ToUsdtPair.sell.decimals)
 
   const balancesQuery = useQuery({
     queryKey: queryKeys.chain.swapBalances(

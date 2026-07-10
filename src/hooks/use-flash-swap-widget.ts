@@ -24,15 +24,12 @@ const FLASH_SWAP_SLIPPAGE_BPS = 50
 export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
-  const pair = useMemo(() => getSwapPairTokens('reverse'), [])
+  const pair = getSwapPairTokens('reverse')
   const readClient = useChainReadClient()
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)
-  const spotQuoteAmount = useMemo(
-    () => 10n ** BigInt(pair.sell.decimals),
-    [pair.sell.decimals],
-  )
+  const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
 
   const balancesQuery = useQuery({
     queryKey: queryKeys.chain.flashSwapBalances(address ?? ''),

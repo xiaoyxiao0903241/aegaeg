@@ -13,7 +13,7 @@ import {
   getTeamRewardTotal,
 } from '~/shared/api/endpoints'
 import type { PaginationParams } from '~/shared/api/types'
-import { requestWithSession, toQueryErrorMessage } from '~/shared/api/query/session-request'
+import { requestWithSession, toQueryErrorMessage, canRunAuthenticatedQuery } from '~/shared/api/query/session-request'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useAuth } from '~/app/bootstrap/use-auth'
@@ -32,7 +32,12 @@ function useAuthenticatedQuery<T>(
     // 用 JWT 作用域 key：切钱包换 token 时自动拉新数据，避免跨账户脏缓存。
     queryKey: token ? [...queryKey, token] : queryKey,
     queryFn: () => requestWithSession(fetcher, token!, invalidateSession),
-    enabled: enabled && hasHydrated && sessionReady && Boolean(token),
+    enabled: canRunAuthenticatedQuery({
+      enabled,
+      hasHydrated,
+      sessionReady,
+      hasToken: Boolean(token),
+    }),
     staleTime: QUERY_STALE_TIME.api,
     placeholderData: options?.keepPreviousData
       ? (previousData) => previousData
