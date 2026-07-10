@@ -1,8 +1,6 @@
 import { formatUsd } from '~/shared/api/format-display'
-import { type PresalePhaseOnChain } from '~/core/presale/presale-math'
+import { USD1_DECIMALS, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatTokenAmount } from '~/core/swap/token-amount'
-
-const USD1_DECIMALS = 18
 
 export interface GenesisFaqTemplateValues extends Record<string, string> {
   phaseCount: string

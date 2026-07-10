@@ -1,14 +1,14 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useMemo } from 'react'
-import { formatSwapRate, formatSwapRateColon } from '~/views/dapp/swap/format-swap-rate'
+import { formatSwapRate, formatSwapRateColon, resolveEmptySpotRatePlaceholder } from '~/views/dapp/swap/format-swap-rate'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/token-amount'
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
-import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
@@ -88,9 +88,8 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
     (spotQuoteQuery.isFetching && spotQuotedOut === 0n)
 
   const exchangePriceLabel = useMemo(() => {
-    if (spotQuotedOut === 0n) {
-      return isExchangePriceQuoting ? '' : '—'
-    }
+    const empty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
+    if (empty !== null) return empty
 
     return formatSwapRate({
       amountIn: spotQuoteAmount,
@@ -112,9 +111,8 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
   ])
 
   const overviewRateLabel = useMemo(() => {
-    if (spotQuotedOut === 0n) {
-      return isExchangePriceQuoting ? '' : '—'
-    }
+    const empty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
+    if (empty !== null) return empty
 
     return formatSwapRateColon({
       amountIn: spotQuoteAmount,
@@ -144,7 +142,7 @@ export function useFlashSwapWidget(sessionReady: boolean, quotesEnabled = true) 
 
   const submit = useCallback(async (): Promise<{ ok: true } | { ok: false; error: unknown }> => {
     if (!account || !wallet) {
-      const error = GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED
+      const error = WALLET_GATE_ERROR.NOT_CONNECTED
       core.setSubmitError(error)
       return { ok: false, error }
     }

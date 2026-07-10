@@ -3,12 +3,14 @@ import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-re
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
+  USD1_DECIMALS,
   buildPhaseCountdownKey,
   clampGenesisShares,
   canPurchaseGenesis,
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
   estimateXTokenAirdropUsd,
+  evaluateGenesisPostApproveGate,
   formatPhaseCountdown,
   getAirdropBpsForPhase,
   hasPhaseCountdownElapsed,
@@ -19,16 +21,14 @@ import {
   resolveRemainingUserAmount,
   resolveSharePriceWei,
 } from '~/core/presale/presale-math'
-import { evaluateGenesisPostApproveGate } from '~/core/presale/presale-math'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
 import { MAX_UINT256 } from '~/views/dapp/web3/abis'
 import { formatUsd } from '~/shared/api/format-display'
-import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR, WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 import { readErc20Allowance, readErc20Balance } from '~/views/dapp/web3/swap-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { invalidatePresaleChainQueries } from '~/shared/api/query/invalidate'
 import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
@@ -44,6 +44,7 @@ import {
 import {
   invalidateAfterGenesisPhaseTransition,
   invalidateAfterGenesisPurchase,
+  invalidatePresaleChainQueries,
 } from '~/shared/api/query/invalidate'
 import { useI18n } from '~/i18n/use-i18n'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
@@ -54,8 +55,6 @@ export interface GenesisPurchaseResult {
   /** Raw wallet / contract error — keep for selector-based i18n resolution. */
   error?: unknown
 }
-
-const USD1_DECIMALS = 18
 
 /** Survives GenesisWidgetProvider unmount when user switches tabs mid-tx. */
 const genesisPurchaseGate = { inFlight: false }
@@ -69,7 +68,6 @@ export function useGenesisWidget() {
   const countdownRefreshRef = useRef<string | null>(null)
   const [sharesDraft, setSharesDraft] = useState(0)
   const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
-  const [error, setError] = useState<string | null>(null)
   // Clock + chrome SSOT: GenesisPromoSync derives once into the store.
   const nowSeconds = useGenesisPromoStore((state) => state.nowSeconds)
   const activeSeasonNumber = useGenesisPromoStore((state) => state.activeSeasonNumber)
@@ -202,7 +200,7 @@ export function useGenesisWidget() {
 
   const approve = useCallback(async (): Promise<GenesisPurchaseResult> => {
     if (!account || !wallet) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED }
+      return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
     if (!canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
@@ -212,8 +210,6 @@ export function useGenesisWidget() {
     }
 
     setSubmittingAction('approve')
-    setError(null)
-
     try {
       await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
       if (address) {
@@ -232,15 +228,13 @@ export function useGenesisWidget() {
 
   const purchase = useCallback(async (): Promise<GenesisPurchaseResult> => {
     if (!account || !wallet) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED }
+      return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
     if (!activePhase || !canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
 
     setSubmittingAction('purchase')
-    setError(null)
-
     try {
       const [balance, approved] = await Promise.all([
         readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
@@ -401,7 +395,7 @@ export function useGenesisWidget() {
     isLoading,
     isSubmitting,
     submittingAction,
-    error: queryError ?? error,
+    error: queryError,
     refresh,
     approve,
     purchase,

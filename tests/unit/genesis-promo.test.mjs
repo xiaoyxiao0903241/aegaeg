@@ -19,7 +19,6 @@ test('buildGenesisPromoSnapshot uses active season discount and end date', async
       endTime: BigInt(now + 86_400),
       soldAmount: 1_000n,
       userPurchaseLimit: 10_000n,
-      purchasedAmount: 1_000n,
     },
   ]
 
@@ -50,7 +49,6 @@ test('buildGenesisPromoSnapshot falls back to upcoming season', async () => {
       endTime: BigInt(now + 172_800),
       soldAmount: 0n,
       userPurchaseLimit: 20_000n,
-      purchasedAmount: 0n,
     },
   ]
 

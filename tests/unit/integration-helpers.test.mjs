@@ -17,7 +17,6 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
       endTime: BigInt(now + 10_000),
       soldAmount: 500n,
       userPurchaseLimit: 10_000n,
-      purchasedAmount: 500n,
     },
     {
       index: 1,
@@ -29,7 +28,6 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
       endTime: BigInt(now + 40_000),
       soldAmount: 0n,
       userPurchaseLimit: 20_000n,
-      purchasedAmount: 0n,
     },
   ]
 

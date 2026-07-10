@@ -24,7 +24,6 @@ test('findActivePresalePhase picks phase by timestamp', async () => {
         endTime: 200n,
         soldAmount: 0n,
         userPurchaseLimit: 10_000n,
-        purchasedAmount: 0n,
       },
       {
         index: 1,
@@ -36,7 +35,6 @@ test('findActivePresalePhase picks phase by timestamp', async () => {
         endTime: 300n,
         soldAmount: 0n,
         userPurchaseLimit: 20_000n,
-        purchasedAmount: 0n,
       },
     ],
     150,

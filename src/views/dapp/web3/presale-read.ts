@@ -77,7 +77,6 @@ function mapPhaseTupleToOnChain(
     endTime,
     soldAmount,
     userPurchaseLimit,
-    purchasedAmount: soldAmount,
   }
 }
 

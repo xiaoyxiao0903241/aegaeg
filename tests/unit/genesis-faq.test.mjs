@@ -13,7 +13,6 @@ const samplePhases = [
     endTime: BigInt(5 * 86_400),
     soldAmount: 0n,
     userPurchaseLimit: 10_000n * 10n ** 18n,
-    purchasedAmount: 0n,
   },
   {
     index: 1,
@@ -25,7 +24,6 @@ const samplePhases = [
     endTime: BigInt(5 * 86_400),
     soldAmount: 0n,
     userPurchaseLimit: 20_000n * 10n ** 18n,
-    purchasedAmount: 0n,
   },
   {
     index: 2,
@@ -37,7 +35,6 @@ const samplePhases = [
     endTime: BigInt(5 * 86_400),
     soldAmount: 0n,
     userPurchaseLimit: 30_000n * 10n ** 18n,
-    purchasedAmount: 0n,
   },
 ]
 
@@ -83,7 +80,6 @@ test('buildGenesisFaqTemplateValues supports dynamic phase count and varying dur
       endTime: BigInt(6 * 86_400),
       soldAmount: 0n,
       userPurchaseLimit: 40_000n * 10n ** 18n,
-      purchasedAmount: 0n,
     },
     {
       index: 4,
@@ -95,7 +91,6 @@ test('buildGenesisFaqTemplateValues supports dynamic phase count and varying dur
       endTime: BigInt(5 * 86_400),
       soldAmount: 0n,
       userPurchaseLimit: 50_000n * 10n ** 18n,
-      purchasedAmount: 0n,
     },
     {
       index: 5,
@@ -107,7 +102,6 @@ test('buildGenesisFaqTemplateValues supports dynamic phase count and varying dur
       endTime: BigInt(5 * 86_400),
       soldAmount: 0n,
       userPurchaseLimit: 60_000n * 10n ** 18n,
-      purchasedAmount: 0n,
     },
   ]
 

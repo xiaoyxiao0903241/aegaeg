@@ -47,7 +47,6 @@ test('resolveRemainingUserAmount falls back to phase inventory when unlimited', 
     endTime: 0n,
     soldAmount: 6000n * 10n ** 18n,
     userPurchaseLimit: 0n,
-    purchasedAmount: 6000n * 10n ** 18n,
   }
 
   assert.equal(
@@ -69,7 +68,6 @@ test('resolveRemainingUserAmount fails closed when limit set but remaining unrea
     endTime: 0n,
     soldAmount: 6000n * 10n ** 18n,
     userPurchaseLimit: 10000n * 10n ** 18n,
-    purchasedAmount: 6000n * 10n ** 18n,
   }
 
   assert.equal(resolveRemainingUserAmount(null, activePhase, 0n), 0n)
@@ -88,7 +86,6 @@ test('resolveRemainingPhaseAmount clamps oversold inventory to zero', async () =
     endTime: 0n,
     soldAmount: 4_016_300n * 10n ** 18n,
     userPurchaseLimit: 10000n * 10n ** 18n,
-    purchasedAmount: 4_016_300n * 10n ** 18n,
   }
 
   assert.equal(resolveRemainingPhaseAmount(null, oversold), 0n)

@@ -40,7 +40,6 @@ test('genesis countdown helpers detect elapsed boundaries', async () => {
       endTime: 1_200n,
       soldAmount: 0n,
       userPurchaseLimit: 10_000n * 10n ** 18n,
-      purchasedAmount: 0n,
     },
     {
       index: 1,
@@ -52,7 +51,6 @@ test('genesis countdown helpers detect elapsed boundaries', async () => {
       endTime: 2_000n,
       soldAmount: 0n,
       userPurchaseLimit: 20_000n * 10n ** 18n,
-      purchasedAmount: 0n,
     },
   ]
 

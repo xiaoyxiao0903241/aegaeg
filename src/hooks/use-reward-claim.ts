@@ -1,4 +1,4 @@
-import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useCallback, useState } from 'react'
 import { useAuth } from '~/app/bootstrap/use-auth'
@@ -34,7 +34,7 @@ export function useRewardClaim(execute: RewardClaimExecutor) {
     txHash?: string
   } | null> => {
     if (!account || !wallet || !token || !sessionReady) {
-      setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
+      setError(WALLET_GATE_ERROR.NOT_CONNECTED)
       return null
     }
 

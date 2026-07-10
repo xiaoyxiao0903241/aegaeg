@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-price-impact-bps'
 import { resolveLiveQuotedOut } from '~/core/swap/resolve-live-quoted-out'
 import { formatGasEstimate } from '~/views/dapp/swap/format-gas-estimate'
-import { formatSwapRateApprox } from '~/views/dapp/swap/format-swap-rate'
+import { formatSwapRateApprox, resolveEmptySpotRatePlaceholder } from '~/views/dapp/swap/format-swap-rate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   clampSlippagePercent,
@@ -19,7 +19,7 @@ import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
-import { GENESIS_PURCHASE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
@@ -191,9 +191,8 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   )
 
   const exchangePriceLabel = useMemo(() => {
-    if (exchangeSpotQuotedOut === 0n) {
-      return isExchangePriceQuoting ? '' : '—'
-    }
+    const empty = resolveEmptySpotRatePlaceholder(exchangeSpotQuotedOut, isExchangePriceQuoting)
+    if (empty !== null) return empty
 
     return formatSwapRateApprox({
       amountIn: exchangeSpotAmount,
@@ -215,9 +214,11 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
   ])
 
   const exchangePriceLabelInverted = useMemo(() => {
-    if (exchangeSpotQuotedOut === 0n) {
-      return isExchangePriceInvertedQuoting ? '' : '—'
-    }
+    const empty = resolveEmptySpotRatePlaceholder(
+      exchangeSpotQuotedOut,
+      isExchangePriceInvertedQuoting,
+    )
+    if (empty !== null) return empty
     const amountOut =
       (exchangeSpotAmountInverted * exchangeSpotAmount) / exchangeSpotQuotedOut
     if (amountOut === 0n) return '—'
@@ -270,7 +271,7 @@ export function useSwapWidget(sessionReady: boolean, quotesEnabled = true) {
     { ok: true } | { ok: false; error: unknown | null }
   > => {
     if (!account || !wallet) {
-      const error = GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED
+      const error = WALLET_GATE_ERROR.NOT_CONNECTED
       core.setSubmitError(error)
       return { ok: false, error }
     }

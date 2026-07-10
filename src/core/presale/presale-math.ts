@@ -10,8 +10,6 @@ export interface PresalePhaseOnChain {
   endTime: bigint
   soldAmount: bigint
   userPurchaseLimit: bigint
-  /** @deprecated 使用 soldAmount */
-  purchasedAmount: bigint
 }
 
 export interface PresalePhaseRemaining {
@@ -22,6 +20,8 @@ export interface PresalePhaseRemaining {
 }
 
 const USD1_DECIMALS = 18
+
+export { USD1_DECIMALS }
 
 /** Phase inventory left from `phases()` fields; never negative when sold ≫ max. */
 export function resolveRemainingPhaseAmount(

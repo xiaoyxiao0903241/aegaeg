@@ -12,7 +12,7 @@ import {
   readReferrer,
 } from '~/views/dapp/web3/referral-read'
 import { bindReferrer } from '~/views/dapp/web3/referral-write'
-import { GENESIS_PURCHASE_ERROR, REFERRAL_BIND_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { useChainReadClient } from '~/hooks/use-chain-read-client'
 
@@ -103,7 +103,7 @@ export function useReferral(sessionReady: boolean) {
     startBindCooldown()
 
     if (!account || !wallet) {
-      setError(GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED)
+      setError(WALLET_GATE_ERROR.NOT_CONNECTED)
       return false
     }
 

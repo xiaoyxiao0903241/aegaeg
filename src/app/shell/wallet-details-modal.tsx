@@ -2,6 +2,7 @@ import { useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Wallet, X } from 'lucide-react'
 import { useActiveAccount, useActiveWallet, useDisconnect } from '~/views/dapp/web3/thirdweb-react'
+import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { formatTokenAmount } from '~/core/swap/token-amount'
 import { useUsd1PresaleWalletQuery } from '~/hooks/queries/use-presale-queries'
 import { useI18n } from '~/i18n/use-i18n'
@@ -21,8 +22,6 @@ import {
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
 import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
-
-const USD1_DECIMALS = 18
 
 /**
  * Wallet details / disconnect modal — Figma `4040:5234`.

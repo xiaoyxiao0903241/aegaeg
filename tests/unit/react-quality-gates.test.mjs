@@ -275,3 +275,14 @@ test('calcAmountOutMin rejects invalid slippage and floors with valid bps', asyn
   assert.throws(() => calcAmountOutMin(10_000n, -1))
   assert.throws(() => calcAmountOutMin(10_000n, 10_000))
 })
+
+test('resolveEmptySpotRatePlaceholder gates empty vs format', async () => {
+  const { resolveEmptySpotRatePlaceholder } = await loadModule(
+    '/src/views/dapp/swap/format-swap-rate.ts',
+  )
+
+  assert.equal(resolveEmptySpotRatePlaceholder(0n, true), '')
+  assert.equal(resolveEmptySpotRatePlaceholder(0n, false), '—')
+  assert.equal(resolveEmptySpotRatePlaceholder(1n, false), null)
+  assert.equal(resolveEmptySpotRatePlaceholder(1n, true), null)
+})

@@ -29,7 +29,6 @@ test('X airdrop preview applies phase ratio to current order once eligible', asy
     endTime: 0n,
     soldAmount: 0n,
     userPurchaseLimit: 0n,
-    purchasedAmount: 0n,
   }
   const phase1 = { ...phase0, index: 1, airdropValueRatio: 200n }
 
@@ -58,7 +57,6 @@ test('estimateXTokenAirdropUsd uses on-chain airdropValueRatio from phase', asyn
       endTime: 0n,
       soldAmount: 0n,
       userPurchaseLimit: 0n,
-      purchasedAmount: 0n,
     }),
     5,
   )
@@ -73,7 +71,6 @@ test('estimateXTokenAirdropUsd uses on-chain airdropValueRatio from phase', asyn
       endTime: 0n,
       soldAmount: 0n,
       userPurchaseLimit: 0n,
-      purchasedAmount: 0n,
     }),
     2,
   )

@@ -1,5 +1,25 @@
 import { formatTokenAmount } from '~/core/swap/token-amount'
 
+function normalizeRateOutPerUnit(
+  amountIn: bigint,
+  amountOut: bigint,
+  decimalsIn: number,
+): bigint {
+  const oneUnitIn = 10n ** BigInt(decimalsIn)
+  return (amountOut * oneUnitIn) / amountIn
+}
+
+/**
+ * Spot / exchange label empty gate: quoting → ''; settled zero → '—'; non-zero → null (format).
+ */
+export function resolveEmptySpotRatePlaceholder(
+  quotedOut: bigint,
+  isQuoting: boolean,
+): '' | '—' | null {
+  if (quotedOut !== 0n) return null
+  return isQuoting ? '' : '—'
+}
+
 function formatRateRatioFixed(
   normalizedOut: bigint,
   decimalsOut: number,
@@ -34,8 +54,7 @@ export function formatSwapRateColon({
     return '—'
   }
 
-  const oneUnitIn = 10n ** BigInt(decimalsIn)
-  const normalizedOut = (amountOut * oneUnitIn) / amountIn
+  const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
 
   return `1 : ${formatRateRatioFixed(normalizedOut, decimalsOut)}`
 }
@@ -61,8 +80,7 @@ export function formatSwapRate({
     return `1 ${symbolIn} = — ${symbolOut}`
   }
 
-  const oneUnitIn = 10n ** BigInt(decimalsIn)
-  const normalizedOut = (amountOut * oneUnitIn) / amountIn
+  const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
   const formattedOut =
     fractionDigits === 6
       ? formatTokenAmount(normalizedOut, decimalsOut, 6)
@@ -93,8 +111,7 @@ export function formatSwapRateApprox({
     return `1 ${symbolIn} ≈ — ${symbolOut}`
   }
 
-  const oneUnitIn = 10n ** BigInt(decimalsIn)
-  const normalizedOut = (amountOut * oneUnitIn) / amountIn
+  const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
 
   return `1 ${symbolIn} ≈ ${formatRateRatioFixed(normalizedOut, decimalsOut, fractionDigits)} ${symbolOut}`
 }

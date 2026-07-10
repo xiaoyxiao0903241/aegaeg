@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { buildSeasonOptions } from '~/views/dapp/genesis/season-options'
 import { buildGenesisPromoSnapshot } from '~/views/dapp/genesis/genesis-promo'
@@ -8,8 +9,6 @@ import {
   usePresalePhasesQuery,
 } from '~/hooks/queries/use-presale-queries'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
-
-const USD1_DECIMALS = 18
 
 /**
  * Shell-resident syncer: light presale reads → genesis-promo-store.

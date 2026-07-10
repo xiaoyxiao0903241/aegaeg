@@ -14,11 +14,17 @@ const USER_REJECTED_PATTERN =
 const WALLET_SEND_FAILURE_PATTERN =
   /transaction failed|interaction failed|likely to fail|execution reverted|cannot estimate gas|intrinsic gas too low|insufficient funds|not broadcast|reverted on-chain|wallet may have failed/i
 
+/** Shared wallet-gate sentinels (swap / claim / referral / genesis). Literal frozen. */
+export const WALLET_GATE_ERROR = {
+  NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
+} as const
+
 export const GENESIS_PURCHASE_ERROR = {
   INSUFFICIENT_USD1: 'GENESIS_INSUFFICIENT_USD1',
   INSUFFICIENT_ALLOWANCE: 'GENESIS_INSUFFICIENT_ALLOWANCE',
   UNAVAILABLE: 'GENESIS_UNAVAILABLE',
-  WALLET_NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
+  /** @deprecated Prefer `WALLET_GATE_ERROR.NOT_CONNECTED` — same literal. */
+  WALLET_NOT_CONNECTED: WALLET_GATE_ERROR.NOT_CONNECTED,
   NOT_BOUND: 'GENESIS_NOT_BOUND',
 } as const
 
@@ -279,7 +285,7 @@ export function toWalletUserFacingMessage(error: unknown, fallback: string): str
   if (error == null) return null
   const text = readErrorText(error).trim()
   if (
-    text === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED ||
+    text === WALLET_GATE_ERROR.NOT_CONNECTED ||
     /wallet not connected/i.test(text)
   ) {
     return fallback
@@ -435,7 +441,7 @@ export function resolveTeamClaimError(
   if (mapped) return mapped
 
   if (
-    text.raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED ||
+    text.raw === WALLET_GATE_ERROR.NOT_CONNECTED ||
     /please connect wallet/i.test(text.raw)
   ) {
     return messages.walletNotConnected ?? messages.failed
@@ -453,7 +459,7 @@ const GENESIS_PURCHASE_SENTINEL_RULES: Array<{
   { sentinel: GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1, messageKey: 'insufficientUsd1' },
   { sentinel: GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE, messageKey: 'insufficientAllowance' },
   { sentinel: GENESIS_PURCHASE_ERROR.UNAVAILABLE, messageKey: 'purchaseUnavailable' },
-  { sentinel: GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED, messageKey: 'walletNotConnected' },
+  { sentinel: WALLET_GATE_ERROR.NOT_CONNECTED, messageKey: 'walletNotConnected' },
   { sentinel: GENESIS_PURCHASE_ERROR.NOT_BOUND, messageKey: 'notBound' },
 ]
 
@@ -507,7 +513,7 @@ export function resolveSwapUserFacingMessage(
     return messages.quoteFailed
   }
   if (
-    raw === GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED ||
+    raw === WALLET_GATE_ERROR.NOT_CONNECTED ||
     /wallet not connected/i.test(raw)
   ) {
     return messages.walletNotConnected
