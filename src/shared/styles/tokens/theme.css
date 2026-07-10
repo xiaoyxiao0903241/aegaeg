@@ -427,7 +427,15 @@
   --app-table-empty-padding-h5: 1.375rem 1rem;
   --app-community-stat-padding: 0.8125rem 0.75rem;
   --app-skeleton-chip-size: 1.125rem;
+  /* Tooltip bubble — Figma 76:17 @ 16px root (py 9 / px 12; arrow 14×7) */
   --app-tooltip-offset: 0.5rem;
+  --app-tooltip-padding: 0.5625rem 0.75rem;
+  --app-tooltip-arrow-width: 0.875rem;
+  --app-tooltip-arrow-height: 0.4375rem;
+  --app-tooltip-arrow-padding-center: 0.5rem;
+  --app-tooltip-arrow-padding-edge: 1.125rem;
+  --app-tooltip-max-width: 18rem;
+  --app-tooltip-collision-padding: 1rem;
   --app-progress-meter-height: 0.4375rem;
   --app-sheet-max-height: 40rem;
   --app-scroll-fade: 1.5rem;
@@ -461,6 +469,13 @@
   --dapp-community-stat-padding: var(--app-community-stat-padding);
   --dapp-skeleton-chip-size: var(--app-skeleton-chip-size);
   --dapp-tooltip-offset: var(--app-tooltip-offset);
+  --dapp-tooltip-padding: var(--app-tooltip-padding);
+  --dapp-tooltip-arrow-width: var(--app-tooltip-arrow-width);
+  --dapp-tooltip-arrow-height: var(--app-tooltip-arrow-height);
+  --dapp-tooltip-arrow-padding-center: var(--app-tooltip-arrow-padding-center);
+  --dapp-tooltip-arrow-padding-edge: var(--app-tooltip-arrow-padding-edge);
+  --dapp-tooltip-max-width: var(--app-tooltip-max-width);
+  --dapp-tooltip-collision-padding: var(--app-tooltip-collision-padding);
   --dapp-progress-meter-height: var(--app-progress-meter-height);
   --dapp-sheet-max-height: var(--app-sheet-max-height);
   --dapp-scroll-fade: var(--app-scroll-fade);
