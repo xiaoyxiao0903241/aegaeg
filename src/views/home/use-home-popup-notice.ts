@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   normalizeHomePopupNotices,
   noticeDismissKey,
@@ -38,12 +38,7 @@ export function useHomePopupNotice(): {
     sessionDismissedKeys,
     brokenImageKeys,
   })
-
-  const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    setOpen(notice !== null)
-  }, [notice])
+  const open = notice !== null
 
   function dismissCurrentNotice() {
     if (!notice) return
@@ -66,7 +61,7 @@ export function useHomePopupNotice(): {
 
   return {
     notice,
-    open: open && notice !== null,
+    open,
     onDismiss: dismissCurrentNotice,
     onImageLoadError,
   }
