@@ -3,17 +3,15 @@ import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-re
 import { useCallback, useState } from 'react'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import type { ClaimConfirmResult } from '~/shared/api/types'
+import {
+  resolveRewardClaimOutcome,
+  type RewardClaimExecuteResult,
+} from '~/core/rewards/resolve-reward-claim-outcome'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import {
   claimCommunityFund,
   claimTeamReward,
 } from '~/views/dapp/web3/reward-claim'
-
-type RewardClaimExecuteResult = {
-  confirmError?: unknown
-  confirmResult: ClaimConfirmResult | null
-  txHash: string
-}
 
 type RewardClaimExecutor = (args: {
   wallet: NonNullable<ReturnType<typeof useActiveWallet>>
@@ -49,16 +47,15 @@ export function useRewardClaim(execute: RewardClaimExecutor) {
         token,
         onUnauthorized: invalidateSession,
       })
-      if (result.confirmError) {
-        // 链上已成功：不乐观清空余额/日志；仅提示后端同步失败。
-        return {
-          status: 'confirm_failed',
-          confirmResult: null,
-          txHash: result.txHash,
-        }
+      const outcome = resolveRewardClaimOutcome(result)
+      if (outcome.shouldInvalidate) {
+        invalidateAfterTeamClaim()
       }
-      invalidateAfterTeamClaim()
-      return { status: 'success', confirmResult: result.confirmResult, txHash: result.txHash }
+      return {
+        status: outcome.status,
+        confirmResult: outcome.confirmResult as ClaimConfirmResult | null,
+        txHash: outcome.txHash,
+      }
     } catch (caught) {
       setError(caught)
       return null

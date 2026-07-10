@@ -154,6 +154,43 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
   assert.equal(canSubmitQuotedSwap({ ...base, nowMs: nowMs + 10_001 }), false)
 })
 
+test('assertQuotedSwapStillSubmittable throws SWAP_SUBMIT_GATE_FAILED when gate fails', async () => {
+  const { assertQuotedSwapStillSubmittable, canSubmitQuotedSwap } = await loadModule(
+    '/src/core/swap/resolve-live-quoted-out.ts',
+  )
+  const { SWAP_SUBMIT_GATE_FAILED } = await loadModule(
+    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+  )
+
+  const okParams = {
+    walletReady: true,
+    amountIn: 10n,
+    sellBalance: 100n,
+    quotedOut: 100n,
+    amountOutMin: 99n,
+    isPlaceholderData: false,
+    isQuotePending: false,
+    isBalancesLoading: false,
+    // Mid-submit re-gate must pass isSubmitting:false (in-flight latch is separate).
+    isSubmitting: false,
+    quoteUpdatedAt: 1_000_000,
+    maxQuoteAgeMs: 10_000,
+    nowMs: 1_000_000,
+  }
+
+  assert.equal(canSubmitQuotedSwap(okParams), true)
+  assert.doesNotThrow(() => assertQuotedSwapStillSubmittable(okParams))
+
+  assert.throws(
+    () =>
+      assertQuotedSwapStillSubmittable({
+        ...okParams,
+        nowMs: 1_000_000 + 10_001,
+      }),
+    (error) => error instanceof Error && error.message === SWAP_SUBMIT_GATE_FAILED,
+  )
+})
+
 test('resolveWalletRemountKey clears draft identity on address change', async () => {
   const { resolveWalletRemountKey } = await loadModule(
     '/src/shared/lib/resolve-wallet-remount-key.ts',

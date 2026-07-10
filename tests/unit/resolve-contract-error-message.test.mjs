@@ -229,3 +229,81 @@ test('toWalletUserFacingMessage never returns raw RPC text', async () => {
     null,
   )
 })
+
+test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw RPC', async () => {
+  const {
+    resolveSwapUserFacingMessage,
+    SWAP_QUOTE_FAILED,
+    SWAP_SUBMIT_GATE_FAILED,
+  } = await loadModule('/src/views/dapp/web3/resolve-contract-error-message.ts')
+
+  const messages = {
+    walletNotConnected: 'Connect wallet',
+    insufficientAllowance: 'Allowance',
+    insufficientUsd1: 'USD1',
+    purchaseUnavailable: 'Unavailable',
+    transactionCancelled: 'Cancelled',
+    quoteFailed: 'Quote failed',
+  }
+  const walletErrors = {
+    gasLimitTooLow: 'Gas too low',
+    gasEstimateFailed: 'Estimate failed',
+    insufficientFunds: 'No BNB',
+    transactionFailed: 'Tx failed',
+  }
+
+  assert.equal(
+    resolveSwapUserFacingMessage(SWAP_QUOTE_FAILED, messages, walletErrors, 'Fallback'),
+    'Quote failed',
+  )
+  assert.equal(
+    resolveSwapUserFacingMessage(
+      new Error(SWAP_SUBMIT_GATE_FAILED),
+      messages,
+      walletErrors,
+      'Fallback',
+    ),
+    'Quote failed',
+  )
+  assert.equal(
+    resolveSwapUserFacingMessage(
+      new Error('execution reverted: 0xdeadbeef raw'),
+      messages,
+      walletErrors,
+      'Fallback',
+    ),
+    'Fallback',
+  )
+  assert.notEqual(
+    resolveSwapUserFacingMessage(
+      new Error('execution reverted: 0xdeadbeef raw'),
+      messages,
+      walletErrors,
+      'Fallback',
+    ),
+    'execution reverted: 0xdeadbeef raw',
+  )
+})
+
+test('resolveTeamClaimError never returns normalize throw.message', async () => {
+  const { resolveTeamClaimError } = await loadModule(
+    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+  )
+
+  const messages = {
+    zeroAmount: 'Zero',
+    invalidSigner: 'Signer',
+    alreadyUsed: 'Used',
+    expired: 'Expired',
+    noOrder: 'No order',
+    failed: 'Claim failed',
+    confirmSyncFailed: 'Sync failed',
+    walletNotConnected: 'Connect',
+  }
+
+  const normalizeThrow = new Error(
+    '领取签名缺少字段: salt。/claim/team-reward 实际返回字段: [signature]',
+  )
+  assert.equal(resolveTeamClaimError(normalizeThrow, messages), 'Claim failed')
+  assert.notEqual(resolveTeamClaimError(normalizeThrow, messages), normalizeThrow.message)
+})

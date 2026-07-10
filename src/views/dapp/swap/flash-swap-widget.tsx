@@ -10,7 +10,7 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { resolveFlashSwapUserMessage } from '~/views/dapp/web3/resolve-contract-error-message'
+import { resolveSwapUserFacingMessage } from '~/views/dapp/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
 import {
   SwapAmountFlow,
@@ -46,7 +46,7 @@ export function FlashSwapWidget({
 
   const resolveFlashMessage = useCallback(
     (error: unknown) =>
-      resolveFlashSwapUserMessage(
+      resolveSwapUserFacingMessage(
         error,
         {
           walletNotConnected: t.genesis.walletNotConnected,

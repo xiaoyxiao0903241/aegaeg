@@ -68,3 +68,16 @@ export function canSubmitQuotedSwap({
     !blockResubmit
   )
 }
+
+/**
+ * Re-run quote submit gate after approve (or any await). Throws the
+ * `SWAP_SUBMIT_GATE_FAILED` sentinel when the live quote is no longer submittable.
+ * Sentinel string must stay identical to `resolve-contract-error-message`.
+ */
+export function assertQuotedSwapStillSubmittable(
+  params: Parameters<typeof canSubmitQuotedSwap>[0],
+): void {
+  if (!canSubmitQuotedSwap(params)) {
+    throw new Error('SWAP_SUBMIT_GATE_FAILED')
+  }
+}

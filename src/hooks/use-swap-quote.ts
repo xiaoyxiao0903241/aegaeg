@@ -2,11 +2,12 @@ import { keepPreviousData, useQuery, type QueryKey } from '@tanstack/react-query
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import {
+  assertQuotedSwapStillSubmittable,
   canSubmitQuotedSwap,
   resolveLiveQuotedOut,
 } from '~/core/swap/resolve-live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/token-amount'
-import { SWAP_QUOTE_FAILED, SWAP_SUBMIT_GATE_FAILED } from '~/views/dapp/web3/resolve-contract-error-message'
+import { SWAP_QUOTE_FAILED } from '~/views/dapp/web3/resolve-contract-error-message'
 import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
 import { needsTokenApproval } from '~/views/dapp/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
@@ -201,7 +202,9 @@ export function useSwapQuote<TQuote>({
         )
         const liveAmountOutMin =
           liveQuotedOut > 0n ? calcAmountOutMin(liveQuotedOut, slippageBps) : 0n
-        const ok = canSubmitQuotedSwap({
+        // Mid-submit re-gate: ignore in-flight latch (already submitting). Check quote age /
+        // balance / placeholder only — passing isSubmitting:true would always fail the gate.
+        assertQuotedSwapStillSubmittable({
           walletReady,
           amountIn: debouncedAmountIn,
           sellBalance,
@@ -210,14 +213,11 @@ export function useSwapQuote<TQuote>({
           isPlaceholderData: amountQuoteQuery.isPlaceholderData,
           isQuotePending: amountQuoteQuery.isPending,
           isBalancesLoading,
-          isSubmitting: true,
+          isSubmitting: false,
           blockResubmit,
           quoteUpdatedAt: amountQuoteQuery.dataUpdatedAt,
           maxQuoteAgeMs: QUERY_STALE_TIME.quote,
         })
-        if (!ok) {
-          throw new Error(SWAP_SUBMIT_GATE_FAILED)
-        }
       }
 
       try {

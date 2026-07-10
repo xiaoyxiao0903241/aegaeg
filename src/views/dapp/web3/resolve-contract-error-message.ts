@@ -482,7 +482,7 @@ export function resolveGenesisPurchaseError(
   return resolveContractErrorMessage(error, messages)
 }
 
-export function resolveFlashSwapUserMessage(
+export function resolveSwapUserFacingMessage(
   error: unknown,
   messages: {
     walletNotConnected: string
@@ -531,3 +531,6 @@ export function resolveFlashSwapUserMessage(
     toWalletUserFacingMessage(error, fallback)
   )
 }
+
+/** @deprecated Use `resolveSwapUserFacingMessage` — same Trade/Flash toast chain. */
+export const resolveFlashSwapUserMessage = resolveSwapUserFacingMessage

@@ -12,10 +12,7 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
 import {
-  resolveGenesisPurchaseError,
-  resolveWalletTransactionError,
-  SWAP_QUOTE_FAILED,
-  toWalletUserFacingMessage,
+  resolveSwapUserFacingMessage,
 } from '~/views/dapp/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
@@ -77,28 +74,21 @@ export function TradeSwapWidget({
   }
 
   const resolveTradeMessage = useCallback(
-    (error: unknown) => {
-      if (error === SWAP_QUOTE_FAILED) return t.errors.quoteFailed
-      return (
-        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-        resolveGenesisPurchaseError(error, {
+    (error: unknown) =>
+      resolveSwapUserFacingMessage(
+        error,
+        {
+          walletNotConnected: t.genesis.walletNotConnected,
           insufficientAllowance: t.genesis.insufficientAllowance,
           insufficientUsd1: t.genesis.insufficientUsd1,
           purchaseUnavailable: t.genesis.purchaseUnavailable,
-          walletNotConnected: t.genesis.walletNotConnected,
-        }) ??
-        toWalletUserFacingMessage(error, t.errors.chain.fallback)
-      )
-    },
-    [
-      t.errors.chain.fallback,
-      t.errors.quoteFailed,
-      t.genesis.insufficientAllowance,
-      t.genesis.insufficientUsd1,
-      t.genesis.purchaseUnavailable,
-      t.genesis.walletNotConnected,
-      t.wallet.transactionErrors,
-    ],
+          transactionCancelled: t.swap.transactionCancelled,
+          quoteFailed: t.errors.quoteFailed,
+        },
+        t.wallet.transactionErrors,
+        t.errors.chain.fallback,
+      ),
+    [t],
   )
 
   async function handleSubmit() {
