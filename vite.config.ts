@@ -77,6 +77,38 @@ export default defineConfig(({ command }) => ({
         index: resolve(__dirname, 'index.html'),
         ...localeEntries,
       },
+      output: {
+        /**
+         * Prefer several parallel vendor chunks over one opaque shared bag.
+         * Match `/node_modules/<pkg>/` only — never substring `/react/` inside other packages.
+         */
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          const path = id.replaceAll('\\', '/')
+
+          if (path.includes('/node_modules/react-dom/')) return 'react-dom'
+          if (path.includes('/node_modules/react/')) return 'react'
+          if (path.includes('/node_modules/@tanstack/react-query/')) return 'query'
+          if (path.includes('/node_modules/@radix-ui/')) return 'radix'
+          if (
+            path.includes('/node_modules/i18next/') ||
+            path.includes('/node_modules/react-i18next/') ||
+            path.includes('/node_modules/i18next-browser-languagedetector/')
+          ) {
+            return 'i18next'
+          }
+          if (path.includes('/node_modules/lucide-react/')) return 'lucide'
+          if (
+            path.includes('/node_modules/tailwind-variants/') ||
+            path.includes('/node_modules/clsx/') ||
+            path.includes('/node_modules/tailwind-merge/')
+          ) {
+            return 'tv'
+          }
+          if (path.includes('/node_modules/sonner/')) return 'sonner'
+          return
+        },
+      },
     },
   },
   optimizeDeps: {

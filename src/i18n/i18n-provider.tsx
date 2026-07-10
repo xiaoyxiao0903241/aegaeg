@@ -1,7 +1,5 @@
 import {
-  useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -38,32 +36,7 @@ function createInitialI18nState(): { locale: Locale; messages: Messages } {
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => createInitialI18nState().locale)
-  const [messages, setMessages] = useState<Messages>(() => createInitialI18nState().messages)
-  const localeSyncedRef = useRef(true)
-
-  useEffect(() => {
-    if (localeSyncedRef.current) {
-      localeSyncedRef.current = false
-      return
-    }
-
-    let cancelled = false
-
-    loadMessages(locale).then((nextMessages) => {
-      if (!cancelled) {
-        setMessages(nextMessages)
-      }
-    })
-
-    if (i18n.language !== locale) {
-      void i18n.changeLanguage(locale)
-    }
-
-    return () => {
-      cancelled = true
-    }
-  }, [locale])
+  const [{ locale, messages }, setState] = useState(createInitialI18nState)
 
   const value = useMemo<I18nContextValue>(() => {
     function setLocale(nextLocale: Locale) {
@@ -79,7 +52,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      setLocaleState(nextLocale)
+      // Load first, then commit locale + messages together to avoid stale copy flash.
+      void loadMessages(nextLocale).then((nextMessages) => {
+        setState({ locale: nextLocale, messages: nextMessages })
+        if (i18n.language !== nextLocale) {
+          void i18n.changeLanguage(nextLocale)
+        }
+      })
     }
 
     return {

@@ -1,6 +1,6 @@
 # 首页加载性能优化策略
 
-> **状态**：Phase 1 **已完成** · Phase 2–4 待做（代码仍以 [`homepage-architecture.md`](./homepage-architecture.md) 为准）  
+> **状态**：Phase 1–2 **已完成** · Phase 3–4 待做（代码仍以 [`homepage-architecture.md`](./homepage-architecture.md) 为准）  
 > **关联**：[`static-homepage-plan.md`](./static-homepage-plan.md)
 
 ---
@@ -13,16 +13,15 @@
 
 ---
 
-## 1. 现状基线（`pnpm build` · `dist/en/`）
+## 1. 现状基线
 
-| 指标 | Home | DApp |
-|------|------|------|
-| JS chunk 数 | 65 | 70 |
-| JS 体积（未 gzip） | **~1 252 KB** | **~1 863 KB** |
-| 与 DApp 共享 chunk | **64** | — |
-| Home 独有 | `home-main`（~44 KB） | — |
+| 阶段 | Home sync JS（`en/index.html`） | 说明 |
+|------|--------------------------------|------|
+| Phase 1 后（改前） | ~817 KB · 最大共享包 ~748 KB · 5 files | 11 locale 静态进共享图 |
+| Phase 2 后 | **~539 KB · 11 files · 最大 ~174 KB（react-dom）** | HTML `#aegis-messages` + 安全 `manualChunks` |
 
-**根因（已修复）**：Home 曾使用 `WebRootProviders`；现 **`src/views/home/main.tsx`** 使用 **`HomeProviders`**（仅 Query）。DApp 入口 **`src/app/main.tsx`** 仍用 `WebRootProviders`。详见 [`homepage-architecture.md` §2](./homepage-architecture.md#2-现状-vs-目标agent-勿混读)。
+**根因（Phase 1）**：Home 曾使用 `WebRootProviders`；现 **`HomeProviders`**（仅 Query）。  
+**根因（Phase 2）**：`messages.ts` 曾静态 import 11 语言；现 bootstrap + `import()`。
 
 ---
 
@@ -30,9 +29,9 @@
 
 1. 多入口 HTML **保留**  
 2. **先减 JS**，再 SSG  
-3. build 已知 locale → inline / 拆包 i18n  
+3. build 已知 locale → HTML inline；切换 lazy  
 4. DApp 行为不变  
-5. 每阶段 build 对比体积
+5. 每阶段 `pnpm probe:bundle` 对比体积
 
 ---
 
@@ -40,31 +39,30 @@
 
 ```
 Phase 1  Home 轻量 Provider（去 thirdweb）     ← ✅ 已完成
-Phase 2  i18n 按 locale 减重                   ← P1，下一步
+Phase 2  i18n 按 locale 减重 + vendor 拆包     ← ✅ 已完成
 Phase 3  SSG 预渲染（可选）                     ← P2
 Phase 4  CSS / redirect 细项                   ← P3
 ```
 
 ### Phase 1 · Home 轻量 Provider（P0）✅
 
-- `HomeProviders`：仅 `QueryProvider`（服务 `use-home-popup-notice`）
-- `views/home/main.tsx` 使用 `HomeProviders`；`app/main.tsx`（DApp）保留 `WebRootProviders`
+- `HomeProviders`：仅 `QueryProvider`
 - Home 首屏不加载 thirdweb chunk
 
-**验收**：build 后 chunk 断言 · Home 动效/popup/语言切换 · DApp 连接不受影响
+### Phase 2 · i18n 按 locale + manualChunks（P1）✅
 
-### Phase 2 · i18n 按 locale（P1）
-
-- **推荐**：`renderHomeDocument(locale)` inline `#aegis-messages` JSON；切换语言 lazy import
-- **不推荐**：纯 pathname 动态 import（首屏易闪动）
+- `renderHomeDocument` / `renderAppDocument` 注入 `#aegis-messages`
+- `getMessagesSync` 读 bootstrap；`loadMessages` → 动态 `import('~/i18n/messages/{locale}')`
+- 全量静态表仅在 `messages-catalog.ts`（render-home / SSR）
+- `vite.config.ts` `manualChunks`：`react` / `react-dom` / `query` / `radix` / `i18next` / …
 
 ### Phase 3 · SSG（P2 · 可选）
 
-- `render-home.mjs` + `renderToString(HomePage)` → `#root`；客户端 hydrate
+- `renderToString(HomePage)` → `#root`；客户端 hydrate
 
 ### Phase 4 · 细项
 
-- R2 home CSS 瘦身 · 根路径 302 · wallet island **仅 DApp**（Home 仍链 `/app.html`）
+- R2 home CSS 瘦身 · 根路径 302 · wallet island **仅 DApp**
 
 ---
 
@@ -77,19 +75,11 @@ Phase 4  CSS / redirect 细项                   ← P3
 ## 5. 验收
 
 ```bash
-pnpm build
-node -e "
-const fs=require('fs');
-const html=fs.readFileSync('dist/en/index.html','utf8');
-const scripts=[...html.matchAll(/src=\\\"(\\/assets\\/[^\\\"]+)\\\"/g)].map(m=>m[1]);
-let total=0;
-for (const s of scripts) { try { total+=fs.statSync('dist'+s).size; } catch {} }
-console.log('Home JS KB:', (total/1024).toFixed(0));
-"
+pnpm build && pnpm probe:bundle
 ```
 
-Phase 1 后新增 `scripts/assert-home-bundle.mjs`（denylist thirdweb chunk 名）建议纳入 CI。
+Home `en`：**不应**在 sync script 中出现其它语言长文案（如日文「未来の価値」）；切换语言再拉对应 chunk。
 
 ---
 
-**下一步**：实施 **Phase 2**（按 locale inline i18n，见 [`homepage-architecture.md` §2](./homepage-architecture.md#2-现状-vs-目标agent-勿混读)）。
+**下一步**：可选 Phase 3 SSG；或进一步让 Home HTML 只注入 `home`+`common`（需收窄 `Messages` 类型 / 双 provider）。

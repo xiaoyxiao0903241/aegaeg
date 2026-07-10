@@ -51,8 +51,8 @@
 | Home 是否连钱包 / 探地址 | **否**（无 ConnectButton；不读 `useActiveAccount` 做 UI） | 保持否 |
 | Home CTA | Hero / Header **`<a href="/{locale}/app.html">`** | 保持；**不是**首页弹 connect modal |
 | 首页 wallet island | **未实现** | 文档曾写 hover 预加载 island — **defer**，钱包在 DApp 入口 |
-| HTML 内容 | **薄壳**：空 `#root`，**无 SSG** | 可选 Phase 3 预渲染 |
-| i18n 打包 | `messages.ts` **静态 import 全部 11 语言** | Phase 2：build 按 locale inline 或 lazy |
+| HTML 内容 | **薄壳** + `#aegis-messages`（当前 locale 全文案 JSON）；**无** section DOM SSG | 可选 Phase 3 预渲染 |
+| i18n 打包 | 首屏读 HTML bootstrap；切换语言 `import()` 单 locale | ✅ Phase 2 已落地（见 load-optimization） |
 | 链支持（DApp） | `supportedChains = [bsc]` **仅 BSC** | `AGENTS.md` 8.6 规划 BSC + Ethereum；Ethereum **尚未接入** |
 
 ---
@@ -67,28 +67,30 @@
 | 文件 | 数量 | 说明 |
 |------|------|------|
 | `/index.html`、`/app.html` | 2 | redirect + `noindex` |
-| `/{locale}/index.html` | 11 | Home 薄壳 |
-| `/{locale}/app.html` | 11 | DApp 薄壳 |
+| `/{locale}/index.html` | 11 | Home 薄壳 + `#aegis-messages` |
+| `/{locale}/app.html` | 11 | DApp 薄壳 + `#aegis-messages` |
 | **合计 Vite input** | **24** | `vite.config.ts` `rollupOptions.input` |
 
 **Locale 列表**（`src/i18n/locales.ts`）：`en`, `zh`, `zht`, `id`, `ko`, `ja`, `vi`, `es`, `ru`, `hi`, `tr`
 
 ### 3.2 每个 Home HTML 内有什么
 
-- `html[lang]`、`title`、`meta description`（来自 `homeMessagesByLocale[locale].meta`）
+- `html[lang]`、`title`、`meta description`（来自当前 locale `messages.home.meta`）
+- `#aegis-messages`：`application/json`，当前 locale 全文案（供 `getMessagesSync` 首屏同步读）
 - hero poster、`montserrat` 字体 **preload**
 - 滚动恢复 boot：`PAGE_SCROLL_RESTORATION_BOOT_SCRIPT`
 - `link` → `/src/shared/styles/home.css`（dev）/ 打包后 hashed CSS
 - **空** `<div id="root">` + `views/home/main.tsx`
 
-**没有什么**：预渲染的 section DOM、按 locale 拆分的 message JSON（尚未做 Phase 2）。
+**没有什么**：预渲染的 section DOM；其它 10 种语言的 message 模块（切换时再 `import()`）。
 
 ### 3.3 性能含义
 
 - ✅ SEO / 分享 meta、直链 `/zh/`、CDN 按路径缓存  
-- ✅ 多 HTML **共用** 同一套 `dist/assets/*.js`  
-- ❌ **不**缩短 FCP（正文仍等 CSR）  
-- ❌ **不**按语言减 JS（全语言打进 bundle）
+- ✅ 多 HTML **共用** 同一套 runtime chunk；文案按入口 locale 注入  
+- ✅ 切换语言只拉一个 locale chunk（`loadMessages`）  
+- ❌ **不**缩短 FCP 到「无 JS 可见正文」（仍 CSR；SSG 见 Phase 3）  
+- 探针：`pnpm probe:bundle`（`scripts/probe-home-bundle.mjs`）
 
 ---
 

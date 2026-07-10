@@ -1,37 +1,94 @@
 import type { Locale } from '~/i18n/locales'
-import en from '~/i18n/messages/en'
-import zh from '~/i18n/messages/zh'
-import zht from '~/i18n/messages/zht'
-import id from '~/i18n/messages/id'
-import ko from '~/i18n/messages/ko'
-import ja from '~/i18n/messages/ja'
-import vi from '~/i18n/messages/vi'
-import es from '~/i18n/messages/es'
-import ru from '~/i18n/messages/ru'
-import hi from '~/i18n/messages/hi'
-import tr from '~/i18n/messages/tr'
+import type { CatalogMessages } from '~/i18n/messages-catalog'
 
-export type Messages = typeof zh
+export type Messages = CatalogMessages
 
-const messagesByLocale = {
-  en,
-  zh,
-  zht,
-  id,
-  ko,
-  ja,
-  vi,
-  es,
-  ru,
-  hi,
-  tr,
-} satisfies Record<Locale, Messages>
+const BOOTSTRAP_SCRIPT_ID = 'aegis-messages'
 
-/** 首屏同步读取，避免 async load 导致文案闪动 */
+const messagesCache = new Map<Locale, Messages>()
+
+function readBootstrappedMessages(): { locale: Locale; messages: Messages } | null {
+  if (typeof document === 'undefined') return null
+
+  const el = document.getElementById(BOOTSTRAP_SCRIPT_ID)
+  if (!el?.textContent?.trim()) return null
+
+  const localeAttr = el.getAttribute('data-locale')
+  if (!localeAttr) return null
+
+  try {
+    const messages = JSON.parse(el.textContent) as Messages
+    return { locale: localeAttr as Locale, messages }
+  } catch {
+    return null
+  }
+}
+
+async function importMessages(locale: Locale): Promise<Messages> {
+  switch (locale) {
+    case 'en':
+      return (await import('~/i18n/messages/en')).default as Messages
+    case 'zh':
+      return (await import('~/i18n/messages/zh')).default
+    case 'zht':
+      return (await import('~/i18n/messages/zht')).default as Messages
+    case 'id':
+      return (await import('~/i18n/messages/id')).default as Messages
+    case 'ko':
+      return (await import('~/i18n/messages/ko')).default as Messages
+    case 'ja':
+      return (await import('~/i18n/messages/ja')).default as Messages
+    case 'vi':
+      return (await import('~/i18n/messages/vi')).default as Messages
+    case 'es':
+      return (await import('~/i18n/messages/es')).default as Messages
+    case 'ru':
+      return (await import('~/i18n/messages/ru')).default as Messages
+    case 'hi':
+      return (await import('~/i18n/messages/hi')).default as Messages
+    case 'tr':
+      return (await import('~/i18n/messages/tr')).default as Messages
+    default: {
+      const _exhaustive: never = locale
+      throw new Error(`Unsupported locale: ${_exhaustive}`)
+    }
+  }
+}
+
+/**
+ * First paint: read `#aegis-messages` injected by `home-renderer` for the URL locale.
+ * Avoids statically bundling all 11 locales into every entry.
+ */
 export function getMessagesSync(locale: Locale): Messages {
-  return messagesByLocale[locale]
+  const cached = messagesCache.get(locale)
+  if (cached) return cached
+
+  const boot = readBootstrappedMessages()
+  if (boot) {
+    messagesCache.set(boot.locale, boot.messages)
+    if (boot.locale === locale) {
+      return boot.messages
+    }
+  }
+
+  const again = messagesCache.get(locale)
+  if (again) return again
+
+  throw new Error(
+    `Missing #${BOOTSTRAP_SCRIPT_ID} bootstrap for locale "${locale}". ` +
+      'Ensure render-home injected messages for this HTML entry.',
+  )
 }
 
-export function loadMessages(locale: Locale) {
-  return Promise.resolve(messagesByLocale[locale])
+/** Locale switch / warm cache — one locale chunk per call. */
+export function loadMessages(locale: Locale): Promise<Messages> {
+  const cached = messagesCache.get(locale)
+  if (cached) return Promise.resolve(cached)
+
+  return importMessages(locale).then((messages) => {
+    messagesCache.set(locale, messages)
+    return messages
+  })
 }
+
+export { BOOTSTRAP_SCRIPT_ID }

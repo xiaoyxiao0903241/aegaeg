@@ -1,7 +1,8 @@
 import type { Locale } from '~/i18n/locales'
 import { getHtmlLang } from '~/i18n/locale-meta'
 import { locales } from '~/i18n/locales'
-import { homeMessagesByLocale } from '~/i18n/messages/home'
+import { getMessagesForRender } from '~/i18n/messages-catalog'
+import { BOOTSTRAP_SCRIPT_ID } from '~/i18n/messages'
 import { homeAssets } from '~/views/home/assets'
 import { themeHex } from '~/shared/styles/theme'
 import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '~/shared/lib/legacy-runtime-polyfills'
@@ -21,6 +22,12 @@ function escapeAttr(value: string) {
     .replace(/"/g, '&quot;')
 }
 
+/** JSON in <script> — neutralize `</script>` breakouts. */
+function serializeMessagesBootstrap(locale: Locale) {
+  const json = JSON.stringify(getMessagesForRender(locale)).replace(/</g, '\\u003c')
+  return `<script type="application/json" id="${BOOTSTRAP_SCRIPT_ID}" data-locale="${locale}">${json}</script>`
+}
+
 const faviconHead = `
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -36,7 +43,7 @@ const viewportContent =
  */
 export function renderHomeDocument(locale: Locale) {
   const lang = getHtmlLang(locale)
-  const meta = homeMessagesByLocale[locale].meta
+  const meta = getMessagesForRender(locale).home.meta
 
   return `<!doctype html>
 <html lang="${lang}">
@@ -59,6 +66,7 @@ ${faviconHead}
     <title>${escapeAttr(meta.title)}</title>
   </head>
   <body>
+    ${serializeMessagesBootstrap(locale)}
     <div id="root"></div>
     ${legacyCoreJsScript}
     <script type="module" src="/src/views/home/main.tsx"></script>
@@ -69,7 +77,7 @@ ${faviconHead}
 
 export function renderAppDocument(locale: Locale) {
   const lang = getHtmlLang(locale)
-  const meta = homeMessagesByLocale[locale].meta
+  const meta = getMessagesForRender(locale).home.meta
 
   return `<!doctype html>
 <html lang="${lang}">
@@ -90,6 +98,7 @@ ${faviconHead}
     <title>${escapeAttr(meta.title)}</title>
   </head>
   <body>
+    ${serializeMessagesBootstrap(locale)}
     <div id="root"></div>
     ${legacyCoreJsScript}
     <script type="module" src="/src/app/main.tsx"></script>
