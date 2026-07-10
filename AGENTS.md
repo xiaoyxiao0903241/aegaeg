@@ -62,17 +62,14 @@ AI 工作规范
 
 ### 8.6 AEGIS X DApp 技术约束
 
-- **DApp 页面推进顺序**：先收束共享 shell / rail / card / typography / table / action primitives，再按 Figma frame title 逐页实现：Swap → Genesis → Rewards → Community。不要在未完成当前页面结构对齐前随机跳到其他页面。
-- **页面归属规则**：页面内容归属以 Figma frame title 为准；例如 `DApp — Swap` 里的 Genesis 说明仍属于 Swap 页面展示，不迁移到 Genesis tab。连接 / 未连接状态也按对应 frame 处理。
-- **H5 响应式规则**：H5 是同一套 PC 文案与组件的响应式布局，不是独立页面。除非 Figma 明确表达为不同状态组件，否则不要为 H5 新增同义文案、独立数据表或单独业务逻辑。
-- **对齐验收重点**：DApp 对齐先看元素是否齐全、状态是否正确、组件视觉是否一致、素材是否来自 Figma、布局是否能承载未来动态数据；动态数值和 1-2px 渲染取整不作为阻塞项。
-- **当前第一版范围**：只做 EVM DApp，不引入 Solana / Bitcoin / TON / TRON，除非甲方变更。**代码现状** `supportedChains` **仅 BSC**；**产品路线图**含 BSC + Ethereum，Ethereum 未接入前勿假设已支持。
-- **前端技术栈**：React + Vite + TypeScript + Tailwind CSS。
-- **钱包技术栈**：thirdweb React SDK v5；`ThirdwebProvider` / `ConnectButton` 负责连接 UI、钱包列表、自动重连、WalletConnect 和 EIP-6963 钱包发现；链上读写、签名、交易状态以 thirdweb SDK 的 client、account、wallet 和 transaction API 为 SSOT。
-- **钱包兼容策略**：必须同时保留 injected provider、WalletConnect fallback、EIP-6963 多钱包发现；移动钱包内置浏览器优先 injected，普通移动浏览器走 WalletConnect deep link / QR。
-- **链配置策略**：链定义集中维护在 `src/web3/thirdweb.ts`；合约地址在 `src/shared/config/contracts.ts`。不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。接入 Ethereum 时在此扩展 `supportedChains`。
-- **登录语义**：连接钱包不等于业务登录。SIWE/nonce + JWT session 已由 `AuthProvider` + `src/views/dapp/auth/login-with-wallet.ts` 落地；推荐关系 / 奖励记录依赖 `sessionReady`。
-- **UI 实现**：钱包按钮优先用 thirdweb `ConnectButton` 的 `connectButton` / `detailsButton` / `connectModal` 配置承接项目设计，不直接暴露默认按钮样式到核心界面。
+- **页面归属**：以 Figma frame title 为准（如 Swap 帧内的 Genesis 说明仍属 Swap）。连接 / 未连接按对应 frame。
+- **H5**：同一套 PC 文案与组件的响应式布局；不为 H5 新增同义文案或分叉业务逻辑。
+- **对齐**：元素齐全、状态正确、视觉一致、素材来自 Figma、布局可承载动态数据；动态数值与 1-2px 取整不阻塞。
+- **链范围**：EVM only；`supportedChains` **仅 BSC**（Ethereum 未接入前勿假设已支持）。
+- **栈**：React + Vite + TypeScript + Tailwind；钱包 thirdweb v5（`ConnectButton` / injected + WalletConnect + EIP-6963）。
+- **链 / 合约 SSOT**：`src/web3/thirdweb.ts` · `src/shared/config/contracts.ts`；组件内禁散落 chain id / RPC / 合约地址。
+- **登录**：连接 ≠ 业务登录；SIWE + JWT 由 `AuthProvider` + `login-with-wallet`；推荐 / 奖励依赖 `sessionReady`。
+- **金钱路径**：见 [`docs/money-path-map.md`](docs/money-path-map.md)（write intent、unknown latch、approve 后 live 门闸）。
 
 ### 8.7 样式与 Tailwind 约束
 

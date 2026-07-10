@@ -223,7 +223,7 @@
 
 ---
 
-## §9 组件地图（实现已落地）
+## §9 组件地图
 
 | 层 | 文件 / 入口 | Gate |
 |----|-------------|------|
@@ -236,18 +236,3 @@
 | Composite | FaqList · WidgetPromoCard · MetricCard · Segment · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome |
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。
-
----
-
-## 修订
-
-| 版本 | 说明 |
-|------|------|
-| v3.4 | 删死文件 `DataTable` / `AmountInput`；Composite 表改 `AmountBox` + `ResponsiveTable` |
-| v3.3 | `FieldActionChip` / `AegisDialogClose` 替代 `*Class` 常量；模块级样式改 `tv()` |
-| v3.2 | `SwapFlowButton`；断点白名单无 `shell-layout.ts` |
-| v3.1 | panel/section tracking `-0.04em`（≡ Figma Genesis 标题）；正文保持 `-0.02em` |
-| v3.0 | Baseline 维护态：去掉 P0–P8 交付矩阵叙事；入口与 runbook 对齐 |
-| v2.25 | CommunityProgramCard：label/CTA `text-coral` ≡ Figma `#c85c3f` |
-| v2.11–v2.24 | 见 git 历史（tabular 删除 · flb · Button scale · FAQ/Pagination 动效等） |
-| v2.1–v2.10 | 命名定稿 · Card/Button/Chip/Input/Composite 收束 |

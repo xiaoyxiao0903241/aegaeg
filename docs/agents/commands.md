@@ -8,7 +8,7 @@
 |------|------|
 | `pnpm dev` | tokens + render-home + Vite `:5174` |
 | `pnpm build` | tokens + `tsc -b` + render-home + Vite production build |
-| `pnpm probe:bundle` | 读 `dist/*/index.html` / `app.html` 同步 JS；**Home 污染标记 / 体积上限失败则 exit 1** |
+| `pnpm probe:bundle` | `build` 后：Home sync 污染标记 / 体积上限 → 失败 exit 1 |
 | `pnpm env:staging` / `pnpm env:prod` / `pnpm env:status` | 切换 `.env.local` staging 覆盖 |
 
 ## 验证门禁
@@ -18,7 +18,7 @@
 | **`pnpm check`** | **收工最小门禁**：`tsc -b` + `lint:src`（eslint **error** only）+ `lint:architecture` + `lint:hex` + `lint:css` + `lint:deadcode`（knip）+ `test:unit` |
 | `pnpm lint:css` | Stylelint `src/**/*.css`（进 `check`） |
 | `pnpm lint:src` | `eslint src --quiet`（仅 error；`exhaustive-deps` 等进收工） |
-| `pnpm lint` | ESLint 全仓（含 Tailwind / 登记债 **warn**，不阻断 `check`） |
+| `pnpm lint` | ESLint 全仓（含 Tailwind warn；不阻断 `check`） |
 | `pnpm lint:hex` | 禁止 scoped TS 模块硬编码 hex（须走 `theme.ts`） |
 | **git pre-commit**（husky） | staged `*.{ts,tsx,js,mjs,cjs}` → `eslint`；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。`pnpm install` 后 `prepare` 会挂上 hook。**禁止**把 `test:e2e` / Playwright 挂进 hook 或 `pnpm check` |
 | `pnpm lint:all` | ESLint + Stylelint + hex + depcruise + knip |
@@ -52,6 +52,7 @@
 |------|------|
 | 链 / thirdweb | `src/web3/thirdweb.ts` |
 | 写链 | `src/web3/wallet/wallet-contract-write.ts` |
+| Write intent / latch | `src/web3/wallet/assert-write-intent.ts` · `pending-unknown-latch.ts` |
 | Swap 链 IO | `src/web3/swap/` |
 | 合约地址 | `src/shared/config/contracts.ts` |
 | Query 失效 | `src/shared/api/query/invalidate.ts` |

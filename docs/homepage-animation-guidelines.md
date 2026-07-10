@@ -23,8 +23,6 @@ Figma SSOT 同根 `AGENTS.md`。参考站 `https://aegis-x5.vercel.app/` 仅动�
 | Reveal | `[data-reveal]` → `data-visible` |
 | 计数 | `[data-count-target]` / `[data-count-panel]` |
 
-删 Home 钱包时**勿删**此 boot（无钱包逻辑）。
-
 ## Section
 
 - Hero rays：背景层连续旋转；媒体轻微 transform。

@@ -1,16 +1,9 @@
-# Figma MCP 导出数据（历史归档）
+# Figma 导出归档（只读）
 
-> **状态**：只读归档。提取 / staging / MCP persist 脚本已删除，不再维护。
-> **来源（历史）**：Figma MCP `get_design_context` → React+Tailwind 代码
-> **内容**：[`raw/`](./raw/)（每帧 `.tsx`）+ [`frames/*.json`](./frames/)（结构化 token）+ [`token-usage-audit.json`](./token-usage-audit.json)
-> **不含**：图标 / 图片 asset URL
->
-> **视觉 SSOT**：Figma 画板实节点 + **当前分支**（见 [`docs/foundation/`](../foundation/README.md)）。
-> **勿恢复**已删除的口号 Spec JSON / Phase0 baselines。
+> [`raw/`](./raw/) · [`frames/`](./frames/) · [`token-usage-audit.json`](./token-usage-audit.json)  
+> 视觉 SSOT：Figma 画板 + 当前分支（[`docs/foundation/`](../foundation/README.md)）。不含图标/图片 asset。
 
-**清单帧**：31 · **已提取**：31 · **缺失**：0
-
-## 帧索引（31 页面清单）
+## 帧索引（31）
 
 | # | Node | Frame | 文本节点 | JSON | MCP |
 |---|------|-------|----------|------|-----|
