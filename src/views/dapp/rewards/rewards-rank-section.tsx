@@ -25,7 +25,7 @@ import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-r
 import { ProgressMeter } from '~/app/shell/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { RankTitleWithSuperCommunity } from '~/views/dapp/rewards/rank-title-with-super-community'
+import { RankTitleWithSuperCommunity } from '~/views/dapp/rewards/rewards-rank-title-with-super-community'
 import { DappSideCard } from '~/app/shell/dapp-card'
 import { RewardsProgressRow } from '~/views/dapp/rewards/rewards-widget-primitives'
 import { rewardsSideCard } from '~/views/dapp/rewards/rewards-widget-styles'

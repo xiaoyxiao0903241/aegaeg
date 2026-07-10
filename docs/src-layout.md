@@ -8,7 +8,7 @@
 2. **链读写 / 钱包 / thirdweb** → `src/views/dapp/web3/`（Home **禁止**依赖；depcruise `home-no-web3`）
 3. **跨面无业务 primitive**（Button、Text、Card…）→ `src/shared/ui/`
 4. **跨 Tab chrome**（rail、table shell、钱包弹层…）→ `src/app/shell/`（平铺，无 `components/`）
-5. **单 Tab 业务卡 / 页专属弹层** → 对应 `src/views/dapp/<tab>/`（例：`genesis-promo-card`、`season-selector`、`swap-slippage-modal`、`rank-title-with-super-community`）
+5. **单 Tab 业务卡 / 页专属弹层** → 对应 `src/views/dapp/<tab>/`（例：`genesis-promo-card`、`genesis-season-selector`、`swap-slippage-modal`、`rewards-rank-title-with-super-community`）
 6. **单面 UI** → `src/views/<面>/` 平铺  
    - Home：`src/views/home/`  
    - DApp 页：`src/views/dapp/{swap,genesis,rewards,community,auth}/`

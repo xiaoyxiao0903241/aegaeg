@@ -1,7 +1,7 @@
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useState } from 'react'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-price-impact-bps'
-import { formatGasEstimate } from '~/views/dapp/swap/format-gas-estimate'
+import { formatGasEstimate } from '~/views/dapp/swap/swap-format-gas-estimate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   clampSlippagePercent,

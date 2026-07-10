@@ -12,7 +12,7 @@ test('resolvePancakeSwapDeepLink maps USDT and USD1 directions', async () => {
 })
 
 test('formatSwapRateApprox displays connected swap meta rate', async () => {
-  const { formatSwapRateApprox } = await loadModule('/src/views/dapp/swap/format-swap-rate.ts')
+  const { formatSwapRateApprox } = await loadModule('/src/views/dapp/swap/swap-format-rate.ts')
 
   assert.equal(
     formatSwapRateApprox({

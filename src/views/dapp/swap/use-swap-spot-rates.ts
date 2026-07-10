@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { resolveLiveQuotedOut } from '~/core/swap/resolve-live-quoted-out'
-import { formatSwapRateApprox, resolveEmptySpotRatePlaceholder } from '~/views/dapp/swap/format-swap-rate'
+import { formatSwapRateApprox, resolveEmptySpotRatePlaceholder } from '~/views/dapp/swap/swap-format-rate'
 import { getSwapPairTokens, type SwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { fetchSwapQuote, type SwapPoolReadContext } from '~/views/dapp/web3/swap-read'

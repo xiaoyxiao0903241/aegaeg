@@ -9,7 +9,7 @@ import {
   SwapMetricCard,
   SwapMetricCardSkeleton,
 } from '~/views/dapp/swap/swap-detail-primitives'
-import { TokenAboutCard } from '~/views/dapp/swap/token-about-card'
+import { TokenAboutCard } from '~/views/dapp/swap/swap-token-about-card'
 
 export function FlashSwapContent() {
   const { messages: t } = useI18n()

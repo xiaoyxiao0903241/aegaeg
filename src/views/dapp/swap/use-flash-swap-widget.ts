@@ -4,7 +4,7 @@ import {
   formatSwapRate,
   formatSwapRateColon,
   resolveEmptySpotRatePlaceholder,
-} from '~/views/dapp/swap/format-swap-rate'
+} from '~/views/dapp/swap/swap-format-rate'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/token-amount'
 import { getSwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
