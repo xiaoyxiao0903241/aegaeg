@@ -7,6 +7,7 @@ import { dappAssets } from '~/app/assets'
 import { DappRail } from '~/app/dapp-rail'
 import { DappMobileNav } from '~/app/shell/dapp-mobile-nav'
 import { DappRevealObserver } from '~/app/shell/dapp-reveal-observer'
+import { useDappTabContentFade } from '~/app/shell/dapp-content-fade'
 import { DappTopbar } from '~/app/dapp-topbar'
 import { DappScrollFadeHost } from '~/app/shell/dapp-scroll-fade-host'
 import { HeroRaysBackground } from '~/shared/ui/hero-rays-background'
@@ -35,6 +36,7 @@ export function DappShell() {
   const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
   const shellState = useDappShell()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
+  const { displayTab, phase } = useDappTabContentFade(activeTab)
 
   const selectTab = (tab: typeof activeTab) => {
     selectTabInStore(tab)
@@ -62,8 +64,8 @@ export function DappShell() {
 
   useEffect(() => {
     scrollDappPanelsToTop()
-    invalidateTabQueries(activeTab)
-  }, [activeTab])
+    invalidateTabQueries(displayTab)
+  }, [displayTab])
 
   // Mirror former store-side scroll: fire when a swap subview transition starts.
   useEffect(() => {
@@ -130,9 +132,9 @@ export function DappShell() {
           data-dapp-shell-container
         >
           <GenesisPromoSync />
-          <GenesisSessionHost active={activeTab === 'genesis'}>
+          <GenesisSessionHost active={displayTab === 'genesis'}>
             {(genesis) => (
-              <SwapSessionHosts activeTab={activeTab}>
+              <SwapSessionHosts activeTab={displayTab}>
                 {({ trade, flash }) => (
                   <div
                     ref={setWindowNode}
@@ -147,7 +149,7 @@ export function DappShell() {
                     data-collapsed={effectiveDetailCollapsed ? 'true' : 'false'}
                     data-session-ready={shellState.sessionReady ? 'true' : 'false'}
                     data-dapp-window
-                    data-tab={activeTab}
+                    data-tab={displayTab}
                     data-wallet-ready={shellState.walletReady ? 'true' : 'false'}
                   >
                     <DappRail activeTab={activeTab} onSelectTab={selectTab} />
@@ -155,13 +157,14 @@ export function DappShell() {
                     <DappScrollFadeHost>
                       <aside
                         className={cn(
-                          'overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
+                          'dapp-content-fade overflow-x-hidden border-r border-border bg-card px-6 pt-10 pb-5.5',
                           // PC: fill column and scroll inside the panel
                           'dapp:h-full dapp:max-h-full dapp:min-h-0 dapp:overflow-y-auto',
                           // H5: size to content; window is the only scroller (avoid flex-shrink overlap)
                           'max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:border-r-0 max-dapp:border-b-0 max-dapp:p-0',
                         )}
                         data-dapp-widget-panel
+                        data-phase={phase}
                       >
                         <div className="relative hidden max-dapp:block" data-dapp-h5-menu>
                           <button
@@ -182,8 +185,7 @@ export function DappShell() {
                           open={mobileNavOpen}
                         />
                         <DappTabWidget
-                          key={activeTab}
-                          activeTab={activeTab}
+                          activeTab={displayTab}
                           flash={flash}
                           genesis={genesis}
                           onSelectTab={selectTab}
@@ -197,27 +199,26 @@ export function DappShell() {
                     >
                       <section
                         className={cn(
-                          'min-w-0 overflow-x-hidden bg-card transition-opacity duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                          'dapp-content-fade min-w-0 overflow-x-hidden bg-card',
                           // PC: fill column and scroll inside the panel
                           'dapp:max-h-full dapp:min-h-0',
                           effectiveDetailCollapsed
                             ? 'pointer-events-none overflow-y-hidden opacity-0'
-                            : 'opacity-100 dapp:overflow-y-auto',
+                            : 'dapp:overflow-y-auto',
                           // H5: size to content under the shared window scroller
-                          'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible max-dapp:opacity-100',
+                          'max-dapp:pointer-events-auto max-dapp:h-auto max-dapp:max-h-none max-dapp:min-h-0 max-dapp:w-full max-dapp:shrink-0 max-dapp:overflow-visible',
                         )}
                         aria-hidden={effectiveDetailCollapsed}
-                        aria-labelledby={`${activeTab}-title`}
+                        aria-labelledby={`${displayTab}-title`}
                         data-dapp-detail
+                        data-phase={effectiveDetailCollapsed ? 'idle' : phase}
                       >
-                        <div className="dapp-detail-panel" key={activeTab}>
-                          <DappTabContent
-                            activeTab={activeTab}
-                            flash={flash}
-                            genesis={genesis}
-                            trade={trade}
-                          />
-                        </div>
+                        <DappTabContent
+                          activeTab={displayTab}
+                          flash={flash}
+                          genesis={genesis}
+                          trade={trade}
+                        />
                       </section>
                     </DappScrollFadeHost>
                   </div>

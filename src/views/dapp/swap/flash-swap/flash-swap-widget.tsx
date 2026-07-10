@@ -139,7 +139,7 @@ export function FlashSwapWidget({
                   {t.swap.flash.providerName}
                   <button
                     aria-label={t.swap.flash.openProvider}
-                    className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80"
+                    className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-dapp-fast ease-out hover:opacity-80"
                     onClick={() =>
                       window.open(
                         bscscanAddress(BSC_CONTRACTS.usd1Swap),

@@ -23,7 +23,7 @@ export function DappInfoTooltip({
       <button
         aria-label={ariaLabel ?? (typeof content === 'string' ? content : undefined)}
         className={cn(
-          'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80',
+          'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 transition-opacity duration-dapp-fast ease-out hover:opacity-80',
           className,
         )}
         type="button"

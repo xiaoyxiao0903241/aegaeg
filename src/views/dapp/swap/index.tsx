@@ -98,7 +98,6 @@ export function SwapWidget({
   const direction = useSwapViewStore((state) => state.direction)
   const outgoingView = useSwapViewStore((state) => state.outgoingView)
   const incomingView = useSwapViewStore((state) => state.incomingView)
-  const hasSubviewHistory = useSwapViewStore((state) => state.hasSubviewHistory)
 
   const isTransitioning = motion && outgoingView && incomingView
 
@@ -107,7 +106,6 @@ export function SwapWidget({
       className={cn(
         'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
         isTransitioning && swapTransitionStack(),
-        !hasSubviewHistory && view === 'hub' && !motion && 'dapp-panel-enter',
       )}
       data-swap-transitioning={isTransitioning ? 'true' : undefined}
       data-swap-widget-panel

@@ -35,3 +35,22 @@ test('generated theme.css site-fluid is continuous clamp (not stepped media)', a
   assert.match(css, /--fluid-scale:\s*clamp\(1/)
   assert.doesNotMatch(css, /@media \(min-width: 2080px\)/)
 })
+
+test('generated theme.css exposes DApp motion tokens', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const { fileURLToPath } = await import('node:url')
+  const themePath = fileURLToPath(
+    new URL('../../src/shared/styles/tokens/theme.css', import.meta.url),
+  )
+  const css = await readFile(themePath, 'utf8')
+  assert.match(css, /--motion-dapp-fast:\s*120ms/)
+  assert.match(css, /--motion-dapp-base:\s*220ms/)
+  assert.match(css, /--motion-dapp-emphasis:\s*300ms/)
+  assert.match(css, /--motion-dapp-ease:\s*cubic-bezier\(0\.22, 1, 0\.36, 1\)/)
+  assert.match(css, /--motion-dapp-rise:\s*6px/)
+  assert.match(css, /--motion-dapp-slide:\s*1\.5rem/)
+  assert.match(css, /--motion-dapp-fade-out:\s*160ms/)
+  assert.match(css, /--motion-dapp-fade-in:\s*220ms/)
+  assert.match(css, /--duration-dapp-base:\s*var\(--motion-dapp-base\)/)
+  assert.match(css, /--ease-dapp:\s*var\(--motion-dapp-ease\)/)
+})

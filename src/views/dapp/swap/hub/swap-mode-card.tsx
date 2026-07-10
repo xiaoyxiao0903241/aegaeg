@@ -26,7 +26,7 @@ export function SwapModeCard({
       className={cn(
         'flex w-full items-center gap-3 text-left text-muted-foreground shadow-none',
         interactive &&
-          'cursor-pointer transition-[border-color,transform] duration-160 ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
+          'cursor-pointer transition-[border-color,transform] duration-dapp-fast ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
       )}
       onClick={onClick}
       type="button"

@@ -14,7 +14,7 @@ import { Text } from '~/shared/ui/text'
 const drawerItem = tv({
   base: cn(
     'flex w-full min-w-0 cursor-pointer items-center gap-3.5 rounded-md px-4 py-3.5',
-    'transition-[background-color,color] duration-180 ease-out',
+    'transition-[background-color,color] duration-dapp-fast ease-out',
   ),
   variants: {
     active: {
@@ -24,7 +24,8 @@ const drawerItem = tv({
   },
 })
 
-const NAV_MOTION_MS = 320
+/** Keep in sync with `--motion-dapp-emphasis` (theme.css). */
+const NAV_MOTION_MS = 300
 
 type NavMotion = 'enter' | 'exit'
 

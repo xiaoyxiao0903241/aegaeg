@@ -15,7 +15,7 @@ const communityProgramCard = tv({
     root: cn(revealClass(), 'flex w-full min-w-0 flex-col gap-2 p-5'),
     action: cn(
       'm-0 cursor-pointer border-0 bg-transparent p-0 text-left',
-      'transition-opacity duration-160 ease-out hover:opacity-80',
+      'transition-opacity duration-dapp-fast ease-out hover:opacity-80',
     ),
   },
 })

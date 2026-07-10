@@ -80,7 +80,7 @@ export function SwapPromoPillAction({
               'absolute top-1/2 right-4 z-2 -translate-y-1/2 px-4 py-2.5',
               'text-xs/normal font-semibold',
               !withArrow && minConnectWidth && 'min-w-31 text-xs',
-              'transition-[border-color,transform] duration-180 ease-out',
+              'transition-[border-color,transform] duration-dapp-fast ease-out',
               'hover:translate-x-px hover:border-primary',
               'focus-visible:translate-x-px focus-visible:border-primary',
               'disabled:pointer-events-none disabled:opacity-45',

@@ -19,7 +19,7 @@ export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkPr
     <a
       className={cn(
         'flex items-center gap-3 rounded-md border border-border-subtle bg-card px-3.5 py-3',
-        'transition-[border-color,transform] duration-180 ease-out',
+        'transition-[border-color,transform] duration-dapp-fast ease-out',
         'hover:translate-x-0.5 hover:border-coral-hover-border',
       )}
       href={href}

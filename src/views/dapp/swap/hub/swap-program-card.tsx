@@ -13,7 +13,7 @@ const swapProgramCard = tv({
       split: 'items-center justify-between gap-2',
     },
     interactive: {
-      true: 'cursor-pointer transition-[transform,box-shadow] duration-160 ease-out hover:scale-[1.008] active:scale-[0.992]',
+      true: 'cursor-pointer transition-[transform,box-shadow] duration-dapp-fast ease-out hover:scale-[1.008] active:scale-[0.992]',
       false: '',
     },
   },

@@ -243,7 +243,7 @@ export function SeasonSelector({
                   <span
                     aria-hidden="true"
                     className={cn(
-                      'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
+                      'block rounded-full bg-border transition-[width,background-color] duration-dapp-base ease-out',
                       current === index ? 'h-1.75 w-5.5 bg-primary' : 'size-1.75',
                     )}
                   />

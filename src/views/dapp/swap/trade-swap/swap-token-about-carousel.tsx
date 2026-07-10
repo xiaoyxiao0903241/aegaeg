@@ -62,7 +62,7 @@ const swapTokenAboutCarousel = tv({
           'relative z-1 -mt-[calc(var(--shadow-bleed-subtle)-var(--carousel-h5-viewport-pad-y))] pt-(--carousel-h5-indicator-pt)',
         ],
         navButton:
-          'size-(--dapp-icon-lg) rounded-full transition-[background-color,color] duration-180 ease-out hover:bg-background hover:text-muted-foreground',
+          'size-(--dapp-icon-lg) rounded-full transition-[background-color,color] duration-dapp-fast ease-out hover:bg-background hover:text-muted-foreground',
         chevron: dappIcon({ size: 'md' }),
       },
     },

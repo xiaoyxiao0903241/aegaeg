@@ -54,7 +54,7 @@ export function DappPanelHeader({
           >
             <DappIcon
               className={cn(
-                'transition-transform duration-260 ease-[cubic-bezier(.2,.8,.2,1)]',
+                'transition-transform duration-dapp-base ease-dapp',
                 detailCollapsed && 'rotate-90',
               )}
               size="lg"

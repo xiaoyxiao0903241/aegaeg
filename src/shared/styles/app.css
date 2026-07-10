@@ -39,11 +39,11 @@ html.dapp-app #root {
       minmax(min(20rem, 100%), 25rem)
       var(--shell-detail-col);
     transition:
-      grid-template-columns 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      width 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      max-width 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      height 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 280ms ease;
+      grid-template-columns var(--motion-dapp-emphasis) var(--motion-dapp-ease),
+      width var(--motion-dapp-emphasis) var(--motion-dapp-ease),
+      max-width var(--motion-dapp-emphasis) var(--motion-dapp-ease),
+      height var(--motion-dapp-emphasis) var(--motion-dapp-ease),
+      box-shadow var(--motion-dapp-emphasis) ease;
   }
 
   [data-dapp-window][data-collapsed='true'] {
@@ -56,7 +56,7 @@ html.dapp-app #root {
 @keyframes dapp-detail-enter {
   from {
     opacity: 0;
-    transform: translate3d(0, 5px, 0);
+    transform: translate3d(0, var(--motion-dapp-rise), 0);
   }
 
   to {
@@ -67,7 +67,7 @@ html.dapp-app #root {
 
 @keyframes swap-widget-enter-from-right {
   from {
-    transform: translate3d(1.5rem, 0, 0);
+    transform: translate3d(var(--motion-dapp-slide), 0, 0);
   }
 
   to {
@@ -77,7 +77,7 @@ html.dapp-app #root {
 
 @keyframes swap-widget-enter-from-left {
   from {
-    transform: translate3d(-1.5rem, 0, 0);
+    transform: translate3d(calc(var(--motion-dapp-slide) * -1), 0, 0);
   }
 
   to {
@@ -91,7 +91,7 @@ html.dapp-app #root {
   }
 
   to {
-    transform: translate3d(1.5rem, 0, 0);
+    transform: translate3d(var(--motion-dapp-slide), 0, 0);
   }
 }
 
@@ -101,13 +101,13 @@ html.dapp-app #root {
   }
 
   to {
-    transform: translate3d(-1.5rem, 0, 0);
+    transform: translate3d(calc(var(--motion-dapp-slide) * -1), 0, 0);
   }
 }
 
 @keyframes swap-detail-enter {
   from {
-    transform: translate3d(0, 5px, 0);
+    transform: translate3d(0, var(--motion-dapp-rise), 0);
   }
 
   to {
@@ -121,12 +121,52 @@ html.dapp-app #root {
   }
 
   to {
-    transform: translate3d(0, 5px, 0);
+    transform: translate3d(0, var(--motion-dapp-rise), 0);
   }
 }
 
 .dapp-panel-enter {
-  animation: dapp-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: dapp-detail-enter var(--motion-dapp-base) var(--motion-dapp-ease) both;
+}
+
+/* Tab switch — fade out on stable tree, then rise+fade in after displayTab swap
+ * (session hosts may remount; enter uses animation so mount still plays). */
+@keyframes dapp-content-fade-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--motion-dapp-rise, 6px) * 0.35), 0);
+  }
+}
+
+@keyframes dapp-content-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-dapp-rise, 6px), 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.dapp-content-fade[data-phase='out'] {
+  animation: dapp-content-fade-out var(--motion-dapp-fade-out, 160ms) var(--motion-dapp-ease) both;
+  pointer-events: none;
+}
+
+.dapp-content-fade[data-phase='in'] {
+  animation: dapp-content-fade-in var(--motion-dapp-fade-in, 220ms) var(--motion-dapp-ease) both;
+}
+
+.dapp-content-fade[data-phase='idle'] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .swap-view-layer {
@@ -168,32 +208,32 @@ html.dapp-app #root {
 }
 
 [data-swap-widget-panel] .swap-view-layer-enter[data-swap-direction='forward'] .swap-view-layer-motion {
-  animation: swap-widget-enter-from-right 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: swap-widget-enter-from-right var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
 }
 
 [data-swap-widget-panel] .swap-view-layer-exit[data-swap-direction='forward'] .swap-view-layer-motion {
-  animation: swap-widget-exit-to-left 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: swap-widget-exit-to-left var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
 }
 
 [data-swap-widget-panel] .swap-view-layer-enter[data-swap-direction='back'] .swap-view-layer-motion {
-  animation: swap-widget-enter-from-left 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: swap-widget-enter-from-left var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
 }
 
 [data-swap-widget-panel] .swap-view-layer-exit[data-swap-direction='back'] .swap-view-layer-motion {
-  animation: swap-widget-exit-to-right 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: swap-widget-exit-to-right var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
 }
 
 [data-swap-detail-panel] .swap-view-layer-enter .swap-view-layer-motion {
-  animation: swap-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: swap-detail-enter var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
 
 [data-swap-detail-panel] .swap-view-layer-exit .swap-view-layer-motion {
-  animation: swap-detail-exit 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: swap-detail-exit var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
 
 .dapp-detail-panel {
   min-height: 0;
-  animation: dapp-detail-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: dapp-detail-enter var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
 
 @media (min-width: 821px) {
@@ -249,13 +289,13 @@ html.dapp-app #root {
   height: 100%;
   border-radius: inherit;
   background-color: var(--primary);
-  transition: width 300ms ease-out;
+  transition: width var(--motion-dapp-emphasis) ease-out;
 }
 
 .dapp-collapsible-body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: grid-template-rows var(--motion-dapp-emphasis) var(--motion-dapp-ease);
 }
 
 .dapp-collapsible-body[data-open='true'] {
@@ -274,7 +314,7 @@ html.dapp-app #root {
 
 /* Content fade only while opening — height is owned by grid-template-rows on the body. */
 .dapp-collapsible-body[data-open='true'] .dapp-collapsible-inner {
-  animation: dapp-collapsible-content-in 240ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: dapp-collapsible-content-in var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
 
 @keyframes dapp-collapsible-content-in {
@@ -440,18 +480,18 @@ html.dapp-app [data-sonner-toaster].app-toaster .sonner-loading-wrapper {
   }
 
   [data-dapp-mobile-nav][data-motion='enter'] [data-dapp-mobile-nav-panel] {
-    animation: dapp-mobile-nav-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: dapp-mobile-nav-in var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
   }
 
   [data-dapp-mobile-nav][data-motion='exit'] [data-dapp-mobile-nav-panel] {
-    animation: dapp-mobile-nav-out 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: dapp-mobile-nav-out var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
   }
 
   [data-dapp-mobile-nav][data-motion='enter'] [data-dapp-mobile-nav-backdrop] {
-    animation: dapp-mobile-nav-fade-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: dapp-mobile-nav-fade-in var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
   }
 
   [data-dapp-mobile-nav][data-motion='exit'] [data-dapp-mobile-nav-backdrop] {
-    animation: dapp-mobile-nav-fade-out 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: dapp-mobile-nav-fade-out var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
   }
 }

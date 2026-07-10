@@ -141,7 +141,7 @@ export function TradeSwapWidget({
                   onClick={handleFlip}
                 >
                   <span
-                    className="grid place-items-center transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
+                    className="grid place-items-center transition-transform duration-dapp-emphasis ease-dapp"
                     style={{ transform: `rotate(${rotation}deg)` }}
                   >
                     ⇅
@@ -173,7 +173,7 @@ export function TradeSwapWidget({
                   <AnchoredTooltip content={t.swap.flip}>
                     <button
                       aria-label={t.swap.flip}
-                      className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80"
+                      className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-dapp-fast ease-out hover:opacity-80"
                       onClick={() => setExchangePriceInverted((inverted) => !inverted)}
                       type="button"
                     >
@@ -192,7 +192,7 @@ export function TradeSwapWidget({
                   <button
                     aria-label={t.swap.slippageSettings}
                     className={cn(
-                      'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80',
+                      'grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-dapp-fast ease-out hover:opacity-80',
                       sessionReady && !swap.walletReady && 'pointer-events-none opacity-40',
                     )}
                     disabled={sessionReady && !swap.walletReady}
@@ -236,7 +236,7 @@ export function TradeSwapWidget({
                   {t.swap.providerName}
                   <button
                     aria-label={t.swap.openPancakeSwap}
-                    className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-180 ease-out hover:opacity-80"
+                    className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity duration-dapp-fast ease-out hover:opacity-80"
                     onClick={() => openPancakeSwapDeepLink(swap.pancakeSwapUrl)}
                     type="button"
                   >

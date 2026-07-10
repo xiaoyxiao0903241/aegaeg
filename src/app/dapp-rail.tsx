@@ -18,7 +18,7 @@ type RailIndicator = {
 const railItem = tv({
   base: cn(
     'relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
-    'transition-[color,background-color] duration-180 ease-out',
+    'transition-[color,background-color] duration-dapp-fast ease-out',
   ),
   variants: {
     active: {
@@ -122,7 +122,7 @@ export function DappRail({
           className={cn(
             'pointer-events-none absolute inset-x-2 top-0 z-0 rounded-md bg-accent will-change-[transform,height]',
             indicatorReady &&
-              'transition-[transform,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]',
+              'transition-[transform,height] duration-dapp-emphasis ease-dapp',
           )}
           style={{
             height: indicator.height,

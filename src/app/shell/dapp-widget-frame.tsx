@@ -47,7 +47,7 @@ export function DappWidgetFrame({
   return (
     <div
       className={cn(
-        'dapp-panel-enter flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
+        'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
         className,
       )}
     >

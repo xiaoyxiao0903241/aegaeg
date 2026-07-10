@@ -5,7 +5,7 @@ import { cn } from '~/shared/lib/utils'
 export const swapFlipCard = tv({
   variants: {
     flipping: {
-      true: 'animate-[swap-card-flip_320ms_cubic-bezier(.2,.8,.2,1)_both]',
+      true: 'animate-[swap-card-flip_var(--motion-dapp-emphasis)_var(--motion-dapp-ease)_both]',
       false: '',
     },
   },
@@ -23,7 +23,7 @@ const swapFlowButton = tv({
     interactive: {
       true: cn(
         'origin-center',
-        'transition-[border-color,background-color,box-shadow,transform,opacity] duration-160 ease-out',
+        'transition-[border-color,background-color,box-shadow,transform,opacity] duration-dapp-fast ease-out',
         'enabled:cursor-pointer enabled:hover:scale-[1.02] enabled:hover:border-primary',
         'enabled:focus-visible:scale-[1.02] enabled:focus-visible:border-primary',
         'enabled:active:scale-[0.985] enabled:active:duration-75 enabled:active:border-primary',

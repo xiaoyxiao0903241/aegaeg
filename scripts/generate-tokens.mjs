@@ -280,6 +280,17 @@ function staticEngineeringVars() {
   --carousel-h5-indicator-pt: 0.75rem;
   --carousel-pc-indicator-pt: 0.75rem;
 
+  /* DApp motion — shared timing / easing / travel (CSS animations + transitions) */
+  --motion-dapp-fast: 120ms;
+  --motion-dapp-base: 220ms;
+  --motion-dapp-emphasis: 300ms;
+  --motion-dapp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-dapp-rise: 6px;
+  --motion-dapp-slide: 1.5rem;
+  /* Tab content crossfade — out then in (JS timeouts must match) */
+  --motion-dapp-fade-out: 160ms;
+  --motion-dapp-fade-in: 220ms;
+
   /* App chrome (rem @ 16px; scales with site-fluid) */
   --app-icon-xs: 0.75rem;
   --app-icon-sm: 0.8125rem;
@@ -484,6 +495,11 @@ function staticExtraTheme() {
   --carousel-h5-viewport-pad-y: 0.875rem;
   --carousel-h5-indicator-pt: 0.75rem;
   --carousel-pc-indicator-pt: 0.75rem;
+
+  --duration-dapp-fast: var(--motion-dapp-fast);
+  --duration-dapp-base: var(--motion-dapp-base);
+  --duration-dapp-emphasis: var(--motion-dapp-emphasis);
+  --ease-dapp: var(--motion-dapp-ease);
 }
 `
 }
