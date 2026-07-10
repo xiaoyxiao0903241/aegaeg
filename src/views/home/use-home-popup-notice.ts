@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   normalizeHomePopupNotices,
   noticeDismissKey,
@@ -27,24 +27,17 @@ export function useHomePopupNotice(): {
     retry: 1,
   })
 
-  const sortedNotices = useMemo(
-    () => normalizeHomePopupNotices(query.data, locale),
-    [query.data, locale],
-  )
+  const sortedNotices = normalizeHomePopupNotices(query.data, locale)
 
   const [dismissedKeys, setDismissedKeys] = useState(() => readDismissedPopupKeys())
   const [sessionDismissedKeys, setSessionDismissedKeys] = useState<Set<string>>(() => new Set())
   const [brokenImageKeys, setBrokenImageKeys] = useState<Set<string>>(() => new Set())
 
-  const notice = useMemo(
-    () =>
-      selectNextHomePopupNotice(sortedNotices, {
-        dismissedKeys,
-        sessionDismissedKeys,
-        brokenImageKeys,
-      }),
-    [sortedNotices, dismissedKeys, sessionDismissedKeys, brokenImageKeys],
-  )
+  const notice = selectNextHomePopupNotice(sortedNotices, {
+    dismissedKeys,
+    sessionDismissedKeys,
+    brokenImageKeys,
+  })
 
   const [open, setOpen] = useState(false)
 
@@ -52,7 +45,7 @@ export function useHomePopupNotice(): {
     setOpen(notice !== null)
   }, [notice])
 
-  const dismissCurrentNotice = useCallback(() => {
+  function dismissCurrentNotice() {
     if (!notice) return
 
     const key = noticeDismissKey(notice)
@@ -62,14 +55,14 @@ export function useHomePopupNotice(): {
       persistDismissedPopupKey(key)
       setDismissedKeys(readDismissedPopupKeys())
     }
-  }, [notice])
+  }
 
-  const onImageLoadError = useCallback(() => {
+  function onImageLoadError() {
     if (!notice) return
     if (notice.title || notice.content) return
     const key = noticeDismissKey(notice)
     setBrokenImageKeys((current) => new Set(current).add(key))
-  }, [notice])
+  }
 
   return {
     notice,
