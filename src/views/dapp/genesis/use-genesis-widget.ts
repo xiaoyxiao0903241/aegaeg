@@ -40,14 +40,14 @@ import {
   usePresaleUserPhaseRemainingQuery,
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
-} from '~/hooks/queries/use-presale-queries'
+} from '~/views/dapp/web3/use-presale-queries'
 import {
   invalidateAfterGenesisPhaseTransition,
   invalidateAfterGenesisPurchase,
   invalidatePresaleChainQueries,
 } from '~/shared/api/query/invalidate'
 import { useI18n } from '~/i18n/use-i18n'
-import { useChainReadClient } from '~/hooks/use-chain-read-client'
+import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 export interface GenesisPurchaseResult {

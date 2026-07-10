@@ -21,7 +21,7 @@ import {
   CurrentTitleCardBodySkeleton,
   ProgressCardSkeleton,
 } from '~/app/shell/dapp-skeleton'
-import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
+import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { ProgressMeter } from '~/app/shell/progress-meter'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'

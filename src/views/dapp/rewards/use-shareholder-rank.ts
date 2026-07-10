@@ -7,7 +7,7 @@ import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { usePresaleUserTotalQuery } from '~/hooks/queries/use-presale-queries'
+import { usePresaleUserTotalQuery } from '~/views/dapp/web3/use-presale-queries'
 
 export function useShareholderRank() {
   const { sessionReady } = useDappShell()

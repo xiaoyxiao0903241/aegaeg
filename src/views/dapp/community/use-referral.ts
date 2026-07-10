@@ -14,7 +14,7 @@ import {
 import { bindReferrer } from '~/views/dapp/web3/referral-write'
 import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
-import { useChainReadClient } from '~/hooks/use-chain-read-client'
+import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
 
 const BIND_COOLDOWN_MS = 5_000
 

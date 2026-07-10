@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
-import { useShareholderRank } from '~/hooks/use-shareholder-rank'
+import { useShareholderRank } from '~/views/dapp/rewards/use-shareholder-rank'
 import {
   formatCount,
   formatPresaleRank,

@@ -9,7 +9,7 @@ import {
   readSwapPoolSpotPrice,
 } from '~/views/dapp/web3/read-swap-pool'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
-import { useChainReadClient } from '~/hooks/use-chain-read-client'
+import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
 
 /** Shared pool metadata + slot0 spot — short-stale spot reused across swap quotes. */
 export function useSwapPoolReads(quotesEnabled = true) {

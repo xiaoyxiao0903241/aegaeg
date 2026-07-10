@@ -7,7 +7,7 @@ import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
   usePresalePhasesQuery,
-} from '~/hooks/queries/use-presale-queries'
+} from '~/views/dapp/web3/use-presale-queries'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 
 /**

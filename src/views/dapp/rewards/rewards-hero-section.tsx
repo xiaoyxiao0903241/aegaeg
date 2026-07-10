@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { RewardsHeroBodySkeleton } from '~/app/shell/dapp-skeleton'
-import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
+import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useCommunityFundTotal } from '~/hooks/use-api-data'
 import {

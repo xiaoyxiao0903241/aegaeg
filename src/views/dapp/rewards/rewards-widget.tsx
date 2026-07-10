@@ -5,7 +5,7 @@ import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { toast } from 'sonner'
 import { ACCOUNT_BANNED_SENTINEL, resolveAuthLoginErrorMessage } from '~/shared/api/account-banned'
-import { useShareholderRankLabels } from '~/hooks/use-shareholder-rank'
+import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { RewardsBalanceSection } from '~/views/dapp/rewards/rewards-balance-section'
 import { RewardsRankSection } from '~/views/dapp/rewards/rewards-rank-section'
 

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { findActivePresalePhase, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { useChainReadClient } from '~/hooks/use-chain-read-client'
+import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
