@@ -9,9 +9,6 @@ export const API_TRANSPORT_ERROR = {
   MISSING_DATA: 'MISSING_DATA',
 } as const
 
-export type ApiTransportErrorCode =
-  (typeof API_TRANSPORT_ERROR)[keyof typeof API_TRANSPORT_ERROR]
-
 export interface ApiUserFacingErrorMessages {
   network: string
   timeout: string

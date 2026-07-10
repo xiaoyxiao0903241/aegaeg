@@ -1,11 +1,11 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { authenticatedMutation } from '~/shared/api/authenticated-mutation'
 import {
   confirmTeamRewardClaim,
   requestCommunityFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
+import { authenticatedMutation } from '~/shared/api/query/fetch-authenticated'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import { normalizeTeamRewardClaimPayload } from '~/shared/api/normalize-claim-payload'
 import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/views/dapp/web3/abis'

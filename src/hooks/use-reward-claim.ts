@@ -4,6 +4,10 @@ import { useCallback, useState } from 'react'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
+import {
+  executeCommunityFundClaim,
+  executeTeamRewardClaim,
+} from '~/views/dapp/web3/reward-claim'
 
 type RewardClaimExecuteResult = {
   confirmError?: unknown
@@ -64,4 +68,20 @@ export function useRewardClaim(execute: RewardClaimExecutor) {
   }, [account, execute, invalidateSession, isAuthenticated, token, wallet])
 
   return { claim, isClaiming, error, canClaim: Boolean(account && token && isAuthenticated) }
+}
+
+export function useTeamRewardClaim() {
+  const execute = useCallback(
+    (args: Parameters<typeof executeTeamRewardClaim>[0]) => executeTeamRewardClaim(args),
+    [],
+  )
+  return useRewardClaim(execute)
+}
+
+export function useCommunityFundClaim() {
+  const execute = useCallback(
+    (args: Parameters<typeof executeCommunityFundClaim>[0]) => executeCommunityFundClaim(args),
+    [],
+  )
+  return useRewardClaim(execute)
 }

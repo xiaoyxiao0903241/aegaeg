@@ -8,26 +8,54 @@ import {
 import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { LOGIN_ERROR } from '~/shared/api/account-banned'
-import { toLoginErrorSentinel } from '~/views/dapp/auth/login-error-sentinel'
 import {
   buildLoginAttemptKey,
   deriveAuthAction,
   deriveAuthState,
   shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
-import { loginWithWallet } from '~/views/dapp/auth/login-with-wallet'
+import { loginWithWallet, toLoginErrorSentinel } from '~/views/dapp/auth/login-with-wallet'
 import { defaultChain } from '~/views/dapp/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
-import {
-  createStoreAuthSessionStorage,
-  createStoreLoginSignatureStorage,
-} from '~/stores/auth-storage-adapters'
+import type { AuthSessionStorage, LoginSignatureStorage } from '~/core/auth/storage'
+import type { StoredAuthSession } from '~/core/auth/types'
 import {
   clearApiQueries,
   invalidateAfterAuthLogin,
   invalidateAfterWalletSwitch,
 } from '~/shared/api/query/invalidate'
 import { AuthContext, type AuthContextValue } from '~/app/bootstrap/use-auth'
+
+type AuthStoreGetter = Pick<
+  ReturnType<typeof useAuthStore.getState>,
+  | 'upsertSessionForAddress'
+  | 'upsertSignatureForAddress'
+  | 'readSignatureForAddress'
+  | 'clearSignatureForAddress'
+>
+
+/** loginWithWallet → 按地址 Zustand 表；read/clear 为空（会话由 sessionsByAddress 派生）。 */
+function createStoreAuthSessionStorage(
+  getStore: () => AuthStoreGetter = () => useAuthStore.getState(),
+): AuthSessionStorage {
+  return {
+    read: () => null,
+    write: (session: StoredAuthSession) => {
+      getStore().upsertSessionForAddress(session)
+    },
+    clear: () => {},
+  }
+}
+
+function createStoreLoginSignatureStorage(
+  getStore: () => AuthStoreGetter = () => useAuthStore.getState(),
+): LoginSignatureStorage {
+  return {
+    readForAddress: (address) => getStore().readSignatureForAddress(address),
+    write: (signature) => getStore().upsertSignatureForAddress(signature),
+    clearForAddress: (address) => getStore().clearSignatureForAddress(address),
+  }
+}
 
 const sessionStorage = createStoreAuthSessionStorage()
 const signatureStorage = createStoreLoginSignatureStorage()

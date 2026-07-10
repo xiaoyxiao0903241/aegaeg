@@ -12,8 +12,7 @@ import {
 } from '~/views/dapp/rewards/rewards-display'
 import { formatUsd } from '~/shared/api/format-display'
 import { RewardBalanceCardSkeleton } from '~/app/shell/dapp-skeleton'
-import { useTeamRewardClaim } from '~/hooks/use-team-reward-claim'
-import { useCommunityFundClaim } from '~/hooks/use-community-fund-claim'
+import { useCommunityFundClaim, useTeamRewardClaim } from '~/hooks/use-reward-claim'
 import { toast } from 'sonner'
 import {
   resolveTeamClaimError,

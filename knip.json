@@ -5,6 +5,7 @@
     "src/views/home/main.tsx",
     "src/shared/lib/legacy-core-js.ts",
     "src/views/home/home-renderer.ts",
+    "src/i18n/messages/home/index.ts",
     "tests/unit/**/*.test.mjs"
   ],
   "project": [
@@ -14,8 +15,6 @@
     "src/**/*.d.ts"
   ],
   "ignoreExportsUsedInFile": true,
-  "ignoreFiles": [
-  ],
   "ignoreDependencies": [
     "terser",
     "regenerator-runtime",

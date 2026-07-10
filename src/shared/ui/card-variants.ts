@@ -16,5 +16,3 @@ export const cardVariants = tv({
     surface: 'outlined',
   },
 })
-
-export type CardSurface = keyof typeof cardVariants.variants.surface

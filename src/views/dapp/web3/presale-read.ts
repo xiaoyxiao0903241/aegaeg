@@ -6,7 +6,6 @@ import {
 } from 'viem'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
-  findActivePresalePhase,
   type PresalePhaseOnChain,
   type PresalePhaseRemaining,
 } from '~/core/presale/presale-math'
@@ -133,13 +132,6 @@ export async function readAllPresalePhases(
 
     return mapPhaseTupleToOnChain(phaseIndex, decoded)
   })
-}
-
-export async function readActivePresalePhase(
-  client: ChainReadClient = bscReadClient,
-): Promise<PresalePhaseOnChain | null> {
-  const phases = await readAllPresalePhases(client)
-  return findActivePresalePhase(phases)
 }
 
 export async function readUserPhaseRemainingAmount(

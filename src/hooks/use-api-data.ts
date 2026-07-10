@@ -1,3 +1,4 @@
+import { useQuery, type QueryKey } from '@tanstack/react-query'
 import {
   getCommunityFundLogs,
   getCommunityFundTotal,
@@ -12,8 +13,41 @@ import {
   getTeamRewardTotal,
 } from '~/shared/api/endpoints'
 import type { PaginationParams } from '~/shared/api/types'
+import { fetchAuthenticated, toQueryErrorMessage } from '~/shared/api/query/fetch-authenticated'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useAuthenticatedQuery } from '~/hooks/use-authenticated-query'
+import { useAuth } from '~/app/bootstrap/use-auth'
+import { useI18n } from '~/i18n/use-i18n'
+
+function useAuthenticatedQuery<T>(
+  queryKey: QueryKey,
+  fetcher: (token: string) => Promise<T>,
+  enabled = true,
+  options?: { keepPreviousData?: boolean },
+) {
+  const { token, invalidateSession, isAuthenticated, hasHydrated } = useAuth()
+  const { messages: t } = useI18n()
+
+  const query = useQuery({
+    // 用 JWT 作用域 key：切钱包换 token 时自动拉新数据，避免跨账户脏缓存。
+    queryKey: token ? [...queryKey, token] : queryKey,
+    queryFn: () => fetchAuthenticated(fetcher, token!, invalidateSession),
+    enabled: enabled && hasHydrated && isAuthenticated && Boolean(token),
+    staleTime: QUERY_STALE_TIME.api,
+    placeholderData: options?.keepPreviousData
+      ? (previousData) => previousData
+      : undefined,
+  })
+
+  return {
+    data: query.data ?? null,
+    error: toQueryErrorMessage(query.error, t.errors.api),
+    isLoading: query.isLoading,
+    refresh: async () => {
+      await query.refetch()
+    },
+  }
+}
 
 export function usePerformance(enabled = true) {
   return useAuthenticatedQuery(queryKeys.api.performance, getPerformance, enabled)

@@ -19,7 +19,7 @@ import {
   resolveRemainingUserAmount,
   resolveSharePriceWei,
 } from '~/core/presale/presale-math'
-import { evaluateGenesisPostApproveGate } from '~/core/presale/evaluate-genesis-post-approve-gate'
+import { evaluateGenesisPostApproveGate } from '~/core/presale/presale-math'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/views/dapp/web3/presale-write'
 import { MAX_UINT256 } from '~/views/dapp/web3/abis'

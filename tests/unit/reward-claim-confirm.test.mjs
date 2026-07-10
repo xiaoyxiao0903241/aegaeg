@@ -67,7 +67,7 @@ test('confirmClaimWithRetry succeeds after transient failures', async () => {
 
 test('evaluateGenesisPostApproveGate blocks unbound / paused', async () => {
   const { evaluateGenesisPostApproveGate } = await loadModule(
-    '/src/core/presale/evaluate-genesis-post-approve-gate.ts',
+    '/src/core/presale/presale-math.ts',
   )
 
   assert.deepEqual(

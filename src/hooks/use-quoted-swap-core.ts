@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery, type QueryKey } from '@tanstack/react-query'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { calcAmountOutMin } from '~/core/swap/calc-amount-out-min'
 import {
   canSubmitQuotedSwap,
@@ -12,9 +12,20 @@ import { needsTokenApproval } from '~/views/dapp/web3/swap-write'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { useVisibleQueryInterval } from '~/hooks/queries/use-visible-query-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
-import { useDebouncedValue } from '~/hooks/use-debounced-value'
 
 const DEFAULT_QUOTE_DEBOUNCE_MS = 400
+
+/** 值稳定 `delayMs` 后不再变化时返回。 */
+function useDebouncedValue<T>(value: T, delayMs: number): T {
+  const [debounced, setDebounced] = useState(value)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebounced(value), delayMs)
+    return () => window.clearTimeout(timer)
+  }, [delayMs, value])
+
+  return debounced
+}
 
 export type UseQuotedSwapCoreOptions<TQuote> = {
   authenticated: boolean

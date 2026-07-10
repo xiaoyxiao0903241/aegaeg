@@ -23,3 +23,7 @@ export function isSessionForAddress(
   if (!session || !address) return false
   return session.address.toLowerCase() === address.toLowerCase()
 }
+
+export function normalizeAuthAddress(address: string): string {
+  return address.toLowerCase()
+}

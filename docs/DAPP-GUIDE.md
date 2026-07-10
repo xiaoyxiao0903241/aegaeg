@@ -47,7 +47,7 @@
 ## 7. API 与错误
 
 - 读：`fetchAuthenticated` → 401 → `invalidateSession`。
-- 写（claim 等）：`authenticatedMutation`，同语义。
+- 写（claim 等）：`authenticatedMutation`（`fetch-authenticated.ts`），同语义。
 - 封禁：`isAccountBannedError` = **403 + 封禁文案/业务码**；裸 403 不 latch。
 - 登录失败分类：`classifyLoginFailure` → `toLoginErrorSentinel`。
 

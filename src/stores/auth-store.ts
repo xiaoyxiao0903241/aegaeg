@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { normalizeAuthAddress } from '~/core/auth/auth-address'
+import { normalizeAuthAddress } from '~/core/auth/types'
 import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
 import type { StoredLoginSignature, StoredAuthSession } from '~/core/auth/types'
 import {

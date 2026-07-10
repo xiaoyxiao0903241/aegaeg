@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('toLoginErrorSentinel maps classify kinds', async () => {
-  const { toLoginErrorSentinel } = await loadModule('/src/views/dapp/auth/login-error-sentinel.ts')
+  const { toLoginErrorSentinel } = await loadModule('/src/views/dapp/auth/login-with-wallet.ts')
   const { LOGIN_ERROR, ACCOUNT_BANNED_SENTINEL } = await loadModule(
     '/src/shared/api/account-banned.ts',
   )

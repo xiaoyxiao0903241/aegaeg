@@ -18,4 +18,4 @@
 | **Flash / Trade** | Swap 子视图；Provider 按需挂载 | `swap-view-store` |
 | **Genesis phase** | 预售季；链上 phases + active | presale queries |
 | **promo SSOT** | 季/折扣 chrome 派生写入 store | `GenesisPromoSync` |
-| **authenticatedMutation** | JWT 写路径；401 → purge | `shared/api/authenticated-mutation` |
+| **authenticatedMutation** | JWT 写路径；401 → purge | `shared/api/query/fetch-authenticated` |

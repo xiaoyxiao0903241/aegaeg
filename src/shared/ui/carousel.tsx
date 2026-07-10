@@ -2,6 +2,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import {
   forwardRef,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -16,9 +17,16 @@ import {
   type CarouselPlugin,
 } from '~/shared/ui/carousel-context'
 import { cn } from '~/shared/lib/utils'
-import { useCarousel } from '~/shared/ui/use-carousel'
 
 export type { CarouselApi, CarouselOptions, CarouselPlugin } from '~/shared/ui/carousel-context'
+
+function useCarousel() {
+  const context = useContext(CarouselContext)
+  if (!context) {
+    throw new Error('useCarousel must be used within a <Carousel />')
+  }
+  return context
+}
 
 type CarouselProps = {
   opts?: CarouselOptions

@@ -10,8 +10,6 @@ import { Text, type TextProps } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 import { cardVariants } from '~/shared/ui/card-variants'
 
-export type { CardSurface } from '~/shared/ui/card-variants'
-
 type CardElement = 'article' | 'button' | 'div' | 'section' | 'details' | 'span'
 
 export type CardProps = (HTMLAttributes<HTMLElement> | ButtonHTMLAttributes<HTMLButtonElement>) &
