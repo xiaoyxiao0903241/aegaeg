@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react'
-import { useFlashSwapWidget } from '~/views/dapp/swap/use-flash-swap-widget'
+import { useFlashSwapWidget } from '~/views/dapp/swap/flash-swap/use-flash-swap-widget'
 
 type FlashSwapWidgetContextValue = ReturnType<typeof useFlashSwapWidget>
 

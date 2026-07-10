@@ -2,7 +2,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { swapHubAssets } from '~/app/assets'
 import { useDappShell } from '~/app/dapp-shell-context'
 import { useSwapViewStore } from '~/stores/swap-view-store'
-import { SwapModeCard } from '~/views/dapp/swap/swap-mode-card'
+import { SwapModeCard } from '~/views/dapp/swap/hub/swap-mode-card'
 import {
   SwapGenesisFooter,
   SwapPanelToggle,

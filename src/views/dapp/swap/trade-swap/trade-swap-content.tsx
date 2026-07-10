@@ -7,9 +7,9 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
-import { TokenAboutCarousel } from '~/views/dapp/swap/swap-token-about-carousel'
+import { TokenAboutCarousel } from '~/views/dapp/swap/trade-swap/swap-token-about-carousel'
 import { useSwapDirectionStore } from '~/stores/swap-direction-store'
-import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
+import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap/trade-swap-widget-context'
 import {
   SwapMetricCard,
   SwapMetricCardSkeleton,

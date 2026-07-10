@@ -13,9 +13,9 @@ import { DappMetaList } from '~/app/shell/dapp-meta-list'
 import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { SeasonSelector } from '~/views/dapp/genesis/genesis-season-selector'
+import { SeasonSelector } from '~/views/dapp/genesis/season/genesis-season-selector'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { SeasonOptionSkeleton } from '~/views/dapp/genesis/genesis-season-option-skeleton'
+import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season/genesis-season-option-skeleton'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
 import {
   resolveGenesisPurchaseError,

@@ -4,7 +4,7 @@ import test from 'node:test'
 
 test('useSwapWidget assembles balances, spot rates, and quote core', async () => {
   const source = await readFile(
-    new URL('../../src/views/dapp/swap/use-swap-widget.ts', import.meta.url),
+    new URL('../../src/views/dapp/swap/trade-swap/use-swap-widget.ts', import.meta.url),
     'utf8',
   )
 

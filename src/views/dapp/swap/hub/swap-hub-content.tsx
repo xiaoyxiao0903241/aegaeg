@@ -4,8 +4,8 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { SwapHubAboutCard } from '~/views/dapp/swap/swap-hub-about-card'
-import { SwapProgramCards } from '~/views/dapp/swap/swap-program-cards'
+import { SwapHubAboutCard } from '~/views/dapp/swap/hub/swap-hub-about-card'
+import { SwapProgramCards } from '~/views/dapp/swap/hub/swap-program-cards'
 
 export function SwapHubContent() {
   const { messages: t } = useI18n()

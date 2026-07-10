@@ -2,12 +2,12 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
-import { SwapHubWidget } from '~/views/dapp/swap/swap-hub-widget'
-import { SwapHubContent } from '~/views/dapp/swap/swap-hub-content'
-import { FlashSwapWidget } from '~/views/dapp/swap/flash-swap-widget'
-import { FlashSwapContent } from '~/views/dapp/swap/flash-swap-content'
-import { TradeSwapWidget } from '~/views/dapp/swap/trade-swap-widget'
-import { TradeSwapContent } from '~/views/dapp/swap/trade-swap-content'
+import { SwapHubWidget } from '~/views/dapp/swap/hub/swap-hub-widget'
+import { SwapHubContent } from '~/views/dapp/swap/hub/swap-hub-content'
+import { FlashSwapWidget } from '~/views/dapp/swap/flash-swap/flash-swap-widget'
+import { FlashSwapContent } from '~/views/dapp/swap/flash-swap/flash-swap-content'
+import { TradeSwapWidget } from '~/views/dapp/swap/trade-swap/trade-swap-widget'
+import { TradeSwapContent } from '~/views/dapp/swap/trade-swap/trade-swap-content'
 
 const swapTransitionStack = tv({
   base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',

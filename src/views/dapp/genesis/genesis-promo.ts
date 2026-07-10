@@ -1,6 +1,6 @@
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatPhaseDate } from '~/core/presale/presale-math'
-import { buildSeasonOptions } from '~/views/dapp/genesis/genesis-season-options'
+import { buildSeasonOptions } from '~/views/dapp/genesis/season/genesis-season-options'
 import type {
   GenesisPromoSnapshot,
   GenesisPromoStatus,

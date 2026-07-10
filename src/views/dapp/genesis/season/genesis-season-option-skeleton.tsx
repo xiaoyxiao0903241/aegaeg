@@ -1,5 +1,5 @@
 import { DappSkeleton } from '~/app/shell/dapp-skeleton'
-import { seasonCard } from '~/views/dapp/genesis/genesis-season-card'
+import { seasonCard } from '~/views/dapp/genesis/season/genesis-season-card'
 
 export function SeasonOptionSkeleton() {
   return (

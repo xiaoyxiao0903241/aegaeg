@@ -4,12 +4,12 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
-import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap-widget-context'
+import { useFlashSwapWidgetContext } from '~/views/dapp/swap/flash-swap/flash-swap-widget-context'
 import {
   SwapMetricCard,
   SwapMetricCardSkeleton,
 } from '~/views/dapp/swap/swap-detail-primitives'
-import { TokenAboutCard } from '~/views/dapp/swap/swap-token-about-card'
+import { TokenAboutCard } from '~/views/dapp/swap/flash-swap/swap-token-about-card'
 
 export function FlashSwapContent() {
   const { messages: t } = useI18n()

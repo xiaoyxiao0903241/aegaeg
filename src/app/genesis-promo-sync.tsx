@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
-import { buildSeasonOptions } from '~/views/dapp/genesis/genesis-season-options'
+import { buildSeasonOptions } from '~/views/dapp/genesis/season/genesis-season-options'
 import { buildGenesisPromoSnapshot } from '~/views/dapp/genesis/genesis-promo'
 import {
   usePresaleActivePhaseQuery,

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { FlashSwapWidgetProvider } from '~/views/dapp/swap/flash-swap-widget-context'
-import { TradeSwapWidgetProvider } from '~/views/dapp/swap/trade-swap-widget-context'
+import { FlashSwapWidgetProvider } from '~/views/dapp/swap/flash-swap/flash-swap-widget-context'
+import { TradeSwapWidgetProvider } from '~/views/dapp/swap/trade-swap/trade-swap-widget-context'
 import { useSwapViewStore } from '~/stores/swap-view-store'
 import { viewsNeedingProvider } from '~/views/dapp/swap/swap-views-needing-provider'
 

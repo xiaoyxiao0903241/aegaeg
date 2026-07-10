@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { useSwapViewStore, type SwapView } from '~/stores/swap-view-store'
-import { SwapProgramCard } from '~/views/dapp/swap/swap-program-card'
+import { SwapProgramCard } from '~/views/dapp/swap/hub/swap-program-card'
 
 /** Cards 0 → flash, 1 → trade, 2–4 inactive (per product doc). */
 const PROGRAM_TARGETS: Array<SwapView | null> = ['flash', 'trade', null, null, null]

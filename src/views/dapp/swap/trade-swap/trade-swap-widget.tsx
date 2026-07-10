@@ -6,11 +6,11 @@ import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { SwapSlippageModal } from '~/views/dapp/swap/swap-slippage-modal'
+import { SwapSlippageModal } from '~/views/dapp/swap/trade-swap/swap-slippage-modal'
 import { SwapMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap-widget-context'
+import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap/trade-swap-widget-context'
 import {
   resolveSwapUserFacingMessage,
 } from '~/views/dapp/web3/resolve-contract-error-message'

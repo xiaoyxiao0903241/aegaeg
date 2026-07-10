@@ -1,7 +1,7 @@
 import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
 import { useState } from 'react'
 import { HIGH_SWAP_PRICE_IMPACT_BPS } from '~/core/swap/calc-price-impact-bps'
-import { formatGasEstimate } from '~/views/dapp/swap/swap-format-gas-estimate'
+import { formatGasEstimate } from '~/views/dapp/swap/trade-swap/swap-format-gas-estimate'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   clampSlippagePercent,
@@ -20,8 +20,8 @@ import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
 import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
 import { useSwapQuote } from '~/views/dapp/swap/use-swap-quote'
 import { useSwapPoolReads } from '~/views/dapp/swap/use-swap-pool-reads'
-import { useSwapBalances } from '~/views/dapp/swap/use-swap-balances'
-import { useSwapSpotRates } from '~/views/dapp/swap/use-swap-spot-rates'
+import { useSwapBalances } from '~/views/dapp/swap/trade-swap/use-swap-balances'
+import { useSwapSpotRates } from '~/views/dapp/swap/trade-swap/use-swap-spot-rates'
 
 /**
  * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.
