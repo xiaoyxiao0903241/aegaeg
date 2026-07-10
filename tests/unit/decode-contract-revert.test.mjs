@@ -4,7 +4,7 @@ import { encodeErrorResult, parseAbi } from 'viem'
 import { loadModule } from './load-module.mjs'
 
 test('decodeContractRevert decodes PreSaleUserNotBound by selector', async () => {
-  const { decodeContractRevert } = await loadModule('/src/views/dapp/web3/decode-contract-revert.ts')
+  const { decodeContractRevert } = await loadModule('/src/web3/decode-contract-revert.ts')
   const abi = parseAbi(['error PreSaleUserNotBound()'])
   const data = encodeErrorResult({ abi, errorName: 'PreSaleUserNotBound', args: [] })
 
@@ -13,9 +13,9 @@ test('decodeContractRevert decodes PreSaleUserNotBound by selector', async () =>
 })
 
 test('normalizeContractRevertError surfaces error name for UI parsers', async () => {
-  const { normalizeContractRevertError } = await loadModule('/src/views/dapp/web3/decode-contract-revert.ts')
+  const { normalizeContractRevertError } = await loadModule('/src/web3/decode-contract-revert.ts')
   const { resolveGenesisPurchaseError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
   const abi = parseAbi(['error PreSaleUserNotBound()'])
   const data = encodeErrorResult({ abi, errorName: 'PreSaleUserNotBound', args: [] })

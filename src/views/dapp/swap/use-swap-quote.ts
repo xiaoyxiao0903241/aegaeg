@@ -7,9 +7,9 @@ import {
   resolveLiveQuotedOut,
 } from '~/core/swap/resolve-live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/token-amount'
-import { SWAP_QUOTE_FAILED } from '~/views/dapp/web3/resolve-contract-error-message'
-import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
-import { needsTokenApproval } from '~/views/dapp/web3/swap-write'
+import { SWAP_QUOTE_FAILED } from '~/web3/resolve-contract-error-message'
+import { WalletTransactionWaitError } from '~/web3/wait-wallet-transaction'
+import { needsTokenApproval } from '~/web3/swap-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'

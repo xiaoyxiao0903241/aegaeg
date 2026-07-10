@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import { isUserRejectedWalletError } from '~/views/dapp/web3/resolve-contract-error-message'
+import { isUserRejectedWalletError } from '~/web3/resolve-contract-error-message'
 
 /**
  * Present a single user-facing error toast. Skips wallet rejection and empty messages.

@@ -3,7 +3,7 @@
 
 > 本文档面向前端开发，梳理邀请绑定推荐关系、预售购买、团队奖励领取三个核心业务的合约调用方法。
 >
-> **本仓库实现入口（行为 SSOT）**：写链经 `src/views/dapp/web3/wallet-contract-write.ts`；绑定 `referral-write.ts`；预售 `presale-write.ts`；奖励领取 `reward-claim.ts`（API 签名 → `normalize-team-reward-claim.ts` → 链上 `claimReward`）。地址 SSOT：`src/shared/config/contracts.ts`。
+> **本仓库实现入口（行为 SSOT）**：写链经 `src/web3/wallet-contract-write.ts`；绑定 `referral-write.ts`；预售 `presale-write.ts`；奖励领取 `reward-claim.ts`（API 签名 → `normalize-team-reward-claim.ts` → 链上 `claimReward`）。地址 SSOT：`src/shared/config/contracts.ts`。
 
 ---
 

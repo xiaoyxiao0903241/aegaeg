@@ -18,8 +18,8 @@ import { toast } from 'sonner'
 import {
   resolveTeamClaimError,
   resolveWalletTransactionError,
-} from '~/views/dapp/web3/resolve-contract-error-message'
-import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
+} from '~/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { RewardBalanceCard } from '~/app/shell/dapp-card'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'

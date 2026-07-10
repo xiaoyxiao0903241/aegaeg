@@ -8,7 +8,7 @@ import {
   resolveGenesisMaxShares,
 } from '~/core/presale/presale-math'
 import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
-import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 import {
   usePresaleActivePhaseQuery,
@@ -21,7 +21,7 @@ import {
   usePresaleUserPhaseRemainingQuery,
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
-} from '~/views/dapp/web3/use-presale-queries'
+} from '~/web3/use-presale-queries'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 /** Chain + promo reads for Genesis — no shares draft, no write actions. */

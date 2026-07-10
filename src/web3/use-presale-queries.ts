@@ -1,7 +1,7 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { findActivePresalePhase, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
@@ -12,9 +12,9 @@ import {
   readTotalPresalePurchased,
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
-} from '~/views/dapp/web3/presale-read'
-import { readErc20Allowance, readErc20Balance } from '~/views/dapp/web3/swap-read'
-import { readIsBindReferral } from '~/views/dapp/web3/referral-read'
+} from '~/web3/presale-read'
+import { readErc20Allowance, readErc20Balance } from '~/web3/swap-read'
+import { readIsBindReferral } from '~/web3/referral-read'
 
 type PresaleQueryOptions = {
   enabled?: boolean

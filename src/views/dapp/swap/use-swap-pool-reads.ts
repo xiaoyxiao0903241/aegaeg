@@ -2,13 +2,13 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import type { SwapPoolReadContext } from '~/views/dapp/web3/swap-read'
+import type { SwapPoolReadContext } from '~/web3/swap-read'
 import {
   readSwapPoolImmutableMetadata,
   readSwapPoolSpotPrice,
-} from '~/views/dapp/web3/read-swap-pool'
+} from '~/web3/read-swap-pool'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
-import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
 
 /** Shared pool metadata + slot0 spot — short-stale spot reused across swap quotes. */
 export function useSwapPoolReads(quotesEnabled = true) {

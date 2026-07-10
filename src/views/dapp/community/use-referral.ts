@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { parseReferrerFromSearch, resolveDisplayReferrer } from '~/shared/config/referral'
 import { formatCount, formatShortAddress } from '~/shared/api/format-display'
@@ -10,11 +10,11 @@ import {
   readIsBindReferral,
   readReferralCount,
   readReferrer,
-} from '~/views/dapp/web3/referral-read'
-import { bindReferrer } from '~/views/dapp/web3/referral-write'
-import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+} from '~/web3/referral-read'
+import { bindReferrer } from '~/web3/referral-write'
+import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
-import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
 
 const BIND_COOLDOWN_MS = 5_000
 

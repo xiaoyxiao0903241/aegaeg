@@ -5,7 +5,7 @@ import { loadModule } from './load-module.mjs'
 describe('resolveWalletEip1193Provider', () => {
   it('uses window.ethereum when eth_accounts matches the connected wallet', async () => {
     const { resolveWalletEip1193Provider } = await loadModule(
-      '/src/views/dapp/web3/resolve-wallet-eip1193-provider.ts',
+      '/src/web3/resolve-wallet-eip1193-provider.ts',
     )
 
     const address = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'

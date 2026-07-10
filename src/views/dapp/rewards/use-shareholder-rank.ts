@@ -1,4 +1,4 @@
-import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatPresaleRank } from '~/shared/api/format-display'
 import { resolveCommitmentFloorRank } from '~/core/presale/tier-table'
 import { resolveDisplayPresaleRank } from '~/core/presale/rank'
@@ -6,7 +6,7 @@ import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useDappShell } from '~/app/dapp-shell-context'
-import { usePresaleUserTotalQuery } from '~/views/dapp/web3/use-presale-queries'
+import { usePresaleUserTotalQuery } from '~/web3/use-presale-queries'
 
 export function useShareholderRank() {
   const { sessionReady } = useDappShell()

@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('resolveContractErrorMessage maps ERC20InsufficientBalance selector', async () => {
   const { resolveContractErrorMessage } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const message = resolveContractErrorMessage(new Error('Encoded error signature "0xe450d38c" not found'), {
@@ -17,7 +17,7 @@ test('resolveContractErrorMessage maps ERC20InsufficientBalance selector', async
 
 test('resolveGenesisPurchaseError maps validation codes to localized messages', async () => {
   const { GENESIS_PURCHASE_ERROR, resolveGenesisPurchaseError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const messages = {
@@ -42,7 +42,7 @@ test('resolveGenesisPurchaseError maps validation codes to localized messages', 
 
 test('isUserRejectedWalletError detects MetaMask rejection', async () => {
   const { isUserRejectedWalletError, resolveGenesisPurchaseError, resolveSwapUserFacingMessage } =
-    await loadModule('/src/views/dapp/web3/resolve-contract-error-message.ts')
+    await loadModule('/src/web3/resolve-contract-error-message.ts')
 
   assert.equal(isUserRejectedWalletError({ code: 4001, message: 'User rejected the request.' }), true)
   assert.equal(isUserRejectedWalletError(new Error('User rejected the request.')), true)
@@ -82,7 +82,7 @@ test('isUserRejectedWalletError detects MetaMask rejection', async () => {
 
 test('resolveContractErrorMessage maps ERC20InsufficientAllowance selector', async () => {
   const { resolveContractErrorMessage } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const message = resolveContractErrorMessage(new Error('reverted with 0xfb8f41b2'), {
@@ -95,9 +95,9 @@ test('resolveContractErrorMessage maps ERC20InsufficientAllowance selector', asy
 
 test('resolveReferralBindError maps MetaMask nested revert selector', async () => {
   const { resolveReferralBindError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
-  const { normalizeWalletRpcError } = await loadModule('/src/views/dapp/web3/wallet-write-error.ts')
+  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet-write-error.ts')
 
   const messages = {
     alreadyBound: 'Already bound',
@@ -135,7 +135,7 @@ test('resolveReferralBindError maps MetaMask nested revert selector', async () =
 
 test('resolveWalletTransactionError maps gas and estimate failures', async () => {
   const { WALLET_WRITE_ERROR, resolveWalletTransactionError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const messages = {
@@ -168,9 +168,9 @@ test('resolveWalletTransactionError maps gas and estimate failures', async () =>
 
 test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data', async () => {
   const { resolveGenesisPurchaseError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
-  const { normalizeWalletRpcError } = await loadModule('/src/views/dapp/web3/wallet-write-error.ts')
+  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet-write-error.ts')
 
   const walletError = normalizeWalletRpcError({
     code: -32603,
@@ -196,7 +196,7 @@ test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data'
 
 test('resolveReferralBindError falls back to null when unmapped (no raw passthrough)', async () => {
   const { resolveReferralBindError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const messages = {
@@ -214,7 +214,7 @@ test('resolveReferralBindError falls back to null when unmapped (no raw passthro
 
 test('toWalletUserFacingMessage never returns raw RPC text', async () => {
   const { toWalletUserFacingMessage } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   assert.equal(
@@ -235,7 +235,7 @@ test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw
     resolveSwapUserFacingMessage,
     SWAP_QUOTE_FAILED,
     SWAP_SUBMIT_GATE_FAILED,
-  } = await loadModule('/src/views/dapp/web3/resolve-contract-error-message.ts')
+  } = await loadModule('/src/web3/resolve-contract-error-message.ts')
 
   const messages = {
     walletNotConnected: 'Connect wallet',
@@ -287,7 +287,7 @@ test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw
 
 test('resolveTeamClaimError never returns normalize throw.message', async () => {
   const { resolveTeamClaimError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const messages = {

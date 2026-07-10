@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveWallet } from '~/web3/thirdweb-react'
 import {
   USD1_DECIMALS,
   buildPhaseCountdownKey,

@@ -25,7 +25,7 @@ import {
   type AuthSessionStorage,
   type StoredAuthSession,
 } from '~/views/dapp/auth/session'
-import { isUserRejectedWalletError } from '~/views/dapp/web3/resolve-contract-error-message'
+import { isUserRejectedWalletError } from '~/web3/resolve-contract-error-message'
 
 /** 将 classifyLoginFailure 结果映射为 AuthStore 可持久化的 sentinel。 */
 export function toLoginErrorSentinel(error: unknown): string | null {

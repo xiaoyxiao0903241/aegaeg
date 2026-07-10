@@ -1,8 +1,8 @@
 import {
   ContractRevertError,
   decodeContractRevert,
-} from '~/views/dapp/web3/decode-contract-revert'
-import { WalletTransactionWaitError } from '~/views/dapp/web3/wait-wallet-transaction'
+} from '~/web3/decode-contract-revert'
+import { WalletTransactionWaitError } from '~/web3/wait-wallet-transaction'
 
 const ERC20_INSUFFICIENT_BALANCE = '0xe450d38c'
 const ERC20_INSUFFICIENT_ALLOWANCE = '0xfb8f41b2'

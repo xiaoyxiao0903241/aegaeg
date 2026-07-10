@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { SWAP_CONFIG } from '~/shared/config/swap'
-import { readErc20Balance, readErc20Allowance } from '~/views/dapp/web3/swap-read'
+import { readErc20Balance, readErc20Allowance } from '~/web3/swap-read'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
 
 type UseSwapBalancesArgs = {
   address: string | undefined

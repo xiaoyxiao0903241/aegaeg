@@ -1,9 +1,9 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { ERC20_METHODS, MAX_UINT256, PRESALE_METHODS, ERC20_ERRORS, PRESALE_ERRORS } from '~/views/dapp/web3/abis'
-import { createWalletReadClient } from '~/views/dapp/web3/chain-read-client'
-import { readErc20Allowance } from '~/views/dapp/web3/swap-read'
-import { parseWriteAbi, writeContractViaWallet } from '~/views/dapp/web3/wallet-contract-write'
+import { ERC20_METHODS, MAX_UINT256, PRESALE_METHODS, ERC20_ERRORS, PRESALE_ERRORS } from '~/web3/abis'
+import { createWalletReadClient } from '~/web3/chain-read-client'
+import { readErc20Allowance } from '~/web3/swap-read'
+import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet-contract-write'
 
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const presaleWriteAbi = parseWriteAbi(PRESALE_METHODS.purchase, PRESALE_ERRORS)

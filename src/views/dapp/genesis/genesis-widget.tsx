@@ -4,7 +4,7 @@ import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { GenesisPurchaseForm } from '~/views/dapp/genesis/genesis-purchase-form'
 import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
-import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 export function GenesisWidget() {
   const { messages: t } = useI18n()

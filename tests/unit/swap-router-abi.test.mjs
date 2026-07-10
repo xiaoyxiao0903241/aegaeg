@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { encodeFunctionData, parseAbi, toFunctionSelector } from 'viem'
-import { SWAP_ROUTER_V3_METHODS } from '../../src/views/dapp/web3/abis.ts'
+import { SWAP_ROUTER_V3_METHODS } from '../../src/web3/abis.ts'
 
 const routerAbi = parseAbi([SWAP_ROUTER_V3_METHODS.exactInputSingle])
 

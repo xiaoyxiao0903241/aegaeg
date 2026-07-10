@@ -1,8 +1,8 @@
 import { parseAbi } from 'viem'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { ERC20_METHODS, USD1_SWAP_METHODS } from '~/views/dapp/web3/abis'
-import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
-import type { ChainReadClient } from '~/views/dapp/web3/chain-read-client'
+import { ERC20_METHODS, USD1_SWAP_METHODS } from '~/web3/abis'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 
 /** Flash Swap tokens — BSC USDT / USD1 (same as Trade Swap). */
 const FLASH_SWAP_USDT = BSC_CONTRACTS.usdt

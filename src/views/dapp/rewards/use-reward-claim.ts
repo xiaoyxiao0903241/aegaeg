@@ -1,5 +1,5 @@
-import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
-import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
+import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useCallback, useState } from 'react'
 import { useAuth } from '~/app/bootstrap/use-auth'
 import type { ClaimConfirmResult } from '~/shared/api/types'
@@ -11,7 +11,7 @@ import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import {
   claimCommunityFund,
   claimTeamReward,
-} from '~/views/dapp/web3/reward-claim'
+} from '~/web3/reward-claim'
 
 type RewardClaimExecutor = (args: {
   wallet: NonNullable<ReturnType<typeof useActiveWallet>>

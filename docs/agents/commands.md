@@ -49,7 +49,7 @@
 
 | 主题 | 路径 |
 |------|------|
-| 链 / thirdweb | `src/views/dapp/web3/thirdweb.ts` |
+| 链 / thirdweb | `src/web3/thirdweb.ts` |
 | 合约地址 | `src/shared/config/contracts.ts` |
 | Query 失效 | `src/shared/api/query/invalidate.ts` |
 | Auth | `src/app/bootstrap/auth-provider.tsx` + `src/views/dapp/auth/*` + `src/core/auth/*` |

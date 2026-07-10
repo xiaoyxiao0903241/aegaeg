@@ -13,7 +13,7 @@
   "ignoreExportsUsedInFile": true,
   "ignoreDependencies": ["regenerator-runtime", "lightningcss"],
   "ignoreIssues": {
-    "src/views/dapp/web3/thirdweb.ts": ["duplicates", "types"],
+    "src/web3/thirdweb.ts": ["duplicates", "types"],
     "src/shared/styles/tokens/tokens.ts": ["types"],
     "src/shared/ui/card.tsx": ["types"],
     "src/i18n/messages/app/**": ["types"],

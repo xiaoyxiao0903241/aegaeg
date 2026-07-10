@@ -13,8 +13,8 @@ import { useDappShell } from '~/app/dapp-shell-context'
 import { useTradeSwapWidgetContext } from '~/views/dapp/swap/trade-swap/trade-swap-widget-context'
 import {
   resolveSwapUserFacingMessage,
-} from '~/views/dapp/web3/resolve-contract-error-message'
-import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
+} from '~/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-swap-links'
 import {
   SwapAmountFlow,

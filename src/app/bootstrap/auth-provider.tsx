@@ -5,7 +5,7 @@ import {
   useRef,
   type ReactNode,
 } from 'react'
-import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { LOGIN_ERROR } from '~/shared/api/account-banned'
 import {
@@ -15,7 +15,7 @@ import {
   shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
 import { loginWithWallet, toLoginErrorSentinel } from '~/views/dapp/auth/login-with-wallet'
-import { defaultChain } from '~/views/dapp/web3/thirdweb'
+import { defaultChain } from '~/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
 import type { AuthSessionStorage, LoginSignatureStorage } from '~/core/auth/storage'
 import type { StoredAuthSession } from '~/core/auth/types'

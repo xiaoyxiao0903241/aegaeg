@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent } from 'react'
-import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useReferral } from '~/views/dapp/community/use-referral'
 import { formatReferralLinkDisplay } from '~/views/dapp/community/community-display'
@@ -18,8 +18,8 @@ import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-
 import {
   resolveReferralBindError,
   resolveWalletTransactionError,
-} from '~/views/dapp/web3/resolve-contract-error-message'
-import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
+} from '~/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import {
   CommunityReferralLinkCard,
   CommunityReferrerBindCard,

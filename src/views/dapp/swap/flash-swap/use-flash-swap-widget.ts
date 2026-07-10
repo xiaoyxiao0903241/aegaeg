@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useActiveAccount, useActiveWallet } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import {
   formatSwapRate,
   formatSwapRateColon,
@@ -11,14 +11,14 @@ import { SWAP_CONFIG } from '~/shared/config/swap'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterSwap } from '~/shared/api/query/invalidate'
-import { WALLET_GATE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
-import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
+import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { hasWalletAccount } from '~/web3/wallet-connection-state'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
-import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useSwapQuote } from '~/views/dapp/swap/use-swap-quote'
 import { resolveLiveQuotedOut } from '~/core/swap/resolve-live-quoted-out'
-import { readFlashSwapBalances, readFlashSwapQuote } from '~/views/dapp/web3/flash-swap-read'
-import { approveUsdtForFlashSwapIfNeeded, flashSwap } from '~/views/dapp/web3/flash-swap-write'
+import { readFlashSwapBalances, readFlashSwapQuote } from '~/web3/flash-swap-read'
+import { approveUsdtForFlashSwapIfNeeded, flashSwap } from '~/web3/flash-swap-write'
 
 /** Fixed tolerance (0.5%) below the displayed quote for the on-chain floor. */
 const FLASH_SWAP_SLIPPAGE_BPS = 50

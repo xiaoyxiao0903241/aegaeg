@@ -14,7 +14,7 @@ const allowlist = new Set([
 ])
 
 const scanRoots = [
-  resolve(projectRoot, 'src/views/dapp/web3'),
+  resolve(projectRoot, 'src/web3'),
   resolve(projectRoot, 'src/shared/config'),
 ]
 

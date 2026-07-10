@@ -1,7 +1,7 @@
 import { EIP1193, injectedProvider, type Wallet } from 'thirdweb/wallets'
 import type { WalletId } from 'thirdweb/wallets'
 import type { EIP1193Provider } from 'viem'
-import { defaultChain, thirdwebClient } from '~/views/dapp/web3/thirdweb'
+import { defaultChain, thirdwebClient } from '~/web3/thirdweb'
 
 const METAMASK_WALLET_ID = 'io.metamask' as WalletId
 

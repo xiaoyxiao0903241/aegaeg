@@ -20,8 +20,8 @@ import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-
 import {
   resolveGenesisPurchaseError,
   resolveWalletTransactionError,
-} from '~/views/dapp/web3/resolve-contract-error-message'
-import { presentUserFacingError } from '~/views/dapp/web3/present-user-facing-error'
+} from '~/web3/resolve-contract-error-message'
+import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
 

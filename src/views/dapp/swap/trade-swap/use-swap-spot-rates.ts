@@ -3,11 +3,11 @@ import { resolveLiveQuotedOut } from '~/core/swap/resolve-live-quoted-out'
 import { formatSwapRateApprox, resolveEmptySpotRatePlaceholder } from '~/views/dapp/swap/swap-format-rate'
 import { getSwapPairTokens, type SwapPairTokens } from '~/views/dapp/swap/swap-pair'
 import { SWAP_CONFIG } from '~/shared/config/swap'
-import { fetchSwapQuote, type SwapPoolReadContext } from '~/views/dapp/web3/swap-read'
+import { fetchSwapQuote, type SwapPoolReadContext } from '~/web3/swap-read'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
-import { useChainReadClient } from '~/views/dapp/web3/use-chain-read-client'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
 
 type UseSwapSpotRatesArgs = {
   pair: SwapPairTokens

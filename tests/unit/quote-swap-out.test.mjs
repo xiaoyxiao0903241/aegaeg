@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('needsTokenApproval is true when allowance is below amountIn', async () => {
-  const { needsTokenApproval } = await loadModule('/src/views/dapp/web3/swap-write.ts')
+  const { needsTokenApproval } = await loadModule('/src/web3/swap-write.ts')
 
   assert.equal(needsTokenApproval(50n, 100n), true)
   assert.equal(needsTokenApproval(100n, 100n), false)

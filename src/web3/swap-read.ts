@@ -1,21 +1,21 @@
 import { parseAbi } from 'viem'
 import { calcPriceImpactBps } from '~/core/swap/calc-price-impact-bps'
-import { quoteV3ExactInputSingle } from '~/views/dapp/web3/quote-v3-exact-input'
+import { quoteV3ExactInputSingle } from '~/web3/quote-v3-exact-input'
 import { SWAP_CONFIG } from '~/shared/config/swap'
-import { ERC20_METHODS } from '~/views/dapp/web3/abis'
+import { ERC20_METHODS } from '~/web3/abis'
 import {
   readSwapPoolImmutableMetadata,
   readSwapPoolSpotPrice,
   type SwapPoolImmutableMetadata,
   type SwapPoolSpotPrice,
-} from '~/views/dapp/web3/read-swap-pool'
+} from '~/web3/read-swap-pool'
 
 export type SwapPoolReadContext = {
   pool: SwapPoolImmutableMetadata
   spot: SwapPoolSpotPrice
 }
-import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
-import type { ChainReadClient } from '~/views/dapp/web3/chain-read-client'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 
 export interface SwapQuoteResult {
   quotedOut: bigint
@@ -101,4 +101,4 @@ export async function fetchSwapQuote({
   }
 }
 
-export { readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } from '~/views/dapp/web3/read-swap-pool'
+export { readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } from '~/web3/read-swap-pool'

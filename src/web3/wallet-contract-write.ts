@@ -14,17 +14,17 @@ import {
   decodeContractRevert,
   isContractRevert,
   normalizeContractRevertError,
-} from '~/views/dapp/web3/decode-contract-revert'
-import { WALLET_WRITE_ERROR } from '~/views/dapp/web3/resolve-contract-error-message'
+} from '~/web3/decode-contract-revert'
+import { WALLET_WRITE_ERROR } from '~/web3/resolve-contract-error-message'
 import {
   createWalletReadClient,
   type ChainReadClient,
-} from '~/views/dapp/web3/chain-read-client'
-import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
-import { resolveWalletEip1193Provider } from '~/views/dapp/web3/resolve-wallet-eip1193-provider'
-import { assertWalletTransactionHash } from '~/views/dapp/web3/wallet-write-error'
-import { walletProviderRequest } from '~/views/dapp/web3/wallet-provider-request'
-import { waitForWalletTransactionConfirmation } from '~/views/dapp/web3/wait-wallet-transaction'
+} from '~/web3/chain-read-client'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import { resolveWalletEip1193Provider } from '~/web3/resolve-wallet-eip1193-provider'
+import { assertWalletTransactionHash } from '~/web3/wallet-write-error'
+import { walletProviderRequest } from '~/web3/wallet-provider-request'
+import { waitForWalletTransactionConfirmation } from '~/web3/wait-wallet-transaction'
 
 export type ConfirmedWalletWrite = TransactionReceipt & { transactionHash: Hash }
 
@@ -206,7 +206,7 @@ export async function writeContractViaWallet({
   return { ...receipt, transactionHash: hash }
 }
 
-/** Parses write ABI lines plus optional custom error definitions from `~/views/dapp/web3/abis`. */
+/** Parses write ABI lines plus optional custom error definitions from `~/web3/abis`. */
 export function parseWriteAbi(signature: string, errors: readonly string[] = []) {
   return parseAbi(errors.length > 0 ? [signature, ...errors] : [signature])
 }

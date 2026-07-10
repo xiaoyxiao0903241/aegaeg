@@ -40,7 +40,7 @@ Figma source of truth (canonical — same as root `AGENTS.md` §8.4):
 - Homepage CTA buttons are static UI at first paint. → **Met** (`<a href="…/app.html">` + button CSS classes).
 - Wallet connection happens on **DApp** (`app.html`) via thirdweb `ConnectButton` / connect modal — not on marketing home.
 - ~~On CTA hover/focus/touch/click, preload wallet island on home~~ → **Deferred**; do not implement on home until product revisits.
-- Keep BSC chain configuration centralized in `src/views/dapp/web3/thirdweb.ts`.
+- Keep BSC chain configuration centralized in `src/web3/thirdweb.ts`.
 - Animations: CSS + small IO/rAF via `src/views/home/home-reveal-loader.ts` (`bootHomeReveal`). See [`homepage-animation-guidelines.md`](./homepage-animation-guidelines.md).
 - Hero video: WebM alpha + poster; do not preload video body.
 

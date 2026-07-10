@@ -181,7 +181,7 @@ test('assertQuotedSwapStillSubmittable throws SWAP_SUBMIT_GATE_FAILED when gate 
     '/src/core/swap/resolve-live-quoted-out.ts',
   )
   const { SWAP_SUBMIT_GATE_FAILED } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const okParams = {

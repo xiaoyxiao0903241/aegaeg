@@ -27,7 +27,7 @@ module.exports = {
       severity: 'error',
       from: {
         path: '^src/',
-        pathNot: '^src/views/dapp/web3/|^src/views/dapp/auth/',
+        pathNot: '^src/web3/|^src/views/dapp/auth/',
       },
       to: { path: '^thirdweb' },
     },
@@ -47,7 +47,7 @@ module.exports = {
       name: 'home-no-web3',
       severity: 'error',
       from: { path: '^src/views/home/' },
-      to: { path: '(^src/views/dapp/web3/|^thirdweb)' },
+      to: { path: '(^src/web3/|^thirdweb)' },
     },
     {
       name: 'ui-is-dumb',

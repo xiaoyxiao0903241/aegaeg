@@ -1,8 +1,8 @@
 import { parseAbi } from 'viem'
 import { SWAP_CONFIG } from '~/shared/config/swap'
-import { POOL_V3_METHODS } from '~/views/dapp/web3/abis'
-import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
-import type { ChainReadClient } from '~/views/dapp/web3/chain-read-client'
+import { POOL_V3_METHODS } from '~/web3/abis'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 
 const poolAbi = parseAbi([
   POOL_V3_METHODS.fee,

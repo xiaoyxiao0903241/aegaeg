@@ -103,7 +103,7 @@ test('resolveAuthLoginErrorMessage maps sentinels and never returns raw copy', a
 
 test('resolveReferralBindError maps parent-not-bound sentinel before contract revert', async () => {
   const { REFERRAL_BIND_ERROR, resolveReferralBindError } = await loadModule(
-    '/src/views/dapp/web3/resolve-contract-error-message.ts',
+    '/src/web3/resolve-contract-error-message.ts',
   )
 
   const messages = {

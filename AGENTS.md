@@ -73,7 +73,7 @@ AI 工作规范
 - **前端技术栈**：React + Vite + TypeScript + Tailwind CSS。
 - **钱包技术栈**：thirdweb React SDK v5；`ThirdwebProvider` / `ConnectButton` 负责连接 UI、钱包列表、自动重连、WalletConnect 和 EIP-6963 钱包发现；链上读写、签名、交易状态以 thirdweb SDK 的 client、account、wallet 和 transaction API 为 SSOT。
 - **钱包兼容策略**：必须同时保留 injected provider、WalletConnect fallback、EIP-6963 多钱包发现；移动钱包内置浏览器优先 injected，普通移动浏览器走 WalletConnect deep link / QR。
-- **链配置策略**：链定义集中维护在 `src/views/dapp/web3/thirdweb.ts`；合约地址在 `src/shared/config/contracts.ts`。不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。接入 Ethereum 时在此扩展 `supportedChains`。
+- **链配置策略**：链定义集中维护在 `src/web3/thirdweb.ts`；合约地址在 `src/shared/config/contracts.ts`。不要在组件里散落 chain id、RPC URL、区块浏览器 URL、代币地址。接入 Ethereum 时在此扩展 `supportedChains`。
 - **登录语义**：连接钱包不等于业务登录。SIWE/nonce + JWT session 已由 `AuthProvider` + `src/views/dapp/auth/login-with-wallet.ts` 落地；推荐关系 / 奖励记录依赖 `sessionReady`。
 - **UI 实现**：钱包按钮优先用 thirdweb `ConnectButton` 的 `connectButton` / `detailsButton` / `connectModal` 配置承接项目设计，不直接暴露默认按钮样式到核心界面。
 

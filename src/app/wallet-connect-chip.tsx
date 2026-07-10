@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { useActiveAccount } from '~/views/dapp/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuth } from '~/app/bootstrap/use-auth'
-import { hasWalletAccount } from '~/views/dapp/web3/wallet-connection-state'
+import { hasWalletAccount } from '~/web3/wallet-connection-state'
 import {
   ACCOUNT_BANNED_SENTINEL,
   LOGIN_ERROR,
@@ -15,7 +15,7 @@ import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-
 import {
   isUserRejectedWalletError,
   toWalletUserFacingMessage,
-} from '~/views/dapp/web3/resolve-contract-error-message'
+} from '~/web3/resolve-contract-error-message'
 import { useAuthStore } from '~/stores/auth-store'
 import { formatAddress } from '~/app/utils'
 import { Text } from '~/shared/ui/text'

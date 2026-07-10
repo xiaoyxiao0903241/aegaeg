@@ -36,7 +36,7 @@
 | `views/dapp/rewards/rewards-balance-section.tsx:129,183` | **领奖按钮门禁比较格式化字符串** `disabled={teamClaimable === '$0.00'}`：资金操作可用性派生自展示层输出，`formatClaimableAmount` 任何变化都会静默改变按钮行为；$0.004 会因格式化为 '$0.00' 被禁用。应比较数值 `claimable > 0`。 |
 | `app/dapp-shell.tsx:47` | 每次切 Tab 无条件 `invalidateTabQueries(activeTab)`，5 分钟 `staleTime` 对 tab 数据形同虚设。「新鲜度」事实存两处（query-client staleTime vs shell 强制失效），来回切 tab 产生成倍 RPC/API 流量。 |
 | `shared/api/query/invalidate.ts:12,168` | 购买后轮询用 `readSalesLogCount`（各分页 items 长度最大值）判完成；首页满 20 条时新纪录插入后长度仍 20 → 条件永假 → **固定空转 8 轮 × 2.5s ≈ 20s**，无取消机制。判定应基于 total 字段或首条记录标识。 |
-| `views/dapp/auth/build-login-message.ts:48` + `views/dapp/web3/wallet-contract-write.ts:197` | **无链校验 / 无 `wallet_switchEthereumChain`**：无条件写 `Chain ID: 56` 照常签名；写交易硬编码 `chainId: numberToHex(bsc.id)` 直发。钱包停在 ETH 主网时 SIWE 仍签出「看似 BSC」的消息，`estimateWriteGasLimit` 会先在错误链上 simulate 导致错误文案与真实原因不符。 |
+| `views/dapp/auth/build-login-message.ts:48` + `web3/wallet-contract-write.ts:197` | **无链校验 / 无 `wallet_switchEthereumChain`**：无条件写 `Chain ID: 56` 照常签名；写交易硬编码 `chainId: numberToHex(bsc.id)` 直发。钱包停在 ETH 主网时 SIWE 仍签出「看似 BSC」的消息，`estimateWriteGasLimit` 会先在错误链上 simulate 导致错误文案与真实原因不符。 |
 | 全仓（`home-motion.css` / `hero-rays.css` / `home-reveal-loader.ts:44`） | **0 处 `prefers-reduced-motion`**：整套 stagger/blur 入场、48s 无限旋转、无限脉冲对减动效用户全量播放，违反 WCAG 2.3.3，也与「低端国产 WebView」耗电诉求矛盾。一条全局 `@media` 豁免 + loader 一个 `matchMedia` 检查即可收口。 |
 | `app/bootstrap/auth-provider.tsx:143` + `hooks/use-api-data.ts:33` | 静默续票导致**全页 skeleton 闪烁 + 请求突发**：JWT 到期前 60s 换 token → 所有 queryKey 同时变 → 无 placeholder 的查询 `data=null / isLoading=true` → 用户正浏览的页面整页回退 skeleton 并并发重拉。与 #4 同根因的另一面。 |
 
@@ -49,7 +49,7 @@
 | `hooks/use-swap-widget.ts:38` vs `core/swap/swap.ts:41` | UI 初值 `useState(1)`（1%），`SWAP_CONFIG.defaultSlippageBps=50`（0.5%）从未被读取 → **死代码**，改 `VITE_SWAP_DEFAULT_SLIPPAGE_BPS` 不生效。 |
 | `core/swap/build-swap-deadline.ts:1` | `deadline` 取本机时钟 `Date.now()/1000`；设备时钟慢 >20min → deadline 落在过去 → PancakeV3 revert「Transaction too old」，错误文案难自解释。 |
 | `core/auth/jwt.ts:30` | `isJwtExpired` 在无 `exp` 时返回 false → **陈旧 token 被永久当作有效**，仅靠 renew timer 与后端 401 兜底。 |
-| `views/dapp/web3/resolve-contract-error-message.ts:536` | 死导出 `resolveFlashSwapUserMessage`（与 `resolveSwapUserFacingMessage` 重复别名），knip 已抓到但 `check` 门禁不含 `lint:deadcode`。 |
+| `web3/resolve-contract-error-message.ts:536` | 死导出 `resolveFlashSwapUserMessage`（与 `resolveSwapUserFacingMessage` 重复别名），knip 已抓到但 `check` 门禁不含 `lint:deadcode`。 |
 | `hooks/use-genesis-widget.ts:72,215,242,404` | 本地 `error` state 只被 `setError(null)`，从未置非空值 → **死状态**，`queryError ?? error` 恒等于 `queryError`，误导读者。 |
 | 多处（rewards/genesis/community effect） | toast-in-effect 以 i18n messages 为依赖，切语言重弹旧错误。错误应在消费时一次性置空。 |
 
@@ -181,7 +181,7 @@
 
 ### D. 命名 · 组织 · 极简 · DRY/SSOT
 
-- [中] hooks/ 反向依赖 views/，depcruise 无 `no-circular`（`use-swap-widget.ts:2` import `~/views/dapp/web3/*`；`dapp-tabs.ts:1` 注释「avoids cycle」证明环已出现）。
+- [中] hooks/ 反向依赖 views/，depcruise 无 `no-circular`（`use-swap-widget.ts:2` import `~/web3/*`；`dapp-tabs.ts:1` 注释「avoids cycle」证明环已出现）。
 - [中] 跨域哨兵命名违反统一语言：`GENESIS_PURCHASE_ERROR.WALLET_NOT_CONNECTED` 被 swap、rewards 消费。
 - [中] 死兼容分支违反 deletion-first：`presale-display.ts:60` `options: number | ...` 的 number 分支零调用方。
 - [低] 死导出 `resolveFlashSwapUserMessage`（knip 抓到但 check 漏网）。

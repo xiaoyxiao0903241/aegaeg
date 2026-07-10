@@ -1,8 +1,8 @@
 import { parseAbi } from 'viem'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { REFERRAL_METHODS } from '~/views/dapp/web3/abis'
-import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
-import type { ChainReadClient } from '~/views/dapp/web3/chain-read-client'
+import { REFERRAL_METHODS } from '~/web3/abis'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 
 const referralAbi = parseAbi([
   REFERRAL_METHODS.isBindReferral,

@@ -1,8 +1,8 @@
 import { createPublicClient, custom, type PublicClient } from 'viem'
 import { bsc } from 'viem/chains'
 import type { Wallet } from 'thirdweb/wallets'
-import { bscReadClient } from '~/views/dapp/web3/bsc-read-client'
-import { resolveWalletEip1193Provider } from '~/views/dapp/web3/resolve-wallet-eip1193-provider'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import { resolveWalletEip1193Provider } from '~/web3/resolve-wallet-eip1193-provider'
 
 export type ChainReadClient = PublicClient
 

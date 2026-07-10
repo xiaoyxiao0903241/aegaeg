@@ -2,7 +2,7 @@ import { createThirdwebClient, defineChain } from 'thirdweb'
 import { createWallet } from 'thirdweb/wallets'
 import { bsc as bscBase } from 'thirdweb/chains'
 import type { WalletId } from 'thirdweb/wallets'
-import { aegisConnectTheme } from '~/views/dapp/web3/connect-theme'
+import { aegisConnectTheme } from '~/web3/connect-theme'
 import { appEnv } from '~/shared/config/env'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 
