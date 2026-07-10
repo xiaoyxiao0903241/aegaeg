@@ -80,6 +80,10 @@ export function resolveTeamClaimError(
     return messages.walletNotConnected ?? messages.failed
   }
 
+  if (text.raw === WALLET_GATE_ERROR.PENDING_UNKNOWN) {
+    return messages.failed
+  }
+
   if (isNoTeamClaimOrder(error, text.raw)) return messages.noOrder
 
   return messages.failed

@@ -11,6 +11,13 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { invalidateAfterGenesisPurchase, invalidatePresaleChainQueries } from '~/shared/api/query/invalidate'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
+import {
+  WRITE_PATH,
+  clearPendingUnknownLatch,
+  isPendingUnknownLatched,
+  latchPendingUnknown,
+} from '~/web3/wallet/pending-unknown-latch'
 
 export interface GenesisPurchaseResult {
   success: boolean
@@ -61,7 +68,7 @@ export function useGenesisPurchaseActions({
     if (!account || !wallet) {
       return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
-    if (!canPurchase) {
+    if (isPendingUnknownLatched(WRITE_PATH.GENESIS) || !canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
     if (isApproved) {
@@ -79,6 +86,9 @@ export function useGenesisPurchaseActions({
       }
       return { success: true }
     } catch (caught) {
+      if (isUnknownSubmitOutcome(caught)) {
+        latchPendingUnknown(WRITE_PATH.GENESIS)
+      }
       return { success: false, error: caught }
     } finally {
       setSubmittingAction(null)
@@ -89,7 +99,11 @@ export function useGenesisPurchaseActions({
     if (!account || !wallet) {
       return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
-    if (!activePhase || !canPurchase) {
+    if (
+      isPendingUnknownLatched(WRITE_PATH.GENESIS) ||
+      !activePhase ||
+      !canPurchase
+    ) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
 
@@ -125,8 +139,12 @@ export function useGenesisPurchaseActions({
         amount: purchaseAmount,
       })
       invalidateAfterGenesisPurchase(account.address, purchaseAmount)
+      clearPendingUnknownLatch(WRITE_PATH.GENESIS)
       return { success: true }
     } catch (caught) {
+      if (isUnknownSubmitOutcome(caught)) {
+        latchPendingUnknown(WRITE_PATH.GENESIS)
+      }
       return { success: false, error: caught }
     } finally {
       setSubmittingAction(null)
@@ -134,7 +152,10 @@ export function useGenesisPurchaseActions({
   }
 
   async function submitPurchase(): Promise<GenesisPurchaseResult> {
-    if (genesisPurchaseGate.inFlight) {
+    if (
+      genesisPurchaseGate.inFlight ||
+      isPendingUnknownLatched(WRITE_PATH.GENESIS)
+    ) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
 

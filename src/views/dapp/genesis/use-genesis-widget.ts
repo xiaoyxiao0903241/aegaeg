@@ -13,6 +13,10 @@ import {
   type GenesisPurchaseResult,
 } from '~/views/dapp/genesis/use-genesis-purchase-actions'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import {
+  WRITE_PATH,
+  isPendingUnknownLatched,
+} from '~/web3/wallet/pending-unknown-latch'
 
 export type { GenesisPurchaseResult }
 
@@ -30,7 +34,8 @@ export function useGenesisWidget() {
     sharesDraft,
     countdownUnits: t.genesis.countdownUnits,
   })
-  const canPurchase = model.canPurchase && writeReady
+  const canPurchase =
+    model.canPurchase && writeReady && !isPendingUnknownLatched(WRITE_PATH.GENESIS)
 
   function setShares(next: number) {
     setSharesDraft(next)

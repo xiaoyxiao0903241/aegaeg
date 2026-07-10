@@ -1,6 +1,8 @@
 /** Shared wallet-gate sentinels (swap / claim / referral / genesis). Literal frozen. */
 export const WALLET_GATE_ERROR = {
   NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
+  /** Unknown tx outcome — resubmit blocked until explicit reset. */
+  PENDING_UNKNOWN: 'WALLET_PENDING_UNKNOWN',
 } as const
 
 export const GENESIS_PURCHASE_ERROR = {

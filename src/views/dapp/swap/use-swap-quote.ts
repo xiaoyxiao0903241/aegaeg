@@ -9,6 +9,13 @@ import {
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/swap/token-amount'
 import { SWAP_QUOTE_FAILED } from '~/web3/resolve-contract-error-message'
 import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
+import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
+import {
+  WRITE_PATH,
+  clearPendingUnknownLatch,
+  isPendingUnknownLatched,
+  latchPendingUnknown,
+} from '~/web3/wallet/pending-unknown-latch'
 import { needsTokenApproval } from '~/web3/swap/swap-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
@@ -142,6 +149,7 @@ export function useSwapQuote<TQuote>({
 
   const canSubmit =
     !isAmountDebouncing &&
+    !isPendingUnknownLatched(WRITE_PATH.SWAP) &&
     canSubmitQuotedSwap({
       walletReady: writeReady,
       amountIn: debouncedAmountIn,
@@ -158,12 +166,14 @@ export function useSwapQuote<TQuote>({
     })
 
   function setSellAmountAndUnlock(value: string) {
+    clearPendingUnknownLatch(WRITE_PATH.SWAP)
     setBlockResubmit(false)
     setSellAmount(value)
   }
 
   function fillPercent(percent: number) {
     if (!walletReady) return
+    clearPendingUnknownLatch(WRITE_PATH.SWAP)
     setBlockResubmit(false)
     fillSellPercent(percent)
   }
@@ -214,11 +224,16 @@ export function useSwapQuote<TQuote>({
 
     try {
       await execute({ assertStillSubmittable })
+      clearPendingUnknownLatch(WRITE_PATH.SWAP)
       setBlockResubmit(false)
       clearAmount()
       return { ok: true }
     } catch (caught: unknown) {
-      if (caught instanceof WalletTransactionWaitError && caught.outcome === 'unknown') {
+      if (
+        isUnknownSubmitOutcome(caught) ||
+        (caught instanceof WalletTransactionWaitError && caught.outcome === 'unknown')
+      ) {
+        latchPendingUnknown(WRITE_PATH.SWAP)
         setBlockResubmit(true)
       }
       setSubmitError(caught)
