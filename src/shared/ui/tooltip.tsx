@@ -66,7 +66,7 @@ const TooltipContent = React.forwardRef<
           children
         )}
         <TooltipPrimitive.Arrow
-          className="fill-dark"
+          className="fill-dark h-(--app-tooltip-arrow-height) w-(--app-tooltip-arrow-width)"
           height={cssRemVarPx('--app-tooltip-arrow-height', 0.4375)}
           width={cssRemVarPx('--app-tooltip-arrow-width', 0.875)}
         />
