@@ -415,6 +415,7 @@ const app = defineMessages({
         communityFundTooltip: 'Суперсистемы получают 5% фонда развития системы для самообеспечения системы, включая, но не ограничиваясь: строительство системы, ежедневные операции, системные встречи и системных лекторов.',
         communityFundLocked: 'Заблокировано: {amount}',
         communityFundUnlockedSuffix: 'разблокировано',
+        communityFundClaimed: 'Вы получили {amount}',
         communityFundHistory: 'Фонд развития',
         communityFundCumulativeClaimed: 'Всего получено {amount}',
         communityFundHistoryEmpty: {

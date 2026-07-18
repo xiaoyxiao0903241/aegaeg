@@ -415,6 +415,7 @@ const app = defineMessages({
         '超级体系获得5%体系发展基金，专项用于体系自营，包括但不限于：系统建设，日常运营，体系会议，体系讲师等。',
       communityFundLocked: '待解锁: {amount}',
       communityFundUnlockedSuffix: '已解锁',
+      communityFundClaimed: '您已领取{amount}',
       communityFundHistory: '发展基金',
       communityFundCumulativeClaimed: '累计领取 {amount}',
       communityFundHistoryEmpty: {

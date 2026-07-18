@@ -415,6 +415,7 @@ const app = defineMessages({
         communityFundTooltip: 'Super sistem menerima 5% dana pengembangan sistem, khusus untuk operasi mandiri sistem, termasuk namun tidak terbatas pada: pembangunan sistem, operasi harian, rapat sistem, dan pengajar sistem.',
         communityFundLocked: 'Terkunci: {amount}',
         communityFundUnlockedSuffix: 'terbuka',
+        communityFundClaimed: 'Anda telah mengklaim {amount}',
         communityFundHistory: 'Dana pengembangan',
         communityFundCumulativeClaimed: 'Total diklaim {amount}',
         communityFundHistoryEmpty: {

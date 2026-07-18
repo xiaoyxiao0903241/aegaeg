@@ -415,6 +415,7 @@ const app = defineMessages({
         communityFundTooltip: 'सुपर प्रणालियों को 5% प्रणाली विकास कोष मिलता है, जो प्रणाली स्व-संचालन के लिए समर्पित है, जिसमें सिस्टम निर्माण, दैनिक संचालन, प्रणाली बैठकें और प्रणाली व्याख्याता शामिल हैं।',
         communityFundLocked: 'लॉक: {amount}',
         communityFundUnlockedSuffix: 'अनलॉक',
+        communityFundClaimed: 'आपने दावा किया {amount}',
         communityFundHistory: 'विकास कोष',
         communityFundCumulativeClaimed: 'कुल दावा {amount}',
         communityFundHistoryEmpty: {

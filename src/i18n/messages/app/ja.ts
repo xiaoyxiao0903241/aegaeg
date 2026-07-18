@@ -415,6 +415,7 @@ const app = defineMessages({
         communityFundTooltip: 'スーパー体系は体系発展基金の5%を受け取り、システム構築、日常運営、体系会議、体系講師など体系の自営に専用されます。',
         communityFundLocked: 'ロック中: {amount}',
         communityFundUnlockedSuffix: 'アンロック済み',
+        communityFundClaimed: '受取済み{amount}',
         communityFundHistory: '発展基金',
         communityFundCumulativeClaimed: '累計受取 {amount}',
         communityFundHistoryEmpty: {
