@@ -391,6 +391,7 @@ const app = defineMessages({
         communityFundTooltip: 'Süper sistemler, sistem gelişim fonunun %5\'ini alır; sistem inşası, günlük operasyonlar, sistem toplantıları ve sistem eğitmenleri dahil olmak üzere sistem öz-işletimine ayrılır.',
         communityFundLocked: 'Kilitli: {amount}',
         communityFundUnlockedSuffix: 'kilidi açıldı',
+        communityFundClaimed: 'Talep ettiniz {amount}',
         communityFundHistory: 'Gelişim fonu',
         communityFundCumulativeClaimed: 'Toplam talep {amount}',
         communityFundHistoryEmpty: {

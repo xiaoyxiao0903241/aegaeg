@@ -392,6 +392,7 @@ const app = defineMessages({
         communityFundTooltip: 'Los supersistemas reciben el 5% del fondo de desarrollo del sistema, dedicado a la autogestión del sistema, incluyendo pero no limitado a: construcción del sistema, operaciones diarias, reuniones del sistema y formadores del sistema.',
         communityFundLocked: 'Bloqueado: {amount}',
         communityFundUnlockedSuffix: 'desbloqueado',
+        communityFundClaimed: 'Has reclamado {amount}',
         communityFundHistory: 'Fondo de desarrollo',
         communityFundCumulativeClaimed: 'Total reclamado {amount}',
         communityFundHistoryEmpty: {

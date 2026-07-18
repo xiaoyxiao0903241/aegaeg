@@ -65,6 +65,10 @@ export function RewardsBalanceSection() {
     '{amount}',
     communityFundLocked,
   )
+  const communityFundClaimedText = t.rewards.communityFundClaimed.replace(
+    '{amount}',
+    formatUsd(communityFundTotal?.claimed ?? 0, 2),
+  )
   const communityFundLabel = (
     <span className="inline-flex items-center gap-1">
       {t.rewards.communityFund}
@@ -194,7 +198,7 @@ export function RewardsBalanceSection() {
             headerMetaClassName="max-dapp:text-faint"
             label={communityFundLabel}
             meta={communityFundLockedMeta}
-            value={`${communityFundClaimable} ${t.rewards.communityFundUnlockedSuffix}`}
+            value={`${communityFundClaimable} ${t.rewards.communityFundUnlockedSuffix} ${communityFundClaimedText}`}
           />
         ) : null
       ) : null}
