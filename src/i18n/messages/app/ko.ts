@@ -392,6 +392,7 @@ const app = defineMessages({
         communityFundTooltip: '슈퍼 체계는 체계 발전 기금의 5%를 받으며, 시스템 구축, 일상 운영, 체계 회의, 체계 강사 등 체계 자영에 전용됩니다.',
         communityFundLocked: '잠금: {amount}',
         communityFundUnlockedSuffix: '잠금 해제',
+        communityFundClaimed: '수령 완료 {amount}',
         communityFundHistory: '발전 기금',
         communityFundCumulativeClaimed: '누적 수령 {amount}',
         communityFundHistoryEmpty: {

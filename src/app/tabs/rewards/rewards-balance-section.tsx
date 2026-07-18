@@ -65,10 +65,16 @@ export function RewardsBalanceSection() {
     '{amount}',
     communityFundLocked,
   )
+  const communityFundClaimedText = t.rewards.communityFundClaimed.replace(
+    '{amount}',
+    formatUsd(communityFundTotal?.claimed ?? 0, 2),
+  )
   const communityFundLabel = (
     <span className="inline-flex items-center gap-1">
       {t.rewards.communityFund}
-      <DappInfoTooltip content={t.rewards.communityFundTooltip} />
+      <DappInfoTooltip
+        content={`${t.rewards.communityFundTooltip} ${communityFundClaimedText}`}
+      />
     </span>
   )
   const showReferralSkeleton = sessionReady && referralLoading && referralTotal == null
