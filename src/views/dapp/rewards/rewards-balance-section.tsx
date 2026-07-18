@@ -114,7 +114,9 @@ export function RewardsBalanceSection() {
   const communityFundLabel = (
     <span className="inline-flex items-center gap-1">
       {t.rewards.communityFund}
-      <DappInfoTooltip content={t.rewards.communityFundTooltip} />
+      <DappInfoTooltip
+        content={`${t.rewards.communityFundTooltip} ${communityFundClaimedText}`}
+      />
     </span>
   )
   const showReferralSkeleton = sessionReady && referralLoading && referralTotal == null
@@ -242,7 +244,7 @@ export function RewardsBalanceSection() {
             headerMetaClassName={rewardsBalanceHeaderMeta()}
             label={communityFundLabel}
             meta={communityFundLockedMeta}
-            value={`${communityFundClaimable} ${t.rewards.communityFundUnlockedSuffix} ${communityFundClaimedText}`}
+            value={`${communityFundClaimable} ${t.rewards.communityFundUnlockedSuffix}`}
           />
         ) : null
       ) : null}
