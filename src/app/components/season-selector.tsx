@@ -68,12 +68,9 @@ function resolveSeasonStatusBadgeClass(status: string, selected: boolean) {
   return cn(seasonStatusBadgeBaseClass, 'bg-muted text-muted-foreground')
 }
 
+/** Initial carousel snap only — users can still scroll freely afterward. */
 function resolveSeasonCarouselScrollIndex(activeIndex: number): number {
-  if (activeIndex <= 0) {
-    return 0
-  }
-  // Figma peek layout — keep the current phase as the 2nd visible card when possible.
-  return activeIndex - 1
+  return Math.max(0, activeIndex)
 }
 
 function useCarouselScrollState(api: CarouselApi | undefined) {
