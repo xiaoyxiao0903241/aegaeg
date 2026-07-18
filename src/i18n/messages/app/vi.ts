@@ -392,6 +392,7 @@ const app = defineMessages({
         communityFundTooltip: 'Siêu hệ thống nhận 5% quỹ phát triển hệ thống, dành riêng cho vận hành tự chủ, bao gồm nhưng không giới hạn: xây dựng hệ thống, vận hành hàng ngày, họp hệ thống và giảng viên hệ thống.',
         communityFundLocked: 'Chưa mở khóa: {amount}',
         communityFundUnlockedSuffix: 'đã mở khóa',
+        communityFundClaimed: 'Bạn đã nhận {amount}',
         communityFundHistory: 'Quỹ phát triển',
         communityFundCumulativeClaimed: 'Tổng đã nhận {amount}',
         communityFundHistoryEmpty: {

@@ -391,6 +391,7 @@ const app = defineMessages({
         communityFundTooltip: '超級體系獲得5%體系發展基金，專項用於體系自營，包括但不限於：系統建設，日常運營，體系會議，體系講師等。',
         communityFundLocked: '待解鎖: {amount}',
         communityFundUnlockedSuffix: '已解鎖',
+        communityFundClaimed: '您已領取{amount}',
         communityFundHistory: '發展基金',
         communityFundCumulativeClaimed: '累計領取 {amount}',
         communityFundHistoryEmpty: {

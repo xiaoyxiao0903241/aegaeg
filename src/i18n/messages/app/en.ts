@@ -392,6 +392,7 @@ const app = defineMessages({
         communityFundTooltip: 'Super systems receive 5% of the system development fund, dedicated to system self-operation, including but not limited to: system building, daily operations, system meetings, and system lecturers.',
         communityFundLocked: 'Locked: {amount}',
         communityFundUnlockedSuffix: 'unlocked',
+        communityFundClaimed: 'You claimed {amount}',
         communityFundHistory: 'Development fund',
         communityFundCumulativeClaimed: 'Total claimed {amount}',
         communityFundHistoryEmpty: {
