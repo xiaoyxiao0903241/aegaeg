@@ -93,7 +93,7 @@ export function HomePopupNoticeModal({
                   id="home-popup-notice-body"
                 >
                   {notice.title ? (
-                    <h2 className="text-balance text-[1.35rem] font-bold leading-[1.25] tracking-[-0.02em] text-foreground">
+                    <h2 className="wrap-break-word text-balance text-[1.35rem] font-bold leading-[1.25] tracking-[-0.02em] text-foreground">
                       {notice.title}
                     </h2>
                   ) : null}
