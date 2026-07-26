@@ -1,5 +1,5 @@
-/** Order matches Figma `lang-popup` (4140:286). */
-export const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'tr', 'ru', 'hi'] as const
+/** Order matches Figma `lang-popup` (4140:286); `th` appended after existing locales. */
+export const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'tr', 'ru', 'hi', 'th'] as const
 
 export type Locale = (typeof locales)[number]
 

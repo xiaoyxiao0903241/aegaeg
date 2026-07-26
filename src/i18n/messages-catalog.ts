@@ -1,7 +1,7 @@
 /**
  * Build / SSR-only catalog — static imports of every locale.
  * Client runtime must use `~/i18n/messages` (bootstrap + dynamic import) instead,
- * so Home / DApp entry graphs do not embed all 11 locales.
+ * so Home / DApp entry graphs do not embed all locales.
  */
 import type { Locale } from '~/i18n/locales'
 import en from '~/i18n/messages/en'
@@ -11,6 +11,7 @@ import id from '~/i18n/messages/id'
 import ja from '~/i18n/messages/ja'
 import ko from '~/i18n/messages/ko'
 import ru from '~/i18n/messages/ru'
+import th from '~/i18n/messages/th'
 import tr from '~/i18n/messages/tr'
 import vi from '~/i18n/messages/vi'
 import zh from '~/i18n/messages/zh'
@@ -31,6 +32,7 @@ export const messagesByLocale = {
   ru,
   hi,
   tr,
+  th,
 } as Record<Locale, CatalogMessages>
 
 export function getMessagesForRender(locale: Locale): CatalogMessages {

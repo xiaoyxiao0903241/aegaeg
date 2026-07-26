@@ -48,6 +48,8 @@ async function importMessages(locale: Locale): Promise<Messages> {
       return (await import('~/i18n/messages/hi')).default as Messages
     case 'tr':
       return (await import('~/i18n/messages/tr')).default as Messages
+    case 'th':
+      return (await import('~/i18n/messages/th')).default as Messages
     default: {
       const _exhaustive: never = locale
       throw new Error(`Unsupported locale: ${_exhaustive}`)
@@ -57,7 +59,7 @@ async function importMessages(locale: Locale): Promise<Messages> {
 
 /**
  * First paint: read `#aegis-messages` injected by `home-renderer` for the URL locale.
- * Avoids statically bundling all 11 locales into every entry.
+ * Avoids statically bundling all locales into every entry.
  */
 export function getMessagesSync(locale: Locale): Messages {
   const cached = messagesCache.get(locale)
