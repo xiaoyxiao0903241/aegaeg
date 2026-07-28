@@ -44,6 +44,8 @@ AI 工作规范
 
 写盘前若 ticket 字面与层 SSOT 张力大：**先暴露不确定性**（§8.1），禁止静默用 ticket 覆盖 foundation / src-layout / i18n。
 
+**Frontier**：map「无阻塞可立即开」仍须对照**代码就绪度**（验收 DOM/锚点是否已存在或由本票创建）。`Blocked by: None` ≠ 现在就能诚实验收——冲突时先改阻塞图，再 `/implement`。见 [`docs/agents/implement-checklist.md`](docs/agents/implement-checklist.md)。
+
 ### 8.1 工作方式
 
 - **默认端到端完成**：理解问题、读取相关文件、实施最小充分修改、验证、报告。用户明确要求「只分析 / 暂不修改 / 只给建议」时才停在分析。

@@ -9,6 +9,8 @@
 [ ] 已读当前 ticket + Parent Spec/Answer；未重开已锁决策
 [ ] 按 §8.0 R1 表对号：产品验收 vs foundation API vs 落点 vs i18n vs Figma vs 手册 vs money-path
 [ ] ticket 字面若像「把档位/文案塞进 shared」→ 按 R2 解为 call site；张力大则先暴露，禁止静默覆盖
+[ ] **DOM / 锚点就绪**：验收依赖的 DOM（含 `data-tour-id`）是否已在代码中，或是否由**本票**创建？否则改 `Blocked by` / 停手暴露（勿在 stub 上冒充验收）
+[ ] 对照代码就绪度：map frontier「无阻塞」≠「现在就能诚实验收」
 [ ] 落点查 src-layout：宁放 views，勿放 shared；shared/ui 只扩 chrome（R3）
 [ ] 触达 Foundation / shell primitive → 先读 foundation runbook + api（AGENTS §8.1）
 [ ] 改 hooks / memo / i18n 渲染 → 先读 docs/react-runtime.md
