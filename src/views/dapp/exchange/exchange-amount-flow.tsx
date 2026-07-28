@@ -67,6 +67,7 @@ export function ExchangeAmountFlow({
       />
 
       <PercentButtonRow
+        aria-label={`${sell.symbol} sell percent`}
         className="pt-2.5 max-dapp:mt-3 max-dapp:py-0"
         disabled={(!exchangePreview && !walletReady) || amountLocked}
         onSelect={onFillPercent}

@@ -4,6 +4,15 @@
  * Not imported by production code or by the test runner.
  */
 export { resolveXTokenAirdropUsdForPurchase } from '../../src/core/presale/presale-math'
+export { ClaimSplitSlider, claimSplitFromReleasePct } from '../../src/shared/ui/claim-split-slider'
+export {
+  SEGMENT_MOTION_EASING,
+  SEGMENT_MOTION_MS,
+  SEGMENT_PILL_GAP_PX,
+  SEGMENT_PILL_PAD_PX,
+  Segment,
+  segmentPillThumbStyle,
+} from '../../src/shared/ui/segment'
 export { resetAccountBannedReportCooldownForTests } from '../../src/shared/api/account-banned'
 export {
   BREAKPOINT_DESIGN_BASE_PX,

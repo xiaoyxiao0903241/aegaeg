@@ -4,6 +4,46 @@ AI 工作规范
 
 > 以下规范指导 AI 编码助手在本项目中的工作方式、工程决策和工具使用。
 
+### 8.0 文档分层与解释规则
+
+> 按「管什么」读文档，不按「哪份先出现」。产品验收语言 ≠ 实现归属。索引见 [`docs/README.md`](docs/README.md)。
+
+#### R1 — 层 SSOT
+
+| 问题类型                 | SSOT                                                                                            | 禁止用它决定                      |
+| ------------------------ | ----------------------------------------------------------------------------------------------- | --------------------------------- |
+| 用户可见行为 / MUST 清单 | Spec + tickets + grilling Answers                                                               | 把验收字面塞进 `shared/ui`        |
+| 组件公开轴 / 视觉 chrome | [`docs/foundation/api.md`](docs/foundation/api.md) + [`runbook.md`](docs/foundation/runbook.md) | ticket 示例文案覆盖 API           |
+| 文件落点                 | [`docs/src-layout.md`](docs/src-layout.md)                                                      | 「进组件系统」= 业务数据进 shared |
+| 用户可见字符串           | `src/i18n/messages/` + §8.4 PC 文案 SSOT                                                        | 在 primitive 硬编码 locale        |
+| 静态 UI                  | Figma `uiKwzwIoD06phS0husdqjB`                                                                  | `docs/figma-export/`、旧 fileKey  |
+| 交互状态机               | research 09 / 原型语义                                                                          | 抄原型 DOM/CSS                    |
+| 链上                     | [`docs/frontend-manual/`](docs/frontend-manual/)                                                | 原型演示数值当门闸                |
+| 金钱写路径               | [`docs/money-path-map.md`](docs/money-path-map.md)                                              | UI ticket 重写已证 gates          |
+
+#### R2 — 产品语言 ≠ 实现归属
+
+- Ticket/Spec 写「Segment：活期/180…」「支持两套 options」= **产品要在对应 rail 可用这些档**。
+- Foundation 写 `options` / `value` / `onChange` = **primitive 只吃传入数据**。
+- 二者同时为真：**call site（views + i18n）组 options**；`shared/ui` 只实现 chrome 合同。
+- Spec 用组件名做决策桶（如 `Segment (05): open ≠ claim`）= **产品规则挂名**，不是授权把 domain presets 放进该组件文件。
+
+#### R3 — 「进组件系统 / shared」只扩 chrome
+
+- **允许**进 `shared/ui`：视觉、a11y 轴、动效合同、无 locale 的纯函数 helper。
+- **禁止**进 `shared/ui`：业务档位表、locale 文案、合约地址、rail 专属默认 options、locale `aria-label` 默认值。
+- 不确定 → [`src-layout`](docs/src-layout.md)：**宁放页袋，勿放 shared**。
+
+#### R4 — 冲突裁决序（疑似打架时）
+
+1. 全局 Contract / 本文件 MUST NOT
+2. 该关注点的层 SSOT（R1 表）
+3. Spec Implementation Decisions
+4. 当前 ticket 验收条
+5. research / scratch / prototype / figma-export（仅参考，除非标明现行 SSOT）
+
+写盘前若 ticket 字面与层 SSOT 张力大：**先暴露不确定性**（§8.1），禁止静默用 ticket 覆盖 foundation / src-layout / i18n。
+
 ### 8.1 工作方式
 
 - **默认端到端完成**：理解问题、读取相关文件、实施最小充分修改、验证、报告。用户明确要求「只分析 / 暂不修改 / 只给建议」时才停在分析。
@@ -37,7 +77,7 @@ AI 工作规范
 ### 8.3 工具规则
 
 - 用 `rg` 搜索文本、文档、配置、生成文件和 fallback。
-- **项目文档索引**：[`docs/README.md`](docs/README.md) — 仅现状 SSOT；命令门禁 [`docs/agents/commands.md`](docs/agents/commands.md)；目录落点 [`docs/src-layout.md`](docs/src-layout.md)。
+- **项目文档索引**：[`docs/README.md`](docs/README.md) — 仅现状 SSOT；**分层与冲突裁决见 §8.0**；命令门禁 [`docs/agents/commands.md`](docs/agents/commands.md)；目录落点 [`docs/src-layout.md`](docs/src-layout.md)。
 - **React 运行时**：[`docs/react-runtime.md`](docs/react-runtime.md) — Compiler（全量）、hooks/effect、i18n 渲染、质量门禁；改 hooks/memo/i18n 前先读。
 - 触达代码时优先用 `agent-lsp` 做语义查询，使用最小 workspace root。
 - **CodeGraph** 是当前默认代码图谱工具。依赖结果前先运行 `codegraph status .`；索引不新时运行 `codegraph sync .`。

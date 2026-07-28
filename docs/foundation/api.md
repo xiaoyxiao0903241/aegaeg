@@ -172,25 +172,30 @@
 
 ---
 
-## §7 Composite（业务组件）
+## §7 Composite（跨页 chrome）
+
+> **命名**：历史称「业务组件」= 跨 rail / 跨页复用的 chrome composite，**不是**「可内置业务数据或 locale 文案」。domain options / 文案由 call site + i18n 传入；见根 `AGENTS.md` §8.0。
 
 按 Figma 高频层提取，**不满足 3 调用点或纯视觉容器不提**。
 
-| Composite         | Figma 层           | 核心 props                                  | 提升理由                                                     |
-| ----------------- | ------------------ | ------------------------------------------- | ------------------------------------------------------------ |
-| `TopBar`          | topbar / tb / tr   | `wallet`, `network`, `locale`               | 全局 shell                                                   |
-| `NavRail`         | rail / rit         | `items`, `activeTab`, `onSelect`            | 4 页共用                                                     |
-| `PanelHeader`     | wh                 | `title`, `subtitle`, `action`               | 4 页共用                                                     |
-| `AmountBox`       | box / tk / rr / mx | `token`, `value`, `balance`, `sessionReady` | 金额输入卡                                                   |
-| `Segment`         | pcts / pct / htab  | `options`, `value`, `onChange`              | 高频模式                                                     |
-| `MetricCard`      | sc / mc            | `label`, `value`, `hint`, `tone`            | 跨页指标                                                     |
-| `ResponsiveTable` | tbl / trow / cell  | `headers`, `rows`, …                        | DApp 表；壳见 `DappTableCard`                                |
-| `Accordion`       | qa / qhd           | `items`, `variant`                          | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`） |
-| `WidgetPromoCard` | promo / pcard      | children                                    | 深色 CTA 卡（`Card inverse`）；替代已删 `CalloutCard`        |
+| Composite          | Figma 层           | 核心 props                                   | 提升理由                                                      |
+| ------------------ | ------------------ | -------------------------------------------- | ------------------------------------------------------------- |
+| `TopBar`           | topbar / tb / tr   | `wallet`, `network`, `locale`                | 全局 shell                                                    |
+| `NavRail`          | rail / rit         | `items`, `activeTab`, `onSelect`             | 4 页共用                                                      |
+| `PanelHeader`      | wh                 | `title`, `subtitle`, `action`                | 4 页共用                                                      |
+| `AmountBox`        | box / tk / rr / mx | `token`, `value`, `balance`, `sessionReady`  | 金额输入卡                                                    |
+| `Segment`          | seg / pcts / htab  | `options`, `value`, `onChange`, `aria-label` | 滑动白底 pill（≠ Chip）；options/文案由 call site + i18n 传入 |
+| `ClaimSplitSlider` | slider `4812:221`  | `value` (release%), `onChange`, `aria-label` | 双色轨 + `%` thumb；Radix；文案由 call site 传入              |
+| `MetricCard`       | sc / mc            | `label`, `value`, `hint`, `tone`             | 跨页指标                                                      |
+| `ResponsiveTable`  | tbl / trow / cell  | `headers`, `rows`, …                         | DApp 表；壳见 `DappTableCard`                                 |
+| `Accordion`        | qa / qhd           | `items`, `variant`                           | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）  |
+| `WidgetPromoCard`  | promo / pcard      | children                                     | 深色 CTA 卡（`Card inverse`）；替代已删 `CalloutCard`         |
 
 **内部约定**：
 
 - `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron：固定 path + CSS `.faq-chevron`（`[data-faq-item][data-state=open]` → `rotate(180deg)` + `color: var(--primary)`；关态 `foreground@40%`）；禁换 path / 禁 React 条件 class 切旋转。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
+- `Segment`：Figma `seg` 滑动白底 pill + `text-coral-emphasis` 选中字；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。**禁**在 `shared/ui` 硬编码业务档位或 locale 文案；`options` / `aria-label` 由 call site（i18n）传入。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options，不在本组件内预设。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
+- `ClaimSplitSlider`：`@radix-ui/react-slider`；左轨 `bg-primary`（释放%）· 右轨 `--app-claim-restake`（复投%）· 白底内嵌 `%` thumb；`aria-label` 必填（i18n）。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
 - `Card.Description`：多数次级文案 → `tone="muted-foreground"`。
@@ -226,14 +231,14 @@
 
 ## §9 组件地图
 
-| 层        | 文件 / 入口                                                                     | Gate                       |
-| --------- | ------------------------------------------------------------------------------- | -------------------------- |
-| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                       | §1                         |
-| Text      | `shared/ui/text.tsx`                                                            | 11 variant · 7 tone        |
-| Button    | `shared/ui/button.tsx`                                                          | 4×3×2                      |
-| Chip      | `shared/ui/chip.tsx`                                                            | 3×3×2×4                    |
-| Card      | `shared/ui/card.tsx`                                                            | 4 surface                  |
-| Input     | `shared/ui/input.tsx`                                                           | default / numeric / amount |
-| Composite | FaqList · WidgetPromoCard · MetricCard · Segment · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome       |
+| 层        | 文件 / 入口                                                                                        | Gate                       |
+| --------- | -------------------------------------------------------------------------------------------------- | -------------------------- |
+| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                          | §1                         |
+| Text      | `shared/ui/text.tsx`                                                                               | 11 variant · 7 tone        |
+| Button    | `shared/ui/button.tsx`                                                                             | 4×3×2                      |
+| Chip      | `shared/ui/chip.tsx`                                                                               | 3×3×2×4                    |
+| Card      | `shared/ui/card.tsx`                                                                               | 4 surface                  |
+| Input     | `shared/ui/input.tsx`                                                                              | default / numeric / amount |
+| Composite | FaqList · WidgetPromoCard · MetricCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome       |
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。

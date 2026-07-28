@@ -6,7 +6,7 @@
 
 1. **纯逻辑**（无 React、无链 IO）→ `src/core/<domain>/`
 2. **链 / 钱包 / thirdweb** → `src/web3/`（Home 禁；depcruise `home-no-web3` 含 `viem`）
-3. **跨面 primitive** → `src/shared/ui/`
+3. **跨面 primitive** → `src/shared/ui/`（**只**视觉 / a11y / 动效 chrome 与无 locale 的纯 helper；**不**拥有 domain options、业务档位表或 locale 文案——档位与文案在 `views/dapp/<tab>/` + `i18n/messages/`。见根 `AGENTS.md` §8.0）
 4. **跨 Tab chrome** → `src/app/shell/`（平铺）
 5. **单 Tab 业务** → `src/views/dapp/<tab>/`
 6. **单面 UI** → `src/views/<面>/`（Home：`views/home/`）

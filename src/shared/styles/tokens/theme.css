@@ -362,6 +362,9 @@
   --motion-dapp-emphasis: 300ms;
   --motion-dapp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-dapp-rise: 6px;
+
+  /* ClaimSplitSlider restake track — Figma accent/blue `4812:221` */
+  --app-claim-restake: #4a7bec;
   --motion-dapp-slide: 1.5rem;
   /* Tab content crossfade — out then in (JS timeouts must match) */
   --motion-dapp-fade-out: 160ms;

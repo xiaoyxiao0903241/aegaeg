@@ -14,13 +14,13 @@
 
 ## 2. 单切片流程（写盘前 → 写盘后）
 
-| Step | 动作 | 产出 |
-|------|------|------|
-| **1** | 对 [`api.md`](./api.md) 确认公开轴；键数定死 | 不扩轴 / 不新增 alias |
-| **2** | Figma 节点 + 当前分支同位置源码 | 根因一句 + REGRESSION \| INTENTIONAL \| IGNORE |
-| **3** | 样式栈（字号·字重·行高·字距·色·`!`·`as`） | 单一 owner |
-| **4** | primitive 收束 + **全仓 call site**（同 PR） | 无半迁移 |
-| **5** | 双 gate | API + 人工对照（`tsc` / 肉眼） |
+| Step  | 动作                                         | 产出                                           |
+| ----- | -------------------------------------------- | ---------------------------------------------- |
+| **1** | 对 [`api.md`](./api.md) 确认公开轴；键数定死 | 不扩轴 / 不新增 alias                          |
+| **2** | Figma 节点 + 当前分支同位置源码              | 根因一句 + REGRESSION \| INTENTIONAL \| IGNORE |
+| **3** | 样式栈（字号·字重·行高·字距·色·`!`·`as`）    | 单一 owner                                     |
+| **4** | primitive 收束 + **全仓 call site**（同 PR） | 无半迁移                                       |
+| **5** | 双 gate                                      | API + 人工对照（`tsc` / 肉眼）                 |
 
 ### 报告模板
 
@@ -42,6 +42,7 @@ Risk: …
 - 布局-only 用 `div` / `section`，禁止平行 typography wrapper。
 - **Shell 布局禁止字阶**：`dapp-shell` / rail / mobile-nav 等只留布局 / 色 / 间距；`text-*` / `font-*` / `leading-*` / `tracking-*` 不得进 shell chrome（字阶归 `<Text>`）。
 - **禁止组件硬编码**：`text-[Npx]`、`tracking-[Npx]`、`max-w-[Nch]`、组件内 `#hex` / `rgb()`（色进 `tokens.json` 或 engineering `:root`；字距用 em 或 `--type-*-tracking`）。
+- **禁止在 foundation / `shared/ui` 硬编码业务枚举与 locale 文案**（档位表、中文默认 label、`aria-label` 默认句等）；options / 文案由 call site + `src/i18n/messages/` 传入。见根 [`AGENTS.md`](../../AGENTS.md) §8.0 R3。
 - **JS 色值**：`theme.ts` 从生成的 `colorHex` 取 brand 色；thirdweb Connect 可保留 chrome-only hex（非产品轴）。Toaster / scrollbar / wallet 阴影走 engineering CSS vars，禁在 `app.css` / `scrollbars.css` 再写裸 `oklch(...)`。
 
 ---
@@ -61,36 +62,36 @@ Risk: …
 
 ## 5. Class / CSS 减法
 
-| MUST | 说明 |
-|------|------|
-| 无 `*Class = {…} as const` / 顶部长样式表 | 一次性布局写在 JSX `className` |
-| 无空装饰 class | 仅当 CSS/脚本真正选择该名 |
-| 动效用 `data-*` | 同步改选择器 |
-| 以「是否影响样式」删冗余 | 不看旧 worktree 是否保留 |
-| 视觉偏差找根因 | 改 SSOT / call site；禁 `!important` / 局部特判 |
-| 红块优先 | 整页 `%` 不作收工 |
-| 探针降级 | 仅肉眼分不清或硬验收时 scoped 取 computed |
+| MUST                                      | 说明                                            |
+| ----------------------------------------- | ----------------------------------------------- |
+| 无 `*Class = {…} as const` / 顶部长样式表 | 一次性布局写在 JSX `className`                  |
+| 无空装饰 class                            | 仅当 CSS/脚本真正选择该名                       |
+| 动效用 `data-*`                           | 同步改选择器                                    |
+| 以「是否影响样式」删冗余                  | 不看旧 worktree 是否保留                        |
+| 视觉偏差找根因                            | 改 SSOT / call site；禁 `!important` / 局部特判 |
+| 红块优先                                  | 整页 `%` 不作收工                               |
+| 探针降级                                  | 仅肉眼分不清或硬验收时 scoped 取 computed       |
 
 ### 禁止当死 CSS 删
 
-| 区域 | 为何 |
-|------|------|
-| `home-motion.css` + reveal `data-*` | Home 动效运行时 |
-| `wallet.css` 主路径（connected chip / connect-embed / tw-modal） | Connect shell；CTA 已迁 Button |
-| DApp 动效钩子（`faq-answer-panel*` · `dapp-collapsible-*` · panel-enter · modal/sheet …） | 有 DOM/`data-*` 绑定 |
-| `scrollbars.css` 全局 + `scrollbar-x-track` | 表卡横向滚动（`scrollbar-none` / `scrollbar-dark` 已删：零 call site） |
+| 区域                                                                                      | 为何                                                                   |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `home-motion.css` + reveal `data-*`                                                       | Home 动效运行时                                                        |
+| `wallet.css` 主路径（connected chip / connect-embed / tw-modal）                          | Connect shell；CTA 已迁 Button                                         |
+| DApp 动效钩子（`faq-answer-panel*` · `dapp-collapsible-*` · panel-enter · modal/sheet …） | 有 DOM/`data-*` 绑定                                                   |
+| `scrollbars.css` 全局 + `scrollbar-x-track`                                               | 表卡横向滚动（`scrollbar-none` / `scrollbar-dark` 已删：零 call site） |
 
 可删前提：`rg` 全仓（含 `scripts/`）零命中，且不在上表。
 
 ### 跨 tab 统一
 
-| 面 | SSOT |
-|----|------|
-| 左卡 padding/圆角 | Card `outlined` / `DappSideCard` |
-| 块间距 / 标题→内容 | `DappDetailBlock` · `DappSection` / `DappContentHeading`（`pb-4`）· `DappWidgetFrame` |
-| 标题字阶 | Text `section` / `panel` + `copy` |
-| 主 pill 高度 | `DappActionButton`：inverse 38 · card 42 · external 44 · modal 46 · hero 48；Home hero / topbar Connect = Button `lg` 48 / `sm` 36 |
-| Overview 指标 | `MetricCard`；Community `sc` / Rewards hero **不并** |
+| 面                 | SSOT                                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 左卡 padding/圆角  | Card `outlined` / `DappSideCard`                                                                                                   |
+| 块间距 / 标题→内容 | `DappDetailBlock` · `DappSection` / `DappContentHeading`（`pb-4`）· `DappWidgetFrame`                                              |
+| 标题字阶           | Text `section` / `panel` + `copy`                                                                                                  |
+| 主 pill 高度       | `DappActionButton`：inverse 38 · card 42 · external 44 · modal 46 · hero 48；Home hero / topbar Connect = Button `lg` 48 / `sm` 36 |
+| Overview 指标      | `MetricCard`；Community `sc` / Rewards hero **不并**                                                                               |
 
 `group-data-[tab=*]`：只合并同值重复；跨 tab 复用组件必须保留守卫。
 
