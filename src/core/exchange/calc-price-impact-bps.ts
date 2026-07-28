@@ -1,17 +1,27 @@
 /**
- * Absolute spot→quote price move in basis points for Uniswap/Pancake V3.
- * Pool price P ∝ (sqrtPriceX96)², so impact is |ΔP|/P — not |Δ√P|/√P.
+ * V2 AMM price impact vs mid (no-fee) reserve ratio, in basis points.
+ * Includes pool fee + size impact relative to `amountIn * reserveOut / reserveIn`.
  */
-export function calcPriceImpactBps(sqrtPriceBefore: bigint, sqrtPriceAfter: bigint): number {
-  if (sqrtPriceBefore === 0n) return 0
+export function calcV2PriceImpactBps({
+  amountIn,
+  amountOut,
+  reserveIn,
+  reserveOut,
+}: {
+  amountIn: bigint
+  amountOut: bigint
+  reserveIn: bigint
+  reserveOut: bigint
+}): number {
+  if (amountIn === 0n || amountOut === 0n || reserveIn === 0n || reserveOut === 0n) return 0
 
-  const priceBefore = sqrtPriceBefore * sqrtPriceBefore
-  const priceAfter = sqrtPriceAfter * sqrtPriceAfter
-  const diff = priceAfter >= priceBefore ? priceAfter - priceBefore : priceBefore - priceAfter
+  const midOut = (amountIn * reserveOut) / reserveIn
+  if (midOut === 0n) return 0
 
-  const bps = Number((diff * 10000n) / priceBefore)
+  const diff = midOut > amountOut ? midOut - amountOut : amountOut - midOut
+  const bps = Number((diff * 10000n) / midOut)
   return Number.isFinite(bps) ? bps : 0
 }
 
-/** Default warning threshold (1% true price impact). */
+/** Default warning threshold (1% price impact). */
 export const HIGH_EXCHANGE_PRICE_IMPACT_BPS = 100

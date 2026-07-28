@@ -1,29 +1,28 @@
 import { parseAbi } from 'viem'
-import { calcPriceImpactBps } from '~/core/exchange/calc-price-impact-bps'
-import { quoteV3ExactInputSingle } from '~/web3/exchange/quote-v3-exact-input'
+import { calcV2PriceImpactBps } from '~/core/exchange/calc-price-impact-bps'
+import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { ERC20_METHODS } from '~/web3/abis'
 import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
+  resolvePairReservesForTokenIn,
   type ExchangePoolImmutableMetadata,
   type ExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
 
 export type ExchangePoolReadContext = {
   pool: ExchangePoolImmutableMetadata
   spot: ExchangePoolSpotPrice
 }
-import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 
 export interface ExchangeQuoteResult {
   quotedOut: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
-  fee: number
-  sqrtPriceX96After: bigint
-  initializedTicksCrossed: number
+  /** V2 has no quoter gas estimate; UI shows "—" when zero. */
   gasEstimate: bigint
   priceImpactBps: number
 }
@@ -78,25 +77,35 @@ export async function fetchExchangeQuote({
         readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool, client),
       ])
 
-  const quote = await quoteV3ExactInputSingle({
-    quoter: EXCHANGE_CONFIG.quoter,
-    tokenIn,
-    tokenOut,
+  const quotedOut = await quoteV2AmountsOut({
+    router: EXCHANGE_CONFIG.router,
     amountIn,
-    fee: pool.fee,
+    path: [tokenIn, tokenOut],
     client,
   })
 
-  const priceImpactBps = calcPriceImpactBps(spot.sqrtPriceX96, quote.sqrtPriceX96After)
+  const reserves = resolvePairReservesForTokenIn({
+    tokenIn,
+    token0: pool.token0,
+    token1: pool.token1,
+    reserve0: spot.reserve0,
+    reserve1: spot.reserve1,
+  })
+
+  const priceImpactBps = reserves
+    ? calcV2PriceImpactBps({
+        amountIn,
+        amountOut: quotedOut,
+        reserveIn: reserves.reserveIn,
+        reserveOut: reserves.reserveOut,
+      })
+    : 0
 
   return {
-    quotedOut: quote.amountOut,
+    quotedOut,
     tokenIn,
     tokenOut,
-    fee: pool.fee,
-    sqrtPriceX96After: quote.sqrtPriceX96After,
-    initializedTicksCrossed: quote.initializedTicksCrossed,
-    gasEstimate: quote.gasEstimate,
+    gasEstimate: 0n,
     priceImpactBps,
   }
 }

@@ -100,8 +100,10 @@ function invalidateAddressScopedChainQueries(address?: string) {
       EXCHANGE_CONFIG.tradePair.tokenA.address,
     ),
   })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapBalances(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapRoot })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapQuoteRoot })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.burnSwapRoot })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.turbineRoot })
 }
 
 /** 钱包账户切换：刷新新地址链上读；旧地址缓存保留至自然过期。 */
@@ -191,7 +193,13 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.performance,
     queryKeys.chain.referralRoot,
   ],
-  exchange: [queryKeys.chain.swapRoot, queryKeys.chain.erc20Root],
+  exchange: [
+    queryKeys.chain.swapRoot,
+    queryKeys.chain.erc20Root,
+    queryKeys.chain.flashSwapRoot,
+    queryKeys.chain.burnSwapRoot,
+    queryKeys.chain.turbineRoot,
+  ],
   assets: [],
   staking: [],
   release: [],

@@ -313,21 +313,49 @@ test('viewsNeedingProvider mounts only active swap subviews', async () => {
   assert.deepEqual(viewsNeedingProvider('hub', false, null, null), {
     flash: false,
     trade: false,
+    burn: false,
+    turbine: false,
+  })
+  assert.deepEqual(viewsNeedingProvider('burn', false, null, null), {
+    flash: false,
+    trade: false,
+    burn: true,
+    turbine: false,
+  })
+  assert.deepEqual(viewsNeedingProvider('turbine', false, null, null), {
+    flash: false,
+    trade: false,
+    burn: false,
+    turbine: true,
   })
   assert.deepEqual(viewsNeedingProvider('trade', false, null, null), {
     flash: false,
     trade: true,
+    burn: false,
+    turbine: false,
   })
   assert.deepEqual(viewsNeedingProvider('flash', false, null, null), {
     flash: true,
     trade: false,
+    burn: false,
+    turbine: false,
   })
   assert.deepEqual(viewsNeedingProvider('hub', true, 'trade', 'flash'), {
     flash: true,
     trade: true,
+    burn: false,
+    turbine: false,
   })
   assert.deepEqual(viewsNeedingProvider('trade', true, 'trade', 'hub'), {
     flash: false,
     trade: true,
+    burn: false,
+    turbine: false,
+  })
+  assert.deepEqual(viewsNeedingProvider('hub', true, 'burn', 'turbine'), {
+    flash: false,
+    trade: false,
+    burn: true,
+    turbine: true,
   })
 })

@@ -1,7 +1,6 @@
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
@@ -13,10 +12,10 @@ import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-
 import { useDappShell } from '~/app/use-dapp-shell'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
+import { FLASH_USD1_GATE_ERROR } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
 import {
   ExchangeAmountFlow,
   ExchangeFlowButton,
-  ExchangeGenesisFooter,
   ExchangeMetaPanel,
   ExchangeSubpageHeader,
   ExchangeWidgetBody,
@@ -24,25 +23,18 @@ import {
 } from '~/views/dapp/exchange/exchange-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { Segment } from '~/shared/ui/segment'
+import { readErrorText } from '~/web3/errors/error-text'
 
-export function FlashExchangeWidget({
-  onSelectGenesis,
-  flash,
-}: {
-  onSelectGenesis: () => void
-  flash: FlashExchangeState
-}) {
+export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const { pair } = flash
-  /** Live money path is USDT→USD1; gAGX→AGX UI is deferred (Spec). */
-  const [pairTab, setPairTab] = useState('usdt')
   const showRateSkeleton = flash.isExchangePriceQuoting && !flash.exchangePriceLabel
   const showBuyAmountSkeleton =
     sessionReady && flash.isQuoting && flash.sellAmount.trim().length > 0
 
   const flashPairOptions = [
-    { label: t.exchange.flash.pairs.gagx, value: 'gagx', disabled: true },
+    { label: t.exchange.flash.pairs.gagx, value: 'gagx' },
     { label: t.exchange.flash.pairs.usdt, value: 'usdt' },
   ]
 
@@ -55,6 +47,14 @@ export function FlashExchangeWidget({
   })
 
   function resolveFlashMessage(error: unknown) {
+    const raw = readErrorText(error)
+    const gateMessages = t.exchange.flash.gates
+    if (raw === FLASH_USD1_GATE_ERROR.paused) return gateMessages.paused
+    if (raw === FLASH_USD1_GATE_ERROR.belowMin) return gateMessages.belowMin
+    if (raw === FLASH_USD1_GATE_ERROR.aboveMax) return gateMessages.aboveMax
+    if (raw === FLASH_USD1_GATE_ERROR.insufficientReserve) return gateMessages.insufficientReserve
+    if (raw === FLASH_USD1_GATE_ERROR.zeroRate) return gateMessages.zeroRate
+
     return resolveExchangeUserFacingMessage(
       error,
       {
@@ -69,6 +69,8 @@ export function FlashExchangeWidget({
       t.errors.chain.fallback,
     )
   }
+
+  const gateHint = flash.usd1Gate != null ? t.exchange.flash.gates[flash.usd1Gate] : null
 
   const submitErrorMessage =
     !flash.error || flash.isSubmitting ? null : resolveFlashMessage(flash.error)
@@ -97,19 +99,19 @@ export function FlashExchangeWidget({
 
   return (
     <>
-      <ExchangeSubpageHeader subtitle={t.exchange.flash.intro} title={t.exchange.flash.title} />
-      <ExchangeWidgetBody
-        bodyClassName="gap-0"
-        footer={
-          sessionReady ? <ExchangeGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined
-        }
-      >
+      <ExchangeSubpageHeader
+        subtitle={t.exchange.flash.intros[flash.introKey as keyof typeof t.exchange.flash.intros]}
+        title={t.exchange.flash.title}
+      />
+      <ExchangeWidgetBody bodyClassName="gap-0">
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
           className="mb-3.5"
-          onChange={setPairTab}
+          disabled={flash.isSubmitting}
+          onChange={flash.setPairId}
           options={flashPairOptions}
-          value={pairTab}
+          tone="ink"
+          value={flash.pairId}
         />
 
         <ExchangeAmountFlow
@@ -117,9 +119,20 @@ export function FlashExchangeWidget({
           buyAmount={flash.buyAmount}
           buyBalance={buyLabel}
           middleSlot={
-            <div aria-hidden className="flex items-center justify-center py-1.5">
-              <ExchangeFlowButton aria-hidden>
-                <DappIcon alt="" className="size-4" src={flashExchangeAssets.flowDivider} />
+            <div className="flex items-center justify-center py-1.5">
+              <ExchangeFlowButton
+                aria-label={t.exchange.flip}
+                disabled={
+                  !flash.canFlip || flash.isSubmitting || (sessionReady && !flash.walletReady)
+                }
+                interactive
+                onClick={() => flash.flipDirection()}
+              >
+                <span className="grid size-4 place-items-center">
+                  <span className="-rotate-90">
+                    <DappIcon alt="" size="base" src={flashExchangeAssets.flowDivider} />
+                  </span>
+                </span>
               </ExchangeFlowButton>
             </div>
           }
@@ -149,10 +162,6 @@ export function FlashExchangeWidget({
               value: flash.routeLabel,
             },
             {
-              label: t.exchange.flash.minReceived,
-              value: flash.minUsd1OutLabel,
-            },
-            {
               label: t.exchange.provider,
               value: (
                 <>
@@ -162,7 +171,7 @@ export function FlashExchangeWidget({
                     className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
                     onClick={() =>
                       window.open(
-                        bscscanAddress(BSC_CONTRACTS.usd1Swap),
+                        bscscanAddress(flash.providerAddress),
                         '_blank',
                         'noopener,noreferrer',
                       )
@@ -193,6 +202,12 @@ export function FlashExchangeWidget({
         ) : null}
 
         {!sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
+
+        {gateHint ? (
+          <DappInlineAlert className="mt-3" role="status">
+            {gateHint}
+          </DappInlineAlert>
+        ) : null}
 
         {submitErrorMessage ? (
           <DappInlineAlert className="mt-3" role="alert">

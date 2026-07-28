@@ -12,7 +12,7 @@ export const SEGMENT_PILL_PAD_PX = 4
 export type SegmentOption = {
   label: string
   value: string
-  /** Per-option disable (e.g. deferred pair tab). List-level `disabled` still wins. */
+  /** Per-option disable. List-level `disabled` still wins. */
   disabled?: boolean
 }
 
@@ -46,10 +46,17 @@ export type SegmentProps = {
   /** Labels are call-site / i18n owned — not domain presets inside this primitive. */
   options: readonly SegmentOption[]
   value: string
+  /**
+   * Active label tone — Figma variants:
+   * - `coral` = `seg` sample `4448:601` (coral + medium)
+   * - `ink` = flash/trade tabs `4430:410` (ink + semibold)
+   */
+  tone?: 'coral' | 'ink'
 }
 
 /**
- * Figma `seg` sliding white pill + coral-emphasis active label.
+ * Figma `seg` sliding white pill. Active label tone is call-site owned
+ * (`coral` vs `ink` — see {@link SegmentProps.tone}).
  * Options + copy come from the call site (i18n). Not a Chip grid —
  * use {@link PercentButtonRow} for amount % chips.
  */
@@ -60,6 +67,7 @@ export function Segment({
   onChange,
   options,
   value,
+  tone = 'coral',
 }: SegmentProps) {
   const count = options.length
   const index = Math.max(
@@ -75,6 +83,7 @@ export function Segment({
         className,
       )}
       data-segment="pill"
+      data-segment-tone={tone}
       role="tablist"
       aria-label={ariaLabel}
       style={{
@@ -100,7 +109,7 @@ export function Segment({
             aria-selected={active}
             disabled={!optionEnabled}
             className={cn(
-              'relative z-1 flex h-7 items-center justify-center border-0 bg-transparent px-1',
+              'relative z-1 flex min-h-7 items-center justify-center border-0 bg-transparent px-1 py-2',
               optionEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-45',
             )}
             onClick={() => {
@@ -111,7 +120,13 @@ export function Segment({
             <Text
               as="span"
               variant="support"
-              className={cn('font-medium', active ? 'text-coral-emphasis' : 'text-foreground/40')}
+              className={cn(
+                active
+                  ? tone === 'ink'
+                    ? 'font-semibold text-foreground'
+                    : 'font-medium text-coral-emphasis'
+                  : 'font-medium text-foreground/40',
+              )}
             >
               {option.label}
             </Text>

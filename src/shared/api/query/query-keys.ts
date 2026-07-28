@@ -33,6 +33,9 @@ export const queryKeys = {
     referralRoot: ['chain', 'referral'] as const,
     swapRoot: ['chain', 'swap'] as const,
     flashSwapQuoteRoot: ['chain', 'flashSwap', 'quote'] as const,
+    flashSwapRoot: ['chain', 'flashSwap'] as const,
+    burnSwapQuoteRoot: ['chain', 'burnSwap', 'quote'] as const,
+    burnSwapRoot: ['chain', 'burnSwap'] as const,
     presaleUserTotalRoot: ['chain', 'presale', 'userTotal'] as const,
     presaleUserPhaseRemainingRoot: ['chain', 'presale', 'userPhaseRemaining'] as const,
     presalePhases: ['chain', 'presale', 'phases'] as const,
@@ -75,8 +78,27 @@ export const queryKeys = {
         sellToken.toLowerCase(),
         buyToken.toLowerCase(),
       ] as const,
-    flashSwapQuote: (usdtAmount: string) => ['chain', 'flashSwap', 'quote', usdtAmount] as const,
-    flashSwapBalances: (address: string) =>
-      ['chain', 'flashSwap', 'balances', address.toLowerCase()] as const,
+    flashSwapQuote: (pairId: string, direction: string, amountIn: string) =>
+      ['chain', 'flashSwap', 'quote', pairId, direction, amountIn] as const,
+    flashSwapBalances: (pairId: string, direction: string, address: string) =>
+      ['chain', 'flashSwap', 'balances', pairId, direction, address.toLowerCase()] as const,
+    flashUsd1SwapConfig: ['chain', 'flashSwap', 'usd1Config'] as const,
+    burnSwapConfig: ['chain', 'burnSwap', 'config'] as const,
+    burnSwapQuote: (amountIn: string) => ['chain', 'burnSwap', 'quote', amountIn] as const,
+    burnSwapBalances: (address: string) =>
+      ['chain', 'burnSwap', 'balances', address.toLowerCase()] as const,
+    burnSwapUserStats: (address: string) =>
+      ['chain', 'burnSwap', 'userStats', address.toLowerCase()] as const,
+    turbineRoot: ['chain', 'turbine'] as const,
+    turbineCooldown: ['chain', 'turbine', 'cooldown'] as const,
+    turbineQuota: (address: string) =>
+      ['chain', 'turbine', 'quota', address.toLowerCase()] as const,
+    turbineUsd1Balances: (address: string) =>
+      ['chain', 'turbine', 'usd1Balances', address.toLowerCase()] as const,
+    turbineSilences: (address: string) =>
+      ['chain', 'turbine', 'silences', address.toLowerCase()] as const,
+    turbineUsdQuote: (agxAmount: string) => ['chain', 'turbine', 'usdQuote', agxAmount] as const,
+    turbineClaimable: (address: string) =>
+      ['chain', 'turbine', 'claimable', address.toLowerCase()] as const,
   },
 } as const

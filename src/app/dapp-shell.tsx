@@ -135,7 +135,7 @@ export function DappShell() {
           <GenesisSessionHost active={displayTab === 'genesis'}>
             {(genesis) => (
               <ExchangeSessionHosts activeTab={displayTab}>
-                {({ trade, flash }) => (
+                {({ trade, flash, burn, turbine }) => (
                   <div
                     ref={setWindowNode}
                     className={cn(
@@ -186,10 +186,12 @@ export function DappShell() {
                         />
                         <DappTabWidget
                           activeTab={displayTab}
+                          burn={burn}
                           flash={flash}
                           genesis={genesis}
                           onSelectTab={selectTab}
                           trade={trade}
+                          turbine={turbine}
                         />
                       </aside>
                     </DappScrollFadeHost>
@@ -215,9 +217,11 @@ export function DappShell() {
                       >
                         <DappTabContent
                           activeTab={displayTab}
+                          burn={burn}
                           flash={flash}
                           genesis={genesis}
                           trade={trade}
+                          turbine={turbine}
                         />
                       </section>
                     </DappScrollFadeHost>

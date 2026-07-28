@@ -6,4 +6,3 @@ export { ExchangeSubpageHeader } from '~/views/dapp/exchange/exchange-subpage-he
 export { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 export { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 export { ExchangeMetaPanel } from '~/views/dapp/exchange/exchange-meta-panel'
-export { ExchangeGenesisFooter } from '~/views/dapp/exchange/exchange-genesis-footer'

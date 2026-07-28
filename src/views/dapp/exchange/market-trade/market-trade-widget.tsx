@@ -2,7 +2,7 @@ import { useEffect, useEffectEvent, useState } from 'react'
 import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { dappAssets } from '~/app/assets'
+import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -17,7 +17,6 @@ import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import {
   ExchangeAmountFlow,
   ExchangeFlowButton,
-  ExchangeGenesisFooter,
   ExchangeMetaPanel,
   ExchangeSubpageHeader,
   ExchangeWidgetBody,
@@ -34,13 +33,7 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 const EXCHANGE_FLIP_APPLY_MS = 160
 const EXCHANGE_FLIP_SETTLE_MS = 320
 
-export function MarketTradeWidget({
-  onSelectGenesis,
-  trade,
-}: {
-  onSelectGenesis: () => void
-  trade: MarketTradeState
-}) {
+export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const [isFlipping, setIsFlipping] = useState(false)
@@ -123,12 +116,7 @@ export function MarketTradeWidget({
   return (
     <>
       <ExchangeSubpageHeader subtitle={t.exchange.trade.intro} title={t.exchange.trade.title} />
-      <ExchangeWidgetBody
-        bodyClassName="gap-0"
-        footer={
-          sessionReady ? <ExchangeGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined
-        }
-      >
+      <ExchangeWidgetBody bodyClassName="gap-0">
         <ExchangeAmountFlow
           amountBoxClassName={flipCardClass}
           buy={pair.buy}
@@ -153,7 +141,11 @@ export function MarketTradeWidget({
                     className="duration-dapp-emphasis grid place-items-center transition-transform ease-dapp"
                     style={{ transform: `rotate(${rotation}deg)` }}
                   >
-                    ⇅
+                    <span className="grid size-4 place-items-center">
+                      <span className="-rotate-90">
+                        <DappIcon alt="" size="base" src={flashExchangeAssets.flowDivider} />
+                      </span>
+                    </span>
                   </span>
                 </ExchangeFlowButton>
               </AnchoredTooltip>
@@ -161,11 +153,13 @@ export function MarketTradeWidget({
           }
           onFillPercent={(percent) => trade.fillPercent(percent)}
           onSellAmountChange={trade.setSellAmount}
+          onTokenPick={handleFlip}
           sell={pair.sell}
           sellAmountDisplay={trade.sellAmountDisplay}
           sellBalance={sellLabel}
           sessionReady={sessionReady}
           showBuyAmountSkeleton={showBuyAmountSkeleton}
+          tokenPicker
           walletReady={trade.walletReady}
           amountLocked={trade.isSubmitting}
         />

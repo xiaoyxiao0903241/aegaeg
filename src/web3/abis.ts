@@ -6,24 +6,20 @@ export const ERC20_METHODS = {
   mint: 'function mint(address to, uint256 amount)',
 } as const
 
-/** PancakeSwap V3 — field order matches on-chain IQuoterV2 / ISwapRouter structs */
-export const QUOTER_V3_METHODS = {
-  quoteExactInputSingle:
-    'function quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96)) external returns (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)',
+/** PancakeSwap V2 Router — handbook §7.1 Trade (USD1↔AGX). */
+export const PANCAKE_ROUTER_V2_METHODS = {
+  getAmountsOut:
+    'function getAmountsOut(uint256 amountIn, address[] path) view returns (uint256[] amounts)',
+  swapExactTokensForTokens:
+    'function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) returns (uint256[] amounts)',
 } as const
 
-/** Pancake V3 SwapRouter — includes deadline (selector 0x414bf389); 7-field tuple reverts with empty 0x */
-export const SWAP_ROUTER_V3_METHODS = {
-  exactInputSingle:
-    'function exactInputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 deadline, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96)) external payable returns (uint256 amountOut)',
-} as const
-
-export const POOL_V3_METHODS = {
-  fee: 'function fee() view returns (uint24)',
+/** Pancake V2 Pair — reserves for spot / price impact. */
+export const PANCAKE_PAIR_V2_METHODS = {
   token0: 'function token0() view returns (address)',
   token1: 'function token1() view returns (address)',
-  slot0:
-    'function slot0() view returns (uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext, uint8 feeProtocol, bool unlocked)',
+  getReserves:
+    'function getReserves() view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)',
 } as const
 
 export const PRESALE_METHODS = {
@@ -60,6 +56,70 @@ export const USD1_SWAP_METHODS = {
   paused: 'function paused() view returns (bool)',
   getConfig:
     'function getConfig() view returns (address usdtToken, address usd1Token, address wallet, uint256 currentRateBps, uint8 usdtDec, uint8 usd1Dec, bool isPaused, uint256 minIn, uint256 maxIn, uint256 reserve)',
+} as const
+
+/** AegisUsd1Swap custom errors — docs/frontend-manual/contracts/usd1swap.md */
+export const USD1_SWAP_ERRORS = [
+  'error ErrorPaused()',
+  'error ErrorInsufficientUsd1(uint256 available, uint256 required)',
+  'error ErrorBelowMin(uint256 amount, uint256 minAmount)',
+  'error ErrorAboveMax(uint256 amount, uint256 maxAmount)',
+  'error ErrorInsufficientOutput(uint256 actual, uint256 minRequired)',
+  'error ErrorZeroAmount()',
+  'error ErrorZeroRate()',
+] as const
+
+/** AegisAgxContributionSwap — handbook §9.2 burn AGX → contribution points. */
+export const AGX_CONTRIBUTION_SWAP_METHODS = {
+  quoteContributionOut: 'function quoteContributionOut(uint256 agxAmount) view returns (uint256)',
+  getConfig:
+    'function getConfig() view returns (address agxToken, uint8 decimals_, uint256 rateBps_, bool isPaused, uint256 minIn, uint256 maxIn, uint256 totalBurned, uint256 totalContribution)',
+  getSplitConfig:
+    'function getSplitConfig() view returns (address injector, uint256 splitBps, uint256 totalIn, uint256 totalBurned, uint256 totalInjected)',
+  originalOf: 'function originalOf(address account) view returns (address)',
+  userContribution: 'function userContribution(address user) view returns (uint256)',
+  userAgxBurned: 'function userAgxBurned(address user) view returns (uint256)',
+  userContributionConsumed:
+    'function userContributionConsumed(address user) view returns (uint256)',
+  convert: 'function convert(uint256 agxAmount)',
+} as const
+
+/** AegisAgxContributionSwap custom errors — docs/frontend-manual/contracts/agxcontributionswap.md */
+export const AGX_CONTRIBUTION_SWAP_ERRORS = [
+  'error ErrorPaused()',
+  'error ErrorBelowMin(uint256 amount, uint256 minAmount)',
+  'error ErrorAboveMax(uint256 amount, uint256 maxAmount)',
+  'error ErrorZeroAmount()',
+  'error ErrorZeroRate()',
+] as const
+
+/** AegisTurbineVestingHub — handbook §16 unlock / claim. */
+export const TURBINE_METHODS = {
+  turbineBalances: 'function turbineBalances(address user) view returns (uint256)',
+  silencesSize: 'function silencesSize(address user) view returns (uint256)',
+  silences:
+    'function silences(address user, uint256 index) view returns (uint256 silenceBalance, uint256 startTime)',
+  isVested: 'function isVested(address user, uint256 index) view returns (bool)',
+  currentCooldownDuration: 'function currentCooldownDuration() view returns (uint256)',
+  quoteUsdInForAgxOut: 'function quoteUsdInForAgxOut(uint256 agxAmount) view returns (uint256)',
+  buyAgxAndStartCooldown: 'function buyAgxAndStartCooldown(uint256 usdAmount)',
+  claimCooledGagx: 'function claimCooledGagx(uint256 index)',
+} as const
+
+export const TURBINE_ERRORS = [
+  'error ErrorZeroAmount()',
+  'error ErrorInsufficientBalance()',
+  'error ErrorInvalidAmount()',
+  'error ErrorIndexOutOfBounds()',
+  'error ErrorSilentTime()',
+  'error ErrorNotAvailable()',
+  'error ErrorNoSilenceBalance()',
+] as const
+
+/** AegisRedeemableGAGX — gAGX↔AGX wrap/redeem (manual: redeemablegagx). */
+export const REDEEMABLE_GAGX_METHODS = {
+  redeem: 'function redeem(uint256 _amount)',
+  wrap: 'function wrap(uint256 _amount)',
 } as const
 
 export const REWARD_CLAIMER_METHODS = {

@@ -12,20 +12,20 @@ function buildPancakeSwapUrl(inputCurrency: string, outputCurrency: string): str
   return `${pancakeSwapBase}?${params.toString()}`
 }
 
-/** PancakeSwap deep links for USDT ↔ USD1 on BSC (Exchange widget external open). */
+/** PancakeSwap deep links for Trade USD1 ↔ AGX on BSC. */
 export const PANCAKE_SWAP_DEEP_LINKS = {
-  usdtToUsd1: buildPancakeSwapUrl(BSC_CONTRACTS.usdt, BSC_CONTRACTS.usd1),
-  usd1ToUsdt: buildPancakeSwapUrl(BSC_CONTRACTS.usd1, BSC_CONTRACTS.usdt),
+  usd1ToAgx: buildPancakeSwapUrl(BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx),
+  agxToUsd1: buildPancakeSwapUrl(BSC_CONTRACTS.agx, BSC_CONTRACTS.usd1),
 } as const
 
 export function resolvePancakeSwapDeepLink(sellSymbol: string, buySymbol: string): string {
-  if (sellSymbol === 'USDT' && buySymbol === 'USD1') {
-    return PANCAKE_SWAP_DEEP_LINKS.usdtToUsd1
+  if (sellSymbol === 'USD1' && buySymbol === 'AGX') {
+    return PANCAKE_SWAP_DEEP_LINKS.usd1ToAgx
   }
-  if (sellSymbol === 'USD1' && buySymbol === 'USDT') {
-    return PANCAKE_SWAP_DEEP_LINKS.usd1ToUsdt
+  if (sellSymbol === 'AGX' && buySymbol === 'USD1') {
+    return PANCAKE_SWAP_DEEP_LINKS.agxToUsd1
   }
-  return PANCAKE_SWAP_DEEP_LINKS.usdtToUsd1
+  return PANCAKE_SWAP_DEEP_LINKS.usd1ToAgx
 }
 
 export function openPancakeSwapDeepLink(url: string): void {

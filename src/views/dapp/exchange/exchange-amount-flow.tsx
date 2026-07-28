@@ -6,21 +6,25 @@ import { AmountBox } from '~/shared/ui/amount-box'
 import { PercentButtonRow } from '~/shared/ui/segment'
 import { cn } from '~/shared/lib/utils'
 
-type AmountToken = { icon: string; symbol: string }
+type AmountToken = { icon?: string; symbol: string }
 
 export function ExchangeAmountFlow({
   amountBoxClassName,
   buy,
   buyAmount,
   buyBalance,
+  buyLabel,
   middleSlot,
   onFillPercent,
   onSellAmountChange,
+  onTokenPick,
   sell,
   sellAmountDisplay,
   sellBalance,
+  sellLabel,
   sessionReady,
   showBuyAmountSkeleton,
+  tokenPicker = false,
   walletReady,
   amountLocked = false,
 }: {
@@ -28,14 +32,20 @@ export function ExchangeAmountFlow({
   buy: AmountToken
   buyAmount: string
   buyBalance: ReactNode
+  /** Override default Sell/Buy card labels (Burn uses destroy / receive copy). */
+  buyLabel?: string
   middleSlot: ReactNode
   onFillPercent: (percent: number) => void
   onSellAmountChange: (value: string) => void
+  /** Trade: pill+chevron; click flips pair (USD1↔AGX). */
+  onTokenPick?: () => void
   sell: AmountToken
   sellAmountDisplay: string
   sellBalance: ReactNode
+  sellLabel?: string
   sessionReady: boolean
   showBuyAmountSkeleton: boolean
+  tokenPicker?: boolean
   walletReady: boolean
   /** Lock sell input / percent while a tx is in flight (amount already snapshotted). */
   amountLocked?: boolean
@@ -43,6 +53,7 @@ export function ExchangeAmountFlow({
   const { messages: t } = useI18n()
   const exchangePreview = !sessionReady
   const sellDisabled = (sessionReady && !walletReady) || amountLocked
+  const pickDisabled = amountLocked || (sessionReady && !walletReady)
 
   const sellAmountProps: Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
     'aria-label': string
@@ -61,9 +72,16 @@ export function ExchangeAmountFlow({
         amountProps={sellAmountProps}
         balance={sellBalance}
         className={amountBoxClassName}
-        label={t.exchange.sell}
+        label={sellLabel ?? t.exchange.sell}
         sessionReady={sessionReady}
-        startAdornment={<TokenChip icon={sell.icon} label={sell.symbol} />}
+        startAdornment={
+          <TokenChip
+            icon={sell.icon}
+            label={sell.symbol}
+            onClick={tokenPicker && !pickDisabled ? onTokenPick : undefined}
+            picker={tokenPicker}
+          />
+        }
       />
 
       <PercentButtonRow
@@ -78,17 +96,27 @@ export function ExchangeAmountFlow({
       <AmountBox
         amountProps={{
           'aria-label': `${buy.symbol} receive amount`,
+          // Display-only: no typing, no focus chrome (Figma caret frame is Sell-side only in product).
+          onMouseDown: (event) => event.preventDefault(),
           placeholder: '0.00',
           readOnly: true,
+          tabIndex: -1,
           value: exchangePreview ? buyAmount || '0.00' : buyAmount,
         }}
         balance={buyBalance}
         className={cn('mt-0', amountBoxClassName)}
-        label={t.exchange.buy}
+        label={buyLabel ?? t.exchange.buy}
         loading={showBuyAmountSkeleton}
         loadingSkeleton={<ExchangeAmountSkeleton />}
         sessionReady={sessionReady}
-        startAdornment={<TokenChip icon={buy.icon} label={buy.symbol} />}
+        startAdornment={
+          <TokenChip
+            icon={buy.icon}
+            label={buy.symbol}
+            onClick={tokenPicker && !pickDisabled ? onTokenPick : undefined}
+            picker={tokenPicker}
+          />
+        }
       />
     </>
   )

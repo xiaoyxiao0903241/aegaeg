@@ -26,7 +26,7 @@ Infrastructure adapters (`shared/lib`, thin wallet RPC helpers) may keep technic
 
 Directory / export renames to glossary English business words are complete for this slice:
 
-- **7-rail + exchange dirs** — navigation `exchange` · `assets` · `staking` · `rewards` · `release` · `community` · `genesis`; view bag `views/dapp/exchange`; `flash-exchange/` · `market-trade/`; i18n `t.exchange`; stores `exchange-view-store` / `exchange-direction-store`
+- **7-rail + exchange dirs** — navigation `exchange` · `assets` · `staking` · `rewards` · `release` · `community` · `genesis`; view bag `views/dapp/exchange`; `flash-exchange/` · `market-trade/` · `burn/` · `turbine/` · `hub/`; i18n `t.exchange`; stores `exchange-view-store` / `exchange-direction-store`
 - **web3 / core** — `web3/exchange` · `core/exchange`
 - **Config** — `EXCHANGE_CONFIG` / `shared/config/exchange` · `pancake-exchange-links`
 - **Errors / invalidation / shell** — `EXCHANGE_QUOTE_FAILED` · `invalidateAfterExchange` · `flashExchangeAssets` · `Exchange*Skeleton` · `HIGH_EXCHANGE_PRICE_IMPACT_BPS`

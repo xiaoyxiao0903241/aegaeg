@@ -24,7 +24,7 @@ export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
     exchangeDirection === 'reverse'
       ? trade.isExchangePriceQuoting
       : trade.isExchangePriceInvertedQuoting
-  const [faqToken, setFaqToken] = useState<ExchangeTokenKey>('usd1')
+  const [faqToken, setFaqToken] = useState<ExchangeTokenKey>('trade')
   const faqItems = t.exchange.faq.tabs[faqToken].items
 
   return (
@@ -64,6 +64,7 @@ function MarketTradeFaqTabs({
 }) {
   const { messages: t } = useI18n()
   const labels: Record<ExchangeTokenKey, string> = {
+    trade: t.exchange.faq.tabs.trade.label,
     usd1: t.exchange.faq.tabs.usd1.label,
     agx: t.exchange.faq.tabs.agx.label,
     x: t.exchange.faq.tabs.x.label,

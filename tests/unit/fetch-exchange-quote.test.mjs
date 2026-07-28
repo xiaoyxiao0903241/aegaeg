@@ -2,88 +2,75 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-const POOL = '0x9c4ee895e4f6ce07ada631c508d1306db7502cce'
-const QUOTER = '0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997'
-const TOKEN_IN = '0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d'
-const TOKEN_OUT = '0x55d398326f99059fF775485246999027B3197955'
+const PAIR = '0xaC645E2137eB011f612b01942D21De6Be959E266'
+const ROUTER = '0x10ED43C718714eb63d5aA57B78B54704E256024E'
+const TOKEN_IN = '0x32Bb0be09F62bbE69764906d80e9A5782C7F7633'
+const TOKEN_OUT = '0x8d0771495272bB97Cd1cD44795222c8fB1b53247'
 
-function createMockClient({ fee = 100, sqrtBefore = 1_000_000n, quote } = {}) {
+function createMockClient({ reserve0 = 10n ** 24n, reserve1 = 10n ** 15n, quotedOut } = {}) {
   const calls = []
   return {
     calls,
     async readContract(request) {
       calls.push(['read', request.functionName, request.address])
-      if (request.functionName === 'fee') return fee
       if (request.functionName === 'token0') return TOKEN_IN
       if (request.functionName === 'token1') return TOKEN_OUT
-      if (request.functionName === 'slot0') return [sqrtBefore, 0, 0, 1, 1, 0, true]
+      if (request.functionName === 'getReserves') return [reserve0, reserve1, 0]
+      if (request.functionName === 'getAmountsOut') {
+        const amountIn = request.args[0]
+        const out = quotedOut ?? amountIn / 2n
+        return [amountIn, out]
+      }
       throw new Error(`unexpected readContract ${request.functionName}`)
-    },
-    async simulateContract(request) {
-      calls.push(['simulate', request.functionName, request.address])
-      if (request.functionName !== 'quoteExactInputSingle') {
-        throw new Error(`unexpected simulate ${request.functionName}`)
-      }
-      const amountIn = request.args[0].amountIn
-      if (quote) return { result: quote(amountIn, request.args[0]) }
-      return {
-        result: [amountIn / 2n, sqrtBefore + 1_000n, 1n, 120_000n],
-      }
     },
   }
 }
 
-test('fetchExchangeQuote wires pool fee, quoter out, and price impact bps', async () => {
+test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async () => {
   const { fetchExchangeQuote } = await loadModule('/src/web3/exchange/exchange-read.ts')
   const { clearExchangePoolImmutableCache } = await loadModule(
     '/src/web3/exchange/read-exchange-pool.ts',
   )
   clearExchangePoolImmutableCache()
 
+  const amountIn = 10n ** 18n
+  const quotedOut = 5n * 10n ** 8n
   const client = createMockClient({
-    fee: 100,
-    sqrtBefore: 1_000_000n,
-    quote: (amountIn) => [amountIn / 2n, 1_010_000n, 2n, 90_000n],
+    reserve0: 10n ** 24n,
+    reserve1: 10n ** 15n,
+    quotedOut,
   })
 
   const result = await fetchExchangeQuote({
-    amountIn: 10n ** 18n,
+    amountIn,
     tokenIn: TOKEN_IN,
     tokenOut: TOKEN_OUT,
     client,
   })
 
-  assert.equal(result.quotedOut, 5n * 10n ** 17n)
-  assert.equal(result.fee, 100)
+  assert.equal(result.quotedOut, quotedOut)
   assert.equal(result.tokenIn, TOKEN_IN)
   assert.equal(result.tokenOut, TOKEN_OUT)
-  // √P 1e6→1.01e6 ⇒ true price impact ≈201 bps (not 100 sqrt-bps)
-  assert.equal(result.priceImpactBps, 201)
-  assert.equal(result.gasEstimate, 90_000n)
+  assert.equal(result.gasEstimate, 0n)
+  assert.ok(result.priceImpactBps > 0)
+  assert.ok(client.calls.some((c) => c[0] === 'read' && c[1] === 'getAmountsOut'))
+  assert.ok(client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === PAIR.toLowerCase()))
   assert.ok(
-    client.calls.some((c) => c[0] === 'simulate' && c[2].toLowerCase() === QUOTER.toLowerCase()),
+    client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === ROUTER.toLowerCase()),
   )
-  assert.ok(client.calls.some((c) => c[0] === 'read' && c[2].toLowerCase() === POOL.toLowerCase()))
 })
 
-test('quoteV3ExactInputSingle returns zeros for zero amountIn without RPC', async () => {
-  const { quoteV3ExactInputSingle } = await loadModule('/src/web3/exchange/quote-v3-exact-input.ts')
+test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () => {
+  const { quoteV2AmountsOut } = await loadModule('/src/web3/exchange/quote-v2-amounts-out.ts')
   const client = createMockClient()
 
-  const result = await quoteV3ExactInputSingle({
-    quoter: QUOTER,
-    tokenIn: TOKEN_IN,
-    tokenOut: TOKEN_OUT,
+  const result = await quoteV2AmountsOut({
+    router: ROUTER,
     amountIn: 0n,
-    fee: 100,
+    path: [TOKEN_IN, TOKEN_OUT],
     client,
   })
 
-  assert.deepEqual(result, {
-    amountOut: 0n,
-    sqrtPriceX96After: 0n,
-    initializedTicksCrossed: 0,
-    gasEstimate: 0n,
-  })
+  assert.equal(result, 0n)
   assert.equal(client.calls.length, 0)
 })

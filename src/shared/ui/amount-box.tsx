@@ -8,7 +8,8 @@ import { cn } from '~/shared/lib/utils'
 /** Amount input card — label + balance / amount row + token selector + input. */
 export const amountBox = tv({
   slots: {
-    root: 'flex flex-col gap-2',
+    // Figma sell/buy cards: default border; focused editable field → coral card stroke (#c85c3f)
+    root: 'flex flex-col gap-2 focus-within:border-coral',
     header: 'flex items-center justify-between gap-3',
     label: '',
     balance: 'text-right',

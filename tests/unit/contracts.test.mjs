@@ -11,9 +11,8 @@ const CONTRACT_ENV_KEYS = {
   VITE_BSC_WBNB: 'wbnb',
   VITE_BSC_USD1: 'usd1',
   VITE_BSC_USDT: 'usdt',
-  VITE_BSC_PANCAKE_V3_SWAP_ROUTER: 'pancakeV3SwapRouter',
-  VITE_BSC_PANCAKE_V3_QUOTER: 'pancakeV3Quoter',
-  VITE_BSC_USDT_USD1_POOL: 'usdtUsd1Pool',
+  VITE_BSC_PANCAKE_ROUTER: 'pancakeRouter',
+  VITE_BSC_PANCAKE_PAIR: 'pancakePair',
   VITE_BSC_MULTICALL3: 'multicall3',
   VITE_BSC_PRESALE: 'preSale',
   VITE_BSC_COMMUNITY_FUND_VAULT: 'communityFundVault',
@@ -23,6 +22,8 @@ const CONTRACT_ENV_KEYS = {
   VITE_BSC_AGX: 'agx',
   VITE_BSC_GAGX: 'gagx',
   VITE_BSC_X_TOKEN: 'xToken',
+  VITE_BSC_AGX_CONTRIBUTION_SWAP: 'agxContributionSwap',
+  VITE_BSC_TURBINE: 'turbine',
 }
 
 function normalizeAddress(address) {

@@ -3,9 +3,10 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 
 /** Carousel / About 区块可跳转 BscScan 的代币；未部署则 null */
 export const EXCHANGE_TOKEN_CONTRACTS: Record<string, `0x${string}` | null> = {
-  agx: null,
+  agx: BSC_CONTRACTS.agx,
+  gagx: BSC_CONTRACTS.gagx,
   usd1: BSC_CONTRACTS.usd1,
-  x: null,
+  x: BSC_CONTRACTS.xToken,
 }
 
 export function getExchangeTokenContractAddress(tokenKey: string): `0x${string}` | null {

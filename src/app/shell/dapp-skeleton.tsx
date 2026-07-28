@@ -185,11 +185,3 @@ export function ExchangeMetaValueSkeleton({ className }: { className?: string })
 export function ExchangeAmountSkeleton() {
   return <DappSkeleton className="ml-auto h-7 w-28 max-w-[55%]" />
 }
-
-export function GenesisPromoTitleSkeleton() {
-  return <DappSkeleton className="h-3.5 w-[72%]" tone="dark" />
-}
-
-export function GenesisPromoBodySkeleton() {
-  return <DappSkeleton className="h-3 w-[82%]" tone="dark" />
-}

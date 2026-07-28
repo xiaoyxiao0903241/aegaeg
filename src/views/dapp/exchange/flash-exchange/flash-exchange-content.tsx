@@ -9,11 +9,10 @@ import {
   ExchangeMetricCard,
   ExchangeMetricCardSkeleton,
 } from '~/views/dapp/exchange/exchange-detail-primitives'
-import { TokenAboutCard } from '~/views/dapp/exchange/flash-exchange/exchange-token-about-card'
+import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
 export function FlashExchangeContent({ flash }: { flash: FlashExchangeState }) {
   const { messages: t } = useI18n()
-  const usd1About = t.exchange.tokenAbout.items.find((item) => item.key === 'usd1')!
   const showRateSkeleton = flash.isExchangePriceQuoting && !flash.overviewRateLabel
 
   return (
@@ -37,13 +36,13 @@ export function FlashExchangeContent({ flash }: { flash: FlashExchangeState }) {
       </section>
 
       <DappDetailBlock>
-        <DappContentHeading>{t.exchange.flash.tokenAboutTitle}</DappContentHeading>
-        <TokenAboutCard body={usd1About.body} title={usd1About.title} />
+        <DappContentHeading>{t.exchange.flash.aboutTitle}</DappContentHeading>
+        <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'agx']} />
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
-        <FaqList defaultOpenFirst={false} items={t.exchange.faq.tabs.usd1.items} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={t.exchange.flash.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

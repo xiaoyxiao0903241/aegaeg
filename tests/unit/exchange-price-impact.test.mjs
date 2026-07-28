@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+import { loadModule } from './load-module.mjs'
+
+test('calcV2PriceImpactBps measures mid vs execution', async () => {
+  const { calcV2PriceImpactBps } = await loadModule('/src/core/exchange/calc-price-impact-bps.ts')
+
+  // midOut = 1e18 * 1e15 / 1e24 = 1e9; quoted 5e8 → 50% = 5000 bps
+  assert.equal(
+    calcV2PriceImpactBps({
+      amountIn: 10n ** 18n,
+      amountOut: 5n * 10n ** 8n,
+      reserveIn: 10n ** 24n,
+      reserveOut: 10n ** 15n,
+    }),
+    5000,
+  )
+  assert.equal(
+    calcV2PriceImpactBps({
+      amountIn: 0n,
+      amountOut: 1n,
+      reserveIn: 1n,
+      reserveOut: 1n,
+    }),
+    0,
+  )
+})
+
+test('formatGasEstimate formats bigint gas with tilde prefix', async () => {
+  const { formatGasEstimate } = await loadModule(
+    '/src/views/dapp/exchange/market-trade/exchange-format-gas-estimate.ts',
+  )
+
+  assert.equal(formatGasEstimate(0n), '—')
+  assert.equal(formatGasEstimate(90_000n), '~90,000')
+})

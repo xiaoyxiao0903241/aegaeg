@@ -4,10 +4,17 @@ import { ExchangeProgramCard } from '~/views/dapp/exchange/hub/exchange-program-
 
 /**
  * Figma hub program grid (PC `4267:212`):
- * 0 Trade gAGX → flash · 1 Turbine → ticket 04 · 2 Get USD1 → flash
- * 3 Get AGX → trade · 4 Sell X → trade · 5 Points → ticket 04 burn
+ * 0 Trade gAGX → flash · 1 Turbine → turbine · 2 Get USD1 → flash
+ * 3 Get AGX → trade · 4 Sell X → trade · 5 Points → burn
  */
-const PROGRAM_TARGETS: Array<ExchangeView | null> = ['flash', null, 'flash', 'trade', 'trade', null]
+const PROGRAM_TARGETS: Array<ExchangeView | null> = [
+  'flash',
+  'turbine',
+  'flash',
+  'trade',
+  'trade',
+  'burn',
+]
 
 export function ExchangeProgramCards() {
   const { messages: t } = useI18n()

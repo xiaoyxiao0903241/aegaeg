@@ -13,10 +13,10 @@ export interface BscContracts {
   wbnb: Address
   usd1: Address
   usdt: Address
-  /** PancakeSwap V3 SwapRouter — approve + exactInputSingle */
-  pancakeV3SwapRouter: Address
-  pancakeV3Quoter: Address
-  usdtUsd1Pool: Address
+  /** PancakeSwap V2 Router — handbook §7.1 Trade */
+  pancakeRouter: Address
+  /** Pancake V2 AGX/USD1 pair (manual deployment key `PancakePair`) */
+  pancakePair: Address
   /** PreSale proxy — Genesis purchase */
   preSale: Address
   multicall3: Address
@@ -34,6 +34,10 @@ export interface BscContracts {
   gagx: Address
   /** XToken (manual deployment key `XToken`) */
   xToken: Address
+  /** AgxContributionSwap — burn AGX → contribution points (manual §9.2) */
+  agxContributionSwap: Address
+  /** Turbine vesting hub — unlock / claim gAGX (manual §16) */
+  turbine: Address
 }
 
 /**
@@ -47,9 +51,8 @@ export const BSC_CONTRACTS = {
   wbnb: requireEnvAddress('VITE_BSC_WBNB'),
   usd1: requireEnvAddress('VITE_BSC_USD1'),
   usdt: requireEnvAddress('VITE_BSC_USDT'),
-  pancakeV3SwapRouter: requireEnvAddress('VITE_BSC_PANCAKE_V3_SWAP_ROUTER'),
-  pancakeV3Quoter: requireEnvAddress('VITE_BSC_PANCAKE_V3_QUOTER'),
-  usdtUsd1Pool: requireEnvAddress('VITE_BSC_USDT_USD1_POOL'),
+  pancakeRouter: requireEnvAddress('VITE_BSC_PANCAKE_ROUTER'),
+  pancakePair: requireEnvAddress('VITE_BSC_PANCAKE_PAIR'),
   multicall3: requireEnvAddress('VITE_BSC_MULTICALL3'),
   referral: requireEnvAddress('VITE_BSC_REFERRAL'),
   preSale: requireEnvAddress('VITE_BSC_PRESALE'),
@@ -59,4 +62,6 @@ export const BSC_CONTRACTS = {
   agx: requireEnvAddress('VITE_BSC_AGX'),
   gagx: requireEnvAddress('VITE_BSC_GAGX'),
   xToken: requireEnvAddress('VITE_BSC_X_TOKEN'),
+  agxContributionSwap: requireEnvAddress('VITE_BSC_AGX_CONTRIBUTION_SWAP'),
+  turbine: requireEnvAddress('VITE_BSC_TURBINE'),
 } as const satisfies BscContracts

@@ -39,7 +39,7 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     setSlippageRaw(clampSlippagePercent(value))
   }
   const readClient = useChainReadClient()
-  const { poolContext, poolFee } = useExchangePoolReads(quotesEnabled)
+  const { poolContext } = useExchangePoolReads(quotesEnabled)
 
   const pair = getExchangePairTokens(direction)
   const address = account?.address
@@ -130,7 +130,6 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     exchangePriceLabelInverted: spot.exchangePriceLabelInverted,
     routeLabel,
     pancakeSwapUrl,
-    poolFee,
     priceImpactLabel,
     gasEstimateLabel,
     isHighPriceImpact,

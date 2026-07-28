@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type ExchangeView = 'hub' | 'flash' | 'trade'
+export type ExchangeView = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
 export type ExchangeViewDirection = 'forward' | 'back'
 
 export const EXCHANGE_VIEW_MOTION_MS = 320

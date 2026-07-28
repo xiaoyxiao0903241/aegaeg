@@ -136,11 +136,6 @@ const app = defineMessages({
           title: 'Turbine',
           body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
         },
-        comingSoon: 'Coming soon',
-      },
-      about: {
-        title: 'About Swap',
-        body: 'Convert USDT to USD1, trade major tokens for AEGIS X assets, upgrade gAGX to AGX, or burn AGX for contribution points.',
       },
       program: {
         title: 'Get AEGIS X protocol tokens',
@@ -180,17 +175,59 @@ const app = defineMessages({
     },
     flash: {
       title: 'Flash',
-      intro: 'Convert USDT to USD1 — no fees, no slippage',
+      intros: {
+        gagx: 'Convert gAGX to AGX — no fees, no slippage',
+        gagxWrap: 'Wrap AGX into gAGX — no fees, no slippage',
+        usdt: 'Convert USDT to USD1 — no fees, no slippage',
+      },
       providerName: 'AEGIS X',
       openProvider: 'View convert contract on BscScan',
       settlementValue: 'On-chain · instant',
-      tokenAboutTitle: 'About USD1',
+      aboutTitle: 'About',
       action: 'Flash',
-      minReceived: 'Minimum received',
       pairAriaLabel: 'Flash pair',
       pairs: {
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',
+      },
+      gates: {
+        paused: 'Flash is paused. Please try again later.',
+        belowMin: 'Amount is below the minimum swap limit.',
+        aboveMax: 'Amount exceeds the maximum swap limit.',
+        insufficientReserve: 'USD1 reserve is insufficient. Please try again later.',
+        zeroRate: 'Exchange rate is unavailable. Please try again later.',
+      },
+      faq: {
+        items: [
+          {
+            q: 'What is gAGX?',
+            a: 'gAGX is the unified settlement voucher for Rebase and DAO rewards. Rebase yield from AGX staking or bonds, and DAO rewards, are paid as gAGX.',
+          },
+          {
+            q: 'What is the gAGX to AGX exchange rate?',
+            a: 'Fixed 1:1 at any time — no fees, no slippage, settled on-chain instantly.',
+          },
+          {
+            q: 'Why does Flash have no fees or slippage?',
+            a: 'Flash is a protocol-level 1:1 gAGX↔AGX redeem, not an AMM trade, so there is no price slippage or swap fee. You only pay BSC network gas in BNB.',
+          },
+          {
+            q: 'How do I get gAGX?',
+            a: 'After participating in protocol yield distribution, you receive a corresponding amount of gAGX.',
+          },
+          {
+            q: 'What else can I do with gAGX besides redeeming AGX?',
+            a: 'Redeem 1:1 to AGX for staking compounding, or stake gAGX to mine X. Both paths are available.',
+          },
+          {
+            q: 'How do I swap USDT for USD1?',
+            a: 'Switch to the USDT → USD1 pair on Flash, enter an amount, and swap at the protocol rate with on-chain settlement.',
+          },
+          {
+            q: 'Can I swap USD1 back to USDT?',
+            a: 'Flash is one-way USDT→USD1. Use Trade for market swaps to other assets.',
+          },
+        ],
       },
     },
     trade: {
@@ -201,6 +238,130 @@ const app = defineMessages({
       estimatedGas: 'Est. network gas',
       highPriceImpactWarning:
         'This trade may move the pool price significantly. Try a smaller amount or increase slippage tolerance.',
+    },
+    burn: {
+      title: 'Burn',
+      subtitle: 'Burn AGX to obtain contribution points',
+      sellLabel: 'Burn',
+      receiveLabel: 'Receive',
+      pointsToken: 'Contribution points',
+      currentContribution: 'Current contribution',
+      burnRate: 'Burn rate',
+      destination: 'Burn destination',
+      destinationValue: 'Black hole address, permanently burned',
+      providerName: 'AEGIS X',
+      openProvider: 'View contribution swap on BscScan',
+      action: 'Burn',
+      aboutTitle: 'About',
+      gates: {
+        paused: 'Burn is paused. Please try again later.',
+        belowMin: 'Amount is below the minimum burn limit.',
+        aboveMax: 'Amount exceeds the maximum burn limit.',
+        zeroRate: 'Burn rate is unavailable. Please try again later.',
+      },
+      metrics: {
+        totalBurnedAgx: 'Total AGX burned',
+        totalEarnedContribution: 'Total contribution earned',
+        totalConsumedContribution: 'Total contribution consumed',
+      },
+      history: {
+        title: 'Burn history',
+        empty: 'No burn or consumption records yet',
+        tabsAriaLabel: 'Burn history tabs',
+        tabs: {
+          burn: 'Burn',
+          consume: 'Consume',
+        },
+        burnColumns: ['Time', 'Burned AGX', 'Contribution earned', 'Transaction hash'],
+        consumeColumns: ['Time', 'Contribution consumed', 'Transaction hash'],
+      },
+      faq: {
+        items: [
+          {
+            q: 'What are contribution points used for?',
+            a: 'Contribution points are required when claiming mixed rewards with restake. Restake and lucky-pool claims consume points based on the reward amount.',
+          },
+          {
+            q: 'Why do I need contribution points to claim rewards?',
+            a: 'The protocol uses contribution points to gate reward claims and restake flows. If your balance is insufficient, the claim reverts — burn AGX first to add points.',
+          },
+          {
+            q: 'What is the burn rate?',
+            a: 'The burn rate is set on-chain (rateBps). Each AGX burned yields contribution points at contribution = AGX × rateBps ÷ 10000.',
+          },
+          {
+            q: 'Where does burned AGX go?',
+            a: 'A portion is sent to a black-hole address and permanently destroyed; the remainder may be injected into LP per contract split settings.',
+          },
+          {
+            q: 'Can contribution points be transferred or refunded?',
+            a: 'Contribution points are account-bound ledger balances on AgxContributionSwap. They cannot be transferred or refunded to AGX.',
+          },
+        ],
+      },
+    },
+    turbine: {
+      title: 'Turbine',
+      segmentAriaLabel: 'Turbine actions',
+      segments: {
+        unlock: 'Unlock',
+        claim: 'Claim',
+      },
+      unlockLabel: 'Unlock gAGX',
+      unlockable: 'Unlockable',
+      equivalentBuyHint: 'Unlocking also executes an equal buy',
+      payUsd1Label: 'Pay USD1',
+      buyAgxLabel: 'Buy AGX',
+      buyToBoundWallet: 'Buy to bound wallet',
+      agxPrice: 'AGX price',
+      willReceiveAgx: 'AGX you will receive',
+      unlockRatio: 'Unlock ratio',
+      unlockRatioValue: '1:1 buy to unlock',
+      cooldown: 'Cooldown',
+      unlockAction: 'Unlock',
+      unlockSuccess: 'Unlocked — cooldown started',
+      claimAction: 'Claim',
+      claimSuccess: 'Claimed successfully',
+      claimEmpty: 'No cooldown records yet',
+      claimReady: 'Ready to claim',
+      claimCooling: 'Cooling down',
+      dataTitle: 'Turbine data',
+      aboutTitle: 'About',
+      recordsTitle: 'Turbine records',
+      recordsEmpty: 'No records yet',
+      recordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
+      mechanismTitle: 'Turbine mechanism',
+      mechanism: [
+        {
+          title: '1:1 buy to unlock',
+          body: 'Pay equal USD1 to buy AGX and unlock the matching Turbine quota into cooldown.',
+        },
+        {
+          title: 'Adaptive cooldown',
+          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+        },
+      ],
+      metrics: {
+        pendingUnlock: 'Pending unlock',
+        cooling: 'Cooling',
+        claimable: 'Claimable',
+      },
+      faq: {
+        items: [
+          {
+            q: 'What does Turbine do?',
+            a: 'Rewards enter Turbine as unlockable quota. Buy AGX with USD1 1:1 to start cooldown, then claim gAGX when vested.',
+          },
+          {
+            q: 'Why USD1?',
+            a: 'The handbook path settles unlock with USD1. On-chain quotes determine the exact payment amount.',
+          },
+          {
+            q: 'How do I claim after cooldown?',
+            a: 'Open the Claim tab and claim vested rows. After a successful claim the silence list is re-fetched.',
+          },
+        ],
+      },
     },
     tokenAbout: {
       title: 'About AEGIS X ecosystem tokens',
@@ -234,6 +395,35 @@ const app = defineMessages({
       title: 'FAQs',
       tabsTitle: 'FAQs',
       tabs: {
+        trade: {
+          label: 'Trade',
+          items: [
+            {
+              q: 'What is the difference between Trade and Flash Swap?',
+              a: 'Trade swaps USD1, AGX, X and other ecosystem tokens on PancakeSwap at live market rates with customizable slippage and gas fees. Flash Swap is a protocol 1:1 gAGX↔AGX conversion with no fee or slippage.',
+            },
+            {
+              q: 'What is allowed slippage and how do I set it?',
+              a: 'Slippage is price movement between submission and settlement. Allowed slippage is the maximum deviation you accept—use the default or a custom percent. If realized slippage exceeds your setting the trade reverts (gas may still be spent). Too low fails easily; too high may fill at a worse price.',
+            },
+            {
+              q: 'How does Trade settle, and are there fees?',
+              a: 'Trades settle on PancakeSwap on-chain. AEGIS X charges no extra swap fee, but every on-chain tx needs BSC gas in BNB—keep enough BNB in your wallet.',
+            },
+            {
+              q: 'Why can the received amount differ from the estimate?',
+              a: 'Estimates use the rate at quote time. Market moves or other trades can change the fill; the final amount is what settles on-chain within your slippage limit.',
+            },
+            {
+              q: 'Which tokens can I trade?',
+              a: "You can swap among AEGIS X ecosystem tokens (USD1, AGX, X) at market rates. Use the tabs above for each token's details.",
+            },
+            {
+              q: 'Where can I see trade history?',
+              a: 'Trades execute on-chain and settle in seconds. Confirm each tx in your wallet or a block explorer.',
+            },
+          ],
+        },
         usd1: {
           label: 'USD1',
           items: [

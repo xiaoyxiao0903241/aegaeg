@@ -7,23 +7,36 @@ export function DappTabWidget({
   onSelectTab,
   trade,
   flash,
+  burn,
+  turbine,
   genesis,
 }: {
   activeTab: DappTab
   onSelectTab: (tab: DappTab) => void
 } & DappTabSessions) {
   const { Widget } = getDappTabEntry(activeTab)
-  return <Widget flash={flash} genesis={genesis} onSelectTab={onSelectTab} trade={trade} />
+  return (
+    <Widget
+      burn={burn}
+      flash={flash}
+      genesis={genesis}
+      onSelectTab={onSelectTab}
+      trade={trade}
+      turbine={turbine}
+    />
+  )
 }
 
 export function DappTabContent({
   activeTab,
   trade,
   flash,
+  burn,
+  turbine,
   genesis,
 }: {
   activeTab: DappTab
 } & DappTabSessions) {
   const { Content } = getDappTabEntry(activeTab)
-  return <Content flash={flash} genesis={genesis} trade={trade} />
+  return <Content burn={burn} flash={flash} genesis={genesis} trade={trade} turbine={turbine} />
 }

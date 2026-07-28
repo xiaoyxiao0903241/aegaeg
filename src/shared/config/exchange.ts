@@ -11,11 +11,10 @@ export interface ExchangeTokenConfig {
 
 export interface ExchangeConfig {
   chainId: 56
+  /** Pancake V2 Router — handbook §7.1 */
   router: `0x${string}`
-  quoter: `0x${string}`
+  /** Pancake V2 AGX/USD1 pair */
   pool: `0x${string}`
-  feeTier: number
-  wbnb: `0x${string}`
   defaultSlippageBps: number
   deadlineSeconds: number
   /** Poll on-chain swap quote while amount is set (ms). */
@@ -24,7 +23,7 @@ export interface ExchangeConfig {
   spotRateRefreshIntervalMs: number
   tradePair: {
     enabled: true
-    symbols: ['USD1', 'USDT']
+    symbols: ['USD1', 'AGX']
     tokenA: ExchangeTokenConfig
     tokenB: ExchangeTokenConfig
   }
@@ -33,18 +32,15 @@ export interface ExchangeConfig {
 
 export const EXCHANGE_CONFIG: ExchangeConfig = {
   chainId: BSC_CONTRACTS.chainId,
-  router: BSC_CONTRACTS.pancakeV3SwapRouter,
-  quoter: BSC_CONTRACTS.pancakeV3Quoter,
-  pool: BSC_CONTRACTS.usdtUsd1Pool,
-  feeTier: 100,
-  wbnb: BSC_CONTRACTS.wbnb,
+  router: BSC_CONTRACTS.pancakeRouter,
+  pool: BSC_CONTRACTS.pancakePair,
   defaultSlippageBps: appEnv.exchangeDefaultSlippageBps,
   deadlineSeconds: appEnv.exchangeDeadlineSeconds,
   quoteRefreshIntervalMs: 10_000,
   spotRateRefreshIntervalMs: 10_000,
   tradePair: {
     enabled: true,
-    symbols: ['USD1', 'USDT'],
+    symbols: ['USD1', 'AGX'],
     tokenA: {
       symbol: 'USD1',
       address: BSC_CONTRACTS.usd1,
@@ -53,11 +49,11 @@ export const EXCHANGE_CONFIG: ExchangeConfig = {
       icon: '/assets/figma/dapp/token-usd1.svg',
     },
     tokenB: {
-      symbol: 'USDT',
-      address: BSC_CONTRACTS.usdt,
-      decimals: 18,
+      symbol: 'AGX',
+      address: BSC_CONTRACTS.agx,
+      decimals: 9,
       enabled: true,
-      icon: '/assets/figma/dapp/token-usdt.svg',
+      icon: '/assets/figma/dapp/carousel/token-agx.png',
     },
   },
   tokens: {
@@ -79,15 +75,15 @@ export const EXCHANGE_CONFIG: ExchangeConfig = {
       symbol: 'AGX',
       address: BSC_CONTRACTS.agx,
       decimals: 9,
-      enabled: false,
-      icon: '',
+      enabled: true,
+      icon: '/assets/figma/dapp/carousel/token-agx.png',
     },
     gagx: {
       symbol: 'gAGX',
       address: BSC_CONTRACTS.gagx,
-      decimals: 18,
-      enabled: false,
-      icon: '',
+      decimals: 9,
+      enabled: true,
+      icon: '/assets/figma/dapp/carousel/token-gagx.png',
     },
     x: {
       symbol: 'X',

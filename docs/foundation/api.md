@@ -164,6 +164,7 @@
 
 **Placeholder**：`placeholder:text-placeholder`（`--placeholder` ≡ 4175 `oklch(82% 0.011 264)`）。**禁止** `placeholder:text-muted-foreground`。
 **未连接金额预览**：`AmountBox` 在 `sessionReady=false` 时用 `text-amount-muted` / `placeholder:text-amount-muted`（≡ 4175 `#c9cfda`）。
+**聚焦（兑换金额卡）**：`AmountBox` 根 `focus-within:border-coral`（Figma `#c85c3f` 卡描边，非 `--primary`）；`Input variant=amount` 用 `caret-coral` + `focus:border-0`（禁止 input 自身描边）。Buy 只读 + `tabIndex=-1`，不抢焦点。
 
 **禁止**：call site 手写平行 `<input>` / 输入框内 hand-roll amount typography（社区邀请人等须走 `Input`）
 **依赖**：Token（§1）
@@ -194,7 +195,7 @@
 **内部约定**：
 
 - `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron：固定 path + CSS `.faq-chevron`（`[data-faq-item][data-state=open]` → `rotate(180deg)` + `color: var(--primary)`；关态 `foreground@40%`）；禁换 path / 禁 React 条件 class 切旋转。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
-- `Segment`：Figma `seg` 滑动白底 pill + `text-coral-emphasis` 选中字；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。**禁**在 `shared/ui` 硬编码业务档位或 locale 文案；`options` / `aria-label` 由 call site（i18n）传入。`options[].disabled` 支持单档禁用（如闪兑 gAGX 对 DEFER）。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options，不在本组件内预设。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
+- `Segment`：Figma `seg` 滑动白底 pill；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。选中字色由 call site `tone` 传入：`coral`（默认，样本 `4448:601`）| `ink`（闪兑 tabs `4430:410`，semibold）。**禁**在 `shared/ui` 硬编码业务档位或 locale 文案；`options` / `aria-label` 由 call site（i18n）传入。`options[].disabled` 支持单档禁用（临时不可用选项）。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options，不在本组件内预设。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
 - `ClaimSplitSlider`：`@radix-ui/react-slider`；左轨 `bg-primary`（释放%）· 右轨 `--app-claim-restake`（复投%）· 白底内嵌 `%` thumb；`aria-label` 必填（i18n）。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。

@@ -20,7 +20,7 @@ type UseMarketTradeSpotRatesArgs = {
   amountIn: bigint
 }
 
-/** Direction-independent USDT↔USD1 spot rates + pair spot for empty sell amount. */
+/** Direction-independent USD1↔AGX spot rates + pair spot for empty sell amount. */
 export function useMarketTradeSpotRates({
   pair,
   quotesEnabled,
@@ -28,11 +28,11 @@ export function useMarketTradeSpotRates({
   amountIn,
 }: UseMarketTradeSpotRatesArgs) {
   const readClient = useChainReadClient()
-  const usdtToUsd1Pair = getExchangePairTokens('reverse')
-  const usd1ToUsdtPair = getExchangePairTokens('forward')
+  const agxToUsd1Pair = getExchangePairTokens('reverse')
+  const usd1ToAgxPair = getExchangePairTokens('forward')
   const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
-  const exchangeSpotAmount = 10n ** BigInt(usdtToUsd1Pair.sell.decimals)
-  const exchangeSpotAmountInverted = 10n ** BigInt(usd1ToUsdtPair.sell.decimals)
+  const exchangeSpotAmount = 10n ** BigInt(usd1ToAgxPair.sell.decimals)
+  const exchangeSpotAmountInverted = 10n ** BigInt(agxToUsd1Pair.sell.decimals)
 
   const spotQuoteQuery = useQuery({
     queryKey: queryKeys.chain.swapQuote(
@@ -55,15 +55,15 @@ export function useMarketTradeSpotRates({
 
   const exchangeSpotQuoteQuery = useQuery({
     queryKey: queryKeys.chain.swapQuote(
-      usdtToUsd1Pair.sell.address,
-      usdtToUsd1Pair.buy.address,
+      usd1ToAgxPair.sell.address,
+      usd1ToAgxPair.buy.address,
       exchangeSpotAmount.toString(),
     ),
     queryFn: () =>
       fetchExchangeQuote({
         amountIn: exchangeSpotAmount,
-        tokenIn: usdtToUsd1Pair.sell.address,
-        tokenOut: usdtToUsd1Pair.buy.address,
+        tokenIn: usd1ToAgxPair.sell.address,
+        tokenOut: usd1ToAgxPair.buy.address,
         client: readClient,
         poolContext,
       }),
@@ -90,7 +90,7 @@ export function useMarketTradeSpotRates({
   const isExchangePriceQuoting =
     (exchangeSpotQuoteQuery.isPending || exchangeSpotQuoteQuery.isPlaceholderData) &&
     exchangeSpotQuotedOut === 0n
-  /** 反方向汇率由正向 quote 反推，不再单独轮询。 */
+  /** Reverse rate derived from forward quote — no second poll. */
   const isExchangePriceInvertedQuoting = isExchangePriceQuoting
 
   const exchangePriceEmpty = resolveEmptySpotRatePlaceholder(
@@ -103,10 +103,10 @@ export function useMarketTradeSpotRates({
       : formatExchangeRateApprox({
           amountIn: exchangeSpotAmount,
           amountOut: exchangeSpotQuotedOut,
-          decimalsIn: usdtToUsd1Pair.sell.decimals,
-          decimalsOut: usdtToUsd1Pair.buy.decimals,
-          symbolIn: usdtToUsd1Pair.sell.symbol,
-          symbolOut: usdtToUsd1Pair.buy.symbol,
+          decimalsIn: usd1ToAgxPair.sell.decimals,
+          decimalsOut: usd1ToAgxPair.buy.decimals,
+          symbolIn: usd1ToAgxPair.sell.symbol,
+          symbolOut: usd1ToAgxPair.buy.symbol,
           fractionDigits: 6,
         })
 
@@ -126,10 +126,10 @@ export function useMarketTradeSpotRates({
         : formatExchangeRateApprox({
             amountIn: exchangeSpotAmountInverted,
             amountOut: invertedAmountOut,
-            decimalsIn: usd1ToUsdtPair.sell.decimals,
-            decimalsOut: usd1ToUsdtPair.buy.decimals,
-            symbolIn: usd1ToUsdtPair.sell.symbol,
-            symbolOut: usd1ToUsdtPair.buy.symbol,
+            decimalsIn: agxToUsd1Pair.sell.decimals,
+            decimalsOut: agxToUsd1Pair.buy.decimals,
+            symbolIn: agxToUsd1Pair.sell.symbol,
+            symbolOut: agxToUsd1Pair.buy.symbol,
             fractionDigits: 6,
           })
 

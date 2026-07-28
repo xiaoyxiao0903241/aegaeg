@@ -15,9 +15,8 @@ interface ImportMetaEnv {
   readonly VITE_BSC_WBNB?: string
   readonly VITE_BSC_USD1?: string
   readonly VITE_BSC_USDT?: string
-  readonly VITE_BSC_PANCAKE_V3_SWAP_ROUTER?: string
-  readonly VITE_BSC_PANCAKE_V3_QUOTER?: string
-  readonly VITE_BSC_USDT_USD1_POOL?: string
+  readonly VITE_BSC_PANCAKE_ROUTER?: string
+  readonly VITE_BSC_PANCAKE_PAIR?: string
   readonly VITE_BSC_MULTICALL3?: string
   readonly VITE_BSC_REFERRAL?: string
   readonly VITE_BSC_PRESALE?: string
@@ -27,6 +26,8 @@ interface ImportMetaEnv {
   readonly VITE_BSC_AGX?: string
   readonly VITE_BSC_GAGX?: string
   readonly VITE_BSC_X_TOKEN?: string
+  readonly VITE_BSC_AGX_CONTRIBUTION_SWAP?: string
+  readonly VITE_BSC_TURBINE?: string
 }
 
 interface ImportMeta {

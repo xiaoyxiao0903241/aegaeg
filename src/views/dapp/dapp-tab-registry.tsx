@@ -14,7 +14,6 @@ import { RewardsWidget } from '~/views/dapp/rewards/rewards-widget'
 import { StakingContent } from '~/views/dapp/staking/staking-content'
 import { StakingWidget } from '~/views/dapp/staking/staking-widget'
 import { ExchangeContent, ExchangeWidget } from '~/views/dapp/exchange'
-import { scrollDappPanelsToTop } from '~/app/utils'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
 
@@ -33,21 +32,12 @@ export type DappTabEntry = {
   Content: ComponentType<TabContentProps>
 }
 
-function ExchangeTabWidget({ onSelectTab, trade, flash }: TabWidgetProps) {
-  return (
-    <ExchangeWidget
-      flash={flash}
-      onSelectGenesis={() => {
-        onSelectTab('genesis')
-        scrollDappPanelsToTop()
-      }}
-      trade={trade}
-    />
-  )
+function ExchangeTabWidget({ trade, flash, burn, turbine }: TabWidgetProps) {
+  return <ExchangeWidget burn={burn} flash={flash} trade={trade} turbine={turbine} />
 }
 
-function ExchangeTabContent({ trade, flash }: TabContentProps) {
-  return <ExchangeContent flash={flash} trade={trade} />
+function ExchangeTabContent({ trade, flash, burn, turbine }: TabContentProps) {
+  return <ExchangeContent burn={burn} flash={flash} trade={trade} turbine={turbine} />
 }
 
 function AssetsTabWidget() {

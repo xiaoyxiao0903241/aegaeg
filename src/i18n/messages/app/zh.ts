@@ -129,11 +129,6 @@ const app = defineMessages({
           title: '涡轮',
           body: '以 USD1 按 1:1 买入解锁涡轮中的 gAGX',
         },
-        comingSoon: '即将推出',
-      },
-      about: {
-        title: '关于兑换',
-        body: '将 USDT 兑换为 USD1，用主流代币交易 AEGIS X 生态代币，或将 gAGX 升级为 AGX、销毁 AGX 获得贡献点数。',
       },
       program: {
         title: '获取AEGIS X协议代币',
@@ -173,17 +168,59 @@ const app = defineMessages({
     },
     flash: {
       title: '闪兑',
-      intro: '将 USDT 兑换为 USD1，无手续费，无滑点',
+      intros: {
+        gagx: '将 gAGX 兑换为 AGX，无手续费，无滑点',
+        gagxWrap: '将 AGX 包装为 gAGX，无手续费，无滑点',
+        usdt: '将 USDT 兑换为 USD1，无手续费，无滑点',
+      },
       providerName: 'AEGIS X',
       openProvider: '在 BscScan 查看闪兑合约',
       settlementValue: '链上 · 秒到',
-      tokenAboutTitle: '关于 USD1',
+      aboutTitle: '关于',
       action: '闪兑',
-      minReceived: '最少获得',
       pairAriaLabel: '闪兑币对',
       pairs: {
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',
+      },
+      gates: {
+        paused: '闪兑已暂停，请稍后再试。',
+        belowMin: '低于单笔最小兑换限额。',
+        aboveMax: '超过单笔最大兑换限额。',
+        insufficientReserve: 'USD1 储备不足，请稍后再试。',
+        zeroRate: '兑换汇率未就绪，请稍后再试。',
+      },
+      faq: {
+        items: [
+          {
+            q: 'gAGX 是什么？',
+            a: 'gAGX 是 Rebase 与 DAO 奖励的统一结算凭证；参与 AGX 质押或持有债券产生的 Rebase 收益，以及各类 DAO 奖励，均以 gAGX 形式发放。',
+          },
+          {
+            q: 'gAGX 与 AGX 的兑换比例是多少？',
+            a: '固定 1:1 随时兑换，无手续费、无滑点，链上即时到账。',
+          },
+          {
+            q: '闪兑为什么没有手续费和滑点？',
+            a: '闪兑是协议层面的 gAGX↔AGX 1:1 固定赎回，而非在 AMM 池中撮合成交，因此不存在价格滑点，也不收取兑换手续费；您仅需支付链上交易所需的网络 gas 费（以 BNB 结算）。',
+          },
+          {
+            q: '如何获得 gAGX？',
+            a: '参与协议收益分配后，用户会收到相应数量的 gAGX。',
+          },
+          {
+            q: 'gAGX 除了兑换 AGX 还能做什么？',
+            a: 'gAGX 可随时 1:1 兑换为 AGX，继续参与质押复利增长；也可质押挖矿 X，捕获生态红利。两条路径可自由选择。',
+          },
+          {
+            q: '如何将 USDT 兑换为 USD1？',
+            a: '在闪兑页顶部切换到「USDT → USD1」币对，输入数量即可按协议汇率兑换，链上即时到账。',
+          },
+          {
+            q: '可以把 USD1 兑换回 USDT 吗？',
+            a: '闪兑路径为单向 USDT→USD1；如需换回其他资产，请使用交易页的市场兑换。',
+          },
+        ],
       },
     },
     trade: {
@@ -194,13 +231,137 @@ const app = defineMessages({
       estimatedGas: '预估 Gas',
       highPriceImpactWarning: '当前交易额对池子价格影响较大，建议减小金额或提高滑点容忍度。',
     },
+    burn: {
+      title: '销毁',
+      subtitle: '销毁 AGX 以获得贡献点数',
+      sellLabel: '销毁',
+      receiveLabel: '获得',
+      pointsToken: '贡献点数',
+      currentContribution: '当前贡献值',
+      burnRate: '销毁比率',
+      destination: '销毁去向',
+      destinationValue: '黑洞地址，永久销毁',
+      providerName: 'AEGIS X',
+      openProvider: '在 BscScan 查看贡献兑换合约',
+      action: '销毁',
+      aboutTitle: '关于',
+      gates: {
+        paused: '销毁已暂停，请稍后再试。',
+        belowMin: '低于单笔最小销毁限额。',
+        aboveMax: '超过单笔最大销毁限额。',
+        zeroRate: '销毁比率未就绪，请稍后再试。',
+      },
+      metrics: {
+        totalBurnedAgx: '累计销毁 AGX 数量',
+        totalEarnedContribution: '累计获得贡献点数',
+        totalConsumedContribution: '累计消耗贡献点数',
+      },
+      history: {
+        title: '销毁记录',
+        empty: '暂无销毁或消耗记录',
+        tabsAriaLabel: '销毁记录分类',
+        tabs: {
+          burn: '销毁',
+          consume: '消耗',
+        },
+        burnColumns: ['时间', '销毁 AGX', '获得贡献点数', '交易哈希'],
+        consumeColumns: ['时间', '消耗贡献点数', '交易哈希'],
+      },
+      faq: {
+        items: [
+          {
+            q: '贡献点数有什么用？',
+            a: '领取混合收益、复投等流程需要消耗贡献点数；余额不足时领取会失败，需先销毁 AGX 补充。',
+          },
+          {
+            q: '为什么领取收益需要消耗贡献点数？',
+            a: '协议用贡献点数约束领奖与复投资格；消耗量与奖励金额相关，请先确保账户贡献值充足。',
+          },
+          {
+            q: '销毁比率是多少？',
+            a: '销毁比率由链上 rateBps 配置；贡献点数 = 销毁 AGX × rateBps ÷ 10000。',
+          },
+          {
+            q: '销毁的 AGX 去了哪里？',
+            a: '一部分进入黑洞地址永久销毁，其余按合约拆分配置可能注入 LP 流动性。',
+          },
+          {
+            q: '贡献点数可以转让或退回吗？',
+            a: '贡献点数记录在 AgxContributionSwap 合约账户账本中，不可转让，也不能退回为 AGX。',
+          },
+        ],
+      },
+    },
+    turbine: {
+      title: '涡轮',
+      segmentAriaLabel: '涡轮操作',
+      segments: {
+        unlock: '解锁',
+        claim: '提取',
+      },
+      unlockLabel: '解锁 gAGX',
+      unlockable: '可解锁',
+      equivalentBuyHint: '解锁同时将执行等额买入',
+      payUsd1Label: '支付 USD1',
+      buyAgxLabel: '买入 AGX',
+      buyToBoundWallet: '买入到绑钱包',
+      agxPrice: 'AGX 价格',
+      willReceiveAgx: '将获得 AGX',
+      unlockRatio: '解锁比率',
+      unlockRatioValue: '1:1 买入解锁',
+      cooldown: '冷却周期',
+      unlockAction: '解锁',
+      unlockSuccess: '解锁成功，已进入冷却',
+      claimAction: '提取',
+      claimSuccess: '提取成功',
+      claimEmpty: '暂无冷却记录',
+      claimReady: '已到期，可提取',
+      claimCooling: '冷却中',
+      dataTitle: '涡轮数据',
+      aboutTitle: '关于',
+      recordsTitle: '涡轮记录',
+      recordsEmpty: '暂无记录',
+      recordColumns: ['时间', '操作', '数量', '交易哈希'],
+      mechanismTitle: '涡轮机制',
+      mechanism: [
+        {
+          title: '1:1 买入解锁',
+          body: '使用等额 USD1 买入 AGX，即可解锁对应涡轮配额中的 gAGX，并进入冷却。',
+        },
+        {
+          title: '动态冷却机制',
+          body: '冷却时长随国库健康度在约 24–96 小时之间自适应；到期后可提取 gAGX。',
+        },
+      ],
+      metrics: {
+        pendingUnlock: '待解锁',
+        cooling: '冷却中',
+        claimable: '可提取',
+      },
+      faq: {
+        items: [
+          {
+            q: '涡轮是做什么的？',
+            a: '奖励进入涡轮后形成可解锁配额；用 USD1 等额买入 AGX 即可启动冷却，到期提取 gAGX。',
+          },
+          {
+            q: '为什么要用 USD1 买入？',
+            a: '手册约定以 USD1 支付买入解锁；页面展示的支付币种以链上报价为准。',
+          },
+          {
+            q: '冷却结束后如何提取？',
+            a: '切换到「提取」页，对已到期记录点击提取；领取成功后列表会重新拉取。',
+          },
+        ],
+      },
+    },
     tokenAbout: {
       title: '关于 AEGIS X 生态代币',
       items: [
         {
           key: 'usd1',
-          title: 'USD1 · 核心结算资产',
-          body: 'AEGIS X生态核心结算资产，连接价值流通、流动性网络与支付场景。',
+          title: 'USD1 · 结算稳定币',
+          body: '协议核心结算稳定币，1:1 锚定、零滑点兑换，贯穿 Genesis 认购、质押与支付场景。',
         },
         {
           key: 'agx',
@@ -209,8 +370,8 @@ const app = defineMessages({
         },
         {
           key: 'gagx',
-          title: 'gAGX · 奖励结算凭证',
-          body: '协议奖励结算凭证，可兑换AGX，并参与生态挖矿与收益再循环。',
+          title: 'gAGX · 收益结算凭证',
+          body: 'Rebase 与 DAO 奖励的统一结算凭证，可 1:1 兑换 AGX，也可质押挖取 X。',
         },
         {
           key: 'x',
@@ -226,6 +387,35 @@ const app = defineMessages({
       title: 'FAQs',
       tabsTitle: 'FAQs',
       tabs: {
+        trade: {
+          label: '交易',
+          items: [
+            {
+              q: '交易和闪兑有什么区别？',
+              a: '交易通过 PancakeSwap 按实时市场汇率兑换 USD1、AGX、X 等代币，价格随市场波动、需设置允许滑点并支付 gas 费；闪兑则是协议内 gAGX 与 AGX 的 1:1 固定兑换，无手续费、无滑点。',
+            },
+            {
+              q: '什么是允许滑点？如何设置？',
+              a: '滑点是从发起交易到链上成交之间的价格变化。允许滑点即您可接受的最大偏差：可选默认（系统按代币自动设定）或自定义百分比。实际滑点超过设定值时交易会失败并回滚，回滚交易仍可能消耗 gas 费；滑点设置过低易失败，过高则可能以较差价格成交。',
+            },
+            {
+              q: '交易通过什么结算？有手续费吗？',
+              a: '交易由 PancakeSwap 链上撮合结算。AEGIS X 应用不额外收取兑换手续费，但每笔链上交易都需支付网络 gas 费（BSC 链以 BNB 支付），请确保钱包中留有足够 BNB。',
+            },
+            {
+              q: '为什么实际到账数量与预估有偏差？',
+              a: '预估数量按下单时的市场汇率计算，成交时价格可能已因市场波动或他人交易而变化，最终到账以链上实际成交为准，偏差范围由您设置的允许滑点约束。',
+            },
+            {
+              q: '可以交易哪些代币？',
+              a: '支持在 AEGIS X 生态代币（USD1、AGX、X）之间按市场汇率兑换。切换上方标签可查看各代币的详细介绍。',
+            },
+            {
+              q: '交易记录在哪里查看？',
+              a: '交易在链上执行，成交后秒到账。您可以在自己的钱包或区块链浏览器中查看和确认每一笔交易。',
+            },
+          ],
+        },
         usd1: {
           label: 'USD1',
           items: [

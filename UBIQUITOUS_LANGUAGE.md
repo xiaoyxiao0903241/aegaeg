@@ -28,12 +28,12 @@
 
 ## 兑换与报价
 
-| 业务术语            | 代码名           | 含义                                       | Owner                                          |
-| ------------------- | ---------------- | ------------------------------------------ | ---------------------------------------------- |
-| **兑换**            | `exchangeTokens` | Trade 路径链上 swap                        | `web3/exchange/exchange-write`                 |
-| **闪兑**            | `flashExchange`  | Flash 路径链上 swap                        | `web3/exchange/flash-exchange-write`           |
-| **报价**            | `quote`          | 链上/路由报价；placeholder 不得驱动 submit | `canSubmitQuotedExchange` / `useExchangeQuote` |
-| **闪兑 / 市场交易** | Flash / Trade    | Exchange 子视图；Provider 按需挂载         | `exchange-view-store`                          |
+| 业务术语            | 代码名           | 含义                                                          | Owner                                                    |
+| ------------------- | ---------------- | ------------------------------------------------------------- | -------------------------------------------------------- |
+| **兑换**            | `exchangeTokens` | Trade 路径链上 swap                                           | `web3/exchange/exchange-write`                           |
+| **闪兑**            | `flashExchange`  | Flash 双 pair：gAGX→AGX（`redeem`）与 USDT→USD1（`Usd1Swap`） | `web3/exchange/` · redeemablegagx / flash-exchange-write |
+| **报价**            | `quote`          | 链上/路由报价；placeholder 不得驱动 submit                    | `canSubmitQuotedExchange` / `useExchangeQuote`           |
+| **闪兑 / 市场交易** | Flash / Trade    | Exchange 子视图；Provider 按需挂载                            | `exchange-view-store`                                    |
 
 ## 奖励领取
 

@@ -47,6 +47,68 @@ test.describe('DApp money-path — behavior contracts', () => {
     await expect(sell).toHaveValue('1.25')
   })
 
+  test('swap flash exposes dual pairs and sell amount when disconnected', async ({ page }) => {
+    await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
+    await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
+
+    await page
+      .locator('[data-exchange-widget-panel]')
+      .getByRole('button', { name: /^Flash/i })
+      .click()
+
+    await expect(page.getByRole('tablist', { name: /Flash pair/i })).toBeVisible({
+      timeout: 30_000,
+    })
+    await expect(page.getByRole('tab', { name: /gAGX/i })).toBeVisible()
+    await expect(page.getByRole('tab', { name: /USDT/i })).toBeVisible()
+
+    const sell = page.getByLabel(/sell amount/i).first()
+    await expect(sell).toBeVisible()
+    await expect(sell).toBeEnabled()
+    await sell.fill('2')
+    await expect(sell).toHaveValue('2')
+  })
+
+  test('swap burn shows destroy flow and connect gate when disconnected', async ({ page }) => {
+    await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
+    await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
+
+    await page
+      .locator('[data-exchange-widget-panel]')
+      .getByRole('button', { name: /Burn/i })
+      .click()
+
+    await expect(page.getByText(/Burn AGX/i).first()).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByText(/contribution points/i).first()).toBeVisible()
+
+    const sell = page.getByLabel(/sell amount/i).first()
+    await expect(sell).toBeVisible()
+    await expect(sell).toBeEnabled()
+    await sell.fill('1')
+    await expect(sell).toHaveValue('1')
+
+    // Burn CTA is wallet-gated; disconnected shows Connect promo instead of submit.
+    await expect(page.getByRole('button', { name: /connect/i }).first()).toBeVisible()
+  })
+
+  test('swap turbine unlock segment is visible when disconnected', async ({ page }) => {
+    await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
+    await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
+
+    await page
+      .locator('[data-exchange-widget-panel]')
+      .getByRole('button', { name: /Turbine/i })
+      .click()
+
+    await expect(page.getByRole('tablist', { name: /Turbine actions/i })).toBeVisible({
+      timeout: 30_000,
+    })
+    await expect(page.getByRole('tab', { name: /Unlock/i })).toBeVisible()
+    await expect(page.getByRole('tab', { name: /Claim/i })).toBeVisible()
+    await expect(page.getByText(/Unlockable/i).first()).toBeVisible()
+    await expect(page.getByRole('button', { name: /connect/i }).first()).toBeVisible()
+  })
+
   test('genesis shares input is disabled when disconnected', async ({ page }) => {
     await page.goto('/en/app.html#genesis', { waitUntil: 'domcontentloaded', timeout: 60_000 })
     await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })

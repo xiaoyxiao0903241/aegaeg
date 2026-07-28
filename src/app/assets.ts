@@ -19,6 +19,11 @@ export const flashExchangeAssets = {
   externalLink: '/assets/figma/dapp/flash/ic-external-link.svg',
 } as const
 
+/** Burn exchange icons. */
+export const burnExchangeAssets = {
+  flowDown: '/assets/figma/dapp/burn/ic-flow-down.svg',
+} as const
+
 /** Exchange hub icons. */
 export const exchangeHubAssets = {
   modeFlash: '/assets/figma/dapp/hub/ic-hub-mode-flash.svg',

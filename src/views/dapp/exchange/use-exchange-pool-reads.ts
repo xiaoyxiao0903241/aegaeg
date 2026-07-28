@@ -10,7 +10,7 @@ import {
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 
-/** Shared pool metadata + slot0 spot — short-stale spot reused across exchange quotes. */
+/** Shared V2 pair metadata + reserves — short-stale spot reused across exchange quotes. */
 export function useExchangePoolReads(quotesEnabled = true) {
   const readClient = useChainReadClient()
 
@@ -38,7 +38,6 @@ export function useExchangePoolReads(quotesEnabled = true) {
 
   return {
     poolContext,
-    poolFee: metadataQuery.data?.fee ?? EXCHANGE_CONFIG.feeTier,
     metadataQuery,
     spotQuery,
   }

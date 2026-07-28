@@ -1,33 +1,24 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { encodeFunctionData, parseAbi, toFunctionSelector } from 'viem'
-import { SWAP_ROUTER_V3_METHODS } from '../../src/web3/abis.ts'
+import { PANCAKE_ROUTER_V2_METHODS } from '../../src/web3/abis.ts'
 
-const routerAbi = parseAbi([SWAP_ROUTER_V3_METHODS.exactInputSingle])
+const routerAbi = parseAbi([PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens])
 
-test('SWAP_ROUTER_V3 exactInputSingle matches Pancake on-chain selector', () => {
-  assert.equal(
-    toFunctionSelector(SWAP_ROUTER_V3_METHODS.exactInputSingle),
-    '0x414bf389',
-    'Pancake V3 SwapRouter expects deadline in ExactInputSingleParams',
-  )
+test('PANCAKE_ROUTER_V2 swapExactTokensForTokens matches on-chain selector', () => {
+  assert.equal(toFunctionSelector(PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens), '0x38ed1739')
 
   const data = encodeFunctionData({
     abi: routerAbi,
-    functionName: 'exactInputSingle',
+    functionName: 'swapExactTokensForTokens',
     args: [
-      {
-        tokenIn: '0x55d398326f99059fF775485246999027B3197955',
-        tokenOut: '0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d',
-        fee: 100,
-        recipient: '0x0000000000000000000000000000000000000001',
-        deadline: 1_700_001_200n,
-        amountIn: 10n ** 16n,
-        amountOutMinimum: 1n,
-        sqrtPriceLimitX96: 0n,
-      },
+      10n ** 16n,
+      1n,
+      ['0x32Bb0be09F62bbE69764906d80e9A5782C7F7633', '0x8d0771495272bB97Cd1cD44795222c8fB1b53247'],
+      '0x0000000000000000000000000000000000000001',
+      1_700_001_200n,
     ],
   })
 
-  assert.equal(data.slice(0, 10), '0x414bf389')
+  assert.equal(data.slice(0, 10), '0x38ed1739')
 })

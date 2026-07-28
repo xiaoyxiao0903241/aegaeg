@@ -9,6 +9,8 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Text } from '~/shared/ui/text'
 import { useGenesisPromo } from '~/hooks/use-genesis-promo'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
+import { useTurbineExchangeRailDot } from '~/views/dapp/exchange/turbine/use-turbine-exchange-rail-dot'
+import { useDappShell } from '~/app/use-dapp-shell'
 
 type RailIndicator = {
   height: number
@@ -65,7 +67,9 @@ export function DappRail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
+  const { sessionReady } = useDappShell()
   const tooltips = useRailTooltips()
+  const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
   const [indicator, setIndicator] = useState<RailIndicator | null>(null)
@@ -151,6 +155,13 @@ export function DappRail({
                 style={railIconMask(item.icon)}
                 aria-hidden="true"
               />
+              {item.id === 'exchange' && exchangeClaimable ? (
+                <span
+                  aria-hidden
+                  className="absolute top-2 right-2 size-1.5 rounded-full bg-coral"
+                  data-exchange-claimable-dot
+                />
+              ) : null}
               <Text
                 as="span"
                 variant="caption"

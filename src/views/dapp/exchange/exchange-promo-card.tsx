@@ -203,7 +203,3 @@ export function ExchangePromoCard({
     </Card>
   )
 }
-
-export function exchangePromoLayoutFromViewport(isDesktop: boolean): PromoLayout {
-  return isDesktop ? 'desktop' : 'mobile'
-}

@@ -93,10 +93,12 @@ const exchangeTokenAboutCarousel = tv({
   ],
 })
 
+type ExchangeTokenCarouselKey = 'agx' | 'usd1' | 'x' | 'gagx'
+
 type ExchangeTokenCarouselItem = {
   asset: string
   body: string
-  key: (typeof exchangeTokenCardKeys)[number]
+  key: ExchangeTokenCarouselKey
   title: string
 }
 
@@ -178,14 +180,18 @@ function useCarouselSnap(api: CarouselApi | undefined) {
   return { current, goTo }
 }
 
-function getExchangeTokenContent(t: ReturnType<typeof useI18n>['messages']) {
-  const assets = {
+function getExchangeTokenContent(
+  t: ReturnType<typeof useI18n>['messages'],
+  keys: readonly ExchangeTokenCarouselKey[],
+) {
+  const assets: Record<ExchangeTokenCarouselKey, string> = {
     agx: tokenCarouselIcons.agxIcon,
     usd1: tokenCarouselIcons.usd1Icon,
     x: tokenCarouselIcons.xIcon,
-  } as const
+    gagx: tokenCarouselIcons.gagxIcon,
+  }
 
-  return exchangeTokenCardKeys.map((key) => {
+  return keys.map((key) => {
     const copy = t.exchange.tokenAbout.items.find((item) => item.key === key)!
     return {
       asset: assets[key],
@@ -240,12 +246,16 @@ function CarouselDot({
   )
 }
 
-export function TokenAboutCarousel() {
+export function TokenAboutCarousel({
+  cardKeys = exchangeTokenCardKeys,
+}: {
+  cardKeys?: readonly ExchangeTokenCarouselKey[]
+} = {}) {
   const isDesktop = !useMobileViewport()
   const layout: CarouselLayout = isDesktop ? 'desktop' : 'mobile'
   const styles = exchangeTokenAboutCarousel({ layout })
   const { messages: t } = useI18n()
-  const tokens = getExchangeTokenContent(t)
+  const tokens = getExchangeTokenContent(t, cardKeys)
   const [api, setApi] = useState<CarouselApi>()
   const { current, goTo } = useCarouselSnap(api)
   const autoplay = useMemo(

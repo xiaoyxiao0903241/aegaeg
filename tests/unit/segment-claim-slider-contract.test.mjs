@@ -27,6 +27,16 @@ test('Segment pill thumb uses sliding transform contract (220ms cubic-bezier)', 
   assert.equal(two.transform, 'translateX(calc(1 * (100% + 4px)))')
 })
 
+test('Segment source documents coral + ink active tones', async () => {
+  const source = await import('node:fs/promises').then((fs) =>
+    fs.readFile(new URL('../../src/shared/ui/segment.tsx', import.meta.url), 'utf8'),
+  )
+  assert.match(source, /tone\?: 'coral' \| 'ink'/)
+  assert.match(source, /tone = 'coral'/)
+  assert.match(source, /text-coral-emphasis/)
+  assert.match(source, /font-semibold text-foreground/)
+})
+
 test('claimSplitFromReleasePct keeps release + restake = 100', async () => {
   const { claimSplitFromReleasePct } = await loadModule('/src/shared/ui/claim-split-slider.tsx')
 
