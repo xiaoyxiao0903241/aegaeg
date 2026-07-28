@@ -65,7 +65,7 @@ html.dapp-app #root {
   }
 }
 
-@keyframes swap-widget-enter-from-right {
+@keyframes exchange-widget-enter-from-right {
   from {
     transform: translate3d(var(--motion-dapp-slide), 0, 0);
   }
@@ -75,7 +75,7 @@ html.dapp-app #root {
   }
 }
 
-@keyframes swap-widget-enter-from-left {
+@keyframes exchange-widget-enter-from-left {
   from {
     transform: translate3d(calc(var(--motion-dapp-slide) * -1), 0, 0);
   }
@@ -85,7 +85,7 @@ html.dapp-app #root {
   }
 }
 
-@keyframes swap-widget-exit-to-right {
+@keyframes exchange-widget-exit-to-right {
   from {
     transform: translate3d(0, 0, 0);
   }
@@ -95,7 +95,7 @@ html.dapp-app #root {
   }
 }
 
-@keyframes swap-widget-exit-to-left {
+@keyframes exchange-widget-exit-to-left {
   from {
     transform: translate3d(0, 0, 0);
   }
@@ -105,7 +105,7 @@ html.dapp-app #root {
   }
 }
 
-@keyframes swap-detail-enter {
+@keyframes exchange-detail-enter {
   from {
     transform: translate3d(0, var(--motion-dapp-rise), 0);
   }
@@ -115,7 +115,7 @@ html.dapp-app #root {
   }
 }
 
-@keyframes swap-detail-exit {
+@keyframes exchange-detail-exit {
   from {
     transform: translate3d(0, 0, 0);
   }
@@ -169,7 +169,7 @@ html.dapp-app #root {
   transform: translate3d(0, 0, 0);
 }
 
-.swap-view-layer {
+.exchange-view-layer {
   display: flex;
   min-height: 100%;
   min-width: 0;
@@ -178,7 +178,7 @@ html.dapp-app #root {
   background-color: var(--card);
 }
 
-.swap-view-layer-motion {
+.exchange-view-layer-motion {
   display: flex;
   min-height: 100%;
   min-width: 0;
@@ -187,48 +187,58 @@ html.dapp-app #root {
   will-change: transform;
 }
 
-.swap-view-layer-exit {
+.exchange-view-layer-exit {
   pointer-events: none;
 }
 
-[data-swap-widget-panel] .swap-view-layer-enter {
+[data-exchange-widget-panel] .exchange-view-layer-enter {
   z-index: 2;
 }
 
-[data-swap-widget-panel] .swap-view-layer-exit {
+[data-exchange-widget-panel] .exchange-view-layer-exit {
   z-index: 1;
 }
 
-[data-swap-detail-panel] .swap-view-layer-enter {
+[data-exchange-detail-panel] .exchange-view-layer-enter {
   z-index: 2;
 }
 
-[data-swap-detail-panel] .swap-view-layer-exit {
+[data-exchange-detail-panel] .exchange-view-layer-exit {
   z-index: 1;
 }
 
-[data-swap-widget-panel] .swap-view-layer-enter[data-swap-direction='forward'] .swap-view-layer-motion {
-  animation: swap-widget-enter-from-right var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
+[data-exchange-widget-panel]
+  .exchange-view-layer-enter[data-exchange-direction='forward']
+  .exchange-view-layer-motion {
+  animation: exchange-widget-enter-from-right var(--motion-dapp-emphasis) var(--motion-dapp-ease)
+    both;
 }
 
-[data-swap-widget-panel] .swap-view-layer-exit[data-swap-direction='forward'] .swap-view-layer-motion {
-  animation: swap-widget-exit-to-left var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
+[data-exchange-widget-panel]
+  .exchange-view-layer-exit[data-exchange-direction='forward']
+  .exchange-view-layer-motion {
+  animation: exchange-widget-exit-to-left var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
 }
 
-[data-swap-widget-panel] .swap-view-layer-enter[data-swap-direction='back'] .swap-view-layer-motion {
-  animation: swap-widget-enter-from-left var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
+[data-exchange-widget-panel]
+  .exchange-view-layer-enter[data-exchange-direction='back']
+  .exchange-view-layer-motion {
+  animation: exchange-widget-enter-from-left var(--motion-dapp-emphasis) var(--motion-dapp-ease)
+    both;
 }
 
-[data-swap-widget-panel] .swap-view-layer-exit[data-swap-direction='back'] .swap-view-layer-motion {
-  animation: swap-widget-exit-to-right var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
+[data-exchange-widget-panel]
+  .exchange-view-layer-exit[data-exchange-direction='back']
+  .exchange-view-layer-motion {
+  animation: exchange-widget-exit-to-right var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
 }
 
-[data-swap-detail-panel] .swap-view-layer-enter .swap-view-layer-motion {
-  animation: swap-detail-enter var(--motion-dapp-base) var(--motion-dapp-ease) both;
+[data-exchange-detail-panel] .exchange-view-layer-enter .exchange-view-layer-motion {
+  animation: exchange-detail-enter var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
 
-[data-swap-detail-panel] .swap-view-layer-exit .swap-view-layer-motion {
-  animation: swap-detail-exit var(--motion-dapp-base) var(--motion-dapp-ease) both;
+[data-exchange-detail-panel] .exchange-view-layer-exit .exchange-view-layer-motion {
+  animation: exchange-detail-exit var(--motion-dapp-base) var(--motion-dapp-ease) both;
 }
 
 .dapp-detail-panel {
@@ -355,12 +365,13 @@ html.dapp-app [data-sonner-toast][data-styled='true'] {
   width: max-content !important;
   max-width: var(--width);
   overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: break-word;
   white-space: normal;
 }
 
 html.dapp-app [data-sonner-toast][data-styled='true'][data-x-position='center'],
-html.dapp-app [data-sonner-toast][data-styled='true'][data-expanded='true'][data-x-position='center'] {
+html.dapp-app
+  [data-sonner-toast][data-styled='true'][data-expanded='true'][data-x-position='center'] {
   left: 50% !important;
   right: auto !important;
   transform: translateX(-50%) var(--y) !important;
@@ -370,7 +381,7 @@ html.dapp-app [data-sonner-toast][data-styled='true'] [data-title],
 html.dapp-app [data-sonner-toast][data-styled='true'] [data-description] {
   color: inherit !important;
   overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: break-word;
   white-space: normal;
 }
 
@@ -399,7 +410,7 @@ html.dapp-app [data-sonner-toast][data-styled='true'] [data-content] {
   min-width: 0;
   flex: 1 1 auto;
   overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 html.dapp-app [data-sonner-toast][data-styled='true'] [data-button] {
@@ -436,9 +447,12 @@ html.dapp-app [data-sonner-toaster].app-toaster .sonner-loading-wrapper {
 
   html.dapp-app [data-sonner-toaster].app-toaster [data-sonner-toast] {
     width: max-content !important;
-    max-width: min(var(--width), calc(100vw - var(--mobile-offset-left) - var(--mobile-offset-right))) !important;
+    max-width: min(
+      var(--width),
+      calc(100vw - var(--mobile-offset-left) - var(--mobile-offset-right))
+    ) !important;
     overflow-wrap: anywhere;
-    word-break: break-word;
+    overflow-wrap: break-word;
     white-space: normal;
   }
 }

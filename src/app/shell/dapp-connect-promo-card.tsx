@@ -22,7 +22,7 @@ export function DappConnectPromoCard({ className }: { className?: string }) {
             as="a"
             variant="copy"
             tone="primary"
-            className="m-0 inline-flex items-center gap-1 transition-opacity duration-dapp-fast ease-out hover:opacity-90"
+            className="duration-dapp-fast m-0 inline-flex items-center gap-1 transition-opacity ease-out hover:opacity-90"
             href={homeHref}
           >
             {t.dapp.connect.promoBrandLine}

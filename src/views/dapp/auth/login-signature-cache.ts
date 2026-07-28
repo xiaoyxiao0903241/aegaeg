@@ -87,8 +87,9 @@ export function isLoginSignatureForAddress(
 
 function parseSiweExpirationMs(message: string): number | null {
   const match = message.match(/^Expiration Time: (.+)$/m)
-  if (!match) return null
-  const parsed = Date.parse(match[1])
+  const expirationText = match?.[1]
+  if (!expirationText) return null
+  const parsed = Date.parse(expirationText)
   return Number.isFinite(parsed) ? parsed : null
 }
 

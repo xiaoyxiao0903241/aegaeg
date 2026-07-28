@@ -3,10 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { normalizeAuthAddress } from '~/core/auth/types'
 import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
 import type { StoredLoginSignature, StoredAuthSession } from '~/core/auth/types'
-import {
-  AUTH_SESSION_STORAGE_KEY,
-  AUTH_SIGNATURE_STORAGE_KEY,
-} from '~/core/auth/types'
+import { AUTH_SESSION_STORAGE_KEY, AUTH_SIGNATURE_STORAGE_KEY } from '~/core/auth/types'
 
 export const AUTH_STORE_STORAGE_KEY = 'aegis.auth.store'
 
@@ -66,12 +63,8 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
     const legacySignatureRaw = localStorage.getItem(AUTH_SIGNATURE_STORAGE_KEY)
     if (!legacySessionRaw && !legacySignatureRaw) return null
 
-    const session = legacySessionRaw
-      ? (JSON.parse(legacySessionRaw) as StoredAuthSession)
-      : null
-    const legacySignature = legacySignatureRaw
-      ? (JSON.parse(legacySignatureRaw) as unknown)
-      : null
+    const session = legacySessionRaw ? (JSON.parse(legacySessionRaw) as StoredAuthSession) : null
+    const legacySignature = legacySignatureRaw ? (JSON.parse(legacySignatureRaw) as unknown) : null
 
     localStorage.removeItem(AUTH_SESSION_STORAGE_KEY)
     localStorage.removeItem(AUTH_SIGNATURE_STORAGE_KEY)
@@ -101,7 +94,10 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
 /** Merge persisted + legacy address-keyed auth tables (exported for unit tests). */
 export function mergePersistedState(
   persistedState: Partial<
-    AuthPersistState & { session?: StoredAuthSession | null; signature?: StoredLoginSignature | null }
+    AuthPersistState & {
+      session?: StoredAuthSession | null
+      signature?: StoredLoginSignature | null
+    }
   >,
   legacy: Partial<AuthPersistState> | null,
 ): AuthPersistState {
@@ -185,7 +181,10 @@ export const useAuthStore = create<AuthStore>()(
       merge: (persisted, currentState) => {
         const legacy = readLegacyPersistedAuth()
         const persistedState = (persisted ?? {}) as Partial<
-          AuthPersistState & { session?: StoredAuthSession | null; signature?: StoredLoginSignature | null }
+          AuthPersistState & {
+            session?: StoredAuthSession | null
+            signature?: StoredLoginSignature | null
+          }
         >
         return {
           ...currentState,
@@ -198,4 +197,3 @@ export const useAuthStore = create<AuthStore>()(
     },
   ),
 )
-

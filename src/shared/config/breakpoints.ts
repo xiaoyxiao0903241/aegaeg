@@ -9,7 +9,7 @@ export const BREAKPOINT_DAPP_PX = 821
 export const BREAKPOINT_DESIGN_BASE_PX = 1920
 
 /** site-fluid continuous clamp — min width (CSS px) at scale 1 / 16px root. */
-export const BREAKPOINT_FLUID_MIN_WIDTH_PX = BREAKPOINT_DESIGN_BASE_PX
+export const BREAKPOINT_FLUID_MIN_WIDTH_PX = 1920
 
 /** site-fluid continuous clamp — max width (CSS px) at scale cap. */
 export const BREAKPOINT_FLUID_MAX_WIDTH_PX = 3840

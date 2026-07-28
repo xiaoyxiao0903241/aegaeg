@@ -1,7 +1,4 @@
-import {
-  GENESIS_PURCHASE_ERROR,
-  WALLET_GATE_ERROR,
-} from '~/web3/errors/sentinels'
+import { GENESIS_PURCHASE_ERROR, WALLET_GATE_ERROR } from '~/web3/errors/sentinels'
 import {
   type ErrorRule,
   hasSelector,
@@ -72,7 +69,12 @@ const PRE_SALE_ERROR_RULES: Array<ErrorRule<keyof GenesisContractErrorMessages>>
 
 const GENESIS_PURCHASE_SENTINEL_RULES: Array<{
   sentinel: string
-  messageKey: keyof GenesisContractErrorMessages | 'insufficientUsd1' | 'insufficientAllowance' | 'purchaseUnavailable' | 'walletNotConnected'
+  messageKey:
+    | keyof GenesisContractErrorMessages
+    | 'insufficientUsd1'
+    | 'insufficientAllowance'
+    | 'purchaseUnavailable'
+    | 'walletNotConnected'
 }> = [
   { sentinel: GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1, messageKey: 'insufficientUsd1' },
   { sentinel: GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE, messageKey: 'insufficientAllowance' },

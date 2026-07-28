@@ -15,11 +15,11 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { isThirdwebConfigured } from '~/web3/thirdweb'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { useSwapViewStore } from '~/stores/swap-view-store'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { invalidateTabQueries } from '~/shared/api/query/invalidate'
 import { GenesisPromoSync } from '~/app/genesis-promo-sync'
 import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
-import { SwapSessionHosts } from '~/views/dapp/swap/swap-session-hosts'
+import { ExchangeSessionHosts } from '~/views/dapp/exchange/exchange-session-hosts'
 import { DappTabContent, DappTabWidget } from '~/views/dapp/dapp-tabs'
 
 function replaceTabHash(tab: string) {
@@ -69,9 +69,9 @@ export function DappShell() {
 
   // Mirror former store-side scroll: fire when a swap subview transition starts.
   useEffect(() => {
-    let prevView = useSwapViewStore.getState().view
-    let prevMotion = useSwapViewStore.getState().motion
-    return useSwapViewStore.subscribe((state) => {
+    let prevView = useExchangeViewStore.getState().view
+    let prevMotion = useExchangeViewStore.getState().motion
+    return useExchangeViewStore.subscribe((state) => {
       if (state.motion && !prevMotion && state.view !== prevView) {
         scrollDappPanelsToTop()
       }
@@ -134,7 +134,7 @@ export function DappShell() {
           <GenesisPromoSync />
           <GenesisSessionHost active={displayTab === 'genesis'}>
             {(genesis) => (
-              <SwapSessionHosts activeTab={displayTab}>
+              <ExchangeSessionHosts activeTab={displayTab}>
                 {({ trade, flash }) => (
                   <div
                     ref={setWindowNode}
@@ -223,7 +223,7 @@ export function DappShell() {
                     </DappScrollFadeHost>
                   </div>
                 )}
-              </SwapSessionHosts>
+              </ExchangeSessionHosts>
             )}
           </GenesisSessionHost>
         </div>

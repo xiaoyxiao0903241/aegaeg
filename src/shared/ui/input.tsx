@@ -16,11 +16,11 @@ export const inputVariants = tv({
   variants: {
     variant: {
       default:
-        'rounded-sm px-3.5 py-2.5 text-left text-(length:--type-copy-size) font-normal leading-normal tracking-normal',
+        'rounded-sm px-3.5 py-2.5 text-left text-(length:--type-copy-size) leading-normal font-normal tracking-normal',
       numeric:
-        'rounded-sm px-3.5 py-2.5 text-left text-(length:--type-copy-size) font-semibold leading-normal tracking-normal [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+        '[appearance:textfield] rounded-sm px-3.5 py-2.5 text-left text-(length:--type-copy-size) leading-normal font-semibold tracking-normal [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
       amount:
-        'border-0 bg-transparent text-right text-(length:--type-figure-size) font-semibold leading-normal tracking-[-0.02em] outline-0',
+        'border-0 bg-transparent text-right text-(length:--type-figure-size) leading-normal font-semibold tracking-[-0.02em] outline-0',
     },
     size: {
       sm: '',
@@ -46,16 +46,11 @@ export const inputVariants = tv({
   },
 })
 
-export type InputProps = InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof inputVariants>
+export type InputProps = InputHTMLAttributes<HTMLInputElement> & VariantProps<typeof inputVariants>
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, variant, size, ...props }, ref) => (
-    <input
-      className={cn(inputVariants({ variant, size }), className)}
-      ref={ref}
-      {...props}
-    />
+    <input className={cn(inputVariants({ variant, size }), className)} ref={ref} {...props} />
   ),
 )
 Input.displayName = 'Input'

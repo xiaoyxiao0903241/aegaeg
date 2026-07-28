@@ -47,17 +47,10 @@ export function buildLoginAttemptKey(
   session: StoredAuthSession | null,
   signature: StoredLoginSignature | null,
 ): string {
-  return [
-    address.toLowerCase(),
-    session?.token ?? 'none',
-    signature?.savedAt ?? 'nosig',
-  ].join(':')
+  return [address.toLowerCase(), session?.token ?? 'none', signature?.savedAt ?? 'nosig'].join(':')
 }
 
-export type AuthAction =
-  | { type: 'idle' }
-  | { type: 'login' }
-  | { type: 'renewAt'; at: number }
+export type AuthAction = { type: 'idle' } | { type: 'login' } | { type: 'renewAt'; at: number }
 
 export function resolveSessionRenewAtMs(
   session: StoredAuthSession,

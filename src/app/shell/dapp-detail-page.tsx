@@ -13,7 +13,7 @@ export function DappDetailPage({
     <div
       className={cn(
         'min-w-0',
-        'dapp:pt-10 dapp:px-7',
+        'dapp:px-7 dapp:pt-10',
         'dapp:pb-[calc(1.875rem+var(--shadow-bleed))]',
         'max-dapp:p-0',
         // First DappSection / DappDetailBlock carries mt-8.5 — drop it at page top.

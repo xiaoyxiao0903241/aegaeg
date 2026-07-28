@@ -3,9 +3,7 @@
  * wallet is already usable. Never treat `'unknown'` as a blocking handshake.
  * Active account address is the source of truth for on-chain readiness.
  */
-export function hasWalletAccount(
-  account: { address: string } | undefined | null,
-): boolean {
+export function hasWalletAccount(account: { address: string } | undefined | null): boolean {
   return Boolean(account?.address)
 }
 

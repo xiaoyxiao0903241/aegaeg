@@ -5,22 +5,22 @@
 import assert from 'node:assert/strict'
 import { loadModule } from '../unit/load-module.mjs'
 
-const { fetchSwapQuote, readSwapPoolImmutableMetadata, readSwapPoolSpotPrice } =
-  await loadModule('/src/web3/swap/swap-read.ts')
+const { fetchExchangeQuote, readExchangePoolImmutableMetadata, readExchangePoolSpotPrice } =
+  await loadModule('/src/web3/exchange/exchange-read.ts')
 const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
-const pool = await readSwapPoolImmutableMetadata()
+const pool = await readExchangePoolImmutableMetadata()
 assert.equal(pool.fee, 100)
 assert.equal(pool.token0.toLowerCase(), BSC_CONTRACTS.usdt.toLowerCase())
 assert.equal(pool.token1.toLowerCase(), BSC_CONTRACTS.usd1.toLowerCase())
 
-const spot = await readSwapPoolSpotPrice()
+const spot = await readExchangePoolSpotPrice()
 assert.ok(spot.sqrtPriceX96 > 0n, 'pool sqrtPriceX96 should be positive')
 
 const oneUnit = 10n ** 18n
 
 console.log('Testing USD1 → USDT quote on BSC (PancakeSwap V3)...')
-const quote = await fetchSwapQuote({
+const quote = await fetchExchangeQuote({
   amountIn: oneUnit,
   tokenIn: BSC_CONTRACTS.usd1,
   tokenOut: BSC_CONTRACTS.usdt,
@@ -37,7 +37,7 @@ console.log(`  1 USD1 ≈ ${Number(quote.quotedOut) / 1e18} USDT (raw: ${quote.q
 console.log(`  price impact: ${quote.priceImpactBps} bps, gas: ${quote.gasEstimate}`)
 
 console.log('Testing USDT → USD1 quote...')
-const reverse = await fetchSwapQuote({
+const reverse = await fetchExchangeQuote({
   amountIn: oneUnit,
   tokenIn: BSC_CONTRACTS.usdt,
   tokenOut: BSC_CONTRACTS.usd1,

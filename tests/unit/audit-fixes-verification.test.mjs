@@ -55,21 +55,19 @@ test('audit #18: transient login errors allow retry; permanent errors block', as
   assert.equal(isPermanentLoginErrorMessage('LOGIN_SIGNATURE_REJECTED'), true)
   assert.equal(isPermanentLoginErrorMessage('Network request failed'), false)
 
-  assert.deepEqual(
-    deriveAuthAction({ ...base, loginError: 'User rejected' }),
-    { type: 'idle' },
-  )
-  assert.deepEqual(
-    deriveAuthAction({ ...base, loginError: 'Network request failed' }),
-    { type: 'login' },
-  )
+  assert.deepEqual(deriveAuthAction({ ...base, loginError: 'User rejected' }), { type: 'idle' })
+  assert.deepEqual(deriveAuthAction({ ...base, loginError: 'Network request failed' }), {
+    type: 'login',
+  })
 })
 
-test('audit #12: formatSwapRateColon uses bigint ratio without Number()', async () => {
-  const { formatSwapRateColon } = await loadModule('/src/views/dapp/swap/swap-format-rate.ts')
+test('audit #12: formatExchangeRateColon uses bigint ratio without Number()', async () => {
+  const { formatExchangeRateColon } = await loadModule(
+    '/src/views/dapp/exchange/exchange-format-rate.ts',
+  )
 
   assert.equal(
-    formatSwapRateColon({
+    formatExchangeRateColon({
       amountIn: 10n ** 18n,
       amountOut: 1001n * 10n ** 15n,
       decimalsIn: 18,

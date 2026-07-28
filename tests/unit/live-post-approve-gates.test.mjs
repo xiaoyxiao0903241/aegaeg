@@ -56,9 +56,9 @@ test('fetchLiveGenesisPostApproveGate re-reads bind/pause (not render snapshot)'
   assert.deepEqual(missingAddress, { ok: false, reason: 'not_bound' })
 })
 
-test('assertQuotedSwapStillSubmittable fails when live sell balance drops', async () => {
-  const { assertQuotedSwapStillSubmittable } = await loadModule(
-    '/src/core/swap/resolve-live-quoted-out.ts',
+test('assertQuotedExchangeStillSubmittable fails when live sell balance drops', async () => {
+  const { assertQuotedExchangeStillSubmittable } = await loadModule(
+    '/src/core/exchange/resolve-live-quoted-out.ts',
   )
 
   const base = {
@@ -74,11 +74,9 @@ test('assertQuotedSwapStillSubmittable fails when live sell balance drops', asyn
     maxQuoteAgeMs: 60_000,
   }
 
-  assert.doesNotThrow(() =>
-    assertQuotedSwapStillSubmittable({ ...base, sellBalance: 100n }),
-  )
+  assert.doesNotThrow(() => assertQuotedExchangeStillSubmittable({ ...base, sellBalance: 100n }))
   assert.throws(
-    () => assertQuotedSwapStillSubmittable({ ...base, sellBalance: 50n }),
-    (error) => error instanceof Error && error.message === 'SWAP_SUBMIT_GATE_FAILED',
+    () => assertQuotedExchangeStillSubmittable({ ...base, sellBalance: 50n }),
+    (error) => error instanceof Error && error.message === 'EXCHANGE_SUBMIT_GATE_FAILED',
   )
 })

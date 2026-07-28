@@ -36,12 +36,16 @@ export function RewardsTierSection() {
   ]
 
   const tierRows = rewardTiers.map((row, rowIndex) => {
+    const rankLabel = row[0] ?? ''
+    const shareholder = row[1] ?? ''
+    const totalVolumeValue = row[2] ?? ''
+    const rewardRate = row[3] ?? ''
     const totalVolumeCell = formatTierTotalVolumeCell(
-      row[0],
-      row[2],
+      rankLabel,
+      totalVolumeValue,
       t.rewards.tierDualLegRequirement,
     )
-    const cells = [row[0], row[1], totalVolumeCell, row[3]]
+    const cells = [rankLabel, shareholder, totalVolumeCell, rewardRate]
     if (tierHighlightedRows.includes(rowIndex)) {
       cells[0] = `${cells[0]} · ${t.rewards.currentTierSuffix}`
     }

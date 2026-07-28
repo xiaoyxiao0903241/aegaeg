@@ -36,7 +36,7 @@ export const WALLET_WRITE_ERROR = {
 } as const
 
 /** Quote RPC / router failure — map via i18n `errors.quoteFailed`. */
-export const SWAP_QUOTE_FAILED = 'SWAP_QUOTE_FAILED'
+export const EXCHANGE_QUOTE_FAILED = 'EXCHANGE_QUOTE_FAILED'
 
 /** Approve 后二次门闸失败（quote 过期等）— 与 quoteFailed 同文案。 */
-export const SWAP_SUBMIT_GATE_FAILED = 'SWAP_SUBMIT_GATE_FAILED'
+export const EXCHANGE_SUBMIT_GATE_FAILED = 'EXCHANGE_SUBMIT_GATE_FAILED'

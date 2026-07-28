@@ -4,7 +4,7 @@ import { homeAssets as canonicalHomeAssets } from '~/views/home/assets'
 /** Homepage token flywheel icons. */
 const tokenFlywheelIcons = canonicalHomeAssets.token
 
-/** DApp swap carousel icons. */
+/** DApp exchange carousel icons. */
 export const tokenCarouselIcons = {
   agxIcon: '/assets/figma/dapp/carousel/token-agx.png',
   usd1Icon: '/assets/figma/dapp/carousel/token-usd1.png',
@@ -12,15 +12,15 @@ export const tokenCarouselIcons = {
   gagxIcon: '/assets/figma/dapp/carousel/token-gagx.png',
 } as const
 
-/** Flash swap icons. */
-export const flashSwapAssets = {
+/** Flash exchange icons. */
+export const flashExchangeAssets = {
   backArrow: '/assets/figma/dapp/flash/ic-back-arrow.svg',
   flowDivider: '/assets/figma/dapp/flash/ic-flow-divider.svg',
   externalLink: '/assets/figma/dapp/flash/ic-external-link.svg',
 } as const
 
-/** Swap hub icons. */
-export const swapHubAssets = {
+/** Exchange hub icons. */
+export const exchangeHubAssets = {
   modeFlash: '/assets/figma/dapp/hub/ic-hub-mode-flash.svg',
   modeTrade: '/assets/figma/dapp/hub/ic-hub-mode-trade.svg',
   modeBurn: '/assets/figma/dapp/hub/ic-hub-mode-burn.svg',
@@ -58,7 +58,7 @@ export const dappAssets = {
   check: '/assets/figma/dapp/ic-check.svg',
   chevron: '/assets/figma/dapp/ic-chevron.svg',
   chevronUp: '/assets/figma/dapp/ic-chevron-up.svg',
-  /** H5 Swap pager — double chevron (down); rotate 180° for previous page. */
+  /** H5 Exchange pager — double chevron (down); rotate 180° for previous page. */
   swipeChevronDouble: '/assets/figma/dapp/ic-swipe-chevron-double.svg',
   community: '/assets/figma/dapp/ic-community.svg',
   genesis: '/assets/figma/dapp/ic-genesis.svg',
@@ -68,8 +68,13 @@ export const dappAssets = {
   setting: '/assets/figma/dapp/ic-setting.svg',
   infoHint: '/assets/figma/dapp/ic-info-hint.svg',
   arrowUpRight: '/assets/figma/dapp/ic-arrow-up-right.svg',
-  swap: '/assets/figma/dapp/ic-swap.svg',
-  swapExchange: '/assets/figma/dapp/ic-swap-exchange.svg',
+  /** Rail icon for exchange tab (glyph file name historical). */
+  exchange: '/assets/figma/dapp/ic-swap.svg',
+  assets: '/assets/figma/dapp/ic-assets.svg',
+  staking: '/assets/figma/dapp/ic-staking.svg',
+  release: '/assets/figma/dapp/ic-release.svg',
+  /** Direction flip control in market trade (glyph file name historical). */
+  exchangeFlip: '/assets/figma/dapp/ic-swap-exchange.svg',
   telegram: '/assets/figma/dapp/ic-telegram.svg',
   twitter: '/assets/figma/dapp/ic-twitter.svg',
   youtube: '/assets/figma/dapp/ic-youtube.svg',
@@ -90,8 +95,11 @@ export const railItems: Array<{
   id: DappTab
   icon: string
 }> = [
-  { id: 'swap', icon: dappAssets.swap },
-  { id: 'genesis', icon: dappAssets.genesis },
+  { id: 'exchange', icon: dappAssets.exchange },
+  { id: 'assets', icon: dappAssets.assets },
+  { id: 'staking', icon: dappAssets.staking },
   { id: 'rewards', icon: dappAssets.rewards },
+  { id: 'release', icon: dappAssets.release },
   { id: 'community', icon: dappAssets.community },
+  { id: 'genesis', icon: dappAssets.genesis },
 ]

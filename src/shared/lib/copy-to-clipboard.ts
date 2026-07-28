@@ -107,8 +107,7 @@ export async function fallbackCopyText(text: string): Promise<boolean> {
 export async function copyTextToClipboard(text: string): Promise<CopyToClipboardResult> {
   if (!text) return 'failed'
   if (isWithinCopyCooldown(text)) return 'skipped'
-  const ok =
-    (await copyViaClipboardApi(text)) || (await fallbackCopyText(text))
+  const ok = (await copyViaClipboardApi(text)) || (await fallbackCopyText(text))
   if (!ok) return 'failed'
   markCopySuccess(text)
   return 'copied'

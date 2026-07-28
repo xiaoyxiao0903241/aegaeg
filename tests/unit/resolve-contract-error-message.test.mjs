@@ -7,10 +7,13 @@ test('resolveContractErrorMessage maps ERC20InsufficientBalance selector', async
     '/src/web3/resolve-contract-error-message.ts',
   )
 
-  const message = resolveContractErrorMessage(new Error('Encoded error signature "0xe450d38c" not found'), {
-    insufficientUsd1: 'USD1 low',
-    insufficientAllowance: 'Allowance low',
-  })
+  const message = resolveContractErrorMessage(
+    new Error('Encoded error signature "0xe450d38c" not found'),
+    {
+      insufficientUsd1: 'USD1 low',
+      insufficientAllowance: 'Allowance low',
+    },
+  )
 
   assert.equal(message, 'USD1 low')
 })
@@ -41,19 +44,19 @@ test('resolveGenesisPurchaseError maps validation codes to localized messages', 
 })
 
 test('isUserRejectedWalletError detects MetaMask rejection', async () => {
-  const { isUserRejectedWalletError, resolveGenesisPurchaseError, resolveSwapUserFacingMessage } =
-    await loadModule('/src/web3/resolve-contract-error-message.ts')
+  const {
+    isUserRejectedWalletError,
+    resolveGenesisPurchaseError,
+    resolveExchangeUserFacingMessage,
+  } = await loadModule('/src/web3/resolve-contract-error-message.ts')
 
-  assert.equal(isUserRejectedWalletError({ code: 4001, message: 'User rejected the request.' }), true)
+  assert.equal(
+    isUserRejectedWalletError({ code: 4001, message: 'User rejected the request.' }),
+    true,
+  )
   assert.equal(isUserRejectedWalletError(new Error('User rejected the request.')), true)
-  assert.equal(
-    isUserRejectedWalletError({ code: 4001, message: 'Transaction failed' }),
-    false,
-  )
-  assert.equal(
-    isUserRejectedWalletError({ code: 4001, message: 'Interaction failed' }),
-    false,
-  )
+  assert.equal(isUserRejectedWalletError({ code: 4001, message: 'Transaction failed' }), false)
+  assert.equal(isUserRejectedWalletError({ code: 4001, message: 'Interaction failed' }), false)
 
   const messages = {
     insufficientUsd1: 'USD1 low',
@@ -63,19 +66,19 @@ test('isUserRejectedWalletError detects MetaMask rejection', async () => {
     transactionCancelled: 'Cancelled',
   }
 
+  assert.equal(resolveGenesisPurchaseError(new Error('User rejected the request.'), messages), null)
   assert.equal(
-    resolveGenesisPurchaseError(new Error('User rejected the request.'), messages),
-    null,
-  )
-  assert.equal(
-    resolveSwapUserFacingMessage({ code: 4001, message: 'Transaction failed' }, messages),
+    resolveExchangeUserFacingMessage({ code: 4001, message: 'Transaction failed' }, messages),
     'Unavailable',
   )
   assert.equal(
-    resolveSwapUserFacingMessage({ code: 4001, message: 'User rejected the request.' }, {
-      ...messages,
-      transactionCancelled: 'Cancelled',
-    }),
+    resolveExchangeUserFacingMessage(
+      { code: 4001, message: 'User rejected the request.' },
+      {
+        ...messages,
+        transactionCancelled: 'Cancelled',
+      },
+    ),
     'Cancelled',
   )
 })
@@ -157,7 +160,10 @@ test('resolveWalletTransactionError maps gas and estimate failures', async () =>
     'Estimate failed',
   )
   assert.equal(
-    resolveWalletTransactionError(new Error('insufficient funds for gas * price + value'), messages),
+    resolveWalletTransactionError(
+      new Error('insufficient funds for gas * price + value'),
+      messages,
+    ),
     'No BNB',
   )
   assert.equal(
@@ -230,12 +236,9 @@ test('toWalletUserFacingMessage never returns raw RPC text', async () => {
   )
 })
 
-test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw RPC', async () => {
-  const {
-    resolveSwapUserFacingMessage,
-    SWAP_QUOTE_FAILED,
-    SWAP_SUBMIT_GATE_FAILED,
-  } = await loadModule('/src/web3/resolve-contract-error-message.ts')
+test('resolveExchangeUserFacingMessage maps quote/gate sentinels and never leaks raw RPC', async () => {
+  const { resolveExchangeUserFacingMessage, EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_GATE_FAILED } =
+    await loadModule('/src/web3/resolve-contract-error-message.ts')
 
   const messages = {
     walletNotConnected: 'Connect wallet',
@@ -253,12 +256,12 @@ test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw
   }
 
   assert.equal(
-    resolveSwapUserFacingMessage(SWAP_QUOTE_FAILED, messages, walletErrors, 'Fallback'),
+    resolveExchangeUserFacingMessage(EXCHANGE_QUOTE_FAILED, messages, walletErrors, 'Fallback'),
     'Quote failed',
   )
   assert.equal(
-    resolveSwapUserFacingMessage(
-      new Error(SWAP_SUBMIT_GATE_FAILED),
+    resolveExchangeUserFacingMessage(
+      new Error(EXCHANGE_SUBMIT_GATE_FAILED),
       messages,
       walletErrors,
       'Fallback',
@@ -266,7 +269,7 @@ test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw
     'Quote failed',
   )
   assert.equal(
-    resolveSwapUserFacingMessage(
+    resolveExchangeUserFacingMessage(
       new Error('execution reverted: 0xdeadbeef raw'),
       messages,
       walletErrors,
@@ -275,7 +278,7 @@ test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw
     'Fallback',
   )
   assert.notEqual(
-    resolveSwapUserFacingMessage(
+    resolveExchangeUserFacingMessage(
       new Error('execution reverted: 0xdeadbeef raw'),
       messages,
       walletErrors,
@@ -286,9 +289,7 @@ test('resolveSwapUserFacingMessage maps quote/gate sentinels and never leaks raw
 })
 
 test('resolveTeamClaimError never returns normalize throw.message', async () => {
-  const { resolveTeamClaimError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
+  const { resolveTeamClaimError } = await loadModule('/src/web3/resolve-contract-error-message.ts')
 
   const messages = {
     zeroAmount: 'Zero',

@@ -7,8 +7,11 @@ export function decodeJwtPayload(token: string): JwtPayload | null {
   const parts = token.split('.')
   if (parts.length !== 3) return null
 
+  const payloadSegment = parts[1]
+  if (!payloadSegment) return null
+
   try {
-    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const base64 = payloadSegment.replace(/-/g, '+').replace(/_/g, '/')
     const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
     const json = atob(padded)
     return JSON.parse(json) as JwtPayload
@@ -30,9 +33,7 @@ export function isJwtExpired(token: string, now = Date.now()): boolean {
   return now >= expiresAt
 }
 
-export function withJwtExpiry<T extends { token: string; expiresAt?: number }>(
-  session: T,
-): T {
+export function withJwtExpiry<T extends { token: string; expiresAt?: number }>(session: T): T {
   const expiresAt = getJwtExpiresAtMs(session.token)
   return expiresAt === null ? session : { ...session, expiresAt }
 }

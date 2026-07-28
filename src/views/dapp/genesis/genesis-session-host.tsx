@@ -33,8 +33,6 @@ export function GenesisSessionHost({
   }
 
   return (
-    <GenesisSessionMounted key={remountKey}>
-      {(genesis) => children(genesis)}
-    </GenesisSessionMounted>
+    <GenesisSessionMounted key={remountKey}>{(genesis) => children(genesis)}</GenesisSessionMounted>
   )
 }

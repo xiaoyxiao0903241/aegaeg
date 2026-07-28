@@ -49,9 +49,7 @@ export async function getPerformance(token: string): Promise<UserPerformance> {
   })
 }
 
-export async function getQualifiedPartitions(
-  token: string,
-): Promise<QualifiedPartitionsResponse> {
+export async function getQualifiedPartitions(token: string): Promise<QualifiedPartitionsResponse> {
   return apiRequest<QualifiedPartitionsResponse>('/performance/qualified-partitions', {
     method: 'POST',
     token,

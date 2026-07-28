@@ -13,12 +13,12 @@ import {
   type LoginSignatureStorage,
   type StoredLoginSignature,
 } from '~/views/dapp/auth/login-signature-cache'
-import { shouldClearCachedLoginSignature, classifyLoginFailure } from '~/core/auth/classify-login-failure'
-import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
 import {
-  ACCOUNT_BANNED_SENTINEL,
-  LOGIN_ERROR,
-} from '~/shared/api/account-banned'
+  shouldClearCachedLoginSignature,
+  classifyLoginFailure,
+} from '~/core/auth/classify-login-failure'
+import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
+import { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR } from '~/shared/api/account-banned'
 import {
   createLocalAuthSessionStorage,
   isSessionForAddress,

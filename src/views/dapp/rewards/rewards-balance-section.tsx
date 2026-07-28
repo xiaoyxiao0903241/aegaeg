@@ -1,11 +1,7 @@
 import { useEffect, useEffectEvent } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
-import {
-  useCommunityFundTotal,
-  useReferralTotal,
-  useTeamRewardTotal,
-} from '~/hooks/use-api-data'
+import { useCommunityFundTotal, useReferralTotal, useTeamRewardTotal } from '~/hooks/use-api-data'
 import {
   formatCommunityFundLockedAmount,
   formatClaimableAmount,
@@ -13,7 +9,7 @@ import {
 } from '~/views/dapp/rewards/rewards-display'
 import { formatUsd } from '~/shared/api/format-display'
 import { RewardBalanceCardSkeleton } from '~/app/shell/dapp-skeleton'
-import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-reward-claim'
+import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
 import { toast } from 'sonner'
 import {
   resolveTeamClaimError,
@@ -87,7 +83,10 @@ export function RewardsBalanceSection() {
   }, [communityFundClaimError])
 
   const referralValue = formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
-  const teamClaimableValue = claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
+  const teamClaimableValue = claimableAmountValue(
+    teamTotal?.total ?? '0',
+    teamTotal?.claimed ?? '0',
+  )
   const teamClaimable = formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamRewardMeta = (() => {
     if (teamTotal?.claimed == null) return undefined
@@ -114,9 +113,7 @@ export function RewardsBalanceSection() {
   const communityFundLabel = (
     <span className="inline-flex items-center gap-1">
       {t.rewards.communityFund}
-      <DappInfoTooltip
-        content={`${t.rewards.communityFundTooltip} ${communityFundClaimedText}`}
-      />
+      <DappInfoTooltip content={`${t.rewards.communityFundTooltip} ${communityFundClaimedText}`} />
     </span>
   )
   const showReferralSkeleton = sessionReady && referralLoading && referralTotal == null
@@ -125,10 +122,7 @@ export function RewardsBalanceSection() {
     sessionReady && isSuperCommunity && communityFundLoading && communityFundTotal == null
   const disconnectedReferralValue = formatUsd(0, 2)
   const disconnectedTeamValue = formatUsd(0, 2)
-  const disconnectedTeamClaimedMeta = t.rewards.claimed.replace(
-    '{amount}',
-    disconnectedTeamValue,
-  )
+  const disconnectedTeamClaimedMeta = t.rewards.claimed.replace('{amount}', disconnectedTeamValue)
 
   return (
     <>
@@ -137,10 +131,7 @@ export function RewardsBalanceSection() {
       ) : (
         <RewardBalanceCard
           badge={t.rewards.autoPaidLabel}
-          className={cn(
-            rewardsSideCard(),
-            'max-dapp:[&_small]:hidden',
-          )}
+          className={cn(rewardsSideCard(), 'max-dapp:[&_small]:hidden')}
           headerLabelClassName={rewardsBalanceHeaderMeta()}
           hint={t.rewards.autoPaid}
           hintClassName={rewardsBalanceHint()}
@@ -168,9 +159,7 @@ export function RewardsBalanceSection() {
                 void teamClaim.claim().then((result) => {
                   if (!result) return
                   if (result.status === 'confirm_failed') {
-                    toast.warning(
-                      t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimSuccess,
-                    )
+                    toast.warning(t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimSuccess)
                     return
                   }
                   const claimedAmount = result.confirmResult?.order?.amount

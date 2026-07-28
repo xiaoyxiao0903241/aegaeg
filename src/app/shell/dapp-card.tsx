@@ -4,13 +4,7 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 
 /** Left-column outlined card (`p-3.5` / `rounded-md`); stack gap defaults to `gap-2`. */
-export function DappSideCard({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
+export function DappSideCard({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <Card
       as="section"
@@ -58,37 +52,25 @@ export function RewardBalanceCard({
       data-reveal
     >
       <Card.Header className="flex-row items-center justify-between gap-3">
-        <Card.Label
-          as="p"
-          tone="muted-foreground"
-          className={cn('m-0', headerLabelClassName)}
-        >
+        <Card.Label as="p" tone="muted-foreground" className={cn('m-0', headerLabelClassName)}>
           {label}
         </Card.Label>
         {meta ? (
-          <Card.Label
-            as="span"
-            tone="muted-foreground"
-            className={cn(headerMetaClassName)}
-          >
+          <Card.Label as="span" tone="muted-foreground" className={cn(headerMetaClassName)}>
             {meta}
           </Card.Label>
         ) : (
           <Card.Label
             as="span"
             tone="success"
-            className={cn('whitespace-nowrap font-medium', badgeClassName)}
+            className={cn('font-medium whitespace-nowrap', badgeClassName)}
           >
             {badge}
           </Card.Label>
         )}
       </Card.Header>
       {/* Default: text-lg；H5 走 Text variant token；referral 用 figure 覆盖 */}
-      <Card.Value
-        className={cn('mt-2 text-lg leading-[1.3]', valueClassName)}
-      >
-        {value}
-      </Card.Value>
+      <Card.Value className={cn('mt-2 text-lg leading-[1.3]', valueClassName)}>{value}</Card.Value>
       {hint ? (
         <Card.Description
           as="small"

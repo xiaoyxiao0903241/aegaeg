@@ -117,12 +117,7 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             <Text as="h4" variant="headline" className="m-0 text-sm leading-[1.2]">
               {item.title}
             </Text>
-            <Text
-              as="p"
-              variant="copy"
-              tone="muted-foreground"
-              className="m-0 text-sm/normal"
-            >
+            <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-sm/normal">
               {item.copy}
             </Text>
           </div>

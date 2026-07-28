@@ -12,7 +12,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 const topbar = tv({
   slots: {
     root: [
-      'relative flex shrink-0 w-full items-center justify-between gap-6 bg-transparent px-6 py-4',
+      'relative flex w-full shrink-0 items-center justify-between gap-6 bg-transparent px-6 py-4',
       'max-dapp:sticky max-dapp:top-0 max-dapp:z-20',
       'max-dapp:gap-3 max-dapp:px-4 max-dapp:pb-4',
       'max-dapp:pt-[max(1rem,env(safe-area-inset-top,0px))]',

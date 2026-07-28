@@ -3,10 +3,10 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Wallet, X } from 'lucide-react'
 import { useActiveAccount, useActiveWallet, useDisconnect } from '~/web3/thirdweb-react'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
-import { formatTokenAmount } from '~/core/swap/token-amount'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useUsd1PresaleWalletQuery } from '~/web3/use-presale-queries'
 import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/app/bootstrap/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
@@ -43,9 +43,7 @@ export function WalletDetailsModal({
   const [connectOpen, setConnectOpen] = useState(false)
   const walletAddress = account?.address
   const walletReady = hasWalletAccount(account)
-  const { balanceQuery, usd1Balance } = useUsd1PresaleWalletQuery(
-    open ? walletAddress : undefined,
-  )
+  const { balanceQuery, usd1Balance } = useUsd1PresaleWalletQuery(open ? walletAddress : undefined)
 
   const handleOpenChange = (next: boolean) => {
     if (!next) setCopied(false)
@@ -100,10 +98,10 @@ export function WalletDetailsModal({
         'w-full max-w-(--dapp-wallet-modal-max-width) p-6',
         'dapp:rounded-2xl',
         // H5 bottom sheet — full bleed, top radius only
-        'max-dapp:max-w-none max-dapp:w-full',
+        'max-dapp:w-full max-dapp:max-w-none',
         'max-dapp:rounded-t-2xl max-dapp:rounded-b-none',
-        'max-dapp:border-x-0 max-dapp:border-b-0 max-dapp:border-t max-dapp:border-border',
-        'max-dapp:px-6 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))] max-dapp:pt-3',
+        'max-dapp:border-x-0 max-dapp:border-t max-dapp:border-b-0 max-dapp:border-border',
+        'max-dapp:px-6 max-dapp:pt-3 max-dapp:pb-[max(1.5rem,env(safe-area-inset-bottom))]',
       )}
     >
       <AegisSheetHandle />
@@ -118,10 +116,7 @@ export function WalletDetailsModal({
         aria-hidden="true"
         className="mx-auto mt-1.5 mb-5 grid size-(--dapp-wallet-modal-orb-size) shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-primary-orb"
       >
-        <Wallet
-          className="size-(--dapp-wallet-modal-orb-icon) shrink-0"
-          strokeWidth={1.75}
-        />
+        <Wallet className="size-(--dapp-wallet-modal-orb-icon) shrink-0" strokeWidth={1.75} />
       </div>
 
       <DialogPrimitive.Title asChild>

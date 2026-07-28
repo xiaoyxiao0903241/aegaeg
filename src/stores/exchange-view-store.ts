@@ -1,0 +1,75 @@
+import { create } from 'zustand'
+
+export type ExchangeView = 'hub' | 'flash' | 'trade'
+export type ExchangeViewDirection = 'forward' | 'back'
+
+export const EXCHANGE_VIEW_MOTION_MS = 320
+
+interface ExchangeViewStore {
+  view: ExchangeView
+  motion: boolean
+  direction: ExchangeViewDirection
+  outgoingView: ExchangeView | null
+  incomingView: ExchangeView | null
+  hasSubviewHistory: boolean
+  setView: (view: ExchangeView) => void
+  backToHub: () => void
+}
+
+let transitionTimer: number | null = null
+
+function clearTransitionTimer() {
+  if (transitionTimer !== null) {
+    window.clearTimeout(transitionTimer)
+    transitionTimer = null
+  }
+}
+
+/** Pure view/motion state — panel scroll lives in the shell (DOM side effect). */
+export const useExchangeViewStore = create<ExchangeViewStore>((set, get) => ({
+  view: 'hub',
+  motion: false,
+  direction: 'forward',
+  outgoingView: null,
+  incomingView: null,
+  hasSubviewHistory: false,
+  setView: (view) => {
+    const { view: currentView, motion } = get()
+    if (view === currentView && !motion) return
+    if (motion) return
+
+    const outgoingView = currentView
+    const back = view === 'hub' && outgoingView !== 'hub'
+    const leavingHub = outgoingView === 'hub' && view !== 'hub'
+
+    clearTransitionTimer()
+    set({
+      view,
+      motion: true,
+      direction: back ? 'back' : 'forward',
+      outgoingView,
+      incomingView: view,
+      ...(leavingHub ? { hasSubviewHistory: true } : null),
+    })
+
+    transitionTimer = window.setTimeout(() => {
+      set({
+        motion: false,
+        outgoingView: null,
+        incomingView: null,
+      })
+      transitionTimer = null
+    }, EXCHANGE_VIEW_MOTION_MS)
+  },
+  backToHub: () => {
+    clearTransitionTimer()
+    set({
+      view: 'hub',
+      motion: false,
+      direction: 'forward',
+      outgoingView: null,
+      incomingView: null,
+      hasSubviewHistory: false,
+    })
+  },
+}))

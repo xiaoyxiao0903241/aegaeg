@@ -92,6 +92,7 @@ export function FaqList({
   const defaultValue = useMemo(() => {
     for (let index = 0; index < items.length; index++) {
       const item = items[index]
+      if (!item) continue
       if (item.open ?? (openFirst && index === 0)) {
         return String(index)
       }

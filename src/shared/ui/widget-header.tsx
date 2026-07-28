@@ -5,7 +5,7 @@ import { cn } from '~/shared/lib/utils'
 
 export const widgetHeader = tv({
   slots: {
-    root: 'mb-3.5 flex items-start justify-between gap-4 max-dapp:mb-7.5 max-dapp:mt-6',
+    root: 'mb-3.5 flex items-start justify-between gap-4 max-dapp:mt-6 max-dapp:mb-7.5',
     copy: 'flex min-w-0 flex-1 flex-col gap-1.5',
     title: 'm-0',
     subtitle: 'm-0 max-w-70 max-dapp:max-w-none',
@@ -19,12 +19,7 @@ type WidgetHeaderProps = {
   title: ReactNode
 }
 
-export function WidgetHeader({
-  action,
-  className,
-  subtitle,
-  title,
-}: WidgetHeaderProps) {
+export function WidgetHeader({ action, className, subtitle, title }: WidgetHeaderProps) {
   const styles = widgetHeader()
 
   return (
@@ -87,11 +82,7 @@ export function WidgetSubpageHeader({
   return (
     <div className={cn(styles.root(), className)}>
       <div className={styles.navRow()}>
-        <button
-          className={styles.backButton()}
-          onClick={onBack}
-          type="button"
-        >
+        <button className={styles.backButton()} onClick={onBack} type="button">
           {backLabel}
         </button>
         {action}

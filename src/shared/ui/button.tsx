@@ -37,7 +37,7 @@ export const buttonVariants = tv({
         'disabled:border-border disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',
       ],
       link: [
-        'min-h-0 w-auto justify-start border-0 bg-transparent p-0 text-left font-normal text-primary whitespace-normal',
+        'min-h-0 w-auto justify-start border-0 bg-transparent p-0 text-left font-normal whitespace-normal text-primary',
         'disabled:text-muted-foreground disabled:opacity-100',
       ],
     },
@@ -60,8 +60,7 @@ export const buttonVariants = tv({
     {
       variant: ['secondary', 'ghost'],
       size: 'lg',
-      class:
-        'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
+      class: 'visited:text-foreground hover:text-foreground focus-visible:text-foreground',
     },
     {
       variant: 'link',

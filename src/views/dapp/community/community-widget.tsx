@@ -27,11 +27,7 @@ import {
   communityGenesisCta,
 } from '~/views/dapp/community/community-widget-primitives'
 
-export function CommunityWidget({
-  onSelectTab,
-}: {
-  onSelectTab: (tab: DappTab) => void
-}) {
+export function CommunityWidget({ onSelectTab }: { onSelectTab: (tab: DappTab) => void }) {
   const { sessionReady } = useDappShell()
   return sessionReady ? (
     <CommunityConnectedWidget onSelectTab={onSelectTab} />
@@ -40,11 +36,7 @@ export function CommunityWidget({
   )
 }
 
-function CommunityConnectedWidget({
-  onSelectTab,
-}: {
-  onSelectTab: (tab: DappTab) => void
-}) {
+function CommunityConnectedWidget({ onSelectTab }: { onSelectTab: (tab: DappTab) => void }) {
   const { messages: t } = useI18n()
   const account = useActiveAccount()
   const referral = useReferral(true)

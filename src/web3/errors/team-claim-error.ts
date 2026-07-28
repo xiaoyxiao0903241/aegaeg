@@ -1,7 +1,4 @@
-import {
-  CLAIM_CONFIRM_SYNC_FAILED,
-  WALLET_GATE_ERROR,
-} from '~/web3/errors/sentinels'
+import { CLAIM_CONFIRM_SYNC_FAILED, WALLET_GATE_ERROR } from '~/web3/errors/sentinels'
 import {
   type ErrorRule,
   nameOrSelector,
@@ -12,7 +9,7 @@ import {
 } from '~/web3/errors/error-text'
 import { isUserRejectedWalletError } from '~/web3/errors/wallet-error'
 
-/** Friendly i18n messages for the reward-claim flow (RewardClaimer errors + flow). */
+/** Friendly i18n messages for the claim-reward flow (RewardClaimer errors + flow). */
 export interface TeamClaimErrorMessages {
   zeroAmount: string
   invalidSigner: string
@@ -73,10 +70,7 @@ export function resolveTeamClaimError(
   const mapped = resolveFirstMatch(text, TEAM_CLAIM_ERROR_RULES, messages)
   if (mapped) return mapped
 
-  if (
-    text.raw === WALLET_GATE_ERROR.NOT_CONNECTED ||
-    /please connect wallet/i.test(text.raw)
-  ) {
+  if (text.raw === WALLET_GATE_ERROR.NOT_CONNECTED || /please connect wallet/i.test(text.raw)) {
     return messages.walletNotConnected ?? messages.failed
   }
 

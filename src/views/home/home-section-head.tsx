@@ -28,12 +28,7 @@ export function HomeSectionHead({
       data-reveal
       data-section-head
     >
-      <Text
-        as="p"
-        className="m-0 text-xs/tight normal-case"
-        tone="primary"
-        variant="eyebrow"
-      >
+      <Text as="p" className="m-0 text-xs/tight normal-case" tone="primary" variant="eyebrow">
         {eyebrow}
       </Text>
       <Text

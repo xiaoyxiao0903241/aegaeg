@@ -18,12 +18,14 @@ export function extractRootDomain(hostname: string): string {
   return parts.slice(-2).join('.')
 }
 
-export function resolveApiBaseUrl(options: {
-  hostname?: string
-  isDev?: boolean
-  envBaseUrl?: string
-  deriveFromDomain?: boolean
-} = {}): string {
+export function resolveApiBaseUrl(
+  options: {
+    hostname?: string
+    isDev?: boolean
+    envBaseUrl?: string
+    deriveFromDomain?: boolean
+  } = {},
+): string {
   const hostname = options.hostname ?? getRuntimeHostname()
   const isDev = options.isDev ?? import.meta.env.DEV
   const envBaseUrl = (options.envBaseUrl ?? appEnv.apiBaseUrl)?.trim()

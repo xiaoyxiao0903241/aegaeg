@@ -177,18 +177,38 @@
 
 /* React 挂载前：首屏保持终态，避免 refresh 时 opacity / transform 初始态闪动 */
 html:not([data-home-motion-ready]) [data-reveal]:not([data-reveal-manual]),
-html:not([data-home-motion-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel],
-html:not([data-home-motion-ready]) [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel] article,
+html:not([data-home-motion-ready])
+  [data-metrics-reveal]:not([data-visible='true'])
+  [data-metrics-panel],
+html:not([data-home-motion-ready])
+  [data-metrics-reveal]:not([data-visible='true'])
+  [data-metrics-panel]
+  article,
 html:not([data-home-motion-ready]) [data-token-grid]:not([data-visible='true']) [data-token-card],
-html:not([data-home-motion-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card],
-html:not([data-home-motion-ready]) [data-protocol-grid]:not([data-visible='true']) [data-protocol-card] [data-feature-line],
+html:not([data-home-motion-ready])
+  [data-protocol-grid]:not([data-visible='true'])
+  [data-protocol-card],
+html:not([data-home-motion-ready])
+  [data-protocol-grid]:not([data-visible='true'])
+  [data-protocol-card]
+  [data-feature-line],
 html:not([data-home-motion-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card],
-html:not([data-home-motion-ready]) [data-engine-grid]:not([data-visible='true']) [data-engine-card] [data-feature-line],
+html:not([data-home-motion-ready])
+  [data-engine-grid]:not([data-visible='true'])
+  [data-engine-card]
+  [data-feature-line],
 html:not([data-home-motion-ready]) [data-timeline]:not([data-visible='true']) [data-phase-card],
 html:not([data-home-motion-ready]) [data-timeline]:not([data-visible='true']) [data-phase-dot],
-html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true']) [data-security-art] img,
-html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true']) [data-security-line],
-html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true']) [data-security-check] {
+html:not([data-home-motion-ready])
+  [data-security-grid]:not([data-visible='true'])
+  [data-security-art]
+  img,
+html:not([data-home-motion-ready])
+  [data-security-grid]:not([data-visible='true'])
+  [data-security-line],
+html:not([data-home-motion-ready])
+  [data-security-grid]:not([data-visible='true'])
+  [data-security-check] {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
@@ -197,7 +217,14 @@ html:not([data-home-motion-ready]) [data-security-grid]:not([data-visible='true'
 }
 
 /* boot 完成后：仅对尚未 reveal 的块隐藏（首屏已 instant 标记的保持可见） */
-html[data-home-motion-ready] [data-reveal]:not([data-visible='true'], [data-reveal-manual], [data-protocol-grid], [data-engine-grid], [data-token-grid]) {
+html[data-home-motion-ready]
+  [data-reveal]:not(
+    [data-visible='true'],
+    [data-reveal-manual],
+    [data-protocol-grid],
+    [data-engine-grid],
+    [data-token-grid]
+  ) {
   opacity: 0;
 }
 
@@ -318,8 +345,10 @@ html[data-home-motion-ready] [data-reveal]:not([data-visible='true'], [data-reve
 
 [data-timeline][data-visible='true'] [data-phase-current] [data-phase-dot] {
   animation:
-    roadmap-dot-grow 560ms cubic-bezier(0.16, 1, 0.3, 1) both calc(var(--phase-index, 0) * 95ms + 240ms),
-    roadmap-active-ripple 3.6s cubic-bezier(0.16, 1, 0.3, 1) infinite calc(var(--phase-index, 0) * 95ms + 860ms);
+    roadmap-dot-grow 560ms cubic-bezier(0.16, 1, 0.3, 1) both
+      calc(var(--phase-index, 0) * 95ms + 240ms),
+    roadmap-active-ripple 3.6s cubic-bezier(0.16, 1, 0.3, 1) infinite
+      calc(var(--phase-index, 0) * 95ms + 860ms);
 }
 
 [data-security-grid] > * {

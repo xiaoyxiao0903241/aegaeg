@@ -1,0 +1,149 @@
+import { exchangeHubAssets } from '~/app/assets'
+import { tv } from 'tailwind-variants'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
+import { cn } from '~/shared/lib/utils'
+
+/** Layout only — chrome from Card `elevated` (shadow-card / rounded-md). Pad `p-4` INTENTIONAL vs elevated `p-3.5`. */
+const exchangeProgramCard = tv({
+  base: 'flex w-full p-4 text-left',
+  variants: {
+    layout: {
+      text: 'flex-col items-start gap-1',
+      split: 'items-center justify-between gap-2',
+    },
+    interactive: {
+      true: 'duration-dapp-fast cursor-pointer transition-[transform,box-shadow] ease-out hover:scale-[1.008] active:scale-[0.992]',
+      false: '',
+    },
+  },
+})
+
+const exchangeProgramCardBody = tv({
+  base: 'min-w-0',
+  variants: {
+    width: {
+      hero: 'shrink-0',
+      default: 'flex-1',
+    },
+  },
+})
+
+function ProgramCardCopy({ body, title }: { body: string; title: string }) {
+  return (
+    <span className="grid min-w-0 gap-1 text-left">
+      <Text as="strong" variant="support" className="leading-[1.3] font-semibold">
+        {title}
+      </Text>
+      <Text as="span" variant="copy" tone="muted-foreground" className="leading-[1.3]">
+        {body}
+      </Text>
+    </span>
+  )
+}
+
+function ProgramCardIcon({ index }: { index: number }) {
+  if (index === 0) {
+    return (
+      <span className="flex shrink-0 items-center justify-end">
+        <img
+          alt=""
+          className="-mr-1.75 size-7 shrink-0"
+          height={28}
+          src={exchangeHubAssets.programUsdt}
+          width={28}
+        />
+        <img
+          alt=""
+          className="size-7 shrink-0"
+          height={28}
+          src={exchangeHubAssets.programUsd1}
+          width={28}
+        />
+      </span>
+    )
+  }
+
+  if (index === 1) {
+    return (
+      <img
+        alt=""
+        className="size-7 shrink-0"
+        height={28}
+        src={exchangeHubAssets.programUsd1}
+        width={28}
+      />
+    )
+  }
+
+  if (index === 2) {
+    return (
+      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-dark">
+        <img
+          alt=""
+          className="h-[1.09375rem] w-5.25 object-contain"
+          height={17.5}
+          src={exchangeHubAssets.programAgx}
+          width={21}
+        />
+      </span>
+    )
+  }
+
+  if (index === 3) {
+    return (
+      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-dark">
+        <img
+          alt=""
+          className="h-4.25 w-4.5 object-contain"
+          height={17}
+          src={exchangeHubAssets.programX}
+          width={18}
+        />
+      </span>
+    )
+  }
+
+  return null
+}
+
+export function ExchangeProgramCard({
+  body,
+  index,
+  onClick,
+  title,
+}: {
+  body: string
+  index: number
+  onClick?: () => void
+  title: string
+}) {
+  const textOnly = index === 4
+  const interactive = Boolean(onClick)
+
+  return (
+    <Card
+      as="button"
+      surface="elevated"
+      className={cn(
+        exchangeProgramCard({
+          layout: textOnly ? 'text' : 'split',
+          interactive,
+        }),
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      {textOnly ? (
+        <ProgramCardCopy body={body} title={title} />
+      ) : (
+        <>
+          <span className={exchangeProgramCardBody({ width: index === 0 ? 'hero' : 'default' })}>
+            <ProgramCardCopy body={body} title={title} />
+          </span>
+          <ProgramCardIcon index={index} />
+        </>
+      )}
+    </Card>
+  )
+}

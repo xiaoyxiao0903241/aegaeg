@@ -45,7 +45,11 @@ export function buildNextTierProgress(
   const nextRank = resolveNextPresaleRank(normalizedRank)
 
   if (nextRank == null) {
-    const maxPersonalTarget = PERSONAL_PRESALE_RANK_THRESHOLDS_USD[MAX_PRESALE_RANK - 1]
+    const maxPersonalTarget =
+      PERSONAL_PRESALE_RANK_THRESHOLDS_USD[MAX_PRESALE_RANK - 1] ??
+      PERSONAL_PRESALE_RANK_THRESHOLDS_USD[0] ??
+      0
+    const maxTeamLegRank = TEAM_LEG_REQUIREMENT_RANKS[TEAM_LEG_REQUIREMENT_RANKS.length - 1] ?? null
     return {
       currentRank: normalizedRank,
       isMaxRank: true,
@@ -56,21 +60,41 @@ export function buildNextTierProgress(
       personalProgressPercent: 100,
       teamCurrentUsd,
       teamTargetUsd: null,
-      teamLegRank: TEAM_LEG_REQUIREMENT_RANKS[TEAM_LEG_REQUIREMENT_RANKS.length - 1],
+      teamLegRank: maxTeamLegRank,
       teamProgressPercent: null,
       teamRemainingUsd: null,
     }
   }
 
   const personalTargetUsd = PERSONAL_PRESALE_RANK_THRESHOLDS_USD[nextRank - 1]
+  if (personalTargetUsd == null) {
+    return {
+      currentRank: normalizedRank,
+      isMaxRank: true,
+      nextRank: MAX_PRESALE_RANK,
+      personalCurrentUsd,
+      personalTargetUsd:
+        PERSONAL_PRESALE_RANK_THRESHOLDS_USD[MAX_PRESALE_RANK - 1] ??
+        PERSONAL_PRESALE_RANK_THRESHOLDS_USD[0] ??
+        0,
+      personalRemainingUsd: 0,
+      personalProgressPercent: 100,
+      teamCurrentUsd,
+      teamTargetUsd: null,
+      teamLegRank: TEAM_LEG_REQUIREMENT_RANKS[TEAM_LEG_REQUIREMENT_RANKS.length - 1] ?? null,
+      teamProgressPercent: null,
+      teamRemainingUsd: null,
+    }
+  }
+
   const personalRemainingUsd = Math.max(0, personalTargetUsd - personalCurrentUsd)
   const teamTargetUsd =
     nextRank <= TEAM_PRESALE_RANK_THRESHOLDS_USD.length
-      ? TEAM_PRESALE_RANK_THRESHOLDS_USD[nextRank - 1]
+      ? (TEAM_PRESALE_RANK_THRESHOLDS_USD[nextRank - 1] ?? null)
       : null
   const teamLegRank =
     nextRank > TEAM_PRESALE_RANK_THRESHOLDS_USD.length
-      ? TEAM_LEG_REQUIREMENT_RANKS[nextRank - TEAM_PRESALE_RANK_THRESHOLDS_USD.length - 1]
+      ? (TEAM_LEG_REQUIREMENT_RANKS[nextRank - TEAM_PRESALE_RANK_THRESHOLDS_USD.length - 1] ?? null)
       : null
   const teamRemainingUsd =
     teamTargetUsd == null ? null : Math.max(0, teamTargetUsd - teamCurrentUsd)

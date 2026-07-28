@@ -2,40 +2,41 @@ import { defineMessages } from '~/i18n/messages/define-messages'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS X 是 AI 原生 DeFi 4.0 协议，以 USD1 结算、BSC 优先钱包入口和自修复协议引擎构建下一代价值网络。',
-    title: 'AEGIS X - 守护未来价值网络'
+    description:
+      'AEGIS X 是 AI 原生 DeFi 4.0 协议，以 USD1 结算、BSC 优先钱包入口和自修复协议引擎构建下一代价值网络。',
+    title: 'AEGIS X - 守护未来价值网络',
   },
   nav: {
     sectionsLabel: '首页区块导航',
     links: [
       {
         href: '#protocol',
-        label: '协议'
+        label: '协议',
       },
       {
         href: '#engine',
-        label: '核心机制'
+        label: '核心机制',
       },
       {
         href: '#token',
-        label: '生态价值'
+        label: '生态价值',
       },
       {
         href: '#roadmap',
-        label: '路线图'
+        label: '路线图',
       },
       {
         href: '#security',
-        label: '安全'
+        label: '安全',
       },
       {
         href: '#faq',
-        label: '常见问题'
-      }
+        label: '常见问题',
+      },
     ],
     whitepaper: '白皮书',
     enterApp: '进入 App',
-    languageLabel: '语言'
+    languageLabel: '语言',
   },
   hero: {
     guardianLabel: 'AEGIS X 守护者',
@@ -54,19 +55,19 @@ const home = defineMessages({
         {
           title: 'AI 智库',
           body: '自主风险控制、智能做市与流动性管理全部链上执行。',
-          index: '01'
+          index: '01',
         },
         {
           title: 'USD1 结算',
           body: '以 USD1 为核心结算资产，构建稳定的价值流通网络。',
-          index: '02'
+          index: '02',
         },
         {
           title: '全球支付',
           body: '连接 AI Agent、DeFi 与全球支付场景，构建下一代价值网络。',
-          index: '03'
-        }
-      ]
+          index: '03',
+        },
+      ],
     },
     engine: {
       eyebrow: '核心机制',
@@ -75,21 +76,21 @@ const home = defineMessages({
       cards: [
         {
           title: '智能做市机制',
-          body: '上涨阶段累积储备资产，增强协议储备能力；回调阶段执行回购与销毁机制，实现价格修复。'
+          body: '上涨阶段累积储备资产，增强协议储备能力；回调阶段执行回购与销毁机制，实现价格修复。',
         },
         {
           title: '波动防御机制',
-          body: '当日跌幅达到阈值自动触发：卖出费率提升至 30%，储备回购与黑洞销毁启动，24 小时后自动恢复。'
+          body: '当日跌幅达到阈值自动触发：卖出费率提升至 30%，储备回购与黑洞销毁启动，24 小时后自动恢复。',
         },
         {
           title: '收益分配机制',
-          body: '采用区块级线性释放机制，每12小时进行一次收益结算，支持最长540天参与周期。'
+          body: '采用区块级线性释放机制，每12小时进行一次收益结算，支持最长540天参与周期。',
         },
         {
           title: '涡轮机制',
-          body: '通过动态买入解锁机制，优化市场流动性结构，增强生态稳定性与长期发展能力。'
-        }
-      ]
+          body: '通过动态买入解锁机制，优化市场流动性结构，增强生态稳定性与长期发展能力。',
+        },
+      ],
     },
     token: {
       eyebrow: '价值生态',
@@ -98,21 +99,21 @@ const home = defineMessages({
       cards: [
         {
           label: '核心协议资产',
-          description: '150% 超额抵押铸造 · 收益增长引擎'
+          description: '150% 超额抵押铸造 · 收益增长引擎',
         },
         {
           label: '核心结算资产',
-          description: '生态结算层 · 价值流通基础设施'
+          description: '生态结算层 · 价值流通基础设施',
         },
         {
           label: '生态价值代币',
-          description: '固定总量2.1亿 · 持续价值沉淀'
+          description: '固定总量2.1亿 · 持续价值沉淀',
         },
         {
           label: '奖励结算凭证',
-          description: '可兑换AGX · 参与生态挖矿'
-        }
-      ]
+          description: '可兑换AGX · 参与生态挖矿',
+        },
+      ],
     },
     roadmap: {
       eyebrow: '路线图',
@@ -125,7 +126,7 @@ const home = defineMessages({
           description: '协议部署 · AGX 铸造 · USD1 流动性池',
           dot: '✓',
           side: 'left',
-          state: 'current'
+          state: 'current',
         },
         {
           phase: 'PHASE 02',
@@ -133,7 +134,7 @@ const home = defineMessages({
           title: 'DeFi 核心',
           description: 'Rebase 质押 · LP 债券 · 销毁债券 · AI 做市',
           dot: '2',
-          side: 'right'
+          side: 'right',
         },
         {
           phase: 'PHASE 03',
@@ -141,7 +142,7 @@ const home = defineMessages({
           title: 'DAO 与增长',
           description: 'X DAO 激励 · 多签治理 · 全球节点',
           dot: '3',
-          side: 'left'
+          side: 'left',
         },
         {
           phase: 'PHASE 04',
@@ -149,7 +150,7 @@ const home = defineMessages({
           title: 'AI Agent 经济',
           description: '自主支付 · 智能协作 · AI Agent经济网络',
           dot: '4',
-          side: 'right'
+          side: 'right',
         },
         {
           phase: 'PHASE 05',
@@ -157,7 +158,7 @@ const home = defineMessages({
           title: '全球支付',
           description: '全球支付网络 · 商户接入 · USD1支付场景',
           dot: '5',
-          side: 'left'
+          side: 'left',
         },
         {
           phase: 'PHASE 06',
@@ -165,23 +166,23 @@ const home = defineMessages({
           title: '未来价值网络',
           description: '支付网络 · AI Agent经济 · 价值生态',
           dot: '6',
-          side: 'right'
-        }
-      ]
+          side: 'right',
+        },
+      ],
     },
     security: {
       eyebrow: '安全与信任',
       title: 'AEGIS级安全架构',
       subtitle: '从协议架构到资产管理，安全贯穿每一个环节',
       checks: [
-        "非托管架构 · 智能做市合约不具备资产转出权限",
-        "核心合约开源可验证 · 通过专业安全审计",
-        "多签治理机制 · 核心权限共同管理",
-        "动态防御机制 · 自动应对极端波动"
-      ]
+        '非托管架构 · 智能做市合约不具备资产转出权限',
+        '核心合约开源可验证 · 通过专业安全审计',
+        '多签治理机制 · 核心权限共同管理',
+        '动态防御机制 · 自动应对极端波动',
+      ],
     },
     partners: {
-      title: '生态基础设施'
+      title: '生态基础设施',
     },
     faq: {
       eyebrow: '快速了解',
@@ -190,56 +191,56 @@ const home = defineMessages({
         {
           q: 'AEGIS X 是什么？',
           a: 'AEGIS X 是全球首个AI智库驱动的USD1生态协议，以USD1为核心结算资产，连接AI、DeFi与全球支付网络。',
-          open: true
+          open: true,
         },
         {
           q: 'AGX 如何铸造？',
-          a: 'AGX 通过150%超额抵押机制生成，是协议核心资产与价值增长的重要载体。'
+          a: 'AGX 通过150%超额抵押机制生成，是协议核心资产与价值增长的重要载体。',
         },
         {
           q: 'USD1 在 AEGIS X 中承担什么角色？',
-          a: 'USD1 是协议核心结算资产，为生态提供价值流通、流动性支持与支付基础设施能力。'
+          a: 'USD1 是协议核心结算资产，为生态提供价值流通、流动性支持与支付基础设施能力。',
         },
         {
           q: '协议如何保障安全？',
-          a: '合约采用非托管边界、审计、开源审查与多签治理。'
+          a: '合约采用非托管边界、审计、开源审查与多签治理。',
         },
         {
           q: '涡轮机制是什么？',
-          a: '涡轮机制通过动态解锁与流动性调节机制，降低集中性抛压风险，增强市场稳定性与长期发展能力。'
+          a: '涡轮机制通过动态解锁与流动性调节机制，降低集中性抛压风险，增强市场稳定性与长期发展能力。',
         },
         {
           q: 'X 代币如何运作？',
-          a: 'X 是生态价值代币，采用固定总量与协议驱动的销毁机制。'
-        }
-      ]
-    }
+          a: 'X 是生态价值代币，采用固定总量与协议驱动的销毁机制。',
+        },
+      ],
+    },
   },
   metrics: [
     {
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: '超额抵押率'
+      label: '超额抵押率',
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'LP永久锁定'
+      label: 'LP永久锁定',
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: '动态防御机制'
+      label: '动态防御机制',
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X固定总量'
-    }
+      label: 'X固定总量',
+    },
   ],
   footer: {
     brandCopy: '守护未来价值网络 \nAI x DeFi x USD1',
@@ -251,21 +252,21 @@ const home = defineMessages({
         links: [
           {
             href: '/app.html',
-            label: '进入 App'
+            label: '进入 App',
           },
           {
             linkId: 'whitepaper',
-            label: '白皮书'
+            label: '白皮书',
           },
           {
             linkId: 'docs',
-            label: '项目文档'
+            label: '项目文档',
           },
           {
             linkId: 'economicModel',
-            label: '经济模型'
-          }
-        ]
+            label: '经济模型',
+          },
+        ],
       },
       {
         label: '生态',
@@ -273,21 +274,21 @@ const home = defineMessages({
         links: [
           {
             href: '#token',
-            label: 'AGX'
+            label: 'AGX',
           },
           {
             href: '#token',
-            label: 'USD1'
+            label: 'USD1',
           },
           {
             href: '#token',
-            label: 'X'
+            label: 'X',
           },
           {
             href: '#token',
-            label: 'gAGX'
-          }
-        ]
+            label: 'gAGX',
+          },
+        ],
       },
       {
         label: '社区',
@@ -295,24 +296,24 @@ const home = defineMessages({
         links: [
           {
             socialId: 'youtube',
-            label: 'Youtube'
+            label: 'Youtube',
           },
           {
             socialId: 'twitter',
-            label: 'Twitter / X'
+            label: 'Twitter / X',
           },
           {
             socialId: 'telegram',
-            label: 'Telegram'
+            label: 'Telegram',
           },
           {
             socialId: 'medium',
-            label: 'Medium'
-          }
-        ]
-      }
-    ]
-  }
+            label: 'Medium',
+          },
+        ],
+      },
+    ],
+  },
 })
 
 export type HomeMessagesBundle = typeof home

@@ -1,7 +1,7 @@
 import { queryClient } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { SWAP_CONFIG } from '~/shared/config/swap'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import type { Paginated, SalesLogItem } from '~/shared/api/types'
 
@@ -36,11 +36,7 @@ export function salesLogAdvanced(
   current: SalesLogFingerprint,
 ): boolean {
   if (current.total > baseline.total) return true
-  if (
-    current.firstId != null &&
-    baseline.firstId != null &&
-    current.firstId !== baseline.firstId
-  ) {
+  if (current.firstId != null && baseline.firstId != null && current.firstId !== baseline.firstId) {
     return true
   }
   return false
@@ -53,10 +49,7 @@ function readSalesLogFingerprint(): SalesLogFingerprint {
   return pickSalesLogFingerprint(entries.map(([, data]) => data))
 }
 
-async function pollGenesisContributions(baseline: {
-  total: number
-  firstId: number | null
-}) {
+async function pollGenesisContributions(baseline: { total: number; firstId: number | null }) {
   await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
   await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
 
@@ -82,23 +75,29 @@ function invalidateApiQueries() {
 function invalidateAddressScopedChainQueries(address?: string) {
   if (!address) return
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale) })
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address),
+  })
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address),
+  })
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+  })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.swapBalances(
       address,
-      SWAP_CONFIG.tradePair.tokenA.address,
-      SWAP_CONFIG.tradePair.tokenB.address,
+      EXCHANGE_CONFIG.tradePair.tokenA.address,
+      EXCHANGE_CONFIG.tradePair.tokenB.address,
     ),
   })
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.swapBalances(
       address,
-      SWAP_CONFIG.tradePair.tokenB.address,
-      SWAP_CONFIG.tradePair.tokenA.address,
+      EXCHANGE_CONFIG.tradePair.tokenB.address,
+      EXCHANGE_CONFIG.tradePair.tokenA.address,
     ),
   })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapBalances(address) })
@@ -106,7 +105,11 @@ function invalidateAddressScopedChainQueries(address?: string) {
 }
 
 /** 钱包账户切换：刷新新地址链上读；旧地址缓存保留至自然过期。 */
-export function invalidateAfterWalletSwitch(previousAddress?: string, nextAddress?: string, tab?: DappTab) {
+export function invalidateAfterWalletSwitch(
+  previousAddress?: string,
+  nextAddress?: string,
+  tab?: DappTab,
+) {
   void previousAddress
   invalidateAddressScopedChainQueries(nextAddress)
 
@@ -147,7 +150,9 @@ export function invalidatePresaleChainQueries(address?: string) {
   if (!address) return
 
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address) })
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address),
+  })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Root })
 }
 
@@ -186,10 +191,10 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.performance,
     queryKeys.chain.referralRoot,
   ],
-  swap: [
-    queryKeys.chain.swapRoot,
-    queryKeys.chain.erc20Root,
-  ],
+  exchange: [queryKeys.chain.swapRoot, queryKeys.chain.erc20Root],
+  assets: [],
+  staking: [],
+  release: [],
 }
 
 /** 使当前 Tab 相关 query 标记过期，并只 refetch 已挂载的观察者。 */
@@ -229,6 +234,6 @@ export function invalidateAfterReferralBind() {
   invalidateTabQueries('community')
 }
 
-export function invalidateAfterSwap() {
-  invalidateTabQueries('swap')
+export function invalidateAfterExchange() {
+  invalidateTabQueries('exchange')
 }

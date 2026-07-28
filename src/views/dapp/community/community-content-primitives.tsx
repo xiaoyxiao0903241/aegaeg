@@ -124,11 +124,7 @@ export function CommunityStatCard({
           as="small"
           variant="support"
           tone={dark ? 'inverse-muted' : undefined}
-          className={cn(
-            styles.hint(),
-            'tracking-[-0.01em]',
-            !dark && 'text-foreground/40',
-          )}
+          className={cn(styles.hint(), 'tracking-[-0.01em]', !dark && 'text-foreground/40')}
         >
           {today}
         </Text>

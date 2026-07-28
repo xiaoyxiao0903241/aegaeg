@@ -5,12 +5,7 @@ import {
   parseAbi,
   type Abi,
 } from 'viem'
-import {
-  ERC20_ERRORS,
-  PRESALE_ERRORS,
-  REFERRAL_ERRORS,
-  REWARD_CLAIMER_ERRORS,
-} from '~/web3/abis'
+import { ERC20_ERRORS, PRESALE_ERRORS, REFERRAL_ERRORS, REWARD_CLAIMER_ERRORS } from '~/web3/abis'
 
 export interface DecodedContractRevert {
   errorName: string
@@ -45,7 +40,11 @@ function isRevertHex(value: string): value is `0x${string}` {
 }
 
 /** Walk wallet / viem error trees and find the first revert payload hex. */
-export function extractRevertData(error: unknown, depth = 0, seen = new WeakSet<object>()): `0x${string}` | null {
+export function extractRevertData(
+  error: unknown,
+  depth = 0,
+  seen = new WeakSet<object>(),
+): `0x${string}` | null {
   if (depth > 10 || error == null) return null
 
   if (error instanceof ContractFunctionRevertedError) {

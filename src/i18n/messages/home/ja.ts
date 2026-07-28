@@ -3,40 +3,41 @@ import type { HomeMessagesBundle } from './types'
 
 const home = defineMessages({
   meta: {
-    description: 'AEGIS Xは、USD1決済、BSC優先ウォレット入口、自己修復プロトコルエンジンを備えたAIネイティブDeFi 4.0プロトコルで、次世代の価値ネットワークを構築します。',
-    title: 'AEGIS X - 未来の価値ネットワークを守る'
+    description:
+      'AEGIS Xは、USD1決済、BSC優先ウォレット入口、自己修復プロトコルエンジンを備えたAIネイティブDeFi 4.0プロトコルで、次世代の価値ネットワークを構築します。',
+    title: 'AEGIS X - 未来の価値ネットワークを守る',
   },
   nav: {
     sectionsLabel: 'ホームページセクションナビゲーション',
     links: [
       {
         href: '#protocol',
-        label: 'プロトコル'
+        label: 'プロトコル',
       },
       {
         href: '#engine',
-        label: 'コアメカニズム'
+        label: 'コアメカニズム',
       },
       {
         href: '#token',
-        label: 'エコシステム価値'
+        label: 'エコシステム価値',
       },
       {
         href: '#roadmap',
-        label: 'ロードマップ'
+        label: 'ロードマップ',
       },
       {
         href: '#security',
-        label: 'セキュリティ'
+        label: 'セキュリティ',
       },
       {
         href: '#faq',
-        label: 'よくある質問'
-      }
+        label: 'よくある質問',
+      },
     ],
     whitepaper: 'ホワイトペーパー',
     enterApp: 'Appに入る',
-    languageLabel: '言語'
+    languageLabel: '言語',
   },
   hero: {
     guardianLabel: 'AEGIS X ガーディアン',
@@ -55,42 +56,43 @@ const home = defineMessages({
         {
           title: 'AIシンクタンク',
           body: '自律的なリスク管理、インテリジェントなマーケットメイキング、流動性管理をすべてオンチェーンで実行します。',
-          index: '01'
+          index: '01',
         },
         {
           title: 'USD1決済',
           body: 'USD1をコア決済資産とし、安定した価値流通ネットワークを構築します。',
-          index: '02'
+          index: '02',
         },
         {
           title: 'グローバル決済',
           body: 'AI Agent、DeFi、グローバル決済シナリオを接続し、次世代の価値ネットワークを構築します。',
-          index: '03'
-        }
-      ]
+          index: '03',
+        },
+      ],
     },
     engine: {
       eyebrow: 'コアメカニズム',
       title: '4つのメカニズム、1つのインテリジェントシステム',
-      subtitle: 'インテリジェントな意思決定、動的調整、リスク管理により、持続可能な価値ネットワークを構築します。',
+      subtitle:
+        'インテリジェントな意思決定、動的調整、リスク管理により、持続可能な価値ネットワークを構築します。',
       cards: [
         {
           title: 'インテリジェントマーケットメイキングメカニズム',
-          body: '上昇局面では準備資産を蓄積しプロトコル準備能力を強化し、調整局面では買い戻し・バーン機構を実行して価格を修復します。'
+          body: '上昇局面では準備資産を蓄積しプロトコル準備能力を強化し、調整局面では買い戻し・バーン機構を実行して価格を修復します。',
         },
         {
           title: 'ボラティリティ防御メカニズム',
-          body: '日次下落率が閾値に達すると自動発動：売却手数料を30%に引き上げ、準備金買い戻しとブラックホールバーンを開始し、24時間後に自動復帰します。'
+          body: '日次下落率が閾値に達すると自動発動：売却手数料を30%に引き上げ、準備金買い戻しとブラックホールバーンを開始し、24時間後に自動復帰します。',
         },
         {
           title: '収益分配メカニズム',
-          body: 'ブロック単位のリニアリリース機構を採用し、12時間ごとに収益精算を行い、最大540日の参加期間をサポートします。'
+          body: 'ブロック単位のリニアリリース機構を採用し、12時間ごとに収益精算を行い、最大540日の参加期間をサポートします。',
         },
         {
           title: 'ターボメカニズム',
-          body: '動的な買いアンロック機構により市場流動性構造を最適化し、エコシステムの安定性と長期発展力を強化します。'
-        }
-      ]
+          body: '動的な買いアンロック機構により市場流動性構造を最適化し、エコシステムの安定性と長期発展力を強化します。',
+        },
+      ],
     },
     token: {
       eyebrow: '価値エコシステム',
@@ -99,21 +101,21 @@ const home = defineMessages({
       cards: [
         {
           label: 'コアプロトコル資産',
-          description: '150%超過担保発行 · 収益成長エンジン'
+          description: '150%超過担保発行 · 収益成長エンジン',
         },
         {
           label: 'コア決済資産',
-          description: 'エコシステム決済レイヤー · 価値流通インフラ'
+          description: 'エコシステム決済レイヤー · 価値流通インフラ',
         },
         {
           label: 'エコシステム価値トークン',
-          description: '固定総量2.1億 · 継続的な価値蓄積'
+          description: '固定総量2.1億 · 継続的な価値蓄積',
         },
         {
           label: '報酬決済証明',
-          description: 'AGXと交換可能 · エコシステムマイニング参加'
-        }
-      ]
+          description: 'AGXと交換可能 · エコシステムマイニング参加',
+        },
+      ],
     },
     roadmap: {
       eyebrow: 'ロードマップ',
@@ -126,7 +128,7 @@ const home = defineMessages({
           description: 'プロトコル展開 · AGX発行 · USD1流動性プール',
           dot: '✓',
           side: 'left',
-          state: 'current'
+          state: 'current',
         },
         {
           phase: 'PHASE 02',
@@ -134,7 +136,7 @@ const home = defineMessages({
           title: 'DeFiコア',
           description: 'Rebaseステーキング · LPボンド · バーンボンド · AIマーケットメイキング',
           dot: '2',
-          side: 'right'
+          side: 'right',
         },
         {
           phase: 'PHASE 03',
@@ -142,7 +144,7 @@ const home = defineMessages({
           title: 'DAOと成長',
           description: 'X DAOインセンティブ · マルチシグガバナンス · グローバルノード',
           dot: '3',
-          side: 'left'
+          side: 'left',
         },
         {
           phase: 'PHASE 04',
@@ -150,7 +152,7 @@ const home = defineMessages({
           title: 'AI Agent経済',
           description: '自律決済 · インテリジェント協業 · AI Agent経済ネットワーク',
           dot: '4',
-          side: 'right'
+          side: 'right',
         },
         {
           phase: 'PHASE 05',
@@ -158,7 +160,7 @@ const home = defineMessages({
           title: 'グローバル決済',
           description: 'グローバル決済ネットワーク · 加盟店連携 · USD1決済シナリオ',
           dot: '5',
-          side: 'left'
+          side: 'left',
         },
         {
           phase: 'PHASE 06',
@@ -166,23 +168,24 @@ const home = defineMessages({
           title: '未来の価値ネットワーク',
           description: '決済ネットワーク · AI Agent経済 · 価値エコシステム',
           dot: '6',
-          side: 'right'
-        }
-      ]
+          side: 'right',
+        },
+      ],
     },
     security: {
       eyebrow: 'セキュリティと信頼',
       title: 'AEGIS級セキュリティアーキテクチャ',
-      subtitle: 'プロトコルアーキテクチャから資産管理まで、セキュリティがすべての段階に貫通しています',
+      subtitle:
+        'プロトコルアーキテクチャから資産管理まで、セキュリティがすべての段階に貫通しています',
       checks: [
-        "非カストディアルアーキテクチャ · インテリジェントマーケットメイキングコントラクトは資産転出権限を持ちません",
-        "コアコントラクトはオープンソースで検証可能 · 専門的なセキュリティ監査を通過",
-        "マルチシグガバナンス機構 · コア権限の共同管理",
-        "動的防御メカニズム · 極端なボラティリティに自動対応"
-      ]
+        '非カストディアルアーキテクチャ · インテリジェントマーケットメイキングコントラクトは資産転出権限を持ちません',
+        'コアコントラクトはオープンソースで検証可能 · 専門的なセキュリティ監査を通過',
+        'マルチシグガバナンス機構 · コア権限の共同管理',
+        '動的防御メカニズム · 極端なボラティリティに自動対応',
+      ],
     },
     partners: {
-      title: 'エコシステムインフラ'
+      title: 'エコシステムインフラ',
     },
     faq: {
       eyebrow: 'クイックガイド',
@@ -191,56 +194,56 @@ const home = defineMessages({
         {
           q: 'AEGIS Xとは何ですか？',
           a: 'AEGIS Xは世界初のAIシンクタンク駆動型USD1エコシステムプロトコルで、USD1をコア決済資産とし、AI、DeFi、グローバル決済ネットワークを接続します。',
-          open: true
+          open: true,
         },
         {
           q: 'AGXはどのように発行されますか？',
-          a: 'AGXは150%超過担保メカニズムにより生成され、プロトコルのコア資産と価値成長の重要な担い手です。'
+          a: 'AGXは150%超過担保メカニズムにより生成され、プロトコルのコア資産と価値成長の重要な担い手です。',
         },
         {
           q: 'USD1はAEGIS Xでどのような役割を果たしますか？',
-          a: 'USD1はプロトコルのコア決済資産であり、エコシステムに価値流通、流動性サポート、決済インフラ機能を提供します。'
+          a: 'USD1はプロトコルのコア決済資産であり、エコシステムに価値流通、流動性サポート、決済インフラ機能を提供します。',
         },
         {
           q: 'プロトコルはどのようにセキュリティを確保しますか？',
-          a: 'コントラクトは非カストディアル境界、監査、オープンソースレビュー、マルチシグガバナンスを採用しています。'
+          a: 'コントラクトは非カストディアル境界、監査、オープンソースレビュー、マルチシグガバナンスを採用しています。',
         },
         {
           q: 'ターボメカニズムとは何ですか？',
-          a: 'ターボメカニズムは動的アンロックと流動性調整機構により、集中売り圧力リスクを低減し、市場の安定性と長期発展力を強化します。'
+          a: 'ターボメカニズムは動的アンロックと流動性調整機構により、集中売り圧力リスクを低減し、市場の安定性と長期発展力を強化します。',
         },
         {
           q: 'Xトークンはどのように機能しますか？',
-          a: 'Xはエコシステム価値トークンで、固定総量とプロトコル駆動のバーン機構を採用しています。'
-        }
-      ]
-    }
+          a: 'Xはエコシステム価値トークンで、固定総量とプロトコル駆動のバーン機構を採用しています。',
+        },
+      ],
+    },
   },
   metrics: [
     {
       value: '150%',
       countTarget: 150,
       suffix: '%',
-      label: '超過担保率'
+      label: '超過担保率',
     },
     {
       value: '100%',
       countTarget: 100,
       suffix: '%',
-      label: 'LP永久ロック'
+      label: 'LP永久ロック',
     },
     {
       value: '24H',
       countTarget: 24,
       suffix: 'H',
-      label: '動的防御メカニズム'
+      label: '動的防御メカニズム',
     },
     {
       value: '2.1M',
       countTarget: 210,
       suffix: 'M',
-      label: 'X固定総量'
-    }
+      label: 'X固定総量',
+    },
   ],
   footer: {
     brandCopy: '未来の価値ネットワークを守る \nAI x DeFi x USD1',
@@ -252,21 +255,21 @@ const home = defineMessages({
         links: [
           {
             href: '/app.html',
-            label: 'Appに入る'
+            label: 'Appに入る',
           },
           {
             linkId: 'whitepaper',
-            label: 'ホワイトペーパー'
+            label: 'ホワイトペーパー',
           },
           {
             linkId: 'docs',
-            label: 'プロジェクトドキュメント'
+            label: 'プロジェクトドキュメント',
           },
           {
             linkId: 'economicModel',
-            label: '経済モデル'
-          }
-        ]
+            label: '経済モデル',
+          },
+        ],
       },
       {
         label: 'エコシステム',
@@ -274,21 +277,21 @@ const home = defineMessages({
         links: [
           {
             href: '#token',
-            label: 'AGX'
+            label: 'AGX',
           },
           {
             href: '#token',
-            label: 'USD1'
+            label: 'USD1',
           },
           {
             href: '#token',
-            label: 'X'
+            label: 'X',
           },
           {
             href: '#token',
-            label: 'gAGX'
-          }
-        ]
+            label: 'gAGX',
+          },
+        ],
       },
       {
         label: 'コミュニティ',
@@ -296,24 +299,24 @@ const home = defineMessages({
         links: [
           {
             socialId: 'youtube',
-            label: 'Youtube'
+            label: 'Youtube',
           },
           {
             socialId: 'twitter',
-            label: 'Twitter / X'
+            label: 'Twitter / X',
           },
           {
             socialId: 'telegram',
-            label: 'Telegram'
+            label: 'Telegram',
           },
           {
             socialId: 'medium',
-            label: 'Medium'
-          }
-        ]
-      }
-    ]
-  }
+            label: 'Medium',
+          },
+        ],
+      },
+    ],
+  },
 } satisfies HomeMessagesBundle)
 
 export default home

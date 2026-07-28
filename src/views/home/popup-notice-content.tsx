@@ -43,7 +43,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
   if (isPopupNoticeHtmlContent(content)) {
     return (
       <div
-        className="home-popup-notice-content wrap-break-word space-y-3 leading-[1.65] text-foreground [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:decoration-primary/35 [&_a]:underline-offset-2 [&_li]:ms-4 [&_li]:list-disc [&_ol]:list-decimal [&_p+p]:mt-3 [&_strong]:font-semibold [&_ul]:space-y-1.5"
+        className="home-popup-notice-content space-y-3 leading-[1.65] wrap-break-word text-foreground [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:decoration-primary/35 [&_a]:underline-offset-2 [&_li]:ms-4 [&_li]:list-disc [&_ol]:list-decimal [&_p+p]:mt-3 [&_strong]:font-semibold [&_ul]:space-y-1.5"
         dangerouslySetInnerHTML={{ __html: content }}
       />
     )
@@ -55,7 +55,7 @@ export function PopupNoticeContent({ content }: { content: string }) {
     .filter(Boolean)
 
   return (
-    <div className="home-popup-notice-content wrap-break-word space-y-3 leading-[1.65] text-foreground">
+    <div className="home-popup-notice-content space-y-3 leading-[1.65] wrap-break-word text-foreground">
       {paragraphs.map((paragraph) => (
         <Text as="p" key={paragraph} tone="foreground" variant="copy">
           {linkifyPlainText(paragraph)}

@@ -1,10 +1,7 @@
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatPhaseDate } from '~/core/presale/presale-math'
 import { buildSeasonOptions } from '~/views/dapp/genesis/season/genesis-season-options'
-import type {
-  GenesisPromoSnapshot,
-  GenesisPromoStatus,
-} from '~/core/presale/genesis-promo-types'
+import type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
 export type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
@@ -17,9 +14,7 @@ function resolveFeaturedPhaseIndex(
     return activePhase.index
   }
 
-  const upcomingIndex = phases.findIndex(
-    (phase) => Number(phase.startTime) > nowSeconds,
-  )
+  const upcomingIndex = phases.findIndex((phase) => Number(phase.startTime) > nowSeconds)
   if (upcomingIndex >= 0) {
     return upcomingIndex
   }
@@ -56,6 +51,7 @@ export function buildGenesisPromoSnapshot(
   }
 
   const phase = phases[featuredIndex]
+  if (!phase) return null
 
   return {
     season: featuredIndex + 1,
@@ -67,10 +63,7 @@ export function buildGenesisPromoSnapshot(
   }
 }
 
-export function applyMessageTemplate(
-  template: string,
-  values: Record<string, string>,
-): string {
+export function applyMessageTemplate(template: string, values: Record<string, string>): string {
   return Object.entries(values).reduce(
     (result, [key, value]) => result.replaceAll(`{${key}}`, value),
     template,

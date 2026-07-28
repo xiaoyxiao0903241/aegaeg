@@ -46,8 +46,7 @@ const faviconHead = `
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />`
 
-const viewportContent =
-  'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+const viewportContent = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
 
 /**
  * 首页文档：纯客户端 SPA 薄壳（不做 SSR / 不预渲染内容）。

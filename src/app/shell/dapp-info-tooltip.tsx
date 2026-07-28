@@ -1,7 +1,4 @@
-import {
-  AnchoredTooltip,
-  type AnchoredTooltipProps,
-} from '~/shared/ui/anchored-tooltip'
+import { AnchoredTooltip, type AnchoredTooltipProps } from '~/shared/ui/anchored-tooltip'
 import { DappInfoIcon } from '~/app/shell/dapp-info-icon'
 import { cn } from '~/shared/lib/utils'
 
@@ -23,7 +20,7 @@ export function DappInfoTooltip({
       <button
         aria-label={ariaLabel ?? (typeof content === 'string' ? content : undefined)}
         className={cn(
-          'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 transition-opacity duration-dapp-fast ease-out hover:opacity-80',
+          'duration-dapp-fast inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
           className,
         )}
         type="button"

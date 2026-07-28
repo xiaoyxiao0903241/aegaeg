@@ -59,10 +59,7 @@ export function AmountBox({
             as="span"
             variant="support"
             tone="muted-foreground"
-            className={cn(
-              styles.balance(),
-              sessionReady && !disabled && 'font-semibold',
-            )}
+            className={cn(styles.balance(), sessionReady && !disabled && 'font-semibold')}
           >
             {balance}
           </Text>

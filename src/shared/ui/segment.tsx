@@ -15,13 +15,7 @@ export type SegmentProps = {
   value: string
 }
 
-export function Segment({
-  className,
-  disabled = false,
-  onChange,
-  options,
-  value,
-}: SegmentProps) {
+export function Segment({ className, disabled = false, onChange, options, value }: SegmentProps) {
   return (
     <div className={cn('grid grid-cols-4 gap-1.5', className)} role="group" aria-label="Segment">
       {options.map((option) => {

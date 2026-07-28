@@ -22,11 +22,7 @@ export function DappContentHeading({
     <Text
       as="h2"
       variant="section"
-      className={cn(
-        'm-0 pb-4 max-dapp:mt-0',
-        reveal && revealClass(),
-        className,
-      )}
+      className={cn('m-0 pb-4 max-dapp:mt-0', reveal && revealClass(), className)}
       data-reveal={reveal ? '' : undefined}
       id={id}
     >

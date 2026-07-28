@@ -28,7 +28,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         'hover:shadow-(--home-token-hover-shadow) hover:saturate-[1.02]',
         'hover:before:opacity-100',
         'hover:**:data-token-tile:border-white/50 hover:**:data-token-tile:bg-white/20 hover:**:data-token-tile:shadow-(--home-token-tile-shadow)',
-        'hover:[&_[data-token-tile]_img]:saturate-[1.08] hover:[&_[data-token-tile]_img]:contrast-[1.04]',
+        'hover:[&_[data-token-tile]_img]:contrast-[1.04] hover:[&_[data-token-tile]_img]:saturate-[1.08]',
         'hover:**:data-token-shape-wrap:opacity-100 hover:**:data-token-shape-wrap:saturate-[1.08]',
         token.className,
       )}
@@ -43,10 +43,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         aria-hidden="true"
       >
         <img
-          className={cn(
-            'block size-full [[&:not([src])]]:bg-transparent',
-            token.shapeClassName,
-          )}
+          className={cn('block size-full [[&:not([src])]]:bg-transparent', token.shapeClassName)}
           src={token.shape}
           alt=""
           width={token.symbol === 'X' ? 585 : 170}
@@ -55,7 +52,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         />
       </div>
       <span
-        className="absolute left-6 top-6 z-1 grid size-(--home-token-tile-size) origin-center place-items-center rounded-[0.875rem] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-(--home-token-tile-size-h5) max-dapp:rounded-[0.8125rem] [&_img:not([src])]:bg-transparent"
+        className="absolute top-6 left-6 z-1 grid size-(--home-token-tile-size) origin-center place-items-center rounded-[0.875rem] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-(--home-token-tile-size-h5) max-dapp:rounded-[0.8125rem] [&_img:not([src])]:bg-transparent"
         data-token-tile
         aria-hidden="true"
       >
@@ -71,7 +68,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
           loading="lazy"
         />
       </span>
-      <div className="absolute left-6 top-40 z-1 flex w-full max-w-60 flex-col gap-1.5 max-dapp:static max-dapp:w-full max-dapp:max-w-none">
+      <div className="absolute top-40 left-6 z-1 flex w-full max-w-60 flex-col gap-1.5 max-dapp:static max-dapp:w-full max-dapp:max-w-none">
         <Text
           as="h3"
           className="m-0 text-2xl leading-[1.3] tracking-[-0.03em] text-white max-dapp:mt-0.5 max-dapp:text-xl max-dapp:leading-[1.2]"
@@ -81,7 +78,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         </Text>
         <Text
           as="strong"
-          className="text-sm font-semibold leading-[1.3] text-white max-dapp:text-xs max-dapp:leading-[1.2]"
+          className="text-sm leading-[1.3] font-semibold text-white max-dapp:text-xs max-dapp:leading-[1.2]"
           variant="copy"
         >
           {token.label}
@@ -101,10 +98,11 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
 export function HomeTokenSection() {
   const { messages } = useI18n()
   const content = messages.home.sections.token
-  const cards = content.cards.map((card, index) => ({
-    ...tokenCardShells[index],
-    ...card,
-  }))
+  const cards: TokenCard[] = content.cards.flatMap((card, index) => {
+    const shell = tokenCardShells[index]
+    if (!shell) return []
+    return [{ ...shell, ...card }]
+  })
 
   return (
     <HomeSection

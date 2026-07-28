@@ -4,8 +4,8 @@ export {
   CLAIM_SIGNATURE_EXPIRED,
   GENESIS_PURCHASE_ERROR,
   REFERRAL_BIND_ERROR,
-  SWAP_QUOTE_FAILED,
-  SWAP_SUBMIT_GATE_FAILED,
+  EXCHANGE_QUOTE_FAILED,
+  EXCHANGE_SUBMIT_GATE_FAILED,
   WALLET_GATE_ERROR,
   WALLET_WRITE_ERROR,
 } from '~/web3/errors/sentinels'
@@ -20,12 +20,9 @@ export {
   resolveReferralBindError,
   type ReferralBindErrorMessages,
 } from '~/web3/errors/referral-bind-error'
-export {
-  resolveTeamClaimError,
-  type TeamClaimErrorMessages,
-} from '~/web3/errors/team-claim-error'
+export { resolveTeamClaimError, type TeamClaimErrorMessages } from '~/web3/errors/team-claim-error'
 export {
   resolveGenesisPurchaseError,
   type GenesisContractErrorMessages,
 } from '~/web3/errors/genesis-purchase-error'
-export { resolveSwapUserFacingMessage } from '~/web3/errors/swap-user-facing-message'
+export { resolveExchangeUserFacingMessage } from '~/web3/errors/exchange-user-facing-message'

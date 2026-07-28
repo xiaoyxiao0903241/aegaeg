@@ -19,7 +19,7 @@ export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkPr
     <a
       className={cn(
         'flex items-center gap-3 rounded-md border border-border-subtle bg-card px-3.5 py-3',
-        'transition-[border-color,transform] duration-dapp-fast ease-out',
+        'duration-dapp-fast transition-[border-color,transform] ease-out',
         'hover:translate-x-0.5 hover:border-coral-hover-border',
       )}
       href={href}
@@ -36,16 +36,15 @@ export function QuickLink({ href, icon, iconTone = 'coral', label }: QuickLinkPr
       >
         <img
           alt=""
-          className={cn('block shrink-0 object-contain', isBrandIcon ? 'size-full' : insetIconClass)}
+          className={cn(
+            'block shrink-0 object-contain',
+            isBrandIcon ? 'size-full' : insetIconClass,
+          )}
           loading="lazy"
           src={icon}
         />
       </span>
-      <Text
-        as="span"
-        variant="headline"
-        className="text-sm/normal"
-      >
+      <Text as="span" variant="headline" className="text-sm/normal">
         {label}
       </Text>
     </a>

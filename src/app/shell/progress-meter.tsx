@@ -10,8 +10,7 @@ export function ProgressMeter({
   value: number
 }) {
   const clampedValue = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0
-  const fillWidth =
-    clampedValue > 0 ? `max(${clampedValue.toFixed(2)}%, 4px)` : '0%'
+  const fillWidth = clampedValue > 0 ? `max(${clampedValue.toFixed(2)}%, 4px)` : '0%'
 
   return (
     <div

@@ -1,7 +1,4 @@
-import {
-  AUTH_SESSION_STORAGE_KEY,
-  type StoredAuthSession,
-} from '~/core/auth/types'
+import { AUTH_SESSION_STORAGE_KEY, type StoredAuthSession } from '~/core/auth/types'
 import type { AuthSessionStorage } from '~/core/auth/storage'
 
 export type { StoredAuthSession } from '~/core/auth/types'

@@ -10,7 +10,7 @@ const rewardsHeroCard = tv({
     root: '',
     content: '',
     character: cn(
-      'pointer-events-none absolute right-3 -top-10.75 z-0 h-48 w-32 max-w-32 -scale-x-100 select-none object-contain',
+      'pointer-events-none absolute -top-10.75 right-3 z-0 h-48 w-32 max-w-32 -scale-x-100 object-contain select-none',
     ),
   },
   variants: {

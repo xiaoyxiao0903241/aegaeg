@@ -18,17 +18,9 @@ export function DappTableAuthPrompt({
   const { messages: t } = useI18n()
 
   return (
-    <DappTableEmptyState
-      className={cn(className)}
-      embedded={embedded}
-      showSkeleton={showSkeleton}
-    >
+    <DappTableEmptyState className={cn(className)} embedded={embedded} showSkeleton={showSkeleton}>
       <div className="grid w-full gap-1.5 text-center">
-        <Text
-          as="p"
-          variant="headline"
-          className="m-0 text-sm leading-[1.2] tracking-[-0.02em]"
-        >
+        <Text as="p" variant="headline" className="m-0 text-sm leading-[1.2] tracking-[-0.02em]">
           {t.dapp.connect.recordsTitle}
         </Text>
         <Text as="p" variant="support" tone="muted-foreground" className="m-0">

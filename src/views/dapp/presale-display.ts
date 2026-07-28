@@ -1,5 +1,9 @@
 import type { SalesLogItem } from '~/shared/api/types'
-import { estimateAgxFromUsd1, resolvePhaseDiscountBps, type PresalePhaseOnChain } from '~/core/presale/presale-math'
+import {
+  estimateAgxFromUsd1,
+  resolvePhaseDiscountBps,
+  type PresalePhaseOnChain,
+} from '~/core/presale/presale-math'
 import {
   TABLE_EMPTY,
   formatBlockTime,

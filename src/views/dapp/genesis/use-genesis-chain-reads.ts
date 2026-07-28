@@ -7,7 +7,7 @@ import {
   presaleAirdropThresholdToUsd,
   resolveGenesisMaxShares,
 } from '~/core/presale/presale-math'
-import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 import {
@@ -78,10 +78,7 @@ export function useGenesisChainReads() {
     agxPriceQuery.isLoading ||
     totalPurchasedQuery.isLoading ||
     (purchaseQueriesEnabled && walletReady && userTotalQuery.isLoading) ||
-    (purchaseQueriesEnabled &&
-      walletReady &&
-      activePhase !== null &&
-      phaseRemainingQuery.isLoading)
+    (purchaseQueriesEnabled && walletReady && activePhase !== null && phaseRemainingQuery.isLoading)
 
   const phaseIndex = activePhase?.index ?? 0
   const fromChain = formatTokenAmountToNumber(agxPriceWei, USD1_DECIMALS)

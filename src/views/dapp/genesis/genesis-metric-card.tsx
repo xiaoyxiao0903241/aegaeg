@@ -7,7 +7,7 @@ export const genesisMetricGrid = tv({
   base: 'max-dapp:grid-cols-2 max-dapp:gap-3',
 })
 
-/** Genesis season metrics — same overview MetricCard chrome/value as Swap. */
+/** Genesis season metrics — same overview MetricCard chrome/value as Exchange. */
 export function GenesisMetricCard({
   className,
   hint,

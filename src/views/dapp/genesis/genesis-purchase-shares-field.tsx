@@ -48,7 +48,10 @@ export function GenesisPurchaseSharesField({
             type="number"
             value={value}
           />
-          <span aria-hidden className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-muted-foreground">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-muted-foreground"
+          >
             {shareUnit}
           </span>
         </div>

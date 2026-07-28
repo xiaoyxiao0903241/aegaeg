@@ -13,10 +13,14 @@ import {
   getTeamRewardTotal,
 } from '~/shared/api/endpoints'
 import type { PaginationParams } from '~/shared/api/types'
-import { requestWithSession, toQueryErrorMessage, canRunAuthenticatedQuery } from '~/shared/api/query/session-request'
+import {
+  requestWithSession,
+  toQueryErrorMessage,
+  canRunAuthenticatedQuery,
+} from '~/shared/api/query/session-request'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useAuth } from '~/app/bootstrap/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
 import { useAuthStore } from '~/stores/auth-store'
 import { normalizeAuthAddress } from '~/core/auth/types'
@@ -77,11 +81,7 @@ export function usePerformance(enabled = true) {
 }
 
 export function useQualifiedPartitions(enabled = true) {
-  return useAuthenticatedQuery(
-    queryKeys.api.qualifiedPartitions,
-    getQualifiedPartitions,
-    enabled,
-  )
+  return useAuthenticatedQuery(queryKeys.api.qualifiedPartitions, getQualifiedPartitions, enabled)
 }
 
 export function useSalesLogs(params: PaginationParams = {}, enabled = true) {

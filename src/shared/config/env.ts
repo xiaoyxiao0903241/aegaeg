@@ -9,10 +9,7 @@ const EVM_ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/
  * Env override for `0x` addresses.
  * Missing → `fallback`. Present but invalid → throw (misconfiguration must not silently ship).
  */
-export function readEnvAddress(
-  key: keyof ImportMetaEnv,
-  fallback: `0x${string}`,
-): `0x${string}` {
+export function readEnvAddress(key: keyof ImportMetaEnv, fallback: `0x${string}`): `0x${string}` {
   const raw = readString(key)
   if (!raw) return fallback
   if (!EVM_ADDRESS_RE.test(raw)) {
@@ -47,10 +44,7 @@ export const appEnv = {
   apiDeriveFromDomain: readBoolean('VITE_API_DERIVE_FROM_DOMAIN', true),
   authMessageFormat: readString('VITE_AUTH_MESSAGE_FORMAT', 'siwe'),
   bscscanBase: readString('VITE_BSCSCAN_BASE_URL', 'https://bscscan.com'),
-  swapDefaultSlippageBps: readNumber('VITE_SWAP_DEFAULT_SLIPPAGE_BPS', 50),
-  swapDeadlineSeconds: readNumber('VITE_SWAP_DEADLINE_SECONDS', 20 * 60),
-  pancakeSwapBaseUrl: readString(
-    'VITE_PANCAKE_SWAP_BASE_URL',
-    'https://pancakeswap.finance/swap',
-  ),
+  exchangeDefaultSlippageBps: readNumber('VITE_SWAP_DEFAULT_SLIPPAGE_BPS', 50),
+  exchangeDeadlineSeconds: readNumber('VITE_SWAP_DEADLINE_SECONDS', 20 * 60),
+  pancakeSwapBaseUrl: readString('VITE_PANCAKE_SWAP_BASE_URL', 'https://pancakeswap.finance/swap'),
 } as const

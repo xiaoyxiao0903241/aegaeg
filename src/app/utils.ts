@@ -8,9 +8,14 @@ export function isDappTab(value: string): value is DappTab {
   return tabOrder.includes(value as DappTab)
 }
 
+/** Map URL hash → tab; legacy `#swap` bookmarks resolve to exchange. */
+export function resolveTabFromHash(hash: string): DappTab | null {
+  if (hash === 'swap') return 'exchange'
+  return isDappTab(hash) ? hash : null
+}
+
 export function getInitialTab(): DappTab {
-  const hash = window.location.hash.slice(1)
-  return isDappTab(hash) ? hash : 'swap'
+  return resolveTabFromHash(window.location.hash.slice(1)) ?? 'exchange'
 }
 
 /** Scroll both DApp panels and the H5 window to top — used after tab switch or promo CTA navigation. */

@@ -45,12 +45,7 @@ export function DappWidgetFrame({
   const onToggle = useDappShellStore((state) => state.toggleDetailCollapsed)
 
   return (
-    <div
-      className={cn(
-        'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
-        className,
-      )}
-    >
+    <div className={cn('flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0', className)}>
       <DappPanelHeader
         className="mb-3.5 max-dapp:mb-7.5"
         detailCollapsed={collapsed}

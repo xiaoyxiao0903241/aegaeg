@@ -1,8 +1,5 @@
 import { create } from 'zustand'
-import type {
-  GenesisPromoSnapshot,
-  SeasonOption,
-} from '~/core/presale/genesis-promo-types'
+import type { GenesisPromoSnapshot, SeasonOption } from '~/core/presale/genesis-promo-types'
 
 export type GenesisPromoState = {
   /** Shell 时钟 SSOT（GenesisPromoSync 15s tick）。 */

@@ -61,10 +61,7 @@ function rethrowAfterIntercept(error: unknown): never {
   throw error
 }
 
-export async function apiRequest<T>(
-  path: string,
-  options: ApiRequestOptions = {},
-): Promise<T> {
+export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = {
     Accept: 'application/json',
   }

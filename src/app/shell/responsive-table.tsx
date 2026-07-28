@@ -46,8 +46,8 @@ const responsiveTable = tv({
     },
     positive: {
       true: {
-        cell: 'font-bold text-success group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
-        text: 'font-bold text-success group-data-[tab=rewards]/shell:font-normal group-data-[tab=genesis]/shell:font-normal',
+        cell: 'font-bold text-success group-data-[tab=genesis]/shell:font-normal group-data-[tab=rewards]/shell:font-normal',
+        text: 'font-bold text-success group-data-[tab=genesis]/shell:font-normal group-data-[tab=rewards]/shell:font-normal',
       },
       false: {},
     },
@@ -110,12 +110,7 @@ export function ResponsiveTable({
           <tr>
             {headers.map((header) => (
               <th className={styles.cell()} key={header}>
-                <Text
-                  as="span"
-                  variant="copy"
-                  tone="muted-foreground"
-                  className={styles.text()}
-                >
+                <Text as="span" variant="copy" tone="muted-foreground" className={styles.text()}>
                   {header}
                 </Text>
               </th>
@@ -142,17 +137,12 @@ export function ResponsiveTable({
                     const cellStyles = responsiveTable({
                       lastRow: rowIndex === rows.length - 1,
                       link: !isStatus && isPlain === false && linkColumns.includes(index),
-                      emphasis:
-                        !isStatus && isPlain === false && emphasisColumns.includes(index),
-                      positive:
-                        !isStatus && isPlain === false && positiveColumns.includes(index),
+                      emphasis: !isStatus && isPlain === false && emphasisColumns.includes(index),
+                      positive: !isStatus && isPlain === false && positiveColumns.includes(index),
                     })
 
                     return (
-                      <td
-                        className={cellStyles.cell()}
-                        key={`${rowIndex}-${index}`}
-                      >
+                      <td className={cellStyles.cell()} key={`${rowIndex}-${index}`}>
                         {isStatus ? (
                           <StatusBadge>{cell}</StatusBadge>
                         ) : isPlain ? (

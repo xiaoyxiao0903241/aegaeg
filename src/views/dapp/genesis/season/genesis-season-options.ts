@@ -1,5 +1,9 @@
 import type { SeasonOption } from '~/core/presale/genesis-promo-types'
-import { formatPhaseDate, isPhaseActive, type PresalePhaseOnChain } from '~/core/presale/presale-math'
+import {
+  formatPhaseDate,
+  isPhaseActive,
+  type PresalePhaseOnChain,
+} from '~/core/presale/presale-math'
 
 function formatPhaseDateRange(startTime: bigint, endTime: bigint): string {
   return `${formatPhaseDate(startTime)} – ${formatPhaseDate(endTime)}`

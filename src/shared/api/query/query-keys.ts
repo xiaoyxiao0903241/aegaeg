@@ -50,7 +50,14 @@ export const queryKeys = {
     erc20Balance: (token: string, address: string) =>
       ['chain', 'erc20', 'balance', token.toLowerCase(), address.toLowerCase()] as const,
     erc20Allowance: (token: string, owner: string, spender: string) =>
-      ['chain', 'erc20', 'allowance', token.toLowerCase(), owner.toLowerCase(), spender.toLowerCase()] as const,
+      [
+        'chain',
+        'erc20',
+        'allowance',
+        token.toLowerCase(),
+        owner.toLowerCase(),
+        spender.toLowerCase(),
+      ] as const,
     referral: (address: string) => ['chain', 'referral', address.toLowerCase()] as const,
     referralIsBound: (address: string) =>
       ['chain', 'referral', 'isBound', address.toLowerCase()] as const,
@@ -60,9 +67,15 @@ export const queryKeys = {
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string) =>
       ['chain', 'swap', 'quote', tokenIn.toLowerCase(), tokenOut.toLowerCase(), amountIn] as const,
     swapBalances: (address: string, sellToken: string, buyToken: string) =>
-      ['chain', 'swap', 'balances', address.toLowerCase(), sellToken.toLowerCase(), buyToken.toLowerCase()] as const,
-    flashSwapQuote: (usdtAmount: string) =>
-      ['chain', 'flashSwap', 'quote', usdtAmount] as const,
+      [
+        'chain',
+        'swap',
+        'balances',
+        address.toLowerCase(),
+        sellToken.toLowerCase(),
+        buyToken.toLowerCase(),
+      ] as const,
+    flashSwapQuote: (usdtAmount: string) => ['chain', 'flashSwap', 'quote', usdtAmount] as const,
     flashSwapBalances: (address: string) =>
       ['chain', 'flashSwap', 'balances', address.toLowerCase()] as const,
   },

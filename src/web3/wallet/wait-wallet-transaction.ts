@@ -113,7 +113,11 @@ export async function waitForWalletTransactionConfirmation({
       )
     }
 
-    if (seenOnChain && pendingSince > 0 && Date.now() - pendingSince >= PENDING_WITHOUT_RECEIPT_MS) {
+    if (
+      seenOnChain &&
+      pendingSince > 0 &&
+      Date.now() - pendingSince >= PENDING_WITHOUT_RECEIPT_MS
+    ) {
       throw new WalletTransactionWaitError(
         hash,
         `Transaction stayed pending without confirmation. Do not resubmit until it settles. Hash: ${hash}`,

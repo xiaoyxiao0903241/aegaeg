@@ -15,10 +15,7 @@ import {
   normalizeContractRevertError,
 } from '~/web3/decode-contract-revert'
 import { WALLET_WRITE_ERROR } from '~/web3/resolve-contract-error-message'
-import {
-  createWalletReadClient,
-  type ChainReadClient,
-} from '~/web3/chain-read-client'
+import { createWalletReadClient, type ChainReadClient } from '~/web3/chain-read-client'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { resolveWalletEip1193Provider } from '~/web3/wallet/resolve-wallet-eip1193-provider'
 import { assertWalletTransactionHash } from '~/web3/wallet/wallet-write-error'
@@ -112,10 +109,7 @@ export async function estimateWriteGasLimit(
 
     if (import.meta.env.DEV) {
       const decoded = decodeContractRevert(error, call.abi)
-      console.warn(
-        '[preflight] simulate skipped (non-revert):',
-        decoded?.errorName ?? error,
-      )
+      console.warn('[preflight] simulate skipped (non-revert):', decoded?.errorName ?? error)
     }
   }
 

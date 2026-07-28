@@ -52,10 +52,7 @@ type DappTablePaginationProps = {
   total: number
 }
 
-function resolveMenuPlacement(
-  triggerRect: DOMRect,
-  menuHeight: number,
-): MenuPlacement {
+function resolveMenuPlacement(triggerRect: DOMRect, menuHeight: number): MenuPlacement {
   const viewportPadding = pageMenuViewportPaddingPx()
   const gap = pageMenuGapPx()
   const spaceBelow = window.innerHeight - triggerRect.bottom - viewportPadding
@@ -74,28 +71,16 @@ function resolveMenuStyle(
 ): CSSProperties {
   const viewportPadding = pageMenuViewportPaddingPx()
   const gap = pageMenuGapPx()
-  const maxHeight = Math.min(
-    menuHeight,
-    window.innerHeight - viewportPadding * 2,
-  )
+  const maxHeight = Math.min(menuHeight, window.innerHeight - viewportPadding * 2)
   const width = triggerRect.width
 
-  let top =
-    placement === 'below'
-      ? triggerRect.bottom + gap
-      : triggerRect.top - gap - maxHeight
+  let top = placement === 'below' ? triggerRect.bottom + gap : triggerRect.top - gap - maxHeight
 
-  top = Math.max(
-    viewportPadding,
-    Math.min(top, window.innerHeight - viewportPadding - maxHeight),
-  )
+  top = Math.max(viewportPadding, Math.min(top, window.innerHeight - viewportPadding - maxHeight))
 
   const left = Math.max(
     viewportPadding,
-    Math.min(
-      triggerRect.right - width,
-      window.innerWidth - width - viewportPadding,
-    ),
+    Math.min(triggerRect.right - width, window.innerWidth - width - viewportPadding),
   )
 
   return {
@@ -129,10 +114,7 @@ export function DappTablePagination({
   const safePage = Math.min(Math.max(page, 1), totalPages)
   const canPrev = safePage > 1
   const canNext = safePage < totalPages
-  const menuHeight = Math.min(
-    totalPages * pageMenuItemHeightPx(),
-    pageMenuMaxHeightPx(),
-  )
+  const menuHeight = Math.min(totalPages * pageMenuItemHeightPx(), pageMenuMaxHeightPx())
 
   const updateMenuPosition = useCallback(() => {
     const trigger = triggerRef.current
@@ -161,10 +143,7 @@ export function DappTablePagination({
 
     const handleClick = (event: MouseEvent) => {
       const target = event.target as Node
-      if (
-        rootRef.current?.contains(target) ||
-        menuRef.current?.contains(target)
-      ) {
+      if (rootRef.current?.contains(target) || menuRef.current?.contains(target)) {
         return
       }
       setMenuOpen(false)
@@ -203,7 +182,7 @@ export function DappTablePagination({
           as="p"
           variant="support"
           tone="muted-foreground"
-          className="m-0 shrink-0 whitespace-nowrap leading-none"
+          className="m-0 shrink-0 leading-none whitespace-nowrap"
         >
           {t.common.paginationTotal.replace('{total}', formatCount(total))}
         </Text>
@@ -212,7 +191,7 @@ export function DappTablePagination({
             as="p"
             variant="support"
             tone="muted-foreground"
-            className="m-0 min-w-0 whitespace-nowrap leading-none"
+            className="m-0 min-w-0 leading-none whitespace-nowrap"
           >
             {summary}
           </Text>
@@ -225,7 +204,7 @@ export function DappTablePagination({
             as="span"
             variant="support"
             tone="muted-foreground"
-            className="whitespace-nowrap leading-none"
+            className="leading-none whitespace-nowrap"
           >
             {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
           </Text>
@@ -261,11 +240,7 @@ export function DappTablePagination({
                 ref={triggerRef}
                 type="button"
               >
-                <Text
-                  as="span"
-                  variant="support"
-                  className="font-semibold leading-none text-coral"
-                >
+                <Text as="span" variant="support" className="leading-none font-semibold text-coral">
                   {safePage} / {totalPages}
                 </Text>
                 {/* Closed → down; open → up. Base asset points up. */}

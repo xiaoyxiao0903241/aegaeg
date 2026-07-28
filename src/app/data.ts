@@ -1,4 +1,4 @@
-export const swapTokenKeys = ['usd1', 'agx', 'x'] as const
-export const swapTokenCardKeys = ['agx', 'usd1', 'x'] as const
+export const exchangeTokenKeys = ['usd1', 'agx', 'x'] as const
+export const exchangeTokenCardKeys = ['agx', 'usd1', 'x'] as const
 
-export type SwapTokenKey = (typeof swapTokenKeys)[number]
+export type ExchangeTokenKey = (typeof exchangeTokenKeys)[number]

@@ -40,9 +40,10 @@ const THIRDWEB_SETUP_HINT = [
  * Dev: log once so local work is not blocked.
  */
 export function assertWeb3EnvConfigured() {
-  const fromEnv = typeof import.meta.env.VITE_THIRDWEB_CLIENT_ID === 'string'
-    ? import.meta.env.VITE_THIRDWEB_CLIENT_ID.trim()
-    : ''
+  const fromEnv =
+    typeof import.meta.env.VITE_THIRDWEB_CLIENT_ID === 'string'
+      ? import.meta.env.VITE_THIRDWEB_CLIENT_ID.trim()
+      : ''
 
   if (import.meta.env.PROD && !fromEnv) {
     throw new Error(

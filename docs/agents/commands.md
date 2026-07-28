@@ -4,32 +4,49 @@
 
 ## 日常
 
-| 命令 | 用途 |
-|------|------|
-| `pnpm dev` | tokens + render-home + Vite `:5174` |
-| `pnpm build` | tokens + `tsc -b` + render-home + Vite production build |
-| `pnpm probe:bundle` | `build` 后：Home sync 污染标记 / 体积上限 → 失败 exit 1 |
-| `pnpm env:staging` / `pnpm env:prod` / `pnpm env:status` | 切换 `.env.local` staging 覆盖 |
+| 命令                                                     | 用途                                                    |
+| -------------------------------------------------------- | ------------------------------------------------------- |
+| `pnpm dev`                                               | tokens + render-home + Vite `:5174`                     |
+| `pnpm build`                                             | tokens + `tsc -b` + render-home + Vite production build |
+| `pnpm probe:bundle`                                      | `build` 后：Home sync 污染标记 / 体积上限 → 失败 exit 1 |
+| `pnpm env:staging` / `pnpm env:prod` / `pnpm env:status` | 切换 `.env.local` staging 覆盖                          |
 
 ## 验证门禁
 
-| 命令 | 用途 |
-|------|------|
-| **`pnpm check`** | **收工最小门禁**：`tsc -b` + `lint:src`（eslint **error** only）+ `lint:architecture` + `lint:hex` + `lint:css` + `lint:deadcode`（knip）+ `test:unit` |
-| `pnpm lint:css` | Stylelint `src/**/*.css`（进 `check`） |
-| `pnpm lint:src` | `eslint src --quiet`（仅 error；`exhaustive-deps` 等进收工） |
-| `pnpm lint` | ESLint 全仓（含 Tailwind warn；不阻断 `check`） |
-| `pnpm lint:hex` | 禁止 scoped TS 模块硬编码 hex（须走 `theme.ts`） |
-| **git pre-commit**（husky） | staged `*.{ts,tsx,js,mjs,cjs}` → `eslint`；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。`pnpm install` 后 `prepare` 会挂上 hook。**禁止**把 `test:e2e` / Playwright 挂进 hook 或 `pnpm check` |
-| `pnpm lint:all` | ESLint + Stylelint + hex + depcruise + knip |
-| `pnpm lint:deadcode` | knip（死代码；`tests/unit/knip-traced-exports.ts` 承接 `loadModule` 动态引用；**进** `check`） |
-| `pnpm format` / `pnpm format:check` | Prettier + `prettier-plugin-tailwindcss`（class 排序；**未**进 `check`） |
-| `pnpm format:classnames` | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序） |
-| `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等 |
-| `pnpm test:unit` | Node 内置 test runner（`tests/unit/*.test.mjs`） |
-| `pnpm test:e2e` | Playwright 视觉 + 契约（需本机浏览器；**手动 / 可选**，不进 husky、不进 `pnpm check`） |
-| `pnpm test:e2e:update` | 更新视觉快照 |
-| `pnpm test:integration` | 可选 live BSC quote（非 CI 门禁） |
+| 命令                                         | 用途                                                                                                                                         |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`pnpm check`**                             | **收工最小门禁**：`tsc -b` + `lint:src` + `lint:architecture` + `lint:hex` + `lint:css` + `lint:deadcode` + **`format:check`** + `test:unit` |
+| `pnpm build`                                 | tokens + `tsc -b` + render-home + Vite production build（**CI 强制**）                                                                       |
+| `pnpm probe:bundle`                          | `build` 后：Home sync 污染标记 / 体积上限 → 失败 exit 1（**CI 强制**）                                                                       |
+| `pnpm audit:prod`                            | `pnpm audit --prod --audit-level high`（CI 单独 job，`continue-on-error`：传递依赖洞可见但不挡 merge）                                       |
+| `pnpm lint:css`                              | Stylelint `src/**/*.css`（进 `check`）                                                                                                       |
+| `pnpm lint:src`                              | `eslint src --quiet`（仅 error；`exhaustive-deps` 等进收工）                                                                                 |
+| `pnpm lint`                                  | ESLint 全仓（含 Tailwind warn；不阻断 `check`）                                                                                              |
+| `pnpm lint:hex`                              | 禁止 scoped TS 模块硬编码 hex（须走 `theme.ts`）                                                                                             |
+| **git pre-commit**（husky）                  | staged → eslint + prettier；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。                                                               |
+| **git commit-msg**（husky）                  | `commitlint` conventional commits                                                                                                            |
+| `pnpm lint:all`                              | ESLint + Stylelint + hex + depcruise + knip                                                                                                  |
+| `pnpm lint:deadcode`                         | knip（死代码；**进** `check`）                                                                                                               |
+| `pnpm format` / `pnpm format:check`          | Prettier（**`format:check` 进 `check`**）                                                                                                    |
+| `pnpm format:classnames`                     | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序）                                                                                    |
+| `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等                                                                                           |
+| `pnpm test:unit`                             | Node 内置 test runner（`tests/unit/*.test.mjs`）                                                                                             |
+| `pnpm test:e2e`                              | Playwright 视觉 + 契约（需本机浏览器；**手动 / 可选**，不进 husky、不进 `pnpm check`）                                                       |
+| `pnpm test:e2e:update`                       | 更新视觉快照                                                                                                                                 |
+| `pnpm test:integration`                      | 可选 live BSC quote（非 CI 门禁）                                                                                                            |
+
+### 架构门禁（dependency-cruiser）
+
+- `core-is-pure` / `shared-no-views` / `shared-no-app` / `web3-gateway` / `stores-no-views` / `hooks-no-views` / **`hooks-no-app`** / `home-no-web3`
+- **`no-circular`**（仅 `src/` 内环）
+
+### TypeScript
+
+- `strict` + **`noUncheckedIndexedAccess`**（`tsconfig.app.json`）
+
+### 命名
+
+- [`docs/naming.md`](../naming.md) · [`UBIQUITOUS_LANGUAGE.md`](../../UBIQUITOUS_LANGUAGE.md)
 
 ### Tailwind 工具链
 
@@ -48,15 +65,15 @@
 
 ## 路径 SSOT（行为）
 
-| 主题 | 路径 |
-|------|------|
-| 链 / thirdweb | `src/web3/thirdweb.ts` |
-| 写链 | `src/web3/wallet/wallet-contract-write.ts` |
-| Write intent / latch | `src/web3/wallet/assert-write-intent.ts` · `pending-unknown-latch.ts` |
-| Swap 链 IO | `src/web3/swap/` |
-| 合约地址 | `src/shared/config/contracts.ts` |
-| Query 失效 | `src/shared/api/query/invalidate.ts` |
-| Auth | `src/app/bootstrap/auth-provider.tsx` + `src/views/dapp/auth/*` + `src/core/auth/*` |
-| Home providers | `src/app/bootstrap/home-providers.tsx`（无 thirdweb） |
-| DApp providers | `src/app/bootstrap/web-root-providers.tsx` |
-| 目录落点 | [`docs/src-layout.md`](../src-layout.md) |
+| 主题                                | 路径                                                                              |
+| ----------------------------------- | --------------------------------------------------------------------------------- |
+| 链 / thirdweb                       | `src/web3/thirdweb.ts`                                                            |
+| 写链                                | `src/web3/wallet/wallet-contract-write.ts`                                        |
+| Write intent / unknown receipt lock | `src/web3/wallet/assert-write-intent.ts` · `unknown-receipt-lock.ts`              |
+| Exchange 链 IO                      | `src/web3/exchange/`                                                              |
+| 合约地址                            | `src/shared/config/contracts.ts`                                                  |
+| Query 失效                          | `src/shared/api/query/invalidate.ts`                                              |
+| Auth                                | `src/app/startup/auth-provider.tsx` + `src/views/dapp/auth/*` + `src/core/auth/*` |
+| Home providers                      | `src/app/startup/home-providers.tsx`（无 thirdweb）                               |
+| DApp providers                      | `src/app/startup/web-root-providers.tsx`                                          |
+| 目录落点                            | [`docs/src-layout.md`](../src-layout.md)                                          |

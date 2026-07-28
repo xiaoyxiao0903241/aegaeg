@@ -13,10 +13,7 @@ export const aegisDialogClose = tv({
   ],
 })
 
-export function AegisDialogClose({
-  className,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
+export function AegisDialogClose({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <DialogPrimitive.Close
       className={aegisDialogClose({ class: className })}
@@ -30,7 +27,7 @@ export function AegisSheetHandle() {
   return (
     <div
       aria-hidden="true"
-      className="mx-auto mb-3 mt-2 hidden h-1 w-10 shrink-0 rounded-full bg-border max-dapp:block"
+      className="mx-auto mt-2 mb-3 hidden h-1 w-10 shrink-0 rounded-full bg-border max-dapp:block"
     />
   )
 }

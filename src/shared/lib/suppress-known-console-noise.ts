@@ -30,6 +30,5 @@ export function suppressKnownConsoleNoise() {
     originalWarn(...args)
   }) as typeof console.warn
 
-  ;(console.warn as typeof console.warn & { __aegisPatched?: boolean }).__aegisPatched =
-    true
+  ;(console.warn as typeof console.warn & { __aegisPatched?: boolean }).__aegisPatched = true
 }

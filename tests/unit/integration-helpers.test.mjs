@@ -3,7 +3,9 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('buildSeasonOptions marks active phase from chain timestamps', async () => {
-  const { buildSeasonOptions } = await loadModule('/src/views/dapp/genesis/season/genesis-season-options.ts')
+  const { buildSeasonOptions } = await loadModule(
+    '/src/views/dapp/genesis/season/genesis-season-options.ts',
+  )
   const now = 1_700_000_000
 
   const phases = [
@@ -37,12 +39,10 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
   assert.equal(seasons[1]?.status, 'Upcoming')
 })
 
-test('normalizeTeamRewardClaim accepts snake_case fields', async () => {
-  const { normalizeTeamRewardClaim } = await loadModule(
-    '/src/shared/api/normalize-team-reward-claim.ts',
-  )
+test('parseTeamRewardClaim accepts snake_case fields', async () => {
+  const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
-  const normalized = normalizeTeamRewardClaim({
+  const normalized = parseTeamRewardClaim({
     signature: '0xabc',
     salt: '0xsalt',
     amount_wei: '1000000000000000000',
@@ -57,12 +57,10 @@ test('normalizeTeamRewardClaim accepts snake_case fields', async () => {
   assert.equal(normalized.expireTime, 1735689600n)
 })
 
-test('normalizeTeamRewardClaim accepts camelCase and decimal amount', async () => {
-  const { normalizeTeamRewardClaim } = await loadModule(
-    '/src/shared/api/normalize-team-reward-claim.ts',
-  )
+test('parseTeamRewardClaim accepts camelCase and decimal amount', async () => {
+  const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
-  const normalized = normalizeTeamRewardClaim({
+  const normalized = parseTeamRewardClaim({
     signature: '0xsig',
     salt: '0xsalt',
     amount: '1.5',
@@ -75,12 +73,10 @@ test('normalizeTeamRewardClaim accepts camelCase and decimal amount', async () =
   assert.equal(normalized.expireTime, 1704067200n)
 })
 
-test('normalizeTeamRewardClaim prefers amount_wei over decimal amount', async () => {
-  const { normalizeTeamRewardClaim } = await loadModule(
-    '/src/shared/api/normalize-team-reward-claim.ts',
-  )
+test('parseTeamRewardClaim prefers amount_wei over decimal amount', async () => {
+  const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
-  const normalized = normalizeTeamRewardClaim({
+  const normalized = parseTeamRewardClaim({
     signature: '0xsig',
     salt: '0xsalt',
     amount: '9.9',
@@ -92,12 +88,10 @@ test('normalizeTeamRewardClaim prefers amount_wei over decimal amount', async ()
   assert.equal(normalized.amountWei, 1000000000000000000n)
 })
 
-test('normalizeTeamRewardClaim truncates fraction beyond 18 decimals', async () => {
-  const { normalizeTeamRewardClaim } = await loadModule(
-    '/src/shared/api/normalize-team-reward-claim.ts',
-  )
+test('parseTeamRewardClaim truncates fraction beyond 18 decimals', async () => {
+  const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
-  const normalized = normalizeTeamRewardClaim({
+  const normalized = parseTeamRewardClaim({
     signature: '0xsig',
     salt: '0xsalt',
     amount: '0.1234567890123456789',
@@ -108,13 +102,11 @@ test('normalizeTeamRewardClaim truncates fraction beyond 18 decimals', async () 
   assert.equal(normalized.amountWei, 123456789012345678n)
 })
 
-test('normalizeTeamRewardClaim throws with payload keys when fields missing', async () => {
-  const { normalizeTeamRewardClaim } = await loadModule(
-    '/src/shared/api/normalize-team-reward-claim.ts',
-  )
+test('parseTeamRewardClaim throws with payload keys when fields missing', async () => {
+  const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
   assert.throws(
-    () => normalizeTeamRewardClaim({ signature: '0xsig' }),
+    () => parseTeamRewardClaim({ signature: '0xsig' }),
     (error) => {
       assert.ok(error instanceof Error)
       assert.match(error.message, /领取签名缺少字段/)

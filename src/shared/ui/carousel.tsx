@@ -36,22 +36,8 @@ type CarouselProps = {
   children?: ReactNode
 }
 
-export const Carousel = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement> & CarouselProps
->(
-  (
-    {
-      orientation = 'horizontal',
-      opts,
-      setApi,
-      plugins,
-      className,
-      children,
-      ...props
-    },
-    ref,
-  ) => {
+export const Carousel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement> & CarouselProps>(
+  ({ orientation = 'horizontal', opts, setApi, plugins, className, children, ...props }, ref) => {
     const [carouselRef, api] = useEmblaCarousel(
       {
         ...opts,
@@ -133,8 +119,7 @@ export const Carousel = forwardRef<
       const observer = new ResizeObserver((entries) => {
         const width = entries[0]?.contentRect.width ?? 0
         const becameVisible = lastWidth === 0 && width > 0
-        const resizedWhileVisible =
-          width > 0 && lastWidth > 0 && Math.abs(width - lastWidth) > 1
+        const resizedWhileVisible = width > 0 && lastWidth > 0 && Math.abs(width - lastWidth) > 1
         if (becameVisible || resizedWhileVisible) {
           api.reInit()
         }

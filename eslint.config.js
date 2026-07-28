@@ -21,10 +21,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     files: ['src/**/*.{ts,tsx}'],
-    ignores: [
-      'src/web3/**',
-      'src/views/dapp/auth/**',
-    ],
+    ignores: ['src/web3/**', 'src/views/dapp/auth/**'],
     rules: {
       'no-restricted-imports': [
         'error',

@@ -8,10 +8,7 @@ const metricCardSkeleton = tv({
 })
 
 const dappSkeleton = tv({
-  base: [
-    'block rounded-md',
-    'motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]',
-  ],
+  base: ['block rounded-md', 'motion-safe:animate-[dapp-skeleton-pulse_1.4s_ease-in-out_infinite]'],
   variants: {
     tone: {
       surface: 'bg-skeleton',
@@ -50,7 +47,7 @@ const tableRowSkeletonCell = tv({
   base: [
     tableCell.border(),
     tableCell.minWidth(),
-    'px-3 py-2.5 text-left whitespace-nowrap font-normal max-dapp:px-2.5 max-dapp:py-2',
+    'px-3 py-2.5 text-left font-normal whitespace-nowrap max-dapp:px-2.5 max-dapp:py-2',
   ],
   variants: {
     last: {
@@ -60,7 +57,7 @@ const tableRowSkeletonCell = tv({
   },
 })
 
-const swapMetaValueSkeleton = tv({
+const exchangeMetaValueSkeleton = tv({
   base: 'inline-block h-3.5 w-full max-w-37',
 })
 
@@ -71,21 +68,12 @@ export function DappSkeleton({
   className?: string
   tone?: 'dark' | 'surface'
 }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={dappSkeleton({ tone, class: className })}
-    />
-  )
+  return <span aria-hidden="true" className={dappSkeleton({ tone, class: className })} />
 }
 
 export function MetricCardSkeleton({ className }: { className?: string }) {
   return (
-    <Card
-      as="article"
-      surface="elevated"
-      className={metricCardSkeleton({ class: className })}
-    >
+    <Card as="article" surface="elevated" className={metricCardSkeleton({ class: className })}>
       <DappSkeleton className="h-3 w-18 max-w-[55%]" />
       <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
     </Card>
@@ -108,10 +96,7 @@ export function CurrentTitleCardBodySkeleton() {
 export function RewardsHeroBodySkeleton({ compact = false }: { compact?: boolean }) {
   return (
     <div aria-hidden="true" className="grid gap-2">
-      <DappSkeleton
-        className={rewardsHeroTitleSkeleton({ compact })}
-        tone="dark"
-      />
+      <DappSkeleton className={rewardsHeroTitleSkeleton({ compact })} tone="dark" />
       <div className="grid gap-1.5">
         <DappSkeleton className="h-3 w-full" tone="dark" />
         <DappSkeleton className="h-3 w-[78%]" tone="dark" />
@@ -189,15 +174,15 @@ export function TableRowSkeleton({
   )
 }
 
-export function SwapBalanceSkeleton() {
+export function ExchangeBalanceSkeleton() {
   return <DappSkeleton className="inline-block h-3 w-22" />
 }
 
-export function SwapMetaValueSkeleton({ className }: { className?: string }) {
-  return <DappSkeleton className={swapMetaValueSkeleton({ class: className })} />
+export function ExchangeMetaValueSkeleton({ className }: { className?: string }) {
+  return <DappSkeleton className={exchangeMetaValueSkeleton({ class: className })} />
 }
 
-export function SwapAmountSkeleton() {
+export function ExchangeAmountSkeleton() {
   return <DappSkeleton className="ml-auto h-7 w-28 max-w-[55%]" />
 }
 

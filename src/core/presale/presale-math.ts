@@ -1,4 +1,4 @@
-import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 
 export interface PresalePhaseOnChain {
   index: number
@@ -90,9 +90,7 @@ export function resolveGenesisMaxShares({
   if (sharePriceWei === 0n) return 0
 
   const maxPurchasableWei =
-    remainingPhaseAmount < remainingUserAmount
-      ? remainingPhaseAmount
-      : remainingUserAmount
+    remainingPhaseAmount < remainingUserAmount ? remainingPhaseAmount : remainingUserAmount
 
   const caps = [Number(maxPurchasableWei / sharePriceWei)]
 
@@ -157,8 +155,7 @@ export function canPurchaseGenesis({
 
 /** Genesis：approve 完成后、purchase 前的二次门闸。 */
 export type GenesisPostApproveGate =
-  | { ok: true }
-  | { ok: false; reason: 'not_bound' | 'unavailable' }
+  { ok: true } | { ok: false; reason: 'not_bound' | 'unavailable' }
 
 export function evaluateGenesisPostApproveGate({
   isBound,
@@ -174,7 +171,10 @@ export function evaluateGenesisPostApproveGate({
   return { ok: true }
 }
 
-export function isPhaseActive(phase: PresalePhaseOnChain, nowSeconds = Math.floor(Date.now() / 1000)): boolean {
+export function isPhaseActive(
+  phase: PresalePhaseOnChain,
+  nowSeconds = Math.floor(Date.now() / 1000),
+): boolean {
   const now = BigInt(nowSeconds)
   return now >= phase.startTime && now <= phase.endTime
 }

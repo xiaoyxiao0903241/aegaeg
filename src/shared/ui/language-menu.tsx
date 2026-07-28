@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  type MouseEvent,
-  type ReactNode,
-} from 'react'
+import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Text } from '~/shared/ui/text'
 
@@ -13,21 +7,21 @@ const languageMenu = tv({
     trigger: [
       // Figma topbar lang — h 36, pill, white (H5 226:205 / PC 12:14)
       'inline-flex h-9 min-h-9 min-w-14 cursor-pointer items-center justify-center gap-1.5 rounded-full',
-      'border border-border bg-card px-3 text-xs font-semibold leading-none text-foreground shadow-none',
+      'border border-border bg-card px-3 text-xs leading-none font-semibold text-foreground shadow-none',
       'transition-[background-color,border-color,box-shadow,transform] duration-180 ease-out',
       'hover:border-coral-hover-border focus-visible:border-coral-hover-border',
       'hover:-translate-y-px hover:bg-coral-wash hover:shadow-card',
       'focus-visible:-translate-y-px focus-visible:bg-coral-wash focus-visible:shadow-card',
       'in-[[open]]:border-coral-hover-border in-[[open]]:bg-coral-wash in-[[open]]:shadow-card',
       'in-data-open:border-coral-hover-border in-data-open:bg-coral-wash in-data-open:shadow-card',
-      '[&::-webkit-details-marker]:hidden [&_img]:size-4',
+      '[&_img]:size-4 [&::-webkit-details-marker]:hidden',
       'max-dapp:min-w-14 max-dapp:gap-1.5 max-dapp:px-3 max-dapp:text-xs',
     ],
     /** Figma `lang-popup` 4140:286 — sizes via `--dapp-lang-menu-*` (rem / site-fluid). */
     panel: [
-      'hidden in-[[open]]:flex in-data-open:flex in-[[open]]:flex-col in-data-open:flex-col',
-      'in-[[open]]:animate-[language-menu-in_180ms_ease_both] in-data-open:animate-[language-menu-in_180ms_ease_both]',
-      'absolute right-0 top-[calc(100%+0.5rem)] z-130 w-(--dapp-lang-menu-width) max-w-[calc(100dvw-2rem)] overflow-clip',
+      'hidden in-data-open:flex in-data-open:flex-col in-[[open]]:flex in-[[open]]:flex-col',
+      'in-data-open:animate-[language-menu-in_180ms_ease_both] in-[[open]]:animate-[language-menu-in_180ms_ease_both]',
+      'absolute top-[calc(100%+0.5rem)] right-0 z-130 w-(--dapp-lang-menu-width) max-w-[calc(100dvw-2rem)] overflow-clip',
       'rounded-sm border border-border-subtle bg-card p-2.5 shadow-menu',
     ],
     list: 'flex w-full flex-col gap-0.5 overflow-clip',
@@ -123,18 +117,13 @@ function MenuItem({
       </span>
       {option.active ? (
         checkIcon ? (
-          <img
-            src={checkIcon}
-            alt=""
-            aria-hidden="true"
-            className="relative z-1 size-4 shrink-0"
-          />
+          <img src={checkIcon} alt="" aria-hidden="true" className="relative z-1 size-4 shrink-0" />
         ) : (
           <Text
             aria-hidden="true"
             variant="caption"
             tone="primary"
-            className="relative z-1 shrink-0 text-xs font-bold leading-none"
+            className="relative z-1 shrink-0 text-xs leading-none font-bold"
           >
             ✓
           </Text>
@@ -222,7 +211,7 @@ function NativeLanguageMenu({
           role="button"
         >
           <img src={globeIcon} alt="" className="size-4 shrink-0" />
-          <Text as="span" variant="copy" className="text-sm font-semibold leading-none">
+          <Text as="span" variant="copy" className="text-sm leading-none font-semibold">
             {triggerLabel ?? activeOption?.code}
           </Text>
         </summary>
@@ -326,15 +315,12 @@ function ReactLanguageMenu({
         type="button"
       >
         <img src={globeIcon} alt="" className="size-4 shrink-0" />
-        <Text as="span" variant="copy" className="text-sm font-semibold leading-none">
+        <Text as="span" variant="copy" className="text-sm leading-none font-semibold">
           {triggerLabel ?? activeOption?.code}
         </Text>
       </button>
 
-      <div
-        className={styles.panel({ class: [!open && 'hidden', menuClassName] })}
-        role="menu"
-      >
+      <div className={styles.panel({ class: [!open && 'hidden', menuClassName] })} role="menu">
         <div className={styles.list()}>
           {options.map((option) => (
             <MenuItem

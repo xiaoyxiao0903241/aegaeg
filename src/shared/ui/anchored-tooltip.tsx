@@ -59,9 +59,7 @@ export function AnchoredTooltip({
   })
 
   const mobileControlled =
-    isMobileViewport && isInfoOnly
-      ? { open: mobileOpen, onOpenChange: setMobileOpen }
-      : {}
+    isMobileViewport && isInfoOnly ? { open: mobileOpen, onOpenChange: setMobileOpen } : {}
 
   return (
     <Tooltip {...mobileControlled}>

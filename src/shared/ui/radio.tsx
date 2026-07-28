@@ -27,20 +27,13 @@ export type RadioIndicatorProps = {
 /** Circular radio indicator; use RadioGroup for group semantics. */
 export function RadioIndicator({ checked = false, className, size }: RadioIndicatorProps) {
   return (
-    <span
-      aria-hidden="true"
-      className={cn(radioIndicatorVariants({ size, checked }), className)}
-    >
+    <span aria-hidden="true" className={cn(radioIndicatorVariants({ size, checked }), className)}>
       {checked ? <span className="absolute inset-0.5 rounded-full bg-primary" /> : null}
     </span>
   )
 }
 
-export function RadioGroup({
-  children,
-  className,
-  ...props
-}: ComponentProps<'div'>) {
+export function RadioGroup({ children, className, ...props }: ComponentProps<'div'>) {
   return (
     <div className={cn('grid gap-2', className)} role="radiogroup" {...props}>
       {children}

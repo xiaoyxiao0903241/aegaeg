@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
-import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { buildSeasonOptions } from '~/views/dapp/genesis/season/genesis-season-options'
 import { buildGenesisPromoSnapshot } from '~/views/dapp/genesis/genesis-promo'
 import {
@@ -59,8 +59,7 @@ export function GenesisPromoSync() {
     [activePhase, agxPriceUsd, nowSeconds, phases],
   )
 
-  const isLoading =
-    phasesQuery.isLoading || activePhaseQuery.isLoading || agxPriceQuery.isLoading
+  const isLoading = phasesQuery.isLoading || activePhaseQuery.isLoading || agxPriceQuery.isLoading
 
   useEffect(() => {
     setPromo({

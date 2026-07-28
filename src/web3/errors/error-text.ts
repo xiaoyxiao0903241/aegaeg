@@ -1,7 +1,4 @@
-import {
-  ContractRevertError,
-  decodeContractRevert,
-} from '~/web3/decode-contract-revert'
+import { ContractRevertError, decodeContractRevert } from '~/web3/decode-contract-revert'
 
 export type ErrorText = { raw: string; lower: string }
 
@@ -46,7 +43,11 @@ export function readErrorCode(error: unknown): number | string | undefined {
 }
 
 /** Walk wallet / viem error trees and collect revert selectors from nested `data` hex. */
-export function collectErrorFragments(error: unknown, depth = 0, seen = new WeakSet<object>()): string[] {
+export function collectErrorFragments(
+  error: unknown,
+  depth = 0,
+  seen = new WeakSet<object>(),
+): string[] {
   if (depth > 8) return []
   if (error instanceof Error) {
     return [error.message, ...collectErrorFragments(error.cause, depth + 1, seen)]

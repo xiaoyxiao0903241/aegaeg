@@ -13,12 +13,7 @@ import {
 } from '~/shared/api/format-display'
 
 export type RewardLogStatusKey =
-  | 'pending'
-  | 'processing'
-  | 'paid'
-  | 'claimed'
-  | 'failed'
-  | 'unknown'
+  'pending' | 'processing' | 'paid' | 'claimed' | 'failed' | 'unknown'
 
 export type RewardLogStatusLabels = Record<RewardLogStatusKey, string>
 
@@ -91,17 +86,11 @@ export function formatCommunityFundLockedAmount(
   claimed: string,
   unlockedClaimable: string,
 ): string {
-  const locked = Math.max(
-    0,
-    Number(total) - Number(claimed) - Number(unlockedClaimable),
-  )
+  const locked = Math.max(0, Number(total) - Number(claimed) - Number(unlockedClaimable))
   return formatUsd(locked, 2)
 }
 
-export function mapRewardLogToRow(
-  item: RewardLogItem,
-  labels: RewardLogStatusLabels,
-): string[] {
+export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLabels): string[] {
   const signedAmount = Number(item.amount)
   const amountLabel = Number.isFinite(signedAmount)
     ? formatUsd(Math.abs(signedAmount), 2)
@@ -121,9 +110,7 @@ export function mapTeamRewardClaimLogToRow(
   labels: RewardLogStatusLabels,
 ): string[] {
   const amountNum = Number(item.amount)
-  const amountLabel = Number.isFinite(amountNum)
-    ? formatUsd(Math.abs(amountNum), 2)
-    : TABLE_EMPTY
+  const amountLabel = Number.isFinite(amountNum) ? formatUsd(Math.abs(amountNum), 2) : TABLE_EMPTY
   const statusKey = resolveTeamRewardClaimStatusKey(item.status)
 
   return [
@@ -139,14 +126,8 @@ export function mapCommunityFundLogToRow(
   labels: RewardLogStatusLabels,
 ): string[] {
   const amountNum = Number(item.amount)
-  const amountLabel = Number.isFinite(amountNum)
-    ? formatUsd(Math.abs(amountNum), 2)
-    : TABLE_EMPTY
+  const amountLabel = Number.isFinite(amountNum) ? formatUsd(Math.abs(amountNum), 2) : TABLE_EMPTY
   const statusKey = resolveCommunityFundLogStatusKey(item.status)
 
-  return [
-    formatBlockTime(item.block_time),
-    amountLabel,
-    labels[statusKey],
-  ]
+  return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
 }

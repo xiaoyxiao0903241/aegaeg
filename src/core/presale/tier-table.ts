@@ -1,18 +1,10 @@
 import { PERSONAL_PRESALE_RANK_THRESHOLDS_USD } from '~/core/presale/rank'
-import { TEAM_LEG_REQUIREMENT_RANKS, TEAM_PRESALE_RANK_THRESHOLDS_USD } from '~/core/presale/tier-progress'
+import {
+  TEAM_LEG_REQUIREMENT_RANKS,
+  TEAM_PRESALE_RANK_THRESHOLDS_USD,
+} from '~/core/presale/tier-progress'
 
-const TEAM_BONUS_RATES = [
-  '1%',
-  '2%',
-  '3%',
-  '4%',
-  '5%',
-  '6%',
-  '7%',
-  '8%',
-  '9%',
-  '10%',
-] as const
+const TEAM_BONUS_RATES = ['1%', '2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%'] as const
 
 /** Caps commitment-floor A-tier from /performance presale_commitment_floor_rank (max A13; S max remains S10). */
 export const MAX_COMMITMENT_FLOOR_A_RANK = 13
@@ -23,9 +15,9 @@ export function resolveCommitmentFloorRank(apiRank: number): number {
 }
 
 export function getTeamBonusRateLabel(rank: number): string {
-  if (rank <= 0) return TEAM_BONUS_RATES[0]
+  if (rank <= 0) return TEAM_BONUS_RATES[0] ?? '1%'
   const index = Math.min(rank - 1, TEAM_BONUS_RATES.length - 1)
-  return TEAM_BONUS_RATES[index]
+  return TEAM_BONUS_RATES[index] ?? TEAM_BONUS_RATES[0] ?? '1%'
 }
 
 /** Commitment floor rank maps 1:1 to A-tier (floor 3 → A3). */
@@ -78,7 +70,9 @@ function formatTeamRequirement(rank: number): string {
   }
 
   if (rank <= TEAM_PRESALE_RANK_THRESHOLDS_USD.length) {
-    return formatUsdThreshold(TEAM_PRESALE_RANK_THRESHOLDS_USD[rank - 1])
+    const threshold = TEAM_PRESALE_RANK_THRESHOLDS_USD[rank - 1]
+    if (threshold == null) return '-'
+    return formatUsdThreshold(threshold)
   }
 
   return '-'
@@ -91,7 +85,7 @@ export function buildRewardTierRows(): readonly (readonly string[])[] {
       `S${rank}`,
       formatMinPersonalContribution(personalUsd),
       formatTeamRequirement(rank),
-      TEAM_BONUS_RATES[index],
+      TEAM_BONUS_RATES[index] ?? TEAM_BONUS_RATES[0] ?? '1%',
     ]
   })
 }

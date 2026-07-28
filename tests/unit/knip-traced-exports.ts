@@ -18,5 +18,5 @@ export {
 } from '../../src/shared/config/breakpoints'
 export { readWalletSession } from '../../src/views/dapp/auth/login-with-wallet'
 export { createMemoryAuthSessionStorage } from '../../src/views/dapp/auth/session'
-export { clearSwapPoolImmutableCache } from '../../src/web3/swap/read-swap-pool'
-export { resetPendingUnknownLatchesForTests } from '../../src/web3/wallet/pending-unknown-latch'
+export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-exchange-pool'
+export { resetUnknownReceiptLocksForTests } from '../../src/web3/wallet/unknown-receipt-lock'

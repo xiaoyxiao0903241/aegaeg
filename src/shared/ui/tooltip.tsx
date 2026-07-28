@@ -25,55 +25,41 @@ function tooltipArrowPaddingPx(align?: 'start' | 'center' | 'end') {
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(
-  (
-    {
-      className,
-      sideOffset,
-      collisionPadding,
-      align,
-      children,
-      ...props
-    },
-    ref,
-  ) => (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        ref={ref}
-        align={align}
-        sideOffset={sideOffset ?? cssRemVarPx('--app-tooltip-offset', 0.5)}
-        collisionPadding={
-          collisionPadding ?? cssRemVarPx('--app-tooltip-collision-padding', 1)
-        }
-        arrowPadding={tooltipArrowPaddingPx(align)}
-        avoidCollisions
-        sticky="partial"
-        className={cn(
-          'z-9999 overflow-visible',
-          'w-max max-w-[min(var(--app-tooltip-max-width),calc(100vw-2*var(--app-tooltip-collision-padding)))] rounded-chip bg-dark p-(--app-tooltip-padding)',
-          'text-left shadow-tooltip',
-          'animate-[aegis-tooltip-in_140ms_ease-out]',
-          'data-[state=closed]:animate-[aegis-tooltip-out_100ms_ease-in]',
-          className,
-        )}
-        {...props}
-      >
-        {typeof children === 'string' || typeof children === 'number' ? (
-          <Text as="span" className="whitespace-pre-line" tone="inverse" variant="support">
-            {children}
-          </Text>
-        ) : (
-          children
-        )}
-        <TooltipPrimitive.Arrow
-          className="fill-dark h-(--app-tooltip-arrow-height) w-(--app-tooltip-arrow-width)"
-          height={cssRemVarPx('--app-tooltip-arrow-height', 0.4375)}
-          width={cssRemVarPx('--app-tooltip-arrow-width', 0.875)}
-        />
-      </TooltipPrimitive.Content>
-    </TooltipPrimitive.Portal>
-  ),
-)
+>(({ className, sideOffset, collisionPadding, align, children, ...props }, ref) => (
+  <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Content
+      ref={ref}
+      align={align}
+      sideOffset={sideOffset ?? cssRemVarPx('--app-tooltip-offset', 0.5)}
+      collisionPadding={collisionPadding ?? cssRemVarPx('--app-tooltip-collision-padding', 1)}
+      arrowPadding={tooltipArrowPaddingPx(align)}
+      avoidCollisions
+      sticky="partial"
+      className={cn(
+        'z-9999 overflow-visible',
+        'w-max max-w-[min(var(--app-tooltip-max-width),calc(100vw-2*var(--app-tooltip-collision-padding)))] rounded-chip bg-dark p-(--app-tooltip-padding)',
+        'text-left shadow-tooltip',
+        'animate-[aegis-tooltip-in_140ms_ease-out]',
+        'data-[state=closed]:animate-[aegis-tooltip-out_100ms_ease-in]',
+        className,
+      )}
+      {...props}
+    >
+      {typeof children === 'string' || typeof children === 'number' ? (
+        <Text as="span" className="whitespace-pre-line" tone="inverse" variant="support">
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
+      <TooltipPrimitive.Arrow
+        className="h-(--app-tooltip-arrow-height) w-(--app-tooltip-arrow-width) fill-dark"
+        height={cssRemVarPx('--app-tooltip-arrow-height', 0.4375)}
+        width={cssRemVarPx('--app-tooltip-arrow-width', 0.875)}
+      />
+    </TooltipPrimitive.Content>
+  </TooltipPrimitive.Portal>
+))
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

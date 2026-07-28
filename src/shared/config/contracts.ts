@@ -58,17 +58,11 @@ export const BSC_CONTRACTS = {
     'VITE_BSC_PANCAKE_V3_QUOTER',
     DEFAULT_BSC_CONTRACTS.pancakeV3Quoter,
   ),
-  usdtUsd1Pool: readEnvAddress(
-    'VITE_BSC_USDT_USD1_POOL',
-    DEFAULT_BSC_CONTRACTS.usdtUsd1Pool,
-  ),
+  usdtUsd1Pool: readEnvAddress('VITE_BSC_USDT_USD1_POOL', DEFAULT_BSC_CONTRACTS.usdtUsd1Pool),
   multicall3: readEnvAddress('VITE_BSC_MULTICALL3', DEFAULT_BSC_CONTRACTS.multicall3),
   referral: readEnvAddress('VITE_BSC_REFERRAL', DEFAULT_BSC_CONTRACTS.referral),
   preSale: readEnvAddress('VITE_BSC_PRESALE', DEFAULT_BSC_CONTRACTS.preSale),
-  rewardClaimer: readEnvAddress(
-    'VITE_BSC_REWARD_CLAIMER',
-    DEFAULT_BSC_CONTRACTS.rewardClaimer,
-  ),
+  rewardClaimer: readEnvAddress('VITE_BSC_REWARD_CLAIMER', DEFAULT_BSC_CONTRACTS.rewardClaimer),
   communityFundVault: readEnvAddress(
     'VITE_BSC_COMMUNITY_FUND_VAULT',
     DEFAULT_BSC_CONTRACTS.communityFundVault,

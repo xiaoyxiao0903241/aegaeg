@@ -26,26 +26,26 @@ export const textVariants = tv({
   variants: {
     variant: {
       caption:
-        'text-(length:--type-caption-size) font-(--type-caption-weight) leading-(--type-caption-leading) tracking-(--type-caption-tracking)',
+        'text-(length:--type-caption-size) leading-(--type-caption-leading) font-(--type-caption-weight) tracking-(--type-caption-tracking)',
       eyebrow:
-        'text-(length:--type-eyebrow-size) font-(--type-eyebrow-weight) leading-(--type-eyebrow-leading) tracking-(--type-eyebrow-tracking) uppercase',
+        'text-(length:--type-eyebrow-size) leading-(--type-eyebrow-leading) font-(--type-eyebrow-weight) tracking-(--type-eyebrow-tracking) uppercase',
       support:
-        'text-(length:--type-support-size) font-(--type-support-weight) leading-(--type-support-leading) tracking-(--type-support-tracking)',
-      copy: 'text-(length:--type-copy-size) font-(--type-copy-weight) leading-(--type-copy-leading) tracking-(--type-copy-tracking)',
+        'text-(length:--type-support-size) leading-(--type-support-leading) font-(--type-support-weight) tracking-(--type-support-tracking)',
+      copy: 'text-(length:--type-copy-size) leading-(--type-copy-leading) font-(--type-copy-weight) tracking-(--type-copy-tracking)',
       detail:
-        'text-(length:--type-detail-size) font-(--type-detail-weight) leading-(--type-detail-leading) tracking-(--type-detail-tracking)',
+        'text-(length:--type-detail-size) leading-(--type-detail-leading) font-(--type-detail-weight) tracking-(--type-detail-tracking)',
       question:
-        'text-(length:--type-question-size) font-(--type-question-weight) leading-(--type-question-leading) tracking-(--type-question-tracking)',
+        'text-(length:--type-question-size) leading-(--type-question-leading) font-(--type-question-weight) tracking-(--type-question-tracking)',
       headline:
-        'text-(length:--type-headline-size) font-(--type-headline-weight) leading-(--type-headline-leading) tracking-(--type-headline-tracking)',
+        'text-(length:--type-headline-size) leading-(--type-headline-leading) font-(--type-headline-weight) tracking-(--type-headline-tracking)',
       brand:
-        'text-(length:--type-brand-size) font-(--type-brand-weight) leading-(--type-brand-leading) tracking-(--type-brand-tracking)',
+        'text-(length:--type-brand-size) leading-(--type-brand-leading) font-(--type-brand-weight) tracking-(--type-brand-tracking)',
       section:
-        'text-(length:--type-section-size) font-(--type-section-weight) leading-(--type-section-leading) tracking-(--type-section-tracking)',
+        'text-(length:--type-section-size) leading-(--type-section-leading) font-(--type-section-weight) tracking-(--type-section-tracking)',
       panel:
-        'text-(length:--type-panel-size) font-(--type-panel-weight) leading-(--type-panel-leading) tracking-(--type-panel-tracking)',
+        'text-(length:--type-panel-size) leading-(--type-panel-leading) font-(--type-panel-weight) tracking-(--type-panel-tracking)',
       figure:
-        'text-(length:--type-figure-size) font-(--type-figure-weight) leading-(--type-figure-leading) tracking-(--type-figure-tracking)',
+        'text-(length:--type-figure-size) leading-(--type-figure-leading) font-(--type-figure-weight) tracking-(--type-figure-tracking)',
     },
     tone: toneClass,
   },
@@ -63,7 +63,21 @@ export type TextVariant = keyof typeof textVariants.variants.variant
 export type TextTone = keyof typeof toneClass
 
 export type TextProps = HTMLAttributes<HTMLElement> & {
-  as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'strong' | 'a' | 'small' | 'em' | 'b' | 'div' | 'time' | 'label'
+  as?:
+    | 'p'
+    | 'span'
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'strong'
+    | 'a'
+    | 'small'
+    | 'em'
+    | 'b'
+    | 'div'
+    | 'time'
+    | 'label'
   children: ReactNode
   href?: string
   htmlFor?: string
@@ -97,14 +111,7 @@ function stripVariantTypeTokens(variantClassName: string): string {
     .join(' ')
 }
 
-export function Text({
-  as = 'span',
-  children,
-  className,
-  variant,
-  tone,
-  ...props
-}: TextProps) {
+export function Text({ as = 'span', children, className, variant, tone, ...props }: TextProps) {
   const variantClassName = textVariants({
     variant: variant ?? 'copy',
     tone: tone ?? 'foreground',

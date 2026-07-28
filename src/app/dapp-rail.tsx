@@ -17,8 +17,8 @@ type RailIndicator = {
 
 const railItem = tv({
   base: cn(
-    'relative z-1 flex w-full min-h-15 cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
-    'transition-[color,background-color] duration-dapp-fast ease-out',
+    'relative z-1 flex min-h-15 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-md bg-transparent px-1 py-2.5',
+    'duration-dapp-fast transition-[color,background-color] ease-out',
   ),
   variants: {
     active: {
@@ -38,22 +38,20 @@ function useRailTooltips() {
 
   return useMemo(
     () => ({
-      swap: t.swap.intro,
+      exchange: t.exchange.intro,
+      assets: t.assets.body,
+      staking: t.staking.body,
+      rewards: t.nav.rewardsTooltip,
+      release: t.release.body,
+      community: t.nav.communityTooltip,
       genesis: formatGenesisSeasonIntro(
         t.genesis.intro,
         genesis.activeSeasonNumber,
         genesis.discountLabel,
         genesis.isLoading,
       ),
-      rewards: t.nav.rewardsTooltip,
-      community: t.nav.communityTooltip,
     }),
-    [
-      genesis.activeSeasonNumber,
-      genesis.discountLabel,
-      genesis.isLoading,
-      t,
-    ],
+    [genesis.activeSeasonNumber, genesis.discountLabel, genesis.isLoading, t],
   )
 }
 
@@ -109,7 +107,7 @@ export function DappRail({
   return (
     <nav
       className={cn(
-        'relative flex h-full min-h-0 max-h-full flex-col gap-1.5 border-r border-border bg-card px-2 py-3.5',
+        'relative flex h-full max-h-full min-h-0 flex-col gap-1.5 border-r border-border bg-card px-2 py-3.5',
         'max-dapp:hidden',
         mobile && 'grid h-auto max-h-none min-h-0 gap-0 border-0 p-2',
       )}
@@ -121,8 +119,7 @@ export function DappRail({
           aria-hidden
           className={cn(
             'pointer-events-none absolute inset-x-2 top-0 z-0 rounded-md bg-accent will-change-[transform,height]',
-            indicatorReady &&
-              'transition-[transform,height] duration-dapp-emphasis ease-dapp',
+            indicatorReady && 'duration-dapp-emphasis transition-[transform,height] ease-dapp',
           )}
           style={{
             height: indicator.height,

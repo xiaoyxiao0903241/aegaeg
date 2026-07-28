@@ -66,17 +66,12 @@ function thirdwebWalletProvider(wallet: Wallet): EIP1193Provider {
   }) as EIP1193Provider
 }
 
-async function providerOwnsAccount(
-  provider: EIP1193Provider,
-  address: string,
-): Promise<boolean> {
+async function providerOwnsAccount(provider: EIP1193Provider, address: string): Promise<boolean> {
   try {
     const accounts = await provider.request({ method: 'eth_accounts' })
     if (!Array.isArray(accounts)) return false
     const wanted = address.toLowerCase()
-    return accounts.some(
-      (item) => typeof item === 'string' && item.toLowerCase() === wanted,
-    )
+    return accounts.some((item) => typeof item === 'string' && item.toLowerCase() === wanted)
   } catch {
     return false
   }

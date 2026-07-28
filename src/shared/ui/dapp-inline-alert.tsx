@@ -22,9 +22,7 @@ export const dappInlineAlert = tv({
   },
 })
 
-export type DappInlineAlertDensity = NonNullable<
-  VariantProps<typeof dappInlineAlert>['density']
->
+export type DappInlineAlertDensity = NonNullable<VariantProps<typeof dappInlineAlert>['density']>
 
 export type DappInlineAlertProps = Omit<TextProps, 'tone' | 'variant'> & {
   children: ReactNode

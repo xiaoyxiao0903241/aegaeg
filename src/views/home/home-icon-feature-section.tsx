@@ -108,10 +108,11 @@ export function HomeIconFeatureSection({ variant }: { variant: 'protocol' | 'eng
   const { messages } = useI18n()
   const content = messages.home.sections[variant]
   const { icons, id } = sectionConfig[variant]
-  const cards = content.cards.map((card, index) => ({
-    ...card,
-    icon: icons[index],
-  }))
+  const cards: IconCard[] = content.cards.flatMap((card, index) => {
+    const icon = icons[index]
+    if (!icon) return []
+    return [{ ...card, icon }]
+  })
   const isEngine = variant === 'engine'
 
   return (

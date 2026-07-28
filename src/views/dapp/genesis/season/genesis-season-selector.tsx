@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  type CarouselApi,
-} from '~/shared/ui/carousel'
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '~/shared/ui/carousel'
 import { RadioGroup, RadioIndicator } from '~/shared/ui/radio'
 import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
@@ -77,11 +72,7 @@ function SeasonCard({
   })
 
   return (
-    <article
-      aria-checked={selected}
-      className={styles.root()}
-      role="radio"
-    >
+    <article aria-checked={selected} className={styles.root()} role="radio">
       <div className="flex w-full flex-col gap-0.75 overflow-hidden">
         <div className="flex h-4.5 items-center justify-between gap-1">
           <Text as="strong" variant="headline" className={styles.title()}>
@@ -204,7 +195,7 @@ export function SeasonSelector({
         {showControls ? (
           <div className="flex w-full items-center justify-center gap-3.5">
             <button
-              aria-label={t.swap.tokenPrevious}
+              aria-label={t.exchange.tokenPrevious}
               className={cn(
                 'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
                 dappIcon({ size: 'base' }),
@@ -215,7 +206,7 @@ export function SeasonSelector({
               <span
                 aria-hidden="true"
                 className={cn(
-                  'block -rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
+                  "block -rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]",
                   dappIcon({ size: 'base' }),
                 )}
               />
@@ -240,7 +231,7 @@ export function SeasonSelector({
                   <span
                     aria-hidden="true"
                     className={cn(
-                      'block rounded-full bg-border transition-[width,background-color] duration-dapp-base ease-out',
+                      'duration-dapp-base block rounded-full bg-border transition-[width,background-color] ease-out',
                       current === index ? 'h-1.75 w-5.5 bg-primary' : 'size-1.75',
                     )}
                   />
@@ -248,7 +239,7 @@ export function SeasonSelector({
               ))}
             </span>
             <button
-              aria-label={t.swap.tokenNext}
+              aria-label={t.exchange.tokenNext}
               className={cn(
                 'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
                 dappIcon({ size: 'base' }),
@@ -259,7 +250,7 @@ export function SeasonSelector({
               <span
                 aria-hidden="true"
                 className={cn(
-                  'block rotate-90 bg-current [mask:url(\'/assets/figma/dapp/ic-chevron.svg\')_center/contain_no-repeat]',
+                  "block rotate-90 bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]",
                   dappIcon({ size: 'base' }),
                 )}
               />

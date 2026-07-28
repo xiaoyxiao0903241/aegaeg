@@ -21,11 +21,7 @@ export function DappSection({
 }) {
   return (
     <DappDetailBlock className={cn(revealClass(), className)} data-reveal>
-      <Text
-        as="h3"
-        variant="section"
-        className={cn('m-0 pb-4', titleClassName)}
-      >
+      <Text as="h3" variant="section" className={cn('m-0 pb-4', titleClassName)}>
         {title}
       </Text>
       {children}

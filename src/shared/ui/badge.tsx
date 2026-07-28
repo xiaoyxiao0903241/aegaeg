@@ -2,13 +2,7 @@ import type { ReactNode } from 'react'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-export function StatusBadge({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
+export function StatusBadge({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <Text
       as="span"

@@ -62,7 +62,7 @@ export function DappCollapsibleSection({
         <button
           aria-controls={bodyId}
           aria-expanded={open}
-          className="flex w-full cursor-pointer appearance-none items-center justify-between gap-3 border-0 bg-transparent p-0 pb-4 text-left text-inherit hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 active:bg-transparent"
+          className="flex w-full cursor-pointer appearance-none items-center justify-between gap-3 border-0 bg-transparent p-0 pb-4 text-left text-inherit hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none active:bg-transparent"
           onClick={handleToggle}
           type="button"
         >

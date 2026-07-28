@@ -5,8 +5,8 @@ import { DappConnectPromoCard } from '~/app/shell/dapp-connect-promo-card'
 
 const dappWidgetConnectFooter = tv({
   slots: {
-    spacer: 'max-dapp:hidden min-h-3.5 shrink-0 grow basis-3.5',
-    bottom: 'mt-3.5 w-full shrink-0 max-dapp:mt-3 dapp:mt-auto',
+    spacer: 'min-h-3.5 shrink-0 grow basis-3.5 max-dapp:hidden',
+    bottom: 'mt-3.5 w-full shrink-0 dapp:mt-auto max-dapp:mt-3',
   },
 })
 
@@ -26,11 +26,7 @@ export function DappWidgetConnectFooter({
   )
 }
 
-export function DappWidgetConnectPromo({
-  className,
-}: {
-  className?: string
-}) {
+export function DappWidgetConnectPromo({ className }: { className?: string }) {
   return (
     <DappWidgetConnectFooter className={className}>
       <DappConnectPromoCard />

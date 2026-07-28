@@ -12,7 +12,7 @@ import {
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
 } from '~/views/dapp/rewards/rewards-display'
-import { useAuth } from '~/app/bootstrap/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { DappCollapsibleSection } from '~/app/shell/dapp-collapsible-section'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
@@ -69,10 +69,7 @@ export function RewardsHistorySection() {
     data: communityFundLogs,
     isLoading: communityFundLogsLoading,
     refresh: refreshCommunityFundLogs,
-  } = useCommunityFundLogs(
-    tablePageQuery(communityFundPage),
-    sessionReady && isSuperCommunity,
-  )
+  } = useCommunityFundLogs(tablePageQuery(communityFundPage), sessionReady && isSuperCommunity)
 
   const historyStatusLabels = t.rewards.logStatus
 
@@ -92,16 +89,12 @@ export function RewardsHistorySection() {
         : communityFundHistoryRows
   const historyTotal =
     activeTab === 'referral'
-      ? rewardLogs?.total ?? 0
+      ? (rewardLogs?.total ?? 0)
       : activeTab === 'team'
-        ? teamClaimLogs?.total ?? 0
-        : communityFundLogs?.total ?? 0
+        ? (teamClaimLogs?.total ?? 0)
+        : (communityFundLogs?.total ?? 0)
   const historyPage =
-    activeTab === 'referral'
-      ? referralPage
-      : activeTab === 'team'
-        ? teamPage
-        : communityFundPage
+    activeTab === 'referral' ? referralPage : activeTab === 'team' ? teamPage : communityFundPage
   const onHistoryPageChange =
     activeTab === 'referral'
       ? setReferralPage
@@ -128,13 +121,7 @@ export function RewardsHistorySection() {
 
   const historyHeaders =
     activeTab === 'referral'
-      ? [
-          t.tables.time,
-          t.tables.amount,
-          t.tables.from,
-          t.tables.contribution,
-          t.tables.status,
-        ]
+      ? [t.tables.time, t.tables.amount, t.tables.from, t.tables.contribution, t.tables.status]
       : activeTab === 'team'
         ? [t.tables.claimTime, t.tables.amount, t.tables.genesisRank, t.tables.status]
         : [t.tables.claimTime, t.tables.amount, t.tables.status]
@@ -163,13 +150,11 @@ export function RewardsHistorySection() {
           : ['referral', 'team']
         const next = tabs.find((tab) => tab === value) ?? 'referral'
         setHistoryTab(next)
-        void (
-          next === 'referral'
-            ? refreshReferralLogs()
-            : next === 'team'
-              ? refreshTeamLogs()
-              : refreshCommunityFundLogs()
-        )
+        void (next === 'referral'
+          ? refreshReferralLogs()
+          : next === 'team'
+            ? refreshTeamLogs()
+            : refreshCommunityFundLogs())
       }}
       options={historyPillItems}
       value={activeTab}
@@ -180,12 +165,7 @@ export function RewardsHistorySection() {
     <DappTableAuthPrompt body={t.dapp.connect.recordsBodyRewards} embedded />
   ) : historyTable.queryEmpty ? (
     <>
-      <ResponsiveTable
-        colWidths={historyColWidths}
-        compact
-        headers={historyHeaders}
-        rows={[]}
-      />
+      <ResponsiveTable colWidths={historyColWidths} compact headers={historyHeaders} rows={[]} />
       <DappTableEmptyMessage
         body={
           activeTab === 'referral'

@@ -13,12 +13,11 @@ import { cn } from '~/shared/lib/utils'
 const dappTableCard = tv({
   slots: {
     shell: 'overflow-hidden rounded-2xl border-0 p-0',
-    header:
-      'px-4 pt-3.5 pb-2.5 max-dapp:px-3.5 border-b border-border/50',
+    header: 'border-b border-border/50 px-4 pt-3.5 pb-2.5 max-dapp:px-3.5',
     content: 'px-4 py-1.5 max-dapp:px-3.5',
     contentBelowHeader: 'px-4 pt-0 pb-1.5 max-dapp:px-3.5',
     footer:
-      'dapp:px-4 dapp:py-3 max-dapp:px-3.5 max-dapp:py-2.5 relative z-10 overflow-visible rounded-b-2xl border-t border-border/50 bg-card',
+      'relative z-10 overflow-visible rounded-b-2xl border-t border-border/50 bg-card dapp:px-4 dapp:py-3 max-dapp:px-3.5 max-dapp:py-2.5',
   },
 })
 
@@ -39,50 +38,36 @@ type DappTableCardProps = {
   headerClassName?: string
 }
 
-export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(
-  function DappTableCard(
-    {
-      children,
-      className,
-      contentClassName,
-      footer,
-      footerClassName,
-      header,
-      headerClassName,
-    },
-    ref,
-  ) {
-    const styles = dappTableCard()
+export const DappTableCard = forwardRef<HTMLDivElement, DappTableCardProps>(function DappTableCard(
+  { children, className, contentClassName, footer, footerClassName, header, headerClassName },
+  ref,
+) {
+  const styles = dappTableCard()
 
-    return (
-      <Card
-        as="article"
-        surface="elevated"
-        className={cn(styles.shell(), 'flex min-w-0 max-w-full flex-col', className)}
+  return (
+    <Card
+      as="article"
+      surface="elevated"
+      className={cn(styles.shell(), 'flex max-w-full min-w-0 flex-col', className)}
+    >
+      {header ? <div className={cn(styles.header(), headerClassName)}>{header}</div> : null}
+
+      <div
+        ref={ref}
+        className={cn(
+          'min-w-0 overflow-x-auto max-dapp:scrollbar-x-track',
+          header ? styles.contentBelowHeader() : styles.content(),
+          footer && 'pb-0',
+          contentClassName,
+        )}
       >
-        {header ? (
-          <div className={cn(styles.header(), headerClassName)}>{header}</div>
-        ) : null}
+        {children}
+      </div>
 
-        <div
-          ref={ref}
-          className={cn(
-            'min-w-0 overflow-x-auto max-dapp:scrollbar-x-track',
-            header ? styles.contentBelowHeader() : styles.content(),
-            footer && 'pb-0',
-            contentClassName,
-          )}
-        >
-          {children}
-        </div>
-
-        {footer ? (
-          <div className={cn(styles.footer(), footerClassName)}>{footer}</div>
-        ) : null}
-      </Card>
-    )
-  },
-)
+      {footer ? <div className={cn(styles.footer(), footerClassName)}>{footer}</div> : null}
+    </Card>
+  )
+})
 
 export function DappTableCardShell({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   const styles = dappTableCard()

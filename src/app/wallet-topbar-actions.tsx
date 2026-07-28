@@ -2,7 +2,7 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 import { tv } from 'tailwind-variants'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/app/bootstrap/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { dappAssets } from '~/app/assets'
@@ -12,7 +12,7 @@ const networkPill = tv({
   base: [
     // Figma H5/PC topbar net — h 36, white surface (226:199 / 12:*)
     'inline-flex h-9 min-h-9 cursor-default items-center justify-center gap-2 rounded-full border border-border bg-card px-3.5',
-    'text-xs font-semibold leading-[1.2] shadow-none',
+    'text-xs leading-[1.2] font-semibold shadow-none',
     'max-dapp:px-3 max-dapp:text-xs',
   ],
 })
@@ -29,12 +29,7 @@ export function WalletTopbarActions() {
       <>
         <AnchoredTooltip content={t.nav.bscTooltip} position="bottom">
           <div className={networkPill()} aria-label={t.topbar.currentNetwork}>
-            <DappIcon
-              alt=""
-              className="rounded-full"
-              size="lg"
-              src={dappAssets.bsc}
-            />
+            <DappIcon alt="" className="rounded-full" size="lg" src={dappAssets.bsc} />
             {t.common.bsc}
           </div>
         </AnchoredTooltip>

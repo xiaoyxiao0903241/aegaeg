@@ -98,25 +98,27 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
     }
 
     if (result.error) {
-      presentUserFacingError(result.error, (error) =>
-        resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-        resolveGenesisPurchaseError(error, {
-          insufficientAllowance: t.genesis.insufficientAllowance,
-          insufficientUsd1: t.genesis.insufficientUsd1,
-          purchaseUnavailable: t.genesis.purchaseUnavailable,
-          walletNotConnected: t.genesis.walletNotConnected,
-          notBound: t.genesis.errors.notBound,
-          paused: t.genesis.errors.paused,
-          invalidAmount: t.genesis.errors.invalidAmount,
-          phaseInactive: t.genesis.errors.phaseInactive,
-          belowMin: t.genesis.errors.belowMin,
-          soldOut: t.genesis.errors.soldOut,
-          userLimitExceeded: t.genesis.errors.userLimitExceeded,
-          invalidPhase: t.genesis.errors.invalidPhase,
-          systemConfig: t.genesis.errors.systemConfig,
-        }) ??
-        resolveApiUserFacingError(error, t.errors.api) ??
-        t.errors.chain.fallback,
+      presentUserFacingError(
+        result.error,
+        (error) =>
+          resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
+          resolveGenesisPurchaseError(error, {
+            insufficientAllowance: t.genesis.insufficientAllowance,
+            insufficientUsd1: t.genesis.insufficientUsd1,
+            purchaseUnavailable: t.genesis.purchaseUnavailable,
+            walletNotConnected: t.genesis.walletNotConnected,
+            notBound: t.genesis.errors.notBound,
+            paused: t.genesis.errors.paused,
+            invalidAmount: t.genesis.errors.invalidAmount,
+            phaseInactive: t.genesis.errors.phaseInactive,
+            belowMin: t.genesis.errors.belowMin,
+            soldOut: t.genesis.errors.soldOut,
+            userLimitExceeded: t.genesis.errors.userLimitExceeded,
+            invalidPhase: t.genesis.errors.invalidPhase,
+            systemConfig: t.genesis.errors.systemConfig,
+          }) ??
+          resolveApiUserFacingError(error, t.errors.api) ??
+          t.errors.chain.fallback,
       )
     }
   }
@@ -145,10 +147,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
           </div>
         </div>
       ) : (
-        <SeasonSelector
-          activePhaseIndex={genesis.phaseIndex}
-          seasons={genesis.seasonOptions}
-        />
+        <SeasonSelector activePhaseIndex={genesis.phaseIndex} seasons={genesis.seasonOptions} />
       )}
 
       <GenesisPurchaseSharesField

@@ -7,8 +7,7 @@ const zhNotionLinks = {
 } as const
 
 const enNotionLinks = {
-  whitepaper:
-    'https://xdaoaegis.notion.site/Read-Whitepaper-V1-0-37fdd8755b988085a906cd5cb6ad5ee0',
+  whitepaper: 'https://xdaoaegis.notion.site/Read-Whitepaper-V1-0-37fdd8755b988085a906cd5cb6ad5ee0',
   docs: 'https://xdaoaegis.notion.site/en',
   economicModel:
     'https://xdaoaegis.notion.site/Read-Economic-Model-Analysis-37fdd8755b98807282ede05961292be2',

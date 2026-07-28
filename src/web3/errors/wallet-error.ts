@@ -31,9 +31,7 @@ export interface WalletTransactionErrorMessages {
   transactionUnknown?: string
 }
 
-const WALLET_TRANSACTION_ERROR_RULES: Array<
-  ErrorRule<keyof WalletTransactionErrorMessages>
-> = [
+const WALLET_TRANSACTION_ERROR_RULES: Array<ErrorRule<keyof WalletTransactionErrorMessages>> = [
   {
     match: ({ raw }) =>
       raw === WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED ||
@@ -70,10 +68,7 @@ export function resolveWalletTransactionError(
   ) {
     return messages.transactionUnknown
   }
-  if (
-    error instanceof WalletSubmitUnknownError &&
-    messages.transactionUnknown
-  ) {
+  if (error instanceof WalletSubmitUnknownError && messages.transactionUnknown) {
     return messages.transactionUnknown
   }
   const rawEarly = readErrorText(error)
@@ -118,10 +113,7 @@ export function toWalletUserFacingMessage(error: unknown, fallback: string): str
   if (isUserRejectedWalletError(error)) return null
   if (error == null) return null
   const text = readErrorText(error).trim()
-  if (
-    text === WALLET_GATE_ERROR.NOT_CONNECTED ||
-    /wallet not connected/i.test(text)
-  ) {
+  if (text === WALLET_GATE_ERROR.NOT_CONNECTED || /wallet not connected/i.test(text)) {
     return fallback
   }
   return fallback

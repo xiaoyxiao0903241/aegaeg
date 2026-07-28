@@ -9,9 +9,7 @@ import { isUserRejectedWalletError } from '~/web3/errors/wallet-error'
 const ERC20_INSUFFICIENT_BALANCE = '0xe450d38c'
 const ERC20_INSUFFICIENT_ALLOWANCE = '0xfb8f41b2'
 
-const ERC20_ERROR_RULES: Array<
-  ErrorRule<'insufficientUsd1' | 'insufficientAllowance'>
-> = [
+const ERC20_ERROR_RULES: Array<ErrorRule<'insufficientUsd1' | 'insufficientAllowance'>> = [
   {
     match: ({ raw }) =>
       raw.includes(ERC20_INSUFFICIENT_BALANCE) || /ERC20InsufficientBalance/i.test(raw),

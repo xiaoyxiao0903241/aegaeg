@@ -8,14 +8,5 @@ export function DappActionRow({
   children: ReactNode
   className?: string
 }) {
-  return (
-    <div
-      className={cn(
-        'grid shrink-0 grid-cols-2 gap-2',
-        className,
-      )}
-    >
-      {children}
-    </div>
-  )
+  return <div className={cn('grid shrink-0 grid-cols-2 gap-2', className)}>{children}</div>
 }

@@ -2,11 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useShareholderRank } from '~/views/dapp/rewards/use-shareholder-rank'
-import {
-  formatCount,
-  formatPresaleRank,
-  formatUsd,
-} from '~/shared/api/format-display'
+import { formatCount, formatPresaleRank, formatUsd } from '~/shared/api/format-display'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import {
@@ -15,7 +11,7 @@ import {
   resolveCommitmentFloorBoostCopy,
 } from '~/core/presale/tier-table'
 import { CommunityStatCardSkeleton } from '~/app/shell/dapp-skeleton'
-import { useAuth } from '~/app/bootstrap/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
@@ -71,8 +67,7 @@ export function CommunityContent() {
     sessionReady,
   )
 
-  const inviteRowsCompact =
-    referrals?.items.map((item) => mapTeamReferralToCompactRow(item)) ?? []
+  const inviteRowsCompact = referrals?.items.map((item) => mapTeamReferralToCompactRow(item)) ?? []
   const compactRows = inviteRowsCompact
   const invitesTotal = referrals?.total ?? 0
   const invitesTable = dappTableViewState({
@@ -100,12 +95,16 @@ export function CommunityContent() {
 
   const useStatPlaceholders = authPending || overviewLoading || isRankLoading
 
-  const directCount = overviewLoading ? STAT_PLACEHOLDER : formatCount(overview?.direct_referral_count ?? 0)
+  const directCount = overviewLoading
+    ? STAT_PLACEHOLDER
+    : formatCount(overview?.direct_referral_count ?? 0)
   const directVolume = overviewLoading
     ? STAT_PLACEHOLDER
     : formatUsd(overview?.direct_presale_volume ?? 0)
 
-  const teamCount = overviewLoading ? STAT_PLACEHOLDER : formatCount(overview?.descendant_count ?? 0)
+  const teamCount = overviewLoading
+    ? STAT_PLACEHOLDER
+    : formatCount(overview?.descendant_count ?? 0)
   const teamVolume = overviewLoading
     ? STAT_PLACEHOLDER
     : formatUsd(overview?.sales_team_market ?? 0)

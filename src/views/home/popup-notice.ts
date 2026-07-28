@@ -45,11 +45,7 @@ function pickI18nEntry(
   if (!entries?.length) return null
   if (!locale) return entries[0] ?? null
 
-  return (
-    entries.find((entry) => localeMatches(locale, entry.locale)) ??
-    entries[0] ??
-    null
-  )
+  return entries.find((entry) => localeMatches(locale, entry.locale)) ?? entries[0] ?? null
 }
 
 function readOptionalTimestamp(value: unknown): number | null | undefined {
@@ -141,7 +137,9 @@ function parseDismissedKeys(raw: string | null): Set<string> {
   try {
     const parsed = JSON.parse(raw) as unknown
     if (!Array.isArray(parsed)) return new Set()
-    return new Set(parsed.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0))
+    return new Set(
+      parsed.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0),
+    )
   } catch {
     return new Set()
   }

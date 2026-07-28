@@ -13,9 +13,7 @@ export function DappTabWidget({
   onSelectTab: (tab: DappTab) => void
 } & DappTabSessions) {
   const { Widget } = getDappTabEntry(activeTab)
-  return (
-    <Widget flash={flash} genesis={genesis} onSelectTab={onSelectTab} trade={trade} />
-  )
+  return <Widget flash={flash} genesis={genesis} onSelectTab={onSelectTab} trade={trade} />
 }
 
 export function DappTabContent({

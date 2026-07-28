@@ -2,10 +2,7 @@ import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useSalesLogs } from '~/hooks/use-api-data'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import {
-  calcProgressPercent,
-  formatUsd,
-} from '~/shared/api/format-display'
+import { calcProgressPercent, formatUsd } from '~/shared/api/format-display'
 import { mapSalesLogToDesktopRow } from '~/views/dapp/presale-display'
 import { bscscanTx } from '~/shared/config/explorer'
 import { DappSection } from '~/app/shell/dapp-section'
@@ -14,13 +11,11 @@ import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
-import {
-  genesisContributionsColWidths,
-} from '~/app/shell/dapp-table-columns'
+import { genesisContributionsColWidths } from '~/app/shell/dapp-table-columns'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useAuth } from '~/app/bootstrap/use-auth'
-import { formatTokenAmountToNumber } from '~/core/swap/token-amount'
+import { useAuth } from '~/hooks/use-auth'
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   GenesisContributionsProgressHeader,
   GenesisContributionsReveal,
@@ -28,11 +23,7 @@ import {
 } from '~/views/dapp/genesis/genesis-contributions-primitives'
 import { Text } from '~/shared/ui/text'
 
-export function GenesisContributionsSection({
-  genesis,
-}: {
-  genesis: GenesisWidgetState
-}) {
+export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const { isLoggingIn } = useAuth()
@@ -51,33 +42,32 @@ export function GenesisContributionsSection({
   )
   const contributedLabel = `${formatUsd(seasonContributedUsd)} / ${formatUsd(seasonMaxContributionUsd)}`
 
-  const desktopRows =
-    genesis.isPhasesLoading
-      ? []
-      : salesLogs?.items.map((item) => {
-          const row = mapSalesLogToDesktopRow(item, {
-            agxPriceUsd: genesis.agxPriceUsd,
-            phases: genesis.phases,
-          })
-          const txLabel = row[4]
-          if (!item.tx_hash || txLabel === '-') return row
+  const desktopRows = genesis.isPhasesLoading
+    ? []
+    : (salesLogs?.items.map((item) => {
+        const row = mapSalesLogToDesktopRow(item, {
+          agxPriceUsd: genesis.agxPriceUsd,
+          phases: genesis.phases,
+        })
+        const txLabel = row[4]
+        if (!item.tx_hash || txLabel === '-') return row
 
-          return [
-            ...row.slice(0, 4),
-            <Text
-              as="a"
-              className="underline"
-              href={bscscanTx(item.tx_hash)}
-              key={item.tx_hash}
-              rel="noopener noreferrer"
-              target="_blank"
-              tone="primary"
-              variant="copy"
-            >
-              {txLabel}
-            </Text>,
-          ]
-        }) ?? []
+        return [
+          ...row.slice(0, 4),
+          <Text
+            as="a"
+            className="underline"
+            href={bscscanTx(item.tx_hash)}
+            key={item.tx_hash}
+            rel="noopener noreferrer"
+            target="_blank"
+            tone="primary"
+            variant="copy"
+          >
+            {txLabel}
+          </Text>,
+        ]
+      }) ?? [])
 
   const tableHeaders = [
     t.tables.time,
@@ -106,7 +96,9 @@ export function GenesisContributionsSection({
     <DappSection title={t.genesis.myContributions}>
       <GenesisContributionsReveal>
         {showSalesSyncHint ? (
-          <GenesisContributionsSyncHint>{t.genesis.contributionsSyncPending}</GenesisContributionsSyncHint>
+          <GenesisContributionsSyncHint>
+            {t.genesis.contributionsSyncPending}
+          </GenesisContributionsSyncHint>
         ) : null}
         <DappTableCard
           footer={

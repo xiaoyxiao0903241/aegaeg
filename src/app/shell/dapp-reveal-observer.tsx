@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export function DappRevealObserver({
-  container,
-}: {
-  container: HTMLElement | null
-}) {
+export function DappRevealObserver({ container }: { container: HTMLElement | null }) {
   const observerRef = useRef<IntersectionObserver | null>(null)
   const observedRef = useRef(new WeakSet<Element>())
 

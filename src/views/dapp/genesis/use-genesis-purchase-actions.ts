@@ -3,11 +3,13 @@ import { useState } from 'react'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale-write'
-import { MAX_UINT256 } from '~/web3/abis'
 import { GENESIS_PURCHASE_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
-import { readErc20Allowance, readErc20Balance } from '~/web3/swap/swap-read'
+import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { invalidateAfterGenesisPurchase, invalidatePresaleChainQueries } from '~/shared/api/query/invalidate'
+import {
+  invalidateAfterGenesisPurchase,
+  invalidatePresaleChainQueries,
+} from '~/shared/api/query/invalidate'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readIsBindReferral } from '~/web3/referral-read'
@@ -16,10 +18,10 @@ import { fetchLiveGenesisPostApproveGate } from '~/views/dapp/genesis/fetch-live
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
-  clearPendingUnknownLatch,
-  isPendingUnknownLatched,
-  latchPendingUnknown,
-} from '~/web3/wallet/pending-unknown-latch'
+  clearUnknownReceiptLock,
+  isUnknownReceiptLocked,
+  lockUnknownReceipt,
+} from '~/web3/wallet/unknown-receipt-lock'
 
 export interface GenesisPurchaseResult {
   success: boolean
@@ -70,7 +72,7 @@ export function useGenesisPurchaseActions({
     if (!account || !wallet) {
       return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
-    if (isPendingUnknownLatched(WRITE_PATH.GENESIS) || !canPurchase) {
+    if (isUnknownReceiptLocked(WRITE_PATH.GENESIS) || !canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
     if (isApproved) {
@@ -83,13 +85,13 @@ export function useGenesisPurchaseActions({
       if (address) {
         queryClient.setQueryData(
           queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
-          MAX_UINT256,
+          purchaseAmount,
         )
       }
       return { success: true }
     } catch (caught) {
       if (isUnknownSubmitOutcome(caught)) {
-        latchPendingUnknown(WRITE_PATH.GENESIS)
+        lockUnknownReceipt(WRITE_PATH.GENESIS)
       }
       return { success: false, error: caught }
     } finally {
@@ -101,11 +103,7 @@ export function useGenesisPurchaseActions({
     if (!account || !wallet) {
       return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
-    if (
-      isPendingUnknownLatched(WRITE_PATH.GENESIS) ||
-      !activePhase ||
-      !canPurchase
-    ) {
+    if (isUnknownReceiptLocked(WRITE_PATH.GENESIS) || !activePhase || !canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
 
@@ -117,10 +115,7 @@ export function useGenesisPurchaseActions({
       ])
 
       if (address) {
-        queryClient.setQueryData(
-          queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address),
-          balance,
-        )
+        queryClient.setQueryData(queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address), balance)
         queryClient.setQueryData(
           queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
           approved,
@@ -141,11 +136,11 @@ export function useGenesisPurchaseActions({
         amount: purchaseAmount,
       })
       invalidateAfterGenesisPurchase(account.address, purchaseAmount)
-      clearPendingUnknownLatch(WRITE_PATH.GENESIS)
+      clearUnknownReceiptLock(WRITE_PATH.GENESIS)
       return { success: true }
     } catch (caught) {
       if (isUnknownSubmitOutcome(caught)) {
-        latchPendingUnknown(WRITE_PATH.GENESIS)
+        lockUnknownReceipt(WRITE_PATH.GENESIS)
       }
       return { success: false, error: caught }
     } finally {
@@ -154,10 +149,7 @@ export function useGenesisPurchaseActions({
   }
 
   async function submitPurchase(): Promise<GenesisPurchaseResult> {
-    if (
-      genesisPurchaseGate.inFlight ||
-      isPendingUnknownLatched(WRITE_PATH.GENESIS)
-    ) {
+    if (genesisPurchaseGate.inFlight || isUnknownReceiptLocked(WRITE_PATH.GENESIS)) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
 

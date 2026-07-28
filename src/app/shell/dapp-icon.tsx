@@ -6,13 +6,7 @@ type DappIconProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'width' |
   src: string
 }
 
-export function DappIcon({
-  alt = '',
-  className,
-  size = 'base',
-  src,
-  ...props
-}: DappIconProps) {
+export function DappIcon({ alt = '', className, size = 'base', src, ...props }: DappIconProps) {
   return (
     <img
       alt={alt}

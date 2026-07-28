@@ -29,7 +29,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error(`[ErrorBoundary${this.props.name ? `:${this.props.name}` : ''}]`, error, info.componentStack)
+    console.error(
+      `[ErrorBoundary${this.props.name ? `:${this.props.name}` : ''}]`,
+      error,
+      info.componentStack,
+    )
   }
 
   private handleReload = () => {

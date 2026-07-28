@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useActiveWallet } from '~/web3/thirdweb-react'
-import {
-  buildPhaseCountdownKey,
-  hasPhaseCountdownElapsed,
-} from '~/core/presale/presale-math'
+import { buildPhaseCountdownKey, hasPhaseCountdownElapsed } from '~/core/presale/presale-math'
 import { invalidateAfterGenesisPhaseTransition } from '~/shared/api/query/invalidate'
 import { useI18n } from '~/i18n/use-i18n'
 import { buildGenesisWidgetModel } from '~/views/dapp/genesis/build-genesis-widget-model'
@@ -13,10 +10,7 @@ import {
   type GenesisPurchaseResult,
 } from '~/views/dapp/genesis/use-genesis-purchase-actions'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import {
-  WRITE_PATH,
-  isPendingUnknownLatched,
-} from '~/web3/wallet/pending-unknown-latch'
+import { WRITE_PATH, isUnknownReceiptLocked } from '~/web3/wallet/unknown-receipt-lock'
 
 export type { GenesisPurchaseResult }
 
@@ -34,8 +28,7 @@ export function useGenesisWidget() {
     sharesDraft,
     countdownUnits: t.genesis.countdownUnits,
   })
-  const canPurchase =
-    model.canPurchase && writeReady && !isPendingUnknownLatched(WRITE_PATH.GENESIS)
+  const canPurchase = model.canPurchase && writeReady && !isUnknownReceiptLocked(WRITE_PATH.GENESIS)
 
   function setShares(next: number) {
     setSharesDraft(next)

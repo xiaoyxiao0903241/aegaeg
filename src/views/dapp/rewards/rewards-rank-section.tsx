@@ -6,21 +6,14 @@ import {
   useQualifiedPartitions,
   useTeamOverview,
 } from '~/hooks/use-api-data'
-import {
-  calcProgressPercent,
-  formatPresaleRank,
-  formatUsd,
-} from '~/shared/api/format-display'
+import { calcProgressPercent, formatPresaleRank, formatUsd } from '~/shared/api/format-display'
 import { buildNextTierProgress } from '~/core/presale/tier-progress'
 import {
   getCommitmentFloorPostLaunchLabel,
   getTeamBonusRateLabel,
   resolveCommitmentFloorBoostCopy,
 } from '~/core/presale/tier-table'
-import {
-  CurrentTitleCardBodySkeleton,
-  ProgressCardSkeleton,
-} from '~/app/shell/dapp-skeleton'
+import { CurrentTitleCardBodySkeleton, ProgressCardSkeleton } from '~/app/shell/dapp-skeleton'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { ProgressMeter } from '~/app/shell/progress-meter'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -59,10 +52,10 @@ export function RewardsRankSection() {
     ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
     : ''
   const postLaunch30DayLabel = showPostLaunchRank
-    ? resolveCommitmentFloorBoostCopy(commitmentFloorRank, {
+    ? (resolveCommitmentFloorBoostCopy(commitmentFloorRank, {
         boostTemplate: t.rewards.postLaunch30DayRank,
         maxRankCopy: t.rewards.postLaunchMaxRank,
-      }) ?? ''
+      }) ?? '')
     : ''
   const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
     '{rate}',
@@ -99,7 +92,7 @@ export function RewardsRankSection() {
     ? calcProgressPercent(qualifiedPartitionCount, 2)
     : tierProgress.isMaxRank
       ? 100
-      : tierProgress.teamProgressPercent ?? 0
+      : (tierProgress.teamProgressPercent ?? 0)
 
   const showPerformanceSkeleton =
     (performanceLoading && !performance) ||
@@ -119,22 +112,12 @@ export function RewardsRankSection() {
               showPostLaunchRank ? 'grid-cols-2' : 'grid-cols-1',
             )}
           >
-            <Text
-              as="p"
-              variant="eyebrow"
-              tone="primary"
-              className="m-0"
-            >
+            <Text as="p" variant="eyebrow" tone="primary" className="m-0">
               {t.rewards.currentTitle}
             </Text>
             {showPostLaunchRank ? (
               <div className="flex items-center justify-end gap-1 self-start">
-                <Text
-                  as="p"
-                  variant="eyebrow"
-                  tone="primary"
-                  className="m-0"
-                >
+                <Text as="p" variant="eyebrow" tone="primary" className="m-0">
                   {t.rewards.postLaunchRankTitle}
                 </Text>
                 <DappInfoTooltip
@@ -163,12 +146,7 @@ export function RewardsRankSection() {
               </Text>
             ) : null}
 
-            <Text
-              as="small"
-              variant="support"
-              tone="muted-foreground"
-              className="block"
-            >
+            <Text as="small" variant="support" tone="muted-foreground" className="block">
               {leftBottomLabel}
             </Text>
             {postLaunch30DayLabel ? (

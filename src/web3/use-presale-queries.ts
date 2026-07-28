@@ -13,7 +13,7 @@ import {
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
 } from '~/web3/presale-read'
-import { readErc20Allowance, readErc20Balance } from '~/web3/swap/swap-read'
+import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 import { readIsBindReferral } from '~/web3/referral-read'
 
 type PresaleQueryOptions = {
@@ -50,8 +50,7 @@ type PresaleActivePhaseQueryResult = Pick<
 export function usePresaleActivePhaseQuery(): PresaleActivePhaseQueryResult {
   const phasesQuery = usePresalePhasesQuery()
 
-  const data =
-    phasesQuery.data === undefined ? undefined : findActivePresalePhase(phasesQuery.data)
+  const data = phasesQuery.data === undefined ? undefined : findActivePresalePhase(phasesQuery.data)
 
   return {
     data,
@@ -132,8 +131,7 @@ export function usePresaleUserPhaseRemainingQuery(
   options?: PresaleQueryOptions,
 ) {
   const readClient = useChainReadClient()
-  const queryEnabled =
-    (options?.enabled ?? true) && Boolean(address) && phaseIndex !== undefined
+  const queryEnabled = (options?.enabled ?? true) && Boolean(address) && phaseIndex !== undefined
 
   return useQuery({
     queryKey: queryKeys.chain.presaleUserPhaseRemaining(address ?? '', phaseIndex ?? 0),

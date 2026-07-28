@@ -5,7 +5,7 @@ import {
   parseTokenAmount,
   resolveCappedTokenAmountRaw,
   sanitizeTokenAmountInput,
-} from '~/core/swap/token-amount'
+} from '~/core/exchange/token-amount'
 
 type UseCappedTokenAmountInputOptions = {
   decimals: number

@@ -1,14 +1,6 @@
-import {
-  decodeAbiParameters,
-  encodeFunctionData,
-  parseAbi,
-  type AbiParameter,
-} from 'viem'
+import { decodeAbiParameters, encodeFunctionData, parseAbi, type AbiParameter } from 'viem'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import {
-  type PresalePhaseOnChain,
-  type PresalePhaseRemaining,
-} from '~/core/presale/presale-math'
+import { type PresalePhaseOnChain, type PresalePhaseRemaining } from '~/core/presale/presale-math'
 import { MULTICALL3_METHODS, PRESALE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
@@ -56,16 +48,7 @@ function mapPhaseTupleToOnChain(
     endTime,
     soldAmount,
     userPurchaseLimit,
-  ]: readonly [
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-    bigint,
-  ],
+  ]: readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint],
 ): PresalePhaseOnChain {
   return {
     index: phaseIndex,
@@ -196,9 +179,7 @@ export async function readPresaleAgxPriceWei(
   })
 }
 
-export async function readPresalePaused(
-  client: ChainReadClient = bscReadClient,
-): Promise<boolean> {
+export async function readPresalePaused(client: ChainReadClient = bscReadClient): Promise<boolean> {
   return client.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,

@@ -15,7 +15,7 @@ const communityProgramCard = tv({
     root: cn(revealClass(), 'flex w-full min-w-0 flex-col gap-2 p-5'),
     action: cn(
       'm-0 cursor-pointer border-0 bg-transparent p-0 text-left',
-      'transition-opacity duration-dapp-fast ease-out hover:opacity-80',
+      'duration-dapp-fast transition-opacity ease-out hover:opacity-80',
     ),
   },
 })
@@ -56,7 +56,7 @@ export function CommunityProgramCard({
 
   return (
     <Card as="article" surface="elevated" className={cn(styles.root(), className)} data-reveal>
-      <Text as="span" variant="eyebrow" className="m-0 normal-case text-coral">
+      <Text as="span" variant="eyebrow" className="m-0 text-coral normal-case">
         {label}
       </Text>
       <Text as="h3" variant="headline" tone="foreground" className="m-0">

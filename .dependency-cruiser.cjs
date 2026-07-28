@@ -44,6 +44,18 @@ module.exports = {
       to: { path: '^src/views/' },
     },
     {
+      name: 'hooks-no-app',
+      severity: 'error',
+      from: { path: '^src/hooks/' },
+      to: { path: '^src/app/' },
+    },
+    {
+      name: 'no-circular',
+      severity: 'error',
+      from: { path: '^src/' },
+      to: { circular: true, path: '^src/' },
+    },
+    {
       name: 'home-no-web3',
       severity: 'error',
       from: { path: '^src/views/home/' },
@@ -59,5 +71,8 @@ module.exports = {
   options: {
     tsPreCompilationDeps: true,
     tsConfig: { fileName: 'tsconfig.app.json' },
+    doNotFollow: {
+      path: '(^node_modules/|\\.pnpm/)',
+    },
   },
 }

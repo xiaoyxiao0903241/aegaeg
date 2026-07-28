@@ -8,11 +8,7 @@ import {
   CommunityProgramGrid,
 } from '~/views/dapp/community/community-flow-primitives'
 
-export function CommunityFlowSection({
-  isMobileViewport = false,
-}: {
-  isMobileViewport?: boolean
-}) {
+export function CommunityFlowSection({ isMobileViewport = false }: { isMobileViewport?: boolean }) {
   const { messages: t } = useI18n()
   const genesis = useGenesisPromo()
 

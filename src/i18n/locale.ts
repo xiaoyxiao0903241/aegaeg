@@ -103,11 +103,7 @@ export function getInitialLocale(): Locale {
     return defaultLocale
   }
 
-  return (
-    getLocaleFromPathname(window.location.pathname) ??
-    getStoredLocale() ??
-    getBrowserLocale()
-  )
+  return getLocaleFromPathname(window.location.pathname) ?? getStoredLocale() ?? getBrowserLocale()
 }
 
 export function persistLocale(locale: Locale) {

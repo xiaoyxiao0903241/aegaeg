@@ -30,7 +30,7 @@ export const rewardsBalanceHeaderMeta = tv({
 })
 
 export const rewardsBalanceHint = tv({
-  base: 'max-dapp:hidden text-foreground/30',
+  base: 'text-foreground/30 max-dapp:hidden',
 })
 
 export const rewardsReferralAmount = tv({

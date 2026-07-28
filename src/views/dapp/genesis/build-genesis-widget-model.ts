@@ -8,7 +8,7 @@ import {
   formatPhaseCountdown,
   getAirdropBpsForPhase,
 } from '~/core/presale/presale-math'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/swap/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatUsd } from '~/shared/api/format-display'
 import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 
@@ -23,8 +23,7 @@ export function buildGenesisWidgetModel(args: {
 }) {
   const { reads, sharesDraft, countdownUnits } = args
   const shares = clampGenesisShares(sharesDraft, reads.maxShares)
-  const purchaseAmount =
-    reads.sharePriceWei > 0n ? reads.sharePriceWei * BigInt(shares) : 0n
+  const purchaseAmount = reads.sharePriceWei > 0n ? reads.sharePriceWei * BigInt(shares) : 0n
   const payUsd1 = formatTokenAmountToNumber(purchaseAmount, USD1_DECIMALS)
   const estimatedAgx = estimateAgxFromUsd1(payUsd1, reads.discountBps, reads.agxPriceUsd)
   const contributionValueUsd = estimateContributionValueUsd(
@@ -64,11 +63,7 @@ export function buildGenesisWidgetModel(args: {
       discountLabel: reads.discountLabel,
       discountBps: reads.discountBps,
       countdown: reads.countdownTarget
-        ? formatPhaseCountdown(
-            reads.countdownTarget.targetTime,
-            reads.nowSeconds,
-            countdownUnits,
-          )
+        ? formatPhaseCountdown(reads.countdownTarget.targetTime, reads.nowSeconds, countdownUnits)
         : '—',
       countdownMode: reads.countdownTarget?.mode ?? null,
       globalPurchasedLabel: formatTokenAmount(reads.totalPurchased, USD1_DECIMALS, 0),

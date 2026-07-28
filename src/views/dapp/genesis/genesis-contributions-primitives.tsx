@@ -15,11 +15,7 @@ const genesisContributionsSection = tv({
   },
 })
 
-export function GenesisContributionsReveal({
-  children,
-}: {
-  children: ReactNode
-}) {
+export function GenesisContributionsReveal({ children }: { children: ReactNode }) {
   const styles = genesisContributionsSection()
   return (
     <div className={styles.root()} data-reveal>
@@ -51,19 +47,12 @@ export function GenesisContributionsProgressHeader({
   return (
     <div className={styles.progressHeader()}>
       <div className={styles.progressRow()}>
-        <Text
-          className="font-semibold leading-[1.2]"
-          tone="foreground"
-          variant="support"
-        >
+        <Text className="leading-[1.2] font-semibold" tone="foreground" variant="support">
           {label}
         </Text>
         <Text
           as="strong"
-          className={cn(
-            styles.progressValue(),
-            'font-semibold leading-[1.2]',
-          )}
+          className={cn(styles.progressValue(), 'leading-[1.2] font-semibold')}
           tone="foreground"
           variant="support"
         >

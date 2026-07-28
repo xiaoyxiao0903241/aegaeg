@@ -3,7 +3,7 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
 import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/app/bootstrap/use-auth'
+import { useAuth } from '~/hooks/use-auth'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import {
   ACCOUNT_BANNED_SENTINEL,
@@ -29,7 +29,7 @@ const walletConnectChip = tv({
     label: 'inline-flex min-w-0 items-center gap-1.5',
     glyph: [
       'relative aspect-16/13 w-4 shrink-0 rounded-sm border-[1.5px] border-primary',
-      'after:absolute after:right-0.5 after:top-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
+      'after:absolute after:top-0.5 after:right-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
     ],
     connected: 'aegis-connected-wallet-chip',
     shell: '',
@@ -147,7 +147,7 @@ function ConnectedWalletChip() {
         <Text
           as="span"
           variant="copy"
-          className="truncate text-xs font-semibold leading-[1.2] tracking-[-0.01em]"
+          className="truncate text-xs leading-[1.2] font-semibold tracking-[-0.01em]"
         >
           {formatAddress(address)}
         </Text>
@@ -177,9 +177,7 @@ function WalletConnectButton({
   const [connectOpen, setConnectOpen] = useState(false)
   const styles = walletConnectChip({ fullWidth })
 
-  const connectLabel =
-    label ??
-    (needsSignIn ? t.wallet.signInRequired : t.common.connectWallet)
+  const connectLabel = label ?? (needsSignIn ? t.wallet.signInRequired : t.common.connectWallet)
 
   async function handleClick() {
     if (loginError) {

@@ -1,6 +1,6 @@
 import { formatUsd } from '~/shared/api/format-display'
 import { USD1_DECIMALS, type PresalePhaseOnChain } from '~/core/presale/presale-math'
-import { formatTokenAmount } from '~/core/swap/token-amount'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 
 export interface GenesisFaqTemplateValues extends Record<string, string> {
   phaseCount: string
@@ -22,9 +22,7 @@ function formatUsdRange(min: bigint, max: bigint): string {
 }
 
 function formatDiscountList(phases: PresalePhaseOnChain[]): string {
-  return phases
-    .map((phase) => `${(Number(phase.discountBps) / 100).toFixed(0)}%`)
-    .join(' / ')
+  return phases.map((phase) => `${(Number(phase.discountBps) / 100).toFixed(0)}%`).join(' / ')
 }
 
 function formatAirdropRatioList(phases: PresalePhaseOnChain[]): string {
@@ -102,7 +100,9 @@ export function buildGenesisFaqTemplateValues(
     discounts: formatDiscountList(phases),
     minUsd: minUsdNumber > 0 ? formatUsd(minUsdNumber) : '—',
     shareIncrement: resolveShareIncrement(phases),
-    phaseQuotas: phases.map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount)).join(' / '),
+    phaseQuotas: phases
+      .map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount))
+      .join(' / '),
     threshold: airdropThresholdUsd > 0 ? formatUsd(airdropThresholdUsd) : '—',
     airdropRatios: formatAirdropRatioList(phases),
   }

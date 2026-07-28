@@ -16,7 +16,11 @@ export function DappPillTabs({
   onSelect?: (index: number) => void
 }) {
   return (
-    <div className={cn('flex flex-wrap items-center gap-2', className)} role="tablist" aria-label={ariaLabel}>
+    <div
+      className={cn('flex flex-wrap items-center gap-2', className)}
+      role="tablist"
+      aria-label={ariaLabel}
+    >
       {items.map((item, index) => (
         <Chip
           aria-selected={Boolean(item.active)}

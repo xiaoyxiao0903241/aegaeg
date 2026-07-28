@@ -25,12 +25,7 @@ export function DappPanelHeader({
   const { messages: t } = useI18n()
 
   return (
-    <div
-      className={cn(
-        'flex items-start justify-between gap-4 max-dapp:mt-6',
-        className,
-      )}
-    >
+    <div className={cn('flex items-start justify-between gap-4 max-dapp:mt-6', className)}>
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <Text as="h1" variant="panel" className="m-0">
           {title}
@@ -54,7 +49,7 @@ export function DappPanelHeader({
           >
             <DappIcon
               className={cn(
-                'transition-transform duration-dapp-base ease-dapp',
+                'duration-dapp-base transition-transform ease-dapp',
                 detailCollapsed && 'rotate-90',
               )}
               size="lg"

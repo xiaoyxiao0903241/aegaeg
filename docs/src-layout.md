@@ -19,28 +19,29 @@
 
 ## 业务子袋
 
-同能力 ≥4 文件且有单一入口时可按能力名再拆一层（如 `flash-swap/`、`trade-swap/`、`web3/wallet/`）。禁类型空壳袋名。跨子袋共享留在页袋根。
+同能力 ≥4 文件且有单一入口时可按能力名再拆一层（如 `flash-exchange/`、`market-trade/`、`web3/wallet/`）。禁类型空壳袋名。跨子袋共享留在页袋根。
 
 ## 树
 
 ```text
 src/
-  core/{auth,swap,presale}/
+  core/{auth,exchange,presale}/
   web3/                 # thirdweb、abis、presale/referral/reward、errors
-    swap/  wallet/      # 读/写、pool、write intent、latch、wait
-  app/{bootstrap,shell}/
+    exchange/  wallet/  # 读/写、pool、write intent、unknown-receipt-lock、wait
+  app/{startup,shell}/  # providers / boot；壳 chrome 在 shell/
   shared/{ui,config,styles,lib,api}/
   hooks/  stores/  i18n/messages/{home,app}/
   views/
     home/               # 禁 web3 / thirdweb / viem
-    dapp/{swap,genesis,rewards,community,auth}/
+    dapp/{exchange,assets,staking,rewards,release,community,genesis,auth}/
+      exchange/{flash-exchange,market-trade,hub}/
 ```
 
 ## `hooks/` 白名单
 
 `use-api-data` · `use-capped-token-amount-input` · `use-genesis-promo` · `use-mobile-viewport` · `queries/use-visible-interval`
 
-页专属编排在页袋（如 `use-swap-quote`、`use-genesis-widget`、`use-reward-claim`）。
+页专属编排在页袋（如 `use-exchange-quote`、`use-genesis-widget`、`use-claim-reward`）。
 
 ## 不变量
 

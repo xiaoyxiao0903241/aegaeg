@@ -1,6 +1,6 @@
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 
-/** Selector facade for rail / swap footer / community / genesis chrome — store SSOT. */
+/** Selector facade for rail / exchange footer / community / genesis chrome — store SSOT. */
 export function useGenesisPromo() {
   const activeSeasonNumber = useGenesisPromoStore((state) => state.activeSeasonNumber)
   const discountLabel = useGenesisPromoStore((state) => state.discountLabel)

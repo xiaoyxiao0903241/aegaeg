@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test'
  */
 test.describe('DApp money-path — behavior contracts', () => {
   test('disconnected shell shows connect affordance', async ({ page }) => {
-    await page.goto('/en/app.html#swap', { waitUntil: 'domcontentloaded', timeout: 60_000 })
+    await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
     await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
 
     const connect = page.getByRole('button', { name: /connect/i }).first()
@@ -18,21 +18,21 @@ test.describe('DApp money-path — behavior contracts', () => {
   })
 
   test('swap hub exposes Flash mode card when disconnected', async ({ page }) => {
-    await page.goto('/en/app.html#swap', { waitUntil: 'domcontentloaded', timeout: 60_000 })
+    await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
     await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
 
     await expect(
-      page.locator('[data-swap-widget-panel]').getByRole('button', { name: /Flash/i }),
+      page.locator('[data-exchange-widget-panel]').getByRole('button', { name: /Flash/i }),
     ).toBeVisible({ timeout: 30_000 })
   })
 
   test('swap trade sell amount accepts draft input when disconnected', async ({ page }) => {
-    await page.goto('/en/app.html#swap', { waitUntil: 'domcontentloaded', timeout: 60_000 })
+    await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
     await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
 
     // Hub mode card accessible name = title + body (not exact "Trade").
     await page
-      .locator('[data-swap-widget-panel]')
+      .locator('[data-exchange-widget-panel]')
       .getByRole('button', { name: /Trade/i })
       .click()
 

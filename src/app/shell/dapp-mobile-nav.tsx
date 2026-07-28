@@ -14,7 +14,7 @@ import { Text } from '~/shared/ui/text'
 const drawerItem = tv({
   base: cn(
     'flex w-full min-w-0 cursor-pointer items-center gap-3.5 rounded-md px-4 py-3.5',
-    'transition-[background-color,color] duration-dapp-fast ease-out',
+    'duration-dapp-fast transition-[background-color,color] ease-out',
   ),
   variants: {
     active: {
@@ -92,7 +92,7 @@ export function DappMobileNav({
     <div
       aria-hidden={!open}
       className={cn(
-        'fixed inset-0 z-60 max-dapp:block dapp:hidden',
+        'fixed inset-0 z-60 dapp:hidden max-dapp:block',
         open ? 'pointer-events-auto' : 'pointer-events-none',
       )}
       data-dapp-mobile-nav
@@ -101,10 +101,7 @@ export function DappMobileNav({
     >
       <button
         aria-label={t.common.close}
-        className={cn(
-          'absolute inset-0 border-0 p-0',
-          'bg-modal-overlay backdrop-blur-sm',
-        )}
+        className={cn('absolute inset-0 border-0 p-0', 'bg-modal-overlay backdrop-blur-sm')}
         data-dapp-mobile-nav-backdrop
         onClick={onClose}
         type="button"

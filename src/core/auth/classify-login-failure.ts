@@ -3,11 +3,7 @@
  * AuthProvider 再映射到 LOGIN_ERROR / ACCOUNT_BANNED sentinel。
  */
 export type LoginFailureKind =
-  | 'banned'
-  | 'user_rejected'
-  | 'signature_rejected'
-  | 'failed'
-  | 'transient'
+  'banned' | 'user_rejected' | 'signature_rejected' | 'failed' | 'transient'
 
 const USER_REJECTED = /rejected|denied|cancel/i
 const SIGNATURE_REJECTED = /nonce|signature|expired|invalid/i

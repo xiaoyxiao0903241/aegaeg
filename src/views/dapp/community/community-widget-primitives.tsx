@@ -49,7 +49,12 @@ export function CommunityReferralLinkCard({
       <Text as="p" variant="support" tone="muted-foreground" className="m-0">
         {linkLabel}
       </Text>
-      <Text as="strong" variant="copy" tone="foreground" className="block max-w-full truncate text-sm font-semibold tracking-tight">
+      <Text
+        as="strong"
+        variant="copy"
+        tone="foreground"
+        className="block max-w-full truncate text-sm font-semibold tracking-tight"
+      >
         {referralLink}
       </Text>
       <DappActionButton disabled={disabled} onClick={onCopy}>
@@ -84,12 +89,7 @@ export function CommunityReferrerBindCard({
 }) {
   return (
     <DappSideCard className="gap-2">
-      <Text
-        as="p"
-        variant="support"
-        tone="muted-foreground"
-        className="m-0"
-      >
+      <Text as="p" variant="support" tone="muted-foreground" className="m-0">
         {referrerLabel}
       </Text>
       <div className={communityReferrerBindGrid()}>
@@ -109,12 +109,7 @@ export function CommunityReferrerBindCard({
           {bindLabel}
         </FieldActionChip>
       </div>
-      <Text
-        as="small"
-        variant="support"
-        tone="muted-foreground"
-        className="block"
-      >
+      <Text as="small" variant="support" tone="muted-foreground" className="block">
         {hint}
       </Text>
     </DappSideCard>
@@ -138,12 +133,7 @@ export function CommunityReferrerBoundPanel({
 }) {
   return (
     <DappSideCard className="gap-2.5">
-      <Text
-        as="p"
-        variant="support"
-        tone="muted-foreground"
-        className="m-0"
-      >
+      <Text as="p" variant="support" tone="muted-foreground" className="m-0">
         {addressLabel}
       </Text>
       <div className={communityReferrerAddressRow()}>
@@ -155,7 +145,7 @@ export function CommunityReferrerBoundPanel({
             as="strong"
             variant="copy"
             tone="foreground"
-            className="truncate text-sm font-semibold leading-[1.2]"
+            className="truncate text-sm leading-[1.2] font-semibold"
           >
             {referrerLabel ?? '—'}
           </Text>
@@ -171,12 +161,7 @@ export function CommunityReferrerBoundPanel({
           </button>
         ) : null}
       </div>
-      <Text
-        as="p"
-        variant="support"
-        tone="muted-foreground"
-        className="m-0"
-      >
+      <Text as="p" variant="support" tone="muted-foreground" className="m-0">
         {note}
       </Text>
     </DappSideCard>

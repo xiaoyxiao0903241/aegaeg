@@ -53,12 +53,7 @@ function Title({ className, ...props }: Omit<TextProps, 'variant'>) {
 
 function Description({ className, ...props }: Omit<TextProps, 'variant' | 'tone'>) {
   return (
-    <Text
-      variant="support"
-      tone="muted-foreground"
-      className={cn('m-0', className)}
-      {...props}
-    />
+    <Text variant="support" tone="muted-foreground" className={cn('m-0', className)} {...props} />
   )
 }
 
@@ -72,9 +67,7 @@ function Footer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 
 /** Tier B · metric / meta 行标签（Figma 12px support） */
 function Label({ className, ...props }: Omit<TextProps, 'variant'>) {
-  return (
-    <Text variant="support" tone="foreground" className={className} {...props} />
-  )
+  return <Text variant="support" tone="foreground" className={className} {...props} />
 }
 
 /** Tier B · 数值（默认 figure 字阶；比例字，无 tabular-nums） */

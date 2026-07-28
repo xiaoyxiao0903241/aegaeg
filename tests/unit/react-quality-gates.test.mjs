@@ -67,10 +67,7 @@ test('canPurchaseGenesis requires live phase, share cap, and amount bounds', asy
   assert.equal(canPurchaseGenesis({ ...base, shares: 0 }), false)
   assert.equal(canPurchaseGenesis({ ...base, shares: 41 }), false)
   assert.equal(canPurchaseGenesis({ ...base, purchaseAmount: 50n * 10n ** 18n }), false)
-  assert.equal(
-    canPurchaseGenesis({ ...base, purchaseAmount: 5000n * 10n ** 18n }),
-    false,
-  )
+  assert.equal(canPurchaseGenesis({ ...base, purchaseAmount: 5000n * 10n ** 18n }), false)
 })
 
 test('canPurchaseGenesis requires at least one share', async () => {
@@ -111,7 +108,7 @@ test('canPurchaseGenesis fails closed when unbound or paused', async () => {
 })
 
 test('resolveLiveQuotedOut ignores placeholder keepPreviousData', async () => {
-  const { resolveLiveQuotedOut } = await loadModule('/src/core/swap/resolve-live-quoted-out.ts')
+  const { resolveLiveQuotedOut } = await loadModule('/src/core/exchange/resolve-live-quoted-out.ts')
 
   assert.equal(resolveLiveQuotedOut(true, 123n), 0n)
   assert.equal(resolveLiveQuotedOut(false, 123n), 123n)
@@ -119,9 +116,9 @@ test('resolveLiveQuotedOut ignores placeholder keepPreviousData', async () => {
   assert.equal(resolveLiveQuotedOut(false, null), 0n)
 })
 
-test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () => {
-  const { canSubmitQuotedSwap, resolveLiveQuotedOut } = await loadModule(
-    '/src/core/swap/resolve-live-quoted-out.ts',
+test('canSubmitQuotedExchange blocks placeholder-zero and pending quotes', async () => {
+  const { canSubmitQuotedExchange, resolveLiveQuotedOut } = await loadModule(
+    '/src/core/exchange/resolve-live-quoted-out.ts',
   )
 
   const live = resolveLiveQuotedOut(false, 100n)
@@ -143,19 +140,21 @@ test('canSubmitQuotedSwap blocks placeholder-zero and pending quotes', async () 
     nowMs,
   }
 
-  assert.equal(canSubmitQuotedSwap(base), true)
-  assert.equal(canSubmitQuotedSwap({ ...base, quotedOut: stale, amountOutMin: 0n }), false)
-  assert.equal(canSubmitQuotedSwap({ ...base, isPlaceholderData: true }), false)
-  assert.equal(canSubmitQuotedSwap({ ...base, isQuotePending: true }), false)
-  assert.equal(canSubmitQuotedSwap({ ...base, amountIn: 200n }), false)
-  assert.equal(canSubmitQuotedSwap({ ...base, blockResubmit: true }), false)
-  assert.equal(canSubmitQuotedSwap({ ...base, isBalancesLoading: true }), false)
-  assert.equal(canSubmitQuotedSwap({ ...base, amountOutMin: 0n }), false)
-  assert.equal(canSubmitQuotedSwap({ ...base, nowMs: nowMs + 10_001 }), false)
+  assert.equal(canSubmitQuotedExchange(base), true)
+  assert.equal(canSubmitQuotedExchange({ ...base, quotedOut: stale, amountOutMin: 0n }), false)
+  assert.equal(canSubmitQuotedExchange({ ...base, isPlaceholderData: true }), false)
+  assert.equal(canSubmitQuotedExchange({ ...base, isQuotePending: true }), false)
+  assert.equal(canSubmitQuotedExchange({ ...base, amountIn: 200n }), false)
+  assert.equal(canSubmitQuotedExchange({ ...base, blockResubmit: true }), false)
+  assert.equal(canSubmitQuotedExchange({ ...base, isBalancesLoading: true }), false)
+  assert.equal(canSubmitQuotedExchange({ ...base, amountOutMin: 0n }), false)
+  assert.equal(canSubmitQuotedExchange({ ...base, nowMs: nowMs + 10_001 }), false)
 })
 
-test('canSubmitQuotedSwap blockResubmit models unknown-tx double-submit latch', async () => {
-  const { canSubmitQuotedSwap } = await loadModule('/src/core/swap/resolve-live-quoted-out.ts')
+test('canSubmitQuotedExchange blockResubmit models unknown-tx double-submit latch', async () => {
+  const { canSubmitQuotedExchange } = await loadModule(
+    '/src/core/exchange/resolve-live-quoted-out.ts',
+  )
 
   const base = {
     walletReady: true,
@@ -172,15 +171,15 @@ test('canSubmitQuotedSwap blockResubmit models unknown-tx double-submit latch', 
     nowMs: 1_000_000,
   }
 
-  assert.equal(canSubmitQuotedSwap(base), true)
-  assert.equal(canSubmitQuotedSwap({ ...base, blockResubmit: true }), false)
+  assert.equal(canSubmitQuotedExchange(base), true)
+  assert.equal(canSubmitQuotedExchange({ ...base, blockResubmit: true }), false)
 })
 
-test('assertQuotedSwapStillSubmittable throws SWAP_SUBMIT_GATE_FAILED when gate fails', async () => {
-  const { assertQuotedSwapStillSubmittable, canSubmitQuotedSwap } = await loadModule(
-    '/src/core/swap/resolve-live-quoted-out.ts',
+test('assertQuotedExchangeStillSubmittable throws EXCHANGE_SUBMIT_GATE_FAILED when gate fails', async () => {
+  const { assertQuotedExchangeStillSubmittable, canSubmitQuotedExchange } = await loadModule(
+    '/src/core/exchange/resolve-live-quoted-out.ts',
   )
-  const { SWAP_SUBMIT_GATE_FAILED } = await loadModule(
+  const { EXCHANGE_SUBMIT_GATE_FAILED } = await loadModule(
     '/src/web3/resolve-contract-error-message.ts',
   )
 
@@ -200,16 +199,16 @@ test('assertQuotedSwapStillSubmittable throws SWAP_SUBMIT_GATE_FAILED when gate 
     nowMs: 1_000_000,
   }
 
-  assert.equal(canSubmitQuotedSwap(okParams), true)
-  assert.doesNotThrow(() => assertQuotedSwapStillSubmittable(okParams))
+  assert.equal(canSubmitQuotedExchange(okParams), true)
+  assert.doesNotThrow(() => assertQuotedExchangeStillSubmittable(okParams))
 
   assert.throws(
     () =>
-      assertQuotedSwapStillSubmittable({
+      assertQuotedExchangeStillSubmittable({
         ...okParams,
         nowMs: 1_000_000 + 10_001,
       }),
-    (error) => error instanceof Error && error.message === SWAP_SUBMIT_GATE_FAILED,
+    (error) => error instanceof Error && error.message === EXCHANGE_SUBMIT_GATE_FAILED,
   )
 })
 
@@ -221,15 +220,12 @@ test('resolveWalletRemountKey clears draft identity on address change', async ()
   assert.equal(resolveWalletRemountKey(undefined), 'disconnected')
   assert.equal(resolveWalletRemountKey(null), 'disconnected')
   assert.equal(resolveWalletRemountKey('0xAbC'), '0xabc')
-  assert.notEqual(
-    resolveWalletRemountKey('0xaaa'),
-    resolveWalletRemountKey('0xbbb'),
-  )
+  assert.notEqual(resolveWalletRemountKey('0xaaa'), resolveWalletRemountKey('0xbbb'))
   assert.notEqual(resolveWalletRemountKey('0xaaa'), resolveWalletRemountKey(undefined))
 })
 
 test('resolveCappedTokenAmountRaw does not wipe draft while balances loading', async () => {
-  const { resolveCappedTokenAmountRaw } = await loadModule('/src/core/swap/token-amount.ts')
+  const { resolveCappedTokenAmountRaw } = await loadModule('/src/core/exchange/token-amount.ts')
   const balance = 5n * 10n ** 18n
 
   assert.equal(
@@ -255,7 +251,7 @@ test('resolveCappedTokenAmountRaw does not wipe draft while balances loading', a
 })
 
 test('resolveCappedTokenAmountRaw re-caps when balance drops below draft', async () => {
-  const { resolveCappedTokenAmountRaw } = await loadModule('/src/core/swap/token-amount.ts')
+  const { resolveCappedTokenAmountRaw } = await loadModule('/src/core/exchange/token-amount.ts')
   const balance = 5n * 10n ** 18n
 
   assert.equal(
@@ -281,7 +277,7 @@ test('resolveCappedTokenAmountRaw re-caps when balance drops below draft', async
 })
 
 test('capTokenAmountInput is idempotent for already-capped input', async () => {
-  const { capTokenAmountInput } = await loadModule('/src/core/swap/token-amount.ts')
+  const { capTokenAmountInput } = await loadModule('/src/core/exchange/token-amount.ts')
   const balance = 5n * 10n ** 18n
 
   const once = capTokenAmountInput('100', balance, 18)
@@ -290,7 +286,7 @@ test('capTokenAmountInput is idempotent for already-capped input', async () => {
 })
 
 test('calcAmountOutMin rejects invalid slippage and floors with valid bps', async () => {
-  const { calcAmountOutMin } = await loadModule('/src/core/swap/calc-amount-out-min.ts')
+  const { calcAmountOutMin } = await loadModule('/src/core/exchange/calc-amount-out-min.ts')
 
   assert.equal(calcAmountOutMin(10_000n, 50), 9950n)
   assert.equal(calcAmountOutMin(1n, 9900), 1n)
@@ -300,7 +296,7 @@ test('calcAmountOutMin rejects invalid slippage and floors with valid bps', asyn
 
 test('resolveEmptySpotRatePlaceholder gates empty vs format', async () => {
   const { resolveEmptySpotRatePlaceholder } = await loadModule(
-    '/src/views/dapp/swap/swap-format-rate.ts',
+    '/src/views/dapp/exchange/exchange-format-rate.ts',
   )
 
   assert.equal(resolveEmptySpotRatePlaceholder(0n, true), '')
@@ -311,7 +307,7 @@ test('resolveEmptySpotRatePlaceholder gates empty vs format', async () => {
 
 test('viewsNeedingProvider mounts only active swap subviews', async () => {
   const { viewsNeedingProvider } = await loadModule(
-    '/src/views/dapp/swap/swap-views-needing-provider.ts',
+    '/src/views/dapp/exchange/exchange-views-needing-provider.ts',
   )
 
   assert.deepEqual(viewsNeedingProvider('hub', false, null, null), {

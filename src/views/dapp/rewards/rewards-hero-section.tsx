@@ -3,10 +3,7 @@ import { RewardsHeroBodySkeleton } from '~/app/shell/dapp-skeleton'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useCommunityFundTotal } from '~/hooks/use-api-data'
-import {
-  formatRankTitleWithBadge,
-  formatShareholderHintForRank,
-} from '~/shared/api/format-display'
+import { formatRankTitleWithBadge, formatShareholderHintForRank } from '~/shared/api/format-display'
 import { buildRewardTierRows } from '~/core/presale/tier-table'
 import { Text } from '~/shared/ui/text'
 import { RewardsHeroCard } from '~/views/dapp/rewards/rewards-hero-card'
@@ -49,28 +46,18 @@ function RewardsHeroPanel({
             tone="inverse"
             className={
               layout === 'desktop'
-                ? 'm-0 min-w-0 wrap-break-word leading-[1.3]'
-                : 'm-0 min-w-0 wrap-break-word leading-[1.2]'
+                ? 'm-0 min-w-0 leading-[1.3] wrap-break-word'
+                : 'm-0 min-w-0 leading-[1.2] wrap-break-word'
             }
           >
             {title}
           </Text>
           <div className="flex flex-col gap-0">
-            <Text
-              as="p"
-              variant="copy"
-              tone="inverse-muted"
-              className="m-0"
-            >
+            <Text as="p" variant="copy" tone="inverse-muted" className="m-0">
               {heroTierRewardBody}
             </Text>
             {showSuperBadge ? (
-              <Text
-                as="p"
-                variant="copy"
-                tone="inverse-muted"
-                className="m-0"
-              >
+              <Text as="p" variant="copy" tone="inverse-muted" className="m-0">
                 {superCommunityBenefitBody}
               </Text>
             ) : null}
