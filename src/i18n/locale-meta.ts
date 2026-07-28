@@ -91,6 +91,13 @@ export const localeMeta: Record<Locale, LocaleMeta> = {
     menuName: 'Türkçe',
     menuLabel: 'Turkish',
   },
+  th: {
+    label: 'TH',
+    htmlLang: 'th',
+    menuCode: 'TH',
+    menuName: 'ไทย',
+    menuLabel: 'Thai',
+  },
 }
 
 export function getHtmlLang(locale: Locale): string {

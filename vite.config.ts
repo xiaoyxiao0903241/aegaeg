@@ -21,7 +21,7 @@ function legacyBootFirstPlugin(): Plugin {
   }
 }
 
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr'] as const
+const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr', 'th'] as const
 
 const localeEntries = Object.fromEntries(
   locales.flatMap((locale) => [
