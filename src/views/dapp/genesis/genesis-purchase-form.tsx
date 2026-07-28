@@ -205,15 +205,25 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
 
       {walletReady ? (
         <DappActionRow className="grid-cols-1">
-          <DappActionButton
-            density="external"
-            disabled={!genesis.canPurchase || genesis.isSubmitting}
-            loading={genesis.isSubmitting}
-            onClick={() => void handlePurchase()}
-            variant="primary"
-          >
-            {t.genesis.join}
-          </DappActionButton>
+          {genesis.needsReferralBind ? (
+            <DappActionButton
+              density="external"
+              onClick={() => useDappShellStore.getState().selectTab('community')}
+              variant="primary"
+            >
+              {t.genesis.goBindReferrer}
+            </DappActionButton>
+          ) : (
+            <DappActionButton
+              density="external"
+              disabled={!genesis.canPurchase || genesis.isSubmitting}
+              loading={genesis.isSubmitting}
+              onClick={() => void handlePurchase()}
+              variant="primary"
+            >
+              {t.genesis.join}
+            </DappActionButton>
+          )}
         </DappActionRow>
       ) : (
         <DappWidgetConnectPromo />

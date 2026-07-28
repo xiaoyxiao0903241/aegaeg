@@ -168,30 +168,30 @@ export function useGenesisPurchaseActions({
         if (!approveResult.success) {
           return approveResult
         }
-        // Live re-gate: bind/pause may flip while the user signs approve.
-        const gate = await fetchLiveGenesisPostApproveGate({
-          address,
-          fetchIsBound: (addr) =>
-            queryClient.fetchQuery({
-              queryKey: queryKeys.chain.referralIsBound(addr),
-              queryFn: () => readIsBindReferral(addr, readClient),
-              staleTime: 0,
-            }),
-          fetchPaused: () =>
-            queryClient.fetchQuery({
-              queryKey: queryKeys.chain.presalePaused,
-              queryFn: () => readPresalePaused(readClient),
-              staleTime: 0,
-            }),
-        })
-        if (!gate.ok) {
-          return {
-            success: false,
-            error:
-              gate.reason === 'not_bound'
-                ? GENESIS_PURCHASE_ERROR.NOT_BOUND
-                : GENESIS_PURCHASE_ERROR.UNAVAILABLE,
-          }
+      }
+      // Live re-gate always (money-path: [approve?] → live bind/pause → purchase).
+      const gate = await fetchLiveGenesisPostApproveGate({
+        address,
+        fetchIsBound: (addr) =>
+          queryClient.fetchQuery({
+            queryKey: queryKeys.chain.referralIsBound(addr),
+            queryFn: () => readIsBindReferral(addr, readClient),
+            staleTime: 0,
+          }),
+        fetchPaused: () =>
+          queryClient.fetchQuery({
+            queryKey: queryKeys.chain.presalePaused,
+            queryFn: () => readPresalePaused(readClient),
+            staleTime: 0,
+          }),
+      })
+      if (!gate.ok) {
+        return {
+          success: false,
+          error:
+            gate.reason === 'not_bound'
+              ? GENESIS_PURCHASE_ERROR.NOT_BOUND
+              : GENESIS_PURCHASE_ERROR.UNAVAILABLE,
         }
       }
       return await purchase()
