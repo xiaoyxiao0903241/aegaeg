@@ -131,6 +131,10 @@ const app = defineMessages({
           title: 'Сжигание',
           body: 'Сжигайте AGX за очки вклада',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: 'Скоро',
       },
       about: {
@@ -138,28 +142,38 @@ const app = defineMessages({
         body: 'Меняйте USDT на USD1, обменивайте основные токены на активы X DAO, апгрейдите gAGX в AGX или сжигайте AGX за очки.',
       },
       program: {
-        title: 'Получить токены X DAO',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: 'Конвертация', body: 'Конвертировать USDT в USD1' },
-          { title: 'Получить USD1', body: 'Получить USD1 по цене PancakeSwap' },
-          { title: 'Получить AGX', body: 'Получить AGX по цене PancakeSwap' },
-          { title: 'Продать X', body: 'Меняйте X на активы AEGIS X или основные токены' },
-          { title: 'Получить очки', body: 'Сжечь AGX 1:6 за очки' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: 'Что такое криптокошелек?',
-            a: 'Криптокошелек управляет ончейн-активами. В non-custodial кошельке private key/seed phrase контролируете только вы; храните их безопасно. Популярны MetaMask и TokenPocket.',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: 'Что такое gas fee?',
-            a: 'Покупка, продажа, своп или перевод on-chain требуют gas. Его взимает не AEGIS X, а сеть BSC. Перед сделками держите BNB в кошельке.',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: 'Как работает кошелек?',
-            a: 'Кошелек использует public и private keys. Private key или seed phrase подписывает транзакции и должен храниться в тайне. Public key нужен для адреса и получения активов.',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -173,6 +187,11 @@ const app = defineMessages({
       tokenAboutTitle: 'О USD1',
       action: 'Конвертация',
       minReceived: 'Минимум к получению',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: 'Торговля',

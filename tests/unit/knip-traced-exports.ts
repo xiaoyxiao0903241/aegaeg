@@ -11,6 +11,7 @@ export {
   SEGMENT_PILL_GAP_PX,
   SEGMENT_PILL_PAD_PX,
   Segment,
+  isSegmentOptionEnabled,
   segmentPillThumbStyle,
 } from '../../src/shared/ui/segment'
 export { resetAccountBannedReportCooldownForTests } from '../../src/shared/api/account-banned'

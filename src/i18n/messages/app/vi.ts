@@ -129,6 +129,10 @@ const app = defineMessages({
           title: 'Đốt',
           body: 'Đốt AGX để nhận điểm đóng góp',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: 'Sắp ra mắt',
       },
       about: {
@@ -136,28 +140,38 @@ const app = defineMessages({
         body: 'Swap USDT sang USD1, giao dịch token chính để nhận tài sản X DAO, nâng gAGX lên AGX hoặc đốt AGX lấy điểm.',
       },
       program: {
-        title: 'Nhận token X DAO',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: 'Chuyển đổi', body: 'Chuyển USDT sang USD1' },
-          { title: 'Nhận USD1', body: 'Nhận USD1 theo giá PancakeSwap' },
-          { title: 'Nhận AGX', body: 'Nhận AGX theo giá PancakeSwap' },
-          { title: 'Bán X', body: 'Swap X sang tài sản AEGIS X hoặc token chính' },
-          { title: 'Nhận điểm', body: 'Đốt AGX tỷ lệ 1:6 để nhận điểm' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: 'Ví crypto là gì?',
-            a: 'Ví crypto dùng để quản lý tài sản on-chain. Với ví non-custodial, chỉ bạn giữ private key/seed phrase; hãy bảo mật kỹ. Phổ biến có MetaMask và TokenPocket.',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: 'Phí gas là gì?',
-            a: 'Mọi lệnh mua, bán, swap hoặc chuyển on-chain đều cần gas. AEGIS X không thu phí này; mạng BSC thu. Hãy giữ BNB trong ví trước khi giao dịch.',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: 'Ví hoạt động thế nào?',
-            a: 'Ví dùng public key và private key. Private key hoặc seed phrase ký giao dịch và phải giữ bí mật. Public key tạo địa chỉ và nhận tài sản.',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -171,6 +185,11 @@ const app = defineMessages({
       tokenAboutTitle: 'Về USD1',
       action: 'Chuyển đổi',
       minReceived: 'Nhận tối thiểu',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: 'Giao dịch',

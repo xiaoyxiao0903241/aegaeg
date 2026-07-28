@@ -126,6 +126,10 @@ const app = defineMessages({
           title: '銷毀',
           body: '銷毀 AGX 以獲得貢獻點數',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: '即將推出',
       },
       about: {
@@ -133,28 +137,38 @@ const app = defineMessages({
         body: '將 USDT 兌換為 USD1，用熱門代幣交易 X DAO 生態代幣，或將 gAGX 升級為 AGX、銷毀 AGX 取得貢獻點數。',
       },
       program: {
-        title: '取得 X DAO 協議代幣',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: '閃兌', body: '將 USDT 兌換為 USD1' },
-          { title: '取得 USD1', body: '以 PancakeSwap 市場匯率取得 USD1' },
-          { title: '取得 AGX', body: '以 PancakeSwap 市場匯率取得 AGX' },
-          { title: '出售 X', body: '將 X 兌換為 AEGIS X 經濟代幣或主流代幣' },
-          { title: '取得貢獻點數', body: '按 1:6 比率銷毀 AGX 以取得貢獻點數' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: '什麼是加密錢包？',
-            a: '加密錢包用於管理鏈上數位資產。非託管錢包由您自行掌控私鑰或助記詞，請妥善保存。常見選項包括 MetaMask 和 TokenPocket。',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: '什麼是 gas 費？',
-            a: '鏈上買入、出售、兌換或轉帳都需要 gas 費。費用由 BSC 網路收取，非 AEGIS X 收取。交易前請在錢包保留 BNB。',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: '錢包如何運作？',
-            a: '錢包使用公鑰與私鑰。私鑰或助記詞用於簽署交易，必須保密；公鑰可產生地址並接收資產。',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -168,6 +182,11 @@ const app = defineMessages({
       tokenAboutTitle: '關於 USD1',
       action: '閃兌',
       minReceived: '最少獲得',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: '交易',

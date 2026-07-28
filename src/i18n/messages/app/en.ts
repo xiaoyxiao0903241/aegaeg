@@ -121,59 +121,77 @@ const app = defineMessages({
     hub: {
       modes: {
         flash: {
-          title: 'Convert',
-          body: 'Convert USDT to USD1, no fee or slippage',
+          title: 'Flash',
+          body: 'Swap gAGX for AGX or USDT for USD1 — no fees, no slippage',
         },
         trade: {
           title: 'Trade',
-          body: 'Swap major tokens for AEGIS X tokens',
+          body: 'Swap major tokens for AEGIS X ecosystem tokens',
         },
         burn: {
           title: 'Burn',
           body: 'Burn AGX for contribution points',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: 'Coming soon',
       },
       about: {
         title: 'About Swap',
-        body: 'Swap USDT to USD1, trade major tokens for X DAO assets, upgrade gAGX to AGX, or burn AGX for points.',
+        body: 'Convert USDT to USD1, trade major tokens for AEGIS X assets, upgrade gAGX to AGX, or burn AGX for contribution points.',
       },
       program: {
-        title: 'Get X DAO Tokens',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: 'Convert', body: 'Convert USDT to USD1' },
-          { title: 'Get USD1', body: 'Get USD1 at PancakeSwap market rate' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
           { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
-          { title: 'Sell X', body: 'Swap X for AEGIS X assets or major tokens' },
-          { title: 'Get Points', body: 'Burn AGX at 1:6 for points' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
       faq: {
         items: [
           {
-            q: 'What is a crypto wallet?',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
+          },
+          {
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
+          },
+          {
+            q: 'What is a crypto wallet, and how do I get one?',
             a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
           },
           {
-            q: 'What is a gas fee?',
+            q: 'What is a blockchain transaction fee?',
             a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
           },
           {
-            q: 'How does a wallet work?',
+            q: 'How does a crypto wallet work?',
             a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
     },
     flash: {
-      title: 'Convert',
-      intro: 'Convert USDT to USD1, no fees, no slippage',
+      title: 'Flash',
+      intro: 'Convert USDT to USD1 — no fees, no slippage',
       providerName: 'AEGIS X',
       openProvider: 'View convert contract on BscScan',
       settlementValue: 'On-chain · instant',
       tokenAboutTitle: 'About USD1',
-      action: 'Convert',
+      action: 'Flash',
       minReceived: 'Minimum received',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: 'Trade',

@@ -131,6 +131,10 @@ const app = defineMessages({
           title: 'バーン',
           body: 'AGXをバーンして貢献ポイント獲得',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: '近日公開',
       },
       about: {
@@ -138,28 +142,38 @@ const app = defineMessages({
         body: 'USDTをUSD1へスワップ、主要トークンをX DAO資産へ取引、gAGXからAGXへのアップグレード、AGXバーンでポイント獲得ができます。',
       },
       program: {
-        title: 'X DAOトークンを入手',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: '変換', body: 'USDTをUSD1へ変換' },
-          { title: 'USD1を入手', body: 'PancakeSwap市場価格でUSD1を入手' },
-          { title: 'AGXを入手', body: 'PancakeSwap市場価格でAGXを入手' },
-          { title: 'Xを売却', body: 'XをAEGIS X資産または主要トークンへ交換' },
-          { title: 'ポイント獲得', body: 'AGXを1:6でバーンしてポイント獲得' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: '暗号資産ウォレットとは？',
-            a: '暗号資産ウォレットはオンチェーン資産を管理するツールです。非カストディアルでは秘密鍵/シードフレーズを自分だけが管理します。MetaMaskやTokenPocketが一般的です。',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: 'ガス代とは？',
-            a: 'オンチェーンの購入、売却、スワップ、送金にはガス代が必要です。AEGIS XではなくBSCネットワークが徴収します。取引前にBNBを用意してください。',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: 'ウォレットの仕組みは？',
-            a: 'ウォレットは公開鍵と秘密鍵を使います。秘密鍵/シードフレーズは署名に使うため非公開で保管します。公開鍵はアドレス作成や受取に使えます。',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -173,6 +187,11 @@ const app = defineMessages({
       tokenAboutTitle: 'USD1について',
       action: '変換',
       minReceived: '最小受取額',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: '取引',

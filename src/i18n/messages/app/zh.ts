@@ -115,7 +115,7 @@ const app = defineMessages({
       modes: {
         flash: {
           title: '闪兑',
-          body: '将 USDT 兑换为 USD1，无手续费，无滑点',
+          body: 'gAGX 兑换 AGX、USDT 兑换 USD1，无手续费，无滑点',
         },
         trade: {
           title: '交易',
@@ -125,24 +125,37 @@ const app = defineMessages({
           title: '销毁',
           body: '销毁 AGX 以获得贡献点数',
         },
+        turbine: {
+          title: '涡轮',
+          body: '以 USD1 按 1:1 买入解锁涡轮中的 gAGX',
+        },
         comingSoon: '即将推出',
       },
       about: {
         title: '关于兑换',
-        body: '将USDT兑换为USD1，用热门代币交易兑换X DAO生态系统代币，或将gAGX升级为AGX、销毁AGX获得贡献值。',
+        body: '将 USDT 兑换为 USD1，用主流代币交易 AEGIS X 生态代币，或将 gAGX 升级为 AGX、销毁 AGX 获得贡献点数。',
       },
       program: {
-        title: '获取 X DAO 协议代币',
+        title: '获取AEGIS X协议代币',
         cards: [
-          { title: '闪兑', body: '将 USDT 兑换为 USD1' },
-          { title: '获取 USD1', body: '以 PancakeSwap 市场汇率获取 USD1' },
+          { title: '交易gAGX', body: '将 gAGX 兑换为 AGX' },
+          { title: '涡轮', body: '以 USD1 买入解锁涡轮中的 gAGX' },
+          { title: '获取 USD1', body: '通过闪兑将 USDT 兑换为 USD1' },
           { title: '获取 AGX', body: '以 PancakeSwap 市场汇率获取 AGX' },
-          { title: '出售 X', body: '将 X 兑换为 AEGIS X 经济代币或主流代币' },
+          { title: '出售 X', body: '将 X 兑换为 AGX 或 USD1 等生态代币' },
           { title: '获取贡献点数', body: '按 1:6 比率销毁 AGX 以获得贡献点数' },
         ],
       },
       faq: {
         items: [
+          {
+            q: '兑换页面可以做什么？',
+            a: '可通过闪兑将 USDT 兑换为 USD1（以及后续开放的 gAGX→AGX），在 PancakeSwap 交易获取 AEGIS X 生态代币，销毁 AGX 获得贡献点数，并以 USD1 买入解锁涡轮中的 gAGX。',
+          },
+          {
+            q: '闪兑和交易有什么区别？',
+            a: '闪兑走协议固定路径，无用户滑点设置；交易基于 PancakeSwap 实时汇率，支持自定义滑点，并可能产生价格影响。',
+          },
           {
             q: '什么是加密钱包，如何获取？',
             a: '加密钱包是用于查看和管理数字资产的软件。您的资产记录在区块链上，而非存储在钱包本身中。非托管钱包让您完全掌控私钥，意味着只有您才能签署交易。与托管钱包不同，没有第三方持有您的密钥——但如果丢失私钥或助记词，您将永久失去对资产的访问权限。非托管钱包可以是移动应用或硬件设备，常见选项包括 MetaMask 和 TokenPocket。',
@@ -167,6 +180,11 @@ const app = defineMessages({
       tokenAboutTitle: '关于 USD1',
       action: '闪兑',
       minReceived: '最少获得',
+      pairAriaLabel: '闪兑币对',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: '交易',

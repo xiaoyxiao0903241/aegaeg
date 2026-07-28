@@ -133,6 +133,10 @@ const app = defineMessages({
           title: 'Quemar',
           body: 'Quema AGX por puntos de contribución',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: 'Próximamente',
       },
       about: {
@@ -140,28 +144,38 @@ const app = defineMessages({
         body: 'Cambia USDT por USD1, opera con tokens principales para obtener activos X DAO, sube gAGX a AGX o quema AGX por puntos de contribución.',
       },
       program: {
-        title: 'Obtén tokens X DAO',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: 'Convertir', body: 'Convierte USDT a USD1' },
-          { title: 'Obtener USD1', body: 'Obtén USD1 al precio de PancakeSwap' },
-          { title: 'Obtener AGX', body: 'Obtén AGX al precio de PancakeSwap' },
-          { title: 'Vender X', body: 'Cambia X por activos AEGIS X o tokens principales' },
-          { title: 'Obtener puntos', body: 'Quema AGX a 1:6 por puntos' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: '¿Qué es una wallet cripto?',
-            a: 'Una wallet cripto gestiona activos on-chain. En una wallet non-custodial solo tú controlas la clave privada o seed phrase; guárdala bien. Opciones comunes: MetaMask y TokenPocket.',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: '¿Qué es el gas?',
-            a: 'Cada compra, venta, swap o transferencia on-chain usa gas. AEGIS X no lo cobra; lo cobra la red BSC. Mantén BNB en tu wallet antes de operar.',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: '¿Cómo funciona una wallet?',
-            a: 'Usa clave pública y privada. La privada o seed phrase firma transacciones y debe guardarse en secreto. La pública crea tu dirección y recibe activos.',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -175,6 +189,11 @@ const app = defineMessages({
       tokenAboutTitle: 'Sobre USD1',
       action: 'Convertir',
       minReceived: 'Mínimo recibido',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: 'Operar',

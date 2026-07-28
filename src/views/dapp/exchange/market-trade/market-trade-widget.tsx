@@ -25,6 +25,7 @@ import {
   useExchangeBalanceLabels,
 } from '~/views/dapp/exchange/exchange-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
+import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 
 /**
  * Keep in sync with `exchange-card-flip` / `--motion-dapp-emphasis` (300ms) in theme.css.
@@ -272,6 +273,8 @@ export function MarketTradeWidget({
             </DappActionButton>
           </DappActionRow>
         ) : null}
+
+        {!sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
       </ExchangeWidgetBody>
 
       <ExchangeSlippageModal

@@ -131,6 +131,10 @@ const app = defineMessages({
           title: 'เผา',
           body: 'เผา AGX เพื่อรับแต้มการมีส่วนร่วม',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: 'เร็วๆ นี้',
       },
       about: {
@@ -138,28 +142,38 @@ const app = defineMessages({
         body: 'แปลง USDT เป็น USD1 เทรดโทเค็นหลักเป็นสินทรัพย์ X DAO อัปเกรด gAGX เป็น AGX หรือเผา AGX เพื่อรับแต้ม',
       },
       program: {
-        title: 'รับโทเค็น X DAO',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: 'แปลง', body: 'แปลง USDT เป็น USD1' },
-          { title: 'รับ USD1', body: 'รับ USD1 ตามอัตราตลาด PancakeSwap' },
-          { title: 'รับ AGX', body: 'รับ AGX ตามอัตราตลาด PancakeSwap' },
-          { title: 'ขาย X', body: 'แลก X เป็นสินทรัพย์ AEGIS X หรือโทเค็นหลัก' },
-          { title: 'รับแต้ม', body: 'เผา AGX ที่อัตรา 1:6 เพื่อรับแต้ม' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: 'กระเป๋าเงินคริปโตคืออะไร?',
-            a: 'กระเป๋าเงินคริปโตใช้จัดการสินทรัพย์ดิจิทัลบนเชน ด้วยกระเป๋าแบบไม่คุมสินทรัพย์ มีเพียงคุณที่ควบคุม private key หรือ seed phrase ดังนั้นต้องเก็บให้ปลอดภัย ตัวเลือกทั่วไป ได้แก่ MetaMask และ TokenPocket',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: 'ค่า gas คืออะไร?',
-            a: 'ทุกการซื้อ ขาย แลก หรือโอนบนเชนต้องใช้ gas AEGIS X ไม่เรียกเก็บ ค่านี้เป็นของเครือข่าย BSC โปรดคง BNB ในกระเป๋าก่อนเทรด',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: 'กระเป๋าเงินทำงานอย่างไร?',
-            a: 'กระเป๋าใช้ public key และ private key Private key หรือ seed phrase ใช้ลงนามธุรกรรมและต้องเก็บเป็นความลับ Public key สร้างที่อยู่ของคุณและรับสินทรัพย์',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -173,6 +187,11 @@ const app = defineMessages({
       tokenAboutTitle: 'เกี่ยวกับ USD1',
       action: 'แปลง',
       minReceived: 'จำนวนขั้นต่ำที่จะได้รับ',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: 'เทรด',

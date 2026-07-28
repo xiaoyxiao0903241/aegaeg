@@ -12,6 +12,13 @@ export const SEGMENT_PILL_PAD_PX = 4
 export type SegmentOption = {
   label: string
   value: string
+  /** Per-option disable (e.g. deferred pair tab). List-level `disabled` still wins. */
+  disabled?: boolean
+}
+
+/** Whether a Segment option can receive pointer / keyboard activation. */
+export function isSegmentOptionEnabled(option: SegmentOption, listDisabled: boolean): boolean {
+  return !listDisabled && !option.disabled
 }
 
 /**
@@ -84,15 +91,22 @@ export function Segment({
       ) : null}
       {options.map((option) => {
         const active = option.value === value
+        const optionEnabled = isSegmentOptionEnabled(option, disabled)
         return (
           <button
             key={option.value}
             type="button"
             role="tab"
             aria-selected={active}
-            disabled={disabled}
-            className="relative z-1 flex h-7 cursor-pointer items-center justify-center border-0 bg-transparent px-1"
-            onClick={() => onChange(option.value)}
+            disabled={!optionEnabled}
+            className={cn(
+              'relative z-1 flex h-7 items-center justify-center border-0 bg-transparent px-1',
+              optionEnabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-45',
+            )}
+            onClick={() => {
+              if (!optionEnabled) return
+              onChange(option.value)
+            }}
           >
             <Text
               as="span"

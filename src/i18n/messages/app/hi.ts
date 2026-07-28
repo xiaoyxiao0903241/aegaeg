@@ -132,6 +132,10 @@ const app = defineMessages({
           title: 'बर्न',
           body: 'AGX बर्न कर योगदान पॉइंट लें',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: 'जल्द आएगा',
       },
       about: {
@@ -139,28 +143,38 @@ const app = defineMessages({
         body: 'USDT को USD1 में बदलें, मुख्य टोकन को X DAO एसेट में ट्रेड करें, gAGX को AGX में अपग्रेड करें या पॉइंट के लिए AGX बर्न करें।',
       },
       program: {
-        title: 'X DAO टोकन लें',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: 'कन्वर्ट', body: 'USDT को USD1 में बदलें' },
-          { title: 'USD1 लें', body: 'PancakeSwap मार्केट रेट पर USD1 लें' },
-          { title: 'AGX लें', body: 'PancakeSwap मार्केट रेट पर AGX लें' },
-          { title: 'X बेचें', body: 'X को AEGIS X एसेट या मुख्य टोकन में बदलें' },
-          { title: 'पॉइंट लें', body: '1:6 रेशियो पर AGX बर्न कर पॉइंट लें' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: 'क्रिप्टो वॉलेट क्या है?',
-            a: 'क्रिप्टो वॉलेट on-chain डिजिटल एसेट संभालता है। Non-custodial वॉलेट में private key/seed phrase केवल आपके पास होती है; इसे सुरक्षित रखें। आम विकल्प: MetaMask, TokenPocket.',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: 'Gas fee क्या है?',
-            a: 'हर on-chain buy, sell, swap या transfer में gas fee लगती है। AEGIS X इसे नहीं लेता; BSC नेटवर्क लेता है। ट्रेड से पहले वॉलेट में BNB रखें।',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: 'वॉलेट कैसे काम करता है?',
-            a: 'वॉलेट public/private keys से चलता है। Private key या seed phrase ट्रांज़ैक्शन sign करता है और secret रहे। Public key address बनाने व asset लेने में काम आती है।',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -174,6 +188,11 @@ const app = defineMessages({
       tokenAboutTitle: 'USD1 के बारे में',
       action: 'कन्वर्ट',
       minReceived: 'न्यूनतम प्राप्ति',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: 'ट्रेड',

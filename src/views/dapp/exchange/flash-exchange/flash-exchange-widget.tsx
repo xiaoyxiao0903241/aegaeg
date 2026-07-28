@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -7,6 +7,7 @@ import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
+import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -22,6 +23,7 @@ import {
   useExchangeBalanceLabels,
 } from '~/views/dapp/exchange/exchange-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
+import { Segment } from '~/shared/ui/segment'
 
 export function FlashExchangeWidget({
   onSelectGenesis,
@@ -33,9 +35,16 @@ export function FlashExchangeWidget({
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const { pair } = flash
+  /** Live money path is USDT→USD1; gAGX→AGX UI is deferred (Spec). */
+  const [pairTab, setPairTab] = useState('usdt')
   const showRateSkeleton = flash.isExchangePriceQuoting && !flash.exchangePriceLabel
   const showBuyAmountSkeleton =
     sessionReady && flash.isQuoting && flash.sellAmount.trim().length > 0
+
+  const flashPairOptions = [
+    { label: t.exchange.flash.pairs.gagx, value: 'gagx', disabled: true },
+    { label: t.exchange.flash.pairs.usdt, value: 'usdt' },
+  ]
 
   const { buyLabel, sellLabel } = useExchangeBalanceLabels({
     buyBalanceLabel: flash.buyBalanceLabel,
@@ -95,6 +104,14 @@ export function FlashExchangeWidget({
           sessionReady ? <ExchangeGenesisFooter onSelectGenesis={onSelectGenesis} /> : undefined
         }
       >
+        <Segment
+          aria-label={t.exchange.flash.pairAriaLabel}
+          className="mb-3.5"
+          onChange={setPairTab}
+          options={flashPairOptions}
+          value={pairTab}
+        />
+
         <ExchangeAmountFlow
           buy={pair.buy}
           buyAmount={flash.buyAmount}
@@ -174,6 +191,8 @@ export function FlashExchangeWidget({
             </DappActionButton>
           </DappActionRow>
         ) : null}
+
+        {!sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
 
         {submitErrorMessage ? (
           <DappInlineAlert className="mt-3" role="alert">

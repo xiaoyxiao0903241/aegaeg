@@ -19,16 +19,6 @@ const exchangeProgramCard = tv({
   },
 })
 
-const exchangeProgramCardBody = tv({
-  base: 'min-w-0',
-  variants: {
-    width: {
-      hero: 'shrink-0',
-      default: 'flex-1',
-    },
-  },
-})
-
 function ProgramCardCopy({ body, title }: { body: string; title: string }) {
   return (
     <span className="grid min-w-0 gap-1 text-left">
@@ -42,41 +32,35 @@ function ProgramCardCopy({ body, title }: { body: string; title: string }) {
   )
 }
 
+function DualCoin({ left, right }: { left: string; right: string }) {
+  return (
+    <span className="flex shrink-0 items-center justify-end">
+      <img
+        alt=""
+        className="-mr-1.75 size-7 shrink-0 rounded-md"
+        height={28}
+        src={left}
+        width={28}
+      />
+      <img alt="" className="size-7 shrink-0 rounded-md" height={28} src={right} width={28} />
+    </span>
+  )
+}
+
 function ProgramCardIcon({ index }: { index: number }) {
   if (index === 0) {
-    return (
-      <span className="flex shrink-0 items-center justify-end">
-        <img
-          alt=""
-          className="-mr-1.75 size-7 shrink-0"
-          height={28}
-          src={exchangeHubAssets.programUsdt}
-          width={28}
-        />
-        <img
-          alt=""
-          className="size-7 shrink-0"
-          height={28}
-          src={exchangeHubAssets.programUsd1}
-          width={28}
-        />
-      </span>
-    )
+    return <DualCoin left={exchangeHubAssets.programGagx} right={exchangeHubAssets.programAgx} />
   }
 
   if (index === 1) {
-    return (
-      <img
-        alt=""
-        className="size-7 shrink-0"
-        height={28}
-        src={exchangeHubAssets.programUsd1}
-        width={28}
-      />
-    )
+    return <DualCoin left={exchangeHubAssets.programUsd1} right={exchangeHubAssets.programGagx} />
   }
 
   if (index === 2) {
+    return <DualCoin left={exchangeHubAssets.programUsdt} right={exchangeHubAssets.programUsd1} />
+  }
+
+  if (index === 3) {
     return (
       <span className="grid size-7 shrink-0 place-items-center rounded-full bg-dark">
         <img
@@ -90,7 +74,7 @@ function ProgramCardIcon({ index }: { index: number }) {
     )
   }
 
-  if (index === 3) {
+  if (index === 4) {
     return (
       <span className="grid size-7 shrink-0 place-items-center rounded-full bg-dark">
         <img
@@ -118,7 +102,7 @@ export function ExchangeProgramCard({
   onClick?: () => void
   title: string
 }) {
-  const textOnly = index === 4
+  const textOnly = index === 5
   const interactive = Boolean(onClick)
 
   return (
@@ -138,7 +122,7 @@ export function ExchangeProgramCard({
         <ProgramCardCopy body={body} title={title} />
       ) : (
         <>
-          <span className={exchangeProgramCardBody({ width: index === 0 ? 'hero' : 'default' })}>
+          <span className="min-w-0 flex-1">
             <ProgramCardCopy body={body} title={title} />
           </span>
           <ProgramCardIcon index={index} />

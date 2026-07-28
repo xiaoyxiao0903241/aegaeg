@@ -45,6 +45,12 @@ export function ExchangeHubWidget({ onSelectGenesis }: { onSelectGenesis: () => 
           icon={exchangeHubAssets.modeBurn}
           title={t.exchange.hub.modes.burn.title}
         />
+        <ExchangeModeCard
+          badge={t.exchange.hub.modes.comingSoon}
+          body={t.exchange.hub.modes.turbine.body}
+          icon={exchangeHubAssets.modeTurbine}
+          title={t.exchange.hub.modes.turbine.title}
+        />
       </ExchangeWidgetBody>
     </>
   )

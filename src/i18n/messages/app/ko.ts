@@ -131,6 +131,10 @@ const app = defineMessages({
           title: '소각',
           body: 'AGX 소각으로 기여 포인트 획득',
         },
+        turbine: {
+          title: 'Turbine',
+          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+        },
         comingSoon: '출시 예정',
       },
       about: {
@@ -138,28 +142,38 @@ const app = defineMessages({
         body: 'USDT를 USD1로 스왑하고, 주요 토큰을 X DAO 자산으로 거래하거나, gAGX를 AGX로 업그레이드하거나, AGX 소각으로 포인트를 얻습니다.',
       },
       program: {
-        title: 'X DAO 토큰 받기',
+        title: 'Get AEGIS X protocol tokens',
         cards: [
-          { title: '전환', body: 'USDT를 USD1로 전환' },
-          { title: 'USD1 받기', body: 'PancakeSwap 시장가로 USD1 받기' },
-          { title: 'AGX 받기', body: 'PancakeSwap 시장가로 AGX 받기' },
-          { title: 'X 판매', body: 'X를 AEGIS X 자산 또는 주요 토큰으로 스왑' },
-          { title: '포인트 받기', body: 'AGX를 1:6 비율로 소각해 포인트 받기' },
+          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
+          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
+          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
+          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
+          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
+          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
         ],
       },
+
       faq: {
         items: [
           {
-            q: '암호화폐 지갑이란?',
-            a: '암호화폐 지갑은 온체인 자산을 관리하는 도구입니다. 비수탁 지갑에서는 개인키/시드 구문을 본인만 관리하므로 안전하게 보관하세요. MetaMask와 TokenPocket이 많이 쓰입니다.',
+            q: 'What can I do on the Swap page?',
+            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
-            q: '가스비란?',
-            a: '온체인 매수, 매도, 스왑, 전송에는 가스비가 필요합니다. AEGIS X가 아닌 BSC 네트워크가 부과합니다. 거래 전 BNB를 준비하세요.',
+            q: 'What is the difference between Flash and Trade?',
+            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
           },
           {
-            q: '지갑은 어떻게 작동하나요?',
-            a: '지갑은 공개키와 개인키를 사용합니다. 개인키/시드 구문은 서명에 쓰이며 반드시 비밀로 보관해야 합니다. 공개키는 주소 생성과 자산 수령에 사용됩니다.',
+            q: 'What is a crypto wallet, and how do I get one?',
+            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+          },
+          {
+            q: 'What is a blockchain transaction fee?',
+            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
+          },
+          {
+            q: 'How does a crypto wallet work?',
+            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
           },
         ],
       },
@@ -173,6 +187,11 @@ const app = defineMessages({
       tokenAboutTitle: 'USD1 안내',
       action: '전환',
       minReceived: '최소 수령',
+      pairAriaLabel: 'Flash pair',
+      pairs: {
+        gagx: 'gAGX → AGX',
+        usdt: 'USDT → USD1',
+      },
     },
     trade: {
       title: '거래',

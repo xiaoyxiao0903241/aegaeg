@@ -24,10 +24,12 @@ export const exchangeHubAssets = {
   modeFlash: '/assets/figma/dapp/hub/ic-hub-mode-flash.svg',
   modeTrade: '/assets/figma/dapp/hub/ic-hub-mode-trade.svg',
   modeBurn: '/assets/figma/dapp/hub/ic-hub-mode-burn.svg',
+  modeTurbine: '/assets/figma/dapp/hub/ic-hub-mode-turbine.svg',
   programUsdt: '/assets/figma/dapp/hub/program-usdt.svg',
   programUsd1: '/assets/figma/dapp/hub/program-usd1.svg',
   programAgx: '/assets/figma/dapp/hub/program-agx.png',
   programX: '/assets/figma/dapp/hub/program-x.png',
+  programGagx: '/assets/figma/dapp/carousel/token-gagx.png',
   aboutRays: '/assets/figma/dapp/hub/token-card-rays-hub.svg',
 } as const
 
