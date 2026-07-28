@@ -136,7 +136,7 @@ const app = defineMessages({
         },
         turbine: {
           title: 'Turbine',
-          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+          body: 'Beli gAGX Turbine yang terbuka 1:1 dengan USD1',
         },
         comingSoon: 'Segera hadir',
       },
@@ -145,38 +145,39 @@ const app = defineMessages({
         body: 'Swap USDT ke USD1, tukar token utama ke aset X DAO, upgrade gAGX ke AGX, atau burn AGX untuk poin.',
       },
       program: {
-        title: 'Get AEGIS X protocol tokens',
+        title: 'Dapatkan token protokol AEGIS X',
         cards: [
-          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
-          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
-          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
-          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
-          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
-          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
+          { title: 'Perdagangkan gAGX', body: 'Tukar gAGX menjadi AGX' },
+          { title: 'Turbine', body: 'Beli gAGX Turbine yang terbuka dengan USD1' },
+          { title: 'Dapatkan USD1', body: 'Konversi USDT ke USD1 via Flash' },
+          { title: 'Dapatkan AGX', body: 'Dapatkan AGX dengan kurs pasar PancakeSwap' },
+          { title: 'Jual X', body: 'Tukar X menjadi AGX, USD1, atau token ekosistem lain' },
+          { title: 'Dapatkan poin kontribusi', body: 'Bakar AGX 1:6 untuk poin kontribusi' },
         ],
       },
 
       faq: {
         items: [
           {
-            q: 'What can I do on the Swap page?',
-            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
+            q: 'Apa yang bisa dilakukan di halaman Swap?',
+            a: 'Flash konversi USDT ke USD1 (dan gAGX ke AGX), perdagangan aset AEGIS X di PancakeSwap, bakar AGX untuk poin kontribusi, dan beli gAGX Turbine terbuka dengan USD1.',
           },
           {
-            q: 'What is the difference between Flash and Trade?',
-            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
+            q: 'Apa beda Flash dan Trade?',
+            a: 'Flash memakai rute protokol tetap tanpa pengaturan slippage pengguna. Trade memakai kurs langsung PancakeSwap dengan slippage yang dapat dikonfigurasi dan dampak harga.',
+          },
+
+          {
+            q: 'Apa itu wallet kripto?',
+            a: 'Wallet kripto mengelola aset digital on-chain. Wallet non-custodial memberi kontrol private key/seed phrase hanya kepada Anda; simpan aman. Opsi umum: MetaMask dan TokenPocket.',
           },
           {
-            q: 'What is a crypto wallet, and how do I get one?',
-            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+            q: 'Apa itu biaya gas?',
+            a: 'Setiap buy, sell, swap, atau transfer on-chain butuh gas. AEGIS X tidak memungutnya; jaringan BSC yang mengenakan. Simpan BNB sebelum trading.',
           },
           {
-            q: 'What is a blockchain transaction fee?',
-            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
-          },
-          {
-            q: 'How does a crypto wallet work?',
-            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
+            q: 'Bagaimana wallet bekerja?',
+            a: 'Wallet memakai public key dan private key. Private key atau seed phrase menandatangani transaksi dan harus dirahasiakan. Public key dipakai untuk alamat dan menerima aset.',
           },
         ],
       },
@@ -190,7 +191,7 @@ const app = defineMessages({
       tokenAboutTitle: 'Tentang USD1',
       action: 'Konversi',
       minReceived: 'Minimum diterima',
-      pairAriaLabel: 'Flash pair',
+      pairAriaLabel: 'Pasangan Flash',
       pairs: {
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',

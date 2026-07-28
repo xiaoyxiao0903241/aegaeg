@@ -133,8 +133,8 @@ const app = defineMessages({
           body: 'AGX बर्न कर योगदान पॉइंट लें',
         },
         turbine: {
-          title: 'Turbine',
-          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+          title: 'टरबाइन',
+          body: 'USD1 से 1:1 टरबाइन में अनलॉक gAGX खरीदें',
         },
         comingSoon: 'जल्द आएगा',
       },
@@ -143,38 +143,42 @@ const app = defineMessages({
         body: 'USDT को USD1 में बदलें, मुख्य टोकन को X DAO एसेट में ट्रेड करें, gAGX को AGX में अपग्रेड करें या पॉइंट के लिए AGX बर्न करें।',
       },
       program: {
-        title: 'Get AEGIS X protocol tokens',
+        title: 'AEGIS X प्रोटोकॉल टोकन प्राप्त करें',
         cards: [
-          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
-          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
-          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
-          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
-          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
-          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
+          { title: 'gAGX ट्रेड', body: 'gAGX को AGX में बदलें' },
+          { title: 'टरबाइन', body: 'USD1 से टरबाइन में अनलॉक gAGX खरीदें' },
+          { title: 'USD1 प्राप्त करें', body: 'Flash से USDT को USD1 में बदलें' },
+          { title: 'AGX प्राप्त करें', body: 'PancakeSwap बाज़ार दर पर AGX प्राप्त करें' },
+          { title: 'X बेचें', body: 'X को AGX, USD1 या अन्य इकोसिस्टम टोकन में बदलें' },
+          {
+            title: 'योगदान अंक प्राप्त करें',
+            body: 'AGX को 1:6 पर बर्न कर योगदान अंक प्राप्त करें',
+          },
         ],
       },
 
       faq: {
         items: [
           {
-            q: 'What can I do on the Swap page?',
-            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
+            q: 'Swap पेज पर क्या कर सकते हैं?',
+            a: 'Flash से USDT→USD1 (और gAGX→AGX), PancakeSwap पर AEGIS X संपत्ति ट्रेड, AGX बर्न से योगदान अंक, और USD1 से टरबाइन अनलॉक gAGX खरीद।',
           },
           {
-            q: 'What is the difference between Flash and Trade?',
-            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
+            q: 'Flash और Trade में क्या अंतर है?',
+            a: 'Flash प्रोटोकॉल की तय रूट है, यूज़र स्लिपेज सेटिंग नहीं। Trade PancakeSwap लाइव रेट है, कस्टम स्लिपेज और प्राइस इंपैक्ट के साथ।',
+          },
+
+          {
+            q: 'क्रिप्टो वॉलेट क्या है?',
+            a: 'क्रिप्टो वॉलेट on-chain डिजिटल एसेट संभालता है। Non-custodial वॉलेट में private key/seed phrase केवल आपके पास होती है; इसे सुरक्षित रखें। आम विकल्प: MetaMask, TokenPocket.',
           },
           {
-            q: 'What is a crypto wallet, and how do I get one?',
-            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+            q: 'Gas fee क्या है?',
+            a: 'हर on-chain buy, sell, swap या transfer में gas fee लगती है। AEGIS X इसे नहीं लेता; BSC नेटवर्क लेता है। ट्रेड से पहले वॉलेट में BNB रखें।',
           },
           {
-            q: 'What is a blockchain transaction fee?',
-            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
-          },
-          {
-            q: 'How does a crypto wallet work?',
-            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
+            q: 'वॉलेट कैसे काम करता है?',
+            a: 'वॉलेट public/private keys से चलता है। Private key या seed phrase ट्रांज़ैक्शन sign करता है और secret रहे। Public key address बनाने व asset लेने में काम आती है।',
           },
         ],
       },
@@ -188,7 +192,7 @@ const app = defineMessages({
       tokenAboutTitle: 'USD1 के बारे में',
       action: 'कन्वर्ट',
       minReceived: 'न्यूनतम प्राप्ति',
-      pairAriaLabel: 'Flash pair',
+      pairAriaLabel: 'Flash पेयर',
       pairs: {
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',

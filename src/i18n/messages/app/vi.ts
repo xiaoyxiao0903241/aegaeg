@@ -131,7 +131,7 @@ const app = defineMessages({
         },
         turbine: {
           title: 'Turbine',
-          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+          body: 'Mua gAGX đã mở khóa trong Turbine bằng USD1 theo tỷ lệ 1:1',
         },
         comingSoon: 'Sắp ra mắt',
       },
@@ -140,38 +140,39 @@ const app = defineMessages({
         body: 'Swap USDT sang USD1, giao dịch token chính để nhận tài sản X DAO, nâng gAGX lên AGX hoặc đốt AGX lấy điểm.',
       },
       program: {
-        title: 'Get AEGIS X protocol tokens',
+        title: 'Nhận token giao thức AEGIS X',
         cards: [
-          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
-          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
-          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
-          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
-          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
-          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
+          { title: 'Giao dịch gAGX', body: 'Đổi gAGX thành AGX' },
+          { title: 'Turbine', body: 'Mua gAGX đã mở khóa trong Turbine bằng USD1' },
+          { title: 'Nhận USD1', body: 'Đổi USDT sang USD1 qua Flash' },
+          { title: 'Nhận AGX', body: 'Nhận AGX theo tỷ giá thị trường PancakeSwap' },
+          { title: 'Bán X', body: 'Đổi X sang AGX, USD1 hoặc token hệ sinh thái khác' },
+          { title: 'Nhận điểm đóng góp', body: 'Đốt AGX theo tỷ lệ 1:6 để nhận điểm đóng góp' },
         ],
       },
 
       faq: {
         items: [
           {
-            q: 'What can I do on the Swap page?',
-            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
+            q: 'Trang Swap làm được gì?',
+            a: 'Flash đổi USDT sang USD1 (và gAGX sang AGX), giao dịch tài sản AEGIS X trên PancakeSwap, đốt AGX lấy điểm đóng góp, và mua gAGX mở khóa Turbine bằng USD1.',
           },
           {
-            q: 'What is the difference between Flash and Trade?',
-            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
+            q: 'Flash và Trade khác nhau thế nào?',
+            a: 'Flash dùng lộ trình cố định của giao thức, không có cài đặt trượt giá. Trade dùng tỷ giá PancakeSwap trực tiếp, có trượt giá tùy chỉnh và ảnh hưởng giá.',
+          },
+
+          {
+            q: 'Ví crypto là gì?',
+            a: 'Ví crypto dùng để quản lý tài sản on-chain. Với ví non-custodial, chỉ bạn giữ private key/seed phrase; hãy bảo mật kỹ. Phổ biến có MetaMask và TokenPocket.',
           },
           {
-            q: 'What is a crypto wallet, and how do I get one?',
-            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+            q: 'Phí gas là gì?',
+            a: 'Mọi lệnh mua, bán, swap hoặc chuyển on-chain đều cần gas. AEGIS X không thu phí này; mạng BSC thu. Hãy giữ BNB trong ví trước khi giao dịch.',
           },
           {
-            q: 'What is a blockchain transaction fee?',
-            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
-          },
-          {
-            q: 'How does a crypto wallet work?',
-            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
+            q: 'Ví hoạt động thế nào?',
+            a: 'Ví dùng public key và private key. Private key hoặc seed phrase ký giao dịch và phải giữ bí mật. Public key tạo địa chỉ và nhận tài sản.',
           },
         ],
       },
@@ -185,7 +186,7 @@ const app = defineMessages({
       tokenAboutTitle: 'Về USD1',
       action: 'Chuyển đổi',
       minReceived: 'Nhận tối thiểu',
-      pairAriaLabel: 'Flash pair',
+      pairAriaLabel: 'Cặp Flash',
       pairs: {
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',

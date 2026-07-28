@@ -127,8 +127,8 @@ const app = defineMessages({
           body: '銷毀 AGX 以獲得貢獻點數',
         },
         turbine: {
-          title: 'Turbine',
-          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+          title: '渦輪',
+          body: '以 USD1 按 1:1 買入解鎖渦輪中的 gAGX',
         },
         comingSoon: '即將推出',
       },
@@ -137,38 +137,39 @@ const app = defineMessages({
         body: '將 USDT 兌換為 USD1，用熱門代幣交易 X DAO 生態代幣，或將 gAGX 升級為 AGX、銷毀 AGX 取得貢獻點數。',
       },
       program: {
-        title: 'Get AEGIS X protocol tokens',
+        title: '獲取AEGIS X協議代幣',
         cards: [
-          { title: 'Trade gAGX', body: 'Swap gAGX for AGX' },
-          { title: 'Turbine', body: 'Buy unlocked Turbine gAGX with USD1' },
-          { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
-          { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
-          { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
-          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
+          { title: '交易gAGX', body: '將 gAGX 兌換為 AGX' },
+          { title: '渦輪', body: '以 USD1 買入解鎖渦輪中的 gAGX' },
+          { title: '獲取 USD1', body: '透過閃兌將 USDT 兌換為 USD1' },
+          { title: '獲取 AGX', body: '以 PancakeSwap 市場匯率獲取 AGX' },
+          { title: '出售 X', body: '將 X 兌換為 AGX 或 USD1 等生態代幣' },
+          { title: '獲取貢獻點數', body: '按 1:6 比率銷毀 AGX 以獲得貢獻點數' },
         ],
       },
 
       faq: {
         items: [
           {
-            q: 'What can I do on the Swap page?',
-            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
+            q: '兌換頁面可以做什麼？',
+            a: '可透過閃兌將 USDT 兌換為 USD1（以及 gAGX→AGX），在 PancakeSwap 交易獲取 AEGIS X 生態代幣，銷毀 AGX 獲得貢獻點數，並以 USD1 買入解鎖渦輪中的 gAGX。',
           },
           {
-            q: 'What is the difference between Flash and Trade?',
-            a: 'Flash uses a fixed protocol route with no user slippage controls. Trade uses PancakeSwap live rates with configurable slippage and market price impact.',
+            q: '閃兌和交易有什麼區別？',
+            a: '閃兌走協議固定路徑，無用戶滑點設置；交易基於 PancakeSwap 即時匯率，支援自訂滑點，並可能產生價格影響。',
+          },
+
+          {
+            q: '什麼是加密錢包？',
+            a: '加密錢包用於管理鏈上數位資產。非託管錢包由您自行掌控私鑰或助記詞，請妥善保存。常見選項包括 MetaMask 和 TokenPocket。',
           },
           {
-            q: 'What is a crypto wallet, and how do I get one?',
-            a: 'A crypto wallet manages digital assets on-chain. With a non-custodial wallet, only you control the private key or seed phrase, so keep it safe. Common options include MetaMask and TokenPocket.',
+            q: '什麼是 gas 費？',
+            a: '鏈上買入、出售、兌換或轉帳都需要 gas 費。費用由 BSC 網路收取，非 AEGIS X 收取。交易前請在錢包保留 BNB。',
           },
           {
-            q: 'What is a blockchain transaction fee?',
-            a: 'Every on-chain buy, sell, swap, or transfer needs gas. AEGIS X does not charge it; the BSC network does. Keep BNB in your wallet before trading.',
-          },
-          {
-            q: 'How does a crypto wallet work?',
-            a: 'Wallets use public and private keys. The private key or seed phrase signs transactions and must stay secret. The public key creates your address and receives assets.',
+            q: '錢包如何運作？',
+            a: '錢包使用公鑰與私鑰。私鑰或助記詞用於簽署交易，必須保密；公鑰可產生地址並接收資產。',
           },
         ],
       },
@@ -182,7 +183,7 @@ const app = defineMessages({
       tokenAboutTitle: '關於 USD1',
       action: '閃兌',
       minReceived: '最少獲得',
-      pairAriaLabel: 'Flash pair',
+      pairAriaLabel: '閃兌幣對',
       pairs: {
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',
