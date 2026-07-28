@@ -55,7 +55,7 @@ function formatCommunityStatToday(
 
 export function CommunityContent() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady, walletReady } = useDappShell()
   const isMobileViewport = useMobileViewport()
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)
@@ -84,7 +84,8 @@ export function CommunityContent() {
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
   const authPending = sessionReady && isLoggingIn
 
-  if (!sessionReady) {
+  // Disconnected: browse flow + FAQ only (no invented empty-member state).
+  if (!walletReady) {
     return (
       <DappDetailPage>
         <CommunityFlowSection isMobileViewport={isMobileViewport} />
@@ -93,7 +94,7 @@ export function CommunityContent() {
     )
   }
 
-  const useStatPlaceholders = authPending || overviewLoading || isRankLoading
+  const useStatPlaceholders = !sessionReady || authPending || overviewLoading || isRankLoading
 
   const directCount = overviewLoading
     ? STAT_PLACEHOLDER

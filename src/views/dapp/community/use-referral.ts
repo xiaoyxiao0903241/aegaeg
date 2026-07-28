@@ -6,6 +6,7 @@ import { formatCount, formatShortAddress } from '~/shared/api/format-display'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { usePerformance } from '~/hooks/use-api-data'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'
 import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
@@ -24,7 +25,7 @@ function readPendingReferrerFromEnvironment(): `0x${string}` | null {
   return parseReferrerFromSearch(window.location.search) ?? readStoredPendingReferrer()
 }
 
-export function useReferral(sessionReady: boolean) {
+export function useReferral() {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const readClient = useChainReadClient()
@@ -72,9 +73,11 @@ export function useReferral(sessionReady: boolean) {
       ])
       return { isBound, referrer, directCount }
     },
-    enabled: sessionReady && Boolean(address),
+    // On-chain bind status — wallet only (SIWE not required).
+    enabled: walletReady,
     staleTime: QUERY_STALE_TIME.balances,
   })
+  const { sessionReady } = useDappShell()
   const performanceQuery = usePerformance(sessionReady && Boolean(address))
 
   const isBound = referralQuery.data?.isBound ?? false
@@ -157,7 +160,6 @@ export function useReferral(sessionReady: boolean) {
     isBindCooldown,
     walletReady,
     canBind:
-      sessionReady &&
       walletReady &&
       !isBound &&
       !isSubmitting &&

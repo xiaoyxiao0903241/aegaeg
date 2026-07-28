@@ -764,8 +764,8 @@ const app = defineMessages({
       ],
     },
     invitesEmpty: {
-      title: 'No referral records yet',
-      body: 'Share your referral link to invite friends to your community.',
+      title: 'No community members yet',
+      body: 'Share your invite link — partners will appear here after they join.',
     },
     faq: {
       title: 'FAQs',

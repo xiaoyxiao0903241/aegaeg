@@ -750,8 +750,8 @@ const app = defineMessages({
       ],
     },
     invitesEmpty: {
-      title: '暂无邀请记录',
-      body: '分享推荐链接，邀请好友加入你的社区。',
+      title: '暂无社区成员',
+      body: '分享您的邀请链接，伙伴加入后将展示在这里。',
     },
     faq: {
       title: 'FAQs',

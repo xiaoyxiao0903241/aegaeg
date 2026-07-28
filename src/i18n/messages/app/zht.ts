@@ -751,8 +751,8 @@ const app = defineMessages({
       ],
     },
     invitesEmpty: {
-      title: '暫無邀請記錄',
-      body: '分享推薦連結，邀請好友加入你的社區。',
+      title: '暫無社區成員',
+      body: '分享您的邀請連結，夥伴加入後將展示在這裡。',
     },
     faq: {
       title: 'FAQs',

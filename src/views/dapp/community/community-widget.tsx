@@ -28,8 +28,9 @@ import {
 } from '~/views/dapp/community/community-widget-primitives'
 
 export function CommunityWidget({ onSelectTab }: { onSelectTab: (tab: DappTab) => void }) {
-  const { sessionReady } = useDappShell()
-  return sessionReady ? (
+  const { walletReady } = useDappShell()
+  // Bind is on-chain (walletReady). Member tables / performance stay session-gated in content.
+  return walletReady ? (
     <CommunityConnectedWidget onSelectTab={onSelectTab} />
   ) : (
     <CommunityDisconnectedWidget />
@@ -39,7 +40,7 @@ export function CommunityWidget({ onSelectTab }: { onSelectTab: (tab: DappTab) =
 function CommunityConnectedWidget({ onSelectTab }: { onSelectTab: (tab: DappTab) => void }) {
   const { messages: t } = useI18n()
   const account = useActiveAccount()
-  const referral = useReferral(true)
+  const referral = useReferral()
   const { error: referralError, clearError: clearReferralError } = referral
   const referralLink = account ? formatReferralLinkDisplay(account.address) : '—'
 
