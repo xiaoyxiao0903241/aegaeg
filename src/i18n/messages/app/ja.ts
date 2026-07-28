@@ -573,7 +573,9 @@ const app = defineMessages({
       'オンチェーン購入は確認済みです。履歴を同期中です。しばらくしてから更新してください。',
     contributionsEmpty: {
       title: '共創記録はまだありません',
+      body: '共創プログラムは終了しました。未参加のアカウントには記録がありません。',
     },
+    goBindReferrer: '紹介者を紐付け',
     seasonLive: '進行中',
     seasonEnded: '終了',
     seasonUpcoming: 'まもなく開始',

@@ -575,7 +575,9 @@ const app = defineMessages({
       'On-chain subscription confirmed. History is syncing — refresh shortly.',
     contributionsEmpty: {
       title: 'No co-build records yet',
+      body: 'The co-build program has ended. Accounts that did not participate have no records here.',
     },
+    goBindReferrer: 'Bind referrer',
     seasonLive: 'In progress',
     seasonEnded: 'Ended',
     seasonUpcoming: 'Upcoming',

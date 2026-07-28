@@ -15,12 +15,14 @@ import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { SeasonSelector } from '~/views/dapp/genesis/season/genesis-season-selector'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season/genesis-season-option-skeleton'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
 import {
   resolveGenesisPurchaseError,
   resolveWalletTransactionError,
 } from '~/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR } from '~/web3/errors/sentinels'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
@@ -98,6 +100,16 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
     }
 
     if (result.error) {
+      // GX-R1: referral is gate-only here — deep-link to community for full bind UI.
+      if (result.error === GENESIS_PURCHASE_ERROR.NOT_BOUND) {
+        toast.error(t.genesis.errors.notBound, {
+          action: {
+            label: t.genesis.goBindReferrer,
+            onClick: () => useDappShellStore.getState().selectTab('community'),
+          },
+        })
+        return
+      }
       presentUserFacingError(
         result.error,
         (error) =>

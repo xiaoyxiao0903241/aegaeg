@@ -133,7 +133,11 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
                 positiveColumns={[2]}
                 rows={[]}
               />
-              <DappTableEmptyMessage embedded title={t.genesis.contributionsEmpty.title} />
+              <DappTableEmptyMessage
+                body={t.genesis.contributionsEmpty.body}
+                embedded
+                title={t.genesis.contributionsEmpty.title}
+              />
             </>
           ) : (
             <ResponsiveTable

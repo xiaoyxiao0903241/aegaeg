@@ -576,7 +576,9 @@ const app = defineMessages({
       'Zincir üstü abonelik onaylandı; geçmiş kayıtlar senkronize ediliyor, lütfen daha sonra yenileyin.',
     contributionsEmpty: {
       title: 'Henüz ortak inşa kaydı yok',
+      body: 'Ortak inşa programı sona erdi. Katılmayan hesapların burada kaydı yoktur.',
     },
+    goBindReferrer: 'Referansı bağla',
     seasonLive: 'Devam ediyor',
     seasonEnded: 'Sona erdi',
     seasonUpcoming: 'Yakında',
