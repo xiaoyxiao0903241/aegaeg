@@ -86,10 +86,10 @@ function ReleaseTabContent() {
   return <ReleaseContent />
 }
 
-function CommunityTabWidget({ onSelectTab }: TabWidgetProps) {
+function CommunityTabWidget() {
   const account = useActiveAccount()
   const remountKey = resolveWalletRemountKey(account?.address)
-  return <CommunityWidget key={remountKey} onSelectTab={onSelectTab} />
+  return <CommunityWidget key={remountKey} />
 }
 
 function CommunityTabContent() {

@@ -5,11 +5,7 @@ import { useShareholderRank } from '~/views/dapp/rewards/use-shareholder-rank'
 import { formatCount, formatPresaleRank, formatUsd } from '~/shared/api/format-display'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
-import {
-  getCommitmentFloorPostLaunchLabel,
-  getTeamBonusRateLabel,
-  resolveCommitmentFloorBoostCopy,
-} from '~/core/presale/tier-table'
+import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { CommunityStatCardSkeleton } from '~/app/shell/dapp-skeleton'
 import { useAuth } from '~/hooks/use-auth'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -60,8 +56,7 @@ export function CommunityContent() {
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)
   const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
-  const { displayRank, isRankLoading, commitmentFloorRank, commitmentFloorTeamUsd } =
-    useShareholderRank()
+  const { displayRank, isRankLoading } = useShareholderRank()
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
     tablePageQuery(invitesPage),
     sessionReady,
@@ -120,21 +115,6 @@ export function CommunityContent() {
     : displayRank > 0
       ? `${t.tables.rewardRate} ${getTeamBonusRateLabel(displayRank)}`
       : `${t.tables.rewardRate} ${STAT_PLACEHOLDER}`
-  const postLaunchRankValue = useStatPlaceholders
-    ? STAT_PLACEHOLDER
-    : commitmentFloorRank > 0
-      ? getCommitmentFloorPostLaunchLabel(commitmentFloorRank)
-      : STAT_PLACEHOLDER
-  const postLaunchVolume = t.community.totalTeamVolume.replace(
-    '{amount}',
-    formatUsd(useStatPlaceholders ? 0 : commitmentFloorTeamUsd),
-  )
-  const postLaunchBoostLabel = useStatPlaceholders
-    ? undefined
-    : resolveCommitmentFloorBoostCopy(commitmentFloorRank, {
-        boostTemplate: t.community.postLaunch30DayBoost,
-        maxRankCopy: t.community.postLaunchMaxRank,
-      })
 
   const stats: CommunityStat[] = [
     {
@@ -168,12 +148,6 @@ export function CommunityContent() {
       today: genesisRewardRateLabel,
       dark: !isMobileViewport,
     },
-    {
-      label: t.community.postLaunchRankLabel,
-      value: postLaunchRankValue,
-      volume: postLaunchVolume,
-      today: postLaunchBoostLabel,
-    },
   ]
 
   const inviteTableHeaders = [
@@ -197,7 +171,6 @@ export function CommunityContent() {
             <CommunityStatCardSkeleton />
             <CommunityStatCardSkeleton />
             <CommunityStatCardSkeleton dark />
-            <CommunityStatCardSkeleton />
           </>
         ) : (
           stats.map((stat, index) => (

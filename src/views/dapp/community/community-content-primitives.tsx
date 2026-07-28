@@ -7,9 +7,9 @@ import { cn } from '~/shared/lib/utils'
 
 export const communityStatGrid = tv({
   base: cn(
-    'grid grid-cols-4 gap-3.5',
+    'grid grid-cols-3 gap-3.5',
     'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,9.5rem),1fr))]',
-    'max-dapp:min-w-0 max-dapp:grid-cols-2 max-dapp:gap-2.5',
+    'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-2.5',
   ),
 })
 

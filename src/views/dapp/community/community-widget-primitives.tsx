@@ -26,11 +26,6 @@ const communityCopyButton = tv({
   base: 'grid size-7.5 shrink-0 cursor-pointer place-items-center rounded-sm bg-transparent',
 })
 
-/** Spacing / visibility only. */
-export const communityGenesisCta = tv({
-  base: 'mt-4 max-dapp:hidden',
-})
-
 export function CommunityReferralLinkCard({
   copyLabel,
   disabled = false,

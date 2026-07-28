@@ -6,9 +6,7 @@ import { formatReferralLinkDisplay } from '~/views/dapp/community/community-disp
 import { buildReferralSharePath } from '~/shared/config/referral'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { useDappShell } from '~/app/use-dapp-shell'
-import type { DappTab } from '~/shared/config/dapp-tabs'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { QuickLinks } from '~/app/shell/quick-links'
 import { buildCommunityQuickLinkItems } from '~/shared/config/community-links'
@@ -24,20 +22,15 @@ import {
   CommunityReferralLinkCard,
   CommunityReferrerBindCard,
   CommunityReferrerBoundPanel,
-  communityGenesisCta,
 } from '~/views/dapp/community/community-widget-primitives'
 
-export function CommunityWidget({ onSelectTab }: { onSelectTab: (tab: DappTab) => void }) {
+export function CommunityWidget() {
   const { walletReady } = useDappShell()
   // Bind is on-chain (walletReady). Member tables / performance stay session-gated in content.
-  return walletReady ? (
-    <CommunityConnectedWidget onSelectTab={onSelectTab} />
-  ) : (
-    <CommunityDisconnectedWidget />
-  )
+  return walletReady ? <CommunityConnectedWidget /> : <CommunityDisconnectedWidget />
 }
 
-function CommunityConnectedWidget({ onSelectTab }: { onSelectTab: (tab: DappTab) => void }) {
+function CommunityConnectedWidget() {
   const { messages: t } = useI18n()
   const account = useActiveAccount()
   const referral = useReferral()
@@ -116,14 +109,6 @@ function CommunityConnectedWidget({ onSelectTab }: { onSelectTab: (tab: DappTab)
       )}
 
       <CommunityQuickLinks />
-
-      <DappActionButton
-        className={communityGenesisCta()}
-        density="hero"
-        onClick={() => onSelectTab('genesis')}
-      >
-        {t.community.shareholder}
-      </DappActionButton>
     </DappWidgetFrame>
   )
 }
