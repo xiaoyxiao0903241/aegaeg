@@ -130,6 +130,10 @@ AI 工作规范
 
 ## Agent skills
 
+### Implement
+
+Before `/implement` write: [`docs/agents/implement-checklist.md`](docs/agents/implement-checklist.md) (links §8.0). Ticket ownership template: [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
+
 ### Issue tracker
 
 Issues live as local markdown under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
