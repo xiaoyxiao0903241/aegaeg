@@ -1,5 +1,5 @@
 FROM mirror.gcr.io/library/node:20.19.0-slim AS builder
-
+ 
 WORKDIR /app
 
 RUN corepack enable \
