@@ -33,32 +33,30 @@ export interface GenesisPurchaseResult {
 const genesisPurchaseGate = { inFlight: false }
 
 type UseGenesisPurchaseActionsArgs = {
-  account: ReturnType<typeof useActiveAccount>
-  wallet: ReturnType<typeof useActiveWallet>
-  address: string | undefined
-  activePhase: PresalePhaseOnChain | null
-  canPurchase: boolean
-  isApproved: boolean
-  needsApproval: boolean
-  purchaseAmount: bigint
-  isBoundQueryData: boolean | undefined
-  isPaused: boolean
-  isPausedUnknown: boolean
+  wallet: {
+    account: ReturnType<typeof useActiveAccount>
+    wallet: ReturnType<typeof useActiveWallet>
+    address: string | undefined
+  }
+  phase: {
+    activePhase: PresalePhaseOnChain | null
+    isPaused: boolean
+    isPausedUnknown: boolean
+    isBoundQueryData: boolean | undefined
+  }
+  purchase: {
+    canPurchase: boolean
+    isApproved: boolean
+    needsApproval: boolean
+    purchaseAmount: bigint
+  }
 }
 
 /** Approve → re-gate → purchase orchestration for Genesis. */
 export function useGenesisPurchaseActions({
-  account,
-  wallet,
-  address,
-  activePhase,
-  canPurchase,
-  isApproved,
-  needsApproval,
-  purchaseAmount,
-  isBoundQueryData,
-  isPaused,
-  isPausedUnknown,
+  wallet: { account, wallet, address },
+  phase: { activePhase, isPaused, isPausedUnknown, isBoundQueryData },
+  purchase: { canPurchase, isApproved, needsApproval, purchaseAmount },
 }: UseGenesisPurchaseActionsArgs) {
   const queryClient = useQueryClient()
   const readClient = useChainReadClient()

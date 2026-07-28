@@ -120,6 +120,8 @@ function createDeferredWalletProvider(wallet: Wallet): EIP1193Provider {
     return bound(args)
   }
 
+  // Minimal EIP-1193 surface — only `request` is used by wallet writes.
+  // Full viem `EIP1193Provider` is a large method union; widen at the adapter edge.
   return { request } as unknown as EIP1193Provider
 }
 

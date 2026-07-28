@@ -95,6 +95,8 @@ export async function estimateWriteGasLimit(
   walletClient: ChainReadClient,
   fallbackClient: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
+  // viem simulate/estimate overloads require concrete ABI function names; dynamic
+  // write paths intentionally erase here (same pattern as thirdweb adapters).
   const callRequest = call as never
 
   try {

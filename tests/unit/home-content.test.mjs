@@ -1,8 +1,12 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr', 'th']
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
+const locales = JSON.parse(readFileSync(resolve(root, 'src/i18n/locales.json'), 'utf8'))
 
 async function loadHomeMessages() {
   return loadModule('/src/i18n/messages/home/index.ts')

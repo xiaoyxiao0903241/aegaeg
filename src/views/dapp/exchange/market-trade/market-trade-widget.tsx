@@ -26,6 +26,13 @@ import {
 } from '~/views/dapp/exchange/exchange-widget-composites'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 
+/**
+ * Keep in sync with `exchange-card-flip` / `--motion-dapp-emphasis` (300ms) in theme.css.
+ * Apply direction change mid-animation; settle after the flip completes.
+ */
+const EXCHANGE_FLIP_APPLY_MS = 160
+const EXCHANGE_FLIP_SETTLE_MS = 320
+
 export function MarketTradeWidget({
   onSelectGenesis,
   trade,
@@ -66,10 +73,10 @@ export function MarketTradeWidget({
     setRotation((prev) => prev + 180)
     window.setTimeout(() => {
       trade.flipDirection()
-    }, 160)
+    }, EXCHANGE_FLIP_APPLY_MS)
     window.setTimeout(() => {
       setIsFlipping(false)
-    }, 320)
+    }, EXCHANGE_FLIP_SETTLE_MS)
   }
 
   function resolveTradeMessage(error: unknown) {

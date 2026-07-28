@@ -6,6 +6,7 @@ import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 import { flattenCssCascadeLayersPlugin } from './vite-plugins/flatten-css-cascade-layers'
 import { viewportUnitFallbacksPlugin } from './vite-plugins/viewport-unit-fallbacks'
+import localesJson from './src/i18n/locales.json'
 
 /** Inline boot polyfill must parse before plugin-legacy module polyfills in <head>. */
 function legacyBootFirstPlugin(): Plugin {
@@ -14,7 +15,9 @@ function legacyBootFirstPlugin(): Plugin {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
-        const bootMatch = html.match(/<script>try\{if\('scrollRestoration'[\s\S]*?__patchPerfLists[\s\S]*?\}<\/script>/)
+        const bootMatch = html.match(
+          /<script>try\{if\('scrollRestoration'[\s\S]*?__patchPerfLists[\s\S]*?\}<\/script>/,
+        )
         if (!bootMatch) return html
         const boot = bootMatch[0]
         return html.replace(boot, '').replace('<head>', `<head>\n    ${boot}`)
@@ -23,7 +26,7 @@ function legacyBootFirstPlugin(): Plugin {
   }
 }
 
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'tr', 'ru', 'hi', 'th'] as const
+const locales = localesJson as readonly string[]
 
 const localeEntries = Object.fromEntries(
   locales.flatMap((locale) => [

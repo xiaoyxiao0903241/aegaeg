@@ -24,37 +24,31 @@ function readBootstrappedMessages(): { locale: Locale; messages: Messages } | nu
   }
 }
 
+type LocaleMessagesModule = { readonly default: Messages }
+
+/**
+ * One dynamic import per locale — keeps Home/DApp entries from bundling every bag.
+ * Module defaults are asserted once at the loader boundary (locale files are
+ * structurally checked via `messages-catalog` + unit tests).
+ */
+const loadLocaleMessages = {
+  en: () => import('~/i18n/messages/en'),
+  zh: () => import('~/i18n/messages/zh'),
+  zht: () => import('~/i18n/messages/zht'),
+  id: () => import('~/i18n/messages/id'),
+  ko: () => import('~/i18n/messages/ko'),
+  ja: () => import('~/i18n/messages/ja'),
+  vi: () => import('~/i18n/messages/vi'),
+  es: () => import('~/i18n/messages/es'),
+  ru: () => import('~/i18n/messages/ru'),
+  hi: () => import('~/i18n/messages/hi'),
+  tr: () => import('~/i18n/messages/tr'),
+  th: () => import('~/i18n/messages/th'),
+} satisfies Record<Locale, () => Promise<unknown>>
+
 async function importMessages(locale: Locale): Promise<Messages> {
-  switch (locale) {
-    case 'en':
-      return (await import('~/i18n/messages/en')).default as Messages
-    case 'zh':
-      return (await import('~/i18n/messages/zh')).default
-    case 'zht':
-      return (await import('~/i18n/messages/zht')).default as Messages
-    case 'id':
-      return (await import('~/i18n/messages/id')).default as Messages
-    case 'ko':
-      return (await import('~/i18n/messages/ko')).default as Messages
-    case 'ja':
-      return (await import('~/i18n/messages/ja')).default as Messages
-    case 'vi':
-      return (await import('~/i18n/messages/vi')).default as Messages
-    case 'es':
-      return (await import('~/i18n/messages/es')).default as Messages
-    case 'ru':
-      return (await import('~/i18n/messages/ru')).default as Messages
-    case 'hi':
-      return (await import('~/i18n/messages/hi')).default as Messages
-    case 'tr':
-      return (await import('~/i18n/messages/tr')).default as Messages
-    case 'th':
-      return (await import('~/i18n/messages/th')).default as Messages
-    default: {
-      const _exhaustive: never = locale
-      throw new Error(`Unsupported locale: ${_exhaustive}`)
-    }
-  }
+  const mod = (await loadLocaleMessages[locale]()) as LocaleMessagesModule
+  return mod.default
 }
 
 /**

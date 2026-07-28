@@ -10,7 +10,6 @@ test('breakpoint SSOT matches legacy-breakpoints / theme contract', async () => 
   assert.equal(bp.BREAKPOINT_DESIGN_BASE_PX, 1920)
   assert.equal(bp.BREAKPOINT_TABLET_MAX_PX, 1100)
   assert.equal(bp.BREAKPOINT_NARROW_MAX_PX, 520)
-  assert.equal(bp.BREAKPOINT_FLUID_MIN_WIDTH_PX, 1920)
   assert.equal(bp.BREAKPOINT_FLUID_MAX_WIDTH_PX, 3840)
   assert.equal(bp.BREAKPOINT_FLUID_MIN_ROOT_PX, 16)
   assert.equal(bp.BREAKPOINT_FLUID_MAX_ROOT_PX, 48)

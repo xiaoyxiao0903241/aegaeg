@@ -35,17 +35,23 @@ export function useGenesisWidget() {
   }
 
   const actions = useGenesisPurchaseActions({
-    account: reads.account,
-    wallet,
-    address: reads.address,
-    activePhase: reads.activePhase,
-    canPurchase,
-    isApproved: model.isApproved,
-    needsApproval: model.needsApproval,
-    purchaseAmount: model.purchaseAmount,
-    isBoundQueryData: reads.isBoundQueryData,
-    isPaused: reads.isPaused,
-    isPausedUnknown: reads.isPausedUnknown,
+    wallet: {
+      account: reads.account,
+      wallet,
+      address: reads.address,
+    },
+    phase: {
+      activePhase: reads.activePhase,
+      isPaused: reads.isPaused,
+      isPausedUnknown: reads.isPausedUnknown,
+      isBoundQueryData: reads.isBoundQueryData,
+    },
+    purchase: {
+      canPurchase,
+      isApproved: model.isApproved,
+      needsApproval: model.needsApproval,
+      purchaseAmount: model.purchaseAmount,
+    },
   })
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -5,7 +6,8 @@ import { createServer } from 'vite'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const placeholderHtml = '<!doctype html><html><head></head><body></body></html>\n'
-const locales = ['en', 'zh', 'zht', 'id', 'ko', 'ja', 'vi', 'es', 'ru', 'hi', 'tr', 'th']
+/** SSOT: `src/i18n/locales.json` (same list as `locale-codes.ts`). */
+const locales = JSON.parse(readFileSync(resolve(root, 'src/i18n/locales.json'), 'utf8'))
 
 for (const locale of locales) {
   const localeRoot = resolve(root, locale)

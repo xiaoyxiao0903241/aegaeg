@@ -1,5 +1,10 @@
-/** Locale codes — leaf module (no imports from other i18n files). */
-export const locales = [
+import localeCodes from '~/i18n/locales.json'
+
+/**
+ * Locale codes SSOT — list lives in `locales.json` (Node/Vite scripts read the same file).
+ * Tuple cast keeps `Locale` a closed string-literal union.
+ */
+export const locales = localeCodes as unknown as readonly [
   'en',
   'zh',
   'zht',
@@ -12,7 +17,7 @@ export const locales = [
   'ru',
   'hi',
   'th',
-] as const
+]
 
 export type Locale = (typeof locales)[number]
 

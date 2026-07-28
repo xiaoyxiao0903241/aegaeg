@@ -8,9 +8,6 @@ export const BREAKPOINT_DAPP_PX = 821
  */
 export const BREAKPOINT_DESIGN_BASE_PX = 1920
 
-/** site-fluid continuous clamp — min width (CSS px) at scale 1 / 16px root. */
-export const BREAKPOINT_FLUID_MIN_WIDTH_PX = 1920
-
 /** site-fluid continuous clamp — max width (CSS px) at scale cap. */
 export const BREAKPOINT_FLUID_MAX_WIDTH_PX = 3840
 
@@ -26,7 +23,7 @@ export const BREAKPOINT_FLUID_MAX_SCALE = 3
  * Kept as a 2-row table for docs / knip / unit contract.
  */
 export const BREAKPOINT_ULTRA_WIDE_SCALE = [
-  { minWidthPx: BREAKPOINT_FLUID_MIN_WIDTH_PX, rootFontSizePx: BREAKPOINT_FLUID_MIN_ROOT_PX },
+  { minWidthPx: BREAKPOINT_DESIGN_BASE_PX, rootFontSizePx: BREAKPOINT_FLUID_MIN_ROOT_PX },
   { minWidthPx: BREAKPOINT_FLUID_MAX_WIDTH_PX, rootFontSizePx: BREAKPOINT_FLUID_MAX_ROOT_PX },
 ] as const
 
