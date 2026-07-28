@@ -84,7 +84,21 @@ AI 工作规范
 - 默认由**另一会话 / 子 agent / 用户指定 reviewer**对照清单裁决；实现会话只提交证据（清单路径、diff、验证命令）。用户说「跳过审查」才可省略独立方，但仍须留下自检勾选记录。
 - Post-Code 关注点：**正确性与可验证性优先于速度**；清晰优于精巧；能一行不五十一行；禁为「以后扩展」预留空壳。
 
-节奏见 [`docs/agents/implement-checklist.md`](docs/agents/implement-checklist.md)。
+#### R7 — Tab / 切片提交前多 agent 门禁（用户锁定 2026-07-29）
+
+> **每个 DApp tab（或实现 ticket）在 `git commit` 之前**必须过独立多 agent 审查；实现者自检不算过门。Critical 未清禁止提交。
+
+| 规则               | 要求                                                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **何时**           | 用户要求「tab 完成即提交」或本票称完成并准备 commit 时；**commit 之前**                                                                       |
+| **模型**           | 全部审查子代理固定 **`cursor-grok-4.5-high`（Grok 4.5 high）**；禁止默默换模型                                                                |
+| **分轨**           | 至少并行两路：① **Post-Design / Spec**（稿∩手册∩ticket 清单）；② **Post-Code / deletion-first**（§8.2、死代码、假数、多余抽象、金钱路径门闸） |
+| **Deletion-first** | Post-Code 路必须显式列：应删未删项、可内联的 wrapper、无测缝分支、稿外 chrome                                                                 |
+| **世界级标准**     | 正确性 > 可验证性 > 简洁；fail-closed 金钱路径；无机会主义扩面；能一行不五十一行                                                              |
+| **产出**           | 审查结论落盘（ticket 勾选或 `.scratch/.../research/*-review.md`）；Critical → 先修再 commit；DEFER 须写明理由                                 |
+| **补审**           | 若某 tab 已提交但未过本门 → **补审**；Critical 用 follow-up commit 修，不 rewrite 已推送历史（除非用户明示）                                  |
+
+节奏见 [`docs/agents/implement-checklist.md`](docs/agents/implement-checklist.md)「提交前多 agent」。
 
 ### 8.1 工作方式
 
@@ -113,7 +127,7 @@ AI 工作规范
 - 优先复用既有工具函数、状态容器、脚本入口和测试基础设施。
 - 发现重复逻辑时，先判断是否应回收到现有 SSOT；不要默认再包一层。
 - **deletion-first**：实现后删除、内联或收窄不服务不变量、成功标准或验证路径的状态、字段、类型、分支、配置和 helper。
-- **代码或复杂脚本切片**：按 **§8.0 R6** 做 Post-Code 独立审查 + 受影响验证；用户要求提交时再按单切片单提交。
+- **代码或复杂脚本切片**：按 **§8.0 R6** 做 Post-Code 独立审查 + 受影响验证；用户要求提交时再按单切片单提交；提交前另过 **§8.0 R7**（Grok 4.5 high 多 agent + deletion-first）。
 - 人工审查只保留给视觉、手感、真实滚动物理、主观动效质量和真实辅助技术行为（Post-Design 的主观项）。
 
 ### 8.3 工具规则

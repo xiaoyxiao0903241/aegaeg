@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { exchangeHubAssets } from '~/app/assets'
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { ExchangeModeCard } from '~/views/dapp/exchange/hub/exchange-mode-card'
 import {
   ExchangePanelToggle,
@@ -10,7 +10,6 @@ import { WidgetHeader } from '~/shared/ui/widget-header'
 
 export function ExchangeHubWidget() {
   const { messages: t } = useI18n()
-  const setView = useExchangeViewStore((state) => state.setView)
 
   return (
     <>
@@ -23,25 +22,25 @@ export function ExchangeHubWidget() {
         <ExchangeModeCard
           body={t.exchange.hub.modes.flash.body}
           icon={exchangeHubAssets.modeFlash}
-          onClick={() => setView('flash')}
+          onClick={() => openExchangeView('flash')}
           title={t.exchange.hub.modes.flash.title}
         />
         <ExchangeModeCard
           body={t.exchange.hub.modes.trade.body}
           icon={exchangeHubAssets.modeTrade}
-          onClick={() => setView('trade')}
+          onClick={() => openExchangeView('trade')}
           title={t.exchange.hub.modes.trade.title}
         />
         <ExchangeModeCard
           body={t.exchange.hub.modes.burn.body}
           icon={exchangeHubAssets.modeBurn}
-          onClick={() => setView('burn')}
+          onClick={() => openExchangeView('burn')}
           title={t.exchange.hub.modes.burn.title}
         />
         <ExchangeModeCard
           body={t.exchange.hub.modes.turbine.body}
           icon={exchangeHubAssets.modeTurbine}
-          onClick={() => setView('turbine')}
+          onClick={() => openExchangeView('turbine')}
           title={t.exchange.hub.modes.turbine.title}
         />
       </ExchangeWidgetBody>

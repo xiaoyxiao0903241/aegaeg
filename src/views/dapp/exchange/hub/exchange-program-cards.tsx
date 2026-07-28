@@ -1,24 +1,26 @@
-import { useI18n } from '~/i18n/use-i18n'
-import { useExchangeViewStore, type ExchangeView } from '~/stores/exchange-view-store'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { openExchangeView } from '~/shared/config/open-exchange-view'
+import type { ExchangeView } from '~/stores/exchange-view-store'
 import { ExchangeProgramCard } from '~/views/dapp/exchange/hub/exchange-program-card'
+import { useI18n } from '~/i18n/use-i18n'
 
 /**
  * Figma hub program grid (PC `4267:212`):
  * 0 Trade gAGX → flash · 1 Turbine → turbine · 2 Get USD1 → flash
- * 3 Get AGX → trade · 4 Sell X → trade · 5 Points → burn
+ * 3 Get AGX → trade · 4 Sell X → null (X trade not enabled) · 5 Points → burn
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'flash',
   'turbine',
   'flash',
   'trade',
-  'trade',
+  null,
   'burn',
 ]
 
 export function ExchangeProgramCards() {
   const { messages: t } = useI18n()
-  const setView = useExchangeViewStore((state) => state.setView)
+  useExchangeViewStore((state) => state.view)
   const cards = t.exchange.hub.program.cards
 
   return (
@@ -31,7 +33,7 @@ export function ExchangeProgramCards() {
             body={card.body}
             index={index}
             key={`${card.title}:${index}`}
-            onClick={target ? () => setView(target) : undefined}
+            onClick={target ? () => openExchangeView(target) : undefined}
             title={card.title}
           />
         )

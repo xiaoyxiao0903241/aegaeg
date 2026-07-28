@@ -24,7 +24,9 @@ type FlashQuotedSubmitCore = {
   setSubmitError: (error: unknown) => void
   runQuotedSubmit: (
     run: (helpers: {
-      assertStillSubmittable: (live?: { sellBalance: bigint }) => Promise<bigint>
+      assertStillSubmittable: (live?: {
+        sellBalance: bigint
+      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
     }) => Promise<void>,
   ) => Promise<{ ok: true } | { ok: false; error: unknown }>
 }
@@ -68,7 +70,7 @@ export async function submitFlashExchange(args: {
     if (refreshed.error || refreshed.data === undefined) {
       throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
     }
-    const minOut = await assertStillSubmittable({
+    const { amountOutMin: minOut, quotedOut } = await assertStillSubmittable({
       sellBalance: refreshed.data.sell,
     })
 
@@ -91,7 +93,7 @@ export async function submitFlashExchange(args: {
       }
       const gate = resolveFlashUsd1SwapGate({
         amountIn: core.debouncedAmountIn,
-        quotedOut: minOut,
+        quotedOut,
         config: liveConfig.data,
       })
       if (gate) {

@@ -10,6 +10,8 @@ import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { aegisDialogClose } from '~/shared/ui/aegis-responsive-dialog'
 import { Text } from '~/shared/ui/text'
+import { useTurbineExchangeRailDot } from '~/views/dapp/exchange/turbine/use-turbine-exchange-rail-dot'
+import { useDappShell } from '~/app/use-dapp-shell'
 
 const drawerItem = tv({
   base: cn(
@@ -41,6 +43,8 @@ export function DappMobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
+  const { sessionReady } = useDappShell()
+  const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
   const [mounted, setMounted] = useState(open)
   const [motion, setMotion] = useState<NavMotion | null>(open ? 'enter' : null)
   const [prevOpen, setPrevOpen] = useState(open)
@@ -138,7 +142,7 @@ export function DappMobileNav({
             <button
               aria-label={label}
               aria-selected={active}
-              className={drawerItem({ active })}
+              className={cn(drawerItem({ active }), 'relative')}
               key={item.id}
               onClick={() => onSelectTab(item.id)}
               role="tab"
@@ -152,6 +156,13 @@ export function DappMobileNav({
                 )}
                 style={railIconMask(item.icon)}
               />
+              {item.id === 'exchange' && exchangeClaimable ? (
+                <span
+                  aria-hidden
+                  className="absolute top-3 right-3 size-1.5 rounded-full bg-coral"
+                  data-exchange-claimable-dot
+                />
+              ) : null}
               <Text
                 as="span"
                 variant="copy"

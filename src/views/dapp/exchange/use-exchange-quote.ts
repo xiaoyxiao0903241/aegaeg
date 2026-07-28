@@ -179,7 +179,9 @@ export function useExchangeQuote<TQuote>({
 
   async function runQuotedSubmit(
     execute: (helpers: {
-      assertStillSubmittable: (live?: { sellBalance: bigint }) => Promise<bigint>
+      assertStillSubmittable: (live?: {
+        sellBalance: bigint
+      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
     }) => Promise<void>,
   ): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
     // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
@@ -193,7 +195,9 @@ export function useExchangeQuote<TQuote>({
     // Live re-gate: force-refresh quote after approve (may exceed maxQuoteAgeMs),
     // then read from query cache — not the render snapshot that started submit.
     // Callers must pass post-refetch sellBalance; render-closure balance is stale.
-    const assertStillSubmittable = async (live?: { sellBalance: bigint }): Promise<bigint> => {
+    const assertStillSubmittable = async (live?: {
+      sellBalance: bigint
+    }): Promise<{ amountOutMin: bigint; quotedOut: bigint }> => {
       if (live === undefined) {
         throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
       }
@@ -222,7 +226,7 @@ export function useExchangeQuote<TQuote>({
         quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
         maxQuoteAgeMs: QUERY_STALE_TIME.quote,
       })
-      return liveAmountOutMin
+      return { amountOutMin: liveAmountOutMin, quotedOut: liveQuotedOut }
     }
 
     try {

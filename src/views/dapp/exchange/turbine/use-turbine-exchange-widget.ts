@@ -35,7 +35,6 @@ export type TurbineSegment = 'unlock' | 'claim'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
-const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
 /** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
 export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
@@ -131,6 +130,7 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     writeReady &&
     !isSubmitting &&
     !blockResubmit &&
+    !isUnknownReceiptLocked(WRITE_PATH.EXCHANGE) &&
     unlockAmountIn > 0n &&
     unlockAmountIn <= quota &&
     usdNeeded > 0n &&
@@ -167,10 +167,10 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
       account,
       wallet,
       core: { setSubmitError, runSubmit },
-      usdAmount: usdNeeded,
-      usd1Balance,
+      unlockAmountAgx: unlockAmountIn,
       refetchBalances: () => balancesQuery.refetch(),
       refetchQuota: () => quotaQuery.refetch(),
+      refetchUsdQuote: () => quoteQuery.refetch(),
     })
   }
 
@@ -189,7 +189,8 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     segment,
     setSegment,
     pair: {
-      unlock: { icon: dappAssets.tokenGagx, symbol: 'gAGX', decimals: GAGX_DECIMALS },
+      // Handbook §16: turbineBalances / unlock amount axis = AGX (not gAGX).
+      unlock: { icon: dappAssets.tokenAgx, symbol: 'AGX', decimals: AGX_DECIMALS },
       pay: { icon: dappAssets.tokenUsd1, symbol: 'USD1', decimals: USD1_DECIMALS },
       buy: { icon: dappAssets.tokenAgx, symbol: 'AGX', decimals: AGX_DECIMALS },
     },
@@ -202,8 +203,7 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     quotaLabel: formatTokenAmount(quota, AGX_DECIMALS, 4),
     usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, 4),
     cooldownHoursLabel,
-    unlockRatioLabel: '1:1',
-    providerAddress: BSC_CONTRACTS.pancakeRouter,
+    providerAddress: BSC_CONTRACTS.turbine,
     silences: silencesQuery.data?.rows ?? [],
     overview: {
       pendingUnlockLabel: formatTokenAmount(quota, AGX_DECIMALS, 2),

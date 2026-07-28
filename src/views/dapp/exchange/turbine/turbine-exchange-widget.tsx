@@ -45,7 +45,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
   ) : exchangePreview ? (
     `${t.exchange.turbine.unlockable}: 0.00`
   ) : (
-    `${t.exchange.turbine.unlockable}: ${turbine.walletReady ? turbine.quotaLabel : '—'} gAGX`
+    `${t.exchange.turbine.unlockable}: ${turbine.walletReady ? turbine.quotaLabel : '—'} AGX`
   )
 
   const usd1Balance = showBalanceSkeleton ? (
@@ -190,7 +190,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 },
                 {
                   label: t.exchange.allowedSlippage,
-                  value: '0.3%',
+                  // No user slippage UI on turbine; do not hardcode a fake floor.
+                  value: '—',
                 },
                 {
                   label: t.exchange.turbine.willReceiveAgx,
@@ -213,9 +214,9 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   label: t.exchange.provider,
                   value: (
                     <>
-                      {t.exchange.providerName}
+                      Turbine
                       <button
-                        aria-label={t.exchange.openPancakeSwap}
+                        aria-label={t.genesis.viewContract}
                         className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
                         onClick={() =>
                           window.open(

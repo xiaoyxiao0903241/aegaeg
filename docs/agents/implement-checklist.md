@@ -80,6 +80,22 @@ Pre-Design → 写盘实现 → Post-Design + Post-Code（分轨）→ pnpm chec
 | 测试：合同用 unit；行为 e2e 在挂载后               | `tests/unit/*` · `pnpm test:e2e` 可选              | 无失败测试先写生产代码（TDD 缝）          |
 | 收工                                               | 三门 + `pnpm check`                                | 只靠肉眼或未跑门禁称完成                  |
 
+## 提交前多 agent（§8.0 **R7** · 强制）
+
+> 每个 tab / ticket **`git commit` 之前**必须过；实现者自检不算。用户锁定：子代理模型 = **Grok 4.5 high**（Cursor slug `cursor-grok-4.5-high`）。
+
+```
+[ ] Post-Design / Spec 子代理（Grok 4.5 high）已对照 ticket + Pre-Design 清单 + 手册/Figma
+[ ] Post-Code / deletion-first 子代理（Grok 4.5 high）已对照 §8.2 + 金钱路径 + 死代码/多余抽象
+[ ] Critical 已清或已修；DEFER 已落盘理由
+[ ] 审查结论路径已记录（`.scratch/.../research/*-review.md` 或 ticket 勾选）
+[ ] 然后才 `git commit`（用户明示才提交）
+```
+
+**并行 spawn**：同一轮至少两条 Task/子代理，`model: cursor-grok-4.5-high`。账单或工具不可用时：停手暴露，不得静默降级模型或跳过 R7（用户明示「跳过审查」除外）。
+
+**补审**：已提交但未过 R7 的 tab → 补跑两路审查；Critical → follow-up commit。
+
 ## `/implement` 节奏（单票）
 
 1. 新会话；只带 **一张** ticket + Spec 相关节 + §8.0。
@@ -90,8 +106,9 @@ Pre-Design → 写盘实现 → Post-Design + Post-Code（分轨）→ pnpm chec
 6. **Post-Design** + **Post-Code** 分轨独立审查。
 7. 组件已挂路由再补 Playwright **行为**契约（非像素 SSOT）。
 8. `pnpm check`。
-9. **单票一 commit**（用户明示才提交）；再开下一票窗口。
+9. **R7 多 agent（Grok 4.5 high）** → Critical 清零。
+10. **单票一 commit**（用户明示才提交）；再开下一票窗口。
 
 ## 写盘后报告（常规）
 
-改了什么 · 为何 · Pre/Post 清单路径与审查结论 · `pnpm check` · 剩余风险 · 一句反面意见。
+改了什么 · 为何 · Pre/Post 清单路径与审查结论（含 R7） · `pnpm check` · 剩余风险 · 一句反面意见。

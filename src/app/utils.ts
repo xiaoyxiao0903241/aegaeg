@@ -1,17 +1,13 @@
-import { tabOrder, type DappTab } from '~/shared/config/dapp-tabs'
+import { type DappTab } from '~/shared/config/dapp-tabs'
+import { resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
 
 export function formatAddress(address: string) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`
 }
 
-export function isDappTab(value: string): value is DappTab {
-  return tabOrder.includes(value as DappTab)
-}
-
-/** Map URL hash → tab; legacy `#swap` bookmarks resolve to exchange. */
+/** Map URL hash → tab; legacy `#swap` and `#exchange/<view>` supported. */
 export function resolveTabFromHash(hash: string): DappTab | null {
-  if (hash === 'swap') return 'exchange'
-  return isDappTab(hash) ? hash : null
+  return resolveDappLocationFromHash(hash)?.tab ?? null
 }
 
 export function getInitialTab(): DappTab {

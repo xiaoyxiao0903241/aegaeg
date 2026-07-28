@@ -1,6 +1,7 @@
 import { create } from 'zustand'
+import { exchangeHashForView, type ExchangeView } from '~/shared/config/exchange-deep-link'
 
-export type ExchangeView = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
+export type { ExchangeView }
 export type ExchangeViewDirection = 'forward' | 'back'
 
 export const EXCHANGE_VIEW_MOTION_MS = 320
@@ -13,7 +14,9 @@ interface ExchangeViewStore {
   incomingView: ExchangeView | null
   hasSubviewHistory: boolean
   setView: (view: ExchangeView) => void
-  backToHub: () => void
+  /** Hash hydrate — no motion, no hash write (caller owns URL). */
+  hydrateView: (view: ExchangeView) => void
+  backToHub: (options?: { syncHash?: boolean }) => void
 }
 
 let transitionTimer: number | null = null
@@ -22,6 +25,13 @@ function clearTransitionTimer() {
   if (transitionTimer !== null) {
     window.clearTimeout(transitionTimer)
     transitionTimer = null
+  }
+}
+
+function syncExchangeHash(view: ExchangeView) {
+  const next = exchangeHashForView(view).slice(1)
+  if (window.location.hash.slice(1) !== next) {
+    window.location.hash = next
   }
 }
 
@@ -35,7 +45,10 @@ export const useExchangeViewStore = create<ExchangeViewStore>((set, get) => ({
   hasSubviewHistory: false,
   setView: (view) => {
     const { view: currentView, motion } = get()
-    if (view === currentView && !motion) return
+    if (view === currentView && !motion) {
+      syncExchangeHash(view)
+      return
+    }
     if (motion) return
 
     const outgoingView = currentView
@@ -51,6 +64,7 @@ export const useExchangeViewStore = create<ExchangeViewStore>((set, get) => ({
       incomingView: view,
       ...(leavingHub ? { hasSubviewHistory: true } : null),
     })
+    syncExchangeHash(view)
 
     transitionTimer = window.setTimeout(() => {
       set({
@@ -61,7 +75,18 @@ export const useExchangeViewStore = create<ExchangeViewStore>((set, get) => ({
       transitionTimer = null
     }, EXCHANGE_VIEW_MOTION_MS)
   },
-  backToHub: () => {
+  hydrateView: (view) => {
+    clearTransitionTimer()
+    set({
+      view,
+      motion: false,
+      direction: 'forward',
+      outgoingView: null,
+      incomingView: null,
+      hasSubviewHistory: view !== 'hub',
+    })
+  },
+  backToHub: (options) => {
     clearTransitionTimer()
     set({
       view: 'hub',
@@ -71,5 +96,8 @@ export const useExchangeViewStore = create<ExchangeViewStore>((set, get) => ({
       incomingView: null,
       hasSubviewHistory: false,
     })
+    if (options?.syncHash !== false) {
+      syncExchangeHash('hub')
+    }
   },
 }))

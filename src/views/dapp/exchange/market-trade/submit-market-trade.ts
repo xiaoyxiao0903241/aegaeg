@@ -13,7 +13,9 @@ type TradeQuotedSubmitCore = {
   setSubmitError: (error: unknown) => void
   runQuotedSubmit: (
     run: (helpers: {
-      assertStillSubmittable: (live?: { sellBalance: bigint }) => Promise<bigint>
+      assertStillSubmittable: (live?: {
+        sellBalance: bigint
+      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
     }) => Promise<void>,
   ) => Promise<{ ok: true } | { ok: false; error: unknown }>
 }
@@ -43,7 +45,7 @@ export async function submitMarketTrade(args: {
     if (refreshed.error || refreshed.data === undefined) {
       throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
     }
-    const amountOutMin = await assertStillSubmittable({
+    const { amountOutMin } = await assertStillSubmittable({
       sellBalance: refreshed.data.sell,
     })
 

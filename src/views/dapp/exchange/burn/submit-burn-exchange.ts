@@ -19,7 +19,9 @@ type BurnQuotedSubmitCore = {
   setSubmitError: (error: unknown) => void
   runQuotedSubmit: (
     run: (helpers: {
-      assertStillSubmittable: (live?: { sellBalance: bigint }) => Promise<bigint>
+      assertStillSubmittable: (live?: {
+        sellBalance: bigint
+      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
     }) => Promise<void>,
   ) => Promise<{ ok: true } | { ok: false; error: unknown }>
 }
