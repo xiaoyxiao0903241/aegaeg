@@ -1,15 +1,15 @@
+import { ZERO_ADDRESS } from '~/shared/config/contracts'
+
 export const REFERRAL_CONFIG = {
   refQueryKey: 'ref',
 } as const
-
-const ZERO_REFERRER_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export function parseReferrerAddress(value: unknown): `0x${string}` | null {
   if (typeof value !== 'string') return null
 
   const trimmed = value.trim()
   if (!/^0x[a-fA-F0-9]{40}$/.test(trimmed)) return null
-  if (trimmed.toLowerCase() === ZERO_REFERRER_ADDRESS) return null
+  if (trimmed.toLowerCase() === ZERO_ADDRESS) return null
 
   return trimmed as `0x${string}`
 }

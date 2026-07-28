@@ -1,20 +1,20 @@
 # =============================================================================
-# Staging 覆盖 — xdpro + 旧版合约（2026-07-02 前，commit 557dd9c）
+# Staging 覆盖 — 与 docs/frontend-manual/00-addresses.md 对齐的部署地址
 # Vite 优先级高于 .env；pnpm env:staging 写入本文件到 .env.local
+# Fail-closed：下列键均必填；勿依赖代码 fallback。
 # =============================================================================
 
 VITE_API_BASE_URL=https://api.xdpro.cc/api
 VITE_API_DERIVE_FROM_DOMAIN=false
 VITE_APP_HOST=xdpro.cc
 
-# --- BSC 合约（staging 代理 + 测试 USD1 / 测试 USDT）---
-# 已与链上核对（2026-07-10）：
-# - USDT/USD1 须与 usd1Swap.getConfig() 一致（测试币，非官方 BSC-USD）
-# - Router 须为 Pancake V3 SwapRouter（exactInputSingle）；勿用 Smart Router 0x13f4…
-# - Quoter / WBNB / Multicall3 与 prod 相同（BSC 公共基础设施）
-# - Referral / PreSale / RewardClaimer / CommunityFund / Usd1Swap 为同一套 staging 代理
-# - Trade 池：链上尚无 staging USDT×USD1 的 V3 pool；下方仍为 prod 池占位，
-#   Trade 报价会失败，直到部署对应池并改掉 VITE_BSC_USDT_USD1_POOL
+# --- BSC 合约（staging / 手册部署）---
+# - USD1 为手册 Faucet / AegisMintableToken（非官方 USD1）
+# - USDT 为 staging 测试币（非官方 BSC-USD）；须与 usd1Swap.getConfig() 一致
+# - Router / Quoter / WBNB / Multicall3 为 BSC 公共基础设施
+# - Referral / PreSale / RewardClaimer / CommunityFund / Usd1Swap / AGX / gAGX / XToken
+#   与 docs/frontend-manual/00-addresses.md 一致
+# - Trade 池：若链上尚无对应 USDT×USD1 V3 pool，报价会失败直至更新 VITE_BSC_USDT_USD1_POOL
 
 VITE_BSC_WBNB=0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
 VITE_BSC_USD1=0x32Bb0be09F62bbE69764906d80e9A5782C7F7633
@@ -28,3 +28,6 @@ VITE_BSC_PRESALE=0xDE381f0F124d46Ab7E43629421Ac862b103fe008
 VITE_BSC_REWARD_CLAIMER=0x697B55FCFBC4Cd5401f605EE4D9905816c127f07
 VITE_BSC_COMMUNITY_FUND_VAULT=0x083441EC373E547611295e037D759084b1483a95
 VITE_BSC_USD1_SWAP=0x95EA21C11dd40A7C2b7Ec2f5FBa7b124f3Dec1c0
+VITE_BSC_AGX=0x8d0771495272bB97Cd1cD44795222c8fB1b53247
+VITE_BSC_GAGX=0xf9D9BC796fC71B119179Bbaf8fcf28fA2393EC51
+VITE_BSC_X_TOKEN=0xb6Bc530437e47Be2E5FD47f472C0e291af56BE0A

@@ -6,7 +6,7 @@ import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAuth } from '~/hooks/use-auth'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { usePresaleUserTotalQuery } from '~/web3/use-presale-queries'
+import { usePresaleUserTotalQuery } from '~/web3/presale/use-presale-queries'
 
 export function useShareholderRank() {
   const { sessionReady } = useDappShell()

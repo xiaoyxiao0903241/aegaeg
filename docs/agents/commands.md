@@ -65,15 +65,16 @@
 
 ## 路径 SSOT（行为）
 
-| 主题                                | 路径                                                                              |
-| ----------------------------------- | --------------------------------------------------------------------------------- |
-| 链 / thirdweb                       | `src/web3/thirdweb.ts`                                                            |
-| 写链                                | `src/web3/wallet/wallet-contract-write.ts`                                        |
-| Write intent / unknown receipt lock | `src/web3/wallet/assert-write-intent.ts` · `unknown-receipt-lock.ts`              |
-| Exchange 链 IO                      | `src/web3/exchange/`                                                              |
-| 合约地址                            | `src/shared/config/contracts.ts`                                                  |
-| Query 失效                          | `src/shared/api/query/invalidate.ts`                                              |
-| Auth                                | `src/app/startup/auth-provider.tsx` + `src/views/dapp/auth/*` + `src/core/auth/*` |
-| Home providers                      | `src/app/startup/home-providers.tsx`（无 thirdweb）                               |
-| DApp providers                      | `src/app/startup/web-root-providers.tsx`                                          |
-| 目录落点                            | [`docs/src-layout.md`](../src-layout.md)                                          |
+| 主题                                | 路径                                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| 链 / thirdweb                       | `src/web3/thirdweb.ts`                                                                            |
+| 写链                                | `src/web3/wallet/wallet-contract-write.ts`                                                        |
+| Write intent / unknown receipt lock | `src/web3/wallet/assert-write-intent.ts` · `unknown-receipt-lock.ts`                              |
+| Exchange 链 IO                      | `src/web3/exchange/`                                                                              |
+| 合约地址（运行时 / fail-closed）    | `src/shared/config/contracts.ts` ← `VITE_BSC_*`；目录 SSOT `docs/frontend-manual/00-addresses.md` |
+| 新功能手册 / ABI                    | `docs/frontend-manual/` · `env/manual.bsc.addresses.env`                                          |
+| Query 失效                          | `src/shared/api/query/invalidate.ts`                                                              |
+| Auth                                | `src/app/startup/auth-provider.tsx` + `src/views/dapp/auth/*` + `src/core/auth/*`                 |
+| Home providers                      | `src/app/startup/home-providers.tsx`（无 thirdweb）                                               |
+| DApp providers                      | `src/app/startup/web-root-providers.tsx`                                                          |
+| 目录落点                            | [`docs/src-layout.md`](../src-layout.md)                                                          |

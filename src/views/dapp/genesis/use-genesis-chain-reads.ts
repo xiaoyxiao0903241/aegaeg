@@ -21,7 +21,7 @@ import {
   usePresaleUserPhaseRemainingQuery,
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
-} from '~/web3/use-presale-queries'
+} from '~/web3/presale/use-presale-queries'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 /** Chain + promo reads for Genesis — no shares draft, no write actions. */

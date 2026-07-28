@@ -30,7 +30,7 @@ Directory / export renames to glossary English business words are complete for t
 - **web3 / core** — `web3/exchange` · `core/exchange`
 - **Config** — `EXCHANGE_CONFIG` / `shared/config/exchange` · `pancake-exchange-links`
 - **Errors / invalidation / shell** — `EXCHANGE_QUOTE_FAILED` · `invalidateAfterExchange` · `flashExchangeAssets` · `Exchange*Skeleton` · `HIGH_EXCHANGE_PRICE_IMPACT_BPS`
-- **Claim** — `web3/claim-reward` · `use-claim-reward` · `parse-team-reward-claim`
+- **Claim** — `web3/claim/claim-reward` · `use-claim-reward` · `parse-team-reward-claim`
 - **Unknown receipt** — `unknown-receipt-lock` (`lockUnknownReceipt` / `clearUnknownReceiptLock` / `isUnknownReceiptLocked`)
 - **Startup** — `src/app/startup/` (was `bootstrap/`)
 

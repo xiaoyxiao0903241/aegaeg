@@ -2,7 +2,9 @@
 
 > 本文档面向前端开发，梳理邀请绑定推荐关系、预售购买、团队奖励领取三个核心业务的合约调用方法。
 >
-> **本仓库实现入口（行为 SSOT）**：写链经 `src/web3/wallet/wallet-contract-write.ts`；绑定 `src/web3/referral-write.ts`；预售 `src/web3/presale-write.ts`；奖励领取 `src/web3/claim-reward.ts`（API 签名 → `parse-team-reward-claim.ts` → 链上 `claimReward`）。地址 SSOT：`src/shared/config/contracts.ts`。目录落点见 [`src-layout.md`](./src-layout.md)。
+> **本仓库实现入口（行为 SSOT）**：写链经 `src/web3/wallet/wallet-contract-write.ts`；绑定 `src/web3/referral/referral-write.ts`；预售 `src/web3/presale/presale-write.ts`；奖励领取 `src/web3/claim/claim-reward.ts`（API 签名 → `parse-team-reward-claim.ts` → 链上 `claimReward`）。
+>
+> **地址 SSOT**：部署地址以 [`frontend-manual/00-addresses.md`](./frontend-manual/00-addresses.md) 为准；运行时经 `VITE_BSC_*` 注入 `src/shared/config/contracts.ts`（**fail-closed，无代码兜底**）。全量 env 模板：`env/manual.bsc.addresses.env`。新功能对接读 [`frontend-manual/`](./frontend-manual/)。目录落点见 [`src-layout.md`](./src-layout.md)。
 
 ---
 

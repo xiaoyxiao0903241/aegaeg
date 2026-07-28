@@ -24,6 +24,9 @@ interface ImportMetaEnv {
   readonly VITE_BSC_REWARD_CLAIMER?: string
   readonly VITE_BSC_COMMUNITY_FUND_VAULT?: string
   readonly VITE_BSC_USD1_SWAP?: string
+  readonly VITE_BSC_AGX?: string
+  readonly VITE_BSC_GAGX?: string
+  readonly VITE_BSC_X_TOKEN?: string
 }
 
 interface ImportMeta {

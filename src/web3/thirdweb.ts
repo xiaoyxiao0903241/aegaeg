@@ -16,7 +16,7 @@ export const bsc = defineChain({
 
 export const thirdwebClientId = appEnv.thirdwebClientId
 
-/** thirdweb ConnectButton / SDK — env override with code fallback in `env.ts`. */
+/** Fail-closed: `appEnv` throws if unset, so this is always true when the module loads. */
 export const isThirdwebConfigured = thirdwebClientId.length > 0
 
 export const thirdwebClient = createThirdwebClient({
@@ -25,19 +25,16 @@ export const thirdwebClient = createThirdwebClient({
 
 export const walletConnectProjectId = appEnv.walletConnectProjectId
 
-let web3EnvWarningsLogged = false
-
 const THIRDWEB_SETUP_HINT = [
   '未配置 VITE_THIRDWEB_CLIENT_ID，钱包连接会出现 401。',
-  '1. 复制 .env.example 为 .env',
+  '1. 复制 .env.example 为 .env 并填入全部必填项（无代码 fallback）',
   '2. 在 https://thirdweb.com/dashboard/settings/api-keys 创建 Client ID',
   '3. 写入 VITE_THIRDWEB_CLIENT_ID=你的ClientId',
   '4. 重启 pnpm dev',
 ].join('\n')
 
 /**
- * Production boot: require an explicit `VITE_THIRDWEB_CLIENT_ID` (not only the code fallback).
- * Dev: log once so local work is not blocked.
+ * Boot guard: re-check raw env (defense in depth; `appEnv` already fail-closed).
  */
 export function assertWeb3EnvConfigured() {
   const fromEnv =
@@ -45,17 +42,10 @@ export function assertWeb3EnvConfigured() {
       ? import.meta.env.VITE_THIRDWEB_CLIENT_ID.trim()
       : ''
 
-  if (import.meta.env.PROD && !fromEnv) {
-    throw new Error(
-      'VITE_THIRDWEB_CLIENT_ID is required in production builds. Set it in .env before `pnpm build`.',
-    )
-  }
-
-  if (web3EnvWarningsLogged || !import.meta.env.DEV) return
-  web3EnvWarningsLogged = true
-
   if (!fromEnv) {
-    console.error(THIRDWEB_SETUP_HINT)
+    throw new Error(
+      `VITE_THIRDWEB_CLIENT_ID is required (no code fallback).\n${THIRDWEB_SETUP_HINT}`,
+    )
   }
 }
 

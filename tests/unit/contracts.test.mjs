@@ -8,41 +8,32 @@ import { loadModule } from './load-module.mjs'
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
 const CONTRACT_ENV_KEYS = {
+  VITE_BSC_WBNB: 'wbnb',
   VITE_BSC_USD1: 'usd1',
   VITE_BSC_USDT: 'usdt',
   VITE_BSC_PANCAKE_V3_SWAP_ROUTER: 'pancakeV3SwapRouter',
   VITE_BSC_PANCAKE_V3_QUOTER: 'pancakeV3Quoter',
   VITE_BSC_USDT_USD1_POOL: 'usdtUsd1Pool',
+  VITE_BSC_MULTICALL3: 'multicall3',
   VITE_BSC_PRESALE: 'preSale',
   VITE_BSC_COMMUNITY_FUND_VAULT: 'communityFundVault',
   VITE_BSC_REFERRAL: 'referral',
   VITE_BSC_REWARD_CLAIMER: 'rewardClaimer',
   VITE_BSC_USD1_SWAP: 'usd1Swap',
+  VITE_BSC_AGX: 'agx',
+  VITE_BSC_GAGX: 'gagx',
+  VITE_BSC_X_TOKEN: 'xToken',
 }
 
 function normalizeAddress(address) {
   return address.toLowerCase()
 }
 
-function contractAddressSnapshot(contracts) {
-  return Object.fromEntries(
-    Object.values(CONTRACT_ENV_KEYS).map((field) => [
-      field,
-      normalizeAddress(contracts[field]),
-    ]),
-  )
-}
-
-function snapshotsEqual(left, right) {
-  return Object.keys(left).every((key) => left[key] === right[key])
-}
-
-function parseStagingLocalContractSnapshot() {
-  const stagingPath = resolve(projectRoot, 'env/staging.local')
-  if (!existsSync(stagingPath)) return null
+function parseEnvFile(path) {
+  if (!existsSync(path)) return {}
 
   const snapshot = {}
-  for (const line of readFileSync(stagingPath, 'utf8').split('\n')) {
+  for (const line of readFileSync(path, 'utf8').split('\n')) {
     const trimmed = line.trim()
     if (!trimmed || trimmed.startsWith('#')) continue
 
@@ -50,47 +41,62 @@ function parseStagingLocalContractSnapshot() {
     if (separatorIndex === -1) continue
 
     const envKey = trimmed.slice(0, separatorIndex)
-    const field = CONTRACT_ENV_KEYS[envKey]
-    if (!field) continue
-
-    snapshot[field] = normalizeAddress(trimmed.slice(separatorIndex + 1))
+    snapshot[envKey] = trimmed.slice(separatorIndex + 1).trim()
   }
-
-  return Object.keys(snapshot).length > 0 ? snapshot : null
+  return snapshot
 }
 
-test('DEFAULT_BSC_CONTRACTS matches prod deployment snapshot', async () => {
-  const { DEFAULT_BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
+/** Vite merge order for unit SSR: `.env` then `.env.local` overrides. */
+function resolveViteEnvContracts() {
+  const merged = {
+    ...parseEnvFile(resolve(projectRoot, '.env')),
+    ...parseEnvFile(resolve(projectRoot, '.env.local')),
+  }
 
-  assert.equal(DEFAULT_BSC_CONTRACTS.chainId, 56)
-  assert.deepEqual(contractAddressSnapshot(DEFAULT_BSC_CONTRACTS), {
-    usd1: '0x8d0d000ee44948fc98c9b98a4fa4921476f08b0d',
-    usdt: '0x55d398326f99059ff775485246999027b3197955',
-    pancakeV3SwapRouter: '0x1b81d678ffb9c0263b24a97847620c99d213eb14',
-    pancakeV3Quoter: '0xb048bbc1ee6b733fffcfb9e9cef7375518e25997',
-    usdtUsd1Pool: '0x9c4ee895e4f6ce07ada631c508d1306db7502cce',
-    preSale: '0xcb8ebebd2b4a03ab16a28021ad9ed50b125be618',
-    communityFundVault: '0xef11751f13ff5578c6fa1c6e9ef99bb917a4d5e6',
-    referral: '0xfe7803230d11bc6fb248f1629a3353e409a2db29',
-    rewardClaimer: '0xc6b3d73ba06594dc78be538f65307c6eb348e13e',
-    usd1Swap: '0xae1155cf325277acce615cc310dd52da8e46c6e3',
-  })
+  const snapshot = {}
+  for (const [envKey, field] of Object.entries(CONTRACT_ENV_KEYS)) {
+    const value = merged[envKey]
+    if (!value) {
+      throw new Error(`Missing ${envKey} in .env / .env.local (fail-closed; no code defaults)`)
+    }
+    snapshot[field] = normalizeAddress(value)
+  }
+  return snapshot
+}
+
+test('DEFAULT_BSC_CONTRACTS is removed (no code address fallbacks)', async () => {
+  const mod = await loadModule('/src/shared/config/contracts.ts')
+  assert.equal(mod.DEFAULT_BSC_CONTRACTS, undefined)
 })
 
-test('BSC_CONTRACTS runtime matches prod defaults or staging env template', async () => {
-  const { BSC_CONTRACTS, DEFAULT_BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
+test('BSC_CONTRACTS matches Vite-resolved env (fail-closed)', async () => {
+  const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
+  const expected = resolveViteEnvContracts()
 
   assert.equal(BSC_CONTRACTS.chainId, 56)
+  for (const [field, address] of Object.entries(expected)) {
+    assert.equal(
+      normalizeAddress(BSC_CONTRACTS[field]),
+      address,
+      `${field} must equal env (got ${BSC_CONTRACTS[field]})`,
+    )
+  }
+})
 
-  const runtime = contractAddressSnapshot(BSC_CONTRACTS)
-  const prod = contractAddressSnapshot(DEFAULT_BSC_CONTRACTS)
-  const staging = parseStagingLocalContractSnapshot()
+test('env/manual.bsc.addresses.env matches docs/frontend-manual/00-addresses.md', () => {
+  const md = readFileSync(resolve(projectRoot, 'docs/frontend-manual/00-addresses.md'), 'utf8')
+  const envText = readFileSync(resolve(projectRoot, 'env/manual.bsc.addresses.env'), 'utf8')
 
-  const matchesProd = snapshotsEqual(runtime, prod)
-  const matchesStaging = staging !== null && snapshotsEqual(runtime, staging)
-
-  assert.ok(
-    matchesProd || matchesStaging,
-    'BSC_CONTRACTS must match DEFAULT_BSC_CONTRACTS (prod) or env/staging.local overrides',
+  const mdAddresses = [...md.matchAll(/`\[?(0x[a-fA-F0-9]{40})`\]?/g)].map((m) =>
+    m[1].toLowerCase(),
   )
+
+  assert.ok(mdAddresses.length >= 40, 'manual should list deployment addresses')
+
+  for (const addr of new Set(mdAddresses)) {
+    assert.ok(
+      envText.toLowerCase().includes(addr),
+      `manual address ${addr} missing from env/manual.bsc.addresses.env`,
+    )
+  }
 })

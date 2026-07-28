@@ -19,18 +19,19 @@
 
 细则：[`src-layout.md`](./src-layout.md)。
 
-| 主题                       | 路径                                                                              |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| 链 / thirdweb              | `src/web3/thirdweb.ts`（经 `thirdweb-react.ts`）                                  |
-| 写链                       | `src/web3/wallet/wallet-contract-write.ts`                                        |
-| Write intent / readiness   | `src/web3/wallet/assert-write-intent.ts` · `use-write-readiness.ts`               |
-| Unknown receipt lock       | `src/web3/wallet/unknown-receipt-lock.ts`                                         |
-| Swap                       | `src/web3/exchange/*` · `views/dapp/exchange/*`                                   |
-| Presale / referral / claim | `src/web3/presale-*` · `referral-*` · `claim-reward.ts`                           |
-| 合约地址                   | `src/shared/config/contracts.ts`                                                  |
-| Query                      | `src/shared/api/query/*`                                                          |
-| Auth                       | `src/app/startup/auth-provider.tsx` · `src/core/auth/*` · `src/views/dapp/auth/*` |
-| 颜色 / 字阶                | `theme.css` · `src/shared/ui/text.tsx`                                            |
+| 主题                       | 路径                                                                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 链 / thirdweb              | `src/web3/thirdweb.ts`（经 `thirdweb-react.ts`）                                                                             |
+| 写链                       | `src/web3/wallet/wallet-contract-write.ts`                                                                                   |
+| Write intent / readiness   | `src/web3/wallet/assert-write-intent.ts` · `use-write-readiness.ts`                                                          |
+| Unknown receipt lock       | `src/web3/wallet/unknown-receipt-lock.ts`                                                                                    |
+| Swap                       | `src/web3/exchange/*` · `views/dapp/exchange/*`                                                                              |
+| Presale / referral / claim | `src/web3/presale/` · `referral/` · `claim/`                                                                                 |
+| 合约地址（fail-closed）    | `src/shared/config/contracts.ts` ← `VITE_BSC_*`；目录 [`frontend-manual/00-addresses.md`](./frontend-manual/00-addresses.md) |
+| 新功能手册                 | [`frontend-manual/`](./frontend-manual/)                                                                                     |
+| Query                      | `src/shared/api/query/*`                                                                                                     |
+| Auth                       | `src/app/startup/auth-provider.tsx` · `src/core/auth/*` · `src/views/dapp/auth/*`                                            |
+| 颜色 / 字阶                | `theme.css` · `src/shared/ui/text.tsx`                                                                                       |
 
 ## 4. 链上读写
 
@@ -62,13 +63,14 @@
 
 ## 9. 反模式
 
-| 不要                           | 要                             |
-| ------------------------------ | ------------------------------ |
-| 组件内散落 chain id / 合约地址 | `contracts.ts` / `thirdweb.ts` |
-| 裸 403 当封禁                  | 业务码 + 文案                  |
-| confirm 失败仍清空 UI          | `confirm_failed` + 保留 txHash |
-| Approve 后用渲染快照做门闸     | live `fetchQuery` / refetch    |
-| Unknown 后立即重提             | `WRITE_PATH` latch             |
+| 不要                           | 要                                                       |
+| ------------------------------ | -------------------------------------------------------- |
+| 组件内散落 chain id / 合约地址 | `contracts.ts` / `thirdweb.ts` + env（禁止代码地址兜底） |
+| 缺 env 时静默用硬编码地址      | 抛错（fail-closed）                                      |
+| 裸 403 当封禁                  | 业务码 + 文案                                            |
+| confirm 失败仍清空 UI          | `confirm_failed` + 保留 txHash                           |
+| Approve 后用渲染快照做门闸     | live `fetchQuery` / refetch                              |
+| Unknown 后立即重提             | `WRITE_PATH` latch                                       |
 
 ## 10. 验证
 

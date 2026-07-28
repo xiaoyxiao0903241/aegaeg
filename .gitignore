@@ -19,6 +19,7 @@ docs/figma-captures/
 docs/*.cfg
 docs/superpowers/
 tmp/
+.scratch/
 tests/e2e/visual-*/
 
 # render-home.mjs 生成的 HTML 壳（dev/build 前自动生成）

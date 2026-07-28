@@ -46,7 +46,7 @@ AI 工作规范
 
 ### 8.4 设计稿来源
 
-- **正式 Figma 设计稿 SSOT**：https://www.figma.com/design/sXWXDvBrLeg5r0NnP1SMZH/AEGIS-X--Copy---Copy---Copy-
+- **正式 Figma 设计稿 SSOT（静态 UI）**：https://www.figma.com/design/uiKwzwIoD06phS0husdqjB/AEGIS-X--Copy---Copy-?node-id=4253-365&p=f&m=dev（fileKey `uiKwzwIoD06phS0husdqjB`）。历史文件 `sXWXDvBrLeg5r0NnP1SMZH` 仅作过往参考。
 - 后续官网首页、H5、DApp 页面和组件的像素级对齐，以该 Figma 文件为准；历史 Figma 链接只作为过往参考，除非用户明确指定。
 - **像素级对齐的含义**：优先对齐元素归属、组件结构、视觉层级、字体、颜色、圆角、阴影、边框、间距节奏、素材、hover / active / connected / disconnected 状态。1-2px 的浏览器渲染、截图或布局取整偏差可以接受，禁止围绕这些误差反复修改。
 - **PC 是文案 SSOT**：H5 是 PC 的响应式布局，不是独立文案版本。PC / H5 文案不一致时，以 PC 为准；不要为了 H5 单独新增同义文案 key 或分叉 copy。
@@ -68,7 +68,7 @@ AI 工作规范
 - **对齐**：元素齐全、状态正确、视觉一致、素材来自 Figma、布局可承载动态数据；动态数值与 1-2px 取整不阻塞。
 - **链范围**：EVM only；`supportedChains` **仅 BSC**（Ethereum 未接入前勿假设已支持）。
 - **栈**：React + Vite + TypeScript + Tailwind；钱包 thirdweb v5（`ConnectButton` / injected + WalletConnect + EIP-6963）。
-- **链 / 合约 SSOT**：`src/web3/thirdweb.ts` · `src/shared/config/contracts.ts`；组件内禁散落 chain id / RPC / 合约地址。
+- **链 / 合约 SSOT**：链配置 `src/web3/thirdweb.ts`；运行时地址 `src/shared/config/contracts.ts` ← **仅** `VITE_BSC_*`（**fail-closed：缺配置即报错，禁止代码内合约地址兜底**）。部署地址目录与新功能对接：[`docs/frontend-manual/`](docs/frontend-manual/)（与原始手册字节一致）。组件内禁散落 chain id / RPC / 合约地址。
 - **登录**：连接 ≠ 业务登录；SIWE + JWT 由 `AuthProvider` + `login-with-wallet`；推荐 / 奖励依赖 `sessionReady`。
 - **金钱路径**：见 [`docs/money-path-map.md`](docs/money-path-map.md)（write intent、unknown latch、approve 后 live 门闸）。
 
@@ -87,3 +87,17 @@ AI 工作规范
 - **全站文本**：用户可见文案 **必须** `<Text>` 包装；流程见 [`docs/foundation/runbook.md`](docs/foundation/runbook.md) §3。
 - **布局**：间距、栅格、`max-w`、定位等用 Tailwind 原子类或调用处 `className`；细则见 [`docs/foundation/api.md`](docs/foundation/api.md) / [`runbook.md`](docs/foundation/runbook.md)。
 - **样式重构强制流程**：凡改 Foundation / typography / shell primitive，**只走** [`docs/foundation/`](docs/foundation/README.md)。未写清根因与标签不得写盘。
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as local markdown under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `CONTEXT.md` + `docs/adr/`. See `docs/agents/domain.md`.

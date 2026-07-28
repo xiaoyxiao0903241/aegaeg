@@ -19,6 +19,8 @@ jobs:
           node-version-file: '.nvmrc'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Fail-closed env: no code address/secret fallbacks — CI uses committed public placeholders.
+      - run: cp env/ci.env .env
       - run: pnpm build:tokens
       - run: pnpm check
       - run: pnpm build

@@ -12,9 +12,9 @@ import {
   readTotalPresalePurchased,
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
-} from '~/web3/presale-read'
+} from '~/web3/presale/presale-read'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
-import { readIsBindReferral } from '~/web3/referral-read'
+import { readIsBindReferral } from '~/web3/referral/referral-read'
 
 type PresaleQueryOptions = {
   enabled?: boolean

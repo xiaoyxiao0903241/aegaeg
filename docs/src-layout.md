@@ -26,8 +26,9 @@
 ```text
 src/
   core/{auth,exchange,presale}/
-  web3/                 # thirdweb、abis、presale/referral/reward、errors
-    exchange/  wallet/  # 读/写、pool、write intent、unknown-receipt-lock、wait
+  web3/                 # thirdweb、abis、errors、链读客户端
+    exchange/  wallet/  # 兑换读写、write intent、unknown-receipt-lock
+    presale/   referral/ claim/  # 预售 / 推荐 / 领奖（按域装袋）
   app/{startup,shell}/  # providers / boot；壳 chrome 在 shell/
   shared/{ui,config,styles,lib,api}/
   hooks/  stores/  i18n/messages/{home,app}/

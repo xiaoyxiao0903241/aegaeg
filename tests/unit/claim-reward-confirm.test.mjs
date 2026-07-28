@@ -3,7 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('confirmClaimWithRetry succeeds after transient failures', async () => {
-  const { confirmClaimWithRetry } = await loadModule('/src/web3/claim-reward.ts')
+  const { confirmClaimWithRetry } = await loadModule('/src/web3/claim/claim-reward.ts')
   const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   let calls = 0
