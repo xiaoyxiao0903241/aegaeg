@@ -118,8 +118,16 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           className="gap-3 p-4"
           items={[
             {
-              label: copy.meta.discount,
-              value: bond.isMarketLoading ? '…' : bond.discountLabel,
+              label: copy.meta.discount.replace(
+                '{pct}',
+                bond.isMarketLoading
+                  ? '…'
+                  : bond.discountLabel === '—'
+                    ? '—'
+                    : bond.discountLabel.replace(/%$/, ''),
+              ),
+              // Dollar dual-price needs AGX spot × discount; no fake demo $.
+              value: '—',
             },
             {
               label: copy.meta.slippage,
@@ -160,6 +168,10 @@ export function BondWidget({ kind }: { kind: BondKind }) {
             },
           ]}
         />
+
+        <Text as="p" className="m-0" tone="muted-foreground" variant="detail">
+          {copy.footnote}
+        </Text>
 
         {walletReady ? (
           <DappActionRow>

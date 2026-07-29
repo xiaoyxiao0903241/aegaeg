@@ -169,12 +169,14 @@ export async function readBondMarketMeta(
   }
 }
 
-/** Manual: 10000 BPS = no discount; 9500 = 5% off. */
+/**
+ * Figma「当前折扣」shows discountRateBP as % of market (9200 → 92%).
+ * Manual: 10000 = par; lower BP = more discount (e.g. 9500 ≈ 5% off).
+ */
 export function formatBondDiscountLabel(discountRateBP: bigint): string {
   if (discountRateBP === 0n || discountRateBP > 10000n) return '—'
-  const offBps = 10000n - discountRateBP
-  const whole = offBps / 100n
-  const frac = offBps % 100n
+  const whole = discountRateBP / 100n
+  const frac = discountRateBP % 100n
   if (frac === 0n) return `${whole}%`
   return `${whole}.${frac.toString().padStart(2, '0').replace(/0+$/, '')}%`
 }

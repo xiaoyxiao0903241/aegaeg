@@ -1383,11 +1383,12 @@ const app = defineMessages({
       faq: '常见问题',
       recordsTitles: {
         stake: '我的质押记录',
-        lpbond: '我的 LP 债券记录',
-        burnbond: '我的销毁债券记录',
+        lpbond: '债券购买记录',
+        burnbond: '债券购买记录',
         xmine: '我的挖矿记录',
       },
       recordColumns: ['时间', '周期', '数量', '已释放', '交易哈希'],
+      bondRecordColumns: ['时间', '周期', '支付', '折扣', '获得AGX', '交易哈希'],
       recordsEmpty: '暂无记录',
       chartTitles: {
         stake: 'TVL（质押）数据指标',
@@ -1518,6 +1519,7 @@ const app = defineMessages({
       amountBalance: '数量（钱包余额 {balance} USD1）',
       submit: '购买',
       success: '购买成功',
+      footnote: '系统将自动构建 AGX/USD1 LP 并销毁至黑洞，形成永久底层流动性。',
       card: {
         yield: '周期收益率',
         discountRange: '折扣区间',
@@ -1526,7 +1528,7 @@ const app = defineMessages({
         discountPrice: '折扣价',
       },
       meta: {
-        discount: '折扣价',
+        discount: '折扣价（{pct}%）',
         slippage: '允许滑点',
         pay: '支付',
         receive: '获得AGX',
@@ -1545,28 +1547,48 @@ const app = defineMessages({
         { label: '我的质押' },
         { label: '已领取' },
         { label: '待释放' },
-        { label: '当前 Rebase 收益' },
+        { label: '当前Rebase 收益' },
       ],
       mechanismTitle: 'LP债券运行机制',
       mechanism: '经 BondHelper 以 USD1 zap 进入对应周期的 BondDepository。赎回与收益在资产页。',
       mechanismSteps: [
         {
           title: '购买 LP 债券',
-          body: '使用 USD1 经 BondHelper 折扣买入对应周期债券。',
+          body: '使用 USD1 参与共建底池，按折扣铸造 AGX。',
         },
         {
           title: '自动构建 LP',
-          body: '系统自动构建 AGX/USD1 流动性并进入底池。',
+          body: '系统合约自动构建 AGX/USD1 流动性。',
         },
         {
-          title: '永久锁定',
-          body: 'LP 永久锁定/销毁至黑洞，形成底层流动性。',
+          title: '黑洞永久锁定',
+          body: 'LP Token 转入黑洞地址，永久不可拆解。',
         },
       ],
       faq: [
         {
-          q: '为什么没有活期？',
-          a: '债券仅提供 180 / 360 / 540 天档位。',
+          q: '什么是 LP 债券？',
+          a: '使用 USD1 参与共建底池，系统合约自动完成：按折扣铸造 AGX、自动构建 AGX/USD1 LP 并销毁至黑洞（Blackhole Lock），构建永久不可拆除的底层流动性支撑。',
+        },
+        {
+          q: '折扣如何确定？',
+          a: '折扣由市场供需关系与协议参数动态调节（Dynamic Bond Control）：180 天 85%–100%、360 天 80%–100%、540 天 75%–100%，周期越长折扣越优。',
+        },
+        {
+          q: '购买 LP 债券后，我会持有 LP Token 吗？',
+          a: '不会。LP Token 由系统合约构建后直接销毁至黑洞地址，成为协议永久不可拆除的底层流动性，不归属任何个人持有。您实际获得的是按折扣铸造的 AGX，将按所选债券周期区块线性释放到账。',
+        },
+        {
+          q: '债券溢价率是什么？',
+          a: '溢价率反映当前折扣价相对 AGX 市场价的收益空间。溢价率为正时，通过债券获取 AGX 比按市价直接购买更划算。',
+        },
+        {
+          q: '可以提前赎回吗？',
+          a: '不支持提前赎回。本金按所选周期区块线性释放，已释放部分可随时领取，请根据自身资金规划选择债券周期。',
+        },
+        {
+          q: '我支付的 USD1 去了哪里？',
+          a: '支付的 USD1 与系统按折扣铸造的 AGX 共同组成 AGX/USD1 LP，LP Token 随后销毁至黑洞地址，成为协议永久不可拆除的底层流动性。',
         },
       ],
     },
@@ -1579,6 +1601,7 @@ const app = defineMessages({
       amountBalance: '数量（钱包余额 {balance} USD1）',
       submit: '购买',
       success: '购买成功',
+      footnote: '系统将按折扣比例铸造 AGX，自动买入并永久销毁至黑洞。',
       card: {
         yield: '周期收益率',
         discountRange: '折扣区间',
@@ -1587,7 +1610,7 @@ const app = defineMessages({
         discountPrice: '折扣价',
       },
       meta: {
-        discount: '折扣价',
+        discount: '折扣价（{pct}%）',
         slippage: '允许滑点',
         pay: '支付',
         receive: '获得AGX',
@@ -1606,7 +1629,7 @@ const app = defineMessages({
         { label: '我的债券' },
         { label: '已释放' },
         { label: '待释放' },
-        { label: '当前 Rebase 收益' },
+        { label: '当前Rebase 收益' },
       ],
       mechanismTitle: '销毁债券运行机制',
       mechanism:
@@ -1614,21 +1637,37 @@ const app = defineMessages({
       mechanismSteps: [
         {
           title: '支付 USD1',
-          body: '使用 USD1 经 BondHelper 进入销毁债券仓。',
+          body: '选择释放周期，按当前折扣参与销毁债券。',
         },
         {
           title: '折扣铸造 AGX',
-          body: '按当前折扣铸造 AGX 进入对应周期仓位。',
+          body: '系统按对应折扣比例铸造 AGX。',
         },
         {
           title: '买入并永久销毁',
-          body: '对应份额永久销毁，增强协议通缩。',
+          body: '自动买入 AGX 并销毁至黑洞，增强通缩。',
         },
       ],
       faq: [
         {
-          q: '销毁债券和 LP 债券有何不同？',
-          a: '二者走不同 Depository；开仓均经 BondHelper 与 USD1，领取路径在资产页。',
+          q: '什么是销毁债券？',
+          a: '使用 USD1 参与销毁债券时，系统合约自动完成：按对应折扣比例铸造 AGX，自动买入 AGX 并永久销毁（Blackhole Lock），持续减少市场流通量，增强长期价值支撑。',
+        },
+        {
+          q: '与 LP 债券有什么区别？',
+          a: 'LP 债券构建永久底层流动性，销毁债券直接通缩流通量。两者折扣区间一致（75%–100% 按周期动态调节），本金均按周期区块线性释放。',
+        },
+        {
+          q: '债券溢价率是什么？',
+          a: '溢价率反映当前折扣价相对 AGX 市场价的收益空间。溢价率为正时，通过债券获取 AGX 比按市价直接购买更划算。',
+        },
+        {
+          q: '可以提前赎回吗？',
+          a: '不支持提前赎回。本金按所选周期区块线性释放，已释放部分可随时领取，请根据自身资金规划选择债券周期。',
+        },
+        {
+          q: '我支付的 USD1 去了哪里？',
+          a: '支付的 USD1 进入智库储备资产，用于支持抵押铸造、智能做市与风险防御；系统同时按对应折扣铸造 AGX，自动买入并永久销毁至黑洞。',
         },
       ],
     },

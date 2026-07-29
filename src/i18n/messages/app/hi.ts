@@ -1478,11 +1478,12 @@ const app = defineMessages({
       faq: 'FAQ',
       recordsTitles: {
         stake: 'My staking records',
-        lpbond: 'My LP bond records',
-        burnbond: 'My burn bond records',
+        lpbond: 'Bond purchase records',
+        burnbond: 'Bond purchase records',
         xmine: 'My mining records',
       },
       recordColumns: ['Time', 'Period', 'Amount', 'Released', 'Tx hash'],
+      bondRecordColumns: ['Time', 'Period', 'Paid', 'Discount', 'AGX received', 'Tx hash'],
       recordsEmpty: 'No records yet',
       chartTitles: {
         stake: 'TVL (Staking) metrics',
@@ -1614,6 +1615,8 @@ const app = defineMessages({
       amountBalance: 'Amount (wallet balance {balance} USD1)',
       submit: 'Buy',
       success: 'Purchased successfully',
+      footnote:
+        'The system auto-builds AGX/USD1 LP and burns it to the black hole for permanent base liquidity.',
       card: {
         yield: 'Period yield',
         discountRange: 'Discount range',
@@ -1622,7 +1625,7 @@ const app = defineMessages({
         discountPrice: 'Discount price',
       },
       meta: {
-        discount: 'Discount price',
+        discount: 'Discount price ({pct}%)',
         slippage: 'Allowed slippage',
         pay: 'Pay',
         receive: 'Receive AGX',
@@ -1634,31 +1637,57 @@ const app = defineMessages({
       overviewMetrics: [
         { label: 'LP bond TVL' },
         { label: 'Bond premium' },
-        { label: 'Total sold' },
-        { label: 'Current discount' },
+        { label: 'Next Rebase payout' },
+        { label: 'Current Rebase yield' },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
-        { label: 'Released' },
+        { label: 'My stake' },
+        { label: 'Claimed' },
         { label: 'Pending release' },
-        { label: 'Current Rebase yield' },
+        { label: 'Current Rebase reward' },
       ],
       mechanismTitle: 'How LP Bond works',
       mechanism:
         'USD1 zap via BondHelper into the period BondDepository. Redeem and yield on Assets.',
       mechanismSteps: [
-        { title: 'Pay USD1', body: 'Route USD1 through BondHelper into the LP bond vault.' },
         {
-          title: 'Discount mint AGX',
-          body: 'Mint AGX at the current discount and deepen pool liquidity.',
+          title: 'Buy LP Bond',
+          body: 'Use USD1 to co-build the pool and mint AGX at a discount.',
         },
         {
-          title: 'Release & claim',
-          body: 'Principal unlocks linearly; claim gAGX yield on Assets.',
+          title: 'Auto-build LP',
+          body: 'Contracts automatically build AGX/USD1 liquidity.',
+        },
+        {
+          title: 'Blackhole lock',
+          body: 'LP tokens go to the blackhole address — permanently locked.',
         },
       ],
       faq: [
-        { q: 'Why is there no flexible bond?', a: 'Bonds only offer 180 / 360 / 540 day terms.' },
+        {
+          q: 'What is an LP Bond?',
+          a: 'Pay USD1 to co-build the pool: discount-mint AGX, auto-build AGX/USD1 LP, and burn LP to the black hole for permanent base liquidity.',
+        },
+        {
+          q: 'How is the discount set?',
+          a: 'Dynamic Bond Control adjusts with supply/demand: 180d 85%–100%, 360d 80%–100%, 540d 75%–100% — longer terms get better discounts.',
+        },
+        {
+          q: 'Do I hold LP tokens after buying?',
+          a: 'No. LP is burned to the blackhole. You receive discount-minted AGX that unlocks linearly over the bond term.',
+        },
+        {
+          q: 'What is bond premium?',
+          a: 'Premium is the gap between discount price and AGX market price. Positive premium means bonds beat spot purchase.',
+        },
+        {
+          q: 'Can I redeem early?',
+          a: 'No early redeem. Principal unlocks linearly by block; claim released amounts anytime.',
+        },
+        {
+          q: 'Where does my USD1 go?',
+          a: 'USD1 pairs with discount-minted AGX into AGX/USD1 LP; LP is burned to the blackhole as permanent protocol liquidity.',
+        },
       ],
     },
     burnbond: {
@@ -1670,6 +1699,8 @@ const app = defineMessages({
       amountBalance: 'Amount (wallet balance {balance} USD1)',
       submit: 'Buy',
       success: 'Purchased successfully',
+      footnote:
+        'The system discount-mints AGX, auto-buys, and permanently burns to the black hole.',
       card: {
         yield: 'Period yield',
         discountRange: 'Discount range',
@@ -1678,7 +1709,7 @@ const app = defineMessages({
         discountPrice: 'Discount price',
       },
       meta: {
-        discount: 'Discount price',
+        discount: 'Discount price ({pct}%)',
         slippage: 'Allowed slippage',
         pay: 'Pay',
         receive: 'Receive AGX',
@@ -1690,33 +1721,52 @@ const app = defineMessages({
       overviewMetrics: [
         { label: 'Burn bond TVL' },
         { label: 'Bond premium' },
-        { label: 'Total burned' },
-        { label: 'Current discount' },
+        { label: 'Next Rebase payout' },
+        { label: 'Current Rebase yield' },
       ],
       positionMetrics: [
         { label: 'My bonds' },
         { label: 'Released' },
         { label: 'Pending release' },
-        { label: 'Current Rebase yield' },
+        { label: 'Current Rebase reward' },
       ],
       mechanismTitle: 'How Burn Bond works',
       mechanism:
         'USD1 zap via BondHelper into the period BurnBondDepository. Redeem and yield on Assets.',
       mechanismSteps: [
-        { title: 'Pay USD1', body: 'Route USD1 through BondHelper into the burn bond vault.' },
         {
-          title: 'Discount mint AGX',
-          body: 'Mint AGX at the current discount into the term position.',
+          title: 'Pay USD1',
+          body: 'Pick a release term and join Burn Bond at the current discount.',
         },
         {
-          title: 'Burn permanently',
-          body: 'Corresponding supply is burned permanently for deflation.',
+          title: 'Discount-mint AGX',
+          body: 'The system mints AGX at the matching discount rate.',
+        },
+        {
+          title: 'Buy and burn forever',
+          body: 'Auto-buy AGX and burn to the black hole for deflation.',
         },
       ],
       faq: [
         {
-          q: 'How does Burn Bond differ from LP Bond?',
-          a: 'Different depositories; both open with BondHelper + USD1; claims are on Assets.',
+          q: 'What is a Burn Bond?',
+          a: 'Pay USD1: discount-mint AGX, auto-buy AGX, and permanently burn it (Blackhole Lock) to reduce float and support long-term value.',
+        },
+        {
+          q: 'How does it differ from LP Bond?',
+          a: 'LP Bond builds permanent base liquidity; Burn Bond deflates float. Same discount bands (75%–100% by term); principal unlocks linearly either way.',
+        },
+        {
+          q: 'What is bond premium?',
+          a: 'Premium is the gap between discount price and AGX market price. Positive premium means bonds beat spot purchase.',
+        },
+        {
+          q: 'Can I redeem early?',
+          a: 'No early redeem. Principal unlocks linearly by block; claim released amounts anytime.',
+        },
+        {
+          q: 'Where does my USD1 go?',
+          a: 'USD1 enters treasury reserves for minting, market making, and risk defense; AGX is discount-minted, bought, and burned to the black hole.',
         },
       ],
     },

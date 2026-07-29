@@ -24,26 +24,35 @@ export function StakingDetailAside({
   mechanismSteps,
   faq,
   recordsTitle,
+  recordColumns,
+  recordColWidths,
   chartTitle,
   showXValueCard = false,
   positionItems,
+  positionLayout = 'triple-plus',
 }: {
   overviewItems: Array<{ label: string; value: ReactNode }>
-  /** Figma stake: 2×2 elevated cards; bond/xmine keep compact list until their leaf tickets. */
+  /** Figma stake/bond: 2×2 elevated cards. */
   overviewLayout?: 'list' | 'cards'
   mechanism?: string
   mechanismTitle?: string
   mechanismSteps?: Array<{ title: string; body: string }>
   faq: Array<{ q: string; a: string }>
   recordsTitle: string
+  recordColumns?: readonly string[]
+  recordColWidths?: readonly string[]
   chartTitle: string
   showXValueCard?: boolean
   positionItems?: Array<{ label: string; value: ReactNode }>
+  /** Bond Figma: 2×2; stake hub: 3 + remainder. */
+  positionLayout?: 'triple-plus' | 'cards-2'
 }) {
   const { messages: t } = useI18n()
   const selectTab = useDappShellStore((state) => state.selectTab)
   const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
   const xValue = t.staking.aside.xValue
+  const tableHeaders = recordColumns ?? t.staking.aside.recordColumns
+  const tableColWidths = recordColWidths ?? ['175px', '80px', '140px', '90px', '1fr']
 
   return (
     <>
@@ -139,9 +148,9 @@ export function StakingDetailAside({
           </button>
         </div>
         {positionItems ? (
-          <div className="grid gap-4">
-            <div className="grid gap-4 sm:grid-cols-3">
-              {positionItems.slice(0, 3).map((item) => (
+          positionLayout === 'cards-2' ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {positionItems.map((item) => (
                 <MetricCard
                   className="gap-1.5 p-4"
                   key={item.label}
@@ -151,9 +160,10 @@ export function StakingDetailAside({
                 />
               ))}
             </div>
-            {positionItems.length > 3 ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {positionItems.slice(3).map((item) => (
+          ) : (
+            <div className="grid gap-4">
+              <div className="grid gap-4 sm:grid-cols-3">
+                {positionItems.slice(0, 3).map((item) => (
                   <MetricCard
                     className="gap-1.5 p-4"
                     key={item.label}
@@ -163,8 +173,21 @@ export function StakingDetailAside({
                   />
                 ))}
               </div>
-            ) : null}
-          </div>
+              {positionItems.length > 3 ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {positionItems.slice(3).map((item) => (
+                    <MetricCard
+                      className="gap-1.5 p-4"
+                      key={item.label}
+                      label={item.label}
+                      value={item.value}
+                      valueClassName="text-base font-semibold tracking-normal"
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          )
         ) : (
           <>
             <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
@@ -186,11 +209,7 @@ export function StakingDetailAside({
       <DappDetailBlock>
         <DappContentHeading>{recordsTitle}</DappContentHeading>
         <DappTableCard>
-          <ResponsiveTable
-            colWidths={['175px', '80px', '140px', '90px', '1fr']}
-            headers={[...t.staking.aside.recordColumns]}
-            rows={[]}
-          />
+          <ResponsiveTable colWidths={[...tableColWidths]} headers={[...tableHeaders]} rows={[]} />
           <DappTableEmptyMessage embedded title={t.staking.aside.recordsEmpty} />
         </DappTableCard>
       </DappDetailBlock>
