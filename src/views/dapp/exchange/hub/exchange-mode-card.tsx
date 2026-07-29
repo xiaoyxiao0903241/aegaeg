@@ -11,6 +11,8 @@ export function ExchangeModeCard({
   onClick,
   title,
   tourId,
+  /** Figma hub: flash row is taller (88) for two-line body; others 70. */
+  density = 'default',
 }: {
   badge?: string
   body: string
@@ -19,6 +21,7 @@ export function ExchangeModeCard({
   title: string
   /** OnboardingGuide `data-tour-id` (ticket 02). */
   tourId?: string
+  density?: 'default' | 'tall'
 }) {
   const interactive = Boolean(onClick)
 
@@ -27,7 +30,8 @@ export function ExchangeModeCard({
       as="button"
       surface="outlined"
       className={cn(
-        'flex w-full items-center gap-3 text-left text-muted-foreground shadow-none',
+        'flex w-full items-center gap-3 px-4 text-left text-muted-foreground shadow-none',
+        density === 'tall' ? 'min-h-[88px] py-2.5' : 'min-h-[70px] py-3.5',
         interactive &&
           'duration-dapp-fast cursor-pointer transition-[border-color,transform] ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
       )}
@@ -36,9 +40,9 @@ export function ExchangeModeCard({
       type="button"
     >
       <DappIcon alt="" className="shrink-0" size="xl" src={icon} />
-      <Card.Content className="grid min-w-0 flex-1 gap-1">
+      <Card.Content className="grid min-w-0 flex-1 gap-1.5">
         <Card.Header className="flex-row items-center gap-1.5">
-          <Card.Label as="span" className="font-semibold text-foreground">
+          <Card.Label as="span" className="text-sm font-semibold text-foreground">
             {title}
           </Card.Label>
           {badge ? (

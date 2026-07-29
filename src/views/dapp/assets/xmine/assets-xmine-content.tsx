@@ -7,25 +7,25 @@ import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
-
-const PLACEHOLDER = '—'
+import { useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-assets-xmine-stats'
 
 export function AssetsXmineContent() {
   const { messages: t } = useI18n()
   const copy = t.assets.products.xmine
+  const values = useAssetsXmineStats()
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{copy.stats.title}</DappContentHeading>
         <div className="grid grid-cols-2 gap-3 dapp:grid-cols-3">
-          {copy.stats.metrics.map((metric) => (
+          {copy.stats.metrics.map((metric, index) => (
             <div className="grid gap-1" key={metric.label}>
               <Text as="span" tone="muted-foreground" variant="detail">
                 {metric.label}
               </Text>
               <Text as="strong" className="font-semibold" variant="copy">
-                {PLACEHOLDER}
+                {values[index] ?? '—'}
               </Text>
             </div>
           ))}
@@ -46,7 +46,7 @@ export function AssetsXmineContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{copy.faq.title}</DappContentHeading>
-        <FaqList defaultOpenFirst={false} items={copy.faq.items} variant="dapp" />
+        <FaqList items={copy.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

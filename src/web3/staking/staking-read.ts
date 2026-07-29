@@ -1,6 +1,7 @@
 import { parseAbi } from 'viem'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import {
+  BOND_DEPOSITORY_MARKET_METHODS,
   BOND_HELPER_METHODS,
   LIQUID_STAKING_METHODS,
   LOCKED_STAKING_METHODS,
@@ -23,6 +24,10 @@ const lockedAbi = parseAbi([
   LOCKED_STAKING_METHODS.periodTime,
 ])
 const bondHelperAbi = parseAbi([BOND_HELPER_METHODS.authContracts])
+const bondMarketAbi = parseAbi([
+  BOND_DEPOSITORY_MARKET_METHODS.discountRateBP,
+  BOND_DEPOSITORY_MARKET_METHODS.terms,
+])
 const xStakingAbi = parseAbi([X_STAKING_POOL_METHODS.miningQuotaOf])
 
 export type StakeOpenPreflight = {
@@ -125,6 +130,53 @@ export async function readBondZapPreflight(args: {
     }),
   ])
   return { isBound, balance, allowance, depositoryAuthorized }
+}
+
+/** Public bond market chrome — discountRateBP + debt capacity (manual §10). */
+export async function readBondMarketMeta(
+  depository: Address,
+  client: ChainReadClient = bscReadClient,
+): Promise<{
+  discountRateBP: bigint
+  feeBps: bigint
+  maxDebt: bigint
+  totalDeposit: bigint
+}> {
+  const [discountRateBP, terms] = await Promise.all([
+    client.readContract({
+      address: depository,
+      abi: bondMarketAbi,
+      functionName: 'discountRateBP',
+    }),
+    client.readContract({
+      address: depository,
+      abi: bondMarketAbi,
+      functionName: 'terms',
+    }),
+  ])
+  const [, , feeBps, maxDebt, totalDeposit] = terms as readonly [
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+  ]
+  return {
+    discountRateBP: discountRateBP as bigint,
+    feeBps,
+    maxDebt,
+    totalDeposit,
+  }
+}
+
+/** Manual: 10000 BPS = no discount; 9500 = 5% off. */
+export function formatBondDiscountLabel(discountRateBP: bigint): string {
+  if (discountRateBP === 0n || discountRateBP > 10000n) return '—'
+  const offBps = 10000n - discountRateBP
+  const whole = offBps / 100n
+  const frac = offBps % 100n
+  if (frac === 0n) return `${whole}%`
+  return `${whole}.${frac.toString().padStart(2, '0').replace(/0+$/, '')}%`
 }
 
 export async function readXminePreflight(args: {

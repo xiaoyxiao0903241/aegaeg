@@ -10,7 +10,7 @@ test('needsTokenApproval is true when allowance is below amountIn', async () => 
   assert.equal(needsTokenApproval(101n, 100n), false)
 })
 
-test('formatExchangeRateColon displays colon exchange rate with 4 fraction digits', async () => {
+test('formatExchangeRateColon displays colon exchange rate and trims trailing zeros', async () => {
   const { formatExchangeRateColon } = await loadModule(
     '/src/views/dapp/exchange/exchange-format-rate.ts',
   )
@@ -22,24 +22,16 @@ test('formatExchangeRateColon displays colon exchange rate with 4 fraction digit
       decimalsIn: 18,
       decimalsOut: 18,
     }),
-    '1 : 1.0010',
-  )
-})
-
-test('formatExchangeRate displays exchange rate between tokens', async () => {
-  const { formatExchangeRate } = await loadModule(
-    '/src/views/dapp/exchange/exchange-format-rate.ts',
+    '1 : 1.001',
   )
 
   assert.equal(
-    formatExchangeRate({
+    formatExchangeRateColon({
       amountIn: 10n ** 18n,
-      amountOut: 2n * 10n ** 17n,
+      amountOut: 10n ** 18n,
       decimalsIn: 18,
       decimalsOut: 18,
-      symbolIn: 'USD1',
-      symbolOut: 'USDT',
     }),
-    '1 USD1 = 0.2 USDT',
+    '1 : 1',
   )
 })

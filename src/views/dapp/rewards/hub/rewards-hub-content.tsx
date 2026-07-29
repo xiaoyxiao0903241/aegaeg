@@ -6,6 +6,7 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
+import { FaqList } from '~/shared/ui/faq-list'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { Button } from '~/shared/ui/button'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -21,6 +22,8 @@ const ABOUT_VIEWS = [
   'grant',
   'genesis',
 ] as const satisfies readonly Exclude<RewardsView, 'hub'>[]
+
+const DASH = '—'
 
 export function RewardsHubContent() {
   const { messages: t } = useI18n()
@@ -43,40 +46,72 @@ export function RewardsHubContent() {
   }, [api, onSelect])
 
   const tier = t.rewards.hub.tierTable
+  const emptyValue = sessionReady
+    ? t.rewards.hub.balancePlaceholder
+    : t.rewards.hub.signInForBalance
+  const stats = t.rewards.hub.stats
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
-        <DappContentHeading id="rewards-hub-title">{t.rewards.hub.asideTitle}</DappContentHeading>
-        <Text as="p" className="mb-4" tone="muted-foreground" variant="copy">
-          {t.rewards.hub.asideBody}
-        </Text>
-        <div className="mb-6 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {t.rewards.hub.stats.totalRewards}
+        <div className="mb-6 grid gap-2 sm:grid-cols-3">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+              {stats.totalRewards}
             </Text>
-            <Text as="p" className="mt-1 font-semibold" variant="copy">
-              {sessionReady ? t.rewards.hub.balancePlaceholder : t.rewards.hub.signInForBalance}
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {emptyValue}
             </Text>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {t.rewards.hub.stats.tier}
+          <div className="relative overflow-hidden rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+              {stats.tier}
             </Text>
-            <Text as="p" className="mt-1 font-semibold" variant="copy">
-              {t.rewards.hub.stats.tierEmpty}
+            <Text as="p" className="mt-1.5 text-[13px]" tone="muted-foreground" variant="detail">
+              {stats.tierEmpty}
             </Text>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-4 sm:col-span-2">
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {t.rewards.hub.stats.contribution}
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+              {stats.personalHolding}
             </Text>
-            <Text as="p" className="mt-1" tone="muted-foreground" variant="caption">
-              {t.rewards.hub.stats.contributionHint}
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
             </Text>
-            <Button className="mt-3" onClick={() => openExchangeView('burn')} type="button">
-              {t.rewards.hub.stats.goBurn}
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+              {stats.totalPerformance}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+              {stats.smallAreaPerformance}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+              {stats.contribution}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+            <Text as="p" className="mt-1 text-[13px]" tone="muted-foreground" variant="detail">
+              {stats.contributionHint}
+            </Text>
+            <Button
+              className="mt-2 h-auto p-0 text-primary"
+              onClick={() => openExchangeView('burn')}
+              type="button"
+              variant="link"
+            >
+              {stats.goClaim}
             </Button>
           </div>
         </div>
@@ -159,18 +194,7 @@ export function RewardsHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.faq.title}</DappContentHeading>
-        <ul className="grid gap-3">
-          {t.rewards.faq.items.map((item) => (
-            <li className="rounded-2xl border border-border bg-card p-4" key={item.q}>
-              <Text as="p" className="font-semibold" variant="copy">
-                {item.q}
-              </Text>
-              <Text as="p" className="mt-2" tone="muted-foreground" variant="copy">
-                {item.a}
-              </Text>
-            </li>
-          ))}
-        </ul>
+        <FaqList items={t.rewards.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

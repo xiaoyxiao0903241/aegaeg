@@ -23,6 +23,7 @@ Pre-Design → 写盘实现 → Post-Design + Post-Code（分轨）→ pnpm chec
     - 产出：能用自己的话说明用户流程、读/写方法、前置检查、成功后刷新；禁止未读手册开写
 [ ] 按 §8.0 R1 表对号：产品验收 vs foundation API vs 落点 vs i18n vs Figma vs 手册 vs money-path
 [ ] **现行 Figma node 已钉死**（fileKey + frame id；若 section 有新帧替换旧帧，以用户指定 / 更新的帧为准）
+[ ] **任意页贴稿序已执行**：[ui-leaf-parity-workflow.md](./ui-leaf-parity-workflow.md)（手册 → `get_design_context` 页级+子节点 → 有原型则 WebBridge 点通 → 错位表）；禁止截图驱动
 [ ] **§8.0 R5 元素清单已落盘**（ticket 附件或 `.scratch/...`），形状符合 R5「禁止偷换」：
     - 按 frame 自上而下可见节点（含状态帧）
     - 含「代码有、稿无 → 删/缺口」列
@@ -65,20 +66,21 @@ Pre-Design → 写盘实现 → Post-Design + Post-Code（分轨）→ pnpm chec
 
 ## 编码习惯（从本仓已落地模式抽出）
 
-| 做法                                               | 本仓锚点                                           | 反例                                      |
-| -------------------------------------------------- | -------------------------------------------------- | ----------------------------------------- |
-| 用户可见字符串 → i18n + `<Text>`                   | `src/i18n/messages/` · foundation runbook §3       | `shared/ui` 内硬编码「活期」「领取/复投」 |
-| 选项 / 档位 → call site 组装后传入                 | Segment / AmountBox：`options` · 必填 `aria-label` | 在 primitive 导出业务 `*_OPTIONS` presets |
-| Composite = 跨页 chrome，非业务数据袋              | foundation api §7                                  | 借「业务组件」名把 domain 塞进 shared     |
-| PC 文案 SSOT；H5 只响应式                          | AGENTS §8.4 / §8.6                                 | 为 H5 新增同义 key                        |
-| 静态 UI = 现行 Figma fileKey                       | AGENTS §8.4                                        | `docs/figma-export/`、旧 fileKey          |
-| 稿∩手册才 MUST；手册独有→缺口；稿独有→暴露         | AGENTS §8.0 **R5**                                 | 无稿造 UI；有稿不读手册；假数冒充验收     |
-| **先读手册再开稿清单**                             | AGENTS §8.0 **R5** 第一步 · 本表 Pre-Design        | 跳过手册直接贴稿/抄现码                   |
-| 三门独立审查                                       | AGENTS §8.0 **R6**                                 | 自检冒充审查；用链上完成代替贴稿          |
-| 交互跟原型状态机，禁抄 DOM/CSS                     | Spec Testing / map                                 | 粘贴原型 class / 结构当生产               |
-| 金钱路径复用既有 intent / unknown lock / live 门闸 | `docs/money-path-map.md`                           | ticket 为「好写」绕开二次门闸             |
-| 测试：合同用 unit；行为 e2e 在挂载后               | `tests/unit/*` · `pnpm test:e2e` 可选              | 无失败测试先写生产代码（TDD 缝）          |
-| 收工                                               | 三门 + `pnpm check`                                | 只靠肉眼或未跑门禁称完成                  |
+| 做法                                               | 本仓锚点                                                     | 反例                                       |
+| -------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------ |
+| 用户可见字符串 → i18n + `<Text>`                   | `src/i18n/messages/` · foundation runbook §3                 | `shared/ui` 内硬编码「活期」「领取/复投」  |
+| 选项 / 档位 → call site 组装后传入                 | Segment / AmountBox：`options` · 必填 `aria-label`           | 在 primitive 导出业务 `*_OPTIONS` presets  |
+| Composite = 跨页 chrome，非业务数据袋              | foundation api §7                                            | 借「业务组件」名把 domain 塞进 shared      |
+| PC 文案 SSOT；H5 只响应式                          | AGENTS §8.4 / §8.6                                           | 为 H5 新增同义 key                         |
+| 静态 UI = 现行 Figma fileKey                       | AGENTS §8.4                                                  | `docs/figma-export/`、旧 fileKey           |
+| 稿∩手册才 MUST；手册独有→缺口；稿独有→暴露         | AGENTS §8.0 **R5**                                           | 无稿造 UI；有稿不读手册；假数冒充验收      |
+| **先读手册再开稿清单**                             | AGENTS §8.0 **R5** 第一步 · 本表 Pre-Design                  | 跳过手册直接贴稿/抄现码                    |
+| 三门独立审查                                       | AGENTS §8.0 **R6**                                           | 自检冒充审查；用链上完成代替贴稿           |
+| 交互跟原型状态机，禁抄 DOM/CSS                     | Spec Testing / map · **WebBridge 点原型**                    | 粘贴原型 class；只读 research 摘要不开原型 |
+| **任意页**贴稿：手册→Figma context→WebBridge→改码  | [`ui-leaf-parity-workflow.md`](./ui-leaf-parity-workflow.md) | 截图肉眼估；结构 PASS 冒充 1:1             |
+| 金钱路径复用既有 intent / unknown lock / live 门闸 | `docs/money-path-map.md`                                     | ticket 为「好写」绕开二次门闸              |
+| 测试：合同用 unit；行为 e2e 在挂载后               | `tests/unit/*` · `pnpm test:e2e` 可选                        | 无失败测试先写生产代码（TDD 缝）           |
+| 收工                                               | 三门 + `pnpm check`                                          | 只靠肉眼或未跑门禁称完成                   |
 
 ## 提交前多 agent（§8.0 **R7** · 强制）
 

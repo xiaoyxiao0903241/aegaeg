@@ -10,16 +10,16 @@ AI 工作规范
 
 #### R1 — 层 SSOT
 
-| 问题类型                 | SSOT                                                                                            | 禁止用它决定                      |
-| ------------------------ | ----------------------------------------------------------------------------------------------- | --------------------------------- |
-| 用户可见行为 / MUST 清单 | Spec + tickets + grilling Answers                                                               | 把验收字面塞进 `shared/ui`        |
-| 组件公开轴 / 视觉 chrome | [`docs/foundation/api.md`](docs/foundation/api.md) + [`runbook.md`](docs/foundation/runbook.md) | ticket 示例文案覆盖 API           |
-| 文件落点                 | [`docs/src-layout.md`](docs/src-layout.md)                                                      | 「进组件系统」= 业务数据进 shared |
-| 用户可见字符串           | `src/i18n/messages/` + §8.4 PC 文案 SSOT                                                        | 在 primitive 硬编码 locale        |
-| 静态 UI                  | Figma `uiKwzwIoD06phS0husdqjB`                                                                  | `docs/figma-export/`、旧 fileKey  |
-| 交互状态机               | research 09 / 原型语义                                                                          | 抄原型 DOM/CSS                    |
-| 链上                     | [`docs/frontend-manual/`](docs/frontend-manual/)                                                | 原型演示数值当门闸                |
-| 金钱写路径               | [`docs/money-path-map.md`](docs/money-path-map.md)                                              | UI ticket 重写已证 gates          |
+| 问题类型                 | SSOT                                                                                                                                    | 禁止用它决定                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 用户可见行为 / MUST 清单 | Spec + tickets + grilling Answers                                                                                                       | 把验收字面塞进 `shared/ui`                         |
+| 组件公开轴 / 视觉 chrome | [`docs/foundation/api.md`](docs/foundation/api.md) + [`runbook.md`](docs/foundation/runbook.md)                                         | ticket 示例文案覆盖 API                            |
+| 文件落点                 | [`docs/src-layout.md`](docs/src-layout.md)                                                                                              | 「进组件系统」= 业务数据进 shared                  |
+| 用户可见字符串           | `src/i18n/messages/` + §8.4 PC 文案 SSOT                                                                                                | 在 primitive 硬编码 locale                         |
+| 静态 UI                  | Figma `uiKwzwIoD06phS0husdqjB` + **[`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)**（任意页贴稿序） | `docs/figma-export/`、旧 fileKey；截图肉眼估当规格 |
+| 交互状态机               | 原型 HTML（有则 WebBridge 点通）+ research 摘录仅辅助                                                                                   | 抄原型 DOM/CSS；只读摘要不开原型                   |
+| 链上                     | [`docs/frontend-manual/`](docs/frontend-manual/)                                                                                        | 原型演示数值当门闸                                 |
+| 金钱写路径               | [`docs/money-path-map.md`](docs/money-path-map.md)                                                                                      | UI ticket 重写已证 gates                           |
 
 #### R2 — 产品语言 ≠ 实现归属
 
@@ -58,6 +58,8 @@ AI 工作规范
 | **二者冲突**                                                                          | 按 R4；写盘前暴露，禁止静默选边                                                                                                                    |
 
 写盘前强制：对本票表面做一次「稿元素清单 × 手册 API/门闸」对照；未对照不得称完成。
+
+**任意页贴稿工具序（强制 · 全仓）**：凡实现或修正用户可见 UI（不限 DApp 某一票），必须遵守 [`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)——**手册 → Figma `get_design_context`（页级+子节点）→（有原型则）Kimi WebBridge 点通 → leaf 错位表 → 改码 → 回看**。禁止仅用截图驱动实现；结构 PASS / 钱路 PASS / `pnpm check` 绿均不得冒充贴稿完成。
 
 **「稿元素清单」形状（禁止偷换）**：
 
@@ -144,7 +146,7 @@ AI 工作规范
 
 - **正式 Figma 设计稿 SSOT（静态 UI）**：https://www.figma.com/design/uiKwzwIoD06phS0husdqjB/AEGIS-X--Copy---Copy-?node-id=4253-365&p=f&m=dev（fileKey `uiKwzwIoD06phS0husdqjB`）。历史文件 `sXWXDvBrLeg5r0NnP1SMZH` 仅作过往参考。
 - 后续官网首页、H5、DApp 页面和组件的像素级对齐，以该 Figma 文件为准；历史 Figma 链接只作为过往参考，除非用户明确指定。
-- **像素级对齐的含义**：优先对齐元素归属、组件结构、视觉层级、字体、颜色、圆角、阴影、边框、间距节奏、素材、hover / active / connected / disconnected 状态。1-2px 的浏览器渲染、截图或布局取整偏差可以接受，禁止围绕这些误差反复修改。
+- **像素级对齐的含义**：优先对齐元素归属、组件结构、视觉层级、字体、颜色、圆角、阴影、边框、间距节奏、素材、hover / active / connected / disconnected 状态。1-2px 的浏览器渲染、截图或布局取整偏差可以接受，禁止围绕这些误差反复修改。实现步骤见 [`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)（**全仓任意页**）。
 - **PC 是文案 SSOT**：H5 是 PC 的响应式布局，不是独立文案版本。PC / H5 文案不一致时，以 PC 为准；不要为了 H5 单独新增同义文案 key 或分叉 copy。
 - **稿上有数值区 + 手册有链上来源**：必须接真实读链/报价（见 §8.0 R5）；禁止长期用假数冒充验收。1–2px 渲染取整仍不阻塞。
 

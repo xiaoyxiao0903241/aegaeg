@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { dappAssets, flashExchangeAssets } from '~/app/assets'
+import { burnExchangeAssets, dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -12,7 +12,6 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import {
-  ExchangeAmountFlow,
   ExchangeFlowButton,
   ExchangeMetaPanel,
   ExchangeSubpageHeader,
@@ -21,7 +20,7 @@ import {
 import { AmountBox } from '~/shared/ui/amount-box'
 import { TokenChip } from '~/app/shell/token-chip'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
-import { Segment } from '~/shared/ui/segment'
+import { PercentButtonRow, Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -32,6 +31,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
   const { sessionReady } = useDappShell()
   const exchangePreview = !sessionReady
   const showBalanceSkeleton = !exchangePreview && turbine.isBalancesLoading
+  const unlock = turbine.pair.unlock
+  const sellDisabled = (sessionReady && !turbine.walletReady) || turbine.isSubmitting
 
   const segmentOptions = [
     { label: t.exchange.turbine.segments.unlock, value: 'unlock' },
@@ -43,20 +44,29 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
       {t.exchange.turbine.unlockable}: <ExchangeBalanceSkeleton />
     </>
   ) : exchangePreview ? (
-    `${t.exchange.turbine.unlockable}: 0.00`
+    `${t.exchange.turbine.unlockable}: 0.00 gAGX`
   ) : (
-    `${t.exchange.turbine.unlockable}: ${turbine.walletReady ? turbine.quotaLabel : '—'} AGX`
+    `${t.exchange.turbine.unlockable}: ${turbine.walletReady ? turbine.quotaLabel : '—'} gAGX`
   )
 
   const usd1Balance = showBalanceSkeleton ? (
     <>
-      {t.exchange.balance}: <ExchangeBalanceSkeleton />
+      {t.exchange.balance} <ExchangeBalanceSkeleton />
     </>
   ) : exchangePreview ? (
-    `${t.exchange.balance}: 0.00`
+    `${t.exchange.balance} 0.00`
   ) : (
-    `${t.exchange.balance}: ${turbine.walletReady ? turbine.usd1BalanceLabel : '—'}`
+    `${t.exchange.balance} ${turbine.walletReady ? turbine.usd1BalanceLabel : '—'}`
   )
+
+  const willReceiveValue =
+    sessionReady && turbine.isQuoting ? (
+      <ExchangeMetaValueSkeleton />
+    ) : turbine.unlockAmount.trim().length > 0 ? (
+      turbine.buyAgxLabel
+    ) : (
+      '—'
+    )
 
   function resolveTurbineMessage(error: unknown) {
     return resolveExchangeUserFacingMessage(
@@ -114,71 +124,88 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
 
         {turbine.segment === 'unlock' ? (
           <>
-            <ExchangeAmountFlow
-              buy={turbine.pair.buy}
-              buyAmount={turbine.buyAgxLabel}
-              buyBalance={t.exchange.turbine.buyToBoundWallet}
-              buyLabel={t.exchange.turbine.buyAgxLabel}
-              middleSlot={
-                <div className="flex items-center justify-center py-1.5">
-                  <ExchangeFlowButton aria-hidden>
-                    <DappIcon alt="" className="rotate-90" size="base" src={dappAssets.chevron} />
-                  </ExchangeFlowButton>
-                </div>
-              }
-              onFillPercent={(percent) => turbine.fillPercent(percent)}
-              onSellAmountChange={turbine.setUnlockAmount}
-              sell={turbine.pair.unlock}
-              sellAmountDisplay={turbine.unlockAmountDisplay}
-              sellBalance={unlockableBalance}
-              sellLabel={t.exchange.turbine.unlockLabel}
+            <AmountBox
+              amountProps={{
+                'aria-label': `${unlock.symbol} unlock amount`,
+                disabled: sellDisabled,
+                inputMode: 'decimal',
+                onChange: (event) => turbine.setUnlockAmount(event.currentTarget.value),
+                placeholder: '0.00',
+                value: turbine.unlockAmountDisplay,
+              }}
+              balance={unlockableBalance}
+              className="p-4"
+              label={t.exchange.turbine.unlockLabel}
               sessionReady={sessionReady}
-              showBuyAmountSkeleton={sessionReady && turbine.isQuoting}
-              walletReady={turbine.walletReady}
-              amountLocked={turbine.isSubmitting}
+              startAdornment={<TokenChip icon={unlock.icon} label={unlock.symbol} />}
             />
 
-            <div className="mt-3.5 grid gap-2">
+            <PercentButtonRow
+              aria-label={`${unlock.symbol} unlock percent`}
+              className="pt-2.5 max-dapp:mt-3 max-dapp:py-0"
+              disabled={(!exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
+              onSelect={(percent) => turbine.fillPercent(percent)}
+            />
+
+            <div className="flex items-center justify-center py-1.5">
+              <ExchangeFlowButton aria-hidden>
+                <DappIcon alt="" size="base" src={burnExchangeAssets.flowDown} />
+              </ExchangeFlowButton>
+            </div>
+
+            <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
               <Text as="p" variant="support" tone="muted-foreground">
                 {t.exchange.turbine.equivalentBuyHint}
               </Text>
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                <AmountBox
-                  amountProps={{
-                    'aria-label': 'USD1 pay amount',
-                    readOnly: true,
-                    tabIndex: -1,
-                    value: turbine.payUsd1Label,
-                    onMouseDown: (event) => event.preventDefault(),
-                  }}
-                  balance={usd1Balance}
-                  label={t.exchange.turbine.payUsd1Label}
-                  sessionReady={sessionReady}
-                  startAdornment={
-                    <TokenChip icon={turbine.pair.pay.icon} label={turbine.pair.pay.symbol} />
-                  }
-                />
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                <div className="flex min-w-0 flex-col gap-1.5 rounded-[10px] bg-background p-3">
+                  <Text as="p" variant="caption" tone="muted-foreground">
+                    {t.exchange.turbine.payUsd1Label}
+                  </Text>
+                  <div className="flex items-center gap-2">
+                    <DappIcon
+                      alt=""
+                      className="size-5 rounded-md"
+                      size="token"
+                      src={turbine.pair.pay.icon}
+                    />
+                    <Text as="span" variant="copy" className="font-semibold">
+                      {turbine.payUsd1Label}
+                    </Text>
+                  </div>
+                  <Text as="p" variant="caption" tone="muted-foreground">
+                    {usd1Balance}
+                  </Text>
+                </div>
                 <DappIcon
                   alt=""
-                  className="size-4 text-coral"
+                  className="size-3.5 -rotate-90 text-coral"
                   size="base"
                   src={dappAssets.chevron}
                 />
-                <AmountBox
-                  amountProps={{
-                    'aria-label': 'AGX buy amount',
-                    readOnly: true,
-                    tabIndex: -1,
-                    value: turbine.buyAgxLabel,
-                    onMouseDown: (event) => event.preventDefault(),
-                  }}
-                  balance={t.exchange.turbine.buyToBoundWallet}
-                  label={t.exchange.turbine.buyAgxLabel}
-                  sessionReady={sessionReady}
-                  startAdornment={
-                    <TokenChip icon={turbine.pair.buy.icon} label={turbine.pair.buy.symbol} />
-                  }
-                />
+                <div className="flex min-w-0 flex-col gap-1.5 rounded-[10px] bg-background p-3">
+                  <Text as="p" variant="caption" tone="muted-foreground">
+                    {t.exchange.turbine.buyAgxLabel}
+                  </Text>
+                  <div className="flex items-center gap-2">
+                    <DappIcon
+                      alt=""
+                      className="size-5 rounded-md"
+                      size="token"
+                      src={turbine.pair.buy.icon}
+                    />
+                    <Text as="span" variant="copy" className="font-semibold">
+                      {sessionReady && turbine.isQuoting ? (
+                        <ExchangeMetaValueSkeleton />
+                      ) : (
+                        turbine.buyAgxLabel
+                      )}
+                    </Text>
+                  </div>
+                  <Text as="p" variant="caption" tone="muted-foreground">
+                    {t.exchange.turbine.buyToBoundWallet}
+                  </Text>
+                </div>
               </div>
             </div>
 
@@ -186,7 +213,11 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               items={[
                 {
                   label: t.exchange.turbine.agxPrice,
-                  value: sessionReady ? '—' : t.exchange.ratePlaceholder,
+                  value: turbine.isAgxPriceQuoting ? (
+                    <ExchangeMetaValueSkeleton />
+                  ) : (
+                    turbine.agxPriceLabel || (sessionReady ? '—' : t.exchange.ratePlaceholder)
+                  ),
                 },
                 {
                   label: t.exchange.allowedSlippage,
@@ -195,12 +226,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 },
                 {
                   label: t.exchange.turbine.willReceiveAgx,
-                  value:
-                    sessionReady && turbine.isQuoting ? (
-                      <ExchangeMetaValueSkeleton />
-                    ) : (
-                      turbine.buyAgxLabel
-                    ),
+                  value: willReceiveValue,
                 },
                 {
                   label: t.exchange.turbine.unlockRatio,
@@ -214,7 +240,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   label: t.exchange.provider,
                   value: (
                     <>
-                      Turbine
+                      {t.exchange.providerName}
                       <button
                         aria-label={t.genesis.viewContract}
                         className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"

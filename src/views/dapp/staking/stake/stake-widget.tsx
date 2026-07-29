@@ -11,6 +11,7 @@ import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
+import { formatAddress } from '~/app/utils'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { ExchangeMetaPanel } from '~/views/dapp/exchange/exchange-meta-panel'
 import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
@@ -33,6 +34,16 @@ export function StakeWidget() {
     { label: t.staking.stake.periods.d360, value: '360' },
     { label: t.staking.stake.periods.d540, value: '540' },
   ]
+
+  const lockLabel =
+    stake.period === 'liquid'
+      ? t.staking.stake.meta.lockLiquid
+      : t.staking.stake.meta.lockDays.replace('{days}', stake.period)
+
+  const amountLabel = t.staking.stake.amountBalance.replace(
+    '{balance}',
+    stake.isBalancesLoading ? '…' : `${stake.balanceLabel}`,
+  )
 
   function resolveMessage(error: unknown) {
     const raw = readErrorText(error)
@@ -84,54 +95,60 @@ export function StakeWidget() {
     <>
       <StakingSubpageHeader subtitle={t.staking.stake.intro} title={t.staking.stake.title} />
       <ExchangeWidgetBody>
-        <Segment
-          aria-label={t.staking.stake.periodAria}
-          onChange={stake.setPeriod}
-          options={periodOptions}
-          tone="coral"
-          value={stake.period}
-        />
+        <div className="grid gap-2.5">
+          <Text as="span" tone="muted-foreground" variant="detail">
+            {t.staking.stake.periodLabel}
+          </Text>
+          <Segment
+            aria-label={t.staking.stake.periodAria}
+            onChange={stake.setPeriod}
+            options={periodOptions}
+            tone="ink"
+            value={stake.period}
+          />
+        </div>
 
         <AmountBox
           amountProps={{
             'aria-label': t.staking.stake.amountAria,
             inputMode: 'decimal',
             onChange: (event) => stake.setAmount(event.target.value),
-            placeholder: '0',
+            placeholder: '0.00',
             value: stake.amountDisplay,
           }}
-          balance={
-            <>
-              {t.staking.balance}: {stake.isBalancesLoading ? '…' : stake.balanceLabel}
-            </>
-          }
           endAdornment={
-            <FieldActionChip disabled={!walletReady || stake.isSubmitting} onClick={stake.fillMax}>
-              {t.staking.max}
-            </FieldActionChip>
-          }
-          label={t.staking.amount}
-          sessionReady={sessionReady}
-          startAdornment={
-            <span className="flex items-center gap-2">
-              <DappIcon alt="" size="md" src={dappAssets.tokenAgx} />
-              <Text as="span" className="font-semibold" variant="copy">
-                AGX
-              </Text>
+            <span className="flex items-center gap-2.5">
+              <span className="flex items-center gap-1.5">
+                <DappIcon alt="" size="md" src={dappAssets.tokenAgx} />
+                <Text as="span" className="font-semibold" variant="copy">
+                  AGX
+                </Text>
+              </span>
+              <FieldActionChip
+                disabled={!walletReady || stake.isSubmitting}
+                onClick={stake.fillMax}
+              >
+                {t.staking.max}
+              </FieldActionChip>
             </span>
           }
+          inputClassName="!ml-0 mr-auto max-w-[50%] text-left"
+          label={amountLabel}
+          sessionReady={sessionReady}
+          startAdornment={null}
         />
 
         <ExchangeMetaPanel
+          className="gap-3 p-4"
           items={[
-            { label: t.staking.stake.meta.apy, value: '—' },
-            { label: t.staking.stake.meta.bonus, value: '—' },
+            { label: t.staking.stake.meta.baseDaily, value: '—' },
             {
-              label: t.staking.stake.meta.lock,
-              value:
-                stake.period === 'liquid' ? t.staking.stake.periods.liquid : `${stake.period}d`,
+              label: t.staking.stake.meta.periodYield,
+              value: '—',
+              valueClassName: 'text-primary',
             },
-            { label: t.staking.stake.meta.remaining, value: stake.remainingLabel },
+            { label: t.staking.stake.meta.bonus, value: '—' },
+            { label: t.staking.stake.meta.lock, value: lockLabel },
             {
               label: t.staking.stake.meta.contract,
               value: (
@@ -141,7 +158,7 @@ export function StakeWidget() {
                   rel="noreferrer"
                   target="_blank"
                 >
-                  {t.staking.viewContract}
+                  {formatAddress(stake.pool)}
                 </a>
               ),
             },

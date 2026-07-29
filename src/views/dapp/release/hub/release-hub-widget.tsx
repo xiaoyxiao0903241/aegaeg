@@ -16,6 +16,9 @@ import {
 } from '~/views/dapp/release/use-release-reads'
 import { formatReleaseAmount, formatReleasePct } from '~/views/dapp/release/release-display'
 
+const DASH = '—'
+const APPROX_EMPTY = '≈ —'
+
 export function ReleaseHubWidget() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
@@ -28,6 +31,18 @@ export function ReleaseHubWidget() {
   const bufferReleasing = bufferQuery.data?.totalReleasing ?? 0n
 
   const dash = t.release.dash
+  const queuePct = walletReady ? formatReleasePct(queueClaimable, queueReleasing) : dash
+  const bufferPct = walletReady ? formatReleasePct(bufferClaimable, bufferReleasing) : dash
+  const queueReleasingLabel = walletReady
+    ? `${formatReleaseAmount(queueReleasing)} ${t.release.units.queue}`
+    : dash
+  const queueClaimableLabel = walletReady
+    ? `${formatReleaseAmount(queueClaimable)} ${t.release.units.queue}`
+    : dash
+  const bufferTotalAgx = walletReady
+    ? `${formatReleaseAmount(bufferClaimable + bufferReleasing)} AGX`
+    : dash
+  const bufferClaimedAgx = walletReady ? `${formatReleaseAmount(bufferClaimable)} AGX` : dash
 
   return (
     <>
@@ -39,91 +54,92 @@ export function ReleaseHubWidget() {
       <ExchangeWidgetBody>
         <Card
           as="button"
-          className="duration-dapp-fast w-full cursor-pointer text-left shadow-none hover:border-primary"
+          className="duration-dapp-fast flex w-full cursor-pointer flex-col gap-2 text-left shadow-none hover:border-primary"
           data-tour-id="release-pool-card"
           onClick={() => openReleaseView('queue')}
           surface="outlined"
           type="button"
         >
-          <Card.Content className="grid gap-2">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <img alt="" className="size-5" src={dappAssets.release} />
-                <Text as="span" className="font-semibold" variant="copy">
-                  {t.release.queue.title}
-                </Text>
-              </div>
-              <Text as="span" tone="muted-foreground" variant="caption">
-                {walletReady ? formatReleasePct(queueClaimable, queueReleasing) : dash}
-              </Text>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Text as="p" tone="muted-foreground" variant="caption">
-                  {t.release.labels.releasing}
-                </Text>
-                <Text as="p" className="font-semibold" variant="copy">
-                  {walletReady
-                    ? `${formatReleaseAmount(queueReleasing)} ${t.release.units.queue}`
-                    : dash}
-                </Text>
-              </div>
-              <div>
-                <Text as="p" tone="muted-foreground" variant="caption">
-                  {t.release.labels.released}
-                </Text>
-                <Text as="p" className="font-semibold" variant="copy">
-                  {walletReady
-                    ? `${formatReleaseAmount(queueClaimable)} ${t.release.units.queue}`
-                    : dash}
-                </Text>
-              </div>
-            </div>
-          </Card.Content>
+          <div className="flex items-center gap-2">
+            <img alt="" className="size-5 shrink-0" src={dappAssets.release} />
+            <Text as="span" className="min-w-0 flex-1 text-[13px] font-semibold" variant="copy">
+              {t.release.queue.title}
+            </Text>
+            <Text as="span" className="text-[13px]" variant="caption">
+              {queuePct}
+            </Text>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {t.release.labels.releasing}
+            </Text>
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {t.release.labels.released}
+            </Text>
+            <Text as="p" className="font-semibold" variant="copy">
+              {queueReleasingLabel}
+            </Text>
+            <Text as="p" className="font-semibold text-primary" variant="copy">
+              {queueClaimableLabel}
+            </Text>
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {walletReady ? APPROX_EMPTY : dash}
+            </Text>
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {walletReady ? APPROX_EMPTY : dash}
+            </Text>
+          </div>
         </Card>
 
         <Card
           as="button"
-          className="duration-dapp-fast w-full cursor-pointer text-left shadow-none hover:border-primary"
+          className="duration-dapp-fast flex w-full cursor-pointer flex-col gap-2 text-left shadow-none hover:border-primary"
           data-tour-id="buffer-pool-card"
           onClick={() => openReleaseView('buffer')}
           surface="outlined"
           type="button"
         >
-          <Card.Content className="grid gap-2">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <img alt="" className="size-5" src={exchangeHubAssets.modeTurbine} />
-                <Text as="span" className="font-semibold" variant="copy">
-                  {t.release.buffer.title}
-                </Text>
-              </div>
+          <div className="flex items-center gap-2">
+            <img alt="" className="size-5 shrink-0" src={exchangeHubAssets.modeTurbine} />
+            <Text as="span" className="min-w-0 flex-1 text-[13px] font-semibold" variant="copy">
+              {t.release.buffer.title}
+            </Text>
+            <Text as="span" className="text-[13px]" variant="caption">
+              {bufferPct}
+            </Text>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Text as="p" className="font-semibold" variant="copy">
+              {bufferTotalAgx}
+            </Text>
+            <Text as="p" className="font-semibold" variant="copy">
+              {DASH} gAGX
+            </Text>
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {walletReady ? APPROX_EMPTY : dash}
+            </Text>
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {walletReady ? APPROX_EMPTY : dash}
+            </Text>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center gap-1.5">
               <Text as="span" tone="muted-foreground" variant="caption">
-                {walletReady ? formatReleasePct(bufferClaimable, bufferReleasing) : dash}
+                {t.release.labels.released}
+              </Text>
+              <Text as="span" className="text-primary" variant="caption">
+                {bufferClaimedAgx}
               </Text>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Text as="p" className="font-semibold" variant="copy">
-                  {walletReady
-                    ? `${formatReleaseAmount(bufferClaimable + bufferReleasing)} AGX`
-                    : dash}
-                </Text>
-                <Text as="p" tone="muted-foreground" variant="caption">
-                  {t.release.labels.released}{' '}
-                  {walletReady ? `${formatReleaseAmount(bufferClaimable)} AGX` : dash}
-                </Text>
-              </div>
-              <div>
-                <Text as="p" className="font-semibold" variant="copy">
-                  {dash} gAGX
-                </Text>
-                <Text as="p" tone="muted-foreground" variant="caption">
-                  {t.release.labels.released} {dash} gAGX
-                </Text>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <Text as="span" tone="muted-foreground" variant="caption">
+                {t.release.labels.released}
+              </Text>
+              <Text as="span" className="text-primary" variant="caption">
+                {DASH} gAGX
+              </Text>
             </div>
-          </Card.Content>
+          </div>
         </Card>
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}

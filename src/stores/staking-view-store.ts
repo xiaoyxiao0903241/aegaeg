@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { stakingHashForView, type StakingView } from '~/shared/config/staking-deep-link'
+import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
 
 export type { StakingView }
 export type StakingViewDirection = 'forward' | 'back'
@@ -13,10 +14,17 @@ interface StakingViewStore {
   outgoingView: StakingView | null
   incomingView: StakingView | null
   hasSubviewHistory: boolean
+  /** Shared with stake widget + aside — SSOT for remainingQuota period. */
+  stakePeriod: StakePeriod
+  /** Shared with bond widget + aside — SSOT for discount/cap per kind. */
+  lpBondPeriod: BondPeriod
+  burnBondPeriod: BondPeriod
   setView: (view: StakingView) => void
   /** Hash hydrate — no motion, no hash write (caller owns URL). */
   hydrateView: (view: StakingView) => void
   backToHub: (options?: { syncHash?: boolean }) => void
+  setStakePeriod: (period: StakePeriod) => void
+  setBondPeriod: (kind: 'lp' | 'burn', period: BondPeriod) => void
 }
 
 let transitionTimer: number | null = null
@@ -43,6 +51,12 @@ export const useStakingViewStore = create<StakingViewStore>((set, get) => ({
   outgoingView: null,
   incomingView: null,
   hasSubviewHistory: false,
+  stakePeriod: 'liquid',
+  lpBondPeriod: '180',
+  burnBondPeriod: '180',
+  setStakePeriod: (period) => set({ stakePeriod: period }),
+  setBondPeriod: (kind, period) =>
+    set(kind === 'lp' ? { lpBondPeriod: period } : { burnBondPeriod: period }),
   setView: (view) => {
     const { view: currentView, motion } = get()
     if (view === currentView && !motion) {

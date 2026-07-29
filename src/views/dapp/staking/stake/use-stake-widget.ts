@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateStakeLiveGate } from '~/core/staking/staking-gates'
-import { type StakePeriod } from '~/core/staking/staking-period'
 import { resolveStakePoolAddress } from '~/web3/staking/resolve-staking-addresses'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -15,6 +14,7 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
+import { useStakingViewStore } from '~/stores/staking-view-store'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -23,7 +23,8 @@ export function useStakeWidget(sessionReady: boolean) {
   const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const readClient = useChainReadClient()
-  const [period, setPeriod] = useState<StakePeriod>('liquid')
+  const period = useStakingViewStore((state) => state.stakePeriod)
+  const setStakePeriod = useStakingViewStore((state) => state.setStakePeriod)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<unknown>(null)
 
@@ -112,7 +113,7 @@ export function useStakeWidget(sessionReady: boolean) {
     if (next === period) return
     if (next !== 'liquid' && next !== '180' && next !== '360' && next !== '540') return
     amountInput.clearAmount()
-    setPeriod(next)
+    setStakePeriod(next)
   }
 
   return {

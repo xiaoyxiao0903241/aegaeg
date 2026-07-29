@@ -4,7 +4,6 @@ import { useI18n } from '~/i18n/use-i18n'
 import { stakingHubAssets } from '~/app/assets'
 import { openAssetsView } from '~/shared/config/open-assets-view'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { ExchangeModeCard } from '~/views/dapp/exchange/hub/exchange-mode-card'
 import {
   ExchangePanelToggle,
   ExchangeWidgetBody,
@@ -24,6 +23,8 @@ import {
 import type { Address } from '~/shared/config/contracts'
 import type { AssetsView } from '~/stores/assets-view-store'
 import { cn } from '~/shared/lib/utils'
+import { AssetsModeCard } from '~/views/dapp/assets/hub/assets-mode-card'
+import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hub-overview-stats'
 
 const MODE_KEYS = ['stake', 'lpbond', 'burnbond', 'xmine'] as const satisfies readonly AssetsView[]
 
@@ -34,6 +35,7 @@ export function AssetsHubWidget() {
   const readClient = useChainReadClient()
   const address = account?.address
   const [hideZero, setHideZero] = useState(true)
+  const overview = useAssetsHubOverviewStats()
 
   const holdings = useQueries({
     queries: [
@@ -122,16 +124,25 @@ export function AssetsHubWidget() {
           {t.assets.hub.hideZero}
         </button>
 
-        {modes.map((key) => (
-          <ExchangeModeCard
-            body={t.assets.hub.modes[key].body}
-            icon={icons[key]}
-            key={key}
-            onClick={() => openAssetsView(key)}
-            title={t.assets.hub.modes[key].title}
-            tourId={key === 'stake' ? 'asset-mode-stake' : undefined}
-          />
-        ))}
+        {modes.map((key) => {
+          const stats = overview.modes[key]
+          return (
+            <AssetsModeCard
+              aprLabel={stats.aprLabel}
+              icon={icons[key]}
+              key={key}
+              onClick={() => openAssetsView(key)}
+              positionApprox={stats.positionApprox}
+              positionLabel={t.assets.hub.card.position}
+              positionValue={stats.positionValue}
+              title={t.assets.hub.modes[key].title}
+              tourId={key === 'stake' ? 'asset-mode-stake' : undefined}
+              yieldApprox={stats.yieldApprox}
+              yieldLabel={t.assets.hub.card.yield}
+              yieldValue={stats.yieldValue}
+            />
+          )
+        })}
 
         {walletReady && hideZero && holdingsReady && modes.length === 0 ? (
           <Text as="p" tone="muted-foreground" variant="copy">
@@ -139,13 +150,7 @@ export function AssetsHubWidget() {
           </Text>
         ) : null}
 
-        {!walletReady ? (
-          <DappWidgetConnectPromo />
-        ) : modes.length > 0 ? (
-          <Text as="p" tone="muted-foreground" variant="copy">
-            {t.assets.hub.emptyHint}
-          </Text>
-        ) : null}
+        {!walletReady ? <DappWidgetConnectPromo /> : null}
       </ExchangeWidgetBody>
     </>
   )

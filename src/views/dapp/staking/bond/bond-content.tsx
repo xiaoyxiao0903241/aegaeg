@@ -3,6 +3,8 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 
+const PLACEHOLDER = '—'
+
 export function BondContent({ kind }: { kind: BondKind }) {
   const { messages: t } = useI18n()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
@@ -10,17 +12,23 @@ export function BondContent({ kind }: { kind: BondKind }) {
     kind === 'lp' ? t.staking.aside.recordsTitles.lpbond : t.staking.aside.recordsTitles.burnbond
   const chartTitle =
     kind === 'lp' ? t.staking.aside.chartTitles.lpbond : t.staking.aside.chartTitles.burnbond
+
   return (
     <DappDetailPage>
       <StakingDetailAside
         chartTitle={chartTitle}
         faq={copy.faq}
-        mechanism={copy.mechanism}
-        overviewItems={[
-          { label: copy.meta.discount, value: '—' },
-          { label: copy.meta.slippage, value: '—' },
-          { label: copy.meta.cap, value: '—' },
-        ]}
+        mechanismSteps={copy.mechanismSteps}
+        mechanismTitle={copy.mechanismTitle}
+        overviewItems={copy.overviewMetrics.map((metric) => ({
+          label: metric.label,
+          value: PLACEHOLDER,
+        }))}
+        overviewLayout="cards"
+        positionItems={copy.positionMetrics.map((metric) => ({
+          label: metric.label,
+          value: PLACEHOLDER,
+        }))}
         recordsTitle={recordsTitle}
       />
     </DappDetailPage>

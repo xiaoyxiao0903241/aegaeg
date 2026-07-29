@@ -10,7 +10,7 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { Text } from '~/shared/ui/text'
 import { WidgetHeader } from '~/shared/ui/widget-header'
-import { ExchangeModeCard } from '~/views/dapp/exchange/hub/exchange-mode-card'
+import { RewardsModeCard } from '~/views/dapp/rewards/hub/rewards-mode-card'
 import {
   ExchangePanelToggle,
   ExchangeWidgetBody,
@@ -26,6 +26,17 @@ const CARD_VIEWS = [
   'grant',
   'genesis',
 ] as const satisfies readonly Exclude<RewardsView, 'hub'>[]
+
+const DASH = '—'
+
+function formatGagxBalance(value: number | null, sessionReady: boolean, signInLabel: string) {
+  if (!sessionReady) return { amount: signInLabel, approx: DASH }
+  if (value == null) return { amount: DASH, approx: DASH }
+  return {
+    amount: `${value.toFixed(4)}gAGX`,
+    approx: `≈ ${formatUsd(value, 2)}`,
+  }
+}
 
 export function RewardsHubWidget() {
   const { messages: t } = useI18n()
@@ -44,13 +55,6 @@ export function RewardsHubWidget() {
     if (view === 'genesis') return genesisAmount
     if (view === 'referral') return Number.isFinite(referralAmount) ? referralAmount : 0
     return null
-  }
-
-  const amountLabel = (view: (typeof CARD_VIEWS)[number]) => {
-    if (!sessionReady) return t.rewards.hub.signInForBalance
-    const value = amountValue(view)
-    if (value == null) return t.rewards.hub.balancePlaceholder
-    return `${formatUsd(value, 2)}`
   }
 
   const visible = CARD_VIEWS.filter((view) => {
@@ -102,10 +106,27 @@ export function RewardsHubWidget() {
 
         {visible.map((view) => {
           const card = t.rewards.cards[view]
+          const value = amountValue(view)
+          const isGenesis = view === 'genesis'
+          const balance = isGenesis
+            ? {
+                amount: sessionReady
+                  ? value == null
+                    ? DASH
+                    : formatUsd(value, 2)
+                  : t.rewards.hub.signInForBalance,
+                approx: undefined as string | undefined,
+              }
+            : formatGagxBalance(value, sessionReady, t.rewards.hub.signInForBalance)
+
           return (
-            <ExchangeModeCard
-              badge={view === 'genesis' ? t.rewards.cards.genesis.badge : undefined}
-              body={`${card.body}\n${t.rewards.hub.balanceLabel}: ${amountLabel(view)}`}
+            <RewardsModeCard
+              approx={balance.approx}
+              badge={isGenesis ? t.rewards.cards.genesis.badge : undefined}
+              balanceAmount={balance.amount}
+              balanceLabel={isGenesis ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel}
+              body={card.body}
+              claimCta={isGenesis ? t.rewards.hub.enterClaim : undefined}
               icon={dappAssets.rewards}
               key={`${view}:${REWARDS_CARD_CONTRACT[view]}`}
               onClick={() => openRewardsView(view)}

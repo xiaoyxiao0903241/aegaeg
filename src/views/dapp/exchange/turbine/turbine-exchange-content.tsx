@@ -2,7 +2,6 @@ import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -14,6 +13,9 @@ import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { DappIcon } from '~/app/shell/dapp-icon'
+import { dappAssets } from '~/app/assets'
+import { cn } from '~/shared/lib/utils'
 
 export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeState }) {
   const { messages: t } = useI18n()
@@ -23,10 +25,9 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
     <DappDetailPage>
       <section>
         <DappContentHeading id="exchange-title">{t.exchange.turbine.dataTitle}</DappContentHeading>
-        <MetricGrid columns={2}>
+        <div className={cn('grid grid-cols-3 gap-4', 'max-dapp:grid-cols-1 max-dapp:gap-2.5')}>
           {showOverviewSkeleton ? (
             <>
-              <ExchangeMetricCardSkeleton />
               <ExchangeMetricCardSkeleton />
               <ExchangeMetricCardSkeleton />
               <ExchangeMetricCardSkeleton />
@@ -35,23 +36,56 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
             <>
               <ExchangeMetricCard
                 label={t.exchange.turbine.metrics.pendingUnlock}
-                value={`${turbine.overview.pendingUnlockLabel} gAGX`}
+                value={
+                  <span className="inline-flex items-center gap-2">
+                    <DappIcon
+                      alt=""
+                      className="size-[22px] rounded-md"
+                      size="token"
+                      src={dappAssets.tokenGagx}
+                    />
+                    <Text as="span" variant="copy" className="font-semibold">
+                      {turbine.overview.pendingUnlockLabel} gAGX
+                    </Text>
+                  </span>
+                }
               />
               <ExchangeMetricCard
                 label={t.exchange.turbine.metrics.cooling}
-                value={`${turbine.overview.coolingLabel} gAGX`}
+                value={
+                  <span className="inline-flex items-center gap-2">
+                    <DappIcon
+                      alt=""
+                      className="size-[22px] rounded-md"
+                      size="token"
+                      src={dappAssets.tokenGagx}
+                    />
+                    <Text as="span" variant="copy" className="font-semibold">
+                      {turbine.overview.coolingLabel} gAGX
+                    </Text>
+                  </span>
+                }
               />
               <ExchangeMetricCard
-                label={t.exchange.turbine.metrics.claimable}
-                value={`${turbine.overview.claimableLabel} gAGX`}
-              />
-              <ExchangeMetricCard
-                label={t.exchange.turbine.cooldown}
-                value={turbine.cooldownHoursLabel}
+                label={t.exchange.turbine.metrics.totalWithdrawn}
+                value={
+                  <span className="inline-flex items-center gap-2">
+                    <DappIcon
+                      alt=""
+                      className="size-[22px] rounded-md"
+                      size="token"
+                      src={dappAssets.tokenGagx}
+                    />
+                    <Text as="span" variant="copy" className="font-semibold">
+                      {/* No cumulative claim index on-chain yet — honest empty (leaf DEFER). */}
+                      {turbine.overview.totalWithdrawnLabel}
+                    </Text>
+                  </span>
+                }
               />
             </>
           )}
-        </MetricGrid>
+        </div>
       </section>
 
       <DappDetailBlock>
@@ -89,7 +123,7 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
-        <FaqList defaultOpenFirst={false} items={t.exchange.turbine.faq.items} variant="dapp" />
+        <FaqList items={t.exchange.turbine.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

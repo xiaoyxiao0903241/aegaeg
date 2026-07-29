@@ -109,7 +109,7 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
-        <FaqList defaultOpenFirst={false} items={t.exchange.burn.faq.items} variant="dapp" />
+        <FaqList items={t.exchange.burn.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

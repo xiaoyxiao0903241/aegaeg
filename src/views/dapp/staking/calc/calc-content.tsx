@@ -3,19 +3,82 @@ import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { Text } from '~/shared/ui/text'
+import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 
 const PLACEHOLDER = '—'
+
+function formatUsd(value: number) {
+  if (!Number.isFinite(value)) return PLACEHOLDER
+  return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}`
+}
+
+function formatPct(value: number) {
+  if (!Number.isFinite(value)) return PLACEHOLDER
+  const sign = value >= 0 ? '+' : ''
+  return `${sign}${value.toFixed(2)}%`
+}
 
 export function CalcContent() {
   const { messages: t } = useI18n()
   const aside = t.staking.calc.aside
+  const result = useCalcEstimateStore((state) => state.result)
+
+  const productLabel = result ? t.staking.calc.products[result.product] : null
+  const periodLabel = result
+    ? result.period === 'liquid'
+      ? t.staking.stake.periods.liquid
+      : result.period === '180'
+        ? t.staking.stake.periods.d180
+        : result.period === '360'
+          ? t.staking.stake.periods.d360
+          : result.period === '540'
+            ? t.staking.stake.periods.d540
+            : result.period
+    : null
+
   return (
     <DappDetailPage>
       <DappDetailBlock>
-        <DappContentHeading>{aside.result}</DappContentHeading>
-        <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
-          {aside.resultHint}
-        </Text>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <DappContentHeading className="m-0">{aside.result}</DappContentHeading>
+          {result ? (
+            <div className="flex flex-wrap gap-1.5">
+              <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[12px] font-semibold text-primary">
+                {productLabel}
+              </span>
+              <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[12px] font-semibold text-primary">
+                {periodLabel}
+              </span>
+              <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[12px] font-semibold text-primary">
+                {aside.tags.day.replace('{day}', String(result.days))}
+              </span>
+            </div>
+          ) : null}
+        </div>
+        {result ? (
+          <div className="grid gap-3">
+            <div className="grid gap-1">
+              <Text as="span" tone="muted-foreground" variant="detail">
+                {t.staking.calc.result.total}
+              </Text>
+              <div className="flex flex-wrap items-center gap-2">
+                <Text as="strong" className="text-[28px] font-bold text-success" variant="copy">
+                  {formatUsd(result.totalUsd)}
+                </Text>
+                <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[12px] font-semibold text-success">
+                  {formatPct(result.ratePct)}
+                </span>
+              </div>
+            </div>
+            <Text as="p" className="m-0" tone="muted-foreground" variant="detail">
+              {t.staking.calc.result.interest}: {formatUsd(result.interestUsd)}
+            </Text>
+          </div>
+        ) : (
+          <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
+            {aside.resultHint}
+          </Text>
+        )}
       </DappDetailBlock>
       <DappDetailBlock>
         <DappContentHeading>{aside.curve}</DappContentHeading>

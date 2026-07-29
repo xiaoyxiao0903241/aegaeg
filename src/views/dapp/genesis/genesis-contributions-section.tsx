@@ -7,7 +7,6 @@ import { mapSalesLogToDesktopRow } from '~/views/dapp/presale-display'
 import { bscscanTx } from '~/shared/config/explorer'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
@@ -125,20 +124,16 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
           {contributionsTable.requiresAuth ? (
             <DappTableAuthPrompt body={t.dapp.connect.recordsBodyGenesis} embedded />
           ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
-            <>
-              <ResponsiveTable
-                colWidths={[...genesisContributionsColWidths]}
-                compact
-                headers={tableHeaders}
-                positiveColumns={[2]}
-                rows={[]}
-              />
-              <DappTableEmptyMessage
-                body={t.genesis.contributionsEmpty.body}
-                embedded
-                title={t.genesis.contributionsEmpty.title}
-              />
-            </>
+            <div className="flex min-h-[108px] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
+              <Text
+                as="p"
+                className="text-center text-[13px]"
+                tone="muted-foreground"
+                variant="detail"
+              >
+                {`${t.genesis.contributionsEmpty.title}，${t.genesis.contributionsEmpty.body}`}
+              </Text>
+            </div>
           ) : (
             <ResponsiveTable
               colWidths={[...genesisContributionsColWidths]}

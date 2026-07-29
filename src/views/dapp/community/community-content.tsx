@@ -13,7 +13,6 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
@@ -26,6 +25,7 @@ import {
   CommunityStatCard,
   CommunityStatGrid,
 } from '~/views/dapp/community/community-content-primitives'
+import { Text } from '~/shared/ui/text'
 
 type CommunityStat = {
   dark?: boolean
@@ -205,20 +205,16 @@ export function CommunityContent() {
           {invitesTable.requiresAuth ? (
             <DappTableAuthPrompt body={t.dapp.connect.recordsBodyCommunity} embedded />
           ) : invitesTable.queryEmpty ? (
-            <>
-              <ResponsiveTable
-                colWidths={[...communityInviteColWidths]}
-                compact
-                headers={inviteTableHeaders}
-                linkColumns={[1]}
-                rows={[]}
-              />
-              <DappTableEmptyMessage
-                body={t.community.invitesEmpty.body}
-                embedded
-                title={t.community.invitesEmpty.title}
-              />
-            </>
+            <div className="flex min-h-[108px] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
+              <Text
+                as="p"
+                className="text-center text-[13px]"
+                tone="muted-foreground"
+                variant="detail"
+              >
+                {`${t.community.invitesEmpty.title}，${t.community.invitesEmpty.body}`}
+              </Text>
+            </div>
           ) : (
             <ResponsiveTable
               colWidths={[...communityInviteColWidths]}

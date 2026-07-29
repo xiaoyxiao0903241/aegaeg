@@ -17,7 +17,7 @@ export function TokenChip({
   const body = (
     <>
       {icon ? (
-        <DappIcon alt="" className="rounded-full" loading="lazy" size="token" src={icon} />
+        <DappIcon alt="" className="rounded-md" loading="lazy" size="token" src={icon} />
       ) : null}
       <Text as="span" variant="detail" className="leading-[1.2] font-semibold">
         {label}
@@ -49,7 +49,7 @@ export function TokenChip({
   return (
     <button
       className={cn(
-        'inline-flex items-center gap-2 rounded-full bg-background px-2.5 py-1.5',
+        'inline-flex items-center gap-2 rounded-full bg-background px-[10px] py-1.5',
         onClick && 'cursor-pointer',
         !onClick && 'cursor-default',
       )}

@@ -73,6 +73,6 @@ test('audit #12: formatExchangeRateColon uses bigint ratio without Number()', as
       decimalsIn: 18,
       decimalsOut: 18,
     }),
-    '1 : 1.0010',
+    '1 : 1.001',
   )
 })

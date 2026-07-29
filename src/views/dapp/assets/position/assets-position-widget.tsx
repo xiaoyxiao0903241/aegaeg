@@ -5,7 +5,8 @@ import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatBlockTime, formatUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { openStakingView } from '~/shared/config/open-staking-view'
@@ -13,6 +14,7 @@ import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { AssetsSubpageHeader } from '~/views/dapp/assets/assets-subpage-header'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
@@ -41,6 +43,7 @@ import type { Address } from '~/shared/config/contracts'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 export type AssetsProduct = 'stake' | 'lpbond' | 'burnbond'
 
@@ -74,6 +77,13 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
   const copy = t.assets.products[product]
   const stakingTarget = product === 'stake' ? 'stake' : product === 'lpbond' ? 'lpbond' : 'burnbond'
   const pageSize = t.assets.position.pageSize
+  const agxPriceQuery = usePresaleAgxPriceQuery()
+  const agxPriceUsd = formatTokenAmountToNumber(agxPriceQuery.data ?? 0n, USD1_DECIMALS)
+
+  function formatRewardUsd(amount: bigint): string {
+    if (agxPriceQuery.isError || agxPriceUsd <= 0) return '—'
+    return formatUsd(formatTokenAmountToNumber(amount, GAGX_DECIMALS) * agxPriceUsd, 2)
+  }
 
   const stakeQuery = useQuery({
     queryKey: queryKeys.chain.assetsStakePositions(address ?? ''),
@@ -208,48 +218,81 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             const canClaim = reward > 0n
             const canRedeem = row.kind === 'liquid' ? row.principal > 0n : row.claimableBalance > 0n
             const periodLabel =
-              row.period === 'liquid' ? t.assets.position.liquid : `${row.period}d`
+              row.period === 'liquid' ? t.assets.position.liquid : `${row.period} 天`
+            const voucher =
+              row.kind === 'locked' && row.pool
+                ? `${row.pool.slice(0, 6)}…${row.pool.slice(-4)}`
+                : null
             return (
-              <Card key={row.id} surface="outlined" className="grid gap-3 p-4 shadow-none">
-                <div className="flex items-center justify-between gap-2">
-                  <Text as="span" className="font-semibold" variant="copy">
+              <Card key={row.id} surface="outlined" className="grid gap-2 p-4 shadow-none">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs text-muted-foreground">
                     {periodLabel}
-                  </Text>
-                  <Text as="span" tone="muted-foreground" variant="detail">
-                    {t.assets.position.remaining}: —
-                  </Text>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="grid gap-1">
+                  </span>
+                  <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
                     <Text as="span" tone="muted-foreground" variant="detail">
-                      {t.assets.position.staked}
+                      {t.assets.position.remaining}
                     </Text>
-                    <Text as="strong" variant="copy">
-                      {formatTokenAmount(row.principal, AGX_DECIMALS, 4)} AGX
+                    <Text as="span" className="text-sm" variant="detail">
+                      {row.expiry > 0n ? formatBlockTime(Number(row.expiry)) : '—'}
                     </Text>
-                    {row.releasedPrincipal > 0n ? (
-                      <Text as="span" tone="muted-foreground" variant="detail">
-                        {formatTokenAmount(row.releasedPrincipal, AGX_DECIMALS, 4)} AGX
-                      </Text>
-                    ) : null}
-                  </div>
-                  <div className="grid gap-1 text-right">
-                    <Text as="span" tone="muted-foreground" variant="detail">
-                      {t.assets.position.yield}
-                    </Text>
-                    <Text as="strong" variant="copy">
-                      {formatTokenAmount(reward, GAGX_DECIMALS, 4)} gAGX
-                    </Text>
-                    {quote === 'usd' ? (
-                      <Text as="span" tone="muted-foreground" variant="detail">
-                        —
-                      </Text>
-                    ) : null}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
+                  <div className="grid gap-1">
+                    <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                      {t.assets.position.staked}
+                    </Text>
+                    <Text as="strong" className="text-base font-semibold" variant="copy">
+                      {formatTokenAmount(row.principal, AGX_DECIMALS, 2)} AGX
+                    </Text>
+                    {row.releasedPrincipal > 0n ? (
+                      <span className="inline-flex w-fit items-center gap-1 rounded-[10px] bg-primary-soft px-2 py-0.5">
+                        <Text as="span" className="text-xs text-primary" variant="detail">
+                          {formatTokenAmount(row.releasedPrincipal, AGX_DECIMALS, 2)} AGX
+                        </Text>
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="grid justify-items-end gap-1 text-right">
+                    <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                      {t.assets.position.yield}
+                    </Text>
+                    <Text
+                      as="strong"
+                      className="text-base font-semibold text-primary"
+                      variant="copy"
+                    >
+                      {formatTokenAmount(reward, GAGX_DECIMALS, 2)} gAGX
+                    </Text>
+                    {row.extraInterest > 0n ? (
+                      <span className="inline-flex w-fit items-center gap-1 rounded-[10px] bg-primary-soft px-2 py-0.5">
+                        <Text as="span" className="text-xs text-primary" variant="detail">
+                          {formatTokenAmount(row.extraInterest, GAGX_DECIMALS, 2)} gAGX
+                        </Text>
+                      </span>
+                    ) : null}
+                    {quote === 'usd' ? (
+                      <Text as="span" tone="muted-foreground" variant="detail">
+                        {formatRewardUsd(reward)}
+                      </Text>
+                    ) : null}
+                  </div>
+                </div>
+                {voucher ? (
+                  <div className="flex items-center justify-end gap-1">
+                    <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                      {t.assets.position.voucher}
+                    </Text>
+                    <Text as="span" className="text-xs" variant="detail">
+                      {voucher}
+                    </Text>
+                  </div>
+                ) : null}
+                <div className="grid grid-cols-2 gap-3">
                   <DappActionButton
-                    density="external"
+                    className="h-7 min-h-7 text-xs"
+                    density="inverse"
                     disabled={!canClaim || locked || busy}
                     onClick={() => {
                       const target: MixedClaimTarget =
@@ -273,7 +316,8 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                     {t.assets.position.claim}
                   </DappActionButton>
                   <DappActionButton
-                    density="external"
+                    className="h-7 min-h-7 text-xs"
+                    density="inverse"
                     disabled={!canRedeem || locked || busy}
                     onClick={() => requestRedeem('stake', row)}
                     variant="secondary"
@@ -288,38 +332,57 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
           pagedBondRows.map((row) => {
             const canClaim = row.profit > 0n
             const canRedeem = row.pendingPayout > 0n
-            const periodLabel = `${row.period}d`
+            const periodLabel = `${row.period} 天`
+            const voucher = `${row.depository.slice(0, 6)}…${row.depository.slice(-4)}`
             return (
-              <Card key={row.id} surface="outlined" className="grid gap-3 p-4 shadow-none">
-                <div className="flex items-center justify-between gap-2">
-                  <Text as="span" className="font-semibold" variant="copy">
+              <Card key={row.id} surface="outlined" className="grid gap-2 p-4 shadow-none">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs text-muted-foreground">
                     {periodLabel}
-                  </Text>
-                  <Text as="span" tone="muted-foreground" variant="detail">
-                    {t.assets.position.remaining}: —
-                  </Text>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="grid gap-1">
+                  </span>
+                  <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
                     <Text as="span" tone="muted-foreground" variant="detail">
-                      {t.assets.position.payout}
+                      {t.assets.position.remaining}
                     </Text>
-                    <Text as="strong" variant="copy">
-                      {formatTokenAmount(row.payoutRemaining, AGX_DECIMALS, 4)} AGX
-                    </Text>
-                  </div>
-                  <div className="grid gap-1 text-right">
-                    <Text as="span" tone="muted-foreground" variant="detail">
-                      {t.assets.position.yield}
-                    </Text>
-                    <Text as="strong" variant="copy">
-                      {formatTokenAmount(row.profit, GAGX_DECIMALS, 4)} gAGX
+                    <Text as="span" className="text-sm" variant="detail">
+                      {row.vestingEndTime > 0n ? formatBlockTime(Number(row.vestingEndTime)) : '—'}
                     </Text>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
+                  <div className="grid gap-1">
+                    <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                      {t.assets.position.payout}
+                    </Text>
+                    <Text as="strong" className="text-base font-semibold" variant="copy">
+                      {formatTokenAmount(row.payoutRemaining, AGX_DECIMALS, 2)} AGX
+                    </Text>
+                  </div>
+                  <div className="grid justify-items-end gap-1 text-right">
+                    <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                      {t.assets.position.yield}
+                    </Text>
+                    <Text
+                      as="strong"
+                      className="text-base font-semibold text-primary"
+                      variant="copy"
+                    >
+                      {formatTokenAmount(row.profit, GAGX_DECIMALS, 2)} gAGX
+                    </Text>
+                  </div>
+                </div>
+                <div className="flex items-center justify-end gap-1">
+                  <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                    {t.assets.position.voucher}
+                  </Text>
+                  <Text as="span" className="text-xs" variant="detail">
+                    {voucher}
+                  </Text>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
                   <DappActionButton
-                    density="external"
+                    className="h-7 min-h-7 text-xs"
+                    density="inverse"
                     disabled={!canClaim || locked || busy}
                     onClick={() =>
                       setClaim({
@@ -338,7 +401,8 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                     {t.assets.position.claim}
                   </DappActionButton>
                   <DappActionButton
-                    density="external"
+                    className="h-7 min-h-7 text-xs"
+                    density="inverse"
                     disabled={!canRedeem || locked || busy}
                     onClick={() => requestRedeem('bond', row)}
                     variant="secondary"

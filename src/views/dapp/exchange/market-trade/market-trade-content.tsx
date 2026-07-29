@@ -49,7 +49,7 @@ export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.tabsTitle}</DappContentHeading>
         <MarketTradeFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
-        <FaqList defaultOpenFirst={false} items={faqItems} key={faqToken} variant="dapp" />
+        <FaqList items={faqItems} key={faqToken} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

@@ -20,6 +20,7 @@ export const PANCAKE_PAIR_V2_METHODS = {
   token1: 'function token1() view returns (address)',
   getReserves:
     'function getReserves() view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast)',
+  totalSupply: 'function totalSupply() view returns (uint256)',
 } as const
 
 export const PRESALE_METHODS = {
@@ -145,6 +146,7 @@ export const LOCKED_STAKING_METHODS = {
 /** BondHelper — LP / Burn zap (manual §10). */
 export const BOND_HELPER_METHODS = {
   authContracts: 'function authContracts(address target) view returns (bool)',
+  slippage: 'function slippage() view returns (uint256)',
   zapIntoLiquidityBond:
     'function zapIntoLiquidityBond(address bondDepository, address token, uint256 amount)',
   zapIntoBurnBond:
@@ -189,6 +191,21 @@ export const LOCKED_STAKING_ASSETS_METHODS = {
     'function claimExtraRewardMixed(uint256 stakeIndex, uint256 amount, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
 } as const
 
+/** Bond / BurnBond market reads (manual §10) — staking buy meta. */
+export const BOND_DEPOSITORY_MARKET_METHODS = {
+  discountRateBP: 'function discountRateBP() view returns (uint256)',
+  terms:
+    'function terms() view returns (uint256 vestingTerm, uint256 maxPayout, uint256 fee, uint256 maxDebt, uint256 totalDeposit)',
+  treasury: 'function treasury() view returns (address)',
+  principle: 'function principle() view returns (address)',
+  liquidityPool: 'function liquidityPool() view returns (address)',
+  restakeConfig: 'function restakeConfig() view returns (address)',
+} as const
+
+export const TREASURY_METHODS = {
+  valueOf: 'function valueOf(address token, uint256 amount) view returns (uint256)',
+} as const
+
 /** Bond / BurnBond position ops (manual §10) — assets rail. */
 export const BOND_DEPOSITORY_ASSETS_METHODS = {
   getBondCount: 'function getBondCount(address depositor) view returns (uint256)',
@@ -230,6 +247,7 @@ export const RESTAKE_CONFIG_METHODS = {
   getPlanCount: 'function getPlanCount() view returns (uint256)',
   getPlan:
     'function getPlan(uint256 index) view returns (uint256 period, uint256 taxBP, address target, bool exists)',
+  agxPrice: 'function agxPrice() view returns (uint256)',
 } as const
 
 export const REWARD_CLAIMER_METHODS = {

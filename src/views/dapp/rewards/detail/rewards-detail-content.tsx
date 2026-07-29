@@ -6,6 +6,7 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
+import { FaqList } from '~/shared/ui/faq-list'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
 
 export function RewardsDetailContent({ view }: { view: Exclude<RewardsView, 'hub'> }) {
@@ -35,18 +36,7 @@ export function RewardsDetailContent({ view }: { view: Exclude<RewardsView, 'hub
 
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.faq.title}</DappContentHeading>
-        <ul className="grid gap-3">
-          {t.rewards.faq.items.map((item) => (
-            <li className="rounded-2xl border border-border bg-card p-4" key={item.q}>
-              <Text as="p" className="font-semibold" variant="copy">
-                {item.q}
-              </Text>
-              <Text as="p" className="mt-2" tone="muted-foreground" variant="copy">
-                {item.a}
-              </Text>
-            </li>
-          ))}
-        </ul>
+        <FaqList items={t.rewards.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

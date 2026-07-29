@@ -42,7 +42,7 @@ export function FlashExchangeContent({ flash }: { flash: FlashExchangeState }) {
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
-        <FaqList defaultOpenFirst={false} items={t.exchange.flash.faq.items} variant="dapp" />
+        <FaqList items={t.exchange.flash.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

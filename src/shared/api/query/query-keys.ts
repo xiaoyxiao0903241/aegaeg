@@ -105,6 +105,11 @@ export const queryKeys = {
       ['chain', 'staking', 'open', pool.toLowerCase(), address.toLowerCase()] as const,
     bondZapPreflight: (depository: string, address: string) =>
       ['chain', 'staking', 'bondZap', depository.toLowerCase(), address.toLowerCase()] as const,
+    bondMarketMeta: (depository: string) =>
+      ['chain', 'staking', 'bondMarket', depository.toLowerCase()] as const,
+    bondZapAgxPreview: (kind: string, depository: string, amount: string) =>
+      ['chain', 'staking', 'bondZapPreview', kind, depository.toLowerCase(), amount] as const,
+    bondHelperSlippage: ['chain', 'staking', 'bondHelper', 'slippage'] as const,
     xminePreflight: (address: string) =>
       ['chain', 'staking', 'xmine', address.toLowerCase()] as const,
     assetsRoot: ['chain', 'assets'] as const,

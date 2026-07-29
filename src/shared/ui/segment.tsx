@@ -156,13 +156,14 @@ export function PercentButtonRow({
   values = [25, 50, 75, 100],
 }: PercentButtonRowProps) {
   return (
-    <div className={cn('grid grid-cols-4 gap-1.5', className)} role="group" aria-label={ariaLabel}>
+    <div className={cn('grid grid-cols-4 gap-2', className)} role="group" aria-label={ariaLabel}>
       {values.map((percent) => (
         <Chip
           key={percent}
+          className="h-6 min-h-6 py-0 text-xs font-semibold"
           disabled={disabled}
           onClick={() => onSelect(percent)}
-          shape="rounded"
+          shape="pill"
           size="md"
           type="button"
           variant="outlined"

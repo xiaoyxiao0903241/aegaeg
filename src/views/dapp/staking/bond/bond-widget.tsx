@@ -9,12 +9,13 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
-import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
+import { formatAddress } from '~/app/utils'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { ExchangeMetaPanel } from '~/views/dapp/exchange/exchange-meta-panel'
 import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
 import { StakingSubpageHeader } from '~/views/dapp/staking/staking-subpage-header'
+import { BondPeriodList } from '~/views/dapp/staking/bond/bond-period-list'
 import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
 import { BOND_ZAP_GATE_ERROR, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
@@ -27,12 +28,6 @@ export function BondWidget({ kind }: { kind: BondKind }) {
   const bond = useBondWidget(kind, sessionReady)
   const selectTab = useDappShellStore((state) => state.selectTab)
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
-
-  const periodOptions = [
-    { label: t.staking.stake.periods.d180, value: '180' },
-    { label: t.staking.stake.periods.d360, value: '360' },
-    { label: t.staking.stake.periods.d540, value: '540' },
-  ]
 
   function resolveMessage(error: unknown) {
     const raw = readErrorText(error)
@@ -69,16 +64,26 @@ export function BondWidget({ kind }: { kind: BondKind }) {
   }
 
   const ctaLabel = bond.gate === 'notBound' ? t.staking.stake.bindCta : copy.submit
+  const amountLabel = copy.amountBalance.replace(
+    '{balance}',
+    bond.isBalancesLoading ? '…' : bond.balanceLabel,
+  )
 
   return (
     <>
       <StakingSubpageHeader subtitle={copy.intro} title={copy.title} />
       <ExchangeWidgetBody>
-        <Segment
-          aria-label={copy.periodAria}
+        <BondPeriodList
+          ariaLabel={copy.periodAria}
+          copy={copy.card}
+          discounts={bond.periodDiscounts}
           onChange={bond.setPeriod}
-          options={periodOptions}
-          tone="coral"
+          periodLabel={copy.periodLabel}
+          periodLabels={{
+            '180': t.staking.stake.periods.d180,
+            '360': t.staking.stake.periods.d360,
+            '540': t.staking.stake.periods.d540,
+          }}
           value={bond.period}
         />
 
@@ -87,39 +92,59 @@ export function BondWidget({ kind }: { kind: BondKind }) {
             'aria-label': copy.amountAria,
             inputMode: 'decimal',
             onChange: (event) => bond.setAmount(event.target.value),
-            placeholder: '0',
+            placeholder: '0.00',
             value: bond.amountDisplay,
           }}
-          balance={
-            <>
-              {t.staking.balance}: {bond.isBalancesLoading ? '…' : bond.balanceLabel}
-            </>
-          }
           endAdornment={
-            <FieldActionChip disabled={!walletReady || bond.isSubmitting} onClick={bond.fillMax}>
-              {t.staking.max}
-            </FieldActionChip>
-          }
-          label={t.staking.amount}
-          sessionReady={sessionReady}
-          startAdornment={
-            <span className="flex items-center gap-2">
-              <DappIcon alt="" size="md" src={dappAssets.tokenUsd1} />
-              <Text as="span" className="font-semibold" variant="copy">
-                USD1
-              </Text>
+            <span className="flex items-center gap-2.5">
+              <span className="flex items-center gap-1.5">
+                <DappIcon alt="" size="md" src={dappAssets.tokenUsd1} />
+                <Text as="span" className="font-semibold" variant="copy">
+                  USD1
+                </Text>
+              </span>
+              <FieldActionChip disabled={!walletReady || bond.isSubmitting} onClick={bond.fillMax}>
+                {t.staking.max}
+              </FieldActionChip>
             </span>
           }
+          inputClassName="!ml-0 mr-auto max-w-[50%] text-left"
+          label={amountLabel}
+          sessionReady={sessionReady}
+          startAdornment={null}
         />
 
         <ExchangeMetaPanel
+          className="gap-3 p-4"
           items={[
-            { label: copy.meta.discount, value: '—' },
-            { label: copy.meta.slippage, value: '—' },
-            { label: copy.meta.pay, value: bond.amountDisplay || '—' },
-            { label: copy.meta.receive, value: '—' },
-            { label: copy.meta.cap, value: '—' },
-            { label: copy.meta.release, value: `${bond.period}d` },
+            {
+              label: copy.meta.discount,
+              value: bond.isMarketLoading ? '…' : bond.discountLabel,
+            },
+            {
+              label: copy.meta.slippage,
+              value: bond.isSlippageLoading ? '…' : bond.slippageLabel,
+            },
+            {
+              label: copy.meta.pay,
+              value: bond.amountDisplay ? `${bond.amountDisplay} USD1` : '0 USD1',
+            },
+            {
+              label: copy.meta.receive,
+              value: bond.isPayoutQuoting
+                ? '…'
+                : bond.receiveLabel === '—'
+                  ? '—'
+                  : `${bond.receiveLabel} AGX`,
+            },
+            {
+              label: copy.meta.cap,
+              value: bond.isMarketLoading ? '…' : bond.capLabel,
+            },
+            {
+              label: copy.meta.release,
+              value: copy.meta.releaseLinear.replace('{days}', bond.period),
+            },
             {
               label: copy.meta.contract,
               value: (
@@ -129,7 +154,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
                   rel="noreferrer"
                   target="_blank"
                 >
-                  {t.staking.viewContract}
+                  {formatAddress(bond.depository)}
                 </a>
               ),
             },

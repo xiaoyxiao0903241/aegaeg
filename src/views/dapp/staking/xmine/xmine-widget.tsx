@@ -9,6 +9,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
+import { formatAddress } from '~/app/utils'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { ExchangeMetaPanel } from '~/views/dapp/exchange/exchange-meta-panel'
 import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
@@ -45,6 +46,16 @@ export function XmineWidget() {
     if (result.error != null) presentUserFacingError(result.error, resolveMessage)
   }
 
+  const amountLabel = t.staking.xmine.amountBalance.replace(
+    '{balance}',
+    xmine.isBalancesLoading ? '…' : xmine.balanceLabel,
+  )
+  const quotaBalance = (
+    <Text as="span" className="font-semibold text-primary" variant="support">
+      {t.staking.xmine.quotaInline.replace('{quota}', xmine.quotaLabel)}
+    </Text>
+  )
+
   return (
     <>
       <StakingSubpageHeader subtitle={t.staking.xmine.intro} title={t.staking.xmine.title} />
@@ -54,37 +65,48 @@ export function XmineWidget() {
             'aria-label': t.staking.xmine.amountAria,
             inputMode: 'decimal',
             onChange: (event) => xmine.setAmount(event.target.value),
-            placeholder: '0',
+            placeholder: '0.00',
             value: xmine.amountDisplay,
           }}
-          balance={
-            <>
-              {t.staking.balance}: {xmine.isBalancesLoading ? '…' : xmine.balanceLabel}
-            </>
-          }
+          balance={quotaBalance}
           endAdornment={
-            <FieldActionChip disabled={!walletReady || xmine.isSubmitting} onClick={xmine.fillMax}>
-              {t.staking.max}
-            </FieldActionChip>
-          }
-          label={t.staking.amount}
-          sessionReady={sessionReady}
-          startAdornment={
-            <span className="flex items-center gap-2">
-              <DappIcon alt="" size="md" src={dappAssets.tokenGagx} />
-              <Text as="span" className="font-semibold" variant="copy">
-                gAGX
-              </Text>
+            <span className="flex items-center gap-2.5">
+              <span className="flex items-center gap-1.5">
+                <DappIcon alt="" size="md" src={dappAssets.tokenGagx} />
+                <Text as="span" className="font-semibold" variant="copy">
+                  gAGX
+                </Text>
+              </span>
+              <FieldActionChip
+                disabled={!walletReady || xmine.isSubmitting}
+                onClick={xmine.fillMax}
+              >
+                {t.staking.max}
+              </FieldActionChip>
             </span>
           }
+          inputClassName="!ml-0 mr-auto max-w-[50%] text-left"
+          label={amountLabel}
+          sessionReady={sessionReady}
+          startAdornment={null}
         />
 
         <ExchangeMetaPanel
+          className="gap-3 p-4"
           items={[
-            { label: t.staking.xmine.meta.quota, value: xmine.quotaLabel },
-            { label: t.staking.xmine.meta.daily, value: '—' },
-            { label: t.staking.xmine.meta.max, value: '—' },
-            { label: t.staking.xmine.meta.h24, value: '—' },
+            {
+              label: t.staking.xmine.meta.daily,
+              value: '—',
+              valueClassName: 'text-primary',
+            },
+            {
+              label: t.staking.xmine.meta.max,
+              value: xmine.quotaLabel === '—' ? '—' : `${xmine.quotaLabel} gAGX`,
+            },
+            {
+              label: t.staking.xmine.meta.lock,
+              value: t.staking.xmine.meta.lockValue,
+            },
             {
               label: t.staking.xmine.meta.contract,
               value: (
@@ -94,7 +116,7 @@ export function XmineWidget() {
                   rel="noreferrer"
                   target="_blank"
                 >
-                  {t.staking.viewContract}
+                  {formatAddress(xmine.pool)}
                 </a>
               ),
             },

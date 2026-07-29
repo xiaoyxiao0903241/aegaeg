@@ -1,5 +1,3 @@
-import { formatTokenAmount } from '~/core/exchange/token-amount'
-
 function normalizeRateOutPerUnit(amountIn: bigint, amountOut: bigint, decimalsIn: number): bigint {
   const oneUnitIn = 10n ** BigInt(decimalsIn)
   return (amountOut * oneUnitIn) / amountIn
@@ -34,7 +32,13 @@ function formatRateRatioFixed(
   return `${groupedWhole}.${fractionText}`
 }
 
-/** Exchange widget rate label — `1 : 1.0010` (4 fraction digits). */
+/** Trim trailing zeros — Figma flash meta/overview uses `1 : 1`, not `1 : 1.0000`. */
+function trimTrailingZeros(value: string): string {
+  if (!value.includes('.')) return value
+  return value.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')
+}
+
+/** Exchange widget rate label — `1 : 1` / `1 : 1.001` (up to 4 fraction digits). */
 export function formatExchangeRateColon({
   amountIn,
   amountOut,
@@ -52,37 +56,7 @@ export function formatExchangeRateColon({
 
   const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
 
-  return `1 : ${formatRateRatioFixed(normalizedOut, decimalsOut)}`
-}
-
-export function formatExchangeRate({
-  amountIn,
-  amountOut,
-  decimalsIn,
-  decimalsOut,
-  symbolIn,
-  symbolOut,
-  fractionDigits = 6,
-}: {
-  amountIn: bigint
-  amountOut: bigint
-  decimalsIn: number
-  decimalsOut: number
-  symbolIn: string
-  symbolOut: string
-  fractionDigits?: number
-}): string {
-  if (amountIn === 0n || amountOut === 0n) {
-    return `1 ${symbolIn} = — ${symbolOut}`
-  }
-
-  const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
-  const formattedOut =
-    fractionDigits === 6
-      ? formatTokenAmount(normalizedOut, decimalsOut, 6)
-      : formatRateRatioFixed(normalizedOut, decimalsOut, fractionDigits)
-
-  return `1 ${symbolIn} = ${formattedOut} ${symbolOut}`
+  return `1 : ${trimTrailingZeros(formatRateRatioFixed(normalizedOut, decimalsOut))}`
 }
 
 /** Connected Exchange meta — `1 USDT ≈ 1.001 USD1` (3 fraction digits). */

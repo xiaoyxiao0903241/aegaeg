@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
@@ -35,6 +36,8 @@ export type TurbineSegment = 'unlock' | 'claim'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
+/** One whole AGX in base units — unit spot via handbook `quoteUsdInForAgxOut`. */
+const ONE_AGX = 10n ** BigInt(AGX_DECIMALS)
 
 /** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
 export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
@@ -105,10 +108,26 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     staleTime: QUERY_STALE_TIME.quote,
   })
 
+  // Unit spot for meta「AGX 价格」— handbook quoteUsdInForAgxOut(1 AGX); fail → honest —.
+  const unitPriceQuery = useQuery({
+    queryKey: queryKeys.chain.turbineUsdQuote(ONE_AGX.toString()),
+    queryFn: () => readTurbineUsdQuote(ONE_AGX, readClient),
+    enabled: quotesEnabled && sessionReady,
+    staleTime: QUERY_STALE_TIME.quote,
+  })
+
   const usdNeeded = quoteQuery.data ?? 0n
   const buyAgxLabel =
     unlockAmountIn > 0n ? formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4) : '0.00'
   const payUsd1Label = unlockAmountIn > 0n ? formatTokenAmount(usdNeeded, USD1_DECIMALS, 4) : '0.00'
+
+  const unitUsd = unitPriceQuery.data
+  const unitUsdNumber =
+    unitUsd === undefined ? 0 : formatTokenAmountToNumber(unitUsd, USD1_DECIMALS)
+  const agxPriceLabel =
+    unitPriceQuery.isError || unitUsd === undefined || unitUsdNumber <= 0
+      ? ''
+      : formatUsd(unitUsdNumber, 4)
 
   const cooldownSeconds = Number(cooldownQuery.data ?? silencesQuery.data?.cooldownDuration ?? 0n)
   const cooldownHoursLabel = cooldownSeconds > 0 ? `${Math.round(cooldownSeconds / 3600)}h` : '—'
@@ -116,11 +135,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
   const coolingBalance =
     silencesQuery.data?.rows.reduce(
       (sum, row) => (row.vested ? sum : sum + row.silenceBalance),
-      0n,
-    ) ?? 0n
-  const claimableBalance =
-    silencesQuery.data?.rows.reduce(
-      (sum, row) => (row.vested ? sum + row.silenceBalance : sum),
       0n,
     ) ?? 0n
 
@@ -189,8 +203,8 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     segment,
     setSegment,
     pair: {
-      // Handbook §16: turbineBalances / unlock amount axis = AGX (not gAGX).
-      unlock: { icon: dappAssets.tokenAgx, symbol: 'AGX', decimals: AGX_DECIMALS },
+      // Handbook §16: turbineBalances amount axis = AGX decimals. Figma unlock leaf labels gAGX.
+      unlock: { icon: dappAssets.tokenGagx, symbol: 'gAGX', decimals: AGX_DECIMALS },
       pay: { icon: dappAssets.tokenUsd1, symbol: 'USD1', decimals: USD1_DECIMALS },
       buy: { icon: dappAssets.tokenAgx, symbol: 'AGX', decimals: AGX_DECIMALS },
     },
@@ -203,12 +217,15 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     quotaLabel: formatTokenAmount(quota, AGX_DECIMALS, 4),
     usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, 4),
     cooldownHoursLabel,
+    agxPriceLabel,
+    isAgxPriceQuoting: sessionReady && unitPriceQuery.isFetching && !agxPriceLabel,
     providerAddress: BSC_CONTRACTS.turbine,
     silences: silencesQuery.data?.rows ?? [],
     overview: {
       pendingUnlockLabel: formatTokenAmount(quota, AGX_DECIMALS, 2),
       coolingLabel: formatTokenAmount(coolingBalance, AGX_DECIMALS, 2),
-      claimableLabel: formatTokenAmount(claimableBalance, AGX_DECIMALS, 2),
+      // Cumulative withdrawn needs claim event index — honest empty until wired.
+      totalWithdrawnLabel: '—',
       isLoading: walletReady && (quotaQuery.isLoading || silencesQuery.isLoading),
     },
     hasClaimable: (silencesQuery.data?.claimableCount ?? 0) > 0,

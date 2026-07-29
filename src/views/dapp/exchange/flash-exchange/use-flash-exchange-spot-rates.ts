@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import {
-  formatExchangeRate,
   formatExchangeRateColon,
   resolveEmptySpotRatePlaceholder,
 } from '~/views/dapp/exchange/exchange-format-rate'
@@ -48,20 +47,8 @@ export function useFlashExchangeSpotRates({
         (spotQuoteQuery.isFetching && spotQuotedOut === 0n)
 
   const exchangePriceEmpty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
-  const exchangePriceLabel =
-    exchangePriceEmpty !== null
-      ? exchangePriceEmpty
-      : formatExchangeRate({
-          amountIn: spotQuoteAmount,
-          amountOut: spotQuotedOut,
-          decimalsIn: pair.sell.decimals,
-          decimalsOut: pair.buy.decimals,
-          symbolIn: pair.sell.symbol,
-          symbolOut: pair.buy.symbol,
-          fractionDigits: 6,
-        })
-
-  const overviewRateLabel =
+  // Figma flash meta + overview both use colon form (`1 : 1`), not `1 TOKEN = …`.
+  const colonRateLabel =
     exchangePriceEmpty !== null
       ? exchangePriceEmpty
       : formatExchangeRateColon({
@@ -70,6 +57,8 @@ export function useFlashExchangeSpotRates({
           decimalsIn: pair.sell.decimals,
           decimalsOut: pair.buy.decimals,
         })
+  const exchangePriceLabel = colonRateLabel
+  const overviewRateLabel = colonRateLabel
 
   return {
     exchangePriceLabel,

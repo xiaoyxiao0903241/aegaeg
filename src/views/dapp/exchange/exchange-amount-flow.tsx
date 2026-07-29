@@ -71,7 +71,7 @@ export function ExchangeAmountFlow({
       <AmountBox
         amountProps={sellAmountProps}
         balance={sellBalance}
-        className={amountBoxClassName}
+        className={cn('p-4', amountBoxClassName)}
         label={sellLabel ?? t.exchange.sell}
         sessionReady={sessionReady}
         startAdornment={
@@ -104,7 +104,7 @@ export function ExchangeAmountFlow({
           value: exchangePreview ? buyAmount || '0.00' : buyAmount,
         }}
         balance={buyBalance}
-        className={cn('mt-0', amountBoxClassName)}
+        className={cn('mt-0 p-4', amountBoxClassName)}
         label={buyLabel ?? t.exchange.buy}
         loading={showBuyAmountSkeleton}
         loadingSkeleton={<ExchangeAmountSkeleton />}

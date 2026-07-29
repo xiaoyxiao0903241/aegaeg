@@ -8,26 +8,26 @@ import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
-
-const PLACEHOLDER = '—'
+import { useAssetsPositionStats } from '~/views/dapp/assets/position/use-assets-position-stats'
 
 export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
   const { messages: t } = useI18n()
   const copy = t.assets.products[product]
   const stats = copy.stats
+  const values = useAssetsPositionStats(product)
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{stats.title}</DappContentHeading>
         <div className="grid grid-cols-2 gap-3 dapp:grid-cols-3">
-          {stats.metrics.map((metric) => (
-            <div className="grid gap-1" key={metric.label}>
+          {stats.metrics.map((metric, index) => (
+            <div className="grid gap-1 rounded-2xl bg-card p-3.5 shadow-card" key={metric.label}>
               <Text as="span" tone="muted-foreground" variant="detail">
                 {metric.label}
               </Text>
               <Text as="strong" className="font-semibold" variant="copy">
-                {PLACEHOLDER}
+                {values[index] ?? '—'}
               </Text>
             </div>
           ))}
@@ -48,7 +48,7 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
 
       <DappDetailBlock>
         <DappContentHeading>{copy.faq.title}</DappContentHeading>
-        <FaqList defaultOpenFirst={false} items={copy.faq.items} variant="dapp" />
+        <FaqList items={copy.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )
