@@ -15,6 +15,7 @@ export function StakingHubWidget() {
     <>
       <WidgetHeader
         action={<ExchangePanelToggle />}
+        className="mb-4 [&_h1]:text-[1.25rem] [&_h1]:leading-normal [&_h1]:tracking-normal"
         subtitle={t.staking.intro}
         title={t.staking.title}
       />

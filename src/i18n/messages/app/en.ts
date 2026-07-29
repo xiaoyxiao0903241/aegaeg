@@ -1314,8 +1314,8 @@ const app = defineMessages({
   },
   staking: {
     title: 'Staking',
-    intro: 'Stake AGX, buy bonds, or mine X with gAGX',
-    body: 'Stake AGX, buy bonds, or mine X with gAGX',
+    intro: 'Stake and bonds co-build — share Rebase compounding',
+    body: 'Stake and bonds co-build — share Rebase compounding',
     backToHub: 'Back to Staking',
     amount: 'Amount',
     balance: 'Balance',
@@ -1336,37 +1336,73 @@ const app = defineMessages({
       modes: {
         stake: {
           title: 'Stake',
-          body: 'Stake AGX for flexible or term yields',
+          body: 'Stake AGX — rebase twice daily with compounding',
         },
         lpbond: {
           title: 'LP Bond',
-          body: 'Buy liquidity bonds with USD1',
+          body: 'Build the pool with USD1 — get AGX at a discount',
         },
         burnbond: {
           title: 'Burn Bond',
-          body: 'Buy burn bonds with USD1',
+          body: 'Mint AGX at a discount and burn permanently for deflation',
         },
         xmine: {
           title: 'X Mining',
-          body: 'Stake gAGX to mine X',
+          body: 'Stake gAGX to mine X ecosystem rewards without loss',
         },
         calc: {
-          title: 'Calculator',
-          body: 'Local yield estimate — no on-chain writes',
+          title: 'Yield Calculator',
+          body: 'Estimate returns across periods and prices',
         },
       },
       overview: {
         title: 'Overview',
         metrics: [
-          { label: 'TVL' },
-          { label: 'Stakers' },
-          { label: 'Staked today' },
-          { label: 'Flexible APY' },
-          { label: 'Term APY' },
-          { label: 'Bond discount' },
-          { label: 'X mining quota' },
-          { label: 'Reward pool' },
-          { label: 'Protocol revenue' },
+          {
+            id: 'tvl',
+            label: 'Staked TVL',
+            hint: 'Total AGX staked in the protocol and its USD estimate',
+          },
+          {
+            id: 'mcap',
+            label: 'Market cap',
+            hint: 'Total value of circulating AGX',
+          },
+          {
+            id: 'circulating',
+            label: 'AGX circulating',
+            hint: 'AGX currently in circulation',
+          },
+          {
+            id: 'treasury',
+            label: 'Treasury reserve',
+            hint: 'Treasury assets backing minting, market making, and risk defense',
+          },
+          {
+            id: 'price',
+            label: 'AGX price',
+            hint: 'AGX market reference price versus USD1',
+          },
+          {
+            id: 'burned',
+            label: 'Total burned',
+            hint: 'AGX burned via burn bonds and contribution purchases',
+          },
+          {
+            id: 'rebase',
+            label: 'Current Rebase yield',
+            hint: 'Settled once per Epoch (~12h); adjusts with protocol state',
+          },
+          {
+            id: 'runway',
+            label: 'Runway',
+            hint: 'Estimated sustainable runtime from current treasury vs spend',
+          },
+          {
+            id: 'stakers',
+            label: 'Staker addresses',
+            hint: 'Unique addresses that have staked',
+          },
         ],
       },
       periodTable: {
@@ -1377,9 +1413,9 @@ const app = defineMessages({
           lpbond: 'LP Bond',
           burnbond: 'Burn Bond',
         },
-        columns: ['Period', 'Yield', 'Bonus'],
+        columns: ['Period', 'Base daily yield', 'Yield bonus', 'Period yield'],
         rows: [
-          { id: 'liquid', period: 'Flexible' },
+          { id: 'liquid', period: 'Flexible (term)' },
           { id: '180', period: '180d' },
           { id: '360', period: '360d' },
           { id: '540', period: '540d' },
@@ -1388,25 +1424,41 @@ const app = defineMessages({
       chart: {
         title: 'Metrics',
         metricTabs: {
-          tvl: 'TVL',
+          tvl: 'Staked TVL',
           mcap: 'Market cap',
         },
         metricAria: 'Metric switch',
       },
       faq: {
-        title: 'FAQ',
+        title: 'FAQs',
         items: [
           {
-            q: 'What can I do on Staking?',
-            a: 'Stake AGX (flexible/term), buy LP or burn bonds with USD1, mine X with gAGX, and run a local calculator. Claims and redeems live on Assets.',
+            q: 'How is Rebase settled?',
+            a: 'The protocol runs on blocks: ~14,400 blocks = 1 Epoch (~12 hours). Rebase settles at each Epoch end — twice daily.',
           },
           {
-            q: 'Why do I need a referral?',
-            a: 'Stake and bond opens require a bound referral. Bind on Community, then retry.',
+            q: 'How is principal released?',
+            a: 'Stake and bond principal use block-level linear release (~3s per block). After withdrawal, released principal enters a 30-day buffer release for smoother outflow.',
           },
           {
-            q: 'Does the calculator send a transaction?',
-            a: 'No. It only estimates locally and never writes on-chain.',
+            q: 'How do Stake, LP Bond, and Burn Bond differ?',
+            a: 'Stake deposits AGX for Rebase compounding. LP and Burn bonds spend USD1 for discounted AGX — LP builds permanent base liquidity; Burn permanently burns AGX for deflation. All three release principal linearly by period and earn Rebase.',
+          },
+          {
+            q: 'In what form are rewards paid?',
+            a: 'Rebase rewards across products settle as gAGX. Redeem gAGX 1:1 to AGX, or stake gAGX to mine X.',
+          },
+          {
+            q: 'What does the treasury reserve do?',
+            a: 'Treasury (USD1) backs the protocol: 150% over-collateralized AGX minting, AI market making, and risk defense. Runway estimates sustainable runtime from reserve vs spend.',
+          },
+          {
+            q: 'How should I choose a product?',
+            a: 'Prefer compounding → Stake. Want discounted AGX → LP or Burn Bond. Hold gAGX for ecosystem upside → X Mining. Use the calculator to compare periods first.',
+          },
+          {
+            q: 'How do market cap and circulating supply work?',
+            a: 'Circulating supply is AGX in circulation; market cap = circulating × price. Together with TVL and burned supply, they show lock rate and deflation progress.',
           },
         ],
       },

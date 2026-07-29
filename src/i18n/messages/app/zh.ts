@@ -1218,8 +1218,8 @@ const app = defineMessages({
   },
   staking: {
     title: '质押',
-    intro: '质押 AGX、购买债券或以 gAGX 参与 X 挖矿',
-    body: '质押 AGX、购买债券或以 gAGX 参与 X 挖矿',
+    intro: '质押与债券共建，共享 Rebase 复利增长',
+    body: '质押与债券共建，共享 Rebase 复利增长',
     backToHub: '返回质押',
     amount: '数量',
     balance: '余额',
@@ -1240,50 +1240,86 @@ const app = defineMessages({
       modes: {
         stake: {
           title: '质押',
-          body: '质押 AGX 获得活期或定期收益',
+          body: '质押 AGX，每日 2 次 Rebase 复利增长',
         },
         lpbond: {
-          title: 'LP 债券',
-          body: '以 USD1 买入流动性债券',
+          title: 'LP债券',
+          body: '使用 USD1 共建底池，折扣获取 AGX',
         },
         burnbond: {
           title: '销毁债券',
-          body: '以 USD1 买入销毁债券',
+          body: '折扣铸造 AGX 并永久销毁，增强通缩',
         },
         xmine: {
-          title: 'X 挖矿',
-          body: '质押 gAGX 参与 X 挖矿',
+          title: 'X挖矿',
+          body: '质押 gAGX，无损挖取 X 生态奖励',
         },
         calc: {
-          title: '计算器',
-          body: '本地测算收益，不发起链上交易',
+          title: '收益计算器',
+          body: '测算不同周期与价格下的预期收益',
         },
       },
       overview: {
         title: '数据总览',
         metrics: [
-          { label: '总锁仓' },
-          { label: '质押人数' },
-          { label: '今日质押' },
-          { label: '活期 APY' },
-          { label: '定期 APY' },
-          { label: '债券折扣' },
-          { label: 'X 挖矿额度' },
-          { label: '奖励池' },
-          { label: '协议收入' },
+          {
+            id: 'tvl',
+            label: '质押总量(TVL)',
+            hint: '协议内已质押 AGX 总量及其约合美元价值',
+          },
+          {
+            id: 'mcap',
+            label: '总市值',
+            hint: 'AGX 市场流通数量对应的总价值',
+          },
+          {
+            id: 'circulating',
+            label: 'AGX 流通量',
+            hint: '市场上流通中的 AGX 数量',
+          },
+          {
+            id: 'treasury',
+            label: '智库储备',
+            hint: '智库储备资产用于支持抵押铸造、智能做市与风险防御',
+          },
+          {
+            id: 'price',
+            label: 'AGX 价格',
+            hint: 'AGX 相对 USD1 的市场参考价',
+          },
+          {
+            id: 'burned',
+            label: '总销毁量',
+            hint: '购买销毁债券与购买贡献点数销毁的 AGX 总量',
+          },
+          {
+            id: 'rebase',
+            label: '当前 Rebase 收益率',
+            hint: '每个 Epoch（约 12 小时）结算一次，随协议运行状态动态调节',
+          },
+          {
+            id: 'runway',
+            label: '可运行周期',
+            hint: '按当前智库储备与协议支出估算的可持续运行周期',
+          },
+          {
+            id: 'stakers',
+            label: '质押地址数',
+            hint: '全网参与质押的地址总数量',
+          },
         ],
       },
       periodTable: {
-        title: '周期与收益',
+        title: '质押周期与收益',
         segmentAria: '周期表产品切换',
         segs: {
           stake: '质押',
-          lpbond: 'LP 债券',
+          lpbond: 'LP债券',
           burnbond: '销毁债券',
         },
-        columns: ['周期', '收益率', '加成'],
+        columns: ['周期', '基础收益率（日）', '收益率加成', '周期收益率'],
         rows: [
-          { id: 'liquid', period: '活期' },
+          { id: 'liquid', period: '活期（限期）' },
           { id: '180', period: '180 天' },
           { id: '360', period: '360 天' },
           { id: '540', period: '540 天' },
@@ -1298,19 +1334,35 @@ const app = defineMessages({
         metricAria: '数据指标切换',
       },
       faq: {
-        title: '常见问题',
+        title: 'FAQs',
         items: [
           {
-            q: '质押页面可以做什么？',
-            a: '可质押 AGX（活期/定期）、以 USD1 购买 LP 或销毁债券、以 gAGX 参与 X 挖矿，并使用本地收益计算器。仓位领取与赎回请前往资产页。',
+            q: 'Rebase 如何结算？',
+            a: '协议以区块为基础运行：约 14,400 个区块 = 1 个 Epoch（约 12 小时）。每个 Epoch 结束时执行一次 Rebase 结算，系统每日进行 2 次收益分配。',
           },
           {
-            q: '为什么提示绑定推荐？',
-            a: '质押与债券开仓要求已绑定推荐关系。未绑定请前往社区页完成绑定后再试。',
+            q: '本金如何释放？',
+            a: '质押与债券本金采用区块级线性释放模型（约 3 秒一个区块连续释放结算）。已释放本金在提取后，将进入 30 天缓冲释放周期，通过双层线性释放平衡资金释放连续性与市场稳定性。',
           },
           {
-            q: '计算器会发起交易吗？',
-            a: '不会。计算器仅在本地估算收益，不读写链上合约。',
+            q: '质押、LP债券和销毁债券有什么区别？',
+            a: '质押是直接存入 AGX 获取 Rebase 复利收益；LP债券和销毁债券是使用 USD1 以折扣价获取 AGX——LP债券构建永久底层流动性，销毁债券直接销毁 AGX 增强通缩。三者本金均按周期区块线性释放，并享受 Rebase 收益。',
+          },
+          {
+            q: '收益以什么形式发放？',
+            a: '各板块的 Rebase 收益统一以 gAGX 形式结算。gAGX 可随时 1:1 兑换为 AGX，也可质押参与 X 挖矿，获取生态价值代币 X。',
+          },
+          {
+            q: '智库储备有什么作用？',
+            a: '智库储备（USD1）是协议的价值支撑：用于 150% 超额抵押铸造 AGX、AI 智能做市与市场风险防御。"可运行周期"即按当前储备与协议支出估算的可持续运行时间。',
+          },
+          {
+            q: '如何选择适合我的参与方式？',
+            a: '追求稳定复利可选择质押；希望以折扣价获取 AGX 可选择 LP债券或销毁债券；持有 gAGX 想捕获生态红利可参与 X 挖矿。可先用收益计算器测算不同产品与周期的预期收益再做决定。',
+          },
+          {
+            q: '总市值和 AGX 流通量如何理解？',
+            a: 'AGX 流通量为市场上流通中的 AGX 数量，总市值 = 流通量 × 当前价格。配合总质押量与总销毁量，可以观察协议的锁仓率与通缩进度。',
           },
         ],
       },
