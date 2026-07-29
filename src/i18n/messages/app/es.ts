@@ -1581,12 +1581,36 @@ const app = defineMessages({
       ],
       faq: [
         {
-          q: 'Flexible vs term?',
-          a: 'Flexible uses LiquidStaking with warmup; term uses the matching LockedStaking pool.',
+          q: 'How is staking yield calculated?',
+          a: 'Rebase twice daily; daily yield is about 0.5%–1%. Longer locks earn higher bonuses: 180d ≥10%, 360d ≥15%, 540d ≥20%, adjusted with the rebase factor.',
         },
         {
-          q: 'Is warmup activation a reward claim?',
-          a: 'No. claim() only activates expired warmup principal. Mixed claims are on Assets.',
+          q: 'When can principal be withdrawn?',
+          a: 'Principal unlocks linearly by block (~3s). Released amounts can be claimed anytime; claims enter a 30-day buffer release.',
+        },
+        {
+          q: 'Is the reference APY fixed?',
+          a: 'No. APY is indicative; actual yield moves with the rebase factor, protocol state, and market supply/demand.',
+        },
+        {
+          q: 'Rebase yield vs rebase bonus?',
+          a: 'Rebase yield compounds with each epoch while unclaimed. Rebase bonus is the term-lock add-on and does not compound while unclaimed — claim promptly.',
+        },
+        {
+          q: 'In what form are rewards paid?',
+          a: 'Staking rewards are paid as gAGX. Redeem 1:1 for AGX anytime, or stake gAGX in X Mining for X.',
+        },
+        {
+          q: 'Can I exit before maturity?',
+          a: 'No early exit. Principal unlocks linearly over the chosen period; only released amounts can be claimed. Pick a period that fits your plan.',
+        },
+        {
+          q: 'What limits apply to flexible staking?',
+          a: 'Flexible stakes earn no yield bonus and are limited by daily global and per-account quotas that reset daily (first come, first served).',
+        },
+        {
+          q: 'Can one account have multiple stakes?',
+          a: 'Yes. Each stake tracks its own period, yield, and release progress under My staking records.',
         },
       ],
     },

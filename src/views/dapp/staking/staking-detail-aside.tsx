@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -28,7 +28,7 @@ export function StakingDetailAside({
   showXValueCard = false,
   positionItems,
 }: {
-  overviewItems: Array<{ label: string; value: string }>
+  overviewItems: Array<{ label: string; value: ReactNode }>
   /** Figma stake: 2×2 elevated cards; bond/xmine keep compact list until their leaf tickets. */
   overviewLayout?: 'list' | 'cards'
   mechanism?: string
@@ -38,7 +38,7 @@ export function StakingDetailAside({
   recordsTitle: string
   chartTitle: string
   showXValueCard?: boolean
-  positionItems?: Array<{ label: string; value: string }>
+  positionItems?: Array<{ label: string; value: ReactNode }>
 }) {
   const { messages: t } = useI18n()
   const selectTab = useDappShellStore((state) => state.selectTab)
