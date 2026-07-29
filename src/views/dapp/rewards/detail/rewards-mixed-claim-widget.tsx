@@ -44,7 +44,7 @@ import type { DurationPlan } from '~/core/assets/claim-plans'
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const DASH = '—'
 
-type MixedView = Extract<RewardsView, 'lucky' | 'cobuild'>
+type MixedView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral'>
 
 function planLabel(
   days: number,
@@ -94,7 +94,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const amount =
     view === 'lucky'
       ? (luckyQuery.data?.rewardAmount ?? 0n)
-      : 0n /* Dao amount from signature at submit */
+      : 0n /* Dao: signature at submit · referral: no Mixed read yet */
 
   const plansQuery = useQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
@@ -104,7 +104,10 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const contribQuery = useQuery({
     queryKey: [...queryKeys.chain.assetsContribution(account?.address ?? ''), String(amount), view],
     queryFn: () => readContributionSnapshot(account!.address as Address, amount, readClient),
-    enabled: walletReady && Boolean(account?.address) && (view === 'cobuild' || amount > 0n),
+    enabled:
+      walletReady &&
+      Boolean(account?.address) &&
+      (view === 'cobuild' || view === 'referral' || amount > 0n),
   })
 
   const releaseIndex = plansQuery.data
@@ -121,7 +124,9 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const luckyOk =
     view !== 'lucky' ||
     (luckyQuery.data != null && luckyQuery.data.claimable && !luckyQuery.data.paused)
+  /** Referral Mixed write not in handbook — UI chrome only; fail-closed CTA. */
   const canConfirm =
+    view !== 'referral' &&
     walletReady &&
     sessionReady &&
     !locked &&
@@ -155,9 +160,11 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const amountKnown = view === 'lucky' && luckyQuery.data != null
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
-    : sessionReady
-      ? t.rewards.hub.balancePlaceholder
-      : t.rewards.hub.signInForBalance
+    : view === 'referral'
+      ? DASH
+      : sessionReady
+        ? t.rewards.hub.balancePlaceholder
+        : t.rewards.hub.signInForBalance
   const releaseAmount = amountKnown ? splitAmount(amount, releasePct) : 0n
   const restakeAmount = amountKnown ? splitAmount(amount, restakePct) : 0n
   const releaseAmountText = amountKnown ? formatTokenAmount(releaseAmount, AGX_DECIMALS) : DASH
@@ -173,7 +180,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
     (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)
 
   async function onConfirm() {
-    if (!account || !wallet) return
+    if (!account || !wallet || view === 'referral') return
     setDaoContributionBlocked(false)
     setSubmitting(true)
     try {
@@ -270,6 +277,11 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
           !luckyQuery.data.paused ? (
             <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
               {mixed.luckyNotClaimable}
+            </Text>
+          ) : null}
+          {view === 'referral' ? (
+            <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
+              {mixed.referralWritePending}
             </Text>
           ) : null}
         </div>

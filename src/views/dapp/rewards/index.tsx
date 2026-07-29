@@ -14,8 +14,8 @@ const rewardsTransitionStack = tv({
 
 function renderRewardsWidget(displayView: RewardsView) {
   if (displayView === 'lucky') return <RewardsMixedClaimWidget view="lucky" />
+  if (displayView === 'referral') return <RewardsMixedClaimWidget view="referral" />
   if (displayView === 'cobuild') return <RewardsMixedClaimWidget view="cobuild" />
-  if (displayView === 'referral') return <RewardsSimpleClaimWidget view="referral" />
   if (displayView === 'participate') return <RewardsSimpleClaimWidget view="participate" />
   if (displayView === 'grant') return <RewardsSimpleClaimWidget view="grant" />
   if (displayView === 'genesis') return <RewardsSimpleClaimWidget view="genesis" />

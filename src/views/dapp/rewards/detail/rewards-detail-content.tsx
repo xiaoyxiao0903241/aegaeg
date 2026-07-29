@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
@@ -7,11 +8,21 @@ import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
+import { useDappShell } from '~/app/use-dapp-shell'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import type { Address } from '~/shared/config/contracts'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { readContributionSnapshot } from '~/web3/assets/assets-read'
+import { readReferralCount } from '~/web3/referral/referral-read'
 import { Button } from '~/shared/ui/button'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
 
 const DASH = '—'
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 function RewardsLuckyContent() {
   const { messages: t } = useI18n()
@@ -124,9 +135,135 @@ function RewardsLuckyContent() {
   )
 }
 
+function RewardsReferralContent() {
+  const { messages: t } = useI18n()
+  const referral = t.rewards.referral
+  const { walletReady } = useDappShell()
+  const account = useActiveAccount()
+  const readClient = useChainReadClient()
+  const address = account?.address
+
+  const countQuery = useQuery({
+    queryKey: ['chain', 'rewards', 'referral-count', address ?? ''],
+    queryFn: () => readReferralCount(address as Address, readClient),
+    enabled: Boolean(walletReady && address && readClient),
+  })
+
+  const contribQuery = useQuery({
+    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-referral'],
+    queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
+    enabled: Boolean(walletReady && address && readClient),
+  })
+
+  const referralCount =
+    !walletReady || !address
+      ? DASH
+      : countQuery.isPending
+        ? '…'
+        : countQuery.data != null
+          ? String(countQuery.data)
+          : DASH
+
+  const contributionValue =
+    !walletReady || !address
+      ? DASH
+      : contribQuery.isPending
+        ? '…'
+        : contribQuery.data
+          ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS, 2)
+          : DASH
+
+  return (
+    <DappDetailPage>
+      <DappDetailBlock>
+        <DappContentHeading>{referral.dataTitle}</DappContentHeading>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {referral.totalRewards}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {referral.myPosition}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {referral.directCount}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {referralCount}
+            </Text>
+          </div>
+        </div>
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {referral.contribution}
+            </Text>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <Text as="p" className="font-semibold" variant="copy">
+                {contributionValue}
+              </Text>
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {referral.contributionHint}
+              </Text>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {referral.nextPayout}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+        </div>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{referral.recordsTitle}</DappContentHeading>
+        <DappTableCard className="mt-4">
+          <ResponsiveTable
+            colWidths={['190px', '160px', '160px', '1fr']}
+            headers={[...referral.recordsColumns]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage embedded title={referral.emptyRecords} />
+        </DappTableCard>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{referral.referralsTitle}</DappContentHeading>
+        <DappTableCard className="mt-4">
+          <ResponsiveTable
+            colWidths={['200px', '170px', '110px', '1fr']}
+            headers={[...referral.referralsColumns]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage embedded title={referral.emptyReferrals} />
+        </DappTableCard>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{referral.faq.title}</DappContentHeading>
+        <FaqList items={referral.faq.items} variant="dapp" />
+      </DappDetailBlock>
+    </DappDetailPage>
+  )
+}
+
 export function RewardsDetailContent({ view }: { view: Exclude<RewardsView, 'hub'> }) {
   const { messages: t } = useI18n()
   if (view === 'lucky') return <RewardsLuckyContent />
+  if (view === 'referral') return <RewardsReferralContent />
 
   const card = t.rewards.cards[view]
 

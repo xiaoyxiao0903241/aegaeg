@@ -797,7 +797,7 @@ const app = defineMessages({
       referral: {
         title: '推薦獎',
         body: '推薦夥伴參與共建獲得獎勵',
-        aside: '推薦獎通過 CommunityFund 簽名領取。',
+        aside: '直推 Rebase 收益的 10% 鏈上結算；領取走 Mixed，按 1:1 消耗貢獻點數。',
       },
       participate: {
         title: '參與獎',
@@ -859,6 +859,7 @@ const app = defineMessages({
       goBurn: '獲取貢獻點數',
       luckyPaused: '幸運獎池已暫停，暫不可領取。',
       luckyNotClaimable: '當前無可領取的幸運獎。',
+      referralWritePending: '推薦獎 Mixed 領取通道尚未接入，暫不可提交。',
     },
 
     lucky: {
@@ -905,6 +906,54 @@ const app = defineMessages({
           {
             q: 'Does liquid staking grant eligibility?',
             a: 'No. Liquid stake has a per-day per-user cap below $5,000, so it cannot meet the eligibility threshold.',
+          },
+        ],
+      },
+    },
+    referral: {
+      dataTitle: '數據',
+      totalRewards: '總獎勵',
+      myPosition: '我的倉位',
+      directCount: '直接推薦地址數',
+      contribution: '當前貢獻點數',
+      contributionHint: '領取獎勵按 1:1 消耗',
+      nextPayout: '下一次獎勵發放',
+      recordsTitle: '推薦獎記錄',
+      recordsColumns: ['時間', '數量', '狀態', '領取時間'],
+      emptyRecords: '暫無獎勵記錄，獲得獎勵發放後，這裡將展示您的每一筆記錄。',
+      referralsTitle: '我的推薦',
+      referralsColumns: ['加入時間', '地址', '持倉', '累計貢獻獎勵'],
+      emptyReferrals: '暫無直推夥伴，分享您的邀請連結，夥伴加入後將展示在這裡。',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: '推薦獎是如何計算的？',
+            a: '您將獲得直推帳戶每次 Rebase 收益的 10%，鏈上即時結算，累積在推薦獎卡片中。',
+          },
+          {
+            q: '獲得推薦獎的條件是什麼？',
+            a: '您參與質押、購買債券的倉位價值需大於 $100。滿足條件後，您的直推帳戶產生的 Rebase 收益即按比例為您計發推薦獎。',
+          },
+          {
+            q: '為什麼我的持倉是 $100，但我沒有拿到推薦獎勵？',
+            a: 'AGX 幣價是波動的，當結算時您的持倉可能被記作 $99.99，您就不再滿足獲得推薦獎勵的條件了。建議增加持倉，避免因幣價波動受到損失。',
+          },
+          {
+            q: '我推薦的用戶的持倉遠大於我，我能獲得全部的推薦獎勵嗎？',
+            a: '可以的。只要您滿足獲得推薦獎的條件（倉位價值大於 $100），即可獲得直推帳戶每次 Rebase 收益 10% 的全額獎勵，不受雙方倉位大小差異影響。',
+          },
+          {
+            q: '推薦獎如何領取？',
+            a: '在左側領取面板中選擇領取與複投的比例：領取部分進入釋放池按所選週期線性釋放，複投部分直接進入單幣質押複利。領取和複投均按 1:1 消耗貢獻點數。',
+          },
+          {
+            q: '直接推薦地址數是什麼？',
+            a: '通過您的推薦連結綁定並完成首次參與的錢包地址數量。只有直接推薦（第一層）計入推薦獎。',
+          },
+          {
+            q: '推薦的夥伴退出後還有推薦獎嗎？',
+            a: '推薦獎與被推薦人的活躍倉位掛鉤：其倉位持續產生收益時您持續獲得推薦獎，其全部退出後對應的推薦獎停止產生，已獲得部分不受影響。',
           },
         ],
       },

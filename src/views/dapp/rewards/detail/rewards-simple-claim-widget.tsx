@@ -5,13 +5,12 @@ import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatUsd } from '~/shared/api/format-display'
-import { useCommunityFundTotal, useTeamRewardTotal } from '~/hooks/use-api-data'
+import { useTeamRewardTotal } from '~/hooks/use-api-data'
 import { Text } from '~/shared/ui/text'
 import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
 import { RewardsSubpageHeader } from '~/views/dapp/rewards/rewards-subpage-header'
 import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
 import {
-  useCommunityFundClaim,
   useGenesisRewardClaim,
   useIncentiveClaim,
   useMarketFundClaim,
@@ -23,14 +22,12 @@ import {
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
 
-type SimpleView = Extract<RewardsView, 'referral' | 'participate' | 'grant' | 'genesis'>
+type SimpleView = Extract<RewardsView, 'participate' | 'grant' | 'genesis'>
 
 function useSimpleClaim(view: SimpleView) {
-  const community = useCommunityFundClaim()
   const incentive = useIncentiveClaim()
   const market = useMarketFundClaim()
   const genesis = useGenesisRewardClaim()
-  if (view === 'referral') return community
   if (view === 'participate') return incentive
   if (view === 'grant') return market
   return genesis
@@ -42,23 +39,19 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleView }) {
   const card = t.rewards.cards[view]
   const claim = useSimpleClaim(view)
   const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(sessionReady)
-  const { data: communityFundTotal, isLoading: communityLoading } =
-    useCommunityFundTotal(sessionReady)
 
   // participate / grant: no balance API yet — amount comes from signature at claim time
   // (same honesty pattern as Dao Mixed `signedAmountHint`). Do not hardcode 0 and kill CTA.
-  const amountKnown = view === 'genesis' || view === 'referral'
+  const amountKnown = view === 'genesis'
   const amountValue = amountKnown
-    ? view === 'genesis'
-      ? claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
-      : Number(communityFundTotal?.unlocked_claimable ?? 0)
+    ? claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
     : null
   const amountLabel = !sessionReady
     ? t.rewards.hub.signInForBalance
     : amountKnown
       ? formatUsd(Number.isFinite(amountValue ?? NaN) ? (amountValue ?? 0) : 0, 2)
       : t.rewards.detail.signedAmountHint
-  const loading = (view === 'genesis' && teamLoading) || (view === 'referral' && communityLoading)
+  const loading = view === 'genesis' && teamLoading
   const canAmount = sessionReady && (amountKnown ? (amountValue ?? 0) > 0 : true)
 
   const presentError = useEffectEvent((error: unknown) => {

@@ -810,7 +810,8 @@ const app = defineMessages({
       referral: {
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
-        aside: 'Referral rewards are claimed via CommunityFund signatures.',
+        aside:
+          '10% of direct-referral Rebase yield settles on-chain; claim via Mixed with 1:1 contribution.',
       },
       participate: {
         title: 'Participation',
@@ -873,6 +874,7 @@ const app = defineMessages({
       goBurn: 'Get contribution points',
       luckyPaused: 'Lucky pool is paused; claims are unavailable.',
       luckyNotClaimable: 'No lucky reward available to claim.',
+      referralWritePending: 'Referral Mixed claim is not wired yet; submit stays disabled.',
     },
 
     lucky: {
@@ -919,6 +921,54 @@ const app = defineMessages({
           {
             q: 'Does liquid staking grant eligibility?',
             a: 'No. Liquid stake has a per-day per-user cap below $5,000, so it cannot meet the eligibility threshold.',
+          },
+        ],
+      },
+    },
+    referral: {
+      dataTitle: 'Data',
+      totalRewards: 'Total rewards',
+      myPosition: 'My position',
+      directCount: 'Direct referrals',
+      contribution: 'Contribution points',
+      contributionHint: 'Claims spend 1:1',
+      nextPayout: 'Next reward payout',
+      recordsTitle: 'Referral reward records',
+      recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
+      emptyRecords: 'No reward records yet. Entries appear after rewards are issued.',
+      referralsTitle: 'My referrals',
+      referralsColumns: ['Joined', 'Address', 'Position', 'Cumulative referral rewards'],
+      emptyReferrals: 'No direct referrals yet. Share your invite link to list partners here.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'How are referral rewards calculated?',
+            a: 'You earn 10% of each direct referral’s Rebase yield, settled on-chain and accumulated on the Referral card.',
+          },
+          {
+            q: 'What are the conditions?',
+            a: 'Your stake/bond position value must stay above $100. Then each direct referral’s Rebase yield accrues your share.',
+          },
+          {
+            q: 'Why no reward when my position shows $100?',
+            a: 'AGX price moves; at settlement your position may be marked $99.99 and miss the threshold. Keep a buffer.',
+          },
+          {
+            q: 'If my referral holds much more than I do, do I still get the full 10%?',
+            a: 'Yes. Meeting the >$100 condition earns the full 10% of their Rebase yield, regardless of position size gap.',
+          },
+          {
+            q: 'How do I claim referral rewards?',
+            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution 1:1.',
+          },
+          {
+            q: 'What is direct referral count?',
+            a: 'Wallets that bound via your invite link and completed first participation. Only the first layer counts.',
+          },
+          {
+            q: 'Do rewards continue if a partner exits?',
+            a: 'Rewards track their active position: they continue while that position earns; they stop after full exit. Already earned amounts stay.',
           },
         ],
       },

@@ -9,7 +9,6 @@ import {
 } from '~/core/rewards/resolve-claim-reward-outcome'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import {
-  claimCommunityFund,
   claimIncentiveReward,
   claimMarketFundReward,
   claimTeamReward,
@@ -101,14 +100,6 @@ export function useClaimReward(execute: RewardClaimExecutor) {
 export function useTeamRewardClaim() {
   const execute = useCallback(
     (args: Parameters<typeof claimTeamReward>[0]) => claimTeamReward(args),
-    [],
-  )
-  return useClaimReward(execute)
-}
-
-export function useCommunityFundClaim() {
-  const execute = useCallback(
-    (args: Parameters<typeof claimCommunityFund>[0]) => claimCommunityFund(args),
     [],
   )
   return useClaimReward(execute)
