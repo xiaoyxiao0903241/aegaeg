@@ -1057,6 +1057,7 @@ const app = defineMessages({
       remaining: 'Time left',
       staked: 'Staked',
       payout: 'Pending payout',
+      bondPrincipal: '債券本金',
       yield: 'Yield',
       claim: 'Claim',
       redeem: 'Redeem',
@@ -1243,28 +1244,50 @@ const app = defineMessages({
         },
       },
       lpbond: {
-        title: 'LP Bond positions',
-        intro: 'Manage liquidity bonds — claim yield or redeem principal',
-        empty: 'No LP bond positions',
-        emptyCta: 'Buy LP Bond',
+        title: 'LP債券倉位',
+        intro: '管理您的每一份債券，隨時領取收益或贖回本金',
+        empty: '暫無LP債券倉位，購買一份債券後，這裡將展示您的每一筆倉位。',
+        emptyCta: '購買首份LP債券，開始賺取收益',
         stats: {
-          title: 'Position stats',
+          title: '倉位數據',
           metrics: [
-            { label: 'Total' },
-            { label: 'Pending payout' },
-            { label: 'Claimable' },
-            { label: 'Claimed' },
-            { label: 'Discount' },
-            { label: 'Voucher' },
+            { label: '我的持倉' },
+            { label: '已釋放' },
+            { label: '待釋放' },
+            { label: '當前Rebase 收益' },
+            { label: 'LP債券總收益' },
           ],
         },
-        ops: { title: 'Activity', empty: 'No activity yet' },
+        ops: {
+          title: '操作記錄',
+          empty: '暫無操作記錄，完成質押、領取或贖回後，這裡將展示您的每一筆操作。',
+        },
         faq: {
-          title: 'FAQ',
+          title: 'FAQs',
           items: [
             {
-              q: 'How does redeem credit principal?',
-              a: 'redeem(..., false) creates a PRV release entry — not instant.',
+              q: '領取和贖回有什麼區別？',
+              a: '領取針對收益：將債券產生的 gAGX 收益按所選釋放週期領出，或直接複投；贖回針對本金：將已釋放的 AGX 本金取出，進入 30 天緩衝區二次線性釋放後到賬錢包。',
+            },
+            {
+              q: '「債券本金」是怎麼來的？',
+              a: '購買 LP 債券時，您支付的 USD1 按折扣價換算為 AGX，即為該筆債券的本金。本金按所選週期（180/360/540 天）區塊線性釋放，「已釋放」部分可隨時贖回。',
+            },
+            {
+              q: '為什麼每份債券單獨顯示？',
+              a: '每份債券獨立計算週期、折扣、收益與釋放進度，到期時間和可執行操作互不影響，因此按倉位分別展示與操作。',
+            },
+            {
+              q: '債券收益可以複投嗎？',
+              a: '可以。領取時通過滑條自由分配複投與領取的比例：複投部分進入所選週期（360/540 天）的單幣質押繼續複利，稅率優於按週期領取。',
+            },
+            {
+              q: '倒計時結束後會怎樣？',
+              a: '倒計時結束代表本金釋放全部完成，此時可隨時贖回全部本金；未領取的收益不會失效，仍會持續產生複利收益。',
+            },
+            {
+              q: 'LP 債券的 LP 可以取回嗎？',
+              a: '不可以。系統構建的 AGX/USD1 LP 已轉入黑洞地址永久鎖定，成為協議的永久底層流動性；您獲得的是按折扣價鑄造的 AGX 本金及其持續收益。',
             },
           ],
         },

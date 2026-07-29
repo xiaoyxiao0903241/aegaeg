@@ -81,15 +81,18 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
         ? resolveLpBondDepository(discountPeriod)
         : resolveBurnBondDepository(discountPeriod)
 
+  // Burn keeps legacy six-cell chrome until Burn positions frame; LP no longer shows discount.
   const discountQuery = useQuery({
     queryKey: queryKeys.chain.bondMarketMeta(sampleDepository ?? 'none'),
     queryFn: () => readBondMarketMeta(sampleDepository!, readClient),
-    enabled: product !== 'stake' && sampleDepository != null,
+    enabled: product === 'burnbond' && sampleDepository != null,
     staleTime: 60_000,
   })
 
+  const emptyLen = product === 'lpbond' ? 5 : 6
+
   if (!walletReady || !address) {
-    return Array.from({ length: 6 }, () => cell('—'))
+    return Array.from({ length: emptyLen }, () => cell('—'))
   }
 
   if (product === 'stake') {
@@ -141,13 +144,49 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     ]
   }
 
-  if (bondQuery.isError) return Array.from({ length: 6 }, () => cell('—'))
-  if (bondQuery.data === undefined)
-    return [cell('…'), cell('…'), cell('…'), cell('—'), cell('…'), cell('…')]
+  if (bondQuery.isError) return Array.from({ length: emptyLen }, () => cell('—'))
+  if (bondQuery.data === undefined) {
+    return product === 'lpbond'
+      ? Array.from({ length: 5 }, () => cell('…'))
+      : [cell('…'), cell('…'), cell('…'), cell('—'), cell('…'), cell('…')]
+  }
+
   const rows = bondQuery.data
   const total = rows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
-  const pending = rows.reduce((sum, row) => sum + row.pendingPayout, 0n)
+  const released = rows.reduce((sum, row) => sum + row.pendingPayout, 0n)
+  const pendingRelease = rows.reduce((sum, row) => {
+    const left =
+      row.payoutRemaining > row.pendingPayout ? row.payoutRemaining - row.pendingPayout : 0n
+    return sum + left
+  }, 0n)
   const profit = rows.reduce((sum, row) => sum + row.profit, 0n)
+
+  // LP Figma `4518:5993`: 我的持仓 / 已释放 / 待释放 / 当前Rebase / LP债券总收益(无累计 → —)
+  if (product === 'lpbond') {
+    return [
+      cell(
+        `${formatTokenAmount(total, AGX_DECIMALS, 2)} AGX`,
+        'agx',
+        approxUsd(formatTokenAmountToNumber(total, AGX_DECIMALS), priceUsd),
+      ),
+      cell(
+        `${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`,
+        'agx',
+        approxUsd(formatTokenAmountToNumber(released, AGX_DECIMALS), priceUsd),
+      ),
+      cell(
+        `${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`,
+        'agx',
+        approxUsd(formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS), priceUsd),
+      ),
+      cell(
+        `${formatTokenAmount(profit, GAGX_DECIMALS, 2)} gAGX`,
+        'gagx',
+        approxUsd(formatTokenAmountToNumber(profit, GAGX_DECIMALS), priceUsd),
+      ),
+      cell('—', 'gagx', '≈ —'),
+    ]
+  }
 
   let discount = '—'
   if (discountPeriod != null) {
@@ -162,7 +201,7 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
 
   return [
     cell(`${formatTokenAmount(total, AGX_DECIMALS, 4)} AGX`),
-    cell(`${formatTokenAmount(pending, AGX_DECIMALS, 4)} AGX`),
+    cell(`${formatTokenAmount(released, AGX_DECIMALS, 4)} AGX`),
     cell(`${formatTokenAmount(profit, GAGX_DECIMALS, 4)} gAGX`),
     cell('—'),
     cell(discount),

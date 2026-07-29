@@ -355,11 +355,18 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                 <div className="grid grid-cols-2 gap-2">
                   <div className="grid gap-1">
                     <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
-                      {t.assets.position.payout}
+                      {t.assets.position.bondPrincipal}
                     </Text>
                     <Text as="strong" className="text-base font-semibold" variant="copy">
                       {formatTokenAmount(row.payoutRemaining, AGX_DECIMALS, 2)} AGX
                     </Text>
+                    {row.pendingPayout > 0n ? (
+                      <span className="inline-flex w-fit items-center gap-1 rounded-[10px] bg-primary-soft px-2 py-0.5">
+                        <Text as="span" className="text-xs text-primary" variant="detail">
+                          {formatTokenAmount(row.pendingPayout, AGX_DECIMALS, 2)} AGX
+                        </Text>
+                      </span>
+                    ) : null}
                   </div>
                   <div className="grid justify-items-end gap-1 text-right">
                     <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
@@ -372,6 +379,11 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                     >
                       {formatTokenAmount(row.profit, GAGX_DECIMALS, 2)} gAGX
                     </Text>
+                    {quote === 'usd' ? (
+                      <Text as="span" tone="muted-foreground" variant="detail">
+                        {formatRewardUsd(row.profit)}
+                      </Text>
+                    ) : null}
                   </div>
                 </div>
                 <div className="flex items-center justify-end gap-1">

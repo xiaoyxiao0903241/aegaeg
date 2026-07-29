@@ -1074,6 +1074,7 @@ const app = defineMessages({
       remaining: 'Time left',
       staked: 'Staked',
       payout: 'Pending payout',
+      bondPrincipal: 'Bond principal',
       yield: 'Yield',
       claim: 'Claim',
       redeem: 'Redeem',
@@ -1261,27 +1262,49 @@ const app = defineMessages({
       },
       lpbond: {
         title: 'LP Bond positions',
-        intro: 'Manage liquidity bonds — claim yield or redeem principal',
-        empty: 'No LP bond positions',
-        emptyCta: 'Buy LP Bond',
+        intro: 'Manage each bond — claim yield or redeem principal anytime',
+        empty: 'No LP bond positions yet. Buy a bond and each position will show here.',
+        emptyCta: 'Buy your first LP Bond to start earning',
         stats: {
           title: 'Position stats',
           metrics: [
-            { label: 'Total' },
-            { label: 'Pending payout' },
-            { label: 'Claimable' },
-            { label: 'Claimed' },
-            { label: 'Discount' },
-            { label: 'Voucher' },
+            { label: 'My holdings' },
+            { label: 'Released' },
+            { label: 'Pending release' },
+            { label: 'Current Rebase yield' },
+            { label: 'Total LP Bond yield' },
           ],
         },
-        ops: { title: 'Activity', empty: 'No activity yet' },
+        ops: {
+          title: 'Activity',
+          empty: 'No activity yet. Stake, claim, or redeem to see records here.',
+        },
         faq: {
-          title: 'FAQ',
+          title: 'FAQs',
           items: [
             {
-              q: 'How does redeem credit principal?',
-              a: 'redeem(..., false) creates a PRV release entry — not instant.',
+              q: 'Claim vs redeem?',
+              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a 30-day buffer before wallet credit.',
+            },
+            {
+              q: 'Where does bond principal come from?',
+              a: 'USD1 paid for an LP bond converts to AGX at a discount — that AGX is the bond principal. It unlocks linearly over 180/360/540 days; released amounts can be redeemed anytime.',
+            },
+            {
+              q: 'Why is each bond shown separately?',
+              a: 'Each bond has its own period, discount, yield, and vesting — so actions stay per position.',
+            },
+            {
+              q: 'Can bond yield be restaked?',
+              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking (360/540) with better tax than period claim.',
+            },
+            {
+              q: 'What happens when the countdown ends?',
+              a: 'Vesting is complete — redeem all principal anytime. Unclaimed yield keeps accruing.',
+            },
+            {
+              q: 'Can I withdraw the LP of an LP bond?',
+              a: 'No. AGX/USD1 LP is permanently locked to a burn address as protocol liquidity; you hold discounted AGX principal and its yield.',
             },
           ],
         },
