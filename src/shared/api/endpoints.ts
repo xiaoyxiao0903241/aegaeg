@@ -160,6 +160,30 @@ export async function requestCommunityFundClaim(token: string): Promise<TeamRewa
   })
 }
 
+export async function requestIncentiveClaim(token: string): Promise<TeamRewardSignature> {
+  return apiRequest<TeamRewardSignature>('/claim/incentive', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+export async function requestMarketFundClaim(token: string): Promise<TeamRewardSignature> {
+  return apiRequest<TeamRewardSignature>('/claim/market-fund', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
+export async function requestDaoClaim(token: string): Promise<TeamRewardSignature> {
+  return apiRequest<TeamRewardSignature>('/claim/dao', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
 export async function confirmTeamRewardClaim(
   token: string,
   request: ClaimConfirmRequest,

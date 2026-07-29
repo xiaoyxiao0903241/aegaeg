@@ -582,8 +582,122 @@ const app = defineMessages({
     seasonUpcoming: 'जल्द शुरू',
   },
   rewards: {
-    title: 'सह-निर्माण पुरस्कार',
-    intro: 'सह-निर्माण में भाग लें · वृद्धि मूल्य साझा करें',
+    title: 'Rewards',
+    intro: 'View reward card balances and payout records.',
+    backToHub: 'Back to rewards',
+    claim: 'Claim',
+    claimSuccess: 'Claimed successfully',
+    claimErrors: {
+      zeroAmount: 'Claim amount is 0.',
+      invalidSigner: 'Invalid signature. Refresh and try again.',
+      alreadyUsed: 'This reward was already claimed.',
+      expired: 'Signature expired. Refresh and claim again.',
+      noOrder: 'No reward available to claim.',
+      failed: 'Claim failed. Please try again later.',
+      confirmSyncFailed:
+        'Claim succeeded on-chain but sync failed. Refresh the page and do not claim again.',
+    },
+    hub: {
+      asideTitle: 'About AEGIS X rewards',
+      asideBody:
+        'Six reward cards cover lucky draws, referral, participation, co-build, development stipend, and genesis co-build.',
+      balanceLabel: 'Balance',
+      balancePlaceholder: '—',
+      signInForBalance: 'Sign in to view',
+      sessionHint:
+        'Complete wallet sign-in before claiming. Connecting a wallet is not the same as a business login.',
+      stats: {
+        totalRewards: 'Total rewards',
+        tier: 'Co-build tier',
+        tierEmpty: 'No co-build tier yet',
+        contribution: 'Contribution points',
+        contributionHint: 'Mixed claims consume contribution points 1:1.',
+        goBurn: 'Go burn →',
+      },
+      mechanismTitle: 'Co-build reward mechanism',
+      mechanismBody: 'Co-build rewards come from team Rebase yield and are shared by tier.',
+    },
+    cards: {
+      lucky: {
+        title: 'Lucky',
+        body: 'Block lucky draw for co-builders',
+        aside: 'Lucky rewards use Chainlink VRF; winners claim via Mixed.',
+      },
+      referral: {
+        title: 'Referral',
+        body: 'Rewards for inviting partners into co-build',
+        aside: 'Referral rewards are claimed via CommunityFund signatures.',
+      },
+      participate: {
+        title: 'Participation',
+        body: 'Rewards from your referrer',
+        aside: 'Participation rewards are claimed via IncentivePool signatures.',
+      },
+      cobuild: {
+        title: 'Co-build',
+        body: 'Long-term team co-build incentive rewards',
+        aside: 'Co-build rewards use DaoPool Mixed and require contribution points.',
+      },
+      grant: {
+        title: 'Development stipend',
+        body: 'Ecosystem development stipend',
+        aside: 'Development grants are claimed via MarketFund signatures.',
+      },
+      genesis: {
+        title: 'Genesis co-build rewards',
+        body: 'Genesis direct, tier, and development fund rewards',
+        aside: 'Genesis co-build rewards are claimed via RewardClaimer signatures.',
+        badge: 'Closing soon',
+      },
+    },
+    detail: {
+      claimable: 'Claimable',
+      emptyClaimable: 'No reward available to claim.',
+      signedAmountHint: 'Claimable amount follows the signed payload',
+    },
+    mixed: {
+      splitAria: 'Claim vs restake split',
+      releasePct: 'Claim {pct}%',
+      restakePct: 'Restake {pct}%',
+      releasePeriod: 'Release period',
+      restakePeriod: 'Restake period',
+      releaseAria: 'Release period',
+      restakeAria: 'Restake period',
+      releaseDays: '{days}d',
+      restakeDays: '{days}d',
+      requiredContribution: 'Contribution required this claim: {amount}',
+      insufficientContribution: 'Insufficient contribution points. Burn to top up.',
+      goBurn: 'Get contribution points',
+      luckyPaused: 'Lucky pool is paused; claims are unavailable.',
+      luckyNotClaimable: 'No lucky reward available to claim.',
+    },
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: 'How are rewards paid out?',
+          a: 'Most rewards are shown in AGX / gAGX terms; genesis co-build rewards follow RewardClaimer assets. Mixed claims send the release portion to the release queue.',
+        },
+        {
+          q: 'What is required to claim?',
+          a: 'Simple signed claims need a claimable balance and a valid signature. Lucky / DaoPool Mixed also need enough contribution points and a release/restake split.',
+        },
+        {
+          q: 'When do claimed rewards arrive?',
+          a: 'After the on-chain transaction confirms. The release portion unlocks over the selected period; the restake portion enters the matching stake position.',
+        },
+        {
+          q: 'When are rewards settled?',
+          a: 'Each source settles by contract and backend scan rules. The frontend uses claimable balances and signed payloads as source of truth.',
+        },
+        {
+          q: 'Why do some cards hide amounts?',
+          a: 'Disconnected or unsigned sessions show a sign-in hint, not an empty reward. After sign-in, — means nothing claimable or data is not ready yet.',
+        },
+      ],
+    },
+
+    // legacy keys retained for history helpers / gradual deletion
     currentTitle: 'वर्तमान स्तर',
     postLaunchRankTitle: 'लॉन्च के बाद स्तर',
     teamRewardRate: 'टीम पुरस्कार {rate}',
@@ -613,18 +727,6 @@ const app = defineMessages({
     autoPaid: 'पुरस्कार स्वचालित रूप से वॉलेट में निपटान',
     teamRewards: 'स्तर पुरस्कार',
     claimed: 'दावा किया {amount}',
-    claim: 'वॉलेट में दावा करें',
-    claimSuccess: 'सफलतापूर्वक दावा हुआ',
-    claimErrors: {
-      zeroAmount: 'दावा राशि शून्य है।',
-      invalidSigner: 'हस्ताक्षर अमान्य है, कृपया दोबारा प्राप्त करें।',
-      alreadyUsed: 'यह रिवॉर्ड पहले ही दावा हो चुका है।',
-      expired: 'हस्ताक्षर समाप्त हो गया, रिफ़्रेश करके पुनः प्रयास करें।',
-      noOrder: 'दावा के लिए कोई रिवॉर्ड नहीं है।',
-      failed: 'दावा विफल। कृपया बाद में पुनः प्रयास करें।',
-      confirmSyncFailed:
-        'इनाम ऑन-चेन क्लेम हो चुका है, लेकिन सिंक विफल। पेज रिफ़्रेश करें — दोबारा क्लेम न करें।',
-    },
     heroTitle: 'वर्तमान स्तर',
     allTiers: 'Genesis सम्मान प्रणाली',
     history: 'पुरस्कार रिकॉर्ड',
@@ -647,27 +749,6 @@ const app = defineMessages({
     communityFundHistoryEmpty: {
       title: 'अभी कोई विकास कोष रिकॉर्ड नहीं',
       body: 'विकास कोष दावा रिकॉर्ड पुरस्कार उत्पन्न होने के बाद यहाँ दिखाई देंगे।',
-    },
-    faq: {
-      title: 'FAQs',
-      items: [
-        {
-          q: 'रेफ़रल पुरस्कार की गणना कैसे होती है?',
-          a: 'रेफ़रल पुरस्कार 3%, संपीड़ित समान राशि निपटान तंत्र, केवल समान राशि भाग पर गणना, खाली खाते पुरस्कार स्तर में नहीं गिने जाते, पुरस्कार स्वचालित निपटान।',
-        },
-        {
-          q: 'Genesis स्तर कैसे बढ़ता है?',
-          a: 'Genesis स्तर S1 से S10, व्यक्तिगत सह-निर्माण राशि और नेटवर्क कुल प्रदर्शन के आधार पर। उच्च स्तर के लिए दो-क्षेत्र पदोन्नति शर्तें।',
-        },
-        {
-          q: 'स्तर वृद्धि पुरस्कार क्या है?',
-          a: 'सह-निर्माण के दौरान प्राप्त Genesis स्तर प्रोटोकॉल लॉन्च के बाद स्वचालित 1 स्तर बढ़ता है, 30 दिन वैध, फिर वास्तविक स्तर पर लौटता है।',
-        },
-        {
-          q: 'Genesis टीम पुरस्कार का निपटान कैसे होता है?',
-          a: 'Genesis टीम पुरस्कार संबंधित Genesis स्तर अनुपात से स्वचालित रूप से निपटाए जाते हैं; उपयोगकर्ता को मैन्युअल रूप से वॉलेट में दावा करना होगा। सह-निर्माण अवधि समाप्त के बाद यह पृष्ठ बंद; अदावा किए पुरस्कार दावा नहीं किए जा सकते, स्मार्ट मार्केट मेकर कॉन्ट्रैक्ट में स्थानांतरित।',
-        },
-      ],
     },
     rewardType: {
       referralPaid: 'रेफ़रल पुरस्कार',

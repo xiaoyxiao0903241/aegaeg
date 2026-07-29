@@ -582,8 +582,122 @@ const app = defineMessages({
     seasonUpcoming: 'Скоро',
   },
   rewards: {
-    title: 'Награды за со-строительство',
-    intro: 'Участвуйте в со-строительстве · делитесь ростом стоимости',
+    title: 'Rewards',
+    intro: 'View reward card balances and payout records.',
+    backToHub: 'Back to rewards',
+    claim: 'Claim',
+    claimSuccess: 'Claimed successfully',
+    claimErrors: {
+      zeroAmount: 'Claim amount is 0.',
+      invalidSigner: 'Invalid signature. Refresh and try again.',
+      alreadyUsed: 'This reward was already claimed.',
+      expired: 'Signature expired. Refresh and claim again.',
+      noOrder: 'No reward available to claim.',
+      failed: 'Claim failed. Please try again later.',
+      confirmSyncFailed:
+        'Claim succeeded on-chain but sync failed. Refresh the page and do not claim again.',
+    },
+    hub: {
+      asideTitle: 'About AEGIS X rewards',
+      asideBody:
+        'Six reward cards cover lucky draws, referral, participation, co-build, development stipend, and genesis co-build.',
+      balanceLabel: 'Balance',
+      balancePlaceholder: '—',
+      signInForBalance: 'Sign in to view',
+      sessionHint:
+        'Complete wallet sign-in before claiming. Connecting a wallet is not the same as a business login.',
+      stats: {
+        totalRewards: 'Total rewards',
+        tier: 'Co-build tier',
+        tierEmpty: 'No co-build tier yet',
+        contribution: 'Contribution points',
+        contributionHint: 'Mixed claims consume contribution points 1:1.',
+        goBurn: 'Go burn →',
+      },
+      mechanismTitle: 'Co-build reward mechanism',
+      mechanismBody: 'Co-build rewards come from team Rebase yield and are shared by tier.',
+    },
+    cards: {
+      lucky: {
+        title: 'Lucky',
+        body: 'Block lucky draw for co-builders',
+        aside: 'Lucky rewards use Chainlink VRF; winners claim via Mixed.',
+      },
+      referral: {
+        title: 'Referral',
+        body: 'Rewards for inviting partners into co-build',
+        aside: 'Referral rewards are claimed via CommunityFund signatures.',
+      },
+      participate: {
+        title: 'Participation',
+        body: 'Rewards from your referrer',
+        aside: 'Participation rewards are claimed via IncentivePool signatures.',
+      },
+      cobuild: {
+        title: 'Co-build',
+        body: 'Long-term team co-build incentive rewards',
+        aside: 'Co-build rewards use DaoPool Mixed and require contribution points.',
+      },
+      grant: {
+        title: 'Development stipend',
+        body: 'Ecosystem development stipend',
+        aside: 'Development grants are claimed via MarketFund signatures.',
+      },
+      genesis: {
+        title: 'Genesis co-build rewards',
+        body: 'Genesis direct, tier, and development fund rewards',
+        aside: 'Genesis co-build rewards are claimed via RewardClaimer signatures.',
+        badge: 'Closing soon',
+      },
+    },
+    detail: {
+      claimable: 'Claimable',
+      emptyClaimable: 'No reward available to claim.',
+      signedAmountHint: 'Claimable amount follows the signed payload',
+    },
+    mixed: {
+      splitAria: 'Claim vs restake split',
+      releasePct: 'Claim {pct}%',
+      restakePct: 'Restake {pct}%',
+      releasePeriod: 'Release period',
+      restakePeriod: 'Restake period',
+      releaseAria: 'Release period',
+      restakeAria: 'Restake period',
+      releaseDays: '{days}d',
+      restakeDays: '{days}d',
+      requiredContribution: 'Contribution required this claim: {amount}',
+      insufficientContribution: 'Insufficient contribution points. Burn to top up.',
+      goBurn: 'Get contribution points',
+      luckyPaused: 'Lucky pool is paused; claims are unavailable.',
+      luckyNotClaimable: 'No lucky reward available to claim.',
+    },
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: 'How are rewards paid out?',
+          a: 'Most rewards are shown in AGX / gAGX terms; genesis co-build rewards follow RewardClaimer assets. Mixed claims send the release portion to the release queue.',
+        },
+        {
+          q: 'What is required to claim?',
+          a: 'Simple signed claims need a claimable balance and a valid signature. Lucky / DaoPool Mixed also need enough contribution points and a release/restake split.',
+        },
+        {
+          q: 'When do claimed rewards arrive?',
+          a: 'After the on-chain transaction confirms. The release portion unlocks over the selected period; the restake portion enters the matching stake position.',
+        },
+        {
+          q: 'When are rewards settled?',
+          a: 'Each source settles by contract and backend scan rules. The frontend uses claimable balances and signed payloads as source of truth.',
+        },
+        {
+          q: 'Why do some cards hide amounts?',
+          a: 'Disconnected or unsigned sessions show a sign-in hint, not an empty reward. After sign-in, — means nothing claimable or data is not ready yet.',
+        },
+      ],
+    },
+
+    // legacy keys retained for history helpers / gradual deletion
     currentTitle: 'Текущий уровень',
     postLaunchRankTitle: 'Уровень после запуска',
     teamRewardRate: 'Командная награда {rate}',
@@ -613,18 +727,6 @@ const app = defineMessages({
     autoPaid: 'Награды автоматически зачисляются на кошелёк',
     teamRewards: 'Награды за уровень',
     claimed: 'Получено {amount}',
-    claim: 'Получить на кошелёк',
-    claimSuccess: 'Успешно получено',
-    claimErrors: {
-      zeroAmount: 'Сумма получения равна нулю.',
-      invalidSigner: 'Недействительная подпись, запросите её снова.',
-      alreadyUsed: 'Эта награда уже получена.',
-      expired: 'Срок подписи истёк, обновите и повторите.',
-      noOrder: 'Нет наград для получения.',
-      failed: 'Не удалось получить. Повторите позже.',
-      confirmSyncFailed:
-        'Награда уже получена в сети, но синхронизация не удалась. Обновите страницу — не запрашивайте снова.',
-    },
     heroTitle: 'Текущий уровень',
     allTiers: 'Система почёта Genesis',
     history: 'История наград',
@@ -647,27 +749,6 @@ const app = defineMessages({
     communityFundHistoryEmpty: {
       title: 'Записей фонда развития пока нет',
       body: 'История получения фонда развития появится здесь после начисления наград.',
-    },
-    faq: {
-      title: 'FAQs',
-      items: [
-        {
-          q: 'Как рассчитываются реферальные награды?',
-          a: 'Реферальные награды составляют 3% и рассчитываются по механизму сжатия равных сумм: учитывается только равная часть суммы, пустые аккаунты не учитываются в уровнях наград; выплата автоматическая.',
-        },
-        {
-          q: 'Как повышается уровень Genesis?',
-          a: 'Уровни Genesis от S1 до S10 определяются личным вкладом в со-строительство и совокупным объёмом системы; для высоких уровней требуется условие двух зон.',
-        },
-        {
-          q: 'Что такое награда за повышение уровня?',
-          a: 'Уровень Genesis, достигнутый в период со-строительства, автоматически повышается на 1 уровень после запуска протокола на 30 дней, затем восстанавливается реальный уровень.',
-        },
-        {
-          q: 'Как рассчитываются командные награды Genesis?',
-          a: 'Командные награды Genesis автоматически рассчитываются по ставке соответствующего уровня; пользователь вручную получает на кошелёк. После окончания периода со-строительства страница закрывается; неполученные награды нельзя забрать — они направляются в смарт-контракт маркет-мейкинга.',
-        },
-      ],
     },
     rewardType: {
       referralPaid: 'Реферальная награда',

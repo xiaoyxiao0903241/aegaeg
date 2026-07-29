@@ -225,6 +225,44 @@ export const REWARD_CLAIMER_METHODS = {
   rewardSigner: 'function rewardSigner() view returns (address)',
 } as const
 
+/** IncentivePool — simple signed claim (manual §9.5). */
+export const INCENTIVE_POOL_METHODS = {
+  claimRewards:
+    'function claimRewards(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
+} as const
+
+/** MarketFund — simple signed claim (manual §9.5). */
+export const MARKET_FUND_METHODS = {
+  claimReward:
+    'function claimReward(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
+} as const
+
+/** DaoPool — Mixed signed claim (manual §9.5); signType fixed to 4. */
+export const DAO_POOL_METHODS = {
+  claimRewardsMixed:
+    'function claimRewardsMixed(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
+} as const
+
+/** LuckyPool — Mixed claim + pause / winner reads (manual §14). */
+export const LUCKY_POOL_METHODS = {
+  paused: 'function paused() view returns (bool)',
+  currentRoundId: 'function currentRoundId() view returns (uint256)',
+  getWinnerInfo:
+    'function getWinnerInfo(uint256 roundId, address user) view returns (bool won, uint256 rewardAmount)',
+  rewardClaimed: 'function rewardClaimed(uint256 roundId, address user) view returns (bool)',
+  claimRewardMixed:
+    'function claimRewardMixed(uint256 roundId, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
+} as const
+
+/** AegisPresaleRewardClaimer custom errors — see docs/contract.md §4.4. */
+export const REWARD_CLAIMER_ERRORS = [
+  'error ErrorZeroAddress()',
+  'error ErrorZeroAmount()',
+  'error ErrorInvalidSigner()',
+  'error ErrorAlreadyUsed()',
+  'error ErrorSignatureExpired()',
+] as const
+
 /** OpenZeppelin ERC20 custom errors — selectors verified in resolve-contract-error-message. */
 export const ERC20_ERRORS = [
   'error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)',
@@ -257,13 +295,4 @@ export const REFERRAL_ERRORS = [
   'error Referral__ParentNotBound(address parent)',
   'error Referral__MigratedAccount(address account)',
   'error Referral__NotMigrationManager(address caller)',
-] as const
-
-/** AegisPresaleRewardClaimer custom errors — see docs/contract.md §4.4. */
-export const REWARD_CLAIMER_ERRORS = [
-  'error ErrorZeroAddress()',
-  'error ErrorZeroAmount()',
-  'error ErrorInvalidSigner()',
-  'error ErrorAlreadyUsed()',
-  'error ErrorSignatureExpired()',
 ] as const

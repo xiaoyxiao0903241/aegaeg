@@ -24,8 +24,16 @@ export interface BscContracts {
   referral: Address
   /** RewardClaimer proxy — team reward claim */
   rewardClaimer: Address
-  /** CommunityFund proxy — development fund claim */
+  /** CommunityFund proxy — referral / genesis development fund claim */
   communityFundVault: Address
+  /** DaoPool — DAO Mixed signed claim (manual §9.5) */
+  daoPool: Address
+  /** IncentivePool — participation signed claim */
+  incentivePool: Address
+  /** MarketFund — development stipend signed claim */
+  marketFund: Address
+  /** LuckyPool — lucky Mixed claim (manual §14; may be paused) */
+  luckyPool: Address
   /** Usd1Swap proxy — USDT → USD1 flash swap */
   usd1Swap: Address
   /** AGX token (manual deployment key `AGX`) */
@@ -88,6 +96,10 @@ export const BSC_CONTRACTS = {
   preSale: requireEnvAddress('VITE_BSC_PRESALE'),
   rewardClaimer: requireEnvAddress('VITE_BSC_REWARD_CLAIMER'),
   communityFundVault: requireEnvAddress('VITE_BSC_COMMUNITY_FUND_VAULT'),
+  daoPool: requireEnvAddress('VITE_BSC_DAO_POOL'),
+  incentivePool: requireEnvAddress('VITE_BSC_INCENTIVE_POOL'),
+  marketFund: requireEnvAddress('VITE_BSC_MARKET_FUND'),
+  luckyPool: requireEnvAddress('VITE_BSC_LUCKY_POOL'),
   usd1Swap: requireEnvAddress('VITE_BSC_USD1_SWAP'),
   agx: requireEnvAddress('VITE_BSC_AGX'),
   gagx: requireEnvAddress('VITE_BSC_GAGX'),

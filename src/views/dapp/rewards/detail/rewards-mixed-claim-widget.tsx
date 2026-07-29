@@ -1,0 +1,283 @@
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { useI18n } from '~/i18n/use-i18n'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { useDappShell } from '~/app/use-dapp-shell'
+import { useAuth } from '~/hooks/use-auth'
+import {
+  RELEASE_DURATION_DAYS,
+  RESTAKE_DURATION_DAYS,
+  matchPlanIndexByDurationDays,
+  type ReleaseDurationDays,
+  type RestakeDurationDays,
+} from '~/core/assets/claim-plans'
+import { claimSplitFromReleasePct, ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
+import { Segment } from '~/shared/ui/segment'
+import { Text } from '~/shared/ui/text'
+import { Button } from '~/shared/ui/button'
+import { openExchangeView } from '~/shared/config/open-exchange-view'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
+import { RewardsSubpageHeader } from '~/views/dapp/rewards/rewards-subpage-header'
+import {
+  REWARDS_GATE_ERROR,
+  submitDaoMixedClaim,
+  submitLuckyMixedClaim,
+} from '~/views/dapp/rewards/submit-rewards'
+import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
+import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
+import { presentUserFacingError } from '~/web3/present-user-facing-error'
+import { readErrorText } from '~/web3/errors/error-text'
+import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
+import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import type { Address } from '~/shared/config/contracts'
+import type { RewardsView } from '~/shared/config/rewards-deep-link'
+
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+
+type MixedView = Extract<RewardsView, 'lucky' | 'cobuild'>
+
+export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
+  const { messages: t } = useI18n()
+  const { walletReady, sessionReady } = useDappShell()
+  const { token, invalidateSession } = useAuth()
+  const account = useActiveAccount()
+  const wallet = useActiveWallet()
+  const readClient = useChainReadClient()
+  const card = t.rewards.cards[view]
+  const [releasePct, setReleasePct] = useState(50)
+  const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(5)
+  const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
+  const [submitting, setSubmitting] = useState(false)
+  /** Dao amount unknown until signature; set when live gate reports insufficient contribution. */
+  const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
+  const { restakePct } = claimSplitFromReleasePct(releasePct)
+  const locked = isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM)
+
+  const luckyQuery = useQuery({
+    queryKey: ['chain', 'rewards', 'lucky', account?.address ?? ''],
+    queryFn: () => readLuckyClaimSnapshot(readClient, account!.address as Address),
+    enabled: view === 'lucky' && walletReady && Boolean(account?.address),
+  })
+
+  const amount =
+    view === 'lucky'
+      ? (luckyQuery.data?.rewardAmount ?? 0n)
+      : 0n /* Dao amount from signature at submit */
+
+  const plansQuery = useQuery({
+    queryKey: queryKeys.chain.assetsClaimPlans,
+    queryFn: () => readClaimPlans(readClient),
+  })
+
+  const contribQuery = useQuery({
+    queryKey: [...queryKeys.chain.assetsContribution(account?.address ?? ''), String(amount), view],
+    queryFn: () => readContributionSnapshot(account!.address as Address, amount, readClient),
+    enabled: walletReady && Boolean(account?.address) && (view === 'cobuild' || amount > 0n),
+  })
+
+  const releaseIndex = plansQuery.data
+    ? matchPlanIndexByDurationDays(plansQuery.data.releasePlans, releaseDays)
+    : null
+  const restakeIndex = plansQuery.data
+    ? matchPlanIndexByDurationDays(plansQuery.data.restakePlans, restakeDays)
+    : null
+  const luckyContributionOk =
+    contribQuery.data != null &&
+    contribQuery.data.contribution >= contribQuery.data.requiredContribution
+  const contributionOk = view === 'cobuild' ? !daoContributionBlocked : luckyContributionOk
+  const plansOk = releaseIndex != null && restakeIndex != null
+  const luckyOk =
+    view !== 'lucky' ||
+    (luckyQuery.data != null && luckyQuery.data.claimable && !luckyQuery.data.paused)
+  const canConfirm =
+    walletReady &&
+    sessionReady &&
+    !locked &&
+    !submitting &&
+    plansOk &&
+    luckyOk &&
+    contributionOk &&
+    (view === 'cobuild' || amount > 0n)
+
+  const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
+    label: t.rewards.mixed.releaseDays.replace('{days}', String(days)),
+    value: String(days),
+  }))
+  const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => ({
+    label: t.rewards.mixed.restakeDays.replace('{days}', String(days)),
+    value: String(days),
+  }))
+
+  const amountLabel =
+    view === 'lucky'
+      ? luckyQuery.data
+        ? `${formatTokenAmount(luckyQuery.data.rewardAmount, AGX_DECIMALS)} AGX`
+        : sessionReady
+          ? t.rewards.hub.balancePlaceholder
+          : t.rewards.hub.signInForBalance
+      : t.rewards.detail.signedAmountHint
+
+  async function onConfirm() {
+    if (!account || !wallet) return
+    setDaoContributionBlocked(false)
+    setSubmitting(true)
+    try {
+      const result =
+        view === 'lucky'
+          ? await submitLuckyMixedClaim({
+              releaseDays,
+              restakeDays,
+              restakePct,
+              account,
+              wallet,
+              readClient,
+            })
+          : await submitDaoMixedClaim({
+              token: token ?? '',
+              onUnauthorized: invalidateSession,
+              releaseDays,
+              restakeDays,
+              restakePct,
+              account,
+              wallet,
+              readClient,
+            })
+      if (!result.ok) {
+        if (result.error === REWARDS_GATE_ERROR.insufficientContribution) {
+          if (view === 'cobuild') setDaoContributionBlocked(true)
+          presentUserFacingError(result.error, () => t.rewards.mixed.insufficientContribution, {
+            id: `rewards-mixed:${view}`,
+          })
+          return
+        }
+        if (result.error === REWARDS_GATE_ERROR.luckyPaused) {
+          presentUserFacingError(result.error, () => t.rewards.mixed.luckyPaused, {
+            id: `rewards-mixed:${view}`,
+          })
+          return
+        }
+        presentUserFacingError(
+          result.error,
+          (err) =>
+            resolveWalletTransactionError(err, t.wallet.transactionErrors) ??
+            readErrorText(err) ??
+            t.errors.chain.fallback,
+          { id: `rewards-mixed:${view}` },
+        )
+        return
+      }
+      toast.success(t.rewards.claimSuccess)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <RewardsSubpageHeader subtitle={card.body} title={card.title} />
+      <ExchangeWidgetBody>
+        <div className="rounded-2xl border border-border bg-card p-4">
+          <Text as="p" tone="muted-foreground" variant="caption">
+            {t.rewards.detail.claimable}
+          </Text>
+          <Text as="p" className="mt-2 font-semibold" variant="headline">
+            {amountLabel}
+          </Text>
+          {view === 'lucky' && luckyQuery.data?.paused ? (
+            <Text as="p" className="mt-2 text-destructive" variant="caption">
+              {t.rewards.mixed.luckyPaused}
+            </Text>
+          ) : null}
+          {view === 'lucky' &&
+          luckyQuery.data &&
+          !luckyQuery.data.claimable &&
+          !luckyQuery.data.paused ? (
+            <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
+              {t.rewards.mixed.luckyNotClaimable}
+            </Text>
+          ) : null}
+        </div>
+
+        {contribQuery.data && view === 'lucky' && amount > 0n ? (
+          <Text as="p" tone="muted-foreground" variant="caption">
+            {t.rewards.mixed.requiredContribution.replace(
+              '{amount}',
+              formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS),
+            )}
+          </Text>
+        ) : null}
+
+        {!contributionOk && (view === 'lucky' ? amount > 0n : daoContributionBlocked) ? (
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4">
+            <Text as="p" variant="copy">
+              {t.rewards.mixed.insufficientContribution}
+            </Text>
+            <Button className="mt-3" onClick={() => openExchangeView('burn')} type="button">
+              {t.rewards.mixed.goBurn}
+            </Button>
+          </div>
+        ) : null}
+
+        <ClaimSplitSlider
+          aria-label={t.rewards.mixed.splitAria}
+          onChange={setReleasePct}
+          value={releasePct}
+        />
+        <div className="flex justify-between gap-2">
+          <Text as="span" variant="detail">
+            {t.rewards.mixed.releasePct.replace('{pct}', String(releasePct))}
+          </Text>
+          <Text as="span" variant="detail">
+            {t.rewards.mixed.restakePct.replace('{pct}', String(restakePct))}
+          </Text>
+        </div>
+
+        <div className="grid gap-3">
+          <div>
+            <Text as="p" className="mb-2" tone="muted-foreground" variant="caption">
+              {t.rewards.mixed.releasePeriod}
+            </Text>
+            <Segment
+              aria-label={t.rewards.mixed.releaseAria}
+              onChange={(value) => setReleaseDays(Number(value) as ReleaseDurationDays)}
+              options={releaseOptions}
+              tone="coral"
+              value={String(releaseDays)}
+            />
+          </div>
+          <div>
+            <Text as="p" className="mb-2" tone="muted-foreground" variant="caption">
+              {t.rewards.mixed.restakePeriod}
+            </Text>
+            <Segment
+              aria-label={t.rewards.mixed.restakeAria}
+              onChange={(value) => setRestakeDays(Number(value) as RestakeDurationDays)}
+              options={restakeOptions}
+              tone="ink"
+              value={String(restakeDays)}
+            />
+          </div>
+        </div>
+
+        {walletReady ? (
+          <DappActionButton
+            disabled={!canConfirm}
+            loading={submitting}
+            onClick={() => void onConfirm()}
+          >
+            {t.rewards.claim}
+          </DappActionButton>
+        ) : (
+          <DappWidgetConnectPromo />
+        )}
+      </ExchangeWidgetBody>
+    </>
+  )
+}

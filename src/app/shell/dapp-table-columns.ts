@@ -15,15 +15,3 @@ export const genesisContributionsColWidths = [
   '8.5rem',
   '6.5rem',
 ] as const
-
-export const rewardsReferralHistoryColWidths = [
-  '8.25rem',
-  '6.5rem',
-  '8.75rem',
-  '7.5rem',
-  '6.5rem',
-] as const
-
-export const rewardsTeamHistoryColWidths = ['10rem', '7.5rem', '10rem', '10rem'] as const
-
-export const rewardsCommunityFundHistoryColWidths = ['11rem', '8rem', '10rem'] as const

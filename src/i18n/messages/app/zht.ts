@@ -572,8 +572,119 @@ const app = defineMessages({
     seasonUpcoming: '即將開始',
   },
   rewards: {
-    title: '共建獎勵',
-    intro: '參與共建 · 共享成長價值',
+    title: '獎勵',
+    intro: '查看各類獎勵卡片餘額與發放記錄。',
+    backToHub: '返回獎勵',
+    claim: '領取',
+    claimSuccess: '領取成功',
+    claimErrors: {
+      zeroAmount: '領取金額為 0。',
+      invalidSigner: '簽名無效，請重新獲取後再領取。',
+      alreadyUsed: '該獎勵已領取，請勿重複操作。',
+      expired: '簽名已過期，請刷新後重新領取。',
+      noOrder: '暫無可領取的獎勵。',
+      failed: '領取失敗，請稍後再試。',
+      confirmSyncFailed: '獎勵已在鏈上領取成功，但同步失敗。請刷新頁面，請勿重複領取。',
+    },
+    hub: {
+      asideTitle: '關於 AEGIS X 獎勵',
+      asideBody: '六種獎勵卡片覆蓋幸運抽獎、推薦、參與、共建、發展津貼與創世共建。',
+      balanceLabel: '餘額',
+      balancePlaceholder: '—',
+      signInForBalance: '簽名登入後查看',
+      sessionHint: '請完成錢包簽名登入後再領取。連接錢包不等於業務登入。',
+      stats: {
+        totalRewards: '總獎勵',
+        tier: '共建級別',
+        tierEmpty: '暫未達到共建級別',
+        contribution: '貢獻點數',
+        contributionHint: '領取獎勵按 1:1 消耗貢獻點數（Mixed）。',
+        goBurn: '去消耗 →',
+      },
+      mechanismTitle: '共建獎機制',
+      mechanismBody: '共建獎勵來源於團隊總 Rebase 收益，按等級比例獲得獎勵。',
+    },
+    cards: {
+      lucky: {
+        title: '幸運獎',
+        body: '爆塊幸運抽獎，隨機發放給幸運共建者',
+        aside: '幸運獎採用 Chainlink VRF 開獎；中獎後可走 Mixed 領取。',
+      },
+      referral: {
+        title: '推薦獎',
+        body: '推薦夥伴參與共建獲得獎勵',
+        aside: '推薦獎通過 CommunityFund 簽名領取。',
+      },
+      participate: {
+        title: '參與獎',
+        body: '來自推薦人的獎勵',
+        aside: '參與獎通過 IncentivePool 簽名領取。',
+      },
+      cobuild: {
+        title: '共建獎',
+        body: '通過團隊協作與長期共建構建的可持續發展激勵獎勵',
+        aside: '共建獎通過 DaoPool Mixed 領取，需貢獻點數。',
+      },
+      grant: {
+        title: '發展津貼',
+        body: '生態發展專項津貼',
+        aside: '發展津貼通過 MarketFund 簽名領取。',
+      },
+      genesis: {
+        title: '創世共建獎勵',
+        body: '創世期的直推獎勵、等級獎勵與發展基金',
+        aside: '創世共建獎勵通過 RewardClaimer 簽名領取。',
+        badge: '結算關閉',
+      },
+    },
+    detail: {
+      claimable: '可領取',
+      emptyClaimable: '暫無可領取的獎勵。',
+      signedAmountHint: '可領金額以簽名包為準',
+    },
+    mixed: {
+      splitAria: '領取與復投比例',
+      releasePct: '領取 {pct}%',
+      restakePct: '復投 {pct}%',
+      releasePeriod: '釋放週期',
+      restakePeriod: '復投週期',
+      releaseAria: '釋放週期',
+      restakeAria: '復投週期',
+      releaseDays: '{days}天',
+      restakeDays: '{days}天',
+      requiredContribution: '本次需扣除貢獻點數 {amount}',
+      insufficientContribution: '貢獻點數不足，請先獲取貢獻點數。',
+      goBurn: '獲取貢獻點數',
+      luckyPaused: '幸運獎池已暫停，暫不可領取。',
+      luckyNotClaimable: '當前無可領取的幸運獎。',
+    },
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: '獎勵以什麼形式發放？',
+          a: '多數獎勵以 AGX / gAGX 口徑展示；創世共建獎勵按 RewardClaimer 資產發放。Mixed 領取時釋放部分進入釋放池。',
+        },
+        {
+          q: '領取獎勵需要什麼條件？',
+          a: '簡單簽名獎勵需可領餘額與有效簽名；Lucky / DaoPool Mixed 還需足夠貢獻點數，並選擇釋放與復投比例。',
+        },
+        {
+          q: '領取的獎勵什麼時候到賬？',
+          a: '鏈上交易確認後到賬。釋放部分按所選週期線性釋放；復投部分進入對應復投倉位。',
+        },
+        {
+          q: '獎勵什麼時候結算？',
+          a: '各獎勵來源按合約與後端掃描規則結算；前端以可領餘額與簽名包為準。',
+        },
+        {
+          q: '為什麼有些獎勵卡片不顯示金額？',
+          a: '未連接或未簽名登入時顯示登入提示，不等於暫無獎勵。登入後若仍為 — 表示當前無可領或數據未就緒。',
+        },
+      ],
+    },
+
+    // legacy keys retained for history helpers / gradual deletion
     currentTitle: '當前等級',
     postLaunchRankTitle: '上線後等級',
     teamRewardRate: '團隊獎勵 {rate}',
@@ -603,17 +714,6 @@ const app = defineMessages({
     autoPaid: '獎勵自動結算至錢包',
     teamRewards: '等級獎勵',
     claimed: '已領取 {amount}',
-    claim: '領取到錢包',
-    claimSuccess: '領取成功',
-    claimErrors: {
-      zeroAmount: '領取金額為 0。',
-      invalidSigner: '簽名無效，請重新獲取後再領取。',
-      alreadyUsed: '該獎勵已領取，請勿重複操作。',
-      expired: '簽名已過期，請刷新後重新領取。',
-      noOrder: '暫無可領取的獎勵。',
-      failed: '領取失敗，請稍後再試。',
-      confirmSyncFailed: '獎勵已在鏈上領取成功，但同步失敗。請重新整理頁面，請勿重複領取。',
-    },
     heroTitle: '當前等級',
     allTiers: '創世榮譽體系',
     history: '獎勵記錄',
@@ -636,27 +736,6 @@ const app = defineMessages({
     communityFundHistoryEmpty: {
       title: '暫無發展基金記錄',
       body: '發展基金領取記錄將在獎勵產生後顯示在這裡。',
-    },
-    faq: {
-      title: 'FAQs',
-      items: [
-        {
-          q: '推薦獎勵如何計算？',
-          a: '推薦獎勵為 3%，採用壓縮同等金額結算機制，僅按同等金額部分計算，空帳戶不計獎勵層級，獎勵自動結算。',
-        },
-        {
-          q: '創世等級如何晉升？',
-          a: '創世等級由 S1 至 S10，根據個人共建金額與體系總業績進行評定，高等級需滿足雙區晉升條件。',
-        },
-        {
-          q: '什麼是等級提升獎勵？',
-          a: '共建期間達成的創世等級，將於協議上線後自動提升 1 個等級，有效期 30 天，結束後恢復真實等級。',
-        },
-        {
-          q: '創世團隊獎勵如何結算？',
-          a: '創世團隊獎勵根據對應創世等級比例自動結算，需用戶手動領取到錢包。共建期結束後，當前頁面將關閉，未領取的獎勵不可再領取，獎勵將被打入智能做市合約。',
-        },
-      ],
     },
     rewardType: {
       referralPaid: '推薦獎勵',

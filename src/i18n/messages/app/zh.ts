@@ -571,8 +571,119 @@ const app = defineMessages({
     seasonUpcoming: '即将开始',
   },
   rewards: {
-    title: '共建奖励',
-    intro: '参与共建 · 共享成长价值',
+    title: '奖励',
+    intro: '查看各类奖励卡片余额与发放记录。',
+    backToHub: '返回奖励',
+    claim: '领取',
+    claimSuccess: '领取成功',
+    claimed: '已领取 {amount}',
+    claimErrors: {
+      zeroAmount: '领取金额为 0。',
+      invalidSigner: '签名无效，请重新获取后再领取。',
+      alreadyUsed: '该奖励已领取，请勿重复操作。',
+      expired: '签名已过期，请刷新后重新领取。',
+      noOrder: '暂无可领取的奖励。',
+      failed: '领取失败，请稍后再试。',
+      confirmSyncFailed: '奖励已在链上领取成功，但同步失败。请刷新页面，请勿重复领取。',
+    },
+    hub: {
+      asideTitle: '关于 AEGIS X 奖励',
+      asideBody: '六种奖励卡片覆盖幸运抽奖、推荐、参与、共建、发展津贴与创世共建。',
+      balanceLabel: '余额',
+      balancePlaceholder: '—',
+      signInForBalance: '签名登录后查看',
+      sessionHint: '请完成钱包签名登录后再领取。连接钱包不等于业务登录。',
+      stats: {
+        totalRewards: '总奖励',
+        tier: '共建级别',
+        tierEmpty: '暂未达到共建级别',
+        contribution: '贡献点数',
+        contributionHint: '领取奖励按 1:1 消耗贡献点数（Mixed）。',
+        goBurn: '去消耗 →',
+      },
+      mechanismTitle: '共建奖机制',
+      mechanismBody: '共建奖励来源于团队总 Rebase 收益，按等级比例获得奖励。',
+    },
+    cards: {
+      lucky: {
+        title: '幸运奖',
+        body: '爆块幸运抽奖，随机发放给幸运共建者',
+        aside: '幸运奖采用 Chainlink VRF 开奖；中奖后可走 Mixed 领取。',
+      },
+      referral: {
+        title: '推荐奖',
+        body: '推荐伙伴参与共建获得奖励',
+        aside: '推荐奖通过 CommunityFund 签名领取。',
+      },
+      participate: {
+        title: '参与奖',
+        body: '来自推荐人的奖励',
+        aside: '参与奖通过 IncentivePool 签名领取。',
+      },
+      cobuild: {
+        title: '共建奖',
+        body: '通过团队协作与长期共建构建的可持续发展激励奖励',
+        aside: '共建奖通过 DaoPool Mixed 领取，需贡献点数。',
+      },
+      grant: {
+        title: '发展津贴',
+        body: '生态发展专项津贴',
+        aside: '发展津贴通过 MarketFund 签名领取。',
+      },
+      genesis: {
+        title: '创世共建奖励',
+        body: '创世期的直推奖励、等级奖励与发展基金',
+        aside: '创世共建奖励通过 RewardClaimer 签名领取。',
+        badge: '结算关闭',
+      },
+    },
+    detail: {
+      claimable: '可领取',
+      emptyClaimable: '暂无可领取的奖励。',
+      signedAmountHint: '可领金额以签名包为准',
+    },
+    mixed: {
+      splitAria: '领取与复投比例',
+      releasePct: '领取 {pct}%',
+      restakePct: '复投 {pct}%',
+      releasePeriod: '释放周期',
+      restakePeriod: '复投周期',
+      releaseAria: '释放周期',
+      restakeAria: '复投周期',
+      releaseDays: '{days}天',
+      restakeDays: '{days}天',
+      requiredContribution: '本次需扣除贡献点数 {amount}',
+      insufficientContribution: '贡献点数不足，请先获取贡献点数。',
+      goBurn: '获取贡献点数',
+      luckyPaused: '幸运奖池已暂停，暂不可领取。',
+      luckyNotClaimable: '当前无可领取的幸运奖。',
+    },
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: '奖励以什么形式发放？',
+          a: '多数奖励以 AGX / gAGX 口径展示；创世共建奖励按 RewardClaimer 资产发放。Mixed 领取时释放部分进入释放池。',
+        },
+        {
+          q: '领取奖励需要什么条件？',
+          a: '简单签名奖励需可领余额与有效签名；Lucky / DaoPool Mixed 还需足够贡献点数，并选择释放与复投比例。',
+        },
+        {
+          q: '领取的奖励什么时候到账？',
+          a: '链上交易确认后到账。释放部分按所选周期线性释放；复投部分进入对应复投仓位。',
+        },
+        {
+          q: '奖励什么时候结算？',
+          a: '各奖励来源按合约与后端扫描规则结算；前端以可领余额与签名包为准。',
+        },
+        {
+          q: '为什么有些奖励卡片不显示金额？',
+          a: '未连接或未签名登录时显示登录提示，不等于暂无奖励。登录后若仍为 — 表示当前无可领或数据未就绪。',
+        },
+      ],
+    },
+    // legacy keys retained for history helpers / gradual deletion
     currentTitle: '当前等级',
     postLaunchRankTitle: '上线后等级',
     teamRewardRate: '团队奖励 {rate}',
@@ -601,18 +712,6 @@ const app = defineMessages({
     autoPaidLabel: '自动支付',
     autoPaid: '奖励自动结算至钱包',
     teamRewards: '等级奖励',
-    claimed: '已领取 {amount}',
-    claim: '领取到钱包',
-    claimSuccess: '领取成功',
-    claimErrors: {
-      zeroAmount: '领取金额为 0。',
-      invalidSigner: '签名无效，请重新获取后再领取。',
-      alreadyUsed: '该奖励已领取，请勿重复操作。',
-      expired: '签名已过期，请刷新后重新领取。',
-      noOrder: '暂无可领取的奖励。',
-      failed: '领取失败，请稍后再试。',
-      confirmSyncFailed: '奖励已在链上领取成功，但同步失败。请刷新页面，请勿重复领取。',
-    },
     heroTitle: '当前等级',
     allTiers: '创世荣誉体系',
     history: '奖励记录',
@@ -635,27 +734,6 @@ const app = defineMessages({
     communityFundHistoryEmpty: {
       title: '暂无发展基金记录',
       body: '发展基金领取记录将在奖励产生后显示在这里。',
-    },
-    faq: {
-      title: 'FAQs',
-      items: [
-        {
-          q: '推荐奖励如何计算？',
-          a: '推荐奖励为3%，采用压缩同等金额结算机制，仅按同等金额部分计算，空账户不计奖励层级，奖励自动结算。',
-        },
-        {
-          q: '创世等级如何晋升？',
-          a: '创世等级由S1至S10，根据个人共建金额与体系总业绩进行评定，高等级需满足双区晋升条件。',
-        },
-        {
-          q: '什么是等级提升奖励？',
-          a: '共建期间达成的创世等级，将于协议上线后自动提升1个等级，有效期30天，结束后恢复真实等级。',
-        },
-        {
-          q: '创世团队奖励如何结算？',
-          a: '创世团队奖励根据对应创世等级比例自动结算，需用户手动领取到钱包。共建期结束后，当前页面将关闭，未领取的奖励不可再领取，奖励将被打入智能做市合约。',
-        },
-      ],
     },
     rewardType: {
       referralPaid: '推荐奖励',

@@ -580,8 +580,122 @@ const app = defineMessages({
     seasonUpcoming: 'Sắp bắt đầu',
   },
   rewards: {
-    title: 'Phần thưởng cùng xây dựng',
-    intro: 'Tham gia cùng xây dựng · Chia sẻ giá trị tăng trưởng',
+    title: 'Rewards',
+    intro: 'View reward card balances and payout records.',
+    backToHub: 'Back to rewards',
+    claim: 'Claim',
+    claimSuccess: 'Claimed successfully',
+    claimErrors: {
+      zeroAmount: 'Claim amount is 0.',
+      invalidSigner: 'Invalid signature. Refresh and try again.',
+      alreadyUsed: 'This reward was already claimed.',
+      expired: 'Signature expired. Refresh and claim again.',
+      noOrder: 'No reward available to claim.',
+      failed: 'Claim failed. Please try again later.',
+      confirmSyncFailed:
+        'Claim succeeded on-chain but sync failed. Refresh the page and do not claim again.',
+    },
+    hub: {
+      asideTitle: 'About AEGIS X rewards',
+      asideBody:
+        'Six reward cards cover lucky draws, referral, participation, co-build, development stipend, and genesis co-build.',
+      balanceLabel: 'Balance',
+      balancePlaceholder: '—',
+      signInForBalance: 'Sign in to view',
+      sessionHint:
+        'Complete wallet sign-in before claiming. Connecting a wallet is not the same as a business login.',
+      stats: {
+        totalRewards: 'Total rewards',
+        tier: 'Co-build tier',
+        tierEmpty: 'No co-build tier yet',
+        contribution: 'Contribution points',
+        contributionHint: 'Mixed claims consume contribution points 1:1.',
+        goBurn: 'Go burn →',
+      },
+      mechanismTitle: 'Co-build reward mechanism',
+      mechanismBody: 'Co-build rewards come from team Rebase yield and are shared by tier.',
+    },
+    cards: {
+      lucky: {
+        title: 'Lucky',
+        body: 'Block lucky draw for co-builders',
+        aside: 'Lucky rewards use Chainlink VRF; winners claim via Mixed.',
+      },
+      referral: {
+        title: 'Referral',
+        body: 'Rewards for inviting partners into co-build',
+        aside: 'Referral rewards are claimed via CommunityFund signatures.',
+      },
+      participate: {
+        title: 'Participation',
+        body: 'Rewards from your referrer',
+        aside: 'Participation rewards are claimed via IncentivePool signatures.',
+      },
+      cobuild: {
+        title: 'Co-build',
+        body: 'Long-term team co-build incentive rewards',
+        aside: 'Co-build rewards use DaoPool Mixed and require contribution points.',
+      },
+      grant: {
+        title: 'Development stipend',
+        body: 'Ecosystem development stipend',
+        aside: 'Development grants are claimed via MarketFund signatures.',
+      },
+      genesis: {
+        title: 'Genesis co-build rewards',
+        body: 'Genesis direct, tier, and development fund rewards',
+        aside: 'Genesis co-build rewards are claimed via RewardClaimer signatures.',
+        badge: 'Closing soon',
+      },
+    },
+    detail: {
+      claimable: 'Claimable',
+      emptyClaimable: 'No reward available to claim.',
+      signedAmountHint: 'Claimable amount follows the signed payload',
+    },
+    mixed: {
+      splitAria: 'Claim vs restake split',
+      releasePct: 'Claim {pct}%',
+      restakePct: 'Restake {pct}%',
+      releasePeriod: 'Release period',
+      restakePeriod: 'Restake period',
+      releaseAria: 'Release period',
+      restakeAria: 'Restake period',
+      releaseDays: '{days}d',
+      restakeDays: '{days}d',
+      requiredContribution: 'Contribution required this claim: {amount}',
+      insufficientContribution: 'Insufficient contribution points. Burn to top up.',
+      goBurn: 'Get contribution points',
+      luckyPaused: 'Lucky pool is paused; claims are unavailable.',
+      luckyNotClaimable: 'No lucky reward available to claim.',
+    },
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: 'How are rewards paid out?',
+          a: 'Most rewards are shown in AGX / gAGX terms; genesis co-build rewards follow RewardClaimer assets. Mixed claims send the release portion to the release queue.',
+        },
+        {
+          q: 'What is required to claim?',
+          a: 'Simple signed claims need a claimable balance and a valid signature. Lucky / DaoPool Mixed also need enough contribution points and a release/restake split.',
+        },
+        {
+          q: 'When do claimed rewards arrive?',
+          a: 'After the on-chain transaction confirms. The release portion unlocks over the selected period; the restake portion enters the matching stake position.',
+        },
+        {
+          q: 'When are rewards settled?',
+          a: 'Each source settles by contract and backend scan rules. The frontend uses claimable balances and signed payloads as source of truth.',
+        },
+        {
+          q: 'Why do some cards hide amounts?',
+          a: 'Disconnected or unsigned sessions show a sign-in hint, not an empty reward. After sign-in, — means nothing claimable or data is not ready yet.',
+        },
+      ],
+    },
+
+    // legacy keys retained for history helpers / gradual deletion
     currentTitle: 'Cấp hiện tại',
     postLaunchRankTitle: 'Cấp sau ra mắt',
     teamRewardRate: 'Thưởng nhóm {rate}',
@@ -611,18 +725,6 @@ const app = defineMessages({
     autoPaid: 'Phần thưởng tự động thanh toán vào ví',
     teamRewards: 'Phần thưởng cấp',
     claimed: 'Đã nhận {amount}',
-    claim: 'Nhận vào ví',
-    claimSuccess: 'Nhận thưởng thành công',
-    claimErrors: {
-      zeroAmount: 'Số tiền nhận bằng 0.',
-      invalidSigner: 'Chữ ký không hợp lệ, vui lòng lấy lại.',
-      alreadyUsed: 'Phần thưởng này đã được nhận.',
-      expired: 'Chữ ký đã hết hạn, hãy làm mới và thử lại.',
-      noOrder: 'Không có phần thưởng để nhận.',
-      failed: 'Nhận thất bại. Vui lòng thử lại sau.',
-      confirmSyncFailed:
-        'Phần thưởng đã nhận on-chain nhưng đồng bộ thất bại. Hãy làm mới trang — đừng nhận lại.',
-    },
     heroTitle: 'Cấp hiện tại',
     allTiers: 'Hệ thống danh dự sáng lập',
     history: 'Lịch sử phần thưởng',
@@ -645,27 +747,6 @@ const app = defineMessages({
     communityFundHistoryEmpty: {
       title: 'Chưa có lịch sử quỹ phát triển',
       body: 'Lịch sử nhận quỹ phát triển sẽ hiển thị tại đây khi phần thưởng phát sinh.',
-    },
-    faq: {
-      title: 'FAQs',
-      items: [
-        {
-          q: 'Phần thưởng giới thiệu được tính như thế nào?',
-          a: 'Phần thưởng giới thiệu là 3%, áp dụng cơ chế quyết toán nén số tiền tương đương, chỉ tính theo phần số tiền tương đương, tài khoản trống không tính tầng phần thưởng, phần thưởng tự động quyết toán.',
-        },
-        {
-          q: 'Cấp sáng lập thăng tiến như thế nào?',
-          a: 'Cấp sáng lập từ S1 đến S10, đánh giá theo số tiền cùng xây dựng cá nhân và tổng doanh số hệ thống, cấp cao cần đáp ứng điều kiện thăng tiến hai khu vực.',
-        },
-        {
-          q: 'Phần thưởng nâng cấp cấp là gì?',
-          a: 'Cấp sáng lập đạt được trong thời gian cùng xây dựng sẽ tự động nâng 1 cấp sau khi giao thức ra mắt, có hiệu lực 30 ngày, sau đó trở về cấp thực tế.',
-        },
-        {
-          q: 'Phần thưởng nhóm sáng lập được quyết toán như thế nào?',
-          a: 'Phần thưởng nhóm sáng lập được quyết toán tự động theo tỷ lệ cấp sáng lập tương ứng; người dùng phải tự nhận vào ví. Sau khi kỳ cùng xây dựng kết thúc, trang hiện tại sẽ đóng, phần thưởng chưa nhận không thể nhận nữa, phần thưởng sẽ chuyển vào hợp đồng market maker thông minh.',
-        },
-      ],
     },
     rewardType: {
       referralPaid: 'Phần thưởng giới thiệu',

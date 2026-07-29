@@ -29,3 +29,31 @@ export { readWalletSession } from '../../src/views/dapp/auth/login-with-wallet'
 export { createMemoryAuthSessionStorage } from '../../src/views/dapp/auth/session'
 export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-exchange-pool'
 export { resetUnknownReceiptLocksForTests } from '../../src/web3/wallet/unknown-receipt-lock'
+
+export {
+  buildRewardTierRows,
+  getCommitmentFloorPostLaunchLabel,
+  resolveCommitmentFloorBoostCopy,
+} from '../../src/core/presale/tier-table'
+export { buildNextTierProgress } from '../../src/core/presale/tier-progress'
+export {
+  formatApiDateTime,
+  formatRankTitleWithBadge,
+  formatShareholderHintForRank,
+  getPresaleRankHighlightedRows,
+} from '../../src/shared/api/format-display'
+export {
+  formatClaimableAmount,
+  formatCommunityFundLockedAmount,
+  mapCommunityFundLogToRow,
+  mapRewardLogToRow,
+  mapTeamRewardClaimLogToRow,
+} from '../../src/views/dapp/rewards/rewards-display'
+export { useShareholderRankLabels } from '../../src/views/dapp/rewards/use-shareholder-rank'
+export {
+  getCommunityFundLogs,
+  getQualifiedPartitions,
+  getReferralTotal,
+  getRewardLogs,
+  getTeamRewardClaimLogs,
+} from '../../src/shared/api/endpoints'

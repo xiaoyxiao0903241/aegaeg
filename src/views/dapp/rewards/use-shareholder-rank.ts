@@ -1,5 +1,4 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { formatPresaleRank } from '~/shared/api/format-display'
 import { resolveCommitmentFloorRank } from '~/core/presale/tier-table'
 import { resolveDisplayPresaleRank } from '~/core/presale/rank'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -51,41 +50,5 @@ export function useShareholderRank() {
     personalVolumeUsd,
     commitmentFloorRank,
     commitmentFloorTeamUsd,
-  }
-}
-
-export function useShareholderRankLabels(t: {
-  rewards: {
-    shareholderNoRankTitle: string
-    shareholderTitleForRank: string
-  }
-}) {
-  const rankState = useShareholderRank()
-
-  const effectiveDisplayRank = rankState.sessionReady ? rankState.displayRank : 0
-
-  const rankLabel = (() => {
-    if (rankState.sessionReady && rankState.isRankLoading) return ''
-    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankTitle
-    return t.rewards.shareholderTitleForRank.replace(
-      '{rank}',
-      formatPresaleRank(effectiveDisplayRank),
-    )
-  })()
-
-  const heroTitle = (() => {
-    if (rankState.sessionReady && rankState.isRankLoading) return ''
-    if (effectiveDisplayRank <= 0) return t.rewards.shareholderNoRankTitle
-    return t.rewards.shareholderTitleForRank.replace(
-      '{rank}',
-      formatPresaleRank(effectiveDisplayRank),
-    )
-  })()
-
-  return {
-    ...rankState,
-    displayRank: effectiveDisplayRank,
-    heroTitle,
-    rankLabel,
   }
 }

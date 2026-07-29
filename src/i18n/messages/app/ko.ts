@@ -580,8 +580,122 @@ const app = defineMessages({
     seasonUpcoming: '곧 시작',
   },
   rewards: {
-    title: '공동 구축 리워드',
-    intro: '공동 구축 참여 · 성장 가치 공유',
+    title: 'Rewards',
+    intro: 'View reward card balances and payout records.',
+    backToHub: 'Back to rewards',
+    claim: 'Claim',
+    claimSuccess: 'Claimed successfully',
+    claimErrors: {
+      zeroAmount: 'Claim amount is 0.',
+      invalidSigner: 'Invalid signature. Refresh and try again.',
+      alreadyUsed: 'This reward was already claimed.',
+      expired: 'Signature expired. Refresh and claim again.',
+      noOrder: 'No reward available to claim.',
+      failed: 'Claim failed. Please try again later.',
+      confirmSyncFailed:
+        'Claim succeeded on-chain but sync failed. Refresh the page and do not claim again.',
+    },
+    hub: {
+      asideTitle: 'About AEGIS X rewards',
+      asideBody:
+        'Six reward cards cover lucky draws, referral, participation, co-build, development stipend, and genesis co-build.',
+      balanceLabel: 'Balance',
+      balancePlaceholder: '—',
+      signInForBalance: 'Sign in to view',
+      sessionHint:
+        'Complete wallet sign-in before claiming. Connecting a wallet is not the same as a business login.',
+      stats: {
+        totalRewards: 'Total rewards',
+        tier: 'Co-build tier',
+        tierEmpty: 'No co-build tier yet',
+        contribution: 'Contribution points',
+        contributionHint: 'Mixed claims consume contribution points 1:1.',
+        goBurn: 'Go burn →',
+      },
+      mechanismTitle: 'Co-build reward mechanism',
+      mechanismBody: 'Co-build rewards come from team Rebase yield and are shared by tier.',
+    },
+    cards: {
+      lucky: {
+        title: 'Lucky',
+        body: 'Block lucky draw for co-builders',
+        aside: 'Lucky rewards use Chainlink VRF; winners claim via Mixed.',
+      },
+      referral: {
+        title: 'Referral',
+        body: 'Rewards for inviting partners into co-build',
+        aside: 'Referral rewards are claimed via CommunityFund signatures.',
+      },
+      participate: {
+        title: 'Participation',
+        body: 'Rewards from your referrer',
+        aside: 'Participation rewards are claimed via IncentivePool signatures.',
+      },
+      cobuild: {
+        title: 'Co-build',
+        body: 'Long-term team co-build incentive rewards',
+        aside: 'Co-build rewards use DaoPool Mixed and require contribution points.',
+      },
+      grant: {
+        title: 'Development stipend',
+        body: 'Ecosystem development stipend',
+        aside: 'Development grants are claimed via MarketFund signatures.',
+      },
+      genesis: {
+        title: 'Genesis co-build rewards',
+        body: 'Genesis direct, tier, and development fund rewards',
+        aside: 'Genesis co-build rewards are claimed via RewardClaimer signatures.',
+        badge: 'Closing soon',
+      },
+    },
+    detail: {
+      claimable: 'Claimable',
+      emptyClaimable: 'No reward available to claim.',
+      signedAmountHint: 'Claimable amount follows the signed payload',
+    },
+    mixed: {
+      splitAria: 'Claim vs restake split',
+      releasePct: 'Claim {pct}%',
+      restakePct: 'Restake {pct}%',
+      releasePeriod: 'Release period',
+      restakePeriod: 'Restake period',
+      releaseAria: 'Release period',
+      restakeAria: 'Restake period',
+      releaseDays: '{days}d',
+      restakeDays: '{days}d',
+      requiredContribution: 'Contribution required this claim: {amount}',
+      insufficientContribution: 'Insufficient contribution points. Burn to top up.',
+      goBurn: 'Get contribution points',
+      luckyPaused: 'Lucky pool is paused; claims are unavailable.',
+      luckyNotClaimable: 'No lucky reward available to claim.',
+    },
+    faq: {
+      title: 'FAQs',
+      items: [
+        {
+          q: 'How are rewards paid out?',
+          a: 'Most rewards are shown in AGX / gAGX terms; genesis co-build rewards follow RewardClaimer assets. Mixed claims send the release portion to the release queue.',
+        },
+        {
+          q: 'What is required to claim?',
+          a: 'Simple signed claims need a claimable balance and a valid signature. Lucky / DaoPool Mixed also need enough contribution points and a release/restake split.',
+        },
+        {
+          q: 'When do claimed rewards arrive?',
+          a: 'After the on-chain transaction confirms. The release portion unlocks over the selected period; the restake portion enters the matching stake position.',
+        },
+        {
+          q: 'When are rewards settled?',
+          a: 'Each source settles by contract and backend scan rules. The frontend uses claimable balances and signed payloads as source of truth.',
+        },
+        {
+          q: 'Why do some cards hide amounts?',
+          a: 'Disconnected or unsigned sessions show a sign-in hint, not an empty reward. After sign-in, — means nothing claimable or data is not ready yet.',
+        },
+      ],
+    },
+
+    // legacy keys retained for history helpers / gradual deletion
     currentTitle: '현재 등급',
     postLaunchRankTitle: '출시 후 등급',
     teamRewardRate: '팀 보상 {rate}',
@@ -611,18 +725,6 @@ const app = defineMessages({
     autoPaid: '리워드가 지갑으로 자동 정산됩니다',
     teamRewards: '등급 리워드',
     claimed: '수령 완료 {amount}',
-    claim: '지갑으로 수령',
-    claimSuccess: '수령 성공',
-    claimErrors: {
-      zeroAmount: '수령 금액이 0입니다.',
-      invalidSigner: '서명이 유효하지 않습니다. 다시 발급받으세요.',
-      alreadyUsed: '이미 수령한 리워드입니다.',
-      expired: '서명이 만료되었습니다. 새로고침 후 다시 시도하세요.',
-      noOrder: '수령 가능한 리워드가 없습니다.',
-      failed: '수령에 실패했습니다. 나중에 다시 시도하세요.',
-      confirmSyncFailed:
-        '온체인 수령은 완료됐지만 동기화에 실패했습니다. 페이지를 새로고침하세요. 다시 수령하지 마세요.',
-    },
     heroTitle: '현재 등급',
     allTiers: '창세 명예 체계',
     history: '리워드 기록',
@@ -645,27 +747,6 @@ const app = defineMessages({
     communityFundHistoryEmpty: {
       title: '발전 기금 기록 없음',
       body: '발전 기금 수령 기록은 리워드가 발생한 후 여기에 표시됩니다.',
-    },
-    faq: {
-      title: 'FAQs',
-      items: [
-        {
-          q: '추천 리워드는 어떻게 계산되나요?',
-          a: '추천 리워드는 3%이며, 압축 동등 금액 정산 메커니즘을 적용합니다. 동등 금액 부분만 계산하며, 빈 계정은 리워드 계층에 포함되지 않고 리워드는 자동 정산됩니다.',
-        },
-        {
-          q: '창세 등급은 어떻게 승급하나요?',
-          a: '창세 등급은 S1부터 S10까지이며, 개인 공동 구축 금액과 조직 총 실적을 기준으로 평가합니다. 상위 등급은 양쪽 구역 승급 조건을 충족해야 합니다.',
-        },
-        {
-          q: '등급 상승 리워드란?',
-          a: '공동 구축 기간에 달성한 창세 등급은 프로토콜 출시 후 자동으로 1등급 상승하며, 30일간 유효하고 이후 실제 등급으로 복귀합니다.',
-        },
-        {
-          q: '창세 팀 리워드는 어떻게 정산되나요?',
-          a: '창세 팀 리워드는 해당 창세 등급 비율에 따라 자동 정산되며, 사용자가 지갑으로 수동 수령해야 합니다. 공동 구축 기간 종료 후 현재 페이지는 닫히며, 미수령 리워드는 더 이상 수령할 수 없고 스마트 마켓메이킹 컨트랙트로 이전됩니다.',
-        },
-      ],
     },
     rewardType: {
       referralPaid: '추천 리워드',

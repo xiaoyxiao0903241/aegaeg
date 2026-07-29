@@ -20,15 +20,6 @@ const dappSkeleton = tv({
   },
 })
 
-const rewardsHeroTitleSkeleton = tv({
-  variants: {
-    compact: {
-      true: 'h-4.5 w-[62%]',
-      false: 'h-5 w-[58%]',
-    },
-  },
-})
-
 const communityStatSkeleton = tv({
   base: [
     'community-stat flex min-h-22 flex-col items-start gap-1 rounded-lg p-4.5',
@@ -77,65 +68,6 @@ export function MetricCardSkeleton({ className }: { className?: string }) {
       <DappSkeleton className="h-3 w-18 max-w-[55%]" />
       <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
     </Card>
-  )
-}
-
-export function CurrentTitleCardBodySkeleton() {
-  return (
-    <div aria-hidden="true" className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-      <DappSkeleton className="h-3 w-16" />
-      <DappSkeleton className="ml-auto h-3 w-20" />
-      <DappSkeleton className="h-5 w-[78%]" />
-      <DappSkeleton className="ml-auto h-5 w-10" />
-      <DappSkeleton className="h-3 w-[58%]" />
-      <DappSkeleton className="ml-auto h-3 w-[88%]" />
-    </div>
-  )
-}
-
-export function RewardsHeroBodySkeleton({ compact = false }: { compact?: boolean }) {
-  return (
-    <div aria-hidden="true" className="grid gap-2">
-      <DappSkeleton className={rewardsHeroTitleSkeleton({ compact })} tone="dark" />
-      <div className="grid gap-1.5">
-        <DappSkeleton className="h-3 w-full" tone="dark" />
-        <DappSkeleton className="h-3 w-[78%]" tone="dark" />
-      </div>
-    </div>
-  )
-}
-
-export function RewardBalanceCardSkeleton() {
-  return (
-    <Card as="article" surface="outlined">
-      <div className="flex items-center justify-between gap-3">
-        <DappSkeleton className="h-3 w-24" />
-        <DappSkeleton className="h-3 w-16" />
-      </div>
-      <DappSkeleton className="mt-2 h-7 w-[42%]" />
-      <DappSkeleton className="mt-1.5 h-3 w-[78%]" />
-    </Card>
-  )
-}
-
-export function ProgressCardSkeleton() {
-  return (
-    <div className="grid gap-3">
-      <div className="grid gap-1.5">
-        <div className="flex items-center justify-between gap-3">
-          <DappSkeleton className="h-3 w-24" />
-          <DappSkeleton className="h-3 w-20" />
-        </div>
-        <DappSkeleton className="h-1.5 w-full rounded-full" />
-      </div>
-      <div className="grid gap-1.5">
-        <div className="flex items-center justify-between gap-3">
-          <DappSkeleton className="h-3 w-20" />
-          <DappSkeleton className="h-3 w-24" />
-        </div>
-        <DappSkeleton className="h-1.5 w-full rounded-full" />
-      </div>
-    </div>
   )
 }
 
