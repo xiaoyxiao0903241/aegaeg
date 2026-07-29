@@ -191,7 +191,7 @@ const app = defineMessages({
         },
         turbine: {
           title: 'Turbine',
-          body: 'Buy unlocked Turbine gAGX 1:1 with USD1',
+          body: 'Buy unlocked Turbine gAGX with USD1',
         },
       },
       program: {
@@ -202,7 +202,7 @@ const app = defineMessages({
           { title: 'Get USD1', body: 'Convert USDT to USD1 via Flash' },
           { title: 'Get AGX', body: 'Get AGX at PancakeSwap market rate' },
           { title: 'Sell X', body: 'Swap X for AGX, USD1, or other ecosystem tokens' },
-          { title: 'Get contribution points', body: 'Burn AGX at 1:6 for contribution points' },
+          { title: 'Get contribution points', body: 'Burn AGX at {ratio} for contribution points' },
         ],
       },
       faq: {

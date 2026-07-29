@@ -33,6 +33,7 @@ export const exchangeHubAssets = {
   programUsdt: '/assets/figma/dapp/hub/program-usdt.svg',
   programUsd1: '/assets/figma/dapp/hub/program-usd1.svg',
   programAgx: '/assets/figma/dapp/hub/program-agx.png',
+  programPancake: '/assets/figma/dapp/hub/program-pancake.png',
   programX: '/assets/figma/dapp/hub/program-x.png',
   programGagx: '/assets/figma/dapp/carousel/token-gagx.png',
   aboutRays: '/assets/figma/dapp/hub/token-card-rays-hub.svg',

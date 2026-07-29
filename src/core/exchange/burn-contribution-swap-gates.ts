@@ -57,3 +57,18 @@ export function formatBurnContributionRateLabel({
 
   return `1 ${agxSymbol} = ${formatted} ${pointsLabel}`
 }
+
+/**
+ * Hub / marketing ratio `1:6` from on-chain `rateBps`.
+ * Exact when rateBps % 10000 === 0; otherwise decimal (trim trailing zeros).
+ */
+export function formatBurnContributionRatioColon(rateBps: bigint): string {
+  if (rateBps === 0n) return '—'
+  if (rateBps % 10000n === 0n) {
+    return `1:${(rateBps / 10000n).toString()}`
+  }
+  const whole = rateBps / 10000n
+  const frac = rateBps % 10000n
+  const fracStr = frac.toString().padStart(4, '0').replace(/0+$/, '')
+  return fracStr.length > 0 ? `1:${whole.toString()}.${fracStr}` : `1:${whole.toString()}`
+}

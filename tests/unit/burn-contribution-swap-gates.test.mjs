@@ -72,3 +72,13 @@ test('formatBurnContributionRateLabel from rateBps', async () => {
     '1 AGX = — points',
   )
 })
+
+test('formatBurnContributionRatioColon from rateBps', async () => {
+  const { formatBurnContributionRatioColon } = await loadModule(
+    '/src/core/exchange/burn-contribution-swap-gates.ts',
+  )
+
+  assert.equal(formatBurnContributionRatioColon(60_000n), '1:6')
+  assert.equal(formatBurnContributionRatioColon(0n), '—')
+  assert.equal(formatBurnContributionRatioColon(15_000n), '1:1.5')
+})

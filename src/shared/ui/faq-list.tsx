@@ -18,8 +18,7 @@ const faqList = tv({
   slots: {
     list: '',
     cardBody: [
-      'flex w-full flex-col items-start px-6 py-4.5',
-      'max-dapp:px-4 max-dapp:py-3.5',
+      'flex w-full flex-col items-start',
       'group-data-[state=open]:gap-3 max-dapp:group-data-[state=open]:gap-2.5',
     ],
     question: 'min-w-px flex-[1_0_0] text-left wrap-anywhere',
@@ -35,12 +34,15 @@ const faqList = tv({
           revealClass(),
           'mx-auto mt-10 grid w-full max-w-240 gap-3 max-dapp:mt-5 max-dapp:max-w-none max-dapp:gap-2.5',
         ),
+        cardBody: 'px-6 py-4.5 max-dapp:px-4 max-dapp:py-3.5',
         // Color only — size/weight from Text `copy` (shadcn semantic; replaces legacy text-faq)
         answer: 'text-muted-foreground',
       },
       dapp: {
+        // Figma DApp FAQ (hub `4273:242`): px16 py18 · gap12 · question 16
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        // Color + sheet pad — size/weight from Text `detail`
+        cardBody: 'px-4 py-[18px]',
+        question: 'text-[16px] leading-normal tracking-normal',
         answer: 'my-0 py-[1em] text-muted-foreground',
       },
     },
@@ -151,7 +153,12 @@ export function FaqList({
             <Card
               as="div"
               surface="soft"
-              className={cn('group', itemClassName)}
+              className={cn(
+                'group',
+                // DApp FAQ leaf (hub `4273:242`): radius 12 — call-site override, keep Card soft SSOT.
+                variant === 'dapp' && 'rounded-[12px]',
+                itemClassName,
+              )}
               data-faq-item
               data-faq-motion={motionEnabled ? 'true' : 'false'}
             >

@@ -184,7 +184,7 @@ const app = defineMessages({
         },
         turbine: {
           title: '涡轮',
-          body: '以 USD1 按 1:1 买入解锁涡轮中的 gAGX',
+          body: '以 USD1 买入解锁涡轮中的 gAGX',
         },
       },
       program: {
@@ -195,7 +195,7 @@ const app = defineMessages({
           { title: '获取 USD1', body: '通过闪兑将 USDT 兑换为 USD1' },
           { title: '获取 AGX', body: '以 PancakeSwap 市场汇率获取 AGX' },
           { title: '出售 X', body: '将 X 兑换为 AGX 或 USD1 等生态代币' },
-          { title: '获取贡献点数', body: '按 1:6 比率销毁 AGX 以获得贡献点数' },
+          { title: '获取贡献点数', body: '按 {ratio} 比率销毁 AGX 以获得贡献点数' },
         ],
       },
       faq: {

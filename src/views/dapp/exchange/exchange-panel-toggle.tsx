@@ -16,7 +16,7 @@ export function ExchangePanelToggle() {
       <IconButton
         aria-expanded={!detailCollapsed}
         aria-label={detailCollapsed ? t.topbar.showDetails : t.topbar.hideDetails}
-        className="shrink-0"
+        className="size-9 min-h-9 shrink-0"
         onClick={toggle}
       >
         <DappIcon
