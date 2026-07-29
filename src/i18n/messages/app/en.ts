@@ -161,7 +161,6 @@ const app = defineMessages({
     flip: 'Flip swap direction',
     balance: 'Balance',
     exchangePrice: 'Exchange price',
-    ratePlaceholder: '1 : 1',
     slippage: 'Slippage tolerance',
     allowedSlippage: 'Allowed slippage',
     slippageSettings: 'Slippage tolerance settings',

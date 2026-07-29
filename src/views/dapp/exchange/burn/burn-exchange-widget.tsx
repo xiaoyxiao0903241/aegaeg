@@ -137,7 +137,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
               value: showRateSkeleton ? (
                 <ExchangeMetaValueSkeleton />
               ) : (
-                burn.exchangePriceLabel || t.exchange.ratePlaceholder
+                burn.exchangePriceLabel || '—'
               ),
             },
             {

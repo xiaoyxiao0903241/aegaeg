@@ -172,7 +172,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                 <ExchangeMetaValueSkeleton />
               ) : (
                 <>
-                  {exchangePriceDisplayLabel || t.exchange.ratePlaceholder}
+                  {exchangePriceDisplayLabel || '—'}
                   <AnchoredTooltip content={t.exchange.flip}>
                     <button
                       aria-label={t.exchange.flip}

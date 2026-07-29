@@ -154,7 +154,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
               value: showRateSkeleton ? (
                 <ExchangeMetaValueSkeleton />
               ) : (
-                flash.exchangePriceLabel || t.exchange.ratePlaceholder
+                flash.exchangePriceLabel || '—'
               ),
             },
             {

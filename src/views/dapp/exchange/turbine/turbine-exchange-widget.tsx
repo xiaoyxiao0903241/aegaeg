@@ -216,7 +216,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   value: turbine.isAgxPriceQuoting ? (
                     <ExchangeMetaValueSkeleton />
                   ) : (
-                    turbine.agxPriceLabel || (sessionReady ? '—' : t.exchange.ratePlaceholder)
+                    turbine.agxPriceLabel || '—'
                   ),
                 },
                 {

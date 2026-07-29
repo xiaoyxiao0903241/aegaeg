@@ -154,7 +154,6 @@ const app = defineMessages({
     flip: '切换兑换方向',
     balance: '余额',
     exchangePrice: '兑换价格',
-    ratePlaceholder: '1 : 1',
     slippage: '滑点设置',
     allowedSlippage: '允许滑点',
     slippageSettings: '允许滑点设置',
