@@ -10,16 +10,16 @@ AI 工作规范
 
 #### R1 — 层 SSOT
 
-| 问题类型                 | SSOT                                                                                                                                    | 禁止用它决定                                       |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| 用户可见行为 / MUST 清单 | Spec + tickets + grilling Answers                                                                                                       | 把验收字面塞进 `shared/ui`                         |
-| 组件公开轴 / 视觉 chrome | [`docs/foundation/api.md`](docs/foundation/api.md) + [`runbook.md`](docs/foundation/runbook.md)                                         | ticket 示例文案覆盖 API                            |
-| 文件落点                 | [`docs/src-layout.md`](docs/src-layout.md)                                                                                              | 「进组件系统」= 业务数据进 shared                  |
-| 用户可见字符串           | `src/i18n/messages/` + §8.4 PC 文案 SSOT                                                                                                | 在 primitive 硬编码 locale                         |
-| 静态 UI                  | Figma `uiKwzwIoD06phS0husdqjB` + **[`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)**（任意页贴稿序） | `docs/figma-export/`、旧 fileKey；截图肉眼估当规格 |
-| 交互状态机               | 原型 HTML（有则 WebBridge 点通）+ research 摘录仅辅助                                                                                   | 抄原型 DOM/CSS；只读摘要不开原型                   |
-| 链上                     | [`docs/frontend-manual/`](docs/frontend-manual/)                                                                                        | 原型演示数值当门闸                                 |
-| 金钱写路径               | [`docs/money-path-map.md`](docs/money-path-map.md)                                                                                      | UI ticket 重写已证 gates                           |
+| 问题类型                 | SSOT                                                                                                                                    | 禁止用它决定                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 用户可见行为 / MUST 清单 | Spec + tickets + grilling Answers                                                                                                       | 把验收字面塞进 `shared/ui`                                               |
+| 组件公开轴 / 视觉 chrome | [`docs/foundation/api.md`](docs/foundation/api.md) + [`runbook.md`](docs/foundation/runbook.md)                                         | ticket 示例文案覆盖 API                                                  |
+| 文件落点                 | [`docs/src-layout.md`](docs/src-layout.md)                                                                                              | 「进组件系统」= 业务数据进 shared                                        |
+| 用户可见字符串           | `src/i18n/messages/` + §8.4 PC 文案 SSOT                                                                                                | 在 primitive 硬编码 locale                                               |
+| 静态 UI                  | Figma `uiKwzwIoD06phS0husdqjB` + **[`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)**（任意页贴稿序） | `docs/figma-export/`、旧 fileKey；截图肉眼估当规格                       |
+| 交互状态机               | 原型 HTML（DApp 默认须 WebBridge；见 ui-leaf §2.2）+ research 仅辅助                                                                    | 抄 DOM/CSS；只读摘要；WebBridge「可选 DEFER」；**选币=flip 冒充 picker** |
+| 链上                     | [`docs/frontend-manual/`](docs/frontend-manual/)                                                                                        | 原型演示数值当门闸；**用手册范围取消 Figma/原型控件**                    |
+| 金钱写路径               | [`docs/money-path-map.md`](docs/money-path-map.md)                                                                                      | UI ticket 重写已证 gates                                                 |
 
 #### R2 — 产品语言 ≠ 实现归属
 
@@ -46,39 +46,41 @@ AI 工作规范
 
 #### R5 — 设计稿 ∩ 手册（实现准入）
 
-> 用户锁定（2026-07-29）：**没有设计稿就无法诚实实现 UI**；手册不能单独授权「发明界面」。
+> 用户锁定（2026-07-29；**2026-07-30 纠偏**）：没有设计稿就无法诚实实现 UI；手册不能单独授权「发明界面」；**手册也不能单独授权「取消稿面/原型控件」**。
 
-**写盘前第一步（强制）**：对本票相关表面，**先阅读** [`docs/frontend-manual/`](docs/frontend-manual/)（至少 `01-frontend-integration-guide.md` 对应章节 + 相关 `contracts/*.md`）以及触及写链时的 [`docs/money-path-map.md`](docs/money-path-map.md)，**先弄清功能与门闸**，再打开 Figma 做元素清单。禁止跳过手册、只盯稿面或只抄现码。
+**写盘前第一步（强制）**：先读 [`docs/frontend-manual/`](docs/frontend-manual/)（integration-guide 相关章 + `contracts/*.md`）及触及写链时的 [`docs/money-path-map.md`](docs/money-path-map.md)，弄清钱路与门闸；再按 [`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md) 做原型点通与 Figma leaf。禁止跳过手册、只盯稿面或只抄现码。
 
-| 情况                                                                                  | 动作                                                                                                                                               |
-| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Figma 有该表面/控件/状态，且 `frontend-manual`（或 money-path）写了行为/读链/写链** | **MUST 实现**：视觉跟稿，数据与门闸跟手册；禁止只接线不贴稿、禁止只贴稿不接手册规定的链上读/写/门闸                                                |
-| **手册有，Figma 无对应表面/控件**                                                     | **缺口记录**（ticket / map Notes / research）：**优先建议补 Figma**（把手册能力补进稿），**禁止**在代码里发明稿外 UI；补稿或产品裁决前不实现该表面 |
-| **Figma 有，手册无链上/行为依据**                                                     | **停手暴露**：禁止用原型演示数或臆测当门闸；补手册或明确 DEFER                                                                                     |
-| **二者冲突**                                                                          | 按 R4；写盘前暴露，禁止静默选边                                                                                                                    |
+| 情况                                    | 动作                                                                                                                                                                                     |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Figma/原型有该表面或控件**            | **UI MUST 实现**（跟稿/原型），**不论手册是否写全数据**。手册有读/写 → 接线；手册缺数据 → **UI 仍做完**，值面 `—` / skeleton，缺口写入 leaf/ticket；**禁止**因手册不全而砍控件或降级冒充 |
+| **手册有能力，Figma/原型无对应表面**    | **缺口记录**；优先补稿；**禁止**发明稿外 UI                                                                                                                                              |
+| **Figma 有数值区，手册无链上/行为依据** | **停手暴露**该**数值/门闸**；禁止用原型演示数臆测。**不**等于整控件可砍                                                                                                                  |
+| **钱路冲突（稿演示比 vs 手册公式）**    | 按 R4；视觉跟稿结构，**数跟手册**；写盘前暴露                                                                                                                                            |
 
-写盘前强制：对本票表面做一次「稿元素清单 × 手册 API/门闸」对照；未对照不得称完成。
+##### R5a — 稿有 UI 必须实现；手册缺数只记缺口（强制 · 2026-07-30）
 
-**任意页贴稿工具序（强制 · 全仓）**：凡实现或修正用户可见 UI（不限 DApp 某一票），必须遵守 [`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)——**手册 → Figma `get_design_context`（页级+子节点）→（有原型则）Kimi WebBridge 点通 → leaf 错位表 → 改码 → 回看**。禁止仅用截图驱动实现；结构 PASS / 钱路 PASS / `pnpm check` 绿均不得冒充贴稿完成。
+> **用户锁定：** 设计稿上的可见控件/状态 **必须完成 UI**。若手册缺少读/写或数据源导致功能不完整 → **记入文档缺口**（leaf / ticket / map Notes），值面诚实 `—` / skeleton / 禁用写链；**禁止**因此不画、删掉、或用 flip 等降级冒充该控件。
 
-**「稿元素清单」形状（禁止偷换）**：
+- `frontend-manual` / money-path **只钉**：用户流、读/写、币对/路径、门闸、诚实失败。
+- **不钉、不否决**：Figma 可见 chrome、原型交互（选币 pill/chevron/弹层、segment、浮层、空态等）。
+- **禁止推理**：「手册 §X 只写余额/quote/swap」→「选币下拉可跳过 / 改成 flip 并标 PASS」。
+- 稿有或原型有而手册未写控件名 → **UI 仍 MUST**；手册只约束背后钱路（如仍仅 USD1↔AGX）。
+- leaf **分列**：`UI`（跟稿） vs `钱路/数据`（跟手册；无源则缺口 + `—`）。钱路 PASS **不得**关闭 UI FAIL；**数据缺口不得关闭 UI MUST**。
+- 仅当 **产品/grilling Answer 书面杀掉**该 chrome 才可不实现该控件；ticket 自写 DEFER / EX-* /「手册没有」**一律不够**。
 
-- **必须**按 Figma frame **自上而下、可见节点**列出：标题/副文、Segment、金额卡、翻转/切换、meta 行、CTA、右侧概览/关于/FAQ、连接态与未连接态（若稿有分帧）。
-- **必须**含两列：① 稿有 → 实现目标；② **代码现有但稿无 → 删除或记缺口**（禁止默默保留原型 chrome）。
-- **禁止**只写能力/链上门闸表（如「接 redeem / getConfig」）冒充元素清单；能力表可附属，但不能替代视觉节点清单。
-- PC 文案以稿为准写入 i18n；全 locale 键齐全（缺译不得静默英文兜底冒充完成，除非该语种票另有 DEFER）。
+**工具序与 page-done 硬定义（唯一正文）**：[`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)。本处不重复步骤清单。交付单位 = **一个 Figma PC 产品帧**。旧「High 结构波」不作交付证明。
 
-**Frontier**：map「无阻塞可立即开」仍须对照**代码就绪度**（验收 DOM/锚点是否已存在或由本票创建）。`Blocked by: None` ≠ 现在就能诚实验收——冲突时先改阻塞图，再 `/implement`。见 [`docs/agents/implement-checklist.md`](docs/agents/implement-checklist.md)。
+**Frontier**：map「无阻塞」仍须对照代码就绪度。见 [`docs/agents/implement-checklist.md`](docs/agents/implement-checklist.md)。
 
 #### R6 — 做前 / 做后独立审查（UI 与代码质量分轨）
 
 > 用户锁定（2026-07-29）：贴稿与代码质量都要**独立**过关；实现者自检 ≠ 审查。缺任一门不得称本票完成。
 
-| 门              | 何时                 | 审查什么                                                                                                  | 通过标准                                                                                  |
-| --------------- | -------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **Pre-Design**  | **写盘前**           | ① **已先读手册**弄清本票功能/读写下法/门闸；② R5 产出物：现行 Figma node 元素清单 + 手册对照 + 代码多余项 | 手册章节已注明；清单完整（含「稿无代码有」）；无未暴露的稿∩手册空缺；**未读手册不得开写** |
-| **Post-Design** | **实现后、称完成前** | 对照同一清单逐项 pass/fail（截图或 frame 节点 vs 现码）                                                   | 清单无未解释 fail；稿外 chrome 已删；i18n 键与 PC 文案对齐                                |
-| **Post-Code**   | **实现后、称完成前** | 与贴稿**分开**审：极简、逻辑清晰可测、删除优先、边界清晰                                                  | 符合 §8.2；无堆叠补丁/多余抽象；纯逻辑有单测或可测缝；`pnpm check` 过                     |
+| 门              | 何时                 | 审查什么                                                                             | 通过标准                                           |
+| --------------- | -------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------- |
+| **Pre-Design**  | **写盘前**           | 手册 + 原型证据（ui-leaf §2.2）+ Figma leaf + 动态审计 + R5a（控件未因手册沉默被砍） | 证据齐全；**未读手册 / DApp 未点原型不得开写**     |
+| **Post-Design** | **实现后、称完成前** | leaf 逐项（**UI 列与钱路列分判**）；回看原型∥本站∥Figma                              | 无未解释 UI FAIL；WebBridge 实录字段齐全；假数清零 |
+| **Post-Code**   | **实现后、称完成前** | 极简、可测、deletion-first                                                           | §8.2；`pnpm check` 过                              |
 
 **独立审查含义**：
 
@@ -90,15 +92,15 @@ AI 工作规范
 
 > **每个 DApp tab（或实现 ticket）在 `git commit` 之前**必须过独立多 agent 审查；实现者自检不算过门。Critical 未清禁止提交。
 
-| 规则               | 要求                                                                                                                                          |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **何时**           | 用户要求「tab 完成即提交」或本票称完成并准备 commit 时；**commit 之前**                                                                       |
-| **模型**           | 全部审查子代理固定 **`cursor-grok-4.5-high`（Grok 4.5 high）**；禁止默默换模型                                                                |
-| **分轨**           | 至少并行两路：① **Post-Design / Spec**（稿∩手册∩ticket 清单）；② **Post-Code / deletion-first**（§8.2、死代码、假数、多余抽象、金钱路径门闸） |
-| **Deletion-first** | Post-Code 路必须显式列：应删未删项、可内联的 wrapper、无测缝分支、稿外 chrome                                                                 |
-| **世界级标准**     | 正确性 > 可验证性 > 简洁；fail-closed 金钱路径；无机会主义扩面；能一行不五十一行                                                              |
-| **产出**           | 审查结论落盘（ticket 勾选或 `.scratch/.../research/*-review.md`）；Critical → 先修再 commit；DEFER 须写明理由                                 |
-| **补审**           | 若某 tab 已提交但未过本门 → **补审**；Critical 用 follow-up commit 修，不 rewrite 已推送历史（除非用户明示）                                  |
+| 规则               | 要求                                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **何时**           | 本页称完成并准备 commit 时；**commit 之前**                                                                    |
+| **模型**           | 实现切片与审查子代理一律 **`cursor-grok-4.5-high`（Grok 4.5 high）**；禁止默默换模型                           |
+| **分轨**           | ① **Post-Design**（leaf + WebBridge **实录字段** + 动态审计 + R5a 控件未砍）；② **Post-Code / deletion-first** |
+| **Deletion-first** | 应删未删、假数、稿外 chrome、用 flip 冒充 picker 等                                                            |
+| **世界级标准**     | 正确性 > 可验证性 > 简洁；fail-closed 金钱路径；无机会主义扩面                                                 |
+| **产出**           | 审查落盘；缺 WebBridge 实录 / 稿面控件被 DEFER → **强制 Critical**；禁止「DEFER 不挡 PASS」                    |
+| **补审**           | 缺原型点通 → `needs-proto-reverify`；补完 + R7 后再承认 page-done                                              |
 
 节奏见 [`docs/agents/implement-checklist.md`](docs/agents/implement-checklist.md)「提交前多 agent」。
 

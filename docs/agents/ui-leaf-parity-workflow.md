@@ -1,72 +1,171 @@
 # UI 页面实现工作流（全仓通用 · 强制）
 
-> **状态：** 用户锁定 2026-07-29  
-> **适用范围：** **任意** 用户可见页面 / 表面 / 组件贴稿实现（DApp 七轨、Home、H5、壳、弹层、后续新页）——不限于某一 ticket 序列。  
-> **挂载：** 根 [`AGENTS.md`](../../AGENTS.md) §8.0 R5 / §8.4 · [`implement-checklist.md`](./implement-checklist.md) Pre-Design
+> **状态：** 用户锁定 2026-07-30（对抗纠偏：堵 R5 合取漏洞 · 手册沉默 ≠ 取消 UI · WebBridge 实录字段）  
+> **本文件 = `page-done` 与工具序唯一正文。** `AGENTS.md` 管分层；`implement-checklist.md` 只管勾选。  
+> **挂载：** [`AGENTS.md`](../../AGENTS.md) §8.0 R5 / R5a / R6 / R7
 
-## 1. 一句话
+---
 
-做任何页面 UI：**手册钉功能 → Figma `get_design_context` 钉 leaf →（有原型则）WebBridge 钉交互 → 对照现码写错位表 → 最小改码 → 回看 → `pnpm check`。**  
-禁止用截图肉眼估、结构壳 PASS、钱路 PASS 或 `pnpm check` 绿冒充贴稿完成。
+## 0. 禁止再犯（合并禁语）
 
-## 2. 三源与工具（硬分工）
+| 坏做法                                           | 必须                                                             |
+| ------------------------------------------------ | ---------------------------------------------------------------- |
+| WebBridge「可选 / DEFER / 稍后补」后标 page-done | 无 §2.2 实录字段 → Status ≤ `needs-proto-reverify`；R7 不得 PASS |
+| 手册缺数据 / 只写钱路 → 不做下拉、用 flip 冒充   | **UI MUST 做完**；缺口记文档；值 `—`；flip ≠ picker              |
+| 「稿∩手册才 MUST」缩 UI                          | 控件跟 Figma/原型；钱跟手册                                      |
+| 多页并行写盘                                     | 一帧闭环到 page-done 后才开下一帧                                |
+| `pnpm check` / 钱路 PASS / High 波 = 完成        | 仅 §5 全满                                                       |
+| 证据栏套话（「一致」「N/A」无路径）              | Critical                                                         |
+| 旧 scratch「选币=flip PASS」                     | **作废**（见 §9）                                                |
 
-| 源                                                    | 钉什么                                                | 工具                                                                | 禁止                                                            |
-| ----------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------- |
-| **正式 Figma**（现行 fileKey 见 AGENTS §8.4）         | 可见 leaf：树、字阶、色、圆角、阴影、间距、素材、状态 | MCP **`get_design_context`**（主）；写盘前加载 figma-design-to-code | 仅截图驱动实现；整页粘贴 MCP 参考代码；手描 icon 冒充稿         |
-| **可操作原型**（若该面有；DApp 见 `~/Downloads/新/`） | 交互状态机：点哪、开层、空态、segment、浮层           | **Kimi WebBridge** 开原型（`file://` 或托管 URL）                   | 抄 DOM/CSS；演示数当门闸/链上真相；只读 research 摘要代替点原型 |
-| **frontend-manual ∩ money-path**（触及链上时）        | 读/写、门闸、诚实失败                                 | 读手册 + 既有 read/write                                            | 假数；有 API 永久静态                                           |
+---
 
-冲突裁决（与 AGENTS R4/R5 同向）：**视觉跟 Figma · 交互跟原型 · 钱跟手册。**  
-无原型的表面：交互以 Figma 状态帧 + 手册为准，仍须 `get_design_context`；不得用「没有原型」跳过 Figma context。
+## 1. 交付单位与硬序
 
-### 2.1 Figma（任意页）
-
-1. 对本票 **每个相关页级 frame**（PC；若做 H5 则含对应 H5 帧）调 `get_design_context(fileKey, nodeId)`。
-2. **大帧必须再拆子节点**二次（或多次）拉 context，直到 leaf 尺寸/间距/字阶可勾选；禁止「只看整页截图」。
-3. MCP 返回的代码是 **REFERENCE**：映射进本仓 shell / tokens / call site（见 `src-layout` + foundation），禁止整页粘贴。
-4. 图标/图：用 MCP asset 入库或接既有 leaf 组件；禁止手写 path 冒充稿。
-5. 截图仅用于定向或收工抽查，**不是**实现规格。
-
-### 2.2 原型（有则必须点）
-
-- DApp 默认三份：`AEGIS X DApp.html`（有数据）· `AEGIS DApp 无数据.html` · `AEGIS DApp Shell 演示.html`（tour）。
-- WebBridge **不能**直接打开 `file://`：先在原型目录起本地静态服（例：`python3 -m http.server 8765 --bind 127.0.0.1`），再 `navigate` 到 `http://127.0.0.1:8765/...`。
-- WebBridge：`navigate` → `snapshot` / 点击走通本面 IA；对照 `pnpm dev` 本站。
-- **不**用安装 Playwright / Cursor browser 学原型；`pnpm test:e2e` 仅可选修后锁回归。
-- 一任务一 `session`；`group_title` 用中文。
-
-### 2.3 手册（触及功能/链上时）
-
-先能口述用户流、读/写、前置检查、成功刷新，再开 Figma 元素清单。纯展示且无链上行为的表面：至少确认「无手册义务 / 诚实空 / DEFER」再贴稿。
-
-## 3. 单面标准步骤（每页复制）
+**交付单位：** 一个现行 Figma **PC 产品帧** = 一页。
 
 ```text
-1. 手册（若适用） → 允许的读写 / 必须诚实空 / DEFER
-2. Figma           → get_design_context（页级 + 子节点）→ leaf 表落盘
-3. WebBridge       → 有原型则点通 IA；对照本站
-4. 对照现码        → 标：缺 leaf / 错层级 / 错材质 / 交互错
-5. 最小改码        → 复用 chrome；按清单改；禁凭感觉「调好看」
-6. 回看            → WebBridge 并排；必要时再拉 Figma context
-7. pnpm check      → 绿；1–2px 不挡关；整块错 / 错状态机挡关
+手册（钱/门闸）→ 原型 WebBridge（DApp MUST）→ Figma context（页+子）
+→ 文案动态审计 → leaf（UI 列∥钱路列）→ 最小改码 → 回看
+→ pnpm check → R7（Grok 双轨）→ 用户明示 commit → page-done → 下一页
 ```
 
-## 4. 验收禁语
+---
 
-禁止用下列任一冒充「该页 UI 已对齐 / 完成」：
+## 2. 三源
 
-- 结构壳 PASS / 钱路 Critical PASS / `pnpm check` 绿
-- 「跟稿差不多」且无 leaf 勾选表
-- 只更新了摘要文档、未开 `get_design_context` 或（有原型时）未 WebBridge 点原型
+| 源                      | 钉什么                | 禁止                      |
+| ----------------------- | --------------------- | ------------------------- |
+| **手册 ∩ money-path**   | 流、读/写、币对、门闸 | 假数；**取消稿/原型控件** |
+| **原型**（DApp 默认有） | IA / 开层 / 空态      | 抄 DOM；摘要代替点通      |
+| **Figma**               | 可见 leaf             | 截图当规格；粘贴 MCP 整页 |
 
-## 5. 与其它文档的关系
+裁决：**视觉跟 Figma · 交互跟原型 · 钱跟手册**（= AGENTS R5a）。
 
-| 文档                          | 角色                                                      |
-| ----------------------------- | --------------------------------------------------------- |
-| 本文件                        | **任意页**贴稿工具序与禁法（通用）                        |
-| `AGENTS.md` §8.0 R5           | 稿∩手册准入与元素清单形状                                 |
-| `implement-checklist.md`      | 单票三门节奏；Pre-Design 须引用本文件                     |
-| `.scratch/.../research/38` 等 | 某次 effort 的增强需求 / 顺序；**不得**窄化本文件适用范围 |
+### 2.1 手册
 
-某 effort 的 ticket 序（如 11→19）写在该 effort 的 plan/tickets 里，**不是**本通用流程的一部分。
+先口述钱路与门闸，再开原型/Figma。
+
+### 2.2 原型
+
+**路径：** `~/Downloads/新/` → `AEGIS X DApp.html` / `AEGIS DApp 无数据.html` / `AEGIS DApp Shell 演示.html`
+
+- **DApp 七轨：** 默认必须 WebBridge；禁止自称「本页无原型」。
+- **Home 等确无 HTML：** leaf 写 `原型 N/A` + **路径级**「目录下无对应文件」证据；交互跟 Figma 状态帧。
+- 起服：`python3 -m http.server 8765 --bind 127.0.0.1`（禁直接 `file://`）。
+- 学 IA 用 WebBridge，不用 Playwright。
+
+**WebBridge 实录字段（缺一 = 未点通 → R7 Critical）：**
+
+1. http URL（含文件名）
+2. 本面路由/入口怎么进
+3. **有序**点击控件列表（含稿有则连接/未连接）
+4. 与 `pnpm dev` 本站差异一句（或「一致」）
+5. 执行时间（ISO 日即可）
+
+禁止：「可选」「环境恢复后补」「DEFER 不挡」。环境不可用 → **停手**，不改 Status 向上、不开 R7、不开下一帧。
+
+### 2.3 Figma
+
+`get_design_context` 页级 + 子节点；`skillNames` 含 `figma-design-to-code`。
+
+**稿面可见控件 = MUST 做完 UI**（用户锁定）：手册缺数据 → leaf/ticket **记录缺口**，值面 `—` / skeleton / 禁写；**禁止**不实现该控件。  
+仅当产品/grilling Answer **书面杀控**（ticket id + 日期）才可不做。自写 DEFER / EX-* /「手册没有」不够。
+
+### 2.4 文案动态审计
+
+| 判定       | 动作                             |
+| ---------- | -------------------------------- |
+| 有链上/API | 接真读；空=`—`/skeleton          |
+| 协议不变量 | 可展示；leaf 注手册出处          |
+| 无源       | 控件留、值 `—`；**禁止**抄演示数 |
+
+### 2.5 DEFER 分型（唯一合法）
+
+| 类型                                                         | 合法？             | 例                                          |
+| ------------------------------------------------------------ | ------------------ | ------------------------------------------- |
+| **数据无源**                                                 | 是（只缓数据）     | UI 必须已实现；TVL=`—`；leaf 记「手册缺源」 |
+| **产品书面杀控**                                             | 是（可不做该控件） | Answer 写明删 picker                        |
+| **因手册不全而不做 UI / WebBridge 未做 / 用 DEFER 关控件门** | **否**             | T-D1 下拉未做、WebBridge「可选」            |
+
+Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错、状态错、假数、缺控件仍挡）。  
+缺译：键须齐；真译可 `locale-DEFER` 另票，**不**把七语全译绑进同一帧 DoD。
+
+---
+
+## 3. 单面步骤（串行）
+
+```text
+1. 手册     2. WebBridge 实录   3. Figma context
+4. 动态审计 5. leaf（UI∥钱路） 6. 改码（禁并行下一帧）
+7. 回看     8. pnpm check       9. R7（缺实录=Critical）
+10. 用户明示 commit → page-done → 下一页
+```
+
+---
+
+## 4. leaf 最低字段
+
+1. Frame ids
+2. 手册章节
+3. WebBridge 实录（或 N/A + 路径证据）
+4. 动态审计表
+5. 节点表：**UI 标** 与 **钱路标** 分列
+6. 稿无代码有 → 删/缺口
+7. Status：`pre-design` | `in-progress` | `needs-proto-reverify` | `page-done`
+
+---
+
+## 5. page-done（硬）
+
+- [ ] 本帧可见控件 **UI 均已实现**（或产品书面杀控）；手册缺数 → 缺口已记文档且值面诚实空——**不得**用缺口当「可不做 UI」
+- [ ] 手册已读；有源接线；无源=`—`且 **UI 仍在**
+- [ ] WebBridge 实录五字段齐全（或合法 N/A）
+- [ ] Figma 页+子 context 已拉
+- [ ] 「稿无代码有」已处理
+- [ ] `pnpm check` exit 0
+- [ ] R7 Post-Design：实录字段 + R5a；缺则 Critical
+- [ ] R7 Post-Code：假数/稿外 chrome Critical=0
+- [ ] 用户明示后 commit（或用户书面「本页不 commit」原句进 leaf）
+- [ ] 仅此时 Status=`page-done`；此前禁止下一 Figma PC 帧写盘
+
+**纠偏：** 凡旧 page-done 缺原型实录 → `needs-proto-reverify`；**零交付证明**（禁止「代码轴仍有价值」话术冒充半完成）。
+
+---
+
+## 6. 子代理
+
+实现 / 补审 / R7：一律 `cursor-grok-4.5-high`。
+
+---
+
+## 7. 文档分工
+
+| 文件                     | 职责                                       |
+| ------------------------ | ------------------------------------------ |
+| **本文件**               | 工具序 + page-done + 实录字段 + DEFER 分型 |
+| `AGENTS.md` R1/R5/R5a    | 分层与「手册不取消 UI」                    |
+| `AGENTS.md` R6/R7        | 三门含义、模型、Critical                   |
+| `implement-checklist.md` | 勾选；禁止第二套叙事                       |
+| `.scratch/...`           | 页证据；不得覆盖本文件                     |
+
+---
+
+## 8. 重新开始（5 步）
+
+1. 合并本纠偏（R5a + 本文件）并 commit（用户明示时）。
+2. 队列全部非 page-done：`needs-proto-reverify` / `not started`。
+3. 从兑换主页 `4267:212` 起：**一页一闭环**（含原型 + Trade 类控件 MUST）。
+4. Trade：picker 下拉 = UI FAIL 直至实现；§7.1 钱路可先 PASS。
+5. 全部真 page-done 后再通知用户。
+
+---
+
+## 9. 作废的旧 scratch 口径
+
+下列指导 **superseded**（可留文件但须当错）：
+
+- 「选币 pill = flip」「点选 = flip → PASS」「结构 PASS；真 picker DEFER 不挡」
+- 出现在：`55-trade-page-leaf`、`13-exchange-tab-pre-design`、`39`/`40`/`41` exchange leaf、`16-exchange-r7-review` 等
+
+**保留：** 钱路「Trade = USD1↔AGX」（手册 §7.1）——那是路径，不是 UI 免责声明。
