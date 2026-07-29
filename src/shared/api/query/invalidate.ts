@@ -207,7 +207,7 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.burnSwapRoot,
   ],
   staking: [queryKeys.chain.stakingRoot, queryKeys.chain.erc20Root, queryKeys.chain.referralRoot],
-  release: [],
+  release: [queryKeys.chain.releaseRoot, queryKeys.chain.erc20Root, queryKeys.chain.turbineRoot],
 }
 
 /** 使当前 Tab 相关 query 标记过期，并只 refetch 已挂载的观察者。 */
@@ -259,4 +259,12 @@ export function invalidateAfterStaking() {
 export function invalidateAfterAssetsClaim() {
   invalidateTabQueries('assets')
   invalidateTabQueries('staking')
+}
+
+/**
+ * Queue vested claim → Turbine quota (EX-U5) + release reads.
+ * Buffer claim → release + AGX balance (turbineRoot invalidation is cheap/harmless).
+ */
+export function invalidateAfterReleaseClaim() {
+  invalidateTabQueries('release')
 }

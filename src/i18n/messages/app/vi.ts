@@ -1301,7 +1301,146 @@ const app = defineMessages({
   },
   release: {
     title: 'Release',
-    body: 'Release schedule is coming soon.',
+    intro: 'Manage yield and principal release',
+    backToHub: 'Back to release',
+    dash: '—',
+    recordsEmpty: 'No indexed records yet',
+    labels: {
+      releasing: 'Releasing',
+      released: 'Released',
+      releasedPct: 'Released {pct}%',
+    },
+    units: {
+      queue: 'gAGX',
+    },
+    errors: {
+      claimFailed: 'Claim failed. Please try again.',
+    },
+    hub: {
+      aboutTitle: 'About release',
+      aboutCardTitle: 'Release pool · yield & rewards',
+      aboutCardBody:
+        'The release pool turns instant sell pressure into a smooth multi-day flow. Each claim unlocks linearly over the selected period so protocol outflows stay aligned with ecosystem growth.',
+      mechanismTitle: 'Yield claim flow',
+      mechanismSubtitle:
+        'Release sits between yield creation and Turbine — trade time for a lower tax rate and steadier exits.',
+      mechanismSteps: [
+        { title: 'Claim Rebase / DAO rewards', body: 'Yield is created' },
+        { title: '6 : 1 contribution', body: '50% burn · 50% into X pool' },
+        { title: 'Enter release pool', body: 'Choose 5 / 20 / 40 / 60 days' },
+        { title: 'Claim into Turbine', body: '1:1 unlock sell quota' },
+      ],
+      taxTitle: 'Longer release, lower tax',
+      taxPeriod: 'Period',
+      taxRate: 'Claim tax',
+      taxRows: {
+        periods: ['5d', '20d', '40d', '60d'],
+        rates: ['20%', '10%', '5%', '1%'],
+      },
+    },
+    queue: {
+      title: 'Release pool',
+      intro:
+        'Claimed yield unlocks here over the selected period. Released amounts can be claimed into Turbine anytime.',
+      planDays: '{days}d',
+      claim: 'Claim',
+      claimSuccess: 'Claimed into Turbine quota',
+      goTurbine: 'Go to Turbine',
+      statsTitle: 'Release pool data',
+      lifetimeClaimed: 'Lifetime claimed from pool',
+      recordsTitle: 'Release pool records',
+    },
+    buffer: {
+      title: 'Buffer pool',
+      intro:
+        'Redeemed principal unlocks here with a second linear release. Released AGX can be withdrawn to your wallet.',
+      claim: 'Withdraw',
+      claimSuccess: 'AGX withdrawn to wallet',
+      gagxHint:
+        'PrincipalReleaseVault settles AGX only. gAGX exits convert to AGX before entering the buffer.',
+      statsTitle: 'Buffer pool data',
+      entered: 'Total entered',
+      extracted: 'Total withdrawn',
+      recordsTitle: 'Buffer pool records',
+      mechanismTitle: 'Principal release flow',
+      mechanismSubtitle:
+        'Stake and bond principal use a two-stage release model for market stability.',
+      mechanismSteps: [
+        { title: 'Stake / bond principal', body: 'Exit entry' },
+        { title: 'Block-level release', body: 'Inside position' },
+        { title: 'Buffer after redeem', body: '~30 days default' },
+        { title: 'Second linear release', body: 'Withdraw to wallet' },
+      ],
+    },
+    faq: {
+      title: 'FAQs',
+      hub: [
+        {
+          q: 'Can I change the release period?',
+          a: 'Not for amounts already queued. New claims can pick a different period.',
+        },
+        {
+          q: 'When is the tax taken?',
+          a: 'When you claim unlocked amounts, using the plan fee rate.',
+        },
+        {
+          q: 'Where does a release-pool claim go?',
+          a: 'On-chain AGX enters Turbine sell quota; then use Turbine to obtain gAGX.',
+        },
+        {
+          q: 'Do I lose unlocked amounts if I wait?',
+          a: 'No. Unlocked amounts stay claimable.',
+        },
+        {
+          q: 'How do I pick a period?',
+          a: 'Longer periods have lower tax. Choose among 5 / 20 / 40 / 60 days.',
+        },
+      ],
+      queue: [
+        {
+          q: 'Can I change the release period?',
+          a: 'Not for amounts already queued.',
+        },
+        {
+          q: 'When is the tax taken?',
+          a: 'On claim of unlocked amounts.',
+        },
+        {
+          q: 'Where does a release-pool claim go?',
+          a: 'Into Turbine quota — open Exchange → Turbine.',
+        },
+        {
+          q: 'Do I lose unlocked amounts if I wait?',
+          a: 'No.',
+        },
+        {
+          q: 'How do I pick a period?',
+          a: 'Longer periods, lower tax.',
+        },
+      ],
+      buffer: [
+        {
+          q: 'What is the buffer pool?',
+          a: 'PrincipalReleaseVault — second-stage linear release after redeem/unstake.',
+        },
+        {
+          q: 'Do buffer assets still earn yield?',
+          a: 'No staking yield accrues while in the buffer.',
+        },
+        {
+          q: 'How do I withdraw released amounts?',
+          a: 'Tap Withdraw — AGX goes to your wallet.',
+        },
+        {
+          q: 'Why show AGX and gAGX?',
+          a: 'Design keeps both cards; on-chain buffer is AGX-only after gAGX conversion.',
+        },
+        {
+          q: 'Why can’t I withdraw everything at once?',
+          a: 'Only currently unlocked amounts are claimable.',
+        },
+      ],
+    },
   },
   tables: {
     time: 'Thời gian',

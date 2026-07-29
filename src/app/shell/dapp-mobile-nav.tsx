@@ -11,6 +11,7 @@ import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
 import { aegisDialogClose } from '~/shared/ui/aegis-responsive-dialog'
 import { Text } from '~/shared/ui/text'
 import { useTurbineExchangeRailDot } from '~/views/dapp/exchange/turbine/use-turbine-exchange-rail-dot'
+import { useReleaseRailDot } from '~/views/dapp/release/use-release-rail-dot'
 import { useDappShell } from '~/app/use-dapp-shell'
 
 const drawerItem = tv({
@@ -43,8 +44,9 @@ export function DappMobileNav({
   onClose: () => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady, walletReady } = useDappShell()
   const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
+  const releaseClaimable = useReleaseRailDot(walletReady)
   const [mounted, setMounted] = useState(open)
   const [motion, setMotion] = useState<NavMotion | null>(open ? 'enter' : null)
   const [prevOpen, setPrevOpen] = useState(open)
@@ -161,6 +163,13 @@ export function DappMobileNav({
                   aria-hidden
                   className="absolute top-3 right-3 size-1.5 rounded-full bg-coral"
                   data-exchange-claimable-dot
+                />
+              ) : null}
+              {item.id === 'release' && releaseClaimable ? (
+                <span
+                  aria-hidden
+                  className="absolute top-3 right-3 size-1.5 rounded-full bg-coral"
+                  data-release-claimable-dot
                 />
               ) : null}
               <Text

@@ -17,6 +17,8 @@ export const WRITE_PATH = {
   XMINE: 'xmine',
   /** Assets Mixed claim / redeem / xmine claim+unstake. */
   ASSETS_CLAIM: 'assets-claim',
+  /** Release queue vested claim / buffer PRV claim. */
+  RELEASE_CLAIM: 'release-claim',
 } as const
 
 export type WritePath = (typeof WRITE_PATH)[keyof typeof WRITE_PATH]

@@ -10,6 +10,7 @@ import { Text } from '~/shared/ui/text'
 import { useGenesisPromo } from '~/hooks/use-genesis-promo'
 import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 import { useTurbineExchangeRailDot } from '~/views/dapp/exchange/turbine/use-turbine-exchange-rail-dot'
+import { useReleaseRailDot } from '~/views/dapp/release/use-release-rail-dot'
 import { useDappShell } from '~/app/use-dapp-shell'
 
 type RailIndicator = {
@@ -44,7 +45,7 @@ function useRailTooltips() {
       assets: t.assets.body,
       staking: t.staking.body,
       rewards: t.nav.rewardsTooltip,
-      release: t.release.body,
+      release: t.release.intro,
       community: t.nav.communityTooltip,
       genesis: formatGenesisSeasonIntro(
         t.genesis.intro,
@@ -67,9 +68,10 @@ export function DappRail({
   onSelectTab: (tab: DappTab) => void
 }) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { sessionReady, walletReady } = useDappShell()
   const tooltips = useRailTooltips()
   const exchangeClaimable = useTurbineExchangeRailDot(sessionReady)
+  const releaseClaimable = useReleaseRailDot(walletReady)
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef(new Map<DappTab, HTMLButtonElement>())
   const [indicator, setIndicator] = useState<RailIndicator | null>(null)
@@ -160,6 +162,13 @@ export function DappRail({
                   aria-hidden
                   className="absolute top-2 right-2 size-1.5 rounded-full bg-coral"
                   data-exchange-claimable-dot
+                />
+              ) : null}
+              {item.id === 'release' && releaseClaimable ? (
+                <span
+                  aria-hidden
+                  className="absolute top-2 right-2 size-1.5 rounded-full bg-coral"
+                  data-release-claimable-dot
                 />
               ) : null}
               <Text

@@ -29,8 +29,10 @@ Xmine: gAGX bal/allow + miningQuotaOf → [approve?] → live 重读
 Assets Mixed: live 重读奖励+贡献+plans → claim*Mixed → WRITE_PATH.ASSETS_CLAIM
 Assets redeem: live 重读可赎额 → claimPrincipal / redeem / startUnstake → ASSETS_CLAIM
 Assets xmine: live pending/warmup → claimReward / startUnstake → ASSETS_CLAIM
+Release queue: live plan claimable → claimAllVestedRewards → WRITE_PATH.RELEASE_CLAIM + invalidate turbineRoot (EX-U5)
+Release buffer: live PRV claimable → claimMany → RELEASE_CLAIM（钱包 AGX）
 
-Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / bond-zap / xmine / assets-claim），禁立即重提
+Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / bond-zap / xmine / assets-claim / release-claim），禁立即重提
 ```
 
 ## 关键路径
@@ -44,6 +46,7 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 | Staking / BondZap / Xmine | `core/staking/staking-gates.ts` · `web3/staking/*`                                       |
 | Assets Mixed / redeem     | `core/assets/assets-gates.ts` · `views/dapp/assets/submit-assets.ts`                     |
 | Rewards Mixed / simple    | `core/rewards/rewards-gates.ts` · `views/dapp/rewards/submit-rewards.ts`                 |
+| Release queue / buffer    | `core/release/release-gates.ts` · `views/dapp/release/submit-release.ts`                 |
 | 写链                      | `web3/wallet/wallet-contract-write.ts`                                                   |
 
 ## 必跑单测
@@ -57,6 +60,7 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 | Genesis gate                | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApproveGate`）                  |
 | Claim confirm / 401         | `claim-reward-confirm.test.mjs` · `resolve-claim-reward-outcome.test.mjs`            |
 | Rewards Mixed / simple gate | `rewards-gates.test.mjs`                                                             |
+| Release queue / buffer gate | `release-gates.test.mjs`                                                             |
 | 登录 / 封禁                 | `classify-login-failure.test.mjs` · `account-banned.test.mjs`                        |
 | Auth machine                | `auth-executor.test.mjs`                                                             |
 | Invalidate / wallet switch  | `query-invalidate.test.mjs`                                                          |

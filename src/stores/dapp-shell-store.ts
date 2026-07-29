@@ -4,6 +4,7 @@ import { resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { useReleaseViewStore } from '~/stores/release-view-store'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 
@@ -43,6 +44,12 @@ function writeTabHash(tab: DappTab) {
     }
     return
   }
+  if (tab === 'release') {
+    if (!window.location.hash.startsWith('#release')) {
+      window.location.hash = 'release'
+    }
+    return
+  }
   if (window.location.hash.slice(1) !== tab) {
     window.location.hash = tab
   }
@@ -60,6 +67,9 @@ function resetForeignSubviewStores(tab: DappTab) {
   }
   if (tab !== 'rewards') {
     useRewardsViewStore.getState().backToHub({ syncHash: false })
+  }
+  if (tab !== 'release') {
+    useReleaseViewStore.getState().backToHub({ syncHash: false })
   }
 }
 
@@ -104,6 +114,9 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
     }
     if (loc.tab === 'rewards' && loc.rewardsView) {
       useRewardsViewStore.getState().hydrateView(loc.rewardsView)
+    }
+    if (loc.tab === 'release' && loc.releaseView) {
+      useReleaseViewStore.getState().hydrateView(loc.releaseView)
     }
   },
 }))

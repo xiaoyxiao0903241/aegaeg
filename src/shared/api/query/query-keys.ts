@@ -117,5 +117,12 @@ export const queryKeys = {
     assetsClaimPlans: ['chain', 'assets', 'claimPlans'] as const,
     assetsContribution: (address: string) =>
       ['chain', 'assets', 'contribution', address.toLowerCase()] as const,
+    releaseRoot: ['chain', 'release'] as const,
+    releaseQueue: (address: string) =>
+      ['chain', 'release', 'queue', address.toLowerCase()] as const,
+    releaseBuffer: (address: string) =>
+      ['chain', 'release', 'buffer', address.toLowerCase()] as const,
+    releaseClaimable: (address: string) =>
+      ['chain', 'release', 'claimable', address.toLowerCase()] as const,
   },
 } as const

@@ -14,263 +14,160 @@ const REWARDS_VIEWS = new Set([
   'grant',
   'genesis',
 ])
+const RELEASE_VIEWS = new Set(['hub', 'queue', 'buffer'])
 
-function resolveDappLocationFromHash(hash) {
-  const raw = hash.replace(/^#/, '').trim()
-  if (!raw) return null
-  if (raw === 'swap')
-    return {
-      tab: 'exchange',
-      exchangeView: 'hub',
-      stakingView: null,
-      assetsView: null,
-      rewardsView: null,
-    }
-  const [tabPart, viewPart] = raw.split('/')
-  if (!tabOrder.includes(tabPart)) return null
-  if (tabPart === 'exchange') {
-    if (!viewPart)
-      return {
-        tab: 'exchange',
-        exchangeView: null,
-        stakingView: null,
-        assetsView: null,
-        rewardsView: null,
-      }
-    if (!EXCHANGE_VIEWS.has(viewPart))
-      return {
-        tab: 'exchange',
-        exchangeView: 'hub',
-        stakingView: null,
-        assetsView: null,
-        rewardsView: null,
-      }
-    return {
-      tab: 'exchange',
-      exchangeView: viewPart,
-      stakingView: null,
-      assetsView: null,
-      rewardsView: null,
-    }
-  }
-  if (tabPart === 'staking') {
-    if (!viewPart)
-      return {
-        tab: 'staking',
-        exchangeView: null,
-        stakingView: null,
-        assetsView: null,
-        rewardsView: null,
-      }
-    if (!STAKING_VIEWS.has(viewPart))
-      return {
-        tab: 'staking',
-        exchangeView: null,
-        stakingView: 'hub',
-        assetsView: null,
-        rewardsView: null,
-      }
-    return {
-      tab: 'staking',
-      exchangeView: null,
-      stakingView: viewPart,
-      assetsView: null,
-      rewardsView: null,
-    }
-  }
-  if (tabPart === 'assets') {
-    if (!viewPart)
-      return {
-        tab: 'assets',
-        exchangeView: null,
-        stakingView: null,
-        assetsView: null,
-        rewardsView: null,
-      }
-    if (!ASSETS_VIEWS.has(viewPart))
-      return {
-        tab: 'assets',
-        exchangeView: null,
-        stakingView: null,
-        assetsView: 'hub',
-        rewardsView: null,
-      }
-    return {
-      tab: 'assets',
-      exchangeView: null,
-      stakingView: null,
-      assetsView: viewPart,
-      rewardsView: null,
-    }
-  }
-  if (tabPart === 'rewards') {
-    if (!viewPart)
-      return {
-        tab: 'rewards',
-        exchangeView: null,
-        stakingView: null,
-        assetsView: null,
-        rewardsView: null,
-      }
-    if (!REWARDS_VIEWS.has(viewPart))
-      return {
-        tab: 'rewards',
-        exchangeView: null,
-        stakingView: null,
-        assetsView: null,
-        rewardsView: 'hub',
-      }
-    return {
-      tab: 'rewards',
-      exchangeView: null,
-      stakingView: null,
-      assetsView: null,
-      rewardsView: viewPart,
-    }
-  }
+function emptyViews(tab, patch = {}) {
   return {
-    tab: tabPart,
+    tab,
     exchangeView: null,
     stakingView: null,
     assetsView: null,
     rewardsView: null,
+    releaseView: null,
+    ...patch,
   }
+}
+
+function resolveDappLocationFromHash(hash) {
+  const raw = hash.replace(/^#/, '').trim()
+  if (!raw) return null
+  if (raw === 'swap') return emptyViews('exchange', { exchangeView: 'hub' })
+  const [tabPart, viewPart] = raw.split('/')
+  if (!tabOrder.includes(tabPart)) return null
+  if (tabPart === 'exchange') {
+    if (!viewPart) return emptyViews('exchange')
+    if (!EXCHANGE_VIEWS.has(viewPart)) return emptyViews('exchange', { exchangeView: 'hub' })
+    return emptyViews('exchange', { exchangeView: viewPart })
+  }
+  if (tabPart === 'staking') {
+    if (!viewPart) return emptyViews('staking')
+    if (!STAKING_VIEWS.has(viewPart)) return emptyViews('staking', { stakingView: 'hub' })
+    return emptyViews('staking', { stakingView: viewPart })
+  }
+  if (tabPart === 'assets') {
+    if (!viewPart) return emptyViews('assets')
+    if (!ASSETS_VIEWS.has(viewPart)) return emptyViews('assets', { assetsView: 'hub' })
+    return emptyViews('assets', { assetsView: viewPart })
+  }
+  if (tabPart === 'rewards') {
+    if (!viewPart) return emptyViews('rewards')
+    if (!REWARDS_VIEWS.has(viewPart)) return emptyViews('rewards', { rewardsView: 'hub' })
+    return emptyViews('rewards', { rewardsView: viewPart })
+  }
+  if (tabPart === 'release') {
+    if (!viewPart) return emptyViews('release')
+    if (viewPart === 'rewards' || !RELEASE_VIEWS.has(viewPart)) {
+      return emptyViews('release', { releaseView: 'hub' })
+    }
+    return emptyViews('release', { releaseView: viewPart })
+  }
+  return emptyViews(tabPart)
+}
+
+const empty = {
+  exchangeView: null,
+  stakingView: null,
+  assetsView: null,
+  rewardsView: null,
+  releaseView: null,
 }
 
 test('EX-B4 deep link resolves exchange/burn', () => {
   assert.deepEqual(resolveDappLocationFromHash('exchange/burn'), {
     tab: 'exchange',
+    ...empty,
     exchangeView: 'burn',
-    stakingView: null,
-    assetsView: null,
-    rewardsView: null,
   })
   assert.deepEqual(resolveDappLocationFromHash('#exchange/turbine'), {
     tab: 'exchange',
+    ...empty,
     exchangeView: 'turbine',
-    stakingView: null,
-    assetsView: null,
-    rewardsView: null,
   })
   assert.deepEqual(resolveDappLocationFromHash('swap'), {
     tab: 'exchange',
+    ...empty,
     exchangeView: 'hub',
-    stakingView: null,
-    assetsView: null,
-    rewardsView: null,
   })
   assert.deepEqual(resolveDappLocationFromHash('genesis'), {
     tab: 'genesis',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: null,
-    rewardsView: null,
+    ...empty,
   })
 })
 
 test('staking deep link resolves hub and subviews', () => {
   assert.deepEqual(resolveDappLocationFromHash('staking'), {
     tab: 'staking',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: null,
-    rewardsView: null,
+    ...empty,
   })
   assert.deepEqual(resolveDappLocationFromHash('#staking/stake'), {
     tab: 'staking',
-    exchangeView: null,
+    ...empty,
     stakingView: 'stake',
-    assetsView: null,
-    rewardsView: null,
-  })
-  assert.deepEqual(resolveDappLocationFromHash('staking/lpbond'), {
-    tab: 'staking',
-    exchangeView: null,
-    stakingView: 'lpbond',
-    assetsView: null,
-    rewardsView: null,
   })
   assert.deepEqual(resolveDappLocationFromHash('staking/nope'), {
     tab: 'staking',
-    exchangeView: null,
+    ...empty,
     stakingView: 'hub',
-    assetsView: null,
-    rewardsView: null,
   })
 })
 
 test('assets deep link resolves hub and subviews', () => {
   assert.deepEqual(resolveDappLocationFromHash('assets'), {
     tab: 'assets',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: null,
-    rewardsView: null,
+    ...empty,
   })
   assert.deepEqual(resolveDappLocationFromHash('#assets/stake'), {
     tab: 'assets',
-    exchangeView: null,
-    stakingView: null,
+    ...empty,
     assetsView: 'stake',
-    rewardsView: null,
-  })
-  assert.deepEqual(resolveDappLocationFromHash('assets/lpbond'), {
-    tab: 'assets',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: 'lpbond',
-    rewardsView: null,
-  })
-  assert.deepEqual(resolveDappLocationFromHash('assets/burnbond'), {
-    tab: 'assets',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: 'burnbond',
-    rewardsView: null,
-  })
-  assert.deepEqual(resolveDappLocationFromHash('assets/xmine'), {
-    tab: 'assets',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: 'xmine',
-    rewardsView: null,
   })
   assert.deepEqual(resolveDappLocationFromHash('assets/nope'), {
     tab: 'assets',
-    exchangeView: null,
-    stakingView: null,
+    ...empty,
     assetsView: 'hub',
-    rewardsView: null,
   })
 })
 
 test('rewards deep link resolves hub and six cards', () => {
   assert.deepEqual(resolveDappLocationFromHash('rewards'), {
     tab: 'rewards',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: null,
-    rewardsView: null,
+    ...empty,
   })
   assert.deepEqual(resolveDappLocationFromHash('#rewards/lucky'), {
     tab: 'rewards',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: null,
+    ...empty,
     rewardsView: 'lucky',
-  })
-  assert.deepEqual(resolveDappLocationFromHash('rewards/genesis'), {
-    tab: 'rewards',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: null,
-    rewardsView: 'genesis',
   })
   assert.deepEqual(resolveDappLocationFromHash('rewards/legacy'), {
     tab: 'rewards',
-    exchangeView: null,
-    stakingView: null,
-    assetsView: null,
+    ...empty,
     rewardsView: 'hub',
+  })
+})
+
+test('release deep link resolves hub|queue|buffer and rejects rewards subview name', () => {
+  assert.deepEqual(resolveDappLocationFromHash('release'), {
+    tab: 'release',
+    ...empty,
+  })
+  assert.deepEqual(resolveDappLocationFromHash('#release/queue'), {
+    tab: 'release',
+    ...empty,
+    releaseView: 'queue',
+  })
+  assert.deepEqual(resolveDappLocationFromHash('release/buffer'), {
+    tab: 'release',
+    ...empty,
+    releaseView: 'buffer',
+  })
+  assert.deepEqual(resolveDappLocationFromHash('release/rewards'), {
+    tab: 'release',
+    ...empty,
+    releaseView: 'hub',
+  })
+  assert.deepEqual(resolveDappLocationFromHash('release/nope'), {
+    tab: 'release',
+    ...empty,
+    releaseView: 'hub',
   })
 })
