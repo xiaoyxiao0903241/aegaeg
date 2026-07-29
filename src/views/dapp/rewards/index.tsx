@@ -5,6 +5,7 @@ import { useRewardsViewStore, type RewardsView } from '~/stores/rewards-view-sto
 import { RewardsHubWidget } from '~/views/dapp/rewards/hub/rewards-hub-widget'
 import { RewardsHubContent } from '~/views/dapp/rewards/hub/rewards-hub-content'
 import { RewardsSimpleClaimWidget } from '~/views/dapp/rewards/detail/rewards-simple-claim-widget'
+import { RewardsGenesisClaimWidget } from '~/views/dapp/rewards/detail/rewards-genesis-widget'
 import { RewardsMixedClaimWidget } from '~/views/dapp/rewards/detail/rewards-mixed-claim-widget'
 import { RewardsDetailContent } from '~/views/dapp/rewards/detail/rewards-detail-content'
 
@@ -18,7 +19,7 @@ function renderRewardsWidget(displayView: RewardsView) {
   if (displayView === 'participate') return <RewardsMixedClaimWidget view="participate" />
   if (displayView === 'cobuild') return <RewardsMixedClaimWidget view="cobuild" />
   if (displayView === 'grant') return <RewardsSimpleClaimWidget view="grant" />
-  if (displayView === 'genesis') return <RewardsSimpleClaimWidget view="genesis" />
+  if (displayView === 'genesis') return <RewardsGenesisClaimWidget />
   return <RewardsHubWidget />
 }
 

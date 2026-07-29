@@ -1110,6 +1110,36 @@ const app = defineMessages({
       },
     },
 
+    genesisDetail: {
+      pageTitle: '共建獎勵',
+      pageSubtitle: '參與共建 · 共享成長價值',
+      claimToWallet: '領取到錢包',
+      tierColumns: ['等級', '個人認購', '體系業績', '獎勵比例'],
+      recordsTabsAria: '創世獎勵記錄類型',
+      recordsColumns: ['時間', '類型', '金額', '狀態'],
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: '推薦獎勵如何計算？',
+            a: '推薦獎勵為3%，採用壓縮同等金額結算機制，僅按同等金額部分計算，空賬戶不計獎勵層級，獎勵自動結算。',
+          },
+          {
+            q: '創世等級如何晉升？',
+            a: '根據個人共建金額與體系業績達成情況，逐步晉升 S1 至 S10 等級。',
+          },
+          {
+            q: '什麼是等級提升獎勵？',
+            a: '等級獎勵按當前創世等級對應比例結算團隊共建金額，可領取額度通過 RewardClaimer 簽名領取至錢包。',
+          },
+          {
+            q: '創世團隊獎勵如何結算？',
+            a: '直推獎勵自動結算至錢包；等級獎勵與發展基金分別經 RewardClaimer / CommunityFund 簽名領取。',
+          },
+        ],
+      },
+    },
+
     faq: {
       title: 'FAQs',
       items: [

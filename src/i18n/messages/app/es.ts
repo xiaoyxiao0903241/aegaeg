@@ -1130,6 +1130,36 @@ const app = defineMessages({
       },
     },
 
+    genesisDetail: {
+      pageTitle: 'Co-build rewards',
+      pageSubtitle: 'Join co-build · share growth value',
+      claimToWallet: 'Claim to wallet',
+      tierColumns: ['Tier', 'Personal subscription', 'System performance', 'Reward rate'],
+      recordsTabsAria: 'Genesis reward record type',
+      recordsColumns: ['Time', 'Type', 'Amount', 'Status'],
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'How are referral rewards calculated?',
+            a: 'Referral rewards are 3% with compressed equal-amount settlement—only the matched amount counts; empty accounts skip reward layers; payouts settle automatically.',
+          },
+          {
+            q: 'How do I advance Genesis tiers?',
+            a: 'Advance gradually from S1 to S10 based on personal co-build amount and organization performance.',
+          },
+          {
+            q: 'What is the tier uplift reward?',
+            a: 'Tier rewards settle a share of team co-build volume by your Genesis tier and are claimed to wallet via RewardClaimer signatures.',
+          },
+          {
+            q: 'How are Genesis team rewards settled?',
+            a: 'Direct referral rewards auto-settle to your wallet; tier rewards and the development fund are claimed via RewardClaimer / CommunityFund signatures.',
+          },
+        ],
+      },
+    },
+
     faq: {
       title: 'FAQs',
       items: [

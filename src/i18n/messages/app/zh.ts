@@ -1058,6 +1058,35 @@ const app = defineMessages({
         ],
       },
     },
+    genesisDetail: {
+      pageTitle: '共建奖励',
+      pageSubtitle: '参与共建 · 共享成长价值',
+      claimToWallet: '领取到钱包',
+      tierColumns: ['等级', '个人认购', '体系业绩', '奖励比例'],
+      recordsTabsAria: '创世奖励记录类型',
+      recordsColumns: ['时间', '类型', '金额', '状态'],
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: '推荐奖励如何计算？',
+            a: '推荐奖励为3%，采用压缩同等金额结算机制，仅按同等金额部分计算，空账户不计奖励层级，奖励自动结算。',
+          },
+          {
+            q: '创世等级如何晋升？',
+            a: '根据个人共建金额与体系业绩达成情况，逐步晋升 S1 至 S10 等级。',
+          },
+          {
+            q: '什么是等级提升奖励？',
+            a: '等级奖励按当前创世等级对应比例结算团队共建金额，可领取额度通过 RewardClaimer 签名领取至钱包。',
+          },
+          {
+            q: '创世团队奖励如何结算？',
+            a: '直推奖励自动结算至钱包；等级奖励与发展基金分别经 RewardClaimer / CommunityFund 签名领取。',
+          },
+        ],
+      },
+    },
     faq: {
       title: 'FAQs',
       items: [

@@ -8,7 +8,11 @@ import {
   type ClaimRewardExecuteResult,
 } from '~/core/rewards/resolve-claim-reward-outcome'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
-import { claimMarketFundReward, claimTeamReward } from '~/web3/claim/claim-reward'
+import {
+  claimCommunityFund,
+  claimMarketFundReward,
+  claimTeamReward,
+} from '~/web3/claim/claim-reward'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
@@ -109,6 +113,10 @@ export function useMarketFundClaim() {
   return useClaimReward(execute)
 }
 
-export function useGenesisRewardClaim() {
-  return useTeamRewardClaim()
+export function useCommunityFundClaim() {
+  const execute = useCallback(
+    (args: Parameters<typeof claimCommunityFund>[0]) => claimCommunityFund(args),
+    [],
+  )
+  return useClaimReward(execute)
 }
