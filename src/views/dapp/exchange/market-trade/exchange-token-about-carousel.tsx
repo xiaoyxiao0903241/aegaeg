@@ -93,7 +93,7 @@ const exchangeTokenAboutCarousel = tv({
   ],
 })
 
-type ExchangeTokenCarouselKey = 'agx' | 'usd1' | 'x' | 'gagx'
+type ExchangeTokenCarouselKey = 'agx' | 'usd1' | 'x' | 'gagx' | 'gagxStake'
 
 type ExchangeTokenCarouselItem = {
   asset: string
@@ -189,6 +189,7 @@ function getExchangeTokenContent(
     usd1: tokenCarouselIcons.usd1Icon,
     x: tokenCarouselIcons.xIcon,
     gagx: tokenCarouselIcons.gagxIcon,
+    gagxStake: tokenCarouselIcons.gagxIcon,
   }
 
   return keys.map((key) => {

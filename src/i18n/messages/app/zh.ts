@@ -444,6 +444,11 @@ const app = defineMessages({
           body: 'Rebase 与 DAO 奖励的统一结算凭证，可 1:1 兑换 AGX，也可质押挖取 X。',
         },
         {
+          key: 'gagxStake',
+          title: 'gAGX · 质押凭证',
+          body: '质押 AGX 获得的生息凭证，自动复利收益，解锁治理权重与更高称号。',
+        },
+        {
           key: 'x',
           title: 'X · 权益代币',
           body: '生态参与与权益代币，记录链上贡献，可兑换权益、参与活动并获得空投加成。',

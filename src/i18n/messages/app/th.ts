@@ -451,6 +451,11 @@ const app = defineMessages({
           body: 'A protocol reward settlement voucher redeemable for AGX and used in ecosystem mining and yield recycling.',
         },
         {
+          key: 'gagxStake',
+          title: 'gAGX · Staking voucher',
+          body: 'An interest-bearing voucher from staking AGX, with auto-compounding yield and unlocked governance weight and higher titles.',
+        },
+        {
           key: 'x',
           title: 'X · Ecosystem value token',
           body: 'The AEGIS X ecosystem value carrier with a fixed supply of 210 million, carrying ecosystem growth and value accumulation.',
