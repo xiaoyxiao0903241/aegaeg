@@ -313,7 +313,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                     <Text as="p" variant="detail" className="font-semibold">
                       {formatTokenAmount(
                         row.silenceBalance,
-                        EXCHANGE_CONFIG.tokens.gagx.decimals,
+                        // Handbook §16: silenceBalance axis = AGX decimals (UI leaf labels gAGX).
+                        EXCHANGE_CONFIG.tokens.agx.decimals,
                         4,
                       )}{' '}
                       gAGX

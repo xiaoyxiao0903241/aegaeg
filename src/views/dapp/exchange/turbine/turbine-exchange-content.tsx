@@ -105,7 +105,8 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.turbine.aboutTitle}</DappContentHeading>
-        <TokenAboutCarousel cardKeys={['gagx', 'agx', 'usd1', 'x']} />
+        {/* Figma 4435:220 about-carousel: gAGX · USD1 · X · gAGX质押 */}
+        <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'gagxStake']} />
       </DappDetailBlock>
 
       <DappDetailBlock>
