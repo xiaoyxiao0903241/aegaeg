@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useAuth } from '~/hooks/use-auth'
 import {
@@ -14,15 +15,15 @@ import {
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
 import { claimSplitFromReleasePct, ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
-import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import { Button } from '~/shared/ui/button'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { dappAssets } from '~/app/assets'
 import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
 import { RewardsSubpageHeader } from '~/views/dapp/rewards/rewards-subpage-header'
+import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-picker'
 import {
   REWARDS_GATE_ERROR,
   submitDaoMixedClaim,
@@ -38,10 +39,33 @@ import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { Address } from '~/shared/config/contracts'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
+import type { DurationPlan } from '~/core/assets/claim-plans'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const DASH = '—'
 
 type MixedView = Extract<RewardsView, 'lucky' | 'cobuild'>
+
+function planLabel(
+  days: number,
+  plans: readonly DurationPlan[] | undefined,
+  daysTax: string,
+  daysOnly: string,
+  taxRate: string,
+): string {
+  const plan = plans?.find(
+    (p) => p.exists !== false && Number(p.durationSeconds / 86_400n) === days,
+  )
+  if (plan?.taxBps != null) {
+    const tax = taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
+    return daysTax.replace('{days}', String(days)).replace('{tax}', tax)
+  }
+  return daysOnly.replace('{days}', String(days))
+}
+
+function splitAmount(amount: bigint, pct: number): bigint {
+  return (amount * BigInt(pct)) / 100n
+}
 
 export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const { messages: t } = useI18n()
@@ -51,8 +75,9 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const wallet = useActiveWallet()
   const readClient = useChainReadClient()
   const card = t.rewards.cards[view]
+  const mixed = t.rewards.mixed
   const [releasePct, setReleasePct] = useState(50)
-  const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(5)
+  const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(60)
   const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
   const [submitting, setSubmitting] = useState(false)
   /** Dao amount unknown until signature; set when live gate reports insufficient contribution. */
@@ -107,22 +132,45 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
     (view === 'cobuild' || amount > 0n)
 
   const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
-    label: t.rewards.mixed.releaseDays.replace('{days}', String(days)),
+    label: planLabel(
+      days,
+      plansQuery.data?.releasePlans,
+      mixed.daysTax,
+      mixed.releaseDays,
+      mixed.taxRate,
+    ),
     value: String(days),
   }))
   const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => ({
-    label: t.rewards.mixed.restakeDays.replace('{days}', String(days)),
+    label: planLabel(
+      days,
+      plansQuery.data?.restakePlans,
+      mixed.daysTax,
+      mixed.restakeDays,
+      mixed.taxRate,
+    ),
     value: String(days),
   }))
 
-  const amountLabel =
-    view === 'lucky'
-      ? luckyQuery.data
-        ? `${formatTokenAmount(luckyQuery.data.rewardAmount, AGX_DECIMALS)} AGX`
-        : sessionReady
-          ? t.rewards.hub.balancePlaceholder
-          : t.rewards.hub.signInForBalance
-      : t.rewards.detail.signedAmountHint
+  const amountKnown = view === 'lucky' && luckyQuery.data != null
+  const amountText = amountKnown
+    ? formatTokenAmount(amount, AGX_DECIMALS)
+    : sessionReady
+      ? t.rewards.hub.balancePlaceholder
+      : t.rewards.hub.signInForBalance
+  const releaseAmount = amountKnown ? splitAmount(amount, releasePct) : 0n
+  const restakeAmount = amountKnown ? splitAmount(amount, restakePct) : 0n
+  const releaseAmountText = amountKnown ? formatTokenAmount(releaseAmount, AGX_DECIMALS) : DASH
+  const restakeAmountText = amountKnown ? formatTokenAmount(restakeAmount, AGX_DECIMALS) : DASH
+  const requiredText = contribQuery.data
+    ? formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS)
+    : DASH
+  const haveText = contribQuery.data
+    ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS)
+    : DASH
+  const showContributionShort =
+    !contributionOk &&
+    (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)
 
   async function onConfirm() {
     if (!account || !wallet) return
@@ -152,13 +200,13 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
       if (!result.ok) {
         if (result.error === REWARDS_GATE_ERROR.insufficientContribution) {
           if (view === 'cobuild') setDaoContributionBlocked(true)
-          presentUserFacingError(result.error, () => t.rewards.mixed.insufficientContribution, {
+          presentUserFacingError(result.error, () => mixed.insufficientContribution, {
             id: `rewards-mixed:${view}`,
           })
           return
         }
         if (result.error === REWARDS_GATE_ERROR.luckyPaused) {
-          presentUserFacingError(result.error, () => t.rewards.mixed.luckyPaused, {
+          presentUserFacingError(result.error, () => mixed.luckyPaused, {
             id: `rewards-mixed:${view}`,
           })
           return
@@ -184,15 +232,36 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
       <RewardsSubpageHeader subtitle={card.body} title={card.title} />
       <ExchangeWidgetBody>
         <div className="rounded-2xl border border-border bg-card p-4">
-          <Text as="p" tone="muted-foreground" variant="caption">
-            {t.rewards.detail.claimable}
-          </Text>
-          <Text as="p" className="mt-2 font-semibold" variant="headline">
-            {amountLabel}
-          </Text>
+          <div className="flex items-start justify-between gap-3">
+            <div className="grid gap-1">
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {t.rewards.detail.claimable}
+              </Text>
+              <div className="flex items-center gap-2">
+                <DappIcon
+                  alt=""
+                  className="size-[18px] rounded-full"
+                  loading="lazy"
+                  size="token"
+                  src={dappAssets.tokenGagx}
+                />
+                <Text as="p" className="font-semibold" variant="copy">
+                  {amountKnown ? `${amountText} ${mixed.tokenGagx}` : amountText}
+                </Text>
+              </div>
+            </div>
+            <div className="grid gap-1.5 text-right">
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {mixed.requiredContributionLabel}
+              </Text>
+              <Text as="p" className="font-semibold" variant="copy">
+                {view === 'lucky' && amount > 0n ? requiredText : DASH}
+              </Text>
+            </div>
+          </div>
           {view === 'lucky' && luckyQuery.data?.paused ? (
             <Text as="p" className="mt-2 text-destructive" variant="caption">
-              {t.rewards.mixed.luckyPaused}
+              {mixed.luckyPaused}
             </Text>
           ) : null}
           {view === 'lucky' &&
@@ -200,67 +269,125 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
           !luckyQuery.data.claimable &&
           !luckyQuery.data.paused ? (
             <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
-              {t.rewards.mixed.luckyNotClaimable}
+              {mixed.luckyNotClaimable}
             </Text>
           ) : null}
         </div>
 
-        {contribQuery.data && view === 'lucky' && amount > 0n ? (
-          <Text as="p" tone="muted-foreground" variant="caption">
-            {t.rewards.mixed.requiredContribution.replace(
-              '{amount}',
-              formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS),
-            )}
-          </Text>
-        ) : null}
-
-        {!contributionOk && (view === 'lucky' ? amount > 0n : daoContributionBlocked) ? (
-          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4">
-            <Text as="p" variant="copy">
-              {t.rewards.mixed.insufficientContribution}
+        {showContributionShort ? (
+          <div className="rounded-2xl bg-primary/10 px-4 py-3">
+            <Text as="p" className="leading-[18px]" variant="caption">
+              <span className="text-foreground">
+                {mixed.insufficientContributionDetail
+                  .replace('{need}', requiredText)
+                  .replace('{have}', haveText)}
+              </span>{' '}
+              <button
+                className="cursor-pointer text-primary underline"
+                onClick={() => openExchangeView('burn')}
+                type="button"
+              >
+                {mixed.goBurnInline}
+              </button>
+              <span className="text-foreground">{mixed.getContributionSuffix}</span>
             </Text>
-            <Button className="mt-3" onClick={() => openExchangeView('burn')} type="button">
-              {t.rewards.mixed.goBurn}
-            </Button>
           </div>
         ) : null}
 
-        <ClaimSplitSlider
-          aria-label={t.rewards.mixed.splitAria}
-          onChange={setReleasePct}
-          value={releasePct}
-        />
-        <div className="flex justify-between gap-2">
-          <Text as="span" variant="detail">
-            {t.rewards.mixed.releasePct.replace('{pct}', String(releasePct))}
-          </Text>
-          <Text as="span" variant="detail">
-            {t.rewards.mixed.restakePct.replace('{pct}', String(restakePct))}
-          </Text>
+        <div className="rounded-2xl border border-border bg-card p-4">
+          <ClaimSplitSlider
+            aria-label={mixed.splitAria}
+            className="max-w-none"
+            onChange={setReleasePct}
+            value={releasePct}
+          />
+          <div className="mt-1 flex justify-between gap-2">
+            <Text as="span" className="font-semibold text-primary" variant="detail">
+              {mixed.releasePct.replace('{pct}', String(releasePct))}
+            </Text>
+            <Text
+              as="span"
+              className="font-semibold text-[var(--app-claim-restake)]"
+              variant="detail"
+            >
+              {mixed.restakePct.replace('{pct}', String(restakePct))}
+            </Text>
+          </div>
         </div>
 
-        <div className="grid gap-3">
-          <div>
-            <Text as="p" className="mb-2" tone="muted-foreground" variant="caption">
-              {t.rewards.mixed.releasePeriod}
+        <div className="grid gap-3 rounded-2xl border border-primary/35 bg-primary/10 p-4">
+          <div className="flex items-center justify-between gap-2">
+            <Text as="span" className="text-primary" variant="copy">
+              {t.rewards.claim}
             </Text>
-            <Segment
-              aria-label={t.rewards.mixed.releaseAria}
-              onChange={(value) => setReleaseDays(Number(value) as ReleaseDurationDays)}
+            <Text as="span" tone="muted-foreground" variant="caption">
+              {mixed.releaseInto}
+            </Text>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
+              <DappIcon
+                alt=""
+                className="size-6 rounded-2xl"
+                loading="lazy"
+                size="token"
+                src={dappAssets.tokenGagx}
+              />
+              <Text as="span" className="font-semibold" variant="detail">
+                {mixed.tokenGagx}
+              </Text>
+            </span>
+            <Text as="span" className="text-2xl font-semibold" variant="headline">
+              {releaseAmountText}
+            </Text>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <Text as="span" tone="muted-foreground" variant="caption">
+              {mixed.releasePeriod}
+            </Text>
+            <RewardsPlanPicker
+              ariaLabel={mixed.releaseAria}
+              onSelect={(value) => setReleaseDays(Number(value) as ReleaseDurationDays)}
               options={releaseOptions}
-              tone="coral"
               value={String(releaseDays)}
             />
           </div>
-          <div>
-            <Text as="p" className="mb-2" tone="muted-foreground" variant="caption">
-              {t.rewards.mixed.restakePeriod}
+        </div>
+
+        <div className="grid gap-3 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
+          <div className="flex items-center justify-between gap-2">
+            <Text as="span" className="text-[var(--app-claim-restake)]" variant="copy">
+              {mixed.restakeLabel}
             </Text>
-            <Segment
-              aria-label={t.rewards.mixed.restakeAria}
-              onChange={(value) => setRestakeDays(Number(value) as RestakeDurationDays)}
+            <Text as="span" tone="muted-foreground" variant="caption">
+              {mixed.restakeInto}
+            </Text>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
+              <DappIcon
+                alt=""
+                className="size-6 rounded-2xl"
+                loading="lazy"
+                size="token"
+                src={dappAssets.tokenGagx}
+              />
+              <Text as="span" className="font-semibold" variant="detail">
+                {mixed.tokenGagx}
+              </Text>
+            </span>
+            <Text as="span" className="text-2xl font-semibold" variant="headline">
+              {restakeAmountText}
+            </Text>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <Text as="span" tone="muted-foreground" variant="caption">
+              {mixed.restakePeriod}
+            </Text>
+            <RewardsPlanPicker
+              ariaLabel={mixed.restakeAria}
+              onSelect={(value) => setRestakeDays(Number(value) as RestakeDurationDays)}
               options={restakeOptions}
-              tone="ink"
               value={String(restakeDays)}
             />
           </div>
@@ -272,7 +399,20 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
             loading={submitting}
             onClick={() => void onConfirm()}
           >
-            {t.rewards.claim}
+            <span className="flex flex-col items-start gap-0.5 leading-tight">
+              <span>
+                {mixed.ctaReleaseLine.replace(
+                  '{amount}',
+                  `${releaseAmountText} ${mixed.tokenGagx}`,
+                )}
+              </span>
+              <span>
+                {mixed.ctaRestakeLine.replace(
+                  '{amount}',
+                  `${restakeAmountText} ${mixed.tokenGagx}`,
+                )}
+              </span>
+            </span>
           </DappActionButton>
         ) : (
           <DappWidgetConnectPromo />

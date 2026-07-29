@@ -110,6 +110,7 @@ export async function readClaimPlans(client: ChainReadClient): Promise<{
   ).map((plan, index) => ({
     index,
     durationSeconds: plan.releaseDuration,
+    taxBps: plan.feeRate,
   }))
 
   const count = Number(planCount)
