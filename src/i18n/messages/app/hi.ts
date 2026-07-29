@@ -294,6 +294,8 @@ const app = defineMessages({
       title: 'Trade',
       intro: 'PancakeSwap live rate · on-chain settlement',
       aboutTitle: 'About',
+      selectSellToken: 'Select sell token',
+      selectBuyToken: 'Select buy token',
       action: 'Trade',
       priceImpact: 'Price impact',
       estimatedGas: 'Est. network gas',

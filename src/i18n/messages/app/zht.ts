@@ -288,6 +288,8 @@ const app = defineMessages({
       title: '交易',
       intro: '基于 PancakeSwap 实时市场汇率，链上秒到',
       aboutTitle: '關於',
+      selectSellToken: '選擇賣出代幣',
+      selectBuyToken: '選擇買入代幣',
       action: '交易',
       priceImpact: '价格影响',
       estimatedGas: '预估 Gas',

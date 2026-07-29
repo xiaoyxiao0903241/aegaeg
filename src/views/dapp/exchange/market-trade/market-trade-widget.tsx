@@ -7,10 +7,12 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { ExchangeSlippageModal } from '~/views/dapp/exchange/market-trade/exchange-slippage-modal'
+import { ExchangeTokenPicker } from '~/views/dapp/exchange/market-trade/exchange-token-picker'
 import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { getExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -71,6 +73,35 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
     window.setTimeout(() => {
       setIsFlipping(false)
     }, EXCHANGE_FLIP_SETTLE_MS)
+  }
+
+  /** §7.1 path = USD1↔AGX; picker lists both, selecting the other side flips. */
+  const tradePairForward = getExchangePairTokens('forward')
+  const pickDisabled = trade.isSubmitting || (sessionReady && !trade.walletReady)
+  const balanceFor = (key: string) => {
+    if (pair.sell.key === key) return trade.sellBalanceLabel
+    if (pair.buy.key === key) return trade.buyBalanceLabel
+    return '—'
+  }
+  const tokenPickerOptions = [
+    {
+      key: tradePairForward.sell.key,
+      symbol: tradePairForward.sell.symbol,
+      icon: tradePairForward.sell.icon,
+      balanceLabel: balanceFor(tradePairForward.sell.key),
+    },
+    {
+      key: tradePairForward.buy.key,
+      symbol: tradePairForward.buy.symbol,
+      icon: tradePairForward.buy.icon,
+      balanceLabel: balanceFor(tradePairForward.buy.key),
+    },
+  ]
+
+  function handleTokenPick(side: 'sell' | 'buy', key: string) {
+    const current = side === 'sell' ? pair.sell.key : pair.buy.key
+    if (key === current) return
+    handleFlip()
   }
 
   function resolveTradeMessage(error: unknown) {
@@ -153,13 +184,31 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
           }
           onFillPercent={(percent) => trade.fillPercent(percent)}
           onSellAmountChange={trade.setSellAmount}
-          onTokenPick={handleFlip}
           sell={pair.sell}
           sellAmountDisplay={trade.sellAmountDisplay}
           sellBalance={sellLabel}
+          sellTokenAdornment={
+            <ExchangeTokenPicker
+              ariaLabel={t.exchange.trade.selectSellToken}
+              checkIcon={dappAssets.check}
+              disabled={pickDisabled}
+              onSelect={(key) => handleTokenPick('sell', key)}
+              options={tokenPickerOptions}
+              value={pair.sell.key}
+            />
+          }
+          buyTokenAdornment={
+            <ExchangeTokenPicker
+              ariaLabel={t.exchange.trade.selectBuyToken}
+              checkIcon={dappAssets.check}
+              disabled={pickDisabled}
+              onSelect={(key) => handleTokenPick('buy', key)}
+              options={tokenPickerOptions}
+              value={pair.buy.key}
+            />
+          }
           sessionReady={sessionReady}
           showBuyAmountSkeleton={showBuyAmountSkeleton}
-          tokenPicker
           walletReady={trade.walletReady}
           amountLocked={trade.isSubmitting}
         />

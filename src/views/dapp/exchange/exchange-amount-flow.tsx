@@ -14,17 +14,17 @@ export function ExchangeAmountFlow({
   buyAmount,
   buyBalance,
   buyLabel,
+  buyTokenAdornment,
   middleSlot,
   onFillPercent,
   onSellAmountChange,
-  onTokenPick,
   sell,
   sellAmountDisplay,
   sellBalance,
   sellLabel,
+  sellTokenAdornment,
   sessionReady,
   showBuyAmountSkeleton,
-  tokenPicker = false,
   walletReady,
   amountLocked = false,
 }: {
@@ -34,18 +34,18 @@ export function ExchangeAmountFlow({
   buyBalance: ReactNode
   /** Override default Sell/Buy card labels (Burn uses destroy / receive copy). */
   buyLabel?: string
+  /** Trade: real token picker (chevron + open list). Flash/Burn omit → static chip. */
+  buyTokenAdornment?: ReactNode
   middleSlot: ReactNode
   onFillPercent: (percent: number) => void
   onSellAmountChange: (value: string) => void
-  /** Trade: pill+chevron; click flips pair (USD1↔AGX). */
-  onTokenPick?: () => void
   sell: AmountToken
   sellAmountDisplay: string
   sellBalance: ReactNode
   sellLabel?: string
+  sellTokenAdornment?: ReactNode
   sessionReady: boolean
   showBuyAmountSkeleton: boolean
-  tokenPicker?: boolean
   walletReady: boolean
   /** Lock sell input / percent while a tx is in flight (amount already snapshotted). */
   amountLocked?: boolean
@@ -53,7 +53,6 @@ export function ExchangeAmountFlow({
   const { messages: t } = useI18n()
   const exchangePreview = !sessionReady
   const sellDisabled = (sessionReady && !walletReady) || amountLocked
-  const pickDisabled = amountLocked || (sessionReady && !walletReady)
 
   const sellAmountProps: Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
     'aria-label': string
@@ -74,14 +73,7 @@ export function ExchangeAmountFlow({
         className={cn('p-4', amountBoxClassName)}
         label={sellLabel ?? t.exchange.sell}
         sessionReady={sessionReady}
-        startAdornment={
-          <TokenChip
-            icon={sell.icon}
-            label={sell.symbol}
-            onClick={tokenPicker && !pickDisabled ? onTokenPick : undefined}
-            picker={tokenPicker}
-          />
-        }
+        startAdornment={sellTokenAdornment ?? <TokenChip icon={sell.icon} label={sell.symbol} />}
       />
 
       <PercentButtonRow
@@ -109,14 +101,7 @@ export function ExchangeAmountFlow({
         loading={showBuyAmountSkeleton}
         loadingSkeleton={<ExchangeAmountSkeleton />}
         sessionReady={sessionReady}
-        startAdornment={
-          <TokenChip
-            icon={buy.icon}
-            label={buy.symbol}
-            onClick={tokenPicker && !pickDisabled ? onTokenPick : undefined}
-            picker={tokenPicker}
-          />
-        }
+        startAdornment={buyTokenAdornment ?? <TokenChip icon={buy.icon} label={buy.symbol} />}
       />
     </>
   )
