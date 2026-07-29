@@ -10,12 +10,15 @@ export function ExchangeModeCard({
   icon,
   onClick,
   title,
+  tourId,
 }: {
   badge?: string
   body: string
   icon: string
   onClick?: () => void
   title: string
+  /** OnboardingGuide `data-tour-id` (ticket 02). */
+  tourId?: string
 }) {
   const interactive = Boolean(onClick)
 
@@ -28,6 +31,7 @@ export function ExchangeModeCard({
         interactive &&
           'duration-dapp-fast cursor-pointer transition-[border-color,transform] ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
       )}
+      data-tour-id={tourId}
       onClick={onClick}
       type="button"
     >

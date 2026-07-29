@@ -40,6 +40,7 @@ export function ReleaseHubWidget() {
         <Card
           as="button"
           className="duration-dapp-fast w-full cursor-pointer text-left shadow-none hover:border-primary"
+          data-tour-id="release-pool-card"
           onClick={() => openReleaseView('queue')}
           surface="outlined"
           type="button"
@@ -84,6 +85,7 @@ export function ReleaseHubWidget() {
         <Card
           as="button"
           className="duration-dapp-fast w-full cursor-pointer text-left shadow-none hover:border-primary"
+          data-tour-id="buffer-pool-card"
           onClick={() => openReleaseView('buffer')}
           surface="outlined"
           type="button"

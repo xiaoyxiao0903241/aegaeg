@@ -8,6 +8,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { OnboardingTourChip } from '~/app/shell/onboarding-tour-chip'
 
 const topbar = tv({
   slots: {
@@ -45,7 +46,13 @@ const topbar = tv({
   },
 })
 
-export function DappTopbar() {
+export function DappTopbar({
+  onboardingDone,
+  onStartOnboarding,
+}: {
+  onboardingDone?: boolean
+  onStartOnboarding?: () => void
+}) {
   const { locale, messages: t, setLocale } = useI18n()
   const { sessionReady, tab } = useDappShell()
   const styles = topbar({ hideBrandLabel: sessionReady })
@@ -70,6 +77,13 @@ export function DappTopbar() {
         </Text>
       </a>
       <div className={styles.actions()}>
+        {onStartOnboarding ? (
+          <OnboardingTourChip
+            done={Boolean(onboardingDone)}
+            label={t.onboarding.chip}
+            onClick={onStartOnboarding}
+          />
+        ) : null}
         <WalletTopbarActions />
         <LanguageMenu
           checkIcon={dappAssets.check}

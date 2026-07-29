@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants'
 import { cn } from '~/shared/lib/utils'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { railItems } from '~/app/assets'
-import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
+import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
 import { useI18n } from '~/i18n/use-i18n'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Text } from '~/shared/ui/text'
@@ -144,6 +144,7 @@ export function DappRail({
               aria-label={label}
               aria-selected={active}
               className={railItem({ active, mobile })}
+              data-tour-id={railTourIds[item.id]}
               onClick={() => onSelectTab(item.id)}
               ref={(node) => {
                 if (node) itemRefs.current.set(item.id, node)

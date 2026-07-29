@@ -14,6 +14,17 @@ export const railNavLabelKeys = {
   'exchange' | 'assets' | 'staking' | 'rewards' | 'release' | 'community' | 'genesis'
 >
 
+/** Prototype Shell tour ids for nav steps (ticket 02). Genesis is not in the tour. */
+export const railTourIds = {
+  exchange: 'nav-swap',
+  assets: 'nav-assets',
+  staking: 'nav-staking',
+  rewards: 'nav-rewards',
+  release: 'nav-release',
+  community: 'nav-community',
+  genesis: undefined,
+} as const satisfies Record<DappTab, string | undefined>
+
 export function railIconMask(icon: string): CSSProperties {
   return {
     maskImage: `url(${icon})`,

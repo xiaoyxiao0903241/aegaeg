@@ -7,7 +7,7 @@ import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { railItems } from '~/app/assets'
-import { railIconMask, railNavLabelKeys } from '~/app/rail-shared'
+import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
 import { aegisDialogClose } from '~/shared/ui/aegis-responsive-dialog'
 import { Text } from '~/shared/ui/text'
 import { useTurbineExchangeRailDot } from '~/views/dapp/exchange/turbine/use-turbine-exchange-rail-dot'
@@ -145,6 +145,7 @@ export function DappMobileNav({
               aria-label={label}
               aria-selected={active}
               className={cn(drawerItem({ active }), 'relative')}
+              data-tour-id={railTourIds[item.id]}
               key={item.id}
               onClick={() => onSelectTab(item.id)}
               role="tab"

@@ -60,6 +60,63 @@ const app = defineMessages({
     showDetails: 'Показать панель деталей',
     toggleTooltip: 'Показать или скрыть панель деталей',
   },
+  onboarding: {
+    chip: 'Tutorial',
+    skip: 'Skip',
+    prev: 'Back',
+    next: 'Next',
+    done: 'Done',
+    steps: [
+      {
+        title: 'Exchange',
+        body: 'Use Exchange to swap major tokens for AEGIS X ecosystem tokens (AGX, gAGX, X) at market rates.',
+      },
+      {
+        title: 'Trade',
+        body: 'Use Trade to buy AGX with USD1.',
+      },
+      {
+        title: 'Staking',
+        body: 'Staking is where yield starts: stake AGX or buy bonds to earn compound rewards on every Rebase.',
+      },
+      {
+        title: 'Single-asset stake',
+        body: 'Stake AGX in the Stake card. Rebase twice daily compounds; longer lockups earn higher yield boosts.',
+      },
+      {
+        title: 'Assets',
+        body: 'Assets summarizes all positions: stake, LP bonds, burn bonds, and X mining holdings and rewards.',
+      },
+      {
+        title: 'Stake positions',
+        body: 'In the Assets Stake card, review holdings and total rewards, then claim, compound, or redeem.',
+      },
+      {
+        title: 'Release',
+        body: 'Release manages pending funds: rewards enter the release pool / buffer pool and unlock linearly by period.',
+      },
+      {
+        title: 'Release pool',
+        body: 'Claimed rewards unlock linearly over 5 / 20 / 40 / 60 days; released amounts can move into Turbine.',
+      },
+      {
+        title: 'Buffer pool',
+        body: 'Redeemed principal unlocks linearly over ~30 days of blocks; released amounts can be withdrawn anytime.',
+      },
+      {
+        title: 'Turbine',
+        body: 'gAGX from the release pool stays locked until you unlock it 1:1 with USD1 in Turbine.',
+      },
+      {
+        title: 'Rewards',
+        body: 'Rewards include referral, participation, co-build, and more. Claiming spends contribution points 1:1.',
+      },
+      {
+        title: 'Community',
+        body: 'Community shows your team: invite link, members, and co-build tier live here.',
+      },
+    ],
+  },
   dapp: {
     connect: {
       promoTitle: 'Подключитесь, чтобы изучить функции AEGIS X',

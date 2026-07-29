@@ -21,6 +21,7 @@ import { GenesisPromoSync } from '~/app/genesis-promo-sync'
 import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
 import { ExchangeSessionHosts } from '~/views/dapp/exchange/exchange-session-hosts'
 import { DappTabContent, DappTabWidget } from '~/views/dapp/dapp-tabs'
+import { OnboardingGuide, useOnboardingAutoStart } from '~/app/shell/onboarding-guide'
 
 function replaceTabHash(tab: string) {
   window.history.replaceState(null, '', `#${tab}`)
@@ -37,6 +38,7 @@ export function DappShell() {
   const shellState = useDappShell()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
   const { displayTab, phase } = useDappTabContentFade(activeTab)
+  const onboarding = useOnboardingAutoStart()
 
   const selectTab = (tab: typeof activeTab) => {
     selectTabInStore(tab)
@@ -100,7 +102,8 @@ export function DappShell() {
         )}
       />
       <HeroRaysBackground variant="shell" />
-      <DappTopbar />
+      <DappTopbar onStartOnboarding={onboarding.startTour} onboardingDone={onboarding.done} />
+      <OnboardingGuide onOpenChange={onboarding.setOpen} open={onboarding.open} />
 
       {import.meta.env.DEV && !isThirdwebConfigured ? (
         <DappInlineAlert

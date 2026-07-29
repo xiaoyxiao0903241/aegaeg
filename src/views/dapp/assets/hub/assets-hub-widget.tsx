@@ -28,6 +28,7 @@ export function AssetsHubWidget() {
           icon={stakingHubAssets.modeStake}
           onClick={() => openAssetsView('stake')}
           title={t.assets.hub.modes.stake.title}
+          tourId="asset-mode-stake"
         />
         <ExchangeModeCard
           body={t.assets.hub.modes.lpbond.body}

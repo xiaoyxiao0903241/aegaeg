@@ -24,6 +24,7 @@ export function StakingHubWidget() {
           icon={stakingHubAssets.modeStake}
           onClick={() => openStakingView('stake')}
           title={t.staking.hub.modes.stake.title}
+          tourId="stake-mode-stake"
         />
         <ExchangeModeCard
           body={t.staking.hub.modes.lpbond.body}

@@ -30,6 +30,7 @@ export function ExchangeHubWidget() {
           icon={exchangeHubAssets.modeTrade}
           onClick={() => openExchangeView('trade')}
           title={t.exchange.hub.modes.trade.title}
+          tourId="swap-trade"
         />
         <ExchangeModeCard
           body={t.exchange.hub.modes.burn.body}
@@ -42,6 +43,7 @@ export function ExchangeHubWidget() {
           icon={exchangeHubAssets.modeTurbine}
           onClick={() => openExchangeView('turbine')}
           title={t.exchange.hub.modes.turbine.title}
+          tourId="swap-turbine"
         />
       </ExchangeWidgetBody>
     </>
