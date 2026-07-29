@@ -25,27 +25,28 @@ const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 type MetricTone = 'default' | 'accent'
 type MetricIcon = 'agx' | 'usd1' | null
+type HubMetricId =
+  'tvl' | 'mcap' | 'circulating' | 'treasury' | 'price' | 'burned' | 'rebase' | 'runway' | 'stakers'
 
-const METRIC_CHROME: Record<string, { tone: MetricTone; icon: MetricIcon; hasSub?: boolean }> = {
-  tvl: { tone: 'default', icon: 'agx', hasSub: true },
-  mcap: { tone: 'default', icon: null },
-  circulating: { tone: 'default', icon: 'agx' },
-  treasury: { tone: 'default', icon: 'usd1', hasSub: true },
-  price: { tone: 'default', icon: 'agx' },
-  burned: { tone: 'default', icon: 'agx' },
-  rebase: { tone: 'accent', icon: null },
-  runway: { tone: 'accent', icon: null },
-  stakers: { tone: 'default', icon: null },
-}
+const METRIC_CHROME: Record<HubMetricId, { tone: MetricTone; icon: MetricIcon; hasSub: boolean }> =
+  {
+    tvl: { tone: 'default', icon: 'agx', hasSub: true },
+    mcap: { tone: 'default', icon: null, hasSub: false },
+    circulating: { tone: 'default', icon: 'agx', hasSub: false },
+    treasury: { tone: 'default', icon: 'usd1', hasSub: true },
+    price: { tone: 'default', icon: 'agx', hasSub: false },
+    burned: { tone: 'default', icon: 'agx', hasSub: false },
+    rebase: { tone: 'accent', icon: null, hasSub: false },
+    runway: { tone: 'accent', icon: null, hasSub: false },
+    stakers: { tone: 'default', icon: null, hasSub: false },
+  }
 
 function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; value: string }) {
   const src = icon === 'agx' ? dappAssets.tokenAgx : icon === 'usd1' ? dappAssets.tokenUsd1 : null
 
   return (
     <span className="flex min-w-0 items-center gap-1.5">
-      {src ? (
-        <DappIcon alt="" className="size-[18px] shrink-0 rounded-full" size="md" src={src} />
-      ) : null}
+      {src ? <DappIcon alt="" className="size-[18px] shrink-0 rounded-full" src={src} /> : null}
       <span>{value}</span>
       {sub ? (
         <Text
@@ -59,6 +60,10 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
       ) : null}
     </span>
   )
+}
+
+function isHubMetricId(id: string): id is HubMetricId {
+  return id in METRIC_CHROME
 }
 
 /** Hub right rail: overview grid + period table + chart chrome + FAQ (dynamic figures may be —). */
@@ -80,7 +85,7 @@ export function StakingHubContent() {
         ? '…'
         : PLACEHOLDER
 
-  function metricValue(id: string): string {
+  function metricValue(id: HubMetricId): string {
     if (id === 'price') return agxPriceLabel
     return PLACEHOLDER
   }
@@ -91,10 +96,8 @@ export function StakingHubContent() {
         <DappContentHeading className={hubSectionTitleClass}>{overview.title}</DappContentHeading>
         <div className="grid grid-cols-3 gap-2">
           {overview.metrics.map((metric) => {
-            const chrome = METRIC_CHROME[metric.id] ?? {
-              tone: 'default' as const,
-              icon: null as MetricIcon,
-            }
+            if (!isHubMetricId(metric.id)) return null
+            const chrome = METRIC_CHROME[metric.id]
             const value = metricValue(metric.id)
             const valueClassName =
               chrome.tone === 'accent'
@@ -107,9 +110,7 @@ export function StakingHubContent() {
                 key={metric.id}
                 label={
                   <span className="flex items-center gap-1">
-                    <Text as="span" tone="muted-foreground" variant="detail">
-                      {metric.label}
-                    </Text>
+                    <span>{metric.label}</span>
                     {metric.hint ? (
                       <DappInfoTooltip className="size-3 [&_svg]:size-3" content={metric.hint} />
                     ) : null}
