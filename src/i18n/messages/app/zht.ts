@@ -1470,6 +1470,7 @@ const app = defineMessages({
       },
       recordColumns: ['Time', 'Period', 'Amount', 'Released', 'Tx hash'],
       bondRecordColumns: ['Time', 'Period', 'Paid', 'Discount', 'AGX received', 'Tx hash'],
+      xmineRecordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
       recordsEmpty: 'No records yet',
       chartTitles: {
         stake: 'TVL (Staking) metrics',
@@ -1500,7 +1501,11 @@ const app = defineMessages({
           {
             pct: '52.38%',
             title: 'Global rewards & growth',
-            bullets: ['gAGX mining rewards', 'Ecosystem growth incentives'],
+            bullets: [
+              'gAGX mining rewards',
+              'Market expansion & brand partnerships',
+              'Ecosystem building & long-term growth',
+            ],
           },
         ],
       },
@@ -1777,24 +1782,63 @@ const app = defineMessages({
         { label: 'X Mine TVL' },
         { label: 'X price' },
         { label: 'Total mined' },
-        { label: 'Today yield' },
+        { label: 'Daily yield rate' },
+        { label: 'Next mining payout' },
       ],
-      positionMetrics: [{ label: 'My stake' }, { label: 'Released' }, { label: 'Mined' }],
+      positionMetrics: [{ label: 'My mining stake' }, { label: 'Released' }, { label: 'Mined' }],
       mechanismTitle: 'How X Mine works',
       mechanism: 'Validate miningQuotaOf then stakeGagxForMining. Claim X and unstake on Assets.',
       mechanismSteps: [
         {
           title: 'Rebase + DAO rewards',
-          body: 'Protocol rebase and DAO rewards enter the distributable pool.',
+          body: 'Rewards settle uniformly as gAGX.',
         },
-        { title: 'Stake gAGX', body: 'Stake gAGX within quota; enter 24h warmup.' },
-        { title: 'Dynamic X allocation', body: 'X rewards allocate by protocol state.' },
-        { title: 'Unstake linear release', body: 'Exit principal enters the release vault.' },
+        { title: 'Stake gAGX', body: 'Staked gAGX enters a 24-hour lock.' },
+        {
+          title: 'Dynamic X allocation',
+          body: 'X rewards allocate dynamically by protocol yield.',
+        },
+        {
+          title: 'Unstake linear release',
+          body: 'After unlock, gAGX releases linearly over ~30 days.',
+        },
       ],
       faq: [
         {
-          q: 'Where does quota come from?',
-          a: 'Sum of locked principal from Early, term stake, and bonds via miningQuotaOf.',
+          q: 'How do I join X Mine?',
+          a: 'Stake gAGX to mine X. After staking, gAGX locks for 24 hours; X rewards allocate by protocol yield.',
+        },
+        {
+          q: 'What is the stake cap?',
+          a: 'gAGX stake cannot exceed your ≥180-day AGX bond holdings plus AGX stake total.',
+        },
+        {
+          q: 'How does unstaking release assets?',
+          a: 'Unlocked gAGX uses a ~30-day block-linear release to reduce sell pressure.',
+        },
+        {
+          q: 'What is the X supply? Will it inflate?',
+          a: 'Fixed 210M X, never inflated. 47.62% for LP liquidity; 52.38% for global rewards and growth.',
+        },
+        {
+          q: 'How do I get gAGX?',
+          a: 'gAGX is the unified settlement voucher for Rebase and DAO rewards from staking and bonds.',
+        },
+        {
+          q: 'What else can gAGX do besides mining?',
+          a: 'Redeem 1:1 to AGX for staking, or stake gAGX to mine X.',
+        },
+        {
+          q: 'Why does X deflate?',
+          a: 'Each X sell burns 25%. Growth increases demand while burns shrink supply.',
+        },
+        {
+          q: 'What drives X value?',
+          a: 'Mining demand, protocol revenue recirculation, and ecosystem growth reinforce X demand.',
+        },
+        {
+          q: 'Why is the cap tied to bonds and long-term stake?',
+          a: 'It keeps miners as long-term builders; more bonds or long stake raises the cap via miningQuotaOf.',
         },
       ],
     },
@@ -1821,8 +1865,17 @@ const app = defineMessages({
       submit: 'Calculate',
       result: {
         interest: 'Estimated yield',
-        total: 'Principal + yield',
-        rate: '收益率',
+        total: 'Total yield',
+        rate: 'Yield rate',
+        sellTotal: 'Sell proceeds',
+        invested: 'Total invested',
+        yieldBar: 'Yield {amount}',
+        legend: {
+          released: 'Released principal value',
+          netYield: 'Net yield value',
+          cost: 'Cost basis',
+          grossYield: 'Total yield',
+        },
       },
       aside: {
         result: 'Estimate',
@@ -1831,6 +1884,7 @@ const app = defineMessages({
         curve: 'Yield curve',
         curveHint: 'Cumulative yield by day; compounding continues if not redeemed at maturity',
         nodes: 'Key nodes',
+        nodeEndLabel: 'Hold to day {day}',
         nodeCards: [
           { label: 'Breakeven day', hint: 'Selling from this day can realize positive yield' },
           { label: 'Principal fully released', hint: '' },
@@ -1839,9 +1893,10 @@ const app = defineMessages({
         notes: 'Notes',
         notesBody: 'Local estimate only — not an on-chain quote or yield promise.',
         notesItems: [
-          'Yield compounds at the current base daily rate; term bonuses: 180d 15%, 360d 25%, 540d 35%.',
+          'Yield compounds at base daily 0.82% (2 × rebase); term bonuses: 180d 15%, 360d 25%, 540d 35%.',
           'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
-          'Ignores claim tax and price volatility; actual results vary with protocol state.',
+          'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
+          'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',
         ],
       },
     },

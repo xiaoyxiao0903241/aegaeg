@@ -23,6 +23,8 @@ export function XmineContent() {
           label: metric.label,
           value: PLACEHOLDER,
         }))}
+        recordColWidths={['175px', '100px', '140px', '1fr']}
+        recordColumns={t.staking.aside.xmineRecordColumns}
         recordsTitle={t.staking.aside.recordsTitles.xmine}
         showXValueCard
       />
