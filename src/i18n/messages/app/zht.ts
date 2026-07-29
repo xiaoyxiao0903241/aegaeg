@@ -1293,28 +1293,50 @@ const app = defineMessages({
         },
       },
       burnbond: {
-        title: 'Burn Bond positions',
-        intro: 'Manage burn bonds — claim yield or redeem principal',
-        empty: 'No burn bond positions',
-        emptyCta: 'Buy Burn Bond',
+        title: '銷毀債券倉位',
+        intro: '管理您的每一份債券，隨時領取收益或贖回本金',
+        empty: '暫無銷毀債券倉位，購買一份債券後，這裡將展示您的每一筆倉位。',
+        emptyCta: '購買首份銷毀債券，開始賺取收益',
         stats: {
-          title: 'Position stats',
+          title: '倉位數據',
           metrics: [
-            { label: 'Total' },
-            { label: 'Pending payout' },
-            { label: 'Claimable' },
-            { label: 'Claimed' },
-            { label: 'Discount' },
-            { label: 'Voucher' },
+            { label: '我的持倉' },
+            { label: '已釋放' },
+            { label: '待釋放' },
+            { label: '當前Rebase 收益' },
+            { label: '銷毀債券總收益' },
           ],
         },
-        ops: { title: 'Activity', empty: 'No activity yet' },
+        ops: {
+          title: '操作記錄',
+          empty: '暫無操作記錄，完成質押、領取或贖回後，這裡將展示您的每一筆操作。',
+        },
         faq: {
-          title: 'FAQ',
+          title: 'FAQs',
           items: [
             {
-              q: 'Burn vs LP bond?',
-              a: 'Different entry paths; Mixed claim and redeem contracts match.',
+              q: '領取和贖回有什麼區別？',
+              a: '領取針對收益：將債券產生的 gAGX 收益按所選釋放週期領出，或直接複投；贖回針對本金：將已釋放的 AGX 本金取出，進入 30 天緩衝區二次線性釋放後到賬錢包。',
+            },
+            {
+              q: '「債券本金」是怎麼來的？',
+              a: '購買銷毀債券時，您支付的 USD1 按折扣價換算為 AGX，即為該筆債券的本金。本金按所選週期（180/360/540 天）區塊線性釋放，「已釋放」部分可隨時贖回。',
+            },
+            {
+              q: '為什麼每份債券單獨顯示？',
+              a: '每份債券獨立計算週期、折扣、收益與釋放進度，到期時間和可執行操作互不影響，因此按倉位分別展示與操作。',
+            },
+            {
+              q: '債券收益可以複投嗎？',
+              a: '可以。領取時通過滑條自由分配複投與領取的比例：複投部分進入所選週期（360/540 天）的單幣質押繼續複利，稅率優於按週期領取。',
+            },
+            {
+              q: '倒計時結束後會怎樣？',
+              a: '倒計時結束代表本金釋放全部完成，此時可隨時贖回全部本金；未領取的收益不會失效，仍會持續產生複利收益。',
+            },
+            {
+              q: '銷毀債券對 AGX 有什麼影響？',
+              a: '購買銷毀債券的資金會自動買入 AGX 並永久銷毀至黑洞地址，直接減少流通量、增強通縮，您在獲得折扣與收益的同時也在推動協議價值增長。',
             },
           ],
         },

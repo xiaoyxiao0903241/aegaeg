@@ -1308,27 +1308,49 @@ const app = defineMessages({
       },
       burnbond: {
         title: 'Burn Bond positions',
-        intro: 'Manage burn bonds — claim yield or redeem principal',
-        empty: 'No burn bond positions',
-        emptyCta: 'Buy Burn Bond',
+        intro: 'Manage each bond — claim yield or redeem principal anytime',
+        empty: 'No burn bond positions yet. Buy a bond and each position will show here.',
+        emptyCta: 'Buy your first Burn Bond to start earning',
         stats: {
           title: 'Position stats',
           metrics: [
-            { label: 'Total' },
-            { label: 'Pending payout' },
-            { label: 'Claimable' },
-            { label: 'Claimed' },
-            { label: 'Discount' },
-            { label: 'Voucher' },
+            { label: 'My holdings' },
+            { label: 'Released' },
+            { label: 'Pending release' },
+            { label: 'Current Rebase yield' },
+            { label: 'Total Burn Bond yield' },
           ],
         },
-        ops: { title: 'Activity', empty: 'No activity yet' },
+        ops: {
+          title: 'Activity',
+          empty: 'No activity yet. Stake, claim, or redeem to see records here.',
+        },
         faq: {
-          title: 'FAQ',
+          title: 'FAQs',
           items: [
             {
-              q: 'Burn vs LP bond?',
-              a: 'Different entry paths; Mixed claim and redeem contracts match.',
+              q: 'Claim vs redeem?',
+              a: 'Claim handles bond gAGX yield (release or restake). Redeem takes released AGX principal into a 30-day buffer before wallet credit.',
+            },
+            {
+              q: 'Where does bond principal come from?',
+              a: 'USD1 paid for a Burn bond converts to AGX at a discount — that AGX is the bond principal. It unlocks linearly over 180/360/540 days; released amounts can be redeemed anytime.',
+            },
+            {
+              q: 'Why is each bond shown separately?',
+              a: 'Each bond has its own period, discount, yield, and vesting — so actions stay per position.',
+            },
+            {
+              q: 'Can bond yield be restaked?',
+              a: 'Yes. On claim, split release vs restake; restake routes into single-asset staking (360/540) with better tax than period claim.',
+            },
+            {
+              q: 'What happens when the countdown ends?',
+              a: 'Vesting is complete — redeem all principal anytime. Unclaimed yield keeps accruing.',
+            },
+            {
+              q: 'What impact does Burn Bond have on AGX?',
+              a: 'Burn Bond proceeds buy AGX and permanently burn it to a dead address — reducing float and reinforcing deflation while you earn discounted principal and yield.',
             },
           ],
         },

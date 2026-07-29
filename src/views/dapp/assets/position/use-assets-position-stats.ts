@@ -5,7 +5,6 @@ import { formatUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
-import type { BondPeriod } from '~/core/staking/staking-period'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
@@ -14,11 +13,6 @@ import {
   readLpBondPositions,
   readStakePositions,
 } from '~/web3/assets/assets-read'
-import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
-import {
-  resolveBurnBondDepository,
-  resolveLpBondDepository,
-} from '~/web3/staking/resolve-staking-addresses'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -29,10 +23,6 @@ export type AssetsPositionStatCell = {
   value: string
   approx?: string
   icon?: 'agx' | 'gagx'
-}
-
-function isBondPeriod(value: string): value is BondPeriod {
-  return value === '180' || value === '360' || value === '540'
 }
 
 function approxUsd(amount: number, priceUsd: number | null): string {
@@ -71,28 +61,8 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     enabled: walletReady && Boolean(address) && product !== 'stake',
   })
 
-  const bondRows = bondQuery.data ?? []
-  const uniquePeriods = [...new Set(bondRows.map((row) => row.period).filter(isBondPeriod))]
-  const discountPeriod = uniquePeriods.length === 1 ? uniquePeriods[0] : null
-  const sampleDepository =
-    discountPeriod == null
-      ? null
-      : product === 'lpbond'
-        ? resolveLpBondDepository(discountPeriod)
-        : resolveBurnBondDepository(discountPeriod)
-
-  // Burn keeps legacy six-cell chrome until Burn positions frame; LP no longer shows discount.
-  const discountQuery = useQuery({
-    queryKey: queryKeys.chain.bondMarketMeta(sampleDepository ?? 'none'),
-    queryFn: () => readBondMarketMeta(sampleDepository!, readClient),
-    enabled: product === 'burnbond' && sampleDepository != null,
-    staleTime: 60_000,
-  })
-
-  const emptyLen = product === 'lpbond' ? 5 : 6
-
   if (!walletReady || !address) {
-    return Array.from({ length: emptyLen }, () => cell('—'))
+    return Array.from({ length: product === 'stake' ? 6 : 5 }, () => cell('—'))
   }
 
   if (product === 'stake') {
@@ -144,12 +114,9 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     ]
   }
 
-  if (bondQuery.isError) return Array.from({ length: emptyLen }, () => cell('—'))
-  if (bondQuery.data === undefined) {
-    return product === 'lpbond'
-      ? Array.from({ length: 5 }, () => cell('…'))
-      : [cell('…'), cell('…'), cell('…'), cell('—'), cell('…'), cell('…')]
-  }
+  // LP `4518:5993` / Burn `4518:6384`: 我的持仓 / 已释放 / 待释放 / 当前Rebase / 总收益(无累计 → —)
+  if (bondQuery.isError) return Array.from({ length: 5 }, () => cell('—'))
+  if (bondQuery.data === undefined) return Array.from({ length: 5 }, () => cell('…'))
 
   const rows = bondQuery.data
   const total = rows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
@@ -161,50 +128,27 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   }, 0n)
   const profit = rows.reduce((sum, row) => sum + row.profit, 0n)
 
-  // LP Figma `4518:5993`: 我的持仓 / 已释放 / 待释放 / 当前Rebase / LP债券总收益(无累计 → —)
-  if (product === 'lpbond') {
-    return [
-      cell(
-        `${formatTokenAmount(total, AGX_DECIMALS, 2)} AGX`,
-        'agx',
-        approxUsd(formatTokenAmountToNumber(total, AGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`,
-        'agx',
-        approxUsd(formatTokenAmountToNumber(released, AGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`,
-        'agx',
-        approxUsd(formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(profit, GAGX_DECIMALS, 2)} gAGX`,
-        'gagx',
-        approxUsd(formatTokenAmountToNumber(profit, GAGX_DECIMALS), priceUsd),
-      ),
-      cell('—', 'gagx', '≈ —'),
-    ]
-  }
-
-  let discount = '—'
-  if (discountPeriod != null) {
-    if (discountQuery.isError) {
-      discount = '—'
-    } else if (discountQuery.data === undefined) {
-      discount = '…'
-    } else {
-      discount = formatBondDiscountLabel(discountQuery.data.discountRateBP)
-    }
-  }
-
   return [
-    cell(`${formatTokenAmount(total, AGX_DECIMALS, 4)} AGX`),
-    cell(`${formatTokenAmount(released, AGX_DECIMALS, 4)} AGX`),
-    cell(`${formatTokenAmount(profit, GAGX_DECIMALS, 4)} gAGX`),
-    cell('—'),
-    cell(discount),
-    cell(String(rows.length)),
+    cell(
+      `${formatTokenAmount(total, AGX_DECIMALS, 2)} AGX`,
+      'agx',
+      approxUsd(formatTokenAmountToNumber(total, AGX_DECIMALS), priceUsd),
+    ),
+    cell(
+      `${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`,
+      'agx',
+      approxUsd(formatTokenAmountToNumber(released, AGX_DECIMALS), priceUsd),
+    ),
+    cell(
+      `${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`,
+      'agx',
+      approxUsd(formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS), priceUsd),
+    ),
+    cell(
+      `${formatTokenAmount(profit, GAGX_DECIMALS, 2)} gAGX`,
+      'gagx',
+      approxUsd(formatTokenAmountToNumber(profit, GAGX_DECIMALS), priceUsd),
+    ),
+    cell('—', 'gagx', '≈ —'),
   ]
 }
