@@ -784,7 +784,210 @@ const app = defineMessages({
   },
   assets: {
     title: 'Assets',
-    body: 'Assets overview is coming soon.',
+    intro: 'View positions, claim yield, or redeem principal',
+    body: 'View positions, claim yield, or redeem principal',
+    backToHub: 'Back to Assets',
+    gates: {
+      zeroAmount: 'Enter a valid amount',
+      insufficientReward: 'Insufficient claimable yield',
+      insufficientContribution: 'Not enough contribution points — burn AGX first',
+      planUnresolved: 'Release/restake plan not ready — try again later',
+      nothingToRedeem: 'Nothing available to redeem',
+      warmupActive: 'Warmup still active',
+      unavailable: 'Transaction temporarily unavailable',
+    },
+    position: {
+      sort: 'Sort',
+      remaining: 'Time left',
+      staked: 'Staked',
+      payout: 'Pending payout',
+      yield: 'Yield',
+      claim: 'Claim',
+      redeem: 'Redeem',
+      unlock: 'Unlock',
+      unstake: 'Unstake',
+      liquid: 'Flexible',
+    },
+    claim: {
+      title: 'Claim yield',
+      amount: 'Claim amount',
+      splitAria: 'Release vs restake split',
+      releaseShare: 'Release {pct}%',
+      restakeShare: 'Restake {pct}%',
+      releasePeriod: 'Release period',
+      releasePeriodAria: 'Release period',
+      restakePeriod: 'Restake period',
+      restakePeriodAria: 'Restake period',
+      releaseDays: '{days}d',
+      restakeDays: '{days}d',
+      restakeDaysTax: '{days}d · {tax}',
+      taxRate: 'tax {rate}%',
+      contribNeed: 'This claim requires {amount} contribution',
+      contribShort: 'Not enough contribution — burn AGX for points first',
+      goBurn: 'Go to Burn',
+      ctaMixed: 'Claim & Restake',
+      ctaRelease: 'Claim',
+      ctaRestake: 'Restake',
+      success: 'Claim submitted',
+      xmineSuccess: 'X reward claim submitted',
+    },
+    redeem: {
+      title: 'Confirm redeem',
+      body: 'Principal enters the release buffer (PrincipalReleaseVault) — not credited to your wallet immediately.',
+      confirm: 'Enter buffer',
+      cancel: 'Cancel',
+      success: 'Redeem submitted — principal entered the release buffer',
+    },
+    hub: {
+      emptyHint: 'Pick a product to view positions, or open a position in Staking.',
+      modes: {
+        stake: { title: 'Stake', body: 'Manage AGX flexible / term positions' },
+        lpbond: { title: 'LP Bond', body: 'Manage liquidity bond positions' },
+        burnbond: { title: 'Burn Bond', body: 'Manage burn bond positions' },
+        xmine: { title: 'X Mine', body: 'Manage gAGX mining positions' },
+      },
+      overview: {
+        title: 'Assets overview',
+        metrics: [
+          { label: 'Total value' },
+          { label: 'Claimable yield' },
+          { label: 'Claimed total' },
+          { label: 'Contribution points' },
+        ],
+      },
+      distribution: {
+        title: 'Holdings',
+        empty: 'No holdings yet. Stake or buy bonds to see distribution here.',
+        cta: 'Go to Staking',
+      },
+      faq: {
+        title: 'FAQ',
+        items: [
+          {
+            q: 'How is total value calculated?',
+            a: 'Sum of product positions and claimable yield valuations.',
+          },
+          {
+            q: 'Why do claims need contribution points?',
+            a: 'Mixed claims consume contribution per the handbook; burn AGX if short.',
+          },
+          {
+            q: 'Where does redeemed principal go?',
+            a: 'Into PrincipalReleaseVault linear release — not instant wallet credit.',
+          },
+        ],
+      },
+    },
+    products: {
+      stake: {
+        title: 'Stake positions',
+        intro: 'Manage each stake — claim yield or redeem principal anytime',
+        empty: 'No stake positions',
+        emptyCta: 'Go stake',
+        stats: {
+          title: 'Position stats',
+          metrics: [
+            { label: 'Total' },
+            { label: 'Released' },
+            { label: 'Pending release' },
+            { label: 'Claimable' },
+            { label: 'Claimed' },
+            { label: 'Voucher' },
+          ],
+        },
+        ops: { title: 'Activity', empty: 'No activity yet' },
+        faq: {
+          title: 'FAQ',
+          items: [
+            {
+              q: 'Claim vs redeem?',
+              a: 'Claim handles yield (optional restake); redeem sends principal to the release buffer.',
+            },
+            {
+              q: 'What is released?',
+              a: 'Principal available to redeem after a locked stake matures.',
+            },
+          ],
+        },
+      },
+      lpbond: {
+        title: 'LP Bond positions',
+        intro: 'Manage liquidity bonds — claim yield or redeem principal',
+        empty: 'No LP bond positions',
+        emptyCta: 'Buy LP Bond',
+        stats: {
+          title: 'Position stats',
+          metrics: [
+            { label: 'Total' },
+            { label: 'Pending payout' },
+            { label: 'Claimable' },
+            { label: 'Claimed' },
+            { label: 'Discount' },
+            { label: 'Voucher' },
+          ],
+        },
+        ops: { title: 'Activity', empty: 'No activity yet' },
+        faq: {
+          title: 'FAQ',
+          items: [
+            {
+              q: 'How does redeem credit principal?',
+              a: 'redeem(..., false) creates a PRV release entry — not instant.',
+            },
+          ],
+        },
+      },
+      burnbond: {
+        title: 'Burn Bond positions',
+        intro: 'Manage burn bonds — claim yield or redeem principal',
+        empty: 'No burn bond positions',
+        emptyCta: 'Buy Burn Bond',
+        stats: {
+          title: 'Position stats',
+          metrics: [
+            { label: 'Total' },
+            { label: 'Pending payout' },
+            { label: 'Claimable' },
+            { label: 'Claimed' },
+            { label: 'Discount' },
+            { label: 'Voucher' },
+          ],
+        },
+        ops: { title: 'Activity', empty: 'No activity yet' },
+        faq: {
+          title: 'FAQ',
+          items: [
+            {
+              q: 'Burn vs LP bond?',
+              a: 'Different entry paths; Mixed claim and redeem contracts match.',
+            },
+          ],
+        },
+      },
+      xmine: {
+        title: 'X Mine positions',
+        intro: 'Claim X rewards or unstake into the release buffer',
+        empty: 'No X mine positions',
+        emptyCta: 'Go to X Mine',
+        stats: {
+          title: 'Position stats',
+          metrics: [
+            { label: 'Staked' },
+            { label: 'Pending X' },
+            { label: 'In warmup' },
+            { label: 'Mining quota' },
+          ],
+        },
+        ops: { title: 'Activity', empty: 'No activity yet' },
+        faq: {
+          title: 'FAQ',
+          items: [
+            { q: 'Why no restake slider?', a: 'X claim is claimReward only — no Mixed split.' },
+            { q: 'Where does unstake go?', a: 'startUnstake enters PrincipalReleaseVault.' },
+          ],
+        },
+      },
+    },
   },
   staking: {
     title: 'Staking',

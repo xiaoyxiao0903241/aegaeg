@@ -62,6 +62,12 @@ export interface BscContracts {
   burnBondDepository540d: Address
   /** XStakingPool — gAGX mining stake (manual §15) */
   xStakingPool: Address
+  /** RewardQueue — Mixed release vesting (manual §12) */
+  rewardQueue: Address
+  /** RestakeConfig — Mixed restake plan index (manual §9) */
+  restakeConfig: Address
+  /** PrincipalReleaseVault — principal exit buffer (manual §13) */
+  principalReleaseVault: Address
 }
 
 /**
@@ -100,4 +106,7 @@ export const BSC_CONTRACTS = {
   burnBondDepository360d: requireEnvAddress('VITE_BSC_BURN_BOND_DEPOSITORY_360D'),
   burnBondDepository540d: requireEnvAddress('VITE_BSC_BURN_BOND_DEPOSITORY_540D'),
   xStakingPool: requireEnvAddress('VITE_BSC_X_STAKING_POOL'),
+  rewardQueue: requireEnvAddress('VITE_BSC_REWARD_QUEUE'),
+  restakeConfig: requireEnvAddress('VITE_BSC_RESTAKE_CONFIG'),
+  principalReleaseVault: requireEnvAddress('VITE_BSC_PRINCIPAL_RELEASE_VAULT'),
 } as const satisfies BscContracts

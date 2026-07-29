@@ -28,6 +28,21 @@ interface ImportMetaEnv {
   readonly VITE_BSC_X_TOKEN?: string
   readonly VITE_BSC_AGX_CONTRIBUTION_SWAP?: string
   readonly VITE_BSC_TURBINE?: string
+  readonly VITE_BSC_LIQUID_STAKING?: string
+  readonly VITE_BSC_LOCKED_STAKING_180D?: string
+  readonly VITE_BSC_LOCKED_STAKING_360D?: string
+  readonly VITE_BSC_LOCKED_STAKING_540D?: string
+  readonly VITE_BSC_BOND_HELPER?: string
+  readonly VITE_BSC_BOND_DEPOSITORY_180D?: string
+  readonly VITE_BSC_BOND_DEPOSITORY_360D?: string
+  readonly VITE_BSC_BOND_DEPOSITORY_540D?: string
+  readonly VITE_BSC_BURN_BOND_DEPOSITORY_180D?: string
+  readonly VITE_BSC_BURN_BOND_DEPOSITORY_360D?: string
+  readonly VITE_BSC_BURN_BOND_DEPOSITORY_540D?: string
+  readonly VITE_BSC_X_STAKING_POOL?: string
+  readonly VITE_BSC_REWARD_QUEUE?: string
+  readonly VITE_BSC_RESTAKE_CONFIG?: string
+  readonly VITE_BSC_PRINCIPAL_RELEASE_VAULT?: string
 }
 
 interface ImportMeta {

@@ -15,6 +15,8 @@ export const WRITE_PATH = {
   BOND_ZAP: 'bond-zap',
   /** XStakingPool gAGX mining stake. */
   XMINE: 'xmine',
+  /** Assets Mixed claim / redeem / xmine claim+unstake. */
+  ASSETS_CLAIM: 'assets-claim',
 } as const
 
 export type WritePath = (typeof WRITE_PATH)[keyof typeof WRITE_PATH]

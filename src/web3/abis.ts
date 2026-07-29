@@ -81,6 +81,8 @@ export const AGX_CONTRIBUTION_SWAP_METHODS = {
   userAgxBurned: 'function userAgxBurned(address user) view returns (uint256)',
   userContributionConsumed:
     'function userContributionConsumed(address user) view returns (uint256)',
+  quoteRequiredContribution:
+    'function quoteRequiredContribution(uint256 rewardAmount) view returns (uint256)',
   convert: 'function convert(uint256 agxAmount)',
 } as const
 
@@ -154,6 +156,65 @@ export const X_STAKING_POOL_METHODS = {
   miningQuotaOf: 'function miningQuotaOf(address user) view returns (uint256)',
   stakeGagxForMining: 'function stakeGagxForMining(uint256 amount)',
   activateWarmup: 'function activateWarmup()',
+  pendingReward: 'function pendingReward(address user) view returns (uint256)',
+  miningStakeAmountOf: 'function miningStakeAmountOf(address user) view returns (uint256)',
+  stakes:
+    'function stakes(address user) view returns (uint256 gons, uint256 warmupGons, uint256 warmupStartTime, uint256 warmupEndTime, uint256 rewardStartTime)',
+  claimReward: 'function claimReward()',
+  startUnstake: 'function startUnstake()',
+} as const
+
+/** LiquidStaking claim / exit (manual §8.2) — assets rail. */
+export const LIQUID_STAKING_ASSETS_METHODS = {
+  claimPrincipal: 'function claimPrincipal(uint256 amount)',
+  claimRewardMixed:
+    'function claimRewardMixed(uint8 releasePlanIndex, uint256 amount, uint256 restakePlanIndex, uint256 restakeBps)',
+  getStakeRewards:
+    'function getStakeRewards(address user) view returns (uint256 warmupReward, uint256 activeReward)',
+  stakes:
+    'function stakes(address user) view returns (uint256 principal, uint256 gons, uint256 startEpoch, uint256 expiry, bool exists)',
+} as const
+
+/** LockedStaking claim / exit (manual §8.3) — assets rail. */
+export const LOCKED_STAKING_ASSETS_METHODS = {
+  getStakesCount: 'function getStakesCount(address user) view returns (uint256)',
+  getStake:
+    'function getStake(address user, uint256 index) view returns ((uint256 pending, uint256 blockReward, uint256 extraInterest, uint256 claimableBalance, uint256 expiry))',
+  getReleasedPrincipal:
+    'function getReleasedPrincipal(address user, uint256 index) view returns (uint256)',
+  claimPrincipal: 'function claimPrincipal(uint256 index)',
+  claimRewardMixed:
+    'function claimRewardMixed(uint256 stakeIndex, uint256 amount, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
+  claimExtraRewardMixed:
+    'function claimExtraRewardMixed(uint256 stakeIndex, uint256 amount, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
+} as const
+
+/** Bond / BurnBond position ops (manual §10) — assets rail. */
+export const BOND_DEPOSITORY_ASSETS_METHODS = {
+  getBondCount: 'function getBondCount(address depositor) view returns (uint256)',
+  getBondInfo:
+    'function getBondInfo(address depositor, uint256 bondIndex) view returns (uint256 payout, uint256 vesting, uint256 lastTime, uint256 pricePaid, bool exists, uint256 percentVested, uint256 payoutRemaining, uint256 vestingEndTime, uint256 currentDiscountBP, uint256 profit)',
+  pendingPayoutFor:
+    'function pendingPayoutFor(address depositor, uint256 bondIndex) view returns (uint256)',
+  getStakeProfit:
+    'function getStakeProfit(address recipient, uint256 bondIndex) view returns (uint256)',
+  redeem:
+    'function redeem(address recipient, uint256 bondIndex, bool shouldStake) returns (uint256)',
+  claimStakeProfitMixed:
+    'function claimStakeProfitMixed(address recipient, uint256 amount, uint8 releasePlanIndex, uint256 bondIndex, uint256 restakePlanIndex, uint256 restakeBps) returns (uint256)',
+} as const
+
+/** RewardQueue plans (manual §12) — duration → releasePlanIndex. */
+export const REWARD_QUEUE_METHODS = {
+  queuePlans:
+    'function queuePlans() view returns ((uint256 releaseDuration, uint256 feeRate, address feeRecipient)[])',
+} as const
+
+/** RestakeConfig plans (manual §9) — duration → restakePlanIndex (raw index). */
+export const RESTAKE_CONFIG_METHODS = {
+  getPlanCount: 'function getPlanCount() view returns (uint256)',
+  getPlan:
+    'function getPlan(uint256 index) view returns (uint256 period, uint256 taxBP, address target, bool exists)',
 } as const
 
 export const REWARD_CLAIMER_METHODS = {

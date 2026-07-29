@@ -23,8 +23,11 @@ BondZap: bind + USD1 bal/allow + authContracts → [approve?] → live 重读
        → BondHelper zap → WRITE_PATH.BOND_ZAP
 Xmine: gAGX bal/allow + miningQuotaOf → [approve?] → live 重读
        → stakeGagxForMining → WRITE_PATH.XMINE
+Assets Mixed: live 重读奖励+贡献+plans → claim*Mixed → WRITE_PATH.ASSETS_CLAIM
+Assets redeem: live 重读可赎额 → claimPrincipal / redeem / startUnstake → ASSETS_CLAIM
+Assets xmine: live pending/warmup → claimReward / startUnstake → ASSETS_CLAIM
 
-Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / bond-zap / xmine），禁立即重提
+Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / bond-zap / xmine / assets-claim），禁立即重提
 ```
 
 ## 关键路径
@@ -36,6 +39,7 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 | Swap 门闸                 | `core/exchange/resolve-live-quoted-out.ts` · `views/dapp/exchange/use-exchange-quote.ts` |
 | Genesis 二次门闸          | `fetch-live-genesis-post-approve-gate.ts` · `evaluateGenesisPostApproveGate`             |
 | Staking / BondZap / Xmine | `core/staking/staking-gates.ts` · `web3/staking/*`                                       |
+| Assets Mixed / redeem     | `core/assets/assets-gates.ts` · `views/dapp/assets/submit-assets.ts`                     |
 | 写链                      | `web3/wallet/wallet-contract-write.ts`                                                   |
 
 ## 必跑单测

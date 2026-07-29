@@ -200,7 +200,12 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.burnSwapRoot,
     queryKeys.chain.turbineRoot,
   ],
-  assets: [],
+  assets: [
+    queryKeys.chain.assetsRoot,
+    queryKeys.chain.stakingRoot,
+    queryKeys.chain.erc20Root,
+    queryKeys.chain.burnSwapRoot,
+  ],
   staking: [queryKeys.chain.stakingRoot, queryKeys.chain.erc20Root, queryKeys.chain.referralRoot],
   release: [],
 }
@@ -247,5 +252,11 @@ export function invalidateAfterExchange() {
 }
 
 export function invalidateAfterStaking() {
+  invalidateTabQueries('staking')
+}
+
+/** Mixed claim / redeem / xmine claim+unstake — refresh positions + plans + contribution. */
+export function invalidateAfterAssetsClaim() {
+  invalidateTabQueries('assets')
   invalidateTabQueries('staking')
 }

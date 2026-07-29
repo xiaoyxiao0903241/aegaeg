@@ -107,5 +107,15 @@ export const queryKeys = {
       ['chain', 'staking', 'bondZap', depository.toLowerCase(), address.toLowerCase()] as const,
     xminePreflight: (address: string) =>
       ['chain', 'staking', 'xmine', address.toLowerCase()] as const,
+    assetsRoot: ['chain', 'assets'] as const,
+    assetsStakePositions: (address: string) =>
+      ['chain', 'assets', 'stake', address.toLowerCase()] as const,
+    assetsBondPositions: (kind: string, address: string) =>
+      ['chain', 'assets', 'bond', kind, address.toLowerCase()] as const,
+    assetsXminePosition: (address: string) =>
+      ['chain', 'assets', 'xmine', address.toLowerCase()] as const,
+    assetsClaimPlans: ['chain', 'assets', 'claimPlans'] as const,
+    assetsContribution: (address: string) =>
+      ['chain', 'assets', 'contribution', address.toLowerCase()] as const,
   },
 } as const
