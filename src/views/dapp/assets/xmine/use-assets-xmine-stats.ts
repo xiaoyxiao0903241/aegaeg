@@ -1,25 +1,45 @@
 import { useQuery } from '@tanstack/react-query'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { formatBlockTime } from '~/shared/api/format-display'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
+import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readXminePosition } from '~/web3/assets/assets-read'
-import { readXminePreflight } from '~/web3/staking/staking-read'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
-/** Right-rail Xmine stats from `readXminePosition` + `miningQuotaOf`. */
-export function useAssetsXmineStats(): string[] {
+export type AssetsXmineStatCell = {
+  value: string
+  approx?: string
+  icon?: 'gagx' | 'x'
+}
+
+function approxUsd(amount: number, priceUsd: number | null): string {
+  if (priceUsd == null || priceUsd <= 0 || !Number.isFinite(amount)) return '≈ —'
+  return `≈ ${formatUsd(amount * priceUsd, 2)}`
+}
+
+function cell(value: string, icon?: 'gagx' | 'x', approx?: string): AssetsXmineStatCell {
+  return { value, icon, approx }
+}
+
+/** Right-rail Xmine stats — `readXminePosition` only; total mined DEFER-数据. */
+export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const readClient = useChainReadClient()
   const address = account?.address
+  const agxPriceQuery = usePresaleAgxPriceQuery()
+  const priceUsd =
+    agxPriceQuery.isError || agxPriceQuery.data === undefined
+      ? null
+      : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
 
   const positionQuery = useQuery({
     queryKey: queryKeys.chain.assetsXminePosition(address ?? ''),
@@ -27,27 +47,31 @@ export function useAssetsXmineStats(): string[] {
     enabled: walletReady && Boolean(address),
   })
 
-  const quotaQuery = useQuery({
-    queryKey: queryKeys.chain.xminePreflight(address ?? ''),
-    queryFn: () => readXminePreflight({ user: address!, client: readClient }),
-    enabled: walletReady && Boolean(address),
-    staleTime: QUERY_STALE_TIME.balances,
-  })
-
-  if (!walletReady || !address) return ['—', '—', '—', '—']
-  if (positionQuery.isError || quotaQuery.isError) return ['—', '—', '—', '—']
-  if (positionQuery.data === undefined || quotaQuery.data === undefined) {
-    return ['…', '…', '…', '…']
+  const dash = [cell('—'), cell('—'), cell('—'), cell('—')]
+  if (!walletReady || !address) return dash
+  if (positionQuery.isError) return dash
+  if (positionQuery.data === undefined) {
+    return [cell('…'), cell('…'), cell('…'), cell('…')]
   }
 
-  const { miningStake, pending, warmupGons, warmupEndTime } = positionQuery.data
-  const warmupLabel =
-    warmupGons > 0n && warmupEndTime > 0n ? formatBlockTime(Number(warmupEndTime)) : '0'
+  const { miningStake, pending, warmupGons } = positionQuery.data
+  // No gons→amount view: redeemable estimate = full stake after warmup, else 0.
+  const released = warmupGons > 0n ? 0n : miningStake
+  const stakeNum = formatTokenAmountToNumber(miningStake, GAGX_DECIMALS)
+  const releasedNum = formatTokenAmountToNumber(released, GAGX_DECIMALS)
 
   return [
-    formatTokenAmount(miningStake, GAGX_DECIMALS, 4),
-    formatTokenAmount(pending, X_DECIMALS, 4),
-    warmupLabel,
-    formatTokenAmount(quotaQuery.data.miningQuota, GAGX_DECIMALS, 4),
+    cell(
+      `${formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX`,
+      'gagx',
+      approxUsd(stakeNum, priceUsd),
+    ),
+    cell(
+      `${formatTokenAmount(released, GAGX_DECIMALS, 2)} gAGX`,
+      'gagx',
+      approxUsd(releasedNum, priceUsd),
+    ),
+    cell(`${formatTokenAmount(pending, X_DECIMALS, 2)} X`, 'x', '≈ —'),
+    cell('—', 'x', '≈ —'),
   ]
 }

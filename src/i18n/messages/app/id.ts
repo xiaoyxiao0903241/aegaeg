@@ -1081,6 +1081,8 @@ const app = defineMessages({
       unlock: 'Unlock',
       unstake: 'Unstake',
       liquid: 'Flexible',
+      lockedPrefix: 'Locked',
+      redeemAnytime: 'Redeemable anytime',
     },
     opsColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     claim: {
@@ -1314,24 +1316,51 @@ const app = defineMessages({
       },
       xmine: {
         title: 'X Mine positions',
-        intro: 'Claim X rewards or unstake into the release buffer',
-        empty: 'No X mine positions',
-        emptyCta: 'Go to X Mine',
+        intro: 'Manage each mining stake — claim output or redeem principal anytime',
+        empty: 'No X Mine positions yet. Stake gAGX to start mining and see each position here.',
+        emptyCta: 'Stake gAGX to mine X',
+        periodPill: 'Mining stake',
+        output: 'Output',
         stats: {
           title: 'Position stats',
           metrics: [
-            { label: 'Staked' },
-            { label: 'Pending X' },
-            { label: 'In warmup' },
-            { label: 'Mining quota' },
+            { label: 'My mining stake' },
+            { label: 'Released' },
+            { label: 'Current mining output' },
+            { label: 'Total mining output' },
           ],
         },
-        ops: { title: 'Activity', empty: 'No activity yet' },
+        ops: {
+          title: 'Activity',
+          empty: 'No activity yet. Stake, claim, or redeem to see records here.',
+        },
         faq: {
-          title: 'FAQ',
+          title: 'FAQs',
           items: [
-            { q: 'Why no restake slider?', a: 'X claim is claimReward only — no Mixed split.' },
-            { q: 'Where does unstake go?', a: 'startUnstake enters PrincipalReleaseVault.' },
+            {
+              q: 'Claim output vs redeem stake?',
+              a: 'Claim takes mining output: X goes to your wallet with no release period. Redeem targets principal: gAGX enters the buffer for a 30-day linear release and stops earning.',
+            },
+            {
+              q: 'Why do some positions show Locked?',
+              a: 'Each gAGX stake enters a 24h lock; you cannot redeem during the lock. After the countdown, it shows Redeemable anytime.',
+            },
+            {
+              q: 'How is mining output calculated?',
+              a: 'Settled daily at UTC 0 on a gold standard: USD value of staked gAGX × daily rate, paid in X. Amount moves with AGX and X prices.',
+            },
+            {
+              q: 'Does mining output compound?',
+              a: 'No automatic compound. Claim X manually; to grow the mining position, stake more gAGX (subject to quota).',
+            },
+            {
+              q: 'Why does my stake quota change?',
+              a: 'gAGX stake quota cannot exceed ≥180-day AGX bond holdings plus AGX stake. Raise bonds/long stake to raise quota; expiry lowers it.',
+            },
+            {
+              q: 'Can I keep earning after redeem?',
+              a: 'No. Redeemed gAGX stops mining once in the buffer; remaining stakes continue normally.',
+            },
           ],
         },
       },

@@ -2,11 +2,14 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { openStakingView } from '~/shared/config/open-staking-view'
 import { Button } from '~/shared/ui/button'
@@ -28,10 +31,17 @@ import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import type { Address } from '~/shared/config/contracts'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+
+function formatWarmupCountdown(endTime: bigint): string {
+  const left = Math.max(0, Number(endTime) - Math.floor(Date.now() / 1000))
+  const h = Math.floor(left / 3600)
+  const m = Math.floor((left % 3600) / 60)
+  const s = left % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+}
 
 export function AssetsXmineWidget() {
   const { messages: t } = useI18n()
@@ -44,8 +54,10 @@ export function AssetsXmineWidget() {
   const locked = isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)
   const [busy, setBusy] = useState(false)
   const [confirmUnstake, setConfirmUnstake] = useState(false)
+  const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
 
   const copy = t.assets.products.xmine
+  const pageSize = t.assets.position.pageSize
 
   const positionQuery = useQuery({
     queryKey: queryKeys.chain.assetsXminePosition(address ?? ''),
@@ -55,6 +67,16 @@ export function AssetsXmineWidget() {
 
   const position = positionQuery.data
   const isEmpty = !position || (position.miningStake <= 0n && position.pending <= 0n)
+  const inWarmup = Boolean(position && position.warmupGons > 0n)
+  const redeemableStake = position == null ? 0n : inWarmup ? 0n : position.miningStake
+  const remainingLabel =
+    position == null
+      ? '—'
+      : inWarmup && position.warmupEndTime > 0n
+        ? `${t.assets.position.lockedPrefix} ${formatWarmupCountdown(position.warmupEndTime)}`
+        : t.assets.position.redeemAnytime
+  const voucher = `${BSC_CONTRACTS.xStakingPool.slice(0, 6)}…${BSC_CONTRACTS.xStakingPool.slice(-4)}`
+  const totalRows = isEmpty ? 0 : 1
 
   function resolveMessage(error: unknown) {
     const raw = readErrorText(error)
@@ -108,13 +130,44 @@ export function AssetsXmineWidget() {
     <>
       <AssetsSubpageHeader subtitle={copy.intro} title={copy.title} />
       <ExchangeWidgetBody>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <button
+            className="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-3 text-xs text-foreground"
+            type="button"
+          >
+            {t.assets.position.sort}
+            <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.chevron} />
+          </button>
+          <div className="flex items-center gap-1">
+            <Text as="span" tone="muted-foreground" variant="detail">
+              {t.assets.position.quoteCurrency}
+            </Text>
+            <div className="flex rounded-full bg-muted p-0.5">
+              <button
+                className={`rounded-full px-3 py-1 text-xs ${quote === 'agx' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+                onClick={() => setQuote('agx')}
+                type="button"
+              >
+                AGX
+              </button>
+              <button
+                className={`rounded-full px-3 py-1 text-xs ${quote === 'usd' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+                onClick={() => setQuote('usd')}
+                type="button"
+              >
+                USD
+              </button>
+            </div>
+          </div>
+        </div>
+
         {!walletReady ? (
           <DappWidgetConnectPromo />
         ) : positionQuery.isLoading ? (
           <Text as="p" tone="muted-foreground" variant="copy">
             …
           </Text>
-        ) : isEmpty ? (
+        ) : isEmpty || !position ? (
           <div className="grid gap-3">
             <Text as="p" tone="muted-foreground" variant="copy">
               {copy.empty}
@@ -124,44 +177,102 @@ export function AssetsXmineWidget() {
             </Button>
           </div>
         ) : (
-          <Card surface="outlined" className="grid gap-3 p-4 shadow-none">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-1">
+          <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs text-muted-foreground">
+                {copy.periodPill}
+              </span>
+              <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
                 <Text as="span" tone="muted-foreground" variant="detail">
-                  {t.assets.position.staked}
+                  {t.assets.position.remaining}
                 </Text>
-                <Text as="strong" variant="copy">
-                  {formatTokenAmount(position.miningStake, GAGX_DECIMALS, 4)} gAGX
-                </Text>
-              </div>
-              <div className="grid gap-1 text-right">
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {t.assets.position.yield}
-                </Text>
-                <Text as="strong" variant="copy">
-                  {formatTokenAmount(position.pending, X_DECIMALS, 4)} X
+                <Text as="span" className="text-sm" variant="detail">
+                  {remainingLabel}
                 </Text>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
+              <div className="grid gap-1">
+                <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                  {t.assets.position.staked}
+                </Text>
+                <Text as="strong" className="text-base font-semibold" variant="copy">
+                  {formatTokenAmount(position.miningStake, GAGX_DECIMALS, 2)} gAGX
+                </Text>
+                <span className="inline-flex w-fit items-center gap-1 rounded-[10px] bg-primary-soft px-2 py-0.5">
+                  <Text as="span" className="text-xs text-primary" variant="detail">
+                    {formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX
+                  </Text>
+                </span>
+              </div>
+              <div className="grid justify-items-end gap-1 text-right">
+                <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                  {copy.output}
+                </Text>
+                <Text as="strong" className="text-base font-semibold text-primary" variant="copy">
+                  {formatTokenAmount(position.pending, X_DECIMALS, 2)} X
+                </Text>
+                {quote === 'usd' ? (
+                  <Text as="span" tone="muted-foreground" variant="detail">
+                    ≈ —
+                  </Text>
+                ) : null}
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-1">
+              <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+                {t.assets.position.voucher}
+              </Text>
+              <Text as="span" className="text-xs" variant="detail">
+                {voucher}
+              </Text>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <DappActionButton
-                density="external"
-                disabled={position.pending <= 0n || position.warmupGons > 0n || locked || busy}
+                className="h-7 min-h-7 text-xs"
+                density="inverse"
+                disabled={position.pending <= 0n || inWarmup || locked || busy}
                 onClick={() => void handleClaim()}
               >
                 {t.assets.position.claim}
               </DappActionButton>
               <DappActionButton
-                density="external"
-                disabled={position.gons <= 0n || position.warmupGons > 0n || locked || busy}
+                className="h-7 min-h-7 text-xs"
+                density="inverse"
+                disabled={position.gons <= 0n || inWarmup || locked || busy}
                 onClick={requestUnstake}
                 variant="secondary"
               >
-                {t.assets.position.unstake}
+                {t.assets.position.redeem}
               </DappActionButton>
             </div>
           </Card>
         )}
+
+        {!isEmpty && walletReady ? (
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <Text as="span" tone="muted-foreground" variant="detail">
+              {t.common.paginationTotal.replace('{total}', String(totalRows))} ·{' '}
+              {t.common.paginationPerPage.replace('{size}', String(pageSize))}
+            </Text>
+            <div className="flex gap-2">
+              <button
+                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+                disabled
+                type="button"
+              >
+                {t.common.paginationPrev}
+              </button>
+              <button
+                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+                disabled
+                type="button"
+              >
+                {t.common.paginationNext}
+              </button>
+            </div>
+          </div>
+        ) : null}
       </ExchangeWidgetBody>
 
       <AssetsRedeemConfirm
