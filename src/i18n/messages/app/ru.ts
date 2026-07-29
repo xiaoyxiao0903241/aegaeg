@@ -2396,6 +2396,12 @@ const app = defineMessages({
         { title: 'Buffer after redeem', body: '~30 days default' },
         { title: 'Second linear release', body: 'Withdraw to wallet' },
       ],
+      mechanismBenefits: [
+        'Avoid clustered unlocks',
+        'Reduce sell pressure',
+        'Smooth principal release',
+        'Improve market stability',
+      ],
     },
     faq: {
       title: 'FAQs',

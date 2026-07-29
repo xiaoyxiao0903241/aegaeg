@@ -2356,7 +2356,7 @@ const app = defineMessages({
     },
     buffer: {
       title: '缓冲池',
-      intro: '赎回资产在此进行二次线性释放，已释放部分可随时提取到钱包',
+      intro: '贖回資產在此進行 30 天二次線性釋放，已釋放部分可隨時提取',
       claim: '提取',
       claimSuccess: '已提取 AGX 到钱包',
       gagxHint: '本金释放库仅结算 AGX；gAGX 退出会先折算为 AGX 再进入缓冲池。',
@@ -2372,6 +2372,7 @@ const app = defineMessages({
         { title: '提取后缓冲', body: '默认约 30 天' },
         { title: '二次线性释放', body: '可提取到钱包' },
       ],
+      mechanismBenefits: ['避免集中解鎖', '降低市場拋壓', '平滑資金釋放', '增強市場穩定性'],
     },
     faq: {
       title: 'FAQs',

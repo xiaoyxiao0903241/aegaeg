@@ -6,6 +6,8 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { tokenCarouselIcons } from '~/app/assets'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
@@ -15,8 +17,8 @@ import { ReleaseSubpageHeader } from '~/views/dapp/release/release-subpage-heade
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleaseAmount, formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
-import { cn } from '~/shared/lib/utils'
-import { exchangeHubAssets } from '~/app/assets'
+
+const APPROX_EMPTY = '≈ —'
 
 export function ReleaseBufferWidget() {
   const { messages: t } = useI18n()
@@ -28,10 +30,12 @@ export function ReleaseBufferWidget() {
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
   const [pending, setPending] = useState(false)
   const locked = isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM)
+  const dash = t.release.dash
 
   const claimable = bufferQuery.data?.totalClaimable ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const canClaim = walletReady && writeReady && !locked && claimable > 0n
+  const pctLabel = formatReleasePct(claimable, releasing)
 
   async function onClaim() {
     if (!canClaim) return
@@ -55,53 +59,50 @@ export function ReleaseBufferWidget() {
       <ExchangeWidgetBody>
         <Card className="shadow-none" surface="outlined">
           <Card.Content className="grid gap-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <img alt="" className="size-5" src={exchangeHubAssets.programAgx} />
-                <Text
-                  as="span"
-                  className="rounded-full bg-muted px-3 py-1 font-medium"
-                  variant="caption"
-                >
-                  AGX
-                </Text>
-              </div>
-              {claimable > 0n ? (
-                <span aria-hidden className="size-2 rounded-full bg-primary" />
-              ) : null}
+            <div className="flex items-center gap-2">
+              <DappIcon
+                alt=""
+                className="size-5 rounded-md"
+                size="sm"
+                src={tokenCarouselIcons.agxIcon}
+              />
+              <Text
+                as="span"
+                className="rounded-full bg-muted px-3 py-1 font-semibold"
+                variant="caption"
+              >
+                AGX
+              </Text>
             </div>
             <div className="flex justify-between gap-2">
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.released}{' '}
-                <Text as="span" className="text-foreground" variant="caption">
-                  {formatReleaseAmount(claimable)} AGX
+                <Text as="span" className="font-semibold text-primary" variant="caption">
+                  {walletReady ? `${formatReleaseAmount(claimable)} AGX` : dash}
                 </Text>
               </Text>
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.releasing}{' '}
-                <Text as="span" className="text-foreground" variant="caption">
-                  {formatReleaseAmount(releasing)} AGX
+                <Text as="span" className="font-semibold text-foreground" variant="caption">
+                  {walletReady ? `${formatReleaseAmount(releasing)} AGX` : dash}
                 </Text>
               </Text>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-muted">
               <div
                 className="h-full rounded-full bg-primary"
-                style={{ width: formatReleasePct(claimable, releasing) }}
+                style={{ width: walletReady ? pctLabel : '0%' }}
               />
             </div>
-            <Text as="span" tone="muted-foreground" variant="caption">
-              {t.release.labels.releasedPct.replace(
-                '{pct}',
-                formatReleasePct(claimable, releasing).replace('%', ''),
-              )}
-            </Text>
-            <Button
-              className={cn(!canClaim && 'opacity-50')}
-              disabled={!canClaim || pending}
-              onClick={() => void onClaim()}
-              type="button"
-            >
+            <div className="flex justify-between gap-2">
+              <Text as="span" tone="muted-foreground" variant="caption">
+                {t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))}
+              </Text>
+              <Text as="span" tone="muted-foreground" variant="caption">
+                {walletReady ? APPROX_EMPTY : dash}
+              </Text>
+            </div>
+            <Button disabled={!canClaim || pending} onClick={() => void onClaim()} type="button">
               {t.release.buffer.claim}
             </Button>
           </Card.Content>
@@ -110,16 +111,46 @@ export function ReleaseBufferWidget() {
         <Card className="shadow-none" surface="outlined">
           <Card.Content className="grid gap-3">
             <div className="flex items-center gap-2">
-              <img alt="" className="size-5" src={exchangeHubAssets.programGagx} />
+              <DappIcon
+                alt=""
+                className="size-5 rounded-md"
+                size="sm"
+                src={tokenCarouselIcons.gagxIcon}
+              />
               <Text
                 as="span"
-                className="rounded-full bg-muted px-3 py-1 font-medium"
+                className="rounded-full bg-muted px-3 py-1 font-semibold"
                 variant="caption"
               >
                 gAGX
               </Text>
             </div>
-            <Text as="p" tone="muted-foreground" variant="copy">
+            <div className="flex justify-between gap-2">
+              <Text as="span" tone="muted-foreground" variant="caption">
+                {t.release.labels.released}{' '}
+                <Text as="span" className="font-semibold text-primary" variant="caption">
+                  {dash} gAGX
+                </Text>
+              </Text>
+              <Text as="span" tone="muted-foreground" variant="caption">
+                {t.release.labels.releasing}{' '}
+                <Text as="span" className="font-semibold text-foreground" variant="caption">
+                  {dash} gAGX
+                </Text>
+              </Text>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+              <div className="h-full w-0 rounded-full bg-primary" />
+            </div>
+            <div className="flex justify-between gap-2">
+              <Text as="span" tone="muted-foreground" variant="caption">
+                {t.release.labels.releasedPct.replace('{pct}', '0')}
+              </Text>
+              <Text as="span" tone="muted-foreground" variant="caption">
+                {APPROX_EMPTY}
+              </Text>
+            </div>
+            <Text as="p" tone="muted-foreground" variant="caption">
               {t.release.buffer.gagxHint}
             </Text>
             <Button disabled type="button">
@@ -128,7 +159,7 @@ export function ReleaseBufferWidget() {
           </Card.Content>
         </Card>
 
-        {!walletReady ? <DappWidgetConnectPromo /> : null}
+        {walletReady ? null : <DappWidgetConnectPromo />}
       </ExchangeWidgetBody>
     </>
   )
