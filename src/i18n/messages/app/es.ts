@@ -1555,6 +1555,7 @@ const app = defineMessages({
     intro: 'Manage yield and principal release',
     backToHub: 'Back to release',
     dash: '—',
+    recordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     recordsEmpty: 'No indexed records yet',
     labels: {
       releasing: 'Releasing',
@@ -1572,6 +1573,21 @@ const app = defineMessages({
       aboutCardTitle: 'Release pool · yield & rewards',
       aboutCardBody:
         'The release pool turns instant sell pressure into a smooth multi-day flow. Each claim unlocks linearly over the selected period so protocol outflows stay aligned with ecosystem growth.',
+
+      aboutSlides: [
+        {
+          title: 'Release pool · yield & rewards',
+          body: 'The release pool turns instant sell pressure into a smooth multi-day flow. Each claim unlocks linearly over the selected period so protocol yield outflow stays aligned with ecosystem growth.',
+        },
+        {
+          title: 'Buffer pool · principal second release',
+          body: 'After stake/bond principal exits, funds enter the buffer for a second linear release that matches market absorption capacity.',
+        },
+      ],
+      purposeTitle: 'Why release exists',
+      purposeBody:
+        'All yield passes through the release pool before Turbine. Spreading redemption over time cuts dump pressure; longer periods get lower tax rates to reward holding.',
+
       mechanismTitle: 'Yield claim flow',
       mechanismSubtitle:
         'Release sits between yield creation and Turbine — trade time for a lower tax rate and steadier exits.',

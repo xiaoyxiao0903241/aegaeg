@@ -379,7 +379,7 @@ const app = defineMessages({
       aboutTitle: '关于',
       recordsTitle: '涡轮记录',
       recordsEmpty: '暂无记录',
-      recordColumns: ['时间', '操作', '数量', '交易哈希'],
+      recordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
       mechanismTitle: '涡轮机制',
       mechanism: [
         {
@@ -1532,6 +1532,7 @@ const app = defineMessages({
     intro: '管理与查看收益与本金释放',
     backToHub: '返回释放',
     dash: '—',
+    recordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     recordsEmpty: '暂无链上索引记录（待 indexer）',
     labels: {
       releasing: '释放中',
@@ -1549,6 +1550,21 @@ const app = defineMessages({
       aboutCardTitle: '释放池 · 收益与奖励释放',
       aboutCardBody:
         '释放池将收益的兑现从“瞬时抛压”转化为跨越数十天的平滑资金流。每一笔领取都按所选周期线性释放，这使协议收益的流出节奏与生态增长的节奏保持同步。',
+
+      aboutSlides: [
+        {
+          title: 'Release pool · yield & rewards',
+          body: 'The release pool turns instant sell pressure into a smooth multi-day flow. Each claim unlocks linearly over the selected period so protocol yield outflow stays aligned with ecosystem growth.',
+        },
+        {
+          title: 'Buffer pool · principal second release',
+          body: 'After stake/bond principal exits, funds enter the buffer for a second linear release that matches market absorption capacity.',
+        },
+      ],
+      purposeTitle: 'Why release exists',
+      purposeBody:
+        'All yield passes through the release pool before Turbine. Spreading redemption over time cuts dump pressure; longer periods get lower tax rates to reward holding.',
+
       mechanismTitle: '收益领取机制',
       mechanismSubtitle: '释放是收益从产生到进入涡轮的必经环节——用时间换税率，用节奏换稳定',
       mechanismSteps: [

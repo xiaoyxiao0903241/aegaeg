@@ -1461,6 +1461,7 @@ const app = defineMessages({
     backToHub: '返回释放',
     dash: '—',
     recordsEmpty: '暂无链上索引记录（待 indexer）',
+    recordColumns: ['时间', '操作', '数量', '交易哈希'],
     labels: {
       releasing: '释放中',
       released: '已释放',
@@ -1477,8 +1478,21 @@ const app = defineMessages({
       aboutCardTitle: '释放池 · 收益与奖励释放',
       aboutCardBody:
         '释放池将收益的兑现从“瞬时抛压”转化为跨越数十天的平滑资金流。每一笔领取都按所选周期线性释放，这使协议收益的流出节奏与生态增长的节奏保持同步。',
+      aboutSlides: [
+        {
+          title: '释放池 · 收益与奖励释放',
+          body: '释放池将收益的兑现从“瞬时抛压”转化为跨越数十天的平滑资金流。每一笔领取都按所选周期线性释放，这使协议收益的流出节奏与生态增长的节奏保持同步，避免收益集中兑现冲击 AGX 价格，为所有长期参与者守护复利增长的基础。',
+        },
+        {
+          title: '缓冲池 · 本金二次释放',
+          body: '质押与债券本金退出后进入缓冲池二次线性释放，将本金兑现节奏与市场吸收能力对齐，增强生态稳定性。',
+        },
+      ],
       mechanismTitle: '收益领取机制',
       mechanismSubtitle: '释放是收益从产生到进入涡轮的必经环节——用时间换税率，用节奏换稳定',
+      purposeTitle: '释放的作用',
+      purposeBody:
+        '所有收益在到达涡轮之前，都要先经过释放池按所选周期线性释放。这一环节将集中的兑现需求分散到时间维度上，降低瞬时抛压；配合周期越长、税率越低的设计，引导长期持有，为生态的稳定运行提供缓冲。',
       mechanismSteps: [
         { title: '领取 Rebase / DAO 奖励', body: '收益产生' },
         { title: '6 : 1 贡献机制', body: '50% 销毁 · 50% 注入 X 底池' },

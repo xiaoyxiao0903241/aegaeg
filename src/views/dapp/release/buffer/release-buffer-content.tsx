@@ -1,6 +1,9 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
+import { DappTableCard } from '~/app/shell/dapp-table-card'
+import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -66,11 +69,14 @@ export function ReleaseBufferContent() {
         <Text as="h3" className="mb-3 font-semibold" variant="headline">
           {t.release.buffer.recordsTitle}
         </Text>
-        <div className="rounded-2xl border border-border bg-card p-4">
-          <Text as="p" tone="muted-foreground" variant="copy">
-            {t.release.recordsEmpty}
-          </Text>
-        </div>
+        <DappTableCard>
+          <ResponsiveTable
+            colWidths={['200px', '150px', '180px', '1fr']}
+            headers={[...t.release.recordColumns]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage embedded title={t.release.recordsEmpty} />
+        </DappTableCard>
       </section>
 
       <section className="mb-6">

@@ -86,8 +86,8 @@ export function OnboardingTourTooltip({
           {copy.steps.map((_, index) => (
             <span
               className={cn(
-                'size-1.5 rounded-full',
-                index === currentStep ? 'bg-primary' : 'bg-border',
+                'rounded-full transition-[width,background-color] duration-200',
+                index === currentStep ? 'h-1.5 w-5.5 bg-primary' : 'size-1.5 bg-border',
               )}
               key={index}
             />
