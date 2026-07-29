@@ -568,12 +568,92 @@ function RewardsCobuildContent() {
   )
 }
 
+type GrantRecordsTab = 'issue' | 'claim'
+
+function RewardsGrantContent() {
+  const { messages: t } = useI18n()
+  const grant = t.rewards.grant
+  const [recordsTab, setRecordsTab] = useState<GrantRecordsTab>('issue')
+
+  const recordsTabOptions: Array<{ label: string; value: GrantRecordsTab }> = [
+    { label: grant.recordsTabIssue, value: 'issue' },
+    { label: grant.recordsTabClaim, value: 'claim' },
+  ]
+
+  const isIssue = recordsTab === 'issue'
+
+  return (
+    <DappDetailPage>
+      <DappDetailBlock>
+        <DappContentHeading>{grant.dataTitle}</DappContentHeading>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {grant.tier}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {t.rewards.hub.stats.tierEmpty}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {grant.totalClaimed}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+        </div>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{grant.recordsTitle}</DappContentHeading>
+        <DappTableCard
+          className="mt-4"
+          header={
+            <DappPillTabs
+              activeTone="coral"
+              ariaLabel={grant.recordsTabsAria}
+              className="flex items-center justify-start gap-2"
+              items={recordsTabOptions.map((option) => ({
+                active: option.value === recordsTab,
+                label: option.label,
+              }))}
+              onSelect={(index) => {
+                const next = recordsTabOptions[index]
+                if (next) setRecordsTab(next.value)
+              }}
+            />
+          }
+        >
+          <ResponsiveTable
+            colWidths={
+              isIssue
+                ? ['160px', '140px', '60px', '130px', '70px', '1fr']
+                : ['190px', '160px', '1fr']
+            }
+            headers={[...(isIssue ? grant.issueColumns : grant.claimColumns)]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage embedded title={isIssue ? grant.emptyIssue : grant.emptyClaim} />
+        </DappTableCard>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{grant.faq.title}</DappContentHeading>
+        <FaqList items={grant.faq.items} variant="dapp" />
+      </DappDetailBlock>
+    </DappDetailPage>
+  )
+}
+
 export function RewardsDetailContent({ view }: { view: Exclude<RewardsView, 'hub'> }) {
   const { messages: t } = useI18n()
   if (view === 'lucky') return <RewardsLuckyContent />
   if (view === 'referral') return <RewardsReferralContent />
   if (view === 'participate') return <RewardsParticipateContent />
   if (view === 'cobuild') return <RewardsCobuildContent />
+  if (view === 'grant') return <RewardsGrantContent />
 
   const card = t.rewards.cards[view]
 

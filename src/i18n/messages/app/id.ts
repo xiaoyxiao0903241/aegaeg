@@ -1083,6 +1083,50 @@ const app = defineMessages({
         ],
       },
     },
+    grant: {
+      pendingLabel: 'Pending approval',
+      pendingHint: 'Moves to claimable after approval',
+      pendingBody: 'Contact support to unlock stipends; claim only after approval.',
+      contactSupport: 'Contact support to unlock',
+      claimIntoWallet: 'To wallet',
+      ctaToWallet: 'Claim {amount} to wallet',
+      dataTitle: 'Data',
+      tier: 'Co-build tier',
+      totalClaimed: 'Total claimed rewards',
+      recordsTitle: 'Stipend records',
+      recordsTabsAria: 'Stipend record type',
+      recordsTabIssue: 'Issued',
+      recordsTabClaim: 'Claimed',
+      issueColumns: ['Issued at', 'Amount', 'Type', 'Hash', 'Rate', 'Stipend'],
+      claimColumns: ['Claimed at', 'Amount', 'Hash'],
+      emptyIssue: 'No issuance records yet. Entries appear after stipends accrue.',
+      emptyClaim: 'No claim records yet. Entries appear after you claim.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'What is the development stipend?',
+            a: 'A special fund to help co-builders expand markets—promotion, community events, channels—accruing with team stake positions.',
+          },
+          {
+            q: 'What can the stipend be used for?',
+            a: 'Market development only: offline salons and roadshows, community ops, promo materials, channel expansion.',
+          },
+          {
+            q: 'How do I use the stipend?',
+            a: 'Two paths: apply before spending (submit a plan and budget to support; approved amounts become claimable), or reimburse afterward with receipts and proof.',
+          },
+          {
+            q: 'Why is my stipend pending approval?',
+            a: 'Accrued stipends start pending until you submit a use plan or reimbursement proof and support approves. Progress shows in stipend records.',
+          },
+          {
+            q: 'Does claiming spend contribution points?',
+            a: 'No. Unlike other rewards, development stipends spend no contribution and skip the release queue—gAGX goes straight to your wallet.',
+          },
+        ],
+      },
+    },
 
     faq: {
       title: 'FAQs',
