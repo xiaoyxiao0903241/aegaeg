@@ -1,7 +1,9 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { tokenCarouselIcons } from '~/app/assets'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
@@ -10,6 +12,8 @@ import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleaseAmount } from '~/views/dapp/release/release-display'
+
+const APPROX_EMPTY = '≈ —'
 
 export function ReleaseQueueContent() {
   const { messages: t } = useI18n()
@@ -20,40 +24,57 @@ export function ReleaseQueueContent() {
   const unit = t.release.units.queue
   const dash = t.release.dash
 
+  const stats = [
+    {
+      label: t.release.labels.releasing,
+      value: walletReady ? `${formatReleaseAmount(releasing)} ${unit}` : dash,
+      approx: walletReady ? APPROX_EMPTY : dash,
+    },
+    {
+      label: t.release.labels.released,
+      value: walletReady ? `${formatReleaseAmount(claimable)} ${unit}` : dash,
+      approx: walletReady ? APPROX_EMPTY : dash,
+    },
+    {
+      label: t.release.queue.lifetimeClaimed,
+      value: dash,
+      approx: walletReady ? APPROX_EMPTY : dash,
+    },
+  ]
+
   return (
     <DappDetailPage>
-      <DappContentHeading id="release-queue-title">{t.release.queue.statsTitle}</DappContentHeading>
-      <div className="mb-6 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl border border-border bg-card p-4">
-          <Text as="p" tone="muted-foreground" variant="caption">
-            {t.release.labels.releasing}
-          </Text>
-          <Text as="p" className="mt-1 font-semibold" variant="copy">
-            {walletReady ? `${formatReleaseAmount(releasing)} ${unit}` : dash}
-          </Text>
+      <DappDetailBlock>
+        <DappContentHeading id="release-queue-title">
+          {t.release.queue.statsTitle}
+        </DappContentHeading>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {stats.map((stat) => (
+            <div className="grid gap-1.5 rounded-2xl bg-card p-4 shadow-card" key={stat.label}>
+              <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
+                {stat.label}
+              </Text>
+              <div className="flex items-center gap-2">
+                <DappIcon
+                  alt=""
+                  className="size-[18px] rounded-[10px]"
+                  size="sm"
+                  src={tokenCarouselIcons.gagxIcon}
+                />
+                <Text as="strong" className="text-base font-semibold" variant="copy">
+                  {stat.value}
+                </Text>
+              </div>
+              <Text as="span" tone="muted-foreground" variant="detail">
+                {stat.approx}
+              </Text>
+            </div>
+          ))}
         </div>
-        <div className="rounded-2xl border border-border bg-card p-4">
-          <Text as="p" tone="muted-foreground" variant="caption">
-            {t.release.labels.released}
-          </Text>
-          <Text as="p" className="mt-1 font-semibold" variant="copy">
-            {walletReady ? `${formatReleaseAmount(claimable)} ${unit}` : dash}
-          </Text>
-        </div>
-        <div className="rounded-2xl border border-border bg-card p-4">
-          <Text as="p" tone="muted-foreground" variant="caption">
-            {t.release.queue.lifetimeClaimed}
-          </Text>
-          <Text as="p" className="mt-1 font-semibold" variant="copy">
-            {dash}
-          </Text>
-        </div>
-      </div>
+      </DappDetailBlock>
 
       <DappDetailBlock>
-        <Text as="h3" className="mb-3 font-semibold" variant="headline">
-          {t.release.queue.recordsTitle}
-        </Text>
+        <DappContentHeading>{t.release.queue.recordsTitle}</DappContentHeading>
         <DappTableCard>
           <ResponsiveTable
             colWidths={['200px', '150px', '180px', '1fr']}
@@ -65,9 +86,7 @@ export function ReleaseQueueContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <Text as="h3" className="mb-3 font-semibold" variant="headline">
-          {t.release.faq.title}
-        </Text>
+        <DappContentHeading>{t.release.faq.title}</DappContentHeading>
         <FaqList items={t.release.faq.queue} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
