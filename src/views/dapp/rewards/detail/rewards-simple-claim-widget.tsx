@@ -10,11 +10,7 @@ import { Text } from '~/shared/ui/text'
 import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
 import { RewardsSubpageHeader } from '~/views/dapp/rewards/rewards-subpage-header'
 import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
-import {
-  useGenesisRewardClaim,
-  useIncentiveClaim,
-  useMarketFundClaim,
-} from '~/views/dapp/rewards/use-claim-reward'
+import { useGenesisRewardClaim, useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 import {
   resolveTeamClaimError,
   resolveWalletTransactionError,
@@ -22,13 +18,11 @@ import {
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
 
-type SimpleView = Extract<RewardsView, 'participate' | 'grant' | 'genesis'>
+type SimpleView = Extract<RewardsView, 'grant' | 'genesis'>
 
 function useSimpleClaim(view: SimpleView) {
-  const incentive = useIncentiveClaim()
   const market = useMarketFundClaim()
   const genesis = useGenesisRewardClaim()
-  if (view === 'participate') return incentive
   if (view === 'grant') return market
   return genesis
 }
@@ -40,7 +34,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleView }) {
   const claim = useSimpleClaim(view)
   const { data: teamTotal, isLoading: teamLoading } = useTeamRewardTotal(sessionReady)
 
-  // participate / grant: no balance API yet — amount comes from signature at claim time
+  // grant: no balance API yet — amount comes from signature at claim time
   // (same honesty pattern as Dao Mixed `signedAmountHint`). Do not hardcode 0 and kill CTA.
   const amountKnown = view === 'genesis'
   const amountValue = amountKnown

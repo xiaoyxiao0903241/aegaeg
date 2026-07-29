@@ -698,7 +698,7 @@ const app = defineMessages({
         },
         participate: {
           title: '参与奖',
-          body: '来自推荐人的奖励，通过 IncentivePool 签名领取。',
+          body: '来自推荐人的参与奖励；领取走 Mixed，按 1:1 消耗贡献点数。',
         },
         cobuild: {
           title: '共建奖',
@@ -753,7 +753,7 @@ const app = defineMessages({
       participate: {
         title: '参与奖',
         body: '来自推荐人的奖励',
-        aside: '参与奖通过 IncentivePool 签名领取。',
+        aside: '来自推荐关系的参与奖励；领取走 Mixed，按 1:1 消耗贡献点数。',
       },
       cobuild: {
         title: '共建奖',
@@ -810,6 +810,8 @@ const app = defineMessages({
       luckyPaused: '幸运奖池已暂停，暂不可领取。',
       luckyNotClaimable: '当前无可领取的幸运奖。',
       referralWritePending: '推荐奖 Mixed 领取通道尚未接入，暂不可提交。',
+      participateWritePending:
+        '参与奖 Mixed 领取通道尚未接入（手册仅为 IncentivePool 简单签），暂不可提交。',
     },
     lucky: {
       dataTitle: '数据',
@@ -903,6 +905,49 @@ const app = defineMessages({
           {
             q: '推荐的伙伴退出后还有推荐奖吗？',
             a: '推荐奖与被推荐人的活跃仓位挂钩：其仓位持续产生收益时您持续获得推荐奖，其全部退出后对应的推荐奖停止产生，已获得部分不受影响。',
+          },
+        ],
+      },
+    },
+    participate: {
+      dataTitle: '数据',
+      totalRewards: '总奖励',
+      myPosition: '我的仓位',
+      contribution: '当前贡献点数',
+      contributionHint: '领取奖励按 1:1 消耗',
+      nextPayout: '下一次奖励发放',
+      recordsTitle: '参与奖记录',
+      recordsColumns: ['时间', '数量', '状态', '领取时间'],
+      emptyRecords: '暂无奖励记录，获得奖励发放后，这里将展示您的每一笔记录。',
+      inviterTitle: '我的邀请人',
+      inviterColumns: ['绑定时间', '地址', '持仓', '累计带来奖励'],
+      emptyInviter: '暂无邀请人绑定记录。通过推荐链接完成绑定后将展示在这里。',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: '参与奖是怎么来的？',
+            a: '当您通过邀请人的推荐链接绑定并参与共建后，作为被推荐人，您将获得来自推荐关系的参与奖励，链上即时结算，累积在参与奖卡片中。',
+          },
+          {
+            q: '参与奖是如何计算的？',
+            a: '您将获得与您持仓等额部分的邀请人 Rebase 收益的 10%。例如：您持仓 $10,000、邀请人持仓 $1,000，邀请人持仓全部在等额范围内，您可获得其全部 Rebase 收益的 10%；若您持仓 $10,000、邀请人持仓 $20,000，则只能获得其中 $10,000 持仓部分 Rebase 收益的 10%。',
+          },
+          {
+            q: '获得参与奖的条件是什么？',
+            a: '您需要通过邀请人的推荐链接完成绑定，且您参与质押、购买债券的仓位价值大于 $100。',
+          },
+          {
+            q: '为什么我的持仓是 $100，但我没有拿到参与奖励？',
+            a: 'AGX 币价是波动的，当结算时您的持仓可能被记作 $99.99，您就不再满足获得参与奖励的条件了。建议增加持仓，避免因币价波动受到损失。',
+          },
+          {
+            q: '参与奖如何领取？',
+            a: '在左侧领取面板中选择领取与复投的比例：领取部分进入释放池按所选周期线性释放，复投部分直接进入单币质押复利。领取和复投均按 1:1 消耗贡献点数。',
+          },
+          {
+            q: '邀请人可以更换吗？',
+            a: '不可以。推荐关系在首次绑定后写入链上、永久有效，无法更换邀请人。',
           },
         ],
       },

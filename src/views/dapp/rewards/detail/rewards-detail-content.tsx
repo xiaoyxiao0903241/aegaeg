@@ -260,10 +260,111 @@ function RewardsReferralContent() {
   )
 }
 
+function RewardsParticipateContent() {
+  const { messages: t } = useI18n()
+  const participate = t.rewards.participate
+  const { walletReady } = useDappShell()
+  const account = useActiveAccount()
+  const readClient = useChainReadClient()
+  const address = account?.address
+
+  const contribQuery = useQuery({
+    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-participate'],
+    queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
+    enabled: Boolean(walletReady && address && readClient),
+  })
+
+  const contributionValue =
+    !walletReady || !address
+      ? DASH
+      : contribQuery.isPending
+        ? '…'
+        : contribQuery.data
+          ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS, 2)
+          : DASH
+
+  return (
+    <DappDetailPage>
+      <DappDetailBlock>
+        <DappContentHeading>{participate.dataTitle}</DappContentHeading>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {participate.totalRewards}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {participate.myPosition}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {participate.contribution}
+            </Text>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <Text as="p" className="font-semibold" variant="copy">
+                {contributionValue}
+              </Text>
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {participate.contributionHint}
+              </Text>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {participate.nextPayout}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+        </div>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{participate.recordsTitle}</DappContentHeading>
+        <DappTableCard className="mt-4">
+          <ResponsiveTable
+            colWidths={['190px', '160px', '160px', '1fr']}
+            headers={[...participate.recordsColumns]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage embedded title={participate.emptyRecords} />
+        </DappTableCard>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{participate.inviterTitle}</DappContentHeading>
+        <DappTableCard className="mt-4">
+          <ResponsiveTable
+            colWidths={['200px', '170px', '110px', '1fr']}
+            headers={[...participate.inviterColumns]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage embedded title={participate.emptyInviter} />
+        </DappTableCard>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{participate.faq.title}</DappContentHeading>
+        <FaqList items={participate.faq.items} variant="dapp" />
+      </DappDetailBlock>
+    </DappDetailPage>
+  )
+}
+
 export function RewardsDetailContent({ view }: { view: Exclude<RewardsView, 'hub'> }) {
   const { messages: t } = useI18n()
   if (view === 'lucky') return <RewardsLuckyContent />
   if (view === 'referral') return <RewardsReferralContent />
+  if (view === 'participate') return <RewardsParticipateContent />
 
   const card = t.rewards.cards[view]
 

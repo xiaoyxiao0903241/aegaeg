@@ -814,7 +814,8 @@ const app = defineMessages({
       participate: {
         title: 'Participation',
         body: 'Rewards from your referrer',
-        aside: 'Participation rewards are claimed via IncentivePool signatures.',
+        aside:
+          'Participation rewards from your referral bond; claim via Mixed with 1:1 contribution.',
       },
       cobuild: {
         title: 'Co-build',
@@ -873,6 +874,8 @@ const app = defineMessages({
       luckyPaused: 'Lucky pool is paused; claims are unavailable.',
       luckyNotClaimable: 'No lucky reward available to claim.',
       referralWritePending: 'Referral Mixed claim is not wired yet; submit stays disabled.',
+      participateWritePending:
+        'Participation Mixed claim is not wired yet (handbook only lists IncentivePool simple claim); submit stays disabled.',
     },
 
     lucky: {
@@ -971,6 +974,50 @@ const app = defineMessages({
         ],
       },
     },
+    participate: {
+      dataTitle: 'Data',
+      totalRewards: 'Total rewards',
+      myPosition: 'My position',
+      contribution: 'Contribution points',
+      contributionHint: 'Claims spend 1:1',
+      nextPayout: 'Next reward payout',
+      recordsTitle: 'Participation reward records',
+      recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
+      emptyRecords: 'No reward records yet. Entries appear after rewards are issued.',
+      inviterTitle: 'My referrer',
+      inviterColumns: ['Bound at', 'Address', 'Position', 'Cumulative rewards brought'],
+      emptyInviter: 'No referrer binding yet. Bind via an invite link to list your referrer here.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'Where do participation rewards come from?',
+            a: 'After you bind via your referrer’s invite link and join co-build, you earn participation rewards from that relationship, settled on-chain and accumulated on the Participate card.',
+          },
+          {
+            q: 'How are participation rewards calculated?',
+            a: 'You earn 10% of your referrer’s Rebase yield on the portion matching your position size. Example: you hold $10,000 and your referrer holds $1,000 — their full position is within your match, so you earn 10% of all their Rebase; if they hold $20,000, you only earn 10% of the $10,000 matched portion.',
+          },
+          {
+            q: 'What are the conditions?',
+            a: 'Bind via your referrer’s invite link, and keep your stake/bond position value above $100.',
+          },
+          {
+            q: 'Why no reward when my position shows $100?',
+            a: 'AGX price moves; at settlement your position may be marked $99.99 and miss the threshold. Keep a buffer.',
+          },
+          {
+            q: 'How do I claim participation rewards?',
+            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution 1:1.',
+          },
+          {
+            q: 'Can I change my referrer?',
+            a: 'No. The referral binding is written on-chain at first bind and is permanent.',
+          },
+        ],
+      },
+    },
+
     faq: {
       title: 'FAQs',
       items: [

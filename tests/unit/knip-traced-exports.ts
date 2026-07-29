@@ -59,3 +59,5 @@ export {
 } from '../../src/shared/api/endpoints'
 /** CommunityFund signed claim — temporarily unhooked from referral UI (Mixed chrome / write DEFER). */
 export { claimCommunityFund } from '../../src/web3/claim/claim-reward'
+/** IncentivePool signed claim — temporarily unhooked from participate UI (Mixed chrome / write DEFER). */
+export { claimIncentiveReward } from '../../src/web3/claim/claim-reward'

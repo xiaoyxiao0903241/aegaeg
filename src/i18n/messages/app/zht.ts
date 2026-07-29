@@ -802,7 +802,7 @@ const app = defineMessages({
       participate: {
         title: '參與獎',
         body: '來自推薦人的獎勵',
-        aside: '參與獎通過 IncentivePool 簽名領取。',
+        aside: '來自推薦關係的參與獎勵；領取走 Mixed，按 1:1 消耗貢獻點數。',
       },
       cobuild: {
         title: '共建獎',
@@ -860,6 +860,8 @@ const app = defineMessages({
       luckyPaused: '幸運獎池已暫停，暫不可領取。',
       luckyNotClaimable: '當前無可領取的幸運獎。',
       referralWritePending: '推薦獎 Mixed 領取通道尚未接入，暫不可提交。',
+      participateWritePending:
+        '參與獎 Mixed 領取通道尚未接入（手冊僅為 IncentivePool 簡單簽），暫不可提交。',
     },
 
     lucky: {
@@ -958,6 +960,50 @@ const app = defineMessages({
         ],
       },
     },
+    participate: {
+      dataTitle: '資料',
+      totalRewards: '總獎勵',
+      myPosition: '我的倉位',
+      contribution: '當前貢獻點數',
+      contributionHint: '領取獎勵按 1:1 消耗',
+      nextPayout: '下一次獎勵發放',
+      recordsTitle: '參與獎記錄',
+      recordsColumns: ['時間', '數量', '狀態', '領取時間'],
+      emptyRecords: '暫無獎勵記錄，獲得獎勵發放後，這裡將展示您的每一筆記錄。',
+      inviterTitle: '我的邀請人',
+      inviterColumns: ['綁定時間', '地址', '持倉', '累計帶來獎勵'],
+      emptyInviter: '暫無邀請人綁定記錄。透過推薦連結完成綁定後將展示在這裡。',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: '參與獎是怎麼來的？',
+            a: '當您透過邀請人的推薦連結綁定並參與共建後，作為被推薦人，您將獲得來自推薦關係的參與獎勵，鏈上即時結算，累積在參與獎卡片中。',
+          },
+          {
+            q: '參與獎是如何計算的？',
+            a: '您將獲得與您持倉等額部分的邀請人 Rebase 收益的 10%。例如：您持倉 $10,000、邀請人持倉 $1,000，邀請人持倉全部在等額範圍內，您可獲得其全部 Rebase 收益的 10%；若您持倉 $10,000、邀請人持倉 $20,000，則只能獲得其中 $10,000 持倉部分 Rebase 收益的 10%。',
+          },
+          {
+            q: '獲得參與獎的條件是什麼？',
+            a: '您需要透過邀請人的推薦連結完成綁定，且您參與質押、購買債券的倉位價值大於 $100。',
+          },
+          {
+            q: '為什麼我的持倉是 $100，但我沒有拿到參與獎勵？',
+            a: 'AGX 幣價是波動的，當結算時您的持倉可能被記作 $99.99，您就不再滿足獲得參與獎勵的條件了。建議增加持倉，避免因幣價波動受到損失。',
+          },
+          {
+            q: '參與獎如何領取？',
+            a: '在左側領取面板中選擇領取與複投的比例：領取部分進入釋放池按所選週期線性釋放，複投部分直接進入單幣質押複利。領取和複投均按 1:1 消耗貢獻點數。',
+          },
+          {
+            q: '邀請人可以更換嗎？',
+            a: '不可以。推薦關係在首次綁定後寫入鏈上、永久有效，無法更換邀請人。',
+          },
+        ],
+      },
+    },
+
     faq: {
       title: 'FAQs',
       items: [

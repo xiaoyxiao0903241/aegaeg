@@ -8,11 +8,7 @@ import {
   type ClaimRewardExecuteResult,
 } from '~/core/rewards/resolve-claim-reward-outcome'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
-import {
-  claimIncentiveReward,
-  claimMarketFundReward,
-  claimTeamReward,
-} from '~/web3/claim/claim-reward'
+import { claimMarketFundReward, claimTeamReward } from '~/web3/claim/claim-reward'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
@@ -100,14 +96,6 @@ export function useClaimReward(execute: RewardClaimExecutor) {
 export function useTeamRewardClaim() {
   const execute = useCallback(
     (args: Parameters<typeof claimTeamReward>[0]) => claimTeamReward(args),
-    [],
-  )
-  return useClaimReward(execute)
-}
-
-export function useIncentiveClaim() {
-  const execute = useCallback(
-    (args: Parameters<typeof claimIncentiveReward>[0]) => claimIncentiveReward(args),
     [],
   )
   return useClaimReward(execute)
