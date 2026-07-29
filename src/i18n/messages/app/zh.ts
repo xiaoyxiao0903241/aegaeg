@@ -1161,7 +1161,7 @@ const app = defineMessages({
         },
         ops: { title: '操作记录', empty: '暂无操作记录' },
         faq: {
-          title: '常见问题',
+          title: 'FAQs',
           items: [
             {
               q: '领取和赎回有什么区别？',

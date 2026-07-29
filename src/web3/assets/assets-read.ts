@@ -249,7 +249,14 @@ export async function readStakePositions(
         claimableBalance: bigint
         expiry: bigint
       }
-      if (data.pending <= 0n && data.blockReward <= 0n && data.claimableBalance <= 0n) continue
+      if (
+        data.pending <= 0n &&
+        data.blockReward <= 0n &&
+        data.extraInterest <= 0n &&
+        data.claimableBalance <= 0n
+      ) {
+        continue
+      }
       rows.push({
         id: `locked-${period}-${index}`,
         kind: 'locked',

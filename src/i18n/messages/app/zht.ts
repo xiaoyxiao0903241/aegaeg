@@ -1215,7 +1215,7 @@ const app = defineMessages({
         },
         ops: { title: 'Activity', empty: 'No activity yet' },
         faq: {
-          title: 'FAQ',
+          title: 'FAQs',
           items: [
             {
               q: 'Claim vs redeem?',

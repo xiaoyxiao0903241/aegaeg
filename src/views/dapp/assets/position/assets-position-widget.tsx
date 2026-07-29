@@ -2,7 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
+import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -173,6 +175,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             type="button"
           >
             {t.assets.position.sort}
+            <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.chevron} />
           </button>
           <div className="flex items-center gap-1">
             <Text as="span" tone="muted-foreground" variant="detail">
