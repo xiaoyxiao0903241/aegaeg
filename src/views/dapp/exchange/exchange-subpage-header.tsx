@@ -8,9 +8,11 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { ExchangePanelToggle } from '~/views/dapp/exchange/exchange-panel-toggle'
 
 export function ExchangeSubpageHeader({
+  className,
   subtitle,
   title,
 }: {
+  className?: string
   subtitle: ReactNode
   title: ReactNode
 }) {
@@ -32,6 +34,7 @@ export function ExchangeSubpageHeader({
           </Text>
         </>
       }
+      className={className}
       onBack={() => setView('hub')}
       subtitle={subtitle}
       title={title}

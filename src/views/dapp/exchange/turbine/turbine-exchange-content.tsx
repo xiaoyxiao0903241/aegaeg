@@ -35,6 +35,11 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
           ) : (
             <>
               <ExchangeMetricCard
+                hint={
+                  turbine.overview.pendingUnlockUsdHint
+                    ? `≈ ${turbine.overview.pendingUnlockUsdHint}`
+                    : undefined
+                }
                 label={t.exchange.turbine.metrics.pendingUnlock}
                 value={
                   <span className="inline-flex items-center gap-2">
@@ -51,6 +56,11 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
                 }
               />
               <ExchangeMetricCard
+                hint={
+                  turbine.overview.coolingUsdHint
+                    ? `≈ ${turbine.overview.coolingUsdHint}`
+                    : undefined
+                }
                 label={t.exchange.turbine.metrics.cooling}
                 value={
                   <span className="inline-flex items-center gap-2">
@@ -67,6 +77,11 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
                 }
               />
               <ExchangeMetricCard
+                hint={
+                  turbine.overview.totalWithdrawnUsdHint
+                    ? `≈ ${turbine.overview.totalWithdrawnUsdHint}`
+                    : undefined
+                }
                 label={t.exchange.turbine.metrics.totalWithdrawn}
                 value={
                   <span className="inline-flex items-center gap-2">
@@ -107,7 +122,10 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.turbine.mechanismTitle}</DappContentHeading>
-        <div className="grid gap-3">
+        <Text as="p" variant="support" tone="muted-foreground" className="mt-1">
+          {t.exchange.turbine.mechanismIntro}
+        </Text>
+        <div className="mt-3 grid grid-cols-2 gap-4 max-dapp:grid-cols-1 max-dapp:gap-3">
           {t.exchange.turbine.mechanism.map((item) => (
             <div key={item.title} className="rounded-lg border border-border px-3.5 py-3">
               <Text as="p" variant="detail" className="font-semibold">

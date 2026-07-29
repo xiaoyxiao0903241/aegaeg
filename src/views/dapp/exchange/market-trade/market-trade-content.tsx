@@ -8,22 +8,20 @@ import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
-import { useExchangeDirectionStore } from '~/stores/exchange-direction-store'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import {
   ExchangeMetricCard,
   ExchangeMetricCardSkeleton,
 } from '~/views/dapp/exchange/exchange-detail-primitives'
 
+/** Figma PC `4433:220` about carousel order — same as flash. */
+const TRADE_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'agx'] as const
+
 export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
   const { messages: t } = useI18n()
-  const exchangeDirection = useExchangeDirectionStore((state) => state.direction)
-  const poolRateLabel =
-    exchangeDirection === 'reverse' ? trade.exchangePriceLabel : trade.exchangePriceLabelInverted
-  const poolRateLoading =
-    exchangeDirection === 'reverse'
-      ? trade.isExchangePriceQuoting
-      : trade.isExchangePriceInvertedQuoting
+  /** Overview always shows pool USD1→AGX spot (Figma `1 USD1 = … AGX`), not flip-direction. */
+  const poolRateLabel = trade.exchangePriceLabel
+  const poolRateLoading = trade.isExchangePriceQuoting
   const [faqToken, setFaqToken] = useState<ExchangeTokenKey>('trade')
   const faqItems = t.exchange.faq.tabs[faqToken].items
 
@@ -35,15 +33,15 @@ export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
           {poolRateLoading && !poolRateLabel ? (
             <ExchangeMetricCardSkeleton />
           ) : (
-            <ExchangeMetricCard label={t.exchange.exchangeRate} value={poolRateLabel ?? '—'} />
+            <ExchangeMetricCard label={t.exchange.exchangeRate} value={poolRateLabel || '—'} />
           )}
           <ExchangeMetricCard label={t.exchange.settlement} value={t.exchange.settlementValue} />
         </MetricGrid>
       </section>
 
       <DappDetailBlock>
-        <DappContentHeading>{t.exchange.tokenAbout.title}</DappContentHeading>
-        <TokenAboutCarousel />
+        <DappContentHeading>{t.exchange.trade.aboutTitle}</DappContentHeading>
+        <TokenAboutCarousel cardKeys={TRADE_ABOUT_CARD_KEYS} />
       </DappDetailBlock>
 
       <DappDetailBlock>

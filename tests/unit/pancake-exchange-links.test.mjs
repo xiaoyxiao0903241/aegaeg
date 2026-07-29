@@ -25,6 +25,24 @@ test('formatExchangeRateApprox displays connected swap meta rate', async () => {
       symbolIn: 'USD1',
       symbolOut: 'AGX',
     }),
-    '1 USD1 ≈ 1.001 AGX',
+    '1 USD1 = 1.001 AGX',
+  )
+})
+
+test('formatExchangeRateApprox empty amounts is honest dash', async () => {
+  const { formatExchangeRateApprox } = await loadModule(
+    '/src/views/dapp/exchange/exchange-format-rate.ts',
+  )
+
+  assert.equal(
+    formatExchangeRateApprox({
+      amountIn: 0n,
+      amountOut: 0n,
+      decimalsIn: 18,
+      decimalsOut: 18,
+      symbolIn: 'USD1',
+      symbolOut: 'AGX',
+    }),
+    '—',
   )
 })

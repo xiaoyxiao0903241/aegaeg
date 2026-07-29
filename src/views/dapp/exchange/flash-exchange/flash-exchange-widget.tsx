@@ -100,13 +100,15 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   return (
     <>
       <ExchangeSubpageHeader
+        /* Figma `4430:265`: col gap16 · intro 13 · panel title already 21 */
+        className="gap-4 [&_p]:text-[13px] [&_p]:leading-normal"
         subtitle={t.exchange.flash.intros[flash.introKey as keyof typeof t.exchange.flash.intros]}
         title={t.exchange.flash.title}
       />
       <ExchangeWidgetBody bodyClassName="gap-0">
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
-          className="mb-3.5"
+          className="mb-3"
           disabled={flash.isSubmitting}
           onChange={flash.setPairId}
           options={flashPairOptions}
@@ -148,6 +150,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
         />
 
         <ExchangeMetaPanel
+          className="gap-2.5"
           items={[
             {
               label: t.exchange.exchangePrice,

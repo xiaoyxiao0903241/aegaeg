@@ -59,7 +59,7 @@ export function formatExchangeRateColon({
   return `1 : ${trimTrailingZeros(formatRateRatioFixed(normalizedOut, decimalsOut))}`
 }
 
-/** Connected Exchange meta — `1 USDT ≈ 1.001 USD1` (3 fraction digits). */
+/** Market-trade spot / meta — Figma PC `1 USD1 = 0.015385 AGX` (`=` · up to 6 fraction digits). */
 export function formatExchangeRateApprox({
   amountIn,
   amountOut,
@@ -78,10 +78,10 @@ export function formatExchangeRateApprox({
   fractionDigits?: number
 }): string {
   if (amountIn === 0n || amountOut === 0n) {
-    return `1 ${symbolIn} ≈ — ${symbolOut}`
+    return '—'
   }
 
   const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
 
-  return `1 ${symbolIn} ≈ ${formatRateRatioFixed(normalizedOut, decimalsOut, fractionDigits)} ${symbolOut}`
+  return `1 ${symbolIn} = ${formatRateRatioFixed(normalizedOut, decimalsOut, fractionDigits)} ${symbolOut}`
 }

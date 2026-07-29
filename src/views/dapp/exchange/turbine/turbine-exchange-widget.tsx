@@ -23,6 +23,7 @@ import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { PercentButtonRow, Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatBlockTime } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { cn } from '~/shared/lib/utils'
 
@@ -170,7 +171,11 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                       src={turbine.pair.pay.icon}
                     />
                     <Text as="span" variant="copy" className="font-semibold">
-                      {turbine.payUsd1Label}
+                      {sessionReady && turbine.isQuoting ? (
+                        <ExchangeMetaValueSkeleton />
+                      ) : (
+                        turbine.payUsd1Label || '—'
+                      )}
                     </Text>
                   </div>
                   <Text as="p" variant="caption" tone="muted-foreground">
@@ -230,11 +235,21 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 },
                 {
                   label: t.exchange.turbine.unlockRatio,
-                  value: t.exchange.turbine.unlockRatioValue,
+                  value: turbine.isUnlockRatioQuoting ? (
+                    <ExchangeMetaValueSkeleton />
+                  ) : (
+                    turbine.unlockRatioLabel || '—'
+                  ),
                 },
                 {
                   label: t.exchange.turbine.cooldown,
-                  value: turbine.cooldownHoursLabel,
+                  value:
+                    turbine.cooldownHours == null
+                      ? '—'
+                      : t.exchange.turbine.cooldownHoursValue.replace(
+                          '{hours}',
+                          String(turbine.cooldownHours),
+                        ),
                 },
                 {
                   label: t.exchange.provider,
@@ -278,7 +293,11 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
           </>
         ) : (
           <div className="flex flex-col gap-2.5">
-            {turbine.silences.length === 0 ? (
+            {!exchangePreview && turbine.isSilencesLoading ? (
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-3">
+                <ExchangeBalanceSkeleton />
+              </div>
+            ) : turbine.silences.length === 0 ? (
               <Text as="p" variant="copy" tone="muted-foreground">
                 {t.exchange.turbine.claimEmpty}
               </Text>
@@ -300,7 +319,12 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                       gAGX
                     </Text>
                     <Text as="p" variant="support" tone="muted-foreground">
-                      {row.vested ? t.exchange.turbine.claimReady : t.exchange.turbine.claimCooling}
+                      {row.vested
+                        ? t.exchange.turbine.claimReady
+                        : t.exchange.turbine.claimCoolingUntil.replace(
+                            '{time}',
+                            formatBlockTime(Number(row.unlockAt)),
+                          )}
                     </Text>
                   </div>
                   {sessionReady && turbine.walletReady ? (
