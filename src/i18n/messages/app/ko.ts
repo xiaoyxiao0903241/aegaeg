@@ -575,6 +575,7 @@ const app = defineMessages({
   genesis: {
     title: '공동 구축 프로그램',
     intro: 'X DAO 공동 구축 프로그램 참여 · 페이즈 {season}  ({discount} 할인)',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: '지분 (1지분 = 100 USD1 · 최대 {max} 지분)',
     quota: '이번 페이즈 공동 구축 한도',
     pay: '지불',
@@ -584,6 +585,7 @@ const app = defineMessages({
     xTokenAirdropHint:
       '페이즈 누적 공동 구축 금액 ≥ {threshold} 시 에어드롭 보상 자격이 부여됩니다.',
     join: '공동 구축 참여',
+    joinEnded: 'Co-build ended',
     joinGenesis: '창세 공동 구축 참여',
     statsTitle: '페이즈 {season} 공동 구축 데이터',
     startsIn: '시작까지',

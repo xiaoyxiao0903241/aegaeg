@@ -568,6 +568,7 @@ const app = defineMessages({
   genesis: {
     title: '共建计划',
     intro: '参与 X DAO 共建计划 · 第{season}期  ({discount} 折扣)',
+    introEnded: 'X DAO 共建计划已圆满结束 · 感谢全球共建者的参与',
     shares: '份额（1 份 = 100 USD1 · 最大 {max} 份）',
     quota: '本期共建额度',
     pay: '支付',
@@ -576,6 +577,7 @@ const app = defineMessages({
     xTokenAirdrop: '将获得X初始空投价值',
     xTokenAirdropHint: '单期累计参与共建金额 ≥ {threshold}可获得空投奖励',
     join: '参与共建',
+    joinEnded: '共建已结束',
     joinGenesis: '参与创世共建',
     statsTitle: '第 {season} 期共建数据',
     startsIn: '开始倒计时',

@@ -151,12 +151,12 @@ export function SeasonSelector({
 
   return (
     <RadioGroup
-      aria-label={t.genesis.statsTitle}
+      aria-label={t.genesis.title}
       className={cn(revealClass(), 'mb-1.5 min-w-0')}
       data-reveal
     >
       <Carousel
-        aria-label={t.genesis.statsTitle}
+        aria-label={t.genesis.title}
         className={carousel.root()}
         opts={carouselOpts}
         setApi={setApi}
@@ -212,7 +212,7 @@ export function SeasonSelector({
               />
             </button>
             <span
-              aria-label={t.genesis.statsTitle}
+              aria-label={t.genesis.title}
               className="inline-flex items-center gap-1.5"
               role="group"
             >

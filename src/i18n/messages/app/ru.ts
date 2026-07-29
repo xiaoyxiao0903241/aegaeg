@@ -575,6 +575,7 @@ const app = defineMessages({
   genesis: {
     title: 'Программа со-строительства',
     intro: 'Участие в программе со-строительства X DAO · Фаза {season}  (скидка {discount})',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: 'Доли (1 доля = 100 USD1 · макс. {max} долей)',
     quota: 'Квота со-строительства текущей фазы',
     pay: 'Оплата',
@@ -584,6 +585,7 @@ const app = defineMessages({
     xTokenAirdropHint:
       'Награды аирдропа доступны при накопленном участии в со-строительстве за фазу ≥ {threshold}.',
     join: 'Участвовать в со-строительстве',
+    joinEnded: 'Co-build ended',
     joinGenesis: 'Участвовать в со-строительстве Genesis',
     statsTitle: 'Данные со-строительства фазы {season}',
     startsIn: 'До начала',

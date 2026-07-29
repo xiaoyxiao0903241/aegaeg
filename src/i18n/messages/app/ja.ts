@@ -575,6 +575,7 @@ const app = defineMessages({
   genesis: {
     title: '共創プラン',
     intro: 'X DAO共創プランに参加 · フェーズ{season}  ({discount} 割引)',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: 'シェア（1シェア = 100 USD1 · 最大 {max} シェア）',
     quota: 'このフェーズの共創枠',
     pay: '支払',
@@ -584,6 +585,7 @@ const app = defineMessages({
     xTokenAirdropHint:
       'フェーズごとの累計共創参加額が{threshold}以上でエアドロップ報酬の対象になります。',
     join: '共創に参加',
+    joinEnded: 'Co-build ended',
     joinGenesis: '創世共創に参加',
     statsTitle: 'フェーズ{season} 共創データ',
     startsIn: '開始まで',

@@ -575,6 +575,7 @@ const app = defineMessages({
   genesis: {
     title: 'โปรแกรมร่วมสร้าง',
     intro: 'เข้าร่วมโปรแกรมร่วมสร้าง X DAO · เฟส {season}  ({discount} ส่วนลด)',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: 'หุ้น (1 หุ้น = 100 USD1 · สูงสุด {max} หุ้น)',
     quota: 'โควต้าร่วมสร้างของเฟส',
     pay: 'ชำระ',
@@ -583,6 +584,7 @@ const app = defineMessages({
     xTokenAirdrop: 'มูลค่า X airdrop เริ่มต้นโดยประมาณ',
     xTokenAirdropHint: 'ยอดร่วมสร้างสะสมต่อเฟส ≥ {threshold} จึงมีสิทธิ์รับรางวัล airdrop',
     join: 'เข้าร่วมร่วมสร้าง',
+    joinEnded: 'Co-build ended',
     joinGenesis: 'เข้าร่วมร่วมสร้าง Genesis',
     statsTitle: 'สถิติร่วมสร้างเฟส {season}',
     startsIn: 'เริ่มใน',

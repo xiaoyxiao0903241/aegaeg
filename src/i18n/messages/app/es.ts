@@ -578,6 +578,7 @@ const app = defineMessages({
     title: 'Plan de co-construcción',
     intro:
       'Participa en el plan de co-construcción X DAO · Fase {season}  ({discount} de descuento)',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: 'Participaciones (1 participación = 100 USD1 · máx. {max} participaciones)',
     quota: 'Cuota de co-construcción de esta fase',
     pay: 'Pagar',
@@ -587,6 +588,7 @@ const app = defineMessages({
     xTokenAirdropHint:
       'La participación acumulada en co-construcción por fase ≥ {threshold} da derecho a recompensas de airdrop.',
     join: 'Participar en la co-construcción',
+    joinEnded: 'Co-build ended',
     joinGenesis: 'Participar en la co-construcción Génesis',
     statsTitle: 'Datos de co-construcción de la fase {season}',
     startsIn: 'Cuenta regresiva de inicio',

@@ -573,6 +573,7 @@ const app = defineMessages({
   genesis: {
     title: 'Kế hoạch cùng xây dựng',
     intro: 'Tham gia kế hoạch cùng xây dựng X DAO · Giai đoạn {season}  (giảm giá {discount})',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: 'Phần (1 phần = 100 USD1 · tối đa {max} phần)',
     quota: 'Hạn mức cùng xây dựng giai đoạn này',
     pay: 'Thanh toán',
@@ -582,6 +583,7 @@ const app = defineMessages({
     xTokenAirdropHint:
       'Phần thưởng airdrop yêu cầu tổng tham gia cùng xây dựng theo giai đoạn ≥ {threshold}.',
     join: 'Tham gia cùng xây dựng',
+    joinEnded: 'Co-build ended',
     joinGenesis: 'Tham gia cùng xây dựng Genesis',
     statsTitle: 'Dữ liệu cùng xây dựng giai đoạn {season}',
     startsIn: 'Đếm ngược bắt đầu',

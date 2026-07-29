@@ -576,6 +576,7 @@ const app = defineMessages({
   genesis: {
     title: 'Ortak İnşa Planı',
     intro: 'X DAO Ortak İnşa Planına katılın · Faz {season}  ({discount} indirim)',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: 'Pay (1 pay = 100 USD1 · maks {max} pay)',
     quota: 'Faz ortak inşa kotası',
     pay: 'Ödeme',
@@ -585,6 +586,7 @@ const app = defineMessages({
     xTokenAirdropHint:
       'Faz bazında kümülatif ortak inşa tutarı ≥ {threshold} olduğunda airdrop ödülü kazanılır',
     join: 'Ortak İnşaya Katıl',
+    joinEnded: 'Co-build ended',
     joinGenesis: 'Genesis ortak inşaya katıl',
     statsTitle: 'Faz {season} ortak inşa verileri',
     startsIn: 'Başlangıç geri sayımı',

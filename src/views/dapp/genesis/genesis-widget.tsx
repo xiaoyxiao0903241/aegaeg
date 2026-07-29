@@ -11,12 +11,16 @@ export function GenesisWidget({ genesis }: { genesis: GenesisWidgetState }) {
   const account = useActiveAccount()
   const formKey = resolveWalletRemountKey(account?.address)
 
-  const seasonIntro = formatGenesisSeasonIntro(
-    t.genesis.intro,
-    genesis.activeSeasonNumber,
-    genesis.discountLabel,
-    genesis.isLoading,
-  )
+  const hasUpcomingSeason = genesis.seasonOptions.some((season) => season.status === 'Upcoming')
+  const programEnded = !genesis.isLoading && genesis.activePhase === null && !hasUpcomingSeason
+  const seasonIntro = programEnded
+    ? t.genesis.introEnded
+    : formatGenesisSeasonIntro(
+        t.genesis.intro,
+        genesis.activeSeasonNumber,
+        genesis.discountLabel,
+        genesis.isLoading,
+      )
 
   return (
     <DappWidgetFrame subtitle={seasonIntro} title={t.genesis.title}>

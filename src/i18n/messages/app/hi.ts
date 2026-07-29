@@ -576,6 +576,7 @@ const app = defineMessages({
   genesis: {
     title: 'सह-निर्माण योजना',
     intro: 'X DAO सह-निर्माण कार्यक्रम में भाग लें · फेज़ {season}  ({discount} छूट)',
+    introEnded: 'The X DAO co-build program has concluded · Thank you to all co-builders',
     shares: 'शेयर (1 शेयर = 100 USD1 · अधिकतम {max} शेयर)',
     quota: 'इस फेज़ की सह-निर्माण सीमा',
     pay: 'भुगतान',
@@ -585,6 +586,7 @@ const app = defineMessages({
     xTokenAirdropHint:
       'एयरड्रॉप पुरस्कार के लिए प्रति फेज़ संचयी सह-निर्माण भागीदारी ≥ {threshold} आवश्यक है।',
     join: 'सह-निर्माण में भाग लें',
+    joinEnded: 'Co-build ended',
     joinGenesis: 'Genesis सह-निर्माण में शामिल हों',
     statsTitle: 'फेज़ {season} सह-निर्माण डेटा',
     startsIn: 'शुरू होने में',

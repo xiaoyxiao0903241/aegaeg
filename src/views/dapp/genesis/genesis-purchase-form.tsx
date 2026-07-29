@@ -148,6 +148,11 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
     presentGenesisQueryError(genesis.error)
   }, [genesis.error])
 
+  const hasUpcomingSeason = genesis.seasonOptions.some((season) => season.status === 'Upcoming')
+  const programEnded = !genesis.isLoading && genesis.activePhase === null && !hasUpcomingSeason
+  const purchaseCtaLabel =
+    genesis.activePhase === null && hasUpcomingSeason ? t.genesis.seasonUpcoming : t.genesis.join
+
   return (
     <>
       {genesis.seasonOptions.length === 0 ? (
@@ -205,7 +210,11 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
 
       {walletReady ? (
         <DappActionRow className="grid-cols-1">
-          {genesis.needsReferralBind ? (
+          {programEnded ? (
+            <DappActionButton density="external" disabled variant="secondary">
+              {t.genesis.joinEnded}
+            </DappActionButton>
+          ) : genesis.needsReferralBind ? (
             <DappActionButton
               density="external"
               onClick={() => useDappShellStore.getState().selectTab('community')}
@@ -221,7 +230,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
               onClick={() => void handlePurchase()}
               variant="primary"
             >
-              {t.genesis.join}
+              {purchaseCtaLabel}
             </DappActionButton>
           )}
         </DappActionRow>
