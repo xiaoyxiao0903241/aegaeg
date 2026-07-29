@@ -1284,6 +1284,7 @@ const app = defineMessages({
     directReferrals: 'Referral langsung',
     myTeam: 'Anggota komunitas',
     genesisTitle: 'Saat ini',
+    cobuildLevel: 'Co-build tier',
     inviteTitle: 'Mulai mengundang · bagikan nilai pertumbuhan ekosistem',
     programs: {
       title: 'Program dukungan ekosistem',

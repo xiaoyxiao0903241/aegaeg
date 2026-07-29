@@ -31,7 +31,6 @@ const communityStatCard = tv({
     label: cn('relative z-1', 'max-dapp:w-full'),
     value: cn('relative z-1', 'max-dapp:mt-1 max-dapp:w-full'),
     volume: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
-    hint: cn('relative z-1', 'max-dapp:mt-1 max-dapp:block max-dapp:w-full'),
   },
   variants: {
     dark: {
@@ -68,7 +67,6 @@ export function CommunityStatCard({
   dark = false,
   image,
   label,
-  today,
   value,
   volume,
 }: {
@@ -77,7 +75,6 @@ export function CommunityStatCard({
   dark?: boolean
   image?: string
   label: ReactNode
-  today?: ReactNode
   value: ReactNode
   volume?: ReactNode
 }) {
@@ -117,16 +114,6 @@ export function CommunityStatCard({
           className={cn(styles.volume(), 'text-sm leading-[1.2]', !dark && 'text-coral')}
         >
           {volume}
-        </Text>
-      ) : null}
-      {today ? (
-        <Text
-          as="small"
-          variant="support"
-          tone={dark ? 'inverse-muted' : undefined}
-          className={cn(styles.hint(), 'tracking-[-0.01em]', !dark && 'text-foreground/40')}
-        >
-          {today}
         </Text>
       ) : null}
       {children}

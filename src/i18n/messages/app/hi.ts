@@ -1280,6 +1280,7 @@ const app = defineMessages({
     directReferrals: 'प्रत्यक्ष रेफ़रल',
     myTeam: 'समुदाय सदस्य',
     genesisTitle: 'वर्तमान',
+    cobuildLevel: 'Co-build tier',
     inviteTitle: 'आमंत्रण शुरू करें · इकोसिस्टम वृद्धि मूल्य साझा करें',
     programs: {
       title: 'इकोसिस्टम सहायता कार्यक्रम',

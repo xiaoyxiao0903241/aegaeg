@@ -1275,6 +1275,7 @@ const app = defineMessages({
     directReferrals: 'แนะนำตรง',
     myTeam: 'สมาชิกชุมชน',
     genesisTitle: 'ปัจจุบัน',
+    cobuildLevel: 'Co-build tier',
     inviteTitle: 'เริ่มเชิญ · แบ่งปันมูลค่าการเติบโตของระบบนิเวศ',
     programs: {
       title: 'โปรแกรมสนับสนุนระบบนิเวศ',

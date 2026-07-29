@@ -1282,6 +1282,7 @@ const app = defineMessages({
     directReferrals: 'Прямые рефералы',
     myTeam: 'Участники сообщества',
     genesisTitle: 'Текущий',
+    cobuildLevel: 'Co-build tier',
     inviteTitle: 'Начните приглашать · делитесь ростом экосистемы',
     programs: {
       title: 'Программы поддержки экосистемы',

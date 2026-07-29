@@ -4,8 +4,6 @@ import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useShareholderRank } from '~/views/dapp/rewards/use-shareholder-rank'
 import { formatCount, formatPresaleRank, formatUsd } from '~/shared/api/format-display'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
-import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
-import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { CommunityStatCardSkeleton } from '~/app/shell/dapp-skeleton'
 import { useAuth } from '~/hooks/use-auth'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -31,23 +29,11 @@ type CommunityStat = {
   dark?: boolean
   image?: string
   label: ReactNode
-  today?: ReactNode
   value: ReactNode
   volume?: ReactNode
 }
 
 const STAT_PLACEHOLDER = '—'
-
-function formatCommunityStatToday(
-  template: string,
-  count: number | string = STAT_PLACEHOLDER,
-  amount: number | string = STAT_PLACEHOLDER,
-) {
-  return applyMessageTemplate(template, {
-    count: typeof count === 'number' ? formatCount(count) : count,
-    amount: typeof amount === 'number' ? formatUsd(amount, 0) : amount,
-  })
-}
 
 export function CommunityContent() {
   const { messages: t } = useI18n()
@@ -105,47 +91,28 @@ export function CommunityContent() {
     ? STAT_PLACEHOLDER
     : formatUsd(overview?.sales_team_market ?? 0)
 
+  // Figma `4300:212` stats = label / value / 业绩|共建等级 only（无「今日」行）.
   const genesisRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0
       ? formatPresaleRank(displayRank)
       : STAT_PLACEHOLDER
-  const genesisRewardRateLabel = useStatPlaceholders
-    ? STAT_PLACEHOLDER
-    : displayRank > 0
-      ? `${t.tables.rewardRate} ${getTeamBonusRateLabel(displayRank)}`
-      : `${t.tables.rewardRate} ${STAT_PLACEHOLDER}`
 
   const stats: CommunityStat[] = [
     {
       label: t.community.directReferrals,
       value: directCount,
       volume: `${t.community.volumePrefix} ${directVolume}`,
-      today: formatCommunityStatToday(
-        t.community.statToday,
-        useStatPlaceholders ? STAT_PLACEHOLDER : (overview?.today_addition_direct_count ?? 0),
-        useStatPlaceholders
-          ? STAT_PLACEHOLDER
-          : Number(overview?.today_addition_direct_presale_volume ?? 0),
-      ),
     },
     {
       label: t.community.myTeam,
       value: teamCount,
       volume: `${t.community.volumePrefix} ${teamVolume}`,
-      today: formatCommunityStatToday(
-        t.community.statToday,
-        useStatPlaceholders ? STAT_PLACEHOLDER : (overview?.today_addition_team_count ?? 0),
-        useStatPlaceholders
-          ? STAT_PLACEHOLDER
-          : Number(overview?.today_addition_sales_team_market ?? 0),
-      ),
     },
     {
       label: t.community.genesisTitle,
       value: genesisRankValue,
-      volume: t.tables.genesisRank,
-      today: genesisRewardRateLabel,
+      volume: t.community.cobuildLevel,
       dark: !isMobileViewport,
     },
   ]
@@ -154,7 +121,7 @@ export function CommunityContent() {
     t.tables.joined,
     t.tables.address,
     t.community.shareholder,
-    t.tables.genesisRank,
+    t.community.cobuildLevel,
     t.community.directReferrals,
     t.tables.communityVolume,
   ]
@@ -179,7 +146,6 @@ export function CommunityContent() {
               image={stat.image}
               key={index}
               label={stat.label}
-              today={stat.today}
               value={stat.value}
               volume={stat.volume}
             />

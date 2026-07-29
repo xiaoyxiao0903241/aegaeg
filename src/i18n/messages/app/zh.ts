@@ -1209,6 +1209,7 @@ const app = defineMessages({
     directReferrals: '直推人数',
     myTeam: '社区人数',
     genesisTitle: '当前',
+    cobuildLevel: '共建等级',
     inviteTitle: '开始邀请 · 共享生态成长价值',
     programs: {
       title: '生态支持计划',

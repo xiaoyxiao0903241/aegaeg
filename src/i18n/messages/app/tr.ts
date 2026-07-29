@@ -1283,6 +1283,7 @@ const app = defineMessages({
     directReferrals: 'Doğrudan davet sayısı',
     myTeam: 'Topluluk boyutu',
     genesisTitle: 'Mevcut',
+    cobuildLevel: 'Co-build tier',
     inviteTitle: 'Davet etmeye başlayın · Ekosistem büyüme değerini paylaşın',
     programs: {
       title: 'Ekosistem destek programları',

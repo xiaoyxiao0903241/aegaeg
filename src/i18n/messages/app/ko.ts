@@ -1278,6 +1278,7 @@ const app = defineMessages({
     directReferrals: '직접 추천 인원',
     myTeam: '커뮤니티 인원',
     genesisTitle: '현재',
+    cobuildLevel: 'Co-build tier',
     inviteTitle: '초대 시작 · 생태계 성장 가치 공유',
     programs: {
       title: '생태계 지원 프로그램',

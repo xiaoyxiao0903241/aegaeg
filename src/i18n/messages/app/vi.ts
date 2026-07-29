@@ -1278,6 +1278,7 @@ const app = defineMessages({
     directReferrals: 'Số giới thiệu trực tiếp',
     myTeam: 'Số thành viên cộng đồng',
     genesisTitle: 'Hiện tại',
+    cobuildLevel: 'Co-build tier',
     inviteTitle: 'Bắt đầu mời · Chia sẻ giá trị tăng trưởng hệ sinh thái',
     programs: {
       title: 'Kế hoạch hỗ trợ hệ sinh thái',
