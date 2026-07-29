@@ -38,6 +38,30 @@ export interface BscContracts {
   agxContributionSwap: Address
   /** Turbine vesting hub — unlock / claim gAGX (manual §16) */
   turbine: Address
+  /** LiquidStaking — AGX flexible stake (manual §8.2) */
+  liquidStaking: Address
+  /** LockedStaking 180d (manual §8.3) */
+  lockedStaking180d: Address
+  /** LockedStaking 360d */
+  lockedStaking360d: Address
+  /** LockedStaking 540d */
+  lockedStaking540d: Address
+  /** BondHelper — LP / Burn bond zap entry (manual §10) */
+  bondHelper: Address
+  /** BondDepository 180d */
+  bondDepository180d: Address
+  /** BondDepository 360d */
+  bondDepository360d: Address
+  /** BondDepository 540d */
+  bondDepository540d: Address
+  /** BurnBondDepository 180d */
+  burnBondDepository180d: Address
+  /** BurnBondDepository 360d */
+  burnBondDepository360d: Address
+  /** BurnBondDepository 540d */
+  burnBondDepository540d: Address
+  /** XStakingPool — gAGX mining stake (manual §15) */
+  xStakingPool: Address
 }
 
 /**
@@ -64,4 +88,16 @@ export const BSC_CONTRACTS = {
   xToken: requireEnvAddress('VITE_BSC_X_TOKEN'),
   agxContributionSwap: requireEnvAddress('VITE_BSC_AGX_CONTRIBUTION_SWAP'),
   turbine: requireEnvAddress('VITE_BSC_TURBINE'),
+  liquidStaking: requireEnvAddress('VITE_BSC_LIQUID_STAKING'),
+  lockedStaking180d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_180D'),
+  lockedStaking360d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_360D'),
+  lockedStaking540d: requireEnvAddress('VITE_BSC_LOCKED_STAKING_540D'),
+  bondHelper: requireEnvAddress('VITE_BSC_BOND_HELPER'),
+  bondDepository180d: requireEnvAddress('VITE_BSC_BOND_DEPOSITORY_180D'),
+  bondDepository360d: requireEnvAddress('VITE_BSC_BOND_DEPOSITORY_360D'),
+  bondDepository540d: requireEnvAddress('VITE_BSC_BOND_DEPOSITORY_540D'),
+  burnBondDepository180d: requireEnvAddress('VITE_BSC_BURN_BOND_DEPOSITORY_180D'),
+  burnBondDepository360d: requireEnvAddress('VITE_BSC_BURN_BOND_DEPOSITORY_360D'),
+  burnBondDepository540d: requireEnvAddress('VITE_BSC_BURN_BOND_DEPOSITORY_540D'),
+  xStakingPool: requireEnvAddress('VITE_BSC_X_STAKING_POOL'),
 } as const satisfies BscContracts

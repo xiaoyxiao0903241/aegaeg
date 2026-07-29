@@ -777,7 +777,236 @@ const app = defineMessages({
   },
   staking: {
     title: '质押',
-    body: '质押功能即将上线。',
+    intro: '质押 AGX、购买债券或以 gAGX 参与 X 挖矿',
+    body: '质押 AGX、购买债券或以 gAGX 参与 X 挖矿',
+    backToHub: '返回质押',
+    amount: '数量',
+    balance: '余额',
+    max: '最大',
+    viewContract: '查看合约',
+    gates: {
+      notBound: '请先绑定推荐关系',
+      insufficientBalance: '余额不足',
+      insufficientGagx: 'gAGX 余额不足，请先闪兑包装',
+      insufficientAllowance: '授权不足',
+      insufficientQuota: '额度不足',
+      poolPaused: '该质押池暂未开放',
+      depositoryNotAuth: '债券合约未授权',
+      zeroAmount: '请输入有效数量',
+      unavailable: '交易暂时不可用，请稍后重试',
+    },
+    hub: {
+      modes: {
+        stake: {
+          title: '质押',
+          body: '质押 AGX 获得活期或定期收益',
+        },
+        lpbond: {
+          title: 'LP 债券',
+          body: '以 USD1 买入流动性债券',
+        },
+        burnbond: {
+          title: '销毁债券',
+          body: '以 USD1 买入销毁债券',
+        },
+        xmine: {
+          title: 'X 挖矿',
+          body: '质押 gAGX 参与 X 挖矿',
+        },
+        calc: {
+          title: '计算器',
+          body: '本地测算收益，不发起链上交易',
+        },
+      },
+      overview: {
+        title: '数据总览',
+        metrics: [
+          { label: '总锁仓' },
+          { label: '质押人数' },
+          { label: '今日质押' },
+          { label: '活期 APY' },
+          { label: '定期 APY' },
+          { label: '债券折扣' },
+          { label: 'X 挖矿额度' },
+          { label: '奖励池' },
+          { label: '协议收入' },
+        ],
+      },
+      periodTable: {
+        title: '周期与收益',
+        segmentAria: '周期表产品切换',
+        segs: {
+          stake: '质押',
+          lpbond: 'LP 债券',
+          burnbond: '销毁债券',
+        },
+        columns: ['周期', '收益率', '加成'],
+        rows: [
+          { period: '活期' },
+          { period: '180 天' },
+          { period: '360 天' },
+          { period: '540 天' },
+        ],
+      },
+      chart: {
+        title: '数据指标',
+      },
+      faq: {
+        title: '常见问题',
+        items: [
+          {
+            q: '质押页面可以做什么？',
+            a: '可质押 AGX（活期/定期）、以 USD1 购买 LP 或销毁债券、以 gAGX 参与 X 挖矿，并使用本地收益计算器。仓位领取与赎回请前往资产页。',
+          },
+          {
+            q: '为什么提示绑定推荐？',
+            a: '质押与债券开仓要求已绑定推荐关系。未绑定请前往社区页完成绑定后再试。',
+          },
+          {
+            q: '计算器会发起交易吗？',
+            a: '不会。计算器仅在本地估算收益，不读写链上合约。',
+          },
+        ],
+      },
+    },
+    aside: {
+      overview: '概览',
+      positions: '我的仓位',
+      positionsHint: '仓位领取、赎回与解押请在资产页操作。',
+      viewPositions: '查看',
+      mechanism: '机制说明',
+      faq: '常见问题',
+    },
+    stake: {
+      title: '质押',
+      intro: '选择周期并质押 AGX',
+      periodAria: '质押周期',
+      amountAria: '质押数量',
+      submit: '质押',
+      bindCta: '去绑定推荐',
+      success: '质押成功',
+      warmupCta: '激活 Warmup',
+      warmupSuccess: 'Warmup 已激活',
+      periods: {
+        liquid: '活期',
+        d180: '180天',
+        d360: '360天',
+        d540: '540天',
+      },
+      meta: {
+        apy: '收益率',
+        bonus: '加成',
+        lock: '锁定周期',
+        remaining: '剩余额度',
+        contract: '合约',
+      },
+      mechanism:
+        '活期质押进入 warmup 后需激活；定期质押按所选池锁定。奖励领取与本金退出在资产页完成。',
+      faq: [
+        {
+          q: '活期和定期有什么区别？',
+          a: '活期使用 LiquidStaking，有 warmup；定期使用对应天数的 LockedStaking 实例。',
+        },
+        {
+          q: '激活 Warmup 是领奖吗？',
+          a: '不是。claim() 仅用于激活到期的 warmup 本金，Mixed 领奖在资产页。',
+        },
+      ],
+    },
+    lpbond: {
+      title: 'LP 债券',
+      intro: '以 USD1 经 BondHelper 买入流动性债券',
+      periodAria: 'LP 债券周期',
+      amountAria: '购买数量',
+      submit: '购买',
+      success: '购买成功',
+      meta: {
+        discount: '折扣',
+        slippage: '允许滑点',
+        pay: '支付',
+        receive: '获得',
+        cap: '上限',
+        release: '释放',
+        contract: '合约',
+      },
+      mechanism: '经 BondHelper 以 USD1 zap 进入对应周期的 BondDepository。赎回与收益在资产页。',
+      faq: [
+        {
+          q: '为什么没有活期？',
+          a: '债券仅提供 180 / 360 / 540 天档位。',
+        },
+      ],
+    },
+    burnbond: {
+      title: '销毁债券',
+      intro: '以 USD1 经 BondHelper 买入销毁债券',
+      periodAria: '销毁债券周期',
+      amountAria: '购买数量',
+      submit: '购买',
+      success: '购买成功',
+      meta: {
+        discount: '折扣',
+        slippage: '允许滑点',
+        pay: '支付',
+        receive: '获得',
+        cap: '上限',
+        release: '释放',
+        contract: '合约',
+      },
+      mechanism:
+        '经 BondHelper 以 USD1 zap 进入对应周期的 BurnBondDepository。赎回与收益在资产页。',
+      faq: [
+        {
+          q: '销毁债券和 LP 债券有何不同？',
+          a: '二者走不同 Depository；开仓均经 BondHelper 与 USD1，领取路径在资产页。',
+        },
+      ],
+    },
+    xmine: {
+      title: 'X 挖矿',
+      intro: '质押 gAGX 参与挖矿（额度由锁定本金决定）',
+      amountAria: '质押 gAGX 数量',
+      submit: '质押',
+      success: '质押成功',
+      meta: {
+        quota: '质押额度',
+        daily: '日收益',
+        max: '最大',
+        h24: '24h',
+        contract: '合约',
+      },
+      mechanism:
+        '使用 miningQuotaOf 校验额度后 stakeGagxForMining。领取 X 与解押在资产页；本页不提供取消 warmup。',
+      faq: [
+        {
+          q: '额度从哪来？',
+          a: '由 Early、定期质押与债券等锁定本金汇总，合约直接返回 miningQuotaOf。',
+        },
+      ],
+    },
+    calc: {
+      title: '计算器',
+      intro: '本地测算收益，不发起链上交易',
+      productAria: '测算产品',
+      periodAria: '测算周期',
+      amountAria: '测算数量',
+      price: '价格',
+      priceAria: '价格输入',
+      days: '天数',
+      daysAria: '持有天数',
+      submit: '计算',
+      result: {
+        interest: '预计收益',
+        total: '本息合计',
+      },
+      aside: {
+        result: '测算结果',
+        resultHint: '在左侧输入参数并点击计算后查看结果。',
+        curve: '收益曲线',
+        notes: '说明',
+        notesBody: '本计算器仅供本地估算参考，不构成链上报价或收益承诺。',
+      },
+    },
   },
   release: {
     title: '释放',

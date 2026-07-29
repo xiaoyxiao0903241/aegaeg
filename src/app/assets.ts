@@ -38,6 +38,15 @@ export const exchangeHubAssets = {
   aboutRays: '/assets/figma/dapp/hub/token-card-rays-hub.svg',
 } as const
 
+/** Staking hub mode icons. */
+export const stakingHubAssets = {
+  modeStake: '/assets/figma/dapp/staking/ic-mode-stake.svg',
+  modeLpBond: '/assets/figma/dapp/staking/ic-mode-lpbond.svg',
+  modeBurnBond: '/assets/figma/dapp/staking/ic-mode-burnbond.svg',
+  modeXmine: '/assets/figma/dapp/staking/ic-mode-xmine.svg',
+  modeCalc: '/assets/figma/dapp/staking/ic-mode-calc.svg',
+} as const
+
 export const homeAssets = {
   logoMark: canonicalHomeAssets.logoMark,
   heroCharacterTall: '/assets/figma/home/hero-character-tall.webp',

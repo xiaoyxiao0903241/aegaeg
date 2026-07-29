@@ -100,5 +100,12 @@ export const queryKeys = {
     turbineUsdQuote: (agxAmount: string) => ['chain', 'turbine', 'usdQuote', agxAmount] as const,
     turbineClaimable: (address: string) =>
       ['chain', 'turbine', 'claimable', address.toLowerCase()] as const,
+    stakingRoot: ['chain', 'staking'] as const,
+    stakeOpenPreflight: (pool: string, address: string) =>
+      ['chain', 'staking', 'open', pool.toLowerCase(), address.toLowerCase()] as const,
+    bondZapPreflight: (depository: string, address: string) =>
+      ['chain', 'staking', 'bondZap', depository.toLowerCase(), address.toLowerCase()] as const,
+    xminePreflight: (address: string) =>
+      ['chain', 'staking', 'xmine', address.toLowerCase()] as const,
   },
 } as const

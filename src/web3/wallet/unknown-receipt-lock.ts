@@ -9,6 +9,12 @@ export const WRITE_PATH = {
   EXCHANGE: 'swap',
   GENESIS: 'genesis',
   REWARD_CLAIM: 'reward-claim',
+  /** AGX liquid / locked stake open path. */
+  STAKING: 'staking',
+  /** BondHelper LP / Burn zap. */
+  BOND_ZAP: 'bond-zap',
+  /** XStakingPool gAGX mining stake. */
+  XMINE: 'xmine',
 } as const
 
 export type WritePath = (typeof WRITE_PATH)[keyof typeof WRITE_PATH]

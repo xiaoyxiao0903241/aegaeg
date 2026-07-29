@@ -201,7 +201,7 @@ const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.turbineRoot,
   ],
   assets: [],
-  staking: [],
+  staking: [queryKeys.chain.stakingRoot, queryKeys.chain.erc20Root, queryKeys.chain.referralRoot],
   release: [],
 }
 
@@ -244,4 +244,8 @@ export function invalidateAfterReferralBind() {
 
 export function invalidateAfterExchange() {
   invalidateTabQueries('exchange')
+}
+
+export function invalidateAfterStaking() {
+  invalidateTabQueries('staking')
 }

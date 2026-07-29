@@ -784,7 +784,232 @@ const app = defineMessages({
   },
   staking: {
     title: 'Staking',
-    body: 'Staking is coming soon.',
+    intro: 'Stake AGX, buy bonds, or mine X with gAGX',
+    body: 'Stake AGX, buy bonds, or mine X with gAGX',
+    backToHub: 'Back to Staking',
+    amount: 'Amount',
+    balance: 'Balance',
+    max: 'Max',
+    viewContract: 'View contract',
+    gates: {
+      notBound: 'Bind a referral first',
+      insufficientBalance: 'Insufficient balance',
+      insufficientGagx: 'Insufficient gAGX — wrap via Flash first',
+      insufficientAllowance: 'Insufficient allowance',
+      insufficientQuota: 'Insufficient quota',
+      poolPaused: 'This staking pool is paused',
+      depositoryNotAuth: 'Bond depository is not authorized',
+      zeroAmount: 'Enter a valid amount',
+      unavailable: 'Transaction temporarily unavailable — try again later',
+    },
+    hub: {
+      modes: {
+        stake: {
+          title: 'Stake',
+          body: 'Stake AGX for flexible or term yields',
+        },
+        lpbond: {
+          title: 'LP Bond',
+          body: 'Buy liquidity bonds with USD1',
+        },
+        burnbond: {
+          title: 'Burn Bond',
+          body: 'Buy burn bonds with USD1',
+        },
+        xmine: {
+          title: 'X Mining',
+          body: 'Stake gAGX to mine X',
+        },
+        calc: {
+          title: 'Calculator',
+          body: 'Local yield estimate — no on-chain writes',
+        },
+      },
+      overview: {
+        title: 'Overview',
+        metrics: [
+          { label: 'TVL' },
+          { label: 'Stakers' },
+          { label: 'Staked today' },
+          { label: 'Flexible APY' },
+          { label: 'Term APY' },
+          { label: 'Bond discount' },
+          { label: 'X mining quota' },
+          { label: 'Reward pool' },
+          { label: 'Protocol revenue' },
+        ],
+      },
+      periodTable: {
+        title: 'Periods & yields',
+        segmentAria: 'Period table product',
+        segs: {
+          stake: 'Stake',
+          lpbond: 'LP Bond',
+          burnbond: 'Burn Bond',
+        },
+        columns: ['Period', 'Yield', 'Bonus'],
+        rows: [{ period: 'Flexible' }, { period: '180d' }, { period: '360d' }, { period: '540d' }],
+      },
+      chart: {
+        title: 'Metrics',
+      },
+      faq: {
+        title: 'FAQ',
+        items: [
+          {
+            q: 'What can I do on Staking?',
+            a: 'Stake AGX (flexible/term), buy LP or burn bonds with USD1, mine X with gAGX, and run a local calculator. Claims and redeems live on Assets.',
+          },
+          {
+            q: 'Why do I need a referral?',
+            a: 'Stake and bond opens require a bound referral. Bind on Community, then retry.',
+          },
+          {
+            q: 'Does the calculator send a transaction?',
+            a: 'No. It only estimates locally and never writes on-chain.',
+          },
+        ],
+      },
+    },
+    aside: {
+      overview: 'Overview',
+      positions: 'My positions',
+      positionsHint: 'Claims, redeems, and unstakes are on the Assets tab.',
+      viewPositions: 'View',
+      mechanism: 'How it works',
+      faq: 'FAQ',
+    },
+    stake: {
+      title: 'Stake',
+      intro: 'Choose a period and stake AGX',
+      periodAria: 'Stake period',
+      amountAria: 'Stake amount',
+      submit: 'Stake',
+      bindCta: 'Bind referral',
+      success: 'Staked successfully',
+      warmupCta: 'Activate warmup',
+      warmupSuccess: 'Warmup activated',
+      periods: {
+        liquid: 'Flexible',
+        d180: '180d',
+        d360: '360d',
+        d540: '540d',
+      },
+      meta: {
+        apy: 'Yield',
+        bonus: 'Bonus',
+        lock: 'Lock period',
+        remaining: 'Remaining quota',
+        contract: 'Contract',
+      },
+      mechanism:
+        'Flexible stake enters warmup before activation; term stakes lock in the selected pool. Rewards and principal exits are on Assets.',
+      faq: [
+        {
+          q: 'Flexible vs term?',
+          a: 'Flexible uses LiquidStaking with warmup; term uses the matching LockedStaking pool.',
+        },
+        {
+          q: 'Is warmup activation a reward claim?',
+          a: 'No. claim() only activates expired warmup principal. Mixed claims are on Assets.',
+        },
+      ],
+    },
+    lpbond: {
+      title: 'LP Bond',
+      intro: 'Buy liquidity bonds with USD1 via BondHelper',
+      periodAria: 'LP bond period',
+      amountAria: 'Purchase amount',
+      submit: 'Buy',
+      success: 'Purchased successfully',
+      meta: {
+        discount: 'Discount',
+        slippage: 'Allowed slippage',
+        pay: 'Pay',
+        receive: 'Receive',
+        cap: 'Cap',
+        release: 'Release',
+        contract: 'Contract',
+      },
+      mechanism:
+        'Zap USD1 through BondHelper into the matching BondDepository. Redeems and rewards are on Assets.',
+      faq: [
+        {
+          q: 'Why no flexible bond?',
+          a: 'Bonds only offer 180 / 360 / 540 day terms.',
+        },
+      ],
+    },
+    burnbond: {
+      title: 'Burn Bond',
+      intro: 'Buy burn bonds with USD1 via BondHelper',
+      periodAria: 'Burn bond period',
+      amountAria: 'Purchase amount',
+      submit: 'Buy',
+      success: 'Purchased successfully',
+      meta: {
+        discount: 'Discount',
+        slippage: 'Allowed slippage',
+        pay: 'Pay',
+        receive: 'Receive',
+        cap: 'Cap',
+        release: 'Release',
+        contract: 'Contract',
+      },
+      mechanism:
+        'Zap USD1 through BondHelper into the matching BurnBondDepository. Redeems and rewards are on Assets.',
+      faq: [
+        {
+          q: 'How is burn bond different from LP bond?',
+          a: 'They use different depositories; both open via BondHelper + USD1. Claims are on Assets.',
+        },
+      ],
+    },
+    xmine: {
+      title: 'X Mining',
+      intro: 'Stake gAGX to mine (quota from locked principal)',
+      amountAria: 'gAGX stake amount',
+      submit: 'Stake',
+      success: 'Staked successfully',
+      meta: {
+        quota: 'Mining quota',
+        daily: 'Daily yield',
+        max: 'Max',
+        h24: '24h',
+        contract: 'Contract',
+      },
+      mechanism:
+        'Checks miningQuotaOf then stakeGagxForMining. Claim X and unstake are on Assets; cancelWarmup is not offered here.',
+      faq: [
+        {
+          q: 'Where does quota come from?',
+          a: 'Locked principal across Early, term stakes, and bonds — returned by miningQuotaOf.',
+        },
+      ],
+    },
+    calc: {
+      title: 'Calculator',
+      intro: 'Local yield estimate — no on-chain writes',
+      productAria: 'Product',
+      periodAria: 'Period',
+      amountAria: 'Amount',
+      price: 'Price',
+      priceAria: 'Price input',
+      days: 'Days',
+      daysAria: 'Holding days',
+      submit: 'Calculate',
+      result: {
+        interest: 'Est. interest',
+        total: 'Total',
+      },
+      aside: {
+        result: 'Result',
+        resultHint: 'Enter parameters on the left and tap Calculate.',
+        curve: 'Yield curve',
+        notes: 'Notes',
+        notesBody: 'Estimates only — not an on-chain quote or yield promise.',
+      },
+    },
   },
   release: {
     title: 'Release',

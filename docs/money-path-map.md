@@ -17,8 +17,14 @@ Genesis: bind/pause → [approve?] → live 二次门闸(bind + pause)
        → purchase → invalidateAfterGenesisPurchase
 Claim: 签名 API → 链上 claim → confirm → success: invalidate
                               ↘ confirm_failed: 保留 txHash，不乐观清空
+Staking: bind + AGX bal/allow + quota(/status) → [approve?] → live 重读
+       → liquidStake / lockedStake → WRITE_PATH.STAKING
+BondZap: bind + USD1 bal/allow + authContracts → [approve?] → live 重读
+       → BondHelper zap → WRITE_PATH.BOND_ZAP
+Xmine: gAGX bal/allow + miningQuotaOf → [approve?] → live 重读
+       → stakeGagxForMining → WRITE_PATH.XMINE
 
-Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim），禁立即重提
+Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / bond-zap / xmine），禁立即重提
 ```
 
 ## 关键路径
@@ -29,6 +35,7 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim），禁立�
 | Unknown receipt lock      | `web3/wallet/unknown-receipt-lock.ts`                                                    |
 | Swap 门闸                 | `core/exchange/resolve-live-quoted-out.ts` · `views/dapp/exchange/use-exchange-quote.ts` |
 | Genesis 二次门闸          | `fetch-live-genesis-post-approve-gate.ts` · `evaluateGenesisPostApproveGate`             |
+| Staking / BondZap / Xmine | `core/staking/staking-gates.ts` · `web3/staking/*`                                       |
 | 写链                      | `web3/wallet/wallet-contract-write.ts`                                                   |
 
 ## 必跑单测

@@ -122,6 +122,40 @@ export const REDEEMABLE_GAGX_METHODS = {
   wrap: 'function wrap(uint256 _amount)',
 } as const
 
+/** LiquidStaking — AGX flexible stake (manual §8.2). */
+export const LIQUID_STAKING_METHODS = {
+  liquidStake: 'function liquidStake(uint256 amount)',
+  claim: 'function claim()',
+  remainingStakeAmount: 'function remainingStakeAmount() view returns (uint256)',
+  isWarmupExpired: 'function isWarmupExpired(address user) view returns (bool)',
+} as const
+
+/** LockedStaking — AGX term stake (manual §8.3). */
+export const LOCKED_STAKING_METHODS = {
+  lockedStake: 'function lockedStake(uint256 amount)',
+  remainingStakeAmount: 'function remainingStakeAmount() view returns (uint256)',
+  status: 'function status() view returns (bool)',
+  singleAddressLimit: 'function singleAddressLimit() view returns (uint256)',
+  userStakingAmounts: 'function userStakingAmounts(address account) view returns (uint256)',
+  periodTime: 'function periodTime() view returns (uint256)',
+} as const
+
+/** BondHelper — LP / Burn zap (manual §10). */
+export const BOND_HELPER_METHODS = {
+  authContracts: 'function authContracts(address target) view returns (bool)',
+  zapIntoLiquidityBond:
+    'function zapIntoLiquidityBond(address bondDepository, address token, uint256 amount)',
+  zapIntoBurnBond:
+    'function zapIntoBurnBond(address burnBondDepository, address token, uint256 amount)',
+} as const
+
+/** XStakingPool — gAGX mining (manual §15). */
+export const X_STAKING_POOL_METHODS = {
+  miningQuotaOf: 'function miningQuotaOf(address user) view returns (uint256)',
+  stakeGagxForMining: 'function stakeGagxForMining(uint256 amount)',
+  activateWarmup: 'function activateWarmup()',
+} as const
+
 export const REWARD_CLAIMER_METHODS = {
   // Verified on-chain (impl 0x0265…fb7b, selector 0xf2ee58d4) and per
   // contract.md §4.1: claimReward(signType, amount, expireTime, salt, signature).

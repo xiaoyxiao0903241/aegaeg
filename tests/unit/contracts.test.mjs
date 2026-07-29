@@ -24,6 +24,18 @@ const CONTRACT_ENV_KEYS = {
   VITE_BSC_X_TOKEN: 'xToken',
   VITE_BSC_AGX_CONTRIBUTION_SWAP: 'agxContributionSwap',
   VITE_BSC_TURBINE: 'turbine',
+  VITE_BSC_LIQUID_STAKING: 'liquidStaking',
+  VITE_BSC_LOCKED_STAKING_180D: 'lockedStaking180d',
+  VITE_BSC_LOCKED_STAKING_360D: 'lockedStaking360d',
+  VITE_BSC_LOCKED_STAKING_540D: 'lockedStaking540d',
+  VITE_BSC_BOND_HELPER: 'bondHelper',
+  VITE_BSC_BOND_DEPOSITORY_180D: 'bondDepository180d',
+  VITE_BSC_BOND_DEPOSITORY_360D: 'bondDepository360d',
+  VITE_BSC_BOND_DEPOSITORY_540D: 'bondDepository540d',
+  VITE_BSC_BURN_BOND_DEPOSITORY_180D: 'burnBondDepository180d',
+  VITE_BSC_BURN_BOND_DEPOSITORY_360D: 'burnBondDepository360d',
+  VITE_BSC_BURN_BOND_DEPOSITORY_540D: 'burnBondDepository540d',
+  VITE_BSC_X_STAKING_POOL: 'xStakingPool',
 }
 
 function normalizeAddress(address) {

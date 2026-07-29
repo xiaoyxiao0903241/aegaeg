@@ -3,6 +3,7 @@ import { getInitialTab, resolveTabFromHash } from '~/app/utils'
 import { resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { useStakingViewStore } from '~/stores/staking-view-store'
 
 interface DappShellStore {
   activeTab: DappTab
@@ -22,8 +23,23 @@ function writeTabHash(tab: DappTab) {
     }
     return
   }
+  if (tab === 'staking') {
+    if (!window.location.hash.startsWith('#staking')) {
+      window.location.hash = 'staking'
+    }
+    return
+  }
   if (window.location.hash.slice(1) !== tab) {
     window.location.hash = tab
+  }
+}
+
+function resetForeignSubviewStores(tab: DappTab) {
+  if (tab !== 'exchange') {
+    useExchangeViewStore.getState().backToHub({ syncHash: false })
+  }
+  if (tab !== 'staking') {
+    useStakingViewStore.getState().backToHub({ syncHash: false })
   }
 }
 
@@ -33,18 +49,14 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
   detailCollapsed: false,
   mobileNavOpen: false,
   selectTab: (tab) => {
-    if (tab !== 'exchange') {
-      useExchangeViewStore.getState().backToHub({ syncHash: false })
-    }
+    resetForeignSubviewStores(tab)
     set(() => ({
       activeTab: tab,
     }))
     writeTabHash(tab)
   },
   selectMobileTab: (tab) => {
-    if (tab !== 'exchange') {
-      useExchangeViewStore.getState().backToHub({ syncHash: false })
-    }
+    resetForeignSubviewStores(tab)
     set({
       activeTab: tab,
       mobileNavOpen: false,
@@ -63,6 +75,9 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
     set({ activeTab: loc.tab })
     if (loc.tab === 'exchange' && loc.exchangeView) {
       useExchangeViewStore.getState().hydrateView(loc.exchangeView)
+    }
+    if (loc.tab === 'staking' && loc.stakingView) {
+      useStakingViewStore.getState().hydrateView(loc.stakingView)
     }
   },
 }))
