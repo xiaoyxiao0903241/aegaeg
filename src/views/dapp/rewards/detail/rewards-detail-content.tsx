@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
+import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
@@ -20,6 +22,8 @@ import { readReferralCount } from '~/web3/referral/referral-read'
 import { Button } from '~/shared/ui/button'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
+
+type CobuildRecordsTab = 'cobuild' | 'equalize'
 
 const DASH = '—'
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -360,11 +364,216 @@ function RewardsParticipateContent() {
   )
 }
 
+function RewardsCobuildContent() {
+  const { messages: t } = useI18n()
+  const cobuild = t.rewards.cobuild
+  const { walletReady } = useDappShell()
+  const account = useActiveAccount()
+  const readClient = useChainReadClient()
+  const address = account?.address
+  const [recordsTab, setRecordsTab] = useState<CobuildRecordsTab>('cobuild')
+
+  const countQuery = useQuery({
+    queryKey: ['chain', 'rewards', 'cobuild-count', address ?? ''],
+    queryFn: () => readReferralCount(address as Address, readClient),
+    enabled: Boolean(walletReady && address && readClient),
+  })
+
+  const contribQuery = useQuery({
+    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-cobuild'],
+    queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
+    enabled: Boolean(walletReady && address && readClient),
+  })
+
+  const referralCount =
+    !walletReady || !address
+      ? DASH
+      : countQuery.isPending
+        ? '…'
+        : countQuery.data != null
+          ? String(countQuery.data)
+          : DASH
+
+  const contributionValue =
+    !walletReady || !address
+      ? DASH
+      : contribQuery.isPending
+        ? '…'
+        : contribQuery.data
+          ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS, 2)
+          : DASH
+
+  const recordsTabOptions: Array<{ label: string; value: CobuildRecordsTab }> = [
+    { label: cobuild.recordsTabCobuild, value: 'cobuild' },
+    { label: cobuild.recordsTabEqualize, value: 'equalize' },
+  ]
+
+  return (
+    <DappDetailPage>
+      <DappDetailBlock>
+        <DappContentHeading>{cobuild.dataTitle}</DappContentHeading>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {cobuild.totalRewards}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {cobuild.totalPerformance}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {cobuild.myPosition}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {cobuild.directCount}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {referralCount}
+            </Text>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {cobuild.contribution}
+            </Text>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <Text as="p" className="font-semibold" variant="copy">
+                {contributionValue}
+              </Text>
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {cobuild.contributionHint}
+              </Text>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {cobuild.nextPayout}
+            </Text>
+            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+              {DASH}
+            </Text>
+          </div>
+        </div>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{cobuild.tierTitle}</DappContentHeading>
+        <div className="mt-4 rounded-2xl bg-card p-5 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {cobuild.tierCurrent}
+              </Text>
+              <Text as="p" className="mt-1" variant="figure">
+                {t.rewards.hub.stats.tierEmpty}
+              </Text>
+            </div>
+            <div className="text-right">
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {cobuild.tierNext}
+              </Text>
+              <Text as="p" className="mt-1 font-semibold" variant="copy">
+                {DASH}
+              </Text>
+            </div>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {(
+              [
+                [cobuild.reqHolding, cobuild.reqHoldingHint],
+                [cobuild.reqAccounts, cobuild.reqAccountsHint],
+                [cobuild.reqPerformance, cobuild.reqPerformanceHint],
+              ] as const
+            ).map(([label, hint]) => (
+              <div className="rounded-2xl border border-border p-4" key={label}>
+                <Text as="p" tone="muted-foreground" variant="caption">
+                  {label}
+                </Text>
+                <Text as="p" className="mt-2 font-semibold" variant="copy">
+                  {DASH}
+                </Text>
+                <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
+                  {hint}
+                </Text>
+              </div>
+            ))}
+          </div>
+        </div>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{cobuild.recordsTitle}</DappContentHeading>
+        <DappTableCard
+          className="mt-4"
+          header={
+            <DappPillTabs
+              activeTone="coral"
+              ariaLabel={cobuild.recordsTabsAria}
+              className="flex items-center justify-start gap-2"
+              items={recordsTabOptions.map((option) => ({
+                active: option.value === recordsTab,
+                label: option.label,
+              }))}
+              onSelect={(index) => {
+                const next = recordsTabOptions[index]
+                if (next) setRecordsTab(next.value)
+              }}
+            />
+          }
+        >
+          <ResponsiveTable
+            colWidths={['190px', '70px', '140px', '110px', '1fr']}
+            headers={[...cobuild.recordsColumns]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage
+            embedded
+            title={
+              recordsTab === 'cobuild' ? cobuild.emptyRecordsCobuild : cobuild.emptyRecordsEqualize
+            }
+          />
+        </DappTableCard>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{cobuild.directsTitle}</DappContentHeading>
+        <DappTableCard className="mt-4">
+          <ResponsiveTable
+            colWidths={['200px', '200px', '130px', '1fr']}
+            headers={[...cobuild.directsColumns]}
+            rows={[]}
+          />
+          <DappTableEmptyMessage embedded title={cobuild.emptyDirects} />
+        </DappTableCard>
+      </DappDetailBlock>
+
+      <DappDetailBlock>
+        <DappContentHeading>{cobuild.faq.title}</DappContentHeading>
+        <FaqList items={cobuild.faq.items} variant="dapp" />
+      </DappDetailBlock>
+    </DappDetailPage>
+  )
+}
+
 export function RewardsDetailContent({ view }: { view: Exclude<RewardsView, 'hub'> }) {
   const { messages: t } = useI18n()
   if (view === 'lucky') return <RewardsLuckyContent />
   if (view === 'referral') return <RewardsReferralContent />
   if (view === 'participate') return <RewardsParticipateContent />
+  if (view === 'cobuild') return <RewardsCobuildContent />
 
   const card = t.rewards.cards[view]
 

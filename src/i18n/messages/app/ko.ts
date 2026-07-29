@@ -1016,6 +1016,68 @@ const app = defineMessages({
         ],
       },
     },
+    cobuild: {
+      dataTitle: 'Data',
+      totalRewards: 'Total rewards',
+      totalPerformance: 'Total performance',
+      myPosition: 'My position',
+      directCount: 'Direct referrals',
+      contribution: 'Contribution points',
+      contributionHint: 'Claims spend 1:1',
+      nextPayout: 'Next reward payout',
+      tierTitle: 'Co-build tier',
+      tierCurrent: 'Current tier',
+      tierNext: 'Next tier',
+      reqHolding: 'Personal holding',
+      reqHoldingHint: 'Stake and bond position value',
+      reqAccounts: 'Active accounts',
+      reqAccountsHint: 'Active direct referrals',
+      reqPerformance: 'Total performance',
+      reqPerformanceHint: 'All downline position value',
+      recordsTitle: 'Reward records',
+      recordsTabsAria: 'Reward record type',
+      recordsTabCobuild: 'Co-build',
+      recordsTabEqualize: 'Equalize',
+      recordsColumns: ['Time', 'Tier', 'Amount', 'Status', 'Claimed at'],
+      emptyRecordsCobuild: 'No reward records yet. Entries appear after rewards are issued.',
+      emptyRecordsEqualize: 'No equalize records yet. Entries appear after rewards are issued.',
+      directsTitle: 'Direct referrals',
+      directsColumns: ['Joined', 'Address', 'Position', 'Tier'],
+      emptyDirects: 'No direct referrals yet. Share your invite link to list partners here.',
+      faq: {
+        title: 'FAQs',
+        items: [
+          {
+            q: 'How are co-build rewards calculated?',
+            a: 'Co-build rewards come from team Rebase yield and pay at your tier bonus rate (A1 10% through A13 130%). See the hub co-build mechanism table.',
+          },
+          {
+            q: 'What is the equalize reward?',
+            a: 'When a downline team catches up to or surpasses your tier, their co-build reward no longer feeds your differential. Equalize pays you 10% of that downline co-build reward as compensation.',
+          },
+          {
+            q: 'Is there a tier limit for equalize?',
+            a: 'Yes. Equalize only covers downlines within two tiers above you. Example: at A2 you can equalize A3/A4; A5+ is out of range until you promote.',
+          },
+          {
+            q: 'How do I promote co-build tiers?',
+            a: 'A1–A5 use personal holding, active accounts, and team volume. From A6, promotion uses the dual-leg rule (any two legs at the required tier); A6–A9 also allow a single-leg path plus other-leg volume.',
+          },
+          {
+            q: 'How is team performance counted?',
+            a: 'Team performance is the mark-to-market value of stake and bond positions across your entire referral tree at settlement.',
+          },
+          {
+            q: 'How do I claim co-build and equalize rewards?',
+            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution 1:1. Equalize history is under Reward records tabs on the right.',
+          },
+          {
+            q: 'When does a new tier rate apply?',
+            a: 'Tiers re-evaluate at daily settlement. The next co-build payout uses the new rate; equalize coverage updates with the new tier.',
+          },
+        ],
+      },
+    },
 
     faq: {
       title: 'FAQs',
