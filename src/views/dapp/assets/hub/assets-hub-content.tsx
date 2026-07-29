@@ -1,14 +1,14 @@
+import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { tokenCarouselIcons } from '~/app/assets'
+import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
-import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { openStakingView } from '~/shared/config/open-staking-view'
+import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hub-overview-stats'
 
 export function AssetsHubContent() {
@@ -16,6 +16,15 @@ export function AssetsHubContent() {
   const overview = t.assets.hub.overview
   const rebase = t.assets.hub.rebase
   const values = useAssetsHubOverviewStats()
+  const [bufferAsset, setBufferAsset] = useState<'agx' | 'gagx'>('agx')
+
+  const bufferTotal = bufferAsset === 'agx' ? values.bufferTotal : values.bufferGagxTotal
+  const bufferTotalApprox = bufferAsset === 'agx' ? values.bufferTotalApprox : '≈ —'
+  const bufferReleased = bufferAsset === 'agx' ? values.bufferReleased : values.bufferGagxReleased
+  const bufferReleasedApprox = bufferAsset === 'agx' ? values.bufferReleasedApprox : '≈ —'
+  const bufferLabel = bufferAsset === 'agx' ? overview.bufferAssetAgx : overview.bufferAssetGagx
+  const bufferIcon =
+    bufferAsset === 'agx' ? tokenCarouselIcons.agxIcon : tokenCarouselIcons.gagxIcon
 
   return (
     <DappDetailPage>
@@ -24,9 +33,15 @@ export function AssetsHubContent() {
         <Card surface="inverse" className="relative overflow-hidden p-4">
           <div className="grid gap-4 sm:grid-cols-2 dapp:grid-cols-4 dapp:gap-6">
             <div className="grid gap-1">
-              <Text as="span" tone="inverse-muted" variant="detail">
-                {overview.totalValue}
-              </Text>
+              <div className="flex items-center gap-1">
+                <Text as="span" tone="inverse-muted" variant="detail">
+                  {overview.totalValue}
+                </Text>
+                <DappInfoTooltip
+                  className="size-3 opacity-80 [&_svg]:size-3 [&_svg]:text-white"
+                  content={overview.totalValueHint}
+                />
+              </div>
               <Text as="strong" className="text-[32px] leading-none font-semibold" tone="inverse">
                 {values.totalValue}
               </Text>
@@ -113,9 +128,19 @@ export function AssetsHubContent() {
               <Text as="span" className="font-medium" variant="detail">
                 {overview.bufferTitle}
               </Text>
-              <Text as="span" tone="muted-foreground" variant="detail">
-                {overview.bufferAssetGagx}
-              </Text>
+              <button
+                aria-label={overview.bufferSwitchAria}
+                className="flex items-center gap-1 rounded-full border-0 bg-transparent p-0"
+                onClick={() => setBufferAsset((v) => (v === 'agx' ? 'gagx' : 'agx'))}
+                type="button"
+              >
+                <span className="grid size-4 place-items-center overflow-hidden rounded-full border border-border">
+                  <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.exchangeFlip} />
+                </span>
+                <Text as="span" tone="muted-foreground" variant="detail">
+                  {bufferLabel}
+                </Text>
+              </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="grid gap-0.5">
@@ -127,14 +152,14 @@ export function AssetsHubContent() {
                     alt=""
                     className="mt-0.5 size-[18px] rounded-[10px]"
                     size="sm"
-                    src={tokenCarouselIcons.agxIcon}
+                    src={bufferIcon}
                   />
                   <div className="grid gap-1">
                     <Text as="strong" className="text-base font-semibold" variant="copy">
-                      {values.bufferTotal}
+                      {bufferTotal}
                     </Text>
                     <Text as="span" tone="muted-foreground" variant="detail">
-                      {values.bufferTotalApprox}
+                      {bufferTotalApprox}
                     </Text>
                   </div>
                 </div>
@@ -144,10 +169,10 @@ export function AssetsHubContent() {
                   {overview.bufferReleased}
                 </Text>
                 <Text as="strong" className="text-base font-semibold" variant="copy">
-                  {values.bufferReleased}
+                  {bufferReleased}
                 </Text>
                 <Text as="span" tone="muted-foreground" variant="detail">
-                  {values.bufferReleasedApprox}
+                  {bufferReleasedApprox}
                 </Text>
               </div>
             </div>
@@ -162,14 +187,6 @@ export function AssetsHubContent() {
             {t.assets.hub.distribution.empty}
           </Text>
         </div>
-        <Button
-          className="mt-3"
-          onClick={() => openStakingView('stake')}
-          type="button"
-          variant="secondary"
-        >
-          {t.assets.hub.distribution.cta}
-        </Button>
       </DappDetailBlock>
 
       <DappDetailBlock>
@@ -199,9 +216,12 @@ export function AssetsHubContent() {
           </ol>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-2xl bg-muted px-4 py-3">
             {rebase.tags.map((tag) => (
-              <Text as="span" className="font-semibold" key={tag} variant="detail">
-                {tag}
-              </Text>
+              <span className="flex items-center gap-1.5" key={tag}>
+                <DappIcon alt="" className="size-4" size="sm" src={dappAssets.check} />
+                <Text as="span" className="font-semibold" variant="detail">
+                  {tag}
+                </Text>
+              </span>
             ))}
           </div>
           <Text as="p" tone="muted-foreground" variant="detail">

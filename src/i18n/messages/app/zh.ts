@@ -1044,22 +1044,36 @@ const app = defineMessages({
       success: '赎回已提交，本金进入释放缓冲',
     },
     hub: {
-      emptyHint: '选择产品查看仓位，或前往质押开仓。',
-      hideZero: '隐藏零持仓',
-      hideZeroEmpty: '当前没有非零持仓。关闭「隐藏零持仓」可查看全部产品入口。',
       card: {
         position: '仓位',
         yield: '总收益',
       },
       modes: {
-        stake: { title: '质押', body: '管理 AGX 活期/定期仓位' },
-        lpbond: { title: 'LP债券', body: '管理流动性债券仓位' },
-        burnbond: { title: '销毁债券', body: '管理销毁债券仓位' },
-        xmine: { title: 'X挖矿', body: '管理 gAGX 挖矿仓位' },
+        stake: {
+          title: '质押',
+          body: '管理 AGX 活期/定期仓位',
+          aprHint: '收益包含 Rebase 加成与复利收益，仅统计持仓中未提取收益',
+        },
+        lpbond: {
+          title: 'LP债券',
+          body: '管理流动性债券仓位',
+          aprHint: '收益包含复利收益，仅统计持仓中未提取收益',
+        },
+        burnbond: {
+          title: '销毁债券',
+          body: '管理销毁债券仓位',
+          aprHint: '收益包含复利收益，仅统计持仓中未提取收益',
+        },
+        xmine: {
+          title: 'X挖矿',
+          body: '管理 gAGX 挖矿仓位',
+          aprHint: '收益为持仓中未领取的挖矿产出',
+        },
       },
       overview: {
         title: '资产总览',
         totalValue: '总资产价值',
+        totalValueHint: '按当前市场价格估值 · 含持仓本金与未提取收益；暂无跨产品报价时显示 —',
         claimable: '可领取收益',
         claimed: '累计已领取',
         contribution: '我的贡献点数',
@@ -1070,12 +1084,13 @@ const app = defineMessages({
         bufferTitle: '缓冲池',
         bufferTotal: '总量',
         bufferReleased: '已释放',
+        bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
+        bufferSwitchAria: '切换缓冲池资产展示',
       },
       distribution: {
         title: '持仓分布',
         empty: '暂无持仓，参与质押或购买债券后，这里将展示您的持仓分布。',
-        cta: '前往质押',
       },
       rebase: {
         title: 'Rebase 收益释放机制',
@@ -1092,16 +1107,37 @@ const app = defineMessages({
       faq: {
         title: 'FAQs',
         items: [
-          { q: '总资产价值如何计算？', a: '汇总各产品仓位与可领收益的估值；暂无报价时显示为 —。' },
-          { q: '收益以什么形式发放？', a: '质押与债券收益以 gAGX 计量；X 挖矿收益以 X 计量。' },
-          { q: '为什么领取需要贡献点？', a: 'Mixed 领奖按手册消耗贡献值；不足请先销毁兑换。' },
-          { q: '贡献点数从哪里来？', a: '通过销毁兑换获得贡献点数，领取收益时按 1:1 消耗。' },
-          { q: '赎回后本金去哪了？', a: '进入 PrincipalReleaseVault 线性释放，不是立即到账。' },
-          { q: '持仓分布什么时候出现？', a: '有非零仓位后展示各产品分布；当前无持仓时为空态。' },
-          { q: '缓冲池是什么？', a: '本金退出后进入释放缓冲二次线性释放；链上仅结算 AGX。' },
           {
-            q: '为什么缓冲池标了 gAGX？',
-            a: '稿面保留资产切换 chrome；gAGX 退出已折算为 AGX，数值诚实显示 —。',
+            q: '总资产价值是如何计算的？',
+            a: '汇总各产品仓位本金与未提取收益的估值；暂无跨产品报价时显示为 —。钱包闲置余额不计入。',
+          },
+          {
+            q: '收益以什么形式发放？',
+            a: '质押与债券 Rebase 收益以 gAGX 计量；X 挖矿产出为 X。',
+          },
+          {
+            q: '为什么我无法领取收益？',
+            a: 'Mixed 领奖需消耗贡献值；不足时请先销毁 AGX 获取贡献值后再领取。',
+          },
+          {
+            q: '如何获得贡献值？',
+            a: '购买 AGX 并销毁可获得贡献值；领取收益时按 1:1 消耗。',
+          },
+          {
+            q: '领取收益时为什么要选择释放周期？',
+            a: '领取的收益进入释放池按所选周期线性释放；周期越长税率通常越低。',
+          },
+          {
+            q: '收益领取后去到了哪里？',
+            a: '不会立即到账钱包，而是进入 RewardQueue / 释放池按周期释放；已释放部分可在释放页领取。',
+          },
+          {
+            q: '收益复投和领取有什么区别？',
+            a: '复投可将收益直接进入复投仓继续计息；领取则按释放周期逐步到账，更灵活。',
+          },
+          {
+            q: '缓冲池是什么？',
+            a: '本金解除质押后进入 PrincipalReleaseVault 二次线性释放；链上仅结算 AGX。稿面可切换 gAGX 标签，数值诚实为 —。',
           },
         ],
       },

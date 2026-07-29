@@ -1096,23 +1096,37 @@ const app = defineMessages({
       success: 'Redeem submitted — principal entered the release buffer',
     },
     hub: {
-      hideZero: 'Hide zero balances',
-      hideZeroEmpty:
-        'No non-zero positions. Turn off Hide zero balances to see all product entries.',
-      emptyHint: 'Pick a product to view positions, or open a position in Staking.',
       card: {
         position: 'Position',
         yield: 'Total yield',
       },
       modes: {
-        stake: { title: 'Stake', body: 'Manage AGX flexible / term positions' },
-        lpbond: { title: 'LP Bond', body: 'Manage liquidity bond positions' },
-        burnbond: { title: 'Burn Bond', body: 'Manage burn bond positions' },
-        xmine: { title: 'X Mine', body: 'Manage gAGX mining positions' },
+        stake: {
+          title: 'Stake',
+          body: 'Manage AGX flexible / term positions',
+          aprHint: 'Includes rebase bonus and compounding; unclaimed yield in position only',
+        },
+        lpbond: {
+          title: 'LP Bond',
+          body: 'Manage liquidity bond positions',
+          aprHint: 'Includes compounding; unclaimed yield in position only',
+        },
+        burnbond: {
+          title: 'Burn Bond',
+          body: 'Manage burn bond positions',
+          aprHint: 'Includes compounding; unclaimed yield in position only',
+        },
+        xmine: {
+          title: 'X Mine',
+          body: 'Manage gAGX mining positions',
+          aprHint: 'Unclaimed mining output in the position',
+        },
       },
       overview: {
         title: 'Assets overview',
         totalValue: 'Total value',
+        totalValueHint:
+          'Mark-to-market of principal + unclaimed yield; shows — without a cross-product quote',
         claimable: 'Claimable yield',
         claimed: 'Claimed total',
         contribution: 'Contribution points',
@@ -1123,12 +1137,13 @@ const app = defineMessages({
         bufferTitle: 'Buffer pool',
         bufferTotal: 'Total',
         bufferReleased: 'Released',
+        bufferAssetAgx: 'AGX',
         bufferAssetGagx: 'gAGX',
+        bufferSwitchAria: 'Switch buffer asset display',
       },
       distribution: {
-        title: 'Holdings',
+        title: 'Holdings distribution',
         empty: 'No holdings yet. Stake or buy bonds to see distribution here.',
-        cta: 'Go to Staking',
       },
       rebase: {
         title: 'Rebase yield release',
@@ -1147,36 +1162,36 @@ const app = defineMessages({
         title: 'FAQs',
         items: [
           {
-            q: 'How is total value calculated?',
-            a: 'Sum of product positions and claimable yield valuations; shows — without a quote.',
+            q: 'How is total asset value calculated?',
+            a: 'Sum of product principal and unclaimed yield valuations; shows — without a cross-product quote. Idle wallet balances are excluded.',
           },
           {
-            q: 'How is yield paid?',
-            a: 'Stake/bond yield is in gAGX; X mine yield is in X.',
+            q: 'In what form is yield paid?',
+            a: 'Stake/bond rebase yield is in gAGX; X mine output is X.',
           },
           {
-            q: 'Why do claims need contribution points?',
-            a: 'Mixed claims consume contribution per the handbook; burn AGX if short.',
+            q: 'Why can I not claim yield?',
+            a: 'Mixed claims consume contribution; burn AGX for points first if short.',
           },
           {
-            q: 'Where do contribution points come from?',
-            a: 'Burn exchange grants contribution; claims consume them 1:1.',
+            q: 'How do I earn contribution points?',
+            a: 'Buy and burn AGX; claims consume contribution 1:1.',
           },
           {
-            q: 'Where does redeemed principal go?',
-            a: 'Into PrincipalReleaseVault linear release — not instant wallet credit.',
+            q: 'Why choose a release period when claiming?',
+            a: 'Claimed yield enters the release queue and unlocks linearly; longer periods usually mean lower tax.',
           },
           {
-            q: 'When does holdings distribution appear?',
-            a: 'After non-zero positions exist; empty state otherwise.',
+            q: 'Where does claimed yield go?',
+            a: 'Not instant wallet credit — into RewardQueue / release pool; claim vested amounts on Release.',
+          },
+          {
+            q: 'Restake vs claim?',
+            a: 'Restake can route yield into restake staking; claim unlocks over the chosen release period.',
           },
           {
             q: 'What is the buffer pool?',
-            a: 'Principal exits into the release buffer for secondary linear release; on-chain AGX only.',
-          },
-          {
-            q: 'Why does the buffer show gAGX?',
-            a: 'Chrome keeps the asset switch; gAGX exits are converted to AGX — values stay honest —.',
+            a: 'Redeemed principal enters PrincipalReleaseVault for secondary linear release (AGX on-chain). gAGX chrome stays; values show —.',
           },
         ],
       },
