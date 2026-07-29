@@ -12,8 +12,12 @@ export type CalcEstimateResult = {
   price: number
   interestTokens: number
   totalTokens: number
+  /** Net yield value (收益总额). */
   interestUsd: number
-  totalUsd: number
+  /** Principal × price (总投入 / 已释放本金价值 for liquid). */
+  investedUsd: number
+  /** Invested + interest (卖出总值). */
+  sellUsd: number
   ratePct: number
 }
 

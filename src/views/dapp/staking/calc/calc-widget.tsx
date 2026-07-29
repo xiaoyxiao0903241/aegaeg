@@ -63,6 +63,7 @@ export function CalcWidget() {
     const estimate = calcStakingEstimate({ principal, apr, days })
     const interestUsd = estimate.interest * priceN
     const investedUsd = principal * priceN
+    const sellUsd = investedUsd + interestUsd
     const ratePct = investedUsd > 0 ? (interestUsd / investedUsd) * 100 : 0
     setResult({
       product,
@@ -73,7 +74,8 @@ export function CalcWidget() {
       interestTokens: estimate.interest,
       totalTokens: estimate.total,
       interestUsd,
-      totalUsd: interestUsd,
+      investedUsd,
+      sellUsd,
       ratePct,
     })
   }
