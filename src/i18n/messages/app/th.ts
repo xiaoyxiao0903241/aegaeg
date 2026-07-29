@@ -1190,7 +1190,12 @@ const app = defineMessages({
           burnbond: 'Burn Bond',
         },
         columns: ['Period', 'Yield', 'Bonus'],
-        rows: [{ period: 'Flexible' }, { period: '180d' }, { period: '360d' }, { period: '540d' }],
+        rows: [
+          { id: 'liquid', period: 'Flexible' },
+          { id: '180', period: '180d' },
+          { id: '360', period: '360d' },
+          { id: '540', period: '540d' },
+        ],
       },
       chart: {
         title: 'Metrics',
@@ -1220,7 +1225,42 @@ const app = defineMessages({
       viewPositions: 'View',
       mechanism: 'How it works',
       faq: 'FAQ',
+      recordsTitles: {
+        stake: 'My staking records',
+        lpbond: 'My LP bond records',
+        burnbond: 'My burn bond records',
+        xmine: 'My mining records',
+      },
+      recordColumns: ['Time', 'Period', 'Amount', 'Released', 'Tx hash'],
+      recordsEmpty: 'No records yet',
+      chartTitles: {
+        stake: 'TVL (Staking) metrics',
+        lpbond: 'TVL (LP Bond) metrics',
+        burnbond: 'TVL (Burn Bond) metrics',
+        xmine: 'TVL (X Mining) metrics',
+      },
+      chartRangeAria: 'Chart time range',
+      chartRanges: ['1W', '1M', '1Y', 'All'],
+      xValue: {
+        title: 'X long-term value',
+        supplyLabel: 'X total supply',
+        supplyValue: '210,000,000',
+        badge: 'Fixed supply · never inflate',
+        columns: [
+          {
+            pct: '47.62%',
+            title: 'LP liquidity',
+            bullets: ['Initial liquidity build', 'Market making & liquidity support'],
+          },
+          {
+            pct: '52.38%',
+            title: 'Global rewards & growth',
+            bullets: ['gAGX mining rewards', 'Ecosystem growth incentives'],
+          },
+        ],
+      },
     },
+
     stake: {
       title: 'Stake',
       intro: 'Choose a period and stake AGX',
@@ -1345,11 +1385,33 @@ const app = defineMessages({
         total: 'Total',
       },
       aside: {
-        result: 'Result',
-        resultHint: 'Enter parameters on the left and tap Calculate.',
+        result: 'Estimate result',
+        resultHint: 'Enter parameters on the left and tap Calculate to see results.',
         curve: 'Yield curve',
-        notes: 'Notes',
-        notesBody: 'Estimates only — not an on-chain quote or yield promise.',
+        curveHint:
+          'Cumulative yield by day at current parameters; compounding continues if not redeemed after maturity.',
+        nodes: 'Key milestones',
+        nodeCards: [
+          {
+            label: 'Break-even day',
+            hint: 'Selling from this day can realize positive yield',
+          },
+          {
+            label: 'Principal fully released',
+            hint: '',
+          },
+          {
+            label: 'Hold to period end',
+            hint: 'Illustrative cumulative return vs principal',
+          },
+        ],
+        notes: 'Calculation notes',
+        notesBody: 'Local estimate only — not an on-chain quote or yield promise.',
+        notesItems: [
+          'Yield compounds at the current base daily rate; longer locks get APR boosts: 180d 15%, 360d 25%, 540d 35%.',
+          'Principal releases linearly by block; only released principal through the estimate day is counted.',
+          'Results exclude tax on yield release and price volatility; for reference only.',
+        ],
       },
     },
   },

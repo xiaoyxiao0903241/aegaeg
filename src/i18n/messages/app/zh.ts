@@ -1165,10 +1165,10 @@ const app = defineMessages({
         },
         columns: ['周期', '收益率', '加成'],
         rows: [
-          { period: '活期' },
-          { period: '180 天' },
-          { period: '360 天' },
-          { period: '540 天' },
+          { id: 'liquid', period: '活期' },
+          { id: '180', period: '180 天' },
+          { id: '360', period: '360 天' },
+          { id: '540', period: '540 天' },
         ],
       },
       chart: {
@@ -1199,6 +1199,40 @@ const app = defineMessages({
       viewPositions: '查看',
       mechanism: '机制说明',
       faq: '常见问题',
+      recordsTitles: {
+        stake: '我的质押记录',
+        lpbond: '我的 LP 债券记录',
+        burnbond: '我的销毁债券记录',
+        xmine: '我的挖矿记录',
+      },
+      recordColumns: ['时间', '周期', '数量', '已释放', '交易哈希'],
+      recordsEmpty: '暂无记录',
+      chartTitles: {
+        stake: 'TVL（质押）数据指标',
+        lpbond: 'TVL（LP 债券）数据指标',
+        burnbond: 'TVL（销毁债券）数据指标',
+        xmine: 'TVL（X挖矿）数据指标',
+      },
+      chartRangeAria: '图表时间范围',
+      chartRanges: ['1周', '1月', '1年', '全部'],
+      xValue: {
+        title: 'X长期价值系统',
+        supplyLabel: 'X 总发行量',
+        supplyValue: '210,000,000',
+        badge: '固定总量 · 永不增发',
+        columns: [
+          {
+            pct: '47.62%',
+            title: 'LP 流动性建设',
+            bullets: ['初始流动性构建', '市场做市与流动性支持'],
+          },
+          {
+            pct: '52.38%',
+            title: '全球奖励与发展',
+            bullets: ['gAGX 挖矿奖励', '生态发展与激励'],
+          },
+        ],
+      },
     },
     stake: {
       title: '质押',
@@ -1326,8 +1360,29 @@ const app = defineMessages({
         result: '测算结果',
         resultHint: '在左侧输入参数并点击计算后查看结果。',
         curve: '收益曲线',
-        notes: '说明',
+        curveHint: '按当前参数逐日测算的累计收益，到期后未赎回将继续产生复利收益',
+        nodes: '关键节点',
+        nodeCards: [
+          {
+            label: '正收益起始日',
+            hint: '从该天起卖出可实现正收益',
+          },
+          {
+            label: '本金完全释放',
+            hint: '',
+          },
+          {
+            label: '持有至周期末日',
+            hint: '相对本金的累计收益示意',
+          },
+        ],
+        notes: '计算说明',
         notesBody: '本计算器仅供本地估算参考，不构成链上报价或收益承诺。',
+        notesItems: [
+          '收益按当前基础日收益率复利测算，长周期额外享受收益率加成：180 天 15%、360 天 25%、540 天 35%。',
+          '本金按所选周期区块线性释放，仅计入测算日已释放的部分；未到期释放的本金及其产出的收益不计入结果。',
+          '测算结果未扣除收益释放时的所得税，也未考虑价格波动；结果仅供参考，实际收益随协议运行状态动态变化。',
+        ],
       },
     },
   },

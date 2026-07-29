@@ -7,6 +7,7 @@ export function StakeContent() {
   return (
     <DappDetailPage>
       <StakingDetailAside
+        chartTitle={t.staking.aside.chartTitles.stake}
         faq={t.staking.stake.faq}
         mechanism={t.staking.stake.mechanism}
         overviewItems={[
@@ -14,6 +15,7 @@ export function StakeContent() {
           { label: t.staking.stake.meta.bonus, value: '—' },
           { label: t.staking.stake.meta.remaining, value: '—' },
         ]}
+        recordsTitle={t.staking.aside.recordsTitles.stake}
       />
     </DappDetailPage>
   )

@@ -7,6 +7,7 @@ export function XmineContent() {
   return (
     <DappDetailPage>
       <StakingDetailAside
+        chartTitle={t.staking.aside.chartTitles.xmine}
         faq={t.staking.xmine.faq}
         mechanism={t.staking.xmine.mechanism}
         overviewItems={[
@@ -14,6 +15,8 @@ export function XmineContent() {
           { label: t.staking.xmine.meta.daily, value: '—' },
           { label: t.staking.xmine.meta.h24, value: '—' },
         ]}
+        recordsTitle={t.staking.aside.recordsTitles.xmine}
+        showXValueCard
       />
     </DappDetailPage>
   )

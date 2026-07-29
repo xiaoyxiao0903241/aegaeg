@@ -63,25 +63,27 @@ export function StakingHubContent() {
               </tr>
             </thead>
             <tbody>
-              {table.rows.map((row) => (
-                <tr key={row.period}>
-                  <td className="py-2 pr-3">
-                    <Text as="span" variant="detail">
-                      {row.period}
-                    </Text>
-                  </td>
-                  <td className="py-2 pr-3">
-                    <Text as="span" variant="detail">
-                      {PLACEHOLDER}
-                    </Text>
-                  </td>
-                  <td className="py-2">
-                    <Text as="span" variant="detail">
-                      {PLACEHOLDER}
-                    </Text>
-                  </td>
-                </tr>
-              ))}
+              {table.rows
+                .filter((row) => tableSeg === 'stake' || row.id !== 'liquid')
+                .map((row) => (
+                  <tr key={row.id}>
+                    <td className="py-2 pr-3">
+                      <Text as="span" variant="detail">
+                        {row.period}
+                      </Text>
+                    </td>
+                    <td className="py-2 pr-3">
+                      <Text as="span" variant="detail">
+                        {PLACEHOLDER}
+                      </Text>
+                    </td>
+                    <td className="py-2">
+                      <Text as="span" variant="detail">
+                        {PLACEHOLDER}
+                      </Text>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
