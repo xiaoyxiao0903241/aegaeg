@@ -672,8 +672,6 @@ const app = defineMessages({
       signInForBalance: '簽名登入後查看',
       enterClaim: '進入領取',
       sessionHint: '請完成錢包簽名登入後再領取。連接錢包不等於業務登入。',
-      hideZero: 'Hide zero balances',
-      hideZeroEmpty: 'No non-zero reward cards. Turn off Hide zero balances to see all entries.',
       aboutSlides: {
         lucky: {
           title: 'Lucky',
@@ -703,24 +701,24 @@ const app = defineMessages({
       tierTable: {
         columns: ['Tier', 'Holding', 'Active accounts', 'Team volume', 'Bonus rate'],
         rows: [
-          { level: 'A1', holding: '$100', accounts: '2', team: '—', rate: '10%' },
+          { level: 'A1', holding: '$100', accounts: '2', team: 'Volume ≥ $6,000', rate: '10%' },
           { level: 'A2', holding: '$100', accounts: '2', team: 'Volume ≥ $20,000', rate: '20%' },
           { level: 'A3', holding: '$100', accounts: '2', team: 'Volume ≥ $60,000', rate: '30%' },
-          { level: 'A4', holding: '$100', accounts: '3', team: 'Two lines reach A3', rate: '40%' },
-          { level: 'A5', holding: '$500', accounts: '3', team: 'Two lines reach A4', rate: '50%' },
+          { level: 'A4', holding: '$500', accounts: '5', team: 'Volume ≥ $180,000', rate: '40%' },
+          { level: 'A5', holding: '$1,000', accounts: '5', team: 'Volume ≥ $550,000', rate: '55%' },
           {
             level: 'A6',
-            holding: '$1,000',
-            accounts: '4',
+            holding: '$2,000',
+            accounts: '5',
             team: 'Two lines reach A5',
-            rate: '60%',
+            rate: '68%',
           },
           {
             level: 'A7',
-            holding: '$2,000',
-            accounts: '4',
+            holding: '$3,000',
+            accounts: '5',
             team: 'Two lines reach A6',
-            rate: '70%',
+            rate: '78%',
           },
           {
             level: 'A8',
@@ -755,14 +753,21 @@ const app = defineMessages({
             holding: '$40,000',
             accounts: '5',
             team: 'Two lines reach A11',
-            rate: '128%',
+            rate: '125%',
           },
           {
             level: 'A13',
             holding: '$50,000',
             accounts: '5',
             team: 'Two lines reach A12',
-            rate: '138%',
+            rate: '130%',
+          },
+          {
+            level: 'Lifetime achievement',
+            holding: '$100,000',
+            accounts: '5',
+            team: 'Two lines reach A13',
+            rate: '130% + global dividend 5%',
           },
         ],
       },
@@ -775,12 +780,13 @@ const app = defineMessages({
         totalPerformance: '總業績',
         smallAreaPerformance: '小區業績',
         contribution: '貢獻點數',
-        contributionHint: '領取獎勵按 1:1 消耗貢獻點數（Mixed）。',
-        goClaim: '去領取',
-        goBurn: '去消耗 →',
+        contributionHint: '領取獎勵按 1:1 消耗',
+        goBurn: '去銷毀',
       },
       mechanismTitle: '共建獎機制',
       mechanismBody: '共建獎勵來源於團隊總 Rebase 收益，按等級比例獲得獎勵。',
+      mechanismFooter:
+        '任意雙線機制：任意兩條線達到對應等級，即可完成晉升。級別越高，獎金比例越高，最高可享終身成就獎與全球分紅。',
     },
     cards: {
       lucky: {

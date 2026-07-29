@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
@@ -12,24 +13,34 @@ import { Button } from '~/shared/ui/button'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '~/shared/ui/carousel'
 import { cn } from '~/shared/lib/utils'
-import type { RewardsView } from '~/shared/config/rewards-deep-link'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import type { Address } from '~/shared/config/contracts'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { readContributionSnapshot } from '~/web3/assets/assets-read'
 
-const ABOUT_VIEWS = [
-  'lucky',
-  'referral',
-  'participate',
-  'cobuild',
-  'grant',
-  'genesis',
-] as const satisfies readonly Exclude<RewardsView, 'hub'>[]
+/** Figma about carousel · 4 dots（推荐/参与/共建/幸运）；发展/创世不进轮播。 */
+const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
 
 const DASH = '—'
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function RewardsHubContent() {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
+  const { walletReady } = useDappShell()
+  const account = useActiveAccount()
+  const readClient = useChainReadClient()
+  const address = account?.address
   const [api, setApi] = useState<CarouselApi>()
   const [index, setIndex] = useState(0)
+
+  const contribQuery = useQuery({
+    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-hub'],
+    queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
+    enabled: Boolean(walletReady && address && readClient),
+  })
 
   const onSelect = useCallback(() => {
     if (!api) return
@@ -46,10 +57,15 @@ export function RewardsHubContent() {
   }, [api, onSelect])
 
   const tier = t.rewards.hub.tierTable
-  const emptyValue = sessionReady
-    ? t.rewards.hub.balancePlaceholder
-    : t.rewards.hub.signInForBalance
   const stats = t.rewards.hub.stats
+  const contributionValue =
+    !walletReady || !address
+      ? DASH
+      : contribQuery.isPending
+        ? '…'
+        : contribQuery.data
+          ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS, 2)
+          : DASH
 
   return (
     <DappDetailPage>
@@ -60,7 +76,7 @@ export function RewardsHubContent() {
               {stats.totalRewards}
             </Text>
             <Text as="p" className="mt-1.5 font-semibold" variant="copy">
-              {emptyValue}
+              {DASH}
             </Text>
           </div>
           <div className="relative overflow-hidden rounded-2xl bg-card p-4 shadow-sm">
@@ -96,23 +112,25 @@ export function RewardsHubContent() {
             </Text>
           </div>
           <div className="rounded-2xl bg-card p-4 shadow-sm">
-            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
-              {stats.contribution}
-            </Text>
+            <div className="flex items-start justify-between gap-2">
+              <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+                {stats.contribution}
+              </Text>
+              <Button
+                className="h-4 shrink-0 rounded-full bg-primary px-2 text-[10px] text-primary-foreground hover:bg-primary/90"
+                onClick={() => openExchangeView('burn')}
+                size="sm"
+                type="button"
+              >
+                {stats.goBurn}
+              </Button>
+            </div>
             <Text as="p" className="mt-1.5 font-semibold" variant="copy">
-              {DASH}
+              {contributionValue}
             </Text>
             <Text as="p" className="mt-1 text-[13px]" tone="muted-foreground" variant="detail">
               {stats.contributionHint}
             </Text>
-            <Button
-              className="mt-2 h-auto p-0 text-primary"
-              onClick={() => openExchangeView('burn')}
-              type="button"
-              variant="link"
-            >
-              {stats.goClaim}
-            </Button>
           </div>
         </div>
       </DappDetailBlock>
@@ -189,6 +207,9 @@ export function RewardsHubContent() {
               row.rate,
             ])}
           />
+          <Text as="p" className="mt-3.5 text-[13px]" tone="muted-foreground" variant="detail">
+            {t.rewards.hub.mechanismFooter}
+          </Text>
         </DappTableCard>
       </DappDetailBlock>
 
