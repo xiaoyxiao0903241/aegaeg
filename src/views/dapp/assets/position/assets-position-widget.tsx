@@ -69,9 +69,11 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
   const [claim, setClaim] = useState<ClaimState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
   const [busy, setBusy] = useState(false)
+  const [page, setPage] = useState(0)
 
   const copy = t.assets.products[product]
   const stakingTarget = product === 'stake' ? 'stake' : product === 'lpbond' ? 'lpbond' : 'burnbond'
+  const pageSize = t.assets.position.pageSize
 
   const stakeQuery = useQuery({
     queryKey: queryKeys.chain.assetsStakePositions(address ?? ''),
@@ -92,6 +94,12 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
   const bondRows = bondQuery.data ?? []
   const isEmpty = product === 'stake' ? stakeRows.length === 0 : bondRows.length === 0
   const isLoading = product === 'stake' ? stakeQuery.isLoading : bondQuery.isLoading
+  const totalRows = product === 'stake' ? stakeRows.length : bondRows.length
+  const pageCount = Math.max(1, Math.ceil(totalRows / pageSize))
+  const safePage = Math.min(page, pageCount - 1)
+  const pageSliceStart = safePage * pageSize
+  const pagedStakeRows = stakeRows.slice(pageSliceStart, pageSliceStart + pageSize)
+  const pagedBondRows = bondRows.slice(pageSliceStart, pageSliceStart + pageSize)
 
   function resolveMessage(error: unknown) {
     const raw = readErrorText(error)
@@ -149,25 +157,33 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
     <>
       <AssetsSubpageHeader subtitle={copy.intro} title={copy.title} />
       <ExchangeWidgetBody>
-        <div className="flex items-center justify-between gap-2">
-          <Text as="span" tone="muted-foreground" variant="detail">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <button
+            className="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-3 text-xs text-foreground"
+            type="button"
+          >
             {t.assets.position.sort}
-          </Text>
-          <div className="flex rounded-md border border-border p-0.5">
-            <button
-              className={`rounded px-2 py-1 text-xs ${quote === 'agx' ? 'bg-muted font-semibold' : ''}`}
-              onClick={() => setQuote('agx')}
-              type="button"
-            >
-              AGX
-            </button>
-            <button
-              className={`rounded px-2 py-1 text-xs ${quote === 'usd' ? 'bg-muted font-semibold' : ''}`}
-              onClick={() => setQuote('usd')}
-              type="button"
-            >
-              USD
-            </button>
+          </button>
+          <div className="flex items-center gap-1">
+            <Text as="span" tone="muted-foreground" variant="detail">
+              {t.assets.position.quoteCurrency}
+            </Text>
+            <div className="flex rounded-full bg-muted p-0.5">
+              <button
+                className={`rounded-full px-3 py-1 text-xs ${quote === 'agx' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+                onClick={() => setQuote('agx')}
+                type="button"
+              >
+                AGX
+              </button>
+              <button
+                className={`rounded-full px-3 py-1 text-xs ${quote === 'usd' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+                onClick={() => setQuote('usd')}
+                type="button"
+              >
+                USD
+              </button>
+            </div>
           </div>
         </div>
 
@@ -187,7 +203,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             </Button>
           </div>
         ) : product === 'stake' ? (
-          stakeRows.map((row) => {
+          pagedStakeRows.map((row) => {
             const reward = row.blockReward + row.extraInterest
             const canClaim = reward > 0n
             const canRedeem = row.kind === 'liquid' ? row.principal > 0n : row.claimableBalance > 0n
@@ -269,7 +285,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             )
           })
         ) : (
-          bondRows.map((row) => {
+          pagedBondRows.map((row) => {
             const canClaim = row.profit > 0n
             const canRedeem = row.pendingPayout > 0n
             const periodLabel = `${row.period}d`
@@ -278,6 +294,9 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                 <div className="flex items-center justify-between gap-2">
                   <Text as="span" className="font-semibold" variant="copy">
                     {periodLabel}
+                  </Text>
+                  <Text as="span" tone="muted-foreground" variant="detail">
+                    {t.assets.position.remaining}: —
                   </Text>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -331,6 +350,33 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             )
           })
         )}
+
+        {!isEmpty && walletReady ? (
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <Text as="span" tone="muted-foreground" variant="detail">
+              {t.common.paginationTotal.replace('{total}', String(totalRows))} ·{' '}
+              {t.common.paginationPerPage.replace('{size}', String(pageSize))}
+            </Text>
+            <div className="flex gap-2">
+              <button
+                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+                disabled={safePage <= 0}
+                onClick={() => setPage((value) => Math.max(0, value - 1))}
+                type="button"
+              >
+                {t.common.paginationPrev}
+              </button>
+              <button
+                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+                disabled={safePage >= pageCount - 1}
+                onClick={() => setPage((value) => Math.min(pageCount - 1, value + 1))}
+                type="button"
+              >
+                {t.common.paginationNext}
+              </button>
+            </div>
+          </div>
+        ) : null}
       </ExchangeWidgetBody>
 
       <AssetsClaimModal

@@ -936,6 +936,8 @@ const app = defineMessages({
     },
     position: {
       sort: 'Sort',
+      quoteCurrency: 'Quote currency',
+      pageSize: 5,
       remaining: 'Time left',
       staked: 'Staked',
       payout: 'Pending payout',
@@ -946,6 +948,7 @@ const app = defineMessages({
       unstake: 'Unstake',
       liquid: 'Flexible',
     },
+    opsColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     claim: {
       title: 'Claim yield',
       amount: 'Claim amount',
@@ -977,6 +980,9 @@ const app = defineMessages({
       success: 'Redeem submitted — principal entered the release buffer',
     },
     hub: {
+      hideZero: 'Hide zero balances',
+      hideZeroEmpty:
+        'No non-zero positions. Turn off Hide zero balances to see all product entries.',
       emptyHint: 'Pick a product to view positions, or open a position in Staking.',
       modes: {
         stake: { title: 'Stake', body: 'Manage AGX flexible / term positions' },
@@ -1044,6 +1050,18 @@ const app = defineMessages({
             {
               q: 'What is released?',
               a: 'Principal available to redeem after a locked stake matures.',
+            },
+            {
+              q: 'Why is each stake shown separately?',
+              a: 'Each open position accrues and releases independently so you can claim or redeem per position.',
+            },
+            {
+              q: 'What happens when the countdown ends?',
+              a: 'The position becomes redeemable/operable; on-chain status is authoritative.',
+            },
+            {
+              q: 'How does the restake ratio work when claiming?',
+              a: 'Use the slider to split release vs restake, pick periods, then confirm.',
             },
           ],
         },

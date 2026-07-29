@@ -922,6 +922,7 @@ const app = defineMessages({
     },
     position: {
       sort: '排序',
+      quoteCurrency: '计价单位',
       remaining: '剩余时间',
       staked: '质押数量',
       payout: '待赎回',
@@ -931,7 +932,9 @@ const app = defineMessages({
       unlock: '解锁',
       unstake: '解押',
       liquid: '活期',
+      pageSize: 5,
     },
+    opsColumns: ['时间', '操作', '数量', '交易哈希'],
     claim: {
       title: '领取收益',
       amount: '领取数量',
@@ -964,6 +967,8 @@ const app = defineMessages({
     },
     hub: {
       emptyHint: '选择产品查看仓位，或前往质押开仓。',
+      hideZero: '隐藏零持仓',
+      hideZeroEmpty: '当前没有非零持仓。关闭「隐藏零持仓」可查看全部产品入口。',
       modes: {
         stake: { title: '质押', body: '管理 AGX 活期/定期仓位' },
         lpbond: { title: 'LP 债券', body: '管理流动性债券仓位' },
@@ -987,7 +992,7 @@ const app = defineMessages({
       faq: {
         title: '常见问题',
         items: [
-          { q: '总资产价值如何计算？', a: '汇总各产品仓位与可领收益的估值。' },
+          { q: '总资产价值如何计算？', a: '汇总各产品仓位与可领收益的估值；暂无报价时显示为 —。' },
           { q: '为什么领取需要贡献点？', a: 'Mixed 领奖按手册消耗贡献值；不足请先销毁兑换。' },
           { q: '赎回后本金去哪了？', a: '进入 PrincipalReleaseVault 线性释放，不是立即到账。' },
         ],
@@ -1018,7 +1023,19 @@ const app = defineMessages({
               q: '领取和赎回有什么区别？',
               a: '领取处理收益（可分流复投）；赎回将本金送入释放缓冲。',
             },
+            {
+              q: '为什么每笔质押单独显示？',
+              a: '每笔开仓独立计息与释放进度，便于按仓位领取或赎回。',
+            },
             { q: '已释放是什么意思？', a: '定期仓位到期后可赎回的本金部分。' },
+            {
+              q: '倒计时结束后会怎样？',
+              a: '剩余时间归零后，对应仓位进入可赎回/可操作状态；请以链上状态为准。',
+            },
+            {
+              q: '领取时的复投比例怎么用？',
+              a: '通过滑杆分配释放与复投比例，并选择释放周期与复投周期后确认。',
+            },
           ],
         },
       },
