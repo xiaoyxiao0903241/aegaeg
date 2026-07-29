@@ -673,6 +673,102 @@ const app = defineMessages({
       },
       mechanismTitle: 'Co-build reward mechanism',
       mechanismBody: 'Co-build rewards come from team Rebase yield and are shared by tier.',
+
+      aboutTitle: 'About AEGIS X rewards',
+      hideZero: 'Hide zero balances',
+      hideZeroEmpty: 'No non-zero reward cards. Turn off Hide zero balances to see all entries.',
+      aboutSlides: {
+        lucky: {
+          title: 'Lucky',
+          body: 'Block-lucky draws for co-builders; claim via Mixed when won.',
+        },
+        referral: {
+          title: 'Referral',
+          body: 'Earn 10% of each direct referral Rebase yield, settled on-chain. Keep your position value above $100.',
+        },
+        participate: {
+          title: 'Participate',
+          body: 'Rewards from your referrer via IncentivePool signed claims.',
+        },
+        cobuild: {
+          title: 'Co-build',
+          body: 'Long-term team incentives by tier; Mixed claims require contribution points.',
+        },
+        grant: {
+          title: 'Growth grant',
+          body: 'Ecosystem grant via MarketFund signed claims.',
+        },
+        genesis: {
+          title: 'Genesis co-build',
+          body: 'Genesis referral, tier, and growth-fund rewards; claims close after settlement ends.',
+        },
+      },
+      tierTable: {
+        columns: ['Tier', 'Holding', 'Active accounts', 'Team volume', 'Bonus rate'],
+        rows: [
+          { level: 'A1', holding: '$100', accounts: '2', team: '—', rate: '10%' },
+          { level: 'A2', holding: '$100', accounts: '2', team: 'Volume ≥ $20,000', rate: '20%' },
+          { level: 'A3', holding: '$100', accounts: '2', team: 'Volume ≥ $60,000', rate: '30%' },
+          { level: 'A4', holding: '$100', accounts: '3', team: 'Two lines reach A3', rate: '40%' },
+          { level: 'A5', holding: '$500', accounts: '3', team: 'Two lines reach A4', rate: '50%' },
+          {
+            level: 'A6',
+            holding: '$1,000',
+            accounts: '4',
+            team: 'Two lines reach A5',
+            rate: '60%',
+          },
+          {
+            level: 'A7',
+            holding: '$2,000',
+            accounts: '4',
+            team: 'Two lines reach A6',
+            rate: '70%',
+          },
+          {
+            level: 'A8',
+            holding: '$5,000',
+            accounts: '5',
+            team: 'Two lines reach A7',
+            rate: '88%',
+          },
+          {
+            level: 'A9',
+            holding: '$10,000',
+            accounts: '5',
+            team: 'Two lines reach A8',
+            rate: '98%',
+          },
+          {
+            level: 'A10',
+            holding: '$20,000',
+            accounts: '5',
+            team: 'Two lines reach A9',
+            rate: '108%',
+          },
+          {
+            level: 'A11',
+            holding: '$30,000',
+            accounts: '5',
+            team: 'Two lines reach A10',
+            rate: '118%',
+          },
+          {
+            level: 'A12',
+            holding: '$40,000',
+            accounts: '5',
+            team: 'Two lines reach A11',
+            rate: '128%',
+          },
+          {
+            level: 'A13',
+            holding: '$50,000',
+            accounts: '5',
+            team: 'Two lines reach A12',
+            rate: '138%',
+          },
+        ],
+      },
     },
     cards: {
       lucky: {
@@ -712,6 +808,13 @@ const app = defineMessages({
       emptyClaimable: 'No reward available to claim.',
       signedAmountHint: 'Claimable amount follows the signed payload',
     },
+
+    claimHistory: {
+      title: 'Grant & claim history',
+      columns: ['Time', 'Type', 'Amount', 'Tx hash'],
+      empty: 'No records yet',
+    },
+
     mixed: {
       splitAria: 'Claim vs restake split',
       releasePct: 'Claim {pct}%',

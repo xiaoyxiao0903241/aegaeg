@@ -646,10 +646,13 @@ const app = defineMessages({
     hub: {
       asideTitle: '关于 AEGIS X 奖励',
       asideBody: '六种奖励卡片覆盖幸运抽奖、推荐、参与、共建、发展津贴与创世共建。',
+      aboutTitle: '关于AEGIS X奖励',
       balanceLabel: '余额',
       balancePlaceholder: '—',
       signInForBalance: '签名登录后查看',
       sessionHint: '请完成钱包签名登录后再领取。连接钱包不等于业务登录。',
+      hideZero: '隐藏零余额',
+      hideZeroEmpty: '当前没有非零余额卡片。关闭「隐藏零余额」可查看全部入口。',
       stats: {
         totalRewards: '总奖励',
         tier: '共建级别',
@@ -660,6 +663,50 @@ const app = defineMessages({
       },
       mechanismTitle: '共建奖机制',
       mechanismBody: '共建奖励来源于团队总 Rebase 收益，按等级比例获得奖励。',
+      aboutSlides: {
+        lucky: {
+          title: '幸运奖',
+          body: '爆块幸运抽奖，随机发放给幸运共建者；中奖后走 Mixed 领取。',
+        },
+        referral: {
+          title: '推荐奖',
+          body: '直推伙伴参与共建后，您可获得其每次 Rebase 收益的 10%，链上即时结算。需保持自身仓位价值大于 $100。',
+        },
+        participate: {
+          title: '参与奖',
+          body: '来自推荐人的奖励，通过 IncentivePool 签名领取。',
+        },
+        cobuild: {
+          title: '共建奖',
+          body: '通过团队协作与长期共建构建的可持续发展激励；按等级比例分配，Mixed 领取需贡献点数。',
+        },
+        grant: {
+          title: '发展津贴',
+          body: '生态发展专项津贴，通过 MarketFund 签名领取。',
+        },
+        genesis: {
+          title: '创世共建奖励',
+          body: '创世期的直推奖励、等级奖励与发展基金；结算窗口关闭后不可再领。',
+        },
+      },
+      tierTable: {
+        columns: ['等级', '个人持仓', '有效账户', '团队业绩', '奖金比例'],
+        rows: [
+          { level: 'A1', holding: '$100', accounts: '2', team: '—', rate: '10%' },
+          { level: 'A2', holding: '$100', accounts: '2', team: '总业绩 ≥ $20,000', rate: '20%' },
+          { level: 'A3', holding: '$100', accounts: '2', team: '总业绩 ≥ $60,000', rate: '30%' },
+          { level: 'A4', holding: '$100', accounts: '3', team: '双线达成A3', rate: '40%' },
+          { level: 'A5', holding: '$500', accounts: '3', team: '双线达成A4', rate: '50%' },
+          { level: 'A6', holding: '$1,000', accounts: '4', team: '双线达成A5', rate: '60%' },
+          { level: 'A7', holding: '$2,000', accounts: '4', team: '双线达成A6', rate: '70%' },
+          { level: 'A8', holding: '$5,000', accounts: '5', team: '双线达成A7', rate: '88%' },
+          { level: 'A9', holding: '$10,000', accounts: '5', team: '双线达成A8', rate: '98%' },
+          { level: 'A10', holding: '$20,000', accounts: '5', team: '双线达成A9', rate: '108%' },
+          { level: 'A11', holding: '$30,000', accounts: '5', team: '双线达成A10', rate: '118%' },
+          { level: 'A12', holding: '$40,000', accounts: '5', team: '双线达成A11', rate: '128%' },
+          { level: 'A13', holding: '$50,000', accounts: '5', team: '双线达成A12', rate: '138%' },
+        ],
+      },
     },
     cards: {
       lucky: {
@@ -691,13 +738,18 @@ const app = defineMessages({
         title: '创世共建奖励',
         body: '创世期的直推奖励、等级奖励与发展基金',
         aside: '创世共建奖励通过 RewardClaimer 签名领取。',
-        badge: '结算关闭',
+        badge: '即将关闭',
       },
     },
     detail: {
       claimable: '可领取',
       emptyClaimable: '暂无可领取的奖励。',
       signedAmountHint: '可领金额以签名包为准',
+    },
+    claimHistory: {
+      title: '发放与领取记录',
+      columns: ['时间', '类型', '数量', '交易哈希'],
+      empty: '暂无记录',
     },
     mixed: {
       splitAria: '领取与复投比例',
