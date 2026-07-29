@@ -7,13 +7,8 @@ import {
 } from '~/core/release/release-gates'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { writeClaimAllVestedRewards, writeClaimManyReleases } from '~/web3/release/release-write'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  lockUnknownReceipt,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { runUnknownGuardedWrite } from '~/web3/wallet/run-unknown-guarded-write'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
 
@@ -34,6 +29,12 @@ function gateError(
   return RELEASE_GATE_ERROR[reason]
 }
 
+function mapGuardedError(error: unknown): string {
+  if (typeof error === 'string') return error
+  if (error instanceof Error && error.message) return error.message
+  return RELEASE_GATE_ERROR.unavailable
+}
+
 export async function submitReleaseQueueClaim(args: {
   account: ActiveAccount
   wallet: ActiveWallet
@@ -47,43 +48,41 @@ export async function submitReleaseQueueClaim(args: {
   if (planIndex < 0) {
     return { ok: false, error: RELEASE_GATE_ERROR.planUnresolved }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM)) {
-    return { ok: false, error: RELEASE_GATE_ERROR.lockedUnknown }
-  }
 
   const address = account.address as Address
-  const pre = await readReleaseQueueSnapshot(address, readClient)
-  const preRow = pre.plans.find((row) => row.planIndex === planIndex)
-  const preGate = evaluateReleaseQueueClaimGate({
-    claimable: preRow?.claimable ?? 0n,
-    unknownLocked: false,
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.RELEASE_CLAIM,
+    lockedError: RELEASE_GATE_ERROR.lockedUnknown,
+    run: async () => {
+      const pre = await readReleaseQueueSnapshot(address, readClient)
+      const preRow = pre.plans.find((row) => row.planIndex === planIndex)
+      const preErr = gateError(
+        evaluateReleaseQueueClaimGate({
+          claimable: preRow?.claimable ?? 0n,
+          unknownLocked: false,
+        }),
+      )
+      if (preErr) throw preErr
+
+      const live = await readReleaseQueueSnapshot(address, readClient)
+      const liveRow = live.plans.find((row) => row.planIndex === planIndex)
+      const liveErr = gateError(
+        evaluateReleaseQueueClaimGate({
+          claimable: liveRow?.claimable ?? 0n,
+          unknownLocked: false,
+        }),
+      )
+      if (liveErr) throw liveErr
+
+      await writeClaimAllVestedRewards({ wallet, planIndex })
+    },
   })
-  const preErr = gateError(preGate)
-  if (preErr) return { ok: false, error: preErr }
 
-  try {
-    const live = await readReleaseQueueSnapshot(address, readClient)
-    const liveRow = live.plans.find((row) => row.planIndex === planIndex)
-    const liveGate = evaluateReleaseQueueClaimGate({
-      claimable: liveRow?.claimable ?? 0n,
-      unknownLocked: isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM),
-    })
-    const liveErr = gateError(liveGate)
-    if (liveErr) return { ok: false, error: liveErr }
-
-    await writeClaimAllVestedRewards({ wallet, planIndex })
-    clearUnknownReceiptLock(WRITE_PATH.RELEASE_CLAIM)
-    invalidateAfterReleaseClaim()
-    return { ok: true }
-  } catch (error) {
-    if (isUnknownSubmitOutcome(error)) {
-      lockUnknownReceipt(WRITE_PATH.RELEASE_CLAIM)
-    }
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : RELEASE_GATE_ERROR.unavailable,
-    }
+  if (!guarded.ok) {
+    return { ok: false, error: mapGuardedError(guarded.error) }
   }
+  invalidateAfterReleaseClaim()
+  return { ok: true }
 }
 
 export async function submitReleaseBufferClaim(args: {
@@ -95,40 +94,38 @@ export async function submitReleaseBufferClaim(args: {
   if (!account?.address || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM)) {
-    return { ok: false, error: RELEASE_GATE_ERROR.lockedUnknown }
-  }
 
   const address = account.address as Address
-  const pre = await readReleaseBufferSnapshot(address, readClient)
-  const preGate = evaluateReleaseBufferClaimGate({
-    claimable: pre.totalClaimable,
-    unknownLocked: false,
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.RELEASE_CLAIM,
+    lockedError: RELEASE_GATE_ERROR.lockedUnknown,
+    run: async () => {
+      const pre = await readReleaseBufferSnapshot(address, readClient)
+      const preErr = gateError(
+        evaluateReleaseBufferClaimGate({
+          claimable: pre.totalClaimable,
+          unknownLocked: false,
+        }),
+      )
+      if (preErr) throw preErr
+
+      const live = await readReleaseBufferSnapshot(address, readClient)
+      const liveErr = gateError(
+        evaluateReleaseBufferClaimGate({
+          claimable: live.totalClaimable,
+          unknownLocked: false,
+        }),
+      )
+      if (liveErr) throw liveErr
+      if (live.count <= 0) throw RELEASE_GATE_ERROR.zeroAmount
+
+      await writeClaimManyReleases({ wallet, start: 0, limit: live.count })
+    },
   })
-  const preErr = gateError(preGate)
-  if (preErr) return { ok: false, error: preErr }
 
-  try {
-    const live = await readReleaseBufferSnapshot(address, readClient)
-    const liveGate = evaluateReleaseBufferClaimGate({
-      claimable: live.totalClaimable,
-      unknownLocked: isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM),
-    })
-    const liveErr = gateError(liveGate)
-    if (liveErr) return { ok: false, error: liveErr }
-    if (live.count <= 0) return { ok: false, error: RELEASE_GATE_ERROR.zeroAmount }
-
-    await writeClaimManyReleases({ wallet, start: 0, limit: live.count })
-    clearUnknownReceiptLock(WRITE_PATH.RELEASE_CLAIM)
-    invalidateAfterReleaseClaim()
-    return { ok: true }
-  } catch (error) {
-    if (isUnknownSubmitOutcome(error)) {
-      lockUnknownReceipt(WRITE_PATH.RELEASE_CLAIM)
-    }
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : RELEASE_GATE_ERROR.unavailable,
-    }
+  if (!guarded.ok) {
+    return { ok: false, error: mapGuardedError(guarded.error) }
   }
+  invalidateAfterReleaseClaim()
+  return { ok: true }
 }

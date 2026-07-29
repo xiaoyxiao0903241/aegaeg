@@ -40,7 +40,8 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 | 主题                      | 路径                                                                                     |
 | ------------------------- | ---------------------------------------------------------------------------------------- |
 | Write intent / writeReady | `web3/wallet/assert-write-intent.ts` · `use-write-readiness.ts`                          |
-| Unknown receipt lock      | `web3/wallet/unknown-receipt-lock.ts`                                                    |
+| Unknown receipt lock      | `web3/wallet/unknown-receipt-lock.ts` · `run-unknown-guarded-write.ts`                   |
+| Assets Mixed dual-gate    | `core/assets/dual-gate-mixed-claim.ts`（intent×live；禁自证）                            |
 | Swap 门闸                 | `core/exchange/resolve-live-quoted-out.ts` · `views/dapp/exchange/use-exchange-quote.ts` |
 | Genesis 二次门闸          | `fetch-live-genesis-post-approve-gate.ts` · `evaluateGenesisPostApproveGate`             |
 | Staking / BondZap / Xmine | `core/staking/staking-gates.ts` · `web3/staking/*`                                       |
@@ -54,7 +55,8 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 | 主题                        | 文件                                                                                 |
 | --------------------------- | ------------------------------------------------------------------------------------ |
 | Write intent                | `write-intent.test.mjs`                                                              |
-| Unknown receipt lock        | `unknown-receipt-lock.test.mjs`                                                      |
+| Unknown receipt lock        | `unknown-receipt-lock.test.mjs` · `run-unknown-guarded-write.test.mjs`               |
+| Assets Mixed dual-gate      | `dual-gate-mixed-claim.test.mjs`                                                     |
 | Live post-approve / balance | `live-post-approve-gates.test.mjs`                                                   |
 | Quote / unknown 门闸        | `react-quality-gates.test.mjs`                                                       |
 | Genesis gate                | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApproveGate`）                  |

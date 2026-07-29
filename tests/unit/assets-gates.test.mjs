@@ -58,5 +58,7 @@ test('submitMixedClaim source must call readMixedRewardAvailable (string lock)',
     'utf8',
   )
   assert.match(src, /readMixedRewardAvailable/)
+  assert.match(src, /dualGateMixedClaim/)
+  assert.match(src, /runUnknownGuardedWrite/)
   assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
 })

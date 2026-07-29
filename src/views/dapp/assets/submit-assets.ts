@@ -2,11 +2,11 @@ import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import {
-  evaluateMixedClaimGate,
   evaluateRedeemGate,
   evaluateXmineClaimGate,
   evaluateXmineUnstakeGate,
 } from '~/core/assets/assets-gates'
+import { dualGateMixedClaim } from '~/core/assets/dual-gate-mixed-claim'
 import {
   matchPlanIndexByDurationDays,
   restakeBpsFromPct,
@@ -34,6 +34,7 @@ import {
   writeXmineStartUnstake,
 } from '~/web3/assets/assets-write'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
+import { runUnknownGuardedWrite } from '~/web3/wallet/run-unknown-guarded-write'
 import {
   WRITE_PATH,
   clearUnknownReceiptLock,
@@ -80,6 +81,30 @@ export type MixedClaimTarget =
       amount: bigint
     }
 
+async function readMixedClaimSnapshot(
+  target: MixedClaimTarget,
+  user: Address,
+  amount: bigint,
+  releaseDays: ReleaseDurationDays,
+  restakeDays: RestakeDurationDays,
+  readClient: ChainReadClient,
+) {
+  const plans = await readClaimPlans(readClient)
+  const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
+  const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
+  const [rewardAvailable, contrib] = await Promise.all([
+    readMixedRewardAvailable(target, user, readClient),
+    readContributionSnapshot(user, amount, readClient),
+  ])
+  return {
+    rewardAvailable,
+    contribution: contrib.contribution,
+    requiredContribution: contrib.requiredContribution,
+    releasePlanIndex,
+    restakePlanIndex,
+  }
+}
+
 export async function submitMixedClaim(args: {
   target: MixedClaimTarget
   releaseDays: ReleaseDurationDays
@@ -93,97 +118,77 @@ export async function submitMixedClaim(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)) {
-    return { ok: false, error: ASSETS_GATE_ERROR.unavailable }
-  }
 
   const amount = target.amount
   const restakeBps = restakeBpsFromPct(restakePct)
   const user = account.address as Address
 
-  try {
-    const plans = await readClaimPlans(readClient)
-    const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
-    const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
-    const [rewardAvailable, contrib] = await Promise.all([
-      readMixedRewardAvailable(target, user, readClient),
-      readContributionSnapshot(user, amount, readClient),
-    ])
-
-    const preGate = evaluateMixedClaimGate({
-      amount,
-      rewardAvailable,
-      contribution: contrib.contribution,
-      requiredContribution: contrib.requiredContribution,
-      releasePlanIndex,
-      restakePlanIndex,
-    })
-    const preErr = gateError(preGate)
-    if (preErr) return { ok: false, error: preErr }
-
-    // Live re-read rewards + contribution + plans (money-path: never trust modal snapshot)
-    const livePlans = await readClaimPlans(readClient)
-    const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
-    const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
-    const [liveReward, liveContrib] = await Promise.all([
-      readMixedRewardAvailable(target, user, readClient),
-      readContributionSnapshot(user, amount, readClient),
-    ])
-    const liveGate = evaluateMixedClaimGate({
-      amount,
-      rewardAvailable: liveReward,
-      contribution: liveContrib.contribution,
-      requiredContribution: liveContrib.requiredContribution,
-      releasePlanIndex: liveRelease,
-      restakePlanIndex: liveRestake,
-    })
-    const liveErr = gateError(liveGate)
-    if (liveErr) return { ok: false, error: liveErr }
-    if (liveRelease == null || liveRestake == null) {
-      return { ok: false, error: ASSETS_GATE_ERROR.releasePlanUnresolved }
-    }
-
-    if (target.source === 'liquid') {
-      await writeLiquidClaimMixed({
-        wallet,
-        releasePlanIndex: liveRelease,
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    lockedError: ASSETS_GATE_ERROR.unavailable,
+    run: async () => {
+      const intent = await readMixedClaimSnapshot(
+        target,
+        user,
         amount,
-        restakePlanIndex: liveRestake,
-        restakeBps,
-      })
-    } else if (target.source === 'locked') {
-      await writeLockedClaimMixed({
-        wallet,
-        pool: target.pool,
-        stakeIndex: target.stakeIndex,
+        releaseDays,
+        restakeDays,
+        readClient,
+      )
+      const live = await readMixedClaimSnapshot(
+        target,
+        user,
         amount,
-        releasePlanIndex: liveRelease,
-        restakePlanIndex: liveRestake,
-        restakeBps,
-        extra: target.extra,
-      })
-    } else {
-      await writeBondClaimMixed({
-        wallet,
-        depository: target.depository,
-        recipient: account.address as Address,
-        amount,
-        releasePlanIndex: liveRelease,
-        bondIndex: target.bondIndex,
-        restakePlanIndex: liveRestake,
-        restakeBps,
-      })
-    }
+        releaseDays,
+        restakeDays,
+        readClient,
+      )
+      const dual = dualGateMixedClaim({ amount, intent, live })
+      if (!dual.ok) {
+        const mapped = gateError(dual.fail.reason)
+        throw mapped ?? ASSETS_GATE_ERROR.unavailable
+      }
 
-    clearUnknownReceiptLock(WRITE_PATH.ASSETS_CLAIM)
-    invalidateAfterAssetsClaim()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.ASSETS_CLAIM)
-    }
-    return { ok: false, error: caught }
+      const { releasePlanIndex, restakePlanIndex } = dual.ready
+      if (target.source === 'liquid') {
+        await writeLiquidClaimMixed({
+          wallet,
+          releasePlanIndex,
+          amount,
+          restakePlanIndex,
+          restakeBps,
+        })
+      } else if (target.source === 'locked') {
+        await writeLockedClaimMixed({
+          wallet,
+          pool: target.pool,
+          stakeIndex: target.stakeIndex,
+          amount,
+          releasePlanIndex,
+          restakePlanIndex,
+          restakeBps,
+          extra: target.extra,
+        })
+      } else {
+        await writeBondClaimMixed({
+          wallet,
+          depository: target.depository,
+          recipient: account.address as Address,
+          amount,
+          releasePlanIndex,
+          bondIndex: target.bondIndex,
+          restakePlanIndex,
+          restakeBps,
+        })
+      }
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
+  invalidateAfterAssetsClaim()
+  return { ok: true }
 }
 
 export async function submitStakeRedeem(args: {
