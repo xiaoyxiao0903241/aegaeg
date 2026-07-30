@@ -8,6 +8,8 @@ export type ExchangeTokenPickerOption = {
   symbol: string
   icon?: string
   balanceLabel: string
+  /** Shown in list but not selectable (handbook-silent / DEFER tokens). */
+  disabled?: boolean
 }
 
 /**
@@ -119,18 +121,25 @@ export function ExchangeTokenPicker({
         >
           {options.map((option) => {
             const active = option.key === value
+            const optionDisabled = Boolean(option.disabled)
             return (
               <button
                 key={option.key}
+                aria-disabled={optionDisabled || undefined}
                 aria-selected={active}
                 className={cn(
-                  'flex w-full cursor-pointer items-center gap-[9px] rounded-[10px] border-0 px-2.5 py-2 text-left',
+                  'flex w-full items-center gap-[9px] rounded-[10px] border-0 px-2.5 py-2 text-left',
                   'transition-colors duration-150 ease-out focus-visible:outline-none',
-                  active
-                    ? 'bg-primary-soft'
-                    : 'bg-transparent hover:bg-background focus-visible:bg-background',
+                  optionDisabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
+                  !optionDisabled &&
+                    (active
+                      ? 'bg-primary-soft'
+                      : 'bg-transparent hover:bg-background focus-visible:bg-background'),
+                  optionDisabled && active && 'bg-primary-soft',
                 )}
+                disabled={optionDisabled}
                 onClick={() => {
+                  if (optionDisabled) return
                   onSelect(option.key)
                   setOpen(false)
                 }}

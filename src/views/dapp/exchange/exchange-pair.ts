@@ -12,8 +12,12 @@ export { FLASH_PAIR_DEFAULT, isFlashPairId }
 export type { TradeTokenKey } from '~/core/exchange/resolve-trade-path'
 export {
   TRADE_TOKEN_KEYS,
+  TRADE_LIVE_TOKEN_KEYS,
   tradeBuyOptions,
   isTradeTokenKey,
+  isTradeTokenLive,
+  resolveBuyKeyAfterSellChange,
+  resolveTradePath,
 } from '~/core/exchange/resolve-trade-path'
 
 export interface ExchangePairToken {

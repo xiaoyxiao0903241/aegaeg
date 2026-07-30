@@ -17,7 +17,7 @@ import { useChainReadClient } from '~/web3/use-chain-read-client'
 /**
  * Figma hub program grid (PC `4267:212`):
  * 0 Trade gAGX → flash · 1 Turbine → turbine · 2 Get USD1 → flash
- * 3 Get AGX → trade · 4 Sell X → trade (sell=X) · 5 Points → burn
+ * 3 Get AGX → trade · 4 Sell X → trade（X 选币 DEFER：§7.1 仅 USD1↔AGX，进交易默认对） · 5 Points → burn
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'flash',
@@ -28,7 +28,7 @@ const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'burn',
 ]
 
-/** Index of「出售 X」— open trade with sell=X. */
+/** Index of「出售 X」— opens trade; X preselect DEFER until handbook lists X. */
 const SELL_X_CARD_INDEX = 4
 
 /** Parallel to i18n cards — `undefined` = text-only leaf. */
@@ -163,8 +163,9 @@ export function ExchangeProgramCards() {
             onClick={
               target
                 ? () => {
+                    // Sell X: open trade on handbook default pair; X preselect DEFER (T-D1c).
                     if (index === SELL_X_CARD_INDEX) {
-                      useExchangeTradePairStore.getState().setSellKey('x')
+                      useExchangeTradePairStore.getState().setSellKey('usd1')
                     }
                     openExchangeView(target)
                   }

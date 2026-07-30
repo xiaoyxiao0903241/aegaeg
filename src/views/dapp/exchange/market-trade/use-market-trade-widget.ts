@@ -13,6 +13,7 @@ import {
   getTradePairTokens,
   getTradeSwapPath,
   getTradeToken,
+  isTradeTokenLive,
   tradeBuyOptions,
   type TradeTokenKey,
 } from '~/views/dapp/exchange/exchange-pair'
@@ -57,7 +58,6 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const address = account?.address
   const walletReady = hasWalletAccount(account)
   const slippageBps = slippagePercentToBps(slippage)
-  const priceImpactApplicable = sellKey !== 'x' && buyKey !== 'x'
 
   const {
     balancesQuery,
@@ -120,15 +120,12 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const routeLabel = formatTradeRouteLabel(sellKey, buyKey)
   const pancakeSwapUrl = resolvePancakeSwapDeepLink(pair.sell.address, pair.buy.address)
   const priceImpactLabel =
-    !priceImpactApplicable || !sessionReady || core.amountIn === 0n || core.isQuoting
+    !sessionReady || core.amountIn === 0n || core.isQuoting
       ? ''
       : `${(priceImpactBps / 100).toFixed(2)}%`
   const gasEstimateLabel = formatGasEstimate(gasEstimate)
   const isHighPriceImpact =
-    priceImpactApplicable &&
-    sessionReady &&
-    core.amountIn > 0n &&
-    priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
+    sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 
   function flipDirection() {
     core.setBlockResubmit(false)
@@ -137,14 +134,14 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   }
 
   function selectSellToken(key: TradeTokenKey) {
-    if (key === sellKey) return
+    if (!isTradeTokenLive(key) || key === sellKey) return
     core.setBlockResubmit(false)
     setSellKey(key)
     core.clearAmount()
   }
 
   function selectBuyToken(key: TradeTokenKey) {
-    if (key === buyKey || key === sellKey) return
+    if (!isTradeTokenLive(key) || key === buyKey || key === sellKey) return
     core.setBlockResubmit(false)
     setBuyKey(key)
     core.clearAmount()
@@ -173,6 +170,7 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     sellPickerKeys,
     buyPickerKeys,
     getToken: getTradeToken,
+    isTokenLive: isTradeTokenLive,
     sellBalanceLabel: formatTokenAmount(sellBalance, pair.sell.decimals, 4),
     buyBalanceLabel: formatTokenAmount(buyBalance, pair.buy.decimals, 4),
     balanceLabelFor: (key: TradeTokenKey) => {

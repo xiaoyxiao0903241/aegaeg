@@ -32,3 +32,13 @@ test('resolveBuyKeyAfterSellChange defaults X sell to AGX buy', async () => {
   assert.equal(resolveBuyKeyAfterSellChange('x', 'usd1'), 'usd1')
   assert.equal(resolveBuyKeyAfterSellChange('usd1', 'usd1'), 'agx')
 })
+
+test('isTradeTokenLive: handbook §7.1 USD1/AGX only', async () => {
+  const { isTradeTokenLive, TRADE_LIVE_TOKEN_KEYS } = await loadModule(
+    '/src/core/exchange/resolve-trade-path.ts',
+  )
+  assert.deepEqual([...TRADE_LIVE_TOKEN_KEYS], ['usd1', 'agx'])
+  assert.equal(isTradeTokenLive('usd1'), true)
+  assert.equal(isTradeTokenLive('agx'), true)
+  assert.equal(isTradeTokenLive('x'), false)
+})

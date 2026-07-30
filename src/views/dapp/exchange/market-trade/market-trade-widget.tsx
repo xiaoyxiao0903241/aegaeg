@@ -82,6 +82,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
       symbol: token.symbol,
       icon: token.icon,
       balanceLabel: trade.balanceLabelFor(key),
+      disabled: !trade.isTokenLive(key),
     }
   })
   const buyPickerOptions = trade.buyPickerKeys.map((key) => {
@@ -91,11 +92,12 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
       symbol: token.symbol,
       icon: token.icon,
       balanceLabel: trade.balanceLabelFor(key),
+      disabled: !trade.isTokenLive(key),
     }
   })
 
   function handleTokenPick(side: 'sell' | 'buy', key: string) {
-    if (!isTradeTokenKey(key)) return
+    if (!isTradeTokenKey(key) || !trade.isTokenLive(key)) return
     if (side === 'sell') trade.selectSellToken(key)
     else trade.selectBuyToken(key)
   }

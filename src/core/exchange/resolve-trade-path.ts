@@ -1,14 +1,22 @@
-/** Trade sell/buy keys — proto picker USD1 / AGX / X (product extension beyond handbook §7.1). */
+/** Trade sell/buy keys — proto picker lists USD1 / AGX / X; only handbook §7.1 pair is live. */
 export type TradeTokenKey = 'usd1' | 'agx' | 'x'
 
 export const TRADE_TOKEN_KEYS = ['usd1', 'agx', 'x'] as const satisfies readonly TradeTokenKey[]
 
+/** Handbook §7.1 Pancake Trade — live selectable keys (X shown disabled until DEFER lifts). */
+export const TRADE_LIVE_TOKEN_KEYS = ['usd1', 'agx'] as const satisfies readonly TradeTokenKey[]
+
 export type TradeTokenAddresses = Record<TradeTokenKey, `0x${string}`>
+
+export function isTradeTokenLive(key: TradeTokenKey): boolean {
+  return (TRADE_LIVE_TOKEN_KEYS as readonly TradeTokenKey[]).includes(key)
+}
 
 /**
  * Pancake V2 path for Trade.
  * - USD1↔AGX / AGX↔X: direct hop
  * - USD1↔X: via AGX (proto: `X → AGX → USD1`)
+ * Live UI only selects USD1↔AGX; X paths retained for DEFER re-enable.
  */
 export function resolveTradePath(
   sellKey: TradeTokenKey,
@@ -35,13 +43,13 @@ export function isTradeTokenKey(value: string): value is TradeTokenKey {
   return (TRADE_TOKEN_KEYS as readonly string[]).includes(value)
 }
 
-/** When sell changes, keep buy if still valid; else default (X → AGX, else first other). */
+/** When sell changes, keep buy if still valid + live; else default to other live token. */
 export function resolveBuyKeyAfterSellChange(
   sellKey: TradeTokenKey,
   previousBuyKey: TradeTokenKey,
 ): TradeTokenKey {
-  if (previousBuyKey !== sellKey) return previousBuyKey
-  if (sellKey === 'x') return 'agx'
+  if (previousBuyKey !== sellKey && isTradeTokenLive(previousBuyKey)) return previousBuyKey
+  if (!isTradeTokenLive(sellKey)) return 'agx'
   return sellKey === 'usd1' ? 'agx' : 'usd1'
 }
 
