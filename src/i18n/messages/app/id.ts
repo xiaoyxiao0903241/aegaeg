@@ -522,8 +522,8 @@ const app = defineMessages({
               a: 'USD1 serves as the core settlement asset, connecting liquidity networks, payment scenarios, and ecosystem value flows.',
             },
             {
-              q: 'How do I swap USD1?',
-              a: 'Users can quickly swap USDT for USD1 through on-chain swap functionality to participate in the AEGIS X ecosystem.',
+              q: 'How do I get USD1?',
+              a: 'Use the “Get USD1” entry on the Swap hub at PancakeSwap market rates, or swap AGX, X, and other ecosystem tokens on the Trade page.',
             },
           ],
         },
@@ -541,6 +541,10 @@ const app = defineMessages({
             {
               q: 'How do I get AGX?',
               a: 'Users can obtain AGX by participating in the protocol ecosystem, or acquire it through trading markets supported by the protocol.',
+            },
+            {
+              q: 'Where does AGX value support come from?',
+              a: 'AGX is minted with 150% over-collateralization backed by think-tank reserves, and forms a long-term value loop through staking, bonds, Rebase compounding, and buyback-and-burn.',
             },
           ],
         },
@@ -575,6 +579,10 @@ const app = defineMessages({
             {
               q: 'How is the X airdrop released?',
               a: 'X value comes from ecosystem growth, value accumulation, and long-term development consensus, making it a key carrier of ecosystem value.',
+            },
+            {
+              q: 'Why does X stay deflationary?',
+              a: 'X has a fixed 210 million supply with no further minting, and 25% of each sell is burned. Growth-driven demand plus ongoing burns shrink circulating supply over time.',
             },
           ],
         },

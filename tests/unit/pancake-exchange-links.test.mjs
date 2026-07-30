@@ -2,13 +2,24 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('resolvePancakeSwapDeepLink maps USD1 and AGX directions', async () => {
+test('resolvePancakeSwapDeepLink builds from token addresses', async () => {
   const { PANCAKE_SWAP_DEEP_LINKS, resolvePancakeSwapDeepLink } = await loadModule(
     '/src/shared/config/pancake-exchange-links.ts',
   )
+  const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
-  assert.equal(resolvePancakeSwapDeepLink('USD1', 'AGX'), PANCAKE_SWAP_DEEP_LINKS.usd1ToAgx)
-  assert.equal(resolvePancakeSwapDeepLink('AGX', 'USD1'), PANCAKE_SWAP_DEEP_LINKS.agxToUsd1)
+  assert.equal(
+    resolvePancakeSwapDeepLink(BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx),
+    PANCAKE_SWAP_DEEP_LINKS.usd1ToAgx,
+  )
+  assert.equal(
+    resolvePancakeSwapDeepLink(BSC_CONTRACTS.agx, BSC_CONTRACTS.usd1),
+    PANCAKE_SWAP_DEEP_LINKS.agxToUsd1,
+  )
+  assert.match(
+    resolvePancakeSwapDeepLink(BSC_CONTRACTS.xToken, BSC_CONTRACTS.agx),
+    new RegExp(BSC_CONTRACTS.xToken, 'i'),
+  )
 })
 
 test('formatExchangeRateApprox displays connected swap meta rate', async () => {

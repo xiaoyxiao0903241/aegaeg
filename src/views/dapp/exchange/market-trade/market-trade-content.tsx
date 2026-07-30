@@ -19,7 +19,7 @@ const TRADE_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'agx'] as const
 
 export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
   const { messages: t } = useI18n()
-  /** Overview always shows pool USD1→AGX spot (Figma `1 USD1 = … AGX`), not flip-direction. */
+  /** Overview follows current sell→buy spot (proto: changes when picking X). */
   const poolRateLabel = trade.exchangePriceLabel
   const poolRateLoading = trade.isExchangePriceQuoting
   const [faqToken, setFaqToken] = useState<ExchangeTokenKey>('trade')

@@ -50,20 +50,22 @@ export async function approveTokenIfNeeded({
 export async function exchangeTokens({
   wallet,
   amountIn,
-  tokenIn,
-  tokenOut,
+  path,
   amountOutMin,
 }: {
   wallet: Wallet
   amountIn: bigint
-  tokenIn: `0x${string}`
-  tokenOut: `0x${string}`
+  /** Direct (2) or via-mid (3) hop — must match live quote path. */
+  path: readonly `0x${string}`[]
   /** Live post-approve floor from assertStillSubmittable — not recomputed here. */
   amountOutMin: bigint
 }) {
   const account = wallet.getAccount()
   if (!account) {
     throw new Error('Wallet not connected')
+  }
+  if (path.length < 2) {
+    throw new Error(`EXCHANGE_PATH_TOO_SHORT:${path.length}`)
   }
 
   const deadline = BigInt(buildExchangeDeadline(EXCHANGE_CONFIG.deadlineSeconds))
@@ -73,6 +75,6 @@ export async function exchangeTokens({
     address: EXCHANGE_CONFIG.router,
     abi: exchangeRouterWriteAbi,
     functionName: 'swapExactTokensForTokens',
-    args: [amountIn, amountOutMin, [tokenIn, tokenOut], getAddress(account.address), deadline],
+    args: [amountIn, amountOutMin, [...path], getAddress(account.address), deadline],
   })
 }

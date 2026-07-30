@@ -89,8 +89,8 @@ export const EXCHANGE_CONFIG: ExchangeConfig = {
       symbol: 'X',
       address: BSC_CONTRACTS.xToken,
       decimals: 18,
-      enabled: false,
-      icon: '',
+      enabled: true,
+      icon: '/assets/figma/dapp/carousel/token-x.png',
     },
   },
 }

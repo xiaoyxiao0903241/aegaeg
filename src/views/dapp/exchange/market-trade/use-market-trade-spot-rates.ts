@@ -4,7 +4,7 @@ import {
   formatExchangeRateApprox,
   resolveEmptySpotRatePlaceholder,
 } from '~/views/dapp/exchange/exchange-format-rate'
-import { getExchangePairTokens, type ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
+import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { fetchExchangeQuote, type ExchangePoolReadContext } from '~/web3/exchange/exchange-read'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
@@ -14,37 +14,42 @@ import { useChainReadClient } from '~/web3/use-chain-read-client'
 
 type UseMarketTradeSpotRatesArgs = {
   pair: ExchangePairTokens
+  path: readonly `0x${string}`[]
+  pathKey: string
   quotesEnabled: boolean
   poolContext: ExchangePoolReadContext | undefined
   /** Live sell amountIn — when zero, spot quoting drives the empty-rate skeleton. */
   amountIn: bigint
 }
 
-/** Direction-independent USD1↔AGX spot rates + pair spot for empty sell amount. */
+/** Current sell→buy spot (+ inverted buy→sell) for meta / overview. */
 export function useMarketTradeSpotRates({
   pair,
+  path,
+  pathKey,
   quotesEnabled,
   poolContext,
   amountIn,
 }: UseMarketTradeSpotRatesArgs) {
   const readClient = useChainReadClient()
-  const agxToUsd1Pair = getExchangePairTokens('reverse')
-  const usd1ToAgxPair = getExchangePairTokens('forward')
   const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
-  const exchangeSpotAmount = 10n ** BigInt(usd1ToAgxPair.sell.decimals)
-  const exchangeSpotAmountInverted = 10n ** BigInt(agxToUsd1Pair.sell.decimals)
+  const invertedSpotAmount = 10n ** BigInt(pair.buy.decimals)
+  const invertedPath = [...path].reverse() as `0x${string}`[]
+  const invertedPathKey = invertedPath.join('-').toLowerCase()
 
   const spotQuoteQuery = useQuery({
     queryKey: queryKeys.chain.swapQuote(
       pair.sell.address,
       pair.buy.address,
       spotQuoteAmount.toString(),
+      pathKey,
     ),
     queryFn: () =>
       fetchExchangeQuote({
         amountIn: spotQuoteAmount,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
+        path,
         client: readClient,
         poolContext,
       }),
@@ -53,17 +58,19 @@ export function useMarketTradeSpotRates({
     placeholderData: keepPreviousData,
   })
 
-  const exchangeSpotQuoteQuery = useQuery({
+  const invertedSpotQuoteQuery = useQuery({
     queryKey: queryKeys.chain.swapQuote(
-      usd1ToAgxPair.sell.address,
-      usd1ToAgxPair.buy.address,
-      exchangeSpotAmount.toString(),
+      pair.buy.address,
+      pair.sell.address,
+      invertedSpotAmount.toString(),
+      invertedPathKey,
     ),
     queryFn: () =>
       fetchExchangeQuote({
-        amountIn: exchangeSpotAmount,
-        tokenIn: usd1ToAgxPair.sell.address,
-        tokenOut: usd1ToAgxPair.buy.address,
+        amountIn: invertedSpotAmount,
+        tokenIn: pair.buy.address,
+        tokenOut: pair.sell.address,
+        path: invertedPath,
         client: readClient,
         poolContext,
       }),
@@ -73,65 +80,56 @@ export function useMarketTradeSpotRates({
   })
 
   useVisibleInterval(spotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
-  useVisibleInterval(exchangeSpotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleInterval(invertedSpotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
   const spotQuotedOut = resolveLiveQuotedOut(
     spotQuoteQuery.isPlaceholderData,
     spotQuoteQuery.data?.quotedOut,
   )
-  const exchangeSpotQuotedOut = resolveLiveQuotedOut(
-    exchangeSpotQuoteQuery.isPlaceholderData,
-    exchangeSpotQuoteQuery.data?.quotedOut,
+  const invertedQuotedOut = resolveLiveQuotedOut(
+    invertedSpotQuoteQuery.isPlaceholderData,
+    invertedSpotQuoteQuery.data?.quotedOut,
   )
   const isSpotQuoting =
     amountIn === 0n &&
     (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) &&
     spotQuotedOut === 0n
   const isExchangePriceQuoting =
-    (exchangeSpotQuoteQuery.isPending || exchangeSpotQuoteQuery.isPlaceholderData) &&
-    exchangeSpotQuotedOut === 0n
-  /** Reverse rate derived from forward quote — no second poll. */
-  const isExchangePriceInvertedQuoting = isExchangePriceQuoting
+    (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === 0n
+  const isExchangePriceInvertedQuoting =
+    (invertedSpotQuoteQuery.isPending || invertedSpotQuoteQuery.isPlaceholderData) &&
+    invertedQuotedOut === 0n
 
-  const exchangePriceEmpty = resolveEmptySpotRatePlaceholder(
-    exchangeSpotQuotedOut,
-    isExchangePriceQuoting,
-  )
+  const exchangePriceEmpty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
   const exchangePriceLabel =
     exchangePriceEmpty !== null
       ? exchangePriceEmpty
       : formatExchangeRateApprox({
-          amountIn: exchangeSpotAmount,
-          amountOut: exchangeSpotQuotedOut,
-          decimalsIn: usd1ToAgxPair.sell.decimals,
-          decimalsOut: usd1ToAgxPair.buy.decimals,
-          symbolIn: usd1ToAgxPair.sell.symbol,
-          symbolOut: usd1ToAgxPair.buy.symbol,
+          amountIn: spotQuoteAmount,
+          amountOut: spotQuotedOut,
+          decimalsIn: pair.sell.decimals,
+          decimalsOut: pair.buy.decimals,
+          symbolIn: pair.sell.symbol,
+          symbolOut: pair.buy.symbol,
           fractionDigits: 6,
         })
 
   const invertedEmpty = resolveEmptySpotRatePlaceholder(
-    exchangeSpotQuotedOut,
+    invertedQuotedOut,
     isExchangePriceInvertedQuoting,
   )
-  const invertedAmountOut =
-    exchangeSpotQuotedOut === 0n
-      ? 0n
-      : (exchangeSpotAmountInverted * exchangeSpotAmount) / exchangeSpotQuotedOut
   const exchangePriceLabelInverted =
     invertedEmpty !== null
       ? invertedEmpty
-      : invertedAmountOut === 0n
-        ? '—'
-        : formatExchangeRateApprox({
-            amountIn: exchangeSpotAmountInverted,
-            amountOut: invertedAmountOut,
-            decimalsIn: agxToUsd1Pair.sell.decimals,
-            decimalsOut: agxToUsd1Pair.buy.decimals,
-            symbolIn: agxToUsd1Pair.sell.symbol,
-            symbolOut: agxToUsd1Pair.buy.symbol,
-            fractionDigits: 6,
-          })
+      : formatExchangeRateApprox({
+          amountIn: invertedSpotAmount,
+          amountOut: invertedQuotedOut,
+          decimalsIn: pair.buy.decimals,
+          decimalsOut: pair.sell.decimals,
+          symbolIn: pair.buy.symbol,
+          symbolOut: pair.sell.symbol,
+          fractionDigits: 6,
+        })
 
   return {
     isSpotQuoting,

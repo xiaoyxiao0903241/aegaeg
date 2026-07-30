@@ -11,8 +11,11 @@ export type ExchangeTokenPickerOption = {
 }
 
 /**
- * Sell/Buy token pill + open list (Figma chevron · proto dropdown).
- * Options are call-site data (Trade: USD1/AGX); chrome only — no domain presets.
+ * Sell/Buy token pill + open list (proto HTML chrome).
+ * Options are call-site data; chrome only — no domain presets.
+ *
+ * Proto: trigger #f7f8f9 pill; panel white 14px / pad 6 / shadow;
+ * rows gap 9 / radius 10 / selected #f9ece6 — buttons in a grid, not ul/li.
  */
 export function ExchangeTokenPicker({
   ariaLabel,
@@ -61,7 +64,7 @@ export function ExchangeTokenPicker({
   return (
     <span
       ref={wrapRef}
-      className={cn('relative inline-flex', open && 'z-50')}
+      className={cn('relative inline-flex shrink-0 items-center', open && 'z-50')}
       data-open={open ? '' : undefined}
     >
       <button
@@ -69,7 +72,8 @@ export function ExchangeTokenPicker({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         className={cn(
-          'inline-flex items-center gap-2 rounded-full bg-background px-[10px] py-1.5',
+          'inline-flex items-center gap-1.5 rounded-full border-0 bg-background py-[5px] pr-2.5 pl-1.5',
+          'transition-colors duration-150 ease-out hover:bg-muted',
           disabled ? 'cursor-default opacity-40' : 'cursor-pointer',
         )}
         disabled={disabled}
@@ -77,94 +81,96 @@ export function ExchangeTokenPicker({
         type="button"
       >
         {selected.icon ? (
-          <DappIcon alt="" className="rounded-md" loading="lazy" size="token" src={selected.icon} />
+          <DappIcon
+            alt=""
+            className="rounded-full"
+            loading="lazy"
+            size="token"
+            src={selected.icon}
+          />
         ) : null}
-        <Text as="span" className="leading-[1.2] font-semibold" variant="detail">
+        <Text as="span" className="leading-none font-semibold" variant="copy">
           {selected.symbol}
         </Text>
         <svg
           aria-hidden
-          className="size-2.5 shrink-0 text-muted-foreground"
+          className="size-3 shrink-0 text-muted-foreground"
           fill="none"
-          viewBox="0 0 9 5"
+          viewBox="0 0 18 18"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M1 1L4.5 4L8 1"
+            d="M13.5 6.75L9 11.25L4.5 6.75"
             stroke="currentColor"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth="1.2"
+            strokeWidth="1.8"
           />
         </svg>
       </button>
 
       {open ? (
         <div
-          className="absolute top-[calc(100%+0.375rem)] left-0 z-50 min-w-[11.5rem] overflow-clip rounded-md border border-border bg-card p-1.5 shadow-menu"
+          className={cn(
+            'absolute top-[calc(100%+0.5rem)] left-0 z-50 grid min-w-52 gap-0.5',
+            'rounded-[14px] border border-border bg-card p-1.5 shadow-menu',
+          )}
           role="listbox"
         >
-          <ul className="flex flex-col gap-0.5">
-            {options.map((option) => {
-              const active = option.key === value
-              return (
-                <li key={option.key}>
-                  <button
-                    aria-selected={active}
-                    className={cn(
-                      'flex h-10 w-full cursor-pointer items-center gap-2 rounded-sm bg-transparent px-2.5 text-left',
-                      'transition-colors duration-150 ease-out focus-visible:outline-none',
-                      active ? 'bg-background' : 'hover:bg-background focus-visible:bg-background',
-                    )}
-                    onClick={() => {
-                      onSelect(option.key)
-                      setOpen(false)
-                    }}
-                    role="option"
-                    type="button"
-                  >
-                    {option.icon ? (
-                      <DappIcon
-                        alt=""
-                        className="rounded-md"
-                        loading="lazy"
-                        size="token"
-                        src={option.icon}
-                      />
-                    ) : null}
-                    <Text as="span" className="min-w-0 flex-1 font-semibold" variant="detail">
-                      {option.symbol}
-                    </Text>
-                    <Text
-                      as="span"
-                      className="shrink-0 tabular-nums"
-                      tone="muted-foreground"
-                      variant="caption"
-                    >
-                      {option.balanceLabel}
-                    </Text>
-                    {active ? (
-                      checkIcon ? (
-                        <img alt="" aria-hidden className="size-4 shrink-0" src={checkIcon} />
-                      ) : (
-                        <Text
-                          aria-hidden
-                          as="span"
-                          className="shrink-0 text-xs font-bold"
-                          tone="primary"
-                          variant="caption"
-                        >
-                          ✓
-                        </Text>
-                      )
+          {options.map((option) => {
+            const active = option.key === value
+            return (
+              <button
+                key={option.key}
+                aria-selected={active}
+                className={cn(
+                  'flex w-full cursor-pointer items-center gap-[9px] rounded-[10px] border-0 px-2.5 py-2 text-left',
+                  'transition-colors duration-150 ease-out focus-visible:outline-none',
+                  active
+                    ? 'bg-primary-soft'
+                    : 'bg-transparent hover:bg-background focus-visible:bg-background',
+                )}
+                onClick={() => {
+                  onSelect(option.key)
+                  setOpen(false)
+                }}
+                role="option"
+                type="button"
+              >
+                {option.icon ? (
+                  <img
+                    alt=""
+                    className="size-[22px] shrink-0 rounded-full object-contain"
+                    loading="lazy"
+                    src={option.icon}
+                  />
+                ) : null}
+                <Text as="span" className="min-w-0 flex-1 font-semibold" variant="detail">
+                  {option.symbol}
+                </Text>
+                <Text
+                  as="span"
+                  className="shrink-0 whitespace-nowrap tabular-nums"
+                  tone="muted-foreground"
+                  variant="caption"
+                >
+                  {option.balanceLabel}
+                </Text>
+                <span
+                  aria-hidden
+                  className="flex w-3 shrink-0 items-center justify-end text-xs font-bold text-primary"
+                >
+                  {active ? (
+                    checkIcon ? (
+                      <img alt="" className="size-3" src={checkIcon} />
                     ) : (
-                      <span aria-hidden className="size-4 shrink-0" />
-                    )}
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
+                      '✓'
+                    )
+                  ) : null}
+                </span>
+              </button>
+            )
+          })}
         </div>
       ) : null}
     </span>

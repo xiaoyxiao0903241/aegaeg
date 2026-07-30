@@ -13,10 +13,14 @@ export async function quoteV2AmountsOut({
 }: {
   router: `0x${string}`
   amountIn: bigint
-  path: readonly [`0x${string}`, `0x${string}`]
+  /** Direct (2) or via-mid (3) hop — Pancake V2 `getAmountsOut`. */
+  path: readonly `0x${string}`[]
   client?: ChainReadClient
 }): Promise<bigint> {
   if (amountIn === 0n) return 0n
+  if (path.length < 2) {
+    throw new Error(`QUOTE_PATH_TOO_SHORT:${path.length}`)
+  }
 
   const amounts = await client.readContract({
     address: router,

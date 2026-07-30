@@ -24,10 +24,11 @@ export async function submitMarketTrade(args: {
   account: ActiveAccount
   wallet: ActiveWallet
   pair: ExchangePairTokens
+  path: readonly `0x${string}`[]
   core: TradeQuotedSubmitCore
   balancesQuery: { refetch: () => Promise<{ data?: { sell: bigint }; error: Error | null }> }
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { account, wallet, pair, core, balancesQuery } = args
+  const { account, wallet, pair, path, core, balancesQuery } = args
   if (!account || !wallet) {
     const error = WALLET_GATE_ERROR.NOT_CONNECTED
     core.setSubmitError(error)
@@ -51,8 +52,7 @@ export async function submitMarketTrade(args: {
     await exchangeTokens({
       wallet,
       amountIn: core.debouncedAmountIn,
-      tokenIn: pair.sell.address,
-      tokenOut: pair.buy.address,
+      path,
       amountOutMin,
     })
     invalidateAfterExchange()

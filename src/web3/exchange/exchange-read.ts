@@ -60,16 +60,20 @@ export async function fetchExchangeQuote({
   amountIn,
   tokenIn,
   tokenOut,
+  path: pathArg,
   client = bscReadClient,
   poolContext,
 }: {
   amountIn: bigint
   tokenIn: `0x${string}`
   tokenOut: `0x${string}`
+  /** When omitted, path is the direct `[tokenIn, tokenOut]` hop. */
+  path?: readonly `0x${string}`[]
   client?: ChainReadClient
   /** Reuse short-stale pool reads from React Query when available. */
   poolContext?: ExchangePoolReadContext
 }): Promise<ExchangeQuoteResult> {
+  const path = pathArg ?? ([tokenIn, tokenOut] as const)
   const [pool, spot] = poolContext
     ? [poolContext.pool, poolContext.spot]
     : await Promise.all([
@@ -80,17 +84,27 @@ export async function fetchExchangeQuote({
   const quotedOut = await quoteV2AmountsOut({
     router: EXCHANGE_CONFIG.router,
     amountIn,
-    path: [tokenIn, tokenOut],
+    path,
     client,
   })
 
-  const reserves = resolvePairReservesForTokenIn({
-    tokenIn,
-    token0: pool.token0,
-    token1: pool.token1,
-    reserve0: spot.reserve0,
-    reserve1: spot.reserve1,
-  })
+  /** Price impact only for the known USD1/AGX pool direct hop; else honest 0 (UI shows —). */
+  const isDirectUsd1AgxPoolHop =
+    path.length === 2 &&
+    path[0] === tokenIn &&
+    path[1] === tokenOut &&
+    ((tokenIn === pool.token0 && tokenOut === pool.token1) ||
+      (tokenIn === pool.token1 && tokenOut === pool.token0))
+
+  const reserves = isDirectUsd1AgxPoolHop
+    ? resolvePairReservesForTokenIn({
+        tokenIn,
+        token0: pool.token0,
+        token1: pool.token1,
+        reserve0: spot.reserve0,
+        reserve1: spot.reserve1,
+      })
+    : null
 
   const priceImpactBps = reserves
     ? calcV2PriceImpactBps({

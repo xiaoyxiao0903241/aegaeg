@@ -12,7 +12,7 @@ Pre-Design → 写盘（一页一帧）→ Post-Design + Post-Code → pnpm chec
 
 ```
 [ ] ticket / Spec；未重开已锁决策
-[ ] 手册已读（钱/门闸）；能口述
+[ ] 手册相关章 **逐行**已读（ui-leaf §2.1）；leaf 有章节清单 + 逐条对照表；能口述钱/门闸
 [ ] DApp：WebBridge 实录五字段已写（ui-leaf §2.2）；非 DApp 无原型：N/A + 路径证据
 [ ] Figma fileKey + PC frame；get_design_context 页+子
 [ ] 动态审计表；leaf UI 列∥钱路列（R5a：手册沉默不砍控件）
@@ -54,15 +54,15 @@ Pre-Design → 写盘（一页一帧）→ Post-Design + Post-Code → pnpm chec
 ## R7（commit 前）
 
 ```
-[ ] Post-Design：实录五字段 + R5a；缺 → Critical（禁「DEFER 不挡」）
-[ ] Post-Code：假数 / 稿外 / flip 冒充 picker
+[ ] Post-Design：实录五字段 + R5a + 手册逐行对照表；缺 → Critical（禁「DEFER 不挡」）
+[ ] Post-Code：假数 / 稿外 / flip 冒充 picker / 手册注意项未落地
 [ ] Critical=0；结论落盘
 [ ] 用户明示才 commit → 才改 Status=page-done
 ```
 
 ## `/implement`（单帧）
 
-手册 → WebBridge → Figma leaf → 动态审计 → 实现 → 回看 → check → R7 → commit → page-done → **下一帧**。
+手册逐行对照 → WebBridge → Figma leaf → 动态审计 → 实现 → 回看 → check → R7 → commit → page-done → **下一帧**。
 
 ## 报告
 

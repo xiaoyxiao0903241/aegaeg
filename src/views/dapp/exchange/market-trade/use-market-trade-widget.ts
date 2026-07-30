@@ -8,11 +8,18 @@ import {
   formatTokenAmount,
   slippagePercentToBps,
 } from '~/core/exchange/token-amount'
-import { getExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
+import {
+  formatTradeRouteLabel,
+  getTradePairTokens,
+  getTradeSwapPath,
+  getTradeToken,
+  tradeBuyOptions,
+  type TradeTokenKey,
+} from '~/views/dapp/exchange/exchange-pair'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { fetchExchangeQuote } from '~/web3/exchange/exchange-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useExchangeDirectionStore } from '~/stores/exchange-direction-store'
+import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
@@ -30,8 +37,11 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
-  const direction = useExchangeDirectionStore((state) => state.direction)
-  const flipDirectionInStore = useExchangeDirectionStore((state) => state.flipDirection)
+  const sellKey = useExchangeTradePairStore((state) => state.sellKey)
+  const buyKey = useExchangeTradePairStore((state) => state.buyKey)
+  const setSellKey = useExchangeTradePairStore((state) => state.setSellKey)
+  const setBuyKey = useExchangeTradePairStore((state) => state.setBuyKey)
+  const flipPair = useExchangeTradePairStore((state) => state.flipPair)
   const [slippage, setSlippageRaw] = useState(() =>
     clampSlippagePercent(EXCHANGE_CONFIG.defaultSlippageBps / 100),
   )
@@ -41,19 +51,29 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const readClient = useChainReadClient()
   const { poolContext } = useExchangePoolReads(quotesEnabled)
 
-  const pair = getExchangePairTokens(direction)
+  const pair = getTradePairTokens(sellKey, buyKey)
+  const path = getTradeSwapPath(sellKey, buyKey)
+  const pathKey = path.join('-').toLowerCase()
   const address = account?.address
   const walletReady = hasWalletAccount(account)
   const slippageBps = slippagePercentToBps(slippage)
+  const priceImpactApplicable = sellKey !== 'x' && buyKey !== 'x'
 
-  const { balancesQuery, sellBalance, buyBalance, allowance, balancesLoaded, isBalancesLoading } =
-    useMarketTradeBalances({
-      address,
-      sellAddress: pair.sell.address,
-      buyAddress: pair.buy.address,
-      quotesEnabled,
-      walletReady,
-    })
+  const {
+    balancesQuery,
+    sellBalance,
+    buyBalance,
+    balanceByKey,
+    allowance,
+    balancesLoaded,
+    isBalancesLoading,
+  } = useMarketTradeBalances({
+    address,
+    sellKey,
+    buyKey,
+    quotesEnabled,
+    walletReady,
+  })
 
   const core = useExchangeQuote({
     sessionReady,
@@ -69,12 +89,13 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     slippageBps,
     quoteRefreshIntervalMs: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     getQuoteQueryKey: (amountIn) =>
-      queryKeys.chain.swapQuote(pair.sell.address, pair.buy.address, amountIn.toString()),
+      queryKeys.chain.swapQuote(pair.sell.address, pair.buy.address, amountIn.toString(), pathKey),
     fetchQuote: (amountIn) =>
       fetchExchangeQuote({
         amountIn,
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
+        path,
         client: readClient,
         poolContext,
       }),
@@ -83,6 +104,8 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
 
   const spot = useMarketTradeSpotRates({
     pair,
+    path,
+    pathKey,
     quotesEnabled,
     poolContext,
     amountIn: core.amountIn,
@@ -94,37 +117,68 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const priceImpactBps = amountQuote?.priceImpactBps ?? 0
   const gasEstimate = amountQuote?.gasEstimate ?? 0n
 
-  const routeLabel = `${pair.sell.symbol} → ${pair.buy.symbol}`
-  const pancakeSwapUrl = resolvePancakeSwapDeepLink(pair.sell.symbol, pair.buy.symbol)
+  const routeLabel = formatTradeRouteLabel(sellKey, buyKey)
+  const pancakeSwapUrl = resolvePancakeSwapDeepLink(pair.sell.address, pair.buy.address)
   const priceImpactLabel =
-    !sessionReady || core.amountIn === 0n || core.isQuoting
+    !priceImpactApplicable || !sessionReady || core.amountIn === 0n || core.isQuoting
       ? ''
       : `${(priceImpactBps / 100).toFixed(2)}%`
   const gasEstimateLabel = formatGasEstimate(gasEstimate)
   const isHighPriceImpact =
-    sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
+    priceImpactApplicable &&
+    sessionReady &&
+    core.amountIn > 0n &&
+    priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 
   function flipDirection() {
     core.setBlockResubmit(false)
-    flipDirectionInStore()
+    flipPair()
+    core.clearAmount()
+  }
+
+  function selectSellToken(key: TradeTokenKey) {
+    if (key === sellKey) return
+    core.setBlockResubmit(false)
+    setSellKey(key)
+    core.clearAmount()
+  }
+
+  function selectBuyToken(key: TradeTokenKey) {
+    if (key === buyKey || key === sellKey) return
+    core.setBlockResubmit(false)
+    setBuyKey(key)
     core.clearAmount()
   }
 
   async function submit(): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-    return submitMarketTrade({ account, wallet, pair, core, balancesQuery })
+    return submitMarketTrade({ account, wallet, pair, path, core, balancesQuery })
   }
+
+  const sellPickerKeys: TradeTokenKey[] = ['usd1', 'agx', 'x']
+  const buyPickerKeys = tradeBuyOptions(sellKey)
 
   return {
     sellAmount: core.sellAmount,
     sellAmountDisplay: core.sellAmountDisplay,
     setSellAmount: core.setSellAmount,
-    direction,
+    sellKey,
+    buyKey,
+    selectSellToken,
+    selectBuyToken,
     flipDirection,
     slippage,
     setSlippage,
     pair,
+    path,
+    sellPickerKeys,
+    buyPickerKeys,
+    getToken: getTradeToken,
     sellBalanceLabel: formatTokenAmount(sellBalance, pair.sell.decimals, 4),
     buyBalanceLabel: formatTokenAmount(buyBalance, pair.buy.decimals, 4),
+    balanceLabelFor: (key: TradeTokenKey) => {
+      const token = getTradeToken(key)
+      return formatTokenAmount(balanceByKey[key], token.decimals, 4)
+    },
     buyAmount: core.buyAmount,
     exchangePriceLabel: spot.exchangePriceLabel,
     exchangePriceLabelInverted: spot.exchangePriceLabelInverted,

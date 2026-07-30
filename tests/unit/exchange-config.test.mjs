@@ -14,7 +14,7 @@ test('swap config exposes USD1-AGX trade pair on BSC', async () => {
   assert.deepEqual(EXCHANGE_CONFIG.tradePair.symbols, ['USD1', 'AGX'])
 })
 
-test('swap config enables flash tokens; X remains design-only', async () => {
+test('swap config enables flash tokens and trade X', async () => {
   const { EXCHANGE_CONFIG } = await loadModule('/src/shared/config/exchange.ts')
 
   assert.equal(EXCHANGE_CONFIG.tokens.usdt.enabled, true)
@@ -23,7 +23,8 @@ test('swap config enables flash tokens; X remains design-only', async () => {
   assert.equal(EXCHANGE_CONFIG.tokens.gagx.decimals, 9)
   assert.ok(EXCHANGE_CONFIG.tokens.gagx.icon)
   assert.ok(EXCHANGE_CONFIG.tokens.agx.icon)
-  assert.equal(EXCHANGE_CONFIG.tokens.x.enabled, false)
+  assert.equal(EXCHANGE_CONFIG.tokens.x.enabled, true)
+  assert.ok(EXCHANGE_CONFIG.tokens.x.icon)
 })
 
 test('swap config defaultSlippageBps maps to UI percent for Trade init', async () => {
