@@ -11,6 +11,7 @@ import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { FaqList } from '~/shared/ui/faq-list'
+import { Card } from '~/shared/ui/card'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
@@ -204,7 +205,7 @@ export function StakingHubContent() {
           tone="coral"
           value={chartMetric}
         />
-        <div className="grid gap-3 rounded-2xl border-0 bg-card p-4 shadow-card">
+        <Card surface="elevated" className="grid gap-3 rounded-2xl p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Text as="strong" className="text-xl font-semibold" variant="copy">
@@ -227,7 +228,7 @@ export function StakingHubContent() {
               {PLACEHOLDER}
             </Text>
           </div>
-        </div>
+        </Card>
       </DappDetailBlock>
 
       <DappDetailBlock>

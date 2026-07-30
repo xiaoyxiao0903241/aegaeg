@@ -16,6 +16,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { openStakingView } from '~/shared/config/open-staking-view'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
+import { Chip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import {
@@ -138,32 +139,33 @@ export function AssetsXmineWidget() {
       />
       <DappWidgetStack>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <button
-            className="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-3 text-xs text-foreground"
-            type="button"
-          >
+          <Chip className="h-6 gap-1" shape="pill" size="sm" type="button" variant="soft">
             {t.assets.position.sort}
             <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.chevron} />
-          </button>
+          </Chip>
           <div className="flex items-center gap-1">
             <Text as="span" tone="muted-foreground" variant="detail">
               {t.assets.position.quoteCurrency}
             </Text>
             <div className="flex rounded-full bg-muted p-0.5">
-              <button
-                className={`rounded-full px-3 py-1 text-xs ${quote === 'agx' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+              <Chip
                 onClick={() => setQuote('agx')}
+                shape="pill"
+                size="sm"
                 type="button"
+                variant={quote === 'agx' ? 'solid' : 'soft'}
               >
                 AGX
-              </button>
-              <button
-                className={`rounded-full px-3 py-1 text-xs ${quote === 'usd' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+              </Chip>
+              <Chip
                 onClick={() => setQuote('usd')}
+                shape="pill"
+                size="sm"
                 type="button"
+                variant={quote === 'usd' ? 'solid' : 'soft'}
               >
                 USD
-              </button>
+              </Chip>
             </div>
           </div>
         </div>
@@ -263,20 +265,26 @@ export function AssetsXmineWidget() {
               {t.common.paginationPerPage.replace('{size}', String(pageSize))}
             </Text>
             <div className="flex gap-2">
-              <button
-                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+              <Button
+                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
                 disabled
+                shape="pill"
+                size="sm"
                 type="button"
+                variant="ghost"
               >
                 {t.common.paginationPrev}
-              </button>
-              <button
-                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+              </Button>
+              <Button
+                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
                 disabled
+                shape="pill"
+                size="sm"
                 type="button"
+                variant="ghost"
               >
                 {t.common.paginationNext}
-              </button>
+              </Button>
             </div>
           </div>
         ) : null}

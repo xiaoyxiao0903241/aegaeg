@@ -11,6 +11,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { openStakingView } from '~/shared/config/open-staking-view'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
+import { Chip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
@@ -40,32 +41,33 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
       />
       <DappWidgetStack>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <button
-            className="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-3 text-xs text-foreground"
-            type="button"
-          >
+          <Chip className="h-6 gap-1" shape="pill" size="sm" type="button" variant="soft">
             {t.assets.position.sort}
             <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.chevron} />
-          </button>
+          </Chip>
           <div className="flex items-center gap-1">
             <Text as="span" tone="muted-foreground" variant="detail">
               {t.assets.position.quoteCurrency}
             </Text>
             <div className="flex rounded-full bg-muted p-0.5">
-              <button
-                className={`rounded-full px-3 py-1 text-xs ${w.quote === 'agx' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+              <Chip
                 onClick={() => w.setQuote('agx')}
+                shape="pill"
+                size="sm"
                 type="button"
+                variant={w.quote === 'agx' ? 'solid' : 'soft'}
               >
                 AGX
-              </button>
-              <button
-                className={`rounded-full px-3 py-1 text-xs ${w.quote === 'usd' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+              </Chip>
+              <Chip
                 onClick={() => w.setQuote('usd')}
+                shape="pill"
+                size="sm"
                 type="button"
+                variant={w.quote === 'usd' ? 'solid' : 'soft'}
               >
                 USD
-              </button>
+              </Chip>
             </div>
           </div>
         </div>
@@ -277,22 +279,28 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
               {t.common.paginationPerPage.replace('{size}', String(w.pageSize))}
             </Text>
             <div className="flex gap-2">
-              <button
-                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+              <Button
+                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
                 disabled={w.safePage <= 0}
                 onClick={() => w.setPage((value) => Math.max(0, value - 1))}
+                shape="pill"
+                size="sm"
                 type="button"
+                variant="ghost"
               >
                 {t.common.paginationPrev}
-              </button>
-              <button
-                className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
+              </Button>
+              <Button
+                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
                 disabled={w.safePage >= w.pageCount - 1}
                 onClick={() => w.setPage((value) => Math.min(w.pageCount - 1, value + 1))}
+                shape="pill"
+                size="sm"
                 type="button"
+                variant="ghost"
               >
                 {t.common.paginationNext}
-              </button>
+              </Button>
             </div>
           </div>
         ) : null}

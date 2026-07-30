@@ -17,6 +17,7 @@ import {
 import { formatPresaleRank, formatUsd, calcProgressPercent } from '~/shared/api/format-display'
 import { buildNextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -245,7 +246,7 @@ export function RewardsGenesisClaimWidget() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card px-5 py-4">
+        <Card surface="outlined" className="rounded-2xl px-5 py-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" tone="muted-foreground" variant="caption">
               {t.rewards.referralRewards}
@@ -260,9 +261,9 @@ export function RewardsGenesisClaimWidget() {
           <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
             {t.rewards.autoPaid}
           </Text>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-border bg-card px-5 py-4">
+        <Card surface="outlined" className="rounded-2xl px-5 py-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" tone="muted-foreground" variant="caption">
               {t.rewards.teamRewards}
@@ -299,9 +300,9 @@ export function RewardsGenesisClaimWidget() {
               {g.claimToWallet}
             </DappActionButton>
           ) : null}
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-border bg-card px-5 py-4">
+        <Card surface="outlined" className="rounded-2xl px-5 py-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" tone="muted-foreground" variant="caption">
               {t.rewards.communityFund}
@@ -339,7 +340,7 @@ export function RewardsGenesisClaimWidget() {
               {g.claimToWallet}
             </DappActionButton>
           ) : null}
-        </div>
+        </Card>
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}
       </DappWidgetStack>

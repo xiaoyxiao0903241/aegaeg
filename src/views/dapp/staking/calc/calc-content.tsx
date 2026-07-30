@@ -2,6 +2,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import {
   calcStakingEstimate,
@@ -101,7 +102,7 @@ export function CalcContent() {
           ) : null}
         </div>
         {result ? (
-          <div className="grid gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <Card surface="outlined" className="grid gap-3 rounded-2xl p-4 shadow-sm">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="grid gap-1">
                 <Text as="span" tone="muted-foreground" variant="detail">
@@ -188,7 +189,7 @@ export function CalcContent() {
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
         ) : (
           <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
             {aside.resultHint}
@@ -229,9 +230,10 @@ export function CalcContent() {
               hint = formatPct(endEstimate.ratePct)
             }
             return (
-              <div
-                className="grid gap-1.5 rounded-2xl border border-border bg-card p-4 shadow-sm"
+              <Card
+                className="grid gap-1.5 rounded-2xl p-4 shadow-sm"
                 key={card.label}
+                surface="outlined"
               >
                 <Text as="span" tone="muted-foreground" variant="detail">
                   {index === 2 ? aside.nodeEndLabel.replace('{day}', String(endDays)) : card.label}
@@ -250,7 +252,7 @@ export function CalcContent() {
                     {hint}
                   </Text>
                 ) : null}
-              </div>
+              </Card>
             )
           })}
         </div>

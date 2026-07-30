@@ -5,6 +5,7 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
+import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { Button } from '~/shared/ui/button'
@@ -93,14 +94,14 @@ export function RewardsHubContent() {
             return {
               key: view,
               content: (
-                <div className="rounded-2xl border border-border bg-card px-4 py-6 shadow-sm">
+                <Card surface="outlined" className="rounded-2xl px-4 py-6 shadow-sm">
                   <Text as="p" className="font-semibold" variant="copy">
                     {slide.title}
                   </Text>
                   <Text as="p" className="mt-3" tone="muted-foreground" variant="detail">
                     {slide.body}
                   </Text>
-                </div>
+                </Card>
               ),
             }
           })}

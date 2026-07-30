@@ -9,6 +9,7 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { dappAssets } from '~/app/assets'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -65,7 +66,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
         title={card.title}
       />
       <DappWidgetStack>
-        <div className="rounded-2xl border border-border bg-card p-4">
+        <Card surface="outlined" className="rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
               <Text as="p" tone="muted-foreground" variant="caption">
@@ -107,7 +108,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
               {grant.pendingBody}
             </Text>
           </div>
-        </div>
+        </Card>
 
         <div className="flex items-center justify-center py-1.5">
           <span className="inline-flex size-[34px] items-center justify-center rounded-[10px] border border-border bg-card shadow-sm">

@@ -17,6 +17,8 @@ import {
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
 import { claimSplitFromReleasePct } from '~/core/assets/claim-plans'
+import { Button } from '~/shared/ui/button'
+import { Card } from '~/shared/ui/card'
 import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
 import { Text } from '~/shared/ui/text'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
@@ -234,7 +236,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         title={card.title}
       />
       <DappWidgetStack>
-        <div className="rounded-2xl border border-border bg-card p-4">
+        <Card surface="outlined" className="rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
               <Text as="p" tone="muted-foreground" variant="caption">
@@ -285,7 +287,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
               {mixed.participateWritePending}
             </Text>
           ) : null}
-        </div>
+        </Card>
 
         {showContributionShort ? (
           <div className="rounded-2xl bg-primary/10 px-4 py-3">
@@ -295,19 +297,21 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
                   .replace('{need}', requiredText)
                   .replace('{have}', haveText)}
               </span>{' '}
-              <button
-                className="cursor-pointer text-primary underline"
+              <Button
+                className="inline underline"
                 onClick={() => openExchangeView('burn')}
+                size="sm"
                 type="button"
+                variant="link"
               >
                 {mixed.goBurnInline}
-              </button>
+              </Button>
               <span className="text-foreground">{mixed.getContributionSuffix}</span>
             </Text>
           </div>
         ) : null}
 
-        <div className="rounded-2xl border border-border bg-card p-4">
+        <Card surface="outlined" className="rounded-2xl p-4">
           <ClaimSplitSlider
             aria-label={mixed.splitAria}
             className="max-w-none"
@@ -326,7 +330,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
               {mixed.restakePct.replace('{pct}', String(restakePct))}
             </Text>
           </div>
-        </div>
+        </Card>
 
         <div className="grid gap-3 rounded-2xl border border-primary/35 bg-primary/10 p-4">
           <div className="flex items-center justify-between gap-2">

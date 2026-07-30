@@ -7,6 +7,7 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
+import { Card } from '~/shared/ui/card'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
@@ -217,7 +218,10 @@ export function StakingDetailAside({
       <DappDetailBlock>
         <DappContentHeading>{mechanismTitle ?? t.staking.aside.mechanism}</DappContentHeading>
         {mechanismSteps && mechanismSteps.length > 0 ? (
-          <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-start">
+          <Card
+            className="flex flex-col gap-4 rounded-2xl p-6 sm:flex-row sm:items-start"
+            surface="outlined"
+          >
             {mechanismSteps.map((step, index) => (
               <div className="grid min-w-0 flex-1 gap-3" key={step.title}>
                 <div className="flex items-center gap-0">
@@ -239,7 +243,7 @@ export function StakingDetailAside({
                 </Text>
               </div>
             ))}
-          </div>
+          </Card>
         ) : (
           <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
             {mechanism}
@@ -249,7 +253,7 @@ export function StakingDetailAside({
 
       <DappDetailBlock>
         <DappContentHeading>{chartTitle}</DappContentHeading>
-        <div className="grid gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+        <Card surface="outlined" className="grid gap-3 rounded-2xl p-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Text as="strong" className="text-xl font-semibold" variant="copy">
               {PLACEHOLDER}
@@ -267,7 +271,7 @@ export function StakingDetailAside({
               {PLACEHOLDER}
             </Text>
           </div>
-        </div>
+        </Card>
       </DappDetailBlock>
 
       <DappDetailBlock>
