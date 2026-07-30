@@ -102,16 +102,7 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
           agxSymbol: EXCHANGE_CONFIG.tokens.agx.symbol,
           pointsLabel,
         })
-
-  const overviewRateLabel =
-    configQuery.data === undefined
-      ? ''
-      : formatBurnContributionRateLabel({
-          rateBps,
-          decimals,
-          agxSymbol: EXCHANGE_CONFIG.tokens.agx.symbol,
-          pointsLabel,
-        })
+  const overviewRateLabel = exchangePriceLabel
 
   const gate = resolveBurnContributionSwapGate({
     amountIn: core.debouncedAmountIn,

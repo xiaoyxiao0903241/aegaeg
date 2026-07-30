@@ -2,7 +2,6 @@ import { queryClient } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import type { Paginated, SalesLogItem } from '~/shared/api/types'
 
@@ -10,7 +9,7 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export type SalesLogFingerprint = { total: number; firstId: number | null }
+type SalesLogFingerprint = { total: number; firstId: number | null }
 
 /** Pure: pick the strongest sales-log fingerprint from cached pages. */
 export function pickSalesLogFingerprint(
@@ -87,33 +86,14 @@ function invalidateAddressScopedChainQueries(address?: string) {
   })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.swapBalances(
-      address,
-      EXCHANGE_CONFIG.tradePair.tokenA.address,
-      EXCHANGE_CONFIG.tradePair.tokenB.address,
-    ),
-  })
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.swapBalances(
-      address,
-      EXCHANGE_CONFIG.tradePair.tokenB.address,
-      EXCHANGE_CONFIG.tradePair.tokenA.address,
-    ),
-  })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Root })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapRoot })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapQuoteRoot })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.burnSwapRoot })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.turbineRoot })
 }
 
 /** 钱包账户切换：刷新新地址链上读；旧地址缓存保留至自然过期。 */
-export function invalidateAfterWalletSwitch(
-  previousAddress?: string,
-  nextAddress?: string,
-  tab?: DappTab,
-) {
-  void previousAddress
+export function invalidateAfterWalletSwitch(nextAddress?: string, tab?: DappTab) {
   invalidateAddressScopedChainQueries(nextAddress)
 
   if (tab) {
@@ -144,7 +124,6 @@ export function clearApiQueries() {
 
 export function invalidatePresaleChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presalePhases })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleActivePhase })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAgxPrice })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleTotalPurchased })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleAirdropThreshold })

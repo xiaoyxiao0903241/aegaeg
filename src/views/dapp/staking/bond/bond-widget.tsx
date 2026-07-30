@@ -12,7 +12,7 @@ import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
-import { formatAddress } from '~/app/utils'
+import { formatShortAddress } from '~/shared/api/format-display'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -169,7 +169,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
                   rel="noreferrer"
                   target="_blank"
                 >
-                  {formatAddress(bond.depository)}
+                  {formatShortAddress(bond.depository)}
                 </a>
               ),
             },

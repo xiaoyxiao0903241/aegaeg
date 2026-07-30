@@ -3,7 +3,7 @@ export interface JwtPayload {
   [key: string]: unknown
 }
 
-export function decodeJwtPayload(token: string): JwtPayload | null {
+function decodeJwtPayload(token: string): JwtPayload | null {
   const parts = token.split('.')
   if (parts.length !== 3) return null
 

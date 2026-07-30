@@ -13,9 +13,6 @@ import { ExchangeContent, ExchangeWidget } from '~/views/dapp/exchange'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
 
-export type { DappTab } from '~/shared/config/dapp-tabs'
-export { tabOrder } from '~/shared/config/dapp-tabs'
-
 type TabWidgetProps = {
   onSelectTab: (tab: DappTab) => void
 } & DappTabSessions
@@ -36,22 +33,6 @@ function ExchangeTabContent({ trade, flash, burn, turbine }: TabContentProps) {
   return <ExchangeContent burn={burn} flash={flash} trade={trade} turbine={turbine} />
 }
 
-function AssetsTabWidget() {
-  return <AssetsWidget />
-}
-
-function AssetsTabContent() {
-  return <AssetsContent />
-}
-
-function StakingTabWidget() {
-  return <StakingWidget />
-}
-
-function StakingTabContent() {
-  return <StakingContent />
-}
-
 function GenesisTabWidget({ genesis }: TabWidgetProps) {
   if (!genesis) {
     throw new Error('GenesisWidget requires a lifted genesis session')
@@ -64,22 +45,6 @@ function GenesisTabContent({ genesis }: TabContentProps) {
     throw new Error('GenesisContent requires a lifted genesis session')
   }
   return <GenesisContent genesis={genesis} />
-}
-
-function RewardsTabWidget() {
-  return <RewardsWidget />
-}
-
-function RewardsTabContent() {
-  return <RewardsContent />
-}
-
-function ReleaseTabWidget() {
-  return <ReleaseWidget />
-}
-
-function ReleaseTabContent() {
-  return <ReleaseContent />
 }
 
 function CommunityTabWidget() {
@@ -95,10 +60,10 @@ function CommunityTabContent() {
 /** Sync registry — loading UX is data-driven inside tabs, not code-split Suspense. */
 export const dappTabEntries: readonly DappTabEntry[] = [
   { id: 'exchange', Widget: ExchangeTabWidget, Content: ExchangeTabContent },
-  { id: 'assets', Widget: AssetsTabWidget, Content: AssetsTabContent },
-  { id: 'staking', Widget: StakingTabWidget, Content: StakingTabContent },
-  { id: 'rewards', Widget: RewardsTabWidget, Content: RewardsTabContent },
-  { id: 'release', Widget: ReleaseTabWidget, Content: ReleaseTabContent },
+  { id: 'assets', Widget: AssetsWidget, Content: AssetsContent },
+  { id: 'staking', Widget: StakingWidget, Content: StakingContent },
+  { id: 'rewards', Widget: RewardsWidget, Content: RewardsContent },
+  { id: 'release', Widget: ReleaseWidget, Content: ReleaseContent },
   { id: 'community', Widget: CommunityTabWidget, Content: CommunityTabContent },
   { id: 'genesis', Widget: GenesisTabWidget, Content: GenesisTabContent },
 ]

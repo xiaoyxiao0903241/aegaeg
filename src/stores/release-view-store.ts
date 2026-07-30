@@ -1,10 +1,9 @@
 import { create } from 'zustand'
 import { releaseHashForView, type ReleaseView } from '~/shared/config/release-deep-link'
+import { DAPP_VIEW_MOTION_MS } from '~/stores/dapp-view-motion'
 
 export type { ReleaseView }
 export type ReleaseViewDirection = 'forward' | 'back'
-
-export const RELEASE_VIEW_MOTION_MS = 320
 
 interface ReleaseViewStore {
   view: ReleaseView
@@ -71,7 +70,7 @@ export const useReleaseViewStore = create<ReleaseViewStore>((set, get) => ({
         incomingView: null,
       })
       transitionTimer = null
-    }, RELEASE_VIEW_MOTION_MS)
+    }, DAPP_VIEW_MOTION_MS)
   },
   hydrateView: (view) => {
     clearTransitionTimer()

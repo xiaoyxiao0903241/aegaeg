@@ -10,31 +10,46 @@ test('query keys normalize addresses and tokens to lowercase', () => {
   const lower = checksummed.toLowerCase()
 
   assert.deepEqual(queryKeys.chain.referral(checksummed), ['chain', 'referral', lower])
-  assert.deepEqual(queryKeys.chain.referralIsBound(checksummed), ['chain', 'referral', 'isBound', lower])
-  assert.deepEqual(queryKeys.chain.presaleUserTotal(checksummed), ['chain', 'presale', 'userTotal', lower])
-  assert.deepEqual(
-    queryKeys.chain.erc20Balance(checksummed, checksummed),
-    ['chain', 'erc20', 'balance', lower, lower],
-  )
-  assert.deepEqual(
-    queryKeys.chain.erc20Allowance(checksummed, checksummed, checksummed),
-    ['chain', 'erc20', 'allowance', lower, lower, lower],
-  )
-  assert.deepEqual(
-    queryKeys.chain.swapBalances(checksummed, checksummed, checksummed),
-    ['chain', 'swap', 'balances', lower, lower, lower],
-  )
-  assert.deepEqual(
-    queryKeys.chain.swapQuote(checksummed, checksummed, '1000'),
-    ['chain', 'swap', 'quote', lower, lower, '1000'],
-  )
+  assert.deepEqual(queryKeys.chain.referralIsBound(checksummed), [
+    'chain',
+    'referral',
+    'isBound',
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.presaleUserTotal(checksummed), [
+    'chain',
+    'presale',
+    'userTotal',
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.erc20Balance(checksummed, checksummed), [
+    'chain',
+    'erc20',
+    'balance',
+    lower,
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.erc20Allowance(checksummed, checksummed, checksummed), [
+    'chain',
+    'erc20',
+    'allowance',
+    lower,
+    lower,
+    lower,
+  ])
+  assert.deepEqual(queryKeys.chain.swapQuote(checksummed, checksummed, '1000'), [
+    'chain',
+    'swap',
+    'quote',
+    lower,
+    lower,
+    '1000',
+  ])
 })
 
 test('invalidateAfterGenesisPurchase optimistically adds purchaseAmount', async () => {
   const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
-  const { invalidateAfterGenesisPurchase } = await loadModule(
-    '/src/shared/api/query/invalidate.ts',
-  )
+  const { invalidateAfterGenesisPurchase } = await loadModule('/src/shared/api/query/invalidate.ts')
 
   const address = '0xabc'
   const userKey = queryKeys.chain.presaleUserTotal(address)
@@ -51,11 +66,9 @@ test('invalidateAfterGenesisPurchase optimistically adds purchaseAmount', async 
   queryClient.clear()
 })
 
-test('invalidateAfterWalletSwitch refreshes next address only (previous unused)', async () => {
+test('invalidateAfterWalletSwitch refreshes next address chain queries', async () => {
   const { queryClient } = await loadModule('/src/shared/api/query/query-client.ts')
-  const { invalidateAfterWalletSwitch } = await loadModule(
-    '/src/shared/api/query/invalidate.ts',
-  )
+  const { invalidateAfterWalletSwitch } = await loadModule('/src/shared/api/query/invalidate.ts')
 
   const previous = '0xaaa'
   const next = '0xbbb'
@@ -66,7 +79,7 @@ test('invalidateAfterWalletSwitch refreshes next address only (previous unused)'
   queryClient.setQueryData(nextKey, 20n)
 
   // Mark both fresh then invalidate switch — previous cache value must remain.
-  invalidateAfterWalletSwitch(previous, next)
+  invalidateAfterWalletSwitch(next)
 
   assert.equal(queryClient.getQueryData(prevKey), 10n)
   assert.equal(queryClient.getQueryData(nextKey), 20n)
@@ -81,9 +94,7 @@ test('invalidateAfterWalletSwitch refreshes next address only (previous unused)'
 })
 
 test('canRunAuthenticatedQuery requires hydrate + session + token', async () => {
-  const { canRunAuthenticatedQuery } = await loadModule(
-    '/src/shared/api/query/session-request.ts',
-  )
+  const { canRunAuthenticatedQuery } = await loadModule('/src/shared/api/query/session-request.ts')
 
   assert.equal(
     canRunAuthenticatedQuery({
@@ -137,18 +148,9 @@ test('salesLogAdvanced detects new purchase by total or first id', async () => {
     '/src/shared/api/query/invalidate.ts',
   )
 
-  assert.equal(
-    salesLogAdvanced({ total: 20, firstId: 1 }, { total: 21, firstId: 99 }),
-    true,
-  )
-  assert.equal(
-    salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 99 }),
-    true,
-  )
-  assert.equal(
-    salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 1 }),
-    false,
-  )
+  assert.equal(salesLogAdvanced({ total: 20, firstId: 1 }, { total: 21, firstId: 99 }), true)
+  assert.equal(salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 99 }), true)
+  assert.equal(salesLogAdvanced({ total: 20, firstId: 1 }, { total: 20, firstId: 1 }), false)
 
   const fingerprint = pickSalesLogFingerprint([
     { total: 20, page: 1, page_size: 20, items: [{ id: 5 }] },

@@ -52,10 +52,7 @@ export function buildLoginAttemptKey(
 
 export type AuthAction = { type: 'idle' } | { type: 'login' } | { type: 'renewAt'; at: number }
 
-export function resolveSessionRenewAtMs(
-  session: StoredAuthSession,
-  renewThresholdMs: number,
-): number {
+function resolveSessionRenewAtMs(session: StoredAuthSession, renewThresholdMs: number): number {
   const expiresAt =
     typeof session.expiresAt === 'number'
       ? session.expiresAt

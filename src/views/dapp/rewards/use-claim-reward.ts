@@ -28,7 +28,7 @@ type RewardClaimExecutor = (args: {
   onUnauthorized: () => void
 }) => Promise<ClaimRewardExecuteResult>
 
-export type RewardClaimStatus = 'success' | 'confirm_failed' | null
+type RewardClaimStatus = 'success' | 'confirm_failed' | null
 
 export function useClaimReward(execute: RewardClaimExecutor) {
   const account = useActiveAccount()

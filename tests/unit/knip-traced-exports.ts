@@ -38,7 +38,6 @@ export {
 export { buildNextTierProgress } from '../../src/core/presale/tier-progress'
 export {
   formatApiDateTime,
-  formatRankTitleWithBadge,
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
 } from '../../src/shared/api/format-display'

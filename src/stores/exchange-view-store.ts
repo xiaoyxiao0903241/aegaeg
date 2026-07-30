@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 import { exchangeHashForView, type ExchangeView } from '~/shared/config/exchange-deep-link'
 
+import { DAPP_VIEW_MOTION_MS } from '~/stores/dapp-view-motion'
+
 export type { ExchangeView }
 export type ExchangeViewDirection = 'forward' | 'back'
-
-export const EXCHANGE_VIEW_MOTION_MS = 320
 
 interface ExchangeViewStore {
   view: ExchangeView
@@ -73,7 +73,7 @@ export const useExchangeViewStore = create<ExchangeViewStore>((set, get) => ({
         incomingView: null,
       })
       transitionTimer = null
-    }, EXCHANGE_VIEW_MOTION_MS)
+    }, DAPP_VIEW_MOTION_MS)
   },
   hydrateView: (view) => {
     clearTransitionTimer()

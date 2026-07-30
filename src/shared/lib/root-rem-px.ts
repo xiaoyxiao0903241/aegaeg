@@ -7,7 +7,7 @@ const DESIGN_ROOT_PX = 16
  * Browser zoom can inflate `getComputedStyle(...).fontSize`; writing that
  * into SVG/layout attributes double-applies zoom and blows up chrome (e.g. tooltip arrows).
  */
-export function rootRemPx(rem: number): number {
+function rootRemPx(rem: number): number {
   if (typeof document === 'undefined') return rem * DESIGN_ROOT_PX
   const fluid = parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue('--fluid-scale').trim(),

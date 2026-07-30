@@ -6,16 +6,6 @@ export function formatPresaleRank(rank: number): string {
   return `S${rank}`
 }
 
-/** Rewards rank title — appends super-community badge when applicable. */
-export function formatRankTitleWithBadge(
-  title: string,
-  isSuperCommunity: boolean,
-  badgeLabel: string,
-): string {
-  if (!title) return ''
-  return isSuperCommunity ? `${title} · ${badgeLabel}` : title
-}
-
 /** Community member table — missing rank or S0 shows `-`, otherwise S1–S10. */
 export function formatTableGenesisRank(rank: number | undefined | null): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return TABLE_EMPTY

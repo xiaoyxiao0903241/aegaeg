@@ -1,10 +1,9 @@
 import { create } from 'zustand'
 import { assetsHashForView, type AssetsView } from '~/shared/config/assets-deep-link'
+import { DAPP_VIEW_MOTION_MS } from '~/stores/dapp-view-motion'
 
 export type { AssetsView }
 export type AssetsViewDirection = 'forward' | 'back'
-
-export const ASSETS_VIEW_MOTION_MS = 320
 
 interface AssetsViewStore {
   view: AssetsView
@@ -73,7 +72,7 @@ export const useAssetsViewStore = create<AssetsViewStore>((set, get) => ({
         incomingView: null,
       })
       transitionTimer = null
-    }, ASSETS_VIEW_MOTION_MS)
+    }, DAPP_VIEW_MOTION_MS)
   },
   hydrateView: (view) => {
     clearTransitionTimer()

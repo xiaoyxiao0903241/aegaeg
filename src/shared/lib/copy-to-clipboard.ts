@@ -78,7 +78,7 @@ function copyViaSelectionApi(input: HTMLInputElement): boolean {
 }
 
 /** Hidden-input + execCommand fallbacks for mobile WebViews (Huawei/Vivo, etc.). */
-export async function fallbackCopyText(text: string): Promise<boolean> {
+async function fallbackCopyText(text: string): Promise<boolean> {
   if (typeof document === 'undefined' || !text) return false
 
   const input = document.createElement('input')

@@ -10,7 +10,7 @@ const dappWidgetConnectFooter = tv({
   },
 })
 
-export function DappWidgetConnectFooter({
+function DappWidgetConnectFooter({
   children,
   className,
 }: {

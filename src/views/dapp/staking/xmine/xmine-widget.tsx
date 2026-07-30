@@ -11,7 +11,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
-import { formatAddress } from '~/app/utils'
+import { formatShortAddress } from '~/shared/api/format-display'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -123,7 +123,7 @@ export function XmineWidget() {
                   rel="noreferrer"
                   target="_blank"
                 >
-                  {formatAddress(xmine.pool)}
+                  {formatShortAddress(xmine.pool)}
                 </a>
               ),
             },

@@ -15,8 +15,6 @@ import {
 } from '~/web3/presale/presale-read'
 import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
 
-export { useIsBindReferralQuery } from '~/web3/referral/use-referral-queries'
-
 type PresaleQueryOptions = {
   enabled?: boolean
 }

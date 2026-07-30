@@ -4,7 +4,7 @@ import {
   type ApiUserFacingErrorMessages,
 } from '~/shared/api/resolve-api-user-facing-error'
 
-export function isUnauthorizedError(error: unknown): boolean {
+function isUnauthorizedError(error: unknown): boolean {
   return error instanceof ApiError && error.code === 401
 }
 

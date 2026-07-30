@@ -32,14 +32,11 @@ export const queryKeys = {
     erc20Root: ['chain', 'erc20'] as const,
     referralRoot: ['chain', 'referral'] as const,
     swapRoot: ['chain', 'swap'] as const,
-    flashSwapQuoteRoot: ['chain', 'flashSwap', 'quote'] as const,
     flashSwapRoot: ['chain', 'flashSwap'] as const,
-    burnSwapQuoteRoot: ['chain', 'burnSwap', 'quote'] as const,
     burnSwapRoot: ['chain', 'burnSwap'] as const,
     presaleUserTotalRoot: ['chain', 'presale', 'userTotal'] as const,
     presaleUserPhaseRemainingRoot: ['chain', 'presale', 'userPhaseRemaining'] as const,
     presalePhases: ['chain', 'presale', 'phases'] as const,
-    presaleActivePhase: ['chain', 'presale', 'activePhase'] as const,
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
     presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
     presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,
@@ -68,15 +65,6 @@ export const queryKeys = {
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string) =>
       ['chain', 'swap', 'quote', tokenIn.toLowerCase(), tokenOut.toLowerCase(), amountIn] as const,
-    swapBalances: (address: string, sellToken: string, buyToken: string) =>
-      [
-        'chain',
-        'swap',
-        'balances',
-        address.toLowerCase(),
-        sellToken.toLowerCase(),
-        buyToken.toLowerCase(),
-      ] as const,
     flashSwapQuote: (pairId: string, direction: string, amountIn: string) =>
       ['chain', 'flashSwap', 'quote', pairId, direction, amountIn] as const,
     flashSwapBalances: (pairId: string, direction: string, address: string) =>

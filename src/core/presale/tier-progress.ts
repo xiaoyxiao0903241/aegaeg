@@ -28,7 +28,7 @@ export type NextTierProgress = {
   teamRemainingUsd: number | null
 }
 
-export function resolveNextPresaleRank(currentRank: number): number | null {
+function resolveNextPresaleRank(currentRank: number): number | null {
   const normalized = Number.isFinite(currentRank) ? Math.max(0, Math.trunc(currentRank)) : 0
   if (normalized >= MAX_PRESALE_RANK) return null
   return normalized <= 0 ? 1 : normalized + 1

@@ -175,7 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (prevAddress && walletAddress && prevAddress.toLowerCase() !== walletAddress.toLowerCase()) {
-      invalidateAfterWalletSwitch(prevAddress, walletAddress, activeTab)
+      invalidateAfterWalletSwitch(walletAddress, activeTab)
     }
 
     prevAuthedRef.current = sessionReady

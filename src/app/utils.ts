@@ -1,10 +1,6 @@
 import { type DappTab } from '~/shared/config/dapp-tabs'
 import { resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
 
-export function formatAddress(address: string) {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`
-}
-
 /** Map URL hash → tab; legacy `#swap` and `#exchange/<view>` supported. */
 export function resolveTabFromHash(hash: string): DappTab | null {
   return resolveDappLocationFromHash(hash)?.tab ?? null

@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 import { stakingHashForView, type StakingView } from '~/shared/config/staking-deep-link'
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
+import { DAPP_VIEW_MOTION_MS } from '~/stores/dapp-view-motion'
 
 export type { StakingView }
 export type StakingViewDirection = 'forward' | 'back'
-
-export const STAKING_VIEW_MOTION_MS = 320
 
 interface StakingViewStore {
   view: StakingView
@@ -87,7 +86,7 @@ export const useStakingViewStore = create<StakingViewStore>((set, get) => ({
         incomingView: null,
       })
       transitionTimer = null
-    }, STAKING_VIEW_MOTION_MS)
+    }, DAPP_VIEW_MOTION_MS)
   },
   hydrateView: (view) => {
     clearTransitionTimer()

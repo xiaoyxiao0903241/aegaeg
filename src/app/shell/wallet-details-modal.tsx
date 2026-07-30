@@ -10,7 +10,7 @@ import { useAuth } from '~/hooks/use-auth'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { formatAddress } from '~/app/utils'
+import { formatShortAddress } from '~/shared/api/format-display'
 import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
 import { toast } from 'sonner'
@@ -54,7 +54,7 @@ export function WalletDetailsModal({
     return null
   }
 
-  const addressLabel = formatAddress(walletAddress)
+  const addressLabel = formatShortAddress(walletAddress)
   const balanceValue = balanceQuery.isPending
     ? '…'
     : balanceQuery.isError

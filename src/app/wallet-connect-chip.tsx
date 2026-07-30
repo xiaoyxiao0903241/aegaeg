@@ -17,7 +17,7 @@ import {
   toWalletUserFacingMessage,
 } from '~/web3/resolve-contract-error-message'
 import { useAuthStore } from '~/stores/auth-store'
-import { formatAddress } from '~/app/utils'
+import { formatShortAddress } from '~/shared/api/format-display'
 import { Text } from '~/shared/ui/text'
 import { Button } from '~/shared/ui/button'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
@@ -138,7 +138,7 @@ function ConnectedWalletChip() {
   return (
     <>
       <button
-        aria-label={formatAddress(address)}
+        aria-label={formatShortAddress(address)}
         className={styles.connected()}
         onClick={() => void handleClick()}
         type="button"
@@ -149,7 +149,7 @@ function ConnectedWalletChip() {
           variant="copy"
           className="truncate text-xs leading-[1.2] font-semibold tracking-[-0.01em]"
         >
-          {formatAddress(address)}
+          {formatShortAddress(address)}
         </Text>
       </button>
       {/* Keep mounted so Radix can play the closed-state exit animation (same as connect modal). */}

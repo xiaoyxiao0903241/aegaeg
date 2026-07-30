@@ -9,7 +9,6 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.api.referralTotal,
     queryKeys.api.teamOverview,
     queryKeys.chain.presalePhases,
-    queryKeys.chain.presaleActivePhase,
     queryKeys.chain.presaleAgxPrice,
     queryKeys.chain.presaleTotalPurchased,
     queryKeys.chain.presaleAirdropThreshold,

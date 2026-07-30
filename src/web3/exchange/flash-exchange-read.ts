@@ -44,16 +44,12 @@ export async function readFlashExchangeQuote(
 }
 
 /** gAGX↔AGX wrap/redeem is 1:1 raw units — no on-chain quoter. */
-export async function readFlashRedeemQuote(amountIn: bigint): Promise<bigint> {
-  return amountIn
-}
-
 export async function readFlashPairQuote(
   pairId: FlashPairId,
   amountIn: bigint,
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
-  if (pairId === 'gagx') return readFlashRedeemQuote(amountIn)
+  if (pairId === 'gagx') return amountIn
   return readFlashExchangeQuote(amountIn, client)
 }
 

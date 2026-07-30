@@ -1,10 +1,9 @@
 import { create } from 'zustand'
 import { rewardsHashForView, type RewardsView } from '~/shared/config/rewards-deep-link'
+import { DAPP_VIEW_MOTION_MS } from '~/stores/dapp-view-motion'
 
 export type { RewardsView }
 export type RewardsViewDirection = 'forward' | 'back'
-
-export const REWARDS_VIEW_MOTION_MS = 320
 
 interface RewardsViewStore {
   view: RewardsView
@@ -71,7 +70,7 @@ export const useRewardsViewStore = create<RewardsViewStore>((set, get) => ({
         incomingView: null,
       })
       transitionTimer = null
-    }, REWARDS_VIEW_MOTION_MS)
+    }, DAPP_VIEW_MOTION_MS)
   },
   hydrateView: (view) => {
     clearTransitionTimer()

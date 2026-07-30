@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getInitialTab, resolveTabFromHash } from '~/app/utils'
+import { getInitialTab } from '~/app/utils'
 import { resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
@@ -97,11 +97,7 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
   setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
   syncTabFromHash: () => {
     const loc = resolveDappLocationFromHash(window.location.hash.slice(1))
-    if (!loc) {
-      const tab = resolveTabFromHash(window.location.hash.slice(1))
-      if (tab) set({ activeTab: tab })
-      return
-    }
+    if (!loc) return
     set({ activeTab: loc.tab })
     if (loc.tab === 'exchange' && loc.exchangeView) {
       useExchangeViewStore.getState().hydrateView(loc.exchangeView)

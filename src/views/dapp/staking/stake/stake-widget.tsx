@@ -13,7 +13,7 @@ import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import { formatAddress } from '~/app/utils'
+import { formatShortAddress } from '~/shared/api/format-display'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -165,7 +165,7 @@ export function StakeWidget() {
                   rel="noreferrer"
                   target="_blank"
                 >
-                  {formatAddress(stake.pool)}
+                  {formatShortAddress(stake.pool)}
                 </a>
               ),
             },
