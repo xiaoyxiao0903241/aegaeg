@@ -76,6 +76,8 @@ export interface BscContracts {
   restakeConfig: Address
   /** PrincipalReleaseVault — principal exit buffer (manual §13) */
   principalReleaseVault: Address
+  /** AccountMigrationManager — §17; this round migrationEnabled=false */
+  accountMigrationManager: Address
 }
 
 /**
@@ -121,4 +123,5 @@ export const BSC_CONTRACTS = {
   rewardQueue: requireEnvAddress('VITE_BSC_REWARD_QUEUE'),
   restakeConfig: requireEnvAddress('VITE_BSC_RESTAKE_CONFIG'),
   principalReleaseVault: requireEnvAddress('VITE_BSC_PRINCIPAL_RELEASE_VAULT'),
+  accountMigrationManager: requireEnvAddress('VITE_BSC_ACCOUNT_MIGRATION_MANAGER'),
 } as const satisfies BscContracts

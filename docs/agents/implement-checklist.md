@@ -12,7 +12,7 @@ Pre-Design → 写盘（一页一帧）→ Post-Design + Post-Code → pnpm chec
 
 ```
 [ ] ticket / Spec；未重开已锁决策
-[ ] 手册相关章 **逐行**已读（ui-leaf §2.1）；leaf 有章节清单 + 逐条对照表；能口述钱/门闸
+[ ] 手册相关章 **逐行**已读（ui-leaf §2.1）；leaf 有章节清单 + 逐条对照表（挂 `G-id` ← [`.scratch/.../manual-coverage/`](../../.scratch/dapp-7rail-parity/research/manual-coverage/README.md)）；能口述钱/门闸
 [ ] DApp：WebBridge 实录五字段已写（ui-leaf §2.2）；非 DApp 无原型：N/A + 路径证据
 [ ] Figma fileKey + PC frame；get_design_context 页+子
 [ ] 动态审计表；leaf UI 列∥钱路列（R5a：手册沉默不砍控件）

@@ -1734,6 +1734,8 @@ const app = defineMessages({
     viewContract: 'View contract',
     gates: {
       notBound: 'Bind a referral first',
+      accountMigrated: 'This address has migrated — use the new address',
+      migrationNotOpen: 'Account migration is not open yet',
       insufficientBalance: 'Insufficient balance',
       insufficientGagx: 'Insufficient gAGX — wrap via Flash first',
       insufficientAllowance: 'Insufficient allowance',

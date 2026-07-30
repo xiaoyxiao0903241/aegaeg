@@ -52,6 +52,11 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.erc20Root,
     queryKeys.chain.burnSwapRoot,
   ],
-  staking: [queryKeys.chain.stakingRoot, queryKeys.chain.erc20Root, queryKeys.chain.referralRoot],
+  staking: [
+    queryKeys.chain.stakingRoot,
+    queryKeys.chain.erc20Root,
+    queryKeys.chain.referralRoot,
+    queryKeys.chain.migrationRoot,
+  ],
   release: [queryKeys.chain.releaseRoot, queryKeys.chain.erc20Root, queryKeys.chain.turbineRoot],
 }

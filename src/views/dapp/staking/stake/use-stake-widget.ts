@@ -9,6 +9,9 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
+import { useMigrationUserGate } from '~/web3/migration/use-migration-queries'
+import { resolveNeedReferral } from '~/core/referral/resolve-need-referral'
+import { resolveWriteButtonPhase } from '~/core/wallet/resolve-write-button-phase'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -33,6 +36,7 @@ export function useStakeWidget(sessionReady: boolean) {
   const preflightQuery = useStakeOpenPreflightQuery(pool, address, isLiquid, {
     enabled: sessionReady && walletReady,
   })
+  const migration = useMigrationUserGate(address, { enabled: walletReady })
 
   const balance = preflightQuery.data?.balance ?? 0n
   const balancesLoaded = preflightQuery.data !== undefined
@@ -44,13 +48,17 @@ export function useStakeWidget(sessionReady: boolean) {
     sessionReady,
   })
 
+  const isBound = preflightQuery.data?.isBound ?? false
+  const needReferral = resolveNeedReferral(preflightQuery.data?.isBound) === 'need_referral'
+
   const gate = evaluateStakeLiveGate({
     amount: amountInput.amountIn,
-    isBound: preflightQuery.data?.isBound ?? false,
+    isBound,
     balance,
     allowance: preflightQuery.data?.allowance ?? 0n,
     remainingQuota: preflightQuery.data?.remainingQuota ?? 0n,
     poolOpen: preflightQuery.data?.poolOpen,
+    isOldAccount: migration.isOldAccount,
   })
 
   const locked =
@@ -58,6 +66,15 @@ export function useStakeWidget(sessionReady: boolean) {
 
   const canSubmit =
     !locked && amountInput.amountIn > 0n && gate == null && preflightQuery.data !== undefined
+
+  const writePhase = resolveWriteButtonPhase({
+    walletReady,
+    writeReady,
+    needReferral,
+    accountMigrated: migration.isOldAccount === true,
+    moneyGate: gate,
+    isSubmitting,
+  })
 
   const showWarmupClaim = isLiquid && Boolean(preflightQuery.data?.isWarmupExpired)
 
@@ -118,6 +135,7 @@ export function useStakeWidget(sessionReady: boolean) {
     isSubmitting,
     error,
     gate,
+    writePhase,
     showWarmupClaim,
     claimWarmup,
     submit,

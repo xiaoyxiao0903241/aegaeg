@@ -4,19 +4,34 @@
  */
 
 export type StakeLiveGateReason =
+  | 'accountMigrated'
   | 'notBound'
   | 'insufficientBalance'
   | 'insufficientAllowance'
   | 'insufficientQuota'
   | 'poolPaused'
   | 'zeroAmount'
+  | 'unavailable'
 
 export type BondZapLiveGateReason =
-  'notBound' | 'insufficientBalance' | 'insufficientAllowance' | 'depositoryNotAuth' | 'zeroAmount'
+  | 'accountMigrated'
+  | 'notBound'
+  | 'insufficientBalance'
+  | 'insufficientAllowance'
+  | 'depositoryNotAuth'
+  | 'zeroAmount'
+  | 'unavailable'
 
 export type XmineLiveGateReason =
   'insufficientBalance' | 'insufficientAllowance' | 'insufficientQuota' | 'zeroAmount'
 
+/**
+ * `isOldAccount`:
+ * - `true` → migrated (block)
+ * - `false` → ok
+ * - `null` → status unknown (fail-closed)
+ * - omit / `undefined` → migration check not in scope for this call site
+ */
 export function evaluateStakeLiveGate(args: {
   amount: bigint
   isBound: boolean
@@ -25,7 +40,11 @@ export function evaluateStakeLiveGate(args: {
   remainingQuota: bigint
   /** Locked pools only — liquid always treated as open. */
   poolOpen?: boolean
+  /** Handbook §17 — migrated old address must not keep writing. */
+  isOldAccount?: boolean | null
 }): StakeLiveGateReason | null {
+  if (args.isOldAccount === null) return 'unavailable'
+  if (args.isOldAccount === true) return 'accountMigrated'
   if (args.amount <= 0n) return 'zeroAmount'
   if (!args.isBound) return 'notBound'
   if (args.poolOpen === false) return 'poolPaused'
@@ -41,7 +60,10 @@ export function evaluateBondZapLiveGate(args: {
   balance: bigint
   allowance: bigint
   depositoryAuthorized: boolean
+  isOldAccount?: boolean | null
 }): BondZapLiveGateReason | null {
+  if (args.isOldAccount === null) return 'unavailable'
+  if (args.isOldAccount === true) return 'accountMigrated'
   if (args.amount <= 0n) return 'zeroAmount'
   if (!args.isBound) return 'notBound'
   if (!args.depositoryAuthorized) return 'depositoryNotAuth'

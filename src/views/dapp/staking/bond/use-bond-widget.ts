@@ -21,6 +21,9 @@ import {
   useBondZapAgxPreviewQuery,
   useBondZapPreflightQuery,
 } from '~/web3/staking/use-staking-queries'
+import { useMigrationUserGate } from '~/web3/migration/use-migration-queries'
+import { resolveNeedReferral } from '~/core/referral/resolve-need-referral'
+import { resolveWriteButtonPhase } from '~/core/wallet/resolve-write-button-phase'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitBondZap, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -49,6 +52,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean) {
   const preflightQuery = useBondZapPreflightQuery(depository, address, {
     enabled: sessionReady && walletReady,
   })
+  const migration = useMigrationUserGate(address, { enabled: walletReady })
 
   const periodMarketQueries = useQueries({
     queries: BOND_PERIODS.map((p) => {
@@ -85,13 +89,25 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean) {
     balance,
     allowance: preflightQuery.data?.allowance ?? 0n,
     depositoryAuthorized: preflightQuery.data?.depositoryAuthorized ?? false,
+    isOldAccount: migration.isOldAccount,
   })
+
+  const needReferral = resolveNeedReferral(preflightQuery.data?.isBound) === 'need_referral'
 
   const locked =
     isUnknownReceiptLocked(WRITE_PATH.BOND_ZAP) || isSubmitting || !writeReady || !walletReady
 
   const canSubmit =
     !locked && amountInput.amountIn > 0n && gate == null && preflightQuery.data !== undefined
+
+  const writePhase = resolveWriteButtonPhase({
+    walletReady,
+    writeReady,
+    needReferral,
+    accountMigrated: migration.isOldAccount === true,
+    moneyGate: gate,
+    isSubmitting,
+  })
 
   const market = marketQuery.data
   const discountLabel =
@@ -191,6 +207,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean) {
     isSubmitting,
     error,
     gate,
+    writePhase,
     submit,
     depository,
   }

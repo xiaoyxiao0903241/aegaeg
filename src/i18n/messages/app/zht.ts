@@ -1720,6 +1720,8 @@ const app = defineMessages({
     viewContract: 'View contract',
     gates: {
       notBound: 'Bind a referral first',
+      accountMigrated: '該地址已遷移，請使用新地址操作',
+      migrationNotOpen: '帳戶遷移暫未開放',
       insufficientBalance: 'Insufficient balance',
       insufficientGagx: 'Insufficient gAGX — wrap via Flash first',
       insufficientAllowance: 'Insufficient allowance',

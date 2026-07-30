@@ -50,6 +50,12 @@ export const REFERRAL_METHODS = {
   bindReferral: 'function bindReferral(address referrer)',
 } as const
 
+/** AccountMigrationManager — handbook §17 read-only this round (writes DEFER). */
+export const ACCOUNT_MIGRATION_METHODS = {
+  migrationEnabled: 'function migrationEnabled() view returns (bool)',
+  isOldAccount: 'function isOldAccount(address account) view returns (bool)',
+} as const
+
 export const USD1_SWAP_METHODS = {
   quoteUsd1Out: 'function quoteUsd1Out(uint256 usdtAmount) view returns (uint256)',
   swap: 'function swap(uint256 usdtAmount, uint256 minUsd1Out)',

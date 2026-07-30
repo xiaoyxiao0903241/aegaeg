@@ -33,6 +33,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
 
   function resolveMessage(error: unknown) {
     const raw = readErrorText(error)
+    if (raw === BOND_ZAP_GATE_ERROR.accountMigrated) return t.staking.gates.accountMigrated
     if (raw === BOND_ZAP_GATE_ERROR.notBound) return t.staking.gates.notBound
     if (raw === BOND_ZAP_GATE_ERROR.insufficientBalance) return t.staking.gates.insufficientBalance
     if (raw === BOND_ZAP_GATE_ERROR.insufficientAllowance)
@@ -46,6 +47,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
   }
 
   async function handleSubmit() {
+    if (bond.gate === 'accountMigrated') return
     if (bond.gate === 'notBound') {
       selectTab('community')
       return
@@ -65,7 +67,12 @@ export function BondWidget({ kind }: { kind: BondKind }) {
     }
   }
 
-  const ctaLabel = bond.gate === 'notBound' ? t.staking.stake.bindCta : copy.submit
+  const ctaLabel =
+    bond.writePhase === 'account_migrated'
+      ? t.staking.gates.accountMigrated
+      : bond.writePhase === 'need_referral'
+        ? t.staking.stake.bindCta
+        : copy.submit
   const amountLabel = copy.amountBalance.replace(
     '{balance}',
     bond.isBalancesLoading ? '…' : bond.balanceLabel,

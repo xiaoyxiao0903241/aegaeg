@@ -20,10 +20,11 @@ Claim: 签名 API → 链上 claim → confirm → success: invalidate
 Rewards Mixed Lucky: live winner/reward vs pre intent + 贡献/plans → claimRewardMixed → WRITE_PATH.REWARD_CLAIM
 Rewards Mixed Dao: 签名额 + live DaoPool AGX solvency/贡献/plans → claimRewardsMixed → REWARD_CLAIM
 Rewards simple: Incentive/Market/CommunityFund/RewardClaimer → 签名 claim → REWARD_CLAIM
-Staking: bind + AGX bal/allow + quota(/status) → [approve?] → live 重读
+Staking: bind + migration(isOldAccount) + AGX bal/allow + quota(/status) → [approve?] → live 重读
        → liquidStake / lockedStake → WRITE_PATH.STAKING
-BondZap: bind + USD1 bal/allow + authContracts → [approve?] → live 重读
+BondZap: bind + migration(isOldAccount) + USD1 bal/allow + authContracts → [approve?] → live 重读
        → BondHelper zap → WRITE_PATH.BOND_ZAP
+Flash / Trade: 无 referral / migration 写门禁（手册未要求）；quote → canSubmit → [approve?] → live
 Xmine: gAGX bal/allow + miningQuotaOf → [approve?] → live 重读
        → stakeGagxForMining → WRITE_PATH.XMINE
 Assets Mixed: live 重读奖励+贡献+plans → claim*Mixed → WRITE_PATH.ASSETS_CLAIM
@@ -35,11 +36,28 @@ Release buffer: live PRV claimable → claimMany → RELEASE_CLAIM（钱包 AGX�
 Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / bond-zap / xmine / assets-claim / release-claim），禁立即重提
 ```
 
+## §1.4 写按钮态 → 现码
+
+| 手册态             | 现码                                                        |
+| ------------------ | ----------------------------------------------------------- |
+| need_wallet        | `!walletReady` → Connect promo                              |
+| wrong_network      | `!writeReady`（`useWriteReadiness`）                        |
+| need_referral      | `resolveNeedReferral` / gate `notBound` → CTA → community   |
+| account_migrated   | `readMigrationStatus.isOldAccount` → gate `accountMigrated` |
+| need_allowance     | 既有 approve 流 + live 二次门闸                             |
+| unknown            | `WRITE_PATH` lock                                           |
+| ready / submitting | `resolveWriteButtonPhase`（stake/bond 示范）                |
+
+迁移写（申请/激活 §17.4）本轮 **DEFER**；`migrationEnabled=false` → `migrationWritesAllowed=false`。
+
 ## 关键路径
 
 | 主题                      | 路径                                                                                     |
 | ------------------------- | ---------------------------------------------------------------------------------------- |
 | Write intent / writeReady | `web3/wallet/assert-write-intent.ts` · `use-write-readiness.ts`                          |
+| §1.4 phase adapter        | `core/wallet/resolve-write-button-phase.ts`                                              |
+| Referral gate             | `core/referral/resolve-need-referral.ts` · `web3/referral/*`                             |
+| Migration read / gate     | `web3/migration/*` · `core/migration/resolve-migration-user-gate.ts`                     |
 | Unknown receipt lock      | `web3/wallet/unknown-receipt-lock.ts` · `run-unknown-guarded-write.ts`                   |
 | Assets Mixed dual-gate    | `core/assets/dual-gate-mixed-claim.ts`（intent×live；禁自证）                            |
 | Swap 门闸                 | `core/exchange/resolve-live-quoted-out.ts` · `views/dapp/exchange/use-exchange-quote.ts` |
@@ -52,21 +70,22 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 
 ## 必跑单测
 
-| 主题                        | 文件                                                                                 |
-| --------------------------- | ------------------------------------------------------------------------------------ |
-| Write intent                | `write-intent.test.mjs`                                                              |
-| Unknown receipt lock        | `unknown-receipt-lock.test.mjs` · `run-unknown-guarded-write.test.mjs`               |
-| Assets Mixed dual-gate      | `dual-gate-mixed-claim.test.mjs`                                                     |
-| Live post-approve / balance | `live-post-approve-gates.test.mjs`                                                   |
-| Quote / unknown 门闸        | `react-quality-gates.test.mjs`                                                       |
-| Genesis gate                | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApproveGate`）                  |
-| Claim confirm / 401         | `claim-reward-confirm.test.mjs` · `resolve-claim-reward-outcome.test.mjs`            |
-| Rewards Mixed / simple gate | `rewards-gates.test.mjs`                                                             |
-| Release queue / buffer gate | `release-gates.test.mjs`                                                             |
-| 登录 / 封禁                 | `classify-login-failure.test.mjs` · `account-banned.test.mjs`                        |
-| Auth machine                | `auth-executor.test.mjs`                                                             |
-| Invalidate / wallet switch  | `query-invalidate.test.mjs`                                                          |
-| 错误不泄漏 raw              | `resolve-contract-error-message.test.mjs` · `resolve-api-user-facing-error.test.mjs` |
+| 主题                        | 文件                                                                                                              |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Write intent                | `write-intent.test.mjs`                                                                                           |
+| §1.4 / referral / migration | `resolve-write-button-phase.test.mjs` · `resolve-need-referral.test.mjs` · `resolve-migration-user-gate.test.mjs` |
+| Unknown receipt lock        | `unknown-receipt-lock.test.mjs` · `run-unknown-guarded-write.test.mjs`                                            |
+| Assets Mixed dual-gate      | `dual-gate-mixed-claim.test.mjs`                                                                                  |
+| Live post-approve / balance | `live-post-approve-gates.test.mjs`                                                                                |
+| Quote / unknown 门闸        | `react-quality-gates.test.mjs`                                                                                    |
+| Genesis gate                | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApproveGate`）                                               |
+| Claim confirm / 401         | `claim-reward-confirm.test.mjs` · `resolve-claim-reward-outcome.test.mjs`                                         |
+| Rewards Mixed / simple gate | `rewards-gates.test.mjs`                                                                                          |
+| Release queue / buffer gate | `release-gates.test.mjs`                                                                                          |
+| 登录 / 封禁                 | `classify-login-failure.test.mjs` · `account-banned.test.mjs`                                                     |
+| Auth machine                | `auth-executor.test.mjs`                                                                                          |
+| Invalidate / wallet switch  | `query-invalidate.test.mjs`                                                                                       |
+| 错误不泄漏 raw              | `resolve-contract-error-message.test.mjs` · `resolve-api-user-facing-error.test.mjs`                              |
 
 ## 不变量
 

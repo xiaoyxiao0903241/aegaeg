@@ -61,18 +61,30 @@ export const queryKeys = {
     referral: (address: string) => ['chain', 'referral', address.toLowerCase()] as const,
     referralIsBound: (address: string) =>
       ['chain', 'referral', 'isBound', address.toLowerCase()] as const,
+    migrationRoot: ['chain', 'migration'] as const,
+    migrationStatus: (address: string) =>
+      ['chain', 'migration', 'status', address.toLowerCase()] as const,
     swapPoolMetadata: ['chain', 'swap', 'poolMetadata'] as const,
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string, pathKey = '') =>
-      [
-        'chain',
-        'swap',
-        'quote',
-        tokenIn.toLowerCase(),
-        tokenOut.toLowerCase(),
-        amountIn,
-        pathKey,
-      ] as const,
+      pathKey
+        ? ([
+            'chain',
+            'swap',
+            'quote',
+            tokenIn.toLowerCase(),
+            tokenOut.toLowerCase(),
+            amountIn,
+            pathKey,
+          ] as const)
+        : ([
+            'chain',
+            'swap',
+            'quote',
+            tokenIn.toLowerCase(),
+            tokenOut.toLowerCase(),
+            amountIn,
+          ] as const),
     flashSwapQuote: (pairId: string, direction: string, amountIn: string) =>
       ['chain', 'flashSwap', 'quote', pairId, direction, amountIn] as const,
     flashSwapBalances: (pairId: string, direction: string, address: string) =>

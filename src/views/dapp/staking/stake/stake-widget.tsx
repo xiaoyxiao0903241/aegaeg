@@ -49,6 +49,7 @@ export function StakeWidget() {
 
   function resolveMessage(error: unknown) {
     const raw = readErrorText(error)
+    if (raw === STAKING_GATE_ERROR.accountMigrated) return t.staking.gates.accountMigrated
     if (raw === STAKING_GATE_ERROR.notBound) return t.staking.gates.notBound
     if (raw === STAKING_GATE_ERROR.insufficientBalance) return t.staking.gates.insufficientBalance
     if (raw === STAKING_GATE_ERROR.insufficientAllowance)
@@ -63,6 +64,7 @@ export function StakeWidget() {
   }
 
   async function handleSubmit() {
+    if (stake.gate === 'accountMigrated') return
     if (stake.gate === 'notBound') {
       selectTab('community')
       return
@@ -91,7 +93,12 @@ export function StakeWidget() {
     if (result.error != null) presentUserFacingError(result.error, resolveMessage)
   }
 
-  const ctaLabel = stake.gate === 'notBound' ? t.staking.stake.bindCta : t.staking.stake.submit
+  const ctaLabel =
+    stake.writePhase === 'account_migrated'
+      ? t.staking.gates.accountMigrated
+      : stake.writePhase === 'need_referral'
+        ? t.staking.stake.bindCta
+        : t.staking.stake.submit
 
   return (
     <>

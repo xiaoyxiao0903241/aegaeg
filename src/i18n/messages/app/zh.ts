@@ -1660,6 +1660,8 @@ const app = defineMessages({
     viewContract: '查看合约',
     gates: {
       notBound: '请先绑定推荐关系',
+      accountMigrated: '该地址已迁移，请使用新地址操作',
+      migrationNotOpen: '账户迁移暂未开放',
       insufficientBalance: '余额不足',
       insufficientGagx: 'gAGX 余额不足，请先闪兑包装',
       insufficientAllowance: '授权不足',

@@ -11,6 +11,7 @@ import {
   lockedStakeAgx,
 } from '~/web3/staking/staking-write'
 import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
+import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
@@ -24,6 +25,7 @@ type ActiveAccount = ReturnType<typeof useActiveAccount>
 type ActiveWallet = ReturnType<typeof useActiveWallet>
 
 export const STAKING_GATE_ERROR = {
+  accountMigrated: 'STAKING_ACCOUNT_MIGRATED',
   notBound: 'STAKING_NOT_BOUND',
   insufficientBalance: 'STAKING_INSUFFICIENT_BALANCE',
   insufficientAllowance: 'STAKING_INSUFFICIENT_ALLOWANCE',
@@ -58,6 +60,7 @@ export async function submitStakeOpen(args: {
       user: account.address,
       client: readClient,
     })
+    const preMigration = await readMigrationStatus(account.address, readClient)
     const preGate = evaluateStakeLiveGate({
       amount,
       isBound: pre.isBound,
@@ -65,8 +68,8 @@ export async function submitStakeOpen(args: {
       allowance: pre.allowance,
       remainingQuota: pre.remainingQuota,
       poolOpen: pre.poolOpen,
+      isOldAccount: preMigration.isOldAccount,
     })
-    if (preGate === 'notBound') return { ok: false, error: STAKING_GATE_ERROR.notBound }
     if (preGate) return { ok: false, error: STAKING_GATE_ERROR[preGate] }
 
     await approveAgxForStakeIfNeeded({ wallet, pool, amount })
@@ -77,6 +80,7 @@ export async function submitStakeOpen(args: {
       user: account.address,
       client: readClient,
     })
+    const liveMigration = await readMigrationStatus(account.address, readClient)
     const liveGate = evaluateStakeLiveGate({
       amount,
       isBound: live.isBound,
@@ -84,8 +88,8 @@ export async function submitStakeOpen(args: {
       allowance: live.allowance,
       remainingQuota: live.remainingQuota,
       poolOpen: live.poolOpen,
+      isOldAccount: liveMigration.isOldAccount,
     })
-    if (liveGate === 'notBound') return { ok: false, error: STAKING_GATE_ERROR.notBound }
     if (liveGate) return { ok: false, error: STAKING_GATE_ERROR[liveGate] }
 
     if (isLiquid) {

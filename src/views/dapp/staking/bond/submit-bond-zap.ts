@@ -13,6 +13,7 @@ import {
   zapIntoLiquidityBond,
 } from '~/web3/staking/staking-write'
 import { readBondZapPreflight } from '~/web3/staking/staking-read'
+import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
@@ -28,6 +29,7 @@ type ActiveWallet = ReturnType<typeof useActiveWallet>
 export type BondKind = 'lp' | 'burn'
 
 export const BOND_ZAP_GATE_ERROR = {
+  accountMigrated: 'BOND_ZAP_ACCOUNT_MIGRATED',
   notBound: 'BOND_ZAP_NOT_BOUND',
   insufficientBalance: 'BOND_ZAP_INSUFFICIENT_BALANCE',
   insufficientAllowance: 'BOND_ZAP_INSUFFICIENT_ALLOWANCE',
@@ -61,14 +63,15 @@ export async function submitBondZap(args: {
       user: account.address,
       client: readClient,
     })
+    const preMigration = await readMigrationStatus(account.address, readClient)
     const preGate = evaluateBondZapLiveGate({
       amount,
       isBound: pre.isBound,
       balance: pre.balance,
       allowance: pre.allowance,
       depositoryAuthorized: pre.depositoryAuthorized,
+      isOldAccount: preMigration.isOldAccount,
     })
-    if (preGate === 'notBound') return { ok: false, error: BOND_ZAP_GATE_ERROR.notBound }
     if (preGate) return { ok: false, error: BOND_ZAP_GATE_ERROR[preGate] }
 
     await approveUsd1ForBondHelperIfNeeded({ wallet, amount })
@@ -78,14 +81,15 @@ export async function submitBondZap(args: {
       user: account.address,
       client: readClient,
     })
+    const liveMigration = await readMigrationStatus(account.address, readClient)
     const liveGate = evaluateBondZapLiveGate({
       amount,
       isBound: live.isBound,
       balance: live.balance,
       allowance: live.allowance,
       depositoryAuthorized: live.depositoryAuthorized,
+      isOldAccount: liveMigration.isOldAccount,
     })
-    if (liveGate === 'notBound') return { ok: false, error: BOND_ZAP_GATE_ERROR.notBound }
     if (liveGate) return { ok: false, error: BOND_ZAP_GATE_ERROR[liveGate] }
 
     if (kind === 'lp') {

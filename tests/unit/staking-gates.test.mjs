@@ -65,6 +65,56 @@ test('evaluateStakeLiveGate blocks unbound / quota / allowance', async () => {
   )
 
   assert.equal(
+    evaluateStakeLiveGate({
+      amount: 5n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      remainingQuota: 10n,
+      poolOpen: true,
+      isOldAccount: true,
+    }),
+    'accountMigrated',
+  )
+
+  assert.equal(
+    evaluateStakeLiveGate({
+      amount: 5n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      remainingQuota: 10n,
+      poolOpen: true,
+      isOldAccount: null,
+    }),
+    'unavailable',
+  )
+
+  assert.equal(
+    evaluateBondZapLiveGate({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      isOldAccount: true,
+    }),
+    'accountMigrated',
+  )
+
+  assert.equal(
+    evaluateBondZapLiveGate({
+      amount: 1n,
+      isBound: true,
+      balance: 10n,
+      allowance: 10n,
+      depositoryAuthorized: true,
+      isOldAccount: null,
+    }),
+    'unavailable',
+  )
+
+  assert.equal(
     evaluateXmineLiveGate({
       amount: 5n,
       balance: 10n,
