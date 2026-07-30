@@ -11,7 +11,6 @@ import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/exchange/exchange-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const FLASH_EXCHANGE_USDT = BSC_CONTRACTS.usdt
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const usd1ExchangeWriteAbi = parseWriteAbi(USD1_SWAP_METHODS.swap, USD1_SWAP_ERRORS)
 const redeemableGagxRedeemAbi = parseWriteAbi(REDEEMABLE_GAGX_METHODS.redeem)
@@ -31,7 +30,7 @@ export async function approveUsdtForFlashExchangeIfNeeded({
 
   const readClient = createWalletReadClient(wallet)
   const allowance = await readErc20Allowance(
-    FLASH_EXCHANGE_USDT,
+    BSC_CONTRACTS.usdt,
     account.address,
     BSC_CONTRACTS.usd1Swap,
     readClient,
@@ -40,7 +39,7 @@ export async function approveUsdtForFlashExchangeIfNeeded({
 
   return writeContractViaWallet({
     wallet,
-    address: FLASH_EXCHANGE_USDT,
+    address: BSC_CONTRACTS.usdt,
     abi: erc20WriteAbi,
     functionName: 'approve',
     args: [BSC_CONTRACTS.usd1Swap, amountIn],

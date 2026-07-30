@@ -49,7 +49,6 @@ export async function submitFlashExchange(args: {
   wallet: ActiveWallet
   core: FlashQuotedSubmitCore
   balancesQuery: { refetch: () => Promise<QueryObserverResult<FlashBalancesResult>> }
-  usd1Config: FlashUsd1SwapConfig | null
   refetchUsd1Config: () => Promise<QueryObserverResult<FlashUsd1SwapConfig>>
 }): Promise<{ ok: true } | { ok: false; error: unknown }> {
   const { pairId, direction, account, wallet, core, balancesQuery, refetchUsd1Config } = args

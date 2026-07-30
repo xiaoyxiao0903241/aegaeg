@@ -25,16 +25,16 @@ import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/
 import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import {
-  flashUsd1SwapGateBlocksSubmit,
-  resolveFlashUsd1SwapGate,
-} from '~/core/exchange/flash-usd1-swap-gates'
+import { resolveFlashUsd1SwapGate } from '~/core/exchange/flash-usd1-swap-gates'
 
-/** Fixed tolerance (0.5%) below the displayed quote for USDT→USD1 floor. Wrap/redeem is 1:1 (0 bps). */
-const FLASH_USDT_SLIPPAGE_BPS = 50
+/**
+ * Handbook `usd1swap.md` sample: `minOut = (usd1Out * 99n) / 100n` (1% floor).
+ * Wrap/redeem is protocol 1:1 → 0 bps.
+ */
+const FLASH_USDT_SLIPPAGE_BPS = 100
 
 /** Dual-pair Flash: gAGX wrap↔redeem + USDT→USD1; dual amount fields; no slippage UI. */
-export type FlashIntroKey = 'gagx' | 'gagxWrap' | 'usdt'
+type FlashIntroKey = 'gagx' | 'gagxWrap' | 'usdt'
 
 export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
@@ -56,6 +56,10 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
     staleTime: QUERY_STALE_TIME.quote,
   })
 
+  // Handbook: never hardcode input/output decimals — wait for getConfig.usdtDec/usd1Dec.
+  const usd1ConfigReady = isRedeemPair || configQuery.data !== undefined
+  const usdtQuotesEnabled = quotesEnabled && usd1ConfigReady
+
   const sellDecimals =
     !isRedeemPair && configQuery.data ? configQuery.data.usdtDec : pair.sell.decimals
   const buyDecimals =
@@ -70,12 +74,15 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
 
   const sellBalance = balancesQuery.data?.sell ?? 0n
   const buyBalance = balancesQuery.data?.buy ?? 0n
-  const balancesLoaded = balancesQuery.data !== undefined
-  const isBalancesLoading = walletReady && balancesQuery.isLoading
+  const balancesLoaded = balancesQuery.data !== undefined && usd1ConfigReady
+  const isBalancesLoading =
+    walletReady &&
+    (balancesQuery.isLoading ||
+      (!isRedeemPair && configQuery.data === undefined && !configQuery.isError))
 
   const core = useExchangeQuote({
     sessionReady,
-    quotesEnabled,
+    quotesEnabled: usdtQuotesEnabled,
     decimals: sellDecimals,
     buyDecimals,
     sellBalance,
@@ -99,7 +106,7 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
       sell: { ...pair.sell, decimals: sellDecimals },
       buy: { ...pair.buy, decimals: buyDecimals },
     },
-    quotesEnabled,
+    quotesEnabled: usdtQuotesEnabled,
   })
 
   const routeLabel = `${pair.sell.symbol} → ${pair.buy.symbol}`
@@ -114,9 +121,7 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
       })
 
   const canSubmit =
-    core.canSubmit &&
-    (isRedeemPair || configQuery.data !== undefined) &&
-    !flashUsd1SwapGateBlocksSubmit(usd1Gate)
+    core.canSubmit && (isRedeemPair || configQuery.data !== undefined) && usd1Gate == null
 
   function setPairId(next: string) {
     if (!isFlashPairId(next) || next === pairId) return
@@ -139,7 +144,6 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
       wallet,
       core,
       balancesQuery,
-      usd1Config: configQuery.data ?? null,
       refetchUsd1Config: () => configQuery.refetch(),
     })
   }
@@ -150,7 +154,6 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
   return {
     pairId,
     setPairId,
-    direction,
     flipDirection,
     canFlip: flashPairAllowsFlip(pairId),
     introKey,

@@ -30,7 +30,7 @@ export async function readUsd1SwapConfig(
   }
 }
 
-export async function readFlashExchangeQuote(
+async function readFlashExchangeQuote(
   usdtAmount: bigint,
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
@@ -53,10 +53,7 @@ export async function readFlashPairQuote(
   return readFlashExchangeQuote(amountIn, client)
 }
 
-export async function readFlashUsdtBalances(
-  owner: string,
-  client: ChainReadClient = bscReadClient,
-) {
+async function readFlashUsdtBalances(owner: string, client: ChainReadClient = bscReadClient) {
   const ownerAddress = owner as `0x${string}`
   const [sell, buy, approved] = await Promise.all([
     client.readContract({
@@ -82,7 +79,7 @@ export async function readFlashUsdtBalances(
 }
 
 /** forward = redeem (sell gAGX); reverse = wrap (sell AGX, approve RewardGAGX). */
-export async function readFlashGagxBalances(
+async function readFlashGagxBalances(
   owner: string,
   direction: ExchangeDirection,
   client: ChainReadClient = bscReadClient,

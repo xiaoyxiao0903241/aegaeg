@@ -26,9 +26,3 @@ export function resolveFlashUsd1SwapGate(args: {
   if (quotedOut > config.reserve) return 'insufficientReserve'
   return null
 }
-
-export function flashUsd1SwapGateBlocksSubmit(
-  reason: FlashUsd1SwapGateReason | null | undefined,
-): boolean {
-  return reason != null
-}

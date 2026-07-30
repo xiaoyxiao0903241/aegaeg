@@ -36,7 +36,6 @@ export const exchangeHubAssets = {
   programPancake: '/assets/figma/dapp/hub/program-pancake.png',
   programX: '/assets/figma/dapp/hub/program-x.png',
   programGagx: '/assets/figma/dapp/hub/program-gagx.png',
-  aboutRays: '/assets/figma/dapp/hub/token-card-rays-hub.svg',
 } as const
 
 /** Staking hub mode icons. */

@@ -48,7 +48,7 @@ export function useFlashExchangeSpotRates({
 
   const exchangePriceEmpty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
   // Figma flash meta + overview both use colon form (`1 : 1`), not `1 TOKEN = …`.
-  const colonRateLabel =
+  const rateLabel =
     exchangePriceEmpty !== null
       ? exchangePriceEmpty
       : formatExchangeRateColon({
@@ -57,12 +57,10 @@ export function useFlashExchangeSpotRates({
           decimalsIn: pair.sell.decimals,
           decimalsOut: pair.buy.decimals,
         })
-  const exchangePriceLabel = colonRateLabel
-  const overviewRateLabel = colonRateLabel
 
   return {
-    exchangePriceLabel,
-    overviewRateLabel,
+    exchangePriceLabel: rateLabel,
+    overviewRateLabel: rateLabel,
     isExchangePriceQuoting,
   }
 }

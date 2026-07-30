@@ -2,7 +2,6 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { FLASH_PAIR_DEFAULT, isFlashPairId, type FlashPairId } from '~/core/exchange/flash-pair'
 
-export type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 export type { FlashPairId } from '~/core/exchange/flash-pair'
 export { FLASH_PAIR_DEFAULT, isFlashPairId }
 

@@ -31,6 +31,13 @@ test('redeemable gAGX write ABI exposes redeem and wrap', async () => {
   assert.match(REDEEMABLE_GAGX_METHODS.wrap, /function wrap\(uint256/)
 })
 
+test('flash USDT minOut matches handbook 1% floor sample', async () => {
+  const { calcAmountOutMin } = await loadModule('/src/core/exchange/calc-amount-out-min.ts')
+  // Handbook usd1swap.md: minOut = (usd1Out * 99n) / 100n
+  const usd1Out = 1_000_000_000_000_000_000n
+  assert.equal(calcAmountOutMin(usd1Out, 100), (usd1Out * 99n) / 100n)
+})
+
 test('flash intros include wrap direction and dual-pair copy', async () => {
   const enModule = await loadModule('/src/i18n/messages/app/en.ts')
   const flash = enModule.default.exchange.flash

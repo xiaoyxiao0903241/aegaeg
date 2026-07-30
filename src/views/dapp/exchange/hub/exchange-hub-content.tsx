@@ -5,8 +5,7 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { FaqList } from '~/shared/ui/faq-list'
 import { ExchangeProgramCards } from '~/views/dapp/exchange/hub/exchange-program-cards'
 
-/** PC `4267:212`: program grid + FAQs only（无「关于兑换」卡、无共建黑卡）. */
-/** Figma hub right column `4323:708`: section titles body-lg 18. */
+/** PC hub right `4267:212` / `4323:708`: program grid + FAQs（无「关于兑换」卡、无共建黑卡）· titles 18. */
 const hubSectionTitleClass = 'text-[1.125rem] leading-normal tracking-normal'
 
 export function ExchangeHubContent() {

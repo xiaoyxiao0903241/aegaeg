@@ -104,7 +104,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
         onBack={() => setView('hub')}
         /* Figma `4430:265`: col gap16 · intro 13 · panel title already 21 */
         className="gap-4 [&_p]:text-[13px] [&_p]:leading-normal"
-        subtitle={t.exchange.flash.intros[flash.introKey as keyof typeof t.exchange.flash.intros]}
+        subtitle={t.exchange.flash.intros[flash.introKey]}
         title={t.exchange.flash.title}
       />
       <DappWidgetStack className="gap-0">
