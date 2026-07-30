@@ -387,19 +387,18 @@ const app = defineMessages({
       unlockSuccess: '解鎖成功，已进入冷却',
       claimAction: '提取',
       claimSuccess: '提取成功',
-      claimEmpty: '暫無冷卻記錄',
+      claimEmpty: '暫無解鎖記錄',
       claimReady: '已到期，可提取',
       claimCoolingUntil: '冷卻中 · {time}',
       dataTitle: '渦輪数据',
       recordsTitle: '渦輪记录',
-      recordsEmpty: '暫無記錄',
-      recordColumns: ['時間', '操作', '數量', '交易哈希'],
+      recordsEmpty: '暫無渦輪記錄，從釋放池領取獎勵進入渦輪後，這裡將展示您的每一筆操作。',
       mechanismTitle: '渦輪机制',
-      mechanismIntro: '將賣出流動性與買入需求綁定，讓每一份解鎖都伴隨對應買入',
+      mechanismIntro: '將賣出流動性與買入需求綁定，讓每一份解鎖都伴隨等量買入',
       mechanism: [
         {
           title: '買入解鎖',
-          body: '从释放池进入渦輪的 gAGX 处于锁定状态。需以 USD1 按链上报价買入对应數量的 AGX，才能解鎖配额并进入冷却。',
+          body: '從釋放池領取的 gAGX 進入渦輪後處於鎖定狀態。需以 USD1 按鏈上報價買入等量 AGX，才能解鎖對應數量的 gAGX 並進入冷卻。',
         },
         {
           title: '動態冷卻機制',

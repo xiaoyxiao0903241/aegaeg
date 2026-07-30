@@ -3,7 +3,7 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { dappAssets, flashExchangeAssets } from '~/app/assets'
+import { flashExchangeAssets, turbineExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -185,9 +185,9 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 </div>
                 <DappIcon
                   alt=""
-                  className="size-3.5 -rotate-90 text-coral"
+                  className="size-3.5 shrink-0"
                   size="base"
-                  src={dappAssets.chevron}
+                  src={turbineExchangeAssets.eqBuyArrow}
                 />
                 <div className="flex min-w-0 flex-col gap-1.5 rounded-[10px] bg-background p-3">
                   <Text as="p" variant="caption" tone="muted-foreground">
@@ -299,7 +299,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 <ExchangeBalanceSkeleton />
               </div>
             ) : turbine.silences.length === 0 ? (
-              <Text as="p" variant="copy" tone="muted-foreground">
+              <Text as="p" variant="copy" className="my-6 text-center text-black/40">
                 {t.exchange.turbine.claimEmpty}
               </Text>
             ) : (

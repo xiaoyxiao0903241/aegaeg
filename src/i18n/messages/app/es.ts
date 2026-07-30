@@ -397,19 +397,20 @@ const app = defineMessages({
       unlockSuccess: 'Unlocked — cooldown started',
       claimAction: 'Claim',
       claimSuccess: 'Claimed successfully',
-      claimEmpty: 'No cooldown records yet',
+      claimEmpty: 'No unlock records yet',
       claimReady: 'Ready to claim',
       claimCoolingUntil: 'Cooling · {time}',
       dataTitle: 'Turbine data',
       recordsTitle: 'Turbine records',
-      recordsEmpty: 'No records yet',
-      recordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
+      recordsEmpty:
+        'No turbine records yet. After rewards enter Turbine from the release pool, each action will appear here.',
       mechanismTitle: 'Turbine mechanism',
-      mechanismIntro: 'Bind sell liquidity to buy demand so every unlock pairs with a matching buy',
+      mechanismIntro:
+        'Bind sell liquidity to buy demand so every unlock is paired with an equal buy',
       mechanism: [
         {
           title: 'Buy to unlock',
-          body: 'gAGX from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
         },
         {
           title: 'Adaptive cooldown',

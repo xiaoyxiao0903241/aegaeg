@@ -24,6 +24,12 @@ export const burnExchangeAssets = {
   flowDown: '/assets/figma/dapp/burn/ic-flow-down.svg',
 } as const
 
+/** Turbine exchange icons. */
+export const turbineExchangeAssets = {
+  /** Figma `4435:445` eqBuy row arrow (coral right). */
+  eqBuyArrow: '/assets/figma/dapp/turbine/ic-eq-buy-arrow.svg',
+} as const
+
 /** Exchange hub icons. */
 export const exchangeHubAssets = {
   modeFlash: '/assets/figma/dapp/hub/ic-hub-mode-flash.svg',
