@@ -3,6 +3,7 @@ import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import {
   evaluateRedeemGate,
+  evaluateXmineActivateWarmupGate,
   evaluateXmineClaimGate,
   evaluateXmineUnstakeGate,
 } from '~/core/assets/assets-gates'
@@ -32,6 +33,7 @@ import {
   writeLockedClaimPrincipal,
   writeXmineClaimReward,
   writeXmineStartUnstake,
+  writeXmineActivateWarmup,
 } from '~/web3/assets/assets-write'
 import { runUnknownGuardedWrite } from '~/web3/wallet/run-unknown-guarded-write'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
@@ -49,6 +51,8 @@ export const ASSETS_GATE_ERROR = {
   restakePlanUnresolved: 'ASSETS_RESTAKE_PLAN_UNRESOLVED',
   nothingToRedeem: 'ASSETS_NOTHING_TO_REDEEM',
   warmupActive: 'ASSETS_WARMUP_ACTIVE',
+  warmupNotEnded: 'ASSETS_WARMUP_NOT_ENDED',
+  noWarmup: 'ASSETS_NO_WARMUP',
   unavailable: 'ASSETS_UNAVAILABLE',
 } as const
 
@@ -329,6 +333,45 @@ export async function submitXmineUnstake(args: {
       if (liveGate) throw ASSETS_GATE_ERROR[liveGate]
 
       await writeXmineStartUnstake({ wallet })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
+  }
+  invalidateAfterAssetsClaim()
+  return { ok: true }
+}
+
+export async function submitXmineActivateWarmup(args: {
+  account: ActiveAccount
+  wallet: ActiveWallet
+  readClient: ChainReadClient
+}): Promise<{ ok: true } | { ok: false; error: unknown }> {
+  const { account, wallet, readClient } = args
+  if (!account || !wallet) {
+    return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
+  }
+
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    lockedError: ASSETS_GATE_ERROR.unavailable,
+    run: async () => {
+      const pre = await readXminePosition(account.address as Address, readClient)
+      const preGate = evaluateXmineActivateWarmupGate({
+        warmupGons: pre.warmupGons,
+        warmupEndTime: pre.warmupEndTime,
+      })
+      if (preGate) throw ASSETS_GATE_ERROR[preGate]
+
+      const live = await readXminePosition(account.address as Address, readClient)
+      const liveGate = evaluateXmineActivateWarmupGate({
+        warmupGons: live.warmupGons,
+        warmupEndTime: live.warmupEndTime,
+      })
+      if (liveGate) throw ASSETS_GATE_ERROR[liveGate]
+
+      await writeXmineActivateWarmup({ wallet })
     },
   })
 

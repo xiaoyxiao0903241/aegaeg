@@ -14,6 +14,8 @@ export type RedeemGateReason = 'nothingToRedeem'
 
 export type XmineClaimGateReason = 'zeroAmount' | 'warmupActive'
 
+export type XmineActivateWarmupGateReason = 'noWarmup' | 'warmupNotEnded'
+
 export function evaluateMixedClaimGate(args: {
   amount: bigint
   rewardAvailable: bigint
@@ -50,5 +52,17 @@ export function evaluateXmineUnstakeGate(args: {
 }): RedeemGateReason | XmineClaimGateReason | null {
   if (args.warmupGons > 0n) return 'warmupActive'
   if (args.activeGons <= 0n) return 'nothingToRedeem'
+  return null
+}
+
+/** Handbook §15.4 — activate after warmup window; fail-closed before endTime. */
+export function evaluateXmineActivateWarmupGate(args: {
+  warmupGons: bigint
+  warmupEndTime: bigint
+  nowSec?: number
+}): XmineActivateWarmupGateReason | null {
+  if (args.warmupGons <= 0n) return 'noWarmup'
+  const now = args.nowSec ?? Math.floor(Date.now() / 1000)
+  if (now < Number(args.warmupEndTime)) return 'warmupNotEnded'
   return null
 }

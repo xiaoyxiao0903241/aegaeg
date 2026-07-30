@@ -207,7 +207,7 @@ const app = defineMessages({
         items: [
           {
             q: 'What can I do on the Swap page?',
-            a: 'Flash-convert USDT to USD1 or (when available) gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
+            a: 'Flash-convert USDT to USD1 or gAGX to AGX, trade major tokens for AEGIS X assets on PancakeSwap, burn AGX for contribution points, and buy unlocked Turbine gAGX with USD1.',
           },
           {
             q: 'What is the difference between Flash and Trade?',
@@ -1382,6 +1382,8 @@ const app = defineMessages({
       planUnresolved: 'Release/restake plan not ready — try again later',
       nothingToRedeem: 'Nothing available to redeem',
       warmupActive: 'Warmup still active',
+      warmupNotEnded: 'Warmup countdown has not ended',
+      noWarmup: 'No warmup stake to activate',
       unavailable: 'Transaction temporarily unavailable',
     },
     position: {
@@ -1401,6 +1403,8 @@ const app = defineMessages({
       liquid: 'Flexible',
       lockedPrefix: 'Locked',
       redeemAnytime: 'Redeemable anytime',
+      activateWarmup: 'Activate warmup',
+      activateWarmupSuccess: 'Warmup activated',
     },
     opsColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     claim: {

@@ -6,6 +6,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
+import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
@@ -16,16 +17,19 @@ import { useChainReadClient } from '~/web3/use-chain-read-client'
 /**
  * Figma hub program grid (PC `4267:212`):
  * 0 Trade gAGX → flash · 1 Turbine → turbine · 2 Get USD1 → flash
- * 3 Get AGX → trade · 4 Sell X → null (X trade not enabled) · 5 Points → burn
+ * 3 Get AGX → trade · 4 Sell X → trade (sell=X) · 5 Points → burn
  */
 const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'flash',
   'turbine',
   'flash',
   'trade',
-  null,
+  'trade',
   'burn',
 ]
+
+/** Index of「出售 X」— open trade with sell=X. */
+const SELL_X_CARD_INDEX = 4
 
 /** Parallel to i18n cards — `undefined` = text-only leaf. */
 const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undefined> = [
@@ -156,7 +160,16 @@ export function ExchangeProgramCards() {
             body={body}
             icon={PROGRAM_ICONS[index]}
             key={`${card.title}:${index}`}
-            onClick={target ? () => openExchangeView(target) : undefined}
+            onClick={
+              target
+                ? () => {
+                    if (index === SELL_X_CARD_INDEX) {
+                      useExchangeTradePairStore.getState().setSellKey('x')
+                    }
+                    openExchangeView(target)
+                  }
+                : undefined
+            }
             title={card.title}
           />
         )

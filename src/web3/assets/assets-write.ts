@@ -17,6 +17,7 @@ const bondClaimMixedAbi = parseWriteAbi(BOND_DEPOSITORY_ASSETS_METHODS.claimStak
 const bondRedeemAbi = parseWriteAbi(BOND_DEPOSITORY_ASSETS_METHODS.redeem)
 const xmineClaimAbi = parseWriteAbi(X_STAKING_POOL_METHODS.claimReward)
 const xmineUnstakeAbi = parseWriteAbi(X_STAKING_POOL_METHODS.startUnstake)
+const xmineActivateWarmupAbi = parseWriteAbi(X_STAKING_POOL_METHODS.activateWarmup)
 
 export async function writeLiquidClaimMixed(args: {
   wallet: Wallet
@@ -145,6 +146,16 @@ export async function writeXmineStartUnstake(args: { wallet: Wallet }) {
     address: BSC_CONTRACTS.xStakingPool,
     abi: xmineUnstakeAbi,
     functionName: 'startUnstake',
+    args: [],
+  })
+}
+
+export async function writeXmineActivateWarmup(args: { wallet: Wallet }) {
+  return writeContractViaWallet({
+    wallet: args.wallet,
+    address: BSC_CONTRACTS.xStakingPool,
+    abi: xmineActivateWarmupAbi,
+    functionName: 'activateWarmup',
     args: [],
   })
 }

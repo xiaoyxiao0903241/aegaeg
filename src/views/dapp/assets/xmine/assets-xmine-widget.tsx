@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
@@ -21,6 +21,7 @@ import { Text } from '~/shared/ui/text'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import {
   ASSETS_GATE_ERROR,
+  submitXmineActivateWarmup,
   submitXmineClaim,
   submitXmineUnstake,
 } from '~/views/dapp/assets/submit-assets'
@@ -37,8 +38,8 @@ import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receip
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
-function formatWarmupCountdown(endTime: bigint): string {
-  const left = Math.max(0, Number(endTime) - Math.floor(Date.now() / 1000))
+function formatWarmupCountdown(endTime: bigint, nowSec: number): string {
+  const left = Math.max(0, Number(endTime) - nowSec)
   const h = Math.floor(left / 3600)
   const m = Math.floor((left % 3600) / 60)
   const s = left % 60
@@ -58,6 +59,7 @@ export function AssetsXmineWidget() {
   const [busy, setBusy] = useState(false)
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
+  const [nowSec, setNowSec] = useState(0)
 
   const copy = t.assets.products.xmine
   const pageSize = t.assets.position.pageSize
@@ -70,20 +72,46 @@ export function AssetsXmineWidget() {
 
   const position = positionQuery.data
   const isEmpty = !position || (position.miningStake <= 0n && position.pending <= 0n)
+
+  const warmupGons = position?.warmupGons
+  const warmupEndTime = position?.warmupEndTime
+
+  useEffect(() => {
+    if (warmupGons == null || warmupGons <= 0n) return
+    const tick = () => setNowSec(Math.floor(Date.now() / 1000))
+    tick()
+    const id = window.setInterval(tick, 1000)
+    return () => window.clearInterval(id)
+  }, [warmupGons, warmupEndTime])
+
+  const inWarmupLocked = Boolean(
+    position &&
+    position.warmupGons > 0n &&
+    (nowSec === 0 || nowSec < Number(position.warmupEndTime)),
+  )
+  const warmupReady = Boolean(
+    position && position.warmupGons > 0n && nowSec > 0 && nowSec >= Number(position.warmupEndTime),
+  )
   const inWarmup = Boolean(position && position.warmupGons > 0n)
   const redeemableStake = position == null ? 0n : inWarmup ? 0n : position.miningStake
   const remainingLabel =
     position == null
       ? '—'
-      : inWarmup && position.warmupEndTime > 0n
-        ? `${t.assets.position.lockedPrefix} ${formatWarmupCountdown(position.warmupEndTime)}`
-        : t.assets.position.redeemAnytime
+      : inWarmupLocked
+        ? nowSec === 0
+          ? t.assets.position.lockedPrefix
+          : `${t.assets.position.lockedPrefix} ${formatWarmupCountdown(position.warmupEndTime, nowSec)}`
+        : warmupReady
+          ? t.assets.position.activateWarmup
+          : t.assets.position.redeemAnytime
   const voucher = `${BSC_CONTRACTS.xStakingPool.slice(0, 6)}…${BSC_CONTRACTS.xStakingPool.slice(-4)}`
   const totalRows = isEmpty ? 0 : 1
 
   function resolveMessage(error: unknown) {
     const raw = readErrorText(error)
     if (raw === ASSETS_GATE_ERROR.warmupActive) return t.assets.gates.warmupActive
+    if (raw === ASSETS_GATE_ERROR.warmupNotEnded) return t.assets.gates.warmupNotEnded
+    if (raw === ASSETS_GATE_ERROR.noWarmup) return t.assets.gates.noWarmup
     if (raw === ASSETS_GATE_ERROR.nothingToRedeem) return t.assets.gates.nothingToRedeem
     if (raw === ASSETS_GATE_ERROR.zeroAmount) return t.assets.gates.zeroAmount
     if (raw === ASSETS_GATE_ERROR.unavailable) return t.assets.gates.unavailable
@@ -98,6 +126,21 @@ export function AssetsXmineWidget() {
       const result = await submitXmineClaim({ account, wallet, readClient })
       if (result.ok) {
         toast.success(t.assets.claim.xmineSuccess)
+        return
+      }
+      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function handleActivateWarmup() {
+    setBusy(true)
+    try {
+      const result = await submitXmineActivateWarmup({ account, wallet, readClient })
+      if (result.ok) {
+        toast.success(t.assets.position.activateWarmupSuccess)
+        await positionQuery.refetch()
         return
       }
       if (result.error != null) presentUserFacingError(result.error, resolveMessage)
@@ -237,23 +280,36 @@ export function AssetsXmineWidget() {
               </Text>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <DappActionButton
-                className="h-7 min-h-7 text-xs"
-                density="inverse"
-                disabled={position.pending <= 0n || inWarmup || locked || busy}
-                onClick={() => void handleClaim()}
-              >
-                {t.assets.position.claim}
-              </DappActionButton>
-              <DappActionButton
-                className="h-7 min-h-7 text-xs"
-                density="inverse"
-                disabled={position.gons <= 0n || inWarmup || locked || busy}
-                onClick={requestUnstake}
-                variant="secondary"
-              >
-                {t.assets.position.redeem}
-              </DappActionButton>
+              {warmupReady ? (
+                <DappActionButton
+                  className="col-span-2 h-7 min-h-7 text-xs"
+                  density="inverse"
+                  disabled={locked || busy}
+                  onClick={() => void handleActivateWarmup()}
+                >
+                  {t.assets.position.activateWarmup}
+                </DappActionButton>
+              ) : (
+                <>
+                  <DappActionButton
+                    className="h-7 min-h-7 text-xs"
+                    density="inverse"
+                    disabled={position.pending <= 0n || inWarmup || locked || busy}
+                    onClick={() => void handleClaim()}
+                  >
+                    {t.assets.position.claim}
+                  </DappActionButton>
+                  <DappActionButton
+                    className="h-7 min-h-7 text-xs"
+                    density="inverse"
+                    disabled={position.gons <= 0n || inWarmup || locked || busy}
+                    onClick={requestUnstake}
+                    variant="secondary"
+                  >
+                    {t.assets.position.redeem}
+                  </DappActionButton>
+                </>
+              )}
             </div>
           </Card>
         )}

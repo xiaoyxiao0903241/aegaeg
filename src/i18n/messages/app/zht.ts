@@ -202,7 +202,7 @@ const app = defineMessages({
         items: [
           {
             q: '兑换页面可以做什么？',
-            a: '可通过闪兑将 USDT 兑换为 USD1（以及后续开放的 gAGX→AGX），在 PancakeSwap 交易获取 AEGIS X 生态代币，销毁 AGX 获得贡献点数，并以 USD1 买入解锁涡轮中的 gAGX。',
+            a: '可通过闪兑将 USDT 兑换为 USD1、将 gAGX 兑换为 AGX，在 PancakeSwap 交易获取 AEGIS X 生态代币，销毁 AGX 获得贡献点数，并以 USD1 买入解锁涡轮中的 gAGX。',
           },
           {
             q: '闪兑和交易有什么区别？',
@@ -1363,6 +1363,8 @@ const app = defineMessages({
       planUnresolved: 'Release/restake plan not ready — try again later',
       nothingToRedeem: 'Nothing available to redeem',
       warmupActive: 'Warmup still active',
+      warmupNotEnded: 'Warmup countdown has not ended',
+      noWarmup: 'No warmup stake to activate',
       unavailable: 'Transaction temporarily unavailable',
     },
     position: {
@@ -1382,6 +1384,8 @@ const app = defineMessages({
       liquid: 'Flexible',
       lockedPrefix: 'Locked',
       redeemAnytime: 'Redeemable anytime',
+      activateWarmup: '啟動預熱',
+      activateWarmupSuccess: '預熱已啟動',
     },
     opsColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     claim: {

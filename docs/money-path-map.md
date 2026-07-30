@@ -29,7 +29,7 @@ Xmine: gAGX bal/allow + miningQuotaOf → [approve?] → live 重读
        → stakeGagxForMining → WRITE_PATH.XMINE
 Assets Mixed: live 重读奖励+贡献+plans → claim*Mixed → WRITE_PATH.ASSETS_CLAIM
 Assets redeem: live 重读可赎额 → claimPrincipal / redeem / startUnstake → ASSETS_CLAIM
-Assets xmine: live pending/warmup → claimReward / startUnstake → ASSETS_CLAIM
+Assets xmine: live pending/warmup → claimReward / activateWarmup / startUnstake → ASSETS_CLAIM
 Release queue: live plan claimable → claimAllVestedRewards → WRITE_PATH.RELEASE_CLAIM + invalidate turbineRoot (EX-U5)
 Release buffer: live PRV claimable → claimMany → RELEASE_CLAIM（钱包 AGX）
 
