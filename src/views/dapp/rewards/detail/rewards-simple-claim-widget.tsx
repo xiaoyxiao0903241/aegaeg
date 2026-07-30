@@ -13,7 +13,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
+import { useIncentiveClaim, useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 import {
   resolveTeamClaimError,
   resolveWalletTransactionError,
@@ -23,13 +23,19 @@ import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 
 const TOKEN_GAGX = 'gAGX'
 
-export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
+type SimpleClaimView = 'grant' | 'participate'
+
+export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
   const { walletReady, sessionReady } = useDappShell()
   const card = t.rewards.cards[view]
-  const claim = useMarketFundClaim()
+  const marketClaim = useMarketFundClaim()
+  const incentiveClaim = useIncentiveClaim()
+  const claim = view === 'grant' ? marketClaim : incentiveClaim
   const grant = t.rewards.grant
+  const participate = t.rewards.participateClaim
+  const copy = view === 'grant' ? grant : participate
 
   const presentError = useEffectEvent((error: unknown) => {
     presentUserFacingError(
@@ -51,11 +57,11 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
     presentError(claim.error)
   }, [claim.error])
 
-  const grantClaimableText = !sessionReady
+  const claimableText = !sessionReady
     ? t.rewards.hub.signInForBalance
     : t.rewards.detail.signedAmountHint
-  const grantCtaAmount = !sessionReady ? REWARDS_DASH : `${REWARDS_DASH} ${TOKEN_GAGX}`
-  const grantCtaLabel = grant.ctaToWallet.replace('{amount}', grantCtaAmount)
+  const ctaAmount = !sessionReady ? REWARDS_DASH : `${REWARDS_DASH} ${TOKEN_GAGX}`
+  const ctaLabel = copy.ctaToWallet.replace('{amount}', ctaAmount)
 
   return (
     <>
@@ -66,55 +72,61 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
         title={card.title}
       />
       <DappWidgetStack>
-        <Card surface="outlined" className="rounded-2xl p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="grid gap-1">
-              <Text as="p" tone="muted-foreground" variant="caption">
-                {grant.pendingLabel}
-              </Text>
-              <div className="flex items-center gap-2">
-                <DappIcon
-                  alt=""
-                  className="size-[18px] rounded-full"
-                  loading="lazy"
-                  size="token"
-                  src={dappAssets.tokenGagx}
-                />
-                <Text as="p" className="font-semibold" variant="copy">
-                  {TOKEN_GAGX}
+        {view === 'grant' ? (
+          <>
+            <Card surface="outlined" className="rounded-2xl p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="grid gap-1">
+                  <Text as="p" tone="muted-foreground" variant="caption">
+                    {grant.pendingLabel}
+                  </Text>
+                  <div className="flex items-center gap-2">
+                    <DappIcon
+                      alt=""
+                      className="size-[18px] rounded-full"
+                      loading="lazy"
+                      size="token"
+                      src={dappAssets.tokenGagx}
+                    />
+                    <Text as="p" className="font-semibold" variant="copy">
+                      {TOKEN_GAGX}
+                    </Text>
+                  </div>
+                </div>
+                <div className="grid gap-1.5 text-right">
+                  <Text as="p" tone="muted-foreground" variant="caption">
+                    {grant.pendingHint}
+                  </Text>
+                  <Text as="p" className="font-semibold" variant="headline">
+                    {REWARDS_DASH}
+                  </Text>
+                </div>
+              </div>
+              <div className="mt-2.5 grid gap-1">
+                <a
+                  className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline"
+                  href={COMMUNITY_SOCIAL_LINKS.telegram}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <Text as="span" className="text-[13px] font-medium text-primary" variant="detail">
+                    {grant.contactSupport}
+                  </Text>
+                  <ChevronIcon className="size-2.5 -rotate-90 opacity-80" direction="up" />
+                </a>
+                <Text as="p" tone="muted-foreground" variant="caption">
+                  {grant.pendingBody}
                 </Text>
               </div>
-            </div>
-            <div className="grid gap-1.5 text-right">
-              <Text as="p" tone="muted-foreground" variant="caption">
-                {grant.pendingHint}
-              </Text>
-              <Text as="p" className="font-semibold" variant="headline">
-                {REWARDS_DASH}
-              </Text>
-            </div>
-          </div>
-          <div className="mt-2.5 grid gap-1">
-            <a
-              className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline"
-              href={COMMUNITY_SOCIAL_LINKS.telegram}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {grant.contactSupport}
-              <ChevronIcon className="size-2.5 -rotate-90 opacity-80" direction="up" />
-            </a>
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {grant.pendingBody}
-            </Text>
-          </div>
-        </Card>
+            </Card>
 
-        <div className="flex items-center justify-center py-1.5">
-          <span className="inline-flex size-[34px] items-center justify-center rounded-[10px] border border-border bg-card shadow-sm">
-            <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
-          </span>
-        </div>
+            <div className="flex items-center justify-center py-1.5">
+              <span className="inline-flex size-[34px] items-center justify-center rounded-[10px] border border-border bg-card shadow-sm">
+                <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
+              </span>
+            </div>
+          </>
+        ) : null}
 
         <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary/10 p-4">
           <div className="flex items-center justify-between gap-2">
@@ -122,7 +134,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
               {t.rewards.detail.claimable}
             </Text>
             <Text as="span" tone="muted-foreground" variant="caption">
-              {grant.claimIntoWallet}
+              {copy.claimIntoWallet}
             </Text>
           </div>
           <div className="flex items-center justify-between gap-2">
@@ -139,9 +151,14 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
               </Text>
             </span>
             <Text as="span" className="text-2xl font-semibold" variant="headline">
-              {grantClaimableText}
+              {claimableText}
             </Text>
           </div>
+          {view === 'participate' ? (
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {participate.simpleHint}
+            </Text>
+          ) : null}
         </div>
 
         {walletReady ? (
@@ -159,7 +176,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
               })
             }
           >
-            {grantCtaLabel}
+            {ctaLabel}
           </DappActionButton>
         ) : (
           <DappWidgetConnectPromo />

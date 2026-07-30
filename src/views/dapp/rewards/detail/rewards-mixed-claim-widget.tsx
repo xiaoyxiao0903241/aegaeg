@@ -80,7 +80,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const amount =
     view === 'lucky'
       ? (luckyQuery.data?.rewardAmount ?? 0n)
-      : 0n /* Dao: signature at submit · referral/participate: no Mixed read yet */
+      : 0n /* Dao: signature at submit · referral: Mixed chrome only */
 
   const plansQuery = useQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
@@ -113,7 +113,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const luckyOk =
     view !== 'lucky' ||
     (luckyQuery.data != null && luckyQuery.data.claimable && !luckyQuery.data.paused)
-  /** Referral / participate Mixed write not in handbook — UI chrome only; fail-closed CTA. */
+  /** Referral: Figma Mixed chrome only — handbook has no Mixed write. */
   const canConfirm =
     !isMixedWriteDeferred(view) &&
     walletReady &&
@@ -280,11 +280,6 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           {view === 'referral' ? (
             <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
               {mixed.referralWritePending}
-            </Text>
-          ) : null}
-          {view === 'participate' ? (
-            <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
-              {mixed.participateWritePending}
             </Text>
           ) : null}
         </Card>

@@ -110,7 +110,7 @@ const app = defineMessages({
       },
       {
         title: 'Rewards',
-        body: 'Rewards include referral, participation, co-build, and more. Claiming spends contribution points 1:1.',
+        body: 'Rewards include referral, participation, co-build, and more. Mixed claims (Lucky/co-build) spend contribution 1:1; participation and stipends use signed claims to wallet.',
       },
       {
         title: 'Community',
@@ -833,7 +833,7 @@ const app = defineMessages({
         title: 'Participation',
         body: 'Rewards from your referrer',
         aside:
-          'Participation rewards from your referral bond; claim via Mixed with 1:1 contribution.',
+          'Participation rewards from your referral bond; claim via IncentivePool signature to wallet.',
       },
       cobuild: {
         title: 'Co-build',
@@ -892,8 +892,6 @@ const app = defineMessages({
       luckyPaused: 'Lucky pool is paused; claims are unavailable.',
       luckyNotClaimable: 'No lucky reward available to claim.',
       referralWritePending: 'Referral Mixed claim is not wired yet; submit stays disabled.',
-      participateWritePending:
-        'Participation Mixed claim is not wired yet (handbook only lists IncentivePool simple claim); submit stays disabled.',
     },
 
     lucky: {
@@ -997,7 +995,7 @@ const app = defineMessages({
       totalRewards: 'Total rewards',
       myPosition: 'My position',
       contribution: 'Contribution points',
-      contributionHint: 'Claims spend 1:1',
+      contributionHint: 'Display only; simple claim does not burn contribution',
       nextPayout: 'Next reward payout',
       recordsTitle: 'Participation reward records',
       recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
@@ -1026,7 +1024,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim participation rewards?',
-            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution 1:1.',
+            a: 'Submit an IncentivePool signed claim in the left panel: no contribution burn and no release queue — gAGX goes straight to your wallet.',
           },
           {
             q: 'Can I change my referrer?',
@@ -1140,6 +1138,12 @@ const app = defineMessages({
           },
         ],
       },
+    },
+    participateClaim: {
+      claimIntoWallet: 'To wallet',
+      ctaToWallet: 'Claim {amount} to wallet',
+      simpleHint:
+        'Participation uses IncentivePool signed claim; no contribution burn — gAGX goes to your wallet.',
     },
 
     genesisDetail: {

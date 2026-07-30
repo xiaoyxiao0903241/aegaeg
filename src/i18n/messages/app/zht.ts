@@ -107,7 +107,7 @@ const app = defineMessages({
       },
       {
         title: '獎勵',
-        body: '「獎勵」包含推薦獎、參與獎、共建獎等多種激勵，領取獎勵需按 1:1 消耗貢獻點數。',
+        body: '「獎勵」含推薦獎、參與獎、共建獎等；Lucky/共建等 Mixed 領取按 1:1 消耗貢獻點數，參與獎與發展津貼等為簽名直達錢包。',
       },
       {
         title: '社區',
@@ -700,7 +700,7 @@ const app = defineMessages({
         },
         participate: {
           title: 'Participate',
-          body: 'Rewards from your referrer via IncentivePool signed claims.',
+          body: '來自推薦人的參與獎勵；透過 IncentivePool 簽名領取，直達錢包。',
         },
         cobuild: {
           title: 'Co-build',
@@ -819,7 +819,7 @@ const app = defineMessages({
       participate: {
         title: '參與獎',
         body: '來自推薦人的獎勵',
-        aside: '來自推薦關係的參與獎勵；領取走 Mixed，按 1:1 消耗貢獻點數。',
+        aside: '來自推薦關係的參與獎勵；透過 IncentivePool 簽名領取，直達錢包。',
       },
       cobuild: {
         title: '共建獎',
@@ -877,8 +877,6 @@ const app = defineMessages({
       luckyPaused: '幸運獎池已暫停，暫不可領取。',
       luckyNotClaimable: '當前無可領取的幸運獎。',
       referralWritePending: '推薦獎 Mixed 領取通道尚未接入，暫不可提交。',
-      participateWritePending:
-        '參與獎 Mixed 領取通道尚未接入（手冊僅為 IncentivePool 簡單簽），暫不可提交。',
     },
 
     lucky: {
@@ -982,7 +980,7 @@ const app = defineMessages({
       totalRewards: '總獎勵',
       myPosition: '我的倉位',
       contribution: '當前貢獻點數',
-      contributionHint: '領取獎勵按 1:1 消耗',
+      contributionHint: '展示參考；領取為簡單簽，不消耗貢獻點數',
       nextPayout: '下一次獎勵發放',
       recordsTitle: '參與獎記錄',
       recordsColumns: ['時間', '數量', '狀態', '領取時間'],
@@ -1011,7 +1009,7 @@ const app = defineMessages({
           },
           {
             q: '參與獎如何領取？',
-            a: '在左側領取面板中選擇領取與複投的比例：領取部分進入釋放池按所選週期線性釋放，複投部分直接進入單幣質押複利。領取和複投均按 1:1 消耗貢獻點數。',
+            a: '在左側領取面板提交 IncentivePool 簽名領取：不消耗貢獻點數，也不經過釋放池，gAGX 將直接進入您的錢包。',
           },
           {
             q: '邀請人可以更換嗎？',
@@ -1125,6 +1123,11 @@ const app = defineMessages({
           },
         ],
       },
+    },
+    participateClaim: {
+      claimIntoWallet: '至錢包',
+      ctaToWallet: '領取 {amount} 至錢包',
+      simpleHint: '參與獎透過 IncentivePool 簽名領取，不消耗貢獻點數，gAGX 直達錢包。',
     },
 
     genesisDetail: {

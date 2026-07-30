@@ -106,7 +106,7 @@ const app = defineMessages({
       },
       {
         title: '奖励',
-        body: '「奖励」包含推荐奖、参与奖、共建奖等多种激励，领取奖励需按 1:1 消耗贡献点数。',
+        body: '「奖励」含推荐奖、参与奖、共建奖等；Lucky/共建等 Mixed 领取按 1:1 消耗贡献点数，参与奖与发展津贴等为签名直达钱包。',
       },
       {
         title: '社区',
@@ -715,7 +715,7 @@ const app = defineMessages({
         },
         participate: {
           title: '参与奖',
-          body: '来自推荐人的参与奖励；领取走 Mixed，按 1:1 消耗贡献点数。',
+          body: '来自推荐人的参与奖励；通过 IncentivePool 签名领取，直达钱包。',
         },
         cobuild: {
           title: '共建奖',
@@ -770,7 +770,7 @@ const app = defineMessages({
       participate: {
         title: '参与奖',
         body: '来自推荐人的奖励',
-        aside: '来自推荐关系的参与奖励；领取走 Mixed，按 1:1 消耗贡献点数。',
+        aside: '来自推荐关系的参与奖励；通过 IncentivePool 签名领取，直达钱包。',
       },
       cobuild: {
         title: '共建奖',
@@ -827,8 +827,6 @@ const app = defineMessages({
       luckyPaused: '幸运奖池已暂停，暂不可领取。',
       luckyNotClaimable: '当前无可领取的幸运奖。',
       referralWritePending: '推荐奖 Mixed 领取通道尚未接入，暂不可提交。',
-      participateWritePending:
-        '参与奖 Mixed 领取通道尚未接入（手册仅为 IncentivePool 简单签），暂不可提交。',
     },
     lucky: {
       dataTitle: '数据',
@@ -931,7 +929,7 @@ const app = defineMessages({
       totalRewards: '总奖励',
       myPosition: '我的仓位',
       contribution: '当前贡献点数',
-      contributionHint: '领取奖励按 1:1 消耗',
+      contributionHint: '展示参考；领取为简单签，不消耗贡献点数',
       nextPayout: '下一次奖励发放',
       recordsTitle: '参与奖记录',
       recordsColumns: ['时间', '数量', '状态', '领取时间'],
@@ -960,7 +958,7 @@ const app = defineMessages({
           },
           {
             q: '参与奖如何领取？',
-            a: '在左侧领取面板中选择领取与复投的比例：领取部分进入释放池按所选周期线性释放，复投部分直接进入单币质押复利。领取和复投均按 1:1 消耗贡献点数。',
+            a: '在左侧领取面板提交 IncentivePool 签名领取：不消耗贡献点数，也不经过释放池，gAGX 将直接进入您的钱包。',
           },
           {
             q: '邀请人可以更换吗？',
@@ -1074,6 +1072,11 @@ const app = defineMessages({
           },
         ],
       },
+    },
+    participateClaim: {
+      claimIntoWallet: '至钱包',
+      ctaToWallet: '领取 {amount} 至钱包',
+      simpleHint: '参与奖通过 IncentivePool 签名领取，不消耗贡献点数，gAGX 直达钱包。',
     },
     genesisDetail: {
       pageTitle: '共建奖励',

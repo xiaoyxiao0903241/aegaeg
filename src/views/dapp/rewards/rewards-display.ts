@@ -19,11 +19,14 @@ import type { RewardsView } from '~/shared/config/rewards-deep-link'
 export const REWARDS_DASH = '—'
 export const REWARDS_LOADING = '…'
 
-export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral' | 'participate'>
+export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral'>
 
-/** Figma Mixed chrome; handbook has no Mixed write for these views. */
+/**
+ * Referral: Figma Mixed chrome only — handbook has no referral Mixed write
+ * (CommunityFund simple lives on genesis 发展基金).
+ */
 export function isMixedWriteDeferred(view: MixedClaimView): boolean {
-  return view === 'referral' || view === 'participate'
+  return view === 'referral'
 }
 
 export function planLabel(
