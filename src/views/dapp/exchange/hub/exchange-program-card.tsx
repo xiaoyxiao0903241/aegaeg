@@ -1,133 +1,90 @@
-import { exchangeHubAssets } from '~/app/assets'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/** Figma hub program card `4323:704`: h70, px16 py14, elevated. */
+/**
+ * Exchange hub right-rail tile — Figma `4323:704` (elevated, h70).
+ * Chrome is identical; optional `icon` URLs are the only structural fork.
+ * No onClick → `article` (same visual); never HTML `disabled` (global dims + strips shadow).
+ */
 const exchangeProgramCard = tv({
   base: 'flex h-[70px] w-full px-4 py-3.5 text-left',
   variants: {
-    layout: {
-      text: 'flex-col items-start justify-center gap-1.5',
-      split: 'items-center justify-between gap-2',
+    hasIcon: {
+      true: 'items-center justify-between gap-2',
+      false: 'flex-col items-start justify-center gap-1.5',
     },
     interactive: {
       true: 'duration-dapp-fast cursor-pointer transition-[transform,box-shadow] ease-out hover:scale-[1.008] active:scale-[0.992]',
-      false: 'cursor-not-allowed opacity-45 shadow-none',
+      false: null,
     },
   },
 })
 
-function ProgramCardCopy({ body, title }: { body: string; title: string }) {
-  return (
-    <span className="grid min-w-0 gap-1.5 text-left">
-      <Text as="strong" variant="copy" className="text-[14px] leading-normal font-semibold">
-        {title}
-      </Text>
-      <Text as="span" variant="support" className="leading-normal text-foreground/40">
-        {body}
-      </Text>
-    </span>
-  )
-}
+function ProgramCoinIcon({ icon }: { icon: readonly [string] | readonly [string, string] }) {
+  if (icon.length === 1) {
+    return (
+      <img
+        alt=""
+        className="size-7 shrink-0 rounded-md object-cover"
+        height={28}
+        src={icon[0]}
+        width={28}
+      />
+    )
+  }
 
-function DualCoin({ left, right }: { left: string; right: string }) {
   return (
     <span className="relative flex h-7 w-[53px] shrink-0 items-center">
       <img
         alt=""
         className="absolute top-0 left-[2px] size-7 rounded-md object-cover"
         height={28}
-        src={left}
+        src={icon[0]}
         width={28}
       />
       <img
         alt=""
         className="absolute top-0 left-[25px] size-7 rounded-md object-cover"
         height={28}
-        src={right}
+        src={icon[1]}
         width={28}
       />
     </span>
   )
 }
 
-function SingleCoin({ src }: { src: string }) {
-  return (
-    <img
-      alt=""
-      className="size-7 shrink-0 rounded-md object-cover"
-      height={28}
-      src={src}
-      width={28}
-    />
-  )
-}
-
-function ProgramCardIcon({ index }: { index: number }) {
-  if (index === 0) {
-    return <DualCoin left={exchangeHubAssets.programGagx} right={exchangeHubAssets.programAgx} />
-  }
-
-  if (index === 1) {
-    return <DualCoin left={exchangeHubAssets.programUsd1} right={exchangeHubAssets.programGagx} />
-  }
-
-  if (index === 2) {
-    return <DualCoin left={exchangeHubAssets.programUsdt} right={exchangeHubAssets.programUsd1} />
-  }
-
-  if (index === 3) {
-    return <SingleCoin src={exchangeHubAssets.programPancake} />
-  }
-
-  if (index === 4) {
-    return <SingleCoin src={exchangeHubAssets.programX} />
-  }
-
-  return null
-}
-
 export function ExchangeProgramCard({
   body,
-  index,
+  icon,
   onClick,
   title,
 }: {
   body: string
-  index: number
+  /** 1 = single coin · 2 = overlapping dual · omit = text-only. */
+  icon?: readonly [string] | readonly [string, string]
   onClick?: () => void
   title: string
 }) {
-  const textOnly = index === 5
   const interactive = Boolean(onClick)
 
   return (
     <Card
-      as="button"
+      as={interactive ? 'button' : 'article'}
       surface="elevated"
-      aria-disabled={!interactive}
-      className={cn(
-        exchangeProgramCard({
-          layout: textOnly ? 'text' : 'split',
-          interactive,
-        }),
-      )}
-      disabled={!interactive}
-      onClick={onClick}
-      type="button"
+      className={cn(exchangeProgramCard({ hasIcon: Boolean(icon), interactive }))}
+      {...(interactive ? { onClick, type: 'button' as const } : {})}
     >
-      {textOnly ? (
-        <ProgramCardCopy body={body} title={title} />
-      ) : (
-        <>
-          <span className="min-w-0 flex-1">
-            <ProgramCardCopy body={body} title={title} />
-          </span>
-          <ProgramCardIcon index={index} />
-        </>
-      )}
+      <Card.Content className={cn('grid min-w-0 gap-1.5 text-left', icon && 'flex-1')}>
+        <Text as="strong" className="text-[14px] leading-normal font-semibold" variant="copy">
+          {title}
+        </Text>
+        <Text as="span" className="leading-normal text-foreground/40" variant="support">
+          {body}
+        </Text>
+      </Card.Content>
+      {icon ? <ProgramCoinIcon icon={icon} /> : null}
     </Card>
   )
 }

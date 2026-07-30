@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { exchangeHubAssets } from '~/app/assets'
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap-gates'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -21,6 +22,16 @@ const PROGRAM_TARGETS: Array<ExchangeView | null> = [
   'trade',
   null,
   'burn',
+]
+
+/** Parallel to i18n cards — `undefined` = text-only leaf. */
+const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undefined> = [
+  [exchangeHubAssets.programGagx, exchangeHubAssets.programAgx],
+  [exchangeHubAssets.programUsd1, exchangeHubAssets.programGagx],
+  [exchangeHubAssets.programUsdt, exchangeHubAssets.programUsd1],
+  [exchangeHubAssets.programPancake],
+  [exchangeHubAssets.programX],
+  undefined,
 ]
 
 /** Index of「获取贡献点数」— body ratio from on-chain `rateBps`, not static 1:6. */
@@ -54,7 +65,7 @@ export function ExchangeProgramCards() {
         return (
           <ExchangeProgramCard
             body={body}
-            index={index}
+            icon={PROGRAM_ICONS[index]}
             key={`${card.title}:${index}`}
             onClick={target ? () => openExchangeView(target) : undefined}
             title={card.title}

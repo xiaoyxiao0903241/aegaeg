@@ -144,6 +144,8 @@
 
 **子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`
 
+**用法**：同 chrome 入口卡 / hub tile 的 props 合同与「可点才 button」见 [`component-usage.md`](./component-usage.md)。
+
 **禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认。
 **Composite 豁免（须文档）**：`CommunityStatCard` / `ExchangePromoCard` 可用 className 抹平 radius/pad，**禁止**再叠 `shadow-*` 改 elevation。
 **依赖**：Text（§2）

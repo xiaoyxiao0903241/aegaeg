@@ -10,16 +10,17 @@ AI 工作规范
 
 #### R1 — 层 SSOT
 
-| 问题类型                 | SSOT                                                                                                                                    | 禁止用它决定                                                             |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| 用户可见行为 / MUST 清单 | Spec + tickets + grilling Answers                                                                                                       | 把验收字面塞进 `shared/ui`                                               |
-| 组件公开轴 / 视觉 chrome | [`docs/foundation/api.md`](docs/foundation/api.md) + [`runbook.md`](docs/foundation/runbook.md)                                         | ticket 示例文案覆盖 API                                                  |
-| 文件落点                 | [`docs/src-layout.md`](docs/src-layout.md)                                                                                              | 「进组件系统」= 业务数据进 shared                                        |
-| 用户可见字符串           | `src/i18n/messages/` + §8.4 PC 文案 SSOT                                                                                                | 在 primitive 硬编码 locale                                               |
-| 静态 UI                  | Figma `uiKwzwIoD06phS0husdqjB` + **[`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)**（任意页贴稿序） | `docs/figma-export/`、旧 fileKey；截图肉眼估当规格                       |
-| 交互状态机               | 原型 HTML（DApp 默认须 WebBridge；见 ui-leaf §2.2）+ research 仅辅助                                                                    | 抄 DOM/CSS；只读摘要；WebBridge「可选 DEFER」；**选币=flip 冒充 picker** |
-| 链上                     | [`docs/frontend-manual/`](docs/frontend-manual/)                                                                                        | 原型演示数值当门闸；**用手册范围取消 Figma/原型控件**                    |
-| 金钱写路径               | [`docs/money-path-map.md`](docs/money-path-map.md)                                                                                      | UI ticket 重写已证 gates                                                 |
+| 问题类型                   | SSOT                                                                                                                                    | 禁止用它决定                                                             |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 用户可见行为 / MUST 清单   | Spec + tickets + grilling Answers                                                                                                       | 把验收字面塞进 `shared/ui`                                               |
+| 组件公开轴 / 视觉 chrome   | [`docs/foundation/api.md`](docs/foundation/api.md) + [`runbook.md`](docs/foundation/runbook.md)                                         | ticket 示例文案覆盖 API                                                  |
+| 组件用法 / leaf props 合同 | [`docs/foundation/component-usage.md`](docs/foundation/component-usage.md)                                                              | 用万能卡 / index 分支 / `*Copy` 冒充抽象；裸 `disabled` 毁 elevation     |
+| 文件落点                   | [`docs/src-layout.md`](docs/src-layout.md)                                                                                              | 「进组件系统」= 业务数据进 shared                                        |
+| 用户可见字符串             | `src/i18n/messages/` + §8.4 PC 文案 SSOT                                                                                                | 在 primitive 硬编码 locale                                               |
+| 静态 UI                    | Figma `uiKwzwIoD06phS0husdqjB` + **[`docs/agents/ui-leaf-parity-workflow.md`](docs/agents/ui-leaf-parity-workflow.md)**（任意页贴稿序） | `docs/figma-export/`、旧 fileKey；截图肉眼估当规格                       |
+| 交互状态机                 | 原型 HTML（DApp 默认须 WebBridge；见 ui-leaf §2.2）+ research 仅辅助                                                                    | 抄 DOM/CSS；只读摘要；WebBridge「可选 DEFER」；**选币=flip 冒充 picker** |
+| 链上                       | [`docs/frontend-manual/`](docs/frontend-manual/)                                                                                        | 原型演示数值当门闸；**用手册范围取消 Figma/原型控件**                    |
+| 金钱写路径                 | [`docs/money-path-map.md`](docs/money-path-map.md)                                                                                      | UI ticket 重写已证 gates                                                 |
 
 #### R2 — 产品语言 ≠ 实现归属
 
@@ -111,7 +112,7 @@ AI 工作规范
 - **暴露不确定性**：写代码前暴露会影响数据所有权、同步正确性、schema / API、性能目标或平台语义的不确定性；禁止静默假设。
 - **优先最小闭环**：优先做能验证目标的最小闭环。切片必须绑定一个用户可判断 case 或一个证明边界。
 - **找根因不用补丁**：找根因，不用补丁掩盖症状；失败来自流程时，同步修改文档或本文件，不靠聊天记忆。
-- **样式重构**：触达 Foundation / typography / shell primitive 时，**只读** [`docs/foundation/README.md`](docs/foundation/README.md) 双核（runbook · api）+ [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)。**当前分支 = baseline**；探针 PASS ≠ 完成。禁导出 `*Class` 常量；多处复用抽组件。
+- **样式重构**：触达 Foundation / typography / shell primitive 时，**只读** [`docs/foundation/README.md`](docs/foundation/README.md)（runbook · api · **component-usage**）+ [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)。**当前分支 = baseline**；探针 PASS ≠ 完成。禁导出 `*Class` 常量；多处复用抽组件。新建 / 重构 hub 入口卡、同 chrome 多实例时必读 [`component-usage.md`](docs/foundation/component-usage.md)。
 - **小而精准**：保持小而精准的改动；不要机会主义重写、重命名、格式化或清理无关代码。
 - **最终报告必须说明**：改了什么、为什么、如何验证、剩余风险。
 

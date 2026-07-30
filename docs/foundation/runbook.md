@@ -1,6 +1,7 @@
 # Foundation Runbook（执行 SSOT）
 
 > **API**：[`api.md`](./api.md)  
+> **用法（leaf / call site）**：[`component-usage.md`](./component-usage.md)  
 > **Baseline**：当前分支 + Figma 正式稿
 
 ---
@@ -8,6 +9,7 @@
 ## 1. 何时走本 runbook
 
 触达 **Token / Text / Button / Card / Chip / Input / Composite / shell primitive** 时必走。  
+新建 / 重构页袋入口卡、hub tile、同 chrome 多实例 → **同时**读 [`component-usage.md`](./component-usage.md)。  
 纯业务逻辑、Web3、Home 动效脚本 → 各自文档，不扩 Foundation 轴。
 
 ---
