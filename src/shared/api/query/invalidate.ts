@@ -1,5 +1,6 @@
 import { queryClient } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { DappTab } from '~/shared/config/dapp-tabs'
@@ -156,58 +157,6 @@ export function invalidatePresaleChainQueries(address?: string) {
     queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address),
   })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Root })
-}
-
-const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
-  genesis: [
-    queryKeys.api.performance,
-    queryKeys.api.salesLogsRoot,
-    queryKeys.api.referralTotal,
-    queryKeys.api.teamOverview,
-    queryKeys.chain.presalePhases,
-    queryKeys.chain.presaleActivePhase,
-    queryKeys.chain.presaleAgxPrice,
-    queryKeys.chain.presaleTotalPurchased,
-    queryKeys.chain.presaleAirdropThreshold,
-    queryKeys.chain.presalePaused,
-    queryKeys.chain.presaleUserTotalRoot,
-    queryKeys.chain.presaleUserPhaseRemainingRoot,
-    queryKeys.chain.erc20Root,
-    queryKeys.chain.referralRoot,
-  ],
-  rewards: [
-    queryKeys.api.performance,
-    queryKeys.api.qualifiedPartitions,
-    queryKeys.api.rewardLogsRoot,
-    queryKeys.api.referralTotal,
-    queryKeys.api.teamRewardTotal,
-    queryKeys.api.teamRewardClaimLogsRoot,
-    queryKeys.api.communityFundTotal,
-    queryKeys.api.communityFundLogsRoot,
-    queryKeys.api.teamOverview,
-  ],
-  community: [
-    queryKeys.api.teamOverview,
-    queryKeys.api.teamReferralsRoot,
-    queryKeys.api.referralTotal,
-    queryKeys.api.performance,
-    queryKeys.chain.referralRoot,
-  ],
-  exchange: [
-    queryKeys.chain.swapRoot,
-    queryKeys.chain.erc20Root,
-    queryKeys.chain.flashSwapRoot,
-    queryKeys.chain.burnSwapRoot,
-    queryKeys.chain.turbineRoot,
-  ],
-  assets: [
-    queryKeys.chain.assetsRoot,
-    queryKeys.chain.stakingRoot,
-    queryKeys.chain.erc20Root,
-    queryKeys.chain.burnSwapRoot,
-  ],
-  staking: [queryKeys.chain.stakingRoot, queryKeys.chain.erc20Root, queryKeys.chain.referralRoot],
-  release: [queryKeys.chain.releaseRoot, queryKeys.chain.erc20Root, queryKeys.chain.turbineRoot],
 }
 
 /** 使当前 Tab 相关 query 标记过期，并只 refetch 已挂载的观察者。 */

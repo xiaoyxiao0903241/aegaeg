@@ -382,13 +382,13 @@ function RewardsReferralContent() {
   const address = account?.address
 
   const countQuery = useQuery({
-    queryKey: ['chain', 'rewards', 'referral-count', address ?? ''],
+    queryKey: queryKeys.chain.rewardsReferralCount(address ?? ''),
     queryFn: () => readReferralCount(address as Address, readClient),
     enabled: Boolean(walletReady && address && readClient),
   })
 
   const contribQuery = useQuery({
-    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-referral'],
+    queryKey: queryKeys.chain.assetsContribution(address ?? ''),
     queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
     enabled: Boolean(walletReady && address && readClient),
   })
@@ -507,7 +507,7 @@ function RewardsParticipateContent() {
   const address = account?.address
 
   const contribQuery = useQuery({
-    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-participate'],
+    queryKey: queryKeys.chain.assetsContribution(address ?? ''),
     queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
     enabled: Boolean(walletReady && address && readClient),
   })
@@ -608,13 +608,13 @@ function RewardsCobuildContent() {
   const [recordsTab, setRecordsTab] = useState<CobuildRecordsTab>('cobuild')
 
   const countQuery = useQuery({
-    queryKey: ['chain', 'rewards', 'cobuild-count', address ?? ''],
+    queryKey: queryKeys.chain.rewardsCobuildCount(address ?? ''),
     queryFn: () => readReferralCount(address as Address, readClient),
     enabled: Boolean(walletReady && address && readClient),
   })
 
   const contribQuery = useQuery({
-    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-cobuild'],
+    queryKey: queryKeys.chain.assetsContribution(address ?? ''),
     queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
     enabled: Boolean(walletReady && address && readClient),
   })

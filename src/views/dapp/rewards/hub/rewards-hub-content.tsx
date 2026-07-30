@@ -32,7 +32,7 @@ export function RewardsHubContent() {
   const readClient = useChainReadClient()
   const address = account?.address
   const contribQuery = useQuery({
-    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'rewards-hub'],
+    queryKey: queryKeys.chain.assetsContribution(address ?? ''),
     queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
     enabled: Boolean(walletReady && address && readClient),
   })

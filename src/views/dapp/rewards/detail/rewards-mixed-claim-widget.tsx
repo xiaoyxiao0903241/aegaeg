@@ -93,7 +93,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const locked = isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM)
 
   const luckyQuery = useQuery({
-    queryKey: ['chain', 'rewards', 'lucky', account?.address ?? ''],
+    queryKey: queryKeys.chain.rewardsLuckyClaim(account?.address ?? ''),
     queryFn: () => readLuckyClaimSnapshot(readClient, account!.address as Address),
     enabled: view === 'lucky' && walletReady && Boolean(account?.address),
   })
@@ -109,7 +109,10 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   })
 
   const contribQuery = useQuery({
-    queryKey: [...queryKeys.chain.assetsContribution(account?.address ?? ''), String(amount), view],
+    queryKey:
+      amount > 0n
+        ? queryKeys.chain.assetsContributionForAmount(account?.address ?? '', amount.toString())
+        : queryKeys.chain.assetsContribution(account?.address ?? ''),
     queryFn: () => readContributionSnapshot(account!.address as Address, amount, readClient),
     enabled:
       walletReady &&

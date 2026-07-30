@@ -15,6 +15,13 @@ export const queryClient = new QueryClient({
   },
 })
 
+/**
+ * Maps Spec freshness tiers (S/U/Q/L):
+ * - S (quasi-static) → `api` / default 5m (pool metadata may use Infinity)
+ * - U (user balances/positions) → `balances` / `presale` 30s
+ * - Q (quotes) → `quote` 10s
+ * - L (submit live) → staleTime 0 / direct read — not listed here
+ */
 export const QUERY_STALE_TIME = {
   api: FIVE_MINUTES,
   presale: 30_000,

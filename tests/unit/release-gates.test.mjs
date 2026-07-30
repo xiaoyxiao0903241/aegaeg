@@ -39,6 +39,10 @@ test('submit release live-gates and EX-U5 invalidate turbine', async () => {
     new URL('../../src/shared/api/query/invalidate.ts', import.meta.url),
     'utf8',
   )
+  const tabKeys = await readFile(
+    new URL('../../src/shared/api/query/tab-query-keys.ts', import.meta.url),
+    'utf8',
+  )
   assert.match(submit, /readReleaseQueueSnapshot/)
   assert.match(submit, /readReleaseBufferSnapshot/)
   assert.match(submit, /WRITE_PATH\.RELEASE_CLAIM/)
@@ -46,5 +50,5 @@ test('submit release live-gates and EX-U5 invalidate turbine', async () => {
   assert.match(submit, /const live = await readReleaseQueueSnapshot/)
   assert.match(submit, /const live = await readReleaseBufferSnapshot/)
   assert.match(invalidate, /invalidateAfterReleaseClaim/)
-  assert.match(invalidate, /release:\s*\[[\s\S]*turbineRoot/)
+  assert.match(tabKeys, /release:\s*\[[\s\S]*turbineRoot/)
 })

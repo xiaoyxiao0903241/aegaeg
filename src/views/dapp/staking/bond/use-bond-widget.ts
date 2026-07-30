@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useQueries, useQuery } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateBondZapLiveGate } from '~/core/staking/staking-gates'
@@ -15,12 +15,12 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { readBondMarketMeta, formatBondDiscountLabel } from '~/web3/staking/staking-read'
 import {
-  readBondMarketMeta,
-  readBondZapPreflight,
-  formatBondDiscountLabel,
-} from '~/web3/staking/staking-read'
-import { readBondZapAgxPreview, readBondHelperSlippage } from '~/web3/staking/bond-zap-quote-read'
+  useBondHelperSlippageQuery,
+  useBondZapAgxPreviewQuery,
+  useBondZapPreflightQuery,
+} from '~/web3/staking/use-staking-queries'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitBondZap, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -46,16 +46,8 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean) {
   const resolveDepository = kind === 'lp' ? resolveLpBondDepository : resolveBurnBondDepository
   const depository = resolveDepository(period)
 
-  const preflightQuery = useQuery({
-    queryKey: queryKeys.chain.bondZapPreflight(depository, address ?? ''),
-    queryFn: () =>
-      readBondZapPreflight({
-        depository,
-        user: address!,
-        client: readClient,
-      }),
-    enabled: sessionReady && walletReady && Boolean(address),
-    staleTime: QUERY_STALE_TIME.balances,
+  const preflightQuery = useBondZapPreflightQuery(depository, address, {
+    enabled: sessionReady && walletReady,
   })
 
   const periodMarketQueries = useQueries({
@@ -71,11 +63,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean) {
 
   const marketQuery = periodMarketQueries[BOND_PERIODS.indexOf(period)]!
 
-  const slippageQuery = useQuery({
-    queryKey: queryKeys.chain.bondHelperSlippage,
-    queryFn: () => readBondHelperSlippage(readClient),
-    staleTime: QUERY_STALE_TIME.quote,
-  })
+  const slippageQuery = useBondHelperSlippageQuery()
 
   const balance = preflightQuery.data?.balance ?? 0n
   const balancesLoaded = preflightQuery.data !== undefined
@@ -87,17 +75,8 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean) {
     sessionReady,
   })
 
-  const payoutQuery = useQuery({
-    queryKey: queryKeys.chain.bondZapAgxPreview(kind, depository, amountInput.amountIn.toString()),
-    queryFn: () =>
-      readBondZapAgxPreview({
-        kind,
-        depository,
-        depositUsd1: amountInput.amountIn,
-        client: readClient,
-      }),
-    enabled: sessionReady && amountInput.amountIn > 0n,
-    staleTime: QUERY_STALE_TIME.quote,
+  const payoutQuery = useBondZapAgxPreviewQuery(kind, depository, amountInput.amountIn, {
+    enabled: sessionReady,
   })
 
   const gate = evaluateBondZapLiveGate({

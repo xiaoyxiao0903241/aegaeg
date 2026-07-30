@@ -1,9 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { readErc20Balance, readErc20Allowance } from '~/web3/exchange/exchange-read'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import type { Address } from '~/shared/config/contracts'
+import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
 
 type UseMarketTradeBalancesArgs = {
   address: string | undefined
@@ -13,7 +10,7 @@ type UseMarketTradeBalancesArgs = {
   walletReady: boolean
 }
 
-/** ERC20 sell/buy balances + router allowance for the active trade pair. */
+/** Atomic ERC20 sell/buy balances + router allowance for the active trade pair. */
 export function useMarketTradeBalances({
   address,
   sellAddress,
@@ -21,29 +18,42 @@ export function useMarketTradeBalances({
   quotesEnabled,
   walletReady,
 }: UseMarketTradeBalancesArgs) {
-  const readClient = useChainReadClient()
+  const enabled = quotesEnabled && walletReady && Boolean(address)
 
-  const balancesQuery = useQuery({
-    queryKey: queryKeys.chain.swapBalances(address ?? '', sellAddress, buyAddress),
-    queryFn: async () => {
-      const owner = address!
-      const [sell, buy, approved] = await Promise.all([
-        readErc20Balance(sellAddress, owner, readClient),
-        readErc20Balance(buyAddress, owner, readClient),
-        readErc20Allowance(sellAddress, owner, EXCHANGE_CONFIG.router, readClient),
-      ])
-      return { sell, buy, approved }
-    },
-    enabled: quotesEnabled && walletReady && Boolean(address),
-    staleTime: QUERY_STALE_TIME.balances,
-  })
+  const sellQuery = useErc20BalanceQuery(sellAddress as Address, address, { enabled })
+  const buyQuery = useErc20BalanceQuery(buyAddress as Address, address, { enabled })
+  const allowanceQuery = useErc20AllowanceQuery(
+    sellAddress as Address,
+    address,
+    EXCHANGE_CONFIG.router,
+    { enabled },
+  )
+
+  const balancesLoaded =
+    sellQuery.data !== undefined && buyQuery.data !== undefined && allowanceQuery.data !== undefined
+
+  async function refetchBalances(): Promise<{
+    data?: { sell: bigint }
+    error: Error | null
+  }> {
+    const [sell, ,] = await Promise.all([
+      sellQuery.refetch(),
+      buyQuery.refetch(),
+      allowanceQuery.refetch(),
+    ])
+    if (sell.error || sell.data === undefined) {
+      return { data: undefined, error: sell.error ?? new Error('EXCHANGE_SUBMIT_GATE_FAILED') }
+    }
+    return { data: { sell: sell.data }, error: null }
+  }
 
   return {
-    balancesQuery,
-    sellBalance: balancesQuery.data?.sell ?? 0n,
-    buyBalance: balancesQuery.data?.buy ?? 0n,
-    allowance: balancesQuery.data?.approved ?? 0n,
-    balancesLoaded: balancesQuery.data !== undefined,
-    isBalancesLoading: walletReady && balancesQuery.isLoading,
+    balancesQuery: { refetch: refetchBalances },
+    sellBalance: sellQuery.data ?? 0n,
+    buyBalance: buyQuery.data ?? 0n,
+    allowance: allowanceQuery.data ?? 0n,
+    balancesLoaded,
+    isBalancesLoading:
+      walletReady && (sellQuery.isLoading || buyQuery.isLoading || allowanceQuery.isLoading),
   }
 }

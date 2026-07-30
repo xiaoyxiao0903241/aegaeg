@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateXmineLiveGate } from '~/core/staking/staking-gates'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { readXminePreflight } from '~/web3/staking/staking-read'
+import { useXminePreflightQuery } from '~/web3/staking/use-staking-queries'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitXmineStake } from '~/views/dapp/staking/xmine/submit-xmine'
 
@@ -28,11 +25,8 @@ export function useXmineWidget(sessionReady: boolean) {
   const address = account?.address
   const walletReady = hasWalletAccount(account)
 
-  const preflightQuery = useQuery({
-    queryKey: queryKeys.chain.xminePreflight(address ?? ''),
-    queryFn: () => readXminePreflight({ user: address!, client: readClient }),
-    enabled: sessionReady && walletReady && Boolean(address),
-    staleTime: QUERY_STALE_TIME.balances,
+  const preflightQuery = useXminePreflightQuery(address, {
+    enabled: sessionReady && walletReady,
   })
 
   const balance = preflightQuery.data?.balance ?? 0n

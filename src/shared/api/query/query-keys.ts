@@ -64,7 +64,6 @@ export const queryKeys = {
     referral: (address: string) => ['chain', 'referral', address.toLowerCase()] as const,
     referralIsBound: (address: string) =>
       ['chain', 'referral', 'isBound', address.toLowerCase()] as const,
-    pairSpotRate: ['chain', 'swap', 'pairSpotRate'] as const,
     swapPoolMetadata: ['chain', 'swap', 'poolMetadata'] as const,
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string) =>
@@ -122,6 +121,16 @@ export const queryKeys = {
     assetsClaimPlans: ['chain', 'assets', 'claimPlans'] as const,
     assetsContribution: (address: string) =>
       ['chain', 'assets', 'contribution', address.toLowerCase()] as const,
+    /** Contribution + quoteRequired for a reward amount (invalidates under assetsContribution prefix). */
+    assetsContributionForAmount: (address: string, amount: string) =>
+      ['chain', 'assets', 'contribution', address.toLowerCase(), amount] as const,
+    rewardsRoot: ['chain', 'rewards'] as const,
+    rewardsLuckyClaim: (address: string) =>
+      ['chain', 'rewards', 'lucky', address.toLowerCase()] as const,
+    rewardsReferralCount: (address: string) =>
+      ['chain', 'rewards', 'referralCount', address.toLowerCase()] as const,
+    rewardsCobuildCount: (address: string) =>
+      ['chain', 'rewards', 'cobuildCount', address.toLowerCase()] as const,
     releaseRoot: ['chain', 'release'] as const,
     releaseQueue: (address: string) =>
       ['chain', 'release', 'queue', address.toLowerCase()] as const,

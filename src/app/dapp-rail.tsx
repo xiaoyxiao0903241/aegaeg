@@ -12,6 +12,7 @@ import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
 import { useTurbineExchangeRailDot } from '~/views/dapp/exchange/turbine/use-turbine-exchange-rail-dot'
 import { useReleaseRailDot } from '~/views/dapp/release/use-release-rail-dot'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { prefetchTabQueries } from '~/shared/api/query/prefetch'
 
 type RailIndicator = {
   height: number
@@ -146,6 +147,12 @@ export function DappRail({
               className={railItem({ active, mobile })}
               data-tour-id={railTourIds[item.id]}
               onClick={() => onSelectTab(item.id)}
+              onMouseEnter={() => {
+                if (item.id !== activeTab) prefetchTabQueries(item.id)
+              }}
+              onFocus={() => {
+                if (item.id !== activeTab) prefetchTabQueries(item.id)
+              }}
               ref={(node) => {
                 if (node) itemRefs.current.set(item.id, node)
                 else itemRefs.current.delete(item.id)

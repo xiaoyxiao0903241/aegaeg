@@ -22,6 +22,7 @@ import { GenesisSessionHost } from '~/views/dapp/genesis/genesis-session-host'
 import { ExchangeSessionHosts } from '~/views/dapp/exchange/exchange-session-hosts'
 import { DappTabContent, DappTabWidget } from '~/views/dapp/dapp-tabs'
 import { OnboardingGuide, useOnboardingAutoStart } from '~/app/shell/onboarding-guide'
+import { useConnectWarmPrefetch } from '~/web3/wallet/use-connect-warm-prefetch'
 
 function replaceTabHash(tab: string) {
   window.history.replaceState(null, '', `#${tab}`)
@@ -39,6 +40,7 @@ export function DappShell() {
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
   const { displayTab, phase } = useDappTabContentFade(activeTab)
   const onboarding = useOnboardingAutoStart()
+  useConnectWarmPrefetch()
 
   const selectTab = (tab: typeof activeTab) => {
     selectTabInStore(tab)

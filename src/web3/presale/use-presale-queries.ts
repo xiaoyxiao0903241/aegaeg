@@ -13,23 +13,12 @@ import {
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
 } from '~/web3/presale/presale-read'
-import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
-import { readIsBindReferral } from '~/web3/referral/referral-read'
+import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
+
+export { useIsBindReferralQuery } from '~/web3/referral/use-referral-queries'
 
 type PresaleQueryOptions = {
   enabled?: boolean
-}
-
-export function useIsBindReferralQuery(address?: string, options?: PresaleQueryOptions) {
-  const readClient = useChainReadClient()
-  const queryEnabled = (options?.enabled ?? true) && Boolean(address)
-
-  return useQuery({
-    queryKey: queryKeys.chain.referralIsBound(address ?? ''),
-    queryFn: () => readIsBindReferral(address!, readClient),
-    enabled: queryEnabled,
-    staleTime: QUERY_STALE_TIME.balances,
-  })
 }
 
 export function usePresalePhasesQuery() {
@@ -142,27 +131,17 @@ export function usePresaleUserPhaseRemainingQuery(
 }
 
 export function useUsd1PresaleWalletQuery(address?: string, options?: PresaleQueryOptions) {
-  const readClient = useChainReadClient()
   const queryEnabled = (options?.enabled ?? true) && Boolean(address)
 
-  const balanceQuery = useQuery({
-    queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address ?? ''),
-    queryFn: () => readErc20Balance(BSC_CONTRACTS.usd1, address!, readClient),
+  const balanceQuery = useErc20BalanceQuery(BSC_CONTRACTS.usd1, address, {
     enabled: queryEnabled,
-    staleTime: QUERY_STALE_TIME.balances,
   })
-
-  const allowanceQuery = useQuery({
-    queryKey: queryKeys.chain.erc20Allowance(
-      BSC_CONTRACTS.usd1,
-      address ?? '',
-      BSC_CONTRACTS.preSale,
-    ),
-    queryFn: () =>
-      readErc20Allowance(BSC_CONTRACTS.usd1, address!, BSC_CONTRACTS.preSale, readClient),
-    enabled: queryEnabled,
-    staleTime: QUERY_STALE_TIME.balances,
-  })
+  const allowanceQuery = useErc20AllowanceQuery(
+    BSC_CONTRACTS.usd1,
+    address,
+    BSC_CONTRACTS.preSale,
+    { enabled: queryEnabled },
+  )
 
   return {
     balanceQuery,

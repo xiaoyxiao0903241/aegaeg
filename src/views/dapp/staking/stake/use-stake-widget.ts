@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateStakeLiveGate } from '~/core/staking/staking-gates'
 import { resolveStakePoolAddress } from '~/web3/staking/resolve-staking-addresses'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
+import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -33,17 +30,8 @@ export function useStakeWidget(sessionReady: boolean) {
   const pool = resolveStakePoolAddress(period)
   const isLiquid = period === 'liquid'
 
-  const preflightQuery = useQuery({
-    queryKey: queryKeys.chain.stakeOpenPreflight(pool, address ?? ''),
-    queryFn: () =>
-      readStakeOpenPreflight({
-        pool,
-        isLiquid,
-        user: address!,
-        client: readClient,
-      }),
-    enabled: sessionReady && walletReady && Boolean(address),
-    staleTime: QUERY_STALE_TIME.balances,
+  const preflightQuery = useStakeOpenPreflightQuery(pool, address, isLiquid, {
+    enabled: sessionReady && walletReady,
   })
 
   const balance = preflightQuery.data?.balance ?? 0n

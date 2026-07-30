@@ -1,4 +1,3 @@
-import type { QueryObserverResult } from '@tanstack/react-query'
 import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
@@ -26,7 +25,7 @@ export async function submitMarketTrade(args: {
   wallet: ActiveWallet
   pair: ExchangePairTokens
   core: TradeQuotedSubmitCore
-  balancesQuery: { refetch: () => Promise<QueryObserverResult<{ sell: bigint }>> }
+  balancesQuery: { refetch: () => Promise<{ data?: { sell: bigint }; error: Error | null }> }
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { account, wallet, pair, core, balancesQuery } = args
   if (!account || !wallet) {
