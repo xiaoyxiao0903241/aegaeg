@@ -50,6 +50,17 @@ test('formatTokenAmount renders human readable balance', async () => {
   assert.notEqual(parseTokenAmount(formatTokenAmount(dusty, 18, 6), 18), dusty)
 })
 
+test('formatTokenAmountFixed pads trailing zeros to fraction width', async () => {
+  const { formatTokenAmountFixed, parseTokenAmount } = await loadModule(
+    '/src/core/exchange/token-amount.ts',
+  )
+
+  assert.equal(formatTokenAmountFixed(0n, 18, 2), '0.00')
+  assert.equal(formatTokenAmountFixed(parseTokenAmount('6.5', 18), 18, 2), '6.50')
+  assert.equal(formatTokenAmountFixed(parseTokenAmount('39', 18), 18, 2), '39.00')
+  assert.equal(formatTokenAmountFixed(parseTokenAmount('1234.567', 18), 18, 2), '1,234.56')
+})
+
 test('slippagePercentToBps converts UI percent to basis points', async () => {
   const { slippagePercentToBps } = await loadModule('/src/core/exchange/token-amount.ts')
 

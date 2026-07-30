@@ -1,4 +1,3 @@
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { appEnv } from '~/shared/config/env'
 
 const pancakeSwapBase = appEnv.pancakeSwapBaseUrl.replace(/\/$/, '')
@@ -13,11 +12,6 @@ function buildPancakeSwapUrl(inputCurrency: string, outputCurrency: string): str
 }
 
 /** PancakeSwap deep links for Trade on BSC (addresses, not symbols). */
-export const PANCAKE_SWAP_DEEP_LINKS = {
-  usd1ToAgx: buildPancakeSwapUrl(BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx),
-  agxToUsd1: buildPancakeSwapUrl(BSC_CONTRACTS.agx, BSC_CONTRACTS.usd1),
-} as const
-
 export function resolvePancakeSwapDeepLink(
   sellAddress: `0x${string}`,
   buyAddress: `0x${string}`,

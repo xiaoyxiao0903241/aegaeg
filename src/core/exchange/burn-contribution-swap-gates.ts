@@ -9,6 +9,19 @@ export type BurnContributionSwapConfig = {
   maxIn: bigint
   totalBurned: bigint
   totalContribution: bigint
+  /** Burn share of convert (`getSplitConfig.splitBps`); remainder injects LP. */
+  splitBps: bigint
+}
+
+/** Format `splitBps` (0–10000) as a whole/decimal percent string for FAQ. */
+export function formatBurnSplitPercent(splitBps: bigint): string {
+  if (splitBps < 0n || splitBps > 10_000n) {
+    throw new Error(`BURN_SPLIT_BPS_OUT_OF_RANGE:${splitBps}`)
+  }
+  if (splitBps % 100n === 0n) return (splitBps / 100n).toString()
+  const whole = splitBps / 100n
+  const frac = (splitBps % 100n).toString().padStart(2, '0').replace(/0+$/, '')
+  return `${whole.toString()}.${frac}`
 }
 
 export type BurnContributionSwapGateReason = 'paused' | 'belowMin' | 'aboveMax' | 'zeroRate'

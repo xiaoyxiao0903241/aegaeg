@@ -17,11 +17,11 @@ export function DappTableEmptyMessage({
 }) {
   const message = (
     <>
-      <Text as="p" variant="copy" className="m-0 font-medium">
+      <Text as="p" variant="copy" className="m-0 text-black/40">
         {title}
       </Text>
       {body ? (
-        <Text as="p" variant="support" tone="muted-foreground" className="mt-2 mb-0">
+        <Text as="p" variant="support" className="mt-2 mb-0 text-black/40">
           {body}
         </Text>
       ) : null}
@@ -29,7 +29,7 @@ export function DappTableEmptyMessage({
   )
 
   if (embedded) {
-    return <div className={cn('py-8 text-center max-dapp:py-6', className)}>{message}</div>
+    return <div className={cn('px-5 py-11 text-center max-dapp:py-8', className)}>{message}</div>
   }
 
   return (

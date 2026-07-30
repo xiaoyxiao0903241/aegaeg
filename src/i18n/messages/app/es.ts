@@ -337,7 +337,10 @@ const app = defineMessages({
       },
       history: {
         title: 'Burn history',
-        empty: 'No burn or consumption records yet',
+        emptyBurn:
+          'No burn records yet. After you burn AGX for contribution points, each transaction will appear here.',
+        emptyConsume:
+          'No consumption records yet. After claiming rewards that consume contribution points, each record will appear here.',
         tabsAriaLabel: 'Burn history tabs',
         tabs: {
           burn: 'Burn',
@@ -362,7 +365,7 @@ const app = defineMessages({
           },
           {
             q: 'Where does burned AGX go?',
-            a: 'A portion is sent to a black-hole address and permanently destroyed; the remainder may be injected into LP per contract split settings.',
+            a: 'Per on-chain split config, about {burnPct}% goes to the black-hole address permanently; about {injectPct}% may be injected into LP liquidity.',
           },
           {
             q: 'Can contribution points be transferred or refunded?',

@@ -69,6 +69,29 @@ export function formatTokenAmount(amount: bigint, decimals: number, maxFractionD
   return trimmed ? `${groupedWhole}.${trimmed}` : groupedWhole
 }
 
+/** Display with a fixed fraction width (pads trailing zeros; does not strip). */
+export function formatTokenAmountFixed(
+  amount: bigint,
+  decimals: number,
+  fractionDigits: number,
+): string {
+  const digits = Math.max(0, Math.floor(fractionDigits))
+  const divisor = 10n ** BigInt(decimals)
+  const whole = amount / divisor
+  const fraction = amount % divisor
+  const groupedWhole = formatIntegerGrouping(whole.toString())
+
+  if (digits === 0) return groupedWhole
+
+  const fractionText = fraction
+    .toString()
+    .padStart(decimals, '0')
+    .slice(0, digits)
+    .padEnd(digits, '0')
+
+  return `${groupedWhole}.${fractionText}`
+}
+
 /** Parse a token amount to a plain number without grouping separators.
  *  Only use when downstream code needs a number (e.g. arithmetic / comparisons).
  *  Prefer `formatTokenAmount` for display.

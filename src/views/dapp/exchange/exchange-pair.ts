@@ -120,13 +120,6 @@ export function formatTradeRouteLabel(sellKey: TradeTokenKey, buyKey: TradeToken
   return path.map((address) => byAddress.get(address.toLowerCase()) ?? '?').join(' → ')
 }
 
-/** @deprecated Prefer getTradePairTokens — kept for spot helpers that still use direction. */
-export function getExchangePairTokens(direction: ExchangeDirection): ExchangePairTokens {
-  return direction === 'forward'
-    ? { sell: USD1_TOKEN, buy: AGX_TRADE_TOKEN }
-    : { sell: AGX_TRADE_TOKEN, buy: USD1_TOKEN }
-}
-
 /** Flash dual pairs — direction flips gAGX wrap↔redeem; USDT is forward-only (Usd1Swap). */
 export function getFlashExchangePairTokens(
   pairId: FlashPairId,

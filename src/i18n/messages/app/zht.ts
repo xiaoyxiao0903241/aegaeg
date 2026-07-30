@@ -329,7 +329,8 @@ const app = defineMessages({
       },
       history: {
         title: '销毁记录',
-        empty: '暂无销毁或消耗记录',
+        emptyBurn: '暫無銷毀記錄，銷毀 AGX 獲得貢獻點數後，這裡將展示您的每一筆操作。',
+        emptyConsume: '暫無消耗記錄，領取收益或獎勵消耗貢獻點數後，這裡將展示您的每一筆記錄。',
         tabsAriaLabel: '销毁记录分类',
         tabs: {
           burn: '销毁',
@@ -354,7 +355,7 @@ const app = defineMessages({
           },
           {
             q: '销毁的 AGX 去了哪里？',
-            a: '一部分进入黑洞地址永久销毁，其余按合约拆分配置可能注入 LP 流动性。',
+            a: '按鏈上拆分配置，約 {burnPct}% 進入黑洞永久銷毀，約 {injectPct}% 注入 LP 流動性。',
           },
           {
             q: '贡献点数可以转让或退回吗？',

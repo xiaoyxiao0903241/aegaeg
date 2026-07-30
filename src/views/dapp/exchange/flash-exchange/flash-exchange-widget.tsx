@@ -19,7 +19,11 @@ import {
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
-import { ExchangeFlowButton, exchangeFlipCard } from '~/views/dapp/exchange/exchange-flow-button'
+import {
+  ExchangeFlowButton,
+  ExchangeOneWayFlowIndicator,
+  exchangeFlipCard,
+} from '~/views/dapp/exchange/exchange-flow-button'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
@@ -166,9 +170,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
                   </ExchangeFlowButton>
                 </AnchoredTooltip>
               ) : (
-                <ExchangeFlowButton aria-hidden>
-                  <DappIcon alt="" size="base" src={flashExchangeAssets.flowDown} />
-                </ExchangeFlowButton>
+                <ExchangeOneWayFlowIndicator />
               )}
             </div>
           }

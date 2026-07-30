@@ -7,7 +7,8 @@ import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
 import { formatUsd } from '~/shared/api/format-display'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmountFixed, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap-gates'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -20,6 +21,8 @@ import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exch
 import { useDappShell } from '~/app/use-dapp-shell'
 
 const USD1_DECIMALS = 18
+/** FAQ index — 「销毁的 AGX 去了哪里？」 uses live getSplitConfig. */
+const FAQ_DESTINATION_INDEX = 3
 
 export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
   const { messages: t } = useI18n()
@@ -47,17 +50,32 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
     return fromChain > 0 ? fromChain : 0
   }, [agxPriceQuery.data])
 
-  const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, 2)} AGX`
+  const burnedAgxLabel = `${formatTokenAmountFixed(totalBurnedAgx, decimals, 2)} AGX`
   const burnedUsdLabel =
     agxPriceUsd > 0
       ? formatUsd(formatTokenAmountToNumber(totalBurnedAgx, decimals) * agxPriceUsd, 2)
       : null
 
-  const earnedLabel = formatTokenAmount(totalEarnedContribution, decimals, 2)
+  const earnedLabel = formatTokenAmountFixed(totalEarnedContribution, decimals, 2)
   const consumedLabel =
     totalConsumedContribution != null
-      ? formatTokenAmount(totalConsumedContribution, decimals, 2)
+      ? formatTokenAmountFixed(totalConsumedContribution, decimals, 2)
       : '—'
+
+  const faqItems = useMemo(() => {
+    const items = t.exchange.burn.faq.items
+    const splitBps = burn.config?.splitBps
+    const burnPct = splitBps === undefined ? '—' : formatBurnSplitPercent(splitBps)
+    const injectPct = splitBps === undefined ? '—' : formatBurnSplitPercent(10_000n - splitBps)
+    return items.map((item, index) =>
+      index === FAQ_DESTINATION_INDEX
+        ? {
+            ...item,
+            a: item.a.replace('{burnPct}', burnPct).replace('{injectPct}', injectPct),
+          }
+        : item,
+    )
+  }, [burn.config?.splitBps, t.exchange.burn.faq.items])
 
   return (
     <DappDetailPage>
@@ -109,7 +127,7 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
-        <FaqList items={t.exchange.burn.faq.items} variant="dapp" />
+        <FaqList items={faqItems} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

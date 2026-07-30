@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
+import { burnExchangeAssets } from '~/app/assets'
 import { cn } from '~/shared/lib/utils'
 
 export const exchangeFlipCard = tv({
@@ -47,7 +48,7 @@ type ExchangeFlowButtonProps = {
   onClick?: () => void
 }
 
-/** Trade flip / Flash divider — 34×34 control chrome. */
+/** Trade flip / Flash divider — 34×34 control chrome. Children = glyph only. */
 export function ExchangeFlowButton({
   children,
   className,
@@ -74,5 +75,20 @@ export function ExchangeFlowButton({
     <div {...aria} className={cn(exchangeFlowButton({ interactive: false }), className)}>
       {children}
     </div>
+  )
+}
+
+/**
+ * Figma burn `4434:429` chevCircle — full 34×34 asset (border + single chevron).
+ * Do **not** wrap in `ExchangeFlowButton` (asset already includes chrome).
+ */
+export function ExchangeOneWayFlowIndicator({ className }: { className?: string }) {
+  return (
+    <img
+      alt=""
+      aria-hidden
+      className={cn('size-8.5 shrink-0', className)}
+      src={burnExchangeAssets.flowDown}
+    />
   )
 }

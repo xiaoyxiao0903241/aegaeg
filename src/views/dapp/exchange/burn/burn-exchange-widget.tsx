@@ -2,7 +2,7 @@ import { useEffect, useEffectEvent } from 'react'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
-import { burnExchangeAssets, flashExchangeAssets } from '~/app/assets'
+import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -17,7 +17,7 @@ import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { BURN_GATE_ERROR } from '~/views/dapp/exchange/burn/submit-burn-exchange'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
-import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
+import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { readErrorText } from '~/web3/errors/error-text'
@@ -118,9 +118,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
           buyLabel={t.exchange.burn.receiveLabel}
           middleSlot={
             <div className="flex items-center justify-center py-1.5">
-              <ExchangeFlowButton aria-hidden>
-                <DappIcon alt="" size="base" src={burnExchangeAssets.flowDown} />
-              </ExchangeFlowButton>
+              <ExchangeOneWayFlowIndicator />
             </div>
           }
           onFillPercent={(percent) => burn.fillPercent(percent)}

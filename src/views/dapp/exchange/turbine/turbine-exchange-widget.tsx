@@ -3,7 +3,7 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { burnExchangeAssets, dappAssets, flashExchangeAssets } from '~/app/assets'
+import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -15,7 +15,7 @@ import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
-import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
+import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { TokenChip } from '~/app/shell/token-chip'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
@@ -152,9 +152,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
             />
 
             <div className="flex items-center justify-center py-1.5">
-              <ExchangeFlowButton aria-hidden>
-                <DappIcon alt="" size="base" src={burnExchangeAssets.flowDown} />
-              </ExchangeFlowButton>
+              <ExchangeOneWayFlowIndicator />
             </div>
 
             <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">

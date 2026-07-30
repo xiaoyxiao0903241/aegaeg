@@ -2,16 +2,16 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('getExchangePairTokens maps direction to USD1 and AGX', async () => {
-  const { getExchangePairTokens, getTradePairTokens, formatTradeRouteLabel } = await loadModule(
+test('getTradePairTokens maps trade keys and multi-hop routes', async () => {
+  const { getTradePairTokens, formatTradeRouteLabel } = await loadModule(
     '/src/views/dapp/exchange/exchange-pair.ts',
   )
 
-  const forward = getExchangePairTokens('forward')
+  const forward = getTradePairTokens('usd1', 'agx')
   assert.equal(forward.sell.symbol, 'USD1')
   assert.equal(forward.buy.symbol, 'AGX')
 
-  const reverse = getExchangePairTokens('reverse')
+  const reverse = getTradePairTokens('agx', 'usd1')
   assert.equal(reverse.sell.symbol, 'AGX')
   assert.equal(reverse.buy.symbol, 'USD1')
 

@@ -7,6 +7,7 @@ import type { BurnContributionSwapConfig } from '~/core/exchange/burn-contributi
 
 const burnSwapReadAbi = parseAbi([
   AGX_CONTRIBUTION_SWAP_METHODS.getConfig,
+  AGX_CONTRIBUTION_SWAP_METHODS.getSplitConfig,
   AGX_CONTRIBUTION_SWAP_METHODS.quoteContributionOut,
   AGX_CONTRIBUTION_SWAP_METHODS.originalOf,
   AGX_CONTRIBUTION_SWAP_METHODS.userContribution,
@@ -26,12 +27,20 @@ export type BurnUserStats = {
 export async function readBurnContributionSwapConfig(
   client: ChainReadClient = bscReadClient,
 ): Promise<BurnContributionSwapConfig & { agxToken: `0x${string}` }> {
-  const result = await client.readContract({
-    address: BSC_CONTRACTS.agxContributionSwap,
-    abi: burnSwapReadAbi,
-    functionName: 'getConfig',
-  })
+  const [result, split] = await Promise.all([
+    client.readContract({
+      address: BSC_CONTRACTS.agxContributionSwap,
+      abi: burnSwapReadAbi,
+      functionName: 'getConfig',
+    }),
+    client.readContract({
+      address: BSC_CONTRACTS.agxContributionSwap,
+      abi: burnSwapReadAbi,
+      functionName: 'getSplitConfig',
+    }),
+  ])
   const [, decimals_, rateBps_, isPaused, minIn, maxIn, totalBurned, totalContribution] = result
+  const [, splitBps] = split
   return {
     agxToken: result[0],
     decimals: Number(decimals_),
@@ -41,6 +50,7 @@ export async function readBurnContributionSwapConfig(
     maxIn,
     totalBurned,
     totalContribution,
+    splitBps,
   }
 }
 
