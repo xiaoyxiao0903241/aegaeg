@@ -9,21 +9,27 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { dappAssets } from '~/app/assets'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
+import { formatUsd } from '~/shared/api/format-display'
+import { useCommunityFundTotal } from '~/hooks/use-api-data'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useIncentiveClaim, useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
+import {
+  useCommunityFundClaim,
+  useIncentiveClaim,
+  useMarketFundClaim,
+} from '~/views/dapp/rewards/use-claim-reward'
 import {
   resolveTeamClaimError,
   resolveWalletTransactionError,
 } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { REWARDS_DASH, REWARDS_LOADING } from '~/views/dapp/rewards/rewards-display'
 
 const TOKEN_GAGX = 'gAGX'
 
-type SimpleClaimView = 'grant' | 'participate'
+type SimpleClaimView = 'grant' | 'participate' | 'referral'
 
 export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()
@@ -32,10 +38,22 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
   const card = t.rewards.cards[view]
   const marketClaim = useMarketFundClaim()
   const incentiveClaim = useIncentiveClaim()
-  const claim = view === 'grant' ? marketClaim : incentiveClaim
+  const communityClaim = useCommunityFundClaim()
+  const claim =
+    view === 'grant' ? marketClaim : view === 'participate' ? incentiveClaim : communityClaim
   const grant = t.rewards.grant
   const participate = t.rewards.participateClaim
-  const copy = view === 'grant' ? grant : participate
+  const referral = t.rewards.referralClaim
+  const copy = view === 'grant' ? grant : view === 'participate' ? participate : referral
+  const { data: communityFundTotal, isLoading: communityLoading } =
+    useCommunityFundTotal(sessionReady)
+
+  const referralAmountRaw = communityFundTotal?.unlocked_claimable
+  const referralAmount = referralAmountRaw != null ? Number(referralAmountRaw) : Number.NaN
+  const referralAmountKnown = view === 'referral'
+  const referralAmountOk =
+    !referralAmountKnown || (Number.isFinite(referralAmount) && referralAmount > 0)
+  /** Same CommunityFund as genesis 发展基金 (pre-leaf dual entry); amount gate only — node gate is backend/sign. */
 
   const presentError = useEffectEvent((error: unknown) => {
     presentUserFacingError(
@@ -59,9 +77,26 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
 
   const claimableText = !sessionReady
     ? t.rewards.hub.signInForBalance
-    : t.rewards.detail.signedAmountHint
-  const ctaAmount = !sessionReady ? REWARDS_DASH : `${REWARDS_DASH} ${TOKEN_GAGX}`
+    : view === 'referral'
+      ? communityLoading && referralAmountRaw == null
+        ? REWARDS_LOADING
+        : formatUsd(Number.isFinite(referralAmount) ? referralAmount : 0, 2)
+      : t.rewards.detail.signedAmountHint
+  const ctaAmount = !sessionReady
+    ? REWARDS_DASH
+    : view === 'referral'
+      ? communityLoading && referralAmountRaw == null
+        ? REWARDS_LOADING
+        : formatUsd(Number.isFinite(referralAmount) ? referralAmount : 0, 2)
+      : `${REWARDS_DASH} ${TOKEN_GAGX}`
   const ctaLabel = copy.ctaToWallet.replace('{amount}', ctaAmount)
+  const showTokenChip = view !== 'referral'
+  const canSubmit =
+    sessionReady &&
+    referralAmountOk &&
+    !(view === 'referral' && communityLoading) &&
+    !claim.isClaiming &&
+    claim.canClaim
 
   return (
     <>
@@ -138,18 +173,24 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
             </Text>
           </div>
           <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
-              <DappIcon
-                alt=""
-                className="size-6 rounded-2xl"
-                loading="lazy"
-                size="token"
-                src={dappAssets.tokenGagx}
-              />
+            {showTokenChip ? (
+              <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
+                <DappIcon
+                  alt=""
+                  className="size-6 rounded-2xl"
+                  loading="lazy"
+                  size="token"
+                  src={dappAssets.tokenGagx}
+                />
+                <Text as="span" className="font-semibold" variant="detail">
+                  {TOKEN_GAGX}
+                </Text>
+              </span>
+            ) : (
               <Text as="span" className="font-semibold" variant="detail">
-                {TOKEN_GAGX}
+                USD
               </Text>
-            </span>
+            )}
             <Text as="span" className="text-2xl font-semibold" variant="headline">
               {claimableText}
             </Text>
@@ -159,11 +200,21 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
               {participate.simpleHint}
             </Text>
           ) : null}
+          {view === 'referral' ? (
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {referral.simpleHint}
+            </Text>
+          ) : null}
+          {view === 'referral' && sessionReady && !referralAmountOk ? (
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {t.rewards.detail.emptyClaimable}
+            </Text>
+          ) : null}
         </div>
 
         {walletReady ? (
           <DappActionButton
-            disabled={!sessionReady || claim.isClaiming || !claim.canClaim}
+            disabled={!canSubmit}
             loading={claim.isClaiming}
             onClick={() =>
               void claim.claim().then((result) => {

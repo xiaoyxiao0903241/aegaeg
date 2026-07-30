@@ -54,12 +54,9 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
 })
 
 test('planLabel and splitAmountByPct', async () => {
-  const { planLabel, splitAmountByPct, isMixedWriteDeferred } = await loadModule(
+  const { planLabel, splitAmountByPct } = await loadModule(
     '/src/views/dapp/rewards/rewards-display.ts',
   )
-
-  assert.equal(isMixedWriteDeferred('referral'), true)
-  assert.equal(isMixedWriteDeferred('lucky'), false)
 
   assert.equal(splitAmountByPct(1000n, 40), 400n)
 

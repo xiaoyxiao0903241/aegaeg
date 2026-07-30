@@ -725,7 +725,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Earn 10% of each direct referral Rebase yield, settled on-chain. Keep your position value above $100.',
+          body: 'Rewards from direct referrals; claim via CommunityFund signed claim.',
         },
         participate: {
           title: 'Participate',
@@ -827,8 +827,7 @@ const app = defineMessages({
       referral: {
         title: 'Referral',
         body: 'Rewards for inviting partners into co-build',
-        aside:
-          '10% of direct-referral Rebase yield settles on-chain; claim via Mixed with 1:1 contribution.',
+        aside: 'Direct-referral related rewards; claim via CommunityFund signature to wallet.',
       },
       participate: {
         title: 'Participation',
@@ -892,7 +891,6 @@ const app = defineMessages({
       goBurn: 'Get contribution points',
       luckyPaused: 'Lucky pool is paused; claims are unavailable.',
       luckyNotClaimable: 'No lucky reward available to claim.',
-      referralWritePending: 'Referral Mixed claim is not wired yet; submit stays disabled.',
     },
 
     lucky: {
@@ -949,7 +947,7 @@ const app = defineMessages({
       myPosition: 'My position',
       directCount: 'Direct referrals',
       contribution: 'Contribution points',
-      contributionHint: 'Claims spend 1:1',
+      contributionHint: 'Display only; simple claim does not burn contribution',
       nextPayout: 'Next reward payout',
       recordsTitle: 'Referral reward records',
       recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
@@ -978,7 +976,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim referral rewards?',
-            a: 'Use the left panel to split claim vs restake: claim enters the release queue; restake enters single-asset stake. Both spend contribution 1:1.',
+            a: 'Submit a CommunityFund signed claim in the left panel: unlocked balance to wallet — no Mixed release/restake.',
           },
           {
             q: 'What is direct referral count?',
@@ -1145,6 +1143,12 @@ const app = defineMessages({
       ctaToWallet: 'Claim {amount} to wallet',
       simpleHint:
         'Participation uses IncentivePool signed claim; no contribution burn — gAGX goes to your wallet.',
+    },
+    referralClaim: {
+      claimIntoWallet: 'To wallet',
+      ctaToWallet: 'Claim {amount} to wallet',
+      simpleHint:
+        'Referral uses CommunityFund signed claim (handbook §9.5); claimable follows unlocked balance to wallet.',
     },
 
     genesisDetail: {

@@ -12,7 +12,11 @@ import { WidgetHeader } from '~/shared/ui/widget-header'
 import { RewardsModeCard } from '~/views/dapp/rewards/hub/rewards-mode-card'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { claimableAmountValue, REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import {
+  claimableAmountValue,
+  REWARDS_DASH,
+  REWARDS_LOADING,
+} from '~/views/dapp/rewards/rewards-display'
 
 const CARD_VIEWS = [
   'lucky',
@@ -36,17 +40,23 @@ export function RewardsHubWidget() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
-  const { data: communityFundTotal } = useCommunityFundTotal(sessionReady)
+  const { data: communityFundTotal, isLoading: communityLoading } =
+    useCommunityFundTotal(sessionReady)
 
   const genesisAmount = sessionReady
     ? claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
     : 0
-  const referralAmount = sessionReady ? Number(communityFundTotal?.unlocked_claimable ?? 0) : 0
+  const referralAmountRaw = communityFundTotal?.unlocked_claimable
+  const referralAmount =
+    sessionReady && referralAmountRaw != null ? Number(referralAmountRaw) : null
 
   const amountValue = (view: (typeof CARD_VIEWS)[number]) => {
     if (!sessionReady) return null
     if (view === 'genesis') return genesisAmount
-    if (view === 'referral') return Number.isFinite(referralAmount) ? referralAmount : 0
+    if (view === 'referral') {
+      if (communityLoading && referralAmountRaw == null) return null
+      return referralAmount != null && Number.isFinite(referralAmount) ? referralAmount : 0
+    }
     return null
   }
 
@@ -62,17 +72,19 @@ export function RewardsHubWidget() {
           const card = t.rewards.cards[view]
           const value = amountValue(view)
           const isGenesis = view === 'genesis'
+          const isReferral = view === 'referral'
           const usesClaimableLabel = isGenesis || view === 'grant'
-          const balance = isGenesis
-            ? {
-                amount: sessionReady
-                  ? value == null
-                    ? REWARDS_DASH
-                    : formatUsd(value, 2)
-                  : t.rewards.hub.signInForBalance,
-                approx: undefined as string | undefined,
-              }
-            : formatGagxBalance(value, sessionReady, t.rewards.hub.signInForBalance)
+          const balance =
+            isGenesis || isReferral
+              ? {
+                  amount: sessionReady
+                    ? value == null
+                      ? REWARDS_LOADING
+                      : formatUsd(value, 2)
+                    : t.rewards.hub.signInForBalance,
+                  approx: undefined as string | undefined,
+                }
+              : formatGagxBalance(value, sessionReady, t.rewards.hub.signInForBalance)
 
           return (
             <RewardsModeCard

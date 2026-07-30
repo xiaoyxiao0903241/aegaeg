@@ -34,7 +34,6 @@ import {
   submitLuckyMixedClaim,
 } from '~/views/dapp/rewards/submit-rewards'
 import {
-  isMixedWriteDeferred,
   planLabel,
   REWARDS_DASH,
   splitAmountByPct,
@@ -78,9 +77,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   })
 
   const amount =
-    view === 'lucky'
-      ? (luckyQuery.data?.rewardAmount ?? 0n)
-      : 0n /* Dao: signature at submit · referral: Mixed chrome only */
+    view === 'lucky' ? (luckyQuery.data?.rewardAmount ?? 0n) : 0n /* Dao: signature at submit */
 
   const plansQuery = useQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
@@ -93,10 +90,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         ? queryKeys.chain.assetsContributionForAmount(account?.address ?? '', amount.toString())
         : queryKeys.chain.assetsContribution(account?.address ?? ''),
     queryFn: () => readContributionSnapshot(account!.address as Address, amount, readClient),
-    enabled:
-      walletReady &&
-      Boolean(account?.address) &&
-      (view === 'cobuild' || isMixedWriteDeferred(view) || amount > 0n),
+    enabled: walletReady && Boolean(account?.address) && (view === 'cobuild' || amount > 0n),
   })
 
   const releaseIndex = plansQuery.data
@@ -113,9 +107,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const luckyOk =
     view !== 'lucky' ||
     (luckyQuery.data != null && luckyQuery.data.claimable && !luckyQuery.data.paused)
-  /** Referral: Figma Mixed chrome only — handbook has no Mixed write. */
   const canConfirm =
-    !isMixedWriteDeferred(view) &&
     walletReady &&
     sessionReady &&
     !locked &&
@@ -149,11 +141,9 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const amountKnown = view === 'lucky' && luckyQuery.data != null
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
-    : isMixedWriteDeferred(view)
-      ? REWARDS_DASH
-      : sessionReady
-        ? t.rewards.hub.balancePlaceholder
-        : t.rewards.hub.signInForBalance
+    : sessionReady
+      ? t.rewards.hub.balancePlaceholder
+      : t.rewards.hub.signInForBalance
   const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : 0n
   const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : 0n
   const releaseAmountText = amountKnown
@@ -173,7 +163,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
     (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)
 
   async function onConfirm() {
-    if (!account || !wallet || isMixedWriteDeferred(view)) return
+    if (!account || !wallet) return
     setDaoContributionBlocked(false)
     setSubmitting(true)
     try {
@@ -275,11 +265,6 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           !luckyQuery.data.paused ? (
             <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
               {mixed.luckyNotClaimable}
-            </Text>
-          ) : null}
-          {view === 'referral' ? (
-            <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
-              {mixed.referralWritePending}
             </Text>
           ) : null}
         </Card>

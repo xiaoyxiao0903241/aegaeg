@@ -696,7 +696,7 @@ const app = defineMessages({
         },
         referral: {
           title: 'Referral',
-          body: 'Earn 10% of each direct referral Rebase yield, settled on-chain. Keep your position value above $100.',
+          body: '直推夥伴參與共建後計發的推薦相關獎勵；透過 CommunityFund 簽名領取。',
         },
         participate: {
           title: 'Participate',
@@ -814,7 +814,7 @@ const app = defineMessages({
       referral: {
         title: '推薦獎',
         body: '推薦夥伴參與共建獲得獎勵',
-        aside: '直推 Rebase 收益的 10% 鏈上結算；領取走 Mixed，按 1:1 消耗貢獻點數。',
+        aside: '直推 Rebase 收益相關獎勵；透過 CommunityFund 簽名領取，直達錢包。',
       },
       participate: {
         title: '參與獎',
@@ -876,7 +876,6 @@ const app = defineMessages({
       goBurn: '獲取貢獻點數',
       luckyPaused: '幸運獎池已暫停，暫不可領取。',
       luckyNotClaimable: '當前無可領取的幸運獎。',
-      referralWritePending: '推薦獎 Mixed 領取通道尚未接入，暫不可提交。',
     },
 
     lucky: {
@@ -933,7 +932,7 @@ const app = defineMessages({
       myPosition: '我的倉位',
       directCount: '直接推薦地址數',
       contribution: '當前貢獻點數',
-      contributionHint: '領取獎勵按 1:1 消耗',
+      contributionHint: '展示參考；領取為簡單簽，不消耗貢獻點數',
       nextPayout: '下一次獎勵發放',
       recordsTitle: '推薦獎記錄',
       recordsColumns: ['時間', '數量', '狀態', '領取時間'],
@@ -962,7 +961,7 @@ const app = defineMessages({
           },
           {
             q: '推薦獎如何領取？',
-            a: '在左側領取面板中選擇領取與複投的比例：領取部分進入釋放池按所選週期線性釋放，複投部分直接進入單幣質押複利。領取和複投均按 1:1 消耗貢獻點數。',
+            a: '在左側領取面板提交 CommunityFund 簽名領取：可領額以解鎖餘額為準，不經過 Mixed 釋放/復投。',
           },
           {
             q: '直接推薦地址數是什麼？',
@@ -1128,6 +1127,12 @@ const app = defineMessages({
       claimIntoWallet: '至錢包',
       ctaToWallet: '領取 {amount} 至錢包',
       simpleHint: '參與獎透過 IncentivePool 簽名領取，不消耗貢獻點數，gAGX 直達錢包。',
+    },
+    referralClaim: {
+      claimIntoWallet: '至錢包',
+      ctaToWallet: '領取 {amount} 至錢包',
+      simpleHint:
+        '推薦獎透過 CommunityFund 簽名領取（手冊 §9.5）；可領額以解鎖餘額為準，直達錢包。',
     },
 
     genesisDetail: {

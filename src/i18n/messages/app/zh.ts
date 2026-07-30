@@ -711,7 +711,7 @@ const app = defineMessages({
         },
         referral: {
           title: '推荐奖',
-          body: '直推伙伴参与共建后，您可获得其每次 Rebase 收益的 10%，链上即时结算。需保持自身仓位价值大于 $100。',
+          body: '直推伙伴参与共建后计发的推荐相关奖励；通过 CommunityFund 签名领取。',
         },
         participate: {
           title: '参与奖',
@@ -765,7 +765,7 @@ const app = defineMessages({
       referral: {
         title: '推荐奖',
         body: '推荐伙伴参与共建获得奖励',
-        aside: '直推 Rebase 收益的 10% 链上结算；领取走 Mixed，按 1:1 消耗贡献点数。',
+        aside: '直推 Rebase 收益相关奖励；通过 CommunityFund 签名领取，直达钱包。',
       },
       participate: {
         title: '参与奖',
@@ -826,7 +826,6 @@ const app = defineMessages({
       ctaRestakeLine: '复投 {amount}',
       luckyPaused: '幸运奖池已暂停，暂不可领取。',
       luckyNotClaimable: '当前无可领取的幸运奖。',
-      referralWritePending: '推荐奖 Mixed 领取通道尚未接入，暂不可提交。',
     },
     lucky: {
       dataTitle: '数据',
@@ -882,7 +881,7 @@ const app = defineMessages({
       myPosition: '我的仓位',
       directCount: '直接推荐地址数',
       contribution: '当前贡献点数',
-      contributionHint: '领取奖励按 1:1 消耗',
+      contributionHint: '展示参考；领取为简单签，不消耗贡献点数',
       nextPayout: '下一次奖励发放',
       recordsTitle: '推荐奖记录',
       recordsColumns: ['时间', '数量', '状态', '领取时间'],
@@ -911,7 +910,7 @@ const app = defineMessages({
           },
           {
             q: '推荐奖如何领取？',
-            a: '在左侧领取面板中选择领取与复投的比例：领取部分进入释放池按所选周期线性释放，复投部分直接进入单币质押复利。领取和复投均按 1:1 消耗贡献点数。',
+            a: '在左侧领取面板提交 CommunityFund 签名领取：可领额以解锁余额为准，不经过 Mixed 释放/复投。',
           },
           {
             q: '直接推荐地址数是什么？',
@@ -1077,6 +1076,12 @@ const app = defineMessages({
       claimIntoWallet: '至钱包',
       ctaToWallet: '领取 {amount} 至钱包',
       simpleHint: '参与奖通过 IncentivePool 签名领取，不消耗贡献点数，gAGX 直达钱包。',
+    },
+    referralClaim: {
+      claimIntoWallet: '至钱包',
+      ctaToWallet: '领取 {amount} 至钱包',
+      simpleHint:
+        '推荐奖通过 CommunityFund 签名领取（手册 §9.5）；可领额以解锁余额为准，直达钱包。',
     },
     genesisDetail: {
       pageTitle: '共建奖励',
