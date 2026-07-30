@@ -3,7 +3,10 @@ import test from 'node:test'
 import { encodeFunctionData, parseAbi, toFunctionSelector } from 'viem'
 import { PANCAKE_ROUTER_V2_METHODS } from '../../src/web3/abis.ts'
 
-const routerAbi = parseAbi([PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens])
+const routerAbi = parseAbi([
+  PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens,
+  PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokensSupportingFeeOnTransferTokens,
+])
 
 test('PANCAKE_ROUTER_V2 swapExactTokensForTokens matches on-chain selector', () => {
   assert.equal(toFunctionSelector(PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens), '0x38ed1739')
@@ -21,4 +24,13 @@ test('PANCAKE_ROUTER_V2 swapExactTokensForTokens matches on-chain selector', () 
   })
 
   assert.equal(data.slice(0, 10), '0x38ed1739')
+})
+
+test('PANCAKE_ROUTER_V2 SupportingFeeOnTransfer selector is 0x5c11d795', () => {
+  assert.equal(
+    toFunctionSelector(
+      PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokensSupportingFeeOnTransferTokens,
+    ),
+    '0x5c11d795',
+  )
 })

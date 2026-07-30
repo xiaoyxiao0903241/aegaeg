@@ -12,6 +12,16 @@ export const PANCAKE_ROUTER_V2_METHODS = {
     'function getAmountsOut(uint256 amountIn, address[] path) view returns (uint256[] amounts)',
   swapExactTokensForTokens:
     'function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) returns (uint256[] amounts)',
+  /** AGX→USD1 sell — AGX takes sell tax into the pair (contracts/agx.md). */
+  swapExactTokensForTokensSupportingFeeOnTransferTokens:
+    'function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)',
+} as const
+
+/** AGX sell-tax views — handbook `contracts/agx.md`. */
+export const AGX_SELL_TAX_METHODS = {
+  sellRatio: 'function sellRatio() view returns (uint256)',
+  extraSellBP: 'function extraSellBP() view returns (uint256)',
+  crashFuseActive: 'function crashFuseActive() view returns (bool)',
 } as const
 
 /** Pancake V2 Pair — reserves for spot / price impact. */

@@ -1,14 +1,20 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { getAddress } from 'thirdweb/utils'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { parseAbi } from 'viem'
+import { isAgxSellPath } from '~/core/exchange/agx-sell-tax'
 import { buildExchangeDeadline } from '~/core/exchange/build-exchange-deadline'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { ERC20_METHODS, PANCAKE_ROUTER_V2_METHODS, ERC20_ERRORS } from '~/web3/abis'
 import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/exchange/exchange-read'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
-const exchangeRouterWriteAbi = parseWriteAbi(PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens)
+const exchangeRouterWriteAbi = parseAbi([
+  PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens,
+  PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokensSupportingFeeOnTransferTokens,
+])
 
 /** True when router allowance is below the intended spend — approve before swap. */
 export function needsTokenApproval(allowance: bigint, amountIn: bigint): boolean {
@@ -67,14 +73,22 @@ export async function exchangeTokens({
   if (path.length < 2) {
     throw new Error(`EXCHANGE_PATH_TOO_SHORT:${path.length}`)
   }
+  const tokenIn = path[0]
+  if (tokenIn === undefined) {
+    throw new Error('EXCHANGE_PATH_TOO_SHORT:0')
+  }
 
   const deadline = BigInt(buildExchangeDeadline(EXCHANGE_CONFIG.deadlineSeconds))
+  /** AGX pair sells take sell tax — use SupportingFee path (contracts/agx.md). */
+  const functionName = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
+    ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens'
+    : 'swapExactTokensForTokens'
 
   return writeContractViaWallet({
     wallet,
     address: EXCHANGE_CONFIG.router,
     abi: exchangeRouterWriteAbi,
-    functionName: 'swapExactTokensForTokens',
+    functionName,
     args: [amountIn, amountOutMin, [...path], getAddress(account.address), deadline],
   })
 }

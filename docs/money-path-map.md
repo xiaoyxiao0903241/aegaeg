@@ -27,6 +27,8 @@ Staking: bind + migration(isOldAccount) + AGX bal/allow + quota(/status) → [ap
 BondZap: bind + migration(isOldAccount) + USD1 bal/allow + authContracts → [approve?] → live 重读
        → BondHelper zap → WRITE_PATH.BOND_ZAP
 Flash / Trade: 无 referral / migration 写门禁（手册未要求）；quote → canSubmit → [approve?] → live
+       → swap（USD1→AGX: `swapExactTokensForTokens`；AGX→USD1: 税折净额报价 + SupportingFee）
+       → invalidateAfterExchange
 Xmine: gAGX bal/allow + miningQuotaOf → [approve?] → live 重读
        → stakeGagxForMining → WRITE_PATH.XMINE
 Assets Mixed: live 重读奖励+贡献+plans → claim*Mixed → WRITE_PATH.ASSETS_CLAIM
@@ -80,6 +82,7 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 | Assets Mixed dual-gate      | `dual-gate-mixed-claim.test.mjs`                                                                                  |
 | Live post-approve / balance | `live-post-approve-gates.test.mjs`                                                                                |
 | Quote / unknown 门闸        | `react-quality-gates.test.mjs`                                                                                    |
+| Trade AGX 卖税              | `agx-sell-tax.test.mjs` · `fetch-exchange-quote.test.mjs` · `swap-router-abi.test.mjs`                            |
 | Genesis gate                | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApproveGate`）                                               |
 | Claim confirm / 401         | `claim-reward-confirm.test.mjs` · `resolve-claim-reward-outcome.test.mjs`                                         |
 | Rewards Mixed / simple gate | `rewards-gates.test.mjs`                                                                                          |

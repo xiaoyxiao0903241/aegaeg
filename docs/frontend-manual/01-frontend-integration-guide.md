@@ -401,6 +401,44 @@ AEGIS X 的用户端不是单一功能，而是一组围绕 AGX 资产展开的�
 - 不要把 amountOutMin 写死为 0。
 - deadline 应由前端生成，避免交易长时间挂起。
 
+#### 7.1.1 PancakeRouter 卖 AGX（USD1 回兑）
+
+| 项       | 内容                                                   |
+| -------- | ------------------------------------------------------ |
+| 页面用途 | 用户用 AGX 通过同一流动性池兑回 USD1（交易页翻转方向） |
+| ABI      | PancakeRouter ABI、ERC20、`AegisXToken` 卖税视图       |
+| 地址     | Router、`USD1`、`AGX`、Pair                            |
+
+**AGX 卖出税（必读 `contracts/agx.md`）：**
+
+- 非白名单地址向 Pair 卖出时扣税；正常 `sellRatio`（默认 3.5%），`crashFuseActive` 时用 `extraSellBP`（默认 30%）。
+- 池子实际收到的是税后净额；`getAmountsOut` 必须用**净额**作 `amountIn`，否则报价偏高、`amountOutMin` 过严导致 revert。
+- 写路径必须用 `swapExactTokensForTokensSupportingFeeOnTransferTokens`（普通 `swapExactTokensForTokens` 在 FOT 卖出时会失败）。
+
+展示字段：
+
+| 字段           | 方法                                                                                                |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| AGX 余额       | ERC20 `balanceOf(user)`                                                                             |
+| USD1 余额      | ERC20 `balanceOf(user)`                                                                             |
+| AGX 授权       | ERC20 `allowance(user, router)`                                                                     |
+| 生效卖税       | `sellRatio()` / `extraSellBP()` / `crashFuseActive()`                                               |
+| 预估 USD1 输出 | `getAmountsOut(netAmountIn, [AGX, USD1])`，其中 `netAmountIn = amountIn * (10000 - taxBps) / 10000` |
+| 最小输出       | 前端用滑点计算 `amountOutMin`（基于税后报价）                                                       |
+
+写方法：
+
+| 按钮     | 方法                                                                                                | 前置检查                                    | 成功后刷新              |
+| -------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------- | ----------------------- |
+| 授权 AGX | ERC20 `approve(router, amountIn)`                                                                   | 余额足够                                    | allowance               |
+| 卖 AGX   | `swapExactTokensForTokensSupportingFeeOnTransferTokens(amountIn, amountOutMin, path, to, deadline)` | 路径有流动性；amountOutMin 已按税后报价计算 | AGX/USD1 余额、交易历史 |
+
+注意事项：
+
+- 毛卖出量仍按用户钱包扣减的 `amountIn` 授权与 `transferFrom`；仅报价与 `amountOutMin` 用净额。
+- 同块超额卖出可能临时升至防御税（见 AGX 单区块额度）；前端默认按当前 `crashFuseActive` 选择税率，极端同块场景用户可提高滑点。
+- 交易页 live 币种仅 USD1↔AGX；X 因另有卖税/禁买规则，未接 live。
+
 #### 7.2 Usd1Swap
 
 | 项       | 内容                                               |

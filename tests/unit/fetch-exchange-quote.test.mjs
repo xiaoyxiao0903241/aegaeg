@@ -60,6 +60,48 @@ test('fetchExchangeQuote wires V2 getAmountsOut and reserve price impact', async
   )
 })
 
+test('fetchExchangeQuote AGX to USD1 uses post-tax amountIn for getAmountsOut', async () => {
+  const { fetchExchangeQuote } = await loadModule('/src/web3/exchange/exchange-read.ts')
+  const { clearExchangePoolImmutableCache } = await loadModule(
+    '/src/web3/exchange/read-exchange-pool.ts',
+  )
+  clearExchangePoolImmutableCache()
+
+  const amountIn = 10n ** 9n
+  const taxBps = 3000n
+  const netIn = (amountIn * (10_000n - taxBps)) / 10_000n
+  let getAmountsOutArg = null
+
+  const client = {
+    calls: [],
+    async readContract(request) {
+      client.calls.push(['read', request.functionName, request.address])
+      if (request.functionName === 'token0') return TOKEN_IN
+      if (request.functionName === 'token1') return TOKEN_OUT
+      if (request.functionName === 'getReserves') return [10n ** 24n, 10n ** 15n, 0]
+      if (request.functionName === 'sellRatio') return 350n
+      if (request.functionName === 'extraSellBP') return taxBps
+      if (request.functionName === 'crashFuseActive') return true
+      if (request.functionName === 'getAmountsOut') {
+        getAmountsOutArg = request.args[0]
+        return [getAmountsOutArg, getAmountsOutArg / 2n]
+      }
+      throw new Error(`unexpected readContract ${request.functionName}`)
+    },
+  }
+
+  const result = await fetchExchangeQuote({
+    amountIn,
+    tokenIn: TOKEN_OUT,
+    tokenOut: TOKEN_IN,
+    client,
+  })
+
+  assert.equal(getAmountsOutArg, netIn)
+  assert.equal(result.quotedOut, netIn / 2n)
+  assert.ok(client.calls.some((c) => c[1] === 'crashFuseActive'))
+})
+
 test('quoteV2AmountsOut returns zero for zero amountIn without RPC', async () => {
   const { quoteV2AmountsOut } = await loadModule('/src/web3/exchange/quote-v2-amounts-out.ts')
   const client = createMockClient()

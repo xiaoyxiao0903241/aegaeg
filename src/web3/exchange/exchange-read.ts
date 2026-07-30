@@ -1,8 +1,13 @@
 import { parseAbi } from 'viem'
+import { applyAgxSellTaxToAmountIn, isAgxSellPath } from '~/core/exchange/agx-sell-tax'
 import { calcV2PriceImpactBps } from '~/core/exchange/calc-price-impact-bps'
-import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { ERC20_METHODS } from '~/web3/abis'
+import { bscReadClient } from '~/web3/bsc-read-client'
+import type { ChainReadClient } from '~/web3/chain-read-client'
+import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
+import { readAgxSellTaxBps } from '~/web3/exchange/read-agx-sell-tax'
 import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
@@ -10,8 +15,6 @@ import {
   type ExchangePoolImmutableMetadata,
   type ExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
-import { bscReadClient } from '~/web3/bsc-read-client'
-import type { ChainReadClient } from '~/web3/chain-read-client'
 
 export type ExchangePoolReadContext = {
   pool: ExchangePoolImmutableMetadata
@@ -74,16 +77,24 @@ export async function fetchExchangeQuote({
   poolContext?: ExchangePoolReadContext
 }): Promise<ExchangeQuoteResult> {
   const path = pathArg ?? ([tokenIn, tokenOut] as const)
-  const [pool, spot] = poolContext
-    ? [poolContext.pool, poolContext.spot]
-    : await Promise.all([
-        readExchangePoolImmutableMetadata(EXCHANGE_CONFIG.pool, client),
-        readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool, client),
-      ])
+  const sellingAgx = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
+
+  const [pool, spot, sellTaxBps] = await Promise.all([
+    poolContext
+      ? Promise.resolve(poolContext.pool)
+      : readExchangePoolImmutableMetadata(EXCHANGE_CONFIG.pool, client),
+    poolContext
+      ? Promise.resolve(poolContext.spot)
+      : readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool, client),
+    sellingAgx ? readAgxSellTaxBps(client) : Promise.resolve(0),
+  ])
+
+  /** Pair receives post-tax AGX; Router getAmountsOut must use net in (contracts/agx.md). */
+  const amountInForQuote = sellingAgx ? applyAgxSellTaxToAmountIn(amountIn, sellTaxBps) : amountIn
 
   const quotedOut = await quoteV2AmountsOut({
     router: EXCHANGE_CONFIG.router,
-    amountIn,
+    amountIn: amountInForQuote,
     path,
     client,
   })
@@ -108,7 +119,7 @@ export async function fetchExchangeQuote({
 
   const priceImpactBps = reserves
     ? calcV2PriceImpactBps({
-        amountIn,
+        amountIn: amountInForQuote,
         amountOut: quotedOut,
         reserveIn: reserves.reserveIn,
         reserveOut: reserves.reserveOut,
