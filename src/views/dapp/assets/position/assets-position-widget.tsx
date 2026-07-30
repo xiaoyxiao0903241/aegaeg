@@ -1,179 +1,42 @@
-import { useQuery } from '@tanstack/react-query'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useState } from 'react'
-import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatBlockTime, formatUsd } from '~/shared/api/format-display'
-import { queryKeys } from '~/shared/api/query/query-keys'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatBlockTime } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { openStakingView } from '~/shared/config/open-staking-view'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
-import {
-  ASSETS_GATE_ERROR,
-  submitBondRedeem,
-  submitStakeRedeem,
-  type MixedClaimTarget,
-} from '~/views/dapp/assets/submit-assets'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { readErrorText } from '~/web3/errors/error-text'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import {
-  readBurnBondPositions,
-  readLpBondPositions,
-  readStakePositions,
-  type AssetsBondRow,
-  type AssetsStakeRow,
-} from '~/web3/assets/assets-read'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import type { Address } from '~/shared/config/contracts'
+  useAssetsPositionWidget,
+  type AssetsProduct,
+} from '~/views/dapp/assets/position/use-assets-position-widget'
+
+export type { AssetsProduct }
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
-
-export type AssetsProduct = 'stake' | 'lpbond' | 'burnbond'
-
-type ClaimState =
-  { open: false } | { open: true; target: MixedClaimTarget; label: string; amountLabel: string }
-
-type RedeemState =
-  | { open: false }
-  | {
-      open: true
-      kind: 'stake' | 'bond'
-      row: AssetsStakeRow | AssetsBondRow
-    }
 
 export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
-  const { walletReady } = useDappShell()
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
-  const isMobile = useMobileViewport()
-  const address = account?.address
-  const locked = isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)
-
-  const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
-  const [claim, setClaim] = useState<ClaimState>({ open: false })
-  const [redeem, setRedeem] = useState<RedeemState>({ open: false })
-  const [busy, setBusy] = useState(false)
-  const [page, setPage] = useState(0)
-
-  const copy = t.assets.products[product]
-  const stakingTarget = product === 'stake' ? 'stake' : product === 'lpbond' ? 'lpbond' : 'burnbond'
-  const pageSize = t.assets.position.pageSize
-  const agxPriceQuery = usePresaleAgxPriceQuery()
-  const agxPriceUsd = formatTokenAmountToNumber(agxPriceQuery.data ?? 0n, USD1_DECIMALS)
-
-  function formatRewardUsd(amount: bigint): string {
-    if (agxPriceQuery.isError || agxPriceUsd <= 0) return '—'
-    return formatUsd(formatTokenAmountToNumber(amount, GAGX_DECIMALS) * agxPriceUsd, 2)
-  }
-
-  const stakeQuery = useQuery({
-    queryKey: queryKeys.chain.assetsStakePositions(address ?? ''),
-    queryFn: () => readStakePositions(address as Address, readClient),
-    enabled: walletReady && Boolean(address) && product === 'stake',
-  })
-
-  const bondQuery = useQuery({
-    queryKey: queryKeys.chain.assetsBondPositions(product, address ?? ''),
-    queryFn: () =>
-      product === 'lpbond'
-        ? readLpBondPositions(address as Address, readClient)
-        : readBurnBondPositions(address as Address, readClient),
-    enabled: walletReady && Boolean(address) && product !== 'stake',
-  })
-
-  const stakeRows = stakeQuery.data ?? []
-  const bondRows = bondQuery.data ?? []
-  const isEmpty = product === 'stake' ? stakeRows.length === 0 : bondRows.length === 0
-  const isLoading = product === 'stake' ? stakeQuery.isLoading : bondQuery.isLoading
-  const totalRows = product === 'stake' ? stakeRows.length : bondRows.length
-  const pageCount = Math.max(1, Math.ceil(totalRows / pageSize))
-  const safePage = Math.min(page, pageCount - 1)
-  const pageSliceStart = safePage * pageSize
-  const pagedStakeRows = stakeRows.slice(pageSliceStart, pageSliceStart + pageSize)
-  const pagedBondRows = bondRows.slice(pageSliceStart, pageSliceStart + pageSize)
-
-  function resolveMessage(error: unknown) {
-    const raw = readErrorText(error)
-    if (raw === ASSETS_GATE_ERROR.insufficientContribution)
-      return t.assets.gates.insufficientContribution
-    if (raw === ASSETS_GATE_ERROR.releasePlanUnresolved) return t.assets.gates.planUnresolved
-    if (raw === ASSETS_GATE_ERROR.restakePlanUnresolved) return t.assets.gates.planUnresolved
-    if (raw === ASSETS_GATE_ERROR.nothingToRedeem) return t.assets.gates.nothingToRedeem
-    if (raw === ASSETS_GATE_ERROR.unavailable) return t.assets.gates.unavailable
-    if (raw === ASSETS_GATE_ERROR.zeroAmount) return t.assets.gates.zeroAmount
-    if (raw === ASSETS_GATE_ERROR.insufficientReward) return t.assets.gates.insufficientReward
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ?? t.errors.chain.fallback
-    )
-  }
-
-  async function runRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
-    if (!hasWalletAccount(account) || !wallet) return
-    setBusy(true)
-    try {
-      const result =
-        kind === 'stake'
-          ? await submitStakeRedeem({
-              row: row as AssetsStakeRow,
-              account,
-              wallet,
-              readClient,
-            })
-          : await submitBondRedeem({
-              row: row as AssetsBondRow,
-              account,
-              wallet,
-              readClient,
-            })
-      if (result.ok) {
-        toast.success(t.assets.redeem.success)
-        setRedeem({ open: false })
-        return
-      }
-      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  function requestRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
-    if (isMobile) {
-      setRedeem({ open: true, kind, row })
-      return
-    }
-    void runRedeem(kind, row)
-  }
+  const w = useAssetsPositionWidget(product)
 
   return (
     <>
       <DappTabHeader
         backText={t.assets.backToHub}
         onBack={() => setView('hub')}
-        subtitle={copy.intro}
-        title={copy.title}
+        subtitle={w.copy.intro}
+        title={w.copy.title}
       />
       <DappWidgetStack>
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -190,15 +53,15 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             </Text>
             <div className="flex rounded-full bg-muted p-0.5">
               <button
-                className={`rounded-full px-3 py-1 text-xs ${quote === 'agx' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
-                onClick={() => setQuote('agx')}
+                className={`rounded-full px-3 py-1 text-xs ${w.quote === 'agx' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+                onClick={() => w.setQuote('agx')}
                 type="button"
               >
                 AGX
               </button>
               <button
-                className={`rounded-full px-3 py-1 text-xs ${quote === 'usd' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
-                onClick={() => setQuote('usd')}
+                className={`rounded-full px-3 py-1 text-xs ${w.quote === 'usd' ? 'bg-card font-semibold text-foreground' : 'text-muted-foreground'}`}
+                onClick={() => w.setQuote('usd')}
                 type="button"
               >
                 USD
@@ -207,28 +70,27 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
           </div>
         </div>
 
-        {!walletReady ? (
+        {!w.walletReady ? (
           <DappWidgetConnectPromo />
-        ) : isLoading ? (
+        ) : w.isLoading ? (
           <Text as="p" tone="muted-foreground" variant="copy">
             …
           </Text>
-        ) : isEmpty ? (
+        ) : w.isEmpty ? (
           <div className="grid gap-3">
             <Text as="p" tone="muted-foreground" variant="copy">
-              {copy.empty}
+              {w.copy.empty}
             </Text>
-            <Button onClick={() => openStakingView(stakingTarget)} type="button">
-              {copy.emptyCta}
+            <Button onClick={() => openStakingView(w.stakingTarget)} type="button">
+              {w.copy.emptyCta}
             </Button>
           </div>
         ) : product === 'stake' ? (
-          pagedStakeRows.map((row) => {
+          w.pagedStakeRows.map((row) => {
             const reward = row.blockReward + row.extraInterest
             const canClaim = reward > 0n
             const canRedeem = row.kind === 'liquid' ? row.principal > 0n : row.claimableBalance > 0n
-            const periodLabel =
-              row.period === 'liquid' ? t.assets.position.liquid : `${row.period} 天`
+            const periodLabel = w.formatPeriodLabel(row.period)
             const voucher =
               row.kind === 'locked' && row.pool
                 ? `${row.pool.slice(0, 6)}…${row.pool.slice(-4)}`
@@ -282,9 +144,9 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                         </Text>
                       </span>
                     ) : null}
-                    {quote === 'usd' ? (
+                    {w.quote === 'usd' ? (
                       <Text as="span" tone="muted-foreground" variant="detail">
-                        {formatRewardUsd(reward)}
+                        {w.formatRewardUsd(reward)}
                       </Text>
                     ) : null}
                   </div>
@@ -303,33 +165,16 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                   <DappActionButton
                     className="h-7 min-h-7 text-xs"
                     density="inverse"
-                    disabled={!canClaim || locked || busy}
-                    onClick={() => {
-                      const target: MixedClaimTarget =
-                        row.kind === 'liquid'
-                          ? { source: 'liquid', amount: reward }
-                          : {
-                              source: 'locked',
-                              pool: row.pool,
-                              stakeIndex: row.stakeIndex!,
-                              amount: row.blockReward > 0n ? row.blockReward : row.extraInterest,
-                              extra: row.blockReward <= 0n && row.extraInterest > 0n,
-                            }
-                      setClaim({
-                        open: true,
-                        target,
-                        label: periodLabel,
-                        amountLabel: `${formatTokenAmount(target.amount, GAGX_DECIMALS, 4)} gAGX`,
-                      })
-                    }}
+                    disabled={!canClaim || w.locked || w.busy}
+                    onClick={() => w.openStakeClaim(row)}
                   >
                     {t.assets.position.claim}
                   </DappActionButton>
                   <DappActionButton
                     className="h-7 min-h-7 text-xs"
                     density="inverse"
-                    disabled={!canRedeem || locked || busy}
-                    onClick={() => requestRedeem('stake', row)}
+                    disabled={!canRedeem || w.locked || w.busy}
+                    onClick={() => w.requestRedeem('stake', row)}
                     variant="secondary"
                   >
                     {row.kind === 'liquid' ? t.assets.position.unlock : t.assets.position.redeem}
@@ -339,10 +184,10 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             )
           })
         ) : (
-          pagedBondRows.map((row) => {
+          w.pagedBondRows.map((row) => {
             const canClaim = row.profit > 0n
             const canRedeem = row.pendingPayout > 0n
-            const periodLabel = `${row.period} 天`
+            const periodLabel = w.formatPeriodLabel(String(row.period))
             const voucher = `${row.depository.slice(0, 6)}…${row.depository.slice(-4)}`
             return (
               <Card key={row.id} surface="outlined" className="grid gap-2 p-4 shadow-none">
@@ -386,9 +231,9 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                     >
                       {formatTokenAmount(row.profit, GAGX_DECIMALS, 2)} gAGX
                     </Text>
-                    {quote === 'usd' ? (
+                    {w.quote === 'usd' ? (
                       <Text as="span" tone="muted-foreground" variant="detail">
-                        {formatRewardUsd(row.profit)}
+                        {w.formatRewardUsd(row.profit)}
                       </Text>
                     ) : null}
                   </div>
@@ -405,28 +250,16 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                   <DappActionButton
                     className="h-7 min-h-7 text-xs"
                     density="inverse"
-                    disabled={!canClaim || locked || busy}
-                    onClick={() =>
-                      setClaim({
-                        open: true,
-                        target: {
-                          source: 'bond',
-                          depository: row.depository,
-                          bondIndex: row.bondIndex,
-                          amount: row.profit,
-                        },
-                        label: periodLabel,
-                        amountLabel: `${formatTokenAmount(row.profit, GAGX_DECIMALS, 4)} gAGX`,
-                      })
-                    }
+                    disabled={!canClaim || w.locked || w.busy}
+                    onClick={() => w.openBondClaim(row)}
                   >
                     {t.assets.position.claim}
                   </DappActionButton>
                   <DappActionButton
                     className="h-7 min-h-7 text-xs"
                     density="inverse"
-                    disabled={!canRedeem || locked || busy}
-                    onClick={() => requestRedeem('bond', row)}
+                    disabled={!canRedeem || w.locked || w.busy}
+                    onClick={() => w.requestRedeem('bond', row)}
                     variant="secondary"
                   >
                     {t.assets.position.redeem}
@@ -437,25 +270,25 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
           })
         )}
 
-        {!isEmpty && walletReady ? (
+        {!w.isEmpty && w.walletReady ? (
           <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
             <Text as="span" tone="muted-foreground" variant="detail">
-              {t.common.paginationTotal.replace('{total}', String(totalRows))} ·{' '}
-              {t.common.paginationPerPage.replace('{size}', String(pageSize))}
+              {t.common.paginationTotal.replace('{total}', String(w.totalRows))} ·{' '}
+              {t.common.paginationPerPage.replace('{size}', String(w.pageSize))}
             </Text>
             <div className="flex gap-2">
               <button
                 className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
-                disabled={safePage <= 0}
-                onClick={() => setPage((value) => Math.max(0, value - 1))}
+                disabled={w.safePage <= 0}
+                onClick={() => w.setPage((value) => Math.max(0, value - 1))}
                 type="button"
               >
                 {t.common.paginationPrev}
               </button>
               <button
                 className="rounded-full bg-muted px-3 py-1 text-xs disabled:opacity-40"
-                disabled={safePage >= pageCount - 1}
-                onClick={() => setPage((value) => Math.min(pageCount - 1, value + 1))}
+                disabled={w.safePage >= w.pageCount - 1}
+                onClick={() => w.setPage((value) => Math.min(w.pageCount - 1, value + 1))}
                 type="button"
               >
                 {t.common.paginationNext}
@@ -466,25 +299,22 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
       </DappWidgetStack>
 
       <AssetsClaimModal
-        amountLabel={claim.open ? claim.amountLabel : ''}
+        amountLabel={w.claim.open ? w.claim.amountLabel : ''}
         onOpenChange={(open) => {
-          if (!open) setClaim({ open: false })
+          if (!open) w.closeClaim()
         }}
-        open={claim.open}
-        positionLabel={claim.open ? claim.label : ''}
-        target={claim.open ? claim.target : null}
+        open={w.claim.open}
+        positionLabel={w.claim.open ? w.claim.label : ''}
+        target={w.claim.open ? w.claim.target : null}
       />
 
       <AssetsRedeemConfirm
-        busy={busy}
-        onConfirm={() => {
-          if (!redeem.open) return
-          void runRedeem(redeem.kind, redeem.row)
-        }}
+        busy={w.busy}
+        onConfirm={w.confirmRedeem}
         onOpenChange={(open) => {
-          if (!open) setRedeem({ open: false })
+          if (!open) w.closeRedeem()
         }}
-        open={redeem.open}
+        open={w.redeem.open}
       />
     </>
   )

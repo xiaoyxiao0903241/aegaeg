@@ -53,7 +53,7 @@ src/
 
 ## `hooks/` 白名单
 
-`use-api-data` · `use-capped-token-amount-input` · `use-genesis-promo` · `use-mobile-viewport` · `queries/use-visible-interval`
+`use-api-data` · `use-capped-token-amount-input` · `use-genesis-promo` · `use-mobile-viewport` · `use-shareholder-rank` · `queries/use-visible-interval`
 
 页专属编排在页袋（如 `use-exchange-quote`、`use-genesis-widget`、`use-claim-reward`）。
 
@@ -63,3 +63,5 @@ src/
 2. `core` 无 React、无链 IO
 3. 合约地址在 `shared/config`；链/钱包在 `web3`
 4. 仅 `src/web3/` 与 `src/views/dapp/auth/` 可直接依赖 `thirdweb`（`web3-gateway`）
+5. **`app→views` composition（known-ok）**：`dapp-shell` / session hosts / `dapp-tabs`、`auth-provider`→`login-with-wallet`（不变量 4）、rail dots / genesis promo sync、`app/assets`→home assets。depcruise `app-views-composition` 为 **warn**（文档化边，不升 error）。真泄漏（壳吃页袋 tv/常量）应下沉到 `app/shell` 或上提 helper。
+6. **`views/dapp/<tab>` 禁跨 tab 直引**（depcruise `views-no-cross-tab` error）；共享 hook 进 `hooks/`，纯模板进 `shared/lib`。

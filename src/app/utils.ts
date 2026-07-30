@@ -1,15 +1,3 @@
-import { type DappTab } from '~/shared/config/dapp-tabs'
-import { resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
-
-/** Map URL hash → tab; legacy `#swap` and `#exchange/<view>` supported. */
-export function resolveTabFromHash(hash: string): DappTab | null {
-  return resolveDappLocationFromHash(hash)?.tab ?? null
-}
-
-export function getInitialTab(): DappTab {
-  return resolveTabFromHash(window.location.hash.slice(1)) ?? 'exchange'
-}
-
 /** Scroll both DApp panels and the H5 window to top — used after tab switch or promo CTA navigation. */
 export function scrollDappPanelsToTop() {
   requestAnimationFrame(() => {

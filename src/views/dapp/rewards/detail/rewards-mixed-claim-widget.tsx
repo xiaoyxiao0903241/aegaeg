@@ -16,7 +16,8 @@ import {
   type ReleaseDurationDays,
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
-import { claimSplitFromReleasePct, ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
+import { claimSplitFromReleasePct } from '~/core/assets/claim-plans'
+import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
 import { Text } from '~/shared/ui/text'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -30,6 +31,13 @@ import {
   submitDaoMixedClaim,
   submitLuckyMixedClaim,
 } from '~/views/dapp/rewards/submit-rewards'
+import {
+  isMixedWriteDeferred,
+  planLabel,
+  REWARDS_DASH,
+  splitAmountByPct,
+  type MixedClaimView,
+} from '~/views/dapp/rewards/rewards-display'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
@@ -39,41 +47,10 @@ import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { Address } from '~/shared/config/contracts'
-import type { RewardsView } from '~/shared/config/rewards-deep-link'
-import type { DurationPlan } from '~/core/assets/claim-plans'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-const DASH = '—'
 
-type MixedView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral' | 'participate'>
-
-/** Figma Mixed chrome; handbook has no Mixed write for these views. */
-function isMixedWriteDeferred(view: MixedView): boolean {
-  return view === 'referral' || view === 'participate'
-}
-
-function planLabel(
-  days: number,
-  plans: readonly DurationPlan[] | undefined,
-  daysTax: string,
-  daysOnly: string,
-  taxRate: string,
-): string {
-  const plan = plans?.find(
-    (p) => p.exists !== false && Number(p.durationSeconds / 86_400n) === days,
-  )
-  if (plan?.taxBps != null) {
-    const tax = taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
-    return daysTax.replace('{days}', String(days)).replace('{tax}', tax)
-  }
-  return daysOnly.replace('{days}', String(days))
-}
-
-function splitAmount(amount: bigint, pct: number): bigint {
-  return (amount * BigInt(pct)) / 100n
-}
-
-export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
+export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
   const { walletReady, sessionReady } = useDappShell()
@@ -171,20 +148,24 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
     : isMixedWriteDeferred(view)
-      ? DASH
+      ? REWARDS_DASH
       : sessionReady
         ? t.rewards.hub.balancePlaceholder
         : t.rewards.hub.signInForBalance
-  const releaseAmount = amountKnown ? splitAmount(amount, releasePct) : 0n
-  const restakeAmount = amountKnown ? splitAmount(amount, restakePct) : 0n
-  const releaseAmountText = amountKnown ? formatTokenAmount(releaseAmount, AGX_DECIMALS) : DASH
-  const restakeAmountText = amountKnown ? formatTokenAmount(restakeAmount, AGX_DECIMALS) : DASH
+  const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : 0n
+  const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : 0n
+  const releaseAmountText = amountKnown
+    ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
+    : REWARDS_DASH
+  const restakeAmountText = amountKnown
+    ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
+    : REWARDS_DASH
   const requiredText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS)
-    : DASH
+    : REWARDS_DASH
   const haveText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS)
-    : DASH
+    : REWARDS_DASH
   const showContributionShort =
     !contributionOk &&
     (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)
@@ -277,7 +258,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
                 {mixed.requiredContributionLabel}
               </Text>
               <Text as="p" className="font-semibold" variant="copy">
-                {view === 'lucky' && amount > 0n ? requiredText : DASH}
+                {view === 'lucky' && amount > 0n ? requiredText : REWARDS_DASH}
               </Text>
             </div>
           </div>

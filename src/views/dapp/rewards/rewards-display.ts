@@ -11,6 +11,56 @@ import {
   formatTableGenesisRank,
   formatUsd,
 } from '~/shared/api/format-display'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import type { DurationPlan } from '~/core/assets/claim-plans'
+import type { RewardsView } from '~/shared/config/rewards-deep-link'
+
+/** Em dash placeholder for unset rewards UI values. */
+export const REWARDS_DASH = '—'
+export const REWARDS_LOADING = '…'
+
+export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'referral' | 'participate'>
+
+/** Figma Mixed chrome; handbook has no Mixed write for these views. */
+export function isMixedWriteDeferred(view: MixedClaimView): boolean {
+  return view === 'referral' || view === 'participate'
+}
+
+export function planLabel(
+  days: number,
+  plans: readonly DurationPlan[] | undefined,
+  daysTax: string,
+  daysOnly: string,
+  taxRate: string,
+): string {
+  const plan = plans?.find(
+    (p) => p.exists !== false && Number(p.durationSeconds / 86_400n) === days,
+  )
+  if (plan?.taxBps != null) {
+    const tax = taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
+    return daysTax.replace('{days}', String(days)).replace('{tax}', tax)
+  }
+  return daysOnly.replace('{days}', String(days))
+}
+
+export function splitAmountByPct(amount: bigint, pct: number): bigint {
+  return (amount * BigInt(pct)) / 100n
+}
+
+/** Placeholder for contribution snapshot: disconnected / loading / value. */
+export function formatContributionPlaceholder(input: {
+  walletReady: boolean
+  hasAddress: boolean
+  isPending: boolean
+  contribution: bigint | undefined
+  decimals: number
+  fractionDigits?: number
+}): string {
+  if (!input.walletReady || !input.hasAddress) return REWARDS_DASH
+  if (input.isPending) return REWARDS_LOADING
+  if (input.contribution === undefined) return REWARDS_DASH
+  return formatTokenAmount(input.contribution, input.decimals, input.fractionDigits ?? 2)
+}
 
 export type RewardLogStatusKey =
   'pending' | 'processing' | 'paid' | 'claimed' | 'failed' | 'unknown'

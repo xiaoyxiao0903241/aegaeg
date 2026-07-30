@@ -3,6 +3,7 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { Text } from '~/shared/ui/text'
+import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
 import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { cn } from '~/shared/lib/utils'
@@ -19,14 +20,14 @@ export function ReleaseHubContent() {
           slides={slides.map((slide) => ({
             key: slide.title,
             content: (
-              <div className="rounded-2xl bg-card p-4 shadow-sm">
+              <Card as="div" surface="elevated" className="rounded-2xl p-4 shadow-sm">
                 <Text as="p" className="mb-2 font-semibold" variant="copy">
                   {slide.title}
                 </Text>
                 <Text as="p" tone="muted-foreground" variant="copy">
                   {slide.body}
                 </Text>
-              </div>
+              </Card>
             ),
           }))}
         />
@@ -39,7 +40,11 @@ export function ReleaseHubContent() {
         <Text as="p" className="mb-4" tone="muted-foreground" variant="caption">
           {t.release.hub.mechanismSubtitle}
         </Text>
-        <div className="flex flex-col gap-6 rounded-2xl bg-card px-4 py-6 shadow-sm">
+        <Card
+          as="div"
+          surface="elevated"
+          className="flex flex-col gap-6 rounded-2xl px-4 py-6 shadow-sm"
+        >
           <ol className="flex flex-col gap-4 sm:flex-row sm:items-start">
             {t.release.hub.mechanismSteps.map((step, stepIndex) => {
               const accent = stepIndex === 2
@@ -122,7 +127,7 @@ export function ReleaseHubContent() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </DappDetailBlock>
 
       <DappDetailBlock>

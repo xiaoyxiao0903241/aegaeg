@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { useGenesisPromo } from '~/hooks/use-genesis-promo'
-import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
+import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { DappSection } from '~/app/shell/dapp-section'
 import { InviteFlow, InviteFlowStack } from '~/views/dapp/community/community-invite-flow'
 import {

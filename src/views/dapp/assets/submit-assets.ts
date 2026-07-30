@@ -33,14 +33,8 @@ import {
   writeXmineClaimReward,
   writeXmineStartUnstake,
 } from '~/web3/assets/assets-write'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import { runUnknownGuardedWrite } from '~/web3/wallet/run-unknown-guarded-write'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  lockUnknownReceipt,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
 
@@ -201,35 +195,34 @@ export async function submitStakeRedeem(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)) {
-    return { ok: false, error: ASSETS_GATE_ERROR.unavailable }
-  }
 
   const user = account.address as Address
-  try {
-    const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
-    const gate = evaluateRedeemGate({ amount: liveAmount })
-    if (gate) return { ok: false, error: ASSETS_GATE_ERROR[gate] }
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    lockedError: ASSETS_GATE_ERROR.unavailable,
+    run: async () => {
+      const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
+      const gate = evaluateRedeemGate({ amount: liveAmount })
+      if (gate) throw ASSETS_GATE_ERROR[gate]
 
-    if (row.kind === 'liquid') {
-      await writeLiquidClaimPrincipal({ wallet, amount: liveAmount })
-    } else {
-      if (row.stakeIndex == null) return { ok: false, error: ASSETS_GATE_ERROR.nothingToRedeem }
-      await writeLockedClaimPrincipal({
-        wallet,
-        pool: row.pool,
-        stakeIndex: row.stakeIndex,
-      })
-    }
-    clearUnknownReceiptLock(WRITE_PATH.ASSETS_CLAIM)
-    invalidateAfterAssetsClaim()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.ASSETS_CLAIM)
-    }
-    return { ok: false, error: caught }
+      if (row.kind === 'liquid') {
+        await writeLiquidClaimPrincipal({ wallet, amount: liveAmount })
+      } else {
+        if (row.stakeIndex == null) throw ASSETS_GATE_ERROR.nothingToRedeem
+        await writeLockedClaimPrincipal({
+          wallet,
+          pool: row.pool,
+          stakeIndex: row.stakeIndex,
+        })
+      }
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
+  invalidateAfterAssetsClaim()
+  return { ok: true }
 }
 
 export async function submitBondRedeem(args: {
@@ -242,31 +235,30 @@ export async function submitBondRedeem(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)) {
-    return { ok: false, error: ASSETS_GATE_ERROR.unavailable }
-  }
 
   const user = account.address as Address
-  try {
-    const liveAmount = await readBondRedeemableAmount(row, user, readClient)
-    const gate = evaluateRedeemGate({ amount: liveAmount })
-    if (gate) return { ok: false, error: ASSETS_GATE_ERROR[gate] }
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    lockedError: ASSETS_GATE_ERROR.unavailable,
+    run: async () => {
+      const liveAmount = await readBondRedeemableAmount(row, user, readClient)
+      const gate = evaluateRedeemGate({ amount: liveAmount })
+      if (gate) throw ASSETS_GATE_ERROR[gate]
 
-    await writeBondRedeem({
-      wallet,
-      depository: row.depository,
-      recipient: user,
-      bondIndex: row.bondIndex,
-    })
-    clearUnknownReceiptLock(WRITE_PATH.ASSETS_CLAIM)
-    invalidateAfterAssetsClaim()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.ASSETS_CLAIM)
-    }
-    return { ok: false, error: caught }
+      await writeBondRedeem({
+        wallet,
+        depository: row.depository,
+        recipient: user,
+        bondIndex: row.bondIndex,
+      })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
+  invalidateAfterAssetsClaim()
+  return { ok: true }
 }
 
 export async function submitXmineClaim(args: {
@@ -278,35 +270,34 @@ export async function submitXmineClaim(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)) {
-    return { ok: false, error: ASSETS_GATE_ERROR.unavailable }
+
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    lockedError: ASSETS_GATE_ERROR.unavailable,
+    run: async () => {
+      const pre = await readXminePosition(account.address as Address, readClient)
+      const preGate = evaluateXmineClaimGate({
+        pending: pre.pending,
+        warmupGons: pre.warmupGons,
+      })
+      if (preGate) throw ASSETS_GATE_ERROR[preGate]
+
+      const live = await readXminePosition(account.address as Address, readClient)
+      const liveGate = evaluateXmineClaimGate({
+        pending: live.pending,
+        warmupGons: live.warmupGons,
+      })
+      if (liveGate) throw ASSETS_GATE_ERROR[liveGate]
+
+      await writeXmineClaimReward({ wallet })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
-
-  try {
-    const pre = await readXminePosition(account.address as Address, readClient)
-    const preGate = evaluateXmineClaimGate({
-      pending: pre.pending,
-      warmupGons: pre.warmupGons,
-    })
-    if (preGate) return { ok: false, error: ASSETS_GATE_ERROR[preGate] }
-
-    const live = await readXminePosition(account.address as Address, readClient)
-    const liveGate = evaluateXmineClaimGate({
-      pending: live.pending,
-      warmupGons: live.warmupGons,
-    })
-    if (liveGate) return { ok: false, error: ASSETS_GATE_ERROR[liveGate] }
-
-    await writeXmineClaimReward({ wallet })
-    clearUnknownReceiptLock(WRITE_PATH.ASSETS_CLAIM)
-    invalidateAfterAssetsClaim()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.ASSETS_CLAIM)
-    }
-    return { ok: false, error: caught }
-  }
+  invalidateAfterAssetsClaim()
+  return { ok: true }
 }
 
 export async function submitXmineUnstake(args: {
@@ -318,33 +309,32 @@ export async function submitXmineUnstake(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)) {
-    return { ok: false, error: ASSETS_GATE_ERROR.unavailable }
+
+  const guarded = await runUnknownGuardedWrite({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    lockedError: ASSETS_GATE_ERROR.unavailable,
+    run: async () => {
+      const pre = await readXminePosition(account.address as Address, readClient)
+      const preGate = evaluateXmineUnstakeGate({
+        activeGons: pre.gons,
+        warmupGons: pre.warmupGons,
+      })
+      if (preGate) throw ASSETS_GATE_ERROR[preGate]
+
+      const live = await readXminePosition(account.address as Address, readClient)
+      const liveGate = evaluateXmineUnstakeGate({
+        activeGons: live.gons,
+        warmupGons: live.warmupGons,
+      })
+      if (liveGate) throw ASSETS_GATE_ERROR[liveGate]
+
+      await writeXmineStartUnstake({ wallet })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
-
-  try {
-    const pre = await readXminePosition(account.address as Address, readClient)
-    const preGate = evaluateXmineUnstakeGate({
-      activeGons: pre.gons,
-      warmupGons: pre.warmupGons,
-    })
-    if (preGate) return { ok: false, error: ASSETS_GATE_ERROR[preGate] }
-
-    const live = await readXminePosition(account.address as Address, readClient)
-    const liveGate = evaluateXmineUnstakeGate({
-      activeGons: live.gons,
-      warmupGons: live.warmupGons,
-    })
-    if (liveGate) return { ok: false, error: ASSETS_GATE_ERROR[liveGate] }
-
-    await writeXmineStartUnstake({ wallet })
-    clearUnknownReceiptLock(WRITE_PATH.ASSETS_CLAIM)
-    invalidateAfterAssetsClaim()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.ASSETS_CLAIM)
-    }
-    return { ok: false, error: caught }
-  }
+  invalidateAfterAssetsClaim()
+  return { ok: true }
 }

@@ -14,7 +14,8 @@ import {
   type ReleaseDurationDays,
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
-import { claimSplitFromReleasePct, ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
+import { claimSplitFromReleasePct } from '~/core/assets/claim-plans'
+import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { Button } from '~/shared/ui/button'

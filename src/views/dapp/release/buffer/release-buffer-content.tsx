@@ -7,6 +7,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -51,7 +52,7 @@ export function ReleaseBufferContent() {
         <DappContentHeading id="release-buffer-title">
           {t.release.buffer.statsTitle}
         </DappContentHeading>
-        <div className="mb-3 grid gap-1.5 rounded-2xl bg-card p-4 shadow-card">
+        <Card as="div" className="mb-3 grid gap-1.5 rounded-2xl p-4" surface="elevated">
           <div className="mb-1 flex items-center gap-2">
             <DappIcon
               alt=""
@@ -78,8 +79,8 @@ export function ReleaseBufferContent() {
               </div>
             ))}
           </div>
-        </div>
-        <div className="grid gap-1.5 rounded-2xl bg-card p-4 shadow-card">
+        </Card>
+        <Card as="div" className="grid gap-1.5 rounded-2xl p-4" surface="elevated">
           <div className="mb-1 flex items-center gap-2">
             <DappIcon
               alt=""
@@ -109,7 +110,7 @@ export function ReleaseBufferContent() {
           <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
             {t.release.buffer.gagxHint}
           </Text>
-        </div>
+        </Card>
       </DappDetailBlock>
 
       <DappDetailBlock>
@@ -129,7 +130,7 @@ export function ReleaseBufferContent() {
         <Text as="p" className="mb-4" tone="muted-foreground" variant="caption">
           {t.release.buffer.mechanismSubtitle}
         </Text>
-        <div className="rounded-2xl bg-card p-4 shadow-card">
+        <Card as="div" className="rounded-2xl p-4" surface="elevated">
           <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {t.release.buffer.mechanismSteps.map((step) => (
               <li className="rounded-2xl bg-muted p-3 text-center" key={step.title}>
@@ -152,7 +153,7 @@ export function ReleaseBufferContent() {
               </li>
             ))}
           </ul>
-        </div>
+        </Card>
       </DappDetailBlock>
 
       <DappDetailBlock>

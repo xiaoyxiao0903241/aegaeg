@@ -8,6 +8,7 @@ import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { tokenCarouselIcons } from '~/app/assets'
 import { FaqList } from '~/shared/ui/faq-list'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
 import { useAssetsPositionStats } from '~/views/dapp/assets/position/use-assets-position-stats'
@@ -32,7 +33,12 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
                   ? tokenCarouselIcons.gagxIcon
                   : null
             return (
-              <div className="grid gap-1.5 rounded-2xl bg-card p-4 shadow-card" key={metric.label}>
+              <Card
+                as="div"
+                className="grid gap-1.5 rounded-2xl p-4"
+                key={metric.label}
+                surface="elevated"
+              >
                 <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
                   {metric.label}
                 </Text>
@@ -54,7 +60,7 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
                     {cell.approx}
                   </Text>
                 ) : null}
-              </div>
+              </Card>
             )
           })}
         </div>

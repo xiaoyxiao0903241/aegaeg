@@ -2,15 +2,6 @@ import * as SliderPrimitive from '@radix-ui/react-slider'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/** Release % → restake % (always sums to 100). */
-export function claimSplitFromReleasePct(releasePct: number): {
-  releasePct: number
-  restakePct: number
-} {
-  const release = Math.min(100, Math.max(0, Math.round(releasePct)))
-  return { releasePct: release, restakePct: 100 - release }
-}
-
 export type ClaimSplitSliderProps = {
   /** Accessible name — call site supplies i18n. */
   'aria-label': string
@@ -21,10 +12,15 @@ export type ClaimSplitSliderProps = {
   value: number
 }
 
+function clampReleasePct(value: number): number {
+  return Math.min(100, Math.max(0, Math.round(value)))
+}
+
 /**
  * Dual-tone claim split — Figma `4812:221`.
  * Coral track = release pool; blue track = restake; white thumb embeds `%`.
  * Labels / aria copy are call-site owned.
+ * Domain split math SSOT: `claimSplitFromReleasePct` in `core/assets/claim-plans`.
  */
 export function ClaimSplitSlider({
   'aria-label': ariaLabel,
@@ -33,7 +29,7 @@ export function ClaimSplitSlider({
   onChange,
   value,
 }: ClaimSplitSliderProps) {
-  const { releasePct } = claimSplitFromReleasePct(value)
+  const releasePct = clampReleasePct(value)
 
   return (
     <SliderPrimitive.Root

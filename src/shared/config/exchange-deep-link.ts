@@ -93,3 +93,13 @@ export function resolveDappLocationFromHash(hash: string): DappLocation | null {
 
   return emptyViews(tabPart)
 }
+
+/** Map URL hash → tab; legacy `#swap` and `#exchange/<view>` supported. */
+export function resolveTabFromHash(hash: string): DappTab | null {
+  return resolveDappLocationFromHash(hash)?.tab ?? null
+}
+
+/** Initial DApp tab from `window.location.hash` (browser-only). */
+export function getInitialTab(): DappTab {
+  return resolveTabFromHash(window.location.hash.slice(1)) ?? 'exchange'
+}

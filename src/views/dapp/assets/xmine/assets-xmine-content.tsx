@@ -8,6 +8,7 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-assets-xmine-stats'
 
@@ -30,7 +31,12 @@ export function AssetsXmineContent() {
                   ? tokenCarouselIcons.xIcon
                   : null
             return (
-              <div className="grid gap-1.5 rounded-2xl bg-card p-4 shadow-card" key={metric.label}>
+              <Card
+                as="div"
+                surface="elevated"
+                className="grid gap-1.5 rounded-2xl p-4"
+                key={metric.label}
+              >
                 <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
                   {metric.label}
                 </Text>
@@ -52,7 +58,7 @@ export function AssetsXmineContent() {
                     {cell.approx}
                   </Text>
                 ) : null}
-              </div>
+              </Card>
             )
           })}
         </div>

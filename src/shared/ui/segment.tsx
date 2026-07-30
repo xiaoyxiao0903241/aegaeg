@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react'
-import { Chip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -58,7 +57,7 @@ export type SegmentProps = {
  * Figma `seg` sliding white pill. Active label tone is call-site owned
  * (`coral` vs `ink` — see {@link SegmentProps.tone}).
  * Options + copy come from the call site (i18n). Not a Chip grid —
- * use {@link PercentButtonRow} for amount % chips.
+ * exchange sell % chips live in `views/dapp/exchange/percent-button-row`.
  */
 export function Segment({
   'aria-label': ariaLabel,
@@ -133,45 +132,6 @@ export function Segment({
           </button>
         )
       })}
-    </div>
-  )
-}
-
-/**
- * Composite：Swap 专用百分比按钮（25/50/75/100）— Chip 网格，≠ Segment=A 合同。
- */
-export type PercentButtonRowProps = {
-  'aria-label': string
-  className?: string
-  disabled?: boolean
-  onSelect: (percent: number) => void
-  values?: number[]
-}
-
-export function PercentButtonRow({
-  'aria-label': ariaLabel,
-  className,
-  disabled = false,
-  onSelect,
-  values = [25, 50, 75, 100],
-}: PercentButtonRowProps) {
-  return (
-    <div className={cn('grid grid-cols-4 gap-2', className)} role="group" aria-label={ariaLabel}>
-      {values.map((percent) => (
-        <Chip
-          key={percent}
-          className="h-6 min-h-6 py-0 text-xs font-semibold"
-          disabled={disabled}
-          onClick={() => onSelect(percent)}
-          shape="pill"
-          size="md"
-          type="button"
-          variant="outlined"
-          tone="default"
-        >
-          {percent}%
-        </Chip>
-      ))}
     </div>
   )
 }

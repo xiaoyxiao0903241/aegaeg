@@ -7,6 +7,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -50,7 +51,12 @@ export function ReleaseQueueContent() {
         </DappContentHeading>
         <div className="grid gap-3 sm:grid-cols-3">
           {stats.map((stat) => (
-            <div className="grid gap-1.5 rounded-2xl bg-card p-4 shadow-card" key={stat.label}>
+            <Card
+              as="div"
+              surface="elevated"
+              className="grid gap-1.5 rounded-2xl p-4"
+              key={stat.label}
+            >
               <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
                 {stat.label}
               </Text>
@@ -68,7 +74,7 @@ export function ReleaseQueueContent() {
               <Text as="span" tone="muted-foreground" variant="detail">
                 {stat.approx}
               </Text>
-            </div>
+            </Card>
           ))}
         </div>
       </DappDetailBlock>

@@ -12,7 +12,7 @@ import { WidgetHeader } from '~/shared/ui/widget-header'
 import { RewardsModeCard } from '~/views/dapp/rewards/hub/rewards-mode-card'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
+import { claimableAmountValue, REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 
 const CARD_VIEWS = [
   'lucky',
@@ -23,11 +23,9 @@ const CARD_VIEWS = [
   'genesis',
 ] as const satisfies readonly Exclude<RewardsView, 'hub'>[]
 
-const DASH = '—'
-
 function formatGagxBalance(value: number | null, sessionReady: boolean, signInLabel: string) {
-  if (!sessionReady) return { amount: signInLabel, approx: DASH }
-  if (value == null) return { amount: DASH, approx: DASH }
+  if (!sessionReady) return { amount: signInLabel, approx: REWARDS_DASH }
+  if (value == null) return { amount: REWARDS_DASH, approx: REWARDS_DASH }
   return {
     amount: `${value.toFixed(4)}gAGX`,
     approx: `≈ ${formatUsd(value, 2)}`,
@@ -69,7 +67,7 @@ export function RewardsHubWidget() {
             ? {
                 amount: sessionReady
                   ? value == null
-                    ? DASH
+                    ? REWARDS_DASH
                     : formatUsd(value, 2)
                   : t.rewards.hub.signInForBalance,
                 approx: undefined as string | undefined,

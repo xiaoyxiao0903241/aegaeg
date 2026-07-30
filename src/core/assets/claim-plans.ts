@@ -39,3 +39,12 @@ export function restakeBpsFromPct(restakePct: number): number {
   const pct = Math.min(100, Math.max(0, Math.round(restakePct)))
   return pct * 100
 }
+
+/** Release % → restake % (always sums to 100). */
+export function claimSplitFromReleasePct(releasePct: number): {
+  releasePct: number
+  restakePct: number
+} {
+  const release = Math.min(100, Math.max(0, Math.round(releasePct)))
+  return { releasePct: release, restakePct: 100 - release }
+}

@@ -38,7 +38,7 @@ test('Segment source documents coral + ink active tones', async () => {
 })
 
 test('claimSplitFromReleasePct keeps release + restake = 100', async () => {
-  const { claimSplitFromReleasePct } = await loadModule('/src/shared/ui/claim-split-slider.tsx')
+  const { claimSplitFromReleasePct } = await loadModule('/src/core/assets/claim-plans.ts')
 
   assert.deepEqual(claimSplitFromReleasePct(50), { releasePct: 50, restakePct: 50 })
   assert.deepEqual(claimSplitFromReleasePct(0), { releasePct: 0, restakePct: 100 })

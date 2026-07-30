@@ -4,7 +4,8 @@
  * Not imported by production code or by the test runner.
  */
 export { resolveXTokenAirdropUsdForPurchase } from '../../src/core/presale/presale-math'
-export { ClaimSplitSlider, claimSplitFromReleasePct } from '../../src/shared/ui/claim-split-slider'
+export { ClaimSplitSlider } from '../../src/shared/ui/claim-split-slider'
+export { claimSplitFromReleasePct } from '../../src/core/assets/claim-plans'
 export {
   SEGMENT_MOTION_EASING,
   SEGMENT_MOTION_MS,

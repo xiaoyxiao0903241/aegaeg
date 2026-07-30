@@ -18,8 +18,8 @@ import {
   resolveWalletTransactionError,
 } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
+import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 
-const DASH = '—'
 const TOKEN_GAGX = 'gAGX'
 
 export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
@@ -53,7 +53,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
   const grantClaimableText = !sessionReady
     ? t.rewards.hub.signInForBalance
     : t.rewards.detail.signedAmountHint
-  const grantCtaAmount = !sessionReady ? DASH : `${DASH} ${TOKEN_GAGX}`
+  const grantCtaAmount = !sessionReady ? REWARDS_DASH : `${REWARDS_DASH} ${TOKEN_GAGX}`
   const grantCtaLabel = grant.ctaToWallet.replace('{amount}', grantCtaAmount)
 
   return (
@@ -89,7 +89,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
                 {grant.pendingHint}
               </Text>
               <Text as="p" className="font-semibold" variant="headline">
-                {DASH}
+                {REWARDS_DASH}
               </Text>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
 
 export const communityStatGrid = tv({
   base: cn(
@@ -13,13 +14,7 @@ export const communityStatGrid = tv({
   ),
 })
 
-/** Mobile stat card shell — stats only render when session is ready. */
-export const communityStatCardMobileShell = tv({
-  base: cn(
-    'max-dapp:min-h-22 max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
-    'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
-  ),
-})
+export { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
 
 const communityStatCard = tv({
   slots: {

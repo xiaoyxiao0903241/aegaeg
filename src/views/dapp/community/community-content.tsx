@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
-import { useShareholderRank } from '~/views/dapp/rewards/use-shareholder-rank'
+import { useShareholderRank } from '~/hooks/use-shareholder-rank'
 import { formatCount, formatPresaleRank, formatUsd } from '~/shared/api/format-display'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { CommunityStatCardSkeleton } from '~/app/shell/dapp-skeleton'
@@ -42,7 +42,7 @@ export function CommunityContent() {
   const { isLoggingIn } = useAuth()
   const [invitesPage, setInvitesPage] = useState(1)
   const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
-  const { displayRank, isRankLoading } = useShareholderRank()
+  const { displayRank, isRankLoading } = useShareholderRank(sessionReady)
   const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
     tablePageQuery(invitesPage),
     sessionReady,

@@ -3,7 +3,7 @@ import { ExchangeAmountSkeleton } from '~/app/shell/dapp-skeleton'
 import { TokenChip } from '~/app/shell/token-chip'
 import { useI18n } from '~/i18n/use-i18n'
 import { AmountBox } from '~/shared/ui/amount-box'
-import { PercentButtonRow } from '~/shared/ui/segment'
+import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
 import { cn } from '~/shared/lib/utils'
 
 type AmountToken = { icon?: string; symbol: string }

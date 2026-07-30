@@ -1,7 +1,15 @@
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
-import { communityStatCardMobileShell } from '~/views/dapp/community/community-content-primitives'
+import { cn } from '~/shared/lib/utils'
 import { dappTableCell } from '~/app/shell/dapp-table-card'
+
+/** Mobile community stat shell — shared by live cards + skeleton (≥2 call sites → shell). */
+export const communityStatCardMobileShell = tv({
+  base: cn(
+    'max-dapp:min-h-22 max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
+    'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
+  ),
+})
 
 const metricCardSkeleton = tv({
   base: 'flex flex-col items-start gap-1.5 rounded-md px-4 py-3.5',

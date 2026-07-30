@@ -24,6 +24,7 @@ import {
   claimableAmountValue,
   formatClaimableAmount,
   formatCommunityFundLockedAmount,
+  REWARDS_DASH,
 } from '~/views/dapp/rewards/rewards-display'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
@@ -32,8 +33,6 @@ import {
   resolveWalletTransactionError,
 } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
-
-const DASH = '—'
 
 export function RewardsGenesisClaimWidget() {
   const { messages: t } = useI18n()
@@ -73,12 +72,12 @@ export function RewardsGenesisClaimWidget() {
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
   const personalProgressValue = sessionReady
     ? `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
-    : DASH
+    : REWARDS_DASH
 
   const qualifiedPartitionCount = qualifiedPartitions?.count ?? 0
   const showQualifiedPartitions = displayRank >= 3 && displayRank <= 9
   const teamProgressValue = !sessionReady
-    ? DASH
+    ? REWARDS_DASH
     : showQualifiedPartitions
       ? t.rewards.teamQualifiedPartitionsLabel
           .replace('{rank}', formatPresaleRank(displayRank))
@@ -109,7 +108,7 @@ export function RewardsGenesisClaimWidget() {
       (partitionsLoading && qualifiedPartitions == null))
 
   const referralValue = !sessionReady
-    ? DASH
+    ? REWARDS_DASH
     : referralLoading && referralTotal == null
       ? '…'
       : formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
@@ -119,24 +118,24 @@ export function RewardsGenesisClaimWidget() {
     teamTotal?.claimed ?? '0',
   )
   const teamClaimable = !sessionReady
-    ? DASH
+    ? REWARDS_DASH
     : teamLoading && teamTotal == null
       ? '…'
       : formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
   const teamMeta = !sessionReady
-    ? DASH
+    ? REWARDS_DASH
     : teamTotal?.claimed == null
-      ? DASH
+      ? REWARDS_DASH
       : formatUsd(teamTotal.claimed, 2)
 
   const communityClaimableValue = Number(communityFundTotal?.unlocked_claimable ?? 0)
   const communityClaimable = !sessionReady
-    ? DASH
+    ? REWARDS_DASH
     : communityFundLoading && communityFundTotal == null
       ? '…'
       : formatUsd(Number.isFinite(communityClaimableValue) ? communityClaimableValue : 0, 2)
   const communityLockedMeta = !sessionReady
-    ? t.rewards.communityFundLocked.replace('{amount}', DASH)
+    ? t.rewards.communityFundLocked.replace('{amount}', REWARDS_DASH)
     : t.rewards.communityFundLocked.replace(
         '{amount}',
         formatCommunityFundLockedAmount(
@@ -312,7 +311,7 @@ export function RewardsGenesisClaimWidget() {
             </Text>
           </div>
           <Text as="p" className="mt-2 font-semibold" variant="headline">
-            {isSuperCommunity || !sessionReady ? communityClaimable : DASH}
+            {isSuperCommunity || !sessionReady ? communityClaimable : REWARDS_DASH}
           </Text>
           {walletReady ? (
             <DappActionButton

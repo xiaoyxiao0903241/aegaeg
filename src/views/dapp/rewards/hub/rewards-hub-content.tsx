@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
@@ -11,88 +10,58 @@ import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { Button } from '~/shared/ui/button'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { DappCarousel } from '~/app/shell/dapp-carousel'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import type { Address } from '~/shared/config/contracts'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
-import { readContributionSnapshot } from '~/web3/assets/assets-read'
+import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
+import { useRewardsContributionDisplay } from '~/views/dapp/rewards/use-rewards-contribution-display'
 
 /** Figma about carousel · 4 dots（推荐/参与/共建/幸运）；发展/创世不进轮播。 */
 const ABOUT_VIEWS = ['referral', 'participate', 'cobuild', 'lucky'] as const
 
-const DASH = '—'
-const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-
 export function RewardsHubContent() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
-  const account = useActiveAccount()
-  const readClient = useChainReadClient()
-  const address = account?.address
-  const contribQuery = useQuery({
-    queryKey: queryKeys.chain.assetsContribution(address ?? ''),
-    queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
-    enabled: Boolean(walletReady && address && readClient),
-  })
+  const { contributionValue } = useRewardsContributionDisplay(walletReady)
 
   const tier = t.rewards.hub.tierTable
   const stats = t.rewards.hub.stats
-  const contributionValue =
-    !walletReady || !address
-      ? DASH
-      : contribQuery.isPending
-        ? '…'
-        : contribQuery.data
-          ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS, 2)
-          : DASH
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <div className="mb-6 grid gap-2 sm:grid-cols-3">
-          <div className="rounded-2xl bg-card p-4 shadow-sm">
-            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
-              {stats.totalRewards}
-            </Text>
-            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
-              {DASH}
-            </Text>
-          </div>
-          <div className="relative overflow-hidden rounded-2xl bg-card p-4 shadow-sm">
+          <RewardsStatCard
+            label={stats.totalRewards}
+            labelClassName="text-[13px]"
+            value={REWARDS_DASH}
+          />
+          <RewardsStatCard
+            className="relative overflow-hidden"
+            label={stats.tier}
+            labelClassName="text-[13px]"
+          >
             <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
               {stats.tier}
             </Text>
             <Text as="p" className="mt-1.5 text-[13px]" tone="muted-foreground" variant="detail">
               {stats.tierEmpty}
             </Text>
-          </div>
-          <div className="rounded-2xl bg-card p-4 shadow-sm">
-            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
-              {stats.personalHolding}
-            </Text>
-            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
-              {DASH}
-            </Text>
-          </div>
-          <div className="rounded-2xl bg-card p-4 shadow-sm">
-            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
-              {stats.totalPerformance}
-            </Text>
-            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
-              {DASH}
-            </Text>
-          </div>
-          <div className="rounded-2xl bg-card p-4 shadow-sm">
-            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
-              {stats.smallAreaPerformance}
-            </Text>
-            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
-              {DASH}
-            </Text>
-          </div>
-          <div className="rounded-2xl bg-card p-4 shadow-sm">
+          </RewardsStatCard>
+          <RewardsStatCard
+            label={stats.personalHolding}
+            labelClassName="text-[13px]"
+            value={REWARDS_DASH}
+          />
+          <RewardsStatCard
+            label={stats.totalPerformance}
+            labelClassName="text-[13px]"
+            value={REWARDS_DASH}
+          />
+          <RewardsStatCard
+            label={stats.smallAreaPerformance}
+            labelClassName="text-[13px]"
+            value={REWARDS_DASH}
+          />
+          <RewardsStatCard label={stats.contribution} labelClassName="text-[13px]">
             <div className="flex items-start justify-between gap-2">
               <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
                 {stats.contribution}
@@ -112,7 +81,7 @@ export function RewardsHubContent() {
             <Text as="p" className="mt-1 text-[13px]" tone="muted-foreground" variant="detail">
               {stats.contributionHint}
             </Text>
-          </div>
+          </RewardsStatCard>
         </div>
       </DappDetailBlock>
 

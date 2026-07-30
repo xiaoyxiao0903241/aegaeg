@@ -1,6 +1,5 @@
 import { create } from 'zustand'
-import { getInitialTab } from '~/app/utils'
-import { resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
+import { getInitialTab, resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
