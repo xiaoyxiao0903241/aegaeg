@@ -66,8 +66,13 @@ export const USD1_SWAP_ERRORS = [
   'error ErrorBelowMin(uint256 amount, uint256 minAmount)',
   'error ErrorAboveMax(uint256 amount, uint256 maxAmount)',
   'error ErrorInsufficientOutput(uint256 actual, uint256 minRequired)',
+  'error ErrorTransferAmountMismatch(address token, uint256 expected, uint256 actual)',
+  'error ErrorZeroAddress()',
+  'error ErrorSameToken()',
   'error ErrorZeroAmount()',
   'error ErrorZeroRate()',
+  'error ErrorCallerNotAuthorized()',
+  'error ErrorInvalidLimits(uint256 minAmount, uint256 maxAmount)',
 ] as const
 
 /** AegisAgxContributionSwap — handbook §9.2 burn AGX → contribution points. */
@@ -124,6 +129,13 @@ export const REDEEMABLE_GAGX_METHODS = {
   redeem: 'function redeem(uint256 _amount)',
   wrap: 'function wrap(uint256 _amount)',
 } as const
+
+/** RedeemableGAGX custom errors — docs/frontend-manual/contracts/redeemablegagx.md */
+export const REDEEMABLE_GAGX_ERRORS = [
+  'error ErrorZeroAddress()',
+  'error ErrorZeroAmount()',
+  'error ErrorNotAuthorized()',
+] as const
 
 /** LiquidStaking — AGX flexible stake (manual §8.2). */
 export const LIQUID_STAKING_METHODS = {

@@ -1,6 +1,6 @@
 import type { QueryObserverResult } from '@tanstack/react-query'
 import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { WALLET_GATE_ERROR, FLASH_USD1_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import type { FlashPairId } from '~/core/exchange/flash-pair'
@@ -32,14 +32,6 @@ type FlashQuotedSubmitCore = {
 }
 
 type FlashBalancesResult = { sell: bigint; buy: bigint; approved: bigint }
-
-const FLASH_USD1_GATE_ERROR = {
-  paused: 'FLASH_USD1_PAUSED',
-  belowMin: 'FLASH_USD1_BELOW_MIN',
-  aboveMax: 'FLASH_USD1_ABOVE_MAX',
-  insufficientReserve: 'FLASH_USD1_INSUFFICIENT_RESERVE',
-  zeroRate: 'FLASH_USD1_ZERO_RATE',
-} as const
 
 /** Flash dual-pair submit: redeem / wrap / USDT swap + invalidate. */
 export async function submitFlashExchange(args: {

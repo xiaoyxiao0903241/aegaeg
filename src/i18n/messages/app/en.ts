@@ -252,6 +252,13 @@ const app = defineMessages({
         aboveMax: 'Amount exceeds the maximum swap limit.',
         insufficientReserve: 'USD1 reserve is insufficient. Please try again later.',
         zeroRate: 'Exchange rate is unavailable. Please try again later.',
+        insufficientOutput: 'Quote moved. Please try again.',
+        transferMismatch: 'Token transfer amount mismatch. Please retry.',
+        zeroAddress: 'Contract address is invalid. Please try again later.',
+        sameToken: 'Token configuration is invalid. Please try again later.',
+        zeroAmount: 'Enter an amount greater than zero.',
+        notAuthorized: 'This action is not authorized.',
+        invalidLimits: 'Swap limits are misconfigured. Please try again later.',
       },
       faq: {
         items: [

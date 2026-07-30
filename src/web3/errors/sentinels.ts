@@ -40,3 +40,12 @@ export const EXCHANGE_QUOTE_FAILED = 'EXCHANGE_QUOTE_FAILED'
 
 /** Approve 后二次门闸失败（quote 过期等）— 与 quoteFailed 同文案。 */
 export const EXCHANGE_SUBMIT_GATE_FAILED = 'EXCHANGE_SUBMIT_GATE_FAILED'
+
+/** Flash Usd1Swap preflight gates — map via i18n `exchange.flash.gates`. */
+export const FLASH_USD1_GATE_ERROR = {
+  paused: 'FLASH_USD1_PAUSED',
+  belowMin: 'FLASH_USD1_BELOW_MIN',
+  aboveMax: 'FLASH_USD1_ABOVE_MAX',
+  insufficientReserve: 'FLASH_USD1_INSUFFICIENT_RESERVE',
+  zeroRate: 'FLASH_USD1_ZERO_RATE',
+} as const

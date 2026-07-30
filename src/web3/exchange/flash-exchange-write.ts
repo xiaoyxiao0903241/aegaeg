@@ -6,6 +6,7 @@ import {
   USD1_SWAP_ERRORS,
   ERC20_ERRORS,
   REDEEMABLE_GAGX_METHODS,
+  REDEEMABLE_GAGX_ERRORS,
 } from '~/web3/abis'
 import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/exchange/exchange-read'
@@ -13,8 +14,11 @@ import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-cont
 
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const usd1ExchangeWriteAbi = parseWriteAbi(USD1_SWAP_METHODS.swap, USD1_SWAP_ERRORS)
-const redeemableGagxRedeemAbi = parseWriteAbi(REDEEMABLE_GAGX_METHODS.redeem)
-const redeemableGagxWrapAbi = parseWriteAbi(REDEEMABLE_GAGX_METHODS.wrap)
+const redeemableGagxRedeemAbi = parseWriteAbi(
+  REDEEMABLE_GAGX_METHODS.redeem,
+  REDEEMABLE_GAGX_ERRORS,
+)
+const redeemableGagxWrapAbi = parseWriteAbi(REDEEMABLE_GAGX_METHODS.wrap, REDEEMABLE_GAGX_ERRORS)
 
 export async function approveUsdtForFlashExchangeIfNeeded({
   wallet,

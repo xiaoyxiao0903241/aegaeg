@@ -12,9 +12,11 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
+import {
+  resolveExchangeUserFacingMessage,
+  resolveFlashExchangeError,
+} from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { FLASH_USD1_GATE_ERROR } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
@@ -22,7 +24,6 @@ import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { Segment } from '~/shared/ui/segment'
-import { readErrorText } from '~/web3/errors/error-text'
 
 export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   const { messages: t } = useI18n()
@@ -47,26 +48,21 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   })
 
   function resolveFlashMessage(error: unknown) {
-    const raw = readErrorText(error)
-    const gateMessages = t.exchange.flash.gates
-    if (raw === FLASH_USD1_GATE_ERROR.paused) return gateMessages.paused
-    if (raw === FLASH_USD1_GATE_ERROR.belowMin) return gateMessages.belowMin
-    if (raw === FLASH_USD1_GATE_ERROR.aboveMax) return gateMessages.aboveMax
-    if (raw === FLASH_USD1_GATE_ERROR.insufficientReserve) return gateMessages.insufficientReserve
-    if (raw === FLASH_USD1_GATE_ERROR.zeroRate) return gateMessages.zeroRate
-
-    return resolveExchangeUserFacingMessage(
-      error,
-      {
-        walletNotConnected: t.genesis.walletNotConnected,
-        insufficientAllowance: t.genesis.insufficientAllowance,
-        insufficientUsd1: t.genesis.insufficientUsd1,
-        purchaseUnavailable: t.genesis.purchaseUnavailable,
-        transactionCancelled: t.exchange.transactionCancelled,
-        quoteFailed: t.errors.quoteFailed,
-      },
-      t.wallet.transactionErrors,
-      t.errors.chain.fallback,
+    return (
+      resolveFlashExchangeError(error, t.exchange.flash.gates) ??
+      resolveExchangeUserFacingMessage(
+        error,
+        {
+          walletNotConnected: t.genesis.walletNotConnected,
+          insufficientAllowance: t.genesis.insufficientAllowance,
+          insufficientUsd1: t.genesis.insufficientUsd1,
+          purchaseUnavailable: t.genesis.purchaseUnavailable,
+          transactionCancelled: t.exchange.transactionCancelled,
+          quoteFailed: t.errors.quoteFailed,
+        },
+        t.wallet.transactionErrors,
+        t.errors.chain.fallback,
+      )
     )
   }
 

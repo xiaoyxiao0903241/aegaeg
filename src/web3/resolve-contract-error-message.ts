@@ -6,6 +6,7 @@ export {
   REFERRAL_BIND_ERROR,
   EXCHANGE_QUOTE_FAILED,
   EXCHANGE_SUBMIT_GATE_FAILED,
+  FLASH_USD1_GATE_ERROR,
   WALLET_GATE_ERROR,
   WALLET_WRITE_ERROR,
 } from '~/web3/errors/sentinels'
@@ -26,3 +27,4 @@ export {
   type GenesisContractErrorMessages,
 } from '~/web3/errors/genesis-purchase-error'
 export { resolveExchangeUserFacingMessage } from '~/web3/errors/exchange-user-facing-message'
+export { resolveFlashExchangeError } from '~/web3/errors/flash-exchange-error'

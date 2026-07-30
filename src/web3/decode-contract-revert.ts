@@ -5,7 +5,13 @@ import {
   parseAbi,
   type Abi,
 } from 'viem'
-import { ERC20_ERRORS, PRESALE_ERRORS, REFERRAL_ERRORS, REWARD_CLAIMER_ERRORS } from '~/web3/abis'
+import {
+  ERC20_ERRORS,
+  PRESALE_ERRORS,
+  REFERRAL_ERRORS,
+  REWARD_CLAIMER_ERRORS,
+  USD1_SWAP_ERRORS,
+} from '~/web3/abis'
 
 export interface DecodedContractRevert {
   errorName: string
@@ -18,6 +24,9 @@ export const ALL_CONTRACT_ERRORS_ABI = parseAbi([
   ...PRESALE_ERRORS,
   ...REFERRAL_ERRORS,
   ...REWARD_CLAIMER_ERRORS,
+  ...USD1_SWAP_ERRORS,
+  // gAGX-only name; ErrorZeroAddress/Amount share selectors with Usd1Swap.
+  'error ErrorNotAuthorized()',
 ])
 
 export class ContractRevertError extends Error {

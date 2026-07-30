@@ -246,6 +246,13 @@ const app = defineMessages({
         aboveMax: '超过单笔最大兑换限额。',
         insufficientReserve: 'USD1 储备不足，请稍后再试。',
         zeroRate: '兑换汇率未就绪，请稍后再试。',
+        insufficientOutput: '兑换报价已变动，请重试。',
+        transferMismatch: '代币转账数量不匹配，请重试。',
+        zeroAddress: '合约地址异常，请稍后重试。',
+        sameToken: '输入与输出代币配置异常，请稍后重试。',
+        zeroAmount: '请输入大于 0 的兑换金额。',
+        notAuthorized: '当前操作未获授权。',
+        invalidLimits: '兑换限额配置异常，请稍后重试。',
       },
       faq: {
         items: [
