@@ -1,4 +1,6 @@
 import { toast } from 'sonner'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { burnExchangeAssets, dappAssets, flashExchangeAssets } from '~/app/assets'
@@ -11,12 +13,9 @@ import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-sessio
 import { useDappShell } from '~/app/use-dapp-shell'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import {
-  ExchangeFlowButton,
-  ExchangeMetaPanel,
-  ExchangeSubpageHeader,
-  ExchangeWidgetBody,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
+import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { TokenChip } from '~/app/shell/token-chip'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
@@ -29,6 +28,7 @@ import { cn } from '~/shared/lib/utils'
 
 export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeState }) {
   const { messages: t } = useI18n()
+  const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappShell()
   const exchangePreview = !sessionReady
   const showBalanceSkeleton = !exchangePreview && turbine.isBalancesLoading
@@ -108,11 +108,13 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
 
   return (
     <>
-      <ExchangeSubpageHeader
+      <DappTabHeader
+        backText={t.exchange.backToHub}
+        onBack={() => setView('hub')}
         subtitle={t.exchange.hub.modes.turbine.body}
         title={t.exchange.turbine.title}
       />
-      <ExchangeWidgetBody bodyClassName="gap-0">
+      <DappWidgetStack className="gap-0">
         <Segment
           aria-label={t.exchange.turbine.segmentAriaLabel}
           className="mb-3.5"
@@ -214,7 +216,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               </div>
             </div>
 
-            <ExchangeMetaPanel
+            <DappMetaPanel
               items={[
                 {
                   label: t.exchange.turbine.agxPrice,
@@ -351,7 +353,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
             {submitErrorMessage}
           </DappInlineAlert>
         ) : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

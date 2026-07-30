@@ -1,10 +1,8 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { stakingHubAssets } from '~/app/assets'
 import { openAssetsView } from '~/shared/config/open-assets-view'
-import {
-  ExchangePanelToggle,
-  ExchangeWidgetBody,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -28,12 +26,8 @@ export function AssetsHubWidget() {
 
   return (
     <>
-      <WidgetHeader
-        action={<ExchangePanelToggle />}
-        subtitle={t.assets.intro}
-        title={t.assets.title}
-      />
-      <ExchangeWidgetBody>
+      <WidgetHeader action={<DappPanelToggle />} subtitle={t.assets.intro} title={t.assets.title} />
+      <DappWidgetStack>
         {MODE_KEYS.map((key) => {
           const stats = overview.modes[key]
           return (
@@ -56,7 +50,7 @@ export function AssetsHubWidget() {
         })}
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

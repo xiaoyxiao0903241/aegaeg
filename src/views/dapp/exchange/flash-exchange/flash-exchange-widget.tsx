@@ -1,4 +1,6 @@
 import { useEffect, useEffectEvent } from 'react'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -13,20 +15,18 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { FLASH_USD1_GATE_ERROR } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
-import {
-  ExchangeAmountFlow,
-  ExchangeFlowButton,
-  ExchangeMetaPanel,
-  ExchangeSubpageHeader,
-  ExchangeWidgetBody,
-  useExchangeBalanceLabels,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
+import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
+import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
+import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { Segment } from '~/shared/ui/segment'
 import { readErrorText } from '~/web3/errors/error-text'
 
 export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   const { messages: t } = useI18n()
+  const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappShell()
   const { pair } = flash
   const showRateSkeleton = flash.isExchangePriceQuoting && !flash.exchangePriceLabel
@@ -99,13 +99,15 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
 
   return (
     <>
-      <ExchangeSubpageHeader
+      <DappTabHeader
+        backText={t.exchange.backToHub}
+        onBack={() => setView('hub')}
         /* Figma `4430:265`: col gap16 · intro 13 · panel title already 21 */
         className="gap-4 [&_p]:text-[13px] [&_p]:leading-normal"
         subtitle={t.exchange.flash.intros[flash.introKey as keyof typeof t.exchange.flash.intros]}
         title={t.exchange.flash.title}
       />
-      <ExchangeWidgetBody bodyClassName="gap-0">
+      <DappWidgetStack className="gap-0">
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
           className="mb-3"
@@ -149,7 +151,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           amountLocked={flash.isSubmitting}
         />
 
-        <ExchangeMetaPanel
+        <DappMetaPanel
           className="gap-2.5"
           items={[
             {
@@ -217,7 +219,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
             {submitErrorMessage}
           </DappInlineAlert>
         ) : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

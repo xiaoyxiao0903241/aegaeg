@@ -17,6 +17,19 @@
 
 不确定：**宁放页袋，勿放 `shared`**。
 
+## `views/dapp/` 根目录
+
+**仅允许**跨 Tab 入口：`dapp-tabs*`、`dapp-tab-registry`、`dapp-tab-sessions`（及同等「注册/会话壳」）。
+
+**禁止**在根目录放业务 helper / display mapper / 单轨 UI。误放反例：根目录 `presale-display.ts`——应落在 **单 Tab 页袋**（`views/dapp/genesis/`，因其依赖 `shared/api` 格式化，**不能**进 `core/`：`core-is-pure` 禁 `core` → `shared/api`）。产品面 Genesis ≠ 预售 core 域名（`UBIQUITOUS_LANGUAGE.md`）：纯预售数学仍在 `core/presale/`。
+
+## 跨 Tab chrome（`app/shell/`）
+
+- **放这里**：≥2 个 DApp Tab 共用的壳（顶栏、面板折叠、文案轮播壳、widget 外框等）。文件平铺；命名用短 `Dapp*`（例：`DappPanelToggle` · `DappTabHeader` · `DappCarousel`）。
+- **禁**：把跨轨壳落在某一 `views/dapp/<tab>/` 下并用该 Tab 前缀命名（反例：`ExchangePanelToggle` 被 assets/staking/rewards/release 引用）。
+- **vs `shared/ui`**：`shared/ui` = 无 DApp 业务语义的底座（Embla Carousel、`WidgetHeader`、颜色/字阶）；`app/shell` = DApp 壳 chrome（可绑 shell store / 通栏布局，仍不拥有 domain options 或 locale 默认文案——文案由 call site + i18n 传入）。见根 `AGENTS.md` §8.0 R3。
+- **单轨 Figma leaf**（仅一轨用、且注释标明非通用壳）留在页袋（例：`AssetsModeCard` / `RewardsModeCard` / `TokenAboutCarousel`）。
+
 ## 业务子袋
 
 同能力 ≥4 文件且有单一入口时可按能力名再拆一层（如 `flash-exchange/`、`market-trade/`、`web3/wallet/`）。禁类型空壳袋名。跨子袋共享留在页袋根。

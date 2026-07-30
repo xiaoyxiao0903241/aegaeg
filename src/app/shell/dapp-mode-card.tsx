@@ -3,7 +3,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-export function ExchangeModeCard({
+export function DappModeCard({
   body,
   icon,
   onClick,
@@ -16,7 +16,7 @@ export function ExchangeModeCard({
   icon: string
   onClick?: () => void
   title: string
-  /** OnboardingGuide `data-tour-id` (ticket 02). */
+  /** OnboardingGuide `data-tour-id`. */
   tourId?: string
   density?: 'default' | 'tall'
 }) {

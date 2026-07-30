@@ -1,4 +1,6 @@
 import { toast } from 'sonner'
+import { useStakingViewStore } from '~/stores/staking-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
@@ -12,9 +14,8 @@ import { FieldActionChip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { formatAddress } from '~/app/utils'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { ExchangeMetaPanel } from '~/views/dapp/exchange/exchange-meta-panel'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { StakingSubpageHeader } from '~/views/dapp/staking/staking-subpage-header'
+import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { BondPeriodList } from '~/views/dapp/staking/bond/bond-period-list'
 import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
 import { BOND_ZAP_GATE_ERROR, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
@@ -24,6 +25,7 @@ import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-mes
 
 export function BondWidget({ kind }: { kind: BondKind }) {
   const { messages: t } = useI18n()
+  const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useDappShell()
   const bond = useBondWidget(kind, sessionReady)
   const selectTab = useDappShellStore((state) => state.selectTab)
@@ -71,8 +73,13 @@ export function BondWidget({ kind }: { kind: BondKind }) {
 
   return (
     <>
-      <StakingSubpageHeader subtitle={copy.intro} title={copy.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.staking.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={copy.intro}
+        title={copy.title}
+      />
+      <DappWidgetStack>
         <BondPeriodList
           ariaLabel={copy.periodAria}
           copy={copy.card}
@@ -114,7 +121,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           startAdornment={null}
         />
 
-        <ExchangeMetaPanel
+        <DappMetaPanel
           className="gap-3 p-4"
           items={[
             {
@@ -187,7 +194,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
         ) : (
           <DappWidgetConnectPromo />
         )}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

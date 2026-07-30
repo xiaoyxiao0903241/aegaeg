@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useReleaseViewStore } from '~/stores/release-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
@@ -12,8 +14,7 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { ReleaseSubpageHeader } from '~/views/dapp/release/release-subpage-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleaseAmount, formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
@@ -23,6 +24,7 @@ const APPROX_EMPTY = '≈ —'
 
 export function ReleaseQueueWidget() {
   const { messages: t } = useI18n()
+  const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const { writeReady } = useWriteReadiness()
   const account = useActiveAccount()
@@ -66,8 +68,13 @@ export function ReleaseQueueWidget() {
 
   return (
     <>
-      <ReleaseSubpageHeader subtitle={t.release.queue.intro} title={t.release.queue.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.release.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={t.release.queue.intro}
+        title={t.release.queue.title}
+      />
+      <DappWidgetStack>
         {rows.map((row) => {
           const canClaim =
             walletReady && writeReady && !locked && row.claimable > 0n && row.planIndex >= 0
@@ -135,7 +142,7 @@ export function ReleaseQueueWidget() {
         })}
 
         {walletReady ? null : <DappWidgetConnectPromo />}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

@@ -6,10 +6,8 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { Text } from '~/shared/ui/text'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 import { Card } from '~/shared/ui/card'
-import {
-  ExchangePanelToggle,
-  ExchangeWidgetBody,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import {
   useReleaseBufferSnapshot,
   useReleaseQueueSnapshot,
@@ -47,11 +45,11 @@ export function ReleaseHubWidget() {
   return (
     <>
       <WidgetHeader
-        action={<ExchangePanelToggle />}
+        action={<DappPanelToggle />}
         subtitle={t.release.intro}
         title={t.release.title}
       />
-      <ExchangeWidgetBody>
+      <DappWidgetStack>
         <Card
           as="button"
           className="duration-dapp-fast flex w-full cursor-pointer flex-col gap-2 text-left shadow-none hover:border-primary"
@@ -143,7 +141,7 @@ export function ReleaseHubWidget() {
         </Card>
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

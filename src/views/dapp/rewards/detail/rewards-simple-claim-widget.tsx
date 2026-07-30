@@ -1,4 +1,6 @@
 import { useEffect, useEffectEvent } from 'react'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
@@ -9,8 +11,7 @@ import { dappAssets } from '~/app/assets'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { Text } from '~/shared/ui/text'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { RewardsSubpageHeader } from '~/views/dapp/rewards/rewards-subpage-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 import {
   resolveTeamClaimError,
@@ -23,6 +24,7 @@ const TOKEN_GAGX = 'gAGX'
 
 export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
   const { messages: t } = useI18n()
+  const setView = useRewardsViewStore((state) => state.setView)
   const { walletReady, sessionReady } = useDappShell()
   const card = t.rewards.cards[view]
   const claim = useMarketFundClaim()
@@ -56,8 +58,13 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
 
   return (
     <>
-      <RewardsSubpageHeader subtitle={card.body} title={card.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.rewards.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={card.body}
+        title={card.title}
+      />
+      <DappWidgetStack>
         <div className="rounded-2xl border border-border bg-card p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
@@ -156,7 +163,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: 'grant' }) {
         ) : (
           <DappWidgetConnectPromo />
         )}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

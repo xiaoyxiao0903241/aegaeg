@@ -1,4 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
+import { useAssetsViewStore } from '~/stores/assets-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
@@ -17,7 +19,6 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
-import { AssetsSubpageHeader } from '~/views/dapp/assets/assets-subpage-header'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import {
@@ -26,7 +27,7 @@ import {
   submitStakeRedeem,
   type MixedClaimTarget,
 } from '~/views/dapp/assets/submit-assets'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { readErrorText } from '~/web3/errors/error-text'
@@ -62,6 +63,7 @@ type RedeemState =
 
 export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
   const { messages: t } = useI18n()
+  const setView = useAssetsViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const wallet = useActiveWallet()
@@ -167,8 +169,13 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
 
   return (
     <>
-      <AssetsSubpageHeader subtitle={copy.intro} title={copy.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.assets.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={copy.intro}
+        title={copy.title}
+      />
+      <DappWidgetStack>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <button
             className="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-3 text-xs text-foreground"
@@ -456,7 +463,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             </div>
           </div>
         ) : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
 
       <AssetsClaimModal
         amountLabel={claim.open ? claim.amountLabel : ''}

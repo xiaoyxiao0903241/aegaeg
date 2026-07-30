@@ -4,7 +4,7 @@ import { chipVariants } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/** Hub reward entry — Figma `reward/*` leaf (not ExchangeModeCard chrome). */
+/** Hub reward entry — Figma `reward/*` leaf (not DappModeCard chrome). */
 export function RewardsModeCard({
   approx,
   badge,

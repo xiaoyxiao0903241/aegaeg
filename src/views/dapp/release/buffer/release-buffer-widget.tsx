@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useReleaseViewStore } from '~/stores/release-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
@@ -12,8 +14,7 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { ReleaseSubpageHeader } from '~/views/dapp/release/release-subpage-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleaseAmount, formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
@@ -22,6 +23,7 @@ const APPROX_EMPTY = '≈ —'
 
 export function ReleaseBufferWidget() {
   const { messages: t } = useI18n()
+  const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const { writeReady } = useWriteReadiness()
   const account = useActiveAccount()
@@ -55,8 +57,13 @@ export function ReleaseBufferWidget() {
 
   return (
     <>
-      <ReleaseSubpageHeader subtitle={t.release.buffer.intro} title={t.release.buffer.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.release.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={t.release.buffer.intro}
+        title={t.release.buffer.title}
+      />
+      <DappWidgetStack>
         <Card className="shadow-none" surface="outlined">
           <Card.Content className="grid gap-3">
             <div className="flex items-center gap-2">
@@ -160,7 +167,7 @@ export function ReleaseBufferWidget() {
         </Card>
 
         {walletReady ? null : <DappWidgetConnectPromo />}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

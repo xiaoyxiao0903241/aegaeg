@@ -3,7 +3,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-export function ExchangeMetaPanel({
+export function DappMetaPanel({
   className,
   items,
 }: {

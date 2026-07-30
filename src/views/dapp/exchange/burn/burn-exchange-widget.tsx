@@ -1,4 +1,6 @@
 import { useEffect, useEffectEvent } from 'react'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
 import { burnExchangeAssets, flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
@@ -13,19 +15,17 @@ import { bscscanAddress } from '~/shared/config/explorer'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { BURN_GATE_ERROR } from '~/views/dapp/exchange/burn/submit-burn-exchange'
-import {
-  ExchangeAmountFlow,
-  ExchangeFlowButton,
-  ExchangeMetaPanel,
-  ExchangeSubpageHeader,
-  ExchangeWidgetBody,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
+import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
+import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { readErrorText } from '~/web3/errors/error-text'
 import { ExchangeBalanceSkeleton } from '~/app/shell/dapp-skeleton'
 
 export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
   const { messages: t } = useI18n()
+  const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappShell()
   const { pair } = burn
   const showRateSkeleton = burn.isExchangePriceQuoting && !burn.exchangePriceLabel
@@ -104,8 +104,13 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
 
   return (
     <>
-      <ExchangeSubpageHeader subtitle={t.exchange.burn.subtitle} title={t.exchange.burn.title} />
-      <ExchangeWidgetBody bodyClassName="gap-0">
+      <DappTabHeader
+        backText={t.exchange.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={t.exchange.burn.subtitle}
+        title={t.exchange.burn.title}
+      />
+      <DappWidgetStack className="gap-0">
         <ExchangeAmountFlow
           buy={{ symbol: t.exchange.burn.pointsToken }}
           buyAmount={burn.buyAmount}
@@ -130,7 +135,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
           amountLocked={burn.isSubmitting}
         />
 
-        <ExchangeMetaPanel
+        <DappMetaPanel
           items={[
             {
               label: t.exchange.burn.burnRate,
@@ -197,7 +202,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
             {submitErrorMessage}
           </DappInlineAlert>
         ) : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

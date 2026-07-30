@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
@@ -21,8 +23,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { dappAssets } from '~/app/assets'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { RewardsSubpageHeader } from '~/views/dapp/rewards/rewards-subpage-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-picker'
 import {
   REWARDS_GATE_ERROR,
@@ -74,6 +75,7 @@ function splitAmount(amount: bigint, pct: number): bigint {
 
 export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
   const { messages: t } = useI18n()
+  const setView = useRewardsViewStore((state) => state.setView)
   const { walletReady, sessionReady } = useDappShell()
   const { token, invalidateSession } = useAuth()
   const account = useActiveAccount()
@@ -241,8 +243,13 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
 
   return (
     <>
-      <RewardsSubpageHeader subtitle={card.body} title={card.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.rewards.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={card.body}
+        title={card.title}
+      />
+      <DappWidgetStack>
         <div className="rounded-2xl border border-border bg-card p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
@@ -439,7 +446,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedView }) {
         ) : (
           <DappWidgetConnectPromo />
         )}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

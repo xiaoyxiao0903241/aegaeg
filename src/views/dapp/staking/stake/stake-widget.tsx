@@ -1,4 +1,6 @@
 import { toast } from 'sonner'
+import { useStakingViewStore } from '~/stores/staking-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
@@ -13,9 +15,8 @@ import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { formatAddress } from '~/app/utils'
 import { bscscanAddress } from '~/shared/config/explorer'
-import { ExchangeMetaPanel } from '~/views/dapp/exchange/exchange-meta-panel'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { StakingSubpageHeader } from '~/views/dapp/staking/staking-subpage-header'
+import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
 import { STAKING_GATE_ERROR } from '~/views/dapp/staking/stake/submit-stake'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
@@ -24,6 +25,7 @@ import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-mes
 
 export function StakeWidget() {
   const { messages: t } = useI18n()
+  const setView = useStakingViewStore((state) => state.setView)
   const { sessionReady, walletReady } = useDappShell()
   const stake = useStakeWidget(sessionReady)
   const selectTab = useDappShellStore((state) => state.selectTab)
@@ -93,8 +95,13 @@ export function StakeWidget() {
 
   return (
     <>
-      <StakingSubpageHeader subtitle={t.staking.stake.intro} title={t.staking.stake.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.staking.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={t.staking.stake.intro}
+        title={t.staking.stake.title}
+      />
+      <DappWidgetStack>
         <div className="grid gap-2.5">
           <Text as="span" tone="muted-foreground" variant="detail">
             {t.staking.stake.periodLabel}
@@ -138,7 +145,7 @@ export function StakeWidget() {
           startAdornment={null}
         />
 
-        <ExchangeMetaPanel
+        <DappMetaPanel
           className="gap-3 p-4"
           items={[
             { label: t.staking.stake.meta.baseDaily, value: '—' },
@@ -189,7 +196,7 @@ export function StakeWidget() {
         ) : (
           <DappWidgetConnectPromo />
         )}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

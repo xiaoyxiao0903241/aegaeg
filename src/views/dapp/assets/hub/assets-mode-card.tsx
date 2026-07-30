@@ -4,7 +4,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 
-/** Hub product entry — Figma `asset/*` leaf (not ExchangeModeCard chrome). */
+/** Hub product entry — Figma `asset/*` leaf (not DappModeCard chrome). */
 export function AssetsModeCard({
   aprHint,
   aprLabel,

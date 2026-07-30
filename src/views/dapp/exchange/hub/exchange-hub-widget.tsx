@@ -1,11 +1,9 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { exchangeHubAssets } from '~/app/assets'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
-import { ExchangeModeCard } from '~/views/dapp/exchange/hub/exchange-mode-card'
-import {
-  ExchangePanelToggle,
-  ExchangeWidgetBody,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappModeCard } from '~/app/shell/dapp-mode-card'
+import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 
 export function ExchangeHubWidget() {
@@ -14,40 +12,40 @@ export function ExchangeHubWidget() {
   return (
     <>
       <WidgetHeader
-        action={<ExchangePanelToggle />}
+        action={<DappPanelToggle />}
         className="mb-4 [&_h1]:text-[1.25rem] [&_h1]:leading-normal [&_h1]:tracking-normal"
         subtitle={t.exchange.intro}
         title={t.exchange.title}
       />
-      <ExchangeWidgetBody>
-        <ExchangeModeCard
+      <DappWidgetStack>
+        <DappModeCard
           body={t.exchange.hub.modes.flash.body}
           density="tall"
           icon={exchangeHubAssets.modeFlash}
           onClick={() => openExchangeView('flash')}
           title={t.exchange.hub.modes.flash.title}
         />
-        <ExchangeModeCard
+        <DappModeCard
           body={t.exchange.hub.modes.trade.body}
           icon={exchangeHubAssets.modeTrade}
           onClick={() => openExchangeView('trade')}
           title={t.exchange.hub.modes.trade.title}
           tourId="swap-trade"
         />
-        <ExchangeModeCard
+        <DappModeCard
           body={t.exchange.hub.modes.burn.body}
           icon={exchangeHubAssets.modeBurn}
           onClick={() => openExchangeView('burn')}
           title={t.exchange.hub.modes.burn.title}
         />
-        <ExchangeModeCard
+        <DappModeCard
           body={t.exchange.hub.modes.turbine.body}
           icon={exchangeHubAssets.modeTurbine}
           onClick={() => openExchangeView('turbine')}
           title={t.exchange.hub.modes.turbine.title}
           tourId="swap-turbine"
         />
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

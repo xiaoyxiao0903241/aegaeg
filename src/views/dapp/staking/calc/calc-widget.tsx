@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useStakingViewStore } from '~/stores/staking-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
@@ -12,8 +14,7 @@ import {
   defaultAprForStakePeriod,
 } from '~/core/staking/calc-staking-yield'
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { StakingSubpageHeader } from '~/views/dapp/staking/staking-subpage-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useCalcEstimateStore, type CalcProduct } from '~/stores/calc-estimate-store'
 
 const XMINE_APR = 0.1
@@ -21,6 +22,7 @@ const XMINE_APR = 0.1
 /** Local-only calculator — zero chain writes. */
 export function CalcWidget() {
   const { messages: t } = useI18n()
+  const setView = useStakingViewStore((state) => state.setView)
   const setResult = useCalcEstimateStore((state) => state.setResult)
   const [product, setProduct] = useState<CalcProduct>('stake')
   const [period, setPeriod] = useState<string>('liquid')
@@ -84,8 +86,13 @@ export function CalcWidget() {
 
   return (
     <>
-      <StakingSubpageHeader subtitle={t.staking.calc.intro} title={t.staking.calc.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.staking.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={t.staking.calc.intro}
+        title={t.staking.calc.title}
+      />
+      <DappWidgetStack>
         <Segment
           aria-label={t.staking.calc.productAria}
           onChange={handleProductChange}
@@ -183,7 +190,7 @@ export function CalcWidget() {
             {t.staking.calc.submit}
           </DappActionButton>
         </DappActionRow>
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

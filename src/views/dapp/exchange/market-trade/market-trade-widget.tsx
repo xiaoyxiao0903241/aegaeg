@@ -1,4 +1,6 @@
 import { useEffect, useEffectEvent, useState } from 'react'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
@@ -16,15 +18,11 @@ import { getExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
-import {
-  ExchangeAmountFlow,
-  ExchangeFlowButton,
-  ExchangeMetaPanel,
-  ExchangeSubpageHeader,
-  ExchangeWidgetBody,
-  exchangeFlipCard,
-  useExchangeBalanceLabels,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
+import { ExchangeFlowButton, exchangeFlipCard } from '~/views/dapp/exchange/exchange-flow-button'
+import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
+import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 
@@ -37,6 +35,7 @@ const EXCHANGE_FLIP_SETTLE_MS = 320
 
 export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
   const { messages: t } = useI18n()
+  const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappShell()
   const [isFlipping, setIsFlipping] = useState(false)
   const [rotation, setRotation] = useState(0)
@@ -146,8 +145,13 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
 
   return (
     <>
-      <ExchangeSubpageHeader subtitle={t.exchange.trade.intro} title={t.exchange.trade.title} />
-      <ExchangeWidgetBody bodyClassName="gap-0">
+      <DappTabHeader
+        backText={t.exchange.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={t.exchange.trade.intro}
+        title={t.exchange.trade.title}
+      />
+      <DappWidgetStack className="gap-0">
         <ExchangeAmountFlow
           amountBoxClassName={flipCardClass}
           buy={pair.buy}
@@ -213,7 +217,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
           amountLocked={trade.isSubmitting}
         />
 
-        <ExchangeMetaPanel
+        <DappMetaPanel
           items={[
             {
               label: t.exchange.exchangePrice,
@@ -318,7 +322,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
         ) : null}
 
         {!sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
 
       <ExchangeSlippageModal
         onConfirm={trade.setSlippage}

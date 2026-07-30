@@ -1,38 +1,40 @@
 import type { ReactNode } from 'react'
 import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { useI18n } from '~/i18n/use-i18n'
+import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { Text } from '~/shared/ui/text'
 import { WidgetSubpageHeader } from '~/shared/ui/widget-header'
-import { useStakingViewStore } from '~/stores/staking-view-store'
-import { ExchangePanelToggle } from '~/views/dapp/exchange/exchange-panel-toggle'
 
-export function StakingSubpageHeader({
+export function DappTabHeader({
+  backText,
+  className,
+  onBack,
   subtitle,
   title,
 }: {
+  backText: string
+  className?: string
+  onBack: () => void
   subtitle: ReactNode
   title: ReactNode
 }) {
-  const { messages: t } = useI18n()
-  const setView = useStakingViewStore((state) => state.setView)
-
   return (
     <WidgetSubpageHeader
-      action={<ExchangePanelToggle />}
+      action={<DappPanelToggle />}
       backLabel={
         <>
           <DappIcon alt="" size="sm" src={flashExchangeAssets.backArrow} />
           <Text
+            className="text-base leading-[1.4] font-medium"
             tone="muted-foreground"
             variant="headline"
-            className="text-base leading-[1.4] font-medium"
           >
-            {t.staking.backToHub}
+            {backText}
           </Text>
         </>
       }
-      onBack={() => setView('hub')}
+      className={className}
+      onBack={onBack}
       subtitle={subtitle}
       title={title}
     />

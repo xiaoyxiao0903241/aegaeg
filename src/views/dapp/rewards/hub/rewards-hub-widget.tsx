@@ -10,10 +10,8 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { Text } from '~/shared/ui/text'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 import { RewardsModeCard } from '~/views/dapp/rewards/hub/rewards-mode-card'
-import {
-  ExchangePanelToggle,
-  ExchangeWidgetBody,
-} from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
 
 const CARD_VIEWS = [
@@ -57,11 +55,11 @@ export function RewardsHubWidget() {
   return (
     <>
       <WidgetHeader
-        action={<ExchangePanelToggle />}
+        action={<DappPanelToggle />}
         subtitle={t.rewards.intro}
         title={t.rewards.title}
       />
-      <ExchangeWidgetBody>
+      <DappWidgetStack>
         {CARD_VIEWS.map((view) => {
           const card = t.rewards.cards[view]
           const value = amountValue(view)
@@ -103,7 +101,7 @@ export function RewardsHubWidget() {
             {t.rewards.hub.sessionHint}
           </Text>
         ) : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

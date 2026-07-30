@@ -1,4 +1,6 @@
 import { useEffect, useEffectEvent } from 'react'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
@@ -17,8 +19,7 @@ import { buildNextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { Text } from '~/shared/ui/text'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
-import { RewardsSubpageHeader } from '~/views/dapp/rewards/rewards-subpage-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import {
   claimableAmountValue,
   formatClaimableAmount,
@@ -36,6 +37,7 @@ const DASH = '—'
 
 export function RewardsGenesisClaimWidget() {
   const { messages: t } = useI18n()
+  const setView = useRewardsViewStore((state) => state.setView)
   const g = t.rewards.genesisDetail
   const { walletReady, sessionReady } = useDappShell()
   const {
@@ -188,8 +190,13 @@ export function RewardsGenesisClaimWidget() {
 
   return (
     <>
-      <RewardsSubpageHeader subtitle={g.pageSubtitle} title={g.pageTitle} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.rewards.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={g.pageSubtitle}
+        title={g.pageTitle}
+      />
+      <DappWidgetStack>
         <div className={banner.root({ className: 'gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
             <Text as="p" className="text-primary" variant="caption">
@@ -336,7 +343,7 @@ export function RewardsGenesisClaimWidget() {
         </div>
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
     </>
   )
 }

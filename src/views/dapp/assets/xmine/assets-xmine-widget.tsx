@@ -1,4 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
+import { useAssetsViewStore } from '~/stores/assets-view-store'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
@@ -15,14 +17,13 @@ import { openStakingView } from '~/shared/config/open-staking-view'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { AssetsSubpageHeader } from '~/views/dapp/assets/assets-subpage-header'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import {
   ASSETS_GATE_ERROR,
   submitXmineClaim,
   submitXmineUnstake,
 } from '~/views/dapp/assets/submit-assets'
-import { ExchangeWidgetBody } from '~/views/dapp/exchange/exchange-widget-composites'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { readErrorText } from '~/web3/errors/error-text'
@@ -45,6 +46,7 @@ function formatWarmupCountdown(endTime: bigint): string {
 
 export function AssetsXmineWidget() {
   const { messages: t } = useI18n()
+  const setView = useAssetsViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const wallet = useActiveWallet()
@@ -128,8 +130,13 @@ export function AssetsXmineWidget() {
 
   return (
     <>
-      <AssetsSubpageHeader subtitle={copy.intro} title={copy.title} />
-      <ExchangeWidgetBody>
+      <DappTabHeader
+        backText={t.assets.backToHub}
+        onBack={() => setView('hub')}
+        subtitle={copy.intro}
+        title={copy.title}
+      />
+      <DappWidgetStack>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <button
             className="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-3 text-xs text-foreground"
@@ -273,7 +280,7 @@ export function AssetsXmineWidget() {
             </div>
           </div>
         ) : null}
-      </ExchangeWidgetBody>
+      </DappWidgetStack>
 
       <AssetsRedeemConfirm
         busy={busy}

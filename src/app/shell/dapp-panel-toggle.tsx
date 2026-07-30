@@ -6,7 +6,7 @@ import { IconButton } from '~/shared/ui/icon-button'
 import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
-export function ExchangePanelToggle() {
+export function DappPanelToggle() {
   const { messages: t } = useI18n()
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
   const toggle = useDappShellStore((state) => state.toggleDetailCollapsed)
