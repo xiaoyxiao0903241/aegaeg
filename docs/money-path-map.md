@@ -2,6 +2,8 @@
 
 金钱与会话路径（以代码为准）。e2e 全链路可选，不进 `pnpm check`。
 
+**接线原则（AGENTS §8.0 R4a · 用户锁定 2026-07-31）：** 手册（`frontend-manual` / 本图）**有**写/读与门闸 → **按手册**；手册对该表面**沉默**但本仓曾有可证旧接线 → **按旧码恢复/保持**；二者皆无 → 禁发明，关写并暴露。旧码须 `git`/leaf 可证。
+
 ```text
 钱包连接 (thirdweb)
     → SIWE (login-with-wallet) → JWT (auth-store) → sessionReady
