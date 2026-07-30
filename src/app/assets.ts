@@ -16,6 +16,8 @@ export const tokenCarouselIcons = {
 export const flashExchangeAssets = {
   backArrow: '/assets/figma/dapp/flash/ic-back-arrow.svg',
   flowDivider: '/assets/figma/dapp/flash/ic-flow-divider.svg',
+  /** USDT→USD1 one-way middle slot (double chevron down). */
+  flowDown: '/assets/figma/dapp/flash/ic-flow-down.svg',
   externalLink: '/assets/figma/dapp/flash/ic-external-link.svg',
 } as const
 

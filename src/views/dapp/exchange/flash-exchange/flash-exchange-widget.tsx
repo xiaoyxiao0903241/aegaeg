@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { toast } from 'sonner'
@@ -19,17 +19,25 @@ import {
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
-import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
+import { ExchangeFlowButton, exchangeFlipCard } from '~/views/dapp/exchange/exchange-flow-button'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { Segment } from '~/shared/ui/segment'
+
+/** Keep in sync with market-trade + `exchange-card-flip` (theme.css). */
+const EXCHANGE_FLIP_APPLY_MS = 160
+const EXCHANGE_FLIP_SETTLE_MS = 320
 
 export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   const { messages: t } = useI18n()
   const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappShell()
+  const [isFlipping, setIsFlipping] = useState(false)
+  const [rotation, setRotation] = useState(0)
   const { pair } = flash
+  const flipCardClass = exchangeFlipCard({ flipping: isFlipping })
   const showRateSkeleton = flash.isExchangePriceQuoting && !flash.exchangePriceLabel
   const showBuyAmountSkeleton =
     sessionReady && flash.isQuoting && flash.sellAmount.trim().length > 0
@@ -46,6 +54,20 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
     sessionReady,
     walletReady: flash.walletReady,
   })
+
+  function handleFlip() {
+    if (!flash.canFlip) return
+    if (sessionReady && !flash.walletReady) return
+    if (isFlipping || flash.isSubmitting) return
+    setIsFlipping(true)
+    setRotation((prev) => prev + 180)
+    window.setTimeout(() => {
+      flash.flipDirection()
+    }, EXCHANGE_FLIP_APPLY_MS)
+    window.setTimeout(() => {
+      setIsFlipping(false)
+    }, EXCHANGE_FLIP_SETTLE_MS)
+  }
 
   function resolveFlashMessage(error: unknown) {
     return (
@@ -107,7 +129,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
         <Segment
           aria-label={t.exchange.flash.pairAriaLabel}
           className="mb-3"
-          disabled={flash.isSubmitting}
+          disabled={flash.isSubmitting || isFlipping}
           onChange={flash.setPairId}
           options={flashPairOptions}
           tone="ink"
@@ -115,25 +137,39 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
         />
 
         <ExchangeAmountFlow
+          amountBoxClassName={flash.canFlip ? flipCardClass : undefined}
           buy={pair.buy}
           buyAmount={flash.buyAmount}
           buyBalance={buyLabel}
           middleSlot={
             <div className="flex items-center justify-center py-1.5">
-              <ExchangeFlowButton
-                aria-label={t.exchange.flip}
-                disabled={
-                  !flash.canFlip || flash.isSubmitting || (sessionReady && !flash.walletReady)
-                }
-                interactive
-                onClick={() => flash.flipDirection()}
-              >
-                <span className="grid size-4 place-items-center">
-                  <span className="-rotate-90">
-                    <DappIcon alt="" size="base" src={flashExchangeAssets.flowDivider} />
-                  </span>
-                </span>
-              </ExchangeFlowButton>
+              {flash.canFlip ? (
+                <AnchoredTooltip content={t.exchange.flip}>
+                  <ExchangeFlowButton
+                    aria-label={t.exchange.flip}
+                    disabled={
+                      flash.isSubmitting || isFlipping || (sessionReady && !flash.walletReady)
+                    }
+                    interactive
+                    onClick={handleFlip}
+                  >
+                    <span
+                      className="duration-dapp-emphasis grid place-items-center transition-transform ease-dapp"
+                      style={{ transform: `rotate(${rotation}deg)` }}
+                    >
+                      <span className="grid size-4 place-items-center">
+                        <span className="-rotate-90">
+                          <DappIcon alt="" size="base" src={flashExchangeAssets.flowDivider} />
+                        </span>
+                      </span>
+                    </span>
+                  </ExchangeFlowButton>
+                </AnchoredTooltip>
+              ) : (
+                <ExchangeFlowButton aria-hidden>
+                  <DappIcon alt="" size="base" src={flashExchangeAssets.flowDown} />
+                </ExchangeFlowButton>
+              )}
             </div>
           }
           onFillPercent={(percent) => flash.fillPercent(percent)}
@@ -144,7 +180,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           sessionReady={sessionReady}
           showBuyAmountSkeleton={showBuyAmountSkeleton}
           walletReady={flash.walletReady}
-          amountLocked={flash.isSubmitting}
+          amountLocked={flash.isSubmitting || isFlipping}
         />
 
         <DappMetaPanel
