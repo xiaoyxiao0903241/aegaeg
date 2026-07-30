@@ -1,7 +1,8 @@
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Figma flash flb leaf (4498:676); call site rotates -90° to match canvas ⇅ -->
-  <path d="M3.33333 2.66667L1.33333 4.66667L3.33333 6.66667" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M12.6667 9.33333L14.6667 11.3333L12.6667 13.3333" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M1.33333 4.66667H14.6667" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M1.33333 11.3333H14.6667" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="Frame">
+<path id="Vector" d="M3.33333 2.66667L1.33333 4.66667L3.33333 6.66667" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M12.6667 9.33333L14.6667 11.3333L12.6667 13.3333" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M1.33333 4.66667H14.6667" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M1.33333 11.3333H14.6667" stroke="#333333" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
 </svg>

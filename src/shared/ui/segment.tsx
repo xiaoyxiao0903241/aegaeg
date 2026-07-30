@@ -92,7 +92,8 @@ export function Segment({
       {count > 0 ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute top-1 bottom-1 rounded-full bg-card shadow-sm"
+          /* Figma `4430:410` active pill — white lift only; `shadow-sm` 过重 */
+          className="pointer-events-none absolute top-1 bottom-1 rounded-full bg-card shadow-[0_1px_2px_rgba(18,26,51,0.06)]"
           data-segment-thumb=""
           style={segmentPillThumbStyle(index, count)}
         />
