@@ -15,11 +15,6 @@ import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { claimableAmountValue, REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
-import {
-  resolveTeamClaimError,
-  resolveWalletTransactionError,
-} from '~/web3/resolve-contract-error-message'
-import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 
 export function useRewardsGenesisView() {
   const { messages: t } = useI18n()
@@ -143,26 +138,6 @@ export function useRewardsGenesisView() {
           { digits: 2, prefix: '$' },
         ),
       )
-
-  function claimUserMessage(error: unknown) {
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-      resolveTeamClaimError(error, {
-        ...t.rewards.claimErrors,
-        walletNotConnected: t.errors.walletNotConnected,
-      }) ??
-      t.errors.chain.fallback
-    )
-  }
-
-  usePresentUserFacingError(teamClaim.error, claimUserMessage, {
-    id: 'rewards-genesis:team-claim',
-    onPresented: teamClaim.clearError,
-  })
-  usePresentUserFacingError(communityFundClaim.error, claimUserMessage, {
-    id: 'rewards-genesis:community-fund-claim',
-    onPresented: communityFundClaim.clearError,
-  })
 
   function onClaimTeamReward() {
     void teamClaim.claim().then((result) => {

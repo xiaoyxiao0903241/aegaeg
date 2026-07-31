@@ -34,7 +34,7 @@ export function useReferral() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isBindCooldown, setIsBindCooldown] = useState(false)
   const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Store the raw error so resolveReferralBindError can read the revert selector.
+  // Store the raw error so getErrorMessage can read the revert selector.
   const [error, setError] = useState<unknown>(null)
 
   const address = account?.address

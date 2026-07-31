@@ -5,14 +5,8 @@ import { invalidateAfterGenesisPhaseTransition } from '~/shared/api/query/invali
 import { useI18n } from '~/i18n/use-i18n'
 import { buildGenesisWidgetModel } from '~/views/dapp/genesis/build-genesis-widget-model'
 import { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
-import {
-  useGenesisPurchaseActions,
-  type GenesisPurchaseResult,
-} from '~/views/dapp/genesis/use-genesis-purchase-actions'
+import { useGenesisPurchaseActions } from '~/views/dapp/genesis/use-genesis-purchase-actions'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { WRITE_PATH, isUnknownReceiptLocked } from '~/web3/wallet/unknown-receipt-lock'
-
-export type { GenesisPurchaseResult }
 
 /** Assembles Genesis reads + purchase actions; public API for lifted session props. */
 export function useGenesisWidget() {
@@ -28,7 +22,7 @@ export function useGenesisWidget() {
     sharesDraft,
     countdownUnits: t.genesis.countdownUnits,
   })
-  const canPurchase = model.canPurchase && writeReady && !isUnknownReceiptLocked(WRITE_PATH.GENESIS)
+  const canPurchaseBase = model.canPurchase && writeReady
 
   function setShares(next: number) {
     setSharesDraft(next)
@@ -47,7 +41,7 @@ export function useGenesisWidget() {
       isBoundQueryData: reads.isBoundQueryData,
     },
     purchase: {
-      canPurchase,
+      canPurchase: canPurchaseBase,
       isApproved: model.isApproved,
       needsApproval: model.needsApproval,
       purchaseAmount: model.purchaseAmount,
@@ -85,14 +79,11 @@ export function useGenesisWidget() {
     needsApproval: model.needsApproval,
     isApproved: model.isApproved,
     hasSufficientBalance: model.hasSufficientBalance,
-    canPurchase,
+    canPurchase: canPurchaseBase && !actions.isLocked,
     isLoading: reads.isLoading,
     isSubmitting: actions.isSubmitting,
-    submittingAction: actions.submittingAction,
     error: reads.error,
     refresh: actions.refresh,
-    approve: actions.approve,
-    purchase: actions.purchase,
     submitPurchase: actions.submitPurchase,
   }
 }

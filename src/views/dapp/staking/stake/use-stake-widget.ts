@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateStakeLiveGate } from '~/core/staking/staking-gates'
 import { resolveStakePoolAddress } from '~/web3/staking/resolve-staking-addresses'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -13,21 +13,26 @@ import { useMigrationUserGate } from '~/web3/migration/use-migration-queries'
 import { resolveNeedReferral } from '~/core/referral/resolve-need-referral'
 import { resolveWriteButtonPhase } from '~/core/wallet/resolve-write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-export function useStakeWidget(sessionReady: boolean) {
+export type StakeWritePresent = {
+  onOpenSuccess: () => void | Promise<void>
+  onWarmupSuccess: () => void | Promise<void>
+  /** Extra side effects only — default error toast always runs after. */
+  onError?: (error: unknown) => void
+}
+
+export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const readClient = useChainReadClient()
   const period = useStakingViewStore((state) => state.stakePeriod)
   const setStakePeriod = useStakingViewStore((state) => state.setStakePeriod)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<unknown>(null)
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)
@@ -62,8 +67,38 @@ export function useStakeWidget(sessionReady: boolean) {
     isOldAccount: migration.isOldAccount,
   })
 
+  const open = useChainMutation({
+    path: WRITE_PATH.STAKING,
+    mutation: () =>
+      submitStakeOpen({
+        period,
+        amount: amountInput.amountIn,
+        account,
+        wallet,
+        readClient,
+      }),
+    onSuccess: async () => {
+      await present.onOpenSuccess()
+      amountInput.clearAmount()
+      await preflightQuery.refetch()
+    },
+    onError: present.onError,
+  })
+
+  const warmup = useChainMutation({
+    path: WRITE_PATH.STAKING,
+    mutation: () => submitLiquidWarmupClaim({ account, wallet }),
+    onSuccess: async () => {
+      await present.onWarmupSuccess()
+      await preflightQuery.refetch()
+    },
+  })
+
+  const isSubmitting = open.isPending || warmup.isPending
+  const isLocked = open.isLocked
+
   const locked = writeCtaDisabled({
-    unknownReceiptLocked: isUnknownReceiptLocked(WRITE_PATH.STAKING),
+    unknownReceiptLocked: isLocked,
     isSubmitting,
     writeReady,
     walletReady,
@@ -81,47 +116,24 @@ export function useStakeWidget(sessionReady: boolean) {
     isSubmitting,
   })
 
-  const showWarmupClaim = isLiquid && Boolean(preflightQuery.data?.isWarmupExpired)
-
-  async function submit() {
-    setIsSubmitting(true)
-    setError(null)
-    try {
-      const result = await submitStakeOpen({
-        period,
-        amount: amountInput.amountIn,
-        account,
-        wallet,
-        readClient,
-      })
-      if (result.ok) {
-        amountInput.clearAmount()
-        await preflightQuery.refetch()
-      } else {
-        setError(result.error)
-      }
-      return result
-    } finally {
-      setIsSubmitting(false)
-    }
+  function unlock() {
+    open.clearLock()
   }
 
-  async function claimWarmup() {
-    setIsSubmitting(true)
-    setError(null)
-    try {
-      const result = await submitLiquidWarmupClaim({ account, wallet })
-      if (result.ok) await preflightQuery.refetch()
-      else setError(result.error)
-      return result
-    } finally {
-      setIsSubmitting(false)
-    }
+  function setAmount(value: string) {
+    unlock()
+    amountInput.setAmount(value)
+  }
+
+  function fillMax() {
+    unlock()
+    amountInput.fillPercent(100)
   }
 
   function changePeriod(next: string) {
     if (next === period) return
     if (next !== 'liquid' && next !== '180' && next !== '360' && next !== '540') return
+    unlock()
     amountInput.clearAmount()
     setStakePeriod(next)
   }
@@ -131,19 +143,18 @@ export function useStakeWidget(sessionReady: boolean) {
     setPeriod: changePeriod,
     amount: amountInput.amount,
     amountDisplay: formatTokenAmountInputDisplay(amountInput.amount),
-    setAmount: amountInput.setAmount,
-    fillMax: () => amountInput.fillPercent(100),
+    setAmount,
+    fillMax,
     balanceLabel: formatTokenAmount(balance, AGX_DECIMALS, 4),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,
     isSubmitting,
-    error,
     gate,
     writePhase,
-    showWarmupClaim,
-    claimWarmup,
-    submit,
+    showWarmupClaim: isLiquid && Boolean(preflightQuery.data?.isWarmupExpired),
+    claimWarmup: () => warmup.mutate(),
+    submit: () => open.mutate(),
     pool,
     remainingLabel:
       preflightQuery.data !== undefined

@@ -1,7 +1,8 @@
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useAuth } from '~/hooks/use-auth'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import {
   resolveClaimRewardOutcome,
@@ -14,8 +15,7 @@ import {
   claimMarketFundReward,
   claimTeamReward,
 } from '~/web3/claim/claim-reward'
-import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 type RewardClaimExecutor = (args: {
@@ -24,72 +24,48 @@ type RewardClaimExecutor = (args: {
   onUnauthorized: () => void
 }) => Promise<ClaimRewardExecuteResult>
 
-type RewardClaimStatus = 'success' | 'confirm_failed' | null
+/** UI-facing claim result — `confirm_failed` is success-path (not thrown). */
+export type ClaimRewardUiResult = {
+  status: 'success' | 'confirm_failed'
+  confirmResult: ClaimConfirmResult | null
+  txHash?: string
+}
 
 export function useClaimReward(execute: RewardClaimExecutor) {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const { token, sessionReady, invalidateSession } = useAuth()
-  const [isClaiming, setIsClaiming] = useState(false)
-  const [error, setError] = useState<unknown>(null)
 
-  const claim = useCallback(async (): Promise<{
-    status: Exclude<RewardClaimStatus, null>
-    confirmResult: ClaimConfirmResult | null
-    txHash?: string
-  } | null> => {
-    if (!account || !wallet || !token || !sessionReady || !writeReady) {
-      setError(WALLET_GATE_ERROR.NOT_CONNECTED)
-      return null
-    }
+  const claimMutation = useChainMutation({
+    path: WRITE_PATH.REWARD_CLAIM,
+    mutation: async (): Promise<ClaimRewardUiResult> => {
+      if (!account || !wallet || !token || !sessionReady || !writeReady) {
+        throw WALLET_GATE_ERROR.NOT_CONNECTED
+      }
 
-    setIsClaiming(true)
-    setError(null)
-
-    const guarded = await submitWithUnknownReceiptLock({
-      path: WRITE_PATH.REWARD_CLAIM,
-      whenLocked: WALLET_GATE_ERROR.PENDING_UNKNOWN,
-      run: async () => {
-        const result = await execute({
-          wallet,
-          token,
-          onUnauthorized: invalidateSession,
-        })
-        return resolveClaimRewardOutcome(result)
-      },
-    })
-
-    setIsClaiming(false)
-
-    if (!guarded.ok) {
-      setError(guarded.error)
-      return null
-    }
-
-    const outcome = guarded.value
-    if (outcome.shouldInvalidate) {
-      invalidateAfterTeamClaim()
-    }
-    return {
-      status: outcome.status,
-      confirmResult: outcome.confirmResult as ClaimConfirmResult | null,
-      txHash: outcome.txHash,
-    }
-  }, [account, execute, invalidateSession, sessionReady, token, wallet, writeReady])
-
-  const clearError = useCallback(() => {
-    setError(null)
-  }, [])
+      const result = await execute({
+        wallet,
+        token,
+        onUnauthorized: invalidateSession,
+      })
+      const outcome = resolveClaimRewardOutcome(result)
+      // confirm_failed: on-chain succeeded — do not throw; views toast.warning vs success.
+      if (outcome.shouldInvalidate) {
+        invalidateAfterTeamClaim()
+      }
+      return {
+        status: outcome.status,
+        confirmResult: outcome.confirmResult as ClaimConfirmResult | null,
+        txHash: outcome.txHash,
+      }
+    },
+  })
 
   return {
-    claim,
-    isClaiming,
-    error,
-    clearError,
-    canClaim:
-      Boolean(account && token && sessionReady && writeReady) &&
-      !isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM),
+    claim: () => claimMutation.mutate(),
+    isClaiming: claimMutation.isPending,
+    canClaim: Boolean(account && token && sessionReady && writeReady) && !claimMutation.isLocked,
   }
 }
 

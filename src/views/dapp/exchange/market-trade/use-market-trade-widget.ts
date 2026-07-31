@@ -131,21 +131,21 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 
   function flipDirection() {
-    core.setBlockResubmit(false)
+    core.clearLock()
     flipPair()
     core.clearAmount()
   }
 
   function selectSellToken(key: TradeTokenKey) {
     if (!isTradeTokenLive(key) || key === sellKey) return
-    core.setBlockResubmit(false)
+    core.clearLock()
     setSellKey(key)
     core.clearAmount()
   }
 
   function selectBuyToken(key: TradeTokenKey) {
     if (!isTradeTokenLive(key) || key === buyKey || key === sellKey) return
-    core.setBlockResubmit(false)
+    core.clearLock()
     setBuyKey(key)
     core.clearAmount()
   }

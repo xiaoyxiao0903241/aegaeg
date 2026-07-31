@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import {
@@ -12,18 +13,12 @@ import {
 } from '~/core/assets/claim-plans'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import {
-  ASSETS_GATE_ERROR,
-  submitMixedClaim,
-  type MixedClaimTarget,
-} from '~/views/dapp/assets/submit-assets'
-import { messageFromSentinels } from '~/web3/errors/message-from-sentinels'
-import { presentSubmitResult } from '~/web3/present-submit-result'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { submitMixedClaim, type MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { Address } from '~/shared/config/contracts'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -41,12 +36,28 @@ export function useAssetsClaimModalView(args: {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const readClient = useChainReadClient()
-  const [releasePct, setReleasePct] = useState(50)
-  const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(5)
-  const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
-  const [submitting, setSubmitting] = useState(false)
+  const [releasePct, setReleasePctState] = useState(50)
+  const [releaseDays, setReleaseDaysState] = useState<ReleaseDurationDays>(5)
+  const [restakeDays, setRestakeDaysState] = useState<RestakeDurationDays>(540)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
-  const locked = isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)
+
+  const claim = useChainMutation({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    mutation: () =>
+      submitMixedClaim({
+        target,
+        releaseDays,
+        restakeDays,
+        restakePct,
+        account,
+        wallet,
+        readClient,
+      }),
+    onSuccess: () => {
+      toast.success(t.assets.claim.success)
+      onOpenChange(false)
+    },
+  })
 
   const plansQuery = useQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
@@ -74,7 +85,12 @@ export function useAssetsClaimModalView(args: {
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
   const plansOk = releaseIndex != null && restakeIndex != null
   const canConfirm =
-    walletReady && !locked && !submitting && contributionOk && plansOk && target.amount > 0n
+    walletReady &&
+    !claim.isLocked &&
+    !claim.isPending &&
+    contributionOk &&
+    plansOk &&
+    target.amount > 0n
 
   const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
     label: t.assets.claim.releaseDays.replace('{days}', String(days)),
@@ -96,38 +112,24 @@ export function useAssetsClaimModalView(args: {
     }
   })
 
-  function toUserMessage(error: unknown) {
-    return messageFromSentinels(
-      error,
-      [
-        [ASSETS_GATE_ERROR.insufficientContribution, t.assets.gates.insufficientContribution],
-        [ASSETS_GATE_ERROR.releasePlanUnresolved, t.assets.gates.planUnresolved],
-        [ASSETS_GATE_ERROR.restakePlanUnresolved, t.assets.gates.planUnresolved],
-        [ASSETS_GATE_ERROR.unavailable, t.assets.gates.unavailable],
-      ],
-      (err) =>
-        resolveWalletTransactionError(err, t.wallet.transactionErrors) ?? t.errors.chain.fallback,
-    )
+  function setReleasePct(value: number) {
+    claim.clearLock()
+    setReleasePctState(value)
   }
 
-  async function handleConfirm() {
+  function setReleaseDays(value: ReleaseDurationDays) {
+    claim.clearLock()
+    setReleaseDaysState(value)
+  }
+
+  function setRestakeDays(value: RestakeDurationDays) {
+    claim.clearLock()
+    setRestakeDaysState(value)
+  }
+
+  function handleConfirm() {
     if (!canConfirm) return
-    setSubmitting(true)
-    try {
-      const result = await submitMixedClaim({
-        target,
-        releaseDays,
-        restakeDays,
-        restakePct,
-        account,
-        wallet,
-        readClient,
-      })
-      if (result.ok) onOpenChange(false)
-      await presentSubmitResult(result, t.assets.claim.success, toUserMessage)
-    } finally {
-      setSubmitting(false)
-    }
+    void claim.mutate()
   }
 
   function goBurn() {
@@ -155,7 +157,7 @@ export function useAssetsClaimModalView(args: {
     restakeDays,
     setRestakeDays,
     restakePct,
-    submitting,
+    submitting: claim.isPending,
     contribQuery,
     requiredContributionLabel,
     releaseOptions,

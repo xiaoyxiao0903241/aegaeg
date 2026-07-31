@@ -1,23 +1,20 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import {
-  ASSETS_GATE_ERROR,
   submitBondRedeem,
   submitStakeRedeem,
   type MixedClaimTarget,
 } from '~/views/dapp/assets/submit-assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { messageFromSentinels } from '~/web3/errors/message-from-sentinels'
-import { presentSubmitResult } from '~/web3/present-submit-result'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import {
@@ -27,7 +24,7 @@ import {
   type AssetsBondRow,
   type AssetsStakeRow,
 } from '~/web3/assets/assets-read'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { Address } from '~/shared/config/contracts'
 
 export type AssetsProduct = 'stake' | 'lpbond' | 'burnbond'
@@ -46,6 +43,11 @@ type RedeemState =
       row: AssetsStakeRow | AssetsBondRow
     }
 
+type RedeemVars = {
+  kind: 'stake' | 'bond'
+  row: AssetsStakeRow | AssetsBondRow
+}
+
 export function useAssetsPositionWidget(product: AssetsProduct) {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
@@ -54,12 +56,10 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const readClient = useChainReadClient()
   const isMobile = useMobileViewport()
   const address = account?.address
-  const locked = isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)
 
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [claim, setClaim] = useState<ClaimState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
-  const [busy, setBusy] = useState(false)
   const [page, setPage] = useState(0)
 
   const copy = t.assets.products[product]
@@ -68,6 +68,28 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const pageSize = t.assets.position.pageSize
   const agxPriceQuery = usePresaleAgxPriceQuery()
   const agxPriceUsd = formatTokenAmountToNumber(agxPriceQuery.data ?? 0n, USD1_DECIMALS)
+
+  const redeemWrite = useChainMutation({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    mutation: (vars: RedeemVars) =>
+      vars.kind === 'stake'
+        ? submitStakeRedeem({
+            row: vars.row as AssetsStakeRow,
+            account,
+            wallet,
+            readClient,
+          })
+        : submitBondRedeem({
+            row: vars.row as AssetsBondRow,
+            account,
+            wallet,
+            readClient,
+          }),
+    onSuccess: () => {
+      toast.success(t.assets.redeem.success)
+      setRedeem({ open: false })
+    },
+  })
 
   function formatRewardUsd(amount: bigint): string {
     if (agxPriceQuery.isError || agxPriceUsd <= 0) return '—'
@@ -108,46 +130,8 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const pagedStakeRows = stakeRows.slice(pageSliceStart, pageSliceStart + pageSize)
   const pagedBondRows = bondRows.slice(pageSliceStart, pageSliceStart + pageSize)
 
-  function toUserMessage(error: unknown) {
-    return messageFromSentinels(
-      error,
-      [
-        [ASSETS_GATE_ERROR.insufficientContribution, t.assets.gates.insufficientContribution],
-        [ASSETS_GATE_ERROR.releasePlanUnresolved, t.assets.gates.planUnresolved],
-        [ASSETS_GATE_ERROR.restakePlanUnresolved, t.assets.gates.planUnresolved],
-        [ASSETS_GATE_ERROR.nothingToRedeem, t.assets.gates.nothingToRedeem],
-        [ASSETS_GATE_ERROR.unavailable, t.assets.gates.unavailable],
-        [ASSETS_GATE_ERROR.zeroAmount, t.assets.gates.zeroAmount],
-        [ASSETS_GATE_ERROR.insufficientReward, t.assets.gates.insufficientReward],
-      ],
-      (err) =>
-        resolveWalletTransactionError(err, t.wallet.transactionErrors) ?? t.errors.chain.fallback,
-    )
-  }
-
-  async function runRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
-    if (!hasWalletAccount(account) || !wallet) return
-    setBusy(true)
-    try {
-      const result =
-        kind === 'stake'
-          ? await submitStakeRedeem({
-              row: row as AssetsStakeRow,
-              account,
-              wallet,
-              readClient,
-            })
-          : await submitBondRedeem({
-              row: row as AssetsBondRow,
-              account,
-              wallet,
-              readClient,
-            })
-      if (result.ok) setRedeem({ open: false })
-      await presentSubmitResult(result, t.assets.redeem.success, toUserMessage)
-    } finally {
-      setBusy(false)
-    }
+  function runRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
+    void redeemWrite.mutate({ kind, row })
   }
 
   function requestRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
@@ -155,7 +139,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
       setRedeem({ open: true, kind, row })
       return
     }
-    void runRedeem(kind, row)
+    runRedeem(kind, row)
   }
 
   function openStakeClaim(row: AssetsStakeRow) {
@@ -204,14 +188,14 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
 
   function confirmRedeem() {
     if (!redeem.open) return
-    void runRedeem(redeem.kind, redeem.row)
+    runRedeem(redeem.kind, redeem.row)
   }
 
   return {
     product,
     walletReady,
-    locked,
-    busy,
+    locked: redeemWrite.isLocked,
+    busy: redeemWrite.isPending,
     quote,
     setQuote,
     claim,

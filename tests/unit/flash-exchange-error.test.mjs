@@ -2,55 +2,39 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-const MESSAGES = {
-  paused: 'paused',
-  belowMin: 'belowMin',
-  aboveMax: 'aboveMax',
-  insufficientReserve: 'insufficientReserve',
-  zeroRate: 'zeroRate',
-  insufficientOutput: 'insufficientOutput',
-  transferMismatch: 'transferMismatch',
-  zeroAddress: 'zeroAddress',
-  sameToken: 'sameToken',
-  zeroAmount: 'zeroAmount',
-  notAuthorized: 'notAuthorized',
-  invalidLimits: 'invalidLimits',
-}
-
-test('resolveFlashExchangeError maps handbook Usd1Swap + gAGX errors', async () => {
-  const { resolveFlashExchangeError } = await loadModule('/src/web3/errors/flash-exchange-error.ts')
+test('getErrorMessage maps flash soft gates and Usd1Swap reverts', async () => {
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
   const { FLASH_USD1_GATE_ERROR } = await loadModule('/src/web3/errors/sentinels.ts')
 
+  assert.equal(getErrorMessage(FLASH_USD1_GATE_ERROR.paused, t), t.exchange.flash.gates.paused)
   assert.equal(
-    resolveFlashExchangeError(new Error(FLASH_USD1_GATE_ERROR.paused), MESSAGES),
-    'paused',
-  )
-  assert.equal(
-    resolveFlashExchangeError(new Error(FLASH_USD1_GATE_ERROR.insufficientReserve), MESSAGES),
-    'insufficientReserve',
+    getErrorMessage(FLASH_USD1_GATE_ERROR.insufficientReserve, t),
+    t.exchange.flash.gates.insufficientReserve,
   )
 
   const cases = [
-    ['ErrorPaused', 'paused'],
-    ['ErrorInsufficientUsd1', 'insufficientReserve'],
-    ['ErrorBelowMin', 'belowMin'],
-    ['ErrorAboveMax', 'aboveMax'],
-    ['ErrorInsufficientOutput', 'insufficientOutput'],
-    ['ErrorTransferAmountMismatch', 'transferMismatch'],
-    ['ErrorZeroAddress', 'zeroAddress'],
-    ['ErrorSameToken', 'sameToken'],
-    ['ErrorZeroAmount', 'zeroAmount'],
-    ['ErrorZeroRate', 'zeroRate'],
-    ['ErrorCallerNotAuthorized', 'notAuthorized'],
-    ['ErrorNotAuthorized', 'notAuthorized'],
-    ['ErrorInvalidLimits', 'invalidLimits'],
+    ['ErrorPaused', t.exchange.flash.gates.paused],
+    ['ErrorInsufficientUsd1', t.exchange.flash.gates.insufficientReserve],
+    ['ErrorBelowMin', t.exchange.flash.gates.belowMin],
+    ['ErrorAboveMax', t.exchange.flash.gates.aboveMax],
+    ['ErrorInsufficientOutput', t.exchange.flash.gates.insufficientOutput],
+    ['ErrorTransferAmountMismatch', t.exchange.flash.gates.transferMismatch],
+    ['ErrorZeroAddress', t.exchange.flash.gates.zeroAddress],
+    ['ErrorSameToken', t.exchange.flash.gates.sameToken],
+    ['ErrorZeroAmount', t.staking.gates.zeroAmount], // §19 shared zero-amount tip
+    ['ErrorZeroRate', t.exchange.flash.gates.zeroRate],
+    ['ErrorCallerNotAuthorized', t.exchange.flash.gates.notAuthorized],
+    ['ErrorNotAuthorized', t.exchange.flash.gates.notAuthorized],
+    ['ErrorInvalidLimits', t.exchange.flash.gates.invalidLimits],
   ]
 
-  for (const [name, key] of cases) {
-    assert.equal(resolveFlashExchangeError(new Error(name), MESSAGES), key, name)
+  for (const [name, expected] of cases) {
+    assert.equal(getErrorMessage(new Error(name), t), expected, name)
   }
 
-  assert.equal(resolveFlashExchangeError(new Error('UnknownBoom'), MESSAGES), null)
+  assert.equal(getErrorMessage(new Error('UnknownBoom'), t), t.errors.chain.fallback)
 })
 
 test('USD1_SWAP_ERRORS lists all handbook custom errors', async () => {

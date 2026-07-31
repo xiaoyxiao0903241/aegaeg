@@ -21,14 +21,13 @@ type ActiveWallet = ReturnType<typeof useActiveWallet>
 
 type FlashQuotedSubmitCore = {
   debouncedAmountIn: bigint
-  setSubmitError: (error: unknown) => void
   runQuotedSubmit: (
     run: (helpers: {
       assertStillSubmittable: (live?: {
         sellBalance: bigint
       }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
     }) => Promise<void>,
-  ) => Promise<{ ok: true } | { ok: false; error: unknown }>
+  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
 }
 
 type FlashBalancesResult = { sell: bigint; buy: bigint; approved: bigint }
@@ -42,15 +41,14 @@ export async function submitFlashExchange(args: {
   core: FlashQuotedSubmitCore
   balancesQuery: { refetch: () => Promise<QueryObserverResult<FlashBalancesResult>> }
   refetchUsd1Config: () => Promise<QueryObserverResult<FlashUsd1SwapConfig>>
-}): Promise<{ ok: true } | { ok: false; error: unknown }> {
+}): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { pairId, direction, account, wallet, core, balancesQuery, refetchUsd1Config } = args
-  if (!account || !wallet) {
-    const error = WALLET_GATE_ERROR.NOT_CONNECTED
-    core.setSubmitError(error)
-    return { ok: false, error }
-  }
 
-  const result = await core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
+  return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
+    if (!account || !wallet) {
+      throw WALLET_GATE_ERROR.NOT_CONNECTED
+    }
+
     if (pairId === 'usdt') {
       await approveUsdtForFlashExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
     } else if (direction === 'reverse') {
@@ -100,9 +98,6 @@ export async function submitFlashExchange(args: {
     invalidateAfterExchange()
     await balancesQuery.refetch()
   })
-
-  if (result.ok) return { ok: true }
-  return { ok: false, error: result.error }
 }
 
 export { FLASH_USD1_GATE_ERROR }

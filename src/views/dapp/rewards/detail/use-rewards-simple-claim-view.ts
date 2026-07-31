@@ -2,16 +2,11 @@ import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { useCommunityFundTotal } from '~/hooks/use-api-data'
-import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import {
   useCommunityFundClaim,
   useIncentiveClaim,
   useMarketFundClaim,
 } from '~/views/dapp/rewards/use-claim-reward'
-import {
-  resolveTeamClaimError,
-  resolveWalletTransactionError,
-} from '~/web3/resolve-contract-error-message'
 import { REWARDS_DASH, REWARDS_LOADING } from '~/views/dapp/rewards/rewards-display'
 
 const TOKEN_GAGX = 'gAGX'
@@ -39,22 +34,6 @@ export function useRewardsSimpleClaimView(view: SimpleClaimView, sessionReady: b
   const referralAmountOk =
     !referralAmountKnown || (Number.isFinite(referralAmount) && referralAmount > 0)
   /** Same CommunityFund as genesis 发展基金 (pre-leaf dual entry); amount gate only — node gate is backend/sign. */
-
-  function claimUserMessage(error: unknown) {
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-      resolveTeamClaimError(error, {
-        ...t.rewards.claimErrors,
-        walletNotConnected: t.errors.walletNotConnected,
-      }) ??
-      t.errors.chain.fallback
-    )
-  }
-
-  usePresentUserFacingError(claim.error, claimUserMessage, {
-    id: `rewards-simple-claim:${view}`,
-    onPresented: claim.clearError,
-  })
 
   const claimableText = !sessionReady
     ? t.rewards.hub.signInForBalance

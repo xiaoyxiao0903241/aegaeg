@@ -27,6 +27,21 @@ const app = defineMessages({
     },
     chain: {
       fallback: '链上操作失败，请稍后重试。',
+      /** Handbook §19 + contract-doc tips not covered by domain gate bags. */
+      reverts: {
+        stakeAmountLimit: '超过每日质押额度，请降低金额或等待额度恢复。',
+        debtCapacityReached: '债券容量不足，请稍后再试。',
+        turbineCooldown: '冷却尚未结束或输入无效，请刷新冷却记录后重试。',
+        pairNotExist: '交易对不存在，请检查代币配置。',
+        notWinner: '当前未中奖，无法领取。',
+        rewardAlreadyClaimed: '奖励已领取，请勿重复操作。',
+        configNotReady: '协议配置未就绪，请稍后再试。',
+        exceedsMax: '金额超过上限，请降低金额。',
+        bondTooSmall: '债券兑付过小，请增加购买金额。',
+        bondTooLarge: '超过单笔债券上限，请降低购买金额。',
+        stakeNotExist: '仓位不存在或已结清，请刷新列表后重试。',
+        yieldUnavailable: '暂无可领收益或提取额过大，请降低金额或等待累积。',
+      },
     },
     walletNotConnected: '请先连接钱包并完成登录。',
     quoteFailed: '报价失败，请稍后重试。',

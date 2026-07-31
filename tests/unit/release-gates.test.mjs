@@ -17,10 +17,22 @@ test('release progress bps is claimable / (claimable + releasing)', () => {
   assert.equal(releaseProgressBps(100n, 0n), 10_000)
 })
 
-test('submit release live-gates and EX-U5 invalidate turbine', async () => {
+test('submit release live-gates; envelope path on views + hook (string lock)', async () => {
   const { readFile } = await import('node:fs/promises')
   const submit = await readFile(
     new URL('../../src/views/dapp/release/submit-release.ts', import.meta.url),
+    'utf8',
+  )
+  const queueView = await readFile(
+    new URL('../../src/views/dapp/release/queue/use-release-queue-view.ts', import.meta.url),
+    'utf8',
+  )
+  const bufferView = await readFile(
+    new URL('../../src/views/dapp/release/buffer/use-release-buffer-view.ts', import.meta.url),
+    'utf8',
+  )
+  const hook = await readFile(
+    new URL('../../src/hooks/use-chain-mutation.ts', import.meta.url),
     'utf8',
   )
   const invalidate = await readFile(
@@ -33,7 +45,11 @@ test('submit release live-gates and EX-U5 invalidate turbine', async () => {
   )
   assert.match(submit, /readReleaseQueueSnapshot/)
   assert.match(submit, /readReleaseBufferSnapshot/)
-  assert.match(submit, /WRITE_PATH\.RELEASE_CLAIM/)
+  assert.doesNotMatch(submit, /submitWithUnknownReceiptLock/)
+  assert.doesNotMatch(submit, /WRITE_PATH\.RELEASE_CLAIM/)
+  assert.match(queueView, /WRITE_PATH\.RELEASE_CLAIM/)
+  assert.match(bufferView, /WRITE_PATH\.RELEASE_CLAIM/)
+  assert.match(hook, /submitWithUnknownReceiptLock/)
   assert.match(submit, /invalidateAfterReleaseClaim/)
   assert.match(submit, /const live = await readReleaseQueueSnapshot/)
   assert.match(submit, /const live = await readReleaseBufferSnapshot/)

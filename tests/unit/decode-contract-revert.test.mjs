@@ -12,22 +12,14 @@ test('decodeContractRevert decodes PreSaleUserNotBound by selector', async () =>
   assert.equal(decoded?.errorName, 'PreSaleUserNotBound')
 })
 
-test('normalizeContractRevertError surfaces error name for UI parsers', async () => {
+test('normalizeContractRevertError surfaces error name for getErrorMessage', async () => {
   const { normalizeContractRevertError } = await loadModule('/src/web3/decode-contract-revert.ts')
-  const { resolveGenesisPurchaseError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
   const abi = parseAbi(['error PreSaleUserNotBound()'])
   const data = encodeErrorResult({ abi, errorName: 'PreSaleUserNotBound', args: [] })
 
   const error = normalizeContractRevertError({ data }, abi)
-  const message = resolveGenesisPurchaseError(error, {
-    insufficientUsd1: 'USD1 low',
-    insufficientAllowance: 'Allowance low',
-    purchaseUnavailable: 'Unavailable',
-    walletNotConnected: 'Wallet missing',
-    notBound: 'Bind referrer first',
-  })
-
-  assert.equal(message, 'Bind referrer first')
+  assert.equal(getErrorMessage(error, t), t.genesis.errors.notBound)
 })

@@ -4,10 +4,9 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { isTradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
-import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
+import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { exchangeUserFacingMessages } from '~/views/dapp/exchange/exchange-user-facing-messages'
-import { presentSubmitResult } from '~/web3/present-submit-result'
+import { toast } from 'sonner'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -71,24 +70,15 @@ export function useMarketTradeView(trade: MarketTradeState) {
     else trade.selectBuyToken(key)
   }
 
-  function tradeUserMessage(error: unknown) {
-    return resolveExchangeUserFacingMessage(
-      error,
-      exchangeUserFacingMessages(t),
-      t.wallet.transactionErrors,
-      t.errors.chain.fallback,
-    )
-  }
-
-  // Quote/validation only — submit errors toast in onSubmit so the same sentinel re-fires.
-  usePresentUserFacingError(trade.validationError, tradeUserMessage, {
+  // Quote/validation only — submit errors toast via useChainMutation.
+  usePresentUserFacingError(trade.validationError, (err) => getErrorMessage(err, t), {
     id: 'market-trade-quote-error',
     trigger: trade.quoteErrorUpdatedAt,
   })
 
   async function onSubmit() {
     const result = await trade.submit()
-    await presentSubmitResult(result, t.exchange.exchangeSuccess, tradeUserMessage)
+    if (result.ok) toast.success(t.exchange.exchangeSuccess)
   }
 
   return {

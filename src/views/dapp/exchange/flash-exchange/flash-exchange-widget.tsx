@@ -151,12 +151,6 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
             {vm.gateHint}
           </DappInlineAlert>
         ) : null}
-
-        {vm.submitErrorMessage ? (
-          <DappInlineAlert className="mt-3" role="alert">
-            {vm.submitErrorMessage}
-          </DappInlineAlert>
-        ) : null}
       </DappWidgetStack>
     </>
   )

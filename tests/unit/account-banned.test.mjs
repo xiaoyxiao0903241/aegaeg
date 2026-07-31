@@ -22,11 +22,8 @@ test('isAccountBannedError requires 403 plus ban signal', async () => {
 })
 
 test('interceptApiError reports banned 403', async () => {
-  const {
-    interceptApiError,
-    resetAccountBannedReportCooldownForTests,
-    subscribeAccountBanned,
-  } = await loadModule('/src/shared/api/account-banned.ts')
+  const { interceptApiError, resetAccountBannedReportCooldownForTests, subscribeAccountBanned } =
+    await loadModule('/src/shared/api/account-banned.ts')
   const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   resetAccountBannedReportCooldownForTests()
@@ -47,11 +44,8 @@ test('interceptApiError reports banned 403', async () => {
 })
 
 test('reportAccountBanned throttles duplicate reports within cooldown', async () => {
-  const {
-    interceptApiError,
-    resetAccountBannedReportCooldownForTests,
-    subscribeAccountBanned,
-  } = await loadModule('/src/shared/api/account-banned.ts')
+  const { interceptApiError, resetAccountBannedReportCooldownForTests, subscribeAccountBanned } =
+    await loadModule('/src/shared/api/account-banned.ts')
   const { ApiError } = await loadModule('/src/shared/api/client.ts')
 
   resetAccountBannedReportCooldownForTests()
@@ -84,10 +78,7 @@ test('resolveAuthLoginErrorMessage maps sentinels and never returns raw copy', a
     loginSignatureRejected: 'Bad signature',
   }
 
-  assert.equal(
-    resolveAuthLoginErrorMessage(ACCOUNT_BANNED_SENTINEL, messages),
-    'Account suspended',
-  )
+  assert.equal(resolveAuthLoginErrorMessage(ACCOUNT_BANNED_SENTINEL, messages), 'Account suspended')
   assert.equal(
     resolveAuthLoginErrorMessage(LOGIN_ERROR.WALLET_NOT_CONNECTED, messages),
     'Connect wallet',
@@ -101,27 +92,18 @@ test('resolveAuthLoginErrorMessage maps sentinels and never returns raw copy', a
   assert.equal(resolveAuthLoginErrorMessage(null, messages), null)
 })
 
-test('resolveReferralBindError maps parent-not-bound sentinel before contract revert', async () => {
-  const { REFERRAL_BIND_ERROR, resolveReferralBindError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-
-  const messages = {
-    alreadyBound: 'Already bound',
-    parentNotBound: 'Parent not bound',
-    selfReferral: 'Self referral',
-    invalidParent: 'Invalid parent',
-    migratedAccount: 'Migrated',
-    systemConfig: 'Config',
-    failed: 'Failed',
-  }
+test('getErrorMessage maps referral soft-gate sentinels', async () => {
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
+  const { REFERRAL_BIND_ERROR } = await loadModule('/src/web3/errors/sentinels.ts')
 
   assert.equal(
-    resolveReferralBindError(REFERRAL_BIND_ERROR.INVALID_PARENT, messages),
-    'Invalid parent',
+    getErrorMessage(REFERRAL_BIND_ERROR.INVALID_PARENT, t),
+    t.community.bindErrors.invalidParent,
   )
   assert.equal(
-    resolveReferralBindError(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND, messages),
-    'Parent not bound',
+    getErrorMessage(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND, t),
+    t.community.bindErrors.parentNotBound,
   )
 })

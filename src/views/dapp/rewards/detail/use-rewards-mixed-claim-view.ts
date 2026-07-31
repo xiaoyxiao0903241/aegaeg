@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useAuth } from '~/hooks/use-auth'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
 import {
   RELEASE_DURATION_DAYS,
   RESTAKE_DURATION_DAYS,
@@ -28,12 +29,11 @@ import {
 } from '~/views/dapp/rewards/rewards-display'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { readErrorText } from '~/web3/errors/error-text'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
+import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { Address } from '~/shared/config/contracts'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -50,11 +50,9 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const [releasePct, setReleasePct] = useState(50)
   const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(60)
   const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
-  const [submitting, setSubmitting] = useState(false)
   /** Dao amount unknown until signature; set when live gate reports insufficient contribution. */
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
-  const locked = isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM)
 
   const luckyQuery = useQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim(account?.address ?? ''),
@@ -93,11 +91,51 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const luckyOk =
     view !== 'lucky' ||
     (luckyQuery.data != null && luckyQuery.data.claimable && !luckyQuery.data.paused)
+
+  const claim = useChainMutation({
+    path: WRITE_PATH.REWARD_CLAIM,
+    mutation: async () => {
+      if (!account || !wallet) throw WALLET_GATE_ERROR.NOT_CONNECTED
+      if (view === 'lucky') {
+        await submitLuckyMixedClaim({
+          releaseDays,
+          restakeDays,
+          restakePct,
+          account,
+          wallet,
+          readClient,
+        })
+        return
+      }
+      await submitDaoMixedClaim({
+        token: token ?? '',
+        onUnauthorized: invalidateSession,
+        releaseDays,
+        restakeDays,
+        restakePct,
+        account,
+        wallet,
+        readClient,
+      })
+    },
+    onSuccess: () => {
+      toast.success(t.rewards.claimSuccess)
+    },
+    onError: (error) => {
+      if (
+        view === 'cobuild' &&
+        readErrorText(error) === REWARDS_GATE_ERROR.insufficientContribution
+      ) {
+        setDaoContributionBlocked(true)
+      }
+    },
+  })
+
   const canConfirm =
     walletReady &&
     sessionReady &&
-    !locked &&
-    !submitting &&
+    !claim.isLocked &&
+    !claim.isPending &&
     plansOk &&
     luckyOk &&
     contributionOk &&
@@ -148,59 +186,9 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
     !contributionOk &&
     (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)
 
-  async function onConfirm() {
-    if (!account || !wallet) return
+  function onConfirm() {
     setDaoContributionBlocked(false)
-    setSubmitting(true)
-    try {
-      const result =
-        view === 'lucky'
-          ? await submitLuckyMixedClaim({
-              releaseDays,
-              restakeDays,
-              restakePct,
-              account,
-              wallet,
-              readClient,
-            })
-          : await submitDaoMixedClaim({
-              token: token ?? '',
-              onUnauthorized: invalidateSession,
-              releaseDays,
-              restakeDays,
-              restakePct,
-              account,
-              wallet,
-              readClient,
-            })
-      if (!result.ok) {
-        if (result.error === REWARDS_GATE_ERROR.insufficientContribution) {
-          if (view === 'cobuild') setDaoContributionBlocked(true)
-          presentUserFacingError(result.error, () => mixed.insufficientContribution, {
-            id: `rewards-mixed:${view}`,
-          })
-          return
-        }
-        if (result.error === REWARDS_GATE_ERROR.luckyPaused) {
-          presentUserFacingError(result.error, () => mixed.luckyPaused, {
-            id: `rewards-mixed:${view}`,
-          })
-          return
-        }
-        presentUserFacingError(
-          result.error,
-          (err) =>
-            resolveWalletTransactionError(err, t.wallet.transactionErrors) ??
-            readErrorText(err) ??
-            t.errors.chain.fallback,
-          { id: `rewards-mixed:${view}` },
-        )
-        return
-      }
-      toast.success(t.rewards.claimSuccess)
-    } finally {
-      setSubmitting(false)
-    }
+    void claim.mutate()
   }
 
   return {
@@ -226,13 +214,13 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
     haveText,
     showContributionShort,
     canConfirm,
-    submitting,
+    submitting: claim.isPending,
     luckyPaused: view === 'lucky' && Boolean(luckyQuery.data?.paused),
     luckyNotClaimable:
       view === 'lucky' &&
       Boolean(luckyQuery.data) &&
       !luckyQuery.data?.claimable &&
       !luckyQuery.data?.paused,
-    onConfirm: () => void onConfirm(),
+    onConfirm,
   }
 }

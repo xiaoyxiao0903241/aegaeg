@@ -4,9 +4,10 @@ import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -41,7 +42,18 @@ export function useReleaseQueueView() {
   const readClient = useChainReadClient()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
-  const locked = isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM)
+
+  const claim = useChainMutation({
+    path: WRITE_PATH.RELEASE_CLAIM,
+    mutation: (planIndex: number) =>
+      submitReleaseQueueClaim({ account, wallet, readClient, planIndex }),
+    onSuccess: async () => {
+      toast.success(t.release.queue.claimSuccess)
+      await queueQuery.refetch()
+    },
+  })
+
+  const locked = claim.isLocked
   const dash = t.release.dash
 
   const rows: ReleaseQueueRowView[] = RELEASE_DURATION_DAYS.map((days) => {
@@ -79,13 +91,7 @@ export function useReleaseQueueView() {
     if (!writeReady || locked || planIndex < 0) return
     setPendingPlan(planIndex)
     try {
-      const result = await submitReleaseQueueClaim({ account, wallet, readClient, planIndex })
-      if (!result.ok) {
-        toast.error(t.release.errors.claimFailed)
-        return
-      }
-      toast.success(t.release.queue.claimSuccess)
-      await queueQuery.refetch()
+      await claim.mutate(planIndex)
     } finally {
       setPendingPlan(null)
     }

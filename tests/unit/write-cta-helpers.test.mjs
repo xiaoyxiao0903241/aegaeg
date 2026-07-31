@@ -100,14 +100,12 @@ test('formatAmountBalanceLabel swaps balance or ellipsis', async () => {
   )
 })
 
-test('messageFromSentinels maps sentinel then falls back', async () => {
-  const { messageFromSentinels } = await loadModule('/src/web3/errors/message-from-sentinels.ts')
-  assert.equal(
-    messageFromSentinels('GATE_A', [['GATE_A', 'alpha']], () => 'fallback'),
-    'alpha',
-  )
-  assert.equal(
-    messageFromSentinels('OTHER', [['GATE_A', 'alpha']], () => 'fallback'),
-    'fallback',
-  )
+test('getErrorMessage maps write-gate sentinels used by CTAs', async () => {
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
+  const { STAKING_GATE_ERROR } = await loadModule('/src/web3/errors/staking-write-gate-errors.ts')
+
+  assert.equal(getErrorMessage(STAKING_GATE_ERROR.notBound, t), t.staking.gates.notBound)
+  assert.equal(getErrorMessage(new Error('OTHER'), t), t.errors.chain.fallback)
 })

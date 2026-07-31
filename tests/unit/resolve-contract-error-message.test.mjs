@@ -2,309 +2,79 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('resolveContractErrorMessage maps ERC20InsufficientBalance selector', async () => {
-  const { resolveContractErrorMessage } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-
-  const message = resolveContractErrorMessage(
-    new Error('Encoded error signature "0xe450d38c" not found'),
-    {
-      insufficientUsd1: 'USD1 low',
-      insufficientAllowance: 'Allowance low',
-    },
-  )
-
-  assert.equal(message, 'USD1 low')
-})
-
-test('resolveGenesisPurchaseError maps validation codes to localized messages', async () => {
-  const { GENESIS_PURCHASE_ERROR, resolveGenesisPurchaseError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-
-  const messages = {
-    insufficientUsd1: 'USD1 low',
-    insufficientAllowance: 'Allowance low',
-    purchaseUnavailable: 'Unavailable',
-  }
-
-  assert.equal(
-    resolveGenesisPurchaseError(GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1, messages),
-    'USD1 low',
-  )
-  assert.equal(
-    resolveGenesisPurchaseError(GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE, messages),
-    'Allowance low',
-  )
-  assert.equal(
-    resolveGenesisPurchaseError(GENESIS_PURCHASE_ERROR.UNAVAILABLE, messages),
-    'Unavailable',
-  )
-})
-
-test('isUserRejectedWalletError detects MetaMask rejection', async () => {
+test('getErrorMessage maps ERC20 / genesis / referral / claim / quote (no raw leak)', async () => {
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
   const {
-    isUserRejectedWalletError,
-    resolveGenesisPurchaseError,
-    resolveExchangeUserFacingMessage,
-  } = await loadModule('/src/web3/resolve-contract-error-message.ts')
+    GENESIS_PURCHASE_ERROR,
+    REFERRAL_BIND_ERROR,
+    EXCHANGE_QUOTE_FAILED,
+    EXCHANGE_SUBMIT_GATE_FAILED,
+  } = await loadModule('/src/web3/errors/sentinels.ts')
 
   assert.equal(
-    isUserRejectedWalletError({ code: 4001, message: 'User rejected the request.' }),
-    true,
+    getErrorMessage(new Error('reverted with 0xe450d38c'), t),
+    t.genesis.insufficientUsd1,
   )
-  assert.equal(isUserRejectedWalletError(new Error('User rejected the request.')), true)
-  assert.equal(isUserRejectedWalletError({ code: 4001, message: 'Transaction failed' }), false)
-  assert.equal(isUserRejectedWalletError({ code: 4001, message: 'Interaction failed' }), false)
+  assert.equal(
+    getErrorMessage(new Error('reverted with 0xfb8f41b2'), t),
+    t.genesis.insufficientAllowance,
+  )
 
-  const messages = {
-    insufficientUsd1: 'USD1 low',
-    insufficientAllowance: 'Allowance low',
-    purchaseUnavailable: 'Unavailable',
-    walletNotConnected: 'Wallet missing',
-    transactionCancelled: 'Cancelled',
+  assert.equal(
+    getErrorMessage(GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1, t),
+    t.genesis.insufficientUsd1,
+  )
+  assert.equal(
+    getErrorMessage(GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE, t),
+    t.genesis.insufficientAllowance,
+  )
+  assert.equal(
+    getErrorMessage(GENESIS_PURCHASE_ERROR.UNAVAILABLE, t),
+    t.genesis.purchaseUnavailable,
+  )
+  assert.equal(getErrorMessage(new Error('User rejected the request.'), t), null)
+
+  assert.equal(
+    getErrorMessage(REFERRAL_BIND_ERROR.INVALID_PARENT, t),
+    t.community.bindErrors.invalidParent,
+  )
+  assert.equal(
+    getErrorMessage(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND, t),
+    t.community.bindErrors.parentNotBound,
+  )
+
+  const parentNotBoundWallet = {
+    data: { data: '0x3d50dfd5' },
+    message: 'execution reverted',
   }
-
-  assert.equal(resolveGenesisPurchaseError(new Error('User rejected the request.'), messages), null)
+  assert.equal(getErrorMessage(parentNotBoundWallet, t), t.community.bindErrors.parentNotBound)
   assert.equal(
-    resolveExchangeUserFacingMessage({ code: 4001, message: 'Transaction failed' }, messages),
-    'Unavailable',
+    getErrorMessage(new Error('reverted with custom error 0xa7e9b6d3'), t),
+    t.community.bindErrors.selfReferral,
   )
+
+  assert.equal(getErrorMessage(EXCHANGE_QUOTE_FAILED, t), t.errors.quoteFailed)
+  assert.equal(getErrorMessage(EXCHANGE_SUBMIT_GATE_FAILED, t), t.errors.quoteFailed)
+  assert.equal(getErrorMessage(new Error('weird rpc english leak'), t), t.errors.chain.fallback)
+
+  // Team claim: mapped claim errors, not raw normalize throw text
+  assert.equal(getErrorMessage(new Error('ErrorAlreadyUsed'), t), t.rewards.claimErrors.alreadyUsed)
   assert.equal(
-    resolveExchangeUserFacingMessage(
-      { code: 4001, message: 'User rejected the request.' },
-      {
-        ...messages,
-        transactionCancelled: 'Cancelled',
-      },
-    ),
-    'Cancelled',
+    getErrorMessage(new Error('some English normalize throw'), t),
+    t.errors.chain.fallback,
   )
 })
 
-test('resolveContractErrorMessage maps ERC20InsufficientAllowance selector', async () => {
-  const { resolveContractErrorMessage } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
+test('getErrorMessage maps PreSale selector from nested wallet data', async () => {
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
 
-  const message = resolveContractErrorMessage(new Error('reverted with 0xfb8f41b2'), {
-    insufficientUsd1: 'USD1 low',
-    insufficientAllowance: 'Allowance low',
-  })
-
-  assert.equal(message, 'Allowance low')
-})
-
-test('resolveReferralBindError maps MetaMask nested revert selector', async () => {
-  const { resolveReferralBindError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet/wallet-write-error.ts')
-
-  const messages = {
-    alreadyBound: 'Already bound',
-    parentNotBound: 'Parent not bound',
-    selfReferral: 'Self referral',
-    invalidParent: 'Invalid parent',
-    migratedAccount: 'Migrated',
-    systemConfig: 'System config',
-    failed: 'Failed',
+  const walletError = {
+    data: { data: '0x3bdd728c' },
+    message: 'execution reverted',
   }
-
-  const walletError = normalizeWalletRpcError({
-    code: -32603,
-    message: 'Internal JSON-RPC error.',
-    data: {
-      code: 3,
-      message: 'execution reverted',
-      data: '0x3d50dfd50000000000000000000000000000000000000000000000000000000000000001',
-    },
-  })
-
-  assert.equal(resolveReferralBindError(walletError, messages), 'Parent not bound')
-  assert.equal(
-    resolveReferralBindError(
-      new Error('execution reverted: Referral__AlreadyBound(address)'),
-      messages,
-    ),
-    'Already bound',
-  )
-  assert.equal(
-    resolveReferralBindError(new Error('reverted with custom error 0xa7e9b6d3'), messages),
-    'Self referral',
-  )
-})
-
-test('resolveWalletTransactionError maps gas and estimate failures', async () => {
-  const { WALLET_WRITE_ERROR, resolveWalletTransactionError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-
-  const messages = {
-    gasLimitTooLow: 'Gas too low',
-    gasEstimateFailed: 'Estimate failed',
-    insufficientFunds: 'No BNB',
-    transactionFailed: 'Tx failed',
-  }
-
-  assert.equal(
-    resolveWalletTransactionError(
-      new Error('Signer Error: gasLimit is too low. given 0, need 21000'),
-      messages,
-    ),
-    'Gas too low',
-  )
-  assert.equal(
-    resolveWalletTransactionError(new Error(WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED), messages),
-    'Estimate failed',
-  )
-  assert.equal(
-    resolveWalletTransactionError(
-      new Error('insufficient funds for gas * price + value'),
-      messages,
-    ),
-    'No BNB',
-  )
-  assert.equal(
-    resolveWalletTransactionError({ code: 4001, message: 'User rejected the request.' }, messages),
-    null,
-  )
-})
-
-test('resolveGenesisPurchaseError maps PreSale selector from nested wallet data', async () => {
-  const { resolveGenesisPurchaseError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-  const { normalizeWalletRpcError } = await loadModule('/src/web3/wallet/wallet-write-error.ts')
-
-  const walletError = normalizeWalletRpcError({
-    code: -32603,
-    message: 'Internal JSON-RPC error.',
-    data: {
-      code: 3,
-      message: 'execution reverted',
-      data: '0x43f81a81',
-    },
-  })
-
-  assert.equal(
-    resolveGenesisPurchaseError(walletError, {
-      insufficientUsd1: 'USD1 low',
-      insufficientAllowance: 'Allowance low',
-      purchaseUnavailable: 'Unavailable',
-      walletNotConnected: 'Wallet missing',
-      userLimitExceeded: 'Limit exceeded',
-    }),
-    'Limit exceeded',
-  )
-})
-
-test('resolveReferralBindError falls back to null when unmapped (no raw passthrough)', async () => {
-  const { resolveReferralBindError } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-
-  const messages = {
-    alreadyBound: 'Already bound',
-    parentNotBound: 'Parent not bound',
-    selfReferral: 'Self referral',
-    invalidParent: 'Invalid parent',
-    migratedAccount: 'Migrated',
-    systemConfig: 'System config',
-    failed: 'Failed',
-  }
-
-  assert.equal(resolveReferralBindError(new Error('weird rpc english leak'), messages), null)
-})
-
-test('toWalletUserFacingMessage never returns raw RPC text', async () => {
-  const { toWalletUserFacingMessage } = await loadModule(
-    '/src/web3/resolve-contract-error-message.ts',
-  )
-
-  assert.equal(
-    toWalletUserFacingMessage(new Error('execution reverted: 0xdead'), 'Chain fallback'),
-    'Chain fallback',
-  )
-  assert.equal(
-    toWalletUserFacingMessage(
-      { code: 4001, message: 'User rejected the request.' },
-      'Chain fallback',
-    ),
-    null,
-  )
-})
-
-test('resolveExchangeUserFacingMessage maps quote/gate sentinels and never leaks raw RPC', async () => {
-  const { resolveExchangeUserFacingMessage, EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_GATE_FAILED } =
-    await loadModule('/src/web3/resolve-contract-error-message.ts')
-
-  const messages = {
-    walletNotConnected: 'Connect wallet',
-    insufficientAllowance: 'Allowance',
-    insufficientUsd1: 'USD1',
-    purchaseUnavailable: 'Unavailable',
-    transactionCancelled: 'Cancelled',
-    quoteFailed: 'Quote failed',
-  }
-  const walletErrors = {
-    gasLimitTooLow: 'Gas too low',
-    gasEstimateFailed: 'Estimate failed',
-    insufficientFunds: 'No BNB',
-    transactionFailed: 'Tx failed',
-  }
-
-  assert.equal(
-    resolveExchangeUserFacingMessage(EXCHANGE_QUOTE_FAILED, messages, walletErrors, 'Fallback'),
-    'Quote failed',
-  )
-  assert.equal(
-    resolveExchangeUserFacingMessage(
-      new Error(EXCHANGE_SUBMIT_GATE_FAILED),
-      messages,
-      walletErrors,
-      'Fallback',
-    ),
-    'Quote failed',
-  )
-  assert.equal(
-    resolveExchangeUserFacingMessage(
-      new Error('execution reverted: 0xdeadbeef raw'),
-      messages,
-      walletErrors,
-      'Fallback',
-    ),
-    'Fallback',
-  )
-  assert.notEqual(
-    resolveExchangeUserFacingMessage(
-      new Error('execution reverted: 0xdeadbeef raw'),
-      messages,
-      walletErrors,
-      'Fallback',
-    ),
-    'execution reverted: 0xdeadbeef raw',
-  )
-})
-
-test('resolveTeamClaimError never returns normalize throw.message', async () => {
-  const { resolveTeamClaimError } = await loadModule('/src/web3/resolve-contract-error-message.ts')
-
-  const messages = {
-    zeroAmount: 'Zero',
-    invalidSigner: 'Signer',
-    alreadyUsed: 'Used',
-    expired: 'Expired',
-    noOrder: 'No order',
-    failed: 'Claim failed',
-    confirmSyncFailed: 'Sync failed',
-    walletNotConnected: 'Connect',
-  }
-
-  const normalizeThrow = new Error(
-    '领取签名缺少字段: salt。/claim/team-reward 实际返回字段: [signature]',
-  )
-  assert.equal(resolveTeamClaimError(normalizeThrow, messages), 'Claim failed')
-  assert.notEqual(resolveTeamClaimError(normalizeThrow, messages), normalizeThrow.message)
+  assert.equal(getErrorMessage(walletError, t), t.genesis.errors.notBound)
 })

@@ -13,7 +13,6 @@ import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { TokenChip } from '~/app/shell/token-chip'
-import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { Segment } from '~/shared/ui/segment'
 import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
 import { Text } from '~/shared/ui/text'
@@ -288,12 +287,6 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
         )}
 
         {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
-
-        {vm.submitErrorMessage ? (
-          <DappInlineAlert className="mt-3" role="alert">
-            {vm.submitErrorMessage}
-          </DappInlineAlert>
-        ) : null}
       </DappWidgetStack>
     </>
   )

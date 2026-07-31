@@ -2,13 +2,10 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
+import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { exchangeUserFacingMessages } from '~/views/dapp/exchange/exchange-user-facing-messages'
-import { presentSubmitResult } from '~/web3/present-submit-result'
+import { toast } from 'sonner'
 import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
-import { BURN_GATE_ERROR } from '~/views/dapp/exchange/burn/submit-burn-exchange'
-import { readErrorText } from '~/web3/errors/error-text'
 
 /** Session state + i18n + present orchestration → everything `BurnExchangeWidget` renders. */
 export function useBurnExchangeView(burn: BurnExchangeState) {
@@ -36,33 +33,17 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     walletReady: burn.walletReady,
   })
 
-  function burnUserMessage(error: unknown) {
-    const raw = readErrorText(error)
-    const gateMessages = t.exchange.burn.gates
-    if (raw === BURN_GATE_ERROR.paused) return gateMessages.paused
-    if (raw === BURN_GATE_ERROR.belowMin) return gateMessages.belowMin
-    if (raw === BURN_GATE_ERROR.aboveMax) return gateMessages.aboveMax
-    if (raw === BURN_GATE_ERROR.zeroRate) return gateMessages.zeroRate
-
-    return resolveExchangeUserFacingMessage(
-      error,
-      exchangeUserFacingMessages(t),
-      t.wallet.transactionErrors,
-      t.errors.chain.fallback,
-    )
-  }
-
   const gateHint = burn.gate != null ? t.exchange.burn.gates[burn.gate] : null
-  const submitErrorMessage = !burn.error || burn.isSubmitting ? null : burnUserMessage(burn.error)
 
-  usePresentUserFacingError(burn.validationError, burnUserMessage, {
+  usePresentUserFacingError(burn.validationError, (err) => getErrorMessage(err, t), {
     id: 'burn-exchange-quote-error',
     trigger: burn.quoteErrorUpdatedAt,
   })
 
   async function onSubmit() {
+    // Errors toast via useChainMutation → getErrorMessage (avoid double toast).
     const result = await burn.submit()
-    await presentSubmitResult(result, t.exchange.exchangeSuccess, burnUserMessage)
+    if (result.ok) toast.success(t.exchange.exchangeSuccess)
   }
 
   return {
@@ -75,7 +56,6 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     sellBalanceLabel,
     buyBalanceLabel,
     gateHint,
-    submitErrorMessage,
     onSubmit,
   }
 }

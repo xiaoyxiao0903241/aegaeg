@@ -2,14 +2,10 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import {
-  resolveExchangeUserFacingMessage,
-  resolveFlashExchangeError,
-} from '~/web3/resolve-contract-error-message'
+import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
-import { exchangeUserFacingMessages } from '~/views/dapp/exchange/exchange-user-facing-messages'
-import { presentSubmitResult } from '~/web3/present-submit-result'
+import { toast } from 'sonner'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 
 /** Session state + i18n + flip/present orchestration → everything `FlashExchangeWidget` renders. */
@@ -41,30 +37,17 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     walletReady: flash.walletReady,
   })
 
-  function flashUserMessage(error: unknown) {
-    return (
-      resolveFlashExchangeError(error, t.exchange.flash.gates) ??
-      resolveExchangeUserFacingMessage(
-        error,
-        exchangeUserFacingMessages(t),
-        t.wallet.transactionErrors,
-        t.errors.chain.fallback,
-      )
-    )
-  }
-
   const gateHint = flash.usd1Gate != null ? t.exchange.flash.gates[flash.usd1Gate] : null
-  const submitErrorMessage =
-    !flash.error || flash.isSubmitting ? null : flashUserMessage(flash.error)
 
-  usePresentUserFacingError(flash.validationError, flashUserMessage, {
+  usePresentUserFacingError(flash.validationError, (err) => getErrorMessage(err, t), {
     id: 'flash-exchange-quote-error',
     trigger: flash.quoteErrorUpdatedAt,
   })
 
   async function onSubmit() {
+    // Errors toast via useChainMutation → getErrorMessage (avoid double toast).
     const result = await flash.submit()
-    await presentSubmitResult(result, t.exchange.exchangeSuccess, flashUserMessage)
+    if (result.ok) toast.success(t.exchange.exchangeSuccess)
   }
 
   return {
@@ -82,7 +65,6 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     buyLabel,
     sellLabel,
     gateHint,
-    submitErrorMessage,
     onSubmit,
   }
 }

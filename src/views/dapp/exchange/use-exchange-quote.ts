@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery, type QueryKey } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { calcAmountOutMin } from '~/core/exchange/calc-amount-out-min'
 import {
   assertQuotedExchangeStillSubmittable,
@@ -8,19 +8,20 @@ import {
 } from '~/core/exchange/resolve-live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { EXCHANGE_QUOTE_FAILED } from '~/web3/resolve-contract-error-message'
-import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
 
 const DEFAULT_QUOTE_DEBOUNCE_MS = 400
+
+type QuotedSubmitExecute = (helpers: {
+  assertStillSubmittable: (live?: {
+    sellBalance: bigint
+  }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
+}) => Promise<void>
 
 /** 值稳定 `delayMs` 后不再变化时返回。 */
 function useDebouncedValue<T>(value: T, delayMs: number): T {
@@ -74,14 +75,10 @@ export function useExchangeQuote<TQuote>({
   selectQuotedOut,
   onBeforeCap,
 }: UseExchangeQuoteOptions<TQuote>) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState<unknown>(null)
-  /** Blocks re-submit after a pending tx with unknown confirmation outcome. */
-  const [blockResubmit, setBlockResubmit] = useState(false)
-
-  function clearSubmitError() {
-    setSubmitError(null)
-  }
+  const submitOutcomeRef = useRef<{ ok: true } | { ok: false; error: unknown | null }>({
+    ok: false,
+    error: null,
+  })
 
   const {
     amount: sellAmount,
@@ -94,7 +91,7 @@ export function useExchangeQuote<TQuote>({
     balance: sellBalance,
     balancesLoaded,
     sessionReady,
-    onBeforeCap: onBeforeCap ?? clearSubmitError,
+    onBeforeCap,
   })
 
   const debouncedAmountIn = useDebouncedValue(amountIn, debounceMs)
@@ -132,8 +129,6 @@ export function useExchangeQuote<TQuote>({
   /** Bumps on each failed quote fetch so UI can re-toast the same sentinel. */
   const quoteErrorUpdatedAt = amountQuoteQuery.error ? amountQuoteQuery.errorUpdatedAt : 0
 
-  const error = submitError ?? validationError
-
   const sellAmountDisplay = formatTokenAmountInputDisplay(sellAmount)
 
   const buyAmount =
@@ -145,9 +140,27 @@ export function useExchangeQuote<TQuote>({
 
   const needsMaxApproval = walletReady && amountIn > 0n && needsTokenApproval(allowance, amountIn)
 
+  const chainWrite = useChainMutation({
+    path: WRITE_PATH.EXCHANGE,
+    mutation: async (run: () => Promise<void>) => {
+      await run()
+    },
+    onSuccess: () => {
+      clearAmount()
+      submitOutcomeRef.current = { ok: true }
+    },
+    onError: (err) => {
+      // Unknown outcome locks the path inside the envelope → `isLocked` / blockResubmit.
+      submitOutcomeRef.current = { ok: false, error: err }
+    },
+  })
+
+  const isSubmitting = chainWrite.isPending
+  const blockResubmit = chainWrite.isLocked
+
   const canSubmit =
     !isAmountDebouncing &&
-    !isUnknownReceiptLocked(WRITE_PATH.EXCHANGE) &&
+    !blockResubmit &&
     canSubmitQuotedExchange({
       walletReady: writeReady,
       amountIn: debouncedAmountIn,
@@ -163,33 +176,30 @@ export function useExchangeQuote<TQuote>({
       maxQuoteAgeMs: QUERY_STALE_TIME.quote,
     })
 
+  function clearLock() {
+    chainWrite.clearLock()
+  }
+
   function setSellAmountAndUnlock(value: string) {
-    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
-    setBlockResubmit(false)
+    clearLock()
     setSellAmount(value)
   }
 
   function fillPercent(percent: number) {
     if (!walletReady) return
-    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
-    setBlockResubmit(false)
+    clearLock()
     fillSellPercent(percent)
   }
 
   async function runQuotedSubmit(
-    execute: (helpers: {
-      assertStillSubmittable: (live?: {
-        sellBalance: bigint
-      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
-    }) => Promise<void>,
+    execute: QuotedSubmitExecute,
   ): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
     // canSubmit 已要求 !isAmountDebouncing ⇒ amountIn === debouncedAmountIn
     if (!canSubmit || amountIn !== debouncedAmountIn) {
       return { ok: false, error: null }
     }
 
-    setIsSubmitting(true)
-    setSubmitError(null)
+    submitOutcomeRef.current = { ok: false, error: null }
 
     // Live re-gate: force-refresh quote after approve (may exceed maxQuoteAgeMs),
     // then read from query cache — not the render snapshot that started submit.
@@ -221,37 +231,18 @@ export function useExchangeQuote<TQuote>({
         isQuotePending: queryState?.status === 'pending',
         isBalancesLoading: false,
         isSubmitting: false,
-        blockResubmit,
+        blockResubmit: chainWrite.isLocked,
         quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
         maxQuoteAgeMs: QUERY_STALE_TIME.quote,
       })
       return { amountOutMin: liveAmountOutMin, quotedOut: liveQuotedOut }
     }
 
-    const guarded = await submitWithUnknownReceiptLock({
-      path: WRITE_PATH.EXCHANGE,
-      whenLocked: new Error('UNKNOWN_RECEIPT_LOCKED'),
-      run: async () => {
-        await execute({ assertStillSubmittable })
-      },
+    await chainWrite.mutate(async () => {
+      await execute({ assertStillSubmittable })
     })
 
-    setIsSubmitting(false)
-
-    if (!guarded.ok) {
-      if (
-        isUnknownSubmitOutcome(guarded.error) ||
-        (guarded.error instanceof Error && guarded.error.message === 'UNKNOWN_RECEIPT_LOCKED')
-      ) {
-        setBlockResubmit(true)
-      }
-      setSubmitError(guarded.error)
-      return { ok: false, error: guarded.error }
-    }
-
-    setBlockResubmit(false)
-    clearAmount()
-    return { ok: true }
+    return submitOutcomeRef.current
   }
 
   return {
@@ -270,14 +261,11 @@ export function useExchangeQuote<TQuote>({
     canSubmit,
     needsMaxApproval,
     isSubmitting,
-    submitError,
-    setSubmitError,
-    clearSubmitError,
     blockResubmit,
-    setBlockResubmit,
+    clearLock,
     validationError,
     quoteErrorUpdatedAt,
-    error,
+    error: validationError,
     amountQuoteQuery,
     runQuotedSubmit,
   }

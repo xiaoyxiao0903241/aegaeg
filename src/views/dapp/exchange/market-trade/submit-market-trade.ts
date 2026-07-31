@@ -9,14 +9,13 @@ type ActiveWallet = ReturnType<typeof useActiveWallet>
 
 type TradeQuotedSubmitCore = {
   debouncedAmountIn: bigint
-  setSubmitError: (error: unknown) => void
   runQuotedSubmit: (
     run: (helpers: {
       assertStillSubmittable: (live?: {
         sellBalance: bigint
       }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
     }) => Promise<void>,
-  ) => Promise<{ ok: true } | { ok: false; error: unknown }>
+  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
 }
 
 /** Trade Pancake swap submit path (approve + swap + invalidate). Behavior-preserving extract. */
@@ -29,13 +28,12 @@ export async function submitMarketTrade(args: {
   balancesQuery: { refetch: () => Promise<{ data?: { sell: bigint }; error: Error | null }> }
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { account, wallet, pair, path, core, balancesQuery } = args
-  if (!account || !wallet) {
-    const error = WALLET_GATE_ERROR.NOT_CONNECTED
-    core.setSubmitError(error)
-    return { ok: false, error }
-  }
 
-  const result = await core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
+  return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
+    if (!account || !wallet) {
+      throw WALLET_GATE_ERROR.NOT_CONNECTED
+    }
+
     await approveTokenIfNeeded({
       wallet,
       token: pair.sell.address,
@@ -58,6 +56,4 @@ export async function submitMarketTrade(args: {
     invalidateAfterExchange()
     await balancesQuery.refetch()
   })
-  if (result.ok) return { ok: true }
-  return { ok: false, error: result.error }
 }

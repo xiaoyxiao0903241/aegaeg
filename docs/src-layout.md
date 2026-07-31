@@ -53,11 +53,13 @@ src/
 
 ## `hooks/` 白名单
 
-`use-api-data` · `use-capped-token-amount-input` · `use-genesis-promo` · `use-mobile-viewport` · `use-present-user-facing-error` · `use-shareholder-rank` · `queries/use-visible-interval`
+`use-api-data` · `use-capped-token-amount-input` · `use-chain-mutation` · `use-genesis-promo` · `use-mobile-viewport` · `use-present-user-facing-error` · `use-shareholder-rank` · `queries/use-visible-interval`
 
 页专属编排在页袋（如 `use-exchange-quote`、`use-genesis-widget`、`use-claim-reward`）。
 
-跨 Tab **写路径纯函数**（非 hook）：`core/wallet/write-cta.ts`（`canClaimWhen` / `writeCtaDisabled` / `writeCtaLabel` / `formatAmountBalanceLabel`）；`web3/present-submit-result.ts`；`web3/errors/message-from-sentinels.ts`；`app/shell/go-bind-referral.ts`。
+跨 Tab **写路径纯函数**（非 hook）：`core/wallet/write-cta.ts`（`canClaimWhen` / `writeCtaDisabled` / `writeCtaLabel` / `formatAmountBalanceLabel`）；`web3/errors/get-error-message.ts`（`getErrorMessage(error, t)`）；`web3/errors/error-messages.ts`（sentinel / revert → i18n 表）；`app/shell/go-bind-referral.ts`。
+
+链上写：读用 `useQuery`；写用唯一共享 hook **`useChainMutation`**（信封 + `retry: false`；已闩静默；错误 `getErrorMessage` toast；可选 `onError` 仅副作用，返回 `'handled'` 可抑制默认 toast）。Domain 仍在页袋 `submit-*`（只抛错，不包信封）。信封实现 `web3/wallet/submit-with-unknown-receipt-lock.ts` **仅**由 hook 调用。
 
 ## 不变量
 

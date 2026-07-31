@@ -9,12 +9,6 @@ import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
-import {
-  resolveGenesisPurchaseError,
-  resolveWalletTransactionError,
-} from '~/web3/resolve-contract-error-message'
-import { GENESIS_PURCHASE_ERROR } from '~/web3/errors/sentinels'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
@@ -95,52 +89,13 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
     goBindReferral()
   }
 
-  function genesisPurchaseUserMessage(error: unknown) {
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
-      resolveGenesisPurchaseError(error, {
-        insufficientAllowance: t.genesis.insufficientAllowance,
-        insufficientUsd1: t.genesis.insufficientUsd1,
-        purchaseUnavailable: t.genesis.purchaseUnavailable,
-        walletNotConnected: t.genesis.walletNotConnected,
-        notBound: t.genesis.errors.notBound,
-        paused: t.genesis.errors.paused,
-        invalidAmount: t.genesis.errors.invalidAmount,
-        phaseInactive: t.genesis.errors.phaseInactive,
-        belowMin: t.genesis.errors.belowMin,
-        soldOut: t.genesis.errors.soldOut,
-        userLimitExceeded: t.genesis.errors.userLimitExceeded,
-        invalidPhase: t.genesis.errors.invalidPhase,
-        systemConfig: t.genesis.errors.systemConfig,
-      }) ??
-      resolveApiUserFacingError(error, t.errors.api) ??
-      t.errors.chain.fallback
-    )
-  }
-
   async function handlePurchase() {
-    const result = await genesis.submitPurchase()
-    if (result.success) {
-      toast.success(t.genesis.joinSuccess)
-      window.setTimeout(() => {
-        invalidateGenesisPage()
-      }, 2000)
-      return
-    }
-
-    if (result.error) {
-      // GX-R1: referral is gate-only here — deep-link to community for full bind UI.
-      if (result.error === GENESIS_PURCHASE_ERROR.NOT_BOUND) {
-        toast.error(t.genesis.errors.notBound, {
-          action: {
-            label: t.genesis.goBindReferrer,
-            onClick: () => goBindReferral(),
-          },
-        })
-        return
-      }
-      presentUserFacingError(result.error, genesisPurchaseUserMessage)
-    }
+    const ok = await genesis.submitPurchase()
+    if (ok !== true) return
+    toast.success(t.genesis.joinSuccess)
+    window.setTimeout(() => {
+      invalidateGenesisPage()
+    }, 2000)
   }
 
   usePresentUserFacingError(

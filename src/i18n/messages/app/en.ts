@@ -28,6 +28,21 @@ const app = defineMessages({
     },
     chain: {
       fallback: 'On-chain action failed. Please try again later.',
+      /** Handbook §19 + contract-doc tips not covered by domain gate bags. */
+      reverts: {
+        stakeAmountLimit: 'Daily stake limit reached. Lower the amount or wait for reset.',
+        debtCapacityReached: 'Bond capacity is full. Please try again later.',
+        turbineCooldown: 'Cooldown not finished or amount invalid. Refresh silences and retry.',
+        pairNotExist: 'Trading pair does not exist. Check token configuration.',
+        notWinner: 'You are not a winner for this round.',
+        rewardAlreadyClaimed: 'Reward already claimed. Do not claim again.',
+        configNotReady: 'Protocol config is not ready. Please try again later.',
+        exceedsMax: 'Amount exceeds the maximum. Please lower it.',
+        bondTooSmall: 'Bond payout is too small. Increase the purchase amount.',
+        bondTooLarge: 'Bond exceeds max payout. Lower the purchase amount.',
+        stakeNotExist: 'Position missing or already closed. Refresh and try again.',
+        yieldUnavailable: 'No claimable yield or amount too high. Lower amount or wait to accrue.',
+      },
     },
     walletNotConnected: 'Please connect your wallet and sign in first.',
     quoteFailed: 'Quote failed. Please try again later.',

@@ -7,10 +7,7 @@ import { buildReferralSharePath } from '~/shared/config/referral'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
-import {
-  resolveReferralBindError,
-  resolveWalletTransactionError,
-} from '~/web3/resolve-contract-error-message'
+import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { buildCommunityQuickLinkItems } from '~/shared/config/community-links'
 
@@ -23,8 +20,7 @@ export function useCommunityConnectedView() {
   usePresentUserFacingError(
     referral.error,
     (err) =>
-      resolveWalletTransactionError(err, t.wallet.transactionErrors) ??
-      resolveReferralBindError(err, t.community.bindErrors) ??
+      getErrorMessage(err, t) ??
       resolveApiUserFacingError(err, t.errors.api) ??
       t.community.bindErrors.failed,
     {

@@ -1,24 +1,22 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
 import {
-  ASSETS_GATE_ERROR,
   submitXmineActivateWarmup,
   submitXmineClaim,
   submitXmineUnstake,
 } from '~/views/dapp/assets/submit-assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { messageFromSentinels } from '~/web3/errors/message-from-sentinels'
-import { presentSubmitResult } from '~/web3/present-submit-result'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readXminePosition } from '~/web3/assets/assets-read'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 function formatWarmupCountdown(endTime: bigint, nowSec: number): string {
   const left = Math.max(0, Number(endTime) - nowSec)
@@ -37,8 +35,6 @@ export function useAssetsXmineView() {
   const readClient = useChainReadClient()
   const isMobile = useMobileViewport()
   const address = account?.address
-  const locked = isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)
-  const [busy, setBusy] = useState(false)
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [nowSec, setNowSec] = useState(0)
@@ -50,6 +46,32 @@ export function useAssetsXmineView() {
     queryKey: queryKeys.chain.assetsXminePosition(address ?? ''),
     queryFn: () => readXminePosition(address as Address, readClient),
     enabled: walletReady && Boolean(address),
+  })
+
+  const claim = useChainMutation({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    mutation: () => submitXmineClaim({ account, wallet, readClient }),
+    onSuccess: () => {
+      toast.success(t.assets.claim.xmineSuccess)
+    },
+  })
+
+  const activateWarmup = useChainMutation({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    mutation: () => submitXmineActivateWarmup({ account, wallet, readClient }),
+    onSuccess: async () => {
+      toast.success(t.assets.position.activateWarmupSuccess)
+      await positionQuery.refetch()
+    },
+  })
+
+  const unstake = useChainMutation({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    mutation: () => submitXmineUnstake({ account, wallet, readClient }),
+    onSuccess: () => {
+      toast.success(t.assets.redeem.success)
+      setConfirmUnstake(false)
+    },
   })
 
   const position = positionQuery.data
@@ -89,52 +111,19 @@ export function useAssetsXmineView() {
   const voucher = `${BSC_CONTRACTS.xStakingPool.slice(0, 6)}…${BSC_CONTRACTS.xStakingPool.slice(-4)}`
   const totalRows = isEmpty ? 0 : 1
 
-  function toUserMessage(error: unknown) {
-    return messageFromSentinels(
-      error,
-      [
-        [ASSETS_GATE_ERROR.warmupActive, t.assets.gates.warmupActive],
-        [ASSETS_GATE_ERROR.warmupNotEnded, t.assets.gates.warmupNotEnded],
-        [ASSETS_GATE_ERROR.noWarmup, t.assets.gates.noWarmup],
-        [ASSETS_GATE_ERROR.nothingToRedeem, t.assets.gates.nothingToRedeem],
-        [ASSETS_GATE_ERROR.zeroAmount, t.assets.gates.zeroAmount],
-        [ASSETS_GATE_ERROR.unavailable, t.assets.gates.unavailable],
-      ],
-      (err) =>
-        resolveWalletTransactionError(err, t.wallet.transactionErrors) ?? t.errors.chain.fallback,
-    )
+  const busy = claim.isPending || activateWarmup.isPending || unstake.isPending
+  const locked = claim.isLocked
+
+  function handleClaim() {
+    void claim.mutate()
   }
 
-  async function handleClaim() {
-    setBusy(true)
-    try {
-      const result = await submitXmineClaim({ account, wallet, readClient })
-      await presentSubmitResult(result, t.assets.claim.xmineSuccess, toUserMessage)
-    } finally {
-      setBusy(false)
-    }
+  function handleActivateWarmup() {
+    void activateWarmup.mutate()
   }
 
-  async function handleActivateWarmup() {
-    setBusy(true)
-    try {
-      const result = await submitXmineActivateWarmup({ account, wallet, readClient })
-      if (result.ok) await positionQuery.refetch()
-      await presentSubmitResult(result, t.assets.position.activateWarmupSuccess, toUserMessage)
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  async function handleUnstake() {
-    setBusy(true)
-    try {
-      const result = await submitXmineUnstake({ account, wallet, readClient })
-      if (result.ok) setConfirmUnstake(false)
-      await presentSubmitResult(result, t.assets.redeem.success, toUserMessage)
-    } finally {
-      setBusy(false)
-    }
+  function handleUnstake() {
+    void unstake.mutate()
   }
 
   function requestUnstake() {
@@ -142,7 +131,7 @@ export function useAssetsXmineView() {
       setConfirmUnstake(true)
       return
     }
-    void handleUnstake()
+    handleUnstake()
   }
 
   return {

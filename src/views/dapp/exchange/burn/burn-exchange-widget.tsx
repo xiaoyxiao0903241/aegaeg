@@ -110,12 +110,6 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
             {vm.gateHint}
           </DappInlineAlert>
         ) : null}
-
-        {vm.submitErrorMessage ? (
-          <DappInlineAlert className="mt-3" role="alert">
-            {vm.submitErrorMessage}
-          </DappInlineAlert>
-        ) : null}
       </DappWidgetStack>
     </>
   )

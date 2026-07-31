@@ -51,14 +51,19 @@ test('evaluateMixedClaimGate does not treat requested amount as available', () =
   )
 })
 
-test('submitMixedClaim source must call readMixedRewardAvailable (string lock)', async () => {
+test('submitMixedClaim source must call readMixedRewardAvailable; envelope in hook (string lock)', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(
+  const submitSrc = await readFile(
     new URL('../../src/views/dapp/assets/submit-assets.ts', import.meta.url),
     'utf8',
   )
-  assert.match(src, /readMixedRewardAvailable/)
-  assert.match(src, /dualGateMixedClaim/)
-  assert.match(src, /submitWithUnknownReceiptLock/)
-  assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
+  const hookSrc = await readFile(
+    new URL('../../src/hooks/use-chain-mutation.ts', import.meta.url),
+    'utf8',
+  )
+  assert.match(submitSrc, /readMixedRewardAvailable/)
+  assert.match(submitSrc, /dualGateMixedClaim/)
+  assert.doesNotMatch(submitSrc, /submitWithUnknownReceiptLock/)
+  assert.doesNotMatch(submitSrc, /rewardAvailable:\s*amount/)
+  assert.match(hookSrc, /submitWithUnknownReceiptLock/)
 })

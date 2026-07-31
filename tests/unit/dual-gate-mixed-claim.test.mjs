@@ -47,24 +47,34 @@ test('dualGateMixedClaim returns narrowed ready when both snapshots pass', async
   })
 })
 
-test('submitMixedClaim source uses dualGate + unknown envelope (string lock)', async () => {
+test('submitMixedClaim source uses dualGate; envelope lives in useChainMutation (string lock)', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(
+  const submitSrc = await readFile(
     new URL('../../src/views/dapp/assets/submit-assets.ts', import.meta.url),
     'utf8',
   )
-  assert.match(src, /dualGateMixedClaim/)
-  assert.match(src, /submitWithUnknownReceiptLock/)
-  assert.match(src, /readMixedRewardAvailable/)
-  assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
+  const hookSrc = await readFile(
+    new URL('../../src/hooks/use-chain-mutation.ts', import.meta.url),
+    'utf8',
+  )
+  assert.match(submitSrc, /dualGateMixedClaim/)
+  assert.match(submitSrc, /readMixedRewardAvailable/)
+  assert.doesNotMatch(submitSrc, /submitWithUnknownReceiptLock/)
+  assert.doesNotMatch(submitSrc, /rewardAvailable:\s*amount/)
+  assert.match(hookSrc, /submitWithUnknownReceiptLock/)
 })
 
-test('submitRelease source uses unknown envelope (string lock)', async () => {
+test('submitRelease source has no envelope; hook owns unknown latch (string lock)', async () => {
   const { readFile } = await import('node:fs/promises')
-  const src = await readFile(
+  const submitSrc = await readFile(
     new URL('../../src/views/dapp/release/submit-release.ts', import.meta.url),
     'utf8',
   )
-  assert.match(src, /submitWithUnknownReceiptLock/)
-  assert.doesNotMatch(src, /lockUnknownReceipt\(/)
+  const hookSrc = await readFile(
+    new URL('../../src/hooks/use-chain-mutation.ts', import.meta.url),
+    'utf8',
+  )
+  assert.doesNotMatch(submitSrc, /submitWithUnknownReceiptLock/)
+  assert.doesNotMatch(submitSrc, /lockUnknownReceipt\(/)
+  assert.match(hookSrc, /submitWithUnknownReceiptLock/)
 })

@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { toast } from 'sonner'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/presale-write'
@@ -15,14 +15,11 @@ import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { readPresalePaused } from '~/web3/presale/presale-read'
 import { fetchLiveGenesisPostApproveGate } from '~/views/dapp/genesis/fetch-live-genesis-post-approve-gate'
-import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
-import { WRITE_PATH, isUnknownReceiptLocked } from '~/web3/wallet/unknown-receipt-lock'
-
-export interface GenesisPurchaseResult {
-  success: boolean
-  /** Raw wallet / contract error — keep for selector-based i18n resolution. */
-  error?: unknown
-}
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useI18n } from '~/i18n/use-i18n'
+import { goBindReferral } from '~/app/shell/go-bind-referral'
+import { readErrorText } from '~/web3/errors/error-text'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 /** Survives Genesis session unmount when user switches tabs mid-tx. */
 const genesisPurchaseGate = { inFlight: false }
@@ -47,7 +44,7 @@ type UseGenesisPurchaseActionsArgs = {
   }
 }
 
-/** Approve → re-gate → purchase orchestration for Genesis. */
+/** Approve → re-gate → purchase orchestration for Genesis. Envelope in `useChainMutation`. */
 export function useGenesisPurchaseActions({
   wallet: { account, wallet, address },
   phase: { activePhase, isPaused, isPausedUnknown, isBoundQueryData },
@@ -55,57 +52,68 @@ export function useGenesisPurchaseActions({
 }: UseGenesisPurchaseActionsArgs) {
   const queryClient = useQueryClient()
   const readClient = useChainReadClient()
-  const [submittingAction, setSubmittingAction] = useState<'approve' | 'purchase' | null>(null)
+  const { messages: t } = useI18n()
 
   async function refresh() {
     invalidatePresaleChainQueries(address)
   }
 
-  async function approve(): Promise<GenesisPurchaseResult> {
-    if (!account || !wallet) {
-      return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
-    }
-    if (!canPurchase) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
-    if (isApproved) {
-      return { success: true }
-    }
+  const purchaseMutation = useChainMutation({
+    path: WRITE_PATH.GENESIS,
+    mutation: async (): Promise<true> => {
+      if (genesisPurchaseGate.inFlight) {
+        throw GENESIS_PURCHASE_ERROR.UNAVAILABLE
+      }
+      if (!account || !wallet) {
+        throw WALLET_GATE_ERROR.NOT_CONNECTED
+      }
+      // Contract requires a bound referrer before purchase; block early with a
+      // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
+      // Fail-closed while bind status is still loading (`undefined`).
+      if (isBoundQueryData !== true) {
+        throw GENESIS_PURCHASE_ERROR.NOT_BOUND
+      }
+      if (isPaused || isPausedUnknown) {
+        throw GENESIS_PURCHASE_ERROR.UNAVAILABLE
+      }
+      if (!activePhase || !canPurchase) {
+        throw GENESIS_PURCHASE_ERROR.UNAVAILABLE
+      }
 
-    setSubmittingAction('approve')
-    const guarded = await submitWithUnknownReceiptLock({
-      path: WRITE_PATH.GENESIS,
-      whenLocked: GENESIS_PURCHASE_ERROR.UNAVAILABLE,
-      run: async () => {
-        await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
-        if (address) {
-          queryClient.setQueryData(
-            queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
-            purchaseAmount,
-          )
+      genesisPurchaseGate.inFlight = true
+      try {
+        if (needsApproval && !isApproved) {
+          await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
+          if (address) {
+            queryClient.setQueryData(
+              queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+              purchaseAmount,
+            )
+          }
         }
-      },
-    })
-    setSubmittingAction(null)
-    if (!guarded.ok) {
-      return { success: false, error: guarded.error }
-    }
-    return { success: true }
-  }
 
-  async function purchase(): Promise<GenesisPurchaseResult> {
-    if (!account || !wallet) {
-      return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
-    }
-    if (!activePhase || !canPurchase) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
+        // Live re-gate always (money-path: [approve?] → live bind/pause → purchase).
+        const gate = await fetchLiveGenesisPostApproveGate({
+          address,
+          fetchIsBound: (addr) =>
+            queryClient.fetchQuery({
+              queryKey: queryKeys.chain.referralIsBound(addr),
+              queryFn: () => readIsBindReferral(addr, readClient),
+              staleTime: 0,
+            }),
+          fetchPaused: () =>
+            queryClient.fetchQuery({
+              queryKey: queryKeys.chain.presalePaused,
+              queryFn: () => readPresalePaused(readClient),
+              staleTime: 0,
+            }),
+        })
+        if (!gate.ok) {
+          throw gate.reason === 'not_bound'
+            ? GENESIS_PURCHASE_ERROR.NOT_BOUND
+            : GENESIS_PURCHASE_ERROR.UNAVAILABLE
+        }
 
-    setSubmittingAction('purchase')
-    const guarded = await submitWithUnknownReceiptLock({
-      path: WRITE_PATH.GENESIS,
-      whenLocked: GENESIS_PURCHASE_ERROR.UNAVAILABLE,
-      run: async () => {
         const [balance, approved] = await Promise.all([
           readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
           readErc20Allowance(
@@ -140,76 +148,30 @@ export function useGenesisPurchaseActions({
           phase: activePhase.index,
           amount: purchaseAmount,
         })
-      },
-    })
-    setSubmittingAction(null)
-    if (!guarded.ok) {
-      return { success: false, error: guarded.error }
-    }
-    invalidateAfterGenesisPurchase(account.address, purchaseAmount)
-    return { success: true }
-  }
-
-  async function submitPurchase(): Promise<GenesisPurchaseResult> {
-    if (genesisPurchaseGate.inFlight || isUnknownReceiptLocked(WRITE_PATH.GENESIS)) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
-
-    // Contract requires a bound referrer before purchase; block early with a
-    // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
-    // Fail-closed while bind status is still loading (`undefined`).
-    if (isBoundQueryData !== true) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.NOT_BOUND }
-    }
-    if (isPaused || isPausedUnknown) {
-      return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
-    }
-
-    genesisPurchaseGate.inFlight = true
-    try {
-      if (needsApproval) {
-        const approveResult = await approve()
-        if (!approveResult.success) {
-          return approveResult
-        }
+        invalidateAfterGenesisPurchase(account.address, purchaseAmount)
+        return true
+      } finally {
+        genesisPurchaseGate.inFlight = false
       }
-      // Live re-gate always (money-path: [approve?] → live bind/pause → purchase).
-      const gate = await fetchLiveGenesisPostApproveGate({
-        address,
-        fetchIsBound: (addr) =>
-          queryClient.fetchQuery({
-            queryKey: queryKeys.chain.referralIsBound(addr),
-            queryFn: () => readIsBindReferral(addr, readClient),
-            staleTime: 0,
-          }),
-        fetchPaused: () =>
-          queryClient.fetchQuery({
-            queryKey: queryKeys.chain.presalePaused,
-            queryFn: () => readPresalePaused(readClient),
-            staleTime: 0,
-          }),
+    },
+    onError: (error) => {
+      // GX-R1: referral gate — action toast replaces default (suppress double toast).
+      if (readErrorText(error) !== GENESIS_PURCHASE_ERROR.NOT_BOUND) return
+      toast.error(t.genesis.errors.notBound, {
+        id: 'genesis-not-bound',
+        action: {
+          label: t.genesis.goBindReferrer,
+          onClick: () => goBindReferral(),
+        },
       })
-      if (!gate.ok) {
-        return {
-          success: false,
-          error:
-            gate.reason === 'not_bound'
-              ? GENESIS_PURCHASE_ERROR.NOT_BOUND
-              : GENESIS_PURCHASE_ERROR.UNAVAILABLE,
-        }
-      }
-      return await purchase()
-    } finally {
-      genesisPurchaseGate.inFlight = false
-    }
-  }
+      return 'handled'
+    },
+  })
 
   return {
     refresh,
-    approve,
-    purchase,
-    submitPurchase,
-    isSubmitting: submittingAction !== null,
-    submittingAction,
+    submitPurchase: () => purchaseMutation.mutate(),
+    isSubmitting: purchaseMutation.isPending || genesisPurchaseGate.inFlight,
+    isLocked: purchaseMutation.isLocked || genesisPurchaseGate.inFlight,
   }
 }

@@ -12,8 +12,9 @@ type ActiveAccount = ReturnType<typeof useActiveAccount>
 type ActiveWallet = ReturnType<typeof useActiveWallet>
 
 type TurbineSubmitCore = {
-  setSubmitError: (error: unknown) => void
-  runSubmit: (run: () => Promise<void>) => Promise<{ ok: true } | { ok: false; error: unknown }>
+  runSubmit: (
+    run: () => Promise<void>,
+  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
 }
 
 /**
@@ -28,21 +29,18 @@ export async function submitTurbineUnlock(args: {
   refetchBalances: () => Promise<QueryObserverResult<{ usd1: bigint }>>
   refetchQuota: () => Promise<QueryObserverResult<bigint>>
   refetchUsdQuote: () => Promise<QueryObserverResult<bigint>>
-}): Promise<{ ok: true } | { ok: false; error: unknown }> {
+}): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { account, wallet, core, unlockAmountAgx, refetchBalances, refetchQuota, refetchUsdQuote } =
     args
-  if (!account || !wallet) {
-    const error = WALLET_GATE_ERROR.NOT_CONNECTED
-    core.setSubmitError(error)
-    return { ok: false, error }
-  }
-  if (unlockAmountAgx <= 0n) {
-    const error = new Error('TURBINE_ZERO_AMOUNT')
-    core.setSubmitError(error)
-    return { ok: false, error }
-  }
 
-  const result = await core.runSubmit(async () => {
+  return core.runSubmit(async () => {
+    if (!account || !wallet) {
+      throw WALLET_GATE_ERROR.NOT_CONNECTED
+    }
+    if (unlockAmountAgx <= 0n) {
+      throw new Error('TURBINE_ZERO_AMOUNT')
+    }
+
     // Pre-approve quote (may drift during wallet signature).
     const preQuote = await refetchUsdQuote()
     if (preQuote.error || preQuote.data === undefined || preQuote.data <= 0n) {
@@ -78,8 +76,6 @@ export async function submitTurbineUnlock(args: {
     invalidateAfterExchange()
     await Promise.all([refetchBalances(), refetchQuota()])
   })
-  if (result.ok) return { ok: true }
-  return { ok: false, error: result.error }
 }
 
 export async function submitTurbineClaim(args: {
@@ -88,20 +84,17 @@ export async function submitTurbineClaim(args: {
   core: TurbineSubmitCore
   index: number
   refetchSilences: () => Promise<QueryObserverResult>
-}): Promise<{ ok: true } | { ok: false; error: unknown }> {
+}): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { account, wallet, core, index, refetchSilences } = args
-  if (!account || !wallet) {
-    const error = WALLET_GATE_ERROR.NOT_CONNECTED
-    core.setSubmitError(error)
-    return { ok: false, error }
-  }
 
-  const result = await core.runSubmit(async () => {
+  return core.runSubmit(async () => {
+    if (!account || !wallet) {
+      throw WALLET_GATE_ERROR.NOT_CONNECTED
+    }
+
     await claimCooledGagx({ wallet, index })
     invalidateAfterExchange()
     // Handbook §16.5: claim uses swap-and-pop — must re-fetch the whole list.
     await refetchSilences()
   })
-  if (result.ok) return { ok: true }
-  return { ok: false, error: result.error }
 }

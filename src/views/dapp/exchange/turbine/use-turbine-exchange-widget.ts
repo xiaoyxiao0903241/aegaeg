@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -24,13 +24,8 @@ import {
 } from '~/views/dapp/exchange/turbine/submit-turbine-exchange'
 import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-rate'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
-import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 export type TurbineSegment = 'unlock' | 'claim'
 
@@ -58,10 +53,11 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
   const walletReady = hasWalletAccount(account)
 
   const [segment, setSegment] = useState<TurbineSegment>('unlock')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState<unknown>(null)
-  const [blockResubmit, setBlockResubmit] = useState(false)
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)
+  const submitOutcomeRef = useRef<{ ok: true } | { ok: false; error: unknown | null }>({
+    ok: false,
+    error: null,
+  })
 
   const quotaQuery = useQuery({
     queryKey: queryKeys.chain.turbineQuota(address ?? ''),
@@ -107,24 +103,36 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     balance: quota,
     balancesLoaded,
     sessionReady,
-    onBeforeCap: () => setSubmitError(null),
   })
 
+  const chainWrite = useChainMutation({
+    path: WRITE_PATH.EXCHANGE,
+    mutation: async (run: () => Promise<void>) => {
+      await run()
+    },
+    onSuccess: () => {
+      clearAmountRaw()
+      submitOutcomeRef.current = { ok: true }
+    },
+    onError: (err) => {
+      submitOutcomeRef.current = { ok: false, error: err }
+    },
+  })
+
+  const isSubmitting = chainWrite.isPending
+  const blockResubmit = chainWrite.isLocked
+
+  function clearLock() {
+    chainWrite.clearLock()
+  }
+
   function setUnlockAmount(value: string) {
-    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
-    setBlockResubmit(false)
+    clearLock()
     setUnlockAmountRaw(value)
   }
 
-  function clearAmount() {
-    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
-    setBlockResubmit(false)
-    clearAmountRaw()
-  }
-
   function fillPercent(percent: number) {
-    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
-    setBlockResubmit(false)
+    clearLock()
     fillPercentRaw(percent)
   }
 
@@ -192,7 +200,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     writeReady &&
     !isSubmitting &&
     !blockResubmit &&
-    !isUnknownReceiptLocked(WRITE_PATH.EXCHANGE) &&
     unlockAmountIn > 0n &&
     unlockAmountIn <= quota &&
     usdNeeded > 0n &&
@@ -200,36 +207,19 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     !quoteQuery.isFetching
 
   async function runSubmit(run: () => Promise<void>) {
-    setIsSubmitting(true)
-    setSubmitError(null)
-    const guarded = await submitWithUnknownReceiptLock({
-      path: WRITE_PATH.EXCHANGE,
-      whenLocked: new Error('UNKNOWN_RECEIPT_LOCKED'),
-      run,
+    submitOutcomeRef.current = { ok: false, error: null }
+    await chainWrite.mutate(async () => {
+      await run()
     })
-    setIsSubmitting(false)
     setClaimingIndex(null)
-
-    if (!guarded.ok) {
-      if (
-        isUnknownSubmitOutcome(guarded.error) ||
-        (guarded.error instanceof Error && guarded.error.message === 'UNKNOWN_RECEIPT_LOCKED')
-      ) {
-        setBlockResubmit(true)
-      }
-      setSubmitError(guarded.error)
-      return { ok: false as const, error: guarded.error }
-    }
-
-    clearAmount()
-    return { ok: true as const }
+    return submitOutcomeRef.current
   }
 
   async function submitUnlock() {
     return submitTurbineUnlock({
       account,
       wallet,
-      core: { setSubmitError, runSubmit },
+      core: { runSubmit },
       unlockAmountAgx: unlockAmountIn,
       refetchBalances: () => balancesQuery.refetch(),
       refetchQuota: () => quotaQuery.refetch(),
@@ -242,7 +232,7 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     return submitTurbineClaim({
       account,
       wallet,
-      core: { setSubmitError, runSubmit },
+      core: { runSubmit },
       index,
       refetchSilences: () => silencesQuery.refetch(),
     })
@@ -296,7 +286,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     isBalancesLoading,
     isSubmitting,
     claimingIndex,
-    error: submitError,
     submitUnlock,
     submitClaim,
   }
