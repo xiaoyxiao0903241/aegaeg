@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -10,20 +8,11 @@ import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
 import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
-
-type GrantRecordsTab = 'issue' | 'claim'
+import { useRewardsGrantContentView } from '~/views/dapp/rewards/detail/use-rewards-grant-content-view'
 
 export function RewardsGrantContent() {
-  const { messages: t } = useI18n()
-  const grant = t.rewards.grant
-  const [recordsTab, setRecordsTab] = useState<GrantRecordsTab>('issue')
-
-  const recordsTabOptions: Array<{ label: string; value: GrantRecordsTab }> = [
-    { label: grant.recordsTabIssue, value: 'issue' },
-    { label: grant.recordsTabClaim, value: 'claim' },
-  ]
-
-  const isIssue = recordsTab === 'issue'
+  const { t, grant, recordsTab, setRecordsTab, recordsTabOptions, isIssue } =
+    useRewardsGrantContentView()
 
   return (
     <DappDetailPage>

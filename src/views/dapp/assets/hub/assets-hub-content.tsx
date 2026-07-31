@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -9,22 +7,19 @@ import { Text } from '~/shared/ui/text'
 import { Card } from '~/shared/ui/card'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hub-overview-stats'
+import { useAssetsHubContentView } from '~/views/dapp/assets/hub/use-assets-hub-content-view'
 
 export function AssetsHubContent() {
-  const { messages: t } = useI18n()
-  const overview = t.assets.hub.overview
-  const rebase = t.assets.hub.rebase
-  const values = useAssetsHubOverviewStats()
-  const [bufferAsset, setBufferAsset] = useState<'agx' | 'gagx'>('agx')
-
-  const bufferTotal = bufferAsset === 'agx' ? values.bufferTotal : values.bufferGagxTotal
-  const bufferTotalApprox = bufferAsset === 'agx' ? values.bufferTotalApprox : '≈ —'
-  const bufferReleased = bufferAsset === 'agx' ? values.bufferReleased : values.bufferGagxReleased
-  const bufferReleasedApprox = bufferAsset === 'agx' ? values.bufferReleasedApprox : '≈ —'
-  const bufferLabel = bufferAsset === 'agx' ? overview.bufferAssetAgx : overview.bufferAssetGagx
-  const bufferIcon =
-    bufferAsset === 'agx' ? tokenCarouselIcons.agxIcon : tokenCarouselIcons.gagxIcon
+  const vm = useAssetsHubContentView()
+  const { t, overview, rebase, values, setBufferAsset } = vm
+  const {
+    bufferTotal,
+    bufferTotalApprox,
+    bufferReleased,
+    bufferReleasedApprox,
+    bufferLabel,
+    bufferIcon,
+  } = vm
 
   return (
     <DappDetailPage>

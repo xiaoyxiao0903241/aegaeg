@@ -1,15 +1,4 @@
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { useState } from 'react'
-import { useReleaseViewStore } from '~/stores/release-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { toast } from 'sonner'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
-import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
@@ -17,51 +6,17 @@ import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
-import { formatReleasePct } from '~/views/dapp/release/release-display'
-import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
-
-const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-buffer-view'
 
 export function ReleaseBufferWidget() {
-  const { messages: t } = useI18n()
-  const setView = useReleaseViewStore((state) => state.setView)
-  const { walletReady } = useDappShell()
-  const { writeReady } = useWriteReadiness()
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
-  const bufferQuery = useReleaseBufferSnapshot(walletReady)
-  const [pending, setPending] = useState(false)
-  const locked = isUnknownReceiptLocked(WRITE_PATH.RELEASE_CLAIM)
-  const dash = t.release.dash
-
-  const claimable = bufferQuery.data?.totalClaimable ?? 0n
-  const releasing = bufferQuery.data?.totalReleasing ?? 0n
-  const canClaim = walletReady && writeReady && !locked && claimable > 0n
-  const pctLabel = formatReleasePct(claimable, releasing)
-
-  async function onClaim() {
-    if (!canClaim) return
-    setPending(true)
-    try {
-      const result = await submitReleaseBufferClaim({ account, wallet, readClient })
-      if (!result.ok) {
-        toast.error(t.release.errors.claimFailed)
-        return
-      }
-      toast.success(t.release.buffer.claimSuccess)
-      await bufferQuery.refetch()
-    } finally {
-      setPending(false)
-    }
-  }
+  const vm = useReleaseBufferView()
+  const { t } = vm
 
   return (
     <>
       <DappTabHeader
         backText={t.release.backToHub}
-        onBack={() => setView('hub')}
+        onBack={vm.onBack}
         subtitle={t.release.buffer.intro}
         title={t.release.buffer.title}
       />
@@ -87,31 +42,32 @@ export function ReleaseBufferWidget() {
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.released}{' '}
                 <Text as="span" className="font-semibold text-primary" variant="caption">
-                  {walletReady ? `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX` : dash}
+                  {vm.claimableLabel}
                 </Text>
               </Text>
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.releasing}{' '}
                 <Text as="span" className="font-semibold text-foreground" variant="caption">
-                  {walletReady ? `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX` : dash}
+                  {vm.releasingLabel}
                 </Text>
               </Text>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary"
-                style={{ width: walletReady ? pctLabel : '0%' }}
-              />
+              <div className="h-full rounded-full bg-primary" style={{ width: vm.progressWidth }} />
             </div>
             <div className="flex justify-between gap-2">
               <Text as="span" tone="muted-foreground" variant="caption">
-                {t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))}
+                {vm.releasedPctLabel}
               </Text>
               <Text as="span" tone="muted-foreground" variant="caption">
-                {walletReady ? '≈ —' : dash}
+                {vm.valueHint}
               </Text>
             </div>
-            <Button disabled={!canClaim || pending} onClick={() => void onClaim()} type="button">
+            <Button
+              disabled={!vm.canClaim || vm.pending}
+              onClick={() => void vm.onClaim()}
+              type="button"
+            >
               {t.release.buffer.claim}
             </Button>
           </Card.Content>
@@ -138,13 +94,13 @@ export function ReleaseBufferWidget() {
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.released}{' '}
                 <Text as="span" className="font-semibold text-primary" variant="caption">
-                  {dash} gAGX
+                  {vm.dash} gAGX
                 </Text>
               </Text>
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.releasing}{' '}
                 <Text as="span" className="font-semibold text-foreground" variant="caption">
-                  {dash} gAGX
+                  {vm.dash} gAGX
                 </Text>
               </Text>
             </div>
@@ -168,7 +124,7 @@ export function ReleaseBufferWidget() {
           </Card.Content>
         </Card>
 
-        {walletReady ? null : <DappWidgetConnectPromo />}
+        {vm.walletReady ? null : <DappWidgetConnectPromo />}
       </DappWidgetStack>
     </>
   )

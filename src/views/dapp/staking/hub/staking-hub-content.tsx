@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -7,22 +5,15 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatGroupedNumber } from '~/shared/api/format-display'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Card } from '~/shared/ui/card'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
-
-const PLACEHOLDER = '—'
+import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
 
 /** Figma hub right column `4371:225`: section titles body-lg 18. */
 const hubSectionTitleClass = 'text-[1.125rem] leading-normal tracking-normal'
-
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 type MetricTone = 'default' | 'accent'
 type MetricIcon = 'agx' | 'usd1' | null
@@ -69,25 +60,20 @@ function isHubMetricId(id: string): id is HubMetricId {
 
 /** Hub right rail: overview grid + period table + chart chrome + FAQ (dynamic figures may be —). */
 export function StakingHubContent() {
-  const { messages: t } = useI18n()
-  const [tableSeg, setTableSeg] = useState('stake')
-  const [chartMetric, setChartMetric] = useState('tvl')
-  const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
-  const agxPriceQuery = usePresaleAgxPriceQuery()
-
-  const overview = t.staking.hub.overview
-  const table = t.staking.hub.periodTable
-  const chart = t.staking.hub.chart
-
-  const agxPriceLabel =
-    agxPriceQuery.data != null
-      ? formatGroupedNumber(formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS), {
-          digits: 2,
-          prefix: '$',
-        })
-      : agxPriceQuery.isPending
-        ? '…'
-        : PLACEHOLDER
+  const {
+    t,
+    tableSeg,
+    setTableSeg,
+    chartMetric,
+    setChartMetric,
+    chartRange,
+    setChartRange,
+    agxPriceLabel,
+    overview,
+    table,
+    chart,
+    placeholder: PLACEHOLDER,
+  } = useStakingHubContentView()
 
   function metricValue(id: HubMetricId): string {
     if (id === 'price') return agxPriceLabel

@@ -1,23 +1,10 @@
-import { useEffect, useEffectEvent } from 'react'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useReferral } from '~/views/dapp/community/use-referral'
-import { formatReferralLinkDisplay } from '~/views/dapp/community/community-display'
-import { buildReferralSharePath } from '~/shared/config/referral'
-import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { QuickLinks } from '~/app/shell/quick-links'
+import { useI18n } from '~/i18n/use-i18n'
 import { buildCommunityQuickLinkItems } from '~/shared/config/community-links'
-import { toast } from 'sonner'
-import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
-import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
-import {
-  resolveReferralBindError,
-  resolveWalletTransactionError,
-} from '~/web3/resolve-contract-error-message'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
+import { useCommunityConnectedView } from '~/views/dapp/community/use-community-connected-view'
 import {
   CommunityReferralLinkCard,
   CommunityReferrerBindCard,
@@ -31,44 +18,16 @@ export function CommunityWidget() {
 }
 
 function CommunityConnectedWidget() {
-  const { messages: t } = useI18n()
-  const account = useActiveAccount()
-  const referral = useReferral()
-  const { error: referralError, clearError: clearReferralError } = referral
-  const referralLink = account ? formatReferralLinkDisplay(account.address) : '—'
-
-  async function copyReferralLink() {
-    if (!account) return
-    const url = `${getRuntimeOrigin()}${window.location.pathname}${buildReferralSharePath(account.address)}`
-    const result = await copyTextToClipboard(url)
-    if (result === 'copied') toast.success(t.wallet.copied)
-    else if (result === 'failed') toast.error(t.wallet.copyFailed)
-  }
-
-  async function copyReferrerAddress() {
-    if (!referral.referrer) return
-    const result = await copyTextToClipboard(referral.referrer)
-    if (result === 'copied') toast.success(t.wallet.copied)
-    else if (result === 'failed') toast.error(t.wallet.copyFailed)
-  }
-
-  const presentReferralError = useEffectEvent((error: unknown) => {
-    presentUserFacingError(
-      error,
-      (err) =>
-        resolveWalletTransactionError(err, t.wallet.transactionErrors) ??
-        resolveReferralBindError(err, t.community.bindErrors) ??
-        resolveApiUserFacingError(err, t.errors.api) ??
-        t.community.bindErrors.failed,
-      { id: 'community-referral-error' },
-    )
-    clearReferralError()
-  })
-
-  useEffect(() => {
-    if (!referralError) return
-    presentReferralError(referralError)
-  }, [referralError])
+  const {
+    t,
+    account,
+    referral,
+    referralLink,
+    quickLinkItems,
+    onCopyReferralLink,
+    onCopyReferrerAddress,
+    onBind,
+  } = useCommunityConnectedView()
 
   return (
     <DappWidgetFrame subtitle={t.community.intro} title={t.community.title}>
@@ -77,7 +36,7 @@ function CommunityConnectedWidget() {
           copyLabel={t.community.shareReferral}
           disabled={!account}
           linkLabel={t.community.referralLink}
-          onCopy={() => void copyReferralLink()}
+          onCopy={() => void onCopyReferralLink()}
           referralLink={referralLink}
         />
       ) : null}
@@ -87,7 +46,7 @@ function CommunityConnectedWidget() {
           addressLabel={t.community.referrer}
           copyLabel={t.common.copy}
           note={t.community.referralBondPermanent}
-          onCopy={() => void copyReferrerAddress()}
+          onCopy={() => void onCopyReferrerAddress()}
           referrer={referral.referrer}
           referrerLabel={referral.referrerLabel}
         />
@@ -98,9 +57,7 @@ function CommunityConnectedWidget() {
           hint={t.community.referrerHint}
           inputLabel={t.community.referrerPlaceholder}
           isSubmitting={referral.isSubmitting}
-          onBind={() =>
-            void referral.bind().then((ok) => ok && toast.success(t.community.bindReferrerSuccess))
-          }
+          onBind={() => void onBind()}
           onInputChange={referral.setReferrerInput}
           placeholder={t.community.referrerPlaceholder}
           referrerLabel={t.community.referrer}
@@ -108,38 +65,28 @@ function CommunityConnectedWidget() {
         />
       )}
 
-      <CommunityQuickLinks />
+      <QuickLinks items={quickLinkItems} />
     </DappWidgetFrame>
   )
 }
 
 function CommunityDisconnectedWidget() {
-  const { messages: t } = useI18n()
+  const { locale, messages: t } = useI18n()
+  const quickLinkItems = buildCommunityQuickLinkItems(
+    {
+      docs: t.community.docs,
+      youtube: t.community.youtube,
+      medium: t.community.medium,
+      twitter: t.community.twitter,
+      telegram: t.community.telegram,
+    },
+    locale,
+  )
 
   return (
     <DappWidgetFrame subtitle={t.community.disconnectedIntro} title={t.community.title}>
-      <CommunityQuickLinks />
+      <QuickLinks items={quickLinkItems} />
       <DappWidgetConnectPromo />
     </DappWidgetFrame>
-  )
-}
-
-function CommunityQuickLinks({ className }: { className?: string }) {
-  const { locale, messages: t } = useI18n()
-
-  return (
-    <QuickLinks
-      className={className}
-      items={buildCommunityQuickLinkItems(
-        {
-          docs: t.community.docs,
-          youtube: t.community.youtube,
-          medium: t.community.medium,
-          twitter: t.community.twitter,
-          telegram: t.community.telegram,
-        },
-        locale,
-      )}
-    />
   )
 }

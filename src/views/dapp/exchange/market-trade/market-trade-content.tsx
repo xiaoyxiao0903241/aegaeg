@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
 import { exchangeTokenKeys, type ExchangeTokenKey } from '~/app/data'
+import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -13,27 +12,24 @@ import {
   ExchangeMetricCard,
   ExchangeMetricCardSkeleton,
 } from '~/views/dapp/exchange/exchange-detail-primitives'
+import { useMarketTradeContentView } from '~/views/dapp/exchange/market-trade/use-market-trade-content-view'
 
 /** Figma PC `4433:220` about carousel order — same as flash. */
 const TRADE_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'agx'] as const
 
 export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
-  const { messages: t } = useI18n()
-  /** Overview follows current sell→buy spot (proto: changes when picking X). */
-  const poolRateLabel = trade.exchangePriceLabel
-  const poolRateLoading = trade.isExchangePriceQuoting
-  const [faqToken, setFaqToken] = useState<ExchangeTokenKey>('trade')
-  const faqItems = t.exchange.faq.tabs[faqToken].items
+  const vm = useMarketTradeContentView(trade)
+  const { t } = vm
 
   return (
     <DappDetailPage>
       <section>
         <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
         <MetricGrid columns={2}>
-          {poolRateLoading && !poolRateLabel ? (
+          {vm.poolRateLoading && !vm.poolRateLabel ? (
             <ExchangeMetricCardSkeleton />
           ) : (
-            <ExchangeMetricCard label={t.exchange.exchangeRate} value={poolRateLabel || '—'} />
+            <ExchangeMetricCard label={t.exchange.exchangeRate} value={vm.poolRateLabel || '—'} />
           )}
           <ExchangeMetricCard label={t.exchange.settlement} value={t.exchange.settlementValue} />
         </MetricGrid>
@@ -46,8 +42,8 @@ export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.tabsTitle}</DappContentHeading>
-        <MarketTradeFaqTabs activeToken={faqToken} onSelect={setFaqToken} />
-        <FaqList items={faqItems} key={faqToken} variant="dapp" />
+        <MarketTradeFaqTabs activeToken={vm.faqToken} onSelect={vm.setFaqToken} />
+        <FaqList items={vm.faqItems} key={vm.faqToken} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

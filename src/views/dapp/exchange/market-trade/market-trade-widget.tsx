@@ -1,9 +1,5 @@
-import { useEffect, useEffectEvent, useState } from 'react'
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { toast } from 'sonner'
 import { cn } from '~/shared/lib/utils'
-import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
@@ -12,150 +8,33 @@ import { ExchangeSlippageModal } from '~/views/dapp/exchange/market-trade/exchan
 import { ExchangeTokenPicker } from '~/views/dapp/exchange/market-trade/exchange-token-picker'
 import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { useDappShell } from '~/app/use-dapp-shell'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { isTradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
-import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
-import { ExchangeFlowButton, exchangeFlipCard } from '~/views/dapp/exchange/exchange-flow-button'
+import { ExchangeFlowButton } from '~/views/dapp/exchange/exchange-flow-button'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
-import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
-import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-
-/**
- * Keep in sync with `exchange-card-flip` / `--motion-dapp-emphasis` (300ms) in theme.css.
- * Apply direction change mid-animation; settle after the flip completes.
- */
-const EXCHANGE_FLIP_APPLY_MS = 160
-const EXCHANGE_FLIP_SETTLE_MS = 320
+import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
+import { useMarketTradeView } from '~/views/dapp/exchange/market-trade/use-market-trade-view'
 
 export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
-  const { messages: t } = useI18n()
-  const setView = useExchangeViewStore((state) => state.setView)
-  const { sessionReady } = useDappShell()
-  const [isFlipping, setIsFlipping] = useState(false)
-  const [rotation, setRotation] = useState(0)
-  const [slippageOpen, setSlippageOpen] = useState(false)
-  const [exchangePriceInverted, setExchangePriceInverted] = useState(false)
-
-  const { pair } = trade
-  const flipCardClass = exchangeFlipCard({ flipping: isFlipping })
-  const showRateSkeleton = exchangePriceInverted
-    ? trade.isExchangePriceInvertedQuoting && !trade.exchangePriceLabelInverted
-    : trade.isExchangePriceQuoting && !trade.exchangePriceLabel
-  const exchangePriceDisplayLabel = exchangePriceInverted
-    ? trade.exchangePriceLabelInverted
-    : trade.exchangePriceLabel
-  const showBuyAmountSkeleton =
-    sessionReady && trade.isQuoting && trade.sellAmount.trim().length > 0
-
-  const { buyLabel, sellLabel } = useExchangeBalanceLabels({
-    buyBalanceLabel: trade.buyBalanceLabel,
-    isBalancesLoading: trade.isBalancesLoading,
-    sellBalanceLabel: trade.sellBalanceLabel,
-    sessionReady,
-    walletReady: trade.walletReady,
-  })
-
-  function handleFlip() {
-    if (sessionReady && !trade.walletReady) return
-    if (isFlipping) return
-    setIsFlipping(true)
-    setRotation((prev) => prev + 180)
-    window.setTimeout(() => {
-      trade.flipDirection()
-    }, EXCHANGE_FLIP_APPLY_MS)
-    window.setTimeout(() => {
-      setIsFlipping(false)
-    }, EXCHANGE_FLIP_SETTLE_MS)
-  }
-
-  const pickDisabled = trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping
-  const sellPickerOptions = trade.sellPickerKeys.map((key) => {
-    const token = trade.getToken(key)
-    return {
-      key,
-      symbol: token.symbol,
-      icon: token.icon,
-      balanceLabel: trade.balanceLabelFor(key),
-      disabled: !trade.isTokenLive(key),
-    }
-  })
-  const buyPickerOptions = trade.buyPickerKeys.map((key) => {
-    const token = trade.getToken(key)
-    return {
-      key,
-      symbol: token.symbol,
-      icon: token.icon,
-      balanceLabel: trade.balanceLabelFor(key),
-      disabled: !trade.isTokenLive(key),
-    }
-  })
-
-  function handleTokenPick(side: 'sell' | 'buy', key: string) {
-    if (!isTradeTokenKey(key) || !trade.isTokenLive(key)) return
-    if (side === 'sell') trade.selectSellToken(key)
-    else trade.selectBuyToken(key)
-  }
-
-  function resolveTradeMessage(error: unknown) {
-    return resolveExchangeUserFacingMessage(
-      error,
-      {
-        walletNotConnected: t.genesis.walletNotConnected,
-        insufficientAllowance: t.genesis.insufficientAllowance,
-        insufficientUsd1: t.genesis.insufficientUsd1,
-        purchaseUnavailable: t.genesis.purchaseUnavailable,
-        transactionCancelled: t.exchange.transactionCancelled,
-        quoteFailed: t.errors.quoteFailed,
-      },
-      t.wallet.transactionErrors,
-      t.errors.chain.fallback,
-    )
-  }
-
-  async function handleSubmit() {
-    const result = await trade.submit()
-    if (result.ok) {
-      toast.success(t.exchange.exchangeSuccess)
-      return
-    }
-    if (result.error != null) {
-      presentUserFacingError(result.error, resolveTradeMessage)
-    }
-  }
-
-  // Quote/validation only — submit errors toast in handleSubmit so same sentinel re-fires.
-  // quoteErrorUpdatedAt re-triggers when RQ fails again with the same EXCHANGE_QUOTE_FAILED sentinel.
-  const presentValidationError = useEffectEvent((error: unknown) => {
-    presentUserFacingError(error, resolveTradeMessage, {
-      id: 'market-trade-quote-error',
-    })
-  })
-
-  useEffect(() => {
-    if (!trade.validationError) return
-    presentValidationError(trade.validationError)
-  }, [trade.quoteErrorUpdatedAt, trade.validationError])
+  const vm = useMarketTradeView(trade)
+  const { t, pair } = vm
 
   return (
     <>
       <DappTabHeader
         backText={t.exchange.backToHub}
-        onBack={() => setView('hub')}
+        onBack={vm.onBack}
         subtitle={t.exchange.trade.intro}
         title={t.exchange.trade.title}
       />
       <DappWidgetStack className="gap-0">
         <ExchangeAmountFlow
-          amountBoxClassName={flipCardClass}
+          amountBoxClassName={vm.flipCardClass}
           buy={pair.buy}
           buyAmount={trade.buyAmount}
-          buyBalance={buyLabel}
+          buyBalance={vm.buyLabel}
           middleSlot={
             <div
               className={cn(
@@ -167,13 +46,13 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                 <ExchangeFlowButton
                   aria-label={t.exchange.flip}
                   className="max-dapp:my-2"
-                  disabled={sessionReady && (!trade.walletReady || trade.isSubmitting)}
+                  disabled={vm.sessionReady && (!trade.walletReady || trade.isSubmitting)}
                   interactive
-                  onClick={handleFlip}
+                  onClick={vm.onFlip}
                 >
                   <span
                     className="duration-dapp-emphasis grid place-items-center transition-transform ease-dapp"
-                    style={{ transform: `rotate(${rotation}deg)` }}
+                    style={{ transform: `rotate(${vm.rotation}deg)` }}
                   >
                     <span className="grid size-4 place-items-center">
                       <span className="-rotate-90">
@@ -189,14 +68,14 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
           onSellAmountChange={trade.setSellAmount}
           sell={pair.sell}
           sellAmountDisplay={trade.sellAmountDisplay}
-          sellBalance={sellLabel}
+          sellBalance={vm.sellLabel}
           sellTokenAdornment={
             <ExchangeTokenPicker
               ariaLabel={t.exchange.trade.selectSellToken}
               checkIcon={dappAssets.check}
-              disabled={pickDisabled}
-              onSelect={(key) => handleTokenPick('sell', key)}
-              options={sellPickerOptions}
+              disabled={vm.pickDisabled}
+              onSelect={(key) => vm.handleTokenPick('sell', key)}
+              options={vm.sellPickerOptions}
               value={pair.sell.key}
             />
           }
@@ -204,32 +83,32 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
             <ExchangeTokenPicker
               ariaLabel={t.exchange.trade.selectBuyToken}
               checkIcon={dappAssets.check}
-              disabled={pickDisabled}
-              onSelect={(key) => handleTokenPick('buy', key)}
-              options={buyPickerOptions}
+              disabled={vm.pickDisabled}
+              onSelect={(key) => vm.handleTokenPick('buy', key)}
+              options={vm.buyPickerOptions}
               value={pair.buy.key}
             />
           }
-          sessionReady={sessionReady}
-          showBuyAmountSkeleton={showBuyAmountSkeleton}
+          sessionReady={vm.sessionReady}
+          showBuyAmountSkeleton={vm.showBuyAmountSkeleton}
           walletReady={trade.walletReady}
-          amountLocked={trade.isSubmitting || isFlipping}
+          amountLocked={trade.isSubmitting || vm.isFlipping}
         />
 
         <DappMetaPanel
           items={[
             {
               label: t.exchange.exchangePrice,
-              value: showRateSkeleton ? (
+              value: vm.showRateSkeleton ? (
                 <ExchangeMetaValueSkeleton />
               ) : (
                 <>
-                  {exchangePriceDisplayLabel || '—'}
+                  {vm.exchangePriceDisplayLabel || '—'}
                   <AnchoredTooltip content={t.exchange.flip}>
                     <button
                       aria-label={t.exchange.flip}
                       className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
-                      onClick={() => setExchangePriceInverted((inverted) => !inverted)}
+                      onClick={vm.onTogglePriceInverted}
                       type="button"
                     >
                       <DappIcon alt="" size="xs" src={dappAssets.exchangeFlip} />
@@ -248,10 +127,10 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                     aria-label={t.exchange.slippageSettings}
                     className={cn(
                       'duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
-                      sessionReady && !trade.walletReady && 'pointer-events-none opacity-40',
+                      vm.sessionReady && !trade.walletReady && 'pointer-events-none opacity-40',
                     )}
-                    disabled={sessionReady && !trade.walletReady}
-                    onClick={() => setSlippageOpen(true)}
+                    disabled={vm.sessionReady && !trade.walletReady}
+                    onClick={() => vm.setSlippageOpen(true)}
                     type="button"
                   >
                     <DappIcon alt="" size="xs" src={dappAssets.setting} />
@@ -260,7 +139,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               ),
               valueClassName: 'inline-flex items-center justify-end gap-1',
             },
-            ...(sessionReady && trade.sellAmount.trim().length > 0
+            ...(vm.sessionReady && trade.sellAmount.trim().length > 0
               ? [
                   {
                     label: t.exchange.trade.priceImpact,
@@ -288,7 +167,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                   <button
                     aria-label={t.exchange.openPancakeSwap}
                     className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
-                    onClick={() => openPancakeSwapDeepLink(trade.pancakeSwapUrl)}
+                    onClick={vm.onOpenPancakeSwap}
                     type="button"
                   >
                     <DappIcon alt="" size="action" src={dappAssets.arrowUpRight} />
@@ -300,33 +179,33 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
           ]}
         />
 
-        {sessionReady && trade.isHighPriceImpact ? (
+        {vm.sessionReady && trade.isHighPriceImpact ? (
           <DappInlineAlert className="mt-3">
             {t.exchange.trade.highPriceImpactWarning}
           </DappInlineAlert>
         ) : null}
 
-        {sessionReady && trade.walletReady ? (
+        {vm.sessionReady && trade.walletReady ? (
           <DappActionRow className="mt-3.5 max-dapp:mt-3">
             <DappActionButton
               className="col-span-full"
               density="external"
               disabled={!trade.canSubmit}
               loading={trade.isSubmitting}
-              onClick={() => void handleSubmit()}
+              onClick={() => void vm.onSubmit()}
             >
               {t.exchange.trade.action}
             </DappActionButton>
           </DappActionRow>
         ) : null}
 
-        {!sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
+        {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
       </DappWidgetStack>
 
       <ExchangeSlippageModal
         onConfirm={trade.setSlippage}
-        onOpenChange={setSlippageOpen}
-        open={slippageOpen}
+        onOpenChange={vm.setSlippageOpen}
+        open={vm.slippageOpen}
         slippage={trade.slippage}
       />
     </>

@@ -1,20 +1,8 @@
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { toast } from 'sonner'
-import { useI18n } from '~/i18n/use-i18n'
 import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { useDappShell } from '~/app/use-dapp-shell'
-import {
-  RELEASE_DURATION_DAYS,
-  RESTAKE_DURATION_DAYS,
-  matchPlanIndexByDurationDays,
-  type ReleaseDurationDays,
-  type RestakeDurationDays,
-} from '~/core/assets/claim-plans'
-import { claimSplitFromReleasePct } from '~/core/assets/claim-plans'
+import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
@@ -25,25 +13,8 @@ import {
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
-import { openExchangeView } from '~/shared/config/open-exchange-view'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import {
-  ASSETS_GATE_ERROR,
-  submitMixedClaim,
-  type MixedClaimTarget,
-} from '~/views/dapp/assets/submit-assets'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { readErrorText } from '~/web3/errors/error-text'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
-import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
-import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import type { Address } from '~/shared/config/contracts'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-
-const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
+import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
+import { useAssetsClaimModalView } from '~/views/dapp/assets/claim-modal/use-assets-claim-modal-view'
 
 export function AssetsClaimModal({
   amountLabel,
@@ -84,111 +55,8 @@ function AssetsClaimModalOpen({
   positionLabel: string
   amountLabel: string
 }) {
-  const { messages: t } = useI18n()
-  const { walletReady } = useDappShell()
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
-  const [releasePct, setReleasePct] = useState(50)
-  const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(5)
-  const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
-  const [submitting, setSubmitting] = useState(false)
-  const { restakePct } = claimSplitFromReleasePct(releasePct)
-  const locked = isUnknownReceiptLocked(WRITE_PATH.ASSETS_CLAIM)
-
-  const plansQuery = useQuery({
-    queryKey: queryKeys.chain.assetsClaimPlans,
-    queryFn: () => readClaimPlans(readClient),
-    enabled: open,
-  })
-
-  const contribQuery = useQuery({
-    queryKey: [
-      ...queryKeys.chain.assetsContribution(account?.address ?? ''),
-      String(target.amount),
-    ],
-    queryFn: () => readContributionSnapshot(account!.address as Address, target.amount, readClient),
-    enabled: open && walletReady && Boolean(account?.address),
-  })
-
-  const releaseIndex = plansQuery.data
-    ? matchPlanIndexByDurationDays(plansQuery.data.releasePlans, releaseDays)
-    : null
-  const restakeIndex = plansQuery.data
-    ? matchPlanIndexByDurationDays(plansQuery.data.restakePlans, restakeDays)
-    : null
-  const contributionOk =
-    contribQuery.data != null &&
-    contribQuery.data.contribution >= contribQuery.data.requiredContribution
-  const plansOk = releaseIndex != null && restakeIndex != null
-  const canConfirm =
-    walletReady && !locked && !submitting && contributionOk && plansOk && target.amount > 0n
-
-  const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
-    label: t.assets.claim.releaseDays.replace('{days}', String(days)),
-    value: String(days),
-  }))
-  const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => {
-    const plan = plansQuery.data?.restakePlans.find(
-      (p) => p.exists !== false && Number(p.durationSeconds / 86_400n) === days,
-    )
-    const tax =
-      plan?.taxBps != null
-        ? t.assets.claim.taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
-        : ''
-    return {
-      label: tax
-        ? t.assets.claim.restakeDaysTax.replace('{days}', String(days)).replace('{tax}', tax)
-        : t.assets.claim.restakeDays.replace('{days}', String(days)),
-      value: String(days),
-    }
-  })
-
-  function resolveMessage(error: unknown) {
-    const raw = readErrorText(error)
-    if (raw === ASSETS_GATE_ERROR.insufficientContribution)
-      return t.assets.gates.insufficientContribution
-    if (
-      raw === ASSETS_GATE_ERROR.releasePlanUnresolved ||
-      raw === ASSETS_GATE_ERROR.restakePlanUnresolved
-    )
-      return t.assets.gates.planUnresolved
-    if (raw === ASSETS_GATE_ERROR.unavailable) return t.assets.gates.unavailable
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ?? t.errors.chain.fallback
-    )
-  }
-
-  async function handleConfirm() {
-    if (!canConfirm) return
-    setSubmitting(true)
-    try {
-      const result = await submitMixedClaim({
-        target,
-        releaseDays,
-        restakeDays,
-        restakePct,
-        account,
-        wallet,
-        readClient,
-      })
-      if (result.ok) {
-        toast.success(t.assets.claim.success)
-        onOpenChange(false)
-        return
-      }
-      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const ctaLabel =
-    releasePct === 100
-      ? t.assets.claim.ctaRelease
-      : restakePct === 100
-        ? t.assets.claim.ctaRestake
-        : t.assets.claim.ctaMixed
+  const vm = useAssetsClaimModalView({ open, onOpenChange, target })
+  const { t } = vm
 
   return (
     <AegisResponsiveDialog
@@ -223,29 +91,26 @@ function AssetsClaimModalOpen({
           <Text as="strong" variant="copy">
             {t.assets.claim.amount}: {amountLabel}
           </Text>
-          {contribQuery.data ? (
+          {vm.requiredContributionLabel ? (
             <Text as="span" tone="muted-foreground" variant="detail">
-              {t.assets.claim.contribNeed.replace(
-                '{amount}',
-                formatTokenAmount(contribQuery.data.requiredContribution, GAGX_DECIMALS, 4),
-              )}
+              {t.assets.claim.contribNeed.replace('{amount}', vm.requiredContributionLabel)}
             </Text>
           ) : null}
         </div>
 
         <ClaimSplitSlider
           aria-label={t.assets.claim.splitAria}
-          onChange={setReleasePct}
-          value={releasePct}
+          onChange={vm.setReleasePct}
+          value={vm.releasePct}
         />
         <div className="flex justify-between gap-2">
           <Text as="span" variant="detail">
             {t.assets.claim.releaseShare
-              .replace('{pct}', String(releasePct))
+              .replace('{pct}', String(vm.releasePct))
               .replace('{amount}', amountLabel)}
           </Text>
           <Text as="span" variant="detail">
-            {t.assets.claim.restakeShare.replace('{pct}', String(restakePct))}
+            {t.assets.claim.restakeShare.replace('{pct}', String(vm.restakePct))}
           </Text>
         </div>
 
@@ -255,10 +120,10 @@ function AssetsClaimModalOpen({
           </Text>
           <Segment
             aria-label={t.assets.claim.releasePeriodAria}
-            onChange={(value) => setReleaseDays(Number(value) as ReleaseDurationDays)}
-            options={releaseOptions}
+            onChange={(value) => vm.setReleaseDays(Number(value) as ReleaseDurationDays)}
+            options={vm.releaseOptions}
             tone="coral"
-            value={String(releaseDays)}
+            value={String(vm.releaseDays)}
           />
         </div>
 
@@ -268,32 +133,25 @@ function AssetsClaimModalOpen({
           </Text>
           <Segment
             aria-label={t.assets.claim.restakePeriodAria}
-            onChange={(value) => setRestakeDays(Number(value) as RestakeDurationDays)}
-            options={restakeOptions}
+            onChange={(value) => vm.setRestakeDays(Number(value) as RestakeDurationDays)}
+            options={vm.restakeOptions}
             tone="ink"
-            value={String(restakeDays)}
+            value={String(vm.restakeDays)}
           />
         </div>
 
-        {!contributionOk && contribQuery.data ? (
+        {!vm.contributionOk && vm.contribQuery.data ? (
           <div className="grid gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3">
             <Text as="p" className="text-destructive" variant="copy">
               {t.assets.claim.contribShort}
             </Text>
-            <Button
-              onClick={() => {
-                onOpenChange(false)
-                openExchangeView('burn')
-              }}
-              type="button"
-              variant="secondary"
-            >
+            <Button onClick={vm.goBurn} type="button" variant="secondary">
               {t.assets.claim.goBurn}
             </Button>
           </div>
         ) : null}
 
-        {!plansOk && plansQuery.isSuccess ? (
+        {!vm.plansOk && vm.plansQuery.isSuccess ? (
           <Text as="p" className="text-destructive" variant="copy">
             {t.assets.gates.planUnresolved}
           </Text>
@@ -301,11 +159,11 @@ function AssetsClaimModalOpen({
 
         <DappActionButton
           density="external"
-          disabled={!canConfirm}
-          loading={submitting}
-          onClick={() => void handleConfirm()}
+          disabled={!vm.canConfirm}
+          loading={vm.submitting}
+          onClick={() => void vm.handleConfirm()}
         >
-          {ctaLabel}
+          {vm.ctaLabel}
         </DappActionButton>
       </div>
     </AegisResponsiveDialog>

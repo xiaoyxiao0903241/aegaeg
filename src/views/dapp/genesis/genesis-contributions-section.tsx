@@ -1,130 +1,57 @@
-import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
-import { useSalesLogs } from '~/hooks/use-api-data'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { formatGroupedNumber } from '~/shared/api/format-display'
-import { calcProgressPercent } from '~/core/math/calc-progress-percent'
-import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
-import { bscscanTx } from '~/shared/config/explorer'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { genesisContributionsColWidths } from '~/app/shell/dapp-table-columns'
-import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { useAuth } from '~/hooks/use-auth'
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import {
   GenesisContributionsProgressHeader,
   GenesisContributionsReveal,
   GenesisContributionsSyncHint,
 } from '~/views/dapp/genesis/genesis-contributions-primitives'
 import { Text } from '~/shared/ui/text'
+import { useGenesisContributionsView } from '~/views/dapp/genesis/use-genesis-contributions-view'
 
 export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
-  const { sessionReady } = useDappShell()
-  const { isLoggingIn } = useAuth()
-  const [contributionsPage, setContributionsPage] = useState(1)
-  const { data: salesLogs, isLoading: salesLoading } = useSalesLogs(
-    tablePageQuery(contributionsPage),
-    sessionReady,
-  )
-
-  const seasonContributedUsd = formatTokenAmountToNumber(genesis.userPhaseAmountCurrent, 18)
-  const seasonMaxContributionUsd = formatTokenAmountToNumber(genesis.seasonContributionMaxWei, 18)
-  const cumulativeContributedUsd = formatTokenAmountToNumber(genesis.userTotal, 18)
-  const contributionProgress = calcProgressPercent(
-    String(seasonContributedUsd),
-    seasonMaxContributionUsd,
-  )
-  const contributedLabel = `${formatGroupedNumber(seasonContributedUsd, { prefix: '$' })} / ${formatGroupedNumber(seasonMaxContributionUsd, { prefix: '$' })}`
-
-  const desktopRows = genesis.isPhasesLoading
-    ? []
-    : (salesLogs?.items.map((item) => {
-        const row = mapSalesLogToDesktopRow(item, {
-          agxPriceUsd: genesis.agxPriceUsd,
-          phases: genesis.phases,
-        })
-        const txLabel = row[4]
-        if (!item.tx_hash || txLabel === '-') return row
-
-        return [
-          ...row.slice(0, 4),
-          <Text
-            as="a"
-            className="underline"
-            href={bscscanTx(item.tx_hash)}
-            key={item.tx_hash}
-            rel="noopener noreferrer"
-            target="_blank"
-            tone="primary"
-            variant="copy"
-          >
-            {txLabel}
-          </Text>,
-        ]
-      }) ?? [])
-
-  const tableHeaders = [
-    t.tables.time,
-    t.tables.paid,
-    t.tables.discount,
-    t.tables.estimatedAgx,
-    t.tables.tx,
-  ]
-  const contributionsTotal = salesLogs?.total ?? 0
-  const showSalesSyncHint =
-    sessionReady &&
-    !salesLoading &&
-    !genesis.isPhasesLoading &&
-    desktopRows.length === 0 &&
-    genesis.userTotal > 0n
-  const contributionsTable = dappTableViewState({
-    sessionReady,
-    isLoading: isLoggingIn || salesLoading || genesis.isPhasesLoading,
-    isLoggingIn,
-    rowCount: desktopRows.length,
-  })
-  const showContributionsSkeleton =
-    contributionsTable.showSkeleton || (sessionReady && genesis.isPhasesLoading)
+  const vm = useGenesisContributionsView(genesis)
 
   return (
     <DappSection title={t.genesis.myContributions}>
       <GenesisContributionsReveal>
-        {showSalesSyncHint ? (
+        {vm.showSalesSyncHint ? (
           <GenesisContributionsSyncHint>
             {t.genesis.contributionsSyncPending}
           </GenesisContributionsSyncHint>
         ) : null}
         <DappTableCard
           footer={
-            sessionReady && !contributionsTable.requiresAuth ? (
+            vm.sessionReady && !vm.contributionsTable.requiresAuth ? (
               <DappTablePagination
                 embedded
-                onPageChange={setContributionsPage}
-                page={contributionsPage}
-                summary={`${t.genesis.cumulativeContributed}${formatGroupedNumber(cumulativeContributedUsd, { prefix: '$' })}`}
-                total={contributionsTotal}
+                onPageChange={vm.setContributionsPage}
+                page={vm.contributionsPage}
+                summary={`${t.genesis.cumulativeContributed}${formatGroupedNumber(vm.cumulativeContributedUsd, { prefix: '$' })}`}
+                total={vm.contributionsTotal}
               />
             ) : undefined
           }
           header={
-            sessionReady && !contributionsTable.requiresAuth ? (
+            vm.sessionReady && !vm.contributionsTable.requiresAuth ? (
               <GenesisContributionsProgressHeader
-                contributedLabel={contributedLabel}
+                contributedLabel={vm.contributedLabel}
                 label={t.genesis.totalContributed}
-                progress={contributionProgress}
+                progress={vm.contributionProgress}
               />
             ) : undefined
           }
         >
-          {contributionsTable.requiresAuth ? (
+          {vm.contributionsTable.requiresAuth ? (
             <DappTableAuthPrompt body={t.dapp.connect.recordsBodyGenesis} embedded />
-          ) : contributionsTable.queryEmpty && !showSalesSyncHint ? (
+          ) : vm.contributionsTable.queryEmpty && !vm.showSalesSyncHint ? (
             <div className="flex min-h-[108px] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
               <Text
                 as="p"
@@ -139,11 +66,11 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
             <ResponsiveTable
               colWidths={[...genesisContributionsColWidths]}
               compact
-              headers={tableHeaders}
-              isLoading={showContributionsSkeleton}
+              headers={vm.tableHeaders}
+              isLoading={vm.showContributionsSkeleton}
               loadingRowCount={4}
               positiveColumns={[2]}
-              rows={desktopRows}
+              rows={vm.desktopRows}
             />
           )}
         </DappTableCard>

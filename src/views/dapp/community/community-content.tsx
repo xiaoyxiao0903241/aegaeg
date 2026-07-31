@@ -1,14 +1,8 @@
-import { useState, type ReactNode } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
-import { useShareholderRank } from '~/hooks/use-shareholder-rank'
+import { type ReactNode } from 'react'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { CommunityStatCardSkeleton } from '~/app/shell/dapp-skeleton'
-import { useAuth } from '~/hooks/use-auth'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
@@ -16,7 +10,7 @@ import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { communityInviteColWidths } from '~/app/shell/dapp-table-columns'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
-import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
+import { dappTableViewState } from '~/shared/lib/table-pagination'
 import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
 import { CommunityFlowSection } from '~/views/dapp/community/community-flow-section'
 import {
@@ -24,6 +18,7 @@ import {
   CommunityStatGrid,
 } from '~/views/dapp/community/community-content-primitives'
 import { Text } from '~/shared/ui/text'
+import { useCommunityContentView } from '~/views/dapp/community/use-community-content-view'
 
 type CommunityStat = {
   dark?: boolean
@@ -36,17 +31,21 @@ type CommunityStat = {
 const STAT_PLACEHOLDER = '—'
 
 export function CommunityContent() {
-  const { messages: t } = useI18n()
-  const { sessionReady, walletReady } = useDappShell()
-  const isMobileViewport = useMobileViewport()
-  const { isLoggingIn } = useAuth()
-  const [invitesPage, setInvitesPage] = useState(1)
-  const { data: overview, isLoading: overviewLoading } = useTeamOverview(sessionReady)
-  const { displayRank, isRankLoading } = useShareholderRank(sessionReady)
-  const { data: referrals, isLoading: referralsLoading } = useTeamReferrals(
-    tablePageQuery(invitesPage),
+  const {
+    t,
     sessionReady,
-  )
+    walletReady,
+    isMobileViewport,
+    isLoggingIn,
+    invitesPage,
+    setInvitesPage,
+    overview,
+    overviewLoading,
+    displayRank,
+    isRankLoading,
+    referrals,
+    referralsLoading,
+  } = useCommunityContentView()
 
   const inviteRowsCompact = referrals?.items.map((item) => mapTeamReferralToCompactRow(item)) ?? []
   const compactRows = inviteRowsCompact

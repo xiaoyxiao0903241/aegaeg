@@ -1,14 +1,9 @@
-import { toast } from 'sonner'
-import { useStakingViewStore } from '~/stores/staking-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
@@ -17,66 +12,22 @@ import { bscscanAddress } from '~/shared/config/explorer'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { BondPeriodList } from '~/views/dapp/staking/bond/bond-period-list'
-import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
-import { BOND_ZAP_GATE_ERROR, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { readErrorText } from '~/web3/errors/error-text'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
+import { useBondView } from '~/views/dapp/staking/bond/use-bond-view'
+import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 
 export function BondWidget({ kind }: { kind: BondKind }) {
-  const { messages: t } = useI18n()
-  const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useDappShell()
-  const bond = useBondWidget(kind, sessionReady)
-  const selectTab = useDappShellStore((state) => state.selectTab)
-  const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
-
-  function resolveMessage(error: unknown) {
-    const raw = readErrorText(error)
-    if (raw === BOND_ZAP_GATE_ERROR.accountMigrated) return t.staking.gates.accountMigrated
-    if (raw === BOND_ZAP_GATE_ERROR.notBound) return t.staking.gates.notBound
-    if (raw === BOND_ZAP_GATE_ERROR.insufficientBalance) return t.staking.gates.insufficientBalance
-    if (raw === BOND_ZAP_GATE_ERROR.insufficientAllowance)
-      return t.staking.gates.insufficientAllowance
-    if (raw === BOND_ZAP_GATE_ERROR.depositoryNotAuth) return t.staking.gates.depositoryNotAuth
-    if (raw === BOND_ZAP_GATE_ERROR.zeroAmount) return t.staking.gates.zeroAmount
-    if (raw === BOND_ZAP_GATE_ERROR.unavailable) return t.staking.gates.unavailable
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ?? t.errors.chain.fallback
-    )
-  }
-
-  async function handleSubmit() {
-    if (bond.gate === 'accountMigrated') return
-    if (bond.gate === 'notBound') {
-      selectTab('community')
-      return
-    }
-    const result = await bond.submit()
-    if (result.ok) {
-      toast.success(copy.success)
-      return
-    }
-    if (result.error != null) {
-      const raw = readErrorText(result.error)
-      if (raw === BOND_ZAP_GATE_ERROR.notBound) {
-        selectTab('community')
-        return
-      }
-      presentUserFacingError(result.error, resolveMessage)
-    }
-  }
-
-  const ctaLabel =
-    bond.writePhase === 'account_migrated'
-      ? t.staking.gates.accountMigrated
-      : bond.writePhase === 'need_referral'
-        ? t.staking.stake.bindCta
-        : copy.submit
-  const amountLabel = copy.amountBalance.replace(
-    '{balance}',
-    bond.isBalancesLoading ? '…' : bond.balanceLabel,
-  )
+  const {
+    t,
+    bond,
+    copy,
+    sessionReady,
+    walletReady,
+    setView,
+    amountLabel,
+    ctaLabel,
+    onSubmit,
+    periodLabels,
+  } = useBondView(kind)
 
   return (
     <>
@@ -93,11 +44,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           discounts={bond.periodDiscounts}
           onChange={bond.setPeriod}
           periodLabel={copy.periodLabel}
-          periodLabels={{
-            '180': t.staking.stake.periods.d180,
-            '360': t.staking.stake.periods.d360,
-            '540': t.staking.stake.periods.d540,
-          }}
+          periodLabels={periodLabels}
           value={bond.period}
         />
 
@@ -193,7 +140,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
               density="external"
               disabled={!bond.canSubmit && bond.gate !== 'notBound'}
               loading={bond.isSubmitting}
-              onClick={() => void handleSubmit()}
+              onClick={() => void onSubmit()}
             >
               {ctaLabel}
             </DappActionButton>

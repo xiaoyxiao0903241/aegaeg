@@ -1,7 +1,4 @@
-import { toast } from 'sonner'
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useI18n } from '~/i18n/use-i18n'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { flashExchangeAssets, turbineExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
@@ -10,9 +7,7 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { ExchangeBalanceSkeleton, ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
+import { useTurbineExchangeView } from '~/views/dapp/exchange/turbine/use-turbine-exchange-view'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
@@ -28,90 +23,37 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { cn } from '~/shared/lib/utils'
 
 export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeState }) {
-  const { messages: t } = useI18n()
-  const setView = useExchangeViewStore((state) => state.setView)
-  const { sessionReady } = useDappShell()
-  const exchangePreview = !sessionReady
-  const showBalanceSkeleton = !exchangePreview && turbine.isBalancesLoading
+  const vm = useTurbineExchangeView(turbine)
+  const { t } = vm
   const unlock = turbine.pair.unlock
-  const sellDisabled = (sessionReady && !turbine.walletReady) || turbine.isSubmitting
 
-  const segmentOptions = [
-    { label: t.exchange.turbine.segments.unlock, value: 'unlock' },
-    { label: t.exchange.turbine.segments.claim, value: 'claim' },
-  ]
-
-  const unlockableBalance = showBalanceSkeleton ? (
+  const unlockableBalance = vm.showBalanceSkeleton ? (
     <>
       {t.exchange.turbine.unlockable}: <ExchangeBalanceSkeleton />
     </>
-  ) : exchangePreview ? (
-    `${t.exchange.turbine.unlockable}: 0.00 gAGX`
   ) : (
-    `${t.exchange.turbine.unlockable}: ${turbine.walletReady ? turbine.quotaLabel : '—'} gAGX`
+    `${t.exchange.turbine.unlockable}: ${vm.unlockableAmountLabel}`
   )
 
-  const usd1Balance = showBalanceSkeleton ? (
+  const usd1Balance = vm.showBalanceSkeleton ? (
     <>
       {t.exchange.balance} <ExchangeBalanceSkeleton />
     </>
-  ) : exchangePreview ? (
-    `${t.exchange.balance} 0.00`
   ) : (
-    `${t.exchange.balance} ${turbine.walletReady ? turbine.usd1BalanceLabel : '—'}`
+    `${t.exchange.balance} ${vm.usd1AmountLabel}`
   )
 
-  const willReceiveValue =
-    sessionReady && turbine.isQuoting ? (
-      <ExchangeMetaValueSkeleton />
-    ) : turbine.unlockAmount.trim().length > 0 ? (
-      turbine.buyAgxLabel
-    ) : (
-      '—'
-    )
-
-  function resolveTurbineMessage(error: unknown) {
-    return resolveExchangeUserFacingMessage(
-      error,
-      {
-        walletNotConnected: t.genesis.walletNotConnected,
-        insufficientAllowance: t.genesis.insufficientAllowance,
-        insufficientUsd1: t.genesis.insufficientUsd1,
-        purchaseUnavailable: t.genesis.purchaseUnavailable,
-        transactionCancelled: t.exchange.transactionCancelled,
-        quoteFailed: t.errors.quoteFailed,
-      },
-      t.wallet.transactionErrors,
-      t.errors.chain.fallback,
-    )
-  }
-
-  const submitErrorMessage =
-    !turbine.error || turbine.isSubmitting ? null : resolveTurbineMessage(turbine.error)
-
-  async function handleUnlock() {
-    const result = await turbine.submitUnlock()
-    if (result.ok) {
-      toast.success(t.exchange.turbine.unlockSuccess)
-      return
-    }
-    if (result.error != null) presentUserFacingError(result.error, resolveTurbineMessage)
-  }
-
-  async function handleClaim(index: number) {
-    const result = await turbine.submitClaim(index)
-    if (result.ok) {
-      toast.success(t.exchange.turbine.claimSuccess)
-      return
-    }
-    if (result.error != null) presentUserFacingError(result.error, resolveTurbineMessage)
-  }
+  const willReceiveValue = vm.showWillReceiveSkeleton ? (
+    <ExchangeMetaValueSkeleton />
+  ) : (
+    vm.willReceiveLabel
+  )
 
   return (
     <>
       <DappTabHeader
         backText={t.exchange.backToHub}
-        onBack={() => setView('hub')}
+        onBack={vm.onBack}
         subtitle={t.exchange.hub.modes.turbine.body}
         title={t.exchange.turbine.title}
       />
@@ -121,7 +63,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
           className="mb-3.5"
           disabled={turbine.isSubmitting}
           onChange={(value) => turbine.setSegment(value as 'unlock' | 'claim')}
-          options={segmentOptions}
+          options={vm.segmentOptions}
           tone="ink"
           value={turbine.segment}
         />
@@ -131,7 +73,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
             <AmountBox
               amountProps={{
                 'aria-label': `${unlock.symbol} unlock amount`,
-                disabled: sellDisabled,
+                disabled: vm.sellDisabled,
                 inputMode: 'decimal',
                 onChange: (event) => turbine.setUnlockAmount(event.currentTarget.value),
                 placeholder: '0.00',
@@ -140,14 +82,14 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               balance={unlockableBalance}
               className="p-4"
               label={t.exchange.turbine.unlockLabel}
-              sessionReady={sessionReady}
+              sessionReady={vm.sessionReady}
               startAdornment={<TokenChip icon={unlock.icon} label={unlock.symbol} />}
             />
 
             <PercentButtonRow
               aria-label={`${unlock.symbol} unlock percent`}
               className="pt-2.5 max-dapp:mt-3 max-dapp:py-0"
-              disabled={(!exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
+              disabled={(!vm.exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
               onSelect={(percent) => turbine.fillPercent(percent)}
             />
 
@@ -172,7 +114,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                       src={turbine.pair.pay.icon}
                     />
                     <Text as="span" variant="copy" className="font-semibold">
-                      {sessionReady && turbine.isQuoting ? (
+                      {vm.sessionReady && turbine.isQuoting ? (
                         <ExchangeMetaValueSkeleton />
                       ) : (
                         turbine.payUsd1Label || '—'
@@ -201,7 +143,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                       src={turbine.pair.buy.icon}
                     />
                     <Text as="span" variant="copy" className="font-semibold">
-                      {sessionReady && turbine.isQuoting ? (
+                      {vm.sessionReady && turbine.isQuoting ? (
                         <ExchangeMetaValueSkeleton />
                       ) : (
                         turbine.buyAgxLabel
@@ -278,14 +220,14 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               ]}
             />
 
-            {sessionReady && turbine.walletReady ? (
+            {vm.sessionReady && turbine.walletReady ? (
               <DappActionRow className="mt-3.5 max-dapp:mt-3">
                 <DappActionButton
                   className="col-span-full"
                   density="external"
                   disabled={!turbine.canUnlock}
                   loading={turbine.isSubmitting && turbine.claimingIndex == null}
-                  onClick={() => void handleUnlock()}
+                  onClick={() => void vm.handleUnlock()}
                 >
                   {t.exchange.turbine.unlockAction}
                 </DappActionButton>
@@ -294,7 +236,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
           </>
         ) : (
           <div className="flex flex-col gap-2.5">
-            {!exchangePreview && turbine.isSilencesLoading ? (
+            {!vm.exchangePreview && turbine.isSilencesLoading ? (
               <div className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-3">
                 <ExchangeBalanceSkeleton />
               </div>
@@ -329,12 +271,12 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                           )}
                     </Text>
                   </div>
-                  {sessionReady && turbine.walletReady ? (
+                  {vm.sessionReady && turbine.walletReady ? (
                     <DappActionButton
                       density="external"
                       disabled={!row.vested || turbine.isSubmitting}
                       loading={turbine.claimingIndex === row.index}
-                      onClick={() => void handleClaim(row.index)}
+                      onClick={() => void vm.handleClaim(row.index)}
                     >
                       {t.exchange.turbine.claimAction}
                     </DappActionButton>
@@ -345,11 +287,11 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
           </div>
         )}
 
-        {!sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
+        {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
 
-        {submitErrorMessage ? (
+        {vm.submitErrorMessage ? (
           <DappInlineAlert className="mt-3" role="alert">
-            {submitErrorMessage}
+            {vm.submitErrorMessage}
           </DappInlineAlert>
         ) : null}
       </DappWidgetStack>

@@ -1,13 +1,9 @@
-import { toast } from 'sonner'
-import { useStakingViewStore } from '~/stores/staking-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { useDappShell } from '~/app/use-dapp-shell'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { FieldActionChip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
@@ -15,43 +11,11 @@ import { formatShortAddress } from '~/shared/api/format-display'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { useXmineWidget } from '~/views/dapp/staking/xmine/use-xmine-widget'
-import { XMINE_GATE_ERROR } from '~/views/dapp/staking/xmine/submit-xmine'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { readErrorText } from '~/web3/errors/error-text'
-import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
+import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine-view'
 
 export function XmineWidget() {
-  const { messages: t } = useI18n()
-  const setView = useStakingViewStore((state) => state.setView)
-  const { sessionReady, walletReady } = useDappShell()
-  const xmine = useXmineWidget(sessionReady)
+  const { t, xmine, sessionReady, walletReady, setView, amountLabel, onSubmit } = useXmineView()
 
-  function resolveMessage(error: unknown) {
-    const raw = readErrorText(error)
-    if (raw === XMINE_GATE_ERROR.insufficientBalance) return t.staking.gates.insufficientGagx
-    if (raw === XMINE_GATE_ERROR.insufficientAllowance) return t.staking.gates.insufficientAllowance
-    if (raw === XMINE_GATE_ERROR.insufficientQuota) return t.staking.gates.insufficientQuota
-    if (raw === XMINE_GATE_ERROR.zeroAmount) return t.staking.gates.zeroAmount
-    if (raw === XMINE_GATE_ERROR.unavailable) return t.staking.gates.unavailable
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ?? t.errors.chain.fallback
-    )
-  }
-
-  async function handleSubmit() {
-    const result = await xmine.submit()
-    if (result.ok) {
-      toast.success(t.staking.xmine.success)
-      return
-    }
-    if (result.error != null) presentUserFacingError(result.error, resolveMessage)
-  }
-
-  const amountLabel = t.staking.xmine.amountBalance.replace(
-    '{balance}',
-    xmine.isBalancesLoading ? '…' : xmine.balanceLabel,
-  )
   const quotaBalance = (
     <Text as="span" className="font-semibold text-primary" variant="support">
       {t.staking.xmine.quotaInline.replace('{quota}', xmine.quotaLabel)}
@@ -136,7 +100,7 @@ export function XmineWidget() {
               density="external"
               disabled={!xmine.canSubmit}
               loading={xmine.isSubmitting}
-              onClick={() => void handleSubmit()}
+              onClick={() => void onSubmit()}
             >
               {t.staking.xmine.submit}
             </DappActionButton>

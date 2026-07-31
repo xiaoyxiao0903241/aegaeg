@@ -53,7 +53,7 @@ src/
 
 ## `hooks/` 白名单
 
-`use-api-data` · `use-capped-token-amount-input` · `use-genesis-promo` · `use-mobile-viewport` · `use-shareholder-rank` · `queries/use-visible-interval`
+`use-api-data` · `use-capped-token-amount-input` · `use-genesis-promo` · `use-mobile-viewport` · `use-present-user-facing-error` · `use-shareholder-rank` · `queries/use-visible-interval`
 
 页专属编排在页袋（如 `use-exchange-quote`、`use-genesis-widget`、`use-claim-reward`）。
 
