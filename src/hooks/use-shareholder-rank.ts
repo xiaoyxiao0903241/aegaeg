@@ -13,7 +13,7 @@ export function useShareholderRank(sessionReady: boolean) {
   const { data: performance, isLoading: performanceLoading } = usePerformance(sessionReady)
 
   const address = account?.address
-  const userTotalQuery = usePresaleUserTotalQuery(address)
+  const userTotalQuery = usePresaleUserTotalQuery()
 
   const chainVolumeUsd = userTotalQuery.data
     ? formatTokenAmountToNumber(userTotalQuery.data, 18)

@@ -10,6 +10,7 @@ import {
   REWARD_QUEUE_METHODS,
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
+import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import {
   resolveBurnBondDepository,
@@ -84,7 +85,7 @@ export type AssetsXminePosition = {
   warmupEndTime: bigint
 }
 
-export async function readClaimPlans(client: ChainReadClient): Promise<{
+export async function readClaimPlans(client: ChainReadClient = bscReadClient): Promise<{
   releasePlans: DurationPlan[]
   restakePlans: DurationPlan[]
 }> {
@@ -137,7 +138,7 @@ export async function readClaimPlans(client: ChainReadClient): Promise<{
 export async function readContributionSnapshot(
   user: Address,
   rewardAmount: bigint,
-  client: ChainReadClient,
+  client: ChainReadClient = bscReadClient,
 ): Promise<{ contribution: bigint; requiredContribution: bigint }> {
   const root = (await client.readContract({
     address: BSC_CONTRACTS.agxContributionSwap,
@@ -175,7 +176,7 @@ const LOCKED_PERIODS = ['180', '360', '540'] as const satisfies readonly Exclude
 
 export async function readStakePositions(
   user: Address,
-  client: ChainReadClient,
+  client: ChainReadClient = bscReadClient,
 ): Promise<AssetsStakeRow[]> {
   const rows: AssetsStakeRow[] = []
 
@@ -345,17 +346,17 @@ async function readBondPositionsFor(
   return rows
 }
 
-export function readLpBondPositions(user: Address, client: ChainReadClient) {
+export function readLpBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
   return readBondPositionsFor('lp', user, client)
 }
 
-export function readBurnBondPositions(user: Address, client: ChainReadClient) {
+export function readBurnBondPositions(user: Address, client: ChainReadClient = bscReadClient) {
   return readBondPositionsFor('burn', user, client)
 }
 
 export async function readXminePosition(
   user: Address,
-  client: ChainReadClient,
+  client: ChainReadClient = bscReadClient,
 ): Promise<AssetsXminePosition> {
   const [pending, miningStake, stake] = await Promise.all([
     client.readContract({

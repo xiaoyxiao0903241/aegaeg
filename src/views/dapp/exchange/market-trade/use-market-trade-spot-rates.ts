@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { keepPreviousData } from '@tanstack/react-query'
 import { resolveLiveQuotedOut } from '~/core/exchange/resolve-live-quoted-out'
 import {
   formatExchangeRateApprox,
@@ -7,10 +7,9 @@ import {
 import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { fetchExchangeQuote, type ExchangePoolReadContext } from '~/web3/exchange/exchange-read'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 type UseMarketTradeSpotRatesArgs = {
   pair: ExchangePairTokens
@@ -31,13 +30,12 @@ export function useMarketTradeSpotRates({
   poolContext,
   amountIn,
 }: UseMarketTradeSpotRatesArgs) {
-  const readClient = useChainReadClient()
   const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
   const invertedSpotAmount = 10n ** BigInt(pair.buy.decimals)
   const invertedPath = [...path].reverse() as `0x${string}`[]
   const invertedPathKey = invertedPath.join('-').toLowerCase()
 
-  const spotQuoteQuery = useQuery({
+  const spotQuoteQuery = useChainQuery({
     queryKey: queryKeys.chain.swapQuote(
       pair.sell.address,
       pair.buy.address,
@@ -50,15 +48,15 @@ export function useMarketTradeSpotRates({
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
         path,
-        client: readClient,
         poolContext,
       }),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 
-  const invertedSpotQuoteQuery = useQuery({
+  const invertedSpotQuoteQuery = useChainQuery({
     queryKey: queryKeys.chain.swapQuote(
       pair.buy.address,
       pair.sell.address,
@@ -71,11 +69,11 @@ export function useMarketTradeSpotRates({
         tokenIn: pair.buy.address,
         tokenOut: pair.sell.address,
         path: invertedPath,
-        client: readClient,
         poolContext,
       }),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 

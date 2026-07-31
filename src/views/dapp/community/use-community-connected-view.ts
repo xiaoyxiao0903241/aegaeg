@@ -17,17 +17,14 @@ export function useCommunityConnectedView() {
   const referral = useReferral()
   const referralLink = account ? formatReferralLinkDisplay(account.address) : '—'
 
-  usePresentUserFacingError(
-    referral.error,
-    (err) =>
+  usePresentUserFacingError(referral.error, {
+    id: 'community-referral-error',
+    onPresented: referral.clearError,
+    resolveMessage: (err) =>
       getErrorMessage(err, t) ??
       resolveApiUserFacingError(err, t.errors.api) ??
       t.community.bindErrors.failed,
-    {
-      id: 'community-referral-error',
-      onPresented: referral.clearError,
-    },
-  )
+  })
 
   async function onCopyReferralLink() {
     if (!account) return

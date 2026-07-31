@@ -1,6 +1,7 @@
 import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
+import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { approveTokenIfNeeded, exchangeTokens } from '~/web3/exchange/exchange-write'
 import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
 
@@ -25,9 +26,8 @@ export async function submitMarketTrade(args: {
   pair: ExchangePairTokens
   path: readonly `0x${string}`[]
   core: TradeQuotedSubmitCore
-  balancesQuery: { refetch: () => Promise<{ data?: { sell: bigint }; error: Error | null }> }
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { account, wallet, pair, path, core, balancesQuery } = args
+  const { account, wallet, pair, path, core } = args
 
   return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
     if (!account || !wallet) {
@@ -39,13 +39,9 @@ export async function submitMarketTrade(args: {
       token: pair.sell.address,
       amountIn: core.debouncedAmountIn,
     })
-    const refreshed = await balancesQuery.refetch()
-    if (refreshed.error || refreshed.data === undefined) {
-      throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
-    }
-    const { amountOutMin } = await assertStillSubmittable({
-      sellBalance: refreshed.data.sell,
-    })
+    // L-tier: direct read — do not trust display query refetch.
+    const sellBalance = await readErc20Balance(pair.sell.address, account.address)
+    const { amountOutMin } = await assertStillSubmittable({ sellBalance })
 
     await exchangeTokens({
       wallet,
@@ -54,6 +50,5 @@ export async function submitMarketTrade(args: {
       amountOutMin,
     })
     invalidateAfterExchange()
-    await balancesQuery.refetch()
   })
 }

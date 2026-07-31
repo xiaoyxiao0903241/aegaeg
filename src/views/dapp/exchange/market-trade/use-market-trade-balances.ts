@@ -19,7 +19,8 @@ export function useMarketTradeBalances({
   quotesEnabled,
   walletReady,
 }: UseMarketTradeBalancesArgs) {
-  const enabled = quotesEnabled && walletReady && Boolean(address)
+  /** Public ERC20 keys need owner; walletReady only for loading chrome. */
+  const enabled = quotesEnabled && Boolean(address)
   const sellAddress = TRADE_TOKEN_ADDRESSES[sellKey]
 
   const usd1Query = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.usd1 as Address, address, {
@@ -46,29 +47,7 @@ export function useMarketTradeBalances({
     xQuery.data !== undefined &&
     allowanceQuery.data !== undefined
 
-  async function refetchBalances(): Promise<{
-    data?: { sell: bigint }
-    error: Error | null
-  }> {
-    const [usd1, agx, x, allowance] = await Promise.all([
-      usd1Query.refetch(),
-      agxQuery.refetch(),
-      xQuery.refetch(),
-      allowanceQuery.refetch(),
-    ])
-    void allowance
-    const sellResult = sellKey === 'usd1' ? usd1 : sellKey === 'agx' ? agx : x
-    if (sellResult.error || sellResult.data === undefined) {
-      return {
-        data: undefined,
-        error: sellResult.error ?? new Error('EXCHANGE_SUBMIT_GATE_FAILED'),
-      }
-    }
-    return { data: { sell: sellResult.data }, error: null }
-  }
-
   return {
-    balancesQuery: { refetch: refetchBalances },
     sellBalance: byKey[sellKey] ?? 0n,
     buyBalance: byKey[buyKey] ?? 0n,
     balanceByKey: {

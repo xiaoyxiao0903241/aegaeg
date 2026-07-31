@@ -4,7 +4,6 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { isTradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
-import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { toast } from 'sonner'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
@@ -71,7 +70,7 @@ export function useMarketTradeView(trade: MarketTradeState) {
   }
 
   // Quote/validation only — submit errors toast via useChainMutation.
-  usePresentUserFacingError(trade.validationError, (err) => getErrorMessage(err, t), {
+  usePresentUserFacingError(trade.validationError, {
     id: 'market-trade-quote-error',
     trigger: trade.quoteErrorUpdatedAt,
   })

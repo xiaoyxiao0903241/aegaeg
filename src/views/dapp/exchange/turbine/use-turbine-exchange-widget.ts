@@ -1,13 +1,10 @@
 import { useRef, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { dappAssets } from '~/app/assets'
@@ -25,6 +22,7 @@ import {
 import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-rate'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 export type TurbineSegment = 'unlock' | 'claim'
@@ -48,8 +46,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
-  const readClient = useChainReadClient()
-  const address = account?.address
   const walletReady = hasWalletAccount(account)
 
   const [segment, setSegment] = useState<TurbineSegment>('unlock')
@@ -59,32 +55,30 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     error: null,
   })
 
-  const quotaQuery = useQuery({
-    queryKey: queryKeys.chain.turbineQuota(address ?? ''),
-    queryFn: () => readTurbineQuota(address!, readClient),
-    enabled: quotesEnabled && walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
-  })
-
-  const balancesQuery = useQuery({
-    queryKey: queryKeys.chain.turbineUsd1Balances(address ?? ''),
-    queryFn: () => readTurbineUsd1Balances(address!, readClient),
-    enabled: quotesEnabled && walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
-  })
-
-  const silencesQuery = useQuery({
-    queryKey: queryKeys.chain.turbineSilences(address ?? ''),
-    queryFn: () => readTurbineSilences(address!, readClient),
-    enabled: quotesEnabled && walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
-  })
-
-  const cooldownQuery = useQuery({
-    queryKey: queryKeys.chain.turbineCooldown,
-    queryFn: () => readTurbineCooldownDuration(readClient),
+  const quotaQuery = useChainQuery({
+    queryKey: queryKeys.chain.turbineQuota,
+    queryFn: (addr) => readTurbineQuota(addr),
     enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
+  })
+
+  const balancesQuery = useChainQuery({
+    queryKey: queryKeys.chain.turbineUsd1Balances,
+    queryFn: (addr) => readTurbineUsd1Balances(addr),
+    enabled: quotesEnabled,
+  })
+
+  const silencesQuery = useChainQuery({
+    queryKey: queryKeys.chain.turbineSilences,
+    queryFn: (addr) => readTurbineSilences(addr),
+    enabled: quotesEnabled,
+  })
+
+  const cooldownQuery = useChainQuery({
+    queryKey: queryKeys.chain.turbineCooldown,
+    queryFn: () => readTurbineCooldownDuration(),
+    scope: 'public',
+    freshness: 'quote',
+    enabled: quotesEnabled,
   })
 
   const quota = quotaQuery.data ?? 0n
@@ -136,19 +130,21 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     fillPercentRaw(percent)
   }
 
-  const quoteQuery = useQuery({
+  const quoteQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineUsdQuote(unlockAmountIn.toString()),
-    queryFn: () => readTurbineUsdQuote(unlockAmountIn, readClient),
+    queryFn: () => readTurbineUsdQuote(unlockAmountIn),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled && sessionReady && unlockAmountIn > 0n,
-    staleTime: QUERY_STALE_TIME.quote,
   })
 
   // Unit spot for meta「AGX 价格」— handbook quoteUsdInForAgxOut(1 AGX); fail → honest —.
-  const unitPriceQuery = useQuery({
+  const unitPriceQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineUsdQuote(ONE_AGX.toString()),
-    queryFn: () => readTurbineUsdQuote(ONE_AGX, readClient),
+    queryFn: () => readTurbineUsdQuote(ONE_AGX),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled && sessionReady,
-    staleTime: QUERY_STALE_TIME.quote,
   })
 
   const usdNeeded = quoteQuery.data ?? 0n
@@ -221,9 +217,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
       wallet,
       core: { runSubmit },
       unlockAmountAgx: unlockAmountIn,
-      refetchBalances: () => balancesQuery.refetch(),
-      refetchQuota: () => quotaQuery.refetch(),
-      refetchUsdQuote: () => quoteQuery.refetch(),
     })
   }
 

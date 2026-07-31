@@ -9,20 +9,23 @@ test('query keys normalize addresses and tokens to lowercase', () => {
   const checksummed = '0xA0b86a33E6441E6C7D3D4B4C6f8B9a2D5e7C1F3a'
   const lower = checksummed.toLowerCase()
 
-  assert.deepEqual(queryKeys.chain.referral(checksummed), ['chain', 'referral', lower])
-  assert.deepEqual(queryKeys.chain.referralIsBound(checksummed), [
+  assert.deepEqual(queryKeys.chain.referral, ['chain', 'referral'])
+  assert.deepEqual(queryKeys.chain.referralOf(checksummed), ['chain', 'referral', lower])
+  assert.deepEqual(queryKeys.chain.referralIsBoundOf(checksummed), [
     'chain',
     'referral',
     'isBound',
     lower,
   ])
-  assert.deepEqual(queryKeys.chain.presaleUserTotal(checksummed), [
+  assert.deepEqual(queryKeys.chain.presaleUserTotal, ['chain', 'presale', 'userTotal'])
+  assert.deepEqual(queryKeys.chain.presaleUserTotalOf(checksummed), [
     'chain',
     'presale',
     'userTotal',
     lower,
   ])
-  assert.deepEqual(queryKeys.chain.erc20Balance(checksummed, checksummed), [
+  assert.deepEqual(queryKeys.chain.erc20Balance(checksummed), ['chain', 'erc20', 'balance', lower])
+  assert.deepEqual(queryKeys.chain.erc20BalanceOf(checksummed, checksummed), [
     'chain',
     'erc20',
     'balance',
@@ -52,7 +55,7 @@ test('invalidateAfterGenesisPurchase optimistically adds purchaseAmount', async 
   const { invalidateAfterGenesisPurchase } = await loadModule('/src/shared/api/query/invalidate.ts')
 
   const address = '0xabc'
-  const userKey = queryKeys.chain.presaleUserTotal(address)
+  const userKey = queryKeys.chain.presaleUserTotalOf(address)
   const totalKey = queryKeys.chain.presaleTotalPurchased
 
   queryClient.setQueryData(userKey, 100n)
@@ -72,8 +75,8 @@ test('invalidateAfterWalletSwitch refreshes next address chain queries', async (
 
   const previous = '0xaaa'
   const next = '0xbbb'
-  const prevKey = queryKeys.chain.presaleUserTotal(previous)
-  const nextKey = queryKeys.chain.presaleUserTotal(next)
+  const prevKey = queryKeys.chain.presaleUserTotalOf(previous)
+  const nextKey = queryKeys.chain.presaleUserTotalOf(next)
 
   queryClient.setQueryData(prevKey, 10n)
   queryClient.setQueryData(nextKey, 20n)

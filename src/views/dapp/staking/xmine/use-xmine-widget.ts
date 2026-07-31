@@ -27,11 +27,10 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
   const { writeReady } = useWriteReadiness()
   const readClient = useChainReadClient()
 
-  const address = account?.address
   const walletReady = hasWalletAccount(account)
 
-  const preflightQuery = useXminePreflightQuery(address, {
-    enabled: sessionReady && walletReady,
+  const preflightQuery = useXminePreflightQuery({
+    enabled: sessionReady,
   })
 
   const balance = preflightQuery.data?.balance ?? 0n
@@ -63,7 +62,6 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     onSuccess: async () => {
       await present.onSuccess()
       amountInput.clearAmount()
-      await preflightQuery.refetch()
     },
     onError: present.onError,
   })

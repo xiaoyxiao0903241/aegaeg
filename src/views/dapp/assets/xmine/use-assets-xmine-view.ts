@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
@@ -7,6 +6,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import {
   submitXmineActivateWarmup,
   submitXmineClaim,
@@ -34,7 +34,6 @@ export function useAssetsXmineView() {
   const wallet = useActiveWallet()
   const readClient = useChainReadClient()
   const isMobile = useMobileViewport()
-  const address = account?.address
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [nowSec, setNowSec] = useState(0)
@@ -42,10 +41,9 @@ export function useAssetsXmineView() {
   const copy = t.assets.products.xmine
   const pageSize = t.assets.position.pageSize
 
-  const positionQuery = useQuery({
-    queryKey: queryKeys.chain.assetsXminePosition(address ?? ''),
-    queryFn: () => readXminePosition(address as Address, readClient),
-    enabled: walletReady && Boolean(address),
+  const positionQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsXminePosition,
+    queryFn: (addr) => readXminePosition(addr as Address),
   })
 
   const claim = useChainMutation({

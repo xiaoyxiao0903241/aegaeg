@@ -1,6 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import type { Address } from '~/shared/config/contracts'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
   readBondZapPreflight,
@@ -8,64 +7,50 @@ import {
   readXminePreflight,
 } from '~/web3/staking/staking-read'
 import { readBondHelperSlippage, readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 
 type StakingQueryOptions = {
   enabled?: boolean
 }
 
+/** Wallet-scoped preflight — address from useChainQuery (active account). */
 export function useStakeOpenPreflightQuery(
   pool: Address,
-  address: string | undefined,
   isLiquid: boolean,
   options?: StakingQueryOptions,
 ) {
-  const readClient = useChainReadClient()
-  const enabled = (options?.enabled ?? true) && Boolean(address)
-
-  return useQuery({
-    queryKey: queryKeys.chain.stakeOpenPreflight(pool, address ?? ''),
-    queryFn: () =>
+  return useChainQuery({
+    queryKey: queryKeys.chain.stakeOpenPreflight(pool),
+    freshness: 'balances',
+    enabled: options?.enabled ?? true,
+    queryFn: (user) =>
       readStakeOpenPreflight({
         pool,
         isLiquid,
-        user: address!,
-        client: readClient,
+        user,
       }),
-    enabled,
-    staleTime: QUERY_STALE_TIME.balances,
   })
 }
 
-export function useBondZapPreflightQuery(
-  depository: Address,
-  address: string | undefined,
-  options?: StakingQueryOptions,
-) {
-  const readClient = useChainReadClient()
-  const enabled = (options?.enabled ?? true) && Boolean(address)
-
-  return useQuery({
-    queryKey: queryKeys.chain.bondZapPreflight(depository, address ?? ''),
-    queryFn: () =>
+export function useBondZapPreflightQuery(depository: Address, options?: StakingQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.bondZapPreflight(depository),
+    freshness: 'balances',
+    enabled: options?.enabled ?? true,
+    queryFn: (user) =>
       readBondZapPreflight({
         depository,
-        user: address!,
-        client: readClient,
+        user,
       }),
-    enabled,
-    staleTime: QUERY_STALE_TIME.balances,
   })
 }
 
 export function useBondHelperSlippageQuery(options?: StakingQueryOptions) {
-  const readClient = useChainReadClient()
-
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.bondHelperSlippage,
-    queryFn: () => readBondHelperSlippage(readClient),
+    scope: 'public',
+    freshness: 'quote',
     enabled: options?.enabled ?? true,
-    staleTime: QUERY_STALE_TIME.quote,
+    queryFn: () => readBondHelperSlippage(),
   })
 }
 
@@ -75,31 +60,25 @@ export function useBondZapAgxPreviewQuery(
   depositUsd1: bigint,
   options?: StakingQueryOptions,
 ) {
-  const readClient = useChainReadClient()
-  const enabled = (options?.enabled ?? true) && depositUsd1 > 0n
-
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.bondZapAgxPreview(kind, depository, depositUsd1.toString()),
+    scope: 'public',
+    freshness: 'quote',
+    enabled: (options?.enabled ?? true) && depositUsd1 > 0n,
     queryFn: () =>
       readBondZapAgxPreview({
         kind,
         depository,
         depositUsd1,
-        client: readClient,
       }),
-    enabled,
-    staleTime: QUERY_STALE_TIME.quote,
   })
 }
 
-export function useXminePreflightQuery(address: string | undefined, options?: StakingQueryOptions) {
-  const readClient = useChainReadClient()
-  const enabled = (options?.enabled ?? true) && Boolean(address)
-
-  return useQuery({
-    queryKey: queryKeys.chain.xminePreflight(address ?? ''),
-    queryFn: () => readXminePreflight({ user: address!, client: readClient }),
-    enabled,
-    staleTime: QUERY_STALE_TIME.balances,
+export function useXminePreflightQuery(options?: StakingQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.xminePreflight,
+    freshness: 'balances',
+    enabled: options?.enabled ?? true,
+    queryFn: (user) => readXminePreflight({ user }),
   })
 }

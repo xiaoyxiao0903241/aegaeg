@@ -1,8 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import {
   migrationWritesAllowed,
   resolveMigrationUserGate,
@@ -14,14 +12,12 @@ type MigrationQueryOptions = {
 
 /** Cross-rail migration status — §17 read; writes stay DEFER while migrationEnabled=false. */
 export function useMigrationStatusQuery(address?: string, options?: MigrationQueryOptions) {
-  const readClient = useChainReadClient()
-  const queryEnabled = options?.enabled ?? true
-
-  return useQuery({
-    queryKey: queryKeys.chain.migrationStatus(address ?? ''),
-    queryFn: () => readMigrationStatus(address, readClient),
-    enabled: queryEnabled,
-    staleTime: QUERY_STALE_TIME.balances,
+  return useChainQuery({
+    queryKey: queryKeys.chain.migrationStatusOf(address ?? ''),
+    scope: 'public',
+    freshness: 'balances',
+    enabled: (options?.enabled ?? true) && Boolean(address),
+    queryFn: () => readMigrationStatus(address),
   })
 }
 

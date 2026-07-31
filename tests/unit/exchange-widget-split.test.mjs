@@ -18,7 +18,7 @@ test('useMarketTradeWidget assembles balances, spot rates, and quote core', asyn
   assert.doesNotMatch(source, /queryKeys\.chain\.swapBalances/)
 })
 
-test('submitMarketTrade owns approve + swap + invalidate path', async () => {
+test('submitMarketTrade owns approve + live balance read + swap + invalidate path', async () => {
   const source = await readFile(
     new URL('../../src/views/dapp/exchange/market-trade/submit-market-trade.ts', import.meta.url),
     'utf8',
@@ -26,8 +26,11 @@ test('submitMarketTrade owns approve + swap + invalidate path', async () => {
 
   assert.match(source, /runQuotedSubmit/)
   assert.match(source, /approveTokenIfNeeded/)
+  assert.match(source, /readErc20Balance/)
+  assert.match(source, /assertStillSubmittable\(\{\s*sellBalance/)
   assert.match(source, /exchangeTokens/)
-  assert.match(source, /sellBalance:\s*refreshed\.data\.sell/)
+  assert.match(source, /invalidateAfterExchange/)
+  assert.doesNotMatch(source, /balancesQuery\.refetch/)
 })
 
 test('useExchangeQuote keeps live re-gate after approve', async () => {

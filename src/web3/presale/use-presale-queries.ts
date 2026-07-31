@@ -1,7 +1,7 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
+import type { UseQueryResult } from '@tanstack/react-query'
 import { findActivePresalePhase, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
@@ -20,12 +20,11 @@ type PresaleQueryOptions = {
 }
 
 export function usePresalePhasesQuery() {
-  const readClient = useChainReadClient()
-
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.presalePhases,
-    queryFn: () => readAllPresalePhases(readClient),
-    staleTime: QUERY_STALE_TIME.presale,
+    scope: 'public',
+    freshness: 'presale',
+    queryFn: () => readAllPresalePhases(),
   })
 }
 
@@ -51,64 +50,57 @@ export function usePresaleActivePhaseQuery(): PresaleActivePhaseQueryResult {
 }
 
 export function usePresaleAgxPriceQuery() {
-  const readClient = useChainReadClient()
-
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.presaleAgxPrice,
-    queryFn: () => readPresaleAgxPriceWei(readClient),
-    staleTime: QUERY_STALE_TIME.presale,
+    scope: 'public',
+    freshness: 'presale',
+    queryFn: () => readPresaleAgxPriceWei(),
   })
 }
 
 export function usePresaleTotalPurchasedQuery(options?: PresaleQueryOptions) {
-  const readClient = useChainReadClient()
   const enabled = options?.enabled ?? true
 
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.presaleTotalPurchased,
-    queryFn: () => readTotalPresalePurchased(readClient),
+    scope: 'public',
+    freshness: 'presale',
     enabled,
-    staleTime: QUERY_STALE_TIME.presale,
+    queryFn: () => readTotalPresalePurchased(),
     // Cumulative contribution refreshes every 30s while the Genesis tab is active.
     refetchInterval: enabled ? QUERY_STALE_TIME.presale : false,
-    refetchIntervalInBackground: false,
   })
 }
 
 export function usePresaleAirdropThresholdQuery(options?: PresaleQueryOptions) {
-  const readClient = useChainReadClient()
-
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.presaleAirdropThreshold,
-    queryFn: () => readPresaleAirdropThresholdWei(readClient),
+    scope: 'public',
+    freshness: 'presale',
     enabled: options?.enabled ?? true,
-    staleTime: QUERY_STALE_TIME.presale,
+    queryFn: () => readPresaleAirdropThresholdWei(),
   })
 }
 
 export function usePresalePausedQuery(options?: PresaleQueryOptions) {
-  const readClient = useChainReadClient()
   const enabled = options?.enabled ?? true
 
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.presalePaused,
-    queryFn: () => readPresalePaused(readClient),
+    scope: 'public',
+    freshness: 'presale',
     enabled,
-    staleTime: QUERY_STALE_TIME.presale,
+    queryFn: () => readPresalePaused(),
     refetchInterval: enabled ? QUERY_STALE_TIME.presale : false,
-    refetchIntervalInBackground: false,
   })
 }
 
-export function usePresaleUserTotalQuery(address?: string, options?: PresaleQueryOptions) {
-  const readClient = useChainReadClient()
-  const queryEnabled = (options?.enabled ?? true) && Boolean(address)
-
-  return useQuery({
-    queryKey: queryKeys.chain.presaleUserTotal(address ?? ''),
-    queryFn: () => readUserPresaleTotal(address!, readClient),
-    enabled: queryEnabled,
-    staleTime: QUERY_STALE_TIME.presale,
+export function usePresaleUserTotalQuery(options?: PresaleQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.presaleUserTotal,
+    freshness: 'presale',
+    enabled: options?.enabled ?? true,
+    queryFn: (addr) => readUserPresaleTotal(addr),
   })
 }
 
@@ -117,14 +109,12 @@ export function usePresaleUserPhaseRemainingQuery(
   phaseIndex?: number,
   options?: PresaleQueryOptions,
 ) {
-  const readClient = useChainReadClient()
-  const queryEnabled = (options?.enabled ?? true) && Boolean(address) && phaseIndex !== undefined
-
-  return useQuery({
+  return useChainQuery({
     queryKey: queryKeys.chain.presaleUserPhaseRemaining(address ?? '', phaseIndex ?? 0),
-    queryFn: () => readUserPhaseRemainingAmount(address!, phaseIndex!, readClient),
-    enabled: queryEnabled,
-    staleTime: QUERY_STALE_TIME.presale,
+    scope: 'public',
+    freshness: 'presale',
+    enabled: (options?.enabled ?? true) && Boolean(address) && phaseIndex !== undefined,
+    queryFn: () => readUserPhaseRemainingAmount(address!, phaseIndex!),
   })
 }
 

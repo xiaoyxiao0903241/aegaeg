@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
@@ -8,6 +7,7 @@ import { formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import {
   submitBondRedeem,
@@ -55,7 +55,6 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const wallet = useActiveWallet()
   const readClient = useChainReadClient()
   const isMobile = useMobileViewport()
-  const address = account?.address
 
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [claim, setClaim] = useState<ClaimState>({ open: false })
@@ -104,19 +103,19 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     return t.assets.claim.releaseDays.replace('{days}', String(period))
   }
 
-  const stakeQuery = useQuery({
-    queryKey: queryKeys.chain.assetsStakePositions(address ?? ''),
-    queryFn: () => readStakePositions(address as Address, readClient),
-    enabled: walletReady && Boolean(address) && product === 'stake',
+  const stakeQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsStakePositions,
+    queryFn: (addr) => readStakePositions(addr as Address),
+    enabled: product === 'stake',
   })
 
-  const bondQuery = useQuery({
-    queryKey: queryKeys.chain.assetsBondPositions(product, address ?? ''),
-    queryFn: () =>
+  const bondQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsBondPositions(product),
+    queryFn: (addr) =>
       product === 'lpbond'
-        ? readLpBondPositions(address as Address, readClient)
-        : readBurnBondPositions(address as Address, readClient),
-    enabled: walletReady && Boolean(address) && product !== 'stake',
+        ? readLpBondPositions(addr as Address)
+        : readBurnBondPositions(addr as Address),
+    enabled: product !== 'stake',
   })
 
   const stakeRows = stakeQuery.data ?? []

@@ -11,11 +11,8 @@ import {
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
-import { useQuery } from '@tanstack/react-query'
 import {
   readFlashPairBalances,
   readFlashPairQuote,
@@ -26,6 +23,7 @@ import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { resolveFlashUsd1SwapGate } from '~/core/exchange/flash-usd1-swap-gates'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 /**
  * Handbook `usd1swap.md` sample: `minOut = (usd1Out * 99n) / 100n` (1% floor).
@@ -43,17 +41,16 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
   const [pairId, setPairIdState] = useState<FlashPairId>(FLASH_PAIR_DEFAULT)
   const [direction, setDirection] = useState<ExchangeDirection>('forward')
   const pair = getFlashExchangePairTokens(pairId, direction)
-  const readClient = useChainReadClient()
   const isRedeemPair = pairId === 'gagx'
 
-  const address = account?.address
   const walletReady = hasWalletAccount(account)
 
-  const configQuery = useQuery({
+  const configQuery = useChainQuery({
     queryKey: queryKeys.chain.flashUsd1SwapConfig,
-    queryFn: () => readUsd1SwapConfig(readClient),
+    queryFn: () => readUsd1SwapConfig(),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled && !isRedeemPair,
-    staleTime: QUERY_STALE_TIME.quote,
   })
 
   // Handbook: never hardcode input/output decimals — wait for getConfig.usdtDec/usd1Dec.
@@ -65,11 +62,10 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
   const buyDecimals =
     !isRedeemPair && configQuery.data ? configQuery.data.usd1Dec : pair.buy.decimals
 
-  const balancesQuery = useQuery({
-    queryKey: queryKeys.chain.flashSwapBalances(pairId, direction, address ?? ''),
-    queryFn: () => readFlashPairBalances(pairId, direction, address!, readClient),
-    enabled: quotesEnabled && walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
+  const balancesQuery = useChainQuery({
+    queryKey: queryKeys.chain.flashSwapBalances(pairId, direction),
+    queryFn: (addr) => readFlashPairBalances(pairId, direction, addr),
+    enabled: quotesEnabled,
   })
 
   const sellBalance = balancesQuery.data?.sell ?? 0n
@@ -95,7 +91,7 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
     quoteRefreshIntervalMs: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     getQuoteQueryKey: (amountIn) =>
       queryKeys.chain.flashSwapQuote(pairId, direction, amountIn.toString()),
-    fetchQuote: (amountIn) => readFlashPairQuote(pairId, amountIn, readClient),
+    fetchQuote: (amountIn) => readFlashPairQuote(pairId, amountIn),
     selectQuotedOut: (quote) => quote ?? 0n,
   })
 
@@ -143,8 +139,6 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
       account,
       wallet,
       core,
-      balancesQuery,
-      refetchUsd1Config: () => configQuery.refetch(),
     })
   }
 

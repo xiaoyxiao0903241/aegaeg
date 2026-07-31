@@ -11,7 +11,6 @@ import {
   invalidatePresaleChainQueries,
 } from '~/shared/api/query/invalidate'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { readPresalePaused } from '~/web3/presale/presale-read'
 import { fetchLiveGenesisPostApproveGate } from '~/views/dapp/genesis/fetch-live-genesis-post-approve-gate'
@@ -51,7 +50,6 @@ export function useGenesisPurchaseActions({
   purchase: { canPurchase, isApproved, needsApproval, purchaseAmount },
 }: UseGenesisPurchaseActionsArgs) {
   const queryClient = useQueryClient()
-  const readClient = useChainReadClient()
   const { messages: t } = useI18n()
 
   async function refresh() {
@@ -97,14 +95,14 @@ export function useGenesisPurchaseActions({
           address,
           fetchIsBound: (addr) =>
             queryClient.fetchQuery({
-              queryKey: queryKeys.chain.referralIsBound(addr),
-              queryFn: () => readIsBindReferral(addr, readClient),
+              queryKey: queryKeys.chain.referralIsBoundOf(addr),
+              queryFn: () => readIsBindReferral(addr),
               staleTime: 0,
             }),
           fetchPaused: () =>
             queryClient.fetchQuery({
               queryKey: queryKeys.chain.presalePaused,
-              queryFn: () => readPresalePaused(readClient),
+              queryFn: () => readPresalePaused(),
               staleTime: 0,
             }),
         })
@@ -115,18 +113,13 @@ export function useGenesisPurchaseActions({
         }
 
         const [balance, approved] = await Promise.all([
-          readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
-          readErc20Allowance(
-            BSC_CONTRACTS.usd1,
-            account.address,
-            BSC_CONTRACTS.preSale,
-            readClient,
-          ),
+          readErc20Balance(BSC_CONTRACTS.usd1, account.address),
+          readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
         ])
 
         if (address) {
           queryClient.setQueryData(
-            queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address),
+            queryKeys.chain.erc20BalanceOf(BSC_CONTRACTS.usd1, address),
             balance,
           )
           queryClient.setQueryData(

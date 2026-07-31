@@ -1,12 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import {
   readBurnContributionQuote,
@@ -22,6 +19,7 @@ import {
   formatBurnContributionRateLabel,
   resolveBurnContributionSwapGate,
 } from '~/core/exchange/burn-contribution-swap-gates'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 const BURN_PAIR = {
   sell: EXCHANGE_CONFIG.tokens.agx,
@@ -38,33 +36,29 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
   const account = useActiveAccount()
   const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
-  const readClient = useChainReadClient()
-
-  const address = account?.address
   const walletReady = hasWalletAccount(account)
 
-  const configQuery = useQuery({
+  const configQuery = useChainQuery({
     queryKey: queryKeys.chain.burnSwapConfig,
-    queryFn: () => readBurnContributionSwapConfig(readClient),
+    queryFn: () => readBurnContributionSwapConfig(),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
   })
 
   const decimals = configQuery.data?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
   const buyDecimals = decimals
 
-  const balancesQuery = useQuery({
-    queryKey: queryKeys.chain.burnSwapBalances(address ?? ''),
-    queryFn: () => readBurnExchangeBalances(address!, readClient),
-    enabled: quotesEnabled && walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
+  const balancesQuery = useChainQuery({
+    queryKey: queryKeys.chain.burnSwapBalances,
+    queryFn: (addr) => readBurnExchangeBalances(addr),
+    enabled: quotesEnabled,
   })
 
-  const userStatsQuery = useQuery({
-    queryKey: queryKeys.chain.burnSwapUserStats(address ?? ''),
-    queryFn: () => readBurnUserStats(address!, readClient),
-    enabled: quotesEnabled && walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
+  const userStatsQuery = useChainQuery({
+    queryKey: queryKeys.chain.burnSwapUserStats,
+    queryFn: (addr) => readBurnUserStats(addr),
+    enabled: quotesEnabled,
   })
 
   const sellBalance = balancesQuery.data?.sell ?? 0n
@@ -85,7 +79,7 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
     slippageBps: 0,
     quoteRefreshIntervalMs: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     getQuoteQueryKey: (amountIn) => queryKeys.chain.burnSwapQuote(amountIn.toString()),
-    fetchQuote: (amountIn) => readBurnContributionQuote(amountIn, readClient),
+    fetchQuote: (amountIn) => readBurnContributionQuote(amountIn),
     selectQuotedOut: (quote) => quote ?? 0n,
   })
 
@@ -117,9 +111,6 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
       account,
       wallet,
       core,
-      balancesQuery,
-      config: configQuery.data ?? null,
-      refetchConfig: () => configQuery.refetch(),
     })
   }
 

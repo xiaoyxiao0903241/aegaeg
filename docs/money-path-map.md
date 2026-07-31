@@ -65,6 +65,7 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 | Unknown receipt lock      | `web3/wallet/unknown-receipt-lock.ts` · `submit-with-unknown-receipt-lock.ts`（**全部** `WRITE_PATH` 写入口须经信封；禁手写 `lock`；`clear` 仅信封成功或金额变更等显式重置） |
 | Approve → live 双读       | `web3/wallet/approve-then-live-write.ts`（stake/bond/xmine；域仍拥有 evaluate）                                                                                              |
 | 提交呈现 / CTA 纯函数     | `web3/errors/get-error-message.ts` · `web3/errors/error-messages.ts` · `hooks/use-chain-mutation.ts` · `core/wallet/write-cta.ts` · `app/shell/go-bind-referral.ts`          |
+| 链上展示读（非 L）        | `hooks/use-chain-query.ts` · `shared/api/query/chain-wallet-query-key.ts` · `core/wallet/resolve-chain-query-enabled.ts`                                                     |
 | Assets Mixed dual-gate    | `core/assets/dual-gate-mixed-claim.ts`（intent×live；禁自证）                                                                                                                |
 | Swap 门闸                 | `core/exchange/resolve-live-quoted-out.ts` · `views/dapp/exchange/use-exchange-quote.ts`                                                                                     |
 | Genesis 二次门闸          | `fetch-live-genesis-post-approve-gate.ts` · `evaluateGenesisPostApproveGate`                                                                                                 |

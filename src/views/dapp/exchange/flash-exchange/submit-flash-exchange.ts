@@ -1,13 +1,9 @@
-import type { QueryObserverResult } from '@tanstack/react-query'
 import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { WALLET_GATE_ERROR, FLASH_USD1_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import type { FlashPairId } from '~/core/exchange/flash-pair'
-import {
-  type FlashUsd1SwapConfig,
-  resolveFlashUsd1SwapGate,
-} from '~/core/exchange/flash-usd1-swap-gates'
+import { resolveFlashUsd1SwapGate } from '~/core/exchange/flash-usd1-swap-gates'
 import {
   approveAgxForWrapIfNeeded,
   approveUsdtForFlashExchangeIfNeeded,
@@ -15,6 +11,7 @@ import {
   redeemGagxFlashExchange,
   wrapAgxFlashExchange,
 } from '~/web3/exchange/flash-exchange-write'
+import { readFlashPairBalances, readUsd1SwapConfig } from '~/web3/exchange/flash-exchange-read'
 
 type ActiveAccount = ReturnType<typeof useActiveAccount>
 type ActiveWallet = ReturnType<typeof useActiveWallet>
@@ -30,8 +27,6 @@ type FlashQuotedSubmitCore = {
   ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
 }
 
-type FlashBalancesResult = { sell: bigint; buy: bigint; approved: bigint }
-
 /** Flash dual-pair submit: redeem / wrap / USDT swap + invalidate. */
 export async function submitFlashExchange(args: {
   pairId: FlashPairId
@@ -39,10 +34,8 @@ export async function submitFlashExchange(args: {
   account: ActiveAccount
   wallet: ActiveWallet
   core: FlashQuotedSubmitCore
-  balancesQuery: { refetch: () => Promise<QueryObserverResult<FlashBalancesResult>> }
-  refetchUsd1Config: () => Promise<QueryObserverResult<FlashUsd1SwapConfig>>
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { pairId, direction, account, wallet, core, balancesQuery, refetchUsd1Config } = args
+  const { pairId, direction, account, wallet, core } = args
 
   return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
     if (!account || !wallet) {
@@ -55,12 +48,10 @@ export async function submitFlashExchange(args: {
       await approveAgxForWrapIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
     }
 
-    const refreshed = await balancesQuery.refetch()
-    if (refreshed.error || refreshed.data === undefined) {
-      throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
-    }
+    // L-tier: direct balance read — not display-query refetch.
+    const liveBalances = await readFlashPairBalances(pairId, direction, account.address)
     const { amountOutMin: minOut, quotedOut } = await assertStillSubmittable({
-      sellBalance: refreshed.data.sell,
+      sellBalance: liveBalances.sell,
     })
 
     if (pairId === 'gagx') {
@@ -76,14 +67,11 @@ export async function submitFlashExchange(args: {
         })
       }
     } else {
-      const liveConfig = await refetchUsd1Config()
-      if (liveConfig.error || liveConfig.data === undefined) {
-        throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
-      }
+      const liveConfig = await readUsd1SwapConfig()
       const gate = resolveFlashUsd1SwapGate({
         amountIn: core.debouncedAmountIn,
         quotedOut,
-        config: liveConfig.data,
+        config: liveConfig,
       })
       if (gate) {
         throw new Error(FLASH_USD1_GATE_ERROR[gate])
@@ -96,7 +84,6 @@ export async function submitFlashExchange(args: {
       })
     }
     invalidateAfterExchange()
-    await balancesQuery.refetch()
   })
 }
 

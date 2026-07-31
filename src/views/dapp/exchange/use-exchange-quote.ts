@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery, type QueryKey } from '@tanstack/react-query'
+import { keepPreviousData, type QueryKey } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { calcAmountOutMin } from '~/core/exchange/calc-amount-out-min'
 import {
@@ -14,6 +14,7 @@ import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 const DEFAULT_QUOTE_DEBOUNCE_MS = 400
 
@@ -97,11 +98,12 @@ export function useExchangeQuote<TQuote>({
   const debouncedAmountIn = useDebouncedValue(amountIn, debounceMs)
   const isAmountDebouncing = amountIn > 0n && amountIn !== debouncedAmountIn
 
-  const amountQuoteQuery = useQuery({
+  const amountQuoteQuery = useChainQuery({
     queryKey: getQuoteQueryKey(debouncedAmountIn),
     queryFn: () => fetchQuote(debouncedAmountIn),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled && sessionReady && debouncedAmountIn > 0n,
-    staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 

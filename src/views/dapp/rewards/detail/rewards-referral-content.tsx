@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
@@ -12,25 +11,23 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import type { Address } from '~/shared/config/contracts'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readReferralCount } from '~/web3/referral/referral-read'
 import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 import { useRewardsContributionDisplay } from '~/views/dapp/rewards/use-rewards-contribution-display'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 export function RewardsReferralContent() {
   const { messages: t } = useI18n()
   const referral = t.rewards.referral
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
-  const readClient = useChainReadClient()
   const address = account?.address
   const { contributionValue } = useRewardsContributionDisplay(walletReady)
 
-  const countQuery = useQuery({
-    queryKey: queryKeys.chain.rewardsReferralCount(address ?? ''),
-    queryFn: () => readReferralCount(address as Address, readClient),
-    enabled: Boolean(walletReady && address && readClient),
+  const countQuery = useChainQuery({
+    queryKey: queryKeys.chain.rewardsReferralCount,
+    queryFn: (addr) => readReferralCount(addr as Address),
   })
 
   const referralCount =

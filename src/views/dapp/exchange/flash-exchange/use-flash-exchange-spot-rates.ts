@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { keepPreviousData } from '@tanstack/react-query'
 import {
   formatExchangeRateColon,
   emptySpotRateDash,
@@ -6,10 +6,9 @@ import {
 import type { ExchangePairTokens, FlashPairId } from '~/views/dapp/exchange/exchange-pair'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { resolveLiveQuotedOut } from '~/core/exchange/resolve-live-quoted-out'
 import { readFlashPairQuote } from '~/web3/exchange/flash-exchange-read'
 
@@ -25,14 +24,14 @@ export function useFlashExchangeSpotRates({
   pair: ExchangePairTokens
   quotesEnabled: boolean
 }) {
-  const readClient = useChainReadClient()
   const spotQuoteAmount = 10n ** BigInt(pair.sell.decimals)
 
-  const spotQuoteQuery = useQuery({
+  const spotQuoteQuery = useChainQuery({
     queryKey: queryKeys.chain.flashSwapQuote(pairId, direction, spotQuoteAmount.toString()),
-    queryFn: () => readFlashPairQuote(pairId, spotQuoteAmount, readClient),
+    queryFn: () => readFlashPairQuote(pairId, spotQuoteAmount),
+    scope: 'public',
+    freshness: 'quote',
     enabled: quotesEnabled,
-    staleTime: QUERY_STALE_TIME.quote,
     placeholderData: keepPreviousData,
   })
 

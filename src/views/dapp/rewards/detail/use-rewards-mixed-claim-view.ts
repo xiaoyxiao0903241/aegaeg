@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import {
   RELEASE_DURATION_DAYS,
   RESTAKE_DURATION_DAYS,
@@ -54,28 +54,41 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
-  const luckyQuery = useQuery({
-    queryKey: queryKeys.chain.rewardsLuckyClaim(account?.address ?? ''),
-    queryFn: () => readLuckyClaimSnapshot(readClient, account!.address as Address),
-    enabled: view === 'lucky' && walletReady && Boolean(account?.address),
+  const luckyQuery = useChainQuery({
+    queryKey: queryKeys.chain.rewardsLuckyClaim,
+    queryFn: (address) => readLuckyClaimSnapshot(address as Address),
+    enabled: view === 'lucky',
   })
 
   const amount =
     view === 'lucky' ? (luckyQuery.data?.rewardAmount ?? 0n) : 0n /* Dao: signature at submit */
 
-  const plansQuery = useQuery({
+  const plansQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
-    queryFn: () => readClaimPlans(readClient),
+    queryFn: () => readClaimPlans(),
+    scope: 'public',
+    freshness: 'api',
   })
 
-  const contribQuery = useQuery({
-    queryKey:
-      amount > 0n
-        ? queryKeys.chain.assetsContributionForAmount(account?.address ?? '', amount.toString())
-        : queryKeys.chain.assetsContribution(account?.address ?? ''),
-    queryFn: () => readContributionSnapshot(account!.address as Address, amount, readClient),
-    enabled: walletReady && Boolean(account?.address) && (view === 'cobuild' || amount > 0n),
-  })
+  const contribQuery = useChainQuery(
+    amount > 0n
+      ? {
+          scope: 'public' as const,
+          queryKey: queryKeys.chain.assetsContributionForAmount(
+            account?.address ?? '',
+            amount.toString(),
+          ),
+          queryFn: () => readContributionSnapshot(account!.address as Address, amount),
+          freshness: 'balances' as const,
+          enabled: Boolean(account?.address) && (view === 'cobuild' || amount > 0n),
+        }
+      : {
+          queryKey: queryKeys.chain.assetsContribution,
+          queryFn: (address: string) => readContributionSnapshot(address as Address, amount),
+          freshness: 'balances' as const,
+          enabled: view === 'cobuild' || amount > 0n,
+        },
+  )
 
   const releaseIndex = plansQuery.data
     ? matchPlanIndexByDurationDays(plansQuery.data.releasePlans, releaseDays)

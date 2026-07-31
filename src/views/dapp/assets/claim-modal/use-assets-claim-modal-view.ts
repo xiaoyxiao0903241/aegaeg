@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -14,6 +13,7 @@ import {
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { submitMixedClaim, type MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
@@ -59,19 +59,22 @@ export function useAssetsClaimModalView(args: {
     },
   })
 
-  const plansQuery = useQuery({
+  const plansQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsClaimPlans,
-    queryFn: () => readClaimPlans(readClient),
+    queryFn: () => readClaimPlans(),
+    scope: 'public',
+    freshness: 'api',
     enabled: open,
   })
 
-  const contribQuery = useQuery({
-    queryKey: [
-      ...queryKeys.chain.assetsContribution(account?.address ?? ''),
+  const contribQuery = useChainQuery({
+    scope: 'public',
+    queryKey: queryKeys.chain.assetsContributionForAmount(
+      account?.address ?? '',
       String(target.amount),
-    ],
-    queryFn: () => readContributionSnapshot(account!.address as Address, target.amount, readClient),
-    enabled: open && walletReady && Boolean(account?.address),
+    ),
+    queryFn: () => readContributionSnapshot(account!.address as Address, target.amount),
+    enabled: open && Boolean(account?.address),
   })
 
   const releaseIndex = plansQuery.data

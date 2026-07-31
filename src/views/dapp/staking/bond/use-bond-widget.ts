@@ -1,4 +1,3 @@
-import { useQueries } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateBondZapLiveGate } from '~/core/staking/staking-gates'
@@ -9,9 +8,9 @@ import {
 } from '~/web3/staking/resolve-staking-addresses'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -54,21 +53,30 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
   const resolveDepository = kind === 'lp' ? resolveLpBondDepository : resolveBurnBondDepository
   const depository = resolveDepository(period)
 
-  const preflightQuery = useBondZapPreflightQuery(depository, address, {
-    enabled: sessionReady && walletReady,
+  const preflightQuery = useBondZapPreflightQuery(depository, {
+    enabled: sessionReady,
   })
   const migration = useMigrationUserGate(address, { enabled: walletReady })
 
-  const periodMarketQueries = useQueries({
-    queries: BOND_PERIODS.map((p) => {
-      const addr = resolveDepository(p)
-      return {
-        queryKey: queryKeys.chain.bondMarketMeta(addr),
-        queryFn: () => readBondMarketMeta(addr, readClient),
-        staleTime: QUERY_STALE_TIME.quote,
-      }
-    }),
+  const market180 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(resolveDepository('180')),
+    scope: 'public',
+    freshness: 'quote',
+    queryFn: () => readBondMarketMeta(resolveDepository('180')),
   })
+  const market360 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(resolveDepository('360')),
+    scope: 'public',
+    freshness: 'quote',
+    queryFn: () => readBondMarketMeta(resolveDepository('360')),
+  })
+  const market540 = useChainQuery({
+    queryKey: queryKeys.chain.bondMarketMeta(resolveDepository('540')),
+    scope: 'public',
+    freshness: 'quote',
+    queryFn: () => readBondMarketMeta(resolveDepository('540')),
+  })
+  const periodMarketQueries = [market180, market360, market540] as const
 
   const marketQuery = periodMarketQueries[BOND_PERIODS.indexOf(period)]!
 
@@ -113,7 +121,6 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     onSuccess: async () => {
       await present.onSuccess()
       amountInput.clearAmount()
-      await Promise.all([preflightQuery.refetch(), marketQuery.refetch(), payoutQuery.refetch()])
     },
     onError: present.onError,
   })

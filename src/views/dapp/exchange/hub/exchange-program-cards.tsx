@@ -1,10 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
 import { tv } from 'tailwind-variants'
 import { exchangeHubAssets } from '~/app/assets'
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap-gates'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { cn } from '~/shared/lib/utils'
@@ -12,7 +10,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import type { ExchangeView } from '~/stores/exchange-view-store'
 import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 /**
  * Figma hub program grid (PC `4267:212`):
@@ -132,13 +130,13 @@ function ExchangeProgramCard({
 
 export function ExchangeProgramCards() {
   const { messages: t } = useI18n()
-  const readClient = useChainReadClient()
   const cards = t.exchange.hub.program.cards
 
-  const configQuery = useQuery({
+  const configQuery = useChainQuery({
     queryKey: queryKeys.chain.burnSwapConfig,
-    queryFn: () => readBurnContributionSwapConfig(readClient),
-    staleTime: QUERY_STALE_TIME.quote,
+    queryFn: () => readBurnContributionSwapConfig(),
+    scope: 'public',
+    freshness: 'quote',
   })
 
   const contributionRatio =

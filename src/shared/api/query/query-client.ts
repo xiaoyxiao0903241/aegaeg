@@ -17,13 +17,15 @@ export const queryClient = new QueryClient({
 
 /**
  * Maps Spec freshness tiers (S/U/Q/L):
- * - S (quasi-static) → `api` / default 5m (pool metadata may use Infinity)
+ * - S (quasi-static) → `api` / `static` (Infinity for immutable pool metadata)
  * - U (user balances/positions) → `balances` / `presale` 30s
  * - Q (quotes) → `quote` 10s
- * - L (submit live) → staleTime 0 / direct read — not listed here
+ * - L (submit live) → staleTime 0 / direct read — not listed here; never via useChainQuery
  */
 export const QUERY_STALE_TIME = {
   api: FIVE_MINUTES,
+  /** Immutable on-chain metadata (pair token0/token1, etc.). */
+  static: Number.POSITIVE_INFINITY,
   presale: 30_000,
   balances: 30_000,
   quote: 10_000,

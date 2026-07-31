@@ -37,17 +37,18 @@
 
 ## 奖励领取
 
-| 业务术语             | 代码名                         | 含义                                                         | Owner                                                 |
-| -------------------- | ------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------- |
-| **领取团队奖励**     | `claimTeamReward`              | 签名 → 上链 → confirm                                        | `claim-reward`                                        |
-| **领取社区基金**     | `claimCommunityFund`           | 同上                                                         | `claim-reward`                                        |
-| **领取签名**         | `TeamRewardClaimSignature`     | 后端签名包（字段名兼容 snake/camel）                         | `claim-reward` / `parseTeamRewardClaim`               |
-| **确认失败**         | `confirm_failed`               | 链上成功但后端 confirm 失败                                  | `useClaimReward`                                      |
-| **未知回执**         | `unknown`（tx）                | pending 超时无回执；禁双提交                                 | `unknown-receipt-lock` / `WalletTransactionWaitError` |
-| **带未知回执闩提交** | `submitWithUnknownReceiptLock` | 写入口信封：已闩拒 → 成功清闩 → unknown 上闩                 | `web3/wallet/submit-with-unknown-receipt-lock.ts`     |
-| **授权后二次门闸写** | `approveThenLiveWrite`         | pre 门闸 → approve? → live 重读门闸 → write                  | `web3/wallet/approve-then-live-write.ts`              |
-| **链上写 mutation**  | `useChainMutation`             | 信封 + retry:false；已闩静默；错误 toast；isLocked/clearLock | `hooks/use-chain-mutation.ts`                         |
-| **错误用户文案**     | `getErrorMessage`              | unknown → 用户可见文案（或 null 跳过 toast）                 | `web3/errors/get-error-message.ts`                    |
+| 业务术语             | 代码名                         | 含义                                                                    | Owner                                                 |
+| -------------------- | ------------------------------ | ----------------------------------------------------------------------- | ----------------------------------------------------- |
+| **领取团队奖励**     | `claimTeamReward`              | 签名 → 上链 → confirm                                                   | `claim-reward`                                        |
+| **领取社区基金**     | `claimCommunityFund`           | 同上                                                                    | `claim-reward`                                        |
+| **领取签名**         | `TeamRewardClaimSignature`     | 后端签名包（字段名兼容 snake/camel）                                    | `claim-reward` / `parseTeamRewardClaim`               |
+| **确认失败**         | `confirm_failed`               | 链上成功但后端 confirm 失败                                             | `useClaimReward`                                      |
+| **未知回执**         | `unknown`（tx）                | pending 超时无回执；禁双提交                                            | `unknown-receipt-lock` / `WalletTransactionWaitError` |
+| **带未知回执闩提交** | `submitWithUnknownReceiptLock` | 写入口信封：已闩拒 → 成功清闩 → unknown 上闩                            | `web3/wallet/submit-with-unknown-receipt-lock.ts`     |
+| **授权后二次门闸写** | `approveThenLiveWrite`         | pre 门闸 → approve? → live 重读门闸 → write                             | `web3/wallet/approve-then-live-write.ts`              |
+| **链上读 query**     | `useChainQuery`                | wallet 前缀+address；public 全 key；freshness；read* 默认 bscReadClient | `hooks/use-chain-query.ts`                            |
+| **链上写 mutation**  | `useChainMutation`             | 信封 + retry:false；已闩静默；错误 toast；isLocked/clearLock            | `hooks/use-chain-mutation.ts`                         |
+| **错误用户文案**     | `getErrorMessage`              | unknown → 用户可见文案（或 null 跳过 toast）                            | `web3/errors/get-error-message.ts`                    |
 
 ## 壳与导航
 

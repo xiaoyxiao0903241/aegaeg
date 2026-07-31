@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -6,7 +5,6 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import {
   readBurnBondPositions,
   readLpBondPositions,
@@ -14,6 +12,7 @@ import {
 } from '~/web3/assets/assets-read'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
 import { formatApproxUsd } from '~/shared/api/format-display'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -47,7 +46,6 @@ function mapPricedStats(
 export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionStatCell[] {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
-  const readClient = useChainReadClient()
   const address = account?.address
   const agxPriceQuery = usePresaleAgxPriceQuery()
   const priceUsd =
@@ -55,19 +53,19 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
       ? null
       : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
 
-  const stakeQuery = useQuery({
-    queryKey: queryKeys.chain.assetsStakePositions(address ?? ''),
-    queryFn: () => readStakePositions(address as Address, readClient),
-    enabled: walletReady && Boolean(address) && product === 'stake',
+  const stakeQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsStakePositions,
+    queryFn: (addr) => readStakePositions(addr as Address),
+    enabled: product === 'stake',
   })
 
-  const bondQuery = useQuery({
-    queryKey: queryKeys.chain.assetsBondPositions(product, address ?? ''),
-    queryFn: () =>
+  const bondQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsBondPositions(product),
+    queryFn: (addr) =>
       product === 'lpbond'
-        ? readLpBondPositions(address as Address, readClient)
-        : readBurnBondPositions(address as Address, readClient),
-    enabled: walletReady && Boolean(address) && product !== 'stake',
+        ? readLpBondPositions(addr as Address)
+        : readBurnBondPositions(addr as Address),
+    enabled: product !== 'stake',
   })
 
   if (!walletReady || !address) {

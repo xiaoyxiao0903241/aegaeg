@@ -1,6 +1,7 @@
 import { parseAbi } from 'viem'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import { PRINCIPAL_RELEASE_VAULT_METHODS, REWARD_QUEUE_METHODS } from '~/web3/abis'
+import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
@@ -47,7 +48,9 @@ function durationDaysFromSeconds(seconds: bigint): number | null {
   return days
 }
 
-export async function readReleaseQueuePlans(readClient: ChainReadClient): Promise<DurationPlan[]> {
+export async function readReleaseQueuePlans(
+  readClient: ChainReadClient = bscReadClient,
+): Promise<DurationPlan[]> {
   const plans = await readClient.readContract({
     address: BSC_CONTRACTS.rewardQueue,
     abi: queueReadAbi,
@@ -61,7 +64,7 @@ export async function readReleaseQueuePlans(readClient: ChainReadClient): Promis
 
 export async function readReleaseQueueSnapshot(
   address: Address,
-  readClient: ChainReadClient,
+  readClient: ChainReadClient = bscReadClient,
 ): Promise<ReleaseQueueSnapshot> {
   const durationPlans = await readReleaseQueuePlans(readClient)
   const rows: ReleaseQueuePlanRow[] = []
@@ -144,7 +147,7 @@ export async function readReleaseQueueSnapshot(
 
 export async function readReleaseQueueClaimable(
   address: Address,
-  readClient: ChainReadClient,
+  readClient: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
   return readClient.readContract({
     address: BSC_CONTRACTS.rewardQueue,
@@ -156,7 +159,7 @@ export async function readReleaseQueueClaimable(
 
 export async function readReleaseBufferSnapshot(
   address: Address,
-  readClient: ChainReadClient,
+  readClient: ChainReadClient = bscReadClient,
 ): Promise<ReleaseBufferSnapshot> {
   const countRaw = (await readClient.readContract({
     address: BSC_CONTRACTS.principalReleaseVault,
@@ -215,7 +218,7 @@ export async function readReleaseBufferSnapshot(
 
 export async function readReleaseHasClaimable(
   address: Address,
-  readClient: ChainReadClient,
+  readClient: ChainReadClient = bscReadClient,
 ): Promise<boolean> {
   const [queueClaimable, buffer] = await Promise.all([
     readReleaseQueueClaimable(address, readClient),

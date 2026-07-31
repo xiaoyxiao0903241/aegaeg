@@ -71,18 +71,18 @@ function invalidateApiQueries() {
 
 function invalidateAddressScopedChainQueries(address?: string) {
   if (!address) return
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotalOf(address) })
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address),
   })
   void queryClient.invalidateQueries({
-    queryKey: queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address),
+    queryKey: queryKeys.chain.erc20BalanceOf(BSC_CONTRACTS.usd1, address),
   })
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
   })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralOf(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBoundOf(address) })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Root })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.flashSwapRoot })
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.burnSwapRoot })
@@ -105,8 +105,8 @@ export function invalidateAfterAuthLogin(address?: string) {
 
   if (!address) return
 
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referral(address) })
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBound(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralOf(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.referralIsBoundOf(address) })
 }
 
 /** Genesis phase start/end boundary crossed — refresh presale + session API. */
@@ -128,7 +128,7 @@ export function invalidatePresaleChainQueries(address?: string) {
 
   if (!address) return
 
-  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotal(address) })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.chain.presaleUserTotalOf(address) })
   void queryClient.invalidateQueries({
     queryKey: queryKeys.chain.presaleUserPhaseRemainingByUser(address),
   })
@@ -149,7 +149,7 @@ export function invalidateGenesisPage() {
 
 export function invalidateAfterGenesisPurchase(address: string, purchaseAmount?: bigint) {
   if (purchaseAmount && purchaseAmount > 0n) {
-    queryClient.setQueryData(queryKeys.chain.presaleUserTotal(address), (current?: bigint) => {
+    queryClient.setQueryData(queryKeys.chain.presaleUserTotalOf(address), (current?: bigint) => {
       const base = typeof current === 'bigint' ? current : 0n
       return base + purchaseAmount
     })

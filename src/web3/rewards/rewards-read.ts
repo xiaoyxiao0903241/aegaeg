@@ -1,6 +1,7 @@
 import { parseAbi } from 'viem'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import { LUCKY_POOL_METHODS } from '~/web3/abis'
+import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { isLuckyClaimable } from '~/core/rewards/rewards-gates'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
@@ -22,8 +23,8 @@ export type LuckyClaimSnapshot = {
 }
 
 export async function readLuckyClaimSnapshot(
-  client: ChainReadClient,
   user: Address,
+  client: ChainReadClient = bscReadClient,
 ): Promise<LuckyClaimSnapshot> {
   const paused = Boolean(
     await client.readContract({

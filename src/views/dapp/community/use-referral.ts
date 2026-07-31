@@ -1,9 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { parseReferrerFromSearch, resolveDisplayReferrer } from '~/shared/config/referral'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -12,6 +10,7 @@ import { bindReferrer } from '~/web3/referral/referral-write'
 import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 const BIND_COOLDOWN_MS = 5_000
 const PENDING_REFERRER_KEY = 'aegis.pendingReferrer'
@@ -63,19 +62,17 @@ export function useReferral() {
     }
   }, [])
 
-  const referralQuery = useQuery({
-    queryKey: queryKeys.chain.referral(address ?? ''),
-    queryFn: async () => {
+  const referralQuery = useChainQuery({
+    queryKey: queryKeys.chain.referral,
+    queryFn: async (addr) => {
       const [isBound, referrer, directCount] = await Promise.all([
-        readIsBindReferral(address!, readClient),
-        readReferrer(address!, readClient),
-        readReferralCount(address!, readClient),
+        readIsBindReferral(addr),
+        readReferrer(addr),
+        readReferralCount(addr),
       ])
       return { isBound, referrer, directCount }
     },
     // On-chain bind status — wallet only (SIWE not required).
-    enabled: walletReady,
-    staleTime: QUERY_STALE_TIME.balances,
   })
   const { sessionReady } = useDappShell()
   const performanceQuery = usePerformance(sessionReady && Boolean(address))

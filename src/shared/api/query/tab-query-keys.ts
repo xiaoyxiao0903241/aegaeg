@@ -13,7 +13,7 @@ export const TAB_QUERY_KEYS: Record<DappTab, readonly (readonly string[])[]> = {
     queryKeys.chain.presaleTotalPurchased,
     queryKeys.chain.presaleAirdropThreshold,
     queryKeys.chain.presalePaused,
-    queryKeys.chain.presaleUserTotalRoot,
+    queryKeys.chain.presaleUserTotal,
     queryKeys.chain.presaleUserPhaseRemainingRoot,
     queryKeys.chain.erc20Root,
     queryKeys.chain.referralRoot,

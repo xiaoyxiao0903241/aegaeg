@@ -39,8 +39,8 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
   const pool = resolveStakePoolAddress(period)
   const isLiquid = period === 'liquid'
 
-  const preflightQuery = useStakeOpenPreflightQuery(pool, address, isLiquid, {
-    enabled: sessionReady && walletReady,
+  const preflightQuery = useStakeOpenPreflightQuery(pool, isLiquid, {
+    enabled: sessionReady,
   })
   const migration = useMigrationUserGate(address, { enabled: walletReady })
 
@@ -80,7 +80,6 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     onSuccess: async () => {
       await present.onOpenSuccess()
       amountInput.clearAmount()
-      await preflightQuery.refetch()
     },
     onError: present.onError,
   })
@@ -90,7 +89,6 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     mutation: () => submitLiquidWarmupClaim({ account, wallet }),
     onSuccess: async () => {
       await present.onWarmupSuccess()
-      await preflightQuery.refetch()
     },
   })
 

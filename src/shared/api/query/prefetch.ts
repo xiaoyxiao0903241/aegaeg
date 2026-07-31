@@ -22,14 +22,14 @@ const CONNECT_WARM_TOKENS: readonly Address[] = [
  */
 export function prefetchConnectWarm(address: string, readClient: ChainReadClient): void {
   void queryClient.prefetchQuery({
-    queryKey: queryKeys.chain.referralIsBound(address),
+    queryKey: queryKeys.chain.referralIsBoundOf(address),
     queryFn: () => readIsBindReferral(address, readClient),
     staleTime: QUERY_STALE_TIME.balances,
   })
 
   for (const token of CONNECT_WARM_TOKENS) {
     void queryClient.prefetchQuery({
-      queryKey: queryKeys.chain.erc20Balance(token, address),
+      queryKey: queryKeys.chain.erc20BalanceOf(token, address),
       queryFn: () => readErc20Balance(token, address, readClient),
       staleTime: QUERY_STALE_TIME.balances,
     })

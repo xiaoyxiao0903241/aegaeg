@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatApproxUsd } from '~/shared/api/format-display'
@@ -7,7 +6,6 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import {
   readBurnBondPositions,
   readContributionSnapshot,
@@ -17,6 +15,7 @@ import {
 } from '~/web3/assets/assets-read'
 import { readReleaseBufferSnapshot } from '~/web3/release/release-read'
 import type { AssetsView } from '~/stores/assets-view-store'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -75,7 +74,6 @@ const EMPTY_XMINE: AssetsHubModeStats = {
 export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
-  const readClient = useChainReadClient()
   const address = account?.address
   const enabled = walletReady && Boolean(address)
   const agxPriceQuery = usePresaleAgxPriceQuery()
@@ -84,35 +82,29 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
       ? null
       : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
 
-  const stakeQuery = useQuery({
-    queryKey: queryKeys.chain.assetsStakePositions(address ?? ''),
-    queryFn: () => readStakePositions(address as Address, readClient),
-    enabled,
+  const stakeQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsStakePositions,
+    queryFn: (addr) => readStakePositions(addr as Address),
   })
-  const lpQuery = useQuery({
-    queryKey: queryKeys.chain.assetsBondPositions('lpbond', address ?? ''),
-    queryFn: () => readLpBondPositions(address as Address, readClient),
-    enabled,
+  const lpQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsBondPositions('lpbond'),
+    queryFn: (addr) => readLpBondPositions(addr as Address),
   })
-  const burnQuery = useQuery({
-    queryKey: queryKeys.chain.assetsBondPositions('burnbond', address ?? ''),
-    queryFn: () => readBurnBondPositions(address as Address, readClient),
-    enabled,
+  const burnQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsBondPositions('burnbond'),
+    queryFn: (addr) => readBurnBondPositions(addr as Address),
   })
-  const xmineQuery = useQuery({
-    queryKey: queryKeys.chain.assetsXminePosition(address ?? ''),
-    queryFn: () => readXminePosition(address as Address, readClient),
-    enabled,
+  const xmineQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsXminePosition,
+    queryFn: (addr) => readXminePosition(addr as Address),
   })
-  const contribQuery = useQuery({
-    queryKey: [...queryKeys.chain.assetsContribution(address ?? ''), 'hub'],
-    queryFn: () => readContributionSnapshot(address as Address, 0n, readClient),
-    enabled,
+  const contribQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsContribution,
+    queryFn: (addr) => readContributionSnapshot(addr as Address, 0n),
   })
-  const bufferQuery = useQuery({
-    queryKey: queryKeys.chain.releaseBuffer(address ?? ''),
-    queryFn: () => readReleaseBufferSnapshot(address as Address, readClient),
-    enabled,
+  const bufferQuery = useChainQuery({
+    queryKey: queryKeys.chain.releaseBuffer,
+    queryFn: (addr) => readReleaseBufferSnapshot(addr as Address),
   })
 
   const emptyModes = {

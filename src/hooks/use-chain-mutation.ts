@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
 import {
   clearUnknownReceiptLock,
@@ -58,7 +57,7 @@ export function useChainMutation<TVars = void, TValue = void>(
     onError: (error, vars) => {
       if (isChainMutationLockedError(error)) return
       if (args.onError?.(error, vars) === 'handled') return
-      presentUserFacingError(error, (err) => getErrorMessage(err, t))
+      presentUserFacingError(error, t)
     },
   })
 

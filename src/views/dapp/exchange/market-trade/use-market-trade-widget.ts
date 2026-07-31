@@ -59,21 +59,14 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const walletReady = hasWalletAccount(account)
   const slippageBps = slippagePercentToBps(slippage)
 
-  const {
-    balancesQuery,
-    sellBalance,
-    buyBalance,
-    balanceByKey,
-    allowance,
-    balancesLoaded,
-    isBalancesLoading,
-  } = useMarketTradeBalances({
-    address,
-    sellKey,
-    buyKey,
-    quotesEnabled,
-    walletReady,
-  })
+  const { sellBalance, buyBalance, balanceByKey, allowance, balancesLoaded, isBalancesLoading } =
+    useMarketTradeBalances({
+      address,
+      sellKey,
+      buyKey,
+      quotesEnabled,
+      walletReady,
+    })
 
   const core = useExchangeQuote({
     sessionReady,
@@ -151,7 +144,7 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   }
 
   async function submit(): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-    return submitMarketTrade({ account, wallet, pair, path, core, balancesQuery })
+    return submitMarketTrade({ account, wallet, pair, path, core })
   }
 
   const sellPickerKeys: TradeTokenKey[] = ['usd1', 'agx', 'x']

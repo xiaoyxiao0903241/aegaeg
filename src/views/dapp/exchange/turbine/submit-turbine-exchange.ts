@@ -3,6 +3,11 @@ import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import {
+  readTurbineQuota,
+  readTurbineUsd1Balances,
+  readTurbineUsdQuote,
+} from '~/web3/exchange/turbine-exchange-read'
+import {
   approveUsd1ForTurbineIfNeeded,
   buyAgxAndStartCooldown,
   claimCooledGagx,
@@ -19,6 +24,7 @@ type TurbineSubmitCore = {
 
 /**
  * Turbine unlock — money-path: approve → live re-quote + balance/quota gate → buyAgxAndStartCooldown.
+ * L-tier gates use direct `readTurbine*` (not display-query refetch).
  */
 export async function submitTurbineUnlock(args: {
   account: ActiveAccount
@@ -26,12 +32,8 @@ export async function submitTurbineUnlock(args: {
   core: TurbineSubmitCore
   /** Unlock AGX amount (handbook turbineBalances is AGX quota). */
   unlockAmountAgx: bigint
-  refetchBalances: () => Promise<QueryObserverResult<{ usd1: bigint }>>
-  refetchQuota: () => Promise<QueryObserverResult<bigint>>
-  refetchUsdQuote: () => Promise<QueryObserverResult<bigint>>
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { account, wallet, core, unlockAmountAgx, refetchBalances, refetchQuota, refetchUsdQuote } =
-    args
+  const { account, wallet, core, unlockAmountAgx } = args
 
   return core.runSubmit(async () => {
     if (!account || !wallet) {
@@ -41,40 +43,29 @@ export async function submitTurbineUnlock(args: {
       throw new Error('TURBINE_ZERO_AMOUNT')
     }
 
+    const address = account.address
+
     // Pre-approve quote (may drift during wallet signature).
-    const preQuote = await refetchUsdQuote()
-    if (preQuote.error || preQuote.data === undefined || preQuote.data <= 0n) {
+    const preUsd = await readTurbineUsdQuote(unlockAmountAgx)
+    if (preUsd <= 0n) {
       throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
     }
-    const preUsd = preQuote.data
 
     await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: preUsd })
 
-    // Live re-gate after approve (money-path invariant 3).
-    const [liveBalances, liveQuota, liveQuote] = await Promise.all([
-      refetchBalances(),
-      refetchQuota(),
-      refetchUsdQuote(),
+    // Live re-gate after approve (money-path invariant 3) — direct reads, staleTime 0 semantics.
+    const [liveBalances, liveQuota, liveUsd] = await Promise.all([
+      readTurbineUsd1Balances(address),
+      readTurbineQuota(address),
+      readTurbineUsdQuote(unlockAmountAgx),
     ])
-    if (
-      liveBalances.error ||
-      liveBalances.data === undefined ||
-      liveQuota.error ||
-      liveQuota.data === undefined ||
-      liveQuote.error ||
-      liveQuote.data === undefined
-    ) {
-      throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
-    }
 
-    const liveUsd = liveQuote.data
     if (liveUsd <= 0n) throw new Error('TURBINE_ZERO_AMOUNT')
-    if (unlockAmountAgx > liveQuota.data) throw new Error('TURBINE_QUOTA_EXCEEDED')
-    if (liveUsd > liveBalances.data.usd1) throw new Error('TURBINE_INSUFFICIENT_USD1')
+    if (unlockAmountAgx > liveQuota) throw new Error('TURBINE_QUOTA_EXCEEDED')
+    if (liveUsd > liveBalances.usd1) throw new Error('TURBINE_INSUFFICIENT_USD1')
 
     await buyAgxAndStartCooldown({ wallet, usdAmount: liveUsd })
     invalidateAfterExchange()
-    await Promise.all([refetchBalances(), refetchQuota()])
   })
 }
 

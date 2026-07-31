@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatApproxUsd } from '~/shared/api/format-display'
@@ -7,8 +6,8 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readXminePosition } from '~/web3/assets/assets-read'
+import { useChainQuery } from '~/hooks/use-chain-query'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -24,7 +23,6 @@ export type AssetsXmineStatCell = {
 export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
-  const readClient = useChainReadClient()
   const address = account?.address
   const agxPriceQuery = usePresaleAgxPriceQuery()
   const priceUsd =
@@ -32,10 +30,9 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
       ? null
       : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
 
-  const positionQuery = useQuery({
-    queryKey: queryKeys.chain.assetsXminePosition(address ?? ''),
-    queryFn: () => readXminePosition(address as Address, readClient),
-    enabled: walletReady && Boolean(address),
+  const positionQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsXminePosition,
+    queryFn: (addr) => readXminePosition(addr as Address),
   })
 
   if (!walletReady || !address || positionQuery.isError) {

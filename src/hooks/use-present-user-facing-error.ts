@@ -1,21 +1,27 @@
 import { useEffect, useEffectEvent } from 'react'
+import { useI18n } from '~/i18n/use-i18n'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 
 /**
- * Present `error` as a toast when it becomes truthy.
- * Pass `trigger` to re-fire when the same sentinel is set again (e.g. quote retry).
+ * Toast when `error` becomes truthy (quote / page query / bind — not chain writes).
+ * Chain writes use `useChainMutation` instead.
+ * Default message: `getErrorMessage`. Pass `resolveMessage` only for API/page overrides.
  */
 export function usePresentUserFacingError(
   error: unknown,
-  resolveMessage: (error: unknown) => string | null | undefined,
   options?: {
     id?: string
     trigger?: unknown
     onPresented?: () => void
+    resolveMessage?: (error: unknown) => string | null | undefined
   },
 ): void {
+  const { messages: t } = useI18n()
   const present = useEffectEvent((next: unknown) => {
-    presentUserFacingError(next, resolveMessage, options?.id ? { id: options.id } : undefined)
+    presentUserFacingError(next, t, {
+      id: options?.id,
+      resolveMessage: options?.resolveMessage,
+    })
     options?.onPresented?.()
   })
 

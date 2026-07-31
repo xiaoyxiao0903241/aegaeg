@@ -54,7 +54,7 @@ export async function submitLuckyMixedClaim(args: {
   const user = account.address as Address
   const restakeBps = restakeBpsFromPct(restakePct)
 
-  const snapshot = await readLuckyClaimSnapshot(readClient, user)
+  const snapshot = await readLuckyClaimSnapshot(user, readClient)
   // Intent from first read; live gate must compare against a second chain read (never self-certify).
   const amount = snapshot.rewardAmount
   const plans = await readClaimPlans(readClient)
@@ -75,7 +75,7 @@ export async function submitLuckyMixedClaim(args: {
   const preErr = gateError(mapMixedReason(preGate))
   if (preErr) throw preErr
 
-  const live = await readLuckyClaimSnapshot(readClient, user)
+  const live = await readLuckyClaimSnapshot(user, readClient)
   const livePlans = await readClaimPlans(readClient)
   const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
   const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)

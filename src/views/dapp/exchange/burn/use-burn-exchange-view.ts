@@ -2,7 +2,6 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { toast } from 'sonner'
 import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
@@ -35,7 +34,7 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
 
   const gateHint = burn.gate != null ? t.exchange.burn.gates[burn.gate] : null
 
-  usePresentUserFacingError(burn.validationError, (err) => getErrorMessage(err, t), {
+  usePresentUserFacingError(burn.validationError, {
     id: 'burn-exchange-quote-error',
     trigger: burn.quoteErrorUpdatedAt,
   })

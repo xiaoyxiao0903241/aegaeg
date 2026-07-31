@@ -2,7 +2,6 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 import { toast } from 'sonner'
@@ -39,7 +38,7 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
 
   const gateHint = flash.usd1Gate != null ? t.exchange.flash.gates[flash.usd1Gate] : null
 
-  usePresentUserFacingError(flash.validationError, (err) => getErrorMessage(err, t), {
+  usePresentUserFacingError(flash.validationError, {
     id: 'flash-exchange-quote-error',
     trigger: flash.quoteErrorUpdatedAt,
   })

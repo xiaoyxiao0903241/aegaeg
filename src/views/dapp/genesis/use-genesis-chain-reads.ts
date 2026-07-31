@@ -46,7 +46,7 @@ export function useGenesisChainReads() {
     enabled: purchaseQueriesEnabled,
   })
   const pausedQuery = usePresalePausedQuery({ enabled: purchaseQueriesEnabled })
-  const userTotalQuery = usePresaleUserTotalQuery(address, { enabled: purchaseQueriesEnabled })
+  const userTotalQuery = usePresaleUserTotalQuery({ enabled: purchaseQueriesEnabled })
   const phaseRemainingQuery = usePresaleUserPhaseRemainingQuery(
     address,
     activePhaseQuery.data?.index,

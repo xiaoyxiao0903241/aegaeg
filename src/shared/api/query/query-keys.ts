@@ -1,4 +1,14 @@
 import type { PaginationParams } from '~/shared/api/types'
+import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
+
+const erc20BalancePrefix = (token: string) =>
+  ['chain', 'erc20', 'balance', token.toLowerCase()] as const
+const flashSwapBalancesPrefix = (pairId: string, direction: string) =>
+  ['chain', 'flashSwap', 'balances', pairId, direction] as const
+const stakeOpenPrefix = (pool: string) => ['chain', 'staking', 'open', pool.toLowerCase()] as const
+const bondZapPrefix = (depository: string) =>
+  ['chain', 'staking', 'bondZap', depository.toLowerCase()] as const
+const assetsBondPrefix = (kind: string) => ['chain', 'assets', 'bond', kind] as const
 
 export const queryKeys = {
   api: {
@@ -27,28 +37,28 @@ export const queryKeys = {
     homePopupNotices: (locale: string) => ['api', 'home', 'popupNotices', locale] as const,
   },
   chain: {
-    // Root keys cover every query under a prefix — the single source of truth
-    // for broad invalidation (never spell these out as inline literals).
     erc20Root: ['chain', 'erc20'] as const,
     referralRoot: ['chain', 'referral'] as const,
     swapRoot: ['chain', 'swap'] as const,
     flashSwapRoot: ['chain', 'flashSwap'] as const,
     burnSwapRoot: ['chain', 'burnSwap'] as const,
-    presaleUserTotalRoot: ['chain', 'presale', 'userTotal'] as const,
     presaleUserPhaseRemainingRoot: ['chain', 'presale', 'userPhaseRemaining'] as const,
     presalePhases: ['chain', 'presale', 'phases'] as const,
     presaleAgxPrice: ['chain', 'presale', 'agxPrice'] as const,
     presaleTotalPurchased: ['chain', 'presale', 'totalPurchased'] as const,
     presaleAirdropThreshold: ['chain', 'presale', 'airdropThreshold'] as const,
     presalePaused: ['chain', 'presale', 'paused'] as const,
-    presaleUserTotal: (address: string) =>
-      ['chain', 'presale', 'userTotal', address.toLowerCase()] as const,
+    /** Wallet prefix — useChainQuery appends address. */
+    presaleUserTotal: ['chain', 'presale', 'userTotal'] as const,
+    presaleUserTotalOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'presale', 'userTotal'], address),
     presaleUserPhaseRemainingByUser: (address: string) =>
       ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase()] as const,
     presaleUserPhaseRemaining: (address: string, phaseIndex: number) =>
       ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase(), phaseIndex] as const,
-    erc20Balance: (token: string, address: string) =>
-      ['chain', 'erc20', 'balance', token.toLowerCase(), address.toLowerCase()] as const,
+    erc20Balance: erc20BalancePrefix,
+    erc20BalanceOf: (token: string, address: string) =>
+      chainWalletQueryKey(erc20BalancePrefix(token), address),
     erc20Allowance: (token: string, owner: string, spender: string) =>
       [
         'chain',
@@ -58,12 +68,15 @@ export const queryKeys = {
         owner.toLowerCase(),
         spender.toLowerCase(),
       ] as const,
-    referral: (address: string) => ['chain', 'referral', address.toLowerCase()] as const,
-    referralIsBound: (address: string) =>
-      ['chain', 'referral', 'isBound', address.toLowerCase()] as const,
+    referral: ['chain', 'referral'] as const,
+    referralOf: (address: string) => chainWalletQueryKey(['chain', 'referral'], address),
+    referralIsBound: ['chain', 'referral', 'isBound'] as const,
+    referralIsBoundOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'referral', 'isBound'], address),
     migrationRoot: ['chain', 'migration'] as const,
-    migrationStatus: (address: string) =>
-      ['chain', 'migration', 'status', address.toLowerCase()] as const,
+    migrationStatus: ['chain', 'migration', 'status'] as const,
+    migrationStatusOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'migration', 'status'], address),
     swapPoolMetadata: ['chain', 'swap', 'poolMetadata'] as const,
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string, pathKey = '') =>
@@ -87,64 +100,83 @@ export const queryKeys = {
           ] as const),
     flashSwapQuote: (pairId: string, direction: string, amountIn: string) =>
       ['chain', 'flashSwap', 'quote', pairId, direction, amountIn] as const,
-    flashSwapBalances: (pairId: string, direction: string, address: string) =>
-      ['chain', 'flashSwap', 'balances', pairId, direction, address.toLowerCase()] as const,
+    flashSwapBalances: flashSwapBalancesPrefix,
+    flashSwapBalancesOf: (pairId: string, direction: string, address: string) =>
+      chainWalletQueryKey(flashSwapBalancesPrefix(pairId, direction), address),
     flashUsd1SwapConfig: ['chain', 'flashSwap', 'usd1Config'] as const,
     burnSwapConfig: ['chain', 'burnSwap', 'config'] as const,
     burnSwapQuote: (amountIn: string) => ['chain', 'burnSwap', 'quote', amountIn] as const,
-    burnSwapBalances: (address: string) =>
-      ['chain', 'burnSwap', 'balances', address.toLowerCase()] as const,
-    burnSwapUserStats: (address: string) =>
-      ['chain', 'burnSwap', 'userStats', address.toLowerCase()] as const,
+    burnSwapBalances: ['chain', 'burnSwap', 'balances'] as const,
+    burnSwapBalancesOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'burnSwap', 'balances'], address),
+    burnSwapUserStats: ['chain', 'burnSwap', 'userStats'] as const,
+    burnSwapUserStatsOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'burnSwap', 'userStats'], address),
     turbineRoot: ['chain', 'turbine'] as const,
     turbineCooldown: ['chain', 'turbine', 'cooldown'] as const,
-    turbineQuota: (address: string) =>
-      ['chain', 'turbine', 'quota', address.toLowerCase()] as const,
-    turbineUsd1Balances: (address: string) =>
-      ['chain', 'turbine', 'usd1Balances', address.toLowerCase()] as const,
-    turbineSilences: (address: string) =>
-      ['chain', 'turbine', 'silences', address.toLowerCase()] as const,
+    turbineQuota: ['chain', 'turbine', 'quota'] as const,
+    turbineQuotaOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'turbine', 'quota'], address),
+    turbineUsd1Balances: ['chain', 'turbine', 'usd1Balances'] as const,
+    turbineUsd1BalancesOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'turbine', 'usd1Balances'], address),
+    turbineSilences: ['chain', 'turbine', 'silences'] as const,
+    turbineSilencesOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'turbine', 'silences'], address),
     turbineUsdQuote: (agxAmount: string) => ['chain', 'turbine', 'usdQuote', agxAmount] as const,
-    turbineClaimable: (address: string) =>
-      ['chain', 'turbine', 'claimable', address.toLowerCase()] as const,
+    turbineClaimable: ['chain', 'turbine', 'claimable'] as const,
+    turbineClaimableOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'turbine', 'claimable'], address),
     stakingRoot: ['chain', 'staking'] as const,
-    stakeOpenPreflight: (pool: string, address: string) =>
-      ['chain', 'staking', 'open', pool.toLowerCase(), address.toLowerCase()] as const,
-    bondZapPreflight: (depository: string, address: string) =>
-      ['chain', 'staking', 'bondZap', depository.toLowerCase(), address.toLowerCase()] as const,
+    stakeOpenPreflight: stakeOpenPrefix,
+    stakeOpenPreflightOf: (pool: string, address: string) =>
+      chainWalletQueryKey(stakeOpenPrefix(pool), address),
+    bondZapPreflight: bondZapPrefix,
+    bondZapPreflightOf: (depository: string, address: string) =>
+      chainWalletQueryKey(bondZapPrefix(depository), address),
     bondMarketMeta: (depository: string) =>
       ['chain', 'staking', 'bondMarket', depository.toLowerCase()] as const,
     bondZapAgxPreview: (kind: string, depository: string, amount: string) =>
       ['chain', 'staking', 'bondZapPreview', kind, depository.toLowerCase(), amount] as const,
     bondHelperSlippage: ['chain', 'staking', 'bondHelper', 'slippage'] as const,
-    xminePreflight: (address: string) =>
-      ['chain', 'staking', 'xmine', address.toLowerCase()] as const,
+    xminePreflight: ['chain', 'staking', 'xmine'] as const,
+    xminePreflightOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'staking', 'xmine'], address),
     assetsRoot: ['chain', 'assets'] as const,
-    assetsStakePositions: (address: string) =>
-      ['chain', 'assets', 'stake', address.toLowerCase()] as const,
-    assetsBondPositions: (kind: string, address: string) =>
-      ['chain', 'assets', 'bond', kind, address.toLowerCase()] as const,
-    assetsXminePosition: (address: string) =>
-      ['chain', 'assets', 'xmine', address.toLowerCase()] as const,
+    assetsStakePositions: ['chain', 'assets', 'stake'] as const,
+    assetsStakePositionsOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'assets', 'stake'], address),
+    assetsBondPositions: assetsBondPrefix,
+    assetsBondPositionsOf: (kind: string, address: string) =>
+      chainWalletQueryKey(assetsBondPrefix(kind), address),
+    assetsXminePosition: ['chain', 'assets', 'xmine'] as const,
+    assetsXminePositionOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'assets', 'xmine'], address),
     assetsClaimPlans: ['chain', 'assets', 'claimPlans'] as const,
-    assetsContribution: (address: string) =>
-      ['chain', 'assets', 'contribution', address.toLowerCase()] as const,
-    /** Contribution + quoteRequired for a reward amount (invalidates under assetsContribution prefix). */
+    assetsContribution: ['chain', 'assets', 'contribution'] as const,
+    assetsContributionOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'assets', 'contribution'], address),
     assetsContributionForAmount: (address: string, amount: string) =>
       ['chain', 'assets', 'contribution', address.toLowerCase(), amount] as const,
     rewardsRoot: ['chain', 'rewards'] as const,
-    rewardsLuckyClaim: (address: string) =>
-      ['chain', 'rewards', 'lucky', address.toLowerCase()] as const,
-    rewardsReferralCount: (address: string) =>
-      ['chain', 'rewards', 'referralCount', address.toLowerCase()] as const,
-    rewardsCobuildCount: (address: string) =>
-      ['chain', 'rewards', 'cobuildCount', address.toLowerCase()] as const,
+    rewardsLuckyClaim: ['chain', 'rewards', 'lucky'] as const,
+    rewardsLuckyClaimOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'rewards', 'lucky'], address),
+    rewardsReferralCount: ['chain', 'rewards', 'referralCount'] as const,
+    rewardsReferralCountOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'rewards', 'referralCount'], address),
+    rewardsCobuildCount: ['chain', 'rewards', 'cobuildCount'] as const,
+    rewardsCobuildCountOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'rewards', 'cobuildCount'], address),
     releaseRoot: ['chain', 'release'] as const,
-    releaseQueue: (address: string) =>
-      ['chain', 'release', 'queue', address.toLowerCase()] as const,
-    releaseBuffer: (address: string) =>
-      ['chain', 'release', 'buffer', address.toLowerCase()] as const,
-    releaseClaimable: (address: string) =>
-      ['chain', 'release', 'claimable', address.toLowerCase()] as const,
+    releaseQueue: ['chain', 'release', 'queue'] as const,
+    releaseQueueOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'release', 'queue'], address),
+    releaseBuffer: ['chain', 'release', 'buffer'] as const,
+    releaseBufferOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'release', 'buffer'], address),
+    releaseClaimable: ['chain', 'release', 'claimable'] as const,
+    releaseClaimableOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'release', 'claimable'], address),
   },
 } as const

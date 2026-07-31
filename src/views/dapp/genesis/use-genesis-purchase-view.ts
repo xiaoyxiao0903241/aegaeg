@@ -98,11 +98,10 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
     }, 2000)
   }
 
-  usePresentUserFacingError(
-    genesis.error,
-    (err) => resolveApiUserFacingError(err, t.errors.api) ?? t.errors.loadFailed,
-    { id: 'genesis-query-error' },
-  )
+  usePresentUserFacingError(genesis.error, {
+    id: 'genesis-query-error',
+    resolveMessage: (err) => resolveApiUserFacingError(err, t.errors.api) ?? t.errors.loadFailed,
+  })
 
   const hasUpcomingSeason = genesis.seasonOptions.some((season) => season.status === 'Upcoming')
   const programEnded = !genesis.isLoading && genesis.activePhase === null && !hasUpcomingSeason
