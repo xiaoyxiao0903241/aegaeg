@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { homeAssets } from '~/views/home/assets'
+import { homeAssets } from '~/shared/assets/home'
 import { useI18n } from '~/i18n/use-i18n'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'

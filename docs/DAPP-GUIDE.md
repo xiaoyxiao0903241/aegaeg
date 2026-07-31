@@ -30,7 +30,7 @@
 | 合约地址（fail-closed）    | `src/shared/config/contracts.ts` ← `VITE_BSC_*`；目录 [`frontend-manual/00-addresses.md`](./frontend-manual/00-addresses.md) |
 | 新功能手册                 | [`frontend-manual/`](./frontend-manual/)                                                                                     |
 | Query                      | `src/shared/api/query/*`                                                                                                     |
-| Auth                       | `src/app/startup/auth-provider.tsx` · `src/core/auth/*` · `src/views/dapp/auth/*`                                            |
+| Auth                       | `src/app/startup/auth-provider.tsx` · `src/core/auth/*` · `src/web3/auth/*`                                                  |
 | 颜色 / 字阶                | `theme.css` · `src/shared/ui/text.tsx`                                                                                       |
 
 ## 4. 链上读写

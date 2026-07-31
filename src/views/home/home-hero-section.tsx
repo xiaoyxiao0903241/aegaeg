@@ -3,7 +3,7 @@ import { Button } from '~/shared/ui/button'
 import { HeroRaysBackground } from '~/shared/ui/hero-rays-background'
 import { Text } from '~/shared/ui/text'
 import { getNotionLinks } from '~/shared/config/notion-links'
-import { homeAssets } from '~/views/home/assets'
+import { homeAssets } from '~/shared/assets/home'
 import { useI18n } from '~/i18n/use-i18n'
 
 function HeroPrimaryAction({ enterProtocol }: { enterProtocol: string }) {

@@ -27,7 +27,7 @@ module.exports = {
       severity: 'error',
       from: {
         path: '^src/',
-        pathNot: '^src/web3/|^src/views/dapp/auth/',
+        pathNot: '^src/web3/',
       },
       to: { path: '^thirdweb' },
     },

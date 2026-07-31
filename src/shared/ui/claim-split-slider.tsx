@@ -12,15 +12,15 @@ export type ClaimSplitSliderProps = {
   value: number
 }
 
-function clampReleasePct(value: number): number {
+/** UI-only 0–100 clamp — domain SSOT remains `claimSplitFromReleasePct` in core. */
+function clampSliderPct(value: number): number {
   return Math.min(100, Math.max(0, Math.round(value)))
 }
 
 /**
- * Dual-tone claim split — Figma `4812:221`.
- * Coral track = release pool; blue track = restake; white thumb embeds `%`.
- * Labels / aria copy are call-site owned.
- * Domain split math SSOT: `claimSplitFromReleasePct` in `core/assets/claim-plans`.
+ * Dual-tone claim split chrome — Figma `4812:221`.
+ * Coral track = release; blue = restake; white thumb embeds `%`.
+ * Labels / aria / split math are call-site owned (`claimSplitFromReleasePct`).
  */
 export function ClaimSplitSlider({
   'aria-label': ariaLabel,
@@ -29,7 +29,7 @@ export function ClaimSplitSlider({
   onChange,
   value,
 }: ClaimSplitSliderProps) {
-  const releasePct = clampReleasePct(value)
+  const releasePct = clampSliderPct(value)
 
   return (
     <SliderPrimitive.Root

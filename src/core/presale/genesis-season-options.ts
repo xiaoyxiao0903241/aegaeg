@@ -5,6 +5,13 @@ import {
   type PresalePhaseOnChain,
 } from '~/core/presale/presale-math'
 
+function formatApproxUsdPrice(value: number): string {
+  return `≈ $${value.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`
+}
+
 function formatPhaseDateRange(startTime: bigint, endTime: bigint): string {
   return `${formatPhaseDate(startTime)} – ${formatPhaseDate(endTime)}`
 }
@@ -32,10 +39,7 @@ export function buildSeasonOptions(
         discount: `-${discountPct}%`,
         airdrop,
       },
-      price:
-        effectivePrice > 0
-          ? `≈ $${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(effectivePrice)}`
-          : '—',
+      price: effectivePrice > 0 ? formatApproxUsdPrice(effectivePrice) : '—',
       date: formatPhaseDateRange(phase.startTime, phase.endTime),
     }
   })

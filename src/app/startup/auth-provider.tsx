@@ -8,7 +8,7 @@ import {
   deriveAuthState,
   shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
-import { loginWithWallet, toLoginErrorSentinel } from '~/views/dapp/auth/login-with-wallet'
+import { loginWithWallet, toLoginErrorSentinel } from '~/web3/auth/login-with-wallet'
 import { defaultChain } from '~/web3/thirdweb'
 import { useAuthStore } from '~/stores/auth-store'
 import type { AuthSessionStorage, LoginSignatureStorage } from '~/core/auth/storage'

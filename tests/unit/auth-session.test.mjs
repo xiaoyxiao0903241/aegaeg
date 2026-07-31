@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('auth session storage roundtrips token for address', async () => {
   const { createMemoryAuthSessionStorage, isSessionForAddress } = await loadModule(
-    '/src/views/dapp/auth/session.ts',
+    '/src/web3/auth/session.ts',
   )
 
   const storage = createMemoryAuthSessionStorage()
@@ -25,8 +25,8 @@ test('auth session storage roundtrips token for address', async () => {
 })
 
 test('readWalletSession ignores mismatched address', async () => {
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
-  const { readWalletSession } = await loadModule('/src/views/dapp/auth/login-with-wallet.ts')
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
+  const { readWalletSession } = await loadModule('/src/web3/auth/login-with-wallet.ts')
 
   const storage = createMemoryAuthSessionStorage()
   storage.write({
@@ -41,7 +41,7 @@ test('readWalletSession ignores mismatched address', async () => {
 
 test('login signature cache respects SIWE expiration', async () => {
   const { createMemoryLoginSignatureStorage, isLoginSignatureUsable } = await loadModule(
-    '/src/views/dapp/auth/login-signature-cache.ts',
+    '/src/web3/auth/login-signature-cache.ts',
   )
 
   const storage = createMemoryLoginSignatureStorage()
@@ -91,9 +91,7 @@ test('login signature cache respects SIWE expiration', async () => {
 })
 
 test('login signature without Expiration Time expires after 5 minutes', async () => {
-  const { isLoginSignatureUsable } = await loadModule(
-    '/src/views/dapp/auth/login-signature-cache.ts',
-  )
+  const { isLoginSignatureUsable } = await loadModule('/src/web3/auth/login-signature-cache.ts')
 
   const cached = {
     address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
@@ -107,11 +105,11 @@ test('login signature without Expiration Time expires after 5 minutes', async ()
 })
 
 test('loginWithWallet reuses cached signature without re-signing', async () => {
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
   const { createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/views/dapp/auth/login-signature-cache.ts',
+    '/src/web3/auth/login-signature-cache.ts',
   )
-  const { loginWithWallet } = await loadModule('/src/views/dapp/auth/login-with-wallet.ts')
+  const { loginWithWallet } = await loadModule('/src/web3/auth/login-with-wallet.ts')
 
   const storage = createMemoryAuthSessionStorage()
   const signatureStorage = createMemoryLoginSignatureStorage()
@@ -171,7 +169,7 @@ test('loginWithWallet reuses cached signature without re-signing', async () => {
 
 test('login signature cache keeps entries per wallet address', async () => {
   const { createMemoryLoginSignatureStorage, readUsableLoginSignature } = await loadModule(
-    '/src/views/dapp/auth/login-signature-cache.ts',
+    '/src/web3/auth/login-signature-cache.ts',
   )
 
   const storage = createMemoryLoginSignatureStorage()
@@ -209,11 +207,11 @@ test('login signature cache keeps entries per wallet address', async () => {
 })
 
 test('loginWithWallet signs message and stores jwt', async () => {
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
   const { createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/views/dapp/auth/login-signature-cache.ts',
+    '/src/web3/auth/login-signature-cache.ts',
   )
-  const { loginWithWallet } = await loadModule('/src/views/dapp/auth/login-with-wallet.ts')
+  const { loginWithWallet } = await loadModule('/src/web3/auth/login-with-wallet.ts')
 
   const storage = createMemoryAuthSessionStorage()
   const signatureStorage = createMemoryLoginSignatureStorage()
@@ -249,10 +247,7 @@ test('loginWithWallet signs message and stores jwt', async () => {
 
     assert.equal(result.token, 'jwt-from-api')
     assert.equal(storage.read()?.token, 'jwt-from-api')
-    assert.equal(
-      signatureStorage.readForAddress(account.address)?.signature,
-      '0xsig',
-    )
+    assert.equal(signatureStorage.readForAddress(account.address)?.signature, '0xsig')
     assert.equal(calls.length, 1)
   } finally {
     globalThis.fetch = originalFetch

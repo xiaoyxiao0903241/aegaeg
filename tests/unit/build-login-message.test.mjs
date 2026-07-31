@@ -4,7 +4,7 @@ import { loadModule } from './load-module.mjs'
 
 test('buildSiweLoginMessage follows EIP-4361 layout', async () => {
   const { buildSiweLoginMessage, createSiweLoginPayload } = await loadModule(
-    '/src/views/dapp/auth/build-login-message.ts',
+    '/src/web3/auth/build-login-message.ts',
   )
 
   const payload = createSiweLoginPayload({
@@ -26,9 +26,7 @@ test('buildSiweLoginMessage follows EIP-4361 layout', async () => {
 })
 
 test('buildSimpleLoginMessage includes address and nonce', async () => {
-  const { buildSimpleLoginMessage } = await loadModule(
-    '/src/views/dapp/auth/build-login-message.ts',
-  )
+  const { buildSimpleLoginMessage } = await loadModule('/src/web3/auth/build-login-message.ts')
 
   const message = buildSimpleLoginMessage({
     address: '0xabc',
@@ -49,7 +47,7 @@ test('buildSimpleLoginMessage includes address and nonce', async () => {
 })
 
 test('buildLoginMessage defaults to siwe format', async () => {
-  const { buildLoginMessage } = await loadModule('/src/views/dapp/auth/build-login-message.ts')
+  const { buildLoginMessage } = await loadModule('/src/web3/auth/build-login-message.ts')
 
   const message = buildLoginMessage(
     {

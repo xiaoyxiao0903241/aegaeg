@@ -5,14 +5,14 @@ import {
   generateLoginNonce,
   resolveLoginMessageFormat,
   type LoginMessageFormat,
-} from '~/views/dapp/auth/build-login-message'
+} from '~/web3/auth/build-login-message'
 import {
   createLocalLoginSignatureStorage,
   createMemoryLoginSignatureStorage,
   readUsableLoginSignature,
   type LoginSignatureStorage,
   type StoredLoginSignature,
-} from '~/views/dapp/auth/login-signature-cache'
+} from '~/web3/auth/login-signature-cache'
 import {
   shouldClearCachedLoginSignature,
   classifyLoginFailure,
@@ -24,7 +24,7 @@ import {
   isSessionForAddress,
   type AuthSessionStorage,
   type StoredAuthSession,
-} from '~/views/dapp/auth/session'
+} from '~/web3/auth/session'
 import { isUserRejectedWalletError } from '~/web3/resolve-contract-error-message'
 
 /** 将 classifyLoginFailure 结果映射为 AuthStore 可持久化的 sentinel。 */

@@ -26,8 +26,8 @@ export {
   BREAKPOINT_TABLET_MAX_PX,
   BREAKPOINT_ULTRA_WIDE_SCALE,
 } from '../../src/shared/config/breakpoints'
-export { readWalletSession } from '../../src/views/dapp/auth/login-with-wallet'
-export { createMemoryAuthSessionStorage } from '../../src/views/dapp/auth/session'
+export { readWalletSession } from '../../src/web3/auth/login-with-wallet'
+export { createMemoryAuthSessionStorage } from '../../src/web3/auth/session'
 export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-exchange-pool'
 export { resetUnknownReceiptLocksForTests } from '../../src/web3/wallet/unknown-receipt-lock'
 

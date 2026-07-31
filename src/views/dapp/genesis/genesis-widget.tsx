@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { formatGenesisSeasonIntro } from '~/views/dapp/genesis/genesis-promo'
+import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { GenesisPurchaseForm } from '~/views/dapp/genesis/genesis-purchase-form'
 import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'

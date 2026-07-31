@@ -61,7 +61,19 @@ export function useChainMutation<TVars = void, TValue = void>(
       if (!guarded.ok) throw guarded.error
       return guarded.value as TValue
     },
-    onSuccess: (value, vars) => args.onSuccess?.(value, vars),
+    onSuccess: (value, vars) => {
+      // Isolate side-effect failures from write success — do not reject mutateAsync.
+      try {
+        const result = args.onSuccess?.(value, vars)
+        if (result != null && typeof (result as PromiseLike<void>).then === 'function') {
+          void Promise.resolve(result).catch((error: unknown) => {
+            presentUserFacingError(error, t)
+          })
+        }
+      } catch (error) {
+        presentUserFacingError(error, t)
+      }
+    },
     onError: (error, vars) => {
       if (isChainMutationLockedError(error)) return
       if (args.onError?.(error, vars) === 'handled') return
@@ -73,8 +85,9 @@ export function useChainMutation<TVars = void, TValue = void>(
     mutate: async (vars?: TVars): Promise<TValue | undefined> => {
       try {
         return await mutation.mutateAsync(vars as TVars)
-      } catch {
-        // presented in onError (or silent lock via ChainMutationLockedError)
+      } catch (error) {
+        // mutationFn / lock errors already handled in onError (or silent lock).
+        if (isChainMutationLockedError(error)) return undefined
         return undefined
       }
     },

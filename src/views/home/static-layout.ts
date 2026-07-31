@@ -1,4 +1,4 @@
-import { homeAssets } from '~/views/home/assets'
+import { homeAssets } from '~/shared/assets/home'
 
 /** 飞轮卡片右下角装饰层 — 与 AGX 相同的百分比锚点，随卡片 rem 同比缩放。 */
 const tokenShapeInset = 'left-[56.54%] right-[-3.53%] top-[55%] bottom-[0.71%]'

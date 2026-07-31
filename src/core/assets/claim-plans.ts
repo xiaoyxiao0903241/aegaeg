@@ -40,11 +40,16 @@ export function restakeBpsFromPct(restakePct: number): number {
   return pct * 100
 }
 
+/** Release % clamped to 0–100 integer (slider + split math SSOT). */
+export function clampReleasePct(releasePct: number): number {
+  return Math.min(100, Math.max(0, Math.round(releasePct)))
+}
+
 /** Release % → restake % (always sums to 100). */
 export function claimSplitFromReleasePct(releasePct: number): {
   releasePct: number
   restakePct: number
 } {
-  const release = Math.min(100, Math.max(0, Math.round(releasePct)))
+  const release = clampReleasePct(releasePct)
   return { releasePct: release, restakePct: 100 - release }
 }

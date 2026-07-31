@@ -1,5 +1,5 @@
 import type { DappTab } from '~/shared/config/dapp-tabs'
-import { homeAssets as canonicalHomeAssets } from '~/views/home/assets'
+import { homeAssets as canonicalHomeAssets } from '~/shared/assets/home'
 
 /** Homepage token flywheel icons. */
 const tokenFlywheelIcons = canonicalHomeAssets.token

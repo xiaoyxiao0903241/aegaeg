@@ -7,7 +7,7 @@ import {
 import { resolveNotionLink } from '~/shared/config/notion-links'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
-import { homeAssets } from '~/views/home/assets'
+import { homeAssets } from '~/shared/assets/home'
 
 function resolveFooterLinkHref(
   locale: ReturnType<typeof useI18n>['locale'],

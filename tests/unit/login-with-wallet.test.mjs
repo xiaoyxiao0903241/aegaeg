@@ -3,9 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('resolveLoginMessageFormats prefers siwe then simple by default', async () => {
-  const { resolveLoginMessageFormats } = await loadModule(
-    '/src/views/dapp/auth/login-with-wallet.ts',
-  )
+  const { resolveLoginMessageFormats } = await loadModule('/src/web3/auth/login-with-wallet.ts')
 
   const formats = resolveLoginMessageFormats()
   assert.deepEqual(formats, ['siwe', 'simple'])
@@ -13,9 +11,9 @@ test('resolveLoginMessageFormats prefers siwe then simple by default', async () 
 
 test('loginWithWallet falls back to simple message when siwe signing fails', async () => {
   const { loginWithWallet, createMemoryLoginSignatureStorage } = await loadModule(
-    '/src/views/dapp/auth/login-with-wallet.ts',
+    '/src/web3/auth/login-with-wallet.ts',
   )
-  const { createMemoryAuthSessionStorage } = await loadModule('/src/views/dapp/auth/session.ts')
+  const { createMemoryAuthSessionStorage } = await loadModule('/src/web3/auth/session.ts')
 
   const address = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
   const originalFetch = globalThis.fetch

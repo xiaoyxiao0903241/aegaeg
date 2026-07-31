@@ -6,7 +6,7 @@ import { allLanguageOptions } from '~/i18n/locales'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { getNotionLinks } from '~/shared/config/notion-links'
-import { homeAssets } from '~/views/home/assets'
+import { homeAssets } from '~/shared/assets/home'
 
 export function HomeHeader() {
   const { locale, messages, setLocale } = useI18n()

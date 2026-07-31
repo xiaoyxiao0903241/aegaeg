@@ -10,8 +10,8 @@ import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
 import { aegisDialogClose } from '~/shared/ui/aegis-responsive-dialog'
 import { Text } from '~/shared/ui/text'
-import { useTurbineExchangeRailDot } from '~/views/dapp/exchange/turbine/use-turbine-exchange-rail-dot'
-import { useReleaseRailDot } from '~/views/dapp/release/use-release-rail-dot'
+import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
+import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useDappShell } from '~/app/use-dapp-shell'
 
 const drawerItem = tv({

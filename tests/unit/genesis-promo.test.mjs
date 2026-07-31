@@ -3,9 +3,7 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('buildGenesisPromoSnapshot uses active season discount and end date', async () => {
-  const { buildGenesisPromoSnapshot } = await loadModule(
-    '/src/views/dapp/genesis/genesis-promo.ts',
-  )
+  const { buildGenesisPromoSnapshot } = await loadModule('/src/core/presale/genesis-promo.ts')
 
   const now = 1_700_000_000
   const phases = [
@@ -33,9 +31,7 @@ test('buildGenesisPromoSnapshot uses active season discount and end date', async
 })
 
 test('buildGenesisPromoSnapshot falls back to upcoming season', async () => {
-  const { buildGenesisPromoSnapshot } = await loadModule(
-    '/src/views/dapp/genesis/genesis-promo.ts',
-  )
+  const { buildGenesisPromoSnapshot } = await loadModule('/src/core/presale/genesis-promo.ts')
 
   const now = 1_700_000_000
   const phases = [

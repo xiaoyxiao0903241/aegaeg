@@ -1,11 +1,9 @@
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatPhaseDate } from '~/core/presale/presale-math'
-import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
-import { buildSeasonOptions } from '~/views/dapp/genesis/season/genesis-season-options'
+import { buildSeasonOptions } from '~/core/presale/genesis-season-options'
 import type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
 export type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
-export { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 
 function resolveFeaturedPhaseIndex(
   phases: PresalePhaseOnChain[],
@@ -71,8 +69,7 @@ export function formatGenesisSeasonIntro(
   discount: string,
   isLoading = false,
 ): string {
-  return applyMessageTemplate(template, {
-    season: String(season),
-    discount: isLoading ? '…' : discount,
-  })
+  return template
+    .replaceAll('{season}', String(season))
+    .replaceAll('{discount}', isLoading ? '…' : discount)
 }
