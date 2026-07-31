@@ -1,4 +1,4 @@
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateXmineLiveGate } from '~/core/staking/staking-gates'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -6,7 +6,6 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { useXminePreflightQuery } from '~/web3/staking/use-staking-queries'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
@@ -23,9 +22,7 @@ export type XmineWritePresent = {
 
 export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent) {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
-  const readClient = useChainReadClient()
 
   const walletReady = hasWalletAccount(account)
 
@@ -55,9 +52,6 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     mutation: () =>
       submitXmineStake({
         amount: amountInput.amountIn,
-        account,
-        wallet,
-        readClient,
       }),
     onSuccess: async () => {
       await present.onSuccess()

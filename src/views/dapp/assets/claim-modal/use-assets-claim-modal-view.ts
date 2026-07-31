@@ -15,8 +15,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { submitMixedClaim, type MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { Address } from '~/shared/config/contracts'
@@ -34,8 +33,6 @@ export function useAssetsClaimModalView(args: {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
   const [releasePct, setReleasePctState] = useState(50)
   const [releaseDays, setReleaseDaysState] = useState<ReleaseDurationDays>(5)
   const [restakeDays, setRestakeDaysState] = useState<RestakeDurationDays>(540)
@@ -49,9 +46,6 @@ export function useAssetsClaimModalView(args: {
         releaseDays,
         restakeDays,
         restakePct,
-        account,
-        wallet,
-        readClient,
       }),
     onSuccess: () => {
       toast.success(t.assets.claim.success)

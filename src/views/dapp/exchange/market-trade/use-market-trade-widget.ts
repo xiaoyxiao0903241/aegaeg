@@ -1,4 +1,4 @@
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useState } from 'react'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
 import { formatGroupedNumber } from '~/shared/api/format-display'
@@ -22,7 +22,6 @@ import { fetchExchangeQuote } from '~/web3/exchange/exchange-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import { useExchangePoolReads } from '~/views/dapp/exchange/use-exchange-pool-reads'
 import { useMarketTradeBalances } from '~/views/dapp/exchange/market-trade/use-market-trade-balances'
@@ -36,7 +35,6 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
  */
 export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const sellKey = useExchangeTradePairStore((state) => state.sellKey)
   const buyKey = useExchangeTradePairStore((state) => state.buyKey)
@@ -49,7 +47,6 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   function setSlippage(value: number) {
     setSlippageRaw(clampSlippagePercent(value))
   }
-  const readClient = useChainReadClient()
   const { poolContext } = useExchangePoolReads(quotesEnabled)
 
   const pair = getTradePairTokens(sellKey, buyKey)
@@ -89,7 +86,6 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
         tokenIn: pair.sell.address,
         tokenOut: pair.buy.address,
         path,
-        client: readClient,
         poolContext,
       }),
     selectQuotedOut: (quote) => quote?.quotedOut ?? 0n,
@@ -144,7 +140,7 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   }
 
   async function submit(): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-    return submitMarketTrade({ account, wallet, pair, path, core })
+    return submitMarketTrade({ pair, path, core })
   }
 
   const sellPickerKeys: TradeTokenKey[] = ['usd1', 'agx', 'x']

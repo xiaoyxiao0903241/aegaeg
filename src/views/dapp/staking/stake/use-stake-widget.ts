@@ -1,4 +1,4 @@
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateStakeLiveGate } from '~/core/staking/staking-gates'
 import { resolveStakePoolAddress } from '~/web3/staking/resolve-staking-addresses'
@@ -6,7 +6,6 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
 import { useMigrationUserGate } from '~/web3/migration/use-migration-queries'
@@ -28,9 +27,7 @@ export type StakeWritePresent = {
 
 export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent) {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
-  const readClient = useChainReadClient()
   const period = useStakingViewStore((state) => state.stakePeriod)
   const setStakePeriod = useStakingViewStore((state) => state.setStakePeriod)
 
@@ -73,9 +70,6 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
       submitStakeOpen({
         period,
         amount: amountInput.amountIn,
-        account,
-        wallet,
-        readClient,
       }),
     onSuccess: async () => {
       await present.onOpenSuccess()
@@ -86,7 +80,7 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
 
   const warmup = useChainMutation({
     path: WRITE_PATH.STAKING,
-    mutation: () => submitLiquidWarmupClaim({ account, wallet }),
+    mutation: () => submitLiquidWarmupClaim(),
     onSuccess: async () => {
       await present.onWarmupSuccess()
     },

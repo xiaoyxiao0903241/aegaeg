@@ -1,4 +1,4 @@
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateBondZapLiveGate } from '~/core/staking/staking-gates'
 import type { BondPeriod } from '~/core/staking/staking-period'
@@ -12,7 +12,6 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { readBondMarketMeta, formatBondDiscountLabel } from '~/web3/staking/staking-read'
 import {
@@ -40,9 +39,7 @@ export type BondWritePresent = {
 
 export function useBondWidget(kind: BondKind, sessionReady: boolean, present: BondWritePresent) {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
-  const readClient = useChainReadClient()
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)
@@ -114,9 +111,6 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
         kind,
         period,
         amount: amountInput.amountIn,
-        account,
-        wallet,
-        readClient,
       }),
     onSuccess: async () => {
       await present.onSuccess()

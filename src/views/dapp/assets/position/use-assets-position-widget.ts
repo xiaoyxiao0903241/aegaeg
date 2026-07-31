@@ -15,8 +15,6 @@ import {
   type MixedClaimTarget,
 } from '~/views/dapp/assets/submit-assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import {
   readBurnBondPositions,
   readLpBondPositions,
@@ -51,9 +49,6 @@ type RedeemVars = {
 export function useAssetsPositionWidget(product: AssetsProduct) {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
   const isMobile = useMobileViewport()
 
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
@@ -74,15 +69,9 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
       vars.kind === 'stake'
         ? submitStakeRedeem({
             row: vars.row as AssetsStakeRow,
-            account,
-            wallet,
-            readClient,
           })
         : submitBondRedeem({
             row: vars.row as AssetsBondRow,
-            account,
-            wallet,
-            readClient,
           }),
     onSuccess: () => {
       toast.success(t.assets.redeem.success)

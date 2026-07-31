@@ -1,4 +1,4 @@
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useI18n } from '~/i18n/use-i18n'
@@ -34,7 +34,6 @@ const BURN_PAIR = {
 export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
   const { messages: t } = useI18n()
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const walletReady = hasWalletAccount(account)
 
@@ -108,8 +107,6 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
 
   async function submit(): Promise<{ ok: true } | { ok: false; error: unknown }> {
     return submitBurnExchange({
-      account,
-      wallet,
       core,
     })
   }

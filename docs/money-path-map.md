@@ -56,24 +56,25 @@ Unknown 结果 → WRITE_PATH lock（swap / genesis / reward-claim / staking / b
 
 ## 关键路径
 
-| 主题                      | 路径                                                                                                                                                                         |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Write intent / writeReady | `web3/wallet/assert-write-intent.ts` · `use-write-readiness.ts`                                                                                                              |
-| §1.4 phase adapter        | `core/wallet/resolve-write-button-phase.ts`                                                                                                                                  |
-| Referral gate             | `core/referral/resolve-need-referral.ts` · `web3/referral/*`                                                                                                                 |
-| Migration read / gate     | `web3/migration/*` · `core/migration/resolve-migration-user-gate.ts`                                                                                                         |
-| Unknown receipt lock      | `web3/wallet/unknown-receipt-lock.ts` · `submit-with-unknown-receipt-lock.ts`（**全部** `WRITE_PATH` 写入口须经信封；禁手写 `lock`；`clear` 仅信封成功或金额变更等显式重置） |
-| Approve → live 双读       | `web3/wallet/approve-then-live-write.ts`（stake/bond/xmine；域仍拥有 evaluate）                                                                                              |
-| 提交呈现 / CTA 纯函数     | `web3/errors/get-error-message.ts` · `web3/errors/error-messages.ts` · `hooks/use-chain-mutation.ts` · `core/wallet/write-cta.ts` · `app/shell/go-bind-referral.ts`          |
-| 链上展示读（非 L）        | `hooks/use-chain-query.ts` · `shared/api/query/chain-wallet-query-key.ts` · `core/wallet/resolve-chain-query-enabled.ts`                                                     |
-| Assets Mixed dual-gate    | `core/assets/dual-gate-mixed-claim.ts`（intent×live；禁自证）                                                                                                                |
-| Swap 门闸                 | `core/exchange/resolve-live-quoted-out.ts` · `views/dapp/exchange/use-exchange-quote.ts`                                                                                     |
-| Genesis 二次门闸          | `fetch-live-genesis-post-approve-gate.ts` · `evaluateGenesisPostApproveGate`                                                                                                 |
-| Staking / BondZap / Xmine | `core/staking/staking-gates.ts` · `web3/staking/*`                                                                                                                           |
-| Assets Mixed / redeem     | `core/assets/assets-gates.ts` · `views/dapp/assets/submit-assets.ts`                                                                                                         |
-| Rewards Mixed / simple    | `core/rewards/rewards-gates.ts` · `views/dapp/rewards/submit-rewards.ts`                                                                                                     |
-| Release queue / buffer    | `core/release/release-gates.ts` · `views/dapp/release/submit-release.ts`                                                                                                     |
-| 写链                      | `web3/wallet/wallet-contract-write.ts`                                                                                                                                       |
+| 主题                                   | 路径                                                                                                                                                                         |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Write intent / writeReady              | `web3/wallet/assert-write-intent.ts` · `use-write-readiness.ts`                                                                                                              |
+| Write session（wallet→account/client） | `web3/wallet/require-write-session.ts`（submit 入口；禁第二套 wallet store）                                                                                                 |
+| §1.4 phase adapter                     | `core/wallet/resolve-write-button-phase.ts`                                                                                                                                  |
+| Referral gate                          | `core/referral/resolve-need-referral.ts` · `web3/referral/*`                                                                                                                 |
+| Migration read / gate                  | `web3/migration/*` · `core/migration/resolve-migration-user-gate.ts`                                                                                                         |
+| Unknown receipt lock                   | `web3/wallet/unknown-receipt-lock.ts` · `submit-with-unknown-receipt-lock.ts`（**全部** `WRITE_PATH` 写入口须经信封；禁手写 `lock`；`clear` 仅信封成功或金额变更等显式重置） |
+| Approve → live 双读                    | `web3/wallet/approve-then-live-write.ts`（stake/bond/xmine；域仍拥有 evaluate）                                                                                              |
+| 提交呈现 / CTA 纯函数                  | `web3/errors/get-error-message.ts` · `web3/errors/error-messages.ts` · `hooks/use-chain-mutation.ts` · `core/wallet/write-cta.ts` · `app/shell/go-bind-referral.ts`          |
+| 链上展示读（非 L）                     | `hooks/use-chain-query.ts` · `shared/api/query/chain-wallet-query-key.ts` · `core/wallet/resolve-chain-query-enabled.ts`                                                     |
+| Assets Mixed dual-gate                 | `core/assets/dual-gate-mixed-claim.ts`（intent×live；禁自证）                                                                                                                |
+| Swap 门闸                              | `core/exchange/resolve-live-quoted-out.ts` · `views/dapp/exchange/use-exchange-quote.ts`                                                                                     |
+| Genesis 二次门闸                       | `fetch-live-genesis-post-approve-gate.ts` · `evaluateGenesisPostApproveGate`                                                                                                 |
+| Staking / BondZap / Xmine              | `core/staking/staking-gates.ts` · `web3/staking/*`                                                                                                                           |
+| Assets Mixed / redeem                  | `core/assets/assets-gates.ts` · `views/dapp/assets/submit-assets.ts`                                                                                                         |
+| Rewards Mixed / simple                 | `core/rewards/rewards-gates.ts` · `views/dapp/rewards/submit-rewards.ts`                                                                                                     |
+| Release queue / buffer                 | `core/release/release-gates.ts` · `views/dapp/release/submit-release.ts`                                                                                                     |
+| 写链                                   | `web3/wallet/wallet-contract-write.ts`                                                                                                                                       |
 
 ## 必跑单测
 

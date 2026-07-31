@@ -9,7 +9,7 @@ import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/refe
 import { bindReferrer } from '~/web3/referral/referral-write'
 import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 import { useChainQuery } from '~/hooks/use-chain-query'
 
 const BIND_COOLDOWN_MS = 5_000
@@ -27,7 +27,6 @@ function readPendingReferrerFromEnvironment(): `0x${string}` | null {
 export function useReferral() {
   const account = useActiveAccount()
   const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
   const [pendingReferrer] = useState(readPendingReferrerFromEnvironment)
   const [referrerInput, setReferrerInput] = useState(() => pendingReferrer ?? '')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -111,6 +110,7 @@ export function useReferral() {
     setError(null)
 
     try {
+      const { readClient } = requireWriteSession(wallet)
       const parentBound = await readIsBindReferral(target, readClient)
       if (!parentBound) {
         setError(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND)
@@ -131,7 +131,6 @@ export function useReferral() {
     isBindCooldown,
     isSubmitting,
     pendingReferrer,
-    readClient,
     referrerInput,
     startBindCooldown,
     wallet,

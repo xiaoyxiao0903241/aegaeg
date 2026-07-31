@@ -1,12 +1,8 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { approveTokenIfNeeded, exchangeTokens } from '~/web3/exchange/exchange-write'
 import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 type TradeQuotedSubmitCore = {
   debouncedAmountIn: bigint
@@ -21,18 +17,14 @@ type TradeQuotedSubmitCore = {
 
 /** Trade Pancake swap submit path (approve + swap + invalidate). Behavior-preserving extract. */
 export async function submitMarketTrade(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
   pair: ExchangePairTokens
   path: readonly `0x${string}`[]
   core: TradeQuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { account, wallet, pair, path, core } = args
+  const { pair, path, core } = args
 
   return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
-    if (!account || !wallet) {
-      throw WALLET_GATE_ERROR.NOT_CONNECTED
-    }
+    const { wallet, address } = requireWriteSession()
 
     await approveTokenIfNeeded({
       wallet,
@@ -40,7 +32,7 @@ export async function submitMarketTrade(args: {
       amountIn: core.debouncedAmountIn,
     })
     // L-tier: direct read — do not trust display query refetch.
-    const sellBalance = await readErc20Balance(pair.sell.address, account.address)
+    const sellBalance = await readErc20Balance(pair.sell.address, address)
     const { amountOutMin } = await assertStillSubmittable({ sellBalance })
 
     await exchangeTokens({

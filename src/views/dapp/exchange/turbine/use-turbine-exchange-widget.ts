@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -44,7 +44,6 @@ function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined)
 /** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
 export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const walletReady = hasWalletAccount(account)
 
@@ -213,8 +212,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
 
   async function submitUnlock() {
     return submitTurbineUnlock({
-      account,
-      wallet,
       core: { runSubmit },
       unlockAmountAgx: unlockAmountIn,
     })
@@ -223,8 +220,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
   async function submitClaim(index: number) {
     setClaimingIndex(index)
     return submitTurbineClaim({
-      account,
-      wallet,
       core: { runSubmit },
       index,
       refetchSilences: () => silencesQuery.refetch(),

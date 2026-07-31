@@ -1,9 +1,7 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
-import { STAKING_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
-import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
-import { evaluateStakeLiveGate } from '~/core/staking/staking-gates'
 import type { StakePeriod } from '~/core/staking/staking-period'
+import { evaluateStakeLiveGate } from '~/core/staking/staking-gates'
+import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
+import { STAKING_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
 import { resolveStakePoolAddress } from '~/web3/staking/resolve-staking-addresses'
 import {
   approveAgxForStakeIfNeeded,
@@ -14,25 +12,17 @@ import {
 import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
-import type { ChainReadClient } from '~/web3/chain-read-client'
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 export { STAKING_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitStakeOpen(args: {
   period: StakePeriod
   amount: bigint
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
 }): Promise<void> {
-  const { period, amount, account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+  const { period, amount } = args
+  const { wallet, address, readClient } = requireWriteSession()
 
   const pool = resolveStakePoolAddress(period)
   const isLiquid = period === 'liquid'
@@ -42,10 +32,10 @@ export async function submitStakeOpen(args: {
       const preflight = await readStakeOpenPreflight({
         pool,
         isLiquid,
-        user: account.address,
+        user: address,
         client: readClient,
       })
-      const migration = await readMigrationStatus(account.address, readClient)
+      const migration = await readMigrationStatus(address, readClient)
       return { preflight, isOldAccount: migration.isOldAccount }
     },
     evaluate: ({ preflight, isOldAccount }) =>
@@ -75,14 +65,8 @@ export async function submitStakeOpen(args: {
 }
 
 /** Domain write only — envelope lives in `useChainMutation`. */
-export async function submitLiquidWarmupClaim(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
-}): Promise<void> {
-  const { account, wallet } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitLiquidWarmupClaim(): Promise<void> {
+  const { wallet } = requireWriteSession()
   await claimLiquidWarmup({ wallet })
   invalidateAfterStaking()
 }

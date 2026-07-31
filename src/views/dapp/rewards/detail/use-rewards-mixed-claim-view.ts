@@ -30,9 +30,7 @@ import {
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { Address } from '~/shared/config/contracts'
 
@@ -43,8 +41,6 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const { walletReady, sessionReady } = useDappShell()
   const { token, invalidateSession } = useAuth()
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
   const card = t.rewards.cards[view]
   const mixed = t.rewards.mixed
   const [releasePct, setReleasePct] = useState(50)
@@ -108,15 +104,11 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const claim = useChainMutation({
     path: WRITE_PATH.REWARD_CLAIM,
     mutation: async () => {
-      if (!account || !wallet) throw WALLET_GATE_ERROR.NOT_CONNECTED
       if (view === 'lucky') {
         await submitLuckyMixedClaim({
           releaseDays,
           restakeDays,
           restakePct,
-          account,
-          wallet,
-          readClient,
         })
         return
       }
@@ -126,9 +118,6 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
         releaseDays,
         restakeDays,
         restakePct,
-        account,
-        wallet,
-        readClient,
       })
     },
     onSuccess: () => {

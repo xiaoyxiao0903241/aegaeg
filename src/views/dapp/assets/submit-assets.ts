@@ -1,5 +1,3 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { ASSETS_GATE_ERROR } from '~/web3/errors/assets-write-gate-errors'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import {
@@ -38,9 +36,7 @@ import {
 } from '~/web3/assets/assets-write'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 function gateError(
   reason: keyof typeof ASSETS_GATE_ERROR | null,
@@ -95,18 +91,12 @@ export async function submitMixedClaim(args: {
   releaseDays: ReleaseDurationDays
   restakeDays: RestakeDurationDays
   restakePct: number
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
 }): Promise<void> {
-  const { target, releaseDays, restakeDays, restakePct, account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+  const { target, releaseDays, restakeDays, restakePct } = args
+  const { wallet, address: user, readClient } = requireWriteSession()
 
   const amount = target.amount
   const restakeBps = restakeBpsFromPct(restakePct)
-  const user = account.address as Address
 
   const intent = await readMixedClaimSnapshot(
     target,
@@ -154,7 +144,7 @@ export async function submitMixedClaim(args: {
     await writeBondClaimMixed({
       wallet,
       depository: target.depository,
-      recipient: account.address as Address,
+      recipient: user,
       amount,
       releasePlanIndex,
       bondIndex: target.bondIndex,
@@ -166,18 +156,10 @@ export async function submitMixedClaim(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitStakeRedeem(args: {
-  row: AssetsStakeRow
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
-}): Promise<void> {
-  const { row, account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitStakeRedeem(args: { row: AssetsStakeRow }): Promise<void> {
+  const { row } = args
+  const { wallet, address: user, readClient } = requireWriteSession()
 
-  const user = account.address as Address
   const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
   const gate = evaluateRedeemGate({ amount: liveAmount })
   if (gate) throw ASSETS_GATE_ERROR[gate]
@@ -196,18 +178,10 @@ export async function submitStakeRedeem(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitBondRedeem(args: {
-  row: AssetsBondRow
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
-}): Promise<void> {
-  const { row, account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitBondRedeem(args: { row: AssetsBondRow }): Promise<void> {
+  const { row } = args
+  const { wallet, address: user, readClient } = requireWriteSession()
 
-  const user = account.address as Address
   const liveAmount = await readBondRedeemableAmount(row, user, readClient)
   const gate = evaluateRedeemGate({ amount: liveAmount })
   if (gate) throw ASSETS_GATE_ERROR[gate]
@@ -222,24 +196,17 @@ export async function submitBondRedeem(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineClaim(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
-}): Promise<void> {
-  const { account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitXmineClaim(): Promise<void> {
+  const { wallet, address, readClient } = requireWriteSession()
 
-  const pre = await readXminePosition(account.address as Address, readClient)
+  const pre = await readXminePosition(address, readClient)
   const preGate = evaluateXmineClaimGate({
     pending: pre.pending,
     warmupGons: pre.warmupGons,
   })
   if (preGate) throw ASSETS_GATE_ERROR[preGate]
 
-  const live = await readXminePosition(account.address as Address, readClient)
+  const live = await readXminePosition(address, readClient)
   const liveGate = evaluateXmineClaimGate({
     pending: live.pending,
     warmupGons: live.warmupGons,
@@ -251,24 +218,17 @@ export async function submitXmineClaim(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineUnstake(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
-}): Promise<void> {
-  const { account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitXmineUnstake(): Promise<void> {
+  const { wallet, address, readClient } = requireWriteSession()
 
-  const pre = await readXminePosition(account.address as Address, readClient)
+  const pre = await readXminePosition(address, readClient)
   const preGate = evaluateXmineUnstakeGate({
     activeGons: pre.gons,
     warmupGons: pre.warmupGons,
   })
   if (preGate) throw ASSETS_GATE_ERROR[preGate]
 
-  const live = await readXminePosition(account.address as Address, readClient)
+  const live = await readXminePosition(address, readClient)
   const liveGate = evaluateXmineUnstakeGate({
     activeGons: live.gons,
     warmupGons: live.warmupGons,
@@ -280,24 +240,17 @@ export async function submitXmineUnstake(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineActivateWarmup(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
-}): Promise<void> {
-  const { account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitXmineActivateWarmup(): Promise<void> {
+  const { wallet, address, readClient } = requireWriteSession()
 
-  const pre = await readXminePosition(account.address as Address, readClient)
+  const pre = await readXminePosition(address, readClient)
   const preGate = evaluateXmineActivateWarmupGate({
     warmupGons: pre.warmupGons,
     warmupEndTime: pre.warmupEndTime,
   })
   if (preGate) throw ASSETS_GATE_ERROR[preGate]
 
-  const live = await readXminePosition(account.address as Address, readClient)
+  const live = await readXminePosition(address, readClient)
   const liveGate = evaluateXmineActivateWarmupGate({
     warmupGons: live.warmupGons,
     warmupEndTime: live.warmupEndTime,

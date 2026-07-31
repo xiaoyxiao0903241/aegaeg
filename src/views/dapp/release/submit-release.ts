@@ -1,15 +1,9 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
-import { RELEASE_GATE_ERROR } from '~/web3/errors/release-write-gate-errors'
-import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
 import { releaseClaimBlockReason } from '~/core/release/release-gates'
+import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
+import { RELEASE_GATE_ERROR } from '~/web3/errors/release-write-gate-errors'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { writeClaimAllVestedRewards, writeClaimManyReleases } from '~/web3/release/release-write'
-import type { ChainReadClient } from '~/web3/chain-read-client'
-import type { Address } from '~/shared/config/contracts'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 function gateError(
   reason: 'zeroAmount' | 'lockedUnknown' | null,
@@ -19,21 +13,13 @@ function gateError(
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitReleaseQueueClaim(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
-  planIndex: number
-}): Promise<void> {
-  const { account, wallet, readClient, planIndex } = args
-  if (!account?.address || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitReleaseQueueClaim(args: { planIndex: number }): Promise<void> {
+  const { planIndex } = args
+  const { wallet, address, readClient } = requireWriteSession()
   if (planIndex < 0) {
     throw RELEASE_GATE_ERROR.planUnresolved
   }
 
-  const address = account.address as Address
   const pre = await readReleaseQueueSnapshot(address, readClient)
   const preRow = pre.plans.find((row) => row.planIndex === planIndex)
   const preErr = gateError(
@@ -59,17 +45,9 @@ export async function submitReleaseQueueClaim(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitReleaseBufferClaim(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
-}): Promise<void> {
-  const { account, wallet, readClient } = args
-  if (!account?.address || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+export async function submitReleaseBufferClaim(): Promise<void> {
+  const { wallet, address, readClient } = requireWriteSession()
 
-  const address = account.address as Address
   const pre = await readReleaseBufferSnapshot(address, readClient)
   const preErr = gateError(
     releaseClaimBlockReason({

@@ -1,6 +1,3 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
-import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import { evaluateRewardsMixedClaimGate } from '~/core/rewards/rewards-gates'
 import {
   matchPlanIndexByDurationDays,
@@ -15,13 +12,11 @@ import { requestDaoClaim } from '~/shared/api/endpoints'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
 import { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
-import type { ChainReadClient } from '~/web3/chain-read-client'
-import type { Address } from '~/shared/config/contracts'
+import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 export { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
 
 function gateError(
   reason: keyof typeof REWARDS_GATE_ERROR | null,
@@ -42,16 +37,9 @@ export async function submitLuckyMixedClaim(args: {
   releaseDays: ReleaseDurationDays
   restakeDays: RestakeDurationDays
   restakePct: number
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
 }): Promise<void> {
-  const { releaseDays, restakeDays, restakePct, account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
-
-  const user = account.address as Address
+  const { releaseDays, restakeDays, restakePct } = args
+  const { wallet, address: user, readClient } = requireWriteSession()
   const restakeBps = restakeBpsFromPct(restakePct)
 
   const snapshot = await readLuckyClaimSnapshot(user, readClient)
@@ -113,25 +101,12 @@ export async function submitDaoMixedClaim(args: {
   releaseDays: ReleaseDurationDays
   restakeDays: RestakeDurationDays
   restakePct: number
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
 }): Promise<void> {
-  const {
-    token,
-    onUnauthorized,
-    releaseDays,
-    restakeDays,
-    restakePct,
-    account,
-    wallet,
-    readClient,
-  } = args
-  if (!account || !wallet || !token) {
+  const { token, onUnauthorized, releaseDays, restakeDays, restakePct } = args
+  if (!token) {
     throw WALLET_GATE_ERROR.NOT_CONNECTED
   }
-
-  const user = account.address as Address
+  const { wallet, address: user, readClient } = requireWriteSession()
   const restakeBps = restakeBpsFromPct(restakePct)
 
   const payload = await requestWithSession(requestDaoClaim, token, onUnauthorized)

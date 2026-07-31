@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import {
   FLASH_PAIR_DEFAULT,
@@ -36,7 +36,6 @@ type FlashIntroKey = 'gagx' | 'gagxWrap' | 'usdt'
 
 export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const [pairId, setPairIdState] = useState<FlashPairId>(FLASH_PAIR_DEFAULT)
   const [direction, setDirection] = useState<ExchangeDirection>('forward')
@@ -136,8 +135,6 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
     return submitFlashExchange({
       pairId,
       direction,
-      account,
-      wallet,
       core,
     })
   }

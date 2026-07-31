@@ -1,9 +1,7 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
-import { BOND_ZAP_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
-import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
-import { evaluateBondZapLiveGate } from '~/core/staking/staking-gates'
 import type { BondPeriod } from '~/core/staking/staking-period'
+import { evaluateBondZapLiveGate } from '~/core/staking/staking-gates'
+import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
+import { BOND_ZAP_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
 import {
   resolveBurnBondDepository,
   resolveLpBondDepository,
@@ -16,28 +14,20 @@ import {
 import { readBondZapPreflight } from '~/web3/staking/staking-read'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
-import type { ChainReadClient } from '~/web3/chain-read-client'
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 export type BondKind = 'lp' | 'burn'
 
 export { BOND_ZAP_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitBondZap(args: {
   kind: BondKind
   period: BondPeriod
   amount: bigint
-  account: ActiveAccount
-  wallet: ActiveWallet
-  readClient: ChainReadClient
 }): Promise<void> {
-  const { kind, period, amount, account, wallet, readClient } = args
-  if (!account || !wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
-  }
+  const { kind, period, amount } = args
+  const { wallet, address, readClient } = requireWriteSession()
 
   const depository =
     kind === 'lp' ? resolveLpBondDepository(period) : resolveBurnBondDepository(period)
@@ -46,10 +36,10 @@ export async function submitBondZap(args: {
     readSnapshot: async () => {
       const preflight = await readBondZapPreflight({
         depository,
-        user: account.address,
+        user: address,
         client: readClient,
       })
-      const migration = await readMigrationStatus(account.address, readClient)
+      const migration = await readMigrationStatus(address, readClient)
       return { preflight, isOldAccount: migration.isOldAccount }
     },
     evaluate: ({ preflight, isOldAccount }) =>

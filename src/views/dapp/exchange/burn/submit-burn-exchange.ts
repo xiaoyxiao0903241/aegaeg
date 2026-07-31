@@ -1,5 +1,3 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import { resolveBurnContributionSwapGate } from '~/core/exchange/burn-contribution-swap-gates'
 import {
@@ -11,9 +9,7 @@ import {
   readBurnExchangeBalances,
 } from '~/web3/exchange/burn-exchange-read'
 import { BURN_GATE_ERROR } from '~/web3/errors/exchange-write-gate-errors'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 type BurnQuotedSubmitCore = {
   debouncedAmountIn: bigint
@@ -28,21 +24,17 @@ type BurnQuotedSubmitCore = {
 
 /** Burn AGX → contribution points: approve + convert + invalidate. */
 export async function submitBurnExchange(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
   core: BurnQuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { account, wallet, core } = args
+  const { core } = args
 
   return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
-    if (!account || !wallet) {
-      throw WALLET_GATE_ERROR.NOT_CONNECTED
-    }
+    const { wallet, address } = requireWriteSession()
 
     await approveAgxForBurnExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
 
     // L-tier: direct reads — not display-query refetch.
-    const liveBalances = await readBurnExchangeBalances(account.address)
+    const liveBalances = await readBurnExchangeBalances(address)
     await assertStillSubmittable({ sellBalance: liveBalances.sell })
 
     const liveConfig = await readBurnContributionSwapConfig()

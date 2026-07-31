@@ -1,6 +1,4 @@
 import type { QueryObserverResult } from '@tanstack/react-query'
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import {
   readTurbineQuota,
@@ -12,9 +10,7 @@ import {
   buyAgxAndStartCooldown,
   claimCooledGagx,
 } from '~/web3/exchange/turbine-exchange-write'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 type TurbineSubmitCore = {
   runSubmit: (
@@ -27,23 +23,17 @@ type TurbineSubmitCore = {
  * L-tier gates use direct `readTurbine*` (not display-query refetch).
  */
 export async function submitTurbineUnlock(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
   core: TurbineSubmitCore
   /** Unlock AGX amount (handbook turbineBalances is AGX quota). */
   unlockAmountAgx: bigint
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { account, wallet, core, unlockAmountAgx } = args
+  const { core, unlockAmountAgx } = args
 
   return core.runSubmit(async () => {
-    if (!account || !wallet) {
-      throw WALLET_GATE_ERROR.NOT_CONNECTED
-    }
+    const { wallet, address } = requireWriteSession()
     if (unlockAmountAgx <= 0n) {
       throw new Error('TURBINE_ZERO_AMOUNT')
     }
-
-    const address = account.address
 
     // Pre-approve quote (may drift during wallet signature).
     const preUsd = await readTurbineUsdQuote(unlockAmountAgx)
@@ -70,18 +60,14 @@ export async function submitTurbineUnlock(args: {
 }
 
 export async function submitTurbineClaim(args: {
-  account: ActiveAccount
-  wallet: ActiveWallet
   core: TurbineSubmitCore
   index: number
   refetchSilences: () => Promise<QueryObserverResult>
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { account, wallet, core, index, refetchSilences } = args
+  const { core, index, refetchSilences } = args
 
   return core.runSubmit(async () => {
-    if (!account || !wallet) {
-      throw WALLET_GATE_ERROR.NOT_CONNECTED
-    }
+    const { wallet } = requireWriteSession()
 
     await claimCooledGagx({ wallet, index })
     invalidateAfterExchange()

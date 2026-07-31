@@ -13,8 +13,6 @@ import {
   submitXmineUnstake,
 } from '~/views/dapp/assets/submit-assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
@@ -30,9 +28,6 @@ export function useAssetsXmineView() {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
   const isMobile = useMobileViewport()
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
@@ -48,7 +43,7 @@ export function useAssetsXmineView() {
 
   const claim = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: () => submitXmineClaim({ account, wallet, readClient }),
+    mutation: () => submitXmineClaim(),
     onSuccess: () => {
       toast.success(t.assets.claim.xmineSuccess)
     },
@@ -56,7 +51,7 @@ export function useAssetsXmineView() {
 
   const activateWarmup = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: () => submitXmineActivateWarmup({ account, wallet, readClient }),
+    mutation: () => submitXmineActivateWarmup(),
     onSuccess: async () => {
       toast.success(t.assets.position.activateWarmupSuccess)
       await positionQuery.refetch()
@@ -65,7 +60,7 @@ export function useAssetsXmineView() {
 
   const unstake = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: () => submitXmineUnstake({ account, wallet, readClient }),
+    mutation: () => submitXmineUnstake(),
     onSuccess: () => {
       toast.success(t.assets.redeem.success)
       setConfirmUnstake(false)

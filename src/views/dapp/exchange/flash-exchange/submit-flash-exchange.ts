@@ -1,5 +1,4 @@
-import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { WALLET_GATE_ERROR, FLASH_USD1_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { FLASH_USD1_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import type { FlashPairId } from '~/core/exchange/flash-pair'
@@ -12,9 +11,7 @@ import {
   wrapAgxFlashExchange,
 } from '~/web3/exchange/flash-exchange-write'
 import { readFlashPairBalances, readUsd1SwapConfig } from '~/web3/exchange/flash-exchange-read'
-
-type ActiveAccount = ReturnType<typeof useActiveAccount>
-type ActiveWallet = ReturnType<typeof useActiveWallet>
+import { requireWriteSession } from '~/web3/wallet/require-write-session'
 
 type FlashQuotedSubmitCore = {
   debouncedAmountIn: bigint
@@ -31,16 +28,12 @@ type FlashQuotedSubmitCore = {
 export async function submitFlashExchange(args: {
   pairId: FlashPairId
   direction: ExchangeDirection
-  account: ActiveAccount
-  wallet: ActiveWallet
   core: FlashQuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
-  const { pairId, direction, account, wallet, core } = args
+  const { pairId, direction, core } = args
 
   return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
-    if (!account || !wallet) {
-      throw WALLET_GATE_ERROR.NOT_CONNECTED
-    }
+    const { wallet, address } = requireWriteSession()
 
     if (pairId === 'usdt') {
       await approveUsdtForFlashExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
@@ -49,7 +42,7 @@ export async function submitFlashExchange(args: {
     }
 
     // L-tier: direct balance read — not display-query refetch.
-    const liveBalances = await readFlashPairBalances(pairId, direction, account.address)
+    const liveBalances = await readFlashPairBalances(pairId, direction, address)
     const { amountOutMin: minOut, quotedOut } = await assertStillSubmittable({
       sellBalance: liveBalances.sell,
     })

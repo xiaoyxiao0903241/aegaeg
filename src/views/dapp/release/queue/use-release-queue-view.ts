@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -37,16 +35,12 @@ export function useReleaseQueueView() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const { writeReady } = useWriteReadiness()
-  const account = useActiveAccount()
-  const wallet = useActiveWallet()
-  const readClient = useChainReadClient()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
 
   const claim = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
-    mutation: (planIndex: number) =>
-      submitReleaseQueueClaim({ account, wallet, readClient, planIndex }),
+    mutation: (planIndex: number) => submitReleaseQueueClaim({ planIndex }),
     onSuccess: async () => {
       toast.success(t.release.queue.claimSuccess)
       await queueQuery.refetch()
