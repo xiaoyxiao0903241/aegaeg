@@ -49,8 +49,9 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
 
   const stake = useChainMutation({
     path: WRITE_PATH.XMINE,
-    mutation: () =>
+    mutation: (_vars, session) =>
       submitXmineStake({
+        session,
         amount: amountInput.amountIn,
       }),
     onSuccess: async () => {

@@ -42,6 +42,12 @@ const app = defineMessages({
         bondTooLarge: 'Bond exceeds max payout. Lower the purchase amount.',
         stakeNotExist: 'Position missing or already closed. Refresh and try again.',
         yieldUnavailable: 'No claimable yield or amount too high. Lower amount or wait to accrue.',
+        /** Shared revert names across flash/burn/staking — avoid domain-specific copy. */
+        operationPaused: 'This operation is paused. Please try again later.',
+        belowMinAmount: 'Amount is below the minimum. Please increase it.',
+        aboveMaxAmount: 'Amount exceeds the maximum. Please lower it.',
+        zeroRate: 'Rate is not ready. Please try again later.',
+        zeroAmount: 'Enter a valid amount.',
       },
     },
     walletNotConnected: 'Please connect your wallet and sign in first.',

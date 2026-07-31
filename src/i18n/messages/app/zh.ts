@@ -41,6 +41,12 @@ const app = defineMessages({
         bondTooLarge: '超过单笔债券上限，请降低购买金额。',
         stakeNotExist: '仓位不存在或已结清，请刷新列表后重试。',
         yieldUnavailable: '暂无可领收益或提取额过大，请降低金额或等待累积。',
+        /** Shared revert names across flash/burn/staking — avoid domain-specific copy. */
+        operationPaused: '该操作已暂停，请稍后再试。',
+        belowMinAmount: '金额低于下限，请提高金额。',
+        aboveMaxAmount: '金额超过上限，请降低金额。',
+        zeroRate: '汇率未就绪，请稍后再试。',
+        zeroAmount: '请输入有效数量。',
       },
     },
     walletNotConnected: '请先连接钱包并完成登录。',

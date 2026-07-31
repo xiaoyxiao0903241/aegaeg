@@ -15,10 +15,12 @@ import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 const DEFAULT_QUOTE_DEBOUNCE_MS = 400
 
 type QuotedSubmitExecute = (helpers: {
+  session: WriteSession
   assertStillSubmittable: (live?: {
     sellBalance: bigint
   }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
@@ -144,8 +146,8 @@ export function useExchangeQuote<TQuote>({
 
   const chainWrite = useChainMutation({
     path: WRITE_PATH.EXCHANGE,
-    mutation: async (run: () => Promise<void>) => {
-      await run()
+    mutation: async (run: (session: WriteSession) => Promise<void>, session) => {
+      await run(session)
     },
     onSuccess: () => {
       clearAmount()
@@ -240,8 +242,8 @@ export function useExchangeQuote<TQuote>({
       return { amountOutMin: liveAmountOutMin, quotedOut: liveQuotedOut }
     }
 
-    await chainWrite.mutate(async () => {
-      await execute({ assertStillSubmittable })
+    await chainWrite.mutate(async (session) => {
+      await execute({ session, assertStillSubmittable })
     })
 
     return submitOutcomeRef.current

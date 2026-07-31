@@ -25,6 +25,7 @@ import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useTurbineSummary } from '~/hooks/use-api-data'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export type TurbineSegment = 'unlock' | 'claim'
 
@@ -115,8 +116,8 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
 
   const chainWrite = useChainMutation({
     path: WRITE_PATH.EXCHANGE,
-    mutation: async (run: () => Promise<void>) => {
-      await run()
+    mutation: async (run: (session: WriteSession) => Promise<void>, session) => {
+      await run(session)
     },
     onSuccess: () => {
       clearAmountRaw()
@@ -232,10 +233,10 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     usdNeeded <= usd1Balance &&
     !quoteQuery.isFetching
 
-  async function runSubmit(run: () => Promise<void>) {
+  async function runSubmit(run: (session: WriteSession) => Promise<void>) {
     submitOutcomeRef.current = { ok: false, error: null }
-    await chainWrite.mutate(async () => {
-      await run()
+    await chainWrite.mutate(async (session) => {
+      await run(session)
     })
     setClaimingIndex(null)
     return submitOutcomeRef.current

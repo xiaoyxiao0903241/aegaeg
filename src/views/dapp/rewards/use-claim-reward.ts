@@ -1,5 +1,5 @@
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useCallback } from 'react'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -16,9 +16,10 @@ import {
 } from '~/web3/claim/claim-reward'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type RewardClaimExecutor = (args: {
-  wallet: NonNullable<ReturnType<typeof useActiveWallet>>
+  wallet: WriteSession['wallet']
   token: string
   onUnauthorized: () => void
 }) => Promise<ClaimRewardExecuteResult>
@@ -32,19 +33,18 @@ export type ClaimRewardUiResult = {
 
 export function useClaimReward(execute: RewardClaimExecutor) {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const { token, sessionReady, invalidateSession } = useAuth()
 
   const claimMutation = useChainMutation({
     path: WRITE_PATH.REWARD_CLAIM,
-    mutation: async (): Promise<ClaimRewardUiResult> => {
-      if (!account || !wallet || !token || !sessionReady || !writeReady) {
+    mutation: async (_vars, session): Promise<ClaimRewardUiResult> => {
+      if (!token || !sessionReady || !writeReady) {
         throw WALLET_GATE_ERROR.NOT_CONNECTED
       }
 
       const result = await execute({
-        wallet,
+        wallet: session.wallet,
         token,
         onUnauthorized: invalidateSession,
       })

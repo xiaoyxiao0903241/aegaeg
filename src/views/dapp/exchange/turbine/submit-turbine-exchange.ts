@@ -10,11 +10,11 @@ import {
   buyAgxAndStartCooldown,
   claimCooledGagx,
 } from '~/web3/exchange/turbine-exchange-write'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type TurbineSubmitCore = {
   runSubmit: (
-    run: () => Promise<void>,
+    run: (session: WriteSession) => Promise<void>,
   ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
 }
 
@@ -29,8 +29,8 @@ export async function submitTurbineUnlock(args: {
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { core, unlockAmountAgx } = args
 
-  return core.runSubmit(async () => {
-    const { wallet, address } = requireWriteSession()
+  return core.runSubmit(async (session) => {
+    const { wallet, address } = session
     if (unlockAmountAgx <= 0n) {
       throw new Error('TURBINE_ZERO_AMOUNT')
     }
@@ -66,8 +66,8 @@ export async function submitTurbineClaim(args: {
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { core, index, refetchSilences } = args
 
-  return core.runSubmit(async () => {
-    const { wallet } = requireWriteSession()
+  return core.runSubmit(async (session) => {
+    const { wallet } = session
 
     await claimCooledGagx({ wallet, index })
     invalidateAfterExchange()

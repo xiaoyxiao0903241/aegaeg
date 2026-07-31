@@ -4,15 +4,18 @@ import { XMINE_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
 import { approveGagxForXmineIfNeeded, stakeGagxForMining } from '~/web3/staking/staking-write'
 import { readXminePreflight } from '~/web3/staking/staking-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 
 export { XMINE_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineStake(args: { amount: bigint }): Promise<void> {
-  const { amount } = args
-  const { wallet, address, readClient } = requireWriteSession()
+export async function submitXmineStake(args: {
+  session: WriteSession
+  amount: bigint
+}): Promise<void> {
+  const { session, amount } = args
+  const { wallet, address, readClient } = session
 
   let pastPreflight = false
   await approveThenLiveWrite({

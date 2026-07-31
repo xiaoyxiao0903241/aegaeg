@@ -12,17 +12,18 @@ import {
 import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export { STAKING_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitStakeOpen(args: {
+  session: WriteSession
   period: StakePeriod
   amount: bigint
 }): Promise<void> {
-  const { period, amount } = args
-  const { wallet, address, readClient } = requireWriteSession()
+  const { session, period, amount } = args
+  const { wallet, address, readClient } = session
 
   const pool = resolveStakePoolAddress(period)
   const isLiquid = period === 'liquid'
@@ -65,8 +66,8 @@ export async function submitStakeOpen(args: {
 }
 
 /** Domain write only — envelope lives in `useChainMutation`. */
-export async function submitLiquidWarmupClaim(): Promise<void> {
-  const { wallet } = requireWriteSession()
+export async function submitLiquidWarmupClaim(args: { session: WriteSession }): Promise<void> {
+  const { wallet } = args.session
   await claimLiquidWarmup({ wallet })
   invalidateAfterStaking()
 }

@@ -117,9 +117,10 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
 
   const claim = useChainMutation({
     path: WRITE_PATH.REWARD_CLAIM,
-    mutation: async () => {
+    mutation: async (_vars, session) => {
       if (view === 'lucky') {
         await submitLuckyMixedClaim({
+          session,
           releaseDays,
           restakeDays,
           restakePct,
@@ -127,6 +128,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
         return
       }
       await submitDaoMixedClaim({
+        session,
         token: token ?? '',
         onUnauthorized: invalidateSession,
         rewardType: daoRewardType,

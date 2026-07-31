@@ -9,12 +9,13 @@ import {
   readBurnExchangeBalances,
 } from '~/web3/exchange/burn-exchange-read'
 import { BURN_GATE_ERROR } from '~/web3/errors/exchange-write-gate-errors'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type BurnQuotedSubmitCore = {
   debouncedAmountIn: bigint
   runQuotedSubmit: (
     run: (helpers: {
+      session: WriteSession
       assertStillSubmittable: (live?: {
         sellBalance: bigint
       }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
@@ -28,8 +29,8 @@ export async function submitBurnExchange(args: {
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { core } = args
 
-  return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
-    const { wallet, address } = requireWriteSession()
+  return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
+    const { wallet, address } = session
 
     await approveAgxForBurnExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
 

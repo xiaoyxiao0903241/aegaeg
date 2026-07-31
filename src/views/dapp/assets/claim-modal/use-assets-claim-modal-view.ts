@@ -40,8 +40,9 @@ export function useAssetsClaimModalView(args: {
 
   const claim = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: () =>
+    mutation: (_vars, session) =>
       submitMixedClaim({
+        session,
         target,
         releaseDays,
         restakeDays,

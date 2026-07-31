@@ -66,8 +66,9 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
 
   const open = useChainMutation({
     path: WRITE_PATH.STAKING,
-    mutation: () =>
+    mutation: (_vars, session) =>
       submitStakeOpen({
+        session,
         period,
         amount: amountInput.amountIn,
       }),
@@ -80,7 +81,7 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
 
   const warmup = useChainMutation({
     path: WRITE_PATH.STAKING,
-    mutation: () => submitLiquidWarmupClaim(),
+    mutation: (_vars, session) => submitLiquidWarmupClaim({ session }),
     onSuccess: async () => {
       await present.onWarmupSuccess()
     },

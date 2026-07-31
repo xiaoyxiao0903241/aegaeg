@@ -106,8 +106,9 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
 
   const zap = useChainMutation({
     path: WRITE_PATH.BOND_ZAP,
-    mutation: () =>
+    mutation: (_vars, session) =>
       submitBondZap({
+        session,
         kind,
         period,
         amount: amountInput.amountIn,

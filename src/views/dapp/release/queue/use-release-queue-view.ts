@@ -40,7 +40,7 @@ export function useReleaseQueueView() {
 
   const claim = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
-    mutation: (planIndex: number) => submitReleaseQueueClaim({ planIndex }),
+    mutation: (planIndex: number, session) => submitReleaseQueueClaim({ session, planIndex }),
     onSuccess: async () => {
       toast.success(t.release.queue.claimSuccess)
       await queueQuery.refetch()

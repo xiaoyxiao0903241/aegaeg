@@ -14,7 +14,7 @@ import {
 import { readBondZapPreflight } from '~/web3/staking/staking-read'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export type BondKind = 'lp' | 'burn'
 
@@ -22,12 +22,13 @@ export { BOND_ZAP_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitBondZap(args: {
+  session: WriteSession
   kind: BondKind
   period: BondPeriod
   amount: bigint
 }): Promise<void> {
-  const { kind, period, amount } = args
-  const { wallet, address, readClient } = requireWriteSession()
+  const { session, kind, period, amount } = args
+  const { wallet, address, readClient } = session
 
   const depository =
     kind === 'lp' ? resolveLpBondDepository(period) : resolveBurnBondDepository(period)

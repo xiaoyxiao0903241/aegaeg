@@ -35,7 +35,11 @@ export function useFlashExchangeSpotRates({
     placeholderData: keepPreviousData,
   })
 
-  useVisibleInterval(spotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
+  useVisibleInterval(
+    spotQuoteQuery,
+    EXCHANGE_CONFIG.quoteRefreshIntervalMs,
+    quotesEnabled && pairId !== 'gagx',
+  )
 
   const spotQuotedOut = resolveLiveQuotedOut(spotQuoteQuery.isPlaceholderData, spotQuoteQuery.data)
   const isExchangePriceQuoting =

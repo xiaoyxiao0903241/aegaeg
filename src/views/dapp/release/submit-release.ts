@@ -3,7 +3,7 @@ import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
 import { RELEASE_GATE_ERROR } from '~/web3/errors/release-write-gate-errors'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { writeClaimAllVestedRewards, writeClaimManyReleases } from '~/web3/release/release-write'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 function gateError(
   reason: 'zeroAmount' | 'lockedUnknown' | null,
@@ -13,9 +13,12 @@ function gateError(
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitReleaseQueueClaim(args: { planIndex: number }): Promise<void> {
-  const { planIndex } = args
-  const { wallet, address, readClient } = requireWriteSession()
+export async function submitReleaseQueueClaim(args: {
+  session: WriteSession
+  planIndex: number
+}): Promise<void> {
+  const { session, planIndex } = args
+  const { wallet, address, readClient } = session
   if (planIndex < 0) {
     throw RELEASE_GATE_ERROR.planUnresolved
   }
@@ -45,8 +48,9 @@ export async function submitReleaseQueueClaim(args: { planIndex: number }): Prom
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitReleaseBufferClaim(): Promise<void> {
-  const { wallet, address, readClient } = requireWriteSession()
+export async function submitReleaseBufferClaim(args: { session: WriteSession }): Promise<void> {
+  const { session } = args
+  const { wallet, address, readClient } = session
 
   const pre = await readReleaseBufferSnapshot(address, readClient)
   const preErr = gateError(

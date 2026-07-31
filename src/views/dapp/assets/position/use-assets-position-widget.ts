@@ -65,12 +65,14 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
 
   const redeemWrite = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: (vars: RedeemVars) =>
+    mutation: (vars: RedeemVars, session) =>
       vars.kind === 'stake'
         ? submitStakeRedeem({
+            session,
             row: vars.row as AssetsStakeRow,
           })
         : submitBondRedeem({
+            session,
             row: vars.row as AssetsBondRow,
           }),
     onSuccess: () => {

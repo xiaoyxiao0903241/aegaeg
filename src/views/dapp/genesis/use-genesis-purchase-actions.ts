@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/presale-write'
-import { GENESIS_PURCHASE_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR } from '~/web3/resolve-contract-error-message'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
@@ -45,7 +45,7 @@ type UseGenesisPurchaseActionsArgs = {
 
 /** Approve → re-gate → purchase orchestration for Genesis. Envelope in `useChainMutation`. */
 export function useGenesisPurchaseActions({
-  wallet: { account, wallet, address },
+  wallet: { address },
   phase: { activePhase, isPaused, isPausedUnknown, isBoundQueryData },
   purchase: { canPurchase, isApproved, needsApproval, purchaseAmount },
 }: UseGenesisPurchaseActionsArgs) {
@@ -58,13 +58,11 @@ export function useGenesisPurchaseActions({
 
   const purchaseMutation = useChainMutation({
     path: WRITE_PATH.GENESIS,
-    mutation: async (): Promise<true> => {
+    mutation: async (_vars, session): Promise<true> => {
       if (genesisPurchaseGate.inFlight) {
         throw GENESIS_PURCHASE_ERROR.UNAVAILABLE
       }
-      if (!account || !wallet) {
-        throw WALLET_GATE_ERROR.NOT_CONNECTED
-      }
+      const { wallet, account, address: sessionAddress } = session
       // Contract requires a bound referrer before purchase; block early with a
       // friendly prompt instead of letting the tx revert (PreSaleUserNotBound).
       // Fail-closed while bind status is still loading (`undefined`).
@@ -82,9 +80,13 @@ export function useGenesisPurchaseActions({
       try {
         if (needsApproval && !isApproved) {
           await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
-          if (address) {
+          if (sessionAddress) {
             queryClient.setQueryData(
-              queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+              queryKeys.chain.erc20Allowance(
+                BSC_CONTRACTS.usd1,
+                sessionAddress,
+                BSC_CONTRACTS.preSale,
+              ),
               purchaseAmount,
             )
           }
@@ -92,7 +94,7 @@ export function useGenesisPurchaseActions({
 
         // Live re-gate always (money-path: [approve?] → live bind/pause → purchase).
         const gate = await fetchLiveGenesisPostApproveGate({
-          address,
+          address: sessionAddress,
           fetchIsBound: (addr) =>
             queryClient.fetchQuery({
               queryKey: queryKeys.chain.referralIsBoundOf(addr),
@@ -117,13 +119,17 @@ export function useGenesisPurchaseActions({
           readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale),
         ])
 
-        if (address) {
+        if (sessionAddress) {
           queryClient.setQueryData(
-            queryKeys.chain.erc20BalanceOf(BSC_CONTRACTS.usd1, address),
+            queryKeys.chain.erc20BalanceOf(BSC_CONTRACTS.usd1, sessionAddress),
             balance,
           )
           queryClient.setQueryData(
-            queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+            queryKeys.chain.erc20Allowance(
+              BSC_CONTRACTS.usd1,
+              sessionAddress,
+              BSC_CONTRACTS.preSale,
+            ),
             approved,
           )
         }

@@ -298,7 +298,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'zero-amount',
     match: nameOrSelector(/Error(ZeroAmount|AmountZero|StakeAmount)\b/i, '0xc91787e4'),
-    message: (t) => t.staking.gates.zeroAmount,
+    message: (t) => t.errors.chain.reverts.zeroAmount,
   },
   {
     id: 'insufficient-balance',
@@ -406,11 +406,11 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.staking.gates.accountMigrated,
   },
 
-  // —— Flash / Usd1Swap (usd1swap.md) + prior flash resolver ——
+  // —— Shared Error* names (flash Usd1Swap + burn AgxContributionSwap collide on selector) ——
   {
-    id: 'flash-paused',
+    id: 'shared-paused',
     match: nameOrSelector(/^ErrorPaused\b/i),
-    message: (t) => t.exchange.flash.gates.paused,
+    message: (t) => t.errors.chain.reverts.operationPaused,
   },
   {
     id: 'flash-insufficient-usd1',
@@ -418,14 +418,14 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.exchange.flash.gates.insufficientReserve,
   },
   {
-    id: 'flash-below-min',
+    id: 'shared-below-min',
     match: nameOrSelector(/^ErrorBelowMin\b/i),
-    message: (t) => t.exchange.flash.gates.belowMin,
+    message: (t) => t.errors.chain.reverts.belowMinAmount,
   },
   {
-    id: 'flash-above-max',
+    id: 'shared-above-max',
     match: nameOrSelector(/^ErrorAboveMax\b/i),
-    message: (t) => t.exchange.flash.gates.aboveMax,
+    message: (t) => t.errors.chain.reverts.aboveMaxAmount,
   },
   {
     id: 'flash-insufficient-output',
@@ -448,9 +448,9 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.exchange.flash.gates.sameToken,
   },
   {
-    id: 'flash-zero-rate',
+    id: 'shared-zero-rate',
     match: nameOrSelector(/^ErrorZeroRate\b/i),
-    message: (t) => t.exchange.flash.gates.zeroRate,
+    message: (t) => t.errors.chain.reverts.zeroRate,
   },
   {
     id: 'flash-not-authorized',

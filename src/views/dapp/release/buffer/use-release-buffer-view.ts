@@ -24,7 +24,7 @@ export function useReleaseBufferView() {
 
   const claim = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
-    mutation: () => submitReleaseBufferClaim(),
+    mutation: (_vars, session) => submitReleaseBufferClaim({ session }),
     onSuccess: async () => {
       toast.success(t.release.buffer.claimSuccess)
       await bufferQuery.refetch()

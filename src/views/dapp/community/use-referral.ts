@@ -9,7 +9,7 @@ import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/refe
 import { bindReferrer } from '~/web3/referral/referral-write'
 import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import { makeWriteSession } from '~/web3/wallet/require-write-session'
 import { useChainQuery } from '~/hooks/use-chain-query'
 
 const BIND_COOLDOWN_MS = 5_000
@@ -110,7 +110,7 @@ export function useReferral() {
     setError(null)
 
     try {
-      const { readClient } = requireWriteSession(wallet)
+      const { readClient } = makeWriteSession(wallet)
       const parentBound = await readIsBindReferral(target, readClient)
       if (!parentBound) {
         setError(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND)

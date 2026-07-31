@@ -36,7 +36,7 @@ import {
 } from '~/web3/assets/assets-write'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 function gateError(
   reason: keyof typeof ASSETS_GATE_ERROR | null,
@@ -87,13 +87,14 @@ async function readMixedClaimSnapshot(
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitMixedClaim(args: {
+  session: WriteSession
   target: MixedClaimTarget
   releaseDays: ReleaseDurationDays
   restakeDays: RestakeDurationDays
   restakePct: number
 }): Promise<void> {
-  const { target, releaseDays, restakeDays, restakePct } = args
-  const { wallet, address: user, readClient } = requireWriteSession()
+  const { session, target, releaseDays, restakeDays, restakePct } = args
+  const { wallet, address: user, readClient } = session
 
   const amount = target.amount
   const restakeBps = restakeBpsFromPct(restakePct)
@@ -156,9 +157,12 @@ export async function submitMixedClaim(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitStakeRedeem(args: { row: AssetsStakeRow }): Promise<void> {
-  const { row } = args
-  const { wallet, address: user, readClient } = requireWriteSession()
+export async function submitStakeRedeem(args: {
+  session: WriteSession
+  row: AssetsStakeRow
+}): Promise<void> {
+  const { session, row } = args
+  const { wallet, address: user, readClient } = session
 
   const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
   const gate = evaluateRedeemGate({ amount: liveAmount })
@@ -178,9 +182,12 @@ export async function submitStakeRedeem(args: { row: AssetsStakeRow }): Promise<
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitBondRedeem(args: { row: AssetsBondRow }): Promise<void> {
-  const { row } = args
-  const { wallet, address: user, readClient } = requireWriteSession()
+export async function submitBondRedeem(args: {
+  session: WriteSession
+  row: AssetsBondRow
+}): Promise<void> {
+  const { session, row } = args
+  const { wallet, address: user, readClient } = session
 
   const liveAmount = await readBondRedeemableAmount(row, user, readClient)
   const gate = evaluateRedeemGate({ amount: liveAmount })
@@ -196,8 +203,8 @@ export async function submitBondRedeem(args: { row: AssetsBondRow }): Promise<vo
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineClaim(): Promise<void> {
-  const { wallet, address, readClient } = requireWriteSession()
+export async function submitXmineClaim(args: { session: WriteSession }): Promise<void> {
+  const { wallet, address, readClient } = args.session
 
   const pre = await readXminePosition(address, readClient)
   const preGate = evaluateXmineClaimGate({
@@ -218,8 +225,8 @@ export async function submitXmineClaim(): Promise<void> {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineUnstake(): Promise<void> {
-  const { wallet, address, readClient } = requireWriteSession()
+export async function submitXmineUnstake(args: { session: WriteSession }): Promise<void> {
+  const { wallet, address, readClient } = args.session
 
   const pre = await readXminePosition(address, readClient)
   const preGate = evaluateXmineUnstakeGate({
@@ -240,8 +247,8 @@ export async function submitXmineUnstake(): Promise<void> {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineActivateWarmup(): Promise<void> {
-  const { wallet, address, readClient } = requireWriteSession()
+export async function submitXmineActivateWarmup(args: { session: WriteSession }): Promise<void> {
+  const { wallet, address, readClient } = args.session
 
   const pre = await readXminePosition(address, readClient)
   const preGate = evaluateXmineActivateWarmupGate({

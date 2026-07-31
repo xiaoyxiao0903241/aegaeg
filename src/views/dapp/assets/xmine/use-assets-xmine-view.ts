@@ -43,7 +43,7 @@ export function useAssetsXmineView() {
 
   const claim = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: () => submitXmineClaim(),
+    mutation: (_vars, session) => submitXmineClaim({ session }),
     onSuccess: () => {
       toast.success(t.assets.claim.xmineSuccess)
     },
@@ -51,7 +51,7 @@ export function useAssetsXmineView() {
 
   const activateWarmup = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: () => submitXmineActivateWarmup(),
+    mutation: (_vars, session) => submitXmineActivateWarmup({ session }),
     onSuccess: async () => {
       toast.success(t.assets.position.activateWarmupSuccess)
       await positionQuery.refetch()
@@ -60,7 +60,7 @@ export function useAssetsXmineView() {
 
   const unstake = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
-    mutation: () => submitXmineUnstake(),
+    mutation: (_vars, session) => submitXmineUnstake({ session }),
     onSuccess: () => {
       toast.success(t.assets.redeem.success)
       setConfirmUnstake(false)

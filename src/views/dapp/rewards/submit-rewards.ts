@@ -15,7 +15,7 @@ import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
 import { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
 
@@ -35,12 +35,13 @@ function mapMixedReason(
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitLuckyMixedClaim(args: {
+  session: WriteSession
   releaseDays: ReleaseDurationDays
   restakeDays: RestakeDurationDays
   restakePct: number
 }): Promise<void> {
-  const { releaseDays, restakeDays, restakePct } = args
-  const { wallet, address: user, readClient } = requireWriteSession()
+  const { session, releaseDays, restakeDays, restakePct } = args
+  const { wallet, address: user, readClient } = session
   const restakeBps = restakeBpsFromPct(restakePct)
 
   const snapshot = await readLuckyClaimSnapshot(user, readClient)
@@ -97,6 +98,7 @@ export async function submitLuckyMixedClaim(args: {
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitDaoMixedClaim(args: {
+  session: WriteSession
   token: string
   onUnauthorized: () => void
   rewardType: DaoRewardType
@@ -104,11 +106,11 @@ export async function submitDaoMixedClaim(args: {
   restakeDays: RestakeDurationDays
   restakePct: number
 }): Promise<void> {
-  const { token, onUnauthorized, rewardType, releaseDays, restakeDays, restakePct } = args
+  const { session, token, onUnauthorized, rewardType, releaseDays, restakeDays, restakePct } = args
   if (!token) {
     throw WALLET_GATE_ERROR.NOT_CONNECTED
   }
-  const { wallet, address: user, readClient } = requireWriteSession()
+  const { wallet, address: user, readClient } = session
   const restakeBps = restakeBpsFromPct(restakePct)
 
   const payload = await requestWithSession(

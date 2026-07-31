@@ -9,7 +9,7 @@ import {
   isUnknownReceiptLocked,
   type WritePath,
 } from '~/web3/wallet/unknown-receipt-lock'
-import { bindWriteSessionWallet } from '~/web3/wallet/require-write-session'
+import { makeWriteSession, type WriteSession } from '~/web3/wallet/require-write-session'
 
 /** Path already latched — no toast (CTA uses `isLocked`). */
 class ChainMutationLockedError extends Error {
@@ -25,8 +25,8 @@ function isChainMutationLockedError(error: unknown): boolean {
 
 export type UseChainMutationArgs<TVars, TValue> = {
   path: WritePath
-  /** Domain write — soft gates throw. Envelope applies lock + write-session bind. */
-  mutation: (vars: TVars) => Promise<TValue>
+  /** Domain write — soft gates throw. Envelope builds WriteSession and passes it in. */
+  mutation: (vars: TVars, session: WriteSession) => Promise<TValue>
   onSuccess?: (value: TValue, vars: TVars) => void | Promise<void>
   /**
    * Extra side effects only — default error toast runs after unless `'handled'`
@@ -36,11 +36,9 @@ export type UseChainMutationArgs<TVars, TValue> = {
 }
 
 /**
- * Shared chain-write mutation: unknown-receipt envelope + write-session bind +
+ * Shared chain-write mutation: unknown-receipt envelope + explicit WriteSession +
  * `retry: false` + isPending.
  * Already-latched → silent no-op. Real errors → onError side effects, then getErrorMessage toast.
- *
- * While `mutation` runs, `requireWriteSession()` resolves the active wallet (no call-site pass).
  */
 export function useChainMutation<TVars = void, TValue = void>(
   args: UseChainMutationArgs<TVars, TValue>,
@@ -54,18 +52,14 @@ export function useChainMutation<TVars = void, TValue = void>(
   const mutation = useMutation({
     retry: false,
     mutationFn: async (vars: TVars): Promise<TValue> => {
-      const unbind = bindWriteSessionWallet(() => walletRef.current)
-      try {
-        const guarded = await submitWithUnknownReceiptLock({
-          path,
-          whenLocked: new ChainMutationLockedError(),
-          run: () => args.mutation(vars),
-        })
-        if (!guarded.ok) throw guarded.error
-        return guarded.value as TValue
-      } finally {
-        unbind()
-      }
+      const session = makeWriteSession(walletRef.current)
+      const guarded = await submitWithUnknownReceiptLock({
+        path,
+        whenLocked: new ChainMutationLockedError(),
+        run: () => args.mutation(vars, session),
+      })
+      if (!guarded.ok) throw guarded.error
+      return guarded.value as TValue
     },
     onSuccess: (value, vars) => args.onSuccess?.(value, vars),
     onError: (error, vars) => {

@@ -11,12 +11,13 @@ import {
   wrapAgxFlashExchange,
 } from '~/web3/exchange/flash-exchange-write'
 import { readFlashPairBalances, readUsd1SwapConfig } from '~/web3/exchange/flash-exchange-read'
-import { requireWriteSession } from '~/web3/wallet/require-write-session'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type FlashQuotedSubmitCore = {
   debouncedAmountIn: bigint
   runQuotedSubmit: (
     run: (helpers: {
+      session: WriteSession
       assertStillSubmittable: (live?: {
         sellBalance: bigint
       }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
@@ -32,8 +33,8 @@ export async function submitFlashExchange(args: {
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { pairId, direction, core } = args
 
-  return core.runQuotedSubmit(async ({ assertStillSubmittable }) => {
-    const { wallet, address } = requireWriteSession()
+  return core.runQuotedSubmit(async ({ session, assertStillSubmittable }) => {
+    const { wallet, address } = session
 
     if (pairId === 'usdt') {
       await approveUsdtForFlashExchangeIfNeeded({ wallet, amountIn: core.debouncedAmountIn })
@@ -79,5 +80,3 @@ export async function submitFlashExchange(args: {
     invalidateAfterExchange()
   })
 }
-
-export { FLASH_USD1_GATE_ERROR }
