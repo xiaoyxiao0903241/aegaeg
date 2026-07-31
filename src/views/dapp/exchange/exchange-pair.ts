@@ -1,24 +1,20 @@
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
-import {
-  resolveTradePath,
-  type TradeTokenAddresses,
-  type TradeTokenKey,
-} from '~/core/exchange/resolve-trade-path'
+import { tradePath, type TradeTokenAddresses, type TradeTokenKey } from '~/core/exchange/trade-path'
 import { FLASH_PAIR_DEFAULT, isFlashPairId, type FlashPairId } from '~/core/exchange/flash-pair'
 
 export type { FlashPairId } from '~/core/exchange/flash-pair'
 export { FLASH_PAIR_DEFAULT, isFlashPairId }
-export type { TradeTokenKey } from '~/core/exchange/resolve-trade-path'
+export type { TradeTokenKey } from '~/core/exchange/trade-path'
 export {
   TRADE_TOKEN_KEYS,
   TRADE_LIVE_TOKEN_KEYS,
   tradeBuyOptions,
   isTradeTokenKey,
   isTradeTokenLive,
-  resolveBuyKeyAfterSellChange,
-  resolveTradePath,
-} from '~/core/exchange/resolve-trade-path'
+  buyKeyAfterSellChange,
+  tradePath,
+} from '~/core/exchange/trade-path'
 
 export interface ExchangePairToken {
   key: 'usd1' | 'usdt' | 'agx' | 'gagx' | 'x'
@@ -97,7 +93,7 @@ export function getTradeToken(key: TradeTokenKey): ExchangePairToken {
   return TRADE_TOKENS[key]
 }
 
-/** Trade — proto three-token picker; path via `resolveTradePath`. */
+/** Trade — proto three-token picker; path via `tradePath`. */
 export function getTradePairTokens(
   sellKey: TradeTokenKey,
   buyKey: TradeTokenKey,
@@ -109,7 +105,7 @@ export function getTradeSwapPath(
   sellKey: TradeTokenKey,
   buyKey: TradeTokenKey,
 ): readonly `0x${string}`[] {
-  return resolveTradePath(sellKey, buyKey, TRADE_TOKEN_ADDRESSES)
+  return tradePath(sellKey, buyKey, TRADE_TOKEN_ADDRESSES)
 }
 
 export function formatTradeRouteLabel(sellKey: TradeTokenKey, buyKey: TradeTokenKey): string {

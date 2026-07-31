@@ -24,7 +24,7 @@ const USD1_DECIMALS = 18
 export { USD1_DECIMALS }
 
 /** Phase inventory left from `phases()` fields; never negative when sold ≫ max. */
-export function resolveRemainingPhaseAmount(
+export function remainingPhaseAmount(
   phaseRemaining: PresalePhaseRemaining | null | undefined,
   activePhase: PresalePhaseOnChain | null | undefined,
 ): bigint {
@@ -46,7 +46,7 @@ export function resolveRemainingPhaseAmount(
  * Without `getUserPhaseRemainingAmount`, a per-user limit cannot be reduced by
  * prior purchases — fail closed (0) instead of returning the full limit.
  */
-export function resolveRemainingUserAmount(
+export function remainingUserAmount(
   phaseRemaining: PresalePhaseRemaining | null | undefined,
   activePhase: PresalePhaseOnChain | null | undefined,
   fallbackMaxAmount: bigint,
@@ -59,14 +59,14 @@ export function resolveRemainingUserAmount(
 
   if (activePhase) {
     if (activePhase.userPurchaseLimit > 0n) return 0n
-    return resolveRemainingPhaseAmount(null, activePhase)
+    return remainingPhaseAmount(null, activePhase)
   }
 
   return fallbackMaxAmount
 }
 
 /** One share equals the phase min purchase amount on-chain (typically 100 USD1). */
-export function resolveSharePriceWei(phase: PresalePhaseOnChain | null | undefined): bigint {
+export function sharePriceWei(phase: PresalePhaseOnChain | null | undefined): bigint {
   if (phase?.minAmount && phase.minAmount > 0n) {
     return phase.minAmount
   }
@@ -74,7 +74,7 @@ export function resolveSharePriceWei(phase: PresalePhaseOnChain | null | undefin
 }
 
 /** 份额上限 = min(本期剩余, 用户剩余, 余额可购份数)。 */
-export function resolveGenesisMaxShares({
+export function genesisMaxShares({
   sharePriceWei,
   remainingPhaseAmount,
   remainingUserAmount,
@@ -116,7 +116,7 @@ export function formatGenesisSharesText(shares: number): string {
   return shares === 0 ? '' : String(shares)
 }
 
-/** Genesis purchase submit gate (chain + draft). Bind + pause are fail-closed. */
+/** Genesis purchase submit check (chain + draft). Bind + pause are fail-closed. */
 export function canPurchaseGenesis({
   walletReady,
   hasActivePhase,
@@ -154,10 +154,9 @@ export function canPurchaseGenesis({
 }
 
 /** Genesis：approve 完成后、purchase 前的二次门闸。 */
-export type GenesisPostApproveGate =
-  { ok: true } | { ok: false; reason: 'not_bound' | 'unavailable' }
+export type GenesisPostApprove = { ok: true } | { ok: false; reason: 'not_bound' | 'unavailable' }
 
-export function evaluateGenesisPostApproveGate({
+export function evaluateGenesisPostApprove({
   isBound,
   isPaused,
   isPausedUnknown,
@@ -165,7 +164,7 @@ export function evaluateGenesisPostApproveGate({
   isBound: boolean | undefined
   isPaused: boolean
   isPausedUnknown: boolean
-}): GenesisPostApproveGate {
+}): GenesisPostApprove {
   if (isBound !== true) return { ok: false, reason: 'not_bound' }
   if (isPaused || isPausedUnknown) return { ok: false, reason: 'unavailable' }
   return { ok: true }
@@ -188,7 +187,7 @@ export function findActivePresalePhase(
 
 export type PhaseCountdownMode = 'starts' | 'ends'
 
-export function buildPhaseCountdownKey(
+export function phaseCountdownKey(
   target: { mode: PhaseCountdownMode; targetTime: bigint } | null,
 ): string | null {
   if (!target) return null
@@ -202,7 +201,7 @@ export function hasPhaseCountdownElapsed(
   return nowSeconds >= Number(targetTime)
 }
 
-export function resolvePhaseCountdownTarget(
+export function phaseCountdownTarget(
   phases: PresalePhaseOnChain[],
   nowSeconds = Math.floor(Date.now() / 1000),
 ): { mode: PhaseCountdownMode; targetTime: bigint } | null {
@@ -272,7 +271,7 @@ export function estimateAgxFromUsd1(
 }
 
 /** Resolve presale phase discount bps by API/contract phase index (0-based). */
-export function resolvePhaseDiscountBps(
+export function phaseDiscountBps(
   phaseId: number,
   phases: ReadonlyArray<Pick<PresalePhaseOnChain, 'discountBps'>> = [],
 ): number {
@@ -317,7 +316,7 @@ export function estimateXTokenAirdropUsd(
   return amountUsd1 * (getAirdropBpsForPhase(phaseIndex, phase) / 10_000)
 }
 
-export function resolveXTokenAirdropUsdForPurchase(
+export function xTokenAirdropUsdForPurchase(
   periodContributedUsd: number,
   payUsd1: number,
   phaseIndex: number,

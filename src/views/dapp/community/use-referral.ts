@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { parseReferrerFromSearch, resolveDisplayReferrer } from '~/shared/config/referral'
+import { parseReferrerFromSearch, displayReferrer } from '~/shared/config/referral'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'
-import { REFERRAL_BIND_ERROR, WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { REFERRAL_BIND_ERROR, WALLET_BLOCKED } from '~/web3/contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
 import { makeWriteSession } from '~/web3/wallet/require-write-session'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -82,7 +82,7 @@ export function useReferral() {
 
   const effectiveReferrer = useMemo(
     () =>
-      resolveDisplayReferrer({
+      displayReferrer({
         isBound,
         inviteAddress: performanceQuery.data?.invite_address,
         chainReferrer: referrer,
@@ -96,7 +96,7 @@ export function useReferral() {
     startBindCooldown()
 
     if (!account || !wallet) {
-      setError(WALLET_GATE_ERROR.NOT_CONNECTED)
+      setError(WALLET_BLOCKED.NOT_CONNECTED)
       return false
     }
 

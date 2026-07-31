@@ -15,10 +15,10 @@ import { submitBurnExchange } from '~/views/dapp/exchange/burn/submit-burn-excha
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
-  burnContributionSwapGateBlocksSubmit,
+  burnContributionSwapBlocksSubmit,
   formatBurnContributionRateLabel,
-  resolveBurnContributionSwapGate,
-} from '~/core/exchange/burn-contribution-swap-gates'
+  evaluateBurnContributionSwap,
+} from '~/core/exchange/burn-contribution-swap'
 import { useChainQuery } from '~/hooks/use-chain-query'
 
 const BURN_PAIR = {
@@ -97,13 +97,15 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
         })
   const overviewRateLabel = exchangePriceLabel
 
-  const gate = resolveBurnContributionSwapGate({
+  const blockReason = evaluateBurnContributionSwap({
     amountIn: core.debouncedAmountIn,
     config: configQuery.data,
   })
 
   const canSubmit =
-    core.canSubmit && configQuery.data !== undefined && !burnContributionSwapGateBlocksSubmit(gate)
+    core.canSubmit &&
+    configQuery.data !== undefined &&
+    !burnContributionSwapBlocksSubmit(blockReason)
 
   async function submit(): Promise<{ ok: true } | { ok: false; error: unknown }> {
     return submitBurnExchange({
@@ -127,7 +129,7 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
     providerAddress: BSC_CONTRACTS.agxContributionSwap,
     config: configQuery.data,
     userStats: userStatsQuery.data,
-    gate,
+    blockReason,
     walletReady,
     canSubmit,
     isQuoting: core.isQuoting,

@@ -3,7 +3,7 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { QuickLinks } from '~/app/shell/quick-links'
 import { useI18n } from '~/i18n/use-i18n'
-import { buildCommunityQuickLinkItems } from '~/shared/config/community-links'
+import { communityQuickLinkItems } from '~/shared/config/community-links'
 import { useCommunityConnectedView } from '~/views/dapp/community/use-community-connected-view'
 import {
   CommunityReferralLinkCard,
@@ -72,7 +72,7 @@ function CommunityConnectedWidget() {
 
 function CommunityDisconnectedWidget() {
   const { locale, messages: t } = useI18n()
-  const quickLinkItems = buildCommunityQuickLinkItems(
+  const quickLinkItems = communityQuickLinkItems(
     {
       docs: t.community.docs,
       youtube: t.community.youtube,

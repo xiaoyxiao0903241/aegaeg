@@ -1,8 +1,8 @@
 import { ApiError } from '~/shared/api/client'
 import {
-  resolveApiUserFacingError,
+  apiUserFacingError,
   type ApiUserFacingErrorMessages,
-} from '~/shared/api/resolve-api-user-facing-error'
+} from '~/shared/api/api-user-facing-error'
 
 function isUnauthorizedError(error: unknown): boolean {
   return error instanceof ApiError && error.code === 401
@@ -42,10 +42,10 @@ export function toQueryErrorMessage(
   messages: ApiUserFacingErrorMessages,
 ): string | null {
   if (!error) return null
-  return resolveApiUserFacingError(error, messages) ?? messages.fallback
+  return apiUserFacingError(error, messages) ?? messages.fallback
 }
 
-/** Authenticated React Query `enabled` gate — fail-closed until hydrated + session + token. */
+/** Authenticated React Query `enabled` check — fail-closed until hydrated + session + token. */
 export function canRunAuthenticatedQuery({
   enabled = true,
   hasHydrated,

@@ -100,12 +100,12 @@ test('formatAmountBalanceLabel swaps balance or ellipsis', async () => {
   )
 })
 
-test('getErrorMessage maps write-gate sentinels used by CTAs', async () => {
+test('getErrorMessage maps write-block sentinels used by CTAs', async () => {
   const enModule = await loadModule('/src/i18n/messages/app/en.ts')
   const t = enModule.default
   const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
-  const { STAKING_GATE_ERROR } = await loadModule('/src/web3/errors/staking-write-gate-errors.ts')
+  const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/staking-write-block-errors.ts')
 
-  assert.equal(getErrorMessage(STAKING_GATE_ERROR.notBound, t), t.staking.gates.notBound)
+  assert.equal(getErrorMessage(STAKING_BLOCKED.notBound, t), t.staking.blocked.notBound)
   assert.equal(getErrorMessage(new Error('OTHER'), t), t.errors.chain.fallback)
 })

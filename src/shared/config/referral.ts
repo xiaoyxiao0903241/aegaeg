@@ -15,7 +15,7 @@ export function parseReferrerAddress(value: unknown): `0x${string}` | null {
 }
 
 /** Bound users: prefer /performance invite_address, fall back to on-chain referrer. */
-export function resolveDisplayReferrer(params: {
+export function displayReferrer(params: {
   isBound: boolean
   inviteAddress?: string | null
   chainReferrer?: string | null
@@ -39,6 +39,6 @@ export function parseReferrerFromSearch(search: string): `0x${string}` | null {
   return ref as `0x${string}`
 }
 
-export function buildReferralSharePath(address: string): string {
+export function referralSharePath(address: string): string {
   return `?${REFERRAL_CONFIG.refQueryKey}=${address}`
 }

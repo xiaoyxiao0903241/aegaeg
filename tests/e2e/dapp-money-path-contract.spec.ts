@@ -69,7 +69,7 @@ test.describe('DApp money-path — behavior contracts', () => {
     await expect(sell).toHaveValue('2')
   })
 
-  test('swap burn shows destroy flow and connect gate when disconnected', async ({ page }) => {
+  test('swap burn shows destroy flow and connect check when disconnected', async ({ page }) => {
     await page.goto('/en/app.html#exchange', { waitUntil: 'domcontentloaded', timeout: 60_000 })
     await page.locator('[data-dapp-window]').waitFor({ state: 'visible', timeout: 60_000 })
 
@@ -87,7 +87,7 @@ test.describe('DApp money-path — behavior contracts', () => {
     await sell.fill('1')
     await expect(sell).toHaveValue('1')
 
-    // Burn CTA is wallet-gated; disconnected shows Connect promo instead of submit.
+    // Burn CTA is wallet-blockd; disconnected shows Connect promo instead of submit.
     await expect(page.getByRole('button', { name: /connect/i }).first()).toBeVisible()
   })
 
@@ -125,7 +125,7 @@ test.describe('DApp money-path — behavior contracts', () => {
     const claimButtons = page.getByRole('button', { name: /claim/i })
     const count = await claimButtons.count()
     if (count === 0) {
-      // Promo / connect gate may hide claim row entirely — still a valid disconnected gate.
+      // Promo / connect check may hide claim row entirely — still a valid disconnected gate.
       await expect(page.getByRole('button', { name: /connect/i }).first()).toBeVisible()
       return
     }

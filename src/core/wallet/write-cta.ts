@@ -1,4 +1,4 @@
-import type { WriteButtonPhase } from '~/core/wallet/resolve-write-button-phase'
+import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
 
 /** Release / claim rails: wallet + writeReady + unknown-receipt latch + claimable amount. */
 export function canClaimWhen(args: {

@@ -9,13 +9,10 @@ import {
   ACCOUNT_BANNED_SENTINEL,
   LOGIN_ERROR,
   isAccountBannedError,
-  resolveAuthLoginErrorMessage,
+  authLoginErrorMessage,
 } from '~/shared/api/account-banned'
-import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
-import {
-  isUserRejectedWalletError,
-  toWalletUserFacingMessage,
-} from '~/web3/resolve-contract-error-message'
+import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
+import { isUserRejectedWalletError, toWalletUserFacingMessage } from '~/web3/contract-error-message'
 import { useAuthStore } from '~/stores/auth-store'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { Text } from '~/shared/ui/text'
@@ -58,7 +55,7 @@ const walletConnectChip = tv({
   },
 })
 
-function resolveLoginToastMessage(
+function loginToastMessage(
   error: unknown,
   loginError: string | null,
   messages: {
@@ -82,11 +79,11 @@ function resolveLoginToastMessage(
     return null
   }
 
-  const fromLogin = resolveAuthLoginErrorMessage(loginError, messages)
+  const fromLogin = authLoginErrorMessage(loginError, messages)
   if (fromLogin) return fromLogin
 
   return (
-    resolveApiUserFacingError(error, messages.api) ??
+    apiUserFacingError(error, messages.api) ??
     toWalletUserFacingMessage(error, messages.loginFailed)
   )
 }
@@ -120,7 +117,7 @@ function ConnectedWalletChip() {
       try {
         await login()
       } catch (error) {
-        const message = resolveLoginToastMessage(
+        const message = loginToastMessage(
           error,
           useAuthStore.getState().loginError,
           loginToastCopy(t),
@@ -184,7 +181,7 @@ function WalletConnectButton({
       try {
         await login()
       } catch (error) {
-        const message = resolveLoginToastMessage(
+        const message = loginToastMessage(
           error,
           useAuthStore.getState().loginError,
           loginToastCopy(t),
@@ -200,7 +197,7 @@ function WalletConnectButton({
       try {
         await login()
       } catch (error) {
-        const message = resolveLoginToastMessage(
+        const message = loginToastMessage(
           error,
           useAuthStore.getState().loginError,
           loginToastCopy(t),

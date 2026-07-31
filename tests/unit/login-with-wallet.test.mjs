@@ -2,10 +2,10 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('resolveLoginMessageFormats prefers siwe then simple by default', async () => {
-  const { resolveLoginMessageFormats } = await loadModule('/src/web3/auth/login-with-wallet.ts')
+test('loginMessageFormats prefers siwe then simple by default', async () => {
+  const { loginMessageFormats } = await loadModule('/src/web3/auth/login-with-wallet.ts')
 
-  const formats = resolveLoginMessageFormats()
+  const formats = loginMessageFormats()
   assert.deepEqual(formats, ['siwe', 'simple'])
 })
 

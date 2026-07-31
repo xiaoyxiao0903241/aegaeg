@@ -19,7 +19,7 @@ type TurbineSubmitCore = {
 }
 
 /**
- * Turbine unlock — money-path: approve → live re-quote + balance/quota gate → buyAgxAndStartCooldown.
+ * Turbine unlock — money-path: approve → live re-quote + balance/quota check → buyAgxAndStartCooldown.
  * L-tier gates use direct `readTurbine*` (not display-query refetch).
  */
 export async function submitTurbineUnlock(args: {
@@ -38,12 +38,12 @@ export async function submitTurbineUnlock(args: {
     // Pre-approve quote (may drift during wallet signature).
     const preUsd = await readTurbineUsdQuote(unlockAmountAgx)
     if (preUsd <= 0n) {
-      throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
+      throw new Error('EXCHANGE_SUBMIT_BLOCKED')
     }
 
     await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: preUsd })
 
-    // Live re-gate after approve (money-path invariant 3) — direct reads, staleTime 0 semantics.
+    // Live re-check after approve (money-path invariant 3) — direct reads, staleTime 0 semantics.
     const [liveBalances, liveQuota, liveUsd] = await Promise.all([
       readTurbineUsd1Balances(address),
       readTurbineQuota(address),

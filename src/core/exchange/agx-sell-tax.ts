@@ -6,7 +6,7 @@ const BPS_DENOM = 10_000n
  * Effective sell-tax bps for a non-whitelist transfer into the AGX pair.
  * Fuse on → defense tax; else base `sellRatio`.
  */
-export function resolveAgxSellTaxBps(args: {
+export function agxSellTaxBps(args: {
   crashFuseActive: boolean
   sellRatio: bigint
   extraSellBP: bigint

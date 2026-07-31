@@ -112,7 +112,7 @@ export function StakeWidget() {
           <DappActionRow>
             <DappActionButton
               density="external"
-              disabled={!stake.canSubmit && stake.gate !== 'notBound'}
+              disabled={!stake.canSubmit && stake.blockReason !== 'notBound'}
               loading={stake.isSubmitting}
               onClick={() => void onSubmit()}
             >

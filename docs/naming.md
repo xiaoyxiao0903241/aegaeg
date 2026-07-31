@@ -17,10 +17,16 @@ Do not use these as primary names for product modules:
 
 - `Dto`, `Entity`, `Model`, `Record`, `Payload`, `Data`, `Info`, `Object` (unless the glossary defines that exact term)
 - `Manager`, `Handler`, `Helper`, `Util`, `Wrapper`, `Processor`, `Service` (unless glossary Term)
-- Vague verbs alone: `process`, `handle`, `do`, `execute`, `run`
+- Vague / engineering-process verbs as the **lead** of a product symbol: `process`, `handle`, `do`, `execute`, `run`, **`build`**, **`resolve`**
+  - Prefer the **result noun** or a glossary verb (`evaluate*`, `submit*`, `claim*`, `*FromPhases`).
+  - Thin infra adapters (`shared/lib`, URL/RPC helpers) may keep technical verbs locally — do not leak them as the primary name of a product feature.
+- Engineering control metaphors as primary product names: **`gate`**, `*Gate*`, `*_GATE_*`, `*-gates`
+  - Prefer **block reason** / readiness nouns: `*BlockReason`, `evaluateRedeem`, `ASSETS_BLOCKED`, `dualCheckMixedClaim`.
 - Scaffold / academic labels as feature folders: `common`, `base`, `system` (prefer a real capability)
 
 Infrastructure adapters (`shared/lib`, thin wallet RPC helpers) may keep technical names, but must not leak as the **primary** name of a product feature.
+
+**Do not rename:** product brand **CoBuild** (`cobuild` rail copy / folder segments that mean the CoBuild product).
 
 ## Batch 4 full polish — done
 

@@ -21,8 +21,8 @@ test('jwt helpers decode exp and detect expiry', async () => {
   assert.equal(isJwtExpired('not-a-jwt'), false)
 })
 
-test('resolveAuthStatus requires wallet, jwt, and matching address', async () => {
-  const { resolveAuthStatus } = await loadModule('/src/core/auth/resolve-auth-status.ts')
+test('authStatus requires wallet, jwt, and matching address', async () => {
+  const { authStatus } = await loadModule('/src/core/auth/auth-status.ts')
 
   const nowSec = Math.floor(Date.now() / 1000)
   const token = makeJwt({ exp: nowSec + 3600 })
@@ -32,19 +32,19 @@ test('resolveAuthStatus requires wallet, jwt, and matching address', async () =>
     savedAt: Date.now(),
   }
 
-  assert.deepEqual(resolveAuthStatus({ session, walletAddress: undefined }), {
+  assert.deepEqual(authStatus({ session, walletAddress: undefined }), {
     sessionReady: false,
     needsSignIn: false,
     token: null,
   })
 
-  assert.deepEqual(resolveAuthStatus({ session, walletAddress: '0xabc' }), {
+  assert.deepEqual(authStatus({ session, walletAddress: '0xabc' }), {
     sessionReady: true,
     needsSignIn: false,
     token,
   })
 
-  assert.deepEqual(resolveAuthStatus({ session, walletAddress: '0xdef' }), {
+  assert.deepEqual(authStatus({ session, walletAddress: '0xdef' }), {
     sessionReady: false,
     needsSignIn: true,
     token: null,

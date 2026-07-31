@@ -19,6 +19,6 @@ export function getNotionLinks(locale: Locale) {
   return locale === 'zh' || locale === 'zht' ? zhNotionLinks : enNotionLinks
 }
 
-export function resolveNotionLink(locale: Locale, key: NotionLinkKey) {
+export function notionLink(locale: Locale, key: NotionLinkKey) {
   return getNotionLinks(locale)[key]
 }

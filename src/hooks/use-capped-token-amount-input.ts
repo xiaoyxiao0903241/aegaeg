@@ -3,7 +3,7 @@ import {
   capTokenAmountInput,
   formatTokenAmount,
   parseTokenAmount,
-  resolveCappedTokenAmountRaw,
+  cappedTokenAmountRaw,
   sanitizeTokenAmountInput,
 } from '~/core/exchange/token-amount'
 
@@ -38,7 +38,7 @@ export function useCappedTokenAmountInput({
   // 100% fill: keep full on-chain precision (do not re-cap through display digits).
   const amount = isFullBalanceDraft
     ? sanitizeTokenAmountInput(amountDraft, decimals)
-    : resolveCappedTokenAmountRaw({
+    : cappedTokenAmountRaw({
         amount: amountDraft,
         sessionReady,
         balancesLoaded,

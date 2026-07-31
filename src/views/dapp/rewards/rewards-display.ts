@@ -122,7 +122,7 @@ export type RewardLogStatusKey =
 
 export type RewardLogStatusLabels = Record<RewardLogStatusKey, string>
 
-function resolveRewardLogStatusKey(status: number): RewardLogStatusKey {
+function rewardLogStatusKey(status: number): RewardLogStatusKey {
   switch (status) {
     case 0:
       return 'pending'
@@ -138,7 +138,7 @@ function resolveRewardLogStatusKey(status: number): RewardLogStatusKey {
 }
 
 /** reward_claim_orders: 0=待领取, 1=已领取, 2=已领取, 3=领取失败 */
-function resolveTeamRewardClaimStatusKey(status: number): RewardLogStatusKey {
+function teamRewardClaimStatusKey(status: number): RewardLogStatusKey {
   switch (status) {
     case 0:
       return 'pending'
@@ -152,7 +152,7 @@ function resolveTeamRewardClaimStatusKey(status: number): RewardLogStatusKey {
   }
 }
 
-function resolveCommunityFundLogStatusKey(status: number): RewardLogStatusKey {
+function communityFundLogStatusKey(status: number): RewardLogStatusKey {
   switch (status) {
     case 0:
       return 'pending'
@@ -168,7 +168,7 @@ function resolveCommunityFundLogStatusKey(status: number): RewardLogStatusKey {
 }
 
 function formatRewardStatus(status: number, labels: RewardLogStatusLabels): string {
-  return labels[resolveRewardLogStatusKey(status)]
+  return labels[rewardLogStatusKey(status)]
 }
 
 export function claimableAmountValue(total: string, claimed: string): number {
@@ -204,7 +204,7 @@ export function mapTeamRewardClaimLogToRow(
   const amountLabel = Number.isFinite(amountNum)
     ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
     : TABLE_EMPTY
-  const statusKey = resolveTeamRewardClaimStatusKey(item.status)
+  const statusKey = teamRewardClaimStatusKey(item.status)
 
   return [
     formatApiDateTime(item.claimed_at ?? item.created_at),
@@ -222,7 +222,7 @@ export function mapCommunityFundLogToRow(
   const amountLabel = Number.isFinite(amountNum)
     ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
     : TABLE_EMPTY
-  const statusKey = resolveCommunityFundLogStatusKey(item.status)
+  const statusKey = communityFundLogStatusKey(item.status)
 
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
 }

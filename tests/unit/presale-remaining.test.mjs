@@ -2,8 +2,8 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('resolveRemainingUserAmount treats zero userPurchaseLimit as unlimited', async () => {
-  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
+test('remainingUserAmount treats zero userPurchaseLimit as unlimited', async () => {
+  const { remainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const phaseRemaining = {
     remainingPhaseAmount: 4000n * 10n ** 18n,
@@ -12,14 +12,11 @@ test('resolveRemainingUserAmount treats zero userPurchaseLimit as unlimited', as
     userPhaseAmountCurrent: 6000n * 10n ** 18n,
   }
 
-  assert.equal(
-    resolveRemainingUserAmount(phaseRemaining, null, 0n),
-    4000n * 10n ** 18n,
-  )
+  assert.equal(remainingUserAmount(phaseRemaining, null, 0n), 4000n * 10n ** 18n)
 })
 
-test('resolveRemainingUserAmount uses explicit remainingUserAmount when limit is set', async () => {
-  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
+test('remainingUserAmount uses explicit remainingUserAmount when limit is set', async () => {
+  const { remainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const phaseRemaining = {
     remainingPhaseAmount: 4000n * 10n ** 18n,
@@ -28,14 +25,11 @@ test('resolveRemainingUserAmount uses explicit remainingUserAmount when limit is
     userPhaseAmountCurrent: 6000n * 10n ** 18n,
   }
 
-  assert.equal(
-    resolveRemainingUserAmount(phaseRemaining, null, 0n),
-    2900n * 10n ** 18n,
-  )
+  assert.equal(remainingUserAmount(phaseRemaining, null, 0n), 2900n * 10n ** 18n)
 })
 
-test('resolveRemainingUserAmount falls back to phase inventory when unlimited', async () => {
-  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
+test('remainingUserAmount falls back to phase inventory when unlimited', async () => {
+  const { remainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const activePhase = {
     index: 0,
@@ -49,14 +43,11 @@ test('resolveRemainingUserAmount falls back to phase inventory when unlimited', 
     userPurchaseLimit: 0n,
   }
 
-  assert.equal(
-    resolveRemainingUserAmount(null, activePhase, 0n),
-    4000n * 10n ** 18n,
-  )
+  assert.equal(remainingUserAmount(null, activePhase, 0n), 4000n * 10n ** 18n)
 })
 
-test('resolveRemainingUserAmount fails closed when limit set but remaining unread', async () => {
-  const { resolveRemainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
+test('remainingUserAmount fails closed when limit set but remaining unread', async () => {
+  const { remainingUserAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const activePhase = {
     index: 0,
@@ -70,11 +61,11 @@ test('resolveRemainingUserAmount fails closed when limit set but remaining unrea
     userPurchaseLimit: 10000n * 10n ** 18n,
   }
 
-  assert.equal(resolveRemainingUserAmount(null, activePhase, 0n), 0n)
+  assert.equal(remainingUserAmount(null, activePhase, 0n), 0n)
 })
 
-test('resolveRemainingPhaseAmount clamps oversold inventory to zero', async () => {
-  const { resolveRemainingPhaseAmount } = await loadModule('/src/core/presale/presale-math.ts')
+test('remainingPhaseAmount clamps oversold inventory to zero', async () => {
+  const { remainingPhaseAmount } = await loadModule('/src/core/presale/presale-math.ts')
 
   const oversold = {
     index: 0,
@@ -88,9 +79,9 @@ test('resolveRemainingPhaseAmount clamps oversold inventory to zero', async () =
     userPurchaseLimit: 10000n * 10n ** 18n,
   }
 
-  assert.equal(resolveRemainingPhaseAmount(null, oversold), 0n)
+  assert.equal(remainingPhaseAmount(null, oversold), 0n)
   assert.equal(
-    resolveRemainingPhaseAmount(
+    remainingPhaseAmount(
       {
         remainingPhaseAmount: 10000n * 10n ** 18n,
         remainingUserAmount: 5000n * 10n ** 18n,
@@ -103,8 +94,8 @@ test('resolveRemainingPhaseAmount clamps oversold inventory to zero', async () =
   )
 })
 
-test('resolveGenesisMaxShares ignores zero remainingUserAmount when unlimited', async () => {
-  const { resolveGenesisMaxShares } = await loadModule('/src/core/presale/presale-math.ts')
+test('genesisMaxShares ignores zero remainingUserAmount when unlimited', async () => {
+  const { genesisMaxShares } = await loadModule('/src/core/presale/presale-math.ts')
 
   const sharePriceWei = 100n * 10n ** 18n
   const remainingPhaseAmount = 4000n * 10n ** 18n
@@ -112,7 +103,7 @@ test('resolveGenesisMaxShares ignores zero remainingUserAmount when unlimited', 
   const usd1Balance = 5000n * 10n ** 18n
 
   assert.equal(
-    resolveGenesisMaxShares({
+    genesisMaxShares({
       sharePriceWei,
       remainingPhaseAmount,
       remainingUserAmount,

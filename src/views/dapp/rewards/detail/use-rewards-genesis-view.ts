@@ -10,7 +10,7 @@ import {
 } from '~/hooks/use-api-data'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
-import { buildNextTierProgress } from '~/core/presale/tier-progress'
+import { nextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { claimableAmountValue, REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
@@ -41,7 +41,7 @@ export function useRewardsGenesisView() {
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
   const hasRank = displayRank > 0
   const teamVolumeUsd = Number(teamOverview?.sales_team_market ?? 0)
-  const tierProgress = buildNextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
+  const tierProgress = nextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
   const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
     '{rate}',

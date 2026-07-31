@@ -1,5 +1,5 @@
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
-import { resolveBurnContributionSwapGate } from '~/core/exchange/burn-contribution-swap-gates'
+import { evaluateBurnContributionSwap } from '~/core/exchange/burn-contribution-swap'
 import {
   approveAgxForBurnExchangeIfNeeded,
   burnExchangeConvert,
@@ -8,7 +8,7 @@ import {
   readBurnContributionSwapConfig,
   readBurnExchangeBalances,
 } from '~/web3/exchange/burn-exchange-read'
-import { BURN_GATE_ERROR } from '~/web3/errors/exchange-write-gate-errors'
+import { BURN_BLOCKED } from '~/web3/errors/exchange-write-block-errors'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type BurnQuotedSubmitCore = {
@@ -39,12 +39,12 @@ export async function submitBurnExchange(args: {
     await assertStillSubmittable({ sellBalance: liveBalances.sell })
 
     const liveConfig = await readBurnContributionSwapConfig()
-    const gate = resolveBurnContributionSwapGate({
+    const blockReason = evaluateBurnContributionSwap({
       amountIn: core.debouncedAmountIn,
       config: liveConfig,
     })
-    if (gate) {
-      throw new Error(BURN_GATE_ERROR[gate])
+    if (blockReason) {
+      throw new Error(BURN_BLOCKED[blockReason])
     }
 
     await burnExchangeConvert({

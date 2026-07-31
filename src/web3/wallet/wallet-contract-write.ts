@@ -14,10 +14,10 @@ import {
   isContractRevert,
   normalizeContractRevertError,
 } from '~/web3/decode-contract-revert'
-import { WALLET_WRITE_ERROR } from '~/web3/resolve-contract-error-message'
+import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import { createWalletReadClient, type ChainReadClient } from '~/web3/chain-read-client'
 import { bscReadClient } from '~/web3/bsc-read-client'
-import { resolveWalletEip1193Provider } from '~/web3/wallet/resolve-wallet-eip1193-provider'
+import { walletEip1193Provider } from '~/web3/wallet/wallet-eip1193-provider'
 import { assertWalletTransactionHash } from '~/web3/wallet/wallet-write-error'
 import { walletProviderRequest } from '~/web3/wallet/wallet-provider-request'
 import { waitForWalletTransactionConfirmation } from '~/web3/wallet/wait-wallet-transaction'
@@ -52,7 +52,7 @@ export type WriteCallParams = {
   value?: bigint
 }
 
-function buildWriteCallParams({
+function writeCallParams({
   wallet,
   address,
   abi,
@@ -144,7 +144,7 @@ async function preflightContractWrite({
   args: readonly unknown[]
   value?: bigint
 }): Promise<bigint> {
-  const call = buildWriteCallParams({ wallet, address, abi, functionName, args, value })
+  const call = writeCallParams({ wallet, address, abi, functionName, args, value })
   const walletClient = createWalletReadClient(wallet)
   return estimateWriteGasLimit(call, walletClient)
 }
@@ -170,7 +170,7 @@ export async function writeContractViaWallet({
 }): Promise<ConfirmedWalletWrite> {
   const account = requireWalletAccount(wallet)
   const intent = createWriteIntent(account.address, defaultChain.id)
-  const provider = resolveWalletEip1193Provider(wallet)
+  const provider = walletEip1193Provider(wallet)
 
   const gasLimit = await preflightContractWrite({
     wallet,

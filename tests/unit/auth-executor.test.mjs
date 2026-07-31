@@ -26,9 +26,7 @@ test('isPermanentLoginErrorMessage covers all LOGIN_ERROR sentinels', async () =
 })
 
 test('shouldClearLoginAttemptAfterFailure mirrors permanent latch', async () => {
-  const { shouldClearLoginAttemptAfterFailure } = await loadModule(
-    '/src/core/auth/auth-machine.ts',
-  )
+  const { shouldClearLoginAttemptAfterFailure } = await loadModule('/src/core/auth/auth-machine.ts')
   const { LOGIN_ERROR } = await loadModule('/src/shared/api/account-banned.ts')
 
   assert.equal(shouldClearLoginAttemptAfterFailure(LOGIN_ERROR.USER_REJECTED), false)
@@ -38,12 +36,10 @@ test('shouldClearLoginAttemptAfterFailure mirrors permanent latch', async () => 
 })
 
 test('401-style attempt key stays latched when session purged but signature kept', async () => {
-  const { buildLoginAttemptKey, deriveAuthAction } = await loadModule(
-    '/src/core/auth/auth-machine.ts',
-  )
+  const { loginAttemptKey, deriveAuthAction } = await loadModule('/src/core/auth/auth-machine.ts')
 
   const signature = { address: '0xabc', message: 'm', signature: 's', savedAt: 42 }
-  const after401Key = buildLoginAttemptKey('0xabc', null, signature)
+  const after401Key = loginAttemptKey('0xabc', null, signature)
 
   // First silent retry after 401 purge is allowed once.
   assert.deepEqual(

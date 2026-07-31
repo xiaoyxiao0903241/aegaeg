@@ -6,7 +6,7 @@ export const PERSONAL_PRESALE_RANK_THRESHOLDS_USD = [
 export const MAX_PRESALE_RANK = PERSONAL_PRESALE_RANK_THRESHOLDS_USD.length
 
 /** Normalize API `presale_rank` (S1=1 …) for display; no client-side inference. */
-export function resolveDisplayPresaleRank(apiRank: number): number {
+export function displayPresaleRank(apiRank: number): number {
   if (!Number.isFinite(apiRank) || apiRank <= 0) return 0
   return Math.min(MAX_PRESALE_RANK, Math.trunc(apiRank))
 }

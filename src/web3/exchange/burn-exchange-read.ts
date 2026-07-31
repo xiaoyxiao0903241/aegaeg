@@ -3,7 +3,7 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { AGX_CONTRIBUTION_SWAP_METHODS, ERC20_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
-import type { BurnContributionSwapConfig } from '~/core/exchange/burn-contribution-swap-gates'
+import type { BurnContributionSwapConfig } from '~/core/exchange/burn-contribution-swap'
 
 const burnSwapReadAbi = parseAbi([
   AGX_CONTRIBUTION_SWAP_METHODS.getConfig,

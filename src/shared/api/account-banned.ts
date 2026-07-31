@@ -64,7 +64,7 @@ export function getAccountBannedToastId(): string {
   return ACCOUNT_BANNED_TOAST_ID
 }
 
-export function resolveAuthLoginErrorMessage(
+export function authLoginErrorMessage(
   error: string | null,
   messages: {
     accountBanned: string

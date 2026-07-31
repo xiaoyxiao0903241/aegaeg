@@ -11,7 +11,7 @@ export function tablePageQuery(page: number) {
   return { page, page_size: DAPP_TABLE_PAGE_SIZE }
 }
 
-/** Authenticated DApp tables: sign-in gate, empty query, and skeleton loading. */
+/** Authenticated DApp tables: sign-in check, empty query, and skeleton loading. */
 export function dappTableViewState({
   isLoading,
   isLoggingIn,

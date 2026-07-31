@@ -1,4 +1,4 @@
-import { resolveAuthStatus } from '~/core/auth/resolve-auth-status'
+import { authStatus } from '~/core/auth/auth-status'
 import type { StoredAuthSession, StoredLoginSignature } from '~/core/auth/types'
 
 /** Matches SIWE default TTL when JWT omits `exp`. */
@@ -27,7 +27,7 @@ export function deriveAuthState({
   if (!walletAddress) return { kind: 'disconnected' }
 
   const session = sessionsByAddress[walletAddress.toLowerCase()] ?? null
-  const status = resolveAuthStatus({ session, walletAddress, now })
+  const status = authStatus({ session, walletAddress, now })
 
   if (status.sessionReady && session) {
     return { kind: 'sessionReady', session }
@@ -42,7 +42,7 @@ export function deriveAuthState({
  * second 401 yields the same `(address, no-token, signature)` fingerprint, so
  * the second attempt is suppressed.
  */
-export function buildLoginAttemptKey(
+export function loginAttemptKey(
   address: string,
   session: StoredAuthSession | null,
   signature: StoredLoginSignature | null,
@@ -52,7 +52,7 @@ export function buildLoginAttemptKey(
 
 export type AuthAction = { type: 'idle' } | { type: 'login' } | { type: 'renewAt'; at: number }
 
-function resolveSessionRenewAtMs(session: StoredAuthSession, renewThresholdMs: number): number {
+function sessionRenewAtMs(session: StoredAuthSession, renewThresholdMs: number): number {
   const expiresAt =
     typeof session.expiresAt === 'number'
       ? session.expiresAt
@@ -108,7 +108,7 @@ export function deriveAuthAction({
     return { type: 'login' }
   }
 
-  return { type: 'renewAt', at: resolveSessionRenewAtMs(state.session, renewThresholdMs) }
+  return { type: 'renewAt', at: sessionRenewAtMs(state.session, renewThresholdMs) }
 }
 
 /** 静默登录失败后是否清除 attempt 闩锁，允许下一轮输入变化后重试。 */

@@ -1,6 +1,6 @@
 import type { Account, Wallet } from 'thirdweb/wallets'
-import { WALLET_GATE_ERROR } from '~/web3/errors/sentinels'
-import { resolveChainReadClient, type ChainReadClient } from '~/web3/chain-read-client'
+import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
+import { chainReadClient, type ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
 
 export type WriteSession = {
@@ -16,16 +16,16 @@ export type WriteSession = {
  */
 export function makeWriteSession(wallet: Wallet | undefined | null): WriteSession {
   if (!wallet) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
+    throw WALLET_BLOCKED.NOT_CONNECTED
   }
   const account = wallet.getAccount()
   if (!account?.address) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
+    throw WALLET_BLOCKED.NOT_CONNECTED
   }
   return {
     wallet,
     account,
     address: account.address as Address,
-    readClient: resolveChainReadClient(wallet),
+    readClient: chainReadClient(wallet),
   }
 }

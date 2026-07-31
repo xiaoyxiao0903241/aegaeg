@@ -1,5 +1,5 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { resolveDisplayPresaleRank } from '~/core/presale/rank'
+import { displayPresaleRank } from '~/core/presale/rank'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAuth } from '~/hooks/use-auth'
 import { usePerformance } from '~/hooks/use-api-data'
@@ -21,7 +21,7 @@ export function useShareholderRank(sessionReady: boolean) {
   const apiVolume = Number(performance?.presale_volume ?? 0)
   const personalVolumeUsd = Math.max(apiVolume, chainVolumeUsd)
 
-  const displayRank = resolveDisplayPresaleRank(performance?.presale_rank ?? 0)
+  const displayRank = displayPresaleRank(performance?.presale_rank ?? 0)
 
   const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 

@@ -146,9 +146,9 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
 
         {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
 
-        {vm.gateHint ? (
+        {vm.blockHint ? (
           <DappInlineAlert className="mt-3" role="status">
-            {vm.gateHint}
+            {vm.blockHint}
           </DappInlineAlert>
         ) : null}
       </DappWidgetStack>

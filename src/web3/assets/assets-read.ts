@@ -13,10 +13,10 @@ import {
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import {
-  resolveBurnBondDepository,
-  resolveLpBondDepository,
-  resolveStakePoolAddress,
-} from '~/web3/staking/resolve-staking-addresses'
+  burnBondDepositoryAddress,
+  lpBondDepositoryAddress,
+  stakePoolAddress,
+} from '~/web3/staking/staking-addresses'
 import type { StakePeriod } from '~/core/staking/staking-period'
 
 const rewardQueueAbi = parseAbi([REWARD_QUEUE_METHODS.queuePlans])
@@ -180,7 +180,7 @@ export async function readStakePositions(
 ): Promise<AssetsStakeRow[]> {
   const rows: AssetsStakeRow[] = []
 
-  const liquidPool = resolveStakePoolAddress('liquid')
+  const liquidPool = stakePoolAddress('liquid')
   const [liquidStake, liquidRewards] = await Promise.all([
     client.readContract({
       address: liquidPool,
@@ -220,7 +220,7 @@ export async function readStakePositions(
   }
 
   for (const period of LOCKED_PERIODS) {
-    const pool = resolveStakePoolAddress(period)
+    const pool = stakePoolAddress(period)
     const count = Number(
       await client.readContract({
         address: pool,
@@ -286,7 +286,7 @@ async function readBondPositionsFor(
   const rows: AssetsBondRow[] = []
   for (const period of LOCKED_PERIODS) {
     const depository =
-      kind === 'lp' ? resolveLpBondDepository(period) : resolveBurnBondDepository(period)
+      kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
     const count = Number(
       await client.readContract({
         address: depository,
@@ -394,7 +394,7 @@ export async function readXminePosition(
   }
 }
 
-/** Live Mixed claimable for gate — never trust modal snapshot alone. */
+/** Live Mixed claimable for block — never trust modal snapshot alone. */
 export async function readMixedRewardAvailable(
   target:
     | { source: 'liquid' }
@@ -405,7 +405,7 @@ export async function readMixedRewardAvailable(
 ): Promise<bigint> {
   if (target.source === 'liquid') {
     const rewards = await client.readContract({
-      address: resolveStakePoolAddress('liquid'),
+      address: stakePoolAddress('liquid'),
       abi: liquidAbi,
       functionName: 'getStakeRewards',
       args: [user],

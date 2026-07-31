@@ -52,7 +52,7 @@ type DappTablePaginationProps = {
   total: number
 }
 
-function resolveMenuPlacement(triggerRect: DOMRect, menuHeight: number): MenuPlacement {
+function placementForMenu(triggerRect: DOMRect, menuHeight: number): MenuPlacement {
   const viewportPadding = pageMenuViewportPaddingPx()
   const gap = pageMenuGapPx()
   const spaceBelow = window.innerHeight - triggerRect.bottom - viewportPadding
@@ -64,7 +64,7 @@ function resolveMenuPlacement(triggerRect: DOMRect, menuHeight: number): MenuPla
   return spaceBelow >= spaceAbove ? 'below' : 'above'
 }
 
-function resolveMenuStyle(
+function styleForMenu(
   triggerRect: DOMRect,
   placement: MenuPlacement,
   menuHeight: number,
@@ -121,8 +121,8 @@ export function DappTablePagination({
     if (!trigger) return
 
     const rect = trigger.getBoundingClientRect()
-    const placement = resolveMenuPlacement(rect, menuHeight)
-    setMenuStyle(resolveMenuStyle(rect, placement, menuHeight))
+    const placement = placementForMenu(rect, menuHeight)
+    setMenuStyle(styleForMenu(rect, placement, menuHeight))
   }, [menuHeight])
 
   // Only clamp when total is known — avoid resetting page while the next page is loading.

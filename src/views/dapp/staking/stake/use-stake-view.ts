@@ -4,7 +4,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
-import { STAKING_GATE_ERROR } from '~/views/dapp/staking/stake/submit-stake'
+import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
 import { readErrorText } from '~/web3/errors/error-text'
 
@@ -21,7 +21,7 @@ export function useStakeView() {
       toast.success(t.staking.stake.warmupSuccess)
     },
     onError: (error) => {
-      if (readErrorText(error) === STAKING_GATE_ERROR.notBound) goBindReferral()
+      if (readErrorText(error) === STAKING_BLOCKED.notBound) goBindReferral()
     },
   })
 
@@ -43,14 +43,14 @@ export function useStakeView() {
   })
 
   const ctaLabel = writeCtaLabel(stake.writePhase, {
-    accountMigrated: t.staking.gates.accountMigrated,
+    accountMigrated: t.staking.blocked.accountMigrated,
     bindReferral: t.staking.stake.bindCta,
     submit: t.staking.stake.submit,
   })
 
   async function onSubmit() {
-    if (stake.gate === 'accountMigrated') return
-    if (stake.gate === 'notBound') {
+    if (stake.blockReason === 'accountMigrated') return
+    if (stake.blockReason === 'notBound') {
       goBindReferral()
       return
     }

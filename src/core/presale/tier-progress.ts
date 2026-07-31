@@ -21,13 +21,13 @@ export type NextTierProgress = {
   teamRemainingUsd: number | null
 }
 
-function resolveNextPresaleRank(currentRank: number): number | null {
+function nextPresaleRank(currentRank: number): number | null {
   const normalized = Number.isFinite(currentRank) ? Math.max(0, Math.trunc(currentRank)) : 0
   if (normalized >= MAX_PRESALE_RANK) return null
   return normalized <= 0 ? 1 : normalized + 1
 }
 
-export function buildNextTierProgress(
+export function nextTierProgress(
   currentRank: number,
   personalVolumeUsd: number,
   teamVolumeUsd: number,
@@ -35,7 +35,7 @@ export function buildNextTierProgress(
   const normalizedRank = Number.isFinite(currentRank) ? Math.max(0, Math.trunc(currentRank)) : 0
   const personalCurrentUsd = Math.max(0, Number(personalVolumeUsd) || 0)
   const teamCurrentUsd = Math.max(0, Number(teamVolumeUsd) || 0)
-  const nextRank = resolveNextPresaleRank(normalizedRank)
+  const nextRank = nextPresaleRank(normalizedRank)
 
   if (nextRank == null) {
     const maxPersonalTarget =

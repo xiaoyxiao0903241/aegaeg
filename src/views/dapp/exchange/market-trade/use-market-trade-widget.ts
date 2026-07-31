@@ -2,7 +2,7 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useState } from 'react'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
 import { formatGroupedNumber } from '~/shared/api/format-display'
-import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
+import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import {
   clampSlippagePercent,
   formatTokenAmount,
@@ -107,7 +107,7 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const gasEstimate = amountQuote?.gasEstimate ?? 0n
 
   const routeLabel = formatTradeRouteLabel(sellKey, buyKey)
-  const pancakeSwapUrl = resolvePancakeSwapDeepLink(pair.sell.address, pair.buy.address)
+  const pancakeSwapUrl = pancakeSwapDeepLink(pair.sell.address, pair.buy.address)
   const priceImpactLabel =
     !sessionReady || core.amountIn === 0n || core.isQuoting
       ? ''

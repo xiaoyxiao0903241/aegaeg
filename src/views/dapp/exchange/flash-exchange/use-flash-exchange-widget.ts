@@ -22,7 +22,7 @@ import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/
 import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { resolveFlashUsd1SwapGate } from '~/core/exchange/flash-usd1-swap-gates'
+import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
 import { useChainQuery } from '~/hooks/use-chain-query'
 
 /**
@@ -107,16 +107,16 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
   const routeLabel = `${pair.sell.symbol} → ${pair.buy.symbol}`
   const providerAddress = isRedeemPair ? BSC_CONTRACTS.gagx : BSC_CONTRACTS.usd1Swap
 
-  const usd1Gate = isRedeemPair
+  const usd1Block = isRedeemPair
     ? null
-    : resolveFlashUsd1SwapGate({
+    : evaluateFlashUsd1Swap({
         amountIn: core.debouncedAmountIn,
         quotedOut: core.quotedOut,
         config: configQuery.data,
       })
 
   const canSubmit =
-    core.canSubmit && (isRedeemPair || configQuery.data !== undefined) && usd1Gate == null
+    core.canSubmit && (isRedeemPair || configQuery.data !== undefined) && usd1Block == null
 
   function setPairId(next: string) {
     if (!isFlashPairId(next) || next === pairId) return
@@ -162,7 +162,7 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
     routeLabel,
     overviewRateLabel: spot.overviewRateLabel,
     providerAddress,
-    usd1Gate,
+    usd1Block,
     walletReady,
     canSubmit,
     isQuoting: core.isQuoting,

@@ -2,10 +2,10 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('buildRewardTierRows aligns with tier-progress thresholds', async () => {
-  const { buildRewardTierRows } = await loadModule('/src/core/presale/tier-table.ts')
+test('rewardTierRows aligns with tier-progress thresholds', async () => {
+  const { rewardTierRows } = await loadModule('/src/core/presale/tier-table.ts')
 
-  const rows = buildRewardTierRows()
+  const rows = rewardTierRows()
 
   assert.equal(rows.length, 10)
   assert.deepEqual(rows[0], ['S1', '≥ $500', '$5,000', '1%'])
@@ -20,16 +20,16 @@ test('commitment floor post-launch labels map API floor rank to A-tier', async (
     getCommitmentFloorPostLaunchLabel,
     getCommitmentFloorBoostedPostLaunchLabel,
     getTeamBonusRateLabel,
-    resolveCommitmentFloorBoostCopy,
-    resolveCommitmentFloorRank,
+    commitmentFloorBoostCopy,
+    commitmentFloorRank,
     MAX_COMMITMENT_FLOOR_A_RANK,
   } = await loadModule('/src/core/presale/tier-table.ts')
 
   assert.equal(MAX_COMMITMENT_FLOOR_A_RANK, 13)
-  assert.equal(resolveCommitmentFloorRank(0), 0)
-  assert.equal(resolveCommitmentFloorRank(10), 10)
-  assert.equal(resolveCommitmentFloorRank(13), 13)
-  assert.equal(resolveCommitmentFloorRank(14), 13)
+  assert.equal(commitmentFloorRank(0), 0)
+  assert.equal(commitmentFloorRank(10), 10)
+  assert.equal(commitmentFloorRank(13), 13)
+  assert.equal(commitmentFloorRank(14), 13)
 
   assert.equal(getCommitmentFloorPostLaunchLabel(3), 'A3')
   assert.equal(getCommitmentFloorBoostedPostLaunchLabel(3), 'A4')
@@ -39,21 +39,21 @@ test('commitment floor post-launch labels map API floor rank to A-tier', async (
   assert.equal(getCommitmentFloorBoostedPostLaunchLabel(13), 'A13')
   assert.equal(getCommitmentFloorPostLaunchLabel(14), 'A13')
   assert.equal(
-    resolveCommitmentFloorBoostCopy(0, {
+    commitmentFloorBoostCopy(0, {
       boostTemplate: 'boost {rank}',
       maxRankCopy: 'max',
     }),
     undefined,
   )
   assert.equal(
-    resolveCommitmentFloorBoostCopy(3, {
+    commitmentFloorBoostCopy(3, {
       boostTemplate: 'boost {rank}',
       maxRankCopy: 'max',
     }),
     'boost A4',
   )
   assert.equal(
-    resolveCommitmentFloorBoostCopy(13, {
+    commitmentFloorBoostCopy(13, {
       boostTemplate: 'boost {rank}',
       maxRankCopy: '您已达到最高等级',
     }),

@@ -1,11 +1,11 @@
 import type { BondPeriod } from '~/core/staking/staking-period'
-import { evaluateBondZapLiveGate } from '~/core/staking/staking-gates'
+import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
-import { BOND_ZAP_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
+import { BOND_ZAP_BLOCKED } from '~/web3/errors/staking-write-block-errors'
 import {
-  resolveBurnBondDepository,
-  resolveLpBondDepository,
-} from '~/web3/staking/resolve-staking-addresses'
+  burnBondDepositoryAddress,
+  lpBondDepositoryAddress,
+} from '~/web3/staking/staking-addresses'
 import {
   approveUsd1ForBondHelperIfNeeded,
   zapIntoBurnBond,
@@ -18,7 +18,7 @@ import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export type BondKind = 'lp' | 'burn'
 
-export { BOND_ZAP_GATE_ERROR } from '~/web3/errors/staking-write-gate-errors'
+export { BOND_ZAP_BLOCKED } from '~/web3/errors/staking-write-block-errors'
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitBondZap(args: {
@@ -31,7 +31,7 @@ export async function submitBondZap(args: {
   const { wallet, address, readClient } = session
 
   const depository =
-    kind === 'lp' ? resolveLpBondDepository(period) : resolveBurnBondDepository(period)
+    kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
 
   await approveThenLiveWrite({
     readSnapshot: async () => {
@@ -44,7 +44,7 @@ export async function submitBondZap(args: {
       return { preflight, isOldAccount: migration.isOldAccount }
     },
     evaluate: ({ preflight, isOldAccount }) =>
-      evaluateBondZapLiveGate({
+      evaluateBondZapLive({
         amount,
         isBound: preflight.isBound,
         balance: preflight.balance,
@@ -52,8 +52,8 @@ export async function submitBondZap(args: {
         depositoryAuthorized: preflight.depositoryAuthorized,
         isOldAccount,
       }),
-    mapGateError: (reason: NonNullable<ReturnType<typeof evaluateBondZapLiveGate>>) =>
-      BOND_ZAP_GATE_ERROR[reason],
+    mapBlockError: (reason: NonNullable<ReturnType<typeof evaluateBondZapLive>>) =>
+      BOND_ZAP_BLOCKED[reason],
     approve: async () => {
       await approveUsd1ForBondHelperIfNeeded({ wallet, amount })
     },

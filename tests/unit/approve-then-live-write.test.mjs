@@ -14,7 +14,7 @@ test('approveThenLiveWrite runs pre → approve → live → write in order', as
       return { ok: true }
     },
     evaluate: () => null,
-    mapGateError: (reason) => reason,
+    mapBlockError: (reason) => reason,
     approve: async () => {
       steps.push('approve')
     },
@@ -35,7 +35,7 @@ test('approveThenLiveWrite throws mapped pre gate and skips approve', async () =
       approveThenLiveWrite({
         readSnapshot: async () => ({ n: 1 }),
         evaluate: () => 'blocked',
-        mapGateError: (reason) => `ERR_${reason}`,
+        mapBlockError: (reason) => `ERR_${reason}`,
         approve: async () => {
           approved = true
         },
@@ -59,7 +59,7 @@ test('approveThenLiveWrite soft-fails on live gate after approve', async () => {
           return { reads }
         },
         evaluate: (snap) => (snap.reads === 2 ? 'liveFail' : null),
-        mapGateError: (reason) => reason,
+        mapBlockError: (reason) => reason,
         approve: async () => {},
         write: async () => {
           wrote = true

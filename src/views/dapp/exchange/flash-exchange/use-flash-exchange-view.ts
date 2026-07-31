@@ -36,7 +36,7 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     walletReady: flash.walletReady,
   })
 
-  const gateHint = flash.usd1Gate != null ? t.exchange.flash.gates[flash.usd1Gate] : null
+  const blockHint = flash.usd1Block != null ? t.exchange.flash.blocked[flash.usd1Block] : null
 
   usePresentUserFacingError(flash.validationError, {
     id: 'flash-exchange-quote-error',
@@ -63,7 +63,7 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     pairOptions,
     buyLabel,
     sellLabel,
-    gateHint,
+    blockHint,
     onSubmit,
   }
 }

@@ -1,4 +1,4 @@
-import { evaluateRewardsMixedClaimGate } from '~/core/rewards/rewards-gates'
+import { evaluateRewardsMixedClaim } from '~/core/rewards/rewards-block-reasons'
 import {
   matchPlanIndexByDurationDays,
   restakeBpsFromPct,
@@ -12,23 +12,23 @@ import { requestDaoClaim } from '~/shared/api/endpoints'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
 import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
-import { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { REWARDS_BLOCKED } from '~/web3/errors/rewards-write-block-errors'
+import { WALLET_BLOCKED } from '~/web3/contract-error-message'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
-export { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
+export { REWARDS_BLOCKED } from '~/web3/errors/rewards-write-block-errors'
 
 function gateError(
-  reason: keyof typeof REWARDS_GATE_ERROR | null,
-): (typeof REWARDS_GATE_ERROR)[keyof typeof REWARDS_GATE_ERROR] | null {
+  reason: keyof typeof REWARDS_BLOCKED | null,
+): (typeof REWARDS_BLOCKED)[keyof typeof REWARDS_BLOCKED] | null {
   if (!reason) return null
-  return REWARDS_GATE_ERROR[reason]
+  return REWARDS_BLOCKED[reason]
 }
 
 function mapMixedReason(
-  reason: ReturnType<typeof evaluateRewardsMixedClaimGate>,
-): keyof typeof REWARDS_GATE_ERROR | null {
+  reason: ReturnType<typeof evaluateRewardsMixedClaim>,
+): keyof typeof REWARDS_BLOCKED | null {
   if (reason === 'notClaimable') return 'luckyNotClaimable'
   return reason
 }
@@ -45,14 +45,14 @@ export async function submitLuckyMixedClaim(args: {
   const restakeBps = restakeBpsFromPct(restakePct)
 
   const snapshot = await readLuckyClaimSnapshot(user, readClient)
-  // Intent from first read; live gate must compare against a second chain read (never self-certify).
+  // Intent from first read; live check must compare against a second chain read (never self-certify).
   const amount = snapshot.rewardAmount
   const plans = await readClaimPlans(readClient)
   const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
   const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
   const contrib = await readContributionSnapshot(user, amount, readClient)
 
-  const preGate = evaluateRewardsMixedClaimGate({
+  const preBlock = evaluateRewardsMixedClaim({
     amount,
     rewardAvailable: snapshot.rewardAmount,
     contribution: contrib.contribution,
@@ -62,7 +62,7 @@ export async function submitLuckyMixedClaim(args: {
     luckyPaused: snapshot.paused,
     luckyClaimable: snapshot.claimable,
   })
-  const preErr = gateError(mapMixedReason(preGate))
+  const preErr = gateError(mapMixedReason(preBlock))
   if (preErr) throw preErr
 
   const live = await readLuckyClaimSnapshot(user, readClient)
@@ -70,7 +70,7 @@ export async function submitLuckyMixedClaim(args: {
   const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
   const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
   const liveContrib = await readContributionSnapshot(user, amount, readClient)
-  const liveGate = evaluateRewardsMixedClaimGate({
+  const liveBlock = evaluateRewardsMixedClaim({
     amount,
     rewardAvailable: live.rewardAmount,
     contribution: liveContrib.contribution,
@@ -80,10 +80,10 @@ export async function submitLuckyMixedClaim(args: {
     luckyPaused: live.paused,
     luckyClaimable: live.claimable,
   })
-  const liveErr = gateError(mapMixedReason(liveGate))
+  const liveErr = gateError(mapMixedReason(liveBlock))
   if (liveErr) throw liveErr
   if (liveRelease == null || liveRestake == null) {
-    throw REWARDS_GATE_ERROR.releasePlanUnresolved
+    throw REWARDS_BLOCKED.releasePlanUnresolved
   }
 
   await writeLuckyMixedClaim({
@@ -108,7 +108,7 @@ export async function submitDaoMixedClaim(args: {
 }): Promise<void> {
   const { session, token, onUnauthorized, rewardType, releaseDays, restakeDays, restakePct } = args
   if (!token) {
-    throw WALLET_GATE_ERROR.NOT_CONNECTED
+    throw WALLET_BLOCKED.NOT_CONNECTED
   }
   const { wallet, address: user, readClient } = session
   const restakeBps = restakeBpsFromPct(restakePct)
@@ -120,10 +120,10 @@ export async function submitDaoMixedClaim(args: {
   )
   const normalized = parseTeamRewardClaim(payload)
   if (normalized.expireTime <= BigInt(Math.floor(Date.now() / 1000))) {
-    throw REWARDS_GATE_ERROR.signatureExpired
+    throw REWARDS_BLOCKED.signatureExpired
   }
   if (normalized.signType !== DAO_REWARD_SIGN_TYPE[rewardType]) {
-    throw REWARDS_GATE_ERROR.unavailable
+    throw REWARDS_BLOCKED.unavailable
   }
   const amount = normalized.amountWei
 
@@ -134,7 +134,7 @@ export async function submitDaoMixedClaim(args: {
     readDaoPoolRewardAvailable(readClient),
     readContributionSnapshot(user, amount, readClient),
   ])
-  const preGate = evaluateRewardsMixedClaimGate({
+  const preBlock = evaluateRewardsMixedClaim({
     amount,
     rewardAvailable,
     contribution: contrib.contribution,
@@ -142,7 +142,7 @@ export async function submitDaoMixedClaim(args: {
     releasePlanIndex,
     restakePlanIndex,
   })
-  const preErr = gateError(mapMixedReason(preGate))
+  const preErr = gateError(mapMixedReason(preBlock))
   if (preErr) throw preErr
 
   // Live: re-read DaoPool AGX solvency + contribution + plans (never signature-self-certify).
@@ -153,7 +153,7 @@ export async function submitDaoMixedClaim(args: {
     readDaoPoolRewardAvailable(readClient),
     readContributionSnapshot(user, amount, readClient),
   ])
-  const liveGate = evaluateRewardsMixedClaimGate({
+  const liveBlock = evaluateRewardsMixedClaim({
     amount,
     rewardAvailable: liveReward,
     contribution: liveContrib.contribution,
@@ -161,10 +161,10 @@ export async function submitDaoMixedClaim(args: {
     releasePlanIndex: liveRelease,
     restakePlanIndex: liveRestake,
   })
-  const liveErr = gateError(mapMixedReason(liveGate))
+  const liveErr = gateError(mapMixedReason(liveBlock))
   if (liveErr) throw liveErr
   if (liveRelease == null || liveRestake == null) {
-    throw REWARDS_GATE_ERROR.releasePlanUnresolved
+    throw REWARDS_BLOCKED.releasePlanUnresolved
   }
 
   await writeDaoMixedClaim({

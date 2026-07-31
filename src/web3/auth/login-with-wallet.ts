@@ -1,11 +1,11 @@
 import type { Account } from 'thirdweb/wallets'
 import { login } from '~/shared/api/endpoints'
 import {
-  buildLoginMessage,
+  loginMessage,
   generateLoginNonce,
-  resolveLoginMessageFormat,
+  loginMessageFormat,
   type LoginMessageFormat,
-} from '~/web3/auth/build-login-message'
+} from '~/web3/auth/login-message'
 import {
   createLocalLoginSignatureStorage,
   createMemoryLoginSignatureStorage,
@@ -25,7 +25,7 @@ import {
   type AuthSessionStorage,
   type StoredAuthSession,
 } from '~/web3/auth/session'
-import { isUserRejectedWalletError } from '~/web3/resolve-contract-error-message'
+import { isUserRejectedWalletError } from '~/web3/contract-error-message'
 
 /** 将 classifyLoginFailure 结果映射为 AuthStore 可持久化的 sentinel。 */
 export function toLoginErrorSentinel(error: unknown): string | null {
@@ -59,8 +59,8 @@ export interface WalletLoginResult {
 }
 
 /** SIWE first; fall back to plain text for wallets that reject EIP-4361 payloads. */
-export function resolveLoginMessageFormats(): LoginMessageFormat[] {
-  return resolveLoginMessageFormat() === 'simple' ? ['simple'] : ['siwe', 'simple']
+export function loginMessageFormats(): LoginMessageFormat[] {
+  return loginMessageFormat() === 'simple' ? ['simple'] : ['siwe', 'simple']
 }
 
 /** 仅后端拒绝 SIWE 载荷时清除签名缓存；网络错误保留缓存以免反复弹窗。 */
@@ -111,13 +111,13 @@ async function signAndExchangeLogin({
   storage: AuthSessionStorage
   signatureStorage: LoginSignatureStorage
 }): Promise<WalletLoginResult> {
-  const formats = resolveLoginMessageFormats()
+  const formats = loginMessageFormats()
   let lastError: unknown = null
 
   for (let index = 0; index < formats.length; index += 1) {
     const format = formats[index]!
     const isLastFormat = index === formats.length - 1
-    const message = buildLoginMessage(
+    const message = loginMessage(
       {
         address: account.address,
         chainId,

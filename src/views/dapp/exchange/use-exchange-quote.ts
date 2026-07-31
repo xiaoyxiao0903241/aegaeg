@@ -4,10 +4,10 @@ import { calcAmountOutMin } from '~/core/exchange/calc-amount-out-min'
 import {
   assertQuotedExchangeStillSubmittable,
   canSubmitQuotedExchange,
-  resolveLiveQuotedOut,
-} from '~/core/exchange/resolve-live-quoted-out'
+  liveQuotedOut,
+} from '~/core/exchange/live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
-import { EXCHANGE_QUOTE_FAILED } from '~/web3/resolve-contract-error-message'
+import { EXCHANGE_QUOTE_FAILED } from '~/web3/contract-error-message'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
@@ -115,7 +115,7 @@ export function useExchangeQuote<TQuote>({
     quotesEnabled && sessionReady && debouncedAmountIn > 0n,
   )
 
-  const quotedOut = resolveLiveQuotedOut(
+  const quotedOut = liveQuotedOut(
     amountQuoteQuery.isPlaceholderData,
     selectQuotedOut(amountQuoteQuery.data),
   )
@@ -205,14 +205,14 @@ export function useExchangeQuote<TQuote>({
 
     submitOutcomeRef.current = { ok: false, error: null }
 
-    // Live re-gate: force-refresh quote after approve (may exceed maxQuoteAgeMs),
+    // Live re-check: force-refresh quote after approve (may exceed maxQuoteAgeMs),
     // then read from query cache — not the render snapshot that started submit.
     // Callers must pass post-refetch sellBalance; render-closure balance is stale.
     const assertStillSubmittable = async (live?: {
       sellBalance: bigint
     }): Promise<{ amountOutMin: bigint; quotedOut: bigint }> => {
       if (live === undefined) {
-        throw new Error('EXCHANGE_SUBMIT_GATE_FAILED')
+        throw new Error('EXCHANGE_SUBMIT_BLOCKED')
       }
       const queryKey = getQuoteQueryKey(debouncedAmountIn)
       await queryClient.fetchQuery({
@@ -222,14 +222,14 @@ export function useExchangeQuote<TQuote>({
       })
       const queryState = queryClient.getQueryState<TQuote>(queryKey)
       const data = queryClient.getQueryData<TQuote>(queryKey)
-      const liveQuotedOut = resolveLiveQuotedOut(false, selectQuotedOut(data))
+      const quotedOutLive = liveQuotedOut(false, selectQuotedOut(data))
       const liveAmountOutMin =
-        liveQuotedOut > 0n ? calcAmountOutMin(liveQuotedOut, slippageBps) : 0n
+        quotedOutLive > 0n ? calcAmountOutMin(quotedOutLive, slippageBps) : 0n
       assertQuotedExchangeStillSubmittable({
         walletReady: writeReady,
         amountIn: debouncedAmountIn,
         sellBalance: live.sellBalance,
-        quotedOut: liveQuotedOut,
+        quotedOut: quotedOutLive,
         amountOutMin: liveAmountOutMin,
         isPlaceholderData: false,
         isQuotePending: queryState?.status === 'pending',
@@ -239,7 +239,7 @@ export function useExchangeQuote<TQuote>({
         quoteUpdatedAt: queryState?.dataUpdatedAt ?? 0,
         maxQuoteAgeMs: QUERY_STALE_TIME.quote,
       })
-      return { amountOutMin: liveAmountOutMin, quotedOut: liveQuotedOut }
+      return { amountOutMin: liveAmountOutMin, quotedOut: quotedOutLive }
     }
 
     await chainWrite.mutate(async (session) => {

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useGenesisWidget } from '~/views/dapp/genesis/use-genesis-widget'
-import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
+import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 export type GenesisWidgetState = ReturnType<typeof useGenesisWidget>
@@ -16,7 +16,7 @@ function GenesisSessionMounted({
 
 /**
  * Lifts Genesis widget hook once (wallet remount clears draft) and passes state as props.
- * Only mounts while Genesis tab is active — same as former GenesisWidgetProvider gate.
+ * Only mounts while Genesis tab is active — same as former GenesisWidgetProvider check.
  */
 export function GenesisSessionHost({
   active,
@@ -26,7 +26,7 @@ export function GenesisSessionHost({
   children: (genesis: GenesisWidgetState | null) => ReactNode
 }) {
   const account = useActiveAccount()
-  const remountKey = resolveWalletRemountKey(account?.address)
+  const remountKey = walletRemountKey(account?.address)
 
   if (!active) {
     return children(null)

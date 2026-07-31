@@ -35,7 +35,7 @@ export type AssetsHubModeStats = {
   yieldApprox: string
 }
 
-export type AssetsHubOverviewModel = {
+export type AssetsHubOverview = {
   totalValue: string
   claimable: string
   claimableApprox: string
@@ -114,7 +114,7 @@ function modeFromApiAmount(
  * Hub overview + per-mode leaf amounts.
  * sessionReady + API data wins for display; chain remains fallback / write-adjacent.
  */
-export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
+export function useAssetsHubOverviewStats(): AssetsHubOverview {
   const { walletReady, sessionReady } = useDappShell()
   const account = useActiveAccount()
   const address = account?.address
@@ -161,7 +161,7 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
     xmine: EMPTY_XMINE,
   } as const satisfies Record<Exclude<AssetsView, 'hub'>, AssetsHubModeStats>
 
-  const unavailableOverview = (modes: AssetsHubOverviewModel['modes']): AssetsHubOverviewModel => ({
+  const unavailableOverview = (modes: AssetsHubOverview['modes']): AssetsHubOverview => ({
     totalValue: '—',
     claimable: '—',
     claimableApprox: '≈ —',

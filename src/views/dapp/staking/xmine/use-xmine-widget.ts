@@ -1,6 +1,6 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
-import { evaluateXmineLiveGate } from '~/core/staking/staking-gates'
+import { evaluateXmineLive } from '~/core/staking/staking-block-reasons'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
@@ -40,7 +40,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     sessionReady,
   })
 
-  const gate = evaluateXmineLiveGate({
+  const blockReason = evaluateXmineLive({
     amount: amountInput.amountIn,
     balance,
     allowance: preflightQuery.data?.allowance ?? 0n,
@@ -69,7 +69,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
   })
 
   const canSubmit =
-    !locked && amountInput.amountIn > 0n && gate == null && preflightQuery.data !== undefined
+    !locked && amountInput.amountIn > 0n && blockReason == null && preflightQuery.data !== undefined
 
   function unlock() {
     stake.clearLock()
@@ -98,7 +98,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     walletReady,
     canSubmit,
     isSubmitting: stake.isPending,
-    gate,
+    blockReason,
     submit: () => stake.mutate(),
     pool: BSC_CONTRACTS.xStakingPool,
   }

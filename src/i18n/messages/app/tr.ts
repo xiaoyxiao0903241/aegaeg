@@ -265,7 +265,7 @@ const app = defineMessages({
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',
       },
-      gates: {
+      blocked: {
         paused: 'Flash is paused. Please try again later.',
         belowMin: 'Amount is below the minimum swap limit.',
         aboveMax: 'Amount exceeds the maximum swap limit.',
@@ -342,7 +342,7 @@ const app = defineMessages({
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
       aboutTitle: 'About',
-      gates: {
+      blocked: {
         paused: 'Burn is paused. Please try again later.',
         belowMin: 'Amount is below the minimum burn limit.',
         aboveMax: 'Amount exceeds the maximum burn limit.',
@@ -1406,7 +1406,7 @@ const app = defineMessages({
     intro: 'View positions, claim yield, or redeem principal',
     body: 'View positions, claim yield, or redeem principal',
     backToHub: 'Back to Assets',
-    gates: {
+    blocked: {
       zeroAmount: 'Enter a valid amount',
       insufficientReward: 'Insufficient claimable yield',
       insufficientContribution: 'Not enough contribution points — burn AGX first',
@@ -1772,7 +1772,7 @@ const app = defineMessages({
     balance: 'Balance',
     max: 'Max',
     viewContract: 'View contract',
-    gates: {
+    blocked: {
       notBound: 'Bind a referral first',
       accountMigrated: 'This address has migrated — use the new address',
       migrationNotOpen: 'Account migration is not open yet',

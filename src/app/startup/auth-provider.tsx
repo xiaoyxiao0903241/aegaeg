@@ -3,7 +3,7 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { LOGIN_ERROR } from '~/shared/api/account-banned'
 import {
-  buildLoginAttemptKey,
+  loginAttemptKey,
   deriveAuthAction,
   deriveAuthState,
   shouldClearLoginAttemptAfterFailure,
@@ -119,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!hasHydrated || !walletAddress) return
 
     const signature = signaturesByAddress[walletAddress.toLowerCase()] ?? null
-    const attemptKey = buildLoginAttemptKey(walletAddress, session, signature)
+    const attemptKey = loginAttemptKey(walletAddress, session, signature)
 
     const action = deriveAuthAction({
       state: authState,

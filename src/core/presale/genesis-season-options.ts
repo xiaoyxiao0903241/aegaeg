@@ -16,7 +16,7 @@ function formatPhaseDateRange(startTime: bigint, endTime: bigint): string {
   return `${formatPhaseDate(startTime)} – ${formatPhaseDate(endTime)}`
 }
 
-export function buildSeasonOptions(
+export function seasonOptionsFromPhases(
   phases: PresalePhaseOnChain[],
   agxPriceUsd: number,
   nowSeconds = Math.floor(Date.now() / 1000),

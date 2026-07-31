@@ -2,10 +2,10 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-describe('resolveWalletEip1193Provider', () => {
+describe('walletEip1193Provider', () => {
   it('uses window.ethereum when eth_accounts matches the connected wallet', async () => {
-    const { resolveWalletEip1193Provider } = await loadModule(
-      '/src/web3/wallet/resolve-wallet-eip1193-provider.ts',
+    const { walletEip1193Provider } = await loadModule(
+      '/src/web3/wallet/wallet-eip1193-provider.ts',
     )
 
     const address = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
@@ -20,7 +20,7 @@ describe('resolveWalletEip1193Provider', () => {
       },
     }
 
-    const provider = resolveWalletEip1193Provider({
+    const provider = walletEip1193Provider({
       id: 'com.tokenpocket.wallet',
       getAccount: () => ({ address }),
     })

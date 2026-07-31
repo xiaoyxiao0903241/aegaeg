@@ -1,11 +1,11 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
-import { evaluateBondZapLiveGate } from '~/core/staking/staking-gates'
+import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondPeriod } from '~/core/staking/staking-period'
 import {
-  resolveBurnBondDepository,
-  resolveLpBondDepository,
-} from '~/web3/staking/resolve-staking-addresses'
+  burnBondDepositoryAddress,
+  lpBondDepositoryAddress,
+} from '~/web3/staking/staking-addresses'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
@@ -19,9 +19,9 @@ import {
   useBondZapAgxPreviewQuery,
   useBondZapPreflightQuery,
 } from '~/web3/staking/use-staking-queries'
-import { useMigrationUserGate } from '~/web3/migration/use-migration-queries'
-import { resolveNeedReferral } from '~/core/referral/resolve-need-referral'
-import { resolveWriteButtonPhase } from '~/core/wallet/resolve-write-button-phase'
+import { useMigrationUser } from '~/web3/migration/use-migration-queries'
+import { evaluateNeedReferral } from '~/core/referral/need-referral'
+import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitBondZap, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
@@ -47,31 +47,31 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     kind === 'lp' ? state.lpBondPeriod : state.burnBondPeriod,
   )
   const setBondPeriod = useStakingViewStore((state) => state.setBondPeriod)
-  const resolveDepository = kind === 'lp' ? resolveLpBondDepository : resolveBurnBondDepository
-  const depository = resolveDepository(period)
+  const depositoryAddress = kind === 'lp' ? lpBondDepositoryAddress : burnBondDepositoryAddress
+  const depository = depositoryAddress(period)
 
   const preflightQuery = useBondZapPreflightQuery(depository, {
     enabled: sessionReady,
   })
-  const migration = useMigrationUserGate(address, { enabled: walletReady })
+  const migration = useMigrationUser(address, { enabled: walletReady })
 
   const market180 = useChainQuery({
-    queryKey: queryKeys.chain.bondMarketMeta(resolveDepository('180')),
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('180')),
     scope: 'public',
     freshness: 'quote',
-    queryFn: () => readBondMarketMeta(resolveDepository('180')),
+    queryFn: () => readBondMarketMeta(depositoryAddress('180')),
   })
   const market360 = useChainQuery({
-    queryKey: queryKeys.chain.bondMarketMeta(resolveDepository('360')),
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('360')),
     scope: 'public',
     freshness: 'quote',
-    queryFn: () => readBondMarketMeta(resolveDepository('360')),
+    queryFn: () => readBondMarketMeta(depositoryAddress('360')),
   })
   const market540 = useChainQuery({
-    queryKey: queryKeys.chain.bondMarketMeta(resolveDepository('540')),
+    queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('540')),
     scope: 'public',
     freshness: 'quote',
-    queryFn: () => readBondMarketMeta(resolveDepository('540')),
+    queryFn: () => readBondMarketMeta(depositoryAddress('540')),
   })
   const periodMarketQueries = [market180, market360, market540] as const
 
@@ -93,7 +93,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     enabled: sessionReady,
   })
 
-  const gate = evaluateBondZapLiveGate({
+  const blockReason = evaluateBondZapLive({
     amount: amountInput.amountIn,
     isBound: preflightQuery.data?.isBound ?? false,
     balance,
@@ -102,7 +102,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     isOldAccount: migration.isOldAccount,
   })
 
-  const needReferral = resolveNeedReferral(preflightQuery.data?.isBound) === 'need_referral'
+  const needReferral = evaluateNeedReferral(preflightQuery.data?.isBound) === 'need_referral'
 
   const zap = useChainMutation({
     path: WRITE_PATH.BOND_ZAP,
@@ -130,14 +130,14 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
   })
 
   const canSubmit =
-    !locked && amountInput.amountIn > 0n && gate == null && preflightQuery.data !== undefined
+    !locked && amountInput.amountIn > 0n && blockReason == null && preflightQuery.data !== undefined
 
-  const writePhase = resolveWriteButtonPhase({
+  const writePhase = evaluateWriteButtonPhase({
     walletReady,
     writeReady,
     needReferral,
     accountMigrated: migration.isOldAccount === true,
-    moneyGate: gate,
+    moneyBlock: blockReason,
     isSubmitting,
   })
 
@@ -228,7 +228,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     walletReady,
     canSubmit,
     isSubmitting,
-    gate,
+    blockReason,
     writePhase,
     submit: () => zap.mutate(),
     depository,

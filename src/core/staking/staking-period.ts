@@ -13,7 +13,7 @@ export type BurnBondDepositoryKey =
   'burnBondDepository180d' | 'burnBondDepository360d' | 'burnBondDepository540d'
 
 /** Period → BSC_CONTRACTS field key for AGX stake open path. */
-export function resolveStakePoolKey(period: StakePeriod): StakePoolContractKey {
+export function stakePoolKey(period: StakePeriod): StakePoolContractKey {
   if (period === 'liquid') return 'liquidStaking'
   if (period === '180') return 'lockedStaking180d'
   if (period === '360') return 'lockedStaking360d'
@@ -21,14 +21,14 @@ export function resolveStakePoolKey(period: StakePeriod): StakePoolContractKey {
 }
 
 /** Period → LP Bond depository key for BondHelper zap. */
-export function resolveLpBondDepositoryKey(period: BondPeriod): LpBondDepositoryKey {
+export function lpBondDepositoryKey(period: BondPeriod): LpBondDepositoryKey {
   if (period === '180') return 'bondDepository180d'
   if (period === '360') return 'bondDepository360d'
   return 'bondDepository540d'
 }
 
 /** Period → Burn Bond depository key for BondHelper zap. */
-export function resolveBurnBondDepositoryKey(period: BondPeriod): BurnBondDepositoryKey {
+export function burnBondDepositoryKey(period: BondPeriod): BurnBondDepositoryKey {
   if (period === '180') return 'burnBondDepository180d'
   if (period === '360') return 'burnBondDepository360d'
   return 'burnBondDepository540d'

@@ -1,8 +1,8 @@
-import { FLASH_USD1_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { FLASH_USD1_BLOCKED } from '~/web3/contract-error-message'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import type { FlashPairId } from '~/core/exchange/flash-pair'
-import { resolveFlashUsd1SwapGate } from '~/core/exchange/flash-usd1-swap-gates'
+import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
 import {
   approveAgxForWrapIfNeeded,
   approveUsdtForFlashExchangeIfNeeded,
@@ -62,13 +62,13 @@ export async function submitFlashExchange(args: {
       }
     } else {
       const liveConfig = await readUsd1SwapConfig()
-      const gate = resolveFlashUsd1SwapGate({
+      const blockReason = evaluateFlashUsd1Swap({
         amountIn: core.debouncedAmountIn,
         quotedOut,
         config: liveConfig,
       })
-      if (gate) {
-        throw new Error(FLASH_USD1_GATE_ERROR[gate])
+      if (blockReason) {
+        throw new Error(FLASH_USD1_BLOCKED[blockReason])
       }
 
       await flashExchange({

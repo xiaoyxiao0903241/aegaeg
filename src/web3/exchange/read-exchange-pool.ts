@@ -71,7 +71,7 @@ export async function readExchangePoolSpotPrice(
   }
 }
 
-export function resolvePairReservesForTokenIn({
+export function pairReservesForTokenIn({
   tokenIn,
   token0,
   token1,

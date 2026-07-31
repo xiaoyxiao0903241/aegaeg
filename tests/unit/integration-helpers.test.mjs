@@ -2,8 +2,10 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('buildSeasonOptions marks active phase from chain timestamps', async () => {
-  const { buildSeasonOptions } = await loadModule('/src/core/presale/genesis-season-options.ts')
+test('seasonOptionsFromPhases marks active phase from chain timestamps', async () => {
+  const { seasonOptionsFromPhases } = await loadModule(
+    '/src/core/presale/genesis-season-options.ts',
+  )
   const now = 1_700_000_000
 
   const phases = [
@@ -31,7 +33,7 @@ test('buildSeasonOptions marks active phase from chain timestamps', async () => 
     },
   ]
 
-  const seasons = buildSeasonOptions(phases, 55, now)
+  const seasons = seasonOptionsFromPhases(phases, 55, now)
   assert.equal(seasons[0]?.active, true)
   assert.equal(seasons[0]?.status, 'LIVE')
   assert.equal(seasons[1]?.status, 'Upcoming')

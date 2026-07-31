@@ -1,12 +1,12 @@
-import { ASSETS_GATE_ERROR } from '~/web3/errors/assets-write-gate-errors'
+import { ASSETS_BLOCKED } from '~/web3/errors/assets-write-block-errors'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import {
-  evaluateRedeemGate,
-  evaluateXmineActivateWarmupGate,
-  evaluateXmineClaimGate,
-  evaluateXmineUnstakeGate,
-} from '~/core/assets/assets-gates'
-import { dualGateMixedClaim } from '~/core/assets/dual-gate-mixed-claim'
+  evaluateRedeem,
+  evaluateXmineActivateWarmup,
+  evaluateXmineClaim,
+  evaluateXmineUnstake,
+} from '~/core/assets/assets-block-reasons'
+import { dualCheckMixedClaim } from '~/core/assets/dual-check-mixed-claim'
 import {
   matchPlanIndexByDurationDays,
   restakeBpsFromPct,
@@ -39,10 +39,10 @@ import type { Address } from '~/shared/config/contracts'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 function gateError(
-  reason: keyof typeof ASSETS_GATE_ERROR | null,
-): (typeof ASSETS_GATE_ERROR)[keyof typeof ASSETS_GATE_ERROR] | null {
+  reason: keyof typeof ASSETS_BLOCKED | null,
+): (typeof ASSETS_BLOCKED)[keyof typeof ASSETS_BLOCKED] | null {
   if (!reason) return null
-  return ASSETS_GATE_ERROR[reason]
+  return ASSETS_BLOCKED[reason]
 }
 
 export type MixedClaimTarget =
@@ -115,10 +115,10 @@ export async function submitMixedClaim(args: {
     restakeDays,
     readClient,
   )
-  const dual = dualGateMixedClaim({ amount, intent, live })
+  const dual = dualCheckMixedClaim({ amount, intent, live })
   if (!dual.ok) {
     const mapped = gateError(dual.fail.reason)
-    throw mapped ?? ASSETS_GATE_ERROR.unavailable
+    throw mapped ?? ASSETS_BLOCKED.unavailable
   }
 
   const { releasePlanIndex, restakePlanIndex } = dual.ready
@@ -165,13 +165,13 @@ export async function submitStakeRedeem(args: {
   const { wallet, address: user, readClient } = session
 
   const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
-  const gate = evaluateRedeemGate({ amount: liveAmount })
-  if (gate) throw ASSETS_GATE_ERROR[gate]
+  const blockReason = evaluateRedeem({ amount: liveAmount })
+  if (blockReason) throw ASSETS_BLOCKED[blockReason]
 
   if (row.kind === 'liquid') {
     await writeLiquidClaimPrincipal({ wallet, amount: liveAmount })
   } else {
-    if (row.stakeIndex == null) throw ASSETS_GATE_ERROR.nothingToRedeem
+    if (row.stakeIndex == null) throw ASSETS_BLOCKED.nothingToRedeem
     await writeLockedClaimPrincipal({
       wallet,
       pool: row.pool,
@@ -190,8 +190,8 @@ export async function submitBondRedeem(args: {
   const { wallet, address: user, readClient } = session
 
   const liveAmount = await readBondRedeemableAmount(row, user, readClient)
-  const gate = evaluateRedeemGate({ amount: liveAmount })
-  if (gate) throw ASSETS_GATE_ERROR[gate]
+  const blockReason = evaluateRedeem({ amount: liveAmount })
+  if (blockReason) throw ASSETS_BLOCKED[blockReason]
 
   await writeBondRedeem({
     wallet,
@@ -207,18 +207,18 @@ export async function submitXmineClaim(args: { session: WriteSession }): Promise
   const { wallet, address, readClient } = args.session
 
   const pre = await readXminePosition(address, readClient)
-  const preGate = evaluateXmineClaimGate({
+  const preBlock = evaluateXmineClaim({
     pending: pre.pending,
     warmupGons: pre.warmupGons,
   })
-  if (preGate) throw ASSETS_GATE_ERROR[preGate]
+  if (preBlock) throw ASSETS_BLOCKED[preBlock]
 
   const live = await readXminePosition(address, readClient)
-  const liveGate = evaluateXmineClaimGate({
+  const liveBlock = evaluateXmineClaim({
     pending: live.pending,
     warmupGons: live.warmupGons,
   })
-  if (liveGate) throw ASSETS_GATE_ERROR[liveGate]
+  if (liveBlock) throw ASSETS_BLOCKED[liveBlock]
 
   await writeXmineClaimReward({ wallet })
   invalidateAfterAssetsClaim()
@@ -229,18 +229,18 @@ export async function submitXmineUnstake(args: { session: WriteSession }): Promi
   const { wallet, address, readClient } = args.session
 
   const pre = await readXminePosition(address, readClient)
-  const preGate = evaluateXmineUnstakeGate({
+  const preBlock = evaluateXmineUnstake({
     activeGons: pre.gons,
     warmupGons: pre.warmupGons,
   })
-  if (preGate) throw ASSETS_GATE_ERROR[preGate]
+  if (preBlock) throw ASSETS_BLOCKED[preBlock]
 
   const live = await readXminePosition(address, readClient)
-  const liveGate = evaluateXmineUnstakeGate({
+  const liveBlock = evaluateXmineUnstake({
     activeGons: live.gons,
     warmupGons: live.warmupGons,
   })
-  if (liveGate) throw ASSETS_GATE_ERROR[liveGate]
+  if (liveBlock) throw ASSETS_BLOCKED[liveBlock]
 
   await writeXmineStartUnstake({ wallet })
   invalidateAfterAssetsClaim()
@@ -251,18 +251,18 @@ export async function submitXmineActivateWarmup(args: { session: WriteSession })
   const { wallet, address, readClient } = args.session
 
   const pre = await readXminePosition(address, readClient)
-  const preGate = evaluateXmineActivateWarmupGate({
+  const preBlock = evaluateXmineActivateWarmup({
     warmupGons: pre.warmupGons,
     warmupEndTime: pre.warmupEndTime,
   })
-  if (preGate) throw ASSETS_GATE_ERROR[preGate]
+  if (preBlock) throw ASSETS_BLOCKED[preBlock]
 
   const live = await readXminePosition(address, readClient)
-  const liveGate = evaluateXmineActivateWarmupGate({
+  const liveBlock = evaluateXmineActivateWarmup({
     warmupGons: live.warmupGons,
     warmupEndTime: live.warmupEndTime,
   })
-  if (liveGate) throw ASSETS_GATE_ERROR[liveGate]
+  if (liveBlock) throw ASSETS_BLOCKED[liveBlock]
 
   await writeXmineActivateWarmup({ wallet })
   invalidateAfterAssetsClaim()

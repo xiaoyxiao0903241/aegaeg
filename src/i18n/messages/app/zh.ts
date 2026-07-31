@@ -260,7 +260,7 @@ const app = defineMessages({
         gagx: 'gAGX → AGX',
         usdt: 'USDT → USD1',
       },
-      gates: {
+      blocked: {
         paused: '闪兑已暂停，请稍后再试。',
         belowMin: '低于单笔最小兑换限额。',
         aboveMax: '超过单笔最大兑换限额。',
@@ -336,7 +336,7 @@ const app = defineMessages({
       openProvider: '在 BscScan 查看贡献兑换合约',
       action: '销毁',
       aboutTitle: '关于',
-      gates: {
+      blocked: {
         paused: '销毁已暂停，请稍后再试。',
         belowMin: '低于单笔最小销毁限额。',
         aboveMax: '超过单笔最大销毁限额。',
@@ -1330,7 +1330,7 @@ const app = defineMessages({
     intro: '查看持仓、领取收益或赎回本金',
     body: '查看持仓、领取收益或赎回本金',
     backToHub: '返回资产',
-    gates: {
+    blocked: {
       zeroAmount: '请输入有效数量',
       insufficientReward: '可领收益不足',
       insufficientContribution: '贡献值不足，请先兑换贡献点',
@@ -1691,7 +1691,7 @@ const app = defineMessages({
     balance: '余额',
     max: '最大',
     viewContract: '查看合约',
-    gates: {
+    blocked: {
       notBound: '请先绑定推荐关系',
       accountMigrated: '该地址已迁移，请使用新地址操作',
       migrationNotOpen: '账户迁移暂未开放',

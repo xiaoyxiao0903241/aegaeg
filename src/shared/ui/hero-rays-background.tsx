@@ -15,7 +15,7 @@ function polarPoint(cx: number, cy: number, radius: number, angleDeg: number) {
   }
 }
 
-function buildRayWedgePath(index: number) {
+function rayWedgePath(index: number) {
   const startDeg = index * RAY_SPACING_DEG
   const endDeg = startDeg + RAY_WIDTH_DEG
   const outerStart = polarPoint(CENTER, CENTER, RADIUS, startDeg)
@@ -24,7 +24,7 @@ function buildRayWedgePath(index: number) {
   return `M ${CENTER} ${CENTER} L ${outerStart.x} ${outerStart.y} A ${RADIUS} ${RADIUS} 0 0 1 ${outerEnd.x} ${outerEnd.y} Z`
 }
 
-const RAY_WEDGES = Array.from({ length: RAY_COUNT }, (_, index) => buildRayWedgePath(index))
+const RAY_WEDGES = Array.from({ length: RAY_COUNT }, (_, index) => rayWedgePath(index))
 
 const heroRays = tv({
   base: 'hero-rays',

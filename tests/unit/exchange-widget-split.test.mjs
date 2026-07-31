@@ -33,7 +33,7 @@ test('submitMarketTrade owns approve + live balance read + swap + invalidate pat
   assert.doesNotMatch(source, /balancesQuery\.refetch/)
 })
 
-test('useExchangeQuote keeps live re-gate after approve', async () => {
+test('useExchangeQuote keeps live re-check after approve', async () => {
   const source = await readFile(
     new URL('../../src/views/dapp/exchange/use-exchange-quote.ts', import.meta.url),
     'utf8',

@@ -22,11 +22,9 @@ test('formatPhaseCountdown uses localized unit labels', async () => {
 })
 
 test('genesis countdown helpers detect elapsed boundaries', async () => {
-  const {
-    buildPhaseCountdownKey,
-    hasPhaseCountdownElapsed,
-    resolvePhaseCountdownTarget,
-  } = await loadModule('/src/core/presale/presale-math.ts')
+  const { phaseCountdownKey, hasPhaseCountdownElapsed, phaseCountdownTarget } = await loadModule(
+    '/src/core/presale/presale-math.ts',
+  )
 
   const nowSeconds = 1_000
   const phases = [
@@ -54,9 +52,9 @@ test('genesis countdown helpers detect elapsed boundaries', async () => {
     },
   ]
 
-  const activeTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
+  const activeTarget = phaseCountdownTarget(phases, nowSeconds)
   assert.deepEqual(activeTarget, { mode: 'ends', targetTime: 1_200n })
   assert.equal(hasPhaseCountdownElapsed(1_200n, 1_200), true)
   assert.equal(hasPhaseCountdownElapsed(1_200n, 1_199), false)
-  assert.equal(buildPhaseCountdownKey(activeTarget), 'ends:1200')
+  assert.equal(phaseCountdownKey(activeTarget), 'ends:1200')
 })

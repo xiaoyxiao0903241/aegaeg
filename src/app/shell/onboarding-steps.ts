@@ -77,7 +77,7 @@ export async function prepareOnboardingStep(
   return waitForVisibleTourTarget(id, signal)
 }
 
-export function resolveVisibleTourTarget(id: OnboardingStepId): Element | null {
+export function visibleTourTarget(id: OnboardingStepId): Element | null {
   const nodes = document.querySelectorAll(tourSelector(id))
   for (const node of nodes) {
     if (node.getClientRects().length > 0) return node
@@ -97,7 +97,7 @@ function waitForVisibleTourTarget(
         resolve(null)
         return
       }
-      const el = resolveVisibleTourTarget(id)
+      const el = visibleTourTarget(id)
       if (el && el.getClientRects().length > 0) {
         resolve(el)
         return

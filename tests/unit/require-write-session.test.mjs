@@ -5,19 +5,19 @@ import { loadModule } from './load-module.mjs'
 describe('makeWriteSession', () => {
   it('fails closed without wallet or account', async () => {
     const { makeWriteSession } = await loadModule('/src/web3/wallet/require-write-session.ts')
-    const { WALLET_GATE_ERROR } = await loadModule('/src/web3/errors/sentinels.ts')
+    const { WALLET_BLOCKED } = await loadModule('/src/web3/errors/sentinels.ts')
 
     assert.throws(
       () => makeWriteSession(undefined),
-      (err) => err === WALLET_GATE_ERROR.NOT_CONNECTED,
+      (err) => err === WALLET_BLOCKED.NOT_CONNECTED,
     )
     assert.throws(
       () => makeWriteSession(null),
-      (err) => err === WALLET_GATE_ERROR.NOT_CONNECTED,
+      (err) => err === WALLET_BLOCKED.NOT_CONNECTED,
     )
     assert.throws(
       () => makeWriteSession({ getAccount: () => undefined }),
-      (err) => err === WALLET_GATE_ERROR.NOT_CONNECTED,
+      (err) => err === WALLET_BLOCKED.NOT_CONNECTED,
     )
   })
 

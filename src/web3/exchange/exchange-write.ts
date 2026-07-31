@@ -2,7 +2,7 @@ import type { Wallet } from 'thirdweb/wallets'
 import { getAddress } from 'thirdweb/utils'
 import { parseAbi } from 'viem'
 import { isAgxSellPath } from '~/core/exchange/agx-sell-tax'
-import { buildExchangeDeadline } from '~/core/exchange/build-exchange-deadline'
+import { exchangeDeadline } from '~/core/exchange/exchange-deadline'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { ERC20_METHODS, PANCAKE_ROUTER_V2_METHODS, ERC20_ERRORS } from '~/web3/abis'
@@ -78,7 +78,7 @@ export async function exchangeTokens({
     throw new Error('EXCHANGE_PATH_TOO_SHORT:0')
   }
 
-  const deadline = BigInt(buildExchangeDeadline(EXCHANGE_CONFIG.deadlineSeconds))
+  const deadline = BigInt(exchangeDeadline(EXCHANGE_CONFIG.deadlineSeconds))
   /** AGX pair sells take sell tax — use SupportingFee path (contracts/agx.md). */
   const functionName = isAgxSellPath(tokenIn, BSC_CONTRACTS.agx)
     ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens'

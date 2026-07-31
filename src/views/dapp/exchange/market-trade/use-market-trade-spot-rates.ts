@@ -1,5 +1,5 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { resolveLiveQuotedOut } from '~/core/exchange/resolve-live-quoted-out'
+import { liveQuotedOut } from '~/core/exchange/live-quoted-out'
 import {
   formatExchangeRateApprox,
   emptySpotRateDash,
@@ -80,11 +80,11 @@ export function useMarketTradeSpotRates({
   useVisibleInterval(spotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
   useVisibleInterval(invertedSpotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
-  const spotQuotedOut = resolveLiveQuotedOut(
+  const spotQuotedOut = liveQuotedOut(
     spotQuoteQuery.isPlaceholderData,
     spotQuoteQuery.data?.quotedOut,
   )
-  const invertedQuotedOut = resolveLiveQuotedOut(
+  const invertedQuotedOut = liveQuotedOut(
     invertedSpotQuoteQuery.isPlaceholderData,
     invertedSpotQuoteQuery.data?.quotedOut,
   )

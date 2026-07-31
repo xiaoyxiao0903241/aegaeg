@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import {
   isTradeTokenLive,
-  resolveBuyKeyAfterSellChange,
+  buyKeyAfterSellChange,
   type TradeTokenKey,
-} from '~/core/exchange/resolve-trade-path'
+} from '~/core/exchange/trade-path'
 
 interface ExchangeTradePairStore {
   sellKey: TradeTokenKey
@@ -21,7 +21,7 @@ export const useExchangeTradePairStore = create<ExchangeTradePairStore>((set) =>
     if (!isTradeTokenLive(sellKey)) return
     set((state) => ({
       sellKey,
-      buyKey: resolveBuyKeyAfterSellChange(sellKey, state.buyKey),
+      buyKey: buyKeyAfterSellChange(sellKey, state.buyKey),
     }))
   },
   setBuyKey: (buyKey) => {

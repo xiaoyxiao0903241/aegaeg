@@ -22,7 +22,7 @@ export function nameOrSelector(
   return ({ raw, lower }) => namePattern.test(raw) || hasSelector(lower, ...selectors)
 }
 
-export function resolveFirstMatch<M extends object, K extends keyof M & string>(
+export function firstMatch<M extends object, K extends keyof M & string>(
   text: ErrorText,
   rules: Array<ErrorRule<K>>,
   messages: M,

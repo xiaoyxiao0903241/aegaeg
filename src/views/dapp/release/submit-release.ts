@@ -1,15 +1,15 @@
-import { releaseClaimBlockReason } from '~/core/release/release-gates'
+import { releaseClaimBlockReason } from '~/core/release/release-block-reasons'
 import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
-import { RELEASE_GATE_ERROR } from '~/web3/errors/release-write-gate-errors'
+import { RELEASE_BLOCKED } from '~/web3/errors/release-write-block-errors'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { writeClaimAllVestedRewards, writeClaimManyReleases } from '~/web3/release/release-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 function gateError(
   reason: 'zeroAmount' | 'lockedUnknown' | null,
-): (typeof RELEASE_GATE_ERROR)[keyof typeof RELEASE_GATE_ERROR] | null {
+): (typeof RELEASE_BLOCKED)[keyof typeof RELEASE_BLOCKED] | null {
   if (!reason) return null
-  return RELEASE_GATE_ERROR[reason]
+  return RELEASE_BLOCKED[reason]
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
@@ -20,7 +20,7 @@ export async function submitReleaseQueueClaim(args: {
   const { session, planIndex } = args
   const { wallet, address, readClient } = session
   if (planIndex < 0) {
-    throw RELEASE_GATE_ERROR.planUnresolved
+    throw RELEASE_BLOCKED.planUnresolved
   }
 
   const pre = await readReleaseQueueSnapshot(address, readClient)
@@ -69,7 +69,7 @@ export async function submitReleaseBufferClaim(args: { session: WriteSession }):
     }),
   )
   if (liveErr) throw liveErr
-  if (live.count <= 0) throw RELEASE_GATE_ERROR.zeroAmount
+  if (live.count <= 0) throw RELEASE_BLOCKED.zeroAmount
 
   await writeClaimManyReleases({ wallet, start: 0, limit: live.count })
   invalidateAfterReleaseClaim()

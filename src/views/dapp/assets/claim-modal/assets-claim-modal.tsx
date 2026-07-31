@@ -153,7 +153,7 @@ function AssetsClaimModalOpen({
 
         {!vm.plansOk && vm.plansQuery.isSuccess ? (
           <Text as="p" className="text-destructive" variant="copy">
-            {t.assets.gates.planUnresolved}
+            {t.assets.blocked.planUnresolved}
           </Text>
         ) : null}
 

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('buildGenesisPromoSnapshot uses active season discount and end date', async () => {
-  const { buildGenesisPromoSnapshot } = await loadModule('/src/core/presale/genesis-promo.ts')
+test('genesisPromoSnapshot uses active season discount and end date', async () => {
+  const { genesisPromoSnapshot } = await loadModule('/src/core/presale/genesis-promo.ts')
 
   const now = 1_700_000_000
   const phases = [
@@ -20,7 +20,7 @@ test('buildGenesisPromoSnapshot uses active season discount and end date', async
     },
   ]
 
-  const snapshot = buildGenesisPromoSnapshot(phases, phases[0], 55, now)
+  const snapshot = genesisPromoSnapshot(phases, phases[0], 55, now)
 
   assert.equal(snapshot?.season, 1)
   assert.equal(snapshot?.discount, '-30%')
@@ -30,8 +30,8 @@ test('buildGenesisPromoSnapshot uses active season discount and end date', async
   assert.match(snapshot?.dateRange ?? '', /\d{2}\.\d{2}/)
 })
 
-test('buildGenesisPromoSnapshot falls back to upcoming season', async () => {
-  const { buildGenesisPromoSnapshot } = await loadModule('/src/core/presale/genesis-promo.ts')
+test('genesisPromoSnapshot falls back to upcoming season', async () => {
+  const { genesisPromoSnapshot } = await loadModule('/src/core/presale/genesis-promo.ts')
 
   const now = 1_700_000_000
   const phases = [
@@ -48,7 +48,7 @@ test('buildGenesisPromoSnapshot falls back to upcoming season', async () => {
     },
   ]
 
-  const snapshot = buildGenesisPromoSnapshot(phases, null, 55, now)
+  const snapshot = genesisPromoSnapshot(phases, null, 55, now)
 
   assert.equal(snapshot?.status, 'Upcoming')
   assert.equal(snapshot?.discount, '-25%')

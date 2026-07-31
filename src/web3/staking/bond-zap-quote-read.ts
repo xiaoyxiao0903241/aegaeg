@@ -90,7 +90,7 @@ export async function readBondZapAgxPreview(args: {
     functionName: 'agxPrice',
   })) as bigint
 
-  const depositPrinciple = await resolveZapPrincipleAmount({
+  const depositPrinciple = await zapPrincipleAmount({
     kind: args.kind,
     depository: args.depository,
     depositUsd1: args.depositUsd1,
@@ -116,7 +116,7 @@ export async function readBondZapAgxPreview(args: {
   return { netPayout, grossPayout }
 }
 
-async function resolveZapPrincipleAmount(args: {
+async function zapPrincipleAmount(args: {
   kind: BondZapKind
   depository: Address
   depositUsd1: bigint

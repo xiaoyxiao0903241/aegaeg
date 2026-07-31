@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { buildRewardTierRows, getTeamRequirementLegRank } from '~/core/presale/tier-table'
+import { rewardTierRows, getTeamRequirementLegRank } from '~/core/presale/tier-table'
 import {
   formatPresaleRank,
   formatShareholderHintForRank,
@@ -62,11 +62,11 @@ export function useRewardsGenesisContentView() {
         displayRank,
         t.rewards.heroTierRewardBody,
         t.rewards.shareholderNoRankBody,
-        buildRewardTierRows(),
+        rewardTierRows(),
       )
     : t.rewards.shareholderNoRankBody
 
-  const rewardTiers = buildRewardTierRows()
+  const rewardTiers = rewardTierRows()
   const highlightedRows = getPresaleRankHighlightedRows(displayRank, rewardTiers.length)
   const tierRows = rewardTiers.map((row, rowIndex) => {
     const rankLabel = row[0] ?? ''

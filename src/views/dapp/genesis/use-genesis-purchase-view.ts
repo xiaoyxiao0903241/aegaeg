@@ -8,7 +8,7 @@ import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/pres
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
+import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
@@ -100,7 +100,7 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
 
   usePresentUserFacingError(genesis.error, {
     id: 'genesis-query-error',
-    resolveMessage: (err) => resolveApiUserFacingError(err, t.errors.api) ?? t.errors.loadFailed,
+    messageFor: (err) => apiUserFacingError(err, t.errors.api) ?? t.errors.loadFailed,
   })
 
   const hasUpcomingSeason = genesis.seasonOptions.some((season) => season.status === 'Upcoming')

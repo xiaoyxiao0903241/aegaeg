@@ -9,7 +9,7 @@ const TEAM_BONUS_RATES = ['1%', '2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', 
 /** Caps commitment-floor A-tier from /performance presale_commitment_floor_rank (max A13; S max remains S10). */
 export const MAX_COMMITMENT_FLOOR_A_RANK = 13
 
-export function resolveCommitmentFloorRank(apiRank: number): number {
+export function commitmentFloorRank(apiRank: number): number {
   if (!Number.isFinite(apiRank) || apiRank <= 0) return 0
   return Math.min(MAX_COMMITMENT_FLOOR_A_RANK, Math.trunc(apiRank))
 }
@@ -35,7 +35,7 @@ export function getCommitmentFloorBoostedPostLaunchLabel(floorRank: number): str
 }
 
 /** 30-day boost / max-rank copy for commitment floor tier. */
-export function resolveCommitmentFloorBoostCopy(
+export function commitmentFloorBoostCopy(
   floorRank: number,
   options: {
     boostTemplate: string
@@ -78,7 +78,7 @@ function formatTeamRequirement(rank: number): string {
   return '-'
 }
 
-export function buildRewardTierRows(): readonly (readonly string[])[] {
+export function rewardTierRows(): readonly (readonly string[])[] {
   return PERSONAL_PRESALE_RANK_THRESHOLDS_USD.map((personalUsd, index) => {
     const rank = index + 1
     return [

@@ -11,7 +11,7 @@ import { RewardsContent, RewardsWidget } from '~/views/dapp/rewards'
 import { StakingContent, StakingWidget } from '~/views/dapp/staking'
 import { ExchangeContent, ExchangeWidget } from '~/views/dapp/exchange'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { resolveWalletRemountKey } from '~/shared/lib/resolve-wallet-remount-key'
+import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
 
 type TabWidgetProps = {
   onSelectTab: (tab: DappTab) => void
@@ -49,7 +49,7 @@ function GenesisTabContent({ genesis }: TabContentProps) {
 
 function CommunityTabWidget() {
   const account = useActiveAccount()
-  const remountKey = resolveWalletRemountKey(account?.address)
+  const remountKey = walletRemountKey(account?.address)
   return <CommunityWidget key={remountKey} />
 }
 

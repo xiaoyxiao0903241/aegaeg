@@ -38,35 +38,32 @@ const samplePhases = [
   },
 ]
 
-test('buildGenesisFaqTemplateValues formats on-chain presale fields', async () => {
-  const { buildGenesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/genesis-faq.ts')
+test('genesisFaqTemplateValues formats on-chain presale fields', async () => {
+  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/genesis-faq.ts')
 
-  const values = buildGenesisFaqTemplateValues(samplePhases, 5000)
+  const values = genesisFaqTemplateValues(samplePhases, 5000)
 
   assert.equal(values.phaseCount, '3')
   assert.equal(values.phaseDurationDays, '5')
   assert.equal(values.discounts, '30% / 25% / 20%')
   assert.equal(values.minUsd, '$100')
   assert.equal(values.shareIncrement, '100')
-  assert.equal(
-    values.phaseQuotas,
-    '$100–$10,000 / $100–$20,000 / $100–$30,000',
-  )
+  assert.equal(values.phaseQuotas, '$100–$10,000 / $100–$20,000 / $100–$30,000')
   assert.equal(values.threshold, '$5,000')
   assert.equal(values.airdropRatios, '5% / 2% / 1%')
 })
 
-test('buildGenesisFaqTemplateValues returns ellipsis while loading', async () => {
-  const { buildGenesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/genesis-faq.ts')
+test('genesisFaqTemplateValues returns ellipsis while loading', async () => {
+  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/genesis-faq.ts')
 
-  const values = buildGenesisFaqTemplateValues([], 5000, true)
+  const values = genesisFaqTemplateValues([], 5000, true)
 
   assert.equal(values.phaseCount, '…')
   assert.equal(values.threshold, '…')
 })
 
-test('buildGenesisFaqTemplateValues supports dynamic phase count and varying durations', async () => {
-  const { buildGenesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/genesis-faq.ts')
+test('genesisFaqTemplateValues supports dynamic phase count and varying durations', async () => {
+  const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/genesis-faq.ts')
 
   const sixPhases = [
     ...samplePhases,
@@ -105,7 +102,7 @@ test('buildGenesisFaqTemplateValues supports dynamic phase count and varying dur
     },
   ]
 
-  const values = buildGenesisFaqTemplateValues(sixPhases, 5000)
+  const values = genesisFaqTemplateValues(sixPhases, 5000)
 
   assert.equal(values.phaseCount, '6')
   assert.equal(values.phaseDurationDays, '5 / 5 / 5 / 6 / 5 / 5')

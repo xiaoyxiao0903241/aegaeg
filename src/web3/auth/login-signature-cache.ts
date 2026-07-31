@@ -97,7 +97,7 @@ function parseSiweExpirationMs(message: string): number | null {
 export function isLoginSignatureUsable(cached: StoredLoginSignature, now = Date.now()): boolean {
   const expirationMs = parseSiweExpirationMs(cached.message)
   if (expirationMs === null) {
-    // No Expiration Time: short fallback only (messages from build-login-message always include one).
+    // No Expiration Time: short fallback only (messages from login-message always include one).
     return now - cached.savedAt < 5 * 60 * 1000
   }
 

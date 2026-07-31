@@ -1,11 +1,11 @@
 import {
   USD1_DECIMALS,
-  resolvePhaseCountdownTarget,
-  resolveRemainingPhaseAmount,
-  resolveRemainingUserAmount,
-  resolveSharePriceWei,
+  phaseCountdownTarget,
+  remainingPhaseAmount,
+  remainingUserAmount,
+  sharePriceWei,
   presaleAirdropThresholdToUsd,
-  resolveGenesisMaxShares,
+  genesisMaxShares,
 } from '~/core/presale/presale-math'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useActiveAccount } from '~/web3/thirdweb-react'
@@ -63,7 +63,7 @@ export function useGenesisChainReads() {
 
   const phases = phasesQuery.data ?? []
   const activePhase = activePhaseQuery.data ?? null
-  const sharePriceWei = resolveSharePriceWei(activePhase)
+  const priceWei = sharePriceWei(activePhase)
   const userTotal = userTotalQuery.data ?? 0n
   const phaseRemaining = phaseRemainingQuery.data ?? null
   const agxPriceWei = agxPriceQuery.data ?? 0n
@@ -86,19 +86,18 @@ export function useGenesisChainReads() {
   const discountBps = Number(activePhase?.discountBps ?? 0)
   const minAmount = activePhase?.minAmount ?? 0n
   const maxAmount = activePhase?.maxAmount ?? 0n
-  const remainingPhaseAmount = resolveRemainingPhaseAmount(phaseRemaining, activePhase)
-  const remainingUserAmount = resolveRemainingUserAmount(phaseRemaining, activePhase, maxAmount)
-  const maxShares = resolveGenesisMaxShares({
-    sharePriceWei,
-    remainingPhaseAmount,
-    remainingUserAmount,
+  const phaseLeft = remainingPhaseAmount(phaseRemaining, activePhase)
+  const userLeft = remainingUserAmount(phaseRemaining, activePhase, maxAmount)
+  const maxShares = genesisMaxShares({
+    sharePriceWei: priceWei,
+    remainingPhaseAmount: phaseLeft,
+    remainingUserAmount: userLeft,
     usd1Balance,
     walletReady,
   })
-  const maxPurchasableWei =
-    remainingPhaseAmount < remainingUserAmount ? remainingPhaseAmount : remainingUserAmount
+  const maxPurchasableWei = phaseLeft < userLeft ? phaseLeft : userLeft
 
-  const countdownTarget = resolvePhaseCountdownTarget(phases, nowSeconds)
+  const countdownTarget = phaseCountdownTarget(phases, nowSeconds)
 
   const queryError =
     phasesQuery.error ??
@@ -116,7 +115,7 @@ export function useGenesisChainReads() {
     phases,
     activePhase,
     phaseIndex,
-    sharePriceWei,
+    sharePriceWei: priceWei,
     userTotal,
     phaseRemaining,
     usd1Balance,

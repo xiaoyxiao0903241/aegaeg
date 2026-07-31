@@ -138,7 +138,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           <DappActionRow>
             <DappActionButton
               density="external"
-              disabled={!bond.canSubmit && bond.gate !== 'notBound'}
+              disabled={!bond.canSubmit && bond.blockReason !== 'notBound'}
               loading={bond.isSubmitting}
               onClick={() => void onSubmit()}
             >

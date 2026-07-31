@@ -4,7 +4,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { useStakingViewStore } from '~/stores/staking-view-store'
 import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
-import { BOND_ZAP_GATE_ERROR, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
+import { BOND_ZAP_BLOCKED, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
 import { readErrorText } from '~/web3/errors/error-text'
 
@@ -19,12 +19,12 @@ export function useBondView(kind: BondKind) {
       toast.success(copy.success)
     },
     onError: (error) => {
-      if (readErrorText(error) === BOND_ZAP_GATE_ERROR.notBound) goBindReferral()
+      if (readErrorText(error) === BOND_ZAP_BLOCKED.notBound) goBindReferral()
     },
   })
 
   const ctaLabel = writeCtaLabel(bond.writePhase, {
-    accountMigrated: t.staking.gates.accountMigrated,
+    accountMigrated: t.staking.blocked.accountMigrated,
     bindReferral: t.staking.stake.bindCta,
     submit: copy.submit,
   })
@@ -35,8 +35,8 @@ export function useBondView(kind: BondKind) {
   })
 
   async function onSubmit() {
-    if (bond.gate === 'accountMigrated') return
-    if (bond.gate === 'notBound') {
+    if (bond.blockReason === 'accountMigrated') return
+    if (bond.blockReason === 'notBound') {
       goBindReferral()
       return
     }

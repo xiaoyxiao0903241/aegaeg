@@ -1,5 +1,5 @@
 import { parseAbi } from 'viem'
-import { resolveAgxSellTaxBps } from '~/core/exchange/agx-sell-tax'
+import { agxSellTaxBps } from '~/core/exchange/agx-sell-tax'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { AGX_SELL_TAX_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
@@ -34,5 +34,5 @@ export async function readAgxSellTaxBps(
     }),
   ])
 
-  return resolveAgxSellTaxBps({ crashFuseActive, sellRatio, extraSellBP })
+  return agxSellTaxBps({ crashFuseActive, sellRatio, extraSellBP })
 }

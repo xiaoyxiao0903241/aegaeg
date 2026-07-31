@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getInitialTab, resolveDappLocationFromHash } from '~/shared/config/exchange-deep-link'
+import { getInitialTab, dappLocationFromHash } from '~/shared/config/exchange-deep-link'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
@@ -95,7 +95,7 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
   toggleDetailCollapsed: () => set((state) => ({ detailCollapsed: !state.detailCollapsed })),
   setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
   syncTabFromHash: () => {
-    const loc = resolveDappLocationFromHash(window.location.hash.slice(1))
+    const loc = dappLocationFromHash(window.location.hash.slice(1))
     if (!loc) return
     set({ activeTab: loc.tab })
     if (loc.tab === 'exchange' && loc.exchangeView) {

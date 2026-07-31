@@ -28,7 +28,7 @@ function emptyViews(tab, patch = {}) {
   }
 }
 
-function resolveDappLocationFromHash(hash) {
+function dappLocationFromHash(hash) {
   const raw = hash.replace(/^#/, '').trim()
   if (!raw) return null
   if (raw === 'swap') return emptyViews('exchange', { exchangeView: 'hub' })
@@ -73,38 +73,38 @@ const empty = {
 }
 
 test('EX-B4 deep link resolves exchange/burn', () => {
-  assert.deepEqual(resolveDappLocationFromHash('exchange/burn'), {
+  assert.deepEqual(dappLocationFromHash('exchange/burn'), {
     tab: 'exchange',
     ...empty,
     exchangeView: 'burn',
   })
-  assert.deepEqual(resolveDappLocationFromHash('#exchange/turbine'), {
+  assert.deepEqual(dappLocationFromHash('#exchange/turbine'), {
     tab: 'exchange',
     ...empty,
     exchangeView: 'turbine',
   })
-  assert.deepEqual(resolveDappLocationFromHash('swap'), {
+  assert.deepEqual(dappLocationFromHash('swap'), {
     tab: 'exchange',
     ...empty,
     exchangeView: 'hub',
   })
-  assert.deepEqual(resolveDappLocationFromHash('genesis'), {
+  assert.deepEqual(dappLocationFromHash('genesis'), {
     tab: 'genesis',
     ...empty,
   })
 })
 
 test('staking deep link resolves hub and subviews', () => {
-  assert.deepEqual(resolveDappLocationFromHash('staking'), {
+  assert.deepEqual(dappLocationFromHash('staking'), {
     tab: 'staking',
     ...empty,
   })
-  assert.deepEqual(resolveDappLocationFromHash('#staking/stake'), {
+  assert.deepEqual(dappLocationFromHash('#staking/stake'), {
     tab: 'staking',
     ...empty,
     stakingView: 'stake',
   })
-  assert.deepEqual(resolveDappLocationFromHash('staking/nope'), {
+  assert.deepEqual(dappLocationFromHash('staking/nope'), {
     tab: 'staking',
     ...empty,
     stakingView: 'hub',
@@ -112,16 +112,16 @@ test('staking deep link resolves hub and subviews', () => {
 })
 
 test('assets deep link resolves hub and subviews', () => {
-  assert.deepEqual(resolveDappLocationFromHash('assets'), {
+  assert.deepEqual(dappLocationFromHash('assets'), {
     tab: 'assets',
     ...empty,
   })
-  assert.deepEqual(resolveDappLocationFromHash('#assets/stake'), {
+  assert.deepEqual(dappLocationFromHash('#assets/stake'), {
     tab: 'assets',
     ...empty,
     assetsView: 'stake',
   })
-  assert.deepEqual(resolveDappLocationFromHash('assets/nope'), {
+  assert.deepEqual(dappLocationFromHash('assets/nope'), {
     tab: 'assets',
     ...empty,
     assetsView: 'hub',
@@ -129,16 +129,16 @@ test('assets deep link resolves hub and subviews', () => {
 })
 
 test('rewards deep link resolves hub and six cards', () => {
-  assert.deepEqual(resolveDappLocationFromHash('rewards'), {
+  assert.deepEqual(dappLocationFromHash('rewards'), {
     tab: 'rewards',
     ...empty,
   })
-  assert.deepEqual(resolveDappLocationFromHash('#rewards/lucky'), {
+  assert.deepEqual(dappLocationFromHash('#rewards/lucky'), {
     tab: 'rewards',
     ...empty,
     rewardsView: 'lucky',
   })
-  assert.deepEqual(resolveDappLocationFromHash('rewards/legacy'), {
+  assert.deepEqual(dappLocationFromHash('rewards/legacy'), {
     tab: 'rewards',
     ...empty,
     rewardsView: 'hub',
@@ -146,26 +146,26 @@ test('rewards deep link resolves hub and six cards', () => {
 })
 
 test('release deep link resolves hub|queue|buffer and rejects rewards subview name', () => {
-  assert.deepEqual(resolveDappLocationFromHash('release'), {
+  assert.deepEqual(dappLocationFromHash('release'), {
     tab: 'release',
     ...empty,
   })
-  assert.deepEqual(resolveDappLocationFromHash('#release/queue'), {
+  assert.deepEqual(dappLocationFromHash('#release/queue'), {
     tab: 'release',
     ...empty,
     releaseView: 'queue',
   })
-  assert.deepEqual(resolveDappLocationFromHash('release/buffer'), {
+  assert.deepEqual(dappLocationFromHash('release/buffer'), {
     tab: 'release',
     ...empty,
     releaseView: 'buffer',
   })
-  assert.deepEqual(resolveDappLocationFromHash('release/rewards'), {
+  assert.deepEqual(dappLocationFromHash('release/rewards'), {
     tab: 'release',
     ...empty,
     releaseView: 'hub',
   })
-  assert.deepEqual(resolveDappLocationFromHash('release/nope'), {
+  assert.deepEqual(dappLocationFromHash('release/nope'), {
     tab: 'release',
     ...empty,
     releaseView: 'hub',

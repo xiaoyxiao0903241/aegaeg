@@ -26,10 +26,9 @@ test('deriveAuthState reduces wallet + jwt cache to a single state', async () =>
   const expiredSession = makeSession('0xAbC', nowSec - 60)
 
   // No wallet → disconnected
-  assert.deepEqual(
-    deriveAuthState({ walletAddress: undefined, sessionsByAddress: {}, now }),
-    { kind: 'disconnected' },
-  )
+  assert.deepEqual(deriveAuthState({ walletAddress: undefined, sessionsByAddress: {}, now }), {
+    kind: 'disconnected',
+  })
 
   // Wallet + valid cached jwt → sessionReady (session is derived from the table)
   const authed = deriveAuthState({
@@ -41,10 +40,9 @@ test('deriveAuthState reduces wallet + jwt cache to a single state', async () =>
   assert.equal(authed.session.token, validSession.token)
 
   // Wallet but no cached jwt → needsLogin
-  assert.deepEqual(
-    deriveAuthState({ walletAddress: '0xabc', sessionsByAddress: {}, now }),
-    { kind: 'needsLogin' },
-  )
+  assert.deepEqual(deriveAuthState({ walletAddress: '0xabc', sessionsByAddress: {}, now }), {
+    kind: 'needsLogin',
+  })
 
   // Wallet + expired cached jwt → needsLogin
   assert.deepEqual(
@@ -57,23 +55,20 @@ test('deriveAuthState reduces wallet + jwt cache to a single state', async () =>
   )
 })
 
-test('buildLoginAttemptKey fingerprints address + token + signature', async () => {
-  const { buildLoginAttemptKey } = await loadModule('/src/core/auth/auth-machine.ts')
+test('loginAttemptKey fingerprints address + token + signature', async () => {
+  const { loginAttemptKey } = await loadModule('/src/core/auth/auth-machine.ts')
   const session = makeSession('0xAbC', 2_000_000)
   const signature = { address: '0xabc', message: 'm', signature: 's', savedAt: 42 }
 
-  const key = buildLoginAttemptKey('0xABC', session, signature)
+  const key = loginAttemptKey('0xABC', session, signature)
   // Case-insensitive on address, stable for identical inputs.
-  assert.equal(key, buildLoginAttemptKey('0xabc', session, signature))
+  assert.equal(key, loginAttemptKey('0xabc', session, signature))
 
   // Losing the session (e.g. after a 401 purge) changes the key → one new attempt allowed.
-  assert.notEqual(key, buildLoginAttemptKey('0xabc', null, signature))
+  assert.notEqual(key, loginAttemptKey('0xabc', null, signature))
 
   // Same null-session + same signature → identical key → no repeated attempt (loop guard).
-  assert.equal(
-    buildLoginAttemptKey('0xabc', null, signature),
-    buildLoginAttemptKey('0xabc', null, signature),
-  )
+  assert.equal(loginAttemptKey('0xabc', null, signature), loginAttemptKey('0xabc', null, signature))
 })
 
 test('deriveAuthAction decides idle / login / renew', async () => {
@@ -89,17 +84,11 @@ test('deriveAuthAction decides idle / login / renew', async () => {
   }
 
   // disconnected → idle
-  assert.deepEqual(
-    deriveAuthAction({ ...base, state: { kind: 'disconnected' } }),
-    { type: 'idle' },
-  )
+  assert.deepEqual(deriveAuthAction({ ...base, state: { kind: 'disconnected' } }), { type: 'idle' })
 
   // needsLogin + clean guards → auto-login. Silent when a cached signature
   // exists; prompts the wallet once when it does not (loop guard dedupes).
-  assert.deepEqual(
-    deriveAuthAction({ ...base, state: { kind: 'needsLogin' } }),
-    { type: 'login' },
-  )
+  assert.deepEqual(deriveAuthAction({ ...base, state: { kind: 'needsLogin' } }), { type: 'login' })
 
   // needsLogin while a login is in flight → idle
   assert.deepEqual(
@@ -115,13 +104,22 @@ test('deriveAuthAction decides idle / login / renew', async () => {
 
   // needsLogin after a transient error → retry login
   assert.deepEqual(
-    deriveAuthAction({ ...base, loginError: 'Network request failed', state: { kind: 'needsLogin' } }),
+    deriveAuthAction({
+      ...base,
+      loginError: 'Network request failed',
+      state: { kind: 'needsLogin' },
+    }),
     { type: 'login' },
   )
 
   // needsLogin but this exact input was already attempted → idle (dedupe / loop guard)
   assert.deepEqual(
-    deriveAuthAction({ ...base, lastAttemptKey: 'k1', attemptKey: 'k1', state: { kind: 'needsLogin' } }),
+    deriveAuthAction({
+      ...base,
+      lastAttemptKey: 'k1',
+      attemptKey: 'k1',
+      state: { kind: 'needsLogin' },
+    }),
     { type: 'idle' },
   )
 
@@ -130,7 +128,10 @@ test('deriveAuthAction decides idle / login / renew', async () => {
   assert.deepEqual(
     deriveAuthAction({
       ...base,
-      state: { kind: 'sessionReady', session: { token: 't', address: '0x1', savedAt: 0, expiresAt } },
+      state: {
+        kind: 'sessionReady',
+        session: { token: 't', address: '0x1', savedAt: 0, expiresAt },
+      },
     }),
     { type: 'renewAt', at: expiresAt - renewThresholdMs },
   )

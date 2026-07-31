@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /** Returns href when it is a non-empty http(s) URL; otherwise null (no navigation). */
-export function resolveNavigableHref(href: string): string | null {
+export function navigableHref(href: string): string | null {
   const trimmed = href.trim()
   if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
     return null

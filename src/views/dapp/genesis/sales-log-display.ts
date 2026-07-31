@@ -1,7 +1,7 @@
 import type { SalesLogItem } from '~/shared/api/types'
 import {
   estimateAgxFromUsd1,
-  resolvePhaseDiscountBps,
+  phaseDiscountBps,
   type PresalePhaseOnChain,
 } from '~/core/presale/presale-math'
 import {
@@ -29,7 +29,7 @@ function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions
 
   const estimated = estimateAgxFromUsd1(
     amountUsd1,
-    resolvePhaseDiscountBps(item.phase_id, options.phases),
+    phaseDiscountBps(item.phase_id, options.phases),
     agxPriceUsd,
   )
   return estimated > 0 ? formatGroupedNumber(estimated, { digits: 2 }) : TABLE_EMPTY
@@ -42,7 +42,7 @@ export function mapSalesLogToDesktopRow(
   return [
     formatBlockTime(item.block_time),
     formatGroupedNumber(Number(item.amount), { digits: 0, prefix: '$' }),
-    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, options.phases)),
+    formatDiscountBps(phaseDiscountBps(item.phase_id, options.phases)),
     formatSalesLogAgx(item, options),
     item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
   ]

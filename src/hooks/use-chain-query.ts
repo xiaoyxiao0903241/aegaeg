@@ -7,17 +7,14 @@ import {
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
-import {
-  resolveChainQueryEnabled,
-  type ChainQueryScope,
-} from '~/core/wallet/resolve-chain-query-enabled'
+import { chainQueryEnabled, type ChainQueryScope } from '~/core/wallet/chain-query-enabled'
 
 export type ChainQueryFreshness = keyof typeof QUERY_STALE_TIME
 
 type ChainQueryBase<TData> = {
   /** Default `balances` (U). Never use for submit-time live gates (L). */
   freshness?: ChainQueryFreshness
-  /** Domain gate; AND-ed with scope. Default true. */
+  /** Domain enabled; AND-ed with scope. Default true. */
   enabled?: boolean
   placeholderData?: UseQueryOptions<TData, Error, TData, QueryKey>['placeholderData']
   refetchInterval?: number | false
@@ -68,7 +65,7 @@ export function useChainQuery<TData>(args: UseChainQueryArgs<TData>): UseQueryRe
       }
       return (args as UsePublicChainQueryArgs<TData>).queryFn()
     },
-    enabled: resolveChainQueryEnabled({
+    enabled: chainQueryEnabled({
       scope,
       enabled: args.enabled,
       address: walletAddress,

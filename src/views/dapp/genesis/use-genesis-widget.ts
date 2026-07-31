@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useActiveWallet } from '~/web3/thirdweb-react'
-import { buildPhaseCountdownKey, hasPhaseCountdownElapsed } from '~/core/presale/presale-math'
+import { phaseCountdownKey, hasPhaseCountdownElapsed } from '~/core/presale/presale-math'
 import { invalidateAfterGenesisPhaseTransition } from '~/shared/api/query/invalidate'
 import { useI18n } from '~/i18n/use-i18n'
-import { buildGenesisWidgetModel } from '~/views/dapp/genesis/build-genesis-widget-model'
+import { genesisPurchaseSummary } from '~/views/dapp/genesis/genesis-purchase-summary'
 import { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 import { useGenesisPurchaseActions } from '~/views/dapp/genesis/use-genesis-purchase-actions'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -17,7 +17,7 @@ export function useGenesisWidget() {
   const countdownRefreshRef = useRef<string | null>(null)
   const [sharesDraft, setSharesDraft] = useState(0)
 
-  const model = buildGenesisWidgetModel({
+  const model = genesisPurchaseSummary({
     reads,
     sharesDraft,
     countdownUnits: t.genesis.countdownUnits,
@@ -57,7 +57,7 @@ export function useGenesisWidget() {
       return
     }
 
-    const countdownKey = buildPhaseCountdownKey(countdownTarget)
+    const countdownKey = phaseCountdownKey(countdownTarget)
     if (!countdownKey || countdownRefreshRef.current === countdownKey) {
       return
     }

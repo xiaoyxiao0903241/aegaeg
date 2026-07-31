@@ -53,14 +53,14 @@ test('parseReferrerFromSearch reads ref query param', async () => {
   assert.equal(parseReferrerFromSearch('?foo=bar'), null)
 })
 
-test('resolveDisplayReferrer prefers API invite_address over chain referrer', async () => {
-  const { resolveDisplayReferrer } = await loadModule('/src/shared/config/referral.ts')
+test('displayReferrer prefers API invite_address over chain referrer', async () => {
+  const { displayReferrer } = await loadModule('/src/shared/config/referral.ts')
 
   const apiAddress = '0x1111111111111111111111111111111111111111'
   const chainAddress = '0x2222222222222222222222222222222222222222'
 
   assert.equal(
-    resolveDisplayReferrer({
+    displayReferrer({
       isBound: true,
       inviteAddress: apiAddress,
       chainReferrer: chainAddress,
@@ -69,13 +69,13 @@ test('resolveDisplayReferrer prefers API invite_address over chain referrer', as
   )
 })
 
-test('resolveDisplayReferrer falls back to chain referrer when API is missing', async () => {
-  const { resolveDisplayReferrer } = await loadModule('/src/shared/config/referral.ts')
+test('displayReferrer falls back to chain referrer when API is missing', async () => {
+  const { displayReferrer } = await loadModule('/src/shared/config/referral.ts')
 
   const chainAddress = '0x2222222222222222222222222222222222222222'
 
   assert.equal(
-    resolveDisplayReferrer({
+    displayReferrer({
       isBound: true,
       inviteAddress: null,
       chainReferrer: chainAddress,
@@ -83,7 +83,7 @@ test('resolveDisplayReferrer falls back to chain referrer when API is missing', 
     chainAddress,
   )
   assert.equal(
-    resolveDisplayReferrer({
+    displayReferrer({
       isBound: true,
       inviteAddress: '',
       chainReferrer: chainAddress,
@@ -92,11 +92,11 @@ test('resolveDisplayReferrer falls back to chain referrer when API is missing', 
   )
 })
 
-test('resolveDisplayReferrer returns null when user is not bound', async () => {
-  const { resolveDisplayReferrer } = await loadModule('/src/shared/config/referral.ts')
+test('displayReferrer returns null when user is not bound', async () => {
+  const { displayReferrer } = await loadModule('/src/shared/config/referral.ts')
 
   assert.equal(
-    resolveDisplayReferrer({
+    displayReferrer({
       isBound: false,
       inviteAddress: '0x1111111111111111111111111111111111111111',
       chainReferrer: '0x2222222222222222222222222222222222222222',

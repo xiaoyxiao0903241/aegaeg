@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { revealClass } from '~/shared/lib/reveal'
-import { cn, resolveNavigableHref } from '~/shared/lib/utils'
+import { cn, navigableHref } from '~/shared/lib/utils'
 
 export const communityProgramGrid = tv({
   base: cn('grid grid-cols-2 gap-2', 'max-dapp:grid-cols-1'),
@@ -46,7 +46,7 @@ export function CommunityProgramCard({
   title: ReactNode
 }) {
   const styles = communityProgramCard()
-  const navigableHref = resolveNavigableHref(href)
+  const safeHref = navigableHref(href)
 
   const actionNode = (
     <Text as="span" variant="copy" className="font-semibold text-coral">
@@ -65,10 +65,10 @@ export function CommunityProgramCard({
       <Text as="p" variant="copy" tone="muted-foreground" className="m-0">
         {body}
       </Text>
-      {navigableHref ? (
+      {safeHref ? (
         <a
           className={cn(styles.action(), 'no-underline')}
-          href={navigableHref}
+          href={safeHref}
           rel="noopener noreferrer"
           target="_blank"
         >

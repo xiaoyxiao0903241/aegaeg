@@ -17,10 +17,8 @@ test('calcAmountOutMin rejects invalid slippage', async () => {
   assert.throws(() => calcAmountOutMin(100n, 10_000), /slippage/i)
 })
 
-test('buildExchangeDeadline returns unix seconds in the future', async () => {
-  const { buildExchangeDeadline } = await loadModule(
-    '/src/core/exchange/build-exchange-deadline.ts',
-  )
+test('exchangeDeadline returns unix seconds in the future', async () => {
+  const { exchangeDeadline } = await loadModule('/src/core/exchange/exchange-deadline.ts')
   const now = 1_700_000_000
-  assert.equal(buildExchangeDeadline(20 * 60, now), 1_700_001_200)
+  assert.equal(exchangeDeadline(20 * 60, now), 1_700_001_200)
 })

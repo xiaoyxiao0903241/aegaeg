@@ -1,4 +1,4 @@
-import { resolveNotionLink } from '~/shared/config/notion-links'
+import { notionLink } from '~/shared/config/notion-links'
 import type { Locale } from '~/i18n/locales'
 
 export const COMMUNITY_SOCIAL_LINKS = {
@@ -10,7 +10,7 @@ export const COMMUNITY_SOCIAL_LINKS = {
 
 export type CommunitySocialLinkId = keyof typeof COMMUNITY_SOCIAL_LINKS
 
-export function resolveCommunitySocialLink(id: CommunitySocialLinkId) {
+export function communitySocialLink(id: CommunitySocialLinkId) {
   return COMMUNITY_SOCIAL_LINKS[id]
 }
 
@@ -38,13 +38,13 @@ const COMMUNITY_LINK_ICONS = {
   telegram: '/assets/figma/dapp/ic-telegram.svg',
 } as const
 
-export function buildCommunityQuickLinkItems(
+export function communityQuickLinkItems(
   labels: CommunityQuickLinkLabels,
   locale: Locale,
 ): CommunityQuickLinkItem[] {
   return [
     {
-      href: resolveNotionLink(locale, 'docs'),
+      href: notionLink(locale, 'docs'),
       icon: COMMUNITY_LINK_ICONS.docs,
       label: labels.docs,
     },

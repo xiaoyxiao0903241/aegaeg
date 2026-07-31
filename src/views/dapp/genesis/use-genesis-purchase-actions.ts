@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/presale-write'
-import { GENESIS_PURCHASE_ERROR } from '~/web3/resolve-contract-error-message'
+import { GENESIS_PURCHASE_ERROR } from '~/web3/contract-error-message'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
@@ -13,7 +13,7 @@ import {
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { readPresalePaused } from '~/web3/presale/presale-read'
-import { fetchLiveGenesisPostApproveGate } from '~/views/dapp/genesis/fetch-live-genesis-post-approve-gate'
+import { fetchLiveGenesisPostApprove } from '~/views/dapp/genesis/fetch-live-genesis-post-approve'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
 import { goBindReferral } from '~/app/shell/go-bind-referral'
@@ -21,7 +21,7 @@ import { readErrorText } from '~/web3/errors/error-text'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 /** Survives Genesis session unmount when user switches tabs mid-tx. */
-const genesisPurchaseGate = { inFlight: false }
+const genesisPurchaseBlock = { inFlight: false }
 
 type UseGenesisPurchaseActionsArgs = {
   wallet: {
@@ -43,7 +43,7 @@ type UseGenesisPurchaseActionsArgs = {
   }
 }
 
-/** Approve → re-gate → purchase orchestration for Genesis. Envelope in `useChainMutation`. */
+/** Approve → re-check → purchase orchestration for Genesis. Envelope in `useChainMutation`. */
 export function useGenesisPurchaseActions({
   wallet: { address },
   phase: { activePhase, isPaused, isPausedUnknown, isBoundQueryData },
@@ -59,7 +59,7 @@ export function useGenesisPurchaseActions({
   const purchaseMutation = useChainMutation({
     path: WRITE_PATH.GENESIS,
     mutation: async (_vars, session): Promise<true> => {
-      if (genesisPurchaseGate.inFlight) {
+      if (genesisPurchaseBlock.inFlight) {
         throw GENESIS_PURCHASE_ERROR.UNAVAILABLE
       }
       const { wallet, account, address: sessionAddress } = session
@@ -76,7 +76,7 @@ export function useGenesisPurchaseActions({
         throw GENESIS_PURCHASE_ERROR.UNAVAILABLE
       }
 
-      genesisPurchaseGate.inFlight = true
+      genesisPurchaseBlock.inFlight = true
       try {
         if (needsApproval && !isApproved) {
           await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
@@ -92,8 +92,8 @@ export function useGenesisPurchaseActions({
           }
         }
 
-        // Live re-gate always (money-path: [approve?] → live bind/pause → purchase).
-        const gate = await fetchLiveGenesisPostApproveGate({
+        // Live re-check always (money-path: [approve?] → live bind/pause → purchase).
+        const blockReason = await fetchLiveGenesisPostApprove({
           address: sessionAddress,
           fetchIsBound: (addr) =>
             queryClient.fetchQuery({
@@ -108,8 +108,8 @@ export function useGenesisPurchaseActions({
               staleTime: 0,
             }),
         })
-        if (!gate.ok) {
-          throw gate.reason === 'not_bound'
+        if (!blockReason.ok) {
+          throw blockReason.reason === 'not_bound'
             ? GENESIS_PURCHASE_ERROR.NOT_BOUND
             : GENESIS_PURCHASE_ERROR.UNAVAILABLE
         }
@@ -150,11 +150,11 @@ export function useGenesisPurchaseActions({
         invalidateAfterGenesisPurchase(account.address, purchaseAmount)
         return true
       } finally {
-        genesisPurchaseGate.inFlight = false
+        genesisPurchaseBlock.inFlight = false
       }
     },
     onError: (error) => {
-      // GX-R1: referral gate — action toast replaces default (suppress double toast).
+      // GX-R1: referral check — action toast replaces default (suppress double toast).
       if (readErrorText(error) !== GENESIS_PURCHASE_ERROR.NOT_BOUND) return
       toast.error(t.genesis.errors.notBound, {
         id: 'genesis-not-bound',
@@ -170,7 +170,7 @@ export function useGenesisPurchaseActions({
   return {
     refresh,
     submitPurchase: () => purchaseMutation.mutate(),
-    isSubmitting: purchaseMutation.isPending || genesisPurchaseGate.inFlight,
-    isLocked: purchaseMutation.isLocked || genesisPurchaseGate.inFlight,
+    isSubmitting: purchaseMutation.isPending || genesisPurchaseBlock.inFlight,
+    isLocked: purchaseMutation.isLocked || genesisPurchaseBlock.inFlight,
   }
 }

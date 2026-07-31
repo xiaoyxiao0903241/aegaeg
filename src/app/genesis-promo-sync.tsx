@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { USD1_DECIMALS } from '~/core/presale/presale-math'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { buildSeasonOptions } from '~/core/presale/genesis-season-options'
-import { buildGenesisPromoSnapshot } from '~/core/presale/genesis-promo'
+import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
+import { genesisPromoSnapshot } from '~/core/presale/genesis-promo'
 import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
@@ -43,7 +43,7 @@ export function GenesisPromoSync() {
   const discountLabel = discountBps > 0 ? `-${(discountBps / 100).toFixed(0)}%` : '—'
 
   const seasonOptions = useMemo(
-    () => buildSeasonOptions(phases, agxPriceUsd, nowSeconds),
+    () => seasonOptionsFromPhases(phases, agxPriceUsd, nowSeconds),
     [agxPriceUsd, nowSeconds, phases],
   )
 
@@ -55,7 +55,7 @@ export function GenesisPromoSync() {
   }, [activePhase, phaseIndex, seasonOptions])
 
   const promoSnapshot = useMemo(
-    () => buildGenesisPromoSnapshot(phases, activePhase, agxPriceUsd, nowSeconds),
+    () => genesisPromoSnapshot(phases, activePhase, agxPriceUsd, nowSeconds),
     [activePhase, agxPriceUsd, nowSeconds, phases],
   )
 

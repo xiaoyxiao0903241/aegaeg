@@ -1,4 +1,4 @@
-import { releaseProgressBps } from '~/core/release/release-gates'
+import { releaseProgressBps } from '~/core/release/release-block-reasons'
 
 export function formatReleasePct(claimable: bigint, releasing: bigint): string {
   const bps = releaseProgressBps(claimable, releasing)

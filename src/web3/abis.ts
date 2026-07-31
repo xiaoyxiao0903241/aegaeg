@@ -318,7 +318,7 @@ export const REWARD_CLAIMER_ERRORS = [
   'error ErrorSignatureExpired()',
 ] as const
 
-/** OpenZeppelin ERC20 custom errors — selectors verified in resolve-contract-error-message. */
+/** OpenZeppelin ERC20 custom errors — selectors verified in contract-error-message. */
 export const ERC20_ERRORS = [
   'error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)',
   'error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed)',

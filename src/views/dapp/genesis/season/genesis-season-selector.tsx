@@ -20,7 +20,7 @@ import type { SeasonOption } from '~/core/presale/genesis-promo-types'
 export type { SeasonOption } from '~/core/presale/genesis-promo-types'
 
 /** Initial carousel snap only — users can still scroll freely afterward. */
-function resolveSeasonCarouselScrollIndex(activeIndex: number): number {
+function seasonCarouselScrollIndex(activeIndex: number): number {
   return Math.max(0, activeIndex)
 }
 
@@ -125,7 +125,7 @@ export function SeasonSelector({
     return seasons.findIndex((season) => season.active)
   }, [activePhaseIndex, seasons])
   const initialScrollIndex = useMemo(
-    () => resolveSeasonCarouselScrollIndex(activeSeasonIndex),
+    () => seasonCarouselScrollIndex(activeSeasonIndex),
     [activeSeasonIndex],
   )
   const carouselOpts = useMemo(

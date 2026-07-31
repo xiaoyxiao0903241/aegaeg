@@ -1,13 +1,13 @@
-import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
+import { WALLET_BLOCKED } from '~/web3/contract-error-message'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useCallback } from 'react'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import {
-  resolveClaimRewardOutcome,
+  claimRewardOutcome,
   type ClaimRewardExecuteResult,
-} from '~/core/rewards/resolve-claim-reward-outcome'
+} from '~/core/rewards/claim-reward-outcome'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import {
   claimCommunityFund,
@@ -40,7 +40,7 @@ export function useClaimReward(execute: RewardClaimExecutor) {
     path: WRITE_PATH.REWARD_CLAIM,
     mutation: async (_vars, session): Promise<ClaimRewardUiResult> => {
       if (!token || !sessionReady || !writeReady) {
-        throw WALLET_GATE_ERROR.NOT_CONNECTED
+        throw WALLET_BLOCKED.NOT_CONNECTED
       }
 
       const result = await execute({
@@ -48,7 +48,7 @@ export function useClaimReward(execute: RewardClaimExecutor) {
         token,
         onUnauthorized: invalidateSession,
       })
-      const outcome = resolveClaimRewardOutcome(result)
+      const outcome = claimRewardOutcome(result)
       // confirm_failed: on-chain succeeded — do not throw; views toast.warning vs success.
       if (outcome.shouldInvalidate) {
         invalidateAfterTeamClaim()

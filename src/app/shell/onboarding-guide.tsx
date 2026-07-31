@@ -17,7 +17,7 @@ const LazyTour = lazy(async () => {
   return { default: mod.Tour as TourComponent }
 })
 
-function buildSteps(): StepType[] {
+function onboardingSteps(): StepType[] {
   return ONBOARDING_STEP_IDS.map((id) => ({
     selector: tourSelector(id),
     content: '',
@@ -40,7 +40,7 @@ export function OnboardingGuide({
   const { messages: t } = useI18n()
   const [currentStep, setCurrentStep] = useState(0)
   const [disabledActions, setDisabledActions] = useState(false)
-  const steps = useMemo(() => buildSteps(), [])
+  const steps = useMemo(() => onboardingSteps(), [])
 
   const copy: OnboardingChromeCopy = {
     skip: t.onboarding.skip,

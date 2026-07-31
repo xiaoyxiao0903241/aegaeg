@@ -1,4 +1,4 @@
-import { resolveApiBaseUrl } from '~/shared/api/resolve-api-base-url'
+import { apiBaseUrl } from '~/shared/api/api-base-url'
 
 export interface ApiEnvelope<T> {
   code: number
@@ -36,14 +36,14 @@ export function createAuthHeader(token: string): { Authorization: string } {
 }
 
 export interface ApiClient {
-  buildUrl: (path: string) => string
+  urlFor: (path: string) => string
 }
 
 export function createApiClient(options: { baseUrl: string }): ApiClient {
   const normalizedBase = options.baseUrl.replace(/\/$/, '')
 
   return {
-    buildUrl(path: string) {
+    urlFor(path: string) {
       const normalizedPath = path.startsWith('/') ? path : `/${path}`
       return `${normalizedBase}${normalizedPath}`
     },
@@ -51,9 +51,9 @@ export function createApiClient(options: { baseUrl: string }): ApiClient {
 }
 
 export function getApiBaseUrl(): string {
-  return resolveApiBaseUrl()
+  return apiBaseUrl()
 }
 
-export function buildApiClientUrl(path: string): string {
-  return createApiClient({ baseUrl: getApiBaseUrl() }).buildUrl(path)
+export function apiClientUrl(path: string): string {
+  return createApiClient({ baseUrl: getApiBaseUrl() }).urlFor(path)
 }

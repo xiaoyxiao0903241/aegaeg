@@ -1,6 +1,6 @@
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
-import { ASSETS_GATE_ERROR } from '~/web3/errors/assets-write-gate-errors'
-import { BURN_GATE_ERROR } from '~/web3/errors/exchange-write-gate-errors'
+import { ASSETS_BLOCKED } from '~/web3/errors/assets-write-block-errors'
+import { BURN_BLOCKED } from '~/web3/errors/exchange-write-block-errors'
 import {
   type ErrorText,
   hasSelector,
@@ -8,81 +8,81 @@ import {
   readErrorCode,
   toErrorText,
 } from '~/web3/errors/error-text'
-import { RELEASE_GATE_ERROR } from '~/web3/errors/release-write-gate-errors'
-import { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
+import { RELEASE_BLOCKED } from '~/web3/errors/release-write-block-errors'
+import { REWARDS_BLOCKED } from '~/web3/errors/rewards-write-block-errors'
 import {
   CLAIM_CONFIRM_SYNC_FAILED,
   EXCHANGE_QUOTE_FAILED,
-  EXCHANGE_SUBMIT_GATE_FAILED,
-  FLASH_USD1_GATE_ERROR,
+  EXCHANGE_SUBMIT_BLOCKED,
+  FLASH_USD1_BLOCKED,
   GENESIS_PURCHASE_ERROR,
   REFERRAL_BIND_ERROR,
-  WALLET_GATE_ERROR,
+  WALLET_BLOCKED,
   WALLET_WRITE_ERROR,
 } from '~/web3/errors/sentinels'
 import {
-  BOND_ZAP_GATE_ERROR,
-  STAKING_GATE_ERROR,
-  XMINE_GATE_ERROR,
-} from '~/web3/errors/staking-write-gate-errors'
+  BOND_ZAP_BLOCKED,
+  STAKING_BLOCKED,
+  XMINE_BLOCKED,
+} from '~/web3/errors/staking-write-block-errors'
 
 type MessageFn = (t: AppMessagesBundle) => string
 
 /**
- * Exact soft-gate / domain sentinels → i18n.
+ * Exact soft-block / domain sentinels → i18n.
  * Soft gates stay locale-free strings; user messages live only here.
  */
 export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   // —— staking / bond / xmine ——
-  [STAKING_GATE_ERROR.accountMigrated]: (t) => t.staking.gates.accountMigrated,
-  [BOND_ZAP_GATE_ERROR.accountMigrated]: (t) => t.staking.gates.accountMigrated,
-  [STAKING_GATE_ERROR.notBound]: (t) => t.staking.gates.notBound,
-  [BOND_ZAP_GATE_ERROR.notBound]: (t) => t.staking.gates.notBound,
-  [STAKING_GATE_ERROR.insufficientBalance]: (t) => t.staking.gates.insufficientBalance,
-  [BOND_ZAP_GATE_ERROR.insufficientBalance]: (t) => t.staking.gates.insufficientBalance,
-  [XMINE_GATE_ERROR.insufficientBalance]: (t) => t.staking.gates.insufficientGagx,
-  [STAKING_GATE_ERROR.insufficientAllowance]: (t) => t.staking.gates.insufficientAllowance,
-  [BOND_ZAP_GATE_ERROR.insufficientAllowance]: (t) => t.staking.gates.insufficientAllowance,
-  [XMINE_GATE_ERROR.insufficientAllowance]: (t) => t.staking.gates.insufficientAllowance,
-  [STAKING_GATE_ERROR.insufficientQuota]: (t) => t.staking.gates.insufficientQuota,
-  [XMINE_GATE_ERROR.insufficientQuota]: (t) => t.staking.gates.insufficientQuota,
-  [STAKING_GATE_ERROR.poolPaused]: (t) => t.staking.gates.poolPaused,
-  [BOND_ZAP_GATE_ERROR.depositoryNotAuth]: (t) => t.staking.gates.depositoryNotAuth,
-  [STAKING_GATE_ERROR.zeroAmount]: (t) => t.staking.gates.zeroAmount,
-  [BOND_ZAP_GATE_ERROR.zeroAmount]: (t) => t.staking.gates.zeroAmount,
-  [XMINE_GATE_ERROR.zeroAmount]: (t) => t.staking.gates.zeroAmount,
-  [STAKING_GATE_ERROR.unavailable]: (t) => t.staking.gates.unavailable,
-  [BOND_ZAP_GATE_ERROR.unavailable]: (t) => t.staking.gates.unavailable,
-  [XMINE_GATE_ERROR.unavailable]: (t) => t.staking.gates.unavailable,
+  [STAKING_BLOCKED.accountMigrated]: (t) => t.staking.blocked.accountMigrated,
+  [BOND_ZAP_BLOCKED.accountMigrated]: (t) => t.staking.blocked.accountMigrated,
+  [STAKING_BLOCKED.notBound]: (t) => t.staking.blocked.notBound,
+  [BOND_ZAP_BLOCKED.notBound]: (t) => t.staking.blocked.notBound,
+  [STAKING_BLOCKED.insufficientBalance]: (t) => t.staking.blocked.insufficientBalance,
+  [BOND_ZAP_BLOCKED.insufficientBalance]: (t) => t.staking.blocked.insufficientBalance,
+  [XMINE_BLOCKED.insufficientBalance]: (t) => t.staking.blocked.insufficientGagx,
+  [STAKING_BLOCKED.insufficientAllowance]: (t) => t.staking.blocked.insufficientAllowance,
+  [BOND_ZAP_BLOCKED.insufficientAllowance]: (t) => t.staking.blocked.insufficientAllowance,
+  [XMINE_BLOCKED.insufficientAllowance]: (t) => t.staking.blocked.insufficientAllowance,
+  [STAKING_BLOCKED.insufficientQuota]: (t) => t.staking.blocked.insufficientQuota,
+  [XMINE_BLOCKED.insufficientQuota]: (t) => t.staking.blocked.insufficientQuota,
+  [STAKING_BLOCKED.poolPaused]: (t) => t.staking.blocked.poolPaused,
+  [BOND_ZAP_BLOCKED.depositoryNotAuth]: (t) => t.staking.blocked.depositoryNotAuth,
+  [STAKING_BLOCKED.zeroAmount]: (t) => t.staking.blocked.zeroAmount,
+  [BOND_ZAP_BLOCKED.zeroAmount]: (t) => t.staking.blocked.zeroAmount,
+  [XMINE_BLOCKED.zeroAmount]: (t) => t.staking.blocked.zeroAmount,
+  [STAKING_BLOCKED.unavailable]: (t) => t.staking.blocked.unavailable,
+  [BOND_ZAP_BLOCKED.unavailable]: (t) => t.staking.blocked.unavailable,
+  [XMINE_BLOCKED.unavailable]: (t) => t.staking.blocked.unavailable,
 
   // —— assets ——
-  [ASSETS_GATE_ERROR.zeroAmount]: (t) => t.assets.gates.zeroAmount,
-  [ASSETS_GATE_ERROR.insufficientReward]: (t) => t.assets.gates.insufficientReward,
-  [ASSETS_GATE_ERROR.insufficientContribution]: (t) => t.assets.gates.insufficientContribution,
-  [ASSETS_GATE_ERROR.releasePlanUnresolved]: (t) => t.assets.gates.planUnresolved,
-  [ASSETS_GATE_ERROR.restakePlanUnresolved]: (t) => t.assets.gates.planUnresolved,
-  [ASSETS_GATE_ERROR.nothingToRedeem]: (t) => t.assets.gates.nothingToRedeem,
-  [ASSETS_GATE_ERROR.warmupActive]: (t) => t.assets.gates.warmupActive,
-  [ASSETS_GATE_ERROR.warmupNotEnded]: (t) => t.assets.gates.warmupNotEnded,
-  [ASSETS_GATE_ERROR.noWarmup]: (t) => t.assets.gates.noWarmup,
-  [ASSETS_GATE_ERROR.unavailable]: (t) => t.assets.gates.unavailable,
+  [ASSETS_BLOCKED.zeroAmount]: (t) => t.assets.blocked.zeroAmount,
+  [ASSETS_BLOCKED.insufficientReward]: (t) => t.assets.blocked.insufficientReward,
+  [ASSETS_BLOCKED.insufficientContribution]: (t) => t.assets.blocked.insufficientContribution,
+  [ASSETS_BLOCKED.releasePlanUnresolved]: (t) => t.assets.blocked.planUnresolved,
+  [ASSETS_BLOCKED.restakePlanUnresolved]: (t) => t.assets.blocked.planUnresolved,
+  [ASSETS_BLOCKED.nothingToRedeem]: (t) => t.assets.blocked.nothingToRedeem,
+  [ASSETS_BLOCKED.warmupActive]: (t) => t.assets.blocked.warmupActive,
+  [ASSETS_BLOCKED.warmupNotEnded]: (t) => t.assets.blocked.warmupNotEnded,
+  [ASSETS_BLOCKED.noWarmup]: (t) => t.assets.blocked.noWarmup,
+  [ASSETS_BLOCKED.unavailable]: (t) => t.assets.blocked.unavailable,
 
   // —— release ——
-  [RELEASE_GATE_ERROR.zeroAmount]: (t) => t.assets.gates.zeroAmount,
-  [RELEASE_GATE_ERROR.planUnresolved]: (t) => t.assets.gates.planUnresolved,
-  [RELEASE_GATE_ERROR.lockedUnknown]: (t) => t.assets.gates.unavailable,
-  [RELEASE_GATE_ERROR.unavailable]: (t) => t.assets.gates.unavailable,
+  [RELEASE_BLOCKED.zeroAmount]: (t) => t.assets.blocked.zeroAmount,
+  [RELEASE_BLOCKED.planUnresolved]: (t) => t.assets.blocked.planUnresolved,
+  [RELEASE_BLOCKED.lockedUnknown]: (t) => t.assets.blocked.unavailable,
+  [RELEASE_BLOCKED.unavailable]: (t) => t.assets.blocked.unavailable,
 
   // —— rewards soft gates ——
-  [REWARDS_GATE_ERROR.insufficientContribution]: (t) => t.rewards.mixed.insufficientContribution,
-  [REWARDS_GATE_ERROR.luckyPaused]: (t) => t.rewards.mixed.luckyPaused,
-  [REWARDS_GATE_ERROR.luckyNotClaimable]: (t) => t.rewards.mixed.luckyNotClaimable,
-  [REWARDS_GATE_ERROR.zeroAmount]: (t) => t.rewards.claimErrors.zeroAmount,
-  [REWARDS_GATE_ERROR.signatureExpired]: (t) => t.rewards.claimErrors.expired,
-  [REWARDS_GATE_ERROR.insufficientReward]: (t) => t.rewards.claimErrors.failed,
-  [REWARDS_GATE_ERROR.releasePlanUnresolved]: (t) => t.rewards.claimErrors.failed,
-  [REWARDS_GATE_ERROR.restakePlanUnresolved]: (t) => t.rewards.claimErrors.failed,
-  [REWARDS_GATE_ERROR.unavailable]: (t) => t.rewards.claimErrors.failed,
+  [REWARDS_BLOCKED.insufficientContribution]: (t) => t.rewards.mixed.insufficientContribution,
+  [REWARDS_BLOCKED.luckyPaused]: (t) => t.rewards.mixed.luckyPaused,
+  [REWARDS_BLOCKED.luckyNotClaimable]: (t) => t.rewards.mixed.luckyNotClaimable,
+  [REWARDS_BLOCKED.zeroAmount]: (t) => t.rewards.claimErrors.zeroAmount,
+  [REWARDS_BLOCKED.signatureExpired]: (t) => t.rewards.claimErrors.expired,
+  [REWARDS_BLOCKED.insufficientReward]: (t) => t.rewards.claimErrors.failed,
+  [REWARDS_BLOCKED.releasePlanUnresolved]: (t) => t.rewards.claimErrors.failed,
+  [REWARDS_BLOCKED.restakePlanUnresolved]: (t) => t.rewards.claimErrors.failed,
+  [REWARDS_BLOCKED.unavailable]: (t) => t.rewards.claimErrors.failed,
   [CLAIM_CONFIRM_SYNC_FAILED]: (t) =>
     t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimErrors.failed,
 
@@ -93,8 +93,8 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [GENESIS_PURCHASE_ERROR.NOT_BOUND]: (t) => t.genesis.errors.notBound,
 
   // —— wallet / exchange soft gates ——
-  [WALLET_GATE_ERROR.NOT_CONNECTED]: (t) => t.errors.walletNotConnected,
-  [WALLET_GATE_ERROR.PENDING_UNKNOWN]: (t) =>
+  [WALLET_BLOCKED.NOT_CONNECTED]: (t) => t.errors.walletNotConnected,
+  [WALLET_BLOCKED.PENDING_UNKNOWN]: (t) =>
     t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
   [WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED]: (t) => t.wallet.transactionErrors.gasEstimateFailed,
   [WALLET_WRITE_ERROR.INTENT_ADDRESS_MISMATCH]: (t) =>
@@ -104,18 +104,18 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [WALLET_WRITE_ERROR.SUBMIT_UNKNOWN]: (t) =>
     t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
   [EXCHANGE_QUOTE_FAILED]: (t) => t.errors.quoteFailed,
-  [EXCHANGE_SUBMIT_GATE_FAILED]: (t) => t.errors.quoteFailed,
+  [EXCHANGE_SUBMIT_BLOCKED]: (t) => t.errors.quoteFailed,
 
   // —— flash / burn soft gates ——
-  [FLASH_USD1_GATE_ERROR.paused]: (t) => t.exchange.flash.gates.paused,
-  [FLASH_USD1_GATE_ERROR.belowMin]: (t) => t.exchange.flash.gates.belowMin,
-  [FLASH_USD1_GATE_ERROR.aboveMax]: (t) => t.exchange.flash.gates.aboveMax,
-  [FLASH_USD1_GATE_ERROR.insufficientReserve]: (t) => t.exchange.flash.gates.insufficientReserve,
-  [FLASH_USD1_GATE_ERROR.zeroRate]: (t) => t.exchange.flash.gates.zeroRate,
-  [BURN_GATE_ERROR.paused]: (t) => t.exchange.burn.gates.paused,
-  [BURN_GATE_ERROR.belowMin]: (t) => t.exchange.burn.gates.belowMin,
-  [BURN_GATE_ERROR.aboveMax]: (t) => t.exchange.burn.gates.aboveMax,
-  [BURN_GATE_ERROR.zeroRate]: (t) => t.exchange.burn.gates.zeroRate,
+  [FLASH_USD1_BLOCKED.paused]: (t) => t.exchange.flash.blocked.paused,
+  [FLASH_USD1_BLOCKED.belowMin]: (t) => t.exchange.flash.blocked.belowMin,
+  [FLASH_USD1_BLOCKED.aboveMax]: (t) => t.exchange.flash.blocked.aboveMax,
+  [FLASH_USD1_BLOCKED.insufficientReserve]: (t) => t.exchange.flash.blocked.insufficientReserve,
+  [FLASH_USD1_BLOCKED.zeroRate]: (t) => t.exchange.flash.blocked.zeroRate,
+  [BURN_BLOCKED.paused]: (t) => t.exchange.burn.blocked.paused,
+  [BURN_BLOCKED.belowMin]: (t) => t.exchange.burn.blocked.belowMin,
+  [BURN_BLOCKED.aboveMax]: (t) => t.exchange.burn.blocked.aboveMax,
+  [BURN_BLOCKED.zeroRate]: (t) => t.exchange.burn.blocked.zeroRate,
 
   // —— referral soft gates ——
   [REFERRAL_BIND_ERROR.INVALID_PARENT]: (t) => t.community.bindErrors.invalidParent,
@@ -196,7 +196,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'presale-migrated',
     match: nameOrSelector(/PreSaleMigratedAccount/i),
-    message: (t) => t.staking.gates.accountMigrated,
+    message: (t) => t.staking.blocked.accountMigrated,
   },
   {
     id: 'presale-system-config',
@@ -261,7 +261,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'am-migration',
     match: ({ raw }) => /\bAM__/i.test(raw),
-    message: (t) => t.staking.gates.accountMigrated,
+    message: (t) => t.staking.blocked.accountMigrated,
   },
   {
     id: 'claim-no-order',
@@ -283,17 +283,17 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'stake-not-approved',
     match: nameOrSelector(/ErrorStakeNotApproved/i),
-    message: (t) => t.staking.gates.notBound,
+    message: (t) => t.staking.blocked.notBound,
   },
   {
     id: 'not-approved-plain',
     match: ({ raw }) => /^Not approved$/i.test(raw.trim()),
-    message: (t) => t.staking.gates.notBound,
+    message: (t) => t.staking.blocked.notBound,
   },
   {
     id: 'bond-not-approved',
     match: nameOrSelector(/^ErrorNotApproved\b/i),
-    message: (t) => t.staking.gates.depositoryNotAuth,
+    message: (t) => t.staking.blocked.depositoryNotAuth,
   },
   {
     id: 'zero-amount',
@@ -305,7 +305,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     match: nameOrSelector(
       /Error(InsufficientBalance|ExceedsBalance|InvalidBalance|StakeAmountExceedsBalance)\b/i,
     ),
-    message: (t) => t.staking.gates.insufficientBalance,
+    message: (t) => t.staking.blocked.insufficientBalance,
   },
   {
     id: 'stake-amount-limit',
@@ -317,12 +317,12 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     match: nameOrSelector(
       /Error(StakeWarmupNotEnded|StillLocked|WarmupPending|StakeWarmupPeriod|WarmupActive)\b/i,
     ),
-    message: (t) => t.assets.gates.warmupNotEnded,
+    message: (t) => t.assets.blocked.warmupNotEnded,
   },
   {
     id: 'no-warmup',
     match: nameOrSelector(/ErrorNoWarmup\b/i),
-    message: (t) => t.assets.gates.noWarmup,
+    message: (t) => t.assets.blocked.noWarmup,
   },
   {
     id: 'reward-already-claimed',
@@ -354,7 +354,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'mining-quota',
     match: nameOrSelector(/ErrorMiningQuotaExceeded\b/i),
-    message: (t) => t.staking.gates.insufficientQuota,
+    message: (t) => t.staking.blocked.insufficientQuota,
   },
   {
     id: 'bond-too-small',
@@ -369,7 +369,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'invalid-bond-amount',
     match: nameOrSelector(/ErrorInvalidBondAmount\b/i),
-    message: (t) => t.staking.gates.zeroAmount,
+    message: (t) => t.staking.blocked.zeroAmount,
   },
   {
     id: 'stake-not-exist',
@@ -388,7 +388,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     match: nameOrSelector(
       /Error(NothingToClaim|IndexOutOfBounds|NoSilenceBalance|NotAvailable)\b/i,
     ),
-    message: (t) => t.assets.gates.nothingToRedeem,
+    message: (t) => t.assets.blocked.nothingToRedeem,
   },
   {
     id: 'turbine-cooldown',
@@ -403,7 +403,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'account-migrated',
     match: nameOrSelector(/Error(AccountMigrated|AlreadyMigrated)\b/i),
-    message: (t) => t.staking.gates.accountMigrated,
+    message: (t) => t.staking.blocked.accountMigrated,
   },
 
   // —— Shared Error* names (flash Usd1Swap + burn AgxContributionSwap collide on selector) ——
@@ -415,7 +415,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'flash-insufficient-usd1',
     match: nameOrSelector(/^ErrorInsufficientUsd1\b/i),
-    message: (t) => t.exchange.flash.gates.insufficientReserve,
+    message: (t) => t.exchange.flash.blocked.insufficientReserve,
   },
   {
     id: 'shared-below-min',
@@ -430,22 +430,22 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'flash-insufficient-output',
     match: nameOrSelector(/^ErrorInsufficientOutput\b/i),
-    message: (t) => t.exchange.flash.gates.insufficientOutput,
+    message: (t) => t.exchange.flash.blocked.insufficientOutput,
   },
   {
     id: 'flash-transfer-mismatch',
     match: nameOrSelector(/^ErrorTransferAmountMismatch\b/i),
-    message: (t) => t.exchange.flash.gates.transferMismatch,
+    message: (t) => t.exchange.flash.blocked.transferMismatch,
   },
   {
     id: 'flash-zero-address',
     match: nameOrSelector(/^ErrorZeroAddress\b/i),
-    message: (t) => t.exchange.flash.gates.zeroAddress,
+    message: (t) => t.exchange.flash.blocked.zeroAddress,
   },
   {
     id: 'flash-same-token',
     match: nameOrSelector(/^ErrorSameToken\b/i),
-    message: (t) => t.exchange.flash.gates.sameToken,
+    message: (t) => t.exchange.flash.blocked.sameToken,
   },
   {
     id: 'shared-zero-rate',
@@ -455,12 +455,12 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'flash-not-authorized',
     match: nameOrSelector(/^Error(CallerNotAuthorized|NotAuthorized|Unauthorized)\b/i),
-    message: (t) => t.exchange.flash.gates.notAuthorized,
+    message: (t) => t.exchange.flash.blocked.notAuthorized,
   },
   {
     id: 'flash-invalid-limits',
     match: nameOrSelector(/^ErrorInvalidLimits\b/i),
-    message: (t) => t.exchange.flash.gates.invalidLimits,
+    message: (t) => t.exchange.flash.blocked.invalidLimits,
   },
 
   // —— wallet gas / send (prior wallet-error.ts) ——

@@ -4,12 +4,12 @@
 
 ## 版本
 
-| 项 | 现状 |
-|----|------|
-| React | `^19.2.7` |
-| Vite | `^8` + `@vitejs/plugin-react` `^6` |
+| 项       | 现状                                               |
+| -------- | -------------------------------------------------- |
+| React    | `^19.2.7`                                          |
+| Vite     | `^8` + `@vitejs/plugin-react` `^6`                 |
 | Compiler | 全量（`vite.config.ts` → `reactCompilerPreset()`） |
-| 目标 | `chrome >= 90` + legacy plugin |
+| 目标     | `chrome >= 90` + legacy plugin                     |
 
 ## Compiler
 
@@ -26,7 +26,7 @@
 5. `set-state-in-effect` = **warn**；禁扩大 per-file 豁免
 6. `only-export-components` = **off**
 
-Money-path 表征测：`tests/unit/react-quality-gates.test.mjs`。
+Money-path 表征测：`tests/unit/react-quality-checks.test.mjs`。
 
 ## i18n
 
@@ -36,8 +36,8 @@ Money-path 表征测：`tests/unit/react-quality-gates.test.mjs`。
 
 ## 门禁
 
-| 命令 | 范围 |
-|------|------|
-| `pnpm check` | tsc + eslint error + architecture + unit |
-| pre-commit | staged eslint + tsc；无 e2e |
-| `pnpm test:e2e` | 手动 / 可选 |
+| 命令            | 范围                                     |
+| --------------- | ---------------------------------------- |
+| `pnpm check`    | tsc + eslint error + architecture + unit |
+| pre-commit      | staged eslint + tsc；无 e2e              |
+| `pnpm test:e2e` | 手动 / 可选                              |

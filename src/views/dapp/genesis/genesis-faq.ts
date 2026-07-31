@@ -47,7 +47,7 @@ function formatPhaseDurationDays(phases: PresalePhaseOnChain[]): string {
   return dayCounts.join(' / ')
 }
 
-function resolveMinUsd(phases: PresalePhaseOnChain[]): number {
+function minUsd(phases: PresalePhaseOnChain[]): number {
   const minAmounts = phases
     .map((phase) => Number(phase.minAmount) / 10 ** USD1_DECIMALS)
     .filter((amount) => amount > 0)
@@ -59,7 +59,7 @@ function resolveMinUsd(phases: PresalePhaseOnChain[]): number {
   return Math.min(...minAmounts)
 }
 
-function resolveShareIncrement(phases: PresalePhaseOnChain[]): string {
+function shareIncrement(phases: PresalePhaseOnChain[]): string {
   const minWei = phases[0]?.minAmount
   if (minWei && minWei > 0n) {
     return formatTokenAmount(minWei, USD1_DECIMALS, 0)
@@ -68,7 +68,7 @@ function resolveShareIncrement(phases: PresalePhaseOnChain[]): string {
   return '—'
 }
 
-export function buildGenesisFaqTemplateValues(
+export function genesisFaqTemplateValues(
   phases: PresalePhaseOnChain[],
   airdropThresholdUsd: number,
   isLoading = false,
@@ -88,14 +88,14 @@ export function buildGenesisFaqTemplateValues(
     }
   }
 
-  const minUsdNumber = resolveMinUsd(phases)
+  const minUsdNumber = minUsd(phases)
 
   return {
     phaseCount: String(phases.length),
     phaseDurationDays: formatPhaseDurationDays(phases),
     discounts: formatDiscountList(phases),
     minUsd: minUsdNumber > 0 ? formatGroupedNumber(minUsdNumber, { prefix: '$' }) : '—',
-    shareIncrement: resolveShareIncrement(phases),
+    shareIncrement: shareIncrement(phases),
     phaseQuotas: phases
       .map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount))
       .join(' / '),

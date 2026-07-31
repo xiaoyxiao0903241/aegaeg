@@ -1,6 +1,6 @@
 import { tv } from 'tailwind-variants'
 import { exchangeHubAssets } from '~/app/assets'
-import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap-gates'
+import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { openExchangeView } from '~/shared/config/open-exchange-view'

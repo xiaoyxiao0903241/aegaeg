@@ -6,11 +6,8 @@ test('createApiClient builds absolute URLs from base path', async () => {
   const { createApiClient } = await loadModule('/src/shared/api/client.ts')
   const client = createApiClient({ baseUrl: 'https://api.x-dao.io/api' })
 
-  assert.equal(client.buildUrl('/auth/login'), 'https://api.x-dao.io/api/auth/login')
-  assert.equal(
-    client.buildUrl('sales/logs?page=2'),
-    'https://api.x-dao.io/api/sales/logs?page=2',
-  )
+  assert.equal(client.urlFor('/auth/login'), 'https://api.x-dao.io/api/auth/login')
+  assert.equal(client.urlFor('sales/logs?page=2'), 'https://api.x-dao.io/api/sales/logs?page=2')
 })
 
 test('parseApiResponse returns data when code is zero', async () => {

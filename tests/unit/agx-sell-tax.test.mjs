@@ -3,21 +3,15 @@ import test from 'node:test'
 import {
   applyAgxSellTaxToAmountIn,
   isAgxSellPath,
-  resolveAgxSellTaxBps,
+  agxSellTaxBps,
 } from '../../src/core/exchange/agx-sell-tax.ts'
 
-test('resolveAgxSellTaxBps uses sellRatio when fuse off', () => {
-  assert.equal(
-    resolveAgxSellTaxBps({ crashFuseActive: false, sellRatio: 350n, extraSellBP: 3000n }),
-    350,
-  )
+test('agxSellTaxBps uses sellRatio when fuse off', () => {
+  assert.equal(agxSellTaxBps({ crashFuseActive: false, sellRatio: 350n, extraSellBP: 3000n }), 350)
 })
 
-test('resolveAgxSellTaxBps uses extraSellBP when fuse on', () => {
-  assert.equal(
-    resolveAgxSellTaxBps({ crashFuseActive: true, sellRatio: 350n, extraSellBP: 3000n }),
-    3000,
-  )
+test('agxSellTaxBps uses extraSellBP when fuse on', () => {
+  assert.equal(agxSellTaxBps({ crashFuseActive: true, sellRatio: 350n, extraSellBP: 3000n }), 3000)
 })
 
 test('applyAgxSellTaxToAmountIn subtracts tax from gross', () => {

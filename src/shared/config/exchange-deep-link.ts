@@ -48,7 +48,7 @@ function emptyViews(tab: DappTab, patch: Partial<DappLocation> = {}): DappLocati
  * Legacy: `#swap` → exchange hub.
  * Release subviews are `hub|queue|buffer` only — never `rewards`.
  */
-export function resolveDappLocationFromHash(hash: string): DappLocation | null {
+export function dappLocationFromHash(hash: string): DappLocation | null {
   const raw = hash.replace(/^#/, '').trim()
   if (!raw) return null
   if (raw === 'swap') return emptyViews('exchange', { exchangeView: 'hub' })
@@ -95,11 +95,11 @@ export function resolveDappLocationFromHash(hash: string): DappLocation | null {
 }
 
 /** Map URL hash → tab; legacy `#swap` and `#exchange/<view>` supported. */
-export function resolveTabFromHash(hash: string): DappTab | null {
-  return resolveDappLocationFromHash(hash)?.tab ?? null
+export function tabFromHash(hash: string): DappTab | null {
+  return dappLocationFromHash(hash)?.tab ?? null
 }
 
 /** Initial DApp tab from `window.location.hash` (browser-only). */
 export function getInitialTab(): DappTab {
-  return resolveTabFromHash(window.location.hash.slice(1)) ?? 'exchange'
+  return tabFromHash(window.location.hash.slice(1)) ?? 'exchange'
 }

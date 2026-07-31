@@ -9,7 +9,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { resolveLiveQuotedOut } from '~/core/exchange/resolve-live-quoted-out'
+import { liveQuotedOut } from '~/core/exchange/live-quoted-out'
 import { readFlashPairQuote } from '~/web3/exchange/flash-exchange-read'
 
 /** Fixed 10^decimals spot quote for flash exchange / overview rate labels. */
@@ -41,7 +41,7 @@ export function useFlashExchangeSpotRates({
     quotesEnabled && pairId !== 'gagx',
   )
 
-  const spotQuotedOut = resolveLiveQuotedOut(spotQuoteQuery.isPlaceholderData, spotQuoteQuery.data)
+  const spotQuotedOut = liveQuotedOut(spotQuoteQuery.isPlaceholderData, spotQuoteQuery.data)
   const isExchangePriceQuoting =
     pairId === 'gagx'
       ? false

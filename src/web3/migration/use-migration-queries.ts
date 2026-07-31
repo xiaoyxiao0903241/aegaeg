@@ -1,10 +1,7 @@
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
-import {
-  migrationWritesAllowed,
-  resolveMigrationUserGate,
-} from '~/core/migration/resolve-migration-user-gate'
+import { migrationWritesAllowed, evaluateMigrationUser } from '~/core/migration/migration-user'
 
 type MigrationQueryOptions = {
   enabled?: boolean
@@ -22,17 +19,17 @@ export function useMigrationStatusQuery(address?: string, options?: MigrationQue
 }
 
 /**
- * Thin gate for money writes: `isOldAccount` is `null` until status is known (fail-closed).
+ * Thin check for money writes: `isOldAccount` is `null` until status is known (fail-closed).
  * Query error → `null` (call sites must not treat as false).
  */
-export function useMigrationUserGate(address?: string, options?: MigrationQueryOptions) {
+export function useMigrationUser(address?: string, options?: MigrationQueryOptions) {
   const query = useMigrationStatusQuery(address, options)
   const status = query.isSuccess ? query.data : undefined
   return {
     /** `true`/`false` only when status known; otherwise `null` (unknown / error). */
     isOldAccount: status ? status.isOldAccount : null,
     statusKnown: status !== undefined,
-    gate: resolveMigrationUserGate(status),
+    blockReason: evaluateMigrationUser(status),
     writesAllowed: migrationWritesAllowed(status),
   }
 }

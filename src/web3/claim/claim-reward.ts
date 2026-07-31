@@ -10,7 +10,7 @@ import { requestWithSession } from '~/shared/api/query/session-request'
 import type { ClaimConfirmResult } from '~/shared/api/types'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
 import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/web3/abis'
-import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/resolve-contract-error-message'
+import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/contract-error-message'
 import {
   parseWriteAbi,
   writeContractViaWallet,

@@ -66,8 +66,8 @@ test('reportAccountBanned throttles duplicate reports within cooldown', async ()
   }
 })
 
-test('resolveAuthLoginErrorMessage maps sentinels and never returns raw copy', async () => {
-  const { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR, resolveAuthLoginErrorMessage } = await loadModule(
+test('authLoginErrorMessage maps sentinels and never returns raw copy', async () => {
+  const { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR, authLoginErrorMessage } = await loadModule(
     '/src/shared/api/account-banned.ts',
   )
 
@@ -78,21 +78,15 @@ test('resolveAuthLoginErrorMessage maps sentinels and never returns raw copy', a
     loginSignatureRejected: 'Bad signature',
   }
 
-  assert.equal(resolveAuthLoginErrorMessage(ACCOUNT_BANNED_SENTINEL, messages), 'Account suspended')
-  assert.equal(
-    resolveAuthLoginErrorMessage(LOGIN_ERROR.WALLET_NOT_CONNECTED, messages),
-    'Connect wallet',
-  )
-  assert.equal(resolveAuthLoginErrorMessage(LOGIN_ERROR.USER_REJECTED, messages), null)
-  assert.equal(
-    resolveAuthLoginErrorMessage(LOGIN_ERROR.SIGNATURE_REJECTED, messages),
-    'Bad signature',
-  )
-  assert.equal(resolveAuthLoginErrorMessage('raw english leak', messages), 'Login failed')
-  assert.equal(resolveAuthLoginErrorMessage(null, messages), null)
+  assert.equal(authLoginErrorMessage(ACCOUNT_BANNED_SENTINEL, messages), 'Account suspended')
+  assert.equal(authLoginErrorMessage(LOGIN_ERROR.WALLET_NOT_CONNECTED, messages), 'Connect wallet')
+  assert.equal(authLoginErrorMessage(LOGIN_ERROR.USER_REJECTED, messages), null)
+  assert.equal(authLoginErrorMessage(LOGIN_ERROR.SIGNATURE_REJECTED, messages), 'Bad signature')
+  assert.equal(authLoginErrorMessage('raw english leak', messages), 'Login failed')
+  assert.equal(authLoginErrorMessage(null, messages), null)
 })
 
-test('getErrorMessage maps referral soft-gate sentinels', async () => {
+test('getErrorMessage maps referral soft-block sentinels', async () => {
   const enModule = await loadModule('/src/i18n/messages/app/en.ts')
   const t = enModule.default
   const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')

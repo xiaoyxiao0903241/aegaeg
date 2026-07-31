@@ -2,22 +2,20 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('resolvePancakeSwapDeepLink builds from token addresses', async () => {
-  const { resolvePancakeSwapDeepLink } = await loadModule(
-    '/src/shared/config/pancake-exchange-links.ts',
-  )
+test('pancakeSwapDeepLink builds from token addresses', async () => {
+  const { pancakeSwapDeepLink } = await loadModule('/src/shared/config/pancake-exchange-links.ts')
   const { BSC_CONTRACTS } = await loadModule('/src/shared/config/contracts.ts')
 
   assert.match(
-    resolvePancakeSwapDeepLink(BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx),
+    pancakeSwapDeepLink(BSC_CONTRACTS.usd1, BSC_CONTRACTS.agx),
     new RegExp(BSC_CONTRACTS.usd1, 'i'),
   )
   assert.match(
-    resolvePancakeSwapDeepLink(BSC_CONTRACTS.agx, BSC_CONTRACTS.usd1),
+    pancakeSwapDeepLink(BSC_CONTRACTS.agx, BSC_CONTRACTS.usd1),
     new RegExp(BSC_CONTRACTS.agx, 'i'),
   )
   assert.match(
-    resolvePancakeSwapDeepLink(BSC_CONTRACTS.xToken, BSC_CONTRACTS.agx),
+    pancakeSwapDeepLink(BSC_CONTRACTS.xToken, BSC_CONTRACTS.agx),
     new RegExp(BSC_CONTRACTS.xToken, 'i'),
   )
 })

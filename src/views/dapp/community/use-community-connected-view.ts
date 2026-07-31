@@ -3,13 +3,13 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useReferral } from '~/views/dapp/community/use-referral'
 import { formatReferralLinkDisplay } from '~/views/dapp/community/community-display'
-import { buildReferralSharePath } from '~/shared/config/referral'
+import { referralSharePath } from '~/shared/config/referral'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
-import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
+import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { buildCommunityQuickLinkItems } from '~/shared/config/community-links'
+import { communityQuickLinkItems } from '~/shared/config/community-links'
 
 export function useCommunityConnectedView() {
   const { locale, messages: t } = useI18n()
@@ -20,15 +20,15 @@ export function useCommunityConnectedView() {
   usePresentUserFacingError(referral.error, {
     id: 'community-referral-error',
     onPresented: referral.clearError,
-    resolveMessage: (err) =>
+    messageFor: (err) =>
       getErrorMessage(err, t) ??
-      resolveApiUserFacingError(err, t.errors.api) ??
+      apiUserFacingError(err, t.errors.api) ??
       t.community.bindErrors.failed,
   })
 
   async function onCopyReferralLink() {
     if (!account) return
-    const url = `${getRuntimeOrigin()}${window.location.pathname}${buildReferralSharePath(account.address)}`
+    const url = `${getRuntimeOrigin()}${window.location.pathname}${referralSharePath(account.address)}`
     const result = await copyTextToClipboard(url)
     if (result === 'copied') toast.success(t.wallet.copied)
     else if (result === 'failed') toast.error(t.wallet.copyFailed)
@@ -46,7 +46,7 @@ export function useCommunityConnectedView() {
     if (ok) toast.success(t.community.bindReferrerSuccess)
   }
 
-  const quickLinkItems = buildCommunityQuickLinkItems(
+  const quickLinkItems = communityQuickLinkItems(
     {
       docs: t.community.docs,
       youtube: t.community.youtube,

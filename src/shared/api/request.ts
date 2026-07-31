@@ -1,15 +1,12 @@
 import { interceptApiError } from '~/shared/api/account-banned'
 import {
   ApiError,
-  buildApiClientUrl,
+  apiClientUrl,
   createAuthHeader,
   parseApiResponse,
   type ApiEnvelope,
 } from '~/shared/api/client'
-import {
-  apiErrorFromHttpStatus,
-  toTransportApiError,
-} from '~/shared/api/resolve-api-user-facing-error'
+import { apiErrorFromHttpStatus, toTransportApiError } from '~/shared/api/api-user-facing-error'
 
 export { ApiError }
 
@@ -39,11 +36,11 @@ export interface ApiRequestOptions {
   searchParams?: Record<string, string | number | undefined>
 }
 
-export function buildApiUrl(
+export function apiUrl(
   path: string,
   searchParams?: Record<string, string | number | undefined>,
 ): string {
-  const url = new URL(buildApiClientUrl(path))
+  const url = new URL(apiClientUrl(path))
 
   if (searchParams) {
     for (const [key, value] of Object.entries(searchParams)) {
@@ -76,7 +73,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
 
   let response: Response
   try {
-    response = await fetch(buildApiUrl(path, options.searchParams), {
+    response = await fetch(apiUrl(path, options.searchParams), {
       method: options.method ?? 'POST',
       headers,
       body: options.body === undefined ? undefined : JSON.stringify(options.body),

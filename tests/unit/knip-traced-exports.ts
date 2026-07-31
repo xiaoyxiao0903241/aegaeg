@@ -3,7 +3,7 @@
  * `loadModule()` in unit tests (knip cannot follow those string paths).
  * Not imported by production code or by the test runner.
  */
-export { resolveXTokenAirdropUsdForPurchase } from '../../src/core/presale/presale-math'
+export { xTokenAirdropUsdForPurchase } from '../../src/core/presale/presale-math'
 export { ClaimSplitSlider } from '../../src/shared/ui/claim-split-slider'
 export { claimSplitFromReleasePct } from '../../src/core/assets/claim-plans'
 export {
@@ -32,12 +32,12 @@ export { clearExchangePoolImmutableCache } from '../../src/web3/exchange/read-ex
 export { resetUnknownReceiptLocksForTests } from '../../src/web3/wallet/unknown-receipt-lock'
 
 export {
-  buildRewardTierRows,
+  rewardTierRows,
   getCommitmentFloorPostLaunchLabel,
-  resolveCommitmentFloorBoostCopy,
-  resolveCommitmentFloorRank,
+  commitmentFloorBoostCopy,
+  commitmentFloorRank,
 } from '../../src/core/presale/tier-table'
-export { buildNextTierProgress } from '../../src/core/presale/tier-progress'
+export { nextTierProgress } from '../../src/core/presale/tier-progress'
 export {
   formatApiDateTime,
   formatShareholderHintForRank,

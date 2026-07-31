@@ -32,7 +32,7 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     walletReady: burn.walletReady,
   })
 
-  const gateHint = burn.gate != null ? t.exchange.burn.gates[burn.gate] : null
+  const blockHint = burn.blockReason != null ? t.exchange.burn.blocked[burn.blockReason] : null
 
   usePresentUserFacingError(burn.validationError, {
     id: 'burn-exchange-quote-error',
@@ -54,7 +54,7 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     showBuyAmountSkeleton,
     sellBalanceLabel,
     buyBalanceLabel,
-    gateHint,
+    blockHint,
     onSubmit,
   }
 }

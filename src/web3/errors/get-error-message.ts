@@ -1,10 +1,7 @@
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
 import { matchRevertMessage, matchSentinelMessage } from '~/web3/errors/error-messages'
 import { readErrorText } from '~/web3/errors/error-text'
-import {
-  isUserRejectedWalletError,
-  resolveWalletTransactionError,
-} from '~/web3/errors/wallet-error'
+import { isUserRejectedWalletError, walletTransactionError } from '~/web3/errors/wallet-error'
 
 /**
  * Universal chain-write error → user message (or null to skip toast).
@@ -24,7 +21,7 @@ export function getErrorMessage(error: unknown, t: AppMessagesBundle): string | 
   if (fromRevert) return fromRevert
 
   // Instance-typed wallet outcomes (unknown receipt / submit timeout).
-  const fromWallet = resolveWalletTransactionError(error, t.wallet.transactionErrors)
+  const fromWallet = walletTransactionError(error, t.wallet.transactionErrors)
   if (fromWallet) return fromWallet
 
   return t.errors.chain.fallback

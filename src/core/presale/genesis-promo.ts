@@ -1,11 +1,11 @@
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatPhaseDate } from '~/core/presale/presale-math'
-import { buildSeasonOptions } from '~/core/presale/genesis-season-options'
+import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
 import type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
 export type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
-function resolveFeaturedPhaseIndex(
+function featuredPhaseIndex(
   phases: PresalePhaseOnChain[],
   activePhase: PresalePhaseOnChain | null,
   nowSeconds: number,
@@ -33,7 +33,7 @@ function resolveFeaturedPhaseIndex(
   return 0
 }
 
-export function buildGenesisPromoSnapshot(
+export function genesisPromoSnapshot(
   phases: PresalePhaseOnChain[],
   activePhase: PresalePhaseOnChain | null,
   agxPriceUsd: number,
@@ -43,8 +43,8 @@ export function buildGenesisPromoSnapshot(
     return null
   }
 
-  const seasonOptions = buildSeasonOptions(phases, agxPriceUsd, nowSeconds)
-  const featuredIndex = resolveFeaturedPhaseIndex(phases, activePhase, nowSeconds)
+  const seasonOptions = seasonOptionsFromPhases(phases, agxPriceUsd, nowSeconds)
+  const featuredIndex = featuredPhaseIndex(phases, activePhase, nowSeconds)
   const featured = seasonOptions[featuredIndex]
   if (!featured) {
     return null

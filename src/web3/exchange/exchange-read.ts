@@ -11,7 +11,7 @@ import { readAgxSellTaxBps } from '~/web3/exchange/read-agx-sell-tax'
 import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
-  resolvePairReservesForTokenIn,
+  pairReservesForTokenIn,
   type ExchangePoolImmutableMetadata,
   type ExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
@@ -108,7 +108,7 @@ export async function fetchExchangeQuote({
       (tokenIn === pool.token1 && tokenOut === pool.token0))
 
   const reserves = isDirectUsd1AgxPoolHop
-    ? resolvePairReservesForTokenIn({
+    ? pairReservesForTokenIn({
         tokenIn,
         token0: pool.token0,
         token1: pool.token1,

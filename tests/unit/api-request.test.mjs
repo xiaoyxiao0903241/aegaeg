@@ -2,15 +2,15 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
-test('buildApiUrl appends query params', async () => {
-  const { buildApiUrl } = await loadModule('/src/shared/api/request.ts')
+test('apiUrl appends query params', async () => {
+  const { apiUrl } = await loadModule('/src/shared/api/request.ts')
   const { getApiBaseUrl } = await loadModule('/src/shared/api/client.ts')
 
   // Derive the base from the same resolver the app uses so the test stays
   // hermetic — it verifies query-param handling, not the deploy-specific host.
   const base = getApiBaseUrl().replace(/\/$/, '')
   assert.equal(
-    buildApiUrl('/sales/logs', { page: 2, page_size: 10 }),
+    apiUrl('/sales/logs', { page: 2, page_size: 10 }),
     `${base}/sales/logs?page=2&page_size=10`,
   )
 })
@@ -108,10 +108,9 @@ test('apiRequest defaults to POST when method is omitted', async () => {
 
 test('apiRequest non-JSON 403 does not treat bare 403 as banned', async () => {
   const { apiRequest, ApiError } = await loadModule('/src/shared/api/request.ts')
-  const {
-    resetAccountBannedReportCooldownForTests,
-    subscribeAccountBanned,
-  } = await loadModule('/src/shared/api/account-banned.ts')
+  const { resetAccountBannedReportCooldownForTests, subscribeAccountBanned } = await loadModule(
+    '/src/shared/api/account-banned.ts',
+  )
 
   resetAccountBannedReportCooldownForTests()
   let bannedReports = 0

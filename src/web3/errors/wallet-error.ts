@@ -1,11 +1,11 @@
 import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
 import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
-import { WALLET_GATE_ERROR, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
+import { WALLET_BLOCKED, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 import {
   type ErrorRule,
   readErrorCode,
   readErrorText,
-  resolveFirstMatch,
+  firstMatch,
   toErrorText,
 } from '~/web3/errors/error-text'
 
@@ -56,7 +56,7 @@ const WALLET_TRANSACTION_ERROR_RULES: Array<ErrorRule<keyof WalletTransactionErr
  * to localized copy. Call before domain-specific resolvers so raw English gas
  * strings are not shown to users.
  */
-export function resolveWalletTransactionError(
+export function walletTransactionError(
   error: unknown,
   messages: WalletTransactionErrorMessages,
 ): string | null {
@@ -80,7 +80,7 @@ export function resolveWalletTransactionError(
   ) {
     return messages.transactionUnknown
   }
-  return resolveFirstMatch(toErrorText(rawEarly), WALLET_TRANSACTION_ERROR_RULES, messages)
+  return firstMatch(toErrorText(rawEarly), WALLET_TRANSACTION_ERROR_RULES, messages)
 }
 
 export function isUserRejectedWalletError(error: unknown): boolean {
@@ -113,7 +113,7 @@ export function toWalletUserFacingMessage(error: unknown, fallback: string): str
   if (isUserRejectedWalletError(error)) return null
   if (error == null) return null
   const text = readErrorText(error).trim()
-  if (text === WALLET_GATE_ERROR.NOT_CONNECTED || /wallet not connected/i.test(text)) {
+  if (text === WALLET_BLOCKED.NOT_CONNECTED || /wallet not connected/i.test(text)) {
     return fallback
   }
   return fallback

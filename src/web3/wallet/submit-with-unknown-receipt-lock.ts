@@ -15,7 +15,7 @@ export type SubmitWithUnknownReceiptLockResult<T> =
  * - Success → clear latch (caller still owns invalidate*)
  * - Unknown submit outcome → lock latch
  *
- * Does not own gates, approve, or invalidate. Soft gate failures should throw
+ * Does not own gates, approve, or invalidate. Soft block failures should throw
  * a non-unknown error so they never latch.
  */
 export async function submitWithUnknownReceiptLock<T>(args: {

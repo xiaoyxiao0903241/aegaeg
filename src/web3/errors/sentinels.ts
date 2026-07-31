@@ -1,5 +1,5 @@
-/** Shared wallet-gate sentinels (swap / claim / referral / genesis). Literal frozen. */
-export const WALLET_GATE_ERROR = {
+/** Shared wallet-block sentinels (swap / claim / referral / genesis). Literal frozen. */
+export const WALLET_BLOCKED = {
   NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
   /** Unknown tx outcome — resubmit blocked until explicit reset. */
   PENDING_UNKNOWN: 'WALLET_PENDING_UNKNOWN',
@@ -9,8 +9,8 @@ export const GENESIS_PURCHASE_ERROR = {
   INSUFFICIENT_USD1: 'GENESIS_INSUFFICIENT_USD1',
   INSUFFICIENT_ALLOWANCE: 'GENESIS_INSUFFICIENT_ALLOWANCE',
   UNAVAILABLE: 'GENESIS_UNAVAILABLE',
-  /** @deprecated Prefer `WALLET_GATE_ERROR.NOT_CONNECTED` — same literal. */
-  WALLET_NOT_CONNECTED: WALLET_GATE_ERROR.NOT_CONNECTED,
+  /** @deprecated Prefer `WALLET_BLOCKED.NOT_CONNECTED` — same literal. */
+  WALLET_NOT_CONNECTED: WALLET_BLOCKED.NOT_CONNECTED,
   NOT_BOUND: 'GENESIS_NOT_BOUND',
 } as const
 
@@ -39,10 +39,10 @@ export const WALLET_WRITE_ERROR = {
 export const EXCHANGE_QUOTE_FAILED = 'EXCHANGE_QUOTE_FAILED'
 
 /** Approve 后二次门闸失败（quote 过期等）— 与 quoteFailed 同文案。 */
-export const EXCHANGE_SUBMIT_GATE_FAILED = 'EXCHANGE_SUBMIT_GATE_FAILED'
+export const EXCHANGE_SUBMIT_BLOCKED = 'EXCHANGE_SUBMIT_BLOCKED'
 
-/** Flash Usd1Swap preflight gates — map via i18n `exchange.flash.gates`. */
-export const FLASH_USD1_GATE_ERROR = {
+/** Flash Usd1Swap preflight gates — map via i18n `exchange.flash.blocked`. */
+export const FLASH_USD1_BLOCKED = {
   paused: 'FLASH_USD1_PAUSED',
   belowMin: 'FLASH_USD1_BELOW_MIN',
   aboveMax: 'FLASH_USD1_ABOVE_MAX',

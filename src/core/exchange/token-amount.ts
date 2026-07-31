@@ -63,7 +63,7 @@ export type FormatTokenAmountOptions = {
   trimZeros?: boolean
 }
 
-function resolveTokenAmountOptions(
+function tokenAmountOptions(
   maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
 ): Required<FormatTokenAmountOptions> {
   if (typeof maxFractionDigitsOrOptions === 'number') {
@@ -84,7 +84,7 @@ export function formatTokenAmount(
   decimals: number,
   maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
 ): string {
-  const { digits: rawDigits, trimZeros } = resolveTokenAmountOptions(maxFractionDigitsOrOptions)
+  const { digits: rawDigits, trimZeros } = tokenAmountOptions(maxFractionDigitsOrOptions)
   const digits = Math.max(0, Math.floor(rawDigits))
   const divisor = 10n ** BigInt(decimals)
   const whole = amount / divisor
@@ -207,7 +207,7 @@ export function capTokenAmountInput(
  * Balance re-cap policy for controlled sell amount.
  * Do not wipe draft while session not ready or balances still loading.
  */
-export function resolveCappedTokenAmountRaw({
+export function cappedTokenAmountRaw({
   amount,
   sessionReady,
   balancesLoaded,

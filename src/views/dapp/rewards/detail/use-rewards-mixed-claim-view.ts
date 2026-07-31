@@ -17,7 +17,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
-  REWARDS_GATE_ERROR,
+  REWARDS_BLOCKED,
   submitDaoMixedClaim,
   submitLuckyMixedClaim,
 } from '~/views/dapp/rewards/submit-rewards'
@@ -51,7 +51,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const [cobuildRewardType, setCobuildRewardType] = useState<'RANK_REWARD' | 'SURPASS_REWARD'>(
     'RANK_REWARD',
   )
-  /** Dao amount unknown until signature; set when live gate reports insufficient contribution. */
+  /** Dao amount unknown until signature; set when live check reports insufficient contribution. */
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
@@ -141,7 +141,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
       toast.success(t.rewards.claimSuccess)
     },
     onError: (error) => {
-      if (isDaoMixed && readErrorText(error) === REWARDS_GATE_ERROR.insufficientContribution) {
+      if (isDaoMixed && readErrorText(error) === REWARDS_BLOCKED.insufficientContribution) {
         setDaoContributionBlocked(true)
       }
     },
