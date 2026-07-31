@@ -4,7 +4,7 @@ import { openRewardsView } from '~/shared/config/open-rewards-view'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/rewards-deep-link'
 import { formatGroupedNumber } from '~/shared/api/format-display'
-import { useCommunityFundTotal, useTeamRewardTotal } from '~/hooks/use-api-data'
+import { useTeamRewardTotal } from '~/hooks/use-api-data'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { Text } from '~/shared/ui/text'
@@ -40,23 +40,15 @@ export function RewardsHubWidget() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
   const { data: teamTotal } = useTeamRewardTotal(sessionReady)
-  const { data: communityFundTotal, isLoading: communityLoading } =
-    useCommunityFundTotal(sessionReady)
 
   const genesisAmount = sessionReady
     ? claimableAmountValue(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
     : 0
-  const referralAmountRaw = communityFundTotal?.unlocked_claimable
-  const referralAmount =
-    sessionReady && referralAmountRaw != null ? Number(referralAmountRaw) : null
 
   const amountValue = (view: (typeof CARD_VIEWS)[number]) => {
     if (!sessionReady) return null
     if (view === 'genesis') return genesisAmount
-    if (view === 'referral') {
-      if (communityLoading && referralAmountRaw == null) return null
-      return referralAmount != null && Number.isFinite(referralAmount) ? referralAmount : 0
-    }
+    // Dao Mixed (referral / participate / cobuild): amount from signature at claim — no hub preview.
     return null
   }
 
@@ -72,19 +64,17 @@ export function RewardsHubWidget() {
           const card = t.rewards.cards[view]
           const value = amountValue(view)
           const isGenesis = view === 'genesis'
-          const isReferral = view === 'referral'
           const usesClaimableLabel = isGenesis || view === 'grant'
-          const balance =
-            isGenesis || isReferral
-              ? {
-                  amount: sessionReady
-                    ? value == null
-                      ? REWARDS_LOADING
-                      : formatGroupedNumber(value, { digits: 2, prefix: '$' })
-                    : t.rewards.hub.signInForBalance,
-                  approx: undefined as string | undefined,
-                }
-              : formatGagxBalance(value, sessionReady, t.rewards.hub.signInForBalance)
+          const balance = isGenesis
+            ? {
+                amount: sessionReady
+                  ? value == null
+                    ? REWARDS_LOADING
+                    : formatGroupedNumber(value, { digits: 2, prefix: '$' })
+                  : t.rewards.hub.signInForBalance,
+                approx: undefined as string | undefined,
+              }
+            : formatGagxBalance(value, sessionReady, t.rewards.hub.signInForBalance)
 
           return (
             <RewardsModeCard

@@ -1,5 +1,6 @@
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { useI18n } from '~/i18n/use-i18n'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -13,31 +14,77 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
+import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
+function formatApiOrChainLabel(
+  sessionReady: boolean,
+  apiPending: boolean,
+  apiRaw: string | undefined,
+  chainReady: boolean,
+  chainValue: bigint,
+  dash: string,
+): string {
+  if (sessionReady && apiRaw != null && apiRaw.trim() !== '') {
+    const n = Number(apiRaw)
+    if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} AGX`
+  }
+  if (sessionReady && apiPending && apiRaw == null) return '…'
+  if (chainReady) return `${formatTokenAmount(chainValue, AGX_DECIMALS, 4)} AGX`
+  return dash
+}
+
 export function ReleaseBufferContent() {
   const { messages: t } = useI18n()
-  const { walletReady } = useDappShell()
+  const { walletReady, sessionReady } = useDappShell()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
+  const apiSummaryQuery = useBufferPoolSummary(sessionReady)
+  const bufferLogsQuery = useBufferPoolLogs({}, sessionReady)
+  const bufferLogRows = bufferLogsQuery.data?.items.map(mapBufferPoolLogToRow) ?? []
+  const bufferLogsLoading = sessionReady && bufferLogsQuery.isLoading
   const amount = bufferQuery.data?.totalAmount ?? 0n
   const claimed = bufferQuery.data?.totalClaimed ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const dash = t.release.dash
+  const api = apiSummaryQuery.data
+  const apiPending = sessionReady && apiSummaryQuery.isLoading && api == null
 
   const agxStats = [
     {
       label: t.release.buffer.entered,
-      value: walletReady ? `${formatTokenAmount(amount, AGX_DECIMALS, 4)} AGX` : dash,
+      value: formatApiOrChainLabel(
+        sessionReady,
+        apiPending,
+        api?.cumulative_amount,
+        walletReady,
+        amount,
+        dash,
+      ),
     },
     {
       label: t.release.buffer.extracted,
-      value: walletReady ? `${formatTokenAmount(claimed, AGX_DECIMALS, 4)} AGX` : dash,
+      value: formatApiOrChainLabel(
+        sessionReady,
+        apiPending,
+        api?.released_amount,
+        walletReady,
+        claimed,
+        dash,
+      ),
     },
     {
       label: t.release.labels.releasing,
-      value: walletReady ? `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX` : dash,
+      value: formatApiOrChainLabel(
+        sessionReady,
+        apiPending,
+        api?.releasing_amount,
+        walletReady,
+        releasing,
+        dash,
+      ),
     },
   ]
 
@@ -75,7 +122,7 @@ export function ReleaseBufferContent() {
                   {stat.value}
                 </Text>
                 <Text as="span" tone="muted-foreground" variant="detail">
-                  {walletReady ? '≈ —' : dash}
+                  {walletReady || sessionReady ? '≈ —' : dash}
                 </Text>
               </div>
             ))}
@@ -120,9 +167,14 @@ export function ReleaseBufferContent() {
           <ResponsiveTable
             colWidths={['200px', '150px', '180px', '1fr']}
             headers={[...t.release.recordColumns]}
-            rows={[]}
+            rows={bufferLogRows}
           />
-          <DappTableEmptyMessage embedded title={t.release.recordsEmpty} />
+          {bufferLogRows.length === 0 ? (
+            <DappTableEmptyMessage
+              embedded
+              title={bufferLogsLoading ? '…' : t.release.recordsEmpty}
+            />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

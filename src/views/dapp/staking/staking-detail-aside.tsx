@@ -27,6 +27,8 @@ export function StakingDetailAside({
   recordsTitle,
   recordColumns,
   recordColWidths,
+  recordRows,
+  recordsEmptyTitle,
   chartTitle,
   showXValueCard = false,
   positionItems,
@@ -42,6 +44,8 @@ export function StakingDetailAside({
   recordsTitle: string
   recordColumns?: readonly string[]
   recordColWidths?: readonly string[]
+  recordRows?: readonly string[][]
+  recordsEmptyTitle?: string
   chartTitle: string
   showXValueCard?: boolean
   positionItems?: Array<{ label: string; value: ReactNode }>
@@ -54,6 +58,8 @@ export function StakingDetailAside({
   const xValue = t.staking.aside.xValue
   const tableHeaders = recordColumns ?? t.staking.aside.recordColumns
   const tableColWidths = recordColWidths ?? ['175px', '80px', '140px', '90px', '1fr']
+  const rows = recordRows ?? []
+  const emptyTitle = recordsEmptyTitle ?? t.staking.aside.recordsEmpty
 
   return (
     <>
@@ -210,8 +216,12 @@ export function StakingDetailAside({
       <DappDetailBlock>
         <DappContentHeading>{recordsTitle}</DappContentHeading>
         <DappTableCard>
-          <ResponsiveTable colWidths={[...tableColWidths]} headers={[...tableHeaders]} rows={[]} />
-          <DappTableEmptyMessage embedded title={t.staking.aside.recordsEmpty} />
+          <ResponsiveTable
+            colWidths={[...tableColWidths]}
+            headers={[...tableHeaders]}
+            rows={[...rows]}
+          />
+          {rows.length === 0 ? <DappTableEmptyMessage embedded title={emptyTitle} /> : null}
         </DappTableCard>
       </DappDetailBlock>
 

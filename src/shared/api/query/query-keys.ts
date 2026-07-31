@@ -1,4 +1,14 @@
-import type { PaginationParams } from '~/shared/api/types'
+import type {
+  BondFlowLogsParams,
+  BufferPoolLogsParams,
+  PaginationParams,
+  RankRewardTeamMembersParams,
+  ReferralAwardDirectReferralsParams,
+  ReleasePoolLogsParams,
+  StakeFlowLogsParams,
+  TurbineLogsParams,
+  X0MiningLogsParams,
+} from '~/shared/api/types'
 import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
 
 const erc20BalancePrefix = (token: string) =>
@@ -14,6 +24,10 @@ export const queryKeys = {
   api: {
     all: ['api'] as const,
     performance: ['api', 'performance'] as const,
+    searchPerformance: (address: string) =>
+      ['api', 'search', 'performance', address.toLowerCase()] as const,
+    makingOverview: ['api', 'performance', 'makingOverview'] as const,
+    stakeAddressCount: ['api', 'performance', 'stakeAddressCount'] as const,
     salesLogsRoot: ['api', 'salesLogs'] as const,
     salesLogs: (params: PaginationParams = {}) =>
       ['api', 'salesLogs', params.page ?? 1, params.page_size ?? 20] as const,
@@ -35,6 +49,151 @@ export const queryKeys = {
     teamOverview: ['api', 'teamOverview'] as const,
     qualifiedPartitions: ['api', 'performance', 'qualified-partitions'] as const,
     homePopupNotices: (locale: string) => ['api', 'home', 'popupNotices', locale] as const,
+    agxContributionSummary: ['api', 'agxContribution', 'summary'] as const,
+    agxContributionBurnLogsRoot: ['api', 'agxContribution', 'burnLogs'] as const,
+    agxContributionBurnLogs: (params: PaginationParams = {}) =>
+      ['api', 'agxContribution', 'burnLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    agxContributionConsumeLogsRoot: ['api', 'agxContribution', 'consumeLogs'] as const,
+    agxContributionConsumeLogs: (params: PaginationParams = {}) =>
+      ['api', 'agxContribution', 'consumeLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    assetsHoldingsDistribution: ['api', 'assets', 'holdingsDistribution'] as const,
+    assetsHoldingsSummary: ['api', 'assets', 'holdingsSummary'] as const,
+    assetsRewardSummary: ['api', 'assets', 'rewardSummary'] as const,
+    bondFlowLpLogsRoot: ['api', 'bondFlow', 'lpLogs'] as const,
+    bondFlowLpLogs: (params: BondFlowLogsParams = {}) =>
+      [
+        'api',
+        'bondFlow',
+        'lpLogs',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.operation ?? null,
+      ] as const,
+    bondFlowBurnLogsRoot: ['api', 'bondFlow', 'burnLogs'] as const,
+    bondFlowBurnLogs: (params: BondFlowLogsParams = {}) =>
+      [
+        'api',
+        'bondFlow',
+        'burnLogs',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.operation ?? null,
+      ] as const,
+    bondFlowLpPurchasesRoot: ['api', 'bondFlow', 'lpPurchases'] as const,
+    bondFlowLpPurchases: (params: PaginationParams = {}) =>
+      ['api', 'bondFlow', 'lpPurchases', params.page ?? 1, params.page_size ?? 20] as const,
+    bondFlowBurnPurchasesRoot: ['api', 'bondFlow', 'burnPurchases'] as const,
+    bondFlowBurnPurchases: (params: PaginationParams = {}) =>
+      ['api', 'bondFlow', 'burnPurchases', params.page ?? 1, params.page_size ?? 20] as const,
+    bufferPoolSummary: ['api', 'bufferPool', 'summary'] as const,
+    bufferPoolLogsRoot: ['api', 'bufferPool', 'logs'] as const,
+    bufferPoolLogs: (params: BufferPoolLogsParams = {}) =>
+      [
+        'api',
+        'bufferPool',
+        'logs',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.event_type ?? null,
+      ] as const,
+    luckyRewardSummary: ['api', 'luckyReward', 'summary'] as const,
+    luckyRewardMyRoundsRoot: ['api', 'luckyReward', 'myRounds'] as const,
+    luckyRewardMyRounds: (params: PaginationParams = {}) =>
+      ['api', 'luckyReward', 'myRounds', params.page ?? 1, params.page_size ?? 20] as const,
+    luckyRewardWinnersRoot: ['api', 'luckyReward', 'winners'] as const,
+    luckyRewardWinners: (date: string) => ['api', 'luckyReward', 'winners', date] as const,
+    marketAllowanceSummary: ['api', 'marketAllowance', 'summary'] as const,
+    marketAllowanceClaimLogsRoot: ['api', 'marketAllowance', 'claimLogs'] as const,
+    marketAllowanceClaimLogs: (params: PaginationParams = {}) =>
+      ['api', 'marketAllowance', 'claimLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    marketAllowancePaidLogsRoot: ['api', 'marketAllowance', 'paidLogs'] as const,
+    marketAllowancePaidLogs: (params: PaginationParams = {}) =>
+      ['api', 'marketAllowance', 'paidLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    participationAwardSummary: ['api', 'participationAward', 'summary'] as const,
+    participationAwardLogsRoot: ['api', 'participationAward', 'logs'] as const,
+    participationAwardLogs: (params: PaginationParams = {}) =>
+      ['api', 'participationAward', 'logs', params.page ?? 1, params.page_size ?? 20] as const,
+    participationAwardInviter: ['api', 'participationAward', 'inviter'] as const,
+    rankRewardSummary: ['api', 'rankReward', 'summary'] as const,
+    rankRewardLogsRoot: ['api', 'rankReward', 'logs'] as const,
+    rankRewardLogs: (params: PaginationParams = {}) =>
+      ['api', 'rankReward', 'logs', params.page ?? 1, params.page_size ?? 20] as const,
+    rankRewardPeerSurpassLogsRoot: ['api', 'rankReward', 'peerSurpassLogs'] as const,
+    rankRewardPeerSurpassLogs: (params: PaginationParams = {}) =>
+      ['api', 'rankReward', 'peerSurpassLogs', params.page ?? 1, params.page_size ?? 20] as const,
+    rankRewardTeamMembersRoot: ['api', 'rankReward', 'teamMembers'] as const,
+    rankRewardTeamMembers: (params: RankRewardTeamMembersParams = {}) =>
+      [
+        'api',
+        'rankReward',
+        'teamMembers',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.sort_time ?? null,
+        params.hide_zero_market ?? null,
+      ] as const,
+    referralAwardSummary: ['api', 'referralAward', 'summary'] as const,
+    referralAwardLogsRoot: ['api', 'referralAward', 'logs'] as const,
+    referralAwardLogs: (params: PaginationParams = {}) =>
+      ['api', 'referralAward', 'logs', params.page ?? 1, params.page_size ?? 20] as const,
+    referralAwardDirectReferralsRoot: ['api', 'referralAward', 'directReferrals'] as const,
+    referralAwardDirectReferrals: (params: ReferralAwardDirectReferralsParams = {}) =>
+      [
+        'api',
+        'referralAward',
+        'directReferrals',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.hide_zero_position ?? null,
+      ] as const,
+    releasePoolSummary: ['api', 'releasePool', 'summary'] as const,
+    releasePoolLogsRoot: ['api', 'releasePool', 'logs'] as const,
+    releasePoolLogs: (params: ReleasePoolLogsParams = {}) =>
+      [
+        'api',
+        'releasePool',
+        'logs',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.event_type ?? null,
+      ] as const,
+    stakeFlowLogsRoot: ['api', 'stakeFlow', 'logs'] as const,
+    stakeFlowLogs: (params: StakeFlowLogsParams = {}) =>
+      [
+        'api',
+        'stakeFlow',
+        'logs',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.operation ?? null,
+      ] as const,
+    stakeFlowPositionsRoot: ['api', 'stakeFlow', 'positions'] as const,
+    stakeFlowPositions: (params: PaginationParams = {}) =>
+      ['api', 'stakeFlow', 'positions', params.page ?? 1, params.page_size ?? 20] as const,
+    turbineSummary: ['api', 'turbine', 'summary'] as const,
+    turbineLogsRoot: ['api', 'turbine', 'logs'] as const,
+    turbineLogs: (params: TurbineLogsParams = {}) =>
+      [
+        'api',
+        'turbine',
+        'logs',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.turbine_type ?? null,
+      ] as const,
+    x0MiningLogsRoot: ['api', 'x0Mining', 'logs'] as const,
+    x0MiningLogs: (params: X0MiningLogsParams = {}) =>
+      [
+        'api',
+        'x0Mining',
+        'logs',
+        params.page ?? 1,
+        params.page_size ?? 20,
+        params.operation ?? null,
+      ] as const,
+    x0MiningPositionsRoot: ['api', 'x0Mining', 'positions'] as const,
+    x0MiningPositions: (params: PaginationParams = {}) =>
+      ['api', 'x0Mining', 'positions', params.page ?? 1, params.page_size ?? 20] as const,
   },
   chain: {
     erc20Root: ['chain', 'erc20'] as const,

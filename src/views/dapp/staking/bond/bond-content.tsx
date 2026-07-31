@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
+import { mapBondPurchaseToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 
@@ -20,11 +23,16 @@ function TokenMetricValue({ icon, value }: { icon: 'agx' | 'gagx'; value: string
 
 export function BondContent({ kind }: { kind: BondKind }) {
   const { messages: t } = useI18n()
+  const { sessionReady } = useDappShell()
   const copy = kind === 'lp' ? t.staking.lpbond : t.staking.burnbond
   const recordsTitle =
     kind === 'lp' ? t.staking.aside.recordsTitles.lpbond : t.staking.aside.recordsTitles.burnbond
   const chartTitle =
     kind === 'lp' ? t.staking.aside.chartTitles.lpbond : t.staking.aside.chartTitles.burnbond
+  const lpPurchases = useBondFlowLpPurchases({}, sessionReady && kind === 'lp')
+  const burnPurchases = useBondFlowBurnPurchases({}, sessionReady && kind === 'burn')
+  const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
+  const recordRows = purchasesQuery.data?.items.map(mapBondPurchaseToAsideRow) ?? []
 
   const overviewItems = copy.overviewMetrics.map((metric, index) => {
     const value: ReactNode =
@@ -50,6 +58,10 @@ export function BondContent({ kind }: { kind: BondKind }) {
         positionLayout="cards-2"
         recordColWidths={['140px', '70px', '90px', '70px', '110px', '1fr']}
         recordColumns={t.staking.aside.bondRecordColumns}
+        recordRows={recordRows}
+        recordsEmptyTitle={
+          sessionReady && purchasesQuery.isLoading ? '…' : t.staking.aside.recordsEmpty
+        }
         recordsTitle={recordsTitle}
       />
     </DappDetailPage>

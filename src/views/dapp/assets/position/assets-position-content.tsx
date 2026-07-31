@@ -11,6 +11,7 @@ import { FaqList } from '~/shared/ui/faq-list'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
+import { useAssetsPositionOpsRows } from '~/views/dapp/assets/position/use-assets-position-ops-rows'
 import { useAssetsPositionStats } from '~/views/dapp/assets/position/use-assets-position-stats'
 
 export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
@@ -18,6 +19,7 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
   const copy = t.assets.products[product]
   const stats = copy.stats
   const values = useAssetsPositionStats(product)
+  const ops = useAssetsPositionOpsRows(product)
 
   return (
     <DappDetailPage>
@@ -72,9 +74,11 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
           <ResponsiveTable
             colWidths={['200px', '150px', '180px', '1fr']}
             headers={[...t.assets.opsColumns]}
-            rows={[]}
+            rows={ops.rows}
           />
-          <DappTableEmptyMessage embedded title={copy.ops.empty} />
+          {ops.rows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={ops.isLoading ? '…' : copy.ops.empty} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

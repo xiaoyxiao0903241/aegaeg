@@ -1,5 +1,4 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { resolveCommitmentFloorRank } from '~/core/presale/tier-table'
 import { resolveDisplayPresaleRank } from '~/core/presale/rank'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAuth } from '~/hooks/use-auth'
@@ -23,16 +22,6 @@ export function useShareholderRank(sessionReady: boolean) {
   const personalVolumeUsd = Math.max(apiVolume, chainVolumeUsd)
 
   const displayRank = resolveDisplayPresaleRank(performance?.presale_rank ?? 0)
-  const commitmentFloorRank = resolveCommitmentFloorRank(
-    performance?.presale_commitment_floor_rank ?? 0,
-  )
-
-  const commitmentFloorTeamUsd = (() => {
-    const raw = performance?.presale_commitment_floor_performance
-    if (raw == null || raw === '') return 0
-    const parsed = Number(raw)
-    return Number.isFinite(parsed) ? Math.max(0, parsed) : 0
-  })()
 
   const isChainVolumeLoading = Boolean(address) && userTotalQuery.isLoading
 
@@ -47,7 +36,5 @@ export function useShareholderRank(sessionReady: boolean) {
     performance,
     performanceLoading,
     personalVolumeUsd,
-    commitmentFloorRank,
-    commitmentFloorTeamUsd,
   }
 }

@@ -1,5 +1,17 @@
 import type {
   CommunityFundLogItem,
+  DaoGrantStatus,
+  LuckyRewardMyRoundItem,
+  LuckyRewardWinnerItem,
+  MarketAllowanceClaimLogItem,
+  MarketAllowancePaidLogItem,
+  ParticipationAwardInviter,
+  ParticipationAwardLogItem,
+  RankRewardLogItem,
+  RankRewardPeerSurpassLogItem,
+  RankRewardTeamMemberItem,
+  ReferralAwardDirectReferralItem,
+  ReferralAwardLogItem,
   RewardLogItem,
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
@@ -8,6 +20,7 @@ import {
   TABLE_EMPTY,
   formatApiDateTime,
   formatBlockTime,
+  formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
 } from '~/shared/api/format-display'
@@ -19,7 +32,54 @@ import type { RewardsView } from '~/shared/config/rewards-deep-link'
 export const REWARDS_DASH = '—'
 export const REWARDS_LOADING = '…'
 
-export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild'>
+export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'participate' | 'referral'>
+
+/** Backend SUM / decimal-string amounts → grouped display (never invent). */
+export function formatApiDecimalAmount(
+  raw: string | null | undefined,
+  options: { digits?: number; prefix?: string; suffix?: string } = {},
+): string {
+  if (raw == null || raw.trim() === '') return REWARDS_DASH
+  const n = Number(raw)
+  if (!Number.isFinite(n)) return REWARDS_DASH
+  return formatGroupedNumber(n, {
+    digits: options.digits ?? 2,
+    prefix: options.prefix,
+    suffix: options.suffix,
+  })
+}
+
+export function formatApiStatLabel(
+  sessionReady: boolean,
+  isPending: boolean,
+  raw: string | null | undefined,
+  options?: { digits?: number; prefix?: string; suffix?: string },
+): string {
+  if (!sessionReady) return REWARDS_DASH
+  if (isPending && raw == null) return REWARDS_LOADING
+  return formatApiDecimalAmount(raw, options)
+}
+
+function formatDaoGrantStatus(status: DaoGrantStatus, labels: RewardLogStatusLabels): string {
+  switch (status) {
+    case 'READY':
+      return labels.pending
+    case 'RESERVED':
+    case 'PARTIALLY_CLAIMED':
+      return labels.processing
+    case 'CLAIMED':
+      return labels.claimed
+    case 'CANCELLED':
+      return labels.failed
+    default:
+      return labels.unknown
+  }
+}
+
+export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
+  if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
+  return String(Math.trunc(rank))
+}
 
 export function planLabel(
   days: number,
@@ -165,4 +225,108 @@ export function mapCommunityFundLogToRow(
   const statusKey = resolveCommunityFundLogStatusKey(item.status)
 
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
+}
+
+export function mapParticipationAwardLogToRow(
+  item: ParticipationAwardLogItem,
+  labels: RewardLogStatusLabels,
+): string[] {
+  return [
+    formatApiDateTime(item.created_at),
+    formatApiDecimalAmount(item.awarded_gross),
+    formatDaoGrantStatus(item.status, labels),
+    formatApiDateTime(item.fully_claimed_at),
+  ]
+}
+
+export function mapParticipationAwardInviterToRow(item: ParticipationAwardInviter): string[] {
+  return [
+    formatApiDateTime(item.bound_at),
+    formatShortAddress(item.address),
+    formatApiDecimalAmount(item.active_stake_balance),
+    formatApiDecimalAmount(item.total_brought_reward),
+  ]
+}
+
+export function mapRankRewardLogToRow(
+  item: RankRewardLogItem | RankRewardPeerSurpassLogItem,
+  labels: RewardLogStatusLabels,
+): string[] {
+  return [
+    formatApiDateTime(item.created_at),
+    String(item.benefit_level),
+    formatApiDecimalAmount(item.awarded_gross),
+    formatDaoGrantStatus(item.status, labels),
+    formatApiDateTime(item.fully_claimed_at),
+  ]
+}
+
+export function mapRankRewardTeamMemberToRow(item: RankRewardTeamMemberItem): string[] {
+  return [
+    formatApiDateTime(item.bound_at),
+    formatShortAddress(item.address),
+    formatApiDecimalAmount(item.making_market),
+    formatMakingRankLabel(item.making_rank, TABLE_EMPTY),
+  ]
+}
+
+export function mapReferralAwardLogToRow(
+  item: ReferralAwardLogItem,
+  labels: RewardLogStatusLabels,
+): string[] {
+  return [
+    formatApiDateTime(item.created_at),
+    formatApiDecimalAmount(item.awarded_gross),
+    formatDaoGrantStatus(item.status, labels),
+    formatApiDateTime(item.fully_claimed_at),
+  ]
+}
+
+export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralItem): string[] {
+  return [
+    formatApiDateTime(item.bound_at),
+    formatShortAddress(item.address),
+    formatApiDecimalAmount(item.active_stake_balance),
+    formatApiDecimalAmount(item.contributed_reward_total),
+  ]
+}
+
+export function mapMarketAllowancePaidLogToRow(item: MarketAllowancePaidLogItem): string[] {
+  return [
+    formatBlockTime(item.paid_time),
+    formatApiDecimalAmount(item.agx_amount),
+    item.operation_type || TABLE_EMPTY,
+    item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
+    item.subsidy_rate || TABLE_EMPTY,
+    formatApiDecimalAmount(item.allowance_amount),
+  ]
+}
+
+export function mapMarketAllowanceClaimLogToRow(item: MarketAllowanceClaimLogItem): string[] {
+  return [
+    formatBlockTime(item.claim_time),
+    formatApiDecimalAmount(item.allowance_amount),
+    item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
+  ]
+}
+
+export function mapLuckyWinnerToRow(item: LuckyRewardWinnerItem): string[] {
+  return [
+    String(item.rank),
+    formatShortAddress(item.address),
+    formatApiDecimalAmount(item.participation_amount),
+    formatApiDecimalAmount(item.reward_amount),
+  ]
+}
+
+export function mapLuckyMyRoundToRow(item: LuckyRewardMyRoundItem): string[] {
+  const result =
+    item.winner_status?.trim() ||
+    (item.is_winner === true ? '1' : item.is_winner === false ? TABLE_EMPTY : TABLE_EMPTY)
+  return [
+    formatRegisterDate(item.date),
+    formatApiDecimalAmount(item.participation_amount),
+    result,
+    item.draw_tx_hash ? formatShortAddress(item.draw_tx_hash) : TABLE_EMPTY,
+  ]
 }

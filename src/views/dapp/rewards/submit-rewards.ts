@@ -11,6 +11,7 @@ import { writeDaoMixedClaim, writeLuckyMixedClaim } from '~/web3/rewards/rewards
 import { requestDaoClaim } from '~/shared/api/endpoints'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
+import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
 import { REWARDS_GATE_ERROR } from '~/web3/errors/rewards-write-gate-errors'
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
@@ -98,21 +99,29 @@ export async function submitLuckyMixedClaim(args: {
 export async function submitDaoMixedClaim(args: {
   token: string
   onUnauthorized: () => void
+  rewardType: DaoRewardType
   releaseDays: ReleaseDurationDays
   restakeDays: RestakeDurationDays
   restakePct: number
 }): Promise<void> {
-  const { token, onUnauthorized, releaseDays, restakeDays, restakePct } = args
+  const { token, onUnauthorized, rewardType, releaseDays, restakeDays, restakePct } = args
   if (!token) {
     throw WALLET_GATE_ERROR.NOT_CONNECTED
   }
   const { wallet, address: user, readClient } = requireWriteSession()
   const restakeBps = restakeBpsFromPct(restakePct)
 
-  const payload = await requestWithSession(requestDaoClaim, token, onUnauthorized)
+  const payload = await requestWithSession(
+    (sessionToken) => requestDaoClaim(sessionToken, rewardType),
+    token,
+    onUnauthorized,
+  )
   const normalized = parseTeamRewardClaim(payload)
   if (normalized.expireTime <= BigInt(Math.floor(Date.now() / 1000))) {
     throw REWARDS_GATE_ERROR.signatureExpired
+  }
+  if (normalized.signType !== DAO_REWARD_SIGN_TYPE[rewardType]) {
+    throw REWARDS_GATE_ERROR.unavailable
   }
   const amount = normalized.amountWei
 

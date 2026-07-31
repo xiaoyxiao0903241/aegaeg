@@ -286,19 +286,13 @@ export const REWARD_CLAIMER_METHODS = {
   rewardSigner: 'function rewardSigner() view returns (address)',
 } as const
 
-/** IncentivePool — simple signed claim (manual §9.5). */
-export const INCENTIVE_POOL_METHODS = {
-  claimRewards:
-    'function claimRewards(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
-} as const
-
 /** MarketFund — simple signed claim (manual §9.5). */
 export const MARKET_FUND_METHODS = {
   claimReward:
     'function claimReward(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
 } as const
 
-/** DaoPool — Mixed signed claim (manual §9.5); signType fixed to 4. */
+/** DaoPool — Mixed signed claim; OpenAPI dao-reward uses signType 41–45 per rewardType. */
 export const DAO_POOL_METHODS = {
   claimRewardsMixed:
     'function claimRewardsMixed(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',

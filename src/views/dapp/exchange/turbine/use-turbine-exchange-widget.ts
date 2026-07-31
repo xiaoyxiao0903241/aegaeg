@@ -23,6 +23,7 @@ import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-r
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useTurbineSummary } from '~/hooks/use-api-data'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 export type TurbineSegment = 'unlock' | 'claim'
@@ -39,6 +40,20 @@ function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined)
   const usdNumber = formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS)
   if (!Number.isFinite(usdNumber) || usdNumber <= 0) return ''
   return formatGroupedNumber(usdNumber, { digits: 2, prefix: '$' })
+}
+
+/** Backend SUM amount: decimal string → grouped; integer wei-like → token format. */
+function formatTurbineClaimedTotal(raw: string): string {
+  if (raw.includes('.')) {
+    const n = Number(raw)
+    return Number.isFinite(n) ? formatGroupedNumber(n, { digits: 2 }) : '—'
+  }
+  try {
+    return formatTokenAmount(BigInt(raw), AGX_DECIMALS, { digits: 2, trimZeros: false })
+  } catch {
+    const n = Number(raw)
+    return Number.isFinite(n) ? formatGroupedNumber(n, { digits: 2 }) : '—'
+  }
 }
 
 /** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
@@ -146,6 +161,8 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     enabled: quotesEnabled && sessionReady,
   })
 
+  const turbineSummaryQuery = useTurbineSummary(sessionReady)
+
   const usdNeeded = quoteQuery.data ?? 0n
   const buyAgxLabel =
     unlockAmountIn > 0n ? formatTokenAmount(unlockAmountIn, AGX_DECIMALS, 4) : '0.00'
@@ -188,6 +205,20 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     ) ?? 0n
 
   const unitUsdReady = unitUsd !== undefined && unitUsd > 0n && !unitPriceQuery.isError
+
+  const claimedRaw = turbineSummaryQuery.data?.claimed_total
+  const totalWithdrawnLabel = !sessionReady
+    ? '—'
+    : turbineSummaryQuery.isLoading && claimedRaw == null
+      ? '…'
+      : claimedRaw != null
+        ? formatTurbineClaimedTotal(claimedRaw)
+        : '—'
+  const claimedAsNumber = claimedRaw != null ? Number(claimedRaw) : Number.NaN
+  const totalWithdrawnUsdHint =
+    Number.isFinite(claimedAsNumber) && claimedAsNumber === 0
+      ? formatGroupedNumber(0, { digits: 2, prefix: '$' })
+      : ''
 
   const canUnlock =
     sessionReady &&
@@ -262,10 +293,11 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
         trimZeros: false,
       }),
       coolingUsdHint: formatAgxQuotaUsd(coolingBalance, unitUsdReady ? unitUsd : undefined),
-      // No cumulative claim index on-chain yet — placeholder 0.00 until indexer.
-      totalWithdrawnLabel: '0.00',
-      totalWithdrawnUsdHint: formatGroupedNumber(0, { digits: 2, prefix: '$' }),
-      isLoading: walletReady && (quotaQuery.isLoading || silencesQuery.isLoading),
+      totalWithdrawnLabel,
+      totalWithdrawnUsdHint,
+      isLoading:
+        walletReady &&
+        (quotaQuery.isLoading || silencesQuery.isLoading || turbineSummaryQuery.isLoading),
     },
     hasClaimable: (silencesQuery.data?.claimableCount ?? 0) > 0,
     walletReady,

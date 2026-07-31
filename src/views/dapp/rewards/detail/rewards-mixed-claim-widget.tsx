@@ -6,6 +6,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
+import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 import { dappAssets } from '~/app/assets'
@@ -29,6 +30,14 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         title={vm.card.title}
       />
       <DappWidgetStack>
+        {vm.showCobuildRewardType ? (
+          <Segment
+            aria-label={t.rewards.cobuild.recordsTabsAria}
+            onChange={(value) => vm.setCobuildRewardType(value as 'RANK_REWARD' | 'SURPASS_REWARD')}
+            options={vm.cobuildRewardTypeOptions}
+            value={vm.cobuildRewardType}
+          />
+        ) : null}
         <Card surface="outlined" className="rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">

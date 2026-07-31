@@ -69,6 +69,7 @@ export function StakingHubContent() {
     chartRange,
     setChartRange,
     agxPriceLabel,
+    stakersLabel,
     overview,
     table,
     chart,
@@ -77,6 +78,7 @@ export function StakingHubContent() {
 
   function metricValue(id: HubMetricId): string {
     if (id === 'price') return agxPriceLabel
+    if (id === 'stakers') return stakersLabel
     return PLACEHOLDER
   }
 

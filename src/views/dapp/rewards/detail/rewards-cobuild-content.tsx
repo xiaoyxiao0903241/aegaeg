@@ -7,18 +7,29 @@ import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 import { useRewardsCobuildContentView } from '~/views/dapp/rewards/detail/use-rewards-cobuild-content-view'
 
 export function RewardsCobuildContent() {
   const {
-    t,
     cobuild,
     recordsTab,
     setRecordsTab,
     contributionValue,
     referralCount,
+    totalRewards,
+    totalPerformance,
+    myPosition,
+    nextPayout,
+    tierCurrent,
+    tierNext,
+    reqHolding,
+    reqAccounts,
+    reqPerformance,
+    recordRows,
+    recordsLoading,
+    directRows,
+    directsLoading,
     recordsTabOptions,
   } = useRewardsCobuildContentView()
 
@@ -27,9 +38,9 @@ export function RewardsCobuildContent() {
       <DappDetailBlock>
         <DappContentHeading>{cobuild.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <RewardsStatCard label={cobuild.totalRewards} value={REWARDS_DASH} />
-          <RewardsStatCard label={cobuild.totalPerformance} value={REWARDS_DASH} />
-          <RewardsStatCard label={cobuild.myPosition} value={REWARDS_DASH} />
+          <RewardsStatCard label={cobuild.totalRewards} value={totalRewards} />
+          <RewardsStatCard label={cobuild.totalPerformance} value={totalPerformance} />
+          <RewardsStatCard label={cobuild.myPosition} value={myPosition} />
           <RewardsStatCard label={cobuild.directCount} value={referralCount} />
           <RewardsStatCard label={cobuild.contribution}>
             <Text as="p" tone="muted-foreground" variant="caption">
@@ -44,7 +55,7 @@ export function RewardsCobuildContent() {
               </Text>
             </div>
           </RewardsStatCard>
-          <RewardsStatCard label={cobuild.nextPayout} value={REWARDS_DASH} />
+          <RewardsStatCard label={cobuild.nextPayout} value={nextPayout} />
         </div>
       </DappDetailBlock>
 
@@ -57,7 +68,7 @@ export function RewardsCobuildContent() {
                 {cobuild.tierCurrent}
               </Text>
               <Text as="p" className="mt-1" variant="figure">
-                {t.rewards.hub.stats.tierEmpty}
+                {tierCurrent}
               </Text>
             </div>
             <div className="text-right">
@@ -65,24 +76,24 @@ export function RewardsCobuildContent() {
                 {cobuild.tierNext}
               </Text>
               <Text as="p" className="mt-1 font-semibold" variant="copy">
-                {REWARDS_DASH}
+                {tierNext}
               </Text>
             </div>
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             {(
               [
-                [cobuild.reqHolding, cobuild.reqHoldingHint],
-                [cobuild.reqAccounts, cobuild.reqAccountsHint],
-                [cobuild.reqPerformance, cobuild.reqPerformanceHint],
+                [cobuild.reqHolding, cobuild.reqHoldingHint, reqHolding],
+                [cobuild.reqAccounts, cobuild.reqAccountsHint, reqAccounts],
+                [cobuild.reqPerformance, cobuild.reqPerformanceHint, reqPerformance],
               ] as const
-            ).map(([label, hint]) => (
+            ).map(([label, hint, value]) => (
               <div className="rounded-2xl border border-border p-4" key={label}>
                 <Text as="p" tone="muted-foreground" variant="caption">
                   {label}
                 </Text>
                 <Text as="p" className="mt-2 font-semibold" variant="copy">
-                  {REWARDS_DASH}
+                  {value}
                 </Text>
                 <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
                   {hint}
@@ -116,14 +127,19 @@ export function RewardsCobuildContent() {
           <ResponsiveTable
             colWidths={['190px', '70px', '140px', '110px', '1fr']}
             headers={[...cobuild.recordsColumns]}
-            rows={[]}
+            isLoading={recordsLoading}
+            rows={recordRows}
           />
-          <DappTableEmptyMessage
-            embedded
-            title={
-              recordsTab === 'cobuild' ? cobuild.emptyRecordsCobuild : cobuild.emptyRecordsEqualize
-            }
-          />
+          {!recordsLoading && recordRows.length === 0 ? (
+            <DappTableEmptyMessage
+              embedded
+              title={
+                recordsTab === 'cobuild'
+                  ? cobuild.emptyRecordsCobuild
+                  : cobuild.emptyRecordsEqualize
+              }
+            />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
@@ -133,9 +149,12 @@ export function RewardsCobuildContent() {
           <ResponsiveTable
             colWidths={['200px', '200px', '130px', '1fr']}
             headers={[...cobuild.directsColumns]}
-            rows={[]}
+            isLoading={directsLoading}
+            rows={directRows}
           />
-          <DappTableEmptyMessage embedded title={cobuild.emptyDirects} />
+          {!directsLoading && directRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={cobuild.emptyDirects} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

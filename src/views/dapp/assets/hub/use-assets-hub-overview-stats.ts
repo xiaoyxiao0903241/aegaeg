@@ -1,6 +1,6 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatApproxUsd } from '~/shared/api/format-display'
+import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
@@ -16,6 +16,11 @@ import {
 import { readReleaseBufferSnapshot } from '~/web3/release/release-read'
 import type { AssetsView } from '~/stores/assets-view-store'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import {
+  useAssetsHoldingsDistribution,
+  useAssetsHoldingsSummary,
+  useAssetsRewardSummary,
+} from '~/hooks/use-api-data'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -67,12 +72,50 @@ const EMPTY_XMINE: AssetsHubModeStats = {
   yieldApprox: formatApproxUsd(0, null),
 }
 
+function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2): string | null {
+  if (raw == null || raw.trim() === '') return null
+  const n = Number(raw)
+  if (!Number.isFinite(n)) return null
+  return `${formatGroupedNumber(n, { digits })} ${unit}`
+}
+
+function formatApiUsdLabel(raw: string | undefined): string | null {
+  if (raw == null || raw.trim() === '') return null
+  const n = Number(raw)
+  if (!Number.isFinite(n)) return null
+  return formatGroupedNumber(n, { digits: 2, prefix: '$' })
+}
+
+/** Honest ≈$ for API decimals — never invent $0.00 from missing/NaN. */
+function formatApiApproxUsd(raw: string | undefined, priceUsd: number | null): string {
+  if (raw == null || raw.trim() === '') return '≈ —'
+  const n = Number(raw)
+  if (!Number.isFinite(n)) return '≈ —'
+  return formatApproxUsd(n, priceUsd)
+}
+
+function modeFromApiAmount(
+  amountRaw: string | undefined,
+  unit: 'AGX' | 'gAGX',
+  priceUsd: number | null,
+): AssetsHubModeStats {
+  const positionValue = formatApiTokenLabel(amountRaw, unit) ?? '—'
+  const n = amountRaw != null ? Number(amountRaw) : Number.NaN
+  return {
+    aprLabel: '—',
+    positionValue,
+    positionApprox: Number.isFinite(n) ? formatApproxUsd(n, priceUsd) : '≈ —',
+    yieldValue: '—',
+    yieldApprox: '≈ —',
+  }
+}
+
 /**
- * Hub overview + per-mode leaf amounts — handbook owners only.
- * Total value / claimed stay honest `—` without cross-product USD quote + cumulative view.
+ * Hub overview + per-mode leaf amounts.
+ * sessionReady + API data wins for display; chain remains fallback / write-adjacent.
  */
 export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
-  const { walletReady } = useDappShell()
+  const { walletReady, sessionReady } = useDappShell()
   const account = useActiveAccount()
   const address = account?.address
   const enabled = walletReady && Boolean(address)
@@ -81,6 +124,10 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
     agxPriceQuery.isError || agxPriceQuery.data == null
       ? null
       : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
+
+  const holdingsSummaryQuery = useAssetsHoldingsSummary(sessionReady)
+  const rewardSummaryQuery = useAssetsRewardSummary(sessionReady)
+  const distributionQuery = useAssetsHoldingsDistribution(sessionReady)
 
   const stakeQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsStakePositions,
@@ -133,6 +180,82 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
     bufferGagxReleased: '—',
     modes,
   })
+
+  const apiHoldings = holdingsSummaryQuery.data
+  const apiReward = rewardSummaryQuery.data
+  const apiDist = distributionQuery.data
+  const apiPending =
+    sessionReady &&
+    ((holdingsSummaryQuery.isLoading && apiHoldings == null) ||
+      (rewardSummaryQuery.isLoading && apiReward == null) ||
+      (distributionQuery.isLoading && apiDist == null))
+  const apiReady = sessionReady && apiHoldings != null && apiReward != null && apiDist != null
+
+  if (apiReady) {
+    const totalValue = formatApiUsdLabel(apiReward.stake_invest_usd_value) ?? '—'
+    const claimableGagx = formatApiTokenLabel(apiReward.claimable_gagx, 'gAGX') ?? '—'
+    const claimed = formatApiDecimalOrDash(apiReward.total_reward_claimed)
+    const contribution = formatApiDecimalOrDash(apiReward.available_contribution)
+    const holdingsTotal = formatApiTokenLabel(apiHoldings.total_holdings_agx, 'AGX') ?? '—'
+    const holdingsReleased = formatApiTokenLabel(apiHoldings.total_released_agx, 'AGX') ?? '—'
+    const bufferTotal = formatApiTokenLabel(apiHoldings.buffer_pool_cumulative, 'AGX') ?? '—'
+    const bufferReleased = formatApiTokenLabel(apiHoldings.buffer_pool_released, 'AGX') ?? '—'
+
+    return {
+      totalValue,
+      claimable: claimableGagx,
+      claimableApprox: formatApiApproxUsd(apiReward.claimable_gagx, priceUsd),
+      claimed,
+      claimedApprox: formatApiApproxUsd(apiReward.total_reward_claimed, priceUsd),
+      contribution,
+      holdingsReleased,
+      holdingsReleasedApprox: formatApiApproxUsd(apiHoldings.total_released_agx, priceUsd),
+      holdingsTotal,
+      holdingsTotalApprox: formatApiApproxUsd(apiHoldings.total_holdings_agx, priceUsd),
+      bufferTotal,
+      bufferTotalApprox: formatApiApproxUsd(apiHoldings.buffer_pool_cumulative, priceUsd),
+      bufferReleased,
+      bufferReleasedApprox: formatApiApproxUsd(apiHoldings.buffer_pool_released, priceUsd),
+      bufferGagxTotal: '—',
+      bufferGagxReleased: '—',
+      modes: {
+        stake: modeFromApiAmount(apiDist.stake_total_agx, 'AGX', priceUsd),
+        lpbond: modeFromApiAmount(apiDist.bond_lp, 'AGX', priceUsd),
+        burnbond: modeFromApiAmount(apiDist.bond_burn, 'AGX', priceUsd),
+        xmine: {
+          ...modeFromApiAmount(apiDist.stake_x_pool, 'gAGX', priceUsd),
+          yieldValue: '—',
+          yieldApprox: '≈ —',
+        },
+      },
+    }
+  }
+
+  if (apiPending) {
+    const pending: AssetsHubModeStats = {
+      aprLabel: '—',
+      positionValue: '…',
+      positionApprox: '≈ —',
+      yieldValue: '…',
+      yieldApprox: '≈ —',
+    }
+    return {
+      ...unavailableOverview({
+        stake: pending,
+        lpbond: pending,
+        burnbond: pending,
+        xmine: pending,
+      }),
+      totalValue: '…',
+      claimable: '…',
+      claimed: '…',
+      contribution: '…',
+      holdingsReleased: '…',
+      holdingsTotal: '…',
+      bufferTotal: '…',
+      bufferReleased: '…',
+    }
+  }
 
   if (!enabled) {
     return unavailableOverview(emptyModes)
@@ -277,4 +400,11 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
       },
     },
   }
+}
+
+function formatApiDecimalOrDash(raw: string | undefined): string {
+  if (raw == null || raw.trim() === '') return '—'
+  const n = Number(raw)
+  if (!Number.isFinite(n)) return '—'
+  return formatGroupedNumber(n, { digits: 2 })
 }

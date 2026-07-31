@@ -32,61 +32,57 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         title={vm.card.title}
       />
       <DappWidgetStack>
-        {view === 'grant' ? (
-          <>
-            <Card surface="outlined" className="rounded-2xl p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="grid gap-1">
-                  <Text as="p" tone="muted-foreground" variant="caption">
-                    {vm.grant.pendingLabel}
-                  </Text>
-                  <div className="flex items-center gap-2">
-                    <DappIcon
-                      alt=""
-                      className="size-[18px] rounded-full"
-                      loading="lazy"
-                      size="token"
-                      src={dappAssets.tokenGagx}
-                    />
-                    <Text as="p" className="font-semibold" variant="copy">
-                      {vm.tokenGagx}
-                    </Text>
-                  </div>
-                </div>
-                <div className="grid gap-1.5 text-right">
-                  <Text as="p" tone="muted-foreground" variant="caption">
-                    {vm.grant.pendingHint}
-                  </Text>
-                  <Text as="p" className="font-semibold" variant="headline">
-                    {REWARDS_DASH}
-                  </Text>
-                </div>
-              </div>
-              <div className="mt-2.5 grid gap-1">
-                <a
-                  className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline"
-                  href={COMMUNITY_SOCIAL_LINKS.telegram}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <Text as="span" className="text-[13px] font-medium text-primary" variant="detail">
-                    {vm.grant.contactSupport}
-                  </Text>
-                  <ChevronIcon className="size-2.5 -rotate-90 opacity-80" direction="up" />
-                </a>
-                <Text as="p" tone="muted-foreground" variant="caption">
-                  {vm.grant.pendingBody}
+        <Card surface="outlined" className="rounded-2xl p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="grid gap-1">
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {vm.grant.pendingLabel}
+              </Text>
+              <div className="flex items-center gap-2">
+                <DappIcon
+                  alt=""
+                  className="size-[18px] rounded-full"
+                  loading="lazy"
+                  size="token"
+                  src={dappAssets.tokenGagx}
+                />
+                <Text as="p" className="font-semibold" variant="copy">
+                  {vm.tokenGagx}
                 </Text>
               </div>
-            </Card>
-
-            <div className="flex items-center justify-center py-1.5">
-              <span className="inline-flex size-[34px] items-center justify-center rounded-[10px] border border-border bg-card shadow-sm">
-                <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
-              </span>
             </div>
-          </>
-        ) : null}
+            <div className="grid gap-1.5 text-right">
+              <Text as="p" tone="muted-foreground" variant="caption">
+                {vm.grant.pendingHint}
+              </Text>
+              <Text as="p" className="font-semibold" variant="headline">
+                {REWARDS_DASH}
+              </Text>
+            </div>
+          </div>
+          <div className="mt-2.5 grid gap-1">
+            <a
+              className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline"
+              href={COMMUNITY_SOCIAL_LINKS.telegram}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <Text as="span" className="text-[13px] font-medium text-primary" variant="detail">
+                {vm.grant.contactSupport}
+              </Text>
+              <ChevronIcon className="size-2.5 -rotate-90 opacity-80" direction="up" />
+            </a>
+            <Text as="p" tone="muted-foreground" variant="caption">
+              {vm.grant.pendingBody}
+            </Text>
+          </div>
+        </Card>
+
+        <div className="flex items-center justify-center py-1.5">
+          <span className="inline-flex size-[34px] items-center justify-center rounded-[10px] border border-border bg-card shadow-sm">
+            <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
+          </span>
+        </div>
 
         <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary/10 p-4">
           <div className="flex items-center justify-between gap-2">
@@ -98,43 +94,22 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
             </Text>
           </div>
           <div className="flex items-center justify-between gap-2">
-            {vm.showTokenChip ? (
-              <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
-                <DappIcon
-                  alt=""
-                  className="size-6 rounded-2xl"
-                  loading="lazy"
-                  size="token"
-                  src={dappAssets.tokenGagx}
-                />
-                <Text as="span" className="font-semibold" variant="detail">
-                  {vm.tokenGagx}
-                </Text>
-              </span>
-            ) : (
+            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
+              <DappIcon
+                alt=""
+                className="size-6 rounded-2xl"
+                loading="lazy"
+                size="token"
+                src={dappAssets.tokenGagx}
+              />
               <Text as="span" className="font-semibold" variant="detail">
-                USD
+                {vm.tokenGagx}
               </Text>
-            )}
+            </span>
             <Text as="span" className="text-2xl font-semibold" variant="headline">
               {vm.claimableText}
             </Text>
           </div>
-          {view === 'participate' ? (
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {vm.participate.simpleHint}
-            </Text>
-          ) : null}
-          {view === 'referral' ? (
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {vm.referral.simpleHint}
-            </Text>
-          ) : null}
-          {view === 'referral' && sessionReady && !vm.referralAmountOk ? (
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {t.rewards.detail.emptyClaimable}
-            </Text>
-          ) : null}
         </div>
 
         {walletReady ? (

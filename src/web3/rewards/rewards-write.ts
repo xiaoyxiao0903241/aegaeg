@@ -2,7 +2,6 @@ import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   DAO_POOL_METHODS,
-  INCENTIVE_POOL_METHODS,
   LUCKY_POOL_METHODS,
   MARKET_FUND_METHODS,
   REWARD_CLAIMER_ERRORS,
@@ -13,7 +12,6 @@ import {
   type ConfirmedWalletWrite,
 } from '~/web3/wallet/wallet-contract-write'
 
-const incentiveWriteAbi = parseWriteAbi(INCENTIVE_POOL_METHODS.claimRewards, REWARD_CLAIMER_ERRORS)
 const marketWriteAbi = parseWriteAbi(MARKET_FUND_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
 const daoMixedWriteAbi = parseWriteAbi(DAO_POOL_METHODS.claimRewardsMixed, REWARD_CLAIMER_ERRORS)
 const luckyMixedWriteAbi = parseWriteAbi(LUCKY_POOL_METHODS.claimRewardMixed)
@@ -25,16 +23,6 @@ export type SignedClaimArgs = {
   expireTime: bigint
   salt: `0x${string}`
   signature: `0x${string}`
-}
-
-export async function writeIncentiveClaim(args: SignedClaimArgs): Promise<ConfirmedWalletWrite> {
-  return writeContractViaWallet({
-    wallet: args.wallet,
-    address: BSC_CONTRACTS.incentivePool,
-    abi: incentiveWriteAbi,
-    functionName: 'claimRewards',
-    args: [args.signType, args.amount, args.expireTime, args.salt, args.signature],
-  })
 }
 
 export async function writeMarketFundClaim(args: SignedClaimArgs): Promise<ConfirmedWalletWrite> {

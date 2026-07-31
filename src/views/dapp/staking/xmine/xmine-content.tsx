@@ -1,11 +1,17 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useX0MiningPositions } from '~/hooks/use-api-data'
+import { mapX0MiningPositionToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
 
 const PLACEHOLDER = '—'
 
 export function XmineContent() {
   const { messages: t } = useI18n()
+  const { sessionReady } = useDappShell()
+  const positionsQuery = useX0MiningPositions({}, sessionReady)
+  const recordRows = positionsQuery.data?.items.map(mapX0MiningPositionToOpsRow) ?? []
 
   return (
     <DappDetailPage>
@@ -25,6 +31,10 @@ export function XmineContent() {
         }))}
         recordColWidths={['175px', '100px', '140px', '1fr']}
         recordColumns={t.staking.aside.xmineRecordColumns}
+        recordRows={recordRows}
+        recordsEmptyTitle={
+          sessionReady && positionsQuery.isLoading ? '…' : t.staking.aside.recordsEmpty
+        }
         recordsTitle={t.staking.aside.recordsTitles.xmine}
         showXValueCard
       />

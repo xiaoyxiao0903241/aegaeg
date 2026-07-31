@@ -1,4 +1,3 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -9,21 +8,32 @@ import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Button } from '~/shared/ui/button'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
+import { useRewardsLuckyContentView } from '~/views/dapp/rewards/detail/use-rewards-lucky-content-view'
 
 export function RewardsLuckyContent() {
-  const { messages: t } = useI18n()
-  const lucky = t.rewards.lucky
+  const {
+    lucky,
+    todayPool,
+    eligibility,
+    cumulativeWins,
+    dateLabel,
+    resultsSummary,
+    verifyHash,
+    winnerRows,
+    winnersLoading,
+    historyRows,
+    historyLoading,
+  } = useRewardsLuckyContentView()
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{lucky.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <RewardsStatCard label={lucky.todayPool} value={REWARDS_DASH} />
-          <RewardsStatCard label={lucky.eligibility} value={REWARDS_DASH} />
-          <RewardsStatCard label={lucky.cumulativeWins} value={REWARDS_DASH} />
+          <RewardsStatCard label={lucky.todayPool} value={todayPool} />
+          <RewardsStatCard label={lucky.eligibility} value={eligibility} />
+          <RewardsStatCard label={lucky.cumulativeWins} value={cumulativeWins} />
         </div>
       </DappDetailBlock>
 
@@ -51,7 +61,6 @@ export function RewardsLuckyContent() {
       <DappDetailBlock>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <DappContentHeading>{lucky.resultsTitle}</DappContentHeading>
-          {/* Figma `4396:225` date pill — shell only until draw indexer exists */}
           <button
             aria-label={lucky.dateFilterAria}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card py-[7px] pr-3 pl-3.5 disabled:opacity-100"
@@ -59,7 +68,7 @@ export function RewardsLuckyContent() {
             type="button"
           >
             <Text as="span" className="text-[13px] font-semibold" variant="caption">
-              {REWARDS_DASH}
+              {dateLabel}
             </Text>
             <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
           </button>
@@ -67,18 +76,21 @@ export function RewardsLuckyContent() {
         <DappTableCard className="mt-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <Text as="span" className="font-semibold" variant="caption">
-              {lucky.resultsSummary.replace('{count}', REWARDS_DASH)}
+              {resultsSummary}
             </Text>
             <Text as="span" className="text-primary underline" variant="caption">
-              {lucky.verifyHash.replace('{hash}', REWARDS_DASH)}
+              {verifyHash}
             </Text>
           </div>
           <ResponsiveTable
             colWidths={['90px', '255px', '175px', '1fr']}
             headers={[...lucky.resultsColumns]}
-            rows={[]}
+            isLoading={winnersLoading}
+            rows={winnerRows}
           />
-          <DappTableEmptyMessage embedded title={lucky.emptyResults} />
+          {!winnersLoading && winnerRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={lucky.emptyResults} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
@@ -88,9 +100,12 @@ export function RewardsLuckyContent() {
           <ResponsiveTable
             colWidths={['150px', '148px', '235px', '1fr']}
             headers={[...lucky.historyColumns]}
-            rows={[]}
+            isLoading={historyLoading}
+            rows={historyRows}
           />
-          <DappTableEmptyMessage embedded title={lucky.emptyHistory} />
+          {!historyLoading && historyRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={lucky.emptyHistory} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

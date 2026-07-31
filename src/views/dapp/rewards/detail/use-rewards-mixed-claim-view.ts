@@ -21,6 +21,7 @@ import {
   submitDaoMixedClaim,
   submitLuckyMixedClaim,
 } from '~/views/dapp/rewards/submit-rewards'
+import type { DaoRewardType } from '~/shared/api/types'
 import {
   planLabel,
   REWARDS_DASH,
@@ -46,6 +47,10 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const [releasePct, setReleasePct] = useState(50)
   const [releaseDays, setReleaseDays] = useState<ReleaseDurationDays>(60)
   const [restakeDays, setRestakeDays] = useState<RestakeDurationDays>(540)
+  /** Cobuild CTA covers one ledger per submit — RANK or SURPASS (OpenAPI: one rewardType per order). */
+  const [cobuildRewardType, setCobuildRewardType] = useState<'RANK_REWARD' | 'SURPASS_REWARD'>(
+    'RANK_REWARD',
+  )
   /** Dao amount unknown until signature; set when live gate reports insufficient contribution. */
   const [daoContributionBlocked, setDaoContributionBlocked] = useState(false)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
@@ -76,13 +81,13 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
           ),
           queryFn: () => readContributionSnapshot(account!.address as Address, amount),
           freshness: 'balances' as const,
-          enabled: Boolean(account?.address) && (view === 'cobuild' || amount > 0n),
+          enabled: Boolean(account?.address) && (view !== 'lucky' || amount > 0n),
         }
       : {
           queryKey: queryKeys.chain.assetsContribution,
           queryFn: (address: string) => readContributionSnapshot(address as Address, amount),
           freshness: 'balances' as const,
-          enabled: view === 'cobuild' || amount > 0n,
+          enabled: view !== 'lucky' || amount > 0n,
         },
   )
 
@@ -95,7 +100,16 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const luckyContributionOk =
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
-  const contributionOk = view === 'cobuild' ? !daoContributionBlocked : luckyContributionOk
+  const isDaoMixed = view === 'cobuild' || view === 'participate' || view === 'referral'
+  const daoRewardType: DaoRewardType =
+    view === 'participate'
+      ? 'PARTICIPATION_REWARD'
+      : view === 'referral'
+        ? 'REFERRAL_REWARD'
+        : view === 'cobuild'
+          ? cobuildRewardType
+          : 'RANK_REWARD'
+  const contributionOk = isDaoMixed ? !daoContributionBlocked : luckyContributionOk
   const plansOk = releaseIndex != null && restakeIndex != null
   const luckyOk =
     view !== 'lucky' ||
@@ -115,6 +129,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
       await submitDaoMixedClaim({
         token: token ?? '',
         onUnauthorized: invalidateSession,
+        rewardType: daoRewardType,
         releaseDays,
         restakeDays,
         restakePct,
@@ -124,10 +139,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
       toast.success(t.rewards.claimSuccess)
     },
     onError: (error) => {
-      if (
-        view === 'cobuild' &&
-        readErrorText(error) === REWARDS_GATE_ERROR.insufficientContribution
-      ) {
+      if (isDaoMixed && readErrorText(error) === REWARDS_GATE_ERROR.insufficientContribution) {
         setDaoContributionBlocked(true)
       }
     },
@@ -141,7 +153,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
     plansOk &&
     luckyOk &&
     contributionOk &&
-    (view === 'cobuild' || amount > 0n)
+    (isDaoMixed || amount > 0n)
 
   const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
     label: planLabel(
@@ -223,6 +235,16 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
       Boolean(luckyQuery.data) &&
       !luckyQuery.data?.claimable &&
       !luckyQuery.data?.paused,
+    showCobuildRewardType: view === 'cobuild',
+    cobuildRewardType,
+    setCobuildRewardType: (value: 'RANK_REWARD' | 'SURPASS_REWARD') => {
+      setDaoContributionBlocked(false)
+      setCobuildRewardType(value)
+    },
+    cobuildRewardTypeOptions: [
+      { label: t.rewards.cobuild.recordsTabCobuild, value: 'RANK_REWARD' },
+      { label: t.rewards.cobuild.recordsTabEqualize, value: 'SURPASS_REWARD' },
+    ],
     onConfirm,
   }
 }

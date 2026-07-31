@@ -1,4 +1,3 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -7,24 +6,29 @@ import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
-import { useRewardsContributionDisplay } from '~/views/dapp/rewards/use-rewards-contribution-display'
+import { useRewardsParticipateContentView } from '~/views/dapp/rewards/detail/use-rewards-participate-content-view'
 
 export function RewardsParticipateContent() {
-  const { messages: t } = useI18n()
-  const participate = t.rewards.participate
-  const { walletReady } = useDappShell()
-  const { contributionValue } = useRewardsContributionDisplay(walletReady)
+  const {
+    participate,
+    totalRewards,
+    myPosition,
+    contributionValue,
+    nextPayout,
+    recordRows,
+    recordsLoading,
+    inviterRows,
+    inviterLoading,
+  } = useRewardsParticipateContentView()
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{participate.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <RewardsStatCard label={participate.totalRewards} value={REWARDS_DASH} />
-          <RewardsStatCard label={participate.myPosition} value={REWARDS_DASH} />
+          <RewardsStatCard label={participate.totalRewards} value={totalRewards} />
+          <RewardsStatCard label={participate.myPosition} value={myPosition} />
           <RewardsStatCard label={participate.contribution}>
             <Text as="p" tone="muted-foreground" variant="caption">
               {participate.contribution}
@@ -38,7 +42,7 @@ export function RewardsParticipateContent() {
               </Text>
             </div>
           </RewardsStatCard>
-          <RewardsStatCard label={participate.nextPayout} value={REWARDS_DASH} />
+          <RewardsStatCard label={participate.nextPayout} value={nextPayout} />
         </div>
       </DappDetailBlock>
 
@@ -48,9 +52,12 @@ export function RewardsParticipateContent() {
           <ResponsiveTable
             colWidths={['190px', '160px', '160px', '1fr']}
             headers={[...participate.recordsColumns]}
-            rows={[]}
+            isLoading={recordsLoading}
+            rows={recordRows}
           />
-          <DappTableEmptyMessage embedded title={participate.emptyRecords} />
+          {!recordsLoading && recordRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={participate.emptyRecords} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
@@ -60,9 +67,12 @@ export function RewardsParticipateContent() {
           <ResponsiveTable
             colWidths={['200px', '170px', '110px', '1fr']}
             headers={[...participate.inviterColumns]}
-            rows={[]}
+            isLoading={inviterLoading}
+            rows={inviterRows}
           />
-          <DappTableEmptyMessage embedded title={participate.emptyInviter} />
+          {!inviterLoading && inviterRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={participate.emptyInviter} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

@@ -3,7 +3,6 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   confirmTeamRewardClaim,
   requestCommunityFundClaim,
-  requestIncentiveClaim,
   requestMarketFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
@@ -17,7 +16,7 @@ import {
   writeContractViaWallet,
   type ConfirmedWalletWrite,
 } from '~/web3/wallet/wallet-contract-write'
-import { writeIncentiveClaim, writeMarketFundClaim } from '~/web3/rewards/rewards-write'
+import { writeMarketFundClaim } from '~/web3/rewards/rewards-write'
 import { sleep } from '~/shared/lib/sleep'
 
 const claimRewardWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
@@ -246,24 +245,6 @@ export async function claimCommunityFund({
     onUnauthorized,
     requestSignature: requestCommunityFundClaim,
     claimOnChain: claimCommunityFundOnChain,
-  })
-}
-
-export async function claimIncentiveReward({
-  wallet,
-  token,
-  onUnauthorized,
-}: {
-  wallet: Wallet
-  token: string
-  onUnauthorized: () => void
-}) {
-  return claimSignedReward({
-    wallet,
-    token,
-    onUnauthorized,
-    requestSignature: requestIncentiveClaim,
-    claimOnChain: writeIncentiveClaim,
   })
 }
 

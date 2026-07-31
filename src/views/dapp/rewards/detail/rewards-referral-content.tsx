@@ -1,4 +1,3 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -7,45 +6,30 @@ import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
-import { useDappShell } from '~/app/use-dapp-shell'
-import type { Address } from '~/shared/config/contracts'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { readReferralCount } from '~/web3/referral/referral-read'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
-import { useRewardsContributionDisplay } from '~/views/dapp/rewards/use-rewards-contribution-display'
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { useRewardsReferralContentView } from '~/views/dapp/rewards/detail/use-rewards-referral-content-view'
 
 export function RewardsReferralContent() {
-  const { messages: t } = useI18n()
-  const referral = t.rewards.referral
-  const { walletReady } = useDappShell()
-  const account = useActiveAccount()
-  const address = account?.address
-  const { contributionValue } = useRewardsContributionDisplay(walletReady)
-
-  const countQuery = useChainQuery({
-    queryKey: queryKeys.chain.rewardsReferralCount,
-    queryFn: (addr) => readReferralCount(addr as Address),
-  })
-
-  const referralCount =
-    !walletReady || !address
-      ? REWARDS_DASH
-      : countQuery.isPending
-        ? '…'
-        : countQuery.data != null
-          ? String(countQuery.data)
-          : REWARDS_DASH
+  const {
+    referral,
+    totalRewards,
+    myPosition,
+    referralCount,
+    contributionValue,
+    nextPayout,
+    recordRows,
+    recordsLoading,
+    referralRows,
+    referralsLoading,
+  } = useRewardsReferralContentView()
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{referral.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <RewardsStatCard label={referral.totalRewards} value={REWARDS_DASH} />
-          <RewardsStatCard label={referral.myPosition} value={REWARDS_DASH} />
+          <RewardsStatCard label={referral.totalRewards} value={totalRewards} />
+          <RewardsStatCard label={referral.myPosition} value={myPosition} />
           <RewardsStatCard label={referral.directCount} value={referralCount} />
         </div>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
@@ -62,7 +46,7 @@ export function RewardsReferralContent() {
               </Text>
             </div>
           </RewardsStatCard>
-          <RewardsStatCard label={referral.nextPayout} value={REWARDS_DASH} />
+          <RewardsStatCard label={referral.nextPayout} value={nextPayout} />
         </div>
       </DappDetailBlock>
 
@@ -72,9 +56,12 @@ export function RewardsReferralContent() {
           <ResponsiveTable
             colWidths={['190px', '160px', '160px', '1fr']}
             headers={[...referral.recordsColumns]}
-            rows={[]}
+            isLoading={recordsLoading}
+            rows={recordRows}
           />
-          <DappTableEmptyMessage embedded title={referral.emptyRecords} />
+          {!recordsLoading && recordRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={referral.emptyRecords} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
@@ -84,9 +71,12 @@ export function RewardsReferralContent() {
           <ResponsiveTable
             colWidths={['200px', '170px', '110px', '1fr']}
             headers={[...referral.referralsColumns]}
-            rows={[]}
+            isLoading={referralsLoading}
+            rows={referralRows}
           />
-          <DappTableEmptyMessage embedded title={referral.emptyReferrals} />
+          {!referralsLoading && referralRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={referral.emptyReferrals} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

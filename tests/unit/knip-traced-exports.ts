@@ -35,6 +35,7 @@ export {
   buildRewardTierRows,
   getCommitmentFloorPostLaunchLabel,
   resolveCommitmentFloorBoostCopy,
+  resolveCommitmentFloorRank,
 } from '../../src/core/presale/tier-table'
 export { buildNextTierProgress } from '../../src/core/presale/tier-progress'
 export {
@@ -54,8 +55,15 @@ export {
   getReferralTotal,
   getRewardLogs,
   getTeamRewardClaimLogs,
+  parseClaimSignature,
+  searchPerformance,
 } from '../../src/shared/api/endpoints'
-/** CommunityFund signed claim — temporarily unhooked from referral UI (Mixed chrome / write DEFER). */
+/** CommunityFund signed claim — genesis 发展基金 only; referral uses Dao Mixed REFERRAL_REWARD. */
 export { claimCommunityFund } from '../../src/web3/claim/claim-reward'
-/** IncentivePool signed claim — temporarily unhooked from participate UI (Mixed chrome / write DEFER). */
-export { claimIncentiveReward } from '../../src/web3/claim/claim-reward'
+export {
+  useAgxContributionBurnLogs,
+  useAgxContributionConsumeLogs,
+  useMakingOverview,
+  useSearchPerformance,
+} from '../../src/hooks/use-api-data'
+export type { LuckyRewardWinnersRequest } from '../../src/shared/api/types'

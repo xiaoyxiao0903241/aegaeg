@@ -94,6 +94,7 @@ export function CommunityContent() {
     : formatGroupedNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
 
   // Figma `4300:212` stats = label / value / 业绩|共建等级 only（无「今日」行）.
+  // Value = genesis (presale) rank only — never substitute making_rank (A0–A13 做市等级).
   const genesisRankValue = useStatPlaceholders
     ? STAT_PLACEHOLDER
     : displayRank > 0

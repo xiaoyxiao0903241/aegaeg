@@ -10,12 +10,14 @@ import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
+import { useAssetsXmineOpsRows } from '~/views/dapp/assets/xmine/use-assets-xmine-ops-rows'
 import { useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-assets-xmine-stats'
 
 export function AssetsXmineContent() {
   const { messages: t } = useI18n()
   const copy = t.assets.products.xmine
   const values = useAssetsXmineStats()
+  const ops = useAssetsXmineOpsRows()
 
   return (
     <DappDetailPage>
@@ -70,9 +72,11 @@ export function AssetsXmineContent() {
           <ResponsiveTable
             colWidths={['200px', '150px', '180px', '1fr']}
             headers={[...t.assets.opsColumns]}
-            rows={[]}
+            rows={ops.rows}
           />
-          <DappTableEmptyMessage embedded title={copy.ops.empty} />
+          {ops.rows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={ops.isLoading ? '…' : copy.ops.empty} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

@@ -6,21 +6,29 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 import { useRewardsGrantContentView } from '~/views/dapp/rewards/detail/use-rewards-grant-content-view'
 
 export function RewardsGrantContent() {
-  const { t, grant, recordsTab, setRecordsTab, recordsTabOptions, isIssue } =
-    useRewardsGrantContentView()
+  const {
+    grant,
+    recordsTab,
+    setRecordsTab,
+    recordsTabOptions,
+    isIssue,
+    tier,
+    totalClaimed,
+    recordRows,
+    recordsLoading,
+  } = useRewardsGrantContentView()
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{grant.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <RewardsStatCard label={grant.tier} value={t.rewards.hub.stats.tierEmpty} />
-          <RewardsStatCard label={grant.totalClaimed} value={REWARDS_DASH} />
+          <RewardsStatCard label={grant.tier} value={tier} />
+          <RewardsStatCard label={grant.totalClaimed} value={totalClaimed} />
         </div>
       </DappDetailBlock>
 
@@ -51,9 +59,12 @@ export function RewardsGrantContent() {
                 : ['190px', '160px', '1fr']
             }
             headers={[...(isIssue ? grant.issueColumns : grant.claimColumns)]}
-            rows={[]}
+            isLoading={recordsLoading}
+            rows={recordRows}
           />
-          <DappTableEmptyMessage embedded title={isIssue ? grant.emptyIssue : grant.emptyClaim} />
+          {!recordsLoading && recordRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={isIssue ? grant.emptyIssue : grant.emptyClaim} />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

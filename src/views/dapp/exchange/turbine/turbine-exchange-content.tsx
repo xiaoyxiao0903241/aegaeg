@@ -1,4 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { useDappShell } from '~/app/use-dapp-shell'
+import { useTurbineLogs } from '~/hooks/use-api-data'
+import { mapTurbineLogToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -10,12 +13,17 @@ import { ExchangeMetricCardSkeleton } from '~/views/dapp/exchange/exchange-detai
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { dappAssets } from '~/app/assets'
 import { cn } from '~/shared/lib/utils'
 
 export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeState }) {
   const { messages: t } = useI18n()
+  const { sessionReady } = useDappShell()
+  const turbineLogsQuery = useTurbineLogs({}, sessionReady)
+  const turbineLogRows = turbineLogsQuery.data?.items.map(mapTurbineLogToOpsRow) ?? []
+  const turbineLogsLoading = sessionReady && turbineLogsQuery.isLoading
   const showOverviewSkeleton = turbine.overview.isLoading
   // Figma 4436:220 — three elevated stats; empty → 0.00 / ≈ $0.00 (never —).
   const overviewMetrics = [
@@ -90,8 +98,17 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.turbine.recordsTitle}</DappContentHeading>
         <DappTableCard>
-          {/* Indexer DEFER: empty only (no header row) until history feed exists. */}
-          <DappTableEmptyMessage embedded title={t.exchange.turbine.recordsEmpty} />
+          <ResponsiveTable
+            colWidths={['200px', '150px', '180px', '1fr']}
+            headers={[...t.assets.opsColumns]}
+            rows={turbineLogRows}
+          />
+          {turbineLogRows.length === 0 ? (
+            <DappTableEmptyMessage
+              embedded
+              title={turbineLogsLoading ? '…' : t.exchange.turbine.recordsEmpty}
+            />
+          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
