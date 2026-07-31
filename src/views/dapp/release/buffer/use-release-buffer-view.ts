@@ -4,6 +4,7 @@ import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useReleaseViewStore } from '~/stores/release-view-store'
@@ -31,7 +32,12 @@ export function useReleaseBufferView() {
 
   const claimable = bufferQuery.data?.totalClaimable ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
-  const canClaim = walletReady && writeReady && !locked && claimable > 0n
+  const canClaim = canClaimWhen({
+    walletReady,
+    writeReady,
+    unknownReceiptLocked: locked,
+    claimable,
+  })
   const pctLabel = formatReleasePct(claimable, releasing)
 
   const claimableLabel = walletReady ? `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX` : dash

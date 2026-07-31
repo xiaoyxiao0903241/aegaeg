@@ -7,7 +7,7 @@ import { isTradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { exchangeUserFacingMessages } from '~/views/dapp/exchange/exchange-user-facing-messages'
-import { presentExchangeSubmitResult } from '~/views/dapp/exchange/present-exchange-submit-result'
+import { presentSubmitResult } from '~/web3/present-submit-result'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
@@ -71,7 +71,7 @@ export function useMarketTradeView(trade: MarketTradeState) {
     else trade.selectBuyToken(key)
   }
 
-  function resolveTradeMessage(error: unknown) {
+  function tradeUserMessage(error: unknown) {
     return resolveExchangeUserFacingMessage(
       error,
       exchangeUserFacingMessages(t),
@@ -81,14 +81,14 @@ export function useMarketTradeView(trade: MarketTradeState) {
   }
 
   // Quote/validation only — submit errors toast in onSubmit so the same sentinel re-fires.
-  usePresentUserFacingError(trade.validationError, resolveTradeMessage, {
+  usePresentUserFacingError(trade.validationError, tradeUserMessage, {
     id: 'market-trade-quote-error',
     trigger: trade.quoteErrorUpdatedAt,
   })
 
   async function onSubmit() {
     const result = await trade.submit()
-    await presentExchangeSubmitResult(result, t.exchange.exchangeSuccess, resolveTradeMessage)
+    await presentSubmitResult(result, t.exchange.exchangeSuccess, tradeUserMessage)
   }
 
   return {

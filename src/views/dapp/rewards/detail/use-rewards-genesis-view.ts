@@ -144,7 +144,7 @@ export function useRewardsGenesisView() {
         ),
       )
 
-  function resolveClaimMessage(error: unknown) {
+  function claimUserMessage(error: unknown) {
     return (
       resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
       resolveTeamClaimError(error, {
@@ -155,11 +155,11 @@ export function useRewardsGenesisView() {
     )
   }
 
-  usePresentUserFacingError(teamClaim.error, resolveClaimMessage, {
+  usePresentUserFacingError(teamClaim.error, claimUserMessage, {
     id: 'rewards-genesis:team-claim',
     onPresented: teamClaim.clearError,
   })
-  usePresentUserFacingError(communityFundClaim.error, resolveClaimMessage, {
+  usePresentUserFacingError(communityFundClaim.error, claimUserMessage, {
     id: 'rewards-genesis:community-fund-claim',
     onPresented: communityFundClaim.clearError,
   })

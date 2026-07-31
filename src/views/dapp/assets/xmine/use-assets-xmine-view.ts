@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -13,8 +12,8 @@ import {
   submitXmineUnstake,
 } from '~/views/dapp/assets/submit-assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { readErrorText } from '~/web3/errors/error-text'
+import { messageFromSentinels } from '~/web3/errors/message-from-sentinels'
+import { presentSubmitResult } from '~/web3/present-submit-result'
 import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
@@ -90,16 +89,19 @@ export function useAssetsXmineView() {
   const voucher = `${BSC_CONTRACTS.xStakingPool.slice(0, 6)}…${BSC_CONTRACTS.xStakingPool.slice(-4)}`
   const totalRows = isEmpty ? 0 : 1
 
-  function resolveMessage(error: unknown) {
-    const raw = readErrorText(error)
-    if (raw === ASSETS_GATE_ERROR.warmupActive) return t.assets.gates.warmupActive
-    if (raw === ASSETS_GATE_ERROR.warmupNotEnded) return t.assets.gates.warmupNotEnded
-    if (raw === ASSETS_GATE_ERROR.noWarmup) return t.assets.gates.noWarmup
-    if (raw === ASSETS_GATE_ERROR.nothingToRedeem) return t.assets.gates.nothingToRedeem
-    if (raw === ASSETS_GATE_ERROR.zeroAmount) return t.assets.gates.zeroAmount
-    if (raw === ASSETS_GATE_ERROR.unavailable) return t.assets.gates.unavailable
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ?? t.errors.chain.fallback
+  function toUserMessage(error: unknown) {
+    return messageFromSentinels(
+      error,
+      [
+        [ASSETS_GATE_ERROR.warmupActive, t.assets.gates.warmupActive],
+        [ASSETS_GATE_ERROR.warmupNotEnded, t.assets.gates.warmupNotEnded],
+        [ASSETS_GATE_ERROR.noWarmup, t.assets.gates.noWarmup],
+        [ASSETS_GATE_ERROR.nothingToRedeem, t.assets.gates.nothingToRedeem],
+        [ASSETS_GATE_ERROR.zeroAmount, t.assets.gates.zeroAmount],
+        [ASSETS_GATE_ERROR.unavailable, t.assets.gates.unavailable],
+      ],
+      (err) =>
+        resolveWalletTransactionError(err, t.wallet.transactionErrors) ?? t.errors.chain.fallback,
     )
   }
 
@@ -107,11 +109,7 @@ export function useAssetsXmineView() {
     setBusy(true)
     try {
       const result = await submitXmineClaim({ account, wallet, readClient })
-      if (result.ok) {
-        toast.success(t.assets.claim.xmineSuccess)
-        return
-      }
-      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
+      await presentSubmitResult(result, t.assets.claim.xmineSuccess, toUserMessage)
     } finally {
       setBusy(false)
     }
@@ -121,12 +119,8 @@ export function useAssetsXmineView() {
     setBusy(true)
     try {
       const result = await submitXmineActivateWarmup({ account, wallet, readClient })
-      if (result.ok) {
-        toast.success(t.assets.position.activateWarmupSuccess)
-        await positionQuery.refetch()
-        return
-      }
-      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
+      if (result.ok) await positionQuery.refetch()
+      await presentSubmitResult(result, t.assets.position.activateWarmupSuccess, toUserMessage)
     } finally {
       setBusy(false)
     }
@@ -136,12 +130,8 @@ export function useAssetsXmineView() {
     setBusy(true)
     try {
       const result = await submitXmineUnstake({ account, wallet, readClient })
-      if (result.ok) {
-        toast.success(t.assets.redeem.success)
-        setConfirmUnstake(false)
-        return
-      }
-      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
+      if (result.ok) setConfirmUnstake(false)
+      await presentSubmitResult(result, t.assets.redeem.success, toUserMessage)
     } finally {
       setBusy(false)
     }

@@ -5,8 +5,8 @@ import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-h
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { exchangeUserFacingMessages } from '~/views/dapp/exchange/exchange-user-facing-messages'
-import { presentExchangeSubmitResult } from '~/views/dapp/exchange/present-exchange-submit-result'
-import { buildExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { presentSubmitResult } from '~/web3/present-submit-result'
+import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { BURN_GATE_ERROR } from '~/views/dapp/exchange/burn/submit-burn-exchange'
 import { readErrorText } from '~/web3/errors/error-text'
 
@@ -21,14 +21,14 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
   const showBuyAmountSkeleton = sessionReady && burn.isQuoting && burn.sellAmount.trim().length > 0
 
   // S6: same skeleton / preview / disconnected shape as useExchangeBalanceLabels, different labels.
-  const sellBalanceLabel = buildExchangeBalanceLabel({
+  const sellBalanceLabel = formatExchangeBalanceLabel({
     label: t.exchange.balance,
     value: burn.sellBalanceLabel,
     isBalancesLoading: burn.isBalancesLoading,
     sessionReady,
     walletReady: burn.walletReady,
   })
-  const buyBalanceLabel = buildExchangeBalanceLabel({
+  const buyBalanceLabel = formatExchangeBalanceLabel({
     label: t.exchange.burn.currentContribution,
     value: burn.contributionBalanceLabel,
     isBalancesLoading: burn.isBalancesLoading,
@@ -36,7 +36,7 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     walletReady: burn.walletReady,
   })
 
-  function resolveBurnMessage(error: unknown) {
+  function burnUserMessage(error: unknown) {
     const raw = readErrorText(error)
     const gateMessages = t.exchange.burn.gates
     if (raw === BURN_GATE_ERROR.paused) return gateMessages.paused
@@ -53,17 +53,16 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
   }
 
   const gateHint = burn.gate != null ? t.exchange.burn.gates[burn.gate] : null
-  const submitErrorMessage =
-    !burn.error || burn.isSubmitting ? null : resolveBurnMessage(burn.error)
+  const submitErrorMessage = !burn.error || burn.isSubmitting ? null : burnUserMessage(burn.error)
 
-  usePresentUserFacingError(burn.validationError, resolveBurnMessage, {
+  usePresentUserFacingError(burn.validationError, burnUserMessage, {
     id: 'burn-exchange-quote-error',
     trigger: burn.quoteErrorUpdatedAt,
   })
 
   async function onSubmit() {
     const result = await burn.submit()
-    await presentExchangeSubmitResult(result, t.exchange.exchangeSuccess, resolveBurnMessage)
+    await presentSubmitResult(result, t.exchange.exchangeSuccess, burnUserMessage)
   }
 
   return {

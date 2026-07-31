@@ -57,6 +57,8 @@ src/
 
 页专属编排在页袋（如 `use-exchange-quote`、`use-genesis-widget`、`use-claim-reward`）。
 
+跨 Tab **写路径纯函数**（非 hook）：`core/wallet/write-cta.ts`（`canClaimWhen` / `writeCtaDisabled` / `writeCtaLabel` / `formatAmountBalanceLabel`）；`web3/present-submit-result.ts`；`web3/errors/message-from-sentinels.ts`；`app/shell/go-bind-referral.ts`。
+
 ## 不变量
 
 1. Home ≠ DApp providers（Home 无 thirdweb）

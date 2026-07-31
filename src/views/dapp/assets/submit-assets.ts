@@ -35,7 +35,7 @@ import {
   writeXmineStartUnstake,
   writeXmineActivateWarmup,
 } from '~/web3/assets/assets-write'
-import { runUnknownGuardedWrite } from '~/web3/wallet/run-unknown-guarded-write'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
@@ -121,9 +121,9 @@ export async function submitMixedClaim(args: {
   const restakeBps = restakeBpsFromPct(restakePct)
   const user = account.address as Address
 
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.ASSETS_CLAIM,
-    lockedError: ASSETS_GATE_ERROR.unavailable,
+    whenLocked: ASSETS_GATE_ERROR.unavailable,
     run: async () => {
       const intent = await readMixedClaimSnapshot(
         target,
@@ -201,9 +201,9 @@ export async function submitStakeRedeem(args: {
   }
 
   const user = account.address as Address
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.ASSETS_CLAIM,
-    lockedError: ASSETS_GATE_ERROR.unavailable,
+    whenLocked: ASSETS_GATE_ERROR.unavailable,
     run: async () => {
       const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
       const gate = evaluateRedeemGate({ amount: liveAmount })
@@ -241,9 +241,9 @@ export async function submitBondRedeem(args: {
   }
 
   const user = account.address as Address
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.ASSETS_CLAIM,
-    lockedError: ASSETS_GATE_ERROR.unavailable,
+    whenLocked: ASSETS_GATE_ERROR.unavailable,
     run: async () => {
       const liveAmount = await readBondRedeemableAmount(row, user, readClient)
       const gate = evaluateRedeemGate({ amount: liveAmount })
@@ -275,9 +275,9 @@ export async function submitXmineClaim(args: {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
 
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.ASSETS_CLAIM,
-    lockedError: ASSETS_GATE_ERROR.unavailable,
+    whenLocked: ASSETS_GATE_ERROR.unavailable,
     run: async () => {
       const pre = await readXminePosition(account.address as Address, readClient)
       const preGate = evaluateXmineClaimGate({
@@ -314,9 +314,9 @@ export async function submitXmineUnstake(args: {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
 
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.ASSETS_CLAIM,
-    lockedError: ASSETS_GATE_ERROR.unavailable,
+    whenLocked: ASSETS_GATE_ERROR.unavailable,
     run: async () => {
       const pre = await readXminePosition(account.address as Address, readClient)
       const preGate = evaluateXmineUnstakeGate({
@@ -353,9 +353,9 @@ export async function submitXmineActivateWarmup(args: {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
 
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.ASSETS_CLAIM,
-    lockedError: ASSETS_GATE_ERROR.unavailable,
+    whenLocked: ASSETS_GATE_ERROR.unavailable,
     run: async () => {
       const pre = await readXminePosition(account.address as Address, readClient)
       const preGate = evaluateXmineActivateWarmupGate({

@@ -12,7 +12,7 @@ Accepted · 2026-07-29
 
 Deliver **two narrow deep modules**, not one cross-rail orchestrator:
 
-1. **`runUnknownGuardedWrite`** (`src/web3/wallet/run-unknown-guarded-write.ts`) — owns unknown-receipt ordering only (reject if latched → success clear → unknown lock). Caller still owns `invalidate*`.
+1. **`submitWithUnknownReceiptLock`** (`src/web3/wallet/submit-with-unknown-receipt-lock.ts`) — owns unknown-receipt ordering only (reject if latched → success clear → unknown lock). Caller still owns `invalidate*`.
 2. **`dualGateMixedClaim`** (`src/core/assets/dual-gate-mixed-claim.ts`) — frozen intent amount vs two independent snapshots; phase `intent` | `live`. Pure; no wallet / WRITE_PATH.
 
 Migration order: Release submit first (envelope), then assets Mixed (dual-gate + envelope). Rewards Mixed later as a second dual-gate adapter — do not generalize until two real adapters exist.

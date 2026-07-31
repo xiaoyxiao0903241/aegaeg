@@ -4,6 +4,7 @@ import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
+import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useReleaseViewStore } from '~/stores/release-view-store'
@@ -54,7 +55,13 @@ export function useReleaseQueueView() {
       days,
       planIndex,
       planLabel: t.release.queue.planDays.replace('{days}', String(days)),
-      canClaim: walletReady && writeReady && !locked && claimable > 0n && planIndex >= 0,
+      canClaim: canClaimWhen({
+        walletReady,
+        writeReady,
+        unknownReceiptLocked: locked,
+        claimable,
+        planIndexOk: planIndex >= 0,
+      }),
       pending: pendingPlan === planIndex,
       claimableLabel: walletReady
         ? `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`

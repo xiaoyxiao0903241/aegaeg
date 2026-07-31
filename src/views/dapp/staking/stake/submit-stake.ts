@@ -12,13 +12,9 @@ import {
 } from '~/web3/staking/staking-write'
 import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  lockUnknownReceipt,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 
 type ActiveAccount = ReturnType<typeof useActiveAccount>
@@ -46,67 +42,56 @@ export async function submitStakeOpen(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.STAKING)) {
-    return { ok: false, error: STAKING_GATE_ERROR.unavailable }
-  }
 
   const pool = resolveStakePoolAddress(period)
   const isLiquid = period === 'liquid'
 
-  try {
-    const pre = await readStakeOpenPreflight({
-      pool,
-      isLiquid,
-      user: account.address,
-      client: readClient,
-    })
-    const preMigration = await readMigrationStatus(account.address, readClient)
-    const preGate = evaluateStakeLiveGate({
-      amount,
-      isBound: pre.isBound,
-      balance: pre.balance,
-      allowance: pre.allowance,
-      remainingQuota: pre.remainingQuota,
-      poolOpen: pre.poolOpen,
-      isOldAccount: preMigration.isOldAccount,
-    })
-    if (preGate) return { ok: false, error: STAKING_GATE_ERROR[preGate] }
+  const guarded = await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.STAKING,
+    whenLocked: STAKING_GATE_ERROR.unavailable,
+    run: async () => {
+      await approveThenLiveWrite({
+        readSnapshot: async () => {
+          const preflight = await readStakeOpenPreflight({
+            pool,
+            isLiquid,
+            user: account.address,
+            client: readClient,
+          })
+          const migration = await readMigrationStatus(account.address, readClient)
+          return { preflight, isOldAccount: migration.isOldAccount }
+        },
+        evaluate: ({ preflight, isOldAccount }) =>
+          evaluateStakeLiveGate({
+            amount,
+            isBound: preflight.isBound,
+            balance: preflight.balance,
+            allowance: preflight.allowance,
+            remainingQuota: preflight.remainingQuota,
+            poolOpen: preflight.poolOpen,
+            isOldAccount,
+          }),
+        mapGateError: (reason: NonNullable<ReturnType<typeof evaluateStakeLiveGate>>) =>
+          STAKING_GATE_ERROR[reason],
+        approve: async () => {
+          await approveAgxForStakeIfNeeded({ wallet, pool, amount })
+        },
+        write: async () => {
+          if (isLiquid) {
+            await liquidStakeAgx({ wallet, amount })
+          } else {
+            await lockedStakeAgx({ wallet, pool, amount })
+          }
+        },
+      })
+    },
+  })
 
-    await approveAgxForStakeIfNeeded({ wallet, pool, amount })
-
-    const live = await readStakeOpenPreflight({
-      pool,
-      isLiquid,
-      user: account.address,
-      client: readClient,
-    })
-    const liveMigration = await readMigrationStatus(account.address, readClient)
-    const liveGate = evaluateStakeLiveGate({
-      amount,
-      isBound: live.isBound,
-      balance: live.balance,
-      allowance: live.allowance,
-      remainingQuota: live.remainingQuota,
-      poolOpen: live.poolOpen,
-      isOldAccount: liveMigration.isOldAccount,
-    })
-    if (liveGate) return { ok: false, error: STAKING_GATE_ERROR[liveGate] }
-
-    if (isLiquid) {
-      await liquidStakeAgx({ wallet, amount })
-    } else {
-      await lockedStakeAgx({ wallet, pool, amount })
-    }
-
-    clearUnknownReceiptLock(WRITE_PATH.STAKING)
-    invalidateAfterStaking()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.STAKING)
-    }
-    return { ok: false, error: caught }
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
+  invalidateAfterStaking()
+  return { ok: true }
 }
 
 export async function submitLiquidWarmupClaim(args: {
@@ -117,18 +102,18 @@ export async function submitLiquidWarmupClaim(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.STAKING)) {
-    return { ok: false, error: STAKING_GATE_ERROR.unavailable }
+
+  const guarded = await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.STAKING,
+    whenLocked: STAKING_GATE_ERROR.unavailable,
+    run: async () => {
+      await claimLiquidWarmup({ wallet })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
-  try {
-    await claimLiquidWarmup({ wallet })
-    clearUnknownReceiptLock(WRITE_PATH.STAKING)
-    invalidateAfterStaking()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.STAKING)
-    }
-    return { ok: false, error: caught }
-  }
+  invalidateAfterStaking()
+  return { ok: true }
 }

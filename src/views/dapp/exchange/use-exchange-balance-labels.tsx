@@ -5,7 +5,7 @@ import { useI18n } from '~/i18n/use-i18n'
  * `{label}: {value}` with skeleton while loading / `0.00` in preview / `—` when disconnected.
  * Shared by exchange balance rows across flash / trade / burn (S6).
  */
-export function buildExchangeBalanceLabel({
+export function formatExchangeBalanceLabel({
   label,
   value,
   isBalancesLoading,
@@ -47,14 +47,14 @@ export function useExchangeBalanceLabels({
 }) {
   const { messages: t } = useI18n()
 
-  const sellLabel = buildExchangeBalanceLabel({
+  const sellLabel = formatExchangeBalanceLabel({
     label: t.exchange.balance,
     value: sellBalanceLabel,
     isBalancesLoading,
     sessionReady,
     walletReady,
   })
-  const buyLabel = buildExchangeBalanceLabel({
+  const buyLabel = formatExchangeBalanceLabel({
     label: t.exchange.balance,
     value: buyBalanceLabel,
     isBalancesLoading,

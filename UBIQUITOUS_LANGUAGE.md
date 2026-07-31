@@ -37,13 +37,15 @@
 
 ## 奖励领取
 
-| 业务术语         | 代码名                     | 含义                                 | Owner                                                 |
-| ---------------- | -------------------------- | ------------------------------------ | ----------------------------------------------------- |
-| **领取团队奖励** | `claimTeamReward`          | 签名 → 上链 → confirm                | `claim-reward`                                        |
-| **领取社区基金** | `claimCommunityFund`       | 同上                                 | `claim-reward`                                        |
-| **领取签名**     | `TeamRewardClaimSignature` | 后端签名包（字段名兼容 snake/camel） | `claim-reward` / `parseTeamRewardClaim`               |
-| **确认失败**     | `confirm_failed`           | 链上成功但后端 confirm 失败          | `useClaimReward`                                      |
-| **未知回执**     | `unknown`（tx）            | pending 超时无回执；禁双提交         | `unknown-receipt-lock` / `WalletTransactionWaitError` |
+| 业务术语             | 代码名                         | 含义                                         | Owner                                                 |
+| -------------------- | ------------------------------ | -------------------------------------------- | ----------------------------------------------------- |
+| **领取团队奖励**     | `claimTeamReward`              | 签名 → 上链 → confirm                        | `claim-reward`                                        |
+| **领取社区基金**     | `claimCommunityFund`           | 同上                                         | `claim-reward`                                        |
+| **领取签名**         | `TeamRewardClaimSignature`     | 后端签名包（字段名兼容 snake/camel）         | `claim-reward` / `parseTeamRewardClaim`               |
+| **确认失败**         | `confirm_failed`               | 链上成功但后端 confirm 失败                  | `useClaimReward`                                      |
+| **未知回执**         | `unknown`（tx）                | pending 超时无回执；禁双提交                 | `unknown-receipt-lock` / `WalletTransactionWaitError` |
+| **带未知回执闩提交** | `submitWithUnknownReceiptLock` | 写入口信封：已闩拒 → 成功清闩 → unknown 上闩 | `web3/wallet/submit-with-unknown-receipt-lock.ts`     |
+| **授权后二次门闸写** | `approveThenLiveWrite`         | pre 门闸 → approve? → live 重读门闸 → write  | `web3/wallet/approve-then-live-write.ts`              |
 
 ## 壳与导航
 

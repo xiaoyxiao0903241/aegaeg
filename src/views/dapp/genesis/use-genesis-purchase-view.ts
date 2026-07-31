@@ -7,7 +7,7 @@ import { formatGroupedNumber } from '~/shared/api/format-display'
 import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
 import { applyMessageTemplate } from '~/views/dapp/genesis/genesis-promo'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { resolveApiUserFacingError } from '~/shared/api/resolve-api-user-facing-error'
 import {
   resolveGenesisPurchaseError,
@@ -92,10 +92,10 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
   }
 
   function goBindReferrer() {
-    useDappShellStore.getState().selectTab('community')
+    goBindReferral()
   }
 
-  function resolvePurchaseMessage(error: unknown) {
+  function genesisPurchaseUserMessage(error: unknown) {
     return (
       resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
       resolveGenesisPurchaseError(error, {
@@ -134,12 +134,12 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
         toast.error(t.genesis.errors.notBound, {
           action: {
             label: t.genesis.goBindReferrer,
-            onClick: () => useDappShellStore.getState().selectTab('community'),
+            onClick: () => goBindReferral(),
           },
         })
         return
       }
-      presentUserFacingError(result.error, resolvePurchaseMessage)
+      presentUserFacingError(result.error, genesisPurchaseUserMessage)
     }
   }
 

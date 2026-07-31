@@ -14,13 +14,8 @@ import {
   claimMarketFundReward,
   claimTeamReward,
 } from '~/web3/claim/claim-reward'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  lockUnknownReceipt,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
+import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 type RewardClaimExecutor = (args: {
@@ -48,38 +43,38 @@ export function useClaimReward(execute: RewardClaimExecutor) {
       setError(WALLET_GATE_ERROR.NOT_CONNECTED)
       return null
     }
-    if (isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM)) {
-      setError(WALLET_GATE_ERROR.PENDING_UNKNOWN)
-      return null
-    }
 
     setIsClaiming(true)
     setError(null)
 
-    try {
-      const result = await execute({
-        wallet,
-        token,
-        onUnauthorized: invalidateSession,
-      })
-      const outcome = resolveClaimRewardOutcome(result)
-      if (outcome.shouldInvalidate) {
-        invalidateAfterTeamClaim()
-      }
-      clearUnknownReceiptLock(WRITE_PATH.REWARD_CLAIM)
-      return {
-        status: outcome.status,
-        confirmResult: outcome.confirmResult as ClaimConfirmResult | null,
-        txHash: outcome.txHash,
-      }
-    } catch (caught) {
-      if (isUnknownSubmitOutcome(caught)) {
-        lockUnknownReceipt(WRITE_PATH.REWARD_CLAIM)
-      }
-      setError(caught)
+    const guarded = await submitWithUnknownReceiptLock({
+      path: WRITE_PATH.REWARD_CLAIM,
+      whenLocked: WALLET_GATE_ERROR.PENDING_UNKNOWN,
+      run: async () => {
+        const result = await execute({
+          wallet,
+          token,
+          onUnauthorized: invalidateSession,
+        })
+        return resolveClaimRewardOutcome(result)
+      },
+    })
+
+    setIsClaiming(false)
+
+    if (!guarded.ok) {
+      setError(guarded.error)
       return null
-    } finally {
-      setIsClaiming(false)
+    }
+
+    const outcome = guarded.value
+    if (outcome.shouldInvalidate) {
+      invalidateAfterTeamClaim()
+    }
+    return {
+      status: outcome.status,
+      confirmResult: outcome.confirmResult as ClaimConfirmResult | null,
+      txHash: outcome.txHash,
     }
   }, [account, execute, invalidateSession, sessionReady, token, wallet, writeReady])
 

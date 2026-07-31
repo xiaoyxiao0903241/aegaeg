@@ -294,15 +294,13 @@ test('calcAmountOutMin rejects invalid slippage and floors with valid bps', asyn
   assert.throws(() => calcAmountOutMin(10_000n, 10_000))
 })
 
-test('resolveEmptySpotRatePlaceholder gates empty vs format', async () => {
-  const { resolveEmptySpotRatePlaceholder } = await loadModule(
-    '/src/views/dapp/exchange/exchange-format-rate.ts',
-  )
+test('emptySpotRateDash gates empty vs format', async () => {
+  const { emptySpotRateDash } = await loadModule('/src/views/dapp/exchange/exchange-format-rate.ts')
 
-  assert.equal(resolveEmptySpotRatePlaceholder(0n, true), '')
-  assert.equal(resolveEmptySpotRatePlaceholder(0n, false), '—')
-  assert.equal(resolveEmptySpotRatePlaceholder(1n, false), null)
-  assert.equal(resolveEmptySpotRatePlaceholder(1n, true), null)
+  assert.equal(emptySpotRateDash(0n, true), '')
+  assert.equal(emptySpotRateDash(0n, false), '—')
+  assert.equal(emptySpotRateDash(1n, false), null)
+  assert.equal(emptySpotRateDash(1n, true), null)
 })
 
 test('viewsNeedingProvider mounts only active swap subviews', async () => {

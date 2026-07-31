@@ -4,7 +4,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { resolveExchangeUserFacingMessage } from '~/web3/resolve-contract-error-message'
 import { exchangeUserFacingMessages } from '~/views/dapp/exchange/exchange-user-facing-messages'
-import { presentExchangeSubmitResult } from '~/views/dapp/exchange/present-exchange-submit-result'
+import { presentSubmitResult } from '~/web3/present-submit-result'
 
 /** Session state + i18n + unlock/claim toast orchestration → everything `TurbineExchangeWidget` renders. */
 export function useTurbineExchangeView(turbine: TurbineExchangeState) {
@@ -33,7 +33,7 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
   const showWillReceiveSkeleton = sessionReady && turbine.isQuoting
   const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '—'
 
-  function resolveTurbineMessage(error: unknown) {
+  function turbineUserMessage(error: unknown) {
     return resolveExchangeUserFacingMessage(
       error,
       exchangeUserFacingMessages(t),
@@ -43,24 +43,16 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
   }
 
   const submitErrorMessage =
-    !turbine.error || turbine.isSubmitting ? null : resolveTurbineMessage(turbine.error)
+    !turbine.error || turbine.isSubmitting ? null : turbineUserMessage(turbine.error)
 
   async function handleUnlock() {
     const result = await turbine.submitUnlock()
-    await presentExchangeSubmitResult(
-      result,
-      t.exchange.turbine.unlockSuccess,
-      resolveTurbineMessage,
-    )
+    await presentSubmitResult(result, t.exchange.turbine.unlockSuccess, turbineUserMessage)
   }
 
   async function handleClaim(index: number) {
     const result = await turbine.submitClaim(index)
-    await presentExchangeSubmitResult(
-      result,
-      t.exchange.turbine.claimSuccess,
-      resolveTurbineMessage,
-    )
+    await presentSubmitResult(result, t.exchange.turbine.claimSuccess, turbineUserMessage)
   }
 
   return {

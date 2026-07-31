@@ -8,13 +8,12 @@ import {
 } from '~/core/exchange/resolve-live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { EXCHANGE_QUOTE_FAILED } from '~/web3/resolve-contract-error-message'
-import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
   clearUnknownReceiptLock,
   isUnknownReceiptLocked,
-  lockUnknownReceipt,
 } from '~/web3/wallet/unknown-receipt-lock'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
@@ -229,25 +228,30 @@ export function useExchangeQuote<TQuote>({
       return { amountOutMin: liveAmountOutMin, quotedOut: liveQuotedOut }
     }
 
-    try {
-      await execute({ assertStillSubmittable })
-      clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
-      setBlockResubmit(false)
-      clearAmount()
-      return { ok: true }
-    } catch (caught: unknown) {
+    const guarded = await submitWithUnknownReceiptLock({
+      path: WRITE_PATH.EXCHANGE,
+      whenLocked: new Error('UNKNOWN_RECEIPT_LOCKED'),
+      run: async () => {
+        await execute({ assertStillSubmittable })
+      },
+    })
+
+    setIsSubmitting(false)
+
+    if (!guarded.ok) {
       if (
-        isUnknownSubmitOutcome(caught) ||
-        (caught instanceof WalletTransactionWaitError && caught.outcome === 'unknown')
+        isUnknownSubmitOutcome(guarded.error) ||
+        (guarded.error instanceof Error && guarded.error.message === 'UNKNOWN_RECEIPT_LOCKED')
       ) {
-        lockUnknownReceipt(WRITE_PATH.EXCHANGE)
         setBlockResubmit(true)
       }
-      setSubmitError(caught)
-      return { ok: false, error: caught }
-    } finally {
-      setIsSubmitting(false)
+      setSubmitError(guarded.error)
+      return { ok: false, error: guarded.error }
     }
+
+    setBlockResubmit(false)
+    clearAmount()
+    return { ok: true }
   }
 
   return {

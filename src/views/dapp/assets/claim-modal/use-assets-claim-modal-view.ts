@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import {
@@ -18,8 +17,8 @@ import {
   submitMixedClaim,
   type MixedClaimTarget,
 } from '~/views/dapp/assets/submit-assets'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { readErrorText } from '~/web3/errors/error-text'
+import { messageFromSentinels } from '~/web3/errors/message-from-sentinels'
+import { presentSubmitResult } from '~/web3/present-submit-result'
 import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
@@ -97,18 +96,17 @@ export function useAssetsClaimModalView(args: {
     }
   })
 
-  function resolveMessage(error: unknown) {
-    const raw = readErrorText(error)
-    if (raw === ASSETS_GATE_ERROR.insufficientContribution)
-      return t.assets.gates.insufficientContribution
-    if (
-      raw === ASSETS_GATE_ERROR.releasePlanUnresolved ||
-      raw === ASSETS_GATE_ERROR.restakePlanUnresolved
-    )
-      return t.assets.gates.planUnresolved
-    if (raw === ASSETS_GATE_ERROR.unavailable) return t.assets.gates.unavailable
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ?? t.errors.chain.fallback
+  function toUserMessage(error: unknown) {
+    return messageFromSentinels(
+      error,
+      [
+        [ASSETS_GATE_ERROR.insufficientContribution, t.assets.gates.insufficientContribution],
+        [ASSETS_GATE_ERROR.releasePlanUnresolved, t.assets.gates.planUnresolved],
+        [ASSETS_GATE_ERROR.restakePlanUnresolved, t.assets.gates.planUnresolved],
+        [ASSETS_GATE_ERROR.unavailable, t.assets.gates.unavailable],
+      ],
+      (err) =>
+        resolveWalletTransactionError(err, t.wallet.transactionErrors) ?? t.errors.chain.fallback,
     )
   }
 
@@ -125,12 +123,8 @@ export function useAssetsClaimModalView(args: {
         wallet,
         readClient,
       })
-      if (result.ok) {
-        toast.success(t.assets.claim.success)
-        onOpenChange(false)
-        return
-      }
-      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
+      if (result.ok) onOpenChange(false)
+      await presentSubmitResult(result, t.assets.claim.success, toUserMessage)
     } finally {
       setSubmitting(false)
     }

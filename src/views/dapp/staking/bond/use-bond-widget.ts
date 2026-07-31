@@ -24,6 +24,7 @@ import {
 import { useMigrationUserGate } from '~/web3/migration/use-migration-queries'
 import { resolveNeedReferral } from '~/core/referral/resolve-need-referral'
 import { resolveWriteButtonPhase } from '~/core/wallet/resolve-write-button-phase'
+import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitBondZap, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -94,8 +95,12 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean) {
 
   const needReferral = resolveNeedReferral(preflightQuery.data?.isBound) === 'need_referral'
 
-  const locked =
-    isUnknownReceiptLocked(WRITE_PATH.BOND_ZAP) || isSubmitting || !writeReady || !walletReady
+  const locked = writeCtaDisabled({
+    unknownReceiptLocked: isUnknownReceiptLocked(WRITE_PATH.BOND_ZAP),
+    isSubmitting,
+    writeReady,
+    walletReady,
+  })
 
   const canSubmit =
     !locked && amountInput.amountIn > 0n && gate == null && preflightQuery.data !== undefined

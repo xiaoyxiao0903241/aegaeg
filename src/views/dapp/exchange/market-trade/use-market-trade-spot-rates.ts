@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { resolveLiveQuotedOut } from '~/core/exchange/resolve-live-quoted-out'
 import {
   formatExchangeRateApprox,
-  resolveEmptySpotRatePlaceholder,
+  emptySpotRateDash,
 } from '~/views/dapp/exchange/exchange-format-rate'
 import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -100,7 +100,7 @@ export function useMarketTradeSpotRates({
     (invertedSpotQuoteQuery.isPending || invertedSpotQuoteQuery.isPlaceholderData) &&
     invertedQuotedOut === 0n
 
-  const exchangePriceEmpty = resolveEmptySpotRatePlaceholder(spotQuotedOut, isExchangePriceQuoting)
+  const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut, isExchangePriceQuoting)
   const exchangePriceLabel =
     exchangePriceEmpty !== null
       ? exchangePriceEmpty
@@ -114,10 +114,7 @@ export function useMarketTradeSpotRates({
           fractionDigits: 6,
         })
 
-  const invertedEmpty = resolveEmptySpotRatePlaceholder(
-    invertedQuotedOut,
-    isExchangePriceInvertedQuoting,
-  )
+  const invertedEmpty = emptySpotRateDash(invertedQuotedOut, isExchangePriceInvertedQuoting)
   const exchangePriceLabelInverted =
     invertedEmpty !== null
       ? invertedEmpty

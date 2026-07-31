@@ -6,24 +6,25 @@ import {
   type WritePath,
 } from '~/web3/wallet/unknown-receipt-lock'
 
-export type UnknownGuardedWriteResult<T> = { ok: true; value: T } | { ok: false; error: unknown }
+export type SubmitWithUnknownReceiptLockResult<T> =
+  { ok: true; value: T } | { ok: false; error: unknown }
 
 /**
- * Narrow money-path envelope: owns unknown-receipt ordering only.
- * - Entry reject when path is latched
+ * Money-path envelope: unknown-receipt lock ordering only.
+ * - Already latched → reject with `whenLocked`
  * - Success → clear latch (caller still owns invalidate*)
  * - Unknown submit outcome → lock latch
  *
  * Does not own gates, approve, or invalidate. Soft gate failures should throw
- * a non-unknown error (or return before calling this) so they never latch.
+ * a non-unknown error so they never latch.
  */
-export async function runUnknownGuardedWrite<T>(args: {
+export async function submitWithUnknownReceiptLock<T>(args: {
   path: WritePath
-  lockedError: unknown
+  whenLocked: unknown
   run: () => Promise<T>
-}): Promise<UnknownGuardedWriteResult<T>> {
+}): Promise<SubmitWithUnknownReceiptLockResult<T>> {
   if (isUnknownReceiptLocked(args.path)) {
-    return { ok: false, error: args.lockedError }
+    return { ok: false, error: args.whenLocked }
   }
 
   try {

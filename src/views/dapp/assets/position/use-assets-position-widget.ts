@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -16,8 +15,8 @@ import {
   type MixedClaimTarget,
 } from '~/views/dapp/assets/submit-assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import { presentUserFacingError } from '~/web3/present-user-facing-error'
-import { readErrorText } from '~/web3/errors/error-text'
+import { messageFromSentinels } from '~/web3/errors/message-from-sentinels'
+import { presentSubmitResult } from '~/web3/present-submit-result'
 import { resolveWalletTransactionError } from '~/web3/resolve-contract-error-message'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
@@ -109,18 +108,20 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const pagedStakeRows = stakeRows.slice(pageSliceStart, pageSliceStart + pageSize)
   const pagedBondRows = bondRows.slice(pageSliceStart, pageSliceStart + pageSize)
 
-  function resolveMessage(error: unknown) {
-    const raw = readErrorText(error)
-    if (raw === ASSETS_GATE_ERROR.insufficientContribution)
-      return t.assets.gates.insufficientContribution
-    if (raw === ASSETS_GATE_ERROR.releasePlanUnresolved) return t.assets.gates.planUnresolved
-    if (raw === ASSETS_GATE_ERROR.restakePlanUnresolved) return t.assets.gates.planUnresolved
-    if (raw === ASSETS_GATE_ERROR.nothingToRedeem) return t.assets.gates.nothingToRedeem
-    if (raw === ASSETS_GATE_ERROR.unavailable) return t.assets.gates.unavailable
-    if (raw === ASSETS_GATE_ERROR.zeroAmount) return t.assets.gates.zeroAmount
-    if (raw === ASSETS_GATE_ERROR.insufficientReward) return t.assets.gates.insufficientReward
-    return (
-      resolveWalletTransactionError(error, t.wallet.transactionErrors) ?? t.errors.chain.fallback
+  function toUserMessage(error: unknown) {
+    return messageFromSentinels(
+      error,
+      [
+        [ASSETS_GATE_ERROR.insufficientContribution, t.assets.gates.insufficientContribution],
+        [ASSETS_GATE_ERROR.releasePlanUnresolved, t.assets.gates.planUnresolved],
+        [ASSETS_GATE_ERROR.restakePlanUnresolved, t.assets.gates.planUnresolved],
+        [ASSETS_GATE_ERROR.nothingToRedeem, t.assets.gates.nothingToRedeem],
+        [ASSETS_GATE_ERROR.unavailable, t.assets.gates.unavailable],
+        [ASSETS_GATE_ERROR.zeroAmount, t.assets.gates.zeroAmount],
+        [ASSETS_GATE_ERROR.insufficientReward, t.assets.gates.insufficientReward],
+      ],
+      (err) =>
+        resolveWalletTransactionError(err, t.wallet.transactionErrors) ?? t.errors.chain.fallback,
     )
   }
 
@@ -142,12 +143,8 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
               wallet,
               readClient,
             })
-      if (result.ok) {
-        toast.success(t.assets.redeem.success)
-        setRedeem({ open: false })
-        return
-      }
-      if (result.error != null) presentUserFacingError(result.error, resolveMessage)
+      if (result.ok) setRedeem({ open: false })
+      await presentSubmitResult(result, t.assets.redeem.success, toUserMessage)
     } finally {
       setBusy(false)
     }

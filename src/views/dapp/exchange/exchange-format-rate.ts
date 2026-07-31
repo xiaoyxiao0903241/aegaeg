@@ -6,12 +6,9 @@ function normalizeRateOutPerUnit(amountIn: bigint, amountOut: bigint, decimalsIn
 }
 
 /**
- * Spot / exchange label empty gate: quoting → ''; settled zero → '—'; non-zero → null (format).
+ * Empty spot rate display: quoting → ''; settled zero → '—'; non-zero → null (format).
  */
-export function resolveEmptySpotRatePlaceholder(
-  quotedOut: bigint,
-  isQuoting: boolean,
-): '' | '—' | null {
+export function emptySpotRateDash(quotedOut: bigint, isQuoting: boolean): '' | '—' | null {
   if (quotedOut !== 0n) return null
   return isQuoting ? '' : '—'
 }

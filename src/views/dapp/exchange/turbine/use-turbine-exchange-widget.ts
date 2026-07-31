@@ -24,13 +24,12 @@ import {
 } from '~/views/dapp/exchange/turbine/submit-turbine-exchange'
 import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-rate'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
-import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
 import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   WRITE_PATH,
   clearUnknownReceiptLock,
   isUnknownReceiptLocked,
-  lockUnknownReceipt,
 } from '~/web3/wallet/unknown-receipt-lock'
 
 export type TurbineSegment = 'unlock' | 'claim'
@@ -100,9 +99,9 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
   const {
     amount: unlockAmount,
     amountIn: unlockAmountIn,
-    setAmount: setUnlockAmount,
-    clearAmount,
-    fillPercent,
+    setAmount: setUnlockAmountRaw,
+    clearAmount: clearAmountRaw,
+    fillPercent: fillPercentRaw,
   } = useCappedTokenAmountInput({
     decimals: AGX_DECIMALS,
     balance: quota,
@@ -110,6 +109,24 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     sessionReady,
     onBeforeCap: () => setSubmitError(null),
   })
+
+  function setUnlockAmount(value: string) {
+    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
+    setBlockResubmit(false)
+    setUnlockAmountRaw(value)
+  }
+
+  function clearAmount() {
+    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
+    setBlockResubmit(false)
+    clearAmountRaw()
+  }
+
+  function fillPercent(percent: number) {
+    clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
+    setBlockResubmit(false)
+    fillPercentRaw(percent)
+  }
 
   const quoteQuery = useQuery({
     queryKey: queryKeys.chain.turbineUsdQuote(unlockAmountIn.toString()),
@@ -183,28 +200,29 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     !quoteQuery.isFetching
 
   async function runSubmit(run: () => Promise<void>) {
-    if (isUnknownReceiptLocked(WRITE_PATH.EXCHANGE)) {
-      setBlockResubmit(true)
-      return { ok: false as const, error: new Error('UNKNOWN_RECEIPT_LOCKED') }
-    }
     setIsSubmitting(true)
     setSubmitError(null)
-    try {
-      await run()
-      clearUnknownReceiptLock(WRITE_PATH.EXCHANGE)
-      clearAmount()
-      return { ok: true as const }
-    } catch (error) {
-      if (isUnknownSubmitOutcome(error) || error instanceof WalletTransactionWaitError) {
-        lockUnknownReceipt(WRITE_PATH.EXCHANGE)
+    const guarded = await submitWithUnknownReceiptLock({
+      path: WRITE_PATH.EXCHANGE,
+      whenLocked: new Error('UNKNOWN_RECEIPT_LOCKED'),
+      run,
+    })
+    setIsSubmitting(false)
+    setClaimingIndex(null)
+
+    if (!guarded.ok) {
+      if (
+        isUnknownSubmitOutcome(guarded.error) ||
+        (guarded.error instanceof Error && guarded.error.message === 'UNKNOWN_RECEIPT_LOCKED')
+      ) {
         setBlockResubmit(true)
       }
-      setSubmitError(error)
-      return { ok: false as const, error }
-    } finally {
-      setIsSubmitting(false)
-      setClaimingIndex(null)
+      setSubmitError(guarded.error)
+      return { ok: false as const, error: guarded.error }
     }
+
+    clearAmount()
+    return { ok: true as const }
   }
 
   async function submitUnlock() {

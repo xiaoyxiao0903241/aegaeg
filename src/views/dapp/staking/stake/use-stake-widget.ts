@@ -12,6 +12,7 @@ import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
 import { useMigrationUserGate } from '~/web3/migration/use-migration-queries'
 import { resolveNeedReferral } from '~/core/referral/resolve-need-referral'
 import { resolveWriteButtonPhase } from '~/core/wallet/resolve-write-button-phase'
+import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakingViewStore } from '~/stores/staking-view-store'
@@ -61,8 +62,12 @@ export function useStakeWidget(sessionReady: boolean) {
     isOldAccount: migration.isOldAccount,
   })
 
-  const locked =
-    isUnknownReceiptLocked(WRITE_PATH.STAKING) || isSubmitting || !writeReady || !walletReady
+  const locked = writeCtaDisabled({
+    unknownReceiptLocked: isUnknownReceiptLocked(WRITE_PATH.STAKING),
+    isSubmitting,
+    writeReady,
+    walletReady,
+  })
 
   const canSubmit =
     !locked && amountInput.amountIn > 0n && gate == null && preflightQuery.data !== undefined

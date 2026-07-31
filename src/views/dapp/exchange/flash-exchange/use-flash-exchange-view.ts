@@ -9,7 +9,7 @@ import {
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 import { exchangeUserFacingMessages } from '~/views/dapp/exchange/exchange-user-facing-messages'
-import { presentExchangeSubmitResult } from '~/views/dapp/exchange/present-exchange-submit-result'
+import { presentSubmitResult } from '~/web3/present-submit-result'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 
 /** Session state + i18n + flip/present orchestration → everything `FlashExchangeWidget` renders. */
@@ -41,7 +41,7 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     walletReady: flash.walletReady,
   })
 
-  function resolveFlashMessage(error: unknown) {
+  function flashUserMessage(error: unknown) {
     return (
       resolveFlashExchangeError(error, t.exchange.flash.gates) ??
       resolveExchangeUserFacingMessage(
@@ -55,16 +55,16 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
 
   const gateHint = flash.usd1Gate != null ? t.exchange.flash.gates[flash.usd1Gate] : null
   const submitErrorMessage =
-    !flash.error || flash.isSubmitting ? null : resolveFlashMessage(flash.error)
+    !flash.error || flash.isSubmitting ? null : flashUserMessage(flash.error)
 
-  usePresentUserFacingError(flash.validationError, resolveFlashMessage, {
+  usePresentUserFacingError(flash.validationError, flashUserMessage, {
     id: 'flash-exchange-quote-error',
     trigger: flash.quoteErrorUpdatedAt,
   })
 
   async function onSubmit() {
     const result = await flash.submit()
-    await presentExchangeSubmitResult(result, t.exchange.exchangeSuccess, resolveFlashMessage)
+    await presentSubmitResult(result, t.exchange.exchangeSuccess, flashUserMessage)
   }
 
   return {

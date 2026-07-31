@@ -7,7 +7,7 @@ import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappMetaList } from '~/app/shell/dapp-meta-list'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { SeasonSelector } from '~/views/dapp/genesis/season/genesis-season-selector'
 import { SeasonOptionSkeleton } from '~/views/dapp/genesis/season/genesis-season-option-skeleton'
 import { GenesisPurchaseSharesField } from '~/views/dapp/genesis/genesis-purchase-shares-field'
@@ -78,11 +78,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
               {t.genesis.joinEnded}
             </DappActionButton>
           ) : genesis.needsReferralBind ? (
-            <DappActionButton
-              density="external"
-              onClick={() => useDappShellStore.getState().selectTab('community')}
-              variant="primary"
-            >
+            <DappActionButton density="external" onClick={() => goBindReferral()} variant="primary">
               {t.genesis.goBindReferrer}
             </DappActionButton>
           ) : (

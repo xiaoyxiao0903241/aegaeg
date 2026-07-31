@@ -15,13 +15,8 @@ import { requestDaoClaim } from '~/shared/api/endpoints'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
 import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/resolve-contract-error-message'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  lockUnknownReceipt,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
 
@@ -67,72 +62,71 @@ export async function submitLuckyMixedClaim(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM)) {
-    return { ok: false, error: REWARDS_GATE_ERROR.unavailable }
-  }
 
   const user = account.address as Address
   const restakeBps = restakeBpsFromPct(restakePct)
 
-  try {
-    const snapshot = await readLuckyClaimSnapshot(readClient, user)
-    // Intent from first read; live gate must compare against a second chain read (never self-certify).
-    const amount = snapshot.rewardAmount
-    const plans = await readClaimPlans(readClient)
-    const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
-    const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
-    const contrib = await readContributionSnapshot(user, amount, readClient)
+  const guarded = await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.REWARD_CLAIM,
+    whenLocked: REWARDS_GATE_ERROR.unavailable,
+    run: async () => {
+      const snapshot = await readLuckyClaimSnapshot(readClient, user)
+      // Intent from first read; live gate must compare against a second chain read (never self-certify).
+      const amount = snapshot.rewardAmount
+      const plans = await readClaimPlans(readClient)
+      const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
+      const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
+      const contrib = await readContributionSnapshot(user, amount, readClient)
 
-    const preGate = evaluateRewardsMixedClaimGate({
-      amount,
-      rewardAvailable: snapshot.rewardAmount,
-      contribution: contrib.contribution,
-      requiredContribution: contrib.requiredContribution,
-      releasePlanIndex,
-      restakePlanIndex,
-      luckyPaused: snapshot.paused,
-      luckyClaimable: snapshot.claimable,
-    })
-    const preErr = gateError(mapMixedReason(preGate))
-    if (preErr) return { ok: false, error: preErr }
+      const preGate = evaluateRewardsMixedClaimGate({
+        amount,
+        rewardAvailable: snapshot.rewardAmount,
+        contribution: contrib.contribution,
+        requiredContribution: contrib.requiredContribution,
+        releasePlanIndex,
+        restakePlanIndex,
+        luckyPaused: snapshot.paused,
+        luckyClaimable: snapshot.claimable,
+      })
+      const preErr = gateError(mapMixedReason(preGate))
+      if (preErr) throw preErr
 
-    const live = await readLuckyClaimSnapshot(readClient, user)
-    const livePlans = await readClaimPlans(readClient)
-    const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
-    const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
-    const liveContrib = await readContributionSnapshot(user, amount, readClient)
-    const liveGate = evaluateRewardsMixedClaimGate({
-      amount,
-      rewardAvailable: live.rewardAmount,
-      contribution: liveContrib.contribution,
-      requiredContribution: liveContrib.requiredContribution,
-      releasePlanIndex: liveRelease,
-      restakePlanIndex: liveRestake,
-      luckyPaused: live.paused,
-      luckyClaimable: live.claimable,
-    })
-    const liveErr = gateError(mapMixedReason(liveGate))
-    if (liveErr) return { ok: false, error: liveErr }
-    if (liveRelease == null || liveRestake == null) {
-      return { ok: false, error: REWARDS_GATE_ERROR.releasePlanUnresolved }
-    }
+      const live = await readLuckyClaimSnapshot(readClient, user)
+      const livePlans = await readClaimPlans(readClient)
+      const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
+      const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
+      const liveContrib = await readContributionSnapshot(user, amount, readClient)
+      const liveGate = evaluateRewardsMixedClaimGate({
+        amount,
+        rewardAvailable: live.rewardAmount,
+        contribution: liveContrib.contribution,
+        requiredContribution: liveContrib.requiredContribution,
+        releasePlanIndex: liveRelease,
+        restakePlanIndex: liveRestake,
+        luckyPaused: live.paused,
+        luckyClaimable: live.claimable,
+      })
+      const liveErr = gateError(mapMixedReason(liveGate))
+      if (liveErr) throw liveErr
+      if (liveRelease == null || liveRestake == null) {
+        throw REWARDS_GATE_ERROR.releasePlanUnresolved
+      }
 
-    await writeLuckyMixedClaim({
-      wallet,
-      roundId: live.roundId,
-      releasePlanIndex: liveRelease,
-      restakePlanIndex: liveRestake,
-      restakeBps,
-    })
-    invalidateAfterTeamClaim()
-    clearUnknownReceiptLock(WRITE_PATH.REWARD_CLAIM)
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.REWARD_CLAIM)
-    }
-    return { ok: false, error: caught }
+      await writeLuckyMixedClaim({
+        wallet,
+        roundId: live.roundId,
+        releasePlanIndex: liveRelease,
+        restakePlanIndex: liveRestake,
+        restakeBps,
+      })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
+  invalidateAfterTeamClaim()
+  return { ok: true }
 }
 
 export async function submitDaoMixedClaim(args: {
@@ -158,79 +152,78 @@ export async function submitDaoMixedClaim(args: {
   if (!account || !wallet || !token) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.REWARD_CLAIM)) {
-    return { ok: false, error: REWARDS_GATE_ERROR.unavailable }
-  }
 
   const user = account.address as Address
   const restakeBps = restakeBpsFromPct(restakePct)
 
-  try {
-    const payload = await requestWithSession(requestDaoClaim, token, onUnauthorized)
-    const normalized = parseTeamRewardClaim(payload)
-    if (normalized.expireTime <= BigInt(Math.floor(Date.now() / 1000))) {
-      return { ok: false, error: REWARDS_GATE_ERROR.signatureExpired }
-    }
-    const amount = normalized.amountWei
+  const guarded = await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.REWARD_CLAIM,
+    whenLocked: REWARDS_GATE_ERROR.unavailable,
+    run: async () => {
+      const payload = await requestWithSession(requestDaoClaim, token, onUnauthorized)
+      const normalized = parseTeamRewardClaim(payload)
+      if (normalized.expireTime <= BigInt(Math.floor(Date.now() / 1000))) {
+        throw REWARDS_GATE_ERROR.signatureExpired
+      }
+      const amount = normalized.amountWei
 
-    const plans = await readClaimPlans(readClient)
-    const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
-    const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
-    const [rewardAvailable, contrib] = await Promise.all([
-      readDaoPoolRewardAvailable(readClient),
-      readContributionSnapshot(user, amount, readClient),
-    ])
-    const preGate = evaluateRewardsMixedClaimGate({
-      amount,
-      rewardAvailable,
-      contribution: contrib.contribution,
-      requiredContribution: contrib.requiredContribution,
-      releasePlanIndex,
-      restakePlanIndex,
-    })
-    const preErr = gateError(mapMixedReason(preGate))
-    if (preErr) return { ok: false, error: preErr }
+      const plans = await readClaimPlans(readClient)
+      const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
+      const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
+      const [rewardAvailable, contrib] = await Promise.all([
+        readDaoPoolRewardAvailable(readClient),
+        readContributionSnapshot(user, amount, readClient),
+      ])
+      const preGate = evaluateRewardsMixedClaimGate({
+        amount,
+        rewardAvailable,
+        contribution: contrib.contribution,
+        requiredContribution: contrib.requiredContribution,
+        releasePlanIndex,
+        restakePlanIndex,
+      })
+      const preErr = gateError(mapMixedReason(preGate))
+      if (preErr) throw preErr
 
-    // Live: re-read DaoPool AGX solvency + contribution + plans (never signature-self-certify).
-    const livePlans = await readClaimPlans(readClient)
-    const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
-    const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
-    const [liveReward, liveContrib] = await Promise.all([
-      readDaoPoolRewardAvailable(readClient),
-      readContributionSnapshot(user, amount, readClient),
-    ])
-    const liveGate = evaluateRewardsMixedClaimGate({
-      amount,
-      rewardAvailable: liveReward,
-      contribution: liveContrib.contribution,
-      requiredContribution: liveContrib.requiredContribution,
-      releasePlanIndex: liveRelease,
-      restakePlanIndex: liveRestake,
-    })
-    const liveErr = gateError(mapMixedReason(liveGate))
-    if (liveErr) return { ok: false, error: liveErr }
-    if (liveRelease == null || liveRestake == null) {
-      return { ok: false, error: REWARDS_GATE_ERROR.releasePlanUnresolved }
-    }
+      // Live: re-read DaoPool AGX solvency + contribution + plans (never signature-self-certify).
+      const livePlans = await readClaimPlans(readClient)
+      const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
+      const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
+      const [liveReward, liveContrib] = await Promise.all([
+        readDaoPoolRewardAvailable(readClient),
+        readContributionSnapshot(user, amount, readClient),
+      ])
+      const liveGate = evaluateRewardsMixedClaimGate({
+        amount,
+        rewardAvailable: liveReward,
+        contribution: liveContrib.contribution,
+        requiredContribution: liveContrib.requiredContribution,
+        releasePlanIndex: liveRelease,
+        restakePlanIndex: liveRestake,
+      })
+      const liveErr = gateError(mapMixedReason(liveGate))
+      if (liveErr) throw liveErr
+      if (liveRelease == null || liveRestake == null) {
+        throw REWARDS_GATE_ERROR.releasePlanUnresolved
+      }
 
-    await writeDaoMixedClaim({
-      wallet,
-      signType: normalized.signType,
-      amount,
-      expireTime: normalized.expireTime,
-      salt: normalized.salt,
-      signature: normalized.signature,
-      releasePlanIndex: liveRelease,
-      restakePlanIndex: liveRestake,
-      restakeBps,
-    })
-    invalidateAfterTeamClaim()
-    clearUnknownReceiptLock(WRITE_PATH.REWARD_CLAIM)
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.REWARD_CLAIM)
-    }
-    return { ok: false, error: caught }
+      await writeDaoMixedClaim({
+        wallet,
+        signType: normalized.signType,
+        amount,
+        expireTime: normalized.expireTime,
+        salt: normalized.salt,
+        signature: normalized.signature,
+        releasePlanIndex: liveRelease,
+        restakePlanIndex: liveRestake,
+        restakeBps,
+      })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
+  invalidateAfterTeamClaim()
+  return { ok: true }
 }

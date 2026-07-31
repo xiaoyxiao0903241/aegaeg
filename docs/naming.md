@@ -31,7 +31,7 @@ Directory / export renames to glossary English business words are complete for t
 - **Config** — `EXCHANGE_CONFIG` / `shared/config/exchange` · `pancake-exchange-links`
 - **Errors / invalidation / shell** — `EXCHANGE_QUOTE_FAILED` · `invalidateAfterExchange` · `flashExchangeAssets` · `Exchange*Skeleton` · `HIGH_EXCHANGE_PRICE_IMPACT_BPS`
 - **Claim** — `web3/claim/claim-reward` · `use-claim-reward` · `parse-team-reward-claim`
-- **Unknown receipt** — `unknown-receipt-lock` (`lockUnknownReceipt` / `clearUnknownReceiptLock` / `isUnknownReceiptLocked`)
+- **Unknown receipt** — `unknown-receipt-lock` (`lockUnknownReceipt` / `clearUnknownReceiptLock` / `isUnknownReceiptLocked`) · `submitWithUnknownReceiptLock` · `approveThenLiveWrite`
 - **Startup** — `src/app/startup/` (was `bootstrap/`)
 
 **Frozen (do not rename):** query key literals `'swap'` / `'flashSwap'`; `WRITE_PATH.EXCHANGE` **value** `'swap'`; ABI `functionName: 'swap'`; ABI constants `USD1_SWAP_*` / `SWAP_ROUTER_V3_*`; contract keys like `usd1Swap` / `pancakeV3SwapRouter`; backend JSON field names. Keep `genesis` as the co-build product directory name.

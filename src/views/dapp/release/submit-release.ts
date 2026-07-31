@@ -4,7 +4,7 @@ import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
 import { releaseClaimBlockReason } from '~/core/release/release-gates'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { writeClaimAllVestedRewards, writeClaimManyReleases } from '~/web3/release/release-write'
-import { runUnknownGuardedWrite } from '~/web3/wallet/run-unknown-guarded-write'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
@@ -47,9 +47,9 @@ export async function submitReleaseQueueClaim(args: {
   }
 
   const address = account.address as Address
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
-    lockedError: RELEASE_GATE_ERROR.lockedUnknown,
+    whenLocked: RELEASE_GATE_ERROR.lockedUnknown,
     run: async () => {
       const pre = await readReleaseQueueSnapshot(address, readClient)
       const preRow = pre.plans.find((row) => row.planIndex === planIndex)
@@ -93,9 +93,9 @@ export async function submitReleaseBufferClaim(args: {
   }
 
   const address = account.address as Address
-  const guarded = await runUnknownGuardedWrite({
+  const guarded = await submitWithUnknownReceiptLock({
     path: WRITE_PATH.RELEASE_CLAIM,
-    lockedError: RELEASE_GATE_ERROR.lockedUnknown,
+    whenLocked: RELEASE_GATE_ERROR.lockedUnknown,
     run: async () => {
       const pre = await readReleaseBufferSnapshot(address, readClient)
       const preErr = gateError(

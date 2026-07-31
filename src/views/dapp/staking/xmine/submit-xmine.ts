@@ -4,13 +4,9 @@ import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { evaluateXmineLiveGate } from '~/core/staking/staking-gates'
 import { approveGagxForXmineIfNeeded, stakeGagxForMining } from '~/web3/staking/staking-write'
 import { readXminePreflight } from '~/web3/staking/staking-read'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  lockUnknownReceipt,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { openExchangeView } from '~/shared/config/open-exchange-view'
 
@@ -35,44 +31,39 @@ export async function submitXmineStake(args: {
   if (!account || !wallet) {
     return { ok: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
   }
-  if (isUnknownReceiptLocked(WRITE_PATH.XMINE)) {
-    return { ok: false, error: XMINE_GATE_ERROR.unavailable }
+
+  const guarded = await submitWithUnknownReceiptLock({
+    path: WRITE_PATH.XMINE,
+    whenLocked: XMINE_GATE_ERROR.unavailable,
+    run: async () => {
+      let pastPreflight = false
+      await approveThenLiveWrite({
+        readSnapshot: () => readXminePreflight({ user: account.address, client: readClient }),
+        evaluate: (preflight) =>
+          evaluateXmineLiveGate({
+            amount,
+            balance: preflight.balance,
+            allowance: preflight.allowance,
+            miningQuota: preflight.miningQuota,
+          }),
+        mapGateError: (reason) => {
+          if (!pastPreflight && reason === 'insufficientBalance') openExchangeView('flash')
+          return XMINE_GATE_ERROR[reason]
+        },
+        approve: async () => {
+          pastPreflight = true
+          await approveGagxForXmineIfNeeded({ wallet, amount })
+        },
+        write: async () => {
+          await stakeGagxForMining({ wallet, amount })
+        },
+      })
+    },
+  })
+
+  if (!guarded.ok) {
+    return { ok: false, error: guarded.error }
   }
-
-  try {
-    const pre = await readXminePreflight({ user: account.address, client: readClient })
-    const preGate = evaluateXmineLiveGate({
-      amount,
-      balance: pre.balance,
-      allowance: pre.allowance,
-      miningQuota: pre.miningQuota,
-    })
-    if (preGate === 'insufficientBalance') {
-      openExchangeView('flash')
-      return { ok: false, error: XMINE_GATE_ERROR.insufficientBalance }
-    }
-    if (preGate) return { ok: false, error: XMINE_GATE_ERROR[preGate] }
-
-    await approveGagxForXmineIfNeeded({ wallet, amount })
-
-    const live = await readXminePreflight({ user: account.address, client: readClient })
-    const liveGate = evaluateXmineLiveGate({
-      amount,
-      balance: live.balance,
-      allowance: live.allowance,
-      miningQuota: live.miningQuota,
-    })
-    if (liveGate) return { ok: false, error: XMINE_GATE_ERROR[liveGate] }
-
-    await stakeGagxForMining({ wallet, amount })
-
-    clearUnknownReceiptLock(WRITE_PATH.XMINE)
-    invalidateAfterStaking()
-    return { ok: true }
-  } catch (caught) {
-    if (isUnknownSubmitOutcome(caught)) {
-      lockUnknownReceipt(WRITE_PATH.XMINE)
-    }
-    return { ok: false, error: caught }
-  }
+  invalidateAfterStaking()
+  return { ok: true }
 }

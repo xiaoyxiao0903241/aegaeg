@@ -15,13 +15,8 @@ import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 import { readPresalePaused } from '~/web3/presale/presale-read'
 import { fetchLiveGenesisPostApproveGate } from '~/views/dapp/genesis/fetch-live-genesis-post-approve-gate'
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
-import {
-  WRITE_PATH,
-  clearUnknownReceiptLock,
-  isUnknownReceiptLocked,
-  lockUnknownReceipt,
-} from '~/web3/wallet/unknown-receipt-lock'
+import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
+import { WRITE_PATH, isUnknownReceiptLocked } from '~/web3/wallet/unknown-receipt-lock'
 
 export interface GenesisPurchaseResult {
   success: boolean
@@ -70,7 +65,7 @@ export function useGenesisPurchaseActions({
     if (!account || !wallet) {
       return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
-    if (isUnknownReceiptLocked(WRITE_PATH.GENESIS) || !canPurchase) {
+    if (!canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
     if (isApproved) {
@@ -78,72 +73,81 @@ export function useGenesisPurchaseActions({
     }
 
     setSubmittingAction('approve')
-    try {
-      await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
-      if (address) {
-        queryClient.setQueryData(
-          queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
-          purchaseAmount,
-        )
-      }
-      return { success: true }
-    } catch (caught) {
-      if (isUnknownSubmitOutcome(caught)) {
-        lockUnknownReceipt(WRITE_PATH.GENESIS)
-      }
-      return { success: false, error: caught }
-    } finally {
-      setSubmittingAction(null)
+    const guarded = await submitWithUnknownReceiptLock({
+      path: WRITE_PATH.GENESIS,
+      whenLocked: GENESIS_PURCHASE_ERROR.UNAVAILABLE,
+      run: async () => {
+        await approveUsd1ForPresaleIfNeeded({ wallet, amount: purchaseAmount })
+        if (address) {
+          queryClient.setQueryData(
+            queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+            purchaseAmount,
+          )
+        }
+      },
+    })
+    setSubmittingAction(null)
+    if (!guarded.ok) {
+      return { success: false, error: guarded.error }
     }
+    return { success: true }
   }
 
   async function purchase(): Promise<GenesisPurchaseResult> {
     if (!account || !wallet) {
       return { success: false, error: WALLET_GATE_ERROR.NOT_CONNECTED }
     }
-    if (isUnknownReceiptLocked(WRITE_PATH.GENESIS) || !activePhase || !canPurchase) {
+    if (!activePhase || !canPurchase) {
       return { success: false, error: GENESIS_PURCHASE_ERROR.UNAVAILABLE }
     }
 
     setSubmittingAction('purchase')
-    try {
-      const [balance, approved] = await Promise.all([
-        readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
-        readErc20Allowance(BSC_CONTRACTS.usd1, account.address, BSC_CONTRACTS.preSale, readClient),
-      ])
+    const guarded = await submitWithUnknownReceiptLock({
+      path: WRITE_PATH.GENESIS,
+      whenLocked: GENESIS_PURCHASE_ERROR.UNAVAILABLE,
+      run: async () => {
+        const [balance, approved] = await Promise.all([
+          readErc20Balance(BSC_CONTRACTS.usd1, account.address, readClient),
+          readErc20Allowance(
+            BSC_CONTRACTS.usd1,
+            account.address,
+            BSC_CONTRACTS.preSale,
+            readClient,
+          ),
+        ])
 
-      if (address) {
-        queryClient.setQueryData(queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address), balance)
-        queryClient.setQueryData(
-          queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
-          approved,
-        )
-      }
+        if (address) {
+          queryClient.setQueryData(
+            queryKeys.chain.erc20Balance(BSC_CONTRACTS.usd1, address),
+            balance,
+          )
+          queryClient.setQueryData(
+            queryKeys.chain.erc20Allowance(BSC_CONTRACTS.usd1, address, BSC_CONTRACTS.preSale),
+            approved,
+          )
+        }
 
-      if (approved < purchaseAmount) {
-        return { success: false, error: GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE }
-      }
+        if (approved < purchaseAmount) {
+          throw GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE
+        }
 
-      if (balance < purchaseAmount) {
-        return { success: false, error: GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1 }
-      }
+        if (balance < purchaseAmount) {
+          throw GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1
+        }
 
-      await purchasePresale({
-        wallet,
-        phase: activePhase.index,
-        amount: purchaseAmount,
-      })
-      invalidateAfterGenesisPurchase(account.address, purchaseAmount)
-      clearUnknownReceiptLock(WRITE_PATH.GENESIS)
-      return { success: true }
-    } catch (caught) {
-      if (isUnknownSubmitOutcome(caught)) {
-        lockUnknownReceipt(WRITE_PATH.GENESIS)
-      }
-      return { success: false, error: caught }
-    } finally {
-      setSubmittingAction(null)
+        await purchasePresale({
+          wallet,
+          phase: activePhase.index,
+          amount: purchaseAmount,
+        })
+      },
+    })
+    setSubmittingAction(null)
+    if (!guarded.ok) {
+      return { success: false, error: guarded.error }
     }
+    invalidateAfterGenesisPurchase(account.address, purchaseAmount)
+    return { success: true }
   }
 
   async function submitPurchase(): Promise<GenesisPurchaseResult> {

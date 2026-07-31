@@ -54,7 +54,7 @@ test('submitMixedClaim source uses dualGate + unknown envelope (string lock)', a
     'utf8',
   )
   assert.match(src, /dualGateMixedClaim/)
-  assert.match(src, /runUnknownGuardedWrite/)
+  assert.match(src, /submitWithUnknownReceiptLock/)
   assert.match(src, /readMixedRewardAvailable/)
   assert.doesNotMatch(src, /rewardAvailable:\s*amount/)
 })
@@ -65,6 +65,6 @@ test('submitRelease source uses unknown envelope (string lock)', async () => {
     new URL('../../src/views/dapp/release/submit-release.ts', import.meta.url),
     'utf8',
   )
-  assert.match(src, /runUnknownGuardedWrite/)
+  assert.match(src, /submitWithUnknownReceiptLock/)
   assert.doesNotMatch(src, /lockUnknownReceipt\(/)
 })

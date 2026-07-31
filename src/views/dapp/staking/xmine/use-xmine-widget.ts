@@ -9,6 +9,7 @@ import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 import { useChainReadClient } from '~/web3/use-chain-read-client'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { useXminePreflightQuery } from '~/web3/staking/use-staking-queries'
+import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { isUnknownReceiptLocked, WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitXmineStake } from '~/views/dapp/staking/xmine/submit-xmine'
 
@@ -46,8 +47,12 @@ export function useXmineWidget(sessionReady: boolean) {
     miningQuota: preflightQuery.data?.miningQuota ?? 0n,
   })
 
-  const locked =
-    isUnknownReceiptLocked(WRITE_PATH.XMINE) || isSubmitting || !writeReady || !walletReady
+  const locked = writeCtaDisabled({
+    unknownReceiptLocked: isUnknownReceiptLocked(WRITE_PATH.XMINE),
+    isSubmitting,
+    writeReady,
+    walletReady,
+  })
 
   const canSubmit =
     !locked && amountInput.amountIn > 0n && gate == null && preflightQuery.data !== undefined

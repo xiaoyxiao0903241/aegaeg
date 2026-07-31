@@ -40,7 +40,7 @@ export function useRewardsSimpleClaimView(view: SimpleClaimView, sessionReady: b
     !referralAmountKnown || (Number.isFinite(referralAmount) && referralAmount > 0)
   /** Same CommunityFund as genesis 发展基金 (pre-leaf dual entry); amount gate only — node gate is backend/sign. */
 
-  function resolveClaimMessage(error: unknown) {
+  function claimUserMessage(error: unknown) {
     return (
       resolveWalletTransactionError(error, t.wallet.transactionErrors) ??
       resolveTeamClaimError(error, {
@@ -51,7 +51,7 @@ export function useRewardsSimpleClaimView(view: SimpleClaimView, sessionReady: b
     )
   }
 
-  usePresentUserFacingError(claim.error, resolveClaimMessage, {
+  usePresentUserFacingError(claim.error, claimUserMessage, {
     id: `rewards-simple-claim:${view}`,
     onPresented: claim.clearError,
   })
