@@ -1,3 +1,5 @@
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+
 function normalizeRateOutPerUnit(amountIn: bigint, amountOut: bigint, decimalsIn: number): bigint {
   const oneUnitIn = 10n ** BigInt(decimalsIn)
   return (amountOut * oneUnitIn) / amountIn
@@ -19,17 +21,10 @@ function formatRateRatioFixed(
   decimalsOut: number,
   fractionDigits = 4,
 ): string {
-  const divisor = 10n ** BigInt(decimalsOut)
-  const whole = normalizedOut / divisor
-  const fraction = normalizedOut % divisor
-  const fractionText = fraction
-    .toString()
-    .padStart(decimalsOut, '0')
-    .slice(0, fractionDigits)
-    .padEnd(fractionDigits, '0')
-  const groupedWhole = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-  return `${groupedWhole}.${fractionText}`
+  return formatTokenAmount(normalizedOut, decimalsOut, {
+    digits: fractionDigits,
+    trimZeros: false,
+  })
 }
 
 /** Trim trailing zeros — Figma flash meta/overview uses `1 : 1`, not `1 : 1.0000`. */

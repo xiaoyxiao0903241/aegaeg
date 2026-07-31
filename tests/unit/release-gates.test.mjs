@@ -1,26 +1,14 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  evaluateReleaseBufferClaimGate,
-  evaluateReleaseQueueClaimGate,
+  releaseClaimBlockReason,
   releaseProgressBps,
 } from '../../src/core/release/release-gates.ts'
 
 test('queue claim gate fails closed on zero and unknown lock', () => {
-  assert.equal(evaluateReleaseQueueClaimGate({ claimable: 0n, unknownLocked: false }), 'zeroAmount')
-  assert.equal(
-    evaluateReleaseQueueClaimGate({ claimable: 1n, unknownLocked: true }),
-    'lockedUnknown',
-  )
-  assert.equal(evaluateReleaseQueueClaimGate({ claimable: 1n, unknownLocked: false }), null)
-})
-
-test('buffer claim gate mirrors queue claimable rules', () => {
-  assert.equal(
-    evaluateReleaseBufferClaimGate({ claimable: 0n, unknownLocked: false }),
-    'zeroAmount',
-  )
-  assert.equal(evaluateReleaseBufferClaimGate({ claimable: 10n, unknownLocked: false }), null)
+  assert.equal(releaseClaimBlockReason({ claimable: 0n, unknownLocked: false }), 'zeroAmount')
+  assert.equal(releaseClaimBlockReason({ claimable: 1n, unknownLocked: true }), 'lockedUnknown')
+  assert.equal(releaseClaimBlockReason({ claimable: 1n, unknownLocked: false }), null)
 })
 
 test('release progress bps is claimable / (claimable + releasing)', () => {
@@ -49,6 +37,8 @@ test('submit release live-gates and EX-U5 invalidate turbine', async () => {
   assert.match(submit, /invalidateAfterReleaseClaim/)
   assert.match(submit, /const live = await readReleaseQueueSnapshot/)
   assert.match(submit, /const live = await readReleaseBufferSnapshot/)
+  assert.match(submit, /releaseClaimBlockReason/)
+  assert.doesNotMatch(submit, /evaluateReleaseBufferClaimGate/)
   assert.match(invalidate, /invalidateAfterReleaseClaim/)
   assert.match(tabKeys, /release:\s*\[[\s\S]*turbineRoot/)
 })

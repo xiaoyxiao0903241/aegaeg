@@ -30,11 +30,24 @@ test('formatShareholderHintForRank renders tier-specific hint', async () => {
   assert.equal(formatShareholderHintForRank(0, '{bonus}', 'fallback', tiers), 'fallback')
 })
 
-test('formatUsdAmountLabel renders amount with USD suffix for hints', async () => {
-  const { formatUsdAmountLabel } = await loadModule('/src/shared/api/format-display.ts')
+test('formatGroupedNumber supports $ prefix and USD suffix', async () => {
+  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
 
-  assert.equal(formatUsdAmountLabel(5000), '5,000 USD')
-  assert.equal(formatUsdAmountLabel('invalid'), '0 USD')
+  assert.equal(formatGroupedNumber(5000, { suffix: ' USD' }), '5,000 USD')
+  assert.equal(formatGroupedNumber('invalid', { suffix: ' USD' }), '0 USD')
+  assert.equal(formatGroupedNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
+  assert.equal(formatGroupedNumber(1000, { digits: 0, trimZeros: true }), '1,000')
+})
+
+test('formatApproxUsd: zero is ≈ $0.00; missing price on non-zero is ≈ —', async () => {
+  const { formatApproxUsd } = await loadModule('/src/shared/api/format-display.ts')
+
+  assert.equal(formatApproxUsd(0, null), '≈ $0.00')
+  assert.equal(formatApproxUsd(0, 65), '≈ $0.00')
+  assert.equal(formatApproxUsd(1, null), '≈ —')
+  assert.equal(formatApproxUsd(1, 0), '≈ —')
+  assert.equal(formatApproxUsd(2, 10), '≈ $20.00')
+  assert.equal(formatApproxUsd(Number.NaN, 10), '≈ —')
 })
 
 test('formatTableGenesisRank hides S0 in community member table', async () => {
@@ -46,7 +59,9 @@ test('formatTableGenesisRank hides S0 in community member table', async () => {
 })
 
 test('mapTeamReferralToCompactRow renders invite table cells', async () => {
-  const { mapTeamReferralToCompactRow } = await loadModule('/src/views/dapp/community/community-display.ts')
+  const { mapTeamReferralToCompactRow } = await loadModule(
+    '/src/views/dapp/community/community-display.ts',
+  )
 
   assert.deepEqual(
     mapTeamReferralToCompactRow({
@@ -95,7 +110,9 @@ test('mapRewardLogToRow uses i18n labels for status', async () => {
 })
 
 test('mapTeamRewardClaimLogToRow renders presale team claim history', async () => {
-  const { mapTeamRewardClaimLogToRow } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
+  const { mapTeamRewardClaimLogToRow } = await loadModule(
+    '/src/views/dapp/rewards/rewards-display.ts',
+  )
   const labels = {
     pending: '待领取',
     processing: '处理中',
@@ -123,7 +140,9 @@ test('mapTeamRewardClaimLogToRow renders presale team claim history', async () =
 })
 
 test('mapCommunityFundLogToRow renders development fund history without genesis rank', async () => {
-  const { mapCommunityFundLogToRow } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
+  const { mapCommunityFundLogToRow } = await loadModule(
+    '/src/views/dapp/rewards/rewards-display.ts',
+  )
   const labels = {
     pending: '待处理',
     processing: '处理中',
@@ -148,12 +167,17 @@ test('mapCommunityFundLogToRow renders development fund history without genesis 
   assert.equal(row[2], '已支付')
 })
 
-test('formatClaimableAmount subtracts claimed from total', async () => {
-  const { formatClaimableAmount, claimableAmountValue } = await loadModule(
-    '/src/views/dapp/rewards/rewards-display.ts',
-  )
+test('claimableAmountValue subtracts claimed from total', async () => {
+  const { claimableAmountValue } = await loadModule('/src/views/dapp/rewards/rewards-display.ts')
+  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
 
-  assert.equal(formatClaimableAmount('1000', '657.82'), '$342.18')
+  assert.equal(
+    formatGroupedNumber(claimableAmountValue('1000', '657.82'), { digits: 2, prefix: '$' }),
+    '$342.18',
+  )
   assert.ok(claimableAmountValue('0.004', '0') > 0)
-  assert.equal(formatClaimableAmount('0.004', '0'), '$0.00')
+  assert.equal(
+    formatGroupedNumber(claimableAmountValue('0.004', '0'), { digits: 2, prefix: '$' }),
+    '$0.00',
+  )
 })

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useSalesLogs } from '~/hooks/use-api-data'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { calcProgressPercent, formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
+import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
 import { bscscanTx } from '~/shared/config/explorer'
 import { DappSection } from '~/app/shell/dapp-section'
@@ -39,7 +40,7 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
     String(seasonContributedUsd),
     seasonMaxContributionUsd,
   )
-  const contributedLabel = `${formatUsd(seasonContributedUsd)} / ${formatUsd(seasonMaxContributionUsd)}`
+  const contributedLabel = `${formatGroupedNumber(seasonContributedUsd, { prefix: '$' })} / ${formatGroupedNumber(seasonMaxContributionUsd, { prefix: '$' })}`
 
   const desktopRows = genesis.isPhasesLoading
     ? []
@@ -106,7 +107,7 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
                 embedded
                 onPageChange={setContributionsPage}
                 page={contributionsPage}
-                summary={`${t.genesis.cumulativeContributed}${formatUsd(cumulativeContributedUsd)}`}
+                summary={`${t.genesis.cumulativeContributed}${formatGroupedNumber(cumulativeContributedUsd, { prefix: '$' })}`}
                 total={contributionsTotal}
               />
             ) : undefined

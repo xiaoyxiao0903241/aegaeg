@@ -14,19 +14,15 @@ import {
   useTeamOverview,
   useTeamRewardTotal,
 } from '~/hooks/use-api-data'
-import { formatPresaleRank, formatUsd, calcProgressPercent } from '~/shared/api/format-display'
+import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
+import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { buildNextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import {
-  claimableAmountValue,
-  formatClaimableAmount,
-  formatCommunityFundLockedAmount,
-  REWARDS_DASH,
-} from '~/views/dapp/rewards/rewards-display'
+import { claimableAmountValue, REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
 import {
@@ -72,7 +68,7 @@ export function RewardsGenesisClaimWidget() {
     ? t.rewards.progressMaxPersonal
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
   const personalProgressValue = sessionReady
-    ? `${formatUsd(tierProgress.personalCurrentUsd)} / ${formatUsd(tierProgress.personalTargetUsd)}`
+    ? `${formatGroupedNumber(tierProgress.personalCurrentUsd, { prefix: '$' })} / ${formatGroupedNumber(tierProgress.personalTargetUsd, { prefix: '$' })}`
     : REWARDS_DASH
 
   const qualifiedPartitionCount = qualifiedPartitions?.count ?? 0
@@ -86,11 +82,11 @@ export function RewardsGenesisClaimWidget() {
       : tierProgress.isMaxRank
         ? t.rewards.progressMaxTeam
         : tierProgress.teamLegRank != null
-          ? `${formatUsd(tierProgress.teamCurrentUsd)} · ${t.rewards.teamLegRequirement.replace(
+          ? `${formatGroupedNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} · ${t.rewards.teamLegRequirement.replace(
               '{rank}',
               formatPresaleRank(tierProgress.teamLegRank),
             )}`
-          : `${formatUsd(tierProgress.teamCurrentUsd)} / ${formatUsd(tierProgress.teamTargetUsd ?? 0)}`
+          : `${formatGroupedNumber(tierProgress.teamCurrentUsd, { prefix: '$' })} / ${formatGroupedNumber(tierProgress.teamTargetUsd ?? 0, { prefix: '$' })}`
 
   const personalProgressPercent = sessionReady ? tierProgress.personalProgressPercent : 0
   const teamProgressPercent = !sessionReady
@@ -112,7 +108,10 @@ export function RewardsGenesisClaimWidget() {
     ? REWARDS_DASH
     : referralLoading && referralTotal == null
       ? '…'
-      : formatUsd(referralTotal?.claimed ?? referralTotal?.total ?? 0, 2)
+      : formatGroupedNumber(referralTotal?.claimed ?? referralTotal?.total ?? 0, {
+          digits: 2,
+          prefix: '$',
+        })
 
   const teamClaimableValue = claimableAmountValue(
     teamTotal?.total ?? '0',
@@ -122,27 +121,37 @@ export function RewardsGenesisClaimWidget() {
     ? REWARDS_DASH
     : teamLoading && teamTotal == null
       ? '…'
-      : formatClaimableAmount(teamTotal?.total ?? '0', teamTotal?.claimed ?? '0')
+      : formatGroupedNumber(teamClaimableValue, { digits: 2, prefix: '$' })
   const teamMeta = !sessionReady
     ? REWARDS_DASH
     : teamTotal?.claimed == null
       ? REWARDS_DASH
-      : formatUsd(teamTotal.claimed, 2)
+      : formatGroupedNumber(teamTotal.claimed, { digits: 2, prefix: '$' })
 
   const communityClaimableValue = Number(communityFundTotal?.unlocked_claimable ?? 0)
   const communityClaimable = !sessionReady
     ? REWARDS_DASH
     : communityFundLoading && communityFundTotal == null
       ? '…'
-      : formatUsd(Number.isFinite(communityClaimableValue) ? communityClaimableValue : 0, 2)
+      : formatGroupedNumber(
+          Number.isFinite(communityClaimableValue) ? communityClaimableValue : 0,
+          {
+            digits: 2,
+            prefix: '$',
+          },
+        )
   const communityLockedMeta = !sessionReady
     ? t.rewards.communityFundLocked.replace('{amount}', REWARDS_DASH)
     : t.rewards.communityFundLocked.replace(
         '{amount}',
-        formatCommunityFundLockedAmount(
-          communityFundTotal?.total ?? '0',
-          communityFundTotal?.claimed ?? '0',
-          communityFundTotal?.unlocked_claimable ?? '0',
+        formatGroupedNumber(
+          Math.max(
+            0,
+            Number(communityFundTotal?.total ?? '0') -
+              Number(communityFundTotal?.claimed ?? '0') -
+              Number(communityFundTotal?.unlocked_claimable ?? '0'),
+          ),
+          { digits: 2, prefix: '$' },
         ),
       )
 

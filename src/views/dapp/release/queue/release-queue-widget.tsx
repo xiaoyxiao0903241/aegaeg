@@ -1,3 +1,5 @@
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useState } from 'react'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
@@ -16,11 +18,11 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
-import { formatReleaseAmount, formatReleasePct } from '~/views/dapp/release/release-display'
+import { formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 
-const APPROX_EMPTY = '≈ —'
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function ReleaseQueueWidget() {
   const { messages: t } = useI18n()
@@ -102,7 +104,7 @@ export function ReleaseQueueWidget() {
                     {t.release.labels.released}{' '}
                     <Text as="span" className="font-semibold text-primary" variant="caption">
                       {walletReady
-                        ? `${formatReleaseAmount(row.claimable)} ${t.release.units.queue}`
+                        ? `${formatTokenAmount(row.claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`
                         : dash}
                     </Text>
                   </Text>
@@ -110,7 +112,7 @@ export function ReleaseQueueWidget() {
                     {t.release.labels.releasing}{' '}
                     <Text as="span" className="font-semibold text-foreground" variant="caption">
                       {walletReady
-                        ? `${formatReleaseAmount(row.releasing)} ${t.release.units.queue}`
+                        ? `${formatTokenAmount(row.releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`
                         : dash}
                     </Text>
                   </Text>
@@ -126,7 +128,7 @@ export function ReleaseQueueWidget() {
                     {t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))}
                   </Text>
                   <Text as="span" tone="muted-foreground" variant="caption">
-                    {walletReady ? APPROX_EMPTY : dash}
+                    {walletReady ? '≈ —' : dash}
                   </Text>
                 </div>
                 <Button

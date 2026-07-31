@@ -6,6 +6,7 @@ import {
   type TransactionReceipt,
 } from 'viem'
 import { bsc } from 'viem/chains'
+import { sleep } from '~/shared/lib/sleep'
 
 const RECEIPT_POLL_MS = 2_000
 /** Max wait for a broadcast tx to mine. */
@@ -14,10 +15,6 @@ const RECEIPT_TIMEOUT_MS = 60_000
 const NOT_ON_CHAIN_FAIL_MS = 8_000
 /** Pending tx visible but no receipt — MetaMask can leave a local pending entry after failed send. */
 const PENDING_WITHOUT_RECEIPT_MS = 20_000
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 async function readReceipt(
   client: { getTransactionReceipt: (args: { hash: Hash }) => Promise<TransactionReceipt | null> },

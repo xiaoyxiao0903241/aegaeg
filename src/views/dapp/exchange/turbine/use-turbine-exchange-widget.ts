@@ -1,12 +1,8 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import {
-  formatTokenAmount,
-  formatTokenAmountFixed,
-  formatTokenAmountToNumber,
-} from '~/core/exchange/token-amount'
-import { formatUsd } from '~/shared/api/format-display'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
@@ -46,11 +42,11 @@ const ONE_AGX = 10n ** BigInt(AGX_DECIMALS)
 
 /** Overview USD hint: zero amount → `$0.00`; missing/failed unit quote → empty (never fake `$0.00`). */
 function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined): string {
-  if (amountAgx === 0n) return formatUsd(0, 2)
+  if (amountAgx === 0n) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
   if (unitUsdPerAgx === undefined || unitUsdPerAgx === 0n) return ''
   const usdNumber = formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS)
   if (!Number.isFinite(usdNumber) || usdNumber <= 0) return ''
-  return formatUsd(usdNumber, 2)
+  return formatGroupedNumber(usdNumber, { digits: 2, prefix: '$' })
 }
 
 /** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
@@ -149,7 +145,7 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
   const agxPriceLabel =
     unitPriceQuery.isError || unitUsd === undefined || unitUsdNumber <= 0
       ? ''
-      : formatUsd(unitUsdNumber, 2)
+      : formatGroupedNumber(unitUsdNumber, { digits: 2, prefix: '$' })
 
   // Meta「解锁比率」— live colon from quoteUsdInForAgxOut(1 AGX); empty → honest —.
   const unlockRatioLabel =
@@ -249,8 +245,11 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     fillPercent,
     payUsd1Label,
     buyAgxLabel,
-    quotaLabel: formatTokenAmountFixed(quota, AGX_DECIMALS, 2),
-    usd1BalanceLabel: formatTokenAmountFixed(usd1Balance, USD1_DECIMALS, 2),
+    quotaLabel: formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
+    usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, {
+      digits: 2,
+      trimZeros: false,
+    }),
     cooldownHours,
     unlockRatioLabel,
     agxPriceLabel,
@@ -260,13 +259,16 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     silences: silencesQuery.data?.rows ?? [],
     isSilencesLoading: walletReady && silencesQuery.isLoading,
     overview: {
-      pendingUnlockLabel: formatTokenAmountFixed(quota, AGX_DECIMALS, 2),
+      pendingUnlockLabel: formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
       pendingUnlockUsdHint: formatAgxQuotaUsd(quota, unitUsdReady ? unitUsd : undefined),
-      coolingLabel: formatTokenAmountFixed(coolingBalance, AGX_DECIMALS, 2),
+      coolingLabel: formatTokenAmount(coolingBalance, AGX_DECIMALS, {
+        digits: 2,
+        trimZeros: false,
+      }),
       coolingUsdHint: formatAgxQuotaUsd(coolingBalance, unitUsdReady ? unitUsd : undefined),
       // No cumulative claim index on-chain yet — placeholder 0.00 until indexer.
       totalWithdrawnLabel: '0.00',
-      totalWithdrawnUsdHint: formatUsd(0, 2),
+      totalWithdrawnUsdHint: formatGroupedNumber(0, { digits: 2, prefix: '$' }),
       isLoading: walletReady && (quotaQuery.isLoading || silencesQuery.isLoading),
     },
     hasClaimable: (silencesQuery.data?.claimableCount ?? 0) > 0,

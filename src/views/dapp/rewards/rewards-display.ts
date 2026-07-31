@@ -4,12 +4,12 @@ import type {
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
 import {
+  formatGroupedNumber,
   TABLE_EMPTY,
   formatApiDateTime,
   formatBlockTime,
   formatShortAddress,
   formatTableGenesisRank,
-  formatUsd,
 } from '~/shared/api/format-display'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import type { DurationPlan } from '~/core/assets/claim-plans'
@@ -111,41 +111,27 @@ function formatRewardStatus(status: number, labels: RewardLogStatusLabels): stri
   return labels[resolveRewardLogStatusKey(status)]
 }
 
-function formatOrderAmountUsd(orderAmount: string | undefined): string {
-  const num = Number(orderAmount)
-  if (!Number.isFinite(num) || num <= 0) return TABLE_EMPTY
-  return formatUsd(num, 0)
-}
-
 export function claimableAmountValue(total: string, claimed: string): number {
   const pending = Math.max(0, Number(total) - Number(claimed))
   return Number.isFinite(pending) ? pending : 0
 }
 
-export function formatClaimableAmount(total: string, claimed: string): string {
-  return formatUsd(claimableAmountValue(total, claimed), 2)
-}
-
-export function formatCommunityFundLockedAmount(
-  total: string,
-  claimed: string,
-  unlockedClaimable: string,
-): string {
-  const locked = Math.max(0, Number(total) - Number(claimed) - Number(unlockedClaimable))
-  return formatUsd(locked, 2)
-}
-
 export function mapRewardLogToRow(item: RewardLogItem, labels: RewardLogStatusLabels): string[] {
   const signedAmount = Number(item.amount)
   const amountLabel = Number.isFinite(signedAmount)
-    ? formatUsd(Math.abs(signedAmount), 2)
+    ? formatGroupedNumber(Math.abs(signedAmount), { digits: 2, prefix: '$' })
     : TABLE_EMPTY
+  const orderAmount = Number(item.order_amount)
+  const orderLabel =
+    Number.isFinite(orderAmount) && orderAmount > 0
+      ? formatGroupedNumber(orderAmount, { digits: 0, prefix: '$' })
+      : TABLE_EMPTY
 
   return [
     formatBlockTime(item.block_time),
     amountLabel,
     formatShortAddress(item.from_address),
-    formatOrderAmountUsd(item.order_amount),
+    orderLabel,
     formatRewardStatus(item.status, labels),
   ]
 }
@@ -155,7 +141,9 @@ export function mapTeamRewardClaimLogToRow(
   labels: RewardLogStatusLabels,
 ): string[] {
   const amountNum = Number(item.amount)
-  const amountLabel = Number.isFinite(amountNum) ? formatUsd(Math.abs(amountNum), 2) : TABLE_EMPTY
+  const amountLabel = Number.isFinite(amountNum)
+    ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
+    : TABLE_EMPTY
   const statusKey = resolveTeamRewardClaimStatusKey(item.status)
 
   return [
@@ -171,7 +159,9 @@ export function mapCommunityFundLogToRow(
   labels: RewardLogStatusLabels,
 ): string[] {
   const amountNum = Number(item.amount)
-  const amountLabel = Number.isFinite(amountNum) ? formatUsd(Math.abs(amountNum), 2) : TABLE_EMPTY
+  const amountLabel = Number.isFinite(amountNum)
+    ? formatGroupedNumber(Math.abs(amountNum), { digits: 2, prefix: '$' })
+    : TABLE_EMPTY
   const statusKey = resolveCommunityFundLogStatusKey(item.status)
 
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]

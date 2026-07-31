@@ -1,3 +1,5 @@
+import { formatGroupedNumber } from '~/shared/api/format-display'
+
 let booted = false
 
 function loadDeferredImage(image: HTMLImageElement) {
@@ -25,13 +27,9 @@ function isRevealCandidateInView(element: HTMLElement) {
   return rect.bottom > 0 && rect.top < viewportHeight * 0.96
 }
 
-function formatCount(value: number) {
-  return value >= 1000 ? value.toLocaleString('en-US') : String(value)
-}
-
 function setCountValue(element: HTMLElement, value: number) {
   const suffix = element.dataset.countSuffix ?? ''
-  element.textContent = `${formatCount(value)}${suffix}`
+  element.textContent = `${formatGroupedNumber(value, { digits: 0, trimZeros: true })}${suffix}`
 }
 
 function resetCountValue(element: HTMLElement) {

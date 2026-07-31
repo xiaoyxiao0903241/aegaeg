@@ -1,4 +1,4 @@
-import { formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { USD1_DECIMALS, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 
@@ -13,12 +13,8 @@ export interface GenesisFaqTemplateValues extends Record<string, string> {
   airdropRatios: string
 }
 
-function formatUsdAmountFromWei(amount: bigint): string {
-  return formatTokenAmount(amount, USD1_DECIMALS, 0)
-}
-
 function formatUsdRange(min: bigint, max: bigint): string {
-  return `$${formatUsdAmountFromWei(min)}–$${formatUsdAmountFromWei(max)}`
+  return `$${formatTokenAmount(min, USD1_DECIMALS, 0)}–$${formatTokenAmount(max, USD1_DECIMALS, 0)}`
 }
 
 function formatDiscountList(phases: PresalePhaseOnChain[]): string {
@@ -66,7 +62,7 @@ function resolveMinUsd(phases: PresalePhaseOnChain[]): number {
 function resolveShareIncrement(phases: PresalePhaseOnChain[]): string {
   const minWei = phases[0]?.minAmount
   if (minWei && minWei > 0n) {
-    return formatUsdAmountFromWei(minWei)
+    return formatTokenAmount(minWei, USD1_DECIMALS, 0)
   }
 
   return '—'
@@ -98,12 +94,13 @@ export function buildGenesisFaqTemplateValues(
     phaseCount: String(phases.length),
     phaseDurationDays: formatPhaseDurationDays(phases),
     discounts: formatDiscountList(phases),
-    minUsd: minUsdNumber > 0 ? formatUsd(minUsdNumber) : '—',
+    minUsd: minUsdNumber > 0 ? formatGroupedNumber(minUsdNumber, { prefix: '$' }) : '—',
     shareIncrement: resolveShareIncrement(phases),
     phaseQuotas: phases
       .map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount))
       .join(' / '),
-    threshold: airdropThresholdUsd > 0 ? formatUsd(airdropThresholdUsd) : '—',
+    threshold:
+      airdropThresholdUsd > 0 ? formatGroupedNumber(airdropThresholdUsd, { prefix: '$' }) : '—',
     airdropRatios: formatAirdropRatioList(phases),
   }
 }

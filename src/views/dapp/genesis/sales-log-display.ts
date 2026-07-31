@@ -5,11 +5,11 @@ import {
   type PresalePhaseOnChain,
 } from '~/core/presale/presale-math'
 import {
+  formatGroupedNumber,
   TABLE_EMPTY,
   formatBlockTime,
   formatDiscountBps,
   formatShortAddress,
-  formatUsd,
 } from '~/shared/api/format-display'
 
 export type SalesLogRowFormatOptions = {
@@ -17,30 +17,11 @@ export type SalesLogRowFormatOptions = {
   phases?: ReadonlyArray<PresalePhaseOnChain>
 }
 
-function resolveSalesLogFormatOptions(
-  options: number | SalesLogRowFormatOptions = {},
-): Required<Pick<SalesLogRowFormatOptions, 'agxPriceUsd'>> & SalesLogRowFormatOptions {
-  if (typeof options === 'number') {
-    return { agxPriceUsd: options }
-  }
-
-  return {
-    agxPriceUsd: options.agxPriceUsd ?? 0,
-    phases: options.phases,
-  }
-}
-
-function formatSalesLogAgx(
-  item: SalesLogItem,
-  options: number | SalesLogRowFormatOptions = {},
-): string {
-  const { agxPriceUsd, phases } = resolveSalesLogFormatOptions(options)
+function formatSalesLogAgx(item: SalesLogItem, options: SalesLogRowFormatOptions): string {
+  const agxPriceUsd = options.agxPriceUsd ?? 0
   const tokens = Number(item.tokens)
   if (Number.isFinite(tokens) && tokens > 0) {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(tokens)
+    return formatGroupedNumber(tokens, { digits: 2 })
   }
 
   const amountUsd1 = Number(item.amount)
@@ -48,27 +29,20 @@ function formatSalesLogAgx(
 
   const estimated = estimateAgxFromUsd1(
     amountUsd1,
-    resolvePhaseDiscountBps(item.phase_id, phases),
+    resolvePhaseDiscountBps(item.phase_id, options.phases),
     agxPriceUsd,
   )
-  return estimated > 0
-    ? new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(estimated)
-    : TABLE_EMPTY
+  return estimated > 0 ? formatGroupedNumber(estimated, { digits: 2 }) : TABLE_EMPTY
 }
 
 export function mapSalesLogToDesktopRow(
   item: SalesLogItem,
-  options: number | SalesLogRowFormatOptions = {},
+  options: SalesLogRowFormatOptions = {},
 ): string[] {
-  const { phases } = resolveSalesLogFormatOptions(options)
-
   return [
     formatBlockTime(item.block_time),
-    formatUsd(Number(item.amount), 0),
-    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, phases)),
+    formatGroupedNumber(Number(item.amount), { digits: 0, prefix: '$' }),
+    formatDiscountBps(resolvePhaseDiscountBps(item.phase_id, options.phases)),
     formatSalesLogAgx(item, options),
     item.tx_hash ? formatShortAddress(item.tx_hash) : TABLE_EMPTY,
   ]

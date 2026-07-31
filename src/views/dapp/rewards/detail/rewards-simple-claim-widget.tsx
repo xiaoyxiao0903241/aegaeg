@@ -9,7 +9,7 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { dappAssets } from '~/app/assets'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
-import { formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { useCommunityFundTotal } from '~/hooks/use-api-data'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
@@ -80,14 +80,20 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
     : view === 'referral'
       ? communityLoading && referralAmountRaw == null
         ? REWARDS_LOADING
-        : formatUsd(Number.isFinite(referralAmount) ? referralAmount : 0, 2)
+        : formatGroupedNumber(Number.isFinite(referralAmount) ? referralAmount : 0, {
+            digits: 2,
+            prefix: '$',
+          })
       : t.rewards.detail.signedAmountHint
   const ctaAmount = !sessionReady
     ? REWARDS_DASH
     : view === 'referral'
       ? communityLoading && referralAmountRaw == null
         ? REWARDS_LOADING
-        : formatUsd(Number.isFinite(referralAmount) ? referralAmount : 0, 2)
+        : formatGroupedNumber(Number.isFinite(referralAmount) ? referralAmount : 0, {
+            digits: 2,
+            prefix: '$',
+          })
       : `${REWARDS_DASH} ${TOKEN_GAGX}`
   const ctaLabel = copy.ctaToWallet.replace('{amount}', ctaAmount)
   const showTokenChip = view !== 'referral'

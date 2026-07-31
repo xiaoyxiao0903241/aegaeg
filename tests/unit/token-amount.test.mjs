@@ -50,15 +50,36 @@ test('formatTokenAmount renders human readable balance', async () => {
   assert.notEqual(parseTokenAmount(formatTokenAmount(dusty, 18, 6), 18), dusty)
 })
 
-test('formatTokenAmountFixed pads trailing zeros to fraction width', async () => {
-  const { formatTokenAmountFixed, parseTokenAmount } = await loadModule(
+test('formatTokenAmount fixed digits pads trailing zeros', async () => {
+  const { formatTokenAmount, parseTokenAmount } = await loadModule(
     '/src/core/exchange/token-amount.ts',
   )
 
-  assert.equal(formatTokenAmountFixed(0n, 18, 2), '0.00')
-  assert.equal(formatTokenAmountFixed(parseTokenAmount('6.5', 18), 18, 2), '6.50')
-  assert.equal(formatTokenAmountFixed(parseTokenAmount('39', 18), 18, 2), '39.00')
-  assert.equal(formatTokenAmountFixed(parseTokenAmount('1234.567', 18), 18, 2), '1,234.56')
+  assert.equal(formatTokenAmount(0n, 18, { digits: 2, trimZeros: false }), '0.00')
+  assert.equal(
+    formatTokenAmount(parseTokenAmount('6.5', 18), 18, { digits: 2, trimZeros: false }),
+    '6.50',
+  )
+  assert.equal(
+    formatTokenAmount(parseTokenAmount('39', 18), 18, { digits: 2, trimZeros: false }),
+    '39.00',
+  )
+  assert.equal(
+    formatTokenAmount(parseTokenAmount('1234.567', 18), 18, { digits: 2, trimZeros: false }),
+    '1,234.56',
+  )
+})
+
+test('formatGroupedNumber is the human-number display core', async () => {
+  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
+
+  assert.equal(
+    formatGroupedNumber(1234.5, { digits: 2, trimZeros: false, prefix: '$' }),
+    '$1,234.50',
+  )
+  assert.equal(formatGroupedNumber(1234.5, { digits: 2, prefix: '$' }), '$1,234.50')
+  assert.equal(formatGroupedNumber(1000, { digits: 0, trimZeros: true }), '1,000')
+  assert.equal(formatGroupedNumber(42, { digits: 0, trimZeros: true }), '42')
 })
 
 test('slippagePercentToBps converts UI percent to basis points', async () => {

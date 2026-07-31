@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
-import { formatCount, formatPresaleRank, formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
 import { CommunityStatCardSkeleton } from '~/app/shell/dapp-skeleton'
 import { useAuth } from '~/hooks/use-auth'
@@ -58,10 +58,13 @@ export function CommunityContent() {
     rowCount: compactRows.length,
   })
   const inviteCount = !sessionReady
-    ? formatCount(0)
+    ? formatGroupedNumber(0, { digits: 0, trimZeros: true })
     : overviewLoading || referralsLoading || isLoggingIn
       ? '…'
-      : formatCount(overview?.descendant_count ?? referrals?.total ?? 0)
+      : formatGroupedNumber(overview?.descendant_count ?? referrals?.total ?? 0, {
+          digits: 0,
+          trimZeros: true,
+        })
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
   const authPending = sessionReady && isLoggingIn
 
@@ -79,17 +82,17 @@ export function CommunityContent() {
 
   const directCount = overviewLoading
     ? STAT_PLACEHOLDER
-    : formatCount(overview?.direct_referral_count ?? 0)
+    : formatGroupedNumber(overview?.direct_referral_count ?? 0, { digits: 0, trimZeros: true })
   const directVolume = overviewLoading
     ? STAT_PLACEHOLDER
-    : formatUsd(overview?.direct_presale_volume ?? 0)
+    : formatGroupedNumber(overview?.direct_presale_volume ?? 0, { prefix: '$' })
 
   const teamCount = overviewLoading
     ? STAT_PLACEHOLDER
-    : formatCount(overview?.descendant_count ?? 0)
+    : formatGroupedNumber(overview?.descendant_count ?? 0, { digits: 0, trimZeros: true })
   const teamVolume = overviewLoading
     ? STAT_PLACEHOLDER
-    : formatUsd(overview?.sales_team_market ?? 0)
+    : formatGroupedNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
 
   // Figma `4300:212` stats = label / value / 业绩|共建等级 only（无「今日」行）.
   const genesisRankValue = useStatPlaceholders

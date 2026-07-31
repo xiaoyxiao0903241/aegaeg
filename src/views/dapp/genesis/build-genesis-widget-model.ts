@@ -9,7 +9,7 @@ import {
   getAirdropBpsForPhase,
 } from '~/core/presale/presale-math'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 
 type GenesisReads = ReturnType<typeof useGenesisChainReads>
@@ -78,8 +78,9 @@ export function buildGenesisWidgetModel(args: {
         maximumFractionDigits: 2,
       }).format(estimatedAgx),
       payUsd1Label: `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(payUsd1)} USD1`,
-      contributionValueLabel: formatUsd(contributionValueUsd),
-      xTokenAirdropLabel: payUsd1 > 0 ? formatUsd(xTokenAirdropUsd) : '—',
+      contributionValueLabel: formatGroupedNumber(contributionValueUsd, { prefix: '$' }),
+      xTokenAirdropLabel:
+        payUsd1 > 0 ? formatGroupedNumber(xTokenAirdropUsd, { prefix: '$' }) : '—',
       airdropThresholdUsd: reads.airdropThresholdUsd,
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,

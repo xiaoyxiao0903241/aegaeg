@@ -6,7 +6,7 @@ import { revealClass } from '~/shared/lib/reveal'
 import { toast } from 'sonner'
 import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { formatCount, formatUsdAmountLabel } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappMetaList } from '~/app/shell/dapp-meta-list'
@@ -56,7 +56,7 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
   const xTokenAirdropHint = applyMessageTemplate(t.genesis.xTokenAirdropHint, {
     threshold: genesis.airdropThresholdLoading
       ? '…'
-      : formatUsdAmountLabel(genesis.airdropThresholdUsd),
+      : formatGroupedNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
   })
 
   const handleSharesChange = (value: string) => {
@@ -170,7 +170,10 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
       <GenesisPurchaseSharesField
         disabled={!walletReady || genesis.maxShares <= 0}
         inputRef={sharesInputRef}
-        label={t.genesis.shares.replace('{max}', formatCount(genesis.maxShares))}
+        label={t.genesis.shares.replace(
+          '{max}',
+          formatGroupedNumber(genesis.maxShares, { digits: 0, trimZeros: true }),
+        )}
         max={Math.max(genesis.maxShares, 1)}
         maxLabel={t.common.max}
         min={1}

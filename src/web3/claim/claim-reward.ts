@@ -18,6 +18,7 @@ import {
   type ConfirmedWalletWrite,
 } from '~/web3/wallet/wallet-contract-write'
 import { writeIncentiveClaim, writeMarketFundClaim } from '~/web3/rewards/rewards-write'
+import { sleep } from '~/shared/lib/sleep'
 
 const claimRewardWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
 
@@ -41,10 +42,6 @@ export type SignedRewardClaimResult = {
   confirmError?: unknown
   /** 链上已成功时始终带回，供 confirm 失败 UI 展示。 */
   txHash: string
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export async function claimRewardOnChain({

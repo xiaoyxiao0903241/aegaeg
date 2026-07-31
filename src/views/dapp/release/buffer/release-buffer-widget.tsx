@@ -1,3 +1,5 @@
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useState } from 'react'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
@@ -16,10 +18,10 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
-import { formatReleaseAmount, formatReleasePct } from '~/views/dapp/release/release-display'
+import { formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
 
-const APPROX_EMPTY = '≈ —'
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function ReleaseBufferWidget() {
   const { messages: t } = useI18n()
@@ -85,13 +87,13 @@ export function ReleaseBufferWidget() {
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.released}{' '}
                 <Text as="span" className="font-semibold text-primary" variant="caption">
-                  {walletReady ? `${formatReleaseAmount(claimable)} AGX` : dash}
+                  {walletReady ? `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX` : dash}
                 </Text>
               </Text>
               <Text as="span" tone="muted-foreground" variant="caption">
                 {t.release.labels.releasing}{' '}
                 <Text as="span" className="font-semibold text-foreground" variant="caption">
-                  {walletReady ? `${formatReleaseAmount(releasing)} AGX` : dash}
+                  {walletReady ? `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX` : dash}
                 </Text>
               </Text>
             </div>
@@ -106,7 +108,7 @@ export function ReleaseBufferWidget() {
                 {t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))}
               </Text>
               <Text as="span" tone="muted-foreground" variant="caption">
-                {walletReady ? APPROX_EMPTY : dash}
+                {walletReady ? '≈ —' : dash}
               </Text>
             </div>
             <Button disabled={!canClaim || pending} onClick={() => void onClaim()} type="button">
@@ -154,7 +156,7 @@ export function ReleaseBufferWidget() {
                 {t.release.labels.releasedPct.replace('{pct}', '0')}
               </Text>
               <Text as="span" tone="muted-foreground" variant="caption">
-                {APPROX_EMPTY}
+                {'≈ —'}
               </Text>
             </div>
             <Text as="p" tone="muted-foreground" variant="caption">

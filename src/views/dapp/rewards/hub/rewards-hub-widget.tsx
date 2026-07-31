@@ -3,7 +3,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { openRewardsView } from '~/shared/config/open-rewards-view'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/rewards-deep-link'
-import { formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { useCommunityFundTotal, useTeamRewardTotal } from '~/hooks/use-api-data'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -32,7 +32,7 @@ function formatGagxBalance(value: number | null, sessionReady: boolean, signInLa
   if (value == null) return { amount: REWARDS_DASH, approx: REWARDS_DASH }
   return {
     amount: `${value.toFixed(4)}gAGX`,
-    approx: `≈ ${formatUsd(value, 2)}`,
+    approx: formatGroupedNumber(value, { digits: 2, prefix: '≈ $' }),
   }
 }
 
@@ -80,7 +80,7 @@ export function RewardsHubWidget() {
                   amount: sessionReady
                     ? value == null
                       ? REWARDS_LOADING
-                      : formatUsd(value, 2)
+                      : formatGroupedNumber(value, { digits: 2, prefix: '$' })
                     : t.rewards.hub.signInForBalance,
                   approx: undefined as string | undefined,
                 }

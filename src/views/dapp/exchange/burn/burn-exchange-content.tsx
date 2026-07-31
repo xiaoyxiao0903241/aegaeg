@@ -6,8 +6,8 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
-import { formatUsd } from '~/shared/api/format-display'
-import { formatTokenAmountFixed, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap-gates'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
@@ -50,16 +50,22 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
     return fromChain > 0 ? fromChain : 0
   }, [agxPriceQuery.data])
 
-  const burnedAgxLabel = `${formatTokenAmountFixed(totalBurnedAgx, decimals, 2)} AGX`
+  const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, { digits: 2, trimZeros: false })} AGX`
   const burnedUsdLabel =
     agxPriceUsd > 0
-      ? formatUsd(formatTokenAmountToNumber(totalBurnedAgx, decimals) * agxPriceUsd, 2)
+      ? formatGroupedNumber(formatTokenAmountToNumber(totalBurnedAgx, decimals) * agxPriceUsd, {
+          digits: 2,
+          prefix: '$',
+        })
       : null
 
-  const earnedLabel = formatTokenAmountFixed(totalEarnedContribution, decimals, 2)
+  const earnedLabel = formatTokenAmount(totalEarnedContribution, decimals, {
+    digits: 2,
+    trimZeros: false,
+  })
   const consumedLabel =
     totalConsumedContribution != null
-      ? formatTokenAmountFixed(totalConsumedContribution, decimals, 2)
+      ? formatTokenAmount(totalConsumedContribution, decimals, { digits: 2, trimZeros: false })
       : '—'
 
   const faqItems = useMemo(() => {

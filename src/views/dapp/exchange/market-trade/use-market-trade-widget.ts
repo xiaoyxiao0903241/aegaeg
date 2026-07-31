@@ -1,7 +1,7 @@
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useState } from 'react'
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
-import { formatGasEstimate } from '~/views/dapp/exchange/market-trade/exchange-format-gas-estimate'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { resolvePancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import {
   clampSlippagePercent,
@@ -123,7 +123,10 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     !sessionReady || core.amountIn === 0n || core.isQuoting
       ? ''
       : `${(priceImpactBps / 100).toFixed(2)}%`
-  const gasEstimateLabel = formatGasEstimate(gasEstimate)
+  const gasEstimateLabel =
+    gasEstimate === 0n
+      ? '—'
+      : formatGroupedNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
   const isHighPriceImpact =
     sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS
 

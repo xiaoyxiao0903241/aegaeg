@@ -11,13 +11,14 @@ import {
 } from '~/core/staking/calc-staking-yield'
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 
 const PLACEHOLDER = '—'
 const XMINE_APR = 0.1
 
-function formatUsd(value: number) {
+function formatUsdOrDash(value: number) {
   if (!Number.isFinite(value)) return PLACEHOLDER
-  return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}`
+  return formatGroupedNumber(value, { digits: 2, prefix: '$' })
 }
 
 function formatPct(value: number) {
@@ -109,7 +110,7 @@ export function CalcContent() {
                   {t.staking.calc.result.total}
                 </Text>
                 <Text as="strong" className="text-[28px] font-bold text-success" variant="copy">
-                  {formatUsd(result.interestUsd)}
+                  {formatUsdOrDash(result.interestUsd)}
                 </Text>
               </div>
               <span className="flex items-center gap-2 rounded-full bg-success/15 px-3 py-1.5 text-[12px] font-semibold text-success">
@@ -126,7 +127,7 @@ export function CalcContent() {
                   {t.staking.calc.result.sellTotal}
                 </Text>
                 <Text as="strong" className="font-semibold" variant="detail">
-                  {formatUsd(result.sellUsd)}
+                  {formatUsdOrDash(result.sellUsd)}
                 </Text>
               </div>
               <div className="flex h-3.5 overflow-hidden rounded-full">
@@ -141,7 +142,7 @@ export function CalcContent() {
                   {t.staking.calc.result.invested}
                 </Text>
                 <Text as="strong" className="font-semibold" variant="detail">
-                  {formatUsd(result.investedUsd)}
+                  {formatUsdOrDash(result.investedUsd)}
                 </Text>
               </div>
               <div className="flex h-3.5 overflow-hidden rounded-full">
@@ -152,7 +153,7 @@ export function CalcContent() {
                 >
                   {t.staking.calc.result.yieldBar.replace(
                     '{amount}',
-                    formatUsd(result.interestUsd),
+                    formatUsdOrDash(result.interestUsd),
                   )}
                 </span>
               </div>
@@ -184,7 +185,7 @@ export function CalcContent() {
                     {t.staking.calc.result.legend[key]}
                   </Text>
                   <Text as="strong" className="font-semibold" variant="detail">
-                    {formatUsd(value)}
+                    {formatUsdOrDash(value)}
                   </Text>
                 </div>
               ))}
@@ -203,7 +204,7 @@ export function CalcContent() {
         </Text>
         {endEstimate ? (
           <Text as="strong" className="mb-2 block text-lg font-semibold" variant="copy">
-            {formatUsd(endEstimate.interestUsd)}
+            {formatUsdOrDash(endEstimate.interestUsd)}
           </Text>
         ) : null}
         <div className="flex min-h-32 items-center justify-center rounded-lg border border-dashed border-border">
@@ -226,7 +227,7 @@ export function CalcContent() {
                 String(periodEndDays(result.period, result.days)),
               )
             } else if (result && endEstimate && index === 2) {
-              value = formatUsd(endEstimate.interestUsd)
+              value = formatUsdOrDash(endEstimate.interestUsd)
               hint = formatPct(endEstimate.ratePct)
             }
             return (

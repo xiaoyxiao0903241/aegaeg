@@ -1,10 +1,7 @@
 import type { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { WALLET_GATE_ERROR } from '~/web3/resolve-contract-error-message'
 import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
-import {
-  evaluateReleaseBufferClaimGate,
-  evaluateReleaseQueueClaimGate,
-} from '~/core/release/release-gates'
+import { releaseClaimBlockReason } from '~/core/release/release-gates'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { writeClaimAllVestedRewards, writeClaimManyReleases } from '~/web3/release/release-write'
 import { runUnknownGuardedWrite } from '~/web3/wallet/run-unknown-guarded-write'
@@ -57,7 +54,7 @@ export async function submitReleaseQueueClaim(args: {
       const pre = await readReleaseQueueSnapshot(address, readClient)
       const preRow = pre.plans.find((row) => row.planIndex === planIndex)
       const preErr = gateError(
-        evaluateReleaseQueueClaimGate({
+        releaseClaimBlockReason({
           claimable: preRow?.claimable ?? 0n,
           unknownLocked: false,
         }),
@@ -67,7 +64,7 @@ export async function submitReleaseQueueClaim(args: {
       const live = await readReleaseQueueSnapshot(address, readClient)
       const liveRow = live.plans.find((row) => row.planIndex === planIndex)
       const liveErr = gateError(
-        evaluateReleaseQueueClaimGate({
+        releaseClaimBlockReason({
           claimable: liveRow?.claimable ?? 0n,
           unknownLocked: false,
         }),
@@ -102,7 +99,7 @@ export async function submitReleaseBufferClaim(args: {
     run: async () => {
       const pre = await readReleaseBufferSnapshot(address, readClient)
       const preErr = gateError(
-        evaluateReleaseBufferClaimGate({
+        releaseClaimBlockReason({
           claimable: pre.totalClaimable,
           unknownLocked: false,
         }),
@@ -111,7 +108,7 @@ export async function submitReleaseBufferClaim(args: {
 
       const live = await readReleaseBufferSnapshot(address, readClient)
       const liveErr = gateError(
-        evaluateReleaseBufferClaimGate({
+        releaseClaimBlockReason({
           claimable: live.totalClaimable,
           unknownLocked: false,
         }),

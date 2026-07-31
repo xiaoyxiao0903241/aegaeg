@@ -43,8 +43,6 @@ export {
   getPresaleRankHighlightedRows,
 } from '../../src/shared/api/format-display'
 export {
-  formatClaimableAmount,
-  formatCommunityFundLockedAmount,
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,

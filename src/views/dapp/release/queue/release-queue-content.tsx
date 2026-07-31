@@ -1,3 +1,5 @@
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -12,9 +14,8 @@ import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
-import { formatReleaseAmount } from '~/views/dapp/release/release-display'
 
-const APPROX_EMPTY = '≈ —'
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function ReleaseQueueContent() {
   const { messages: t } = useI18n()
@@ -28,18 +29,18 @@ export function ReleaseQueueContent() {
   const stats = [
     {
       label: t.release.labels.releasing,
-      value: walletReady ? `${formatReleaseAmount(releasing)} ${unit}` : dash,
-      approx: walletReady ? APPROX_EMPTY : dash,
+      value: walletReady ? `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${unit}` : dash,
+      approx: walletReady ? '≈ —' : dash,
     },
     {
       label: t.release.labels.released,
-      value: walletReady ? `${formatReleaseAmount(claimable)} ${unit}` : dash,
-      approx: walletReady ? APPROX_EMPTY : dash,
+      value: walletReady ? `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${unit}` : dash,
+      approx: walletReady ? '≈ —' : dash,
     },
     {
       label: t.release.queue.lifetimeClaimed,
       value: dash,
-      approx: walletReady ? APPROX_EMPTY : dash,
+      approx: walletReady ? '≈ —' : dash,
     },
   ]
 

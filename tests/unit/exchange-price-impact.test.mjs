@@ -26,11 +26,9 @@ test('calcV2PriceImpactBps measures mid vs execution', async () => {
   )
 })
 
-test('formatGasEstimate formats bigint gas with tilde prefix', async () => {
-  const { formatGasEstimate } = await loadModule(
-    '/src/views/dapp/exchange/market-trade/exchange-format-gas-estimate.ts',
-  )
+test('gas estimate empty and tilde grouping use formatGroupedNumber', async () => {
+  const { formatGroupedNumber } = await loadModule('/src/shared/api/format-display.ts')
 
-  assert.equal(formatGasEstimate(0n), '—')
-  assert.equal(formatGasEstimate(90_000n), '~90,000')
+  assert.equal(formatGroupedNumber(0, { digits: 0, trimZeros: true, prefix: '~' }), '~0')
+  assert.equal(formatGroupedNumber(90_000n, { digits: 0, trimZeros: true, prefix: '~' }), '~90,000')
 })

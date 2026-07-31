@@ -1,3 +1,5 @@
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -12,9 +14,8 @@ import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
-import { formatReleaseAmount } from '~/views/dapp/release/release-display'
 
-const APPROX_EMPTY = '≈ —'
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 export function ReleaseBufferContent() {
   const { messages: t } = useI18n()
@@ -28,15 +29,15 @@ export function ReleaseBufferContent() {
   const agxStats = [
     {
       label: t.release.buffer.entered,
-      value: walletReady ? `${formatReleaseAmount(amount)} AGX` : dash,
+      value: walletReady ? `${formatTokenAmount(amount, AGX_DECIMALS, 4)} AGX` : dash,
     },
     {
       label: t.release.buffer.extracted,
-      value: walletReady ? `${formatReleaseAmount(claimed)} AGX` : dash,
+      value: walletReady ? `${formatTokenAmount(claimed, AGX_DECIMALS, 4)} AGX` : dash,
     },
     {
       label: t.release.labels.releasing,
-      value: walletReady ? `${formatReleaseAmount(releasing)} AGX` : dash,
+      value: walletReady ? `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX` : dash,
     },
   ]
 
@@ -74,7 +75,7 @@ export function ReleaseBufferContent() {
                   {stat.value}
                 </Text>
                 <Text as="span" tone="muted-foreground" variant="detail">
-                  {walletReady ? APPROX_EMPTY : dash}
+                  {walletReady ? '≈ —' : dash}
                 </Text>
               </div>
             ))}
@@ -102,7 +103,7 @@ export function ReleaseBufferContent() {
                   {stat.value}
                 </Text>
                 <Text as="span" tone="muted-foreground" variant="detail">
-                  {APPROX_EMPTY}
+                  {'≈ —'}
                 </Text>
               </div>
             ))}

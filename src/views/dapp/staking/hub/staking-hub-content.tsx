@@ -8,7 +8,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Card } from '~/shared/ui/card'
@@ -81,7 +81,10 @@ export function StakingHubContent() {
 
   const agxPriceLabel =
     agxPriceQuery.data != null
-      ? formatUsd(formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS), 2)
+      ? formatGroupedNumber(formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS), {
+          digits: 2,
+          prefix: '$',
+        })
       : agxPriceQuery.isPending
         ? '…'
         : PLACEHOLDER

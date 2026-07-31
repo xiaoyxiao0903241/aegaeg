@@ -1,12 +1,5 @@
 import { MAX_PRESALE_RANK, PERSONAL_PRESALE_RANK_THRESHOLDS_USD } from '~/core/presale/rank'
-
-function calcProgressPercent(current: number, target: number): number {
-  if (!Number.isFinite(current) || !Number.isFinite(target) || target <= 0) {
-    return 0
-  }
-
-  return Math.min(100, (current / target) * 100)
-}
+import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 
 export const TEAM_PRESALE_RANK_THRESHOLDS_USD = [5000, 10_000, 30_000] as const
 

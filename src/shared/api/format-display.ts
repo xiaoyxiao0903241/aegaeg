@@ -35,29 +35,47 @@ export function formatShareholderHintForRank(
   return template.replace('{bonus}', bonus)
 }
 
-export function formatUsd(value: string | number, fractionDigits = 0): string {
-  const num = Number(value)
-  if (!Number.isFinite(num)) return '$0'
-
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: fractionDigits,
-    minimumFractionDigits: fractionDigits,
-  }).format(num)
+export type FormatGroupedNumberOptions = {
+  digits?: number
+  /** Default `false` (pad). `true` allows fewer than `digits` trailing zeros. */
+  trimZeros?: boolean
+  prefix?: string
+  suffix?: string
 }
 
-/** Tooltip / hint copy — `5,000 USD` (no leading currency symbol). */
-export function formatUsdAmountLabel(value: string | number, fractionDigits = 0): string {
-  const num = Number(value)
-  if (!Number.isFinite(num)) return '0 USD'
+/** Human-readable grouped number — single display core for fiat/count shells. */
+export function formatGroupedNumber(
+  value: string | number | bigint,
+  options: FormatGroupedNumberOptions = {},
+): string {
+  const digits = Math.max(0, Math.floor(options.digits ?? 0))
+  const trimZeros = options.trimZeros === true
+  const prefix = options.prefix ?? ''
+  const suffix = options.suffix ?? ''
+  const num = typeof value === 'bigint' ? Number(value) : Number(value)
 
-  const amount = new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: fractionDigits,
-    minimumFractionDigits: fractionDigits,
+  if (!Number.isFinite(num)) {
+    const zero = digits > 0 && !trimZeros ? `0.${'0'.repeat(digits)}` : '0'
+    return `${prefix}${zero}${suffix}`
+  }
+
+  const formatted = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: digits,
+    minimumFractionDigits: trimZeros ? 0 : digits,
   }).format(num)
 
-  return `${amount} USD`
+  return `${prefix}${formatted}${suffix}`
+}
+
+/**
+ * Token amount × USD price → `≈ $x.xx`.
+ * Zero → `≈ $0.00` (honest without price). Non-zero without price → `≈ —`.
+ */
+export function formatApproxUsd(amount: number, priceUsd: number | null): string {
+  if (!Number.isFinite(amount)) return '≈ —'
+  if (amount === 0) return formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
+  if (priceUsd == null || priceUsd <= 0) return '≈ —'
+  return formatGroupedNumber(amount * priceUsd, { digits: 2, prefix: '≈ $' })
 }
 
 export function formatBlockTime(timestamp: number): string {
@@ -65,12 +83,6 @@ export function formatBlockTime(timestamp: number): string {
 
   const date = new Date(timestamp * 1000)
   return formatDateTimeParts(date)
-}
-
-export function formatCount(value: number | string | bigint): string {
-  const num = Number(value)
-  if (!Number.isFinite(num)) return '0'
-  return new Intl.NumberFormat('en-US').format(num)
 }
 
 export function formatApiDateTime(iso: string | null): string {
@@ -99,28 +111,18 @@ export function formatRegisterDate(iso: string | null): string {
   return date.toISOString().slice(0, 10)
 }
 
-/** Community member table address — 4 chars + ellipsis + last 4. */
-export function formatInviteMemberAddress(address: string): string {
-  if (address.length < 9) return address
-  return `${address.slice(0, 4)}…${address.slice(-4)}`
-}
-
-export function formatShortAddress(address: string): string {
-  if (address.length < 10) return address
-  return `${address.slice(0, 6)}…${address.slice(-4)}`
+/** Community member table address — 4+…+4. Default wallet/tx shorten is 6+…+4. */
+export function formatShortAddress(
+  address: string,
+  options: { head?: number; tail?: number } = {},
+): string {
+  const head = options.head ?? 6
+  const tail = options.tail ?? 4
+  if (address.length < head + tail + 1) return address
+  return `${address.slice(0, head)}…${address.slice(-tail)}`
 }
 
 export function formatDiscountBps(discountBps: number): string {
   if (!Number.isFinite(discountBps) || discountBps <= 0) return '—'
   return `-${discountBps / 100}%`
-}
-
-export function calcProgressPercent(current: string | number, target: string | number): number {
-  const currentNum = Number(current)
-  const targetNum = Number(target)
-  if (!Number.isFinite(currentNum) || !Number.isFinite(targetNum) || targetNum <= 0) {
-    return 0
-  }
-
-  return Math.min(100, (currentNum / targetNum) * 100)
 }

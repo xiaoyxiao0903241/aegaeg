@@ -13,7 +13,7 @@ import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatCount } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 
@@ -184,7 +184,10 @@ export function DappTablePagination({
           tone="muted-foreground"
           className="m-0 shrink-0 leading-none whitespace-nowrap"
         >
-          {t.common.paginationTotal.replace('{total}', formatCount(total))}
+          {t.common.paginationTotal.replace(
+            '{total}',
+            formatGroupedNumber(total, { digits: 0, trimZeros: true }),
+          )}
         </Text>
         {summary ? (
           <Text
@@ -206,7 +209,10 @@ export function DappTablePagination({
             tone="muted-foreground"
             className="leading-none whitespace-nowrap"
           >
-            {t.common.paginationPerPage.replace('{size}', formatCount(pageSize))}
+            {t.common.paginationPerPage.replace(
+              '{size}',
+              formatGroupedNumber(pageSize, { digits: 0, trimZeros: true }),
+            )}
           </Text>
 
           <div className="flex items-center gap-1">

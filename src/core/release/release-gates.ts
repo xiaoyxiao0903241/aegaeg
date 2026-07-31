@@ -1,24 +1,19 @@
 /**
  * Pure live-gate helpers for release queue / buffer claims.
  * Call sites must re-read claimable after any prior write.
+ * Queue (RewardQueue) and buffer (PRV) share the same claimable/unknown rules.
  */
 
-export type ReleaseClaimGateReason = 'zeroAmount' | 'lockedUnknown'
+export type ReleaseClaimBlockReason = 'zeroAmount' | 'lockedUnknown'
 
-export function evaluateReleaseQueueClaimGate(args: {
+/** `null` = may submit; otherwise fail-closed block reason. */
+export function releaseClaimBlockReason(args: {
   claimable: bigint
   unknownLocked: boolean
-}): ReleaseClaimGateReason | null {
+}): ReleaseClaimBlockReason | null {
   if (args.unknownLocked) return 'lockedUnknown'
   if (args.claimable <= 0n) return 'zeroAmount'
   return null
-}
-
-export function evaluateReleaseBufferClaimGate(args: {
-  claimable: bigint
-  unknownLocked: boolean
-}): ReleaseClaimGateReason | null {
-  return evaluateReleaseQueueClaimGate(args)
 }
 
 export function releaseProgressBps(claimable: bigint, releasing: bigint): number {

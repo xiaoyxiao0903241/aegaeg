@@ -1,3 +1,5 @@
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { dappAssets, exchangeHubAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { openReleaseView } from '~/shared/config/open-release-view'
@@ -12,10 +14,10 @@ import {
   useReleaseBufferSnapshot,
   useReleaseQueueSnapshot,
 } from '~/views/dapp/release/use-release-reads'
-import { formatReleaseAmount, formatReleasePct } from '~/views/dapp/release/release-display'
+import { formatReleasePct } from '~/views/dapp/release/release-display'
 
+const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const DASH = '—'
-const APPROX_EMPTY = '≈ —'
 
 export function ReleaseHubWidget() {
   const { messages: t } = useI18n()
@@ -32,15 +34,17 @@ export function ReleaseHubWidget() {
   const queuePct = walletReady ? formatReleasePct(queueClaimable, queueReleasing) : dash
   const bufferPct = walletReady ? formatReleasePct(bufferClaimable, bufferReleasing) : dash
   const queueReleasingLabel = walletReady
-    ? `${formatReleaseAmount(queueReleasing)} ${t.release.units.queue}`
+    ? `${formatTokenAmount(queueReleasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`
     : dash
   const queueClaimableLabel = walletReady
-    ? `${formatReleaseAmount(queueClaimable)} ${t.release.units.queue}`
+    ? `${formatTokenAmount(queueClaimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`
     : dash
   const bufferTotalAgx = walletReady
-    ? `${formatReleaseAmount(bufferClaimable + bufferReleasing)} AGX`
+    ? `${formatTokenAmount(bufferClaimable + bufferReleasing, AGX_DECIMALS, 4)} AGX`
     : dash
-  const bufferClaimedAgx = walletReady ? `${formatReleaseAmount(bufferClaimable)} AGX` : dash
+  const bufferClaimedAgx = walletReady
+    ? `${formatTokenAmount(bufferClaimable, AGX_DECIMALS, 4)} AGX`
+    : dash
 
   return (
     <>
@@ -81,10 +85,10 @@ export function ReleaseHubWidget() {
               {queueClaimableLabel}
             </Text>
             <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? APPROX_EMPTY : dash}
+              {walletReady ? '≈ —' : dash}
             </Text>
             <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? APPROX_EMPTY : dash}
+              {walletReady ? '≈ —' : dash}
             </Text>
           </div>
         </Card>
@@ -114,10 +118,10 @@ export function ReleaseHubWidget() {
               {DASH} gAGX
             </Text>
             <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? APPROX_EMPTY : dash}
+              {walletReady ? '≈ —' : dash}
             </Text>
             <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? APPROX_EMPTY : dash}
+              {walletReady ? '≈ —' : dash}
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { parseReferrerFromSearch, resolveDisplayReferrer } from '~/shared/config/referral'
-import { formatCount, formatShortAddress } from '~/shared/api/format-display'
+import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { usePerformance } from '~/hooks/use-api-data'
@@ -152,7 +152,7 @@ export function useReferral() {
     isBound,
     referrer: effectiveReferrer,
     referrerLabel: effectiveReferrer ? formatShortAddress(effectiveReferrer) : null,
-    directCount: formatCount(directCount),
+    directCount: formatGroupedNumber(directCount, { digits: 0, trimZeros: true }),
     referrerInput,
     setReferrerInput,
     isLoading: referralQuery.isLoading,

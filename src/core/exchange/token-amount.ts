@@ -53,43 +53,60 @@ export function parseTokenAmount(value: string, decimals: number): bigint {
   }
 }
 
-export function formatTokenAmount(amount: bigint, decimals: number, maxFractionDigits = 4): string {
-  if (amount === 0n) return '0'
+export type FormatTokenAmountOptions = {
+  /** Fraction digits to keep (default 4 when omitted). */
+  digits?: number
+  /**
+   * `true` (default): strip trailing zeros (`12.3`).
+   * `false`: pad to `digits` (`12.30`).
+   */
+  trimZeros?: boolean
+}
 
+function resolveTokenAmountOptions(
+  maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
+): Required<FormatTokenAmountOptions> {
+  if (typeof maxFractionDigitsOrOptions === 'number') {
+    return { digits: maxFractionDigitsOrOptions, trimZeros: true }
+  }
+  return {
+    digits: maxFractionDigitsOrOptions.digits ?? 4,
+    trimZeros: maxFractionDigitsOrOptions.trimZeros !== false,
+  }
+}
+
+/**
+ * On-chain amount → grouped human string.
+ * Third arg: max fraction digits (trim) or `{ digits, trimZeros }`.
+ */
+export function formatTokenAmount(
+  amount: bigint,
+  decimals: number,
+  maxFractionDigitsOrOptions: number | FormatTokenAmountOptions = 4,
+): string {
+  const { digits: rawDigits, trimZeros } = resolveTokenAmountOptions(maxFractionDigitsOrOptions)
+  const digits = Math.max(0, Math.floor(rawDigits))
   const divisor = 10n ** BigInt(decimals)
   const whole = amount / divisor
   const fraction = amount % divisor
   const groupedWhole = formatIntegerGrouping(whole.toString())
 
+  if (!trimZeros) {
+    if (digits === 0) return groupedWhole
+    const fractionText = fraction
+      .toString()
+      .padStart(decimals, '0')
+      .slice(0, digits)
+      .padEnd(digits, '0')
+    return `${groupedWhole}.${fractionText}`
+  }
+
+  if (amount === 0n) return '0'
   if (fraction === 0n) return groupedWhole
 
   const fractionText = fraction.toString().padStart(decimals, '0').replace(/0+$/, '')
-  const trimmed = fractionText.slice(0, maxFractionDigits).replace(/0+$/, '')
-
+  const trimmed = fractionText.slice(0, digits).replace(/0+$/, '')
   return trimmed ? `${groupedWhole}.${trimmed}` : groupedWhole
-}
-
-/** Display with a fixed fraction width (pads trailing zeros; does not strip). */
-export function formatTokenAmountFixed(
-  amount: bigint,
-  decimals: number,
-  fractionDigits: number,
-): string {
-  const digits = Math.max(0, Math.floor(fractionDigits))
-  const divisor = 10n ** BigInt(decimals)
-  const whole = amount / divisor
-  const fraction = amount % divisor
-  const groupedWhole = formatIntegerGrouping(whole.toString())
-
-  if (digits === 0) return groupedWhole
-
-  const fractionText = fraction
-    .toString()
-    .padStart(decimals, '0')
-    .slice(0, digits)
-    .padEnd(digits, '0')
-
-  return `${groupedWhole}.${fractionText}`
 }
 
 /** Parse a token amount to a plain number without grouping separators.

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatUsd } from '~/shared/api/format-display'
+import { formatApproxUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
@@ -55,22 +55,17 @@ export type AssetsHubOverviewModel = {
 const EMPTY_MODE: AssetsHubModeStats = {
   aprLabel: '—',
   positionValue: '0.00 AGX',
-  positionApprox: '≈ —',
+  positionApprox: formatApproxUsd(0, null),
   yieldValue: '0.00 gAGX',
-  yieldApprox: '≈ —',
+  yieldApprox: formatApproxUsd(0, null),
 }
 
 const EMPTY_XMINE: AssetsHubModeStats = {
   aprLabel: '—',
   positionValue: '0.00 gAGX',
-  positionApprox: '≈ —',
+  positionApprox: formatApproxUsd(0, null),
   yieldValue: '0.00 X',
-  yieldApprox: '≈ —',
-}
-
-function approxUsd(amount: number, priceUsd: number | null): string {
-  if (priceUsd == null || priceUsd <= 0 || !Number.isFinite(amount)) return '≈ —'
-  return `≈ ${formatUsd(amount * priceUsd, 2)}`
+  yieldApprox: formatApproxUsd(0, null),
 }
 
 /**
@@ -127,26 +122,28 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
     xmine: EMPTY_XMINE,
   } as const satisfies Record<Exclude<AssetsView, 'hub'>, AssetsHubModeStats>
 
+  const unavailableOverview = (modes: AssetsHubOverviewModel['modes']): AssetsHubOverviewModel => ({
+    totalValue: '—',
+    claimable: '—',
+    claimableApprox: '≈ —',
+    claimed: '—',
+    claimedApprox: '≈ —',
+    contribution: '—',
+    holdingsReleased: '—',
+    holdingsReleasedApprox: '≈ —',
+    holdingsTotal: '—',
+    holdingsTotalApprox: '≈ —',
+    bufferTotal: '—',
+    bufferTotalApprox: '≈ —',
+    bufferReleased: '—',
+    bufferReleasedApprox: '≈ —',
+    bufferGagxTotal: '—',
+    bufferGagxReleased: '—',
+    modes,
+  })
+
   if (!enabled) {
-    return {
-      totalValue: '—',
-      claimable: '—',
-      claimableApprox: '≈ —',
-      claimed: '—',
-      claimedApprox: '≈ —',
-      contribution: '—',
-      holdingsReleased: '—',
-      holdingsReleasedApprox: '≈ —',
-      holdingsTotal: '—',
-      holdingsTotalApprox: '≈ —',
-      bufferTotal: '—',
-      bufferTotalApprox: '≈ —',
-      bufferReleased: '—',
-      bufferReleasedApprox: '≈ —',
-      bufferGagxTotal: '—',
-      bufferGagxReleased: '—',
-      modes: emptyModes,
-    }
+    return unavailableOverview(emptyModes)
   }
 
   const errored =
@@ -158,25 +155,7 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
     bufferQuery.isError
 
   if (errored) {
-    return {
-      totalValue: '—',
-      claimable: '—',
-      claimableApprox: '≈ —',
-      claimed: '—',
-      claimedApprox: '≈ —',
-      contribution: '—',
-      holdingsReleased: '—',
-      holdingsReleasedApprox: '≈ —',
-      holdingsTotal: '—',
-      holdingsTotalApprox: '≈ —',
-      bufferTotal: '—',
-      bufferTotalApprox: '≈ —',
-      bufferReleased: '—',
-      bufferReleasedApprox: '≈ —',
-      bufferGagxTotal: '—',
-      bufferGagxReleased: '—',
-      modes: emptyModes,
-    }
+    return unavailableOverview(emptyModes)
   }
 
   const loading =
@@ -196,23 +175,18 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
       yieldApprox: '≈ —',
     }
     return {
-      totalValue: '—',
+      ...unavailableOverview({
+        stake: pending,
+        lpbond: pending,
+        burnbond: pending,
+        xmine: pending,
+      }),
       claimable: '…',
-      claimableApprox: '≈ —',
-      claimed: '—',
-      claimedApprox: '≈ —',
       contribution: '…',
       holdingsReleased: '…',
-      holdingsReleasedApprox: '≈ —',
       holdingsTotal: '…',
-      holdingsTotalApprox: '≈ —',
       bufferTotal: '…',
-      bufferTotalApprox: '≈ —',
       bufferReleased: '…',
-      bufferReleasedApprox: '≈ —',
-      bufferGagxTotal: '—',
-      bufferGagxReleased: '—',
-      modes: { stake: pending, lpbond: pending, burnbond: pending, xmine: pending },
     }
   }
 
@@ -266,48 +240,48 @@ export function useAssetsHubOverviewStats(): AssetsHubOverviewModel {
   return {
     totalValue: '—',
     claimable: claimableParts.length > 0 ? claimableParts.join(' · ') : '0.00 gAGX',
-    claimableApprox: approxUsd(claimableGagxNum, priceUsd),
+    claimableApprox: formatApproxUsd(claimableGagxNum, priceUsd),
     claimed: '—',
     claimedApprox: '≈ —',
     contribution: formatTokenAmount(contribution, AGX_DECIMALS, 2),
     holdingsReleased: `${formatTokenAmount(stakeReleased, AGX_DECIMALS, 2)} AGX`,
-    holdingsReleasedApprox: approxUsd(holdingsReleasedNum, priceUsd),
+    holdingsReleasedApprox: formatApproxUsd(holdingsReleasedNum, priceUsd),
     holdingsTotal: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
-    holdingsTotalApprox: approxUsd(holdingsTotalNum, priceUsd),
+    holdingsTotalApprox: formatApproxUsd(holdingsTotalNum, priceUsd),
     bufferTotal: `${formatTokenAmount(bufferTotal, AGX_DECIMALS, 2)} AGX`,
-    bufferTotalApprox: approxUsd(bufferTotalNum, priceUsd),
+    bufferTotalApprox: formatApproxUsd(bufferTotalNum, priceUsd),
     bufferReleased: `${formatTokenAmount(bufferReleased, AGX_DECIMALS, 2)} AGX`,
-    bufferReleasedApprox: approxUsd(bufferReleasedNum, priceUsd),
+    bufferReleasedApprox: formatApproxUsd(bufferReleasedNum, priceUsd),
     bufferGagxTotal: '—',
     bufferGagxReleased: '—',
     modes: {
       stake: {
         aprLabel: '—',
         positionValue: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
-        positionApprox: approxUsd(stakePosNum, priceUsd),
+        positionApprox: formatApproxUsd(stakePosNum, priceUsd),
         yieldValue: `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX`,
-        yieldApprox: approxUsd(stakeYieldNum, priceUsd),
+        yieldApprox: formatApproxUsd(stakeYieldNum, priceUsd),
       },
       lpbond: {
         aprLabel: '—',
         positionValue: `${formatTokenAmount(lpPrincipal, AGX_DECIMALS, 2)} AGX`,
-        positionApprox: approxUsd(lpPosNum, priceUsd),
+        positionApprox: formatApproxUsd(lpPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(lpYield, GAGX_DECIMALS, 2)} gAGX`,
-        yieldApprox: approxUsd(lpYieldNum, priceUsd),
+        yieldApprox: formatApproxUsd(lpYieldNum, priceUsd),
       },
       burnbond: {
         aprLabel: '—',
         positionValue: `${formatTokenAmount(burnPrincipal, AGX_DECIMALS, 2)} AGX`,
-        positionApprox: approxUsd(burnPosNum, priceUsd),
+        positionApprox: formatApproxUsd(burnPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(burnYield, GAGX_DECIMALS, 2)} gAGX`,
-        yieldApprox: approxUsd(burnYieldNum, priceUsd),
+        yieldApprox: formatApproxUsd(burnYieldNum, priceUsd),
       },
       xmine: {
         aprLabel: '—',
         positionValue: `${formatTokenAmount(xStake, GAGX_DECIMALS, 2)} gAGX`,
-        positionApprox: approxUsd(xPosNum, priceUsd),
+        positionApprox: formatApproxUsd(xPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(xPending, X_DECIMALS, 2)} X`,
-        yieldApprox: '≈ —',
+        yieldApprox: formatApproxUsd(formatTokenAmountToNumber(xPending, X_DECIMALS), null),
       },
     },
   }

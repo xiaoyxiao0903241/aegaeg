@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
@@ -14,6 +13,7 @@ import {
   readStakePositions,
 } from '~/web3/assets/assets-read'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
+import { formatApproxUsd } from '~/shared/api/format-display'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -25,13 +25,22 @@ export type AssetsPositionStatCell = {
   icon?: 'agx' | 'gagx'
 }
 
-function approxUsd(amount: number, priceUsd: number | null): string {
-  if (priceUsd == null || priceUsd <= 0 || !Number.isFinite(amount)) return '≈ —'
-  return `≈ ${formatUsd(amount * priceUsd, 2)}`
+type PricedStat = {
+  amount: bigint
+  decimals: number
+  unit: 'AGX' | 'gAGX'
+  icon: NonNullable<AssetsPositionStatCell['icon']>
 }
 
-function cell(value: string, icon?: 'agx' | 'gagx', approx?: string): AssetsPositionStatCell {
-  return { value, icon, approx }
+function mapPricedStats(
+  rows: readonly PricedStat[],
+  priceUsd: number | null,
+): AssetsPositionStatCell[] {
+  return rows.map(({ amount, decimals, unit, icon }) => ({
+    value: `${formatTokenAmount(amount, decimals, 2)} ${unit}`,
+    icon,
+    approx: formatApproxUsd(formatTokenAmountToNumber(amount, decimals), priceUsd),
+  }))
 }
 
 /** Right-rail position stats — aggregates existing assets reads (38 §4, no fake numbers). */
@@ -62,12 +71,12 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   })
 
   if (!walletReady || !address) {
-    return Array.from({ length: product === 'stake' ? 6 : 5 }, () => cell('—'))
+    return Array.from({ length: product === 'stake' ? 6 : 5 }, () => ({ value: '—' }))
   }
 
   if (product === 'stake') {
-    if (stakeQuery.isError) return Array.from({ length: 6 }, () => cell('—'))
-    if (stakeQuery.data === undefined) return Array.from({ length: 6 }, () => cell('…'))
+    if (stakeQuery.isError) return Array.from({ length: 6 }, () => ({ value: '—' }))
+    if (stakeQuery.data === undefined) return Array.from({ length: 6 }, () => ({ value: '…' }))
     const rows = stakeQuery.data
     const total = rows.reduce((sum, row) => sum + row.principal, 0n)
     const released = rows.reduce((sum, row) => sum + row.releasedPrincipal, 0n)
@@ -80,43 +89,22 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     const rebaseBonus = rows.reduce((sum, row) => sum + row.extraInterest, 0n)
     // 质押总收益 = 未领 Rebase 收益 + 加成（gAGX）；不含 claimableBalance（AGX 本金）
     const totalYield = rebaseReward + rebaseBonus
-    return [
-      cell(
-        `${formatTokenAmount(total, AGX_DECIMALS, 2)} AGX`,
-        'agx',
-        approxUsd(formatTokenAmountToNumber(total, AGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`,
-        'agx',
-        approxUsd(formatTokenAmountToNumber(released, AGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`,
-        'agx',
-        approxUsd(formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(rebaseReward, GAGX_DECIMALS, 2)} gAGX`,
-        'gagx',
-        approxUsd(formatTokenAmountToNumber(rebaseReward, GAGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(rebaseBonus, GAGX_DECIMALS, 2)} gAGX`,
-        'gagx',
-        approxUsd(formatTokenAmountToNumber(rebaseBonus, GAGX_DECIMALS), priceUsd),
-      ),
-      cell(
-        `${formatTokenAmount(totalYield, GAGX_DECIMALS, 2)} gAGX`,
-        'gagx',
-        approxUsd(formatTokenAmountToNumber(totalYield, GAGX_DECIMALS), priceUsd),
-      ),
-    ]
+    return mapPricedStats(
+      [
+        { amount: total, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+        { amount: released, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+        { amount: pendingRelease, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+        { amount: rebaseReward, decimals: GAGX_DECIMALS, unit: 'gAGX', icon: 'gagx' },
+        { amount: rebaseBonus, decimals: GAGX_DECIMALS, unit: 'gAGX', icon: 'gagx' },
+        { amount: totalYield, decimals: GAGX_DECIMALS, unit: 'gAGX', icon: 'gagx' },
+      ],
+      priceUsd,
+    )
   }
 
   // LP `4518:5993` / Burn `4518:6384`: 我的持仓 / 已释放 / 待释放 / 当前Rebase / 总收益(无累计 → —)
-  if (bondQuery.isError) return Array.from({ length: 5 }, () => cell('—'))
-  if (bondQuery.data === undefined) return Array.from({ length: 5 }, () => cell('…'))
+  if (bondQuery.isError) return Array.from({ length: 5 }, () => ({ value: '—' }))
+  if (bondQuery.data === undefined) return Array.from({ length: 5 }, () => ({ value: '…' }))
 
   const rows = bondQuery.data
   const total = rows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
@@ -129,26 +117,15 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   const profit = rows.reduce((sum, row) => sum + row.profit, 0n)
 
   return [
-    cell(
-      `${formatTokenAmount(total, AGX_DECIMALS, 2)} AGX`,
-      'agx',
-      approxUsd(formatTokenAmountToNumber(total, AGX_DECIMALS), priceUsd),
+    ...mapPricedStats(
+      [
+        { amount: total, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+        { amount: released, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+        { amount: pendingRelease, decimals: AGX_DECIMALS, unit: 'AGX', icon: 'agx' },
+        { amount: profit, decimals: GAGX_DECIMALS, unit: 'gAGX', icon: 'gagx' },
+      ],
+      priceUsd,
     ),
-    cell(
-      `${formatTokenAmount(released, AGX_DECIMALS, 2)} AGX`,
-      'agx',
-      approxUsd(formatTokenAmountToNumber(released, AGX_DECIMALS), priceUsd),
-    ),
-    cell(
-      `${formatTokenAmount(pendingRelease, AGX_DECIMALS, 2)} AGX`,
-      'agx',
-      approxUsd(formatTokenAmountToNumber(pendingRelease, AGX_DECIMALS), priceUsd),
-    ),
-    cell(
-      `${formatTokenAmount(profit, GAGX_DECIMALS, 2)} gAGX`,
-      'gagx',
-      approxUsd(formatTokenAmountToNumber(profit, GAGX_DECIMALS), priceUsd),
-    ),
-    cell('—', 'gagx', '≈ —'),
+    { value: '—', icon: 'gagx', approx: '≈ —' },
   ]
 }

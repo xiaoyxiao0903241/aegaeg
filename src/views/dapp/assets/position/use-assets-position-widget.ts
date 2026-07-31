@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { formatUsd } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
@@ -72,7 +72,10 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
 
   function formatRewardUsd(amount: bigint): string {
     if (agxPriceQuery.isError || agxPriceUsd <= 0) return '—'
-    return formatUsd(formatTokenAmountToNumber(amount, GAGX_DECIMALS) * agxPriceUsd, 2)
+    return formatGroupedNumber(formatTokenAmountToNumber(amount, GAGX_DECIMALS) * agxPriceUsd, {
+      digits: 2,
+      prefix: '$',
+    })
   }
 
   function formatPeriodLabel(period: string): string {
