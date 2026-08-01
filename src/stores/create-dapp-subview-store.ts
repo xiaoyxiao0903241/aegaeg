@@ -21,19 +21,27 @@ export type DappSubviewState<TView extends string> = {
 
 type CreateDappSubviewStoreOptions<TView extends string, TExtra extends object> = {
   hub: TView
-  syncHash: (view: TView) => void
+  /** Hash string for a view (e.g. `#/assets/claim`); factory owns write. */
+  hashForView: (view: TView) => string
   /** Extra slice fields merged into the store (e.g. staking periods). */
   extra?: TExtra | ((set: StoreApi<DappSubviewState<TView> & TExtra>['setState']) => TExtra)
 }
 
+function writeHash(hash: string) {
+  const next = hash.startsWith('#') ? hash.slice(1) : hash
+  if (window.location.hash.slice(1) !== next) {
+    window.location.hash = next
+  }
+}
+
 /**
  * Factory for isomorphic DApp tab view stores (hub ↔ subview + enter/exit motion).
- * Each tab still owns its hash sync + optional extra fields.
+ * Each tab still owns its hash map + optional extra fields.
  */
 export function createDappSubviewStore<TView extends string, TExtra extends object = object>(
   options: CreateDappSubviewStoreOptions<TView, TExtra>,
 ): UseBoundStore<StoreApi<DappSubviewState<TView> & TExtra>> {
-  const { hub, syncHash } = options
+  const { hub, hashForView } = options
   let transitionTimer: number | null = null
 
   function clearTransitionTimer() {
@@ -41,6 +49,10 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
       window.clearTimeout(transitionTimer)
       transitionTimer = null
     }
+  }
+
+  function syncHash(view: TView) {
+    writeHash(hashForView(view))
   }
 
   return create<DappSubviewState<TView> & TExtra>((set, get) => {

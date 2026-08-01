@@ -14,17 +14,10 @@ type StakingPeriods = {
   setBondPeriod: (kind: 'lp' | 'burn', period: BondPeriod) => void
 }
 
-function syncStakingHash(view: StakingView) {
-  const next = stakingHashForView(view).slice(1)
-  if (window.location.hash.slice(1) !== next) {
-    window.location.hash = next
-  }
-}
-
 /** Pure view/motion state — panel scroll lives in the shell (DOM side effect). */
 export const useStakingViewStore = createDappSubviewStore<StakingView, StakingPeriods>({
   hub: 'hub',
-  syncHash: syncStakingHash,
+  hashForView: stakingHashForView,
   extra: (set) => ({
     stakePeriod: 'liquid',
     lpBondPeriod: '180',
