@@ -1,3 +1,9 @@
+import {
+  formatBlockTime,
+  formatGroupedNumber,
+  formatShortAddress,
+  TABLE_EMPTY,
+} from '~/shared/api/format-display'
 import type {
   AgxContributionBurnLogItem,
   AgxContributionConsumeLogItem,
@@ -11,12 +17,6 @@ import type {
   X0MiningLogItem,
   X0MiningPositionItem,
 } from '~/shared/api/types'
-import {
-  TABLE_EMPTY,
-  formatBlockTime,
-  formatGroupedNumber,
-  formatShortAddress,
-} from '~/shared/api/format-display'
 
 function formatAmount(raw: string): string {
   const n = Number(raw)

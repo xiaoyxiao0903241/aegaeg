@@ -1,6 +1,7 @@
 import type { Wallet } from 'thirdweb/wallets'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { REFERRAL_METHODS, REFERRAL_ERRORS } from '~/web3/abis'
+import { REFERRAL_ERRORS, REFERRAL_METHODS } from '~/web3/abis'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const referralWriteAbi = parseWriteAbi(REFERRAL_METHODS.bindReferral, REFERRAL_ERRORS)

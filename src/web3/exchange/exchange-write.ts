@@ -1,13 +1,14 @@
-import type { Wallet } from 'thirdweb/wallets'
 import { getAddress } from 'thirdweb/utils'
+import type { Wallet } from 'thirdweb/wallets'
 import { parseAbi } from 'viem'
+
 import { isAgxSellPath } from '~/core/exchange/agx-sell-tax'
 import { exchangeDeadline } from '~/core/exchange/exchange-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { PANCAKE_ROUTER_V2_METHODS } from '~/web3/abis'
-import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
+import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const exchangeRouterWriteAbi = parseAbi([

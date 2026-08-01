@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { useActiveWallet } from '~/web3/thirdweb-react'
-import { phaseCountdownKey, hasPhaseCountdownElapsed } from '~/core/presale/presale-math'
-import { invalidateAfterGenesisPhaseTransition } from '~/shared/api/query/invalidate'
+
+import { hasPhaseCountdownElapsed, phaseCountdownKey } from '~/core/presale/presale-math'
 import { useI18n } from '~/i18n/use-i18n'
+import { invalidateAfterGenesisPhaseTransition } from '~/shared/api/query/invalidate'
 import { genesisPurchaseSummary } from '~/views/dapp/genesis/genesis-purchase-summary'
 import { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 import { useGenesisPurchaseActions } from '~/views/dapp/genesis/use-genesis-purchase-actions'
+import { useActiveWallet } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 /** Assembles Genesis reads + purchase actions; public API for lifted session props. */

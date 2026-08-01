@@ -8,8 +8,8 @@
     "**/*.d.ts"
   ],
   "format": ["typescript", "tsx"],
-  "minLines": 10,
-  "minTokens": 70,
+  "minLines": 15,
+  "minTokens": 80,
   "mode": "strict",
   "gitignore": true,
   "reporters": ["console"],

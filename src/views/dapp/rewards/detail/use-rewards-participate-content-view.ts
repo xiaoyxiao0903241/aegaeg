@@ -1,15 +1,15 @@
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useI18n } from '~/i18n/use-i18n'
 import {
   useParticipationAwardInviter,
   useParticipationAwardLogs,
   useParticipationAwardSummary,
 } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import {
+  formatApiDecimalAmount,
   formatApiStatLabel,
   mapParticipationAwardInviterToRow,
   mapParticipationAwardLogToRow,
-  formatApiDecimalAmount,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 

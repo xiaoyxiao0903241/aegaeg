@@ -1,18 +1,19 @@
+import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { X } from 'lucide-react'
 import { tv } from 'tailwind-variants'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { cn } from '~/shared/lib/utils'
-import { useI18n } from '~/i18n/use-i18n'
-import type { DappTab } from '~/shared/config/dapp-tabs'
+
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
-import { aegisDialogClose } from '~/shared/ui/aegis-responsive-dialog'
-import { Text } from '~/shared/ui/text'
-import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
-import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
+import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
+import { useI18n } from '~/i18n/use-i18n'
+import type { DappTab } from '~/shared/config/dapp-tabs'
+import { cn } from '~/shared/lib/utils'
+import { aegisDialogClose } from '~/shared/ui/aegis-responsive-dialog'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
+import { Text } from '~/shared/ui/text'
 
 const drawerItem = tv({
   base: cn(

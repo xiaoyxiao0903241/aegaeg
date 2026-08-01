@@ -1,9 +1,9 @@
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { displayPresaleRank } from '~/core/presale/rank'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { useAuth } from '~/hooks/use-auth'
+import { displayPresaleRank } from '~/core/presale/rank'
 import { usePerformance } from '~/hooks/use-api-data'
+import { useAuth } from '~/hooks/use-auth'
 import { usePresaleUserTotalQuery } from '~/web3/presale/use-presale-queries'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 /** Cross-tab shareholder rank — pass sessionReady from shell (hooks ↛ app). */
 export function useShareholderRank(sessionReady: boolean) {

@@ -1,23 +1,24 @@
 import type { Wallet } from 'thirdweb/wallets'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
+
 import {
   confirmTeamRewardClaim,
   requestCommunityFundClaim,
   requestMarketFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
+import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import type { ClaimConfirmResult } from '~/shared/api/types'
-import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
-import { REWARD_CLAIMER_METHODS, REWARD_CLAIMER_ERRORS } from '~/web3/abis'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { sleep } from '~/shared/lib/sleep'
+import { REWARD_CLAIMER_ERRORS, REWARD_CLAIMER_METHODS } from '~/web3/abis'
 import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/contract-error-message'
+import { writeMarketFundClaim } from '~/web3/rewards/rewards-write'
 import {
+  type ConfirmedWalletWrite,
   parseWriteAbi,
   writeContractViaWallet,
-  type ConfirmedWalletWrite,
 } from '~/web3/wallet/wallet-contract-write'
-import { writeMarketFundClaim } from '~/web3/rewards/rewards-write'
-import { sleep } from '~/shared/lib/sleep'
 
 const claimRewardWriteAbi = parseWriteAbi(REWARD_CLAIMER_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
 

@@ -1,10 +1,11 @@
 import type { Wallet } from 'thirdweb/wallets'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
-  USD1_SWAP_METHODS,
-  USD1_SWAP_ERRORS,
-  REDEEMABLE_GAGX_METHODS,
   REDEEMABLE_GAGX_ERRORS,
+  REDEEMABLE_GAGX_METHODS,
+  USD1_SWAP_ERRORS,
+  USD1_SWAP_METHODS,
 } from '~/web3/abis'
 import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'

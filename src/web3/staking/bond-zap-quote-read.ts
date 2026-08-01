@@ -1,11 +1,12 @@
 import { parseAbi } from 'viem'
+
 import {
   applyPercentSlippage,
   computeGrossBondPayout,
   computeNetBondPayout,
   quoteV2LpMintAmount,
 } from '~/core/staking/bond-payout'
-import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
+import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_MARKET_METHODS,
   BOND_HELPER_METHODS,

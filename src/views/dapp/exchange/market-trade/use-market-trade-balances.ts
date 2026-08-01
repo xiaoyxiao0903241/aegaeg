@@ -1,6 +1,6 @@
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import type { Address } from '~/shared/config/contracts'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
+import type { Address } from '~/shared/config/contracts'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { TRADE_TOKEN_ADDRESSES, type TradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
 import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
 

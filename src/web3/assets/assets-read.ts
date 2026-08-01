@@ -1,6 +1,9 @@
 import { parseAbi } from 'viem'
-import { BSC_CONTRACTS, ZERO_ADDRESS, type Address } from '~/shared/config/contracts'
+
 import type { DurationPlan } from '~/core/assets/claim-plans'
+import { migrationStakeRoot } from '~/core/migration/migration-user'
+import type { StakePeriod } from '~/core/staking/staking-period'
+import { type Address, BSC_CONTRACTS, ZERO_ADDRESS } from '~/shared/config/contracts'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
   BOND_DEPOSITORY_ASSETS_METHODS,
@@ -12,14 +15,12 @@ import {
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
+import { readMigratedFrom } from '~/web3/migration/migration-read'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
   stakePoolAddress,
 } from '~/web3/staking/staking-addresses'
-import { migrationStakeRoot } from '~/core/migration/migration-user'
-import { readMigratedFrom } from '~/web3/migration/migration-read'
-import type { StakePeriod } from '~/core/staking/staking-period'
 
 const rewardQueueAbi = parseAbi([REWARD_QUEUE_METHODS.queuePlans])
 const restakeConfigAbi = parseAbi([

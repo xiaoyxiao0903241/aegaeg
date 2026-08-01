@@ -1,15 +1,15 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { openStakingView } from '~/shared/config/dapp-open-views'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { useAssetsXmineView } from '~/views/dapp/assets/xmine/use-assets-xmine-view'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
@@ -144,7 +144,7 @@ export function AssetsXmineWidget() {
             </Text>
             <div className="flex gap-2">
               <Button
-                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
+                className="size-auto min-h-0 px-3 py-1 text-xs"
                 disabled
                 shape="pill"
                 size="sm"
@@ -154,7 +154,7 @@ export function AssetsXmineWidget() {
                 {t.common.paginationPrev}
               </Button>
               <Button
-                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
+                className="size-auto min-h-0 px-3 py-1 text-xs"
                 disabled
                 shape="pill"
                 size="sm"

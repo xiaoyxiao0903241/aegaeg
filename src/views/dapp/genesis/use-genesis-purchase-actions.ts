@@ -1,23 +1,24 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+
+import { goBindReferral } from '~/app/shell/go-bind-referral'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/presale-write'
-import { GENESIS_PURCHASE_ERROR } from '~/web3/contract-error-message'
-import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
-import { queryKeys } from '~/shared/api/query/query-keys'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useI18n } from '~/i18n/use-i18n'
 import {
   invalidateAfterGenesisPurchase,
   invalidatePresaleChainQueries,
 } from '~/shared/api/query/invalidate'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { readIsBindReferral } from '~/web3/referral/referral-read'
-import { readPresalePaused, readUserPhaseRemainingAmount } from '~/web3/presale/presale-read'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { fetchLiveGenesisPostApprove } from '~/views/dapp/genesis/fetch-live-genesis-post-approve'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { useI18n } from '~/i18n/use-i18n'
-import { goBindReferral } from '~/app/shell/go-bind-referral'
+import { GENESIS_PURCHASE_ERROR } from '~/web3/contract-error-message'
 import { readErrorText } from '~/web3/errors/error-text'
+import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
+import { readPresalePaused, readUserPhaseRemainingAmount } from '~/web3/presale/presale-read'
+import { approveUsd1ForPresaleIfNeeded, purchasePresale } from '~/web3/presale/presale-write'
+import { readIsBindReferral } from '~/web3/referral/referral-read'
+import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 /** Genesis 购买：跨 tab remount 仍保持的模块级 in-flight。 */

@@ -1,3 +1,13 @@
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import {
+  formatApiDateTime,
+  formatBlockTime,
+  formatGroupedNumber,
+  formatRegisterDate,
+  formatShortAddress,
+  formatTableGenesisRank,
+  TABLE_EMPTY,
+} from '~/shared/api/format-display'
 import type {
   CommunityFundLogItem,
   DaoGrantStatus,
@@ -15,16 +25,6 @@ import type {
   RewardLogItem,
   TeamRewardClaimLogItem,
 } from '~/shared/api/types'
-import {
-  formatGroupedNumber,
-  TABLE_EMPTY,
-  formatApiDateTime,
-  formatBlockTime,
-  formatRegisterDate,
-  formatShortAddress,
-  formatTableGenesisRank,
-} from '~/shared/api/format-display'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 
 /** 数值指标空 / pending → 经格式化器出零（不用命名 dash/loading 别名）。 */

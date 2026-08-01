@@ -1,13 +1,14 @@
 import { keepPreviousData } from '@tanstack/react-query'
+
+import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
-  formatExchangeRateColon,
   emptySpotRateDash,
+  formatExchangeRateColon,
 } from '~/views/dapp/exchange/exchange-format-rate'
 import type { ExchangePairTokens, FlashPairId } from '~/views/dapp/exchange/exchange-pair'
-import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import { readFlashPairQuote } from '~/web3/exchange/flash-exchange-read'
 
 /** Fixed 10^decimals spot quote for flash exchange / overview rate labels. */

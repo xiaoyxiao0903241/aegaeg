@@ -1,7 +1,7 @@
 import { DappTableCardShell } from '~/app/shell/dapp-table-card'
-import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 import { revealClass } from '~/shared/lib/reveal'
+import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 export function DappTableEmptyMessage({
   body,

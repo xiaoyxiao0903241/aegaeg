@@ -1,12 +1,12 @@
-import { useI18n } from '~/i18n/use-i18n'
-import { useGenesisPromo } from '~/hooks/use-genesis-promo'
-import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import { DappSection } from '~/app/shell/dapp-section'
-import { InviteFlow, InviteFlowStack } from '~/views/dapp/community/community-invite-flow'
+import { useGenesisPromo } from '~/hooks/use-genesis-promo'
+import { useI18n } from '~/i18n/use-i18n'
+import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import {
   CommunityProgramCard,
   CommunityProgramGrid,
 } from '~/views/dapp/community/community-flow-primitives'
+import { InviteFlow, InviteFlowStack } from '~/views/dapp/community/community-invite-flow'
 
 export function CommunityFlowSection({ isMobileViewport = false }: { isMobileViewport?: boolean }) {
   const { messages: t } = useI18n()

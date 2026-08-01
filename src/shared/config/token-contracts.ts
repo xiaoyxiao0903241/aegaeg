@@ -1,5 +1,5 @@
-import { bscscanToken } from '~/shared/config/explorer'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { bscscanToken } from '~/shared/config/explorer'
 
 /** Carousel / About 区块可跳转 BscScan 的代币；未部署则 null */
 export const EXCHANGE_TOKEN_CONTRACTS: Record<string, `0x${string}` | null> = {

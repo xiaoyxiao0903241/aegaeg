@@ -1,17 +1,17 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import type { AssetsStakeRow } from '~/web3/assets/assets-read'
+import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
 import {
   ASSETS_POSITION_AGX_DECIMALS,
   ASSETS_POSITION_GAGX_DECIMALS,
   AssetsPositionPrincipalColumn,
   AssetsPositionRowHeader,
-  AssetsPositionYieldColumn,
   type AssetsPositionRowShellProps,
+  AssetsPositionYieldColumn,
 } from '~/views/dapp/assets/position/assets-position-row-chrome'
-import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
+import type { AssetsStakeRow } from '~/web3/assets/assets-read'
 
 export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<AssetsStakeRow>) {
   const { formatPeriodLabel, formatRewardUsd, locked, busy, quote, onClaim, onRedeem, row } = props

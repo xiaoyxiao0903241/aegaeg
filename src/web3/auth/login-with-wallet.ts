@@ -1,28 +1,29 @@
 import type { Account } from 'thirdweb/wallets'
+
+import {
+  classifyLoginFailure,
+  shouldClearCachedLoginSignature,
+} from '~/core/auth/classify-login-failure'
+import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
+import { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR } from '~/shared/api/account-banned'
 import { login } from '~/shared/api/endpoints'
 import {
-  loginMessage,
   generateLoginNonce,
-  loginMessageFormat,
+  loginMessage,
   type LoginMessageFormat,
+  loginMessageFormat,
 } from '~/web3/auth/login-message'
 import {
   createLocalLoginSignatureStorage,
   createMemoryLoginSignatureStorage,
-  readUsableLoginSignature,
   type LoginSignatureStorage,
+  readUsableLoginSignature,
   type StoredLoginSignature,
 } from '~/web3/auth/login-signature-cache'
 import {
-  shouldClearCachedLoginSignature,
-  classifyLoginFailure,
-} from '~/core/auth/classify-login-failure'
-import { isJwtExpired, withJwtExpiry } from '~/core/auth/jwt'
-import { ACCOUNT_BANNED_SENTINEL, LOGIN_ERROR } from '~/shared/api/account-banned'
-import {
+  type AuthSessionStorage,
   createLocalAuthSessionStorage,
   isSessionForAddress,
-  type AuthSessionStorage,
   type StoredAuthSession,
 } from '~/web3/auth/session'
 import { isUserRejectedWalletError } from '~/web3/contract-error-message'

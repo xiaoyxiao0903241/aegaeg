@@ -1,5 +1,6 @@
 import type { Wallet } from 'thirdweb/wallets'
-import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
+
+import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_ASSETS_METHODS,
   BOND_DEPOSITORY_ERRORS,

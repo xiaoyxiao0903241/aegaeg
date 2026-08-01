@@ -1,19 +1,19 @@
-import type { StakePeriod } from '~/core/staking/staking-period'
 import {
   evaluateLiquidWarmupClaimLive,
   evaluateStakeLive,
 } from '~/core/staking/staking-block-reasons'
+import type { StakePeriod } from '~/core/staking/staking-period'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
+import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
+import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
 import {
   approveAgxForStakeIfNeeded,
   claimLiquidWarmup,
   liquidStakeAgx,
   lockedStakeAgx,
 } from '~/web3/staking/staking-write'
-import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
-import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 

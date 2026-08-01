@@ -1,4 +1,3 @@
-import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 import {
   clearUnknownReceiptLock,
   endWritePath,
@@ -6,6 +5,7 @@ import {
   tryBeginWritePath,
   type WritePath,
 } from '~/web3/wallet/unknown-receipt-lock'
+import { isUnknownSubmitOutcome } from '~/web3/wallet/wallet-submit-unknown-error'
 
 export type SubmitWithUnknownReceiptLockResult<T> =
   { ok: true; value: T } | { ok: false; error: unknown }

@@ -1,17 +1,18 @@
 import Autoplay from 'embla-carousel-autoplay'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { tv } from 'tailwind-variants'
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '~/shared/ui/carousel'
-import { useI18n } from '~/i18n/use-i18n'
-import { revealClass } from '~/shared/lib/reveal'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
+
 import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { exchangeTokenCardKeys } from '~/app/data'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { useI18n } from '~/i18n/use-i18n'
 import {
   getExchangeTokenContractAddress,
   openTokenContractOnBscScan,
 } from '~/shared/config/token-contracts'
+import { revealClass } from '~/shared/lib/reveal'
+import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from '~/shared/ui/carousel'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import {
   ExchangePromoCard,
   ExchangePromoPillAction,

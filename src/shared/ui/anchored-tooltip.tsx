@@ -1,12 +1,13 @@
 import {
   cloneElement,
-  useState,
   type MouseEvent,
   type PointerEvent,
   type ReactElement,
+  useState,
 } from 'react'
-import { Tooltip, TooltipContent, TooltipTrigger } from '~/shared/ui/tooltip'
+
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { Tooltip, TooltipContent, TooltipTrigger } from '~/shared/ui/tooltip'
 
 export type AnchoredTooltipPosition = 'top' | 'right' | 'bottom'
 

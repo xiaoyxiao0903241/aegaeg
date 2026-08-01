@@ -1,5 +1,5 @@
-import { defaultLocale, locales, type Locale } from '~/i18n/locales'
 import { getHtmlLang } from '~/i18n/locale-meta'
+import { defaultLocale, type Locale, locales } from '~/i18n/locales'
 
 export const localeStorageKey = 'aegis.locale'
 

@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 

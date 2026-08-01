@@ -1,7 +1,7 @@
 import { useI18n } from '~/i18n/use-i18n'
-import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
+import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 
 const TOKEN_GAGX = 'gAGX'
 

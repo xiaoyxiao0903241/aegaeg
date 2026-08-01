@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { useGenesisWidget } from '~/views/dapp/genesis/use-genesis-widget'
+
 import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
+import { useGenesisWidget } from '~/views/dapp/genesis/use-genesis-widget'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 export type GenesisWidgetState = ReturnType<typeof useGenesisWidget>

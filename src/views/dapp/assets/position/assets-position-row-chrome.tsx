@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
-import { Text } from '~/shared/ui/text'
+
 import { formatBlockTime } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { Text } from '~/shared/ui/text'
 
 export const ASSETS_POSITION_AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 export const ASSETS_POSITION_GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals

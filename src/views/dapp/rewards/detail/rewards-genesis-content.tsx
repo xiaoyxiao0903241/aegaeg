@@ -1,14 +1,14 @@
 import { dappAssets } from '~/app/assets'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
+import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
-import { Text } from '~/shared/ui/text'
-import { FaqList } from '~/shared/ui/faq-list'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
+import { FaqList } from '~/shared/ui/faq-list'
+import { Text } from '~/shared/ui/text'
 import { useRewardsGenesisContentView } from '~/views/dapp/rewards/detail/use-rewards-genesis-content-view'
 
 export function RewardsGenesisContent() {

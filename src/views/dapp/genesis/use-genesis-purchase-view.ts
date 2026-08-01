@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
 import { toast } from 'sonner'
-import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
-import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { formatGroupedNumber } from '~/shared/api/format-display'
-import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
-import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
-import { useDappShell } from '~/app/use-dapp-shell'
+
 import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
-import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
+import { useDappShell } from '~/app/use-dapp-shell'
+import { clampGenesisShares, formatGenesisSharesText } from '~/core/presale/presale-math'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
+import { useI18n } from '~/i18n/use-i18n'
+import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
+import { formatGroupedNumber } from '~/shared/api/format-display'
+import { invalidateGenesisPage } from '~/shared/api/query/invalidate'
+import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 
 /**
  * Owns Genesis purchase form chrome (share draft, focus, submit/present).

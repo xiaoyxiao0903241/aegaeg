@@ -1,10 +1,12 @@
-import { parseAbi } from 'viem'
-import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
+import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
+
+import type { DurationPlan } from '~/core/assets/claim-plans'
+import { RELEASE_DURATION_DAYS, SECONDS_PER_DAY } from '~/core/assets/claim-plans'
+import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { PRINCIPAL_RELEASE_VAULT_METHODS, REWARD_QUEUE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
-import type { DurationPlan } from '~/core/assets/claim-plans'
-import { RELEASE_DURATION_DAYS, SECONDS_PER_DAY } from '~/core/assets/claim-plans'
+import { readAggregate3 } from '~/web3/multicall3-read'
 
 const queueReadAbi = parseAbi([
   REWARD_QUEUE_METHODS.queuePlans,
@@ -162,8 +164,9 @@ export async function readReleaseBufferSnapshot(
   address: Address,
   readClient: ChainReadClient = bscReadClient,
 ): Promise<ReleaseBufferSnapshot> {
+  const vault = BSC_CONTRACTS.principalReleaseVault
   const countRaw = (await readClient.readContract({
-    address: BSC_CONTRACTS.principalReleaseVault,
+    address: vault,
     abi: vaultReadAbi,
     functionName: 'getReleaseCount',
     args: [address],
@@ -180,17 +183,32 @@ export async function readReleaseBufferSnapshot(
     }
   }
 
+  const results = await readAggregate3(
+    readClient,
+    Array.from({ length: count }, (_, i) => ({
+      target: vault,
+      callData: encodeFunctionData({
+        abi: vaultReadAbi,
+        functionName: 'getRelease',
+        args: [address, BigInt(i)],
+      }),
+    })),
+  )
+
   let totalAmount = 0n
   let totalClaimed = 0n
   let totalClaimable = 0n
   let totalRemaining = 0n
   for (let i = 0; i < count; i++) {
-    const raw = (await readClient.readContract({
-      address: BSC_CONTRACTS.principalReleaseVault,
+    const result = results[i]
+    if (!result?.success) {
+      throw new Error(`RELEASE_BUFFER_MULTICALL_FAILED:${i}`)
+    }
+    const raw = decodeFunctionResult({
       abi: vaultReadAbi,
       functionName: 'getRelease',
-      args: [address, BigInt(i)],
-    })) as readonly [
+      data: result.returnData,
+    }) as readonly [
       { amount: bigint; claimed: bigint; startTime: bigint; duration: bigint },
       bigint,
       bigint,

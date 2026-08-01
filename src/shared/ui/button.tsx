@@ -1,5 +1,5 @@
 import { Slot } from '@radix-ui/react-slot'
-import { forwardRef, type ButtonHTMLAttributes } from 'react'
+import { type ButtonHTMLAttributes, forwardRef } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 export const buttonVariants = tv({

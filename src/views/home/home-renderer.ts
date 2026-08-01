@@ -1,12 +1,12 @@
-import type { Locale } from '~/i18n/locales'
 import { getHtmlLang } from '~/i18n/locale-meta'
+import type { Locale } from '~/i18n/locales'
 import { locales } from '~/i18n/locales'
-import { getMessagesForRender } from '~/i18n/messages-catalog'
 import { BOOTSTRAP_SCRIPT_ID } from '~/i18n/messages'
+import { getMessagesForRender } from '~/i18n/messages-catalog'
 import { homeAssets } from '~/shared/assets/home'
-import { themeHex } from '~/shared/styles/theme'
 import { LEGACY_DOM_POLYFILLS_BOOT_SCRIPT } from '~/shared/lib/legacy-runtime-polyfills'
 import { PAGE_SCROLL_RESTORATION_BOOT_SCRIPT } from '~/shared/lib/page-scroll-restoration'
+import { themeHex } from '~/shared/styles/theme'
 
 const supportedLocalesJson = JSON.stringify(locales)
 

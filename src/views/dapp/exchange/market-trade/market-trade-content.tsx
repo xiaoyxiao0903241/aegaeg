@@ -1,14 +1,14 @@
-import { exchangeTokenKeys, type ExchangeTokenKey } from '~/app/data'
-import { useI18n } from '~/i18n/use-i18n'
+import { type ExchangeTokenKey, exchangeTokenKeys } from '~/app/data'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { MetricGrid } from '~/app/shell/metric-grid'
+import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/ui/faq-list'
-import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
-import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
+import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import { useMarketTradeContentView } from '~/views/dapp/exchange/market-trade/use-market-trade-content-view'
 
 /** Figma PC `4433:220` about carousel order — same as flash. */

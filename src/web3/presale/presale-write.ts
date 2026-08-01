@@ -1,6 +1,7 @@
 import type { Wallet } from 'thirdweb/wallets'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { PRESALE_METHODS, PRESALE_ERRORS } from '~/web3/abis'
+import { PRESALE_ERRORS, PRESALE_METHODS } from '~/web3/abis'
 import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 

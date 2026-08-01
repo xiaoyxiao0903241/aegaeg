@@ -1,6 +1,6 @@
-import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 import type { BondPeriod } from '~/core/staking/staking-period'
+import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 const PERIODS: BondPeriod[] = ['180', '360', '540']
 
@@ -60,7 +60,7 @@ export function BondPeriodList({
                     )}
                   >
                     {selected ? (
-                      <span className="absolute top-1/2 left-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
+                      <span className="absolute top-1/2 left-1/2 size-1.5 -translate-1/2 rounded-full bg-primary" />
                     ) : null}
                   </span>
                   <Text as="span" className="font-semibold" variant="detail">

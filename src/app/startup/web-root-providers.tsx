@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
-import { AutoConnect, ThirdwebProvider } from '~/web3/thirdweb-react'
-import { thirdwebClient, assertWeb3EnvConfigured } from '~/web3/thirdweb'
+
 import { AuthProvider } from '~/app/startup/auth-provider'
-import { AccountBannedNotifier } from '~/shared/ui/account-banned-notifier'
 import { QueryProvider } from '~/app/startup/query-provider'
+import { AccountBannedNotifier } from '~/shared/ui/account-banned-notifier'
 import { TooltipProvider } from '~/shared/ui/tooltip'
+import { assertWeb3EnvConfigured, thirdwebClient } from '~/web3/thirdweb'
+import { AutoConnect, ThirdwebProvider } from '~/web3/thirdweb-react'
 
 /**
  * DApp-only provider stack (`app.html` / `src/app/main.tsx`).

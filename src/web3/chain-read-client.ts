@@ -1,6 +1,7 @@
+import type { Wallet } from 'thirdweb/wallets'
 import { createPublicClient, custom, type PublicClient } from 'viem'
 import { bsc } from 'viem/chains'
-import type { Wallet } from 'thirdweb/wallets'
+
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { walletEip1193Provider } from '~/web3/wallet/wallet-eip1193-provider'
 

@@ -1,14 +1,15 @@
 import { useEffect, useMemo } from 'react'
-import { USD1_DECIMALS } from '~/core/presale/presale-math'
+
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
 import { genesisPromoSnapshot } from '~/core/presale/genesis-promo'
+import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
+import { USD1_DECIMALS } from '~/core/presale/presale-math'
+import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 import {
   usePresaleActivePhaseQuery,
   usePresaleAgxPriceQuery,
   usePresalePhasesQuery,
 } from '~/web3/presale/use-presale-queries'
-import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 
 /**
  * Shell-resident syncer: light presale reads → genesis-promo-store.

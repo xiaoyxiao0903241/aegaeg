@@ -1,4 +1,5 @@
 import { toast } from 'sonner'
+
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
 import { getErrorMessage } from '~/web3/errors/get-error-message'
 import { isUserRejectedWalletError } from '~/web3/errors/wallet-error'

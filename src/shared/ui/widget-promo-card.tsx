@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { Card, type CardProps } from '~/shared/ui/card'
+
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { Card, type CardProps } from '~/shared/ui/card'
 
 const widgetPromoCard = tv({
   base: [

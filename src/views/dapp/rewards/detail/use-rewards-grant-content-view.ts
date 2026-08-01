@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
 import {
   useMarketAllowanceClaimLogs,
   useMarketAllowancePaidLogs,
   useMarketAllowanceSummary,
 } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import {
   formatApiStatLabel,
   formatMakingRankLabel,

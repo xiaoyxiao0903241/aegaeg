@@ -1,4 +1,5 @@
 import { defineMessages } from '~/i18n/messages/define-messages'
+
 import type { AppMessagesBundle } from './types'
 
 const app = defineMessages({

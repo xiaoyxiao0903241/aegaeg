@@ -1,17 +1,17 @@
+import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { dappAssets, tokenCarouselIcons } from '~/app/assets'
-import { FaqList } from '~/shared/ui/faq-list'
-import { Text } from '~/shared/ui/text'
-import { Card } from '~/shared/ui/card'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { useAssetsHubContentView } from '~/views/dapp/assets/hub/use-assets-hub-content-view'
+import { Card } from '~/shared/ui/card'
+import { FaqList } from '~/shared/ui/faq-list'
+import { Text } from '~/shared/ui/text'
 import {
   AssetsHubMetricPlain,
   AssetsHubMetricWithIcon,
 } from '~/views/dapp/assets/hub/assets-hub-metric'
+import { useAssetsHubContentView } from '~/views/dapp/assets/hub/use-assets-hub-content-view'
 
 export function AssetsHubContent() {
   const vm = useAssetsHubContentView()

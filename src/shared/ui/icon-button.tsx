@@ -1,6 +1,7 @@
-import { forwardRef, type ButtonHTMLAttributes } from 'react'
-import { Button } from '~/shared/ui/button'
+import { type ButtonHTMLAttributes, forwardRef } from 'react'
+
 import { cn } from '~/shared/lib/utils'
+import { Button } from '~/shared/ui/button'
 
 export const IconButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className, type = 'button', ...props }, ref) => (

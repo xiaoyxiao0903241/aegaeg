@@ -1,15 +1,15 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useAgxContributionSummary } from '~/hooks/use-api-data'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import type { Address } from '~/shared/config/contracts'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { readContributionSnapshot } from '~/web3/assets/assets-read'
+import type { Address } from '~/shared/config/contracts'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   formatApiStatLabel,
   formatContributionPlaceholder,
 } from '~/views/dapp/rewards/rewards-display'
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { readContributionSnapshot } from '~/web3/assets/assets-read'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 

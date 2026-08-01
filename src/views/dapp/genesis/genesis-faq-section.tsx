@@ -1,7 +1,7 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappCollapsibleSection } from '~/app/shell/dapp-collapsible-section'
-import { FaqList } from '~/shared/ui/faq-list'
+import { useI18n } from '~/i18n/use-i18n'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
+import { FaqList } from '~/shared/ui/faq-list'
 import { genesisFaqTemplateValues } from '~/views/dapp/genesis/genesis-faq'
 import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 

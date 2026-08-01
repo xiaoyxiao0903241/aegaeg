@@ -1,13 +1,16 @@
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useState } from 'react'
+
 import { HIGH_EXCHANGE_PRICE_IMPACT_BPS } from '~/core/exchange/calc-price-impact-bps'
-import { formatGroupedNumber } from '~/shared/api/format-display'
-import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
 import {
   clampSlippagePercent,
   formatTokenAmount,
   slippagePercentToBps,
 } from '~/core/exchange/token-amount'
+import { formatGroupedNumber } from '~/shared/api/format-display'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { pancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
+import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import {
   formatTradeRouteLabel,
   getTradePairTokens,
@@ -17,17 +20,15 @@ import {
   tradeBuyOptions,
   type TradeTokenKey,
 } from '~/views/dapp/exchange/exchange-pair'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { fetchExchangeQuote } from '~/web3/exchange/exchange-read'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
-import { useExchangePoolReads } from '~/views/dapp/exchange/use-exchange-pool-reads'
+import { submitMarketTrade } from '~/views/dapp/exchange/market-trade/submit-market-trade'
 import { useMarketTradeBalances } from '~/views/dapp/exchange/market-trade/use-market-trade-balances'
 import { useMarketTradeSpotRates } from '~/views/dapp/exchange/market-trade/use-market-trade-spot-rates'
-import { submitMarketTrade } from '~/views/dapp/exchange/market-trade/submit-market-trade'
+import { useExchangePoolReads } from '~/views/dapp/exchange/use-exchange-pool-reads'
+import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
+import { fetchExchangeQuote } from '~/web3/exchange/exchange-read'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
  * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.

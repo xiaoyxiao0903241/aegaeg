@@ -1,5 +1,6 @@
-import * as React from 'react'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import * as React from 'react'
+
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
 import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
@@ -62,4 +63,4 @@ const TooltipContent = React.forwardRef<
 ))
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }

@@ -1,20 +1,21 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
+
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
-import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
-import { Segment } from '~/shared/ui/segment'
-import { Text } from '~/shared/ui/text'
-import { Button } from '~/shared/ui/button'
 import { cn } from '~/shared/lib/utils'
 import {
   AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
-import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
+import { Button } from '~/shared/ui/button'
+import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
+import { Segment } from '~/shared/ui/segment'
+import { Text } from '~/shared/ui/text'
 import { useAssetsClaimModalView } from '~/views/dapp/assets/claim-modal/use-assets-claim-modal-view'
+import type { MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
 
 export function AssetsClaimModal({
   amountLabel,

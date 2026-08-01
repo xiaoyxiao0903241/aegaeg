@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
-import { IconButton } from '~/shared/ui/icon-button'
-import { Text } from '~/shared/ui/text'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
+import { IconButton } from '~/shared/ui/icon-button'
+import { Text } from '~/shared/ui/text'
 
 export function DappPanelHeader({
   className,

@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { Card } from '~/shared/ui/card'
+
 import { revealClass } from '~/shared/lib/reveal'
+import { Card } from '~/shared/ui/card'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
 
 export type MetricCardProps = {

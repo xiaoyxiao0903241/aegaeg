@@ -1,31 +1,32 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+
+import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
+import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   FLASH_PAIR_DEFAULT,
   flashPairAllowsFlip,
+  type FlashPairId,
   getFlashExchangePairTokens,
   isFlashPairId,
-  type FlashPairId,
 } from '~/views/dapp/exchange/exchange-pair'
-import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
+import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-spot-rates'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import {
   readFlashPairBalances,
   readFlashPairQuote,
   readUsd1SwapConfig,
 } from '~/web3/exchange/flash-exchange-read'
-import { useFlashExchangeSpotRates } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-spot-rates'
-import { submitFlashExchange } from '~/views/dapp/exchange/flash-exchange/submit-flash-exchange'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { evaluateFlashUsd1Swap } from '~/core/exchange/flash-usd1-swap'
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
  * Handbook `usd1swap.md` sample: `minOut = (usd1Out * 99n) / 100n` (1% floor).

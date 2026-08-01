@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '~/shared/ui/carousel'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
+
 import { cn } from '~/shared/lib/utils'
+import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from '~/shared/ui/carousel'
 
 export type DappCarouselSlide = {
   key: string

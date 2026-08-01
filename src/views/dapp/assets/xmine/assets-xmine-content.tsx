@@ -1,5 +1,5 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useI18n } from '~/i18n/use-i18n'
 import { AssetsProductDetailSections } from '~/views/dapp/assets/assets-product-detail-sections'
 import { useAssetsXmineOpsRows } from '~/views/dapp/assets/xmine/use-assets-xmine-ops-rows'
 import { useAssetsXmineStats } from '~/views/dapp/assets/xmine/use-assets-xmine-stats'

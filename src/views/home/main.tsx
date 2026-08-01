@@ -2,14 +2,16 @@ import { bootHomeApp, restoreHomeScroll } from '~/app/startup/home-boot'
 
 bootHomeApp()
 
+import '~/shared/styles/home.css'
+
 import { useLayoutEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import '~/shared/styles/home.css'
-import { I18nProvider } from '~/i18n/i18n-provider'
+
 import { HomeProviders } from '~/app/startup/home-providers'
+import { I18nProvider } from '~/i18n/i18n-provider'
+import { LocalizedErrorBoundary } from '~/shared/ui/localized-error-boundary'
 import { HomePage } from '~/views/home/home-page'
 import { bootHomeReveal } from '~/views/home/home-reveal-loader'
-import { LocalizedErrorBoundary } from '~/shared/ui/localized-error-boundary'
 
 function HomeApp() {
   useLayoutEffect(() => {

@@ -1,23 +1,23 @@
+import {
+  isOnboardingNavStep,
+  ONBOARDING_STEP_IDS,
+  type OnboardingStepId,
+  tourSelector,
+} from '~/app/shell/onboarding-step-ids'
 import type { DappTab } from '~/shared/config/dapp-tabs'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
-import {
-  isOnboardingNavStep,
-  ONBOARDING_STEP_IDS,
-  tourSelector,
-  type OnboardingStepId,
-} from '~/app/shell/onboarding-step-ids'
 
 export {
   isOnboardingNavStep,
   ONBOARDING_STEP_COUNT,
   ONBOARDING_STEP_IDS,
-  tourSelector,
   type OnboardingStepId,
+  tourSelector,
 } from '~/app/shell/onboarding-step-ids'
 
 type StepGo = {

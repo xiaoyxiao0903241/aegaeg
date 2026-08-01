@@ -1,34 +1,35 @@
+import { getAddress } from 'thirdweb/utils'
+import type { Wallet } from 'thirdweb/wallets'
 import {
-  encodeFunctionData,
-  numberToHex,
-  parseAbi,
   type Abi,
   type Address,
+  encodeFunctionData,
   type Hash,
+  numberToHex,
+  parseAbi,
   type TransactionReceipt,
 } from 'viem'
-import type { Wallet } from 'thirdweb/wallets'
-import { getAddress } from 'thirdweb/utils'
+
+import { bscReadClient } from '~/web3/bsc-read-client'
+import { type ChainReadClient, createWalletReadClient } from '~/web3/chain-read-client'
+import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import {
   decodeContractRevert,
   isContractRevert,
   normalizeContractRevertError,
 } from '~/web3/decode-contract-revert'
-import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
 import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
-import { createWalletReadClient, type ChainReadClient } from '~/web3/chain-read-client'
-import { bscReadClient } from '~/web3/bsc-read-client'
-import { walletEip1193Provider } from '~/web3/wallet/wallet-eip1193-provider'
-import { assertWalletTransactionHash } from '~/web3/wallet/wallet-write-error'
-import { walletProviderRequest } from '~/web3/wallet/wallet-provider-request'
-import { waitForWalletTransactionConfirmation } from '~/web3/wallet/wait-wallet-transaction'
+import { defaultChain } from '~/web3/thirdweb'
 import {
   assertWriteIntentMatches,
   createWriteIntent,
   parseEip1193ChainId,
 } from '~/web3/wallet/assert-write-intent'
-import { defaultChain } from '~/web3/thirdweb'
+import { waitForWalletTransactionConfirmation } from '~/web3/wallet/wait-wallet-transaction'
+import { walletEip1193Provider } from '~/web3/wallet/wallet-eip1193-provider'
+import { walletProviderRequest } from '~/web3/wallet/wallet-provider-request'
 import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
+import { assertWalletTransactionHash } from '~/web3/wallet/wallet-write-error'
 
 export type ConfirmedWalletWrite = TransactionReceipt & { transactionHash: Hash }
 

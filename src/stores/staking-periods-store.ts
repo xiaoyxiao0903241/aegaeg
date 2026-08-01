@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
 
 type StakingPeriodsStore = {

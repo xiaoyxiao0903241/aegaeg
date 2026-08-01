@@ -1,13 +1,14 @@
-import { useEffect } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { ConnectEmbed, useActiveAccount } from '~/web3/thirdweb-react'
 import { X } from 'lucide-react'
+import { useEffect } from 'react'
 import { tv } from 'tailwind-variants'
+
 import { useI18n } from '~/i18n/use-i18n'
-import { appMetadata, connectEmbedProps } from '~/web3/thirdweb'
-import { Text } from '~/shared/ui/text'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { AegisResponsiveDialog, AegisSheetHandle } from '~/shared/ui/aegis-responsive-dialog'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
+import { Text } from '~/shared/ui/text'
+import { appMetadata, connectEmbedProps } from '~/web3/thirdweb'
+import { ConnectEmbed, useActiveAccount } from '~/web3/thirdweb-react'
 
 const walletConnectPanel = tv({
   base: [

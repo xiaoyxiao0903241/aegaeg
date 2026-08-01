@@ -1,19 +1,20 @@
-import { useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { useI18n } from '~/i18n/use-i18n'
+import { useState } from 'react'
+
 import { MAX_SLIPPAGE_PERCENT } from '~/core/exchange/token-amount'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
-import { Button } from '~/shared/ui/button'
-import { Chip } from '~/shared/ui/chip'
-import { Input } from '~/shared/ui/input'
-import { Text, textVariants } from '~/shared/ui/text'
 import {
   AegisDialogClose,
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
+import { Button } from '~/shared/ui/button'
+import { Chip } from '~/shared/ui/chip'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
+import { Input } from '~/shared/ui/input'
+import { Text, textVariants } from '~/shared/ui/text'
 
 const SLIPPAGE_PRESETS = [0.1, 0.5, 1, 3, 5] as const
 

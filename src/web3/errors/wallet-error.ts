@@ -1,7 +1,7 @@
+import { readErrorCode, readErrorText } from '~/web3/errors/error-text'
+import { WALLET_BLOCKED, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
 import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
-import { WALLET_BLOCKED, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
-import { readErrorCode, readErrorText } from '~/web3/errors/error-text'
 
 const USER_REJECTED_PATTERN =
   /user rejected|action_rejected|request rejected|user denied|rejected the request|denied transaction signature/i

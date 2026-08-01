@@ -1,17 +1,18 @@
 import type { ComponentType } from 'react'
+
 import type { DappTab } from '~/shared/config/dapp-tabs'
-import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
+import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
 import { AssetsContent, AssetsWidget } from '~/views/dapp/assets'
 import { CommunityContent } from '~/views/dapp/community/community-content'
 import { CommunityWidget } from '~/views/dapp/community/community-widget'
+import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
+import { ExchangeContent, ExchangeWidget } from '~/views/dapp/exchange'
 import { GenesisContent } from '~/views/dapp/genesis/genesis-content'
 import { GenesisWidget } from '~/views/dapp/genesis/genesis-widget'
 import { ReleaseContent, ReleaseWidget } from '~/views/dapp/release'
 import { RewardsContent, RewardsWidget } from '~/views/dapp/rewards'
 import { StakingContent, StakingWidget } from '~/views/dapp/staking'
-import { ExchangeContent, ExchangeWidget } from '~/views/dapp/exchange'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
 
 type TabWidgetProps = {
   onSelectTab: (tab: DappTab) => void

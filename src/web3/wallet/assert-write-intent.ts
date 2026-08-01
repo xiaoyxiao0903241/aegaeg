@@ -1,5 +1,6 @@
-import type { Address } from 'viem'
 import { getAddress } from 'thirdweb/utils'
+import type { Address } from 'viem'
+
 import { WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 import { defaultChain } from '~/web3/thirdweb'
 

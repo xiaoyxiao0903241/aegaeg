@@ -1,9 +1,10 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
+
 import { TokenChip } from '~/app/shell/token-chip'
 import { useI18n } from '~/i18n/use-i18n'
+import { cn } from '~/shared/lib/utils'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
-import { cn } from '~/shared/lib/utils'
 
 type AmountToken = { icon?: string; symbol: string }
 

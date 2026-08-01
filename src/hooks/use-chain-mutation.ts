@@ -1,8 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
-import { useActiveWallet } from '~/web3/thirdweb-react'
+
 import { useI18n } from '~/i18n/use-i18n'
+import { WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
+import { useActiveWallet } from '~/web3/thirdweb-react'
+import { makeWriteSession, type WriteSession } from '~/web3/wallet/require-write-session'
 import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-receipt-lock'
 import {
   clearUnknownReceiptLock,
@@ -11,8 +14,6 @@ import {
   subscribeWritePathBusy,
   type WritePath,
 } from '~/web3/wallet/unknown-receipt-lock'
-import { makeWriteSession, type WriteSession } from '~/web3/wallet/require-write-session'
-import { WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 
 /** 已闩锁：静默；CTA 看 `isLocked`。 */
 class ChainMutationLockedError extends Error {

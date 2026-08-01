@@ -1,12 +1,13 @@
 import type { ButtonHTMLAttributes, ReactElement } from 'react'
 import { tv } from 'tailwind-variants'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+
 import { dappAssets } from '~/app/assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 
 type PromoLayout = 'desktop' | 'mobile'
 

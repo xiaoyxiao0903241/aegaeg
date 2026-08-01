@@ -4,17 +4,17 @@
 
 ## 命名
 
-| 名字 | 是 | 不是 |
-|------|----|------|
-| `home-reveal-loader.ts` / `bootHomeReveal()` | 动效 boot | 钱包 / thirdweb |
-| `data-home-motion-ready` | 动效可播放 | 钱包已连接 |
+| 名字                                         | 是         | 不是            |
+| -------------------------------------------- | ---------- | --------------- |
+| `home-reveal-loader.ts` / `bootHomeReveal()` | 动效 boot  | 钱包 / thirdweb |
+| `data-home-motion-ready`                     | 动效可播放 | 钱包已连接      |
 
 ## 双入口
 
-| HTML | JS | Providers |
-|------|-----|-----------|
+| HTML                  | JS                    | Providers                                |
+| --------------------- | --------------------- | ---------------------------------------- |
 | `{locale}/index.html` | `views/home/main.tsx` | `HomeProviders`（仅 Query，无 thirdweb） |
-| `{locale}/app.html` | `app/main.tsx` | `WebRootProviders` |
+| `{locale}/app.html`   | `app/main.tsx`        | `WebRootProviders`                       |
 
 `/index.html`、`/app.html` = locale redirect。Home CTA → `/{locale}/app.html`。
 
@@ -35,11 +35,11 @@ home/main.tsx → I18nProvider → HomeProviders → HomeApp
 
 ## 约束
 
-| 项 | 规则 |
-|----|------|
-| Home × web3 | 禁 `src/web3` / `thirdweb` / `viem`（depcruise `home-no-web3`） |
-| 链 | `supportedChains` 仅 BSC |
-| Bundle | `pnpm build` 后 `pnpm probe:bundle`：Home sync 污染标记或体积超限 → exit 1 |
+| 项          | 规则                                                                       |
+| ----------- | -------------------------------------------------------------------------- |
+| Home × web3 | 禁 `src/web3` / `thirdweb` / `viem`（depcruise `home-no-web3`）            |
+| 链          | `supportedChains` 仅 BSC                                                   |
+| Bundle      | `pnpm build` 后 `pnpm probe:bundle`：Home sync 污染标记或体积超限 → exit 1 |
 
 ## 验证
 

@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
+
+import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 
 type RewardsStatCardProps = {
   label: ReactNode

@@ -1,9 +1,9 @@
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
+import { Card } from '~/shared/ui/card'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
+import { Text } from '~/shared/ui/text'
 
 /** Hub product entry — Figma `asset/*` leaf (not DappModeCard chrome). */
 export function AssetsModeCard({

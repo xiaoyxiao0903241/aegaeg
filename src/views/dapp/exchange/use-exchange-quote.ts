@@ -1,5 +1,6 @@
 import { keepPreviousData, type QueryKey } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
+
 import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import {
   assertQuotedExchangeStillSubmittable,
@@ -7,16 +8,16 @@ import {
   liveQuotedOut,
 } from '~/core/exchange/live-quoted-out'
 import { formatTokenAmountDraft, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
-import { EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
-import { needsTokenApproval } from '~/web3/exchange/exchange-write'
-import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import type {
   QuotedSubmitCore,
   QuotedSubmitExecute,
 } from '~/views/dapp/exchange/quoted-submit-core'
 import { useExchangeWriteMutation } from '~/views/dapp/exchange/use-exchange-write-mutation'
+import { EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
+import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 
 export type { QuotedSubmitCore, QuotedSubmitExecute }
 

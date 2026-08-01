@@ -1,10 +1,11 @@
 import {
+  type Abi,
   BaseError,
   ContractFunctionRevertedError,
   decodeErrorResult,
   parseAbi,
-  type Abi,
 } from 'viem'
+
 import {
   AGX_CONTRIBUTION_SWAP_ERRORS,
   BOND_DEPOSITORY_ERRORS,

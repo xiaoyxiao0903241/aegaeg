@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import type { DappTab } from '~/shared/config/dapp-tabs'
 
 /** Keep in sync with `--motion-dapp-fade-out` / `--motion-dapp-fade-in` in theme.css. */

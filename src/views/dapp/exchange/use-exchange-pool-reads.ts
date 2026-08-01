@@ -1,12 +1,13 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { ExchangePoolReadContext } from '~/web3/exchange/exchange-read'
 import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
-import { useChainQuery } from '~/hooks/use-chain-query'
 
 /**
  * Shared V2 pair metadata + reserves.

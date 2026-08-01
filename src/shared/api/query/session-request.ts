@@ -1,8 +1,8 @@
-import { ApiError } from '~/shared/api/client'
 import {
   apiUserFacingError,
   type ApiUserFacingErrorMessages,
 } from '~/shared/api/api-user-facing-error'
+import { ApiError } from '~/shared/api/client'
 
 function isUnauthorizedError(error: unknown): boolean {
   return error instanceof ApiError && error.code === 401

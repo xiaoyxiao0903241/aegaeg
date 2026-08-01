@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { DappIcon } from '~/app/shell/dapp-icon'
+
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { Text } from '~/shared/ui/text'
 
 /** gAGX icon + amount/label row used on claim widgets. */

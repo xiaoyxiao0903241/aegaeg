@@ -1,8 +1,9 @@
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
-import { useI18n } from '~/i18n/use-i18n'
-import { useDappShell } from '~/app/use-dapp-shell'
-import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { toast } from 'sonner'
+
+import { useDappShell } from '~/app/use-dapp-shell'
+import { useI18n } from '~/i18n/use-i18n'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 
 /** Session state + i18n + unlock/claim toast orchestration → everything `TurbineExchangeWidget` renders. */
 export function useTurbineExchangeView(turbine: TurbineExchangeState) {

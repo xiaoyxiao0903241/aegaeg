@@ -1,35 +1,36 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
+import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondPeriod } from '~/core/staking/staking-period'
+import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
+import { type BondKind, submitBondZap } from '~/views/dapp/staking/bond/submit-bond-zap'
+import {
+  bindUnlockedAmountEditors,
+  evaluateStakingAmountWrite,
+} from '~/views/dapp/staking/staking-amount-write-ui'
+import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
 } from '~/web3/staking/staking-addresses'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { useChainQuery } from '~/hooks/use-chain-query'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { readBondMarketMeta, formatBondDiscountLabel } from '~/web3/staking/staking-read'
+import { formatBondDiscountLabel, readBondMarketMeta } from '~/web3/staking/staking-read'
 import {
   useBondHelperSlippageQuery,
   useBondZapAgxPreviewQuery,
   useBondZapPreflightQuery,
 } from '~/web3/staking/use-staking-queries'
-import { useMigrationUser } from '~/web3/migration/use-migration-queries'
-import { evaluateNeedReferral } from '~/core/referral/need-referral'
-import {
-  bindUnlockedAmountEditors,
-  evaluateStakingAmountWrite,
-} from '~/views/dapp/staking/staking-amount-write-ui'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import { submitBondZap, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
-import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals

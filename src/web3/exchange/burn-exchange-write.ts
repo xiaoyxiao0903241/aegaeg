@@ -1,4 +1,5 @@
 import type { Wallet } from 'thirdweb/wallets'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { AGX_CONTRIBUTION_SWAP_ERRORS, AGX_CONTRIBUTION_SWAP_METHODS } from '~/web3/abis'
 import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'

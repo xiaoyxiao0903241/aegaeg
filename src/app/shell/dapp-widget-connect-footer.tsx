@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { cn } from '~/shared/lib/utils'
+
 import { DappConnectPromoCard } from '~/app/shell/dapp-connect-promo-card'
+import { cn } from '~/shared/lib/utils'
 
 const dappWidgetConnectFooter = tv({
   slots: {

@@ -1,4 +1,4 @@
-import type { StakePeriod, BondPeriod } from '~/core/staking/staking-period'
+import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
 
 /**
  * Local-only yield estimate for Calc rail — zero chain I/O.

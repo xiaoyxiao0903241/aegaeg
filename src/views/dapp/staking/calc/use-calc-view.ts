@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useStakingViewStore } from '~/stores/staking-view-store'
+
 import {
   calcStakingEstimate,
   defaultAprForBondPeriod,
   defaultAprForStakePeriod,
 } from '~/core/staking/calc-staking-yield'
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
-import { useCalcEstimateStore, type CalcProduct } from '~/stores/calc-estimate-store'
+import { useI18n } from '~/i18n/use-i18n'
+import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { useStakingViewStore } from '~/stores/staking-view-store'
 
 const XMINE_APR = 0.1
 

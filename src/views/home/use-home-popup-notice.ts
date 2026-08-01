@@ -1,5 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+
+import { useI18n } from '~/i18n/use-i18n'
+import { getHomePopupNotices } from '~/shared/api/endpoints'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import type { HomePopupNotice } from '~/shared/api/types'
 import {
   normalizeHomePopupNotices,
   noticeDismissKey,
@@ -7,10 +12,6 @@ import {
   readDismissedPopupKeys,
   selectNextHomePopupNotice,
 } from '~/views/home/popup-notice'
-import { useI18n } from '~/i18n/use-i18n'
-import { getHomePopupNotices } from '~/shared/api/endpoints'
-import type { HomePopupNotice } from '~/shared/api/types'
-import { queryKeys } from '~/shared/api/query/query-keys'
 
 export function useHomePopupNotice(): {
   notice: HomePopupNotice | null

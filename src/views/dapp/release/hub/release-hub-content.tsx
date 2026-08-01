@@ -1,12 +1,12 @@
-import { useI18n } from '~/i18n/use-i18n'
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { Text } from '~/shared/ui/text'
+import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useI18n } from '~/i18n/use-i18n'
+import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
-import { DappCarousel } from '~/app/shell/dapp-carousel'
-import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 export function ReleaseHubContent() {
   const { messages: t } = useI18n()

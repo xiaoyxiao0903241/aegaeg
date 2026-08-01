@@ -1,12 +1,12 @@
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { useReleaseViewMotion } from '~/stores/release-view-store'
 import type { ReleaseView } from '~/shared/config/dapp-deep-links'
-import { ReleaseHubWidget } from '~/views/dapp/release/hub/release-hub-widget'
-import { ReleaseHubContent } from '~/views/dapp/release/hub/release-hub-content'
-import { ReleaseQueueWidget } from '~/views/dapp/release/queue/release-queue-widget'
-import { ReleaseQueueContent } from '~/views/dapp/release/queue/release-queue-content'
-import { ReleaseBufferWidget } from '~/views/dapp/release/buffer/release-buffer-widget'
+import { useReleaseViewMotion } from '~/stores/release-view-store'
 import { ReleaseBufferContent } from '~/views/dapp/release/buffer/release-buffer-content'
+import { ReleaseBufferWidget } from '~/views/dapp/release/buffer/release-buffer-widget'
+import { ReleaseHubContent } from '~/views/dapp/release/hub/release-hub-content'
+import { ReleaseHubWidget } from '~/views/dapp/release/hub/release-hub-widget'
+import { ReleaseQueueContent } from '~/views/dapp/release/queue/release-queue-content'
+import { ReleaseQueueWidget } from '~/views/dapp/release/queue/release-queue-widget'
 
 function ReleaseWidgetBody() {
   const view = useDappSubviewDisplayView<ReleaseView>()

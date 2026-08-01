@@ -1,15 +1,15 @@
-import { useDappShell } from '~/app/use-dapp-shell'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
 import { QuickLinks } from '~/app/shell/quick-links'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { communityQuickLinkItems } from '~/shared/config/community-links'
-import { useCommunityConnectedView } from '~/views/dapp/community/use-community-connected-view'
 import {
   CommunityReferralLinkCard,
   CommunityReferrerBindCard,
   CommunityReferrerBoundPanel,
 } from '~/views/dapp/community/community-widget-primitives'
+import { useCommunityConnectedView } from '~/views/dapp/community/use-community-connected-view'
 
 export function CommunityWidget() {
   const { walletReady } = useDappShell()

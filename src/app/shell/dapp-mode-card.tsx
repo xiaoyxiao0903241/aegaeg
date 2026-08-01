@@ -1,7 +1,7 @@
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 
 export function DappModeCard({
   body,

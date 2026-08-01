@@ -1,15 +1,22 @@
-import { useState } from 'react'
 import { keepPreviousData } from '@tanstack/react-query'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+import { useState } from 'react'
+
+import { dappAssets } from '~/app/assets'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
+import { useTurbineSummary } from '~/hooks/use-api-data'
+import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { formatGroupedNumber } from '~/shared/api/format-display'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { dappAssets } from '~/app/assets'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-rate'
+import {
+  submitTurbineClaim,
+  submitTurbineUnlock,
+} from '~/views/dapp/exchange/turbine/submit-turbine-exchange'
+import { useExchangeWriteMutation } from '~/views/dapp/exchange/use-exchange-write-mutation'
 import {
   readTurbineCooldownDuration,
   readTurbineQuota,
@@ -17,16 +24,10 @@ import {
   readTurbineUsd1Balances,
   readTurbineUsdQuote,
 } from '~/web3/exchange/turbine-exchange-read'
-import {
-  submitTurbineClaim,
-  submitTurbineUnlock,
-} from '~/views/dapp/exchange/turbine/submit-turbine-exchange'
-import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-rate'
-import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
-import { useChainQuery } from '~/hooks/use-chain-query'
-import { useTurbineSummary } from '~/hooks/use-api-data'
-import { useExchangeWriteMutation } from '~/views/dapp/exchange/use-exchange-write-mutation'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 export type TurbineSegment = 'unlock' | 'claim'
 

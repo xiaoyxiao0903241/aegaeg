@@ -1,12 +1,12 @@
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
-import { AssetsHubWidget } from '~/views/dapp/assets/hub/assets-hub-widget'
+import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import { AssetsHubContent } from '~/views/dapp/assets/hub/assets-hub-content'
-import { AssetsPositionWidget } from '~/views/dapp/assets/position/assets-position-widget'
+import { AssetsHubWidget } from '~/views/dapp/assets/hub/assets-hub-widget'
 import { AssetsPositionContent } from '~/views/dapp/assets/position/assets-position-content'
-import { AssetsXmineWidget } from '~/views/dapp/assets/xmine/assets-xmine-widget'
+import { AssetsPositionWidget } from '~/views/dapp/assets/position/assets-position-widget'
 import { AssetsXmineContent } from '~/views/dapp/assets/xmine/assets-xmine-content'
+import { AssetsXmineWidget } from '~/views/dapp/assets/xmine/assets-xmine-widget'
 
 function AssetsWidgetBody() {
   const view = useDappSubviewDisplayView<AssetsView>()

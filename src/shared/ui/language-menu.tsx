@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { type MouseEvent, type ReactNode, useEffect, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
+
 import { Text } from '~/shared/ui/text'
 
 const languageMenu = tv({

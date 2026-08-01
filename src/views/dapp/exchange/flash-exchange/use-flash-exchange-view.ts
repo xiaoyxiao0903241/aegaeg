@@ -1,11 +1,11 @@
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
-import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
-import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
-import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { useI18n } from '~/i18n/use-i18n'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
+import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 
 /** Session state + i18n + flip/present orchestration → everything `FlashExchangeWidget` renders. */
 export function useFlashExchangeView(flash: FlashExchangeState) {

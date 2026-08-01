@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+
 import { prefetchConnectWarm } from '~/shared/api/query/prefetch'
 import { chainReadClient } from '~/web3/chain-read-client'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'

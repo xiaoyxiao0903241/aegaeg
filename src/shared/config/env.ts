@@ -43,6 +43,15 @@ export function parseRequiredBoolean(key: string, raw: string | undefined): bool
   throw new Error(`Invalid ${key} boolean (expected true/false/1/0): ${trimmed}`)
 }
 
+/** Pure parse — unit-tested; runtime readers call this. */
+export function parseOptionalCsvUrls(raw: string | undefined): string[] {
+  if (typeof raw !== 'string' || !raw.trim()) return []
+  return raw
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean)
+}
+
 export function requireEnvString(key: keyof ImportMetaEnv): string {
   return parseRequiredString(String(key), readRaw(key))
 }
@@ -67,6 +76,8 @@ export const appEnv = {
   thirdwebClientId: requireEnvString('VITE_THIRDWEB_CLIENT_ID'),
   walletConnectProjectId: requireEnvString('VITE_WALLETCONNECT_PROJECT_ID'),
   bscRpcUrl: requireEnvString('VITE_BSC_RPC_URL'),
+  /** 可选；逗号分隔。缺省时读客户端仍挂公共 BSC 种子作 failover。 */
+  bscRpcFallbackUrls: parseOptionalCsvUrls(readRaw('VITE_BSC_RPC_FALLBACK_URLS')),
   apiBaseUrl: requireEnvString('VITE_API_BASE_URL'),
   /** Hostname only (no protocol) when runtime `location` is unreadable. */
   appHost: requireEnvString('VITE_APP_HOST'),

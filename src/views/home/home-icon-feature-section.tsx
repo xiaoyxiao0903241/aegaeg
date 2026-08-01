@@ -1,12 +1,13 @@
 import type { CSSProperties } from 'react'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+
 import type { HomeMessagesBundle } from '~/i18n/messages/home/types'
-import { engineIcons, protocolIcons } from '~/views/home/static-layout'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
-import { HomeSectionHead } from '~/views/home/home-section-head'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 import { HomeSection } from '~/views/home/home-section'
+import { HomeSectionHead } from '~/views/home/home-section-head'
+import { engineIcons, protocolIcons } from '~/views/home/static-layout'
 
 type IconCard = (
   | HomeMessagesBundle['sections']['protocol']['cards'][number]

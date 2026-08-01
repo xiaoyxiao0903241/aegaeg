@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+
 import { Text } from '~/shared/ui/text'
 
 const HTML_CONTENT_RE = /<[a-z][\s\S]*>/i

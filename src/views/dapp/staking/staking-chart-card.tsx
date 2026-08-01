@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+
 import { Card } from '~/shared/ui/card'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'

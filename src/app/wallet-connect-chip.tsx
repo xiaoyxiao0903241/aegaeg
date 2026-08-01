@@ -1,25 +1,26 @@
 import { useState } from 'react'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
-import { useI18n } from '~/i18n/use-i18n'
+
+import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
+import { WalletDetailsModal } from '~/app/shell/wallet-details-modal'
 import { useAuth } from '~/hooks/use-auth'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { useI18n } from '~/i18n/use-i18n'
 import {
   ACCOUNT_BANNED_SENTINEL,
-  LOGIN_ERROR,
-  isAccountBannedError,
   authLoginErrorMessage,
+  isAccountBannedError,
+  LOGIN_ERROR,
 } from '~/shared/api/account-banned'
 import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
-import { isUserRejectedWalletError, toWalletUserFacingMessage } from '~/web3/contract-error-message'
-import { useAuthStore } from '~/stores/auth-store'
 import { formatShortAddress } from '~/shared/api/format-display'
-import { Text } from '~/shared/ui/text'
 import { Button } from '~/shared/ui/button'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { WalletDetailsModal } from '~/app/shell/wallet-details-modal'
-import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
+import { Text } from '~/shared/ui/text'
+import { useAuthStore } from '~/stores/auth-store'
+import { isUserRejectedWalletError, toWalletUserFacingMessage } from '~/web3/contract-error-message'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const walletConnectChip = tv({
   slots: {

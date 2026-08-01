@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
+
 import { cn } from '~/shared/lib/utils'
 
 export const homeSectionVariants = tv({

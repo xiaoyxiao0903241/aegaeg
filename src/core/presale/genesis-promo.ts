@@ -1,7 +1,7 @@
+import type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
+import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
 import type { PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatPhaseDate } from '~/core/presale/presale-math'
-import { seasonOptionsFromPhases } from '~/core/presale/genesis-season-options'
-import type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 
 export type { GenesisPromoSnapshot, GenesisPromoStatus } from '~/core/presale/genesis-promo-types'
 

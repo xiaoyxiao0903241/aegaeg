@@ -1,16 +1,17 @@
 import { tv } from 'tailwind-variants'
+
 import { exchangeHubAssets } from '~/app/assets'
 import { formatBurnContributionRatioColon } from '~/core/exchange/burn-contribution-swap'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
-import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import type { ExchangeView } from '~/shared/config/dapp-deep-links'
+import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
-import { useChainQuery } from '~/hooks/use-chain-query'
 
 /**
  * Figma hub program grid (PC `4267:212`):

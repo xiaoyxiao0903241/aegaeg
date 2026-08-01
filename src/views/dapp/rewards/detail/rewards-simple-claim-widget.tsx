@@ -1,21 +1,21 @@
-import { useRewardsViewStore } from '~/stores/rewards-view-store'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { useI18n } from '~/i18n/use-i18n'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { Text } from '~/shared/ui/text'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
-import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 import {
-  useRewardsSimpleClaimView,
   type SimpleClaimView,
+  useRewardsSimpleClaimView,
 } from '~/views/dapp/rewards/detail/use-rewards-simple-claim-view'
+import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 
 export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
   const { messages: t } = useI18n()

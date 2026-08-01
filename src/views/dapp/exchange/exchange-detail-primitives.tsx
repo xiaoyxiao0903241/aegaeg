@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
+
 import { MetricCard } from '~/shared/ui/metric-card'
 
 const exchangeMetricCard = tv({

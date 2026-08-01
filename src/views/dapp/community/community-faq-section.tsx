@@ -1,5 +1,5 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappCollapsibleSection } from '~/app/shell/dapp-collapsible-section'
+import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/ui/faq-list'
 
 export function CommunityFaqSection() {

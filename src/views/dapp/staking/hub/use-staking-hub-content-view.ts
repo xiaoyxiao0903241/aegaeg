@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/hooks/use-auth'
-import { useStakeAddressCount } from '~/hooks/use-api-data'
+
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useStakeAddressCount } from '~/hooks/use-api-data'
+import { useAuth } from '~/hooks/use-auth'
+import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'

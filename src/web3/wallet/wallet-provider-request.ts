@@ -1,4 +1,5 @@
 import type { EIP1193Provider } from 'viem'
+
 import { normalizeWalletRpcError } from '~/web3/wallet/wallet-write-error'
 
 const DEFAULT_WALLET_REQUEST_TIMEOUT_MS = 90_000

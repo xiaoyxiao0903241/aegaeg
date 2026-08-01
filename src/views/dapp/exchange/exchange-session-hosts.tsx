@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
-import type { DappTab } from '~/shared/config/dapp-tabs'
+
 import { useDappShell } from '~/app/use-dapp-shell'
+import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
-import { viewsNeedingProvider } from '~/views/dapp/exchange/exchange-views-needing-provider'
-import { useMarketTradeWidget } from '~/views/dapp/exchange/market-trade/use-market-trade-widget'
-import { useFlashExchangeWidget } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-widget'
 import { useBurnExchangeWidget } from '~/views/dapp/exchange/burn/use-burn-exchange-widget'
+import { viewsNeedingProvider } from '~/views/dapp/exchange/exchange-views-needing-provider'
+import { useFlashExchangeWidget } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-widget'
+import { useMarketTradeWidget } from '~/views/dapp/exchange/market-trade/use-market-trade-widget'
 import { useTurbineExchangeWidget } from '~/views/dapp/exchange/turbine/use-turbine-exchange-widget'
 
 export type MarketTradeState = ReturnType<typeof useMarketTradeWidget>

@@ -1,4 +1,5 @@
 import { parseAbi } from 'viem'
+
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { PANCAKE_PAIR_V2_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'

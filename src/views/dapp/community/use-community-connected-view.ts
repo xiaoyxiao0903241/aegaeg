@@ -1,15 +1,16 @@
 import { toast } from 'sonner'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useReferral } from '~/views/dapp/community/use-referral'
-import { formatReferralLinkDisplay } from '~/views/dapp/community/community-display'
-import { referralSharePath } from '~/shared/config/referral'
-import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
-import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
-import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
-import { getErrorMessage } from '~/web3/errors/get-error-message'
+
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
+import { useI18n } from '~/i18n/use-i18n'
+import { apiUserFacingError } from '~/shared/api/api-user-facing-error'
 import { communityQuickLinkItems } from '~/shared/config/community-links'
+import { referralSharePath } from '~/shared/config/referral'
+import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
+import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
+import { formatReferralLinkDisplay } from '~/views/dapp/community/community-display'
+import { useReferral } from '~/views/dapp/community/use-referral'
+import { getErrorMessage } from '~/web3/errors/get-error-message'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 export function useCommunityConnectedView() {
   const { locale, messages: t } = useI18n()

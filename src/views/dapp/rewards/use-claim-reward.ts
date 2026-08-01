@@ -1,22 +1,23 @@
-import { WALLET_BLOCKED } from '~/web3/contract-error-message'
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useCallback } from 'react'
+
+import {
+  type ClaimRewardExecuteResult,
+  claimRewardOutcome,
+} from '~/core/rewards/claim-reward-outcome'
 import { useAuth } from '~/hooks/use-auth'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
-import type { ClaimConfirmResult } from '~/shared/api/types'
-import {
-  claimRewardOutcome,
-  type ClaimRewardExecuteResult,
-} from '~/core/rewards/claim-reward-outcome'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
+import type { ClaimConfirmResult } from '~/shared/api/types'
 import {
   claimCommunityFund,
   claimMarketFundReward,
   claimTeamReward,
 } from '~/web3/claim/claim-reward'
+import { WALLET_BLOCKED } from '~/web3/contract-error-message'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import type { WriteSession } from '~/web3/wallet/require-write-session'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type RewardClaimExecutor = (args: {
   wallet: WriteSession['wallet']

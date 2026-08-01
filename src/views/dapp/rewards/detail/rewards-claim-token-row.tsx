@@ -1,5 +1,5 @@
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { Text } from '~/shared/ui/text'
 
 /** Token pill + amount on claim surfaces (mixed release/restake + simple claimable). */

@@ -1,18 +1,18 @@
-import type { BondPeriod } from '~/core/staking/staking-period'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
+import type { BondPeriod } from '~/core/staking/staking-period'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
+import { readMigrationStatus } from '~/web3/migration/migration-read'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
 } from '~/web3/staking/staking-addresses'
+import { readBondZapPreflight } from '~/web3/staking/staking-read'
 import {
   approveUsd1ForBondHelperIfNeeded,
   zapIntoBurnBond,
   zapIntoLiquidityBond,
 } from '~/web3/staking/staking-write'
-import { readBondZapPreflight } from '~/web3/staking/staking-read'
-import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 

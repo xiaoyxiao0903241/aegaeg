@@ -1,10 +1,10 @@
 import { withLocalePrefix } from '~/i18n/locale'
+import { useI18n } from '~/i18n/use-i18n'
+import { homeAssets } from '~/shared/assets/home'
+import { getNotionLinks } from '~/shared/config/notion-links'
 import { Button } from '~/shared/ui/button'
 import { HeroRaysBackground } from '~/shared/ui/hero-rays-background'
 import { Text } from '~/shared/ui/text'
-import { getNotionLinks } from '~/shared/config/notion-links'
-import { homeAssets } from '~/shared/assets/home'
-import { useI18n } from '~/i18n/use-i18n'
 
 function HeroPrimaryAction({ enterProtocol }: { enterProtocol: string }) {
   const { locale } = useI18n()

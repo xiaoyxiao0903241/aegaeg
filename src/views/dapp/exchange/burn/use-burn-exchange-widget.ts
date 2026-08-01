@@ -1,11 +1,18 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+
+import {
+  burnContributionSwapBlocksSubmit,
+  evaluateBurnContributionSwap,
+  formatBurnContributionRateLabel,
+} from '~/core/exchange/burn-contribution-swap'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { submitBurnExchange } from '~/views/dapp/exchange/burn/submit-burn-exchange'
 import { useExchangeQuote } from '~/views/dapp/exchange/use-exchange-quote'
 import {
   readBurnContributionQuote,
@@ -13,15 +20,9 @@ import {
   readBurnExchangeBalances,
   readBurnUserStats,
 } from '~/web3/exchange/burn-exchange-read'
-import { submitBurnExchange } from '~/views/dapp/exchange/burn/submit-burn-exchange'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import {
-  burnContributionSwapBlocksSubmit,
-  formatBurnContributionRateLabel,
-  evaluateBurnContributionSwap,
-} from '~/core/exchange/burn-contribution-swap'
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const BURN_PAIR = {
   sell: EXCHANGE_CONFIG.tokens.agx,

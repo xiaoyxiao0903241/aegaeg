@@ -1,4 +1,9 @@
-import { useQuery, type QueryKey } from '@tanstack/react-query'
+import { type QueryKey, useQuery } from '@tanstack/react-query'
+
+import { normalizeAuthAddress } from '~/core/auth/types'
+import { useAuth } from '~/hooks/use-auth'
+import { useI18n } from '~/i18n/use-i18n'
+import type { ApiUserFacingErrorMessages } from '~/shared/api/api-user-facing-error'
 import {
   getAgxContributionBurnLogs,
   getAgxContributionConsumeLogs,
@@ -51,6 +56,13 @@ import {
   getX0MiningPositions,
   searchPerformance,
 } from '~/shared/api/endpoints'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import {
+  canRunAuthenticatedQuery,
+  requestWithSession,
+  toQueryErrorMessage,
+} from '~/shared/api/query/session-request'
 import type {
   BondFlowLogsParams,
   BufferPoolLogsParams,
@@ -62,18 +74,7 @@ import type {
   TurbineLogsParams,
   X0MiningLogsParams,
 } from '~/shared/api/types'
-import {
-  requestWithSession,
-  toQueryErrorMessage,
-  canRunAuthenticatedQuery,
-} from '~/shared/api/query/session-request'
-import type { ApiUserFacingErrorMessages } from '~/shared/api/api-user-facing-error'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useAuth } from '~/hooks/use-auth'
-import { useI18n } from '~/i18n/use-i18n'
 import { useAuthStore } from '~/stores/auth-store'
-import { normalizeAuthAddress } from '~/core/auth/types'
 
 function useAuthenticatedQuery<T>(
   queryKey: QueryKey,

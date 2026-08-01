@@ -1,8 +1,9 @@
-import { useMemo, useRef, useState, type ReactNode } from 'react'
-import { localeLabels, type Locale } from '~/i18n/locales'
-import { getInitialLocale, persistLocale, withLocalePrefix } from '~/i18n/locale'
-import { getMessagesSync, loadMessages, type Messages } from '~/i18n/messages'
+import { type ReactNode, useMemo, useRef, useState } from 'react'
+
 import { I18nContext, type I18nContextValue } from '~/i18n/context'
+import { getInitialLocale, persistLocale, withLocalePrefix } from '~/i18n/locale'
+import { type Locale, localeLabels } from '~/i18n/locales'
+import { getMessagesSync, loadMessages, type Messages } from '~/i18n/messages'
 
 function createInitialI18nState(): { locale: Locale; messages: Messages } {
   const locale = getInitialLocale()

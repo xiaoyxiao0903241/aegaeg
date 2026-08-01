@@ -1,11 +1,16 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  useAssetsHoldingsDistribution,
+  useAssetsHoldingsSummary,
+  useAssetsRewardSummary,
+} from '~/hooks/use-api-data'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+import type { AssetsView } from '~/shared/config/dapp-deep-links'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   readBurnBondPositions,
   readContributionSnapshot,
@@ -13,14 +18,9 @@ import {
   readStakePositions,
   readXminePosition,
 } from '~/web3/assets/assets-read'
+import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { readReleaseBufferSnapshot } from '~/web3/release/release-read'
-import type { AssetsView } from '~/shared/config/dapp-deep-links'
-import { useChainQuery } from '~/hooks/use-chain-query'
-import {
-  useAssetsHoldingsDistribution,
-  useAssetsHoldingsSummary,
-  useAssetsRewardSummary,
-} from '~/hooks/use-api-data'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals

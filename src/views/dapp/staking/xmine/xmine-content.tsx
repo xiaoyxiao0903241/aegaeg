@@ -1,7 +1,7 @@
-import { useI18n } from '~/i18n/use-i18n'
-import { useDappShell } from '~/app/use-dapp-shell'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { useX0MiningPositions } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import { mapX0MiningPositionToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
 

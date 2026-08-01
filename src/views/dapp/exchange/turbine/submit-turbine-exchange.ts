@@ -1,10 +1,11 @@
-import { EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import type { QueryObserverResult } from '@tanstack/react-query'
+
 import {
   evaluateTurbineClaimLive,
   evaluateTurbineUnlockLive,
 } from '~/core/exchange/turbine-unlock-live'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
+import { EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import {
   readTurbineIsVested,
   readTurbineQuota,

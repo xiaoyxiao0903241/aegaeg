@@ -1,13 +1,14 @@
 import {
-  useQuery,
   type QueryKey,
+  useQuery,
   type UseQueryOptions,
   type UseQueryResult,
 } from '@tanstack/react-query'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
-import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
+
 import { chainQueryEnabled, type ChainQueryScope } from '~/core/wallet/chain-query-enabled'
+import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
+import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 export type ChainQueryFreshness = keyof typeof QUERY_STALE_TIME
 

@@ -1,6 +1,7 @@
 import { tv } from 'tailwind-variants'
-import { cn } from '~/shared/lib/utils'
+
 import { dappTableCell } from '~/app/shell/dapp-table-card'
+import { cn } from '~/shared/lib/utils'
 
 /** Mobile community stat shell — shared by live cards (≥2 call sites → shell). */
 export const communityStatCardMobileShell = tv({

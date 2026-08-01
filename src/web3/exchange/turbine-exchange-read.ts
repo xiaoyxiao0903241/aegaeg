@@ -1,8 +1,10 @@
-import { parseAbi } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ERC20_METHODS, TURBINE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
+import { readAggregate3 } from '~/web3/multicall3-read'
 
 const turbineReadAbi = parseAbi([
   TURBINE_METHODS.turbineBalances,
@@ -62,9 +64,10 @@ export async function readTurbineSilences(
   client: ChainReadClient = bscReadClient,
 ): Promise<{ rows: TurbineSilenceRow[]; cooldownDuration: bigint; claimableCount: number }> {
   const userAddress = user as `0x${string}`
+  const turbine = BSC_CONTRACTS.turbine
   const [size, cooldownDuration] = await Promise.all([
     client.readContract({
-      address: BSC_CONTRACTS.turbine,
+      address: turbine,
       abi: turbineReadAbi,
       functionName: 'silencesSize',
       args: [userAddress],
@@ -73,24 +76,52 @@ export async function readTurbineSilences(
   ])
 
   const count = Number(size)
+  if (!Number.isFinite(count) || count <= 0) {
+    return { rows: [], cooldownDuration, claimableCount: 0 }
+  }
+
+  const calls = Array.from({ length: count }, (_, index) => {
+    const idx = BigInt(index)
+    return [
+      {
+        target: turbine,
+        callData: encodeFunctionData({
+          abi: turbineReadAbi,
+          functionName: 'silences',
+          args: [userAddress, idx],
+        }),
+      },
+      {
+        target: turbine,
+        callData: encodeFunctionData({
+          abi: turbineReadAbi,
+          functionName: 'isVested',
+          args: [userAddress, idx],
+        }),
+      },
+    ] as const
+  }).flat()
+
+  const results = await readAggregate3(client, calls)
   const rows: TurbineSilenceRow[] = []
   let claimableCount = 0
 
   for (let index = 0; index < count; index += 1) {
-    const [silence, vested] = await Promise.all([
-      client.readContract({
-        address: BSC_CONTRACTS.turbine,
-        abi: turbineReadAbi,
-        functionName: 'silences',
-        args: [userAddress, BigInt(index)],
-      }),
-      client.readContract({
-        address: BSC_CONTRACTS.turbine,
-        abi: turbineReadAbi,
-        functionName: 'isVested',
-        args: [userAddress, BigInt(index)],
-      }),
-    ])
+    const silenceResult = results[index * 2]
+    const vestedResult = results[index * 2 + 1]
+    if (!silenceResult?.success || !vestedResult?.success) {
+      throw new Error(`TURBINE_SILENCES_MULTICALL_FAILED:${index}`)
+    }
+    const silence = decodeFunctionResult({
+      abi: turbineReadAbi,
+      functionName: 'silences',
+      data: silenceResult.returnData,
+    })
+    const vested = decodeFunctionResult({
+      abi: turbineReadAbi,
+      functionName: 'isVested',
+      data: vestedResult.returnData,
+    })
     const [silenceBalance, startTime] = silence
     if (vested) claimableCount += 1
     rows.push({

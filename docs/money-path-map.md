@@ -93,6 +93,7 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 | Live evaluate completeness  | `live-evaluate-completeness.test.mjs` · `migration-root-reads.test.mjs`                                                                           |
 | Decision freshness          | `decision-freshness.test.mjs`                                                                                                                     |
 | Rail claimable probes       | `rail-claimable-probes.test.mjs`                                                                                                                  |
+| RPC read budget / multicall | `rpc-read-budget.test.mjs`                                                                                                                        |
 | Quote / unknown 门闸        | `react-quality-checks.test.mjs`                                                                                                                   |
 | Trade AGX 卖税              | `agx-sell-tax.test.mjs` · `fetch-exchange-quote.test.mjs` · `swap-router-abi.test.mjs`                                                            |
 | Genesis evaluate            | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApprove`）                                                                                   |
@@ -125,6 +126,8 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 8. **展示 vs 决策**：`keepPreviousData` 仅可画 UI；**balance / allowance / quota / claimable / write CTA / canSubmit** 禁用 placeholder。决策用 `isDecisionFresh` / `decisionBigint`（`core/query/decision-freshness.ts`）；报价轴已有 `liveQuotedOut`。
 9. **轨红点 probe ≠ 全表 snapshot**：Turbine `readTurbineHasClaimable` 只 `silencesSize`+`isVested` 短电路；Release `readReleaseHasClaimable` 用 queue 汇总 + vault `claimable` 短电路。
 10. **Assets 列表读预算（书面）**：`readStakePositions` / locked `getStakesCount`×`getStake` 为 O(仓位数)，无分页；仓位膨胀前保持现状，分页另票（禁在红点路径复用全表）。
+11. **列表读走 Multicall3**：Turbine silences 全表、Release buffer `getRelease`、Presale phases 用 `readAggregate3`（单 RPC）；试点测见 `rpc-read-budget.test.mjs`。
+12. **读 RPC failover**：`bscReadClient` 用 viem `fallback`（主 `VITE_BSC_RPC_URL` → 可选 `VITE_BSC_RPC_FALLBACK_URLS` → 公共种子）。
 
 ## Unknown 解锁通道
 

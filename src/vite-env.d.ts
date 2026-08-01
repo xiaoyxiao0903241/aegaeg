@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   readonly VITE_THIRDWEB_CLIENT_ID?: string
   readonly VITE_WALLETCONNECT_PROJECT_ID?: string
   readonly VITE_BSC_RPC_URL?: string
+  readonly VITE_BSC_RPC_FALLBACK_URLS?: string
   readonly VITE_API_BASE_URL?: string
   readonly VITE_APP_HOST?: string
   readonly VITE_API_DERIVE_FROM_DOMAIN?: string

@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
-import { cn } from '~/shared/lib/utils'
-import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
+
 import { DappSubviewDisplayViewContext } from '~/app/shell/dapp-subview-display-context'
 import { DappSubviewTransitionLayers } from '~/app/shell/dapp-subview-transition-layers'
+import { cn } from '~/shared/lib/utils'
+import { type DappSubviewMotion } from '~/stores/create-dapp-subview-store'
 
 export { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-display-context'
 

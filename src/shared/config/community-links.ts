@@ -1,5 +1,5 @@
-import { notionLink } from '~/shared/config/notion-links'
 import type { Locale } from '~/i18n/locales'
+import { notionLink } from '~/shared/config/notion-links'
 
 export const COMMUNITY_SOCIAL_LINKS = {
   youtube: 'https://www.youtube.com/@AegisxDAO',

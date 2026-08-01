@@ -1,12 +1,12 @@
-import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
+import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { FaqList } from '~/shared/ui/faq-list'
-import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsGrantContentView } from '~/views/dapp/rewards/detail/use-rewards-grant-content-view'
+import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
 export function RewardsGrantContent() {
   const {

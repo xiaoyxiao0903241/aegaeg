@@ -1,15 +1,15 @@
-import { useRewardsViewStore } from '~/stores/rewards-view-store'
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { ProgressMeter } from '~/app/shell/progress-meter'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
-import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
+import { ProgressMeter } from '~/app/shell/progress-meter'
+import { useI18n } from '~/i18n/use-i18n'
+import { Card } from '~/shared/ui/card'
+import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
+import { Text } from '~/shared/ui/text'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useRewardsGenesisView } from '~/views/dapp/rewards/detail/use-rewards-genesis-view'
+import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 
 export function RewardsGenesisClaimWidget() {
   const { messages: t } = useI18n()

@@ -1,22 +1,22 @@
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { dappAssets, exchangeHubAssets } from '~/app/assets'
-import { useI18n } from '~/i18n/use-i18n'
-import { openReleaseView } from '~/shared/config/dapp-open-views'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
+import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { openReleaseView } from '~/shared/config/dapp-open-views'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { Card } from '~/shared/ui/card'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Text } from '~/shared/ui/text'
 import { WidgetHeader } from '~/shared/ui/widget-header'
-import { Card } from '~/shared/ui/card'
-import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { formatReleasePct } from '~/views/dapp/release/release-display'
 import {
   useReleaseBufferSnapshot,
   useReleaseQueueSnapshot,
 } from '~/views/dapp/release/use-release-reads'
-import { formatReleasePct } from '~/views/dapp/release/release-display'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 

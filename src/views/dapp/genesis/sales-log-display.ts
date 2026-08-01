@@ -1,16 +1,16 @@
-import type { SalesLogItem } from '~/shared/api/types'
 import {
   estimateAgxFromUsd1,
   phaseDiscountBps,
   type PresalePhaseOnChain,
 } from '~/core/presale/presale-math'
 import {
-  formatGroupedNumber,
-  TABLE_EMPTY,
   formatBlockTime,
   formatDiscountBps,
+  formatGroupedNumber,
   formatShortAddress,
+  TABLE_EMPTY,
 } from '~/shared/api/format-display'
+import type { SalesLogItem } from '~/shared/api/types'
 
 export type SalesLogRowFormatOptions = {
   agxPriceUsd?: number

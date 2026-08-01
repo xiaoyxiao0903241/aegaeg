@@ -1,5 +1,5 @@
-import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { BPS_DENOM } from '~/core/exchange/bps'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 
 /** AgxContributionSwap submit checks from handbook `getConfig` (no UI invented). */
 export type BurnContributionSwapConfig = {

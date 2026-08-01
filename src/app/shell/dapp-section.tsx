@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
-import { Text } from '~/shared/ui/text'
+
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 /**
  * Detail section block — title uses Text `section` (same as DappContentHeading).

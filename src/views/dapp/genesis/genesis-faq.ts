@@ -1,6 +1,6 @@
-import { formatGroupedNumber } from '~/shared/api/format-display'
-import { USD1_DECIMALS, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { type PresalePhaseOnChain, USD1_DECIMALS } from '~/core/presale/presale-math'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 
 export interface GenesisFaqTemplateValues extends Record<string, string> {
   phaseCount: string

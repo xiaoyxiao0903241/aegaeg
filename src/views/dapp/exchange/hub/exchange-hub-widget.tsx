@@ -1,9 +1,9 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { exchangeHubAssets } from '~/app/assets'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { DappModeCard } from '~/app/shell/dapp-mode-card'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { useI18n } from '~/i18n/use-i18n'
+import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 
 export function ExchangeHubWidget() {
@@ -13,7 +13,7 @@ export function ExchangeHubWidget() {
     <>
       <WidgetHeader
         action={<DappPanelToggle />}
-        className="mb-4 [&_h1]:text-[1.25rem] [&_h1]:leading-normal [&_h1]:tracking-normal"
+        className="mb-4 [&_h1]:text-xl/normal [&_h1]:tracking-normal"
         subtitle={t.exchange.intro}
         title={t.exchange.title}
       />

@@ -1,4 +1,5 @@
 import { tv } from 'tailwind-variants'
+
 import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 
 const CHEVRON_MASK = {

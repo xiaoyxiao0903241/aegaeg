@@ -1,5 +1,5 @@
-import { Chip } from '~/shared/ui/chip'
 import { cn } from '~/shared/lib/utils'
+import { Chip } from '~/shared/ui/chip'
 
 export function DappPillTabs({
   activeTone = 'primary',

@@ -1,20 +1,20 @@
-import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { useI18n } from '~/i18n/use-i18n'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { useI18n } from '~/i18n/use-i18n'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
-import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
-import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
-import { AssetsPositionStakeRow } from '~/views/dapp/assets/position/assets-position-stake-row'
-import { AssetsPositionBondRow } from '~/views/dapp/assets/position/assets-position-bond-row'
+import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
+import { AssetsPositionBondRow } from '~/views/dapp/assets/position/assets-position-bond-row'
+import { AssetsPositionStakeRow } from '~/views/dapp/assets/position/assets-position-stake-row'
 import {
-  useAssetsPositionWidget,
   type AssetsProduct,
+  useAssetsPositionWidget,
 } from '~/views/dapp/assets/position/use-assets-position-widget'
+import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 
 export type { AssetsProduct }
 
@@ -92,7 +92,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             </Text>
             <div className="flex gap-2">
               <Button
-                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
+                className="size-auto min-h-0 px-3 py-1 text-xs"
                 disabled={w.safePage <= 0}
                 onClick={() => w.setPage((value) => Math.max(0, value - 1))}
                 shape="pill"
@@ -103,7 +103,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
                 {t.common.paginationPrev}
               </Button>
               <Button
-                className="h-auto min-h-0 w-auto px-3 py-1 text-xs"
+                className="size-auto min-h-0 px-3 py-1 text-xs"
                 disabled={w.safePage >= w.pageCount - 1}
                 onClick={() => w.setPage((value) => Math.min(w.pageCount - 1, value + 1))}
                 shape="pill"

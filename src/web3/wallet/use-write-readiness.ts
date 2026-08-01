@@ -1,5 +1,5 @@
-import { useActiveAccount, useActiveWalletChain } from '~/web3/thirdweb-react'
 import { defaultChain } from '~/web3/thirdweb'
+import { useActiveAccount, useActiveWalletChain } from '~/web3/thirdweb-react'
 import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**

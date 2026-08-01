@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { Text } from '~/shared/ui/text'
+
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 export const widgetHeader = tv({
   slots: {

@@ -1,14 +1,5 @@
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
 import {
-  ASSETS_BLOCKED,
-  BOND_ZAP_BLOCKED,
-  BURN_BLOCKED,
-  RELEASE_BLOCKED,
-  REWARDS_BLOCKED,
-  STAKING_BLOCKED,
-  XMINE_BLOCKED,
-} from '~/web3/errors/write-block-errors'
-import {
   type ErrorText,
   hasSelector,
   nameOrSelector,
@@ -25,6 +16,15 @@ import {
   WALLET_BLOCKED,
   WALLET_WRITE_ERROR,
 } from '~/web3/errors/sentinels'
+import {
+  ASSETS_BLOCKED,
+  BOND_ZAP_BLOCKED,
+  BURN_BLOCKED,
+  RELEASE_BLOCKED,
+  REWARDS_BLOCKED,
+  STAKING_BLOCKED,
+  XMINE_BLOCKED,
+} from '~/web3/errors/write-block-errors'
 
 type MessageFn = (t: AppMessagesBundle) => string
 

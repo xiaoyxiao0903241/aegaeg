@@ -1,13 +1,14 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import type { StepType, TourProps } from '@reactour/tour'
-import { useI18n } from '~/i18n/use-i18n'
+import { type ComponentType, lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+
 import { readOnboardingPersistence, writeOnboardingDone } from '~/app/shell/onboarding-persistence'
 import {
   ONBOARDING_STEP_IDS,
   prepareOnboardingStep,
   tourSelector,
 } from '~/app/shell/onboarding-steps'
-import { OnboardingTourTooltip, type OnboardingChromeCopy } from '~/app/shell/onboarding-tooltip'
+import { type OnboardingChromeCopy, OnboardingTourTooltip } from '~/app/shell/onboarding-tooltip'
+import { useI18n } from '~/i18n/use-i18n'
 
 type TourComponent = ComponentType<TourProps>
 
@@ -87,7 +88,7 @@ export function OnboardingGuide({
             onSkip={() => finish(true)}
           />
         )}
-        className="!bg-transparent !p-0 !shadow-none"
+        className="bg-transparent! p-0! shadow-none!"
         currentStep={currentStep}
         disableInteraction
         disableWhenSelectorFalsy

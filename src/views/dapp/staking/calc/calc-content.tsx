@@ -1,17 +1,17 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import {
   calcStakingEstimate,
   defaultAprForBondPeriod,
   defaultAprForStakePeriod,
 } from '~/core/staking/calc-staking-yield'
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
-import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
+import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
+import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 
 const PLACEHOLDER = '0.00'
 const XMINE_APR = 0.1

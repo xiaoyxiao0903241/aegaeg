@@ -1,26 +1,27 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { bscscanAddress } from '~/shared/config/explorer'
+import type { ReactNode } from 'react'
+
 import { flashExchangeAssets, turbineExchangeAssets } from '~/app/assets'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { useTurbineExchangeView } from '~/views/dapp/exchange/turbine/use-turbine-exchange-view'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
-import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
-import { AmountBox } from '~/shared/ui/amount-box'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
+import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { TokenChip } from '~/app/shell/token-chip'
-import { Segment } from '~/shared/ui/segment'
-import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
-import { Text } from '~/shared/ui/text'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { bscscanAddress } from '~/shared/config/explorer'
 import { cn } from '~/shared/lib/utils'
-import type { ReactNode } from 'react'
+import { AmountBox } from '~/shared/ui/amount-box'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
+import { Segment } from '~/shared/ui/segment'
+import { Text } from '~/shared/ui/text'
+import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
+import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
+import { useTurbineExchangeView } from '~/views/dapp/exchange/turbine/use-turbine-exchange-view'
 
 function TurbineEqBuyTokenCell({
   label,
@@ -213,7 +214,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 <div
                   key={`${row.index}-${row.startTime.toString()}`}
                   className={cn(
-                    'flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-3',
+                    'flex items-center justify-between gap-3 rounded-lg border border-border p-3',
                   )}
                 >
                   <div className="min-w-0">

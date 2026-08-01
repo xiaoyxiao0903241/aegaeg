@@ -1,11 +1,12 @@
 import { toast } from 'sonner'
-import { useI18n } from '~/i18n/use-i18n'
-import { useDappShell } from '~/app/use-dapp-shell'
+
 import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { useStakingViewStore } from '~/stores/staking-view-store'
-import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
-import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
+import { useI18n } from '~/i18n/use-i18n'
+import { useStakingViewStore } from '~/stores/staking-view-store'
+import { STAKING_BLOCKED } from '~/views/dapp/staking/stake/submit-stake'
+import { useStakeWidget } from '~/views/dapp/staking/stake/use-stake-widget'
 import { readErrorText } from '~/web3/errors/error-text'
 
 export function useStakeView() {

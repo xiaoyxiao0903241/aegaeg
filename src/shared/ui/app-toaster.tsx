@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Toaster } from 'sonner'
+
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 
 /** `--width` caps toast max width; short copy stays content-fit capsule, long copy wraps. */

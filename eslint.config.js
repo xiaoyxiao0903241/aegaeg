@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
@@ -56,6 +57,7 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
       ...reactHooks.configs['recommended-latest'].rules,
@@ -68,6 +70,13 @@ export default tseslint.config(
        * Fast Refresh purity is not a gate — off globally.
        */
       'react-refresh/only-export-components': 'off',
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [['^\\u0000'], ['^node:'], ['^@?\\w'], ['^~/', '^@/'], ['^\\.']],
+        },
+      ],
+      'simple-import-sort/exports': 'error',
     },
   },
   /*

@@ -1,11 +1,12 @@
 import { createThirdwebClient, defineChain } from 'thirdweb'
-import { createWallet } from 'thirdweb/wallets'
 import { bsc as bscBase } from 'thirdweb/chains'
 import type { WalletId } from 'thirdweb/wallets'
-import { lightTheme } from '~/web3/thirdweb-react'
+import { createWallet } from 'thirdweb/wallets'
+
 import { appEnv } from '~/shared/config/env'
 import { getRuntimeOrigin } from '~/shared/lib/runtime-host'
 import { thirdwebConnectHex } from '~/shared/styles/theme'
+import { lightTheme } from '~/web3/thirdweb-react'
 
 /** thirdweb Connect Modal 主题 — 对齐 AEGIS 珊瑚色 + 白底卡片 */
 const aegisConnectTheme = lightTheme({

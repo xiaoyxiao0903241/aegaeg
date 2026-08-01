@@ -1,28 +1,29 @@
-import { useEffect, useState } from 'react'
 import { keepPreviousData } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
 import {
-  RELEASE_DURATION_DAYS,
-  RESTAKE_DURATION_DAYS,
-  matchClaimPlanIndices,
   claimSplitFromReleasePct,
+  matchClaimPlanIndices,
   planLabel,
+  RELEASE_DURATION_DAYS,
   type ReleaseDurationDays,
+  RESTAKE_DURATION_DAYS,
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
-import { queryKeys } from '~/shared/api/query/query-keys'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { submitMixedClaim, type MixedClaimTarget } from '~/views/dapp/assets/submit-assets'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { useI18n } from '~/i18n/use-i18n'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { type MixedClaimTarget, submitMixedClaim } from '~/views/dapp/assets/submit-assets'
+import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 

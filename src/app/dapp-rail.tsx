@@ -1,18 +1,19 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { tv } from 'tailwind-variants'
-import { cn } from '~/shared/lib/utils'
-import type { DappTab } from '~/shared/config/dapp-tabs'
+
 import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
+import { useDappShell } from '~/app/use-dapp-shell'
+import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
+import { useGenesisPromo } from '~/hooks/use-genesis-promo'
+import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
+import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
+import { prefetchTabQueries } from '~/shared/api/query/prefetch'
+import type { DappTab } from '~/shared/config/dapp-tabs'
+import { cn } from '~/shared/lib/utils'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { Text } from '~/shared/ui/text'
-import { useGenesisPromo } from '~/hooks/use-genesis-promo'
-import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
-import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
-import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { prefetchTabQueries } from '~/shared/api/query/prefetch'
 
 type RailIndicator = {
   height: number

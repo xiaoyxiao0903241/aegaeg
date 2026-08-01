@@ -1,9 +1,10 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { Text } from '~/shared/ui/text'
+import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
 import { AegisResponsiveDialog, AegisSheetHandle } from '~/shared/ui/aegis-responsive-dialog'
+import { Text } from '~/shared/ui/text'
 
 /** H5 redeem confirmation — Figma `4824:412`; PRV narrative (not instant wallet credit). */
 export function AssetsRedeemConfirm({

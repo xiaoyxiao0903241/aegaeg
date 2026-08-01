@@ -1,16 +1,17 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useSalesLogs } from '~/hooks/use-api-data'
-import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+
+import { useDappShell } from '~/app/use-dapp-shell'
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
-import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
+import { useSalesLogs } from '~/hooks/use-api-data'
+import { useAuth } from '~/hooks/use-auth'
+import { useI18n } from '~/i18n/use-i18n'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { bscscanTx } from '~/shared/config/explorer'
 import { dappTableViewState, tablePageQuery } from '~/shared/lib/table-pagination'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { useAuth } from '~/hooks/use-auth'
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { Text } from '~/shared/ui/text'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
+import { mapSalesLogToDesktopRow } from '~/views/dapp/genesis/sales-log-display'
 
 export function useGenesisContributionsView(genesis: GenesisWidgetState) {
   const { messages: t } = useI18n()

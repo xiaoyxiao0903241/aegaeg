@@ -1,22 +1,23 @@
 import { type ReactNode } from 'react'
-import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
-import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
+
+import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappSection } from '~/app/shell/dapp-section'
-import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { communityInviteColWidths } from '~/app/shell/dapp-table-columns'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
-import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
-import { CommunityFlowSection } from '~/views/dapp/community/community-flow-section'
+import { Text } from '~/shared/ui/text'
 import {
   CommunityStatCard,
   CommunityStatGrid,
 } from '~/views/dapp/community/community-content-primitives'
-import { Text } from '~/shared/ui/text'
+import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
+import { CommunityFaqSection } from '~/views/dapp/community/community-faq-section'
+import { CommunityFlowSection } from '~/views/dapp/community/community-flow-section'
 import { useCommunityContentView } from '~/views/dapp/community/use-community-content-view'
 
 type CommunityStat = {

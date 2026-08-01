@@ -2,8 +2,8 @@
 export {
   AutoConnect,
   ConnectEmbed,
-  ThirdwebProvider,
   lightTheme,
+  ThirdwebProvider,
   useActiveAccount,
   useActiveWallet,
   useActiveWalletChain,

@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+
 import { cn } from '~/shared/lib/utils'
+import { Card } from '~/shared/ui/card'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
+import { Text } from '~/shared/ui/text'
 
 export function DappMetaPanel({
   className,

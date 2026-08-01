@@ -1,13 +1,14 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import { useState } from 'react'
-import { dialogChrome } from '~/shared/ui/dialog'
-import { Text } from '~/shared/ui/text'
-import { homeAssets } from '~/shared/assets/home'
-import { PopupNoticeContent } from '~/views/home/popup-notice-content'
+
 import { useI18n } from '~/i18n/use-i18n'
 import type { HomePopupNotice } from '~/shared/api/types'
+import { homeAssets } from '~/shared/assets/home'
 import { cn } from '~/shared/lib/utils'
+import { dialogChrome } from '~/shared/ui/dialog'
+import { Text } from '~/shared/ui/text'
+import { PopupNoticeContent } from '~/views/home/popup-notice-content'
 
 export function HomePopupNoticeModal({
   notice,

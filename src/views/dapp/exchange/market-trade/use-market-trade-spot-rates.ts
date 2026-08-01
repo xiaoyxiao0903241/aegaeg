@@ -1,13 +1,14 @@
 import { keepPreviousData } from '@tanstack/react-query'
+
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
-  formatExchangeRateApprox,
   emptySpotRateDash,
+  formatExchangeRateApprox,
 } from '~/views/dapp/exchange/exchange-format-rate'
 import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { fetchExchangeQuote, type ExchangePoolReadContext } from '~/web3/exchange/exchange-read'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { type ExchangePoolReadContext, fetchExchangeQuote } from '~/web3/exchange/exchange-read'
 
 type UseMarketTradeSpotRatesArgs = {
   pair: ExchangePairTokens

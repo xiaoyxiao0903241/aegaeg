@@ -1,6 +1,8 @@
 import { parseAbi } from 'viem'
+
 import { BPS_DENOM } from '~/core/exchange/bps'
-import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
+import { migrationStakeRoot } from '~/core/migration/migration-user'
+import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_MARKET_METHODS,
   BOND_HELPER_METHODS,
@@ -10,9 +12,8 @@ import {
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
-import { migrationStakeRoot } from '~/core/migration/migration-user'
-import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
+import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 
 const liquidAbi = parseAbi([

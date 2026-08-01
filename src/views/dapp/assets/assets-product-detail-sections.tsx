@@ -1,14 +1,15 @@
 import type { ComponentProps } from 'react'
+
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
-import { FaqList, type FaqListItem } from '~/shared/ui/faq-list'
 import { Card } from '~/shared/ui/card'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
+import { FaqList, type FaqListItem } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
 
 export type AssetsDetailMetricCell = {

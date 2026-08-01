@@ -1,21 +1,22 @@
 import {
+  type CSSProperties,
+  type ReactNode,
   useCallback,
   useEffect,
   useId,
   useLayoutEffect,
   useRef,
   useState,
-  type CSSProperties,
-  type ReactNode,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { ChevronIcon } from '~/shared/ui/chevron-icon'
-import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
+
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
-import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { cssRemVarPx } from '~/shared/lib/root-rem-px'
+import { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } from '~/shared/lib/table-pagination'
+import { cn } from '~/shared/lib/utils'
+import { ChevronIcon } from '~/shared/ui/chevron-icon'
+import { Text } from '~/shared/ui/text'
 
 const PAGE_MENU_VISIBLE_ITEMS = 5
 

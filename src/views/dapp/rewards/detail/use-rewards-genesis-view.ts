@@ -1,5 +1,7 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { calcProgressPercent } from '~/core/math/calc-progress-percent'
+import { nextTierProgress } from '~/core/presale/tier-progress'
+import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import {
   useCommunityFundTotal,
   useQualifiedPartitions,
@@ -7,14 +9,12 @@ import {
   useTeamOverview,
   useTeamRewardTotal,
 } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
-import { calcProgressPercent } from '~/core/math/calc-progress-percent'
-import { nextTierProgress } from '~/core/presale/tier-progress'
-import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
-import { formatApiDecimalAmount, claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
+import { claimableAmountValue, formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
-import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
+import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 
 export function useRewardsGenesisView() {
   const { messages: t } = useI18n()

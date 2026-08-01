@@ -1,9 +1,9 @@
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { useI18n } from '~/i18n/use-i18n'
+import { cn } from '~/shared/lib/utils'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { IconButton } from '~/shared/ui/icon-button'
-import { cn } from '~/shared/lib/utils'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
 export function DappPanelToggle() {

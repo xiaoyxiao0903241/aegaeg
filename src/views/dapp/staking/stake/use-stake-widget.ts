@@ -1,24 +1,24 @@
-import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
+import { evaluateNeedReferral } from '~/core/referral/need-referral'
 import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
 import type { StakePeriod } from '~/core/staking/staking-period'
-import { stakePoolAddress } from '~/web3/staking/staking-addresses'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
-import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
-import { useMigrationUser } from '~/web3/migration/use-migration-queries'
-import { evaluateNeedReferral } from '~/core/referral/need-referral'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
+import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import {
   bindUnlockedAmountEditors,
   evaluateStakingAmountWrite,
 } from '~/views/dapp/staking/staking-amount-write-ui'
+import { useMigrationUser } from '~/web3/migration/use-migration-queries'
+import { stakePoolAddress } from '~/web3/staking/staking-addresses'
+import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
-import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const STAKE_PERIODS: readonly StakePeriod[] = ['liquid', '180', '360', '540']

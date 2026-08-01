@@ -1,7 +1,8 @@
 import { create } from 'zustand'
+
 import {
-  isTradeTokenLive,
   buyKeyAfterSellChange,
+  isTradeTokenLive,
   type TradeTokenKey,
 } from '~/core/exchange/trade-path'
 

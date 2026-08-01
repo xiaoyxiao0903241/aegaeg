@@ -1,19 +1,19 @@
 /** Barrel — sentinels + wallet helpers. User message SSOT: `getErrorMessage`. */
+export { getErrorMessage } from '~/web3/errors/get-error-message'
 export {
   CLAIM_CONFIRM_SYNC_FAILED,
   CLAIM_SIGNATURE_EXPIRED,
-  GENESIS_PURCHASE_ERROR,
-  REFERRAL_BIND_ERROR,
   EXCHANGE_QUOTE_FAILED,
   EXCHANGE_SUBMIT_BLOCKED,
   FLASH_USD1_BLOCKED,
+  GENESIS_PURCHASE_ERROR,
+  REFERRAL_BIND_ERROR,
   WALLET_BLOCKED,
   WALLET_WRITE_ERROR,
 } from '~/web3/errors/sentinels'
 export {
   isUserRejectedWalletError,
-  walletTransactionError,
   toWalletUserFacingMessage,
+  walletTransactionError,
   type WalletTransactionErrorMessages,
 } from '~/web3/errors/wallet-error'
-export { getErrorMessage } from '~/web3/errors/get-error-message'

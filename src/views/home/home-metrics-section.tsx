@@ -1,5 +1,5 @@
-import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
+import { Text } from '~/shared/ui/text'
 import { HomeSection } from '~/views/home/home-section'
 
 export function HomeMetricsSection() {

@@ -1,11 +1,13 @@
-import { decodeAbiParameters, encodeFunctionData, parseAbi, type AbiParameter } from 'viem'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { type PresalePhaseOnChain, type PresalePhaseRemaining } from '~/core/presale/presale-math'
+import { type AbiParameter, decodeAbiParameters, encodeFunctionData, parseAbi } from 'viem'
+
 import { migrationStakeRoot } from '~/core/migration/migration-user'
-import { MULTICALL3_METHODS, PRESALE_METHODS } from '~/web3/abis'
+import { type PresalePhaseOnChain, type PresalePhaseRemaining } from '~/core/presale/presale-math'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { PRESALE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readMigratedFrom } from '~/web3/migration/migration-read'
+import { readAggregate3 } from '~/web3/multicall3-read'
 
 const presaleAbi = parseAbi([
   PRESALE_METHODS.getPhaseCount,
@@ -17,8 +19,6 @@ const presaleAbi = parseAbi([
   PRESALE_METHODS.airdropThreshold,
   PRESALE_METHODS.paused,
 ])
-
-const multicallAbi = parseAbi([MULTICALL3_METHODS.aggregate3])
 
 const PHASE_RETURN_TYPES = [
   { type: 'uint256', name: 'minAmount' },
@@ -85,18 +85,13 @@ export async function readAllPresalePhases(
     return []
   }
 
-  const calls = Array.from({ length: phaseCount }, (_, phaseIndex) => ({
-    target: BSC_CONTRACTS.preSale,
-    allowFailure: false,
-    callData: encodePhaseCallData(phaseIndex),
-  }))
-
-  const results = (await client.readContract({
-    address: BSC_CONTRACTS.multicall3,
-    abi: multicallAbi,
-    functionName: 'aggregate3',
-    args: [calls],
-  })) as { success: boolean; returnData: `0x${string}` }[]
+  const results = await readAggregate3(
+    client,
+    Array.from({ length: phaseCount }, (_, phaseIndex) => ({
+      target: BSC_CONTRACTS.preSale,
+      callData: encodePhaseCallData(phaseIndex),
+    })),
+  )
 
   return results.map((result, phaseIndex) => {
     if (!result.success) {

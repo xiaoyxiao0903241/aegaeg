@@ -6,6 +6,7 @@ import {
   type TransactionReceipt,
 } from 'viem'
 import { bsc } from 'viem/chains'
+
 import { sleep } from '~/shared/lib/sleep'
 
 const RECEIPT_POLL_MS = 2_000

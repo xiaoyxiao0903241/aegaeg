@@ -1,7 +1,8 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
+import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { DialogOverlay, DialogPortal, dialogChrome } from '~/shared/ui/dialog'
+
+import { dialogChrome, DialogOverlay, DialogPortal } from '~/shared/ui/dialog'
 
 /** Shared close control — wallet modal, slippage, H5 drawer, etc. */
 export const aegisDialogClose = tv({

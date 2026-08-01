@@ -1,4 +1,5 @@
 import type { Wallet } from 'thirdweb/wallets'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   DAO_POOL_METHODS,
@@ -8,9 +9,9 @@ import {
   REWARD_CLAIMER_ERRORS,
 } from '~/web3/abis'
 import {
+  type ConfirmedWalletWrite,
   parseWriteAbi,
   writeContractViaWallet,
-  type ConfirmedWalletWrite,
 } from '~/web3/wallet/wallet-contract-write'
 
 const marketWriteAbi = parseWriteAbi(MARKET_FUND_METHODS.claimReward, REWARD_CLAIMER_ERRORS)

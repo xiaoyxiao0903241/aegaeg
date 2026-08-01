@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
+
 import { dappAssets } from '~/app/assets'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 
 const PLACEHOLDER = '0.00'
 

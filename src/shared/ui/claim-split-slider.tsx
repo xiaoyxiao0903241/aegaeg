@@ -1,6 +1,7 @@
 import * as SliderPrimitive from '@radix-ui/react-slider'
-import { Text } from '~/shared/ui/text'
+
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 export type ClaimSplitSliderProps = {
   /** Accessible name — call site supplies i18n. */
@@ -34,7 +35,7 @@ export function ClaimSplitSlider({
   return (
     <SliderPrimitive.Root
       className={cn(
-        'relative flex h-7 w-full max-w-[27rem] touch-none items-center select-none',
+        'relative flex h-7 w-full max-w-108 touch-none items-center select-none',
         disabled && 'pointer-events-none opacity-60',
         className,
       )}
@@ -54,7 +55,7 @@ export function ClaimSplitSlider({
         />
         <div
           aria-hidden
-          className="absolute inset-y-0 right-0 bg-[var(--app-claim-restake)]"
+          className="absolute inset-y-0 right-0 bg-(--app-claim-restake)"
           style={{ width: `${100 - releasePct}%` }}
         />
       </SliderPrimitive.Track>

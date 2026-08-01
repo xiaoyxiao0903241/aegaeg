@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
+
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Text } from '~/shared/ui/text'
 
 function renderMetric(node: ReactNode) {

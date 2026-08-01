@@ -1,12 +1,12 @@
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { useRewardsViewMotion } from '~/stores/rewards-view-store'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
-import { RewardsHubWidget } from '~/views/dapp/rewards/hub/rewards-hub-widget'
-import { RewardsHubContent } from '~/views/dapp/rewards/hub/rewards-hub-content'
-import { RewardsSimpleClaimWidget } from '~/views/dapp/rewards/detail/rewards-simple-claim-widget'
+import { useRewardsViewMotion } from '~/stores/rewards-view-store'
+import { RewardsDetailContent } from '~/views/dapp/rewards/detail/rewards-detail-content'
 import { RewardsGenesisClaimWidget } from '~/views/dapp/rewards/detail/rewards-genesis-widget'
 import { RewardsMixedClaimWidget } from '~/views/dapp/rewards/detail/rewards-mixed-claim-widget'
-import { RewardsDetailContent } from '~/views/dapp/rewards/detail/rewards-detail-content'
+import { RewardsSimpleClaimWidget } from '~/views/dapp/rewards/detail/rewards-simple-claim-widget'
+import { RewardsHubContent } from '~/views/dapp/rewards/hub/rewards-hub-content'
+import { RewardsHubWidget } from '~/views/dapp/rewards/hub/rewards-hub-widget'
 
 function RewardsWidgetBody() {
   const view = useDappSubviewDisplayView<RewardsView>()

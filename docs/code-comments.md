@@ -29,3 +29,7 @@
 ## 存量
 
 未触及的英文或中英混排注释不在本切片强制改写。触及某文件时，将该文件内**改到的注释**一并收成中文结论体。
+
+## Import 排序
+
+`eslint-plugin-simple-import-sort`：`simple-import-sort/imports` + `exports` 为 **error**（进 `lint:src` / `pnpm check`）。分组：side-effect → `node:` → 外部包 → `~/` → 相对路径。自动修：`pnpm exec eslint src --fix`。

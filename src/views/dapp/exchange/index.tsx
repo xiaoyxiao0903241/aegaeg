@@ -1,22 +1,22 @@
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
-import { useExchangeViewMotion } from '~/stores/exchange-view-store'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
+import { useExchangeViewMotion } from '~/stores/exchange-view-store'
+import { BurnExchangeContent } from '~/views/dapp/exchange/burn/burn-exchange-content'
+import { BurnExchangeWidget } from '~/views/dapp/exchange/burn/burn-exchange-widget'
 import type {
   BurnExchangeState,
   FlashExchangeState,
   MarketTradeState,
   TurbineExchangeState,
 } from '~/views/dapp/exchange/exchange-session-hosts'
-import { ExchangeHubWidget } from '~/views/dapp/exchange/hub/exchange-hub-widget'
-import { ExchangeHubContent } from '~/views/dapp/exchange/hub/exchange-hub-content'
-import { FlashExchangeWidget } from '~/views/dapp/exchange/flash-exchange/flash-exchange-widget'
 import { FlashExchangeContent } from '~/views/dapp/exchange/flash-exchange/flash-exchange-content'
-import { MarketTradeWidget } from '~/views/dapp/exchange/market-trade/market-trade-widget'
+import { FlashExchangeWidget } from '~/views/dapp/exchange/flash-exchange/flash-exchange-widget'
+import { ExchangeHubContent } from '~/views/dapp/exchange/hub/exchange-hub-content'
+import { ExchangeHubWidget } from '~/views/dapp/exchange/hub/exchange-hub-widget'
 import { MarketTradeContent } from '~/views/dapp/exchange/market-trade/market-trade-content'
-import { BurnExchangeWidget } from '~/views/dapp/exchange/burn/burn-exchange-widget'
-import { BurnExchangeContent } from '~/views/dapp/exchange/burn/burn-exchange-content'
-import { TurbineExchangeWidget } from '~/views/dapp/exchange/turbine/turbine-exchange-widget'
+import { MarketTradeWidget } from '~/views/dapp/exchange/market-trade/market-trade-widget'
 import { TurbineExchangeContent } from '~/views/dapp/exchange/turbine/turbine-exchange-content'
+import { TurbineExchangeWidget } from '~/views/dapp/exchange/turbine/turbine-exchange-widget'
 
 type ExchangeSessions = {
   trade: MarketTradeState | null

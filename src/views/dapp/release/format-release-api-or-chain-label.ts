@@ -1,5 +1,5 @@
-import { formatGroupedNumber } from '~/shared/api/format-display'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 
 /** 优先 API 小数字符串；否则链上额；否则格式化零。 */
 export function formatReleaseApiOrChainLabel(args: {

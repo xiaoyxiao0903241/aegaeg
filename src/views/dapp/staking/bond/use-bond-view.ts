@@ -1,11 +1,12 @@
 import { toast } from 'sonner'
-import { useI18n } from '~/i18n/use-i18n'
-import { useDappShell } from '~/app/use-dapp-shell'
+
 import { goBindReferral } from '~/app/shell/go-bind-referral'
-import { useStakingViewStore } from '~/stores/staking-view-store'
-import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
-import { BOND_ZAP_BLOCKED, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { formatAmountBalanceLabel, writeCtaLabel } from '~/core/wallet/write-cta'
+import { useI18n } from '~/i18n/use-i18n'
+import { useStakingViewStore } from '~/stores/staking-view-store'
+import { BOND_ZAP_BLOCKED, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
+import { useBondWidget } from '~/views/dapp/staking/bond/use-bond-widget'
 import { readErrorText } from '~/web3/errors/error-text'
 
 export function useBondView(kind: BondKind) {

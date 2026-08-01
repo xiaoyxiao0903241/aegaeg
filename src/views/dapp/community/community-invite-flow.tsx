@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 
 export type InviteFlowItem = {
   copy: string

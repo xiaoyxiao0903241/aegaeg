@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
+
+import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
 import { useDismissOnOutside } from '~/shared/ui/use-dismiss-on-outside'
-import { cn } from '~/shared/lib/utils'
 
 export type RewardsPlanPickerOption = {
   label: string

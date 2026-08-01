@@ -1,9 +1,9 @@
-import { useI18n } from '~/i18n/use-i18n'
-import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
 import { DappWidgetFrame } from '~/app/shell/dapp-widget-frame'
-import { GenesisPurchaseForm } from '~/views/dapp/genesis/genesis-purchase-form'
+import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
+import { useI18n } from '~/i18n/use-i18n'
 import { walletRemountKey } from '~/shared/lib/wallet-remount-key'
+import { GenesisPurchaseForm } from '~/views/dapp/genesis/genesis-purchase-form'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 export function GenesisWidget({ genesis }: { genesis: GenesisWidgetState }) {

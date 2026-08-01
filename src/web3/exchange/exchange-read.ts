@@ -1,4 +1,5 @@
 import { parseAbi } from 'viem'
+
 import {
   agxSellTaxBps,
   applyAgxSellTaxToAmountIn,
@@ -12,11 +13,11 @@ import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
 import {
-  readExchangePoolImmutableMetadata,
-  readExchangePoolSpotPrice,
-  pairReservesForTokenIn,
   type ExchangePoolImmutableMetadata,
   type ExchangePoolSpotPrice,
+  pairReservesForTokenIn,
+  readExchangePoolImmutableMetadata,
+  readExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
 
 export type ExchangePoolReadContext = {

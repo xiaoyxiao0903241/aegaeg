@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+
 import { cn } from '~/shared/lib/utils'
 
 /** Right detail column content area (PC padding; H5 margin from shell window). */

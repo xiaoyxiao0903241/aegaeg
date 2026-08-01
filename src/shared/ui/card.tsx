@@ -1,14 +1,15 @@
 import {
+  type ButtonHTMLAttributes,
   createElement,
   forwardRef,
-  type ButtonHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
 } from 'react'
 import { type VariantProps } from 'tailwind-variants'
-import { Text, type TextProps } from '~/shared/ui/text'
+
 import { cn } from '~/shared/lib/utils'
 import { cardVariants } from '~/shared/ui/card-variants'
+import { Text, type TextProps } from '~/shared/ui/text'
 
 type CardElement = 'article' | 'button' | 'div' | 'section' | 'details' | 'span'
 

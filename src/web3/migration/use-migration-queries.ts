@@ -1,7 +1,7 @@
-import { useChainQuery, type ChainQueryOptions } from '~/hooks/use-chain-query'
+import { evaluateMigrationUser, migrationWritesAllowed } from '~/core/migration/migration-user'
+import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { readMigrationStatus } from '~/web3/migration/migration-read'
-import { migrationWritesAllowed, evaluateMigrationUser } from '~/core/migration/migration-user'
 
 /**
  * Cross-rail migration status — §17 read; writes stay DEFER while migrationEnabled=false.

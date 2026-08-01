@@ -1,9 +1,9 @@
-import { AUTH_SIGNATURE_STORAGE_KEY } from '~/core/auth/types'
-import type { StoredLoginSignature } from '~/core/auth/types'
 import type { LoginSignatureStorage } from '~/core/auth/storage'
+import type { StoredLoginSignature } from '~/core/auth/types'
+import { AUTH_SIGNATURE_STORAGE_KEY } from '~/core/auth/types'
 
-export type { StoredLoginSignature } from '~/core/auth/types'
 export type { LoginSignatureStorage } from '~/core/auth/storage'
+export type { StoredLoginSignature } from '~/core/auth/types'
 
 function isStoredLoginSignature(value: unknown): value is StoredLoginSignature {
   if (!value || typeof value !== 'object') return false

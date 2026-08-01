@@ -1,13 +1,14 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { useChainQuery, type ChainQueryOptions } from '~/hooks/use-chain-query'
-import type { Address } from '~/shared/config/contracts'
+
+import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import type { Address } from '~/shared/config/contracts'
+import { readBondHelperSlippage, readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
 import {
   readBondZapPreflight,
   readStakeOpenPreflight,
   readXminePreflight,
 } from '~/web3/staking/staking-read'
-import { readBondHelperSlippage, readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
 
 /** Wallet-scoped preflight — address from useChainQuery (active account). */
 export function useStakeOpenPreflightQuery(

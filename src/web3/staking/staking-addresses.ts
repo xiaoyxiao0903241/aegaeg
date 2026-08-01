@@ -1,11 +1,11 @@
-import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import {
+  type BondPeriod,
   burnBondDepositoryKey,
   lpBondDepositoryKey,
-  stakePoolKey,
-  type BondPeriod,
   type StakePeriod,
+  stakePoolKey,
 } from '~/core/staking/staking-period'
+import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 
 /** Resolve staking pool address for AGX stake open path. */
 export function stakePoolAddress(period: StakePeriod): Address {

@@ -1,8 +1,8 @@
-import { suppressKnownConsoleNoise } from '~/shared/lib/suppress-known-console-noise'
 import {
   bindPageScrollPersistence,
   restorePersistedPageScroll,
 } from '~/shared/lib/page-scroll-restoration'
+import { suppressKnownConsoleNoise } from '~/shared/lib/suppress-known-console-noise'
 
 const HOME_SCROLL_KEY = 'aegis.home.scroll'
 

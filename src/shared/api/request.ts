@@ -1,12 +1,12 @@
 import { interceptApiError } from '~/shared/api/account-banned'
+import { apiErrorFromHttpStatus, toTransportApiError } from '~/shared/api/api-user-facing-error'
 import {
-  ApiError,
   apiClientUrl,
+  type ApiEnvelope,
+  ApiError,
   createAuthHeader,
   parseApiResponse,
-  type ApiEnvelope,
 } from '~/shared/api/client'
-import { apiErrorFromHttpStatus, toTransportApiError } from '~/shared/api/api-user-facing-error'
 
 export { ApiError }
 

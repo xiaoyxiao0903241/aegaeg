@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
+
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { cn } from '~/shared/lib/utils'
+import { Button } from '~/shared/ui/button'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
+import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
+import { Text } from '~/shared/ui/text'
 
 const genesisGlobeWidth = 597
 const genesisGlobeHeight = 250

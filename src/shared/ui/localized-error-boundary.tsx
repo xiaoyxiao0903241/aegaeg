@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react'
+
 import { useI18n } from '~/i18n/use-i18n'
 import { ErrorBoundary } from '~/shared/ui/error-boundary'
-import type { ReactNode } from 'react'
 
 /** Wraps ErrorBoundary with catalog copy so defaults are never English-only. */
 export function LocalizedErrorBoundary({ children, name }: { children: ReactNode; name?: string }) {

@@ -1,22 +1,22 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { bscscanAddress } from '~/shared/config/explorer'
 import { flashExchangeAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { bscscanAddress } from '~/shared/config/explorer'
+import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
+import { Segment } from '~/shared/ui/segment'
+import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import {
   ExchangeFlowButton,
   ExchangeOneWayFlowIndicator,
 } from '~/views/dapp/exchange/exchange-flow-button'
-import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
-import { useFlashExchangeView } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-view'
-import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { Segment } from '~/shared/ui/segment'
-import { ExchangeWidgetSessionFooter } from '~/views/dapp/exchange/exchange-widget-session-footer'
 import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
+import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { ExchangeWidgetSessionFooter } from '~/views/dapp/exchange/exchange-widget-session-footer'
+import { useFlashExchangeView } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-view'
 
 export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   const vm = useFlashExchangeView(flash)

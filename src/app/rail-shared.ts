@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+
 import type { DappTab } from '~/shared/config/dapp-tabs'
 
 export const railNavLabelKeys = {

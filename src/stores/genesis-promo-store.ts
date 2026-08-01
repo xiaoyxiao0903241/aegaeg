@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+
 import type { GenesisPromoSnapshot, SeasonOption } from '~/core/presale/genesis-promo-types'
 
 export type GenesisPromoState = {

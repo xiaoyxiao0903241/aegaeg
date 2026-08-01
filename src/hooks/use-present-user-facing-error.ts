@@ -1,4 +1,5 @@
 import { useEffect, useEffectEvent } from 'react'
+
 import { useI18n } from '~/i18n/use-i18n'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
 

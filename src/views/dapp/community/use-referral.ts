@@ -1,23 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import {
-  parseReferrerFromSearch,
-  parseReferrerAddress,
-  displayReferrer,
-} from '~/shared/config/referral'
-import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { usePerformance } from '~/hooks/use-api-data'
+
 import { useDappShell } from '~/app/use-dapp-shell'
+import { usePerformance } from '~/hooks/use-api-data'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
+import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import type { Address } from '~/shared/config/contracts'
+import {
+  displayReferrer,
+  parseReferrerAddress,
+  parseReferrerFromSearch,
+} from '~/shared/config/referral'
+import { readAndClearBindSuccess } from '~/views/dapp/community/referral-bind-success'
+import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'
-import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
-import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
-import { useChainQuery } from '~/hooks/use-chain-query'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import type { Address } from '~/shared/config/contracts'
-import { readAndClearBindSuccess } from '~/views/dapp/community/referral-bind-success'
 
 const BIND_COOLDOWN_MS = 5_000
 const PENDING_REFERRER_KEY = 'aegis.pendingReferrer'

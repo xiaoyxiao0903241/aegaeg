@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
-import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
-import { useShareholderRank } from '~/hooks/use-shareholder-rank'
-import { useAuth } from '~/hooks/use-auth'
+
 import { useDappShell } from '~/app/use-dapp-shell'
+import { useTeamOverview, useTeamReferrals } from '~/hooks/use-api-data'
+import { useAuth } from '~/hooks/use-auth'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { useShareholderRank } from '~/hooks/use-shareholder-rank'
+import { useI18n } from '~/i18n/use-i18n'
 import { tablePageQuery } from '~/shared/lib/table-pagination'
 
 export function useCommunityContentView() {

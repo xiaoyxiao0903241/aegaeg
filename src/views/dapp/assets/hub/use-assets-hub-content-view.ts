@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { tokenCarouselIcons } from '~/app/assets'
+import { useI18n } from '~/i18n/use-i18n'
 import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hub-overview-stats'
 
 export function useAssetsHubContentView() {

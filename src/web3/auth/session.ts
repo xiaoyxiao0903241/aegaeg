@@ -1,12 +1,12 @@
-import { AUTH_SESSION_STORAGE_KEY, type StoredAuthSession } from '~/core/auth/types'
 import type { AuthSessionStorage } from '~/core/auth/storage'
+import { AUTH_SESSION_STORAGE_KEY, type StoredAuthSession } from '~/core/auth/types'
 
-export type { StoredAuthSession } from '~/core/auth/types'
 export type { AuthSessionStorage } from '~/core/auth/storage'
+export type { StoredAuthSession } from '~/core/auth/types'
 export {
-  isSessionForAddress,
   AUTH_SESSION_STORAGE_KEY,
   AUTH_SIGNATURE_STORAGE_KEY,
+  isSessionForAddress,
 } from '~/core/auth/types'
 
 export function createLocalAuthSessionStorage(

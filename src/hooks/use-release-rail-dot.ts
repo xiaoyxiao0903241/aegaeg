@@ -1,6 +1,6 @@
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { readReleaseHasClaimable } from '~/web3/release/release-read'
-import { useChainQuery } from '~/hooks/use-chain-query'
 
 /** Release rail red-dot when queue or buffer has claimable AGX. */
 export function useReleaseRailDot(enabled: boolean) {

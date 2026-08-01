@@ -1,6 +1,6 @@
-import { formatPresaleRank } from '~/shared/api/format-display'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useShareholderRank } from '~/hooks/use-shareholder-rank'
+import { formatPresaleRank } from '~/shared/api/format-display'
 
 export function useShareholderRankLabels(t: {
   rewards: {

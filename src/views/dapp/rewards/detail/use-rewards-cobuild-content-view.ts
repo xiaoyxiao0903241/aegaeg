@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
 import {
   useRankRewardLogs,
@@ -7,12 +7,13 @@ import {
   useRankRewardSummary,
   useRankRewardTeamMembers,
 } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import {
   bindApiLabelFormatters,
+  formatApiDecimalAmount,
   formatMakingRankLabel,
   mapRankRewardLogToRow,
   mapRankRewardTeamMemberToRow,
-  formatApiDecimalAmount,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 

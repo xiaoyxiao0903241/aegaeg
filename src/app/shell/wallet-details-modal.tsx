@@ -1,19 +1,16 @@
-import { useState } from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Wallet, X } from 'lucide-react'
-import { useActiveAccount, useActiveWallet, useDisconnect } from '~/web3/thirdweb-react'
-import { USD1_DECIMALS } from '~/core/presale/presale-math'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { useUsd1PresaleWalletQuery } from '~/web3/presale/use-presale-queries'
-import { useI18n } from '~/i18n/use-i18n'
-import { useAuth } from '~/hooks/use-auth'
-import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
+import { useState } from 'react'
+import { toast } from 'sonner'
+
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { USD1_DECIMALS } from '~/core/presale/presale-math'
+import { useAuth } from '~/hooks/use-auth'
+import { useI18n } from '~/i18n/use-i18n'
 import { formatShortAddress } from '~/shared/api/format-display'
-import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
-import { toast } from 'sonner'
 import { copyTextToClipboard } from '~/shared/lib/copy-to-clipboard'
 import { cn } from '~/shared/lib/utils'
 import {
@@ -21,7 +18,11 @@ import {
   AegisResponsiveDialog,
   AegisSheetHandle,
 } from '~/shared/ui/aegis-responsive-dialog'
-import { WalletConnectModal } from '~/app/shell/wallet-connect-modal'
+import { Button } from '~/shared/ui/button'
+import { Text } from '~/shared/ui/text'
+import { useUsd1PresaleWalletQuery } from '~/web3/presale/use-presale-queries'
+import { useActiveAccount, useActiveWallet, useDisconnect } from '~/web3/thirdweb-react'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 /**
  * Wallet details / disconnect modal — Figma `4040:5234`.

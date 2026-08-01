@@ -1,7 +1,7 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/ui/faq-list'
 import { ExchangeProgramCards } from '~/views/dapp/exchange/hub/exchange-program-cards'
 

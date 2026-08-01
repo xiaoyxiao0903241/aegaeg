@@ -1,11 +1,11 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { AmountBox } from '~/shared/ui/amount-box'
+import { Input } from '~/shared/ui/input'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import { Input } from '~/shared/ui/input'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useCalcView } from '~/views/dapp/staking/calc/use-calc-view'
 
 /** Local-only calculator — zero chain writes. */

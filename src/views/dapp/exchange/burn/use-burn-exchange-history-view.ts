@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useAgxContributionBurnLogs, useAgxContributionConsumeLogs } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import {
   mapAgxContributionBurnLogToRow,
   mapAgxContributionConsumeLogToRow,

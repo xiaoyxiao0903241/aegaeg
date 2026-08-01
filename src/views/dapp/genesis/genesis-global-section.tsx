@@ -1,9 +1,9 @@
+import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { useI18n } from '~/i18n/use-i18n'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { bscscanAddress } from '~/shared/config/explorer'
-import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
-import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { GenesisGlobalCard } from '~/views/dapp/genesis/genesis-global-card'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 
 function openPreSaleContract() {
   window.open(bscscanAddress(BSC_CONTRACTS.preSale), '_blank', 'noopener,noreferrer')

@@ -1,14 +1,15 @@
 import { Wallet } from 'lucide-react'
 import { tv } from 'tailwind-variants'
+
+import { dappAssets } from '~/app/assets'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappSideCard } from '~/app/shell/dapp-card'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
 import { FieldActionChip } from '~/shared/ui/chip'
+import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
-import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
-import { dappIcon } from '~/shared/ui/dapp-icon-scale'
-import { DappSideCard } from '~/app/shell/dapp-card'
-import { DappActionButton } from '~/app/shell/dapp-action-button'
 
 const communityReferrerBindGrid = tv({
   base: 'flex gap-2',

@@ -1,4 +1,4 @@
-import { tabOrder, type DappTab } from '~/shared/config/dapp-tabs'
+import { type DappTab, tabOrder } from '~/shared/config/dapp-tabs'
 
 export type ExchangeView = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
 export type StakingView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine' | 'calc'

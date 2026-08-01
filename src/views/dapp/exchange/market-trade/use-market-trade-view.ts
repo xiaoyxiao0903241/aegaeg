@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
-import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { isTradeTokenKey, type TradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
-import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { useI18n } from '~/i18n/use-i18n'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
+import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { isTradeTokenKey, type TradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
+import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
+import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 
 function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTradeState) {
   return keys.map((key) => {

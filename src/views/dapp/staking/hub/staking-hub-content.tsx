@@ -9,8 +9,8 @@ import { FaqList } from '~/shared/ui/faq-list'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
+import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 
 /** Figma hub right column `4371:225`: section titles body-lg 18. */
 const hubSectionTitleClass = 'text-[1.125rem] leading-normal tracking-normal'

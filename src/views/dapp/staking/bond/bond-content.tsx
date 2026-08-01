@@ -1,14 +1,14 @@
-import { useI18n } from '~/i18n/use-i18n'
-import { useDappShell } from '~/app/use-dapp-shell'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useDappShell } from '~/app/use-dapp-shell'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import { mapBondPurchaseToAsideRow } from '~/shared/api/map-flow-log-rows'
+import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
 import {
   mapStakingOverviewPlaceholders,
   mapStakingPositionPlaceholders,
 } from '~/views/dapp/staking/staking-token-metric-value'
-import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 
 export function BondContent({ kind }: { kind: BondKind }) {
   const { messages: t } = useI18n()

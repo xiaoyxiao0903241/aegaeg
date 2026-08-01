@@ -1,14 +1,14 @@
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
-  USD1_DECIMALS,
-  clampGenesisShares,
   canPurchaseGenesis,
+  clampGenesisShares,
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
   estimateXTokenAirdropUsd,
   formatPhaseCountdown,
   getAirdropBpsForPhase,
+  USD1_DECIMALS,
 } from '~/core/presale/presale-math'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import type { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 

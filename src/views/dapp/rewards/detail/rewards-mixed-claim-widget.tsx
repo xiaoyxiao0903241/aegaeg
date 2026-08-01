@@ -1,20 +1,20 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
+import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import { openExchangeView } from '~/shared/config/dapp-open-views'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-picker'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
-import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
-import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
+import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-picker'
 import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-rewards-mixed-claim-view'
-import { useRewardsViewStore } from '~/stores/rewards-view-store'
+import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 
 export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
@@ -104,11 +104,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             <Text as="span" className="font-semibold text-primary" variant="detail">
               {vm.mixed.releasePct.replace('{pct}', String(vm.releasePct))}
             </Text>
-            <Text
-              as="span"
-              className="font-semibold text-[var(--app-claim-restake)]"
-              variant="detail"
-            >
+            <Text as="span" className="font-semibold text-(--app-claim-restake)" variant="detail">
               {vm.mixed.restakePct.replace('{pct}', String(vm.restakePct))}
             </Text>
           </div>
@@ -139,7 +135,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
 
         <div className="grid gap-3 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="text-[var(--app-claim-restake)]" variant="copy">
+            <Text as="span" className="text-(--app-claim-restake)" variant="copy">
               {vm.mixed.restakeLabel}
             </Text>
             <Text as="span" tone="muted-foreground" variant="caption">

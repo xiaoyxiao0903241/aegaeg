@@ -1,11 +1,11 @@
-import type { TeamReferralItem } from '~/shared/api/types'
 import {
   formatGroupedNumber,
-  TABLE_EMPTY,
   formatRegisterDate,
   formatShortAddress,
   formatTableGenesisRank,
+  TABLE_EMPTY,
 } from '~/shared/api/format-display'
+import type { TeamReferralItem } from '~/shared/api/types'
 import { getRuntimeHost } from '~/shared/lib/runtime-host'
 
 export function mapTeamReferralToCompactRow(item: TeamReferralItem): string[] {

@@ -1,10 +1,11 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { DappCountValue } from '~/shared/ui/dapp-count-value'
+
+import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
 
 /** Amount input card — label + balance / amount row + token selector + input. */
 export const amountBox = tv({

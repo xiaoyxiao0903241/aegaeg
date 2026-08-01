@@ -1,22 +1,23 @@
 import useEmblaCarousel from 'embla-carousel-react'
 import {
   forwardRef,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-  type HTMLAttributes,
-  type KeyboardEvent,
-  type ReactNode,
 } from 'react'
+
+import { cn } from '~/shared/lib/utils'
 import {
-  CarouselContext,
   type CarouselApi,
+  CarouselContext,
   type CarouselOptions,
   type CarouselPlugin,
 } from '~/shared/ui/carousel-context'
-import { cn } from '~/shared/lib/utils'
 
 export type { CarouselApi, CarouselOptions, CarouselPlugin } from '~/shared/ui/carousel-context'
 

@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
-import { Text } from '~/shared/ui/text'
+
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 /**
  * Detail-column section title — same Text `section` token on every tab.

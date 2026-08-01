@@ -1,14 +1,15 @@
 import { tv } from 'tailwind-variants'
+
+import { dappAssets, homeAssets } from '~/app/assets'
+import { OnboardingTourChip } from '~/app/shell/onboarding-tour-chip'
+import { useDappShell } from '~/app/use-dapp-shell'
+import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
+import { languageMenuOptions } from '~/i18n/language-menu-options'
+import { withLocalePrefix } from '~/i18n/locale'
+import { useI18n } from '~/i18n/use-i18n'
 import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { LanguageMenu } from '~/shared/ui/language-menu'
 import { Text } from '~/shared/ui/text'
-import { withLocalePrefix } from '~/i18n/locale'
-import { languageMenuOptions } from '~/i18n/language-menu-options'
-import { useI18n } from '~/i18n/use-i18n'
-import { homeAssets, dappAssets } from '~/app/assets'
-import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { OnboardingTourChip } from '~/app/shell/onboarding-tour-chip'
 
 const topbar = tv({
   slots: {

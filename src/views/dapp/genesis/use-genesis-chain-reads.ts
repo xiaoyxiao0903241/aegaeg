@@ -1,14 +1,16 @@
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
-  USD1_DECIMALS,
+  genesisMaxShares,
   phaseCountdownTarget,
+  presaleAirdropThresholdToUsd,
   remainingPhaseAmount,
   remainingUserAmount,
   sharePriceWei,
-  presaleAirdropThresholdToUsd,
-  genesisMaxShares,
+  USD1_DECIMALS,
 } from '~/core/presale/presale-math'
-import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { useActiveAccount } from '~/web3/thirdweb-react'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { useGenesisPromoStore } from '~/stores/genesis-promo-store'
 import {
   usePresaleActivePhaseQuery,
@@ -21,10 +23,8 @@ import {
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
 } from '~/web3/presale/use-presale-queries'
-import { useChainQuery } from '~/hooks/use-chain-query'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 /** Chain + promo reads for Genesis — no shares draft, no write actions. */
 export function useGenesisChainReads() {

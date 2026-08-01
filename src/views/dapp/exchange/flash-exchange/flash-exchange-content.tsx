@@ -1,13 +1,13 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { MetricGrid } from '~/app/shell/metric-grid'
+import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/ui/faq-list'
-import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
+import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
 /** Figma flash right `4430:310`: overview/FAQ 18 · About 20. */

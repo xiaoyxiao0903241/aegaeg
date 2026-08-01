@@ -1,11 +1,11 @@
-import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useReleaseQueueView } from '~/views/dapp/release/queue/use-release-queue-view'
 
 export function ReleaseQueueWidget() {

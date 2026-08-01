@@ -1,4 +1,5 @@
 import { parseAbi } from 'viem'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { REFERRAL_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'

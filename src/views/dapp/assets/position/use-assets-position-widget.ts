@@ -1,25 +1,26 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import {
+  type AssetsProduct,
+  useAssetsPositionQueries,
+} from '~/views/dapp/assets/position/use-assets-position-queries'
+import {
+  type MixedClaimTarget,
   submitBondRedeem,
   submitStakeRedeem,
-  type MixedClaimTarget,
 } from '~/views/dapp/assets/submit-assets'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { type AssetsBondRow, type AssetsStakeRow } from '~/web3/assets/assets-read'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import {
-  useAssetsPositionQueries,
-  type AssetsProduct,
-} from '~/views/dapp/assets/position/use-assets-position-queries'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 export type { AssetsProduct }
 

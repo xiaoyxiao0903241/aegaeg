@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+
 import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'

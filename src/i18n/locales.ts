@@ -1,8 +1,8 @@
 /** Public locale barrel — re-exports leaf modules (no circular deps). */
-export { locales, defaultLocale, type Locale } from '~/i18n/locale-codes'
-export { localeMeta, type LocaleMeta, getHtmlLang } from '~/i18n/locale-meta'
+export { defaultLocale, type Locale, locales } from '~/i18n/locale-codes'
+export { getHtmlLang, type LocaleMeta, localeMeta } from '~/i18n/locale-meta'
 
-import { locales, type Locale } from '~/i18n/locale-codes'
+import { type Locale, locales } from '~/i18n/locale-codes'
 import { localeMeta } from '~/i18n/locale-meta'
 
 export const localeLabels: Record<Locale, string> = Object.fromEntries(

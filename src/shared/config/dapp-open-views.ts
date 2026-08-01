@@ -1,13 +1,13 @@
 import {
   assetsHashForView,
-  exchangeHashForView,
-  releaseHashForView,
-  rewardsHashForView,
-  stakingHashForView,
   type AssetsView,
+  exchangeHashForView,
   type ExchangeView,
+  releaseHashForView,
   type ReleaseView,
+  rewardsHashForView,
   type RewardsView,
+  stakingHashForView,
   type StakingView,
 } from '~/shared/config/dapp-deep-links'
 import { useAssetsViewStore } from '~/stores/assets-view-store'

@@ -1,24 +1,25 @@
-import { useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
-import { LOGIN_ERROR } from '~/shared/api/account-banned'
+import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
+
 import {
-  loginAttemptKey,
   deriveAuthAction,
   deriveAuthState,
+  loginAttemptKey,
   shouldClearLoginAttemptAfterFailure,
 } from '~/core/auth/auth-machine'
-import { loginWithWallet, toLoginErrorSentinel } from '~/web3/auth/login-with-wallet'
-import { defaultChain } from '~/web3/thirdweb'
-import { useAuthStore } from '~/stores/auth-store'
 import type { AuthSessionStorage, LoginSignatureStorage } from '~/core/auth/storage'
 import type { StoredAuthSession } from '~/core/auth/types'
+import { AuthContext, type AuthContextValue } from '~/hooks/use-auth'
+import { LOGIN_ERROR } from '~/shared/api/account-banned'
 import {
   clearApiQueries,
   invalidateAfterAuthLogin,
   invalidateAfterWalletSwitch,
 } from '~/shared/api/query/invalidate'
-import { AuthContext, type AuthContextValue } from '~/hooks/use-auth'
+import { useAuthStore } from '~/stores/auth-store'
+import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { loginWithWallet, toLoginErrorSentinel } from '~/web3/auth/login-with-wallet'
+import { defaultChain } from '~/web3/thirdweb'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 type AuthStoreGetter = Pick<
   ReturnType<typeof useAuthStore.getState>,

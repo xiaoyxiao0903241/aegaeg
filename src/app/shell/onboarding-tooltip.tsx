@@ -1,7 +1,8 @@
 import type { PopoverContentProps } from '@reactour/tour'
-import { Text } from '~/shared/ui/text'
-import { cn } from '~/shared/lib/utils'
+
 import { ONBOARDING_STEP_COUNT } from '~/app/shell/onboarding-step-ids'
+import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 export type OnboardingStepCopy = {
   title: string

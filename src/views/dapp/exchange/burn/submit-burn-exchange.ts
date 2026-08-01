@@ -1,15 +1,15 @@
-import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import { evaluateBurnContributionSwap } from '~/core/exchange/burn-contribution-swap'
-import {
-  approveAgxForBurnExchangeIfNeeded,
-  burnExchangeConvert,
-} from '~/web3/exchange/burn-exchange-write'
+import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
+import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
+import { BURN_BLOCKED } from '~/web3/errors/write-block-errors'
 import {
   readBurnContributionSwapConfig,
   readBurnExchangeBalances,
 } from '~/web3/exchange/burn-exchange-read'
-import { BURN_BLOCKED } from '~/web3/errors/write-block-errors'
-import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
+import {
+  approveAgxForBurnExchangeIfNeeded,
+  burnExchangeConvert,
+} from '~/web3/exchange/burn-exchange-write'
 
 /** Burn AGX → contribution points: approve + convert + invalidate. */
 export async function submitBurnExchange(args: {

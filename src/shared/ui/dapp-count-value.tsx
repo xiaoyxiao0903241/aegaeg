@@ -1,4 +1,5 @@
-import { useEffect, useState, type ElementType } from 'react'
+import { type ElementType, useEffect, useState } from 'react'
+
 import { cn } from '~/shared/lib/utils'
 import { metricDisplayText } from '~/shared/ui/metric-display-text'
 

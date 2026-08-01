@@ -1,40 +1,41 @@
-import { useState } from 'react'
 import { keepPreviousData } from '@tanstack/react-query'
+import { useState } from 'react'
 import { toast } from 'sonner'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useAuth } from '~/hooks/use-auth'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import {
-  RELEASE_DURATION_DAYS,
-  RESTAKE_DURATION_DAYS,
   claimSplitFromReleasePct,
   matchClaimPlanIndices,
   planLabel,
+  RELEASE_DURATION_DAYS,
   type ReleaseDurationDays,
+  RESTAKE_DURATION_DAYS,
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { useAuth } from '~/hooks/use-auth'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { useI18n } from '~/i18n/use-i18n'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import type { DaoRewardType } from '~/shared/api/types'
+import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import {
+  formatApiDecimalAmount,
+  type MixedClaimView,
+  splitAmountByPct,
+} from '~/views/dapp/rewards/rewards-display'
 import {
   REWARDS_BLOCKED,
   submitDaoMixedClaim,
   submitLuckyMixedClaim,
 } from '~/views/dapp/rewards/submit-rewards'
-import type { DaoRewardType } from '~/shared/api/types'
-import {
-  formatApiDecimalAmount,
-  splitAmountByPct,
-  type MixedClaimView,
-} from '~/views/dapp/rewards/rewards-display'
-import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { readClaimPlans, readContributionSnapshot } from '~/web3/assets/assets-read'
 import { readErrorText } from '~/web3/errors/error-text'
+import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import type { Address } from '~/shared/config/contracts'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 

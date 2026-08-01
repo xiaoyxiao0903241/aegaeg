@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
-import { Text } from '~/shared/ui/text'
+
 import { cn } from '~/shared/lib/utils'
+import { Text } from '~/shared/ui/text'
 
 /** Figma `seg` sliding-pill motion (issue 05 / ticket 01). */
 export const SEGMENT_MOTION_MS = 220
@@ -93,7 +94,7 @@ export function Segment({
         <div
           aria-hidden
           /* Figma `4430:410` active pill — white lift only; `shadow-sm` 过重 */
-          className="pointer-events-none absolute top-1 bottom-1 rounded-full bg-card shadow-[0_1px_2px_rgba(18,26,51,0.06)]"
+          className="pointer-events-none absolute inset-y-1 rounded-full bg-card shadow-[0_1px_2px_rgba(18,26,51,0.06)]"
           data-segment-thumb=""
           style={segmentPillThumbStyle(index, count)}
         />

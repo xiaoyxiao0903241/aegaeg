@@ -1,5 +1,5 @@
-import { getDappTabEntry } from '~/views/dapp/dapp-tab-registry'
 import type { DappTab } from '~/shared/config/dapp-tabs'
+import { getDappTabEntry } from '~/views/dapp/dapp-tab-registry'
 import type { DappTabSessions } from '~/views/dapp/dapp-tab-sessions'
 
 export function DappTabWidget({

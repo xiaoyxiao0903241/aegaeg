@@ -1,8 +1,9 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
-import type { Address } from '~/shared/config/contracts'
+
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import type { Address } from '~/shared/config/contracts'
+import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 
 export function useReleaseQueueSnapshot(enabled: boolean) {
   return useChainQuery({

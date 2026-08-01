@@ -15,13 +15,13 @@ Figma SSOT 同根 `AGENTS.md`。参考站 `https://aegis-x5.vercel.app/` 仅动�
 
 ## Runtime
 
-| 件 | 位置 |
-|----|------|
+| 件                 | 位置                                                  |
+| ------------------ | ----------------------------------------------------- |
 | `bootHomeReveal()` | `home-reveal-loader.ts`；`main.tsx` `useLayoutEffect` |
-| Ready | `html[data-home-motion-ready]` |
-| 懒图 | `img[data-src]` |
-| Reveal | `[data-reveal]` → `data-visible` |
-| 计数 | `[data-count-target]` / `[data-count-panel]` |
+| Ready              | `html[data-home-motion-ready]`                        |
+| 懒图               | `img[data-src]`                                       |
+| Reveal             | `[data-reveal]` → `data-visible`                      |
+| 计数               | `[data-count-target]` / `[data-count-panel]`          |
 
 ## Section
 

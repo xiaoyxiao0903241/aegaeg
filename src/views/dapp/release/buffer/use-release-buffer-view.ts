@@ -1,17 +1,18 @@
-import { useI18n } from '~/i18n/use-i18n'
+import { toast } from 'sonner'
+
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { canClaimWhen } from '~/core/wallet/write-cta'
-import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import { useReleaseViewStore } from '~/stores/release-view-store'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatApproxUsd } from '~/shared/api/format-display'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
+import { canClaimWhen } from '~/core/wallet/write-cta'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { useI18n } from '~/i18n/use-i18n'
+import { formatApproxUsd } from '~/shared/api/format-display'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
-import { toast } from 'sonner'
+import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 

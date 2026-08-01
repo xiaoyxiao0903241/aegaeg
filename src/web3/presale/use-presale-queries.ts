@@ -1,9 +1,11 @@
 import type { UseQueryResult } from '@tanstack/react-query'
+
 import { findActivePresalePhase, type PresalePhaseOnChain } from '~/core/presale/presale-math'
-import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { useChainQuery, type ChainQueryOptions } from '~/hooks/use-chain-query'
+import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { BSC_CONTRACTS } from '~/shared/config/contracts'
+import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
 import {
   readAllPresalePhases,
   readPresaleAgxPriceWei,
@@ -13,7 +15,6 @@ import {
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
 } from '~/web3/presale/presale-read'
-import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
 
 export function usePresalePhasesQuery() {
   return useChainQuery({

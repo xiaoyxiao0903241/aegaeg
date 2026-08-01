@@ -1,23 +1,24 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
-import { rewardTierRows, getTeamRequirementLegRank } from '~/core/presale/tier-table'
-import {
-  formatPresaleRank,
-  formatShareholderHintForRank,
-  getPresaleRankHighlightedRows,
-} from '~/shared/api/format-display'
+import { getTeamRequirementLegRank, rewardTierRows } from '~/core/presale/tier-table'
 import {
   useCommunityFundLogs,
   useCommunityFundTotal,
   useRewardLogs,
   useTeamRewardClaimLogs,
 } from '~/hooks/use-api-data'
+import { useI18n } from '~/i18n/use-i18n'
 import {
+  formatPresaleRank,
+  formatShareholderHintForRank,
+  getPresaleRankHighlightedRows,
+} from '~/shared/api/format-display'
+import {
+  formatApiDecimalAmount,
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
-  formatApiDecimalAmount,
 } from '~/views/dapp/rewards/rewards-display'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 

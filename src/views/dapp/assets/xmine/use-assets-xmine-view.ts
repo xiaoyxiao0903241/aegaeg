@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { useAssetsViewStore } from '~/stores/assets-view-store'
-import { useI18n } from '~/i18n/use-i18n'
+
 import { useDappShell } from '~/app/use-dapp-shell'
-import { queryKeys } from '~/shared/api/query/query-keys'
-import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
+import { useI18n } from '~/i18n/use-i18n'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
+import { useAssetsViewStore } from '~/stores/assets-view-store'
 import {
   submitXmineActivateWarmup,
   submitXmineClaim,
   submitXmineUnstake,
 } from '~/views/dapp/assets/submit-assets'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 

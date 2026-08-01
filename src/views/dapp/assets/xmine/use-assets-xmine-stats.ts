@@ -1,13 +1,13 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
-import { useActiveAccount } from '~/web3/thirdweb-react'
-import { readXminePosition } from '~/web3/assets/assets-read'
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
+import { readXminePosition } from '~/web3/assets/assets-read'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals

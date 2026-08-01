@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, type RefObject } from 'react'
+import { type RefObject, useEffect, useEffectEvent } from 'react'
 
 /** Close an open layer on outside pointerdown or Escape. */
 export function useDismissOnOutside(

@@ -1,6 +1,6 @@
-import { createContext } from 'react'
-import type { ReactNode } from 'react'
 import type { EmblaCarouselType, EmblaOptionsType, EmblaPluginType } from 'embla-carousel'
+import type { ReactNode } from 'react'
+import { createContext } from 'react'
 
 export type CarouselApi = EmblaCarouselType | undefined
 export type CarouselOptions = EmblaOptionsType | undefined

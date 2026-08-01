@@ -1,5 +1,5 @@
-import { useI18n } from '~/i18n/use-i18n'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { useI18n } from '~/i18n/use-i18n'
 import { AssetsProductDetailSections } from '~/views/dapp/assets/assets-product-detail-sections'
 import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
 import { useAssetsPositionOpsRows } from '~/views/dapp/assets/position/use-assets-position-ops-rows'

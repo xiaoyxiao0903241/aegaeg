@@ -1,9 +1,10 @@
 import { parseAbi } from 'viem'
+
+import type { MigrationStatus } from '~/core/migration/migration-user'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ACCOUNT_MIGRATION_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
-import type { MigrationStatus } from '~/core/migration/migration-user'
 
 const migrationReadAbi = parseAbi([
   ACCOUNT_MIGRATION_METHODS.migrationEnabled,

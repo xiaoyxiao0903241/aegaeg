@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
+
+import { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
 import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
-import { communityStatCardMobileShell } from '~/app/shell/dapp-skeleton'
+import { Card } from '~/shared/ui/card'
+import { Text } from '~/shared/ui/text'
 
 export const communityStatGrid = tv({
   base: cn(

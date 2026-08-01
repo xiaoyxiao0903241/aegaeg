@@ -1,6 +1,6 @@
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import {
   readBurnBondPositions,
   readLpBondPositions,

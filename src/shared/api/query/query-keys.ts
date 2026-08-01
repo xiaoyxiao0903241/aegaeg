@@ -1,3 +1,4 @@
+import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
 import type {
   BondFlowLogsParams,
   BufferPoolLogsParams,
@@ -9,7 +10,6 @@ import type {
   TurbineLogsParams,
   X0MiningLogsParams,
 } from '~/shared/api/types'
-import { chainWalletQueryKey } from '~/shared/api/query/chain-wallet-query-key'
 
 const erc20BalancePrefix = (token: string) =>
   ['chain', 'erc20', 'balance', token.toLowerCase()] as const

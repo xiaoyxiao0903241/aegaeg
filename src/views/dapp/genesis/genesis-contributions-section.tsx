@@ -1,18 +1,18 @@
-import { useI18n } from '~/i18n/use-i18n'
-import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { genesisContributionsColWidths } from '~/app/shell/dapp-table-columns'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
+import { Text } from '~/shared/ui/text'
 import {
   GenesisContributionsProgressHeader,
   GenesisContributionsReveal,
   GenesisContributionsSyncHint,
 } from '~/views/dapp/genesis/genesis-contributions-primitives'
-import { Text } from '~/shared/ui/text'
+import type { GenesisWidgetState } from '~/views/dapp/genesis/genesis-session-host'
 import { useGenesisContributionsView } from '~/views/dapp/genesis/use-genesis-contributions-view'
 
 export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidgetState }) {

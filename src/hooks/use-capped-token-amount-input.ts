@@ -1,9 +1,10 @@
 import { useState } from 'react'
+
 import {
+  cappedTokenAmountRaw,
   capTokenAmountInput,
   formatTokenAmountDraft,
   parseTokenAmount,
-  cappedTokenAmountRaw,
   sanitizeTokenAmountInput,
 } from '~/core/exchange/token-amount'
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
+
 import type { ExchangeTokenKey } from '~/app/data'
+import { useI18n } from '~/i18n/use-i18n'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 
 export function useMarketTradeContentView(trade: MarketTradeState) {

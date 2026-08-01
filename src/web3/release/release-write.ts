@@ -1,4 +1,5 @@
 import type { Wallet } from 'thirdweb/wallets'
+
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   PRINCIPAL_RELEASE_VAULT_ERRORS,
