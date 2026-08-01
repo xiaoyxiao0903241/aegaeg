@@ -6,7 +6,7 @@ import {
   canSubmitQuotedExchange,
   liveQuotedOut,
 } from '~/core/exchange/live-quoted-out'
-import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
+import { formatTokenAmountDraft, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
@@ -127,7 +127,7 @@ export function useExchangeQuote<TQuote>({
   /** Face uses raw quote (incl. keepPreviousData); gate stays on liveQuotedOut. */
   const faceBuyAmount =
     sessionReady && amountIn > 0n && !isAmountDebouncing && rawQuotedOut > 0n
-      ? formatTokenAmountInputDisplay(formatTokenAmount(rawQuotedOut, buyDecimals, 6))
+      ? formatTokenAmountInputDisplay(formatTokenAmountDraft(rawQuotedOut, buyDecimals, 6))
       : null
 
   if (amountIn === 0n || !sessionReady) {

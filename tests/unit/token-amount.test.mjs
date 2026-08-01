@@ -23,6 +23,21 @@ test('formatTokenAmountInputDisplay adds thousand separators while preserving de
   assert.equal(formatTokenAmountInputDisplay('0.5'), '0.5')
 })
 
+test('formatTokenAmountDraft is ungrouped and strips trailing zeros', async () => {
+  const { formatTokenAmountDraft, parseTokenAmount, formatTokenAmount } = await loadModule(
+    '/src/core/exchange/token-amount.ts',
+  )
+
+  const dusty = 179067524420000n // 10 decimals → 17906.752442
+  assert.equal(formatTokenAmount(dusty, 10, { digits: 10, trimZeros: false }), '17,906.7524420000')
+  const draft = formatTokenAmountDraft(dusty, 10, 10)
+  assert.equal(draft, '17906.752442')
+  assert.equal(parseTokenAmount(draft, 10), dusty)
+
+  const full = 1234567890123456789n
+  assert.equal(parseTokenAmount(formatTokenAmountDraft(full, 18, 18), 18), full)
+})
+
 test('sanitizeTokenAmountInput strips grouping separators', async () => {
   const { sanitizeTokenAmountInput } = await loadModule('/src/core/exchange/token-amount.ts')
 

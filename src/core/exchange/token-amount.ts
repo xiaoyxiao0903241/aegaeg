@@ -7,6 +7,17 @@ function formatIntegerGrouping(digits: string): string {
   return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
+/** Strip trailing fraction zeros on an ungrouped amount string (keep mid-edit trailing `.`). */
+export function stripTrailingAmountZeros(value: string): string {
+  const raw = stripTokenAmountGrouping(value)
+  if (!raw || raw.endsWith('.')) return raw
+  const dot = raw.indexOf('.')
+  if (dot === -1) return raw
+  const whole = raw.slice(0, dot)
+  const frac = raw.slice(dot + 1).replace(/0+$/, '')
+  return frac ? `${whole}.${frac}` : whole
+}
+
 export function formatTokenAmountInputDisplay(value: string): string {
   const raw = stripTokenAmountGrouping(value)
   if (!raw) return ''
@@ -109,6 +120,21 @@ export function formatTokenAmount(
   return trimmed ? `${groupedWhole}.${trimmed}` : groupedWhole
 }
 
+/**
+ * Amount-input draft from wei — ungrouped, trailing zeros stripped.
+ * Use `maxFractionDigits === decimals` for 100% fill so parse round-trips exactly.
+ */
+export function formatTokenAmountDraft(
+  amount: bigint,
+  decimals: number,
+  maxFractionDigits: number = decimals,
+): string {
+  const digits = Math.min(decimals, Math.max(0, Math.floor(maxFractionDigits)))
+  return stripTrailingAmountZeros(
+    stripTokenAmountGrouping(formatTokenAmount(amount, decimals, digits)),
+  )
+}
+
 /** Parse a token amount to a plain number without grouping separators.
  *  Only use when downstream code needs a number (e.g. arithmetic / comparisons).
  *  Prefer `formatTokenAmount` for display.
@@ -185,6 +211,7 @@ export function capTokenAmountInput(
   maxFractionDigits = 6,
 ): string {
   const fractionLimit = Math.min(decimals, maxFractionDigits)
+  // Do not strip trailing zeros here — that breaks typing `1.10`.
   const sanitized = sanitizeTokenAmountInput(value, fractionLimit)
 
   if (!sanitized) {
@@ -200,7 +227,7 @@ export function capTokenAmountInput(
     return ''
   }
 
-  return formatTokenAmount(maxAmount, decimals, maxFractionDigits)
+  return formatTokenAmountDraft(maxAmount, decimals, maxFractionDigits)
 }
 
 /**

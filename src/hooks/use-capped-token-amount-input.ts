@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   capTokenAmountInput,
-  formatTokenAmount,
+  formatTokenAmountDraft,
   parseTokenAmount,
   cappedTokenAmountRaw,
   sanitizeTokenAmountInput,
@@ -66,13 +66,13 @@ export function useCappedTokenAmountInput({
   function fillPercent(percent: number) {
     if (balance === 0n) return
     onBeforeCap?.()
-    // 100%: write full on-chain precision so amountIn === balance (no dust from display digits).
+    // 100%: full on-chain digits (trimmed, ungrouped) so amountIn === balance.
     if (percent >= 100) {
-      setAmountDraft(formatTokenAmount(balance, decimals, decimals))
+      setAmountDraft(formatTokenAmountDraft(balance, decimals, decimals))
       return
     }
     const value = (balance * BigInt(percent)) / 100n
-    setAmountDraft(formatTokenAmount(value, decimals, maxFractionDigits))
+    setAmountDraft(formatTokenAmountDraft(value, decimals, maxFractionDigits))
   }
 
   return {
