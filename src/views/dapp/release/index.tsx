@@ -1,4 +1,5 @@
-import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { ReleaseView } from '~/shared/config/dapp-deep-links'
 import { useReleaseViewMotion } from '~/stores/release-view-store'
 import { ReleaseBufferContent } from '~/views/dapp/release/buffer/release-buffer-content'
@@ -25,21 +26,17 @@ function ReleaseContentBody() {
 export function ReleaseWidget() {
   const subview = useReleaseViewMotion()
   return (
-    <DappSubviewShell
-      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
-      panel="widget"
-      subview={subview}
-    >
+    <DappTabWidgetShell subview={subview}>
       <ReleaseWidgetBody />
-    </DappSubviewShell>
+    </DappTabWidgetShell>
   )
 }
 
 export function ReleaseContent() {
   const subview = useReleaseViewMotion()
   return (
-    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
+    <DappTabDetailShell subview={subview}>
       <ReleaseContentBody />
-    </DappSubviewShell>
+    </DappTabDetailShell>
   )
 }

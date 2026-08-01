@@ -1,4 +1,5 @@
-import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { useRewardsViewMotion } from '~/stores/rewards-view-store'
 import { RewardsDetailContent } from '~/views/dapp/rewards/detail/rewards-detail-content'
@@ -28,21 +29,17 @@ function RewardsContentBody() {
 export function RewardsWidget() {
   const subview = useRewardsViewMotion()
   return (
-    <DappSubviewShell
-      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
-      panel="widget"
-      subview={subview}
-    >
+    <DappTabWidgetShell subview={subview}>
       <RewardsWidgetBody />
-    </DappSubviewShell>
+    </DappTabWidgetShell>
   )
 }
 
 export function RewardsContent() {
   const subview = useRewardsViewMotion()
   return (
-    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
+    <DappTabDetailShell subview={subview}>
       <RewardsContentBody />
-    </DappSubviewShell>
+    </DappTabDetailShell>
   )
 }

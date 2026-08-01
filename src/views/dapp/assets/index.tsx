@@ -1,4 +1,5 @@
-import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import { AssetsHubContent } from '~/views/dapp/assets/hub/assets-hub-content'
@@ -29,21 +30,17 @@ function AssetsContentBody() {
 export function AssetsWidget() {
   const subview = useAssetsViewMotion()
   return (
-    <DappSubviewShell
-      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
-      panel="widget"
-      subview={subview}
-    >
+    <DappTabWidgetShell subview={subview}>
       <AssetsWidgetBody />
-    </DappSubviewShell>
+    </DappTabWidgetShell>
   )
 }
 
 export function AssetsContent() {
   const subview = useAssetsViewMotion()
   return (
-    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
+    <DappTabDetailShell subview={subview}>
       <AssetsContentBody />
-    </DappSubviewShell>
+    </DappTabDetailShell>
   )
 }

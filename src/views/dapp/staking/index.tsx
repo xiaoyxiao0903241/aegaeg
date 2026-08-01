@@ -1,4 +1,5 @@
-import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
 import { useStakingViewMotion } from '~/stores/staking-view-store'
 import { BondContent } from '~/views/dapp/staking/bond/bond-content'
@@ -35,21 +36,17 @@ function StakingContentBody() {
 export function StakingWidget() {
   const subview = useStakingViewMotion()
   return (
-    <DappSubviewShell
-      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
-      panel="widget"
-      subview={subview}
-    >
+    <DappTabWidgetShell subview={subview}>
       <StakingWidgetBody />
-    </DappSubviewShell>
+    </DappTabWidgetShell>
   )
 }
 
 export function StakingContent() {
   const subview = useStakingViewMotion()
   return (
-    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
+    <DappTabDetailShell subview={subview}>
       <StakingContentBody />
-    </DappSubviewShell>
+    </DappTabDetailShell>
   )
 }
