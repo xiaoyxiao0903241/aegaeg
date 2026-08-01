@@ -52,7 +52,7 @@ function parseUintField(record: Record<string, unknown>, keys: string[]): bigint
 
 function assertHexBytes(value: string, field: string): `0x${string}` {
   if (!/^0x[0-9a-fA-F]+$/.test(value) || value.length < 4 || value.length % 2 !== 0) {
-    throw new Error(`领取签名字段 ${field} 不是合法 hex：${value.slice(0, 24)}`)
+    throw new Error(`team-reward claim field ${field} is not valid hex: ${value.slice(0, 24)}`)
   }
   return value as `0x${string}`
 }
@@ -95,7 +95,7 @@ export function parseTeamRewardClaim(payload: TeamRewardSignature): {
 
   if (missing.length > 0) {
     throw new Error(
-      `领取签名缺少字段: ${missing.join(', ')}。/claim/team-reward 实际返回字段: [${Object.keys(record).join(', ')}]`,
+      `team-reward claim missing fields: ${missing.join(', ')}. /claim/team-reward keys: [${Object.keys(record).join(', ')}]`,
     )
   }
 

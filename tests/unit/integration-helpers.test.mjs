@@ -112,7 +112,7 @@ test('parseTeamRewardClaim throws with payload keys when fields missing', async 
     () => parseTeamRewardClaim({ signature: VALID_SIG }),
     (error) => {
       assert.ok(error instanceof Error)
-      assert.match(error.message, /领取签名缺少字段/)
+      assert.match(error.message, /team-reward claim missing fields/)
       assert.match(error.message, /salt/)
       assert.match(error.message, /signature/)
       return true
