@@ -16,6 +16,7 @@ const queueReadAbi = parseAbi([
 const vaultReadAbi = parseAbi([
   PRINCIPAL_RELEASE_VAULT_METHODS.getReleaseCount,
   PRINCIPAL_RELEASE_VAULT_METHODS.getRelease,
+  PRINCIPAL_RELEASE_VAULT_METHODS.claimable,
 ])
 
 export type ReleaseQueuePlanRow = {
@@ -216,13 +217,31 @@ export async function readReleaseBufferSnapshot(
   }
 }
 
+/** Release 轨红点：queue 用汇总 view；buffer 用 `claimable` 短电路（不扫全表 getRelease）。 */
 export async function readReleaseHasClaimable(
   address: Address,
   readClient: ChainReadClient = bscReadClient,
 ): Promise<boolean> {
-  const [queueClaimable, buffer] = await Promise.all([
-    readReleaseQueueClaimable(address, readClient),
-    readReleaseBufferSnapshot(address, readClient),
-  ])
-  return queueClaimable > 0n || buffer.totalClaimable > 0n
+  const queueClaimable = await readReleaseQueueClaimable(address, readClient)
+  if (queueClaimable > 0n) return true
+
+  const countRaw = (await readClient.readContract({
+    address: BSC_CONTRACTS.principalReleaseVault,
+    abi: vaultReadAbi,
+    functionName: 'getReleaseCount',
+    args: [address],
+  })) as bigint
+  const count = Number(countRaw)
+  if (!Number.isFinite(count) || count <= 0) return false
+
+  for (let i = 0; i < count; i++) {
+    const amount = (await readClient.readContract({
+      address: BSC_CONTRACTS.principalReleaseVault,
+      abi: vaultReadAbi,
+      functionName: 'claimable',
+      args: [address, BigInt(i)],
+    })) as bigint
+    if (amount > 0n) return true
+  }
+  return false
 }

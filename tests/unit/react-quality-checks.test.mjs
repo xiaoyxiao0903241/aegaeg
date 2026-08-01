@@ -364,3 +364,13 @@ test('viewsNeedingProvider mounts only active swap subviews', async () => {
     turbine: true,
   })
 })
+
+test('ExchangeSessionHosts mounts via viewsNeedingProvider (no tab-wide prefetch)', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const src = await readFile(
+    new URL('../../src/views/dapp/exchange/exchange-session-hosts.tsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(src, /viewsNeedingProvider/)
+  assert.doesNotMatch(src, /flash:\s*true,\s*trade:\s*true,\s*burn:\s*true,\s*turbine:\s*true/)
+})

@@ -92,6 +92,7 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 | Live post-approve / balance | `live-post-approve.test.mjs`                                                                                                                      |
 | Live evaluate completeness  | `live-evaluate-completeness.test.mjs` · `migration-root-reads.test.mjs`                                                                           |
 | Decision freshness          | `decision-freshness.test.mjs`                                                                                                                     |
+| Rail claimable probes       | `rail-claimable-probes.test.mjs`                                                                                                                  |
 | Quote / unknown 门闸        | `react-quality-checks.test.mjs`                                                                                                                   |
 | Trade AGX 卖税              | `agx-sell-tax.test.mjs` · `fetch-exchange-quote.test.mjs` · `swap-router-abi.test.mjs`                                                            |
 | Genesis gate                | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApprove`）                                                                                   |
@@ -113,6 +114,8 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 6. `genesisPurchaseBlock.inFlight` 为模块级单例（跨 tab remount 保活）；信封层另有 per-`WRITE_PATH` in-flight。
 7. Trade/Flash Provider 按需挂载（`viewsNeedingProvider`）；离开子视图丢本地 quote/submit 状态。
 8. **展示 vs 决策**：`keepPreviousData` 仅可画 UI；**balance / allowance / quota / claimable / write CTA / canSubmit** 禁用 placeholder。决策用 `isDecisionFresh` / `decisionBigint`（`core/query/decision-freshness.ts`）；报价轴已有 `liveQuotedOut`。
+9. **轨红点 probe ≠ 全表 snapshot**：Turbine `readTurbineHasClaimable` 只 `silencesSize`+`isVested` 短电路；Release `readReleaseHasClaimable` 用 queue 汇总 + vault `claimable` 短电路。
+10. **Assets 列表读预算（书面）**：`readStakePositions` / locked `getStakesCount`×`getStake` 为 O(仓位数)，无分页；仓位膨胀前保持现状，分页另票（禁在红点路径复用全表）。
 
 ## Unknown 解锁通道
 

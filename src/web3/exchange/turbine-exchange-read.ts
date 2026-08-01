@@ -141,11 +141,28 @@ export async function readTurbineIsVested(
   })
 }
 
-/** 兑换轨红点：是否有可领冷却（当前仍走全表；P2 再拆真 probe）。 */
+/** 兑换轨红点：只 probe `silencesSize` + `isVested`，首个可领即停（不拉全表 silences）。 */
 export async function readTurbineHasClaimable(
   user: string,
   client: ChainReadClient = bscReadClient,
 ): Promise<boolean> {
-  const { claimableCount } = await readTurbineSilences(user, client)
-  return claimableCount > 0
+  const userAddress = user as `0x${string}`
+  const size = await client.readContract({
+    address: BSC_CONTRACTS.turbine,
+    abi: turbineReadAbi,
+    functionName: 'silencesSize',
+    args: [userAddress],
+  })
+  const count = Number(size)
+  if (!Number.isFinite(count) || count <= 0) return false
+  for (let index = 0; index < count; index += 1) {
+    const vested = await client.readContract({
+      address: BSC_CONTRACTS.turbine,
+      abi: turbineReadAbi,
+      functionName: 'isVested',
+      args: [userAddress, BigInt(index)],
+    })
+    if (vested) return true
+  }
+  return false
 }

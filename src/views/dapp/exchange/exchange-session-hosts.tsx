@@ -75,8 +75,7 @@ function TurbineExchangeSessionMounted({
 
 /**
  * Lifts Trade/Flash/Burn/Turbine widget hooks once and passes state as props.
- * While the Exchange tab is active, all four sessions stay mounted (reads warm);
- * amount quotes only run for the visible (+ motion) subview.
+ * Mount / reads follow `viewsNeedingProvider`（离开子视图丢本地 quote/submit；money-path §7）。
  */
 export function ExchangeSessionHosts({
   activeTab,
@@ -94,13 +93,12 @@ export function ExchangeSessionHosts({
   const { view, motion, outgoingView, incomingView } = useExchangeViewMotion()
   const exchangeTabActive = activeTab === 'exchange'
   const needed = viewsNeedingProvider(view, motion, outgoingView, incomingView)
-  /** Mount all sessions on the Exchange tab so hub → program / Segment switches hit cache. */
-  const mount = exchangeTabActive ? { flash: true, trade: true, burn: true, turbine: true } : needed
-  const readsEnabled = exchangeTabActive
-  const flashQuotesEnabled = exchangeTabActive && needed.flash
-  const tradeQuotesEnabled = exchangeTabActive && needed.trade
-  const burnQuotesEnabled = exchangeTabActive && needed.burn
-  const turbineQuotesEnabled = exchangeTabActive && needed.turbine
+  const idle = { flash: false, trade: false, burn: false, turbine: false } as const
+  const mount = exchangeTabActive ? needed : idle
+  const flashQuotesEnabled = mount.flash
+  const tradeQuotesEnabled = mount.trade
+  const burnQuotesEnabled = mount.burn
+  const turbineQuotesEnabled = mount.turbine
 
   const renderWithTurbine = (
     trade: MarketTradeState | null,
@@ -113,7 +111,7 @@ export function ExchangeSessionHosts({
     return (
       <TurbineExchangeSessionMounted
         quotesEnabled={turbineQuotesEnabled}
-        readsEnabled={readsEnabled}
+        readsEnabled={mount.turbine}
         sessionReady={sessionReady}
       >
         {(turbine) => children({ trade, flash, burn, turbine })}
@@ -128,7 +126,7 @@ export function ExchangeSessionHosts({
     return (
       <BurnExchangeSessionMounted
         quotesEnabled={burnQuotesEnabled}
-        readsEnabled={readsEnabled}
+        readsEnabled={mount.burn}
         sessionReady={sessionReady}
       >
         {(burn) => renderWithTurbine(trade, flash, burn)}
@@ -143,7 +141,7 @@ export function ExchangeSessionHosts({
     return (
       <FlashExchangeSessionMounted
         quotesEnabled={flashQuotesEnabled}
-        readsEnabled={readsEnabled}
+        readsEnabled={mount.flash}
         sessionReady={sessionReady}
       >
         {(flash) => renderWithBurn(trade, flash)}
@@ -158,7 +156,7 @@ export function ExchangeSessionHosts({
   return (
     <MarketTradeSessionMounted
       quotesEnabled={tradeQuotesEnabled}
-      readsEnabled={readsEnabled}
+      readsEnabled={mount.trade}
       sessionReady={sessionReady}
     >
       {(trade) => renderWithFlash(trade)}
