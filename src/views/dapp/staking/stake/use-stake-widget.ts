@@ -10,8 +10,10 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { useStakeOpenPreflightQuery } from '~/web3/staking/use-staking-queries'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
-import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
-import { writeCtaDisabled } from '~/core/wallet/write-cta'
+import {
+  bindUnlockedAmountEditors,
+  evaluateStakingAmountWrite,
+} from '~/views/dapp/staking/staking-amount-write-ui'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
@@ -90,38 +92,23 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
   const isSubmitting = open.isPending || warmup.isPending
   const isLocked = open.isLocked
 
-  const locked = writeCtaDisabled({
+  const { canSubmit, writePhase } = evaluateStakingAmountWrite({
     unknownReceiptLocked: isLocked,
     isSubmitting,
     writeReady,
     walletReady,
-  })
-
-  const canSubmit =
-    !locked && amountInput.amountIn > 0n && blockReason == null && preflightQuery.data !== undefined
-
-  const writePhase = evaluateWriteButtonPhase({
-    walletReady,
-    writeReady,
+    amountIn: amountInput.amountIn,
+    blockReason,
+    preflightReady: preflightQuery.data !== undefined,
     needReferral,
     accountMigrated: migration.isOldAccount === true,
-    moneyBlock: blockReason,
-    isSubmitting,
   })
 
   function unlock() {
     open.clearLock()
   }
 
-  function setAmount(value: string) {
-    unlock()
-    amountInput.setAmount(value)
-  }
-
-  function fillMax() {
-    unlock()
-    amountInput.fillPercent(100)
-  }
+  const { setAmount, fillMax } = bindUnlockedAmountEditors(unlock, amountInput)
 
   function changePeriod(next: string) {
     if (next === period) return

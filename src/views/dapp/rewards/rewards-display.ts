@@ -59,6 +59,18 @@ export function formatApiStatLabel(
   return formatApiDecimalAmount(raw, options)
 }
 
+/** Integer / count stats from API — same session/pending gate as formatApiStatLabel. */
+export function formatApiCountLabel(
+  sessionReady: boolean,
+  isPending: boolean,
+  raw: number | null | undefined,
+): string {
+  if (!sessionReady) return REWARDS_DASH
+  if (isPending && raw == null) return REWARDS_LOADING
+  if (raw == null) return REWARDS_DASH
+  return String(raw)
+}
+
 function formatDaoGrantStatus(status: DaoGrantStatus, labels: RewardLogStatusLabels): string {
   switch (status) {
     case 'READY':

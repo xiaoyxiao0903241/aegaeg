@@ -19,29 +19,53 @@ type WidgetHeaderProps = {
   title: ReactNode
 }
 
+function WidgetHeaderCopy({
+  copyClassName,
+  subtitle,
+  subtitleClassName,
+  title,
+  titleClassName,
+}: {
+  copyClassName: string
+  subtitle?: ReactNode
+  subtitleClassName: string
+  title: ReactNode
+  titleClassName: string
+}) {
+  return (
+    <div className={copyClassName}>
+      <Text as="h1" variant="panel" className={titleClassName}>
+        {title}
+      </Text>
+      {subtitle ? (
+        <Text
+          as="p"
+          variant="support"
+          tone="muted-foreground"
+          className={cn(
+            subtitleClassName,
+            'leading-[1.4] [&_strong]:font-bold [&_strong]:text-primary',
+          )}
+        >
+          {subtitle}
+        </Text>
+      ) : null}
+    </div>
+  )
+}
+
 export function WidgetHeader({ action, className, subtitle, title }: WidgetHeaderProps) {
   const styles = widgetHeader()
 
   return (
     <div className={cn(styles.root(), className)}>
-      <div className={styles.copy()}>
-        <Text as="h1" variant="panel" className={styles.title()}>
-          {title}
-        </Text>
-        {subtitle ? (
-          <Text
-            as="p"
-            variant="support"
-            tone="muted-foreground"
-            className={cn(
-              styles.subtitle(),
-              'leading-[1.4] [&_strong]:font-bold [&_strong]:text-primary',
-            )}
-          >
-            {subtitle}
-          </Text>
-        ) : null}
-      </div>
+      <WidgetHeaderCopy
+        copyClassName={styles.copy()}
+        subtitle={subtitle}
+        subtitleClassName={styles.subtitle()}
+        title={title}
+        titleClassName={styles.title()}
+      />
       {action}
     </div>
   )
@@ -87,24 +111,13 @@ export function WidgetSubpageHeader({
         </button>
         {action}
       </div>
-      <div className={styles.copy()}>
-        <Text as="h1" variant="panel" className={styles.title()}>
-          {title}
-        </Text>
-        {subtitle ? (
-          <Text
-            as="p"
-            variant="support"
-            tone="muted-foreground"
-            className={cn(
-              styles.subtitle(),
-              'leading-[1.4] [&_strong]:font-bold [&_strong]:text-primary',
-            )}
-          >
-            {subtitle}
-          </Text>
-        ) : null}
-      </div>
+      <WidgetHeaderCopy
+        copyClassName={styles.copy()}
+        subtitle={subtitle}
+        subtitleClassName={styles.subtitle()}
+        title={title}
+        titleClassName={styles.title()}
+      />
     </div>
   )
 }

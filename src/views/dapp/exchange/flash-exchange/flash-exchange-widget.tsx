@@ -4,7 +4,6 @@ import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -16,8 +15,8 @@ import {
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { useFlashExchangeView } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-view'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
-import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { Segment } from '~/shared/ui/segment'
+import { ExchangeWidgetSessionFooter } from '~/views/dapp/exchange/exchange-widget-session-footer'
 import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
 
 export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
@@ -130,13 +129,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           </DappActionRow>
         ) : null}
 
-        {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
-
-        {vm.blockHint ? (
-          <DappInlineAlert className="mt-3" role="status">
-            {vm.blockHint}
-          </DappInlineAlert>
-        ) : null}
+        <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
       </DappWidgetStack>
     </>
   )

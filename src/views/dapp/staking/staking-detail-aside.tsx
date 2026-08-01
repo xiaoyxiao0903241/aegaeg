@@ -8,9 +8,9 @@ import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Card } from '~/shared/ui/card'
 import { MetricCard } from '~/shared/ui/metric-card'
-import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
+import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
 
 const PLACEHOLDER = '—'
@@ -260,25 +260,19 @@ export function StakingDetailAside({
 
       <DappDetailBlock>
         <DappContentHeading>{chartTitle}</DappContentHeading>
-        <Card surface="outlined" className="grid gap-3 rounded-2xl p-4 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <StakingChartCard
+          chartRange={chartRange}
+          header={
             <Text as="strong" className="text-xl font-semibold" variant="copy">
               {PLACEHOLDER}
             </Text>
-            <Segment
-              aria-label={t.staking.aside.chartRangeAria}
-              onChange={setChartRange}
-              options={t.staking.aside.chartRanges.map((label) => ({ label, value: label }))}
-              tone="ink"
-              value={chartRange}
-            />
-          </div>
-          <div className="flex min-h-40 items-center justify-center rounded-lg border border-dashed border-border">
-            <Text as="span" tone="muted-foreground" variant="copy">
-              {PLACEHOLDER}
-            </Text>
-          </div>
-        </Card>
+          }
+          placeholder={PLACEHOLDER}
+          rangeAriaLabel={t.staking.aside.chartRangeAria}
+          rangeLabels={t.staking.aside.chartRanges}
+          setChartRange={setChartRange}
+          surface="outlined"
+        />
       </DappDetailBlock>
 
       <DappDetailBlock>

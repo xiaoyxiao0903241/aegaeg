@@ -2,9 +2,8 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
+import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { FaqList } from '~/shared/ui/faq-list'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 import { useRewardsGrantContentView } from '~/views/dapp/rewards/detail/use-rewards-grant-content-view'
@@ -52,19 +51,17 @@ export function RewardsGrantContent() {
             />
           }
         >
-          <ResponsiveTable
+          <DappTableBody
             colWidths={
               isIssue
                 ? ['160px', '140px', '60px', '130px', '70px', '1fr']
                 : ['190px', '160px', '1fr']
             }
+            emptyTitle={isIssue ? grant.emptyIssue : grant.emptyClaim}
             headers={[...(isIssue ? grant.issueColumns : grant.claimColumns)]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {!recordsLoading && recordRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={isIssue ? grant.emptyIssue : grant.emptyClaim} />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

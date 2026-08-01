@@ -21,8 +21,10 @@ import {
 } from '~/web3/staking/use-staking-queries'
 import { useMigrationUser } from '~/web3/migration/use-migration-queries'
 import { evaluateNeedReferral } from '~/core/referral/need-referral'
-import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
-import { writeCtaDisabled } from '~/core/wallet/write-cta'
+import {
+  bindUnlockedAmountEditors,
+  evaluateStakingAmountWrite,
+} from '~/views/dapp/staking/staking-amount-write-ui'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitBondZap, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
@@ -122,23 +124,16 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
 
   const isSubmitting = zap.isPending
 
-  const locked = writeCtaDisabled({
+  const { canSubmit, writePhase } = evaluateStakingAmountWrite({
     unknownReceiptLocked: zap.isLocked,
     isSubmitting,
     writeReady,
     walletReady,
-  })
-
-  const canSubmit =
-    !locked && amountInput.amountIn > 0n && blockReason == null && preflightQuery.data !== undefined
-
-  const writePhase = evaluateWriteButtonPhase({
-    walletReady,
-    writeReady,
+    amountIn: amountInput.amountIn,
+    blockReason,
+    preflightReady: preflightQuery.data !== undefined,
     needReferral,
     accountMigrated: migration.isOldAccount === true,
-    moneyBlock: blockReason,
-    isSubmitting,
   })
 
   const market = marketQuery.data
@@ -190,15 +185,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     zap.clearLock()
   }
 
-  function setAmount(value: string) {
-    unlock()
-    amountInput.setAmount(value)
-  }
-
-  function fillMax() {
-    unlock()
-    amountInput.fillPercent(100)
-  }
+  const { setAmount, fillMax } = bindUnlockedAmountEditors(unlock, amountInput)
 
   function changePeriod(next: string) {
     if (next === period) return

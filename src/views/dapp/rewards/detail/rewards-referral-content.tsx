@@ -1,9 +1,8 @@
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
+import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
@@ -53,30 +52,26 @@ export function RewardsReferralContent() {
       <DappDetailBlock>
         <DappContentHeading>{referral.recordsTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
-          <ResponsiveTable
+          <DappTableBody
             colWidths={['190px', '160px', '160px', '1fr']}
+            emptyTitle={referral.emptyRecords}
             headers={[...referral.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {!recordsLoading && recordRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={referral.emptyRecords} />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{referral.referralsTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
-          <ResponsiveTable
+          <DappTableBody
             colWidths={['200px', '170px', '110px', '1fr']}
+            emptyTitle={referral.emptyReferrals}
             headers={[...referral.referralsColumns]}
             isLoading={referralsLoading}
             rows={referralRows}
           />
-          {!referralsLoading && referralRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={referral.emptyReferrals} />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

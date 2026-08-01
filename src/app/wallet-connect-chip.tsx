@@ -98,6 +98,20 @@ function loginToastCopy(t: ReturnType<typeof useI18n>['messages']) {
   }
 }
 
+async function loginWithErrorToast(
+  login: () => Promise<unknown>,
+  messages: ReturnType<typeof loginToastCopy>,
+) {
+  try {
+    await login()
+  } catch (error) {
+    const message = loginToastMessage(error, useAuthStore.getState().loginError, messages)
+    if (message) {
+      toast.error(message)
+    }
+  }
+}
+
 function ConnectedWalletChip() {
   const account = useActiveAccount()
   const { session, sessionReady, loginError, login } = useAuth()
@@ -114,18 +128,7 @@ function ConnectedWalletChip() {
 
   async function handleClick() {
     if (loginError) {
-      try {
-        await login()
-      } catch (error) {
-        const message = loginToastMessage(
-          error,
-          useAuthStore.getState().loginError,
-          loginToastCopy(t),
-        )
-        if (message) {
-          toast.error(message)
-        }
-      }
+      await loginWithErrorToast(login, loginToastCopy(t))
       return
     }
 
@@ -177,35 +180,8 @@ function WalletConnectButton({
   const connectLabel = label ?? (needsSignIn ? t.wallet.signInRequired : t.common.connectWallet)
 
   async function handleClick() {
-    if (loginError) {
-      try {
-        await login()
-      } catch (error) {
-        const message = loginToastMessage(
-          error,
-          useAuthStore.getState().loginError,
-          loginToastCopy(t),
-        )
-        if (message) {
-          toast.error(message)
-        }
-      }
-      return
-    }
-
-    if (needsSignIn) {
-      try {
-        await login()
-      } catch (error) {
-        const message = loginToastMessage(
-          error,
-          useAuthStore.getState().loginError,
-          loginToastCopy(t),
-        )
-        if (message) {
-          toast.error(message)
-        }
-      }
+    if (loginError || needsSignIn) {
+      await loginWithErrorToast(login, loginToastCopy(t))
       return
     }
 

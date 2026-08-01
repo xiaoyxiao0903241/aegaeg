@@ -2,7 +2,6 @@ import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -10,9 +9,9 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow-button'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
-import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { useBurnExchangeView } from '~/views/dapp/exchange/burn/use-burn-exchange-view'
 import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
+import { ExchangeWidgetSessionFooter } from '~/views/dapp/exchange/exchange-widget-session-footer'
 
 export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
   const vm = useBurnExchangeView(burn)
@@ -88,13 +87,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
           </DappActionRow>
         ) : null}
 
-        {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
-
-        {vm.blockHint ? (
-          <DappInlineAlert className="mt-3" role="status">
-            {vm.blockHint}
-          </DappInlineAlert>
-        ) : null}
+        <ExchangeWidgetSessionFooter blockHint={vm.blockHint} sessionReady={vm.sessionReady} />
       </DappWidgetStack>
     </>
   )

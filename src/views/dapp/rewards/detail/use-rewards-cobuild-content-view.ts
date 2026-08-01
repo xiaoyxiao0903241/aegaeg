@@ -8,6 +8,7 @@ import {
   useRankRewardTeamMembers,
 } from '~/hooks/use-api-data'
 import {
+  formatApiCountLabel,
   formatApiStatLabel,
   formatMakingRankLabel,
   mapRankRewardLogToRow,
@@ -50,13 +51,11 @@ export function useRewardsCobuildContentView() {
     summaryQuery.isLoading,
     summary?.active_stake_balance,
   )
-  const referralCount = !sessionReady
-    ? REWARDS_DASH
-    : summaryQuery.isLoading && summary == null
-      ? '…'
-      : summary != null
-        ? String(summary.direct_referral_count)
-        : REWARDS_DASH
+  const referralCount = formatApiCountLabel(
+    sessionReady,
+    summaryQuery.isLoading,
+    summary?.direct_referral_count,
+  )
   const contributionValue = formatApiStatLabel(
     sessionReady,
     summaryQuery.isLoading,
@@ -72,13 +71,11 @@ export function useRewardsCobuildContentView() {
     summaryQuery.isLoading,
     summary?.active_stake_balance,
   )
-  const reqAccounts = !sessionReady
-    ? REWARDS_DASH
-    : summaryQuery.isLoading && summary == null
-      ? '…'
-      : summary != null
-        ? String(summary.effective_direct_referral_count)
-        : REWARDS_DASH
+  const reqAccounts = formatApiCountLabel(
+    sessionReady,
+    summaryQuery.isLoading,
+    summary?.effective_direct_referral_count,
+  )
   const reqPerformance = formatApiStatLabel(
     sessionReady,
     summaryQuery.isLoading,

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { Text } from '~/shared/ui/text'
+import { useDismissOnOutside } from '~/shared/ui/use-dismiss-on-outside'
 import { cn } from '~/shared/lib/utils'
 
 export type ExchangeTokenPickerOption = {
@@ -38,28 +39,7 @@ export function ExchangeTokenPicker({
   const wrapRef = useRef<HTMLSpanElement>(null)
   const selected = options.find((option) => option.key === value) ?? options[0]
 
-  useEffect(() => {
-    if (!open) return
-
-    function handlePointerDown(event: PointerEvent) {
-      const target = event.target
-      if (!(target instanceof Node)) return
-      if (wrapRef.current && !wrapRef.current.contains(target)) {
-        setOpen(false)
-      }
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setOpen(false)
-    }
-
-    document.addEventListener('pointerdown', handlePointerDown, { passive: true })
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown)
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [open])
+  useDismissOnOutside(open, wrapRef, () => setOpen(false))
 
   if (!selected) return null
 
