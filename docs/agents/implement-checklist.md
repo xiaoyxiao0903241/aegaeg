@@ -13,10 +13,11 @@ Pre-Design → 写盘（一页一帧）→ Post-Design + Post-Code → pnpm chec
 ```
 [ ] ticket / Spec；未重开已锁决策
 [ ] 手册相关章 **逐行**已读（ui-leaf §2.1）；leaf 有章节清单 + 逐条对照表（挂 `G-id` ← [`.scratch/.../manual-coverage/`](../../.scratch/dapp-7rail-parity/research/manual-coverage/README.md)）；能口述钱/门闸
+[ ] **后端 OpenAPI**（ui-leaf §2.1b）：`~/Downloads/新/api-docs.html` 相关 path 的 summary/description/schema 已读；有字段 → 接线计划；皆无 → 缺口进 [`dapp-data-gaps.md`](../dapp-data-gaps.md)
 [ ] **R4a**：手册有写/读 → 跟手册；手册沉默 → 查可证旧码并保持/恢复（禁静默拆旧写；禁发明第三条写链）
 [ ] DApp：WebBridge 实录五字段已写（ui-leaf §2.2）；非 DApp 无原型：N/A + 路径证据
 [ ] Figma fileKey + PC frame；get_design_context 页+子
-[ ] 动态审计表；leaf UI 列∥钱路列（R5a：手册沉默不砍控件）
+[ ] 动态审计表；leaf UI 列∥钱路列（R5a：手册沉默不砍控件；**有链上/API 尽量接**）
 [ ] 「稿无代码有」列
 [ ] Pre-Design 证据齐（独立审默认可压到 R7，除非用户要求写前再审）
 [ ] DOM 就绪；src-layout；写链 fail-closed
@@ -26,8 +27,9 @@ Pre-Design → 写盘（一页一帧）→ Post-Design + Post-Code → pnpm chec
 
 ```
 [ ] 只改本帧清单；本页未 page-done 不开下一帧
-[ ] 稿面控件 UI MUST 已实现（手册缺数 → 缺口记文档 + 值 `—`；禁因此跳过 UI）
-[ ] deletion-first；假数删
+[ ] 稿面控件 UI MUST 已实现（手册/API 缺数 → 缺口记 [`dapp-data-gaps.md`](../dapp-data-gaps.md) + 诚实空；禁因此跳过 UI）
+[ ] 动态数字：优先链上读和/或后端 API；假数删
+[ ] deletion-first
 [ ] i18n：PC SSOT；键齐；真译可 locale-DEFER
 [ ] 子代理 = cursor-grok-4.5-high only
 ```
@@ -56,15 +58,15 @@ Pre-Design → 写盘（一页一帧）→ Post-Design + Post-Code → pnpm chec
 ## R7（commit 前）
 
 ```
-[ ] Post-Design：实录五字段 + R5a + 手册逐行对照表；缺 → Critical（禁「DEFER 不挡」）
-[ ] Post-Code：假数 / 稿外 / flip 冒充 picker / 手册注意项未落地 / **R4a**（手册沉默却拆旧写、或发明无据写链）
+[ ] Post-Design：实录五字段 + R5a + 手册逐行对照表 + **API 对照（§2.1b）**；缺 → Critical（禁「DEFER 不挡」）
+[ ] Post-Code：假数 / 稿外 / flip 冒充 picker / 手册注意项未落地 / **有 API 未接却标无源** / **R4a**
 [ ] Critical=0；结论落盘
 [ ] 用户明示才 commit → 才改 Status=page-done
 ```
 
 ## `/implement`（单帧）
 
-手册逐行对照 → WebBridge → Figma leaf → 动态审计 → 实现 → 回看 → check → R7 → commit → page-done → **下一帧**。
+手册逐行对照 → **后端 OpenAPI 对照** → WebBridge → Figma leaf → 动态审计 → 实现（尽量接线）→ 回看 → check → R7 → commit → page-done → **下一帧**。
 
 ## 报告
 
