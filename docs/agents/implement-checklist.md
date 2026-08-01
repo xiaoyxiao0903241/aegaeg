@@ -45,15 +45,15 @@ Pre-Design → 写盘（一页一帧）→ Post-Design + Post-Code → pnpm chec
 
 ## 习惯（反例）
 
-| 做                                  | 反例                                                                                                     |
-| ----------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| 控件跟 Figma/原型；钱跟手册（R5a）  | 「稿∩手册才 MUST」砍下拉                                                                                 |
-| 手册有→手册；手册无→可证旧码（R4a） | 贴稿关写拆掉旧 CommunityFund/Incentive 等；或发明手册/旧码都没有的写链                                   |
-| 任意页走 ui-leaf §3–§5              | 截图估；check 绿冒充完成                                                                                 |
-| 诚实空                              | 演示数 / 假 1:1                                                                                          |
-| shared 只 chrome                    | 业务 presets 进 primitive                                                                                |
-| 同 chrome 一组件；props 传数据      | index 分支 / `*Copy` / 万能卡；见 [`../foundation/component-usage.md`](../foundation/component-usage.md) |
-| 不可点且同视觉 → 非 button          | 裸 `disabled` 吃全局灰态 + 剥阴影                                                                        |
+| 做                                     | 反例                                                                                                     |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 控件跟 Figma/原型；钱跟手册+API（R5a） | 「稿∩手册才 MUST」砍下拉；有 API 却标无源                                                                |
+| 手册有→手册；手册无→可证旧码（R4a）    | 贴稿关写拆掉旧 CommunityFund/Incentive 等；或发明手册/旧码都没有的写链                                   |
+| 任意页走 ui-leaf §3–§5                 | 截图估；check 绿冒充完成                                                                                 |
+| 诚实空                                 | 演示数 / 假 1:1                                                                                          |
+| shared 只 chrome                       | 业务 presets 进 primitive                                                                                |
+| 同 chrome 一组件；props 传数据         | index 分支 / `*Copy` / 万能卡；见 [`../foundation/component-usage.md`](../foundation/component-usage.md) |
+| 不可点且同视觉 → 非 button             | 裸 `disabled` 吃全局灰态 + 剥阴影                                                                        |
 
 ## R7（commit 前）
 
