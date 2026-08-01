@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react'
 
 import { buildCalcEstimate } from '~/core/staking/build-calc-estimate'
+import { CALC_MAX_DAYS, epochRebasePctFrom1e18 } from '~/core/staking/staking-yield-display'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
+import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 export function useCalcView() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
   const setResult = useCalcEstimateStore((state) => state.setResult)
   const spotUsd = useAgxPriceUsd()
+  const overviewQuery = useStakingHubOverviewQuery()
   const [product, setProduct] = useState<CalcProduct>('stake')
   const [period, setPeriod] = useState<string>('liquid')
   const [amount, setAmount] = useState('1')
   const [price, setPrice] = useState('0')
   const [days, setDays] = useState(100)
   const [priceSeeded, setPriceSeeded] = useState(false)
+
+  const epochRebasePct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
 
   // Seed editable price once from live spot when available.
   useEffect(() => {
@@ -28,8 +33,17 @@ export function useCalcView() {
 
   // Live sync: every left-rail change updates right-rail result (Figma 测算结果).
   useEffect(() => {
-    setResult(buildCalcEstimate({ product, period, amount, price, days }))
-  }, [product, period, amount, price, days, setResult])
+    setResult(
+      buildCalcEstimate({
+        product,
+        period,
+        amount,
+        price,
+        days,
+        epochRebasePct,
+      }),
+    )
+  }, [product, period, amount, price, days, epochRebasePct, setResult])
 
   const periodOptions =
     product === 'stake'
@@ -58,6 +72,10 @@ export function useCalcView() {
     setPeriod(next === 'stake' || next === 'xmine' ? 'liquid' : '180')
   }
 
+  function onDaysChange(next: number) {
+    setDays(Math.min(CALC_MAX_DAYS, Math.max(1, next)))
+  }
+
   const tokenSrc = product === 'xmine' ? 'gagx' : product === 'stake' ? 'agx' : 'usd1'
 
   return {
@@ -82,6 +100,6 @@ export function useCalcView() {
     onPeriodChange: setPeriod,
     onAmountChange: setAmount,
     onPriceChange: setPrice,
-    onDaysChange: setDays,
+    onDaysChange,
   }
 }

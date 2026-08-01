@@ -4,11 +4,13 @@ import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { CALC_MAX_DAYS } from '~/core/staking/staking-yield-display'
 import { AmountBox } from '~/shared/ui/amount-box'
 import { Card } from '~/shared/ui/card'
 import { Chip } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
+import { CalcDaySlider } from '~/views/dapp/staking/calc/calc-day-slider'
 import { useCalcView } from '~/views/dapp/staking/calc/use-calc-view'
 
 /** Figma calc `ptabs`/`perRow` 4462:600 — htab Chip h-28，≠ Segment 滑动轨. */
@@ -145,20 +147,21 @@ export function CalcWidget() {
               {t.staking.calc.dayBubble.replace('{day}', String(vm.days))}
             </Text>
           </div>
-          <input
-            aria-label={t.staking.calc.daysAria}
-            className="w-full accent-coral-emphasis"
-            max={730}
-            min={1}
-            onChange={(event) => vm.onDaysChange(Number(event.target.value))}
-            type="range"
+          <CalcDaySlider
+            ariaLabel={t.staking.calc.daysAria}
+            max={CALC_MAX_DAYS}
+            onChange={vm.onDaysChange}
             value={vm.days}
           />
         </div>
 
-        {/* 稿有「计算」；结果已 live-sync — 钮保留为视觉 chrome，禁用避免空点击 */}
-        <DappActionRow>
-          <DappActionButton density="external" disabled type="button">
+        {/* Figma `bigBtn` 4462:641 — coral fill；form→CTA 疏离（稿 gap-24） */}
+        <DappActionRow className="mt-6">
+          <DappActionButton
+            className="bg-coral-emphasis text-white"
+            density="external"
+            type="button"
+          >
             {t.staking.calc.submit}
           </DappActionButton>
         </DappActionRow>

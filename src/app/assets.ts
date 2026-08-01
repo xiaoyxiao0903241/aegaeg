@@ -104,7 +104,7 @@ export const dappAssets = {
   tokenCardRays: '/assets/figma/dapp/token-card-rays.svg',
   tokenCardCorner: '/assets/figma/dapp/token-card-corner.svg',
   tokenAgx: tokenFlywheelIcons.agxIcon,
-  tokenGagx: tokenCarouselIcons.gagxIcon,
+  tokenGagx: tokenFlywheelIcons.gagxIcon,
   tokenUsd1: tokenFlywheelIcons.usd1Icon,
   tokenX: tokenFlywheelIcons.xIcon,
   usdt: '/assets/figma/dapp/token-usdt.svg',

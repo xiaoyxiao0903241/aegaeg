@@ -86,11 +86,17 @@ function tipDateFromTime(time: Time | undefined): string | null {
 
 /** TradingView Lightweight Charts area — Figma hub chart-card plot chrome. */
 export function StakingTvAreaChart({
+  axisLabels: axisLabelsProp,
   className,
+  formatTipDate,
   height = 170,
   points,
 }: {
+  /** Override auto month axis (e.g. calc day labels). */
+  axisLabels?: readonly string[]
   className?: string
+  /** Crosshair date line; defaults to `YYYY-MM`. */
+  formatTipDate?: (time: Time) => string | null
   height?: number
   points: readonly StakingTvAreaPoint[]
 }) {
@@ -99,7 +105,9 @@ export function StakingTvAreaChart({
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const [tip, setTip] = useState<ChartTip | null>(null)
-  const axisLabels = pickStakingChartAxisLabels(points)
+  const axisLabels = axisLabelsProp ?? pickStakingChartAxisLabels(points)
+  const formatTipDateRef = useRef(formatTipDate)
+  formatTipDateRef.current = formatTipDate
 
   useEffect(() => {
     const host = hostRef.current
@@ -179,7 +187,7 @@ export function StakingTvAreaChart({
         setTip(null)
         return
       }
-      const dateLabel = tipDateFromTime(param.time)
+      const dateLabel = formatTipDateRef.current?.(param.time) ?? tipDateFromTime(param.time)
       if (dateLabel == null) {
         setTip(null)
         return

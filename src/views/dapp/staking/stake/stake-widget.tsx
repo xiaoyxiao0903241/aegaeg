@@ -25,6 +25,7 @@ export function StakeWidget() {
     lockLabel,
     amountLabel,
     ctaLabel,
+    yieldMeta,
     onSubmit,
     onWarmup,
   } = useStakeView()
@@ -82,13 +83,13 @@ export function StakeWidget() {
         <DappMetaPanel
           className="mt-0 gap-3 p-4"
           items={[
-            { label: t.staking.stake.meta.baseDaily, value: '0.00%' },
+            { label: t.staking.stake.meta.baseDaily, value: yieldMeta.baseDaily },
             {
               label: t.staking.stake.meta.periodYield,
-              value: '0.00%',
+              value: yieldMeta.periodYield,
               valueClassName: 'text-coral-emphasis',
             },
-            { label: t.staking.stake.meta.bonus, value: '0%' },
+            { label: t.staking.stake.meta.bonus, value: yieldMeta.bonus },
             { label: t.staking.stake.meta.lock, value: lockLabel },
             {
               label: t.staking.stake.meta.contract,

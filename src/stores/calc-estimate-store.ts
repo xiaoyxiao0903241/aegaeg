@@ -19,6 +19,8 @@ export type CalcEstimateResult = {
   /** Invested + interest (卖出总值). */
   sellUsd: number
   ratePct: number
+  /** Epoch rebase % used for this snapshot (null → zero yield). */
+  epochRebasePct: number | null
 }
 
 interface CalcEstimateStore {

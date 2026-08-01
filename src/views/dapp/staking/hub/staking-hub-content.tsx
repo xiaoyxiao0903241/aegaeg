@@ -63,7 +63,7 @@ export function StakingHubContent() {
     chartRange,
     setChartRange,
     labels,
-    tablePlaceholders,
+    periodTableRows,
     chartPoints,
     chartValueLabel,
     chartDeltaLabel,
@@ -168,30 +168,33 @@ export function StakingHubContent() {
               <tbody>
                 {table.rows
                   .filter((row) => tableSeg === 'stake' || row.id !== 'liquid')
-                  .map((row) => (
-                    <tr className="border-b border-border last:border-b-0" key={row.id}>
-                      <td className="py-3 pr-3">
-                        <Text as="span" variant="detail">
-                          {row.period}
-                        </Text>
-                      </td>
-                      <td className="py-3 pr-3">
-                        <Text as="span" variant="detail">
-                          {tablePlaceholders.baseDaily}
-                        </Text>
-                      </td>
-                      <td className="py-3 pr-3">
-                        <Text as="span" variant="detail">
-                          {tablePlaceholders.bonus}
-                        </Text>
-                      </td>
-                      <td className="py-3">
-                        <Text as="span" className="text-success" variant="detail">
-                          {tablePlaceholders.periodYield}
-                        </Text>
-                      </td>
-                    </tr>
-                  ))}
+                  .map((row) => {
+                    const cells = periodTableRows[row.id]
+                    return (
+                      <tr className="border-b border-border last:border-b-0" key={row.id}>
+                        <td className="py-3 pr-3">
+                          <Text as="span" variant="detail">
+                            {row.period}
+                          </Text>
+                        </td>
+                        <td className="py-3 pr-3">
+                          <Text as="span" variant="detail">
+                            {cells?.baseDaily ?? '0.00%'}
+                          </Text>
+                        </td>
+                        <td className="py-3 pr-3">
+                          <Text as="span" variant="detail">
+                            {cells?.bonus ?? '0%'}
+                          </Text>
+                        </td>
+                        <td className="py-3">
+                          <Text as="span" className="text-success" variant="detail">
+                            {cells?.periodYield ?? '0.00%'}
+                          </Text>
+                        </td>
+                      </tr>
+                    )
+                  })}
               </tbody>
             </table>
           </div>

@@ -2356,7 +2356,7 @@ const app = defineMessages({
         notes: 'Notes',
         notesBody: 'Local estimate only — not an on-chain quote or yield promise.',
         notesItems: [
-          'Yield compounds at base daily 0.82% (2 × rebase); term bonuses: 180d 15%, 360d 25%, 540d 35%.',
+          'Yield compounds at base daily {daily}% (2 × rebase); term bonuses: 180d 10%, 360d 15%, 540d 20%.',
           'Only principal unlocked by the selected day counts; locked principal and its yield are excluded.',
           'After deducting 1/6 of yield for burn contribution points, released principal plus yield are sold at the exit price you set.',
           'Ignores claim tax and price volatility during release; results are illustrative and vary with protocol state.',

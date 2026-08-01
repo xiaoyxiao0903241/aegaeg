@@ -1,6 +1,13 @@
 import { useState } from 'react'
 
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import {
+  baseDailyPctFromEpoch,
+  epochRebasePctFrom1e18,
+  lockedBonusBps,
+  periodYieldPct,
+  stakePeriodDays,
+} from '~/core/staking/staking-yield-display'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
@@ -16,9 +23,8 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { StakingTvAreaPoint } from '~/views/dapp/staking/staking-tv-area-chart'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
-/** Table empty — Figma yield cells use `0.00%`; bonus uses integer `0%`. */
-const YIELD_PLACEHOLDER = '0.00%'
-const BONUS_PLACEHOLDER = '0%'
+const YIELD_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`
+const BONUS_EMPTY = `${formatGroupedNumber(0, { digits: 0, trimZeros: true })}%`
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -36,10 +42,26 @@ function formatAgxGrouped(wei: bigint | undefined): string {
 }
 
 function formatRebasePct(rate1e18: bigint | null | undefined): string {
-  if (rate1e18 == null) return YIELD_PLACEHOLDER
+  if (rate1e18 == null) return YIELD_EMPTY
   const pct = formatTokenAmountToNumber(rate1e18, 18)
-  if (!Number.isFinite(pct)) return YIELD_PLACEHOLDER
+  if (!Number.isFinite(pct)) return YIELD_EMPTY
   return `${formatGroupedNumber(pct, { digits: 2 })}%`
+}
+
+function formatYieldPct(pct: number | null): string {
+  if (pct == null || !Number.isFinite(pct)) return YIELD_EMPTY
+  return `${formatGroupedNumber(pct, { digits: 2 })}%`
+}
+
+function formatBonusPct(bps: number): string {
+  return `${formatGroupedNumber(bps / 100, { digits: 0, trimZeros: true })}%`
+}
+
+export type HubPeriodTableRow = {
+  id: string
+  baseDaily: string
+  bonus: string
+  periodYield: string
 }
 
 export function useStakingHubContentView() {
@@ -98,6 +120,37 @@ export function useStakingHubContentView() {
   const chartValueLabel = formatCompactUsd(null)
   const chartDeltaLabel = formatSignedPercent(null)
 
+  const epochPct = epochRebasePctFrom1e18(overviewQuery.data?.rebaseRate1e18)
+  const baseDaily = baseDailyPctFromEpoch(epochPct)
+
+  const periodTableRows: Record<string, HubPeriodTableRow> = Object.fromEntries(
+    t.staking.hub.periodTable.rows.map((row) => {
+      if (tableSeg !== 'stake') {
+        return [
+          row.id,
+          {
+            id: row.id,
+            baseDaily: YIELD_EMPTY,
+            bonus: BONUS_EMPTY,
+            periodYield: YIELD_EMPTY,
+          },
+        ]
+      }
+      const bps = lockedBonusBps(row.id)
+      return [
+        row.id,
+        {
+          id: row.id,
+          baseDaily: formatYieldPct(baseDaily),
+          bonus: formatBonusPct(bps),
+          periodYield: formatYieldPct(
+            baseDaily == null ? null : periodYieldPct(baseDaily, stakePeriodDays(row.id)),
+          ),
+        },
+      ]
+    }),
+  )
+
   return {
     t,
     tableSeg,
@@ -120,11 +173,7 @@ export function useStakingHubContentView() {
       runway: t.staking.hub.runwayUnknown,
       stakers: stakersLabel,
     },
-    tablePlaceholders: {
-      baseDaily: YIELD_PLACEHOLDER,
-      bonus: BONUS_PLACEHOLDER,
-      periodYield: YIELD_PLACEHOLDER,
-    },
+    periodTableRows,
     chartPoints,
     chartValueLabel,
     chartDeltaLabel,
