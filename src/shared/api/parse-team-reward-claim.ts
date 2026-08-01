@@ -50,6 +50,13 @@ function parseUintField(record: Record<string, unknown>, keys: string[]): bigint
   return undefined
 }
 
+function assertHexBytes(value: string, field: string): `0x${string}` {
+  if (!/^0x[0-9a-fA-F]+$/.test(value) || value.length < 4 || value.length % 2 !== 0) {
+    throw new Error(`领取签名字段 ${field} 不是合法 hex：${value.slice(0, 24)}`)
+  }
+  return value as `0x${string}`
+}
+
 /**
  * Normalize the `/claim/team-reward` response into the exact arguments the
  * on-chain `claimReward(signType, amount, expireTime, salt, signature)` needs
@@ -93,10 +100,10 @@ export function parseTeamRewardClaim(payload: TeamRewardSignature): {
   }
 
   return {
-    signature: signature as `0x${string}`,
-    salt: salt as `0x${string}`,
-    signType: signType as bigint,
-    amountWei: BigInt(amountWeiStr as string),
-    expireTime: expireTime as bigint,
+    signature: assertHexBytes(signature!, 'signature'),
+    salt: assertHexBytes(salt!, 'salt'),
+    signType: signType!,
+    amountWei: BigInt(amountWeiStr!),
+    expireTime: expireTime!,
   }
 }

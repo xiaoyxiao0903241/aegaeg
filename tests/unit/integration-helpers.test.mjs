@@ -39,19 +39,22 @@ test('seasonOptionsFromPhases marks active phase from chain timestamps', async (
   assert.equal(seasons[1]?.status, 'Upcoming')
 })
 
+const VALID_SIG = '0xabcdef'
+const VALID_SALT = '0x0123'
+
 test('parseTeamRewardClaim accepts snake_case fields', async () => {
   const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
   const normalized = parseTeamRewardClaim({
-    signature: '0xabc',
-    salt: '0xsalt',
+    signature: VALID_SIG,
+    salt: VALID_SALT,
     amount_wei: '1000000000000000000',
     sign_type: '1',
     expire_time: '1735689600',
   })
 
-  assert.equal(normalized.signature, '0xabc')
-  assert.equal(normalized.salt, '0xsalt')
+  assert.equal(normalized.signature, VALID_SIG)
+  assert.equal(normalized.salt, VALID_SALT)
   assert.equal(normalized.amountWei, 1000000000000000000n)
   assert.equal(normalized.signType, 1n)
   assert.equal(normalized.expireTime, 1735689600n)
@@ -61,8 +64,8 @@ test('parseTeamRewardClaim accepts camelCase and decimal amount', async () => {
   const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
   const normalized = parseTeamRewardClaim({
-    signature: '0xsig',
-    salt: '0xsalt',
+    signature: VALID_SIG,
+    salt: VALID_SALT,
     amount: '1.5',
     signType: '2',
     expireAt: '2024-01-01T00:00:00.000Z',
@@ -77,8 +80,8 @@ test('parseTeamRewardClaim prefers amount_wei over decimal amount', async () => 
   const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
   const normalized = parseTeamRewardClaim({
-    signature: '0xsig',
-    salt: '0xsalt',
+    signature: VALID_SIG,
+    salt: VALID_SALT,
     amount: '9.9',
     amount_wei: '1000000000000000000',
     sign_type: '1',
@@ -92,8 +95,8 @@ test('parseTeamRewardClaim truncates fraction beyond 18 decimals', async () => {
   const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
   const normalized = parseTeamRewardClaim({
-    signature: '0xsig',
-    salt: '0xsalt',
+    signature: VALID_SIG,
+    salt: VALID_SALT,
     amount: '0.1234567890123456789',
     signType: '1',
     expireTime: '1735689600',
@@ -106,7 +109,7 @@ test('parseTeamRewardClaim throws with payload keys when fields missing', async 
   const { parseTeamRewardClaim } = await loadModule('/src/shared/api/parse-team-reward-claim.ts')
 
   assert.throws(
-    () => parseTeamRewardClaim({ signature: '0xsig' }),
+    () => parseTeamRewardClaim({ signature: VALID_SIG }),
     (error) => {
       assert.ok(error instanceof Error)
       assert.match(error.message, /领取签名缺少字段/)

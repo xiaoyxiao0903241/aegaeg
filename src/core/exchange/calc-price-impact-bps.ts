@@ -18,7 +18,7 @@ export function calcV2PriceImpactBps({
   const midOut = (amountIn * reserveOut) / reserveIn
   if (midOut === 0n) return 0
 
-  const diff = midOut > amountOut ? midOut - amountOut : amountOut - midOut
+  const diff = midOut > amountOut ? midOut - amountOut : 0n
   const bps = Number((diff * 10000n) / midOut)
   return Number.isFinite(bps) ? bps : 0
 }

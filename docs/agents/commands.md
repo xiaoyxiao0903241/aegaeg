@@ -16,6 +16,7 @@
 | 命令                                         | 用途                                                                                                                                         |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`pnpm check`**                             | **收工最小门禁**：`tsc -b` + `lint:src` + `lint:architecture` + `lint:hex` + `lint:css` + `lint:deadcode` + **`format:check`** + `test:unit` |
+| `pnpm build:tokens`                          | 从 `tokens.json` 生成 `theme.css` / `tokens.ts`；改色后必跑；**勿手改生成文件**（`--app-claim-restake` 等别名在 generator）                  |
 | `pnpm build`                                 | tokens + `tsc -b` + render-home + Vite production build（**CI 强制**）                                                                       |
 | `pnpm probe:bundle`                          | `build` 后：Home sync 污染标记 / 体积上限 → 失败 exit 1（**CI 强制**）                                                                       |
 | `pnpm audit:prod`                            | `pnpm audit --prod --audit-level high`（CI 单独 job，`continue-on-error`：传递依赖洞可见但不挡 merge）                                       |

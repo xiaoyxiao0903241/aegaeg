@@ -24,6 +24,16 @@ test('calcV2PriceImpactBps measures mid vs execution', async () => {
     }),
     0,
   )
+  // Better-than-mid execution is not adverse impact (do not warn).
+  assert.equal(
+    calcV2PriceImpactBps({
+      amountIn: 10n ** 18n,
+      amountOut: 2n * 10n ** 9n,
+      reserveIn: 10n ** 24n,
+      reserveOut: 10n ** 15n,
+    }),
+    0,
+  )
 })
 
 test('gas estimate empty and tilde grouping use formatGroupedNumber', async () => {

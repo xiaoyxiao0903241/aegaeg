@@ -62,6 +62,7 @@
   --ring: var(--primary);
   --success: #2bab6a;
   --success: oklch(69.46% 0.1551 159.22);
+  --claim-restake: var(--success);
   --dark: #111625;
   --dark: oklch(19.25% 0.0189 270.25);
   --inverse: #fff;
@@ -293,6 +294,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-success: var(--success);
+  --color-claim-restake: var(--claim-restake);
   --color-dark: var(--dark);
   --color-inverse: var(--inverse);
   --color-inverse-muted: var(--inverse-muted);
@@ -348,6 +350,8 @@
   --dapp-h5-gradient-top: var(--app-h5-gradient-top);
   /* Home/DApp body wash — was bare oklch in shared.css */
   --app-body-wash: oklch(96% 0.028 45 / 70%);
+  /* Claim Mixed restake rail — alias of semantic claim-restake (tokens.json → --claim-restake) */
+  --app-claim-restake: var(--claim-restake);
 
   --shadow-bleed: 1.5rem;
   --shadow-bleed-subtle: 1.75rem;

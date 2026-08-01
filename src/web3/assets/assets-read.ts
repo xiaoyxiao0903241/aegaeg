@@ -17,6 +17,8 @@ import {
   lpBondDepositoryAddress,
   stakePoolAddress,
 } from '~/web3/staking/staking-addresses'
+import { migrationStakeRoot } from '~/core/migration/migration-user'
+import { readMigratedFrom } from '~/web3/migration/migration-read'
 import type { StakePeriod } from '~/core/staking/staking-period'
 
 const rewardQueueAbi = parseAbi([REWARD_QUEUE_METHODS.queuePlans])
@@ -358,6 +360,11 @@ export async function readXminePosition(
   user: Address,
   client: ChainReadClient = bscReadClient,
 ): Promise<AssetsXminePosition> {
+  // Handbook xstakingpool.md: `stakes` is a raw mapping — resolve migration root first.
+  // Business views (`pendingReward` / `miningStakeAmountOf`) take the canonical address.
+  const migratedFrom = await readMigratedFrom(user, client)
+  const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
+
   const [pending, miningStake, stake] = await Promise.all([
     client.readContract({
       address: BSC_CONTRACTS.xStakingPool,
@@ -375,7 +382,7 @@ export async function readXminePosition(
       address: BSC_CONTRACTS.xStakingPool,
       abi: xmineAbi,
       functionName: 'stakes',
-      args: [user],
+      args: [stakeRoot],
     }),
   ])
   const [gons, warmupGons, , warmupEndTime] = stake as readonly [

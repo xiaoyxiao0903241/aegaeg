@@ -64,6 +64,7 @@ export const REFERRAL_METHODS = {
 export const ACCOUNT_MIGRATION_METHODS = {
   migrationEnabled: 'function migrationEnabled() view returns (bool)',
   isOldAccount: 'function isOldAccount(address account) view returns (bool)',
+  migratedFrom: 'function migratedFrom(address account) view returns (address)',
 } as const
 
 export const USD1_SWAP_METHODS = {

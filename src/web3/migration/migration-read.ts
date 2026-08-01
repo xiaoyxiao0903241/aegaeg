@@ -8,6 +8,7 @@ import type { MigrationStatus } from '~/core/migration/migration-user'
 const migrationReadAbi = parseAbi([
   ACCOUNT_MIGRATION_METHODS.migrationEnabled,
   ACCOUNT_MIGRATION_METHODS.isOldAccount,
+  ACCOUNT_MIGRATION_METHODS.migratedFrom,
 ])
 
 async function readMigrationEnabled(client: ChainReadClient = bscReadClient): Promise<boolean> {
@@ -26,6 +27,19 @@ async function readIsOldAccount(
     address: BSC_CONTRACTS.accountMigrationManager,
     abi: migrationReadAbi,
     functionName: 'isOldAccount',
+    args: [address as `0x${string}`],
+  })
+}
+
+/** First migration root for public mapping getters; zero address → current. */
+export async function readMigratedFrom(
+  address: string,
+  client: ChainReadClient = bscReadClient,
+): Promise<`0x${string}`> {
+  return client.readContract({
+    address: BSC_CONTRACTS.accountMigrationManager,
+    abi: migrationReadAbi,
+    functionName: 'migratedFrom',
     args: [address as `0x${string}`],
   })
 }

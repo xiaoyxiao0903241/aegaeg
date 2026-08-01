@@ -1,28 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { loadModule } from './load-module.mjs'
 
-const SECONDS_PER_DAY = 86_400n
-
-function matchPlanIndexByDurationDays(plans, days) {
-  const target = BigInt(days) * SECONDS_PER_DAY
-  for (const plan of plans) {
-    if (plan.exists === false) continue
-    if (plan.durationSeconds === target) return plan.index
-  }
-  return null
-}
-
-function restakeBpsFromPct(restakePct) {
-  const pct = Math.min(100, Math.max(0, Math.round(restakePct)))
-  return pct * 100
-}
-
-function claimSplitFromReleasePct(releasePct) {
-  const release = Math.min(100, Math.max(0, Math.round(releasePct)))
-  return { releasePct: release, restakePct: 100 - release }
-}
-
-test('matchPlanIndexByDurationDays maps UI days to raw index', () => {
+test('matchPlanIndexByDurationDays maps UI days to raw index', async () => {
+  const { matchPlanIndexByDurationDays, SECONDS_PER_DAY } = await loadModule(
+    '/src/core/assets/claim-plans.ts',
+  )
   const plans = [
     { index: 0, durationSeconds: 5n * SECONDS_PER_DAY },
     { index: 1, durationSeconds: 20n * SECONDS_PER_DAY },
@@ -36,7 +19,10 @@ test('matchPlanIndexByDurationDays maps UI days to raw index', () => {
   assert.equal(matchPlanIndexByDurationDays(plans, 180), null)
 })
 
-test('restake plans keep raw RestakeConfig index (not filtered order)', () => {
+test('restake plans keep raw RestakeConfig index (not filtered order)', async () => {
+  const { matchPlanIndexByDurationDays, SECONDS_PER_DAY } = await loadModule(
+    '/src/core/assets/claim-plans.ts',
+  )
   const plans = [
     { index: 0, durationSeconds: 180n * SECONDS_PER_DAY, exists: false },
     { index: 1, durationSeconds: 360n * SECONDS_PER_DAY },
@@ -47,7 +33,10 @@ test('restake plans keep raw RestakeConfig index (not filtered order)', () => {
   assert.equal(matchPlanIndexByDurationDays(plans, 180), null)
 })
 
-test('restakeBpsFromPct and claim split stay complementary', () => {
+test('restakeBpsFromPct and claim split stay complementary', async () => {
+  const { restakeBpsFromPct, claimSplitFromReleasePct } = await loadModule(
+    '/src/core/assets/claim-plans.ts',
+  )
   assert.equal(restakeBpsFromPct(0), 0)
   assert.equal(restakeBpsFromPct(50), 5000)
   assert.equal(restakeBpsFromPct(100), 10_000)

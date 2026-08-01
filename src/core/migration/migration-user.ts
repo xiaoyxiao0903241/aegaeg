@@ -6,6 +6,17 @@ export type MigrationStatus = {
   isOldAccount: boolean
 }
 
+const ZERO = '0x0000000000000000000000000000000000000000'
+
+/**
+ * Public mapping getters (e.g. `stakes`) need the first migration root.
+ * `migratedFrom(current) == 0` → use `current`.
+ */
+export function migrationStakeRoot(current: string, migratedFrom: string): string {
+  if (!migratedFrom || migratedFrom.toLowerCase() === ZERO) return current
+  return migratedFrom
+}
+
 /**
  * User-facing migration check (not admin).
  * - Unknown status → fail-closed (`migration_writes_closed`)

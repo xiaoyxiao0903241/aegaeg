@@ -237,7 +237,7 @@ const home = defineMessages({
     },
     {
       value: '2.1M',
-      countTarget: 210,
+      countTarget: 2.1,
       suffix: 'M',
       label: 'X固定总量',
     },

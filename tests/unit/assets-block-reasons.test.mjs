@@ -1,16 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { loadModule } from './load-module.mjs'
 
-function evaluateMixedClaim(args) {
-  if (args.amount <= 0n) return 'zeroAmount'
-  if (args.rewardAvailable < args.amount) return 'insufficientReward'
-  if (args.releasePlanIndex == null) return 'releasePlanUnresolved'
-  if (args.restakePlanIndex == null) return 'restakePlanUnresolved'
-  if (args.contribution < args.requiredContribution) return 'insufficientContribution'
-  return null
-}
+test('evaluateMixedClaim fails when live reward is below claim amount', async () => {
+  const { evaluateMixedClaim } = await loadModule('/src/core/assets/assets-block-reasons.ts')
 
-test('evaluateMixedClaim fails when live reward is below claim amount', () => {
   assert.equal(
     evaluateMixedClaim({
       amount: 100n,
@@ -24,9 +18,10 @@ test('evaluateMixedClaim fails when live reward is below claim amount', () => {
   )
 })
 
-test('evaluateMixedClaim does not treat requested amount as available', () => {
+test('evaluateMixedClaim does not treat requested amount as available', async () => {
+  const { evaluateMixedClaim } = await loadModule('/src/core/assets/assets-block-reasons.ts')
   const amount = 100n
-  // Bug pattern: rewardAvailable === amount always passes reward check
+
   assert.equal(
     evaluateMixedClaim({
       amount,

@@ -29,7 +29,8 @@ function isRevealCandidateInView(element: HTMLElement) {
 
 function setCountValue(element: HTMLElement, value: number) {
   const suffix = element.dataset.countSuffix ?? ''
-  element.textContent = `${formatGroupedNumber(value, { digits: 0, trimZeros: true })}${suffix}`
+  const digits = Number.isInteger(value) ? 0 : 1
+  element.textContent = `${formatGroupedNumber(value, { digits, trimZeros: true })}${suffix}`
 }
 
 function resetCountValue(element: HTMLElement) {
@@ -52,7 +53,9 @@ function animateCount(element: HTMLElement) {
   const tick = (now: number) => {
     const rawProgress = Math.min((now - start) / duration, 1)
     const easedProgress = 1 - Math.pow(1 - rawProgress, 3)
-    setCountValue(element, Math.round(target * easedProgress))
+    const scaled = target * easedProgress
+    const display = Number.isInteger(target) ? Math.round(scaled) : Math.round(scaled * 10) / 10
+    setCountValue(element, display)
 
     if (rawProgress < 1) {
       requestAnimationFrame(tick)
