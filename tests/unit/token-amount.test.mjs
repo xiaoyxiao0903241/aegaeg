@@ -38,6 +38,15 @@ test('formatTokenAmountDraft is ungrouped and strips trailing zeros', async () =
   assert.equal(parseTokenAmount(formatTokenAmountDraft(full, 18, 18), 18), full)
 })
 
+test('formatTokenAmountDraft at human digits hides 1-wei dust (no …000001)', async () => {
+  const { formatTokenAmountDraft } = await loadModule('/src/core/exchange/token-amount.ts')
+
+  // 17906.752442 + 1 wei at 18 decimals — full precision leaks dust into the input.
+  const withDust = 17906752442000000000001n
+  assert.equal(formatTokenAmountDraft(withDust, 18, 18), '17906.752442000000000001')
+  assert.equal(formatTokenAmountDraft(withDust, 18, 6), '17906.752442')
+})
+
 test('sanitizeTokenAmountInput strips grouping separators', async () => {
   const { sanitizeTokenAmountInput } = await loadModule('/src/core/exchange/token-amount.ts')
 
