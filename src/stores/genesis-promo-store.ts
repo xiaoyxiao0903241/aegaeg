@@ -1,9 +1,10 @@
 import { create } from 'zustand'
 
+import { genesisPromoChromeEqual } from '~/core/presale/genesis-promo-equality'
 import type { GenesisPromoSnapshot, SeasonOption } from '~/core/presale/genesis-promo-types'
 
 export type GenesisPromoState = {
-  /** Shell 时钟 SSOT（GenesisPromoSync 15s tick）。 */
+  /** Shell 时钟 SSOT（GenesisPromoSync 15s tick）。与 setPromo 分轨，勿并入 chrome 短路。 */
   nowSeconds: number
   activeSeasonNumber: number
   discountLabel: string
@@ -31,6 +32,8 @@ export const useGenesisPromoStore = create<GenesisPromoState>((set) => ({
   isLoading: true,
   promoSnapshot: null,
   seasonOptions: [],
-  setNowSeconds: (nowSeconds) => set({ nowSeconds }),
-  setPromo: (next) => set(next),
+  setNowSeconds: (nowSeconds) =>
+    set((state) => (state.nowSeconds === nowSeconds ? state : { nowSeconds })),
+  setPromo: (next) =>
+    set((state) => (genesisPromoChromeEqual(state, next) ? state : { ...state, ...next })),
 }))

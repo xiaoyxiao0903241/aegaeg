@@ -1,5 +1,5 @@
 import { DappSection } from '~/app/shell/dapp-section'
-import { useGenesisPromo } from '~/hooks/use-genesis-promo'
+import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { useI18n } from '~/i18n/use-i18n'
 import { applyMessageTemplate } from '~/shared/lib/apply-message-template'
 import {
@@ -10,7 +10,7 @@ import { InviteFlow, InviteFlowStack } from '~/views/dapp/community/community-in
 
 export function CommunityFlowSection({ isMobileViewport = false }: { isMobileViewport?: boolean }) {
   const { messages: t } = useI18n()
-  const genesis = useGenesisPromo()
+  const genesis = useGenesisPromoChrome()
 
   const inviteFlowItems = t.community.inviteFlow.items.map(({ title, body }) => ({
     copy: body,

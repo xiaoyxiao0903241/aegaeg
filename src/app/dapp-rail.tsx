@@ -5,7 +5,7 @@ import { railItems } from '~/app/assets'
 import { railIconMask, railNavLabelKeys, railTourIds } from '~/app/rail-shared'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatGenesisSeasonIntro } from '~/core/presale/genesis-promo'
-import { useGenesisPromo } from '~/hooks/use-genesis-promo'
+import { useGenesisPromoChrome } from '~/hooks/use-genesis-promo'
 import { useReleaseRailDot } from '~/hooks/use-release-rail-dot'
 import { useTurbineExchangeRailDot } from '~/hooks/use-turbine-exchange-rail-dot'
 import { useI18n } from '~/i18n/use-i18n'
@@ -39,7 +39,7 @@ const railItem = tv({
 
 function useRailTooltips() {
   const { messages: t } = useI18n()
-  const genesis = useGenesisPromo()
+  const genesis = useGenesisPromoChrome()
 
   return useMemo(
     () => ({
