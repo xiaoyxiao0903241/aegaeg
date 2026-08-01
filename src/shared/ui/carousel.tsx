@@ -7,6 +7,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -130,21 +131,35 @@ export const Carousel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement
       return () => observer.disconnect()
     }, [api])
 
+    const contextValue = useMemo(
+      () => ({
+        carouselRef: setViewportRef,
+        api,
+        opts,
+        orientation,
+        scrollPrev,
+        scrollNext,
+        canScrollPrev,
+        canScrollNext,
+        setApi,
+        plugins,
+      }),
+      [
+        setViewportRef,
+        api,
+        opts,
+        orientation,
+        scrollPrev,
+        scrollNext,
+        canScrollPrev,
+        canScrollNext,
+        setApi,
+        plugins,
+      ],
+    )
+
     return (
-      <CarouselContext.Provider
-        value={{
-          carouselRef: setViewportRef,
-          api,
-          opts,
-          orientation,
-          scrollPrev,
-          scrollNext,
-          canScrollPrev,
-          canScrollNext,
-          setApi,
-          plugins,
-        }}
-      >
+      <CarouselContext.Provider value={contextValue}>
         <div
           ref={ref}
           className={cn('relative', className)}
