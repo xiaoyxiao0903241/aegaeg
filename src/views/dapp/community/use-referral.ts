@@ -1,38 +1,43 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
-import { parseReferrerFromSearch, displayReferrer } from '~/shared/config/referral'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import {
+  parseReferrerFromSearch,
+  parseReferrerAddress,
+  displayReferrer,
+} from '~/shared/config/referral'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { usePerformance } from '~/hooks/use-api-data'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { readIsBindReferral, readReferralCount, readReferrer } from '~/web3/referral/referral-read'
 import { bindReferrer } from '~/web3/referral/referral-write'
-import { REFERRAL_BIND_ERROR, WALLET_BLOCKED } from '~/web3/contract-error-message'
+import { REFERRAL_BIND_ERROR } from '~/web3/contract-error-message'
 import { invalidateAfterReferralBind } from '~/shared/api/query/invalidate'
-import { makeWriteSession } from '~/web3/wallet/require-write-session'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useChainMutation } from '~/hooks/use-chain-mutation'
+import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import type { Address } from '~/shared/config/contracts'
+import { readAndClearBindSuccess } from '~/views/dapp/community/referral-bind-success'
 
 const BIND_COOLDOWN_MS = 5_000
 const PENDING_REFERRER_KEY = 'aegis.pendingReferrer'
 
-function readStoredPendingReferrer(): `0x${string}` | null {
-  const stored = sessionStorage.getItem(PENDING_REFERRER_KEY)
-  return stored && /^0x[a-fA-F0-9]{40}$/.test(stored) ? (stored as `0x${string}`) : null
+function readStoredPendingReferrer(): Address | null {
+  return parseReferrerAddress(sessionStorage.getItem(PENDING_REFERRER_KEY))
 }
 
-function readPendingReferrerFromEnvironment(): `0x${string}` | null {
+function readPendingReferrerFromEnvironment(): Address | null {
   return parseReferrerFromSearch(window.location.search) ?? readStoredPendingReferrer()
 }
 
 export function useReferral() {
   const account = useActiveAccount()
-  const wallet = useActiveWallet()
   const [pendingReferrer] = useState(readPendingReferrerFromEnvironment)
   const [referrerInput, setReferrerInput] = useState(() => pendingReferrer ?? '')
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isBindCooldown, setIsBindCooldown] = useState(false)
   const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Store the raw error so getErrorMessage can read the revert selector.
+  const bindSucceededRef = useRef(false)
+  // Soft precheck errors only — envelope toasts chain / unknown outcomes.
   const [error, setError] = useState<unknown>(null)
 
   const address = account?.address
@@ -76,6 +81,19 @@ export function useReferral() {
   const { sessionReady } = useDappShell()
   const performanceQuery = usePerformance(sessionReady && Boolean(address))
 
+  const bindMutation = useChainMutation({
+    path: WRITE_PATH.REFERRAL_BIND,
+    mutation: async (target: Address, session) => {
+      const parentBound = await readIsBindReferral(target, session.readClient)
+      if (!parentBound) throw REFERRAL_BIND_ERROR.PARENT_NOT_BOUND
+      await bindReferrer({ wallet: session.wallet, referrer: target })
+    },
+    onSuccess: () => {
+      bindSucceededRef.current = true
+      invalidateAfterReferralBind()
+    },
+  })
+
   const isBound = referralQuery.data?.isBound ?? false
   const referrer = referralQuery.data?.referrer ?? null
   const directCount = referralQuery.data?.directCount ?? 0n
@@ -90,50 +108,32 @@ export function useReferral() {
     [isBound, performanceQuery.data?.invite_address, referrer],
   )
 
+  const isSubmitting = bindMutation.isPending
+  const isLocked = bindMutation.isLocked
+
   const bind = useCallback(async () => {
-    if (isBindCooldown || isSubmitting) return false
+    if (isBindCooldown || isSubmitting || isLocked) return false
 
     startBindCooldown()
 
-    if (!account || !wallet) {
-      setError(WALLET_BLOCKED.NOT_CONNECTED)
-      return false
-    }
-
-    const target = (referrerInput.trim() || pendingReferrer) as `0x${string}` | null
-    if (!target || !/^0x[a-fA-F0-9]{40}$/.test(target)) {
+    const target = parseReferrerAddress(referrerInput.trim() || pendingReferrer)
+    if (!target) {
       setError(REFERRAL_BIND_ERROR.INVALID_PARENT)
       return false
     }
 
-    setIsSubmitting(true)
     setError(null)
-
-    try {
-      const { readClient } = makeWriteSession(wallet)
-      const parentBound = await readIsBindReferral(target, readClient)
-      if (!parentBound) {
-        setError(REFERRAL_BIND_ERROR.PARENT_NOT_BOUND)
-        return false
-      }
-
-      await bindReferrer({ wallet, referrer: target })
-      invalidateAfterReferralBind()
-      return true
-    } catch (caught) {
-      setError(caught)
-      return false
-    } finally {
-      setIsSubmitting(false)
-    }
+    bindSucceededRef.current = false
+    await bindMutation.mutate(target)
+    return readAndClearBindSuccess(bindSucceededRef)
   }, [
-    account,
+    bindMutation,
     isBindCooldown,
+    isLocked,
     isSubmitting,
     pendingReferrer,
     referrerInput,
     startBindCooldown,
-    wallet,
   ])
 
   const refresh = useCallback(async () => {
@@ -159,6 +159,7 @@ export function useReferral() {
       walletReady &&
       !isBound &&
       !isSubmitting &&
+      !isLocked &&
       !isBindCooldown &&
       Boolean(referrerInput.trim() || pendingReferrer),
     error,
