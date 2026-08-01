@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { cn } from '~/shared/lib/utils'
-import { useExchangeViewStore, type ExchangeView } from '~/stores/exchange-view-store'
+import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useExchangeViewMotion } from '~/stores/exchange-view-store'
+import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import type {
   BurnExchangeState,
   FlashExchangeState,
@@ -22,6 +22,13 @@ import { TurbineExchangeContent } from '~/views/dapp/exchange/turbine/turbine-ex
 const exchangeTransitionStack = tv({
   base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
 })
+
+type ExchangeSessions = {
+  trade: MarketTradeState | null
+  flash: FlashExchangeState | null
+  burn: BurnExchangeState | null
+  turbine: TurbineExchangeState | null
+}
 
 function requireTrade(trade: MarketTradeState | null): MarketTradeState {
   if (!trade) {
@@ -51,164 +58,48 @@ function requireTurbine(turbine: TurbineExchangeState | null): TurbineExchangeSt
   return turbine
 }
 
-function renderExchangeWidget(
-  displayView: ExchangeView,
-  trade: MarketTradeState | null,
-  flash: FlashExchangeState | null,
-  burn: BurnExchangeState | null,
-  turbine: TurbineExchangeState | null,
-) {
-  if (displayView === 'flash') {
-    return <FlashExchangeWidget flash={requireFlash(flash)} />
-  }
-
-  if (displayView === 'trade') {
-    return <MarketTradeWidget trade={requireTrade(trade)} />
-  }
-
-  if (displayView === 'burn') {
-    return <BurnExchangeWidget burn={requireBurn(burn)} />
-  }
-
-  if (displayView === 'turbine') {
-    return <TurbineExchangeWidget turbine={requireTurbine(turbine)} />
-  }
-
+function ExchangeWidgetBody({ trade, flash, burn, turbine }: ExchangeSessions) {
+  const view = useDappSubviewDisplayView<ExchangeView>()
+  if (view === 'flash') return <FlashExchangeWidget flash={requireFlash(flash)} />
+  if (view === 'trade') return <MarketTradeWidget trade={requireTrade(trade)} />
+  if (view === 'burn') return <BurnExchangeWidget burn={requireBurn(burn)} />
+  if (view === 'turbine') return <TurbineExchangeWidget turbine={requireTurbine(turbine)} />
   return <ExchangeHubWidget />
 }
 
-function renderExchangeContent(
-  displayView: ExchangeView,
-  trade: MarketTradeState | null,
-  flash: FlashExchangeState | null,
-  burn: BurnExchangeState | null,
-  turbine: TurbineExchangeState | null,
-) {
-  if (displayView === 'flash') {
-    return <FlashExchangeContent flash={requireFlash(flash)} />
-  }
-
-  if (displayView === 'trade') {
-    return <MarketTradeContent trade={requireTrade(trade)} />
-  }
-
-  if (displayView === 'burn') {
-    return <BurnExchangeContent burn={requireBurn(burn)} />
-  }
-
-  if (displayView === 'turbine') {
-    return <TurbineExchangeContent turbine={requireTurbine(turbine)} />
-  }
-
+function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) {
+  const view = useDappSubviewDisplayView<ExchangeView>()
+  if (view === 'flash') return <FlashExchangeContent flash={requireFlash(flash)} />
+  if (view === 'trade') return <MarketTradeContent trade={requireTrade(trade)} />
+  if (view === 'burn') return <BurnExchangeContent burn={requireBurn(burn)} />
+  if (view === 'turbine') return <TurbineExchangeContent turbine={requireTurbine(turbine)} />
   return <ExchangeHubContent />
 }
 
-function ExchangeTransitionLayers({
-  direction,
-  incoming,
-  outgoing,
-  render,
-}: {
-  direction: 'forward' | 'back'
-  incoming: ExchangeView
-  outgoing: ExchangeView
-  render: (view: ExchangeView) => ReactNode
-}) {
+export function ExchangeWidget(sessions: ExchangeSessions) {
+  const subview = useExchangeViewMotion()
   return (
-    <>
-      <div
-        className="exchange-view-layer exchange-view-layer-exit"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">{render(outgoing)}</div>
-      </div>
-      <div
-        className="exchange-view-layer exchange-view-layer-enter"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">{render(incoming)}</div>
-      </div>
-    </>
+    <DappSubviewShell
+      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
+      panel="widget"
+      subview={subview}
+      transitionClassName={exchangeTransitionStack()}
+    >
+      <ExchangeWidgetBody {...sessions} />
+    </DappSubviewShell>
   )
 }
 
-export function ExchangeWidget({
-  trade,
-  flash,
-  burn,
-  turbine,
-}: {
-  trade: MarketTradeState | null
-  flash: FlashExchangeState | null
-  burn: BurnExchangeState | null
-  turbine: TurbineExchangeState | null
-}) {
-  const view = useExchangeViewStore((state) => state.view)
-  const motion = useExchangeViewStore((state) => state.motion)
-  const direction = useExchangeViewStore((state) => state.direction)
-  const outgoingView = useExchangeViewStore((state) => state.outgoingView)
-  const incomingView = useExchangeViewStore((state) => state.incomingView)
-
-  const isTransitioning = motion && outgoingView && incomingView
-
+export function ExchangeContent(sessions: ExchangeSessions) {
+  const subview = useExchangeViewMotion()
   return (
-    <div
-      className={cn(
-        'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
-        isTransitioning && exchangeTransitionStack(),
-      )}
-      data-exchange-transitioning={isTransitioning ? 'true' : undefined}
-      data-exchange-widget-panel
+    <DappSubviewShell
+      className="min-h-0"
+      panel="detail"
+      subview={subview}
+      transitionClassName={exchangeTransitionStack()}
     >
-      {isTransitioning ? (
-        <ExchangeTransitionLayers
-          direction={direction}
-          incoming={incomingView}
-          outgoing={outgoingView}
-          render={(displayView) => renderExchangeWidget(displayView, trade, flash, burn, turbine)}
-        />
-      ) : (
-        renderExchangeWidget(view, trade, flash, burn, turbine)
-      )}
-    </div>
-  )
-}
-
-export function ExchangeContent({
-  trade,
-  flash,
-  burn,
-  turbine,
-}: {
-  trade: MarketTradeState | null
-  flash: FlashExchangeState | null
-  burn: BurnExchangeState | null
-  turbine: TurbineExchangeState | null
-}) {
-  const view = useExchangeViewStore((state) => state.view)
-  const motion = useExchangeViewStore((state) => state.motion)
-  const direction = useExchangeViewStore((state) => state.direction)
-  const outgoingView = useExchangeViewStore((state) => state.outgoingView)
-  const incomingView = useExchangeViewStore((state) => state.incomingView)
-
-  const isTransitioning = motion && outgoingView && incomingView
-
-  return (
-    <div
-      className={cn('min-h-0', isTransitioning && exchangeTransitionStack())}
-      data-exchange-detail-panel
-      data-exchange-transitioning={isTransitioning ? 'true' : undefined}
-    >
-      {isTransitioning ? (
-        <ExchangeTransitionLayers
-          direction={direction}
-          incoming={incomingView}
-          outgoing={outgoingView}
-          render={(displayView) => renderExchangeContent(displayView, trade, flash, burn, turbine)}
-        />
-      ) : (
-        renderExchangeContent(view, trade, flash, burn, turbine)
-      )}
-    </div>
+      <ExchangeContentBody {...sessions} />
+    </DappSubviewShell>
   )
 }

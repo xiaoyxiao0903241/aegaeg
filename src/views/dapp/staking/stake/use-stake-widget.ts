@@ -14,7 +14,7 @@ import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
-import { useStakingViewStore } from '~/stores/staking-view-store'
+import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
@@ -28,8 +28,8 @@ export type StakeWritePresent = {
 export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
-  const period = useStakingViewStore((state) => state.stakePeriod)
-  const setStakePeriod = useStakingViewStore((state) => state.setStakePeriod)
+  const period = useStakingPeriodsStore((state) => state.stakePeriod)
+  const setStakePeriod = useStakingPeriodsStore((state) => state.setStakePeriod)
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)

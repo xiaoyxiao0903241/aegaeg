@@ -25,7 +25,7 @@ import { evaluateWriteButtonPhase } from '~/core/wallet/write-button-phase'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { submitBondZap, type BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
-import { useStakingViewStore } from '~/stores/staking-view-store'
+import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
@@ -43,10 +43,10 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
 
   const address = account?.address
   const walletReady = hasWalletAccount(account)
-  const period = useStakingViewStore((state) =>
+  const period = useStakingPeriodsStore((state) =>
     kind === 'lp' ? state.lpBondPeriod : state.burnBondPeriod,
   )
-  const setBondPeriod = useStakingViewStore((state) => state.setBondPeriod)
+  const setBondPeriod = useStakingPeriodsStore((state) => state.setBondPeriod)
   const depositoryAddress = kind === 'lp' ? lpBondDepositoryAddress : burnBondDepositoryAddress
   const depository = depositoryAddress(period)
 

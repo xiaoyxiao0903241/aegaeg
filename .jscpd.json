@@ -1,0 +1,17 @@
+{
+  "path": ["src"],
+  "pattern": "**/*.{ts,tsx}",
+  "ignore": [
+    "**/i18n/messages/**",
+    "**/shared/styles/tokens/theme.css",
+    "**/shared/styles/tokens/tokens.ts",
+    "**/*.d.ts"
+  ],
+  "format": ["typescript", "tsx"],
+  "minLines": 25,
+  "minTokens": 70,
+  "mode": "strict",
+  "gitignore": true,
+  "reporters": ["console"],
+  "threshold": 0
+}

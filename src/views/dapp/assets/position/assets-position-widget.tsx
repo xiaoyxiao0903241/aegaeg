@@ -1,17 +1,15 @@
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
-import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { Button } from '~/shared/ui/button'
-import { Chip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { AssetsPositionStakeRow } from '~/views/dapp/assets/position/assets-position-stake-row'
 import { AssetsPositionBondRow } from '~/views/dapp/assets/position/assets-position-bond-row'
+import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import {
   useAssetsPositionWidget,
@@ -34,37 +32,12 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
         title={w.copy.title}
       />
       <DappWidgetStack>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Chip className="h-6 gap-1" shape="pill" size="sm" type="button" variant="soft">
-            {t.assets.position.sort}
-            <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.chevron} />
-          </Chip>
-          <div className="flex items-center gap-1">
-            <Text as="span" tone="muted-foreground" variant="detail">
-              {t.assets.position.quoteCurrency}
-            </Text>
-            <div className="flex rounded-full bg-muted p-0.5">
-              <Chip
-                onClick={() => w.setQuote('agx')}
-                shape="pill"
-                size="sm"
-                type="button"
-                variant={w.quote === 'agx' ? 'solid' : 'soft'}
-              >
-                AGX
-              </Chip>
-              <Chip
-                onClick={() => w.setQuote('usd')}
-                shape="pill"
-                size="sm"
-                type="button"
-                variant={w.quote === 'usd' ? 'solid' : 'soft'}
-              >
-                USD
-              </Chip>
-            </div>
-          </div>
-        </div>
+        <AssetsQuoteToolbar
+          onQuoteChange={w.setQuote}
+          quote={w.quote}
+          quoteLabel={t.assets.position.quoteCurrency}
+          sortLabel={t.assets.position.sort}
+        />
 
         {!w.walletReady ? (
           <DappWidgetConnectPromo />

@@ -8,7 +8,7 @@ import { useExchangeTradePairStore } from '~/stores/exchange-trade-pair-store'
 import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
-import type { ExchangeView } from '~/stores/exchange-view-store'
+import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { readBurnContributionSwapConfig } from '~/web3/exchange/burn-exchange-read'
 import { useChainQuery } from '~/hooks/use-chain-query'
 

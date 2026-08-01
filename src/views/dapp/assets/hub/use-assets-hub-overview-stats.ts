@@ -14,7 +14,7 @@ import {
   readXminePosition,
 } from '~/web3/assets/assets-read'
 import { readReleaseBufferSnapshot } from '~/web3/release/release-read'
-import type { AssetsView } from '~/stores/assets-view-store'
+import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import {
   useAssetsHoldingsDistribution,

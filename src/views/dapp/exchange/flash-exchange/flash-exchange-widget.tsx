@@ -18,6 +18,7 @@ import { useFlashExchangeView } from '~/views/dapp/exchange/flash-exchange/use-f
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { Segment } from '~/shared/ui/segment'
+import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
 
 export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
   const vm = useFlashExchangeView(flash)
@@ -104,29 +105,14 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
               label: t.exchange.route,
               value: flash.routeLabel,
             },
-            {
+            exchangeProviderMetaRow({
               label: t.exchange.provider,
-              value: (
-                <>
-                  {t.exchange.flash.providerName}
-                  <button
-                    aria-label={t.exchange.flash.openProvider}
-                    className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
-                    onClick={() =>
-                      window.open(
-                        bscscanAddress(flash.providerAddress),
-                        '_blank',
-                        'noopener,noreferrer',
-                      )
-                    }
-                    type="button"
-                  >
-                    <DappIcon alt="" size="action" src={flashExchangeAssets.externalLink} />
-                  </button>
-                </>
-              ),
-              valueClassName: 'inline-flex items-center justify-end gap-1',
-            },
+              name: t.exchange.flash.providerName,
+              ariaLabel: t.exchange.flash.openProvider,
+              onOpen: () =>
+                window.open(bscscanAddress(flash.providerAddress), '_blank', 'noopener,noreferrer'),
+              iconSrc: flashExchangeAssets.externalLink,
+            }),
           ]}
         />
 

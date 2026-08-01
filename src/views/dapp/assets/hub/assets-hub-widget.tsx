@@ -6,7 +6,7 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
-import type { AssetsView } from '~/stores/assets-view-store'
+import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { AssetsModeCard } from '~/views/dapp/assets/hub/assets-mode-card'
 import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hub-overview-stats'
 

@@ -3,7 +3,10 @@ import { createDappSubviewStore } from '~/stores/create-dapp-subview-store'
 
 export type { ReleaseView }
 
-export const useReleaseViewStore = createDappSubviewStore<ReleaseView>({
+const releaseView = createDappSubviewStore<ReleaseView>({
   hub: 'hub',
   hashForView: releaseHashForView,
 })
+
+export const useReleaseViewStore = releaseView.useStore
+export const useReleaseViewMotion = releaseView.useMotion

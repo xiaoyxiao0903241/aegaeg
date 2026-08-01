@@ -1,6 +1,5 @@
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { flashExchangeAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
@@ -13,6 +12,7 @@ import { ExchangeOneWayFlowIndicator } from '~/views/dapp/exchange/exchange-flow
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { useBurnExchangeView } from '~/views/dapp/exchange/burn/use-burn-exchange-view'
+import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
 
 export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
   const vm = useBurnExchangeView(burn)
@@ -63,29 +63,14 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
               label: t.exchange.burn.destination,
               value: t.exchange.burn.destinationValue,
             },
-            {
+            exchangeProviderMetaRow({
               label: t.exchange.provider,
-              value: (
-                <>
-                  {t.exchange.burn.providerName}
-                  <button
-                    aria-label={t.exchange.burn.openProvider}
-                    className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
-                    onClick={() =>
-                      window.open(
-                        bscscanAddress(burn.providerAddress),
-                        '_blank',
-                        'noopener,noreferrer',
-                      )
-                    }
-                    type="button"
-                  >
-                    <DappIcon alt="" size="action" src={flashExchangeAssets.externalLink} />
-                  </button>
-                </>
-              ),
-              valueClassName: 'inline-flex items-center justify-end gap-1',
-            },
+              name: t.exchange.burn.providerName,
+              ariaLabel: t.exchange.burn.openProvider,
+              onOpen: () =>
+                window.open(bscscanAddress(burn.providerAddress), '_blank', 'noopener,noreferrer'),
+              iconSrc: flashExchangeAssets.externalLink,
+            }),
           ]}
         />
 

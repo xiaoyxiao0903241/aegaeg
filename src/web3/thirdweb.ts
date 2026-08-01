@@ -43,7 +43,7 @@ const aegisConnectTheme = lightTheme({
 /** Public BSC RPC — disconnected reads only; connected wallet uses EIP-1193 provider. */
 export const BSC_RPC_URL = appEnv.bscRpcUrl
 
-export const bsc = defineChain({
+export const defaultChain = defineChain({
   ...bscBase,
   rpc: BSC_RPC_URL,
 })
@@ -94,9 +94,7 @@ export const walletListOptions = {
   walletConnect: walletConnectConfig,
 }
 
-export const supportedChains = [bsc] as const
-
-export const defaultChain = bsc
+export const supportedChains = [defaultChain] as const
 
 /** 连接弹窗共用配置（外壳自定义 + ConnectEmbed 内嵌） */
 export const connectModalOptions = {

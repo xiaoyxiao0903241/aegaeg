@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { cn } from '~/shared/lib/utils'
-import { useReleaseViewStore, type ReleaseView } from '~/stores/release-view-store'
+import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useReleaseViewMotion } from '~/stores/release-view-store'
+import type { ReleaseView } from '~/shared/config/dapp-deep-links'
 import { ReleaseHubWidget } from '~/views/dapp/release/hub/release-hub-widget'
 import { ReleaseHubContent } from '~/views/dapp/release/hub/release-hub-content'
 import { ReleaseQueueWidget } from '~/views/dapp/release/queue/release-queue-widget'
@@ -13,105 +13,44 @@ const releaseTransitionStack = tv({
   base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
 })
 
-function renderReleaseWidget(displayView: ReleaseView) {
-  if (displayView === 'queue') return <ReleaseQueueWidget />
-  if (displayView === 'buffer') return <ReleaseBufferWidget />
+function ReleaseWidgetBody() {
+  const view = useDappSubviewDisplayView<ReleaseView>()
+  if (view === 'queue') return <ReleaseQueueWidget />
+  if (view === 'buffer') return <ReleaseBufferWidget />
   return <ReleaseHubWidget />
 }
 
-function renderReleaseContent(displayView: ReleaseView) {
-  if (displayView === 'queue') return <ReleaseQueueContent />
-  if (displayView === 'buffer') return <ReleaseBufferContent />
+function ReleaseContentBody() {
+  const view = useDappSubviewDisplayView<ReleaseView>()
+  if (view === 'queue') return <ReleaseQueueContent />
+  if (view === 'buffer') return <ReleaseBufferContent />
   return <ReleaseHubContent />
 }
 
-function ReleaseTransitionLayers({
-  direction,
-  incoming,
-  outgoing,
-  render,
-}: {
-  direction: 'forward' | 'back'
-  incoming: ReleaseView
-  outgoing: ReleaseView
-  render: (view: ReleaseView) => ReactNode
-}) {
-  return (
-    <>
-      <div
-        className="exchange-view-layer exchange-view-layer-exit"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">{render(outgoing)}</div>
-      </div>
-      <div
-        className="exchange-view-layer exchange-view-layer-enter"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">{render(incoming)}</div>
-      </div>
-    </>
-  )
-}
-
 export function ReleaseWidget() {
-  const view = useReleaseViewStore((state) => state.view)
-  const motion = useReleaseViewStore((state) => state.motion)
-  const direction = useReleaseViewStore((state) => state.direction)
-  const outgoingView = useReleaseViewStore((state) => state.outgoingView)
-  const incomingView = useReleaseViewStore((state) => state.incomingView)
-
-  const isTransitioning = motion && outgoingView && incomingView
-
+  const subview = useReleaseViewMotion()
   return (
-    <div
-      className={cn(
-        'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
-        isTransitioning && releaseTransitionStack(),
-      )}
-      data-exchange-transitioning={isTransitioning ? 'true' : undefined}
-      data-exchange-widget-panel
-      data-release-root
+    <DappSubviewShell
+      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
+      panel="widget"
+      subview={subview}
+      transitionClassName={releaseTransitionStack()}
     >
-      {isTransitioning ? (
-        <ReleaseTransitionLayers
-          direction={direction}
-          incoming={incomingView}
-          outgoing={outgoingView}
-          render={renderReleaseWidget}
-        />
-      ) : (
-        renderReleaseWidget(view)
-      )}
-    </div>
+      <ReleaseWidgetBody />
+    </DappSubviewShell>
   )
 }
 
 export function ReleaseContent() {
-  const view = useReleaseViewStore((state) => state.view)
-  const motion = useReleaseViewStore((state) => state.motion)
-  const direction = useReleaseViewStore((state) => state.direction)
-  const outgoingView = useReleaseViewStore((state) => state.outgoingView)
-  const incomingView = useReleaseViewStore((state) => state.incomingView)
-
-  const isTransitioning = motion && outgoingView && incomingView
-
+  const subview = useReleaseViewMotion()
   return (
-    <div
-      className={cn('min-h-0', isTransitioning && releaseTransitionStack())}
-      data-exchange-detail-panel
-      data-exchange-transitioning={isTransitioning ? 'true' : undefined}
+    <DappSubviewShell
+      className="min-h-0"
+      panel="detail"
+      subview={subview}
+      transitionClassName={releaseTransitionStack()}
     >
-      {isTransitioning ? (
-        <ReleaseTransitionLayers
-          direction={direction}
-          incoming={incomingView}
-          outgoing={outgoingView}
-          render={renderReleaseContent}
-        />
-      ) : (
-        renderReleaseContent(view)
-      )}
-    </div>
+      <ReleaseContentBody />
+    </DappSubviewShell>
   )
 }

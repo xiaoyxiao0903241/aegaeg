@@ -36,6 +36,7 @@ export function DappShell() {
   const selectMobileTabInStore = useDappShellStore((state) => state.selectMobileTab)
   const setMobileNavOpen = useDappShellStore((state) => state.setMobileNavOpen)
   const syncTabFromHash = useDappShellStore((state) => state.syncTabFromHash)
+  const resetForeignSubviewStores = useDappShellStore((state) => state.resetForeignSubviewStores)
   const shellState = useDappShell()
   const [windowNode, setWindowNode] = useState<HTMLDivElement | null>(null)
   const { displayTab, phase } = useDappTabContentFade(activeTab)
@@ -69,9 +70,11 @@ export function DappShell() {
   useEffect(() => {
     scrollDappPanelsToTop()
     invalidateTabQueries(displayTab)
-  }, [displayTab])
+    // After fade-out swaps displayTab, reset inactive rails — keeps leaving subview stable during fade.
+    resetForeignSubviewStores(displayTab)
+  }, [displayTab, resetForeignSubviewStores])
 
-  // Mirror former store-side scroll: fire when a swap subview transition starts.
+  // Mirror former store-side scroll: fire when an exchange subview transition starts.
   useEffect(() => {
     let prevView = useExchangeViewStore.getState().view
     let prevMotion = useExchangeViewStore.getState().motion

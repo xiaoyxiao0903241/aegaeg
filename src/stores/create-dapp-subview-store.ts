@@ -1,7 +1,11 @@
 import { create, type StoreApi, type UseBoundStore } from 'zustand'
+import { useShallow } from 'zustand/react/shallow'
 
-/** Shared subview enter/exit duration for DApp tab view stores. */
-const DAPP_VIEW_MOTION_MS = 320
+/**
+ * Hub↔subview enter/exit duration — must match `--motion-dapp-subview` in theme.css
+ * (+ small buffer so layers unmount after CSS finishes).
+ */
+const DAPP_VIEW_MOTION_MS = 460
 
 export type DappViewDirection = 'forward' | 'back'
 
@@ -17,6 +21,20 @@ export type DappSubviewState<TView extends string> = {
   /** Hash hydrate — no motion, no hash write (caller owns URL). */
   hydrateView: (view: TView) => void
   backToHub: (options?: { syncHash?: boolean }) => void
+}
+
+/** Hub↔subview motion slice (shallow-subscribed). */
+export type DappSubviewMotion<TView extends string = string> = {
+  view: TView
+  motion: boolean
+  direction: DappViewDirection
+  outgoingView: TView | null
+  incomingView: TView | null
+}
+
+export type DappSubviewStoreApi<TView extends string, TExtra extends object = object> = {
+  useStore: UseBoundStore<StoreApi<DappSubviewState<TView> & TExtra>>
+  useMotion: () => DappSubviewMotion<TView>
 }
 
 type CreateDappSubviewStoreOptions<TView extends string, TExtra extends object> = {
@@ -36,11 +54,11 @@ function writeHash(hash: string) {
 
 /**
  * Factory for isomorphic DApp tab view stores (hub ↔ subview + enter/exit motion).
- * Each tab still owns its hash map + optional extra fields.
+ * Each tab owns its hash map + optional extra fields — keeps fade-out stable.
  */
 export function createDappSubviewStore<TView extends string, TExtra extends object = object>(
   options: CreateDappSubviewStoreOptions<TView, TExtra>,
-): UseBoundStore<StoreApi<DappSubviewState<TView> & TExtra>> {
+): DappSubviewStoreApi<TView, TExtra> {
   const { hub, hashForView } = options
   let transitionTimer: number | null = null
 
@@ -55,7 +73,7 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
     writeHash(hashForView(view))
   }
 
-  return create<DappSubviewState<TView> & TExtra>((set, get) => {
+  const useStore = create<DappSubviewState<TView> & TExtra>((set, get) => {
     const extra =
       typeof options.extra === 'function' ? options.extra(set) : ((options.extra ?? {}) as TExtra)
 
@@ -100,6 +118,13 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
         }, DAPP_VIEW_MOTION_MS)
       },
       hydrateView: (view) => {
+        const state = get()
+        // setView writes the hash → hashchange → syncTabFromHash → here.
+        // If we clobber motion, forward enter snaps; back-to-hub is fine because
+        // hub hashes omit the view segment and skip hydrate.
+        if (state.view === view && !state.motion) return
+        if (state.motion && state.incomingView === view) return
+
         clearTransitionTimer()
         set({
           view,
@@ -126,4 +151,18 @@ export function createDappSubviewStore<TView extends string, TExtra extends obje
       },
     }
   })
+
+  function useMotion(): DappSubviewMotion<TView> {
+    return useStore(
+      useShallow((state) => ({
+        view: state.view,
+        motion: state.motion,
+        direction: state.direction,
+        outgoingView: state.outgoingView,
+        incomingView: state.incomingView,
+      })),
+    )
+  }
+
+  return { useStore, useMotion }
 }

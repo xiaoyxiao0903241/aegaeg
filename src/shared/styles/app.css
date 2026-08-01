@@ -67,61 +67,73 @@ html.dapp-app #root {
 
 @keyframes exchange-widget-enter-from-right {
   from {
-    transform: translate3d(var(--motion-dapp-slide), 0, 0);
+    opacity: 0;
+    transform: translate3d(var(--motion-dapp-subview-slide), 0, 0);
   }
 
   to {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes exchange-widget-enter-from-left {
   from {
-    transform: translate3d(calc(var(--motion-dapp-slide) * -1), 0, 0);
+    opacity: 0;
+    transform: translate3d(calc(var(--motion-dapp-subview-slide) * -1), 0, 0);
   }
 
   to {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes exchange-widget-exit-to-right {
   from {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translate3d(var(--motion-dapp-slide), 0, 0);
+    opacity: 0;
+    transform: translate3d(var(--motion-dapp-subview-slide), 0, 0);
   }
 }
 
 @keyframes exchange-widget-exit-to-left {
   from {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translate3d(calc(var(--motion-dapp-slide) * -1), 0, 0);
+    opacity: 0;
+    transform: translate3d(calc(var(--motion-dapp-subview-slide) * -1), 0, 0);
   }
 }
 
 @keyframes exchange-detail-enter {
   from {
-    transform: translate3d(0, var(--motion-dapp-rise), 0);
+    opacity: 0;
+    transform: translate3d(0, var(--motion-dapp-subview-rise), 0);
   }
 
   to {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes exchange-detail-exit {
   from {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translate3d(0, var(--motion-dapp-rise), 0);
+    opacity: 0;
+    transform: translate3d(0, var(--motion-dapp-subview-rise), 0);
   }
 }
 
@@ -184,7 +196,7 @@ html.dapp-app #root {
   min-width: 0;
   flex: 1;
   flex-direction: column;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
 .exchange-view-layer-exit {
@@ -210,35 +222,37 @@ html.dapp-app #root {
 [data-exchange-widget-panel]
   .exchange-view-layer-enter[data-exchange-direction='forward']
   .exchange-view-layer-motion {
-  animation: exchange-widget-enter-from-right var(--motion-dapp-emphasis) var(--motion-dapp-ease)
-    both;
+  animation: exchange-widget-enter-from-right var(--motion-dapp-subview)
+    var(--motion-dapp-subview-ease) both;
 }
 
 [data-exchange-widget-panel]
   .exchange-view-layer-exit[data-exchange-direction='forward']
   .exchange-view-layer-motion {
-  animation: exchange-widget-exit-to-left var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
+  animation: exchange-widget-exit-to-left var(--motion-dapp-subview) var(--motion-dapp-subview-ease)
+    both;
 }
 
 [data-exchange-widget-panel]
   .exchange-view-layer-enter[data-exchange-direction='back']
   .exchange-view-layer-motion {
-  animation: exchange-widget-enter-from-left var(--motion-dapp-emphasis) var(--motion-dapp-ease)
-    both;
+  animation: exchange-widget-enter-from-left var(--motion-dapp-subview)
+    var(--motion-dapp-subview-ease) both;
 }
 
 [data-exchange-widget-panel]
   .exchange-view-layer-exit[data-exchange-direction='back']
   .exchange-view-layer-motion {
-  animation: exchange-widget-exit-to-right var(--motion-dapp-emphasis) var(--motion-dapp-ease) both;
+  animation: exchange-widget-exit-to-right var(--motion-dapp-subview)
+    var(--motion-dapp-subview-ease) both;
 }
 
 [data-exchange-detail-panel] .exchange-view-layer-enter .exchange-view-layer-motion {
-  animation: exchange-detail-enter var(--motion-dapp-base) var(--motion-dapp-ease) both;
+  animation: exchange-detail-enter var(--motion-dapp-subview) var(--motion-dapp-subview-ease) both;
 }
 
 [data-exchange-detail-panel] .exchange-view-layer-exit .exchange-view-layer-motion {
-  animation: exchange-detail-exit var(--motion-dapp-base) var(--motion-dapp-ease) both;
+  animation: exchange-detail-exit var(--motion-dapp-subview) var(--motion-dapp-subview-ease) both;
 }
 
 .dapp-detail-panel {

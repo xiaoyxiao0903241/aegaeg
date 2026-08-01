@@ -290,6 +290,14 @@ function staticEngineeringVars() {
   --motion-dapp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-dapp-rise: 6px;
   --motion-dapp-slide: 1.5rem;
+  /*
+   * Hub↔subview push — keep in sync with DAPP_VIEW_MOTION_MS in create-dapp-subview-store.
+   * Longer + softer than emphasis so the slide reads as deliberate, not snappy.
+   */
+  --motion-dapp-subview: 440ms;
+  --motion-dapp-subview-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-dapp-subview-slide: 2rem;
+  --motion-dapp-subview-rise: 10px;
   /* Tab content crossfade — out then in (JS timeouts must match) */
   --motion-dapp-fade-out: 160ms;
   --motion-dapp-fade-in: 220ms;

@@ -16,6 +16,11 @@ interface DappShellStore {
   toggleDetailCollapsed: () => void
   setMobileNavOpen: (open: boolean) => void
   syncTabFromHash: () => void
+  /**
+   * Reset inactive tab subview stores to hub after content fade swaps displayTab.
+   * Must not run on selectTab — that flashes hub during fade-out of a subview.
+   */
+  resetForeignSubviewStores: (tab: DappTab) => void
 }
 
 function writeTabHash(tab: DappTab) {
@@ -78,14 +83,12 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
   detailCollapsed: false,
   mobileNavOpen: false,
   selectTab: (tab) => {
-    resetForeignSubviewStores(tab)
     set(() => ({
       activeTab: tab,
     }))
     writeTabHash(tab)
   },
   selectMobileTab: (tab) => {
-    resetForeignSubviewStores(tab)
     set({
       activeTab: tab,
       mobileNavOpen: false,
@@ -94,6 +97,7 @@ export const useDappShellStore = create<DappShellStore>((set) => ({
   },
   toggleDetailCollapsed: () => set((state) => ({ detailCollapsed: !state.detailCollapsed })),
   setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
+  resetForeignSubviewStores,
   syncTabFromHash: () => {
     const loc = dappLocationFromHash(window.location.hash.slice(1))
     if (!loc) return

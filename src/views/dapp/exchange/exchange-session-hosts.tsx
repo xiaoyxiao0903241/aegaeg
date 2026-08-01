@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { useExchangeViewStore } from '~/stores/exchange-view-store'
+import { useExchangeViewMotion } from '~/stores/exchange-view-store'
 import { viewsNeedingProvider } from '~/views/dapp/exchange/exchange-views-needing-provider'
 import { useMarketTradeWidget } from '~/views/dapp/exchange/market-trade/use-market-trade-widget'
 import { useFlashExchangeWidget } from '~/views/dapp/exchange/flash-exchange/use-flash-exchange-widget'
@@ -82,10 +82,7 @@ export function ExchangeSessionHosts({
   }) => ReactNode
 }) {
   const { sessionReady } = useDappShell()
-  const view = useExchangeViewStore((state) => state.view)
-  const motion = useExchangeViewStore((state) => state.motion)
-  const outgoingView = useExchangeViewStore((state) => state.outgoingView)
-  const incomingView = useExchangeViewStore((state) => state.incomingView)
+  const { view, motion, outgoingView, incomingView } = useExchangeViewMotion()
   const exchangeTabActive = activeTab === 'exchange'
   const needed = viewsNeedingProvider(view, motion, outgoingView, incomingView)
   const flashQuotesEnabled = exchangeTabActive && needed.flash

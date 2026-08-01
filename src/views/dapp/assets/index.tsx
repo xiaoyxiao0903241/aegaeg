@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
-import { cn } from '~/shared/lib/utils'
-import { useAssetsViewStore, type AssetsView } from '~/stores/assets-view-store'
+import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useAssetsViewMotion } from '~/stores/assets-view-store'
+import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { AssetsHubWidget } from '~/views/dapp/assets/hub/assets-hub-widget'
 import { AssetsHubContent } from '~/views/dapp/assets/hub/assets-hub-content'
 import { AssetsPositionWidget } from '~/views/dapp/assets/position/assets-position-widget'
@@ -13,108 +13,48 @@ const assetsTransitionStack = tv({
   base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
 })
 
-function renderAssetsWidget(displayView: AssetsView) {
-  if (displayView === 'stake') return <AssetsPositionWidget product="stake" />
-  if (displayView === 'lpbond') return <AssetsPositionWidget product="lpbond" />
-  if (displayView === 'burnbond') return <AssetsPositionWidget product="burnbond" />
-  if (displayView === 'xmine') return <AssetsXmineWidget />
+function AssetsWidgetBody() {
+  const view = useDappSubviewDisplayView<AssetsView>()
+  if (view === 'stake') return <AssetsPositionWidget product="stake" />
+  if (view === 'lpbond') return <AssetsPositionWidget product="lpbond" />
+  if (view === 'burnbond') return <AssetsPositionWidget product="burnbond" />
+  if (view === 'xmine') return <AssetsXmineWidget />
   return <AssetsHubWidget />
 }
 
-function renderAssetsContent(displayView: AssetsView) {
-  if (displayView === 'stake') return <AssetsPositionContent product="stake" />
-  if (displayView === 'lpbond') return <AssetsPositionContent product="lpbond" />
-  if (displayView === 'burnbond') return <AssetsPositionContent product="burnbond" />
-  if (displayView === 'xmine') return <AssetsXmineContent />
+function AssetsContentBody() {
+  const view = useDappSubviewDisplayView<AssetsView>()
+  if (view === 'stake') return <AssetsPositionContent product="stake" />
+  if (view === 'lpbond') return <AssetsPositionContent product="lpbond" />
+  if (view === 'burnbond') return <AssetsPositionContent product="burnbond" />
+  if (view === 'xmine') return <AssetsXmineContent />
   return <AssetsHubContent />
 }
 
-function AssetsTransitionLayers({
-  direction,
-  incoming,
-  outgoing,
-  render,
-}: {
-  direction: 'forward' | 'back'
-  incoming: AssetsView
-  outgoing: AssetsView
-  render: (view: AssetsView) => ReactNode
-}) {
-  return (
-    <>
-      <div
-        className="exchange-view-layer exchange-view-layer-exit"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">{render(outgoing)}</div>
-      </div>
-      <div
-        className="exchange-view-layer exchange-view-layer-enter"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">{render(incoming)}</div>
-      </div>
-    </>
-  )
-}
-
 export function AssetsWidget() {
-  const view = useAssetsViewStore((state) => state.view)
-  const motion = useAssetsViewStore((state) => state.motion)
-  const direction = useAssetsViewStore((state) => state.direction)
-  const outgoingView = useAssetsViewStore((state) => state.outgoingView)
-  const incomingView = useAssetsViewStore((state) => state.incomingView)
-
-  const isTransitioning = motion && outgoingView && incomingView
-
+  const subview = useAssetsViewMotion()
   return (
-    <div
-      className={cn(
-        'flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0',
-        isTransitioning && assetsTransitionStack(),
-      )}
-      data-exchange-transitioning={isTransitioning ? 'true' : undefined}
-      data-exchange-widget-panel
+    <DappSubviewShell
+      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
+      panel="widget"
+      subview={subview}
+      transitionClassName={assetsTransitionStack()}
     >
-      {isTransitioning ? (
-        <AssetsTransitionLayers
-          direction={direction}
-          incoming={incomingView}
-          outgoing={outgoingView}
-          render={renderAssetsWidget}
-        />
-      ) : (
-        renderAssetsWidget(view)
-      )}
-    </div>
+      <AssetsWidgetBody />
+    </DappSubviewShell>
   )
 }
 
 export function AssetsContent() {
-  const view = useAssetsViewStore((state) => state.view)
-  const motion = useAssetsViewStore((state) => state.motion)
-  const direction = useAssetsViewStore((state) => state.direction)
-  const outgoingView = useAssetsViewStore((state) => state.outgoingView)
-  const incomingView = useAssetsViewStore((state) => state.incomingView)
-
-  const isTransitioning = motion && outgoingView && incomingView
-
+  const subview = useAssetsViewMotion()
   return (
-    <div
-      className={cn('min-h-0', isTransitioning && assetsTransitionStack())}
-      data-exchange-detail-panel
-      data-exchange-transitioning={isTransitioning ? 'true' : undefined}
+    <DappSubviewShell
+      className="min-h-0"
+      panel="detail"
+      subview={subview}
+      transitionClassName={assetsTransitionStack()}
     >
-      {isTransitioning ? (
-        <AssetsTransitionLayers
-          direction={direction}
-          incoming={incomingView}
-          outgoing={outgoingView}
-          render={renderAssetsContent}
-        />
-      ) : (
-        renderAssetsContent(view)
-      )}
-    </div>
+      <AssetsContentBody />
+    </DappSubviewShell>
   )
 }

@@ -3,7 +3,10 @@ import { createDappSubviewStore } from '~/stores/create-dapp-subview-store'
 
 export type { RewardsView }
 
-export const useRewardsViewStore = createDappSubviewStore<RewardsView>({
+const rewardsView = createDappSubviewStore<RewardsView>({
   hub: 'hub',
   hashForView: rewardsHashForView,
 })
+
+export const useRewardsViewStore = rewardsView.useStore
+export const useRewardsViewMotion = rewardsView.useMotion

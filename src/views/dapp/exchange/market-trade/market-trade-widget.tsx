@@ -16,6 +16,7 @@ import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { useMarketTradeView } from '~/views/dapp/exchange/market-trade/use-market-trade-view'
+import { exchangeProviderMetaRow } from '~/views/dapp/exchange/exchange-provider-meta-value'
 
 export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
   const vm = useMarketTradeView(trade)
@@ -159,23 +160,13 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               label: t.exchange.route,
               value: trade.routeLabel,
             },
-            {
+            exchangeProviderMetaRow({
               label: t.exchange.provider,
-              value: (
-                <>
-                  {t.exchange.providerName}
-                  <button
-                    aria-label={t.exchange.openPancakeSwap}
-                    className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
-                    onClick={vm.onOpenPancakeSwap}
-                    type="button"
-                  >
-                    <DappIcon alt="" size="action" src={dappAssets.arrowUpRight} />
-                  </button>
-                </>
-              ),
-              valueClassName: 'inline-flex items-center justify-end gap-1',
-            },
+              name: t.exchange.providerName,
+              ariaLabel: t.exchange.openPancakeSwap,
+              onOpen: vm.onOpenPancakeSwap,
+              iconSrc: dappAssets.arrowUpRight,
+            }),
           ]}
         />
 

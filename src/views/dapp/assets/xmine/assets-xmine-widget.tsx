@@ -1,16 +1,14 @@
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
-import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
-import { Chip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
+import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useAssetsXmineView } from '~/views/dapp/assets/xmine/use-assets-xmine-view'
 
@@ -30,37 +28,12 @@ export function AssetsXmineWidget() {
         title={copy.title}
       />
       <DappWidgetStack>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Chip className="h-6 gap-1" shape="pill" size="sm" type="button" variant="soft">
-            {t.assets.position.sort}
-            <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.chevron} />
-          </Chip>
-          <div className="flex items-center gap-1">
-            <Text as="span" tone="muted-foreground" variant="detail">
-              {t.assets.position.quoteCurrency}
-            </Text>
-            <div className="flex rounded-full bg-muted p-0.5">
-              <Chip
-                onClick={() => vm.setQuote('agx')}
-                shape="pill"
-                size="sm"
-                type="button"
-                variant={vm.quote === 'agx' ? 'solid' : 'soft'}
-              >
-                AGX
-              </Chip>
-              <Chip
-                onClick={() => vm.setQuote('usd')}
-                shape="pill"
-                size="sm"
-                type="button"
-                variant={vm.quote === 'usd' ? 'solid' : 'soft'}
-              >
-                USD
-              </Chip>
-            </div>
-          </div>
-        </div>
+        <AssetsQuoteToolbar
+          onQuoteChange={vm.setQuote}
+          quote={vm.quote}
+          quoteLabel={t.assets.position.quoteCurrency}
+          sortLabel={t.assets.position.sort}
+        />
 
         {!vm.walletReady ? (
           <DappWidgetConnectPromo />

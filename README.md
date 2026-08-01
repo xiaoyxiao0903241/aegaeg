@@ -27,12 +27,12 @@ pnpm dev
 
 ## Quality gates
 
-| Command             | Purpose                                                                              |
-| ------------------- | ------------------------------------------------------------------------------------ |
-| `pnpm check`        | Typecheck, ESLint (errors), architecture, hex, CSS, knip, Prettier check, unit tests |
-| `pnpm build`        | Production build                                                                     |
-| `pnpm probe:bundle` | Home bundle budget / pollution probe (run after `build`)                             |
-| `pnpm audit:prod`   | Production dependency audit (`high+`; CI reports, may soft-fail on transitive vulns) |
+| Command             | Purpose                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `pnpm check`        | Typecheck, ESLint (errors), architecture, hex, CSS, knip, jscpd, Prettier check, unit tests |
+| `pnpm build`        | Production build                                                                            |
+| `pnpm probe:bundle` | Home bundle budget / pollution probe (run after `build`)                                    |
+| `pnpm audit:prod`   | Production dependency audit (`high+`; CI reports, may soft-fail on transitive vulns)        |
 
 Agent / CI command SSOT: [`docs/agents/commands.md`](docs/agents/commands.md).
 

@@ -13,29 +13,31 @@
 
 ## 验证门禁
 
-| 命令                                         | 用途                                                                                                                                                          |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`pnpm check`**                             | **收工最小门禁**：`check:tokens` + `tsc -b` + `lint:src` + `lint:architecture` + `lint:hex` + `lint:css` + `lint:deadcode` + **`format:check`** + `test:unit` |
-| `pnpm build:tokens`                          | 从 `tokens.json` 生成 `theme.css` / `tokens.ts`；改色后必跑；**勿手改生成文件**（`--app-claim-restake` 等别名在 generator）                                   |
-| `pnpm check:tokens`                          | `build:tokens` 后对生成物 `git diff --exit-code`（防手改 theme/tokens.ts 漂移）                                                                               |
-| `pnpm build`                                 | tokens + `tsc -b` + render-home + Vite production build（**CI 强制**）                                                                                        |
-| `pnpm probe:bundle`                          | `build` 后：Home sync 污染标记 / 体积上限 → 失败 exit 1（**CI 强制**）                                                                                        |
-| `pnpm audit:prod`                            | `pnpm audit --prod --audit-level high`（CI 单独 job，`continue-on-error`：传递依赖洞可见但不挡 merge）                                                        |
-| `pnpm lint:css`                              | Stylelint `src/**/*.css`（进 `check`）                                                                                                                        |
-| `pnpm lint:src`                              | `eslint src --quiet`（仅 error；`exhaustive-deps` 等进收工）                                                                                                  |
-| `pnpm lint`                                  | ESLint 全仓（含 Tailwind warn；不阻断 `check`）                                                                                                               |
-| `pnpm lint:hex`                              | 禁止 scoped TS 模块硬编码 hex（须走 `theme.ts`）                                                                                                              |
-| **git pre-commit**（husky）                  | staged → eslint + prettier；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。                                                                                |
-| **git commit-msg**（husky）                  | `commitlint` conventional commits                                                                                                                             |
-| `pnpm lint:all`                              | ESLint + Stylelint + hex + depcruise + knip                                                                                                                   |
-| `pnpm lint:deadcode`                         | knip（死代码；**进** `check`）                                                                                                                                |
-| `pnpm format` / `pnpm format:check`          | Prettier（**`format:check` 进 `check`**）                                                                                                                     |
-| `pnpm format:classnames`                     | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序）                                                                                                     |
-| `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等                                                                                                            |
-| `pnpm test:unit`                             | Node 内置 test runner（`tests/unit/*.test.mjs`）                                                                                                              |
-| `pnpm test:e2e`                              | Playwright 视觉 + 契约（需本机浏览器；**手动 / 可选**，不进 husky、不进 `pnpm check`）                                                                        |
-| `pnpm test:e2e:update`                       | 更新视觉快照                                                                                                                                                  |
-| `pnpm test:integration`                      | 可选 live BSC quote（非 CI 门禁）                                                                                                                             |
+| 命令                                         | 用途                                                                                                                                                                                  |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`pnpm check`**                             | **收工最小门禁**：`check:tokens` + `tsc -b` + `lint:src` + `lint:architecture` + `lint:hex` + `lint:css` + `lint:deadcode` + **`lint:duplicates`** + **`format:check`** + `test:unit` |
+| `pnpm build:tokens`                          | 从 `tokens.json` 生成 `theme.css` / `tokens.ts`；改色后必跑；**勿手改生成文件**（`--app-claim-restake` 等别名在 generator）                                                           |
+| `pnpm check:tokens`                          | `build:tokens` 后对生成物 `git diff --exit-code`（防手改 theme/tokens.ts 漂移）                                                                                                       |
+| `pnpm build`                                 | tokens + `tsc -b` + render-home + Vite production build（**CI 强制**）                                                                                                                |
+| `pnpm probe:bundle`                          | `build` 后：Home sync 污染标记 / 体积上限 → 失败 exit 1（**CI 强制**）                                                                                                                |
+| `pnpm audit:prod`                            | `pnpm audit --prod --audit-level high`（CI 单独 job，`continue-on-error`：传递依赖洞可见但不挡 merge）                                                                                |
+| `pnpm lint:css`                              | Stylelint `src/**/*.css`（进 `check`）                                                                                                                                                |
+| `pnpm lint:src`                              | `eslint src --quiet`（仅 error；`exhaustive-deps` 等进收工）                                                                                                                          |
+| `pnpm lint`                                  | ESLint 全仓（含 Tailwind warn；不阻断 `check`）                                                                                                                                       |
+| `pnpm lint:hex`                              | 禁止 scoped TS 模块硬编码 hex（须走 `theme.ts`）                                                                                                                                      |
+| **git pre-commit**（husky）                  | staged → eslint + prettier；全仓 → `tsc -b`。**error 阻断提交**；warn 不阻断。                                                                                                        |
+| **git commit-msg**（husky）                  | `commitlint` conventional commits                                                                                                                                                     |
+| `pnpm lint:all`                              | ESLint + Stylelint + hex + depcruise + knip + jscpd                                                                                                                                   |
+| `pnpm lint:deadcode`                         | knip（死导出/文件/依赖/重复导出等；**进** `check`；规则见 `knip.json`）                                                                                                               |
+| `pnpm lint:duplicates`                       | jscpd 拷贝粘贴检测（`.jscpd.json`：`minLines` 25 / `threshold` 0；**进** `check`）                                                                                                    |
+| `pnpm lint:deadcode:duplicates`              | 仅 knip `duplicates` issue（可选；默认已含于 `lint:deadcode`）                                                                                                                        |
+| `pnpm format` / `pnpm format:check`          | Prettier（**`format:check` 进 `check`**）                                                                                                                                             |
+| `pnpm format:classnames`                     | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序）                                                                                                                             |
+| `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等                                                                                                                                    |
+| `pnpm test:unit`                             | Node 内置 test runner（`tests/unit/*.test.mjs`）                                                                                                                                      |
+| `pnpm test:e2e`                              | Playwright 视觉 + 契约（需本机浏览器；**手动 / 可选**，不进 husky、不进 `pnpm check`）                                                                                                |
+| `pnpm test:e2e:update`                       | 更新视觉快照                                                                                                                                                                          |
+| `pnpm test:integration`                      | 可选 live BSC quote（非 CI 门禁）                                                                                                                                                     |
 
 ### 架构门禁（dependency-cruiser）
 
