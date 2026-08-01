@@ -1,4 +1,3 @@
-import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -11,6 +10,7 @@ import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseBufferClaim } from '~/views/dapp/release/submit-release'
+import { toast } from 'sonner'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 

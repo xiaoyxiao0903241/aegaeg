@@ -4,14 +4,13 @@ import { formatApproxUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { Address } from '~/shared/config/contracts'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { useChainQuery } from '~/hooks/use-chain-query'
+import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 export type AssetsXmineStatCell = {
   value: string
@@ -24,11 +23,7 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const address = account?.address
-  const agxPriceQuery = usePresaleAgxPriceQuery()
-  const priceUsd =
-    agxPriceQuery.isError || agxPriceQuery.data === undefined
-      ? null
-      : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
+  const priceUsd = useAgxPriceUsd()
 
   const positionQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsXminePosition,

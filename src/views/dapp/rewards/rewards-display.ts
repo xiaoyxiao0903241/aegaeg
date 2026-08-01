@@ -232,8 +232,13 @@ export function mapCommunityFundLogToRow(
   return [formatBlockTime(item.block_time), amountLabel, labels[statusKey]]
 }
 
-export function mapParticipationAwardLogToRow(
-  item: ParticipationAwardLogItem,
+function mapDaoGrantAwardLogToRow(
+  item: {
+    created_at: string | null
+    awarded_gross: string
+    status: DaoGrantStatus
+    fully_claimed_at: string | null
+  },
   labels: RewardLogStatusLabels,
 ): string[] {
   return [
@@ -242,6 +247,13 @@ export function mapParticipationAwardLogToRow(
     formatDaoGrantStatus(item.status, labels),
     formatApiDateTime(item.fully_claimed_at),
   ]
+}
+
+export function mapParticipationAwardLogToRow(
+  item: ParticipationAwardLogItem,
+  labels: RewardLogStatusLabels,
+): string[] {
+  return mapDaoGrantAwardLogToRow(item, labels)
 }
 
 export function mapParticipationAwardInviterToRow(item: ParticipationAwardInviter): string[] {
@@ -279,12 +291,7 @@ export function mapReferralAwardLogToRow(
   item: ReferralAwardLogItem,
   labels: RewardLogStatusLabels,
 ): string[] {
-  return [
-    formatApiDateTime(item.created_at),
-    formatApiDecimalAmount(item.awarded_gross),
-    formatDaoGrantStatus(item.status, labels),
-    formatApiDateTime(item.fully_claimed_at),
-  ]
+  return mapDaoGrantAwardLogToRow(item, labels)
 }
 
 export function mapReferralAwardDirectToRow(item: ReferralAwardDirectReferralItem): string[] {

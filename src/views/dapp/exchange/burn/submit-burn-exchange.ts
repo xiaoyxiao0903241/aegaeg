@@ -9,23 +9,11 @@ import {
   readBurnExchangeBalances,
 } from '~/web3/exchange/burn-exchange-read'
 import { BURN_BLOCKED } from '~/web3/errors/write-block-errors'
-import type { WriteSession } from '~/web3/wallet/require-write-session'
-
-type BurnQuotedSubmitCore = {
-  debouncedAmountIn: bigint
-  runQuotedSubmit: (
-    run: (helpers: {
-      session: WriteSession
-      assertStillSubmittable: (live?: {
-        sellBalance: bigint
-      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
-    }) => Promise<void>,
-  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
-}
+import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
 
 /** Burn AGX → contribution points: approve + convert + invalidate. */
 export async function submitBurnExchange(args: {
-  core: BurnQuotedSubmitCore
+  core: QuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { core } = args
 

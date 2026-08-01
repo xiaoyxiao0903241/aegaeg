@@ -2,16 +2,15 @@ import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { useI18n } from '~/i18n/use-i18n'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { dappAssets } from '~/app/assets'
 import { COMMUNITY_SOCIAL_LINKS } from '~/shared/config/community-links'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
+import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
 import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import {
   useRewardsSimpleClaimView,
@@ -39,18 +38,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
               <Text as="p" tone="muted-foreground" variant="caption">
                 {vm.grant.pendingLabel}
               </Text>
-              <div className="flex items-center gap-2">
-                <DappIcon
-                  alt=""
-                  className="size-[18px] rounded-full"
-                  loading="lazy"
-                  size="token"
-                  src={dappAssets.tokenGagx}
-                />
-                <Text as="p" className="font-semibold" variant="copy">
-                  {vm.tokenGagx}
-                </Text>
-              </div>
+              <RewardsGagxAmount>{vm.tokenGagx}</RewardsGagxAmount>
             </div>
             <div className="grid gap-1.5 text-right">
               <Text as="p" tone="muted-foreground" variant="caption">

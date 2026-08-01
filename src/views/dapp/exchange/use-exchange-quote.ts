@@ -15,15 +15,14 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
+import type {
+  QuotedSubmitCore,
+  QuotedSubmitExecute,
+} from '~/views/dapp/exchange/quoted-submit-core'
+
+export type { QuotedSubmitCore, QuotedSubmitExecute }
 
 const DEFAULT_QUOTE_DEBOUNCE_MS = 400
-
-type QuotedSubmitExecute = (helpers: {
-  session: WriteSession
-  assertStillSubmittable: (live?: {
-    sellBalance: bigint
-  }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
-}) => Promise<void>
 
 /** 值稳定 `delayMs` 后不再变化时返回。 */
 function useDebouncedValue<T>(value: T, delayMs: number): T {

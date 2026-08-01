@@ -1,13 +1,13 @@
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
+import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsCobuildContentView } from '~/views/dapp/rewards/detail/use-rewards-cobuild-content-view'
 
 export function RewardsCobuildContent() {
@@ -108,21 +108,12 @@ export function RewardsCobuildContent() {
         <DappContentHeading>{cobuild.recordsTitle}</DappContentHeading>
         <DappTableCard
           className="mt-4"
-          header={
-            <DappPillTabs
-              activeTone="coral"
-              ariaLabel={cobuild.recordsTabsAria}
-              className="flex items-center justify-start gap-2"
-              items={recordsTabOptions.map((option) => ({
-                active: option.value === recordsTab,
-                label: option.label,
-              }))}
-              onSelect={(index) => {
-                const next = recordsTabOptions[index]
-                if (next) setRecordsTab(next.value)
-              }}
-            />
-          }
+          header={rewardsRecordsPillTabsHeader({
+            ariaLabel: cobuild.recordsTabsAria,
+            options: recordsTabOptions,
+            value: recordsTab,
+            onChange: (next) => setRecordsTab(next as typeof recordsTab),
+          })}
         >
           <ResponsiveTable
             colWidths={['190px', '70px', '140px', '110px', '1fr']}

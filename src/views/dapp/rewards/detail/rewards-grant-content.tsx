@@ -1,11 +1,11 @@
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { FaqList } from '~/shared/ui/faq-list'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
+import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsGrantContentView } from '~/views/dapp/rewards/detail/use-rewards-grant-content-view'
 
 export function RewardsGrantContent() {
@@ -35,21 +35,12 @@ export function RewardsGrantContent() {
         <DappContentHeading>{grant.recordsTitle}</DappContentHeading>
         <DappTableCard
           className="mt-4"
-          header={
-            <DappPillTabs
-              activeTone="coral"
-              ariaLabel={grant.recordsTabsAria}
-              className="flex items-center justify-start gap-2"
-              items={recordsTabOptions.map((option) => ({
-                active: option.value === recordsTab,
-                label: option.label,
-              }))}
-              onSelect={(index) => {
-                const next = recordsTabOptions[index]
-                if (next) setRecordsTab(next.value)
-              }}
-            />
-          }
+          header={rewardsRecordsPillTabsHeader({
+            ariaLabel: grant.recordsTabsAria,
+            options: recordsTabOptions,
+            value: recordsTab,
+            onChange: (next) => setRecordsTab(next as typeof recordsTab),
+          })}
         >
           <DappTableBody
             colWidths={

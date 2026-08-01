@@ -3,12 +3,25 @@ import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import { isTradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
+import { isTradeTokenKey, type TradeTokenKey } from '~/views/dapp/exchange/exchange-pair'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { toast } from 'sonner'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
 import { openPancakeSwapDeepLink } from '~/shared/config/pancake-exchange-links'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
+
+function mapTradePickerOptions(keys: readonly TradeTokenKey[], trade: MarketTradeState) {
+  return keys.map((key) => {
+    const token = trade.getToken(key)
+    return {
+      key,
+      symbol: token.symbol,
+      icon: token.icon,
+      balanceLabel: trade.balanceLabelFor(key),
+      disabled: !trade.isTokenLive(key),
+    }
+  })
+}
 
 /** Session state + i18n + flip/present orchestration → everything `MarketTradeWidget` renders. */
 export function useMarketTradeView(trade: MarketTradeState) {
@@ -42,26 +55,8 @@ export function useMarketTradeView(trade: MarketTradeState) {
   })
 
   const pickDisabled = trade.isSubmitting || (sessionReady && !trade.walletReady) || isFlipping
-  const sellPickerOptions = trade.sellPickerKeys.map((key) => {
-    const token = trade.getToken(key)
-    return {
-      key,
-      symbol: token.symbol,
-      icon: token.icon,
-      balanceLabel: trade.balanceLabelFor(key),
-      disabled: !trade.isTokenLive(key),
-    }
-  })
-  const buyPickerOptions = trade.buyPickerKeys.map((key) => {
-    const token = trade.getToken(key)
-    return {
-      key,
-      symbol: token.symbol,
-      icon: token.icon,
-      balanceLabel: trade.balanceLabelFor(key),
-      disabled: !trade.isTokenLive(key),
-    }
-  })
+  const sellPickerOptions = mapTradePickerOptions(trade.sellPickerKeys, trade)
+  const buyPickerOptions = mapTradePickerOptions(trade.buyPickerKeys, trade)
 
   function handleTokenPick(side: 'sell' | 'buy', key: string) {
     if (!isTradeTokenKey(key) || !trade.isTokenLive(key)) return
@@ -74,11 +69,6 @@ export function useMarketTradeView(trade: MarketTradeState) {
     id: 'market-trade-quote-error',
     trigger: trade.quoteErrorUpdatedAt,
   })
-
-  async function onSubmit() {
-    const result = await trade.submit()
-    if (result.ok) toast.success(t.exchange.exchangeSuccess)
-  }
 
   return {
     t,
@@ -101,7 +91,7 @@ export function useMarketTradeView(trade: MarketTradeState) {
     sellPickerOptions,
     buyPickerOptions,
     handleTokenPick,
-    onSubmit,
+    onSubmit: () => submitExchangeWithSuccessToast(trade.submit, t.exchange.exchangeSuccess),
     onOpenPancakeSwap: () => openPancakeSwapDeepLink(trade.pancakeSwapUrl),
   }
 }

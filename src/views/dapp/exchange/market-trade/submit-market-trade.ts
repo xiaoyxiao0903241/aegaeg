@@ -2,25 +2,13 @@ import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { approveTokenIfNeeded, exchangeTokens } from '~/web3/exchange/exchange-write'
 import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
-import type { WriteSession } from '~/web3/wallet/require-write-session'
-
-type TradeQuotedSubmitCore = {
-  debouncedAmountIn: bigint
-  runQuotedSubmit: (
-    run: (helpers: {
-      session: WriteSession
-      assertStillSubmittable: (live?: {
-        sellBalance: bigint
-      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
-    }) => Promise<void>,
-  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
-}
+import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
 
 /** Trade Pancake swap submit path (approve + swap + invalidate). Behavior-preserving extract. */
 export async function submitMarketTrade(args: {
   pair: ExchangePairTokens
   path: readonly `0x${string}`[]
-  core: TradeQuotedSubmitCore
+  core: QuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { pair, path, core } = args
 

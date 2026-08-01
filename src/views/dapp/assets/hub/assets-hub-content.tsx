@@ -8,6 +8,10 @@ import { Card } from '~/shared/ui/card'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { useAssetsHubContentView } from '~/views/dapp/assets/hub/use-assets-hub-content-view'
+import {
+  AssetsHubMetricPlain,
+  AssetsHubMetricWithIcon,
+} from '~/views/dapp/assets/hub/assets-hub-metric'
 
 export function AssetsHubContent() {
   const vm = useAssetsHubContentView()
@@ -83,38 +87,17 @@ export function AssetsHubContent() {
               {overview.holdingsTitle}
             </Text>
             <div className="grid grid-cols-2 gap-2">
-              <div className="grid gap-0.5">
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {overview.holdingsReleased}
-                </Text>
-                <div className="flex items-start gap-1">
-                  <DappIcon
-                    alt=""
-                    className="mt-0.5 size-[18px] rounded-[10px]"
-                    size="sm"
-                    src={tokenCarouselIcons.agxIcon}
-                  />
-                  <div className="grid gap-1">
-                    <Text as="strong" className="text-base font-semibold" variant="copy">
-                      {values.holdingsReleased}
-                    </Text>
-                    <Text as="span" tone="muted-foreground" variant="detail">
-                      {values.holdingsReleasedApprox}
-                    </Text>
-                  </div>
-                </div>
-              </div>
-              <div className="grid gap-0.5">
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {overview.holdingsTotal}
-                </Text>
-                <Text as="strong" className="text-base font-semibold" variant="copy">
-                  {values.holdingsTotal}
-                </Text>
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {values.holdingsTotalApprox}
-                </Text>
-              </div>
+              <AssetsHubMetricWithIcon
+                approx={values.holdingsReleasedApprox}
+                icon={tokenCarouselIcons.agxIcon}
+                label={overview.holdingsReleased}
+                value={values.holdingsReleased}
+              />
+              <AssetsHubMetricPlain
+                approx={values.holdingsTotalApprox}
+                label={overview.holdingsTotal}
+                value={values.holdingsTotal}
+              />
             </div>
           </Card>
 
@@ -138,38 +121,17 @@ export function AssetsHubContent() {
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <div className="grid gap-0.5">
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {overview.bufferTotal}
-                </Text>
-                <div className="flex items-start gap-1">
-                  <DappIcon
-                    alt=""
-                    className="mt-0.5 size-[18px] rounded-[10px]"
-                    size="sm"
-                    src={bufferIcon}
-                  />
-                  <div className="grid gap-1">
-                    <Text as="strong" className="text-base font-semibold" variant="copy">
-                      {bufferTotal}
-                    </Text>
-                    <Text as="span" tone="muted-foreground" variant="detail">
-                      {bufferTotalApprox}
-                    </Text>
-                  </div>
-                </div>
-              </div>
-              <div className="grid gap-0.5">
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {overview.bufferReleased}
-                </Text>
-                <Text as="strong" className="text-base font-semibold" variant="copy">
-                  {bufferReleased}
-                </Text>
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {bufferReleasedApprox}
-                </Text>
-              </div>
+              <AssetsHubMetricWithIcon
+                approx={bufferTotalApprox}
+                icon={bufferIcon}
+                label={overview.bufferTotal}
+                value={bufferTotal}
+              />
+              <AssetsHubMetricPlain
+                approx={bufferReleasedApprox}
+                label={overview.bufferReleased}
+                value={bufferReleased}
+              />
             </div>
           </Card>
         </div>

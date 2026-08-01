@@ -1,4 +1,3 @@
-import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import {
@@ -13,6 +12,7 @@ import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { nextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { claimableAmountValue, REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
 
@@ -141,23 +141,19 @@ export function useRewardsGenesisView() {
 
   function onClaimTeamReward() {
     void teamClaim.claim().then((result) => {
-      if (!result) return
-      if (result.status === 'confirm_failed') {
-        toast.warning(t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimSuccess)
-        return
-      }
-      toast.success(t.rewards.claimSuccess)
+      toastClaimResult(result, {
+        claimSuccess: t.rewards.claimSuccess,
+        confirmSyncFailed: t.rewards.claimErrors.confirmSyncFailed,
+      })
     })
   }
 
   function onClaimCommunityFund() {
     void communityFundClaim.claim().then((result) => {
-      if (!result) return
-      if (result.status === 'confirm_failed') {
-        toast.warning(t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimSuccess)
-        return
-      }
-      toast.success(t.rewards.claimSuccess)
+      toastClaimResult(result, {
+        claimSuccess: t.rewards.claimSuccess,
+        confirmSyncFailed: t.rewards.claimErrors.confirmSyncFailed,
+      })
     })
   }
 

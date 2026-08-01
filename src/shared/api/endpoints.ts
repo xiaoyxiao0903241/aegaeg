@@ -74,6 +74,24 @@ function paginationBody(params: PaginationParams = {}) {
   }
 }
 
+/** POST paginated list with one optional filter field. */
+function postFilteredPage<TItem>(
+  path: string,
+  token: string,
+  params: PaginationParams,
+  filterKey: string,
+  filterValue: unknown,
+): Promise<Paginated<TItem>> {
+  return apiRequest<Paginated<TItem>>(path, {
+    method: 'POST',
+    token,
+    body: {
+      ...paginationBody(params),
+      ...(filterValue !== undefined ? { [filterKey]: filterValue } : {}),
+    },
+  })
+}
+
 export async function login(request: LoginRequest): Promise<LoginResponse> {
   return apiRequest<LoginResponse>('/auth/login', {
     method: 'POST',
@@ -274,28 +292,14 @@ export async function getBondFlowLpLogs(
   token: string,
   params: BondFlowLogsParams = {},
 ): Promise<Paginated<BondFlowLogItem>> {
-  return apiRequest<Paginated<BondFlowLogItem>>('/bond-flow/lp-logs', {
-    method: 'POST',
-    token,
-    body: {
-      ...paginationBody(params),
-      ...(params.operation !== undefined ? { operation: params.operation } : {}),
-    },
-  })
+  return postFilteredPage('/bond-flow/lp-logs', token, params, 'operation', params.operation)
 }
 
 export async function getBondFlowBurnLogs(
   token: string,
   params: BondFlowLogsParams = {},
 ): Promise<Paginated<BondFlowLogItem>> {
-  return apiRequest<Paginated<BondFlowLogItem>>('/bond-flow/burn-logs', {
-    method: 'POST',
-    token,
-    body: {
-      ...paginationBody(params),
-      ...(params.operation !== undefined ? { operation: params.operation } : {}),
-    },
-  })
+  return postFilteredPage('/bond-flow/burn-logs', token, params, 'operation', params.operation)
 }
 
 export async function getBondFlowLpPurchases(
@@ -332,14 +336,7 @@ export async function getBufferPoolLogs(
   token: string,
   params: BufferPoolLogsParams = {},
 ): Promise<Paginated<BufferPoolLogItem>> {
-  return apiRequest<Paginated<BufferPoolLogItem>>('/buffer-pool/logs', {
-    method: 'POST',
-    token,
-    body: {
-      ...paginationBody(params),
-      ...(params.event_type !== undefined ? { event_type: params.event_type } : {}),
-    },
-  })
+  return postFilteredPage('/buffer-pool/logs', token, params, 'event_type', params.event_type)
 }
 
 export async function getLuckyRewardSummary(token: string): Promise<LuckyRewardSummary> {
@@ -530,28 +527,14 @@ export async function getReleasePoolLogs(
   token: string,
   params: ReleasePoolLogsParams = {},
 ): Promise<Paginated<ReleasePoolLogItem>> {
-  return apiRequest<Paginated<ReleasePoolLogItem>>('/release-pool/logs', {
-    method: 'POST',
-    token,
-    body: {
-      ...paginationBody(params),
-      ...(params.event_type !== undefined ? { event_type: params.event_type } : {}),
-    },
-  })
+  return postFilteredPage('/release-pool/logs', token, params, 'event_type', params.event_type)
 }
 
 export async function getStakeFlowLogs(
   token: string,
   params: StakeFlowLogsParams = {},
 ): Promise<Paginated<StakeFlowLogItem>> {
-  return apiRequest<Paginated<StakeFlowLogItem>>('/stake-flow/logs', {
-    method: 'POST',
-    token,
-    body: {
-      ...paginationBody(params),
-      ...(params.operation !== undefined ? { operation: params.operation } : {}),
-    },
-  })
+  return postFilteredPage('/stake-flow/logs', token, params, 'operation', params.operation)
 }
 
 export async function getStakeFlowPositions(
@@ -577,28 +560,14 @@ export async function getTurbineLogs(
   token: string,
   params: TurbineLogsParams = {},
 ): Promise<Paginated<TurbineLogItem>> {
-  return apiRequest<Paginated<TurbineLogItem>>('/turbine/logs', {
-    method: 'POST',
-    token,
-    body: {
-      ...paginationBody(params),
-      ...(params.turbine_type !== undefined ? { turbine_type: params.turbine_type } : {}),
-    },
-  })
+  return postFilteredPage('/turbine/logs', token, params, 'turbine_type', params.turbine_type)
 }
 
 export async function getX0MiningLogs(
   token: string,
   params: X0MiningLogsParams = {},
 ): Promise<Paginated<X0MiningLogItem>> {
-  return apiRequest<Paginated<X0MiningLogItem>>('/x0-mining/logs', {
-    method: 'POST',
-    token,
-    body: {
-      ...paginationBody(params),
-      ...(params.operation !== undefined ? { operation: params.operation } : {}),
-    },
-  })
+  return postFilteredPage('/x0-mining/logs', token, params, 'operation', params.operation)
 }
 
 export async function getX0MiningPositions(

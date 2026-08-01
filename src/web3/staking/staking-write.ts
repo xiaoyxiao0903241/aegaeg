@@ -3,8 +3,6 @@ import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import {
   BOND_HELPER_ERRORS,
   BOND_HELPER_METHODS,
-  ERC20_ERRORS,
-  ERC20_METHODS,
   LIQUID_STAKING_ERRORS,
   LIQUID_STAKING_METHODS,
   LOCKED_STAKING_ERRORS,
@@ -12,12 +10,9 @@ import {
   X_STAKING_POOL_ERRORS,
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
-import { createWalletReadClient } from '~/web3/chain-read-client'
-import { readErc20Allowance } from '~/web3/exchange/exchange-read'
-import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
+import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const liquidStakeAbi = parseWriteAbi(LIQUID_STAKING_METHODS.liquidStake, LIQUID_STAKING_ERRORS)
 const liquidClaimAbi = parseWriteAbi(LIQUID_STAKING_METHODS.claim, LIQUID_STAKING_ERRORS)
 const lockedWriteAbi = parseWriteAbi(LOCKED_STAKING_METHODS.lockedStake, LOCKED_STAKING_ERRORS)
@@ -34,19 +29,11 @@ export async function approveAgxForStakeIfNeeded({
   pool: Address
   amount: bigint
 }) {
-  const account = wallet.getAccount()
-  if (!account) throw WALLET_BLOCKED.NOT_CONNECTED
-
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(BSC_CONTRACTS.agx, account.address, pool, readClient)
-  if (allowance >= amount) return null
-
-  return writeContractViaWallet({
+  return approveErc20IfNeeded({
     wallet,
-    address: BSC_CONTRACTS.agx,
-    abi: erc20WriteAbi,
-    functionName: 'approve',
-    args: [pool, amount],
+    token: BSC_CONTRACTS.agx,
+    spender: pool,
+    amountIn: amount,
   })
 }
 
@@ -96,24 +83,11 @@ export async function approveUsd1ForBondHelperIfNeeded({
   wallet: Wallet
   amount: bigint
 }) {
-  const account = wallet.getAccount()
-  if (!account) throw WALLET_BLOCKED.NOT_CONNECTED
-
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(
-    BSC_CONTRACTS.usd1,
-    account.address,
-    BSC_CONTRACTS.bondHelper,
-    readClient,
-  )
-  if (allowance >= amount) return null
-
-  return writeContractViaWallet({
+  return approveErc20IfNeeded({
     wallet,
-    address: BSC_CONTRACTS.usd1,
-    abi: erc20WriteAbi,
-    functionName: 'approve',
-    args: [BSC_CONTRACTS.bondHelper, amount],
+    token: BSC_CONTRACTS.usd1,
+    spender: BSC_CONTRACTS.bondHelper,
+    amountIn: amount,
   })
 }
 
@@ -160,24 +134,11 @@ export async function approveGagxForXmineIfNeeded({
   wallet: Wallet
   amount: bigint
 }) {
-  const account = wallet.getAccount()
-  if (!account) throw WALLET_BLOCKED.NOT_CONNECTED
-
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(
-    BSC_CONTRACTS.gagx,
-    account.address,
-    BSC_CONTRACTS.xStakingPool,
-    readClient,
-  )
-  if (allowance >= amount) return null
-
-  return writeContractViaWallet({
+  return approveErc20IfNeeded({
     wallet,
-    address: BSC_CONTRACTS.gagx,
-    abi: erc20WriteAbi,
-    functionName: 'approve',
-    args: [BSC_CONTRACTS.xStakingPool, amount],
+    token: BSC_CONTRACTS.gagx,
+    spender: BSC_CONTRACTS.xStakingPool,
+    amountIn: amount,
   })
 }
 

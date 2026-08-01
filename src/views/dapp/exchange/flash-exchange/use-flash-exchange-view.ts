@@ -4,8 +4,8 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
 import { useExchangeFlip } from '~/views/dapp/exchange/use-exchange-flip'
-import { toast } from 'sonner'
 import { useExchangeBalanceLabels } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
 
 /** Session state + i18n + flip/present orchestration → everything `FlashExchangeWidget` renders. */
 export function useFlashExchangeView(flash: FlashExchangeState) {
@@ -43,27 +43,21 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     trigger: flash.quoteErrorUpdatedAt,
   })
 
-  async function onSubmit() {
-    // Errors toast via useChainMutation → getErrorMessage (avoid double toast).
-    const result = await flash.submit()
-    if (result.ok) toast.success(t.exchange.exchangeSuccess)
-  }
-
   return {
     t,
+    onBack: () => setView('hub'),
     sessionReady,
     pair,
     isFlipping,
     rotation,
     flipCardClass,
     onFlip,
-    onBack: () => setView('hub'),
     showRateSkeleton,
     showBuyAmountSkeleton,
     pairOptions,
     buyLabel,
     sellLabel,
     blockHint,
-    onSubmit,
+    onSubmit: () => submitExchangeWithSuccessToast(flash.submit, t.exchange.exchangeSuccess),
   }
 }

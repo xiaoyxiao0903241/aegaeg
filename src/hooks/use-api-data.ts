@@ -67,6 +67,7 @@ import {
   toQueryErrorMessage,
   canRunAuthenticatedQuery,
 } from '~/shared/api/query/session-request'
+import type { ApiUserFacingErrorMessages } from '~/shared/api/api-user-facing-error'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useAuth } from '~/hooks/use-auth'
@@ -115,9 +116,21 @@ function useAuthenticatedQuery<T>(
       : undefined,
   })
 
+  return toApiQueryView(query, t.errors.api)
+}
+
+function toApiQueryView<T>(
+  query: {
+    data: T | undefined
+    error: unknown
+    isLoading: boolean
+    refetch: () => Promise<unknown>
+  },
+  apiErrorMessages: ApiUserFacingErrorMessages,
+) {
   return {
     data: query.data ?? null,
-    error: toQueryErrorMessage(query.error, t.errors.api),
+    error: toQueryErrorMessage(query.error, apiErrorMessages),
     isLoading: query.isLoading,
     refresh: async () => {
       await query.refetch()
@@ -139,14 +152,7 @@ export function useSearchPerformance(address: string | null | undefined, enabled
     staleTime: QUERY_STALE_TIME.api,
   })
 
-  return {
-    data: query.data ?? null,
-    error: toQueryErrorMessage(query.error, t.errors.api),
-    isLoading: query.isLoading,
-    refresh: async () => {
-      await query.refetch()
-    },
-  }
+  return toApiQueryView(query, t.errors.api)
 }
 
 export function useQualifiedPartitions(enabled = true) {

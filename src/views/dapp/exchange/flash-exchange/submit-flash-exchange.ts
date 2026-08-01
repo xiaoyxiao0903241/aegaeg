@@ -11,25 +11,13 @@ import {
   wrapAgxFlashExchange,
 } from '~/web3/exchange/flash-exchange-write'
 import { readFlashPairBalances, readUsd1SwapConfig } from '~/web3/exchange/flash-exchange-read'
-import type { WriteSession } from '~/web3/wallet/require-write-session'
-
-type FlashQuotedSubmitCore = {
-  debouncedAmountIn: bigint
-  runQuotedSubmit: (
-    run: (helpers: {
-      session: WriteSession
-      assertStillSubmittable: (live?: {
-        sellBalance: bigint
-      }) => Promise<{ amountOutMin: bigint; quotedOut: bigint }>
-    }) => Promise<void>,
-  ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
-}
+import type { QuotedSubmitCore } from '~/views/dapp/exchange/quoted-submit-core'
 
 /** Flash dual-pair submit: redeem / wrap / USDT swap + invalidate. */
 export async function submitFlashExchange(args: {
   pairId: FlashPairId
   direction: ExchangeDirection
-  core: FlashQuotedSubmitCore
+  core: QuotedSubmitCore
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { pairId, direction, core } = args
 

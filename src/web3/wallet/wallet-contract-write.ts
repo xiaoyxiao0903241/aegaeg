@@ -53,29 +53,24 @@ export type WriteCallParams = {
   value?: bigint
 }
 
-function writeCallParams({
-  wallet,
-  address,
-  abi,
-  functionName,
-  args,
-  value,
-}: {
+type WalletWriteCallInput = {
   wallet: Wallet
   address: Address
   abi: Abi
   functionName: string
   args: readonly unknown[]
   value?: bigint
-}): WriteCallParams {
-  const account = requireWalletAccount(wallet)
+}
+
+function writeCallParams(input: WalletWriteCallInput): WriteCallParams {
+  const account = requireWalletAccount(input.wallet)
   return {
     account: getAddress(account.address) as Address,
-    address,
-    abi,
-    functionName,
-    args,
-    value,
+    address: input.address,
+    abi: input.abi,
+    functionName: input.functionName,
+    args: input.args,
+    value: input.value,
   }
 }
 
@@ -130,23 +125,9 @@ export async function estimateWriteGasLimit(
   throw new Error(WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED)
 }
 
-async function preflightContractWrite({
-  wallet,
-  address,
-  abi,
-  functionName,
-  args,
-  value,
-}: {
-  wallet: Wallet
-  address: Address
-  abi: Abi
-  functionName: string
-  args: readonly unknown[]
-  value?: bigint
-}): Promise<bigint> {
-  const call = writeCallParams({ wallet, address, abi, functionName, args, value })
-  const walletClient = createWalletReadClient(wallet)
+async function preflightContractWrite(input: WalletWriteCallInput): Promise<bigint> {
+  const call = writeCallParams(input)
+  const walletClient = createWalletReadClient(input.wallet)
   return estimateWriteGasLimit(call, walletClient)
 }
 
@@ -154,33 +135,15 @@ async function preflightContractWrite({
  * Simulates the write, estimates gas (+ buffer), then submits via wallet `eth_sendTransaction`.
  * Reverts surface before the wallet prompt; gas is set explicitly so wallets need not estimate.
  */
-export async function writeContractViaWallet({
-  wallet,
-  address,
-  abi,
-  functionName,
-  args,
-  value,
-}: {
-  wallet: Wallet
-  address: Address
-  abi: Abi
-  functionName: string
-  args: readonly unknown[]
-  value?: bigint
-}): Promise<ConfirmedWalletWrite> {
+export async function writeContractViaWallet(
+  input: WalletWriteCallInput,
+): Promise<ConfirmedWalletWrite> {
+  const { wallet, address, abi, functionName, args, value } = input
   const account = requireWalletAccount(wallet)
   const intent = createWriteIntent(account.address, defaultChain.id)
   const provider = walletEip1193Provider(wallet)
 
-  const gasLimit = await preflightContractWrite({
-    wallet,
-    address,
-    abi,
-    functionName,
-    args,
-    value,
-  })
+  const gasLimit = await preflightContractWrite(input)
 
   const liveAccount = requireWalletAccount(wallet)
   const chainIdHex = await walletProviderRequest<string>({

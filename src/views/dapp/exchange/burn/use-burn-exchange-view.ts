@@ -3,8 +3,8 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { usePresentUserFacingError } from '~/hooks/use-present-user-facing-error'
-import { toast } from 'sonner'
 import { formatExchangeBalanceLabel } from '~/views/dapp/exchange/use-exchange-balance-labels'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
 
 /** Session state + i18n + present orchestration → everything `BurnExchangeWidget` renders. */
 export function useBurnExchangeView(burn: BurnExchangeState) {
@@ -39,12 +39,6 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     trigger: burn.quoteErrorUpdatedAt,
   })
 
-  async function onSubmit() {
-    // Errors toast via useChainMutation → getErrorMessage (avoid double toast).
-    const result = await burn.submit()
-    if (result.ok) toast.success(t.exchange.exchangeSuccess)
-  }
-
   return {
     t,
     sessionReady,
@@ -55,6 +49,6 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     sellBalanceLabel,
     buyBalanceLabel,
     blockHint,
-    onSubmit,
+    onSubmit: () => submitExchangeWithSuccessToast(burn.submit, t.exchange.exchangeSuccess),
   }
 }

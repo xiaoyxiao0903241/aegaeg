@@ -1,21 +1,20 @@
-import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
-import { dappAssets } from '~/app/assets'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-picker'
 import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
+import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { REWARDS_DASH, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-rewards-mixed-claim-view'
+import { useRewardsViewStore } from '~/stores/rewards-view-store'
 
 export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
@@ -45,18 +44,9 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
               <Text as="p" tone="muted-foreground" variant="caption">
                 {t.rewards.detail.claimable}
               </Text>
-              <div className="flex items-center gap-2">
-                <DappIcon
-                  alt=""
-                  className="size-[18px] rounded-full"
-                  loading="lazy"
-                  size="token"
-                  src={dappAssets.tokenGagx}
-                />
-                <Text as="p" className="font-semibold" variant="copy">
-                  {vm.amountKnown ? `${vm.amountText} ${vm.mixed.tokenGagx}` : vm.amountText}
-                </Text>
-              </div>
+              <RewardsGagxAmount>
+                {vm.amountKnown ? `${vm.amountText} ${vm.mixed.tokenGagx}` : vm.amountText}
+              </RewardsGagxAmount>
             </div>
             <div className="grid gap-1.5 text-right">
               <Text as="p" tone="muted-foreground" variant="caption">

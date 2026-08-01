@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -9,10 +8,11 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
-import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
+import { toast } from 'sonner'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 

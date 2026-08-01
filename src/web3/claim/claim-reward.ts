@@ -173,56 +173,31 @@ async function claimSignedReward({
   }
 }
 
-export async function claimTeamReward({
-  wallet,
-  token,
-  onUnauthorized,
-}: {
+type SignedClaimOnChain = (args: {
   wallet: Wallet
-  token: string
-  onUnauthorized: () => void
-}) {
-  return claimSignedReward({
-    wallet,
-    token,
-    onUnauthorized,
-    requestSignature: requestTeamRewardSignature,
-    claimOnChain: claimOnVault(BSC_CONTRACTS.rewardClaimer),
-  })
+  signType: bigint
+  amount: bigint
+  expireTime: bigint
+  salt: `0x${string}`
+  signature: `0x${string}`
+}) => Promise<ConfirmedWalletWrite>
+
+function createSignedClaim(
+  requestSignature: (token: string) => Promise<TeamRewardClaimSignature>,
+  claimOnChain: SignedClaimOnChain,
+) {
+  return (args: { wallet: Wallet; token: string; onUnauthorized: () => void }) =>
+    claimSignedReward({ ...args, requestSignature, claimOnChain })
 }
 
-export async function claimCommunityFund({
-  wallet,
-  token,
-  onUnauthorized,
-}: {
-  wallet: Wallet
-  token: string
-  onUnauthorized: () => void
-}) {
-  return claimSignedReward({
-    wallet,
-    token,
-    onUnauthorized,
-    requestSignature: requestCommunityFundClaim,
-    claimOnChain: claimOnVault(BSC_CONTRACTS.communityFundVault),
-  })
-}
+export const claimTeamReward = createSignedClaim(
+  requestTeamRewardSignature,
+  claimOnVault(BSC_CONTRACTS.rewardClaimer),
+)
 
-export async function claimMarketFundReward({
-  wallet,
-  token,
-  onUnauthorized,
-}: {
-  wallet: Wallet
-  token: string
-  onUnauthorized: () => void
-}) {
-  return claimSignedReward({
-    wallet,
-    token,
-    onUnauthorized,
-    requestSignature: requestMarketFundClaim,
-    claimOnChain: writeMarketFundClaim,
-  })
-}
+export const claimCommunityFund = createSignedClaim(
+  requestCommunityFundClaim,
+  claimOnVault(BSC_CONTRACTS.communityFundVault),
+)
+
+export const claimMarketFundReward = createSignedClaim(requestMarketFundClaim, writeMarketFundClaim)

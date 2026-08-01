@@ -20,6 +20,36 @@ import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { cn } from '~/shared/lib/utils'
+import type { ReactNode } from 'react'
+
+function TurbineEqBuyTokenCell({
+  label,
+  icon,
+  value,
+  footer,
+}: {
+  label: string
+  icon: string
+  value: ReactNode
+  footer: ReactNode
+}) {
+  return (
+    <div className="flex min-w-0 flex-col gap-1.5 rounded-[10px] bg-background p-3">
+      <Text as="p" variant="caption" tone="muted-foreground">
+        {label}
+      </Text>
+      <div className="flex items-center gap-2">
+        <DappIcon alt="" className="size-5 rounded-md" size="token" src={icon} />
+        <Text as="span" variant="copy" className="font-semibold">
+          {value}
+        </Text>
+      </div>
+      <Text as="p" variant="caption" tone="muted-foreground">
+        {footer}
+      </Text>
+    </div>
+  )
+}
 
 export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeState }) {
   const vm = useTurbineExchangeView(turbine)
@@ -101,58 +131,36 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 {t.exchange.turbine.equivalentBuyHint}
               </Text>
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-                <div className="flex min-w-0 flex-col gap-1.5 rounded-[10px] bg-background p-3">
-                  <Text as="p" variant="caption" tone="muted-foreground">
-                    {t.exchange.turbine.payUsd1Label}
-                  </Text>
-                  <div className="flex items-center gap-2">
-                    <DappIcon
-                      alt=""
-                      className="size-5 rounded-md"
-                      size="token"
-                      src={turbine.pair.pay.icon}
-                    />
-                    <Text as="span" variant="copy" className="font-semibold">
-                      {vm.sessionReady && turbine.isQuoting ? (
-                        <ExchangeMetaValueSkeleton />
-                      ) : (
-                        turbine.payUsd1Label || '—'
-                      )}
-                    </Text>
-                  </div>
-                  <Text as="p" variant="caption" tone="muted-foreground">
-                    {usd1Balance}
-                  </Text>
-                </div>
+                <TurbineEqBuyTokenCell
+                  footer={usd1Balance}
+                  icon={turbine.pair.pay.icon}
+                  label={t.exchange.turbine.payUsd1Label}
+                  value={
+                    vm.sessionReady && turbine.isQuoting ? (
+                      <ExchangeMetaValueSkeleton />
+                    ) : (
+                      turbine.payUsd1Label || '—'
+                    )
+                  }
+                />
                 <DappIcon
                   alt=""
                   className="size-3.5 shrink-0"
                   size="base"
                   src={turbineExchangeAssets.eqBuyArrow}
                 />
-                <div className="flex min-w-0 flex-col gap-1.5 rounded-[10px] bg-background p-3">
-                  <Text as="p" variant="caption" tone="muted-foreground">
-                    {t.exchange.turbine.buyAgxLabel}
-                  </Text>
-                  <div className="flex items-center gap-2">
-                    <DappIcon
-                      alt=""
-                      className="size-5 rounded-md"
-                      size="token"
-                      src={turbine.pair.buy.icon}
-                    />
-                    <Text as="span" variant="copy" className="font-semibold">
-                      {vm.sessionReady && turbine.isQuoting ? (
-                        <ExchangeMetaValueSkeleton />
-                      ) : (
-                        turbine.buyAgxLabel
-                      )}
-                    </Text>
-                  </div>
-                  <Text as="p" variant="caption" tone="muted-foreground">
-                    {t.exchange.turbine.buyToBoundWallet}
-                  </Text>
-                </div>
+                <TurbineEqBuyTokenCell
+                  footer={t.exchange.turbine.buyToBoundWallet}
+                  icon={turbine.pair.buy.icon}
+                  label={t.exchange.turbine.buyAgxLabel}
+                  value={
+                    vm.sessionReady && turbine.isQuoting ? (
+                      <ExchangeMetaValueSkeleton />
+                    ) : (
+                      turbine.buyAgxLabel
+                    )
+                  }
+                />
               </div>
             </div>
 

@@ -1,7 +1,7 @@
-import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useMarketFundClaim } from '~/views/dapp/rewards/use-claim-reward'
 import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 
 const TOKEN_GAGX = 'gAGX'
 
@@ -22,12 +22,10 @@ export function useRewardsSimpleClaimView(_view: SimpleClaimView, sessionReady: 
 
   function onClaim() {
     void claim.claim().then((result) => {
-      if (!result) return
-      if (result.status === 'confirm_failed') {
-        toast.warning(t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimSuccess)
-        return
-      }
-      toast.success(t.rewards.claimSuccess)
+      toastClaimResult(result, {
+        claimSuccess: t.rewards.claimSuccess,
+        confirmSyncFailed: t.rewards.claimErrors.confirmSyncFailed,
+      })
     })
   }
 

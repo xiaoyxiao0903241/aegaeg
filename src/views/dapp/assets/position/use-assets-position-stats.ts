@@ -1,15 +1,14 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import type { AssetsProduct } from '~/views/dapp/assets/position/use-assets-position-queries'
 import { useAssetsPositionQueries } from '~/views/dapp/assets/position/use-assets-position-queries'
 import { formatApproxUsd } from '~/shared/api/format-display'
+import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 export type AssetsPositionStatCell = {
   value: string
@@ -40,12 +39,7 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const address = account?.address
-  const agxPriceQuery = usePresaleAgxPriceQuery()
-  const priceUsd =
-    agxPriceQuery.isError || agxPriceQuery.data === undefined
-      ? null
-      : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
-
+  const priceUsd = useAgxPriceUsd()
   const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
 
   if (!walletReady || !address) {

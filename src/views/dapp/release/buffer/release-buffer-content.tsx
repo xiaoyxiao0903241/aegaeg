@@ -1,7 +1,8 @@
-import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
-import { formatGroupedNumber } from '~/shared/api/format-display'
 import { useI18n } from '~/i18n/use-i18n'
+import { useDappShell } from '~/app/use-dapp-shell'
+import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
+import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
@@ -13,29 +14,10 @@ import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
-import { useDappShell } from '~/app/use-dapp-shell'
-import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
-import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
+import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/format-release-api-or-chain-label'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-
-function formatApiOrChainLabel(
-  sessionReady: boolean,
-  apiPending: boolean,
-  apiRaw: string | undefined,
-  chainReady: boolean,
-  chainValue: bigint,
-  dash: string,
-): string {
-  if (sessionReady && apiRaw != null && apiRaw.trim() !== '') {
-    const n = Number(apiRaw)
-    if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} AGX`
-  }
-  if (sessionReady && apiPending && apiRaw == null) return '…'
-  if (chainReady) return `${formatTokenAmount(chainValue, AGX_DECIMALS, 4)} AGX`
-  return dash
-}
 
 export function ReleaseBufferContent() {
   const { messages: t } = useI18n()
@@ -55,36 +37,42 @@ export function ReleaseBufferContent() {
   const agxStats = [
     {
       label: t.release.buffer.entered,
-      value: formatApiOrChainLabel(
+      value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiPending,
-        api?.cumulative_amount,
-        walletReady,
-        amount,
+        apiRaw: api?.cumulative_amount,
+        chainReady: walletReady,
+        chainValue: amount,
         dash,
-      ),
+        decimals: AGX_DECIMALS,
+        unit: 'AGX',
+      }),
     },
     {
       label: t.release.buffer.extracted,
-      value: formatApiOrChainLabel(
+      value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiPending,
-        api?.released_amount,
-        walletReady,
-        claimed,
+        apiRaw: api?.released_amount,
+        chainReady: walletReady,
+        chainValue: claimed,
         dash,
-      ),
+        decimals: AGX_DECIMALS,
+        unit: 'AGX',
+      }),
     },
     {
       label: t.release.labels.releasing,
-      value: formatApiOrChainLabel(
+      value: formatReleaseApiOrChainLabel({
         sessionReady,
         apiPending,
-        api?.releasing_amount,
-        walletReady,
-        releasing,
+        apiRaw: api?.releasing_amount,
+        chainReady: walletReady,
+        chainValue: releasing,
         dash,
-      ),
+        decimals: AGX_DECIMALS,
+        unit: 'AGX',
+      }),
     },
   ]
 
