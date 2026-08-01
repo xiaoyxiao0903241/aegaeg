@@ -17,6 +17,11 @@ type UseCappedTokenAmountInputOptions = {
   onBeforeCap?: () => void
 }
 
+/**
+ * Controlled token amount with balance cap.
+ * 100% / MAX locks `amountIn` to the exact on-chain balance while the visible
+ * draft stays at `maxFractionDigits` (avoids `…000000000001` wei dust in the input).
+ */
 export function useCappedTokenAmountInput({
   decimals,
   balance,
@@ -26,30 +31,40 @@ export function useCappedTokenAmountInput({
   onBeforeCap,
 }: UseCappedTokenAmountInputOptions) {
   const [amountDraft, setAmountDraft] = useState('')
+  /** True after 100% fill — spend exact `balance` even if the draft is truncated for display. */
+  const [exactBalanceFill, setExactBalanceFill] = useState(false)
   const fractionLimit = Math.min(decimals, maxFractionDigits)
+
+  const isExactBalance = exactBalanceFill && balance > 0n && sessionReady && balancesLoaded
+
+  const humanMaxDraft =
+    balance > 0n ? formatTokenAmountDraft(balance, decimals, maxFractionDigits) : ''
 
   const exactDraftAmountIn =
     !sessionReady || !balancesLoaded || !amountDraft
       ? 0n
       : parseTokenAmount(sanitizeTokenAmountInput(amountDraft, decimals), decimals)
 
-  const isFullBalanceDraft = balance > 0n && exactDraftAmountIn === balance
+  const isFullBalanceDraft = !isExactBalance && balance > 0n && exactDraftAmountIn === balance
 
-  // 100% fill: keep full on-chain precision (do not re-cap through display digits).
-  const amount = isFullBalanceDraft
-    ? sanitizeTokenAmountInput(amountDraft, decimals)
-    : cappedTokenAmountRaw({
-        amount: amountDraft,
-        sessionReady,
-        balancesLoaded,
-        balance,
-        decimals,
-        maxFractionDigits,
-      })
+  const amount = isExactBalance
+    ? humanMaxDraft
+    : isFullBalanceDraft
+      ? sanitizeTokenAmountInput(amountDraft, fractionLimit)
+      : cappedTokenAmountRaw({
+          amount: amountDraft,
+          sessionReady,
+          balancesLoaded,
+          balance,
+          decimals,
+          maxFractionDigits,
+        })
 
-  const amountIn = isFullBalanceDraft ? balance : parseTokenAmount(amount, decimals)
+  const amountIn =
+    isExactBalance || isFullBalanceDraft ? balance : parseTokenAmount(amount, decimals)
 
   function setAmount(value: string) {
+    setExactBalanceFill(false)
     if (!sessionReady || !balancesLoaded) {
       setAmountDraft(sanitizeTokenAmountInput(value, fractionLimit))
       return
@@ -60,17 +75,20 @@ export function useCappedTokenAmountInput({
   }
 
   function clearAmount() {
+    setExactBalanceFill(false)
     setAmountDraft('')
   }
 
   function fillPercent(percent: number) {
     if (balance === 0n) return
     onBeforeCap?.()
-    // 100%: full on-chain digits (trimmed, ungrouped) so amountIn === balance.
     if (percent >= 100) {
-      setAmountDraft(formatTokenAmountDraft(balance, decimals, decimals))
+      // Display at human digits; amountIn stays exact via exactBalanceFill.
+      setExactBalanceFill(true)
+      setAmountDraft(humanMaxDraft)
       return
     }
+    setExactBalanceFill(false)
     const value = (balance * BigInt(percent)) / 100n
     setAmountDraft(formatTokenAmountDraft(value, decimals, maxFractionDigits))
   }
