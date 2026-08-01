@@ -29,11 +29,11 @@ import {
 type MessageFn = (t: AppMessagesBundle) => string
 
 /**
- * Exact soft-block / domain sentinels → i18n.
- * Soft gates stay locale-free strings; user messages live only here.
+ * 精确域 sentinel → i18n。
+ * 阻断码本身无 locale；用户文案只在此表。
  */
 export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
-  // —— staking / bond / xmine ——
+  // —— 质押 / bond / xmine ——
   [STAKING_BLOCKED.accountMigrated]: (t) => t.staking.blocked.accountMigrated,
   [BOND_ZAP_BLOCKED.accountMigrated]: (t) => t.staking.blocked.accountMigrated,
   [STAKING_BLOCKED.notBound]: (t) => t.staking.blocked.notBound,
@@ -55,7 +55,7 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [BOND_ZAP_BLOCKED.unavailable]: (t) => t.staking.blocked.unavailable,
   [XMINE_BLOCKED.unavailable]: (t) => t.staking.blocked.unavailable,
 
-  // —— assets ——
+  // —— 资产 ——
   [ASSETS_BLOCKED.zeroAmount]: (t) => t.assets.blocked.zeroAmount,
   [ASSETS_BLOCKED.insufficientReward]: (t) => t.assets.blocked.insufficientReward,
   [ASSETS_BLOCKED.insufficientContribution]: (t) => t.assets.blocked.insufficientContribution,
@@ -67,13 +67,13 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [ASSETS_BLOCKED.noWarmup]: (t) => t.assets.blocked.noWarmup,
   [ASSETS_BLOCKED.unavailable]: (t) => t.assets.blocked.unavailable,
 
-  // —— release ——
+  // —— 释放 ——
   [RELEASE_BLOCKED.zeroAmount]: (t) => t.assets.blocked.zeroAmount,
   [RELEASE_BLOCKED.planUnresolved]: (t) => t.assets.blocked.planUnresolved,
   [RELEASE_BLOCKED.lockedUnknown]: (t) => t.assets.blocked.unavailable,
   [RELEASE_BLOCKED.unavailable]: (t) => t.assets.blocked.unavailable,
 
-  // —— rewards soft gates ——
+  // —— 奖励阻断 ——
   [REWARDS_BLOCKED.insufficientContribution]: (t) => t.rewards.mixed.insufficientContribution,
   [REWARDS_BLOCKED.luckyPaused]: (t) => t.rewards.mixed.luckyPaused,
   [REWARDS_BLOCKED.luckyNotClaimable]: (t) => t.rewards.mixed.luckyNotClaimable,
@@ -86,13 +86,13 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [CLAIM_CONFIRM_SYNC_FAILED]: (t) =>
     t.rewards.claimErrors.confirmSyncFailed ?? t.rewards.claimErrors.failed,
 
-  // —— genesis soft gates ——
+  // —— Genesis 阻断 ——
   [GENESIS_PURCHASE_ERROR.INSUFFICIENT_USD1]: (t) => t.genesis.insufficientUsd1,
   [GENESIS_PURCHASE_ERROR.INSUFFICIENT_ALLOWANCE]: (t) => t.genesis.insufficientAllowance,
   [GENESIS_PURCHASE_ERROR.UNAVAILABLE]: (t) => t.genesis.purchaseUnavailable,
   [GENESIS_PURCHASE_ERROR.NOT_BOUND]: (t) => t.genesis.errors.notBound,
 
-  // —— wallet / exchange soft gates ——
+  // —— 钱包 / 兑换阻断 ——
   [WALLET_BLOCKED.NOT_CONNECTED]: (t) => t.errors.walletNotConnected,
   [WALLET_BLOCKED.PENDING_UNKNOWN]: (t) =>
     t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
@@ -108,7 +108,7 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [EXCHANGE_QUOTE_FAILED]: (t) => t.errors.quoteFailed,
   [EXCHANGE_SUBMIT_BLOCKED]: (t) => t.errors.quoteFailed,
 
-  // —— flash / burn soft gates ——
+  // —— flash / burn 阻断 ——
   [FLASH_USD1_BLOCKED.paused]: (t) => t.exchange.flash.blocked.paused,
   [FLASH_USD1_BLOCKED.belowMin]: (t) => t.exchange.flash.blocked.belowMin,
   [FLASH_USD1_BLOCKED.aboveMax]: (t) => t.exchange.flash.blocked.aboveMax,
@@ -119,22 +119,21 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
   [BURN_BLOCKED.aboveMax]: (t) => t.exchange.burn.blocked.aboveMax,
   [BURN_BLOCKED.zeroRate]: (t) => t.exchange.burn.blocked.zeroRate,
 
-  // —— referral soft gates ——
+  // —— 推荐阻断 ——
   [REFERRAL_BIND_ERROR.INVALID_PARENT]: (t) => t.community.bindErrors.invalidParent,
   [REFERRAL_BIND_ERROR.PARENT_NOT_BOUND]: (t) => t.community.bindErrors.parentNotBound,
 }
 
 type MatchRule = {
-  /** Docs / tests id */
+  /** 文档 / 单测用 id。 */
   id: string
   match: (text: ErrorText, error: unknown) => boolean
   message: MessageFn
 }
 
 /**
- * On-chain revert name / selector / fuzzy text → i18n.
- * Order: more specific first. Duplicate names: handbook contract semantics win
- * (§19 summary bunches some names; contract docs override when they disagree).
+ * 链上 revert 名 / selector / 模糊文本 → i18n。
+ * 更具体的规则在前；重名时以合约文档语义为准（盖过手册 §19 笼统归并）。
  */
 export const REVERT_MATCH_RULES: MatchRule[] = [
   // —— ERC20 ——
@@ -149,7 +148,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.genesis.insufficientAllowance,
   },
 
-  // —— PreSale (presale.md) ——
+  // —— PreSale ——
   {
     id: 'presale-user-limit',
     match: nameOrSelector(/PreSaleUserPurchaseLimitExceeded/i, '0x43f81a81'),
@@ -211,7 +210,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.genesis.errors.systemConfig,
   },
 
-  // —— Referral (referral.md) ——
+  // —— Referral ——
   {
     id: 'referral-already-bound',
     match: nameOrSelector(/Referral__AlreadyBound|AlreadyBound/i, '0xd242113b'),
@@ -243,7 +242,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.community.bindErrors.systemConfig,
   },
 
-  // —— RewardClaimer / MarketFund / Incentive (§19 + reward.md) ——
+  // —— RewardClaimer / MarketFund / Incentive ——
   {
     id: 'claim-already-used',
     match: nameOrSelector(/ErrorAlreadyUsed|AlreadyUsed|already.?(used|claimed)/i, '0xd7003173'),
@@ -259,7 +258,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     match: nameOrSelector(/ErrorInvalidSigner|InvalidSigner|invalid.?sign/i, '0xab3834a6'),
     message: (t) => t.rewards.claimErrors.invalidSigner,
   },
-  // Before claim-no-order: `/no.?pending/i` would falsely match `AM__NotPending`.
+  // claim-no-order 须先于通用 pending：否则 `/no.?pending/i` 会误中 `AM__NotPending`。
   {
     id: 'am-migration',
     match: ({ raw }) => /\bAM__/i.test(raw),
@@ -269,7 +268,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     id: 'claim-no-order',
     match: (text, error) => {
       const raw = text.raw
-      // Reward/claim-shaped copy only — bare "not found" / HTML 404 must not steal other domains.
+      // 仅奖励/领取语义；裸 not found / HTML 404 不得抢其他域。
       const claimShaped =
         /no\s*(team\s*)?reward|available\s*to\s*claim|未?待领取|无可领取/i.test(raw) ||
         (/not\s*found/i.test(raw) && /reward|claim|order/i.test(raw))
@@ -280,10 +279,10 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.rewards.claimErrors.noOrder,
   },
 
-  // —— Handbook §19 shared tips (user-facing) ——
-  // ErrorStakeNotApproved = not bound (liquid/locked staking docs).
-  // ErrorNotApproved = bond not authorized (bondhelper.md) — §19 incorrectly bunches them.
-  // Selectors: fail-closed when wallet only embeds revert hex (no errorName string).
+  // —— 手册 §19 共用 tip（用户可见）——
+  // ErrorStakeNotApproved = 未绑定（活期/锁仓质押）。
+  // ErrorNotApproved = bond 未授权；与 §19 笼统归并不同，按合约文档分轨。
+  // 钱包仅嵌 revert hex、无 errorName 时按 selector fail-closed。
   {
     id: 'stake-not-approved',
     match: nameOrSelector(/ErrorStakeNotApproved/i, '0xaa6a22bc'),
@@ -432,7 +431,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.staking.blocked.accountMigrated,
   },
 
-  // —— Shared Error* names (flash Usd1Swap + burn AgxContributionSwap collide on selector) ——
+  // —— 共用 Error* 名（flash 与 burn selector 碰撞）——
   {
     id: 'shared-paused',
     match: nameOrSelector(/^ErrorPaused\b/i, '0xbc2c67a6'),
@@ -489,7 +488,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     message: (t) => t.exchange.flash.blocked.invalidLimits,
   },
 
-  // —— wallet gas / send (prior wallet-error.ts) ——
+  // —— 钱包 gas / 发送 ——
   {
     id: 'wallet-gas-estimate',
     match: ({ raw }) => /Failed to estimate gas for transaction/i.test(raw),
@@ -517,7 +516,7 @@ export function matchSentinelMessage(raw: string, t: AppMessagesBundle): string 
   if (!raw) return null
   const exact = SENTINEL_MESSAGES[raw]
   if (exact) return exact(t)
-  // Flash soft gates may be thrown as `SENTINEL detail`
+  // Flash 阻断可能以 `SENTINEL detail` 抛出。
   for (const [sentinel, message] of Object.entries(SENTINEL_MESSAGES)) {
     if (raw.startsWith(`${sentinel} `)) return message(t)
   }

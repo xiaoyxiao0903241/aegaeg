@@ -1,6 +1,6 @@
 /**
- * Module-level unknown-outcome latch + per-path in-flight mutex (禁双提交).
- * Survives React unmount; clear latch only on owner-matched success or explicit user reset.
+ * 模块级 unknown 闩锁 + 按 WRITE_PATH 的在飞互斥（禁双提交）。
+ * 闩锁跨 React 卸载仍在；仅 owner 配对成功清除或显式 clearLock / 刷新可解。
  */
 const latchedOwners = new Map<string, symbol>()
 const inFlightPaths = new Set<string>()
@@ -11,21 +11,21 @@ function notifyWritePathBusy(): void {
 }
 
 export const WRITE_PATH = {
-  /** Persisted latch key — historical wire value `'swap'`; do not change. */
+  /** 闩锁键历史值 `'swap'`，禁改。 */
   EXCHANGE: 'swap',
   GENESIS: 'genesis',
   REWARD_CLAIM: 'reward-claim',
-  /** AGX liquid / locked stake open path. */
+  /** AGX 活期 / 锁仓质押开仓。 */
   STAKING: 'staking',
-  /** BondHelper LP / Burn zap. */
+  /** BondHelper LP / Burn zap。 */
   BOND_ZAP: 'bond-zap',
-  /** XStakingPool gAGX mining stake. */
+  /** XStakingPool gAGX 挖矿质押。 */
   XMINE: 'xmine',
-  /** Assets Mixed claim / redeem / xmine claim+unstake. */
+  /** Assets Mixed 领取 / 赎回 / xmine 领取与解押。 */
   ASSETS_CLAIM: 'assets-claim',
-  /** Release queue vested claim / buffer PRV claim. */
+  /** Release 队列归属领取 / buffer PRV 领取。 */
   RELEASE_CLAIM: 'release-claim',
-  /** ReferralRegistry bindReferrer. */
+  /** ReferralRegistry.bindReferrer。 */
   REFERRAL_BIND: 'referral-bind',
 } as const
 
@@ -39,7 +39,7 @@ function isWritePathInFlight(path: WritePath): boolean {
   return inFlightPaths.has(path)
 }
 
-/** Latch or in-flight — sibling CTAs on the same path should treat as busy. */
+/** 闩锁或在飞：同 path 兄弟 CTA 须视为 busy。 */
 export function isWritePathBusy(path: WritePath): boolean {
   return isUnknownReceiptLocked(path) || isWritePathInFlight(path)
 }
@@ -52,8 +52,8 @@ export function subscribeWritePathBusy(onStoreChange: () => void): () => void {
 }
 
 /**
- * Atomically start an in-flight write for `path`.
- * Returns owner token, or `{ ok: false, reason }` when the path is already busy.
+ * 原子占用 path 在飞槽。
+ * 成功返回 owner；已闩锁或已在飞则 `{ ok: false, reason }`。
  */
 export function tryBeginWritePath(
   path: WritePath,
@@ -77,9 +77,8 @@ export function lockUnknownReceipt(path: WritePath, owner: symbol): void {
 }
 
 /**
- * Clear unknown latch.
- * - With `owner`: only the latch setter may clear (success path / paired unlock).
- * - Without `owner`: explicit user reset (`clearLock`).
+ * 清除 unknown 闩锁。
+ * 带 `owner`：仅设置者可清；不带：显式 clearLock。
  */
 export function clearUnknownReceiptLock(path: WritePath, owner?: symbol): void {
   if (owner !== undefined) {
@@ -89,7 +88,7 @@ export function clearUnknownReceiptLock(path: WritePath, owner?: symbol): void {
   notifyWritePathBusy()
 }
 
-/** Test-only reset. */
+/** 仅单测重置。 */
 export function resetUnknownReceiptLocksForTests(): void {
   latchedOwners.clear()
   inFlightPaths.clear()

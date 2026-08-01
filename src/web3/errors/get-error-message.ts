@@ -4,9 +4,8 @@ import { readErrorText } from '~/web3/errors/error-text'
 import { isUserRejectedWalletError, walletTransactionError } from '~/web3/errors/wallet-error'
 
 /**
- * Universal chain-write error → user message (or null to skip toast).
- * Table SSOT: `error-messages.ts` (sentinels + handbook∩legacy revert rules).
- * Call sites pass the active i18n bundle; do not rebuild per-rail message bags.
+ * 链上写错误 → 用户文案（或 null 跳过 toast）。
+ * 对照表 SSOT：`error-messages.ts`；调用方传入当前 i18n 包，禁自建各轨文案袋。
  */
 export function getErrorMessage(error: unknown, t: AppMessagesBundle): string | null {
   if (error == null) return null
@@ -20,7 +19,7 @@ export function getErrorMessage(error: unknown, t: AppMessagesBundle): string | 
   const fromRevert = matchRevertMessage(error, raw, t)
   if (fromRevert) return fromRevert
 
-  // Instance-typed wallet outcomes (unknown receipt / submit timeout).
+  // 实例型钱包结果（unknown 收据 / 提交超时）。
   const fromWallet = walletTransactionError(error, t.wallet.transactionErrors)
   if (fromWallet) return fromWallet
 

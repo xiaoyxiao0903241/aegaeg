@@ -27,17 +27,17 @@ import {
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 
-/** Empty / pending metric → zero via formatters (no named dash/loading aliases). */
+/** 数值指标空 / pending → 经格式化器出零（不用命名 dash/loading 别名）。 */
 
 /**
- * Non-numeric empty chrome (dates, hashes, labels).
- * Never pass these through `formatApiDecimalAmount(null)` — that yields `"0.00"`.
+ * 非数值空态（日期、哈希、标签）。
+ * 禁走 `formatApiDecimalAmount(null)`（会得到 `"0.00"`）。
  */
 export const NON_NUMERIC_EMPTY = '—'
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'participate' | 'referral'>
 
-/** Backend SUM / decimal-string amounts → grouped display (never invent). */
+/** 后端 SUM / 小数字符串金额 → 分组展示（禁臆造）。 */
 export function formatApiDecimalAmount(
   raw: string | null | undefined,
   options: { digits?: number; prefix?: string; suffix?: string } = {},
@@ -63,12 +63,12 @@ export function formatApiStatLabel(
   raw: string | null | undefined,
   options?: { digits?: number; prefix?: string; suffix?: string },
 ): string {
-  // Pending with null only on cold start (keepPreviousData keeps raw on refetch).
+  // 仅冷启动 pending+null 出零（refetch 时 keepPreviousData 仍带 raw）。
   if (!sessionReady || (isPending && raw == null)) return formatApiDecimalAmount(null, options)
   return formatApiDecimalAmount(raw, options)
 }
 
-/** Integer / count stats from API — same session/pending gate as formatApiStatLabel. */
+/** API 整数 / 计数；session/pending 门闸同 formatApiStatLabel。 */
 export function formatApiCountLabel(
   sessionReady: boolean,
   isPending: boolean,
@@ -80,7 +80,7 @@ export function formatApiCountLabel(
   return String(raw)
 }
 
-/** Bind session/pending once so detail views don't repeat the gate trio. */
+/** 绑定 session/pending，避免详情视图重复三件套门闸。 */
 export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean) {
   return {
     stat: (
@@ -116,7 +116,7 @@ export function splitAmountByPct(amount: bigint, pct: number): bigint {
   return (amount * BigInt(pct)) / 100n
 }
 
-/** Placeholder for contribution snapshot: disconnected / loading / value. */
+/** 贡献快照占位：未连接 / 加载中 / 有值。 */
 export function formatContributionPlaceholder(input: {
   walletReady: boolean
   hasAddress: boolean

@@ -1,13 +1,13 @@
 import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
 
-/** Release / claim rails: wallet + writeReady + path busy (latch∨in-flight) + claimable. */
+/** 释放 / 领取轨：钱包 + writeReady + path busy + 可领额度。 */
 export function canClaimWhen(args: {
   walletReady: boolean
   writeReady: boolean
-  /** Historical name — pass `useChainMutation.isLocked` (busy, not latch-only). */
+  /** 历史参数名；传入 `useChainMutation.isLocked`（busy，非仅闩锁）。 */
   unknownReceiptLocked: boolean
   claimable: bigint
-  /** When set, also require plan index resolved (queue rows). */
+  /** 若传入，还要求 planIndex 已解析（队列行）。 */
   planIndexOk?: boolean
 }): boolean {
   if (!args.walletReady || !args.writeReady || args.unknownReceiptLocked) return false
@@ -16,9 +16,9 @@ export function canClaimWhen(args: {
   return true
 }
 
-/** Stake / bond / xmine primary CTA: blocked while path busy, submitting, or not write-ready. */
+/** 质押 / bond / xmine 主 CTA：path busy、提交中或未 writeReady 时禁用。 */
 export function writeCtaDisabled(args: {
-  /** Historical name — pass `useChainMutation.isLocked` (busy, not latch-only). */
+  /** 历史参数名；传入 `useChainMutation.isLocked`（busy，非仅闩锁）。 */
   unknownReceiptLocked: boolean
   isSubmitting: boolean
   writeReady: boolean
@@ -27,7 +27,7 @@ export function writeCtaDisabled(args: {
   return args.unknownReceiptLocked || args.isSubmitting || !args.writeReady || !args.walletReady
 }
 
-/** §1.4 phase → CTA label (migrated / bind referral / default submit). */
+/** 手册 §1.4 phase → CTA 文案（迁移 / 绑推荐 / 默认提交）。 */
 export function writeCtaLabel(
   phase: WriteButtonPhase,
   copy: { accountMigrated: string; bindReferral: string; submit: string },
@@ -37,7 +37,7 @@ export function writeCtaLabel(
   return copy.submit
 }
 
-/** `{template}` with `{balance}` replaced — empty balance → `''` (DappCountValue retains). */
+/** `{template}` 替换 `{balance}`；余额为空 → `''`（DappCountValue 可保留）。 */
 export function formatAmountBalanceLabel(template: string, args: { balance: string }): string {
   if (args.balance.trim() === '') return ''
   return template.replace('{balance}', args.balance)

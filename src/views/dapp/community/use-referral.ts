@@ -37,7 +37,7 @@ export function useReferral() {
   const [isBindCooldown, setIsBindCooldown] = useState(false)
   const bindCooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const bindSucceededRef = useRef(false)
-  // Soft precheck errors only — envelope toasts chain / unknown outcomes.
+  // 仅软预检错误；链上 / unknown 由信封 toast。
   const [error, setError] = useState<unknown>(null)
 
   const address = account?.address
@@ -76,7 +76,7 @@ export function useReferral() {
       ])
       return { isBound, referrer, directCount }
     },
-    // On-chain bind status — wallet only (SIWE not required).
+    // 链上绑定态：仅需钱包（不要求 SIWE）。
   })
   const { sessionReady } = useDappShell()
   const performanceQuery = usePerformance(sessionReady && Boolean(address))

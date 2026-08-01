@@ -1,6 +1,6 @@
 /**
- * Bind CTA success for community toast — set only from envelope `onSuccess`.
- * Do not infer success from `mutate()`'s return (void writes resolve `undefined`).
+ * Community 绑定成功标记：仅信封 onSuccess 置位。
+ * 禁从 mutate 返回值推断（void 写成功也可能是 undefined）。
  */
 export function readAndClearBindSuccess(flag: { current: boolean }): boolean {
   const ok = flag.current

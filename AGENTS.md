@@ -21,6 +21,7 @@ AI 工作规范
 | 交互状态机                 | 原型 HTML（DApp 默认须 WebBridge；见 ui-leaf §2.2）+ research 仅辅助                                                                    | 抄 DOM/CSS；只读摘要；WebBridge「可选 DEFER」；**选币=flip 冒充 picker** |
 | 链上                       | [`docs/frontend-manual/`](docs/frontend-manual/)                                                                                        | 原型演示数值当门闸；**用手册范围取消 Figma/原型控件**                    |
 | 金钱写路径                 | [`docs/money-path-map.md`](docs/money-path-map.md) + **§8.0 R4a**（手册有→手册；手册无→可证旧码）                                       | UI ticket 重写已证 gates；手册沉默时静默拆旧写入口                       |
+| 代码注释                   | [`docs/code-comments.md`](docs/code-comments.md)                                                                                        | 英文全文；设计稿/中途步骤进注释；存量批量翻写                            |
 
 #### R2 — 产品语言 ≠ 实现归属
 
@@ -134,6 +135,7 @@ AI 工作规范
 - **找根因不用补丁**：找根因，不用补丁掩盖症状；失败来自流程时，同步修改文档或本文件，不靠聊天记忆。
 - **样式重构**：触达 Foundation / typography / shell primitive 时，**只读** [`docs/foundation/README.md`](docs/foundation/README.md)（runbook · api · **component-usage**）+ [`.cursor/skills/aegis-component-refactor/SKILL.md`](.cursor/skills/aegis-component-refactor/SKILL.md)。**当前分支 = baseline**；探针 PASS ≠ 完成。禁导出 `*Class` 常量；多处复用抽组件。新建 / 重构 hub 入口卡、同 chrome 多实例时必读 [`component-usage.md`](docs/foundation/component-usage.md)。
 - **小而精准**：保持小而精准的改动；不要机会主义重写、重命名、格式化或清理无关代码。
+- **代码注释**：简体中文、只写现行结论；格式见 [`docs/code-comments.md`](docs/code-comments.md)。触及文件时收齐该文件改到的注释；禁批量翻写无关存量。
 - **最终报告必须说明**：改了什么、为什么、如何验证、剩余风险。
 
 ### 8.2 工程原则

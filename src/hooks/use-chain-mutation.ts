@@ -14,7 +14,7 @@ import {
 import { makeWriteSession, type WriteSession } from '~/web3/wallet/require-write-session'
 import { WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 
-/** Path already latched — no toast (CTA uses `isLocked`). */
+/** 已闩锁：静默；CTA 看 `isLocked`。 */
 class ChainMutationLockedError extends Error {
   constructor() {
     super('WRITE_PATH_LOCKED')
@@ -22,7 +22,7 @@ class ChainMutationLockedError extends Error {
   }
 }
 
-/** Sibling write still in flight — toast (not silent). */
+/** 同 path 仍在飞：须 toast，禁与闩锁同形静默。 */
 class ChainMutationInFlightError extends Error {
   constructor() {
     super(WALLET_WRITE_ERROR.IN_FLIGHT)
@@ -36,23 +36,19 @@ function isChainMutationLockedError(error: unknown): boolean {
 
 export type UseChainMutationArgs<TVars, TValue> = {
   path: WritePath
-  /** Domain write — soft gates throw. Envelope builds WriteSession and passes it in. */
+  /** 域写；软阻断抛错。信封构造 WriteSession 并传入。 */
   mutation: (vars: TVars, session: WriteSession) => Promise<TValue>
   onSuccess?: (value: TValue, vars: TVars) => void | Promise<void>
   /**
-   * Extra side effects only — default error toast runs after unless `'handled'`
-   * (rare: action toasts that replace the default message).
+   * 仅额外副作用；默认错误 toast 在其后，除非返回 `'handled'`。
    */
   onError?: (error: unknown, vars: TVars) => void | 'handled'
 }
 
 /**
- * Shared chain-write mutation: unknown-receipt envelope + explicit WriteSession +
- * `retry: false` + isPending.
- * Already-latched → silent no-op. In-flight sibling → toast. Real errors → onError, then toast.
- *
- * `isLocked` ≡ path busy (unknown latch ∨ in-flight) — historical name; not latch-only.
- * `isLatched` ≡ unknown-outcome latch only.
+ * 链上写 mutation：unknown 信封 + WriteSession + `retry: false`。
+ * 已闩锁静默；在飞 toast；其余走 onError 再 toast。
+ * `isLocked` ≡ busy（闩锁∨在飞）；`isLatched` ≡ 仅 unknown 闩锁。
  */
 export function useChainMutation<TVars = void, TValue = void>(
   args: UseChainMutationArgs<TVars, TValue>,
@@ -88,7 +84,7 @@ export function useChainMutation<TVars = void, TValue = void>(
       return guarded.value as TValue
     },
     onSuccess: (value, vars) => {
-      // Isolate side-effect failures from write success — do not reject mutateAsync.
+      // onSuccess 失败不得让 mutateAsync 变成写失败。
       try {
         const result = args.onSuccess?.(value, vars)
         if (result != null && typeof (result as PromiseLike<void>).then === 'function') {
@@ -109,23 +105,22 @@ export function useChainMutation<TVars = void, TValue = void>(
 
   return {
     /**
-     * Runs the write. Resolves with the mutation value on success.
-     * On failure (including silent latch): resolves `undefined` after onError handling.
-     * Prefer `onSuccess` for side effects — do not treat a void mutation's `undefined` as failure.
+     * 成功解析为 mutation 返回值；失败（含静默闩锁）在 onError 处理后为 `undefined`。
+     * 副作用用 onSuccess；void 写成功也可能是 `undefined`，禁把 undefined 当失败。
      */
     mutate: async (vars?: TVars): Promise<TValue | undefined> => {
       try {
         return await mutation.mutateAsync(vars as TVars)
       } catch (error) {
-        // mutationFn / lock errors already handled in onError (or silent lock).
+        // 错误已在 onError 处理（闩锁静默）。
         if (isChainMutationLockedError(error)) return undefined
         return undefined
       }
     },
     isPending: mutation.isPending,
-    /** Path busy: unknown latch ∨ in-flight. CTA / canClaim should treat as blocked. */
+    /** busy：闩锁∨在飞；CTA / canClaim 须阻断。 */
     isLocked,
-    /** Unknown-outcome latch only (survives after in-flight ends). */
+    /** 仅 unknown 闩锁（在飞结束后仍可能为 true）。 */
     isLatched,
     clearLock: () => clearUnknownReceiptLock(path),
     reset: mutation.reset,

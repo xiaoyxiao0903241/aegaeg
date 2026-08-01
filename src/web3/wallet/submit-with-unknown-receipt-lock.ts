@@ -11,14 +11,10 @@ export type SubmitWithUnknownReceiptLockResult<T> =
   { ok: true; value: T } | { ok: false; error: unknown }
 
 /**
- * Money-path envelope: unknown-receipt lock + per-path in-flight mutex.
- * - Already latched → reject with `whenLocked` (silent at useChainMutation)
- * - Already in-flight → reject with `whenInFlight` (toast; must not equal whenLocked)
- * - Success → owner-scoped clear (paired defense only — does not unlock a prior unknown)
- * - Unknown submit outcome → lock latch with this call's owner
- *
- * Does not own gates, approve, or invalidate. Soft block failures should throw
- * a non-unknown error so they never latch.
+ * 钱路信封：unknown 闩锁 + 同 path 在飞互斥。
+ * 已闩锁 → `whenLocked`；在飞 → `whenInFlight`（须与 whenLocked 区分，供 toast）。
+ * 成功仅做 owner 配对清除（不解历史 unknown）；unknown 结果用本调用 owner 上锁。
+ * 不拥有门闸 / approve / invalidate；软失败须抛非 unknown，以免误闩。
  */
 export async function submitWithUnknownReceiptLock<T>(args: {
   path: WritePath

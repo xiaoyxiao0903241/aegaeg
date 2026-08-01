@@ -32,7 +32,7 @@ export function useRewardsLuckyContentView() {
     summaryQuery.isLoading,
     summary?.today_total_prize,
   )
-  // Eligibility copy is static zero until handbook wires a live field.
+  // 资格文案暂固定为零，待手册接通实字段。
   const eligibility = formatApiDecimalAmount(null)
   const cumulativeWins = formatApiCountLabel(
     sessionReady,
