@@ -8,7 +8,7 @@ type UseMarketTradeBalancesArgs = {
   address: string | undefined
   sellKey: TradeTokenKey
   buyKey: TradeTokenKey
-  /** 余额/授权读（Exchange tab 预热）。 */
+  /** 余额/授权读（仅挂载的 Trade 会话）。 */
   readsEnabled: boolean
   walletReady: boolean
 }
@@ -41,6 +41,11 @@ export function useMarketTradeBalances({
     agx: agxQuery.data,
     x: xQuery.data,
   }
+  const placeholderByKey: Record<TradeTokenKey, boolean> = {
+    usd1: usd1Query.isPlaceholderData,
+    agx: agxQuery.isPlaceholderData,
+    x: xQuery.isPlaceholderData,
+  }
 
   // 决策面：placeholder（含钱包切换 keepPreviousData）不算已加载。
   const balancesLoaded =
@@ -49,32 +54,11 @@ export function useMarketTradeBalances({
     isDecisionFresh(xQuery.isPlaceholderData, xQuery.data) &&
     isDecisionFresh(allowanceQuery.isPlaceholderData, allowanceQuery.data)
 
-  const sellFresh = isDecisionFresh(
-    sellKey === 'usd1'
-      ? usd1Query.isPlaceholderData
-      : sellKey === 'agx'
-        ? agxQuery.isPlaceholderData
-        : xQuery.isPlaceholderData,
-    byKey[sellKey],
-  )
-  const buyFresh = isDecisionFresh(
-    buyKey === 'usd1'
-      ? usd1Query.isPlaceholderData
-      : buyKey === 'agx'
-        ? agxQuery.isPlaceholderData
-        : xQuery.isPlaceholderData,
-    byKey[buyKey],
-  )
-
-  const sellDecision = sellFresh ? decisionBigint(byKey[sellKey], false) : undefined
-  const buyDecision = buyFresh ? decisionBigint(byKey[buyKey], false) : undefined
-  const allowanceDecision = decisionBigint(allowanceQuery.data, allowanceQuery.isPlaceholderData)
-
   return {
-    /** 决策用：非 fresh 时为 0，且须配合 balancesLoaded。 */
-    sellBalance: sellDecision ?? 0n,
-    buyBalance: buyDecision ?? 0n,
-    /** 展示用：可含 placeholder 旧值。 */
+    /** 决策用：非 fresh → 0，且须配合 balancesLoaded。 */
+    sellBalance: decisionBigint(byKey[sellKey], placeholderByKey[sellKey]) ?? 0n,
+    buyBalance: decisionBigint(byKey[buyKey], placeholderByKey[buyKey]) ?? 0n,
+    /** 展示用：可含 placeholder 旧值（勿与决策零值混画）。 */
     sellBalanceKnown: byKey[sellKey] !== undefined,
     buyBalanceKnown: byKey[buyKey] !== undefined,
     balanceByKey: {
@@ -87,7 +71,7 @@ export function useMarketTradeBalances({
       agx: byKey.agx !== undefined,
       x: byKey.x !== undefined,
     } satisfies Record<TradeTokenKey, boolean>,
-    allowance: allowanceDecision ?? 0n,
+    allowance: decisionBigint(allowanceQuery.data, allowanceQuery.isPlaceholderData) ?? 0n,
     balancesLoaded,
     isBalancesLoading:
       walletReady &&

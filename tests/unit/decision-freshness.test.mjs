@@ -16,3 +16,16 @@ test('decisionBigint treats placeholder as unknown (wallet-switch keepPreviousDa
   assert.equal(isDecisionFresh(false, previousWalletBalance), true)
   assert.equal(isDecisionFresh(false, undefined), false)
 })
+
+test('decision axis zeros while paint axis may keep previous (contract)', async () => {
+  const { decisionBigint, isDecisionFresh } = await loadModule(
+    '/src/core/query/decision-freshness.ts',
+  )
+  const paint = 5_000n
+  const placeholder = true
+  const decision = decisionBigint(paint, placeholder) ?? 0n
+  const paintKnown = paint !== undefined
+  assert.equal(decision, 0n)
+  assert.equal(paintKnown, true)
+  assert.equal(isDecisionFresh(placeholder, paint), false)
+})

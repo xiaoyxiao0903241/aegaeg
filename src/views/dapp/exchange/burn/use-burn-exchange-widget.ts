@@ -1,6 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -68,9 +69,12 @@ export function useBurnExchangeWidget(
     placeholderData: keepPreviousData,
   })
 
-  const sellBalance = balancesQuery.data?.sell ?? 0n
-  const balancesLoaded = balancesQuery.data !== undefined
-  const isBalancesLoading = walletReady && balancesQuery.isLoading
+  const sellBalance =
+    decisionBigint(balancesQuery.data?.sell, balancesQuery.isPlaceholderData) ?? 0n
+  const allowance =
+    decisionBigint(balancesQuery.data?.approved, balancesQuery.isPlaceholderData) ?? 0n
+  const balancesLoaded = isDecisionFresh(balancesQuery.isPlaceholderData, balancesQuery.data)
+  const isBalancesLoading = walletReady && (!balancesLoaded || balancesQuery.isLoading)
 
   const core = useExchangeQuote({
     sessionReady,
@@ -78,7 +82,7 @@ export function useBurnExchangeWidget(
     decimals,
     buyDecimals,
     sellBalance,
-    allowance: balancesQuery.data?.approved ?? 0n,
+    allowance,
     balancesLoaded,
     walletReady,
     writeReady,

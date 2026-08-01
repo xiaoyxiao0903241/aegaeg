@@ -2,6 +2,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import {
   FLASH_PAIR_DEFAULT,
   flashPairAllowsFlip,
@@ -95,11 +96,16 @@ export function useFlashExchangeWidget(
         ? gagxForwardBalances
         : gagxReverseBalances
 
-  const sellBalance = balancesQuery.data?.sell ?? 0n
-  const balancesLoaded = balancesQuery.data !== undefined && usd1ConfigReady
+  const sellBalance =
+    decisionBigint(balancesQuery.data?.sell, balancesQuery.isPlaceholderData) ?? 0n
+  const allowance =
+    decisionBigint(balancesQuery.data?.approved, balancesQuery.isPlaceholderData) ?? 0n
+  const balancesLoaded =
+    isDecisionFresh(balancesQuery.isPlaceholderData, balancesQuery.data) && usd1ConfigReady
   const isBalancesLoading =
     walletReady &&
-    (balancesQuery.isLoading ||
+    (!balancesLoaded ||
+      balancesQuery.isLoading ||
       (!isRedeemPair && configQuery.data === undefined && !configQuery.isError))
 
   const core = useExchangeQuote({
@@ -108,7 +114,7 @@ export function useFlashExchangeWidget(
     decimals: sellDecimals,
     buyDecimals,
     sellBalance,
-    allowance: balancesQuery.data?.approved ?? 0n,
+    allowance,
     balancesLoaded,
     walletReady,
     writeReady,

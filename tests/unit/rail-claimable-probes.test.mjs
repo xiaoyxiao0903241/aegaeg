@@ -27,6 +27,25 @@ test('readTurbineHasClaimable short-circuits on first vested (no silences body)'
   assert.deepEqual(calls, ['silencesSize', 'isVested', 'isVested'])
 })
 
+test('readTurbineHasClaimable returns false when none vested', async () => {
+  const { readTurbineHasClaimable } = await loadModule(
+    '/src/web3/exchange/turbine-exchange-read.ts',
+  )
+  let vestedCalls = 0
+  const client = {
+    async readContract(request) {
+      if (request.functionName === 'silencesSize') return 3n
+      if (request.functionName === 'isVested') {
+        vestedCalls += 1
+        return false
+      }
+      throw new Error(`unexpected ${request.functionName}`)
+    },
+  }
+  assert.equal(await readTurbineHasClaimable(USER, client), false)
+  assert.equal(vestedCalls, 3)
+})
+
 test('readReleaseHasClaimable uses queue total then vault claimable short-circuit', async () => {
   const { readReleaseHasClaimable } = await loadModule('/src/web3/release/release-read.ts')
   const calls = []
@@ -53,4 +72,17 @@ test('readReleaseHasClaimable uses queue total then vault claimable short-circui
     'claimable',
     'claimable',
   ])
+})
+
+test('readReleaseHasClaimable returns false when queue and vault empty', async () => {
+  const { readReleaseHasClaimable } = await loadModule('/src/web3/release/release-read.ts')
+  const client = {
+    async readContract(request) {
+      if (request.functionName === 'getUserTotalClaimable') return 0n
+      if (request.functionName === 'getReleaseCount') return 2n
+      if (request.functionName === 'claimable') return 0n
+      throw new Error(`unexpected ${request.functionName}`)
+    },
+  }
+  assert.equal(await readReleaseHasClaimable(USER, client), false)
 })

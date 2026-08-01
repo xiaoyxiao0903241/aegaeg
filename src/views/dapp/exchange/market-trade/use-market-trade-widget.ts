@@ -62,7 +62,6 @@ export function useMarketTradeWidget(
 
   const {
     sellBalance,
-    buyBalance,
     sellBalanceKnown,
     buyBalanceKnown,
     balanceByKey,
@@ -172,8 +171,12 @@ export function useMarketTradeWidget(
     buyPickerKeys,
     getToken: getTradeToken,
     isTokenLive: isTradeTokenLive,
-    sellBalanceLabel: sellBalanceKnown ? formatTokenAmount(sellBalance, pair.sell.decimals, 4) : '',
-    buyBalanceLabel: buyBalanceKnown ? formatTokenAmount(buyBalance, pair.buy.decimals, 4) : '',
+    sellBalanceLabel: sellBalanceKnown
+      ? formatTokenAmount(balanceByKey[sellKey], pair.sell.decimals, 4)
+      : '',
+    buyBalanceLabel: buyBalanceKnown
+      ? formatTokenAmount(balanceByKey[buyKey], pair.buy.decimals, 4)
+      : '',
     balanceLabelFor: (key: TradeTokenKey) => {
       if (!balanceKnownByKey[key]) return ''
       const token = getTradeToken(key)
