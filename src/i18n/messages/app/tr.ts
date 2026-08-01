@@ -169,6 +169,7 @@ const app = defineMessages({
       transactionFailed: 'İşlem başarısız. Lütfen daha sonra tekrar deneyin.',
       transactionUnknown:
         'İşlem durumu bilinmiyor. Tekrar göndermeyin — önce cüzdanınızı veya blok gezginini kontrol edin.',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

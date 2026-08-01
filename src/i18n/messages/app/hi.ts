@@ -169,6 +169,7 @@ const app = defineMessages({
       transactionFailed: 'लेनदेन विफल। कृपया बाद में फिर कोशिश करें।',
       transactionUnknown:
         'लेनदेन की स्थिति अज्ञात है। दोबारा सबमिट न करें — पहले वॉलेट या ब्लॉक एक्सप्लोरर जाँचें।',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

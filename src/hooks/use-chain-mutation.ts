@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { useRef } from 'react'
+import { useRef, useSyncExternalStore } from 'react'
 import { useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
@@ -7,15 +7,26 @@ import { submitWithUnknownReceiptLock } from '~/web3/wallet/submit-with-unknown-
 import {
   clearUnknownReceiptLock,
   isUnknownReceiptLocked,
+  isWritePathBusy,
+  subscribeWritePathBusy,
   type WritePath,
 } from '~/web3/wallet/unknown-receipt-lock'
 import { makeWriteSession, type WriteSession } from '~/web3/wallet/require-write-session'
+import { WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
 
 /** Path already latched — no toast (CTA uses `isLocked`). */
 class ChainMutationLockedError extends Error {
   constructor() {
     super('WRITE_PATH_LOCKED')
     this.name = 'ChainMutationLockedError'
+  }
+}
+
+/** Sibling write still in flight — toast (not silent). */
+class ChainMutationInFlightError extends Error {
+  constructor() {
+    super(WALLET_WRITE_ERROR.IN_FLIGHT)
+    this.name = 'ChainMutationInFlightError'
   }
 }
 
@@ -38,7 +49,10 @@ export type UseChainMutationArgs<TVars, TValue> = {
 /**
  * Shared chain-write mutation: unknown-receipt envelope + explicit WriteSession +
  * `retry: false` + isPending.
- * Already-latched → silent no-op. Real errors → onError side effects, then getErrorMessage toast.
+ * Already-latched → silent no-op. In-flight sibling → toast. Real errors → onError, then toast.
+ *
+ * `isLocked` ≡ path busy (unknown latch ∨ in-flight) — historical name; not latch-only.
+ * `isLatched` ≡ unknown-outcome latch only.
  */
 export function useChainMutation<TVars = void, TValue = void>(
   args: UseChainMutationArgs<TVars, TValue>,
@@ -49,6 +63,17 @@ export function useChainMutation<TVars = void, TValue = void>(
   const walletRef = useRef(wallet)
   walletRef.current = wallet
 
+  const isLocked = useSyncExternalStore(
+    subscribeWritePathBusy,
+    () => isWritePathBusy(path),
+    () => isWritePathBusy(path),
+  )
+  const isLatched = useSyncExternalStore(
+    subscribeWritePathBusy,
+    () => isUnknownReceiptLocked(path),
+    () => isUnknownReceiptLocked(path),
+  )
+
   const mutation = useMutation({
     retry: false,
     mutationFn: async (vars: TVars): Promise<TValue> => {
@@ -56,6 +81,7 @@ export function useChainMutation<TVars = void, TValue = void>(
       const guarded = await submitWithUnknownReceiptLock({
         path,
         whenLocked: new ChainMutationLockedError(),
+        whenInFlight: new ChainMutationInFlightError(),
         run: () => args.mutation(vars, session),
       })
       if (!guarded.ok) throw guarded.error
@@ -82,6 +108,11 @@ export function useChainMutation<TVars = void, TValue = void>(
   })
 
   return {
+    /**
+     * Runs the write. Resolves with the mutation value on success.
+     * On failure (including silent latch): resolves `undefined` after onError handling.
+     * Prefer `onSuccess` for side effects — do not treat a void mutation's `undefined` as failure.
+     */
     mutate: async (vars?: TVars): Promise<TValue | undefined> => {
       try {
         return await mutation.mutateAsync(vars as TVars)
@@ -92,7 +123,10 @@ export function useChainMutation<TVars = void, TValue = void>(
       }
     },
     isPending: mutation.isPending,
-    isLocked: isUnknownReceiptLocked(path),
+    /** Path busy: unknown latch ∨ in-flight. CTA / canClaim should treat as blocked. */
+    isLocked,
+    /** Unknown-outcome latch only (survives after in-flight ends). */
+    isLatched,
     clearLock: () => clearUnknownReceiptLock(path),
     reset: mutation.reset,
   }

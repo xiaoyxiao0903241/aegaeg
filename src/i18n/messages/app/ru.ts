@@ -168,6 +168,7 @@ const app = defineMessages({
       transactionFailed: 'Транзакция не удалась. Повторите попытку позже.',
       transactionUnknown:
         'Статус транзакции неизвестен. Не отправляйте повторно — сначала проверьте кошелёк или обозреватель блоков.',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

@@ -168,6 +168,7 @@ const app = defineMessages({
       transactionFailed: 'ธุรกรรมล้มเหลว โปรดลองอีกครั้ง',
       transactionUnknown:
         'สถานะธุรกรรมไม่ทราบ โปรดอย่าส่งซ้ำ — ตรวจสอบในกระเป๋าเงินหรือบล็อกเอ็กซ์พลอเรอร์ก่อน',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

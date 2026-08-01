@@ -168,6 +168,7 @@ const app = defineMessages({
       transactionFailed: '取引に失敗しました。しばらくしてから再試行してください。',
       transactionUnknown:
         '取引状態が不明です。再送信しないでください。先にウォレットまたはブロックエクスプローラーで確認してください。',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

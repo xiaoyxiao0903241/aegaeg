@@ -103,6 +103,8 @@ export const SENTINEL_MESSAGES: Record<string, MessageFn> = {
     t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
   [WALLET_WRITE_ERROR.SUBMIT_UNKNOWN]: (t) =>
     t.wallet.transactionErrors.transactionUnknown ?? t.errors.chain.fallback,
+  [WALLET_WRITE_ERROR.IN_FLIGHT]: (t) =>
+    t.wallet.transactionErrors.writeInFlight ?? t.errors.chain.fallback,
   [EXCHANGE_QUOTE_FAILED]: (t) => t.errors.quoteFailed,
   [EXCHANGE_SUBMIT_BLOCKED]: (t) => t.errors.quoteFailed,
 

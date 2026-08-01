@@ -166,6 +166,7 @@ const app = defineMessages({
       transactionFailed: 'Giao dịch thất bại. Vui lòng thử lại sau.',
       transactionUnknown:
         'Trạng thái giao dịch chưa rõ. Đừng gửi lại — hãy kiểm tra ví hoặc trình duyệt khối trước.',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

@@ -33,6 +33,8 @@ export const WALLET_WRITE_ERROR = {
   WRONG_CHAIN: 'WALLET_WRONG_CHAIN',
   /** eth_sendTransaction timed out before a hash — may still broadcast; treat as unknown. */
   SUBMIT_UNKNOWN: 'WALLET_SUBMIT_UNKNOWN',
+  /** Same WRITE_PATH already has an in-flight envelope (sibling CTA race). */
+  IN_FLIGHT: 'WALLET_WRITE_IN_FLIGHT',
 } as const
 
 /** Quote RPC / router failure — map via i18n `errors.quoteFailed`. */

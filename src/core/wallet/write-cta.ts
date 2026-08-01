@@ -1,9 +1,10 @@
 import type { WriteButtonPhase } from '~/core/wallet/write-button-phase'
 
-/** Release / claim rails: wallet + writeReady + unknown-receipt latch + claimable amount. */
+/** Release / claim rails: wallet + writeReady + path busy (latch∨in-flight) + claimable. */
 export function canClaimWhen(args: {
   walletReady: boolean
   writeReady: boolean
+  /** Historical name — pass `useChainMutation.isLocked` (busy, not latch-only). */
   unknownReceiptLocked: boolean
   claimable: bigint
   /** When set, also require plan index resolved (queue rows). */
@@ -15,8 +16,9 @@ export function canClaimWhen(args: {
   return true
 }
 
-/** Stake / bond / xmine primary CTA: blocked while latched, submitting, or not write-ready. */
+/** Stake / bond / xmine primary CTA: blocked while path busy, submitting, or not write-ready. */
 export function writeCtaDisabled(args: {
+  /** Historical name — pass `useChainMutation.isLocked` (busy, not latch-only). */
   unknownReceiptLocked: boolean
   isSubmitting: boolean
   writeReady: boolean

@@ -171,6 +171,7 @@ const app = defineMessages({
       transactionFailed: 'Transaction failed. Please try again.',
       transactionUnknown:
         'Transaction status is unknown. Do not submit again — check your wallet or the block explorer first.',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

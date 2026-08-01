@@ -171,6 +171,7 @@ const app = defineMessages({
       transactionFailed: 'Transaksi gagal. Silakan coba lagi nanti.',
       transactionUnknown:
         'Status transaksi tidak diketahui. Jangan kirim ulang — periksa dulu dompet atau block explorer.',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

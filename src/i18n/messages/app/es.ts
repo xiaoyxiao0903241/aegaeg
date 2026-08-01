@@ -170,6 +170,7 @@ const app = defineMessages({
       transactionFailed: 'La transacción falló. Inténtalo de nuevo más tarde.',
       transactionUnknown:
         'El estado de la transacción es desconocido. No vuelva a enviar: revise primero la billetera o el explorador.',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

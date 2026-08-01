@@ -168,6 +168,7 @@ const app = defineMessages({
       transactionFailed: '거래에 실패했습니다. 잠시 후 다시 시도하세요.',
       transactionUnknown:
         '거래 상태를 확인할 수 없습니다. 다시 제출하지 마세요. 먼저 지갑 또는 블록 탐색기에서 확인하세요.',
+      writeInFlight: 'Another write is already in progress. Please wait.',
     },
   },
   exchange: {

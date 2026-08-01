@@ -163,6 +163,7 @@ const app = defineMessages({
       insufficientFunds: 'BNB 餘額不足，無法支付網路 Gas 費用。',
       transactionFailed: '交易失敗，請稍後重試。',
       transactionUnknown: '交易狀態未知，請勿重複提交。請先在錢包或區塊瀏覽器確認結果。',
+      writeInFlight: '另一筆鏈上操作進行中，請稍候。',
     },
   },
   exchange: {
