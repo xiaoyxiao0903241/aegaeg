@@ -35,7 +35,7 @@ function TurbineEqBuyTokenCell({
   footer: ReactNode
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1.5 rounded-[10px] bg-background p-3">
+    <div className="flex min-w-0 flex-col gap-1.5 rounded-control bg-background p-3">
       <Text as="p" variant="caption" tone="muted-foreground">
         {label}
       </Text>
@@ -75,6 +75,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
           disabled={turbine.isSubmitting}
           onChange={(value) => turbine.setSegment(value as 'unlock' | 'claim')}
           options={vm.segmentOptions}
+          size="lg"
           tone="ink"
           value={turbine.segment}
         />

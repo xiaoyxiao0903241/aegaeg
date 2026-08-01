@@ -116,7 +116,7 @@ export function RewardsCobuildContent() {
           })}
         >
           <ResponsiveTable
-            colWidths={['190px', '70px', '140px', '110px', '1fr']}
+            colWidths={['11.875rem', '4.375rem', '8.75rem', '6.875rem', '1fr']}
             headers={[...cobuild.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
@@ -138,7 +138,7 @@ export function RewardsCobuildContent() {
         <DappContentHeading>{cobuild.directsTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
           <ResponsiveTable
-            colWidths={['200px', '200px', '130px', '1fr']}
+            colWidths={['12.5rem', '12.5rem', '8.125rem', '1fr']}
             headers={[...cobuild.directsColumns]}
             isLoading={directsLoading}
             rows={directRows}

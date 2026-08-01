@@ -240,7 +240,7 @@ html[data-home-motion-ready]
 
 [data-metrics-reveal]:not([data-visible='true']) [data-metrics-panel] {
   opacity: 0;
-  clip-path: inset(0 50% round 28px);
+  clip-path: inset(0 50% round 1.75rem);
 }
 
 [data-metrics-panel] {

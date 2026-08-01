@@ -5,6 +5,7 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
+import { Chip } from '~/shared/ui/chip'
 import { FaqList } from '~/shared/ui/faq-list'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Segment } from '~/shared/ui/segment'
@@ -12,9 +13,7 @@ import { Text } from '~/shared/ui/text'
 import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 
-/** Figma hub right column `4371:225`: section titles body-lg 18. */
-const hubSectionTitleClass = 'text-[1.125rem] leading-normal tracking-normal'
-
+/** Figma hub right column — section titles use Text `section` token. */
 type MetricTone = 'default' | 'accent'
 type MetricIcon = 'agx' | 'usd1' | null
 type HubMetricId =
@@ -38,15 +37,10 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
 
   return (
     <span className="flex min-w-0 items-center gap-1.5">
-      {src ? <DappIcon alt="" className="size-[18px] shrink-0 rounded-full" src={src} /> : null}
-      <span>{value}</span>
+      {src ? <DappIcon alt="" className="shrink-0 rounded-full" size="lg" src={src} /> : null}
+      <span className="min-w-0 truncate">{value}</span>
       {sub ? (
-        <Text
-          as="span"
-          className="text-[13px] leading-normal"
-          tone="muted-foreground"
-          variant="support"
-        >
+        <Text as="span" className="shrink-0" tone="muted-foreground" variant="support">
           {sub}
         </Text>
       ) : null}
@@ -58,7 +52,7 @@ function isHubMetricId(id: string): id is HubMetricId {
   return id in METRIC_CHROME
 }
 
-/** Hub right rail: overview grid + period table + chart chrome + FAQ (dynamic figures may be —). */
+/** Hub right rail: overview grid + period table + chart chrome + FAQ. */
 export function StakingHubContent() {
   const {
     t,
@@ -68,25 +62,37 @@ export function StakingHubContent() {
     setChartMetric,
     chartRange,
     setChartRange,
-    agxPriceLabel,
-    stakersLabel,
+    labels,
+    tablePlaceholders,
+    chartPoints,
+    chartValueLabel,
+    chartDeltaLabel,
     overview,
     table,
     chart,
-    placeholder: PLACEHOLDER,
   } = useStakingHubContentView()
 
+  const tableSegOptions = [
+    { label: table.segs.stake, value: 'stake' },
+    { label: table.segs.lpbond, value: 'lpbond' },
+    { label: table.segs.burnbond, value: 'burnbond' },
+  ] as const
+
   function metricValue(id: HubMetricId): string {
-    if (id === 'price') return agxPriceLabel
-    if (id === 'stakers') return stakersLabel
-    return PLACEHOLDER
+    return labels[id]
+  }
+
+  function metricSub(id: HubMetricId): string | undefined {
+    if (id === 'tvl') return labels.tvlUsdSub
+    if (id === 'treasury') return labels.treasuryUsdSub
+    return undefined
   }
 
   return (
     <DappDetailPage>
       <DappDetailBlock>
-        <DappContentHeading className={hubSectionTitleClass}>{overview.title}</DappContentHeading>
-        <div className="grid grid-cols-3 gap-2">
+        <DappContentHeading>{overview.title}</DappContentHeading>
+        <div className="grid auto-rows-fr grid-cols-3 gap-2">
           {overview.metrics.map((metric) => {
             if (!isHubMetricId(metric.id)) return null
             const chrome = METRIC_CHROME[metric.id]
@@ -98,20 +104,20 @@ export function StakingHubContent() {
 
             return (
               <MetricCard
-                className="min-h-[75px] gap-1.5 p-4"
+                className="h-full gap-1.5 p-4"
                 key={metric.id}
                 label={
                   <span className="flex items-center gap-1">
                     <span>{metric.label}</span>
                     {metric.hint ? (
-                      <DappInfoTooltip className="size-3 [&_svg]:size-3" content={metric.hint} />
+                      <DappInfoTooltip className="text-foreground" content={metric.hint} />
                     ) : null}
                   </span>
                 }
                 value={
                   <MetricValueRow
                     icon={chrome.icon}
-                    sub={chrome.hasSub ? `≈ ${PLACEHOLDER}` : undefined}
+                    sub={chrome.hasSub ? metricSub(metric.id) : undefined}
                     value={value}
                   />
                 }
@@ -123,19 +129,28 @@ export function StakingHubContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <DappContentHeading className={hubSectionTitleClass}>{table.title}</DappContentHeading>
-        <Segment
-          aria-label={table.segmentAria}
-          className="mb-3 w-fit"
-          onChange={setTableSeg}
-          options={[
-            { label: table.segs.stake, value: 'stake' },
-            { label: table.segs.lpbond, value: 'lpbond' },
-            { label: table.segs.burnbond, value: 'burnbond' },
-          ]}
-          tone="coral"
-          value={tableSeg}
-        />
+        <DappContentHeading>{table.title}</DappContentHeading>
+        {/* Figma `htab` row `4371:233` — discrete coral-soft / outlined pills (= Chip), ≠ sliding Segment */}
+        <div aria-label={table.segmentAria} className="mb-3 flex flex-wrap gap-2.5" role="tablist">
+          {tableSegOptions.map((option) => {
+            const active = tableSeg === option.value
+            return (
+              <Chip
+                aria-selected={active}
+                key={option.value}
+                onClick={() => setTableSeg(option.value)}
+                role="tab"
+                shape="pill"
+                size="md"
+                tone={active ? 'coral' : 'default'}
+                variant={active ? 'soft' : 'outlined'}
+                className="h-7 min-w-0 px-4 font-semibold"
+              >
+                {option.label}
+              </Chip>
+            )
+          })}
+        </div>
         <DappTableCard contentClassName="px-4 py-4">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
@@ -162,17 +177,17 @@ export function StakingHubContent() {
                       </td>
                       <td className="py-3 pr-3">
                         <Text as="span" variant="detail">
-                          {PLACEHOLDER}
+                          {tablePlaceholders.baseDaily}
                         </Text>
                       </td>
                       <td className="py-3 pr-3">
                         <Text as="span" variant="detail">
-                          {PLACEHOLDER}
+                          {tablePlaceholders.bonus}
                         </Text>
                       </td>
                       <td className="py-3">
                         <Text as="span" className="text-success" variant="detail">
-                          {PLACEHOLDER}
+                          {tablePlaceholders.periodYield}
                         </Text>
                       </td>
                     </tr>
@@ -184,7 +199,7 @@ export function StakingHubContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <DappContentHeading className={hubSectionTitleClass}>{chart.title}</DappContentHeading>
+        <DappContentHeading>{chart.title}</DappContentHeading>
         <Segment
           aria-label={chart.metricAria}
           className="mb-3 w-fit"
@@ -193,22 +208,24 @@ export function StakingHubContent() {
             { label: chart.metricTabs.tvl, value: 'tvl' },
             { label: chart.metricTabs.mcap, value: 'mcap' },
           ]}
+          size="md"
           tone="coral"
           value={chartMetric}
         />
         <StakingChartCard
           chartRange={chartRange}
+          emptyLabel={t.staking.aside.chartEmpty}
           header={
             <div className="flex items-center gap-2">
               <Text as="strong" className="text-xl font-semibold" variant="copy">
-                {PLACEHOLDER}
+                {chartValueLabel}
               </Text>
               <Text as="span" className="text-success" variant="detail">
-                {PLACEHOLDER}
+                {chartDeltaLabel}
               </Text>
             </div>
           }
-          placeholder={PLACEHOLDER}
+          points={chartPoints}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
@@ -217,9 +234,7 @@ export function StakingHubContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <DappContentHeading className={hubSectionTitleClass}>
-          {t.staking.hub.faq.title}
-        </DappContentHeading>
+        <DappContentHeading>{t.staking.hub.faq.title}</DappContentHeading>
         <FaqList items={t.staking.hub.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>

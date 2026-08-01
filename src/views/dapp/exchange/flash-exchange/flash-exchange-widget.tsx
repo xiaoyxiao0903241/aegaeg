@@ -27,8 +27,6 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
       <DappTabHeader
         backText={t.exchange.backToHub}
         onBack={vm.onBack}
-        /* Figma `4430:265`: col gap16 · intro 13 · panel title already 21 */
-        className="gap-4 [&_p]:text-[13px] [&_p]:leading-normal"
         subtitle={t.exchange.flash.intros[flash.introKey]}
         title={t.exchange.flash.title}
       />
@@ -39,6 +37,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           disabled={flash.isSubmitting || vm.isFlipping}
           onChange={flash.setPairId}
           options={vm.pairOptions}
+          size="lg"
           tone="ink"
           value={flash.pairId}
         />

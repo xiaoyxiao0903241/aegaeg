@@ -61,13 +61,13 @@ export function RewardsModeCard({
             </span>
           ) : null}
         </div>
-        <Text as="p" className="m-0 text-[13px]" tone="muted-foreground" variant="detail">
+        <Text as="p" className="m-0" tone="muted-foreground" variant="detail">
           {body}
         </Text>
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <Text as="span" className="text-[13px]" tone="muted-foreground" variant="detail">
+        <Text as="span" tone="muted-foreground" variant="detail">
           {balanceLabel}
         </Text>
         <div className="flex items-center gap-1.5">
@@ -75,12 +75,12 @@ export function RewardsModeCard({
             <DappCountValue text={balanceAmount} />
           </Text>
           {approx ? (
-            <Text as="span" className="text-[13px]" tone="muted-foreground" variant="detail">
+            <Text as="span" tone="muted-foreground" variant="detail">
               <DappCountValue text={approx} />
             </Text>
           ) : null}
           {claimCta ? (
-            <Text as="span" className="text-[13px] font-medium text-primary" variant="detail">
+            <Text as="span" className="font-medium text-primary" variant="detail">
               {claimCta}
             </Text>
           ) : null}

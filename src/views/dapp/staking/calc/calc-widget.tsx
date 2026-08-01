@@ -26,6 +26,7 @@ export function CalcWidget() {
           aria-label={t.staking.calc.productAria}
           onChange={vm.onProductChange}
           options={vm.productOptions}
+          size="md"
           tone="coral"
           value={vm.product}
         />
@@ -38,6 +39,7 @@ export function CalcWidget() {
             aria-label={t.staking.calc.periodAria}
             onChange={vm.onPeriodChange}
             options={vm.periodOptions}
+            size="md"
             tone="coral"
             value={vm.period}
           />

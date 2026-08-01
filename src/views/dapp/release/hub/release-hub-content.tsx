@@ -53,10 +53,10 @@ export function ReleaseHubContent() {
                   <div className="flex items-center">
                     <span
                       className={cn(
-                        'flex size-7 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold',
+                        'flex size-7 shrink-0 items-center justify-center rounded-full font-semibold',
                         accent
                           ? 'bg-primary text-white'
-                          : 'border-[1.5px] border-border bg-card text-muted-foreground',
+                          : 'border-[0.09375rem] border-border bg-card text-muted-foreground',
                       )}
                     >
                       {stepIndex + 1}

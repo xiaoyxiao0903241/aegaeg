@@ -49,7 +49,7 @@ export function TokenChip({
   return (
     <button
       className={cn(
-        'inline-flex items-center gap-2 rounded-full bg-background px-[10px] py-1.5',
+        'inline-flex items-center gap-2 rounded-full bg-background px-2.5 py-1.5',
         onClick && 'cursor-pointer',
         !onClick && 'cursor-default',
       )}

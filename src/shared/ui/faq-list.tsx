@@ -40,11 +40,10 @@ const faqList = tv({
         answer: 'text-muted-foreground',
       },
       dapp: {
-        // Figma DApp FAQ (hub `4273:242`): px16 py18 · gap12 · question 16
+        // Figma DApp FAQ (hub `4273:242`): pad + gap via spacing tokens; question = Text `question`.
         list: 'grid w-full gap-3 max-dapp:gap-2.5',
-        cardBody: 'px-4 py-[18px]',
-        question: 'text-[16px] leading-normal tracking-normal',
-        answer: 'my-0 py-[1em] text-muted-foreground',
+        cardBody: 'px-4 py-4.5',
+        answer: 'my-0 py-4 text-muted-foreground',
       },
     },
   },
@@ -156,8 +155,8 @@ export function FaqList({
               surface="soft"
               className={cn(
                 'group',
-                // DApp FAQ leaf (hub `4273:242`): radius 12 — call-site override, keep Card soft SSOT.
-                variant === 'dapp' && 'rounded-[12px]',
+                // Figma FAQ `4273:242` radius 12 → `rounded-faq` (soft default 2xl ≠ 稿).
+                variant === 'dapp' && 'rounded-faq',
                 itemClassName,
               )}
               data-faq-item

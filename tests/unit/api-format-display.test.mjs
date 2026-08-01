@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('formatPresaleRank maps API rank to shareholder label', async () => {
@@ -48,6 +49,21 @@ test('formatApproxUsd: missing / no price / NaN → ≈ $0.00', async () => {
   assert.equal(formatApproxUsd(1, 0), '≈ $0.00')
   assert.equal(formatApproxUsd(2, 10), '≈ $20.00')
   assert.equal(formatApproxUsd(Number.NaN, 10), '≈ $0.00')
+})
+
+test('formatCompactNumber / formatCompactUsd / formatSignedPercent match hub Figma shapes', async () => {
+  const { formatApproxCompactUsd, formatCompactNumber, formatCompactUsd, formatSignedPercent } =
+    await loadModule('/src/shared/api/format-display.ts')
+
+  assert.equal(formatCompactNumber(129_000, { suffix: ' AGX' }), '129K AGX')
+  assert.equal(formatCompactNumber(8_410_000, { prefix: '$' }), '$8.41M')
+  assert.equal(formatCompactUsd(18_600_000), '$18.6M')
+  assert.equal(formatCompactUsd(65), '$65.00')
+  assert.equal(formatCompactUsd(null), '$0.00')
+  assert.equal(formatApproxCompactUsd(129_000, 65), '≈ $8.39M')
+  assert.equal(formatSignedPercent(412.4), '+412.4%')
+  assert.equal(formatSignedPercent(null), '+0.0%')
+  assert.equal(formatSignedPercent(-1.2), '-1.2%')
 })
 
 test('formatTableGenesisRank hides S0 in community member table', async () => {

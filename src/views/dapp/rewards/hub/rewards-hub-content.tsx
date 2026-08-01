@@ -30,45 +30,28 @@ export function RewardsHubContent() {
     <DappDetailPage>
       <DappDetailBlock>
         <div className="mb-6 grid gap-2 sm:grid-cols-3">
-          <RewardsStatCard
-            label={stats.totalRewards}
-            labelClassName="text-[13px]"
-            value={formatApiDecimalAmount(null)}
-          />
-          <RewardsStatCard
-            className="relative overflow-hidden"
-            label={stats.tier}
-            labelClassName="text-[13px]"
-          >
-            <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+          <RewardsStatCard label={stats.totalRewards} value={formatApiDecimalAmount(null)} />
+          <RewardsStatCard className="relative overflow-hidden" label={stats.tier}>
+            <Text as="p" tone="muted-foreground" variant="caption">
               {stats.tier}
             </Text>
-            <Text as="p" className="mt-1.5 text-[13px]" tone="muted-foreground" variant="detail">
+            <Text as="p" className="mt-1.5" tone="muted-foreground" variant="detail">
               {stats.tierEmpty}
             </Text>
           </RewardsStatCard>
-          <RewardsStatCard
-            label={stats.personalHolding}
-            labelClassName="text-[13px]"
-            value={formatApiDecimalAmount(null)}
-          />
-          <RewardsStatCard
-            label={stats.totalPerformance}
-            labelClassName="text-[13px]"
-            value={formatApiDecimalAmount(null)}
-          />
+          <RewardsStatCard label={stats.personalHolding} value={formatApiDecimalAmount(null)} />
+          <RewardsStatCard label={stats.totalPerformance} value={formatApiDecimalAmount(null)} />
           <RewardsStatCard
             label={stats.smallAreaPerformance}
-            labelClassName="text-[13px]"
             value={formatApiDecimalAmount(null)}
           />
-          <RewardsStatCard label={stats.contribution} labelClassName="text-[13px]">
+          <RewardsStatCard label={stats.contribution}>
             <div className="flex items-start justify-between gap-2">
-              <Text as="p" className="text-[13px]" tone="muted-foreground" variant="caption">
+              <Text as="p" tone="muted-foreground" variant="caption">
                 {stats.contribution}
               </Text>
               <Button
-                className="h-4 shrink-0 rounded-full bg-primary px-2 text-[10px] text-primary-foreground hover:bg-primary/90"
+                className="h-4 shrink-0 rounded-full bg-primary px-2 text-primary-foreground hover:bg-primary/90"
                 onClick={() => openExchangeView('burn')}
                 size="sm"
                 type="button"
@@ -79,7 +62,7 @@ export function RewardsHubContent() {
             <Text as="p" className="mt-1.5 font-semibold" variant="copy">
               {contributionValue}
             </Text>
-            <Text as="p" className="mt-1 text-[13px]" tone="muted-foreground" variant="detail">
+            <Text as="p" className="mt-1" tone="muted-foreground" variant="detail">
               {stats.contributionHint}
             </Text>
           </RewardsStatCard>
@@ -115,7 +98,7 @@ export function RewardsHubContent() {
         </Text>
         <DappTableCard>
           <ResponsiveTable
-            colWidths={['160px', '160px', '160px', '1fr', '112px']}
+            colWidths={['10rem', '10rem', '10rem', '1fr', '7rem']}
             headers={[...tier.columns]}
             rows={tier.rows.map((row) => [
               row.level,
@@ -125,7 +108,7 @@ export function RewardsHubContent() {
               row.rate,
             ])}
           />
-          <Text as="p" className="mt-3.5 text-[13px]" tone="muted-foreground" variant="detail">
+          <Text as="p" className="mt-3.5" tone="muted-foreground" variant="detail">
             {t.rewards.hub.mechanismFooter}
           </Text>
         </DappTableCard>

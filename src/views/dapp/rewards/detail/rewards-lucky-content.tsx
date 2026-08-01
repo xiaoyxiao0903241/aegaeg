@@ -52,7 +52,7 @@ export function RewardsLuckyContent() {
               {lucky.verifyTutorial}
             </Button>
           </div>
-          <Text as="p" className="text-[12.5px] leading-[21px] text-white/65" variant="caption">
+          <Text as="p" className="text-white/65" variant="caption">
             {lucky.vrfBody}
           </Text>
         </div>
@@ -63,11 +63,11 @@ export function RewardsLuckyContent() {
           <DappContentHeading>{lucky.resultsTitle}</DappContentHeading>
           <button
             aria-label={lucky.dateFilterAria}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card py-[7px] pr-3 pl-3.5 disabled:opacity-100"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card py-1.75 pr-3 pl-3.5 disabled:opacity-100"
             disabled
             type="button"
           >
-            <Text as="span" className="text-[13px] font-semibold" variant="caption">
+            <Text as="span" className="font-semibold" variant="caption">
               {dateLabel}
             </Text>
             <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
@@ -83,7 +83,7 @@ export function RewardsLuckyContent() {
             </Text>
           </div>
           <ResponsiveTable
-            colWidths={['90px', '255px', '175px', '1fr']}
+            colWidths={['5.625rem', '15.9375rem', '10.9375rem', '1fr']}
             headers={[...lucky.resultsColumns]}
             isLoading={winnersLoading}
             rows={winnerRows}
@@ -98,7 +98,7 @@ export function RewardsLuckyContent() {
         <DappContentHeading>{lucky.historyTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
           <ResponsiveTable
-            colWidths={['150px', '148px', '235px', '1fr']}
+            colWidths={['9.375rem', '9.25rem', '14.6875rem', '1fr']}
             headers={[...lucky.historyColumns]}
             isLoading={historyLoading}
             rows={historyRows}

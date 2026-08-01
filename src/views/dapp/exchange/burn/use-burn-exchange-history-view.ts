@@ -40,8 +40,8 @@ export function useBurnExchangeHistoryView() {
     emptyTitle,
     colWidths:
       tab === 'burn'
-        ? (['200px', '150px', '180px', '1fr'] as const)
-        : (['200px', '180px', '1fr'] as const),
+        ? (['12.5rem', '9.375rem', '11.25rem', '1fr'] as const)
+        : (['12.5rem', '11.25rem', '1fr'] as const),
     headers:
       tab === 'burn'
         ? ([...t.exchange.burn.history.burnColumns] as string[])

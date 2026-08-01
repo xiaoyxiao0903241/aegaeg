@@ -43,7 +43,9 @@ export function BondPeriodList({
               aria-checked={selected}
               className={cn(
                 'flex w-full items-start justify-between gap-3 rounded-2xl border p-3.5 text-left transition-colors',
-                selected ? 'border-[1.4px] border-primary bg-primary/10' : 'border-border bg-card',
+                selected
+                  ? 'border-[0.0875rem] border-primary bg-primary/10'
+                  : 'border-border bg-card',
               )}
               key={period}
               onClick={() => onChange(period)}
@@ -56,7 +58,9 @@ export function BondPeriodList({
                     aria-hidden
                     className={cn(
                       'relative size-4 shrink-0 rounded-full',
-                      selected ? 'border-2 border-primary bg-card' : 'border-[1.5px] border-border',
+                      selected
+                        ? 'border-2 border-primary bg-card'
+                        : 'border-[0.09375rem] border-border',
                     )}
                   >
                     {selected ? (
@@ -66,8 +70,8 @@ export function BondPeriodList({
                   <Text as="span" className="font-semibold" variant="detail">
                     {periodLabels[period]}
                   </Text>
-                  <span className="rounded-[10px] bg-[rgba(22,185,121,0.12)] px-2 py-0.5">
-                    <Text as="span" className="text-[11px] text-success" variant="detail">
+                  <span className="rounded-control bg-[rgba(22,185,121,0.12)] px-2 py-0.5">
+                    <Text as="span" className="text-success" variant="caption">
                       {copy.yield} —
                     </Text>
                   </span>

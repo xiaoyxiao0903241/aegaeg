@@ -64,7 +64,7 @@ export function AssetsPositionPrincipalColumn({
         {amountText}
       </Text>
       {badgeText ? (
-        <span className="inline-flex w-fit items-center gap-1 rounded-[10px] bg-primary-soft px-2 py-0.5">
+        <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2 py-0.5">
           <Text as="span" className="text-xs text-primary" variant="detail">
             {badgeText}
           </Text>

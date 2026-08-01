@@ -114,7 +114,7 @@ export function AssetsXminePositionCard({
           <Text as="strong" className="text-base font-semibold" variant="copy">
             {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
           </Text>
-          <span className="inline-flex w-fit items-center gap-1 rounded-[10px] bg-primary-soft px-2 py-0.5">
+          <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2 py-0.5">
             <Text as="span" className="text-xs text-primary" variant="detail">
               {formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX
             </Text>

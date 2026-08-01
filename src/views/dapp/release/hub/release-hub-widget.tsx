@@ -71,10 +71,10 @@ export function ReleaseHubWidget() {
         >
           <div className="flex items-center gap-2">
             <img alt="" className="size-5 shrink-0" src={dappAssets.release} />
-            <Text as="span" className="min-w-0 flex-1 text-[13px] font-semibold" variant="copy">
+            <Text as="span" className="min-w-0 flex-1 font-semibold" variant="copy">
               {t.release.queue.title}
             </Text>
-            <Text as="span" className="text-[13px]" variant="caption">
+            <Text as="span" variant="caption">
               <DappCountValue text={queuePct} />
             </Text>
           </div>
@@ -105,10 +105,10 @@ export function ReleaseHubWidget() {
         >
           <div className="flex items-center gap-2">
             <img alt="" className="size-5 shrink-0" src={exchangeHubAssets.modeTurbine} />
-            <Text as="span" className="min-w-0 flex-1 text-[13px] font-semibold" variant="copy">
+            <Text as="span" className="min-w-0 flex-1 font-semibold" variant="copy">
               {t.release.buffer.title}
             </Text>
-            <Text as="span" className="text-[13px]" variant="caption">
+            <Text as="span" variant="caption">
               <DappCountValue text={bufferPct} />
             </Text>
           </div>

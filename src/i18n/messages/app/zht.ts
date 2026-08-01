@@ -1853,6 +1853,7 @@ const app = defineMessages({
           { id: '540', period: '540d' },
         ],
       },
+      runwayUnknown: '—',
       chart: {
         title: 'Metrics',
         metricTabs: {
@@ -1911,7 +1912,13 @@ const app = defineMessages({
       recordColumns: ['Time', 'Period', 'Amount', 'Released', 'Tx hash'],
       bondRecordColumns: ['Time', 'Period', 'Paid', 'Discount', 'AGX received', 'Tx hash'],
       xmineRecordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
-      recordsEmpty: 'No records yet',
+      recordsEmpty: {
+        stake: 'No staking records yet. Complete a stake and each one will show up here.',
+        lpbond: 'No purchase records yet. Buy an LP bond and each purchase will show up here.',
+        burnbond: 'No purchase records yet. Buy a burn bond and each purchase will show up here.',
+        xmine:
+          'No mining records yet. Stake gAGX to start mining and each action will show up here.',
+      },
       chartTitles: {
         stake: 'TVL (Staking) metrics',
         lpbond: 'TVL (LP Bond) metrics',
@@ -1920,6 +1927,7 @@ const app = defineMessages({
       },
       chartRangeAria: 'Chart time range',
       chartRanges: ['1W', '1M', '1Y', 'All'],
+      chartEmpty: 'No historical data yet',
       positionMetrics: [
         { label: 'My position' },
         { label: 'Released' },

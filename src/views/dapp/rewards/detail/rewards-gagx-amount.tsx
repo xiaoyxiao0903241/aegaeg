@@ -16,7 +16,7 @@ export function RewardsGagxAmount({
     <div className="flex items-center gap-2">
       <DappIcon
         alt=""
-        className="size-[18px] rounded-full"
+        className="size-(--app-icon-lg) rounded-full"
         loading="lazy"
         size="token"
         src={dappAssets.tokenGagx}

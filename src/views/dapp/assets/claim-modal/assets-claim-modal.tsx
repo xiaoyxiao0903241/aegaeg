@@ -73,7 +73,7 @@ function AssetsClaimModalOpen({
       className={cn(
         'border-0 bg-card',
         'w-full max-w-md max-dapp:w-full',
-        'max-dapp:rounded-t-lg max-dapp:px-4 max-dapp:pt-3 max-dapp:pb-[max(20px,env(safe-area-inset-bottom))]',
+        'max-dapp:rounded-t-lg max-dapp:px-4 max-dapp:pt-3 max-dapp:pb-[max(1.25rem,env(safe-area-inset-bottom))]',
         'dapp:rounded-lg dapp:p-6',
         'dapp:shadow-modal-panel',
       )}

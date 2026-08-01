@@ -6,6 +6,7 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
 import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
@@ -13,8 +14,6 @@ import { MetricCard } from '~/shared/ui/metric-card'
 import { Text } from '~/shared/ui/text'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
-
-const PLACEHOLDER = '0.00'
 
 /** Right-rail shared buckets for stake / bond / xmine — positions deep-link to assets. */
 export function StakingDetailAside({
@@ -55,7 +54,7 @@ export function StakingDetailAside({
   const vm = useStakingDetailAsideView()
   const { t, selectTab, chartRange, setChartRange, xValue } = vm
   const tableHeaders = recordColumns ?? vm.defaultRecordColumns
-  const tableColWidths = recordColWidths ?? ['175px', '80px', '140px', '90px', '1fr']
+  const tableColWidths = recordColWidths ?? ['10.9375rem', '5rem', '8.75rem', '5.625rem', '1fr']
   const rows = recordRows ?? []
   const emptyTitle = recordsEmptyTitle ?? vm.defaultRecordsEmpty
 
@@ -94,30 +93,30 @@ export function StakingDetailAside({
       {showXValueCard ? (
         <DappDetailBlock>
           <DappContentHeading>{xValue.title}</DappContentHeading>
-          <div className="grid gap-4 rounded-[22px] bg-dark px-6 py-5">
+          <div className="grid gap-4 rounded-lg bg-dark px-6 py-5">
             <div className="flex items-start justify-between gap-3">
               <div className="grid gap-1">
                 <Text as="span" tone="primary" variant="detail">
                   {xValue.supplyLabel}
                 </Text>
-                <Text as="strong" className="text-[22px] font-bold" tone="inverse" variant="copy">
+                <Text as="strong" className="font-bold" tone="inverse" variant="figure">
                   {xValue.supplyValue}
                 </Text>
               </div>
-              <span className="rounded-full bg-primary/20 px-3 py-1.5 text-[12px] font-semibold text-primary">
+              <Text
+                as="span"
+                className="rounded-full bg-primary/20 px-3 py-1.5 font-semibold"
+                tone="primary"
+                variant="support"
+              >
                 {xValue.badge}
-              </span>
+              </Text>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {xValue.columns.map((col) => (
                 <div className="grid gap-2" key={col.title}>
                   <div className="flex items-baseline gap-2">
-                    <Text
-                      as="strong"
-                      className="text-[20px] font-bold"
-                      tone="inverse"
-                      variant="copy"
-                    >
+                    <Text as="strong" className="font-bold" tone="inverse" variant="section">
                       {col.pct}
                     </Text>
                     <Text as="span" tone="inverse-muted" variant="detail">
@@ -145,11 +144,13 @@ export function StakingDetailAside({
         <div className="mb-4 flex items-center gap-2.5">
           <DappContentHeading className="m-0">{t.staking.aside.positions}</DappContentHeading>
           <button
-            className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[12px] font-semibold text-primary"
+            className="rounded-full bg-primary/15 px-2.5 py-0.5"
             onClick={() => selectTab('assets')}
             type="button"
           >
-            {t.staking.aside.viewPositions}
+            <Text as="span" className="font-semibold" tone="primary" variant="support">
+              {t.staking.aside.viewPositions}
+            </Text>
           </button>
         </div>
         {positionItems ? (
@@ -233,8 +234,10 @@ export function StakingDetailAside({
             {mechanismSteps.map((step, index) => (
               <div className="grid min-w-0 flex-1 gap-3" key={step.title}>
                 <div className="flex items-center gap-0">
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-[13px] font-semibold text-white">
-                    {index + 1}
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary">
+                    <Text as="span" className="font-semibold" tone="inverse" variant="copy">
+                      {index + 1}
+                    </Text>
                   </span>
                   {index < mechanismSteps.length - 1 ? (
                     <span
@@ -263,12 +266,17 @@ export function StakingDetailAside({
         <DappContentHeading>{chartTitle}</DappContentHeading>
         <StakingChartCard
           chartRange={chartRange}
+          emptyLabel={t.staking.aside.chartEmpty}
           header={
-            <Text as="strong" className="text-xl font-semibold" variant="copy">
-              {PLACEHOLDER}
-            </Text>
+            <div className="flex items-center gap-2">
+              <Text as="strong" className="text-xl font-semibold" variant="copy">
+                {formatCompactUsd(null)}
+              </Text>
+              <Text as="span" className="text-success" variant="detail">
+                {formatSignedPercent(null)}
+              </Text>
+            </div>
           }
-          placeholder={PLACEHOLDER}
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}

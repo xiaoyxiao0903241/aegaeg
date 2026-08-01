@@ -4,11 +4,24 @@ import { type ChainQueryOptions, useChainQuery } from '~/hooks/use-chain-query'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { readBondHelperSlippage, readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
+import { readStakingHubOverview } from '~/web3/staking/staking-hub-overview-read'
 import {
   readBondZapPreflight,
   readStakeOpenPreflight,
   readXminePreflight,
 } from '~/web3/staking/staking-read'
+
+/** Public hub overview — TVL / circulating / treasury / burn / rebase (no wallet). */
+export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.stakingHubOverview,
+    scope: 'public',
+    freshness: 'balances',
+    enabled: options?.enabled ?? true,
+    queryFn: () => readStakingHubOverview(),
+    placeholderData: keepPreviousData,
+  })
+}
 
 /** Wallet-scoped preflight — address from useChainQuery (active account). */
 export function useStakeOpenPreflightQuery(

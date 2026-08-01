@@ -44,7 +44,7 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
           amountText={`${formatTokenAmount(reward, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
           badge={
             row.extraInterest > 0n ? (
-              <span className="inline-flex w-fit items-center gap-1 rounded-[10px] bg-primary-soft px-2 py-0.5">
+              <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2 py-0.5">
                 <Text as="span" className="text-xs text-primary" variant="detail">
                   {formatTokenAmount(row.extraInterest, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX
                 </Text>

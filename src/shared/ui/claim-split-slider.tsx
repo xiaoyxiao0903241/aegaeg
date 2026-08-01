@@ -61,7 +61,7 @@ export function ClaimSplitSlider({
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb
         className={cn(
-          'flex h-[26px] min-w-[52px] cursor-grab items-center justify-center rounded-full',
+          'flex h-6.5 min-w-13 cursor-grab items-center justify-center rounded-full',
           'border border-border bg-card px-3 py-1 shadow-sm',
           'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           'active:cursor-grabbing',

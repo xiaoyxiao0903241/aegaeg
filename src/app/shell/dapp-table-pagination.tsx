@@ -37,7 +37,7 @@ function pageMenuMaxHeightPx(): number {
 }
 
 /** Pagination control radius (6px; project `rounded-sm` is larger). */
-const PAGINATION_BTN_RADIUS = 'rounded-[6px]'
+const PAGINATION_BTN_RADIUS = 'rounded-tight'
 
 type MenuPlacement = 'above' | 'below'
 
@@ -263,7 +263,7 @@ export function DappTablePagination({
               {menuOpen
                 ? createPortal(
                     <ul
-                      className="m-0 list-none overflow-y-auto rounded-[6px] border border-border bg-card p-0 text-xs shadow-dropdown"
+                      className="m-0 list-none overflow-y-auto rounded-tight border border-border bg-card p-0 text-xs shadow-dropdown"
                       data-dapp-pagination-menu
                       id={listId}
                       ref={menuRef}

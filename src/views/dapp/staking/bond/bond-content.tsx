@@ -37,11 +37,15 @@ export function BondContent({ kind }: { kind: BondKind }) {
         overviewLayout="cards"
         positionItems={positionItems}
         positionLayout="cards-2"
-        recordColWidths={['140px', '70px', '90px', '70px', '110px', '1fr']}
+        recordColWidths={['8.75rem', '4.375rem', '5.625rem', '4.375rem', '6.875rem', '1fr']}
         recordColumns={t.staking.aside.bondRecordColumns}
         recordRows={recordRows}
         recordsEmptyTitle={
-          sessionReady && purchasesQuery.isLoading ? '…' : t.staking.aside.recordsEmpty
+          sessionReady && purchasesQuery.isLoading
+            ? '…'
+            : kind === 'lp'
+              ? t.staking.aside.recordsEmpty.lpbond
+              : t.staking.aside.recordsEmpty.burnbond
         }
         recordsTitle={recordsTitle}
       />

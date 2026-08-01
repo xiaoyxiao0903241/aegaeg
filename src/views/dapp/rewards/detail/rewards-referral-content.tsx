@@ -53,7 +53,7 @@ export function RewardsReferralContent() {
         <DappContentHeading>{referral.recordsTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
           <DappTableBody
-            colWidths={['190px', '160px', '160px', '1fr']}
+            colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emptyTitle={referral.emptyRecords}
             headers={[...referral.recordsColumns]}
             isLoading={recordsLoading}
@@ -66,7 +66,7 @@ export function RewardsReferralContent() {
         <DappContentHeading>{referral.referralsTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
           <DappTableBody
-            colWidths={['200px', '170px', '110px', '1fr']}
+            colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
             emptyTitle={referral.emptyReferrals}
             headers={[...referral.referralsColumns]}
             isLoading={referralsLoading}

@@ -73,7 +73,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
 
         {vm.showContributionShort ? (
           <div className="rounded-2xl bg-primary/10 px-4 py-3">
-            <Text as="p" className="leading-[18px]" variant="caption">
+            <Text as="p" className="leading-[1.125rem]" variant="caption">
               <span className="text-foreground">
                 {vm.mixed.insufficientContributionDetail
                   .replace('{need}', vm.requiredText)

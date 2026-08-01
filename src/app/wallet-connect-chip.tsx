@@ -26,7 +26,7 @@ const walletConnectChip = tv({
   slots: {
     label: 'inline-flex min-w-0 items-center gap-1.5',
     glyph: [
-      'relative aspect-16/13 w-4 shrink-0 rounded-sm border-[1.5px] border-primary',
+      'relative aspect-16/13 w-4 shrink-0 rounded-sm border-[0.09375rem] border-primary',
       'after:absolute after:top-0.5 after:right-0.5 after:aspect-square after:w-px after:rounded-full after:bg-primary after:content-[""]',
     ],
     connected: 'aegis-connected-wallet-chip',

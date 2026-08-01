@@ -145,8 +145,10 @@ export const space = [
 export type SpaceToken = (typeof space)[number]
 
 export const radii = [
+  "tight",
   "chip",
   "control",
+  "faq",
   "sm",
   "md",
   "lg",

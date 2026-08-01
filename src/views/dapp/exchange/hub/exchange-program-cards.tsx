@@ -44,12 +44,12 @@ const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undef
 const CONTRIBUTION_CARD_INDEX = 5
 
 /**
- * Exchange hub right-rail tile — Figma `4323:704` (elevated, h70).
- * Chrome is identical; optional `icon` URLs are the only structural fork.
+ * Exchange hub right-rail tile — Figma `4323:704`.
+ * No fixed height: `p-4` + content; parent 2-col grid + `size-full` equalizes row peers.
  * No onClick → `article` (same visual); never HTML `disabled` (global dims + strips shadow).
  */
 const exchangeProgramCard = tv({
-  base: 'flex h-[70px] w-full px-4 py-3.5 text-left',
+  base: 'flex size-full p-4 text-left',
   variants: {
     hasIcon: {
       true: 'items-center justify-between gap-2',
@@ -75,18 +75,19 @@ function ProgramCoinIcon({ icon }: { icon: readonly [string] | readonly [string,
     )
   }
 
+  // Dual overlap: size-7 + left-6 offset → track w-13 (Tailwind spacing tokens).
   return (
-    <span className="relative flex h-7 w-[53px] shrink-0 items-center">
+    <span className="relative flex h-7 w-13 shrink-0 items-center">
       <img
         alt=""
-        className="absolute top-0 left-[2px] size-7 rounded-md object-cover"
+        className="absolute top-0 left-0.5 size-7 rounded-md object-cover"
         height={28}
         src={icon[0]}
         width={28}
       />
       <img
         alt=""
-        className="absolute top-0 left-[25px] size-7 rounded-md object-cover"
+        className="absolute top-0 left-6 size-7 rounded-md object-cover"
         height={28}
         src={icon[1]}
         width={28}
@@ -117,10 +118,10 @@ function ExchangeProgramCard({
       {...(interactive ? { onClick, type: 'button' as const } : {})}
     >
       <Card.Content className={cn('grid min-w-0 gap-1.5 text-left', icon && 'flex-1')}>
-        <Text as="strong" className="text-[14px] leading-normal font-semibold" variant="copy">
+        <Text as="strong" className="font-semibold" variant="copy">
           {title}
         </Text>
-        <Text as="span" className="leading-normal text-foreground/40" variant="support">
+        <Text as="span" className="text-foreground/40" variant="support">
           {body}
         </Text>
       </Card.Content>
@@ -146,7 +147,7 @@ export function ExchangeProgramCards() {
       : formatBurnContributionRatioColon(configQuery.data.rateBps)
 
   return (
-    <div className="grid gap-2 dapp:grid-cols-2 dapp:gap-x-2.5">
+    <div className="grid auto-rows-fr gap-2 dapp:grid-cols-2 dapp:gap-x-2.5">
       {cards.map((card, index) => {
         const target = PROGRAM_TARGETS[index] ?? null
         const body =

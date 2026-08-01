@@ -65,7 +65,7 @@ export function HomeSecuritySection() {
           {content.checks.map((check, index) => (
             <Card
               className={cn(
-                'flex min-h-15.25 items-center gap-3.5 px-5.5 py-5 transition-shadow duration-200 ease-out max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-[0.875rem] max-dapp:px-4.5 max-dapp:py-4',
+                'flex min-h-15.25 items-center gap-3.5 px-5.5 py-5 transition-shadow duration-200 ease-out max-dapp:min-h-14 max-dapp:w-full max-dapp:gap-3 max-dapp:rounded-sm max-dapp:px-4.5 max-dapp:py-4',
                 (index === 0 || index === content.checks.length - 1) && 'max-dapp:min-h-16.5',
               )}
               surface="elevated"
@@ -73,7 +73,7 @@ export function HomeSecuritySection() {
               key={check}
               style={{ '--security-index': index } as CSSProperties}
             >
-              <span className="grid size-(--home-security-icon-wrap-size) shrink-0 place-items-center rounded-[0.8125rem] bg-accent text-primary max-dapp:size-(--home-security-icon-wrap-size-h5) max-dapp:rounded-xl">
+              <span className="grid size-(--home-security-icon-wrap-size) shrink-0 place-items-center rounded-sm bg-accent text-primary max-dapp:size-(--home-security-icon-wrap-size-h5) max-dapp:rounded-xl">
                 <img
                   className="size-(--home-security-icon-size) object-contain"
                   src={homeAssets.securityCheck}

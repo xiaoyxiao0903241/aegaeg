@@ -20,7 +20,6 @@ export function ExchangeHubWidget() {
       <DappWidgetStack>
         <DappModeCard
           body={t.exchange.hub.modes.flash.body}
-          density="tall"
           icon={exchangeHubAssets.modeFlash}
           onClick={() => openExchangeView('flash')}
           title={t.exchange.hub.modes.flash.title}

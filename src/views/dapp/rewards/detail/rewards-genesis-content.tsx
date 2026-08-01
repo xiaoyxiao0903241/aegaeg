@@ -71,7 +71,7 @@ export function RewardsGenesisContent() {
         <DappContentHeading>{t.rewards.allTiers}</DappContentHeading>
         <DappTableCard className="mt-4">
           <ResponsiveTable
-            colWidths={['230px', '190px', '190px', '1fr']}
+            colWidths={['14.375rem', '11.875rem', '11.875rem', '1fr']}
             headers={[...vm.g.tierColumns]}
             highlightedRows={vm.highlightedRows}
             rows={vm.tierRows}
@@ -100,7 +100,7 @@ export function RewardsGenesisContent() {
           }
         >
           <ResponsiveTable
-            colWidths={['190px', '160px', '160px', '1fr']}
+            colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             headers={[...vm.g.recordsColumns]}
             isLoading={vm.sessionReady && vm.historyLoading}
             loadingRowCount={4}

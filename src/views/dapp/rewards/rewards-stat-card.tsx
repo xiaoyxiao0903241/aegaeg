@@ -35,7 +35,7 @@ export function RewardsStatCard({
             </Text>
           ) : null}
           {hint != null ? (
-            <Text as="p" className="mt-1 text-[13px]" tone="muted-foreground" variant="detail">
+            <Text as="p" className="mt-1" tone="muted-foreground" variant="detail">
               {hint}
             </Text>
           ) : null}

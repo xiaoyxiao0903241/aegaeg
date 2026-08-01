@@ -45,8 +45,8 @@ export function RewardsGrantContent() {
           <DappTableBody
             colWidths={
               isIssue
-                ? ['160px', '140px', '60px', '130px', '70px', '1fr']
-                : ['190px', '160px', '1fr']
+                ? ['10rem', '8.75rem', '3.75rem', '8.125rem', '4.375rem', '1fr']
+                : ['11.875rem', '10rem', '1fr']
             }
             emptyTitle={isIssue ? grant.emptyIssue : grant.emptyClaim}
             headers={[...(isIssue ? grant.issueColumns : grant.claimColumns)]}

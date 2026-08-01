@@ -78,7 +78,7 @@ export function TurbineExchangeContent({
               <div className="flex items-center gap-2">
                 <DappIcon
                   alt=""
-                  className="size-[22px] shrink-0 rounded-full object-cover"
+                  className="size-(--app-icon-rail) shrink-0 rounded-full object-cover"
                   size="token"
                   src={dappAssets.tokenGagx}
                 />
@@ -104,7 +104,7 @@ export function TurbineExchangeContent({
         <DappContentHeading>{t.exchange.turbine.recordsTitle}</DappContentHeading>
         <DappTableCard>
           <ResponsiveTable
-            colWidths={['200px', '150px', '180px', '1fr']}
+            colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...t.assets.opsColumns]}
             rows={turbineLogRows}
           />

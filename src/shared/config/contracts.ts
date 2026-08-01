@@ -79,6 +79,12 @@ export interface BscContracts {
   principalReleaseVault: Address
   /** AccountMigrationManager — §17; this round migrationEnabled=false */
   accountMigrationManager: Address
+  /** sAGX — rebasing stake share (manual StakingPool / sAGX) */
+  sagx: Address
+  /** StakingPool — epoch / pool AGX TVL (manual StakingPool) */
+  stakingPool: Address
+  /** Treasury — totalReserves hub chrome (manual Treasury) */
+  treasury: Address
 }
 
 /**
@@ -125,4 +131,7 @@ export const BSC_CONTRACTS = {
   restakeConfig: requireEnvAddress('VITE_BSC_RESTAKE_CONFIG'),
   principalReleaseVault: requireEnvAddress('VITE_BSC_PRINCIPAL_RELEASE_VAULT'),
   accountMigrationManager: requireEnvAddress('VITE_BSC_ACCOUNT_MIGRATION_MANAGER'),
+  sagx: requireEnvAddress('VITE_BSC_SAGX'),
+  stakingPool: requireEnvAddress('VITE_BSC_STAKING_POOL'),
+  treasury: requireEnvAddress('VITE_BSC_TREASURY'),
 } as const satisfies BscContracts

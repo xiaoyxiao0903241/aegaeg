@@ -50,7 +50,7 @@ export function RewardsParticipateContent() {
         <DappContentHeading>{participate.recordsTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
           <ResponsiveTable
-            colWidths={['190px', '160px', '160px', '1fr']}
+            colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             headers={[...participate.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
@@ -65,7 +65,7 @@ export function RewardsParticipateContent() {
         <DappContentHeading>{participate.inviterTitle}</DappContentHeading>
         <DappTableCard className="mt-4">
           <ResponsiveTable
-            colWidths={['200px', '170px', '110px', '1fr']}
+            colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
             headers={[...participate.inviterColumns]}
             isLoading={inviterLoading}
             rows={inviterRows}

@@ -86,7 +86,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
                   : bond.discountLabel.replace(/%$/, ''),
               ),
               // Dollar dual-price needs AGX spot × discount; no fake demo $.
-              value: '0',
+              value: '0.00',
             },
             {
               label: copy.meta.slippage,

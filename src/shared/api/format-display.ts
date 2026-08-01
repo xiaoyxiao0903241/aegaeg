@@ -78,6 +78,72 @@ export function formatApproxUsd(amount: number, priceUsd: number | null): string
   return formatGroupedNumber(amount * priceUsd, { digits: 2, prefix: '≈ $' })
 }
 
+export type FormatCompactNumberOptions = {
+  /** Max fraction digits after K/M scale (default 2, trimmed). */
+  digits?: number
+  prefix?: string
+  suffix?: string
+}
+
+/**
+ * Compact display for hub tiles / chart shells — Figma `129K` / `$8.41M`.
+ * Below 1000 stays grouped; ≥1e3 → K; ≥1e6 → M. Empty/NaN → `0` (+ prefix/suffix).
+ */
+export function formatCompactNumber(
+  value: string | number | bigint,
+  options: FormatCompactNumberOptions = {},
+): string {
+  const digits = Math.max(0, Math.floor(options.digits ?? 2))
+  const prefix = options.prefix ?? ''
+  const suffix = options.suffix ?? ''
+  const num = typeof value === 'bigint' ? Number(value) : Number(value)
+
+  if (!Number.isFinite(num)) {
+    return `${prefix}0${suffix}`
+  }
+
+  const abs = Math.abs(num)
+  if (abs >= 1_000_000) {
+    return `${prefix}${formatGroupedNumber(num / 1_000_000, { digits, trimZeros: true })}M${suffix}`
+  }
+  if (abs >= 1_000) {
+    return `${prefix}${formatGroupedNumber(num / 1_000, { digits, trimZeros: true })}K${suffix}`
+  }
+  return `${prefix}${formatGroupedNumber(num, { digits, trimZeros: true })}${suffix}`
+}
+
+/** Chart / tile USD with compact M/K — empty → `$0.00` (pad, no unit). */
+export function formatCompactUsd(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value)) {
+    return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+  }
+  if (Math.abs(value) < 1_000) {
+    return formatGroupedNumber(value, { digits: 2, prefix: '$' })
+  }
+  return formatCompactNumber(value, { digits: 2, prefix: '$' })
+}
+
+/** `≈ $…` compact twin of {@link formatApproxUsd} for hub TVL/treasury subs. */
+export function formatApproxCompactUsd(amount: number, priceUsd: number | null): string {
+  if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
+    return formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
+  }
+  const usd = amount * priceUsd
+  if (Math.abs(usd) < 1_000) {
+    return formatGroupedNumber(usd, { digits: 2, prefix: '≈ $' })
+  }
+  return formatCompactNumber(usd, { digits: 2, prefix: '≈ $' })
+}
+
+/** Signed percent for chart delta — Figma `+412.4%`; empty → `+0.0%`. */
+export function formatSignedPercent(value: number | null | undefined, digits = 1): string {
+  if (value == null || !Number.isFinite(value)) {
+    return `+${formatGroupedNumber(0, { digits })}%`
+  }
+  const sign = value > 0 ? '+' : value < 0 ? '' : '+'
+  return `${sign}${formatGroupedNumber(value, { digits, trimZeros: true })}%`
+}
+
 export function formatBlockTime(timestamp: number): string {
   if (!timestamp) return '—'
 

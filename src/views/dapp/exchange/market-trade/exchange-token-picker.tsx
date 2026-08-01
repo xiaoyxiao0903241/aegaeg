@@ -55,7 +55,7 @@ export function ExchangeTokenPicker({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         className={cn(
-          'inline-flex items-center gap-1.5 rounded-full border-0 bg-background py-[5px] pr-2.5 pl-1.5',
+          'inline-flex items-center gap-1.5 rounded-full border-0 bg-background py-1.25 pr-2.5 pl-1.5',
           'transition-colors duration-150 ease-out hover:bg-muted',
           disabled ? 'cursor-default opacity-40' : 'cursor-pointer',
         )}
@@ -96,7 +96,7 @@ export function ExchangeTokenPicker({
         <div
           className={cn(
             'absolute top-[calc(100%+0.5rem)] left-0 z-50 grid min-w-52 gap-0.5',
-            'rounded-[14px] border border-border bg-card p-1.5 shadow-menu',
+            'rounded-sm border border-border bg-card p-1.5 shadow-menu',
           )}
           role="listbox"
         >
@@ -109,7 +109,7 @@ export function ExchangeTokenPicker({
                 aria-disabled={optionDisabled || undefined}
                 aria-selected={active}
                 className={cn(
-                  'flex w-full items-center gap-[9px] rounded-[10px] border-0 px-2.5 py-2 text-left',
+                  'flex w-full items-center gap-2.25 rounded-control border-0 px-2.5 py-2 text-left',
                   'transition-colors duration-150 ease-out focus-visible:outline-none',
                   optionDisabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
                   !optionDisabled &&
@@ -130,7 +130,7 @@ export function ExchangeTokenPicker({
                 {option.icon ? (
                   <img
                     alt=""
-                    className="size-[22px] shrink-0 rounded-full object-contain"
+                    className="size-(--app-icon-rail) shrink-0 rounded-full object-contain"
                     loading="lazy"
                     src={option.icon}
                   />

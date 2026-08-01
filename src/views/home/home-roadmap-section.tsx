@@ -57,13 +57,13 @@ export function HomeRoadmapSection() {
           >
             <div
               className={cn(
-                'relative z-2 grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:top-10 dapp:left-1/2 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[3px]',
+                'relative z-2 grid size-8 place-items-center rounded-3xl text-sm font-semibold dapp:absolute dapp:top-10 dapp:left-1/2 dapp:size-9 dapp:-translate-x-1/2 dapp:border-[0.1875rem]',
                 phase.state === 'done' || phase.state === 'current'
                   ? 'bg-primary text-white dapp:border-primary'
-                  : 'border-[3px] border-border bg-card text-muted-foreground',
+                  : 'border-[0.1875rem] border-border bg-card text-muted-foreground',
                 phase.state === 'current' && 'dapp:shadow-roadmap-ring',
                 index < content.phases.length - 1 &&
-                  "after:absolute after:top-8 after:left-3.5 after:h-24 after:w-[3px] after:rounded-xs after:content-[''] dapp:after:hidden",
+                  "after:absolute after:top-8 after:left-3.5 after:h-24 after:w-0.75 after:rounded-xs after:content-[''] dapp:after:hidden",
                 index < content.phases.length - 1 &&
                   (phase.state === 'done' ? 'after:bg-primary' : 'after:bg-border'),
               )}
@@ -74,7 +74,7 @@ export function HomeRoadmapSection() {
             </div>
             <Card
               className={cn(
-                'min-h-28 w-full border-0 p-4 transition-shadow duration-200 ease-out dapp:min-h-30 dapp:w-[calc(50%-15px)] dapp:max-w-lg dapp:px-6 dapp:py-5.5 max-dapp:rounded-md',
+                'min-h-28 w-full border-0 p-4 transition-shadow duration-200 ease-out dapp:min-h-30 dapp:w-[calc(50%-0.9375rem)] dapp:max-w-lg dapp:px-6 dapp:py-5.5 max-dapp:rounded-md',
                 phase.side === 'right' && 'dapp:ml-auto',
                 phase.state === 'current' && 'min-h-30 border border-primary',
               )}

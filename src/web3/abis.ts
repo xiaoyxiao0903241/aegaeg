@@ -296,6 +296,21 @@ export const BOND_DEPOSITORY_MARKET_METHODS = {
 
 export const TREASURY_METHODS = {
   valueOf: 'function valueOf(address token, uint256 amount) view returns (uint256)',
+  totalReserves: 'function totalReserves() view returns (uint256)',
+} as const
+
+/** StakingPool — hub TVL / epoch (manual stakingpool.md). */
+export const STAKING_POOL_METHODS = {
+  poolAgxBalance: 'function poolAgxBalance() view returns (uint256)',
+  epoch: 'function epoch() view returns (uint256 number, uint256 endBlock, uint256 distribute)',
+} as const
+
+/** sAGX — circulating + rebase history (manual sagx.md). */
+export const SAGX_METHODS = {
+  circulatingSupply: 'function circulatingSupply() view returns (uint256)',
+  totalSupply: 'function totalSupply() view returns (uint256)',
+  rebases:
+    'function rebases(uint256 epoch) view returns (uint256 epoch_, uint256 rebase, uint256 totalStakedBefore, uint256 totalStakedAfter, uint256 amountRebased, uint256 index, uint256 blockNumberOccured)',
 } as const
 
 /** Bond / BurnBond position ops (manual §10) — assets rail. */

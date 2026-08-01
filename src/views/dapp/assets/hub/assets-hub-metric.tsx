@@ -26,7 +26,7 @@ export function AssetsHubMetricWithIcon({
         {label}
       </Text>
       <div className="flex items-start gap-1">
-        <DappIcon alt="" className="mt-0.5 size-[18px] rounded-[10px]" size="sm" src={icon} />
+        <DappIcon alt="" className="mt-0.5 rounded-control" size="lg" src={icon} />
         <div className="grid gap-1">
           <Text as="strong" className="text-base font-semibold" variant="copy">
             {renderMetric(value)}

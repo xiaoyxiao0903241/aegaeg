@@ -157,13 +157,8 @@ export function CommunityContent() {
           {invitesTable.requiresAuth ? (
             <DappTableAuthPrompt body={t.dapp.connect.recordsBodyCommunity} embedded />
           ) : invitesTable.queryEmpty ? (
-            <div className="flex min-h-[108px] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
-              <Text
-                as="p"
-                className="text-center text-[13px]"
-                tone="muted-foreground"
-                variant="detail"
-              >
+            <div className="flex min-h-[6.75rem] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
+              <Text as="p" className="text-center" tone="muted-foreground" variant="detail">
                 {`${t.community.invitesEmpty.title}，${t.community.invitesEmpty.body}`}
               </Text>
             </div>

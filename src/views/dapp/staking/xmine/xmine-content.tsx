@@ -29,11 +29,11 @@ export function XmineContent() {
           label: metric.label,
           value: PLACEHOLDER,
         }))}
-        recordColWidths={['175px', '100px', '140px', '1fr']}
+        recordColWidths={['10.9375rem', '6.25rem', '8.75rem', '1fr']}
         recordColumns={t.staking.aside.xmineRecordColumns}
         recordRows={recordRows}
         recordsEmptyTitle={
-          sessionReady && positionsQuery.isLoading ? '…' : t.staking.aside.recordsEmpty
+          sessionReady && positionsQuery.isLoading ? '…' : t.staking.aside.recordsEmpty.xmine
         }
         recordsTitle={t.staking.aside.recordsTitles.xmine}
         showXValueCard

@@ -15,6 +15,6 @@ export function useStakingDetailAsideView() {
     setChartRange,
     xValue: t.staking.aside.xValue,
     defaultRecordColumns: t.staking.aside.recordColumns,
-    defaultRecordsEmpty: t.staking.aside.recordsEmpty,
+    defaultRecordsEmpty: t.staking.aside.recordsEmpty.stake,
   }
 }

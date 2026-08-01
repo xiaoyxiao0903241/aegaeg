@@ -90,15 +90,30 @@ export function CalcContent() {
           <DappContentHeading className="m-0">{aside.result}</DappContentHeading>
           {result ? (
             <div className="flex flex-wrap gap-1.5">
-              <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[12px] font-semibold text-primary">
+              <Text
+                as="span"
+                className="rounded-full bg-primary/15 px-2.5 py-0.5 font-semibold"
+                tone="primary"
+                variant="support"
+              >
                 {productLabel}
-              </span>
-              <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[12px] font-semibold text-primary">
+              </Text>
+              <Text
+                as="span"
+                className="rounded-full bg-primary/15 px-2.5 py-0.5 font-semibold"
+                tone="primary"
+                variant="support"
+              >
                 {periodLabel}
-              </span>
-              <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[12px] font-semibold text-primary">
+              </Text>
+              <Text
+                as="span"
+                className="rounded-full bg-primary/15 px-2.5 py-0.5 font-semibold"
+                tone="primary"
+                variant="support"
+              >
                 {aside.tags.day.replace('{day}', String(result.days))}
-              </span>
+              </Text>
             </div>
           ) : null}
         </div>
@@ -109,15 +124,17 @@ export function CalcContent() {
                 <Text as="span" tone="muted-foreground" variant="detail">
                   {t.staking.calc.result.total}
                 </Text>
-                <Text as="strong" className="text-[28px] font-bold text-success" variant="copy">
+                <Text as="strong" className="font-bold" tone="success" variant="figure">
                   {formatUsdOrDash(result.interestUsd)}
                 </Text>
               </div>
-              <span className="flex items-center gap-2 rounded-full bg-success/15 px-3 py-1.5 text-[12px] font-semibold text-success">
+              <span className="flex items-center gap-2 rounded-full bg-success/15 px-3 py-1.5">
                 <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
                   {t.staking.calc.result.rate}
                 </Text>
-                {formatPct(result.ratePct)}
+                <Text as="span" className="font-semibold" tone="success" variant="support">
+                  {formatPct(result.ratePct)}
+                </Text>
               </span>
             </div>
 
@@ -148,13 +165,15 @@ export function CalcContent() {
               <div className="flex h-3.5 overflow-hidden rounded-full">
                 <span className="bg-muted" style={{ flex: `${100 - investShare} 0 0` }} />
                 <span
-                  className="flex items-center justify-center bg-success text-[11px] font-medium text-white"
+                  className="flex items-center justify-center bg-success text-white"
                   style={{ flex: `${Math.max(investShare, 18)} 0 0` }}
                 >
-                  {t.staking.calc.result.yieldBar.replace(
-                    '{amount}',
-                    formatUsdOrDash(result.interestUsd),
-                  )}
+                  <Text as="span" className="font-medium" tone="inverse" variant="caption">
+                    {t.staking.calc.result.yieldBar.replace(
+                      '{amount}',
+                      formatUsdOrDash(result.interestUsd),
+                    )}
+                  </Text>
                 </span>
               </div>
             </div>

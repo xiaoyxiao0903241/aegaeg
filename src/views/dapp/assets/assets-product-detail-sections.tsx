@@ -73,7 +73,7 @@ export function AssetsProductDetailSections({
                   {iconSrc ? (
                     <DappIcon
                       alt=""
-                      className="size-[18px] rounded-[10px]"
+                      className="size-(--app-icon-lg) rounded-control"
                       size="sm"
                       src={iconSrc}
                     />
@@ -97,7 +97,7 @@ export function AssetsProductDetailSections({
         <DappContentHeading>{opsTitle}</DappContentHeading>
         <DappTableCard>
           <ResponsiveTable
-            colWidths={['200px', '150px', '180px', '1fr']}
+            colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...opsColumns]}
             rows={opsRows}
           />

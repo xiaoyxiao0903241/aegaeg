@@ -51,12 +51,12 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
           </div>
           <div className="mt-2.5 grid gap-1">
             <a
-              className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline"
+              className="inline-flex w-fit items-center gap-1 font-medium text-primary underline"
               href={COMMUNITY_SOCIAL_LINKS.telegram}
               rel="noreferrer"
               target="_blank"
             >
-              <Text as="span" className="text-[13px] font-medium text-primary" variant="detail">
+              <Text as="span" className="font-medium text-primary" variant="detail">
                 {vm.grant.contactSupport}
               </Text>
               <ChevronIcon className="size-2.5 -rotate-90 opacity-80" direction="up" />
@@ -68,7 +68,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         </Card>
 
         <div className="flex items-center justify-center py-1.5">
-          <span className="inline-flex size-[34px] items-center justify-center rounded-[10px] border border-border bg-card shadow-sm">
+          <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
             <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
           </span>
         </div>

@@ -30,7 +30,7 @@ export function StakeContent() {
         positionItems={positionItems}
         recordRows={recordRows}
         recordsEmptyTitle={
-          sessionReady && positionsQuery.isLoading ? '…' : t.staking.aside.recordsEmpty
+          sessionReady && positionsQuery.isLoading ? '…' : t.staking.aside.recordsEmpty.stake
         }
         recordsTitle={t.staking.aside.recordsTitles.stake}
       />

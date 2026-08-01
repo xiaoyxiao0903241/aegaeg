@@ -108,7 +108,7 @@ export function ReleaseBufferContent() {
           <div className="mb-1 flex items-center gap-2">
             <DappIcon
               alt=""
-              className="size-[18px] rounded-[10px]"
+              className="size-(--app-icon-lg) rounded-control"
               size="sm"
               src={tokenCarouselIcons.agxIcon}
             />
@@ -122,7 +122,7 @@ export function ReleaseBufferContent() {
           <div className="mb-1 flex items-center gap-2">
             <DappIcon
               alt=""
-              className="size-[18px] rounded-[10px]"
+              className="size-(--app-icon-lg) rounded-control"
               size="sm"
               src={tokenCarouselIcons.gagxIcon}
             />
@@ -141,7 +141,7 @@ export function ReleaseBufferContent() {
         <DappContentHeading>{t.release.buffer.recordsTitle}</DappContentHeading>
         <DappTableCard>
           <ResponsiveTable
-            colWidths={['200px', '150px', '180px', '1fr']}
+            colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...t.release.recordColumns]}
             rows={bufferLogRows}
           />

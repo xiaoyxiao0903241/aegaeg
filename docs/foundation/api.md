@@ -15,9 +15,9 @@
 | 维度   | 集合                                                                                                                                                                                                                                                                                                                                            | 键数                           |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | color  | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `faq` · `skeleton` · `modal-overlay` · `warning` · `footer` · `success` · `success-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*` | 公开语义；工程色见 tokens.json |
-| type   | `caption` · `eyebrow` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure`                                                                                                                                                                                                                                  | 10                             |
+| type   | `caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure`                                                                                                                                                                                                                      | 11                             |
 | space  | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)`                                                                                                                                                                                                                                                            | 9                              |
-| radius | `sm(8)` · `md(10)` · `lg(12)` · `xl(16)` · `full`                                                                                                                                                                                                                                                                                               | 5                              |
+| radius | `tight(6)` · `chip(9)` · `control(11)` · `faq(12)` · `sm(14)` · `md(16)` · `lg(18)` · `xl(28)` · `full`                                                                                                                                                                                                                                         | 9                              |
 | shadow | `faq(E1)` · `card(E2)` · `subtle(E3)` · `elevated-strong(E4)` · `window(E5)` · `modal(E6)` · `modal-panel(E7)` · `tooltip(E8)` · `menu(E9)` · `dropdown(E10)`                                                                                                                                                                                   | 10                             |
 
 **禁止**：新增 `--ink-strong`、`--faq-text`、`--on-dark`、`--coral-bright` 等代码臆造色（深底亮珊瑚用正式 token `primary-bright` ≡ Figma `accent/coral-bright`）。
@@ -181,23 +181,23 @@
 
 按 Figma 高频层提取，**不满足 3 调用点或纯视觉容器不提**。
 
-| Composite          | Figma 层           | 核心 props                                   | 提升理由                                                      |
-| ------------------ | ------------------ | -------------------------------------------- | ------------------------------------------------------------- |
-| `TopBar`           | topbar / tb / tr   | `wallet`, `network`, `locale`                | 全局 shell                                                    |
-| `NavRail`          | rail / rit         | `items`, `activeTab`, `onSelect`             | 4 页共用                                                      |
-| `PanelHeader`      | wh                 | `title`, `subtitle`, `action`                | 4 页共用                                                      |
-| `AmountBox`        | box / tk / rr / mx | `token`, `value`, `balance`, `sessionReady`  | 金额输入卡                                                    |
-| `Segment`          | seg / pcts / htab  | `options`, `value`, `onChange`, `aria-label` | 滑动白底 pill（≠ Chip）；options/文案由 call site + i18n 传入 |
-| `ClaimSplitSlider` | slider `4812:221`  | `value` (release%), `onChange`, `aria-label` | 双色轨 + `%` thumb；Radix；文案由 call site 传入              |
-| `MetricCard`       | sc / mc            | `label`, `value`, `hint`, `tone`             | 跨页指标                                                      |
-| `ResponsiveTable`  | tbl / trow / cell  | `headers`, `rows`, …                         | DApp 表；壳见 `DappTableCard`                                 |
-| `Accordion`        | qa / qhd           | `items`, `variant`                           | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）  |
-| `WidgetPromoCard`  | promo / pcard      | children                                     | 深色 CTA 卡（`Card inverse`）；替代已删 `CalloutCard`         |
+| Composite          | Figma 层           | 核心 props                                                      | 提升理由                                                     |
+| ------------------ | ------------------ | --------------------------------------------------------------- | ------------------------------------------------------------ |
+| `TopBar`           | topbar / tb / tr   | `wallet`, `network`, `locale`                                   | 全局 shell                                                   |
+| `NavRail`          | rail / rit         | `items`, `activeTab`, `onSelect`                                | 4 页共用                                                     |
+| `PanelHeader`      | wh                 | `title`, `subtitle`, `action`                                   | 4 页共用                                                     |
+| `AmountBox`        | box / tk / rr / mx | `token`, `value`, `balance`, `sessionReady`                     | 金额输入卡                                                   |
+| `Segment`          | seg / pcts / htab  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n       |
+| `ClaimSplitSlider` | slider `4812:221`  | `value` (release%), `onChange`, `aria-label`                    | 双色轨 + `%` thumb；Radix；文案由 call site 传入             |
+| `MetricCard`       | sc / mc            | `label`, `value`, `hint`, `tone`                                | 跨页指标                                                     |
+| `ResponsiveTable`  | tbl / trow / cell  | `headers`, `rows`, …                                            | DApp 表；壳见 `DappTableCard`                                |
+| `Accordion`        | qa / qhd           | `items`, `variant`                                              | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`） |
+| `WidgetPromoCard`  | promo / pcard      | children                                                        | 深色 CTA 卡（`Card inverse`）；替代已删 `CalloutCard`        |
 
 **内部约定**：
 
-- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ `text-faq`（token `faq`，**不进** Text `tone`）。Chevron：固定 path + CSS `.faq-chevron`（`[data-faq-item][data-state=open]` → `rotate(180deg)` + `color: var(--primary)`；关态 `foreground@40%`）；禁换 path / 禁 React 条件 class 切旋转。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。
-- `Segment`：Figma `seg` 滑动白底 pill（闪兑样本 `4430:410`）；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。thumb = 白底 + **微阴影** `0 1px 2px rgba(18,26,51,0.06)`（禁 `shadow-sm` / card elevation）。选中字色由 call site `tone` 传入：`coral`（默认，样本 `4448:601`）| `ink`（闪兑 tabs，semibold）。**禁**在 `shared/ui` 硬编码业务档位或 locale 文案；`options` / `aria-label` 由 call site（i18n）传入。`options[].disabled` 支持单档禁用（临时不可用选项）。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options，不在本组件内预设。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
+- `FaqList` / `Accordion`：question 走 `Text variant="question"`；answer 走 `variant`（home=`copy` / dapp=`detail`）+ muted。Chevron：固定 path + CSS `.faq-chevron`；禁换 path。展开高度走 `.faq-answer-panel` grid `0fr→1fr`。DApp 项圆角稿 `12` → `rounded-faq`（禁 `rounded-xl`：本仓 xl=28px）；pad `px-4 py-4.5`；**禁** call site `text-[Npx|Nrem]` / `rounded-[Nrem]` 覆盖 type/radius token（字阶走 `Text` variant）。
+- `Segment`：Figma `seg` 滑动白底 pill（闪兑样本 `4430:410`）；动效 `220ms` · `cubic-bezier(0.22, 1, 0.36, 1)`。thumb = 白底 + **微阴影** `0 1px 2px rgba(18,26,51,0.06)`（禁 `shadow-sm` / card elevation）；**按选中 tab 实测 left/width，以轨宽 % 写出**（禁硬编码 gap/pad px 常量；轨 `gap`/`p`/`h` 一律 Tailwind spacing token）。列宽 `auto` hug。**`size`**：`sm`=`h-6`（图区间）| `md`=`h-8`（默认，周期/指标）| `lg`=`h-10`（闪兑/涡轮）；call site 按稿面选。项 padding 随 size（md/lg：`px-3`；sm：`px-2.5`）。选中字色由 call site `tone` 传入：`coral`（默认，样本 `4448:601`）| `ink`（闪兑 tabs，semibold）。**Figma `htab`（珊瑚 soft / outlined 分立 pill，样本 hub `4371:233`）走 Chip，不走 Segment。** `options` / `aria-label` 由 call site（i18n）传入。`options[].disabled` 支持单档禁用。开仓档 ≠ 领取释放档 ≠ 复投档 — 由业务 call site 组 options。`PercentButtonRow` 仍为 Chip 网格，≠ Segment 合同。
 - `ClaimSplitSlider`：`@radix-ui/react-slider`；左轨 `bg-primary`（释放%）· 右轨 `--app-claim-restake`（复投%）· 白底内嵌 `%` thumb；`aria-label` 必填（i18n）。
 - `CommunityProgramCard`：Figma `pcard` `4040:7354` — `elevated` · `p-5` · `gap-2` · coral accent（≠ primary）。字阶走 Text `eyebrow` / `headline` / `copy`（rem + `site-fluid`）；**禁** `text-[Npx]` / `max-w-[Nch]` 锁死。
 - `DappCollapsibleSection`：高度 `grid-template-rows 0fr→1fr`（320ms）；chevron `rotate` 同曲线；`overflow-visible` **仅**在展开 settle 后挂上（展开中保持 clip）；CSS 须有 `[data-open=true] .overflow-visible { overflow: visible }` 覆盖基类 `overflow:hidden`（否则表卡 `shadow-card` 被裁）。
@@ -207,7 +207,7 @@
 - `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
 - `AegisDialogClose`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
-- `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-[6px]` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button；下拉菜单不在该节点，保留 portal。
+- `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-tight` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button；下拉菜单不在该节点，保留 portal。
 - `ExchangeFlowButton`（`swap-widget-composites.tsx`）：Figma `flb` — 34×34 · `rounded-control` · border · card；Trade flip（`interactive`）/ Flash divider 共用；**不是** `IconButton`（详情折叠）。禁 call site 再写 `rounded-[11px]`。
 - `ResponsiveTable` 表头：≡ Community「我的社区成员」— `text-muted-foreground`；禁 tab 特判 `text-foreground/30` / `headCellClassName` 分叉。
 - `DappTableCard`：外框 **无** `border`（仅 `shadow-card`）；表头/行/页脚内部分隔线保留。

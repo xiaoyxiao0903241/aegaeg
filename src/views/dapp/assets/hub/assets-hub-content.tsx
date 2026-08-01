@@ -41,7 +41,12 @@ export function AssetsHubContent() {
                   content={overview.totalValueHint}
                 />
               </div>
-              <Text as="strong" className="text-[32px] leading-none font-semibold" tone="inverse">
+              <Text
+                as="strong"
+                className="text-[2rem] leading-none font-semibold"
+                tone="inverse"
+                variant="figure"
+              >
                 {values.totalValue}
               </Text>
             </div>
@@ -139,7 +144,7 @@ export function AssetsHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.assets.hub.distribution.title}</DappContentHeading>
-        <div className="flex min-h-[108px] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
+        <div className="flex min-h-[6.75rem] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
           <Text as="p" className="text-center" tone="muted-foreground" variant="detail">
             {t.assets.hub.distribution.empty}
           </Text>

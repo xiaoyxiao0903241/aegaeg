@@ -1,33 +1,28 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
-test('Segment pill thumb uses sliding transform contract (220ms cubic-bezier)', async () => {
-  const {
-    SEGMENT_MOTION_EASING,
-    SEGMENT_MOTION_MS,
-    SEGMENT_PILL_GAP_PX,
-    SEGMENT_PILL_PAD_PX,
-    segmentPillThumbStyle,
-  } = await loadModule('/src/shared/ui/segment.tsx')
+test('Segment pill thumb uses rem spacing tokens + sliding transform (220ms)', async () => {
+  const { SEGMENT_MOTION_EASING, SEGMENT_MOTION_MS, segmentPillThumbStyle } = await loadModule(
+    '/src/shared/ui/segment.tsx',
+  )
 
   assert.equal(SEGMENT_MOTION_MS, 220)
   assert.equal(SEGMENT_MOTION_EASING, 'cubic-bezier(0.22, 1, 0.36, 1)')
-  assert.equal(SEGMENT_PILL_GAP_PX, 4)
-  assert.equal(SEGMENT_PILL_PAD_PX, 4)
 
   const four = segmentPillThumbStyle(3, 4)
-  assert.equal(four.left, '4px')
-  assert.equal(four.width, 'calc((100% - 8px - 12px) / 4)')
-  assert.equal(four.transform, 'translateX(calc(3 * (100% + 4px)))')
+  assert.equal(four.left, '0.25rem')
+  assert.equal(four.width, 'calc((100% - (0.25rem * 2) - (0.25rem * 3)) / 4)')
+  assert.equal(four.transform, 'translateX(calc(3 * (100% + 0.25rem)))')
   assert.match(String(four.transition), /transform 220ms cubic-bezier\(0\.22, 1, 0\.36, 1\)/)
 
   const two = segmentPillThumbStyle(1, 2)
-  assert.equal(two.width, 'calc((100% - 8px - 4px) / 2)')
-  assert.equal(two.transform, 'translateX(calc(1 * (100% + 4px)))')
+  assert.equal(two.width, 'calc((100% - (0.25rem * 2) - (0.25rem * 1)) / 2)')
+  assert.equal(two.transform, 'translateX(calc(1 * (100% + 0.25rem)))')
 })
 
-test('Segment source documents coral + ink active tones', async () => {
+test('Segment source documents coral + ink active tones and size sm|md|lg', async () => {
   const source = await import('node:fs/promises').then((fs) =>
     fs.readFile(new URL('../../src/shared/ui/segment.tsx', import.meta.url), 'utf8'),
   )
@@ -35,6 +30,13 @@ test('Segment source documents coral + ink active tones', async () => {
   assert.match(source, /tone = 'coral'/)
   assert.match(source, /text-coral-emphasis/)
   assert.match(source, /font-semibold text-foreground/)
+  assert.match(source, /export type SegmentSize = 'sm' \| 'md' \| 'lg'/)
+  assert.match(source, /size = 'md'/)
+  assert.match(source, /sm: 'h-6/)
+  assert.match(source, /md: 'h-8/)
+  assert.match(source, /lg: 'h-10/)
+  assert.doesNotMatch(source, /SEGMENT_PILL_GAP_PX|SEGMENT_PILL_PAD_PX/)
+  assert.match(source, /leftPct|widthPct/)
 })
 
 test('claimSplitFromReleasePct keeps release + restake = 100', async () => {

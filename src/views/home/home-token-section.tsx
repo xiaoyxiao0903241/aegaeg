@@ -52,7 +52,7 @@ function HomeTokenCard({ token }: { token: TokenCard }) {
         />
       </div>
       <span
-        className="absolute top-6 left-6 z-1 grid size-(--home-token-tile-size) origin-center place-items-center rounded-[0.875rem] border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-(--home-token-tile-size-h5) max-dapp:rounded-[0.8125rem] [&_img:not([src])]:bg-transparent"
+        className="absolute top-6 left-6 z-1 grid size-(--home-token-tile-size) origin-center place-items-center rounded-sm border border-white/28 bg-white/16 transition-[background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] max-dapp:static max-dapp:size-(--home-token-tile-size-h5) max-dapp:rounded-sm [&_img:not([src])]:bg-transparent"
         data-token-tile
         aria-hidden="true"
       >

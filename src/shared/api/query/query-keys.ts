@@ -287,6 +287,7 @@ export const queryKeys = {
     turbineClaimableOf: (address: string) =>
       chainWalletQueryKey(['chain', 'turbine', 'claimable'], address),
     stakingRoot: ['chain', 'staking'] as const,
+    stakingHubOverview: ['chain', 'staking', 'hubOverview'] as const,
     stakeOpenPreflight: stakeOpenPrefix,
     stakeOpenPreflightOf: (pool: string, address: string) =>
       chainWalletQueryKey(stakeOpenPrefix(pool), address),

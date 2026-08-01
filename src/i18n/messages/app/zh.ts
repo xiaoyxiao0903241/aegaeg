@@ -1794,6 +1794,7 @@ const app = defineMessages({
           { id: '540', period: '540 天' },
         ],
       },
+      runwayUnknown: '—',
       chart: {
         title: '数据指标',
         metricTabs: {
@@ -1852,7 +1853,12 @@ const app = defineMessages({
       recordColumns: ['时间', '周期', '数量', '已释放', '交易哈希'],
       bondRecordColumns: ['时间', '周期', '支付', '折扣', '获得AGX', '交易哈希'],
       xmineRecordColumns: ['时间', '操作', '数量', '交易哈希'],
-      recordsEmpty: '暂无记录',
+      recordsEmpty: {
+        stake: '暂无质押记录，完成质押后，这里将展示您的每一笔质押。',
+        lpbond: '暂无购买记录，购买 LP 债券后，这里将展示您的每一笔购买。',
+        burnbond: '暂无购买记录，购买销毁债券后，这里将展示您的每一笔购买。',
+        xmine: '暂无挖矿记录，质押 gAGX 开始挖矿后，这里将展示您的每一笔操作。',
+      },
       chartTitles: {
         stake: 'TVL（质押）数据指标',
         lpbond: 'TVL（LP 债券）数据指标',
@@ -1861,6 +1867,7 @@ const app = defineMessages({
       },
       chartRangeAria: '图表时间范围',
       chartRanges: ['1周', '1月', '1年', '全部'],
+      chartEmpty: '暂无历史数据',
       positionMetrics: [
         { label: '我的持仓' },
         { label: '已释放' },

@@ -60,7 +60,7 @@ export function AssetsModeCard({
             </Text>
           </div>
           <div className="pointer-events-auto flex items-center gap-1">
-            <Text as="span" className="text-[13px] font-medium" variant="detail">
+            <Text as="span" className="font-medium" variant="detail">
               <DappCountValue text={aprLabel} />
             </Text>
             <DappInfoTooltip className="size-3 [&_svg]:size-3" content={aprHint} />
