@@ -104,6 +104,15 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 | Invalidate / wallet switch  | `query-invalidate.test.mjs`                                                                                                                       |
 | 错误不泄漏 raw              | `contract-error-message.test.mjs` · `api-user-facing-error.test.mjs`                                                                              |
 
+## Live evaluate 约定
+
+复杂写路径（Turbine unlock、Genesis purchase、stake/bond/xmine 等）在 approve 之后、发交易之前：
+
+1. **再读** live 快照（`staleTime: 0` / 直读，不用展示层 `useChainQuery` 缓存当 L）。
+2. **纯函数** `evaluate*Live` / `*BlockReason` 判定；返回哨兵或 null。
+3. 未通过 → 抛哨兵，**不发**交易。
+4. 文件/符号名禁 `*Gate*`（见 `docs/naming.md`）；简单单步 claim 不必套 Intent/execute 空壳。
+
 ## 不变量
 
 1. 读/写 JWT 对 401 一致 purge session。
