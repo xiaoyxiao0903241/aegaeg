@@ -12,6 +12,7 @@ import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { dappAssets } from '~/app/assets'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-picker'
+import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
 import { REWARDS_DASH, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-rewards-mixed-claim-view'
@@ -130,23 +131,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
               {vm.mixed.releaseInto}
             </Text>
           </div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
-              <DappIcon
-                alt=""
-                className="size-6 rounded-2xl"
-                loading="lazy"
-                size="token"
-                src={dappAssets.tokenGagx}
-              />
-              <Text as="span" className="font-semibold" variant="detail">
-                {vm.mixed.tokenGagx}
-              </Text>
-            </span>
-            <Text as="span" className="text-2xl font-semibold" variant="headline">
-              {vm.releaseAmountText}
-            </Text>
-          </div>
+          <RewardsClaimTokenRow amountText={vm.releaseAmountText} tokenLabel={vm.mixed.tokenGagx} />
           <div className="flex items-center justify-between gap-2">
             <Text as="span" tone="muted-foreground" variant="caption">
               {vm.mixed.releasePeriod}
@@ -169,23 +154,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
               {vm.mixed.restakeInto}
             </Text>
           </div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
-              <DappIcon
-                alt=""
-                className="size-6 rounded-2xl"
-                loading="lazy"
-                size="token"
-                src={dappAssets.tokenGagx}
-              />
-              <Text as="span" className="font-semibold" variant="detail">
-                {vm.mixed.tokenGagx}
-              </Text>
-            </span>
-            <Text as="span" className="text-2xl font-semibold" variant="headline">
-              {vm.restakeAmountText}
-            </Text>
-          </div>
+          <RewardsClaimTokenRow amountText={vm.restakeAmountText} tokenLabel={vm.mixed.tokenGagx} />
           <div className="flex items-center justify-between gap-2">
             <Text as="span" tone="muted-foreground" variant="caption">
               {vm.mixed.restakePeriod}

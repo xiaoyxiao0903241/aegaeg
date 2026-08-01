@@ -72,6 +72,21 @@ const EMPTY_XMINE: AssetsHubModeStats = {
   yieldApprox: formatApproxUsd(0, null),
 }
 
+const PENDING_MODE: AssetsHubModeStats = {
+  aprLabel: '—',
+  positionValue: '…',
+  positionApprox: '≈ —',
+  yieldValue: '…',
+  yieldApprox: '≈ —',
+}
+
+const PENDING_MODES = {
+  stake: PENDING_MODE,
+  lpbond: PENDING_MODE,
+  burnbond: PENDING_MODE,
+  xmine: PENDING_MODE,
+} as const satisfies AssetsHubOverview['modes']
+
 function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2): string | null {
   if (raw == null || raw.trim() === '') return null
   const n = Number(raw)
@@ -232,20 +247,8 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
   }
 
   if (apiPending) {
-    const pending: AssetsHubModeStats = {
-      aprLabel: '—',
-      positionValue: '…',
-      positionApprox: '≈ —',
-      yieldValue: '…',
-      yieldApprox: '≈ —',
-    }
     return {
-      ...unavailableOverview({
-        stake: pending,
-        lpbond: pending,
-        burnbond: pending,
-        xmine: pending,
-      }),
+      ...unavailableOverview(PENDING_MODES),
       totalValue: '…',
       claimable: '…',
       claimed: '…',
@@ -282,20 +285,8 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
     bufferQuery.data === undefined
 
   if (loading) {
-    const pending: AssetsHubModeStats = {
-      aprLabel: '—',
-      positionValue: '…',
-      positionApprox: '≈ —',
-      yieldValue: '…',
-      yieldApprox: '≈ —',
-    }
     return {
-      ...unavailableOverview({
-        stake: pending,
-        lpbond: pending,
-        burnbond: pending,
-        xmine: pending,
-      }),
+      ...unavailableOverview(PENDING_MODES),
       claimable: '…',
       contribution: '…',
       holdingsReleased: '…',

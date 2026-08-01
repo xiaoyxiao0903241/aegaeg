@@ -71,6 +71,17 @@ export function formatApiCountLabel(
   return String(raw)
 }
 
+/** Bind session/pending once so detail views don't repeat the gate trio. */
+export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean) {
+  return {
+    stat: (
+      raw: string | null | undefined,
+      options?: { digits?: number; prefix?: string; suffix?: string },
+    ) => formatApiStatLabel(sessionReady, isPending, raw, options),
+    count: (raw: number | null | undefined) => formatApiCountLabel(sessionReady, isPending, raw),
+  }
+}
+
 function formatDaoGrantStatus(status: DaoGrantStatus, labels: RewardLogStatusLabels): string {
   switch (status) {
     case 'READY':

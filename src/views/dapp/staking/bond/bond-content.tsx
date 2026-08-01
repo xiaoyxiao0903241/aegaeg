@@ -1,25 +1,14 @@
-import type { ReactNode } from 'react'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { useBondFlowBurnPurchases, useBondFlowLpPurchases } from '~/hooks/use-api-data'
 import { mapBondPurchaseToAsideRow } from '~/shared/api/map-flow-log-rows'
 import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
+import {
+  mapStakingOverviewPlaceholders,
+  mapStakingPositionPlaceholders,
+} from '~/views/dapp/staking/staking-token-metric-value'
 import type { BondKind } from '~/views/dapp/staking/bond/submit-bond-zap'
-
-const PLACEHOLDER = '—'
-
-function TokenMetricValue({ icon, value }: { icon: 'agx' | 'gagx'; value: string }) {
-  const src = icon === 'agx' ? dappAssets.tokenAgx : dappAssets.tokenGagx
-  return (
-    <span className="flex min-w-0 items-center gap-1.5">
-      <DappIcon alt="" className="size-[18px] shrink-0 rounded-full" src={src} />
-      <span>{value}</span>
-    </span>
-  )
-}
 
 export function BondContent({ kind }: { kind: BondKind }) {
   const { messages: t } = useI18n()
@@ -34,16 +23,8 @@ export function BondContent({ kind }: { kind: BondKind }) {
   const purchasesQuery = kind === 'lp' ? lpPurchases : burnPurchases
   const recordRows = purchasesQuery.data?.items.map(mapBondPurchaseToAsideRow) ?? []
 
-  const overviewItems = copy.overviewMetrics.map((metric, index) => {
-    const value: ReactNode =
-      index === 0 ? <TokenMetricValue icon="agx" value={PLACEHOLDER} /> : PLACEHOLDER
-    return { label: metric.label, value }
-  })
-
-  const positionItems = copy.positionMetrics.map((metric, index) => ({
-    label: metric.label,
-    value: <TokenMetricValue icon={index < 3 ? 'agx' : 'gagx'} value={PLACEHOLDER} />,
-  }))
+  const overviewItems = mapStakingOverviewPlaceholders(copy.overviewMetrics)
+  const positionItems = mapStakingPositionPlaceholders(copy.positionMetrics)
 
   return (
     <DappDetailPage>

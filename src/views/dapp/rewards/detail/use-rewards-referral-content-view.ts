@@ -6,8 +6,7 @@ import {
   useReferralAwardSummary,
 } from '~/hooks/use-api-data'
 import {
-  formatApiCountLabel,
-  formatApiStatLabel,
+  bindApiLabelFormatters,
   mapReferralAwardDirectToRow,
   mapReferralAwardLogToRow,
   REWARDS_DASH,
@@ -25,26 +24,11 @@ export function useRewardsReferralContentView() {
   const directsQuery = useReferralAwardDirectReferrals({}, sessionReady)
 
   const summary = summaryQuery.data
-  const totalRewards = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.total_referral_reward,
-  )
-  const myPosition = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.active_stake_balance,
-  )
-  const referralCount = formatApiCountLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.direct_referral_count,
-  )
-  const contributionValue = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.available_contribution,
-  )
+  const label = bindApiLabelFormatters(sessionReady, summaryQuery.isLoading)
+  const totalRewards = label.stat(summary?.total_referral_reward)
+  const myPosition = label.stat(summary?.active_stake_balance)
+  const referralCount = label.count(summary?.direct_referral_count)
+  const contributionValue = label.stat(summary?.available_contribution)
 
   const recordRows =
     logsQuery.data?.items.map((item) => mapReferralAwardLogToRow(item, statusLabels)) ?? []

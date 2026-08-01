@@ -11,6 +11,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
 import {
   useRewardsSimpleClaimView,
@@ -93,23 +94,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
               {vm.copy.claimIntoWallet}
             </Text>
           </div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
-              <DappIcon
-                alt=""
-                className="size-6 rounded-2xl"
-                loading="lazy"
-                size="token"
-                src={dappAssets.tokenGagx}
-              />
-              <Text as="span" className="font-semibold" variant="detail">
-                {vm.tokenGagx}
-              </Text>
-            </span>
-            <Text as="span" className="text-2xl font-semibold" variant="headline">
-              {vm.claimableText}
-            </Text>
-          </div>
+          <RewardsClaimTokenRow amountText={vm.claimableText} tokenLabel={vm.tokenGagx} />
         </div>
 
         {walletReady ? (

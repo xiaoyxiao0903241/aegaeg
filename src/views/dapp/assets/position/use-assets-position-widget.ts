@@ -4,10 +4,8 @@ import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { useChainQuery } from '~/hooks/use-chain-query'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import {
   submitBondRedeem,
@@ -15,17 +13,14 @@ import {
   type MixedClaimTarget,
 } from '~/views/dapp/assets/submit-assets'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
-import {
-  readBurnBondPositions,
-  readLpBondPositions,
-  readStakePositions,
-  type AssetsBondRow,
-  type AssetsStakeRow,
-} from '~/web3/assets/assets-read'
+import { type AssetsBondRow, type AssetsStakeRow } from '~/web3/assets/assets-read'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
-import type { Address } from '~/shared/config/contracts'
+import {
+  useAssetsPositionQueries,
+  type AssetsProduct,
+} from '~/views/dapp/assets/position/use-assets-position-queries'
 
-export type AssetsProduct = 'stake' | 'lpbond' | 'burnbond'
+export type { AssetsProduct }
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
@@ -94,20 +89,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     return t.assets.claim.releaseDays.replace('{days}', String(period))
   }
 
-  const stakeQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsStakePositions,
-    queryFn: (addr) => readStakePositions(addr as Address),
-    enabled: product === 'stake',
-  })
-
-  const bondQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsBondPositions(product),
-    queryFn: (addr) =>
-      product === 'lpbond'
-        ? readLpBondPositions(addr as Address)
-        : readBurnBondPositions(addr as Address),
-    enabled: product !== 'stake',
-  })
+  const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
 
   const stakeRows = stakeQuery.data ?? []
   const bondRows = bondQuery.data ?? []

@@ -1,4 +1,3 @@
-import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -6,6 +5,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { useI18n } from '~/i18n/use-i18n'
 import type { AssetsBondRow } from '~/web3/assets/assets-read'
+import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -88,25 +88,16 @@ export function AssetsPositionBondRow({
           {voucher}
         </Text>
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <DappActionButton
-          className="h-7 min-h-7 text-xs"
-          density="inverse"
-          disabled={!canClaim || locked || busy}
-          onClick={() => onClaim(row)}
-        >
-          {t.assets.position.claim}
-        </DappActionButton>
-        <DappActionButton
-          className="h-7 min-h-7 text-xs"
-          density="inverse"
-          disabled={!canRedeem || locked || busy}
-          onClick={() => onRedeem(row)}
-          variant="secondary"
-        >
-          {t.assets.position.redeem}
-        </DappActionButton>
-      </div>
+      <AssetsPositionRowActions
+        busy={busy}
+        canClaim={canClaim}
+        canRedeem={canRedeem}
+        claimLabel={t.assets.position.claim}
+        locked={locked}
+        onClaim={() => onClaim(row)}
+        onRedeem={() => onRedeem(row)}
+        redeemLabel={t.assets.position.redeem}
+      />
     </Card>
   )
 }

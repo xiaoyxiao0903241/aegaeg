@@ -69,56 +69,17 @@ export async function claimRewardOnChain({
   })
 }
 
-export async function claimTeamRewardOnChain({
-  wallet,
-  signType,
-  amount,
-  expireTime,
-  salt,
-  signature,
-}: {
+type ClaimOnChainArgs = {
   wallet: Wallet
   signType: bigint
   amount: bigint
   expireTime: bigint
   salt: `0x${string}`
   signature: `0x${string}`
-}) {
-  return claimRewardOnChain({
-    wallet,
-    contractAddress: BSC_CONTRACTS.rewardClaimer,
-    signType,
-    amount,
-    expireTime,
-    salt,
-    signature,
-  })
 }
 
-export async function claimCommunityFundOnChain({
-  wallet,
-  signType,
-  amount,
-  expireTime,
-  salt,
-  signature,
-}: {
-  wallet: Wallet
-  signType: bigint
-  amount: bigint
-  expireTime: bigint
-  salt: `0x${string}`
-  signature: `0x${string}`
-}) {
-  return claimRewardOnChain({
-    wallet,
-    contractAddress: BSC_CONTRACTS.communityFundVault,
-    signType,
-    amount,
-    expireTime,
-    salt,
-    signature,
-  })
+function claimOnVault(contractAddress: `0x${string}`) {
+  return (args: ClaimOnChainArgs) => claimRewardOnChain({ ...args, contractAddress })
 }
 
 function assertClaimSignatureNotExpired(
@@ -226,7 +187,7 @@ export async function claimTeamReward({
     token,
     onUnauthorized,
     requestSignature: requestTeamRewardSignature,
-    claimOnChain: claimTeamRewardOnChain,
+    claimOnChain: claimOnVault(BSC_CONTRACTS.rewardClaimer),
   })
 }
 
@@ -244,7 +205,7 @@ export async function claimCommunityFund({
     token,
     onUnauthorized,
     requestSignature: requestCommunityFundClaim,
-    claimOnChain: claimCommunityFundOnChain,
+    claimOnChain: claimOnVault(BSC_CONTRACTS.communityFundVault),
   })
 }
 

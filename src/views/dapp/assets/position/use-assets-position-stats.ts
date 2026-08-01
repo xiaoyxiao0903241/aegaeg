@@ -1,18 +1,11 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
-import { queryKeys } from '~/shared/api/query/query-keys'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import type { Address } from '~/shared/config/contracts'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
-import {
-  readBurnBondPositions,
-  readLpBondPositions,
-  readStakePositions,
-} from '~/web3/assets/assets-read'
-import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
+import type { AssetsProduct } from '~/views/dapp/assets/position/use-assets-position-queries'
+import { useAssetsPositionQueries } from '~/views/dapp/assets/position/use-assets-position-queries'
 import { formatApproxUsd } from '~/shared/api/format-display'
-import { useChainQuery } from '~/hooks/use-chain-query'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -53,20 +46,7 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
       ? null
       : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
 
-  const stakeQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsStakePositions,
-    queryFn: (addr) => readStakePositions(addr as Address),
-    enabled: product === 'stake',
-  })
-
-  const bondQuery = useChainQuery({
-    queryKey: queryKeys.chain.assetsBondPositions(product),
-    queryFn: (addr) =>
-      product === 'lpbond'
-        ? readLpBondPositions(addr as Address)
-        : readBurnBondPositions(addr as Address),
-    enabled: product !== 'stake',
-  })
+  const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
 
   if (!walletReady || !address) {
     return Array.from({ length: product === 'stake' ? 6 : 5 }, () => ({ value: '—' }))

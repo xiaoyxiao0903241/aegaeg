@@ -8,8 +8,7 @@ import {
   useRankRewardTeamMembers,
 } from '~/hooks/use-api-data'
 import {
-  formatApiCountLabel,
-  formatApiStatLabel,
+  bindApiLabelFormatters,
   formatMakingRankLabel,
   mapRankRewardLogToRow,
   mapRankRewardTeamMemberToRow,
@@ -36,51 +35,20 @@ export function useRewardsCobuildContentView() {
   const directsQuery = useRankRewardTeamMembers({}, sessionReady)
 
   const summary = summaryQuery.data
-  const totalRewards = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.total_rank_reward,
-  )
-  const totalPerformance = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.making_market,
-  )
-  const myPosition = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.active_stake_balance,
-  )
-  const referralCount = formatApiCountLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.direct_referral_count,
-  )
-  const contributionValue = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.available_contribution,
-  )
+  const label = bindApiLabelFormatters(sessionReady, summaryQuery.isLoading)
+  const totalRewards = label.stat(summary?.total_rank_reward)
+  const totalPerformance = label.stat(summary?.making_market)
+  const myPosition = label.stat(summary?.active_stake_balance)
+  const referralCount = label.count(summary?.direct_referral_count)
+  const contributionValue = label.stat(summary?.available_contribution)
   const tierCurrent = !sessionReady
     ? tierEmpty
     : summaryQuery.isLoading && summary == null
       ? '…'
       : formatMakingRankLabel(summary?.making_rank, tierEmpty)
-  const reqHolding = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.active_stake_balance,
-  )
-  const reqAccounts = formatApiCountLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.effective_direct_referral_count,
-  )
-  const reqPerformance = formatApiStatLabel(
-    sessionReady,
-    summaryQuery.isLoading,
-    summary?.making_market,
-  )
+  const reqHolding = label.stat(summary?.active_stake_balance)
+  const reqAccounts = label.count(summary?.effective_direct_referral_count)
+  const reqPerformance = label.stat(summary?.making_market)
 
   const activeLogsQuery = recordsTab === 'cobuild' ? cobuildLogsQuery : equalizeLogsQuery
   const recordRows =

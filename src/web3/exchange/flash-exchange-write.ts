@@ -1,19 +1,14 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
-  ERC20_METHODS,
   USD1_SWAP_METHODS,
   USD1_SWAP_ERRORS,
-  ERC20_ERRORS,
   REDEEMABLE_GAGX_METHODS,
   REDEEMABLE_GAGX_ERRORS,
 } from '~/web3/abis'
-import { createWalletReadClient } from '~/web3/chain-read-client'
-import { readErc20Allowance } from '~/web3/exchange/exchange-read'
-import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
+import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const usd1ExchangeWriteAbi = parseWriteAbi(USD1_SWAP_METHODS.swap, USD1_SWAP_ERRORS)
 const redeemableGagxRedeemAbi = parseWriteAbi(
   REDEEMABLE_GAGX_METHODS.redeem,
@@ -28,26 +23,11 @@ export async function approveUsdtForFlashExchangeIfNeeded({
   wallet: Wallet
   amountIn: bigint
 }) {
-  const account = wallet.getAccount()
-  if (!account) {
-    throw WALLET_BLOCKED.NOT_CONNECTED
-  }
-
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(
-    BSC_CONTRACTS.usdt,
-    account.address,
-    BSC_CONTRACTS.usd1Swap,
-    readClient,
-  )
-  if (allowance >= amountIn) return null
-
-  return writeContractViaWallet({
+  return approveErc20IfNeeded({
     wallet,
-    address: BSC_CONTRACTS.usdt,
-    abi: erc20WriteAbi,
-    functionName: 'approve',
-    args: [BSC_CONTRACTS.usd1Swap, amountIn],
+    token: BSC_CONTRACTS.usdt,
+    spender: BSC_CONTRACTS.usd1Swap,
+    amountIn,
   })
 }
 
@@ -58,26 +38,11 @@ export async function approveAgxForWrapIfNeeded({
   wallet: Wallet
   amountIn: bigint
 }) {
-  const account = wallet.getAccount()
-  if (!account) {
-    throw WALLET_BLOCKED.NOT_CONNECTED
-  }
-
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(
-    BSC_CONTRACTS.agx,
-    account.address,
-    BSC_CONTRACTS.gagx,
-    readClient,
-  )
-  if (allowance >= amountIn) return null
-
-  return writeContractViaWallet({
+  return approveErc20IfNeeded({
     wallet,
-    address: BSC_CONTRACTS.agx,
-    abi: erc20WriteAbi,
-    functionName: 'approve',
-    args: [BSC_CONTRACTS.gagx, amountIn],
+    token: BSC_CONTRACTS.agx,
+    spender: BSC_CONTRACTS.gagx,
+    amountIn,
   })
 }
 
