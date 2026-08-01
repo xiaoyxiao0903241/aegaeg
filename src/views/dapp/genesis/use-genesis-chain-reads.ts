@@ -1,7 +1,6 @@
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   genesisMaxShares,
-  phaseCountdownTarget,
   presaleAirdropThresholdToUsd,
   remainingPhaseAmount,
   remainingUserAmount,
@@ -29,7 +28,6 @@ import { useActiveAccount } from '~/web3/thirdweb-react'
 /** Chain + promo reads for Genesis — no shares draft, no write actions. */
 export function useGenesisChainReads() {
   const account = useActiveAccount()
-  const nowSeconds = useGenesisPromoStore((state) => state.nowSeconds)
   const activeSeasonNumber = useGenesisPromoStore((state) => state.activeSeasonNumber)
   const discountLabel = useGenesisPromoStore((state) => state.discountLabel)
   const seasonOptions = useGenesisPromoStore((state) => state.seasonOptions)
@@ -105,8 +103,6 @@ export function useGenesisChainReads() {
   })
   const maxPurchasableWei = phaseLeft < userLeft ? phaseLeft : userLeft
 
-  const countdownTarget = phaseCountdownTarget(phases, nowSeconds)
-
   const queryError =
     phasesQuery.error ??
     activePhaseQuery.error ??
@@ -145,8 +141,6 @@ export function useGenesisChainReads() {
     maxAmount,
     maxShares,
     maxPurchasableWei,
-    nowSeconds,
-    countdownTarget,
     activeSeasonNumber,
     seasonOptions,
     totalPurchased: totalPurchasedQuery.data ?? 0n,

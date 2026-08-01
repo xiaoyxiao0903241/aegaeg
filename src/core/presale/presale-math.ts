@@ -188,7 +188,7 @@ export function isPhaseActive(
 }
 
 export function findActivePresalePhase(
-  phases: PresalePhaseOnChain[],
+  phases: readonly PresalePhaseOnChain[],
   nowSeconds = Math.floor(Date.now() / 1000),
 ): PresalePhaseOnChain | null {
   return phases.find((phase) => isPhaseActive(phase, nowSeconds)) ?? null
@@ -211,7 +211,7 @@ export function hasPhaseCountdownElapsed(
 }
 
 export function phaseCountdownTarget(
-  phases: PresalePhaseOnChain[],
+  phases: readonly PresalePhaseOnChain[],
   nowSeconds = Math.floor(Date.now() / 1000),
 ): { mode: PhaseCountdownMode; targetTime: bigint } | null {
   const active = findActivePresalePhase(phases, nowSeconds)

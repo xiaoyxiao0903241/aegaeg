@@ -15,13 +15,14 @@ test('genesis purchase actions keep post-approve check and in-flight latch', asy
   assert.match(source, /GENESIS_PURCHASE_ERROR\.NOT_BOUND/)
 })
 
-test('useGenesisWidget assembles reads, display model, and purchase actions', async () => {
+test('useGenesisWidget assembles reads, countdown leaf, display model, and purchase actions', async () => {
   const source = await readFile(
     new URL('../../src/views/dapp/genesis/use-genesis-widget.ts', import.meta.url),
     'utf8',
   )
 
   assert.match(source, /useGenesisChainReads/)
+  assert.match(source, /useGenesisCountdownClock/)
   assert.match(source, /genesisPurchaseSummary/)
   assert.match(source, /useGenesisPurchaseActions/)
   assert.doesNotMatch(source, /approveUsd1ForPresaleIfNeeded/)
@@ -29,7 +30,7 @@ test('useGenesisWidget assembles reads, display model, and purchase actions', as
   assert.doesNotMatch(source, /estimateAgxFromUsd1/)
 })
 
-test('genesisPurchaseSummary owns display and purchase gates', async () => {
+test('genesisPurchaseSummary owns display and purchase gates without clock', async () => {
   const source = await readFile(
     new URL('../../src/views/dapp/genesis/genesis-purchase-summary.ts', import.meta.url),
     'utf8',
@@ -37,5 +38,15 @@ test('genesisPurchaseSummary owns display and purchase gates', async () => {
 
   assert.match(source, /canPurchaseGenesis/)
   assert.match(source, /estimateAgxFromUsd1/)
-  assert.match(source, /formatPhaseCountdown/)
+  assert.doesNotMatch(source, /formatPhaseCountdown/)
+  assert.doesNotMatch(source, /nowSeconds/)
+})
+
+test('useGenesisChainReads does not subscribe to nowSeconds', async () => {
+  const source = await readFile(
+    new URL('../../src/views/dapp/genesis/use-genesis-chain-reads.ts', import.meta.url),
+    'utf8',
+  )
+  assert.doesNotMatch(source, /nowSeconds/)
+  assert.doesNotMatch(source, /countdownTarget/)
 })

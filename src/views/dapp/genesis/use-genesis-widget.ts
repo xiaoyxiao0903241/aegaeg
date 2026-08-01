@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
-import { hasPhaseCountdownElapsed, phaseCountdownKey } from '~/core/presale/presale-math'
 import { useI18n } from '~/i18n/use-i18n'
-import { invalidateAfterGenesisPhaseTransition } from '~/shared/api/query/invalidate'
 import { genesisPurchaseSummary } from '~/views/dapp/genesis/genesis-purchase-summary'
 import { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
+import { useGenesisCountdownClock } from '~/views/dapp/genesis/use-genesis-countdown-clock'
 import { useGenesisPurchaseActions } from '~/views/dapp/genesis/use-genesis-purchase-actions'
 import { useActiveWallet } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
@@ -15,13 +14,14 @@ export function useGenesisWidget() {
   const wallet = useActiveWallet()
   const { writeReady } = useWriteReadiness()
   const reads = useGenesisChainReads()
-  const countdownRefreshRef = useRef<string | null>(null)
+  const clock = useGenesisCountdownClock(reads.phases, reads.address, t.genesis.countdownUnits)
   const [sharesDraft, setSharesDraft] = useState(0)
 
   const model = genesisPurchaseSummary({
     reads,
     sharesDraft,
-    countdownUnits: t.genesis.countdownUnits,
+    countdown: clock.countdown,
+    countdownMode: clock.countdownMode,
   })
   const canPurchaseBase = model.canPurchase && writeReady
 
@@ -48,24 +48,6 @@ export function useGenesisWidget() {
       purchaseAmount: model.purchaseAmount,
     },
   })
-
-  useEffect(() => {
-    const countdownTarget = reads.countdownTarget
-    if (
-      !countdownTarget ||
-      !hasPhaseCountdownElapsed(countdownTarget.targetTime, reads.nowSeconds)
-    ) {
-      return
-    }
-
-    const countdownKey = phaseCountdownKey(countdownTarget)
-    if (!countdownKey || countdownRefreshRef.current === countdownKey) {
-      return
-    }
-
-    countdownRefreshRef.current = countdownKey
-    invalidateAfterGenesisPhaseTransition(reads.address)
-  }, [reads.address, reads.countdownTarget, reads.nowSeconds])
 
   return {
     shares: model.shares,
