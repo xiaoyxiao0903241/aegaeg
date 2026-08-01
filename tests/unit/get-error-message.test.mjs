@@ -9,8 +9,9 @@ test('getErrorMessage maps sentinels, handbook reverts, and falls back', async (
   assert.ok(t?.errors?.chain?.reverts?.stakeAmountLimit, 'en must include chain.reverts')
 
   const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
-  const { STAKING_BLOCKED } = await loadModule('/src/web3/errors/staking-write-block-errors.ts')
-  const { ASSETS_BLOCKED } = await loadModule('/src/web3/errors/assets-write-block-errors.ts')
+  const { STAKING_BLOCKED, ASSETS_BLOCKED } = await loadModule(
+    '/src/web3/errors/write-block-errors.ts',
+  )
   const { GENESIS_PURCHASE_ERROR, FLASH_USD1_BLOCKED } = await loadModule(
     '/src/web3/errors/sentinels.ts',
   )

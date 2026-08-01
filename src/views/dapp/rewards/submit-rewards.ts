@@ -12,12 +12,12 @@ import { requestDaoClaim } from '~/shared/api/endpoints'
 import { requestWithSession } from '~/shared/api/query/session-request'
 import { parseTeamRewardClaim } from '~/shared/api/parse-team-reward-claim'
 import { DAO_REWARD_SIGN_TYPE, type DaoRewardType } from '~/shared/api/types'
-import { REWARDS_BLOCKED } from '~/web3/errors/rewards-write-block-errors'
+import { REWARDS_BLOCKED } from '~/web3/errors/write-block-errors'
 import { WALLET_BLOCKED } from '~/web3/contract-error-message'
 import { invalidateAfterTeamClaim } from '~/shared/api/query/invalidate'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
-export { REWARDS_BLOCKED } from '~/web3/errors/rewards-write-block-errors'
+export { REWARDS_BLOCKED } from '~/web3/errors/write-block-errors'
 
 function gateError(
   reason: keyof typeof REWARDS_BLOCKED | null,

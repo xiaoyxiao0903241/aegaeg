@@ -1,7 +1,7 @@
 import type { UseQueryResult } from '@tanstack/react-query'
 import { findActivePresalePhase, type PresalePhaseOnChain } from '~/core/presale/presale-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { useChainQuery, type ChainQueryOptions } from '~/hooks/use-chain-query'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
@@ -14,10 +14,6 @@ import {
   readUserPresaleTotal,
 } from '~/web3/presale/presale-read'
 import { useErc20AllowanceQuery, useErc20BalanceQuery } from '~/web3/erc20/use-erc20-queries'
-
-type PresaleQueryOptions = {
-  enabled?: boolean
-}
 
 export function usePresalePhasesQuery() {
   return useChainQuery({
@@ -58,7 +54,7 @@ export function usePresaleAgxPriceQuery() {
   })
 }
 
-export function usePresaleTotalPurchasedQuery(options?: PresaleQueryOptions) {
+export function usePresaleTotalPurchasedQuery(options?: ChainQueryOptions) {
   const enabled = options?.enabled ?? true
 
   return useChainQuery({
@@ -72,7 +68,7 @@ export function usePresaleTotalPurchasedQuery(options?: PresaleQueryOptions) {
   })
 }
 
-export function usePresaleAirdropThresholdQuery(options?: PresaleQueryOptions) {
+export function usePresaleAirdropThresholdQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.presaleAirdropThreshold,
     scope: 'public',
@@ -82,7 +78,7 @@ export function usePresaleAirdropThresholdQuery(options?: PresaleQueryOptions) {
   })
 }
 
-export function usePresalePausedQuery(options?: PresaleQueryOptions) {
+export function usePresalePausedQuery(options?: ChainQueryOptions) {
   const enabled = options?.enabled ?? true
 
   return useChainQuery({
@@ -95,7 +91,7 @@ export function usePresalePausedQuery(options?: PresaleQueryOptions) {
   })
 }
 
-export function usePresaleUserTotalQuery(options?: PresaleQueryOptions) {
+export function usePresaleUserTotalQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.presaleUserTotal,
     freshness: 'presale',
@@ -107,7 +103,7 @@ export function usePresaleUserTotalQuery(options?: PresaleQueryOptions) {
 export function usePresaleUserPhaseRemainingQuery(
   address?: string,
   phaseIndex?: number,
-  options?: PresaleQueryOptions,
+  options?: ChainQueryOptions,
 ) {
   return useChainQuery({
     queryKey: queryKeys.chain.presaleUserPhaseRemaining(address ?? '', phaseIndex ?? 0),
@@ -118,7 +114,7 @@ export function usePresaleUserPhaseRemainingQuery(
   })
 }
 
-export function useUsd1PresaleWalletQuery(address?: string, options?: PresaleQueryOptions) {
+export function useUsd1PresaleWalletQuery(address?: string, options?: ChainQueryOptions) {
   const queryEnabled = (options?.enabled ?? true) && Boolean(address)
 
   const balanceQuery = useErc20BalanceQuery(BSC_CONTRACTS.usd1, address, {

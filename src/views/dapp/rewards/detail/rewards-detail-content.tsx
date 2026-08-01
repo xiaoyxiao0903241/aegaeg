@@ -1,4 +1,4 @@
-import type { RewardsView } from '~/shared/config/rewards-deep-link'
+import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { RewardsCobuildContent } from '~/views/dapp/rewards/detail/rewards-cobuild-content'
 import { RewardsGenesisContent } from '~/views/dapp/rewards/detail/rewards-genesis-content'
 import { RewardsGrantContent } from '~/views/dapp/rewards/detail/rewards-grant-content'

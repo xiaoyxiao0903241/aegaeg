@@ -8,7 +8,7 @@ import {
   readBurnContributionSwapConfig,
   readBurnExchangeBalances,
 } from '~/web3/exchange/burn-exchange-read'
-import { BURN_BLOCKED } from '~/web3/errors/exchange-write-block-errors'
+import { BURN_BLOCKED } from '~/web3/errors/write-block-errors'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 type BurnQuotedSubmitCore = {

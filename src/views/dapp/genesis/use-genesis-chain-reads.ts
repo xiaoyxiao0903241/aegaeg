@@ -21,8 +21,10 @@ import {
   usePresaleUserTotalQuery,
   useUsd1PresaleWalletQuery,
 } from '~/web3/presale/use-presale-queries'
-import { useIsBindReferralQuery } from '~/web3/referral/use-referral-queries'
+import { useChainQuery } from '~/hooks/use-chain-query'
+import { queryKeys } from '~/shared/api/query/query-keys'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
+import { readIsBindReferral } from '~/web3/referral/referral-read'
 
 /** Chain + promo reads for Genesis — no shares draft, no write actions. */
 export function useGenesisChainReads() {
@@ -55,7 +57,13 @@ export function useGenesisChainReads() {
   const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address, {
     enabled: purchaseQueriesEnabled,
   })
-  const isBoundQuery = useIsBindReferralQuery(address, { enabled: purchaseQueriesEnabled })
+  /** U-tier bind display only — L-tier paths read/fetchQuery `readIsBindReferral` directly. */
+  const isBoundQuery = useChainQuery({
+    queryKey: queryKeys.chain.referralIsBound,
+    freshness: 'balances',
+    enabled: purchaseQueriesEnabled && Boolean(address),
+    queryFn: (walletAddress) => readIsBindReferral(walletAddress),
+  })
   const isBound = isBoundQuery.data === true
   const needsReferralBind = walletReady && isBoundQuery.data === false
   const isPaused = pausedQuery.data === true

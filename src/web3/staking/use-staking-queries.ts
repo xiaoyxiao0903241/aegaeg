@@ -1,4 +1,4 @@
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { useChainQuery, type ChainQueryOptions } from '~/hooks/use-chain-query'
 import type { Address } from '~/shared/config/contracts'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import {
@@ -8,15 +8,11 @@ import {
 } from '~/web3/staking/staking-read'
 import { readBondHelperSlippage, readBondZapAgxPreview } from '~/web3/staking/bond-zap-quote-read'
 
-type StakingQueryOptions = {
-  enabled?: boolean
-}
-
 /** Wallet-scoped preflight — address from useChainQuery (active account). */
 export function useStakeOpenPreflightQuery(
   pool: Address,
   isLiquid: boolean,
-  options?: StakingQueryOptions,
+  options?: ChainQueryOptions,
 ) {
   return useChainQuery({
     queryKey: queryKeys.chain.stakeOpenPreflight(pool),
@@ -31,7 +27,7 @@ export function useStakeOpenPreflightQuery(
   })
 }
 
-export function useBondZapPreflightQuery(depository: Address, options?: StakingQueryOptions) {
+export function useBondZapPreflightQuery(depository: Address, options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.bondZapPreflight(depository),
     freshness: 'balances',
@@ -44,7 +40,7 @@ export function useBondZapPreflightQuery(depository: Address, options?: StakingQ
   })
 }
 
-export function useBondHelperSlippageQuery(options?: StakingQueryOptions) {
+export function useBondHelperSlippageQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.bondHelperSlippage,
     scope: 'public',
@@ -58,7 +54,7 @@ export function useBondZapAgxPreviewQuery(
   kind: 'lp' | 'burn',
   depository: Address,
   depositUsd1: bigint,
-  options?: StakingQueryOptions,
+  options?: ChainQueryOptions,
 ) {
   return useChainQuery({
     queryKey: queryKeys.chain.bondZapAgxPreview(kind, depository, depositUsd1.toString()),
@@ -74,7 +70,7 @@ export function useBondZapAgxPreviewQuery(
   })
 }
 
-export function useXminePreflightQuery(options?: StakingQueryOptions) {
+export function useXminePreflightQuery(options?: ChainQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.xminePreflight,
     freshness: 'balances',

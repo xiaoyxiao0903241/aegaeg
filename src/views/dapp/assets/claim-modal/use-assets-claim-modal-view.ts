@@ -11,7 +11,7 @@ import {
   type ReleaseDurationDays,
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
-import { openExchangeView } from '~/shared/config/open-exchange-view'
+import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -64,12 +64,8 @@ export function useAssetsClaimModalView(args: {
   })
 
   const contribQuery = useChainQuery({
-    scope: 'public',
-    queryKey: queryKeys.chain.assetsContributionForAmount(
-      account?.address ?? '',
-      String(target.amount),
-    ),
-    queryFn: () => readContributionSnapshot(account!.address as Address, target.amount),
+    queryKey: queryKeys.chain.assetsContributionForAmount(String(target.amount)),
+    queryFn: (address) => readContributionSnapshot(address as Address, target.amount),
     enabled: open && Boolean(account?.address),
   })
 

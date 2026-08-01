@@ -1,6 +1,6 @@
 import { useI18n } from '~/i18n/use-i18n'
 import { stakingHubAssets } from '~/app/assets'
-import { openAssetsView } from '~/shared/config/open-assets-view'
+import { openAssetsView } from '~/shared/config/dapp-open-views'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { WidgetHeader } from '~/shared/ui/widget-header'

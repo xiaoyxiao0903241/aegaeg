@@ -1,39 +1,34 @@
-import { useChainQuery } from '~/hooks/use-chain-query'
+import { useChainQuery, type ChainQueryOptions } from '~/hooks/use-chain-query'
 import type { Address } from '~/shared/config/contracts'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 
-type Erc20QueryOptions = {
-  enabled?: boolean
-}
-
 /**
- * Atomic ERC20 balance — cross-rail SSOT (`queryKeys.chain.erc20BalanceOf`).
- * Explicit `owner` → `scope: 'public'` (any address, not only active wallet).
+ * Atomic ERC20 balance — wallet-scoped SSOT (`queryKeys.chain.erc20Balance` + address).
+ * `owner` gates enablement and must be the active wallet (invalidate still uses `*Of`).
  */
 export function useErc20BalanceQuery(
   token: Address | undefined,
   owner: string | undefined,
-  options?: Erc20QueryOptions,
+  options?: ChainQueryOptions,
 ) {
   return useChainQuery({
-    queryKey: queryKeys.chain.erc20BalanceOf(token ?? '', owner ?? ''),
-    scope: 'public',
+    queryKey: queryKeys.chain.erc20Balance(token ?? ''),
     freshness: 'balances',
     enabled: (options?.enabled ?? true) && Boolean(token && owner),
-    queryFn: () => readErc20Balance(token!, owner!),
+    queryFn: (address) => readErc20Balance(token!, address),
   })
 }
 
 /**
  * Atomic ERC20 allowance — spender-specific; not part of connect prefetch.
- * Explicit owner/spender → `scope: 'public'`.
+ * Owner + spender stay baked in the key (multi-party; not wallet-prefix-only).
  */
 export function useErc20AllowanceQuery(
   token: Address | undefined,
   owner: string | undefined,
   spender: Address | undefined,
-  options?: Erc20QueryOptions,
+  options?: ChainQueryOptions,
 ) {
   return useChainQuery({
     queryKey: queryKeys.chain.erc20Allowance(token ?? '', owner ?? '', spender ?? ''),

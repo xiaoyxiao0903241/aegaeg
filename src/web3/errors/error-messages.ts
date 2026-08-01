@@ -1,6 +1,13 @@
 import type { AppMessagesBundle } from '~/i18n/messages/app/types'
-import { ASSETS_BLOCKED } from '~/web3/errors/assets-write-block-errors'
-import { BURN_BLOCKED } from '~/web3/errors/exchange-write-block-errors'
+import {
+  ASSETS_BLOCKED,
+  BOND_ZAP_BLOCKED,
+  BURN_BLOCKED,
+  RELEASE_BLOCKED,
+  REWARDS_BLOCKED,
+  STAKING_BLOCKED,
+  XMINE_BLOCKED,
+} from '~/web3/errors/write-block-errors'
 import {
   type ErrorText,
   hasSelector,
@@ -8,8 +15,6 @@ import {
   readErrorCode,
   toErrorText,
 } from '~/web3/errors/error-text'
-import { RELEASE_BLOCKED } from '~/web3/errors/release-write-block-errors'
-import { REWARDS_BLOCKED } from '~/web3/errors/rewards-write-block-errors'
 import {
   CLAIM_CONFIRM_SYNC_FAILED,
   EXCHANGE_QUOTE_FAILED,
@@ -20,11 +25,6 @@ import {
   WALLET_BLOCKED,
   WALLET_WRITE_ERROR,
 } from '~/web3/errors/sentinels'
-import {
-  BOND_ZAP_BLOCKED,
-  STAKING_BLOCKED,
-  XMINE_BLOCKED,
-} from '~/web3/errors/staking-write-block-errors'
 
 type MessageFn = (t: AppMessagesBundle) => string
 

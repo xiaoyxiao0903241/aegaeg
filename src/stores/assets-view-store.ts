@@ -1,4 +1,4 @@
-import { assetsHashForView, type AssetsView } from '~/shared/config/assets-deep-link'
+import { assetsHashForView, type AssetsView } from '~/shared/config/dapp-deep-links'
 import { createDappSubviewStore } from '~/stores/create-dapp-subview-store'
 
 export type { AssetsView }

@@ -11,6 +11,11 @@ import { chainQueryEnabled, type ChainQueryScope } from '~/core/wallet/chain-que
 
 export type ChainQueryFreshness = keyof typeof QUERY_STALE_TIME
 
+/** Shared options bag for domain chain-query hooks (`enabled` only). */
+export type ChainQueryOptions = {
+  enabled?: boolean
+}
+
 type ChainQueryBase<TData> = {
   /** Default `balances` (U). Never use for submit-time live gates (L). */
   freshness?: ChainQueryFreshness

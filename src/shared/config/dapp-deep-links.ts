@@ -1,13 +1,25 @@
 import { tabOrder, type DappTab } from '~/shared/config/dapp-tabs'
-import { isAssetsView, type AssetsView } from '~/shared/config/assets-deep-link'
-import { isReleaseView, type ReleaseView } from '~/shared/config/release-deep-link'
-import { isRewardsView, type RewardsView } from '~/shared/config/rewards-deep-link'
-import { isStakingView, type StakingView } from '~/shared/config/staking-deep-link'
 
 export type ExchangeView = 'hub' | 'flash' | 'trade' | 'burn' | 'turbine'
-export type { StakingView, AssetsView, RewardsView, ReleaseView }
+export type StakingView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine' | 'calc'
+export type AssetsView = 'hub' | 'stake' | 'lpbond' | 'burnbond' | 'xmine'
+export type RewardsView =
+  'hub' | 'lucky' | 'referral' | 'participate' | 'cobuild' | 'grant' | 'genesis'
+export type ReleaseView = 'hub' | 'queue' | 'buffer'
 
 const EXCHANGE_VIEWS = new Set<ExchangeView>(['hub', 'flash', 'trade', 'burn', 'turbine'])
+const STAKING_VIEWS = new Set<StakingView>(['hub', 'stake', 'lpbond', 'burnbond', 'xmine', 'calc'])
+const ASSETS_VIEWS = new Set<AssetsView>(['hub', 'stake', 'lpbond', 'burnbond', 'xmine'])
+const REWARDS_VIEWS = new Set<RewardsView>([
+  'hub',
+  'lucky',
+  'referral',
+  'participate',
+  'cobuild',
+  'grant',
+  'genesis',
+])
+const RELEASE_VIEWS = new Set<ReleaseView>(['hub', 'queue', 'buffer'])
 
 function isDappTab(value: string): value is DappTab {
   return tabOrder.includes(value as DappTab)
@@ -17,9 +29,55 @@ export function isExchangeView(value: string): value is ExchangeView {
   return EXCHANGE_VIEWS.has(value as ExchangeView)
 }
 
-export function exchangeHashForView(view: ExchangeView): string {
-  return view === 'hub' ? '#exchange' : `#exchange/${view}`
+export function isStakingView(value: string): value is StakingView {
+  return STAKING_VIEWS.has(value as StakingView)
 }
+
+export function isAssetsView(value: string): value is AssetsView {
+  return ASSETS_VIEWS.has(value as AssetsView)
+}
+
+export function isRewardsView(value: string): value is RewardsView {
+  return REWARDS_VIEWS.has(value as RewardsView)
+}
+
+export function isReleaseView(value: string): value is ReleaseView {
+  return RELEASE_VIEWS.has(value as ReleaseView)
+}
+
+function hashForTabView(tab: DappTab, view: string, hub: string): string {
+  return view === hub ? `#${tab}` : `#${tab}/${view}`
+}
+
+export function exchangeHashForView(view: ExchangeView): string {
+  return hashForTabView('exchange', view, 'hub')
+}
+
+export function stakingHashForView(view: StakingView): string {
+  return hashForTabView('staking', view, 'hub')
+}
+
+export function assetsHashForView(view: AssetsView): string {
+  return hashForTabView('assets', view, 'hub')
+}
+
+export function rewardsHashForView(view: RewardsView): string {
+  return hashForTabView('rewards', view, 'hub')
+}
+
+export function releaseHashForView(view: ReleaseView): string {
+  return hashForTabView('release', view, 'hub')
+}
+
+/** Card → contract key (grilling 14 / ticket 08). */
+export const REWARDS_CARD_CONTRACT = {
+  lucky: 'LuckyPool',
+  referral: 'CommunityFund',
+  participate: 'IncentivePool',
+  cobuild: 'DaoPool',
+  grant: 'MarketFund',
+  genesis: 'RewardClaimer',
+} as const satisfies Record<Exclude<RewardsView, 'hub'>, string>
 
 type DappLocation = {
   tab: DappTab

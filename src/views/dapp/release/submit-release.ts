@@ -1,6 +1,6 @@
 import { releaseClaimBlockReason } from '~/core/release/release-block-reasons'
 import { invalidateAfterReleaseClaim } from '~/shared/api/query/invalidate'
-import { RELEASE_BLOCKED } from '~/web3/errors/release-write-block-errors'
+import { RELEASE_BLOCKED } from '~/web3/errors/write-block-errors'
 import { readReleaseBufferSnapshot, readReleaseQueueSnapshot } from '~/web3/release/release-read'
 import { writeClaimAllVestedRewards, writeClaimManyReleases } from '~/web3/release/release-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'

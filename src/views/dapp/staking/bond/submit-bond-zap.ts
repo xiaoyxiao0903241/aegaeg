@@ -1,7 +1,7 @@
 import type { BondPeriod } from '~/core/staking/staking-period'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
-import { BOND_ZAP_BLOCKED } from '~/web3/errors/staking-write-block-errors'
+import { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
@@ -18,7 +18,7 @@ import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export type BondKind = 'lp' | 'burn'
 
-export { BOND_ZAP_BLOCKED } from '~/web3/errors/staking-write-block-errors'
+export { BOND_ZAP_BLOCKED } from '~/web3/errors/write-block-errors'
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitBondZap(args: {

@@ -315,8 +315,9 @@ export const queryKeys = {
     assetsContribution: ['chain', 'assets', 'contribution'] as const,
     assetsContributionOf: (address: string) =>
       chainWalletQueryKey(['chain', 'assets', 'contribution'], address),
-    assetsContributionForAmount: (address: string, amount: string) =>
-      ['chain', 'assets', 'contribution', address.toLowerCase(), amount] as const,
+    /** Wallet prefix — amount varies; useChainQuery appends address. */
+    assetsContributionForAmount: (amount: string) =>
+      ['chain', 'assets', 'contribution', amount] as const,
     rewardsRoot: ['chain', 'rewards'] as const,
     rewardsLuckyClaim: ['chain', 'rewards', 'lucky'] as const,
     rewardsLuckyClaimOf: (address: string) =>

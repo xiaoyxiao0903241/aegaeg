@@ -1,7 +1,7 @@
 import type { StakePeriod } from '~/core/staking/staking-period'
 import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
-import { STAKING_BLOCKED } from '~/web3/errors/staking-write-block-errors'
+import { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import {
   approveAgxForStakeIfNeeded,
@@ -14,7 +14,7 @@ import { readMigrationStatus } from '~/web3/migration/migration-read'
 import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
-export { STAKING_BLOCKED } from '~/web3/errors/staking-write-block-errors'
+export { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitStakeOpen(args: {

@@ -71,25 +71,15 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
     freshness: 'api',
   })
 
-  const contribQuery = useChainQuery(
-    amount > 0n
-      ? {
-          scope: 'public' as const,
-          queryKey: queryKeys.chain.assetsContributionForAmount(
-            account?.address ?? '',
-            amount.toString(),
-          ),
-          queryFn: () => readContributionSnapshot(account!.address as Address, amount),
-          freshness: 'balances' as const,
-          enabled: Boolean(account?.address) && (view !== 'lucky' || amount > 0n),
-        }
-      : {
-          queryKey: queryKeys.chain.assetsContribution,
-          queryFn: (address: string) => readContributionSnapshot(address as Address, amount),
-          freshness: 'balances' as const,
-          enabled: view !== 'lucky' || amount > 0n,
-        },
-  )
+  const contribQuery = useChainQuery({
+    queryKey:
+      amount > 0n
+        ? queryKeys.chain.assetsContributionForAmount(amount.toString())
+        : queryKeys.chain.assetsContribution,
+    queryFn: (address) => readContributionSnapshot(address as Address, amount),
+    freshness: 'balances',
+    enabled: Boolean(account?.address) && (view !== 'lucky' || amount > 0n),
+  })
 
   const releaseIndex = plansQuery.data
     ? matchPlanIndexByDurationDays(plansQuery.data.releasePlans, releaseDays)

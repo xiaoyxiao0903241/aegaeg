@@ -25,7 +25,7 @@ import {
   formatTableGenesisRank,
 } from '~/shared/api/format-display'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
-import type { RewardsView } from '~/shared/config/rewards-deep-link'
+import type { RewardsView } from '~/shared/config/dapp-deep-links'
 
 /** Em dash placeholder for unset rewards UI values. */
 export const REWARDS_DASH = '—'

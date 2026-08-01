@@ -1,4 +1,4 @@
-import { exchangeHashForView, type ExchangeView } from '~/shared/config/exchange-deep-link'
+import { exchangeHashForView, type ExchangeView } from '~/shared/config/dapp-deep-links'
 import { createDappSubviewStore } from '~/stores/create-dapp-subview-store'
 
 export type { ExchangeView }

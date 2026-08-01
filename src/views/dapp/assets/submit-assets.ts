@@ -1,4 +1,4 @@
-import { ASSETS_BLOCKED } from '~/web3/errors/assets-write-block-errors'
+import { ASSETS_BLOCKED } from '~/web3/errors/write-block-errors'
 import { invalidateAfterAssetsClaim } from '~/shared/api/query/invalidate'
 import {
   evaluateRedeem,
@@ -203,67 +203,68 @@ export async function submitBondRedeem(args: {
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
-export async function submitXmineClaim(args: { session: WriteSession }): Promise<void> {
+async function submitXmineDualCheck(args: {
+  session: WriteSession
+  evaluate: (
+    position: Awaited<ReturnType<typeof readXminePosition>>,
+  ) => keyof typeof ASSETS_BLOCKED | null
+  write: (wallet: WriteSession['wallet']) => Promise<unknown>
+}): Promise<void> {
   const { wallet, address, readClient } = args.session
 
   const pre = await readXminePosition(address, readClient)
-  const preBlock = evaluateXmineClaim({
-    pending: pre.pending,
-    warmupGons: pre.warmupGons,
-  })
+  const preBlock = args.evaluate(pre)
   if (preBlock) throw ASSETS_BLOCKED[preBlock]
 
   const live = await readXminePosition(address, readClient)
-  const liveBlock = evaluateXmineClaim({
-    pending: live.pending,
-    warmupGons: live.warmupGons,
-  })
+  const liveBlock = args.evaluate(live)
   if (liveBlock) throw ASSETS_BLOCKED[liveBlock]
 
-  await writeXmineClaimReward({ wallet })
+  await args.write(wallet)
   invalidateAfterAssetsClaim()
+}
+
+/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+export async function submitXmineClaim(args: { session: WriteSession }): Promise<void> {
+  await submitXmineDualCheck({
+    session: args.session,
+    evaluate: (position) =>
+      evaluateXmineClaim({
+        pending: position.pending,
+        warmupGons: position.warmupGons,
+      }),
+    write: async (wallet) => {
+      await writeXmineClaimReward({ wallet })
+    },
+  })
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitXmineUnstake(args: { session: WriteSession }): Promise<void> {
-  const { wallet, address, readClient } = args.session
-
-  const pre = await readXminePosition(address, readClient)
-  const preBlock = evaluateXmineUnstake({
-    activeGons: pre.gons,
-    warmupGons: pre.warmupGons,
+  await submitXmineDualCheck({
+    session: args.session,
+    evaluate: (position) =>
+      evaluateXmineUnstake({
+        activeGons: position.gons,
+        warmupGons: position.warmupGons,
+      }),
+    write: async (wallet) => {
+      await writeXmineStartUnstake({ wallet })
+    },
   })
-  if (preBlock) throw ASSETS_BLOCKED[preBlock]
-
-  const live = await readXminePosition(address, readClient)
-  const liveBlock = evaluateXmineUnstake({
-    activeGons: live.gons,
-    warmupGons: live.warmupGons,
-  })
-  if (liveBlock) throw ASSETS_BLOCKED[liveBlock]
-
-  await writeXmineStartUnstake({ wallet })
-  invalidateAfterAssetsClaim()
 }
 
 /** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
 export async function submitXmineActivateWarmup(args: { session: WriteSession }): Promise<void> {
-  const { wallet, address, readClient } = args.session
-
-  const pre = await readXminePosition(address, readClient)
-  const preBlock = evaluateXmineActivateWarmup({
-    warmupGons: pre.warmupGons,
-    warmupEndTime: pre.warmupEndTime,
+  await submitXmineDualCheck({
+    session: args.session,
+    evaluate: (position) =>
+      evaluateXmineActivateWarmup({
+        warmupGons: position.warmupGons,
+        warmupEndTime: position.warmupEndTime,
+      }),
+    write: async (wallet) => {
+      await writeXmineActivateWarmup({ wallet })
+    },
   })
-  if (preBlock) throw ASSETS_BLOCKED[preBlock]
-
-  const live = await readXminePosition(address, readClient)
-  const liveBlock = evaluateXmineActivateWarmup({
-    warmupGons: live.warmupGons,
-    warmupEndTime: live.warmupEndTime,
-  })
-  if (liveBlock) throw ASSETS_BLOCKED[liveBlock]
-
-  await writeXmineActivateWarmup({ wallet })
-  invalidateAfterAssetsClaim()
 }

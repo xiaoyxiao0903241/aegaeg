@@ -1,4 +1,4 @@
-import { stakingHashForView, type StakingView } from '~/shared/config/staking-deep-link'
+import { stakingHashForView, type StakingView } from '~/shared/config/dapp-deep-links'
 import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
 import { createDappSubviewStore } from '~/stores/create-dapp-subview-store'
 
