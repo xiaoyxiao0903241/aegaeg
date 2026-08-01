@@ -1,13 +1,16 @@
 import { parseAbi } from 'viem'
-import { applyAgxSellTaxToAmountIn, isAgxSellPath } from '~/core/exchange/agx-sell-tax'
+import {
+  agxSellTaxBps,
+  applyAgxSellTaxToAmountIn,
+  isAgxSellPath,
+} from '~/core/exchange/agx-sell-tax'
 import { calcV2PriceImpactBps } from '~/core/exchange/calc-price-impact-bps'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { ERC20_METHODS } from '~/web3/abis'
+import { AGX_SELL_TAX_METHODS, ERC20_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { quoteV2AmountsOut } from '~/web3/exchange/quote-v2-amounts-out'
-import { readAgxSellTaxBps } from '~/web3/exchange/read-agx-sell-tax'
 import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
@@ -32,6 +35,37 @@ export interface ExchangeQuoteResult {
 
 const erc20Abi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
 
+const agxSellTaxAbi = parseAbi([
+  AGX_SELL_TAX_METHODS.sellRatio,
+  AGX_SELL_TAX_METHODS.extraSellBP,
+  AGX_SELL_TAX_METHODS.crashFuseActive,
+])
+
+/** Live AGX sell-tax bps for non-whitelist pair sells. */
+export async function readAgxSellTaxBps(
+  client: ChainReadClient = bscReadClient,
+  agx: `0x${string}` = BSC_CONTRACTS.agx,
+): Promise<number> {
+  const [sellRatio, extraSellBP, crashFuseActive] = await Promise.all([
+    client.readContract({
+      address: agx,
+      abi: agxSellTaxAbi,
+      functionName: 'sellRatio',
+    }),
+    client.readContract({
+      address: agx,
+      abi: agxSellTaxAbi,
+      functionName: 'extraSellBP',
+    }),
+    client.readContract({
+      address: agx,
+      abi: agxSellTaxAbi,
+      functionName: 'crashFuseActive',
+    }),
+  ])
+
+  return agxSellTaxBps({ crashFuseActive, sellRatio, extraSellBP })
+}
 export async function readErc20Balance(
   address: `0x${string}`,
   owner: string,

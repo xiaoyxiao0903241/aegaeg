@@ -280,7 +280,7 @@ test('capTokenAmountInput is idempotent for already-capped input', async () => {
 })
 
 test('calcAmountOutMin rejects invalid slippage and floors with valid bps', async () => {
-  const { calcAmountOutMin } = await loadModule('/src/core/exchange/calc-amount-out-min.ts')
+  const { calcAmountOutMin } = await loadModule('/src/core/exchange/exchange-math.ts')
 
   assert.equal(calcAmountOutMin(10_000n, 50), 9950n)
   assert.equal(calcAmountOutMin(1n, 9900), 1n)

@@ -1,5 +1,7 @@
 import { create, type StoreApi, type UseBoundStore } from 'zustand'
-import { DAPP_VIEW_MOTION_MS } from '~/stores/dapp-view-motion'
+
+/** Shared subview enter/exit duration for DApp tab view stores. */
+const DAPP_VIEW_MOTION_MS = 320
 
 export type DappViewDirection = 'forward' | 'back'
 

@@ -32,7 +32,7 @@ test('redeemable gAGX write ABI exposes redeem and wrap', async () => {
 })
 
 test('flash USDT minOut matches handbook 1% floor sample', async () => {
-  const { calcAmountOutMin } = await loadModule('/src/core/exchange/calc-amount-out-min.ts')
+  const { calcAmountOutMin } = await loadModule('/src/core/exchange/exchange-math.ts')
   // Handbook usd1swap.md: minOut = (usd1Out * 99n) / 100n
   const usd1Out = 1_000_000_000_000_000_000n
   assert.equal(calcAmountOutMin(usd1Out, 100), (usd1Out * 99n) / 100n)

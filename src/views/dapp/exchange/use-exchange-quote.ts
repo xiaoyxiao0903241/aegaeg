@@ -1,6 +1,6 @@
 import { keepPreviousData, type QueryKey } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
-import { calcAmountOutMin } from '~/core/exchange/calc-amount-out-min'
+import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import {
   assertQuotedExchangeStillSubmittable,
   canSubmitQuotedExchange,
