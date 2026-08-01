@@ -1,10 +1,10 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { AssetsProduct } from '~/views/dapp/assets/position/use-assets-position-queries'
 import { useAssetsPositionQueries } from '~/views/dapp/assets/position/use-assets-position-queries'
-import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals

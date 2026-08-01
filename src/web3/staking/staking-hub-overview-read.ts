@@ -27,6 +27,10 @@ export type StakingHubOverview = {
   /** Latest sAGX.rebases(epoch).rebase — 1e18 basis; null if no epoch yet */
   rebaseRate1e18: bigint | null
   epochNumber: bigint
+  /** StakingPool.epoch().endBlock — for next-rebase countdown */
+  epochEndBlock: bigint
+  /** Chain head at read time (same RPC batch window) */
+  currentBlock: bigint
 }
 
 /**
@@ -36,35 +40,38 @@ export type StakingHubOverview = {
 export async function readStakingHubOverview(
   client: ChainReadClient = bscReadClient,
 ): Promise<StakingHubOverview> {
-  const [poolAgxBalance, epoch, circulatingSupply, totalReserves, burnConfig] = await Promise.all([
-    client.readContract({
-      address: BSC_CONTRACTS.stakingPool,
-      abi: stakingPoolAbi,
-      functionName: 'poolAgxBalance',
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.stakingPool,
-      abi: stakingPoolAbi,
-      functionName: 'epoch',
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.sagx,
-      abi: sagxAbi,
-      functionName: 'circulatingSupply',
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.treasury,
-      abi: treasuryAbi,
-      functionName: 'totalReserves',
-    }),
-    client.readContract({
-      address: BSC_CONTRACTS.agxContributionSwap,
-      abi: burnSwapAbi,
-      functionName: 'getConfig',
-    }),
-  ])
+  const [poolAgxBalance, epoch, circulatingSupply, totalReserves, burnConfig, currentBlock] =
+    await Promise.all([
+      client.readContract({
+        address: BSC_CONTRACTS.stakingPool,
+        abi: stakingPoolAbi,
+        functionName: 'poolAgxBalance',
+      }),
+      client.readContract({
+        address: BSC_CONTRACTS.stakingPool,
+        abi: stakingPoolAbi,
+        functionName: 'epoch',
+      }),
+      client.readContract({
+        address: BSC_CONTRACTS.sagx,
+        abi: sagxAbi,
+        functionName: 'circulatingSupply',
+      }),
+      client.readContract({
+        address: BSC_CONTRACTS.treasury,
+        abi: treasuryAbi,
+        functionName: 'totalReserves',
+      }),
+      client.readContract({
+        address: BSC_CONTRACTS.agxContributionSwap,
+        abi: burnSwapAbi,
+        functionName: 'getConfig',
+      }),
+      client.getBlockNumber(),
+    ])
 
   const epochNumber = epoch[0]
+  const epochEndBlock = epoch[1]
   const totalBurned = burnConfig[6]
 
   let rebaseRate1e18: bigint | null = null
@@ -94,5 +101,7 @@ export async function readStakingHubOverview(
     totalBurned,
     rebaseRate1e18,
     epochNumber,
+    epochEndBlock,
+    currentBlock,
   }
 }

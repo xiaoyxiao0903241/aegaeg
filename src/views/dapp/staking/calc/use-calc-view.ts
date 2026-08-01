@@ -1,26 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import {
-  calcStakingEstimate,
-  defaultAprForBondPeriod,
-  defaultAprForStakePeriod,
-} from '~/core/staking/calc-staking-yield'
-import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
+import { buildCalcEstimate } from '~/core/staking/build-calc-estimate'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { type CalcProduct, useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { useStakingViewStore } from '~/stores/staking-view-store'
-
-const XMINE_APR = 0.1
 
 export function useCalcView() {
   const { messages: t } = useI18n()
   const setView = useStakingViewStore((state) => state.setView)
   const setResult = useCalcEstimateStore((state) => state.setResult)
+  const spotUsd = useAgxPriceUsd()
   const [product, setProduct] = useState<CalcProduct>('stake')
   const [period, setPeriod] = useState<string>('liquid')
   const [amount, setAmount] = useState('1')
-  const [price, setPrice] = useState('65')
+  const [price, setPrice] = useState('0')
   const [days, setDays] = useState(100)
+  const [priceSeeded, setPriceSeeded] = useState(false)
+
+  // Seed editable price once from live spot when available.
+  useEffect(() => {
+    if (priceSeeded || spotUsd == null) return
+    setPrice(formatGroupedNumber(spotUsd, { digits: 2 }).replace(/,/g, ''))
+    setPriceSeeded(true)
+  }, [priceSeeded, spotUsd])
+
+  // Live sync: every left-rail change updates right-rail result (Figma 测算结果).
+  useEffect(() => {
+    setResult(buildCalcEstimate({ product, period, amount, price, days }))
+  }, [product, period, amount, price, days, setResult])
 
   const periodOptions =
     product === 'stake'
@@ -38,61 +47,18 @@ export function useCalcView() {
             { label: t.staking.stake.periods.d540, value: '540' },
           ]
 
+  const spotLabel =
+    spotUsd != null
+      ? formatGroupedNumber(spotUsd, { digits: 2, prefix: '$' })
+      : formatGroupedNumber(0, { digits: 2, prefix: '$' })
+
   function onProductChange(next: string) {
     if (next !== 'stake' && next !== 'lpbond' && next !== 'burnbond' && next !== 'xmine') return
     setProduct(next)
     setPeriod(next === 'stake' || next === 'xmine' ? 'liquid' : '180')
-    setResult(null)
   }
 
-  function onPeriodChange(value: string) {
-    setPeriod(value)
-    setResult(null)
-  }
-
-  function onAmountChange(value: string) {
-    setAmount(value)
-    setResult(null)
-  }
-
-  function onPriceChange(value: string) {
-    setPrice(value)
-    setResult(null)
-  }
-
-  function onDaysChange(value: number) {
-    setDays(value)
-    setResult(null)
-  }
-
-  function onCalculate() {
-    const principal = Number.parseFloat(amount.replace(/,/g, '')) || 0
-    const priceN = Number.parseFloat(price.replace(/,/g, '')) || 0
-    const apr =
-      product === 'stake'
-        ? defaultAprForStakePeriod(period as StakePeriod)
-        : product === 'xmine'
-          ? XMINE_APR
-          : defaultAprForBondPeriod(period as BondPeriod)
-    const estimate = calcStakingEstimate({ principal, apr, days })
-    const interestUsd = estimate.interest * priceN
-    const investedUsd = principal * priceN
-    const sellUsd = investedUsd + interestUsd
-    const ratePct = investedUsd > 0 ? (interestUsd / investedUsd) * 100 : 0
-    setResult({
-      product,
-      period,
-      days,
-      principal,
-      price: priceN,
-      interestTokens: estimate.interest,
-      totalTokens: estimate.total,
-      interestUsd,
-      investedUsd,
-      sellUsd,
-      ratePct,
-    })
-  }
+  const tokenSrc = product === 'xmine' ? 'gagx' : product === 'stake' ? 'agx' : 'usd1'
 
   return {
     t,
@@ -102,6 +68,7 @@ export function useCalcView() {
     amount,
     price,
     days,
+    spotLabel,
     periodOptions,
     productOptions: [
       { label: t.staking.calc.products.stake, value: 'stake' },
@@ -110,11 +77,11 @@ export function useCalcView() {
       { label: t.staking.calc.products.xmine, value: 'xmine' },
     ],
     tokenLabel: product === 'xmine' ? 'gAGX' : product === 'stake' ? 'AGX' : 'USD1',
+    tokenSrc,
     onProductChange,
-    onPeriodChange,
-    onAmountChange,
-    onPriceChange,
-    onDaysChange,
-    onCalculate,
+    onPeriodChange: setPeriod,
+    onAmountChange: setAmount,
+    onPriceChange: setPrice,
+    onDaysChange: setDays,
   }
 }

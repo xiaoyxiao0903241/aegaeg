@@ -33,7 +33,7 @@ test('Segment source documents coral + ink active tones and size sm|md|lg', asyn
   assert.match(source, /export type SegmentSize = 'sm' \| 'md' \| 'lg'/)
   assert.match(source, /size = 'md'/)
   assert.match(source, /sm: 'h-6/)
-  assert.match(source, /md: 'h-8/)
+  assert.match(source, /md: 'h-9/)
   assert.match(source, /lg: 'h-10/)
   assert.doesNotMatch(source, /SEGMENT_PILL_GAP_PX|SEGMENT_PILL_PAD_PX/)
   assert.match(source, /leftPct|widthPct/)

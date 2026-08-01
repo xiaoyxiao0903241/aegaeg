@@ -1,6 +1,7 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import {
   useAssetsHoldingsDistribution,
   useAssetsHoldingsSummary,
@@ -12,7 +13,6 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import {
   readBurnBondPositions,
   readContributionSnapshot,

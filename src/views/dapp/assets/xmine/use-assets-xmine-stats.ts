@@ -1,11 +1,11 @@
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import { readXminePosition } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 

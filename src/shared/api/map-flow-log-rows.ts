@@ -84,11 +84,23 @@ export function mapTurbineLogToOpsRow(item: TurbineLogItem): string[] {
 }
 
 export function mapStakePositionToAsideRow(item: StakePositionItem): string[] {
+  const amount = Number(item.amount)
+  const amountLabel = Number.isFinite(amount)
+    ? formatGroupedNumber(amount, { digits: 2, suffix: ' AGX' })
+    : TABLE_EMPTY
+  const pctRaw = Number(item.released_pct)
+  const pctLabel = Number.isFinite(pctRaw)
+    ? `${formatGroupedNumber(pctRaw, { digits: 1 })}%`
+    : TABLE_EMPTY
+  const termLabel =
+    item.term_days <= 0
+      ? '活期'
+      : `${formatGroupedNumber(item.term_days, { digits: 0, trimZeros: true })} 天`
   return [
     formatBlockTime(item.block_time),
-    String(item.term_days),
-    formatAmount(item.amount),
-    item.released_pct,
+    termLabel,
+    amountLabel,
+    pctLabel,
     formatTx(item.tx_hash),
   ]
 }

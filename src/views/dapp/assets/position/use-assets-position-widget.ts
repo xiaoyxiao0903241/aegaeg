@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
@@ -17,7 +18,6 @@ import {
   submitBondRedeem,
   submitStakeRedeem,
 } from '~/views/dapp/assets/submit-assets'
-import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import { type AssetsBondRow, type AssetsStakeRow } from '~/web3/assets/assets-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'

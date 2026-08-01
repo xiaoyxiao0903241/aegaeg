@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useStakeAddressCount } from '~/hooks/use-api-data'
 import { useAuth } from '~/hooks/use-auth'
 import { useI18n } from '~/i18n/use-i18n'
@@ -12,7 +13,6 @@ import {
   formatSignedPercent,
 } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import type { StakingTvAreaPoint } from '~/views/dapp/staking/staking-tv-area-chart'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 

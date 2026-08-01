@@ -1,12 +1,8 @@
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import {
-  calcStakingEstimate,
-  defaultAprForBondPeriod,
-  defaultAprForStakePeriod,
-} from '~/core/staking/calc-staking-yield'
-import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
+import { aprForCalcProduct, periodEndDays } from '~/core/staking/build-calc-estimate'
+import { calcStakingEstimate } from '~/core/staking/calc-staking-yield'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/ui/card'
@@ -14,7 +10,6 @@ import { Text } from '~/shared/ui/text'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 
 const PLACEHOLDER = '0.00'
-const XMINE_APR = 0.1
 
 function formatUsdOrDash(value: number) {
   if (!Number.isFinite(value)) return PLACEHOLDER
@@ -25,20 +20,6 @@ function formatPct(value: number) {
   if (!Number.isFinite(value)) return PLACEHOLDER
   const sign = value >= 0 ? '+' : ''
   return `${sign}${value.toFixed(2)}%`
-}
-
-/** Locked periods use tenure; liquid/unknown use the slider day count (no invented 540). */
-function periodEndDays(period: string, sliderDays: number): number {
-  if (period === '180') return 180
-  if (period === '360') return 360
-  if (period === '540') return 540
-  return sliderDays
-}
-
-function aprFor(product: string, period: string): number {
-  if (product === 'xmine') return XMINE_APR
-  if (product === 'stake') return defaultAprForStakePeriod(period as StakePeriod)
-  return defaultAprForBondPeriod(period as BondPeriod)
 }
 
 export function CalcContent() {
@@ -64,7 +45,7 @@ export function CalcContent() {
     ? (() => {
         const est = calcStakingEstimate({
           principal: result.principal,
-          apr: aprFor(result.product, result.period),
+          apr: aprForCalcProduct(result.product, result.period),
           days: endDays,
         })
         const interestUsd = est.interest * result.price

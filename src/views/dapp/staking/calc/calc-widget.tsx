@@ -1,17 +1,62 @@
+import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { AmountBox } from '~/shared/ui/amount-box'
+import { Card } from '~/shared/ui/card'
+import { Chip } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
-import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { useCalcView } from '~/views/dapp/staking/calc/use-calc-view'
 
-/** Local-only calculator — zero chain writes. */
+/** Figma calc `ptabs`/`perRow` 4462:600 — htab Chip h-28，≠ Segment 滑动轨. */
+function CalcHtabRow({
+  ariaLabel,
+  options,
+  value,
+  onChange,
+}: {
+  ariaLabel: string
+  options: ReadonlyArray<{ label: string; value: string }>
+  value: string
+  onChange: (next: string) => void
+}) {
+  return (
+    <div aria-label={ariaLabel} className="flex w-full gap-2" role="tablist">
+      {options.map((option) => {
+        const active = option.value === value
+        return (
+          <Chip
+            aria-selected={active}
+            className="h-7 min-w-0 flex-1 px-4 font-medium"
+            key={option.value}
+            onClick={() => onChange(option.value)}
+            role="tab"
+            shape="pill"
+            size="md"
+            tone={active ? 'coral' : 'default'}
+            variant={active ? 'soft' : 'outlined'}
+          >
+            {option.label}
+          </Chip>
+        )
+      })}
+    </div>
+  )
+}
+
+/** Local-only calculator — zero chain writes; left inputs live-sync right rail. */
 export function CalcWidget() {
   const vm = useCalcView()
   const { t } = vm
+  const tokenSrc =
+    vm.tokenSrc === 'gagx'
+      ? dappAssets.tokenGagx
+      : vm.tokenSrc === 'usd1'
+        ? dappAssets.tokenUsd1
+        : dappAssets.tokenAgx
 
   return (
     <>
@@ -22,25 +67,21 @@ export function CalcWidget() {
         title={t.staking.calc.title}
       />
       <DappWidgetStack>
-        <Segment
-          aria-label={t.staking.calc.productAria}
+        <CalcHtabRow
+          ariaLabel={t.staking.calc.productAria}
           onChange={vm.onProductChange}
           options={vm.productOptions}
-          size="md"
-          tone="coral"
           value={vm.product}
         />
 
         <div className="grid gap-2">
-          <Text as="span" tone="muted-foreground" variant="detail">
+          <Text as="span" className="text-foreground/40" variant="copy">
             {t.staking.calc.periodLabel}
           </Text>
-          <Segment
-            aria-label={t.staking.calc.periodAria}
+          <CalcHtabRow
+            ariaLabel={t.staking.calc.periodAria}
             onChange={vm.onPeriodChange}
             options={vm.periodOptions}
-            size="md"
-            tone="coral"
             value={vm.period}
           />
         </div>
@@ -53,54 +94,71 @@ export function CalcWidget() {
             placeholder: '0',
             value: vm.amount,
           }}
+          endAdornment={
+            <span className="flex items-center gap-1.5">
+              <DappIcon alt="" className="size-[1.375rem]" src={tokenSrc} />
+              <Text as="span" className="font-semibold" variant="detail">
+                {vm.tokenLabel}
+              </Text>
+            </span>
+          }
+          headerOutside
           label={t.staking.calc.amountLabel}
           sessionReady
-          startAdornment={
-            <Text as="span" className="font-semibold" variant="copy">
-              {vm.tokenLabel}
-            </Text>
-          }
+          startAdornment={null}
         />
 
-        <label className="grid gap-2">
+        <div className="grid gap-2">
           <div className="flex items-center justify-between gap-3">
-            <Text as="span" tone="muted-foreground" variant="support">
+            <Text as="span" className="text-foreground/40" variant="copy">
               {t.staking.calc.price}
             </Text>
-            <Text as="span" className="font-semibold text-primary" variant="support">
-              {t.staking.calc.priceCurrent.replace('{price}', vm.price || '0')}
+            <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
+              {t.staking.calc.priceCurrent.replace('{price}', vm.spotLabel)}
             </Text>
           </div>
-          <Input
-            aria-label={t.staking.calc.priceAria}
-            inputMode="decimal"
-            onChange={(event) => vm.onPriceChange(event.target.value)}
-            value={vm.price}
-          />
-        </label>
+          <Card
+            as="div"
+            className="flex min-h-[53px] items-center justify-between gap-3 px-4 py-3 focus-within:border-coral"
+            surface="outlined"
+          >
+            <Input
+              aria-label={t.staking.calc.priceAria}
+              className="mr-auto max-w-[70%] text-left text-[24px] leading-[29px]"
+              inputMode="decimal"
+              onChange={(event) => vm.onPriceChange(event.target.value)}
+              value={vm.price}
+              variant="amount"
+            />
+            <Text as="span" className="text-foreground/40" variant="headline">
+              $
+            </Text>
+          </Card>
+        </div>
 
-        <label className="grid gap-2">
-          <Text as="span" tone="muted-foreground" variant="support">
-            {t.staking.calc.days}
-          </Text>
-          <div className="grid gap-1">
-            <Text as="span" className="text-center font-semibold text-primary" variant="detail">
+        <div className="grid gap-2">
+          <div className="flex items-center justify-between gap-3">
+            <Text as="span" className="text-foreground/40" variant="copy">
+              {t.staking.calc.days}
+            </Text>
+            <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
               {t.staking.calc.dayBubble.replace('{day}', String(vm.days))}
             </Text>
-            <input
-              aria-label={t.staking.calc.daysAria}
-              className="w-full accent-primary"
-              max={730}
-              min={1}
-              onChange={(event) => vm.onDaysChange(Number(event.target.value))}
-              type="range"
-              value={vm.days}
-            />
           </div>
-        </label>
+          <input
+            aria-label={t.staking.calc.daysAria}
+            className="w-full accent-coral-emphasis"
+            max={730}
+            min={1}
+            onChange={(event) => vm.onDaysChange(Number(event.target.value))}
+            type="range"
+            value={vm.days}
+          />
+        </div>
 
+        {/* 稿有「计算」；结果已 live-sync — 钮保留为视觉 chrome，禁用避免空点击 */}
         <DappActionRow>
-          <DappActionButton density="external" onClick={vm.onCalculate}>
+          <DappActionButton density="external" disabled type="button">
             {t.staking.calc.submit}
           </DappActionButton>
         </DappActionRow>

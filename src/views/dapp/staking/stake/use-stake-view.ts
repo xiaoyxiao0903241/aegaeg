@@ -57,6 +57,10 @@ export function useStakeView() {
     await stake.submit()
   }
 
+  async function onWarmup() {
+    await stake.claimWarmup()
+  }
+
   return {
     t,
     stake,
@@ -68,6 +72,6 @@ export function useStakeView() {
     amountLabel,
     ctaLabel,
     onSubmit,
-    onWarmup: () => stake.claimWarmup(),
+    onWarmup,
   }
 }

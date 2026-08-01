@@ -1,34 +1,28 @@
-import type { ReactNode } from 'react'
-
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
+import { Text } from '~/shared/ui/text'
 
-const PLACEHOLDER = '0.00'
-
-export function StakingTokenMetricValue({ icon, value }: { icon: 'agx' | 'gagx'; value: string }) {
+export function StakingTokenMetricValue({
+  icon,
+  value,
+  approx,
+}: {
+  icon: 'agx' | 'gagx'
+  value: string
+  /** Figma inline `≈ $…` next to amount (optional). */
+  approx?: string
+}) {
   const src = icon === 'agx' ? dappAssets.tokenAgx : dappAssets.tokenGagx
   return (
-    <span className="flex min-w-0 items-center gap-1.5">
+    <span className="flex min-w-0 flex-wrap items-center gap-1.5">
       <DappIcon alt="" className="shrink-0 rounded-full" size="lg" src={src} />
       <DappCountValue text={value} />
+      {approx ? (
+        <Text as="span" className="font-normal" tone="muted-foreground" variant="detail">
+          {approx}
+        </Text>
+      ) : null}
     </span>
   )
-}
-
-/** Overview: first metric shows AGX icon; rest are plain zero placeholders. */
-export function mapStakingOverviewPlaceholders(metrics: readonly { label: string }[]) {
-  return metrics.map((metric, index) => {
-    const value: ReactNode =
-      index === 0 ? <StakingTokenMetricValue icon="agx" value={PLACEHOLDER} /> : PLACEHOLDER
-    return { label: metric.label, value }
-  })
-}
-
-/** Position cards: first three AGX, rest gAGX (Figma leaf). */
-export function mapStakingPositionPlaceholders(metrics: readonly { label: string }[]) {
-  return metrics.map((metric, index) => ({
-    label: metric.label,
-    value: <StakingTokenMetricValue icon={index < 3 ? 'agx' : 'gagx'} value={PLACEHOLDER} />,
-  }))
 }

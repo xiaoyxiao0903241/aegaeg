@@ -1,9 +1,8 @@
 # DApp 展示数据缺口与精度 SSOT
 
 > 用户可见数字位：有手册源和/或后端 API → **尽量真读**；二者皆无 → 控件保留、值诚实空（`0`/`0.00` 等），**禁止**抄演示数。  
-> **流程锁定（2026-08-02）**：后续每一页 Pre-Design 须对照 **链上手册**（`docs/frontend-manual/`）**与** 后端 OpenAPI（`~/Downloads/新/api-docs.html` 的 summary/description/schema）；见 [`agents/ui-leaf-parity-workflow.md`](./agents/ui-leaf-parity-workflow.md) §2.1b、[`agents/implement-checklist.md`](./agents/implement-checklist.md)。  
-> 本表从**质押 Hub**起维护；兑换 / 资产 / 奖励等 tab 按同一列形续补。  
-> 实现审计草稿另见 `.scratch/dapp-7rail-parity/research/45-staking-hub-number-audit.md`（研究用，非 docs SSOT）。
+> **流程锁定（2026-08-02）**：后续每一页 Pre-Design 须对照 **链上手册**（`docs/frontend-manual/`）**与** 后端 OpenAPI（`~/Downloads/新/api-docs.html`）；见 [`agents/ui-leaf-parity-workflow.md`](./agents/ui-leaf-parity-workflow.md) §2.1b。  
+> 组织：**页面 → 子页面 → 数据位**。实现审计草稿另见 `.scratch/dapp-7rail-parity/research/`（非 docs SSOT）。
 
 ## 接线优先级（每页强制）
 
@@ -11,64 +10,131 @@
 2. **后端 API**（OpenAPI）— 用户流水、持仓投影、统计计数等。
 3. **仅当 1+2 皆无** → 记本表缺口 + UI 诚实空；禁止未读 API 说明就标「无源」。
 
-协议级指标与用户级流水勿混源（例：Hub TVL ≠ `stake-flow/positions` 用户合计）。
-
 ## 精度约定（展示）
 
-| 类型             | 展示                      | 说明                                                      |
-| ---------------- | ------------------------- | --------------------------------------------------------- |
-| 法币 / 单价 `$`  | 固定 **2** 位（`$55.00`） | `formatGroupedNumber(…, { digits: 2 })`；禁 trim 掉 `.00` |
-| `≈ $` 估值       | 固定 **2** 位；≥1k 可 K/M | `formatApproxUsd` / `formatApproxCompactUsd`              |
-| AGX 量（Hub 卡） | **2** 位；≥1k → K/M       | `formatCompactNumber`：&lt;1k **补齐** digits             |
-| 流通量           | 千分位 + **2** 位         | 空态 `0.00 AGX`                                           |
-| 收益率 `%`       | **2** 位（`0.00%`）       | 表加成列整数 `0%`（稿）                                   |
-| 地址数 / 页码    | **0** 位整数              |                                                           |
-| PreSale 定价     | USD1 **18** dec wei       | **仅**创世 / 预售购买；≠ 市场参考价                       |
+| 类型            | 展示                      | 说明                                                      |
+| --------------- | ------------------------- | --------------------------------------------------------- |
+| 法币 / 单价 `$` | 固定 **2** 位（`$55.00`） | `formatGroupedNumber(…, { digits: 2 })`；禁 trim 掉 `.00` |
+| `≈ $` 估值      | 固定 **2** 位；≥1k 可 K/M | `formatApproxUsd` / `formatApproxCompactUsd`              |
+| AGX 量          | **2** 位；≥1k → K/M       | `formatCompactNumber`：&lt;1k **补齐** digits             |
+| 收益率 `%`      | **2** 位（`0.00%`）       | 表加成列整数 `0%`（稿）                                   |
+| 地址数 / 页码   | **0** 位整数              |                                                           |
 
 ## AGX 价格两源（勿混）
 
-| 源               | 读法                                                                       | 用途                                                   |
-| ---------------- | -------------------------------------------------------------------------- | ------------------------------------------------------ |
-| **市场参考价**   | AGX/USD1 Pair `getReserves` → `readAgxUsd1SpotPriceWei` / `useAgxPriceUsd` | 质押 Hub 价格格、TVL/市值/智库 `≈$`、资产估值          |
-| **PreSale 定价** | `PreSale.agxPrice` → `usePresaleAgxPriceQuery`                             | 创世 / 预售额度与折扣（管理员设定；可刚好为整数如 55） |
+| 源               | 读法                                           | 用途                                                 |
+| ---------------- | ---------------------------------------------- | ---------------------------------------------------- |
+| **市场参考价**   | AGX/USD1 Pair `getReserves` → `useAgxPriceUsd` | Hub 价格格、TVL/市值/智库 `≈$`、资产估值、债券折扣价 |
+| **PreSale 定价** | `PreSale.agxPrice` → `usePresaleAgxPriceQuery` | 创世 / 预售额度与折扣                                |
 
-即时 pair 价 **不是** TWAP（见 `pancakepair.md`）。池未建或储备为 0 → 价 `null` → 展示 `$0.00` / `≈ $0.00`。
+---
 
-## 质押 Hub 字段表
+## 1. 质押（Staking）
 
-> **后端对照**：`~/Downloads/新/api-docs.html`（OpenAPI；已读各 path summary/description/schema）。  
-> 已检索：**无** `runway` / `tvl` / `apy` / `yield` / `rebase` / `circulating` / `treasury` / `market_cap` / 协议级历史曲线字段。
+### 1.1 Hub
 
-| 指标                            | 精度                     | 链上/API 源                                                           | 状态                                    |
-| ------------------------------- | ------------------------ | --------------------------------------------------------------------- | --------------------------------------- |
-| 质押总量 TVL                    | AGX 2 + compact；`≈ $` 2 | 链上 `StakingPool.poolAgxBalance` × 市场价                            | 已接（API **无**协议 TVL）              |
-| 总市值                          | `$` 2 + compact          | 链上流通 × 市场价                                                     | 已接（API **无**）                      |
-| AGX 流通量                      | AGX 2                    | 链上 `sAGX.circulatingSupply`                                         | 已接（API **无**）                      |
-| 智库储备                        | AGX 2 + compact；`≈ $` 2 | 链上 `Treasury.totalReserves`（AGX-value · 9dec）× 市场价             | 已接；稿/FAQ 曾写 USD1 — 单位张力跟手册 |
-| AGX 价格                        | `$` **2**                | Pair spot（非 Presale）                                               | 已接（API **无**价）                    |
-| 总销毁量                        | AGX 2 + compact          | 链上 contribution `totalBurned`；API `POST /agx-contribution/summary` | 已接链上；API summary 可作对照          |
-| Rebase 收益率                   | `%` 2                    | 链上 `epoch` + `sAGX.rebases`                                         | 已接（API **无**）                      |
-| 可运行周期                      | —                        | 手册无公式；**api-docs 无字段**                                       | **缺口** → `runwayUnknown`（`—`）       |
-| 质押地址数                      | 整数                     | API `POST /performance/stake-address-count`（需 session）             | 已接；未登录 → `0`                      |
-| 周期表 日收益 / 加成 / 周期收益 | `0.00%` / `0%`           | 链上无表 view；**api-docs 无 APY/bonus**                              | **缺口**                                |
-| 图 TVL/市值历史                 | `$0.00` / `+0.0%`        | **api-docs 无 history/chart 序列**                                    | **缺口**（壳保留）                      |
+> 后端对照：`api-docs.html` — **无** runway / tvl / apy / rebase / circulating / treasury / market_cap / 协议级历史曲线。
 
-### 同文档里有、但不覆盖 Hub 协议格的 API（勿误当成缺口填数）
+| 数据位                          | 精度                     | 源                                                  | 状态               |
+| ------------------------------- | ------------------------ | --------------------------------------------------- | ------------------ |
+| 质押总量 TVL                    | AGX 2 + compact；`≈ $` 2 | 链上 `StakingPool.poolAgxBalance` × spot            | 已接               |
+| 总市值                          | `$` 2 + compact          | 流通 × spot                                         | 已接               |
+| AGX 流通量                      | AGX 2                    | 链上 `sAGX.circulatingSupply`                       | 已接               |
+| 智库储备                        | AGX 2 + compact；`≈ $` 2 | 链上 `Treasury.totalReserves` × spot                | 已接               |
+| AGX 价格                        | `$` 2                    | Pair spot                                           | 已接               |
+| 总销毁量                        | AGX 2 + compact          | 链上 contribution `totalBurned`；API summary 可对照 | 已接               |
+| Rebase 收益率                   | `%` 2                    | 链上 `epoch` + `sAGX.rebases`                       | 已接               |
+| 可运行周期                      | —                        | 手册无公式；API 无字段                              | **缺口** → `—`     |
+| 质押地址数                      | 整数                     | API `POST /performance/stake-address-count`         | 已接；未登录 → `0` |
+| 周期表 日收益 / 加成 / 周期收益 | `0.00%` / `0%`           | 链上无表 view；API 无 APY/bonus                     | **缺口**           |
+| 图 TVL/市值历史                 | `$0.00` / `+0.0%`        | API 无 history 序列                                 | **缺口**（壳保留） |
 
-| 接口                                              | 用途                         | 与 Hub 概览关系             |
-| ------------------------------------------------- | ---------------------------- | --------------------------- |
-| `POST /stake-flow/positions` · `/stake-flow/logs` | **当前用户**质押持仓 / 流水  | 资产/质押记录页；非协议 TVL |
-| `POST /performance/making-overview`               | 用户做市业绩（持仓、小区等） | 奖励/做市，非 Hub 九宫格    |
-| `POST /bond-flow/*` · `/x0-mining/*`              | 用户债券 / X 挖矿流水        | 子页记录                    |
+### 1.2 Stake 子页
 
-## 兑换 rail（待续补）
+| 数据位                                    | 源                               | 状态                      |
+| ----------------------------------------- | -------------------------------- | ------------------------- |
+| 左栏 meta：基础日收益 / 周期收益 / 加成   | 链上无独立 view；API 无          | **缺口** → `0.00%` / `0%` |
+| 左栏锁定 / 合约                           | 周期派生 + 池地址                | 已接                      |
+| 概览：pool TVL / Epoch / rebase% / 倒计时 | 链上 pool + epoch（endBlock×3s） | 已接                      |
+| 仓位：持仓 / 已领 / 待释 / Rebase         | API holdings + stake-flow        | 已接（加成独立额仍缺）    |
+| TVL 历史图                                | API 无                           | **缺口**（壳）            |
 
-从兑换起逐页补：闪兑 / 交易 / 涡轮 / 销毁 — 报价 `getAmountsOut`、税后净额、历史表金额小数位等；**每页仍须走 §「接线优先级」**。未填前禁止用演示数冒充。
+### 1.3 LP 债券 / 销毁债券
+
+| 数据位                                        | 源                                      | 状态                         |
+| --------------------------------------------- | --------------------------------------- | ---------------------------- |
+| 周期卡：当前折扣                              | 链上 depository market `discountRateBP` | 已接                         |
+| 周期卡：折扣价 `$`                            | spot × 折扣%                            | 已接                         |
+| 周期卡：折扣区间                              | FAQ 不变量（非演示数）                  | 已接                         |
+| 周期卡：已售 `$` / 周期收益率 chip            | 链上/API 无协议级已售与周期 APY         | **缺口** → `$0.00` / `0.00%` |
+| meta：滑点 / 支付 / 获得 / 上限 / 释放 / 合约 | quote + market + 地址                   | 已接（缺则诚实空）           |
+| 概览：债券 TVL / 溢价率                       | 协议级 view 无                          | **缺口** → `0.00`            |
+| 概览：rebase 倒计时 / %                       | 与 Stake 同源                           | 已接                         |
+| 仓位 / 购买记录                               | bond_lp \| bond_burn；bond-flow         | 已接；已释/待释细拆仍缺      |
+
+### 1.4 X 挖矿
+
+| 数据位                              | 源                                                 | 状态               |
+| ----------------------------------- | -------------------------------------------------- | ------------------ |
+| 额度 / 用户仓位                     | API stake_x_pool / x0-mining/positions；链上 quota | 已接               |
+| meta 日收益                         | 协议产出 view 无                                   | **缺口** → `0.00%` |
+| 概览：协议 X 池 TVL / X 价 / 日产出 | 无                                                 | **缺口** → `0.00`  |
+
+### 1.5 收益计算器
+
+| 数据位              | 源                                | 状态           |
+| ------------------- | --------------------------------- | -------------- |
+| 左栏输入 → 右栏结果 | 本地公式（无写链）；spot 可种子价 | 已接（实时）   |
+| 收益曲线像素序列    | 无                                | **缺口**（壳） |
+
+---
+
+## 2. 兑换（Exchange）
+
+> 每子页仍须手册 + OpenAPI 双对照。报价主路径：`getAmountsOut` / redeem / wrap；税后净额跟手册。
+
+### 2.1 Hub
+
+| 数据位            | 源          | 状态                            |
+| ----------------- | ----------- | ------------------------------- |
+| 模式卡文案 / 入口 | i18n + 路由 | UI 已接（无演示比率冒充子页价） |
+
+### 2.2 闪兑
+
+| 数据位        | 源                                             | 状态                |
+| ------------- | ---------------------------------------------- | ------------------- |
+| Sell/Buy 余额 | 链上                                           | 已接                |
+| 报价 / CTA 写 | redeem / wrap+approve / Usd1Swap（money-path） | 已接                |
+| 概览比率      | spot                                           | 已接；空 `—`/`0.00` |
+
+### 2.3 交易
+
+| 数据位                           | 源                  | 状态                         |
+| -------------------------------- | ------------------- | ---------------------------- |
+| 报价 `getAmountsOut`、滑点、税后 | 链上 + money-path   | 已接                         |
+| 历史表金额小数                   | 流水 API / 链上事件 | 按 leaf；无 indexer 处诚实空 |
+
+### 2.4 销毁 / 涡轮
+
+| 数据位              | 源             | 状态                  |
+| ------------------- | -------------- | --------------------- |
+| 销毁报价与写        | 手册 burn 路径 | 已接（详见既有 leaf） |
+| 涡轮领取 / 到期红点 | 链上 claimable | 已接                  |
+
+---
+
+## 同文档有、但不覆盖协议概览格的 API
+
+| 接口                                              | 用途                  | 与 Hub 概览关系 |
+| ------------------------------------------------- | --------------------- | --------------- |
+| `POST /stake-flow/positions` · `/stake-flow/logs` | 用户质押持仓 / 流水   | 非协议 TVL      |
+| `POST /performance/making-overview`               | 用户做市业绩          | 非 Hub 九宫格   |
+| `POST /bond-flow/*` · `/x0-mining/*`              | 用户债券 / X 挖矿流水 | 子页记录        |
 
 ## 变更记录
 
-| 日期       | 变更                                                                                                                         |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 2026-08-02 | 流程锁定：后续页强制手册+OpenAPI 双对照、尽量接线；写入 AGENTS / ui-leaf §2.1b / implement-checklist                         |
-| 2026-08-02 | 对照 `api-docs.html` 全文说明：确认 runway / 周期表 APY / 图历史仍无后端字段；补 stake-flow 等「有 API 但非 Hub 协议格」分表 |
-| 2026-08-02 | 初版：质押 Hub；价改 Pair spot；compact &lt;1k 补两位                                                                        |
+| 日期       | 变更                                                                              |
+| ---------- | --------------------------------------------------------------------------------- |
+| 2026-08-02 | 重组为「页 → 子页 → 数据」；补 Stake meta / Bond 已售·周期收益 / Xmine 日收益缺口 |
+| 2026-08-02 | 质押子页接线；Bond 折扣价=spot×折扣；流程锁定手册+OpenAPI                         |
+| 2026-08-02 | 初版：质押 Hub；价改 Pair spot                                                    |

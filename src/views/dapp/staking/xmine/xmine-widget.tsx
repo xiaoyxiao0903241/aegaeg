@@ -9,7 +9,7 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { AmountBox } from '~/shared/ui/amount-box'
-import { FieldActionChip } from '~/shared/ui/chip'
+import { AmountMaxChip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
 import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine-view'
 
@@ -17,7 +17,7 @@ export function XmineWidget() {
   const { t, xmine, sessionReady, walletReady, setView, amountLabel, onSubmit } = useXmineView()
 
   const quotaBalance = (
-    <Text as="span" className="font-semibold text-primary" variant="support">
+    <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
       {t.staking.xmine.quotaInline.replace('{quota}', xmine.quotaLabel)}
     </Text>
   )
@@ -43,36 +43,33 @@ export function XmineWidget() {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" size="md" src={dappAssets.tokenGagx} />
-                <Text as="span" className="font-semibold" variant="copy">
+                <DappIcon alt="" className="size-[1.375rem]" src={dappAssets.tokenGagx} />
+                <Text as="span" className="font-semibold" variant="detail">
                   gAGX
                 </Text>
               </span>
-              <FieldActionChip
-                disabled={!walletReady || xmine.isSubmitting}
-                onClick={xmine.fillMax}
-              >
+              <AmountMaxChip disabled={!walletReady || xmine.isSubmitting} onClick={xmine.fillMax}>
                 {t.staking.max}
-              </FieldActionChip>
+              </AmountMaxChip>
             </span>
           }
-          inputClassName="!ml-0 mr-auto max-w-[50%] text-left"
+          headerOutside
           label={amountLabel}
           sessionReady={sessionReady}
           startAdornment={null}
         />
 
         <DappMetaPanel
-          className="gap-3 p-4"
+          className="mt-0 gap-3 p-4"
           items={[
             {
               label: t.staking.xmine.meta.daily,
-              value: '0.00',
-              valueClassName: 'text-primary',
+              value: '0.00%',
+              valueClassName: 'text-coral-emphasis',
             },
             {
               label: t.staking.xmine.meta.max,
-              value: xmine.quotaLabel === '0' ? '0.00' : `${xmine.quotaLabel} gAGX`,
+              value: xmine.quotaLabel === '0' ? '0.00 gAGX' : `${xmine.quotaLabel} gAGX`,
             },
             {
               label: t.staking.xmine.meta.lock,
@@ -81,15 +78,11 @@ export function XmineWidget() {
             {
               label: t.staking.xmine.meta.contract,
               value: (
-                <a
-                  className="text-primary underline-offset-2 hover:underline"
-                  href={bscscanAddress(xmine.pool)}
-                  rel="noreferrer"
-                  target="_blank"
-                >
+                <a href={bscscanAddress(xmine.pool)} rel="noreferrer" target="_blank">
                   {formatShortAddress(xmine.pool)}
                 </a>
               ),
+              valueClassName: 'text-coral-emphasis',
             },
           ]}
         />

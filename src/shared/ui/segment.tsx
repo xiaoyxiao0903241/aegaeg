@@ -11,7 +11,7 @@ export const SEGMENT_MOTION_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
 /**
  * Track height — Tailwind tokens only:
  * - `sm` → `h-6` — chart range `4585:578`
- * - `md` → `h-8` — period / metric `4448:601`, hub `4585:44`
+ * - `md` → `h-9` — period / metric `4448:601`（轨高 36）
  * - `lg` → `h-10` — flash/turbine tabs `4430:410`, `4435:410`
  */
 export type SegmentSize = 'sm' | 'md' | 'lg'
@@ -52,7 +52,8 @@ const segmentTrack = tv({
   variants: {
     size: {
       sm: 'h-6 gap-0.5 p-0.5',
-      md: 'h-8 gap-1 p-1',
+      /** Figma `seg` 4448:601 — track 36 / pad 4 → pill 28. */
+      md: 'h-9 gap-1 p-1',
       lg: 'h-10 gap-1 p-1',
     },
     disabled: {
@@ -101,7 +102,7 @@ export type SegmentProps = {
   options: readonly SegmentOption[]
   value: string
   /**
-   * Track height via Tailwind tokens: `sm`=`h-6` · `md`=`h-8` · `lg`=`h-10`.
+   * Track height via Tailwind tokens: `sm`=`h-6` · `md`=`h-9` · `lg`=`h-10`.
    * Call site picks per Figma surface — not one global height.
    * @default 'md'
    */
@@ -123,7 +124,7 @@ function thumbsEqual(a: ThumbBox, b: ThumbBox): boolean {
 
 /**
  * Figma `seg` sliding white pill. Height via {@link SegmentProps.size}
- * (`sm` | `md` | `lg` → `h-6` | `h-8` | `h-10`). Gap/pad are Tailwind
+ * (`sm` | `md` | `lg` → `h-6` | `h-9` | `h-10`). Gap/pad are Tailwind
  * spacing tokens; thumb left/width are % of the track (not raw px constants).
  */
 export function Segment({

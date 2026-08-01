@@ -1,19 +1,73 @@
 import { type ReactNode } from 'react'
 
+import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
-import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Text } from '~/shared/ui/text'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
+
+function MetricGrid({
+  items,
+  layout,
+}: {
+  items: Array<{ label: string; value: ReactNode }>
+  layout: 'cards-2' | 'triple-plus'
+}) {
+  if (layout === 'cards-2') {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2">
+        {items.map((item) => (
+          <MetricCard
+            className="gap-1.5 p-4"
+            key={item.label}
+            label={item.label}
+            value={item.value}
+            valueClassName="text-base font-semibold tracking-normal"
+          />
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid gap-4">
+      <div className="grid gap-4 sm:grid-cols-3">
+        {items.slice(0, 3).map((item) => (
+          <MetricCard
+            className="gap-1.5 p-4"
+            key={item.label}
+            label={item.label}
+            value={item.value}
+            valueClassName="text-base font-semibold tracking-normal"
+          />
+        ))}
+      </div>
+      {items.length > 3 ? (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {items.slice(3).map((item) => (
+            <MetricCard
+              className="gap-1.5 p-4"
+              key={item.label}
+              label={item.label}
+              value={item.value}
+              valueClassName="text-base font-semibold tracking-normal"
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 /** Right-rail shared buckets for stake / bond / xmine — positions deep-link to assets. */
 export function StakingDetailAside({
@@ -34,8 +88,8 @@ export function StakingDetailAside({
   positionLayout = 'triple-plus',
 }: {
   overviewItems: Array<{ label: string; value: ReactNode }>
-  /** Figma stake/bond: 2×2 elevated cards. */
-  overviewLayout?: 'list' | 'cards'
+  /** Figma stake/bond: 2×2; xmine: 3+2. */
+  overviewLayout?: 'list' | 'cards-2' | 'triple-plus'
   mechanism?: string
   mechanismTitle?: string
   mechanismSteps?: Array<{ title: string; body: string }>
@@ -62,19 +116,7 @@ export function StakingDetailAside({
     <>
       <DappDetailBlock>
         <DappContentHeading>{t.staking.aside.overview}</DappContentHeading>
-        {overviewLayout === 'cards' ? (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {overviewItems.map((item) => (
-              <MetricCard
-                className="gap-1.5 p-4"
-                key={item.label}
-                label={item.label}
-                value={item.value}
-                valueClassName="text-base font-semibold tracking-normal"
-              />
-            ))}
-          </div>
-        ) : (
+        {overviewLayout === 'list' ? (
           <ul className="m-0 grid list-none gap-2 p-0">
             {overviewItems.map((item) => (
               <li className="flex items-center justify-between gap-3" key={item.label}>
@@ -87,21 +129,31 @@ export function StakingDetailAside({
               </li>
             ))}
           </ul>
+        ) : (
+          <MetricGrid items={overviewItems} layout={overviewLayout} />
         )}
       </DappDetailBlock>
 
       {showXValueCard ? (
         <DappDetailBlock>
           <DappContentHeading>{xValue.title}</DappContentHeading>
-          <div className="grid gap-4 rounded-lg bg-dark px-6 py-5">
-            <div className="flex items-start justify-between gap-3">
-              <div className="grid gap-1">
-                <Text as="span" tone="primary" variant="detail">
-                  {xValue.supplyLabel}
-                </Text>
-                <Text as="strong" className="font-bold" tone="inverse" variant="figure">
-                  {xValue.supplyValue}
-                </Text>
+          <div className="grid gap-5 rounded-[1.375rem] bg-dark p-6">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <DappIcon alt="" className="size-9 rounded-2xl" src={dappAssets.tokenX} />
+                <div className="grid gap-1">
+                  <Text as="span" className="font-semibold" tone="primary" variant="support">
+                    {xValue.supplyLabel}
+                  </Text>
+                  <Text
+                    as="strong"
+                    className="text-[1.375rem] font-bold"
+                    tone="inverse"
+                    variant="figure"
+                  >
+                    {xValue.supplyValue}
+                  </Text>
+                </div>
               </div>
               <Text
                 as="span"
@@ -112,22 +164,22 @@ export function StakingDetailAside({
                 {xValue.badge}
               </Text>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-10 sm:grid-cols-2">
               {xValue.columns.map((col) => (
-                <div className="grid gap-2" key={col.title}>
+                <div className="grid gap-2.5" key={col.title}>
                   <div className="flex items-baseline gap-2">
-                    <Text as="strong" className="font-bold" tone="inverse" variant="section">
+                    <Text as="strong" className="text-xl font-bold" tone="inverse" variant="copy">
                       {col.pct}
                     </Text>
-                    <Text as="span" tone="inverse-muted" variant="detail">
+                    <Text as="span" className="font-medium" tone="inverse-muted" variant="copy">
                       {col.title}
                     </Text>
                   </div>
-                  <ul className="m-0 grid list-none gap-1.5 p-0">
+                  <ul className="m-0 grid list-none gap-2 p-0">
                     {col.bullets.map((bullet) => (
                       <li className="flex items-center gap-2" key={bullet}>
                         <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-primary" />
-                        <Text as="span" tone="inverse-muted" variant="detail">
+                        <Text as="span" className="text-white/65" variant="copy">
                           {bullet}
                         </Text>
                       </li>
@@ -142,7 +194,7 @@ export function StakingDetailAside({
 
       <DappDetailBlock>
         <div className="mb-4 flex items-center gap-2.5">
-          <DappContentHeading className="m-0">{t.staking.aside.positions}</DappContentHeading>
+          <DappContentHeading className="m-0 pb-0">{t.staking.aside.positions}</DappContentHeading>
           <button
             className="rounded-full bg-primary/15 px-2.5 py-0.5"
             onClick={() => selectTab('assets')}
@@ -154,46 +206,7 @@ export function StakingDetailAside({
           </button>
         </div>
         {positionItems ? (
-          positionLayout === 'cards-2' ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {positionItems.map((item) => (
-                <MetricCard
-                  className="gap-1.5 p-4"
-                  key={item.label}
-                  label={item.label}
-                  value={item.value}
-                  valueClassName="text-base font-semibold tracking-normal"
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              <div className="grid gap-4 sm:grid-cols-3">
-                {positionItems.slice(0, 3).map((item) => (
-                  <MetricCard
-                    className="gap-1.5 p-4"
-                    key={item.label}
-                    label={item.label}
-                    value={item.value}
-                    valueClassName="text-base font-semibold tracking-normal"
-                  />
-                ))}
-              </div>
-              {positionItems.length > 3 ? (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {positionItems.slice(3).map((item) => (
-                    <MetricCard
-                      className="gap-1.5 p-4"
-                      key={item.label}
-                      label={item.label}
-                      value={item.value}
-                      valueClassName="text-base font-semibold tracking-normal"
-                    />
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          )
+          <MetricGrid items={positionItems} layout={positionLayout} />
         ) : (
           <>
             <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
@@ -228,12 +241,12 @@ export function StakingDetailAside({
         <DappContentHeading>{mechanismTitle ?? t.staking.aside.mechanism}</DappContentHeading>
         {mechanismSteps && mechanismSteps.length > 0 ? (
           <Card
-            className="flex flex-col gap-4 rounded-2xl p-6 sm:flex-row sm:items-start"
+            className="flex flex-col gap-4 rounded-2xl p-6 sm:flex-row sm:items-start sm:gap-0"
             surface="outlined"
           >
             {mechanismSteps.map((step, index) => (
               <div className="grid min-w-0 flex-1 gap-3" key={step.title}>
-                <div className="flex items-center gap-0">
+                <div className="flex w-full items-center">
                   <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary">
                     <Text as="span" className="font-semibold" tone="inverse" variant="copy">
                       {index + 1}
@@ -242,14 +255,14 @@ export function StakingDetailAside({
                   {index < mechanismSteps.length - 1 ? (
                     <span
                       aria-hidden
-                      className={cn('ml-0 hidden h-0.5 flex-1 bg-border sm:block')}
+                      className="ml-0 hidden h-0.5 min-w-0 flex-1 bg-border sm:block"
                     />
                   ) : null}
                 </div>
                 <Text as="strong" className="font-semibold" variant="copy">
                   {step.title}
                 </Text>
-                <Text as="p" className="m-0" tone="muted-foreground" variant="detail">
+                <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
                   {step.body}
                 </Text>
               </div>

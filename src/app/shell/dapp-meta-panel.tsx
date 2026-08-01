@@ -31,7 +31,10 @@ export function DappMetaPanel({
           <Text
             as="strong"
             variant="detail"
-            className={cn('mt-0 text-right font-semibold', item.valueClassName)}
+            className={cn(
+              'mt-0 text-right font-semibold [&_a]:text-inherit [&_a]:no-underline [&_a]:hover:underline',
+              item.valueClassName,
+            )}
           >
             {typeof item.value === 'string' ? <DappCountValue text={item.value} /> : item.value}
           </Text>

@@ -9,7 +9,7 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { AmountBox } from '~/shared/ui/amount-box'
-import { FieldActionChip } from '~/shared/ui/chip'
+import { AmountMaxChip } from '~/shared/ui/chip'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
 import { useStakeView } from '~/views/dapp/staking/stake/use-stake-view'
@@ -39,7 +39,7 @@ export function StakeWidget() {
       />
       <DappWidgetStack>
         <div className="grid gap-2.5">
-          <Text as="span" tone="muted-foreground" variant="detail">
+          <Text as="span" className="text-[13px] text-foreground/40" variant="copy">
             {t.staking.stake.periodLabel}
           </Text>
           <Segment
@@ -47,7 +47,7 @@ export function StakeWidget() {
             onChange={stake.setPeriod}
             options={periodOptions}
             size="md"
-            tone="ink"
+            tone="coral"
             value={stake.period}
           />
         </div>
@@ -63,48 +63,41 @@ export function StakeWidget() {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" size="md" src={dappAssets.tokenAgx} />
-                <Text as="span" className="font-semibold" variant="copy">
+                <DappIcon alt="" className="size-[1.375rem]" src={dappAssets.tokenAgx} />
+                <Text as="span" className="font-semibold" variant="detail">
                   AGX
                 </Text>
               </span>
-              <FieldActionChip
-                disabled={!walletReady || stake.isSubmitting}
-                onClick={stake.fillMax}
-              >
+              <AmountMaxChip disabled={!walletReady || stake.isSubmitting} onClick={stake.fillMax}>
                 {t.staking.max}
-              </FieldActionChip>
+              </AmountMaxChip>
             </span>
           }
-          inputClassName="!ml-0 mr-auto max-w-[50%] text-left"
+          headerOutside
           label={amountLabel}
           sessionReady={sessionReady}
           startAdornment={null}
         />
 
         <DappMetaPanel
-          className="gap-3 p-4"
+          className="mt-0 gap-3 p-4"
           items={[
-            { label: t.staking.stake.meta.baseDaily, value: '0.00' },
+            { label: t.staking.stake.meta.baseDaily, value: '0.00%' },
             {
               label: t.staking.stake.meta.periodYield,
-              value: '0.00',
-              valueClassName: 'text-primary',
+              value: '0.00%',
+              valueClassName: 'text-coral-emphasis',
             },
-            { label: t.staking.stake.meta.bonus, value: '0.00' },
+            { label: t.staking.stake.meta.bonus, value: '0%' },
             { label: t.staking.stake.meta.lock, value: lockLabel },
             {
               label: t.staking.stake.meta.contract,
               value: (
-                <a
-                  className="text-primary underline-offset-2 hover:underline"
-                  href={bscscanAddress(stake.pool)}
-                  rel="noreferrer"
-                  target="_blank"
-                >
+                <a href={bscscanAddress(stake.pool)} rel="noreferrer" target="_blank">
                   {formatShortAddress(stake.pool)}
                 </a>
               ),
+              valueClassName: 'text-coral-emphasis',
             },
           ]}
         />
@@ -119,6 +112,7 @@ export function StakeWidget() {
             >
               {ctaLabel}
             </DappActionButton>
+            {/* Handbook §8.2 liquid claim() — leaf X1；稿无分帧仍保留可达写入口 */}
             {stake.showWarmupClaim ? (
               <DappActionButton
                 density="external"
