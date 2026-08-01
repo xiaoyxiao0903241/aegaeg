@@ -22,6 +22,7 @@ jobs:
       # Fail-closed env: no code address/secret fallbacks — CI uses committed public placeholders.
       - run: cp env/ci.env .env
       - run: pnpm build:tokens
+      - run: git diff --exit-code -- src/shared/styles/tokens/theme.css src/shared/styles/tokens/tokens.ts
       - run: pnpm check
       - run: pnpm build
       - run: pnpm probe:bundle

@@ -6,6 +6,7 @@
   "scripts": {
     "render:home": "node scripts/render-home.mjs",
     "build:tokens": "node scripts/generate-tokens.mjs",
+    "check:tokens": "pnpm build:tokens && git diff --exit-code -- src/shared/styles/tokens/theme.css src/shared/styles/tokens/tokens.ts",
     "env:staging": "node scripts/switch-env.mjs staging",
     "env:prod": "node scripts/switch-env.mjs prod",
     "env:status": "node scripts/switch-env.mjs status",
@@ -28,7 +29,7 @@
     "test:integration": "node tests/integration/swap-quote-live.mjs",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
-    "check": "tsc -b && pnpm lint:src && pnpm lint:architecture && pnpm lint:hex && pnpm lint:css && pnpm lint:deadcode && pnpm format:check && pnpm test:unit",
+    "check": "pnpm check:tokens && tsc -b && pnpm lint:src && pnpm lint:architecture && pnpm lint:hex && pnpm lint:css && pnpm lint:deadcode && pnpm format:check && pnpm test:unit",
     "audit:prod": "pnpm audit --prod --audit-level high",
     "commitlint": "commitlint --edit",
     "dev:e2e": "pnpm render:home && vite --host 127.0.0.1 --port 5175 --strictPort --force",
