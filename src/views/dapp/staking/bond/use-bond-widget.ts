@@ -1,6 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
+import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
 import type { BondPeriod } from '~/core/staking/staking-period'
 import {
@@ -95,8 +96,11 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
 
   const slippageQuery = useBondHelperSlippageQuery()
 
-  const balance = preflightQuery.data?.balance ?? 0n
-  const balancesLoaded = preflightQuery.data !== undefined
+  const balance =
+    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? 0n
+  const allowance =
+    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? 0n
+  const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
 
   const amountInput = useCappedTokenAmountInput({
     decimals: USD1_DECIMALS,
@@ -111,10 +115,12 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
 
   const blockReason = evaluateBondZapLive({
     amount: amountInput.amountIn,
-    isBound: preflightQuery.data?.isBound ?? false,
+    isBound: balancesLoaded ? (preflightQuery.data?.isBound ?? false) : false,
     balance,
-    allowance: preflightQuery.data?.allowance ?? 0n,
-    depositoryAuthorized: preflightQuery.data?.depositoryAuthorized ?? false,
+    allowance,
+    depositoryAuthorized: balancesLoaded
+      ? (preflightQuery.data?.depositoryAuthorized ?? false)
+      : false,
     isOldAccount: migration.isOldAccount,
   })
 

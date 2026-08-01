@@ -22,6 +22,20 @@ test('evaluateTurbineUnlockLive requires allowance cover liveUsd', async () => {
   assert.equal(evaluateTurbineUnlockLive({ ...base, liveQuota: 0n }), 'TURBINE_QUOTA_EXCEEDED')
 })
 
+test('evaluateTurbineClaimLive blocks when not vested', async () => {
+  const { evaluateTurbineClaimLive } = await loadModule('/src/core/exchange/turbine-unlock-live.ts')
+  assert.equal(evaluateTurbineClaimLive(true), null)
+  assert.equal(evaluateTurbineClaimLive(false), 'TURBINE_NOT_VESTED')
+})
+
+test('evaluateLiquidWarmupClaimLive blocks before expiry', async () => {
+  const { evaluateLiquidWarmupClaimLive } = await loadModule(
+    '/src/core/staking/staking-block-reasons.ts',
+  )
+  assert.equal(evaluateLiquidWarmupClaimLive(true), null)
+  assert.equal(evaluateLiquidWarmupClaimLive(false), 'unavailable')
+})
+
 test('evaluateGenesisPurchaseAmountLive fails when remaining drifts below purchase', async () => {
   const { evaluateGenesisPurchaseAmountLive } = await loadModule(
     '/src/core/presale/presale-math.ts',

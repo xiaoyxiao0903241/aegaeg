@@ -1,6 +1,9 @@
 import { EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import type { QueryObserverResult } from '@tanstack/react-query'
-import { evaluateTurbineUnlockLive } from '~/core/exchange/turbine-unlock-live'
+import {
+  evaluateTurbineClaimLive,
+  evaluateTurbineUnlockLive,
+} from '~/core/exchange/turbine-unlock-live'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import {
   readTurbineIsVested,
@@ -73,7 +76,8 @@ export async function submitTurbineClaim(args: {
   return core.runSubmit(async (session) => {
     const { wallet, address, readClient } = session
     const vested = await readTurbineIsVested(address, index, readClient)
-    if (!vested) throw new Error('TURBINE_NOT_VESTED')
+    const blocked = evaluateTurbineClaimLive(vested)
+    if (blocked) throw new Error(blocked)
 
     await claimCooledGagx({ wallet, index })
     invalidateAfterExchange()

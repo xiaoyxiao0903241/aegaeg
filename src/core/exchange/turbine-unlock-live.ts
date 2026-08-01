@@ -12,3 +12,9 @@ export function evaluateTurbineUnlockLive(args: {
   if (args.liveUsd > args.approved) return 'TURBINE_INSUFFICIENT_ALLOWANCE'
   return null
 }
+
+/** Turbine claim：live `isVested` 未通过则禁写。 */
+export function evaluateTurbineClaimLive(vested: boolean): string | null {
+  if (!vested) return 'TURBINE_NOT_VESTED'
+  return null
+}

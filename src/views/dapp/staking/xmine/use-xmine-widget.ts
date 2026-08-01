@@ -1,5 +1,6 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
+import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateXmineLive } from '~/core/staking/staking-block-reasons'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -30,8 +31,11 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     enabled: sessionReady,
   })
 
-  const balance = preflightQuery.data?.balance ?? 0n
-  const balancesLoaded = preflightQuery.data !== undefined
+  const balance =
+    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? 0n
+  const allowance =
+    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? 0n
+  const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
 
   const amountInput = useCappedTokenAmountInput({
     decimals: GAGX_DECIMALS,
@@ -43,8 +47,8 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
   const blockReason = evaluateXmineLive({
     amount: amountInput.amountIn,
     balance,
-    allowance: preflightQuery.data?.allowance ?? 0n,
-    miningQuota: preflightQuery.data?.miningQuota ?? 0n,
+    allowance,
+    miningQuota: balancesLoaded ? (preflightQuery.data?.miningQuota ?? 0n) : 0n,
   })
 
   const stake = useChainMutation({

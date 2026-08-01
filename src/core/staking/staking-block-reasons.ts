@@ -84,3 +84,11 @@ export function evaluateXmineLive(args: {
   if (args.miningQuota < args.amount) return 'insufficientQuota'
   return null
 }
+
+/** 活期 warmup 激活：live `isWarmupExpired` 未到期则禁写。 */
+export function evaluateLiquidWarmupClaimLive(
+  isWarmupExpired: boolean,
+): Extract<StakeLiveBlockReason, 'unavailable'> | null {
+  if (!isWarmupExpired) return 'unavailable'
+  return null
+}

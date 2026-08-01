@@ -1,5 +1,6 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
+import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
 import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
 import type { StakePeriod } from '~/core/staking/staking-period'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
@@ -58,8 +59,11 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
 
   const migration = useMigrationUser(address, { enabled: walletReady })
 
-  const balance = preflightQuery.data?.balance ?? 0n
-  const balancesLoaded = preflightQuery.data !== undefined
+  const balance =
+    decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? 0n
+  const allowance =
+    decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? 0n
+  const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
 
   const amountInput = useCappedTokenAmountInput({
     decimals: AGX_DECIMALS,
@@ -68,16 +72,16 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     sessionReady,
   })
 
-  const isBound = preflightQuery.data?.isBound ?? false
+  const isBound = balancesLoaded ? (preflightQuery.data?.isBound ?? false) : false
   const needReferral = evaluateNeedReferral(preflightQuery.data?.isBound) === 'need_referral'
 
   const blockReason = evaluateStakeLive({
     amount: amountInput.amountIn,
     isBound,
     balance,
-    allowance: preflightQuery.data?.allowance ?? 0n,
-    remainingQuota: preflightQuery.data?.remainingQuota ?? 0n,
-    poolOpen: preflightQuery.data?.poolOpen,
+    allowance,
+    remainingQuota: balancesLoaded ? (preflightQuery.data?.remainingQuota ?? 0n) : 0n,
+    poolOpen: balancesLoaded ? preflightQuery.data?.poolOpen : undefined,
     isOldAccount: migration.isOldAccount,
   })
 
@@ -144,18 +148,18 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
       preflightQuery.data === undefined
         ? ''
         : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, 4),
-    isBalancesLoading: walletReady && preflightQuery.isLoading,
+    isBalancesLoading: walletReady && (!balancesLoaded || preflightQuery.isLoading),
     walletReady,
     canSubmit,
     isSubmitting,
     blockReason,
     writePhase,
-    showWarmupClaim: isLiquid && Boolean(preflightQuery.data?.isWarmupExpired),
+    showWarmupClaim: isLiquid && balancesLoaded && Boolean(preflightQuery.data?.isWarmupExpired),
     claimWarmup: () => warmup.mutate(),
     submit: () => open.mutate(),
     pool,
     remainingLabel:
-      preflightQuery.data !== undefined
+      balancesLoaded && preflightQuery.data !== undefined
         ? formatTokenAmount(preflightQuery.data.remainingQuota, AGX_DECIMALS, 4)
         : '',
   }

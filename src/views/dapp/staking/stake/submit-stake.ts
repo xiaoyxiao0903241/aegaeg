@@ -1,5 +1,8 @@
 import type { StakePeriod } from '~/core/staking/staking-period'
-import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
+import {
+  evaluateLiquidWarmupClaimLive,
+  evaluateStakeLive,
+} from '~/core/staking/staking-block-reasons'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
@@ -75,7 +78,9 @@ export async function submitLiquidWarmupClaim(args: { session: WriteSession }): 
     user: address,
     client: readClient,
   })
-  if (!preflight.isWarmupExpired) throw STAKING_BLOCKED.unavailable
+  if (evaluateLiquidWarmupClaimLive(preflight.isWarmupExpired)) {
+    throw STAKING_BLOCKED.unavailable
+  }
   await claimLiquidWarmup({ wallet })
   invalidateAfterStaking()
 }
