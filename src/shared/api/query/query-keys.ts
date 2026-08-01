@@ -238,6 +238,8 @@ export const queryKeys = {
       chainWalletQueryKey(['chain', 'migration', 'status'], address),
     swapPoolMetadata: ['chain', 'swap', 'poolMetadata'] as const,
     swapPoolSpot: ['chain', 'swap', 'poolSpot'] as const,
+    /** AGX/USD1 V2 spot — USD1 wei per 1 AGX（展示/估值；非 Presale 定价）。 */
+    agxUsd1SpotPrice: ['chain', 'swap', 'agxUsd1SpotPrice'] as const,
     swapQuote: (tokenIn: string, tokenOut: string, amountIn: string, pathKey = '') =>
       pathKey
         ? ([

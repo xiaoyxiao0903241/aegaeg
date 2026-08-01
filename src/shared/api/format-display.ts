@@ -87,7 +87,8 @@ export type FormatCompactNumberOptions = {
 
 /**
  * Compact display for hub tiles / chart shells — Figma `129K` / `$8.41M`.
- * Below 1000 stays grouped; ≥1e3 → K; ≥1e6 → M. Empty/NaN → `0` (+ prefix/suffix).
+ * Below 1000 stays grouped **and pads** `digits`（空态 `0.00`）；≥1e3 → K；≥1e6 → M.
+ * Empty/NaN → `0`/`0.00` (+ prefix/suffix，视 digits).
  */
 export function formatCompactNumber(
   value: string | number | bigint,
@@ -99,7 +100,8 @@ export function formatCompactNumber(
   const num = typeof value === 'bigint' ? Number(value) : Number(value)
 
   if (!Number.isFinite(num)) {
-    return `${prefix}0${suffix}`
+    const zero = digits > 0 ? `0.${'0'.repeat(digits)}` : '0'
+    return `${prefix}${zero}${suffix}`
   }
 
   const abs = Math.abs(num)
@@ -109,7 +111,8 @@ export function formatCompactNumber(
   if (abs >= 1_000) {
     return `${prefix}${formatGroupedNumber(num / 1_000, { digits, trimZeros: true })}K${suffix}`
   }
-  return `${prefix}${formatGroupedNumber(num, { digits, trimZeros: true })}${suffix}`
+  // <1k：补足 digits（空态 `0.00 AGX` / `$65.00`）；K/M 档仍 trim。
+  return `${prefix}${formatGroupedNumber(num, { digits, trimZeros: false })}${suffix}`
 }
 
 /** Chart / tile USD with compact M/K — empty → `$0.00` (pad, no unit). */

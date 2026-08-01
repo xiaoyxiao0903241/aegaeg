@@ -17,15 +17,14 @@ import {
   submitBondRedeem,
   submitStakeRedeem,
 } from '~/views/dapp/assets/submit-assets'
+import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import { type AssetsBondRow, type AssetsStakeRow } from '~/web3/assets/assets-read'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
 export type { AssetsProduct }
 
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 type ClaimState =
   | { open: false }
@@ -73,8 +72,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const stakingTarget: 'stake' | 'lpbond' | 'burnbond' =
     product === 'stake' ? 'stake' : product === 'lpbond' ? 'lpbond' : 'burnbond'
   const pageSize = t.assets.position.pageSize
-  const agxPriceQuery = usePresaleAgxPriceQuery()
-  const agxPriceUsd = formatTokenAmountToNumber(agxPriceQuery.data ?? 0n, USD1_DECIMALS)
+  const agxPriceUsd = useAgxPriceUsd()
 
   const redeemWrite = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
@@ -97,7 +95,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   })
 
   function formatRewardUsd(amount: bigint): string {
-    if (agxPriceQuery.isError || agxPriceUsd <= 0) return '$0.00'
+    if (agxPriceUsd == null || agxPriceUsd <= 0) return '$0.00'
     return formatGroupedNumber(formatTokenAmountToNumber(amount, GAGX_DECIMALS) * agxPriceUsd, {
       digits: 2,
       prefix: '$',

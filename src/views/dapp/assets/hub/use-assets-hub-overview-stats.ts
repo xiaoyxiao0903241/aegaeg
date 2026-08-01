@@ -12,6 +12,7 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import {
   readBurnBondPositions,
   readContributionSnapshot,
@@ -19,14 +20,12 @@ import {
   readStakePositions,
   readXminePosition,
 } from '~/web3/assets/assets-read'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { readReleaseBufferSnapshot } from '~/web3/release/release-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 export type AssetsHubModeStats = {
   aprLabel: string
@@ -123,11 +122,7 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
   const account = useActiveAccount()
   const address = account?.address
   const enabled = walletReady && Boolean(address)
-  const agxPriceQuery = usePresaleAgxPriceQuery()
-  const priceUsd =
-    agxPriceQuery.isError || agxPriceQuery.data == null
-      ? null
-      : formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS)
+  const priceUsd = useAgxPriceUsd()
 
   const holdingsSummaryQuery = useAssetsHoldingsSummary(sessionReady)
   const rewardSummaryQuery = useAssetsRewardSummary(sessionReady)

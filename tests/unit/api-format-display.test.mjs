@@ -57,13 +57,62 @@ test('formatCompactNumber / formatCompactUsd / formatSignedPercent match hub Fig
 
   assert.equal(formatCompactNumber(129_000, { suffix: ' AGX' }), '129K AGX')
   assert.equal(formatCompactNumber(8_410_000, { prefix: '$' }), '$8.41M')
+  assert.equal(formatCompactNumber(0, { digits: 2, suffix: ' AGX' }), '0.00 AGX')
+  assert.equal(formatCompactNumber(65, { digits: 2 }), '65.00')
   assert.equal(formatCompactUsd(18_600_000), '$18.6M')
   assert.equal(formatCompactUsd(65), '$65.00')
   assert.equal(formatCompactUsd(null), '$0.00')
   assert.equal(formatApproxCompactUsd(129_000, 65), '≈ $8.39M')
+  assert.equal(formatApproxCompactUsd(0, null), '≈ $0.00')
   assert.equal(formatSignedPercent(412.4), '+412.4%')
   assert.equal(formatSignedPercent(null), '+0.0%')
   assert.equal(formatSignedPercent(-1.2), '-1.2%')
+})
+
+test('agxUsd1SpotPriceWeiFromReserves is USD1 wei per 1 AGX', async () => {
+  const { agxUsd1SpotPriceWeiFromReserves } = await loadModule(
+    '/src/web3/exchange/read-exchange-pool.ts',
+  )
+
+  const agx = '0x1111111111111111111111111111111111111111'
+  const usd1 = '0x2222222222222222222222222222222222222222'
+  // 200_000 AGX (9dec) + 11_000_000 USD1 (18dec) → $55 / AGX
+  const reserveAgx = 200_000n * 10n ** 9n
+  const reserveUsd1 = 11_000_000n * 10n ** 18n
+  const price = agxUsd1SpotPriceWeiFromReserves({
+    token0: agx,
+    token1: usd1,
+    reserve0: reserveAgx,
+    reserve1: reserveUsd1,
+    agx,
+    usd1,
+    agxDecimals: 9,
+  })
+  assert.equal(price, 55n * 10n ** 18n)
+
+  const flipped = agxUsd1SpotPriceWeiFromReserves({
+    token0: usd1,
+    token1: agx,
+    reserve0: reserveUsd1,
+    reserve1: reserveAgx,
+    agx,
+    usd1,
+    agxDecimals: 9,
+  })
+  assert.equal(flipped, 55n * 10n ** 18n)
+
+  assert.equal(
+    agxUsd1SpotPriceWeiFromReserves({
+      token0: agx,
+      token1: usd1,
+      reserve0: 0n,
+      reserve1: reserveUsd1,
+      agx,
+      usd1,
+      agxDecimals: 9,
+    }),
+    null,
+  )
 })
 
 test('formatTableGenesisRank hides S0 in community member table', async () => {

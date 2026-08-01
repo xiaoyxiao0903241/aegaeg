@@ -12,8 +12,8 @@ import {
   formatSignedPercent,
 } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { useAgxPriceUsd } from '~/views/dapp/assets/use-agx-price-usd'
 import type { StakingTvAreaPoint } from '~/views/dapp/staking/staking-tv-area-chart'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 /** Table empty — Figma yield cells use `0.00%`; bonus uses integer `0%`. */
@@ -21,7 +21,6 @@ const YIELD_PLACEHOLDER = '0.00%'
 const BONUS_PLACEHOLDER = '0%'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 function formatAgxCompact(wei: bigint | undefined): string {
   if (wei == null) return formatCompactNumber(0, { digits: 2, suffix: ' AGX' })
@@ -29,17 +28,18 @@ function formatAgxCompact(wei: bigint | undefined): string {
   return formatCompactNumber(n, { digits: 2, suffix: ' AGX' })
 }
 
+/** 流通量：大数千分位、固定 2 位（空态 `0.00 AGX`）。 */
 function formatAgxGrouped(wei: bigint | undefined): string {
-  if (wei == null) return formatGroupedNumber(0, { digits: 0, trimZeros: true, suffix: ' AGX' })
+  if (wei == null) return formatGroupedNumber(0, { digits: 2, suffix: ' AGX' })
   const n = formatTokenAmountToNumber(wei, AGX_DECIMALS)
-  return formatGroupedNumber(n, { digits: 0, trimZeros: true, suffix: ' AGX' })
+  return formatGroupedNumber(n, { digits: 2, suffix: ' AGX' })
 }
 
 function formatRebasePct(rate1e18: bigint | null | undefined): string {
   if (rate1e18 == null) return YIELD_PLACEHOLDER
   const pct = formatTokenAmountToNumber(rate1e18, 18)
   if (!Number.isFinite(pct)) return YIELD_PLACEHOLDER
-  return `${formatGroupedNumber(pct, { digits: 2, trimZeros: true })}%`
+  return `${formatGroupedNumber(pct, { digits: 2 })}%`
 }
 
 export function useStakingHubContentView() {
@@ -48,12 +48,9 @@ export function useStakingHubContentView() {
   const [tableSeg, setTableSeg] = useState('stake')
   const [chartMetric, setChartMetric] = useState('tvl')
   const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
-  const agxPriceQuery = usePresaleAgxPriceQuery()
+  const agxPriceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
   const stakersQuery = useStakeAddressCount(sessionReady)
-
-  const agxPriceUsd =
-    agxPriceQuery.data != null ? formatTokenAmountToNumber(agxPriceQuery.data, USD1_DECIMALS) : null
 
   const agxPriceLabel =
     agxPriceUsd != null
