@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { useRef, useSyncExternalStore } from 'react'
+import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import { useActiveWallet } from '~/web3/thirdweb-react'
 import { useI18n } from '~/i18n/use-i18n'
 import { presentUserFacingError } from '~/web3/present-user-facing-error'
@@ -56,8 +56,11 @@ export function useChainMutation<TVars = void, TValue = void>(
   const { messages: t } = useI18n()
   const path = args.path
   const wallet = useActiveWallet()
+  // mutationFn 异步跨渲染；layout 同步最新钱包，禁 render 期写 ref。
   const walletRef = useRef(wallet)
-  walletRef.current = wallet
+  useLayoutEffect(() => {
+    walletRef.current = wallet
+  }, [wallet])
 
   const isLocked = useSyncExternalStore(
     subscribeWritePathBusy,

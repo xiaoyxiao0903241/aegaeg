@@ -90,6 +90,8 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 | Unknown receipt lock        | `unknown-receipt-lock.test.mjs` · `submit-with-unknown-receipt-lock.test.mjs` · `approve-then-live-write.test.mjs` · `write-cta-helpers.test.mjs` |
 | Assets Mixed dual-gate      | `dual-check-mixed-claim.test.mjs`                                                                                                                 |
 | Live post-approve / balance | `live-post-approve.test.mjs`                                                                                                                      |
+| Live evaluate completeness  | `live-evaluate-completeness.test.mjs` · `migration-root-reads.test.mjs`                                                                           |
+| Decision freshness          | `decision-freshness.test.mjs`                                                                                                                     |
 | Quote / unknown 门闸        | `react-quality-checks.test.mjs`                                                                                                                   |
 | Trade AGX 卖税              | `agx-sell-tax.test.mjs` · `fetch-exchange-quote.test.mjs` · `swap-router-abi.test.mjs`                                                            |
 | Genesis gate                | `claim-reward-confirm.test.mjs`（`evaluateGenesisPostApprove`）                                                                                   |
@@ -110,6 +112,7 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 5. Unknown → `WRITE_PATH` lock（owner 配对）；同 path 在飞互斥；金额变更 / 显式 `clearLock` / 刷新等重置前禁重提。`useChainMutation.isLocked` ≡ busy（latch∨in-flight）。
 6. `genesisPurchaseBlock.inFlight` 为模块级单例（跨 tab remount 保活）；信封层另有 per-`WRITE_PATH` in-flight。
 7. Trade/Flash Provider 按需挂载（`viewsNeedingProvider`）；离开子视图丢本地 quote/submit 状态。
+8. **展示 vs 决策**：`keepPreviousData` 仅可画 UI；**balance / allowance / quota / claimable / write CTA / canSubmit** 禁用 placeholder。决策用 `isDecisionFresh` / `decisionBigint`（`core/query/decision-freshness.ts`）；报价轴已有 `liveQuotedOut`。
 
 ## Unknown 解锁通道
 

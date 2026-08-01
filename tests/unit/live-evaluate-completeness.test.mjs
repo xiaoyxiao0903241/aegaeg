@@ -3,7 +3,9 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('evaluateTurbineUnlockLive requires allowance cover liveUsd', async () => {
-  const { evaluateTurbineUnlockLive } = await loadModule('/src/core/exchange/turbine-live-gate.ts')
+  const { evaluateTurbineUnlockLive } = await loadModule(
+    '/src/core/exchange/turbine-unlock-live.ts',
+  )
   const base = {
     unlockAmountAgx: 1n,
     liveUsd: 100n,

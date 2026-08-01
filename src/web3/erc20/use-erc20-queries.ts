@@ -5,9 +5,8 @@ import { queryKeys } from '~/shared/api/query/query-keys'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 
 /**
- * Atomic ERC20 balance — wallet-scoped SSOT (`queryKeys.chain.erc20Balance` + address).
- * `owner` gates enablement and must be the active wallet (invalidate still uses `*Of`).
- * Refetch keeps previous balance on screen (no skeleton / zero flash).
+ * Atomic ERC20 balance — wallet-scoped SSOT（`queryKeys.chain.erc20Balance` + address）。
+ * 展示可 keepPreviousData；决策面须看 `isPlaceholderData`（见 `decision-freshness`）。
  */
 export function useErc20BalanceQuery(
   token: Address | undefined,
@@ -24,8 +23,8 @@ export function useErc20BalanceQuery(
 }
 
 /**
- * Atomic ERC20 allowance — spender-specific; not part of connect prefetch.
- * Owner + spender stay baked in the key (multi-party; not wallet-prefix-only).
+ * Atomic ERC20 allowance — spender 进 key；非 connect prefetch。
+ * 展示可 keepPreviousData；决策面须排除 placeholder。
  */
 export function useErc20AllowanceQuery(
   token: Address | undefined,

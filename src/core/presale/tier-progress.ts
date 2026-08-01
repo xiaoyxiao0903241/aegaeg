@@ -59,25 +59,10 @@ export function nextTierProgress(
     }
   }
 
+  // nextRank ∈ 1..MAX 且 MAX === thresholds.length → 索引必有值。
   const personalTargetUsd = PERSONAL_PRESALE_RANK_THRESHOLDS_USD[nextRank - 1]
   if (personalTargetUsd == null) {
-    return {
-      currentRank: normalizedRank,
-      isMaxRank: true,
-      nextRank: MAX_PRESALE_RANK,
-      personalCurrentUsd,
-      personalTargetUsd:
-        PERSONAL_PRESALE_RANK_THRESHOLDS_USD[MAX_PRESALE_RANK - 1] ??
-        PERSONAL_PRESALE_RANK_THRESHOLDS_USD[0] ??
-        0,
-      personalRemainingUsd: 0,
-      personalProgressPercent: 100,
-      teamCurrentUsd,
-      teamTargetUsd: null,
-      teamLegRank: TEAM_LEG_REQUIREMENT_RANKS[TEAM_LEG_REQUIREMENT_RANKS.length - 1] ?? null,
-      teamProgressPercent: null,
-      teamRemainingUsd: null,
-    }
+    throw new Error(`PRESALE_RANK_THRESHOLD_MISSING:${nextRank}`)
   }
 
   const personalRemainingUsd = Math.max(0, personalTargetUsd - personalCurrentUsd)

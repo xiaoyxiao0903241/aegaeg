@@ -41,3 +41,5 @@ Money-path 表征测：`tests/unit/react-quality-checks.test.mjs`。
 | `pnpm check`    | tsc + eslint error + architecture + unit |
 | pre-commit      | staged eslint + tsc；无 e2e              |
 | `pnpm test:e2e` | 手动 / 可选                              |
+
+**Compiler lint（已知缺口）：** 全量 Compiler 已开，但未装 `eslint-plugin-react-compiler`；`lint:src --quiet` 也不抬升 refs/render 写 ref 的 warn。禁止在 render 期写 `ref.current`（用 `useLayoutEffect` 同步）。装插件属独立依赖票，勿与钱路切片混装。

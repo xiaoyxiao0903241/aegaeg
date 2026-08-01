@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { keepPreviousData } from '@tanstack/react-query'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -109,8 +110,14 @@ export function useTurbineExchangeWidget(
 
   const quota = quotaQuery.data ?? 0n
   const usd1Balance = balancesQuery.data?.usd1 ?? 0n
-  const balancesLoaded = balancesQuery.data !== undefined && quotaQuery.data !== undefined
-  const isBalancesLoading = walletReady && (balancesQuery.isLoading || quotaQuery.isLoading)
+  // 决策面：钱包切换 placeholder 不算已加载。
+  const balancesLoaded =
+    isDecisionFresh(balancesQuery.isPlaceholderData, balancesQuery.data) &&
+    isDecisionFresh(quotaQuery.isPlaceholderData, quotaQuery.data)
+  const decisionQuota = balancesLoaded ? quota : 0n
+  const decisionUsd1 = balancesLoaded ? usd1Balance : 0n
+  const isBalancesLoading =
+    walletReady && (!balancesLoaded || balancesQuery.isLoading || quotaQuery.isLoading)
 
   const {
     amount: unlockAmount,
@@ -120,7 +127,7 @@ export function useTurbineExchangeWidget(
     fillPercent: fillPercentRaw,
   } = useCappedTokenAmountInput({
     decimals: AGX_DECIMALS,
-    balance: quota,
+    balance: decisionQuota,
     balancesLoaded,
     sessionReady,
   })
@@ -222,12 +229,13 @@ export function useTurbineExchangeWidget(
     sessionReady &&
     walletReady &&
     writeReady &&
+    balancesLoaded &&
     !isSubmitting &&
     !blockResubmit &&
     unlockAmountIn > 0n &&
-    unlockAmountIn <= quota &&
+    unlockAmountIn <= decisionQuota &&
     usdNeeded > 0n &&
-    usdNeeded <= usd1Balance &&
+    usdNeeded <= decisionUsd1 &&
     !quoteQuery.isFetching
 
   async function runSubmit(run: (session: WriteSession) => Promise<void>) {
