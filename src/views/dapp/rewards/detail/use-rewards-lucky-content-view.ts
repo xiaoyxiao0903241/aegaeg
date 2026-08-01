@@ -7,10 +7,12 @@ import {
   useLuckyRewardWinners,
 } from '~/hooks/use-api-data'
 import {
+  formatApiCountLabel,
   formatApiDecimalAmount,
   formatApiStatLabel,
   mapLuckyMyRoundToRow,
   mapLuckyWinnerToRow,
+  NON_NUMERIC_EMPTY,
 } from '~/views/dapp/rewards/rewards-display'
 
 export function useRewardsLuckyContentView() {
@@ -32,9 +34,13 @@ export function useRewardsLuckyContentView() {
   )
   // Eligibility copy is static zero until handbook wires a live field.
   const eligibility = formatApiDecimalAmount(null)
-  const cumulativeWins = summary != null ? String(summary.win_count) : formatApiDecimalAmount(null)
+  const cumulativeWins = formatApiCountLabel(
+    sessionReady,
+    summaryQuery.isLoading,
+    summary?.win_count,
+  )
 
-  const dateLabel = drawDate || formatApiDecimalAmount(null)
+  const dateLabel = drawDate || NON_NUMERIC_EMPTY
 
   const winners = winnersQuery.data?.items ?? []
   const winnerRows = winners.map((item) => mapLuckyWinnerToRow(item))
@@ -42,7 +48,7 @@ export function useRewardsLuckyContentView() {
   const resultsSummary = lucky.resultsSummary.replace('{count}', String(winners.length))
   const verifyHash = lucky.verifyHash.replace(
     '{hash}',
-    drawHash ? formatShortAddress(drawHash) : formatApiDecimalAmount(null),
+    drawHash ? formatShortAddress(drawHash) : NON_NUMERIC_EMPTY,
   )
 
   const historyRows = historyQuery.data?.items.map((item) => mapLuckyMyRoundToRow(item)) ?? []

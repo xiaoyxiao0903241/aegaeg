@@ -29,6 +29,12 @@ import type { RewardsView } from '~/shared/config/dapp-deep-links'
 
 /** Empty / pending metric → zero via formatters (no named dash/loading aliases). */
 
+/**
+ * Non-numeric empty chrome (dates, hashes, labels).
+ * Never pass these through `formatApiDecimalAmount(null)` — that yields `"0.00"`.
+ */
+export const NON_NUMERIC_EMPTY = '—'
+
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'participate' | 'referral'>
 
 /** Backend SUM / decimal-string amounts → grouped display (never invent). */
