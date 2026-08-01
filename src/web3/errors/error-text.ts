@@ -2,11 +2,6 @@ import { ContractRevertError, decodeContractRevert } from '~/web3/decode-contrac
 
 export type ErrorText = { raw: string; lower: string }
 
-export type ErrorRule<K extends string> = {
-  match: (text: ErrorText) => boolean
-  messageKey: K
-}
-
 export function toErrorText(raw: string): ErrorText {
   return { raw, lower: raw.toLowerCase() }
 }
@@ -20,20 +15,6 @@ export function nameOrSelector(
   ...selectors: string[]
 ): (text: ErrorText) => boolean {
   return ({ raw, lower }) => namePattern.test(raw) || hasSelector(lower, ...selectors)
-}
-
-export function firstMatch<M extends object, K extends keyof M & string>(
-  text: ErrorText,
-  rules: Array<ErrorRule<K>>,
-  messages: M,
-): string | null {
-  for (const rule of rules) {
-    if (!rule.match(text)) continue
-    const message = messages[rule.messageKey]
-    if (typeof message === 'string') return message
-    return null
-  }
-  return null
 }
 
 export function readErrorCode(error: unknown): number | string | undefined {

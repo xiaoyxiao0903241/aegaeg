@@ -4,7 +4,7 @@ import { PRINCIPAL_RELEASE_VAULT_METHODS, REWARD_QUEUE_METHODS } from '~/web3/ab
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { DurationPlan } from '~/core/assets/claim-plans'
-import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
+import { RELEASE_DURATION_DAYS, SECONDS_PER_DAY } from '~/core/assets/claim-plans'
 
 const queueReadAbi = parseAbi([
   REWARD_QUEUE_METHODS.queuePlans,
@@ -43,7 +43,7 @@ export type ReleaseBufferSnapshot = {
 }
 
 function durationDaysFromSeconds(seconds: bigint): number | null {
-  const days = Number(seconds / 86_400n)
+  const days = Number(seconds / SECONDS_PER_DAY)
   if (!Number.isFinite(days) || days <= 0) return null
   return days
 }
@@ -70,7 +70,7 @@ export async function readReleaseQueueSnapshot(
   const rows: ReleaseQueuePlanRow[] = []
 
   for (const days of RELEASE_DURATION_DAYS) {
-    const matched = durationPlans.find((p) => p.durationSeconds === BigInt(days) * 86_400n)
+    const matched = durationPlans.find((p) => p.durationSeconds === BigInt(days) * SECONDS_PER_DAY)
     if (!matched) {
       rows.push({
         planIndex: -1,

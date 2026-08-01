@@ -8,7 +8,6 @@ import type { ExchangePairTokens } from '~/views/dapp/exchange/exchange-pair'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { fetchExchangeQuote, type ExchangePoolReadContext } from '~/web3/exchange/exchange-read'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainQuery } from '~/hooks/use-chain-query'
 
 type UseMarketTradeSpotRatesArgs = {
@@ -53,6 +52,7 @@ export function useMarketTradeSpotRates({
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled,
+    refetchInterval: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     placeholderData: keepPreviousData,
   })
 
@@ -74,11 +74,9 @@ export function useMarketTradeSpotRates({
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled,
+    refetchInterval: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     placeholderData: keepPreviousData,
   })
-
-  useVisibleInterval(spotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
-  useVisibleInterval(invertedSpotQuoteQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
   const spotQuotedOut = liveQuotedOut(
     spotQuoteQuery.isPlaceholderData,

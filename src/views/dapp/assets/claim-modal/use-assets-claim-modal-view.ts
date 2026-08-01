@@ -7,6 +7,7 @@ import {
   RESTAKE_DURATION_DAYS,
   matchPlanIndexByDurationDays,
   claimSplitFromReleasePct,
+  planLabel,
   type ReleaseDurationDays,
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
@@ -94,21 +95,16 @@ export function useAssetsClaimModalView(args: {
     label: t.assets.claim.releaseDays.replace('{days}', String(days)),
     value: String(days),
   }))
-  const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => {
-    const plan = plansQuery.data?.restakePlans.find(
-      (p) => p.exists !== false && Number(p.durationSeconds / 86_400n) === days,
-    )
-    const tax =
-      plan?.taxBps != null
-        ? t.assets.claim.taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
-        : ''
-    return {
-      label: tax
-        ? t.assets.claim.restakeDaysTax.replace('{days}', String(days)).replace('{tax}', tax)
-        : t.assets.claim.restakeDays.replace('{days}', String(days)),
-      value: String(days),
-    }
-  })
+  const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => ({
+    label: planLabel(
+      days,
+      plansQuery.data?.restakePlans,
+      t.assets.claim.restakeDaysTax,
+      t.assets.claim.restakeDays,
+      t.assets.claim.taxRate,
+    ),
+    value: String(days),
+  }))
 
   function setReleasePct(value: number) {
     claim.clearLock()

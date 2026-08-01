@@ -2,22 +2,47 @@ import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_ASSETS_METHODS,
+  BOND_DEPOSITORY_ERRORS,
   LIQUID_STAKING_ASSETS_METHODS,
+  LIQUID_STAKING_ERRORS,
   LOCKED_STAKING_ASSETS_METHODS,
+  LOCKED_STAKING_ERRORS,
+  X_STAKING_POOL_ERRORS,
   X_STAKING_POOL_METHODS,
 } from '~/web3/abis'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const liquidClaimMixedAbi = parseWriteAbi(LIQUID_STAKING_ASSETS_METHODS.claimRewardMixed)
-const liquidClaimPrincipalAbi = parseWriteAbi(LIQUID_STAKING_ASSETS_METHODS.claimPrincipal)
-const lockedClaimMixedAbi = parseWriteAbi(LOCKED_STAKING_ASSETS_METHODS.claimRewardMixed)
-const lockedClaimExtraAbi = parseWriteAbi(LOCKED_STAKING_ASSETS_METHODS.claimExtraRewardMixed)
-const lockedClaimPrincipalAbi = parseWriteAbi(LOCKED_STAKING_ASSETS_METHODS.claimPrincipal)
-const bondClaimMixedAbi = parseWriteAbi(BOND_DEPOSITORY_ASSETS_METHODS.claimStakeProfitMixed)
-const bondRedeemAbi = parseWriteAbi(BOND_DEPOSITORY_ASSETS_METHODS.redeem)
-const xmineClaimAbi = parseWriteAbi(X_STAKING_POOL_METHODS.claimReward)
-const xmineUnstakeAbi = parseWriteAbi(X_STAKING_POOL_METHODS.startUnstake)
-const xmineActivateWarmupAbi = parseWriteAbi(X_STAKING_POOL_METHODS.activateWarmup)
+const liquidClaimMixedAbi = parseWriteAbi(
+  LIQUID_STAKING_ASSETS_METHODS.claimRewardMixed,
+  LIQUID_STAKING_ERRORS,
+)
+const liquidClaimPrincipalAbi = parseWriteAbi(
+  LIQUID_STAKING_ASSETS_METHODS.claimPrincipal,
+  LIQUID_STAKING_ERRORS,
+)
+const lockedClaimMixedAbi = parseWriteAbi(
+  LOCKED_STAKING_ASSETS_METHODS.claimRewardMixed,
+  LOCKED_STAKING_ERRORS,
+)
+const lockedClaimExtraAbi = parseWriteAbi(
+  LOCKED_STAKING_ASSETS_METHODS.claimExtraRewardMixed,
+  LOCKED_STAKING_ERRORS,
+)
+const lockedClaimPrincipalAbi = parseWriteAbi(
+  LOCKED_STAKING_ASSETS_METHODS.claimPrincipal,
+  LOCKED_STAKING_ERRORS,
+)
+const bondClaimMixedAbi = parseWriteAbi(
+  BOND_DEPOSITORY_ASSETS_METHODS.claimStakeProfitMixed,
+  BOND_DEPOSITORY_ERRORS,
+)
+const bondRedeemAbi = parseWriteAbi(BOND_DEPOSITORY_ASSETS_METHODS.redeem, BOND_DEPOSITORY_ERRORS)
+const xmineClaimAbi = parseWriteAbi(X_STAKING_POOL_METHODS.claimReward, X_STAKING_POOL_ERRORS)
+const xmineUnstakeAbi = parseWriteAbi(X_STAKING_POOL_METHODS.startUnstake, X_STAKING_POOL_ERRORS)
+const xmineActivateWarmupAbi = parseWriteAbi(
+  X_STAKING_POOL_METHODS.activateWarmup,
+  X_STAKING_POOL_ERRORS,
+)
 
 export async function writeLiquidClaimMixed(args: {
   wallet: Wallet

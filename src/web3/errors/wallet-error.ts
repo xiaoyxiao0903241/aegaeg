@@ -1,13 +1,7 @@
 import { WalletTransactionWaitError } from '~/web3/wallet/wait-wallet-transaction'
 import { WalletSubmitUnknownError } from '~/web3/wallet/wallet-submit-unknown-error'
 import { WALLET_BLOCKED, WALLET_WRITE_ERROR } from '~/web3/errors/sentinels'
-import {
-  type ErrorRule,
-  readErrorCode,
-  readErrorText,
-  firstMatch,
-  toErrorText,
-} from '~/web3/errors/error-text'
+import { readErrorCode, readErrorText } from '~/web3/errors/error-text'
 
 const USER_REJECTED_PATTERN =
   /user rejected|action_rejected|request rejected|user denied|rejected the request|denied transaction signature/i
@@ -15,12 +9,6 @@ const USER_REJECTED_PATTERN =
 /** Wallet send/simulation failures — must surface in the app even when code is 4001. */
 const WALLET_SEND_FAILURE_PATTERN =
   /transaction failed|interaction failed|likely to fail|execution reverted|cannot estimate gas|intrinsic gas too low|insufficient funds|not broadcast|reverted on-chain|wallet may have failed/i
-
-const GAS_LIMIT_TOO_LOW_PATTERN =
-  /gasLimit is too low|given 0|intrinsic gas too low|gas required exceeds allowance/i
-const INSUFFICIENT_FUNDS_PATTERN =
-  /insufficient funds for gas|insufficient funds|insufficient balance for transfer/i
-const SIGNER_GAS_PATTERN = /signer error.*gas/i
 
 export interface WalletTransactionErrorMessages {
   gasLimitTooLow: string
@@ -31,30 +19,9 @@ export interface WalletTransactionErrorMessages {
   transactionUnknown?: string
 }
 
-const WALLET_TRANSACTION_ERROR_RULES: Array<ErrorRule<keyof WalletTransactionErrorMessages>> = [
-  {
-    match: ({ raw }) =>
-      raw === WALLET_WRITE_ERROR.GAS_ESTIMATE_FAILED ||
-      /Failed to estimate gas for transaction/i.test(raw),
-    messageKey: 'gasEstimateFailed',
-  },
-  {
-    match: ({ raw }) =>
-      GAS_LIMIT_TOO_LOW_PATTERN.test(raw) ||
-      SIGNER_GAS_PATTERN.test(raw) ||
-      (/gas/i.test(raw) && /too low|given 0/i.test(raw)),
-    messageKey: 'gasLimitTooLow',
-  },
-  {
-    match: ({ raw }) => INSUFFICIENT_FUNDS_PATTERN.test(raw),
-    messageKey: 'insufficientFunds',
-  },
-]
-
 /**
- * Map wallet / signer infrastructure failures (gas limit, estimate, BNB balance)
- * to localized copy. Call before domain-specific resolvers so raw English gas
- * strings are not shown to users.
+ * Instance-typed wallet outcomes only (unknown receipt / submit timeout / write sentinels).
+ * Gas / insufficient-funds string rules live in `error-messages.ts` revert table — do not duplicate.
  */
 export function walletTransactionError(
   error: unknown,
@@ -80,7 +47,7 @@ export function walletTransactionError(
   ) {
     return messages.transactionUnknown
   }
-  return firstMatch(toErrorText(rawEarly), WALLET_TRANSACTION_ERROR_RULES, messages)
+  return null
 }
 
 export function isUserRejectedWalletError(error: unknown): boolean {

@@ -6,7 +6,12 @@ type ReferralQueryOptions = {
   enabled?: boolean
 }
 
-/** Cross-rail bind check — SSOT for connect warm + genesis/community. */
+/**
+ * U-tier bind display for Genesis (and any future display consumers).
+ * Live L-tier paths (purchase re-check, community bind, prefetch, staking preflight)
+ * call `readIsBindReferral` / `fetchQuery` directly — do not treat this hook as the
+ * only owner of bind truth.
+ */
 export function useIsBindReferralQuery(address?: string, options?: ReferralQueryOptions) {
   return useChainQuery({
     queryKey: queryKeys.chain.referralIsBoundOf(address ?? ''),

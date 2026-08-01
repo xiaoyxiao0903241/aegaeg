@@ -8,11 +8,12 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import {
   RELEASE_DURATION_DAYS,
   RESTAKE_DURATION_DAYS,
+  claimSplitFromReleasePct,
   matchPlanIndexByDurationDays,
+  planLabel,
   type ReleaseDurationDays,
   type RestakeDurationDays,
 } from '~/core/assets/claim-plans'
-import { claimSplitFromReleasePct } from '~/core/assets/claim-plans'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -23,7 +24,6 @@ import {
 } from '~/views/dapp/rewards/submit-rewards'
 import type { DaoRewardType } from '~/shared/api/types'
 import {
-  planLabel,
   REWARDS_DASH,
   splitAmountByPct,
   type MixedClaimView,

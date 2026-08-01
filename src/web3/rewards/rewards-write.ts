@@ -2,6 +2,7 @@ import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import {
   DAO_POOL_METHODS,
+  LUCKY_POOL_ERRORS,
   LUCKY_POOL_METHODS,
   MARKET_FUND_METHODS,
   REWARD_CLAIMER_ERRORS,
@@ -14,7 +15,7 @@ import {
 
 const marketWriteAbi = parseWriteAbi(MARKET_FUND_METHODS.claimReward, REWARD_CLAIMER_ERRORS)
 const daoMixedWriteAbi = parseWriteAbi(DAO_POOL_METHODS.claimRewardsMixed, REWARD_CLAIMER_ERRORS)
-const luckyMixedWriteAbi = parseWriteAbi(LUCKY_POOL_METHODS.claimRewardMixed)
+const luckyMixedWriteAbi = parseWriteAbi(LUCKY_POOL_METHODS.claimRewardMixed, LUCKY_POOL_ERRORS)
 
 export type SignedClaimArgs = {
   wallet: Wallet

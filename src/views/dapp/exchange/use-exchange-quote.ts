@@ -11,7 +11,6 @@ import { EXCHANGE_QUOTE_FAILED } from '~/web3/contract-error-message'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
-import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
@@ -106,14 +105,9 @@ export function useExchangeQuote<TQuote>({
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled && sessionReady && debouncedAmountIn > 0n,
+    refetchInterval: quoteRefreshIntervalMs,
     placeholderData: keepPreviousData,
   })
-
-  useVisibleInterval(
-    amountQuoteQuery,
-    quoteRefreshIntervalMs,
-    quotesEnabled && sessionReady && debouncedAmountIn > 0n,
-  )
 
   const quotedOut = liveQuotedOut(
     amountQuoteQuery.isPlaceholderData,

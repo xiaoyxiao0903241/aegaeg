@@ -266,13 +266,14 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   {
     id: 'claim-no-order',
     match: (text, error) => {
+      const raw = text.raw
+      // Reward/claim-shaped copy only — bare "not found" / HTML 404 must not steal other domains.
+      const claimShaped =
+        /no\s*(team\s*)?reward|available\s*to\s*claim|未?待领取|无可领取/i.test(raw) ||
+        (/not\s*found/i.test(raw) && /reward|claim|order/i.test(raw))
+      if (claimShaped) return true
       const code = readErrorCode(error)
-      return (
-        code === 404 ||
-        /no\s*(team\s*)?reward|available\s*to\s*claim|未?待领取|无可领取|not\s*found/i.test(
-          text.raw,
-        )
-      )
+      return code === 404 && /reward|claim|order/i.test(raw)
     },
     message: (t) => t.rewards.claimErrors.noOrder,
   },
@@ -280,9 +281,10 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   // —— Handbook §19 shared tips (user-facing) ——
   // ErrorStakeNotApproved = not bound (liquid/locked staking docs).
   // ErrorNotApproved = bond not authorized (bondhelper.md) — §19 incorrectly bunches them.
+  // Selectors: fail-closed when wallet only embeds revert hex (no errorName string).
   {
     id: 'stake-not-approved',
-    match: nameOrSelector(/ErrorStakeNotApproved/i),
+    match: nameOrSelector(/ErrorStakeNotApproved/i, '0xaa6a22bc'),
     message: (t) => t.staking.blocked.notBound,
   },
   {
@@ -292,94 +294,114 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   },
   {
     id: 'bond-not-approved',
-    match: nameOrSelector(/^ErrorNotApproved\b/i),
+    match: nameOrSelector(/^ErrorNotApproved\b/i, '0x5e23f093'),
     message: (t) => t.staking.blocked.depositoryNotAuth,
   },
   {
     id: 'zero-amount',
-    match: nameOrSelector(/Error(ZeroAmount|AmountZero|StakeAmount)\b/i, '0xc91787e4'),
+    match: nameOrSelector(
+      /Error(ZeroAmount|AmountZero|StakeAmount)\b/i,
+      '0xc91787e4', // ErrorZeroAmount()
+      '0xbc8ab109', // ErrorAmountZero()
+      '0x5d9fe13e', // ErrorStakeAmount()
+    ),
     message: (t) => t.errors.chain.reverts.zeroAmount,
   },
   {
     id: 'insufficient-balance',
     match: nameOrSelector(
       /Error(InsufficientBalance|ExceedsBalance|InvalidBalance|StakeAmountExceedsBalance)\b/i,
+      '0x0f9aedb5',
+      '0xbd99182f',
+      '0xbacf057c',
+      '0x30adcb59',
     ),
     message: (t) => t.staking.blocked.insufficientBalance,
   },
   {
     id: 'stake-amount-limit',
-    match: nameOrSelector(/ErrorStakeAmountLimit\b/i),
+    match: nameOrSelector(/ErrorStakeAmountLimit\b/i, '0xed35817b'),
     message: (t) => t.errors.chain.reverts.stakeAmountLimit,
   },
   {
     id: 'warmup-or-lock',
     match: nameOrSelector(
       /Error(StakeWarmupNotEnded|StillLocked|WarmupPending|StakeWarmupPeriod|WarmupActive)\b/i,
+      '0xf5c34c55',
+      '0x70b1cae9',
+      '0x0f095e78',
+      '0x9111ff2c',
     ),
     message: (t) => t.assets.blocked.warmupNotEnded,
   },
   {
     id: 'no-warmup',
-    match: nameOrSelector(/ErrorNoWarmup\b/i),
+    match: nameOrSelector(/ErrorNoWarmup\b/i, '0xa20249b0'),
     message: (t) => t.assets.blocked.noWarmup,
   },
   {
     id: 'reward-already-claimed',
-    match: nameOrSelector(/ErrorRewardAlreadyClaimed\b/i),
+    match: nameOrSelector(/ErrorRewardAlreadyClaimed\b/i, '0xa92cf93c'),
     message: (t) => t.errors.chain.reverts.rewardAlreadyClaimed,
   },
   {
     id: 'insufficient-contribution',
-    match: nameOrSelector(/ErrorInsufficientContribution\b/i),
+    match: nameOrSelector(/ErrorInsufficientContribution\b/i, '0x76427e88'),
     message: (t) => t.rewards.mixed.insufficientContribution,
   },
   {
     id: 'restake-or-queue-unset',
     match: nameOrSelector(
       /Error(RestakeConfigNotSet|RewardQueueNotSet|PrincipalReleaseVaultNotSet)\b/i,
+      '0x43f1293c',
+      '0x8748477e',
+      '0xb0f1e580',
     ),
     message: (t) => t.errors.chain.reverts.configNotReady,
   },
   {
     id: 'not-winner',
-    match: nameOrSelector(/ErrorNotWinner\b/i),
+    match: nameOrSelector(/ErrorNotWinner\b/i, '0x9a7defbc'),
     message: (t) => t.errors.chain.reverts.notWinner,
   },
   {
     id: 'debt-capacity',
-    match: nameOrSelector(/ErrorDebtCapacityReached\b/i),
+    match: nameOrSelector(/ErrorDebtCapacityReached\b/i, '0xd63b4733'),
     message: (t) => t.errors.chain.reverts.debtCapacityReached,
   },
   {
     id: 'mining-quota',
-    match: nameOrSelector(/ErrorMiningQuotaExceeded\b/i),
+    match: nameOrSelector(/ErrorMiningQuotaExceeded\b/i, '0xeabda292'),
     message: (t) => t.staking.blocked.insufficientQuota,
   },
   {
     id: 'bond-too-small',
-    match: nameOrSelector(/ErrorBondTooSmall\b/i),
+    match: nameOrSelector(/ErrorBondTooSmall\b/i, '0xad13455f'),
     message: (t) => t.errors.chain.reverts.bondTooSmall,
   },
   {
     id: 'bond-too-large',
-    match: nameOrSelector(/ErrorBondTooLarge\b/i),
+    match: nameOrSelector(/ErrorBondTooLarge\b/i, '0xcc326f21'),
     message: (t) => t.errors.chain.reverts.bondTooLarge,
   },
   {
     id: 'invalid-bond-amount',
-    match: nameOrSelector(/ErrorInvalidBondAmount\b/i),
+    match: nameOrSelector(/ErrorInvalidBondAmount\b/i, '0x0e26005a'),
     message: (t) => t.staking.blocked.zeroAmount,
   },
   {
     id: 'stake-not-exist',
-    match: nameOrSelector(/ErrorStakeNotExists?\b/i),
+    match: nameOrSelector(/ErrorStakeNotExists?\b/i, '0x91962c02', '0x47046b36'),
     message: (t) => t.errors.chain.reverts.stakeNotExist,
   },
   {
     id: 'yield-unavailable',
     match: nameOrSelector(
       /Error(StakeAmountExceedsInterest|StakeInterestAmountZero|ExtraAmount|NotPrincipal|ProfitExceedsAmount|ProfitNotAvailable)\b/i,
+      '0xad4f2d5b',
+      '0xbeda8a6f',
+      '0xf72a7795',
+      '0xac49be17',
     ),
     message: (t) => t.errors.chain.reverts.yieldUnavailable,
   },
@@ -387,44 +409,46 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
     id: 'nothing-to-claim',
     match: nameOrSelector(
       /Error(NothingToClaim|IndexOutOfBounds|NoSilenceBalance|NotAvailable)\b/i,
+      '0x253fa28b',
+      '0x0715b4d9',
     ),
     message: (t) => t.assets.blocked.nothingToRedeem,
   },
   {
     id: 'turbine-cooldown',
-    match: nameOrSelector(/Error(SilentTime|InvalidAmount)\b/i),
+    match: nameOrSelector(/Error(SilentTime|InvalidAmount)\b/i, '0x60977553', '0xd27def68'),
     message: (t) => t.errors.chain.reverts.turbineCooldown,
   },
   {
     id: 'pair-not-exist',
-    match: nameOrSelector(/ErrorPairNotExist\b/i),
+    match: nameOrSelector(/ErrorPairNotExist\b/i, '0xd7660b05'),
     message: (t) => t.errors.chain.reverts.pairNotExist,
   },
   {
     id: 'account-migrated',
-    match: nameOrSelector(/Error(AccountMigrated|AlreadyMigrated)\b/i),
+    match: nameOrSelector(/Error(AccountMigrated|AlreadyMigrated)\b/i, '0x28b83a9a'),
     message: (t) => t.staking.blocked.accountMigrated,
   },
 
   // —— Shared Error* names (flash Usd1Swap + burn AgxContributionSwap collide on selector) ——
   {
     id: 'shared-paused',
-    match: nameOrSelector(/^ErrorPaused\b/i),
+    match: nameOrSelector(/^ErrorPaused\b/i, '0xbc2c67a6'),
     message: (t) => t.errors.chain.reverts.operationPaused,
   },
   {
     id: 'flash-insufficient-usd1',
-    match: nameOrSelector(/^ErrorInsufficientUsd1\b/i),
+    match: nameOrSelector(/^ErrorInsufficientUsd1\b/i, '0x0422c7a7'),
     message: (t) => t.exchange.flash.blocked.insufficientReserve,
   },
   {
     id: 'shared-below-min',
-    match: nameOrSelector(/^ErrorBelowMin\b/i),
+    match: nameOrSelector(/^ErrorBelowMin\b/i, '0x92882673'),
     message: (t) => t.errors.chain.reverts.belowMinAmount,
   },
   {
     id: 'shared-above-max',
-    match: nameOrSelector(/^ErrorAboveMax\b/i),
+    match: nameOrSelector(/^ErrorAboveMax\b/i, '0x1f2fef9c'),
     message: (t) => t.errors.chain.reverts.aboveMaxAmount,
   },
   {
@@ -449,7 +473,7 @@ export const REVERT_MATCH_RULES: MatchRule[] = [
   },
   {
     id: 'shared-zero-rate',
-    match: nameOrSelector(/^ErrorZeroRate\b/i),
+    match: nameOrSelector(/^ErrorZeroRate\b/i, '0x8eb37bb5'),
     message: (t) => t.errors.chain.reverts.zeroRate,
   },
   {

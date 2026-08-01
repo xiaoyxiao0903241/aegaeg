@@ -6,7 +6,6 @@ import {
   readExchangePoolImmutableMetadata,
   readExchangePoolSpotPrice,
 } from '~/web3/exchange/read-exchange-pool'
-import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainQuery } from '~/hooks/use-chain-query'
 
 /** Shared V2 pair metadata + reserves — short-stale spot reused across exchange quotes. */
@@ -25,10 +24,9 @@ export function useExchangePoolReads(quotesEnabled = true) {
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled,
+    refetchInterval: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     placeholderData: keepPreviousData,
   })
-
-  useVisibleInterval(spotQuery, EXCHANGE_CONFIG.quoteRefreshIntervalMs, quotesEnabled)
 
   const poolContext: ExchangePoolReadContext | undefined =
     metadataQuery.data && spotQuery.data

@@ -40,6 +40,26 @@ export function restakeBpsFromPct(restakePct: number): number {
   return pct * 100
 }
 
+/**
+ * Label for a duration plan option (release / restake days + optional tax).
+ * Call sites pass i18n templates — no locale in core.
+ */
+export function planLabel(
+  days: number,
+  plans: readonly DurationPlan[] | undefined,
+  daysTax: string,
+  daysOnly: string,
+  taxRate: string,
+): string {
+  const target = BigInt(days) * SECONDS_PER_DAY
+  const plan = plans?.find((p) => p.exists !== false && p.durationSeconds === target)
+  if (plan?.taxBps != null) {
+    const tax = taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
+    return daysTax.replace('{days}', String(days)).replace('{tax}', tax)
+  }
+  return daysOnly.replace('{days}', String(days))
+}
+
 /** Release % clamped to 0–100 integer (slider + split math SSOT). */
 export function clampReleasePct(releasePct: number): number {
   return Math.min(100, Math.max(0, Math.round(releasePct)))

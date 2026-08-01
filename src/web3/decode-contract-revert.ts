@@ -6,11 +6,22 @@ import {
   type Abi,
 } from 'viem'
 import {
+  AGX_CONTRIBUTION_SWAP_ERRORS,
+  BOND_DEPOSITORY_ERRORS,
+  BOND_HELPER_ERRORS,
   ERC20_ERRORS,
+  LIQUID_STAKING_ERRORS,
+  LOCKED_STAKING_ERRORS,
+  LUCKY_POOL_ERRORS,
   PRESALE_ERRORS,
+  PRINCIPAL_RELEASE_VAULT_ERRORS,
+  REDEEMABLE_GAGX_ERRORS,
   REFERRAL_ERRORS,
   REWARD_CLAIMER_ERRORS,
+  REWARD_QUEUE_ERRORS,
+  TURBINE_ERRORS,
   USD1_SWAP_ERRORS,
+  X_STAKING_POOL_ERRORS,
 } from '~/web3/abis'
 
 export interface DecodedContractRevert {
@@ -18,16 +29,35 @@ export interface DecodedContractRevert {
   args?: readonly unknown[]
 }
 
-/** Union ABI for decoding revert data when the calling contract is unknown. */
-export const ALL_CONTRACT_ERRORS_ABI = parseAbi([
-  ...ERC20_ERRORS,
-  ...PRESALE_ERRORS,
-  ...REFERRAL_ERRORS,
-  ...REWARD_CLAIMER_ERRORS,
-  ...USD1_SWAP_ERRORS,
-  // gAGX-only name; ErrorZeroAddress/Amount share selectors with Usd1Swap.
-  'error ErrorNotAuthorized()',
-])
+/** Deduplicate error ABI lines that share the same signature text. */
+function uniqueErrorAbiLines(lines: readonly string[]): string[] {
+  return [...new Set(lines)]
+}
+
+/**
+ * Union ABI for decoding revert data when the calling contract is unknown.
+ * Sourced from handbook contract error tables (write-path + flash/burn/presale).
+ */
+export const ALL_CONTRACT_ERRORS_ABI = parseAbi(
+  uniqueErrorAbiLines([
+    ...ERC20_ERRORS,
+    ...PRESALE_ERRORS,
+    ...REFERRAL_ERRORS,
+    ...REWARD_CLAIMER_ERRORS,
+    ...USD1_SWAP_ERRORS,
+    ...AGX_CONTRIBUTION_SWAP_ERRORS,
+    ...TURBINE_ERRORS,
+    ...REDEEMABLE_GAGX_ERRORS,
+    ...LIQUID_STAKING_ERRORS,
+    ...LOCKED_STAKING_ERRORS,
+    ...BOND_HELPER_ERRORS,
+    ...BOND_DEPOSITORY_ERRORS,
+    ...X_STAKING_POOL_ERRORS,
+    ...REWARD_QUEUE_ERRORS,
+    ...PRINCIPAL_RELEASE_VAULT_ERRORS,
+    ...LUCKY_POOL_ERRORS,
+  ]),
+)
 
 export class ContractRevertError extends Error {
   readonly errorName: string

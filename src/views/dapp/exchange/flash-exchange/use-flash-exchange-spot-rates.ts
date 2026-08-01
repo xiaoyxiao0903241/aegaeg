@@ -7,7 +7,6 @@ import type { ExchangePairTokens, FlashPairId } from '~/views/dapp/exchange/exch
 import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
-import { useVisibleInterval } from '~/hooks/queries/use-visible-interval'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { liveQuotedOut } from '~/core/exchange/live-quoted-out'
 import { readFlashPairQuote } from '~/web3/exchange/flash-exchange-read'
@@ -32,14 +31,10 @@ export function useFlashExchangeSpotRates({
     scope: 'public',
     freshness: 'quote',
     enabled: quotesEnabled,
+    // gagx has no live spot pool — one-shot read only
+    refetchInterval: pairId === 'gagx' ? false : EXCHANGE_CONFIG.quoteRefreshIntervalMs,
     placeholderData: keepPreviousData,
   })
-
-  useVisibleInterval(
-    spotQuoteQuery,
-    EXCHANGE_CONFIG.quoteRefreshIntervalMs,
-    quotesEnabled && pairId !== 'gagx',
-  )
 
   const spotQuotedOut = liveQuotedOut(spotQuoteQuery.isPlaceholderData, spotQuoteQuery.data)
   const isExchangePriceQuoting =

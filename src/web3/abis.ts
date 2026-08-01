@@ -111,10 +111,15 @@ export const AGX_CONTRIBUTION_SWAP_METHODS = {
 /** AegisAgxContributionSwap custom errors — docs/frontend-manual/contracts/agxcontributionswap.md */
 export const AGX_CONTRIBUTION_SWAP_ERRORS = [
   'error ErrorPaused()',
+  'error ErrorZeroAmount()',
   'error ErrorBelowMin(uint256 amount, uint256 minAmount)',
   'error ErrorAboveMax(uint256 amount, uint256 maxAmount)',
-  'error ErrorZeroAmount()',
+  'error ErrorInsufficientContribution(address user, uint256 available, uint256 required)',
+  'error ErrorCallerNotAuthorized()',
+  'error ErrorZeroAddress()',
   'error ErrorZeroRate()',
+  'error ErrorInvalidLimits(uint256 minAmount, uint256 maxAmount)',
+  'error ErrorAccountMigrated(address oldAccount)',
 ] as const
 
 /** AegisTurbineVestingHub — handbook §16 unlock / claim. */
@@ -131,13 +136,15 @@ export const TURBINE_METHODS = {
 } as const
 
 export const TURBINE_ERRORS = [
-  'error ErrorZeroAmount()',
   'error ErrorInsufficientBalance()',
-  'error ErrorInvalidAmount()',
-  'error ErrorIndexOutOfBounds()',
   'error ErrorSilentTime()',
-  'error ErrorNotAvailable()',
   'error ErrorNoSilenceBalance()',
+  'error ErrorInvalidAmount()',
+  'error ErrorZeroAddress()',
+  'error ErrorZeroAmount()',
+  'error ErrorIndexOutOfBounds()',
+  'error ErrorNotAvailable()',
+  'error ErrorNotAuthorized()',
 ] as const
 
 /** AegisRedeemableGAGX — gAGX↔AGX wrap/redeem (manual: redeemablegagx). */
@@ -161,6 +168,20 @@ export const LIQUID_STAKING_METHODS = {
   isWarmupExpired: 'function isWarmupExpired(address user) view returns (bool)',
 } as const
 
+/** LiquidStaking custom errors — docs/frontend-manual/contracts/liquidstaking.md */
+export const LIQUID_STAKING_ERRORS = [
+  'error ErrorStakeAmount()',
+  'error ErrorStakeNotApproved()',
+  'error ErrorStakeAmountLimit()',
+  'error ErrorStakeNotExists()',
+  'error ErrorStakeWarmupNotEnded()',
+  'error ErrorStakeAmountExceedsBalance()',
+  'error ErrorStakeAmountExceedsInterest()',
+  'error ErrorStakeInterestAmountZero()',
+  'error ErrorAlreadyMigrated()',
+  'error ErrorPrincipalReleaseVaultNotSet()',
+] as const
+
 /** LockedStaking — AGX term stake (manual §8.3). */
 export const LOCKED_STAKING_METHODS = {
   lockedStake: 'function lockedStake(uint256 amount)',
@@ -171,6 +192,21 @@ export const LOCKED_STAKING_METHODS = {
   periodTime: 'function periodTime() view returns (uint256)',
 } as const
 
+/** LockedStaking custom errors — docs/frontend-manual/contracts/lockedstaking.md */
+export const LOCKED_STAKING_ERRORS = [
+  'error ErrorAmountZero()',
+  'error ErrorStakeNotApproved()',
+  'error ErrorStakeAmountLimit()',
+  'error ErrorIndexOutOfBounds()',
+  'error ErrorStakeNotExist()',
+  'error ErrorStakeWarmupPeriod()',
+  'error ErrorNotPrincipal()',
+  'error ErrorExceedsBalance()',
+  'error ErrorExtraAmount()',
+  'error ErrorZeroAddress()',
+  'error ErrorPrincipalReleaseVaultNotSet()',
+] as const
+
 /** BondHelper — LP / Burn zap (manual §10). */
 export const BOND_HELPER_METHODS = {
   authContracts: 'function authContracts(address target) view returns (bool)',
@@ -180,6 +216,16 @@ export const BOND_HELPER_METHODS = {
   zapIntoBurnBond:
     'function zapIntoBurnBond(address burnBondDepository, address token, uint256 amount)',
 } as const
+
+/** BondHelper custom errors — docs/frontend-manual/contracts/bondhelper.md */
+export const BOND_HELPER_ERRORS = [
+  'error ErrorNotApproved()',
+  'error ErrorPairNotExist()',
+  'error ErrorInvalidBalance()',
+  'error ErrorInvalidBondAmount()',
+  'error ErrorZeroAmount()',
+  'error ErrorZeroAddress()',
+] as const
 
 /** XStakingPool — gAGX mining (manual §15). */
 export const X_STAKING_POOL_METHODS = {
@@ -193,6 +239,21 @@ export const X_STAKING_POOL_METHODS = {
   claimReward: 'function claimReward()',
   startUnstake: 'function startUnstake()',
 } as const
+
+/** XStakingPool custom errors — docs/frontend-manual/contracts/xstakingpool.md */
+export const X_STAKING_POOL_ERRORS = [
+  'error ErrorAmountZero()',
+  'error ErrorStakeNotExist()',
+  'error ErrorStillLocked()',
+  'error ErrorNoWarmup()',
+  'error ErrorWarmupPending()',
+  'error ErrorMiningQuotaExceeded(address user, uint256 requested, uint256 quota)',
+  'error ErrorPrincipalReleaseVaultNotSet()',
+  'error ErrorWarmupExitDisabled()',
+  'error ErrorZeroAddress()',
+  'error ErrorZeroAmount()',
+  'error ErrorCallerNotAuthorized()',
+] as const
 
 /** LiquidStaking claim / exit (manual §8.2) — assets rail. */
 export const LIQUID_STAKING_ASSETS_METHODS = {
@@ -249,6 +310,30 @@ export const BOND_DEPOSITORY_ASSETS_METHODS = {
     'function claimStakeProfitMixed(address recipient, uint256 amount, uint8 releasePlanIndex, uint256 bondIndex, uint256 restakePlanIndex, uint256 restakeBps) returns (uint256)',
 } as const
 
+/**
+ * Bond / BurnBond custom errors — docs/frontend-manual/contracts/bonddepository.md
+ * (burnbonddepository.md: same user-facing set).
+ */
+export const BOND_DEPOSITORY_ERRORS = [
+  'error ErrorNotApproved()',
+  'error ErrorDebtCapacityReached()',
+  'error ErrorBondTooSmall()',
+  'error ErrorBondTooLarge()',
+  'error ErrorBondIndexOutOfBounds()',
+  'error ErrorBondNotExist()',
+  'error ErrorUserNotAuthorized()',
+  'error ErrorStakeNotActive()',
+  'error ErrorProfitExceedsAmount()',
+  'error ErrorCallerNotAllowed(address)',
+  'error ErrorPrincipalReleaseVaultNotSet()',
+  'error ErrorZeroAmount()',
+  'error ErrorInvalidAmount()',
+  'error ErrorAmountExceedsBalance()',
+  'error ErrorZeroAddress()',
+  'error ErrorProfitNotAvailable()',
+  'error ErrorCallerNotAuthorized()',
+] as const
+
 /** RewardQueue plans (manual §12) — duration → releasePlanIndex. */
 export const REWARD_QUEUE_METHODS = {
   queuePlans:
@@ -261,6 +346,14 @@ export const REWARD_QUEUE_METHODS = {
   claimAllVestedRewards: 'function claimAllVestedRewards(uint8 planIndex)',
 } as const
 
+/** RewardQueue custom errors — docs/frontend-manual/contracts/rewardqueue.md */
+export const REWARD_QUEUE_ERRORS = [
+  'error ErrorZeroAmount()',
+  'error ErrorIndexOutOfBounds()',
+  'error ErrorNotAuthorized()',
+  'error ErrorZeroAddress()',
+] as const
+
 /** PrincipalReleaseVault (manual §13) — principal linear release → wallet AGX. */
 export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   getReleaseCount: 'function getReleaseCount(address user) view returns (uint256)',
@@ -269,6 +362,17 @@ export const PRINCIPAL_RELEASE_VAULT_METHODS = {
   claim: 'function claim(uint256 index)',
   claimMany: 'function claimMany(uint256 start, uint256 limit)',
 } as const
+
+/** PrincipalReleaseVault custom errors — docs/frontend-manual/contracts/principalreleasevault.md */
+export const PRINCIPAL_RELEASE_VAULT_ERRORS = [
+  'error ErrorZeroAddress()',
+  'error ErrorZeroAmount()',
+  'error ErrorNotAuthorized()',
+  'error ErrorIndexOutOfBounds()',
+  'error ErrorNothingToClaim()',
+  'error ErrorCallerNotAuthorized()',
+  'error ErrorAlreadyMigrated()',
+] as const
 
 /** RestakeConfig plans (manual §9) — duration → restakePlanIndex (raw index). */
 export const RESTAKE_CONFIG_METHODS = {
@@ -308,6 +412,16 @@ export const LUCKY_POOL_METHODS = {
   claimRewardMixed:
     'function claimRewardMixed(uint256 roundId, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
 } as const
+
+/** LuckyPool custom errors — docs/frontend-manual/contracts/aegisluckypool.md (user claim path). */
+export const LUCKY_POOL_ERRORS = [
+  'error ErrorPaused()',
+  'error ErrorNotWinner(uint256 roundId, address user)',
+  'error ErrorRewardAlreadyClaimed(uint256 roundId, address user)',
+  'error ErrorRestakeConfigNotSet()',
+  'error ErrorRewardQueueNotSet()',
+  'error ErrorInsufficientContribution(address user, uint256 required, uint256 available)',
+] as const
 
 /** AegisPresaleRewardClaimer custom errors — see docs/contract.md §4.4. */
 export const REWARD_CLAIMER_ERRORS = [

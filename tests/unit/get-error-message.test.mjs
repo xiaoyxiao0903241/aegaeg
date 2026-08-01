@@ -54,5 +54,36 @@ test('getErrorMessage maps sentinels, handbook reverts, and falls back', async (
     t.errors.chain.reverts.yieldUnavailable,
   )
 
+  // claim-no-order: claim-shaped only — bare "not found" must not steal other domains
+  assert.equal(
+    getErrorMessage(new Error('No reward available to claim'), t),
+    t.rewards.claimErrors.noOrder,
+  )
+  assert.equal(
+    getErrorMessage(new Error('claim order not found'), t),
+    t.rewards.claimErrors.noOrder,
+  )
+  assert.equal(getErrorMessage(new Error('method not found'), t), t.errors.chain.fallback)
+  assert.equal(getErrorMessage(new Error('Not Found'), t), t.errors.chain.fallback)
+
   assert.equal(getErrorMessage(new Error('opaque rpc english'), t), t.errors.chain.fallback)
+})
+
+test('getErrorMessage maps production hex-only wallet shapes via selectors', async () => {
+  const enModule = await loadModule('/src/i18n/messages/app/en.ts')
+  const t = enModule.default
+  const { getErrorMessage } = await loadModule('/src/web3/errors/get-error-message.ts')
+
+  // Wallet often embeds only revert data hex — no ErrorName string in message.
+  const hexOnly = (selector) => ({
+    message: 'execution reverted',
+    data: selector,
+  })
+
+  assert.equal(getErrorMessage(hexOnly('0xed35817b'), t), t.errors.chain.reverts.stakeAmountLimit)
+  assert.equal(getErrorMessage(hexOnly('0xaa6a22bc'), t), t.staking.blocked.notBound)
+  assert.equal(getErrorMessage(hexOnly('0x5e23f093'), t), t.staking.blocked.depositoryNotAuth)
+  assert.equal(getErrorMessage(hexOnly('0xc91787e4'), t), t.errors.chain.reverts.zeroAmount)
+  assert.equal(getErrorMessage(hexOnly('0xf5c34c55'), t), t.assets.blocked.warmupNotEnded)
+  assert.equal(getErrorMessage(hexOnly('0xbc2c67a6'), t), t.errors.chain.reverts.operationPaused)
 })

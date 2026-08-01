@@ -25,7 +25,6 @@ import {
   formatTableGenesisRank,
 } from '~/shared/api/format-display'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
-import type { DurationPlan } from '~/core/assets/claim-plans'
 import type { RewardsView } from '~/shared/config/rewards-deep-link'
 
 /** Em dash placeholder for unset rewards UI values. */
@@ -79,23 +78,6 @@ function formatDaoGrantStatus(status: DaoGrantStatus, labels: RewardLogStatusLab
 export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
   return String(Math.trunc(rank))
-}
-
-export function planLabel(
-  days: number,
-  plans: readonly DurationPlan[] | undefined,
-  daysTax: string,
-  daysOnly: string,
-  taxRate: string,
-): string {
-  const plan = plans?.find(
-    (p) => p.exists !== false && Number(p.durationSeconds / 86_400n) === days,
-  )
-  if (plan?.taxBps != null) {
-    const tax = taxRate.replace('{rate}', String(Number(plan.taxBps) / 100))
-    return daysTax.replace('{days}', String(days)).replace('{tax}', tax)
-  }
-  return daysOnly.replace('{days}', String(days))
 }
 
 export function splitAmountByPct(amount: bigint, pct: number): bigint {
