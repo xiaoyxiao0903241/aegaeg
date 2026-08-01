@@ -43,13 +43,16 @@
 
 - 门闸：`canSubmitQuotedExchange`（禁 placeholder、过期 quote、余额 loading、unknown latch）。
 - Approve 后 live 重读：Swap = quote + sellBalance；Genesis = bind + pause。
-- Genesis chrome：`GenesisPromoSync` → `genesis-promo-store`；无季数据时骨架。
+- Genesis chrome：`GenesisPromoSync` → `genesis-promo-store`（`setPromo` 语义相等短路；`setNowSeconds` 同秒 no-op）；rail/community 用 `useGenesisPromoChrome`（标量）；`seasonOptions` 由 genesis chain-reads 另订。
+- Genesis 倒计时：`useGenesisCountdownClock` 自订 `nowSeconds`；**勿**把钟绑进 `useGenesisChainReads` 整袋。
+- Exchange Content：只传 rate / overview 等标量；Widget 仍收整包 session（金额草稿合法重跑 Content 不合法）。
 
 ## 6. React Query
 
 - Key 只来自 `query-keys.ts`。
 - Tab 切页：`refetchStaleTabQueries(tab)`（仅 stale + active）；写后仍 `invalidateTabQueries(tab)`（`refetchType: 'active'`）。
-- Rail hover：`prefetchTabQueries` 仅暖 stale + inactive。
+- Rail hover：`prefetchTabQueries` 仅暖 stale + inactive（勿对 fresh inactive 无条件 refetch）。
+- Assets hub：API holdings/reward/distribution 可用或加载中时跳过全表链读（`assetsHubNeedsChainFallback`）。
 - 钱包切换：只刷新新地址链上读 + 当前 tab。
 
 ## 7. API 与错误
@@ -64,14 +67,16 @@
 
 ## 9. 反模式
 
-| 不要                           | 要                                                       |
-| ------------------------------ | -------------------------------------------------------- |
-| 组件内散落 chain id / 合约地址 | `contracts.ts` / `thirdweb.ts` + env（禁止代码地址兜底） |
-| 缺 env 时静默用硬编码地址      | 抛错（fail-closed）                                      |
-| 裸 403 当封禁                  | 业务码 + 文案                                            |
-| confirm 失败仍清空 UI          | `confirm_failed` + 保留 txHash                           |
-| Approve 后用渲染快照做门闸     | live `fetchQuery` / refetch                              |
-| Unknown 后立即重提             | `WRITE_PATH` latch                                       |
+| 不要                                 | 要                                                       |
+| ------------------------------------ | -------------------------------------------------------- |
+| 组件内散落 chain id / 合约地址       | `contracts.ts` / `thirdweb.ts` + env（禁止代码地址兜底） |
+| 缺 env 时静默用硬编码地址            | 抛错（fail-closed）                                      |
+| 裸 403 当封禁                        | 业务码 + 文案                                            |
+| confirm 失败仍清空 UI                | `confirm_failed` + 保留 txHash                           |
+| Approve 后用渲染快照做门闸           | live `fetchQuery` / refetch                              |
+| Unknown 后立即重提                   | `WRITE_PATH` latch                                       |
+| 切 Tab 无条件 invalidate 全 key      | `refetchStaleTabQueries` / 写后 `invalidateAfter*`       |
+| Content 订整包 session（含金额草稿） | 标量 props；时钟 / 1Hz 下沉到叶子                        |
 
 ## 10. 验证
 

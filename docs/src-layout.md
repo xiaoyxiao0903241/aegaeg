@@ -25,10 +25,11 @@
 
 ## 跨 Tab chrome（`app/shell/`）
 
-- **放这里**：≥2 个 DApp Tab 共用的壳（顶栏、面板折叠、文案轮播壳、widget 外框等）。文件平铺；命名用短 `Dapp*`（例：`DappPanelToggle` · `DappTabHeader` · `DappCarousel`）。
+- **放这里**：≥2 个 DApp Tab 共用的壳（顶栏、面板折叠、文案轮播壳、widget 外框等）。文件平铺；命名用短 `Dapp*`（例：`DappPanelToggle` · `DappTabHeader` · `DappCarousel` · `DappTabWidgetShell` / `DappTabDetailShell`）。
 - **禁**：把跨轨壳落在某一 `views/dapp/<tab>/` 下并用该 Tab 前缀命名（反例：`ExchangePanelToggle` 被 assets/staking/rewards/release 引用）。
 - **vs `shared/ui`**：`shared/ui` = 无 DApp 业务语义的底座（Embla Carousel、`WidgetHeader`、颜色/字阶）；`app/shell` = DApp 壳 chrome（可绑 shell store / 通栏布局，仍不拥有 domain options 或 locale 默认文案——文案由 call site + i18n 传入）。见根 `AGENTS.md` §8.0 R3。
 - **单轨 Figma leaf**（仅一轨用、且注释标明非通用壳）留在页袋（例：`AssetsModeCard` / `RewardsModeCard` / `TokenAboutCarousel`）。
+- **Tab 面板壳**：各轨 `index.tsx` 的 widget/detail 外框走 `dapp-tab-panel-shell.tsx`（固化 class）；禁在五处 index 复制 `DappSubviewShell` layout class。
 
 ## 业务子袋
 
@@ -38,24 +39,24 @@
 
 ```text
 src/
-  core/{auth,exchange,presale}/
+  core/{auth,assets,exchange,migration,presale,query,referral,release,rewards,staking,wallet}/
   web3/                 # thirdweb、abis、errors、链读客户端
     exchange/  wallet/  # 兑换读写、write intent、unknown-receipt-lock
-    presale/   referral/ claim/  # 预售 / 推荐 / 领奖（按域装袋）
+    assets/  presale/  referral/  claim/  staking/  migration/
   app/{startup,shell}/  # providers / boot；壳 chrome 在 shell/
   shared/{ui,config,styles,lib,api}/
   hooks/  stores/  i18n/messages/{home,app}/
   views/
     home/               # 禁 web3 / thirdweb / viem
     dapp/{exchange,assets,staking,rewards,release,community,genesis,auth}/
-      exchange/{flash-exchange,market-trade,hub}/
+      exchange/{flash-exchange,market-trade,burn,turbine,hub}/
 ```
 
 ## `hooks/` 白名单
 
-`use-api-data` · `use-capped-token-amount-input` · `use-chain-mutation` · `use-chain-query` · `use-genesis-promo` · `use-mobile-viewport` · `use-present-user-facing-error` · `use-shareholder-rank`
+`use-api-data` · `use-capped-token-amount-input` · `use-chain-mutation` · `use-chain-query` · `use-genesis-promo`（对外优先 `useGenesisPromoChrome`：只订标量）· `use-mobile-viewport` · `use-present-user-facing-error` · `use-shareholder-rank`
 
-页专属编排在页袋（如 `use-exchange-quote`、`use-genesis-widget`、`use-claim-reward`）。
+页专属编排在页袋（如 `use-exchange-quote`、`use-genesis-widget`、`use-genesis-countdown-clock`、`use-claim-reward`）。
 
 跨 Tab **写路径纯函数**（非 hook）：`core/wallet/write-cta.ts`（`canClaimWhen` / `writeCtaDisabled` / `writeCtaLabel` / `formatAmountBalanceLabel`）；`web3/errors/get-error-message.ts`（`getErrorMessage(error, t)`）；`web3/errors/error-messages.ts`（sentinel / revert → i18n 表）；`app/shell/go-bind-referral.ts`。
 

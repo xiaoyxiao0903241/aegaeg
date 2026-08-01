@@ -14,6 +14,7 @@
 ## Compiler
 
 - 新代码默认不写 `useMemo` / `useCallback`；effect 依赖或第三方边界需要稳定引用时再写。
+- **例外（仍须手写 memo）**：Context `Provider` 的 `value` 对象（例：`shared/ui/carousel.tsx`）——host 重渲染而 snap 未变时，稳定引用才能让消费者 bailout。
 - 逃生：`"use no memo"`（临时）；修根因后删。
 - 勿盲删 effect 依赖上的 `useCallback`。
 
@@ -43,3 +44,5 @@ Money-path 表征测：`tests/unit/react-quality-checks.test.mjs`。
 | `pnpm test:e2e` | 手动 / 可选                              |
 
 **Compiler lint：** `eslint-plugin-react-compiler` → `react-compiler/react-compiler: error`（进 `lint:src --quiet`）。违反 Rules of React 的组件/hook 会被 Compiler 跳过优化。`react-hooks` 的 refs / set-state-in-effect 仍为 warn（登记债）；禁止在 render 期写 `ref.current`（用 `useLayoutEffect` 同步）。
+
+**Unit `loadModule`：** Vite 依赖缓存落在 `.scratch/vite-test/<pid>/`（已 gitignore）；worker 退出与 `test.after` 清理，启动时 prune 死 pid 孤儿目录。勿再写 `node_modules/.vite-test-*`。
