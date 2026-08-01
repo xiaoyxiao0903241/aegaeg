@@ -1,4 +1,5 @@
-import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
+import { DappTabDetailShell, DappTabWidgetShell } from '~/app/shell/dapp-tab-panel-shell'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
 import { BurnExchangeContent } from '~/views/dapp/exchange/burn/burn-exchange-content'
@@ -62,33 +63,59 @@ function ExchangeWidgetBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   return <ExchangeHubWidget />
 }
 
+/** Content gets scalars only — amount drafts stay on Widget. */
 function ExchangeContentBody({ trade, flash, burn, turbine }: ExchangeSessions) {
   const view = useDappSubviewDisplayView<ExchangeView>()
-  if (view === 'flash') return <FlashExchangeContent flash={requireFlash(flash)} />
-  if (view === 'trade') return <MarketTradeContent trade={requireTrade(trade)} />
-  if (view === 'burn') return <BurnExchangeContent burn={requireBurn(burn)} />
-  if (view === 'turbine') return <TurbineExchangeContent turbine={requireTurbine(turbine)} />
+  if (view === 'flash') {
+    const session = requireFlash(flash)
+    return <FlashExchangeContent overviewRateLabel={session.overviewRateLabel} />
+  }
+  if (view === 'trade') {
+    const session = requireTrade(trade)
+    return <MarketTradeContent exchangePriceLabel={session.exchangePriceLabel} />
+  }
+  if (view === 'burn') {
+    const session = requireBurn(burn)
+    return (
+      <BurnExchangeContent
+        overviewRateLabel={session.overviewRateLabel}
+        walletReady={session.walletReady}
+        config={session.config}
+        userStats={session.userStats}
+      />
+    )
+  }
+  if (view === 'turbine') {
+    const session = requireTurbine(turbine)
+    const { overview } = session
+    return (
+      <TurbineExchangeContent
+        pendingUnlockLabel={overview.pendingUnlockLabel}
+        pendingUnlockUsdHint={overview.pendingUnlockUsdHint}
+        coolingLabel={overview.coolingLabel}
+        coolingUsdHint={overview.coolingUsdHint}
+        totalWithdrawnLabel={overview.totalWithdrawnLabel}
+        totalWithdrawnUsdHint={overview.totalWithdrawnUsdHint}
+      />
+    )
+  }
   return <ExchangeHubContent />
 }
 
 export function ExchangeWidget(sessions: ExchangeSessions) {
   const subview = useExchangeViewMotion()
   return (
-    <DappSubviewShell
-      className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
-      panel="widget"
-      subview={subview}
-    >
+    <DappTabWidgetShell subview={subview}>
       <ExchangeWidgetBody {...sessions} />
-    </DappSubviewShell>
+    </DappTabWidgetShell>
   )
 }
 
 export function ExchangeContent(sessions: ExchangeSessions) {
   const subview = useExchangeViewMotion()
   return (
-    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
+    <DappTabDetailShell subview={subview}>
       <ExchangeContentBody {...sessions} />
-    </DappSubviewShell>
+    </DappTabDetailShell>
   )
 }

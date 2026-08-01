@@ -7,15 +7,15 @@ import { MetricGrid } from '~/app/shell/metric-grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/ui/faq-list'
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
-import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import { useMarketTradeContentView } from '~/views/dapp/exchange/market-trade/use-market-trade-content-view'
 
 /** Figma PC `4433:220` about carousel order — same as flash. */
 const TRADE_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'agx'] as const
 
-export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
-  const vm = useMarketTradeContentView(trade)
+/** Rate scalars only — amount draft keystrokes must not wake FAQ / About. */
+export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel: string }) {
+  const vm = useMarketTradeContentView(exchangePriceLabel)
   const { t } = vm
 
   return (

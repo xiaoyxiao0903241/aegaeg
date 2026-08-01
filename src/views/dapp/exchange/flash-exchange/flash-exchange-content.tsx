@@ -7,7 +7,6 @@ import { MetricGrid } from '~/app/shell/metric-grid'
 import { useI18n } from '~/i18n/use-i18n'
 import { FaqList } from '~/shared/ui/faq-list'
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
-import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
 /** Figma flash right `4430:310`: overview/FAQ 18 · About 20. */
@@ -17,7 +16,8 @@ const flashAboutTitleClass = 'text-[1.25rem] leading-normal tracking-normal'
 /** Figma About order: gAGX settle · USD1 · X · gAGX stake voucher (4th ≠ AGX). */
 const FLASH_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'gagxStake'] as const
 
-export function FlashExchangeContent({ flash }: { flash: FlashExchangeState }) {
+/** Rate scalar only — amount draft keystrokes must not wake FAQ / About. */
+export function FlashExchangeContent({ overviewRateLabel }: { overviewRateLabel: string }) {
   const { messages: t } = useI18n()
 
   return (
@@ -30,7 +30,7 @@ export function FlashExchangeContent({ flash }: { flash: FlashExchangeState }) {
           <ExchangeMetricCard
             className="gap-1.5 p-4"
             label={t.exchange.exchangeRate}
-            value={flash.overviewRateLabel || '0'}
+            value={overviewRateLabel || '0'}
             valueClassName="text-base leading-[1.25] tracking-[-0.02em]"
           />
           <ExchangeMetricCard

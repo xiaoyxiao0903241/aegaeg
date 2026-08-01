@@ -15,10 +15,26 @@ import { Card } from '~/shared/ui/card'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
-import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
-export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeState }) {
+/** Overview label scalars — unlockAmount draft must not wake Content. */
+export type TurbineExchangeContentProps = {
+  pendingUnlockLabel: string
+  pendingUnlockUsdHint: string
+  coolingLabel: string
+  coolingUsdHint: string
+  totalWithdrawnLabel: string
+  totalWithdrawnUsdHint: string
+}
+
+export function TurbineExchangeContent({
+  pendingUnlockLabel,
+  pendingUnlockUsdHint,
+  coolingLabel,
+  coolingUsdHint,
+  totalWithdrawnLabel,
+  totalWithdrawnUsdHint,
+}: TurbineExchangeContentProps) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const turbineLogsQuery = useTurbineLogs({}, sessionReady)
@@ -28,18 +44,18 @@ export function TurbineExchangeContent({ turbine }: { turbine: TurbineExchangeSt
   const overviewMetrics = [
     {
       label: t.exchange.turbine.metrics.pendingUnlock,
-      amount: turbine.overview.pendingUnlockLabel,
-      usd: turbine.overview.pendingUnlockUsdHint,
+      amount: pendingUnlockLabel,
+      usd: pendingUnlockUsdHint,
     },
     {
       label: t.exchange.turbine.metrics.cooling,
-      amount: turbine.overview.coolingLabel,
-      usd: turbine.overview.coolingUsdHint,
+      amount: coolingLabel,
+      usd: coolingUsdHint,
     },
     {
       label: t.exchange.turbine.metrics.totalWithdrawn,
-      amount: turbine.overview.totalWithdrawnLabel,
-      usd: turbine.overview.totalWithdrawnUsdHint,
+      amount: totalWithdrawnLabel,
+      usd: totalWithdrawnUsdHint,
     },
   ] as const
 
