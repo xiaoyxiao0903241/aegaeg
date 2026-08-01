@@ -47,6 +47,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
         />
 
         <DappMetaPanel
+          className="mt-0 gap-2.5 p-4"
           items={[
             {
               label: t.exchange.burn.burnRate,

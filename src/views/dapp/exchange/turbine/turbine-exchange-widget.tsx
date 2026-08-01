@@ -136,6 +136,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
             </div>
 
             <DappMetaPanel
+              className="mt-0 gap-2.5 p-4"
               items={[
                 {
                   label: t.exchange.turbine.agxPrice,

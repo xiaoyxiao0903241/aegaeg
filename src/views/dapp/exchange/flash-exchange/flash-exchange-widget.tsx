@@ -87,7 +87,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
         />
 
         <DappMetaPanel
-          className="gap-2.5"
+          className="mt-0 gap-2.5 p-4"
           items={[
             {
               label: t.exchange.exchangePrice,

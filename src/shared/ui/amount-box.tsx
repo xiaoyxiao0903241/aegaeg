@@ -69,8 +69,10 @@ export function AmountBox({
       <Text
         as="span"
         variant="copy"
-        tone={headerOutside ? undefined : 'muted-foreground'}
-        className={cn(styles.label(), headerOutside && 'text-foreground/40')}
+        className={cn(
+          styles.label(),
+          headerOutside ? 'text-foreground/40' : 'text-[13px] font-normal text-foreground/70',
+        )}
       >
         {renderMetricText(label)}
       </Text>
@@ -79,8 +81,10 @@ export function AmountBox({
           <Text
             as="span"
             variant="copy"
-            tone={headerOutside ? undefined : 'muted-foreground'}
-            className={cn(styles.balance(), headerOutside && 'text-foreground/40')}
+            className={cn(
+              styles.balance(),
+              headerOutside ? 'text-foreground/40' : 'text-[13px] font-normal text-foreground/70',
+            )}
           >
             {renderMetricText(balance)}
           </Text>
