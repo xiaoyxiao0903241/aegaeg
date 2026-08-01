@@ -189,7 +189,7 @@ export function useMarketTradeWidget(
     isHighPriceImpact,
     walletReady,
     canSubmit: core.canSubmit,
-    needsMaxApproval: core.needsMaxApproval,
+    needsApproval: core.needsApproval,
     isQuoting: core.isQuoting,
     isSpotQuoting: spot.isSpotQuoting,
     isExchangePriceQuoting: spot.isExchangePriceQuoting,

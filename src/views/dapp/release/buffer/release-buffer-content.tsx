@@ -54,7 +54,6 @@ export function ReleaseBufferContent() {
   const claimed = bufferQuery.data?.totalClaimed ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const api = apiSummaryQuery.data
-  const apiPending = sessionReady && apiSummaryQuery.isLoading && api == null
   const zeroAmount = formatGroupedNumber(0, { digits: 2 })
 
   const agxStats = [
@@ -62,7 +61,6 @@ export function ReleaseBufferContent() {
       label: t.release.buffer.entered,
       value: formatReleaseApiOrChainLabel({
         sessionReady,
-        apiPending,
         apiRaw: api?.cumulative_amount,
         chainReady: walletReady,
         chainValue: amount,
@@ -74,7 +72,6 @@ export function ReleaseBufferContent() {
       label: t.release.buffer.extracted,
       value: formatReleaseApiOrChainLabel({
         sessionReady,
-        apiPending,
         apiRaw: api?.released_amount,
         chainReady: walletReady,
         chainValue: claimed,
@@ -86,7 +83,6 @@ export function ReleaseBufferContent() {
       label: t.release.labels.releasing,
       value: formatReleaseApiOrChainLabel({
         sessionReady,
-        apiPending,
         apiRaw: api?.releasing_amount,
         chainReady: walletReady,
         chainValue: releasing,

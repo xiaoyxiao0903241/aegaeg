@@ -13,7 +13,7 @@ import { nextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
 import { formatApiDecimalAmount, claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
-import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
+import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
 
 export function useRewardsGenesisView() {

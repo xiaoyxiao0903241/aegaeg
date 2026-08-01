@@ -141,7 +141,7 @@ export function useExchangeQuote<TQuote>({
 
   const amountOutMin = quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n
 
-  const needsMaxApproval = walletReady && amountIn > 0n && needsTokenApproval(allowance, amountIn)
+  const needsApproval = walletReady && amountIn > 0n && needsTokenApproval(allowance, amountIn)
 
   const canSubmit =
     !isAmountDebouncing &&
@@ -244,7 +244,7 @@ export function useExchangeQuote<TQuote>({
     amountOutMin,
     isQuoting,
     canSubmit,
-    needsMaxApproval,
+    needsApproval,
     isSubmitting,
     blockResubmit,
     clearLock,

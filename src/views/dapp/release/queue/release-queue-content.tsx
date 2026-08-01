@@ -33,7 +33,6 @@ export function ReleaseQueueContent() {
   const claimable = queueQuery.data?.totalClaimable ?? 0n
   const unit = t.release.units.queue
   const api = apiSummaryQuery.data
-  const apiPending = sessionReady && apiSummaryQuery.isLoading && api == null
 
   function formatReleasingLabel(): string {
     if (sessionReady && api?.releasing_amount != null && api.releasing_amount.trim() !== '') {
@@ -60,7 +59,6 @@ export function ReleaseQueueContent() {
       const n = Number(api.total_claimed_amount)
       if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
     }
-    void apiPending
     return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
   }
 

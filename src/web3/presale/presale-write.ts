@@ -1,12 +1,9 @@
 import type { Wallet } from 'thirdweb/wallets'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
-import { ERC20_METHODS, PRESALE_METHODS, ERC20_ERRORS, PRESALE_ERRORS } from '~/web3/abis'
-import { createWalletReadClient } from '~/web3/chain-read-client'
-import { readErc20Allowance } from '~/web3/exchange/exchange-read'
-import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
+import { PRESALE_METHODS, PRESALE_ERRORS } from '~/web3/abis'
+import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const presaleWriteAbi = parseWriteAbi(PRESALE_METHODS.purchase, PRESALE_ERRORS)
 
 export async function approveUsd1ForPresaleIfNeeded({
@@ -16,34 +13,16 @@ export async function approveUsd1ForPresaleIfNeeded({
   wallet: Wallet
   amount: bigint
 }) {
-  const account = wallet.getAccount()
-  if (!account) {
-    throw WALLET_BLOCKED.NOT_CONNECTED
-  }
-
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(
-    BSC_CONTRACTS.usd1,
-    account.address,
-    BSC_CONTRACTS.preSale,
-    readClient,
-  )
-
-  if (allowance >= amount) return null
-
-  return writeContractViaWallet({
+  return approveErc20IfNeeded({
     wallet,
-    address: BSC_CONTRACTS.usd1,
-    abi: erc20WriteAbi,
-    functionName: 'approve',
-    args: [BSC_CONTRACTS.preSale, amount],
+    token: BSC_CONTRACTS.usd1,
+    spender: BSC_CONTRACTS.preSale,
+    amountIn: amount,
   })
 }
 
 /**
- * Callers are responsible for allowance (see useGenesisWidget's approve step
- * and its pre-purchase check) — no hidden approve here, so the wallet never
- * pops an unexpected second prompt mid-purchase.
+ * 调用方负责额度（见 genesis approve 步与购前检查）——此处不隐式 approve，避免购中途二次弹窗。
  */
 export async function purchasePresale({
   wallet,

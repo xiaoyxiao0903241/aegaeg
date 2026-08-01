@@ -295,18 +295,16 @@ test('emptySpotRateDash gates empty vs format', async () => {
   assert.equal(emptySpotRateDash(1n), null)
 })
 
-test('resolveMetricDisplayText keeps prior on empty flash', async () => {
-  const { resolveMetricDisplayText } = await loadModule(
-    '/src/shared/ui/resolve-metric-display-text.ts',
-  )
+test('metricDisplayText keeps prior on empty flash', async () => {
+  const { metricDisplayText } = await loadModule('/src/shared/ui/metric-display-text.ts')
 
-  assert.deepEqual(resolveMetricDisplayText('', null), { display: '0', retain: null })
-  assert.deepEqual(resolveMetricDisplayText('', '2,000'), { display: '2,000', retain: '2,000' })
-  assert.deepEqual(resolveMetricDisplayText('3,000', '2,000'), {
+  assert.deepEqual(metricDisplayText('', null), { display: '0', retain: null })
+  assert.deepEqual(metricDisplayText('', '2,000'), { display: '2,000', retain: '2,000' })
+  assert.deepEqual(metricDisplayText('3,000', '2,000'), {
     display: '3,000',
     retain: '3,000',
   })
-  assert.deepEqual(resolveMetricDisplayText('0.00', '2,000'), {
+  assert.deepEqual(metricDisplayText('0.00', '2,000'), {
     display: '0.00',
     retain: '0.00',
   })

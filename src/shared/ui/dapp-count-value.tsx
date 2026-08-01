@@ -1,6 +1,6 @@
 import { useEffect, useState, type ElementType } from 'react'
 import { cn } from '~/shared/lib/utils'
-import { resolveMetricDisplayText } from '~/shared/ui/resolve-metric-display-text'
+import { metricDisplayText } from '~/shared/ui/metric-display-text'
 
 /** DApp digit reel — faster than homepage count-up (home stays 1300ms). */
 export const DAPP_DIGIT_MS = 420
@@ -70,7 +70,7 @@ export function DappCountValue({
   className?: string
 }) {
   const [retained, setRetained] = useState<string | null>(null)
-  const { display, retain } = resolveMetricDisplayText(text, retained)
+  const { display, retain } = metricDisplayText(text, retained)
   if (retain !== retained) setRetained(retain)
 
   const parsed = parseLeadingMetricNumber(display)

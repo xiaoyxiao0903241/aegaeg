@@ -1,8 +1,8 @@
 /**
- * Metric flash guard: empty string = "unknown / still loading" → keep last text.
- * Settled zero must be an explicit `'0'` / `'0.00'` / `≈ $0.00`, not `''`.
+ * 指标闪动守卫：空串视为「未知 / 仍在加载」→ 保留上次文案。
+ * 已结算零值须显式 `'0'` / `'0.00'` / `≈ $0.00`，禁用 `''`。
  */
-export function resolveMetricDisplayText(
+export function metricDisplayText(
   next: string,
   retained: string | null,
 ): { display: string; retain: string | null } {

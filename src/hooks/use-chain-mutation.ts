@@ -111,9 +111,8 @@ export function useChainMutation<TVars = void, TValue = void>(
     mutate: async (vars?: TVars): Promise<TValue | undefined> => {
       try {
         return await mutation.mutateAsync(vars as TVars)
-      } catch (error) {
+      } catch {
         // 错误已在 onError 处理（闩锁静默）。
-        if (isChainMutationLockedError(error)) return undefined
         return undefined
       }
     },

@@ -48,7 +48,7 @@ export {
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
 } from '../../src/views/dapp/rewards/rewards-display'
-export { useShareholderRankLabels } from '../../src/views/dapp/rewards/use-shareholder-rank'
+export { useShareholderRankLabels } from '../../src/views/dapp/rewards/use-shareholder-rank-labels'
 export {
   getCommunityFundLogs,
   getQualifiedPartitions,

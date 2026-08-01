@@ -19,7 +19,7 @@ import {
   mapTeamRewardClaimLogToRow,
   formatApiDecimalAmount,
 } from '~/views/dapp/rewards/rewards-display'
-import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
+import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 
 type GenesisHistoryTab = 'referral' | 'team' | 'communityFund'
 
