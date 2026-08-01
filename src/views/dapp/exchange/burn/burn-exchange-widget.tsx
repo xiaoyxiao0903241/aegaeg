@@ -2,7 +2,6 @@ import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -43,7 +42,6 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
           sellBalance={vm.sellBalanceLabel}
           sellLabel={t.exchange.burn.sellLabel}
           sessionReady={vm.sessionReady}
-          showBuyAmountSkeleton={vm.showBuyAmountSkeleton}
           walletReady={burn.walletReady}
           amountLocked={burn.isSubmitting}
         />
@@ -52,11 +50,7 @@ export function BurnExchangeWidget({ burn }: { burn: BurnExchangeState }) {
           items={[
             {
               label: t.exchange.burn.burnRate,
-              value: vm.showRateSkeleton ? (
-                <ExchangeMetaValueSkeleton />
-              ) : (
-                burn.exchangePriceLabel || '—'
-              ),
+              value: burn.exchangePriceLabel || '0',
             },
             {
               label: t.exchange.burn.destination,

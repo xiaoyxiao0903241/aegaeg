@@ -1,5 +1,4 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { liveQuotedOut } from '~/core/exchange/live-quoted-out'
 import {
   formatExchangeRateApprox,
   emptySpotRateDash,
@@ -78,14 +77,9 @@ export function useMarketTradeSpotRates({
     placeholderData: keepPreviousData,
   })
 
-  const spotQuotedOut = liveQuotedOut(
-    spotQuoteQuery.isPlaceholderData,
-    spotQuoteQuery.data?.quotedOut,
-  )
-  const invertedQuotedOut = liveQuotedOut(
-    invertedSpotQuoteQuery.isPlaceholderData,
-    invertedSpotQuoteQuery.data?.quotedOut,
-  )
+  /** Face rates keep previous quote; do not zero via liveQuotedOut (submit gate only). */
+  const spotQuotedOut = spotQuoteQuery.data?.quotedOut ?? 0n
+  const invertedQuotedOut = invertedSpotQuoteQuery.data?.quotedOut ?? 0n
   const isSpotQuoting =
     amountIn === 0n &&
     (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) &&
@@ -96,7 +90,7 @@ export function useMarketTradeSpotRates({
     (invertedSpotQuoteQuery.isPending || invertedSpotQuoteQuery.isPlaceholderData) &&
     invertedQuotedOut === 0n
 
-  const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut, isExchangePriceQuoting)
+  const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut)
   const exchangePriceLabel =
     exchangePriceEmpty !== null
       ? exchangePriceEmpty
@@ -110,7 +104,7 @@ export function useMarketTradeSpotRates({
           fractionDigits: 6,
         })
 
-  const invertedEmpty = emptySpotRateDash(invertedQuotedOut, isExchangePriceInvertedQuoting)
+  const invertedEmpty = emptySpotRateDash(invertedQuotedOut)
   const exchangePriceLabelInverted =
     invertedEmpty !== null
       ? invertedEmpty

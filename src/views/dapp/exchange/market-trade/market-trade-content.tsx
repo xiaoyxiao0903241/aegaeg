@@ -8,10 +8,7 @@ import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import {
-  ExchangeMetricCard,
-  ExchangeMetricCardSkeleton,
-} from '~/views/dapp/exchange/exchange-detail-primitives'
+import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
 import { useMarketTradeContentView } from '~/views/dapp/exchange/market-trade/use-market-trade-content-view'
 
 /** Figma PC `4433:220` about carousel order — same as flash. */
@@ -26,11 +23,7 @@ export function MarketTradeContent({ trade }: { trade: MarketTradeState }) {
       <section>
         <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
         <MetricGrid columns={2}>
-          {vm.poolRateLoading && !vm.poolRateLabel ? (
-            <ExchangeMetricCardSkeleton />
-          ) : (
-            <ExchangeMetricCard label={t.exchange.exchangeRate} value={vm.poolRateLabel || '—'} />
-          )}
+          <ExchangeMetricCard label={t.exchange.exchangeRate} value={vm.poolRateLabel || '0'} />
           <ExchangeMetricCard label={t.exchange.settlement} value={t.exchange.settlementValue} />
         </MetricGrid>
       </section>

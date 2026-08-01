@@ -13,21 +13,15 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
   const { sessionReady } = useDappShell()
   const { pair } = burn
 
-  const showRateSkeleton = burn.isExchangePriceQuoting && !burn.exchangePriceLabel
-  const showBuyAmountSkeleton = sessionReady && burn.isQuoting && burn.sellAmount.trim().length > 0
-
-  // S6: same skeleton / preview / disconnected shape as useExchangeBalanceLabels, different labels.
   const sellBalanceLabel = formatExchangeBalanceLabel({
     label: t.exchange.balance,
     value: burn.sellBalanceLabel,
-    isBalancesLoading: burn.isBalancesLoading,
     sessionReady,
     walletReady: burn.walletReady,
   })
   const buyBalanceLabel = formatExchangeBalanceLabel({
     label: t.exchange.burn.currentContribution,
     value: burn.contributionBalanceLabel,
-    isBalancesLoading: burn.isBalancesLoading,
     sessionReady,
     walletReady: burn.walletReady,
   })
@@ -44,8 +38,6 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     sessionReady,
     pair,
     onBack: () => setView('hub'),
-    showRateSkeleton,
-    showBuyAmountSkeleton,
     sellBalanceLabel,
     buyBalanceLabel,
     blockHint,

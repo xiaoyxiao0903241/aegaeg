@@ -1,8 +1,9 @@
 import { EXCHANGE_SUBMIT_BLOCKED } from '~/core/exchange/exchange-sentinels'
 
 /**
- * 提交/展示用的实时报价数量。
- * `keepPreviousData` 占位不得驱动 UI 或 canSubmit。
+ * Submit-gate quoted amount only.
+ * `keepPreviousData` may still populate React Query `data` for the face amount —
+ * callers must not feed this zeroed value into buy/rate display.
  */
 export function liveQuotedOut(
   isPlaceholderData: boolean,

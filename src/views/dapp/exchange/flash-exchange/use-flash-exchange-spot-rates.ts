@@ -8,7 +8,6 @@ import type { ExchangeDirection } from '~/core/exchange/exchange-direction'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { liveQuotedOut } from '~/core/exchange/live-quoted-out'
 import { readFlashPairQuote } from '~/web3/exchange/flash-exchange-read'
 
 /** Fixed 10^decimals spot quote for flash exchange / overview rate labels. */
@@ -36,15 +35,13 @@ export function useFlashExchangeSpotRates({
     placeholderData: keepPreviousData,
   })
 
-  const spotQuotedOut = liveQuotedOut(spotQuoteQuery.isPlaceholderData, spotQuoteQuery.data)
+  const spotQuotedOut = spotQuoteQuery.data ?? 0n
   const isExchangePriceQuoting =
     pairId === 'gagx'
       ? false
-      : spotQuoteQuery.isPending ||
-        spotQuoteQuery.isPlaceholderData ||
-        (spotQuoteQuery.isFetching && spotQuotedOut === 0n)
+      : (spotQuoteQuery.isPending || spotQuoteQuery.isPlaceholderData) && spotQuotedOut === 0n
 
-  const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut, isExchangePriceQuoting)
+  const exchangePriceEmpty = emptySpotRateDash(spotQuotedOut)
   // Figma flash meta + overview both use colon form (`1 : 1`), not `1 TOKEN = …`.
   const rateLabel =
     exchangePriceEmpty !== null

@@ -1,11 +1,11 @@
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { flashExchangeAssets, turbineExchangeAssets } from '~/app/assets'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
-import { ExchangeBalanceSkeleton, ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { useTurbineExchangeView } from '~/views/dapp/exchange/turbine/use-turbine-exchange-view'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -30,7 +30,7 @@ function TurbineEqBuyTokenCell({
 }: {
   label: string
   icon: string
-  value: ReactNode
+  value: string
   footer: ReactNode
 }) {
   return (
@@ -41,11 +41,11 @@ function TurbineEqBuyTokenCell({
       <div className="flex items-center gap-2">
         <DappIcon alt="" className="size-5 rounded-md" size="token" src={icon} />
         <Text as="span" variant="copy" className="font-semibold">
-          {value}
+          <DappCountValue text={value} />
         </Text>
       </div>
       <Text as="p" variant="caption" tone="muted-foreground">
-        {footer}
+        {typeof footer === 'string' ? <DappCountValue text={footer} /> : footer}
       </Text>
     </div>
   )
@@ -56,27 +56,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
   const { t } = vm
   const unlock = turbine.pair.unlock
 
-  const unlockableBalance = vm.showBalanceSkeleton ? (
-    <>
-      {t.exchange.turbine.unlockable}: <ExchangeBalanceSkeleton />
-    </>
-  ) : (
-    `${t.exchange.turbine.unlockable}: ${vm.unlockableAmountLabel}`
-  )
-
-  const usd1Balance = vm.showBalanceSkeleton ? (
-    <>
-      {t.exchange.balance} <ExchangeBalanceSkeleton />
-    </>
-  ) : (
-    `${t.exchange.balance} ${vm.usd1AmountLabel}`
-  )
-
-  const willReceiveValue = vm.showWillReceiveSkeleton ? (
-    <ExchangeMetaValueSkeleton />
-  ) : (
-    vm.willReceiveLabel
-  )
+  const unlockableBalance = `${t.exchange.turbine.unlockable}: ${vm.unlockableAmountLabel}`
+  const usd1Balance = `${t.exchange.balance} ${vm.usd1AmountLabel}`
 
   return (
     <>
@@ -135,13 +116,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   footer={usd1Balance}
                   icon={turbine.pair.pay.icon}
                   label={t.exchange.turbine.payUsd1Label}
-                  value={
-                    vm.sessionReady && turbine.isQuoting ? (
-                      <ExchangeMetaValueSkeleton />
-                    ) : (
-                      turbine.payUsd1Label || '—'
-                    )
-                  }
+                  value={turbine.payUsd1Label || '0'}
                 />
                 <DappIcon
                   alt=""
@@ -153,13 +128,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                   footer={t.exchange.turbine.buyToBoundWallet}
                   icon={turbine.pair.buy.icon}
                   label={t.exchange.turbine.buyAgxLabel}
-                  value={
-                    vm.sessionReady && turbine.isQuoting ? (
-                      <ExchangeMetaValueSkeleton />
-                    ) : (
-                      turbine.buyAgxLabel
-                    )
-                  }
+                  value={turbine.buyAgxLabel || '0'}
                 />
               </div>
             </div>
@@ -168,34 +137,26 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               items={[
                 {
                   label: t.exchange.turbine.agxPrice,
-                  value: turbine.isAgxPriceQuoting ? (
-                    <ExchangeMetaValueSkeleton />
-                  ) : (
-                    turbine.agxPriceLabel || '—'
-                  ),
+                  value: turbine.agxPriceLabel || '0',
                 },
                 {
                   label: t.exchange.allowedSlippage,
                   // No user slippage UI on turbine; do not hardcode a fake floor.
-                  value: '—',
+                  value: '0',
                 },
                 {
                   label: t.exchange.turbine.willReceiveAgx,
-                  value: willReceiveValue,
+                  value: vm.willReceiveLabel,
                 },
                 {
                   label: t.exchange.turbine.unlockRatio,
-                  value: turbine.isUnlockRatioQuoting ? (
-                    <ExchangeMetaValueSkeleton />
-                  ) : (
-                    turbine.unlockRatioLabel || '—'
-                  ),
+                  value: turbine.unlockRatioLabel || '0',
                 },
                 {
                   label: t.exchange.turbine.cooldown,
                   value:
                     turbine.cooldownHours == null
-                      ? '—'
+                      ? '0'
                       : t.exchange.turbine.cooldownHoursValue.replace(
                           '{hours}',
                           String(turbine.cooldownHours),
@@ -218,7 +179,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                         }
                         type="button"
                       >
-                        <DappIcon alt="" size="action" src={flashExchangeAssets.externalLink} />
+                        <DappIcon alt="" size="xs" src={flashExchangeAssets.externalLink} />
                       </button>
                     </>
                   ),
@@ -243,11 +204,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
           </>
         ) : (
           <div className="flex flex-col gap-2.5">
-            {!vm.exchangePreview && turbine.isSilencesLoading ? (
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-3">
-                <ExchangeBalanceSkeleton />
-              </div>
-            ) : turbine.silences.length === 0 ? (
+            {turbine.silences.length === 0 ? (
               <Text as="p" variant="copy" className="my-6 text-center text-black/40">
                 {t.exchange.turbine.claimEmpty}
               </Text>
@@ -261,13 +218,14 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 >
                   <div className="min-w-0">
                     <Text as="p" variant="detail" className="font-semibold">
-                      {formatTokenAmount(
-                        row.silenceBalance,
-                        // Handbook §16: silenceBalance axis = AGX decimals (UI leaf labels gAGX).
-                        EXCHANGE_CONFIG.tokens.agx.decimals,
-                        4,
-                      )}{' '}
-                      gAGX
+                      <DappCountValue
+                        text={`${formatTokenAmount(
+                          row.silenceBalance,
+                          // Handbook §16: silenceBalance axis = AGX decimals (UI leaf labels gAGX).
+                          EXCHANGE_CONFIG.tokens.agx.decimals,
+                          4,
+                        )} gAGX`}
+                      />
                     </Text>
                     <Text as="p" variant="support" tone="muted-foreground">
                       {row.vested
@@ -278,23 +236,26 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                           )}
                     </Text>
                   </div>
-                  {vm.sessionReady && turbine.walletReady ? (
-                    <DappActionButton
-                      density="external"
-                      disabled={!row.vested || turbine.isSubmitting}
-                      loading={turbine.claimingIndex === row.index}
-                      onClick={() => void vm.handleClaim(row.index)}
-                    >
-                      {t.exchange.turbine.claimAction}
-                    </DappActionButton>
-                  ) : null}
+                  <DappActionButton
+                    density="external"
+                    disabled={
+                      !vm.sessionReady ||
+                      !turbine.walletReady ||
+                      !row.vested ||
+                      turbine.isSubmitting
+                    }
+                    loading={turbine.isSubmitting && turbine.claimingIndex === row.index}
+                    onClick={() => void vm.handleClaim(row.index)}
+                  >
+                    {t.exchange.turbine.claimAction}
+                  </DappActionButton>
                 </div>
               ))
             )}
           </div>
         )}
 
-        {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
+        {!vm.sessionReady || !turbine.walletReady ? <DappWidgetConnectPromo /> : null}
       </DappWidgetStack>
     </>
   )

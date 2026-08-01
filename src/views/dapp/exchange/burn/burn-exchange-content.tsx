@@ -13,10 +13,7 @@ import { BPS_DENOM } from '~/core/exchange/bps'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import {
-  ExchangeMetricCard,
-  ExchangeMetricCardSkeleton,
-} from '~/views/dapp/exchange/exchange-detail-primitives'
+import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exchange-history-section'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -29,7 +26,6 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
   const agxPriceQuery = usePresaleAgxPriceQuery()
-  const showRateSkeleton = burn.isExchangePriceQuoting && !burn.overviewRateLabel
 
   const decimals = burn.config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
   const walletReady = sessionReady && burn.walletReady
@@ -67,13 +63,13 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
   const consumedLabel =
     totalConsumedContribution != null
       ? formatTokenAmount(totalConsumedContribution, decimals, { digits: 2, trimZeros: false })
-      : '—'
+      : '0.00'
 
   const faqItems = useMemo(() => {
     const items = t.exchange.burn.faq.items
     const splitBps = burn.config?.splitBps
-    const burnPct = splitBps === undefined ? '—' : formatBurnSplitPercent(splitBps)
-    const injectPct = splitBps === undefined ? '—' : formatBurnSplitPercent(BPS_DENOM - splitBps)
+    const burnPct = splitBps === undefined ? '0' : formatBurnSplitPercent(splitBps)
+    const injectPct = splitBps === undefined ? '0' : formatBurnSplitPercent(BPS_DENOM - splitBps)
     return items.map((item, index) =>
       index === FAQ_DESTINATION_INDEX
         ? {
@@ -89,25 +85,19 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
       <section>
         <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
         <MetricGrid columns={2}>
-          {showRateSkeleton ? (
-            <ExchangeMetricCardSkeleton />
-          ) : (
-            <ExchangeMetricCard
-              label={t.exchange.burn.burnRate}
-              value={burn.overviewRateLabel || '—'}
-            />
-          )}
+          <ExchangeMetricCard
+            label={t.exchange.burn.burnRate}
+            value={burn.overviewRateLabel || '0'}
+          />
           <ExchangeMetricCard
             label={t.exchange.burn.metrics.totalBurnedAgx}
             value={
               <>
                 {burnedAgxLabel}
-                {burnedUsdLabel ? (
-                  <Text as="span" variant="copy" tone="muted-foreground" className="text-xs">
-                    {' '}
-                    ≈ {burnedUsdLabel}
-                  </Text>
-                ) : null}
+                <Text as="span" variant="copy" tone="muted-foreground" className="text-xs">
+                  {' '}
+                  ≈ {burnedUsdLabel ?? formatGroupedNumber(0, { digits: 2, prefix: '$' })}
+                </Text>
               </>
             }
           />

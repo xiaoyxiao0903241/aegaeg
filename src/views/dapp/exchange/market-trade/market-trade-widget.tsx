@@ -1,12 +1,12 @@
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { cn } from '~/shared/lib/utils'
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
 import { ExchangeSlippageModal } from '~/views/dapp/exchange/market-trade/exchange-slippage-modal'
 import { ExchangeTokenPicker } from '~/views/dapp/exchange/market-trade/exchange-token-picker'
-import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import type { MarketTradeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -91,7 +91,6 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
             />
           }
           sessionReady={vm.sessionReady}
-          showBuyAmountSkeleton={vm.showBuyAmountSkeleton}
           walletReady={trade.walletReady}
           amountLocked={trade.isSubmitting || vm.isFlipping}
         />
@@ -100,11 +99,9 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
           items={[
             {
               label: t.exchange.exchangePrice,
-              value: vm.showRateSkeleton ? (
-                <ExchangeMetaValueSkeleton />
-              ) : (
+              value: (
                 <>
-                  {vm.exchangePriceDisplayLabel || '—'}
+                  <DappCountValue text={vm.exchangePriceDisplayLabel || '0'} />
                   <AnchoredTooltip content={t.exchange.flip}>
                     <button
                       aria-label={t.exchange.flip}
@@ -123,7 +120,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               label: t.exchange.allowedSlippage,
               value: (
                 <>
-                  {trade.slippage}%
+                  <DappCountValue text={`${trade.slippage}%`} />
                   <button
                     aria-label={t.exchange.slippageSettings}
                     className={cn(
@@ -144,15 +141,11 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               ? [
                   {
                     label: t.exchange.trade.priceImpact,
-                    value: trade.isQuoting ? (
-                      <ExchangeMetaValueSkeleton />
-                    ) : (
-                      trade.priceImpactLabel || '—'
-                    ),
+                    value: trade.priceImpactLabel || '0',
                   },
                   {
                     label: t.exchange.trade.estimatedGas,
-                    value: trade.isQuoting ? <ExchangeMetaValueSkeleton /> : trade.gasEstimateLabel,
+                    value: trade.gasEstimateLabel || '0',
                   },
                 ]
               : []),

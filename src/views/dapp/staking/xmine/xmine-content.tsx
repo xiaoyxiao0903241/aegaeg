@@ -5,7 +5,7 @@ import { useX0MiningPositions } from '~/hooks/use-api-data'
 import { mapX0MiningPositionToOpsRow } from '~/shared/api/map-flow-log-rows'
 import { StakingDetailAside } from '~/views/dapp/staking/staking-detail-aside'
 
-const PLACEHOLDER = '—'
+const PLACEHOLDER = '0.00'
 
 export function XmineContent() {
   const { messages: t } = useI18n()

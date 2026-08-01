@@ -12,7 +12,7 @@ import {
   formatMakingRankLabel,
   mapRankRewardLogToRow,
   mapRankRewardTeamMemberToRow,
-  REWARDS_DASH,
+  formatApiDecimalAmount,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 
@@ -44,7 +44,7 @@ export function useRewardsCobuildContentView() {
   const tierCurrent = !sessionReady
     ? tierEmpty
     : summaryQuery.isLoading && summary == null
-      ? '…'
+      ? '0.00'
       : formatMakingRankLabel(summary?.making_rank, tierEmpty)
   const reqHolding = label.stat(summary?.active_stake_balance)
   const reqAccounts = label.count(summary?.effective_direct_referral_count)
@@ -67,9 +67,9 @@ export function useRewardsCobuildContentView() {
     totalRewards,
     totalPerformance,
     myPosition,
-    nextPayout: REWARDS_DASH,
+    nextPayout: formatApiDecimalAmount(null),
     tierCurrent,
-    tierNext: REWARDS_DASH,
+    tierNext: formatApiDecimalAmount(null),
     reqHolding,
     reqAccounts,
     reqPerformance,

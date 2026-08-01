@@ -38,7 +38,6 @@ export function useStakeView() {
       : t.staking.stake.meta.lockDays.replace('{days}', stake.period)
 
   const amountLabel = formatAmountBalanceLabel(t.staking.stake.amountBalance, {
-    loading: stake.isBalancesLoading,
     balance: stake.balanceLabel,
   })
 

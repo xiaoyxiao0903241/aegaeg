@@ -53,13 +53,14 @@ test('genesisFaqTemplateValues formats on-chain presale fields', async () => {
   assert.equal(values.airdropRatios, '5% / 2% / 1%')
 })
 
-test('genesisFaqTemplateValues returns ellipsis while loading', async () => {
+test('genesisFaqTemplateValues returns zeros while loading', async () => {
   const { genesisFaqTemplateValues } = await loadModule('/src/views/dapp/genesis/genesis-faq.ts')
 
   const values = genesisFaqTemplateValues([], 5000, true)
 
-  assert.equal(values.phaseCount, '…')
-  assert.equal(values.threshold, '…')
+  assert.equal(values.phaseCount, '0')
+  assert.equal(values.threshold, '$0')
+  assert.equal(values.discounts, '0%')
 })
 
 test('genesisFaqTemplateValues supports dynamic phase count and varying durations', async () => {

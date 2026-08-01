@@ -104,10 +104,9 @@ export function useExchangeQuote<TQuote>({
     placeholderData: keepPreviousData,
   })
 
-  const quotedOut = liveQuotedOut(
-    amountQuoteQuery.isPlaceholderData,
-    selectQuotedOut(amountQuoteQuery.data),
-  )
+  const rawQuotedOut = selectQuotedOut(amountQuoteQuery.data) ?? 0n
+  /** Submit gate only — placeholder must not drive canSubmit / amountOutMin. */
+  const quotedOut = liveQuotedOut(amountQuoteQuery.isPlaceholderData, rawQuotedOut)
 
   const isQuoting =
     sessionReady &&
@@ -124,10 +123,21 @@ export function useExchangeQuote<TQuote>({
 
   const sellAmountDisplay = formatTokenAmountInputDisplay(sellAmount)
 
-  const buyAmount =
-    sessionReady && amountIn > 0n && quotedOut > 0n && !isAmountDebouncing
-      ? formatTokenAmountInputDisplay(formatTokenAmount(quotedOut, buyDecimals, 6))
-      : ''
+  const [retainedBuyAmount, setRetainedBuyAmount] = useState('')
+  /** Face uses raw quote (incl. keepPreviousData); gate stays on liveQuotedOut. */
+  const faceBuyAmount =
+    sessionReady && amountIn > 0n && !isAmountDebouncing && rawQuotedOut > 0n
+      ? formatTokenAmountInputDisplay(formatTokenAmount(rawQuotedOut, buyDecimals, 6))
+      : null
+
+  if (amountIn === 0n || !sessionReady) {
+    if (retainedBuyAmount !== '') setRetainedBuyAmount('')
+  } else if (faceBuyAmount != null && faceBuyAmount !== retainedBuyAmount) {
+    setRetainedBuyAmount(faceBuyAmount)
+  }
+
+  /** Keep last buy face while debounce/empty raw; settled empty stays `''`. */
+  const buyAmount = amountIn === 0n || !sessionReady ? '' : (faceBuyAmount ?? retainedBuyAmount)
 
   const amountOutMin = quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n
 

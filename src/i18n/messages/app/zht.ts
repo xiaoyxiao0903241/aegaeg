@@ -704,7 +704,7 @@ const app = defineMessages({
       asideBody: '六種獎勵卡片覆蓋幸運抽獎、推薦、參與、共建、發展津貼與創世共建。',
       aboutTitle: '關於AEGIS X獎勵',
       balanceLabel: '餘額',
-      balancePlaceholder: '—',
+      balancePlaceholder: '0.00',
       signInForBalance: '簽名登入後查看',
       enterClaim: '進入領取',
       sessionHint: '請完成錢包簽名登入後再領取。連接錢包不等於業務登入。',
@@ -2344,7 +2344,6 @@ const app = defineMessages({
     title: '释放',
     intro: '管理与查看收益与本金释放',
     backToHub: '返回释放',
-    dash: '—',
     recordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     recordsEmpty: '暂无链上索引记录（待 indexer）',
     labels: {

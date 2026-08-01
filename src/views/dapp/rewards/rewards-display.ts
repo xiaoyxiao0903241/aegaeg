@@ -27,9 +27,7 @@ import {
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
 
-/** Em dash placeholder for unset rewards UI values. */
-export const REWARDS_DASH = '—'
-export const REWARDS_LOADING = '…'
+/** Empty / pending metric → zero via formatters (no named dash/loading aliases). */
 
 export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'participate' | 'referral'>
 
@@ -38,11 +36,16 @@ export function formatApiDecimalAmount(
   raw: string | null | undefined,
   options: { digits?: number; prefix?: string; suffix?: string } = {},
 ): string {
-  if (raw == null || raw.trim() === '') return REWARDS_DASH
+  const digits = options.digits ?? 2
+  if (raw == null || raw.trim() === '') {
+    return formatGroupedNumber(0, { digits, prefix: options.prefix, suffix: options.suffix })
+  }
   const n = Number(raw)
-  if (!Number.isFinite(n)) return REWARDS_DASH
+  if (!Number.isFinite(n)) {
+    return formatGroupedNumber(0, { digits, prefix: options.prefix, suffix: options.suffix })
+  }
   return formatGroupedNumber(n, {
-    digits: options.digits ?? 2,
+    digits,
     prefix: options.prefix,
     suffix: options.suffix,
   })
@@ -54,8 +57,8 @@ export function formatApiStatLabel(
   raw: string | null | undefined,
   options?: { digits?: number; prefix?: string; suffix?: string },
 ): string {
-  if (!sessionReady) return REWARDS_DASH
-  if (isPending && raw == null) return REWARDS_LOADING
+  // Pending with null only on cold start (keepPreviousData keeps raw on refetch).
+  if (!sessionReady || (isPending && raw == null)) return formatApiDecimalAmount(null, options)
   return formatApiDecimalAmount(raw, options)
 }
 
@@ -65,9 +68,9 @@ export function formatApiCountLabel(
   isPending: boolean,
   raw: number | null | undefined,
 ): string {
-  if (!sessionReady) return REWARDS_DASH
-  if (isPending && raw == null) return REWARDS_LOADING
-  if (raw == null) return REWARDS_DASH
+  if (!sessionReady) return '0'
+  if (isPending && raw == null) return '0'
+  if (raw == null) return '0'
   return String(raw)
 }
 
@@ -116,10 +119,13 @@ export function formatContributionPlaceholder(input: {
   decimals: number
   fractionDigits?: number
 }): string {
-  if (!input.walletReady || !input.hasAddress) return REWARDS_DASH
-  if (input.isPending) return REWARDS_LOADING
-  if (input.contribution === undefined) return REWARDS_DASH
-  return formatTokenAmount(input.contribution, input.decimals, input.fractionDigits ?? 2)
+  if (!input.walletReady || !input.hasAddress || input.contribution === undefined) {
+    return formatApiDecimalAmount(null, { digits: input.fractionDigits ?? 2 })
+  }
+  return (
+    formatTokenAmount(input.contribution, input.decimals, input.fractionDigits ?? 2) ||
+    formatApiDecimalAmount(null, { digits: input.fractionDigits ?? 2 })
+  )
 }
 
 export type RewardLogStatusKey =

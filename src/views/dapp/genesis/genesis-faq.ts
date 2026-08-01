@@ -36,7 +36,7 @@ function formatPhaseDurationDays(phases: PresalePhaseOnChain[]): string {
   )
 
   if (dayCounts.length === 0) {
-    return '—'
+    return '0'
   }
 
   const [firstDayCount = 0] = dayCounts
@@ -65,27 +65,28 @@ function shareIncrement(phases: PresalePhaseOnChain[]): string {
     return formatTokenAmount(minWei, USD1_DECIMALS, 0)
   }
 
-  return '—'
+  return '0'
 }
 
+const ZERO_FAQ: GenesisFaqTemplateValues = {
+  phaseCount: '0',
+  phaseDurationDays: '0',
+  discounts: '0%',
+  minUsd: '$0',
+  shareIncrement: '0',
+  phaseQuotas: '$0–$0',
+  threshold: '$0',
+  airdropRatios: '0%',
+}
+
+/** FAQ interpolations — zeros when unloaded; callers must not animate FAQ digits. */
 export function genesisFaqTemplateValues(
   phases: PresalePhaseOnChain[],
   airdropThresholdUsd: number,
   isLoading = false,
 ): GenesisFaqTemplateValues {
-  const ellipsis = '…'
-
   if (isLoading || phases.length === 0) {
-    return {
-      phaseCount: ellipsis,
-      phaseDurationDays: ellipsis,
-      discounts: ellipsis,
-      minUsd: ellipsis,
-      shareIncrement: ellipsis,
-      phaseQuotas: ellipsis,
-      threshold: ellipsis,
-      airdropRatios: ellipsis,
-    }
+    return ZERO_FAQ
   }
 
   const minUsdNumber = minUsd(phases)
@@ -94,13 +95,12 @@ export function genesisFaqTemplateValues(
     phaseCount: String(phases.length),
     phaseDurationDays: formatPhaseDurationDays(phases),
     discounts: formatDiscountList(phases),
-    minUsd: minUsdNumber > 0 ? formatGroupedNumber(minUsdNumber, { prefix: '$' }) : '—',
+    minUsd: formatGroupedNumber(minUsdNumber, { prefix: '$' }),
     shareIncrement: shareIncrement(phases),
     phaseQuotas: phases
       .map((phase) => formatUsdRange(phase.minAmount, phase.maxAmount))
       .join(' / '),
-    threshold:
-      airdropThresholdUsd > 0 ? formatGroupedNumber(airdropThresholdUsd, { prefix: '$' }) : '—',
+    threshold: formatGroupedNumber(Math.max(0, airdropThresholdUsd), { prefix: '$' }),
     airdropRatios: formatAirdropRatioList(phases),
   }
 }

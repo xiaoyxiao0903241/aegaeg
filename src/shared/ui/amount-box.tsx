@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Card } from '~/shared/ui/card'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
@@ -26,11 +27,13 @@ export type AmountBoxProps = {
   endAdornment?: ReactNode
   inputClassName?: string
   label: ReactNode
-  loading?: boolean
-  loadingSkeleton?: ReactNode
   /** Balance uses semibold only when logged in. */
   sessionReady?: boolean
   startAdornment: ReactNode
+}
+
+function renderMetricText(node: ReactNode) {
+  return typeof node === 'string' ? <DappCountValue text={node} /> : node
 }
 
 export function AmountBox({
@@ -41,8 +44,6 @@ export function AmountBox({
   endAdornment,
   inputClassName,
   label,
-  loading = false,
-  loadingSkeleton,
   sessionReady = true,
   startAdornment,
 }: AmountBoxProps) {
@@ -53,7 +54,7 @@ export function AmountBox({
     <Card as="section" surface="outlined" className={cn(styles.root(), className)}>
       <div className={styles.header()}>
         <Text as="span" variant="support" tone={labelTone} className={styles.label()}>
-          {label}
+          {renderMetricText(label)}
         </Text>
         {balance ? (
           <Text
@@ -62,26 +63,22 @@ export function AmountBox({
             tone="muted-foreground"
             className={cn(styles.balance(), sessionReady && !disabled && 'font-semibold')}
           >
-            {balance}
+            {renderMetricText(balance)}
           </Text>
         ) : null}
       </div>
       <div className={styles.body()}>
         {startAdornment}
-        {loading ? (
-          loadingSkeleton
-        ) : (
-          <Input
-            variant="amount"
-            disabled={disabled}
-            className={cn(
-              styles.input(),
-              !sessionReady && 'text-amount-muted placeholder:text-amount-muted',
-              inputClassName,
-            )}
-            {...amountProps}
-          />
-        )}
+        <Input
+          variant="amount"
+          disabled={disabled}
+          className={cn(
+            styles.input(),
+            !sessionReady && 'text-amount-muted placeholder:text-amount-muted',
+            inputClassName,
+          )}
+          {...amountProps}
+        />
         {endAdornment}
       </div>
     </Card>

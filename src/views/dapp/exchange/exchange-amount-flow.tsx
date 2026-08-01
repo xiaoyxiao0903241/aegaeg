@@ -1,5 +1,4 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
-import { ExchangeAmountSkeleton } from '~/app/shell/dapp-skeleton'
 import { TokenChip } from '~/app/shell/token-chip'
 import { useI18n } from '~/i18n/use-i18n'
 import { AmountBox } from '~/shared/ui/amount-box'
@@ -24,7 +23,6 @@ export function ExchangeAmountFlow({
   sellLabel,
   sellTokenAdornment,
   sessionReady,
-  showBuyAmountSkeleton,
   walletReady,
   amountLocked = false,
 }: {
@@ -45,7 +43,6 @@ export function ExchangeAmountFlow({
   sellLabel?: string
   sellTokenAdornment?: ReactNode
   sessionReady: boolean
-  showBuyAmountSkeleton: boolean
   walletReady: boolean
   /** Lock sell input / percent while a tx is in flight (amount already snapshotted). */
   amountLocked?: boolean
@@ -93,13 +90,11 @@ export function ExchangeAmountFlow({
           placeholder: '0.00',
           readOnly: true,
           tabIndex: -1,
-          value: exchangePreview ? buyAmount || '0.00' : buyAmount,
+          value: exchangePreview ? buyAmount || '0.00' : buyAmount || '0.00',
         }}
         balance={buyBalance}
         className={cn('mt-0 p-4', amountBoxClassName)}
         label={buyLabel ?? t.exchange.buy}
-        loading={showBuyAmountSkeleton}
-        loadingSkeleton={<ExchangeAmountSkeleton />}
         sessionReady={sessionReady}
         startAdornment={buyTokenAdornment ?? <TokenChip icon={buy.icon} label={buy.symbol} />}
       />

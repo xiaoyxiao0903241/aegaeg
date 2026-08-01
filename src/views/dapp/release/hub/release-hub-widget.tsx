@@ -3,8 +3,10 @@ import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { dappAssets, exchangeHubAssets } from '~/app/assets'
 import { useI18n } from '~/i18n/use-i18n'
 import { openReleaseView } from '~/shared/config/dapp-open-views'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { Text } from '~/shared/ui/text'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 import { Card } from '~/shared/ui/card'
@@ -17,7 +19,20 @@ import {
 import { formatReleasePct } from '~/views/dapp/release/release-display'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
-const DASH = '—'
+
+function DualApproxCaptions() {
+  const approx = formatApproxUsd(0, null)
+  return (
+    <>
+      <Text as="p" tone="muted-foreground" variant="caption">
+        <DappCountValue text={approx} />
+      </Text>
+      <Text as="p" tone="muted-foreground" variant="caption">
+        <DappCountValue text={approx} />
+      </Text>
+    </>
+  )
+}
 
 export function ReleaseHubWidget() {
   const { messages: t } = useI18n()
@@ -30,21 +45,13 @@ export function ReleaseHubWidget() {
   const bufferClaimable = bufferQuery.data?.totalClaimable ?? 0n
   const bufferReleasing = bufferQuery.data?.totalReleasing ?? 0n
 
-  const dash = t.release.dash
-  const queuePct = walletReady ? formatReleasePct(queueClaimable, queueReleasing) : dash
-  const bufferPct = walletReady ? formatReleasePct(bufferClaimable, bufferReleasing) : dash
-  const queueReleasingLabel = walletReady
-    ? `${formatTokenAmount(queueReleasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`
-    : dash
-  const queueClaimableLabel = walletReady
-    ? `${formatTokenAmount(queueClaimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`
-    : dash
-  const bufferTotalAgx = walletReady
-    ? `${formatTokenAmount(bufferClaimable + bufferReleasing, AGX_DECIMALS, 4)} AGX`
-    : dash
-  const bufferClaimedAgx = walletReady
-    ? `${formatTokenAmount(bufferClaimable, AGX_DECIMALS, 4)} AGX`
-    : dash
+  const queuePct = formatReleasePct(queueClaimable, queueReleasing)
+  const bufferPct = formatReleasePct(bufferClaimable, bufferReleasing)
+  const queueReleasingLabel = `${formatTokenAmount(queueReleasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`
+  const queueClaimableLabel = `${formatTokenAmount(queueClaimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`
+  const bufferTotalAgx = `${formatTokenAmount(bufferClaimable + bufferReleasing, AGX_DECIMALS, 4)} AGX`
+  const bufferClaimedAgx = `${formatTokenAmount(bufferClaimable, AGX_DECIMALS, 4)} AGX`
+  const zeroGagx = `${formatGroupedNumber(0, { digits: 2 })} gAGX`
 
   return (
     <>
@@ -68,7 +75,7 @@ export function ReleaseHubWidget() {
               {t.release.queue.title}
             </Text>
             <Text as="span" className="text-[13px]" variant="caption">
-              {queuePct}
+              <DappCountValue text={queuePct} />
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -79,17 +86,12 @@ export function ReleaseHubWidget() {
               {t.release.labels.released}
             </Text>
             <Text as="p" className="font-semibold" variant="copy">
-              {queueReleasingLabel}
+              <DappCountValue text={queueReleasingLabel} />
             </Text>
             <Text as="p" className="font-semibold text-primary" variant="copy">
-              {queueClaimableLabel}
+              <DappCountValue text={queueClaimableLabel} />
             </Text>
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? '≈ —' : dash}
-            </Text>
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? '≈ —' : dash}
-            </Text>
+            <DualApproxCaptions />
           </div>
         </Card>
 
@@ -107,22 +109,17 @@ export function ReleaseHubWidget() {
               {t.release.buffer.title}
             </Text>
             <Text as="span" className="text-[13px]" variant="caption">
-              {bufferPct}
+              <DappCountValue text={bufferPct} />
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Text as="p" className="font-semibold" variant="copy">
-              {bufferTotalAgx}
+              <DappCountValue text={bufferTotalAgx} />
             </Text>
             <Text as="p" className="font-semibold" variant="copy">
-              {DASH} gAGX
+              <DappCountValue text={zeroGagx} />
             </Text>
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? '≈ —' : dash}
-            </Text>
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {walletReady ? '≈ —' : dash}
-            </Text>
+            <DualApproxCaptions />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="flex items-center gap-1.5">
@@ -130,7 +127,7 @@ export function ReleaseHubWidget() {
                 {t.release.labels.released}
               </Text>
               <Text as="span" className="text-primary" variant="caption">
-                {bufferClaimedAgx}
+                <DappCountValue text={bufferClaimedAgx} />
               </Text>
             </div>
             <div className="flex items-center gap-1.5">
@@ -138,7 +135,7 @@ export function ReleaseHubWidget() {
                 {t.release.labels.released}
               </Text>
               <Text as="span" className="text-primary" variant="caption">
-                {DASH} gAGX
+                <DappCountValue text={zeroGagx} />
               </Text>
             </div>
           </div>

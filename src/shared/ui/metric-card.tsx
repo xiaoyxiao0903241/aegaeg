@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { tv } from 'tailwind-variants'
 import { Card } from '~/shared/ui/card'
 import { revealClass } from '~/shared/lib/reveal'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 
 export type MetricCardProps = {
   children?: ReactNode
@@ -11,6 +12,8 @@ export type MetricCardProps = {
   label: ReactNode
   value: ReactNode
   valueClassName?: string
+  /** FAQ / static copy: disable count+pop. Default true for metric rails. */
+  animateValue?: boolean
 }
 
 const metricCard = tv({
@@ -29,16 +32,19 @@ export function MetricCard({
   label,
   value,
   valueClassName,
+  animateValue = true,
 }: MetricCardProps) {
   const styles = metricCard()
+  const renderedValue =
+    typeof value === 'string' ? <DappCountValue animate={animateValue} text={value} /> : value
 
   return (
     <Card as="article" surface="elevated" className={styles.root({ class: className })} data-reveal>
       <Card.Label tone="muted-foreground">{label}</Card.Label>
-      <Card.Value className={styles.value({ class: valueClassName })}>{value}</Card.Value>
+      <Card.Value className={styles.value({ class: valueClassName })}>{renderedValue}</Card.Value>
       {hint ? (
         <Card.Description className={styles.hint({ class: hintClassName })}>
-          {hint}
+          {typeof hint === 'string' ? <DappCountValue animate={animateValue} text={hint} /> : hint}
         </Card.Description>
       ) : null}
       {children}

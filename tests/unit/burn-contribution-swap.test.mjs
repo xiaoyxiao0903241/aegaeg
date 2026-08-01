@@ -80,7 +80,7 @@ test('formatBurnContributionRatioColon from rateBps', async () => {
   )
 
   assert.equal(formatBurnContributionRatioColon(60_000n), '1:6')
-  assert.equal(formatBurnContributionRatioColon(0n), '—')
+  assert.equal(formatBurnContributionRatioColon(0n), '0')
   assert.equal(formatBurnContributionRatioColon(15_000n), '1:1.5')
 })
 

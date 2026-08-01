@@ -9,7 +9,7 @@ import {
   bindApiLabelFormatters,
   mapReferralAwardDirectToRow,
   mapReferralAwardLogToRow,
-  REWARDS_DASH,
+  formatApiDecimalAmount,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 
@@ -41,7 +41,7 @@ export function useRewardsReferralContentView() {
     myPosition,
     referralCount,
     contributionValue,
-    nextPayout: REWARDS_DASH,
+    nextPayout: formatApiDecimalAmount(null),
     recordRows,
     recordsLoading: sessionReady && logsQuery.isLoading,
     referralRows,

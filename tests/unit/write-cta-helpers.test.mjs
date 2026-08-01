@@ -88,16 +88,10 @@ test('writeCtaLabel maps migrated and need_referral phases', async () => {
   assert.equal(writeCtaLabel('ready', copy), 'submit')
 })
 
-test('formatAmountBalanceLabel swaps balance or ellipsis', async () => {
+test('formatAmountBalanceLabel always shows balance (empty → 0.00)', async () => {
   const { formatAmountBalanceLabel } = await loadModule('/src/core/wallet/write-cta.ts')
-  assert.equal(
-    formatAmountBalanceLabel('Bal {balance}', { loading: true, balance: '1.0' }),
-    'Bal …',
-  )
-  assert.equal(
-    formatAmountBalanceLabel('Bal {balance}', { loading: false, balance: '1.0' }),
-    'Bal 1.0',
-  )
+  assert.equal(formatAmountBalanceLabel('Bal {balance}', { balance: '1.0' }), 'Bal 1.0')
+  assert.equal(formatAmountBalanceLabel('Bal {balance}', { balance: '' }), 'Bal 0.00')
 })
 
 test('getErrorMessage maps write-block sentinels used by CTAs', async () => {

@@ -1,4 +1,5 @@
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Card } from '~/shared/ui/card'
 import { chipVariants } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
@@ -71,11 +72,11 @@ export function RewardsModeCard({
         </Text>
         <div className="flex items-center gap-1.5">
           <Text as="strong" className="text-base font-semibold" variant="copy">
-            {balanceAmount}
+            <DappCountValue text={balanceAmount} />
           </Text>
           {approx ? (
             <Text as="span" className="text-[13px]" tone="muted-foreground" variant="detail">
-              {approx}
+              <DappCountValue text={approx} />
             </Text>
           ) : null}
           {claimCta ? (

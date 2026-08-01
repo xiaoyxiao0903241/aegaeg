@@ -11,7 +11,7 @@ import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 import {
   useRewardsSimpleClaimView,
   type SimpleClaimView,
@@ -45,7 +45,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
                 {vm.grant.pendingHint}
               </Text>
               <Text as="p" className="font-semibold" variant="headline">
-                {REWARDS_DASH}
+                {formatApiDecimalAmount(null)}
               </Text>
             </div>
           </div>

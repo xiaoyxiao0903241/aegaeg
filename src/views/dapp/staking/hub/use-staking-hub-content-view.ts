@@ -7,7 +7,7 @@ import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 
-const PLACEHOLDER = '—'
+const PLACEHOLDER = '0.00'
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 export function useStakingHubContentView() {
@@ -25,14 +25,12 @@ export function useStakingHubContentView() {
           digits: 2,
           prefix: '$',
         })
-      : agxPriceQuery.isPending
-        ? '…'
-        : PLACEHOLDER
+      : PLACEHOLDER
 
   const stakersLabel = !sessionReady
     ? PLACEHOLDER
     : stakersQuery.isLoading && stakersQuery.data == null
-      ? '…'
+      ? PLACEHOLDER
       : stakersQuery.data != null
         ? formatGroupedNumber(stakersQuery.data.stake_address_count, {
             digits: 0,

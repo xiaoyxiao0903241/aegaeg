@@ -43,12 +43,25 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
 
   if (!walletReady || !address) {
-    return Array.from({ length: product === 'stake' ? 6 : 5 }, () => ({ value: '—' }))
+    return Array.from({ length: product === 'stake' ? 6 : 5 }, () => ({
+      value: '0.00 AGX',
+      approx: formatApproxUsd(0, null),
+    }))
   }
 
   if (product === 'stake') {
-    if (stakeQuery.isError) return Array.from({ length: 6 }, () => ({ value: '—' }))
-    if (stakeQuery.data === undefined) return Array.from({ length: 6 }, () => ({ value: '…' }))
+    if (stakeQuery.isError) {
+      return Array.from({ length: 6 }, () => ({
+        value: '0.00 AGX',
+        approx: formatApproxUsd(0, null),
+      }))
+    }
+    if (stakeQuery.data === undefined) {
+      return Array.from({ length: 6 }, () => ({
+        value: '0.00 AGX',
+        approx: formatApproxUsd(0, null),
+      }))
+    }
     const rows = stakeQuery.data
     const total = rows.reduce((sum, row) => sum + row.principal, 0n)
     const released = rows.reduce((sum, row) => sum + row.releasedPrincipal, 0n)
@@ -74,9 +87,19 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     )
   }
 
-  // LP `4518:5993` / Burn `4518:6384`: 我的持仓 / 已释放 / 待释放 / 当前Rebase / 总收益(无累计 → —)
-  if (bondQuery.isError) return Array.from({ length: 5 }, () => ({ value: '—' }))
-  if (bondQuery.data === undefined) return Array.from({ length: 5 }, () => ({ value: '…' }))
+  // LP `4518:5993` / Burn `4518:6384`: 我的持仓 / 已释放 / 待释放 / 当前Rebase / 总收益(无累计 → 0)
+  if (bondQuery.isError) {
+    return Array.from({ length: 5 }, () => ({
+      value: '0.00 AGX',
+      approx: formatApproxUsd(0, null),
+    }))
+  }
+  if (bondQuery.data === undefined) {
+    return Array.from({ length: 5 }, () => ({
+      value: '0.00 AGX',
+      approx: formatApproxUsd(0, null),
+    }))
+  }
 
   const rows = bondQuery.data
   const total = rows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
@@ -98,6 +121,6 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
       ],
       priceUsd,
     ),
-    { value: '—', icon: 'gagx', approx: '≈ —' },
+    { value: '0.00 gAGX', icon: 'gagx', approx: formatApproxUsd(0, null) },
   ]
 }

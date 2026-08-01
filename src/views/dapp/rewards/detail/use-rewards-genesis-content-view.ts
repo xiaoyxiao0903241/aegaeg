@@ -17,7 +17,7 @@ import {
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
-  REWARDS_DASH,
+  formatApiDecimalAmount,
 } from '~/views/dapp/rewards/rewards-display'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 
@@ -93,29 +93,29 @@ export function useRewardsGenesisContentView() {
       ? (rewardLogs?.items.map((item) => {
           const mapped = mapRewardLogToRow(item, historyStatusLabels)
           return [
-            mapped[0] ?? REWARDS_DASH,
+            mapped[0] ?? formatApiDecimalAmount(null),
             typeReferral,
-            mapped[1] ?? REWARDS_DASH,
-            mapped[4] ?? REWARDS_DASH,
+            mapped[1] ?? formatApiDecimalAmount(null),
+            mapped[4] ?? formatApiDecimalAmount(null),
           ]
         }) ?? [])
       : historyTab === 'team'
         ? (teamClaimLogs?.items.map((item) => {
             const mapped = mapTeamRewardClaimLogToRow(item, historyStatusLabels)
             return [
-              mapped[0] ?? REWARDS_DASH,
+              mapped[0] ?? formatApiDecimalAmount(null),
               typeTeam,
-              mapped[1] ?? REWARDS_DASH,
-              mapped[3] ?? REWARDS_DASH,
+              mapped[1] ?? formatApiDecimalAmount(null),
+              mapped[3] ?? formatApiDecimalAmount(null),
             ]
           }) ?? [])
         : (communityFundLogs?.items.map((item) => {
             const mapped = mapCommunityFundLogToRow(item, historyStatusLabels)
             return [
-              mapped[0] ?? REWARDS_DASH,
+              mapped[0] ?? formatApiDecimalAmount(null),
               typeFund,
-              mapped[1] ?? REWARDS_DASH,
-              mapped[2] ?? REWARDS_DASH,
+              mapped[1] ?? formatApiDecimalAmount(null),
+              mapped[2] ?? formatApiDecimalAmount(null),
             ]
           }) ?? [])
 

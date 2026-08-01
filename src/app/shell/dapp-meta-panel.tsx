@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { cn } from '~/shared/lib/utils'
@@ -31,7 +32,7 @@ export function DappMetaPanel({
             variant="detail"
             className={cn('mt-0 text-right font-semibold', item.valueClassName)}
           >
-            {item.value}
+            {typeof item.value === 'string' ? <DappCountValue text={item.value} /> : item.value}
           </Text>
         </p>
       ))}

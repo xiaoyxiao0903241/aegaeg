@@ -10,7 +10,6 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
   const setView = useExchangeViewStore((state) => state.setView)
   const { sessionReady } = useDappShell()
   const exchangePreview = !sessionReady
-  const showBalanceSkeleton = !exchangePreview && turbine.isBalancesLoading
   const sellDisabled = (sessionReady && !turbine.walletReady) || turbine.isSubmitting
 
   const segmentOptions = [
@@ -20,16 +19,15 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
 
   const unlockableAmountLabel = exchangePreview
     ? '0.00 gAGX'
-    : `${turbine.walletReady ? turbine.quotaLabel : '—'} gAGX`
+    : `${turbine.walletReady ? turbine.quotaLabel : '0'} gAGX`
 
   const usd1AmountLabel = exchangePreview
     ? '0.00'
     : turbine.walletReady
       ? turbine.usd1BalanceLabel
-      : '—'
+      : '0'
 
-  const showWillReceiveSkeleton = sessionReady && turbine.isQuoting
-  const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '—'
+  const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '0'
 
   async function handleUnlock() {
     // Errors toast via useChainMutation → getErrorMessage (avoid double toast).
@@ -46,12 +44,10 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
     t,
     sessionReady,
     exchangePreview,
-    showBalanceSkeleton,
     sellDisabled,
     segmentOptions,
     unlockableAmountLabel,
     usd1AmountLabel,
-    showWillReceiveSkeleton,
     willReceiveLabel,
     onBack: () => setView('hub'),
     handleUnlock,

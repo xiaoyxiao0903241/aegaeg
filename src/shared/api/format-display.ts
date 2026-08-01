@@ -69,12 +69,12 @@ export function formatGroupedNumber(
 
 /**
  * Token amount × USD price → `≈ $x.xx`.
- * Zero → `≈ $0.00` (honest without price). Non-zero without price → `≈ —`.
+ * Missing / NaN / no price → `≈ $0.00` (empty-state SSOT; no em dash).
  */
 export function formatApproxUsd(amount: number, priceUsd: number | null): string {
-  if (!Number.isFinite(amount)) return '≈ —'
-  if (amount === 0) return formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
-  if (priceUsd == null || priceUsd <= 0) return '≈ —'
+  if (!Number.isFinite(amount) || priceUsd == null || priceUsd <= 0) {
+    return formatGroupedNumber(0, { digits: 2, prefix: '≈ $' })
+  }
   return formatGroupedNumber(amount * priceUsd, { digits: 2, prefix: '≈ $' })
 }
 
@@ -123,6 +123,6 @@ export function formatShortAddress(
 }
 
 export function formatDiscountBps(discountBps: number): string {
-  if (!Number.isFinite(discountBps) || discountBps <= 0) return '—'
+  if (!Number.isFinite(discountBps) || discountBps <= 0) return '0%'
   return `-${discountBps / 100}%`
 }

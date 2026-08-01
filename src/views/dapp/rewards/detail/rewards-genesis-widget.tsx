@@ -8,7 +8,7 @@ import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 import { useRewardsGenesisView } from '~/views/dapp/rewards/detail/use-rewards-genesis-view'
 
 export function RewardsGenesisClaimWidget() {
@@ -33,7 +33,7 @@ export function RewardsGenesisClaimWidget() {
             </Text>
             <div className="flex items-start justify-between gap-3">
               <Text as="p" className="font-semibold text-white" variant="detail">
-                {vm.rankBusy ? '…' : vm.rankLabel || t.rewards.shareholderNoRankTitle}
+                {vm.rankBusy ? '0' : vm.rankLabel || t.rewards.shareholderNoRankTitle}
               </Text>
               {vm.hasRank && vm.isSuperCommunity ? (
                 <Text as="p" className="shrink-0 text-primary" variant="caption">
@@ -57,7 +57,7 @@ export function RewardsGenesisClaimWidget() {
                 {vm.personalProgressLabel}
               </Text>
               <Text as="span" className="text-white/80" variant="caption">
-                {vm.rankBusy ? '…' : vm.personalProgressValue}
+                {vm.rankBusy ? '0' : vm.personalProgressValue}
               </Text>
             </div>
             <ProgressMeter label={vm.personalProgressLabel} value={vm.personalProgressPercent} />
@@ -68,7 +68,7 @@ export function RewardsGenesisClaimWidget() {
                 {t.rewards.teamVolume}
               </Text>
               <Text as="span" className="text-white/80" variant="caption">
-                {vm.rankBusy ? '…' : vm.teamProgressValue}
+                {vm.rankBusy ? '0' : vm.teamProgressValue}
               </Text>
             </div>
             <ProgressMeter label={t.rewards.teamVolume} value={vm.teamProgressPercent} />
@@ -132,7 +132,9 @@ export function RewardsGenesisClaimWidget() {
             </Text>
           </div>
           <Text as="p" className="mt-2 font-semibold" variant="headline">
-            {vm.isSuperCommunity || !vm.sessionReady ? vm.communityClaimable : REWARDS_DASH}
+            {vm.isSuperCommunity || !vm.sessionReady
+              ? vm.communityClaimable
+              : formatApiDecimalAmount(null)}
           </Text>
           {vm.walletReady ? (
             <DappActionButton

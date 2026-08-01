@@ -77,7 +77,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   })
 
   function formatRewardUsd(amount: bigint): string {
-    if (agxPriceQuery.isError || agxPriceUsd <= 0) return '—'
+    if (agxPriceQuery.isError || agxPriceUsd <= 0) return '$0.00'
     return formatGroupedNumber(formatTokenAmountToNumber(amount, GAGX_DECIMALS) * agxPriceUsd, {
       digits: 2,
       prefix: '$',

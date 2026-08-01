@@ -66,7 +66,7 @@ export function CalcWidget() {
               {t.staking.calc.price}
             </Text>
             <Text as="span" className="font-semibold text-primary" variant="support">
-              {t.staking.calc.priceCurrent.replace('{price}', vm.price || '—')}
+              {t.staking.calc.priceCurrent.replace('{price}', vm.price || '0')}
             </Text>
           </div>
           <Input

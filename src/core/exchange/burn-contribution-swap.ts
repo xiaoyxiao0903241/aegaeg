@@ -77,7 +77,7 @@ export function formatBurnContributionRateLabel({
  * Exact when rateBps % 10000 === 0; otherwise decimal (trim trailing zeros).
  */
 export function formatBurnContributionRatioColon(rateBps: bigint): string {
-  if (rateBps === 0n) return '—'
+  if (rateBps === 0n) return '0'
   if (rateBps % BPS_DENOM === 0n) {
     return `1:${(rateBps / BPS_DENOM).toString()}`
   }

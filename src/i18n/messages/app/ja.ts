@@ -719,7 +719,7 @@ const app = defineMessages({
         'Six reward cards cover lucky draws, referral, participation, co-build, development stipend, and genesis co-build.',
       aboutTitle: 'About AEGIS X rewards',
       balanceLabel: 'Balance',
-      balancePlaceholder: '—',
+      balancePlaceholder: '0.00',
       signInForBalance: 'Sign in to view',
       enterClaim: '受け取りへ',
       sessionHint:
@@ -2362,7 +2362,6 @@ const app = defineMessages({
     title: 'Release',
     intro: 'Manage yield and principal release',
     backToHub: 'Back to release',
-    dash: '—',
     recordColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     recordsEmpty: 'No indexed records yet',
     labels: {

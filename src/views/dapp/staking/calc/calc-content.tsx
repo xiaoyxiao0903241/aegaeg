@@ -13,7 +13,7 @@ import type { BondPeriod, StakePeriod } from '~/core/staking/staking-period'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 
-const PLACEHOLDER = '—'
+const PLACEHOLDER = '0.00'
 const XMINE_APR = 0.1
 
 function formatUsdOrDash(value: number) {

@@ -100,21 +100,17 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     amountIn: core.amountIn,
   })
 
-  const amountQuote = core.amountQuoteQuery.isPlaceholderData
-    ? undefined
-    : core.amountQuoteQuery.data
+  const amountQuote = core.amountQuoteQuery.data
   const priceImpactBps = amountQuote?.priceImpactBps ?? 0
   const gasEstimate = amountQuote?.gasEstimate ?? 0n
 
   const routeLabel = formatTradeRouteLabel(sellKey, buyKey)
   const pancakeSwapUrl = pancakeSwapDeepLink(pair.sell.address, pair.buy.address)
   const priceImpactLabel =
-    !sessionReady || core.amountIn === 0n || core.isQuoting
-      ? ''
-      : `${(priceImpactBps / 100).toFixed(2)}%`
+    !sessionReady || core.amountIn === 0n ? '' : `${(priceImpactBps / 100).toFixed(2)}%`
   const gasEstimateLabel =
     gasEstimate === 0n
-      ? '—'
+      ? '0'
       : formatGroupedNumber(gasEstimate, { digits: 0, trimZeros: true, prefix: '~' })
   const isHighPriceImpact =
     sessionReady && core.amountIn > 0n && priceImpactBps >= HIGH_EXCHANGE_PRICE_IMPACT_BPS

@@ -141,7 +141,7 @@ export function ExchangeProgramCards() {
 
   const contributionRatio =
     configQuery.data === undefined
-      ? '—'
+      ? '0'
       : formatBurnContributionRatioColon(configQuery.data.rateBps)
 
   return (

@@ -2,6 +2,7 @@ import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
+import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
@@ -109,14 +110,14 @@ export function ReleaseBufferWidget() {
             <BufferTokenHeader iconSrc={tokenCarouselIcons.gagxIcon} label="gAGX" />
             <BufferStatPair
               releasedLabel={t.release.labels.released}
-              releasedValue={`${vm.dash} gAGX`}
+              releasedValue={`${formatGroupedNumber(0, { digits: 2 })} gAGX`}
               releasingLabel={t.release.labels.releasing}
-              releasingValue={`${vm.dash} gAGX`}
+              releasingValue={`${formatGroupedNumber(0, { digits: 2 })} gAGX`}
             />
             <BufferProgressBar width="0%" />
             <BufferFooterPair
               left={t.release.labels.releasedPct.replace('{pct}', '0')}
-              right={'≈ —'}
+              right={formatApproxUsd(0, null)}
             />
             <Text as="p" tone="muted-foreground" variant="caption">
               {t.release.buffer.gagxHint}

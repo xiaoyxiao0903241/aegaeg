@@ -84,13 +84,13 @@ export function StakeWidget() {
         <DappMetaPanel
           className="gap-3 p-4"
           items={[
-            { label: t.staking.stake.meta.baseDaily, value: '—' },
+            { label: t.staking.stake.meta.baseDaily, value: '0' },
             {
               label: t.staking.stake.meta.periodYield,
-              value: '—',
+              value: '0',
               valueClassName: 'text-primary',
             },
-            { label: t.staking.stake.meta.bonus, value: '—' },
+            { label: t.staking.stake.meta.bonus, value: '0' },
             { label: t.staking.stake.meta.lock, value: lockLabel },
             {
               label: t.staking.stake.meta.contract,

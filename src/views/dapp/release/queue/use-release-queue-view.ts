@@ -8,6 +8,7 @@ import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatApproxUsd } from '~/shared/api/format-display'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
@@ -48,7 +49,6 @@ export function useReleaseQueueView() {
   })
 
   const locked = claim.isLocked
-  const dash = t.release.dash
 
   const rows: ReleaseQueueRowView[] = RELEASE_DURATION_DAYS.map((days) => {
     const found = queueQuery.data?.plans.find((p) => p.durationDays === days)
@@ -69,15 +69,11 @@ export function useReleaseQueueView() {
         planIndexOk: planIndex >= 0,
       }),
       pending: pendingPlan === planIndex,
-      claimableLabel: walletReady
-        ? `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`
-        : dash,
-      releasingLabel: walletReady
-        ? `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`
-        : dash,
+      claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
+      releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
       releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),
-      valueHint: walletReady ? '≈ —' : dash,
-      progressWidth: walletReady ? pctLabel : '0%',
+      valueHint: formatApproxUsd(0, null),
+      progressWidth: pctLabel,
     }
   })
 

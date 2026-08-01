@@ -11,8 +11,6 @@ function openPreSaleContract() {
 
 export function GenesisGlobalSection({ genesis }: { genesis: GenesisWidgetState }) {
   const { messages: t } = useI18n()
-  const showValueSkeleton =
-    (genesis.isLoading && genesis.phases.length === 0) || genesis.globalPurchasedLoading
 
   return (
     <DappDetailBlock>
@@ -22,7 +20,6 @@ export function GenesisGlobalSection({ genesis }: { genesis: GenesisWidgetState 
         kicker={t.genesis.globalLabel}
         onViewContract={openPreSaleContract}
         value={`$${genesis.globalPurchasedLabel}`}
-        valueLoading={showValueSkeleton}
       />
     </DappDetailBlock>
   )

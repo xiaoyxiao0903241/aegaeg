@@ -35,10 +35,8 @@ export function writeCtaLabel(
   return copy.submit
 }
 
-/** `{template}` with `{balance}` replaced; loading shows ellipsis. */
-export function formatAmountBalanceLabel(
-  template: string,
-  args: { loading: boolean; balance: string },
-): string {
-  return template.replace('{balance}', args.loading ? '…' : args.balance)
+/** `{template}` with `{balance}` replaced — empty balance → `0.00`. */
+export function formatAmountBalanceLabel(template: string, args: { balance: string }): string {
+  const amount = args.balance.trim() === '' ? '0.00' : args.balance
+  return template.replace('{balance}', amount)
 }

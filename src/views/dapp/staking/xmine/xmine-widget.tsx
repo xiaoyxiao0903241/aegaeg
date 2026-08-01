@@ -67,12 +67,12 @@ export function XmineWidget() {
           items={[
             {
               label: t.staking.xmine.meta.daily,
-              value: '—',
+              value: '0',
               valueClassName: 'text-primary',
             },
             {
               label: t.staking.xmine.meta.max,
-              value: xmine.quotaLabel === '—' ? '—' : `${xmine.quotaLabel} gAGX`,
+              value: xmine.quotaLabel === '0' ? '0' : `${xmine.quotaLabel} gAGX`,
             },
             {
               label: t.staking.xmine.meta.lock,

@@ -1,18 +1,13 @@
 import { tv } from 'tailwind-variants'
-import { Card } from '~/shared/ui/card'
 import { cn } from '~/shared/lib/utils'
 import { dappTableCell } from '~/app/shell/dapp-table-card'
 
-/** Mobile community stat shell — shared by live cards + skeleton (≥2 call sites → shell). */
+/** Mobile community stat shell — shared by live cards (≥2 call sites → shell). */
 export const communityStatCardMobileShell = tv({
   base: cn(
     'max-dapp:min-h-22 max-dapp:items-start max-dapp:rounded-md max-dapp:border-0',
     'max-dapp:p-(--dapp-community-stat-padding) max-dapp:text-left max-dapp:shadow-card',
   ),
-})
-
-const metricCardSkeleton = tv({
-  base: 'flex flex-col items-start gap-1.5 rounded-md px-4 py-3.5',
 })
 
 const dappSkeleton = tv({
@@ -25,19 +20,6 @@ const dappSkeleton = tv({
   },
   defaultVariants: {
     tone: 'surface',
-  },
-})
-
-const communityStatSkeleton = tv({
-  base: [
-    'community-stat flex min-h-22 flex-col items-start gap-1 rounded-lg p-4.5',
-    communityStatCardMobileShell(),
-  ],
-  variants: {
-    dark: {
-      true: 'is-dark rounded-md',
-      false: '',
-    },
   },
 })
 
@@ -56,10 +38,6 @@ const tableRowSkeletonCell = tv({
   },
 })
 
-const exchangeMetaValueSkeleton = tv({
-  base: 'inline-block h-3.5 w-full max-w-37',
-})
-
 export function DappSkeleton({
   className,
   tone = 'surface',
@@ -68,32 +46,6 @@ export function DappSkeleton({
   tone?: 'dark' | 'surface'
 }) {
   return <span aria-hidden="true" className={dappSkeleton({ tone, class: className })} />
-}
-
-export function MetricCardSkeleton({ className }: { className?: string }) {
-  return (
-    <Card as="article" surface="elevated" className={metricCardSkeleton({ class: className })}>
-      <DappSkeleton className="h-3 w-18 max-w-[55%]" />
-      <DappSkeleton className="mt-2 h-5 w-24 max-w-[70%]" />
-    </Card>
-  )
-}
-
-export function CommunityStatCardSkeleton({ dark = false }: { dark?: boolean }) {
-  const tone = dark ? 'dark' : 'surface'
-
-  return (
-    <Card
-      as="article"
-      surface={dark ? 'inverse' : 'soft'}
-      className={communityStatSkeleton({ dark })}
-    >
-      <DappSkeleton className="h-3 w-16" tone={tone} />
-      <DappSkeleton className="mt-2 h-7 w-14" tone={tone} />
-      <DappSkeleton className="mt-1 h-3 w-24" tone={tone} />
-      <DappSkeleton className="mt-1 h-3 w-32" tone={tone} />
-    </Card>
-  )
 }
 
 export function TableRowSkeleton({
@@ -112,16 +64,4 @@ export function TableRowSkeleton({
       ))}
     </tr>
   )
-}
-
-export function ExchangeBalanceSkeleton() {
-  return <DappSkeleton className="inline-block h-3 w-22" />
-}
-
-export function ExchangeMetaValueSkeleton({ className }: { className?: string }) {
-  return <DappSkeleton className={exchangeMetaValueSkeleton({ class: className })} />
-}
-
-export function ExchangeAmountSkeleton() {
-  return <DappSkeleton className="ml-auto h-7 w-28 max-w-[55%]" />
 }

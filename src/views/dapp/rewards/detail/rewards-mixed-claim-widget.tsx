@@ -12,7 +12,7 @@ import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-pick
 import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
-import { REWARDS_DASH, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
+import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-rewards-mixed-claim-view'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 
@@ -53,7 +53,9 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
                 {vm.mixed.requiredContributionLabel}
               </Text>
               <Text as="p" className="font-semibold" variant="copy">
-                {view === 'lucky' && vm.amount > 0n ? vm.requiredText : REWARDS_DASH}
+                {view === 'lucky' && vm.amount > 0n
+                  ? vm.requiredText
+                  : formatApiDecimalAmount(null)}
               </Text>
             </div>
           </div>

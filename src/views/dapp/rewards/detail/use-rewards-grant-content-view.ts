@@ -30,7 +30,7 @@ export function useRewardsGrantContentView() {
   const tier = !sessionReady
     ? tierEmpty
     : summaryQuery.isLoading && summary == null
-      ? '…'
+      ? '0.00'
       : formatMakingRankLabel(summary?.making_rank, tierEmpty)
   const totalClaimed = formatApiStatLabel(
     sessionReady,

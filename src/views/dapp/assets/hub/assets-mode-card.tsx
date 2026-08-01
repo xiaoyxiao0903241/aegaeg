@@ -1,4 +1,5 @@
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
@@ -60,7 +61,7 @@ export function AssetsModeCard({
           </div>
           <div className="pointer-events-auto flex items-center gap-1">
             <Text as="span" className="text-[13px] font-medium" variant="detail">
-              {aprLabel}
+              <DappCountValue text={aprLabel} />
             </Text>
             <DappInfoTooltip className="size-3 [&_svg]:size-3" content={aprHint} />
           </div>
@@ -76,18 +77,18 @@ export function AssetsModeCard({
           </div>
           <div className="flex items-center justify-between gap-2">
             <Text as="strong" className="text-sm font-semibold" variant="copy">
-              {positionValue}
+              <DappCountValue text={positionValue} />
             </Text>
             <Text as="strong" className="text-sm font-semibold text-primary" variant="copy">
-              {yieldValue}
+              <DappCountValue text={yieldValue} />
             </Text>
           </div>
           <div className="flex items-center justify-between gap-2">
             <Text as="span" tone="muted-foreground" variant="detail">
-              {positionApprox}
+              <DappCountValue text={positionApprox} />
             </Text>
             <Text as="span" tone="muted-foreground" variant="detail">
-              {yieldApprox}
+              <DappCountValue text={yieldApprox} />
             </Text>
           </div>
         </div>

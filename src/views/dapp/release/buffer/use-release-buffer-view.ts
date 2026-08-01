@@ -6,6 +6,7 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { formatApproxUsd } from '~/shared/api/format-display'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
@@ -31,7 +32,6 @@ export function useReleaseBufferView() {
     },
   })
 
-  const dash = t.release.dash
   const claimable = bufferQuery.data?.totalClaimable ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const canClaim = canClaimWhen({
@@ -42,11 +42,11 @@ export function useReleaseBufferView() {
   })
   const pctLabel = formatReleasePct(claimable, releasing)
 
-  const claimableLabel = walletReady ? `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX` : dash
-  const releasingLabel = walletReady ? `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX` : dash
+  const claimableLabel = `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`
+  const releasingLabel = `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`
   const releasedPctLabel = t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))
-  const valueHint = walletReady ? '≈ —' : dash
-  const progressWidth = walletReady ? pctLabel : '0%'
+  const valueHint = formatApproxUsd(0, null)
+  const progressWidth = pctLabel
 
   async function onClaim() {
     if (!canClaim) return
@@ -57,7 +57,6 @@ export function useReleaseBufferView() {
     t,
     onBack: () => setView('hub'),
     walletReady,
-    dash,
     claimableLabel,
     releasingLabel,
     releasedPctLabel,

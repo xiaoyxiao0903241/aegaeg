@@ -11,7 +11,7 @@ import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { Button } from '~/shared/ui/button'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { DappCarousel } from '~/app/shell/dapp-carousel'
-import { REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 import { useRewardsContributionDisplay } from '~/views/dapp/rewards/use-rewards-contribution-display'
 
@@ -33,7 +33,7 @@ export function RewardsHubContent() {
           <RewardsStatCard
             label={stats.totalRewards}
             labelClassName="text-[13px]"
-            value={REWARDS_DASH}
+            value={formatApiDecimalAmount(null)}
           />
           <RewardsStatCard
             className="relative overflow-hidden"
@@ -50,17 +50,17 @@ export function RewardsHubContent() {
           <RewardsStatCard
             label={stats.personalHolding}
             labelClassName="text-[13px]"
-            value={REWARDS_DASH}
+            value={formatApiDecimalAmount(null)}
           />
           <RewardsStatCard
             label={stats.totalPerformance}
             labelClassName="text-[13px]"
-            value={REWARDS_DASH}
+            value={formatApiDecimalAmount(null)}
           />
           <RewardsStatCard
             label={stats.smallAreaPerformance}
             labelClassName="text-[13px]"
-            value={REWARDS_DASH}
+            value={formatApiDecimalAmount(null)}
           />
           <RewardsStatCard label={stats.contribution} labelClassName="text-[13px]">
             <div className="flex items-start justify-between gap-2">

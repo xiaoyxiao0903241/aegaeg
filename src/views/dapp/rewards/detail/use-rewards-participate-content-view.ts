@@ -9,7 +9,7 @@ import {
   formatApiStatLabel,
   mapParticipationAwardInviterToRow,
   mapParticipationAwardLogToRow,
-  REWARDS_DASH,
+  formatApiDecimalAmount,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 
@@ -50,7 +50,7 @@ export function useRewardsParticipateContentView() {
     totalRewards,
     myPosition,
     contributionValue,
-    nextPayout: REWARDS_DASH,
+    nextPayout: formatApiDecimalAmount(null),
     recordRows,
     recordsLoading: sessionReady && logsQuery.isLoading,
     inviterRows,

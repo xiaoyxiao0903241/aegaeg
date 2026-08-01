@@ -6,11 +6,11 @@ function normalizeRateOutPerUnit(amountIn: bigint, amountOut: bigint, decimalsIn
 }
 
 /**
- * Empty spot rate display: quoting → ''; settled zero → '—'; non-zero → null (format).
+ * Empty spot rate display: zero → `'0'` (never blank — blank caused 2000→0 flash via `|| '0'`).
+ * Non-zero → null (caller formats).
  */
-export function emptySpotRateDash(quotedOut: bigint, isQuoting: boolean): '' | '—' | null {
-  if (quotedOut !== 0n) return null
-  return isQuoting ? '' : '—'
+export function emptySpotRateDash(quotedOut: bigint): '0' | null {
+  return quotedOut === 0n ? '0' : null
 }
 
 function formatRateRatioFixed(
@@ -43,7 +43,7 @@ export function formatExchangeRateColon({
   decimalsOut: number
 }): string {
   if (amountIn === 0n || amountOut === 0n) {
-    return '—'
+    return '0'
   }
 
   const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)
@@ -70,7 +70,7 @@ export function formatExchangeRateApprox({
   fractionDigits?: number
 }): string {
   if (amountIn === 0n || amountOut === 0n) {
-    return '—'
+    return '0'
   }
 
   const normalizedOut = normalizeRateOutPerUnit(amountIn, amountOut, decimalsIn)

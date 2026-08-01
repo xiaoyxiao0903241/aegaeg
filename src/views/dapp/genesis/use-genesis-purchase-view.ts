@@ -40,9 +40,7 @@ export function useGenesisPurchaseView(genesis: GenesisWidgetState) {
   }, [isMobileViewport])
 
   const xTokenAirdropHint = applyMessageTemplate(t.genesis.xTokenAirdropHint, {
-    threshold: genesis.airdropThresholdLoading
-      ? '…'
-      : formatGroupedNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
+    threshold: formatGroupedNumber(genesis.airdropThresholdUsd, { suffix: ' USD' }),
   })
 
   function handleSharesChange(value: string) {

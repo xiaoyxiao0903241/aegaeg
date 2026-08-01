@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
@@ -77,12 +78,12 @@ export function AssetsProductDetailSections({
                     />
                   ) : null}
                   <Text as="strong" className="text-base font-semibold" variant="copy">
-                    {cell?.value ?? '—'}
+                    <DappCountValue text={cell?.value ?? '0.00'} />
                   </Text>
                 </div>
                 {cell?.approx != null ? (
                   <Text as="span" tone="muted-foreground" variant="detail">
-                    {cell.approx}
+                    <DappCountValue text={cell.approx} />
                   </Text>
                 ) : null}
               </Card>

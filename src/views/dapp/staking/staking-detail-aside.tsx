@@ -13,7 +13,7 @@ import { cn } from '~/shared/lib/utils'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
 
-const PLACEHOLDER = '—'
+const PLACEHOLDER = '0.00'
 
 /** Right-rail shared buckets for stake / bond / xmine — positions deep-link to assets. */
 export function StakingDetailAside({

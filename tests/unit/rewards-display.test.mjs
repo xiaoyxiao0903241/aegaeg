@@ -3,9 +3,10 @@ import test from 'node:test'
 import { loadModule } from './load-module.mjs'
 
 test('formatContributionPlaceholder: disconnected / loading / value', async () => {
-  const { formatContributionPlaceholder, REWARDS_DASH, REWARDS_LOADING } = await loadModule(
+  const { formatContributionPlaceholder, formatApiDecimalAmount } = await loadModule(
     '/src/views/dapp/rewards/rewards-display.ts',
   )
+  const zero = formatApiDecimalAmount(null)
 
   assert.equal(
     formatContributionPlaceholder({
@@ -15,7 +16,7 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
       contribution: undefined,
       decimals: 18,
     }),
-    REWARDS_DASH,
+    zero,
   )
 
   assert.equal(
@@ -26,7 +27,7 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
       contribution: undefined,
       decimals: 18,
     }),
-    REWARDS_LOADING,
+    zero,
   )
 
   assert.equal(
@@ -49,7 +50,7 @@ test('formatContributionPlaceholder: disconnected / loading / value', async () =
       contribution: undefined,
       decimals: 18,
     }),
-    REWARDS_DASH,
+    zero,
   )
 })
 

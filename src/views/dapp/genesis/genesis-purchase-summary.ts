@@ -77,7 +77,9 @@ export function genesisPurchaseSummary(args: {
       payUsd1Label: `${formatGroupedNumber(payUsd1, { digits: 0 })} USD1`,
       contributionValueLabel: formatGroupedNumber(contributionValueUsd, { prefix: '$' }),
       xTokenAirdropLabel:
-        payUsd1 > 0 ? formatGroupedNumber(xTokenAirdropUsd, { prefix: '$' }) : '—',
+        payUsd1 > 0
+          ? formatGroupedNumber(xTokenAirdropUsd, { prefix: '$' })
+          : formatGroupedNumber(0, { prefix: '$' }),
       airdropThresholdUsd: reads.airdropThresholdUsd,
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,

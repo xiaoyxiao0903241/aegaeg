@@ -4,9 +4,9 @@ import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
-import { DappSkeleton } from '~/app/shell/dapp-skeleton'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { cn } from '~/shared/lib/utils'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 
 const genesisGlobeWidth = 597
 const genesisGlobeHeight = 250
@@ -36,14 +36,12 @@ export function GenesisGlobalCard({
   kicker,
   onViewContract,
   value,
-  valueLoading = false,
 }: {
   body: string
   contractLabel: string
   kicker: string
   onViewContract: () => void
   value: ReactNode
-  valueLoading?: boolean
 }) {
   const styles = genesisGlobalCard()
 
@@ -54,7 +52,7 @@ export function GenesisGlobalCard({
           {kicker}
         </Text>
         <Text as="strong" tone="inverse" variant="panel" className="block">
-          {valueLoading ? <DappSkeleton className="h-6 w-40" tone="dark" /> : value}
+          {typeof value === 'string' ? <DappCountValue text={value} /> : value}
         </Text>
         <Text as="p" variant="copy" tone="inverse-muted" className="m-0 max-dapp:w-full">
           {body}

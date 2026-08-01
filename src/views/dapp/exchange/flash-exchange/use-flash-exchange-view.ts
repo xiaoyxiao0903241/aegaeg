@@ -19,10 +19,6 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     disabled: !flash.canFlip || flash.isSubmitting || (sessionReady && !flash.walletReady),
   })
 
-  const showRateSkeleton = flash.isExchangePriceQuoting && !flash.exchangePriceLabel
-  const showBuyAmountSkeleton =
-    sessionReady && flash.isQuoting && flash.sellAmount.trim().length > 0
-
   const pairOptions = [
     { label: t.exchange.flash.pairs.gagx, value: 'gagx' },
     { label: t.exchange.flash.pairs.usdt, value: 'usdt' },
@@ -30,7 +26,6 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
 
   const { buyLabel, sellLabel } = useExchangeBalanceLabels({
     buyBalanceLabel: flash.buyBalanceLabel,
-    isBalancesLoading: flash.isBalancesLoading,
     sellBalanceLabel: flash.sellBalanceLabel,
     sessionReady,
     walletReady: flash.walletReady,
@@ -52,8 +47,6 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     rotation,
     flipCardClass,
     onFlip,
-    showRateSkeleton,
-    showBuyAmountSkeleton,
     pairOptions,
     buyLabel,
     sellLabel,

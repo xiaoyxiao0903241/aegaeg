@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { Text } from '~/shared/ui/text'
+
+function renderMetric(node: ReactNode) {
+  return typeof node === 'string' ? <DappCountValue text={node} /> : node
+}
 
 /** Icon + primary value + approx used in assets hub overview cards. */
 export function AssetsHubMetricWithIcon({
@@ -23,10 +28,10 @@ export function AssetsHubMetricWithIcon({
         <DappIcon alt="" className="mt-0.5 size-[18px] rounded-[10px]" size="sm" src={icon} />
         <div className="grid gap-1">
           <Text as="strong" className="text-base font-semibold" variant="copy">
-            {value}
+            {renderMetric(value)}
           </Text>
           <Text as="span" tone="muted-foreground" variant="detail">
-            {approx}
+            {renderMetric(approx)}
           </Text>
         </div>
       </div>
@@ -50,10 +55,10 @@ export function AssetsHubMetricPlain({
         {label}
       </Text>
       <Text as="strong" className="text-base font-semibold" variant="copy">
-        {value}
+        {renderMetric(value)}
       </Text>
       <Text as="span" tone="muted-foreground" variant="detail">
-        {approx}
+        {renderMetric(approx)}
       </Text>
     </div>
   )

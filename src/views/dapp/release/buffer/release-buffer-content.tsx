@@ -6,6 +6,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
+import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
@@ -16,8 +17,30 @@ import { Text } from '~/shared/ui/text'
 import { FaqList } from '~/shared/ui/faq-list'
 import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads'
 import { formatReleaseApiOrChainLabel } from '~/views/dapp/release/format-release-api-or-chain-label'
+import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+
+function BufferStatCells({ stats }: { stats: ReadonlyArray<{ label: string; value: string }> }) {
+  const approx = formatApproxUsd(0, null)
+  return (
+    <div className="grid gap-3 sm:grid-cols-3">
+      {stats.map((stat) => (
+        <div className="grid gap-1" key={stat.label}>
+          <Text as="span" tone="muted-foreground" variant="detail">
+            {stat.label}
+          </Text>
+          <Text as="strong" className="text-sm font-semibold" variant="copy">
+            <DappCountValue text={stat.value} />
+          </Text>
+          <Text as="span" tone="muted-foreground" variant="detail">
+            <DappCountValue text={approx} />
+          </Text>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export function ReleaseBufferContent() {
   const { messages: t } = useI18n()
@@ -30,9 +53,9 @@ export function ReleaseBufferContent() {
   const amount = bufferQuery.data?.totalAmount ?? 0n
   const claimed = bufferQuery.data?.totalClaimed ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
-  const dash = t.release.dash
   const api = apiSummaryQuery.data
   const apiPending = sessionReady && apiSummaryQuery.isLoading && api == null
+  const zeroAmount = formatGroupedNumber(0, { digits: 2 })
 
   const agxStats = [
     {
@@ -43,7 +66,6 @@ export function ReleaseBufferContent() {
         apiRaw: api?.cumulative_amount,
         chainReady: walletReady,
         chainValue: amount,
-        dash,
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
@@ -56,7 +78,6 @@ export function ReleaseBufferContent() {
         apiRaw: api?.released_amount,
         chainReady: walletReady,
         chainValue: claimed,
-        dash,
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
@@ -69,7 +90,6 @@ export function ReleaseBufferContent() {
         apiRaw: api?.releasing_amount,
         chainReady: walletReady,
         chainValue: releasing,
-        dash,
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
@@ -77,9 +97,9 @@ export function ReleaseBufferContent() {
   ]
 
   const gagxStats = [
-    { label: t.release.buffer.entered, value: dash },
-    { label: t.release.buffer.extracted, value: dash },
-    { label: t.release.labels.releasing, value: dash },
+    { label: t.release.buffer.entered, value: zeroAmount },
+    { label: t.release.buffer.extracted, value: zeroAmount },
+    { label: t.release.labels.releasing, value: zeroAmount },
   ]
 
   return (
@@ -100,21 +120,7 @@ export function ReleaseBufferContent() {
               AGX
             </Text>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {agxStats.map((stat) => (
-              <div className="grid gap-1" key={stat.label}>
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {stat.label}
-                </Text>
-                <Text as="strong" className="text-sm font-semibold" variant="copy">
-                  {stat.value}
-                </Text>
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {walletReady || sessionReady ? '≈ —' : dash}
-                </Text>
-              </div>
-            ))}
-          </div>
+          <BufferStatCells stats={agxStats} />
         </Card>
         <Card as="div" className="grid gap-1.5 rounded-2xl p-4" surface="elevated">
           <div className="mb-1 flex items-center gap-2">
@@ -128,21 +134,7 @@ export function ReleaseBufferContent() {
               gAGX
             </Text>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {gagxStats.map((stat) => (
-              <div className="grid gap-1" key={stat.label}>
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {stat.label}
-                </Text>
-                <Text as="strong" className="text-sm font-semibold" variant="copy">
-                  {stat.value}
-                </Text>
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {'≈ —'}
-                </Text>
-              </div>
-            ))}
-          </div>
+          <BufferStatCells stats={gagxStats} />
           <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
             {t.release.buffer.gagxHint}
           </Text>

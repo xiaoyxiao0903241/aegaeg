@@ -12,11 +12,7 @@ import { WidgetHeader } from '~/shared/ui/widget-header'
 import { RewardsModeCard } from '~/views/dapp/rewards/hub/rewards-mode-card'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import {
-  claimableAmountValue,
-  REWARDS_DASH,
-  REWARDS_LOADING,
-} from '~/views/dapp/rewards/rewards-display'
+import { claimableAmountValue, formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 
 const CARD_VIEWS = [
   'lucky',
@@ -28,8 +24,9 @@ const CARD_VIEWS = [
 ] as const satisfies readonly Exclude<RewardsView, 'hub'>[]
 
 function formatGagxBalance(value: number | null, sessionReady: boolean, signInLabel: string) {
-  if (!sessionReady) return { amount: signInLabel, approx: REWARDS_DASH }
-  if (value == null) return { amount: REWARDS_DASH, approx: REWARDS_DASH }
+  if (!sessionReady) return { amount: signInLabel, approx: formatApiDecimalAmount(null) }
+  if (value == null)
+    return { amount: formatApiDecimalAmount(null), approx: formatApiDecimalAmount(null) }
   return {
     amount: `${value.toFixed(4)}gAGX`,
     approx: formatGroupedNumber(value, { digits: 2, prefix: '≈ $' }),
@@ -69,7 +66,7 @@ export function RewardsHubWidget() {
             ? {
                 amount: sessionReady
                   ? value == null
-                    ? REWARDS_LOADING
+                    ? formatApiDecimalAmount(null)
                     : formatGroupedNumber(value, { digits: 2, prefix: '$' })
                   : t.rewards.hub.signInForBalance,
                 approx: undefined as string | undefined,

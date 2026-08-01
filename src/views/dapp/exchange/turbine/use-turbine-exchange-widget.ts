@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { keepPreviousData } from '@tanstack/react-query'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
@@ -33,12 +34,15 @@ const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 /** One whole AGX in base units — unit spot via handbook `quoteUsdInForAgxOut`. */
 const ONE_AGX = 10n ** BigInt(AGX_DECIMALS)
 
-/** Overview USD hint: zero amount → `$0.00`; missing/failed unit quote → empty (never fake `$0.00`). */
+/** Overview USD hint: missing unit quote → `$0.00` (empty-state SSOT). */
 function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined): string {
-  if (amountAgx === 0n) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
-  if (unitUsdPerAgx === undefined || unitUsdPerAgx === 0n) return ''
+  if (unitUsdPerAgx === undefined || unitUsdPerAgx === 0n || amountAgx === 0n) {
+    return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+  }
   const usdNumber = formatTokenAmountToNumber((amountAgx * unitUsdPerAgx) / ONE_AGX, USD1_DECIMALS)
-  if (!Number.isFinite(usdNumber) || usdNumber <= 0) return ''
+  if (!Number.isFinite(usdNumber) || usdNumber <= 0) {
+    return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+  }
   return formatGroupedNumber(usdNumber, { digits: 2, prefix: '$' })
 }
 
@@ -46,13 +50,17 @@ function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined)
 function formatTurbineClaimedTotal(raw: string): string {
   if (raw.includes('.')) {
     const n = Number(raw)
-    return Number.isFinite(n) ? formatGroupedNumber(n, { digits: 2 }) : '—'
+    return Number.isFinite(n)
+      ? formatGroupedNumber(n, { digits: 2 })
+      : formatGroupedNumber(0, { digits: 2 })
   }
   try {
     return formatTokenAmount(BigInt(raw), AGX_DECIMALS, { digits: 2, trimZeros: false })
   } catch {
     const n = Number(raw)
-    return Number.isFinite(n) ? formatGroupedNumber(n, { digits: 2 }) : '—'
+    return Number.isFinite(n)
+      ? formatGroupedNumber(n, { digits: 2 })
+      : formatGroupedNumber(0, { digits: 2 })
   }
 }
 
@@ -69,18 +77,21 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     queryKey: queryKeys.chain.turbineQuota,
     queryFn: (addr) => readTurbineQuota(addr),
     enabled: quotesEnabled,
+    placeholderData: keepPreviousData,
   })
 
   const balancesQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineUsd1Balances,
     queryFn: (addr) => readTurbineUsd1Balances(addr),
     enabled: quotesEnabled,
+    placeholderData: keepPreviousData,
   })
 
   const silencesQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineSilences,
     queryFn: (addr) => readTurbineSilences(addr),
     enabled: quotesEnabled,
+    placeholderData: keepPreviousData,
   })
 
   const cooldownQuery = useChainQuery({
@@ -153,7 +164,7 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     unlockAmountIn <= 0n
       ? '0.00'
       : quoteQuery.isError
-        ? '—'
+        ? '0'
         : quoteQuery.data === undefined
           ? ''
           : formatTokenAmount(quoteQuery.data, USD1_DECIMALS, 4)
@@ -190,12 +201,12 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
 
   const claimedRaw = turbineSummaryQuery.data?.claimed_total
   const totalWithdrawnLabel = !sessionReady
-    ? '—'
+    ? '0'
     : turbineSummaryQuery.isLoading && claimedRaw == null
-      ? '…'
+      ? '0'
       : claimedRaw != null
         ? formatTurbineClaimedTotal(claimedRaw)
-        : '—'
+        : '0'
   const claimedAsNumber = claimedRaw != null ? Number(claimedRaw) : Number.NaN
   const totalWithdrawnUsdHint =
     Number.isFinite(claimedAsNumber) && claimedAsNumber === 0

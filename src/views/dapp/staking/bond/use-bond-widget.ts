@@ -140,24 +140,24 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
   const discountLabel =
     market === undefined
       ? marketQuery.isError
-        ? '—'
+        ? '0'
         : ''
       : formatBondDiscountLabel(market.discountRateBP)
   const periodDiscounts = Object.fromEntries(
     BOND_PERIODS.map((p, index) => {
       const q = periodMarketQueries[index]!
       if (q.data !== undefined) return [p, formatBondDiscountLabel(q.data.discountRateBP)]
-      if (q.isError) return [p, '—']
-      return [p, q.isFetching ? '…' : '—']
+      if (q.isError) return [p, '0']
+      return [p, q.isFetching ? '0' : '0']
     }),
   ) as Record<BondPeriod, string>
   const capLabel =
     market === undefined
       ? marketQuery.isError
-        ? '—'
+        ? '0'
         : ''
       : market.maxDebt === 0n
-        ? '—'
+        ? '0'
         : formatTokenAmount(
             market.maxDebt > market.totalDeposit ? market.maxDebt - market.totalDeposit : 0n,
             AGX_DECIMALS,
@@ -166,17 +166,17 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
 
   const receiveLabel =
     amountInput.amountIn === 0n
-      ? '—'
+      ? '0'
       : payoutQuery.isError
-        ? '—'
+        ? '0'
         : payoutQuery.data === undefined
           ? ''
           : payoutQuery.data.netPayout > 0n
             ? formatTokenAmount(payoutQuery.data.netPayout, AGX_DECIMALS, 4)
-            : '—'
+            : '0'
 
   const slippageLabel = slippageQuery.isError
-    ? '—'
+    ? '0'
     : slippageQuery.data === undefined
       ? ''
       : `${slippageQuery.data.toString()}%`
@@ -207,11 +207,11 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
     isPayoutQuoting: payoutQuery.isFetching && !receiveLabel && amountInput.amountIn > 0n,
     isSlippageLoading: slippageQuery.isFetching && !slippageLabel && !slippageQuery.isError,
-    discountLabel: discountLabel || '—',
+    discountLabel: discountLabel || '0',
     periodDiscounts,
-    capLabel: capLabel || '—',
-    receiveLabel: receiveLabel || '—',
-    slippageLabel: slippageLabel || '—',
+    capLabel: capLabel || '0',
+    receiveLabel: receiveLabel || '0',
+    slippageLabel: slippageLabel || '0',
     walletReady,
     canSubmit,
     isSubmitting,

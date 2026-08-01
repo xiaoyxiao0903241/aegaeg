@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
 import { mapTeamReferralToCompactRow } from '~/views/dapp/community/community-display'
-import { CommunityStatCardSkeleton } from '~/app/shell/dapp-skeleton'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappSection } from '~/app/shell/dapp-section'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
@@ -28,8 +27,6 @@ type CommunityStat = {
   volume?: ReactNode
 }
 
-const STAT_PLACEHOLDER = '—'
-
 export function CommunityContent() {
   const {
     t,
@@ -40,9 +37,7 @@ export function CommunityContent() {
     invitesPage,
     setInvitesPage,
     overview,
-    overviewLoading,
     displayRank,
-    isRankLoading,
     referrals,
     referralsLoading,
   } = useCommunityContentView()
@@ -58,12 +53,10 @@ export function CommunityContent() {
   })
   const inviteCount = !sessionReady
     ? formatGroupedNumber(0, { digits: 0, trimZeros: true })
-    : overviewLoading || referralsLoading || isLoggingIn
-      ? '…'
-      : formatGroupedNumber(overview?.descendant_count ?? referrals?.total ?? 0, {
-          digits: 0,
-          trimZeros: true,
-        })
+    : formatGroupedNumber(overview?.descendant_count ?? referrals?.total ?? 0, {
+        digits: 0,
+        trimZeros: true,
+      })
   const inviteSectionTitle = t.community.myInvites.replace('{count}', inviteCount)
   const authPending = sessionReady && isLoggingIn
 
@@ -77,29 +70,26 @@ export function CommunityContent() {
     )
   }
 
-  const useStatPlaceholders = !sessionReady || authPending || overviewLoading || isRankLoading
-
-  const directCount = overviewLoading
-    ? STAT_PLACEHOLDER
-    : formatGroupedNumber(overview?.direct_referral_count ?? 0, { digits: 0, trimZeros: true })
-  const directVolume = overviewLoading
-    ? STAT_PLACEHOLDER
-    : formatGroupedNumber(overview?.direct_presale_volume ?? 0, { prefix: '$' })
-
-  const teamCount = overviewLoading
-    ? STAT_PLACEHOLDER
-    : formatGroupedNumber(overview?.descendant_count ?? 0, { digits: 0, trimZeros: true })
-  const teamVolume = overviewLoading
-    ? STAT_PLACEHOLDER
-    : formatGroupedNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
+  // Never `isLoading ? 0` — that flashes 2000→0→3000; use ?? 0 on cached/missing fields.
+  const directCount = formatGroupedNumber(overview?.direct_referral_count ?? 0, {
+    digits: 0,
+    trimZeros: true,
+  })
+  const directVolume = formatGroupedNumber(overview?.direct_presale_volume ?? 0, { prefix: '$' })
+  const teamCount = formatGroupedNumber(overview?.descendant_count ?? 0, {
+    digits: 0,
+    trimZeros: true,
+  })
+  const teamVolume = formatGroupedNumber(overview?.sales_team_market ?? 0, { prefix: '$' })
 
   // Figma `4300:212` stats = label / value / 业绩|共建等级 only（无「今日」行）.
   // Value = genesis (presale) rank only — never substitute making_rank (A0–A13 做市等级).
-  const genesisRankValue = useStatPlaceholders
-    ? STAT_PLACEHOLDER
-    : displayRank > 0
-      ? formatPresaleRank(displayRank)
-      : STAT_PLACEHOLDER
+  const genesisRankValue =
+    !sessionReady || authPending
+      ? formatPresaleRank(0)
+      : displayRank > 0
+        ? formatPresaleRank(displayRank)
+        : formatPresaleRank(0)
 
   const stats: CommunityStat[] = [
     {
@@ -136,24 +126,16 @@ export function CommunityContent() {
       </DappContentHeading>
 
       <CommunityStatGrid>
-        {useStatPlaceholders ? (
-          <>
-            <CommunityStatCardSkeleton />
-            <CommunityStatCardSkeleton />
-            <CommunityStatCardSkeleton dark />
-          </>
-        ) : (
-          stats.map((stat, index) => (
-            <CommunityStatCard
-              dark={stat.dark}
-              image={stat.image}
-              key={index}
-              label={stat.label}
-              value={stat.value}
-              volume={stat.volume}
-            />
-          ))
-        )}
+        {stats.map((stat, index) => (
+          <CommunityStatCard
+            dark={stat.dark}
+            image={stat.image}
+            key={index}
+            label={stat.label}
+            value={stat.value}
+            volume={stat.volume}
+          />
+        ))}
       </CommunityStatGrid>
 
       <CommunityFlowSection isMobileViewport={isMobileViewport} />

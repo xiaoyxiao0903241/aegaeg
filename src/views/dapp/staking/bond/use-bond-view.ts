@@ -30,7 +30,6 @@ export function useBondView(kind: BondKind) {
   })
 
   const amountLabel = formatAmountBalanceLabel(copy.amountBalance, {
-    loading: bond.isBalancesLoading,
     balance: bond.balanceLabel,
   })
 

@@ -4,7 +4,6 @@ import { flashExchangeAssets } from '~/app/assets'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { ExchangeMetaValueSkeleton } from '~/app/shell/dapp-skeleton'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
@@ -84,7 +83,6 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           sellAmountDisplay={flash.sellAmountDisplay}
           sellBalance={vm.sellLabel}
           sessionReady={vm.sessionReady}
-          showBuyAmountSkeleton={vm.showBuyAmountSkeleton}
           walletReady={flash.walletReady}
           amountLocked={flash.isSubmitting || vm.isFlipping}
         />
@@ -94,11 +92,7 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           items={[
             {
               label: t.exchange.exchangePrice,
-              value: vm.showRateSkeleton ? (
-                <ExchangeMetaValueSkeleton />
-              ) : (
-                flash.exchangePriceLabel || '—'
-              ),
+              value: flash.exchangePriceLabel || '0',
             },
             {
               label: t.exchange.route,

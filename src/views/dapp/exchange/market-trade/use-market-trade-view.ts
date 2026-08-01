@@ -37,18 +37,12 @@ export function useMarketTradeView(trade: MarketTradeState) {
     disabled: sessionReady && !trade.walletReady,
   })
 
-  const showRateSkeleton = exchangePriceInverted
-    ? trade.isExchangePriceInvertedQuoting && !trade.exchangePriceLabelInverted
-    : trade.isExchangePriceQuoting && !trade.exchangePriceLabel
   const exchangePriceDisplayLabel = exchangePriceInverted
     ? trade.exchangePriceLabelInverted
     : trade.exchangePriceLabel
-  const showBuyAmountSkeleton =
-    sessionReady && trade.isQuoting && trade.sellAmount.trim().length > 0
 
   const { buyLabel, sellLabel } = useExchangeBalanceLabels({
     buyBalanceLabel: trade.buyBalanceLabel,
-    isBalancesLoading: trade.isBalancesLoading,
     sellBalanceLabel: trade.sellBalanceLabel,
     sessionReady,
     walletReady: trade.walletReady,
@@ -83,8 +77,6 @@ export function useMarketTradeView(trade: MarketTradeState) {
     setSlippageOpen,
     exchangePriceDisplayLabel,
     onTogglePriceInverted: () => setExchangePriceInverted((inverted) => !inverted),
-    showRateSkeleton,
-    showBuyAmountSkeleton,
     buyLabel,
     sellLabel,
     pickDisabled,

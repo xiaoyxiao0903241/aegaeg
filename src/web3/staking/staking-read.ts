@@ -175,7 +175,7 @@ export async function readBondMarketMeta(
  * Manual: 10000 = par; lower BP = more discount (e.g. 9500 ≈ 5% off).
  */
 export function formatBondDiscountLabel(discountRateBP: bigint): string {
-  if (discountRateBP === 0n || discountRateBP > BPS_DENOM) return '—'
+  if (discountRateBP === 0n || discountRateBP > BPS_DENOM) return '0%'
   const whole = discountRateBP / 100n
   const frac = discountRateBP % 100n
   if (frac === 0n) return `${whole}%`

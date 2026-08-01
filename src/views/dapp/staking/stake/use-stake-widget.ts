@@ -139,6 +139,6 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     remainingLabel:
       preflightQuery.data !== undefined
         ? formatTokenAmount(preflightQuery.data.remainingQuota, AGX_DECIMALS, 4)
-        : '—',
+        : '0',
   }
 }

@@ -39,15 +39,15 @@ test('formatGroupedNumber supports $ prefix and USD suffix', async () => {
   assert.equal(formatGroupedNumber(1000, { digits: 0, trimZeros: true }), '1,000')
 })
 
-test('formatApproxUsd: zero is ≈ $0.00; missing price on non-zero is ≈ —', async () => {
+test('formatApproxUsd: missing / no price / NaN → ≈ $0.00', async () => {
   const { formatApproxUsd } = await loadModule('/src/shared/api/format-display.ts')
 
   assert.equal(formatApproxUsd(0, null), '≈ $0.00')
   assert.equal(formatApproxUsd(0, 65), '≈ $0.00')
-  assert.equal(formatApproxUsd(1, null), '≈ —')
-  assert.equal(formatApproxUsd(1, 0), '≈ —')
+  assert.equal(formatApproxUsd(1, null), '≈ $0.00')
+  assert.equal(formatApproxUsd(1, 0), '≈ $0.00')
   assert.equal(formatApproxUsd(2, 10), '≈ $20.00')
-  assert.equal(formatApproxUsd(Number.NaN, 10), '≈ —')
+  assert.equal(formatApproxUsd(Number.NaN, 10), '≈ $0.00')
 })
 
 test('formatTableGenesisRank hides S0 in community member table', async () => {

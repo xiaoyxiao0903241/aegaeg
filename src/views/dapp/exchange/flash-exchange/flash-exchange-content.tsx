@@ -7,10 +7,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { MetricGrid } from '~/app/shell/metric-grid'
 import { FaqList } from '~/shared/ui/faq-list'
 import type { FlashExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
-import {
-  ExchangeMetricCard,
-  ExchangeMetricCardSkeleton,
-} from '~/views/dapp/exchange/exchange-detail-primitives'
+import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
 /** Figma flash right `4430:310`: overview/FAQ 18 · About 20. */
@@ -22,7 +19,6 @@ const FLASH_ABOUT_CARD_KEYS = ['gagx', 'usd1', 'x', 'gagxStake'] as const
 
 export function FlashExchangeContent({ flash }: { flash: FlashExchangeState }) {
   const { messages: t } = useI18n()
-  const showRateSkeleton = flash.isExchangePriceQuoting && !flash.overviewRateLabel
 
   return (
     <DappDetailPage>
@@ -31,16 +27,12 @@ export function FlashExchangeContent({ flash }: { flash: FlashExchangeState }) {
           {t.exchange.overview}
         </DappContentHeading>
         <MetricGrid columns={2}>
-          {showRateSkeleton ? (
-            <ExchangeMetricCardSkeleton className="gap-1.5 p-4" />
-          ) : (
-            <ExchangeMetricCard
-              className="gap-1.5 p-4"
-              label={t.exchange.exchangeRate}
-              value={flash.overviewRateLabel || '—'}
-              valueClassName="text-base leading-[1.25] tracking-[-0.02em]"
-            />
-          )}
+          <ExchangeMetricCard
+            className="gap-1.5 p-4"
+            label={t.exchange.exchangeRate}
+            value={flash.overviewRateLabel || '0'}
+            valueClassName="text-base leading-[1.25] tracking-[-0.02em]"
+          />
           <ExchangeMetricCard
             className="gap-1.5 p-4"
             label={t.exchange.settlement}

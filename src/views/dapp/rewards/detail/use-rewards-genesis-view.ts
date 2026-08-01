@@ -11,7 +11,7 @@ import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-disp
 import { calcProgressPercent } from '~/core/math/calc-progress-percent'
 import { nextTierProgress } from '~/core/presale/tier-progress'
 import { getTeamBonusRateLabel } from '~/core/presale/tier-table'
-import { claimableAmountValue, REWARDS_DASH } from '~/views/dapp/rewards/rewards-display'
+import { formatApiDecimalAmount, claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
 import { toastClaimResult } from '~/views/dapp/rewards/toast-claim-result'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank'
 import { useCommunityFundClaim, useTeamRewardClaim } from '~/views/dapp/rewards/use-claim-reward'
@@ -53,12 +53,12 @@ export function useRewardsGenesisView() {
     : t.rewards.progressPersonalTo.replace('{rank}', nextRankLabel)
   const personalProgressValue = sessionReady
     ? `${formatGroupedNumber(tierProgress.personalCurrentUsd, { prefix: '$' })} / ${formatGroupedNumber(tierProgress.personalTargetUsd, { prefix: '$' })}`
-    : REWARDS_DASH
+    : formatApiDecimalAmount(null)
 
   const qualifiedPartitionCount = qualifiedPartitions?.count ?? 0
   const showQualifiedPartitions = displayRank >= 3 && displayRank <= 9
   const teamProgressValue = !sessionReady
-    ? REWARDS_DASH
+    ? formatApiDecimalAmount(null)
     : showQualifiedPartitions
       ? t.rewards.teamQualifiedPartitionsLabel
           .replace('{rank}', formatPresaleRank(displayRank))
@@ -89,9 +89,9 @@ export function useRewardsGenesisView() {
       (partitionsLoading && qualifiedPartitions == null))
 
   const referralValue = !sessionReady
-    ? REWARDS_DASH
+    ? formatApiDecimalAmount(null)
     : referralLoading && referralTotal == null
-      ? '…'
+      ? '0.00'
       : formatGroupedNumber(referralTotal?.claimed ?? referralTotal?.total ?? 0, {
           digits: 2,
           prefix: '$',
@@ -102,21 +102,21 @@ export function useRewardsGenesisView() {
     teamTotal?.claimed ?? '0',
   )
   const teamClaimable = !sessionReady
-    ? REWARDS_DASH
+    ? formatApiDecimalAmount(null)
     : teamLoading && teamTotal == null
-      ? '…'
+      ? '0.00'
       : formatGroupedNumber(teamClaimableValue, { digits: 2, prefix: '$' })
   const teamMeta = !sessionReady
-    ? REWARDS_DASH
+    ? formatApiDecimalAmount(null)
     : teamTotal?.claimed == null
-      ? REWARDS_DASH
+      ? formatApiDecimalAmount(null)
       : formatGroupedNumber(teamTotal.claimed, { digits: 2, prefix: '$' })
 
   const communityClaimableValue = Number(communityFundTotal?.unlocked_claimable ?? 0)
   const communityClaimable = !sessionReady
-    ? REWARDS_DASH
+    ? formatApiDecimalAmount(null)
     : communityFundLoading && communityFundTotal == null
-      ? '…'
+      ? '0.00'
       : formatGroupedNumber(
           Number.isFinite(communityClaimableValue) ? communityClaimableValue : 0,
           {
@@ -125,7 +125,7 @@ export function useRewardsGenesisView() {
           },
         )
   const communityLockedMeta = !sessionReady
-    ? t.rewards.communityFundLocked.replace('{amount}', REWARDS_DASH)
+    ? t.rewards.communityFundLocked.replace('{amount}', formatApiDecimalAmount(null))
     : t.rewards.communityFundLocked.replace(
         '{amount}',
         formatGroupedNumber(

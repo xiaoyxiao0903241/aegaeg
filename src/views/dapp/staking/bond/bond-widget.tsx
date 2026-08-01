@@ -81,18 +81,16 @@ export function BondWidget({ kind }: { kind: BondKind }) {
             {
               label: copy.meta.discount.replace(
                 '{pct}',
-                bond.isMarketLoading
-                  ? '…'
-                  : bond.discountLabel === '—'
-                    ? '—'
-                    : bond.discountLabel.replace(/%$/, ''),
+                bond.discountLabel === '0' || bond.discountLabel === ''
+                  ? '0'
+                  : bond.discountLabel.replace(/%$/, ''),
               ),
               // Dollar dual-price needs AGX spot × discount; no fake demo $.
-              value: '—',
+              value: '0',
             },
             {
               label: copy.meta.slippage,
-              value: bond.isSlippageLoading ? '…' : bond.slippageLabel,
+              value: bond.isSlippageLoading ? '' : bond.slippageLabel || '0',
             },
             {
               label: copy.meta.pay,
@@ -101,14 +99,14 @@ export function BondWidget({ kind }: { kind: BondKind }) {
             {
               label: copy.meta.receive,
               value: bond.isPayoutQuoting
-                ? '…'
-                : bond.receiveLabel === '—'
-                  ? '—'
+                ? ''
+                : bond.receiveLabel === '0' || bond.receiveLabel === ''
+                  ? '0'
                   : `${bond.receiveLabel} AGX`,
             },
             {
               label: copy.meta.cap,
-              value: bond.isMarketLoading ? '…' : bond.capLabel,
+              value: bond.isMarketLoading ? '' : bond.capLabel || '0',
             },
             {
               label: copy.meta.release,

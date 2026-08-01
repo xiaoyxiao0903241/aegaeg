@@ -7,11 +7,10 @@ import {
   useLuckyRewardWinners,
 } from '~/hooks/use-api-data'
 import {
+  formatApiDecimalAmount,
   formatApiStatLabel,
   mapLuckyMyRoundToRow,
   mapLuckyWinnerToRow,
-  REWARDS_DASH,
-  REWARDS_LOADING,
 } from '~/views/dapp/rewards/rewards-display'
 
 export function useRewardsLuckyContentView() {
@@ -31,37 +30,19 @@ export function useRewardsLuckyContentView() {
     summaryQuery.isLoading,
     summary?.today_total_prize,
   )
-  const eligibility = !sessionReady
-    ? REWARDS_DASH
-    : summaryQuery.isLoading && summary == null
-      ? REWARDS_LOADING
-      : REWARDS_DASH
-  const cumulativeWins = !sessionReady
-    ? REWARDS_DASH
-    : summaryQuery.isLoading && summary == null
-      ? REWARDS_LOADING
-      : summary != null
-        ? String(summary.win_count)
-        : REWARDS_DASH
+  // Eligibility copy is static zero until handbook wires a live field.
+  const eligibility = formatApiDecimalAmount(null)
+  const cumulativeWins = summary != null ? String(summary.win_count) : formatApiDecimalAmount(null)
 
-  const dateLabel = !sessionReady
-    ? REWARDS_DASH
-    : summaryQuery.isLoading && !drawDate
-      ? REWARDS_LOADING
-      : drawDate || REWARDS_DASH
+  const dateLabel = drawDate || formatApiDecimalAmount(null)
 
   const winners = winnersQuery.data?.items ?? []
   const winnerRows = winners.map((item) => mapLuckyWinnerToRow(item))
   const drawHash = winnersQuery.data?.draw_tx_hash
-  const resultsSummary = lucky.resultsSummary.replace(
-    '{count}',
-    sessionReady && winnersQuery.isLoading && winnersQuery.data == null
-      ? REWARDS_LOADING
-      : String(winners.length),
-  )
+  const resultsSummary = lucky.resultsSummary.replace('{count}', String(winners.length))
   const verifyHash = lucky.verifyHash.replace(
     '{hash}',
-    drawHash ? formatShortAddress(drawHash) : REWARDS_DASH,
+    drawHash ? formatShortAddress(drawHash) : formatApiDecimalAmount(null),
   )
 
   const historyRows = historyQuery.data?.items.map((item) => mapLuckyMyRoundToRow(item)) ?? []

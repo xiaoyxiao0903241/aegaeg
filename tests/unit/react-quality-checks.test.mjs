@@ -291,10 +291,25 @@ test('calcAmountOutMin rejects invalid slippage and floors with valid bps', asyn
 test('emptySpotRateDash gates empty vs format', async () => {
   const { emptySpotRateDash } = await loadModule('/src/views/dapp/exchange/exchange-format-rate.ts')
 
-  assert.equal(emptySpotRateDash(0n, true), '')
-  assert.equal(emptySpotRateDash(0n, false), '—')
-  assert.equal(emptySpotRateDash(1n, false), null)
-  assert.equal(emptySpotRateDash(1n, true), null)
+  assert.equal(emptySpotRateDash(0n), '0')
+  assert.equal(emptySpotRateDash(1n), null)
+})
+
+test('resolveMetricDisplayText keeps prior on empty flash', async () => {
+  const { resolveMetricDisplayText } = await loadModule(
+    '/src/shared/ui/resolve-metric-display-text.ts',
+  )
+
+  assert.deepEqual(resolveMetricDisplayText('', null), { display: '0', retain: null })
+  assert.deepEqual(resolveMetricDisplayText('', '2,000'), { display: '2,000', retain: '2,000' })
+  assert.deepEqual(resolveMetricDisplayText('3,000', '2,000'), {
+    display: '3,000',
+    retain: '3,000',
+  })
+  assert.deepEqual(resolveMetricDisplayText('0.00', '2,000'), {
+    display: '0.00',
+    retain: '0.00',
+  })
 })
 
 test('viewsNeedingProvider mounts only active swap subviews', async () => {

@@ -31,10 +31,16 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
   })
 
   if (!walletReady || !address || positionQuery.isError) {
-    return Array.from({ length: 4 }, () => ({ value: '—' }))
+    return Array.from({ length: 4 }, () => ({
+      value: '0.00 gAGX',
+      approx: formatApproxUsd(0, null),
+    }))
   }
   if (positionQuery.data === undefined) {
-    return Array.from({ length: 4 }, () => ({ value: '…' }))
+    return Array.from({ length: 4 }, () => ({
+      value: '0.00 gAGX',
+      approx: formatApproxUsd(0, null),
+    }))
   }
 
   const { miningStake, pending, warmupGons } = positionQuery.data
@@ -65,6 +71,6 @@ export function useAssetsXmineStats(): AssetsXmineStatCell[] {
       icon,
       approx: formatApproxUsd(formatTokenAmountToNumber(amount, decimals), price),
     })),
-    { value: '—', icon: 'x', approx: '≈ —' },
+    { value: '0.00 X', icon: 'x', approx: formatApproxUsd(0, null) },
   ]
 }

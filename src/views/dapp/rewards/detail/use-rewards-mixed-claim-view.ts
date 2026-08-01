@@ -24,7 +24,7 @@ import {
 } from '~/views/dapp/rewards/submit-rewards'
 import type { DaoRewardType } from '~/shared/api/types'
 import {
-  REWARDS_DASH,
+  formatApiDecimalAmount,
   splitAmountByPct,
   type MixedClaimView,
 } from '~/views/dapp/rewards/rewards-display'
@@ -171,22 +171,22 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const amountText = amountKnown
     ? formatTokenAmount(amount, AGX_DECIMALS)
     : sessionReady
-      ? t.rewards.hub.balancePlaceholder
+      ? formatApiDecimalAmount(null)
       : t.rewards.hub.signInForBalance
   const releaseAmount = amountKnown ? splitAmountByPct(amount, releasePct) : 0n
   const restakeAmount = amountKnown ? splitAmountByPct(amount, restakePct) : 0n
   const releaseAmountText = amountKnown
     ? formatTokenAmount(releaseAmount, AGX_DECIMALS)
-    : REWARDS_DASH
+    : formatApiDecimalAmount(null)
   const restakeAmountText = amountKnown
     ? formatTokenAmount(restakeAmount, AGX_DECIMALS)
-    : REWARDS_DASH
+    : formatApiDecimalAmount(null)
   const requiredText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.requiredContribution, AGX_DECIMALS)
-    : REWARDS_DASH
+    : formatApiDecimalAmount(null)
   const haveText = contribQuery.data
     ? formatTokenAmount(contribQuery.data.contribution, AGX_DECIMALS)
-    : REWARDS_DASH
+    : formatApiDecimalAmount(null)
   const showContributionShort =
     !contributionOk &&
     (view === 'lucky' ? amount > 0n && contribQuery.data != null : daoContributionBlocked)
