@@ -16,7 +16,7 @@ import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。 */
 export async function submitStakeOpen(args: {
   session: WriteSession
   period: StakePeriod
@@ -65,9 +65,17 @@ export async function submitStakeOpen(args: {
   invalidateAfterStaking()
 }
 
-/** Domain write only — envelope lives in `useChainMutation`. */
+/** 活期 warmup 激活：live `isWarmupExpired` 通过后再写。 */
 export async function submitLiquidWarmupClaim(args: { session: WriteSession }): Promise<void> {
-  const { wallet } = args.session
+  const { wallet, address, readClient } = args.session
+  const pool = stakePoolAddress('liquid')
+  const preflight = await readStakeOpenPreflight({
+    pool,
+    isLiquid: true,
+    user: address,
+    client: readClient,
+  })
+  if (!preflight.isWarmupExpired) throw STAKING_BLOCKED.unavailable
   await claimLiquidWarmup({ wallet })
   invalidateAfterStaking()
 }

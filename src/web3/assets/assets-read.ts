@@ -183,12 +183,15 @@ export async function readStakePositions(
   const rows: AssetsStakeRow[] = []
 
   const liquidPool = stakePoolAddress('liquid')
+  // `stakes`/`warmupStakes` 为裸 mapping：须 AMM migratedFrom 得 root；`getStakeRewards` 别名感知，传当前钱包。
+  const liquidMigratedFrom = await readMigratedFrom(user, client)
+  const liquidRoot = migrationStakeRoot(user, liquidMigratedFrom) as Address
   const [liquidStake, liquidRewards] = await Promise.all([
     client.readContract({
       address: liquidPool,
       abi: liquidAbi,
       functionName: 'stakes',
-      args: [user],
+      args: [liquidRoot],
     }),
     client.readContract({
       address: liquidPool,
@@ -360,8 +363,7 @@ export async function readXminePosition(
   user: Address,
   client: ChainReadClient = bscReadClient,
 ): Promise<AssetsXminePosition> {
-  // Handbook xstakingpool.md: `stakes` is a raw mapping — resolve migration root first.
-  // Business views (`pendingReward` / `miningStakeAmountOf`) take the canonical address.
+  // `stakes` 为裸 mapping：先解析迁移 root；业务 view 仍传当前地址。
   const migratedFrom = await readMigratedFrom(user, client)
   const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
 
@@ -447,11 +449,14 @@ export async function readStakeRedeemableAmount(
   client: ChainReadClient,
 ): Promise<bigint> {
   if (row.kind === 'liquid') {
+    // 活期 `stakes` 裸 mapping：须迁移 root。
+    const migratedFrom = await readMigratedFrom(user, client)
+    const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
     const liquidStake = await client.readContract({
       address: row.pool,
       abi: liquidAbi,
       functionName: 'stakes',
-      args: [user],
+      args: [stakeRoot],
     })
     const [principal, , , , exists] = liquidStake as readonly [
       bigint,

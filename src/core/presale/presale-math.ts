@@ -39,12 +39,8 @@ export function remainingPhaseAmount(
 
 /**
  * 计算用户本期剩余可购金额。
- *
- * `userPurchaseLimit == 0n` 按合约语义表示“不限制”，此时用户剩余额度
- * 应等于本期剩余额度，而不是 0。
- *
- * Without `getUserPhaseRemainingAmount`, a per-user limit cannot be reduced by
- * prior purchases — fail closed (0) instead of returning the full limit.
+ * `userPurchaseLimit == 0n` 表示不限制，用户剩余等于本期剩余。
+ * 无 `getUserPhaseRemainingAmount` 时无法扣减已购，fail-closed 返回 0。
  */
 export function remainingUserAmount(
   phaseRemaining: PresalePhaseRemaining | null | undefined,
@@ -153,7 +149,7 @@ export function canPurchaseGenesis({
   )
 }
 
-/** Genesis：approve 完成后、purchase 前的二次门闸。 */
+/** Genesis：approve 后二次门闸（绑定 / 暂停）。 */
 export type GenesisPostApprove = { ok: true } | { ok: false; reason: 'not_bound' | 'unavailable' }
 
 export function evaluateGenesisPostApprove({
@@ -168,6 +164,19 @@ export function evaluateGenesisPostApprove({
   if (isBound !== true) return { ok: false, reason: 'not_bound' }
   if (isPaused || isPausedUnknown) return { ok: false, reason: 'unavailable' }
   return { ok: true }
+}
+
+/** Genesis：live 阶段/用户剩余是否仍覆盖拟购金额。 */
+export function evaluateGenesisPurchaseAmountLive(args: {
+  purchaseAmount: bigint
+  remainingPhaseAmount: bigint
+  remainingUserAmount: bigint
+}): boolean {
+  if (args.purchaseAmount <= 0n) return false
+  return (
+    args.purchaseAmount <= args.remainingPhaseAmount &&
+    args.purchaseAmount <= args.remainingUserAmount
+  )
 }
 
 export function isPhaseActive(

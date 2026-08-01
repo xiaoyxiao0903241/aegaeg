@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { keepPreviousData } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
@@ -29,9 +29,10 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 export function useAssetsClaimModalView(args: {
   open: boolean
   onOpenChange: (open: boolean) => void
+  owner: string
   target: MixedClaimTarget
 }) {
-  const { open, onOpenChange, target } = args
+  const { open, onOpenChange, owner, target } = args
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
@@ -40,11 +41,19 @@ export function useAssetsClaimModalView(args: {
   const [restakeDays, setRestakeDaysState] = useState<RestakeDurationDays>(540)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
+  useEffect(() => {
+    const current = account?.address
+    if (!current || current.toLowerCase() !== owner.toLowerCase()) {
+      onOpenChange(false)
+    }
+  }, [account?.address, owner, onOpenChange])
+
   const claim = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
     mutation: (_vars, session) =>
       submitMixedClaim({
         session,
+        owner,
         target,
         releaseDays,
         restakeDays,

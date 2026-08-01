@@ -124,6 +124,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
           if (!open) w.closeClaim()
         }}
         open={w.claim.open}
+        owner={w.claim.open ? w.claim.owner : null}
         positionLabel={w.claim.open ? w.claim.label : ''}
         target={w.claim.open ? w.claim.target : null}
       />

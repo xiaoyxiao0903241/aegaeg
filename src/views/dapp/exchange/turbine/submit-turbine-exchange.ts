@@ -1,7 +1,9 @@
 import { EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import type { QueryObserverResult } from '@tanstack/react-query'
+import { evaluateTurbineUnlockLive } from '~/core/exchange/turbine-live-gate'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import {
+  readTurbineIsVested,
   readTurbineQuota,
   readTurbineUsd1Balances,
   readTurbineUsdQuote,
@@ -19,13 +21,10 @@ type TurbineSubmitCore = {
   ) => Promise<{ ok: true } | { ok: false; error: unknown | null }>
 }
 
-/**
- * Turbine unlock — money-path: approve → live re-quote + balance/quota check → buyAgxAndStartCooldown.
- * L-tier gates use direct `readTurbine*` (not display-query refetch).
- */
+/** Turbine 解锁：approve → live 重读报价/余额/授权/配额 → buyAgxAndStartCooldown。 */
 export async function submitTurbineUnlock(args: {
   core: TurbineSubmitCore
-  /** Unlock AGX amount (handbook turbineBalances is AGX quota). */
+  /** 解锁 AGX 配额（手册 turbineBalances）。 */
   unlockAmountAgx: bigint
 }): Promise<{ ok: true } | { ok: false; error: unknown | null }> {
   const { core, unlockAmountAgx } = args
@@ -36,7 +35,6 @@ export async function submitTurbineUnlock(args: {
       throw new Error('TURBINE_ZERO_AMOUNT')
     }
 
-    // Pre-approve quote (may drift during wallet signature).
     const preUsd = await readTurbineUsdQuote(unlockAmountAgx)
     if (preUsd <= 0n) {
       throw new Error(EXCHANGE_SUBMIT_BLOCKED)
@@ -44,22 +42,27 @@ export async function submitTurbineUnlock(args: {
 
     await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: preUsd })
 
-    // Live re-check after approve (money-path invariant 3) — direct reads, staleTime 0 semantics.
     const [liveBalances, liveQuota, liveUsd] = await Promise.all([
       readTurbineUsd1Balances(address),
       readTurbineQuota(address),
       readTurbineUsdQuote(unlockAmountAgx),
     ])
 
-    if (liveUsd <= 0n) throw new Error('TURBINE_ZERO_AMOUNT')
-    if (unlockAmountAgx > liveQuota) throw new Error('TURBINE_QUOTA_EXCEEDED')
-    if (liveUsd > liveBalances.usd1) throw new Error('TURBINE_INSUFFICIENT_USD1')
+    const blocked = evaluateTurbineUnlockLive({
+      unlockAmountAgx,
+      liveUsd,
+      liveQuota,
+      usd1: liveBalances.usd1,
+      approved: liveBalances.approved,
+    })
+    if (blocked) throw new Error(blocked)
 
     await buyAgxAndStartCooldown({ wallet, usdAmount: liveUsd })
     invalidateAfterExchange()
   })
 }
 
+/** Turbine claim：live `isVested` 通过后再写；成功后整表 refetch（swap-and-pop）。 */
 export async function submitTurbineClaim(args: {
   core: TurbineSubmitCore
   index: number
@@ -68,11 +71,12 @@ export async function submitTurbineClaim(args: {
   const { core, index, refetchSilences } = args
 
   return core.runSubmit(async (session) => {
-    const { wallet } = session
+    const { wallet, address, readClient } = session
+    const vested = await readTurbineIsVested(address, index, readClient)
+    if (!vested) throw new Error('TURBINE_NOT_VESTED')
 
     await claimCooledGagx({ wallet, index })
     invalidateAfterExchange()
-    // Handbook §16.5: claim uses swap-and-pop — must re-fetch the whole list.
     await refetchSilences()
   })
 }

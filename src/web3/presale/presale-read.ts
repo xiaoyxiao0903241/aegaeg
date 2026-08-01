@@ -1,9 +1,11 @@
 import { decodeAbiParameters, encodeFunctionData, parseAbi, type AbiParameter } from 'viem'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { type PresalePhaseOnChain, type PresalePhaseRemaining } from '~/core/presale/presale-math'
+import { migrationStakeRoot } from '~/core/migration/migration-user'
 import { MULTICALL3_METHODS, PRESALE_METHODS } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
+import { readMigratedFrom } from '~/web3/migration/migration-read'
 
 const presaleAbi = parseAbi([
   PRESALE_METHODS.getPhaseCount,
@@ -141,11 +143,14 @@ export async function readUserPresaleTotal(
   address: string,
   client: ChainReadClient = bscReadClient,
 ): Promise<bigint> {
+  // `userTotalAmount` 为按首次 root 键控的 public mapping。
+  const migratedFrom = await readMigratedFrom(address, client)
+  const root = migrationStakeRoot(address, migratedFrom) as `0x${string}`
   return client.readContract({
     address: BSC_CONTRACTS.preSale,
     abi: presaleAbi,
     functionName: 'userTotalAmount',
-    args: [address as `0x${string}`],
+    args: [root],
   })
 }
 

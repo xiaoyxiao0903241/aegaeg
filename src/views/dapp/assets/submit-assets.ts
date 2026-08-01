@@ -37,12 +37,17 @@ import {
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import type { Address } from '~/shared/config/contracts'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
+import { actionOwnerMatches } from '~/core/assets/action-owner'
 
 function gateError(
   reason: keyof typeof ASSETS_BLOCKED | null,
 ): (typeof ASSETS_BLOCKED)[keyof typeof ASSETS_BLOCKED] | null {
   if (!reason) return null
   return ASSETS_BLOCKED[reason]
+}
+
+function assertSessionOwnsAction(sessionAddress: string, owner: string): void {
+  if (!actionOwnerMatches(sessionAddress, owner)) throw ASSETS_BLOCKED.unavailable
 }
 
 export type MixedClaimTarget =
@@ -88,16 +93,18 @@ async function readMixedClaimSnapshot(
   }
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。打开时捕获的 owner 须与 session 一致。 */
 export async function submitMixedClaim(args: {
   session: WriteSession
+  owner: string
   target: MixedClaimTarget
   releaseDays: ReleaseDurationDays
   restakeDays: RestakeDurationDays
   restakePct: number
 }): Promise<void> {
-  const { session, target, releaseDays, restakeDays, restakePct } = args
+  const { session, owner, target, releaseDays, restakeDays, restakePct } = args
   const { wallet, address: user, readClient } = session
+  assertSessionOwnsAction(user, owner)
 
   const amount = target.amount
   const restakeBps = restakeBpsFromPct(restakePct)
@@ -159,13 +166,15 @@ export async function submitMixedClaim(args: {
   invalidateAfterAssetsClaim()
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。 */
 export async function submitStakeRedeem(args: {
   session: WriteSession
+  owner: string
   row: AssetsStakeRow
 }): Promise<void> {
-  const { session, row } = args
+  const { session, owner, row } = args
   const { wallet, address: user, readClient } = session
+  assertSessionOwnsAction(user, owner)
 
   const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
   const blockReason = evaluateRedeem({ amount: liveAmount })
@@ -184,13 +193,15 @@ export async function submitStakeRedeem(args: {
   invalidateAfterAssetsClaim()
 }
 
-/** Domain write only — soft gates throw sentinels. Envelope lives in `useChainMutation`. */
+/** 域写；软门闸抛哨兵。信封在 `useChainMutation`。 */
 export async function submitBondRedeem(args: {
   session: WriteSession
+  owner: string
   row: AssetsBondRow
 }): Promise<void> {
-  const { session, row } = args
+  const { session, owner, row } = args
   const { wallet, address: user, readClient } = session
+  assertSessionOwnsAction(user, owner)
 
   const liveAmount = await readBondRedeemableAmount(row, user, readClient)
   const blockReason = evaluateRedeem({ amount: liveAmount })

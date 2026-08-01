@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -15,6 +15,7 @@ import {
 import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { type AssetsBondRow, type AssetsStakeRow } from '~/web3/assets/assets-read'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import {
   useAssetsPositionQueries,
   type AssetsProduct,
@@ -26,17 +27,26 @@ const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 const USD1_DECIMALS = EXCHANGE_CONFIG.tokens.usd1.decimals
 
 type ClaimState =
-  { open: false } | { open: true; target: MixedClaimTarget; label: string; amountLabel: string }
+  | { open: false }
+  | {
+      open: true
+      owner: string
+      target: MixedClaimTarget
+      label: string
+      amountLabel: string
+    }
 
 type RedeemState =
   | { open: false }
   | {
       open: true
+      owner: string
       kind: 'stake' | 'bond'
       row: AssetsStakeRow | AssetsBondRow
     }
 
 type RedeemVars = {
+  owner: string
   kind: 'stake' | 'bond'
   row: AssetsStakeRow | AssetsBondRow
 }
@@ -44,12 +54,19 @@ type RedeemVars = {
 export function useAssetsPositionWidget(product: AssetsProduct) {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
+  const account = useActiveAccount()
+  const address = account?.address
   const isMobile = useMobileViewport()
 
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [claim, setClaim] = useState<ClaimState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
   const [page, setPage] = useState(0)
+
+  useEffect(() => {
+    setClaim({ open: false })
+    setRedeem({ open: false })
+  }, [address])
 
   const copy = t.assets.products[product]
   const stakingTarget: 'stake' | 'lpbond' | 'burnbond' =
@@ -64,10 +81,12 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
       vars.kind === 'stake'
         ? submitStakeRedeem({
             session,
+            owner: vars.owner,
             row: vars.row as AssetsStakeRow,
           })
         : submitBondRedeem({
             session,
+            owner: vars.owner,
             row: vars.row as AssetsBondRow,
           }),
     onSuccess: () => {
@@ -102,19 +121,21 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const pagedStakeRows = stakeRows.slice(pageSliceStart, pageSliceStart + pageSize)
   const pagedBondRows = bondRows.slice(pageSliceStart, pageSliceStart + pageSize)
 
-  function runRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
-    void redeemWrite.mutate({ kind, row })
+  function runRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow, owner: string) {
+    void redeemWrite.mutate({ kind, row, owner })
   }
 
   function requestRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
+    if (!address) return
     if (isMobile) {
-      setRedeem({ open: true, kind, row })
+      setRedeem({ open: true, owner: address, kind, row })
       return
     }
-    runRedeem(kind, row)
+    runRedeem(kind, row, address)
   }
 
   function openStakeClaim(row: AssetsStakeRow) {
+    if (!address) return
     const reward = row.blockReward + row.extraInterest
     const periodLabel = formatPeriodLabel(row.period)
     const target: MixedClaimTarget =
@@ -129,6 +150,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
           }
     setClaim({
       open: true,
+      owner: address,
       target,
       label: periodLabel,
       amountLabel: `${formatTokenAmount(target.amount, GAGX_DECIMALS, 4)} gAGX`,
@@ -136,9 +158,11 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   }
 
   function openBondClaim(row: AssetsBondRow) {
+    if (!address) return
     const periodLabel = formatPeriodLabel(String(row.period))
     setClaim({
       open: true,
+      owner: address,
       target: {
         source: 'bond',
         depository: row.depository,
@@ -160,7 +184,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
 
   function confirmRedeem() {
     if (!redeem.open) return
-    runRedeem(redeem.kind, redeem.row)
+    runRedeem(redeem.kind, redeem.row, redeem.owner)
   }
 
   return {

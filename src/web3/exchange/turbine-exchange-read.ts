@@ -127,7 +127,21 @@ export async function readTurbineUsd1Balances(
   return { usd1, approved }
 }
 
-/** Lightweight claimable probe for exchange rail red-dot (EX-U4). */
+/** 单条冷却是否可领（手册 §16.4 claim 前置）。 */
+export async function readTurbineIsVested(
+  user: string,
+  index: number,
+  client: ChainReadClient = bscReadClient,
+): Promise<boolean> {
+  return client.readContract({
+    address: BSC_CONTRACTS.turbine,
+    abi: turbineReadAbi,
+    functionName: 'isVested',
+    args: [user as `0x${string}`, BigInt(index)],
+  })
+}
+
+/** 兑换轨红点：是否有可领冷却（当前仍走全表；P2 再拆真 probe）。 */
 export async function readTurbineHasClaimable(
   user: string,
   client: ChainReadClient = bscReadClient,

@@ -10,6 +10,8 @@ import {
 } from '~/web3/abis'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
+import { migrationStakeRoot } from '~/core/migration/migration-user'
+import { readMigratedFrom } from '~/web3/migration/migration-read'
 import { readErc20Allowance, readErc20Balance } from '~/web3/exchange/exchange-read'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
 
@@ -75,6 +77,9 @@ export async function readStakeOpenPreflight(args: {
     }
   }
 
+  // `userStakingAmounts` 按首次 root 累计，非别名感知。
+  const migratedFrom = await readMigratedFrom(args.user, client)
+  const stakeRoot = migrationStakeRoot(args.user, migratedFrom) as `0x${string}`
   const [poolOpen, singleLimit, userStaked] = await Promise.all([
     client.readContract({
       address: args.pool,
@@ -90,7 +95,7 @@ export async function readStakeOpenPreflight(args: {
       address: args.pool,
       abi: lockedAbi,
       functionName: 'userStakingAmounts',
-      args: [args.user as `0x${string}`],
+      args: [stakeRoot],
     }),
   ])
 

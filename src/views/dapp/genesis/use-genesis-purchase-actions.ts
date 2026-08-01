@@ -12,7 +12,7 @@ import {
 } from '~/shared/api/query/invalidate'
 import { useActiveAccount, useActiveWallet } from '~/web3/thirdweb-react'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
-import { readPresalePaused } from '~/web3/presale/presale-read'
+import { readPresalePaused, readUserPhaseRemainingAmount } from '~/web3/presale/presale-read'
 import { fetchLiveGenesisPostApprove } from '~/views/dapp/genesis/fetch-live-genesis-post-approve'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
@@ -20,7 +20,7 @@ import { goBindReferral } from '~/app/shell/go-bind-referral'
 import { readErrorText } from '~/web3/errors/error-text'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
-/** Survives Genesis session unmount when user switches tabs mid-tx. */
+/** Genesis 购买：跨 tab remount 仍保持的模块级 in-flight。 */
 const genesisPurchaseBlock = { inFlight: false }
 
 type UseGenesisPurchaseActionsArgs = {
@@ -92,9 +92,11 @@ export function useGenesisPurchaseActions({
           }
         }
 
-        // Live re-check always (money-path: [approve?] → live bind/pause → purchase).
+        // live：绑定/暂停 + 阶段与用户剩余（禁闭包快照）。
         const blockReason = await fetchLiveGenesisPostApprove({
           address: sessionAddress,
+          purchaseAmount,
+          activePhase,
           fetchIsBound: (addr) =>
             queryClient.fetchQuery({
               queryKey: queryKeys.chain.referralIsBoundOf(addr),
@@ -105,6 +107,12 @@ export function useGenesisPurchaseActions({
             queryClient.fetchQuery({
               queryKey: queryKeys.chain.presalePaused,
               queryFn: () => readPresalePaused(),
+              staleTime: 0,
+            }),
+          fetchPhaseRemaining: (addr, phaseIndex) =>
+            queryClient.fetchQuery({
+              queryKey: queryKeys.chain.presaleUserPhaseRemaining(addr, phaseIndex),
+              queryFn: () => readUserPhaseRemainingAmount(addr, phaseIndex),
               staleTime: 0,
             }),
         })

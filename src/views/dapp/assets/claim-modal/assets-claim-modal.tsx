@@ -20,22 +20,26 @@ export function AssetsClaimModal({
   amountLabel,
   onOpenChange,
   open,
+  owner,
   positionLabel,
   target,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
+  /** 打开 claim 时的钱包；写前须与 session 一致。 */
+  owner: string | null
   target: MixedClaimTarget | null
   positionLabel: string
   amountLabel: string
 }) {
-  if (!open || !target) return null
+  if (!open || !target || !owner) return null
   return (
     <AssetsClaimModalOpen
       amountLabel={amountLabel}
-      key={`${target.source}-${amountLabel}`}
+      key={`${owner}-${target.source}-${amountLabel}`}
       onOpenChange={onOpenChange}
       open={open}
+      owner={owner}
       positionLabel={positionLabel}
       target={target}
     />
@@ -46,16 +50,18 @@ function AssetsClaimModalOpen({
   amountLabel,
   onOpenChange,
   open,
+  owner,
   positionLabel,
   target,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
+  owner: string
   target: MixedClaimTarget
   positionLabel: string
   amountLabel: string
 }) {
-  const vm = useAssetsClaimModalView({ open, onOpenChange, target })
+  const vm = useAssetsClaimModalView({ open, onOpenChange, owner, target })
   const { t } = vm
 
   return (
