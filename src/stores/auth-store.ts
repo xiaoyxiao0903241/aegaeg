@@ -75,7 +75,12 @@ function readLegacyPersistedAuth(): Partial<AuthPersistState> | null {
         signaturesByAddress[normalizeAuthAddress(legacySignature.address)] =
           legacySignature as StoredLoginSignature
       } else {
-        Object.assign(signaturesByAddress, legacySignature as Record<string, StoredLoginSignature>)
+        for (const [address, signature] of Object.entries(
+          legacySignature as Record<string, StoredLoginSignature>,
+        )) {
+          if (typeof address !== 'string' || address.length === 0) continue
+          signaturesByAddress[normalizeAuthAddress(address)] = signature
+        }
       }
     }
 

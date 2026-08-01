@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useMemo, useRef, useState, type ReactNode } from 'react'
 import { localeLabels, type Locale } from '~/i18n/locales'
 import { getInitialLocale, persistLocale, withLocalePrefix } from '~/i18n/locale'
 import { getMessagesSync, loadMessages, type Messages } from '~/i18n/messages'
@@ -16,6 +16,8 @@ function createInitialI18nState(): { locale: Locale; messages: Messages } {
 /** 全站文案 SSOT：仅走本 Provider，不再同步独立 i18next 实例。 */
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [{ locale, messages }, setState] = useState(createInitialI18nState)
+  /** Monotonic load id — drop stale `loadMessages` results after rapid setLocale. */
+  const localeLoadGeneration = useRef(0)
 
   const value = useMemo<I18nContextValue>(() => {
     function setLocale(nextLocale: Locale) {
@@ -31,10 +33,16 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // 先加载再提交，避免语言切换闪旧文案。
-      void loadMessages(nextLocale).then((nextMessages) => {
-        setState({ locale: nextLocale, messages: nextMessages })
-      })
+      // Load then commit — avoid flash of previous locale copy; ignore superseded loads.
+      const generation = ++localeLoadGeneration.current
+      void loadMessages(nextLocale)
+        .then((nextMessages) => {
+          if (generation !== localeLoadGeneration.current) return
+          setState({ locale: nextLocale, messages: nextMessages })
+        })
+        .catch(() => {
+          // Keep current messages; cookie/URL already point at nextLocale for retry/reload.
+        })
     }
 
     return {
