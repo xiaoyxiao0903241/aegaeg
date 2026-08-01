@@ -1,5 +1,6 @@
 import js from '@eslint/js'
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
+import reactCompiler from 'eslint-plugin-react-compiler'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
@@ -57,6 +58,7 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'react-compiler': reactCompiler,
       'simple-import-sort': simpleImportSort,
     },
     rules: {
@@ -65,6 +67,8 @@ export default tseslint.config(
       'react-hooks/exhaustive-deps': 'error',
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/refs': 'warn',
+      /* Compiler：违反 Rules of React → 该组件/hook 不会被优化；进 lint:src --quiet */
+      'react-compiler/react-compiler': 'error',
       /*
        * Project co-locates tv()/helpers with components (intentional).
        * Fast Refresh purity is not a gate — off globally.

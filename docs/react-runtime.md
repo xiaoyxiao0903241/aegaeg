@@ -42,4 +42,4 @@ Money-path 表征测：`tests/unit/react-quality-checks.test.mjs`。
 | pre-commit      | staged eslint + tsc；无 e2e              |
 | `pnpm test:e2e` | 手动 / 可选                              |
 
-**Compiler lint（已知缺口）：** 全量 Compiler 已开，但未装 `eslint-plugin-react-compiler`；`lint:src --quiet` 也不抬升 refs/render 写 ref 的 warn。禁止在 render 期写 `ref.current`（用 `useLayoutEffect` 同步）。装插件属独立依赖票，勿与钱路切片混装。
+**Compiler lint：** `eslint-plugin-react-compiler` → `react-compiler/react-compiler: error`（进 `lint:src --quiet`）。违反 Rules of React 的组件/hook 会被 Compiler 跳过优化。`react-hooks` 的 refs / set-state-in-effect 仍为 warn（登记债）；禁止在 render 期写 `ref.current`（用 `useLayoutEffect` 同步）。
