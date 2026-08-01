@@ -8,7 +8,7 @@ import {
 } from '~/core/assets/assets-block-reasons'
 import { dualCheckMixedClaim } from '~/core/assets/dual-check-mixed-claim'
 import {
-  matchPlanIndexByDurationDays,
+  matchClaimPlanIndices,
   restakeBpsFromPct,
   type ReleaseDurationDays,
   type RestakeDurationDays,
@@ -70,8 +70,11 @@ async function readMixedClaimSnapshot(
   readClient: ChainReadClient,
 ) {
   const plans = await readClaimPlans(readClient)
-  const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
-  const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
+  const { releaseIndex: releasePlanIndex, restakeIndex: restakePlanIndex } = matchClaimPlanIndices(
+    plans,
+    releaseDays,
+    restakeDays,
+  )
   const [rewardAvailable, contrib] = await Promise.all([
     readMixedRewardAvailable(target, user, readClient),
     readContributionSnapshot(user, amount, readClient),

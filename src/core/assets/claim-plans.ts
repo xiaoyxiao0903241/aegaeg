@@ -34,6 +34,24 @@ export function matchPlanIndexByDurationDays(
   return null
 }
 
+export type ClaimPlanBundle = {
+  releasePlans: readonly DurationPlan[]
+  restakePlans: readonly DurationPlan[]
+}
+
+/** Resolve release + restake plan indices together (UI / submit / live re-check). */
+export function matchClaimPlanIndices(
+  plans: ClaimPlanBundle | null | undefined,
+  releaseDays: number,
+  restakeDays: number,
+): { releaseIndex: number | null; restakeIndex: number | null } {
+  if (!plans) return { releaseIndex: null, restakeIndex: null }
+  return {
+    releaseIndex: matchPlanIndexByDurationDays(plans.releasePlans, releaseDays),
+    restakeIndex: matchPlanIndexByDurationDays(plans.restakePlans, restakeDays),
+  }
+}
+
 /** restakeBps = restakePct * 100 (0–10000). */
 export function restakeBpsFromPct(restakePct: number): number {
   const pct = Math.min(100, Math.max(0, Math.round(restakePct)))

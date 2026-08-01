@@ -2,7 +2,7 @@ import { LanguageMenu } from '~/shared/ui/language-menu'
 import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
 import { dappAssets } from '~/app/assets'
-import { allLanguageOptions } from '~/i18n/locales'
+import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { withLocalePrefix } from '~/i18n/locale'
 import { useI18n } from '~/i18n/use-i18n'
 import { getNotionLinks } from '~/shared/config/notion-links'
@@ -13,11 +13,7 @@ export function HomeHeader() {
   const content = messages.home.nav
   const notionLinks = getNotionLinks(locale)
   const appHref = withLocalePrefix(locale, '/app.html')
-  const languageOptions = allLanguageOptions.map((option) => ({
-    ...option,
-    active: option.locale === locale,
-    onSelect: () => setLocale(option.locale),
-  }))
+  const languageOptions = languageMenuOptions(locale, setLocale)
 
   return (
     <header

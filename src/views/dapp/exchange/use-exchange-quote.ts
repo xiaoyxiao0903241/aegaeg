@@ -1,5 +1,5 @@
 import { keepPreviousData, type QueryKey } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { calcAmountOutMin } from '~/core/exchange/exchange-math'
 import {
   assertQuotedExchangeStillSubmittable,
@@ -8,17 +8,15 @@ import {
 } from '~/core/exchange/live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { EXCHANGE_QUOTE_FAILED } from '~/web3/contract-error-message'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import type { WriteSession } from '~/web3/wallet/require-write-session'
 import type {
   QuotedSubmitCore,
   QuotedSubmitExecute,
 } from '~/views/dapp/exchange/quoted-submit-core'
+import { useExchangeWriteMutation } from '~/views/dapp/exchange/use-exchange-write-mutation'
 
 export type { QuotedSubmitCore, QuotedSubmitExecute }
 
@@ -76,11 +74,6 @@ export function useExchangeQuote<TQuote>({
   selectQuotedOut,
   onBeforeCap,
 }: UseExchangeQuoteOptions<TQuote>) {
-  const submitOutcomeRef = useRef<{ ok: true } | { ok: false; error: unknown | null }>({
-    ok: false,
-    error: null,
-  })
-
   const {
     amount: sellAmount,
     amountIn,
@@ -94,6 +87,9 @@ export function useExchangeQuote<TQuote>({
     sessionReady,
     onBeforeCap,
   })
+
+  const { chainWrite, submitOutcomeRef, isSubmitting, blockResubmit } =
+    useExchangeWriteMutation(clearAmount)
 
   const debouncedAmountIn = useDebouncedValue(amountIn, debounceMs)
   const isAmountDebouncing = amountIn > 0n && amountIn !== debouncedAmountIn
@@ -136,24 +132,6 @@ export function useExchangeQuote<TQuote>({
   const amountOutMin = quotedOut > 0n ? calcAmountOutMin(quotedOut, slippageBps) : 0n
 
   const needsMaxApproval = walletReady && amountIn > 0n && needsTokenApproval(allowance, amountIn)
-
-  const chainWrite = useChainMutation({
-    path: WRITE_PATH.EXCHANGE,
-    mutation: async (run: (session: WriteSession) => Promise<void>, session) => {
-      await run(session)
-    },
-    onSuccess: () => {
-      clearAmount()
-      submitOutcomeRef.current = { ok: true }
-    },
-    onError: (err) => {
-      // Unknown outcome locks the path inside the envelope → `isLocked` / blockResubmit.
-      submitOutcomeRef.current = { ok: false, error: err }
-    },
-  })
-
-  const isSubmitting = chainWrite.isPending
-  const blockResubmit = chainWrite.isLocked
 
   const canSubmit =
     !isAmountDebouncing &&

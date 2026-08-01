@@ -5,7 +5,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import {
   RELEASE_DURATION_DAYS,
   RESTAKE_DURATION_DAYS,
-  matchPlanIndexByDurationDays,
+  matchClaimPlanIndices,
   claimSplitFromReleasePct,
   planLabel,
   type ReleaseDurationDays,
@@ -69,12 +69,11 @@ export function useAssetsClaimModalView(args: {
     enabled: open && Boolean(account?.address),
   })
 
-  const releaseIndex = plansQuery.data
-    ? matchPlanIndexByDurationDays(plansQuery.data.releasePlans, releaseDays)
-    : null
-  const restakeIndex = plansQuery.data
-    ? matchPlanIndexByDurationDays(plansQuery.data.restakePlans, restakeDays)
-    : null
+  const { releaseIndex, restakeIndex } = matchClaimPlanIndices(
+    plansQuery.data,
+    releaseDays,
+    restakeDays,
+  )
   const contributionOk =
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution

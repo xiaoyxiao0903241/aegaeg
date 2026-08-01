@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatGroupedNumber } from '~/shared/api/format-display'
@@ -21,10 +21,9 @@ import {
 } from '~/views/dapp/exchange/turbine/submit-turbine-exchange'
 import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-rate'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
-import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
 import { useTurbineSummary } from '~/hooks/use-api-data'
-import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
+import { useExchangeWriteMutation } from '~/views/dapp/exchange/use-exchange-write-mutation'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export type TurbineSegment = 'unlock' | 'claim'
@@ -65,10 +64,6 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
 
   const [segment, setSegment] = useState<TurbineSegment>('unlock')
   const [claimingIndex, setClaimingIndex] = useState<number | null>(null)
-  const submitOutcomeRef = useRef<{ ok: true } | { ok: false; error: unknown | null }>({
-    ok: false,
-    error: null,
-  })
 
   const quotaQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineQuota,
@@ -114,22 +109,8 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     sessionReady,
   })
 
-  const chainWrite = useChainMutation({
-    path: WRITE_PATH.EXCHANGE,
-    mutation: async (run: (session: WriteSession) => Promise<void>, session) => {
-      await run(session)
-    },
-    onSuccess: () => {
-      clearAmountRaw()
-      submitOutcomeRef.current = { ok: true }
-    },
-    onError: (err) => {
-      submitOutcomeRef.current = { ok: false, error: err }
-    },
-  })
-
-  const isSubmitting = chainWrite.isPending
-  const blockResubmit = chainWrite.isLocked
+  const { chainWrite, submitOutcomeRef, isSubmitting, blockResubmit } =
+    useExchangeWriteMutation(clearAmountRaw)
 
   function clearLock() {
     chainWrite.clearLock()

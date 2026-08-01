@@ -9,7 +9,7 @@ import {
   RELEASE_DURATION_DAYS,
   RESTAKE_DURATION_DAYS,
   claimSplitFromReleasePct,
-  matchPlanIndexByDurationDays,
+  matchClaimPlanIndices,
   planLabel,
   type ReleaseDurationDays,
   type RestakeDurationDays,
@@ -81,12 +81,11 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
     enabled: Boolean(account?.address) && (view !== 'lucky' || amount > 0n),
   })
 
-  const releaseIndex = plansQuery.data
-    ? matchPlanIndexByDurationDays(plansQuery.data.releasePlans, releaseDays)
-    : null
-  const restakeIndex = plansQuery.data
-    ? matchPlanIndexByDurationDays(plansQuery.data.restakePlans, restakeDays)
-    : null
+  const { releaseIndex, restakeIndex } = matchClaimPlanIndices(
+    plansQuery.data,
+    releaseDays,
+    restakeDays,
+  )
   const luckyContributionOk =
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution

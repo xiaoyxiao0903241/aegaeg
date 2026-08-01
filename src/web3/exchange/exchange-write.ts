@@ -5,13 +5,11 @@ import { isAgxSellPath } from '~/core/exchange/agx-sell-tax'
 import { exchangeDeadline } from '~/core/exchange/exchange-math'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { ERC20_METHODS, PANCAKE_ROUTER_V2_METHODS, ERC20_ERRORS } from '~/web3/abis'
-import { createWalletReadClient } from '~/web3/chain-read-client'
-import { readErc20Allowance } from '~/web3/exchange/exchange-read'
+import { PANCAKE_ROUTER_V2_METHODS } from '~/web3/abis'
+import { approveErc20IfNeeded } from '~/web3/exchange/approve-erc20-if-needed'
 import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
-import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
+import { writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
-const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
 const exchangeRouterWriteAbi = parseAbi([
   PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokens,
   PANCAKE_ROUTER_V2_METHODS.swapExactTokensForTokensSupportingFeeOnTransferTokens,
@@ -31,26 +29,11 @@ export async function approveTokenIfNeeded({
   token: `0x${string}`
   amountIn: bigint
 }) {
-  const account = wallet.getAccount()
-  if (!account) {
-    throw WALLET_BLOCKED.NOT_CONNECTED
-  }
-
-  const readClient = createWalletReadClient(wallet)
-  const allowance = await readErc20Allowance(
-    token,
-    account.address,
-    EXCHANGE_CONFIG.router,
-    readClient,
-  )
-  if (!needsTokenApproval(allowance, amountIn)) return null
-
-  return writeContractViaWallet({
+  return approveErc20IfNeeded({
     wallet,
-    address: token,
-    abi: erc20WriteAbi,
-    functionName: 'approve',
-    args: [EXCHANGE_CONFIG.router, amountIn],
+    token,
+    spender: EXCHANGE_CONFIG.router,
+    amountIn,
   })
 }
 

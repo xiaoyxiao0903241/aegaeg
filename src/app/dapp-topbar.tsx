@@ -3,7 +3,7 @@ import { dappIcon } from '~/shared/ui/dapp-icon-scale'
 import { LanguageMenu } from '~/shared/ui/language-menu'
 import { Text } from '~/shared/ui/text'
 import { withLocalePrefix } from '~/i18n/locale'
-import { allLanguageOptions } from '~/i18n/locales'
+import { languageMenuOptions } from '~/i18n/language-menu-options'
 import { useI18n } from '~/i18n/use-i18n'
 import { homeAssets, dappAssets } from '~/app/assets'
 import { WalletTopbarActions } from '~/app/wallet-topbar-actions'
@@ -57,11 +57,7 @@ export function DappTopbar({
   const { sessionReady, tab } = useDappShell()
   const styles = topbar({ hideBrandLabel: sessionReady })
 
-  const languageOptions = allLanguageOptions.map((option) => ({
-    ...option,
-    active: option.locale === locale,
-    onSelect: () => setLocale(option.locale),
-  }))
+  const languageOptions = languageMenuOptions(locale, setLocale)
 
   return (
     <header className={styles.root()}>

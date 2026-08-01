@@ -1,6 +1,6 @@
 import { evaluateRewardsMixedClaim } from '~/core/rewards/rewards-block-reasons'
 import {
-  matchPlanIndexByDurationDays,
+  matchClaimPlanIndices,
   restakeBpsFromPct,
   type ReleaseDurationDays,
   type RestakeDurationDays,
@@ -48,8 +48,11 @@ export async function submitLuckyMixedClaim(args: {
   // Intent from first read; live check must compare against a second chain read (never self-certify).
   const amount = snapshot.rewardAmount
   const plans = await readClaimPlans(readClient)
-  const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
-  const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
+  const { releaseIndex: releasePlanIndex, restakeIndex: restakePlanIndex } = matchClaimPlanIndices(
+    plans,
+    releaseDays,
+    restakeDays,
+  )
   const contrib = await readContributionSnapshot(user, amount, readClient)
 
   const preBlock = evaluateRewardsMixedClaim({
@@ -67,8 +70,11 @@ export async function submitLuckyMixedClaim(args: {
 
   const live = await readLuckyClaimSnapshot(user, readClient)
   const livePlans = await readClaimPlans(readClient)
-  const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
-  const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
+  const { releaseIndex: liveRelease, restakeIndex: liveRestake } = matchClaimPlanIndices(
+    livePlans,
+    releaseDays,
+    restakeDays,
+  )
   const liveContrib = await readContributionSnapshot(user, amount, readClient)
   const liveBlock = evaluateRewardsMixedClaim({
     amount,
@@ -128,8 +134,11 @@ export async function submitDaoMixedClaim(args: {
   const amount = normalized.amountWei
 
   const plans = await readClaimPlans(readClient)
-  const releasePlanIndex = matchPlanIndexByDurationDays(plans.releasePlans, releaseDays)
-  const restakePlanIndex = matchPlanIndexByDurationDays(plans.restakePlans, restakeDays)
+  const { releaseIndex: releasePlanIndex, restakeIndex: restakePlanIndex } = matchClaimPlanIndices(
+    plans,
+    releaseDays,
+    restakeDays,
+  )
   const [rewardAvailable, contrib] = await Promise.all([
     readDaoPoolRewardAvailable(readClient),
     readContributionSnapshot(user, amount, readClient),
@@ -147,8 +156,11 @@ export async function submitDaoMixedClaim(args: {
 
   // Live: re-read DaoPool AGX solvency + contribution + plans (never signature-self-certify).
   const livePlans = await readClaimPlans(readClient)
-  const liveRelease = matchPlanIndexByDurationDays(livePlans.releasePlans, releaseDays)
-  const liveRestake = matchPlanIndexByDurationDays(livePlans.restakePlans, restakeDays)
+  const { releaseIndex: liveRelease, restakeIndex: liveRestake } = matchClaimPlanIndices(
+    livePlans,
+    releaseDays,
+    restakeDays,
+  )
   const [liveReward, liveContrib] = await Promise.all([
     readDaoPoolRewardAvailable(readClient),
     readContributionSnapshot(user, amount, readClient),
