@@ -1,4 +1,7 @@
+import { ZERO_ADDRESS } from '~/core/address'
+
 /** Handbook §17 — old address must not keep writing; migration writes DEFER this round. */
+
 export type MigrationUserBlockReason = 'account_migrated' | 'migration_writes_closed'
 
 export type MigrationStatus = {
@@ -6,14 +9,12 @@ export type MigrationStatus = {
   isOldAccount: boolean
 }
 
-const ZERO = '0x0000000000000000000000000000000000000000'
-
 /**
  * Public mapping getters (e.g. `stakes`) need the first migration root.
  * `migratedFrom(current) == 0` → use `current`.
  */
 export function migrationStakeRoot(current: string, migratedFrom: string): string {
-  if (!migratedFrom || migratedFrom.toLowerCase() === ZERO) return current
+  if (!migratedFrom || migratedFrom.toLowerCase() === ZERO_ADDRESS) return current
   return migratedFrom
 }
 

@@ -1,3 +1,5 @@
+import { BPS_DENOM } from '~/core/exchange/bps'
+
 /**
  * Bond deposit payout math (manual bonddepository §deposit).
  * gross = value * 1e9 * 10000 / agxPrice / discountRateBP
@@ -12,14 +14,14 @@ export function computeGrossBondPayout(args: {
   const { value, agxPrice, discountRateBP } = args
   if (value === 0n || agxPrice === 0n || discountRateBP === 0n) return 0n
   // Match Solidity left-assoc: value * 1e9 / agxPrice * 10000 / discountRateBP
-  return (((value * 1_000_000_000n) / agxPrice) * 10_000n) / discountRateBP
+  return (((value * 1_000_000_000n) / agxPrice) * BPS_DENOM) / discountRateBP
 }
 
 export function computeNetBondPayout(grossPayout: bigint, feeBps: bigint): bigint {
   if (grossPayout === 0n) return 0n
   if (feeBps === 0n) return grossPayout
-  if (feeBps >= 10_000n) return 0n
-  const fee = (grossPayout * feeBps) / 10_000n
+  if (feeBps >= BPS_DENOM) return 0n
+  const fee = (grossPayout * feeBps) / BPS_DENOM
   return grossPayout > fee ? grossPayout - fee : 0n
 }
 

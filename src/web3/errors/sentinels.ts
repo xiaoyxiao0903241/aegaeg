@@ -38,8 +38,8 @@ export const WALLET_WRITE_ERROR = {
 /** Quote RPC / router failure — map via i18n `errors.quoteFailed`. */
 export const EXCHANGE_QUOTE_FAILED = 'EXCHANGE_QUOTE_FAILED'
 
-/** Approve 后二次门闸失败（quote 过期等）— 与 quoteFailed 同文案。 */
-export const EXCHANGE_SUBMIT_BLOCKED = 'EXCHANGE_SUBMIT_BLOCKED'
+/** Approve 后二次门闸失败（quote 过期等）— 与 quoteFailed 同文案。 SSOT: core. */
+export { EXCHANGE_SUBMIT_BLOCKED } from '~/core/exchange/exchange-sentinels'
 
 /** Flash Usd1Swap preflight gates — map via i18n `exchange.flash.blocked`. */
 export const FLASH_USD1_BLOCKED = {

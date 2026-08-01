@@ -1,4 +1,3 @@
-import { tv } from 'tailwind-variants'
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { useAssetsViewMotion } from '~/stores/assets-view-store'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
@@ -8,10 +7,6 @@ import { AssetsPositionWidget } from '~/views/dapp/assets/position/assets-positi
 import { AssetsPositionContent } from '~/views/dapp/assets/position/assets-position-content'
 import { AssetsXmineWidget } from '~/views/dapp/assets/xmine/assets-xmine-widget'
 import { AssetsXmineContent } from '~/views/dapp/assets/xmine/assets-xmine-content'
-
-const assetsTransitionStack = tv({
-  base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
-})
 
 function AssetsWidgetBody() {
   const view = useDappSubviewDisplayView<AssetsView>()
@@ -38,7 +33,6 @@ export function AssetsWidget() {
       className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
       panel="widget"
       subview={subview}
-      transitionClassName={assetsTransitionStack()}
     >
       <AssetsWidgetBody />
     </DappSubviewShell>
@@ -48,12 +42,7 @@ export function AssetsWidget() {
 export function AssetsContent() {
   const subview = useAssetsViewMotion()
   return (
-    <DappSubviewShell
-      className="min-h-0"
-      panel="detail"
-      subview={subview}
-      transitionClassName={assetsTransitionStack()}
-    >
+    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
       <AssetsContentBody />
     </DappSubviewShell>
   )

@@ -1,4 +1,3 @@
-import { tv } from 'tailwind-variants'
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { useRewardsViewMotion } from '~/stores/rewards-view-store'
 import type { RewardsView } from '~/shared/config/dapp-deep-links'
@@ -8,10 +7,6 @@ import { RewardsSimpleClaimWidget } from '~/views/dapp/rewards/detail/rewards-si
 import { RewardsGenesisClaimWidget } from '~/views/dapp/rewards/detail/rewards-genesis-widget'
 import { RewardsMixedClaimWidget } from '~/views/dapp/rewards/detail/rewards-mixed-claim-widget'
 import { RewardsDetailContent } from '~/views/dapp/rewards/detail/rewards-detail-content'
-
-const rewardsTransitionStack = tv({
-  base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
-})
 
 function RewardsWidgetBody() {
   const view = useDappSubviewDisplayView<RewardsView>()
@@ -37,7 +32,6 @@ export function RewardsWidget() {
       className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
       panel="widget"
       subview={subview}
-      transitionClassName={rewardsTransitionStack()}
     >
       <RewardsWidgetBody />
     </DappSubviewShell>
@@ -47,12 +41,7 @@ export function RewardsWidget() {
 export function RewardsContent() {
   const subview = useRewardsViewMotion()
   return (
-    <DappSubviewShell
-      className="min-h-0"
-      panel="detail"
-      subview={subview}
-      transitionClassName={rewardsTransitionStack()}
-    >
+    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
       <RewardsContentBody />
     </DappSubviewShell>
   )

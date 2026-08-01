@@ -16,21 +16,15 @@ export function DappSubviewTransitionLayers({
 }) {
   return (
     <>
-      <div
-        className="exchange-view-layer exchange-view-layer-exit"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">
+      <div className="dapp-subview-layer dapp-subview-layer-exit" data-dapp-direction={direction}>
+        <div className="dapp-subview-layer-motion">
           <DappSubviewDisplayViewContext.Provider value={outgoing}>
             {children}
           </DappSubviewDisplayViewContext.Provider>
         </div>
       </div>
-      <div
-        className="exchange-view-layer exchange-view-layer-enter"
-        data-exchange-direction={direction}
-      >
-        <div className="exchange-view-layer-motion">
+      <div className="dapp-subview-layer dapp-subview-layer-enter" data-dapp-direction={direction}>
+        <div className="dapp-subview-layer-motion">
           <DappSubviewDisplayViewContext.Provider value={incoming}>
             {children}
           </DappSubviewDisplayViewContext.Provider>

@@ -6,10 +6,15 @@ import { DappSubviewTransitionLayers } from '~/app/shell/dapp-subview-transition
 
 export { useDappSubviewDisplayView } from '~/app/shell/dapp-subview-display-context'
 
+/** Shared hub↔subview crossfade grid — used by every DApp tab shell. */
+export const DAPP_SUBVIEW_TRANSITION_STACK =
+  'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0'
+
 type DappSubviewShellProps = {
   subview: DappSubviewMotion
   className?: string
-  transitionClassName: string
+  /** Defaults to {@link DAPP_SUBVIEW_TRANSITION_STACK}. */
+  transitionClassName?: string
   /** DOM marker: widget vs detail panel. */
   panel: 'widget' | 'detail'
   children: ReactNode
@@ -19,7 +24,7 @@ type DappSubviewShellProps = {
 export function DappSubviewShell({
   subview,
   className,
-  transitionClassName,
+  transitionClassName = DAPP_SUBVIEW_TRANSITION_STACK,
   panel,
   children,
 }: DappSubviewShellProps) {
@@ -29,9 +34,9 @@ export function DappSubviewShell({
   return (
     <div
       className={cn(className, isTransitioning && transitionClassName)}
-      data-exchange-detail-panel={panel === 'detail' ? '' : undefined}
-      data-exchange-transitioning={isTransitioning ? 'true' : undefined}
-      data-exchange-widget-panel={panel === 'widget' ? '' : undefined}
+      data-dapp-detail-panel={panel === 'detail' ? '' : undefined}
+      data-dapp-transitioning={isTransitioning ? 'true' : undefined}
+      data-dapp-widget-panel={panel === 'widget' ? '' : undefined}
     >
       {isTransitioning && outgoingView && incomingView ? (
         <DappSubviewTransitionLayers

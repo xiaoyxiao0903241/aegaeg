@@ -12,9 +12,10 @@ module.exports = {
     },
     {
       name: 'shared-no-views',
+      comment: 'shared may import core (pure); must not import views.',
       severity: 'error',
       from: { path: '^src/shared/' },
-      to: { path: '^src/(views|core)/' },
+      to: { path: '^src/views/' },
     },
     {
       name: 'shared-no-app',

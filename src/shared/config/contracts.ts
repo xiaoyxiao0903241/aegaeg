@@ -1,12 +1,13 @@
+import { ZERO_ADDRESS as CORE_ZERO_ADDRESS } from '~/core/address'
 import { requireEnvAddress } from '~/shared/config/env'
 
 export type Address = `0x${string}`
 
 /**
  * EIP zero address — protocol sentinel (unbound referrer / disabled slot marker),
- * not a deployment address and not an env fallback.
+ * not a deployment address and not an env fallback. SSOT: `core/address`.
  */
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const satisfies Address
+export const ZERO_ADDRESS = CORE_ZERO_ADDRESS satisfies Address
 
 export interface BscContracts {
   chainId: 56

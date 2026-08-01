@@ -1,4 +1,3 @@
-import { tv } from 'tailwind-variants'
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { useExchangeViewMotion } from '~/stores/exchange-view-store'
 import type { ExchangeView } from '~/shared/config/dapp-deep-links'
@@ -18,10 +17,6 @@ import { BurnExchangeWidget } from '~/views/dapp/exchange/burn/burn-exchange-wid
 import { BurnExchangeContent } from '~/views/dapp/exchange/burn/burn-exchange-content'
 import { TurbineExchangeWidget } from '~/views/dapp/exchange/turbine/turbine-exchange-widget'
 import { TurbineExchangeContent } from '~/views/dapp/exchange/turbine/turbine-exchange-content'
-
-const exchangeTransitionStack = tv({
-  base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
-})
 
 type ExchangeSessions = {
   trade: MarketTradeState | null
@@ -83,7 +78,6 @@ export function ExchangeWidget(sessions: ExchangeSessions) {
       className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
       panel="widget"
       subview={subview}
-      transitionClassName={exchangeTransitionStack()}
     >
       <ExchangeWidgetBody {...sessions} />
     </DappSubviewShell>
@@ -93,12 +87,7 @@ export function ExchangeWidget(sessions: ExchangeSessions) {
 export function ExchangeContent(sessions: ExchangeSessions) {
   const subview = useExchangeViewMotion()
   return (
-    <DappSubviewShell
-      className="min-h-0"
-      panel="detail"
-      subview={subview}
-      transitionClassName={exchangeTransitionStack()}
-    >
+    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
       <ExchangeContentBody {...sessions} />
     </DappSubviewShell>
   )

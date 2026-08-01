@@ -1,6 +1,6 @@
 /** AGX sell-tax helpers — handbook `contracts/agx.md` (sellRatio / extraSellBP / crash fuse). */
 
-const BPS_DENOM = 10_000n
+import { BPS_DENOM, BPS_DENOM_NUMBER } from '~/core/exchange/bps'
 
 /**
  * Effective sell-tax bps for a non-whitelist transfer into the AGX pair.
@@ -20,11 +20,11 @@ export function agxSellTaxBps(args: {
 
 /** Gross sell amount → amount that arrives in the pair after sell tax. */
 export function applyAgxSellTaxToAmountIn(amountIn: bigint, taxBps: number): bigint {
-  if (taxBps < 0 || taxBps >= 10_000) {
+  if (taxBps < 0 || taxBps >= BPS_DENOM_NUMBER) {
     throw new Error(`Invalid AGX sell tax bps: ${taxBps}`)
   }
   if (amountIn <= 0n || taxBps === 0) return amountIn
-  return (amountIn * BigInt(10_000 - taxBps)) / BPS_DENOM
+  return (amountIn * BigInt(BPS_DENOM_NUMBER - taxBps)) / BPS_DENOM
 }
 
 /** True when Trade path sells AGX into the pool (fee-on-transfer sell). */

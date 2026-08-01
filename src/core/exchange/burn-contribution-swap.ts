@@ -1,4 +1,5 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { BPS_DENOM } from '~/core/exchange/bps'
 
 /** AgxContributionSwap submit checks from handbook `getConfig` (no UI invented). */
 export type BurnContributionSwapConfig = {
@@ -15,7 +16,7 @@ export type BurnContributionSwapConfig = {
 
 /** Format `splitBps` (0–10000) as a whole/decimal percent string for FAQ. */
 export function formatBurnSplitPercent(splitBps: bigint): string {
-  if (splitBps < 0n || splitBps > 10_000n) {
+  if (splitBps < 0n || splitBps > BPS_DENOM) {
     throw new Error(`BURN_SPLIT_BPS_OUT_OF_RANGE:${splitBps}`)
   }
   if (splitBps % 100n === 0n) return (splitBps / 100n).toString()
@@ -65,7 +66,7 @@ export function formatBurnContributionRateLabel({
   }
 
   const oneAgx = 10n ** BigInt(decimals)
-  const pointsPerAgx = (oneAgx * rateBps) / 10000n
+  const pointsPerAgx = (oneAgx * rateBps) / BPS_DENOM
   const formatted = formatTokenAmount(pointsPerAgx, decimals, fractionDigits)
 
   return `1 ${agxSymbol} = ${formatted} ${pointsLabel}`
@@ -77,11 +78,11 @@ export function formatBurnContributionRateLabel({
  */
 export function formatBurnContributionRatioColon(rateBps: bigint): string {
   if (rateBps === 0n) return '—'
-  if (rateBps % 10000n === 0n) {
-    return `1:${(rateBps / 10000n).toString()}`
+  if (rateBps % BPS_DENOM === 0n) {
+    return `1:${(rateBps / BPS_DENOM).toString()}`
   }
-  const whole = rateBps / 10000n
-  const frac = rateBps % 10000n
+  const whole = rateBps / BPS_DENOM
+  const frac = rateBps % BPS_DENOM
   const fracStr = frac.toString().padStart(4, '0').replace(/0+$/, '')
   return fracStr.length > 0 ? `1:${whole.toString()}.${fracStr}` : `1:${whole.toString()}`
 }

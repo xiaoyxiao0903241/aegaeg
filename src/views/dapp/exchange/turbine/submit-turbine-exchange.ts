@@ -1,3 +1,4 @@
+import { EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import type { QueryObserverResult } from '@tanstack/react-query'
 import { invalidateAfterExchange } from '~/shared/api/query/invalidate'
 import {
@@ -38,7 +39,7 @@ export async function submitTurbineUnlock(args: {
     // Pre-approve quote (may drift during wallet signature).
     const preUsd = await readTurbineUsdQuote(unlockAmountAgx)
     if (preUsd <= 0n) {
-      throw new Error('EXCHANGE_SUBMIT_BLOCKED')
+      throw new Error(EXCHANGE_SUBMIT_BLOCKED)
     }
 
     await approveUsd1ForTurbineIfNeeded({ wallet, amountIn: preUsd })

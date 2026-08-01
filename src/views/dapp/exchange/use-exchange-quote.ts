@@ -7,7 +7,7 @@ import {
   liveQuotedOut,
 } from '~/core/exchange/live-quoted-out'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
-import { EXCHANGE_QUOTE_FAILED } from '~/web3/contract-error-message'
+import { EXCHANGE_QUOTE_FAILED, EXCHANGE_SUBMIT_BLOCKED } from '~/web3/contract-error-message'
 import { needsTokenApproval } from '~/web3/exchange/exchange-write'
 import { QUERY_STALE_TIME, queryClient } from '~/shared/api/query/query-client'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
@@ -183,7 +183,7 @@ export function useExchangeQuote<TQuote>({
       sellBalance: bigint
     }): Promise<{ amountOutMin: bigint; quotedOut: bigint }> => {
       if (live === undefined) {
-        throw new Error('EXCHANGE_SUBMIT_BLOCKED')
+        throw new Error(EXCHANGE_SUBMIT_BLOCKED)
       }
       const queryKey = getQuoteQueryKey(debouncedAmountIn)
       await queryClient.fetchQuery({

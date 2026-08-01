@@ -1,4 +1,3 @@
-import { tv } from 'tailwind-variants'
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { useReleaseViewMotion } from '~/stores/release-view-store'
 import type { ReleaseView } from '~/shared/config/dapp-deep-links'
@@ -8,10 +7,6 @@ import { ReleaseQueueWidget } from '~/views/dapp/release/queue/release-queue-wid
 import { ReleaseQueueContent } from '~/views/dapp/release/queue/release-queue-content'
 import { ReleaseBufferWidget } from '~/views/dapp/release/buffer/release-buffer-widget'
 import { ReleaseBufferContent } from '~/views/dapp/release/buffer/release-buffer-content'
-
-const releaseTransitionStack = tv({
-  base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
-})
 
 function ReleaseWidgetBody() {
   const view = useDappSubviewDisplayView<ReleaseView>()
@@ -34,7 +29,6 @@ export function ReleaseWidget() {
       className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
       panel="widget"
       subview={subview}
-      transitionClassName={releaseTransitionStack()}
     >
       <ReleaseWidgetBody />
     </DappSubviewShell>
@@ -44,12 +38,7 @@ export function ReleaseWidget() {
 export function ReleaseContent() {
   const subview = useReleaseViewMotion()
   return (
-    <DappSubviewShell
-      className="min-h-0"
-      panel="detail"
-      subview={subview}
-      transitionClassName={releaseTransitionStack()}
-    >
+    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
       <ReleaseContentBody />
     </DappSubviewShell>
   )

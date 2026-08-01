@@ -1,3 +1,5 @@
+import { BPS_DENOM } from '~/core/exchange/bps'
+
 /**
  * V2 AMM price impact vs mid (no-fee) reserve ratio, in basis points.
  * Includes pool fee + size impact relative to `amountIn * reserveOut / reserveIn`.
@@ -19,7 +21,7 @@ export function calcV2PriceImpactBps({
   if (midOut === 0n) return 0
 
   const diff = midOut > amountOut ? midOut - amountOut : 0n
-  const bps = Number((diff * 10000n) / midOut)
+  const bps = Number((diff * BPS_DENOM) / midOut)
   return Number.isFinite(bps) ? bps : 0
 }
 

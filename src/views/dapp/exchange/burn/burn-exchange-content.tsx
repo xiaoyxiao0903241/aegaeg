@@ -9,6 +9,7 @@ import { Text } from '~/shared/ui/text'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
+import { BPS_DENOM } from '~/core/exchange/bps'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 import type { BurnExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
@@ -72,7 +73,7 @@ export function BurnExchangeContent({ burn }: { burn: BurnExchangeState }) {
     const items = t.exchange.burn.faq.items
     const splitBps = burn.config?.splitBps
     const burnPct = splitBps === undefined ? '—' : formatBurnSplitPercent(splitBps)
-    const injectPct = splitBps === undefined ? '—' : formatBurnSplitPercent(10_000n - splitBps)
+    const injectPct = splitBps === undefined ? '—' : formatBurnSplitPercent(BPS_DENOM - splitBps)
     return items.map((item, index) =>
       index === FAQ_DESTINATION_INDEX
         ? {

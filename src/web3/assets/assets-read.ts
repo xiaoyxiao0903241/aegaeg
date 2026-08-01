@@ -1,5 +1,5 @@
 import { parseAbi } from 'viem'
-import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
+import { BSC_CONTRACTS, ZERO_ADDRESS, type Address } from '~/shared/config/contracts'
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import {
   AGX_CONTRIBUTION_SWAP_METHODS,
@@ -148,7 +148,7 @@ export async function readContributionSnapshot(
     functionName: 'originalOf',
     args: [user],
   })) as Address
-  const contributionRoot = root === '0x0000000000000000000000000000000000000000' ? user : root
+  const contributionRoot = root.toLowerCase() === ZERO_ADDRESS ? user : root
 
   const [contribution, requiredContribution] = await Promise.all([
     client.readContract({

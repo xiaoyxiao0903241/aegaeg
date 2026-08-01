@@ -1,4 +1,3 @@
-import { tv } from 'tailwind-variants'
 import { DappSubviewShell, useDappSubviewDisplayView } from '~/app/shell/dapp-subview-panel'
 import { useStakingViewMotion } from '~/stores/staking-view-store'
 import type { StakingView } from '~/shared/config/dapp-deep-links'
@@ -12,10 +11,6 @@ import { XmineWidget } from '~/views/dapp/staking/xmine/xmine-widget'
 import { XmineContent } from '~/views/dapp/staking/xmine/xmine-content'
 import { CalcWidget } from '~/views/dapp/staking/calc/calc-widget'
 import { CalcContent } from '~/views/dapp/staking/calc/calc-content'
-
-const stakingTransitionStack = tv({
-  base: 'grid overflow-hidden *:col-start-1 *:row-start-1 *:min-w-0',
-})
 
 function StakingWidgetBody() {
   const view = useDappSubviewDisplayView<StakingView>()
@@ -44,7 +39,6 @@ export function StakingWidget() {
       className="flex min-h-full flex-col max-dapp:h-auto max-dapp:min-h-0"
       panel="widget"
       subview={subview}
-      transitionClassName={stakingTransitionStack()}
     >
       <StakingWidgetBody />
     </DappSubviewShell>
@@ -54,12 +48,7 @@ export function StakingWidget() {
 export function StakingContent() {
   const subview = useStakingViewMotion()
   return (
-    <DappSubviewShell
-      className="min-h-0"
-      panel="detail"
-      subview={subview}
-      transitionClassName={stakingTransitionStack()}
-    >
+    <DappSubviewShell className="min-h-0" panel="detail" subview={subview}>
       <StakingContentBody />
     </DappSubviewShell>
   )

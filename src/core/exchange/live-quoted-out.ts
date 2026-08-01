@@ -1,3 +1,5 @@
+import { EXCHANGE_SUBMIT_BLOCKED } from '~/core/exchange/exchange-sentinels'
+
 /**
  * 提交/展示用的实时报价数量。
  * `keepPreviousData` 占位不得驱动 UI 或 canSubmit。
@@ -70,14 +72,13 @@ export function canSubmitQuotedExchange({
 }
 
 /**
- * Re-run quote submit check after approve (or any await). Throws the
- * `EXCHANGE_SUBMIT_BLOCKED` sentinel when the live quote is no longer submittable.
- * Sentinel string must stay identical to `contract-error-message`.
+ * Re-run quote submit check after approve (or any await). Throws
+ * {@link EXCHANGE_SUBMIT_BLOCKED} when the live quote is no longer submittable.
  */
 export function assertQuotedExchangeStillSubmittable(
   params: Parameters<typeof canSubmitQuotedExchange>[0],
 ): void {
   if (!canSubmitQuotedExchange(params)) {
-    throw new Error('EXCHANGE_SUBMIT_BLOCKED')
+    throw new Error(EXCHANGE_SUBMIT_BLOCKED)
   }
 }

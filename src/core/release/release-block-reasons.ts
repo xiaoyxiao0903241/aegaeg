@@ -4,6 +4,8 @@
  * Queue (RewardQueue) and buffer (PRV) share the same claimable/unknown rules.
  */
 
+import { BPS_DENOM } from '~/core/exchange/bps'
+
 export type ReleaseClaimBlockReason = 'zeroAmount' | 'lockedUnknown'
 
 /** `null` = may submit; otherwise fail-closed block reason. */
@@ -19,5 +21,5 @@ export function releaseClaimBlockReason(args: {
 export function releaseProgressBps(claimable: bigint, releasing: bigint): number {
   const total = claimable + releasing
   if (total <= 0n) return 0
-  return Number((claimable * 10_000n) / total)
+  return Number((claimable * BPS_DENOM) / total)
 }

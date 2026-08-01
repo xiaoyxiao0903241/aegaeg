@@ -1,4 +1,5 @@
 import { parseAbi } from 'viem'
+import { BPS_DENOM } from '~/core/exchange/bps'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import {
   BOND_DEPOSITORY_MARKET_METHODS,
@@ -174,7 +175,7 @@ export async function readBondMarketMeta(
  * Manual: 10000 = par; lower BP = more discount (e.g. 9500 ≈ 5% off).
  */
 export function formatBondDiscountLabel(discountRateBP: bigint): string {
-  if (discountRateBP === 0n || discountRateBP > 10000n) return '—'
+  if (discountRateBP === 0n || discountRateBP > BPS_DENOM) return '—'
   const whole = discountRateBP / 100n
   const frac = discountRateBP % 100n
   if (frac === 0n) return `${whole}%`
