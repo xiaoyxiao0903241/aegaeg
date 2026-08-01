@@ -48,7 +48,8 @@
 ## 6. React Query
 
 - Key 只来自 `query-keys.ts`。
-- Tab：`invalidateTabQueries(tab)`，`refetchType: 'active'`。
+- Tab 切页：`refetchStaleTabQueries(tab)`（仅 stale + active）；写后仍 `invalidateTabQueries(tab)`（`refetchType: 'active'`）。
+- Rail hover：`prefetchTabQueries` 仅暖 stale + inactive。
 - 钱包切换：只刷新新地址链上读 + 当前 tab。
 
 ## 7. API 与错误

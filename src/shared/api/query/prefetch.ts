@@ -39,10 +39,10 @@ export function prefetchConnectWarm(address: string, readClient: ChainReadClient
 
 /**
  * Warm inactive observers for a tab’s query roots (hover / revisit).
- * No-op for never-fetched keys (need mount to register queryFn).
+ * 只 refetch 已 stale 的 inactive；fresh 缓存不动。从未 fetch 的 key 无 observer → no-op。
  */
 export function prefetchTabQueries(tab: DappTab): void {
   for (const queryKey of TAB_QUERY_KEYS[tab]) {
-    void queryClient.refetchQueries({ queryKey, type: 'inactive' })
+    void queryClient.refetchQueries({ queryKey, type: 'inactive', stale: true })
   }
 }

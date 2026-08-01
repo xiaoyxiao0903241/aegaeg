@@ -13,7 +13,7 @@ import { OnboardingGuide, useOnboardingAutoStart } from '~/app/shell/onboarding-
 import { useDappShell } from '~/app/use-dapp-shell'
 import { scrollDappPanelsToTop } from '~/app/utils'
 import { useI18n } from '~/i18n/use-i18n'
-import { invalidateTabQueries } from '~/shared/api/query/invalidate'
+import { refetchStaleTabQueries } from '~/shared/api/query/invalidate'
 import { cn } from '~/shared/lib/utils'
 import { DappInlineAlert } from '~/shared/ui/dapp-inline-alert'
 import { HeroRaysBackground } from '~/shared/ui/hero-rays-background'
@@ -70,7 +70,7 @@ export function DappShell() {
 
   useEffect(() => {
     scrollDappPanelsToTop()
-    invalidateTabQueries(displayTab)
+    refetchStaleTabQueries(displayTab)
     // After fade-out swaps displayTab, reset inactive rails — keeps leaving subview stable during fade.
     resetForeignSubviewStores(displayTab)
   }, [displayTab, resetForeignSubviewStores])

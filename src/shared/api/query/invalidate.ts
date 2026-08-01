@@ -135,10 +135,20 @@ export function invalidatePresaleChainQueries(address?: string) {
   void queryClient.invalidateQueries({ queryKey: queryKeys.chain.erc20Root })
 }
 
-/** 使当前 Tab 相关 query 标记过期，并只 refetch 已挂载的观察者。 */
+/** 使当前 Tab 相关 query 标记过期，并只 refetch 已挂载的观察者（写后 / 钱包切换）。 */
 export function invalidateTabQueries(tab: DappTab) {
   TAB_QUERY_KEYS[tab].forEach((key) => {
     void queryClient.invalidateQueries({ queryKey: key, refetchType: 'active' })
+  })
+}
+
+/**
+ * 切 Tab：只 refetch 已 stale 的 active 观察者。
+ * 不把仍在 staleTime 内的缓存标脏（避免抵消 hover 预热）。
+ */
+export function refetchStaleTabQueries(tab: DappTab) {
+  TAB_QUERY_KEYS[tab].forEach((key) => {
+    void queryClient.refetchQueries({ queryKey: key, type: 'active', stale: true })
   })
 }
 
