@@ -3,6 +3,7 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { ERC20_ERRORS, ERC20_METHODS, TURBINE_ERRORS, TURBINE_METHODS } from '~/web3/abis'
 import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/exchange/exchange-read'
+import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
@@ -17,7 +18,7 @@ export async function approveUsd1ForTurbineIfNeeded({
   amountIn: bigint
 }) {
   const account = wallet.getAccount()
-  if (!account) throw new Error('Wallet not connected')
+  if (!account) throw WALLET_BLOCKED.NOT_CONNECTED
 
   const readClient = createWalletReadClient(wallet)
   const allowance = await readErc20Allowance(

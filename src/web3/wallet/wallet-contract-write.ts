@@ -15,6 +15,7 @@ import {
   normalizeContractRevertError,
 } from '~/web3/decode-contract-revert'
 import { WALLET_WRITE_ERROR } from '~/web3/contract-error-message'
+import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
 import { createWalletReadClient, type ChainReadClient } from '~/web3/chain-read-client'
 import { bscReadClient } from '~/web3/bsc-read-client'
 import { walletEip1193Provider } from '~/web3/wallet/wallet-eip1193-provider'
@@ -38,7 +39,7 @@ const GAS_BUFFER_DENOMINATOR = 100n
 function requireWalletAccount(wallet: Wallet) {
   const account = wallet.getAccount()
   if (!account) {
-    throw new Error('Wallet not connected')
+    throw WALLET_BLOCKED.NOT_CONNECTED
   }
   return account
 }

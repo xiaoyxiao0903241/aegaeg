@@ -8,6 +8,7 @@ import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { ERC20_METHODS, PANCAKE_ROUTER_V2_METHODS, ERC20_ERRORS } from '~/web3/abis'
 import { createWalletReadClient } from '~/web3/chain-read-client'
 import { readErc20Allowance } from '~/web3/exchange/exchange-read'
+import { WALLET_BLOCKED } from '~/web3/errors/sentinels'
 import { parseWriteAbi, writeContractViaWallet } from '~/web3/wallet/wallet-contract-write'
 
 const erc20WriteAbi = parseWriteAbi(ERC20_METHODS.approve, ERC20_ERRORS)
@@ -32,7 +33,7 @@ export async function approveTokenIfNeeded({
 }) {
   const account = wallet.getAccount()
   if (!account) {
-    throw new Error('Wallet not connected')
+    throw WALLET_BLOCKED.NOT_CONNECTED
   }
 
   const readClient = createWalletReadClient(wallet)
@@ -68,7 +69,7 @@ export async function exchangeTokens({
 }) {
   const account = wallet.getAccount()
   if (!account) {
-    throw new Error('Wallet not connected')
+    throw WALLET_BLOCKED.NOT_CONNECTED
   }
   if (path.length < 2) {
     throw new Error(`EXCHANGE_PATH_TOO_SHORT:${path.length}`)
