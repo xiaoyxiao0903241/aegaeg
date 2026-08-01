@@ -1,4 +1,5 @@
 import { useDappShell } from '~/app/use-dapp-shell'
+import { assetsHubNeedsChainFallback } from '~/core/assets/assets-hub-chain-fallback'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import {
   useAssetsHoldingsDistribution,
@@ -132,29 +133,52 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
   const rewardSummaryQuery = useAssetsRewardSummary(sessionReady)
   const distributionQuery = useAssetsHoldingsDistribution(sessionReady)
 
+  const apiHoldings = holdingsSummaryQuery.data
+  const apiReward = rewardSummaryQuery.data
+  const apiDist = distributionQuery.data
+  const apiPending =
+    sessionReady &&
+    ((holdingsSummaryQuery.isLoading && apiHoldings == null) ||
+      (rewardSummaryQuery.isLoading && apiReward == null) ||
+      (distributionQuery.isLoading && apiDist == null))
+  const apiReady = sessionReady && apiHoldings != null && apiReward != null && apiDist != null
+  const chainFallbackEnabled = assetsHubNeedsChainFallback({
+    walletReady,
+    hasAddress: Boolean(address),
+    sessionReady,
+    apiPending,
+    apiReady,
+  })
+
   const stakeQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsStakePositions,
     queryFn: (addr) => readStakePositions(addr as Address),
+    enabled: chainFallbackEnabled,
   })
   const lpQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsBondPositions('lpbond'),
     queryFn: (addr) => readLpBondPositions(addr as Address),
+    enabled: chainFallbackEnabled,
   })
   const burnQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsBondPositions('burnbond'),
     queryFn: (addr) => readBurnBondPositions(addr as Address),
+    enabled: chainFallbackEnabled,
   })
   const xmineQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsXminePosition,
     queryFn: (addr) => readXminePosition(addr as Address),
+    enabled: chainFallbackEnabled,
   })
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContribution,
     queryFn: (addr) => readContributionSnapshot(addr as Address, 0n),
+    enabled: chainFallbackEnabled,
   })
   const bufferQuery = useChainQuery({
     queryKey: queryKeys.chain.releaseBuffer,
     queryFn: (addr) => readReleaseBufferSnapshot(addr as Address),
+    enabled: chainFallbackEnabled,
   })
 
   const emptyModes = {
@@ -183,16 +207,6 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
     bufferGagxReleased: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
     modes,
   })
-
-  const apiHoldings = holdingsSummaryQuery.data
-  const apiReward = rewardSummaryQuery.data
-  const apiDist = distributionQuery.data
-  const apiPending =
-    sessionReady &&
-    ((holdingsSummaryQuery.isLoading && apiHoldings == null) ||
-      (rewardSummaryQuery.isLoading && apiReward == null) ||
-      (distributionQuery.isLoading && apiDist == null))
-  const apiReady = sessionReady && apiHoldings != null && apiReward != null && apiDist != null
 
   if (apiReady) {
     const totalValue = formatApiUsdLabel(apiReward.stake_invest_usd_value)
