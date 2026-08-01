@@ -54,7 +54,7 @@ export function useGenesisChainReads() {
     activePhaseQuery.data?.index,
     { enabled: purchaseQueriesEnabled },
   )
-  const { usd1Balance, allowance } = useUsd1PresaleWalletQuery(address, {
+  const { usd1Balance, usd1BalanceKnown, allowance } = useUsd1PresaleWalletQuery(address, {
     enabled: purchaseQueriesEnabled,
   })
   /** U-tier bind display only — L-tier paths read/fetchQuery `readIsBindReferral` directly. */
@@ -127,6 +127,7 @@ export function useGenesisChainReads() {
     userTotal,
     phaseRemaining,
     usd1Balance,
+    usd1BalanceKnown,
     allowance,
     isBound,
     isBoundQueryData: isBoundQuery.data,

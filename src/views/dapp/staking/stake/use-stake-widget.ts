@@ -1,6 +1,7 @@
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
+import type { StakePeriod } from '~/core/staking/staking-period'
 import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
@@ -19,6 +20,7 @@ import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/s
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const STAKE_PERIODS: readonly StakePeriod[] = ['liquid', '180', '360', '540']
 
 export type StakeWritePresent = {
   onOpenSuccess: () => void | Promise<void>
@@ -38,9 +40,22 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
   const pool = stakePoolAddress(period)
   const isLiquid = period === 'liquid'
 
-  const preflightQuery = useStakeOpenPreflightQuery(pool, isLiquid, {
+  // Warm every period pool so Segment switch hits cache (pool address is in the query key).
+  const preflightLiquid = useStakeOpenPreflightQuery(stakePoolAddress('liquid'), true, {
     enabled: sessionReady,
   })
+  const preflight180 = useStakeOpenPreflightQuery(stakePoolAddress('180'), false, {
+    enabled: sessionReady,
+  })
+  const preflight360 = useStakeOpenPreflightQuery(stakePoolAddress('360'), false, {
+    enabled: sessionReady,
+  })
+  const preflight540 = useStakeOpenPreflightQuery(stakePoolAddress('540'), false, {
+    enabled: sessionReady,
+  })
+  const periodPreflights = [preflightLiquid, preflight180, preflight360, preflight540] as const
+  const preflightQuery = periodPreflights[STAKE_PERIODS.indexOf(period)]!
+
   const migration = useMigrationUser(address, { enabled: walletReady })
 
   const balance = preflightQuery.data?.balance ?? 0n
@@ -125,7 +140,10 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     amountDisplay: formatTokenAmountInputDisplay(amountInput.amount),
     setAmount,
     fillMax,
-    balanceLabel: formatTokenAmount(balance, AGX_DECIMALS, 4),
+    balanceLabel:
+      preflightQuery.data === undefined
+        ? ''
+        : formatTokenAmount(preflightQuery.data.balance, AGX_DECIMALS, 4),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,
@@ -139,6 +157,6 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     remainingLabel:
       preflightQuery.data !== undefined
         ? formatTokenAmount(preflightQuery.data.remainingQuota, AGX_DECIMALS, 4)
-        : '0',
+        : '',
   }
 }

@@ -72,7 +72,9 @@ export function genesisPurchaseSummary(args: {
       userTotal: reads.userTotal,
       userPhaseAmountCurrent: reads.userPhaseAmountCurrent,
       seasonContributionMaxWei: reads.seasonContributionMaxWei,
-      usd1BalanceLabel: formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, 2),
+      usd1BalanceLabel: reads.usd1BalanceKnown
+        ? formatTokenAmount(reads.usd1Balance, USD1_DECIMALS, 2)
+        : '',
       estimatedAgxLabel: formatGroupedNumber(estimatedAgx, { digits: 2 }),
       payUsd1Label: `${formatGroupedNumber(payUsd1, { digits: 0 })} USD1`,
       contributionValueLabel: formatGroupedNumber(contributionValueUsd, { prefix: '$' }),

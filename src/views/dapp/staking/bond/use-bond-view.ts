@@ -30,7 +30,7 @@ export function useBondView(kind: BondKind) {
   })
 
   const amountLabel = formatAmountBalanceLabel(copy.amountBalance, {
-    balance: bond.balanceLabel,
+    balance: !sessionReady || !walletReady ? '0.00' : bond.balanceLabel,
   })
 
   async function onSubmit() {

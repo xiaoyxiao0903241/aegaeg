@@ -1,23 +1,24 @@
 import { queryClient } from '~/shared/api/query/query-client'
 import { QUERY_STALE_TIME } from '~/shared/api/query/query-client'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
 import { BSC_CONTRACTS, type Address } from '~/shared/config/contracts'
 import type { DappTab } from '~/shared/config/dapp-tabs'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readErc20Balance } from '~/web3/exchange/exchange-read'
 import { readIsBindReferral } from '~/web3/referral/referral-read'
-import { TAB_QUERY_KEYS } from '~/shared/api/query/tab-query-keys'
 
-/** Connect warm tokens — AGX / USD1 / gAGX / USDT only (no allowances). */
+/** Connect warm tokens — Trade/Flash sell faces (no allowances). */
 const CONNECT_WARM_TOKENS: readonly Address[] = [
   BSC_CONTRACTS.agx,
   BSC_CONTRACTS.usd1,
   BSC_CONTRACTS.gagx,
   BSC_CONTRACTS.usdt,
+  BSC_CONTRACTS.xToken,
 ]
 
 /**
- * Prefetch bind + four balances when wallet is ready.
+ * Prefetch bind + core ERC20 balances when wallet is ready.
  * Uses parallel `prefetchQuery` (atomic keys); Multicall3 left optional.
  */
 export function prefetchConnectWarm(address: string, readClient: ChainReadClient): void {

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { keepPreviousData } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -58,7 +59,8 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const luckyQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyClaim,
     queryFn: (address) => readLuckyClaimSnapshot(address as Address),
-    enabled: view === 'lucky',
+    enabled: Boolean(account?.address),
+    placeholderData: keepPreviousData,
   })
 
   const amount =
@@ -69,6 +71,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
     queryFn: () => readClaimPlans(),
     scope: 'public',
     freshness: 'api',
+    placeholderData: keepPreviousData,
   })
 
   const contribQuery = useChainQuery({
@@ -79,6 +82,7 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
     queryFn: (address) => readContributionSnapshot(address as Address, amount),
     freshness: 'balances',
     enabled: Boolean(account?.address) && (view !== 'lucky' || amount > 0n),
+    placeholderData: keepPreviousData,
   })
 
   const { releaseIndex, restakeIndex } = matchClaimPlanIndices(

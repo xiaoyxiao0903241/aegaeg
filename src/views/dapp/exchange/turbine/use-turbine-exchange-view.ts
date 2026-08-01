@@ -19,13 +19,17 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
 
   const unlockableAmountLabel = exchangePreview
     ? '0.00 gAGX'
-    : `${turbine.walletReady ? turbine.quotaLabel : '0'} gAGX`
+    : !turbine.walletReady
+      ? '0 gAGX'
+      : turbine.quotaLabel === ''
+        ? ''
+        : `${turbine.quotaLabel} gAGX`
 
   const usd1AmountLabel = exchangePreview
     ? '0.00'
-    : turbine.walletReady
-      ? turbine.usd1BalanceLabel
-      : '0'
+    : !turbine.walletReady
+      ? '0'
+      : turbine.usd1BalanceLabel
 
   const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '0'
 

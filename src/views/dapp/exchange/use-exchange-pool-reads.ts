@@ -8,14 +8,17 @@ import {
 } from '~/web3/exchange/read-exchange-pool'
 import { useChainQuery } from '~/hooks/use-chain-query'
 
-/** Shared V2 pair metadata + reserves — short-stale spot reused across exchange quotes. */
-export function useExchangePoolReads(quotesEnabled = true) {
+/**
+ * Shared V2 pair metadata + reserves.
+ * `readsEnabled` warms cache on Exchange tab; `spotLive` polls only for the active Trade view.
+ */
+export function useExchangePoolReads(readsEnabled = true, spotLive = readsEnabled) {
   const metadataQuery = useChainQuery({
     queryKey: queryKeys.chain.swapPoolMetadata,
     queryFn: () => readExchangePoolImmutableMetadata(EXCHANGE_CONFIG.pool),
     scope: 'public',
     freshness: 'static',
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
   })
 
   const spotQuery = useChainQuery({
@@ -23,8 +26,8 @@ export function useExchangePoolReads(quotesEnabled = true) {
     queryFn: () => readExchangePoolSpotPrice(EXCHANGE_CONFIG.pool),
     scope: 'public',
     freshness: 'quote',
-    enabled: quotesEnabled,
-    refetchInterval: EXCHANGE_CONFIG.quoteRefreshIntervalMs,
+    enabled: readsEnabled,
+    refetchInterval: spotLive ? EXCHANGE_CONFIG.quoteRefreshIntervalMs : false,
     placeholderData: keepPreviousData,
   })
 

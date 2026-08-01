@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { keepPreviousData } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useI18n } from '~/i18n/use-i18n'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -61,12 +62,14 @@ export function useAssetsClaimModalView(args: {
     scope: 'public',
     freshness: 'api',
     enabled: open,
+    placeholderData: keepPreviousData,
   })
 
   const contribQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsContributionForAmount(String(target.amount)),
     queryFn: (address) => readContributionSnapshot(address as Address, target.amount),
     enabled: open && Boolean(account?.address),
+    placeholderData: keepPreviousData,
   })
 
   const { releaseIndex, restakeIndex } = matchClaimPlanIndices(

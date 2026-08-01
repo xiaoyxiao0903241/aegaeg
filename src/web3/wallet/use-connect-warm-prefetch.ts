@@ -10,7 +10,7 @@ function useChainReadClient() {
   return useMemo(() => chainReadClient(wallet), [wallet])
 }
 
-/** On wallet ready: warm bind + AGX/USD1/gAGX/USDT balances into RQ. */
+/** On wallet ready: warm bind + AGX/USD1/gAGX/USDT/X balances into RQ. */
 export function useConnectWarmPrefetch() {
   const account = useActiveAccount()
   const readClient = useChainReadClient()

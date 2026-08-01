@@ -65,7 +65,11 @@ function formatTurbineClaimedTotal(raw: string): string {
 }
 
 /** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
-export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
+export function useTurbineExchangeWidget(
+  sessionReady: boolean,
+  quotesEnabled = true,
+  readsEnabled = quotesEnabled,
+) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
   const walletReady = hasWalletAccount(account)
@@ -76,21 +80,21 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
   const quotaQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineQuota,
     queryFn: (addr) => readTurbineQuota(addr),
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
     placeholderData: keepPreviousData,
   })
 
   const balancesQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineUsd1Balances,
     queryFn: (addr) => readTurbineUsd1Balances(addr),
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
     placeholderData: keepPreviousData,
   })
 
   const silencesQuery = useChainQuery({
     queryKey: queryKeys.chain.turbineSilences,
     queryFn: (addr) => readTurbineSilences(addr),
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
     placeholderData: keepPreviousData,
   })
 
@@ -99,7 +103,8 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     queryFn: () => readTurbineCooldownDuration(),
     scope: 'public',
     freshness: 'quote',
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
   })
 
   const quota = quotaQuery.data ?? 0n
@@ -265,11 +270,17 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     fillPercent,
     payUsd1Label,
     buyAgxLabel,
-    quotaLabel: formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
-    usd1BalanceLabel: formatTokenAmount(usd1Balance, USD1_DECIMALS, {
-      digits: 2,
-      trimZeros: false,
-    }),
+    quotaLabel:
+      quotaQuery.data === undefined
+        ? ''
+        : formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
+    usd1BalanceLabel:
+      balancesQuery.data === undefined
+        ? ''
+        : formatTokenAmount(usd1Balance, USD1_DECIMALS, {
+            digits: 2,
+            trimZeros: false,
+          }),
     cooldownHours,
     unlockRatioLabel,
     agxPriceLabel,
@@ -279,13 +290,23 @@ export function useTurbineExchangeWidget(sessionReady: boolean, quotesEnabled = 
     silences: silencesQuery.data?.rows ?? [],
     isSilencesLoading: walletReady && silencesQuery.isLoading,
     overview: {
-      pendingUnlockLabel: formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
-      pendingUnlockUsdHint: formatAgxQuotaUsd(quota, unitUsdReady ? unitUsd : undefined),
-      coolingLabel: formatTokenAmount(coolingBalance, AGX_DECIMALS, {
-        digits: 2,
-        trimZeros: false,
-      }),
-      coolingUsdHint: formatAgxQuotaUsd(coolingBalance, unitUsdReady ? unitUsd : undefined),
+      pendingUnlockLabel:
+        quotaQuery.data === undefined
+          ? ''
+          : formatTokenAmount(quota, AGX_DECIMALS, { digits: 2, trimZeros: false }),
+      pendingUnlockUsdHint:
+        quotaQuery.data === undefined || !unitUsdReady ? '' : formatAgxQuotaUsd(quota, unitUsd),
+      coolingLabel:
+        silencesQuery.data === undefined
+          ? ''
+          : formatTokenAmount(coolingBalance, AGX_DECIMALS, {
+              digits: 2,
+              trimZeros: false,
+            }),
+      coolingUsdHint:
+        silencesQuery.data === undefined || !unitUsdReady
+          ? ''
+          : formatAgxQuotaUsd(coolingBalance, unitUsd),
       totalWithdrawnLabel,
       totalWithdrawnUsdHint,
       isLoading:

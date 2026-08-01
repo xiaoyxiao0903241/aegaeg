@@ -7,7 +7,8 @@ type UseMarketTradeBalancesArgs = {
   address: string | undefined
   sellKey: TradeTokenKey
   buyKey: TradeTokenKey
-  quotesEnabled: boolean
+  /** Balance / allowance reads (Exchange-tab warm). */
+  readsEnabled: boolean
   walletReady: boolean
 }
 
@@ -16,11 +17,11 @@ export function useMarketTradeBalances({
   address,
   sellKey,
   buyKey,
-  quotesEnabled,
+  readsEnabled,
   walletReady,
 }: UseMarketTradeBalancesArgs) {
   /** Public ERC20 keys need owner; walletReady only for loading chrome. */
-  const enabled = quotesEnabled && Boolean(address)
+  const enabled = readsEnabled && Boolean(address)
   const sellAddress = TRADE_TOKEN_ADDRESSES[sellKey]
 
   const usd1Query = useErc20BalanceQuery(TRADE_TOKEN_ADDRESSES.usd1 as Address, address, {
@@ -50,11 +51,18 @@ export function useMarketTradeBalances({
   return {
     sellBalance: byKey[sellKey] ?? 0n,
     buyBalance: byKey[buyKey] ?? 0n,
+    sellBalanceKnown: byKey[sellKey] !== undefined,
+    buyBalanceKnown: byKey[buyKey] !== undefined,
     balanceByKey: {
       usd1: byKey.usd1 ?? 0n,
       agx: byKey.agx ?? 0n,
       x: byKey.x ?? 0n,
     } satisfies Record<TradeTokenKey, bigint>,
+    balanceKnownByKey: {
+      usd1: byKey.usd1 !== undefined,
+      agx: byKey.agx !== undefined,
+      x: byKey.x !== undefined,
+    } satisfies Record<TradeTokenKey, boolean>,
     allowance: allowanceQuery.data ?? 0n,
     balancesLoaded,
     isBalancesLoading:

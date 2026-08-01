@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -31,7 +32,11 @@ const BURN_PAIR = {
 }
 
 /** Burn AGX for contribution points — readonly receive side, protocol rate. */
-export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
+export function useBurnExchangeWidget(
+  sessionReady: boolean,
+  quotesEnabled = true,
+  readsEnabled = quotesEnabled,
+) {
   const { messages: t } = useI18n()
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
@@ -42,7 +47,8 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
     queryFn: () => readBurnContributionSwapConfig(),
     scope: 'public',
     freshness: 'quote',
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
   })
 
   const decimals = configQuery.data?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
@@ -51,13 +57,15 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
   const balancesQuery = useChainQuery({
     queryKey: queryKeys.chain.burnSwapBalances,
     queryFn: (addr) => readBurnExchangeBalances(addr),
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
   })
 
   const userStatsQuery = useChainQuery({
     queryKey: queryKeys.chain.burnSwapUserStats,
     queryFn: (addr) => readBurnUserStats(addr),
-    enabled: quotesEnabled,
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
   })
 
   const sellBalance = balancesQuery.data?.sell ?? 0n
@@ -121,8 +129,14 @@ export function useBurnExchangeWidget(sessionReady: boolean, quotesEnabled = tru
     sellAmount: core.sellAmount,
     sellAmountDisplay: core.sellAmountDisplay,
     setSellAmount: core.setSellAmount,
-    sellBalanceLabel: formatTokenAmount(sellBalance, decimals, 4),
-    contributionBalanceLabel: formatTokenAmount(contributionBalance, buyDecimals, 2),
+    sellBalanceLabel:
+      balancesQuery.data === undefined
+        ? ''
+        : formatTokenAmount(balancesQuery.data.sell, decimals, 4),
+    contributionBalanceLabel:
+      userStatsQuery.data === undefined
+        ? ''
+        : formatTokenAmount(contributionBalance, buyDecimals, 2),
     buyAmount: core.buyAmount,
     exchangePriceLabel,
     overviewRateLabel,

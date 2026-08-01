@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useChainQuery, type ChainQueryOptions } from '~/hooks/use-chain-query'
 import type { Address } from '~/shared/config/contracts'
 import { queryKeys } from '~/shared/api/query/query-keys'
@@ -24,6 +25,7 @@ export function useStakeOpenPreflightQuery(
         isLiquid,
         user,
       }),
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -37,6 +39,7 @@ export function useBondZapPreflightQuery(depository: Address, options?: ChainQue
         depository,
         user,
       }),
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -47,6 +50,7 @@ export function useBondHelperSlippageQuery(options?: ChainQueryOptions) {
     freshness: 'quote',
     enabled: options?.enabled ?? true,
     queryFn: () => readBondHelperSlippage(),
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -67,6 +71,7 @@ export function useBondZapAgxPreviewQuery(
         depository,
         depositUsd1,
       }),
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -76,5 +81,6 @@ export function useXminePreflightQuery(options?: ChainQueryOptions) {
     freshness: 'balances',
     enabled: options?.enabled ?? true,
     queryFn: (user) => readXminePreflight({ user }),
+    placeholderData: keepPreviousData,
   })
 }

@@ -38,7 +38,7 @@ export function useStakeView() {
       : t.staking.stake.meta.lockDays.replace('{days}', stake.period)
 
   const amountLabel = formatAmountBalanceLabel(t.staking.stake.amountBalance, {
-    balance: stake.balanceLabel,
+    balance: !sessionReady || !walletReady ? '0.00' : stake.balanceLabel,
   })
 
   const ctaLabel = writeCtaLabel(stake.writePhase, {

@@ -16,58 +16,67 @@ export type TurbineExchangeState = ReturnType<typeof useTurbineExchangeWidget>
 function MarketTradeSessionMounted({
   sessionReady,
   quotesEnabled,
+  readsEnabled,
   children,
 }: {
   sessionReady: boolean
   quotesEnabled: boolean
+  readsEnabled: boolean
   children: (trade: MarketTradeState) => ReactNode
 }) {
-  const trade = useMarketTradeWidget(sessionReady, quotesEnabled)
+  const trade = useMarketTradeWidget(sessionReady, quotesEnabled, readsEnabled)
   return children(trade)
 }
 
 function FlashExchangeSessionMounted({
   sessionReady,
   quotesEnabled,
+  readsEnabled,
   children,
 }: {
   sessionReady: boolean
   quotesEnabled: boolean
+  readsEnabled: boolean
   children: (flash: FlashExchangeState) => ReactNode
 }) {
-  const flash = useFlashExchangeWidget(sessionReady, quotesEnabled)
+  const flash = useFlashExchangeWidget(sessionReady, quotesEnabled, readsEnabled)
   return children(flash)
 }
 
 function BurnExchangeSessionMounted({
   sessionReady,
   quotesEnabled,
+  readsEnabled,
   children,
 }: {
   sessionReady: boolean
   quotesEnabled: boolean
+  readsEnabled: boolean
   children: (burn: BurnExchangeState) => ReactNode
 }) {
-  const burn = useBurnExchangeWidget(sessionReady, quotesEnabled)
+  const burn = useBurnExchangeWidget(sessionReady, quotesEnabled, readsEnabled)
   return children(burn)
 }
 
 function TurbineExchangeSessionMounted({
   sessionReady,
   quotesEnabled,
+  readsEnabled,
   children,
 }: {
   sessionReady: boolean
   quotesEnabled: boolean
+  readsEnabled: boolean
   children: (turbine: TurbineExchangeState) => ReactNode
 }) {
-  const turbine = useTurbineExchangeWidget(sessionReady, quotesEnabled)
+  const turbine = useTurbineExchangeWidget(sessionReady, quotesEnabled, readsEnabled)
   return children(turbine)
 }
 
 /**
  * Lifts Trade/Flash/Burn/Turbine widget hooks once and passes state as props.
- * Mount matrix: leaving a subview unmounts its session.
+ * While the Exchange tab is active, all four sessions stay mounted (reads warm);
+ * amount quotes only run for the visible (+ motion) subview.
  */
 export function ExchangeSessionHosts({
   activeTab,
@@ -85,6 +94,9 @@ export function ExchangeSessionHosts({
   const { view, motion, outgoingView, incomingView } = useExchangeViewMotion()
   const exchangeTabActive = activeTab === 'exchange'
   const needed = viewsNeedingProvider(view, motion, outgoingView, incomingView)
+  /** Mount all sessions on the Exchange tab so hub → program / Segment switches hit cache. */
+  const mount = exchangeTabActive ? { flash: true, trade: true, burn: true, turbine: true } : needed
+  const readsEnabled = exchangeTabActive
   const flashQuotesEnabled = exchangeTabActive && needed.flash
   const tradeQuotesEnabled = exchangeTabActive && needed.trade
   const burnQuotesEnabled = exchangeTabActive && needed.burn
@@ -95,12 +107,13 @@ export function ExchangeSessionHosts({
     flash: FlashExchangeState | null,
     burn: BurnExchangeState | null,
   ) => {
-    if (!needed.turbine) {
+    if (!mount.turbine) {
       return children({ trade, flash, burn, turbine: null })
     }
     return (
       <TurbineExchangeSessionMounted
         quotesEnabled={turbineQuotesEnabled}
+        readsEnabled={readsEnabled}
         sessionReady={sessionReady}
       >
         {(turbine) => children({ trade, flash, burn, turbine })}
@@ -109,33 +122,45 @@ export function ExchangeSessionHosts({
   }
 
   const renderWithBurn = (trade: MarketTradeState | null, flash: FlashExchangeState | null) => {
-    if (!needed.burn) {
+    if (!mount.burn) {
       return renderWithTurbine(trade, flash, null)
     }
     return (
-      <BurnExchangeSessionMounted quotesEnabled={burnQuotesEnabled} sessionReady={sessionReady}>
+      <BurnExchangeSessionMounted
+        quotesEnabled={burnQuotesEnabled}
+        readsEnabled={readsEnabled}
+        sessionReady={sessionReady}
+      >
         {(burn) => renderWithTurbine(trade, flash, burn)}
       </BurnExchangeSessionMounted>
     )
   }
 
   const renderWithFlash = (trade: MarketTradeState | null) => {
-    if (!needed.flash) {
+    if (!mount.flash) {
       return renderWithBurn(trade, null)
     }
     return (
-      <FlashExchangeSessionMounted quotesEnabled={flashQuotesEnabled} sessionReady={sessionReady}>
+      <FlashExchangeSessionMounted
+        quotesEnabled={flashQuotesEnabled}
+        readsEnabled={readsEnabled}
+        sessionReady={sessionReady}
+      >
         {(flash) => renderWithBurn(trade, flash)}
       </FlashExchangeSessionMounted>
     )
   }
 
-  if (!needed.trade) {
+  if (!mount.trade) {
     return renderWithFlash(null)
   }
 
   return (
-    <MarketTradeSessionMounted quotesEnabled={tradeQuotesEnabled} sessionReady={sessionReady}>
+    <MarketTradeSessionMounted
+      quotesEnabled={tradeQuotesEnabled}
+      readsEnabled={readsEnabled}
+      sessionReady={sessionReady}
+    >
       {(trade) => renderWithFlash(trade)}
     </MarketTradeSessionMounted>
   )

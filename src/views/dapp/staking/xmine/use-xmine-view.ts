@@ -16,7 +16,7 @@ export function useXmineView() {
   })
 
   const amountLabel = formatAmountBalanceLabel(t.staking.xmine.amountBalance, {
-    balance: xmine.balanceLabel,
+    balance: !sessionReady || !walletReady ? '0.00' : xmine.balanceLabel,
   })
 
   return {

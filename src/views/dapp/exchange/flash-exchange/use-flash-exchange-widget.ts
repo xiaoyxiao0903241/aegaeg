@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
@@ -34,7 +35,11 @@ const FLASH_USDT_SLIPPAGE_BPS = 100
 /** Dual-pair Flash: gAGX wrap↔redeem + USDT→USD1; dual amount fields; no slippage UI. */
 type FlashIntroKey = 'gagx' | 'gagxWrap' | 'usdt'
 
-export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = true) {
+export function useFlashExchangeWidget(
+  sessionReady: boolean,
+  quotesEnabled = true,
+  readsEnabled = quotesEnabled,
+) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
   const [pairId, setPairIdState] = useState<FlashPairId>(FLASH_PAIR_DEFAULT)
@@ -44,12 +49,14 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
 
   const walletReady = hasWalletAccount(account)
 
+  // Warm config whenever Flash session is mounted (not only on USDT segment).
   const configQuery = useChainQuery({
     queryKey: queryKeys.chain.flashUsd1SwapConfig,
     queryFn: () => readUsd1SwapConfig(),
     scope: 'public',
     freshness: 'quote',
-    enabled: quotesEnabled && !isRedeemPair,
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
   })
 
   // Handbook: never hardcode input/output decimals — wait for getConfig.usdtDec/usd1Dec.
@@ -61,14 +68,34 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
   const buyDecimals =
     !isRedeemPair && configQuery.data ? configQuery.data.usd1Dec : pair.buy.decimals
 
-  const balancesQuery = useChainQuery({
-    queryKey: queryKeys.chain.flashSwapBalances(pairId, direction),
-    queryFn: (addr) => readFlashPairBalances(pairId, direction, addr),
-    enabled: quotesEnabled,
+  // Sibling observers warm Segment/flip slots — cross-pair keepPrevious would show wrong token.
+  const gagxForwardBalances = useChainQuery({
+    queryKey: queryKeys.chain.flashSwapBalances('gagx', 'forward'),
+    queryFn: (addr) => readFlashPairBalances('gagx', 'forward', addr),
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
+  })
+  const gagxReverseBalances = useChainQuery({
+    queryKey: queryKeys.chain.flashSwapBalances('gagx', 'reverse'),
+    queryFn: (addr) => readFlashPairBalances('gagx', 'reverse', addr),
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
+  })
+  const usdtBalances = useChainQuery({
+    queryKey: queryKeys.chain.flashSwapBalances('usdt', 'forward'),
+    queryFn: (addr) => readFlashPairBalances('usdt', 'forward', addr),
+    enabled: readsEnabled,
+    placeholderData: keepPreviousData,
   })
 
+  const balancesQuery =
+    pairId === 'usdt'
+      ? usdtBalances
+      : direction === 'forward'
+        ? gagxForwardBalances
+        : gagxReverseBalances
+
   const sellBalance = balancesQuery.data?.sell ?? 0n
-  const buyBalance = balancesQuery.data?.buy ?? 0n
   const balancesLoaded = balancesQuery.data !== undefined && usd1ConfigReady
   const isBalancesLoading =
     walletReady &&
@@ -155,8 +182,15 @@ export function useFlashExchangeWidget(sessionReady: boolean, quotesEnabled = tr
       sell: { ...pair.sell, decimals: sellDecimals },
       buy: { ...pair.buy, decimals: buyDecimals },
     },
-    sellBalanceLabel: formatTokenAmount(sellBalance, sellDecimals, 4),
-    buyBalanceLabel: formatTokenAmount(buyBalance, buyDecimals, 4),
+    // Pending → '' so DappCountValue retains; never coerce missing pair data to 0.00.
+    sellBalanceLabel:
+      balancesQuery.data === undefined
+        ? ''
+        : formatTokenAmount(balancesQuery.data.sell, sellDecimals, 4),
+    buyBalanceLabel:
+      balancesQuery.data === undefined
+        ? ''
+        : formatTokenAmount(balancesQuery.data.buy, buyDecimals, 4),
     buyAmount: core.buyAmount,
     exchangePriceLabel: spot.exchangePriceLabel,
     routeLabel,

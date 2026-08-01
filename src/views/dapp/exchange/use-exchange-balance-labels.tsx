@@ -2,7 +2,7 @@ import { useI18n } from '~/i18n/use-i18n'
 
 /**
  * `{label}: {value}` string for AmountBox / DappCountValue.
- * Empty / disconnected / preview → formatted zero; refetch keeps prior via keepPreviousData.
+ * Disconnected / preview → `0.00`; connected + empty value → `''` (retain via DappCountValue).
  */
 export function formatExchangeBalanceLabel({
   label,
@@ -15,8 +15,9 @@ export function formatExchangeBalanceLabel({
   sessionReady: boolean
   walletReady: boolean
 }): string {
-  const amount = !sessionReady || !walletReady || value.trim() === '' ? '0.00' : value
-  return `${label}: ${amount}`
+  if (!sessionReady || !walletReady) return `${label}: 0.00`
+  if (value.trim() === '') return ''
+  return `${label}: ${value}`
 }
 
 export function useExchangeBalanceLabels({

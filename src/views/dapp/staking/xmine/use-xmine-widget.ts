@@ -89,11 +89,14 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     amountDisplay: formatTokenAmountInputDisplay(amountInput.amount),
     setAmount,
     fillMax,
-    balanceLabel: formatTokenAmount(balance, GAGX_DECIMALS, 4),
+    balanceLabel:
+      preflightQuery.data === undefined
+        ? ''
+        : formatTokenAmount(preflightQuery.data.balance, GAGX_DECIMALS, 4),
     quotaLabel:
       preflightQuery.data !== undefined
         ? formatTokenAmount(preflightQuery.data.miningQuota, GAGX_DECIMALS, 4)
-        : '0',
+        : '',
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     walletReady,
     canSubmit,

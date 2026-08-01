@@ -35,8 +35,8 @@ export function writeCtaLabel(
   return copy.submit
 }
 
-/** `{template}` with `{balance}` replaced — empty balance → `0.00`. */
+/** `{template}` with `{balance}` replaced — empty balance → `''` (DappCountValue retains). */
 export function formatAmountBalanceLabel(template: string, args: { balance: string }): string {
-  const amount = args.balance.trim() === '' ? '0.00' : args.balance
-  return template.replace('{balance}', amount)
+  if (args.balance.trim() === '') return ''
+  return template.replace('{balance}', args.balance)
 }

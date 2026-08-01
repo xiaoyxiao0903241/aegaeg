@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { evaluateBondZapLive } from '~/core/staking/staking-block-reasons'
@@ -52,9 +53,19 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
   const depositoryAddress = kind === 'lp' ? lpBondDepositoryAddress : burnBondDepositoryAddress
   const depository = depositoryAddress(period)
 
-  const preflightQuery = useBondZapPreflightQuery(depository, {
+  // Warm every period depository so Segment switch hits cache.
+  const preflight180 = useBondZapPreflightQuery(depositoryAddress('180'), {
     enabled: sessionReady,
   })
+  const preflight360 = useBondZapPreflightQuery(depositoryAddress('360'), {
+    enabled: sessionReady,
+  })
+  const preflight540 = useBondZapPreflightQuery(depositoryAddress('540'), {
+    enabled: sessionReady,
+  })
+  const periodPreflights = [preflight180, preflight360, preflight540] as const
+  const preflightQuery = periodPreflights[BOND_PERIODS.indexOf(period)]!
+
   const migration = useMigrationUser(address, { enabled: walletReady })
 
   const market180 = useChainQuery({
@@ -62,18 +73,21 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     scope: 'public',
     freshness: 'quote',
     queryFn: () => readBondMarketMeta(depositoryAddress('180')),
+    placeholderData: keepPreviousData,
   })
   const market360 = useChainQuery({
     queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('360')),
     scope: 'public',
     freshness: 'quote',
     queryFn: () => readBondMarketMeta(depositoryAddress('360')),
+    placeholderData: keepPreviousData,
   })
   const market540 = useChainQuery({
     queryKey: queryKeys.chain.bondMarketMeta(depositoryAddress('540')),
     scope: 'public',
     freshness: 'quote',
     queryFn: () => readBondMarketMeta(depositoryAddress('540')),
+    placeholderData: keepPreviousData,
   })
   const periodMarketQueries = [market180, market360, market540] as const
 
@@ -148,7 +162,7 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
       const q = periodMarketQueries[index]!
       if (q.data !== undefined) return [p, formatBondDiscountLabel(q.data.discountRateBP)]
       if (q.isError) return [p, '0']
-      return [p, q.isFetching ? '0' : '0']
+      return [p, '']
     }),
   ) as Record<BondPeriod, string>
   const capLabel =
@@ -202,7 +216,10 @@ export function useBondWidget(kind: BondKind, sessionReady: boolean, present: Bo
     amountDisplay: formatTokenAmountInputDisplay(amountInput.amount),
     setAmount,
     fillMax,
-    balanceLabel: formatTokenAmount(balance, USD1_DECIMALS, 4),
+    balanceLabel:
+      preflightQuery.data === undefined
+        ? ''
+        : formatTokenAmount(preflightQuery.data.balance, USD1_DECIMALS, 4),
     isBalancesLoading: walletReady && preflightQuery.isLoading,
     isMarketLoading: marketQuery.isFetching && !discountLabel && !marketQuery.isError,
     isPayoutQuoting: payoutQuery.isFetching && !receiveLabel && amountInput.amountIn > 0n,

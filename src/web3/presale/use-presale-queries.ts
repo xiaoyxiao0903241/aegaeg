@@ -131,6 +131,7 @@ export function useUsd1PresaleWalletQuery(address?: string, options?: ChainQuery
     balanceQuery,
     allowanceQuery,
     usd1Balance: balanceQuery.data ?? 0n,
+    usd1BalanceKnown: balanceQuery.data !== undefined,
     allowance: allowanceQuery.data ?? 0n,
     isWalletLoading: queryEnabled && (balanceQuery.isLoading || allowanceQuery.isLoading),
   }

@@ -33,7 +33,11 @@ import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
  * @param sessionReady — SIWE session ready; gates quotes, swap submit, and amount capping.
  * Balances load on wallet account presence (`walletReady`), independent of SIWE.
  */
-export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true) {
+export function useMarketTradeWidget(
+  sessionReady: boolean,
+  quotesEnabled = true,
+  readsEnabled = quotesEnabled,
+) {
   const account = useActiveAccount()
   const { writeReady } = useWriteReadiness()
   const sellKey = useExchangeTradePairStore((state) => state.sellKey)
@@ -47,7 +51,7 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   function setSlippage(value: number) {
     setSlippageRaw(clampSlippagePercent(value))
   }
-  const { poolContext } = useExchangePoolReads(quotesEnabled)
+  const { poolContext } = useExchangePoolReads(readsEnabled, quotesEnabled)
 
   const pair = getTradePairTokens(sellKey, buyKey)
   const path = getTradeSwapPath(sellKey, buyKey)
@@ -56,14 +60,23 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
   const walletReady = hasWalletAccount(account)
   const slippageBps = slippagePercentToBps(slippage)
 
-  const { sellBalance, buyBalance, balanceByKey, allowance, balancesLoaded, isBalancesLoading } =
-    useMarketTradeBalances({
-      address,
-      sellKey,
-      buyKey,
-      quotesEnabled,
-      walletReady,
-    })
+  const {
+    sellBalance,
+    buyBalance,
+    sellBalanceKnown,
+    buyBalanceKnown,
+    balanceByKey,
+    balanceKnownByKey,
+    allowance,
+    balancesLoaded,
+    isBalancesLoading,
+  } = useMarketTradeBalances({
+    address,
+    sellKey,
+    buyKey,
+    readsEnabled,
+    walletReady,
+  })
 
   const core = useExchangeQuote({
     sessionReady,
@@ -159,9 +172,10 @@ export function useMarketTradeWidget(sessionReady: boolean, quotesEnabled = true
     buyPickerKeys,
     getToken: getTradeToken,
     isTokenLive: isTradeTokenLive,
-    sellBalanceLabel: formatTokenAmount(sellBalance, pair.sell.decimals, 4),
-    buyBalanceLabel: formatTokenAmount(buyBalance, pair.buy.decimals, 4),
+    sellBalanceLabel: sellBalanceKnown ? formatTokenAmount(sellBalance, pair.sell.decimals, 4) : '',
+    buyBalanceLabel: buyBalanceKnown ? formatTokenAmount(buyBalance, pair.buy.decimals, 4) : '',
     balanceLabelFor: (key: TradeTokenKey) => {
+      if (!balanceKnownByKey[key]) return ''
       const token = getTradeToken(key)
       return formatTokenAmount(balanceByKey[key], token.decimals, 4)
     },
