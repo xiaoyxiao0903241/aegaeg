@@ -270,6 +270,8 @@ export const LIQUID_STAKING_ASSETS_METHODS = {
 /** LockedStaking claim / exit (manual §8.3) — assets rail. */
 export const LOCKED_STAKING_ASSETS_METHODS = {
   getStakesCount: 'function getStakesCount(address user) view returns (uint256)',
+  getStakes:
+    'function getStakes(address user, uint256 start, uint256 limit) view returns ((uint256 pending, uint256 blockReward, uint256 extraInterest, uint256 claimableBalance, uint256 expiry)[])',
   getStake:
     'function getStake(address user, uint256 index) view returns ((uint256 pending, uint256 blockReward, uint256 extraInterest, uint256 claimableBalance, uint256 expiry))',
   getReleasedPrincipal:

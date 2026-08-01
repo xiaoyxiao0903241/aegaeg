@@ -1,4 +1,4 @@
-import { parseAbi } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, parseAbi } from 'viem'
 
 import type { DurationPlan } from '~/core/assets/claim-plans'
 import { migrationStakeRoot } from '~/core/migration/migration-user'
@@ -16,6 +16,7 @@ import {
 import { bscReadClient } from '~/web3/bsc-read-client'
 import type { ChainReadClient } from '~/web3/chain-read-client'
 import { readMigratedFrom } from '~/web3/migration/migration-read'
+import { type Aggregate3Call, readAggregate3 } from '~/web3/multicall3-read'
 import {
   burnBondDepositoryAddress,
   lpBondDepositoryAddress,
@@ -38,6 +39,7 @@ const liquidAbi = parseAbi([
 ])
 const lockedAbi = parseAbi([
   LOCKED_STAKING_ASSETS_METHODS.getStakesCount,
+  LOCKED_STAKING_ASSETS_METHODS.getStakes,
   LOCKED_STAKING_ASSETS_METHODS.getStake,
   LOCKED_STAKING_ASSETS_METHODS.getReleasedPrincipal,
 ])
@@ -225,38 +227,53 @@ export async function readStakePositions(
     })
   }
 
-  for (const period of LOCKED_PERIODS) {
-    const pool = stakePoolAddress(period)
-    const count = Number(
-      await client.readContract({
-        address: pool,
-        abi: lockedAbi,
-        functionName: 'getStakesCount',
-        args: [user],
-      }),
-    )
-    for (let index = 0; index < count; index += 1) {
-      const [stake, released] = await Promise.all([
-        client.readContract({
+  const lockedPoolCounts = await Promise.all(
+    LOCKED_PERIODS.map(async (period) => {
+      const pool = stakePoolAddress(period)
+      const count = Number(
+        await client.readContract({
           address: pool,
           abi: lockedAbi,
-          functionName: 'getStake',
-          args: [user, BigInt(index)],
+          functionName: 'getStakesCount',
+          args: [user],
         }),
-        client.readContract({
-          address: pool,
+      )
+      return { period, pool, count }
+    }),
+  )
+
+  for (const { period, pool, count } of lockedPoolCounts) {
+    // 手册：start >= total 会 revert；空仓勿调 getStakes。
+    if (!Number.isFinite(count) || count <= 0) continue
+
+    const stakes = (await client.readContract({
+      address: pool,
+      abi: lockedAbi,
+      functionName: 'getStakes',
+      args: [user, 0n, BigInt(count)],
+    })) as readonly {
+      pending: bigint
+      blockReward: bigint
+      extraInterest: bigint
+      claimableBalance: bigint
+      expiry: bigint
+    }[]
+
+    const releasedResults = await readAggregate3(
+      client,
+      stakes.map((_, index) => ({
+        target: pool,
+        callData: encodeFunctionData({
           abi: lockedAbi,
           functionName: 'getReleasedPrincipal',
           args: [user, BigInt(index)],
         }),
-      ])
-      const data = stake as {
-        pending: bigint
-        blockReward: bigint
-        extraInterest: bigint
-        claimableBalance: bigint
-        expiry: bigint
-      }
+      })),
+    )
+
+    for (let index = 0; index < stakes.length; index += 1) {
+      const data = stakes[index]
+      if (!data) continue
       if (
         data.pending <= 0n &&
         data.blockReward <= 0n &&
@@ -265,6 +282,15 @@ export async function readStakePositions(
       ) {
         continue
       }
+      const releasedResult = releasedResults[index]
+      if (!releasedResult?.success) {
+        throw new Error(`LOCKED_RELEASED_MULTICALL_FAILED:${period}:${index}`)
+      }
+      const released = decodeFunctionResult({
+        abi: lockedAbi,
+        functionName: 'getReleasedPrincipal',
+        data: releasedResult.returnData,
+      }) as bigint
       rows.push({
         id: `locked-${period}-${index}`,
         kind: 'locked',
@@ -272,7 +298,7 @@ export async function readStakePositions(
         pool,
         stakeIndex: index,
         principal: data.pending,
-        releasedPrincipal: released as bigint,
+        releasedPrincipal: released,
         blockReward: data.blockReward,
         extraInterest: data.extraInterest,
         claimableBalance: data.claimableBalance,
@@ -290,39 +316,70 @@ async function readBondPositionsFor(
   client: ChainReadClient,
 ): Promise<AssetsBondRow[]> {
   const rows: AssetsBondRow[] = []
-  for (const period of LOCKED_PERIODS) {
-    const depository =
-      kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
-    const count = Number(
-      await client.readContract({
-        address: depository,
-        abi: bondAbi,
-        functionName: 'getBondCount',
-        args: [user],
-      }),
-    )
+  const poolCounts = await Promise.all(
+    LOCKED_PERIODS.map(async (period) => {
+      const depository =
+        kind === 'lp' ? lpBondDepositoryAddress(period) : burnBondDepositoryAddress(period)
+      const count = Number(
+        await client.readContract({
+          address: depository,
+          abi: bondAbi,
+          functionName: 'getBondCount',
+          args: [user],
+        }),
+      )
+      return { period, depository, count }
+    }),
+  )
+
+  for (const { period, depository, count } of poolCounts) {
+    if (!Number.isFinite(count) || count <= 0) continue
+
+    // Bond 无批量列表 view：每仓位 3 读合并为一次 Multicall3（禁 3N 串行 eth_call）。
+    const calls: Aggregate3Call[] = []
     for (let bondIndex = 0; bondIndex < count; bondIndex += 1) {
-      const [info, pendingPayout, profit] = await Promise.all([
-        client.readContract({
-          address: depository,
-          abi: bondAbi,
-          functionName: 'getBondInfo',
-          args: [user, BigInt(bondIndex)],
-        }),
-        client.readContract({
-          address: depository,
-          abi: bondAbi,
-          functionName: 'pendingPayoutFor',
-          args: [user, BigInt(bondIndex)],
-        }),
-        client.readContract({
-          address: depository,
-          abi: bondAbi,
-          functionName: 'getStakeProfit',
-          args: [user, BigInt(bondIndex)],
-        }),
-      ])
-      const [, , , , exists, , payoutRemaining, vestingEndTime] = info as readonly [
+      calls.push(
+        {
+          target: depository,
+          callData: encodeFunctionData({
+            abi: bondAbi,
+            functionName: 'getBondInfo',
+            args: [user, BigInt(bondIndex)],
+          }),
+        },
+        {
+          target: depository,
+          callData: encodeFunctionData({
+            abi: bondAbi,
+            functionName: 'pendingPayoutFor',
+            args: [user, BigInt(bondIndex)],
+          }),
+        },
+        {
+          target: depository,
+          callData: encodeFunctionData({
+            abi: bondAbi,
+            functionName: 'getStakeProfit',
+            args: [user, BigInt(bondIndex)],
+          }),
+        },
+      )
+    }
+
+    const results = await readAggregate3(client, calls)
+    for (let bondIndex = 0; bondIndex < count; bondIndex += 1) {
+      const base = bondIndex * 3
+      const infoResult = results[base]
+      const pendingResult = results[base + 1]
+      const profitResult = results[base + 2]
+      if (!infoResult?.success || !pendingResult?.success || !profitResult?.success) {
+        throw new Error(`BOND_POSITION_MULTICALL_FAILED:${kind}:${period}:${bondIndex}`)
+      }
+      const info = decodeFunctionResult({
+        abi: bondAbi,
+        functionName: 'getBondInfo',
+        data: infoResult.returnData,
+      }) as readonly [
         bigint,
         bigint,
         bigint,
@@ -334,7 +391,18 @@ async function readBondPositionsFor(
         bigint,
         bigint,
       ]
+      const [, , , , exists, , payoutRemaining, vestingEndTime] = info
       if (!exists) continue
+      const pendingPayout = decodeFunctionResult({
+        abi: bondAbi,
+        functionName: 'pendingPayoutFor',
+        data: pendingResult.returnData,
+      }) as bigint
+      const profit = decodeFunctionResult({
+        abi: bondAbi,
+        functionName: 'getStakeProfit',
+        data: profitResult.returnData,
+      }) as bigint
       rows.push({
         id: `${kind}-${period}-${bondIndex}`,
         kind,
@@ -342,8 +410,8 @@ async function readBondPositionsFor(
         depository,
         bondIndex,
         payoutRemaining,
-        pendingPayout: pendingPayout as bigint,
-        profit: profit as bigint,
+        pendingPayout,
+        profit,
         vestingEndTime,
         exists,
       })

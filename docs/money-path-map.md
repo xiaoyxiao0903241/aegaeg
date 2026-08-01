@@ -125,19 +125,20 @@ Unknown 结果 → WRITE_PATH lock（含 referral-bind）；同 path 在飞互�
 7. Trade/Flash Provider 按需挂载（`viewsNeedingProvider`）；离开子视图丢本地 quote/submit 状态。
 8. **展示 vs 决策**：`keepPreviousData` 仅可画 UI；**balance / allowance / quota / claimable / write CTA / canSubmit** 禁用 placeholder。决策用 `isDecisionFresh` / `decisionBigint`（`core/query/decision-freshness.ts`）；报价轴已有 `liveQuotedOut`。
 9. **轨红点 probe ≠ 全表 snapshot**：Turbine `readTurbineHasClaimable` 只 `silencesSize`+`isVested` 短电路；Release `readReleaseHasClaimable` 用 queue 汇总 + vault `claimable` 短电路。
-10. **Assets 列表读预算（书面）**：`readStakePositions` / locked `getStakesCount`×`getStake` 为 O(仓位数)，无分页；仓位膨胀前保持现状，分页另票（禁在红点路径复用全表）。
-11. **列表读走 Multicall3**：Turbine silences 全表、Release buffer `getRelease`、Presale phases 用 `readAggregate3`（单 RPC）；试点测见 `rpc-read-budget.test.mjs`。
+10. **Assets 列表读预算**：locked 三池 `getStakesCount` **并行** →（count>0）`getStakes(0,count)` + Multicall3 `getReleasedPrincipal`×N；Bond 三池 `getBondCount` 并行 + Multicall3（info/payout/profit×N；手册无批量 list view，维持此读法）。空仓勿调 `getStakes`（手册：start≥total revert）。禁在红点路径复用全表。
+11. **列表读走 Multicall3**：Turbine silences、Release buffer、Presale phases、Assets locked released / Bond 仓位明细用 `readAggregate3`；预算测见 `rpc-read-budget.test.mjs`。
 12. **读 RPC failover**：`bscReadClient` 用 viem `fallback`（主 `VITE_BSC_RPC_URL` → 可选 `VITE_BSC_RPC_FALLBACK_URLS` → 公共种子）。
+13. **Assets hub 读预算**：sessionReady 且 API holdings/reward/distribution 可用（或加载中）时**不**启用 `readStakePositions` / bond / xmine 全表链读；仅未登录或 API 三件套失败后链上兜底（`assetsHubNeedsChainFallback`）。
 
 ## Unknown 解锁通道
 
-| 路径族                                       | 解锁方式（不发明稿外 CTA）                                                                                                                   |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Exchange / stake / bond / assets claim modal | 金额或选项变更 → 既有 `clearLock`                                                                                                            |
-| Genesis                                      | 既有购买流重置 / `clearLock`                                                                                                                 |
-| REWARD_CLAIM / RELEASE_CLAIM / xmine         | 目前无稿面「确认后重试」控件；unknown 后 CTA 保持禁用至刷新（刷新清内存 latch）。**产品若补 Figma 解锁文案再接线**，禁止为逻辑单独发明按钮。 |
-| REFERRAL_BIND                                | 软失败（校验/冷却）可冷却后重试；**unknown latch** 须刷新或显式 `clearLock`（冷却结束不解 unknown）                                          |
+| 路径族                                       | 解锁方式                                                                                            |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Exchange / stake / bond / assets claim modal | 金额或选项变更 → 既有 `clearLock`                                                                   |
+| Genesis                                      | 既有购买流重置 / `clearLock`                                                                        |
+| REWARD_CLAIM / RELEASE_CLAIM / xmine         | **不做**稿面「确认后重试」CTA。unknown 后 CTA 保持禁用至刷新（刷新清内存 latch）。                  |
+| REFERRAL_BIND                                | 软失败（校验/冷却）可冷却后重试；**unknown latch** 须刷新或显式 `clearLock`（冷却结束不解 unknown） |
 
-## 跨标签页边界（已知接受）
+## 跨标签页边界（明确不做）
 
-Latch / in-flight 均为**单标签页内存态**。两标签同时点同一可重复写（swap / stake / purchase）→ 可各自弹钱包并双花；签名类 claim 有链上 salt 幂等兜底。前端原理性无解；最后防线是钱包确认弹窗。勿假装有跨 tab 互斥。
+Latch / in-flight 均为**单标签页内存态**。两标签同时点同一可重复写 → 可各自弹钱包；签名类 claim 有链上 salt 幂等兜底。**不实现** BroadcastChannel / 跨 tab 双花租约；最后防线是钱包确认弹窗。
