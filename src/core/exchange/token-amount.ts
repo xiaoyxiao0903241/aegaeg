@@ -122,7 +122,7 @@ export function formatTokenAmount(
 
 /**
  * Amount-input draft from wei — ungrouped, trailing zeros stripped.
- * Use `maxFractionDigits === decimals` for 100% fill so parse round-trips exactly.
+ * Fraction length is `min(decimals, maxFractionDigits)` (callers pass the cap they want).
  */
 export function formatTokenAmountDraft(
   amount: bigint,
