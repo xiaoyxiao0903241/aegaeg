@@ -1,4 +1,5 @@
 import { ContractRevertError, decodeContractRevert } from '~/web3/decode-contract-revert'
+import { walkErrorTree } from '~/web3/errors/error-tree'
 
 export type ErrorText = { raw: string; lower: string }
 
@@ -23,42 +24,40 @@ export function readErrorCode(error: unknown): number | string | undefined {
   return coded.code
 }
 
-/** Walk wallet / viem error trees and collect revert selectors from nested `data` hex. */
-export function collectErrorFragments(
-  error: unknown,
-  depth = 0,
-  seen = new WeakSet<object>(),
-): string[] {
-  if (depth > 8) return []
-  if (error instanceof Error) {
-    return [error.message, ...collectErrorFragments(error.cause, depth + 1, seen)]
-  }
-  if (typeof error === 'string') return [error]
-  if (error == null) return []
-  if (typeof error !== 'object') return [String(error)]
-  if (seen.has(error)) return []
-  seen.add(error)
-
-  const record = error as Record<string, unknown>
+/** Walk wallet / viem error trees and collect message / hex fragments for rule matching. */
+export function collectErrorFragments(error: unknown): string[] {
   const parts: string[] = []
 
-  for (const key of ['message', 'shortMessage', 'reason', 'details']) {
-    const value = record[key]
-    if (typeof value === 'string') parts.push(value)
-  }
+  walkErrorTree(
+    error,
+    (node) => {
+      if (typeof node === 'string') {
+        parts.push(node)
+        return
+      }
 
-  if ('data' in record) {
-    const data = record.data
-    if (typeof data === 'string' && data.startsWith('0x')) {
-      parts.push(data)
-    } else if (typeof data === 'object' && data !== null) {
-      parts.push(...collectErrorFragments(data, depth + 1, seen))
-    }
-  }
+      if (node instanceof Error) {
+        if (node.message) parts.push(node.message)
+        return
+      }
 
-  if ('cause' in record) {
-    parts.push(...collectErrorFragments(record.cause, depth + 1, seen))
-  }
+      if (typeof node !== 'object' || node === null) {
+        parts.push(String(node))
+        return
+      }
+
+      const record = node as Record<string, unknown>
+      for (const key of ['message', 'shortMessage', 'reason', 'details'] as const) {
+        const value = record[key]
+        if (typeof value === 'string') parts.push(value)
+      }
+
+      if (typeof record.data === 'string' && record.data.startsWith('0x')) {
+        parts.push(record.data)
+      }
+    },
+    { maxDepth: 8 },
+  )
 
   return parts
 }

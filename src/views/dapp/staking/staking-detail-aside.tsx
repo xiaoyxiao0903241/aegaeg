@@ -1,5 +1,4 @@
-import { useState, type ReactNode } from 'react'
-import { useI18n } from '~/i18n/use-i18n'
+import { type ReactNode } from 'react'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
@@ -11,8 +10,8 @@ import { Card } from '~/shared/ui/card'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import { useDappShellStore } from '~/stores/dapp-shell-store'
 import { cn } from '~/shared/lib/utils'
+import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
 
 const PLACEHOLDER = '—'
 
@@ -52,14 +51,12 @@ export function StakingDetailAside({
   /** Bond Figma: 2×2; stake hub: 3 + remainder. */
   positionLayout?: 'triple-plus' | 'cards-2'
 }) {
-  const { messages: t } = useI18n()
-  const selectTab = useDappShellStore((state) => state.selectTab)
-  const [chartRange, setChartRange] = useState(t.staking.aside.chartRanges[3] ?? '全部')
-  const xValue = t.staking.aside.xValue
-  const tableHeaders = recordColumns ?? t.staking.aside.recordColumns
+  const vm = useStakingDetailAsideView()
+  const { t, selectTab, chartRange, setChartRange, xValue } = vm
+  const tableHeaders = recordColumns ?? vm.defaultRecordColumns
   const tableColWidths = recordColWidths ?? ['175px', '80px', '140px', '90px', '1fr']
   const rows = recordRows ?? []
-  const emptyTitle = recordsEmptyTitle ?? t.staking.aside.recordsEmpty
+  const emptyTitle = recordsEmptyTitle ?? vm.defaultRecordsEmpty
 
   return (
     <>

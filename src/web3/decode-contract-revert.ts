@@ -23,6 +23,7 @@ import {
   USD1_SWAP_ERRORS,
   X_STAKING_POOL_ERRORS,
 } from '~/web3/abis'
+import { walkErrorTree } from '~/web3/errors/error-tree'
 
 export interface DecodedContractRevert {
   errorName: string
@@ -79,53 +80,47 @@ function isRevertHex(value: string): value is `0x${string}` {
 }
 
 /** Walk wallet / viem error trees and find the first revert payload hex. */
-export function extractRevertData(
-  error: unknown,
-  depth = 0,
-  seen = new WeakSet<object>(),
-): `0x${string}` | null {
-  if (depth > 10 || error == null) return null
-
-  if (error instanceof ContractFunctionRevertedError) {
-    if (error.raw && isRevertHex(error.raw)) return error.raw
-    if (error.signature && isRevertHex(error.signature)) return error.signature
-  }
-
+export function extractRevertData(error: unknown): `0x${string}` | null {
   if (error instanceof BaseError) {
     const reverted = error.walk((entry) => entry instanceof ContractFunctionRevertedError)
     if (reverted instanceof ContractFunctionRevertedError) {
-      return extractRevertData(reverted, depth + 1, seen)
+      if (reverted.raw && isRevertHex(reverted.raw)) return reverted.raw
+      if (reverted.signature && isRevertHex(reverted.signature)) return reverted.signature
     }
   }
 
-  if (typeof error === 'string') {
-    const match = error.match(/0x[a-fA-F0-9]{8,}/)
-    return match && isRevertHex(match[0]) ? match[0] : null
-  }
-
-  if (typeof error !== 'object') return null
-  if (seen.has(error)) return null
-  seen.add(error)
-
-  const record = error as Record<string, unknown>
-
-  if (typeof record.data === 'string' && isRevertHex(record.data)) {
-    return record.data
-  }
-
-  if (typeof record.data === 'object' && record.data !== null) {
-    const nested = extractRevertData(record.data, depth + 1, seen)
-    if (nested) return nested
-  }
-
-  for (const key of ['cause', 'error', 'originalError']) {
-    if (key in record) {
-      const nested = extractRevertData(record[key], depth + 1, seen)
-      if (nested) return nested
+  let found: `0x${string}` | null = null
+  walkErrorTree(error, (node) => {
+    if (node instanceof ContractFunctionRevertedError) {
+      if (node.raw && isRevertHex(node.raw)) {
+        found = node.raw
+        return true
+      }
+      if (node.signature && isRevertHex(node.signature)) {
+        found = node.signature
+        return true
+      }
     }
-  }
 
-  return null
+    if (typeof node === 'string') {
+      const match = node.match(/0x[a-fA-F0-9]{8,}/)
+      if (match && isRevertHex(match[0])) {
+        found = match[0]
+        return true
+      }
+      return
+    }
+
+    if (typeof node === 'object' && node !== null) {
+      const data = (node as Record<string, unknown>).data
+      if (typeof data === 'string' && isRevertHex(data)) {
+        found = data
+        return true
+      }
+    }
+  })
+
+  return found
 }
 
 export function decodeContractRevert(
