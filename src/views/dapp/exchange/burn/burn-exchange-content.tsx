@@ -136,7 +136,10 @@ export function BurnExchangeContent({
       </section>
 
       <DappDetailBlock>
-        <DappContentHeading>{t.exchange.burn.aboutTitle}</DappContentHeading>
+        {/* Figma `4489:303` 关于 = 20 / leading 1.2 */}
+        <DappContentHeading className="mb-0 pb-4 text-xl leading-[1.2] tracking-tight">
+          {t.exchange.burn.aboutTitle}
+        </DappContentHeading>
         <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'agx']} />
       </DappDetailBlock>
 
