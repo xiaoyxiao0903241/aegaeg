@@ -40,7 +40,7 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
       {src ? <DappIcon alt="" className="shrink-0 rounded-full" size="lg" src={src} /> : null}
       <span className="min-w-0 truncate">{value}</span>
       {sub ? (
-        <Text as="span" className="shrink-0" tone="muted-foreground" variant="support">
+        <Text as="span" className="shrink-0" tone="muted-foreground" variant="copy">
           {sub}
         </Text>
       ) : null}
@@ -99,12 +99,12 @@ export function StakingHubContent() {
             const value = metricValue(metric.id)
             const valueClassName =
               chrome.tone === 'accent'
-                ? 'text-base font-semibold tracking-normal text-primary'
-                : 'text-base font-semibold tracking-normal'
+                ? 'text-base leading-5 font-semibold tracking-normal text-primary'
+                : 'text-base leading-5 font-semibold tracking-normal'
 
             return (
               <MetricCard
-                className="h-full gap-1 px-4 py-3.5"
+                className="h-full gap-1.5 p-4 [&>*:first-child]:leading-none!"
                 key={metric.id}
                 label={
                   <span className="flex items-center gap-1">
@@ -130,8 +130,8 @@ export function StakingHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{table.title}</DappContentHeading>
-        {/* Figma `htab` row `4371:233` — discrete coral-soft / outlined pills (= Chip), ≠ sliding Segment */}
-        <div aria-label={table.segmentAria} className="mb-3 flex flex-wrap gap-2.5" role="tablist">
+        {/* Figma htab `4371:233`：discrete Chip（≠ Segment）；gap≈9→gap-2；active coral-emphasis */}
+        <div aria-label={table.segmentAria} className="mb-3 flex flex-wrap gap-2" role="tablist">
           {tableSegOptions.map((option) => {
             const active = tableSeg === option.value
             return (
@@ -144,7 +144,11 @@ export function StakingHubContent() {
                 size="md"
                 tone={active ? 'coral' : 'default'}
                 variant={active ? 'soft' : 'outlined'}
-                className="h-7 min-w-0 px-4 font-semibold"
+                className={
+                  active
+                    ? 'h-7 min-w-0 px-4 text-(length:--type-copy-size) leading-none font-semibold text-coral-emphasis'
+                    : 'h-7 min-w-0 px-4 text-(length:--type-copy-size) leading-none font-semibold'
+                }
               >
                 {option.label}
               </Chip>
@@ -221,10 +225,11 @@ export function StakingHubContent() {
           emptyLabel={t.staking.aside.chartEmpty}
           header={
             <div className="flex items-center gap-2">
-              <Text as="strong" className="text-xl font-semibold" variant="copy">
+              {/* Figma chart-card `4585:575` h3=20 → text-xl；delta caption 13 → copy */}
+              <Text as="strong" className="text-xl/none font-semibold" variant="copy">
                 {chartValueLabel}
               </Text>
-              <Text as="span" className="text-success" variant="detail">
+              <Text as="span" className="text-success" variant="copy">
                 {chartDeltaLabel}
               </Text>
             </div>

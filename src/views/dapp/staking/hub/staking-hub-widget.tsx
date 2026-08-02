@@ -13,7 +13,7 @@ export function StakingHubWidget() {
     <>
       <WidgetHeader
         action={<DappPanelToggle />}
-        className="mb-4 [&_h1]:text-xl/normal [&_h1]:tracking-normal"
+        className="mb-4 gap-4 [&_h1]:text-xl/none! [&_h1]:tracking-normal"
         subtitle={t.staking.intro}
         title={t.staking.title}
       />
