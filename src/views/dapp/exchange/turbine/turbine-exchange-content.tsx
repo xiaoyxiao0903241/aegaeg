@@ -115,13 +115,11 @@ export function TurbineExchangeContent({
           <ResponsiveTable
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...t.assets.opsColumns]}
+            isLoading={turbineLogsLoading}
             rows={turbineLogRows}
           />
-          {turbineLogRows.length === 0 ? (
-            <DappTableEmptyMessage
-              embedded
-              title={turbineLogsLoading ? '…' : t.exchange.turbine.recordsEmpty}
-            />
+          {!turbineLogsLoading && turbineLogRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={t.exchange.turbine.recordsEmpty} />
           ) : null}
         </DappTableCard>
       </DappDetailBlock>

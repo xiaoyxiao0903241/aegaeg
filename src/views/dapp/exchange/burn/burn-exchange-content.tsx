@@ -12,7 +12,6 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { FaqList } from '~/shared/ui/faq-list'
-import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exchange-history-section'
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
@@ -83,14 +82,6 @@ export function BurnExchangeContent({
       ? formatTokenAmount(totalConsumedContribution, decimals, { digits: 2, trimZeros: false })
       : '0.00'
 
-  // 稿「设置贡献点数(测试)」— UI MUST；值 = 链上当前贡献余额，只读诚实空
-  const testContributionDisplay = !walletReady
-    ? '—'
-    : formatTokenAmount(userStats?.contributionBalance ?? 0n, decimals, {
-        digits: 0,
-        trimZeros: true,
-      })
-
   const faqItems = useMemo(() => {
     const items = t.exchange.burn.faq.items
     const splitBps = config?.splitBps
@@ -136,37 +127,24 @@ export function BurnExchangeContent({
       </section>
 
       <DappDetailBlock>
-        {/* Figma `4489:303` 关于 = 20 / leading 1.2 */}
-        <DappContentHeading className="mb-0 pb-4 text-xl leading-[1.2] tracking-tight">
+        {/* 关于标题用 headline leading token */}
+        <DappContentHeading className="mb-0 pb-4 text-xl leading-(--type-headline-leading) tracking-tight">
           {t.exchange.burn.aboutTitle}
         </DappContentHeading>
         <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'agx']} />
       </DappDetailBlock>
 
       <DappDetailBlock>
-        {/* Figma recHead `4434:486`：标题 +「设置贡献点数(测试)」只读诚实展示（禁假写）。 */}
-        <div className="mb-0 flex items-center justify-between gap-3 pb-4">
-          <Text as="h2" variant="section" className="m-0">
-            {t.exchange.burn.history.title}
-          </Text>
-          <label className="flex items-center gap-2.5">
-            <Text as="span" variant="caption" className="whitespace-nowrap text-muted-foreground">
-              {t.exchange.burn.history.testContribution}
-            </Text>
-            <Input
-              aria-label={t.exchange.burn.history.testContribution}
-              className="h-7 w-9 px-1.5 py-0 text-center text-(length:--type-copy-size) leading-none"
-              readOnly
-              value={testContributionDisplay}
-            />
-          </label>
-        </div>
+        {/* 销毁记录标题；测试贡献控件不渲染 */}
+        <DappContentHeading className="mb-0 pb-4">
+          {t.exchange.burn.history.title}
+        </DappContentHeading>
         <BurnExchangeHistorySection />
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
-        <FaqList items={faqItems} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={faqItems} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

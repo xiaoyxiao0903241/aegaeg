@@ -100,10 +100,11 @@ export function AssetsProductDetailSections({
           <ResponsiveTable
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...opsColumns]}
+            isLoading={opsLoading}
             rows={opsRows}
           />
-          {opsRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={opsLoading ? '…' : opsEmpty} />
+          {!opsLoading && opsRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={opsEmpty} />
           ) : null}
         </DappTableCard>
       </DappDetailBlock>

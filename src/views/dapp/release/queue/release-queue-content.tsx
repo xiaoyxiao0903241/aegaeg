@@ -123,13 +123,11 @@ export function ReleaseQueueContent() {
           <ResponsiveTable
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...t.release.recordColumns]}
+            isLoading={queueLogsLoading}
             rows={queueLogRows}
           />
-          {queueLogRows.length === 0 ? (
-            <DappTableEmptyMessage
-              embedded
-              title={queueLogsLoading ? '…' : t.release.recordsEmpty}
-            />
+          {!queueLogsLoading && queueLogRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={t.release.recordsEmpty} />
           ) : null}
         </DappTableCard>
       </DappDetailBlock>

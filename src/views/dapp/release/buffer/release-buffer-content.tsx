@@ -149,13 +149,11 @@ export function ReleaseBufferContent() {
           <ResponsiveTable
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...t.release.recordColumns]}
+            isLoading={bufferLogsLoading}
             rows={bufferLogRows}
           />
-          {bufferLogRows.length === 0 ? (
-            <DappTableEmptyMessage
-              embedded
-              title={bufferLogsLoading ? '…' : t.release.recordsEmpty}
-            />
+          {!bufferLogsLoading && bufferLogRows.length === 0 ? (
+            <DappTableEmptyMessage embedded title={t.release.recordsEmpty} />
           ) : null}
         </DappTableCard>
       </DappDetailBlock>
