@@ -38,7 +38,8 @@ export function RewardsPlanPicker({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         className={cn(
-          'inline-flex items-center gap-1.5 rounded-full bg-card px-3.5 py-2',
+          // Figma dropdown 34：h-8.5（禁 h-[34px]）
+          'inline-flex h-8.5 items-center gap-1.5 rounded-full bg-card px-3.5',
           disabled ? 'cursor-default opacity-40' : 'cursor-pointer',
         )}
         disabled={disabled}

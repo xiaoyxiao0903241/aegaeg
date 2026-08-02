@@ -12,7 +12,7 @@ export function RewardsClaimTokenRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <span className="inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-3.5 pl-2">
+      <span className="inline-flex h-8.5 items-center gap-2 rounded-full bg-card pr-3.5 pl-2">
         <DappIcon
           alt=""
           className="size-6 rounded-2xl"
@@ -20,11 +20,11 @@ export function RewardsClaimTokenRow({
           size="token"
           src={dappAssets.tokenGagx}
         />
-        <Text as="span" className="font-semibold" variant="detail">
+        <Text as="span" className="leading-4 font-semibold" variant="support">
           {tokenLabel}
         </Text>
       </span>
-      <Text as="span" className="text-2xl font-semibold" variant="headline">
+      <Text as="span" className="text-xl leading-7 font-semibold" variant="headline">
         {amountText}
       </Text>
     </div>

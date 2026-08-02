@@ -38,42 +38,43 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             value={vm.cobuildRewardType}
           />
         ) : null}
-        <Card surface="outlined" className="rounded-2xl p-4">
+        <Card surface="outlined" className="min-h-19.75 rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
-              <Text as="p" tone="muted-foreground" variant="caption">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {t.rewards.detail.claimable}
               </Text>
               <RewardsGagxAmount>
                 {vm.amountKnown ? `${vm.amountText} ${vm.mixed.tokenGagx}` : vm.amountText}
               </RewardsGagxAmount>
             </div>
-            <div className="grid gap-1.5 text-right">
-              <Text as="p" tone="muted-foreground" variant="caption">
+            <div className="grid gap-1 text-right">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {vm.mixed.requiredContributionLabel}
               </Text>
-              <Text as="p" className="font-semibold" variant="copy">
+              <Text as="p" className="leading-5 font-semibold" variant="copy">
                 {view === 'lucky' && vm.amount > 0n
                   ? vm.requiredText
                   : formatApiDecimalAmount(null)}
               </Text>
             </div>
           </div>
-          {vm.luckyPaused ? (
-            <Text as="p" className="mt-2 text-destructive" variant="caption">
-              {vm.mixed.luckyPaused}
-            </Text>
-          ) : null}
-          {vm.luckyNotClaimable ? (
-            <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
-              {vm.mixed.luckyNotClaimable}
-            </Text>
-          ) : null}
         </Card>
 
+        {vm.luckyPaused ? (
+          <Text as="p" className="text-destructive" variant="caption">
+            {vm.mixed.luckyPaused}
+          </Text>
+        ) : null}
+        {vm.luckyNotClaimable ? (
+          <Text as="p" tone="muted-foreground" variant="caption">
+            {vm.mixed.luckyNotClaimable}
+          </Text>
+        ) : null}
+
         {vm.showContributionShort ? (
-          <div className="rounded-2xl bg-primary/10 px-4 py-3">
-            <Text as="p" className="leading-[1.125rem]" variant="caption">
+          <div className="rounded-2xl bg-primary/10 px-3.5 py-3">
+            <Text as="p" className="leading-4" variant="caption">
               <span className="text-foreground">
                 {vm.mixed.insufficientContributionDetail
                   .replace('{need}', vm.requiredText)
@@ -101,27 +102,32 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             value={vm.releasePct}
           />
           <div className="mt-1 flex justify-between gap-2">
-            <Text as="span" className="font-semibold text-primary" variant="detail">
+            <Text as="span" className="leading-4 font-semibold text-primary" variant="support">
               {vm.mixed.releasePct.replace('{pct}', String(vm.releasePct))}
             </Text>
-            <Text as="span" className="font-semibold text-(--app-claim-restake)" variant="detail">
+            <Text
+              as="span"
+              className="leading-4 font-semibold text-(--app-claim-restake)"
+              variant="support"
+            >
               {vm.mixed.restakePct.replace('{pct}', String(vm.restakePct))}
             </Text>
           </div>
         </Card>
 
-        <div className="grid gap-3 rounded-2xl border border-primary/35 bg-primary/10 p-4">
+        {/* Figma 领取/复投卡 135：p-4 + gap-2 合成（禁 h-[135px]） */}
+        <div className="grid min-h-33.75 gap-1.5 rounded-2xl border border-primary/35 bg-primary/10 p-4">
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="text-primary" variant="copy">
+            <Text as="span" className="leading-5 text-primary" variant="copy">
               {t.rewards.claim}
             </Text>
-            <Text as="span" tone="muted-foreground" variant="caption">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               {vm.mixed.releaseInto}
             </Text>
           </div>
           <RewardsClaimTokenRow amountText={vm.releaseAmountText} tokenLabel={vm.mixed.tokenGagx} />
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" tone="muted-foreground" variant="caption">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               {vm.mixed.releasePeriod}
             </Text>
             <RewardsPlanPicker
@@ -133,18 +139,18 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           </div>
         </div>
 
-        <div className="grid gap-3 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
+        <div className="grid min-h-33.75 gap-1.5 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="text-(--app-claim-restake)" variant="copy">
+            <Text as="span" className="leading-5 text-(--app-claim-restake)" variant="copy">
               {vm.mixed.restakeLabel}
             </Text>
-            <Text as="span" tone="muted-foreground" variant="caption">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               {vm.mixed.restakeInto}
             </Text>
           </div>
           <RewardsClaimTokenRow amountText={vm.restakeAmountText} tokenLabel={vm.mixed.tokenGagx} />
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" tone="muted-foreground" variant="caption">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               {vm.mixed.restakePeriod}
             </Text>
             <RewardsPlanPicker
@@ -158,6 +164,8 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
 
         {vm.walletReady ? (
           <DappActionButton
+            className="min-h-13 py-2 text-sm leading-4"
+            density="external"
             disabled={!vm.canConfirm}
             loading={vm.submitting}
             onClick={vm.onConfirm}

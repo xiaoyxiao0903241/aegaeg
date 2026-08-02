@@ -38,13 +38,13 @@ export function RewardsLuckyContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <div className="flex flex-col gap-3.5 rounded-2xl bg-[#1c2234] px-5.5 py-5 text-white shadow-sm">
+        <div className="flex min-h-37 flex-col gap-3 rounded-2xl bg-[#1c2234] px-5.5 py-5 text-white shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Text as="p" className="font-semibold text-white" variant="detail">
               {lucky.vrfTitle}
             </Text>
             <Button
-              className="rounded-full border border-white/25 bg-transparent px-4 py-1.5 text-white hover:bg-white/10"
+              className="h-7.5 rounded-full border border-white/25 bg-transparent px-4 text-white hover:bg-white/10"
               disabled
               type="button"
               variant="secondary"
@@ -63,7 +63,7 @@ export function RewardsLuckyContent() {
           <DappContentHeading>{lucky.resultsTitle}</DappContentHeading>
           <button
             aria-label={lucky.dateFilterAria}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card py-1.75 pr-3 pl-3.5 disabled:opacity-100"
+            className="inline-flex h-7.5 items-center gap-1.5 rounded-full border border-border bg-card pr-3 pl-3.5 disabled:opacity-100"
             disabled
             type="button"
           >
