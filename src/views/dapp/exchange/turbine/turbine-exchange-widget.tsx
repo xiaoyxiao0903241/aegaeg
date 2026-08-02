@@ -102,6 +102,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               aria-label={`${unlock.symbol} unlock percent`}
               className="pt-2.5 max-dapp:mt-3 max-dapp:py-0"
               disabled={(!vm.exchangePreview && !turbine.walletReady) || turbine.isSubmitting}
+              formatLabel={(percent) => (percent === 100 ? 'Max' : `${percent}%`)}
               onSelect={(percent) => turbine.fillPercent(percent)}
             />
 
@@ -136,7 +137,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
             </div>
 
             <DappMetaPanel
-              className="mt-0 gap-2.5 p-4"
+              className="mt-0 gap-2.5 px-4 py-4.5"
               items={[
                 {
                   label: t.exchange.turbine.agxPrice,
@@ -144,8 +145,8 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                 },
                 {
                   label: t.exchange.allowedSlippage,
-                  // No user slippage UI on turbine; do not hardcode a fake floor.
-                  value: '0',
+                  // 涡轮无用户滑点 UI；稿演示 0.3% ≠ 钱路 — 诚实空
+                  value: '—',
                 },
                 {
                   label: t.exchange.turbine.willReceiveAgx,
@@ -172,7 +173,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
                       {t.exchange.providerName}
                       <button
                         aria-label={t.genesis.viewContract}
-                        className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
+                        className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
                         onClick={() =>
                           window.open(
                             bscscanAddress(turbine.providerAddress),

@@ -7,6 +7,8 @@ export type PercentButtonRowProps = {
   disabled?: boolean
   onSelect: (percent: number) => void
   values?: number[]
+  /** Figma turbine pct 末档「Max」；默认仍渲染 `N%`。 */
+  formatLabel?: (percent: number) => string
 }
 
 /**
@@ -16,6 +18,7 @@ export function PercentButtonRow({
   'aria-label': ariaLabel,
   className,
   disabled = false,
+  formatLabel = (percent) => `${percent}%`,
   onSelect,
   values = [25, 50, 75, 100],
 }: PercentButtonRowProps) {
@@ -33,7 +36,7 @@ export function PercentButtonRow({
           variant="outlined"
           tone="default"
         >
-          {percent}%
+          {formatLabel(percent)}
         </Chip>
       ))}
     </div>
