@@ -29,8 +29,8 @@ export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel:
       </section>
 
       <DappDetailBlock>
-        {/* Figma about 标题 20 / leading 1.2（`4489:222`）；headline token=16 → text-xl */}
-        <DappContentHeading className="mb-0 pb-4 text-xl leading-[1.2] tracking-tight">
+        {/* Figma about 标题 20 / leading 1.2（`4489:222`）；text-xl + headline leading token（禁 leading-[1.2]） */}
+        <DappContentHeading className="mb-0 pb-4 text-xl leading-(--type-headline-leading) tracking-tight">
           {t.exchange.trade.aboutTitle}
         </DappContentHeading>
         <TokenAboutCarousel cardKeys={TRADE_ABOUT_CARD_KEYS} />
@@ -39,7 +39,7 @@ export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel:
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.tabsTitle}</DappContentHeading>
         <MarketTradeFaqTabs activeToken={vm.faqToken} onSelect={vm.setFaqToken} />
-        <FaqList items={vm.faqItems} key={vm.faqToken} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={vm.faqItems} key={vm.faqToken} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )
