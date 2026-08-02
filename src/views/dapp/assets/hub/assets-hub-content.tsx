@@ -29,11 +29,12 @@ export function AssetsHubContent() {
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{overview.title}</DappContentHeading>
-        <Card surface="inverse" className="relative overflow-hidden p-4">
-          <div className="grid gap-4 sm:grid-cols-2 dapp:grid-cols-4 dapp:gap-6">
+        {/* Figma 资产总览/card 116：min-h-29 + 垂直居中（禁 h-[116px] / text-[2rem]） */}
+        <Card surface="inverse" className="relative flex min-h-29 items-center overflow-hidden p-4">
+          <div className="grid w-full gap-4 sm:grid-cols-2 dapp:grid-cols-4 dapp:gap-6">
             <div className="grid gap-1">
               <div className="flex items-center gap-1">
-                <Text as="span" tone="inverse-muted" variant="detail">
+                <Text as="span" className="leading-4" tone="inverse-muted" variant="support">
                   {overview.totalValue}
                 </Text>
                 <DappInfoTooltip
@@ -43,43 +44,58 @@ export function AssetsHubContent() {
               </div>
               <Text
                 as="strong"
-                className="text-[2rem] leading-none font-semibold"
+                className="leading-none font-semibold"
                 tone="inverse"
-                variant="figure"
+                variant="stat"
               >
                 {values.totalValue}
               </Text>
             </div>
             <div className="grid gap-0.5">
-              <Text as="span" tone="inverse-muted" variant="detail">
+              <Text as="span" className="leading-4" tone="inverse-muted" variant="support">
                 {overview.claimable}
               </Text>
-              <Text as="strong" className="text-base font-semibold" tone="inverse">
+              <Text as="strong" className="text-base leading-5 font-semibold" tone="inverse">
                 {values.claimable}
               </Text>
-              <Text as="span" className="opacity-70" tone="inverse-muted" variant="detail">
+              <Text
+                as="span"
+                className="leading-4 opacity-70"
+                tone="inverse-muted"
+                variant="support"
+              >
                 {values.claimableApprox}
               </Text>
             </div>
             <div className="grid gap-0.5">
-              <Text as="span" tone="inverse-muted" variant="detail">
+              <Text as="span" className="leading-4" tone="inverse-muted" variant="support">
                 {overview.claimed}
               </Text>
-              <Text as="strong" className="text-base font-semibold" tone="inverse">
+              <Text as="strong" className="text-base leading-5 font-semibold" tone="inverse">
                 {values.claimed}
               </Text>
-              <Text as="span" className="opacity-70" tone="inverse-muted" variant="detail">
+              <Text
+                as="span"
+                className="leading-4 opacity-70"
+                tone="inverse-muted"
+                variant="support"
+              >
                 {values.claimedApprox}
               </Text>
             </div>
             <div className="grid gap-0.5">
-              <Text as="span" tone="inverse-muted" variant="detail">
+              <Text as="span" className="leading-4" tone="inverse-muted" variant="support">
                 {overview.contribution}
               </Text>
-              <Text as="strong" className="text-base font-semibold" tone="inverse">
+              <Text as="strong" className="text-base leading-5 font-semibold" tone="inverse">
                 {values.contribution}
               </Text>
-              <Text as="span" className="opacity-70" tone="inverse-muted" variant="detail">
+              <Text
+                as="span"
+                className="leading-4 opacity-70"
+                tone="inverse-muted"
+                variant="support"
+              >
                 {overview.contributionHint}
               </Text>
             </div>
@@ -87,8 +103,9 @@ export function AssetsHubContent() {
         </Card>
 
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
-          <Card surface="elevated" className="grid gap-1.5 p-4 shadow-card">
-            <Text as="span" className="font-medium" variant="detail">
+          {/* Figma 持仓/缓冲 110：min-h-27.5 + p-4（禁 h-[110px]） */}
+          <Card surface="elevated" className="grid min-h-27.5 gap-1 p-4 shadow-card">
+            <Text as="span" className="leading-4 font-medium" variant="support">
               {overview.holdingsTitle}
             </Text>
             <div className="grid grid-cols-2 gap-2">
@@ -106,9 +123,9 @@ export function AssetsHubContent() {
             </div>
           </Card>
 
-          <Card surface="elevated" className="grid gap-1.5 p-4 shadow-card">
+          <Card surface="elevated" className="grid min-h-27.5 gap-1 p-4 shadow-card">
             <div className="flex items-center justify-between gap-2">
-              <Text as="span" className="font-medium" variant="detail">
+              <Text as="span" className="leading-4 font-medium" variant="support">
                 {overview.bufferTitle}
               </Text>
               <button
@@ -120,7 +137,7 @@ export function AssetsHubContent() {
                 <span className="grid size-4 place-items-center overflow-hidden rounded-full border border-border">
                   <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.exchangeFlip} />
                 </span>
-                <Text as="span" tone="muted-foreground" variant="detail">
+                <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
                   {bufferLabel}
                 </Text>
               </button>
@@ -144,8 +161,14 @@ export function AssetsHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.assets.hub.distribution.title}</DappContentHeading>
-        <div className="flex min-h-[6.75rem] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
-          <Text as="p" className="text-center" tone="muted-foreground" variant="detail">
+        {/* Figma 持仓分布/empty 108 → min-h-27（禁 min-h-[6.75rem]） */}
+        <div className="flex min-h-27 items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
+          <Text
+            as="p"
+            className="text-center leading-4.5"
+            tone="muted-foreground"
+            variant="support"
+          >
             {t.assets.hub.distribution.empty}
           </Text>
         </div>
@@ -158,18 +181,22 @@ export function AssetsHubContent() {
         <Text as="p" className="mb-4" tone="muted-foreground" variant="detail">
           {rebase.subtitle}
         </Text>
+        {/* Figma Rebase/card 237：px-4 py-6 + gap-4；step 文案 leading 合成行高 */}
         <Card surface="elevated" className="grid gap-4 px-4 py-6 shadow-card">
           <ol className="m-0 grid list-none gap-2 p-0 sm:grid-cols-2 dapp:grid-cols-4">
             {rebase.steps.map((step) => (
-              <li className="rounded-2xl bg-card p-3 text-center" key={step.title + step.body}>
-                <Text as="p" className="font-bold" variant="copy">
+              <li
+                className="min-h-25.5 rounded-2xl bg-card p-3 text-center"
+                key={step.title + step.body}
+              >
+                <Text as="p" className="leading-5 font-bold" variant="copy">
                   {step.title}
                 </Text>
                 <Text
                   as="p"
-                  className="mt-2 whitespace-pre-line"
+                  className="mt-1.5 leading-4 whitespace-pre-line"
                   tone="muted-foreground"
-                  variant="detail"
+                  variant="support"
                 >
                   {step.body}
                 </Text>
@@ -180,13 +207,13 @@ export function AssetsHubContent() {
             {rebase.tags.map((tag) => (
               <span className="flex items-center gap-1.5" key={tag}>
                 <DappIcon alt="" className="size-4" size="sm" src={dappAssets.check} />
-                <Text as="span" className="font-semibold" variant="detail">
+                <Text as="span" className="leading-4 font-semibold" variant="support">
                   {tag}
                 </Text>
               </span>
             ))}
           </div>
-          <Text as="p" tone="muted-foreground" variant="detail">
+          <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
             {rebase.footer}
           </Text>
         </Card>

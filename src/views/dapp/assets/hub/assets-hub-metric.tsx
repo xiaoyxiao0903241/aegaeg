@@ -21,17 +21,18 @@ export function AssetsHubMetricWithIcon({
   approx: ReactNode
 }) {
   return (
+    // Figma 持仓/缓冲 metric 列 ~56：support leading-4 + value sm 合成
     <div className="grid gap-0.5">
-      <Text as="span" tone="muted-foreground" variant="detail">
+      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
         {label}
       </Text>
       <div className="flex items-start gap-1">
         <DappIcon alt="" className="mt-0.5 rounded-control" size="lg" src={icon} />
-        <div className="grid gap-1">
-          <Text as="strong" className="text-base font-semibold" variant="copy">
+        <div className="grid gap-0.5">
+          <Text as="strong" className="text-sm leading-4.5 font-semibold" variant="copy">
             {renderMetric(value)}
           </Text>
-          <Text as="span" tone="muted-foreground" variant="detail">
+          <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
             {renderMetric(approx)}
           </Text>
         </div>
@@ -52,13 +53,13 @@ export function AssetsHubMetricPlain({
 }) {
   return (
     <div className="grid gap-0.5">
-      <Text as="span" tone="muted-foreground" variant="detail">
+      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
         {label}
       </Text>
-      <Text as="strong" className="text-base font-semibold" variant="copy">
+      <Text as="strong" className="text-sm leading-4.5 font-semibold" variant="copy">
         {renderMetric(value)}
       </Text>
-      <Text as="span" tone="muted-foreground" variant="detail">
+      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
         {renderMetric(approx)}
       </Text>
     </div>

@@ -37,6 +37,7 @@ export function AssetsModeCard({
     <Card
       surface="outlined"
       className={cn(
+        // Figma asset/* 117：p-4 + 行 leading-4 合成（禁 h-[117px]）
         'relative grid w-full gap-2 p-4 text-left shadow-none',
         onClick &&
           'duration-dapp-fast transition-[border-color,transform] ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
@@ -55,12 +56,12 @@ export function AssetsModeCard({
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1">
             <DappIcon alt="" className="size-5 shrink-0" size="sm" src={icon} />
-            <Text as="span" className="text-sm font-semibold" variant="copy">
+            <Text as="span" className="text-sm leading-5 font-semibold" variant="copy">
               {title}
             </Text>
           </div>
           <div className="pointer-events-auto flex items-center gap-1">
-            <Text as="span" className="font-medium" variant="detail">
+            <Text as="span" className="leading-4 font-medium" variant="support">
               <DappCountValue text={aprLabel} />
             </Text>
             <DappInfoTooltip className="size-3 [&_svg]:size-3" content={aprHint} />
@@ -68,26 +69,30 @@ export function AssetsModeCard({
         </div>
         <div className="grid gap-1">
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" tone="muted-foreground" variant="detail">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               {positionLabel}
             </Text>
-            <Text as="span" tone="muted-foreground" variant="detail">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               {yieldLabel}
             </Text>
           </div>
           <div className="flex items-center justify-between gap-2">
-            <Text as="strong" className="text-sm font-semibold" variant="copy">
+            <Text as="strong" className="text-sm leading-4 font-semibold" variant="copy">
               <DappCountValue text={positionValue} />
             </Text>
-            <Text as="strong" className="text-sm font-semibold text-primary" variant="copy">
+            <Text
+              as="strong"
+              className="text-sm leading-4 font-semibold text-primary"
+              variant="copy"
+            >
               <DappCountValue text={yieldValue} />
             </Text>
           </div>
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" tone="muted-foreground" variant="detail">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               <DappCountValue text={positionApprox} />
             </Text>
-            <Text as="span" tone="muted-foreground" variant="detail">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               <DappCountValue text={yieldApprox} />
             </Text>
           </div>
