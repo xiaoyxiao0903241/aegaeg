@@ -36,16 +36,16 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         <Card surface="outlined" className="min-h-31 rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
-              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
+              <Text as="p" className="leading-4 text-foreground/40" variant="copy">
                 {vm.grant.pendingLabel}
               </Text>
-              <RewardsGagxAmount>{vm.tokenGagx}</RewardsGagxAmount>
+              <RewardsGagxAmount textVariant="headline">{vm.tokenGagx}</RewardsGagxAmount>
             </div>
-            <div className="grid gap-0.5 text-right">
-              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
+            <div className="grid gap-1.5 text-right">
+              <Text as="p" className="leading-4 text-foreground/40" variant="copy">
                 {vm.grant.pendingHint}
               </Text>
-              <Text as="p" className="leading-7 font-semibold" variant="headline">
+              <Text as="p" className="leading-5 font-semibold" variant="headline">
                 {formatApiDecimalAmount(null)}
               </Text>
             </div>
@@ -62,7 +62,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
               </Text>
               <ChevronIcon className="size-2.5 -rotate-90 opacity-80" direction="up" />
             </a>
-            <Text as="p" className="leading-none" tone="muted-foreground" variant="support">
+            <Text as="p" className="leading-none text-foreground/40" variant="copy">
               {vm.grant.pendingBody}
             </Text>
           </div>
@@ -74,13 +74,13 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
           </span>
         </div>
 
-        {/* Figma 可领取卡 93：min-h-23.25 + p-4（禁 h-[93px]） */}
-        <div className="grid min-h-23.25 gap-1.5 rounded-2xl border border-primary/35 bg-primary/10 p-4">
+        {/* Figma 可领取卡：primary-soft + border */}
+        <div className="grid min-h-23.25 gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
           <div className="flex h-5 items-center justify-between gap-2">
-            <Text as="span" className="leading-5" variant="copy">
+            <Text as="span" className="leading-5 text-primary" variant="copy">
               {t.rewards.detail.claimable}
             </Text>
-            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
               {vm.copy.claimIntoWallet}
             </Text>
           </div>

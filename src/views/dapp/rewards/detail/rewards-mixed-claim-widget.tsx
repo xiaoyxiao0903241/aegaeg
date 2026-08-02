@@ -16,6 +16,10 @@ import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-pick
 import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-rewards-mixed-claim-view'
 import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 
+/**
+ * Mixed 领取左栏 — Figma lucky/referral/participate/cobuild 同构
+ *（可领卡 · 贡献 warning · 双色 slider · 领取/复投卡 · 双行 CTA）。
+ */
 export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
   const setView = useRewardsViewStore((state) => state.setView)
   const vm = useRewardsMixedClaimView(view)
@@ -41,18 +45,18 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         <Card surface="outlined" className="min-h-19.75 rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
-              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
+              <Text as="p" className="leading-4 text-foreground/40" variant="copy">
                 {t.rewards.detail.claimable}
               </Text>
-              <RewardsGagxAmount>
+              <RewardsGagxAmount textVariant="headline">
                 {vm.amountKnown ? `${vm.amountText} ${vm.mixed.tokenGagx}` : vm.amountText}
               </RewardsGagxAmount>
             </div>
-            <div className="grid gap-1 text-right">
-              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
+            <div className="grid gap-1.5 text-right">
+              <Text as="p" className="leading-4 text-foreground/40" variant="copy">
                 {vm.mixed.requiredContributionLabel}
               </Text>
-              <Text as="p" className="leading-5 font-semibold" variant="copy">
+              <Text as="p" className="leading-5 font-semibold" variant="headline">
                 {view === 'lucky' && vm.amount > 0n
                   ? vm.requiredText
                   : formatApiDecimalAmount(null)}
@@ -62,26 +66,26 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
         </Card>
 
         {vm.luckyPaused ? (
-          <Text as="p" className="text-destructive" variant="caption">
+          <Text as="p" className="text-destructive" variant="copy">
             {vm.mixed.luckyPaused}
           </Text>
         ) : null}
         {vm.luckyNotClaimable ? (
-          <Text as="p" tone="muted-foreground" variant="caption">
+          <Text as="p" tone="muted-foreground" variant="copy">
             {vm.mixed.luckyNotClaimable}
           </Text>
         ) : null}
 
         {vm.showContributionShort ? (
-          <div className="rounded-2xl bg-primary/10 px-3.5 py-3">
-            <Text as="p" className="leading-4" variant="caption">
+          <div className="rounded-2xl bg-primary-soft px-4 py-3">
+            <Text as="p" className="leading-5" variant="copy">
               <span className="text-foreground">
                 {vm.mixed.insufficientContributionDetail
                   .replace('{need}', vm.requiredText)
                   .replace('{have}', vm.haveText)}
               </span>{' '}
               <Button
-                className="inline underline"
+                className="inline text-coral-emphasis underline"
                 onClick={() => openExchangeView('burn')}
                 size="sm"
                 type="button"
@@ -102,32 +106,32 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             value={vm.releasePct}
           />
           <div className="mt-1 flex justify-between gap-2">
-            <Text as="span" className="leading-4 font-semibold text-primary" variant="support">
+            <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
               {vm.mixed.releasePct.replace('{pct}', String(vm.releasePct))}
             </Text>
             <Text
               as="span"
               className="leading-4 font-semibold text-(--app-claim-restake)"
-              variant="support"
+              variant="detail"
             >
               {vm.mixed.restakePct.replace('{pct}', String(vm.restakePct))}
             </Text>
           </div>
         </Card>
 
-        {/* Figma 领取/复投卡 135：p-4 + gap-2 合成（禁 h-[135px]） */}
-        <div className="grid min-h-33.75 gap-1.5 rounded-2xl border border-primary/35 bg-primary/10 p-4">
+        {/* Figma 领取卡：coral-soft + border 35% · gap8 · p16 */}
+        <div className="grid min-h-33.75 gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 text-primary" variant="copy">
               {t.rewards.claim}
             </Text>
-            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
               {vm.mixed.releaseInto}
             </Text>
           </div>
           <RewardsClaimTokenRow amountText={vm.releaseAmountText} tokenLabel={vm.mixed.tokenGagx} />
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
               {vm.mixed.releasePeriod}
             </Text>
             <RewardsPlanPicker
@@ -139,18 +143,19 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           </div>
         </div>
 
-        <div className="grid min-h-33.75 gap-1.5 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
+        {/* Figma 复投卡：#f3fdf6 + green border · 用 success-soft / claim-restake */}
+        <div className="grid min-h-33.75 gap-2 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 text-(--app-claim-restake)" variant="copy">
               {vm.mixed.restakeLabel}
             </Text>
-            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
               {vm.mixed.restakeInto}
             </Text>
           </div>
           <RewardsClaimTokenRow amountText={vm.restakeAmountText} tokenLabel={vm.mixed.tokenGagx} />
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
               {vm.mixed.restakePeriod}
             </Text>
             <RewardsPlanPicker
@@ -164,7 +169,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
 
         {vm.walletReady ? (
           <DappActionButton
-            className="min-h-13 py-2 text-sm leading-4"
+            className="min-h-13 py-2 leading-5"
             density="external"
             disabled={!vm.canConfirm}
             loading={vm.submitting}

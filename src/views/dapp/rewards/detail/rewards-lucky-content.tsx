@@ -1,3 +1,4 @@
+import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -5,6 +6,7 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Button } from '~/shared/ui/button'
+import { Card } from '~/shared/ui/card'
 import { ChevronIcon } from '~/shared/ui/chevron-icon'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
@@ -38,11 +40,24 @@ export function RewardsLuckyContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <div className="flex min-h-37 flex-col gap-3 rounded-2xl bg-[#1c2234] px-5.5 py-5 text-white shadow-sm">
+        {/* Figma chainlink `4395:236`：#1c2234 ≈ `bg-dark`（Card inverse）；禁任意 hex */}
+        <Card
+          surface="inverse"
+          className="flex min-h-37 flex-col gap-3.5 rounded-2xl px-5.5 py-5 shadow-sm"
+        >
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <Text as="p" className="font-semibold text-white" variant="detail">
-              {lucky.vrfTitle}
-            </Text>
+            <div className="flex items-center gap-3">
+              <span className="inline-flex size-7.5 items-center justify-center rounded-control bg-white">
+                <img
+                  alt=""
+                  className="size-4.5 object-contain"
+                  src={dappAssets.rewardsHubChainlink}
+                />
+              </span>
+              <Text as="p" className="font-semibold text-white" variant="detail">
+                {lucky.vrfTitle}
+              </Text>
+            </div>
             <Button
               className="h-7.5 rounded-full border border-white/25 bg-transparent px-4 text-white hover:bg-white/10"
               disabled
@@ -52,10 +67,10 @@ export function RewardsLuckyContent() {
               {lucky.verifyTutorial}
             </Button>
           </div>
-          <Text as="p" className="text-white/65" variant="caption">
+          <Text as="p" className="text-white/65" variant="support">
             {lucky.vrfBody}
           </Text>
-        </div>
+        </Card>
       </DappDetailBlock>
 
       <DappDetailBlock>

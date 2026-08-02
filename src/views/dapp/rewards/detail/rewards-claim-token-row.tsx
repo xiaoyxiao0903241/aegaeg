@@ -20,11 +20,11 @@ export function RewardsClaimTokenRow({
           size="token"
           src={dappAssets.tokenGagx}
         />
-        <Text as="span" className="leading-4 font-semibold" variant="support">
+        <Text as="span" className="leading-4 font-semibold" variant="detail">
           {tokenLabel}
         </Text>
       </span>
-      <Text as="span" className="text-xl leading-7 font-semibold" variant="headline">
+      <Text as="span" className="text-2xl leading-none font-semibold" variant="headline">
         {amountText}
       </Text>
     </div>

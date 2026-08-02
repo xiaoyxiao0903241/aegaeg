@@ -145,6 +145,8 @@ export const dappAssets = {
   rewardsHubTierDeco: '/assets/figma/dapp/rewards-hub/deco-character.png',
   /** 贡献点数「去销毁」chevron · `4629:934` */
   rewardsHubGoBurnChevron: '/assets/figma/dapp/rewards-hub/ic-go-burn-chevron.svg',
+  /** Lucky Chainlink VRF 标 · `4395:240` */
+  rewardsHubChainlink: '/assets/figma/dapp/rewards-hub/ic-chainlink.svg',
 } as const
 
 export const railItems: Array<{
