@@ -70,23 +70,29 @@ export function TurbineExchangeContent({
             <Card
               key={metric.label}
               surface="elevated"
-              className="flex flex-col gap-2 rounded-2xl border-0 p-4 shadow-card"
+              // Figma `4436:223` stat：p16 · gap8 · label15 · icon22/值20 · usd15 → 合成 h100
+              className="flex flex-col gap-2 rounded-md border-0 p-4 shadow-card"
             >
-              <Text as="p" variant="support" tone="muted-foreground" className="m-0 font-medium">
+              <Text
+                as="p"
+                variant="support"
+                tone="muted-foreground"
+                className="m-0 leading-[1.25] font-medium"
+              >
                 {metric.label}
               </Text>
               <div className="flex items-center gap-2">
                 <DappIcon
                   alt=""
                   className="size-(--app-icon-rail) shrink-0 rounded-full object-cover"
-                  size="token"
+                  size="rail"
                   src={dappAssets.tokenGagx}
                 />
-                <Text as="strong" variant="copy" className="m-0 text-base font-semibold">
+                <Text as="strong" variant="copy" className="m-0 text-base leading-5 font-semibold">
                   <DappCountValue text={`${metric.amount} gAGX`} />
                 </Text>
               </div>
-              <Text as="p" variant="support" className="m-0 text-black/40">
+              <Text as="p" variant="support" className="m-0 leading-[1.25] text-black/40">
                 <DappCountValue text={`≈ ${metric.usd || '0.00'}`} />
               </Text>
             </Card>
@@ -95,7 +101,10 @@ export function TurbineExchangeContent({
       </section>
 
       <DappDetailBlock>
-        <DappContentHeading>{t.exchange.turbine.aboutTitle}</DappContentHeading>
+        {/* Figma `4489:384` 关于 = 20 / leading 1.2 */}
+        <DappContentHeading className="mb-0 pb-4 text-xl leading-[1.2] tracking-tight">
+          {t.exchange.turbine.aboutTitle}
+        </DappContentHeading>
         {/* Figma 4435:220 about-carousel: gAGX · USD1 · X · gAGX质押 */}
         <TokenAboutCarousel cardKeys={['gagx', 'usd1', 'x', 'gagxStake']} />
       </DappDetailBlock>
