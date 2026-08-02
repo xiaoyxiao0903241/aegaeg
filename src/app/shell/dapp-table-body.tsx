@@ -3,7 +3,7 @@ import { type ReactNode } from 'react'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 
-/** ResponsiveTable + embedded empty — shared DApp table chrome. */
+/** ResponsiveTable + embedded empty — 空态无表头（见 ResponsiveTable）。 */
 export function DappTableBody({
   colWidths,
   emptyTitle,

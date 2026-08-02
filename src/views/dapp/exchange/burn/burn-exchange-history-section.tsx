@@ -26,9 +26,14 @@ export function BurnExchangeHistorySection() {
         />
       }
     >
-      <ResponsiveTable colWidths={[...vm.colWidths]} headers={vm.headers} rows={vm.rows} />
-      {vm.rows.length === 0 ? (
-        <DappTableEmptyMessage embedded title={vm.isLoading ? '…' : vm.emptyTitle} />
+      <ResponsiveTable
+        colWidths={[...vm.colWidths]}
+        headers={vm.headers}
+        isLoading={vm.isLoading}
+        rows={vm.rows}
+      />
+      {!vm.isLoading && vm.rows.length === 0 ? (
+        <DappTableEmptyMessage embedded title={vm.emptyTitle} />
       ) : null}
     </DappTableCard>
   )

@@ -93,6 +93,8 @@ export function ResponsiveTable({
   statusColumns?: number[]
 }) {
   const styles = responsiveTable({ compact })
+  // 空态只显示 DappTableEmptyMessage，不留表头；loading 仍出表头 + skeleton。
+  if (!isLoading && rows.length === 0) return null
 
   return (
     <div className={styles.root({ class: className })}>
