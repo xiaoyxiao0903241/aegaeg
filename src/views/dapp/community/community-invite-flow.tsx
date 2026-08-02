@@ -13,8 +13,9 @@ export type InviteFlowItem = {
 
 const inviteFlowStep = tv({
   base: [
-    'grid size-7.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold text-white',
-    'max-dapp:size-7',
+    // Figma badge 26：size-6.5
+    'grid size-6.5 shrink-0 place-items-center self-start rounded-full bg-primary font-semibold text-white',
+    'max-dapp:size-6.5',
     'text-(length:--type-copy-size)',
   ],
 })
@@ -51,7 +52,7 @@ export function InviteFlow({ items }: { items: InviteFlowItem[] }) {
       surface="elevated"
       className={cn(
         revealClass(),
-        'grid grid-cols-3 gap-x-0 gap-y-3.5 p-4',
+        'grid min-h-31.75 grid-cols-3 content-start gap-x-0 gap-y-2.5 px-4 py-3.5',
         'max-tablet:grid-cols-[repeat(auto-fit,minmax(min(100%,10.5rem),1fr))] max-tablet:gap-4',
         'max-dapp:min-w-0 max-dapp:grid-cols-1 max-dapp:gap-3.5',
       )}
@@ -115,7 +116,7 @@ export function InviteFlowStack({ items }: { items: InviteFlowItem[] }) {
             {index < items.length - 1 ? <InviteFlowConnector orientation="vertical" /> : null}
           </div>
           <div className={cn('grid min-w-0 gap-0.5', index < items.length - 1 && 'pb-3.5')}>
-            <Text as="h4" variant="headline" className="m-0 text-sm leading-[1.2]">
+            <Text as="h4" variant="headline" className="m-0 text-sm leading-tight">
               {item.title}
             </Text>
             <Text as="p" variant="copy" tone="muted-foreground" className="m-0 text-sm/normal">

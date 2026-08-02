@@ -13,7 +13,7 @@ export const communityProgramGrid = tv({
 /** Community program card — elevated, coral accent. */
 const communityProgramCard = tv({
   slots: {
-    root: cn(revealClass(), 'flex w-full min-w-0 flex-col gap-2 p-5'),
+    root: cn(revealClass(), 'flex min-h-32 w-full min-w-0 flex-col gap-2 p-4'),
     action: cn(
       'm-0 cursor-pointer border-0 bg-transparent p-0 text-left',
       'duration-dapp-fast transition-opacity ease-out hover:opacity-80',

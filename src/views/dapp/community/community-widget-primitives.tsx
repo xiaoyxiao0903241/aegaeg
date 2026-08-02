@@ -16,7 +16,8 @@ const communityReferrerBindGrid = tv({
 })
 
 const communityReferrerAddressRow = tv({
-  base: 'flex h-11 items-center justify-between rounded-sm bg-background px-3.5',
+  // Figma 邀请人行 30：h-7.5
+  base: 'flex h-7.5 items-center justify-between rounded-sm bg-background px-3',
 })
 
 const communityReferrerAvatar = tv({
@@ -41,19 +42,20 @@ export function CommunityReferralLinkCard({
   referralLink: string
 }) {
   return (
-    <DappSideCard className="gap-2">
-      <Text as="p" variant="support" tone="muted-foreground" className="m-0">
+    <DappSideCard className="min-h-30 gap-1.5 rounded-2xl px-4 py-3.5">
+      <Text as="p" variant="support" tone="muted-foreground" className="m-0 leading-4">
         {linkLabel}
       </Text>
       <Text
         as="strong"
         variant="copy"
         tone="foreground"
-        className="block max-w-full truncate text-sm font-semibold tracking-tight"
+        className="block max-w-full truncate text-sm leading-4 font-semibold tracking-tight"
       >
         {referralLink}
       </Text>
-      <DappActionButton disabled={disabled} onClick={onCopy}>
+      {/* Figma copy CTA 38 */}
+      <DappActionButton density="inverse" disabled={disabled} onClick={onCopy}>
         {copyLabel}
       </DappActionButton>
     </DappSideCard>
@@ -128,8 +130,8 @@ export function CommunityReferrerBoundPanel({
   referrerLabel: string | null
 }) {
   return (
-    <DappSideCard className="gap-2.5">
-      <Text as="p" variant="support" tone="muted-foreground" className="m-0">
+    <DappSideCard className="min-h-28 gap-1.5 rounded-2xl px-4 py-3.5">
+      <Text as="p" variant="support" tone="muted-foreground" className="m-0 leading-4">
         {addressLabel}
       </Text>
       <div className={communityReferrerAddressRow()}>
@@ -141,7 +143,7 @@ export function CommunityReferrerBoundPanel({
             as="strong"
             variant="copy"
             tone="foreground"
-            className="truncate text-sm leading-[1.2] font-semibold"
+            className="truncate text-sm leading-tight font-semibold"
           >
             {referrerLabel ?? '—'}
           </Text>
@@ -157,7 +159,7 @@ export function CommunityReferrerBoundPanel({
           </button>
         ) : null}
       </div>
-      <Text as="p" variant="support" tone="muted-foreground" className="m-0">
+      <Text as="p" variant="support" tone="muted-foreground" className="m-0 leading-4">
         {note}
       </Text>
     </DappSideCard>

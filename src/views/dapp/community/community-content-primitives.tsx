@@ -21,7 +21,7 @@ const communityStatCard = tv({
   slots: {
     root: cn(
       revealClass(),
-      'community-stat flex flex-col items-start gap-1 rounded-lg p-4.5',
+      'community-stat flex min-h-25.25 flex-col items-start gap-0.5 rounded-lg px-4 py-3',
       communityStatCardMobileShell(),
     ),
     label: cn('relative z-1', 'max-dapp:w-full'),
@@ -98,7 +98,7 @@ export function CommunityStatCard({
         as="strong"
         variant="figure"
         tone={dark ? 'inverse' : 'foreground'}
-        className={cn(styles.value(), 'text-3xl leading-[1.2] tracking-[-0.04em]')}
+        className={cn(styles.value(), 'text-2xl leading-7 tracking-tight')}
       >
         {value}
       </Text>
@@ -107,7 +107,7 @@ export function CommunityStatCard({
           as="b"
           variant="headline"
           tone={dark ? 'primary-bright' : undefined}
-          className={cn(styles.volume(), 'text-sm leading-[1.2]', !dark && 'text-coral')}
+          className={cn(styles.volume(), 'text-sm leading-tight', !dark && 'text-coral')}
         >
           {volume}
         </Text>
