@@ -106,7 +106,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                   <AnchoredTooltip content={t.exchange.flip}>
                     <button
                       aria-label={t.exchange.flip}
-                      className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
+                      className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
                       onClick={vm.onTogglePriceInverted}
                       type="button"
                     >
@@ -125,7 +125,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
                   <button
                     aria-label={t.exchange.slippageSettings}
                     className={cn(
-                      'duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
+                      'duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
                       vm.sessionReady && !trade.walletReady && 'pointer-events-none opacity-40',
                     )}
                     disabled={vm.sessionReady && !trade.walletReady}

@@ -55,7 +55,8 @@ export function ExchangeTokenPicker({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         className={cn(
-          'inline-flex items-center gap-1.5 rounded-full border-0 bg-background py-1.25 pr-2.5 pl-1.5',
+          // Figma tk `4433:415`：icon24 + py-1.5 → pill h36；禁 py-1.25 落 34
+          'inline-flex items-center gap-2 rounded-full border-0 bg-background px-2.5 py-1.5',
           'transition-colors duration-150 ease-out hover:bg-muted',
           disabled ? 'cursor-default opacity-40' : 'cursor-pointer',
         )}

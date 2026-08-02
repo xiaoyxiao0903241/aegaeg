@@ -17,11 +17,11 @@ export function ExchangeProviderMetaValue({
       {name}
       <button
         aria-label={ariaLabel}
-        className="duration-dapp-fast grid size-6 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
+        className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
         onClick={onOpen}
         type="button"
       >
-        <DappIcon alt="" size="action" src={iconSrc} />
+        <DappIcon alt="" size="xs" src={iconSrc} />
       </button>
     </>
   )

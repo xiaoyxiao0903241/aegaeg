@@ -17,7 +17,8 @@ export const chipVariants = tv({
     size: {
       sm: 'px-2 py-1.5 text-(length:--type-caption-size) leading-none font-(--type-caption-weight) tracking-(--type-caption-tracking)',
       md: 'justify-center px-1.5 py-1.25 text-xs/normal font-semibold tracking-[-0.02em] max-dapp:py-1.5',
-      lg: 'justify-center px-4 py-2 text-sm/snug font-semibold tracking-[-0.02em]',
+      // Figma htab / tokTabs（Trade `4433:484`）h30：py-1.5 + text-base/leading-none → 28（Δ≤2）
+      lg: 'justify-center px-4 py-1.5 text-base leading-none font-semibold tracking-[-0.02em]',
     },
     shape: {
       pill: 'rounded-full',
