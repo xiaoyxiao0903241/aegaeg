@@ -20,6 +20,7 @@ export function StakingHubWidget() {
       <DappWidgetStack>
         <DappModeCard
           body={t.staking.hub.modes.stake.body}
+          density="compact"
           icon={stakingHubAssets.modeStake}
           onClick={() => openStakingView('stake')}
           title={t.staking.hub.modes.stake.title}
@@ -27,24 +28,28 @@ export function StakingHubWidget() {
         />
         <DappModeCard
           body={t.staking.hub.modes.lpbond.body}
+          density="compact"
           icon={stakingHubAssets.modeLpBond}
           onClick={() => openStakingView('lpbond')}
           title={t.staking.hub.modes.lpbond.title}
         />
         <DappModeCard
           body={t.staking.hub.modes.burnbond.body}
+          density="compact"
           icon={stakingHubAssets.modeBurnBond}
           onClick={() => openStakingView('burnbond')}
           title={t.staking.hub.modes.burnbond.title}
         />
         <DappModeCard
           body={t.staking.hub.modes.xmine.body}
+          density="compact"
           icon={stakingHubAssets.modeXmine}
           onClick={() => openStakingView('xmine')}
           title={t.staking.hub.modes.xmine.title}
         />
         <DappModeCard
           body={t.staking.hub.modes.calc.body}
+          density="compact"
           icon={stakingHubAssets.modeCalc}
           onClick={() => openStakingView('calc')}
           title={t.staking.hub.modes.calc.title}

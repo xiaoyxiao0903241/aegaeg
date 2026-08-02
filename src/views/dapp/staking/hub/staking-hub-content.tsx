@@ -104,7 +104,7 @@ export function StakingHubContent() {
 
             return (
               <MetricCard
-                className="h-full gap-1.5 p-4"
+                className="h-full gap-1 px-4 py-3.5"
                 key={metric.id}
                 label={
                   <span className="flex items-center gap-1">
@@ -203,15 +203,16 @@ export function StakingHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{chart.title}</DappContentHeading>
+        {/* Figma metric-tabs `4585:44` 轨高 32 — `h-8` 标准刻度；size sm 对齐 pad/thumb */}
         <Segment
           aria-label={chart.metricAria}
-          className="mb-3 w-fit"
+          className="mb-3 h-8 w-fit"
           onChange={setChartMetric}
           options={[
             { label: chart.metricTabs.tvl, value: 'tvl' },
             { label: chart.metricTabs.mcap, value: 'mcap' },
           ]}
-          size="md"
+          size="sm"
           tone="coral"
           value={chartMetric}
         />
