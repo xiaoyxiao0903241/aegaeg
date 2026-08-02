@@ -43,7 +43,7 @@
 | 23 | 创世奖 | `4413:220` | pending | |
 | 24 | 释放 Hub | `4298:212` | **page-done** | `research/143-release-hub-fresh-leaf.md` · `a664f1f2` |
 | 25 | 队列 | `4466:220` | **page-done** | `research/144-release-queue-fresh-leaf.md` · `f11a060e` |
-| 26 | 缓冲 | `4469:220` | **page-done** | `research/145-release-buffer-fresh-leaf.md` |
+| 26 | 缓冲 | `4469:220` | **page-done** | `research/145-release-buffer-fresh-leaf.md` · `9cb8a214` |
 | 27 | 社区 Hub | `4300:212` | **page-done** | `research/146-community-hub-fresh-leaf.md` |
 | 28 | 创世 Hub | `4303:212` | **page-done** | `research/147-genesis-hub-fresh-leaf.md` |
 
