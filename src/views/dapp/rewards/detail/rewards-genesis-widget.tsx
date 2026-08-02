@@ -26,7 +26,7 @@ export function RewardsGenesisClaimWidget() {
         title={vm.g.pageTitle}
       />
       <DappWidgetStack>
-        <div className={banner.root({ className: 'gap-3.5 p-4' })}>
+        <div className={banner.root({ className: 'min-h-42.75 gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
             <Text as="p" className="text-primary" variant="caption">
               {t.rewards.heroKicker}
@@ -75,38 +75,40 @@ export function RewardsGenesisClaimWidget() {
           </div>
         </div>
 
-        <Card surface="outlined" className="rounded-2xl px-5 py-4">
+        {/* Figma 直推 100 / 等级·基金 125：min-h 合成；内 CTA 38=density inverse */}
+        <Card surface="outlined" className="min-h-25 rounded-2xl px-5 py-4">
           <div className="flex items-center justify-between gap-2">
-            <Text as="p" tone="muted-foreground" variant="caption">
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.referralRewards}
             </Text>
-            <Text as="p" className="font-semibold text-primary" variant="caption">
+            <Text as="p" className="leading-4 font-semibold text-primary" variant="support">
               {t.rewards.autoPaidLabel}
             </Text>
           </div>
           <Text as="p" className="mt-2 font-semibold" variant="headline">
             {vm.referralValue}
           </Text>
-          <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
+          <Text as="p" className="mt-2 leading-4" tone="muted-foreground" variant="support">
             {t.rewards.autoPaid}
           </Text>
         </Card>
 
-        <Card surface="outlined" className="rounded-2xl px-5 py-4">
+        <Card surface="outlined" className="min-h-31.25 rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
-            <Text as="p" tone="muted-foreground" variant="caption">
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.teamRewards}
             </Text>
-            <Text as="p" tone="muted-foreground" variant="caption">
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {vm.teamMeta}
             </Text>
           </div>
-          <Text as="p" className="mt-2 font-semibold" variant="headline">
+          <Text as="p" className="mt-1.5 font-semibold" variant="headline">
             {vm.teamClaimable}
           </Text>
           {vm.walletReady ? (
             <DappActionButton
-              className="mt-3"
+              className="mt-2.5"
+              density="inverse"
               disabled={
                 !vm.sessionReady ||
                 vm.teamClaimableValue <= 0 ||
@@ -122,23 +124,24 @@ export function RewardsGenesisClaimWidget() {
           ) : null}
         </Card>
 
-        <Card surface="outlined" className="rounded-2xl px-5 py-4">
+        <Card surface="outlined" className="min-h-31.25 rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
-            <Text as="p" tone="muted-foreground" variant="caption">
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.communityFund}
             </Text>
-            <Text as="p" tone="muted-foreground" variant="caption">
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {vm.communityLockedMeta}
             </Text>
           </div>
-          <Text as="p" className="mt-2 font-semibold" variant="headline">
+          <Text as="p" className="mt-1.5 font-semibold" variant="headline">
             {vm.isSuperCommunity || !vm.sessionReady
               ? vm.communityClaimable
               : formatApiDecimalAmount(null)}
           </Text>
           {vm.walletReady ? (
             <DappActionButton
-              className="mt-3"
+              className="mt-2.5"
+              density="inverse"
               disabled={
                 !vm.sessionReady ||
                 !vm.isSuperCommunity ||
