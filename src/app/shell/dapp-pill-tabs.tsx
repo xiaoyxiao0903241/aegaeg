@@ -1,5 +1,5 @@
 import { cn } from '~/shared/lib/utils'
-import { Chip } from '~/shared/ui/chip'
+import { Chip, type ChipProps } from '~/shared/ui/chip'
 
 export function DappPillTabs({
   activeTone = 'primary',
@@ -7,6 +7,7 @@ export function DappPillTabs({
   className,
   items,
   onSelect,
+  size = 'lg',
 }: {
   /** Active pill text/bg tone — Rewards history uses `coral` (Figma #c85c3f). */
   activeTone?: 'primary' | 'coral'
@@ -14,6 +15,8 @@ export function DappPillTabs({
   className?: string
   items: Array<{ active?: boolean; label: string }>
   onSelect?: (index: number) => void
+  /** Figma tokTabs/htab ≈ lg(30)；销毁记录 tt ≈ md(24)。 */
+  size?: NonNullable<ChipProps['size']>
 }) {
   return (
     <div
@@ -28,7 +31,7 @@ export function DappPillTabs({
           onClick={() => onSelect?.(index)}
           role="tab"
           shape="pill"
-          size="lg"
+          size={size}
           type="button"
           variant={item.active ? 'soft' : 'outlined'}
           tone={item.active ? activeTone : 'default'}

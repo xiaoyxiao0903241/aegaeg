@@ -361,6 +361,7 @@ const app = defineMessages({
         emptyConsume:
           'No consumption records yet. After claiming rewards that consume contribution points, each record will appear here.',
         tabsAriaLabel: 'Burn history tabs',
+        testContribution: 'Set contribution (test)',
         tabs: {
           burn: 'Burn',
           consume: 'Consume',

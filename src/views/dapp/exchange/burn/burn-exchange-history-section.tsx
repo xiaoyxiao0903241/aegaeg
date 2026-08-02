@@ -13,7 +13,7 @@ export function BurnExchangeHistorySection() {
         <DappPillTabs
           activeTone="coral"
           ariaLabel={vm.t.exchange.burn.history.tabsAriaLabel}
-          className="flex items-center justify-start gap-2"
+          className="flex items-center justify-start gap-2 [&_button]:h-6 [&_button]:min-h-6 [&_button]:py-0"
           items={vm.tabOptions.map((option) => ({
             active: option.value === vm.tab,
             label: option.label,
@@ -22,6 +22,7 @@ export function BurnExchangeHistorySection() {
             const next = vm.tabOptions[index]
             if (next) vm.setTab(next.value)
           }}
+          size="md"
         />
       }
     >

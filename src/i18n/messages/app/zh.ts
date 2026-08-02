@@ -353,6 +353,7 @@ const app = defineMessages({
         emptyBurn: '暂无销毁记录，销毁 AGX 获得贡献点数后，这里将展示您的每一笔操作。',
         emptyConsume: '暂无消耗记录，领取收益或奖励消耗贡献点数后，这里将展示您的每一笔记录。',
         tabsAriaLabel: '销毁记录分类',
+        testContribution: '设置贡献点数(测试)',
         tabs: {
           burn: '销毁',
           consume: '消耗',
