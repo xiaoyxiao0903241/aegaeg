@@ -27,6 +27,11 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
         opsColumns={t.assets.opsColumns}
         opsEmpty={copy.ops.empty}
         opsLoading={ops.isLoading}
+        opsPagination={{
+          page: ops.page,
+          total: ops.sessionReady ? ops.total : 0,
+          onPageChange: ops.setPage,
+        }}
         opsRows={ops.rows}
         opsTitle={copy.ops.title}
         statsTitle={stats.title}

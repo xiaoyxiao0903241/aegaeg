@@ -1,7 +1,6 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
 import {
   ASSETS_POSITION_AGX_DECIMALS,
@@ -12,6 +11,7 @@ import {
   type AssetsPositionRowShellProps,
   AssetsPositionYieldColumn,
 } from '~/views/dapp/assets/position/assets-position-row-chrome'
+import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/assets-position-voucher-link'
 import type { AssetsStakeRow } from '~/web3/assets/assets-read'
 
 export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<AssetsStakeRow>) {
@@ -23,17 +23,19 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
   const canRedeem =
     row.kind === 'liquid' ? !inWarmup && row.principal > 0n : row.claimableBalance > 0n
   const periodLabel = formatPeriodLabel(row.period)
-  const voucher =
-    row.kind === 'locked' && row.pool ? `${row.pool.slice(0, 6)}…${row.pool.slice(-4)}` : null
+  const voucherAddress = row.kind === 'locked' && row.pool ? row.pool : null
+  // 活期 expiry 为 epoch 编号，勿当 unix；非 warmup →「随时可赎回」
   const remainingValue = inWarmup
     ? t.assets.blocked.warmupActive
-    : row.kind === 'liquid' && row.expiry <= 0n
+    : row.kind === 'liquid'
       ? t.assets.position.redeemAnytime
       : undefined
+  const dayUnit = t.assets.claim.releaseDays.replace('{days}', '').trim()
 
   return (
     <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
       <AssetsPositionRowHeader
+        dayUnit={dayUnit}
         periodLabel={periodLabel}
         remainingAt={row.expiry}
         remainingLabel={t.assets.position.remaining}
@@ -52,26 +54,18 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
         <AssetsPositionYieldColumn
           amountText={`${formatTokenAmount(reward, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
           badge={
-            row.extraInterest > 0n ? (
-              <AssetsPositionBoostBadge
-                text={`${formatTokenAmount(row.extraInterest, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
-              />
-            ) : null
+            // 稿 boost chip：有加成显示；无加成仍占位 opacity-0（禁砍 chrome）
+            <AssetsPositionBoostBadge
+              className={row.extraInterest > 0n ? undefined : 'pointer-events-none opacity-0'}
+              text={`${formatTokenAmount(row.extraInterest, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
+            />
           }
           quoteUsd={quote === 'usd' ? formatRewardUsd(reward) : undefined}
           yieldLabel={t.assets.position.yield}
         />
       </div>
-      {voucher ? (
-        // Figma `4525:331` vr：左对齐（禁 justify-end 推到右缘）
-        <div className="flex items-center justify-start gap-1">
-          <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
-            {t.assets.position.voucher}
-          </Text>
-          <Text as="span" className="text-xs" variant="detail">
-            {voucher}
-          </Text>
-        </div>
+      {voucherAddress ? (
+        <AssetsPositionVoucherLink address={voucherAddress} label={t.assets.position.voucher} />
       ) : null}
       <AssetsPositionRowActions
         busy={busy}

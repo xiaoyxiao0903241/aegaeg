@@ -34,6 +34,18 @@ function mapPricedStats(
   }))
 }
 
+/** 读失败诚实空（禁用 0.00 冒充）。未连接 / 加载中仍用稿空态 0.00。 */
+function errorStatCells(count: number): AssetsPositionStatCell[] {
+  return Array.from({ length: count }, () => ({ value: '—' }))
+}
+
+function zeroStatCells(count: number, unit: 'AGX' | 'gAGX' = 'AGX'): AssetsPositionStatCell[] {
+  return Array.from({ length: count }, () => ({
+    value: `0.00 ${unit}`,
+    approx: formatApproxUsd(0, null),
+  }))
+}
+
 /** Right-rail position stats — aggregates existing assets reads (38 §4, no fake numbers). */
 export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionStatCell[] {
   const { walletReady } = useDappShell()
@@ -41,27 +53,16 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
   const address = account?.address
   const priceUsd = useAgxPriceUsd()
   const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
+  const stakeCount = 6
+  const bondCount = 5
 
   if (!walletReady || !address) {
-    return Array.from({ length: product === 'stake' ? 6 : 5 }, () => ({
-      value: '0.00 AGX',
-      approx: formatApproxUsd(0, null),
-    }))
+    return zeroStatCells(product === 'stake' ? stakeCount : bondCount)
   }
 
   if (product === 'stake') {
-    if (stakeQuery.isError) {
-      return Array.from({ length: 6 }, () => ({
-        value: '0.00 AGX',
-        approx: formatApproxUsd(0, null),
-      }))
-    }
-    if (stakeQuery.data === undefined) {
-      return Array.from({ length: 6 }, () => ({
-        value: '0.00 AGX',
-        approx: formatApproxUsd(0, null),
-      }))
-    }
+    if (stakeQuery.isError) return errorStatCells(stakeCount)
+    if (stakeQuery.data === undefined) return zeroStatCells(stakeCount)
     const rows = stakeQuery.data
     const total = rows.reduce((sum, row) => sum + row.principal, 0n)
     const released = rows.reduce((sum, row) => sum + row.releasedPrincipal, 0n)
@@ -87,19 +88,9 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
     )
   }
 
-  // LP `4518:5993` / Burn `4518:6384`: 我的持仓 / 已释放 / 待释放 / 当前Rebase / 总收益(无累计 → 0)
-  if (bondQuery.isError) {
-    return Array.from({ length: 5 }, () => ({
-      value: '0.00 AGX',
-      approx: formatApproxUsd(0, null),
-    }))
-  }
-  if (bondQuery.data === undefined) {
-    return Array.from({ length: 5 }, () => ({
-      value: '0.00 AGX',
-      approx: formatApproxUsd(0, null),
-    }))
-  }
+  // LP / Burn：总收益无累计 API → 诚实 `—`（禁硬编码 0.00 冒充实数）
+  if (bondQuery.isError) return errorStatCells(bondCount)
+  if (bondQuery.data === undefined) return zeroStatCells(bondCount)
 
   const rows = bondQuery.data
   const total = rows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
@@ -121,6 +112,6 @@ export function useAssetsPositionStats(product: AssetsProduct): AssetsPositionSt
       ],
       priceUsd,
     ),
-    { value: '0.00 gAGX', icon: 'gagx', approx: formatApproxUsd(0, null) },
+    { value: '—' },
   ]
 }

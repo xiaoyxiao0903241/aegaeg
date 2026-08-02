@@ -27,6 +27,7 @@ import { createWebBridge } from './lib/webbridge.mjs'
 /** @type {Record<string, string>} */
 const PROFILES = {
   'assets-hub': './profiles/assets-hub.mjs',
+  'assets-stake': './profiles/assets-stake.mjs',
   'staking-hub': './profiles/staking-hub.mjs',
   'staking-stake': './profiles/staking-stake.mjs',
 }

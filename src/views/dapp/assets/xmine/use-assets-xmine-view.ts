@@ -72,7 +72,7 @@ export function useAssetsXmineView() {
 
   const position = positionQuery.data
   const isEmpty = !position || (position.miningStake <= 0n && position.pending <= 0n)
-  const voucher = `${BSC_CONTRACTS.xStakingPool.slice(0, 6)}…${BSC_CONTRACTS.xStakingPool.slice(-4)}`
+  const voucherAddress = BSC_CONTRACTS.xStakingPool
   const totalRows = isEmpty ? 0 : 1
 
   const busy = claim.isPending || activateWarmup.isPending || unstake.isPending
@@ -112,7 +112,7 @@ export function useAssetsXmineView() {
     isLoading: positionQuery.isLoading,
     position,
     isEmpty,
-    voucher,
+    voucherAddress,
     totalRows,
     busy,
     locked,

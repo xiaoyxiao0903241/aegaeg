@@ -45,6 +45,8 @@ type DappTablePaginationProps = {
   className?: string
   /** Inside `DappTableCard` footer — drops outer top margin. */
   embedded?: boolean
+  /** 资产仓位等稿：单页/空表也保留分页 chrome；默认仍走 shouldShowTablePagination */
+  forceShow?: boolean
   /** Left-side summary beside row count — shown even when pagination is hidden. */
   summary?: ReactNode
   onPageChange: (page: number) => void
@@ -97,6 +99,7 @@ function styleForMenu(
 export function DappTablePagination({
   className,
   embedded = false,
+  forceShow = false,
   summary,
   onPageChange,
   page,
@@ -166,7 +169,7 @@ export function DappTablePagination({
     }
   }, [menuOpen, updateMenuPosition])
 
-  const showPagination = shouldShowTablePagination(total, pageSize)
+  const showPagination = forceShow || shouldShowTablePagination(total, pageSize)
   if (!showPagination && summary == null) return null
 
   return (
@@ -220,7 +223,8 @@ export function DappTablePagination({
             <button
               aria-label={t.common.paginationPrev}
               className={cn(
-                'inline-flex size-8 cursor-pointer items-center justify-center bg-pill-muted-bg text-coral transition-colors',
+                // 稿 chevron btn 24×24（禁 size-8=32）
+                'inline-flex size-6 cursor-pointer items-center justify-center bg-pill-muted-bg text-coral transition-colors',
                 PAGINATION_BTN_RADIUS,
                 canPrev ? 'hover:bg-border/80' : 'cursor-default opacity-40',
               )}
@@ -237,7 +241,8 @@ export function DappTablePagination({
                 aria-expanded={menuOpen}
                 aria-haspopup="listbox"
                 className={cn(
-                  'inline-flex h-8 w-20 cursor-pointer items-center justify-center gap-0.5 px-3 text-xs font-semibold text-coral transition-colors',
+                  // 稿 page-indicator 61×24
+                  'inline-flex h-6 min-w-15.25 cursor-pointer items-center justify-center gap-0.5 px-3 text-xs font-semibold text-coral transition-colors',
                   PAGINATION_BTN_RADIUS,
                   'bg-accent',
                 )}
@@ -320,7 +325,7 @@ export function DappTablePagination({
             <button
               aria-label={t.common.paginationNext}
               className={cn(
-                'inline-flex size-8 cursor-pointer items-center justify-center bg-pill-muted-bg text-coral transition-colors',
+                'inline-flex size-6 cursor-pointer items-center justify-center bg-pill-muted-bg text-coral transition-colors',
                 PAGINATION_BTN_RADIUS,
                 canNext ? 'hover:bg-border/80' : 'cursor-default opacity-40',
               )}

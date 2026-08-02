@@ -73,6 +73,8 @@ export function ResponsiveTable({
   headers,
   highlightedRows = [],
   isLoading = false,
+  /** 资产仓位等稿：空态仍留表头；默认 false（空态仅 DappTableEmptyMessage） */
+  keepHeaderWhenEmpty = false,
   linkColumns = [],
   loadingRowCount = 3,
   positiveColumns = [],
@@ -86,6 +88,7 @@ export function ResponsiveTable({
   headers: string[]
   highlightedRows?: number[]
   isLoading?: boolean
+  keepHeaderWhenEmpty?: boolean
   linkColumns?: number[]
   loadingRowCount?: number
   positiveColumns?: number[]
@@ -93,8 +96,10 @@ export function ResponsiveTable({
   statusColumns?: number[]
 }) {
   const styles = responsiveTable({ compact })
-  // 空态只显示 DappTableEmptyMessage，不留表头；loading 仍出表头 + skeleton。
-  if (!isLoading && rows.length === 0) return null
+  // 默认：空态只显示 DappTableEmptyMessage，不留表头；loading 仍出表头 + skeleton。
+  if (!isLoading && rows.length === 0 && !keepHeaderWhenEmpty) return null
+
+  const showBody = isLoading || rows.length > 0
 
   return (
     <div className={styles.root({ class: className })}>
@@ -113,67 +118,68 @@ export function ResponsiveTable({
           <tr>
             {headers.map((header) => (
               <th className={styles.cell()} key={header}>
-                <Text as="span" variant="copy" tone="muted-foreground" className={styles.text()}>
+                <Text as="span" className="text-foreground/40" variant="copy">
                   {header}
                 </Text>
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>
-          {isLoading
-            ? Array.from({ length: loadingRowCount }, (_, rowIndex) => (
-                <TableRowSkeleton
-                  columns={headers.length}
-                  isLast={rowIndex === loadingRowCount - 1}
-                  key={`loading-${rowIndex}`}
-                />
-              ))
-            : rows.map((row, rowIndex) => (
-                <tr
-                  className={highlightedRows.includes(rowIndex) ? highlightedRow : ''}
-                  key={`${row[0]}-${rowIndex}`}
-                >
-                  {row.map((cell, index) => {
-                    const isStatus = statusColumns.includes(index)
-                    const isPlain = typeof cell === 'string' || typeof cell === 'number'
-                    const cellStyles = responsiveTable({
-                      lastRow: rowIndex === rows.length - 1,
-                      link: !isStatus && isPlain === false && linkColumns.includes(index),
-                      emphasis: !isStatus && isPlain === false && emphasisColumns.includes(index),
-                      positive: !isStatus && isPlain === false && positiveColumns.includes(index),
-                    })
-
-                    return (
-                      <td className={cellStyles.cell()} key={`${rowIndex}-${index}`}>
-                        {isStatus ? (
-                          <StatusBadge>{cell}</StatusBadge>
-                        ) : isPlain ? (
-                          <Text
-                            as="span"
-                            variant="copy"
-                            className={responsiveTable({
-                              link: linkColumns.includes(index),
-                              emphasis: emphasisColumns.includes(index),
-                              positive: positiveColumns.includes(index),
-                            }).text({
-                              class:
-                                highlightedRows.includes(rowIndex) && index === 0
-                                  ? 'text-coral'
-                                  : undefined,
-                            })}
-                          >
-                            {cell}
-                          </Text>
-                        ) : (
-                          cell
-                        )}
-                      </td>
-                    )
-                  })}
-                </tr>
-              ))}
-        </tbody>
+        {showBody ? (
+          <tbody>
+            {isLoading
+              ? Array.from({ length: loadingRowCount }, (_, rowIndex) => (
+                  <TableRowSkeleton
+                    columns={headers.length}
+                    isLast={rowIndex === loadingRowCount - 1}
+                    key={`loading-${rowIndex}`}
+                  />
+                ))
+              : rows.map((row, rowIndex) => (
+                  <tr
+                    className={highlightedRows.includes(rowIndex) ? highlightedRow : ''}
+                    key={`${row[0]}-${rowIndex}`}
+                  >
+                    {row.map((cell, index) => {
+                      const isStatus = statusColumns.includes(index)
+                      const isPlain = typeof cell === 'string' || typeof cell === 'number'
+                      const cellStyles = responsiveTable({
+                        lastRow: rowIndex === rows.length - 1,
+                        link: !isStatus && isPlain === false && linkColumns.includes(index),
+                        emphasis: !isStatus && isPlain === false && emphasisColumns.includes(index),
+                        positive: !isStatus && isPlain === false && positiveColumns.includes(index),
+                      })
+                      return (
+                        <td className={cellStyles.cell()} key={`${rowIndex}-${index}`}>
+                          {isStatus ? (
+                            <StatusBadge>{cell}</StatusBadge>
+                          ) : isPlain ? (
+                            <Text
+                              as="span"
+                              variant="copy"
+                              className={responsiveTable({
+                                link: linkColumns.includes(index),
+                                emphasis: emphasisColumns.includes(index),
+                                positive: positiveColumns.includes(index),
+                              }).text({
+                                class:
+                                  highlightedRows.includes(rowIndex) && index === 0
+                                    ? 'text-coral'
+                                    : undefined,
+                              })}
+                            >
+                              {cell}
+                            </Text>
+                          ) : (
+                            cell
+                          )}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                ))}
+          </tbody>
+        ) : null}
       </table>
     </div>
   )

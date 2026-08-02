@@ -215,6 +215,7 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-03 | 资产仓位 LP/Burn「总收益」无累计 API/链汇总 → UI 诚实 `—`（禁硬编码 0.00）                                                   |
 | 2026-08-03 | 写后刷新：`invalidateAfterStaking`→staking+assets+lucky+indexer poll；活期读 `warmupStakes`                                  |
 | 2026-08-03 | rebase：按 `rebases[]` append 下标探测（禁用 epoch.number）；gaps 依赖位改「部分」；poll 收窄                                |
 | 2026-08-03 | Calc：gaps §3.5 澄清手册加成 10/15/20、notes 线性释放/1/6 DEFER、Xmine 诚实 0；#16 Pre-Design 重启                           |

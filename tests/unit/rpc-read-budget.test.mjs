@@ -130,6 +130,7 @@ test('readStakePositions locked: count + getStakes + aggregate3 (not N getStake)
       calls.push(request.functionName)
       if (request.functionName === 'migratedFrom') return ZERO
       if (request.functionName === 'stakes') return [0n, 0n, 0n, 0n, false]
+      if (request.functionName === 'warmupStakes') return [0n, 0n, 0n, 0n, false]
       if (request.functionName === 'getStakeRewards') return [0n, 0n]
       if (request.functionName === 'getStakesCount') {
         // 仅第一个 locked 池有仓；其余 0 跳过 getStakes（手册空列表勿调）。

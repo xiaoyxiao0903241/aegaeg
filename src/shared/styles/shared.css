@@ -63,6 +63,8 @@ body {
     var(--background);
   color: var(--muted-foreground);
   letter-spacing: 0;
+  /* 全站数字等宽，避免金额跳动 */
+  font-variant-numeric: tabular-nums;
 }
 
 button,

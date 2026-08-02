@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('tablePageQuery uses DApp table page size', async () => {
@@ -10,7 +11,7 @@ test('tablePageQuery uses DApp table page size', async () => {
   assert.deepEqual(tablePageQuery(2), { page: 2, page_size: DAPP_TABLE_PAGE_SIZE })
 })
 
-test('shouldShowTablePagination hides pagination when total fits one page', async () => {
+test('shouldShowTablePagination hides when total fits one page', async () => {
   const { DAPP_TABLE_PAGE_SIZE, shouldShowTablePagination } = await loadModule(
     '/src/shared/lib/table-pagination.ts',
   )

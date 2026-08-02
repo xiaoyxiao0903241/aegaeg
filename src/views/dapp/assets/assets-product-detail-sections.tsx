@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
@@ -6,6 +6,7 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Card } from '~/shared/ui/card'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
@@ -29,6 +30,7 @@ export function AssetsProductDetailSections({
   opsColumns,
   opsRows,
   opsLoading,
+  opsPagination,
   faqTitle,
   faqItems,
 }: {
@@ -41,6 +43,13 @@ export function AssetsProductDetailSections({
   opsColumns: ReadonlyArray<string>
   opsRows: ComponentProps<typeof ResponsiveTable>['rows']
   opsLoading: boolean
+  /** 右栏操作记录分页（稿 DappTablePagination）；缺省不渲染 */
+  opsPagination?: {
+    page: number
+    total: number
+    onPageChange: (page: number) => void
+    summary?: ReactNode
+  }
   faqTitle: string
   faqItems: ReadonlyArray<FaqListItem>
 }) {
@@ -69,8 +78,7 @@ export function AssetsProductDetailSections({
               >
                 <Text
                   as="span"
-                  className="leading-4 font-medium"
-                  tone="muted-foreground"
+                  className="leading-4 font-medium text-foreground/40"
                   variant="support"
                 >
                   {metric.label}
@@ -79,12 +87,13 @@ export function AssetsProductDetailSections({
                   {iconSrc ? (
                     <DappIcon alt="" className="rounded-control" size="lg" src={iconSrc} />
                   ) : null}
-                  <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
+                  {/* 稿 stat value SemiBold 16 */}
+                  <Text as="strong" className="text-base leading-5 font-semibold" variant="copy">
                     <DappCountValue text={cell?.value ?? '0.00'} />
                   </Text>
                 </div>
                 {cell?.approx != null ? (
-                  <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+                  <Text as="span" className="leading-4 text-foreground/40" variant="support">
                     <DappCountValue text={cell.approx} />
                   </Text>
                 ) : null}
@@ -96,11 +105,25 @@ export function AssetsProductDetailSections({
 
       <DappDetailBlock>
         <DappContentHeading>{opsTitle}</DappContentHeading>
-        <DappTableCard>
+        <DappTableCard
+          footer={
+            opsPagination ? (
+              <DappTablePagination
+                embedded
+                forceShow
+                onPageChange={opsPagination.onPageChange}
+                page={opsPagination.page}
+                summary={opsPagination.summary}
+                total={opsPagination.total}
+              />
+            ) : undefined
+          }
+        >
           <ResponsiveTable
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...opsColumns]}
             isLoading={opsLoading}
+            keepHeaderWhenEmpty
             rows={opsRows}
           />
           {!opsLoading && opsRows.length === 0 ? (

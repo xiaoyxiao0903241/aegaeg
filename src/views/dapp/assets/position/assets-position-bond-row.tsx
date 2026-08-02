@@ -1,7 +1,6 @@
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/ui/card'
-import { Text } from '~/shared/ui/text'
 import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
 import {
   ASSETS_POSITION_AGX_DECIMALS,
@@ -11,6 +10,7 @@ import {
   type AssetsPositionRowShellProps,
   AssetsPositionYieldColumn,
 } from '~/views/dapp/assets/position/assets-position-row-chrome'
+import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/assets-position-voucher-link'
 import type { AssetsBondRow } from '~/web3/assets/assets-read'
 
 export function AssetsPositionBondRow({
@@ -27,11 +27,12 @@ export function AssetsPositionBondRow({
   const canClaim = row.profit > 0n
   const canRedeem = row.pendingPayout > 0n
   const periodLabel = formatPeriodLabel(String(row.period))
-  const voucher = `${row.depository.slice(0, 6)}…${row.depository.slice(-4)}`
+  const dayUnit = t.assets.claim.releaseDays.replace('{days}', '').trim()
 
   return (
     <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
       <AssetsPositionRowHeader
+        dayUnit={dayUnit}
         periodLabel={periodLabel}
         remainingAt={row.vestingEndTime}
         remainingLabel={t.assets.position.remaining}
@@ -52,14 +53,7 @@ export function AssetsPositionBondRow({
           yieldLabel={t.assets.position.yield}
         />
       </div>
-      <div className="flex items-center justify-start gap-1">
-        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
-          {t.assets.position.voucher}
-        </Text>
-        <Text as="span" className="leading-4" variant="support">
-          {voucher}
-        </Text>
-      </div>
+      <AssetsPositionVoucherLink address={row.depository} label={t.assets.position.voucher} />
       <AssetsPositionRowActions
         busy={busy}
         canClaim={canClaim}

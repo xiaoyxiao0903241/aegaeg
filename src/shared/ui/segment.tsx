@@ -242,7 +242,10 @@ export function Segment({
                 'whitespace-nowrap',
                 active
                   ? tone === 'ink'
-                    ? 'font-semibold text-foreground'
+                    ? // sm Quote Currency 稿 Regular 400；lg tabs 仍 semibold
+                      size === 'lg'
+                      ? 'font-semibold text-foreground'
+                      : 'font-normal text-foreground'
                     : 'font-medium text-coral-emphasis'
                   : 'font-medium text-foreground/40',
               )}

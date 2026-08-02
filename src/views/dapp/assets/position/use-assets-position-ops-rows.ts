@@ -1,28 +1,46 @@
+import { useEffect, useState } from 'react'
+
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useBondFlowBurnLogs, useBondFlowLpLogs, useStakeFlowLogs } from '~/hooks/use-api-data'
 import { mapBondFlowLogToOpsRow, mapStakeFlowLogToOpsRow } from '~/shared/api/map-flow-log-rows'
-import type { AssetsProduct } from '~/views/dapp/assets/position/assets-position-widget'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
+import type { AssetsProduct } from '~/views/dapp/assets/position/use-assets-position-widget'
 
 export function useAssetsPositionOpsRows(product: AssetsProduct) {
   const { sessionReady } = useDappShell()
-  const stakeLogs = useStakeFlowLogs({}, sessionReady && product === 'stake')
-  const lpLogs = useBondFlowLpLogs({}, sessionReady && product === 'lpbond')
-  const burnLogs = useBondFlowBurnLogs({}, sessionReady && product === 'burnbond')
+  const [page, setPage] = useState(1)
+  const params = tablePageQuery(page)
+
+  useEffect(() => {
+    setPage(1)
+  }, [product])
+
+  const stakeLogs = useStakeFlowLogs(params, sessionReady && product === 'stake')
+  const lpLogs = useBondFlowLpLogs(params, sessionReady && product === 'lpbond')
+  const burnLogs = useBondFlowBurnLogs(params, sessionReady && product === 'burnbond')
+
+  const base = { page, setPage, sessionReady }
 
   if (product === 'stake') {
     return {
+      ...base,
       rows: stakeLogs.data?.items.map(mapStakeFlowLogToOpsRow) ?? [],
+      total: stakeLogs.data?.total ?? 0,
       isLoading: sessionReady && stakeLogs.isLoading,
     }
   }
   if (product === 'lpbond') {
     return {
+      ...base,
       rows: lpLogs.data?.items.map(mapBondFlowLogToOpsRow) ?? [],
+      total: lpLogs.data?.total ?? 0,
       isLoading: sessionReady && lpLogs.isLoading,
     }
   }
   return {
+    ...base,
     rows: burnLogs.data?.items.map(mapBondFlowLogToOpsRow) ?? [],
+    total: burnLogs.data?.total ?? 0,
     isLoading: sessionReady && burnLogs.isLoading,
   }
 }

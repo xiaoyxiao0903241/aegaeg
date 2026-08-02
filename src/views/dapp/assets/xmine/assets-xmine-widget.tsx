@@ -2,10 +2,10 @@ import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { openStakingView } from '~/shared/config/dapp-open-views'
-import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
 import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
 import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
+import { AssetsListPager } from '~/views/dapp/assets/position/assets-list-pager'
+import { AssetsPositionListSkeleton } from '~/views/dapp/assets/position/assets-position-row-skeleton'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/assets-xmine-position-card'
 import { useAssetsXmineView } from '~/views/dapp/assets/xmine/use-assets-xmine-view'
@@ -36,9 +36,7 @@ export function AssetsXmineWidget() {
         {!vm.walletReady ? (
           <DappWidgetConnectPromo />
         ) : vm.isLoading ? (
-          <Text as="p" tone="muted-foreground" variant="copy">
-            …
-          </Text>
+          <AssetsPositionListSkeleton count={1} />
         ) : vm.isEmpty || !position ? (
           <AssetsPositionEmptyCard
             body={copy.empty}
@@ -66,7 +64,7 @@ export function AssetsXmineWidget() {
             redeemLabel={t.assets.position.redeem}
             remainingCaption={t.assets.position.remaining}
             stakedCaption={t.assets.position.staked}
-            voucher={vm.voucher}
+            voucherAddress={vm.voucherAddress}
             voucherCaption={t.assets.position.voucher}
             warmupEndTime={position.warmupEndTime}
             warmupGons={position.warmupGons}
@@ -74,34 +72,13 @@ export function AssetsXmineWidget() {
         )}
 
         {!vm.isEmpty && vm.walletReady ? (
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-            <Text as="span" tone="muted-foreground" variant="detail">
-              {t.common.paginationTotal.replace('{total}', String(vm.totalRows))} ·{' '}
-              {t.common.paginationPerPage.replace('{size}', String(vm.pageSize))}
-            </Text>
-            <div className="flex gap-2">
-              <Button
-                className="size-auto min-h-0 px-3 py-1 text-xs"
-                disabled
-                shape="pill"
-                size="sm"
-                type="button"
-                variant="ghost"
-              >
-                {t.common.paginationPrev}
-              </Button>
-              <Button
-                className="size-auto min-h-0 px-3 py-1 text-xs"
-                disabled
-                shape="pill"
-                size="sm"
-                type="button"
-                variant="ghost"
-              >
-                {t.common.paginationNext}
-              </Button>
-            </div>
-          </div>
+          <AssetsListPager
+            onPageChange={() => {}}
+            page={0}
+            pageCount={1}
+            pageSize={vm.pageSize}
+            total={vm.totalRows}
+          />
         ) : null}
       </DappWidgetStack>
 

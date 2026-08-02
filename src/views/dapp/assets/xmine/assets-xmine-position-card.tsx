@@ -7,6 +7,7 @@ import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
+import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/assets-position-voucher-link'
 
 const X_DECIMALS = EXCHANGE_CONFIG.tokens.x.decimals
 const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
@@ -28,7 +29,7 @@ export type AssetsXminePositionCardProps = {
   stakedCaption: string
   outputCaption: string
   voucherCaption: string
-  voucher: string
+  voucherAddress: string
   claimLabel: string
   redeemLabel: string
   quote: 'agx' | 'usd'
@@ -56,7 +57,7 @@ export function AssetsXminePositionCard({
   stakedCaption,
   outputCaption,
   voucherCaption,
-  voucher,
+  voucherAddress,
   claimLabel,
   redeemLabel,
   quote,
@@ -139,14 +140,7 @@ export function AssetsXminePositionCard({
         </div>
       </div>
       {/* Figma `4525:812` vr：左 x16（禁 justify-end） */}
-      <div className="flex items-center justify-start gap-1">
-        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
-          {voucherCaption}
-        </Text>
-        <Text as="span" className="leading-4" variant="support">
-          {voucher}
-        </Text>
-      </div>
+      <AssetsPositionVoucherLink address={voucherAddress} label={voucherCaption} />
       <div className="grid grid-cols-2 gap-3">
         {warmupReady ? (
           <DappActionButton

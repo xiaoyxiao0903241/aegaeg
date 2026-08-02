@@ -46,6 +46,10 @@ export function compareLeaf(measured, leaf, expected, opts = {}) {
   let ok = true
 
   if (!measured?.found) {
+    // 数据依赖 leaf（ops 行等）：无会话/无行时允许缺测，仍计入 R
+    if (leaf.optionalLocate === true) {
+      return { ok: true, verdicts: ['OPTIONAL_MISS'] }
+    }
     return { ok: false, verdicts: ['LOCATE_FAIL'] }
   }
 
@@ -53,13 +57,17 @@ export function compareLeaf(measured, leaf, expected, opts = {}) {
   const eh = leaf.h ?? null
   // chrome / deco 宽随内容列伸缩；只钉 h（若有）
   const skipWidth =
+    leaf.skipSize === true ||
     leaf.kind === 'chrome' ||
     opts.fluidWide === true ||
+    leaf.fluidWide === true ||
     /deco/i.test(leaf.name ?? '') ||
     (typeof ew === 'number' && ew >= 700)
 
+  const skipHeight = leaf.skipSize === true
+
   if (leaf.kind === 'surface' || leaf.kind === 'icon' || leaf.kind === 'chrome') {
-    if (typeof eh === 'number' && eh > 0 && Math.abs(measured.h - eh) > sizeTol) {
+    if (!skipHeight && typeof eh === 'number' && eh > 0 && Math.abs(measured.h - eh) > sizeTol) {
       ok = false
       verdicts.push(`SIZE:h ${measured.h}≠${eh}`)
     }
@@ -70,6 +78,7 @@ export function compareLeaf(measured, leaf, expected, opts = {}) {
   }
 
   if (
+    !leaf.skipFs &&
     expected.fs != null &&
     measured.fs != null &&
     Math.abs(measured.fs - expected.fs) > (opts.fsTol ?? 1)
@@ -78,12 +87,17 @@ export function compareLeaf(measured, leaf, expected, opts = {}) {
     verdicts.push(`FS:${measured.fs}≠${expected.fs}`)
   }
 
-  if (expected.fw != null && measured.fw != null && Math.abs(measured.fw - expected.fw) > 100) {
+  if (
+    !leaf.skipFw &&
+    expected.fw != null &&
+    measured.fw != null &&
+    Math.abs(measured.fw - expected.fw) > 100
+  ) {
     ok = false
     verdicts.push(`FW:${measured.fw}≠${expected.fw}`)
   }
 
-  if (expected.colorHint) {
+  if (expected.colorHint && !leaf.skipColor) {
     const got = measured.color
     if (got !== expected.colorHint) {
       ok = false

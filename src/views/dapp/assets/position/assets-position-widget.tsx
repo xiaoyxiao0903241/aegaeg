@@ -3,13 +3,13 @@ import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useI18n } from '~/i18n/use-i18n'
 import { openStakingView } from '~/shared/config/dapp-open-views'
-import { Button } from '~/shared/ui/button'
-import { Text } from '~/shared/ui/text'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
 import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
 import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
+import { AssetsListPager } from '~/views/dapp/assets/position/assets-list-pager'
 import { AssetsPositionBondRow } from '~/views/dapp/assets/position/assets-position-bond-row'
+import { AssetsPositionListSkeleton } from '~/views/dapp/assets/position/assets-position-row-skeleton'
 import { AssetsPositionStakeRow } from '~/views/dapp/assets/position/assets-position-stake-row'
 import {
   type AssetsProduct,
@@ -46,9 +46,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
         {!w.walletReady ? (
           <DappWidgetConnectPromo />
         ) : w.isLoading ? (
-          <Text as="p" tone="muted-foreground" variant="copy">
-            …
-          </Text>
+          <AssetsPositionListSkeleton />
         ) : w.isEmpty ? (
           <AssetsPositionEmptyCard
             body={w.copy.empty}
@@ -87,36 +85,13 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
         )}
 
         {!w.isEmpty && w.walletReady ? (
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-            <Text as="span" tone="muted-foreground" variant="detail">
-              {t.common.paginationTotal.replace('{total}', String(w.totalRows))} ·{' '}
-              {t.common.paginationPerPage.replace('{size}', String(w.pageSize))}
-            </Text>
-            <div className="flex gap-2">
-              <Button
-                className="size-auto min-h-0 px-3 py-1 text-xs"
-                disabled={w.safePage <= 0}
-                onClick={() => w.setPage((value) => Math.max(0, value - 1))}
-                shape="pill"
-                size="sm"
-                type="button"
-                variant="ghost"
-              >
-                {t.common.paginationPrev}
-              </Button>
-              <Button
-                className="size-auto min-h-0 px-3 py-1 text-xs"
-                disabled={w.safePage >= w.pageCount - 1}
-                onClick={() => w.setPage((value) => Math.min(w.pageCount - 1, value + 1))}
-                shape="pill"
-                size="sm"
-                type="button"
-                variant="ghost"
-              >
-                {t.common.paginationNext}
-              </Button>
-            </div>
-          </div>
+          <AssetsListPager
+            onPageChange={w.setPage}
+            page={w.safePage}
+            pageCount={w.pageCount}
+            pageSize={w.pageSize}
+            total={w.totalRows}
+          />
         ) : null}
       </DappWidgetStack>
 

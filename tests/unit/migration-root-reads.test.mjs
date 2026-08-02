@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 const CURRENT = '0x1111111111111111111111111111111111111111'
@@ -15,6 +16,9 @@ function createMigrationAwareClient(opts) {
       if (fn === 'stakes') {
         opts.onStakes?.(String(arg0))
         return [100n, 0n, 0n, 0n, true]
+      }
+      if (fn === 'warmupStakes') {
+        return [0n, 0n, 0n, 0n, false]
       }
       if (fn === 'getStakeRewards') {
         opts.onRewards?.(String(arg0))
