@@ -110,14 +110,14 @@ export const FieldActionChip = forwardRef<HTMLButtonElement, FieldActionChipProp
 FieldActionChip.displayName = 'FieldActionChip'
 
 /**
- * Figma `maxB` 4454:648 inside inputBox 4454:642:
- * h=27 = py 6 + 12px/15 linebox + py 6; radius 10; px 12;
- * bg primary-soft #fceae2 · text coral-emphasis #e9785a — not FieldActionChip h-11.
+ * Figma `maxB` 4454:648 inside inputBox：
+ * 合成 h27 = py-1.5（6）+ text-xs/leading-3.75（12/15）+ py-1.5；圆角 `rounded-chip`（--radius-chip）；
+ * bg accent · text coral-emphasis — 非 FieldActionChip h-11。禁任意 *[Npx]。
  */
 const amountMaxChip = tv({
   base: [
-    'inline-flex h-[27px] min-w-0 shrink-0 cursor-pointer items-center justify-center',
-    'rounded-[10px] bg-accent px-3 text-xs leading-[15px] font-semibold text-coral-emphasis',
+    'inline-flex h-6.75 min-w-0 shrink-0 cursor-pointer items-center justify-center',
+    'rounded-chip bg-accent px-3 text-xs leading-3.75 font-semibold text-coral-emphasis',
     'transition-[border-color,background-color,color,box-shadow,transform] duration-160 ease-out',
     'origin-center hover:scale-[1.008] focus-visible:scale-[1.008] active:scale-[0.992] active:duration-75',
     'disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100',

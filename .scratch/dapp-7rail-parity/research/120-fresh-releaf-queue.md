@@ -30,10 +30,10 @@
 | 10 | Turbine | `4435:220` | pending | |
 | 11 | 质押 Hub | `4287:212` | **page-done** | `research/123-staking-hub-fresh-leaf.md` · `5ffdec64` |
 | 12 | Stake | `4448:220` | **page-done** | `research/131-staking-stake-fresh-leaf.md` |
-| 13 | Bond LP | `4454:220` | pending | |
-| 14 | Bond Burn | `4458:220` | pending | |
-| 15 | Xmine | `4460:220` | pending | |
-| 16 | Calc | `4462:220` | pending | |
+| 13 | Bond LP | `4454:220` | **page-done** | `research/132-bond-lp-fresh-leaf.md` |
+| 14 | Bond Burn | `4458:220` | **page-done** | `research/133-bond-burn-fresh-leaf.md` |
+| 15 | Xmine | `4460:220` | **page-done** | `research/134-staking-xmine-fresh-leaf.md` |
+| 16 | Calc | `4462:220` | **page-done** | `research/135-staking-calc-fresh-leaf.md` |
 | 17 | 奖励 Hub | `4291:212` | **page-done** | `research/136-rewards-hub-fresh-leaf.md` |
 | 18 | Lucky | `4390:220` | pending | |
 | 19 | 推荐 | `4403:220` | pending | |
@@ -41,10 +41,10 @@
 | 21 | 共建 | `4408:220` | pending | |
 | 22 | Grant | `4410:220` | pending | |
 | 23 | 创世奖 | `4413:220` | pending | |
-| 24 | 释放 Hub | `4298:212` | **needs-reverify** | 勿信旧 releaf；须本轮 Figma 重拉 |
-| 25 | 队列 | `4466:220` | **in-progress** | 须本轮 Figma 重拉（测本站 ≠ 拉稿） |
-| 26 | 缓冲 | `4469:220` | **in-progress** | 须本轮 Figma 重拉 |
-| 27 | 社区 Hub | `4300:212` | **in-progress** | 须本轮 Figma 重拉 |
-| 28 | 创世 Hub | `4303:212` | **in-progress** | 须本轮 Figma 重拉 |
+| 24 | 释放 Hub | `4298:212` | **page-done** | `research/143-release-hub-fresh-leaf.md` |
+| 25 | 队列 | `4466:220` | **page-done** | `research/144-release-queue-fresh-leaf.md` |
+| 26 | 缓冲 | `4469:220` | **page-done** | `research/145-release-buffer-fresh-leaf.md` |
+| 27 | 社区 Hub | `4300:212` | **page-done** | `research/146-community-hub-fresh-leaf.md` |
+| 28 | 创世 Hub | `4303:212` | **page-done** | `research/147-genesis-hub-fresh-leaf.md` |
 
 **完成定义：** 上表全部 Status=`page-done`（含本轮 Figma 直拉 leaf 表 + 实测矩阵 + Critical=0）后 **通知用户**。

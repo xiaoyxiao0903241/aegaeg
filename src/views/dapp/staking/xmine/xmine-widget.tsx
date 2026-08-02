@@ -43,7 +43,7 @@ export function XmineWidget() {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" size="token" src={dappAssets.tokenGagx} />
+                <DappIcon alt="" size="rail" src={dappAssets.tokenGagx} />
                 <Text as="span" className="font-semibold" variant="detail">
                   gAGX
                 </Text>
@@ -60,7 +60,7 @@ export function XmineWidget() {
         />
 
         <DappMetaPanel
-          className="mt-0 gap-3 px-4 py-4.5"
+          className="mt-0 gap-3 p-4"
           items={[
             {
               label: t.staking.xmine.meta.daily,

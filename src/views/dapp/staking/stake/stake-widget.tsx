@@ -63,7 +63,7 @@ export function StakeWidget() {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" size="token" src={dappAssets.tokenAgx} />
+                <DappIcon alt="" size="rail" src={dappAssets.tokenAgx} />
                 <Text as="span" className="font-semibold" variant="detail">
                   AGX
                 </Text>
@@ -80,7 +80,7 @@ export function StakeWidget() {
         />
 
         <DappMetaPanel
-          className="mt-0 gap-3 px-4 py-4.5"
+          className="mt-0 gap-3 p-4"
           items={[
             { label: t.staking.stake.meta.baseDaily, value: yieldMeta.baseDaily },
             {

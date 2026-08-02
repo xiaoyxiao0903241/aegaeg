@@ -28,11 +28,11 @@ function MetricGrid({
       <div className="grid gap-4 sm:grid-cols-2">
         {items.map((item) => (
           <MetricCard
-            className="gap-0.5 px-4 py-3.5"
+            className="gap-1.5 p-4 [&>*:first-child]:leading-none"
             key={item.label}
             label={item.label}
             value={item.value}
-            valueClassName="text-base font-semibold tracking-normal"
+            valueClassName="text-base leading-5 font-semibold tracking-normal"
           />
         ))}
       </div>
@@ -44,11 +44,11 @@ function MetricGrid({
       <div className="grid gap-4 sm:grid-cols-3">
         {items.slice(0, 3).map((item) => (
           <MetricCard
-            className="gap-0.5 px-4 py-3.5"
+            className="gap-1.5 p-4 [&>*:first-child]:leading-none"
             key={item.label}
             label={item.label}
             value={item.value}
-            valueClassName="text-base font-semibold tracking-normal"
+            valueClassName="text-base leading-5 font-semibold tracking-normal"
           />
         ))}
       </div>
@@ -56,11 +56,11 @@ function MetricGrid({
         <div className="grid gap-4 sm:grid-cols-2">
           {items.slice(3).map((item) => (
             <MetricCard
-              className="gap-0.5 px-4 py-3.5"
+              className="gap-1.5 p-4 [&>*:first-child]:leading-none"
               key={item.label}
               label={item.label}
               value={item.value}
-              valueClassName="text-base font-semibold tracking-normal"
+              valueClassName="text-base leading-5 font-semibold tracking-normal"
             />
           ))}
         </div>
@@ -237,7 +237,7 @@ export function StakingDetailAside({
         {mechanismSteps && mechanismSteps.length > 0 ? (
           <Card
             className="flex flex-col gap-4 rounded-2xl p-6 sm:flex-row sm:items-start sm:gap-0"
-            surface="outlined"
+            surface="elevated"
           >
             {mechanismSteps.map((step, index) => (
               <div className="grid min-w-0 flex-1 gap-3" key={step.title}>
@@ -288,7 +288,7 @@ export function StakingDetailAside({
           rangeAriaLabel={t.staking.aside.chartRangeAria}
           rangeLabels={t.staking.aside.chartRanges}
           setChartRange={setChartRange}
-          surface="outlined"
+          surface="elevated"
         />
       </DappDetailBlock>
 
