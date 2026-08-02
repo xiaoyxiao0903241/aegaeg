@@ -7,7 +7,8 @@ import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
 /**
  * DApp primary CTA wrapper.
  * density → height:
- *   inverse 38 · card 42 · external 44 · modal 46 · hero 48
+ *   inverse 38 · card 42 · external 52 · modal 46 · hero 48
+ * external = Button lg + py-4 + text-base/leading-5 合成（稿 bigBtn 52；禁 h-[52px]）
  * Field-adjacent actions (MAX / Bind) → FieldActionChip.
  * Header / topbar Connect stays Button `sm` (36) — not this density map.
  * Home hero uses Button `size="lg"` (48) directly — same height as density="hero".
@@ -15,7 +16,7 @@ import { ButtonLoadingIcon } from '~/shared/ui/button-loading-icon'
 type DappActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode
   /**
-   * card = white-card CTA · external = widget stack · inverse = dark promo ·
+   * card = white-card CTA · external = widget stack bigBtn · inverse = dark promo ·
    * modal = dialog footer · hero = community / page banner CTA (≡ Button lg)
    */
   density?: 'card' | 'external' | 'inverse' | 'modal' | 'hero'
@@ -33,7 +34,7 @@ export function DappActionButton({
   variant = 'primary',
   ...props
 }: DappActionButtonProps) {
-  const size = density === 'hero' ? 'lg' : density === 'external' ? 'md' : 'sm'
+  const size = density === 'hero' || density === 'external' ? 'lg' : 'sm'
 
   return (
     <Button
@@ -43,6 +44,7 @@ export function DappActionButton({
         density === 'card' && 'min-h-10.5',
         density === 'inverse' && 'min-h-9.5 text-xs',
         density === 'modal' && 'min-h-11.5',
+        density === 'external' && 'min-h-0 py-4 text-base leading-5',
         density === 'hero' && 'w-full',
         className,
       )}

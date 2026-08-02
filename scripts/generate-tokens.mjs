@@ -311,7 +311,7 @@ function staticEngineeringVars() {
   --app-icon-lg: 1.125rem;
   --app-icon-xl: 1.25rem;
   --app-icon-rail: 1.375rem;
-  --app-icon-token: 1.375rem;
+  --app-icon-token: 1.5rem;
   --app-icon-brand: 1.75rem;
 
   --dapp-icon-xs: var(--app-icon-xs);

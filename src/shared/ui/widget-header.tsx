@@ -41,12 +41,9 @@ function WidgetHeaderCopy({
       {subtitle ? (
         <Text
           as="p"
-          variant="support"
+          variant="copy"
           tone="muted-foreground"
-          className={cn(
-            subtitleClassName,
-            'leading-[1.4] [&_strong]:font-bold [&_strong]:text-primary',
-          )}
+          className={cn(subtitleClassName, '[&_strong]:font-bold [&_strong]:text-primary')}
         >
           {subtitle}
         </Text>

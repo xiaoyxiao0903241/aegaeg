@@ -10,8 +10,8 @@ import { Text } from '~/shared/ui/text'
 /** Amount input card — label + balance / amount row + token selector + input. */
 export const amountBox = tv({
   slots: {
-    // Figma sell/buy cards: default border; focused editable field → coral card stroke
-    root: 'flex flex-col gap-2 focus-within:border-coral',
+    // Figma sell/buy：p-4（16）+ label copy/leading-4；focused → coral stroke
+    root: 'flex flex-col gap-2 p-4 focus-within:border-coral',
     /**
      * Figma inputBox 4454:642 / amtBox 4462:620 / priceBox 4462:628：
      * 合成壳高 = py-3（--space-5）+ figure 字盒（--type-figure-*）+ border；禁任意 h-[Npx]。
@@ -73,7 +73,7 @@ export function AmountBox({
         variant="copy"
         className={cn(
           styles.label(),
-          headerOutside ? 'text-foreground/40' : 'font-normal text-foreground/70',
+          headerOutside ? 'text-foreground/40' : 'leading-4 font-normal text-foreground/70',
         )}
       >
         {renderMetricText(label)}
@@ -82,10 +82,10 @@ export function AmountBox({
         typeof balance === 'string' ? (
           <Text
             as="span"
-            variant={headerOutside ? 'copy' : 'support'}
+            variant="copy"
             className={cn(
               styles.balance(),
-              headerOutside ? 'text-foreground/40' : 'font-normal text-foreground/70',
+              headerOutside ? 'text-foreground/40' : 'leading-4 font-normal text-foreground/70',
             )}
           >
             {renderMetricText(balance)}

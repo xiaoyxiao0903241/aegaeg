@@ -25,11 +25,7 @@ export function DappTabHeader({
       backLabel={
         <>
           <DappIcon alt="" size="sm" src={flashExchangeAssets.backArrow} />
-          <Text
-            className="text-base leading-[1.4] font-medium"
-            tone="muted-foreground"
-            variant="headline"
-          >
+          <Text className="text-base font-medium" tone="muted-foreground" variant="headline">
             {backText}
           </Text>
         </>
