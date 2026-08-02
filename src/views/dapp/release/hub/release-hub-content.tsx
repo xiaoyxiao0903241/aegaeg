@@ -19,8 +19,9 @@ export function ReleaseHubContent() {
         <DappCarousel
           slides={slides.map((slide) => ({
             key: slide.title,
+            // Figma carousel 108：min-h-27 + p-4
             content: (
-              <Card as="div" surface="elevated" className="rounded-2xl p-4 shadow-sm">
+              <Card as="div" surface="elevated" className="min-h-27 rounded-2xl p-4 shadow-sm">
                 <Text as="p" className="mb-2 font-semibold" variant="copy">
                   {slide.title}
                 </Text>
@@ -40,10 +41,12 @@ export function ReleaseHubContent() {
         <Text as="p" className="mb-4" tone="muted-foreground" variant="caption">
           {t.release.hub.mechanismSubtitle}
         </Text>
+        {/* Figma mechanism 286：min-h-71.5 + px-4 py-6 */}
         <Card
           as="div"
           surface="elevated"
-          className="flex flex-col gap-6 rounded-2xl px-4 py-6 shadow-sm"
+          className="flex min-h-71.5 flex-col gap-6 rounded-2xl px-4 py-6 shadow-sm"
+          data-tour-id="release-mechanism-card"
         >
           <ol className="flex flex-col gap-4 sm:flex-row sm:items-start">
             {t.release.hub.mechanismSteps.map((step, stepIndex) => {
@@ -51,12 +54,13 @@ export function ReleaseHubContent() {
               return (
                 <li className="grid min-w-0 flex-1 gap-3 text-center" key={step.title}>
                   <div className="flex items-center">
+                    {/* Figma badge 28：size-7 + border（禁 border-[0.09375rem]） */}
                     <span
                       className={cn(
                         'flex size-7 shrink-0 items-center justify-center rounded-full font-semibold',
                         accent
                           ? 'bg-primary text-white'
-                          : 'border-[0.09375rem] border-border bg-card text-muted-foreground',
+                          : 'border border-border bg-card text-muted-foreground',
                       )}
                     >
                       {stepIndex + 1}

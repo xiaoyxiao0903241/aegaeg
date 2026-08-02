@@ -5,7 +5,6 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { openReleaseView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Card } from '~/shared/ui/card'
@@ -20,15 +19,15 @@ import {
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
+/** 无报价源：诚实空（禁 ≈ $0.00 冒充） */
 function DualApproxCaptions() {
-  const approx = formatApproxUsd(0, null)
   return (
     <>
       <Text as="p" tone="muted-foreground" variant="caption">
-        <DappCountValue text={approx} />
+        ≈ —
       </Text>
       <Text as="p" tone="muted-foreground" variant="caption">
-        <DappCountValue text={approx} />
+        ≈ —
       </Text>
     </>
   )
@@ -51,7 +50,8 @@ export function ReleaseHubWidget() {
   const queueClaimableLabel = `${formatTokenAmount(queueClaimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`
   const bufferTotalAgx = `${formatTokenAmount(bufferClaimable + bufferReleasing, AGX_DECIMALS, 4)} AGX`
   const bufferClaimedAgx = `${formatTokenAmount(bufferClaimable, AGX_DECIMALS, 4)} AGX`
-  const zeroGagx = `${formatGroupedNumber(0, { digits: 2 })} gAGX`
+  /** PRV 仅 AGX：gAGX 列诚实空 */
+  const gagxEmpty = '—'
 
   return (
     <>
@@ -61,9 +61,10 @@ export function ReleaseHubWidget() {
         title={t.release.title}
       />
       <DappWidgetStack>
+        {/* Figma 释放池 125：min-h-31.25 + p-4（禁 min-h-[125px]） */}
         <Card
           as="button"
-          className="duration-dapp-fast flex w-full cursor-pointer flex-col gap-2 text-left shadow-none hover:border-primary"
+          className="duration-dapp-fast flex min-h-31.25 w-full cursor-pointer flex-col gap-2 rounded-2xl p-4 text-left shadow-none hover:border-primary"
           data-tour-id="release-pool-card"
           onClick={() => openReleaseView('queue')}
           surface="outlined"
@@ -95,9 +96,10 @@ export function ReleaseHubWidget() {
           </div>
         </Card>
 
+        {/* Figma 缓冲池 146：min-h-36.5 + p-4 */}
         <Card
           as="button"
-          className="duration-dapp-fast flex w-full cursor-pointer flex-col gap-2 text-left shadow-none hover:border-primary"
+          className="duration-dapp-fast flex min-h-36.5 w-full cursor-pointer flex-col gap-2 rounded-2xl p-4 text-left shadow-none hover:border-primary"
           data-tour-id="buffer-pool-card"
           onClick={() => openReleaseView('buffer')}
           surface="outlined"
@@ -117,7 +119,7 @@ export function ReleaseHubWidget() {
               <DappCountValue text={bufferTotalAgx} />
             </Text>
             <Text as="p" className="font-semibold" variant="copy">
-              <DappCountValue text={zeroGagx} />
+              {gagxEmpty}
             </Text>
             <DualApproxCaptions />
           </div>
@@ -135,7 +137,7 @@ export function ReleaseHubWidget() {
                 {t.release.labels.released}
               </Text>
               <Text as="span" className="text-primary" variant="caption">
-                <DappCountValue text={zeroGagx} />
+                {gagxEmpty}
               </Text>
             </div>
           </div>
