@@ -1,4 +1,3 @@
-import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/ui/card'
 import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
@@ -15,16 +14,17 @@ import { AssetsPositionVoucherLink } from '~/views/dapp/assets/position/assets-p
 import type { AssetsStakeRow } from '~/web3/assets/assets-read'
 
 export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<AssetsStakeRow>) {
-  const { formatPeriodLabel, formatRewardUsd, locked, busy, quote, onClaim, onRedeem, row } = props
+  const { formatPeriodLabel, formatAmount, locked, busy, onClaim, onRedeem, row } = props
   const { messages: t } = useI18n()
   const reward = row.blockReward + row.extraInterest
+  const boost = row.extraInterest
   const inWarmup = Boolean(row.inWarmup)
-  const canClaim = !inWarmup && reward > 0n
+  // 测试期放开领取入口：warmup 外可点开弹窗；金额=0 / 贡献不足由 Mixed 写链诚实报错
+  const canClaim = !inWarmup
   const canRedeem =
     row.kind === 'liquid' ? !inWarmup && row.principal > 0n : row.claimableBalance > 0n
   const periodLabel = formatPeriodLabel(row.period)
   const voucherAddress = row.kind === 'locked' && row.pool ? row.pool : null
-  // 活期 expiry 为 epoch 编号，勿当 unix；非 warmup →「随时可赎回」
   const remainingValue = inWarmup
     ? t.assets.blocked.warmupActive
     : row.kind === 'liquid'
@@ -43,24 +43,20 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
       />
       <div className="grid grid-cols-2 gap-2">
         <AssetsPositionPrincipalColumn
-          amountText={`${formatTokenAmount(row.principal, ASSETS_POSITION_AGX_DECIMALS, 2)} AGX`}
-          badgeText={
-            row.releasedPrincipal > 0n
-              ? `${formatTokenAmount(row.releasedPrincipal, ASSETS_POSITION_AGX_DECIMALS, 2)} AGX`
-              : undefined
-          }
+          amountText={formatAmount(row.principal, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
+          badgeText={formatAmount(row.releasedPrincipal, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
+          badgeVisible={row.releasedPrincipal > 0n}
           label={t.assets.position.staked}
         />
         <AssetsPositionYieldColumn
-          amountText={`${formatTokenAmount(reward, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
+          amountText={formatAmount(reward, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
           badge={
-            // 稿 boost chip：有加成显示；无加成仍占位 opacity-0（禁砍 chrome）
+            // 稿：收益 + 加成双属性；无加成仍占位，与左侧本金数字对齐
             <AssetsPositionBoostBadge
-              className={row.extraInterest > 0n ? undefined : 'pointer-events-none opacity-0'}
-              text={`${formatTokenAmount(row.extraInterest, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
+              className={boost > 0n ? undefined : 'pointer-events-none opacity-0'}
+              text={formatAmount(boost, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
             />
           }
-          quoteUsd={quote === 'usd' ? formatRewardUsd(reward) : undefined}
           yieldLabel={t.assets.position.yield}
         />
       </div>

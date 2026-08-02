@@ -1397,9 +1397,12 @@ const app = defineMessages({
       xmineSuccess: 'X 奖励领取已提交',
     },
     redeem: {
+      badge: '赎回',
+      releasedLabel: '已释放',
       title: '确认赎回',
-      body: '本金将进入释放缓冲（PrincipalReleaseVault），不会立即到账钱包。',
+      body: '赎回后资产将进入缓冲区，进行 30 天二次线性释放，缓冲区资产不再产生任何收益',
       confirm: '确认进入缓冲',
+      confirmCta: '赎回 {amount}',
       cancel: '取消',
       success: '赎回已提交，本金进入释放缓冲',
     },

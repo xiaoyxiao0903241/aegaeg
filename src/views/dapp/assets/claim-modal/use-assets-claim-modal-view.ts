@@ -38,7 +38,8 @@ export function useAssetsClaimModalView(args: {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const [releasePct, setReleasePctState] = useState(50)
-  const [releaseDays, setReleaseDaysState] = useState<ReleaseDurationDays>(5)
+  // 手册 rewardqueue 默认 plan3=60 天最低费率；稿示意同选 60
+  const [releaseDays, setReleaseDaysState] = useState<ReleaseDurationDays>(60)
   const [restakeDays, setRestakeDaysState] = useState<RestakeDurationDays>(540)
   const { restakePct } = claimSplitFromReleasePct(releasePct)
 
@@ -91,16 +92,22 @@ export function useAssetsClaimModalView(args: {
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
   const plansOk = releaseIndex != null && restakeIndex != null
-  const canConfirm =
-    walletReady &&
-    !claim.isLocked &&
-    !claim.isPending &&
-    contributionOk &&
-    plansOk &&
-    target.amount > 0n
+  // 链上门闸仍在 mutate 内 fail-closed；CTA 先放开可点，便于测弹窗/错误 toast
+  const canConfirm = walletReady && !claim.isLocked && !claim.isPending
+
+  const releaseAmount = (target.amount * BigInt(releasePct)) / 100n
+  const restakeAmount = target.amount - releaseAmount
+  const releaseAmountText = formatTokenAmount(releaseAmount, GAGX_DECIMALS, 4)
+  const restakeAmountText = formatTokenAmount(restakeAmount, GAGX_DECIMALS, 4)
 
   const releaseOptions = RELEASE_DURATION_DAYS.map((days) => ({
-    label: t.assets.claim.releaseDays.replace('{days}', String(days)),
+    label: planLabel(
+      days,
+      plansQuery.data?.releasePlans,
+      t.assets.claim.restakeDaysTax,
+      t.assets.claim.releaseDays,
+      t.assets.claim.taxRate,
+    ),
     value: String(days),
   }))
   const restakeOptions = RESTAKE_DURATION_DAYS.map((days) => ({
@@ -130,7 +137,7 @@ export function useAssetsClaimModalView(args: {
   }
 
   function handleConfirm() {
-    if (!canConfirm) return
+    if (!walletReady || claim.isLocked || claim.isPending) return
     void claim.mutate()
   }
 
@@ -168,6 +175,8 @@ export function useAssetsClaimModalView(args: {
     plansOk,
     plansQuery,
     canConfirm,
+    releaseAmountText,
+    restakeAmountText,
     ctaLabel,
     handleConfirm,
     goBurn,

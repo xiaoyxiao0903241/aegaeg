@@ -45,8 +45,6 @@ type DappTablePaginationProps = {
   className?: string
   /** Inside `DappTableCard` footer — drops outer top margin. */
   embedded?: boolean
-  /** 资产仓位等稿：单页/空表也保留分页 chrome；默认仍走 shouldShowTablePagination */
-  forceShow?: boolean
   /** Left-side summary beside row count — shown even when pagination is hidden. */
   summary?: ReactNode
   onPageChange: (page: number) => void
@@ -99,7 +97,6 @@ function styleForMenu(
 export function DappTablePagination({
   className,
   embedded = false,
-  forceShow = false,
   summary,
   onPageChange,
   page,
@@ -169,7 +166,7 @@ export function DappTablePagination({
     }
   }, [menuOpen, updateMenuPosition])
 
-  const showPagination = forceShow || shouldShowTablePagination(total, pageSize)
+  const showPagination = shouldShowTablePagination(total, pageSize)
   if (!showPagination && summary == null) return null
 
   return (

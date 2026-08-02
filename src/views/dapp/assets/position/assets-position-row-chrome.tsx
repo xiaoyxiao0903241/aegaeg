@@ -16,7 +16,8 @@ export type AssetsPositionRowShellProps<TRow> = {
   locked: boolean
   busy: boolean
   formatPeriodLabel: (period: string) => string
-  formatRewardUsd: (amount: bigint) => string
+  /** AGX/gAGX → 文案；quote=usd 时用缓存价换 `$…` */
+  formatAmount: (amount: bigint, decimals: number, unit: 'AGX' | 'gAGX') => string
   onClaim: (row: TRow) => void
   onRedeem: (row: TRow) => void
 }
@@ -71,15 +72,18 @@ export function AssetsPositionRowHeader({
   )
 }
 
-/** Principal column with optional soft badge（锁 icon · Figma chip）. */
+/** Principal column + 锁 chip（无已释放仍 opacity-0 占位，与收益列数字对齐）. */
 export function AssetsPositionPrincipalColumn({
   label,
   amountText,
   badgeText,
+  badgeVisible,
 }: {
   label: string
   amountText: string
-  badgeText?: string
+  /** 无值仍传占位文案；由 `badgeVisible` 控制显隐 */
+  badgeText: string
+  badgeVisible: boolean
 }) {
   return (
     <div className="grid gap-1">
@@ -90,14 +94,18 @@ export function AssetsPositionPrincipalColumn({
       <Text as="strong" className="text-base/5 font-semibold" variant="copy">
         {amountText}
       </Text>
-      {badgeText ? (
-        <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
-          <DappIcon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
-          <Text as="span" className="leading-none text-primary" variant="support">
-            {badgeText}
-          </Text>
-        </span>
-      ) : null}
+      <span
+        aria-hidden={!badgeVisible}
+        className={cn(
+          'inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2',
+          !badgeVisible && 'pointer-events-none opacity-0',
+        )}
+      >
+        <DappIcon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
+        <Text as="span" className="leading-none text-primary" variant="support">
+          {badgeText}
+        </Text>
+      </span>
     </div>
   )
 }
@@ -129,12 +137,10 @@ export function AssetsPositionYieldColumn({
   yieldLabel,
   amountText,
   badge,
-  quoteUsd,
 }: {
   yieldLabel: string
   amountText: string
   badge?: ReactNode
-  quoteUsd?: string
 }) {
   return (
     <div className="grid justify-items-end gap-1 text-right">
@@ -146,11 +152,6 @@ export function AssetsPositionYieldColumn({
         {amountText}
       </Text>
       {badge}
-      {quoteUsd != null ? (
-        <Text as="span" className="leading-4 text-foreground/40" variant="support">
-          {quoteUsd}
-        </Text>
-      ) : null}
     </div>
   )
 }

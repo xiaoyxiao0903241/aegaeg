@@ -58,8 +58,8 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
           w.pagedStakeRows.map((row) => (
             <AssetsPositionStakeRow
               busy={w.busy}
+              formatAmount={w.formatAmount}
               formatPeriodLabel={w.formatPeriodLabel}
-              formatRewardUsd={w.formatRewardUsd}
               key={row.id}
               locked={w.locked}
               onClaim={w.openStakeClaim}
@@ -72,8 +72,8 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
           w.pagedBondRows.map((row) => (
             <AssetsPositionBondRow
               busy={w.busy}
+              formatAmount={w.formatAmount}
               formatPeriodLabel={w.formatPeriodLabel}
-              formatRewardUsd={w.formatRewardUsd}
               key={row.id}
               locked={w.locked}
               onClaim={w.openBondClaim}
@@ -107,6 +107,7 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
       />
 
       <AssetsRedeemConfirm
+        amountLabel={w.redeem.open ? w.redeem.amountLabel : ''}
         busy={w.busy}
         onConfirm={w.confirmRedeem}
         onOpenChange={(open) => {

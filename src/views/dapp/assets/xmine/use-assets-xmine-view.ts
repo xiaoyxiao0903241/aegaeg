@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useChainQuery } from '~/hooks/use-chain-query'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
@@ -22,7 +21,6 @@ export function useAssetsXmineView() {
   const { messages: t } = useI18n()
   const setView = useAssetsViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
-  const isMobile = useMobileViewport()
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [sort, setSort] = useState<AssetsSortKey>('startNear')
@@ -91,11 +89,7 @@ export function useAssetsXmineView() {
   }
 
   function requestUnstake() {
-    if (isMobile) {
-      setConfirmUnstake(true)
-      return
-    }
-    handleUnstake()
+    setConfirmUnstake(true)
   }
 
   return {

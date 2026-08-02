@@ -1,7 +1,9 @@
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { openStakingView } from '~/shared/config/dapp-open-views'
+import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
 import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import { AssetsListPager } from '~/views/dapp/assets/position/assets-list-pager'
@@ -83,6 +85,15 @@ export function AssetsXmineWidget() {
       </DappWidgetStack>
 
       <AssetsRedeemConfirm
+        amountLabel={
+          vm.position
+            ? `${formatTokenAmount(
+                vm.position.warmupGons > 0n ? 0n : vm.position.miningStake,
+                EXCHANGE_CONFIG.tokens.gagx.decimals,
+                2,
+              )} gAGX`
+            : ''
+        }
         busy={vm.busy}
         onConfirm={() => void vm.handleUnstake()}
         onOpenChange={vm.setConfirmUnstake}

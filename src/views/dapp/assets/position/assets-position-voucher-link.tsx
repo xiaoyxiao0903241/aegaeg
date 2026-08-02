@@ -11,7 +11,7 @@ export function AssetsPositionVoucherLink({ address, label }: { address: string;
       </Text>
       <Text
         as="a"
-        className="text-xs font-medium text-foreground tabular-nums hover:text-primary"
+        className="text-xs font-medium text-foreground tabular-nums hover:underline"
         href={bscscanAddress(address)}
         rel="noreferrer"
         target="_blank"

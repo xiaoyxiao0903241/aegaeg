@@ -73,8 +73,6 @@ export function ResponsiveTable({
   headers,
   highlightedRows = [],
   isLoading = false,
-  /** 资产仓位等稿：空态仍留表头；默认 false（空态仅 DappTableEmptyMessage） */
-  keepHeaderWhenEmpty = false,
   linkColumns = [],
   loadingRowCount = 3,
   positiveColumns = [],
@@ -88,7 +86,6 @@ export function ResponsiveTable({
   headers: string[]
   highlightedRows?: number[]
   isLoading?: boolean
-  keepHeaderWhenEmpty?: boolean
   linkColumns?: number[]
   loadingRowCount?: number
   positiveColumns?: number[]
@@ -96,8 +93,8 @@ export function ResponsiveTable({
   statusColumns?: number[]
 }) {
   const styles = responsiveTable({ compact })
-  // 默认：空态只显示 DappTableEmptyMessage，不留表头；loading 仍出表头 + skeleton。
-  if (!isLoading && rows.length === 0 && !keepHeaderWhenEmpty) return null
+  // 空态只显示 DappTableEmptyMessage，不留表头/表体；loading 仍出表头 + skeleton。
+  if (!isLoading && rows.length === 0) return null
 
   const showBody = isLoading || rows.length > 0
 

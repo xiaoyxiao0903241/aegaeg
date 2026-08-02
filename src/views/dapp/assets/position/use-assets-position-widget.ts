@@ -2,14 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useDappShell } from '~/app/use-dapp-shell'
-import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
-import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import type { AssetsSortKey } from '~/views/dapp/assets/assets-quote-toolbar'
+import { formatAssetsPositionAmount } from '~/views/dapp/assets/position/format-assets-position-amount'
 import {
   type AssetsProduct,
   useAssetsPositionQueries,
@@ -44,6 +43,7 @@ type RedeemState =
       owner: string
       kind: 'stake' | 'bond'
       row: AssetsStakeRow | AssetsBondRow
+      amountLabel: string
     }
 
 type RedeemVars = {
@@ -85,7 +85,6 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const { walletReady } = useDappShell()
   const account = useActiveAccount()
   const address = account?.address
-  const isMobile = useMobileViewport()
 
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
   const [sort, setSort] = useState<AssetsSortKey>('startNear')
@@ -135,12 +134,8 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     },
   })
 
-  function formatRewardUsd(amount: bigint): string {
-    if (agxPriceUsd == null || agxPriceUsd <= 0) return '$0.00'
-    return formatGroupedNumber(formatTokenAmountToNumber(amount, GAGX_DECIMALS) * agxPriceUsd, {
-      digits: 2,
-      prefix: '$',
-    })
+  function formatAmount(amount: bigint, decimals: number, unit: 'AGX' | 'gAGX'): string {
+    return formatAssetsPositionAmount(amount, decimals, quote, agxPriceUsd, unit)
   }
 
   function formatPeriodLabel(period: string): string {
@@ -177,11 +172,14 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
 
   function requestRedeem(kind: 'stake' | 'bond', row: AssetsStakeRow | AssetsBondRow) {
     if (!address) return
-    if (isMobile) {
-      setRedeem({ open: true, owner: address, kind, row })
-      return
-    }
-    runRedeem(kind, row, address)
+    const amount =
+      kind === 'stake'
+        ? (row as AssetsStakeRow).kind === 'liquid'
+          ? (row as AssetsStakeRow).principal
+          : (row as AssetsStakeRow).claimableBalance
+        : (row as AssetsBondRow).pendingPayout
+    const amountLabel = `${formatTokenAmount(amount, EXCHANGE_CONFIG.tokens.agx.decimals, 2)} AGX`
+    setRedeem({ open: true, owner: address, kind, row, amountLabel })
   }
 
   function openStakeClaim(row: AssetsStakeRow) {
@@ -253,7 +251,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     copy,
     stakingTarget,
     pageSize,
-    formatRewardUsd,
+    formatAmount,
     formatPeriodLabel,
     isEmpty,
     isLoading,

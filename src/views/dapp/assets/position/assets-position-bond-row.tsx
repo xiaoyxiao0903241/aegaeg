@@ -1,10 +1,10 @@
-import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/ui/card'
 import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-position-row-actions'
 import {
   ASSETS_POSITION_AGX_DECIMALS,
   ASSETS_POSITION_GAGX_DECIMALS,
+  AssetsPositionBoostBadge,
   AssetsPositionPrincipalColumn,
   AssetsPositionRowHeader,
   type AssetsPositionRowShellProps,
@@ -15,16 +15,16 @@ import type { AssetsBondRow } from '~/web3/assets/assets-read'
 
 export function AssetsPositionBondRow({
   formatPeriodLabel,
-  formatRewardUsd,
+  formatAmount,
   locked,
   busy,
-  quote,
   onClaim,
   onRedeem,
   row,
 }: AssetsPositionRowShellProps<AssetsBondRow>) {
   const { messages: t } = useI18n()
-  const canClaim = row.profit > 0n
+  // 测试期放开领取入口；profit=0 时弹窗仍可开，写链 dual-check 诚实失败
+  const canClaim = true
   const canRedeem = row.pendingPayout > 0n
   const periodLabel = formatPeriodLabel(String(row.period))
   const dayUnit = t.assets.claim.releaseDays.replace('{days}', '').trim()
@@ -39,17 +39,20 @@ export function AssetsPositionBondRow({
       />
       <div className="grid grid-cols-2 gap-2">
         <AssetsPositionPrincipalColumn
-          amountText={`${formatTokenAmount(row.payoutRemaining, ASSETS_POSITION_AGX_DECIMALS, 2)} AGX`}
-          badgeText={
-            row.pendingPayout > 0n
-              ? `${formatTokenAmount(row.pendingPayout, ASSETS_POSITION_AGX_DECIMALS, 2)} AGX`
-              : undefined
-          }
+          amountText={formatAmount(row.payoutRemaining, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
+          badgeText={formatAmount(row.pendingPayout, ASSETS_POSITION_AGX_DECIMALS, 'AGX')}
+          badgeVisible={row.pendingPayout > 0n}
           label={t.assets.position.bondPrincipal}
         />
         <AssetsPositionYieldColumn
-          amountText={`${formatTokenAmount(row.profit, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
-          quoteUsd={quote === 'usd' ? formatRewardUsd(row.profit) : undefined}
+          amountText={formatAmount(row.profit, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
+          badge={
+            // Bond 无独立加成字段；占位保持与质押卡双列数字对齐
+            <AssetsPositionBoostBadge
+              className="pointer-events-none opacity-0"
+              text={formatAmount(0n, ASSETS_POSITION_GAGX_DECIMALS, 'gAGX')}
+            />
+          }
           yieldLabel={t.assets.position.yield}
         />
       </div>

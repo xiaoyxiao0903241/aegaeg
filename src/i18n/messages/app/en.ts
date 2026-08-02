@@ -1474,9 +1474,12 @@ const app = defineMessages({
       xmineSuccess: 'X reward claim submitted',
     },
     redeem: {
+      badge: 'Redeem',
+      releasedLabel: 'Released',
       title: 'Confirm redeem',
-      body: 'Principal enters the release buffer (PrincipalReleaseVault) — not credited to your wallet immediately.',
+      body: 'After redeem, assets enter the buffer for a 30-day secondary linear release. Buffer assets earn no yield.',
       confirm: 'Enter buffer',
+      confirmCta: 'Redeem {amount}',
       cancel: 'Cancel',
       success: 'Redeem submitted — principal entered the release buffer',
     },

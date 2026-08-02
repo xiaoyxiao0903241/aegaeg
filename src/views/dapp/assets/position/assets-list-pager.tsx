@@ -1,8 +1,9 @@
 import { useI18n } from '~/i18n/use-i18n'
+import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
 
-/** 左栏仓位列表分页（稿：共 N · 每页 M + 上一页 / `1 / N` / 下一页）。 */
+/** 左栏仓位列表分页（稿：共 N · 每页 M + 上一页 / `1 / N` / 下一页）。≤pageSize 不渲染。 */
 export function AssetsListPager({
   page,
   pageCount,
@@ -19,6 +20,8 @@ export function AssetsListPager({
 }) {
   const { messages: t } = useI18n()
   const safePage = Math.min(Math.max(page, 0), Math.max(0, pageCount - 1))
+
+  if (!shouldShowTablePagination(total, pageSize)) return null
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">

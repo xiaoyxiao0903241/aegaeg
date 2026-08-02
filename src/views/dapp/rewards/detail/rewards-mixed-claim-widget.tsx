@@ -8,11 +8,11 @@ import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { ClaimSplitSlider } from '~/shared/ui/claim-split-slider'
 import { Segment } from '~/shared/ui/segment'
+import { SelectMenu } from '~/shared/ui/select-menu'
 import { Text } from '~/shared/ui/text'
 import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { RewardsClaimTokenRow } from '~/views/dapp/rewards/detail/rewards-claim-token-row'
 import { RewardsGagxAmount } from '~/views/dapp/rewards/detail/rewards-gagx-amount'
-import { RewardsPlanPicker } from '~/views/dapp/rewards/detail/rewards-plan-picker'
 import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-rewards-mixed-claim-view'
 import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 
@@ -134,16 +134,17 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             <Text as="span" className="leading-4 text-foreground/40" variant="copy">
               {vm.mixed.releasePeriod}
             </Text>
-            <RewardsPlanPicker
+            <SelectMenu
               ariaLabel={vm.mixed.releaseAria}
               onSelect={(value) => vm.setReleaseDays(Number(value) as ReleaseDurationDays)}
               options={vm.releaseOptions}
               value={String(vm.releaseDays)}
+              variant="pill"
             />
           </div>
         </div>
 
-        {/* Figma 复投卡：#f3fdf6 + green border · 用 success-soft / claim-restake */}
+        {/* Figma 复投卡：claim-restake 蓝 soft + border */}
         <div className="grid min-h-33.75 gap-2 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="span" className="leading-5 text-(--app-claim-restake)" variant="copy">
@@ -158,11 +159,12 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             <Text as="span" className="leading-4 text-foreground/40" variant="copy">
               {vm.mixed.restakePeriod}
             </Text>
-            <RewardsPlanPicker
+            <SelectMenu
               ariaLabel={vm.mixed.restakeAria}
               onSelect={(value) => vm.setRestakeDays(Number(value) as RestakeDurationDays)}
               options={vm.restakeOptions}
               value={String(vm.restakeDays)}
+              variant="pill"
             />
           </div>
         </div>

@@ -8,6 +8,7 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { Card } from '~/shared/ui/card'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { FaqList, type FaqListItem } from '~/shared/ui/faq-list'
@@ -107,10 +108,9 @@ export function AssetsProductDetailSections({
         <DappContentHeading>{opsTitle}</DappContentHeading>
         <DappTableCard
           footer={
-            opsPagination ? (
+            opsPagination && shouldShowTablePagination(opsPagination.total) ? (
               <DappTablePagination
                 embedded
-                forceShow
                 onPageChange={opsPagination.onPageChange}
                 page={opsPagination.page}
                 summary={opsPagination.summary}
@@ -123,7 +123,6 @@ export function AssetsProductDetailSections({
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...opsColumns]}
             isLoading={opsLoading}
-            keepHeaderWhenEmpty
             rows={opsRows}
           />
           {!opsLoading && opsRows.length === 0 ? (

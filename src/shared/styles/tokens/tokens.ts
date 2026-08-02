@@ -86,7 +86,7 @@ export const colorHex = {
   "input": "#f0f0f2",
   "ring": "#e86a43",
   "success": "#2bab6a",
-  "claim-restake": "#2bab6a",
+  "claim-restake": "#4a7bec",
   "dark": "#111625",
   "inverse": "#fff",
   "inverse-muted": "#b8c0ce",

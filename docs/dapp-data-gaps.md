@@ -102,6 +102,32 @@
 
 > **隐藏0资产：** UI 筛选，派生自 mode `hasBalance`（API=仓位>0；链兜底=仓位或收益>0）。不单列数据位。
 
+### 2.2 仓位 · 质押 / LP / 销毁（`#assets/stake|lpbond|burnbond`）
+
+| 数据位                                | 是否已接 | 源                                                                                           |
+| ------------------------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| 左栏仓位卡：本金 / 已释 chip          | 是       | 链 `readStakePositions` / `readLpBondPositions` / `readBurnBondPositions`                    |
+| 左栏仓位卡：收益 / 加成               | 部分     | 质押：`blockReward` + `extraInterest`；LP/Burn：`profit` 已接，**加成无协议字段** → 占位 `0` |
+| 左栏仓位卡：AGX↔USD 展示              | 是       | 本地 Quote + `useAgxPriceUsd`（Pair spot）                                                   |
+| 左栏仓位卡：凭证地址                  | 是       | 池合约地址 → BSCScan                                                                         |
+| 写：领取 Mixed                        | 是       | 手册 §9：贡献 + plans + `claim*Mixed`（`submitMixedClaim` · dual-check）                     |
+| 写：赎回 / 领本金                     | 是       | live 可赎额 → `claimPrincipal` / `redeem`；确认弹窗手册 §13 30 天缓冲文案                    |
+| 右栏统计：持仓 / 已释放 / 待释放      | 是       | 上列仓位聚合                                                                                 |
+| 右栏统计：Rebase 收益 / 加成 / 总收益 | 部分     | 质押六格全接；LP/Burn「总收益」**无累计 API/链汇总** → UI 诚实 `—`                           |
+| 操作记录表                            | 是       | API `stake-flow/positions` · `bond-flow/lp-purchases` · `burn-purchases`                     |
+
+### 2.3 仓位 · X 挖矿（`#assets/xmine`）
+
+| 数据位                            | 是否已接 | 源                                                                           |
+| --------------------------------- | -------- | ---------------------------------------------------------------------------- |
+| 左栏仓位：质押 / warmup / 产出    | 是       | 链 `readXminePosition`（`miningStake` / `warmupGons` / `pendingReward`）     |
+| 左栏仓位：产出 `≈ $`（USD Quote） | 否       | X 无独立 USD 价源 · UI 诚实 `≈ —`                                            |
+| 写：领 X / 激活 warmup / 解押     | 是       | `claimReward` / `activateWarmup` / `startUnstake`（money-path Assets xmine） |
+| 右栏：挖矿质押 / 已释放启发式     | 部分     | 质押接链；已释放=warmup 外全额、warmup 内 `0`（无 PRV 已释 view）            |
+| 右栏：挖矿产出                    | 是       | `pendingReward`                                                              |
+| 右栏：累计产出                    | 否       | 无协议累计 X view / 历史 API · UI 诚实 `0.00 X`                              |
+| 挖矿记录表                        | 是       | API `POST /x0-mining/logs`                                                   |
+
 ---
 
 ## 3. 质押（Staking）
@@ -215,6 +241,7 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-03 | 资产仓位：补 §2.2/§2.3（质押/债券/Xmine 读写下与剩余缺口）；Mixed/赎回/Quote 已接；LP·Burn 总收益与 X 累计/USD 仍无源        |
 | 2026-08-03 | 资产仓位 LP/Burn「总收益」无累计 API/链汇总 → UI 诚实 `—`（禁硬编码 0.00）                                                   |
 | 2026-08-03 | 写后刷新：`invalidateAfterStaking`→staking+assets+lucky+indexer poll；活期读 `warmupStakes`                                  |
 | 2026-08-03 | rebase：按 `rebases[]` append 下标探测（禁用 epoch.number）；gaps 依赖位改「部分」；poll 收窄                                |
