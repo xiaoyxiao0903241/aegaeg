@@ -6,6 +6,7 @@ import { openStakingView } from '~/shared/config/dapp-open-views'
 import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
+import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
 import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import { AssetsClaimModal } from '~/views/dapp/assets/claim-modal/assets-claim-modal'
 import { AssetsPositionBondRow } from '~/views/dapp/assets/position/assets-position-bond-row'
@@ -34,9 +35,12 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
       <DappWidgetStack>
         <AssetsQuoteToolbar
           onQuoteChange={w.setQuote}
+          onSortChange={w.setSort}
           quote={w.quote}
           quoteLabel={t.assets.position.quoteCurrency}
           sortLabel={t.assets.position.sort}
+          sortOptions={w.sortOptions}
+          sortValue={w.sort}
         />
 
         {!w.walletReady ? (
@@ -46,14 +50,12 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
             …
           </Text>
         ) : w.isEmpty ? (
-          <div className="grid gap-3">
-            <Text as="p" tone="muted-foreground" variant="copy">
-              {w.copy.empty}
-            </Text>
-            <Button onClick={() => openStakingView(w.stakingTarget)} type="button">
-              {w.copy.emptyCta}
-            </Button>
-          </div>
+          <AssetsPositionEmptyCard
+            body={w.copy.empty}
+            ctaLabel={w.copy.emptyCta}
+            onCta={() => openStakingView(w.stakingTarget)}
+            title={t.assets.position.emptyTitle}
+          />
         ) : product === 'stake' ? (
           w.pagedStakeRows.map((row) => (
             <AssetsPositionStakeRow

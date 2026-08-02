@@ -1346,6 +1346,13 @@ const app = defineMessages({
     position: {
       sort: '排序',
       quoteCurrency: '计价单位',
+      sortOptions: {
+        startNear: '按开始时间从近到远',
+        startFar: '按开始时间从远到近',
+        endNear: '按到期时间从近到远',
+        endFar: '按到期时间从远到近',
+      },
+      emptyTitle: '让您的资产开始产生收益',
       remaining: '剩余时间',
       staked: '质押数量',
       payout: '待赎回',
@@ -1498,8 +1505,8 @@ const app = defineMessages({
       stake: {
         title: '质押仓位',
         intro: '管理您的每一笔质押，随时领取收益或赎回本金',
-        empty: '暂无质押仓位',
-        emptyCta: '前往质押',
+        empty: '暂无质押仓位，完成一笔质押后，这里将展示您的每一笔仓位。',
+        emptyCta: '发起首笔质押，开始赚取收益',
         stats: {
           title: '仓位数据',
           metrics: [

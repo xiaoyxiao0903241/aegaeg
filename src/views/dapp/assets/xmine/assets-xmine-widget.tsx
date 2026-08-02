@@ -4,6 +4,7 @@ import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { openStakingView } from '~/shared/config/dapp-open-views'
 import { Button } from '~/shared/ui/button'
 import { Text } from '~/shared/ui/text'
+import { AssetsPositionEmptyCard } from '~/views/dapp/assets/assets-position-empty-card'
 import { AssetsQuoteToolbar } from '~/views/dapp/assets/assets-quote-toolbar'
 import { AssetsRedeemConfirm } from '~/views/dapp/assets/redeem/assets-redeem-confirm'
 import { AssetsXminePositionCard } from '~/views/dapp/assets/xmine/assets-xmine-position-card'
@@ -24,9 +25,12 @@ export function AssetsXmineWidget() {
       <DappWidgetStack>
         <AssetsQuoteToolbar
           onQuoteChange={vm.setQuote}
+          onSortChange={vm.setSort}
           quote={vm.quote}
           quoteLabel={t.assets.position.quoteCurrency}
           sortLabel={t.assets.position.sort}
+          sortOptions={vm.sortOptions}
+          sortValue={vm.sort}
         />
 
         {!vm.walletReady ? (
@@ -36,14 +40,12 @@ export function AssetsXmineWidget() {
             …
           </Text>
         ) : vm.isEmpty || !position ? (
-          <div className="grid gap-3">
-            <Text as="p" tone="muted-foreground" variant="copy">
-              {copy.empty}
-            </Text>
-            <Button onClick={() => openStakingView('xmine')} type="button">
-              {copy.emptyCta}
-            </Button>
-          </div>
+          <AssetsPositionEmptyCard
+            body={copy.empty}
+            ctaLabel={copy.emptyCta}
+            onCta={() => openStakingView('xmine')}
+            title={t.assets.position.emptyTitle}
+          />
         ) : (
           <AssetsXminePositionCard
             activateWarmupLabel={t.assets.position.activateWarmup}

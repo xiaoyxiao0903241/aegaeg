@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -9,6 +9,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { type Address, BSC_CONTRACTS } from '~/shared/config/contracts'
 import { useAssetsViewStore } from '~/stores/assets-view-store'
+import type { AssetsSortKey } from '~/views/dapp/assets/assets-quote-toolbar'
 import {
   submitXmineActivateWarmup,
   submitXmineClaim,
@@ -24,9 +25,19 @@ export function useAssetsXmineView() {
   const isMobile = useMobileViewport()
   const [confirmUnstake, setConfirmUnstake] = useState(false)
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
+  const [sort, setSort] = useState<AssetsSortKey>('startNear')
 
   const copy = t.assets.products.xmine
   const pageSize = t.assets.position.pageSize
+
+  const sortOptions = useMemo(
+    () =>
+      (['startNear', 'startFar', 'endNear', 'endFar'] as const).map((value) => ({
+        value,
+        label: t.assets.position.sortOptions[value],
+      })),
+    [t.assets.position.sortOptions],
+  )
 
   const positionQuery = useChainQuery({
     queryKey: queryKeys.chain.assetsXminePosition,
@@ -95,6 +106,9 @@ export function useAssetsXmineView() {
     pageSize,
     quote,
     setQuote,
+    sort,
+    setSort,
+    sortOptions,
     isLoading: positionQuery.isLoading,
     position,
     isEmpty,

@@ -1400,6 +1400,13 @@ const app = defineMessages({
     position: {
       sort: 'Sort',
       quoteCurrency: 'Quote currency',
+      sortOptions: {
+        startNear: '按開始時間從近到遠',
+        startFar: '按開始時間從遠到近',
+        endNear: '按到期時間從近到遠',
+        endFar: '按到期時間從遠到近',
+      },
+      emptyTitle: '讓您的資產開始產生收益',
       pageSize: 5,
       voucher: 'Voucher',
       remaining: 'Time left',

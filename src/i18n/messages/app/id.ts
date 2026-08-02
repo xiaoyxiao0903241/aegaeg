@@ -1424,6 +1424,13 @@ const app = defineMessages({
     position: {
       sort: 'Sort',
       quoteCurrency: 'Quote currency',
+      sortOptions: {
+        startNear: 'Start time · newest first',
+        startFar: 'Start time · oldest first',
+        endNear: 'Expiry · soonest first',
+        endFar: 'Expiry · latest first',
+      },
+      emptyTitle: 'Start earning with your assets',
       pageSize: 5,
       voucher: 'Voucher',
       remaining: 'Time left',

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -9,6 +9,7 @@ import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import type { AssetsSortKey } from '~/views/dapp/assets/assets-quote-toolbar'
 import {
   type AssetsProduct,
   useAssetsPositionQueries,
@@ -51,6 +52,34 @@ type RedeemVars = {
   row: AssetsStakeRow | AssetsBondRow
 }
 
+function stakeSortKey(row: AssetsStakeRow): { start: number; end: number } {
+  const end = row.expiry > 0n ? Number(row.expiry) : Number.MAX_SAFE_INTEGER
+  const start = row.stakeIndex == null ? Number.MAX_SAFE_INTEGER : row.stakeIndex
+  return { start, end }
+}
+
+function bondSortKey(row: AssetsBondRow): { start: number; end: number } {
+  const end = row.vestingEndTime > 0n ? Number(row.vestingEndTime) : Number.MAX_SAFE_INTEGER
+  return { start: row.bondIndex, end }
+}
+
+function compareBySort(
+  left: { start: number; end: number },
+  right: { start: number; end: number },
+  sort: AssetsSortKey,
+): number {
+  switch (sort) {
+    case 'startNear':
+      return right.start - left.start
+    case 'startFar':
+      return left.start - right.start
+    case 'endNear':
+      return left.end - right.end
+    case 'endFar':
+      return right.end - left.end
+  }
+}
+
 export function useAssetsPositionWidget(product: AssetsProduct) {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
@@ -59,6 +88,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
   const isMobile = useMobileViewport()
 
   const [quote, setQuote] = useState<'agx' | 'usd'>('agx')
+  const [sort, setSort] = useState<AssetsSortKey>('startNear')
   const [claim, setClaim] = useState<ClaimState>({ open: false })
   const [redeem, setRedeem] = useState<RedeemState>({ open: false })
   const [page, setPage] = useState(0)
@@ -73,6 +103,17 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     product === 'stake' ? 'stake' : product === 'lpbond' ? 'lpbond' : 'burnbond'
   const pageSize = t.assets.position.pageSize
   const agxPriceUsd = useAgxPriceUsd()
+
+  const sortOptions = useMemo(
+    () =>
+      (
+        ['startNear', 'startFar', 'endNear', 'endFar'] as const satisfies readonly AssetsSortKey[]
+      ).map((value) => ({
+        value,
+        label: t.assets.position.sortOptions[value],
+      })),
+    [t.assets.position.sortOptions],
+  )
 
   const redeemWrite = useChainMutation({
     path: WRITE_PATH.ASSETS_CLAIM,
@@ -109,8 +150,18 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
 
   const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
 
-  const stakeRows = stakeQuery.data ?? []
-  const bondRows = bondQuery.data ?? []
+  const stakeRows = useMemo(() => {
+    const rows = [...(stakeQuery.data ?? [])]
+    rows.sort((a, b) => compareBySort(stakeSortKey(a), stakeSortKey(b), sort))
+    return rows
+  }, [stakeQuery.data, sort])
+
+  const bondRows = useMemo(() => {
+    const rows = [...(bondQuery.data ?? [])]
+    rows.sort((a, b) => compareBySort(bondSortKey(a), bondSortKey(b), sort))
+    return rows
+  }, [bondQuery.data, sort])
+
   const isEmpty = product === 'stake' ? stakeRows.length === 0 : bondRows.length === 0
   const isLoading = product === 'stake' ? stakeQuery.isLoading : bondQuery.isLoading
   const totalRows = product === 'stake' ? stakeRows.length : bondRows.length
@@ -193,6 +244,9 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     busy: redeemWrite.isPending,
     quote,
     setQuote,
+    sort,
+    setSort,
+    sortOptions,
     claim,
     redeem,
     copy,
@@ -208,9 +262,9 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     setPage,
     pagedStakeRows,
     pagedBondRows,
-    requestRedeem,
     openStakeClaim,
     openBondClaim,
+    requestRedeem,
     closeClaim,
     closeRedeem,
     confirmRedeem,

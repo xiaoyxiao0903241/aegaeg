@@ -1423,6 +1423,13 @@ const app = defineMessages({
     position: {
       sort: 'Sort',
       quoteCurrency: 'Quote currency',
+      sortOptions: {
+        startNear: 'Start time · newest first',
+        startFar: 'Start time · oldest first',
+        endNear: 'Expiry · soonest first',
+        endFar: 'Expiry · latest first',
+      },
+      emptyTitle: 'Start earning with your assets',
       pageSize: 5,
       voucher: 'Voucher',
       remaining: 'Time left',
@@ -1577,8 +1584,8 @@ const app = defineMessages({
       stake: {
         title: 'Stake positions',
         intro: 'Manage each stake — claim yield or redeem principal anytime',
-        empty: 'No stake positions',
-        emptyCta: 'Go stake',
+        empty: 'No stake positions yet. Complete a stake and each position will show here.',
+        emptyCta: 'Open your first stake and start earning',
         stats: {
           title: 'Position stats',
           metrics: [
