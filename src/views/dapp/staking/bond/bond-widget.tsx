@@ -88,7 +88,7 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" size="rail" src={dappAssets.tokenUsd1} />
+                <DappIcon alt="" shape="circle" size="rail" src={dappAssets.tokenUsd1} />
                 <Text as="span" className="font-semibold" variant="detail">
                   USD1
                 </Text>

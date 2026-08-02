@@ -28,6 +28,7 @@ import { createWebBridge } from './lib/webbridge.mjs'
 const PROFILES = {
   'assets-hub': './profiles/assets-hub.mjs',
   'staking-hub': './profiles/staking-hub.mjs',
+  'staking-stake': './profiles/staking-stake.mjs',
 }
 
 function usage() {

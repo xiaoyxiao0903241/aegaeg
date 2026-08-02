@@ -2,7 +2,7 @@ import { tv, type VariantProps } from 'tailwind-variants'
 
 /** DApp icon sizes — `tokens/theme.css` (`--app-icon-*`). */
 export const dappIcon = tv({
-  base: 'shrink-0',
+  base: 'block shrink-0',
   variants: {
     size: {
       xs: 'size-(--app-icon-xs)',
@@ -16,10 +16,20 @@ export const dappIcon = tv({
       token: 'size-(--app-icon-token)',
       brand: 'size-(--app-icon-brand)',
     },
+    /**
+     * `circle`：稿面 token 圆标（AmountBox / 指标行）。
+     * 用 `object-cover` 填满圆盘；方图靠 `rounded-full` 裁成圆（Figma inputBox `4448:615`）。
+     */
+    shape: {
+      plain: 'object-contain',
+      circle: 'rounded-full object-cover',
+    },
   },
   defaultVariants: {
     size: 'base',
+    shape: 'plain',
   },
 })
 
 export type DappIconSize = NonNullable<VariantProps<typeof dappIcon>['size']>
+export type DappIconShape = NonNullable<VariantProps<typeof dappIcon>['shape']>

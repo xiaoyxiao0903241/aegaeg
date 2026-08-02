@@ -38,7 +38,7 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
 
   return (
     <span className="flex min-w-0 items-center gap-1.5">
-      {src ? <DappIcon alt="" className="shrink-0 rounded-full" size="lg" src={src} /> : null}
+      {src ? <DappIcon alt="" shape="circle" size="lg" src={src} /> : null}
       <span className="min-w-0 truncate">{value}</span>
       {sub ? (
         <Text as="span" className="shrink-0 text-foreground/40" variant="copy">

@@ -4,40 +4,44 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { formatRebaseCountdown } from '~/core/staking/format-rebase-countdown'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
-import {
-  useAssetsHoldingsDistribution,
-  useAssetsHoldingsSummary,
-  useAssetsRewardSummary,
-  useStakeFlowPositions,
-} from '~/hooks/use-api-data'
+import { useStakeFlowPositions } from '~/hooks/use-api-data'
+import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
 import { mapStakePositionToAsideRow } from '~/shared/api/map-flow-log-rows'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import {
   formatAsideAgxLabel,
   formatAsideGagxLabel,
   formatAsideRebasePct,
-  parseApiAmount,
 } from '~/views/dapp/staking/staking-aside-format'
 import { StakingTokenMetricValue } from '~/views/dapp/staking/staking-token-metric-value'
+import { readStakePositions } from '~/web3/assets/assets-read'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
+import { useActiveAccount } from '~/web3/thirdweb-react'
+import { hasWalletAccount } from '~/web3/wallet/wallet-connection-state'
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
+const GAGX_DECIMALS = EXCHANGE_CONFIG.tokens.gagx.decimals
 
 /**
- * Stake detail aside — protocol overview from StakingPool/sAGX;
- * user positions from assets + stake-flow APIs (OpenAPI).
+ * Stake 右栏：协议概览走 StakingPool/sAGX；仓位五卡与资产仓位同源链读；
+ * 记录表走 OpenAPI `stake-flow/positions`（非假数 / 非 reward-summary 混桶）。
  */
 export function useStakeDetailAsideView() {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
+  const account = useActiveAccount()
+  const walletReady = hasWalletAccount(account)
   const priceUsd = useAgxPriceUsd()
   const overviewQuery = useStakingHubOverviewQuery()
-  const positionsQuery = useStakeFlowPositions({}, sessionReady)
-  const holdingsQuery = useAssetsHoldingsSummary(sessionReady)
-  const rewardQuery = useAssetsRewardSummary(sessionReady)
-  const distQuery = useAssetsHoldingsDistribution(sessionReady)
+  const recordsQuery = useStakeFlowPositions({}, sessionReady)
+  const stakeQuery = useChainQuery({
+    queryKey: queryKeys.chain.assetsStakePositions,
+    queryFn: (addr) => readStakePositions(addr as Address),
+  })
 
   const poolAgx =
     overviewQuery.data != null
@@ -75,14 +79,25 @@ export function useStakeDetailAsideView() {
     },
   ]
 
-  const stakeHeld = parseApiAmount(
-    distQuery.data?.stake_total_agx ?? positionsQuery.data?.total_stake_amount,
-  )
-  const stakeReleased = parseApiAmount(holdingsQuery.data?.stake_redeemed_agx)
-  const stakePending = Math.max(0, stakeHeld - stakeReleased)
-  const claimableGagx = parseApiAmount(rewardQuery.data?.claimable_gagx)
-  // No OpenAPI / chain view for rebase-bonus accrual yet.
-  const bonusGagx = 0
+  const stakeRows = walletReady && stakeQuery.data != null ? stakeQuery.data : []
+  let principal = 0n
+  let released = 0n
+  let pending = 0n
+  let blockReward = 0n
+  let extraInterest = 0n
+  for (const row of stakeRows) {
+    principal += row.principal
+    released += row.releasedPrincipal
+    pending += row.principal > row.releasedPrincipal ? row.principal - row.releasedPrincipal : 0n
+    blockReward += row.blockReward
+    extraInterest += row.extraInterest
+  }
+
+  const stakeHeld = formatTokenAmountToNumber(principal, AGX_DECIMALS)
+  const stakeReleased = formatTokenAmountToNumber(released, AGX_DECIMALS)
+  const stakePending = formatTokenAmountToNumber(pending, AGX_DECIMALS)
+  const rebaseGagx = formatTokenAmountToNumber(blockReward, GAGX_DECIMALS)
+  const bonusGagx = formatTokenAmountToNumber(extraInterest, GAGX_DECIMALS)
 
   const metrics = t.staking.aside.positionMetrics
   const positionItems: Array<{ label: string; value: ReactNode }> = [
@@ -120,9 +135,9 @@ export function useStakeDetailAsideView() {
       label: metrics[3]?.label ?? '当前Rebase 收益',
       value: (
         <StakingTokenMetricValue
-          approx={formatApproxUsd(claimableGagx, priceUsd)}
+          approx={formatApproxUsd(rebaseGagx, priceUsd)}
           icon="gagx"
-          value={formatAsideGagxLabel(claimableGagx)}
+          value={formatAsideGagxLabel(rebaseGagx)}
         />
       ),
     },
@@ -138,8 +153,8 @@ export function useStakeDetailAsideView() {
     },
   ]
 
-  const recordRows = positionsQuery.data?.items.map(mapStakePositionToAsideRow) ?? []
-  const recordsLoading = sessionReady && positionsQuery.isLoading && positionsQuery.data == null
+  const recordRows = recordsQuery.data?.items.map(mapStakePositionToAsideRow) ?? []
+  const recordsLoading = sessionReady && recordsQuery.isLoading && recordsQuery.data == null
 
   return {
     overviewItems,

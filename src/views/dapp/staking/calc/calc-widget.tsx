@@ -101,7 +101,7 @@ export function CalcWidget() {
           }}
           endAdornment={
             <span className="flex items-center gap-1.5">
-              <DappIcon alt="" size="rail" src={tokenSrc} />
+              <DappIcon alt="" shape="circle" size="rail" src={tokenSrc} />
               <Text as="span" className="font-semibold" variant="detail">
                 {vm.tokenLabel}
               </Text>

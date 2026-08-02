@@ -5,67 +5,66 @@ import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappIcon } from '~/app/shell/dapp-icon'
+import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { MetricGrid } from '~/app/shell/metric-grid'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
-import { Card } from '~/shared/ui/card'
+import { cn } from '~/shared/lib/utils'
 import { FaqList } from '~/shared/ui/faq-list'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Text } from '~/shared/ui/text'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
 import { useStakingDetailAsideView } from '~/views/dapp/staking/use-staking-detail-aside-view'
 
-function MetricGrid({
+const metricCardClass = 'gap-1.5 p-4 [&>*:first-child]:leading-none'
+const metricValueClass = 'text-base leading-5 font-semibold tracking-normal'
+
+/**
+ * 右栏指标排布 — 跟各帧稿面，不抽万能仓位组件。
+ * - cards-2：概览 2×2（稿 gap 16）
+ * - triple-plus：6 列 span — PC 上三(span2)下二(span3)；H5 一律 span3=每行两卡
+ */
+function AsideMetricLayout({
   items,
   layout,
 }: {
   items: Array<{ label: string; value: ReactNode }>
   layout: 'cards-2' | 'triple-plus'
 }) {
-  if (layout === 'cards-2') {
+  if (layout === 'triple-plus') {
     return (
-      <div className="grid gap-4 sm:grid-cols-2">
-        {items.map((item) => (
+      <div className="grid grid-cols-6 gap-4 max-dapp:min-w-0 max-dapp:gap-2.5">
+        {items.map((item, index) => (
           <MetricCard
-            className="gap-1.5 p-4 [&>*:first-child]:leading-none"
+            className={cn(
+              metricCardClass,
+              'min-w-0',
+              // PC：前三 span2 → 一行三卡；其后 span3 → 一行两卡。H5：全 span3 → 每行两卡。
+              index < 3 ? 'col-span-2 max-dapp:col-span-3' : 'col-span-3',
+            )}
             key={item.label}
             label={item.label}
             value={item.value}
-            valueClassName="text-base leading-5 font-semibold tracking-normal"
+            valueClassName={metricValueClass}
           />
         ))}
       </div>
     )
   }
-
   return (
-    <div className="grid gap-4">
-      <div className="grid gap-4 sm:grid-cols-3">
-        {items.slice(0, 3).map((item) => (
-          <MetricCard
-            className="gap-1.5 p-4 [&>*:first-child]:leading-none"
-            key={item.label}
-            label={item.label}
-            value={item.value}
-            valueClassName="text-base leading-5 font-semibold tracking-normal"
-          />
-        ))}
-      </div>
-      {items.length > 3 ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {items.slice(3).map((item) => (
-            <MetricCard
-              className="gap-1.5 p-4 [&>*:first-child]:leading-none"
-              key={item.label}
-              label={item.label}
-              value={item.value}
-              valueClassName="text-base leading-5 font-semibold tracking-normal"
-            />
-          ))}
-        </div>
-      ) : null}
-    </div>
+    <MetricGrid className="gap-4" columns={2}>
+      {items.map((item) => (
+        <MetricCard
+          className={metricCardClass}
+          key={item.label}
+          label={item.label}
+          value={item.value}
+          valueClassName={metricValueClass}
+        />
+      ))}
+    </MetricGrid>
   )
 }
 
@@ -102,7 +101,7 @@ export function StakingDetailAside({
   chartTitle: string
   showXValueCard?: boolean
   positionItems?: Array<{ label: string; value: ReactNode }>
-  /** Bond Figma: 2×2; stake hub: 3 + remainder. */
+  /** Bond Figma: 2×2; stake: 3 + remainder. */
   positionLayout?: 'triple-plus' | 'cards-2'
 }) {
   const vm = useStakingDetailAsideView()
@@ -130,7 +129,7 @@ export function StakingDetailAside({
             ))}
           </ul>
         ) : (
-          <MetricGrid items={overviewItems} layout={overviewLayout} />
+          <AsideMetricLayout items={overviewItems} layout={overviewLayout} />
         )}
       </DappDetailBlock>
 
@@ -191,7 +190,7 @@ export function StakingDetailAside({
         <div className="mb-4 flex items-center gap-2.5">
           <DappContentHeading className="m-0 pb-0">{t.staking.aside.positions}</DappContentHeading>
           <button
-            className="rounded-full bg-primary/15 px-2.5 py-0.5"
+            className="inline-flex h-5.25 items-center rounded-full bg-primary/15 px-2.5"
             onClick={() => selectTab('assets')}
             type="button"
           >
@@ -201,7 +200,7 @@ export function StakingDetailAside({
           </button>
         </div>
         {positionItems ? (
-          <MetricGrid items={positionItems} layout={positionLayout} />
+          <AsideMetricLayout items={positionItems} layout={positionLayout} />
         ) : (
           <>
             <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
@@ -235,34 +234,7 @@ export function StakingDetailAside({
       <DappDetailBlock>
         <DappContentHeading>{mechanismTitle ?? t.staking.aside.mechanism}</DappContentHeading>
         {mechanismSteps && mechanismSteps.length > 0 ? (
-          <Card
-            className="flex flex-col gap-4 rounded-2xl p-6 sm:flex-row sm:items-start sm:gap-0"
-            surface="elevated"
-          >
-            {mechanismSteps.map((step, index) => (
-              <div className="grid min-w-0 flex-1 gap-3" key={step.title}>
-                <div className="flex w-full items-center">
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary">
-                    <Text as="span" className="font-semibold" tone="inverse" variant="copy">
-                      {index + 1}
-                    </Text>
-                  </span>
-                  {index < mechanismSteps.length - 1 ? (
-                    <span
-                      aria-hidden
-                      className="ml-0 hidden h-0.5 min-w-0 flex-1 bg-border sm:block"
-                    />
-                  ) : null}
-                </div>
-                <Text as="strong" className="font-semibold" variant="copy">
-                  {step.title}
-                </Text>
-                <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
-                  {step.body}
-                </Text>
-              </div>
-            ))}
-          </Card>
+          <DappProcessSteps items={mechanismSteps} />
         ) : (
           <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
             {mechanism}
@@ -277,10 +249,11 @@ export function StakingDetailAside({
           emptyLabel={t.staking.aside.chartEmpty}
           header={
             <div className="flex items-center gap-2">
+              {/* 无 TVL 历史源 — 头值占位；见 dapp-data-gaps §3.2 */}
               <Text as="strong" className="text-xl font-semibold" variant="copy">
                 {formatCompactUsd(null)}
               </Text>
-              <Text as="span" className="text-success" variant="detail">
+              <Text as="span" className="font-semibold text-success" variant="detail">
                 {formatSignedPercent(null)}
               </Text>
             </div>
@@ -294,7 +267,7 @@ export function StakingDetailAside({
 
       <DappDetailBlock>
         <DappContentHeading>{t.staking.aside.faq}</DappContentHeading>
-        <FaqList items={faq} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={faq} variant="dapp" />
       </DappDetailBlock>
     </>
   )

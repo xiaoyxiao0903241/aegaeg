@@ -16,10 +16,10 @@ export function StakingTokenMetricValue({
   const src = icon === 'agx' ? dappAssets.tokenAgx : dappAssets.tokenGagx
   return (
     <span className="flex min-w-0 flex-wrap items-center gap-1.5">
-      <DappIcon alt="" className="shrink-0 rounded-full" size="lg" src={src} />
+      <DappIcon alt="" shape="circle" size="lg" src={src} />
       <DappCountValue text={value} />
       {approx ? (
-        <Text as="span" className="font-normal" tone="muted-foreground" variant="detail">
+        <Text as="span" className="font-normal text-foreground/40" variant="detail">
           {approx}
         </Text>
       ) : null}

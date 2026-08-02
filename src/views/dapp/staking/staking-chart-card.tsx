@@ -51,7 +51,7 @@ export function StakingChartCard({
       {hasSeries ? (
         <TvAreaChart points={points} />
       ) : (
-        <div className="flex min-h-40 items-center justify-center rounded-lg">
+        <div className="flex min-h-51 items-center justify-center rounded-lg">
           <Text as="span" className="text-foreground/40" variant="copy">
             {emptyLabel}
           </Text>

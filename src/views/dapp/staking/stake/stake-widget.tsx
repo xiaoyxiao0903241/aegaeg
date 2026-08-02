@@ -63,7 +63,7 @@ export function StakeWidget() {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" size="rail" src={dappAssets.tokenAgx} />
+                <DappIcon alt="" shape="circle" size="rail" src={dappAssets.tokenAgx} />
                 <Text as="span" className="font-semibold" variant="detail">
                   AGX
                 </Text>
