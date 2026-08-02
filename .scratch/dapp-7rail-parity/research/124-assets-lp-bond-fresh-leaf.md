@@ -90,5 +90,5 @@
 
 - [x] get_metadata(`4518:5993`) + get_design_context 关键控件
 - [x] 实测矩阵 · Critical=0
-- [ ] `pnpm check`（commit 前）
-- [ ] commit · queue #03 → page-done
+- [x] `pnpm check`（本切片文件 prettier/eslint；全仓 check 被无关 dirty prettier 挡）（commit 前）
+- [x] commit · queue #03 → page-done · `212eef4c (leaf) / chrome b72c13df`
