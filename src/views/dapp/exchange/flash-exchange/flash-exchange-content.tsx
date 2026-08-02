@@ -31,8 +31,8 @@ export function FlashExchangeContent({ overviewRateLabel }: { overviewRateLabel:
 
       <DappDetailBlock>
         <div className="mb-4 flex items-center justify-between gap-3">
-          {/* Figma `4477:411` 关于 = 20 / leading 1.2；`headline` token 是 16，用 text-xl。 */}
-          <DappContentHeading className="mb-0 pb-0 text-xl leading-[1.2] tracking-tight">
+          {/* Figma `4477:411` 关于 = 20 / leading 1.2；用 text-xl + headline leading token（禁 leading-[1.2]） */}
+          <DappContentHeading className="mb-0 pb-0 text-xl leading-(--type-headline-leading) tracking-tight">
             {t.exchange.flash.aboutTitle}
           </DappContentHeading>
           {/* Figma `4477:412` chevron chrome; no collapse IA → decorative only (R5a). */}
