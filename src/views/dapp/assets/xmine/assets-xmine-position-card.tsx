@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Card } from '~/shared/ui/card'
@@ -114,7 +116,9 @@ export function AssetsXminePositionCard({
           <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
             {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
           </Text>
+          {/* Figma `4525:797` chip 锁 12 · 与仓位共用 assetsPositionLock */}
           <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
+            <DappIcon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
             <Text as="span" className="leading-none text-primary" variant="support">
               {formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX
             </Text>
@@ -134,7 +138,8 @@ export function AssetsXminePositionCard({
           ) : null}
         </div>
       </div>
-      <div className="flex items-center justify-end gap-1">
+      {/* Figma `4525:812` vr：左 x16（禁 justify-end） */}
+      <div className="flex items-center justify-start gap-1">
         <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {voucherCaption}
         </Text>
