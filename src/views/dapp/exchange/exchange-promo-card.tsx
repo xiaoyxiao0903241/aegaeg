@@ -78,9 +78,10 @@ export function ExchangePromoPillAction({
         withArrow ? 'gap-1.5' : 'justify-center',
         layout === 'desktop'
           ? cn(
+              // Figma btn-contract `4477:426`：px16 py10 · copy13 · leading 1.2 → 合成 h36
               'absolute top-1/2 right-4 z-2 -translate-y-1/2 px-4 py-2.5',
-              'text-xs/normal font-semibold',
-              !withArrow && minConnectWidth && 'min-w-31 text-xs',
+              'text-(length:--type-copy-size) leading-[1.2] font-semibold',
+              !withArrow && minConnectWidth && 'min-w-31',
               'duration-dapp-fast transition-[border-color,transform] ease-out',
               'hover:translate-x-px hover:border-primary',
               'focus-visible:translate-x-px focus-visible:border-primary',

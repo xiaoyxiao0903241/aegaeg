@@ -21,25 +21,18 @@ export function FlashExchangeContent({ overviewRateLabel }: { overviewRateLabel:
       <section>
         <DappContentHeading id="exchange-title">{t.exchange.overview}</DappContentHeading>
         <MetricGrid columns={2}>
+          <ExchangeMetricCard label={t.exchange.exchangeRate} value={overviewRateLabel || '0'} />
           <ExchangeMetricCard
-            className="gap-1.5 p-4"
-            label={t.exchange.exchangeRate}
-            value={overviewRateLabel || '0'}
-            valueClassName="text-base"
-          />
-          <ExchangeMetricCard
-            className="gap-1.5 p-4"
             label={t.exchange.settlement}
             value={t.exchange.flash.settlementValue}
-            valueClassName="text-base"
           />
         </MetricGrid>
       </section>
 
       <DappDetailBlock>
         <div className="mb-4 flex items-center justify-between gap-3">
-          {/* About row — Text `headline` ≈ 20 at design root; no px override. */}
-          <DappContentHeading className="mb-0 pb-0 [&]:text-(length:--type-headline-size)">
+          {/* Figma `4477:411` 关于 = 20 / leading 1.2；`headline` token 是 16，用 text-xl。 */}
+          <DappContentHeading className="mb-0 pb-0 text-xl leading-[1.2] tracking-tight">
             {t.exchange.flash.aboutTitle}
           </DappContentHeading>
           {/* Figma `4477:412` chevron chrome; no collapse IA → decorative only (R5a). */}
