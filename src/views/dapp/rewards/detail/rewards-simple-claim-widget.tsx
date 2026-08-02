@@ -32,26 +32,27 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         title={vm.card.title}
       />
       <DappWidgetStack>
-        <Card surface="outlined" className="rounded-2xl p-4">
+        {/* Figma 待审批 124：p-4 + 顶行 + mt-1.5 + 底栏 35（禁 h-[124px]） */}
+        <Card surface="outlined" className="min-h-31 rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
-              <Text as="p" tone="muted-foreground" variant="caption">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {vm.grant.pendingLabel}
               </Text>
               <RewardsGagxAmount>{vm.tokenGagx}</RewardsGagxAmount>
             </div>
-            <div className="grid gap-1.5 text-right">
-              <Text as="p" tone="muted-foreground" variant="caption">
+            <div className="grid gap-0.5 text-right">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {vm.grant.pendingHint}
               </Text>
-              <Text as="p" className="font-semibold" variant="headline">
+              <Text as="p" className="leading-7 font-semibold" variant="headline">
                 {formatApiDecimalAmount(null)}
               </Text>
             </div>
           </div>
-          <div className="mt-2.5 grid gap-1">
+          <div className="mt-1.5 grid gap-1">
             <a
-              className="inline-flex w-fit items-center gap-1 font-medium text-primary underline"
+              className="inline-flex h-4 w-fit items-center gap-1 font-medium text-primary underline"
               href={COMMUNITY_SOCIAL_LINKS.telegram}
               rel="noreferrer"
               target="_blank"
@@ -61,24 +62,25 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
               </Text>
               <ChevronIcon className="size-2.5 -rotate-90 opacity-80" direction="up" />
             </a>
-            <Text as="p" tone="muted-foreground" variant="caption">
+            <Text as="p" className="leading-none" tone="muted-foreground" variant="support">
               {vm.grant.pendingBody}
             </Text>
           </div>
         </Card>
 
-        <div className="flex items-center justify-center py-1.5">
+        <div className="flex h-11.5 items-center justify-center">
           <span className="inline-flex size-8.5 items-center justify-center rounded-control border border-border bg-card shadow-sm">
             <ChevronIcon className="size-2.5 rotate-180 opacity-70" direction="up" />
           </span>
         </div>
 
-        <div className="grid gap-2 rounded-2xl border border-primary/35 bg-primary/10 p-4">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" variant="copy">
+        {/* Figma 可领取卡 93：min-h-23.25 + p-4（禁 h-[93px]） */}
+        <div className="grid min-h-23.25 gap-1.5 rounded-2xl border border-primary/35 bg-primary/10 p-4">
+          <div className="flex h-5 items-center justify-between gap-2">
+            <Text as="span" className="leading-5" variant="copy">
               {t.rewards.detail.claimable}
             </Text>
-            <Text as="span" tone="muted-foreground" variant="caption">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               {vm.copy.claimIntoWallet}
             </Text>
           </div>
@@ -86,7 +88,13 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         </div>
 
         {walletReady ? (
-          <DappActionButton disabled={!vm.canSubmit} loading={vm.isClaiming} onClick={vm.onClaim}>
+          <DappActionButton
+            className="min-h-13 py-2 text-sm leading-4"
+            density="external"
+            disabled={!vm.canSubmit}
+            loading={vm.isClaiming}
+            onClick={vm.onClaim}
+          >
             {vm.ctaLabel}
           </DappActionButton>
         ) : (

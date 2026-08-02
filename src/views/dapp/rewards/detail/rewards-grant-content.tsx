@@ -26,8 +26,12 @@ export function RewardsGrantContent() {
       <DappDetailBlock>
         <DappContentHeading>{grant.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <RewardsStatCard label={grant.tier} value={tier} />
-          <RewardsStatCard label={grant.totalClaimed} value={totalClaimed} />
+          <RewardsStatCard className="min-h-19.75" label={grant.tier} value={tier} />
+          <RewardsStatCard
+            className="min-h-19.75"
+            label={grant.totalClaimed}
+            value={totalClaimed}
+          />
         </div>
       </DappDetailBlock>
 
