@@ -18,7 +18,7 @@ export function ExchangeHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.faq.title}</DappContentHeading>
-        <FaqList items={t.exchange.hub.faq.items} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={t.exchange.hub.faq.items} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

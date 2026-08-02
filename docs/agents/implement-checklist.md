@@ -25,9 +25,11 @@ Agent session：
 ### A0. 开页
 
 ```
-[ ] 已读 ui-leaf §0 禁语 + §1 硬序（本轮）
+[ ] 已读 ui-leaf §0 禁语 + §1 硬序 + §8 重启铁律（含 §8.1 稿/原型 · §8.2 抽取）
 [ ] 本页登记已填；Status=`pre-design`
-[ ] 确认只做这一帧（禁并行下一帧写盘）
+[ ] 确认只做这一帧（从队列顺序；禁并行下一帧；禁并行 spawn 多页改 src/）
+[ ] 现行队列为 `200-releaf-restart-queue.md`；未引用已删的旧 leaf/page-done
+[ ] 已停掉与本页无关的后台 releaf/check 任务（或确认无运行中）
 ```
 
 ### A1. 手册 + 钱路
@@ -45,26 +47,31 @@ Agent session：
 [ ] 稿面数字位 → API/链上/皆无 对照已写；有源→接线计划；皆无→ gaps + 诚实空
 ```
 
-### A3. 原型 WebBridge（IA）
+### A3. 原型 WebBridge（IA · 稿缺态 SSOT）
 
 ```
 [ ] 点通原型；五字段实录进 leaf（§2.2）
-[ ] 未用 Playwright 代替；未抄原型 DOM/CSS 当视觉规格
+[ ] 未用 Playwright 代替；未抄原型 DOM/CSS 当**有稿**表面的视觉规格
+[ ] 若本页有 Figma 无/未设计完全的状态（空态等）→ 该状态 UI 跟原型，leaf 注明「稿缺→原型」
 ```
 
-### A4. Figma 全 leaf 清单
+### A4. Figma 全 leaf 清单（写盘前门禁 · 缺证据 = 本页未开始）
 
 ```
 [ ] fileKey `uiKwzwIoD06phS0husdqjB`；`get_design_context` 前已 load figma-design-to-code
-[ ] 页帧 context + metadata 已拉
-[ ] **每一个可见最小子 leaf** 已列入清单（nodeId + 稿 h/w/pad/font/色/surface）— 行数须覆盖整帧，禁只列 AmountBox/CTA
+[ ] 本轮已调用 `get_metadata(页帧)`（全树 w/h/x/y）
+[ ] 本轮已对页帧 + **每一个可见最小 leaf** 调用 `get_design_context`
+[ ] leaf 写明：拉取时间 · fileKey · 页帧 nodeId · **全最小 leaf nodeId 清单**（MCP 证据）
+[ ] 每一行含：nodeId + 稿 h/w/pad/font/色/surface — 行数须覆盖整帧，禁只列 AmountBox/CTA
 [ ] 清单覆盖：栏→块→控件→最小叶（icon/thumb/handle/字色/padding）；无「左栏大概 PASS」
-[ ] 自检 §2.3c：漏一项 = A4 未完成
+[ ] 自检 §2.3c：漏一项 = A4 未完成 → **禁止**进入 A5/写盘
+[ ] **未**用旧 scratch / 旧 page-done 抄规格冒充本轮拉取
 ```
 
-### A5. 本站 WebBridge 实测（§2.3b）← 常被跳过，强制
+### A5. 本站 WebBridge 实测（§2.3b）← 测本站 ≠ 拉稿；仅对照 A4 清单
 
 ```
+[ ] A4 已齐（否则本步无效，禁止当进度）
 [ ] 已打开 `pnpm dev` 本站对本帧路由
 [ ] 对 **清单每一行**（不是抽样）用 WebBridge `evaluate` + getBoundingClientRect / getComputedStyle
 [ ] leaf 有「实测矩阵」：稿 | 实测 | Δ | PASS/FAIL（定位方式可复测）
@@ -80,11 +87,13 @@ Agent session：
 [ ] 「稿无代码有」列已填
 ```
 
-### A7. 尺寸硬禁（写盘前再勾一次）
+### A7. 尺寸硬禁 + 组件复用/抽取（写盘前再勾）
 
 ```
 [ ] 本页计划改动 **不含** 任何 `*[Npx]` / `*[Nrem]` 任意值（§2.6）
 [ ] 若字阶/图标对不齐稿 → 计划改 `theme.css` token 或 primitive variant，不计划 call site 补 px
+[ ] 已搜现有 `shared/ui` / shell：能复用的不新造（§8.2）
+[ ] chart / 同 chrome 多实例 → 走或扩共用组件，禁止页袋复制分叉
 ```
 
 ### ✅ 允许写盘
@@ -129,9 +138,9 @@ Agent session：
 [ ] R7 Post-Design：五字段 + 实测矩阵 + 手册/API 对照 + R5a；缺 → Critical
 [ ] R7 Post-Code：假数 / 稿外 / flip 冒充 picker / px 创可贴 / R4a；Critical=0
 [ ] 审查结论落 `.scratch/.../research/`
-[ ] R7 Critical=0 后 commit → Status=`page-done`
-    （默认仍须用户明示；**releaf 队列**若用户已书面授权「R7 过即提交直到全页完成」则可连续 commit）
-[ ] 仅此时可开下一帧（回到 A0）
+[ ] R7 Critical=0 后，**用户明示**才 commit → Status=`page-done` → 更新 `200-releaf-restart-queue.md`
+[ ] **仅此时**可开下一帧（回到 A0）；禁止并行下一页
+[ ] page-done 前复查：leaf 含本轮 MCP 拉取证据（时间·fileKey·全 nodeId）；缺 → 不得勾 page-done
 ```
 
 ---

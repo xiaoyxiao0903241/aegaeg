@@ -16,7 +16,7 @@ export function ExchangeHubWidget() {
         className="mb-4"
         subtitle={t.exchange.intro}
         title={t.exchange.title}
-        titleClassName="text-xl !leading-[1.2] tracking-normal"
+        titleClassName="text-xl leading-(--type-headline-leading) tracking-normal"
       />
       <DappWidgetStack>
         <DappModeCard

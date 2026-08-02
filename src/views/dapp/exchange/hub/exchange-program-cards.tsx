@@ -119,11 +119,11 @@ function ExchangeProgramCard({
       {...(interactive ? { onClick, type: 'button' as const } : {})}
     >
       <Card.Content className={cn('grid min-w-0 gap-1.5 text-left', icon && 'flex-1')}>
-        {/* 稿 title 14 / body 13；unitless 1.2 对齐 Figma leading 以合成 h70 */}
-        <Text as="strong" className="!leading-[1.2] font-semibold" variant="detail">
+        {/* 稿 title 14 / body 13；leading-tight 合成 h70（禁 leading-[…] 任意值） */}
+        <Text as="strong" className="leading-tight font-semibold" variant="detail">
           {title}
         </Text>
-        <Text as="span" className="!leading-[1.2] text-foreground/40" variant="copy">
+        <Text as="span" className="leading-tight text-foreground/40" variant="copy">
           {body}
         </Text>
       </Card.Content>

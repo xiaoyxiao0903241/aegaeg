@@ -1,8 +1,9 @@
 # UI 页面实现工作流（全仓通用 · 强制）
 
-> **状态：** 用户锁定 2026-07-30（对抗纠偏：堵 R5 合取漏洞 · 手册沉默 ≠ 取消 UI · WebBridge 实录字段）；**2026-07-31 加锁：手册逐行对照 + R4a**；**2026-08-02 加锁：全 leaf 清单 + WebBridge 实测 computed style + 禁 px 创可贴**  
+> **状态：** 用户锁定 2026-07-30（对抗纠偏：堵 R5 合取漏洞 · 手册沉默 ≠ 取消 UI · WebBridge 实录字段）；**2026-07-31 加锁：手册逐行对照 + R4a**；**2026-08-02 加锁：全 leaf 清单 + WebBridge 实测 computed style + 禁 px 创可贴**；**2026-08-02 晚重启：一页一闭环 · 测本站≠拉稿 · 缺 MCP 证据不许 page-done**  
 > **本文件 = `page-done` 与工具序唯一正文。** `AGENTS.md` 管分层；[`implement-checklist.md`](./implement-checklist.md) = **每次开页必勾**（禁止跳步写盘）。  
-> **挂载：** [`AGENTS.md`](../../AGENTS.md) §8.0 R4a / R5 / R5a / R6 / R7
+> **挂载：** [`AGENTS.md`](../../AGENTS.md) §8.0 R4a / R5 / R5a / R6 / R7  
+> **现行队列：** [`.scratch/dapp-7rail-parity/research/200-releaf-restart-queue.md`](../../.scratch/dapp-7rail-parity/research/200-releaf-restart-queue.md)（旧 fresh / page-leaf / 假 page-done **已删**，不得当 SSOT）
 
 ---
 
@@ -10,6 +11,12 @@
 
 | 坏做法                                                                                              | 必须                                                                                                                  |
 | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **多页并行写盘 / 并行 spawn 多页改 `src/`**                                                         | **每次只做一页**；从 #01 **顺序**推进；本页未 `page-done` 禁止开下一页                                                |
+| **稿缺态却发明 UI / 用假数填空**                                                                    | Figma 无或未设计完全的状态（如资产空态）→ **跟 HTML 原型**；有稿则尽量跟稿（§8.1）                                    |
+| **同 chrome 多处复制 / 每页自造 chart**                                                             | **复用**现有组件；能抽则抽到 `shared/ui`；chart 走共用实现（§8.2）                                                    |
+| **测本站 / `pnpm check` 冒充「已从 Figma 拉取」**                                                   | 拉稿 = 本轮 `get_metadata` + 全最小 leaf `get_design_context`；测本站只对照清单，**不是**进度门禁                     |
+| **缺 MCP 证据标 page-done / 报「已对齐」**                                                          | leaf 须有：拉取时间 · fileKey · 页帧 nodeId · **全最小 leaf nodeId 清单**；缺任一项 = 本页未开始                      |
+| **旧 scratch / 旧 page-done / 旧 fresh leaf 当规格**                                                | 一律作废；开页必须重新拉 Figma；旧文件仅可作 nodeId 线索（现行队列外的 leaf 已删除）                                  |
 | 手册摘要略读 / 「整体符合 §X」无逐条对照表                                                          | **逐行**读相关章；leaf 落对照表（§2.1）；缺 → Critical                                                                |
 | WebBridge「可选 / DEFER / 稍后补」后标 page-done                                                    | 无 §2.2 实录字段 → Status ≤ `needs-proto-reverify`；R7 不得 PASS                                                      |
 | 只点通原型、**不**对本站每个 leaf 做 `getComputedStyle`                                             | 无 §2.3b 实测矩阵 → **禁止**标 UI PASS；R7 Critical                                                                   |
@@ -18,10 +25,9 @@
 | 手册缺数据 / 只写钱路 → 不做下拉、用 flip 冒充                                                      | **UI MUST 做完**；缺口记文档；动态数字空态=`0`/`0.00`（FAQ 同，无 count 动效）；flip ≠ picker                         |
 | 「稿∩手册才 MUST」缩 UI                                                                             | 控件跟 Figma/原型；钱跟手册                                                                                           |
 | 手册沉默 → 拆旧写 / 发明第三条写链                                                                  | **R4a**：手册有→手册；手册无+可证旧码→恢复；皆无→关写暴露                                                             |
-| 多页并行写盘 / 清单未齐就改码                                                                       | 一帧闭环；**§3 步 1–5 未勾完禁止写产品码**                                                                            |
+| 清单未齐就改码                                                                                      | 一帧闭环；**§3 步 1–5 / checklist A0–A7 未勾完禁止写产品码**                                                          |
 | `pnpm check` / 钱路 PASS / High 波 / 类名像稿 = 完成                                                | 仅 §5 全满；UI PASS **必须**含实测 Δ                                                                                  |
 | 证据栏套话（「一致」「N/A」无路径）                                                                 | Critical                                                                                                              |
-| 旧 scratch「选币=flip PASS」                                                                        | **作废**（见 §9）                                                                                                     |
 | 页级/组件级「大概像」冒充 leaf 对齐                                                                 | **必须**钻到 Figma **最小可见子节点**（§2.3）；漏 thumb / 色 / 卡 surface = Critical                                  |
 | commit 只跑 eslint/tsc、跳过 knip/jscpd                                                             | **pre-commit + `pnpm check`** 均含 `lint:deadcode` + `lint:duplicates`（§5 / commands）                               |
 
@@ -286,21 +292,44 @@ Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错
 
 ---
 
-## 8. 重新开始（5 步）
+## 8. 2026-08-02 晚 · 重启铁律（用户锁定）
 
-1. 合并本纠偏（R5a + 本文件）并 commit（用户明示时）。
-2. 队列全部非 page-done：`needs-proto-reverify` / `not started`。
-3. 从兑换主页 `4267:212` 起：**一页一闭环**（含原型 + Trade 类控件 MUST）。
-4. Trade：picker 下拉 = UI FAIL 直至实现；§7.1 钱路可先 PASS。
-5. 全部真 page-done 后再通知用户。
+> **现行队列：** [`200-releaf-restart-queue.md`](../../.scratch/dapp-7rail-parity/research/200-releaf-restart-queue.md)  
+> **旧 fresh leaf / 旧 page-leaf / 假 page-done / 旧 R7 PASS 文档：已删除，禁止再引用当规格。**  
+> **顺序：** 从队列 **#01** 起顺序执行；**本页未 `page-done` 禁止开下一页**；禁止并行 spawn 多页改 `src/`。
+
+```text
+每次只做一页（从 #01 顺序推进）。
+① 本页 get_metadata（页帧）
+② 页帧 + 每一个用户可见最小 leaf：get_design_context（skillNames 含 figma-design-to-code）
+③ leaf 落：拉取时间 · fileKey · 全 nodeId 清单 · 稿规格
+④ 清单齐了 → 才允许写盘
+⑤ 本站 WebBridge 实测只对照清单（测本站 ≠ 拉稿）
+⑥ Critical=0 → 用户明示 commit → page-done → 才开下一页
+缺 MCP 证据 → 不许 page-done · 不许报「已对齐」
+```
+
+### 8.1 视觉 SSOT 分层（稿优先 · 稿缺态跟原型）
+
+| 情况                                                         | 跟谁                                                                | 禁止                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------------- | ---------------------------- |
+| Figma 有该表面/控件/状态                                     | **尽量对齐 Figma**（在 §2.6 / Foundation / guideline 内）           | 用原型 DOM/CSS 覆盖稿        |
+| Figma **无**该状态，或稿面**未设计完全**（例：资产仓位空态） | **HTML 原型**（`~/Downloads/新/` · WebBridge 点通）为该状态 UI SSOT | 发明第三套空态；用假数填满稿 |
+| 钱路 / 门闸 / 读写真源                                       | 手册 + OpenAPI + R4a                                                | 用原型演示数当验收           |
+
+### 8.2 组件复用与抽取（强制偏好）
+
+1. **优先复用**现有 `shared/ui` / shell / 本轨已有 primitive（Card / Text / Chip / Segment / AmountBox / FaqList / DropdownMenu / `TvAreaChart` 等）。
+2. **同 chrome 多实例 → 抽取**：多页/多轨视觉与行为一致的块，抽到 `shared/ui`（或已有 shell），**禁止**页袋复制粘贴分叉。
+3. **Chart：** 面积/折线类图默认走共用 chart 组件（现行 `TvAreaChart`）；新图先扩共用 API，禁止每页另起一套 chart 实现。
+4. 抽取只扩 **chrome**（视觉/a11y/动效合同）；业务 options / locale / 合约地址仍在 call site（见 AGENTS R3）。
+
+`manual-coverage/`（手册 G-id）保留，仅服务钱路对照，**不是**视觉 leaf SSOT。
 
 ---
 
-## 9. 作废的旧 scratch 口径
+## 9. 作废口径
 
-下列指导 **superseded**（可留文件但须当错）：
-
-- 「选币 pill = flip」「点选 = flip → PASS」「结构 PASS；真 picker DEFER 不挡」
-- 出现在：`55-trade-page-leaf`、`13-exchange-tab-pre-design`、`39`/`40`/`41` exchange leaf、`16-exchange-r7-review` 等
-
-**保留：** 钱路「Trade = USD1↔AGX」（手册 §7.1）——那是路径，不是 UI 免责声明。
+- 一切「旧 page-done / fresh leaf / 测本站即进度 / 并行多页」
+- 「选币 pill = flip」「结构 PASS；真 picker DEFER 不挡」
+- **保留钱路：** Trade = USD1↔AGX（手册 §7.1）——路径约束，不是 UI 免责声明。
