@@ -23,7 +23,12 @@ export function RewardsStatCard({
   children,
 }: RewardsStatCardProps) {
   return (
-    <Card as="div" surface="elevated" className={cn('rounded-2xl p-4 shadow-sm', className)}>
+    <Card
+      as="div"
+      surface="elevated"
+      // Figma tile 74：min-h-18.5 + p-4（禁 min-h-[74px]）
+      className={cn('min-h-18.5 rounded-2xl p-4 shadow-sm', className)}
+    >
       {children ?? (
         <>
           <Text as="p" className={labelClassName} tone="muted-foreground" variant="caption">

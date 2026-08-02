@@ -1,11 +1,10 @@
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
-import { chipVariants } from '~/shared/ui/chip'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Text } from '~/shared/ui/text'
 
-/** Hub reward entry — Figma `reward/*` leaf (not DappModeCard chrome). */
+/** Hub reward entry — Figma `reward/*` 106/110：p-4 + leading-4 合成（禁任意 h-[Npx]）。 */
 export function RewardsModeCard({
   approx,
   badge,
@@ -42,45 +41,35 @@ export function RewardsModeCard({
       <div className="grid gap-1.5">
         <div className="flex items-center gap-1.5">
           <DappIcon alt="" className="size-5 shrink-0" size="sm" src={icon} />
-          <Text as="span" className="text-sm font-semibold" variant="copy">
+          <Text as="span" className="text-sm leading-5 font-semibold" variant="copy">
             {title}
           </Text>
           {badge ? (
-            <span
-              className={cn(
-                chipVariants({
-                  variant: 'solid',
-                  tone: 'primary',
-                  size: 'sm',
-                  shape: 'pill',
-                }),
-                'pointer-events-none shrink-0 bg-warning text-white',
-              )}
-            >
+            <span className="pointer-events-none shrink-0 rounded-full bg-warning px-2 py-0.5 text-(length:--type-caption-size) leading-none font-(--type-caption-weight) text-white">
               {badge}
             </span>
           ) : null}
         </div>
-        <Text as="p" className="m-0" tone="muted-foreground" variant="detail">
+        <Text as="p" className="m-0 truncate leading-4" tone="muted-foreground" variant="support">
           {body}
         </Text>
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <Text as="span" tone="muted-foreground" variant="detail">
+        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {balanceLabel}
         </Text>
         <div className="flex items-center gap-1.5">
-          <Text as="strong" className="text-base font-semibold" variant="copy">
+          <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
             <DappCountValue text={balanceAmount} />
           </Text>
           {approx ? (
-            <Text as="span" tone="muted-foreground" variant="detail">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               <DappCountValue text={approx} />
             </Text>
           ) : null}
           {claimCta ? (
-            <Text as="span" className="font-medium text-primary" variant="detail">
+            <Text as="span" className="leading-4 font-medium text-primary" variant="support">
               {claimCta}
             </Text>
           ) : null}

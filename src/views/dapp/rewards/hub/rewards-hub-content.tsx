@@ -7,7 +7,6 @@ import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
-import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
@@ -46,25 +45,27 @@ export function RewardsHubContent() {
             value={formatApiDecimalAmount(null)}
           />
           <RewardsStatCard label={stats.contribution}>
-            <div className="flex items-start justify-between gap-2">
-              <Text as="p" tone="muted-foreground" variant="caption">
+            <div className="flex items-center justify-between gap-2">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {stats.contribution}
               </Text>
-              <Button
-                className="h-4 shrink-0 rounded-full bg-primary px-2 text-primary-foreground hover:bg-primary/90"
+              {/* Figma 去销毁 pill 16：h-4 + min-h-0；禁 Button sm/pill→min-h-9/w-full */}
+              <button
+                className="inline-flex h-4 shrink-0 items-center rounded-full bg-primary px-2 text-(length:--type-support-size) leading-none text-primary-foreground hover:bg-primary/90"
                 onClick={() => openExchangeView('burn')}
-                size="sm"
                 type="button"
               >
                 {stats.goBurn}
-              </Button>
+              </button>
             </div>
-            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
-              {contributionValue}
-            </Text>
-            <Text as="p" className="mt-1" tone="muted-foreground" variant="detail">
-              {stats.contributionHint}
-            </Text>
+            <div className="mt-1.5 flex items-center gap-1.5">
+              <Text as="p" className="leading-5 font-semibold" variant="copy">
+                {contributionValue}
+              </Text>
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
+                {stats.contributionHint}
+              </Text>
+            </div>
           </RewardsStatCard>
         </div>
       </DappDetailBlock>
@@ -77,11 +78,11 @@ export function RewardsHubContent() {
             return {
               key: view,
               content: (
-                <Card surface="outlined" className="rounded-2xl px-4 py-6 shadow-sm">
-                  <Text as="p" className="font-semibold" variant="copy">
+                <Card surface="outlined" className="min-h-30 rounded-2xl px-4 py-6 shadow-sm">
+                  <Text as="p" className="leading-5 font-semibold" variant="copy">
                     {slide.title}
                   </Text>
-                  <Text as="p" className="mt-3" tone="muted-foreground" variant="detail">
+                  <Text as="p" className="mt-3 leading-5" tone="muted-foreground" variant="detail">
                     {slide.body}
                   </Text>
                 </Card>
@@ -116,7 +117,12 @@ export function RewardsHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.faq.title}</DappContentHeading>
-        <FaqList items={t.rewards.faq.items} variant="dapp" />
+        {/* Figma FAQ 收起 50：py-4 覆盖 dapp 默认 py-4.5（禁任意 px） */}
+        <FaqList
+          className="[&_[data-faq-item]>div]:py-4"
+          items={t.rewards.faq.items}
+          variant="dapp"
+        />
       </DappDetailBlock>
     </DappDetailPage>
   )
