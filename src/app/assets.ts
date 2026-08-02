@@ -39,7 +39,6 @@ export const exchangeHubAssets = {
   programUsdt: '/assets/figma/dapp/token-usdt.svg',
   programUsd1: '/assets/figma/dapp/hub/program-usd1.png',
   programAgx: '/assets/figma/dapp/hub/program-agx.png',
-  programPancake: '/assets/figma/dapp/hub/program-pancake.png',
   programX: '/assets/figma/dapp/hub/program-x.png',
   programGagx: '/assets/figma/dapp/hub/program-gagx.png',
 } as const
@@ -123,8 +122,10 @@ export const dappAssets = {
   assetsPositionLock: '/assets/figma/dapp/assets-hub/ic-position-lock-12.svg',
   /** 仓位加成 chip 双上箭头 · Figma `4525:253` 12. */
   assetsPositionBoost: '/assets/figma/dapp/assets-hub/ic-position-boost-12.svg',
-  tokenAgx: tokenFlywheelIcons.agxIcon,
-  tokenGagx: tokenFlywheelIcons.gagxIcon,
+  tokenAgx: tokenCarouselIcons.agxIcon,
+  tokenGagx: tokenCarouselIcons.gagxIcon,
+  /** 与 `tokenGagx` 同图（carousel 128²）；旧涡轮引用保留 */
+  tokenGagxMark: tokenCarouselIcons.gagxIcon,
   tokenUsd1: tokenFlywheelIcons.usd1Icon,
   tokenX: tokenFlywheelIcons.xIcon,
   usdt: '/assets/figma/dapp/token-usdt.svg',

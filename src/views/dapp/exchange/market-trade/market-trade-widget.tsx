@@ -96,7 +96,7 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
         />
 
         <DappMetaPanel
-          className="mt-0 gap-2.5 p-4"
+          className="gap-2.5 p-4"
           items={[
             {
               label: t.exchange.exchangePrice,

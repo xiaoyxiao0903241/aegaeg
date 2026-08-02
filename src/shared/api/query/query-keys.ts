@@ -285,6 +285,7 @@ export const queryKeys = {
     turbineSilencesOf: (address: string) =>
       chainWalletQueryKey(['chain', 'turbine', 'silences'], address),
     turbineUsdQuote: (agxAmount: string) => ['chain', 'turbine', 'usdQuote', agxAmount] as const,
+    turbineSwapSlippage: ['chain', 'turbine', 'swapSlippageBP'] as const,
     turbineClaimable: ['chain', 'turbine', 'claimable'] as const,
     turbineClaimableOf: (address: string) =>
       chainWalletQueryKey(['chain', 'turbine', 'claimable'], address),

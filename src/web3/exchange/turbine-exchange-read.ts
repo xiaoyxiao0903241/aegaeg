@@ -13,6 +13,7 @@ const turbineReadAbi = parseAbi([
   TURBINE_METHODS.isVested,
   TURBINE_METHODS.currentCooldownDuration,
   TURBINE_METHODS.quoteUsdInForAgxOut,
+  TURBINE_METHODS.swapSlippageBP,
 ])
 const erc20ReadAbi = parseAbi([ERC20_METHODS.balanceOf, ERC20_METHODS.allowance])
 
@@ -56,6 +57,17 @@ export async function readTurbineUsdQuote(
     abi: turbineReadAbi,
     functionName: 'quoteUsdInForAgxOut',
     args: [agxAmount],
+  })
+}
+
+/** 手册 contracts/turbine：`swapSlippageBP` 默认 300（3%）；仅 owner 可改，前端只读展示。 */
+export async function readTurbineSwapSlippageBP(
+  client: ChainReadClient = bscReadClient,
+): Promise<bigint> {
+  return client.readContract({
+    address: BSC_CONTRACTS.turbine,
+    abi: turbineReadAbi,
+    functionName: 'swapSlippageBP',
   })
 }
 

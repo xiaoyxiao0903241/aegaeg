@@ -408,13 +408,14 @@ const app = defineMessages({
       },
       unlockLabel: 'Unlock',
       unlockable: 'Unlockable',
-      equivalentBuyHint: 'Unlocking buys matching AGX at the live quote',
+      equivalentBuyHint: 'Unlocking runs an equal buy at the same time',
       payUsd1Label: 'Pay USD1',
       buyAgxLabel: 'Buy AGX',
       buyToBoundWallet: 'Bought to wallet',
       agxPrice: 'AGX price',
       willReceiveAgx: 'AGX you will receive',
       unlockRatio: 'Unlock ratio',
+      unlockRatioValue: '1 : 1 buy to unlock',
       cooldown: 'Cooldown',
       cooldownHoursValue: '{hours}h',
       unlockAction: 'Unlock',
@@ -433,12 +434,12 @@ const app = defineMessages({
         'Bind sell liquidity to buy demand so every unlock is paired with an equal buy',
       mechanism: [
         {
-          title: 'Buy to unlock',
-          body: 'gAGX claimed from the release pool stays locked in Turbine. Pay USD1 at the live on-chain quote to buy matching AGX, unlock quota, and start cooldown.',
+          title: '1:1 buy-to-unlock',
+          body: 'gAGX claimed from the release pool stays locked in Turbine. Buy matching AGX with USD1 at the current price to unlock the same amount of gAGX—each unlock is floored by buy demand.',
         },
         {
           title: 'Adaptive cooldown',
-          body: 'Cooldown adapts with treasury health (about 24–96 hours). Claim gAGX after it matures.',
+          body: 'Each unlock enters a 24–96 hour cooldown tuned by market state. After it ends, extract unlocked gAGX to your wallet.',
         },
       ],
       metrics: {
@@ -454,7 +455,7 @@ const app = defineMessages({
           },
           {
             q: 'Why is a buy required to unlock?',
-            a: 'Unlock settles with USD1. Exact payment comes from the live on-chain quote — not a fixed 1:1.',
+            a: 'Unlock requires buying an equal amount of AGX with USD1 at the live price (quantity 1:1). The USD1 you pay moves with the AGX quote — it is not a fixed USD1:AGX price of 1:1.',
           },
           {
             q: 'Unlock vs claim?',

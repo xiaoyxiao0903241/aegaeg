@@ -35,7 +35,7 @@ const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undef
   [exchangeHubAssets.programGagx, exchangeHubAssets.programAgx],
   [exchangeHubAssets.programUsd1, exchangeHubAssets.programGagx],
   [exchangeHubAssets.programUsdt, exchangeHubAssets.programUsd1],
-  [exchangeHubAssets.programPancake],
+  [exchangeHubAssets.programAgx],
   [exchangeHubAssets.programX],
   undefined,
 ]

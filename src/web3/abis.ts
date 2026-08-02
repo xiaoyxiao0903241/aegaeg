@@ -132,6 +132,8 @@ export const TURBINE_METHODS = {
   isVested: 'function isVested(address user, uint256 index) view returns (bool)',
   currentCooldownDuration: 'function currentCooldownDuration() view returns (uint256)',
   quoteUsdInForAgxOut: 'function quoteUsdInForAgxOut(uint256 agxAmount) view returns (uint256)',
+  /** 合约内 swap 滑点（BPS）· owner `setSwapConfig`；用户不可改。 */
+  swapSlippageBP: 'function swapSlippageBP() view returns (uint256)',
   buyAgxAndStartCooldown: 'function buyAgxAndStartCooldown(uint256 usdAmount)',
   claimCooledGagx: 'function claimCooledGagx(uint256 index)',
 } as const

@@ -397,13 +397,14 @@ const app = defineMessages({
       },
       unlockLabel: '解鎖',
       unlockable: '可解鎖',
-      equivalentBuyHint: '解鎖同时将按报价買入对应 AGX',
-      payUsd1Label: '支付 USD1',
+      equivalentBuyHint: '解鎖同時將執行等額買入',
+      payUsd1Label: '支付USD1',
       buyAgxLabel: '買入 AGX',
       buyToBoundWallet: '買入到账钱包',
       agxPrice: 'AGX 價格',
       willReceiveAgx: '將獲得 AGX',
       unlockRatio: '解鎖比率',
+      unlockRatioValue: '1 : 1 買入解鎖',
       cooldown: '冷卻週期',
       cooldownHoursValue: '{hours}小時',
       unlockAction: '解鎖',
@@ -420,8 +421,8 @@ const app = defineMessages({
       mechanismIntro: '將賣出流動性與買入需求綁定，讓每一份解鎖都伴隨等量買入',
       mechanism: [
         {
-          title: '買入解鎖',
-          body: '從釋放池領取的 gAGX 進入渦輪後處於鎖定狀態。需以 USD1 按鏈上報價買入等量 AGX，才能解鎖對應數量的 gAGX 並進入冷卻。',
+          title: '1:1 買入解鎖',
+          body: '從釋放池領取的 gAGX 進入渦輪後處於鎖定狀態。用戶需以 USD1 按當前價格買入等量 AGX，才能解鎖對應數量的 gAGX——買入需求為每一份解鎖托底。',
         },
         {
           title: '動態冷卻機制',
@@ -441,7 +442,7 @@ const app = defineMessages({
           },
           {
             q: '为什么需要買入才能解鎖？',
-            a: '解鎖须支付 USD1 買入对应 AGX；具体支付金额以链上报价为准，不是固定 1:1。',
+            a: '解鎖須以 USD1 按當前價格買入等量 AGX（數量 1:1）；支付的 USD1 金額隨 AGX 報價變化，不是 USD1 與 AGX 價格固定 1:1。',
           },
           {
             q: '解鎖和提取有什么区别？',

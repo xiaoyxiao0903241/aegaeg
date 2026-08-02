@@ -32,7 +32,7 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
       ? '0'
       : turbine.usd1BalanceLabel
 
-  const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '0'
+  const willReceiveLabel = turbine.unlockAmount.trim().length > 0 ? turbine.buyAgxLabel : '—'
 
   async function handleUnlock() {
     // Errors toast via useChainMutation → getErrorMessage (avoid double toast).

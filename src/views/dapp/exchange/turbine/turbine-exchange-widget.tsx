@@ -23,6 +23,7 @@ import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-sessio
 import { PercentButtonRow } from '~/views/dapp/exchange/percent-button-row'
 import { useTurbineExchangeView } from '~/views/dapp/exchange/turbine/use-turbine-exchange-view'
 
+/** Figma `4435:436` eqBuy half：bg page · p12 · gap6 · label12@40% · value16 · footer12@40%. */
 function TurbineEqBuyTokenCell({
   label,
   icon,
@@ -36,16 +37,16 @@ function TurbineEqBuyTokenCell({
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5 rounded-control bg-background p-3">
-      <Text as="p" variant="caption" tone="muted-foreground">
+      <Text as="p" variant="support" className="text-foreground/40">
         {label}
       </Text>
       <div className="flex items-center gap-2">
         <DappIcon alt="" className="size-5 rounded-md" size="token" src={icon} />
-        <Text as="span" variant="copy" className="font-semibold">
+        <Text as="span" variant="copy" className="text-base leading-5 font-semibold">
           <DappCountValue text={value} />
         </Text>
       </div>
-      <Text as="p" variant="caption" tone="muted-foreground">
+      <Text as="p" variant="support" className="text-foreground/40">
         {typeof footer === 'string' ? <DappCountValue text={footer} /> : footer}
       </Text>
     </div>
@@ -110,8 +111,9 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               <ExchangeOneWayFlowIndicator />
             </div>
 
+            {/* Figma `4435:436` eqBuy：p16 · gap12 · hint copy@40% */}
             <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
-              <Text as="p" variant="support" tone="muted-foreground">
+              <Text as="p" variant="copy" className="text-foreground/40">
                 {t.exchange.turbine.equivalentBuyHint}
               </Text>
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
@@ -137,30 +139,35 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
             </div>
 
             <DappMetaPanel
-              className="mt-0 gap-2.5 px-4 py-4.5"
+              className="gap-2.5 px-4 py-4"
               items={[
                 {
                   label: t.exchange.turbine.agxPrice,
-                  value: turbine.agxPriceLabel || '0',
+                  value: turbine.agxPriceLabel || '—',
                 },
                 {
                   label: t.exchange.allowedSlippage,
-                  // 涡轮无用户滑点 UI；稿演示 0.3% ≠ 钱路 — 诚实空
-                  value: '—',
+                  // 合约 swapSlippageBP（owner 固定）；非交易页用户可设滑点
+                  value: turbine.slippageLabel || '—',
                 },
                 {
                   label: t.exchange.turbine.willReceiveAgx,
                   value: vm.willReceiveLabel,
                 },
                 {
+                  // Figma `4435:469`：固定「1 : 1 买入解锁」（数量）；勿走 DappCountValue 数字 reel
                   label: t.exchange.turbine.unlockRatio,
-                  value: turbine.unlockRatioLabel || '0',
+                  value: (
+                    <Text as="span" variant="detail" className="leading-4 font-semibold">
+                      {t.exchange.turbine.unlockRatioValue}
+                    </Text>
+                  ),
                 },
                 {
                   label: t.exchange.turbine.cooldown,
                   value:
                     turbine.cooldownHours == null
-                      ? '0'
+                      ? '—'
                       : t.exchange.turbine.cooldownHoursValue.replace(
                           '{hours}',
                           String(turbine.cooldownHours),

@@ -1,4 +1,4 @@
-import { dappAssets } from '~/app/assets'
+import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -81,7 +81,7 @@ export function TurbineExchangeContent({
                   alt=""
                   className="size-(--app-icon-rail) shrink-0 rounded-full object-cover"
                   size="rail"
-                  src={dappAssets.tokenGagx}
+                  src={tokenCarouselIcons.gagxIcon}
                 />
                 <Text as="strong" variant="copy" className="m-0 text-base leading-5 font-semibold">
                   <DappCountValue text={`${metric.amount} gAGX`} />
@@ -139,7 +139,7 @@ export function TurbineExchangeContent({
                 <Text as="p" variant="detail" className="m-0 font-semibold">
                   {item.title}
                 </Text>
-                <Text as="p" variant="copy" tone="muted-foreground" className="m-0">
+                <Text as="p" variant="copy" className="m-0 text-foreground/70">
                   {item.body}
                 </Text>
               </Card>

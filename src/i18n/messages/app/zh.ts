@@ -397,13 +397,14 @@ const app = defineMessages({
       },
       unlockLabel: '解锁',
       unlockable: '可解锁',
-      equivalentBuyHint: '解锁同时将按报价买入对应 AGX',
-      payUsd1Label: '支付 USD1',
+      equivalentBuyHint: '解锁同时将执行等额买入',
+      payUsd1Label: '支付USD1',
       buyAgxLabel: '买入 AGX',
       buyToBoundWallet: '买入到账钱包',
       agxPrice: 'AGX 价格',
       willReceiveAgx: '将获得 AGX',
       unlockRatio: '解锁比率',
+      unlockRatioValue: '1 : 1 买入解锁',
       cooldown: '冷却周期',
       cooldownHoursValue: '{hours}小时',
       unlockAction: '解锁',
@@ -420,12 +421,12 @@ const app = defineMessages({
       mechanismIntro: '将卖出流动性与买入需求绑定，让每一份解锁都伴随等量买入',
       mechanism: [
         {
-          title: '买入解锁',
-          body: '从释放池领取的 gAGX 进入涡轮后处于锁定状态。需以 USD1 按链上报价买入等量 AGX，才能解锁对应数量的 gAGX 并进入冷却。',
+          title: '1:1 买入解锁',
+          body: '从释放池领取的 gAGX 进入涡轮后处于锁定状态。用户需以 USD1 按当前价格买入等量 AGX，才能解锁对应数量的 gAGX——买入需求为每一份解锁托底。',
         },
         {
           title: '动态冷却机制',
-          body: '冷却时长随国库健康度在约 24–96 小时之间自适应；到期后可提取 gAGX。',
+          body: '每次解锁后进入 24–96 小时的冷却期，时长由系统根据市场状态自动调节。冷却结束后即可将解锁的 gAGX 提取至钱包。',
         },
       ],
       metrics: {
@@ -441,7 +442,7 @@ const app = defineMessages({
           },
           {
             q: '为什么需要买入才能解锁？',
-            a: '解锁须支付 USD1 买入对应 AGX；具体支付金额以链上报价为准，不是固定 1:1。',
+            a: '解锁须以 USD1 按当前价格买入等量 AGX（数量 1:1）；支付的 USD1 金额随 AGX 报价变化，不是 USD1 与 AGX 价格固定 1:1。',
           },
           {
             q: '解锁和提取有什么区别？',

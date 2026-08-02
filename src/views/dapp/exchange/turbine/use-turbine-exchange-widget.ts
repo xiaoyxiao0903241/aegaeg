@@ -1,7 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 
-import { dappAssets } from '~/app/assets'
+import { dappAssets, tokenCarouselIcons } from '~/app/assets'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { isDecisionFresh } from '~/core/query/decision-freshness'
 import { useTurbineSummary } from '~/hooks/use-api-data'
@@ -11,7 +11,6 @@ import { formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { formatExchangeRateColon } from '~/views/dapp/exchange/exchange-format-rate'
 import {
   submitTurbineClaim,
   submitTurbineUnlock,
@@ -21,6 +20,7 @@ import {
   readTurbineCooldownDuration,
   readTurbineQuota,
   readTurbineSilences,
+  readTurbineSwapSlippageBP,
   readTurbineUsd1Balances,
   readTurbineUsdQuote,
 } from '~/web3/exchange/turbine-exchange-read'
@@ -167,6 +167,15 @@ export function useTurbineExchangeWidget(
     enabled: quotesEnabled && sessionReady,
   })
 
+  // 手册 contracts/turbine：`swapSlippageBP` 合约内固定（owner setSwapConfig）；非交易页用户滑点。
+  const slippageQuery = useChainQuery({
+    queryKey: queryKeys.chain.turbineSwapSlippage,
+    queryFn: () => readTurbineSwapSlippageBP(),
+    scope: 'public',
+    freshness: 'static',
+    enabled: quotesEnabled && sessionReady,
+  })
+
   const turbineSummaryQuery = useTurbineSummary(sessionReady)
 
   const usdNeeded = quoteQuery.data ?? 0n
@@ -190,16 +199,16 @@ export function useTurbineExchangeWidget(
       ? ''
       : formatGroupedNumber(unitUsdNumber, { digits: 2, prefix: '$' })
 
-  // Meta「解锁比率」— live colon from quoteUsdInForAgxOut(1 AGX); empty → honest —.
-  const unlockRatioLabel =
-    unitPriceQuery.isError || unitUsd === undefined || unitUsd === 0n
-      ? ''
-      : formatExchangeRateColon({
-          amountIn: ONE_AGX,
-          amountOut: unitUsd,
-          decimalsIn: AGX_DECIMALS,
-          decimalsOut: USD1_DECIMALS,
-        })
+  // BPS → 展示百分数：300 → 3%；30 → 0.3%（跟稿位数，不跟稿演示 0.3 当死值）
+  const slippageLabel = (() => {
+    if (slippageQuery.isError) return '—'
+    if (slippageQuery.data === undefined) return ''
+    const bps = Number(slippageQuery.data)
+    if (!Number.isFinite(bps) || bps < 0) return '—'
+    const pct = bps / 100
+    const text = Number.isInteger(pct) ? String(pct) : String(Number(pct.toFixed(4)))
+    return `${text}%`
+  })()
 
   const cooldownSeconds = Number(cooldownQuery.data ?? silencesQuery.data?.cooldownDuration ?? 0n)
   const cooldownHours = cooldownSeconds > 0 ? Math.round(cooldownSeconds / 3600) : null
@@ -269,9 +278,10 @@ export function useTurbineExchangeWidget(
     setSegment,
     pair: {
       // Handbook §16: turbineBalances amount axis = AGX decimals. Figma unlock leaf labels gAGX.
-      unlock: { icon: dappAssets.tokenGagx, symbol: 'gAGX', decimals: AGX_DECIMALS },
+      // 图标与兑换 Hub「交易 gAGX」同套：carousel/hub 128²（勿用 home mark.webp）
+      unlock: { icon: tokenCarouselIcons.gagxIcon, symbol: 'gAGX', decimals: AGX_DECIMALS },
       pay: { icon: dappAssets.tokenUsd1, symbol: 'USD1', decimals: USD1_DECIMALS },
-      buy: { icon: dappAssets.tokenAgx, symbol: 'AGX', decimals: AGX_DECIMALS },
+      buy: { icon: tokenCarouselIcons.agxIcon, symbol: 'AGX', decimals: AGX_DECIMALS },
     },
     unlockAmount,
     unlockAmountDisplay: unlockAmount,
@@ -291,10 +301,10 @@ export function useTurbineExchangeWidget(
             trimZeros: false,
           }),
     cooldownHours,
-    unlockRatioLabel,
     agxPriceLabel,
+    slippageLabel,
     isAgxPriceQuoting: sessionReady && unitPriceQuery.isFetching && !agxPriceLabel,
-    isUnlockRatioQuoting: sessionReady && unitPriceQuery.isFetching && !unlockRatioLabel,
+    isSlippageLoading: sessionReady && slippageQuery.isFetching && !slippageLabel,
     providerAddress: BSC_CONTRACTS.turbine,
     silences: silencesQuery.data?.rows ?? [],
     isSilencesLoading: walletReady && silencesQuery.isLoading,
