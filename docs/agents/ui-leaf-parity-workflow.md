@@ -21,6 +21,7 @@
 | WebBridge「可选 / DEFER / 稍后补」后标 page-done                                                    | 无 §2.2 实录字段 → Status ≤ `needs-proto-reverify`；R7 不得 PASS                                                      |
 | 只点通原型、**不**对本站每个 leaf 做 `getComputedStyle`                                             | 无 §2.3b 实测矩阵 → **禁止**标 UI PASS；R7 Critical                                                                   |
 | **A4 齐后对本站「抽检」几项却称 A5 / 关键 PASS**（如 17/17 冒充 140）                               | **硬禁**（§2.3b）：`measure_row_count` 必须 **= N**；每个 A4 `nodeId` 一行实测；漏一行 = A5 FAIL = Critical           |
+| **「稿无」→ 静默删原型/grilling 仍要的交互**（如 hideZero 筛选）                                    | Figma 静帧无 ≠ 可删；**先**对原型 IA + grilling Answer；仅产品书面杀控才可砍（§2.5 / §4.8）                           |
 | 修一个组件 / 写一句 `min-h-[53px]` 冒充本页贴稿完成                                                 | **每一个**可见最小 leaf 都要进表 + 实测；漏一项 = 未对齐                                                              |
 | 用 `min-h-[Npx]` / `h-[Npx]` / `text-[Npx]` / `size-[Npx]` / `leading-[Npx]` / `p-[Npx]` 等任意长度 | **硬禁**（§2.6）：尺寸只许 token / `Text` variant / 标准刻度 / `var(--*)`；违反 = 写盘 Critical，不论实测是否碰巧对齐 |
 | 手册缺数据 / 只写钱路 → 不做下拉、用 flip 冒充                                                      | **UI MUST 做完**；缺口记文档；动态数字空态=`0`/`0.00`（FAQ 同，无 count 动效）；flip ≠ picker                         |
@@ -269,6 +270,7 @@ pnpm measure:leaf --profile <page-id>    # 例：assets-hub
 | ------------------------------------------------------------ | ------------------ | -------------------------------------------------- |
 | **数据无源**                                                 | 是（只缓数据）     | UI 必须已实现；TVL=`0`/`0.00`；leaf 记「手册缺源」 |
 | **产品书面杀控**                                             | 是（可不做该控件） | Answer 写明删 picker                               |
+| **原型有 / grilling SHOULD，仅因 Figma 静帧未画而删**        | **否**             | hideZero：稿空态四卡 ≠ 杀筛选；R7 不得当「稿外」砍 |
 | **因手册不全而不做 UI / WebBridge 未做 / 用 DEFER 关控件门** | **否**             | T-D1 下拉未做、WebBridge「可选」                   |
 
 Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错、状态错、假数、缺控件、**缺实测**仍挡）。  
@@ -334,7 +336,7 @@ Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错
 5. **全 leaf 清单** + **§2.3b 实测矩阵**
 6. 动态审计表
 7. 节点表：**UI 标** ∥ **钱路标** ∥ **实测**（分列）
-8. 稿无代码有 → 删/缺口
+8. **稿无代码有** → 先对原型 IA + grilling；产品书面杀控才删；其余记缺口/保留（禁 R7 误砍）
 9. Status：`pre-design` | `in-progress` | `needs-proto-reverify` | `needs-measure` | `page-done`
 
 ---
@@ -348,7 +350,7 @@ Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错
 - [ ] **§2.3b 本站实测矩阵**已写；顶栏 `N`/`R`/`R==N`；**每一** A4 nodeId 一行；UI PASS 行均有实测；改后全量回测（禁抽检）
 - [ ] 尺寸跟 §2.6：**零** 任意 `*[Npx]`（硬禁）；不对齐则改 token
 - [ ] **全 leaf 清单无漏项**（§2.3c）；不是只修了用户点名的一两个控件
-- [ ] 「稿无代码有」已处理
+- [ ] 「稿无代码有」已按 §2.5 / §4.8 处理（禁误砍原型/grilling chrome）
 - [ ] `pnpm check` exit 0
 - [ ] R7 Post-Design：实录 + 实测矩阵 + 全清单 + R5a + R4a；缺则 Critical
 - [ ] R7 Post-Code：假数/稿外 chrome/**任意 px** Critical=0

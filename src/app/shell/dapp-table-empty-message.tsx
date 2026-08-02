@@ -3,6 +3,7 @@ import { revealClass } from '~/shared/lib/reveal'
 import { cn } from '~/shared/lib/utils'
 import { Text } from '~/shared/ui/text'
 
+/** 表/列表空态文案色：稿 muted 40% → `text-foreground/40`（禁 `muted-foreground` 70%）。 */
 export function DappTableEmptyMessage({
   body,
   className,
@@ -17,11 +18,11 @@ export function DappTableEmptyMessage({
 }) {
   const message = (
     <>
-      <Text as="p" variant="copy" className="m-0 text-black/40">
+      <Text as="p" className="m-0 text-foreground/40" variant="copy">
         {title}
       </Text>
       {body ? (
-        <Text as="p" variant="support" className="mt-2 mb-0 text-black/40">
+        <Text as="p" className="mt-2 mb-0 text-foreground/40" variant="support">
           {body}
         </Text>
       ) : null}

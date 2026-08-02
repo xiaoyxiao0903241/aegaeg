@@ -216,7 +216,7 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
         ) : (
           <div className="flex flex-col gap-2.5">
             {turbine.silences.length === 0 ? (
-              <Text as="p" variant="copy" className="my-6 text-center text-black/40">
+              <Text as="p" variant="copy" className="my-6 text-center text-foreground/40">
                 {t.exchange.turbine.claimEmpty}
               </Text>
             ) : (

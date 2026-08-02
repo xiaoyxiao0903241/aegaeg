@@ -27,6 +27,7 @@ import { createWebBridge } from './lib/webbridge.mjs'
 /** @type {Record<string, string>} */
 const PROFILES = {
   'assets-hub': './profiles/assets-hub.mjs',
+  'staking-hub': './profiles/staking-hub.mjs',
 }
 
 function usage() {
@@ -180,7 +181,10 @@ async function main() {
       w: leaf.w ?? leaf.gdc_w ?? null,
       h: leaf.h ?? leaf.gdc_h ?? null,
     }
-    const { ok, verdicts } = compareLeaf(measured, leafNorm, expected)
+    const { ok, verdicts } = compareLeaf(measured, leafNorm, expected, {
+      // 右栏 tile 宽随 detail 内栏 + gap 伸缩；只钉 h（禁 -mx 顶满壳 padding）
+      fluidWide: leaf.fluidWide === true || /^tile\//i.test(leaf.name ?? ''),
+    })
     const row = {
       nodeId: leaf.nodeId,
       kind: leaf.kind,

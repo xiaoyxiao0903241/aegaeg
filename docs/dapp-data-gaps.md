@@ -108,22 +108,22 @@
 
 ### 3.1 Hub
 
-| 数据位                  | 是否已接 | 源                                          |
-| ----------------------- | -------- | ------------------------------------------- |
-| 质押总量 TVL            | 是       | 链上 `StakingPool.poolAgxBalance` × spot    |
-| 总市值                  | 是       | 流通 × spot                                 |
-| AGX 流通量              | 是       | 链上 `sAGX.circulatingSupply`               |
-| 智库储备                | 是       | 链上 `Treasury.totalReserves` × spot        |
-| AGX 价格                | 是       | Pair spot                                   |
-| 总销毁量                | 是       | 链上 `getConfig.totalBurned`                |
-| Rebase 收益率           | 是       | 链上 `epoch` + `sAGX.rebases`               |
-| 可运行周期              | 否       | 无数据源                                    |
-| 质押地址数              | 是       | API `POST /performance/stake-address-count` |
-| 周期表 基础日收益       | 是       | `2 ×` 链上 epoch rebase%（stake 段）        |
-| 周期表 收益率加成       | 是       | 手册 `LOCKED_*_BONUS_BPS`（活期 0）         |
-| 周期表 周期收益率       | 是       | 本地：基础日收益复利至 tenure               |
-| 周期表 LP/销毁 段收益列 | 否       | 无数据源                                    |
-| 图 TVL/市值历史         | 否       | 无数据源                                    |
+| 数据位                  | 是否已接 | 源                                                        |
+| ----------------------- | -------- | --------------------------------------------------------- |
+| 质押总量 TVL            | 是       | 链上 `StakingPool.poolAgxBalance` × spot                  |
+| 总市值                  | 是       | 流通 × spot                                               |
+| AGX 流通量              | 是       | 链上 `sAGX.circulatingSupply`                             |
+| 智库储备                | 是       | 链上 `Treasury.totalReserves`（AGX-value）· 副值 × spot   |
+| AGX 价格                | 是       | Pair spot                                                 |
+| 总销毁量                | 是       | 链上 `getConfig.totalBurned`                              |
+| Rebase 收益率           | 是       | 链上 `epoch` + `sAGX.rebases`                             |
+| 可运行周期              | 否       | 无数据源 · UI `—`（`runwayUnknown`）                      |
+| 质押地址数              | 是       | API `POST /performance/stake-address-count`（需 session） |
+| 周期表 基础日收益       | 是       | `2 ×` 链上 epoch rebase%（stake 段）                      |
+| 周期表 收益率加成       | 是       | 手册 `LOCKED_*_BONUS_BPS`（活期 0）                       |
+| 周期表 周期收益率       | 是       | 本地：基础日收益复利至 tenure                             |
+| 周期表 LP/销毁 段收益列 | 否       | 无数据源                                                  |
+| 图 TVL/市值历史         | 否       | 无数据源                                                  |
 
 ### 3.2 Stake 子页
 
@@ -188,10 +188,11 @@
 
 ## 变更记录
 
-| 日期       | 变更                                                                                |
-| ---------- | ----------------------------------------------------------------------------------- |
-| 2026-08-03 | 资产 Hub：拆列 mode 仓位/总收益/缓冲 gAGX；记 API 路径总收益无源；hideZero 派生说明 |
-| 2026-08-02 | 全表改为「数据位 / 是否已接 / 源」；无源统一写「无数据源」；删掉易混的 API 对照措辞 |
-| 2026-08-02 | 兑换缺口双 agent 核实；按 `tabOrder` 重排；只记链上/API                             |
-| 2026-08-02 | 资产 Hub：补 APR 无源；holdings/reward/buffer 已接                                  |
-| 2026-08-02 | 初版：质押 Hub；价改 Pair spot                                                      |
+| 日期       | 变更                                                                                               |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-08-03 | 质押 Hub：核对 Hub 读路径仍齐；澄清智库 AGX-value + 副值 spot；可运行周期/图历史/LP·销毁表列仍无源 |
+| 2026-08-03 | 资产 Hub：拆列 mode 仓位/总收益/缓冲 gAGX；记 API 路径总收益无源；hideZero 派生说明                |
+| 2026-08-02 | 全表改为「数据位 / 是否已接 / 源」；无源统一写「无数据源」；删掉易混的 API 对照措辞                |
+| 2026-08-02 | 兑换缺口双 agent 核实；按 `tabOrder` 重排；只记链上/API                                            |
+| 2026-08-02 | 资产 Hub：补 APR 无源；holdings/reward/buffer 已接                                                 |
+| 2026-08-02 | 初版：质押 Hub；价改 Pair spot                                                                     |

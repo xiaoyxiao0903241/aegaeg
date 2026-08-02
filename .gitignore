@@ -37,3 +37,5 @@ tests/e2e/visual-*/
 /zht/
 /tr/
 /th/
+# local proto HTML for WebBridge (do not commit)
+public/proto/

@@ -87,7 +87,7 @@ export function TurbineExchangeContent({
                   <DappCountValue text={`${metric.amount} gAGX`} />
                 </Text>
               </div>
-              <Text as="p" variant="support" className="m-0 text-black/40">
+              <Text as="p" variant="support" className="m-0 text-foreground/40">
                 <DappCountValue text={`≈ ${metric.usd || '0.00'}`} />
               </Text>
             </Card>
@@ -125,7 +125,7 @@ export function TurbineExchangeContent({
             <DappContentHeading className="pb-0">
               {t.exchange.turbine.mechanismTitle}
             </DappContentHeading>
-            <Text as="p" variant="copy" className="m-0 text-black/40">
+            <Text as="p" variant="copy" className="m-0 text-foreground/40">
               {t.exchange.turbine.mechanismIntro}
             </Text>
           </div>

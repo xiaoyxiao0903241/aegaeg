@@ -5,6 +5,7 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
+import { cn } from '~/shared/lib/utils'
 import { Chip } from '~/shared/ui/chip'
 import { FaqList } from '~/shared/ui/faq-list'
 import { MetricCard } from '~/shared/ui/metric-card'
@@ -40,7 +41,7 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
       {src ? <DappIcon alt="" className="shrink-0 rounded-full" size="lg" src={src} /> : null}
       <span className="min-w-0 truncate">{value}</span>
       {sub ? (
-        <Text as="span" className="shrink-0" tone="muted-foreground" variant="copy">
+        <Text as="span" className="shrink-0 text-foreground/40" variant="copy">
           {sub}
         </Text>
       ) : null}
@@ -92,7 +93,8 @@ export function StakingHubContent() {
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{overview.title}</DappContentHeading>
-        <div className="grid auto-rows-fr grid-cols-3 gap-2">
+        {/* PC 三列；H5 每行两卡（用户锁定）· tile 高跟稿 min-h-18.75 */}
+        <div className="grid auto-rows-fr grid-cols-3 gap-2 max-dapp:grid-cols-2">
           {overview.metrics.map((metric) => {
             if (!isHubMetricId(metric.id)) return null
             const chrome = METRIC_CHROME[metric.id]
@@ -104,7 +106,7 @@ export function StakingHubContent() {
 
             return (
               <MetricCard
-                className="h-full gap-1.5 p-4 [&>*:first-child]:leading-none!"
+                className="h-full min-h-18.75 gap-1.5 rounded-2xl p-4 [&>*:first-child]:leading-none!"
                 key={metric.id}
                 label={
                   <span className="flex items-center gap-1">
@@ -144,11 +146,10 @@ export function StakingHubContent() {
                 size="md"
                 tone={active ? 'coral' : 'default'}
                 variant={active ? 'soft' : 'outlined'}
-                className={
-                  active
-                    ? 'h-7 min-w-0 px-4 text-(length:--type-copy-size) leading-none font-semibold text-coral-emphasis'
-                    : 'h-7 min-w-0 px-4 text-(length:--type-copy-size) leading-none font-semibold'
-                }
+                className={cn(
+                  'h-7 min-w-0 px-4 text-(length:--type-copy-size) leading-none',
+                  active ? 'font-semibold text-coral-emphasis' : 'font-medium',
+                )}
               >
                 {option.label}
               </Chip>
@@ -174,6 +175,7 @@ export function StakingHubContent() {
                   .filter((row) => tableSeg === 'stake' || row.id !== 'liquid')
                   .map((row) => {
                     const cells = periodTableRows[row.id]
+                    if (!cells) return null
                     return (
                       <tr className="border-b border-border last:border-b-0" key={row.id}>
                         <td className="py-3 pr-3">
@@ -183,17 +185,17 @@ export function StakingHubContent() {
                         </td>
                         <td className="py-3 pr-3">
                           <Text as="span" variant="detail">
-                            {cells?.baseDaily ?? '0.00%'}
+                            {cells.baseDaily}
                           </Text>
                         </td>
                         <td className="py-3 pr-3">
                           <Text as="span" variant="detail">
-                            {cells?.bonus ?? '0%'}
+                            {cells.bonus}
                           </Text>
                         </td>
                         <td className="py-3">
                           <Text as="span" className="text-success" variant="detail">
-                            {cells?.periodYield ?? '0.00%'}
+                            {cells.periodYield}
                           </Text>
                         </td>
                       </tr>
