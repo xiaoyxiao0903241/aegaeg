@@ -108,34 +108,34 @@
 
 ### 3.1 Hub
 
-| 数据位                  | 是否已接 | 源                                                        |
-| ----------------------- | -------- | --------------------------------------------------------- |
-| 质押总量 TVL            | 是       | 链上 `StakingPool.poolAgxBalance` × spot                  |
-| 总市值                  | 是       | 流通 × spot                                               |
-| AGX 流通量              | 是       | 链上 `sAGX.circulatingSupply`                             |
-| 智库储备                | 是       | 链上 `Treasury.totalReserves`（AGX-value）· 副值 × spot   |
-| AGX 价格                | 是       | Pair spot                                                 |
-| 总销毁量                | 是       | 链上 `getConfig.totalBurned`                              |
-| Rebase 收益率           | 是       | 链上 `epoch` + `sAGX.rebases`                             |
-| 可运行周期              | 否       | 无数据源 · UI `—`（`runwayUnknown`）                      |
-| 质押地址数              | 是       | API `POST /performance/stake-address-count`（需 session） |
-| 周期表 基础日收益       | 是       | `2 ×` 链上 epoch rebase%（stake 段）                      |
-| 周期表 收益率加成       | 是       | 手册 `LOCKED_*_BONUS_BPS`（活期 0）                       |
-| 周期表 周期收益率       | 是       | 本地：基础日收益复利至 tenure                             |
-| 周期表 LP/销毁 段收益列 | 否       | 无数据源                                                  |
-| 图 TVL/市值历史         | 否       | 无数据源                                                  |
+| 数据位                  | 是否已接 | 源                                                                                                                       |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 质押总量 TVL            | 是       | 链上 `StakingPool.poolAgxBalance` × spot                                                                                 |
+| 总市值                  | 是       | 流通 × spot                                                                                                              |
+| AGX 流通量              | 是       | 链上 `sAGX.circulatingSupply`                                                                                            |
+| 智库储备                | 是       | 链上 `Treasury.totalReserves`（AGX-value）· 副值 × spot                                                                  |
+| AGX 价格                | 是       | Pair spot                                                                                                                |
+| 总销毁量                | 是       | 链上 `getConfig.totalBurned`                                                                                             |
+| Rebase 收益率           | 部分     | 链上 `epoch` + `sAGX.rebases`；**现网** `index` 仍为初始 1e9、`rebases(n)` 越界 revert → 诚实 `null`/`0.00%`（非未接线） |
+| 可运行周期              | 否       | 无数据源 · UI `—`（`runwayUnknown`）                                                                                     |
+| 质押地址数              | 是       | API `POST /performance/stake-address-count`（需 session）                                                                |
+| 周期表 基础日收益       | 部分     | `2 ×` 链上 epoch rebase%（stake 段）；种子 null 时诚实 `0.00%`                                                           |
+| 周期表 收益率加成       | 是       | 手册 `LOCKED_*_BONUS_BPS`（活期 0）                                                                                      |
+| 周期表 周期收益率       | 部分     | 本地：基础日收益复利至 tenure；依赖 rebase 种子                                                                          |
+| 周期表 LP/销毁 段收益列 | 否       | 无数据源                                                                                                                 |
+| 图 TVL/市值历史         | 否       | 无数据源                                                                                                                 |
 
 ### 3.2 Stake 子页
 
 | 数据位                                    | 是否已接 | 源                                                                                            |
 | ----------------------------------------- | -------- | --------------------------------------------------------------------------------------------- |
-| 左栏 meta：基础日收益                     | 是       | `2 ×` 链上 epoch rebase%                                                                      |
-| 左栏 meta：周期收益                       | 是       | 本地：基础日复利 × tenure                                                                     |
+| 左栏 meta：基础日收益                     | 部分     | `2 ×` 链上 epoch rebase%（种子空 → 诚实 0）                                                   |
+| 左栏 meta：周期收益                       | 部分     | 本地：基础日复利 × tenure（依赖 rebase 种子）                                                 |
 | 左栏 meta：加成                           | 是       | 手册 `LOCKED_*_BONUS_BPS`（周期档位展示，非仓位应计）                                         |
 | 左栏锁定 / 合约                           | 是       | 周期派生 + 池地址                                                                             |
 | 左栏余额 / CTA                            | 是       | 链上 preflight 余额 + `liquidStake` / `lockedStake`                                           |
-| 概览：pool TVL / Epoch / rebase% / 倒计时 | 是       | 链上 `readStakingHubOverview`（pool + epoch + rebases）                                       |
-| 仓位：持仓 / 已释放 / 待释放              | 是       | 链上 `readStakePositions`（与资产仓位同源：`principal` / `releasedPrincipal` / 差额）         |
+| 概览：pool TVL / Epoch / rebase% / 倒计时 | 部分     | 链上 `readStakingHubOverview`；rebase% 经数组下标探测，空仓诚实 null                          |
+| 仓位：持仓 / 已释放 / 待释放              | 是       | 链上 `readStakePositions`（含活期 `warmupStakes` + `stakes`；与资产仓位同源）                 |
 | 仓位：当前 Rebase 收益                    | 是       | 链上 `blockReward` 合计（**禁**用 `reward-summary.claimable_gagx`：其为 DAO+释放池+涡轮混桶） |
 | 仓位：当前 Rebase 加成                    | 是       | 链上 `extraInterest` 合计                                                                     |
 | 仓位记录表                                | 是       | API `POST /stake-flow/positions`（空态无表头/脚跟原型）                                       |
@@ -155,7 +155,7 @@
 | meta：滑点 / 支付 / 获得 / 上限 / 释放 / 合约 | 是       | quote + market + 地址                                                                                   |
 | 写：购买                                      | 是       | `BondHelper.zapIntoLiquidityBond` / `zapIntoBurnBond`                                                   |
 | 概览：债券 TVL / 溢价率                       | 否       | 无数据源 · UI 诚实 `0`                                                                                  |
-| 概览：rebase 倒计时 / %                       | 是       | 与 Stake 同源 `readStakingHubOverview`                                                                  |
+| 概览：rebase 倒计时 / %                       | 部分     | 与 Stake 同源 `readStakingHubOverview`；% 种子可空                                                      |
 | 仓位：持仓 / 已释放 / 待释放                  | 是       | 链上 `readLpBondPositions` / `readBurnBondPositions`（与资产同源：`payoutRemaining` / `pendingPayout`） |
 | 仓位：当前 Rebase 收益                        | 是       | 链上 `getStakeProfit` 合计（**禁** `claimable_gagx` 混桶）                                              |
 | 购买记录表                                    | 是       | API `bond-flow/lp-purchases` · `burn-purchases`                                                         |
@@ -186,7 +186,7 @@
 | ---------------------------------- | -------- | --------------------------------------------------------------------------------------- |
 | 左栏输入 → 右栏结果                | 是       | 本地：`2×rebase` 日复利 + 手册 `LOCKED_*_BONUS_BPS`（10/15/20%）；spot 种子；**无写链** |
 | 收益曲线 day 1..720                | 是       | 同上本地公式（`CALC_MAX_DAYS`）                                                         |
-| 日收益种子                         | 是       | 链 hub overview `rebaseRate1e18`（缺 → 诚实 `0.00%` / 利息 0）                          |
+| 日收益种子                         | 部分     | 链 hub overview `rebaseRate1e18`；现网 rebases 空/越界 → 诚实 `0.00%`（见 §3.1）        |
 | notes 加成% 文案                   | 是       | **跟手册** 10/15/20（**禁**跟稿演示 15/25/35）                                          |
 | notes「本金线性释放 / 收益扣 1/6」 | 文案在   | **未进** `calcLocalInterest` · 产品叙事 DEFER（gaps）；结果公式不含这两项               |
 | Xmine 产品收益                     | 否       | 无协议 APR view · `calcLocalInterest` → interest `0`                                    |
@@ -215,6 +215,8 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-03 | 写后刷新：`invalidateAfterStaking`→staking+assets+lucky+indexer poll；活期读 `warmupStakes`                                  |
+| 2026-08-03 | rebase：按 `rebases[]` append 下标探测（禁用 epoch.number）；gaps 依赖位改「部分」；poll 收窄                                |
 | 2026-08-03 | Calc：gaps §3.5 澄清手册加成 10/15/20、notes 线性释放/1/6 DEFER、Xmine 诚实 0；#16 Pre-Design 重启                           |
 | 2026-08-03 | Xmine：接 `yieldRateBP`/`xPerAgx`/`activeGons`（meta 日收益 + 概览 TVL/X 价/日收益）；累计产出与下次倒计时仍无源             |
 | 2026-08-03 | Xmine：pending 副值接 `pendingRewardValue`；gaps 澄清 xPerAgx/yieldRateBP 未接；H5 价值卡双栏+%上下排                        |

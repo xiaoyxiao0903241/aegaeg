@@ -36,6 +36,7 @@ const contribAbi = parseAbi([
 const liquidAbi = parseAbi([
   LIQUID_STAKING_ASSETS_METHODS.getStakeRewards,
   LIQUID_STAKING_ASSETS_METHODS.stakes,
+  LIQUID_STAKING_ASSETS_METHODS.warmupStakes,
 ])
 const lockedAbi = parseAbi([
   LOCKED_STAKING_ASSETS_METHODS.getStakesCount,
@@ -68,6 +69,8 @@ export type AssetsStakeRow = {
   extraInterest: bigint
   claimableBalance: bigint
   expiry: bigint
+  /** 活期 warmup 仓（手册 §8.2）：禁本金退出 / Mixed；须 claim() 激活。 */
+  inWarmup?: boolean
 }
 
 export type AssetsBondRow = {
@@ -192,11 +195,17 @@ export async function readStakePositions(
   // `stakes`/`warmupStakes` 为裸 mapping：须 AMM migratedFrom 得 root；`getStakeRewards` 别名感知，传当前钱包。
   const liquidMigratedFrom = await readMigratedFrom(user, client)
   const liquidRoot = migrationStakeRoot(user, liquidMigratedFrom) as Address
-  const [liquidStake, liquidRewards] = await Promise.all([
+  const [liquidStake, liquidWarmup, liquidRewards] = await Promise.all([
     client.readContract({
       address: liquidPool,
       abi: liquidAbi,
       functionName: 'stakes',
+      args: [liquidRoot],
+    }),
+    client.readContract({
+      address: liquidPool,
+      abi: liquidAbi,
+      functionName: 'warmupStakes',
       args: [liquidRoot],
     }),
     client.readContract({
@@ -213,7 +222,31 @@ export async function readStakePositions(
     bigint,
     boolean,
   ]
-  const [, activeReward] = liquidRewards as readonly [bigint, bigint]
+  const [warmupPrincipal, , , , warmupExists] = liquidWarmup as readonly [
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+    boolean,
+  ]
+  const [warmupReward, activeReward] = liquidRewards as readonly [bigint, bigint]
+  // liquidStake 先进 warmup；expiry 为 epoch 编号，勿当 unix 展示。
+  if (warmupExists && warmupPrincipal > 0n) {
+    rows.push({
+      id: 'liquid-warmup',
+      kind: 'liquid',
+      period: 'liquid',
+      pool: liquidPool,
+      stakeIndex: null,
+      principal: warmupPrincipal,
+      releasedPrincipal: 0n,
+      blockReward: warmupReward,
+      extraInterest: 0n,
+      claimableBalance: 0n,
+      expiry: 0n,
+      inWarmup: true,
+    })
+  }
   if (exists && principal > 0n) {
     rows.push({
       id: 'liquid',

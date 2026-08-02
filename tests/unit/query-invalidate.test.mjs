@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 const queryKeysModule = await loadModule('/src/shared/api/query/query-keys.ts')
@@ -161,4 +162,34 @@ test('salesLogAdvanced detects new purchase by total or first id', async () => {
   ])
   assert.equal(fingerprint.total, 20)
   assert.equal(fingerprint.firstId, 5)
+})
+
+test('indexerPageAdvanced mirrors sales-log advance rules on tx_hash head', async () => {
+  const { indexerPageAdvanced, pickIndexerPageFingerprint } = await loadModule(
+    '/src/shared/api/query/invalidate.ts',
+  )
+
+  assert.equal(indexerPageAdvanced({ total: 2, head: '0xa' }, { total: 3, head: '0xb' }), true)
+  assert.equal(indexerPageAdvanced({ total: 2, head: '0xa' }, { total: 2, head: '0xb' }), true)
+  assert.equal(indexerPageAdvanced({ total: 2, head: '0xa' }, { total: 2, head: '0xa' }), false)
+
+  const fingerprint = pickIndexerPageFingerprint([
+    { total: 4, items: [{ tx_hash: '0xabc' }] },
+    { total: 4, items: [] },
+  ])
+  assert.equal(fingerprint.total, 4)
+  assert.equal(fingerprint.head, '0xabc')
+})
+
+test('invalidateAfterStaking source covers staking+assets+lucky (no live poll in unit)', async () => {
+  const fs = await import('node:fs/promises')
+  const src = await fs.readFile(
+    new URL('../../src/shared/api/query/invalidate.ts', import.meta.url),
+    'utf8',
+  )
+  const body = src.slice(src.indexOf('export function invalidateAfterStaking'))
+  assert.match(body, /invalidateTabQueries\('staking'\)/)
+  assert.match(body, /invalidateTabQueries\('assets'\)/)
+  assert.match(body, /luckyRewardSummary/)
+  assert.match(body, /pollStakingIndexer/)
 })

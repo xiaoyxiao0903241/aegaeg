@@ -8,6 +8,42 @@ import { sleep } from '~/shared/lib/sleep'
 
 type SalesLogFingerprint = { total: number; firstId: number | null }
 
+/** Indexer/API page fingerprint — total + head key (tx_hash / id). */
+export type IndexerPageFingerprint = { total: number; head: string | null }
+
+type IndexerPage = { total: number; items: ReadonlyArray<{ tx_hash?: string | null }> }
+
+/** Pure: pick strongest paginated fingerprint (total, else fill head). */
+export function pickIndexerPageFingerprint(
+  pages: Array<IndexerPage | undefined | null>,
+): IndexerPageFingerprint {
+  let best: IndexerPageFingerprint = { total: 0, head: null }
+  for (const data of pages) {
+    if (!data) continue
+    const head = data.items[0]?.tx_hash ?? null
+    if (data.total > best.total) {
+      best = { total: data.total, head }
+      continue
+    }
+    if (data.total === best.total && head != null && best.head == null) {
+      best = { total: data.total, head }
+    }
+  }
+  return best
+}
+
+/** Pure: whether polling should stop because a newer page appeared. */
+export function indexerPageAdvanced(
+  baseline: IndexerPageFingerprint,
+  current: IndexerPageFingerprint,
+): boolean {
+  if (current.total > baseline.total) return true
+  if (current.head != null && baseline.head != null && current.head !== baseline.head) {
+    return true
+  }
+  return false
+}
+
 /** Pure: pick the strongest sales-log fingerprint from cached pages. */
 export function pickSalesLogFingerprint(
   pages: Array<Paginated<SalesLogItem> | undefined | null>,
@@ -46,6 +82,11 @@ function readSalesLogFingerprint(): SalesLogFingerprint {
   return pickSalesLogFingerprint(entries.map(([, data]) => data))
 }
 
+function readIndexerFingerprint(rootKey: readonly string[]): IndexerPageFingerprint {
+  const entries = queryClient.getQueriesData<IndexerPage>({ queryKey: rootKey })
+  return pickIndexerPageFingerprint(entries.map(([, data]) => data))
+}
+
 async function pollGenesisContributions(baseline: { total: number; firstId: number | null }) {
   await queryClient.refetchQueries({ queryKey: queryKeys.api.performance })
   await queryClient.refetchQueries({ queryKey: queryKeys.api.salesLogsRoot })
@@ -62,6 +103,69 @@ async function pollGenesisContributions(baseline: { total: number; firstId: numb
     if (salesLogAdvanced(baseline, readSalesLogFingerprint())) {
       return
     }
+  }
+}
+
+/**
+ * 质押/债券/挖矿写成功后：后端索引常落后于链确认。
+ * 对标 Genesis `pollGenesisContributions`——立即 refetch + 有限次延迟轮询，指纹前进即停。
+ * 业界常见做法：invalidate 链读即时校正；API/indexer 用短窗 poll（勿无限 setInterval）。
+ */
+async function pollStakingIndexer(baselines: {
+  stakePositions: IndexerPageFingerprint
+  stakeLogs: IndexerPageFingerprint
+  bondLp: IndexerPageFingerprint
+  bondBurn: IndexerPageFingerprint
+  x0Positions: IndexerPageFingerprint
+  x0Logs: IndexerPageFingerprint
+}) {
+  const apiRoots = [
+    queryKeys.api.stakeFlowPositionsRoot,
+    queryKeys.api.stakeFlowLogsRoot,
+    queryKeys.api.bondFlowLpPurchasesRoot,
+    queryKeys.api.bondFlowBurnPurchasesRoot,
+    queryKeys.api.bondFlowLpLogsRoot,
+    queryKeys.api.bondFlowBurnLogsRoot,
+    queryKeys.api.x0MiningPositionsRoot,
+    queryKeys.api.x0MiningLogsRoot,
+    queryKeys.api.luckyRewardSummary,
+    queryKeys.api.luckyRewardMyRoundsRoot,
+  ] as const
+
+  const anyAdvanced = () =>
+    indexerPageAdvanced(
+      baselines.stakePositions,
+      readIndexerFingerprint(queryKeys.api.stakeFlowPositionsRoot),
+    ) ||
+    indexerPageAdvanced(
+      baselines.stakeLogs,
+      readIndexerFingerprint(queryKeys.api.stakeFlowLogsRoot),
+    ) ||
+    indexerPageAdvanced(
+      baselines.bondLp,
+      readIndexerFingerprint(queryKeys.api.bondFlowLpPurchasesRoot),
+    ) ||
+    indexerPageAdvanced(
+      baselines.bondBurn,
+      readIndexerFingerprint(queryKeys.api.bondFlowBurnPurchasesRoot),
+    ) ||
+    indexerPageAdvanced(
+      baselines.x0Positions,
+      readIndexerFingerprint(queryKeys.api.x0MiningPositionsRoot),
+    ) ||
+    indexerPageAdvanced(baselines.x0Logs, readIndexerFingerprint(queryKeys.api.x0MiningLogsRoot))
+
+  const refetchIndexer = async () => {
+    await Promise.all(apiRoots.map((key) => queryClient.refetchQueries({ queryKey: key })))
+  }
+
+  await refetchIndexer()
+  if (anyAdvanced()) return
+
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    await sleep(2500)
+    await refetchIndexer()
+    if (anyAdvanced()) return
   }
 }
 
@@ -186,8 +290,33 @@ export function invalidateAfterExchange() {
   invalidateTabQueries('exchange')
 }
 
+/**
+ * Stake / Bond / Xmine 写成功（手册 §8/10/15）：
+ * - 链：staking + assets（仓位 aside 用 assetsStakePositions；余额/额度在两桶交叉）
+ * - 抽奖资格：lucky API（手册「成功后刷新…抽奖资格」；活期通常达不到门槛仍标脏）
+ * - API 流水/持仓：立即 invalidate + 有限轮询（索引延迟）
+ */
 export function invalidateAfterStaking() {
+  const baselines = {
+    stakePositions: readIndexerFingerprint(queryKeys.api.stakeFlowPositionsRoot),
+    stakeLogs: readIndexerFingerprint(queryKeys.api.stakeFlowLogsRoot),
+    bondLp: readIndexerFingerprint(queryKeys.api.bondFlowLpPurchasesRoot),
+    bondBurn: readIndexerFingerprint(queryKeys.api.bondFlowBurnPurchasesRoot),
+    x0Positions: readIndexerFingerprint(queryKeys.api.x0MiningPositionsRoot),
+    x0Logs: readIndexerFingerprint(queryKeys.api.x0MiningLogsRoot),
+  }
+
   invalidateTabQueries('staking')
+  invalidateTabQueries('assets')
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.api.luckyRewardSummary,
+    refetchType: 'active',
+  })
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.api.luckyRewardMyRoundsRoot,
+    refetchType: 'active',
+  })
+  void pollStakingIndexer(baselines)
 }
 
 /** Mixed claim / redeem / xmine claim+unstake — refresh positions + plans + contribution. */

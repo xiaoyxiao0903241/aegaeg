@@ -186,6 +186,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
 
   function openStakeClaim(row: AssetsStakeRow) {
     if (!address) return
+    if (row.inWarmup) return
     const reward = row.blockReward + row.extraInterest
     const periodLabel = formatPeriodLabel(row.period)
     const target: MixedClaimTarget =

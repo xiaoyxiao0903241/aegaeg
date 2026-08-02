@@ -176,6 +176,8 @@ export async function submitStakeRedeem(args: {
   const { wallet, address: user, readClient } = session
   assertSessionOwnsAction(user, owner)
 
+  if (row.inWarmup) throw ASSETS_BLOCKED.warmupActive
+
   const liveAmount = await readStakeRedeemableAmount(row, user, readClient)
   const blockReason = evaluateRedeem({ amount: liveAmount })
   if (blockReason) throw ASSETS_BLOCKED[blockReason]

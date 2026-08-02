@@ -275,6 +275,9 @@ export const LIQUID_STAKING_ASSETS_METHODS = {
     'function getStakeRewards(address user) view returns (uint256 warmupReward, uint256 activeReward)',
   stakes:
     'function stakes(address user) view returns (uint256 principal, uint256 gons, uint256 startEpoch, uint256 expiry, bool exists)',
+  /** 手册 §8.2 — liquidStake 先进 warmup；与 stakes 同形，须 AMM root。 */
+  warmupStakes:
+    'function warmupStakes(address user) view returns (uint256 principal, uint256 gons, uint256 startEpoch, uint256 expiry, bool exists)',
 } as const
 
 /** LockedStaking claim / exit (manual §8.3) — assets rail. */

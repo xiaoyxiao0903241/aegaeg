@@ -18,13 +18,18 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
   const { formatPeriodLabel, formatRewardUsd, locked, busy, quote, onClaim, onRedeem, row } = props
   const { messages: t } = useI18n()
   const reward = row.blockReward + row.extraInterest
-  const canClaim = reward > 0n
-  const canRedeem = row.kind === 'liquid' ? row.principal > 0n : row.claimableBalance > 0n
+  const inWarmup = Boolean(row.inWarmup)
+  const canClaim = !inWarmup && reward > 0n
+  const canRedeem =
+    row.kind === 'liquid' ? !inWarmup && row.principal > 0n : row.claimableBalance > 0n
   const periodLabel = formatPeriodLabel(row.period)
   const voucher =
     row.kind === 'locked' && row.pool ? `${row.pool.slice(0, 6)}…${row.pool.slice(-4)}` : null
-  const remainingValue =
-    row.kind === 'liquid' && row.expiry <= 0n ? t.assets.position.redeemAnytime : undefined
+  const remainingValue = inWarmup
+    ? t.assets.blocked.warmupActive
+    : row.kind === 'liquid' && row.expiry <= 0n
+      ? t.assets.position.redeemAnytime
+      : undefined
 
   return (
     <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
