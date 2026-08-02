@@ -29,7 +29,10 @@ export function MarketTradeContent({ exchangePriceLabel }: { exchangePriceLabel:
       </section>
 
       <DappDetailBlock>
-        <DappContentHeading>{t.exchange.trade.aboutTitle}</DappContentHeading>
+        {/* Figma about 标题 20 / leading 1.2（`4489:222`）；headline token=16 → text-xl */}
+        <DappContentHeading className="mb-0 pb-4 text-xl leading-[1.2] tracking-tight">
+          {t.exchange.trade.aboutTitle}
+        </DappContentHeading>
         <TokenAboutCarousel cardKeys={TRADE_ABOUT_CARD_KEYS} />
       </DappDetailBlock>
 
