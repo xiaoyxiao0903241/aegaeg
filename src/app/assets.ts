@@ -131,6 +131,20 @@ export const dappAssets = {
   usd1: '/assets/figma/dapp/token-usd1.svg',
   genesisGlobe: '/assets/figma/dapp/genesis-globe.webp',
   rewardsCharacter: '/assets/figma/dapp/rewards-character.webp',
+  /** Hub reward/* 分卡图标 · Figma `4291:212` 左栏直拉 */
+  rewardsHubLucky: '/assets/figma/dapp/rewards-hub/ic-mode-lucky.svg',
+  rewardsHubReferral: '/assets/figma/dapp/rewards-hub/ic-mode-referral.svg',
+  rewardsHubParticipate: '/assets/figma/dapp/rewards-hub/ic-mode-participate.svg',
+  rewardsHubCobuild: '/assets/figma/dapp/rewards-hub/ic-mode-cobuild.svg',
+  rewardsHubGrant: '/assets/figma/dapp/rewards-hub/ic-mode-grant.svg',
+  rewardsHubGenesis: '/assets/figma/dapp/rewards-hub/ic-mode-genesis.svg',
+  rewardsHubEnterClaim: '/assets/figma/dapp/rewards-hub/ic-enter-claim.svg',
+  /** tile/总奖励 gAGX 圆标 · `4296:214` */
+  rewardsHubGagxDot: '/assets/figma/dapp/rewards-hub/ic-gagx-ellipse.svg',
+  /** tile/共建级别 右侧角色 · `4585:1024` */
+  rewardsHubTierDeco: '/assets/figma/dapp/rewards-hub/deco-character.png',
+  /** 贡献点数「去销毁」chevron · `4629:934` */
+  rewardsHubGoBurnChevron: '/assets/figma/dapp/rewards-hub/ic-go-burn-chevron.svg',
 } as const
 
 export const railItems: Array<{

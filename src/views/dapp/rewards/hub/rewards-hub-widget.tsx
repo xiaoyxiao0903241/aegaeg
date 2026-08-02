@@ -23,6 +23,16 @@ const CARD_VIEWS = [
   'genesis',
 ] as const satisfies readonly Exclude<RewardsView, 'hub'>[]
 
+/** Figma：参与/共建/发展 icon 24；其余 20。 */
+const CARD_ICONS = {
+  lucky: { src: dappAssets.rewardsHubLucky, className: undefined },
+  referral: { src: dappAssets.rewardsHubReferral, className: undefined },
+  participate: { src: dappAssets.rewardsHubParticipate, className: 'size-6' },
+  cobuild: { src: dappAssets.rewardsHubCobuild, className: 'size-6' },
+  grant: { src: dappAssets.rewardsHubGrant, className: 'size-6' },
+  genesis: { src: dappAssets.rewardsHubGenesis, className: undefined },
+} as const
+
 function formatGagxBalance(value: number | null, sessionReady: boolean, signInLabel: string) {
   if (!sessionReady) return { amount: signInLabel, approx: formatApiDecimalAmount(null) }
   if (value == null)
@@ -62,6 +72,7 @@ export function RewardsHubWidget() {
           const value = amountValue(view)
           const isGenesis = view === 'genesis'
           const usesClaimableLabel = isGenesis || view === 'grant'
+          const icon = CARD_ICONS[view]
           const balance = isGenesis
             ? {
                 amount: sessionReady
@@ -83,7 +94,9 @@ export function RewardsHubWidget() {
               }
               body={card.body}
               claimCta={isGenesis ? t.rewards.hub.enterClaim : undefined}
-              icon={dappAssets.rewards}
+              claimIcon={isGenesis ? dappAssets.rewardsHubEnterClaim : undefined}
+              icon={icon.src}
+              iconClassName={icon.className}
               key={`${view}:${REWARDS_CARD_CONTRACT[view]}`}
               onClick={() => openRewardsView(view)}
               title={card.title}
