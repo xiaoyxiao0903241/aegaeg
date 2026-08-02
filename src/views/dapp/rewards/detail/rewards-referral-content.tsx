@@ -27,25 +27,33 @@ export function RewardsReferralContent() {
       <DappDetailBlock>
         <DappContentHeading>{referral.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <RewardsStatCard label={referral.totalRewards} value={totalRewards} />
-          <RewardsStatCard label={referral.myPosition} value={myPosition} />
-          <RewardsStatCard label={referral.directCount} value={referralCount} />
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={referral.totalRewards}
+            value={totalRewards}
+          />
+          <RewardsStatCard className="min-h-19.25" label={referral.myPosition} value={myPosition} />
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={referral.directCount}
+            value={referralCount}
+          />
         </div>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
-          <RewardsStatCard label={referral.contribution}>
-            <Text as="p" tone="muted-foreground" variant="caption">
+          <RewardsStatCard className="min-h-19.25" label={referral.contribution}>
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {referral.contribution}
             </Text>
             <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <Text as="p" className="font-semibold" variant="copy">
+              <Text as="p" className="leading-5 font-semibold" variant="copy">
                 {contributionValue}
               </Text>
-              <Text as="p" tone="muted-foreground" variant="caption">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {referral.contributionHint}
               </Text>
             </div>
           </RewardsStatCard>
-          <RewardsStatCard label={referral.nextPayout} value={nextPayout} />
+          <RewardsStatCard className="min-h-19.25" label={referral.nextPayout} value={nextPayout} />
         </div>
       </DappDetailBlock>
 
