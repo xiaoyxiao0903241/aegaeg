@@ -14,7 +14,7 @@ const genesisGlobeHeight = 250
 
 const genesisGlobalCard = tv({
   slots: {
-    root: cn(dappDarkBanner().root(), 'min-h-32 p-6 max-dapp:p-4.5'),
+    root: cn(dappDarkBanner().root(), 'min-h-27 px-6 py-4 max-dapp:p-4.5'),
     content: cn(dappDarkBanner().content(), 'max-dapp:max-w-none'),
     // H5: EN "View contract" ~150px; pr-28 was too tight → title wrapped into the button.
     kicker: 'max-dapp:block max-dapp:pr-44',
@@ -27,7 +27,7 @@ const genesisGlobalCard = tv({
       '[&_img]:size-(--dapp-icon-action) [&_img]:shrink-0 [&_img]:brightness-0 [&_img]:invert',
     ),
     globe:
-      'pointer-events-none absolute top-0 right-0 size-auto max-h-full max-w-[60%] opacity-[0.78] select-none',
+      'pointer-events-none absolute top-0 right-0 size-auto max-h-full max-w-3/5 opacity-80 select-none',
   },
 })
 

@@ -74,16 +74,17 @@ export function GenesisPurchaseForm({ genesis }: { genesis: GenesisWidgetState }
       {vm.walletReady ? (
         <DappActionRow className="grid-cols-1">
           {vm.programEnded ? (
-            <DappActionButton density="external" disabled variant="secondary">
+            <DappActionButton density="card" disabled variant="secondary">
               {t.genesis.joinEnded}
             </DappActionButton>
           ) : genesis.needsReferralBind ? (
-            <DappActionButton density="external" onClick={() => goBindReferral()} variant="primary">
+            <DappActionButton density="card" onClick={() => goBindReferral()} variant="primary">
               {t.genesis.goBindReferrer}
             </DappActionButton>
           ) : (
             <DappActionButton
-              density="external"
+              className="min-h-11"
+              density="card"
               disabled={!genesis.canPurchase || genesis.isSubmitting}
               loading={genesis.isSubmitting}
               onClick={() => void vm.handlePurchase()}
