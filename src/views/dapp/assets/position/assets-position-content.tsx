@@ -18,7 +18,12 @@ export function AssetsPositionContent({ product }: { product: AssetsProduct }) {
         faqItems={copy.faq.items}
         faqTitle={copy.faq.title}
         metrics={stats.metrics}
-        metricsGridClassName="grid grid-cols-2 gap-3 dapp:grid-cols-3"
+        metricsGridClassName={
+          product === 'stake'
+            ? 'grid grid-cols-2 gap-3 dapp:grid-cols-3'
+            : // LP/Burn：上 3 下 2（Figma 250 / 384）；6 列 + col-span 合成
+              'grid grid-cols-2 gap-3 dapp:grid-cols-6 dapp:[&>*]:col-span-2 dapp:[&>*:nth-child(n+4)]:col-span-3'
+        }
         opsColumns={t.assets.opsColumns}
         opsEmpty={copy.ops.empty}
         opsLoading={ops.isLoading}

@@ -53,10 +53,10 @@ export function AssetsPositionBondRow({
         />
       </div>
       <div className="flex items-center justify-end gap-1">
-        <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {t.assets.position.voucher}
         </Text>
-        <Text as="span" className="text-xs" variant="detail">
+        <Text as="span" className="leading-4" variant="support">
           {voucher}
         </Text>
       </div>
