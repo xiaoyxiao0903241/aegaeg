@@ -119,6 +119,10 @@ export const dappAssets = {
   assetsHubCheckBadge: '/assets/figma/dapp/assets-hub/ic-check-badge.svg',
   /** 资产仓位空态插画 · HTML 原型 `r23` / `ip-gift`. */
   assetsPositionEmptyArt: '/assets/figma/dapp/assets-hub/stake-position-empty-art.webp',
+  /** 仓位本金 chip 锁 · Figma `4525:242` 12. */
+  assetsPositionLock: '/assets/figma/dapp/assets-hub/ic-position-lock-12.svg',
+  /** 仓位加成 chip 双上箭头 · Figma `4525:253` 12. */
+  assetsPositionBoost: '/assets/figma/dapp/assets-hub/ic-position-boost-12.svg',
   tokenAgx: tokenFlywheelIcons.agxIcon,
   tokenGagx: tokenFlywheelIcons.gagxIcon,
   tokenUsd1: tokenFlywheelIcons.usd1Icon,

@@ -6,6 +6,7 @@ import { AssetsPositionRowActions } from '~/views/dapp/assets/position/assets-po
 import {
   ASSETS_POSITION_AGX_DECIMALS,
   ASSETS_POSITION_GAGX_DECIMALS,
+  AssetsPositionBoostBadge,
   AssetsPositionPrincipalColumn,
   AssetsPositionRowHeader,
   type AssetsPositionRowShellProps,
@@ -22,6 +23,8 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
   const periodLabel = formatPeriodLabel(row.period)
   const voucher =
     row.kind === 'locked' && row.pool ? `${row.pool.slice(0, 6)}…${row.pool.slice(-4)}` : null
+  const remainingValue =
+    row.kind === 'liquid' && row.expiry <= 0n ? t.assets.position.redeemAnytime : undefined
 
   return (
     <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
@@ -29,6 +32,7 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
         periodLabel={periodLabel}
         remainingAt={row.expiry}
         remainingLabel={t.assets.position.remaining}
+        remainingValue={remainingValue}
       />
       <div className="grid grid-cols-2 gap-2">
         <AssetsPositionPrincipalColumn
@@ -44,11 +48,9 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
           amountText={`${formatTokenAmount(reward, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
           badge={
             row.extraInterest > 0n ? (
-              <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
-                <Text as="span" className="leading-none text-primary" variant="support">
-                  {formatTokenAmount(row.extraInterest, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX
-                </Text>
-              </span>
+              <AssetsPositionBoostBadge
+                text={`${formatTokenAmount(row.extraInterest, ASSETS_POSITION_GAGX_DECIMALS, 2)} gAGX`}
+              />
             ) : null
           }
           quoteUsd={quote === 'usd' ? formatRewardUsd(reward) : undefined}
@@ -56,7 +58,8 @@ export function AssetsPositionStakeRow(props: AssetsPositionRowShellProps<Assets
         />
       </div>
       {voucher ? (
-        <div className="flex items-center justify-end gap-1">
+        // Figma `4525:331` vr：左对齐（禁 justify-end 推到右缘）
+        <div className="flex items-center justify-start gap-1">
           <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
             {t.assets.position.voucher}
           </Text>

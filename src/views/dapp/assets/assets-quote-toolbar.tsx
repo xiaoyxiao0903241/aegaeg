@@ -53,10 +53,10 @@ export function AssetsQuoteToolbar({
           )}
         >
           {sortLabel}
+          {/* Figma `4518:7176`：ic-chevron-down 10 · 黑 40%（禁珊瑚上箭头） */}
           <DappIcon
             alt=""
             className={cn('size-2.5 transition-transform duration-200', open && 'rotate-180')}
-            size="sm"
             src={dappAssets.chevronDown}
           />
         </DropdownMenuTrigger>

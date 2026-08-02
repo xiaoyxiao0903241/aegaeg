@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Text } from '~/shared/ui/text'
@@ -23,10 +25,13 @@ export function AssetsPositionRowHeader({
   periodLabel,
   remainingLabel,
   remainingAt,
+  remainingValue,
 }: {
   periodLabel: string
   remainingLabel: string
   remainingAt: bigint
+  /** 活期可随时赎回等文案；缺省且 remainingAt=0 显示 — */
+  remainingValue?: string
 }) {
   return (
     <div className="flex items-center gap-2">
@@ -39,14 +44,14 @@ export function AssetsPositionRowHeader({
           {remainingLabel}
         </Text>
         <Text as="span" className="text-sm leading-4" variant="copy">
-          {remainingAt > 0n ? formatBlockTime(Number(remainingAt)) : '—'}
+          {remainingValue ?? (remainingAt > 0n ? formatBlockTime(Number(remainingAt)) : '—')}
         </Text>
       </div>
     </div>
   )
 }
 
-/** Principal column with optional soft badge. */
+/** Principal column with optional soft badge（锁 icon · Figma chip）. */
 export function AssetsPositionPrincipalColumn({
   label,
   amountText,
@@ -66,12 +71,25 @@ export function AssetsPositionPrincipalColumn({
       </Text>
       {badgeText ? (
         <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
+          <DappIcon alt="" className="size-3" src={dappAssets.assetsPositionLock} />
           <Text as="span" className="leading-none text-primary" variant="support">
             {badgeText}
           </Text>
         </span>
       ) : null}
     </div>
+  )
+}
+
+/** Yield chip 内双上箭头 · Figma `4525:253`. */
+export function AssetsPositionBoostBadge({ text }: { text: string }) {
+  return (
+    <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
+      <DappIcon alt="" className="size-3" src={dappAssets.assetsPositionBoost} />
+      <Text as="span" className="leading-none text-primary" variant="support">
+        {text}
+      </Text>
+    </span>
   )
 }
 

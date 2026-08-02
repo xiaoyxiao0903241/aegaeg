@@ -52,7 +52,7 @@ export function AssetsPositionBondRow({
           yieldLabel={t.assets.position.yield}
         />
       </div>
-      <div className="flex items-center justify-end gap-1">
+      <div className="flex items-center justify-start gap-1">
         <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {t.assets.position.voucher}
         </Text>
