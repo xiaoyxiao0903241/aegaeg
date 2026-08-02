@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
@@ -124,6 +125,16 @@ test('evaluateStakeLive blocks unbound / quota / allowance', async () => {
     }),
     'insufficientQuota',
   )
+})
+
+test('xmineSpendableCap is min(balance, remaining quota)', async () => {
+  const { xmineSpendableCap } = await loadModule('/src/core/staking/staking-block-reasons.ts')
+
+  assert.equal(xmineSpendableCap(10n, 100n, 0n), 10n)
+  assert.equal(xmineSpendableCap(100n, 40n, 0n), 40n)
+  assert.equal(xmineSpendableCap(100n, 100n, 60n), 40n)
+  assert.equal(xmineSpendableCap(10n, 100n, 60n), 10n)
+  assert.equal(xmineSpendableCap(50n, 30n, 30n), 0n)
 })
 
 test('period → contract key mapping (Pre-Design §1)', async () => {

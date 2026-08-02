@@ -22,7 +22,9 @@ export function evaluateStakingAmountWrite(args: {
     walletReady: args.walletReady,
   })
 
-  const canSubmit = !locked && args.amountIn > 0n && args.blockReason == null && args.preflightReady
+  // 手册：先 approve 再 stake/zap；授权不足须可点 CTA，由 approveThenLiveWrite 内联授权。
+  const moneyOk = args.blockReason == null || args.blockReason === 'insufficientAllowance'
+  const canSubmit = !locked && args.amountIn > 0n && moneyOk && args.preflightReady
 
   const writePhase = evaluateWriteButtonPhase({
     walletReady: args.walletReady,

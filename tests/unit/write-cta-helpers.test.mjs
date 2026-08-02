@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
 test('canClaimWhen requires wallet, writeReady, unlocked, and positive claimable', async () => {
@@ -86,6 +87,34 @@ test('writeCtaLabel maps migrated and need_referral phases', async () => {
   assert.equal(writeCtaLabel('account_migrated', copy), 'migrated')
   assert.equal(writeCtaLabel('need_referral', copy), 'bind')
   assert.equal(writeCtaLabel('ready', copy), 'submit')
+})
+
+test('evaluateStakingAmountWrite allows submit when allowance soft-blocked', async () => {
+  const { evaluateStakingAmountWrite } = await loadModule(
+    '/src/views/dapp/staking/staking-amount-write-ui.ts',
+  )
+
+  const ready = {
+    unknownReceiptLocked: false,
+    isSubmitting: false,
+    writeReady: true,
+    walletReady: true,
+    amountIn: 1n,
+    preflightReady: true,
+    needReferral: false,
+    accountMigrated: false,
+  }
+
+  assert.equal(evaluateStakingAmountWrite({ ...ready, blockReason: null }).canSubmit, true)
+  assert.equal(
+    evaluateStakingAmountWrite({ ...ready, blockReason: 'insufficientAllowance' }).canSubmit,
+    true,
+  )
+  assert.equal(
+    evaluateStakingAmountWrite({ ...ready, blockReason: 'insufficientQuota' }).canSubmit,
+    false,
+  )
+  assert.equal(evaluateStakingAmountWrite({ ...ready, blockReason: 'notBound' }).canSubmit, false)
 })
 
 test('formatAmountBalanceLabel retains on empty (pending → empty string)', async () => {

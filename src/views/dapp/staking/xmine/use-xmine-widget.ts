@@ -1,6 +1,6 @@
 import { formatTokenAmount, formatTokenAmountInputDisplay } from '~/core/exchange/token-amount'
 import { decisionBigint, isDecisionFresh } from '~/core/query/decision-freshness'
-import { evaluateXmineLive } from '~/core/staking/staking-block-reasons'
+import { evaluateXmineLive, xmineSpendableCap } from '~/core/staking/staking-block-reasons'
 import { writeCtaDisabled } from '~/core/wallet/write-cta'
 import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
@@ -35,11 +35,19 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     decisionBigint(preflightQuery.data?.balance, preflightQuery.isPlaceholderData) ?? 0n
   const allowance =
     decisionBigint(preflightQuery.data?.allowance, preflightQuery.isPlaceholderData) ?? 0n
+  const miningQuota =
+    decisionBigint(preflightQuery.data?.miningQuota, preflightQuery.isPlaceholderData) ?? 0n
+  const miningStaked =
+    decisionBigint(preflightQuery.data?.miningStaked, preflightQuery.isPlaceholderData) ?? 0n
   const balancesLoaded = isDecisionFresh(preflightQuery.isPlaceholderData, preflightQuery.data)
+
+  // Max / 键入封顶：min(钱包 gAGX, 剩余挖矿额度)
+  const spendable = xmineSpendableCap(balance, miningQuota, miningStaked)
+  const remainingQuota = miningQuota > miningStaked ? miningQuota - miningStaked : 0n
 
   const amountInput = useCappedTokenAmountInput({
     decimals: GAGX_DECIMALS,
-    balance,
+    balance: spendable,
     balancesLoaded,
     sessionReady,
   })
@@ -48,7 +56,7 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     amount: amountInput.amountIn,
     balance,
     allowance,
-    miningQuota: balancesLoaded ? (preflightQuery.data?.miningQuota ?? 0n) : 0n,
+    miningQuota: remainingQuota,
   })
 
   const stake = useChainMutation({
@@ -72,8 +80,10 @@ export function useXmineWidget(sessionReady: boolean, present: XmineWritePresent
     walletReady,
   })
 
+  // 手册：授权不足仍可提交，内联 approve → live → stake。
+  const moneyOk = blockReason == null || blockReason === 'insufficientAllowance'
   const canSubmit =
-    !locked && amountInput.amountIn > 0n && blockReason == null && preflightQuery.data !== undefined
+    !locked && amountInput.amountIn > 0n && moneyOk && preflightQuery.data !== undefined
 
   function unlock() {
     stake.clearLock()

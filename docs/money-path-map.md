@@ -22,14 +22,14 @@ Claim: 签名 API → 链上 claim → confirm → success: invalidate
 Rewards Mixed Lucky: live winner/reward vs pre intent + 贡献/plans → claimRewardMixed → WRITE_PATH.REWARD_CLAIM
 Rewards Mixed Dao: 签名额 + live DaoPool AGX solvency/贡献/plans → claimRewardsMixed → REWARD_CLAIM
 Rewards simple: Incentive/Market/CommunityFund/RewardClaimer → 签名 claim → REWARD_CLAIM
-Staking: bind + migration(isOldAccount) + AGX bal/allow + quota(/status) → [approve?] → live 重读
+Staking: bind + migration(isOldAccount) + AGX bal/quota(/status) → [approve? soft on insufficientAllowance] → live 重读（含 allowance）
        → liquidStake / lockedStake → WRITE_PATH.STAKING
-BondZap: bind + migration(isOldAccount) + USD1 bal/allow + authContracts → [approve?] → live 重读
+BondZap: bind + migration(isOldAccount) + USD1 bal + authContracts → [approve? soft on insufficientAllowance] → live 重读
        → BondHelper zap → WRITE_PATH.BOND_ZAP
 Flash / Trade: 无 referral / migration 写门禁（手册未要求）；quote → canSubmit → [approve?] → live
        → swap（USD1→AGX: `swapExactTokensForTokens`；AGX→USD1: 税折净额报价 + SupportingFee）
        → invalidateAfterExchange
-Xmine: gAGX bal/allow + miningQuotaOf → [approve?] → live 重读
+Xmine: gAGX bal + miningQuotaOf → [approve? soft on insufficientAllowance] → live 重读
        → stakeGagxForMining → WRITE_PATH.XMINE
 Assets Mixed: live 重读奖励+贡献+plans → claim*Mixed → WRITE_PATH.ASSETS_CLAIM
 Assets redeem: live 重读可赎额 → claimPrincipal / redeem / startUnstake → ASSETS_CLAIM

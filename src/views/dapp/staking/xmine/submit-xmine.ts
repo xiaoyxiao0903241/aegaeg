@@ -1,4 +1,4 @@
-import { evaluateXmineLive } from '~/core/staking/staking-block-reasons'
+import { evaluateXmineLive, type XmineLiveBlockReason } from '~/core/staking/staking-block-reasons'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { XMINE_BLOCKED } from '~/web3/errors/write-block-errors'
@@ -20,17 +20,23 @@ export async function submitXmineStake(args: {
   let pastPreflight = false
   await approveThenLiveWrite({
     readSnapshot: () => readXminePreflight({ user: address, client: readClient }),
-    evaluate: (preflight) =>
-      evaluateXmineLive({
+    evaluate: (preflight): XmineLiveBlockReason | null => {
+      const remaining =
+        preflight.miningQuota > preflight.miningStaked
+          ? preflight.miningQuota - preflight.miningStaked
+          : 0n
+      return evaluateXmineLive({
         amount,
         balance: preflight.balance,
         allowance: preflight.allowance,
-        miningQuota: preflight.miningQuota,
-      }),
-    mapBlockError: (reason) => {
+        miningQuota: remaining,
+      })
+    },
+    mapBlockError: (reason: XmineLiveBlockReason) => {
       if (!pastPreflight && reason === 'insufficientBalance') openExchangeView('flash')
       return XMINE_BLOCKED[reason]
     },
+    softPreBlocks: ['insufficientAllowance'] satisfies ReadonlyArray<XmineLiveBlockReason>,
     approve: async () => {
       pastPreflight = true
       await approveGagxForXmineIfNeeded({ wallet, amount })

@@ -54,6 +54,7 @@ export async function submitBondZap(args: {
       }),
     mapBlockError: (reason: NonNullable<ReturnType<typeof evaluateBondZapLive>>) =>
       BOND_ZAP_BLOCKED[reason],
+    softPreBlocks: ['insufficientAllowance'] as const,
     approve: async () => {
       await approveUsd1ForBondHelperIfNeeded({ wallet, amount })
     },

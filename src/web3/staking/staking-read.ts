@@ -32,7 +32,10 @@ const bondMarketAbi = parseAbi([
   BOND_DEPOSITORY_MARKET_METHODS.discountRateBP,
   BOND_DEPOSITORY_MARKET_METHODS.terms,
 ])
-const xStakingAbi = parseAbi([X_STAKING_POOL_METHODS.miningQuotaOf])
+const xStakingAbi = parseAbi([
+  X_STAKING_POOL_METHODS.miningQuotaOf,
+  X_STAKING_POOL_METHODS.miningStakeAmountOf,
+])
 
 export type StakeOpenPreflight = {
   isBound: boolean
@@ -195,17 +198,26 @@ export async function readXminePreflight(args: {
   balance: bigint
   allowance: bigint
   miningQuota: bigint
+  /** active + warmup；Max / 门闸用 quota − staked。 */
+  miningStaked: bigint
 }> {
   const client = args.client ?? bscReadClient
-  const [balance, allowance, miningQuota] = await Promise.all([
+  const user = args.user as `0x${string}`
+  const [balance, allowance, miningQuota, miningStaked] = await Promise.all([
     readErc20Balance(BSC_CONTRACTS.gagx, args.user, client),
     readErc20Allowance(BSC_CONTRACTS.gagx, args.user, BSC_CONTRACTS.xStakingPool, client),
     client.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: xStakingAbi,
       functionName: 'miningQuotaOf',
-      args: [args.user as `0x${string}`],
+      args: [user],
+    }),
+    client.readContract({
+      address: BSC_CONTRACTS.xStakingPool,
+      abi: xStakingAbi,
+      functionName: 'miningStakeAmountOf',
+      args: [user],
     }),
   ])
-  return { balance, allowance, miningQuota }
+  return { balance, allowance, miningQuota, miningStaked }
 }

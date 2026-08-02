@@ -85,6 +85,19 @@ export function evaluateXmineLive(args: {
   return null
 }
 
+/**
+ * 手册 §15：current + amount ≤ miningQuotaOf。
+ * Max / 输入封顶 = min(gAGX 余额, max(0, quota − staked))。
+ */
+export function xmineSpendableCap(
+  balance: bigint,
+  miningQuota: bigint,
+  miningStaked: bigint,
+): bigint {
+  const remaining = miningQuota > miningStaked ? miningQuota - miningStaked : 0n
+  return balance < remaining ? balance : remaining
+}
+
 /** 活期 warmup 激活：live `isWarmupExpired` 未到期则禁写。 */
 export function evaluateLiquidWarmupClaimLive(
   isWarmupExpired: boolean,

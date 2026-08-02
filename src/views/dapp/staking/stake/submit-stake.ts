@@ -54,6 +54,7 @@ export async function submitStakeOpen(args: {
       }),
     mapBlockError: (reason: NonNullable<ReturnType<typeof evaluateStakeLive>>) =>
       STAKING_BLOCKED[reason],
+    softPreBlocks: ['insufficientAllowance'] as const,
     approve: async () => {
       await approveAgxForStakeIfNeeded({ wallet, pool, amount })
     },
