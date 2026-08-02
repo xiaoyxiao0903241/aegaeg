@@ -1,9 +1,9 @@
 import { tokenCarouselIcons } from '~/app/assets'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { useReleaseQueueView } from '~/views/dapp/release/queue/use-release-queue-view'
@@ -22,7 +22,11 @@ export function ReleaseQueueWidget() {
       />
       <DappWidgetStack>
         {vm.rows.map((row) => (
-          <Card className="shadow-none" key={row.days} surface="outlined">
+          <Card
+            className="min-h-45.75 rounded-2xl p-4 shadow-none"
+            key={row.days}
+            surface="outlined"
+          >
             <Card.Content className="grid gap-3">
               <div className="flex items-center gap-2">
                 <DappIcon
@@ -31,9 +35,10 @@ export function ReleaseQueueWidget() {
                   size="sm"
                   src={tokenCarouselIcons.gagxIcon}
                 />
+                {/* Figma pill 25：min-h-6.25 */}
                 <Text
                   as="span"
-                  className="rounded-full bg-muted px-3 py-1 font-semibold"
+                  className="inline-flex min-h-6.25 items-center rounded-full bg-muted px-3 font-semibold"
                   variant="caption"
                 >
                   {row.planLabel}
@@ -67,13 +72,15 @@ export function ReleaseQueueWidget() {
                   {row.valueHint}
                 </Text>
               </div>
-              <Button
+              <DappActionButton
+                density="card"
                 disabled={!row.canClaim || row.pending}
+                loading={row.pending}
                 onClick={() => void vm.onClaim(row.planIndex)}
                 type="button"
               >
                 {t.release.queue.claim}
-              </Button>
+              </DappActionButton>
             </Card.Content>
           </Card>
         ))}

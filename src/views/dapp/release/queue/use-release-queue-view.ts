@@ -7,7 +7,6 @@ import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
@@ -73,7 +72,7 @@ export function useReleaseQueueView() {
       claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
       releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
       releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),
-      valueHint: formatApproxUsd(0, null),
+      valueHint: '≈ —',
       progressWidth: pctLabel,
     }
   })

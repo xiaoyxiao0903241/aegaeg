@@ -10,7 +10,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { useReleasePoolLogs, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
+import { formatGroupedNumber } from '~/shared/api/format-display'
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Card } from '~/shared/ui/card'
@@ -59,24 +59,25 @@ export function ReleaseQueueContent() {
       const n = Number(api.total_claimed_amount)
       if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
     }
-    return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
+    /** 无 lifetime 链上源 → 诚实空 */
+    return '—'
   }
 
   const stats = [
     {
       label: t.release.labels.releasing,
       value: formatReleasingLabel(),
-      approx: formatApproxUsd(0, null),
+      approx: '≈ —',
     },
     {
       label: t.release.labels.released,
       value: formatReleasedLabel(),
-      approx: formatApproxUsd(0, null),
+      approx: '≈ —',
     },
     {
       label: t.release.queue.lifetimeClaimed,
       value: formatLifetimeClaimed(),
-      approx: formatApproxUsd(0, null),
+      approx: '≈ —',
     },
   ]
 
@@ -91,7 +92,7 @@ export function ReleaseQueueContent() {
             <Card
               as="div"
               surface="elevated"
-              className="grid gap-1.5 rounded-2xl p-4"
+              className="grid min-h-25 gap-1 rounded-2xl px-5 py-3.5"
               key={stat.label}
             >
               <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
@@ -100,16 +101,16 @@ export function ReleaseQueueContent() {
               <div className="flex items-center gap-2">
                 <DappIcon
                   alt=""
-                  className="size-(--app-icon-lg) rounded-control"
+                  className="size-5.5 shrink-0 rounded-control"
                   size="sm"
                   src={tokenCarouselIcons.gagxIcon}
                 />
-                <Text as="strong" className="text-base font-semibold" variant="copy">
+                <Text as="strong" className="font-semibold" variant="copy">
                   <DappCountValue text={stat.value} />
                 </Text>
               </div>
               <Text as="span" tone="muted-foreground" variant="detail">
-                <DappCountValue text={stat.approx} />
+                {stat.approx}
               </Text>
             </Card>
           ))}
