@@ -2025,8 +2025,8 @@ const app = defineMessages({
         { label: '当前 Rebase 收益率' },
       ],
       positionMetrics: [
-        { label: '我的质押' },
-        { label: '已领取' },
+        { label: '我的持仓' },
+        { label: '已释放' },
         { label: '待释放' },
         { label: '当前Rebase 收益' },
       ],
@@ -2107,7 +2107,7 @@ const app = defineMessages({
         { label: '当前 Rebase 收益率' },
       ],
       positionMetrics: [
-        { label: '我的债券' },
+        { label: '我的持仓' },
         { label: '已释放' },
         { label: '待释放' },
         { label: '当前Rebase 收益' },

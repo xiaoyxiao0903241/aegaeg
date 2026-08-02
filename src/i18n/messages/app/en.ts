@@ -2114,10 +2114,10 @@ const app = defineMessages({
         { label: 'Current Rebase yield' },
       ],
       positionMetrics: [
-        { label: 'My stake' },
-        { label: 'Claimed' },
+        { label: 'My holdings' },
+        { label: 'Released' },
         { label: 'Pending release' },
-        { label: 'Current Rebase reward' },
+        { label: 'Current Rebase yield' },
       ],
       mechanismTitle: 'How LP Bond works',
       mechanism:
@@ -2198,10 +2198,10 @@ const app = defineMessages({
         { label: 'Current Rebase yield' },
       ],
       positionMetrics: [
-        { label: 'My bonds' },
+        { label: 'My holdings' },
         { label: 'Released' },
         { label: 'Pending release' },
-        { label: 'Current Rebase reward' },
+        { label: 'Current Rebase yield' },
       ],
       mechanismTitle: 'How Burn Bond works',
       mechanism:
