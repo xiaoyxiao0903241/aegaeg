@@ -30,14 +30,15 @@ export function AssetsPositionRowHeader({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs text-muted-foreground">
+      {/* Figma period pill 24 */}
+      <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs leading-none text-muted-foreground">
         {periodLabel}
       </span>
       <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-        <Text as="span" tone="muted-foreground" variant="detail">
+        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {remainingLabel}
         </Text>
-        <Text as="span" className="text-sm" variant="detail">
+        <Text as="span" className="text-sm leading-4" variant="copy">
           {remainingAt > 0n ? formatBlockTime(Number(remainingAt)) : '—'}
         </Text>
       </div>
@@ -57,15 +58,15 @@ export function AssetsPositionPrincipalColumn({
 }) {
   return (
     <div className="grid gap-1">
-      <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
         {label}
       </Text>
-      <Text as="strong" className="text-base font-semibold" variant="copy">
+      <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
         {amountText}
       </Text>
       {badgeText ? (
-        <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2 py-0.5">
-          <Text as="span" className="text-xs text-primary" variant="detail">
+        <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
+          <Text as="span" className="leading-none text-primary" variant="support">
             {badgeText}
           </Text>
         </span>
@@ -87,15 +88,15 @@ export function AssetsPositionYieldColumn({
 }) {
   return (
     <div className="grid justify-items-end gap-1 text-right">
-      <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
         {yieldLabel}
       </Text>
-      <Text as="strong" className="text-base font-semibold text-primary" variant="copy">
+      <Text as="strong" className="text-sm leading-5 font-semibold text-primary" variant="copy">
         {amountText}
       </Text>
       {badge}
       {quoteUsd != null ? (
-        <Text as="span" tone="muted-foreground" variant="detail">
+        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {quoteUsd}
         </Text>
       ) : null}

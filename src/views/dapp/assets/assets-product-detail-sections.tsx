@@ -60,30 +60,31 @@ export function AssetsProductDetailSections({
                     ? tokenCarouselIcons.xIcon
                     : null
             return (
+              // Figma 仓位数据 stat 94：min-h-23.5 + support leading（禁 h-[94px]）
               <Card
                 as="div"
-                className="grid gap-1.5 rounded-2xl p-4"
+                className="grid min-h-23.5 gap-1 rounded-2xl p-4"
                 key={metric.label}
                 surface="elevated"
               >
-                <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
+                <Text
+                  as="span"
+                  className="leading-4 font-medium"
+                  tone="muted-foreground"
+                  variant="support"
+                >
                   {metric.label}
                 </Text>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   {iconSrc ? (
-                    <DappIcon
-                      alt=""
-                      className="size-(--app-icon-lg) rounded-control"
-                      size="sm"
-                      src={iconSrc}
-                    />
+                    <DappIcon alt="" className="rounded-control" size="lg" src={iconSrc} />
                   ) : null}
-                  <Text as="strong" className="text-base font-semibold" variant="copy">
+                  <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
                     <DappCountValue text={cell?.value ?? '0.00'} />
                   </Text>
                 </div>
                 {cell?.approx != null ? (
-                  <Text as="span" tone="muted-foreground" variant="detail">
+                  <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
                     <DappCountValue text={cell.approx} />
                   </Text>
                 ) : null}

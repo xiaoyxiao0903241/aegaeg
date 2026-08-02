@@ -24,11 +24,13 @@ export function AssetsQuoteToolbar({
         <DappIcon alt="" className="size-2.5" size="sm" src={dappAssets.chevron} />
       </Chip>
       <div className="flex items-center gap-1">
-        <Text as="span" tone="muted-foreground" variant="detail">
+        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {quoteLabel}
         </Text>
-        <div className="flex rounded-full bg-muted p-0.5">
+        {/* Figma Quote toggle 24 */}
+        <div className="flex h-6 items-center rounded-full bg-muted p-0.5">
           <Chip
+            className="h-5 min-h-0 px-3 py-0 leading-none"
             onClick={() => onQuoteChange('agx')}
             shape="pill"
             size="sm"
@@ -38,6 +40,7 @@ export function AssetsQuoteToolbar({
             AGX
           </Chip>
           <Chip
+            className="h-5 min-h-0 px-3 py-0 leading-none"
             onClick={() => onQuoteChange('usd')}
             shape="pill"
             size="sm"
