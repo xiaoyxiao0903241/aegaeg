@@ -20,9 +20,9 @@
 |---|----|---------|--------|-----------|
 | 01 | 资产 Hub | `4281:212` | **page-done** | `research/120-assets-hub-fresh-leaf.md` · `58b12163` |
 | 02 | 资产·质押仓位 | `4518:5594` | **page-done** | `research/121-assets-stake-pos-fresh-leaf.md` · `b72c13df` |
-| 03 | 资产·LP Bond | `4518:5993` | **page-done** | `research/124-assets-lp-bond-fresh-leaf.md` · leaf-in `212eef4c` · chrome `b72c13df` |
-| 04 | 资产·Burn Bond | `4518:6384` | **page-done** | `research/125-assets-burn-bond-fresh-leaf.md` · chrome `b72c13df` |
-| 05 | 资产·Xmine | `4518:6775` | **page-done** | `research/126-assets-xmine-fresh-leaf.md` · `9efc8106` |
+| 03 | 资产·LP Bond | `4518:5993` | **page-done** | `research/124-assets-lp-bond-fresh-leaf.md` · `5ecc14a8` |
+| 04 | 资产·Burn Bond | `4518:6384` | **page-done** | `research/125-assets-burn-bond-fresh-leaf.md` · `9671a26c` |
+| 05 | 资产·Xmine | `4518:6775` | **page-done** | `research/126-assets-xmine-fresh-leaf.md` · code `9efc8106` · leaf `7223a6e7` |
 | 06 | 兑换 Hub | `4267:212` | **page-done** | `research/122-exchange-hub-fresh-leaf.md` · `6b64a42c` |
 | 07 | 闪兑 | `4430:220` | pending | |
 | 08 | 交易 | `4433:220` | pending | |
