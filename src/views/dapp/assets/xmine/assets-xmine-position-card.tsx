@@ -94,51 +94,51 @@ export function AssetsXminePositionCard({
   return (
     <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
       <div className="flex items-center gap-2">
-        <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs text-muted-foreground">
+        <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs leading-none text-muted-foreground">
           {periodPill}
         </span>
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-          <Text as="span" tone="muted-foreground" variant="detail">
+          <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
             {remainingCaption}
           </Text>
-          <Text as="span" className="text-sm" variant="detail">
+          <Text as="span" className="text-sm leading-4" variant="copy">
             {remainingLabel}
           </Text>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="grid gap-1">
-          <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+          <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
             {stakedCaption}
           </Text>
-          <Text as="strong" className="text-base font-semibold" variant="copy">
+          <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
             {formatTokenAmount(miningStake, GAGX_DECIMALS, 2)} gAGX
           </Text>
-          <span className="inline-flex w-fit items-center gap-1 rounded-control bg-primary-soft px-2 py-0.5">
-            <Text as="span" className="text-xs text-primary" variant="detail">
+          <span className="inline-flex h-5.25 w-fit items-center gap-1 rounded-control bg-primary-soft px-2">
+            <Text as="span" className="leading-none text-primary" variant="support">
               {formatTokenAmount(redeemableStake, GAGX_DECIMALS, 2)} gAGX
             </Text>
           </span>
         </div>
         <div className="grid justify-items-end gap-1 text-right">
-          <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+          <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
             {outputCaption}
           </Text>
-          <Text as="strong" className="text-base font-semibold text-primary" variant="copy">
+          <Text as="strong" className="text-sm leading-5 font-semibold text-primary" variant="copy">
             {formatTokenAmount(pending, X_DECIMALS, 2)} X
           </Text>
           {quote === 'usd' ? (
-            <Text as="span" tone="muted-foreground" variant="detail">
+            <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
               ≈ —
             </Text>
           ) : null}
         </div>
       </div>
       <div className="flex items-center justify-end gap-1">
-        <Text as="span" className="text-xs" tone="muted-foreground" variant="detail">
+        <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
           {voucherCaption}
         </Text>
-        <Text as="span" className="text-xs" variant="detail">
+        <Text as="span" className="leading-4" variant="support">
           {voucher}
         </Text>
       </div>

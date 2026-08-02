@@ -16,6 +16,7 @@ export function AssetsXmineContent() {
         faqItems={copy.faq.items}
         faqTitle={copy.faq.title}
         metrics={copy.stats.metrics}
+        metricsGridClassName="grid grid-cols-2 gap-3"
         opsColumns={t.assets.opsColumns}
         opsEmpty={copy.ops.empty}
         opsLoading={ops.isLoading}
