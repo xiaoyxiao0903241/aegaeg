@@ -20,7 +20,7 @@ import {
   formatSignedPercent,
 } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import type { StakingTvAreaPoint } from '~/views/dapp/staking/staking-tv-area-chart'
+import type { TvAreaPoint } from '~/shared/ui/tv-area-chart'
 import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 
 const YIELD_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`
@@ -116,7 +116,7 @@ export function useStakingHubContentView() {
         : formatGroupedNumber(0, { digits: 0, trimZeros: true })
 
   // No history indexer/API yet — empty series; header stays formatted `$0.00` / `+0.0%`.
-  const chartPoints: readonly StakingTvAreaPoint[] = []
+  const chartPoints: readonly TvAreaPoint[] = []
   const chartValueLabel = formatCompactUsd(null)
   const chartDeltaLabel = formatSignedPercent(null)
 

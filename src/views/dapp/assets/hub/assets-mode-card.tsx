@@ -5,7 +5,11 @@ import { Card } from '~/shared/ui/card'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Text } from '~/shared/ui/text'
 
-/** Hub product entry — Figma `asset/*` leaf（非 DappModeCard chrome）. */
+/**
+ * Figma `asset/*` · `4282:223`（h117 · p16 · gap8 · radius/md16）.
+ * 副文/≈：`text-foreground/40`（稿 muted 40%）.
+ * 行盒：`leading-4`（16）贴 labels/≈；顶行靠 icon20 撑到 20.
+ */
 export function AssetsModeCard({
   aprHint,
   aprLabel,
@@ -37,7 +41,6 @@ export function AssetsModeCard({
     <Card
       surface="outlined"
       className={cn(
-        // Figma asset/*：p-4 · gap-2 · radius-md；禁 h-[117px]
         'relative grid w-full gap-2 rounded-2xl p-4 text-left shadow-none',
         onClick &&
           'duration-dapp-fast transition-[border-color,transform] ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
@@ -53,50 +56,55 @@ export function AssetsModeCard({
         />
       ) : null}
       <div className="pointer-events-none relative z-10 grid gap-2">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex h-5 items-center justify-between gap-2">
           <div className="flex items-center gap-1">
             <DappIcon alt="" className="size-5 shrink-0" size="sm" src={icon} />
-            <Text as="span" className="leading-normal font-semibold" variant="detail">
+            <Text as="span" className="leading-4 font-semibold" variant="detail">
               {title}
             </Text>
           </div>
           <div className="pointer-events-auto flex items-center gap-1">
-            <Text as="span" className="leading-normal font-medium" variant="support">
-              <DappCountValue text={aprLabel} />
+            <Text as="span" className="leading-4 font-medium" variant="support">
+              <DappCountValue animate={false} text={aprLabel} />
             </Text>
-            <DappInfoTooltip className="size-3 [&_svg]:size-3" content={aprHint} />
+            <DappInfoTooltip className="size-3 text-foreground [&_svg]:size-3" content={aprHint} />
           </div>
         </div>
-        <div className="grid gap-1">
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-normal" tone="muted-foreground" variant="support">
-              {positionLabel}
-            </Text>
-            <Text as="span" className="leading-normal" tone="muted-foreground" variant="support">
-              {yieldLabel}
-            </Text>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <Text as="strong" className="leading-normal font-semibold" variant="detail">
-              <DappCountValue text={positionValue} />
-            </Text>
-            <Text
-              as="strong"
-              className="leading-normal font-semibold"
-              tone="primary"
-              variant="detail"
-            >
-              <DappCountValue text={yieldValue} />
-            </Text>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-normal" tone="muted-foreground" variant="support">
-              <DappCountValue text={positionApprox} />
-            </Text>
-            <Text as="span" className="leading-normal" tone="muted-foreground" variant="support">
-              <DappCountValue text={yieldApprox} />
-            </Text>
-          </div>
+
+        <div className="grid grid-cols-2 gap-y-1">
+          <Text as="span" className="leading-4 text-foreground/40" variant="support">
+            {positionLabel}
+          </Text>
+          <Text
+            as="span"
+            className="justify-self-end leading-4 text-foreground/40"
+            variant="support"
+          >
+            {yieldLabel}
+          </Text>
+
+          <Text as="strong" className="leading-4 font-semibold" variant="detail">
+            <DappCountValue text={positionValue} />
+          </Text>
+          <Text
+            as="strong"
+            className="justify-self-end leading-4 font-semibold"
+            tone="primary"
+            variant="detail"
+          >
+            <DappCountValue text={yieldValue} />
+          </Text>
+
+          <Text as="span" className="leading-4 text-foreground/40" variant="support">
+            <DappCountValue animate={false} text={positionApprox} />
+          </Text>
+          <Text
+            as="span"
+            className="justify-self-end leading-4 text-foreground/40"
+            variant="support"
+          >
+            <DappCountValue animate={false} text={yieldApprox} />
+          </Text>
         </div>
       </div>
     </Card>

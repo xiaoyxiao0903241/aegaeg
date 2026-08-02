@@ -31,11 +31,12 @@ export function AssetsHubWidget() {
       <WidgetHeader
         action={
           <div className="flex items-center gap-2">
-            {/* Figma btn/settings 36：稿有 chrome；写链/设置面板尚无 → 视觉对齐，禁用 */}
+            {/* Figma `4282:216` btn/settings：36 · radius/sm≈10 · 白底描边；面板 DEFER → 禁用但保持 bg-card */}
             <Button
               aria-label={t.assets.hub.settingsAria}
-              className="grid size-9 min-h-9 shrink-0 rounded-sm p-0 max-dapp:hidden"
+              className="grid size-9 min-h-9 shrink-0 bg-card p-0 disabled:bg-card max-dapp:hidden"
               disabled
+              shape="rounded"
               type="button"
               variant="secondary"
             >

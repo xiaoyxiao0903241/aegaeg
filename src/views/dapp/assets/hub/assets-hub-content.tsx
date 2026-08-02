@@ -227,7 +227,13 @@ export function AssetsHubContent() {
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl bg-muted px-6 py-3">
             {rebase.tags.map((tag) => (
               <span className="flex items-center gap-1.5" key={tag}>
-                <DappIcon alt="" className="size-4" size="sm" src={dappAssets.check} />
+                {/* Figma `4285:232` tags：实心珊瑚圆+白勾（禁描边 ic-check） */}
+                <DappIcon
+                  alt=""
+                  className="h-4 w-4.5 shrink-0"
+                  size="sm"
+                  src={dappAssets.assetsHubCheckBadge}
+                />
                 <Text as="span" className="leading-4 font-semibold" variant="support">
                   {tag}
                 </Text>

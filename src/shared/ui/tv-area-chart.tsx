@@ -16,7 +16,7 @@ import { cn } from '~/shared/lib/utils'
 import { colorHex } from '~/shared/styles/tokens/tokens'
 import { Text } from '~/shared/ui/text'
 
-export type StakingTvAreaPoint = {
+export type TvAreaPoint = {
   /** UTC seconds — Lightweight Charts `UTCTimestamp`. */
   time: UTCTimestamp
   value: number
@@ -37,7 +37,7 @@ type ChartTip = {
 }
 
 /** Format UTC day → Figma x-axis `YYYY-MM`. */
-export function formatStakingChartMonthLabel(time: UTCTimestamp): string {
+export function formatTvAreaChartMonthLabel(time: UTCTimestamp): string {
   const d = new Date(Number(time) * 1000)
   const y = d.getUTCFullYear()
   const m = String(d.getUTCMonth() + 1).padStart(2, '0')
@@ -48,19 +48,19 @@ export function formatStakingChartMonthLabel(time: UTCTimestamp): string {
  * Pick evenly spaced labels including first + last (Figma “全部” shows 6 ticks).
  * Short ranges keep all points when ≤ maxLabels.
  */
-export function pickStakingChartAxisLabels(
-  points: readonly StakingTvAreaPoint[],
+export function pickTvAreaChartAxisLabels(
+  points: readonly TvAreaPoint[],
   maxLabels = 6,
 ): readonly string[] {
   if (points.length === 0) return []
   if (points.length <= maxLabels) {
-    return points.map((p) => formatStakingChartMonthLabel(p.time))
+    return points.map((p) => formatTvAreaChartMonthLabel(p.time))
   }
   const last = maxLabels - 1
   const labels: string[] = []
   for (let i = 0; i < maxLabels; i += 1) {
     const idx = Math.round((i / last) * (points.length - 1))
-    labels.push(formatStakingChartMonthLabel(points[idx]!.time))
+    labels.push(formatTvAreaChartMonthLabel(points[idx]!.time))
   }
   return labels
 }
@@ -73,7 +73,7 @@ function tipValueLabel(value: number): string {
 
 function tipDateFromTime(time: Time | undefined): string | null {
   if (time == null) return null
-  if (typeof time === 'number') return formatStakingChartMonthLabel(time as UTCTimestamp)
+  if (typeof time === 'number') return formatTvAreaChartMonthLabel(time as UTCTimestamp)
   if (typeof time === 'string') {
     // business day `YYYY-MM-DD`
     return time.length >= 7 ? time.slice(0, 7) : time
@@ -84,8 +84,8 @@ function tipDateFromTime(time: Time | undefined): string | null {
   return null
 }
 
-/** TradingView Lightweight Charts area — Figma hub chart-card plot chrome. */
-export function StakingTvAreaChart({
+/** TradingView Lightweight Charts area chrome — 跨页复用；点数由 call site 传入. */
+export function TvAreaChart({
   axisLabels: axisLabelsProp,
   className,
   formatTipDate,
@@ -98,14 +98,14 @@ export function StakingTvAreaChart({
   /** Crosshair date line; defaults to `YYYY-MM`. */
   formatTipDate?: (time: Time) => string | null
   height?: number
-  points: readonly StakingTvAreaPoint[]
+  points: readonly TvAreaPoint[]
 }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const hostRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const [tip, setTip] = useState<ChartTip | null>(null)
-  const axisLabels = axisLabelsProp ?? pickStakingChartAxisLabels(points)
+  const axisLabels = axisLabelsProp ?? pickTvAreaChartAxisLabels(points)
   const formatTipDateRef = useRef(formatTipDate)
   formatTipDateRef.current = formatTipDate
 

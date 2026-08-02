@@ -3,10 +3,7 @@ import { type ReactNode } from 'react'
 import { Card } from '~/shared/ui/card'
 import { Segment } from '~/shared/ui/segment'
 import { Text } from '~/shared/ui/text'
-import {
-  StakingTvAreaChart,
-  type StakingTvAreaPoint,
-} from '~/views/dapp/staking/staking-tv-area-chart'
+import { TvAreaChart, type TvAreaPoint } from '~/shared/ui/tv-area-chart'
 
 /** Staking TVL/range chart — TradingView Lightweight Charts when `points` set; else empty copy (not 0.00). */
 export function StakingChartCard({
@@ -23,7 +20,7 @@ export function StakingChartCard({
   /** Shown when `points` is empty/undefined — never a numeric placeholder. */
   emptyLabel: string
   header: ReactNode
-  points?: readonly StakingTvAreaPoint[]
+  points?: readonly TvAreaPoint[]
   rangeAriaLabel: string
   rangeLabels: readonly string[]
   setChartRange: (value: string) => void
@@ -52,7 +49,7 @@ export function StakingChartCard({
         />
       </div>
       {hasSeries ? (
-        <StakingTvAreaChart points={points} />
+        <TvAreaChart points={points} />
       ) : (
         <div className="flex min-h-40 items-center justify-center rounded-lg">
           <Text as="span" tone="muted-foreground" variant="copy">

@@ -1,15 +1,20 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { cn } from '~/shared/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuPanel,
+  DropdownMenuTrigger,
+} from '~/shared/ui/dropdown-menu'
 import { Text } from '~/shared/ui/text'
-import { useDismissOnOutside } from '~/shared/ui/use-dismiss-on-outside'
 
 export type RewardsPlanPickerOption = {
   label: string
   value: string
 }
 
-/** Period pill + listbox — Figma Lucky/Mixed dropdown chrome; options from call site. */
+/** Period pill + listbox — panel chrome 走 DropdownMenu；行高/字阶本 leaf. */
 export function RewardsPlanPicker({
   ariaLabel,
   disabled = false,
@@ -24,27 +29,20 @@ export function RewardsPlanPicker({
   value: string
 }) {
   const [open, setOpen] = useState(false)
-  const wrapRef = useRef<HTMLSpanElement>(null)
   const selected = options.find((option) => option.value === value) ?? options[0]
-
-  useDismissOnOutside(open, wrapRef, () => setOpen(false))
 
   if (!selected) return null
 
   return (
-    <span ref={wrapRef} className={cn('relative inline-flex', open && 'z-50')}>
-      <button
-        aria-expanded={open}
-        aria-haspopup="listbox"
+    <DropdownMenu onOpenChange={setOpen} open={open}>
+      <DropdownMenuTrigger
         aria-label={ariaLabel}
         className={cn(
-          // Figma dropdown 34：h-8.5（禁 h-[34px]）
+          // Figma dropdown 34：h-8.5
           'inline-flex h-8.5 items-center gap-1.5 rounded-full bg-card px-3.5',
           disabled ? 'cursor-default opacity-40' : 'cursor-pointer',
         )}
         disabled={disabled}
-        onClick={() => setOpen((prev) => !prev)}
-        type="button"
       >
         <Text as="span" className="font-medium" variant="caption">
           {selected.label}
@@ -64,41 +62,26 @@ export function RewardsPlanPicker({
             strokeWidth="1.2"
           />
         </svg>
-      </button>
+      </DropdownMenuTrigger>
 
-      {open ? (
-        <div
-          className="absolute top-[calc(100%+0.375rem)] right-0 z-50 min-w-44 overflow-clip rounded-md border border-border bg-card p-1.5 shadow-menu"
-          role="listbox"
-        >
-          <ul className="flex flex-col gap-0.5">
-            {options.map((option) => {
-              const active = option.value === value
-              return (
-                <li key={option.value}>
-                  <button
-                    aria-selected={active}
-                    className={cn(
-                      'flex h-9 w-full cursor-pointer items-center rounded-sm px-2.5 text-left',
-                      active ? 'bg-background' : 'hover:bg-background',
-                    )}
-                    onClick={() => {
-                      onSelect(option.value)
-                      setOpen(false)
-                    }}
-                    role="option"
-                    type="button"
-                  >
-                    <Text as="span" className="font-medium" variant="caption">
-                      {option.label}
-                    </Text>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      ) : null}
-    </span>
+      <DropdownMenuPanel align="end">
+        {options.map((option) => {
+          const active = option.value === value
+          return (
+            <DropdownMenuItem
+              className="h-9 rounded-sm py-0"
+              key={option.value}
+              onSelect={() => onSelect(option.value)}
+              selected={active}
+              tone="muted"
+            >
+              <Text as="span" className="font-medium" variant="caption">
+                {option.label}
+              </Text>
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuPanel>
+    </DropdownMenu>
   )
 }

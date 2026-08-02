@@ -88,6 +88,8 @@ export const dappAssets = {
   check: '/assets/figma/dapp/ic-check.svg',
   chevron: '/assets/figma/dapp/ic-chevron.svg',
   chevronUp: '/assets/figma/dapp/ic-chevron-up.svg',
+  /** Figma `4518:7176` — 排序等 pill trigger 下箭头 10. */
+  chevronDown: '/assets/figma/dapp/ic-chevron-down.svg',
   /** H5 Exchange pager — double chevron (down); rotate 180° for previous page. */
   swipeChevronDouble: '/assets/figma/dapp/ic-swipe-chevron-double.svg',
   community: '/assets/figma/dapp/ic-community.svg',
@@ -113,6 +115,10 @@ export const dappAssets = {
   tokenCardCorner: '/assets/figma/dapp/token-card-corner.svg',
   /** Assets hub 总览黑卡右侧几何底纹 · Figma `4284:215`. */
   assetsHubOverviewDeco: '/assets/figma/dapp/assets-hub/overview-deco.svg',
+  /** Rebase tags 实心珊瑚勾 · Figma `4285:233`. */
+  assetsHubCheckBadge: '/assets/figma/dapp/assets-hub/ic-check-badge.svg',
+  /** 资产仓位空态插画 · HTML 原型 `r23` / `ip-gift`. */
+  assetsPositionEmptyArt: '/assets/figma/dapp/assets-hub/stake-position-empty-art.webp',
   tokenAgx: tokenFlywheelIcons.agxIcon,
   tokenGagx: tokenFlywheelIcons.gagxIcon,
   tokenUsd1: tokenFlywheelIcons.usd1Icon,

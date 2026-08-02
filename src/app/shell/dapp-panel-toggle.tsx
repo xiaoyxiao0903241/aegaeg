@@ -6,7 +6,7 @@ import { AnchoredTooltip } from '~/shared/ui/anchored-tooltip'
 import { IconButton } from '~/shared/ui/icon-button'
 import { useDappShellStore } from '~/stores/dapp-shell-store'
 
-export function DappPanelToggle() {
+export function DappPanelToggle({ className }: { className?: string }) {
   const { messages: t } = useI18n()
   const detailCollapsed = useDappShellStore((state) => state.detailCollapsed)
   const toggle = useDappShellStore((state) => state.toggleDetailCollapsed)
@@ -16,7 +16,7 @@ export function DappPanelToggle() {
       <IconButton
         aria-expanded={!detailCollapsed}
         aria-label={detailCollapsed ? t.topbar.showDetails : t.topbar.hideDetails}
-        className="size-9 min-h-9 shrink-0"
+        className={cn('size-9 min-h-9 shrink-0', className)}
         onClick={toggle}
       >
         <DappIcon

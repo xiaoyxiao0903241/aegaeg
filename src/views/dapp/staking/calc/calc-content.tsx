@@ -15,11 +15,8 @@ import { formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/ui/card'
 import { Chip } from '~/shared/ui/chip'
 import { Text } from '~/shared/ui/text'
+import { TvAreaChart, type TvAreaPoint } from '~/shared/ui/tv-area-chart'
 import { useCalcEstimateStore } from '~/stores/calc-estimate-store'
-import {
-  StakingTvAreaChart,
-  type StakingTvAreaPoint,
-} from '~/views/dapp/staking/staking-tv-area-chart'
 
 const PLACEHOLDER = '0.00'
 function formatUsdOrDash(value: number) {
@@ -94,7 +91,7 @@ export function CalcContent() {
       })()
     : null
 
-  const curvePoints: readonly StakingTvAreaPoint[] = result
+  const curvePoints: readonly TvAreaPoint[] = result
     ? buildCalcYieldCurvePoints({
         product: result.product,
         period: result.period,
@@ -262,7 +259,7 @@ export function CalcContent() {
             </Text>
           ) : null}
           {curvePoints.length > 0 ? (
-            <StakingTvAreaChart
+            <TvAreaChart
               axisLabels={curveAxisLabels}
               formatTipDate={(time: Time) => {
                 if (typeof time !== 'number') return null
