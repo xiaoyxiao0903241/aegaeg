@@ -5,7 +5,6 @@ import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
@@ -46,7 +45,7 @@ export function useReleaseBufferView() {
   const claimableLabel = `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`
   const releasingLabel = `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`
   const releasedPctLabel = t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))
-  const valueHint = formatApproxUsd(0, null)
+  const valueHint = '≈ —'
   const progressWidth = pctLabel
 
   async function onClaim() {

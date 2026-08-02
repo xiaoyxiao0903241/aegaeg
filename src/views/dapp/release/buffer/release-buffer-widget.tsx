@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
 
 import { tokenCarouselIcons } from '~/app/assets'
+import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
-import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-buffer-view'
@@ -15,7 +14,11 @@ function BufferTokenHeader({ iconSrc, label }: { iconSrc: string; label: string 
   return (
     <div className="flex items-center gap-2">
       <DappIcon alt="" className="size-5 rounded-md" size="sm" src={iconSrc} />
-      <Text as="span" className="rounded-full bg-muted px-3 py-1 font-semibold" variant="caption">
+      <Text
+        as="span"
+        className="inline-flex min-h-6.25 items-center rounded-full bg-muted px-3 font-semibold"
+        variant="caption"
+      >
         {label}
       </Text>
     </div>
@@ -85,7 +88,8 @@ export function ReleaseBufferWidget() {
         title={t.release.buffer.title}
       />
       <DappWidgetStack>
-        <Card className="shadow-none" surface="outlined">
+        {/* Figma buf 卡 183：min-h-45.75 + p-4；CTA card≈41 */}
+        <Card className="min-h-45.75 rounded-2xl p-4 shadow-none" surface="outlined">
           <Card.Content className="grid gap-3">
             <BufferTokenHeader iconSrc={tokenCarouselIcons.agxIcon} label="AGX" />
             <BufferStatPair
@@ -96,36 +100,36 @@ export function ReleaseBufferWidget() {
             />
             <BufferProgressBar width={vm.progressWidth} />
             <BufferFooterPair left={vm.releasedPctLabel} right={vm.valueHint} />
-            <Button
+            <DappActionButton
+              density="card"
               disabled={!vm.canClaim || vm.pending}
+              loading={vm.pending}
               onClick={() => void vm.onClaim()}
               type="button"
             >
               {t.release.buffer.claim}
-            </Button>
+            </DappActionButton>
           </Card.Content>
         </Card>
 
-        <Card className="shadow-none" surface="outlined">
+        <Card className="min-h-45.75 rounded-2xl p-4 shadow-none" surface="outlined">
           <Card.Content className="grid gap-3">
             <BufferTokenHeader iconSrc={tokenCarouselIcons.gagxIcon} label="gAGX" />
+            {/* PRV 仅 AGX：gAGX 值诚实空 */}
             <BufferStatPair
               releasedLabel={t.release.labels.released}
-              releasedValue={`${formatGroupedNumber(0, { digits: 2 })} gAGX`}
+              releasedValue="—"
               releasingLabel={t.release.labels.releasing}
-              releasingValue={`${formatGroupedNumber(0, { digits: 2 })} gAGX`}
+              releasingValue="—"
             />
             <BufferProgressBar width="0%" />
             <BufferFooterPair
               left={t.release.labels.releasedPct.replace('{pct}', '0')}
-              right={formatApproxUsd(0, null)}
+              right="≈ —"
             />
-            <Text as="p" tone="muted-foreground" variant="caption">
-              {t.release.buffer.gagxHint}
-            </Text>
-            <Button disabled type="button">
+            <DappActionButton density="card" disabled type="button">
               {t.release.buffer.claim}
-            </Button>
+            </DappActionButton>
           </Card.Content>
         </Card>
 

@@ -9,7 +9,6 @@ import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Card } from '~/shared/ui/card'
@@ -22,19 +21,18 @@ import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
 function BufferStatCells({ stats }: { stats: ReadonlyArray<{ label: string; value: string }> }) {
-  const approx = formatApproxUsd(0, null)
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className="grid gap-2 sm:grid-cols-3">
       {stats.map((stat) => (
-        <div className="grid gap-1" key={stat.label}>
-          <Text as="span" tone="muted-foreground" variant="detail">
+        <div className="grid gap-0.5" key={stat.label}>
+          <Text as="span" className="leading-4" tone="muted-foreground" variant="detail">
             {stat.label}
           </Text>
-          <Text as="strong" className="text-sm font-semibold" variant="copy">
+          <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
             <DappCountValue text={stat.value} />
           </Text>
-          <Text as="span" tone="muted-foreground" variant="detail">
-            <DappCountValue text={approx} />
+          <Text as="span" className="leading-4" tone="muted-foreground" variant="detail">
+            ≈ —
           </Text>
         </div>
       ))}
@@ -54,7 +52,6 @@ export function ReleaseBufferContent() {
   const claimed = bufferQuery.data?.totalClaimed ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const api = apiSummaryQuery.data
-  const zeroAmount = formatGroupedNumber(0, { digits: 2 })
 
   const agxStats = [
     {
@@ -93,9 +90,9 @@ export function ReleaseBufferContent() {
   ]
 
   const gagxStats = [
-    { label: t.release.buffer.entered, value: zeroAmount },
-    { label: t.release.buffer.extracted, value: zeroAmount },
-    { label: t.release.labels.releasing, value: zeroAmount },
+    { label: t.release.buffer.entered, value: '—' },
+    { label: t.release.buffer.extracted, value: '—' },
+    { label: t.release.labels.releasing, value: '—' },
   ]
 
   return (
@@ -104,37 +101,46 @@ export function ReleaseBufferContent() {
         <DappContentHeading id="release-buffer-title">
           {t.release.buffer.statsTitle}
         </DappContentHeading>
-        <Card as="div" className="mb-3 grid gap-1.5 rounded-2xl p-4" surface="elevated">
-          <div className="mb-1 flex items-center gap-2">
+        {/* Figma 数据行 119：min-h-29.75；内容压紧跟稿 */}
+        <Card
+          as="div"
+          className="mb-3 grid min-h-29.75 content-center gap-2 rounded-2xl px-5 py-3"
+          surface="elevated"
+        >
+          <div className="flex items-center gap-2">
             <DappIcon
               alt=""
-              className="size-(--app-icon-lg) rounded-control"
+              className="size-6 shrink-0 rounded-control"
               size="sm"
               src={tokenCarouselIcons.agxIcon}
             />
-            <Text as="strong" className="font-semibold" variant="copy">
+            <Text as="strong" className="leading-5 font-semibold" variant="copy">
               AGX
             </Text>
           </div>
           <BufferStatCells stats={agxStats} />
         </Card>
-        <Card as="div" className="grid gap-1.5 rounded-2xl p-4" surface="elevated">
-          <div className="mb-1 flex items-center gap-2">
+        <Card
+          as="div"
+          className="grid min-h-29.75 content-center gap-2 rounded-2xl px-5 py-3"
+          surface="elevated"
+        >
+          <div className="flex items-center gap-2">
             <DappIcon
               alt=""
-              className="size-(--app-icon-lg) rounded-control"
+              className="size-6 shrink-0 rounded-control"
               size="sm"
               src={tokenCarouselIcons.gagxIcon}
             />
-            <Text as="strong" className="font-semibold" variant="copy">
+            <Text as="strong" className="leading-5 font-semibold" variant="copy">
               gAGX
             </Text>
           </div>
           <BufferStatCells stats={gagxStats} />
-          <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
-            {t.release.buffer.gagxHint}
-          </Text>
         </Card>
+        <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
+          {t.release.buffer.gagxHint}
+        </Text>
       </DappDetailBlock>
 
       <DappDetailBlock>
@@ -159,7 +165,8 @@ export function ReleaseBufferContent() {
         <Text as="p" className="mb-4" tone="muted-foreground" variant="caption">
           {t.release.buffer.mechanismSubtitle}
         </Text>
-        <Card as="div" className="rounded-2xl p-4" surface="elevated">
+        {/* Figma fcard 183：min-h-45.75 */}
+        <Card as="div" className="min-h-45.75 rounded-2xl p-4" surface="elevated">
           <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {t.release.buffer.mechanismSteps.map((step) => (
               <li className="rounded-2xl bg-muted p-3 text-center" key={step.title}>
