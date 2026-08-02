@@ -1984,8 +1984,6 @@ const app = defineMessages({
       submit: 'Stake',
       bindCta: 'Bind referral',
       success: 'Staked successfully',
-      warmupCta: 'Activate warmup',
-      warmupSuccess: 'Warmup activated',
       periods: {
         liquid: 'Flexible',
         d180: '180d',

@@ -1904,8 +1904,6 @@ const app = defineMessages({
       submit: '质押',
       bindCta: '去绑定推荐',
       success: '质押成功',
-      warmupCta: '激活 Warmup',
-      warmupSuccess: 'Warmup 已激活',
       periods: {
         liquid: '活期',
         d180: '180天',

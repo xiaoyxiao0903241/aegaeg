@@ -64,3 +64,5 @@ export {
 } from '../../src/hooks/use-api-data'
 export type { LuckyRewardWinnersRequest } from '../../src/shared/api/types'
 export { claimCommunityFund } from '../../src/web3/claim/claim-reward'
+/** Stake liquid warmup claim — UI entry DEFER; keep write for knip + money-path. */
+export { submitLiquidWarmupClaim } from '../../src/views/dapp/staking/stake/submit-stake'

@@ -27,7 +27,6 @@ export function StakeWidget() {
     ctaLabel,
     yieldMeta,
     onSubmit,
-    onWarmup,
   } = useStakeView()
 
   return (
@@ -40,7 +39,7 @@ export function StakeWidget() {
       />
       <DappWidgetStack>
         <div className="grid gap-2.5">
-          <Text as="span" className="text-[13px] text-foreground/40" variant="copy">
+          <Text as="span" className="text-foreground/40" variant="copy">
             {t.staking.stake.periodLabel}
           </Text>
           <Segment
@@ -64,7 +63,7 @@ export function StakeWidget() {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" className="size-[1.375rem]" src={dappAssets.tokenAgx} />
+                <DappIcon alt="" size="token" src={dappAssets.tokenAgx} />
                 <Text as="span" className="font-semibold" variant="detail">
                   AGX
                 </Text>
@@ -113,17 +112,6 @@ export function StakeWidget() {
             >
               {ctaLabel}
             </DappActionButton>
-            {/* Handbook §8.2 liquid claim() — leaf X1；稿无分帧仍保留可达写入口 */}
-            {stake.showWarmupClaim ? (
-              <DappActionButton
-                density="external"
-                disabled={stake.isSubmitting}
-                onClick={() => void onWarmup()}
-                variant="secondary"
-              >
-                {t.staking.stake.warmupCta}
-              </DappActionButton>
-            ) : null}
           </DappActionRow>
         ) : (
           <DappWidgetConnectPromo />

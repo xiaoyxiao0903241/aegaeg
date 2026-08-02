@@ -22,8 +22,8 @@ import {
 } from '~/views/dapp/staking/staking-tv-area-chart'
 
 const PLACEHOLDER = '0.00'
-/** Figma `functional/up` on calc rcard — not token `success` (#2bab6a). */
-const YIELD_UP = 'text-[#33d07a]'
+/** Rcard hero figure — Figma 32px; only allowed call-site size override in staking calc. */
+const RCARD_HERO = 'text-[2rem] leading-none font-bold text-success'
 
 function formatUsdOrDash(value: number) {
   if (!Number.isFinite(value)) return PLACEHOLDER
@@ -168,26 +168,18 @@ export function CalcContent() {
           <Card className="grid gap-1.5 p-4" surface="elevated">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="grid gap-1">
-                <Text as="span" className="text-[13px] text-foreground/40" variant="copy">
+                <Text as="span" className="text-foreground/40" variant="copy">
                   {t.staking.calc.result.total}
                 </Text>
-                <Text
-                  as="strong"
-                  className={`text-[32px] leading-none font-bold ${YIELD_UP}`}
-                  variant="figure"
-                >
+                <Text as="strong" className={RCARD_HERO} variant="figure">
                   {formatUsdOrDash(result.interestUsd)}
                 </Text>
               </div>
-              <span className="flex items-center gap-2 rounded-full bg-[rgba(22,185,121,0.12)] px-3 py-1.5">
-                <Text as="span" className="text-[12px] text-foreground/40" variant="caption">
+              <span className="flex items-center gap-2 rounded-full bg-success-soft px-3 py-1.5">
+                <Text as="span" className="text-foreground/40" variant="support">
                   {t.staking.calc.result.rate}
                 </Text>
-                <Text
-                  as="span"
-                  className={`text-[13px] font-semibold ${YIELD_UP}`}
-                  variant="support"
-                >
+                <Text as="span" className="font-semibold text-success" variant="copy">
                   {formatPct(result.ratePct)}
                 </Text>
               </span>
@@ -195,39 +187,35 @@ export function CalcContent() {
 
             <div className="grid gap-2">
               <div className="flex items-center justify-between gap-3">
-                <Text as="span" className="text-[13px] text-foreground/40" variant="copy">
+                <Text as="span" className="text-foreground/40" variant="copy">
                   {t.staking.calc.result.sellTotal}
                 </Text>
-                <Text as="strong" className="text-[14px] font-semibold" variant="detail">
+                <Text as="strong" className="font-semibold" variant="detail">
                   {formatUsdOrDash(result.sellUsd)}
                 </Text>
               </div>
               <div className="flex h-3.5 overflow-hidden rounded-full">
-                <span className="bg-[#fadbd1]" style={{ flex: `${100 - sellShare} 0 0` }} />
+                <span className="bg-primary-soft" style={{ flex: `${100 - sellShare} 0 0` }} />
                 <span className="bg-coral-emphasis" style={{ flex: `${sellShare} 0 0` }} />
               </div>
             </div>
 
             <div className="grid gap-2">
               <div className="flex items-center justify-between gap-3">
-                <Text as="span" className="text-[13px] text-foreground/40" variant="copy">
+                <Text as="span" className="text-foreground/40" variant="copy">
                   {t.staking.calc.result.invested}
                 </Text>
-                <Text as="strong" className="text-[14px] font-semibold" variant="detail">
+                <Text as="strong" className="font-semibold" variant="detail">
                   {formatUsdOrDash(result.investedUsd)}
                 </Text>
               </div>
               <div className="flex h-3.5 overflow-hidden rounded-full">
-                <span className="bg-[#dbdee3]" style={{ flex: `${100 - investShare} 0 0` }} />
+                <span className="bg-border" style={{ flex: `${100 - investShare} 0 0` }} />
                 <span
-                  className="flex items-center justify-center bg-[#33d07a]"
+                  className="flex items-center justify-center bg-success"
                   style={{ flex: `${Math.max(investShare, 18)} 0 0` }}
                 >
-                  <Text
-                    as="span"
-                    className="text-[11px] font-medium text-[#eceef2]"
-                    variant="caption"
-                  >
+                  <Text as="span" className="font-medium text-primary-foreground" variant="caption">
                     {t.staking.calc.result.yieldBar.replace(
                       '{amount}',
                       formatUsdOrDash(result.interestUsd),
@@ -240,18 +228,18 @@ export function CalcContent() {
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               {(
                 [
-                  ['released', result.investedUsd, 'bg-[#fadbd1]'],
+                  ['released', result.investedUsd, 'bg-primary-soft'],
                   ['netYield', result.interestUsd, 'bg-coral-emphasis'],
-                  ['cost', result.investedUsd, 'bg-[#dbdee3]'],
-                  ['grossYield', result.interestUsd, 'bg-[#33d07a]'],
+                  ['cost', result.investedUsd, 'bg-border'],
+                  ['grossYield', result.interestUsd, 'bg-success'],
                 ] as const
               ).map(([key, value, dot]) => (
                 <div className="flex items-center gap-1.5" key={key}>
                   <span aria-hidden className={`size-2 rounded-full ${dot}`} />
-                  <Text as="span" className="text-[12px] text-foreground/40" variant="caption">
+                  <Text as="span" className="text-foreground/40" variant="support">
                     {t.staking.calc.result.legend[key]}
                   </Text>
-                  <Text as="strong" className="text-[12px] font-semibold" variant="caption">
+                  <Text as="strong" className="font-semibold" variant="support">
                     {formatUsdOrDash(value)}
                   </Text>
                 </div>
@@ -268,11 +256,11 @@ export function CalcContent() {
         <DappContentHeading>{aside.curve}</DappContentHeading>
         {/* Figma `ccard` 4463:273 — elevated；曲线 = 本地公式 day 1..720 */}
         <Card className="grid gap-3 p-4" surface="elevated">
-          <Text as="p" className="m-0 text-[13px] text-foreground/40" variant="copy">
+          <Text as="p" className="m-0 text-foreground/40" variant="copy">
             {aside.curveHint}
           </Text>
           {curveEndEstimate != null ? (
-            <Text as="strong" className="text-[18px] font-semibold" variant="copy">
+            <Text as="strong" className="font-semibold" variant="section">
               {formatUsdOrDash(curveEndEstimate)}
             </Text>
           ) : null}
@@ -315,7 +303,7 @@ export function CalcContent() {
             return (
               /* Figma `kc` 4463:289 — elevated */
               <Card className="grid gap-1.5 p-4" key={card.label} surface="elevated">
-                <Text as="span" className="text-[12px] text-foreground/70" variant="caption">
+                <Text as="span" className="text-foreground/70" variant="support">
                   {index === 2 ? aside.nodeEndLabel.replace('{day}', String(endDays)) : card.label}
                 </Text>
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -323,17 +311,17 @@ export function CalcContent() {
                     as="strong"
                     className={
                       index === 0
-                        ? 'text-[18px] font-semibold text-coral-emphasis'
+                        ? 'font-semibold text-coral-emphasis'
                         : index === 2
-                          ? `text-[18px] font-semibold ${YIELD_UP}`
-                          : 'text-[18px] font-semibold'
+                          ? 'font-semibold text-success'
+                          : 'font-semibold'
                     }
-                    variant="copy"
+                    variant="section"
                   >
                     {value}
                   </Text>
                   {hint ? (
-                    <Text as="span" className="text-[12px] text-foreground/40" variant="caption">
+                    <Text as="span" className="text-foreground/40" variant="support">
                       {hint}
                     </Text>
                   ) : null}
@@ -351,7 +339,7 @@ export function CalcContent() {
             {notesItems.map((item) => (
               <li className="flex items-center gap-2.5" key={item}>
                 <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-coral-emphasis" />
-                <Text as="p" className="m-0 text-[13px] text-foreground/70" variant="copy">
+                <Text as="p" className="m-0 text-foreground/70" variant="copy">
                   {item}
                 </Text>
               </li>

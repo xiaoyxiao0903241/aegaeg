@@ -39,9 +39,6 @@ export function useStakeView() {
     onOpenSuccess: () => {
       toast.success(t.staking.stake.success)
     },
-    onWarmupSuccess: () => {
-      toast.success(t.staking.stake.warmupSuccess)
-    },
     onError: (error) => {
       if (readErrorText(error) === STAKING_BLOCKED.notBound) goBindReferral()
     },
@@ -89,10 +86,6 @@ export function useStakeView() {
     await stake.submit()
   }
 
-  async function onWarmup() {
-    await stake.claimWarmup()
-  }
-
   return {
     t,
     stake,
@@ -105,6 +98,5 @@ export function useStakeView() {
     ctaLabel,
     yieldMeta,
     onSubmit,
-    onWarmup,
   }
 }

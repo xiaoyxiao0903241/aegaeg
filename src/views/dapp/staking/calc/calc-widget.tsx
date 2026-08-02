@@ -5,13 +5,15 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { CALC_MAX_DAYS } from '~/core/staking/staking-yield-display'
-import { AmountBox } from '~/shared/ui/amount-box'
+import { AmountBox, amountBox } from '~/shared/ui/amount-box'
 import { Card } from '~/shared/ui/card'
 import { Chip } from '~/shared/ui/chip'
 import { Input } from '~/shared/ui/input'
 import { Text } from '~/shared/ui/text'
 import { CalcDaySlider } from '~/views/dapp/staking/calc/calc-day-slider'
 import { useCalcView } from '~/views/dapp/staking/calc/use-calc-view'
+
+const priceBox = amountBox()
 
 /** Figma calc `ptabs`/`perRow` 4462:600 — htab Chip h-28，≠ Segment 滑动轨. */
 function CalcHtabRow({
@@ -98,7 +100,7 @@ export function CalcWidget() {
           }}
           endAdornment={
             <span className="flex items-center gap-1.5">
-              <DappIcon alt="" className="size-[1.375rem]" src={tokenSrc} />
+              <DappIcon alt="" size="token" src={tokenSrc} />
               <Text as="span" className="font-semibold" variant="detail">
                 {vm.tokenLabel}
               </Text>
@@ -119,22 +121,21 @@ export function CalcWidget() {
               {t.staking.calc.priceCurrent.replace('{price}', vm.spotLabel)}
             </Text>
           </div>
-          <Card
-            as="div"
-            className="flex min-h-[53px] items-center justify-between gap-3 px-4 py-3 focus-within:border-coral"
-            surface="outlined"
-          >
-            <Input
-              aria-label={t.staking.calc.priceAria}
-              className="mr-auto max-w-[70%] text-left text-[24px] leading-[29px]"
-              inputMode="decimal"
-              onChange={(event) => vm.onPriceChange(event.target.value)}
-              value={vm.price}
-              variant="amount"
-            />
-            <Text as="span" className="text-foreground/40" variant="headline">
-              $
-            </Text>
+          {/* Reuse AmountBox headerOutside chrome — figure token via Input amount */}
+          <Card as="div" className={priceBox.rootOutside()} surface="outlined">
+            <div className={priceBox.body()}>
+              <Input
+                aria-label={t.staking.calc.priceAria}
+                className={priceBox.inputOutside()}
+                inputMode="decimal"
+                onChange={(event) => vm.onPriceChange(event.target.value)}
+                value={vm.price}
+                variant="amount"
+              />
+              <Text as="span" className="text-foreground/40" variant="headline">
+                $
+              </Text>
+            </div>
           </Card>
         </div>
 

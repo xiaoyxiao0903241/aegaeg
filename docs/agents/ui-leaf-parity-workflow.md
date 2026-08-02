@@ -19,6 +19,8 @@
 | `pnpm check` / 钱路 PASS / High 波 = 完成        | 仅 §5 全满                                                                                    |
 | 证据栏套话（「一致」「N/A」无路径）              | Critical                                                                                      |
 | 旧 scratch「选币=flip PASS」                     | **作废**（见 §9）                                                                             |
+| 页级/组件级「大概像」冒充 leaf 对齐              | **必须**钻到 Figma **最小可见子节点**（§2.3）；漏 thumb / 色 / 卡 surface = Critical          |
+| commit 只跑 eslint/tsc、跳过 knip/jscpd          | **pre-commit + `pnpm check`** 均含 `lint:deadcode` + `lint:duplicates`（§5 / commands）       |
 
 ---
 
@@ -27,23 +29,24 @@
 **交付单位：** 一个现行 Figma **PC 产品帧** = 一页。
 
 ```text
-手册逐行对照（钱/门闸）→ 原型 WebBridge（DApp MUST）→ Figma context（页+子）
-→ 文案动态审计 → leaf（UI 列∥钱路列）→ 最小改码 → 回看
-→ pnpm check → R7（Grok 双轨）→ 用户明示 commit → page-done → 下一页
+手册逐行对照（钱/门闸）→ OpenAPI 字段对照 → 原型 WebBridge（DApp MUST）
+→ Figma：页帧 + **每一个可见子 leaf**（get_design_context / get_metadata）
+→ 文案动态审计 → leaf 表（UI∥钱路，逐子节点）→ 最小改码 → 回看
+→ pnpm check（含 knip + jscpd）→ R7（Grok 双轨）→ 用户明示 commit → page-done → 下一页
 ```
 
 ---
 
 ## 2. 四源
 
-| 源                      | 钉什么                 | 禁止                                 |
-| ----------------------- | ---------------------- | ------------------------------------ |
-| **手册 ∩ money-path**   | 流、读/写、币对、门闸  | 假数；**取消稿/原型控件**            |
-| **后端 OpenAPI**        | 展示读字段、精度、分页 | 只扫 path 名不读说明；有字段却标无源 |
-| **原型**（DApp 默认有） | IA / 开层 / 空态       | 抄 DOM；摘要代替点通                 |
-| **Figma**               | 可见 leaf              | 截图当规格；粘贴 MCP 整页            |
+| 源                      | 钉什么                        | 禁止                                 |
+| ----------------------- | ----------------------------- | ------------------------------------ |
+| **手册 ∩ money-path**   | 流、读/写、币对、门闸         | 假数；**取消稿/原型控件**            |
+| **后端 OpenAPI**        | 展示读字段、精度、分页        | 只扫 path 名不读说明；有字段却标无源 |
+| **原型**（DApp 默认有） | IA / 开层 / 空态 / 图标素材源 | 抄 DOM；摘要代替点通；素材臆造       |
+| **Figma**               | **最小可见 leaf**             | 截图当规格；粘贴 MCP 整页；只对父框  |
 
-裁决：**视觉跟 Figma · 交互跟原型 · 钱/数跟手册 + 后端 API**（= AGENTS R5a）；手册对该写/读**沉默**时 → **可证旧码**（= AGENTS **R4a**），禁止发明第三条写链。有 API 则 **尽量接线**，缺口登记 [`dapp-data-gaps.md`](../dapp-data-gaps.md)。
+裁决：**视觉跟 Figma 子 leaf · 交互跟原型 · 钱/数跟手册 + 后端 API**（= AGENTS R5a）；手册对该写/读**沉默**时 → **可证旧码**（= AGENTS **R4a**），禁止发明第三条写链。有 API 则 **尽量接线**，缺口登记 [`dapp-data-gaps.md`](../dapp-data-gaps.md)。
 
 ### 2.1 手册（逐行 · 强制 · 用户锁定 2026-07-31）
 
@@ -52,11 +55,20 @@
 **写盘前产出（进 leaf，缺一 = Pre-Design / R7 Critical）：**
 
 1. **章节清单**：精确到 guide §号 + 相关 `contracts/*.md` 文件名（禁止只写「已读手册」）。
-2. **逐条对照表**：手册每一行（展示字段 / 写方法 / 前置检查 / 成功后刷新 / 注意事项）→ 现码路径或「缺口/产品扩展」；**挂覆盖矩阵 [`manual-coverage/`](../../.scratch/dapp-7rail-parity/research/manual-coverage/README.md) 的 `G-id`（按 § 打开分册；用 `surface`/`code` 定位）**；**禁止**用「整体符合 §X」冒充。
-3. **张力暴露**：手册字面窄于稿/原型（如 §7.1 写「买 AGX」而稿可翻转卖出）→ leaf 写明扩展边界与仍服从的钱路不变量；禁止静默扩面或静默缩 UI。
-4. **R4a 旧码核**（写入口）：若手册**未**写明本表面写方法 → 查 `git`/leaf 是否曾有接线；有则对照表写「旧码路径 + SHA/符号」并**保持或恢复**；无则标「手册无 · 旧码无 → 关写/暴露」，禁止发明。
+2. **逐条对照表**：手册每一行（展示字段 / 写方法 / 前置检查 / 成功后刷新 / 注意事项）→ 现码路径或「缺口/产品扩展」；**挂覆盖矩阵 [`manual-coverage/`](../../.scratch/dapp-7rail-parity/research/manual-coverage/README.md) 的 `G-id`**。
+3. **张力暴露**：手册字面窄于稿/原型 → leaf 写明扩展边界。
+4. **R4a 旧码核**（写入口）：手册未写明 → 查可证旧码；皆无 → 关写暴露。
 
-先完成上表并能口述钱路与门闸，**再**开原型/Figma。
+**数据接线硬序（展示数 · 强制）：**
+
+```text
+1. 手册：该数字位的读方法 / 合约 view / 事件？
+2. OpenAPI：同语义 path 的 schema 字段？（summary+description+schema 全文）
+3. 有任一源 → 接真读；空态 = `0`/`0.00`/`—`（按 docs 约定）
+4. 二者皆无 → UI 控件仍做；值诚实空；写入 dapp-data-gaps（页→子页→数据位）
+```
+
+禁止：未读手册+API 就标「无源」；用演示数 / 假 1:1 冒充；把两个无关写方法塞进同一 CTA「顺序执行」而不改手册/产品 Answer。
 
 ### 2.1b 后端 OpenAPI（展示读 · 强制 · 用户锁定 2026-08-02）
 
@@ -66,18 +78,15 @@
 
 1. **相关 path 清单**（如 `POST /stake-flow/positions`）。
 2. **字段对照**：稿面数值位 → API 字段或「API 无 · 手册/链上有 · 皆无」。
-3. **接线裁决**：有 API 或链上源 → **尽量接入**；仅皆无 → 缺口 + 诚实空（`0`/`0.00` / 文档约定的 `—`）；禁止未查 API 就写「无源」。
-
-协议级指标（TVL、流通、智库、rebase…）常以**链上**为准；用户级流水/持仓/统计常以 **API** 为准——勿混用。
+3. **接线裁决**：有 API 或链上源 → **尽量接入**；仅皆无 → 缺口 + 诚实空；禁止未查 API 就写「无源」。
 
 ### 2.2 原型
 
 **路径：** `~/Downloads/新/` → `AEGIS X DApp.html` / `AEGIS DApp 无数据.html` / `AEGIS DApp Shell 演示.html`
 
 - **DApp 七轨：** 默认必须 WebBridge；禁止自称「本页无原型」。
-- **Home 等确无 HTML：** leaf 写 `原型 N/A` + **路径级**「目录下无对应文件」证据；交互跟 Figma 状态帧。
-- 起服：`python3 -m http.server 8765 --bind 127.0.0.1`（禁直接 `file://`）。
-- 学 IA 用 WebBridge，不用 Playwright。
+- 学 IA / 空态 / **图标与素材**用 WebBridge 点通原型；**不用 Playwright**。
+- 素材：原型或正式 Figma export；禁止手画替代 gAGX 等 token 图标。
 
 **WebBridge 实录字段（缺一 = 未点通 → R7 Critical）：**
 
@@ -87,14 +96,31 @@
 4. 与 `pnpm dev` 本站差异一句（或「一致」）
 5. 执行时间（ISO 日即可）
 
-禁止：「可选」「环境恢复后补」「DEFER 不挡」。环境不可用 → **停手**，不改 Status 向上、不开 R7、不开下一帧。
+### 2.3 Figma（子 leaf 钻取 · 强制 · 用户锁定 2026-08-02）
 
-### 2.3 Figma
+`get_design_context` **页级 + 每一个用户可见子节点**；必要时 `get_metadata` 取 **w/h/x/y**；`skillNames` 含 `figma-design-to-code`。
 
-`get_design_context` 页级 + 子节点；`skillNames` 含 `figma-design-to-code`。
+**不是** Figma 图层树 = DOM 树一一映射；**是**每个**可见设计叶子**在运行时有可指出的节点，且规格跟稿一致（尺寸差 ≤2px；色走 token 或稿指定 hex）。
 
-**稿面可见控件 = MUST 做完 UI**（用户锁定）：手册缺数据 → leaf/ticket **记录缺口**，动态数字空态 `0`/`0.00`（FAQ 同零、无 count 动效）/ skeleton / 禁写；**禁止**不实现该控件。  
-仅当产品/grilling Answer **书面杀控**（ticket id + 日期）才可不做。自写 DEFER / EX-* /「手册没有」不够。
+**强制钻取序（漏一层 = 未对齐）：**
+
+```text
+页帧 → 左栏/右栏 → 区块（form / rcard / slider…）
+→ 控件（AmountBox / Chip / Card surface…）
+→ 最小 leaf：thumb/handle、字色、icon 22×22、卡 surface（elevated≠outlined）、padding
+```
+
+**leaf 表每一行必须能回答：**
+
+1. Figma node id（如 `4462:639` handle）
+2. 规格：h/w/radius/fill/stroke/font/色（从 context 或 metadata，**禁止截图估**）
+3. 现码路径 + 用了哪个 primitive/`surface`/`tone`
+4. Δpx / 色是否 PASS；FAIL 不得称完成
+
+**稿面可见控件 = MUST 做完 UI**；手册缺数据 → 缺口记文档 + 诚实空；**禁止**不实现该控件。  
+Card：稿无描边+抬起阴影 → `surface="elevated"`；稿有描边 → `outlined`。**禁止**手搓 `shadow-sm` 冒充 elevated。
+
+仅当产品/grilling Answer **书面杀控**才可不做。自写 DEFER /「手册没有」不够。
 
 ### 2.4 文案动态审计
 

@@ -137,7 +137,7 @@ export function StakingDetailAside({
       {showXValueCard ? (
         <DappDetailBlock>
           <DappContentHeading>{xValue.title}</DappContentHeading>
-          <div className="grid gap-5 rounded-[1.375rem] bg-dark p-6">
+          <div className="grid gap-5 rounded-md bg-dark p-6">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <DappIcon alt="" className="size-9 rounded-2xl" src={dappAssets.tokenX} />
@@ -145,12 +145,7 @@ export function StakingDetailAside({
                   <Text as="span" className="font-semibold" tone="primary" variant="support">
                     {xValue.supplyLabel}
                   </Text>
-                  <Text
-                    as="strong"
-                    className="text-[1.375rem] font-bold"
-                    tone="inverse"
-                    variant="figure"
-                  >
+                  <Text as="strong" className="font-bold" tone="inverse" variant="figure">
                     {xValue.supplyValue}
                   </Text>
                 </div>

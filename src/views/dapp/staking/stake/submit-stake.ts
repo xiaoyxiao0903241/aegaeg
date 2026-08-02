@@ -68,7 +68,10 @@ export async function submitStakeOpen(args: {
   invalidateAfterStaking()
 }
 
-/** 活期 warmup 激活：live `isWarmupExpired` 通过后再写。 */
+/**
+ * 活期 warmup 激活：live `isWarmupExpired` 通过后再写。
+ * UI 入口 DEFER（Stake 稿无次钮；待仓位/资产补稿）— 写函数保留待补稿落点。
+ */
 export async function submitLiquidWarmupClaim(args: { session: WriteSession }): Promise<void> {
   const { wallet, address, readClient } = args.session
   const pool = stakePoolAddress('liquid')

@@ -43,7 +43,7 @@ export function XmineWidget() {
           endAdornment={
             <span className="flex items-center gap-2.5">
               <span className="flex items-center gap-1.5">
-                <DappIcon alt="" className="size-[1.375rem]" src={dappAssets.tokenGagx} />
+                <DappIcon alt="" size="token" src={dappAssets.tokenGagx} />
                 <Text as="span" className="font-semibold" variant="detail">
                   gAGX
                 </Text>

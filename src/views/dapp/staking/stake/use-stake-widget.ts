@@ -7,7 +7,7 @@ import { useCappedTokenAmountInput } from '~/hooks/use-capped-token-amount-input
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useStakingPeriodsStore } from '~/stores/staking-periods-store'
-import { submitLiquidWarmupClaim, submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
+import { submitStakeOpen } from '~/views/dapp/staking/stake/submit-stake'
 import {
   bindUnlockedAmountEditors,
   evaluateStakingAmountWrite,
@@ -25,7 +25,6 @@ const STAKE_PERIODS: readonly StakePeriod[] = ['liquid', '180', '360', '540']
 
 export type StakeWritePresent = {
   onOpenSuccess: () => void | Promise<void>
-  onWarmupSuccess: () => void | Promise<void>
   /** Extra side effects only — default error toast always runs after. */
   onError?: (error: unknown) => void
 }
@@ -39,7 +38,6 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
   const address = account?.address
   const walletReady = hasWalletAccount(account)
   const pool = stakePoolAddress(period)
-  const isLiquid = period === 'liquid'
 
   // Warm every period pool so Segment switch hits cache (pool address is in the query key).
   const preflightLiquid = useStakeOpenPreflightQuery(stakePoolAddress('liquid'), true, {
@@ -100,15 +98,7 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     onError: present.onError,
   })
 
-  const warmup = useChainMutation({
-    path: WRITE_PATH.STAKING,
-    mutation: (_vars, session) => submitLiquidWarmupClaim({ session }),
-    onSuccess: async () => {
-      await present.onWarmupSuccess()
-    },
-  })
-
-  const isSubmitting = open.isPending || warmup.isPending
+  const isSubmitting = open.isPending
   const isLocked = open.isLocked
 
   const { canSubmit, writePhase } = evaluateStakingAmountWrite({
@@ -154,13 +144,7 @@ export function useStakeWidget(sessionReady: boolean, present: StakeWritePresent
     isSubmitting,
     blockReason,
     writePhase,
-    showWarmupClaim: isLiquid && balancesLoaded && Boolean(preflightQuery.data?.isWarmupExpired),
-    claimWarmup: () => warmup.mutate(),
     submit: () => open.mutate(),
     pool,
-    remainingLabel:
-      balancesLoaded && preflightQuery.data !== undefined
-        ? formatTokenAmount(preflightQuery.data.remainingQuota, AGX_DECIMALS, 4)
-        : '',
   }
 }
