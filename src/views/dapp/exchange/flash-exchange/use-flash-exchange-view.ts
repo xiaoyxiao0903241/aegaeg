@@ -51,6 +51,6 @@ export function useFlashExchangeView(flash: FlashExchangeState) {
     buyLabel,
     sellLabel,
     blockHint,
-    onSubmit: () => submitExchangeWithSuccessToast(flash.submit, t.exchange.exchangeSuccess),
+    onSubmit: () => submitExchangeWithSuccessToast(flash.submit, t.exchange.flash.success),
   }
 }

@@ -41,6 +41,6 @@ export function useBurnExchangeView(burn: BurnExchangeState) {
     sellBalanceLabel,
     buyBalanceLabel,
     blockHint,
-    onSubmit: () => submitExchangeWithSuccessToast(burn.submit, t.exchange.exchangeSuccess),
+    onSubmit: () => submitExchangeWithSuccessToast(burn.submit, t.exchange.burn.success),
   }
 }

@@ -183,7 +183,6 @@ const app = defineMessages({
     provider: '提供方',
     providerName: 'PancakeSwap',
     openPancakeSwap: '在 PancakeSwap 打开',
-    exchangeSuccess: '兑换成功',
     transactionCancelled: '已在钱包中取消交易',
     overview: '概览',
     exchangeRate: '兑换比率',
@@ -256,6 +255,7 @@ const app = defineMessages({
       settlementValue: '链上 · 秒到',
       aboutTitle: '关于',
       action: '闪兑',
+      success: '闪兑成功',
       pairAriaLabel: '闪兑币对',
       pairs: {
         gagx: 'gAGX → AGX',
@@ -319,6 +319,7 @@ const app = defineMessages({
       selectSellToken: '选择卖出代币',
       selectBuyToken: '选择买入代币',
       action: '交易',
+      success: '交易成功',
       priceImpact: '价格影响',
       estimatedGas: '预估 Gas',
       highPriceImpactWarning: '当前交易额对池子价格影响较大，建议减小金额或提高滑点容忍度。',
@@ -336,6 +337,7 @@ const app = defineMessages({
       providerName: 'AEGIS X',
       openProvider: '在 BscScan 查看贡献兑换合约',
       action: '销毁',
+      success: '销毁成功',
       aboutTitle: '关于',
       blocked: {
         paused: '销毁已暂停，请稍后再试。',

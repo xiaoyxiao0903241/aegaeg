@@ -186,7 +186,6 @@ const app = defineMessages({
     provider: 'Provider',
     providerName: 'PancakeSwap',
     openPancakeSwap: 'Open on PancakeSwap',
-    exchangeSuccess: 'Swap successful',
     transactionCancelled: 'Transaction cancelled in wallet',
     overview: 'Overview',
     exchangeRate: 'Exchange rate',
@@ -259,6 +258,7 @@ const app = defineMessages({
       settlementValue: 'On-chain · seconds',
       aboutTitle: 'About',
       action: 'Flash',
+      success: 'Flash swap successful',
       pairAriaLabel: 'Flash pair',
       pairs: {
         gagx: 'gAGX → AGX',
@@ -322,6 +322,7 @@ const app = defineMessages({
       selectSellToken: 'Select sell token',
       selectBuyToken: 'Select buy token',
       action: 'Trade',
+      success: 'Trade successful',
       priceImpact: 'Price impact',
       estimatedGas: 'Est. network gas',
       highPriceImpactWarning:
@@ -340,6 +341,7 @@ const app = defineMessages({
       providerName: 'AEGIS X',
       openProvider: 'View contribution swap on BscScan',
       action: 'Burn',
+      success: 'Burn successful',
       aboutTitle: 'About',
       blocked: {
         paused: 'Burn is paused. Please try again later.',

@@ -84,7 +84,7 @@ export function useMarketTradeView(trade: MarketTradeState) {
     sellPickerOptions,
     buyPickerOptions,
     handleTokenPick,
-    onSubmit: () => submitExchangeWithSuccessToast(trade.submit, t.exchange.exchangeSuccess),
+    onSubmit: () => submitExchangeWithSuccessToast(trade.submit, t.exchange.trade.success),
     onOpenPancakeSwap: () => openPancakeSwapDeepLink(trade.pancakeSwapUrl),
   }
 }
