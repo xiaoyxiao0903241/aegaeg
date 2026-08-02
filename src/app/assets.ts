@@ -53,6 +53,14 @@ export const stakingHubAssets = {
   modeCalc: '/assets/figma/dapp/staking/ic-mode-calc.svg',
 } as const
 
+/** Assets hub — Figma `asset/*` leaf icons（与质押 hub mode 图标不同稿）. */
+export const assetsHubAssets = {
+  modeStake: '/assets/figma/dapp/assets-hub/ic-mode-stake.svg',
+  modeLpBond: '/assets/figma/dapp/assets-hub/ic-mode-lpbond.svg',
+  modeBurnBond: '/assets/figma/dapp/assets-hub/ic-mode-burnbond.svg',
+  modeXmine: '/assets/figma/dapp/assets-hub/ic-mode-xmine.svg',
+} as const
+
 export const homeAssets = {
   logoMark: canonicalHomeAssets.logoMark,
   heroCharacterTall: '/assets/figma/home/hero-character-tall.webp',
@@ -103,6 +111,8 @@ export const dappAssets = {
   medium: '/assets/figma/dapp/ic-medium.svg',
   tokenCardRays: '/assets/figma/dapp/token-card-rays.svg',
   tokenCardCorner: '/assets/figma/dapp/token-card-corner.svg',
+  /** Assets hub 总览黑卡右侧几何底纹 · Figma `4284:215`. */
+  assetsHubOverviewDeco: '/assets/figma/dapp/assets-hub/overview-deco.svg',
   tokenAgx: tokenFlywheelIcons.agxIcon,
   tokenGagx: tokenFlywheelIcons.gagxIcon,
   tokenUsd1: tokenFlywheelIcons.usd1Icon,

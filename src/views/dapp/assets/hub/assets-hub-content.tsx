@@ -29,9 +29,15 @@ export function AssetsHubContent() {
     <DappDetailPage>
       <DappDetailBlock>
         <DappContentHeading>{overview.title}</DappContentHeading>
-        {/* Figma 资产总览/card 116：min-h-29 + 垂直居中（禁 h-[116px] / text-[2rem]） */}
+        {/* Figma 资产总览/card 116：min-h-29 + 右侧几何底纹（禁 h-[116px] / text-[2rem]） */}
         <Card surface="inverse" className="relative flex min-h-29 items-center overflow-hidden p-4">
-          <div className="grid w-full gap-4 sm:grid-cols-2 dapp:grid-cols-4 dapp:gap-6">
+          <img
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 h-full w-76 object-cover object-right"
+            src={dappAssets.assetsHubOverviewDeco}
+          />
+          <div className="relative z-1 grid w-full gap-4 sm:grid-cols-2 dapp:grid-cols-4 dapp:gap-6">
             <div className="grid gap-1">
               <div className="flex items-center gap-1">
                 <Text as="span" className="leading-4" tone="inverse-muted" variant="support">
@@ -103,7 +109,7 @@ export function AssetsHubContent() {
         </Card>
 
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
-          {/* Figma 持仓/缓冲 110：min-h-27.5 + p-4（禁 h-[110px]） */}
+          {/* Figma 持仓/缓冲 110：min-h-27.5 + elevated（禁 h-[110px]） */}
           <Card surface="elevated" className="grid min-h-27.5 gap-1 p-4 shadow-card">
             <Text as="span" className="leading-4 font-medium" variant="support">
               {overview.holdingsTitle}
@@ -161,8 +167,11 @@ export function AssetsHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.assets.hub.distribution.title}</DappContentHeading>
-        {/* Figma 持仓分布/empty 108 → min-h-27（禁 min-h-[6.75rem]） */}
-        <div className="flex min-h-27 items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 py-10">
+        {/*
+          Figma 持仓分布/empty：扁平 dashed 空壳（非 elevated）。
+          与持仓/缓冲 elevated 刻意不同；勿升为 shadow-card。
+        */}
+        <div className="flex min-h-27 items-center justify-center rounded-2xl border border-dashed border-border bg-background px-4 py-10">
           <Text
             as="p"
             className="text-center leading-4.5"
@@ -175,20 +184,31 @@ export function AssetsHubContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <Text as="h3" className="mb-1 font-semibold" variant="headline">
+        <Text as="h3" className="mb-1.5 font-semibold" variant="headline">
           {rebase.title}
         </Text>
-        <Text as="p" className="mb-4" tone="muted-foreground" variant="detail">
+        <Text as="p" className="mb-4" tone="muted-foreground" variant="support">
           {rebase.subtitle}
         </Text>
-        {/* Figma Rebase/card 237：px-4 py-6 + gap-4；step 文案 leading 合成行高 */}
-        <Card surface="elevated" className="grid gap-4 px-4 py-6 shadow-card">
-          <ol className="m-0 grid list-none gap-2 p-0 sm:grid-cols-2 dapp:grid-cols-4">
+        {/*
+          Figma Rebase/card：珊瑚圆点时间轴 + 四列纯文案（禁嵌套 bg-card 小白卡）+ tags + footer
+        */}
+        <Card surface="elevated" className="grid gap-1.5 px-4 py-6 shadow-card">
+          <div className="relative grid h-2.5 grid-cols-4 items-center">
+            <div className="absolute top-1/2 right-[12.5%] left-[12.5%] h-0.5 -translate-y-1/2 bg-border" />
             {rebase.steps.map((step) => (
-              <li
-                className="min-h-25.5 rounded-2xl bg-card p-3 text-center"
-                key={step.title + step.body}
+              <span
+                className="relative z-1 flex justify-center"
+                key={`dot-${step.title}-${step.body}`}
               >
+                <span aria-hidden className="size-2.5 shrink-0 rounded-full bg-primary" />
+              </span>
+            ))}
+          </div>
+
+          <ol className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2 dapp:grid-cols-4">
+            {rebase.steps.map((step) => (
+              <li className="min-h-25.5 px-1 pt-4 text-center" key={step.title + step.body}>
                 <Text as="p" className="leading-5 font-bold" variant="copy">
                   {step.title}
                 </Text>
@@ -203,7 +223,8 @@ export function AssetsHubContent() {
               </li>
             ))}
           </ol>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-2xl bg-muted px-4 py-3">
+
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl bg-muted px-6 py-3">
             {rebase.tags.map((tag) => (
               <span className="flex items-center gap-1.5" key={tag}>
                 <DappIcon alt="" className="size-4" size="sm" src={dappAssets.check} />
@@ -213,6 +234,7 @@ export function AssetsHubContent() {
               </span>
             ))}
           </div>
+
           <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
             {rebase.footer}
           </Text>

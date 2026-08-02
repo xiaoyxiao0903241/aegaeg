@@ -1329,8 +1329,8 @@ const app = defineMessages({
   },
   assets: {
     title: '资产',
-    intro: '查看持仓、领取收益或赎回本金',
-    body: '查看持仓、领取收益或赎回本金',
+    intro: '管理您的AEGIS X生态系统资金',
+    body: '管理您的AEGIS X生态系统资金',
     backToHub: '返回资产',
     blocked: {
       zeroAmount: '请输入有效数量',
@@ -1395,6 +1395,7 @@ const app = defineMessages({
       success: '赎回已提交，本金进入释放缓冲',
     },
     hub: {
+      settingsAria: '资产设置',
       card: {
         position: '仓位',
         yield: '总收益',

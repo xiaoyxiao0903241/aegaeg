@@ -1405,8 +1405,8 @@ const app = defineMessages({
   },
   assets: {
     title: 'Assets',
-    intro: 'View positions, claim yield, or redeem principal',
-    body: 'View positions, claim yield, or redeem principal',
+    intro: 'Manage your AEGIS X ecosystem funds',
+    body: 'Manage your AEGIS X ecosystem funds',
     backToHub: 'Back to Assets',
     blocked: {
       zeroAmount: 'Enter a valid amount',
@@ -1471,6 +1471,7 @@ const app = defineMessages({
       success: 'Redeem submitted — principal entered the release buffer',
     },
     hub: {
+      settingsAria: 'Asset settings',
       card: {
         position: 'Position',
         yield: 'Total yield',

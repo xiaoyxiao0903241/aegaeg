@@ -1383,8 +1383,8 @@ const app = defineMessages({
   },
   assets: {
     title: '資產',
-    intro: '查看持倉、領取收益或贖回本金',
-    body: '查看持倉、領取收益或贖回本金',
+    intro: '管理您的AEGIS X生態系統資金',
+    body: '管理您的AEGIS X生態系統資金',
     backToHub: '返回資產',
     blocked: {
       zeroAmount: 'Enter a valid amount',
@@ -1449,6 +1449,7 @@ const app = defineMessages({
       success: 'Redeem submitted — principal entered the release buffer',
     },
     hub: {
+      settingsAria: '資產設定',
       card: {
         position: 'Position',
         yield: 'Total yield',

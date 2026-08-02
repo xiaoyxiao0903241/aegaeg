@@ -1,4 +1,5 @@
-import { stakingHubAssets } from '~/app/assets'
+import { assetsHubAssets, dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -6,6 +7,7 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { openAssetsView } from '~/shared/config/dapp-open-views'
+import { Button } from '~/shared/ui/button'
 import { WidgetHeader } from '~/shared/ui/widget-header'
 import { AssetsModeCard } from '~/views/dapp/assets/hub/assets-mode-card'
 import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hub-overview-stats'
@@ -18,15 +20,33 @@ export function AssetsHubWidget() {
   const overview = useAssetsHubOverviewStats()
 
   const icons = {
-    stake: stakingHubAssets.modeStake,
-    lpbond: stakingHubAssets.modeLpBond,
-    burnbond: stakingHubAssets.modeBurnBond,
-    xmine: stakingHubAssets.modeXmine,
+    stake: assetsHubAssets.modeStake,
+    lpbond: assetsHubAssets.modeLpBond,
+    burnbond: assetsHubAssets.modeBurnBond,
+    xmine: assetsHubAssets.modeXmine,
   } as const
 
   return (
     <>
-      <WidgetHeader action={<DappPanelToggle />} subtitle={t.assets.intro} title={t.assets.title} />
+      <WidgetHeader
+        action={
+          <div className="flex items-center gap-2">
+            {/* Figma btn/settings 36：稿有 chrome；写链/设置面板尚无 → 视觉对齐，禁用 */}
+            <Button
+              aria-label={t.assets.hub.settingsAria}
+              className="grid size-9 min-h-9 shrink-0 rounded-sm p-0 max-dapp:hidden"
+              disabled
+              type="button"
+              variant="secondary"
+            >
+              <DappIcon alt="" size="lg" src={dappAssets.setting} />
+            </Button>
+            <DappPanelToggle />
+          </div>
+        }
+        subtitle={t.assets.intro}
+        title={t.assets.title}
+      />
       <DappWidgetStack>
         {MODE_KEYS.map((key) => {
           const stats = overview.modes[key]
