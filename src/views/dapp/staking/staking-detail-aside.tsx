@@ -28,7 +28,7 @@ function MetricGrid({
       <div className="grid gap-4 sm:grid-cols-2">
         {items.map((item) => (
           <MetricCard
-            className="gap-1.5 p-4"
+            className="gap-0.5 px-4 py-3.5"
             key={item.label}
             label={item.label}
             value={item.value}
@@ -44,7 +44,7 @@ function MetricGrid({
       <div className="grid gap-4 sm:grid-cols-3">
         {items.slice(0, 3).map((item) => (
           <MetricCard
-            className="gap-1.5 p-4"
+            className="gap-0.5 px-4 py-3.5"
             key={item.label}
             label={item.label}
             value={item.value}
@@ -56,7 +56,7 @@ function MetricGrid({
         <div className="grid gap-4 sm:grid-cols-2">
           {items.slice(3).map((item) => (
             <MetricCard
-              className="gap-1.5 p-4"
+              className="gap-0.5 px-4 py-3.5"
               key={item.label}
               label={item.label}
               value={item.value}
