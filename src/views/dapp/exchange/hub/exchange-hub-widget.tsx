@@ -20,12 +20,14 @@ export function ExchangeHubWidget() {
       <DappWidgetStack>
         <DappModeCard
           body={t.exchange.hub.modes.flash.body}
+          density="tall"
           icon={exchangeHubAssets.modeFlash}
           onClick={() => openExchangeView('flash')}
           title={t.exchange.hub.modes.flash.title}
         />
         <DappModeCard
           body={t.exchange.hub.modes.trade.body}
+          density="compact"
           icon={exchangeHubAssets.modeTrade}
           onClick={() => openExchangeView('trade')}
           title={t.exchange.hub.modes.trade.title}
@@ -33,12 +35,14 @@ export function ExchangeHubWidget() {
         />
         <DappModeCard
           body={t.exchange.hub.modes.burn.body}
+          density="compact"
           icon={exchangeHubAssets.modeBurn}
           onClick={() => openExchangeView('burn')}
           title={t.exchange.hub.modes.burn.title}
         />
         <DappModeCard
           body={t.exchange.hub.modes.turbine.body}
+          density="compact"
           icon={exchangeHubAssets.modeTurbine}
           onClick={() => openExchangeView('turbine')}
           title={t.exchange.hub.modes.turbine.title}

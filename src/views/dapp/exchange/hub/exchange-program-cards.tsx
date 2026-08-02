@@ -44,12 +44,13 @@ const PROGRAM_ICONS: Array<readonly [string] | readonly [string, string] | undef
 const CONTRIBUTION_CARD_INDEX = 5
 
 /**
- * Exchange hub right-rail tile — Figma `4323:704`.
- * No fixed height: `p-4` + content; parent 2-col grid + `size-full` equalizes row peers.
- * No onClick → `article` (same visual); never HTML `disabled` (global dims + strips shadow).
+ * Exchange hub right-rail tile — Figma `4323:704` h70.
+ * `min-h-17.5` + `px-4 py-3` 合成稿高（禁 `h-[70px]`）；grid `size-full` 拉齐行高。
+ * No onClick → `article`（同视觉）；禁 HTML `disabled`（会毁 elevation）。
  */
 const exchangeProgramCard = tv({
-  base: 'flex size-full p-4 text-left',
+  // p-0：清 elevated 默认 p-3.5
+  base: 'flex size-full min-h-17.5 p-0 px-4 py-3 text-left',
   variants: {
     hasIcon: {
       true: 'items-center justify-between gap-2',
@@ -118,10 +119,10 @@ function ExchangeProgramCard({
       {...(interactive ? { onClick, type: 'button' as const } : {})}
     >
       <Card.Content className={cn('grid min-w-0 gap-1.5 text-left', icon && 'flex-1')}>
-        <Text as="strong" className="font-semibold" variant="copy">
+        <Text as="strong" className="leading-normal font-semibold" variant="copy">
           {title}
         </Text>
-        <Text as="span" className="text-foreground/40" variant="support">
+        <Text as="span" className="leading-normal text-foreground/40" variant="support">
           {body}
         </Text>
       </Card.Content>
@@ -143,7 +144,7 @@ export function ExchangeProgramCards() {
 
   const contributionRatio =
     configQuery.data === undefined
-      ? '0'
+      ? '—'
       : formatBurnContributionRatioColon(configQuery.data.rateBps)
 
   return (
