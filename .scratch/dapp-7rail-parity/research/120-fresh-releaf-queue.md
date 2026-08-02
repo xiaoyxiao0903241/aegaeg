@@ -30,7 +30,7 @@
 | 10 | Turbine | `4435:220` | pending | |
 | 11 | 质押 Hub | `4287:212` | **page-done** | `research/123-staking-hub-fresh-leaf.md` · `5ffdec64` |
 | 12 | Stake | `4448:220` | **page-done** | `research/131-staking-stake-fresh-leaf.md` · `9e06f63e` |
-| 13 | Bond LP | `4454:220` | **page-done** | `research/132-bond-lp-fresh-leaf.md` |
+| 13 | Bond LP | `4454:220` | **page-done** | `research/132-bond-lp-fresh-leaf.md` · `77af7ce4` |
 | 14 | Bond Burn | `4458:220` | **page-done** | `research/133-bond-burn-fresh-leaf.md` |
 | 15 | Xmine | `4460:220` | **page-done** | `research/134-staking-xmine-fresh-leaf.md` |
 | 16 | Calc | `4462:220` | **page-done** | `research/135-staking-calc-fresh-leaf.md` |

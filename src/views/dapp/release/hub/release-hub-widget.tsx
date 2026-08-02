@@ -57,6 +57,7 @@ export function ReleaseHubWidget() {
     <>
       <WidgetHeader
         action={<DappPanelToggle />}
+        className="[&_h1]:text-xl/none! [&_h1]:tracking-normal"
         subtitle={t.release.intro}
         title={t.release.title}
       />
