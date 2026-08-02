@@ -1481,7 +1481,9 @@ const app = defineMessages({
       success: 'Redeem submitted — principal entered the release buffer',
     },
     hub: {
-      settingsAria: 'Asset settings',
+      filterAria: 'Filter assets',
+      hideZero: 'Hide 0 assets',
+      hideZeroEmpty: 'No non-zero positions',
       card: {
         position: 'Position',
         yield: 'Total yield',

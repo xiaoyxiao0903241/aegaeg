@@ -21,18 +21,18 @@ export function AssetsHubMetricWithIcon({
   approx: ReactNode
 }) {
   return (
-    // Figma 持仓/缓冲 metric 列 ~56：support leading-4 + value sm 合成
+    // Figma 持仓/缓冲：label/≈ = copy13 + muted40%；主值 16 semibold（禁 support12 / text-sm）
     <div className="grid gap-0.5">
-      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+      <Text as="span" className="leading-4 text-foreground/40" variant="copy">
         {label}
       </Text>
       <div className="flex items-start gap-1">
         <DappIcon alt="" className="mt-0.5 rounded-control" size="lg" src={icon} />
         <div className="grid gap-0.5">
-          <Text as="strong" className="text-sm leading-4.5 font-semibold" variant="copy">
+          <Text as="strong" className="text-base leading-4.5 font-semibold">
             {renderMetric(value)}
           </Text>
-          <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+          <Text as="span" className="leading-4 text-foreground/40" variant="copy">
             {renderMetric(approx)}
           </Text>
         </div>
@@ -53,13 +53,13 @@ export function AssetsHubMetricPlain({
 }) {
   return (
     <div className="grid gap-0.5">
-      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+      <Text as="span" className="leading-4 text-foreground/40" variant="copy">
         {label}
       </Text>
-      <Text as="strong" className="text-sm leading-4.5 font-semibold" variant="copy">
+      <Text as="strong" className="text-base leading-4.5 font-semibold">
         {renderMetric(value)}
       </Text>
-      <Text as="span" className="leading-4" tone="muted-foreground" variant="support">
+      <Text as="span" className="leading-4 text-foreground/40" variant="copy">
         {renderMetric(approx)}
       </Text>
     </div>

@@ -35,8 +35,8 @@
 | `pnpm format:classnames`                     | 仅对 `src/**/*.{ts,tsx}` 跑 Prettier（批量修 class 顺序）                                                                                                                             |
 | `pnpm exec eslint "src/**/*.{ts,tsx}" --fix` | 自动修 canonical / important 后缀 / CSS-var 简写等                                                                                                                                    |
 | `pnpm test:unit`                             | Node 内置 test runner（`tests/unit/*.test.mjs`）；Vite `loadModule` 缓存 `.scratch/vite-test/<pid>/`                                                                                  |
-| `pnpm test:e2e`                              | Playwright 视觉 + 契约（需本机浏览器；**手动 / 可选**，不进 husky、不进 `pnpm check`）                                                                                                |
-| `pnpm test:e2e:update`                       | 更新视觉快照                                                                                                                                                                          |
+| `pnpm test:e2e` / `pnpm test:e2e:update`     | Playwright 视觉（可选，不进 check）                                                                                                                                                   |
+| **`pnpm measure:leaf --profile <id>`**       | **A5 全量实测**（§2.3b）：读 A4 inventory → R=N → `*-measure-full.json`；禁抽检。见 [`scripts/ui-leaf-a5-measure/`](../../scripts/ui-leaf-a5-measure/README.md)                       |
 | `pnpm test:integration`                      | 可选 live BSC quote（非 CI 门禁）                                                                                                                                                     |
 
 ### 架构门禁（dependency-cruiser）

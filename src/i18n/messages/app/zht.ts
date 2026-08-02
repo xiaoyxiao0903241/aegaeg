@@ -1458,7 +1458,9 @@ const app = defineMessages({
       success: 'Redeem submitted — principal entered the release buffer',
     },
     hub: {
-      settingsAria: '資產設定',
+      filterAria: '篩選資產',
+      hideZero: '隱藏0資產',
+      hideZeroEmpty: '暫無非零倉位',
       card: {
         position: 'Position',
         yield: 'Total yield',

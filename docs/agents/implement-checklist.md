@@ -59,24 +59,28 @@ Agent session：
 
 ```
 [ ] fileKey `uiKwzwIoD06phS0husdqjB`；`get_design_context` 前已 load figma-design-to-code
-[ ] 本轮已调用 `get_metadata(页帧)`（全树 w/h/x/y）
-[ ] 本轮已对页帧 + **每一个可见最小 leaf** 调用 `get_design_context`
-[ ] leaf 写明：拉取时间 · fileKey · 页帧 nodeId · **全最小 leaf nodeId 清单**（MCP 证据）
-[ ] 每一行含：nodeId + 稿 h/w/pad/font/色/surface — 行数须覆盖整帧，禁只列 AmountBox/CTA
-[ ] 清单覆盖：栏→块→控件→最小叶（icon/thumb/handle/字色/padding）；无「左栏大概 PASS」
-[ ] 自检 §2.3c：漏一项 = A4 未完成 → **禁止**进入 A5/写盘
+[ ] 本轮已调用 `get_metadata(页帧)`（全树 w/h/x/y）并按 §2.3a 计出 meta_min_leaf_count=N
+[ ] 本轮已对页帧 **以及** 每一个最小 leaf（§2.3a 表）调用 `get_design_context`；gdc_min_leaf_count=M
+[ ] **机械门：** M ≥ N；leaf 每一行有独立 `gdc_at`（父框时间不可继承）
+[ ] leaf 文首写明：N、M、拉取日、fileKey、页帧 nodeId
+[ ] 每一行含：nodeId + kind + 稿 h/w/pad/font/色/surface + gdc_at — 禁只列 AmountBox/CTA/「mode×4」
+[ ] 清单覆盖：栏→块→控件→最小叶（icon/thumb/字色/padding/surface）；无「左栏大概 PASS」
+[ ] 自检 §2.3c + §2.3a：漏一项或 M<N = A4 未完成 → **禁止**进入 A5/写盘
 [ ] **未**用旧 scratch / 旧 page-done 抄规格冒充本轮拉取
 ```
 
-### A5. 本站 WebBridge 实测（§2.3b）← 测本站 ≠ 拉稿；仅对照 A4 清单
+### A5. 本站 WebBridge 实测（§2.3b）← 测本站 ≠ 拉稿；**禁抽检**
 
 ```
 [ ] A4 已齐（否则本步无效，禁止当进度）
 [ ] 已打开 `pnpm dev` 本站对本帧路由
-[ ] 对 **清单每一行**（不是抽样）用 WebBridge `evaluate` + getBoundingClientRect / getComputedStyle
-[ ] leaf 有「实测矩阵」：稿 | 实测 | Δ | PASS/FAIL（定位方式可复测）
-[ ] 未用「写了 min-h」或截图肉眼代替实测
+[ ] 输入 = A4 全表；**跑** `pnpm measure:leaf --profile <本页>`（§2.3b / `scripts/ui-leaf-a5-measure`）；禁止会话内手写抽检
+[ ] 产出 `*-measure-full.json`：measure_row_count R == meta_min_leaf_count N；顶栏写明 N / R / R==N
+[ ] 每一个 A4 nodeId 恰好一行：定位方式 + getBoundingClientRect / getComputedStyle + Δ + PASS/FAIL
+[ ] 定位失败 = 该行 FAIL（不得删行 / 并入父卡冒充已测）
+[ ] 未用抽检 /「关键 17/17」/ 截图肉眼 /「写了 min-h」代替全量实测
 [ ] FAIL 项已列入本页改码范围（**全部** FAIL，不是只挑一个）
+[ ] 自检 §2.3b：R<N 或缺 nodeId = A5 未完成 → **禁止**写盘 / 禁止称 UI PASS
 ```
 
 ### A6. 动态审计 + leaf 表
@@ -123,9 +127,9 @@ Agent session：
 ## C. 写盘后回测（未勾完不得称 UI 齐）
 
 ```
-[ ] 对本页 **清单每一行** 再跑 §2.3b（含曾 PASS 的抽检）
+[ ] 对本页 **清单每一行**（R 必须再 == N）再跑 §2.3b；含曾 PASS，**禁止只复测 FAIL 子集就勾齐**
 [ ] 实测矩阵更新；无未解释 FAIL（Δ≤2 可记 Med）
-[ ] 全清单无漏测项（§2.3c）
+[ ] 全清单无漏测项（§2.3b · R==N）
 [ ] `rg` 本页 diff：**零** 新增 `\[[0-9.]+px\]` / 任意 rem 长度
 ```
 

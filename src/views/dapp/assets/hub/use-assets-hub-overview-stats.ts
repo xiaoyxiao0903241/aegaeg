@@ -33,6 +33,8 @@ export type AssetsHubModeStats = {
   positionApprox: string
   yieldValue: string
   yieldApprox: string
+  /** 仓位本金（或 X 挖矿 stake/pending）是否非零 — 供「隐藏0资产」筛选. */
+  hasBalance: boolean
 }
 
 export type AssetsHubOverview = {
@@ -56,23 +58,25 @@ export type AssetsHubOverview = {
   modes: Record<'stake' | 'lpbond' | 'burnbond' | 'xmine', AssetsHubModeStats>
 }
 
-/** 无协议 APR 读源 → 诚实空（稿演示 0.00% 不作真值）. */
-const APR_UNKNOWN = '—'
+/** 无协议 APR 读源 → 稿/原型无数据态展示 `0.00%`（禁 `—`）. */
+const APR_EMPTY = `${formatGroupedNumber(0, { digits: 2 })}%`
 
 const EMPTY_MODE: AssetsHubModeStats = {
-  aprLabel: APR_UNKNOWN,
+  aprLabel: APR_EMPTY,
   positionValue: `${formatGroupedNumber(0, { digits: 2 })} AGX`,
   positionApprox: formatApproxUsd(0, null),
   yieldValue: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
   yieldApprox: formatApproxUsd(0, null),
+  hasBalance: false,
 }
 
 const EMPTY_XMINE: AssetsHubModeStats = {
-  aprLabel: APR_UNKNOWN,
+  aprLabel: APR_EMPTY,
   positionValue: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
   positionApprox: formatApproxUsd(0, null),
   yieldValue: `${formatGroupedNumber(0, { digits: 2 })} X`,
   yieldApprox: formatApproxUsd(0, null),
+  hasBalance: false,
 }
 
 function formatApiTokenLabel(raw: string | undefined, unit: string, digits = 2): string {
@@ -104,7 +108,7 @@ function modeFromApiAmount(
   const n = amountRaw != null ? Number(amountRaw) : Number.NaN
   const amount = Number.isFinite(n) ? n : 0
   return {
-    aprLabel: APR_UNKNOWN,
+    aprLabel: APR_EMPTY,
     positionValue: formatApiTokenLabel(amountRaw, unit),
     positionApprox: formatApproxUsd(amount, priceUsd),
     yieldValue:
@@ -112,6 +116,7 @@ function modeFromApiAmount(
         ? `${formatGroupedNumber(0, { digits: 2 })} gAGX`
         : `${formatGroupedNumber(0, { digits: 2 })} X`,
     yieldApprox: formatApproxUsd(0, null),
+    hasBalance: amount > 0,
   }
 }
 
@@ -343,32 +348,36 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
     bufferGagxReleased: `${formatGroupedNumber(0, { digits: 2 })} gAGX`,
     modes: {
       stake: {
-        aprLabel: APR_UNKNOWN,
+        aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(stakePrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatApproxUsd(stakePosNum, priceUsd),
         yieldValue: `${formatTokenAmount(stakeYield, GAGX_DECIMALS, 2)} gAGX`,
         yieldApprox: formatApproxUsd(stakeYieldNum, priceUsd),
+        hasBalance: stakePrincipal > 0n || stakeYield > 0n,
       },
       lpbond: {
-        aprLabel: APR_UNKNOWN,
+        aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(lpPrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatApproxUsd(lpPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(lpYield, GAGX_DECIMALS, 2)} gAGX`,
         yieldApprox: formatApproxUsd(lpYieldNum, priceUsd),
+        hasBalance: lpPrincipal > 0n || lpYield > 0n,
       },
       burnbond: {
-        aprLabel: APR_UNKNOWN,
+        aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(burnPrincipal, AGX_DECIMALS, 2)} AGX`,
         positionApprox: formatApproxUsd(burnPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(burnYield, GAGX_DECIMALS, 2)} gAGX`,
         yieldApprox: formatApproxUsd(burnYieldNum, priceUsd),
+        hasBalance: burnPrincipal > 0n || burnYield > 0n,
       },
       xmine: {
-        aprLabel: APR_UNKNOWN,
+        aprLabel: APR_EMPTY,
         positionValue: `${formatTokenAmount(xStake, GAGX_DECIMALS, 2)} gAGX`,
         positionApprox: formatApproxUsd(xPosNum, priceUsd),
         yieldValue: `${formatTokenAmount(xPending, X_DECIMALS, 2)} X`,
         yieldApprox: formatApproxUsd(formatTokenAmountToNumber(xPending, X_DECIMALS), null),
+        hasBalance: xStake > 0n || xPending > 0n,
       },
     },
   }

@@ -1,14 +1,16 @@
-import { assetsHubAssets, dappAssets } from '~/app/assets'
-import { DappIcon } from '~/app/shell/dapp-icon'
+import { useState } from 'react'
+
+import { assetsHubAssets } from '~/app/assets'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
+import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import type { AssetsView } from '~/shared/config/dapp-deep-links'
 import { openAssetsView } from '~/shared/config/dapp-open-views'
-import { Button } from '~/shared/ui/button'
 import { WidgetHeader } from '~/shared/ui/widget-header'
+import { AssetsHubFilterMenu } from '~/views/dapp/assets/hub/assets-hub-filter-menu'
 import { AssetsModeCard } from '~/views/dapp/assets/hub/assets-mode-card'
 import { useAssetsHubOverviewStats } from '~/views/dapp/assets/hub/use-assets-hub-overview-stats'
 
@@ -18,6 +20,7 @@ export function AssetsHubWidget() {
   const { messages: t } = useI18n()
   const { walletReady } = useDappShell()
   const overview = useAssetsHubOverviewStats()
+  const [hideZero, setHideZero] = useState(false)
 
   const icons = {
     stake: assetsHubAssets.modeStake,
@@ -26,30 +29,46 @@ export function AssetsHubWidget() {
     xmine: assetsHubAssets.modeXmine,
   } as const
 
+  const modes = MODE_KEYS.filter((key) => {
+    if (!hideZero) return true
+    return overview.modes[key].hasBalance
+  })
+
   return (
     <>
       <WidgetHeader
         action={
-          <div className="flex items-center gap-2">
-            {/* Figma `4282:216`：36 · radius/control≈11（稿 sm=10）· 白底方角；面板 DEFER → 禁用仍 bg-card */}
-            <Button
-              aria-label={t.assets.hub.settingsAria}
-              className="grid size-9 min-h-9 shrink-0 rounded-control! bg-card p-0 disabled:bg-card max-dapp:hidden"
-              disabled
-              shape="rounded"
-              type="button"
-              variant="secondary"
-            >
-              <DappIcon alt="" size="lg" src={dappAssets.setting} />
-            </Button>
+          /* PC：筛选 + 面板切换靠右；H5：action 隐藏，筛选进 title 行贴右 */
+          <div className="flex items-center gap-2 max-dapp:hidden">
+            <AssetsHubFilterMenu
+              align="end"
+              ariaLabel={t.assets.hub.filterAria}
+              hideZero={hideZero}
+              hideZeroLabel={t.assets.hub.hideZero}
+              onHideZeroChange={setHideZero}
+            />
             <DappPanelToggle className="rounded-control!" />
           </div>
         }
         subtitle={t.assets.intro}
-        title={t.assets.title}
+        title={
+          <>
+            <span className="min-w-0">{t.assets.title}</span>
+            {/* H5：与标题同行、ml-auto 贴页面右缘（action 已 hidden，copy 全宽） */}
+            <AssetsHubFilterMenu
+              align="end"
+              ariaLabel={t.assets.hub.filterAria}
+              className="dapp:hidden"
+              hideZero={hideZero}
+              hideZeroLabel={t.assets.hub.hideZero}
+              onHideZeroChange={setHideZero}
+            />
+          </>
+        }
+        titleClassName="flex w-full items-center justify-between gap-3"
       />
       <DappWidgetStack>
-        {MODE_KEYS.map((key) => {
+        {modes.map((key) => {
           const stats = overview.modes[key]
           return (
             <AssetsModeCard
@@ -69,6 +88,10 @@ export function AssetsHubWidget() {
             />
           )
         })}
+
+        {walletReady && hideZero && modes.length === 0 ? (
+          <DappTableEmptyMessage embedded title={t.assets.hub.hideZeroEmpty} />
+        ) : null}
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}
       </DappWidgetStack>

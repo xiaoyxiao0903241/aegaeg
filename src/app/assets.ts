@@ -58,6 +58,8 @@ export const assetsHubAssets = {
   modeLpBond: '/assets/figma/dapp/assets-hub/ic-mode-lpbond.svg',
   modeBurnBond: '/assets/figma/dapp/assets-hub/ic-mode-burnbond.svg',
   modeXmine: '/assets/figma/dapp/assets-hub/ic-mode-xmine.svg',
+  /** 缓冲池币种切换 · Figma `4424:49` stroke `#0B0E14`（勿用珊瑚色 exchangeFlip） */
+  bufferSwap: '/assets/figma/dapp/assets-hub/ic-buffer-swap.svg',
 } as const
 
 export const homeAssets = {

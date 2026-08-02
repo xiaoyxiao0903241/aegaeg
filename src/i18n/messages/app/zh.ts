@@ -1404,7 +1404,9 @@ const app = defineMessages({
       success: '赎回已提交，本金进入释放缓冲',
     },
     hub: {
-      settingsAria: '资产设置',
+      filterAria: '筛选资产',
+      hideZero: '隐藏0资产',
+      hideZeroEmpty: '暂无非零仓位',
       card: {
         position: '仓位',
         yield: '总收益',

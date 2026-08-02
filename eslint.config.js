@@ -148,4 +148,13 @@ export default tseslint.config(
       },
     },
   },
+  {
+    // WebBridge page.evaluate 注入脚本：浏览器全局
+    files: ['scripts/ui-leaf-a5-measure/profiles/**/*.page.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
+  },
 )

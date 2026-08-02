@@ -1,0 +1,89 @@
+import { useState } from 'react'
+
+import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/shell/dapp-icon'
+import { cn } from '~/shared/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuPanel,
+  DropdownMenuTrigger,
+} from '~/shared/ui/dropdown-menu'
+import { Text } from '~/shared/ui/text'
+
+/**
+ * 资产 Hub 筛选：齿轮 → DropdownMenu（与兑换/排序同一套 chrome）.
+ * 勾选盒对齐 HTML 原型 15×15 · r4 · #e86a43；行圆角走 Item 的 rounded-control.
+ */
+export function AssetsHubFilterMenu({
+  align = 'end',
+  ariaLabel,
+  className,
+  hideZero,
+  hideZeroLabel,
+  onHideZeroChange,
+}: {
+  align?: 'start' | 'end'
+  ariaLabel: string
+  className?: string
+  hideZero: boolean
+  hideZeroLabel: string
+  onHideZeroChange: (next: boolean) => void
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <DropdownMenu onOpenChange={setOpen} open={open}>
+      <DropdownMenuTrigger
+        aria-label={ariaLabel}
+        className={cn(
+          'grid size-9 min-h-9 shrink-0 place-items-center rounded-control border bg-card p-0',
+          'cursor-pointer text-foreground transition-colors',
+          open ? 'border-primary/50' : 'border-border hover:border-primary/50',
+          className,
+        )}
+        type="button"
+      >
+        <DappIcon alt="" size="lg" src={dappAssets.setting} />
+      </DropdownMenuTrigger>
+      <DropdownMenuPanel align={align} className="min-w-[10.5rem]">
+        <DropdownMenuItem
+          aria-checked={hideZero}
+          onClick={(event) => {
+            // 勾选不关菜单（与 listbox 点选关盘不同）
+            event.preventDefault()
+            onHideZeroChange(!hideZero)
+          }}
+          role="menuitemcheckbox"
+          selected={hideZero}
+        >
+          {/* 原型 checkbox：15×15 · border 1.5 · r4 · 勾选 #e86a43 */}
+          <span
+            aria-hidden
+            className={cn(
+              'grid size-[0.9375rem] shrink-0 place-items-center rounded-[0.25rem] border-[1.5px] transition-colors',
+              hideZero ? 'border-primary bg-primary' : 'border-black/30 bg-transparent',
+            )}
+          >
+            <svg
+              className={cn('size-[0.5625rem]', hideZero ? 'opacity-100' : 'opacity-0')}
+              fill="none"
+              viewBox="0 0 10 10"
+            >
+              <path
+                d="M1.5 5.5L4 8L8.5 2.5"
+                stroke="#ffffff"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.8"
+              />
+            </svg>
+          </span>
+          <Text as="span" className="tracking-[-0.02em]" variant="copy">
+            {hideZeroLabel}
+          </Text>
+        </DropdownMenuItem>
+      </DropdownMenuPanel>
+    </DropdownMenu>
+  )
+}

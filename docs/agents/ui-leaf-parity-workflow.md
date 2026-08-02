@@ -1,6 +1,6 @@
 # UI 页面实现工作流（全仓通用 · 强制）
 
-> **状态：** 用户锁定 2026-07-30（对抗纠偏：堵 R5 合取漏洞 · 手册沉默 ≠ 取消 UI · WebBridge 实录字段）；**2026-07-31 加锁：手册逐行对照 + R4a**；**2026-08-02 加锁：全 leaf 清单 + WebBridge 实测 computed style + 禁 px 创可贴**；**2026-08-02 晚重启：一页一闭环 · 测本站≠拉稿 · 缺 MCP 证据不许 page-done**  
+> **状态：** 用户锁定 2026-07-30（对抗纠偏：堵 R5 合取漏洞 · 手册沉默 ≠ 取消 UI · WebBridge 实录字段）；**2026-07-31 加锁：手册逐行对照 + R4a**；**2026-08-02 加锁：全 leaf 清单 + WebBridge 实测 computed style + 禁 px 创可贴**；**2026-08-02 晚重启：一页一闭环 · 测本站≠拉稿 · 缺 MCP 证据不许 page-done**；**2026-08-02 夜：A5 禁抽检 · `measure_row_count = N`（§2.3b）**  
 > **本文件 = `page-done` 与工具序唯一正文。** `AGENTS.md` 管分层；[`implement-checklist.md`](./implement-checklist.md) = **每次开页必勾**（禁止跳步写盘）。  
 > **挂载：** [`AGENTS.md`](../../AGENTS.md) §8.0 R4a / R5 / R5a / R6 / R7  
 > **现行队列：** [`.scratch/dapp-7rail-parity/research/200-releaf-restart-queue.md`](../../.scratch/dapp-7rail-parity/research/200-releaf-restart-queue.md)（旧 fresh / page-leaf / 假 page-done **已删**，不得当 SSOT）
@@ -20,6 +20,7 @@
 | 手册摘要略读 / 「整体符合 §X」无逐条对照表                                                          | **逐行**读相关章；leaf 落对照表（§2.1）；缺 → Critical                                                                |
 | WebBridge「可选 / DEFER / 稍后补」后标 page-done                                                    | 无 §2.2 实录字段 → Status ≤ `needs-proto-reverify`；R7 不得 PASS                                                      |
 | 只点通原型、**不**对本站每个 leaf 做 `getComputedStyle`                                             | 无 §2.3b 实测矩阵 → **禁止**标 UI PASS；R7 Critical                                                                   |
+| **A4 齐后对本站「抽检」几项却称 A5 / 关键 PASS**（如 17/17 冒充 140）                               | **硬禁**（§2.3b）：`measure_row_count` 必须 **= N**；每个 A4 `nodeId` 一行实测；漏一行 = A5 FAIL = Critical           |
 | 修一个组件 / 写一句 `min-h-[53px]` 冒充本页贴稿完成                                                 | **每一个**可见最小 leaf 都要进表 + 实测；漏一项 = 未对齐                                                              |
 | 用 `min-h-[Npx]` / `h-[Npx]` / `text-[Npx]` / `size-[Npx]` / `leading-[Npx]` / `p-[Npx]` 等任意长度 | **硬禁**（§2.6）：尺寸只许 token / `Text` variant / 标准刻度 / `var(--*)`；违反 = 写盘 Critical，不论实测是否碰巧对齐 |
 | 手册缺数据 / 只写钱路 → 不做下拉、用 flip 冒充                                                      | **UI MUST 做完**；缺口记文档；动态数字空态=`0`/`0.00`（FAQ 同，无 count 动效）；flip ≠ picker                         |
@@ -28,7 +29,8 @@
 | 清单未齐就改码                                                                                      | 一帧闭环；**§3 步 1–5 / checklist A0–A7 未勾完禁止写产品码**                                                          |
 | `pnpm check` / 钱路 PASS / High 波 / 类名像稿 = 完成                                                | 仅 §5 全满；UI PASS **必须**含实测 Δ                                                                                  |
 | 证据栏套话（「一致」「N/A」无路径）                                                                 | Critical                                                                                                              |
-| 页级/组件级「大概像」冒充 leaf 对齐                                                                 | **必须**钻到 Figma **最小可见子节点**（§2.3）；漏 thumb / 色 / 卡 surface = Critical                                  |
+| 页级/组件级「大概像」冒充 leaf 对齐                                                                 | **必须**钻到 Figma **最小可见子节点**（§2.3 / **§2.3a 计数门**）；漏 thumb / 色 / 卡 surface = Critical               |
+| **只对父卡/`section` 调一次 `get_design_context` 却勾 A4**                                          | **硬禁**（§2.3a）：`gdc_min_leaf_count` &lt; `meta_min_leaf_count` 或 leaf 行无独立 `gdc_at` → A4 FAIL = Critical     |
 | commit 只跑 eslint/tsc、跳过 knip/jscpd                                                             | **pre-commit + `pnpm check`** 均含 `lint:deadcode` + `lint:duplicates`（§5 / commands）                               |
 
 ---
@@ -113,9 +115,9 @@
 4. 与 `pnpm dev` 本站差异一句（或「一致」）
 5. 执行时间（ISO 日即可）
 
-### 2.3 Figma（子 leaf 钻取 · 强制 · 用户锁定 2026-08-02）
+### 2.3 Figma（子 leaf 钻取 · 强制 · 用户锁定 2026-08-02；**2026-08-02 夜补钉：机械计数门**）
 
-`get_design_context` **页级 + 每一个用户可见子节点**；必要时 `get_metadata` 取 **w/h/x/y**；`skillNames` 含 `figma-design-to-code`。
+`get_design_context` **页帧 + 每一个用户可见最小 leaf**；`get_metadata(页帧)` 取全树 **w/h/x/y**；`skillNames` 含 `figma-design-to-code`。
 
 **不是** Figma 图层树 = DOM 树一一映射；**是**每个**可见设计叶子**在运行时有可指出的节点，且规格跟稿一致（尺寸差 ≤2px；色走 token 或稿指定 hex）。
 
@@ -127,48 +129,131 @@
 → 最小 leaf：thumb/handle、字色、icon 22×22、卡 surface（elevated≠outlined）、padding
 ```
 
-**开写前必须先产出「本帧全 leaf 清单」**（可与 metadata 树对齐）：每一行一个可见最小 leaf，含 nodeId + 稿规格。  
-**禁止**清单只写父框（如「左栏 PASS」）或只挑 1～2 个「用户点名过的」组件。
+#### 2.3a 最小 leaf 定义 + 机械门禁（用户锁定 2026-08-02 夜 · 堵「只拉父框」）
+
+> **根因：** 流程已写「每一个最小 leaf」，但仍可只对父卡/`section` 调一次 `get_design_context` 就自称 A4 齐。  
+> **补钉：** A4 必须用 **计数证明**，禁止口称。
+
+**计入「最小 leaf」的 metadata 节点（本帧 Content 内，不含共享 shell 时可另表标 `shell-shared`）：**
+
+| 计入                                                                       | 例                                                   |
+| -------------------------------------------------------------------------- | ---------------------------------------------------- |
+| 每一个 `<text>`                                                            | 标题、标签、`0.00`、`≈ $0.00`、FAQ 问句              |
+| 每一个可见 **icon / glyph** 框（通常 ≤24×24 的 `Frame` / VECTOR / 导出图） | settings、info、swap、token 18×18、check             |
+| 每一个独立 **surface 卡壳**（有 fill/stroke/shadow 的产品卡根）            | mode 卡、总览 inverse 卡、持仓 elevated、分布 dashed |
+| 时间轴点 / tag 勾等装饰 chrome                                             | Rebase ellipse、check badge                          |
+
+**不计入（不得拿它们冒充「已拉最小 leaf」）：**
+
+| 不计入             | 例                                                              |
+| ------------------ | --------------------------------------------------------------- |
+| 纯布局中间层       | `row` / `content` / `section` / `grp` / `Frame 18` 无独立视觉皮 |
+| 仅一次页帧 context | `get_design_context(页帧)` **不算**覆盖子 leaf                  |
+
+**leaf 表强制列（缺一列 = A4 未完成 → 禁写盘 / 禁 page-done）：**
+
+| 列       | 要求                                                                                  |
+| -------- | ------------------------------------------------------------------------------------- |
+| `nodeId` | metadata 最小 leaf id                                                                 |
+| `kind`   | `text` / `icon` / `surface` / `chrome`                                                |
+| `稿规格` | w×h · pad · font/色或 surface（来自 **该 nodeId** 的 `get_design_context`，禁截图估） |
+| `gdc_at` | 对本 nodeId 调用 `get_design_context` 的 ISO 日（**父框时间不可继承**）               |
+| `现码`   | 路径 + primitive/`tone`/`surface`                                                     |
+| `实测`   | §2.3b 后再填                                                                          |
+
+**机械自检（写进 leaf 文首）：**
+
+```text
+meta_min_leaf_count = N   ← 由 get_metadata 按上表计数
+gdc_min_leaf_count  = M   ← 本轮对最小 leaf 的 get_design_context 次数（≠页帧那一次）
+要求：M ≥ N；且每一行都有自己的 gdc_at
+M < N 或存在空 gdc_at → A4 FAIL = Critical（不论用户是否点名）
+```
+
+**开写前必须先产出「本帧全 leaf 清单」**（与 metadata 树对齐）。  
+**禁止**清单只写父框（如「左栏 PASS」「mode×4」「总览卡」）或只挑用户点名过的节点。
 
 **leaf 表每一行必须能回答：**
 
 1. Figma node id（如 `4462:639` handle）
-2. 规格：h/w/radius/fill/stroke/font/色（从 context 或 metadata，**禁止截图估**）
+2. 规格：h/w/radius/fill/stroke/font/色（从 **该 id** 的 context，**禁止截图估**）
 3. 现码路径 + 用了哪个 primitive/`surface`/`tone`
 4. **§2.3b 实测** h/pad/font/lh/… + Δpx / 色是否 PASS；FAIL 不得称完成
 
-**稿面可见控件 = MUST 做完 UI**；手册缺数据 → 缺口记文档 + 诚实空；**禁止**不实现该控件。  
-Card：稿无描边+抬起阴影 → `surface="elevated"`；稿有描边 → `outlined`。**禁止**手搓 `shadow-sm` 冒充 elevated。
+**H5 / 响应式（用户锁定 2026-08-02 夜）：**
 
-仅当产品/grilling Answer **书面杀控**才可不做。自写 DEFER /「手册没有」不够。
+- **PC 产品帧** = 全最小 leaf 钻取 + §2.3a 计数门（不可跳）。
+- **H5 帧**：默认 **只核对大概布局 / 堆叠 / 间距节奏**（一次 `get_design_context(H5 页帧)` + metadata 即可）；**不**对 H5 每一个最小 leaf 做全量 `get_design_context`。
+- H5 细部 FAIL 以 **用户点名节点** 为准再钻再修；禁止擅自把 H5 全 leaf 钻取绑进 page-done。
 
-### 2.3b WebBridge 本站实测（强制 · 用户锁定 2026-08-02）
+### 2.3b WebBridge 本站实测（强制 · 用户锁定 2026-08-02；**2026-08-02 夜补钉：禁抽检**）
 
 > **UI PASS 的唯一运行时证据 = 本站 DOM 的 `getBoundingClientRect` / `getComputedStyle`，不是类名、不是 `min-h` 声明、不是 Figma MCP 截图肉眼。**
+>
+> **根因判例（2026-08-02 · 资产 Hub）：** A4 已有 `4285:249` rebase footer（稿 muted 40%），A5 手写 17 行抽检未含该 `nodeId`，却报「17/17 PASS」→ 错色（12px/70%）漏网，直至用户点名。  
+> **补钉：** A5 与 A4 同构 — **抓到的每一个最小 leaf 都必须测**；禁止抽检、抽样、代表项、关键冒充。
 
-**何时：** Figma 全 leaf 清单齐之后、**写盘前**做基线实测；改码后对 FAIL 项 **再测**直至闭合。
+**何时：** Figma 全 leaf 清单齐之后、**写盘前**做基线实测；改码后对 **全清单每一行**（含曾 PASS）**再测**直至闭合。
 
-**对谁：** `pnpm dev` 本站（如 `http://127.0.0.1:5174/...`）上本帧每一个清单 leaf 的对应节点。  
+**对谁：** `pnpm dev` 本站（如 `http://127.0.0.1:5174/...`）上 **A4 清单每一个 `nodeId`** 的对应节点。  
 原型可辅证 IA，**不得**替代本站实测。
 
-**怎么测（Kimi WebBridge `evaluate`）：** 对每个 leaf 记录至少：
+#### 机械门禁（与 §2.3a 对称 · 缺一 = A5 FAIL）
 
-| 字段                                                                   | 来源                                           |
-| ---------------------------------------------------------------------- | ---------------------------------------------- |
-| 选择器 / 如何定位（aria-label、role、文案）                            | 稳定可复测                                     |
-| `height` / `width`（getBoundingClientRect）                            | 对稿 h/w                                       |
-| `padding` · `gap` · `border*Width` · `borderRadius` · `box-sizing`     | 对稿间距/描边                                  |
-| `fontSize` · `lineHeight` · `fontWeight` · `color` · `backgroundColor` | 对稿字/色                                      |
-| 与稿 Δ（px）                                                           | ≤2 → Med/可过；结构错 / ≥3 或错 surface → FAIL |
+```text
+meta_min_leaf_count   = N   ← A4（§2.3a）已钉死
+measure_row_count     = R   ← 实测矩阵中带 A4 nodeId 的行数
+measure_node_ids      = 集合 ← 必须等于 A4 全部 nodeId 集合
+
+R == N  且  无缺 id、无重复 id 冒充覆盖
+→ 才可称 A5 齐 / 才可写「全量实测」
+
+R < N 或存在 A4 nodeId 无实测行
+→ A5 FAIL = Critical（不论抽检子集是否 100% PASS）
+```
+
+**禁止口称：**
+
+| 禁语                                | 何故                                   |
+| ----------------------------------- | -------------------------------------- |
+| 「关键抽检 17/17 PASS」             | 子集 PASS ≠ 全清单                     |
+| 「主要区块已测」                    | footer / icon / 副文常在「非主要」里漏 |
+| 「父卡尺寸对了所以内部字色默认对」  | 字色/字阶必须逐 leaf 量                |
+| leaf 写 `A5 PASS` 但矩阵行数 &lt; N | 假闭合                                 |
+
+**怎么测（Kimi WebBridge `evaluate`）：** **按 A4 表逐行循环**（**必须**用仓库脚本，禁止会话内手写抽检子集）：
+
+```bash
+# 需 pnpm dev :5174 + WebBridge :10086
+pnpm measure:leaf --profile <page-id>    # 例：assets-hub
+```
+
+脚本 SSOT：[`scripts/ui-leaf-a5-measure/`](../../scripts/ui-leaf-a5-measure/README.md)（读 A4 inventory → 全量 R 行 → `*-measure-full.json`；**R≠N = exit 1**）。新页只加 `profiles/<id>.mjs` + `*.page.js`，禁止再发明一次性 measure 脚本。
+
+对每个 leaf 记录至少：
+
+| 字段                                                                   | 来源                                                |
+| ---------------------------------------------------------------------- | --------------------------------------------------- |
+| `nodeId`（与 A4 同一行）                                               | 强制主键                                            |
+| 选择器 / 如何定位（aria-label、role、文案）                            | 稳定可复测；定位失败 = 该行 **FAIL**（不得跳过）    |
+| `height` / `width`（getBoundingClientRect）                            | 对稿 h/w                                            |
+| `padding` · `gap` · `border*Width` · `borderRadius` · `box-sizing`     | 对稿间距/描边（surface 类）                         |
+| `fontSize` · `lineHeight` · `fontWeight` · `color` · `backgroundColor` | 对稿字/色（text/icon 类）                           |
+| 与稿 Δ（px）/ 色是否一致                                               | ≤2 → Med/可过；结构错 / ≥3 或错色/错 surface → FAIL |
+
+**产出文件（建议）：** `*-measure-full.json`（R 行）+ leaf「实测矩阵」节。摘要表可按 FAIL 优先展示，但 **不得**用摘要行数代替 R=N 证明。
 
 **leaf 表必须多一列「实测」**（或独立「实测矩阵」节）：稿规格 | 实测 | Δ | PASS/FAIL。  
-缺实测列却写 UI PASS → R7 **Critical**。
+缺实测列却写 UI PASS → R7 **Critical**。  
+矩阵顶栏必须写明：`N=…` · `R=…` · `R==N ✅/❌`。
 
 **禁止：**
 
 - 「已设 `min-h-[53px]` 故 PASS」却从未量 rect（实测可能仍是 57：border + 内容撑破）
-- 只测 AmountBox、不测 Chip / CTA / slider / rcard / icon / gap
+- 只测 AmountBox、不测 Chip / CTA / slider / rcard / icon / gap / **footer 副文**
+- **抽检 / 抽样 / 代表 leaf /「先测关键再补」却勾 A5 或称全量 PASS**
 - 用 Playwright 代替 WebBridge
+- 定位失败时删除该行或并入父卡行冒充已测
 
 ### 2.4 文案动态审计
 
@@ -260,7 +345,7 @@ Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错
 - [ ] 手册 **逐行**已读且 leaf 有对照表；有源接线；无源=`0`/`0.00`且 **UI 仍在**
 - [ ] WebBridge 原型实录五字段齐全（或合法 N/A）
 - [ ] Figma 页+**每一个**最小子 leaf context/metadata 已拉；全清单无漏项
-- [ ] **§2.3b 本站实测矩阵**已写；UI PASS 行均有实测证据；改后回测过
+- [ ] **§2.3b 本站实测矩阵**已写；顶栏 `N`/`R`/`R==N`；**每一** A4 nodeId 一行；UI PASS 行均有实测；改后全量回测（禁抽检）
 - [ ] 尺寸跟 §2.6：**零** 任意 `*[Npx]`（硬禁）；不对齐则改 token
 - [ ] **全 leaf 清单无漏项**（§2.3c）；不是只修了用户点名的一两个控件
 - [ ] 「稿无代码有」已处理
