@@ -31,10 +31,10 @@ export function AssetsHubWidget() {
       <WidgetHeader
         action={
           <div className="flex items-center gap-2">
-            {/* Figma `4282:216` btn/settings：36 · radius/sm≈10 · 白底描边；面板 DEFER → 禁用但保持 bg-card */}
+            {/* Figma `4282:216`：36 · radius/control≈11（稿 sm=10）· 白底方角；面板 DEFER → 禁用仍 bg-card */}
             <Button
               aria-label={t.assets.hub.settingsAria}
-              className="grid size-9 min-h-9 shrink-0 bg-card p-0 disabled:bg-card max-dapp:hidden"
+              className="grid size-9 min-h-9 shrink-0 rounded-control! bg-card p-0 disabled:bg-card max-dapp:hidden"
               disabled
               shape="rounded"
               type="button"
@@ -42,7 +42,7 @@ export function AssetsHubWidget() {
             >
               <DappIcon alt="" size="lg" src={dappAssets.setting} />
             </Button>
-            <DappPanelToggle />
+            <DappPanelToggle className="rounded-control!" />
           </div>
         }
         subtitle={t.assets.intro}

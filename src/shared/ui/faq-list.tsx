@@ -52,8 +52,21 @@ const faqList = tv({
   },
 })
 
-/** FAQ chevron — CSS rotate/color via `[data-faq-item][data-state]`. */
-function FaqChevron() {
+/** DApp FAQ 下箭头 · Figma `4285:253`（public 直链；禁 shared→app）. */
+const DAPP_FAQ_CHEVRON_SRC = '/assets/figma/dapp/assets-hub/ic-faq-chevron.svg'
+
+/** FAQ chevron — DApp 用稿面资产；home 保留 currentColor SVG 供开合染色. */
+function FaqChevron({ variant }: { variant: FaqListVariant }) {
+  if (variant === 'dapp') {
+    return (
+      <img
+        alt=""
+        aria-hidden
+        className="faq-chevron size-4.5 shrink-0 object-contain"
+        src={DAPP_FAQ_CHEVRON_SRC}
+      />
+    )
+  }
   return (
     <svg
       aria-hidden="true"
@@ -165,10 +178,14 @@ export function FaqList({
               <div className={styles.cardBody()}>
                 <Accordion.Header className="m-0 w-full">
                   <Accordion.Trigger className={styles.trigger()} data-faq-trigger>
-                    <Text variant="question" className={styles.question()}>
+                    {/* DApp FAQ 问句稿 16 semibold → headline；home 仍 question */}
+                    <Text
+                      variant={variant === 'dapp' ? 'headline' : 'question'}
+                      className={styles.question()}
+                    >
                       {item.q}
                     </Text>
-                    <FaqChevron />
+                    <FaqChevron variant={variant} />
                   </Accordion.Trigger>
                 </Accordion.Header>
                 <Accordion.Content

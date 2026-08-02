@@ -209,14 +209,15 @@ export function AssetsHubContent() {
           <ol className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2 dapp:grid-cols-4">
             {rebase.steps.map((step) => (
               <li className="min-h-25.5 px-1 pt-4 text-center" key={step.title + step.body}>
-                <Text as="p" className="leading-5 font-bold" variant="copy">
+                {/* Figma step 标题 body 16 bold → headline；副文 caption 13 → copy */}
+                <Text as="p" className="leading-5 font-bold" variant="headline">
                   {step.title}
                 </Text>
                 <Text
                   as="p"
                   className="mt-1.5 leading-4 whitespace-pre-line"
                   tone="muted-foreground"
-                  variant="support"
+                  variant="copy"
                 >
                   {step.body}
                 </Text>
@@ -224,7 +225,8 @@ export function AssetsHubContent() {
             ))}
           </ol>
 
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl bg-muted px-6 py-3">
+          {/* Figma tags `4285:232` h43 · bg/page · radius/md16；py-3.5 合成 ≈43 */}
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-2xl bg-muted px-6 py-3.5">
             {rebase.tags.map((tag) => (
               <span className="flex items-center gap-1.5" key={tag}>
                 {/* Figma `4285:232` tags：实心珊瑚圆+白勾（禁描边 ic-check） */}
@@ -234,7 +236,7 @@ export function AssetsHubContent() {
                   size="sm"
                   src={dappAssets.assetsHubCheckBadge}
                 />
-                <Text as="span" className="leading-4 font-semibold" variant="support">
+                <Text as="span" className="leading-4 font-semibold" variant="copy">
                   {tag}
                 </Text>
               </span>

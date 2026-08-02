@@ -7,8 +7,8 @@ import { Text } from '~/shared/ui/text'
 
 /**
  * Figma `asset/*` · `4282:223`（h117 · p16 · gap8 · radius/md16）.
- * 副文/≈：`text-foreground/40`（稿 muted 40%）.
- * 行盒：`leading-4`（16）贴 labels/≈；顶行靠 icon20 撑到 20.
+ * 副文/≈：稿 caption 13 + muted 40% → `copy` + `text-foreground/40`；`leading-4` 压行盒。
+ * 顶行靠 icon20 撑到 20；主值 14 semibold → `detail`。
  */
 export function AssetsModeCard({
   aprHint,
@@ -64,7 +64,7 @@ export function AssetsModeCard({
             </Text>
           </div>
           <div className="pointer-events-auto flex items-center gap-1">
-            <Text as="span" className="leading-4 font-medium" variant="support">
+            <Text as="span" className="leading-4 font-medium" variant="copy">
               <DappCountValue animate={false} text={aprLabel} />
             </Text>
             <DappInfoTooltip className="size-3 text-foreground [&_svg]:size-3" content={aprHint} />
@@ -72,14 +72,10 @@ export function AssetsModeCard({
         </div>
 
         <div className="grid grid-cols-2 gap-y-1">
-          <Text as="span" className="leading-4 text-foreground/40" variant="support">
+          <Text as="span" className="leading-4 text-foreground/40" variant="copy">
             {positionLabel}
           </Text>
-          <Text
-            as="span"
-            className="justify-self-end leading-4 text-foreground/40"
-            variant="support"
-          >
+          <Text as="span" className="justify-self-end leading-4 text-foreground/40" variant="copy">
             {yieldLabel}
           </Text>
 
@@ -95,14 +91,10 @@ export function AssetsModeCard({
             <DappCountValue text={yieldValue} />
           </Text>
 
-          <Text as="span" className="leading-4 text-foreground/40" variant="support">
+          <Text as="span" className="leading-4 text-foreground/40" variant="copy">
             <DappCountValue animate={false} text={positionApprox} />
           </Text>
-          <Text
-            as="span"
-            className="justify-self-end leading-4 text-foreground/40"
-            variant="support"
-          >
+          <Text as="span" className="justify-self-end leading-4 text-foreground/40" variant="copy">
             <DappCountValue animate={false} text={yieldApprox} />
           </Text>
         </div>
