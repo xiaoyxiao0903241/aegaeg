@@ -46,10 +46,11 @@ export function DappModeCard({
     >
       <DappIcon alt="" className="shrink-0" size="xl" src={icon} />
       <Card.Content className="grid min-w-0 flex-1 gap-1.5">
-        <Text as="span" variant="copy" className="leading-normal font-semibold">
+        {/* 稿 title 14 / body 13；leading-tight 合成 h70（禁 leading-[Npx]） */}
+        <Text as="span" className="leading-tight font-semibold" variant="detail">
           {title}
         </Text>
-        <Text as="p" variant="support" className="m-0 leading-normal text-foreground/40">
+        <Text as="p" className="m-0 leading-tight text-foreground/40" variant="copy">
           {body}
         </Text>
       </Card.Content>

@@ -18,6 +18,8 @@ type WidgetHeaderProps = {
   className?: string
   subtitle?: ReactNode
   title: ReactNode
+  /** 覆盖 h1 字阶/行高（兑换 Hub 稿 h3 20 / leading normal）。 */
+  titleClassName?: string
 }
 
 function WidgetHeaderCopy({
@@ -52,7 +54,13 @@ function WidgetHeaderCopy({
   )
 }
 
-export function WidgetHeader({ action, className, subtitle, title }: WidgetHeaderProps) {
+export function WidgetHeader({
+  action,
+  className,
+  subtitle,
+  title,
+  titleClassName,
+}: WidgetHeaderProps) {
   const styles = widgetHeader()
 
   return (
@@ -62,7 +70,7 @@ export function WidgetHeader({ action, className, subtitle, title }: WidgetHeade
         subtitle={subtitle}
         subtitleClassName={styles.subtitle()}
         title={title}
-        titleClassName={styles.title()}
+        titleClassName={cn(styles.title(), titleClassName)}
       />
       {action}
     </div>

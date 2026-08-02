@@ -12,10 +12,11 @@ export function ExchangeHubWidget() {
   return (
     <>
       <WidgetHeader
-        action={<DappPanelToggle />}
-        className="mb-4 [&_h1]:text-xl/normal [&_h1]:tracking-normal"
+        action={<DappPanelToggle className="rounded-[length:var(--radius-control)]" />}
+        className="mb-4"
         subtitle={t.exchange.intro}
         title={t.exchange.title}
+        titleClassName="text-xl !leading-[1.2] tracking-normal"
       />
       <DappWidgetStack>
         <DappModeCard
