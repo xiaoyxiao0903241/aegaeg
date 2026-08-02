@@ -45,6 +45,6 @@
 | 25 | 队列 | `4466:220` | **page-done** | `research/144-release-queue-fresh-leaf.md` · `f11a060e` |
 | 26 | 缓冲 | `4469:220` | **page-done** | `research/145-release-buffer-fresh-leaf.md` · `9cb8a214` |
 | 27 | 社区 Hub | `4300:212` | **page-done** | `research/146-community-hub-fresh-leaf.md` · `1219cc27` |
-| 28 | 创世 Hub | `4303:212` | **page-done** | `research/147-genesis-hub-fresh-leaf.md` |
+| 28 | 创世 Hub | `4303:212` | **page-done** | `research/147-genesis-hub-fresh-leaf.md` · `6909c73b` |
 
 **完成定义：** 上表全部 Status=`page-done`（含本轮 Figma 直拉 leaf 表 + 实测矩阵 + Critical=0）后 **通知用户**。
