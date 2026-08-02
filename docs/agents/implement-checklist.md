@@ -60,12 +60,13 @@ Agent session：
 ```
 [ ] fileKey `uiKwzwIoD06phS0husdqjB`；`get_design_context` 前已 load figma-design-to-code
 [ ] 本轮已调用 `get_metadata(页帧)`（全树 w/h/x/y）并按 §2.3a 计出 meta_min_leaf_count=N
-[ ] 本轮已对页帧 **以及** 每一个最小 leaf（§2.3a 表）调用 `get_design_context`；gdc_min_leaf_count=M
-[ ] **机械门：** M ≥ N；leaf 每一行有独立 `gdc_at`（父框时间不可继承）
-[ ] leaf 文首写明：N、M、拉取日、fileKey、页帧 nodeId
+[ ] **§8.2a：** 已抽且一眼同构的块标 `reuse:<Component>`（整块计 1，子叶不强制计入 N）；本页独有 chrome 仍逐叶计入
+[ ] 本轮已对页帧 **以及** 每一个**须深钻**最小 leaf（§2.3a − §8.2a reuse）调用 `get_design_context`；gdc_min_leaf_count=M
+[ ] **机械门：** M ≥ N（N 已扣 reuse 子叶）；leaf 每一行有独立 `gdc_at`（父框时间不可继承；reuse 行写组件名即可）
+[ ] leaf 文首写明：N、M、拉取日、fileKey、页帧 nodeId、reuse 清单
 [ ] 每一行含：nodeId + kind + 稿 h/w/pad/font/色/surface + gdc_at — 禁只列 AmountBox/CTA/「mode×4」
 [ ] 清单覆盖：栏→块→控件→最小叶（icon/thumb/字色/padding/surface）；无「左栏大概 PASS」
-[ ] 自检 §2.3c + §2.3a：漏一项或 M<N = A4 未完成 → **禁止**进入 A5/写盘
+[ ] 自检 §2.3c + §2.3a + §8.2a：漏独有叶或 M<N = A4 未完成 → **禁止**进入 A5/写盘
 [ ] **未**用旧 scratch / 旧 page-done 抄规格冒充本轮拉取
 ```
 
@@ -97,6 +98,7 @@ Agent session：
 [ ] 本页计划改动 **不含** 任何 `*[Npx]` / `*[Nrem]` 任意值（§2.6）
 [ ] 若字阶/图标对不齐稿 → 计划改 `theme.css` token 或 primitive variant，不计划 call site 补 px
 [ ] 已搜现有 `shared/ui` / shell：能复用的不新造（§8.2）
+[ ] **§8.2a：** 运行机制 / MetricGrid / Chart / FAQ 等已抽且一眼同构 → 复用，不为本页深钻该块
 [ ] chart / 同 chrome 多实例 → 走或扩共用组件，禁止页袋复制分叉
 ```
 

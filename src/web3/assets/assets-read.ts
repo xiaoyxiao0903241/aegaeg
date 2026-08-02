@@ -51,6 +51,7 @@ const bondAbi = parseAbi([
 ])
 const xmineAbi = parseAbi([
   X_STAKING_POOL_METHODS.pendingReward,
+  X_STAKING_POOL_METHODS.pendingRewardValue,
   X_STAKING_POOL_METHODS.miningStakeAmountOf,
   X_STAKING_POOL_METHODS.stakes,
 ])
@@ -84,6 +85,8 @@ export type AssetsBondRow = {
 
 export type AssetsXminePosition = {
   pending: bigint
+  /** `pendingRewardValue` — AGX/gAGX 价值口径（手册 §15.3） */
+  pendingValue: bigint
   miningStake: bigint
   gons: bigint
   warmupGons: bigint
@@ -436,11 +439,17 @@ export async function readXminePosition(
   const migratedFrom = await readMigratedFrom(user, client)
   const stakeRoot = migrationStakeRoot(user, migratedFrom) as Address
 
-  const [pending, miningStake, stake] = await Promise.all([
+  const [pending, pendingValue, miningStake, stake] = await Promise.all([
     client.readContract({
       address: BSC_CONTRACTS.xStakingPool,
       abi: xmineAbi,
       functionName: 'pendingReward',
+      args: [user],
+    }),
+    client.readContract({
+      address: BSC_CONTRACTS.xStakingPool,
+      abi: xmineAbi,
+      functionName: 'pendingRewardValue',
       args: [user],
     }),
     client.readContract({
@@ -465,6 +474,7 @@ export async function readXminePosition(
   ]
   return {
     pending: pending as bigint,
+    pendingValue: pendingValue as bigint,
     miningStake: miningStake as bigint,
     gons,
     warmupGons,

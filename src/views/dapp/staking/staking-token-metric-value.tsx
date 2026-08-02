@@ -8,12 +8,13 @@ export function StakingTokenMetricValue({
   value,
   approx,
 }: {
-  icon: 'agx' | 'gagx'
+  icon: 'agx' | 'gagx' | 'x'
   value: string
   /** Figma inline `≈ $…` next to amount (optional). */
   approx?: string
 }) {
-  const src = icon === 'agx' ? dappAssets.tokenAgx : dappAssets.tokenGagx
+  const src =
+    icon === 'agx' ? dappAssets.tokenAgx : icon === 'x' ? dappAssets.tokenX : dappAssets.tokenGagx
   return (
     <span className="flex min-w-0 flex-wrap items-center gap-1.5">
       <DappIcon alt="" shape="circle" size="lg" src={src} />

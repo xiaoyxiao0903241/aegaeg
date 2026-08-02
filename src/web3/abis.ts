@@ -236,7 +236,15 @@ export const X_STAKING_POOL_METHODS = {
   stakeGagxForMining: 'function stakeGagxForMining(uint256 amount)',
   activateWarmup: 'function activateWarmup()',
   pendingReward: 'function pendingReward(address user) view returns (uint256)',
+  /** 手册 §15.3 — pending 的 AGX/gAGX 价值口径 */
+  pendingRewardValue: 'function pendingRewardValue(address user) view returns (uint256)',
   miningStakeAmountOf: 'function miningStakeAmountOf(address user) view returns (uint256)',
+  /** 手册 contracts/xstakingpool：X/AGX 价格比（1e18 标度 · X per AGX） */
+  xPerAgx: 'function xPerAgx() view returns (uint256)',
+  /** 按天计息 BP；日收益率% = BP / 100 */
+  yieldRateBP: 'function yieldRateBP() view returns (uint256)',
+  /** 活跃质押 gons（与 gAGX 9 位同刻度展示） */
+  activeGons: 'function activeGons() view returns (uint256)',
   stakes:
     'function stakes(address user) view returns (uint256 gons, uint256 warmupGons, uint256 warmupStartTime, uint256 warmupEndTime, uint256 rewardStartTime)',
   claimReward: 'function claimReward()',

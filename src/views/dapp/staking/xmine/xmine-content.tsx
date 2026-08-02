@@ -15,8 +15,9 @@ export function XmineContent() {
         mechanismSteps={t.staking.xmine.mechanismSteps}
         mechanismTitle={t.staking.xmine.mechanismTitle}
         overviewItems={overviewItems}
-        overviewLayout="triple-plus"
+        overviewLayout="pair-plus"
         positionItems={positionItems}
+        positionLayout="triple-plus"
         recordColWidths={['10.9375rem', '6.25rem', '8.75rem', '1fr']}
         recordColumns={t.staking.aside.xmineRecordColumns}
         recordRows={recordRows}

@@ -15,7 +15,6 @@ import type {
   StakePositionItem,
   TurbineLogItem,
   X0MiningLogItem,
-  X0MiningPositionItem,
 } from '~/shared/api/types'
 
 function formatAmount(raw: string): string {
@@ -114,15 +113,6 @@ export function mapBondPurchaseToAsideRow(item: BondPurchaseItem): string[] {
     formatAmount(item.deposit_amount),
     discount,
     formatAmount(item.payout),
-    formatTx(item.tx_hash),
-  ]
-}
-
-export function mapX0MiningPositionToOpsRow(item: X0MiningPositionItem): string[] {
-  return [
-    formatBlockTime(item.block_time),
-    item.operation,
-    formatAmount(item.amount),
     formatTx(item.tx_hash),
   ]
 }

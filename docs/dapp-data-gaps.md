@@ -163,11 +163,22 @@
 
 ### 3.4 X 挖矿
 
-| 数据位                              | 是否已接 | 源               |
-| ----------------------------------- | -------- | ---------------- |
-| 额度 / 用户仓位                     | 是       | API + 链上 quota |
-| meta 日收益                         | 否       | 无数据源         |
-| 概览：协议 X 池 TVL / X 价 / 日产出 | 否       | 无数据源         |
+| 数据位                                   | 是否已接 | 源                                                                                              |
+| ---------------------------------------- | -------- | ----------------------------------------------------------------------------------------------- |
+| 左栏：钱包 gAGX / 质押额度 / CTA         | 是       | 链 `RewardGAGX.balanceOf` + `miningQuotaOf` + `stakeGagxForMining`（money-path Xmine）          |
+| meta：最大质押 / 锁定 24h / 合约         | 是       | quota + FAQ 不变量 + 池地址                                                                     |
+| meta：收益率(日)                         | 是       | 链 `yieldRateBP`（`%/日 = BP/100`）                                                             |
+| 概览：X挖矿总质押量                      | 是       | 链 `activeGons`（按 gAGX 9dec 展示；与本金同刻度）                                              |
+| 概览：累计产出                           | 否       | 无协议累计 X view / 历史 API · UI 诚实 `0`                                                      |
+| 概览：X 价                               | 是       | 链 `xPerAgx`（1e18 标度 X-per-AGX → 展示 AGX/X + AGX USD 副值）                                 |
+| 概览：当日收益率                         | 是       | 同 `yieldRateBP`                                                                                |
+| 概览：下一次挖矿产出（倒计时）           | 否       | 仅有 `lastRewardTime`；无下次结算时刻 / 固定周期 view · UI 诚实 `—`                             |
+| X 长期价值系统（210M / 47.62% / 52.38%） | 是       | FAQ 不变量文案（静态）；H5 `%`/标题上下排（稿横排放不下·产品纠偏）                              |
+| 仓位：我的挖矿质押                       | 是       | 链 `miningStakeAmountOf`（`readXminePosition`）；API `total_stake_amount` / `stake_x_pool` 兜底 |
+| 仓位：已释放                             | 否       | 本页无 PRV 已释字段 · UI 诚实 `0`（资产页 warmup 启发式另表，语义分叉）                         |
+| 仓位：挖矿产出（pending X）              | 是       | 链 `pendingReward` + 副值 `pendingRewardValue`→USD                                              |
+| 挖矿记录表                               | 是       | API `POST /x0-mining/logs`（**禁**用 positions 冒充流水）                                       |
+| TVL 历史图 / 图头占位                    | 否       | 无历史序列 · 空图；头值占位                                                                     |
 
 ### 3.5 收益计算器
 
@@ -201,6 +212,9 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-03 | Xmine：接 `yieldRateBP`/`xPerAgx`/`activeGons`（meta 日收益 + 概览 TVL/X 价/日收益）；累计产出与下次倒计时仍无源             |
+| 2026-08-03 | Xmine：pending 副值接 `pendingRewardValue`；gaps 澄清 xPerAgx/yieldRateBP 未接；H5 价值卡双栏+%上下排                        |
+| 2026-08-03 | Xmine：仓位链读 + 记录改 logs；概览 pair-plus(2+3)；gaps 补全协议无源位；§8.2a 复用机制/图/FAQ                               |
 | 2026-08-03 | Bond LP/Burn：仓位改链读（修 `claimable_gagx`）；gaps 补全左栏/仓位/无源位；H5 机制竖时间线恢复（`4665:1252`）；仓位文案跟稿 |
 | 2026-08-03 | Bond LP/Burn：澄清已售/周期收益/TVL/溢价无源；右栏复用 Stake chrome（`DappProcessSteps` / `MetricGrid`）                     |
 | 2026-08-03 | Stake 子页：仓位五卡改接 `readStakePositions`（修错用 `claimable_gagx`）；加成=`extraInterest`；记图头占位无源               |

@@ -14,7 +14,8 @@ import { Text } from '~/shared/ui/text'
 import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine-view'
 
 export function XmineWidget() {
-  const { t, xmine, sessionReady, walletReady, setView, amountLabel, onSubmit } = useXmineView()
+  const { t, xmine, sessionReady, walletReady, setView, amountLabel, dailyYieldLabel, onSubmit } =
+    useXmineView()
 
   const quotaBalance = (
     <Text as="span" className="font-semibold text-coral-emphasis" variant="copy">
@@ -64,7 +65,7 @@ export function XmineWidget() {
           items={[
             {
               label: t.staking.xmine.meta.daily,
-              value: '0.00%',
+              value: dailyYieldLabel,
               valueClassName: 'text-coral-emphasis',
             },
             {

@@ -23,17 +23,19 @@ const metricValueClass = 'text-base leading-5 font-semibold tracking-normal'
 
 /**
  * 右栏指标排布 — 跟各帧稿面，不抽万能仓位组件。
- * - cards-2：概览 2×2（稿 gap 16）
+ * - cards-2：概览/仓位 2×2（稿 gap 16）
  * - triple-plus：6 列 span — PC 上三(span2)下二(span3)；H5 一律 span3=每行两卡
+ * - pair-plus：Xmine 概览 — PC 上二(span3)下三(span2)；H5 一律 span3
  */
 function AsideMetricLayout({
   items,
   layout,
 }: {
   items: Array<{ label: string; value: ReactNode }>
-  layout: 'cards-2' | 'triple-plus'
+  layout: 'cards-2' | 'triple-plus' | 'pair-plus'
 }) {
-  if (layout === 'triple-plus') {
+  if (layout === 'triple-plus' || layout === 'pair-plus') {
+    const pairFirst = layout === 'pair-plus'
     return (
       <div className="grid grid-cols-6 gap-4 max-dapp:min-w-0 max-dapp:gap-2.5">
         {items.map((item, index) => (
@@ -41,8 +43,15 @@ function AsideMetricLayout({
             className={cn(
               metricCardClass,
               'min-w-0',
-              // PC：前三 span2 → 一行三卡；其后 span3 → 一行两卡。H5：全 span3 → 每行两卡。
-              index < 3 ? 'col-span-2 max-dapp:col-span-3' : 'col-span-3',
+              pairFirst
+                ? // PC：前二 span3 → 一行两卡；其后 span2 → 一行三卡。H5：全 span3。
+                  index < 2
+                  ? 'col-span-3'
+                  : 'col-span-2 max-dapp:col-span-3'
+                : // PC：前三 span2 → 一行三卡；其后 span3 → 一行两卡。H5：全 span3。
+                  index < 3
+                  ? 'col-span-2 max-dapp:col-span-3'
+                  : 'col-span-3',
             )}
             key={item.label}
             label={item.label}
@@ -87,8 +96,8 @@ export function StakingDetailAside({
   positionLayout = 'triple-plus',
 }: {
   overviewItems: Array<{ label: string; value: ReactNode }>
-  /** Figma stake/bond: 2×2; xmine: 3+2. */
-  overviewLayout?: 'list' | 'cards-2' | 'triple-plus'
+  /** Figma stake/bond: 2×2；xmine 概览: pair-plus（2+3）。 */
+  overviewLayout?: 'list' | 'cards-2' | 'triple-plus' | 'pair-plus'
   mechanism?: string
   mechanismTitle?: string
   mechanismSteps?: Array<{ title: string; body: string }>
@@ -158,22 +167,36 @@ export function StakingDetailAside({
                 {xValue.badge}
               </Text>
             </div>
-            <div className="grid gap-10 sm:grid-cols-2">
+            {/* H5 `4665:1656`：双栏并排 + 顶对齐；窄列 %/标题上下排（稿横排放不下，产品纠偏） */}
+            <div className="grid grid-cols-2 items-start gap-10">
               {xValue.columns.map((col) => (
-                <div className="grid gap-2.5" key={col.title}>
-                  <div className="flex items-baseline gap-2">
-                    <Text as="strong" className="text-xl font-bold" tone="inverse" variant="copy">
+                <div className="grid min-w-0 content-start gap-2.5" key={col.title}>
+                  <div className="flex flex-col items-start gap-1 dapp:flex-row dapp:items-baseline dapp:gap-2">
+                    <Text
+                      as="strong"
+                      className="shrink-0 text-xl font-bold"
+                      tone="inverse"
+                      variant="copy"
+                    >
                       {col.pct}
                     </Text>
-                    <Text as="span" className="font-medium" tone="inverse-muted" variant="copy">
+                    <Text
+                      as="span"
+                      className="min-w-0 font-medium"
+                      tone="inverse-muted"
+                      variant="copy"
+                    >
                       {col.title}
                     </Text>
                   </div>
                   <ul className="m-0 grid list-none gap-2 p-0">
                     {col.bullets.map((bullet) => (
-                      <li className="flex items-center gap-2" key={bullet}>
-                        <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-primary" />
-                        <Text as="span" className="text-white/65" variant="copy">
+                      <li className="flex items-start gap-2" key={bullet}>
+                        <span
+                          aria-hidden
+                          className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"
+                        />
+                        <Text as="span" className="min-w-0 text-white/65" variant="copy">
                           {bullet}
                         </Text>
                       </li>

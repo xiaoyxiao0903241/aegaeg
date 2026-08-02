@@ -10,6 +10,7 @@ import {
   readStakeOpenPreflight,
   readXminePreflight,
 } from '~/web3/staking/staking-read'
+import { readXmineOverview } from '~/web3/staking/xmine-overview-read'
 
 /** Public hub overview — TVL / circulating / treasury / burn / rebase (no wallet). */
 export function useStakingHubOverviewQuery(options?: ChainQueryOptions) {
@@ -95,6 +96,18 @@ export function useXminePreflightQuery(options?: ChainQueryOptions) {
     freshness: 'balances',
     enabled: options?.enabled ?? true,
     queryFn: (user) => readXminePreflight({ user }),
+    placeholderData: keepPreviousData,
+  })
+}
+
+/** Public — Xmine 概览/meta（xPerAgx · yieldRateBP · activeGons）。 */
+export function useXmineOverviewQuery(options?: ChainQueryOptions) {
+  return useChainQuery({
+    queryKey: queryKeys.chain.xmineOverview,
+    scope: 'public',
+    freshness: 'quote',
+    enabled: options?.enabled ?? true,
+    queryFn: () => readXmineOverview(),
     placeholderData: keepPreviousData,
   })
 }

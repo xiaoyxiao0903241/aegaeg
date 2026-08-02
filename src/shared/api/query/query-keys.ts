@@ -305,6 +305,8 @@ export const queryKeys = {
     xminePreflight: ['chain', 'staking', 'xmine'] as const,
     xminePreflightOf: (address: string) =>
       chainWalletQueryKey(['chain', 'staking', 'xmine'], address),
+    /** Public — xPerAgx / yieldRateBP / activeGons */
+    xmineOverview: ['chain', 'staking', 'xmine', 'overview'] as const,
     assetsRoot: ['chain', 'assets'] as const,
     assetsStakePositions: ['chain', 'assets', 'stake'] as const,
     assetsStakePositionsOf: (address: string) =>
