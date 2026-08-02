@@ -11,8 +11,8 @@
  *   node scripts/generate-tokens.mjs
  *   node scripts/generate-tokens.mjs --watch
  */
-import { readFileSync, writeFileSync, watch } from 'node:fs'
-import { resolve, dirname } from 'node:path'
+import { readFileSync, watch, writeFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -311,7 +311,7 @@ function staticEngineeringVars() {
   --app-icon-lg: 1.125rem;
   --app-icon-xl: 1.25rem;
   --app-icon-rail: 1.375rem;
-  --app-icon-token: 1.5rem;
+  --app-icon-token: 1.375rem;
   --app-icon-brand: 1.75rem;
 
   --dapp-icon-xs: var(--app-icon-xs);

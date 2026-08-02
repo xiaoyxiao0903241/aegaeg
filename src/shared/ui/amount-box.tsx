@@ -10,21 +10,23 @@ import { Text } from '~/shared/ui/text'
 /** Amount input card — label + balance / amount row + token selector + input. */
 export const amountBox = tv({
   slots: {
-    // Figma sell/buy cards: default border; focused editable field → coral card stroke (#c85c3f)
+    // Figma sell/buy cards: default border; focused editable field → coral card stroke
     root: 'flex flex-col gap-2 focus-within:border-coral',
     /**
-     * Figma inputBox 4454:642: h=53 = py12 + 24px/29 linebox + py12; px14; radius16.
-     * Override Card `p-3.5`; lock min-h so figure + maxB(27) stay ≤53±2.
+     * Figma inputBox 4454:642 / amtBox 4462:620 / priceBox 4462:628：
+     * 合成壳高 = py-3（--space-5）+ figure 字盒（--type-figure-*）+ border；禁任意 h-[Npx]。
+     * Override Card 默认 p-3.5 → p-0 + px-3.5 py-3。
      */
-    rootOutside: 'min-h-[53px] gap-0 rounded-md p-0 px-3.5 py-3 focus-within:border-coral',
+    rootOutside: 'flex items-center gap-0 rounded-md p-0 px-3.5 py-3 focus-within:border-coral',
     header: 'flex items-center justify-between gap-3',
     label: '',
     balance: 'text-right',
     body: 'flex items-center justify-between gap-3 max-dapp:items-start',
-    /** Exchange: amount right. Staking headerOutside: amount left (Figma 4454:642). */
+    /** Exchange: amount right. Staking headerOutside: amount left. */
     input: 'ml-auto max-w-[65%]',
+    /** 字阶走 Input amount → --type-figure-*；p-0 去掉 UA pad，避免壳高被撑破 */
     inputOutside:
-      'mr-auto max-w-[50%] text-left text-[24px] leading-[29px] text-foreground placeholder:text-foreground/40',
+      'mr-auto max-w-[50%] p-0 text-left text-foreground placeholder:text-foreground/40',
   },
 })
 
@@ -71,7 +73,7 @@ export function AmountBox({
         variant="copy"
         className={cn(
           styles.label(),
-          headerOutside ? 'text-foreground/40' : 'text-[13px] font-normal text-foreground/70',
+          headerOutside ? 'text-foreground/40' : 'font-normal text-foreground/70',
         )}
       >
         {renderMetricText(label)}
@@ -80,10 +82,10 @@ export function AmountBox({
         typeof balance === 'string' ? (
           <Text
             as="span"
-            variant="copy"
+            variant={headerOutside ? 'copy' : 'support'}
             className={cn(
               styles.balance(),
-              headerOutside ? 'text-foreground/40' : 'text-[13px] font-normal text-foreground/70',
+              headerOutside ? 'text-foreground/40' : 'font-normal text-foreground/70',
             )}
           >
             {renderMetricText(balance)}

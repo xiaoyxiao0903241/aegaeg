@@ -125,7 +125,8 @@ export const typeVariants = [
   "brand",
   "section",
   "panel",
-  "figure"
+  "figure",
+  "stat"
 ] as const
 
 export type TypeVariant = (typeof typeVariants)[number]

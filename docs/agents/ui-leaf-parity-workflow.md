@@ -1,38 +1,48 @@
 # UI 页面实现工作流（全仓通用 · 强制）
 
-> **状态：** 用户锁定 2026-07-30（对抗纠偏：堵 R5 合取漏洞 · 手册沉默 ≠ 取消 UI · WebBridge 实录字段）；**2026-07-31 加锁：手册逐行对照 + R4a（手册有→手册；手册无→可证旧码）**  
-> **本文件 = `page-done` 与工具序唯一正文。** `AGENTS.md` 管分层；`implement-checklist.md` 只管勾选。  
+> **状态：** 用户锁定 2026-07-30（对抗纠偏：堵 R5 合取漏洞 · 手册沉默 ≠ 取消 UI · WebBridge 实录字段）；**2026-07-31 加锁：手册逐行对照 + R4a**；**2026-08-02 加锁：全 leaf 清单 + WebBridge 实测 computed style + 禁 px 创可贴**  
+> **本文件 = `page-done` 与工具序唯一正文。** `AGENTS.md` 管分层；[`implement-checklist.md`](./implement-checklist.md) = **每次开页必勾**（禁止跳步写盘）。  
 > **挂载：** [`AGENTS.md`](../../AGENTS.md) §8.0 R4a / R5 / R5a / R6 / R7
 
 ---
 
 ## 0. 禁止再犯（合并禁语）
 
-| 坏做法                                           | 必须                                                                                          |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| 手册摘要略读 / 「整体符合 §X」无逐条对照表       | **逐行**读相关章；leaf 落对照表（§2.1）；缺 → Critical                                        |
-| WebBridge「可选 / DEFER / 稍后补」后标 page-done | 无 §2.2 实录字段 → Status ≤ `needs-proto-reverify`；R7 不得 PASS                              |
-| 手册缺数据 / 只写钱路 → 不做下拉、用 flip 冒充   | **UI MUST 做完**；缺口记文档；动态数字空态=`0`/`0.00`（FAQ 同，无 count 动效）；flip ≠ picker |
-| 「稿∩手册才 MUST」缩 UI                          | 控件跟 Figma/原型；钱跟手册                                                                   |
-| 手册沉默 → 拆旧写 / 发明第三条写链               | **R4a**：手册有→手册；手册无+可证旧码→恢复；皆无→关写暴露                                     |
-| 多页并行写盘                                     | 一帧闭环到 page-done 后才开下一帧                                                             |
-| `pnpm check` / 钱路 PASS / High 波 = 完成        | 仅 §5 全满                                                                                    |
-| 证据栏套话（「一致」「N/A」无路径）              | Critical                                                                                      |
-| 旧 scratch「选币=flip PASS」                     | **作废**（见 §9）                                                                             |
-| 页级/组件级「大概像」冒充 leaf 对齐              | **必须**钻到 Figma **最小可见子节点**（§2.3）；漏 thumb / 色 / 卡 surface = Critical          |
-| commit 只跑 eslint/tsc、跳过 knip/jscpd          | **pre-commit + `pnpm check`** 均含 `lint:deadcode` + `lint:duplicates`（§5 / commands）       |
+| 坏做法                                                                                              | 必须                                                                                                                  |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 手册摘要略读 / 「整体符合 §X」无逐条对照表                                                          | **逐行**读相关章；leaf 落对照表（§2.1）；缺 → Critical                                                                |
+| WebBridge「可选 / DEFER / 稍后补」后标 page-done                                                    | 无 §2.2 实录字段 → Status ≤ `needs-proto-reverify`；R7 不得 PASS                                                      |
+| 只点通原型、**不**对本站每个 leaf 做 `getComputedStyle`                                             | 无 §2.3b 实测矩阵 → **禁止**标 UI PASS；R7 Critical                                                                   |
+| 修一个组件 / 写一句 `min-h-[53px]` 冒充本页贴稿完成                                                 | **每一个**可见最小 leaf 都要进表 + 实测；漏一项 = 未对齐                                                              |
+| 用 `min-h-[Npx]` / `h-[Npx]` / `text-[Npx]` / `size-[Npx]` / `leading-[Npx]` / `p-[Npx]` 等任意长度 | **硬禁**（§2.6）：尺寸只许 token / `Text` variant / 标准刻度 / `var(--*)`；违反 = 写盘 Critical，不论实测是否碰巧对齐 |
+| 手册缺数据 / 只写钱路 → 不做下拉、用 flip 冒充                                                      | **UI MUST 做完**；缺口记文档；动态数字空态=`0`/`0.00`（FAQ 同，无 count 动效）；flip ≠ picker                         |
+| 「稿∩手册才 MUST」缩 UI                                                                             | 控件跟 Figma/原型；钱跟手册                                                                                           |
+| 手册沉默 → 拆旧写 / 发明第三条写链                                                                  | **R4a**：手册有→手册；手册无+可证旧码→恢复；皆无→关写暴露                                                             |
+| 多页并行写盘 / 清单未齐就改码                                                                       | 一帧闭环；**§3 步 1–5 未勾完禁止写产品码**                                                                            |
+| `pnpm check` / 钱路 PASS / High 波 / 类名像稿 = 完成                                                | 仅 §5 全满；UI PASS **必须**含实测 Δ                                                                                  |
+| 证据栏套话（「一致」「N/A」无路径）                                                                 | Critical                                                                                                              |
+| 旧 scratch「选币=flip PASS」                                                                        | **作废**（见 §9）                                                                                                     |
+| 页级/组件级「大概像」冒充 leaf 对齐                                                                 | **必须**钻到 Figma **最小可见子节点**（§2.3）；漏 thumb / 色 / 卡 surface = Critical                                  |
+| commit 只跑 eslint/tsc、跳过 knip/jscpd                                                             | **pre-commit + `pnpm check`** 均含 `lint:deadcode` + `lint:duplicates`（§5 / commands）                               |
 
 ---
 
 ## 1. 交付单位与硬序
 
-**交付单位：** 一个现行 Figma **PC 产品帧** = 一页。
+**交付单位：** 一个现行 Figma **PC 产品帧** = 一页。  
+**开页门禁：** 每开一页必须先打开 [`implement-checklist.md`](./implement-checklist.md) 从顶勾到「允许写盘」；未勾完 **禁止**改 `src/`。
 
 ```text
-手册逐行对照（钱/门闸）→ OpenAPI 字段对照 → 原型 WebBridge（DApp MUST）
-→ Figma：页帧 + **每一个可见子 leaf**（get_design_context / get_metadata）
-→ 文案动态审计 → leaf 表（UI∥钱路，逐子节点）→ 最小改码 → 回看
-→ pnpm check（含 knip + jscpd）→ R7（Grok 双轨）→ 用户明示 commit → page-done → 下一页
+0. 打开 checklist · 登记本帧 nodeId / leaf 路径 · Status=pre-design
+1. 手册逐行对照（钱/门闸）
+2. OpenAPI 字段对照
+3. 原型 WebBridge 点通（五字段）
+4. Figma：页帧 + **每一个可见最小子 leaf**（context / metadata → 完整清单）
+5. WebBridge **本站**对清单逐项 getComputedStyle（§2.3b）→ 实测 Δ 表
+6. 文案动态审计 → leaf 表（UI∥钱路；UI 列挂实测）
+✅ 允许写盘：A0–A7 齐
+→ 按 FAIL 改码（该页全部相关组件；禁并行下一帧；硬禁任意 px）
+→ 再测全清单 → pnpm check → R7 → 用户明示 commit → page-done → 下一页
 ```
 
 ---
@@ -80,13 +90,14 @@
 2. **字段对照**：稿面数值位 → API 字段或「API 无 · 手册/链上有 · 皆无」。
 3. **接线裁决**：有 API 或链上源 → **尽量接入**；仅皆无 → 缺口 + 诚实空；禁止未查 API 就写「无源」。
 
-### 2.2 原型
+### 2.2 原型（IA · 点通）
 
 **路径：** `~/Downloads/新/` → `AEGIS X DApp.html` / `AEGIS DApp 无数据.html` / `AEGIS DApp Shell 演示.html`
 
 - **DApp 七轨：** 默认必须 WebBridge；禁止自称「本页无原型」。
 - 学 IA / 空态 / **图标与素材**用 WebBridge 点通原型；**不用 Playwright**。
 - 素材：原型或正式 Figma export；禁止手画替代 gAGX 等 token 图标。
+- **原型点通 ≠ 视觉验收。** 视觉以 Figma + **本站** §2.3b 实测为准；禁止用原型 DOM/CSS 当规格。
 
 **WebBridge 实录字段（缺一 = 未点通 → R7 Critical）：**
 
@@ -110,17 +121,48 @@
 → 最小 leaf：thumb/handle、字色、icon 22×22、卡 surface（elevated≠outlined）、padding
 ```
 
+**开写前必须先产出「本帧全 leaf 清单」**（可与 metadata 树对齐）：每一行一个可见最小 leaf，含 nodeId + 稿规格。  
+**禁止**清单只写父框（如「左栏 PASS」）或只挑 1～2 个「用户点名过的」组件。
+
 **leaf 表每一行必须能回答：**
 
 1. Figma node id（如 `4462:639` handle）
 2. 规格：h/w/radius/fill/stroke/font/色（从 context 或 metadata，**禁止截图估**）
 3. 现码路径 + 用了哪个 primitive/`surface`/`tone`
-4. Δpx / 色是否 PASS；FAIL 不得称完成
+4. **§2.3b 实测** h/pad/font/lh/… + Δpx / 色是否 PASS；FAIL 不得称完成
 
 **稿面可见控件 = MUST 做完 UI**；手册缺数据 → 缺口记文档 + 诚实空；**禁止**不实现该控件。  
 Card：稿无描边+抬起阴影 → `surface="elevated"`；稿有描边 → `outlined`。**禁止**手搓 `shadow-sm` 冒充 elevated。
 
 仅当产品/grilling Answer **书面杀控**才可不做。自写 DEFER /「手册没有」不够。
+
+### 2.3b WebBridge 本站实测（强制 · 用户锁定 2026-08-02）
+
+> **UI PASS 的唯一运行时证据 = 本站 DOM 的 `getBoundingClientRect` / `getComputedStyle`，不是类名、不是 `min-h` 声明、不是 Figma MCP 截图肉眼。**
+
+**何时：** Figma 全 leaf 清单齐之后、**写盘前**做基线实测；改码后对 FAIL 项 **再测**直至闭合。
+
+**对谁：** `pnpm dev` 本站（如 `http://127.0.0.1:5174/...`）上本帧每一个清单 leaf 的对应节点。  
+原型可辅证 IA，**不得**替代本站实测。
+
+**怎么测（Kimi WebBridge `evaluate`）：** 对每个 leaf 记录至少：
+
+| 字段                                                                   | 来源                                           |
+| ---------------------------------------------------------------------- | ---------------------------------------------- |
+| 选择器 / 如何定位（aria-label、role、文案）                            | 稳定可复测                                     |
+| `height` / `width`（getBoundingClientRect）                            | 对稿 h/w                                       |
+| `padding` · `gap` · `border*Width` · `borderRadius` · `box-sizing`     | 对稿间距/描边                                  |
+| `fontSize` · `lineHeight` · `fontWeight` · `color` · `backgroundColor` | 对稿字/色                                      |
+| 与稿 Δ（px）                                                           | ≤2 → Med/可过；结构错 / ≥3 或错 surface → FAIL |
+
+**leaf 表必须多一列「实测」**（或独立「实测矩阵」节）：稿规格 | 实测 | Δ | PASS/FAIL。  
+缺实测列却写 UI PASS → R7 **Critical**。
+
+**禁止：**
+
+- 「已设 `min-h-[53px]` 故 PASS」却从未量 rect（实测可能仍是 57：border + 内容撑破）
+- 只测 AmountBox、不测 Chip / CTA / slider / rcard / icon / gap
+- 用 Playwright 代替 WebBridge
 
 ### 2.4 文案动态审计
 
@@ -138,17 +180,55 @@ Card：稿无描边+抬起阴影 → `surface="elevated"`；稿有描边 → `ou
 | **产品书面杀控**                                             | 是（可不做该控件） | Answer 写明删 picker                               |
 | **因手册不全而不做 UI / WebBridge 未做 / 用 DEFER 关控件门** | **否**             | T-D1 下拉未做、WebBridge「可选」                   |
 
-Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错、状态错、假数、缺控件仍挡）。  
+Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错、状态错、假数、缺控件、**缺实测**仍挡）。  
 缺译：键须齐；真译可 `locale-DEFER` 另票，**不**把七语全译绑进同一帧 DoD。
+
+### 2.6 尺寸硬约束（禁任意 px · 用户锁定 2026-08-02）
+
+> **硬禁：** 在 `src/` **不得**新增（也不得在本页改码中保留）Tailwind **任意长度**：`h-[53px]`、`min-h-[52px]`、`text-[24px]`、`leading-[29px]`、`size-[22px]`、`p-[11px]`、`gap-[13px]`、`w-[351px]` 等。  
+> **同等禁止：** 手写 hex 当色（应用语义 token）；页袋四处抄数字。  
+> **违反本条 = 流程 Critical**，即使 WebBridge 实测碰巧等于稿高也不算 PASS。
+
+目标：**视觉结果 = 稿**；手段只能是设计系统，不是把 Figma 数字抄进 class。
+
+| 优先 | 做法                                                                                                                                                                |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | `Text` / `Input` 的 `variant` → `theme.css` `--type-*`（改字阶 = 改 token，不改 call site `text-[Npx]`）                                                            |
+| 2    | 色：`text-foreground` / `text-primary` / `border-border` / `bg-card` 等                                                                                             |
+| 3    | 间距：标准刻度或 `--space-*`（如 `py-3`≡12、`gap-4`≡16、`px-3.5`≡14 若已映射）                                                                                      |
+| 4    | **合成稿高**：壳 = 垂直 padding（space token）+ 字盒（`--type-figure-size` + `--type-figure-leading`）+ border；先清冲突（Card 默认 `p-3.5`、input UA pad → `p-0`） |
+| 5    | 图标：`--app-icon-*` / `DappIcon` `size`；要对 22 就改 token，禁 `size-[22px]`                                                                                      |
+| 6    | 若 token 与稿不一致 → **改 `theme.css` / primitive 一处**，全仓跟 token；**禁止**在 leaf call site 用任意值「补差」                                                 |
+
+**唯一允许的「数字」形态：**
+
+- 已映射的 Tailwind 刻度名：`h-7` `p-3` `gap-2` `text-base`（背后是 token，不是 `[Npx]`）
+- `text-(length:--type-figure-size)` / `leading-(--type-figure-leading)` / `size-(--app-icon-token)` 等 **CSS 变量引用**
+
+**删除的旧例外：** 不再允许「Figma 锁死 → 一处 `min-h-[53px]` + 注释 nodeId」。稿高必须靠 token 合成或调整 token；合成后实测 Δ≤2 记 Med，Δ≥3 继续改 token/结构，**禁止**回退到任意 px。
+
+### 2.3c 全 leaf 对照完整性（强制）
+
+> **「大概齐了 / 修了 AmountBox」≠ 本页完成。**  
+> 本帧 metadata 树上每一个**用户可见**最小叶都必须：进清单 → 有稿规格 → 有本站实测 → 有 PASS/FAIL。漏一项 = 未对齐。
+
+写盘前自问：清单行数是否接近「可见控件数」？若只有 5～8 行而稿面有 tabs/input/slider/CTA/rcard/bars/legend/nodes/notes —— **清单未完成，禁止写盘。**
 
 ---
 
 ## 3. 单面步骤（串行）
 
 ```text
-1. 手册逐行对照   1b. 后端 OpenAPI 对照（§2.1b）   2. WebBridge 实录   3. Figma context
-4. 动态审计 5. leaf（UI∥钱路） 6. 改码（禁并行下一帧）
-7. 回看     8. pnpm check       9. R7（缺实录/缺对照表/未查 API=Critical）
+0. checklist 开页登记
+1. 手册逐行   1b. OpenAPI
+2. 原型 WebBridge 五字段
+3. Figma 全 leaf 清单（context + metadata）
+4. 本站 WebBridge 实测矩阵（§2.3b）← 未完成禁止写 src/
+5. 动态审计 + leaf 表（UI∥钱路∥实测）
+6. 按 FAIL 改码（该页全部相关组件；禁并行下一帧）
+7. 再测 FAIL 项闭合
+8. pnpm check
+9. R7（缺实录 / 缺对照 / 缺实测矩阵 / 未查 API = Critical）
 10. 用户明示 commit → page-done → 下一页
 ```
 
@@ -158,11 +238,13 @@ Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错
 
 1. Frame ids
 2. 手册章节 + **§2.1 逐行对照表**（展示/写/门闸/注意 → 现码）
-3. WebBridge 实录（或 N/A + 路径证据）
-4. 动态审计表
-5. 节点表：**UI 标** 与 **钱路标** 分列
-6. 稿无代码有 → 删/缺口
-7. Status：`pre-design` | `in-progress` | `needs-proto-reverify` | `page-done`
+3. OpenAPI path 对照（§2.1b）
+4. WebBridge 原型实录五字段（或 N/A + 路径证据）
+5. **全 leaf 清单** + **§2.3b 实测矩阵**
+6. 动态审计表
+7. 节点表：**UI 标** ∥ **钱路标** ∥ **实测**（分列）
+8. 稿无代码有 → 删/缺口
+9. Status：`pre-design` | `in-progress` | `needs-proto-reverify` | `needs-measure` | `page-done`
 
 ---
 
@@ -170,16 +252,19 @@ Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错
 
 - [ ] 本帧可见控件 **UI 均已实现**（或产品书面杀控）；手册缺数 → 缺口已记文档且值面诚实空——**不得**用缺口当「可不做 UI」
 - [ ] 手册 **逐行**已读且 leaf 有对照表；有源接线；无源=`0`/`0.00`且 **UI 仍在**
-- [ ] WebBridge 实录五字段齐全（或合法 N/A）
-- [ ] Figma 页+子 context 已拉
+- [ ] WebBridge 原型实录五字段齐全（或合法 N/A）
+- [ ] Figma 页+**每一个**最小子 leaf context/metadata 已拉；全清单无漏项
+- [ ] **§2.3b 本站实测矩阵**已写；UI PASS 行均有实测证据；改后回测过
+- [ ] 尺寸跟 §2.6：**零** 任意 `*[Npx]`（硬禁）；不对齐则改 token
+- [ ] **全 leaf 清单无漏项**（§2.3c）；不是只修了用户点名的一两个控件
 - [ ] 「稿无代码有」已处理
 - [ ] `pnpm check` exit 0
-- [ ] R7 Post-Design：实录字段 + R5a + R4a 旧码核；缺则 Critical
-- [ ] R7 Post-Code：假数/稿外 chrome Critical=0
+- [ ] R7 Post-Design：实录 + 实测矩阵 + 全清单 + R5a + R4a；缺则 Critical
+- [ ] R7 Post-Code：假数/稿外 chrome/**任意 px** Critical=0
 - [ ] 用户明示后 commit（或用户书面「本页不 commit」原句进 leaf）
 - [ ] 仅此时 Status=`page-done`；此前禁止下一 Figma PC 帧写盘
 
-**纠偏：** 凡旧 page-done 缺原型实录 → `needs-proto-reverify`；**零交付证明**（禁止「代码轴仍有价值」话术冒充半完成）。
+**纠偏：** 凡旧 page-done 缺原型实录或缺实测矩阵 → `needs-proto-reverify` / `needs-measure`；**零交付证明**。
 
 ---
 
@@ -191,13 +276,13 @@ Med 1–2px / 字阶微调：可记 Low，**不单独**挡 page-done（结构错
 
 ## 7. 文档分工
 
-| 文件                      | 职责                                            |
-| ------------------------- | ----------------------------------------------- |
-| **本文件**                | 工具序 + page-done + 实录字段 + DEFER 分型      |
-| `AGENTS.md` R1/R4a/R5/R5a | 分层；钱路手册优先/沉默→旧码；「手册不取消 UI」 |
-| `AGENTS.md` R6/R7         | 三门含义、模型、Critical                        |
-| `implement-checklist.md`  | 勾选；禁止第二套叙事                            |
-| `.scratch/...`            | 页证据；不得覆盖本文件                          |
+| 文件                      | 职责                                                               |
+| ------------------------- | ------------------------------------------------------------------ |
+| **本文件**                | 工具序 + page-done + 实录 + **实测 §2.3b** + **尺寸 §2.6** + DEFER |
+| `AGENTS.md` R1/R4a/R5/R5a | 分层；钱路手册优先/沉默→旧码；「手册不取消 UI」                    |
+| `AGENTS.md` R6/R7         | 三门含义、模型、Critical                                           |
+| `implement-checklist.md`  | **每次开页必勾**；写盘门禁；禁止第二套叙事                         |
+| `.scratch/...`            | 页证据；不得覆盖本文件                                             |
 
 ---
 

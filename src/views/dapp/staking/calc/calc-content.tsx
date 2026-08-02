@@ -22,9 +22,6 @@ import {
 } from '~/views/dapp/staking/staking-tv-area-chart'
 
 const PLACEHOLDER = '0.00'
-/** Rcard hero figure — Figma 32px; only allowed call-site size override in staking calc. */
-const RCARD_HERO = 'text-[2rem] leading-none font-bold text-success'
-
 function formatUsdOrDash(value: number) {
   if (!Number.isFinite(value)) return PLACEHOLDER
   return formatGroupedNumber(value, { digits: 2, prefix: '$' })
@@ -171,7 +168,7 @@ export function CalcContent() {
                 <Text as="span" className="text-foreground/40" variant="copy">
                   {t.staking.calc.result.total}
                 </Text>
-                <Text as="strong" className={RCARD_HERO} variant="figure">
+                <Text as="strong" className="text-success" variant="stat">
                   {formatUsdOrDash(result.interestUsd)}
                 </Text>
               </div>

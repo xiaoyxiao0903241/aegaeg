@@ -70,7 +70,8 @@ export function CalcWidget() {
         subtitle={t.staking.calc.intro}
         title={t.staking.calc.title}
       />
-      <DappWidgetStack>
+      {/* Figma `form` 4462:599 内组 gap-16；CTA 另用 mt-6 ≡ form→bigBtn gap-24 */}
+      <DappWidgetStack className="gap-4">
         <CalcHtabRow
           ariaLabel={t.staking.calc.productAria}
           onChange={vm.onProductChange}
@@ -156,10 +157,10 @@ export function CalcWidget() {
           />
         </div>
 
-        {/* Figma `bigBtn` 4462:641 — coral fill；form→CTA 疏离（稿 gap-24） */}
+        {/* Figma `bigBtn` 4462:641 — py-4 + text-base/leading-5 合成；清 density min-h */}
         <DappActionRow className="mt-6">
           <DappActionButton
-            className="bg-coral-emphasis text-white"
+            className="min-h-0 border-0 bg-coral-emphasis py-4 text-base leading-5 text-white"
             density="external"
             type="button"
           >

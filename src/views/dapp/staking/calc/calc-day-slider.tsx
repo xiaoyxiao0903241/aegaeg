@@ -5,7 +5,8 @@ import { Text } from '~/shared/ui/text'
 
 /**
  * Figma calc `slider` 4462:634 / `handle` 4462:639：
- * track h=6 · fill coral-emphasis · thumb = coral pill + 日数字（非原生 range thumb）。
+ * track h-1.5（6）· fill coral · handle pill + caption 字（非原生 range thumb）。
+ * 尺寸走标准刻度 / token；禁任意 px / hex。
  */
 export function CalcDaySlider({
   ariaLabel,
@@ -34,13 +35,13 @@ export function CalcDaySlider({
   }
 
   return (
-    <div className="relative h-[21px] w-full">
+    <div className="relative h-5 w-full">
       <div
         aria-label={ariaLabel}
         aria-valuemax={max}
         aria-valuemin={min}
         aria-valuenow={value}
-        className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 cursor-pointer rounded-[3px] bg-[#f5f6f8]"
+        className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 cursor-pointer rounded-sm bg-background"
         onKeyDown={(event) => {
           if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
             event.preventDefault()
@@ -63,23 +64,18 @@ export function CalcDaySlider({
         tabIndex={0}
       >
         <div
-          className="absolute top-0 left-0 h-full rounded-[3px] bg-coral-emphasis"
+          className="absolute top-0 left-0 h-full rounded-sm bg-coral-emphasis"
           style={{ width: `${pct}%` }}
         />
       </div>
-      {/* handle leaf — pill with day label */}
       <div
         className={cn(
-          'pointer-events-none absolute top-[2px] flex -translate-x-1/2 items-center justify-center',
-          'rounded-full border-[1.5px] border-coral-emphasis bg-coral-emphasis px-3 py-[3px]',
+          'pointer-events-none absolute top-0.5 flex -translate-x-1/2 items-center justify-center',
+          'rounded-full border border-coral-emphasis bg-coral-emphasis px-3 py-1',
         )}
         style={{ left: `${pct}%` }}
       >
-        <Text
-          as="span"
-          className="text-[12px] leading-none font-medium text-[#eceef2]"
-          variant="caption"
-        >
+        <Text as="span" className="leading-none font-medium" tone="inverse" variant="caption">
           {value}
         </Text>
       </div>

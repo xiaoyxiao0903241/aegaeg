@@ -21,7 +21,7 @@ export const inputVariants = tv({
       numeric:
         '[appearance:textfield] rounded-sm px-3.5 py-2.5 text-left text-(length:--type-copy-size) leading-normal font-semibold tracking-normal [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
       amount:
-        'border-0 bg-transparent text-right text-(length:--type-figure-size) leading-normal font-semibold tracking-[-0.02em] caret-coral outline-0 focus:border-0',
+        'border-0 bg-transparent p-0 text-right text-(length:--type-figure-size) leading-(--type-figure-leading) font-semibold tracking-(--type-figure-tracking) caret-coral outline-0 focus:border-0',
     },
     size: {
       sm: '',

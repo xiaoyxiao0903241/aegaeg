@@ -15,7 +15,7 @@
 | 维度   | 集合                                                                                                                                                                                                                                                                                                                                            | 键数                           |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | color  | `background` · `foreground` · `card` · `muted-foreground` · `primary` · `primary-soft` · `primary-foreground` · `primary-bright` · `coral` · `coral-emphasis` · `band` · `faq` · `skeleton` · `modal-overlay` · `warning` · `footer` · `success` · `success-soft` · `border` · `dark` · `inverse` · `inverse-muted` · `destructive` · `token-*` | 公开语义；工程色见 tokens.json |
-| type   | `caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure`                                                                                                                                                                                                                      | 11                             |
+| type   | `caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat`                                                                                                                                                                                                             | 12                             |
 | space  | `1(4)` · `2(6)` · `3(8)` · `4(10)` · `5(12)` · `6(14)` · `7(16)` · `8(24)` · `9(40)`                                                                                                                                                                                                                                                            | 9                              |
 | radius | `tight(6)` · `chip(9)` · `control(11)` · `faq(12)` · `sm(14)` · `md(16)` · `lg(18)` · `xl(28)` · `full`                                                                                                                                                                                                                                         | 9                              |
 | shadow | `faq(E1)` · `card(E2)` · `subtle(E3)` · `elevated-strong(E4)` · `window(E5)` · `modal(E6)` · `modal-panel(E7)` · `tooltip(E8)` · `menu(E9)` · `dropdown(E10)`                                                                                                                                                                                   | 10                             |
@@ -26,29 +26,30 @@
 
 ## §2 Text
 
-| 公开轴    | 值                                                                                                                                    |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `variant` | **11 键**：`caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` |
-| `tone`    | `foreground` · `muted-foreground` · `primary` · `primary-bright` · `success` · `inverse` · `inverse-muted`                            |
-| 可选      | `as`                                                                                                                                  |
+| 公开轴    | 值                                                                                                                                             |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `variant` | **12 键**：`caption` · `eyebrow` · `support` · `copy` · `detail` · `question` · `headline` · `brand` · `section` · `panel` · `figure` · `stat` |
+| `tone`    | `foreground` · `muted-foreground` · `primary` · `primary-bright` · `success` · `inverse` · `inverse-muted`                                     |
+| 可选      | `as`                                                                                                                                           |
 
 **数字**：比例字（Montserrat 默认字形）。**禁止** `tabular` prop / `tabular-nums`（等宽偏疏，已删）。列对齐若需要，用布局/表格，不靠等宽数字。
 
-### 11 variant（仅此）
+### 12 variant（仅此）
 
-| variant  | PC  | H5  | weight   | 用途                                                             |
-| -------- | --- | --- | -------- | ---------------------------------------------------------------- |
-| caption  | 10  | 11  | normal   | meta / rail label；badge 等 Medium 在 call site `font-medium`    |
-| eyebrow  | 11  | 12  | semibold | uppercase kicker                                                 |
-| support  | 12  | 13  | normal   | 次级说明：等级卡底栏、进度/余额 meta、widget 副标题、分页 chrome |
-| copy     | 13  | 14  | normal   | **默认**正文：表头/单元格、pill、主说明、控件旁文案              |
-| detail   | 14  | 15  | normal   | FAQ 答案、长说明                                                 |
-| question | 14  | 15  | semibold | FAQ 问题                                                         |
-| headline | 16  | 17  | semibold | 卡小标题                                                         |
-| brand    | 17  | 18  | semibold | topbar brand / rank                                              |
-| section  | 18  | 19  | semibold | section heading (dl)；tracking **-0.04em**                       |
-| panel    | 21  | 22  | semibold | widget / page header；tracking **-0.04em**                       |
-| figure   | 22  | 23  | semibold | 金额、数值                                                       |
+| variant  | PC  | H5  | weight   | 用途                                                              |
+| -------- | --- | --- | -------- | ----------------------------------------------------------------- |
+| caption  | 10  | 11  | normal   | meta / rail label；badge 等 Medium 在 call site `font-medium`     |
+| eyebrow  | 11  | 12  | semibold | uppercase kicker                                                  |
+| support  | 12  | 13  | normal   | 次级说明：等级卡底栏、进度/余额 meta、widget 副标题、分页 chrome  |
+| copy     | 13  | 14  | normal   | **默认**正文：表头/单元格、pill、主说明、控件旁文案               |
+| detail   | 14  | 15  | normal   | FAQ 答案、长说明                                                  |
+| question | 14  | 15  | semibold | FAQ 问题                                                          |
+| headline | 16  | 17  | semibold | 卡小标题                                                          |
+| brand    | 17  | 18  | semibold | topbar brand / rank                                               |
+| section  | 18  | 19  | semibold | section heading (dl)；tracking **-0.04em**                        |
+| panel    | 21  | 22  | semibold | widget / page header；tracking **-0.04em**                        |
+| figure   | 24  | 25  | semibold | 金额、数量输入（amtBox 字盒；leading 见 `--type-figure-leading`） |
+| stat     | 32  | 32  | bold     | 结果区大额（rcard 收益总额等）                                    |
 
 **H5 字号策略（≡ `dev` `mobile-type-scale` / `dapp-scale`）**：语义 `--type-*` 与 Tailwind `--text-*` 在 `max-width: 820px` 上均为 **PC +1px**；不以 Figma H5 偏小稿为准。
 
@@ -59,7 +60,7 @@
 **className 显示阶覆盖**：若 `className` 含字号 utility（`text-xs`…`text-9xl` / `text-[…]`，含 `max-*:text-*` / `!text-*`），`Text` 剥掉 size / leading / tracking type token，**保留** `font-[var(--type-*-weight)]`（call site 通常只覆盖字号/行高）。避免残留 tracking 把标题挤窄，同时不丢 variant 字重。
 **依赖**：Token（§1）
 **探针**：Swap catalog 全部 Text owner 行 · Home section titles
-**Gate**：`text.tsx` variant 键 = **11** · `TextVariant` 联合 = 11 · `tone` = 7
+**Gate**：`text.tsx` variant 键 = **12** · `TextVariant` 联合 = 12 · `tone` = 7
 
 `inverse-muted` = 深底次级文案（Figma/dev `#b8c0ce`）。**禁止**用 `inverse` + `opacity-*` 近似；**禁止** call site `text-on-dark`（legacy alias 仅过渡）。
 `primary-bright` = 深底珊瑚强调（Figma `accent/coral-bright` `#f4a98f`）。暗色卡 kicker / volume 用此 tone；**禁止**用 `primary` 近似，**禁止** call site `text-coral-bright`。
@@ -237,7 +238,7 @@
 | 层        | 文件 / 入口                                                                                        | Gate                       |
 | --------- | -------------------------------------------------------------------------------------------------- | -------------------------- |
 | Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                          | §1                         |
-| Text      | `shared/ui/text.tsx`                                                                               | 11 variant · 7 tone        |
+| Text      | `shared/ui/text.tsx`                                                                               | 12 variant · 7 tone        |
 | Button    | `shared/ui/button.tsx`                                                                             | 4×3×2                      |
 | Chip      | `shared/ui/chip.tsx`                                                                               | 3×3×2×4                    |
 | Card      | `shared/ui/card.tsx`                                                                               | 4 surface                  |
