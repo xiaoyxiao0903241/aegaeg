@@ -27,22 +27,34 @@ export function RewardsParticipateContent() {
       <DappDetailBlock>
         <DappContentHeading>{participate.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <RewardsStatCard label={participate.totalRewards} value={totalRewards} />
-          <RewardsStatCard label={participate.myPosition} value={myPosition} />
-          <RewardsStatCard label={participate.contribution}>
-            <Text as="p" tone="muted-foreground" variant="caption">
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={participate.totalRewards}
+            value={totalRewards}
+          />
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={participate.myPosition}
+            value={myPosition}
+          />
+          <RewardsStatCard className="min-h-19.25" label={participate.contribution}>
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {participate.contribution}
             </Text>
             <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <Text as="p" className="font-semibold" variant="copy">
+              <Text as="p" className="leading-5 font-semibold" variant="copy">
                 {contributionValue}
               </Text>
-              <Text as="p" tone="muted-foreground" variant="caption">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {participate.contributionHint}
               </Text>
             </div>
           </RewardsStatCard>
-          <RewardsStatCard label={participate.nextPayout} value={nextPayout} />
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={participate.nextPayout}
+            value={nextPayout}
+          />
         </div>
       </DappDetailBlock>
 
