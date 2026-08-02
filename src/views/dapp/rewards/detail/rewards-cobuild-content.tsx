@@ -38,24 +38,36 @@ export function RewardsCobuildContent() {
       <DappDetailBlock>
         <DappContentHeading>{cobuild.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <RewardsStatCard label={cobuild.totalRewards} value={totalRewards} />
-          <RewardsStatCard label={cobuild.totalPerformance} value={totalPerformance} />
-          <RewardsStatCard label={cobuild.myPosition} value={myPosition} />
-          <RewardsStatCard label={cobuild.directCount} value={referralCount} />
-          <RewardsStatCard label={cobuild.contribution}>
-            <Text as="p" tone="muted-foreground" variant="caption">
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={cobuild.totalRewards}
+            value={totalRewards}
+          />
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={cobuild.totalPerformance}
+            value={totalPerformance}
+          />
+          <RewardsStatCard className="min-h-19.25" label={cobuild.myPosition} value={myPosition} />
+          <RewardsStatCard
+            className="min-h-19.25"
+            label={cobuild.directCount}
+            value={referralCount}
+          />
+          <RewardsStatCard className="min-h-19.25" label={cobuild.contribution}>
+            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {cobuild.contribution}
             </Text>
             <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <Text as="p" className="font-semibold" variant="copy">
+              <Text as="p" className="leading-5 font-semibold" variant="copy">
                 {contributionValue}
               </Text>
-              <Text as="p" tone="muted-foreground" variant="caption">
+              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
                 {cobuild.contributionHint}
               </Text>
             </div>
           </RewardsStatCard>
-          <RewardsStatCard label={cobuild.nextPayout} value={nextPayout} />
+          <RewardsStatCard className="min-h-19.25" label={cobuild.nextPayout} value={nextPayout} />
         </div>
       </DappDetailBlock>
 
