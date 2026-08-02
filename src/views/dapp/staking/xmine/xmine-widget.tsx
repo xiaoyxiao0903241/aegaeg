@@ -60,7 +60,7 @@ export function XmineWidget() {
         />
 
         <DappMetaPanel
-          className="mt-0 gap-3 p-4"
+          className="mt-0 gap-3 px-4 py-4.5"
           items={[
             {
               label: t.staking.xmine.meta.daily,
