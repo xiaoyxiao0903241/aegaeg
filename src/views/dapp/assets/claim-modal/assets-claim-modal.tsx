@@ -1,5 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
+import { useRef } from 'react'
 
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import type { ReleaseDurationDays, RestakeDurationDays } from '~/core/assets/claim-plans'
@@ -37,16 +38,28 @@ export function AssetsClaimModal({
   positionLabel: string
   amountLabel: string
 }) {
-  if (!open || !target || !owner) return null
+  // 关闭时 call site 会清空 target/owner；缓存上一帧以免 Portal 被立刻拆掉、关掉关闭动画
+  const heldRef = useRef<{
+    owner: string
+    target: MixedClaimTarget
+    positionLabel: string
+    amountLabel: string
+  } | null>(null)
+  if (open && target && owner) {
+    heldRef.current = { owner, target, positionLabel, amountLabel }
+  }
+  const held = heldRef.current
+  if (!held) return null
+
   return (
     <AssetsClaimModalOpen
-      amountLabel={amountLabel}
-      key={`${owner}-${target.source}-${amountLabel}`}
+      amountLabel={held.amountLabel}
+      key={`${held.owner}-${held.target.source}-${held.amountLabel}`}
       onOpenChange={onOpenChange}
       open={open}
-      owner={owner}
-      positionLabel={positionLabel}
-      target={target}
+      owner={held.owner}
+      positionLabel={held.positionLabel}
+      target={held.target}
     />
   )
 }

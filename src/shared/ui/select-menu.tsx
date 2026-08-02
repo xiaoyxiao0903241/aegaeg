@@ -54,8 +54,8 @@ export function SelectMenu({
             // Figma dropdown 34：h-8.5
             'inline-flex h-8.5 items-center gap-1.5 rounded-full bg-card px-3.5',
           variant === 'field' &&
-            // Figma claim dd：px14 py11 · rounded 12 · border
-            'flex h-10.5 w-full cursor-pointer items-center justify-between gap-2 rounded-xl border border-border bg-card px-3.5 text-left text-sm text-foreground outline-none',
+            // Figma claim dd `4812:237`：radius 12 → rounded-faq（禁 rounded-xl=28px）
+            'flex h-10.5 w-full cursor-pointer items-center justify-between gap-2 rounded-faq border border-border bg-card px-3.5 text-left text-sm text-foreground outline-none',
           variant === 'field' && open && 'border-primary',
           disabled ? 'cursor-default opacity-40' : variant === 'pill' && 'cursor-pointer',
         )}

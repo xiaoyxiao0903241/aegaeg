@@ -9,7 +9,7 @@ const DialogPortal = DialogPrimitive.Portal
 
 export const dialogChrome = tv({
   slots: {
-    overlay: 'aegis-modal-overlay fixed inset-0 z-50',
+    overlay: 'aegis-modal-overlay fixed inset-0 z-50 backdrop-blur-sm',
     content: 'aegis-modal-content fixed top-1/2 left-1/2 z-50 focus:outline-none',
     panel: 'aegis-responsive-panel focus:outline-none',
     header: 'flex flex-col space-y-1.5 text-center sm:text-left',
