@@ -1,3 +1,4 @@
+import { DappAboutCard } from '~/app/shell/dapp-about-card'
 import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -17,19 +18,11 @@ export function ReleaseHubContent() {
       <DappDetailBlock>
         <DappContentHeading id="release-hub-title">{t.release.hub.aboutTitle}</DappContentHeading>
         <DappCarousel
+          nextLabel={t.common.paginationNext}
+          prevLabel={t.common.paginationPrev}
           slides={slides.map((slide) => ({
             key: slide.title,
-            // Figma carousel 108：min-h-27 + p-4
-            content: (
-              <Card as="div" surface="elevated" className="min-h-27 rounded-2xl p-4 shadow-sm">
-                <Text as="p" className="mb-2 font-semibold" variant="copy">
-                  {slide.title}
-                </Text>
-                <Text as="p" tone="muted-foreground" variant="copy">
-                  {slide.body}
-                </Text>
-              </Card>
-            ),
+            content: <DappAboutCard body={slide.body} title={slide.title} />,
           }))}
         />
       </DappDetailBlock>

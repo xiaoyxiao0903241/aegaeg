@@ -282,6 +282,8 @@ function staticEngineeringVars() {
   --carousel-h5-viewport-pad-y: 0.875rem;
   --carousel-h5-indicator-pt: 0.75rem;
   --carousel-pc-indicator-pt: 0.75rem;
+  /* 奖励 about 轮播右侧 lavender wash · Figma 4297:214 */
+  --rewards-carousel-wash: #e7defa;
 
   /* DApp motion — shared timing / easing / travel (CSS animations + transitions) */
   --motion-dapp-fast: 120ms;

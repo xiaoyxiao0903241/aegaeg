@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict'
-import test from 'node:test'
 import { readFile } from 'node:fs/promises'
+import test from 'node:test'
+
 import { loadModule } from './load-module.mjs'
 
-test('theme.css defines --app-claim-restake from tokens SSOT', async () => {
+test('theme.css defines --claim-restake from tokens SSOT (restake blue, not success)', async () => {
   const css = await readFile(
     new URL('../../src/shared/styles/tokens/theme.css', import.meta.url),
     'utf8',
   )
-  assert.match(css, /--claim-restake:\s*var\(--success\)/)
+  assert.match(css, /--claim-restake:\s*#4a7bec/)
   assert.match(css, /--app-claim-restake:\s*var\(--claim-restake\)/)
 })
 

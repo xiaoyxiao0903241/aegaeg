@@ -221,7 +221,49 @@
 
 ## 4. 奖励（Rewards）
 
-> 待补表。
+### 4.1 Hub（`#rewards` · PC `4291:212`）
+
+> **读源裁决（2026-08-03）：** 手册 `01` §9.5 / LuckyPool + OpenAPI `~/Downloads/新/api-docs.html`。Hub **只读 + 导航**；写在子页。
+
+| 数据位                      | 是否已接  | 源                                                                                        |
+| --------------------------- | --------- | ----------------------------------------------------------------------------------------- |
+| 右栏 · 总奖励（gAGX）       | 已接      | `POST /performance/making-overview` → `total_reward`                                      |
+| 右栏 · 总奖励 ≈$            | 已接      | gAGX × Pair spot（`useAgxPriceUsd`）                                                      |
+| 右栏 · 共建级别             | 已接      | `making_rank` → `A{n}`；≤0 空文案                                                         |
+| 右栏 · 个人持仓 $ / AGX     | 已接      | `personal_position`（AGX）× spot / 原文                                                   |
+| 右栏 · 总业绩 $ / AGX       | 已接      | `making_market`                                                                           |
+| 右栏 · 小区业绩 $ / AGX     | 已接      | `small_market`                                                                            |
+| 右栏 · 贡献点数             | 已接      | API `agx-contribution/summary` 或链 `userContribution`                                    |
+| 左卡 · 创世可领 $           | 已接      | `POST /team-reward/total`（total−claimed）                                                |
+| 左卡 · 发展津贴可领         | 已接      | `POST /market-allowance/summary` → `unlocked_claimable`（OpenAPI：AGX；稿面 gAGX chrome） |
+| 左卡 · 幸运可领             | 已接      | 链 `readLuckyClaimSnapshot`（**非** `lucky-reward/summary` 池 USD）                       |
+| 左卡 · 推荐 / 参与 / 共建   | 诚实空    | 见下「三签可领」；**禁**用二期 `*/summary` 累计冒充                                       |
+| 创世卡 ·「即将关闭」badge   | 静态 i18n | 手册与 OpenAPI **均无**关闭时间 / flag → 保持稿面文案                                     |
+| 机制表 A1–A13 / About / FAQ | N/A       | 静态 i18n（About chrome：Figma `4297:213` lavender wash + 人物）                          |
+
+**三签可领（推荐 / 参与 / 共建）— 读源对照**
+
+| path / 源                                                          | 语义                                                       | Hub「可领取/余额」                                                                                 |
+| ------------------------------------------------------------------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `POST /referral-award/summary` → `total_referral_reward`           | 累计 awarded_gross（gAGX）                                 | **禁**冒充可领                                                                                     |
+| `POST /participation-award/summary` → `total_participation_reward` | 同上                                                       | **禁**                                                                                             |
+| `POST /rank-reward/summary` → `total_rank_reward`                  | 同上（RANK+SURPASS）                                       | **禁**                                                                                             |
+| `POST /claim/dao-reward`                                           | 取签时才返回 `amount`（ledger READY→ISSUED；有写副作用）   | **不**作 Hub 预览读                                                                                |
+| `POST /referral/total`（一期 `sq_referral_totals`）                | OpenAPI：与二期 summary **不同**，属可领汇总 total/claimed | **可选**推荐卡预览；现码仅创世详情 `useReferralTotal`，**Hub 未接**（单位/与稿 gAGX 未钉前保持空） |
+| `POST /community-fund/total` → `unlocked_claimable`                | 预售 **USDT** 发展基金                                     | **勿**塞推荐卡（≠ 推荐奖 gAGX）                                                                    |
+| 手册 §9.5 IncentivePool / DaoPool / CommunityFund                  | 签名领取；合约无「当前可领余额」视图 getter                | 参与/共建：**无** Hub 可读可领预览 → 诚实空                                                        |
+
+**缺口 / 张力**
+
+| 项                                    | 说明                                                                                                                                    |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 发展津贴单位                          | OpenAPI `unlocked_claimable` 标 AGX；稿卡 `0.0000gAGX`。Hub 按稿 chrome 展示；若后端实为 AGX human 与 gAGX 1:1 则显示同数，否则子页再核 |
+| 推荐奖写链                            | 手册 CommunityFund **简单签**（R4a）；二期 API 推荐走 `claim/dao-reward`（DaoPool，signType 42）。Hub 只导航；写链归属在子页按 R4a 裁决 |
+| 推荐卡可领预览                        | 一期 `/referral/total` 理论上可接；接前须钉单位与稿面币种；未钉前诚实空                                                                 |
+| 参与 / 共建可领预览                   | OpenAPI **无** total−claimed / unlocked 读口；保持诚实空                                                                                |
+| 「即将关闭」                          | 无动态源；静态 badge；若产品要按活动开关须另补 API/手册                                                                                 |
+| lucky-reward/summary                  | 仅池统计 / 是否中奖 / 次数；**不可**作 Hub 可领额                                                                                       |
+| market-allowance.unlockable_allowance | 「可解锁未领」；Hub 稿面仅「可领取」→ 不接                                                                                              |
 
 ## 5. 释放（Release）
 
@@ -241,6 +283,8 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-03 | 奖励 Hub §4.1：补三签/即将关闭/一期 referral/total 读源裁决；右栏+幸运/津贴/创世已接；参与共建仍无 Hub 可领预览              |
+| 2026-08-03 | 奖励 Hub §4.1：接 making-overview / grant unlocked / lucky 链可领；三签卡诚实空；禁累计 summary 冒充可领                     |
 | 2026-08-03 | 资产仓位：补 §2.2/§2.3（质押/债券/Xmine 读写下与剩余缺口）；Mixed/赎回/Quote 已接；LP·Burn 总收益与 X 累计/USD 仍无源        |
 | 2026-08-03 | 资产仓位 LP/Burn「总收益」无累计 API/链汇总 → UI 诚实 `—`（禁硬编码 0.00）                                                   |
 | 2026-08-03 | 写后刷新：`invalidateAfterStaking`→staking+assets+lucky+indexer poll；活期读 `warmupStakes`                                  |

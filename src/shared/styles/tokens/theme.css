@@ -191,6 +191,7 @@
   --elevation-e8: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.18);
   --elevation-e9: 0 0.75rem 2rem oklch(0% 0 0 / 12%);
   --elevation-e10: 0 0.25rem 1rem oklch(0% 0 0 / 8%);
+  --elevation-e11: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 /* H5 typography — per-variant Figma table (not blanket +1) */
@@ -249,6 +250,7 @@
   --shadow-tooltip: var(--elevation-e8);
   --shadow-menu: var(--elevation-e9);
   --shadow-dropdown: var(--elevation-e10);
+  --shadow-outlined: var(--elevation-e11);
 }
 
 
@@ -368,6 +370,8 @@
   --carousel-h5-viewport-pad-y: 0.875rem;
   --carousel-h5-indicator-pt: 0.75rem;
   --carousel-pc-indicator-pt: 0.75rem;
+  /* 奖励 about 轮播右侧 lavender wash · Figma 4297:214 */
+  --rewards-carousel-wash: #e7defa;
 
   /* DApp motion — shared timing / easing / travel (CSS animations + transitions) */
   --motion-dapp-fast: 120ms;

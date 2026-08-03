@@ -169,7 +169,8 @@ export const shadows = [
   "modal-panel",
   "tooltip",
   "menu",
-  "dropdown"
+  "dropdown",
+  "outlined"
 ] as const
 
 export type ShadowToken = (typeof shadows)[number]

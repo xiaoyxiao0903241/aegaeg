@@ -114,6 +114,8 @@ export const dappAssets = {
   medium: '/assets/figma/dapp/ic-medium.svg',
   tokenCardRays: '/assets/figma/dapp/token-card-rays.svg',
   tokenCardCorner: '/assets/figma/dapp/token-card-corner.svg',
+  /** 奖励 about 轮播人物 · Figma `4585:1026` */
+  aboutCarouselRewardsMascot: '/assets/figma/dapp/about-carousel/rewards-mascot.webp',
   /** Assets hub 总览黑卡右侧几何底纹 · Figma `4284:215`. */
   assetsHubOverviewDeco: '/assets/figma/dapp/assets-hub/overview-deco.svg',
   /** Rebase tags 实心珊瑚勾 · Figma `4285:233`. */

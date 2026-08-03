@@ -5,9 +5,9 @@ import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Text } from '~/shared/ui/text'
 
 /**
- * Hub reward entry — Figma `reward/*`（p16 · gap12 · r16）.
- * 副文/≈：caption 13 + muted 40% → `copy` + `/40`；余额值 16 semibold → `headline`。
- * 图标：幸运/推荐/创世 20；参与/共建/发展 24（`size-5`/`size-6`，禁任意 px）。
+ * Hub reward entry — Figma `reward/*`（p16 · gap12 · r16 · outlined + soft shadow）。
+ * 标题 14 semibold → `detail`；副文/≈ 13 muted40 → `copy`+/40；余额标签 13 body70；余额值 16 → `headline`。
+ * badge 10 → `caption`；图标：幸运/推荐/创世 20；参与/共建/发展 24。
  */
 export function RewardsModeCard({
   approx,
@@ -39,7 +39,7 @@ export function RewardsModeCard({
       as="button"
       surface="outlined"
       className={cn(
-        'grid w-full gap-3 rounded-2xl p-4 text-left shadow-sm',
+        'grid w-full gap-3 overflow-hidden rounded-2xl border-border p-4 text-left shadow-outlined',
         onClick &&
           'duration-dapp-fast cursor-pointer transition-[border-color,transform] ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
       )}
@@ -53,8 +53,10 @@ export function RewardsModeCard({
             {title}
           </Text>
           {badge ? (
-            <span className="pointer-events-none shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-(length:--type-caption-size) leading-none font-(--type-caption-weight) text-primary">
-              {badge}
+            <span className="pointer-events-none inline-flex h-4.5 shrink-0 items-center rounded-full bg-primary-soft px-2">
+              <Text as="span" className="leading-none" tone="primary" variant="caption">
+                {badge}
+              </Text>
             </span>
           ) : null}
         </div>
@@ -64,7 +66,7 @@ export function RewardsModeCard({
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <Text as="span" className="leading-4" tone="muted-foreground" variant="copy">
+        <Text as="span" className="leading-4 text-foreground/70" variant="copy">
           {balanceLabel}
         </Text>
         <div className="flex items-center gap-1.5">
