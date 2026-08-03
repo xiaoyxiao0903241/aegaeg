@@ -37,11 +37,11 @@ function MetricValueRow({ icon, sub, value }: { icon: MetricIcon; sub?: string; 
   const src = icon === 'agx' ? dappAssets.tokenAgx : icon === 'usd1' ? dappAssets.tokenUsd1 : null
 
   return (
-    <span className="flex min-w-0 items-center gap-1.5">
+    <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
       {src ? <DappIcon alt="" shape="circle" size="lg" src={src} /> : null}
-      <span className="min-w-0 truncate">{value}</span>
+      <span className="min-w-0 wrap-break-word">{value}</span>
       {sub ? (
-        <Text as="span" className="shrink-0 text-foreground/40" variant="copy">
+        <Text as="span" className="shrink-0 wrap-break-word text-foreground/40" variant="copy">
           {sub}
         </Text>
       ) : null}
@@ -106,7 +106,7 @@ export function StakingHubContent() {
 
             return (
               <MetricCard
-                className="h-full min-h-18.75 gap-1.5 rounded-2xl p-4 [&>*:first-child]:leading-none!"
+                className="h-full min-h-18.75 gap-1.5 overflow-visible rounded-2xl p-4 [&>*:first-child]:leading-none!"
                 key={metric.id}
                 label={
                   <span className="flex items-center gap-1">

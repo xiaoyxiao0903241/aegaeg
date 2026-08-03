@@ -1,6 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { tv } from 'tailwind-variants'
 
+import { useMobileViewport } from '~/hooks/use-mobile-viewport'
 import { cn } from '~/shared/lib/utils'
 import { Carousel, type CarouselApi, CarouselContent, CarouselItem } from '~/shared/ui/carousel'
 import { dappIcon } from '~/shared/ui/dapp-icon-scale'
@@ -10,37 +11,24 @@ export type DappCarouselSlide = {
   content: ReactNode
 }
 
+type CarouselLayout = 'desktop' | 'mobile'
+
 /**
- * 通用 DApp about 轮播壳（奖励 / 释放…；兑换 TokenAbout 仍自管 peek）。
- * - 卡间距：track `-ml-8` + slide `pl-8`（≡ 兑换 about）
- * - 阴影：viewport 垫 `--shadow-bleed-*`，避免 Embla `overflow-hidden` 裁切
- * - indicator：chevron mask + pill dots（稿 active 22×6 / inactive 6）
+ * 通用 DApp about 轮播壳（奖励 / 释放…；兑换 TokenAbout 仍自管）。
+ * H5/PC 分轨与 `TokenAboutCarousel` 同构：`useMobileViewport` + 同 bleed / Embla opts，
+ * 避免仅靠 `max-dapp:` 与兑换行为漂移。
  */
 const dappCarouselChrome = tv({
   slots: {
     root: 'grid w-full overflow-visible',
-    viewport: [
-      'overflow-hidden pb-(--shadow-bleed-subtle)',
-      'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7',
-      'max-dapp:-mx-(--shadow-bleed-h5) max-dapp:w-[calc(100%+2*var(--shadow-bleed-h5))] max-dapp:px-(--shadow-bleed-h5) max-dapp:pt-(--carousel-h5-viewport-pad-y)',
-    ],
+    viewport: '',
     track: '-ml-8 flex items-stretch',
-    slide: 'min-w-0 shrink-0 grow-0 basis-full pl-8',
-    indicatorBar: [
-      'relative z-1 inline-flex items-center justify-center gap-3.5 self-center',
-      '-mt-(--shadow-bleed-subtle) pt-(--carousel-pc-indicator-pt)',
-      'max-dapp:-mt-[calc(var(--shadow-bleed-subtle)-var(--carousel-h5-viewport-pad-y))] max-dapp:gap-2.5 max-dapp:pt-(--carousel-h5-indicator-pt)',
-    ],
-    navButton: [
+    slide: 'flex w-full max-w-full min-w-0 shrink-0 grow-0 basis-full flex-col pl-8',
+    indicatorBar: 'inline-flex items-center justify-center self-center',
+    navButton:
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0 text-muted-foreground',
-      dappIcon({ size: 'base' }),
-      'max-dapp:size-(--dapp-icon-lg) max-dapp:rounded-full',
-    ],
-    chevron: [
+    chevron:
       "block bg-current [mask:url('/assets/figma/dapp/ic-chevron.svg')_center/contain_no-repeat]",
-      dappIcon({ size: 'base' }),
-      'max-dapp:size-(--dapp-icon-md)',
-    ],
     dotGroup: 'inline-flex items-center gap-1.5',
     dotButton: [
       'grid cursor-pointer place-items-center border-0 bg-transparent p-0',
@@ -49,15 +37,46 @@ const dappCarouselChrome = tv({
     dot: 'block rounded-full bg-border transition-[width,background-color] duration-250 ease-out',
   },
   variants: {
+    layout: {
+      desktop: {
+        root: 'gap-0',
+        viewport: 'dapp:-mx-7 dapp:w-[calc(100%+3.5rem)] dapp:px-7 dapp:pb-(--shadow-bleed-subtle)',
+        indicatorBar: [
+          'gap-3.5',
+          'relative z-1 -mt-(--shadow-bleed-subtle) pt-(--carousel-pc-indicator-pt)',
+        ],
+        navButton: dappIcon({ size: 'base' }),
+        chevron: dappIcon({ size: 'base' }),
+      },
+      mobile: {
+        viewport: [
+          '-mx-(--shadow-bleed-h5) w-[calc(100%+2*var(--shadow-bleed-h5))]',
+          'px-(--shadow-bleed-h5) pt-(--carousel-h5-viewport-pad-y) pb-(--shadow-bleed-subtle)',
+        ].join(' '),
+        indicatorBar: [
+          'gap-2.5',
+          'relative z-1 -mt-[calc(var(--shadow-bleed-subtle)-var(--carousel-h5-viewport-pad-y))]',
+          'pt-(--carousel-h5-indicator-pt)',
+        ].join(' '),
+        navButton: 'size-(--dapp-icon-lg) rounded-full',
+        chevron: dappIcon({ size: 'md' }),
+      },
+    },
     chevronDirection: {
       prev: { chevron: '-rotate-90' },
       next: { chevron: 'rotate-90' },
     },
     dotActive: {
-      true: { dot: 'h-1.5 w-5.5 bg-primary max-dapp:w-4.5' },
-      false: { dot: 'size-1.5' },
+      true: {},
+      false: {},
     },
   },
+  compoundVariants: [
+    { layout: 'desktop', dotActive: true, class: { dot: 'h-1.5 w-5.5 bg-primary' } },
+    { layout: 'mobile', dotActive: true, class: { dot: 'h-1.5 w-4.5 bg-primary' } },
+    { layout: 'desktop', dotActive: false, class: { dot: 'size-1.5' } },
+    { layout: 'mobile', dotActive: false, class: { dot: 'size-1.5' } },
+  ],
 })
 
 export function DappCarousel({
@@ -71,9 +90,11 @@ export function DappCarousel({
   prevLabel?: string
   slides: readonly DappCarouselSlide[]
 }) {
+  const isMobile = useMobileViewport()
+  const layout: CarouselLayout = isMobile ? 'mobile' : 'desktop'
+  const chrome = dappCarouselChrome({ layout })
   const [api, setApi] = useState<CarouselApi>()
   const [index, setIndex] = useState(0)
-  const chrome = dappCarouselChrome()
 
   const onSelect = useCallback(() => {
     if (!api) return
@@ -90,20 +111,22 @@ export function DappCarousel({
   }, [api, onSelect])
 
   return (
-    <div className={cn(chrome.root(), className)}>
-      <Carousel className="w-full" opts={{ loop: true }} setApi={setApi}>
-        <CarouselContent
-          className={chrome.track()}
-          spacing="none"
-          viewportClassName={chrome.viewport()}
-        >
-          {slides.map((slide) => (
-            <CarouselItem className={chrome.slide()} key={slide.key} spacing="none">
-              {slide.content}
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+    <Carousel
+      className={cn(chrome.root(), className)}
+      opts={{ align: 'start', loop: true, containScroll: 'trimSnaps' }}
+      setApi={setApi}
+    >
+      <CarouselContent
+        className={chrome.track()}
+        spacing="none"
+        viewportClassName={chrome.viewport()}
+      >
+        {slides.map((slide) => (
+          <CarouselItem className={chrome.slide()} key={slide.key} spacing="none">
+            {slide.content}
+          </CarouselItem>
+        ))}
+      </CarouselContent>
       <div className={chrome.indicatorBar()}>
         <button
           aria-label={prevLabel}
@@ -113,7 +136,7 @@ export function DappCarousel({
         >
           <span
             aria-hidden
-            className={dappCarouselChrome({ chevronDirection: 'prev' }).chevron()}
+            className={dappCarouselChrome({ layout, chevronDirection: 'prev' }).chevron()}
           />
         </button>
         <div className={chrome.dotGroup()} role="group">
@@ -126,7 +149,10 @@ export function DappCarousel({
               onClick={() => api?.scrollTo(i)}
               type="button"
             >
-              <span aria-hidden className={dappCarouselChrome({ dotActive: i === index }).dot()} />
+              <span
+                aria-hidden
+                className={dappCarouselChrome({ layout, dotActive: i === index }).dot()}
+              />
             </button>
           ))}
         </div>
@@ -138,10 +164,10 @@ export function DappCarousel({
         >
           <span
             aria-hidden
-            className={dappCarouselChrome({ chevronDirection: 'next' }).chevron()}
+            className={dappCarouselChrome({ layout, chevronDirection: 'next' }).chevron()}
           />
         </button>
       </div>
-    </div>
+    </Carousel>
   )
 }

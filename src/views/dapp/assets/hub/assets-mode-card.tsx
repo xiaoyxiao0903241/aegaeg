@@ -56,15 +56,15 @@ export function AssetsModeCard({
         />
       ) : null}
       <div className="pointer-events-none relative z-10 grid gap-2">
-        <div className="flex h-5 items-center justify-between gap-2">
-          <div className="flex items-center gap-1">
+        <div className="flex min-h-5 flex-wrap items-center justify-between gap-x-2 gap-y-1">
+          <div className="flex min-w-0 items-center gap-1">
             <DappIcon alt="" className="size-5 shrink-0" size="sm" src={icon} />
-            <Text as="span" className="leading-4 font-semibold" variant="detail">
+            <Text as="span" className="leading-4 font-semibold wrap-break-word" variant="detail">
               {title}
             </Text>
           </div>
-          <div className="pointer-events-auto flex items-center gap-1">
-            <Text as="span" className="leading-4 font-medium" variant="copy">
+          <div className="pointer-events-auto flex shrink-0 items-center gap-1">
+            <Text as="span" className="leading-4 font-medium wrap-break-word" variant="copy">
               <DappCountValue animate={false} text={aprLabel} />
             </Text>
             <DappInfoTooltip className="size-3 text-foreground [&_svg]:size-3" content={aprHint} />

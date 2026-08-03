@@ -5,9 +5,9 @@ import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { Text } from '~/shared/ui/text'
 
 /**
- * Hub reward entry — Figma `reward/*`（p16 · gap12 · r16 · outlined + soft shadow）。
- * 标题 14 semibold → `detail`；副文/≈ 13 muted40 → `copy`+/40；余额标签 13 body70；余额值 16 → `headline`。
- * badge 10 → `caption`；图标：幸运/推荐/创世 20；参与/共建/发展 24。
+ * Hub reward entry — Figma `reward/*`（p16 · gap12 · r16 · outlined）。
+ * 与资产/释放 Hub 左卡同 chrome：`shadow-none`（禁 soft shadow）。
+ * 正文完整换行；禁 overflow-hidden / truncate 裁切多语文案。
  */
 export function RewardsModeCard({
   approx,
@@ -39,7 +39,7 @@ export function RewardsModeCard({
       as="button"
       surface="outlined"
       className={cn(
-        'grid w-full gap-3 overflow-hidden rounded-2xl border-border p-4 text-left shadow-outlined',
+        'grid w-full gap-3 rounded-2xl border-border p-4 text-left shadow-none',
         onClick &&
           'duration-dapp-fast cursor-pointer transition-[border-color,transform] ease-out hover:scale-[1.008] hover:border-primary active:scale-[0.992]',
       )}
@@ -47,40 +47,50 @@ export function RewardsModeCard({
       type="button"
     >
       <div className="grid gap-1.5">
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           <DappIcon alt="" className={cn('size-5 shrink-0', iconClassName)} size="sm" src={icon} />
-          <Text as="span" className="leading-4 font-semibold" variant="detail">
+          <Text as="span" className="leading-4 font-semibold wrap-break-word" variant="detail">
             {title}
           </Text>
           {badge ? (
             <span className="pointer-events-none inline-flex h-4.5 shrink-0 items-center rounded-full bg-primary-soft px-2">
-              <Text as="span" className="leading-none" tone="primary" variant="caption">
+              <Text
+                as="span"
+                className="leading-none whitespace-nowrap"
+                tone="primary"
+                variant="caption"
+              >
                 {badge}
               </Text>
             </span>
           ) : null}
         </div>
-        <Text as="p" className="m-0 truncate leading-4 text-foreground/40" variant="copy">
+        <Text as="p" className="m-0 leading-4 wrap-break-word text-foreground/40" variant="copy">
           {body}
         </Text>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
         <Text as="span" className="leading-4 text-foreground/70" variant="copy">
           {balanceLabel}
         </Text>
-        <div className="flex items-center gap-1.5">
-          <Text as="strong" className="leading-5 font-semibold" variant="headline">
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-1.5">
+          <Text as="strong" className="leading-5 font-semibold wrap-break-word" variant="headline">
             <DappCountValue text={balanceAmount} />
           </Text>
           {approx ? (
-            <Text as="span" className="leading-4 text-foreground/40" variant="copy">
+            <Text as="span" className="leading-4 wrap-break-word text-foreground/40" variant="copy">
               <DappCountValue text={approx} />
             </Text>
           ) : null}
           {claimCta ? (
             <span className="inline-flex items-center gap-1">
-              <Text as="span" className="leading-4 font-medium" tone="primary" variant="copy">
+              <Text
+                as="span"
+                className="leading-4 font-medium whitespace-nowrap"
+                tone="primary"
+                variant="copy"
+              >
                 {claimCta}
               </Text>
               {claimIcon ? (

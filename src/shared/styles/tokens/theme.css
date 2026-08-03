@@ -372,6 +372,8 @@
   --carousel-pc-indicator-pt: 0.75rem;
   /* 奖励 about 轮播右侧 lavender wash · Figma 4297:214 */
   --rewards-carousel-wash: #e7defa;
+  /* 机制表「当前」行底 · Figma 4699:234 */
+  --rewards-tier-current-bg: #fdf8f5;
 
   /* DApp motion — shared timing / easing / travel (CSS animations + transitions) */
   --motion-dapp-fast: 120ms;

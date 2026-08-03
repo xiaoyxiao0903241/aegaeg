@@ -120,10 +120,10 @@ function ExchangeProgramCard({
     >
       <Card.Content className={cn('grid min-w-0 gap-1.5 text-left', icon && 'flex-1')}>
         {/* 稿 title 14 / body 13；leading-tight 合成 h70（禁 leading-[…] 任意值） */}
-        <Text as="strong" className="leading-tight font-semibold" variant="detail">
+        <Text as="strong" className="leading-tight font-semibold wrap-break-word" variant="detail">
           {title}
         </Text>
-        <Text as="span" className="leading-tight text-foreground/40" variant="copy">
+        <Text as="span" className="leading-tight wrap-break-word text-foreground/40" variant="copy">
           {body}
         </Text>
       </Card.Content>

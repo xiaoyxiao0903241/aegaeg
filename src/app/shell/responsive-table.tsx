@@ -63,7 +63,7 @@ const responsiveTable = tv({
 })
 
 const highlightedRow =
-  'bg-accent [&_td]:font-normal [&_td]:text-foreground [&_td.text-success]:text-success'
+  'bg-(--rewards-tier-current-bg) [&_td]:font-normal [&_td]:text-foreground [&_td.text-success]:text-success'
 
 export function ResponsiveTable({
   className = '',

@@ -26,39 +26,52 @@ export function RewardsHubContent() {
   return (
     <DappDetailPage>
       <DappDetailBlock>
-        {/* Figma tile 行 gap 9 → gap-2.5(10)；瓦内 leading 跟稿 normal，禁 copy/headline 默认 1.5/1.2 撑高 */}
-        <div className="mb-6 grid gap-2.5 sm:grid-cols-3">
+        {/* PC 三列；H5 一行两卡（≡ staking hub max-dapp:grid-cols-2） */}
+        <div className="mb-6 grid grid-cols-2 gap-2.5 dapp:grid-cols-3">
           <RewardsStatCard label={stats.totalRewards}>
             {/* Figma tile label：13 Medium body70 */}
             <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
               {stats.totalRewards}
             </Text>
-            <div className="mt-1.5 flex items-center gap-1.5">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
               <DappIcon
                 alt=""
                 className="size-4.5 shrink-0"
                 size="sm"
                 src={dappAssets.rewardsHubGagxDot}
               />
-              <Text as="p" className="leading-none font-semibold" variant="headline">
+              <Text
+                as="p"
+                className="leading-none font-semibold wrap-break-word"
+                variant="headline"
+              >
                 {statsView.totalRewardGagx}
               </Text>
-              <Text as="p" className="leading-none text-foreground/40" variant="copy">
+              <Text
+                as="p"
+                className="leading-none wrap-break-word text-foreground/40"
+                variant="copy"
+              >
                 {statsView.totalRewardApprox}
               </Text>
             </div>
           </RewardsStatCard>
+          {/* Figma 4296:218：overflow-clip；IP `-scale-y-100 rotate-180` ≡ `-scale-x-100` 朝左 */}
           <RewardsStatCard className="relative overflow-hidden" label={stats.tier}>
             <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
               {stats.tier}
             </Text>
-            <Text as="p" className="mt-1.5 leading-none text-foreground/40" variant="copy">
+            <Text
+              as="p"
+              className="mt-1.5 leading-none wrap-break-word text-foreground/40"
+              variant="copy"
+            >
               {statsView.tierLabel}
             </Text>
-            {/* Figma 62×88 → w-16 h-22（Δ≤2；禁任意 px） */}
+            {/* Figma 62×88 → w-16 h-22；资产朝右，跟稿水平翻转；禁溢出圆角 */}
             <img
               alt=""
-              className="pointer-events-none absolute top-1.5 right-0 h-22 w-16 object-contain"
+              className="pointer-events-none absolute top-1.5 right-0 h-22 w-16 -scale-x-100 object-contain object-right max-dapp:hidden"
               src={dappAssets.rewardsHubTierDeco}
             />
           </RewardsStatCard>
@@ -66,11 +79,19 @@ export function RewardsHubContent() {
             <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
               {stats.personalHolding}
             </Text>
-            <div className="mt-1.5 flex items-center gap-1.5">
-              <Text as="p" className="leading-none font-semibold" variant="headline">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              <Text
+                as="p"
+                className="leading-none font-semibold wrap-break-word"
+                variant="headline"
+              >
                 {statsView.personalUsd}
               </Text>
-              <Text as="p" className="leading-none text-foreground/40" variant="copy">
+              <Text
+                as="p"
+                className="leading-none wrap-break-word text-foreground/40"
+                variant="copy"
+              >
                 {statsView.personalAgx}
               </Text>
             </div>
@@ -79,11 +100,19 @@ export function RewardsHubContent() {
             <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
               {stats.totalPerformance}
             </Text>
-            <div className="mt-1.5 flex items-center gap-1.5">
-              <Text as="p" className="leading-none font-semibold" variant="headline">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              <Text
+                as="p"
+                className="leading-none font-semibold wrap-break-word"
+                variant="headline"
+              >
                 {statsView.makingMarketUsd}
               </Text>
-              <Text as="p" className="leading-none text-foreground/40" variant="copy">
+              <Text
+                as="p"
+                className="leading-none wrap-break-word text-foreground/40"
+                variant="copy"
+              >
                 {statsView.makingMarketAgx}
               </Text>
             </div>
@@ -92,27 +121,44 @@ export function RewardsHubContent() {
             <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
               {stats.smallAreaPerformance}
             </Text>
-            <div className="mt-1.5 flex items-center gap-1.5">
-              <Text as="p" className="leading-none font-semibold" variant="headline">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              <Text
+                as="p"
+                className="leading-none font-semibold wrap-break-word"
+                variant="headline"
+              >
                 {statsView.smallMarketUsd}
               </Text>
-              <Text as="p" className="leading-none text-foreground/40" variant="copy">
+              <Text
+                as="p"
+                className="leading-none wrap-break-word text-foreground/40"
+                variant="copy"
+              >
                 {statsView.smallMarketAgx}
               </Text>
             </div>
           </RewardsStatCard>
           <RewardsStatCard label={stats.contribution}>
-            <div className="flex items-center justify-between gap-2">
-              <Text as="p" className="leading-none font-medium text-foreground/70" variant="copy">
+            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
+              <Text
+                as="p"
+                className="min-w-0 leading-none font-medium wrap-break-word text-foreground/70"
+                variant="copy"
+              >
                 {stats.contribution}
               </Text>
-              {/* Figma 去销毁 pill h16 · coral solid + caption 10；禁 Button sm→min-h-9 */}
+              {/* Figma 去销毁 pill · coral；禁 Button sm→min-h-9；多语完整可见 */}
               <button
-                className="inline-flex h-4 shrink-0 items-center gap-0.5 rounded-full bg-coral-emphasis px-2 text-primary-foreground hover:opacity-90"
+                className="inline-flex min-h-4 max-w-full shrink-0 items-center gap-0.5 rounded-full bg-coral-emphasis px-2 py-0.5 text-primary-foreground hover:opacity-90"
                 onClick={() => openExchangeView('burn')}
                 type="button"
               >
-                <Text as="span" className="leading-none" tone="inverse" variant="caption">
+                <Text
+                  as="span"
+                  className="leading-none whitespace-nowrap"
+                  tone="inverse"
+                  variant="caption"
+                >
                   {stats.goBurn}
                 </Text>
                 <DappIcon
@@ -123,13 +169,21 @@ export function RewardsHubContent() {
                 />
               </button>
             </div>
-            <div className="mt-1.5 flex items-center gap-1.5">
-              <Text as="p" className="leading-none font-semibold" variant="headline">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              <Text
+                as="p"
+                className="leading-none font-semibold wrap-break-word"
+                variant="headline"
+              >
                 {statsView.contributionValue.startsWith('$')
                   ? statsView.contributionValue
                   : `$${statsView.contributionValue}`}
               </Text>
-              <Text as="p" className="leading-none text-foreground/40" variant="copy">
+              <Text
+                as="p"
+                className="leading-none wrap-break-word text-foreground/40"
+                variant="copy"
+              >
                 {stats.contributionHint}
               </Text>
             </div>
@@ -161,10 +215,16 @@ export function RewardsHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.hub.mechanismTitle}</DappContentHeading>
-        <Text as="p" className="mb-3" tone="muted-foreground" variant="detail">
+        <Text as="p" className="mb-3 text-foreground/40" variant="detail">
           {t.rewards.hub.mechanismBody}
         </Text>
-        <DappTableCard>
+        <DappTableCard
+          footer={
+            <Text as="p" className="text-foreground/40" variant="detail">
+              {t.rewards.hub.mechanismFooter}
+            </Text>
+          }
+        >
           {/* 无数据稿 A4「当前」徽章；有 making_rank 时跟真档，否则跟稿演示 A4 */}
           <ResponsiveTable
             colWidths={['10rem', '10rem', '10rem', '1fr', '7rem']}
@@ -172,13 +232,14 @@ export function RewardsHubContent() {
             highlightedRows={[statsView.tierRowIndex]}
             rows={tier.rows.map((row, rowIndex) => {
               const isCurrent = rowIndex === statsView.tierRowIndex
+              // Figma 4699:234：等级 ink semibold + coral-soft「当前」pill（非等级染 coral）
               const levelCell = isCurrent ? (
-                <span className="inline-flex items-center gap-1.5">
-                  <Text as="span" className="text-coral" variant="copy">
+                <span className="inline-flex items-center gap-2">
+                  <Text as="span" className="font-semibold" variant="copy">
                     {row.level}
                   </Text>
-                  <span className="inline-flex h-4.5 items-center rounded-full bg-primary-soft px-2">
-                    <Text as="span" className="leading-none" tone="primary" variant="caption">
+                  <span className="inline-flex items-center rounded-full bg-primary-soft px-2 py-0.5">
+                    <Text as="span" className="leading-none text-coral" variant="caption">
                       {t.rewards.currentTierSuffix}
                     </Text>
                   </span>
@@ -186,28 +247,26 @@ export function RewardsHubContent() {
               ) : (
                 row.level
               )
-              const rateParts = row.rate
-                .split(/(?=\+)/)
-                .map((p) => p.trim())
-                .filter(Boolean)
+              // Figma 末行：130% semibold +「+全球分红 5%」primary 竖排
+              const plusIdx = row.rate.indexOf('+')
               const rateCell =
-                rateParts.length > 1 ? (
-                  <span className="inline-flex flex-wrap items-baseline gap-1">
-                    {rateParts.map((part) => (
-                      <Text as="span" key={part} variant="copy">
-                        {part}
-                      </Text>
-                    ))}
+                plusIdx > 0 ? (
+                  <span className="flex flex-col items-start leading-normal">
+                    <Text as="span" className="font-semibold" variant="copy">
+                      {row.rate.slice(0, plusIdx).trim()}
+                    </Text>
+                    <Text as="span" className="text-primary" variant="copy">
+                      {row.rate.slice(plusIdx).trim()}
+                    </Text>
                   </span>
                 ) : (
-                  row.rate
+                  <Text as="span" className="font-semibold" variant="copy">
+                    {row.rate}
+                  </Text>
                 )
               return [levelCell, row.holding, row.accounts, row.team, rateCell]
             })}
           />
-          <Text as="p" className="mt-3.5" tone="muted-foreground" variant="detail">
-            {t.rewards.hub.mechanismFooter}
-          </Text>
         </DappTableCard>
       </DappDetailBlock>
 

@@ -13,7 +13,9 @@ type RewardsStatCardProps = {
   children?: ReactNode
 }
 
-/** Local rewards chrome — elevated = shadow-card(e2) · Figma tile 74×p16×r16。 */
+/**
+ * 奖励右栏瓦 — elevated e2 · 稿高约 74 作 **min**（禁定高 + overflow 裁切正文 / CTA）。
+ */
 export function RewardsStatCard({
   label,
   value,
@@ -26,8 +28,7 @@ export function RewardsStatCard({
     <Card
       as="div"
       surface="elevated"
-      // Figma tile 74：h-18.5 + p-4（禁 min-h-[74px]；定高防 leading 撑破；勿再盖 shadow-sm）
-      className={cn('h-18.5 gap-1.5 overflow-hidden rounded-2xl p-4', className)}
+      className={cn('min-h-18.5 gap-1.5 overflow-visible rounded-2xl p-4', className)}
     >
       {children ?? (
         <>
@@ -35,12 +36,12 @@ export function RewardsStatCard({
             {label}
           </Text>
           {value != null ? (
-            <Text as="p" className="mt-1.5 font-semibold" variant="copy">
+            <Text as="p" className="mt-1.5 font-semibold wrap-break-word" variant="copy">
               {value}
             </Text>
           ) : null}
           {hint != null ? (
-            <Text as="p" className="mt-1" tone="muted-foreground" variant="detail">
+            <Text as="p" className="mt-1 wrap-break-word" tone="muted-foreground" variant="detail">
               {hint}
             </Text>
           ) : null}
