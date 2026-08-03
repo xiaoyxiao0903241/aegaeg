@@ -91,7 +91,10 @@ export function bindApiLabelFormatters(sessionReady: boolean, isPending: boolean
   }
 }
 
-function formatDaoGrantStatus(status: DaoGrantStatus, labels: RewardLogStatusLabels): string {
+export function formatDaoGrantStatus(
+  status: DaoGrantStatus,
+  labels: RewardLogStatusLabels,
+): string {
   switch (status) {
     case 'READY':
       return labels.pending
@@ -107,9 +110,25 @@ function formatDaoGrantStatus(status: DaoGrantStatus, labels: RewardLogStatusLab
   }
 }
 
+/** 表 StatusBadge tone：待领 coral · 已领 muted · 处理中 coral · 失败 destructive */
+export function daoGrantStatusTone(
+  status: DaoGrantStatus,
+): 'pending' | 'muted' | 'processing' | 'failed' {
+  switch (status) {
+    case 'READY':
+      return 'pending'
+    case 'CLAIMED':
+      return 'muted'
+    case 'CANCELLED':
+      return 'failed'
+    default:
+      return 'processing'
+  }
+}
+
 export function formatMakingRankLabel(rank: number | null | undefined, emptyLabel: string): string {
   if (rank == null || !Number.isFinite(rank) || rank <= 0) return emptyLabel
-  return String(Math.trunc(rank))
+  return `A${Math.trunc(rank)}`
 }
 
 export function splitAmountByPct(amount: bigint, pct: number): bigint {
@@ -283,8 +302,8 @@ export function mapRankRewardLogToRow(
 ): string[] {
   return [
     formatApiDateTime(item.created_at),
-    String(item.benefit_level),
-    formatApiDecimalAmount(item.awarded_gross),
+    formatMakingRankLabel(item.benefit_level, TABLE_EMPTY),
+    formatApiDecimalAmount(item.awarded_gross, { digits: 4, suffix: ' gAGX' }),
     formatDaoGrantStatus(item.status, labels),
     formatApiDateTime(item.fully_claimed_at),
   ]

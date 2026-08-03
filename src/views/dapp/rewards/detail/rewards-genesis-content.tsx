@@ -2,13 +2,15 @@ import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
+import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { dappDarkBanner } from '~/shared/ui/dapp-dark-banner'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
+import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsGenesisContentView } from '~/views/dapp/rewards/detail/use-rewards-genesis-content-view'
 
 export function RewardsGenesisContent() {
@@ -26,7 +28,7 @@ export function RewardsGenesisContent() {
           })}
         >
           <div className={banner.content({ className: 'min-w-0 flex-1 pr-36 max-dapp:pr-0' })}>
-            <Text as="span" className="text-primary" variant="caption">
+            <Text as="span" tone="primary-bright" variant="caption">
               {t.rewards.heroKicker}
             </Text>
             {vm.showHeroSkeleton ? (
@@ -40,7 +42,7 @@ export function RewardsGenesisContent() {
                     {vm.heroTitle || t.rewards.shareholderNoRankTitle}
                   </Text>
                   {vm.hasRank && vm.isSuperCommunity ? (
-                    <Text as="span" className="text-primary" variant="caption">
+                    <Text as="span" tone="primary-bright" variant="caption">
                       {t.rewards.superCommunityBadge}
                     </Text>
                   ) : null}
@@ -56,22 +58,24 @@ export function RewardsGenesisContent() {
               </>
             )}
           </div>
+          {/* Figma 4719:2483 IP动作3 · 103×155 → rem；无镜像；素材 2026-08-03 自稿重导 */}
           <img
             alt=""
-            className="pointer-events-none absolute -top-10.75 right-3 z-0 hidden h-48 w-32 max-w-32 -scale-x-100 object-contain select-none md:block"
-            height="156"
+            className="pointer-events-none absolute top-1.5 right-6.5 z-0 hidden h-38.75 w-25.75 object-contain select-none md:block"
+            height="155"
             loading="lazy"
             src={dappAssets.rewardsCharacter}
-            width="104"
+            width="103"
           />
         </div>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.allTiers}</DappContentHeading>
+        {/* 静态荣誉档位表 · 非动态列表 · 不分页 */}
         <DappTableCard className="mt-4">
           <ResponsiveTable
-            colWidths={['14.375rem', '11.875rem', '11.875rem', '1fr']}
+            colWidths={['14.375rem', '11.875rem', '11.875rem', '7.875rem']}
             headers={[...vm.g.tierColumns]}
             highlightedRows={vm.highlightedRows}
             rows={vm.tierRows}
@@ -83,36 +87,31 @@ export function RewardsGenesisContent() {
         <DappContentHeading>{t.rewards.history}</DappContentHeading>
         <DappTableCard
           className="mt-4"
-          header={
-            <DappPillTabs
-              activeTone="coral"
-              ariaLabel={vm.g.recordsTabsAria}
-              className="flex items-center justify-start gap-2"
-              items={vm.historyTabOptions.map((option) => ({
-                active: option.value === vm.historyTab,
-                label: option.label,
-              }))}
-              onSelect={(index) => {
-                const next = vm.historyTabOptions[index]
-                if (next) vm.setHistoryTab(next.value)
-              }}
-            />
+          footer={
+            shouldShowTablePagination(vm.historyTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={vm.setHistoryPage}
+                page={vm.historyPage}
+                total={vm.historyTotal}
+              />
+            ) : undefined
           }
+          header={rewardsRecordsPillTabsHeader({
+            ariaLabel: vm.g.recordsTabsAria,
+            options: vm.historyTabOptions,
+            value: vm.historyTab,
+            onChange: (next) => vm.setHistoryTab(next as typeof vm.historyTab),
+          })}
         >
-          <ResponsiveTable
-            colWidths={['11.875rem', '10rem', '10rem', '1fr']}
+          <DappTableBody
+            colWidths={['16.75rem', '8.375rem', '9.8125rem', '1fr']}
+            emphasisColumns={[2]}
+            emptyTitle={!vm.sessionReady ? t.rewards.hub.signInForBalance : vm.historyEmpty.title}
             headers={[...vm.g.recordsColumns]}
             isLoading={vm.sessionReady && vm.historyLoading}
-            loadingRowCount={4}
             rows={vm.historyRows}
           />
-          {!vm.sessionReady || (!vm.historyLoading && vm.historyRows.length === 0) ? (
-            <DappTableEmptyMessage
-              body={!vm.sessionReady ? undefined : vm.historyEmpty.body}
-              embedded
-              title={!vm.sessionReady ? t.rewards.hub.signInForBalance : vm.historyEmpty.title}
-            />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

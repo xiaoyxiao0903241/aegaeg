@@ -4,9 +4,8 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappInfoTooltip } from '~/app/shell/dapp-info-tooltip'
+import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { cn } from '~/shared/lib/utils'
-import { Chip } from '~/shared/ui/chip'
 import { FaqList } from '~/shared/ui/faq-list'
 import { MetricCard } from '~/shared/ui/metric-card'
 import { Segment } from '~/shared/ui/segment'
@@ -132,30 +131,20 @@ export function StakingHubContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{table.title}</DappContentHeading>
-        {/* Figma htab `4371:233`：discrete Chip（≠ Segment）；gap≈9→gap-2；active coral-emphasis */}
-        <div aria-label={table.segmentAria} className="mb-3 flex flex-wrap gap-2" role="tablist">
-          {tableSegOptions.map((option) => {
-            const active = tableSeg === option.value
-            return (
-              <Chip
-                aria-selected={active}
-                key={option.value}
-                onClick={() => setTableSeg(option.value)}
-                role="tab"
-                shape="pill"
-                size="md"
-                tone={active ? 'coral' : 'default'}
-                variant={active ? 'soft' : 'outlined'}
-                className={cn(
-                  'h-7 min-w-0 px-4 text-(length:--type-copy-size) leading-none',
-                  active ? 'font-semibold text-coral-emphasis' : 'font-medium',
-                )}
-              >
-                {option.label}
-              </Chip>
-            )
-          })}
-        </div>
+        {/* Figma htab `4371:233` → 通用 DappPillTabs（≠ Segment） */}
+        <DappPillTabs
+          activeTone="coral"
+          ariaLabel={table.segmentAria}
+          className="mb-3"
+          items={tableSegOptions.map((option) => ({
+            active: tableSeg === option.value,
+            label: option.label,
+          }))}
+          onSelect={(index) => {
+            const next = tableSegOptions[index]
+            if (next) setTableSeg(next.value)
+          }}
+        />
         <DappTableCard contentClassName="px-4 py-4">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">

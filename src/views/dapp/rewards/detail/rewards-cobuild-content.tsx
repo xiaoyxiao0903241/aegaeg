@@ -1,15 +1,19 @@
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
+import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
 import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
 import { useRewardsCobuildContentView } from '~/views/dapp/rewards/detail/use-rewards-cobuild-content-view'
+import { NON_NUMERIC_EMPTY } from '~/views/dapp/rewards/rewards-display'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
+/** Figma 4408:631 levelcard — 当前级 coral rate · 下级 muted rate · req 卡徽章+/目标 */
 export function RewardsCobuildContent() {
   const {
     cobuild,
@@ -23,13 +27,20 @@ export function RewardsCobuildContent() {
     nextPayout,
     tierCurrent,
     tierNext,
-    reqHolding,
-    reqAccounts,
-    reqPerformance,
+    tierCurrentRate,
+    tierNextRate,
+    achievedLabel,
+    tierReqs,
     recordRows,
     recordsLoading,
+    recordsPage,
+    setRecordsPage,
+    recordsTotal,
     directRows,
     directsLoading,
+    directsPage,
+    setDirectsPage,
+    directsTotal,
     recordsTabOptions,
   } = useRewardsCobuildContentView()
 
@@ -38,88 +49,129 @@ export function RewardsCobuildContent() {
       <DappDetailBlock>
         <DappContentHeading>{cobuild.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <RewardsStatCard label={cobuild.totalRewards} value={totalRewards} />
+          <RewardsStatCard label={cobuild.totalPerformance} value={totalPerformance} />
+          <RewardsStatCard label={cobuild.myPosition} value={myPosition} />
+          <RewardsStatCard label={cobuild.directCount} value={referralCount} />
           <RewardsStatCard
-            className="min-h-19.25"
-            label={cobuild.totalRewards}
-            value={totalRewards}
+            label={cobuild.contribution}
+            value={contributionValue}
+            valueHint={cobuild.contributionHint}
           />
-          <RewardsStatCard
-            className="min-h-19.25"
-            label={cobuild.totalPerformance}
-            value={totalPerformance}
-          />
-          <RewardsStatCard className="min-h-19.25" label={cobuild.myPosition} value={myPosition} />
-          <RewardsStatCard
-            className="min-h-19.25"
-            label={cobuild.directCount}
-            value={referralCount}
-          />
-          <RewardsStatCard className="min-h-19.25" label={cobuild.contribution}>
-            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
-              {cobuild.contribution}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <Text as="p" className="leading-5 font-semibold" variant="copy">
-                {contributionValue}
-              </Text>
-              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
-                {cobuild.contributionHint}
-              </Text>
-            </div>
-          </RewardsStatCard>
-          <RewardsStatCard className="min-h-19.25" label={cobuild.nextPayout} value={nextPayout} />
+          <RewardsStatCard label={cobuild.nextPayout} value={nextPayout} />
         </div>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{cobuild.tierTitle}</DappContentHeading>
-        <RewardsStatCard className="mt-4 p-5" label={cobuild.tierCurrent}>
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <Text as="p" tone="muted-foreground" variant="caption">
+        {/* Figma 4408:631 — flex+gap-4.5(18) 标题区↔req；req 横 gap-3(12)；req 内 gap-1.5(6) */}
+        <Card
+          surface="elevated"
+          className="mt-4 flex flex-col gap-4.5 overflow-visible rounded-2xl p-5"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="grid gap-1">
+              <Text as="p" className="leading-none text-foreground/40" variant="copy">
                 {cobuild.tierCurrent}
               </Text>
-              <Text as="p" className="mt-1" variant="figure">
-                {tierCurrent}
-              </Text>
+              <div className="flex items-center gap-2.5">
+                <Text
+                  as="p"
+                  className="leading-none font-semibold"
+                  variant={tierCurrentRate !== NON_NUMERIC_EMPTY ? 'figure' : 'headline'}
+                >
+                  {tierCurrent}
+                </Text>
+                {tierCurrentRate !== NON_NUMERIC_EMPTY ? (
+                  <Text
+                    as="span"
+                    className="rounded-full bg-primary-soft px-2 py-0.5 leading-none font-semibold text-primary"
+                    variant="caption"
+                  >
+                    {tierCurrentRate}
+                  </Text>
+                ) : null}
+              </div>
             </div>
-            <div className="text-right">
-              <Text as="p" tone="muted-foreground" variant="caption">
+            <div className="grid gap-1 text-right">
+              <Text as="p" className="leading-none text-foreground/40" variant="copy">
                 {cobuild.tierNext}
               </Text>
-              <Text as="p" className="mt-1 font-semibold" variant="copy">
-                {tierNext}
-              </Text>
+              <div className="flex items-center justify-end gap-2">
+                <Text as="p" className="leading-none font-semibold" variant="headline">
+                  {tierNext}
+                </Text>
+                {tierNextRate !== NON_NUMERIC_EMPTY ? (
+                  <Text
+                    as="span"
+                    className="leading-none font-semibold text-foreground/40"
+                    variant="caption"
+                  >
+                    {tierNextRate}
+                  </Text>
+                ) : null}
+              </div>
             </div>
           </div>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
-            {(
-              [
-                [cobuild.reqHolding, cobuild.reqHoldingHint, reqHolding],
-                [cobuild.reqAccounts, cobuild.reqAccountsHint, reqAccounts],
-                [cobuild.reqPerformance, cobuild.reqPerformanceHint, reqPerformance],
-              ] as const
-            ).map(([label, hint, value]) => (
-              <div className="rounded-2xl border border-border p-4" key={label}>
-                <Text as="p" tone="muted-foreground" variant="caption">
-                  {label}
-                </Text>
-                <Text as="p" className="mt-2 font-semibold" variant="copy">
-                  {value}
-                </Text>
-                <Text as="p" className="mt-2" tone="muted-foreground" variant="caption">
-                  {hint}
+          <div className="grid gap-3 md:grid-cols-3">
+            {tierReqs.map((req) => (
+              <div
+                className="flex flex-col gap-1.5 rounded-control bg-muted px-4 py-3.5"
+                key={req.label}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <Text as="p" className="leading-none text-foreground/40" variant="caption">
+                    {req.label}
+                  </Text>
+                  {req.badge.kind === 'achieved' ? (
+                    <Text
+                      as="span"
+                      className="rounded-full bg-success-soft px-2 py-0.5 leading-none font-semibold text-success"
+                      variant="caption"
+                    >
+                      {achievedLabel}
+                    </Text>
+                  ) : req.badge.kind === 'pct' ? (
+                    <Text
+                      as="span"
+                      className="rounded-full bg-primary-soft px-2 py-0.5 leading-none font-semibold text-primary"
+                      variant="caption"
+                    >
+                      {req.badge.value}
+                    </Text>
+                  ) : null}
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <Text as="p" className="leading-none font-semibold" variant="headline">
+                    {req.value}
+                  </Text>
+                  <Text as="p" className="leading-none text-foreground/40" variant="caption">
+                    {req.target}
+                  </Text>
+                </div>
+                <Text as="p" className="leading-none text-foreground/40" variant="caption">
+                  {req.hint}
                 </Text>
               </div>
             ))}
           </div>
-        </RewardsStatCard>
+        </Card>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{cobuild.recordsTitle}</DappContentHeading>
         <DappTableCard
           className="mt-4"
+          footer={
+            shouldShowTablePagination(recordsTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={recordsTotal}
+              />
+            ) : undefined
+          }
           header={rewardsRecordsPillTabsHeader({
             ariaLabel: cobuild.recordsTabsAria,
             options: recordsTabOptions,
@@ -127,37 +179,41 @@ export function RewardsCobuildContent() {
             onChange: (next) => setRecordsTab(next as typeof recordsTab),
           })}
         >
-          <ResponsiveTable
-            colWidths={['11.875rem', '4.375rem', '8.75rem', '6.875rem', '1fr']}
+          <DappTableBody
+            colWidths={['12.0625rem', '3.9375rem', '9.1875rem', '6.125rem', '1fr']}
+            emptyTitle={
+              recordsTab === 'cobuild' ? cobuild.emptyRecordsCobuild : cobuild.emptyRecordsEqualize
+            }
             headers={[...cobuild.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {!recordsLoading && recordRows.length === 0 ? (
-            <DappTableEmptyMessage
-              embedded
-              title={
-                recordsTab === 'cobuild'
-                  ? cobuild.emptyRecordsCobuild
-                  : cobuild.emptyRecordsEqualize
-              }
-            />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{cobuild.directsTitle}</DappContentHeading>
-        <DappTableCard className="mt-4">
-          <ResponsiveTable
+        <DappTableCard
+          className="mt-4"
+          footer={
+            shouldShowTablePagination(directsTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setDirectsPage}
+                page={directsPage}
+                total={directsTotal}
+              />
+            ) : undefined
+          }
+        >
+          <DappTableBody
             colWidths={['12.5rem', '12.5rem', '8.125rem', '1fr']}
+            emphasisColumns={[2]}
+            emptyTitle={cobuild.emptyDirects}
             headers={[...cobuild.directsColumns]}
             isLoading={directsLoading}
             rows={directRows}
           />
-          {!directsLoading && directRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={cobuild.emptyDirects} />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
 import { useDappShell } from '~/app/use-dapp-shell'
 import { getTeamRequirementLegRank, rewardTierRows } from '~/core/presale/tier-table'
@@ -14,11 +14,13 @@ import {
   formatShareholderHintForRank,
   getPresaleRankHighlightedRows,
 } from '~/shared/api/format-display'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { Text } from '~/shared/ui/text'
 import {
-  formatApiDecimalAmount,
   mapCommunityFundLogToRow,
   mapRewardLogToRow,
   mapTeamRewardClaimLogToRow,
+  NON_NUMERIC_EMPTY,
 } from '~/views/dapp/rewards/rewards-display'
 import { useShareholderRankLabels } from '~/views/dapp/rewards/use-shareholder-rank-labels'
 
@@ -35,6 +37,13 @@ function formatGenesisTierTeamCell(
   return tierDualLegRequirement.replace('{rank}', formatPresaleRank(legRank))
 }
 
+/** 稿 4414:359 金额 +$ · 强调 */
+function withSignedUsdPrefix(amount: string): string {
+  if (!amount || amount === NON_NUMERIC_EMPTY) return amount
+  if (amount.startsWith('+') || amount.startsWith('-')) return amount
+  return `+${amount}`
+}
+
 export function useRewardsGenesisContentView() {
   const { messages: t } = useI18n()
   const g = t.rewards.genesisDetail
@@ -44,18 +53,24 @@ export function useRewardsGenesisContentView() {
   const isSuperCommunity = communityFundTotal?.is_presale_fund_node === true
   const hasRank = displayRank > 0
   const [historyTab, setHistoryTab] = useState<GenesisHistoryTab>('referral')
+  const [historyPage, setHistoryPage] = useState(1)
 
+  useEffect(() => {
+    setHistoryPage(1)
+  }, [historyTab])
+
+  const pageParams = tablePageQuery(historyPage)
   const { data: rewardLogs, isLoading: rewardLogsLoading } = useRewardLogs(
-    { page: 1, page_size: 20 },
-    sessionReady,
+    pageParams,
+    sessionReady && historyTab === 'referral',
   )
   const { data: teamClaimLogs, isLoading: teamLogsLoading } = useTeamRewardClaimLogs(
-    { page: 1, page_size: 20 },
-    sessionReady,
+    pageParams,
+    sessionReady && historyTab === 'team',
   )
   const { data: communityFundLogs, isLoading: communityLogsLoading } = useCommunityFundLogs(
-    { page: 1, page_size: 20 },
-    sessionReady && isSuperCommunity,
+    pageParams,
+    sessionReady && isSuperCommunity && historyTab === 'communityFund',
   )
 
   const heroBody = hasRank
@@ -69,7 +84,8 @@ export function useRewardsGenesisContentView() {
 
   const rewardTiers = rewardTierRows()
   const highlightedRows = getPresaleRankHighlightedRows(displayRank, rewardTiers.length)
-  const tierRows = rewardTiers.map((row, rowIndex) => {
+  /** Figma 4414:270：等级 semibold + coral-soft「当前」pill（复用 Hub 模式） */
+  const tierRows: ReactNode[][] = rewardTiers.map((row, rowIndex) => {
     const rankLabel = row[0] ?? ''
     const personal = row[1] ?? ''
     const team = formatGenesisTierTeamCell(
@@ -78,9 +94,21 @@ export function useRewardsGenesisContentView() {
       t.rewards.tierDualLegRequirement,
     )
     const rate = row[3] ?? ''
-    const levelCell = highlightedRows.includes(rowIndex)
-      ? `${rankLabel} · ${t.rewards.currentTierSuffix}`
-      : rankLabel
+    const isCurrent = highlightedRows.includes(rowIndex)
+    const levelCell = isCurrent ? (
+      <span className="inline-flex items-center gap-2">
+        <Text as="span" className="font-semibold" variant="copy">
+          {rankLabel}
+        </Text>
+        <span className="inline-flex items-center rounded-full bg-primary-soft px-2 py-0.5">
+          <Text as="span" className="leading-none font-semibold text-coral" variant="caption">
+            {t.rewards.currentTierSuffix}
+          </Text>
+        </span>
+      </span>
+    ) : (
+      rankLabel
+    )
     return [levelCell, personal, team, rate]
   })
 
@@ -89,34 +117,57 @@ export function useRewardsGenesisContentView() {
   const typeTeam = t.rewards.rewardType.presaleTeam
   const typeFund = t.rewards.communityFund
 
-  const historyRows =
+  const activeHistory =
+    historyTab === 'referral'
+      ? rewardLogs
+      : historyTab === 'team'
+        ? teamClaimLogs
+        : communityFundLogs
+
+  const historyRows: ReactNode[][] =
     historyTab === 'referral'
       ? (rewardLogs?.items.map((item) => {
           const mapped = mapRewardLogToRow(item, historyStatusLabels)
           return [
-            mapped[0] ?? formatApiDecimalAmount(null),
+            mapped[0] ?? NON_NUMERIC_EMPTY,
             typeReferral,
-            mapped[1] ?? formatApiDecimalAmount(null),
-            mapped[4] ?? formatApiDecimalAmount(null),
+            withSignedUsdPrefix(mapped[1] ?? NON_NUMERIC_EMPTY),
+            <Text as="span" className="font-semibold text-foreground/40" key="st" variant="support">
+              {mapped[4] ?? NON_NUMERIC_EMPTY}
+            </Text>,
           ]
         }) ?? [])
       : historyTab === 'team'
         ? (teamClaimLogs?.items.map((item) => {
             const mapped = mapTeamRewardClaimLogToRow(item, historyStatusLabels)
             return [
-              mapped[0] ?? formatApiDecimalAmount(null),
+              mapped[0] ?? NON_NUMERIC_EMPTY,
               typeTeam,
-              mapped[1] ?? formatApiDecimalAmount(null),
-              mapped[3] ?? formatApiDecimalAmount(null),
+              withSignedUsdPrefix(mapped[1] ?? NON_NUMERIC_EMPTY),
+              <Text
+                as="span"
+                className="font-semibold text-foreground/40"
+                key="st"
+                variant="support"
+              >
+                {mapped[3] ?? NON_NUMERIC_EMPTY}
+              </Text>,
             ]
           }) ?? [])
         : (communityFundLogs?.items.map((item) => {
             const mapped = mapCommunityFundLogToRow(item, historyStatusLabels)
             return [
-              mapped[0] ?? formatApiDecimalAmount(null),
+              mapped[0] ?? NON_NUMERIC_EMPTY,
               typeFund,
-              mapped[1] ?? formatApiDecimalAmount(null),
-              mapped[2] ?? formatApiDecimalAmount(null),
+              withSignedUsdPrefix(mapped[1] ?? NON_NUMERIC_EMPTY),
+              <Text
+                as="span"
+                className="font-semibold text-foreground/40"
+                key="st"
+                variant="support"
+              >
+                {mapped[2] ?? NON_NUMERIC_EMPTY}
+              </Text>,
             ]
           }) ?? [])
 
@@ -159,5 +210,8 @@ export function useRewardsGenesisContentView() {
     historyRows,
     historyLoading,
     historyEmpty,
+    historyPage,
+    setHistoryPage,
+    historyTotal: activeHistory?.total ?? 0,
   }
 }

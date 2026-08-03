@@ -36,7 +36,7 @@ function pageMenuMaxHeightPx(): number {
   return pageMenuItemHeightPx() * PAGE_MENU_VISIBLE_ITEMS
 }
 
-/** Pagination control radius (6px; project `rounded-sm` is larger). */
+/** 分页控件圆角 6px（`rounded-tight`）。禁 `rounded-sm`——那是大号 DropdownMenu 面板。 */
 const PAGINATION_BTN_RADIUS = 'rounded-tight'
 
 type MenuPlacement = 'above' | 'below'
@@ -264,8 +264,12 @@ export function DappTablePagination({
 
               {menuOpen
                 ? createPortal(
+                    // 小号自管 portal（≠ DropdownMenu）：与触发器同 rounded-tight · 行无圆角
                     <ul
-                      className="m-0 list-none overflow-y-auto rounded-tight border border-border bg-card p-0 text-xs shadow-dropdown"
+                      className={cn(
+                        'm-0 list-none overflow-y-auto border border-border bg-card p-0 text-xs shadow-dropdown',
+                        PAGINATION_BTN_RADIUS,
+                      )}
                       data-dapp-pagination-menu
                       id={listId}
                       ref={menuRef}
@@ -285,9 +289,9 @@ export function DappTablePagination({
                           >
                             <button
                               className={cn(
-                                'flex h-(--dapp-pagination-menu-item-height) w-full cursor-pointer items-center justify-center rounded-control text-center text-xs transition-colors',
+                                'flex h-[var(--dapp-pagination-menu-item-height)] w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
                                 active
-                                  ? 'bg-primary-soft font-semibold text-coral'
+                                  ? 'bg-accent font-semibold text-coral'
                                   : 'bg-card text-foreground',
                               )}
                               onClick={() => {
@@ -298,17 +302,7 @@ export function DappTablePagination({
                               }}
                               type="button"
                             >
-                              <Text
-                                as="span"
-                                variant="support"
-                                tone={active ? undefined : 'foreground'}
-                                className={cn(
-                                  'leading-none',
-                                  active ? 'font-semibold text-coral' : 'font-normal',
-                                )}
-                              >
-                                {pageNumber}
-                              </Text>
+                              {pageNumber}
                             </button>
                           </li>
                         )

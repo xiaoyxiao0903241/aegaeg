@@ -4,7 +4,9 @@ import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { Button } from '~/shared/ui/button'
 import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
@@ -29,8 +31,14 @@ export function RewardsLuckyContent() {
     verifyHash,
     winnerRows,
     winnersLoading,
+    winnersPage,
+    setWinnersPage,
+    winnersTotal,
     historyRows,
     historyLoading,
+    historyPage,
+    setHistoryPage,
+    historyTotal,
   } = useRewardsLuckyContentView()
 
   const dateMenu =
@@ -153,7 +161,19 @@ export function RewardsLuckyContent() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <DappContentHeading>{lucky.resultsTitle}</DappContentHeading>
         </div>
-        <DappTableCard className="mt-4">
+        <DappTableCard
+          className="mt-4"
+          footer={
+            shouldShowTablePagination(winnersTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setWinnersPage}
+                page={winnersPage}
+                total={winnersTotal}
+              />
+            ) : undefined
+          }
+        >
           {showResultsChrome ? (
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
@@ -169,6 +189,7 @@ export function RewardsLuckyContent() {
           ) : null}
           <ResponsiveTable
             colWidths={['5.625rem', '15.9375rem', '10.9375rem', '1fr']}
+            emphasisColumns={[2, 3]}
             headers={[...lucky.resultsColumns]}
             isLoading={winnersLoading}
             rows={winnerRows}
@@ -181,9 +202,22 @@ export function RewardsLuckyContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{lucky.historyTitle}</DappContentHeading>
-        <DappTableCard className="mt-4">
+        <DappTableCard
+          className="mt-4"
+          footer={
+            shouldShowTablePagination(historyTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setHistoryPage}
+                page={historyPage}
+                total={historyTotal}
+              />
+            ) : undefined
+          }
+        >
           <ResponsiveTable
             colWidths={['9.375rem', '9.25rem', '14.6875rem', '1fr']}
+            emphasisColumns={[1]}
             headers={[...lucky.historyColumns]}
             isLoading={historyLoading}
             rows={historyRows}

@@ -101,6 +101,8 @@ export const dappAssets = {
   setting: '/assets/figma/dapp/ic-setting.svg',
   infoHint: '/assets/figma/dapp/ic-info-hint.svg',
   arrowUpRight: '/assets/figma/dapp/ic-arrow-up-right.svg',
+  /** Figma `4742:248` 外链 ↗ 9×9（申请解锁等） */
+  arrowUpRightSm: '/assets/figma/dapp/ic-arrow-up-right-sm.svg',
   /** Rail icon for exchange tab (glyph file name historical). */
   exchange: '/assets/figma/dapp/ic-swap.svg',
   assets: '/assets/figma/dapp/ic-assets.svg',

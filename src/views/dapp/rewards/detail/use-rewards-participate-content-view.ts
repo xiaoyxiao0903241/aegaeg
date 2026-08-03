@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useDappShell } from '~/app/use-dapp-shell'
 import {
   useParticipationAwardInviter,
@@ -5,11 +7,12 @@ import {
   useParticipationAwardSummary,
 } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
+import { tablePageQuery } from '~/shared/lib/table-pagination'
+import { mapParticipationAwardLogToCells } from '~/views/dapp/rewards/detail/rewards-table-cells'
 import {
-  formatApiDecimalAmount,
   formatApiStatLabel,
   mapParticipationAwardInviterToRow,
-  mapParticipationAwardLogToRow,
+  NON_NUMERIC_EMPTY,
   type RewardLogStatusLabels,
 } from '~/views/dapp/rewards/rewards-display'
 
@@ -18,9 +21,10 @@ export function useRewardsParticipateContentView() {
   const participate = t.rewards.participate
   const { sessionReady } = useDappShell()
   const statusLabels = t.rewards.logStatus as RewardLogStatusLabels
+  const [recordsPage, setRecordsPage] = useState(1)
 
   const summaryQuery = useParticipationAwardSummary(sessionReady)
-  const logsQuery = useParticipationAwardLogs({}, sessionReady)
+  const logsQuery = useParticipationAwardLogs(tablePageQuery(recordsPage), sessionReady)
   const inviterQuery = useParticipationAwardInviter(sessionReady)
 
   const summary = summaryQuery.data
@@ -41,7 +45,7 @@ export function useRewardsParticipateContentView() {
   )
 
   const recordRows =
-    logsQuery.data?.items.map((item) => mapParticipationAwardLogToRow(item, statusLabels)) ?? []
+    logsQuery.data?.items.map((item) => mapParticipationAwardLogToCells(item, statusLabels)) ?? []
   const inviter = inviterQuery.data?.inviter
   const inviterRows = inviter != null ? [mapParticipationAwardInviterToRow(inviter)] : []
 
@@ -50,9 +54,12 @@ export function useRewardsParticipateContentView() {
     totalRewards,
     myPosition,
     contributionValue,
-    nextPayout: formatApiDecimalAmount(null),
+    nextPayout: NON_NUMERIC_EMPTY,
     recordRows,
     recordsLoading: sessionReady && logsQuery.isLoading,
+    recordsPage,
+    setRecordsPage,
+    recordsTotal: logsQuery.data?.total ?? 0,
     inviterRows,
     inviterLoading: sessionReady && inviterQuery.isLoading,
   }

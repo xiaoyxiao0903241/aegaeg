@@ -11,6 +11,7 @@ import { useRewardsViewStore } from '~/stores/rewards-view-store'
 import { useRewardsGenesisView } from '~/views/dapp/rewards/detail/use-rewards-genesis-view'
 import { formatApiDecimalAmount } from '~/views/dapp/rewards/rewards-display'
 
+/** Figma 4413:603 左栏 — 深色等级卡 + 直推/等级/发展基金 */
 export function RewardsGenesisClaimWidget() {
   const { messages: t } = useI18n()
   const setView = useRewardsViewStore((state) => state.setView)
@@ -25,57 +26,74 @@ export function RewardsGenesisClaimWidget() {
         subtitle={vm.g.pageSubtitle}
         title={vm.g.pageTitle}
       />
-      <DappWidgetStack>
-        <div className={banner.root({ className: 'min-h-42.75 gap-3.5 p-4' })}>
+      <DappWidgetStack className="gap-4">
+        {/* level-dark 4413:615 — root 须 flex 才能吃 gap-3.5(14)；左栏卡间稿 gap16→gap-4 */}
+        <div className={banner.root({ className: 'flex min-h-42.75 flex-col gap-3.5 p-4' })}>
           <div className="grid gap-1.5">
-            <Text as="p" className="text-primary" variant="caption">
+            <Text as="p" className="font-medium" tone="primary-bright" variant="caption">
               {t.rewards.heroKicker}
             </Text>
-            <div className="flex items-start justify-between gap-3">
-              <Text as="p" className="font-semibold text-white" variant="detail">
+            <div className="flex items-center justify-between gap-3">
+              <Text as="p" className="m-0 leading-none font-semibold text-white" variant="section">
                 {vm.rankBusy ? '0' : vm.rankLabel || t.rewards.shareholderNoRankTitle}
               </Text>
               {vm.hasRank && vm.isSuperCommunity ? (
-                <Text as="p" className="shrink-0 text-primary" variant="caption">
+                <Text
+                  as="p"
+                  className="shrink-0 leading-none font-semibold"
+                  tone="primary-bright"
+                  variant="support"
+                >
                   {t.rewards.superCommunityBadge}
                 </Text>
               ) : null}
             </div>
             {vm.hasRank ? (
-              <Text as="p" className="text-white/60" variant="caption">
-                {vm.teamRewardRateLabel}
+              <Text as="p" className="leading-none text-white/60" variant="support">
+                {vm.teamRewardRatePrefix}{' '}
+                <Text as="span" className="text-coral-emphasis" variant="support">
+                  {vm.teamRewardRate}
+                </Text>
               </Text>
             ) : (
-              <Text as="p" className="text-white/60" variant="caption">
+              <Text as="p" className="leading-none text-white/60" variant="support">
                 {vm.sessionReady ? t.rewards.shareholderNoRankBody : t.rewards.hub.sessionHint}
               </Text>
             )}
           </div>
           <div className="grid gap-1">
             <div className="flex items-center justify-between gap-2">
-              <Text as="span" className="text-white/55" variant="caption">
+              <Text as="span" className="leading-none text-white/55" variant="support">
                 {vm.personalProgressLabel}
               </Text>
-              <Text as="span" className="text-white/80" variant="caption">
+              <Text as="span" className="leading-none text-white/80" variant="support">
                 {vm.rankBusy ? '0' : vm.personalProgressValue}
               </Text>
             </div>
-            <ProgressMeter label={vm.personalProgressLabel} value={vm.personalProgressPercent} />
+            <ProgressMeter
+              className="h-1.5 bg-white/12"
+              label={vm.personalProgressLabel}
+              value={vm.personalProgressPercent}
+            />
           </div>
           <div className="grid gap-1">
             <div className="flex items-center justify-between gap-2">
-              <Text as="span" className="text-white/55" variant="caption">
+              <Text as="span" className="leading-none text-white/55" variant="support">
                 {t.rewards.teamVolume}
               </Text>
-              <Text as="span" className="text-white/80" variant="caption">
+              <Text as="span" className="leading-none text-white/80" variant="support">
                 {vm.rankBusy ? '0' : vm.teamProgressValue}
               </Text>
             </div>
-            <ProgressMeter label={t.rewards.teamVolume} value={vm.teamProgressPercent} />
+            <ProgressMeter
+              className="h-1.5 bg-white/12"
+              label={t.rewards.teamVolume}
+              value={vm.teamProgressPercent}
+            />
           </div>
         </div>
 
-        {/* Figma 直推 100 / 等级·基金 125：min-h 合成；内 CTA 38=density inverse */}
+        {/* 直推 4413:634 · 自动支付 coral */}
         <Card surface="outlined" className="min-h-25 rounded-2xl px-5 py-4">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
@@ -93,12 +111,13 @@ export function RewardsGenesisClaimWidget() {
           </Text>
         </Card>
 
+        {/* 等级奖励 4413:640 · 右侧累计 body70 */}
         <Card surface="outlined" className="min-h-31.25 rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.teamRewards}
             </Text>
-            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
+            <Text as="p" className="leading-4 text-foreground/70" variant="support">
               {vm.teamMeta}
             </Text>
           </div>
@@ -124,12 +143,13 @@ export function RewardsGenesisClaimWidget() {
           ) : null}
         </Card>
 
+        {/* 发展基金 4413:647 */}
         <Card surface="outlined" className="min-h-31.25 rounded-2xl px-5 py-3.5">
           <div className="flex items-center justify-between gap-2">
             <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
               {t.rewards.communityFund}
             </Text>
-            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
+            <Text as="p" className="leading-4 text-foreground/70" variant="support">
               {vm.communityLockedMeta}
             </Text>
           </div>

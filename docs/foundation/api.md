@@ -118,7 +118,9 @@
 
 覆盖：percent buttons、badges、tabs、tags。
 
-**`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。
+**`outlined` + `default`**：未选 htab / 分立 pill — `bg-card` + `border-border` + **`text-foreground/40`**（Figma `text/muted` 40%；**勿**用 `muted-foreground` 70%）。
+
+**`coral`**：Figma `accent/primary (coral)` `#c85c3f` — LIVE / MAX / 选中边框角色；**勿**与 `primary` `#e86a43` 混用。折扣强调用 token `coral-emphasis`（非 Chip tone）。选中 htab 字色由 `DappPillTabs` 叠 `text-coral-emphasis`（样本 Grant `4719:2447`）。
 
 **Field-adjacent action**：Genesis MAX · Community Bind → `FieldActionChip`（`Chip soft` + `coral` · `h-11` / `rounded-control`）；**不是** `DappActionButton` / Button secondary。
 
@@ -208,7 +210,7 @@
 - `dappDarkBanner`（`src/shared/ui/dapp-dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
 - `AegisDialogClose`（`aegis-responsive-dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
-- `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-tight` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button；下拉菜单不在该节点，保留 portal。
+- `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-tight` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button。**页码下拉是小号自管 portal**（≠ `DropdownMenu` / `SelectMenu`）：面板与触发器同 `rounded-tight`（6px；禁 `rounded-sm` 大面板圆角）· `p-0` · `shadow-dropdown`；行无圆角、通栏高亮；选中 `bg-accent` + `text-coral`；可见最多 5 行（`--dapp-pagination-menu-item-height` × 5）。
 - `ExchangeFlowButton`（`swap-widget-composites.tsx`）：Figma `flb` — 34×34 · `rounded-control` · border · card；Trade flip（`interactive`）/ Flash divider 共用；**不是** `IconButton`（详情折叠）。禁 call site 再写 `rounded-[11px]`。
 - `ResponsiveTable` 表头：≡ Community「我的社区成员」— `text-muted-foreground`；禁 tab 特判 `text-foreground/30` / `headCellClassName` 分叉。
 - `DappTableCard`：外框 **无** `border`（仅 `shadow-card`）；表头/行/页脚内部分隔线保留。

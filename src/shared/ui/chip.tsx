@@ -41,9 +41,10 @@ export const chipVariants = tv({
     { variant: 'soft', tone: 'coral', class: 'bg-accent text-coral' },
     { variant: 'soft', tone: 'success', class: 'bg-success-soft text-success' },
     {
+      // Figma text/muted = foreground/40；禁 muted-foreground(70%) 冒充未选 htab
       variant: 'outlined',
       tone: 'default',
-      class: 'border-border bg-card text-muted-foreground hover:border-primary hover:text-primary',
+      class: 'border-border bg-card text-foreground/40 hover:border-primary hover:text-primary',
     },
     {
       variant: 'outlined',

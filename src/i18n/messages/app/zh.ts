@@ -910,7 +910,7 @@ const app = defineMessages({
       myPosition: '我的仓位',
       directCount: '直接推荐地址数',
       contribution: '当前贡献点数',
-      contributionHint: '展示参考；领取为简单签，不消耗贡献点数',
+      contributionHint: '领取奖励按 1:1 消耗',
       nextPayout: '下一次奖励发放',
       recordsTitle: '推荐奖记录',
       recordsColumns: ['时间', '数量', '状态', '领取时间'],
@@ -939,7 +939,7 @@ const app = defineMessages({
           },
           {
             q: '推荐奖如何领取？',
-            a: '在左侧领取面板提交 CommunityFund 签名领取：可领额以解锁余额为准，不经过 Mixed 释放/复投。',
+            a: '在左侧领取面板选择领取与复投比例：领取部分进入释放池按所选周期线性释放，复投部分进入单币质押。领取与复投均按 1:1 消耗贡献点数（DaoPool Mixed）。',
           },
           {
             q: '直接推荐地址数是什么？',
@@ -957,7 +957,7 @@ const app = defineMessages({
       totalRewards: '总奖励',
       myPosition: '我的仓位',
       contribution: '当前贡献点数',
-      contributionHint: '展示参考；领取为简单签，不消耗贡献点数',
+      contributionHint: '领取奖励按 1:1 消耗',
       nextPayout: '下一次奖励发放',
       recordsTitle: '参与奖记录',
       recordsColumns: ['时间', '数量', '状态', '领取时间'],
@@ -986,7 +986,7 @@ const app = defineMessages({
           },
           {
             q: '参与奖如何领取？',
-            a: '在左侧领取面板提交 IncentivePool 签名领取：不消耗贡献点数，也不经过释放池，gAGX 将直接进入您的钱包。',
+            a: '在左侧领取面板选择领取与复投比例：领取部分进入释放池按所选周期线性释放，复投部分进入单币质押。领取与复投均按 1:1 消耗贡献点数（DaoPool Mixed）。',
           },
           {
             q: '邀请人可以更换吗？',
@@ -1013,6 +1013,7 @@ const app = defineMessages({
       reqAccountsHint: '直推有效地址数',
       reqPerformance: '总业绩',
       reqPerformanceHint: '全部推荐体系仓位总和',
+      reqAchieved: '已达成',
       recordsTitle: '奖励记录',
       recordsTabsAria: '奖励记录类型',
       recordsTabCobuild: '共建奖',

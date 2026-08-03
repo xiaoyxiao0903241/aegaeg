@@ -960,7 +960,7 @@ const app = defineMessages({
       myPosition: '我的倉位',
       directCount: '直接推薦地址數',
       contribution: '當前貢獻點數',
-      contributionHint: '展示參考；領取為簡單簽，不消耗貢獻點數',
+      contributionHint: '領取獎勵按 1:1 消耗',
       nextPayout: '下一次獎勵發放',
       recordsTitle: '推薦獎記錄',
       recordsColumns: ['時間', '數量', '狀態', '領取時間'],
@@ -989,7 +989,7 @@ const app = defineMessages({
           },
           {
             q: '推薦獎如何領取？',
-            a: '在左側領取面板提交 CommunityFund 簽名領取：可領額以解鎖餘額為準，不經過 Mixed 釋放/復投。',
+            a: '在左側領取面板選擇領取與復投比例：領取部分進入釋放池按所選週期線性釋放，復投部分進入單幣質押。領取與復投均按 1:1 消耗貢獻點數（DaoPool Mixed）。',
           },
           {
             q: '直接推薦地址數是什麼？',
@@ -1007,7 +1007,7 @@ const app = defineMessages({
       totalRewards: '總獎勵',
       myPosition: '我的倉位',
       contribution: '當前貢獻點數',
-      contributionHint: '展示參考；領取為簡單簽，不消耗貢獻點數',
+      contributionHint: '領取獎勵按 1:1 消耗',
       nextPayout: '下一次獎勵發放',
       recordsTitle: '參與獎記錄',
       recordsColumns: ['時間', '數量', '狀態', '領取時間'],
@@ -1036,7 +1036,7 @@ const app = defineMessages({
           },
           {
             q: '參與獎如何領取？',
-            a: '在左側領取面板提交 IncentivePool 簽名領取：不消耗貢獻點數，也不經過釋放池，gAGX 將直接進入您的錢包。',
+            a: '在左側領取面板選擇領取與復投比例：領取部分進入釋放池按所選週期線性釋放，復投部分進入單幣質押。領取與復投均按 1:1 消耗貢獻點數（DaoPool Mixed）。',
           },
           {
             q: '邀請人可以更換嗎？',
@@ -1063,6 +1063,7 @@ const app = defineMessages({
       reqAccountsHint: '直推有效地址數',
       reqPerformance: '總業績',
       reqPerformanceHint: '全部推薦體系倉位總和',
+      reqAchieved: '已達成',
       recordsTitle: '獎勵記錄',
       recordsTabsAria: '獎勵記錄類型',
       recordsTabCobuild: '共建獎',

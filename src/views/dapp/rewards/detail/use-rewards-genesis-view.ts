@@ -43,10 +43,9 @@ export function useRewardsGenesisView() {
   const teamVolumeUsd = Number(teamOverview?.sales_team_market ?? 0)
   const tierProgress = nextTierProgress(displayRank, personalVolumeUsd, teamVolumeUsd)
   const nextRankLabel = formatPresaleRank(tierProgress.nextRank)
-  const teamRewardRateLabel = t.rewards.teamRewardRate.replace(
-    '{rate}',
-    getTeamBonusRateLabel(displayRank),
-  )
+  const teamRewardRate = getTeamBonusRateLabel(displayRank)
+  const teamRewardRatePrefix = t.rewards.teamRewardRate.replace('{rate}', '').trimEnd()
+  const teamRewardRateLabel = t.rewards.teamRewardRate.replace('{rate}', teamRewardRate)
 
   const personalProgressLabel = tierProgress.isMaxRank
     ? t.rewards.progressMaxPersonal
@@ -166,6 +165,8 @@ export function useRewardsGenesisView() {
     rankBusy,
     rankLabel,
     teamRewardRateLabel,
+    teamRewardRatePrefix,
+    teamRewardRate,
     personalProgressLabel,
     personalProgressValue,
     personalProgressPercent,

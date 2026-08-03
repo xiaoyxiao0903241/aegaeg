@@ -978,7 +978,7 @@ const app = defineMessages({
       myPosition: 'My position',
       directCount: 'Direct referrals',
       contribution: 'Contribution points',
-      contributionHint: 'Display only; simple claim does not burn contribution',
+      contributionHint: 'Claims spend 1:1',
       nextPayout: 'Next reward payout',
       recordsTitle: 'Referral reward records',
       recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
@@ -1007,7 +1007,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim referral rewards?',
-            a: 'Submit a CommunityFund signed claim in the left panel: unlocked balance to wallet — no Mixed release/restake.',
+            a: 'Use the left panel to set claim vs restake: claimed portion enters the release pool for the selected term; restake enters single-token staking. Both spend contribution 1:1 (DaoPool Mixed).',
           },
           {
             q: 'What is direct referral count?',
@@ -1025,7 +1025,7 @@ const app = defineMessages({
       totalRewards: 'Total rewards',
       myPosition: 'My position',
       contribution: 'Contribution points',
-      contributionHint: 'Display only; simple claim does not burn contribution',
+      contributionHint: 'Claims spend 1:1',
       nextPayout: 'Next reward payout',
       recordsTitle: 'Participation reward records',
       recordsColumns: ['Time', 'Amount', 'Status', 'Claimed at'],
@@ -1054,7 +1054,7 @@ const app = defineMessages({
           },
           {
             q: 'How do I claim participation rewards?',
-            a: 'Submit an IncentivePool signed claim in the left panel: no contribution burn and no release queue — gAGX goes straight to your wallet.',
+            a: 'Use the left panel to set claim vs restake: claimed portion enters the release pool for the selected term; restake enters single-token staking. Both spend contribution 1:1 (DaoPool Mixed).',
           },
           {
             q: 'Can I change my referrer?',
@@ -1081,6 +1081,7 @@ const app = defineMessages({
       reqAccountsHint: 'Active direct referrals',
       reqPerformance: 'Total performance',
       reqPerformanceHint: 'All downline position value',
+      reqAchieved: 'Achieved',
       recordsTitle: 'Reward records',
       recordsTabsAria: 'Reward record type',
       recordsTabCobuild: 'Co-build',

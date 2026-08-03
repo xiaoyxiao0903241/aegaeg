@@ -2,7 +2,7 @@ import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
 
 type PillOption = { label: string; value: string }
 
-/** Shared coral pill-tabs header for rewards records tables. */
+/** Shared coral pill-tabs header for rewards records tables（Figma htab → DappPillTabs）. */
 export function rewardsRecordsPillTabsHeader(args: {
   ariaLabel: string
   options: readonly PillOption[]
@@ -14,7 +14,7 @@ export function rewardsRecordsPillTabsHeader(args: {
     <DappPillTabs
       activeTone="coral"
       ariaLabel={ariaLabel}
-      className="flex items-center justify-start gap-2"
+      className="justify-start"
       items={options.map((option) => ({
         active: option.value === value,
         label: option.label,

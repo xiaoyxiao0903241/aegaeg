@@ -1,11 +1,11 @@
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { DappTableBody } from '~/app/shell/dapp-table-body'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
+import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { FaqList } from '~/shared/ui/faq-list'
-import { Text } from '~/shared/ui/text'
 import { useRewardsParticipateContentView } from '~/views/dapp/rewards/detail/use-rewards-participate-content-view'
 import { RewardsStatCard } from '~/views/dapp/rewards/rewards-stat-card'
 
@@ -18,6 +18,9 @@ export function RewardsParticipateContent() {
     nextPayout,
     recordRows,
     recordsLoading,
+    recordsPage,
+    setRecordsPage,
+    recordsTotal,
     inviterRows,
     inviterLoading,
   } = useRewardsParticipateContentView()
@@ -27,64 +30,55 @@ export function RewardsParticipateContent() {
       <DappDetailBlock>
         <DappContentHeading>{participate.dataTitle}</DappContentHeading>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <RewardsStatCard label={participate.totalRewards} value={totalRewards} />
+          <RewardsStatCard label={participate.myPosition} value={myPosition} />
           <RewardsStatCard
-            className="min-h-19.25"
-            label={participate.totalRewards}
-            value={totalRewards}
+            label={participate.contribution}
+            value={contributionValue}
+            valueHint={participate.contributionHint}
           />
-          <RewardsStatCard
-            className="min-h-19.25"
-            label={participate.myPosition}
-            value={myPosition}
-          />
-          <RewardsStatCard className="min-h-19.25" label={participate.contribution}>
-            <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
-              {participate.contribution}
-            </Text>
-            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <Text as="p" className="leading-5 font-semibold" variant="copy">
-                {contributionValue}
-              </Text>
-              <Text as="p" className="leading-4" tone="muted-foreground" variant="support">
-                {participate.contributionHint}
-              </Text>
-            </div>
-          </RewardsStatCard>
-          <RewardsStatCard
-            className="min-h-19.25"
-            label={participate.nextPayout}
-            value={nextPayout}
-          />
+          <RewardsStatCard label={participate.nextPayout} value={nextPayout} />
         </div>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{participate.recordsTitle}</DappContentHeading>
-        <DappTableCard className="mt-4">
-          <ResponsiveTable
+        <DappTableCard
+          className="mt-4"
+          footer={
+            shouldShowTablePagination(recordsTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={recordsTotal}
+              />
+            ) : undefined
+          }
+        >
+          <DappTableBody
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
+            emphasisColumns={[1]}
+            emptyTitle={participate.emptyRecords}
             headers={[...participate.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
-          {!recordsLoading && recordRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={participate.emptyRecords} />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{participate.inviterTitle}</DappContentHeading>
+        {/* 邀请人 API 单条 · 无分页 */}
         <DappTableCard className="mt-4">
-          <ResponsiveTable
+          <DappTableBody
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
+            emphasisColumns={[2, 3]}
+            emptyTitle={participate.emptyInviter}
             headers={[...participate.inviterColumns]}
             isLoading={inviterLoading}
             rows={inviterRows}
           />
-          {!inviterLoading && inviterRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={participate.emptyInviter} />
-          ) : null}
         </DappTableCard>
       </DappDetailBlock>
 

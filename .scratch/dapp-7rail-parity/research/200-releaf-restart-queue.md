@@ -47,11 +47,11 @@
 | 16 | 质押 | Calc | `4462:220` | `#staking/calc` | **page-done** `947ecfe5` | `research/211-staking-calc-leaf.md` |
 | 17 | 奖励 | Hub | `4291:212` | `#rewards` | **in-progress** · N=M=191 · A5 重建中 | `213-rewards-hub-leaf.md` |
 | 18 | 奖励 | Lucky | `4390:220` | `#rewards/lucky` | **page-done** | `215-lucky-leaf.md` |
-| 19 | 奖励 | 推荐 | `4403:220` | `#rewards/referral` | not-started | |
-| 20 | 奖励 | 参与 | `4407:220` | `#rewards/participate` | not-started | |
-| 21 | 奖励 | 共建 | `4408:220` | `#rewards/cobuild` | not-started | |
-| 22 | 奖励 | Grant | `4410:220` | `#rewards/grant` | not-started | |
-| 23 | 奖励 | 创世奖 | `4413:220` | `#rewards/genesis` | not-started | |
+| 19 | 奖励 | 推荐 | `4403:220` | `#rewards/referral` | **page-done** | `research/216-referral-leaf.md` |
+| 20 | 奖励 | 参与 | `4407:220` | `#rewards/participate` | **page-done** | `research/217-participate-leaf.md` |
+| 21 | 奖励 | 共建 | `4408:220` | `#rewards/cobuild` | **page-done** | `research/218-cobuild-leaf.md` |
+| 22 | 奖励 | Grant | `4410:220` | `#rewards/grant` | **page-done** | `research/219-grant-leaf.md` |
+| 23 | 奖励 | 创世奖 | `4413:220` | `#rewards/genesis` | **page-done** | `research/220-genesis-leaf.md` |
 | 24 | 释放 | Hub | `4298:212` | `#release` | not-started | |
 | 25 | 释放 | 队列 | `4466:220` | `#release/queue` | not-started | |
 | 26 | 释放 | 缓冲 | `4469:220` | `#release/buffer` | not-started | |

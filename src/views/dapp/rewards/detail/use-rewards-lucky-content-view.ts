@@ -15,6 +15,7 @@ import { formatShortAddress } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
 import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { DAPP_TABLE_PAGE_SIZE, tablePageQuery } from '~/shared/lib/table-pagination'
 import type { SelectMenuOption } from '~/shared/ui/select-menu'
 import {
   formatApiCountLabel,
@@ -97,10 +98,16 @@ export function useRewardsLuckyContentView() {
   const summaryDate = summary?.date?.trim() || ''
 
   const [selectedDate, setSelectedDate] = useState('')
+  const [winnersPage, setWinnersPage] = useState(1)
+  const [historyPage, setHistoryPage] = useState(1)
   useEffect(() => {
     if (!summaryDate) return
     setSelectedDate((prev) => prev || summaryDate)
   }, [summaryDate])
+
+  useEffect(() => {
+    setWinnersPage(1)
+  }, [selectedDate])
 
   const dateOptions = buildRecentDrawDateOptions(
     summaryDate || selectedDate || formatIsoDateUtc(utcToday()),
@@ -111,7 +118,7 @@ export function useRewardsLuckyContentView() {
       : (dateOptions[0]?.value ?? '')
 
   const winnersQuery = useLuckyRewardWinners(drawDate, sessionReady && drawDate.length > 0)
-  const historyQuery = useLuckyRewardMyRounds({}, sessionReady)
+  const historyQuery = useLuckyRewardMyRounds(tablePageQuery(historyPage), sessionReady)
 
   const roundQuery = useChainQuery({
     queryKey: queryKeys.chain.rewardsLuckyRoundDisplay,
@@ -166,12 +173,15 @@ export function useRewardsLuckyContentView() {
   )
 
   const winners = winnersQuery.data?.items ?? []
-  const winnerRows = winners.map((item) => mapLuckyWinnerToRow(item))
+  const winnersTotal = winners.length
+  const winnersPageStart = (winnersPage - 1) * DAPP_TABLE_PAGE_SIZE
+  const pagedWinners = winners.slice(winnersPageStart, winnersPageStart + DAPP_TABLE_PAGE_SIZE)
+  const winnerRows = pagedWinners.map((item) => mapLuckyWinnerToRow(item))
   const winnersLoading = sessionReady && Boolean(drawDate) && winnersQuery.isLoading
   /** 无中奖行时不展示表顶 controls（日期 / 摘要 / 哈希） */
-  const showResultsChrome = !winnersLoading && winnerRows.length > 0
+  const showResultsChrome = !winnersLoading && winnersTotal > 0
   const drawHash = winnersQuery.data?.draw_tx_hash
-  const resultsSummary = lucky.resultsSummary.replace('{count}', String(winners.length))
+  const resultsSummary = lucky.resultsSummary.replace('{count}', String(winnersTotal))
   const verifyHash = lucky.verifyHash.replace(
     '{hash}',
     drawHash ? formatShortAddress(drawHash) : NON_NUMERIC_EMPTY,
@@ -194,7 +204,13 @@ export function useRewardsLuckyContentView() {
     verifyHash,
     winnerRows,
     winnersLoading,
+    winnersPage,
+    setWinnersPage,
+    winnersTotal,
     historyRows,
     historyLoading: sessionReady && historyQuery.isLoading,
+    historyPage,
+    setHistoryPage,
+    historyTotal: historyQuery.data?.total ?? 0,
   }
 }
