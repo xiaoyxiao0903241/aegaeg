@@ -7,8 +7,11 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useDappShell } from '~/app/use-dapp-shell'
+import { formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolLogs, useBufferPoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
+import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapBufferPoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Card } from '~/shared/ui/card'
@@ -20,7 +23,11 @@ import { useReleaseBufferSnapshot } from '~/views/dapp/release/use-release-reads
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-function BufferStatCells({ stats }: { stats: ReadonlyArray<{ label: string; value: string }> }) {
+function BufferStatCells({
+  stats,
+}: {
+  stats: ReadonlyArray<{ label: string; value: string; approx: string }>
+}) {
   return (
     <div className="grid gap-2 sm:grid-cols-3">
       {stats.map((stat) => (
@@ -31,8 +38,8 @@ function BufferStatCells({ stats }: { stats: ReadonlyArray<{ label: string; valu
           <Text as="strong" className="text-sm leading-5 font-semibold" variant="copy">
             <DappCountValue text={stat.value} />
           </Text>
-          <Text as="span" className="leading-4" tone="muted-foreground" variant="detail">
-            ≈ —
+          <Text as="span" className="leading-4 text-foreground/40" variant="detail">
+            {stat.approx}
           </Text>
         </div>
       ))}
@@ -43,6 +50,7 @@ function BufferStatCells({ stats }: { stats: ReadonlyArray<{ label: string; valu
 export function ReleaseBufferContent() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
+  const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
   const apiSummaryQuery = useBufferPoolSummary(sessionReady)
   const bufferLogsQuery = useBufferPoolLogs({}, sessionReady)
@@ -52,6 +60,14 @@ export function ReleaseBufferContent() {
   const claimed = bufferQuery.data?.totalClaimed ?? 0n
   const releasing = bufferQuery.data?.totalReleasing ?? 0n
   const api = apiSummaryQuery.data
+
+  function amountNum(apiRaw: string | undefined, chain: bigint): number {
+    if (sessionReady && apiRaw != null && apiRaw.trim() !== '') {
+      const n = Number(apiRaw)
+      if (Number.isFinite(n)) return n
+    }
+    return walletReady ? formatTokenAmountToNumber(chain, AGX_DECIMALS) : 0
+  }
 
   const agxStats = [
     {
@@ -64,6 +80,7 @@ export function ReleaseBufferContent() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
+      approx: formatApproxUsd(amountNum(api?.cumulative_amount, amount), priceUsd),
     },
     {
       label: t.release.buffer.extracted,
@@ -75,6 +92,7 @@ export function ReleaseBufferContent() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
+      approx: formatApproxUsd(amountNum(api?.released_amount, claimed), priceUsd),
     },
     {
       label: t.release.labels.releasing,
@@ -86,13 +104,16 @@ export function ReleaseBufferContent() {
         decimals: AGX_DECIMALS,
         unit: 'AGX',
       }),
+      approx: formatApproxUsd(amountNum(api?.releasing_amount, releasing), priceUsd),
     },
   ]
 
+  const gagxZero = `${formatGroupedNumber(0, { digits: 4 })} gAGX`
+  const gagxZeroApprox = formatApproxUsd(0, null)
   const gagxStats = [
-    { label: t.release.buffer.entered, value: '—' },
-    { label: t.release.buffer.extracted, value: '—' },
-    { label: t.release.labels.releasing, value: '—' },
+    { label: t.release.buffer.entered, value: gagxZero, approx: gagxZeroApprox },
+    { label: t.release.buffer.extracted, value: gagxZero, approx: gagxZeroApprox },
+    { label: t.release.labels.releasing, value: gagxZero, approx: gagxZeroApprox },
   ]
 
   return (

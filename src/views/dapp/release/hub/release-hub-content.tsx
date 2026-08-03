@@ -1,20 +1,29 @@
+import { dappAssets } from '~/app/assets'
 import { DappAboutCard } from '~/app/shell/dapp-about-card'
 import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
+import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { useI18n } from '~/i18n/use-i18n'
 import { cn } from '~/shared/lib/utils'
 import { Card } from '~/shared/ui/card'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
 
+/** 税率表高亮列：稿 20 天 / 60 天（4791:3602/3603） */
+const TAX_HIGHLIGHT_PERIOD_INDEX = new Set([1, 3])
+
 export function ReleaseHubContent() {
   const { messages: t } = useI18n()
   const slides = t.release.hub.aboutSlides
+  const periods = t.release.hub.taxRows.periods
+  const rates = t.release.hub.taxRows.rates
+  const steps = t.release.hub.mechanismSteps
 
   return (
     <DappDetailPage>
+      {/* Figma right-col 4371:262：section gap 34 → DappDetailBlock mt-8.5 */}
       <DappDetailBlock>
         <DappContentHeading id="release-hub-title">{t.release.hub.aboutTitle}</DappContentHeading>
         <DappCarousel
@@ -22,103 +31,95 @@ export function ReleaseHubContent() {
           prevLabel={t.common.paginationPrev}
           slides={slides.map((slide) => ({
             key: slide.title,
-            content: <DappAboutCard body={slide.body} title={slide.title} />,
+            content: (
+              <DappAboutCard
+                // 4299:213：p16 · radius/lg · deco 91×91 右上；高随文案
+                body={slide.body}
+                className="min-h-0 gap-2 px-4 py-4"
+                decoClassName="top-2 right-4 size-(--dapp-about-deco-sq) !scale-x-100 object-cover"
+                decoSrc={dappAssets.aboutCarouselReleaseDeco}
+                title={slide.title}
+              />
+            ),
           }))}
         />
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <Text as="h3" className="mb-1 font-semibold" variant="headline">
-          {t.release.hub.mechanismTitle}
-        </Text>
-        <Text as="p" className="mb-4" tone="muted-foreground" variant="caption">
-          {t.release.hub.mechanismSubtitle}
-        </Text>
-        {/* Figma mechanism 286：min-h-71.5 + px-4 py-6 */}
+        <div className="mb-4 grid gap-1.5">
+          <Text as="h3" className="m-0 font-semibold" variant="section">
+            {t.release.hub.mechanismTitle}
+          </Text>
+          <Text as="p" className="m-0 text-foreground/40" variant="caption">
+            {t.release.hub.mechanismSubtitle}
+          </Text>
+        </div>
+        {/* 与 Stake 等同构：DappProcessSteps = PC 横排 / H5 竖时间线 */}
+        <div data-slot-id="release-mechanism-steps">
+          <DappProcessSteps items={steps} />
+        </div>
+
+        {/* 目的 + 税率：稿独立区块；跟在步骤卡下 */}
         <Card
           as="div"
           surface="elevated"
-          className="flex min-h-71.5 flex-col gap-6 rounded-2xl px-4 py-6 shadow-sm"
-          data-tour-id="release-mechanism-card"
+          className="mt-4 flex flex-col gap-6 rounded-2xl p-6"
+          data-slot-id="release-mechanism-meta"
         >
-          <ol className="flex flex-col gap-4 sm:flex-row sm:items-start">
-            {t.release.hub.mechanismSteps.map((step, stepIndex) => {
-              const accent = stepIndex === 2
-              return (
-                <li className="grid min-w-0 flex-1 gap-3 text-center" key={step.title}>
-                  <div className="flex items-center">
-                    {/* Figma badge 28：size-7 + border（禁 border-[0.09375rem]） */}
-                    <span
-                      className={cn(
-                        'flex size-7 shrink-0 items-center justify-center rounded-full font-semibold',
-                        accent
-                          ? 'bg-primary text-white'
-                          : 'border border-border bg-card text-muted-foreground',
-                      )}
-                    >
-                      {stepIndex + 1}
-                    </span>
-                    {stepIndex < t.release.hub.mechanismSteps.length - 1 ? (
-                      <span aria-hidden className="ml-0 hidden h-0.5 flex-1 bg-border sm:block" />
-                    ) : null}
-                  </div>
-                  <Text
-                    as="p"
-                    className={cn('font-medium', accent ? 'text-primary' : undefined)}
-                    variant="copy"
-                  >
-                    {step.title}
-                  </Text>
-                  <Text
-                    as="p"
-                    className={accent ? 'text-primary' : undefined}
-                    tone={accent ? undefined : 'muted-foreground'}
-                    variant="caption"
-                  >
-                    {step.body}
-                  </Text>
-                </li>
-              )
-            })}
-          </ol>
-          <div className="border-t border-border" />
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div>
-              <Text as="p" className="mb-2 font-medium" variant="copy">
+          <div className="grid gap-6 dapp:grid-cols-2">
+            <div className="grid content-start gap-1.5">
+              <Text as="p" className="m-0 font-medium text-foreground" variant="detail">
                 {t.release.hub.purposeTitle}
               </Text>
-              <Text as="p" tone="muted-foreground" variant="caption">
+              <Text as="p" className="m-0 text-foreground/40" variant="caption">
                 {t.release.hub.purposeBody}
               </Text>
             </div>
-            <div>
-              <Text as="p" className="mb-3 font-medium" variant="copy">
+
+            <div className="grid content-start gap-2">
+              <Text as="p" className="m-0 font-medium text-foreground" variant="detail">
                 {t.release.hub.taxTitle}
               </Text>
-              <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3">
-                <Text as="span" tone="muted-foreground" variant="caption">
-                  {t.release.hub.taxPeriod}
-                </Text>
-                <div className="grid grid-cols-4 gap-1 text-center">
-                  {t.release.hub.taxRows.periods.map((p) => (
-                    <Text as="span" className="font-medium" key={p} variant="caption">
-                      {p}
-                    </Text>
-                  ))}
+              {/* 税率：标签列 + 4 周期列；20/60 列灰底高亮 */}
+              <div className="grid grid-cols-[auto_1fr] items-stretch gap-x-4">
+                <div className="grid grid-rows-2 gap-4 py-2.5">
+                  <Text as="span" className="self-center text-foreground/40" variant="caption">
+                    {t.release.hub.taxPeriod}
+                  </Text>
+                  <Text as="span" className="self-center text-foreground/40" variant="caption">
+                    {t.release.hub.taxRate}
+                  </Text>
                 </div>
-                <Text as="span" tone="muted-foreground" variant="caption">
-                  {t.release.hub.taxRate}
-                </Text>
-                <div className="grid grid-cols-4 gap-1 text-center">
-                  {t.release.hub.taxRows.rates.map((r) => (
-                    <Text
-                      as="span"
-                      className={r === '1%' ? 'font-semibold text-primary' : 'font-semibold'}
-                      key={r}
-                      variant="caption"
+                <div className="grid grid-cols-4 gap-0">
+                  {periods.map((period, i) => (
+                    <div
+                      className={cn(
+                        'grid grid-rows-2 gap-4 px-1 py-2.5 text-center',
+                        TAX_HIGHLIGHT_PERIOD_INDEX.has(i) && 'rounded-sm bg-muted',
+                      )}
+                      data-slot-id={
+                        i === 1 ? 'tax-highlight-20' : i === 3 ? 'tax-highlight-60' : undefined
+                      }
+                      key={period}
                     >
-                      {r}
-                    </Text>
+                      <Text
+                        as="span"
+                        className="self-center font-medium text-foreground"
+                        variant="caption"
+                      >
+                        {period}
+                      </Text>
+                      <Text
+                        as="span"
+                        className={cn(
+                          'self-center font-semibold',
+                          rates[i] === '1%' ? 'text-primary' : 'text-foreground',
+                        )}
+                        variant="caption"
+                      >
+                        {rates[i]}
+                      </Text>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -128,10 +129,11 @@ export function ReleaseHubContent() {
       </DappDetailBlock>
 
       <DappDetailBlock>
-        <Text as="h3" className="mb-3 font-semibold" variant="headline">
+        <Text as="h3" className="mb-4 font-semibold" variant="section">
           {t.release.faq.title}
         </Text>
-        <FaqList items={t.release.faq.hub} variant="dapp" />
+        {/* 稿空态 FAQ 全关；禁 dapp 默认展开首项撑破节奏 */}
+        <FaqList defaultOpenFirst={false} items={t.release.faq.hub} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

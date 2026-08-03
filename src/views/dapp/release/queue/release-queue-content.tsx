@@ -7,10 +7,11 @@ import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useDappShell } from '~/app/use-dapp-shell'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useReleasePoolLogs, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { Card } from '~/shared/ui/card'
@@ -24,6 +25,7 @@ const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 export function ReleaseQueueContent() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
+  const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const apiSummaryQuery = useReleasePoolSummary(sessionReady)
   const queueLogsQuery = useReleasePoolLogs({}, sessionReady)
@@ -33,6 +35,14 @@ export function ReleaseQueueContent() {
   const claimable = queueQuery.data?.totalClaimable ?? 0n
   const unit = t.release.units.queue
   const api = apiSummaryQuery.data
+
+  function parseApiOrChain(apiRaw: string | undefined, chain: bigint): number {
+    if (sessionReady && apiRaw != null && apiRaw.trim() !== '') {
+      const n = Number(apiRaw)
+      if (Number.isFinite(n)) return n
+    }
+    return formatTokenAmountToNumber(chain, AGX_DECIMALS)
+  }
 
   function formatReleasingLabel(): string {
     if (sessionReady && api?.releasing_amount != null && api.releasing_amount.trim() !== '') {
@@ -59,25 +69,33 @@ export function ReleaseQueueContent() {
       const n = Number(api.total_claimed_amount)
       if (Number.isFinite(n)) return `${formatGroupedNumber(n, { digits: 4 })} ${unit}`
     }
-    /** 无 lifetime 链上源 → 诚实空 */
-    return '—'
+    /** 无 lifetime 链上源 → 空态 0 */
+    return `${formatGroupedNumber(0, { digits: 4 })} ${unit}`
   }
+
+  const releasingNum = parseApiOrChain(api?.releasing_amount, releasing)
+  const releasedNum = parseApiOrChain(api?.released_amount, claimable)
+  const lifetimeNum =
+    sessionReady && api?.total_claimed_amount != null && api.total_claimed_amount.trim() !== ''
+      ? Number(api.total_claimed_amount)
+      : 0
+  const lifetimeApproxNum = Number.isFinite(lifetimeNum) ? lifetimeNum : 0
 
   const stats = [
     {
       label: t.release.labels.releasing,
       value: formatReleasingLabel(),
-      approx: '≈ —',
+      approx: formatApproxUsd(releasingNum, priceUsd),
     },
     {
       label: t.release.labels.released,
       value: formatReleasedLabel(),
-      approx: '≈ —',
+      approx: formatApproxUsd(releasedNum, priceUsd),
     },
     {
       label: t.release.queue.lifetimeClaimed,
       value: formatLifetimeClaimed(),
-      approx: '≈ —',
+      approx: formatApproxUsd(lifetimeApproxNum, priceUsd),
     },
   ]
 

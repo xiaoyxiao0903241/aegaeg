@@ -11,6 +11,7 @@ export const dappIcon = tv({
       base: 'size-(--app-icon-base)',
       action: 'size-(--app-icon-action)',
       lg: 'size-(--app-icon-lg)',
+      caption: 'size-(--app-icon-caption)',
       xl: 'size-(--app-icon-xl)',
       rail: 'size-(--app-icon-rail)',
       token: 'size-(--app-icon-token)',

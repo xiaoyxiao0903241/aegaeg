@@ -32,6 +32,7 @@ const PROFILES = {
   'staking-stake': './profiles/staking-stake.mjs',
   'rewards-hub': './profiles/rewards-hub.mjs',
   'rewards-lucky': './profiles/rewards-lucky.mjs',
+  'release-hub': './profiles/release-hub.mjs',
 }
 
 function usage() {

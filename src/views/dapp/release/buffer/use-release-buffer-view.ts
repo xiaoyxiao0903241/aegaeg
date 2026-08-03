@@ -1,10 +1,12 @@
 import { toast } from 'sonner'
 
 import { useDappShell } from '~/app/use-dapp-shell'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
+import { formatApproxUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
@@ -21,6 +23,7 @@ export function useReleaseBufferView() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const { writeReady } = useWriteReadiness()
+  const priceUsd = useAgxPriceUsd()
   const bufferQuery = useReleaseBufferSnapshot(walletReady)
 
   const claim = useChainMutation({
@@ -45,7 +48,7 @@ export function useReleaseBufferView() {
   const claimableLabel = `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} AGX`
   const releasingLabel = `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} AGX`
   const releasedPctLabel = t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', ''))
-  const valueHint = '≈ —'
+  const valueHint = formatApproxUsd(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd)
   const progressWidth = pctLabel
 
   async function onClaim() {

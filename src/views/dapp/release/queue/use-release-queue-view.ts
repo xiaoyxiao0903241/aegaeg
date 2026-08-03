@@ -3,10 +3,12 @@ import { toast } from 'sonner'
 
 import { useDappShell } from '~/app/use-dapp-shell'
 import { RELEASE_DURATION_DAYS } from '~/core/assets/claim-plans'
-import { formatTokenAmount } from '~/core/exchange/token-amount'
+import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { canClaimWhen } from '~/core/wallet/write-cta'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
+import { formatApproxUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
@@ -36,6 +38,7 @@ export function useReleaseQueueView() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const { writeReady } = useWriteReadiness()
+  const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
 
@@ -72,7 +75,7 @@ export function useReleaseQueueView() {
       claimableLabel: `${formatTokenAmount(claimable, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
       releasingLabel: `${formatTokenAmount(releasing, AGX_DECIMALS, 4)} ${t.release.units.queue}`,
       releasedPctLabel: t.release.labels.releasedPct.replace('{pct}', pctLabel.replace('%', '')),
-      valueHint: '≈ —',
+      valueHint: formatApproxUsd(formatTokenAmountToNumber(claimable, AGX_DECIMALS), priceUsd),
       progressWidth: pctLabel,
     }
   })

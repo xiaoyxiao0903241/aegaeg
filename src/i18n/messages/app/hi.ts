@@ -2435,7 +2435,7 @@ const app = defineMessages({
         { title: 'Claim Rebase / DAO rewards', body: 'Yield is created' },
         { title: '6 : 1 contribution', body: '50% burn · 50% into X pool' },
         { title: 'Enter release pool', body: 'Choose 5 / 20 / 40 / 60 days' },
-        { title: 'Claim into Turbine', body: 'Unlock sell quota with a USD1 buy at live quote' },
+        { title: 'Claim into Turbine', body: '1:1 buy to unlock sell quota' },
       ],
       taxTitle: 'Longer release, lower tax',
       taxPeriod: 'Period',

@@ -313,10 +313,14 @@ function staticEngineeringVars() {
   --app-icon-base: 1rem;
   --app-icon-action: 0.9375rem;
   --app-icon-lg: 1.125rem;
+  /* Figma 释放池卡标题图标 19 */
+  --app-icon-caption: 1.1875rem;
   --app-icon-xl: 1.25rem;
   --app-icon-rail: 1.375rem;
   --app-icon-token: 1.5rem;
   --app-icon-brand: 1.75rem;
+  /* Figma 释放 About deco 91×91 */
+  --dapp-about-deco-sq: 5.6875rem;
 
   --dapp-icon-xs: var(--app-icon-xs);
   --dapp-icon-sm: var(--app-icon-sm);
@@ -324,6 +328,7 @@ function staticEngineeringVars() {
   --dapp-icon-base: var(--app-icon-base);
   --dapp-icon-action: var(--app-icon-action);
   --dapp-icon-lg: var(--app-icon-lg);
+  --dapp-icon-caption: var(--app-icon-caption);
   --dapp-icon-xl: var(--app-icon-xl);
   --dapp-icon-rail: var(--app-icon-rail);
   --dapp-icon-token: var(--app-icon-token);

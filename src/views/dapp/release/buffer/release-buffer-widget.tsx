@@ -6,6 +6,7 @@ import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { Card } from '~/shared/ui/card'
 import { Text } from '~/shared/ui/text'
 import { useReleaseBufferView } from '~/views/dapp/release/buffer/use-release-buffer-view'
@@ -115,17 +116,17 @@ export function ReleaseBufferWidget() {
         <Card className="min-h-45.75 rounded-2xl p-4 shadow-none" surface="outlined">
           <Card.Content className="grid gap-3">
             <BufferTokenHeader iconSrc={tokenCarouselIcons.gagxIcon} label="gAGX" />
-            {/* PRV 仅 AGX：gAGX 值诚实空 */}
+            {/* PRV 无 gAGX 源：空态 0 */}
             <BufferStatPair
               releasedLabel={t.release.labels.released}
-              releasedValue="—"
+              releasedValue={`${formatGroupedNumber(0, { digits: 4 })} gAGX`}
               releasingLabel={t.release.labels.releasing}
-              releasingValue="—"
+              releasingValue={`${formatGroupedNumber(0, { digits: 4 })} gAGX`}
             />
             <BufferProgressBar width="0%" />
             <BufferFooterPair
               left={t.release.labels.releasedPct.replace('{pct}', '0')}
-              right="≈ —"
+              right={formatApproxUsd(0, null)}
             />
             <DappActionButton density="card" disabled type="button">
               {t.release.buffer.claim}

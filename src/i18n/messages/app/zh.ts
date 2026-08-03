@@ -2358,7 +2358,7 @@ const app = defineMessages({
         { title: '领取 Rebase / DAO 奖励', body: '收益产生' },
         { title: '6 : 1 贡献机制', body: '50% 销毁 · 50% 注入 X 底池' },
         { title: '进入释放池 · 线性释放', body: '选择 5 / 20 / 40 / 60 天周期' },
-        { title: '领取进入涡轮', body: '按链上报价买入解锁卖出额度' },
+        { title: '领取进入涡轮', body: '1:1 买入解锁卖出额度' },
       ],
       taxTitle: '长期释放享受更低税率',
       taxPeriod: '释放周期',

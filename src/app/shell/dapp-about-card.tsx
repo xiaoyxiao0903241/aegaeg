@@ -37,6 +37,7 @@ export function DappAboutCard({
   action,
   body,
   className,
+  decoClassName,
   decoSrc,
   title,
   wash = 'none',
@@ -44,6 +45,8 @@ export function DappAboutCard({
   action?: ReactElement
   body: string
   className?: string
+  /** 覆盖 deco 几何（释放稿 91×91 ≠ 奖励人物框） */
+  decoClassName?: string
   /** Figma IP 人物（H5 不渲染） */
   decoSrc?: string
   title: string
@@ -73,7 +76,9 @@ export function DappAboutCard({
         </Text>
         {action}
       </div>
-      {showDeco ? <img alt="" aria-hidden className={styles.deco()} src={decoSrc} /> : null}
+      {showDeco ? (
+        <img alt="" aria-hidden className={cn(styles.deco(), decoClassName)} src={decoSrc} />
+      ) : null}
     </Card>
   )
 }
