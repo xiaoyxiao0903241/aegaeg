@@ -1,9 +1,8 @@
-import { toast } from 'sonner'
-
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useI18n } from '~/i18n/use-i18n'
 import { useExchangeViewStore } from '~/stores/exchange-view-store'
 import type { TurbineExchangeState } from '~/views/dapp/exchange/exchange-session-hosts'
+import { submitExchangeWithSuccessToast } from '~/views/dapp/exchange/submit-exchange-success'
 
 /** Session state + i18n + unlock/claim toast orchestration → everything `TurbineExchangeWidget` renders. */
 export function useTurbineExchangeView(turbine: TurbineExchangeState) {
@@ -36,13 +35,14 @@ export function useTurbineExchangeView(turbine: TurbineExchangeState) {
 
   async function handleUnlock() {
     // Errors toast via useChainMutation → getErrorMessage (avoid double toast).
-    const result = await turbine.submitUnlock()
-    if (result.ok) toast.success(t.exchange.turbine.unlockSuccess)
+    await submitExchangeWithSuccessToast(turbine.submitUnlock, t.exchange.turbine.unlockSuccess)
   }
 
   async function handleClaim(index: number) {
-    const result = await turbine.submitClaim(index)
-    if (result.ok) toast.success(t.exchange.turbine.claimSuccess)
+    await submitExchangeWithSuccessToast(
+      () => turbine.submitClaim(index),
+      t.exchange.turbine.claimSuccess,
+    )
   }
 
   return {

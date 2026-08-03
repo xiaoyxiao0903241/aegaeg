@@ -182,9 +182,9 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
               {t.exchange.trade.action}
             </DappActionButton>
           </DappActionRow>
-        ) : null}
-
-        {!vm.sessionReady ? <DappWidgetConnectPromo className="mt-3.5" /> : null}
+        ) : (
+          <DappWidgetConnectPromo className="mt-3.5" />
+        )}
       </DappWidgetStack>
 
       <ExchangeSlippageModal

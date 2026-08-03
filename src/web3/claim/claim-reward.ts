@@ -3,6 +3,7 @@ import type { Wallet } from 'thirdweb/wallets'
 import {
   confirmTeamRewardClaim,
   requestCommunityFundClaim,
+  requestIncentiveClaim,
   requestMarketFundClaim,
   requestTeamRewardSignature,
 } from '~/shared/api/endpoints'
@@ -13,7 +14,7 @@ import { BSC_CONTRACTS } from '~/shared/config/contracts'
 import { sleep } from '~/shared/lib/sleep'
 import { REWARD_CLAIMER_ERRORS, REWARD_CLAIMER_METHODS } from '~/web3/abis'
 import { CLAIM_SIGNATURE_EXPIRED } from '~/web3/contract-error-message'
-import { writeMarketFundClaim } from '~/web3/rewards/rewards-write'
+import { writeIncentiveClaim, writeMarketFundClaim } from '~/web3/rewards/rewards-write'
 import {
   type ConfirmedWalletWrite,
   parseWriteAbi,
@@ -129,6 +130,7 @@ async function claimSignedReward({
   onUnauthorized,
   requestSignature,
   claimOnChain,
+  skipConfirm = false,
 }: {
   wallet: Wallet
   token: string
@@ -142,6 +144,8 @@ async function claimSignedReward({
     salt: `0x${string}`
     signature: `0x${string}`
   }) => Promise<ConfirmedWalletWrite>
+  /** OpenAPI：order_type=5（做市）等由扫描器核销，禁止调 /claim/confirm。 */
+  skipConfirm?: boolean
 }): Promise<SignedRewardClaimResult> {
   const payload = (await requestWithSession(
     requestSignature,
@@ -160,6 +164,10 @@ async function claimSignedReward({
     signature: normalized.signature,
   })
   const txHash = receipt.transactionHash
+
+  if (skipConfirm) {
+    return { receipt, confirmResult: null, txHash }
+  }
 
   try {
     const confirmResult = await confirmClaimWithRetry(
@@ -186,9 +194,15 @@ type SignedClaimOnChain = (args: {
 function createSignedClaim(
   requestSignature: (token: string) => Promise<TeamRewardClaimSignature>,
   claimOnChain: SignedClaimOnChain,
+  options?: { skipConfirm?: boolean },
 ) {
   return (args: { wallet: Wallet; token: string; onUnauthorized: () => void }) =>
-    claimSignedReward({ ...args, requestSignature, claimOnChain })
+    claimSignedReward({
+      ...args,
+      requestSignature,
+      claimOnChain,
+      skipConfirm: options?.skipConfirm,
+    })
 }
 
 export const claimTeamReward = createSignedClaim(
@@ -201,4 +215,14 @@ export const claimCommunityFund = createSignedClaim(
   claimOnVault(BSC_CONTRACTS.communityFundVault),
 )
 
-export const claimMarketFundReward = createSignedClaim(requestMarketFundClaim, writeMarketFundClaim)
+/** 参与奖 — IncentivePool 简单签（旧路径；不走 Dao Mixed）。 */
+export const claimIncentiveReward = createSignedClaim(requestIncentiveClaim, writeIncentiveClaim)
+
+/** 做市津贴 — OpenAPI 禁 confirm，扫描器核销。 */
+export const claimMarketFundReward = createSignedClaim(
+  requestMarketFundClaim,
+  writeMarketFundClaim,
+  {
+    skipConfirm: true,
+  },
+)

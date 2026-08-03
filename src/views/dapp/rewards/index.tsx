@@ -12,8 +12,8 @@ import { RewardsHubWidget } from '~/views/dapp/rewards/hub/rewards-hub-widget'
 function RewardsWidgetBody() {
   const view = useDappSubviewDisplayView<RewardsView>()
   if (view === 'lucky') return <RewardsMixedClaimWidget view="lucky" />
-  if (view === 'referral') return <RewardsMixedClaimWidget view="referral" />
-  if (view === 'participate') return <RewardsMixedClaimWidget view="participate" />
+  if (view === 'referral') return <RewardsSimpleClaimWidget view="referral" />
+  if (view === 'participate') return <RewardsSimpleClaimWidget view="participate" />
   if (view === 'cobuild') return <RewardsMixedClaimWidget view="cobuild" />
   if (view === 'grant') return <RewardsSimpleClaimWidget view="grant" />
   if (view === 'genesis') return <RewardsGenesisClaimWidget />

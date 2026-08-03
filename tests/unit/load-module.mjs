@@ -9,6 +9,30 @@ import { createServer } from 'vite'
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const testCacheRoot = path.join(projectRoot, '.scratch', 'vite-test')
 
+/**
+ * 单测 SSR 与 Vite 文档序对齐：`.env` → `.env.local`（后者覆盖）。
+ * IDE/shell 预注入的 `process.env.VITE_*` 会盖过 `.env.local`，导致 contracts 漂移失败。
+ */
+function applyViteFileEnvToProcess() {
+  const merged = {}
+  for (const name of ['.env', '.env.local']) {
+    const filePath = path.join(projectRoot, name)
+    if (!fsSync.existsSync(filePath)) continue
+    for (const line of fsSync.readFileSync(filePath, 'utf8').split('\n')) {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) continue
+      const separatorIndex = trimmed.indexOf('=')
+      if (separatorIndex === -1) continue
+      const key = trimmed.slice(0, separatorIndex)
+      if (!key.startsWith('VITE_')) continue
+      merged[key] = trimmed.slice(separatorIndex + 1).trim()
+    }
+  }
+  for (const [key, value] of Object.entries(merged)) {
+    process.env[key] = value
+  }
+}
+
 /** 每 worker 独立 Vite cache（.scratch，勿进 node_modules），避免并行抢 deps。 */
 function getTestCacheDir() {
   return path.join(testCacheRoot, String(process.pid))
@@ -88,6 +112,7 @@ function registerExitCleanup() {
 export async function getTestViteServer() {
   if (!testServerPromise) {
     registerExitCleanup()
+    applyViteFileEnvToProcess()
     await pruneStaleTestCacheDirs()
     testServerPromise = createServer(testServerConfig)
   }

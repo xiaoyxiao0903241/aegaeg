@@ -92,8 +92,8 @@ export function useAssetsClaimModalView(args: {
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
   const plansOk = releaseIndex != null && restakeIndex != null
-  // 链上门闸仍在 mutate 内 fail-closed；CTA 先放开可点，便于测弹窗/错误 toast
-  const canConfirm = walletReady && !claim.isLocked && !claim.isPending
+  // 链上门闸仍在 mutate 内 fail-closed；CTA 要求贡献与 plan 就绪
+  const canConfirm = walletReady && !claim.isLocked && !claim.isPending && contributionOk && plansOk
 
   const releaseAmount = (target.amount * BigInt(releasePct)) / 100n
   const restakeAmount = target.amount - releaseAmount
@@ -137,7 +137,7 @@ export function useAssetsClaimModalView(args: {
   }
 
   function handleConfirm() {
-    if (!walletReady || claim.isLocked || claim.isPending) return
+    if (!walletReady || claim.isLocked || claim.isPending || !contributionOk || !plansOk) return
     void claim.mutate()
   }
 

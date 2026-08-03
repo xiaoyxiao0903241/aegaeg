@@ -94,15 +94,8 @@ export function useRewardsMixedClaimView(view: MixedClaimView) {
   const luckyContributionOk =
     contribQuery.data != null &&
     contribQuery.data.contribution >= contribQuery.data.requiredContribution
-  const isDaoMixed = view === 'cobuild' || view === 'participate' || view === 'referral'
-  const daoRewardType: DaoRewardType =
-    view === 'participate'
-      ? 'PARTICIPATION_REWARD'
-      : view === 'referral'
-        ? 'REFERRAL_REWARD'
-        : view === 'cobuild'
-          ? cobuildRewardType
-          : 'RANK_REWARD'
+  const isDaoMixed = view === 'cobuild'
+  const daoRewardType: DaoRewardType = view === 'cobuild' ? cobuildRewardType : 'RANK_REWARD'
   const contributionOk = isDaoMixed ? !daoContributionBlocked : luckyContributionOk
   const plansOk = releaseIndex != null && restakeIndex != null
   const luckyOk =

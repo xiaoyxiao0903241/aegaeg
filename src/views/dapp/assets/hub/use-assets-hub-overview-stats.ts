@@ -286,10 +286,7 @@ export function useAssetsHubOverviewStats(): AssetsHubOverview {
 
   const stakePrincipal = stakeRows.reduce((sum, row) => sum + row.principal, 0n)
   const stakeReleased = stakeRows.reduce((sum, row) => sum + row.releasedPrincipal, 0n)
-  const stakeYield = stakeRows.reduce(
-    (sum, row) => sum + row.blockReward + row.extraInterest + row.claimableBalance,
-    0n,
-  )
+  const stakeYield = stakeRows.reduce((sum, row) => sum + row.blockReward + row.extraInterest, 0n)
   const lpPrincipal = lpRows.reduce((sum, row) => sum + row.payoutRemaining, 0n)
   const lpYield = lpRows.reduce((sum, row) => sum + row.profit, 0n)
   const burnPrincipal = burnRows.reduce((sum, row) => sum + row.payoutRemaining, 0n)

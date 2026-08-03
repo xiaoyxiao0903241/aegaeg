@@ -2,13 +2,13 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
-test('genesis purchase actions keep post-approve check and in-flight latch', async () => {
+test('genesis purchase actions keep post-approve live checks', async () => {
   const source = await readFile(
     new URL('../../src/views/dapp/genesis/use-genesis-purchase-actions.ts', import.meta.url),
     'utf8',
   )
 
-  assert.match(source, /genesisPurchaseBlock/)
+  assert.doesNotMatch(source, /genesisPurchaseBlock/)
   assert.match(source, /fetchLiveGenesisPostApprove/)
   assert.match(source, /staleTime:\s*0/)
   assert.match(source, /submitPurchase/)
@@ -38,6 +38,8 @@ test('genesisPurchaseSummary owns display and purchase gates without clock', asy
 
   assert.match(source, /canPurchaseGenesis/)
   assert.match(source, /estimateAgxFromUsd1/)
+  assert.match(source, /previewAddedAirdropValueWei/)
+  assert.doesNotMatch(source, /estimateXTokenAirdropUsd/)
   assert.doesNotMatch(source, /formatPhaseCountdown/)
   assert.doesNotMatch(source, /nowSeconds/)
 })

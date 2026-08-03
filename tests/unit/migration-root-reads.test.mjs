@@ -24,6 +24,7 @@ function createMigrationAwareClient(opts) {
         opts.onRewards?.(String(arg0))
         return [0n, 1n]
       }
+      if (fn === 'isWarmupExpired') return true
       if (fn === 'userTotalAmount') {
         opts.onUserTotal?.(String(arg0))
         return 42n

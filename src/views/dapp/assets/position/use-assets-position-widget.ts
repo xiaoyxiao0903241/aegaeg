@@ -19,6 +19,8 @@ import {
   submitStakeRedeem,
 } from '~/views/dapp/assets/submit-assets'
 import { type AssetsBondRow, type AssetsStakeRow } from '~/web3/assets/assets-read'
+import { submitLiquidWarmupClaim } from '~/web3/staking/submit-liquid-warmup-claim'
+import { useStakingHubOverviewQuery } from '~/web3/staking/use-staking-queries'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 
@@ -134,6 +136,20 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     },
   })
 
+  const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
+
+  const activateWarmupWrite = useChainMutation({
+    path: WRITE_PATH.ASSETS_CLAIM,
+    mutation: (_vars, session) => submitLiquidWarmupClaim({ session }),
+    onSuccess: () => {
+      toast.success(t.assets.position.activateWarmupSuccess)
+      void stakeQuery.refetch()
+    },
+  })
+
+  const overviewQuery = useStakingHubOverviewQuery({ enabled: product === 'stake' })
+  const currentEpoch = overviewQuery.data?.epochNumber ?? null
+
   function formatAmount(amount: bigint, decimals: number, unit: 'AGX' | 'gAGX'): string {
     return formatAssetsPositionAmount(amount, decimals, quote, agxPriceUsd, unit)
   }
@@ -142,8 +158,6 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     if (period === 'liquid') return t.assets.position.liquid
     return t.assets.claim.releaseDays.replace('{days}', String(period))
   }
-
-  const { stakeQuery, bondQuery } = useAssetsPositionQueries(product)
 
   const stakeRows = useMemo(() => {
     const rows = [...(stakeQuery.data ?? [])]
@@ -236,11 +250,15 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     runRedeem(redeem.kind, redeem.row, redeem.owner)
   }
 
+  function activateWarmup() {
+    void activateWarmupWrite.mutate()
+  }
+
   return {
     product,
     walletReady,
-    locked: redeemWrite.isLocked,
-    busy: redeemWrite.isPending,
+    locked: redeemWrite.isLocked || activateWarmupWrite.isLocked,
+    busy: redeemWrite.isPending || activateWarmupWrite.isPending,
     quote,
     setQuote,
     sort,
@@ -253,6 +271,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     pageSize,
     formatAmount,
     formatPeriodLabel,
+    currentEpoch,
     isEmpty,
     isLoading,
     totalRows,
@@ -264,6 +283,7 @@ export function useAssetsPositionWidget(product: AssetsProduct) {
     openStakeClaim,
     openBondClaim,
     requestRedeem,
+    activateWarmup,
     closeClaim,
     closeRedeem,
     confirmRedeem,

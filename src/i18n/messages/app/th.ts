@@ -879,6 +879,7 @@ const app = defineMessages({
       claimable: 'Claimable',
       emptyClaimable: 'No reward available to claim.',
       signedAmountHint: 'Claimable amount follows the signed payload',
+      usdLabel: 'USD',
     },
 
     claimHistory: {
@@ -1445,6 +1446,7 @@ const app = defineMessages({
       redeemAnytime: 'Redeemable anytime',
       activateWarmup: 'Activate warmup',
       activateWarmupSuccess: 'Warmup activated',
+      warmupRemainingEpochs: '{n} epochs remaining',
     },
     opsColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     claim: {

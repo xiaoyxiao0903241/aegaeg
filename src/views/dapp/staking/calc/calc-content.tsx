@@ -70,7 +70,10 @@ export function CalcContent() {
           epochRebasePct: result.epochRebasePct,
         })
         const interestUsd = est.interest * result.price
-        const investedUsd = result.principal * result.price
+        const investedUsd =
+          result.product === 'lpbond' || result.product === 'burnbond'
+            ? result.principal
+            : result.principal * result.price
         return {
           interestUsd,
           ratePct: investedUsd > 0 ? (interestUsd / investedUsd) * 100 : 0,

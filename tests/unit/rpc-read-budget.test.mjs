@@ -132,6 +132,7 @@ test('readStakePositions locked: count + getStakes + aggregate3 (not N getStake)
       if (request.functionName === 'stakes') return [0n, 0n, 0n, 0n, false]
       if (request.functionName === 'warmupStakes') return [0n, 0n, 0n, 0n, false]
       if (request.functionName === 'getStakeRewards') return [0n, 0n]
+      if (request.functionName === 'isWarmupExpired') return true
       if (request.functionName === 'getStakesCount') {
         // 仅第一个 locked 池有仓；其余 0 跳过 getStakes（手册空列表勿调）。
         return calls.filter((name) => name === 'getStakesCount').length === 1 ? 3n : 0n

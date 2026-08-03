@@ -597,6 +597,14 @@ export async function requestCommunityFundClaim(token: string): Promise<TeamRewa
   })
 }
 
+export async function requestIncentiveClaim(token: string): Promise<TeamRewardSignature> {
+  return apiRequest<TeamRewardSignature>('/claim/incentive', {
+    method: 'POST',
+    token,
+    body: {},
+  })
+}
+
 export async function requestDaoClaim(
   token: string,
   rewardType: DaoRewardType,

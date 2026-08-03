@@ -866,6 +866,7 @@ const app = defineMessages({
       claimable: '可領取',
       emptyClaimable: '暫無可領取的獎勵。',
       signedAmountHint: '可領金額以簽名包為準',
+      usdLabel: 'USD',
     },
 
     claimHistory: {
@@ -1430,6 +1431,7 @@ const app = defineMessages({
       redeemAnytime: 'Redeemable anytime',
       activateWarmup: '啟動預熱',
       activateWarmupSuccess: '預熱已啟動',
+      warmupRemainingEpochs: '剩餘 {n} 個 Epoch',
     },
     opsColumns: ['Time', 'Action', 'Amount', 'Tx hash'],
     claim: {

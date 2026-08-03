@@ -29,8 +29,10 @@ export function buildCalcEstimate(args: {
     days,
     epochRebasePct: args.epochRebasePct,
   })
+  const isBondUsd1 = args.product === 'lpbond' || args.product === 'burnbond'
+  // 债券本金已是 USD1（USD）；质押本金为 AGX，须 × 现价。
+  const investedUsd = isBondUsd1 ? principal : principal * priceN
   const interestUsd = estimate.interest * priceN
-  const investedUsd = principal * priceN
   const sellUsd = investedUsd + interestUsd
   const ratePct = investedUsd > 0 ? (interestUsd / investedUsd) * 100 : 0
   return {

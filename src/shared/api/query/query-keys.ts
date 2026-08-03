@@ -215,6 +215,15 @@ export const queryKeys = {
       ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase()] as const,
     presaleUserPhaseRemaining: (address: string, phaseIndex: number) =>
       ['chain', 'presale', 'userPhaseRemaining', address.toLowerCase(), phaseIndex] as const,
+    presalePreviewAirdropValue: (user: string, phaseIndex: number, purchaseAmount: string) =>
+      [
+        'chain',
+        'presale',
+        'previewAirdropValue',
+        user.toLowerCase(),
+        phaseIndex,
+        purchaseAmount,
+      ] as const,
     erc20Balance: erc20BalancePrefix,
     erc20BalanceOf: (token: string, address: string) =>
       chainWalletQueryKey(erc20BalancePrefix(token), address),

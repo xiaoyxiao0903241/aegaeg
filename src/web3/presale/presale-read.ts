@@ -17,6 +17,7 @@ const presaleAbi = parseAbi([
   PRESALE_METHODS.totalPurchasedAmount,
   PRESALE_METHODS.agxPrice,
   PRESALE_METHODS.airdropThreshold,
+  PRESALE_METHODS.previewAirdropValue,
   PRESALE_METHODS.paused,
 ])
 
@@ -118,12 +119,15 @@ export async function readUserPhaseRemainingAmount(
   phaseIndex: number,
   client: ChainReadClient = bscReadClient,
 ): Promise<PresalePhaseRemaining> {
+  // 手册 presale.md：额度查询先解析首次 root，再调 view（与 userTotalAmount 同口径）。
+  const migratedFrom = await readMigratedFrom(address, client)
+  const root = migrationStakeRoot(address, migratedFrom) as `0x${string}`
   const [remainingPhaseAmount, remainingUserAmount, userPurchaseLimit, userPhaseAmountCurrent] =
     await client.readContract({
       address: BSC_CONTRACTS.preSale,
       abi: presaleAbi,
       functionName: 'getUserPhaseRemainingAmount',
-      args: [address as `0x${string}`, BigInt(phaseIndex)],
+      args: [root, BigInt(phaseIndex)],
     })
 
   return {
@@ -185,4 +189,20 @@ export async function readPresalePaused(client: ChainReadClient = bscReadClient)
     abi: presaleAbi,
     functionName: 'paused',
   })
+}
+
+/** `previewAirdropValue` — 仅取 addedAirdropValue（wei / 18 → USD 展示）。 */
+export async function readPreviewAirdropValue(
+  user: string,
+  phaseIndex: number,
+  purchaseAmount: bigint,
+  client: ChainReadClient = bscReadClient,
+): Promise<bigint> {
+  const [addedAirdropValue] = await client.readContract({
+    address: BSC_CONTRACTS.preSale,
+    abi: presaleAbi,
+    functionName: 'previewAirdropValue',
+    args: [user as `0x${string}`, BigInt(phaseIndex), purchaseAmount],
+  })
+  return addedAirdropValue
 }

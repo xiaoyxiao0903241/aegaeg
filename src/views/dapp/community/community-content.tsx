@@ -54,7 +54,7 @@ export function CommunityContent() {
   })
   const inviteCount = !sessionReady
     ? formatGroupedNumber(0, { digits: 0, trimZeros: true })
-    : formatGroupedNumber(overview?.descendant_count ?? referrals?.total ?? 0, {
+    : formatGroupedNumber(overview?.direct_referral_count ?? referrals?.total ?? 0, {
         digits: 0,
         trimZeros: true,
       })

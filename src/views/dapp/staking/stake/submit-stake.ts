@@ -1,7 +1,4 @@
-import {
-  evaluateLiquidWarmupClaimLive,
-  evaluateStakeLive,
-} from '~/core/staking/staking-block-reasons'
+import { evaluateStakeLive } from '~/core/staking/staking-block-reasons'
 import type { StakePeriod } from '~/core/staking/staking-period'
 import { invalidateAfterStaking } from '~/shared/api/query/invalidate'
 import { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
@@ -10,7 +7,6 @@ import { stakePoolAddress } from '~/web3/staking/staking-addresses'
 import { readStakeOpenPreflight } from '~/web3/staking/staking-read'
 import {
   approveAgxForStakeIfNeeded,
-  claimLiquidWarmup,
   liquidStakeAgx,
   lockedStakeAgx,
 } from '~/web3/staking/staking-write'
@@ -18,6 +14,7 @@ import { approveThenLiveWrite } from '~/web3/wallet/approve-then-live-write'
 import type { WriteSession } from '~/web3/wallet/require-write-session'
 
 export { STAKING_BLOCKED } from '~/web3/errors/write-block-errors'
+export { submitLiquidWarmupClaim } from '~/web3/staking/submit-liquid-warmup-claim'
 
 /** 域写；软门闸抛哨兵。信封在 `useChainMutation`。 */
 export async function submitStakeOpen(args: {
@@ -66,25 +63,5 @@ export async function submitStakeOpen(args: {
       }
     },
   })
-  invalidateAfterStaking()
-}
-
-/**
- * 活期 warmup 激活：live `isWarmupExpired` 通过后再写。
- * UI 入口 DEFER（Stake 稿无次钮；待仓位/资产补稿）— 写函数保留待补稿落点。
- */
-export async function submitLiquidWarmupClaim(args: { session: WriteSession }): Promise<void> {
-  const { wallet, address, readClient } = args.session
-  const pool = stakePoolAddress('liquid')
-  const preflight = await readStakeOpenPreflight({
-    pool,
-    isLiquid: true,
-    user: address,
-    client: readClient,
-  })
-  if (evaluateLiquidWarmupClaimLive(preflight.isWarmupExpired)) {
-    throw STAKING_BLOCKED.unavailable
-  }
-  await claimLiquidWarmup({ wallet })
   invalidateAfterStaking()
 }

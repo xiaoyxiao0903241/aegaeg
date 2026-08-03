@@ -8,6 +8,7 @@ import {
   AGX_CONTRIBUTION_SWAP_METHODS,
   BOND_DEPOSITORY_ASSETS_METHODS,
   LIQUID_STAKING_ASSETS_METHODS,
+  LIQUID_STAKING_METHODS,
   LOCKED_STAKING_ASSETS_METHODS,
   RESTAKE_CONFIG_METHODS,
   REWARD_QUEUE_METHODS,
@@ -37,6 +38,7 @@ const liquidAbi = parseAbi([
   LIQUID_STAKING_ASSETS_METHODS.getStakeRewards,
   LIQUID_STAKING_ASSETS_METHODS.stakes,
   LIQUID_STAKING_ASSETS_METHODS.warmupStakes,
+  LIQUID_STAKING_METHODS.isWarmupExpired,
 ])
 const lockedAbi = parseAbi([
   LOCKED_STAKING_ASSETS_METHODS.getStakesCount,
@@ -71,6 +73,8 @@ export type AssetsStakeRow = {
   expiry: bigint
   /** 活期 warmup 仓（手册 §8.2）：禁本金退出 / Mixed；须 claim() 激活。 */
   inWarmup?: boolean
+  /** live `isWarmupExpired`；仅 warmup 行有意义。 */
+  warmupExpired?: boolean
 }
 
 export type AssetsBondRow = {
@@ -195,7 +199,7 @@ export async function readStakePositions(
   // `stakes`/`warmupStakes` 为裸 mapping：须 AMM migratedFrom 得 root；`getStakeRewards` 别名感知，传当前钱包。
   const liquidMigratedFrom = await readMigratedFrom(user, client)
   const liquidRoot = migrationStakeRoot(user, liquidMigratedFrom) as Address
-  const [liquidStake, liquidWarmup, liquidRewards] = await Promise.all([
+  const [liquidStake, liquidWarmup, liquidRewards, warmupExpired] = await Promise.all([
     client.readContract({
       address: liquidPool,
       abi: liquidAbi,
@@ -214,6 +218,12 @@ export async function readStakePositions(
       functionName: 'getStakeRewards',
       args: [user],
     }),
+    client.readContract({
+      address: liquidPool,
+      abi: liquidAbi,
+      functionName: 'isWarmupExpired',
+      args: [user],
+    }),
   ])
   const [principal, , , expiry, exists] = liquidStake as readonly [
     bigint,
@@ -222,7 +232,8 @@ export async function readStakePositions(
     bigint,
     boolean,
   ]
-  const [warmupPrincipal, , , , warmupExists] = liquidWarmup as readonly [
+  // warmupStakes：principal · gons · startEpoch · expiry(epoch) · exists
+  const [warmupPrincipal, , , warmupExpiry, warmupExists] = liquidWarmup as readonly [
     bigint,
     bigint,
     bigint,
@@ -243,8 +254,9 @@ export async function readStakePositions(
       blockReward: warmupReward,
       extraInterest: 0n,
       claimableBalance: 0n,
-      expiry: 0n,
+      expiry: warmupExpiry,
       inWarmup: true,
+      warmupExpired: Boolean(warmupExpired),
     })
   }
   if (exists && principal > 0n) {

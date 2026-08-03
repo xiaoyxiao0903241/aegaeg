@@ -128,8 +128,9 @@ export async function readStakingHubOverview(
       client.getBlockNumber(),
     ])
 
-  const epochNumber = epoch[0]
-  const epochEndBlock = epoch[1]
+  // ABI: (length, number, endBlock, distribute) — 勿把 length 当 number。
+  const epochNumber = epoch[1]
+  const epochEndBlock = epoch[2]
   const totalBurned = burnConfig[6]
   const rebaseRate1e18 = await readLatestSagxRebaseRate1e18(client)
 

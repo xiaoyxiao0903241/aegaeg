@@ -58,10 +58,12 @@ export function AssetsPositionWidget({ product }: { product: AssetsProduct }) {
           w.pagedStakeRows.map((row) => (
             <AssetsPositionStakeRow
               busy={w.busy}
+              currentEpoch={w.currentEpoch}
               formatAmount={w.formatAmount}
               formatPeriodLabel={w.formatPeriodLabel}
               key={row.id}
               locked={w.locked}
+              onActivate={w.activateWarmup}
               onClaim={w.openStakeClaim}
               onRedeem={(claimRow) => w.requestRedeem('stake', claimRow)}
               quote={w.quote}

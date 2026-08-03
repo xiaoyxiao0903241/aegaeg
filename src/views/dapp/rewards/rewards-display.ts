@@ -35,7 +35,7 @@ import type { RewardsView } from '~/shared/config/dapp-deep-links'
  */
 export const NON_NUMERIC_EMPTY = '—'
 
-export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild' | 'participate' | 'referral'>
+export type MixedClaimView = Extract<RewardsView, 'lucky' | 'cobuild'>
 
 /** 后端 SUM / 小数字符串金额 → 分组展示（禁臆造）。 */
 export function formatApiDecimalAmount(

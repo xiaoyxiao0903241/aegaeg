@@ -1,10 +1,13 @@
 import { useState } from 'react'
+import { zeroAddress } from 'viem'
 
+import { clampGenesisShares } from '~/core/presale/presale-math'
 import { useI18n } from '~/i18n/use-i18n'
 import { genesisPurchaseSummary } from '~/views/dapp/genesis/genesis-purchase-summary'
 import { useGenesisChainReads } from '~/views/dapp/genesis/use-genesis-chain-reads'
 import { useGenesisCountdownClock } from '~/views/dapp/genesis/use-genesis-countdown-clock'
 import { useGenesisPurchaseActions } from '~/views/dapp/genesis/use-genesis-purchase-actions'
+import { usePresalePreviewAirdropValueQuery } from '~/web3/presale/use-presale-queries'
 import { useActiveWallet } from '~/web3/thirdweb-react'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
@@ -17,11 +20,22 @@ export function useGenesisWidget() {
   const clock = useGenesisCountdownClock(reads.phases, reads.address, t.genesis.countdownUnits)
   const [sharesDraft, setSharesDraft] = useState(0)
 
+  const shares = clampGenesisShares(sharesDraft, reads.maxShares)
+  const purchaseAmount = reads.sharePriceWei > 0n ? reads.sharePriceWei * BigInt(shares) : 0n
+  const previewUser = reads.address ?? zeroAddress
+  const previewQuery = usePresalePreviewAirdropValueQuery(
+    previewUser,
+    reads.phaseIndex,
+    purchaseAmount,
+    { enabled: reads.purchaseQueriesEnabled },
+  )
+
   const model = genesisPurchaseSummary({
     reads,
     sharesDraft,
     countdown: clock.countdown,
     countdownMode: clock.countdownMode,
+    previewAddedAirdropValueWei: previewQuery.data,
   })
   const canPurchaseBase = model.canPurchase && writeReady
 

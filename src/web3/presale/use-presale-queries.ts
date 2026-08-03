@@ -11,6 +11,7 @@ import {
   readPresaleAgxPriceWei,
   readPresaleAirdropThresholdWei,
   readPresalePaused,
+  readPreviewAirdropValue,
   readTotalPresalePurchased,
   readUserPhaseRemainingAmount,
   readUserPresaleTotal,
@@ -112,6 +113,27 @@ export function usePresaleUserPhaseRemainingQuery(
     freshness: 'presale',
     enabled: (options?.enabled ?? true) && Boolean(address) && phaseIndex !== undefined,
     queryFn: () => readUserPhaseRemainingAmount(address!, phaseIndex!),
+  })
+}
+
+/** Genesis 空投预览 — user（可零地址）+ phase + purchaseAmount。 */
+export function usePresalePreviewAirdropValueQuery(
+  user: string,
+  phaseIndex: number,
+  purchaseAmount: bigint,
+  options?: ChainQueryOptions,
+) {
+  const enabled = (options?.enabled ?? true) && purchaseAmount > 0n
+  return useChainQuery({
+    queryKey: queryKeys.chain.presalePreviewAirdropValue(
+      user,
+      phaseIndex,
+      purchaseAmount.toString(),
+    ),
+    scope: 'public',
+    freshness: 'presale',
+    enabled,
+    queryFn: () => readPreviewAirdropValue(user, phaseIndex, purchaseAmount),
   })
 }
 

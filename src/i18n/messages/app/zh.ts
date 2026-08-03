@@ -818,6 +818,7 @@ const app = defineMessages({
       claimable: '可领取',
       emptyClaimable: '暂无可领取的奖励。',
       signedAmountHint: '可领金额以签名包为准',
+      usdLabel: 'USD',
     },
     claimHistory: {
       title: '发放与领取记录',
@@ -1376,6 +1377,7 @@ const app = defineMessages({
       redeemAnytime: '随时可赎回',
       activateWarmup: '激活预热',
       activateWarmupSuccess: '预热已激活',
+      warmupRemainingEpochs: '剩余 {n} 个 Epoch',
     },
     opsColumns: ['时间', '操作', '数量', '交易哈希'],
     claim: {

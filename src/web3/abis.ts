@@ -43,6 +43,8 @@ export const PRESALE_METHODS = {
   totalPurchasedAmount: 'function totalPurchasedAmount() view returns (uint256)',
   agxPrice: 'function agxPrice() view returns (uint256)',
   airdropThreshold: 'function AIRDROP_THRESHOLD() view returns (uint256)',
+  previewAirdropValue:
+    'function previewAirdropValue(address _user, uint256 _phaseIndex, uint256 _purchaseAmount) view returns (uint256 addedAirdropValue, uint256 phaseAirdropValueAfter, uint256 phaseAmountAfter, bool qualifiedAfter)',
   paused: 'function paused() view returns (bool)',
   purchase: 'function purchase(uint256 _phaseIndex, uint256 _amount)',
 } as const
@@ -315,7 +317,8 @@ export const TREASURY_METHODS = {
 /** StakingPool — hub TVL / epoch (manual stakingpool.md). */
 export const STAKING_POOL_METHODS = {
   poolAgxBalance: 'function poolAgxBalance() view returns (uint256)',
-  epoch: 'function epoch() view returns (uint256 number, uint256 endBlock, uint256 distribute)',
+  epoch:
+    'function epoch() view returns (uint256 length, uint256 number, uint256 endBlock, uint256 distribute)',
 } as const
 
 /** sAGX — circulating + rebase history (manual sagx.md). */
@@ -420,6 +423,12 @@ export const REWARD_CLAIMER_METHODS = {
   claimReward:
     'function claimReward(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes signature)',
   rewardSigner: 'function rewardSigner() view returns (address)',
+} as const
+
+/** IncentivePool — participation signed claim (manual §9.5). */
+export const INCENTIVE_POOL_METHODS = {
+  claimRewards:
+    'function claimRewards(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign)',
 } as const
 
 /** MarketFund — simple signed claim (manual §9.5). */

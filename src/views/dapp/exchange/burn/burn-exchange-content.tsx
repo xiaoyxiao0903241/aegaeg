@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
@@ -8,8 +6,9 @@ import { useDappShell } from '~/app/use-dapp-shell'
 import { BPS_DENOM } from '~/core/exchange/bps'
 import { formatBurnSplitPercent } from '~/core/exchange/burn-contribution-swap'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
+import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useI18n } from '~/i18n/use-i18n'
-import { formatGroupedNumber } from '~/shared/api/format-display'
+import { formatApproxUsd } from '~/shared/api/format-display'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { FaqList } from '~/shared/ui/faq-list'
 import { Text } from '~/shared/ui/text'
@@ -17,9 +16,7 @@ import { BurnExchangeHistorySection } from '~/views/dapp/exchange/burn/burn-exch
 import { ExchangeMetricCard } from '~/views/dapp/exchange/exchange-detail-primitives'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 import type { BurnUserStats } from '~/web3/exchange/burn-exchange-read'
-import { usePresaleAgxPriceQuery } from '~/web3/presale/use-presale-queries'
 
-const USD1_DECIMALS = 18
 /** FAQ index — 「销毁的 AGX 去了哪里？」 uses live getSplitConfig. */
 const FAQ_DESTINATION_INDEX = 3
 
@@ -46,7 +43,7 @@ export function BurnExchangeContent({
 }: BurnExchangeContentProps) {
   const { messages: t } = useI18n()
   const { sessionReady } = useDappShell()
-  const agxPriceQuery = usePresaleAgxPriceQuery()
+  const agxPriceUsd = useAgxPriceUsd()
 
   const decimals = config?.decimals ?? EXCHANGE_CONFIG.tokens.agx.decimals
   const walletReady = sessionReady && burnWalletReady
@@ -59,19 +56,12 @@ export function BurnExchangeContent({
 
   const totalConsumedContribution = walletReady ? (userStats?.contributionConsumed ?? 0n) : null
 
-  const agxPriceUsd = useMemo(() => {
-    const fromChain = formatTokenAmountToNumber(agxPriceQuery.data ?? 0n, USD1_DECIMALS)
-    return fromChain > 0 ? fromChain : 0
-  }, [agxPriceQuery.data])
-
   const burnedAgxLabel = `${formatTokenAmount(totalBurnedAgx, decimals, { digits: 2, trimZeros: false })} AGX`
-  const burnedUsdLabel =
-    agxPriceUsd > 0
-      ? formatGroupedNumber(formatTokenAmountToNumber(totalBurnedAgx, decimals) * agxPriceUsd, {
-          digits: 2,
-          prefix: '$',
-        })
-      : null
+  // 空态 SSOT：无价 → ≈ $0.00（禁 ≈ —）
+  const burnedUsdApprox = formatApproxUsd(
+    formatTokenAmountToNumber(totalBurnedAgx, decimals),
+    agxPriceUsd != null && agxPriceUsd > 0 ? agxPriceUsd : null,
+  )
 
   const earnedLabel = formatTokenAmount(totalEarnedContribution, decimals, {
     digits: 2,
@@ -82,7 +72,7 @@ export function BurnExchangeContent({
       ? formatTokenAmount(totalConsumedContribution, decimals, { digits: 2, trimZeros: false })
       : '0.00'
 
-  const faqItems = useMemo(() => {
+  const faqItems = (() => {
     const items = t.exchange.burn.faq.items
     const splitBps = config?.splitBps
     const burnPct = splitBps === undefined ? '0' : formatBurnSplitPercent(splitBps)
@@ -95,7 +85,7 @@ export function BurnExchangeContent({
           }
         : item,
     )
-  }, [config?.splitBps, t.exchange.burn.faq.items])
+  })()
 
   return (
     <DappDetailPage>
@@ -110,7 +100,7 @@ export function BurnExchangeContent({
                 {burnedAgxLabel}
                 <Text as="span" variant="copy" tone="muted-foreground" className="text-xs">
                   {' '}
-                  ≈ {burnedUsdLabel ?? formatGroupedNumber(0, { digits: 2, prefix: '$' })}
+                  {burnedUsdApprox}
                 </Text>
               </>
             }

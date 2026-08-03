@@ -17,7 +17,7 @@ import { useRewardsMixedClaimView } from '~/views/dapp/rewards/detail/use-reward
 import { formatApiDecimalAmount, type MixedClaimView } from '~/views/dapp/rewards/rewards-display'
 
 /**
- * Mixed 领取左栏 — Figma lucky/referral/participate/cobuild 同构
+ * Mixed 领取左栏 — Figma lucky / cobuild（participate/referral 走简单签）
  *（可领卡 · 贡献 warning · 双色 slider · 领取/复投卡 · 双行 CTA）。
  */
 export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {

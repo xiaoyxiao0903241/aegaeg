@@ -48,22 +48,10 @@ function formatAgxQuotaUsd(amountAgx: bigint, unitUsdPerAgx: bigint | undefined)
   return formatGroupedNumber(usdNumber, { digits: 2, prefix: '$' })
 }
 
-/** Backend SUM amount: decimal string → grouped; integer wei-like → token format. */
-function formatTurbineClaimedTotal(raw: string): string {
-  if (raw.includes('.')) {
-    const n = Number(raw)
-    return Number.isFinite(n)
-      ? formatGroupedNumber(n, { digits: 2 })
-      : formatGroupedNumber(0, { digits: 2 })
-  }
-  try {
-    return formatTokenAmount(BigInt(raw), AGX_DECIMALS, { digits: 2, trimZeros: false })
-  } catch {
-    const n = Number(raw)
-    return Number.isFinite(n)
-      ? formatGroupedNumber(n, { digits: 2 })
-      : formatGroupedNumber(0, { digits: 2 })
-  }
+/** OpenAPI turbine summary/logs 金额：小数字符串（与 `mapTurbineLogToOpsRow` 同族，禁当 wei）。 */
+function formatTurbineSummaryAmount(raw: string | null | undefined): string {
+  const n = raw == null || raw.trim() === '' ? Number.NaN : Number(raw)
+  return formatGroupedNumber(Number.isFinite(n) ? n : 0, { digits: 2 })
 }
 
 /** Turbine unlock (USD1→AGX cooldown) + claim cooled gAGX — handbook §16. */
@@ -221,19 +209,20 @@ export function useTurbineExchangeWidget(
 
   const unitUsdReady = unitUsd !== undefined && unitUsd > 0n && !unitPriceQuery.isError
 
+  // OpenAPI `/turbine/summary`：claimed_total = SUM(cooled_claimed.amount)，与 logs.amount 同族小数字符串（禁当 wei）。
   const claimedRaw = turbineSummaryQuery.data?.claimed_total
   const totalWithdrawnLabel = !sessionReady
-    ? '0'
+    ? formatTurbineSummaryAmount(null)
     : turbineSummaryQuery.isLoading && claimedRaw == null
-      ? '0'
-      : claimedRaw != null
-        ? formatTurbineClaimedTotal(claimedRaw)
-        : '0'
+      ? formatTurbineSummaryAmount(null)
+      : formatTurbineSummaryAmount(claimedRaw)
   const claimedAsNumber = claimedRaw != null ? Number(claimedRaw) : Number.NaN
-  const totalWithdrawnUsdHint =
-    Number.isFinite(claimedAsNumber) && claimedAsNumber === 0
-      ? formatGroupedNumber(0, { digits: 2, prefix: '$' })
-      : ''
+  const totalWithdrawnUsdHint = (() => {
+    if (!Number.isFinite(claimedAsNumber)) return ''
+    if (claimedAsNumber === 0) return formatGroupedNumber(0, { digits: 2, prefix: '$' })
+    if (!unitUsdReady) return ''
+    return formatGroupedNumber(claimedAsNumber * unitUsdNumber, { digits: 2, prefix: '$' })
+  })()
 
   const canUnlock =
     sessionReady &&

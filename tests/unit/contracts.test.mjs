@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import test from 'node:test'
+import { fileURLToPath } from 'node:url'
+
 import { loadModule } from './load-module.mjs'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
@@ -59,7 +60,7 @@ function parseEnvFile(path) {
   return snapshot
 }
 
-/** Vite merge order for unit SSR: `.env` then `.env.local` overrides. */
+/** Vite 文件序：`.env` → `.env.local`（与 `load-module` 写入 process.env 一致）。 */
 function resolveViteEnvContracts() {
   const merged = {
     ...parseEnvFile(resolve(projectRoot, '.env')),

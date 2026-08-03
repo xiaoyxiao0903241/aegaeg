@@ -4,7 +4,6 @@ import {
   clampGenesisShares,
   estimateAgxFromUsd1,
   estimateContributionValueUsd,
-  estimateXTokenAirdropUsd,
   getAirdropBpsForPhase,
   type PhaseCountdownMode,
   USD1_DECIMALS,
@@ -20,8 +19,10 @@ export function genesisPurchaseSummary(args: {
   sharesDraft: number
   countdown: string
   countdownMode: PhaseCountdownMode | null
+  /** `previewAirdropValue` 的 addedAirdropValue；缺省 / 金额为 0 → 展示 $0。 */
+  previewAddedAirdropValueWei?: bigint | null
 }) {
-  const { reads, sharesDraft, countdown, countdownMode } = args
+  const { reads, sharesDraft, countdown, countdownMode, previewAddedAirdropValueWei } = args
   const shares = clampGenesisShares(sharesDraft, reads.maxShares)
   const purchaseAmount = reads.sharePriceWei > 0n ? reads.sharePriceWei * BigInt(shares) : 0n
   const payUsd1 = formatTokenAmountToNumber(purchaseAmount, USD1_DECIMALS)
@@ -31,11 +32,10 @@ export function genesisPurchaseSummary(args: {
     reads.discountBps,
     reads.agxPriceUsd,
   )
-  const xTokenAirdropUsd = estimateXTokenAirdropUsd(
-    payUsd1,
-    reads.phaseIndex,
-    reads.activePhase ?? undefined,
-  )
+  const xTokenAirdropUsd =
+    purchaseAmount > 0n && previewAddedAirdropValueWei != null
+      ? formatTokenAmountToNumber(previewAddedAirdropValueWei, USD1_DECIMALS)
+      : 0
   const quotaLabel = `$${formatTokenAmount(reads.minAmount, USD1_DECIMALS, 0)} – $${formatTokenAmount(reads.maxAmount, USD1_DECIMALS, 0)}`
   const isApproved = reads.walletReady && purchaseAmount > 0n && reads.allowance >= purchaseAmount
   const needsApproval = reads.walletReady && purchaseAmount > 0n && !isApproved
@@ -76,10 +76,7 @@ export function genesisPurchaseSummary(args: {
       estimatedAgxLabel: formatGroupedNumber(estimatedAgx, { digits: 2 }),
       payUsd1Label: `${formatGroupedNumber(payUsd1, { digits: 0 })} USD1`,
       contributionValueLabel: formatGroupedNumber(contributionValueUsd, { prefix: '$' }),
-      xTokenAirdropLabel:
-        payUsd1 > 0
-          ? formatGroupedNumber(xTokenAirdropUsd, { prefix: '$' })
-          : formatGroupedNumber(0, { prefix: '$' }),
+      xTokenAirdropLabel: formatGroupedNumber(xTokenAirdropUsd, { prefix: '$' }),
       airdropThresholdUsd: reads.airdropThresholdUsd,
       airdropThresholdLoading: reads.airdropThresholdLoading,
       quotaLabel,
