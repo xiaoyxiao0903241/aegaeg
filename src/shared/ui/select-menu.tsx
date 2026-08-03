@@ -51,8 +51,8 @@ export function SelectMenu({
         aria-label={ariaLabel}
         className={cn(
           variant === 'pill' &&
-            // Figma dropdown 34：h-8.5
-            'inline-flex h-8.5 items-center gap-1.5 rounded-full bg-card px-3.5',
+            // Figma dropdown 34：h-8.5 · 描边 pill（开奖日期 / 周期）
+            'inline-flex h-8.5 items-center gap-1.5 rounded-full border border-border bg-card px-3.5',
           variant === 'field' &&
             // Figma claim dd `4812:237`：radius 12 → rounded-faq（禁 rounded-xl=28px）
             'flex h-10.5 w-full cursor-pointer items-center justify-between gap-2 rounded-faq border border-border bg-card px-3.5 text-left text-sm text-foreground outline-none',
@@ -64,7 +64,7 @@ export function SelectMenu({
         <Text
           as="span"
           className={cn('font-medium', variant === 'field' && 'min-w-0 truncate')}
-          variant={variant === 'field' ? 'copy' : 'caption'}
+          variant="copy"
         >
           {selected.label}
         </Text>
@@ -104,13 +104,13 @@ export function SelectMenu({
           const active = option.value === value
           return (
             <DropdownMenuItem
-              className="h-9 rounded-sm py-0"
+              className="h-9 py-0"
               key={option.value}
               onSelect={() => onSelect(option.value)}
               selected={active}
-              tone="muted"
+              tone="accent"
             >
-              <Text as="span" className="font-medium" variant="caption">
+              <Text as="span" className="font-medium" variant="copy">
                 {option.label}
               </Text>
             </DropdownMenuItem>

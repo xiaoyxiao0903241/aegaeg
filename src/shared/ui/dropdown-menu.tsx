@@ -186,15 +186,12 @@ export function DropdownMenuItem({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
   selected?: boolean
-  /** accent = primary-soft（兑换/排序）；muted = background（奖励档位）. */
+  /** accent = 字重 semibold；muted = medium。选中底一律 primary-soft。 */
   tone?: 'accent' | 'muted'
   onSelect?: () => void
 }) {
   const { setOpen } = useMenuCtx()
-  const activeClass =
-    tone === 'muted'
-      ? 'bg-background font-medium text-foreground'
-      : 'bg-primary-soft font-semibold text-foreground'
+  const weightClass = tone === 'muted' ? 'font-medium' : 'font-semibold'
   return (
     <button
       {...props}
@@ -205,9 +202,9 @@ export function DropdownMenuItem({
         props.disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
         !props.disabled &&
           (selected
-            ? activeClass
+            ? cn('bg-primary-soft text-foreground', weightClass)
             : 'bg-transparent font-normal text-foreground hover:bg-background focus-visible:bg-background'),
-        props.disabled && selected && (tone === 'muted' ? 'bg-background' : 'bg-primary-soft'),
+        props.disabled && selected && cn('bg-primary-soft', weightClass),
         className,
       )}
       onClick={(event) => {

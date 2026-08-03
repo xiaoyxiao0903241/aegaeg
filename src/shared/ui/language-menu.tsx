@@ -32,12 +32,13 @@ const languageMenu = tv({
 const languageMenuItem = tv({
   base: [
     'flex h-(--dapp-lang-menu-row-height) w-full cursor-pointer items-center gap-2 bg-transparent px-2.5 text-left',
-    'rounded-(--dapp-lang-menu-row-radius)',
+    // 与 DropdownMenuItem 同 guideline：rounded-control
+    'rounded-control',
     'transition-colors duration-150 ease-out focus-visible:outline-none',
   ],
   variants: {
     active: {
-      true: 'bg-background',
+      true: 'bg-primary-soft',
       false: 'hover:bg-background focus-visible:bg-background',
     },
     disabled: {

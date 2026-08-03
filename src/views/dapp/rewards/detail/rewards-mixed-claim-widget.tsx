@@ -109,20 +109,16 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             <Text as="span" className="leading-4 font-semibold text-primary" variant="detail">
               {vm.mixed.releasePct.replace('{pct}', String(vm.releasePct))}
             </Text>
-            <Text
-              as="span"
-              className="leading-4 font-semibold text-(--app-claim-restake)"
-              variant="detail"
-            >
+            <Text as="span" className="leading-4 font-semibold text-claim-restake" variant="detail">
               {vm.mixed.restakePct.replace('{pct}', String(vm.restakePct))}
             </Text>
           </div>
         </Card>
 
-        {/* Figma 领取卡：coral-soft + border 35% · gap8 · p16 */}
+        {/* Figma 4393:244 领取卡：coral-soft + border 35% · gap8 · p16 · 标题 body16 */}
         <div className="grid min-h-33.75 gap-2 rounded-2xl border border-primary/35 bg-primary-soft p-4">
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-5 text-primary" variant="copy">
+            <Text as="span" className="leading-5 font-normal text-primary" variant="headline">
               {t.rewards.claim}
             </Text>
             <Text as="span" className="leading-4 text-foreground/40" variant="copy">
@@ -144,10 +140,10 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           </div>
         </div>
 
-        {/* Figma 复投卡：claim-restake 蓝 soft + border */}
-        <div className="grid min-h-33.75 gap-2 rounded-2xl border border-[color-mix(in_oklab,var(--app-claim-restake)_35%,transparent)] bg-[color-mix(in_oklab,var(--app-claim-restake)_8%,white)] p-4">
+        {/* Figma 4394:233 复投卡：mint #f3fdf6 + success 边/字 */}
+        <div className="grid min-h-33.75 gap-2 rounded-2xl border border-success/35 bg-success-soft p-4">
           <div className="flex items-center justify-between gap-2">
-            <Text as="span" className="leading-5 text-(--app-claim-restake)" variant="copy">
+            <Text as="span" className="leading-5 font-normal text-success" variant="headline">
               {vm.mixed.restakeLabel}
             </Text>
             <Text as="span" className="leading-4 text-foreground/40" variant="copy">
@@ -171,25 +167,26 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
 
         {vm.walletReady ? (
           <DappActionButton
-            className="min-h-13 py-2 leading-5"
+            className="min-h-13 !py-2 !font-normal"
             density="external"
             disabled={!vm.canConfirm}
             loading={vm.submitting}
             onClick={vm.onConfirm}
           >
-            <span className="flex flex-col items-start gap-0.5 leading-tight">
-              <span>
+            {/* Figma 4394:248：高 52 · 双行；detail + leading-4（标准刻度，禁任意 rem） */}
+            <span className="flex flex-col items-start gap-0.5 text-left !font-normal text-white">
+              <Text as="span" className="leading-4 !font-normal text-white" variant="detail">
                 {vm.mixed.ctaReleaseLine.replace(
                   '{amount}',
                   `${vm.releaseAmountText} ${vm.mixed.tokenGagx}`,
                 )}
-              </span>
-              <span>
+              </Text>
+              <Text as="span" className="leading-4 !font-normal text-white" variant="detail">
                 {vm.mixed.ctaRestakeLine.replace(
                   '{amount}',
                   `${vm.restakeAmountText} ${vm.mixed.tokenGagx}`,
                 )}
-              </span>
+              </Text>
             </span>
           </DappActionButton>
         ) : (

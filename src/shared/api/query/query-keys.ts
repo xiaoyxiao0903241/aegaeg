@@ -328,6 +328,9 @@ export const queryKeys = {
     rewardsLuckyClaim: ['chain', 'rewards', 'lucky'] as const,
     rewardsLuckyClaimOf: (address: string) =>
       chainWalletQueryKey(['chain', 'rewards', 'lucky'], address),
+    rewardsLuckyRoundDisplay: ['chain', 'rewards', 'luckyRound'] as const,
+    rewardsLuckyRoundDisplayOf: (address: string) =>
+      chainWalletQueryKey(['chain', 'rewards', 'luckyRound'], address),
     rewardsReferralCount: ['chain', 'rewards', 'referralCount'] as const,
     rewardsReferralCountOf: (address: string) =>
       chainWalletQueryKey(['chain', 'rewards', 'referralCount'], address),

@@ -265,6 +265,33 @@
 | lucky-reward/summary                  | 仅池统计 / 是否中奖 / 次数；**不可**作 Hub 可领额                                                                                       |
 | market-allowance.unlockable_allowance | 「可解锁未领」；Hub 稿面仅「可领取」→ 不接                                                                                              |
 
+### 4.2 幸运奖详情（`#rewards/lucky` · PC `4390:220`）
+
+> **读源裁决（2026-08-03 · Pre-Design A1/A2）：** 手册 `01` §14.1 + contracts LuckyPool/Tracker；OpenAPI `POST /lucky-reward/{summary,winners,my-rounds}`；写 = `claimRewardMixed`（money-path Rewards Mixed Lucky）。证据见 `.scratch/dapp-7rail-parity/research/215-lucky-a1a2.md`。G 册 `14-lucky-pool.md` 原「无锁帧 DEFER」对本页升格 MUST（索引可后补）。
+
+| 数据位             | 是否已接 | 源                                                                                           |
+| ------------------ | -------- | -------------------------------------------------------------------------------------------- |
+| 今日奖池           | 已接     | `POST /lucky-reward/summary` → `today_total_prize`（USD 整池）                               |
+| 累计中奖           | 已接     | 同 → `win_count`                                                                             |
+| 开奖表             | 已接     | `POST /lucky-reward/winners`（date←近 5 UTC 日 `SelectMenu`；空结果隐藏表顶 controls）       |
+| 抽奖记录           | 已接     | `POST /lucky-reward/my-rounds`                                                               |
+| 可领额（左 Mixed） | 已接     | 链 `readLuckyClaimSnapshot`（**非** summary 池 USD）                                         |
+| 贡献点数（左）     | 已接     | `readContributionSnapshot` / required；burn 深链                                             |
+| 今日抽奖资格       | 已接     | 链 `LuckyPool.isUserEligible(currentRoundId, user)`（迁移感知；优于 mapping `isEligible`）   |
+| 倒计时             | 已接     | 链 `getRound(currentRoundId).endTime` → HH:MM:SS；未连接 / 读失败 → 文案内 `—`               |
+| 资格辅助额         | 部分     | Tracker `getUserRoundStat.totalAmount`（**累计** USD1）；稿文案「最大单笔」无链上 max-single |
+| 验证教程 URL       | 无源     | 按钮 disabled                                                                                |
+
+**缺口 / 张力**
+
+| 项                             | 说明                                                                        |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| 稿「最大单笔」vs `totalAmount` | 链仅累计购买额；UI 文案改为「今日累计购买」展示 Tracker 值；无单笔 max 读源 |
+| FAQ 活期资格                   | 已按手册改为「活期可获资格（单笔达标）」；旧「不能」文案废弃                |
+| API `reward_amount` 标 gAGX    | 展示可跟 API；写链金额以链 AGX snapshot 为准                                |
+| `participation_amount`         | 日业绩 USDT 快照 ≠ 单笔达标门槛；勿当资格证明                               |
+| summary 不可作可领             | 与 §4.1 同；子页可领仅链 snapshot                                           |
+
 ## 5. 释放（Release）
 
 > 待补表。
@@ -283,6 +310,8 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-03 | 幸运奖详情 §4.2：资格/倒计时接链；累计购买≠稿「最大单笔」记缺口；FAQ 活期跟手册；Hub §4.1 保留                               |
+| 2026-08-03 | 幸运奖详情 §4.2：A1/A2 接线表（奖池/表已接；资格假零；倒计时链 endTime；FAQ 活期 vs 手册张力）；Hub §4.1 保留                |
 | 2026-08-03 | 奖励 Hub §4.1：补三签/即将关闭/一期 referral/total 读源裁决；右栏+幸运/津贴/创世已接；参与共建仍无 Hub 可领预览              |
 | 2026-08-03 | 奖励 Hub §4.1：接 making-overview / grant unlocked / lucky 链可领；三签卡诚实空；禁累计 summary 冒充可领                     |
 | 2026-08-03 | 资产仓位：补 §2.2/§2.3（质押/债券/Xmine 读写下与剩余缺口）；Mixed/赎回/Quote 已接；LP·Burn 总收益与 X 累计/USD 仍无源        |

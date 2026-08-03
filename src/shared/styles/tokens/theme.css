@@ -66,6 +66,8 @@
   --claim-restake: oklch(60.77% 0.1787 264.16);
   --dark: #111625;
   --dark: oklch(19.25% 0.0189 270.25);
+  --dark-panel: #1c2234;
+  --dark-panel: oklch(24.5% 0.025 265);
   --inverse: #fff;
   --inverse: oklch(100% 0 89.88);
   --inverse-muted: #b8c0ce;
@@ -307,6 +309,7 @@
   --color-success: var(--success);
   --color-claim-restake: var(--claim-restake);
   --color-dark: var(--dark);
+  --color-dark-panel: var(--dark-panel);
   --color-inverse: var(--inverse);
   --color-inverse-muted: var(--inverse-muted);
   --color-token-usd1: var(--token-usd1);
@@ -432,7 +435,8 @@
   /* Language menu — Figma lang-popup 4140:286 @ 16px root; scales with site-fluid */
   --app-lang-menu-width: 16.5rem;
   --app-lang-menu-row-height: 2.625rem;
-  --app-lang-menu-row-radius: 0.625rem;
+  /* 行圆角跟 DropdownMenuItem：--radius-control（禁平行 0.625rem） */
+  --app-lang-menu-row-radius: var(--radius-control);
   --app-lang-menu-meta-size: 0.6875rem;
 
   --dapp-lang-menu-width: var(--app-lang-menu-width);

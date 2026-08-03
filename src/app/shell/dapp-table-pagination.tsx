@@ -285,9 +285,9 @@ export function DappTablePagination({
                           >
                             <button
                               className={cn(
-                                'flex h-(--dapp-pagination-menu-item-height) w-full cursor-pointer items-center justify-center text-center text-xs transition-colors',
+                                'flex h-(--dapp-pagination-menu-item-height) w-full cursor-pointer items-center justify-center rounded-control text-center text-xs transition-colors',
                                 active
-                                  ? 'bg-accent font-semibold text-coral'
+                                  ? 'bg-primary-soft font-semibold text-coral'
                                   : 'bg-card text-foreground',
                               )}
                               onClick={() => {

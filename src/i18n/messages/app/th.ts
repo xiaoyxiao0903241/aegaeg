@@ -919,7 +919,11 @@ const app = defineMessages({
     lucky: {
       dataTitle: 'Data',
       todayPool: 'Today prize pool',
-      eligibility: 'Today eligibility',
+      countdownHint: 'จับรางวัลถัดไป {time}',
+      eligibility: 'สิทธิ์วันนี้',
+      eligibilityYes: 'ได้รับแล้ว',
+      eligibilityNo: 'ยังไม่ได้',
+      maxStakeHint: 'ยอดซื้อวันนี้ {amount}',
       cumulativeWins: 'Cumulative wins',
       vrfTitle: 'Chainlink VRF v2 verifiable randomness',
       vrfBody:
@@ -959,7 +963,7 @@ const app = defineMessages({
           },
           {
             q: 'Does liquid staking grant eligibility?',
-            a: 'No. Liquid stake has a per-day per-user cap below $5,000, so it cannot meet the eligibility threshold.',
+            a: 'Yes. Liquid stake (liquidStake) can grant same-day eligibility when a single purchase meets the threshold; eligibility is per-purchase, not cumulative. Daily liquid caps may still prevent a qualifying single amount.',
           },
         ],
       },

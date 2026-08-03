@@ -855,7 +855,11 @@ const app = defineMessages({
     lucky: {
       dataTitle: '数据',
       todayPool: '今日奖池',
+      countdownHint: '距下次开奖 {time}',
       eligibility: '今日抽奖资格',
+      eligibilityYes: '已获得',
+      eligibilityNo: '未获得',
+      maxStakeHint: '今日累计购买 {amount}',
       cumulativeWins: '累计中奖',
       vrfTitle: 'Chainlink VRF v2 可验证随机抽奖',
       vrfBody:
@@ -895,7 +899,7 @@ const app = defineMessages({
           },
           {
             q: '参与活期质押是否能获得抽奖资格？',
-            a: '不能。活期质押每人每天有额度限制，单笔质押不会超过 $5,000，因此无法满足抽奖资格的金额条件。',
+            a: '可以。手册规定活期质押（liquidStake）在单笔金额达到门槛时也会记入当日资格；资格按单笔达标判定，不是多笔累计。若当日活期额度限制导致单笔无法达到门槛，则该笔不会获得资格。',
           },
         ],
       },

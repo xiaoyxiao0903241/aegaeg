@@ -434,15 +434,25 @@ export const DAO_POOL_METHODS = {
     'function claimRewardsMixed(uint256 signType, uint256 amount, uint256 expireTime, bytes32 salt, bytes sign, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
 } as const
 
-/** LuckyPool — Mixed claim + pause / winner reads (manual §14). */
+/** LuckyPool — Mixed claim + pause / winner / round reads (manual §14). */
 export const LUCKY_POOL_METHODS = {
   paused: 'function paused() view returns (bool)',
   currentRoundId: 'function currentRoundId() view returns (uint256)',
+  purchaseTracker: 'function purchaseTracker() view returns (address)',
+  isUserEligible: 'function isUserEligible(uint256 roundId, address user) view returns (bool)',
+  getRound:
+    'function getRound(uint256 roundId) view returns ((uint256 roundId, uint256 displayDay, uint256 startTime, uint256 endTime, uint256 rewardAmount, uint256 rewardPerWinner, uint256 maxWinners, uint256 requestId, uint256 eligibleCount, uint256 winnerCount, uint256 randomRequestBlock, uint8 status))',
   getWinnerInfo:
     'function getWinnerInfo(uint256 roundId, address user) view returns (bool won, uint256 rewardAmount)',
   rewardClaimed: 'function rewardClaimed(uint256 roundId, address user) view returns (bool)',
   claimRewardMixed:
     'function claimRewardMixed(uint256 roundId, uint8 releasePlanIndex, uint256 restakePlanIndex, uint256 restakeBps)',
+} as const
+
+/** DailyPurchaseTracker — qualification stats (manual §14.1). */
+export const DAILY_PURCHASE_TRACKER_METHODS = {
+  getUserRoundStat:
+    'function getUserRoundStat(uint256 roundId, address user) view returns (uint256 totalAmount, bool qualified, uint256 qualifiedAt)',
 } as const
 
 /** LuckyPool custom errors — docs/frontend-manual/contracts/aegisluckypool.md (user claim path). */

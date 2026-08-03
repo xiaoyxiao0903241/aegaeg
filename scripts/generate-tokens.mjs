@@ -344,7 +344,8 @@ function staticEngineeringVars() {
   /* Language menu — Figma lang-popup 4140:286 @ 16px root; scales with site-fluid */
   --app-lang-menu-width: 16.5rem;
   --app-lang-menu-row-height: 2.625rem;
-  --app-lang-menu-row-radius: 0.625rem;
+  /* 行圆角跟 DropdownMenuItem：--radius-control（禁平行 0.625rem） */
+  --app-lang-menu-row-radius: var(--radius-control);
   --app-lang-menu-meta-size: 0.6875rem;
 
   --dapp-lang-menu-width: var(--app-lang-menu-width);
