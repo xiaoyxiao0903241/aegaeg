@@ -125,30 +125,30 @@ export function ReleaseHubWidget() {
               className="size-(--app-icon-caption) shrink-0"
               src={dappAssets.releasePool}
             />
-            <Text as="span" className="min-w-0 flex-1 font-semibold" variant="caption">
+            <Text as="span" className="min-w-0 flex-1 font-semibold" variant="detail">
               {t.release.queue.title}
             </Text>
-            <Text as="span" variant="caption">
+            <Text as="span" variant="detail">
               <DappCountValue text={queuePct} />
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Text as="p" className="text-foreground/40" variant="caption">
+            <Text as="p" className="text-foreground/40" variant="copy">
               {t.release.labels.releasing}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="caption">
+            <Text as="p" className="text-foreground/40" variant="copy">
               {t.release.labels.released}
             </Text>
-            <Text as="p" className="font-semibold" variant="copy">
+            <Text as="p" className="font-semibold" variant="headline">
               <DappCountValue text={queueReleasingLabel} />
             </Text>
-            <Text as="p" className="font-semibold text-primary" variant="copy">
+            <Text as="p" className="font-semibold text-primary" variant="headline">
               <DappCountValue text={queueClaimableLabel} />
             </Text>
-            <Text as="p" className="text-foreground/40" variant="caption">
+            <Text as="p" className="text-foreground/40" variant="copy">
               {queueReleasingApprox}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="caption">
+            <Text as="p" className="text-foreground/40" variant="copy">
               {queueClaimableApprox}
             </Text>
           </div>
@@ -169,41 +169,41 @@ export function ReleaseHubWidget() {
               className="size-(--app-icon-caption) shrink-0"
               src={dappAssets.bufferPool}
             />
-            <Text as="span" className="min-w-0 flex-1 font-semibold" variant="caption">
+            <Text as="span" className="min-w-0 flex-1 font-semibold" variant="detail">
               {t.release.buffer.title}
             </Text>
-            <Text as="span" variant="caption">
+            <Text as="span" variant="detail">
               <DappCountValue text={bufferPct} />
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Text as="p" className="font-semibold" variant="copy">
+            <Text as="p" className="font-semibold" variant="headline">
               <DappCountValue text={bufferTotalAgx} />
             </Text>
-            <Text as="p" className="font-semibold" variant="copy">
+            <Text as="p" className="font-semibold" variant="headline">
               {gagxZeroLabel}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="caption">
+            <Text as="p" className="text-foreground/40" variant="copy">
               {bufferTotalApprox}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="caption">
+            <Text as="p" className="text-foreground/40" variant="copy">
               {bufferGagxApprox}
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="flex flex-wrap items-center gap-1.5">
-              <Text as="span" className="text-foreground/40" variant="caption">
+              <Text as="span" className="text-foreground/40" variant="copy">
                 {t.release.labels.released}
               </Text>
-              <Text as="span" className="text-primary" variant="caption">
+              <Text as="span" className="text-primary" variant="copy">
                 <DappCountValue text={bufferClaimedAgx} />
               </Text>
             </div>
             <div className="flex flex-wrap items-center gap-1.5">
-              <Text as="span" className="text-foreground/40" variant="caption">
+              <Text as="span" className="text-foreground/40" variant="copy">
                 {t.release.labels.released}
               </Text>
-              <Text as="span" className="text-primary" variant="caption">
+              <Text as="span" className="text-primary" variant="copy">
                 {gagxZeroLabel}
               </Text>
             </div>

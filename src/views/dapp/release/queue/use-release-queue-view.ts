@@ -9,11 +9,20 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useChainMutation } from '~/hooks/use-chain-mutation'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd } from '~/shared/api/format-display'
+import { queryClient } from '~/shared/api/query/query-client'
+import { queryKeys } from '~/shared/api/query/query-keys'
+import type { Address } from '~/shared/config/contracts'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { useReleaseViewStore } from '~/stores/release-view-store'
 import { formatReleasePct } from '~/views/dapp/release/release-display'
 import { submitReleaseQueueClaim } from '~/views/dapp/release/submit-release'
 import { useReleaseQueueSnapshot } from '~/views/dapp/release/use-release-reads'
+import {
+  patchReleaseQueuePlan,
+  readReleaseQueuePlanByDays,
+  type ReleaseQueueSnapshot,
+} from '~/web3/release/release-read'
+import { useActiveAccount } from '~/web3/thirdweb-react'
 import { WRITE_PATH } from '~/web3/wallet/unknown-receipt-lock'
 import { useWriteReadiness } from '~/web3/wallet/use-write-readiness'
 
@@ -38,9 +47,11 @@ export function useReleaseQueueView() {
   const setView = useReleaseViewStore((state) => state.setView)
   const { walletReady } = useDappShell()
   const { writeReady } = useWriteReadiness()
+  const account = useActiveAccount()
   const priceUsd = useAgxPriceUsd()
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const [pendingPlan, setPendingPlan] = useState<number | null>(null)
+  const [refreshingDays, setRefreshingDays] = useState<number | null>(null)
 
   const claim = useChainMutation({
     path: WRITE_PATH.RELEASE_CLAIM,
@@ -90,11 +101,49 @@ export function useReleaseQueueView() {
     }
   }
 
+  async function onRefresh(days: number) {
+    if (refreshingDays != null) return
+    const address = account?.address?.toLowerCase()
+    if (!address) return
+    setRefreshingDays(days)
+    try {
+      const hint = queueQuery.data?.plans.find((p) => p.durationDays === days)?.planIndex ?? -1
+      // 只读被点档；有 planIndex 时 1× Multicall，不碰其它档
+      const row = await readReleaseQueuePlanByDays(address as Address, days, hint)
+      queryClient.setQueryData(
+        queryKeys.chain.releaseQueueOf(address),
+        (prev: ReleaseQueueSnapshot | undefined) => {
+          if (prev) return patchReleaseQueuePlan(prev, row)
+          return {
+            plans: RELEASE_DURATION_DAYS.map((d) =>
+              d === days
+                ? row
+                : {
+                    planIndex: -1,
+                    durationDays: d,
+                    claimable: 0n,
+                    total: 0n,
+                    releasing: 0n,
+                  },
+            ),
+            totalClaimable: row.claimable,
+            totalLocked: row.total,
+            totalReleasing: row.releasing,
+          }
+        },
+      )
+    } finally {
+      setRefreshingDays(null)
+    }
+  }
+
   return {
     t,
     onBack: () => setView('hub'),
     walletReady,
     rows,
     onClaim,
+    onRefresh,
+    refreshingDays,
   }
 }

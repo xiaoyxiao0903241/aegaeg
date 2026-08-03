@@ -19,8 +19,8 @@
 
 | 项 | 值 |
 |----|-----|
-| **当前页** | **#24 释放 Hub**（`4298:212` · `#release`） · 机制已复用 `DappProcessSteps` |
-| **Status** | `committed`（R7 复审：可 commit；**A5 过期 → 禁 page-done**） |
+| **当前页** | **#25 释放池**（`4466:220` · `#release/queue`） |
+| **Status** | `in-progress`（A4 N=M=111；已贴 plan radio/去钉高/stat；A5 measure 进行中） |
 | **规则** | §2.3a 全量计叶；实现走 Foundation；禁 reuse 折叠独有 chrome；一页一闭环 |
 
 > **队列跳转（用户 2026-08-04）：** 开释放轨 #24–26（Section `4585:634`）；奖励 #17–23 贴稿已交 / gaps §4 已纠 R4a。
@@ -52,8 +52,8 @@
 | 21 | 奖励 | 共建 | `4408:220` | `#rewards/cobuild` | **page-done** | `research/218-cobuild-leaf.md` |
 | 22 | 奖励 | Grant | `4410:220` | `#rewards/grant` | **page-done** | `research/219-grant-leaf.md` |
 | 23 | 奖励 | 创世奖 | `4413:220` | `#rewards/genesis` | **page-done** | `research/220-genesis-leaf.md` |
-| 24 | 释放 | Hub | `4298:212` | `#release` | **committed**（R7 PASS 条件放行；A5 待重测；禁 page-done） | `research/221-release-hub-leaf.md` |
-| 25 | 释放 | 队列 | `4466:220` | `#release/queue` | **pre-design** | `research/222-release-queue-leaf.md` |
+| 24 | 释放 | Hub | `4298:212` | `#release` | **committed**（R7 条件放行；A5 待重测；禁 page-done） | `research/221-release-hub-leaf.md` |
+| 25 | 释放 | 队列 | `4466:220` | `#release/queue` | **in-progress** | `research/222-release-queue-leaf.md` |
 | 26 | 释放 | 缓冲 | `4469:220` | `#release/buffer` | not-started | |
 | 27 | 社区 | Hub | `4300:212` | `#community` | not-started | |
 | 28 | 创世 | Hub | `4303:212` | `#genesis` | not-started | |

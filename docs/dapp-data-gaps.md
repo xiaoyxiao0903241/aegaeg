@@ -348,7 +348,18 @@
 
 ### 5.2 释放池（`#release/queue`）
 
-> 待补表（#25）。
+| 稿面位               | 有源？ | 真源 / 空态                                                                                      |
+| -------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| Plan×4 天数 pill     | 是     | UI 行现绑 `RELEASE_DURATION_DAYS`；链 `queuePlans` duration 匹配 index（§12.5；演示档≠链时跟链） |
+| Plan 已释放 / 释放中 | 是     | 链 `getReleasedRewardsWithPlanIndex` / total−claimable（snapshot）                               |
+| Plan 进度 % / ≈$     | 是     | `formatReleasePct`；`formatApproxUsd(claimable, useAgxPriceUsd)`（空 `≈ $0.00`）                 |
+| Plan 领取 CTA        | 是     | **live** `claimAllVestedRewards` / `submitReleaseQueueClaim` + `turbineRoot` invalidate          |
+| Plan 右上刷新        | UI     | 产品替稿（原 radio）→ `RefreshCw`；单档链读 + patch 缓存；loading 图标旋转                       |
+| 右栏释放中 / 已释放  | 是     | API summary \|\| 链 totals（单位 gAGX）                                                          |
+| 累计从释放池领取     | 部分   | API `total_claimed_amount`；无会话/无字段 → **`0.0000 gAGX`**（无 lifetime 链 view）             |
+| 右栏 ≈$ ×3           | 是     | `formatApproxUsd` × spot（空 `≈ $0.00`）                                                         |
+| 记录表               | 是     | `POST /release-pool/logs`（需登录）；空 → empty message                                          |
+| FAQ                  | 是     | i18n 静态                                                                                        |
 
 ### 5.3 缓冲池（`#release/buffer`）
 
@@ -368,7 +379,7 @@
 
 | 日期       | 变更                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 2026-08-04 | 释放 Hub §5.1：双池卡接链+API summary；≈$ 跟 formatApproxUsd；缓冲 gAGX 列诚实空；写链仅子页                                 |
+| 2026-08-04 | 释放池 §5.2：plan 链读+claimAll 写 live；累计领取 API/无源→0；≈$ 接价；右上产品改单档刷新（替稿 radio）                      |
 | 2026-08-04 | 奖励 §4.1/§4.3：纠偏 R4a 写链（推荐 CommunityFund / 参与 IncentivePool / 共建 Dao Mixed）；参与 READY 门闸记缺口             |
 | 2026-08-03 | 奖励详情 #19–23：§4.3–4.5 记 nextPayout/共建下一档/Grant 待审批/稿释放池张力；创世人物重导                                   |
 | 2026-08-03 | 幸运奖详情 §4.2：资格/倒计时接链；累计购买≠稿「最大单笔」记缺口；FAQ 活期跟手册；Hub §4.1 保留                               |

@@ -2373,6 +2373,7 @@ const app = defineMessages({
       intro: '领取的收益与奖励在此按所选周期线性释放，已释放部分可随时领取进入涡轮',
       planDays: '{days} 天',
       claim: '领取',
+      refresh: '刷新',
       claimSuccess: '已领取至涡轮配额',
       goTurbine: '前往涡轮',
       statsTitle: '释放池数据',

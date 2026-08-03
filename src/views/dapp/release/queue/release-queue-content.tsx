@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
@@ -5,6 +7,7 @@ import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
+import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
@@ -14,6 +17,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { mapReleasePoolLogToRow } from '~/shared/api/map-flow-log-rows'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
+import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
 import { Card } from '~/shared/ui/card'
 import { DappCountValue } from '~/shared/ui/dapp-count-value'
 import { FaqList } from '~/shared/ui/faq-list'
@@ -26,10 +30,12 @@ export function ReleaseQueueContent() {
   const { messages: t } = useI18n()
   const { walletReady, sessionReady } = useDappShell()
   const priceUsd = useAgxPriceUsd()
+  const [recordsPage, setRecordsPage] = useState(1)
   const queueQuery = useReleaseQueueSnapshot(walletReady)
   const apiSummaryQuery = useReleasePoolSummary(sessionReady)
-  const queueLogsQuery = useReleasePoolLogs({}, sessionReady)
+  const queueLogsQuery = useReleasePoolLogs(tablePageQuery(recordsPage), sessionReady)
   const queueLogRows = queueLogsQuery.data?.items.map(mapReleasePoolLogToRow) ?? []
+  const queueLogsTotal = queueLogsQuery.data?.total ?? 0
   const queueLogsLoading = sessionReady && queueLogsQuery.isLoading
   const releasing = queueQuery.data?.totalReleasing ?? 0n
   const claimable = queueQuery.data?.totalClaimable ?? 0n
@@ -105,29 +111,30 @@ export function ReleaseQueueContent() {
         <DappContentHeading id="release-queue-title">
           {t.release.queue.statsTitle}
         </DappContentHeading>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-4 dapp:grid-cols-3">
           {stats.map((stat) => (
             <Card
               as="div"
-              surface="elevated"
-              className="grid min-h-25 gap-1 rounded-2xl px-5 py-3.5"
+              className="grid gap-2 rounded-2xl px-5 py-4"
+              data-slot-id={`release-queue-stat-${stat.label}`}
               key={stat.label}
+              surface="elevated"
             >
-              <Text as="span" className="font-medium" tone="muted-foreground" variant="detail">
+              <Text as="span" className="font-medium text-foreground/40" variant="caption">
                 {stat.label}
               </Text>
               <div className="flex items-center gap-2">
                 <DappIcon
                   alt=""
-                  className="size-5.5 shrink-0 rounded-control"
-                  size="sm"
+                  className="size-(--app-icon-rail) shrink-0 rounded-md"
+                  size="rail"
                   src={tokenCarouselIcons.gagxIcon}
                 />
-                <Text as="strong" className="font-semibold" variant="copy">
+                <Text as="strong" className="font-semibold" variant="section">
                   <DappCountValue text={stat.value} />
                 </Text>
               </div>
-              <Text as="span" tone="muted-foreground" variant="detail">
+              <Text as="span" className="text-foreground/40" variant="caption">
                 {stat.approx}
               </Text>
             </Card>
@@ -137,7 +144,18 @@ export function ReleaseQueueContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.release.queue.recordsTitle}</DappContentHeading>
-        <DappTableCard>
+        <DappTableCard
+          footer={
+            shouldShowTablePagination(queueLogsTotal) ? (
+              <DappTablePagination
+                embedded
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={queueLogsTotal}
+              />
+            ) : undefined
+          }
+        >
           <ResponsiveTable
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
             headers={[...t.release.recordColumns]}
@@ -152,7 +170,7 @@ export function ReleaseQueueContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.release.faq.title}</DappContentHeading>
-        <FaqList items={t.release.faq.queue} variant="dapp" />
+        <FaqList defaultOpenFirst={false} items={t.release.faq.queue} variant="dapp" />
       </DappDetailBlock>
     </DappDetailPage>
   )

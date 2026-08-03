@@ -70,72 +70,95 @@ export async function readReleaseQueueSnapshot(
   readClient: ChainReadClient = bscReadClient,
 ): Promise<ReleaseQueueSnapshot> {
   const durationPlans = await readReleaseQueuePlans(readClient)
-  const rows: ReleaseQueuePlanRow[] = []
+  const queue = BSC_CONTRACTS.rewardQueue
 
-  for (const days of RELEASE_DURATION_DAYS) {
-    const matched = durationPlans.find((p) => p.durationSeconds === BigInt(days) * SECONDS_PER_DAY)
-    if (!matched) {
-      rows.push({
-        planIndex: -1,
-        durationDays: days,
-        claimable: 0n,
-        total: 0n,
-        releasing: 0n,
-      })
-      continue
-    }
-    const [claimable, total] = await Promise.all([
-      readClient.readContract({
-        address: BSC_CONTRACTS.rewardQueue,
-        abi: queueReadAbi,
-        functionName: 'getReleasedRewardsWithPlanIndex',
-        args: [address, matched.index],
-      }) as Promise<bigint>,
-      readClient.readContract({
-        address: BSC_CONTRACTS.rewardQueue,
-        abi: queueReadAbi,
-        functionName: 'getRewardsWithPlanIndex',
-        args: [address, matched.index],
-      }) as Promise<bigint>,
-    ])
-    const releasing = total > claimable ? total - claimable : 0n
-    rows.push({
-      planIndex: matched.index,
-      durationDays: days,
-      claimable,
-      total,
-      releasing,
-    })
+  type PendingRow = {
+    planIndex: number
+    durationDays: number | null
+    /** UI 四档写入 uiRows[slot]；链外档仅非零才追加 */
+    uiSlot: number | null
   }
 
-  // Include any on-chain plans outside the UI 5/20/40/60 tiers (fail-open for totals only).
+  const uiRows: ReleaseQueuePlanRow[] = RELEASE_DURATION_DAYS.map((days) => ({
+    planIndex: -1,
+    durationDays: days,
+    claimable: 0n,
+    total: 0n,
+    releasing: 0n,
+  }))
+  const pending: PendingRow[] = []
+
+  for (let slot = 0; slot < RELEASE_DURATION_DAYS.length; slot++) {
+    const days = RELEASE_DURATION_DAYS[slot]!
+    const matched = durationPlans.find((p) => p.durationSeconds === BigInt(days) * SECONDS_PER_DAY)
+    if (!matched) continue
+    pending.push({ planIndex: matched.index, durationDays: days, uiSlot: slot })
+  }
+
+  // 链上非 5/20/40/60 档：读后非零才计入 totals（fail-open）
   for (const plan of durationPlans) {
     const days = durationDaysFromSeconds(plan.durationSeconds)
     if (days != null && (RELEASE_DURATION_DAYS as readonly number[]).includes(days)) continue
-    const [claimable, total] = await Promise.all([
-      readClient.readContract({
-        address: BSC_CONTRACTS.rewardQueue,
-        abi: queueReadAbi,
-        functionName: 'getReleasedRewardsWithPlanIndex',
-        args: [address, plan.index],
-      }) as Promise<bigint>,
-      readClient.readContract({
-        address: BSC_CONTRACTS.rewardQueue,
-        abi: queueReadAbi,
-        functionName: 'getRewardsWithPlanIndex',
-        args: [address, plan.index],
-      }) as Promise<bigint>,
-    ])
-    if (claimable <= 0n && total <= 0n) continue
-    rows.push({
-      planIndex: plan.index,
-      durationDays: days,
+    pending.push({ planIndex: plan.index, durationDays: days, uiSlot: null })
+  }
+
+  // 每档 claimable+total → 单次 Multicall3（避免 N× eth_call）
+  const results = await readAggregate3(
+    readClient,
+    pending.flatMap((row) => [
+      {
+        target: queue,
+        callData: encodeFunctionData({
+          abi: queueReadAbi,
+          functionName: 'getReleasedRewardsWithPlanIndex',
+          args: [address, row.planIndex],
+        }),
+      },
+      {
+        target: queue,
+        callData: encodeFunctionData({
+          abi: queueReadAbi,
+          functionName: 'getRewardsWithPlanIndex',
+          args: [address, row.planIndex],
+        }),
+      },
+    ]),
+  )
+
+  const extraRows: ReleaseQueuePlanRow[] = []
+  for (let i = 0; i < pending.length; i++) {
+    const meta = pending[i]!
+    const claimableSlot = results[i * 2]
+    const totalSlot = results[i * 2 + 1]
+    if (!claimableSlot?.success || !totalSlot?.success) {
+      throw new Error(`RELEASE_QUEUE_MULTICALL_FAILED:${meta.planIndex}`)
+    }
+    const claimable = decodeFunctionResult({
+      abi: queueReadAbi,
+      functionName: 'getReleasedRewardsWithPlanIndex',
+      data: claimableSlot.returnData,
+    }) as bigint
+    const total = decodeFunctionResult({
+      abi: queueReadAbi,
+      functionName: 'getRewardsWithPlanIndex',
+      data: totalSlot.returnData,
+    }) as bigint
+    const row: ReleaseQueuePlanRow = {
+      planIndex: meta.planIndex,
+      durationDays: meta.durationDays,
       claimable,
       total,
       releasing: total > claimable ? total - claimable : 0n,
-    })
+    }
+    if (meta.uiSlot != null) {
+      uiRows[meta.uiSlot] = row
+      continue
+    }
+    if (claimable <= 0n && total <= 0n) continue
+    extraRows.push(row)
   }
 
+  const rows = [...uiRows, ...extraRows]
   let totalClaimable = 0n
   let totalLocked = 0n
   let totalReleasing = 0n
@@ -146,6 +169,95 @@ export async function readReleaseQueueSnapshot(
   }
 
   return { plans: rows, totalClaimable, totalLocked, totalReleasing }
+}
+
+/** 单档读：已知 planIndex 时 1× Multicall（2 call）；未知则先 queuePlans 再读。 */
+export async function readReleaseQueuePlanByDays(
+  address: Address,
+  durationDays: number,
+  planIndexHint: number = -1,
+  readClient: ChainReadClient = bscReadClient,
+): Promise<ReleaseQueuePlanRow> {
+  let planIndex = planIndexHint
+  if (planIndex < 0) {
+    const durationPlans = await readReleaseQueuePlans(readClient)
+    const matched = durationPlans.find(
+      (p) => p.durationSeconds === BigInt(durationDays) * SECONDS_PER_DAY,
+    )
+    if (!matched) {
+      return {
+        planIndex: -1,
+        durationDays,
+        claimable: 0n,
+        total: 0n,
+        releasing: 0n,
+      }
+    }
+    planIndex = matched.index
+  }
+
+  const queue = BSC_CONTRACTS.rewardQueue
+  const results = await readAggregate3(readClient, [
+    {
+      target: queue,
+      callData: encodeFunctionData({
+        abi: queueReadAbi,
+        functionName: 'getReleasedRewardsWithPlanIndex',
+        args: [address, planIndex],
+      }),
+    },
+    {
+      target: queue,
+      callData: encodeFunctionData({
+        abi: queueReadAbi,
+        functionName: 'getRewardsWithPlanIndex',
+        args: [address, planIndex],
+      }),
+    },
+  ])
+  const claimableSlot = results[0]
+  const totalSlot = results[1]
+  if (!claimableSlot?.success || !totalSlot?.success) {
+    throw new Error(`RELEASE_QUEUE_PLAN_MULTICALL_FAILED:${planIndex}`)
+  }
+  const claimable = decodeFunctionResult({
+    abi: queueReadAbi,
+    functionName: 'getReleasedRewardsWithPlanIndex',
+    data: claimableSlot.returnData,
+  }) as bigint
+  const total = decodeFunctionResult({
+    abi: queueReadAbi,
+    functionName: 'getRewardsWithPlanIndex',
+    data: totalSlot.returnData,
+  }) as bigint
+
+  return {
+    planIndex,
+    durationDays,
+    claimable,
+    total,
+    releasing: total > claimable ? total - claimable : 0n,
+  }
+}
+
+/** 用单档结果补丁 snapshot，并重算 totals（右栏链上合计会跟着变）。 */
+export function patchReleaseQueuePlan(
+  snapshot: ReleaseQueueSnapshot,
+  row: ReleaseQueuePlanRow,
+): ReleaseQueueSnapshot {
+  const plans = snapshot.plans.map((p) => (p.durationDays === row.durationDays ? row : p))
+  if (!plans.some((p) => p.durationDays === row.durationDays)) {
+    plans.push(row)
+  }
+  let totalClaimable = 0n
+  let totalLocked = 0n
+  let totalReleasing = 0n
+  for (const p of plans) {
+    totalClaimable += p.claimable
+    totalLocked += p.total
+    totalReleasing += p.releasing
+  }
+  return { plans, totalClaimable, totalLocked, totalReleasing }
 }
 
 export async function readReleaseQueueClaimable(

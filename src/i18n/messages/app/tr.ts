@@ -2453,6 +2453,7 @@ const app = defineMessages({
         'Claimed yield unlocks here over the selected period. Released amounts can be claimed into Turbine anytime.',
       planDays: '{days}d',
       claim: 'Claim',
+      refresh: 'Refresh',
       claimSuccess: 'Claimed into Turbine quota',
       goTurbine: 'Go to Turbine',
       statsTitle: 'Release pool data',
