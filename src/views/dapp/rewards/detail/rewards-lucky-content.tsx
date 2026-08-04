@@ -2,17 +2,14 @@ import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { OverviewGrid } from '~/app/shell/overview-grid'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Tile } from '~/app/shell/tile'
 import { Button } from '~/shared/components/button'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { SelectMenu } from '~/shared/components/select-menu'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useRewardsLuckyContentView } from '~/views/dapp/rewards/detail/use-rewards-lucky-content-view'
@@ -153,19 +150,7 @@ export function RewardsLuckyContent() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <DappContentHeading>{lucky.resultsTitle}</DappContentHeading>
         </div>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(winnersTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setWinnersPage}
-                page={winnersPage}
-                total={winnersTotal}
-              />
-            ) : undefined
-          }
-        >
+        <Table className="mt-4">
           {showResultsChrome ? (
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
@@ -179,45 +164,47 @@ export function RewardsLuckyContent() {
               </Text>
             </div>
           ) : null}
-          <ResponsiveTable
+          <Table.Body
             colWidths={['5.625rem', '15.9375rem', '10.9375rem', '1fr']}
             emphasisColumns={[2, 3]}
+            empty={lucky.emptyResults}
             headers={[...lucky.resultsColumns]}
             isLoading={winnersLoading}
             rows={winnerRows}
           />
-          {!winnersLoading && winnerRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={lucky.emptyResults} />
+          {shouldShowTablePagination(winnersTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setWinnersPage}
+                page={winnersPage}
+                total={winnersTotal}
+              />
+            </Table.Footer>
           ) : null}
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{lucky.historyTitle}</DappContentHeading>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(historyTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setHistoryPage}
-                page={historyPage}
-                total={historyTotal}
-              />
-            ) : undefined
-          }
-        >
-          <ResponsiveTable
+        <Table className="mt-4">
+          <Table.Body
             colWidths={['9.375rem', '9.25rem', '14.6875rem', '1fr']}
             emphasisColumns={[1]}
+            empty={lucky.emptyHistory}
             headers={[...lucky.historyColumns]}
             isLoading={historyLoading}
             rows={historyRows}
           />
-          {!historyLoading && historyRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={lucky.emptyHistory} />
+          {shouldShowTablePagination(historyTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setHistoryPage}
+                page={historyPage}
+                total={historyTotal}
+              />
+            </Table.Footer>
           ) : null}
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

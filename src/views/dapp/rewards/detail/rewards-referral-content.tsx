@@ -1,13 +1,11 @@
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableBody } from '~/app/shell/dapp-table-body'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useRewardsReferralContentView } from '~/views/dapp/rewards/detail/use-rewards-referral-content-view'
@@ -97,54 +95,52 @@ export function RewardsReferralContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{referral.recordsTitle}</DappContentHeading>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(recordsTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={recordsTotal}
-              />
-            ) : undefined
-          }
-        >
-          <DappTableBody
+        {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
+        <Table className="mt-4">
+          <Table.Body
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emphasisColumns={[1]}
-            emptyTitle={referral.emptyRecords}
+            empty={referral.emptyRecords}
             headers={[...referral.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
-        </DappTableCard>
+          {shouldShowTablePagination(recordsTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={recordsTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
+        {/* jscpd:ignore-end */}
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{referral.referralsTitle}</DappContentHeading>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(referralsTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setReferralsPage}
-                page={referralsPage}
-                total={referralsTotal}
-              />
-            ) : undefined
-          }
-        >
-          <DappTableBody
+        {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
+        <Table className="mt-4">
+          <Table.Body
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
             emphasisColumns={[2]}
-            emptyTitle={referral.emptyReferrals}
+            empty={referral.emptyReferrals}
             headers={[...referral.referralsColumns]}
             isLoading={referralsLoading}
             rows={referralRows}
           />
-        </DappTableCard>
+          {shouldShowTablePagination(referralsTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setReferralsPage}
+                page={referralsPage}
+                total={referralsTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
+        {/* jscpd:ignore-end */}
       </DappDetailBlock>
 
       <DappDetailBlock>

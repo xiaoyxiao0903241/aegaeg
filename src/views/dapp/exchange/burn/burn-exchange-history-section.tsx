@@ -1,15 +1,13 @@
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { Table } from '~/shared/components/table'
 import { useBurnExchangeHistoryView } from '~/views/dapp/exchange/burn/use-burn-exchange-history-view'
 
 export function BurnExchangeHistorySection() {
   const vm = useBurnExchangeHistoryView()
 
   return (
-    <DappTableCard
-      header={
+    <Table>
+      <Table.Header>
         <DappPillTabs
           activeTone="coral"
           ariaLabel={vm.t.exchange.burn.history.tabsAriaLabel}
@@ -24,17 +22,14 @@ export function BurnExchangeHistorySection() {
           }}
           size="md"
         />
-      }
-    >
-      <ResponsiveTable
+      </Table.Header>
+      <Table.Body
         colWidths={[...vm.colWidths]}
+        empty={vm.emptyTitle}
         headers={vm.headers}
         isLoading={vm.isLoading}
         rows={vm.rows}
       />
-      {!vm.isLoading && vm.rows.length === 0 ? (
-        <DappTableEmptyMessage embedded title={vm.emptyTitle} />
-      ) : null}
-    </DappTableCard>
+    </Table>
   )
 }

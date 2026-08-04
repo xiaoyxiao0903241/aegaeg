@@ -4,13 +4,10 @@ import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappSection } from '~/app/shell/dapp-section'
-import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { communityInviteColWidths } from '~/app/shell/dapp-table-columns'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { communityInviteColWidths } from '~/app/shell/table-columns'
+import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { formatGroupedNumber, formatPresaleRank } from '~/shared/api/format-display'
+import { Table } from '~/shared/components/table'
 import { dappTableViewState } from '~/shared/lib/table-pagination'
 import {
   CommunityStatCard,
@@ -146,26 +143,21 @@ export function CommunityContent() {
       <CommunityFlowSection isMobileViewport={isMobileViewport} />
 
       <DappSection title={inviteSectionTitle}>
-        <DappTableCard
-          footer={
-            !invitesTable.requiresAuth ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setInvitesPage}
-                page={invitesPage}
-                total={invitesTotal}
-              />
-            ) : undefined
-          }
-        >
+        <Table>
           {invitesTable.requiresAuth ? (
-            <DappTableAuthPrompt body={t.dapp.connect.recordsBodyCommunity} embedded />
+            <Table.Auth
+              body={t.dapp.connect.recordsBodyCommunity}
+              embedded
+              title={t.dapp.connect.recordsTitle}
+            >
+              <WalletConnectChip variant="primary" />
+            </Table.Auth>
           ) : invitesTable.queryEmpty ? (
             <div data-slot-id="community-members-empty">
-              <DappTableEmptyMessage embedded title={emptyTitle} />
+              <Table.Empty embedded title={emptyTitle} />
             </div>
           ) : (
-            <ResponsiveTable
+            <Table.Body
               colWidths={[...communityInviteColWidths]}
               compact
               headers={inviteTableHeaders}
@@ -174,7 +166,16 @@ export function CommunityContent() {
               rows={compactRows}
             />
           )}
-        </DappTableCard>
+          {!invitesTable.requiresAuth ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setInvitesPage}
+                page={invitesPage}
+                total={invitesTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
       </DappSection>
 
       <CommunityFaqSection />

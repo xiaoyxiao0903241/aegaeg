@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import { assetsHubAssets } from '~/app/assets'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { useDappShell } from '~/app/use-dapp-shell'
@@ -10,6 +9,7 @@ import { useI18n } from '~/i18n/use-i18n'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InteractiveCard } from '~/shared/components/interactive-card'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { WidgetHeader } from '~/shared/components/widget-header'
@@ -139,7 +139,7 @@ export function AssetsHubWidget() {
         })}
 
         {walletReady && hideZero && modes.length === 0 ? (
-          <DappTableEmptyMessage embedded title={t.assets.hub.hideZeroEmpty} />
+          <Table.Empty embedded title={t.assets.hub.hideZeroEmpty} />
         ) : null}
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}

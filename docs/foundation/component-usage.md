@@ -69,7 +69,7 @@
 | 布局 | `flex flex-col gap-1.5`；**禁** `h-*` / `min-h-*` / `max-h-*` / `size-full`                                                                                       |
 | API  | `Tile` · `Tile.Label` · 主值 children · `Tile.Note`                                                                                                               |
 | 网格 | `OverviewGrid`（PC `gap-3` · H5 `gap-2.5`；3/4 列 H5 默认两卡；`stackOnDapp`→H5 单列；`6` / `upper3-lower2` = span 壳）；**禁**页内平行 `gap-*` / 盖 gap / 盖列数 |
-| OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 表壳/空态 · 奖励 Hub（pill/deco）→ **自建组件**                                                      |
+| OUT  | program 导航 · 资产持仓/缓冲复卡 · 共建等级大卡 · 机制文案 · 奖励 Hub（pill/deco）→ **自建组件**；表 → `Table`（下节）                                            |
 
 ### 内容 — 页袋组合
 
@@ -86,6 +86,27 @@
 - `variant` / layout 参数；`hint` 双义（tooltip 与说明行）
 - `*StatCard` / `*MetricCard` / `*OverviewTiles`；call site 再抹 `p-*` / `rounded-*` / `shadow-*`
 - 指标瓦网格自写平行 `gap-*`（唯一 owner = `OverviewGrid`）
+
+## DApp 表（`Table`）
+
+> **模型**：组合式 elevated 表壳。`shared/components/table.tsx`。  
+> `Table.Header`（卡内顶槽）· `Table.Body`（网格+空态）· `Table.Cell` · `Table.Footer` · `Table.Pagination`。  
+> 区块标题仍在卡外 `DappContentHeading`。Header ≠ 列名 thead。
+
+| 零件                             | 职责                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------- |
+| `Table`                          | elevated 壳（`rounded-2xl` · `p-0` · `shadow-card`）；认 Header/Footer 槽 |
+| `Table.Header`                   | 卡内顶槽（pill / 进度…）                                                  |
+| `Table.Body`                     | 列头+行；`empty` 时空态；列强调 props                                     |
+| `Table.Cell`                     | 单元格 chrome（手写表 / Body 内部）                                       |
+| `Table.Footer`                   | 卡内底槽                                                                  |
+| `Table.Pagination`               | 分页控件（贴 Footer）                                                     |
+| `Table.Empty` / `Auth` / `Shell` | 空态 / 未连接（title·body·CTA 由 call site）/ 自建壳                      |
+
+### MUST NOT（表）
+
+- `DappTable*` / `ResponsiveTable`；`header=`/`footer=` 袋装冒充结构
+- call site 再抹表壳 `p-*` / `rounded-*` / `shadow-*` / 外框 `border`
 
 ## MUST NOT
 

@@ -1,12 +1,9 @@
 import { DappSection } from '~/app/shell/dapp-section'
-import { DappTableAuthPrompt } from '~/app/shell/dapp-table-auth-prompt'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { genesisContributionsColWidths } from '~/app/shell/dapp-table-columns'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
+import { genesisContributionsColWidths } from '~/app/shell/table-columns'
+import { WalletConnectChip } from '~/app/wallet-connect-chip'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatGroupedNumber } from '~/shared/api/format-display'
+import { Table } from '~/shared/components/table'
 import {
   GenesisContributionsProgressHeader,
   GenesisContributionsReveal,
@@ -27,34 +24,28 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
             {t.genesis.contributionsSyncPending}
           </GenesisContributionsSyncHint>
         ) : null}
-        <DappTableCard
-          footer={
-            vm.sessionReady && !vm.contributionsTable.requiresAuth ? (
-              <DappTablePagination
-                embedded
-                onPageChange={vm.setContributionsPage}
-                page={vm.contributionsPage}
-                summary={`${t.genesis.cumulativeContributed}${formatGroupedNumber(vm.cumulativeContributedUsd, { prefix: '$' })}`}
-                total={vm.contributionsTotal}
-              />
-            ) : undefined
-          }
-          header={
-            vm.sessionReady && !vm.contributionsTable.requiresAuth ? (
+        <Table>
+          {vm.sessionReady && !vm.contributionsTable.requiresAuth ? (
+            <Table.Header>
               <GenesisContributionsProgressHeader
                 contributedLabel={vm.contributedLabel}
                 label={t.genesis.totalContributed}
                 progress={vm.contributionProgress}
               />
-            ) : undefined
-          }
-        >
+            </Table.Header>
+          ) : null}
           {vm.contributionsTable.requiresAuth ? (
-            <DappTableAuthPrompt body={t.dapp.connect.recordsBodyGenesis} embedded />
+            <Table.Auth
+              body={t.dapp.connect.recordsBodyGenesis}
+              embedded
+              title={t.dapp.connect.recordsTitle}
+            >
+              <WalletConnectChip variant="primary" />
+            </Table.Auth>
           ) : vm.contributionsTable.queryEmpty && !vm.showSalesSyncHint ? (
-            <DappTableEmptyMessage body={vm.emptyBody} embedded title={vm.emptyTitle} />
+            <Table.Empty body={vm.emptyBody} embedded title={vm.emptyTitle} />
           ) : (
-            <ResponsiveTable
+            <Table.Body
               colWidths={[...genesisContributionsColWidths]}
               compact
               headers={vm.tableHeaders}
@@ -64,7 +55,17 @@ export function GenesisContributionsSection({ genesis }: { genesis: GenesisWidge
               rows={vm.desktopRows}
             />
           )}
-        </DappTableCard>
+          {vm.sessionReady && !vm.contributionsTable.requiresAuth ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={vm.setContributionsPage}
+                page={vm.contributionsPage}
+                summary={`${t.genesis.cumulativeContributed}${formatGroupedNumber(vm.cumulativeContributedUsd, { prefix: '$' })}`}
+                total={vm.contributionsTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
       </GenesisContributionsReveal>
     </DappSection>
   )

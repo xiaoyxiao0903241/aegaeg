@@ -1,13 +1,11 @@
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableBody } from '~/app/shell/dapp-table-body'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { useRewardsParticipateContentView } from '~/views/dapp/rewards/detail/use-rewards-participate-content-view'
@@ -75,43 +73,42 @@ export function RewardsParticipateContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{participate.recordsTitle}</DappContentHeading>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(recordsTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={recordsTotal}
-              />
-            ) : undefined
-          }
-        >
-          <DappTableBody
+        {/* jscpd:ignore-start — 组合式 Table 页内拼装（禁再抽薄包装） */}
+        <Table className="mt-4">
+          <Table.Body
             colWidths={['11.875rem', '10rem', '10rem', '1fr']}
             emphasisColumns={[1]}
-            emptyTitle={participate.emptyRecords}
+            empty={participate.emptyRecords}
             headers={[...participate.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
-        </DappTableCard>
+          {shouldShowTablePagination(recordsTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={recordsTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
+        {/* jscpd:ignore-end */}
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{participate.inviterTitle}</DappContentHeading>
         {/* 邀请人 API 单条 · 无分页 */}
-        <DappTableCard className="mt-4">
-          <DappTableBody
+        <Table className="mt-4">
+          <Table.Body
             colWidths={['12.5rem', '10.625rem', '6.875rem', '1fr']}
             emphasisColumns={[2, 3]}
-            emptyTitle={participate.emptyInviter}
+            empty={participate.emptyInviter}
             headers={[...participate.inviterColumns]}
             isLoading={inviterLoading}
             rows={inviterRows}
           />
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

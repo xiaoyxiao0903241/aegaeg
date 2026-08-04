@@ -6,14 +6,13 @@ import { DappCarousel } from '~/app/shell/dapp-carousel'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { OverviewGrid } from '~/app/shell/overview-grid'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { openExchangeView } from '~/shared/config/dapp-open-views'
 import { useRewardsHubStats } from '~/views/dapp/rewards/hub/use-rewards-hub-stats'
@@ -207,15 +206,9 @@ export function RewardsHubContent() {
         <Text as="p" className="mb-3 text-foreground/40" variant="detail">
           {t.rewards.hub.mechanismBody}
         </Text>
-        <DappTableCard
-          footer={
-            <Text as="p" className="text-foreground/40" variant="detail">
-              {t.rewards.hub.mechanismFooter}
-            </Text>
-          }
-        >
+        <Table>
           {/* 无数据稿 A4「当前」徽章；有 making_rank 时跟真档，否则跟稿演示 A4 */}
-          <ResponsiveTable
+          <Table.Body
             colWidths={['10rem', '10rem', '10rem', '1fr', '7rem']}
             headers={[...tier.columns]}
             highlightedRows={[statsView.tierRowIndex]}
@@ -256,7 +249,12 @@ export function RewardsHubContent() {
               return [levelCell, row.holding, row.accounts, row.team, rateCell]
             })}
           />
-        </DappTableCard>
+          <Table.Footer>
+            <Text as="p" className="text-foreground/40" variant="detail">
+              {t.rewards.hub.mechanismFooter}
+            </Text>
+          </Table.Footer>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

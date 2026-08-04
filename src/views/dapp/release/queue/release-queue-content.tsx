@@ -4,10 +4,6 @@ import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { formatTokenAmount, formatTokenAmountToNumber } from '~/core/exchange/token-amount'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
@@ -19,6 +15,7 @@ import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
 import { shouldShowTablePagination, tablePageQuery } from '~/shared/lib/table-pagination'
@@ -144,28 +141,24 @@ export function ReleaseQueueContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{t.release.queue.recordsTitle}</DappContentHeading>
-        <DappTableCard
-          footer={
-            shouldShowTablePagination(queueLogsTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={queueLogsTotal}
-              />
-            ) : undefined
-          }
-        >
-          <ResponsiveTable
+        <Table>
+          <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
+            empty={t.release.recordsEmpty}
             headers={[...t.release.recordColumns]}
             isLoading={queueLogsLoading}
             rows={queueLogRows}
           />
-          {!queueLogsLoading && queueLogRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={t.release.recordsEmpty} />
+          {shouldShowTablePagination(queueLogsTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={queueLogsTotal}
+              />
+            </Table.Footer>
           ) : null}
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

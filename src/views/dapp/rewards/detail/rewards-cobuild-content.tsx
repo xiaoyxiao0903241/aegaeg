@@ -1,14 +1,12 @@
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableBody } from '~/app/shell/dapp-table-body'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
@@ -192,61 +190,57 @@ export function RewardsCobuildContent() {
 
       <DappDetailBlock>
         <DappContentHeading>{cobuild.recordsTitle}</DappContentHeading>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(recordsTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setRecordsPage}
-                page={recordsPage}
-                total={recordsTotal}
-              />
-            ) : undefined
-          }
-          header={rewardsRecordsPillTabsHeader({
-            ariaLabel: cobuild.recordsTabsAria,
-            options: recordsTabOptions,
-            value: recordsTab,
-            onChange: (next) => setRecordsTab(next as typeof recordsTab),
-          })}
-        >
-          <DappTableBody
+        <Table className="mt-4">
+          <Table.Header>
+            {rewardsRecordsPillTabsHeader({
+              ariaLabel: cobuild.recordsTabsAria,
+              options: recordsTabOptions,
+              value: recordsTab,
+              onChange: (next) => setRecordsTab(next as typeof recordsTab),
+            })}
+          </Table.Header>
+          <Table.Body
             colWidths={['12.0625rem', '3.9375rem', '9.1875rem', '6.125rem', '1fr']}
-            emptyTitle={
+            empty={
               recordsTab === 'cobuild' ? cobuild.emptyRecordsCobuild : cobuild.emptyRecordsEqualize
             }
             headers={[...cobuild.recordsColumns]}
             isLoading={recordsLoading}
             rows={recordRows}
           />
-        </DappTableCard>
+          {shouldShowTablePagination(recordsTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setRecordsPage}
+                page={recordsPage}
+                total={recordsTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{cobuild.directsTitle}</DappContentHeading>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(directsTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={setDirectsPage}
-                page={directsPage}
-                total={directsTotal}
-              />
-            ) : undefined
-          }
-        >
-          <DappTableBody
+        <Table className="mt-4">
+          <Table.Body
             colWidths={['12.5rem', '12.5rem', '8.125rem', '1fr']}
             emphasisColumns={[2]}
-            emptyTitle={cobuild.emptyDirects}
+            empty={cobuild.emptyDirects}
             headers={[...cobuild.directsColumns]}
             isLoading={directsLoading}
             rows={directRows}
           />
-        </DappTableCard>
+          {shouldShowTablePagination(directsTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={setDirectsPage}
+                page={directsPage}
+                total={directsTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

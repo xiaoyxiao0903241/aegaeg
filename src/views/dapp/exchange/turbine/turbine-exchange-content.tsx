@@ -2,10 +2,7 @@ import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { OverviewGrid } from '~/app/shell/overview-grid'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Tile } from '~/app/shell/tile'
 import { useDappShell } from '~/app/use-dapp-shell'
 import { useTurbineLogs } from '~/hooks/use-api-data'
@@ -15,6 +12,7 @@ import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { TokenAboutCarousel } from '~/views/dapp/exchange/market-trade/exchange-token-about-carousel'
 
@@ -101,17 +99,15 @@ export function TurbineExchangeContent({
 
       <DappDetailBlock>
         <DappContentHeading>{t.exchange.turbine.recordsTitle}</DappContentHeading>
-        <DappTableCard>
-          <ResponsiveTable
+        <Table>
+          <Table.Body
             colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
+            empty={t.exchange.turbine.recordsEmpty}
             headers={[...t.assets.opsColumns]}
             isLoading={turbineLogsLoading}
             rows={turbineLogRows}
           />
-          {!turbineLogsLoading && turbineLogRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={t.exchange.turbine.recordsEmpty} />
-          ) : null}
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

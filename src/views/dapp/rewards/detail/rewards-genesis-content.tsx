@@ -2,12 +2,9 @@ import { dappAssets } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappTableBody } from '~/app/shell/dapp-table-body'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { darkBanner } from '~/shared/components/dark-banner'
 import { FaqList } from '~/shared/components/faq-list'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 import { rewardsRecordsPillTabsHeader } from '~/views/dapp/rewards/detail/rewards-records-pill-tabs'
@@ -73,46 +70,45 @@ export function RewardsGenesisContent() {
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.allTiers}</DappContentHeading>
         {/* 静态荣誉档位表 · 非动态列表 · 不分页 */}
-        <DappTableCard className="mt-4">
-          <ResponsiveTable
+        <Table className="mt-4">
+          <Table.Body
             colWidths={['14.375rem', '11.875rem', '11.875rem', '7.875rem']}
             headers={[...vm.g.tierColumns]}
             highlightedRows={vm.highlightedRows}
             rows={vm.tierRows}
           />
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>
         <DappContentHeading>{t.rewards.history}</DappContentHeading>
-        <DappTableCard
-          className="mt-4"
-          footer={
-            shouldShowTablePagination(vm.historyTotal) ? (
-              <DappTablePagination
-                embedded
-                onPageChange={vm.setHistoryPage}
-                page={vm.historyPage}
-                total={vm.historyTotal}
-              />
-            ) : undefined
-          }
-          header={rewardsRecordsPillTabsHeader({
-            ariaLabel: vm.g.recordsTabsAria,
-            options: vm.historyTabOptions,
-            value: vm.historyTab,
-            onChange: (next) => vm.setHistoryTab(next as typeof vm.historyTab),
-          })}
-        >
-          <DappTableBody
+        <Table className="mt-4">
+          <Table.Header>
+            {rewardsRecordsPillTabsHeader({
+              ariaLabel: vm.g.recordsTabsAria,
+              options: vm.historyTabOptions,
+              value: vm.historyTab,
+              onChange: (next) => vm.setHistoryTab(next as typeof vm.historyTab),
+            })}
+          </Table.Header>
+          <Table.Body
             colWidths={['16.75rem', '8.375rem', '9.8125rem', '1fr']}
             emphasisColumns={[2]}
-            emptyTitle={!vm.sessionReady ? t.rewards.hub.signInForBalance : vm.historyEmpty.title}
+            empty={!vm.sessionReady ? t.rewards.hub.signInForBalance : vm.historyEmpty.title}
             headers={[...vm.g.recordsColumns]}
             isLoading={vm.sessionReady && vm.historyLoading}
             rows={vm.historyRows}
           />
-        </DappTableCard>
+          {shouldShowTablePagination(vm.historyTotal) ? (
+            <Table.Footer>
+              <Table.Pagination
+                onPageChange={vm.setHistoryPage}
+                page={vm.historyPage}
+                total={vm.historyTotal}
+              />
+            </Table.Footer>
+          ) : null}
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

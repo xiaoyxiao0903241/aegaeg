@@ -5,15 +5,13 @@ import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
 import { OverviewGrid } from '~/app/shell/overview-grid'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Tile } from '~/app/shell/tile'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 import { StakingChartCard } from '~/views/dapp/staking/staking-chart-card'
@@ -249,14 +247,14 @@ export function StakingDetailAside({
 
       <DappDetailBlock>
         <DappContentHeading>{recordsTitle}</DappContentHeading>
-        <DappTableCard>
-          <ResponsiveTable
+        <Table>
+          <Table.Body
             colWidths={[...tableColWidths]}
+            empty={emptyTitle}
             headers={[...tableHeaders]}
             rows={[...rows]}
           />
-          {rows.length === 0 ? <DappTableEmptyMessage embedded title={emptyTitle} /> : null}
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

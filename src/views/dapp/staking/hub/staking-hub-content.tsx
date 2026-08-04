@@ -3,13 +3,13 @@ import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
 import { DappPillTabs } from '~/app/shell/dapp-pill-tabs'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
 import { Segment } from '~/shared/components/segment'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { Tooltip } from '~/shared/components/tooltip'
 import { useStakingHubContentView } from '~/views/dapp/staking/hub/use-staking-hub-content-view'
@@ -144,55 +144,19 @@ export function StakingHubContent() {
             if (next) setTableSeg(next.value)
           }}
         />
-        <DappTableCard contentClassName="px-4 py-4">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr>
-                  {table.columns.map((col) => (
-                    <th className="border-b border-border pr-3 pb-3" key={col}>
-                      <Text as="span" tone="muted-foreground" variant="detail">
-                        {col}
-                      </Text>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {table.rows
-                  .filter((row) => tableSeg === 'stake' || row.id !== 'liquid')
-                  .map((row) => {
-                    const cells = periodTableRows[row.id]
-                    if (!cells) return null
-                    return (
-                      <tr className="border-b border-border last:border-b-0" key={row.id}>
-                        <td className="py-3 pr-3">
-                          <Text as="span" variant="detail">
-                            {row.period}
-                          </Text>
-                        </td>
-                        <td className="py-3 pr-3">
-                          <Text as="span" variant="detail">
-                            {cells.baseDaily}
-                          </Text>
-                        </td>
-                        <td className="py-3 pr-3">
-                          <Text as="span" variant="detail">
-                            {cells.bonus}
-                          </Text>
-                        </td>
-                        <td className="py-3">
-                          <Text as="span" className="text-success" variant="detail">
-                            {cells.periodYield}
-                          </Text>
-                        </td>
-                      </tr>
-                    )
-                  })}
-              </tbody>
-            </table>
-          </div>
-        </DappTableCard>
+        <Table>
+          <Table.Body
+            headers={[...table.columns]}
+            positiveColumns={[3]}
+            rows={table.rows
+              .filter((row) => tableSeg === 'stake' || row.id !== 'liquid')
+              .flatMap((row) => {
+                const cells = periodTableRows[row.id]
+                if (!cells) return []
+                return [[row.period, cells.baseDaily, cells.bonus, cells.periodYield]]
+              })}
+          />
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>

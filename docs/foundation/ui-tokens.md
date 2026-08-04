@@ -141,7 +141,7 @@
 | surface  | Elevation            | radius               | padding                       | 用途                                                                                                             |
 | -------- | -------------------- | -------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta / `DappSideCard`；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`） |
-| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）        |
+| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-4` (16px)                  | 右栏指标瓦 B+D；`ExchangeProgramCard`、`Table`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）                |
 | soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）                    |
 | inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                                 |
 
@@ -186,19 +186,19 @@
 
 按 Figma 高频层提取，**不满足 3 调用点或纯视觉容器不提**。
 
-| Composite          | Figma 层           | 核心 props                                                      | 提升理由                                                              |
-| ------------------ | ------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `TopBar`           | topbar / tb / tr   | `wallet`, `network`, `locale`                                   | 全局 shell                                                            |
-| `NavRail`          | rail / rit         | `items`, `activeTab`, `onSelect`                                | 4 页共用                                                              |
-| `PanelHeader`      | wh                 | `title`, `subtitle`, `action`                                   | 4 页共用                                                              |
-| `AmountBox`        | box / tk / rr / mx | `token`, `value`, `balance`, `sessionReady`                     | 金额输入卡                                                            |
-| `Segment`          | seg / pcts / htab  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n                |
-| `ClaimSplitSlider` | slider `4812:221`  | `value` (release%), `onChange`, `aria-label`                    | 双色轨 + `%` thumb；Radix；文案由 call site 传入                      |
-| `Card` elevated    | —                  | children                                                        | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`app/shell/tile.tsx`） |
-| `Tile`             | `Label` / `Note`   | 主值 children；旁注用 `Tooltip.Info`                            | 组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard       |
-| `ResponsiveTable`  | tbl / trow / cell  | `headers`, `rows`, …                                            | DApp 表；壳见 `DappTableCard`                                         |
-| `Accordion`        | qa / qhd           | `items`, `variant`                                              | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）          |
-| `WidgetPromoCard`  | promo / pcard      | children                                                        | 深色 CTA 卡（`Card inverse`）                                         |
+| Composite          | Figma 层                           | 核心 props                                                      | 提升理由                                                              |
+| ------------------ | ---------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `TopBar`           | topbar / tb / tr                   | `wallet`, `network`, `locale`                                   | 全局 shell                                                            |
+| `NavRail`          | rail / rit                         | `items`, `activeTab`, `onSelect`                                | 4 页共用                                                              |
+| `PanelHeader`      | wh                                 | `title`, `subtitle`, `action`                                   | 4 页共用                                                              |
+| `AmountBox`        | box / tk / rr / mx                 | `token`, `value`, `balance`, `sessionReady`                     | 金额输入卡                                                            |
+| `Segment`          | seg / pcts / htab                  | `options`, `value`, `onChange`, `aria-label`, `size` sm\|md\|lg | 滑动白底 pill（≠ Chip）；高度 token；options/文案 i18n                |
+| `ClaimSplitSlider` | slider `4812:221`                  | `value` (release%), `onChange`, `aria-label`                    | 双色轨 + `%` thumb；Radix；文案由 call site 传入                      |
+| `Card` elevated    | —                                  | children                                                        | elevated chrome SSOT；右栏数据卡优先走 `Tile`（`app/shell/tile.tsx`） |
+| `Tile`             | `Label` / `Note`                   | 主值 children；旁注用 `Tooltip.Info`                            | 组合式右栏数据卡；Note=另起一行；禁 layout variant / MetricCard       |
+| `Table`            | Header/Body/Cell/Footer/Pagination | `headers`, `rows`, `empty`, …                                   | 组合式 DApp 表（`shared/components/table.tsx`）                       |
+| `Accordion`        | qa / qhd                           | `items`, `variant`                                              | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）          |
+| `WidgetPromoCard`  | promo / pcard                      | children                                                        | 深色 CTA 卡（`Card inverse`）                                         |
 
 **内部约定**：
 
@@ -213,10 +213,10 @@
 - `darkBanner`（`src/shared/components/dark-banner.tsx`）：暗色横幅 chrome（`bg-dark` + `shadow-card` + `rounded-md`）；RewardsHero / GenesisGlobal 消费；**≠** Card `inverse`（E3 / WidgetPromoCard）。
 - `DialogClose`（`dialog.tsx`）：DApp modal/sheet 关闭钮（details / slippage）；Connect 仍用 `.aegis-wallet-connect-close`；Home popup 深色圆钮独立；**H5 drawer** 关闭为透明 X（≠ modal close）。
 - `LanguageMenu`：topbar 密度 trigger（`min-h-9` / H5 `7.5`）+ `coral-wash` hover；**不是** Button `secondary`；panel `shadow-menu`。
-- `DappTablePagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-tight` · 页码 pill `w-20 h-8` · `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button。**页码下拉是小号自管 portal**（≠ `DropdownMenu` / `SelectMenu`）：面板与触发器同 `rounded-tight`（6px；禁 `rounded-sm` 大面板圆角）· `p-0` · `shadow-dropdown`；行无圆角、通栏高亮；选中 `bg-accent` + `text-coral`；可见最多 5 行（`--dapp-pagination-menu-item-height` × 5）。
+- `Table.Pagination`：视觉 SSOT = Figma `4067:258`（控件 `rounded-tight` · 页码 pill `min-w-15.25 h-6`（61×24，与 chevron `size-6` 同高）· `text-coral`/`bg-accent` ≡ Chip soft coral · 控件簇 gap 4px ·「每页」间距 16px · 文案 12 muted）；页码箭头：关菜单 `rotate-180`（向下）· 开菜单 `rotate-0`（向上）· 220ms；**不是** Button。**页码下拉是小号自管 portal**（≠ `DropdownMenu` / `SelectMenu`）：面板与触发器同 `rounded-tight`（6px；禁 `rounded-sm` 大面板圆角）· `p-0` · `shadow-dropdown`；行无圆角、通栏高亮；选中 `bg-accent` + `text-coral`；行高 `--dapp-pagination-menu-item-height`；可见最多 5 行（× 5）。
 - `ExchangeFlowButton`（`swap-widget-composites.tsx`）：Figma `flb` — 34×34 · `rounded-control` · border · card；Trade flip（`interactive`）/ Flash divider 共用；**不是** `IconButton`（详情折叠）。禁 call site 再写 `rounded-[11px]`。
-- `ResponsiveTable` 表头：≡ Community「我的社区成员」— `text-muted-foreground`；禁 tab 特判 `text-foreground/30` / `headCellClassName` 分叉。
-- `DappTableCard`：外框 **无** `border`（仅 `shadow-card`）；表头/行/页脚内部分隔线保留。
+- `Table.Body` 列头：≡ Community「我的社区成员」— `text-foreground/40`；禁 tab 特判 / `headCellClassName` 分叉。
+- `Table`：外框 **无** `border`（仅 `shadow-card`）；表头/行/页脚内部分隔线保留。`Table.Header` = 卡内顶槽（≠ thead）；`Table.Cell` = 单元格 chrome。
 
 **禁止**：把 `box`、`dl`、`r`、`ovc`、`tcard`、`qlink` 等纯视觉层提升为 Composite。
 
@@ -227,7 +227,7 @@
 允许 `max-dapp:` / `dapp:` **仅 layout** 的文件：
 
 - `dapp-shell.tsx` · `dapp-rail.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
-- `dapp-widget-frame.tsx` · `dapp-detail-page.tsx` · `dapp-detail-block.tsx` · `responsive-table.tsx` · `dapp-table-*`
+- `dapp-widget-frame.tsx` · `dapp-detail-page.tsx` · `dapp-detail-block.tsx` · `shared/components/table.tsx`
 - `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `dialog.tsx`
 - `static-layout.ts` · `views/home/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`

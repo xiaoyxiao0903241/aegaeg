@@ -3,15 +3,12 @@ import type { ComponentProps, ReactNode } from 'react'
 import { tokenCarouselIcons } from '~/app/assets'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappTableCard } from '~/app/shell/dapp-table-card'
-import { DappTableEmptyMessage } from '~/app/shell/dapp-table-empty-message'
-import { DappTablePagination } from '~/app/shell/dapp-table-pagination'
 import { OverviewGrid } from '~/app/shell/overview-grid'
-import { ResponsiveTable } from '~/app/shell/responsive-table'
 import { Tile } from '~/app/shell/tile'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList, type FaqListItem } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { shouldShowTablePagination } from '~/shared/lib/table-pagination'
 
@@ -44,9 +41,9 @@ export function AssetsProductDetailSections({
   opsTitle: string
   opsEmpty: string
   opsColumns: ReadonlyArray<string>
-  opsRows: ComponentProps<typeof ResponsiveTable>['rows']
+  opsRows: ComponentProps<typeof Table.Body>['rows']
   opsLoading: boolean
-  /** 右栏操作记录分页（稿 DappTablePagination）；缺省不渲染 */
+  /** 右栏操作记录分页（稿 Table.Pagination）；缺省不渲染 */
   opsPagination?: {
     page: number
     total: number
@@ -95,29 +92,25 @@ export function AssetsProductDetailSections({
 
       <DappDetailBlock>
         <DappContentHeading>{opsTitle}</DappContentHeading>
-        <DappTableCard
-          footer={
-            opsPagination && shouldShowTablePagination(opsPagination.total) ? (
-              <DappTablePagination
-                embedded
+        <Table>
+          <Table.Body
+            colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
+            empty={opsEmpty}
+            headers={[...opsColumns]}
+            isLoading={opsLoading}
+            rows={opsRows}
+          />
+          {opsPagination && shouldShowTablePagination(opsPagination.total) ? (
+            <Table.Footer>
+              <Table.Pagination
                 onPageChange={opsPagination.onPageChange}
                 page={opsPagination.page}
                 summary={opsPagination.summary}
                 total={opsPagination.total}
               />
-            ) : undefined
-          }
-        >
-          <ResponsiveTable
-            colWidths={['12.5rem', '9.375rem', '11.25rem', '1fr']}
-            headers={[...opsColumns]}
-            isLoading={opsLoading}
-            rows={opsRows}
-          />
-          {!opsLoading && opsRows.length === 0 ? (
-            <DappTableEmptyMessage embedded title={opsEmpty} />
+            </Table.Footer>
           ) : null}
-        </DappTableCard>
+        </Table>
       </DappDetailBlock>
 
       <DappDetailBlock>
