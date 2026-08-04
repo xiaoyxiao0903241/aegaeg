@@ -1,14 +1,15 @@
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
+import { Card } from '~/shared/components/card'
 import { AmountMaxChip } from '~/shared/components/chip'
 import { Icon } from '~/shared/components/icon'
+import { List } from '~/shared/components/list'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { useXmineView } from '~/views/dapp/staking/xmine/use-xmine-view'
@@ -60,33 +61,34 @@ export function XmineWidget() {
           startAdornment={null}
         />
 
-        <DappMetaPanel
-          className="mt-0 gap-3 p-4"
-          items={[
-            {
-              label: t.staking.xmine.meta.daily,
-              value: dailyYieldLabel,
-              valueClassName: 'text-coral-emphasis',
-            },
-            {
-              label: t.staking.xmine.meta.max,
-              value: xmine.quotaLabel === '0' ? '0.00 gAGX' : `${xmine.quotaLabel} gAGX`,
-            },
-            {
-              label: t.staking.xmine.meta.lock,
-              value: t.staking.xmine.meta.lockValue,
-            },
-            {
-              label: t.staking.xmine.meta.contract,
-              value: (
-                <a href={bscscanAddress(xmine.pool)} rel="noreferrer" target="_blank">
-                  {formatShortAddress(xmine.pool)}
-                </a>
-              ),
-              valueClassName: 'text-coral-emphasis',
-            },
-          ]}
-        />
+        <Card as="div" surface="outlined">
+          <List
+            items={[
+              {
+                label: t.staking.xmine.meta.daily,
+                value: dailyYieldLabel,
+                valueClassName: 'text-coral-emphasis',
+              },
+              {
+                label: t.staking.xmine.meta.max,
+                value: xmine.quotaLabel === '0' ? '0.00 gAGX' : `${xmine.quotaLabel} gAGX`,
+              },
+              {
+                label: t.staking.xmine.meta.lock,
+                value: t.staking.xmine.meta.lockValue,
+              },
+              {
+                label: t.staking.xmine.meta.contract,
+                value: (
+                  <a href={bscscanAddress(xmine.pool)} rel="noreferrer" target="_blank">
+                    {formatShortAddress(xmine.pool)}
+                  </a>
+                ),
+                valueClassName: 'text-coral-emphasis',
+              },
+            ]}
+          />
+        </Card>
 
         {walletReady ? (
           <DappActionRow>

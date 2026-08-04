@@ -11,6 +11,7 @@ import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { List } from '~/shared/components/list'
 import { Steps } from '~/shared/components/steps'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
@@ -129,18 +130,12 @@ export function StakingDetailAside({
       <DappDetailBlock>
         <DappContentHeading>{t.staking.aside.overview}</DappContentHeading>
         {overviewLayout === 'list' ? (
-          <ul className="m-0 grid list-none gap-2 p-0">
-            {overviewItems.map((item) => (
-              <li className="flex items-center justify-between gap-3" key={item.label}>
-                <Text as="span" tone="muted-foreground" variant="detail">
-                  {item.label}
-                </Text>
-                <Text as="strong" className="font-semibold" variant="detail">
-                  {item.value}
-                </Text>
-              </li>
-            ))}
-          </ul>
+          <List
+            items={overviewItems.map((item) => ({
+              label: item.label,
+              value: item.value,
+            }))}
+          />
         ) : (
           <AsideMetricLayout items={overviewItems} layout={overviewLayout} />
         )}

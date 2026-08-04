@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import { flashExchangeAssets, turbineExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -11,8 +10,10 @@ import { TokenChip } from '~/app/shell/token-chip'
 import { formatTokenAmount } from '~/core/exchange/token-amount'
 import { formatBlockTime } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
+import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
+import { List } from '~/shared/components/list'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
@@ -138,66 +139,62 @@ export function TurbineExchangeWidget({ turbine }: { turbine: TurbineExchangeSta
               </div>
             </div>
 
-            <DappMetaPanel
-              className="gap-2.5 px-4 py-4"
-              items={[
-                {
-                  label: t.exchange.turbine.agxPrice,
-                  value: turbine.agxPriceLabel || '—',
-                },
-                {
-                  label: t.exchange.allowedSlippage,
-                  // 合约 swapSlippageBP（owner 固定）；非交易页用户可设滑点
-                  value: turbine.slippageLabel || '—',
-                },
-                {
-                  label: t.exchange.turbine.willReceiveAgx,
-                  value: vm.willReceiveLabel,
-                },
-                {
-                  // Figma `4435:469`：固定「1 : 1 买入解锁」（数量）；勿走 CountValue 数字 reel
-                  label: t.exchange.turbine.unlockRatio,
-                  value: (
-                    <Text as="span" variant="detail" className="leading-4 font-semibold">
-                      {t.exchange.turbine.unlockRatioValue}
-                    </Text>
-                  ),
-                },
-                {
-                  label: t.exchange.turbine.cooldown,
-                  value:
-                    turbine.cooldownHours == null
-                      ? '—'
-                      : t.exchange.turbine.cooldownHoursValue.replace(
-                          '{hours}',
-                          String(turbine.cooldownHours),
-                        ),
-                },
-                {
-                  label: t.exchange.provider,
-                  value: (
-                    <>
-                      {t.exchange.providerName}
-                      <button
-                        aria-label={t.genesis.viewContract}
-                        className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
-                        onClick={() =>
-                          window.open(
-                            bscscanAddress(turbine.providerAddress),
-                            '_blank',
-                            'noopener,noreferrer',
-                          )
-                        }
-                        type="button"
-                      >
-                        <Icon alt="" size="xs" src={flashExchangeAssets.externalLink} />
-                      </button>
-                    </>
-                  ),
-                  valueClassName: 'inline-flex items-center justify-end gap-1',
-                },
-              ]}
-            />
+            <Card as="div" className="mt-3.5 max-dapp:mt-3" surface="outlined">
+              <List
+                items={[
+                  {
+                    label: t.exchange.turbine.agxPrice,
+                    value: turbine.agxPriceLabel || '—',
+                  },
+                  {
+                    label: t.exchange.allowedSlippage,
+                    // 合约 swapSlippageBP（owner 固定）；非交易页用户可设滑点
+                    value: turbine.slippageLabel || '—',
+                  },
+                  {
+                    label: t.exchange.turbine.willReceiveAgx,
+                    value: vm.willReceiveLabel,
+                  },
+                  {
+                    label: t.exchange.turbine.unlockRatio,
+                    value: t.exchange.turbine.unlockRatioValue,
+                  },
+                  {
+                    label: t.exchange.turbine.cooldown,
+                    value:
+                      turbine.cooldownHours == null
+                        ? '—'
+                        : t.exchange.turbine.cooldownHoursValue.replace(
+                            '{hours}',
+                            String(turbine.cooldownHours),
+                          ),
+                  },
+                  {
+                    label: t.exchange.provider,
+                    value: (
+                      <>
+                        {t.exchange.providerName}
+                        <button
+                          aria-label={t.genesis.viewContract}
+                          className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
+                          onClick={() =>
+                            window.open(
+                              bscscanAddress(turbine.providerAddress),
+                              '_blank',
+                              'noopener,noreferrer',
+                            )
+                          }
+                          type="button"
+                        >
+                          <Icon alt="" size="xs" src={flashExchangeAssets.externalLink} />
+                        </button>
+                      </>
+                    ),
+                    valueClassName: 'inline-flex items-center justify-end gap-1',
+                  },
+                ]}
+              />
+            </Card>
 
             {vm.sessionReady && turbine.walletReady ? (
               <DappActionRow className="mt-3.5 max-dapp:mt-3">

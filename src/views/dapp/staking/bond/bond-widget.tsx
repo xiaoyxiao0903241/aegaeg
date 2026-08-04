@@ -1,7 +1,6 @@
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -9,8 +8,10 @@ import type { BondPeriod } from '~/core/staking/staking-period'
 import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { formatGroupedNumber, formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
+import { Card } from '~/shared/components/card'
 import { AmountMaxChip } from '~/shared/components/chip'
 import { Icon } from '~/shared/components/icon'
+import { List } from '~/shared/components/list'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
 import { BondPeriodList } from '~/views/dapp/staking/bond/bond-period-list'
@@ -104,78 +105,81 @@ export function BondWidget({ kind }: { kind: BondKind }) {
           startAdornment={null}
         />
 
-        <DappMetaPanel
-          className="mt-0 gap-3 p-4"
-          items={[
-            {
-              label: copy.meta.discount.replace(
-                '{pct}',
-                bond.discountLabel === '0' || bond.discountLabel === ''
-                  ? '0'
-                  : bond.discountLabel.replace(/%$/, ''),
-              ),
-              value: (
-                <span className="flex items-center gap-2">
-                  <Text as="span" className="font-semibold" variant="detail">
-                    {discountUsd}
-                  </Text>
-                  <Text
-                    as="span"
-                    className="line-through"
-                    tone="muted-foreground"
-                    variant="support"
-                  >
-                    {spotLabel}
-                  </Text>
-                </span>
-              ),
-            },
-            {
-              label: copy.meta.slippage,
-              value: bond.isSlippageLoading ? '' : bond.slippageLabel || '0',
-            },
-            {
-              label: copy.meta.pay,
-              value: bond.amountDisplay ? `${bond.amountDisplay} USD1` : '0 USD1',
-            },
-            {
-              label: copy.meta.receive,
-              value: bond.isPayoutQuoting
-                ? ''
-                : bond.receiveLabel === '0' || bond.receiveLabel === ''
-                  ? '0 AGX'
-                  : `${bond.receiveLabel} AGX`,
-            },
-            {
-              label: copy.meta.cap,
-              value: bond.isMarketLoading
-                ? ''
-                : bond.capLabel === '0' || bond.capLabel === ''
-                  ? '0 USD1'
-                  : `${bond.capLabel} USD1`,
-            },
-            {
-              label: copy.meta.release,
-              value: copy.meta.releaseLinear.replace('{days}', bond.period),
-            },
-            {
-              label: copy.meta.contract,
-              value: (
-                <a href={bscscanAddress(bond.depository)} rel="noreferrer" target="_blank">
-                  {formatShortAddress(bond.depository)}
-                </a>
-              ),
-              // Figma accent/coral #e9785a → coral-emphasis；稿无下划线
-              valueClassName: 'text-coral-emphasis',
-            },
-          ]}
-        />
+        <Card as="div" surface="outlined">
+          <List
+            items={[
+              {
+                label: copy.meta.discount.replace(
+                  '{pct}',
+                  bond.discountLabel === '0' || bond.discountLabel === ''
+                    ? '0'
+                    : bond.discountLabel.replace(/%$/, ''),
+                ),
+                value: (
+                  <span className="flex items-center gap-2">
+                    <Text as="span" className="font-semibold" variant="detail">
+                      {discountUsd}
+                    </Text>
+                    <Text
+                      as="span"
+                      className="line-through"
+                      tone="muted-foreground"
+                      variant="support"
+                    >
+                      {spotLabel}
+                    </Text>
+                  </span>
+                ),
+              },
+              {
+                label: copy.meta.slippage,
+                value: bond.isSlippageLoading ? '' : bond.slippageLabel || '0',
+              },
+              {
+                label: copy.meta.pay,
+                value: bond.amountDisplay ? `${bond.amountDisplay} USD1` : '0 USD1',
+              },
+              {
+                label: copy.meta.receive,
+                value: bond.isPayoutQuoting
+                  ? ''
+                  : bond.receiveLabel === '0' || bond.receiveLabel === ''
+                    ? '0 AGX'
+                    : `${bond.receiveLabel} AGX`,
+              },
+              {
+                label: copy.meta.cap,
+                value: bond.isMarketLoading
+                  ? ''
+                  : bond.capLabel === '0' || bond.capLabel === ''
+                    ? '0 USD1'
+                    : `${bond.capLabel} USD1`,
+              },
+              {
+                label: copy.meta.release,
+                value: copy.meta.releaseLinear.replace('{days}', bond.period),
+              },
+              {
+                label: copy.meta.contract,
+                value: (
+                  <a href={bscscanAddress(bond.depository)} rel="noreferrer" target="_blank">
+                    {formatShortAddress(bond.depository)}
+                  </a>
+                ),
+                // Figma accent/coral #e9785a → coral-emphasis；稿无下划线
+                valueClassName: 'text-coral-emphasis',
+              },
+            ]}
+          />
+        </Card>
 
         <Text as="p" className="m-0 text-foreground/40" variant="support">
           {copy.footnote}
         </Text>
 
-        {walletReady ? (
+        {!walletReady ? (
+          <DappWidgetConnectPromo />
+        ) : (
           <DappActionRow>
             <DappActionButton
               density="external"
@@ -186,8 +190,6 @@ export function BondWidget({ kind }: { kind: BondKind }) {
               {ctaLabel}
             </DappActionButton>
           </DappActionRow>
-        ) : (
-          <DappWidgetConnectPromo />
         )}
       </DappWidgetStack>
     </>

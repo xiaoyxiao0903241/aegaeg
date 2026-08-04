@@ -141,6 +141,26 @@
 - 页袋直触 `lightweight-charts` / 平行 `TvAreaChart` / `StakingChartCard`
 - shared 内嵌 locale 或拉历史索引
 
+## DApp 键值列表（`List`）
+
+> **模型**：数据驱动 infoBox 行轨（**不含 Card**）。`shared/components/list.tsx`。  
+> `List` · `Label` · `Value`。卡壳由页袋包：`<Card surface="outlined"><List items={…} /></Card>`。
+
+| 零件         | 职责                                                                |
+| ------------ | ------------------------------------------------------------------- |
+| `List`       | `items: { label, value, valueClassName? }[]`；行距 SSOT `gap-2.5`   |
+| `List.Label` | detail · `text-foreground/40`（Figma muted）                        |
+| `List.Value` | detail semibold；**内容原样**（string = 文案）；禁隐式 `CountValue` |
+
+数字 reel：call site 显式 `value: <CountValue text={…} />`。复杂值（划线价、链接+icon）直接塞 ReactNode。
+
+### MUST NOT（列表）
+
+- shared 内嵌 Card / locale
+- 平行 `DappMetaPanel` / `DappMetaList`
+- `List` 内按 string 自动包 `CountValue`
+- call site 用 `className` 盖行距 `gap-*`（统一 `gap-2.5`）
+
 ## DApp 步骤（`Steps`）
 
 > **模型**：组合式步骤条（**不含 Card**）。`shared/components/steps.tsx`。  

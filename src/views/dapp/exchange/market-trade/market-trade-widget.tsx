@@ -1,13 +1,16 @@
+import { Settings } from 'lucide-react'
+
 import { dappAssets, flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { Icon } from '~/shared/components/icon'
 import { InlineAlert } from '~/shared/components/inline-alert'
+import { List } from '~/shared/components/list'
 import { Tooltip } from '~/shared/components/tooltip'
 import { cn } from '~/shared/lib/utils'
 import { ExchangeAmountFlow } from '~/views/dapp/exchange/exchange-amount-flow'
@@ -95,74 +98,79 @@ export function MarketTradeWidget({ trade }: { trade: MarketTradeState }) {
           amountLocked={trade.isSubmitting || vm.isFlipping}
         />
 
-        <DappMetaPanel
-          className="gap-2.5 p-4"
-          items={[
-            {
-              label: t.exchange.exchangePrice,
-              value: (
-                <>
-                  <CountValue text={vm.exchangePriceDisplayLabel || '0'} />
-                  <Tooltip content={t.exchange.flip}>
+        <Card as="div" className="mt-3.5 max-dapp:mt-3" surface="outlined">
+          <List
+            items={[
+              {
+                label: t.exchange.exchangePrice,
+                value: (
+                  <>
+                    <CountValue text={vm.exchangePriceDisplayLabel || '0'} />
+                    <Tooltip content={t.exchange.flip}>
+                      <button
+                        aria-label={t.exchange.flip}
+                        className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
+                        onClick={vm.onTogglePriceInverted}
+                        type="button"
+                      >
+                        <Icon alt="" size="xs" src={dappAssets.exchangeFlip} />
+                      </button>
+                    </Tooltip>
+                  </>
+                ),
+                valueClassName: 'inline-flex items-center justify-end gap-1',
+              },
+              {
+                label: t.exchange.allowedSlippage,
+                value: (
+                  <>
+                    <CountValue text={`${trade.slippage}%`} />
                     <button
-                      aria-label={t.exchange.flip}
-                      className="duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80"
-                      onClick={vm.onTogglePriceInverted}
+                      aria-label={t.exchange.slippageSettings}
+                      className={cn(
+                        'duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
+                        vm.sessionReady && !trade.walletReady && 'pointer-events-none opacity-40',
+                      )}
+                      disabled={vm.sessionReady && !trade.walletReady}
+                      onClick={() => vm.setSlippageOpen(true)}
                       type="button"
                     >
-                      <Icon alt="" size="xs" src={dappAssets.exchangeFlip} />
+                      <Settings
+                        aria-hidden
+                        className="size-(--app-icon-xs) text-primary"
+                        strokeWidth={1.5}
+                      />
                     </button>
-                  </Tooltip>
-                </>
-              ),
-              valueClassName: 'inline-flex items-center justify-end gap-1',
-            },
-            {
-              label: t.exchange.allowedSlippage,
-              value: (
-                <>
-                  <CountValue text={`${trade.slippage}%`} />
-                  <button
-                    aria-label={t.exchange.slippageSettings}
-                    className={cn(
-                      'duration-dapp-fast grid size-4 shrink-0 cursor-pointer place-items-center rounded-md border-0 bg-transparent p-0 transition-opacity ease-out hover:opacity-80',
-                      vm.sessionReady && !trade.walletReady && 'pointer-events-none opacity-40',
-                    )}
-                    disabled={vm.sessionReady && !trade.walletReady}
-                    onClick={() => vm.setSlippageOpen(true)}
-                    type="button"
-                  >
-                    <Icon alt="" size="xs" src={dappAssets.setting} />
-                  </button>
-                </>
-              ),
-              valueClassName: 'inline-flex items-center justify-end gap-1',
-            },
-            ...(vm.sessionReady && trade.sellAmount.trim().length > 0
-              ? [
-                  {
-                    label: t.exchange.trade.priceImpact,
-                    value: trade.priceImpactLabel || '0',
-                  },
-                  {
-                    label: t.exchange.trade.estimatedGas,
-                    value: trade.gasEstimateLabel || '0',
-                  },
-                ]
-              : []),
-            {
-              label: t.exchange.route,
-              value: trade.routeLabel,
-            },
-            exchangeProviderMetaRow({
-              label: t.exchange.provider,
-              name: t.exchange.providerName,
-              ariaLabel: t.exchange.openPancakeSwap,
-              onOpen: vm.onOpenPancakeSwap,
-              iconSrc: dappAssets.arrowUpRight,
-            }),
-          ]}
-        />
+                  </>
+                ),
+                valueClassName: 'inline-flex items-center justify-end gap-1',
+              },
+              ...(vm.sessionReady && trade.sellAmount.trim().length > 0
+                ? [
+                    {
+                      label: t.exchange.trade.priceImpact,
+                      value: trade.priceImpactLabel || '0',
+                    },
+                    {
+                      label: t.exchange.trade.estimatedGas,
+                      value: trade.gasEstimateLabel || '0',
+                    },
+                  ]
+                : []),
+              {
+                label: t.exchange.route,
+                value: trade.routeLabel,
+              },
+              exchangeProviderMetaRow({
+                label: t.exchange.provider,
+                name: t.exchange.providerName,
+                ariaLabel: t.exchange.openPancakeSwap,
+                onOpen: vm.onOpenPancakeSwap,
+                iconSrc: dappAssets.arrowUpRight,
+              }),
+            ]}
+          />
+        </Card>
 
         {vm.sessionReady && trade.isHighPriceImpact ? (
           <InlineAlert className="mt-3">{t.exchange.trade.highPriceImpactWarning}</InlineAlert>

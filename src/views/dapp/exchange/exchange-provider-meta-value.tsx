@@ -27,7 +27,7 @@ export function ExchangeProviderMetaValue({
   )
 }
 
-/** One DappMetaPanel row for an external provider link. */
+/** One List row for an external provider link. */
 export function exchangeProviderMetaRow({
   label,
   name,

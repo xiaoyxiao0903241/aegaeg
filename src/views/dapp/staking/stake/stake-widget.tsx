@@ -1,14 +1,15 @@
 import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
 import { formatShortAddress } from '~/shared/api/format-display'
 import { AmountBox } from '~/shared/components/amount-box'
+import { Card } from '~/shared/components/card'
 import { AmountMaxChip } from '~/shared/components/chip'
 import { Icon } from '~/shared/components/icon'
+import { List } from '~/shared/components/list'
 import { Segment } from '~/shared/components/segment'
 import { Text } from '~/shared/components/text'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -79,28 +80,29 @@ export function StakeWidget() {
           startAdornment={null}
         />
 
-        <DappMetaPanel
-          className="mt-0 gap-3 p-4"
-          items={[
-            { label: t.staking.stake.meta.baseDaily, value: yieldMeta.baseDaily },
-            {
-              label: t.staking.stake.meta.periodYield,
-              value: yieldMeta.periodYield,
-              valueClassName: 'text-coral-emphasis',
-            },
-            { label: t.staking.stake.meta.bonus, value: yieldMeta.bonus },
-            { label: t.staking.stake.meta.lock, value: lockLabel },
-            {
-              label: t.staking.stake.meta.contract,
-              value: (
-                <a href={bscscanAddress(stake.pool)} rel="noreferrer" target="_blank">
-                  {formatShortAddress(stake.pool)}
-                </a>
-              ),
-              valueClassName: 'text-coral-emphasis',
-            },
-          ]}
-        />
+        <Card as="div" surface="outlined">
+          <List
+            items={[
+              { label: t.staking.stake.meta.baseDaily, value: yieldMeta.baseDaily },
+              {
+                label: t.staking.stake.meta.periodYield,
+                value: yieldMeta.periodYield,
+                valueClassName: 'text-coral-emphasis',
+              },
+              { label: t.staking.stake.meta.bonus, value: yieldMeta.bonus },
+              { label: t.staking.stake.meta.lock, value: lockLabel },
+              {
+                label: t.staking.stake.meta.contract,
+                value: (
+                  <a href={bscscanAddress(stake.pool)} rel="noreferrer" target="_blank">
+                    {formatShortAddress(stake.pool)}
+                  </a>
+                ),
+                valueClassName: 'text-coral-emphasis',
+              },
+            ]}
+          />
+        </Card>
 
         {walletReady ? (
           <DappActionRow>

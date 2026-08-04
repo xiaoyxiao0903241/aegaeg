@@ -1,10 +1,11 @@
 import { flashExchangeAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappActionRow } from '~/app/shell/dapp-action-row'
-import { DappMetaPanel } from '~/app/shell/dapp-meta-panel'
 import { DappTabHeader } from '~/app/shell/dapp-tab-header'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
+import { Card } from '~/shared/components/card'
 import { Icon } from '~/shared/components/icon'
+import { List } from '~/shared/components/list'
 import { Segment } from '~/shared/components/segment'
 import { Tooltip } from '~/shared/components/tooltip'
 import { bscscanAddress } from '~/shared/config/explorer'
@@ -86,27 +87,32 @@ export function FlashExchangeWidget({ flash }: { flash: FlashExchangeState }) {
           amountLocked={flash.isSubmitting || vm.isFlipping}
         />
 
-        <DappMetaPanel
-          className="gap-2.5 p-4"
-          items={[
-            {
-              label: t.exchange.exchangePrice,
-              value: flash.exchangePriceLabel || '0',
-            },
-            {
-              label: t.exchange.route,
-              value: flash.routeLabel,
-            },
-            exchangeProviderMetaRow({
-              label: t.exchange.provider,
-              name: t.exchange.flash.providerName,
-              ariaLabel: t.exchange.flash.openProvider,
-              onOpen: () =>
-                window.open(bscscanAddress(flash.providerAddress), '_blank', 'noopener,noreferrer'),
-              iconSrc: flashExchangeAssets.externalLink,
-            }),
-          ]}
-        />
+        <Card as="div" className="mt-3.5 max-dapp:mt-3" surface="outlined">
+          <List
+            items={[
+              {
+                label: t.exchange.exchangePrice,
+                value: flash.exchangePriceLabel || '0',
+              },
+              {
+                label: t.exchange.route,
+                value: flash.routeLabel,
+              },
+              exchangeProviderMetaRow({
+                label: t.exchange.provider,
+                name: t.exchange.flash.providerName,
+                ariaLabel: t.exchange.flash.openProvider,
+                onOpen: () =>
+                  window.open(
+                    bscscanAddress(flash.providerAddress),
+                    '_blank',
+                    'noopener,noreferrer',
+                  ),
+                iconSrc: flashExchangeAssets.externalLink,
+              }),
+            ]}
+          />
+        </Card>
 
         {vm.sessionReady && flash.walletReady ? (
           <DappActionRow className="mt-3.5 max-dapp:mt-3">
