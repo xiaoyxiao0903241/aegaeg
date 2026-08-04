@@ -199,6 +199,7 @@
 | `Carousel`         | Content/Item/Indicators            | `opts` · `autoplayMs` · `syncIndex`；Content about\|peek；Indicators about\|plain | 组合式轮播（Embla 不漏 api）；indicator active 须 `h-1.5`             |
 | `Empty`            | —                                  | `title` · `body?`                                                                 | 纯文案空态；偏大 pad；`Table.Empty` / `Chart.Empty` 复用              |
 | `Chart`            | Header/Plot/Empty                  | `surface`；Plot 吃 `points`                                                       | 组合式面积图；业务见 StakingTvlChart / StakingCurveChart              |
+| `Steps`            | Item                               | `align` start\|center · `activeIndex?`                                            | 组合式步骤条（无 Card）；PC 横 / H5 竖                                |
 | `Table`            | Header/Body/Cell/Footer/Pagination | `headers`, `rows`, `empty`, …                                                     | 组合式 DApp 表（`shared/components/table.tsx`）                       |
 | `Accordion`        | qa / qhd                           | `items`, `variant`                                                                | 折叠行为 + a11y；实现文件为 `faq-list.tsx`（导出 `FaqList`）          |
 | `WidgetPromoCard`  | promo / pcard                      | children                                                                          | 深色 CTA 卡（`Card inverse`）                                         |
@@ -231,6 +232,7 @@
 
 - `dapp-shell.tsx` · `dapp-rail.tsx` · `dapp-topbar.tsx` · `dapp-mobile-nav.tsx`
 - `dapp-widget-frame.tsx` · `dapp-detail-page.tsx` · `dapp-detail-block.tsx` · `shared/components/table.tsx`
+- `shared/components/steps.tsx` · `shared/components/carousel.tsx`
 - `wallet-*-modal.tsx` · `swap-slippage-modal.tsx` · `dialog.tsx`
 - `static-layout.ts` · `views/home/*`
 - Foundation 定义文件：**layout 断点 only** — `text.tsx` · `button.tsx` · `chip.tsx` · `card.tsx` · `input.tsx`
@@ -243,14 +245,14 @@
 
 ## §9 组件地图
 
-| 层        | 文件 / 入口                                                                           | Gate                                                    |
-| --------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                             | §1                                                      |
-| Text      | `shared/components/text.tsx`                                                          | 12 variant · 7 tone                                     |
-| Button    | `shared/components/button.tsx`                                                        | 4×3×2                                                   |
-| Chip      | `shared/components/chip.tsx`                                                          | 3×3×2×4                                                 |
-| Card      | `shared/components/card.tsx`                                                          | 4 surface                                               |
-| Input     | `shared/components/input.tsx`                                                         | default / numeric / amount                              |
-| Composite | FaqList · WidgetPromoCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · … | 见 §7；禁平行 chrome；右栏指标瓦 = Card elevated + Text |
+| 层        | 文件 / 入口                                                                                                                      | Gate                                                    |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Token     | `tokens.json` → `theme.css` / `tokens.ts`                                                                                        | §1                                                      |
+| Text      | `shared/components/text.tsx`                                                                                                     | 12 variant · 7 tone                                     |
+| Button    | `shared/components/button.tsx`                                                                                                   | 4×3×2                                                   |
+| Chip      | `shared/components/chip.tsx`                                                                                                     | 3×3×2×4                                                 |
+| Card      | `shared/components/card.tsx`                                                                                                     | 4 surface                                               |
+| Input     | `shared/components/input.tsx`                                                                                                    | default / numeric / amount                              |
+| Composite | FaqList · WidgetPromoCard · Segment · ClaimSplitSlider · AmountBox · WidgetHeader · Steps · Carousel · Chart · Empty · Table · … | 见 §7；禁平行 chrome；右栏指标瓦 = Card elevated + Text |
 
 新切片：**先查本表有无 owner** → 有则扩 call site / className；无则先改 api 再实现。

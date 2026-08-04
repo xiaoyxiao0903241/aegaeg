@@ -141,6 +141,27 @@
 - 页袋直触 `lightweight-charts` / 平行 `TvAreaChart` / `StakingChartCard`
 - shared 内嵌 locale 或拉历史索引
 
+## DApp 步骤（`Steps`）
+
+> **模型**：组合式步骤条（**不含 Card**）。`shared/components/steps.tsx`。  
+> `Steps` · `Item`。PC 横排 / H5 竖时间线。卡壳由页袋包。
+
+| 零件         | 职责                                                                |
+| ------------ | ------------------------------------------------------------------- |
+| `Steps`      | `align="start"`\|`"center"` · `activeIndex?`（0-based；缺省全实心） |
+| `Steps.Item` | `title` · `body`                                                    |
+
+| `align`  | 稿         | 连线                    | 间距 / 文案（PC）                                                          |
+| -------- | ---------- | ----------------------- | -------------------------------------------------------------------------- |
+| `start`  | `4301:226` | **2px**（`h-0.5`）圆→圆 | 无 gap · 非末项 `pr-4` · 轨 `-mr-4` 接线 · 圆→文 12 · 题→说明 8 · 文左齐圆 |
+| `center` | `4359:531` | **2px** 贯通 · 首末圆心 | 同上 padding · 文案 max≈148 · 圆→文 16 · 题→说明 4 · 居中                  |
+
+### MUST NOT（步骤）
+
+- shared 内嵌 Card / locale
+- 平行 `DappProcessSteps`
+- call site 自写编号步骤 chrome（点轴时间线 ≠ Steps，见资产 Rebase）
+
 ## DApp 表（`Table`）
 
 > **模型**：组合式 elevated 表壳。`shared/components/table.tsx`。  

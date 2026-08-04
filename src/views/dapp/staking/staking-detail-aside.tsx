@@ -4,13 +4,14 @@ import { dappAssets } from '~/app/assets'
 import { DappActionButton } from '~/app/shell/dapp-action-button'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
-import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { OverviewGrid } from '~/app/shell/overview-grid'
 import { Tile } from '~/app/shell/tile'
 import { formatCompactUsd, formatSignedPercent } from '~/shared/api/format-display'
+import { Card } from '~/shared/components/card'
 import { CountValue } from '~/shared/components/count-value'
 import { FaqList } from '~/shared/components/faq-list'
 import { Icon } from '~/shared/components/icon'
+import { Steps } from '~/shared/components/steps'
 import { Table } from '~/shared/components/table'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -260,7 +261,13 @@ export function StakingDetailAside({
       <DappDetailBlock>
         <DappContentHeading>{mechanismTitle ?? t.staking.aside.mechanism}</DappContentHeading>
         {mechanismSteps && mechanismSteps.length > 0 ? (
-          <DappProcessSteps items={mechanismSteps} />
+          <Card className="rounded-2xl p-6" surface="elevated">
+            <Steps align="start">
+              {mechanismSteps.map((step) => (
+                <Steps.Item body={step.body} key={step.title} title={step.title} />
+              ))}
+            </Steps>
+          </Card>
         ) : (
           <Text as="p" className="m-0" tone="muted-foreground" variant="copy">
             {mechanism}

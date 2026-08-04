@@ -3,11 +3,11 @@ import { DappAboutCard } from '~/app/shell/dapp-about-card'
 import { DappContentHeading } from '~/app/shell/dapp-content-heading'
 import { DappDetailBlock } from '~/app/shell/dapp-detail-block'
 import { DappDetailPage } from '~/app/shell/dapp-detail-page'
-import { DappProcessSteps } from '~/app/shell/dapp-process-steps'
 import { useI18n } from '~/i18n/use-i18n'
 import { Card } from '~/shared/components/card'
 import { Carousel } from '~/shared/components/carousel'
 import { FaqList } from '~/shared/components/faq-list'
+import { Steps } from '~/shared/components/steps'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
 
@@ -58,9 +58,15 @@ export function ReleaseHubContent() {
             {t.release.hub.mechanismSubtitle}
           </Text>
         </div>
-        {/* 与 Stake 等同构：DappProcessSteps = PC 横排 / H5 竖时间线 */}
+        {/* Figma `4359:531` — Steps center + activeIndex=2（进入释放池） */}
         <div data-slot-id="release-mechanism-steps">
-          <DappProcessSteps items={steps} />
+          <Card className="rounded-2xl p-6" surface="elevated">
+            <Steps activeIndex={2} align="center">
+              {steps.map((step) => (
+                <Steps.Item body={step.body} key={step.title} title={step.title} />
+              ))}
+            </Steps>
+          </Card>
         </div>
 
         {/* 目的 + 税率：稿独立区块；跟在步骤卡下 */}

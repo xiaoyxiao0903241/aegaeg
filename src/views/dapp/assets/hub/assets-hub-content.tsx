@@ -202,9 +202,12 @@ export function AssetsHubContent() {
             ))}
           </ol>
 
-          {/* PC 横轴 */}
+          {/* PC 横轴 — 连线 2px（Figma `4285:215`）；禁漏 h-*（会消失） */}
           <div className="relative hidden grid-cols-4 items-center dapp:grid">
-            <div className="absolute inset-x-[12.5%] top-1/2 -translate-y-1/2 bg-border" />
+            <div
+              aria-hidden
+              className="absolute inset-x-[12.5%] top-1/2 h-0.5 -translate-y-1/2 bg-border"
+            />
             {rebase.steps.map((step) => (
               <span
                 className="relative z-1 flex justify-center"
