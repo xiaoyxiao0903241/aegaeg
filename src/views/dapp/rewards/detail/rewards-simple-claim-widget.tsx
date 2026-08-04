@@ -36,7 +36,7 @@ export function RewardsSimpleClaimWidget({ view }: { view: SimpleClaimView }) {
         {view === 'grant' ? (
           <>
             {/* 待审批 4719:1941：顶行标签|hint · 中行 gAGX|金额24 · 客服链+说明 */}
-            <Card surface="outlined" className="min-h-31 rounded-2xl p-4">
+            <Card surface="outlined" className="min-h-31">
               <div className="flex items-start justify-between gap-3">
                 <Text as="p" className="leading-4 text-foreground/40" variant="copy">
                   {vm.grant.pendingLabel}

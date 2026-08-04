@@ -4,7 +4,7 @@ import { Card } from '~/shared/components/card'
 /** 仓位卡 loading 骨架（对齐 outlined 卡：period · 双列 · 双 CTA）。 */
 export function AssetsPositionRowSkeleton() {
   return (
-    <Card aria-busy aria-hidden className="grid gap-2 p-4 shadow-none" surface="outlined">
+    <Card aria-busy aria-hidden className="grid gap-2" surface="outlined">
       <div className="flex items-center gap-2">
         <DappSkeleton className="h-6 w-12 rounded-full" />
         <div className="ml-auto flex items-center gap-2">

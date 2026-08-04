@@ -42,7 +42,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
             value={vm.cobuildRewardType}
           />
         ) : null}
-        <Card surface="outlined" className="min-h-19.75 rounded-2xl p-4">
+        <Card surface="outlined" className="min-h-19.75">
           <div className="flex items-start justify-between gap-3">
             <div className="grid gap-1">
               <Text as="p" className="leading-4 text-foreground/40" variant="copy">
@@ -98,7 +98,7 @@ export function RewardsMixedClaimWidget({ view }: { view: MixedClaimView }) {
           </div>
         ) : null}
 
-        <Card surface="outlined" className="rounded-2xl p-4">
+        <Card surface="outlined">
           <ClaimSplitSlider
             aria-label={vm.mixed.splitAria}
             className="max-w-none"

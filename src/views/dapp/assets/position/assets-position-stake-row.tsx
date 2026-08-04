@@ -60,7 +60,7 @@ export function AssetsPositionStakeRow(
       : t.assets.position.redeem
 
   return (
-    <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
+    <Card surface="outlined" className="grid gap-2">
       <AssetsPositionRowHeader
         dayUnit={dayUnit}
         periodLabel={periodLabel}

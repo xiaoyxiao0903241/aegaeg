@@ -15,7 +15,7 @@ export const amountBox = tv({
     /**
      * Figma inputBox 4454:642 / amtBox 4462:620 / priceBox 4462:628：
      * 合成壳高 = py-3（--space-5）+ figure 字盒（--type-figure-*）+ border；禁任意 h-[Npx]。
-     * Override Card 默认 p-3.5 → p-0 + px-3.5 py-3。
+     * Override Card outlined 默认 p-4 → p-0 + px-3.5 py-3。
      */
     rootOutside: 'flex items-center gap-0 rounded-md p-0 px-3.5 py-3 focus-within:border-coral',
     header: 'flex items-center justify-between gap-3',

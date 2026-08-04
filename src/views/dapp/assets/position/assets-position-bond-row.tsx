@@ -30,7 +30,7 @@ export function AssetsPositionBondRow({
   const dayUnit = t.assets.claim.releaseDays.replace('{days}', '').trim()
 
   return (
-    <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
+    <Card surface="outlined" className="grid gap-2">
       <AssetsPositionRowHeader
         dayUnit={dayUnit}
         periodLabel={periodLabel}

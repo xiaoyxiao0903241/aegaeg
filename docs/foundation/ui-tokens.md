@@ -138,21 +138,23 @@
 | `surface` | `outlined` · `elevated` · `soft` · `inverse`                  |
 | `as`      | `article` · `button` · `div` · `section` · `details` · `span` |
 
-| surface  | Elevation            | radius               | padding                       | 用途                                                                                                  |
-| -------- | -------------------- | -------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
-| outlined | —                    | `rounded-md` (16px)  | `p-3.5` (14px)                | 标准边框卡（wcol box、meta、mode card、`DappSideCard`）                                               |
-| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-3.5` (14px)                | MetricCard、`ExchangeProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影） |
-| soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）         |
-| inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                      |
+| surface  | Elevation            | radius               | padding                       | 用途                                                                                                             |
+| -------- | -------------------- | -------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| outlined | —                    | `rounded-md` (16px)  | `p-4` (16px)                  | 标准边框卡（`InteractiveCard` hub 左卡 / meta / `DappSideCard`；禁 call site 再抹 `p-*`/`rounded-*`/`shadow-*`） |
+| elevated | E2 (`shadow-card`)   | `rounded-md` (16px)  | `p-3.5` (14px)                | MetricCard、`ExchangeProgramCard`、`DappTableCard`（表壳另抹 `rounded-2xl`+`border-0`+`p-0`，仅阴影）            |
+| soft     | E1 (`shadow-faq`)    | `rounded-2xl` (16px) | 无（body 自管 `px-6 py-4.5`） | FAQ / Accordion；浅色 CommunityStat（composite 用 `rounded-lg` + `p-4.5` 抹平 ≡ Figma sc 18）                    |
+| inverse  | E3 (`shadow-subtle`) | `rounded-md` (16px)  | `p-4` (16px)                  | 深色 CTA 卡（`WidgetPromoCard`）                                                                                 |
 
-**子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`
+**子组件**：`Card.Header / Title / Description / Content / Footer / Label / Value`（**通用内容卡**字阶合同；≠ Hub 入口）
+
+**Hub 可点壳**：`InteractiveCard`（`Card outlined` + 交互）— 无文案子件；内容用 `Text`；见 [`component-usage.md`](./component-usage.md)「B+D」。
 
 **用法**：同 chrome 入口卡 / hub tile 的 props 合同与「可点才 button」见 [`component-usage.md`](./component-usage.md)。
 
 **禁止**：`context` · `fill` · `radius` · `tone` · `hover` 轴；call site 叠 `shadow-*` / `rounded-*` 覆盖 surface 默认。
 **Composite 豁免（须文档）**：`CommunityStatCard` / `ExchangePromoCard` 可用 className 抹平 radius/pad，**禁止**再叠 `shadow-*` 改 elevation。
 **依赖**：Text（§2）
-**探针**：mode-card-root · program-card · faq card layout · metric-card · community-stat · swap-promo
+**探针**：InteractiveCard hub · program-card · faq card layout · metric-card · community-stat · swap-promo
 **Gate**：`surface` 键 = **4**
 
 ---

@@ -49,7 +49,7 @@ const CONTRIBUTION_CARD_INDEX = 5
  * No onClick → `article`（同视觉）；禁 HTML `disabled`（会毁 elevation）。
  */
 const exchangeProgramCard = tv({
-  // p-0：清 elevated 默认 p-3.5
+  // p-0：清 elevated 默认 pad，改由 px/py 合成稿高
   base: 'flex size-full min-h-17.5 p-0 px-4 py-3 text-left',
   variants: {
     hasIcon: {

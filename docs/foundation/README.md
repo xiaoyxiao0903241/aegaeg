@@ -1,7 +1,7 @@
 # Foundation — UI token 与组件轴
 
 > **Baseline**：当前分支 + [Figma](https://www.figma.com/design/uiKwzwIoD06phS0husdqjB/AEGIS-X--Copy---Copy-?node-id=4253-365&m=dev)  
-> **范围**：Token · Text · Button · Card · Chip · Input · shell chrome
+> **范围**：Token · Text · Button · Card · InteractiveCard（Hub 壳）· Chip · Input · shell chrome
 
 ## 必读
 

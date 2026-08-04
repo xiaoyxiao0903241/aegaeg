@@ -1,4 +1,5 @@
 import type { BondPeriod } from '~/core/staking/staking-period'
+import { Card } from '~/shared/components/card'
 import { chipVariants } from '~/shared/components/chip'
 import { Text } from '~/shared/components/text'
 import { cn } from '~/shared/lib/utils'
@@ -21,8 +22,8 @@ type BondPeriodCardCopy = {
 }
 
 /**
- * Figma `bond` 4454:602 / yield chip `gb` 4454:607.
- * Yield chrome → Chip soft success（禁页袋手搓 h/hex）.
+ * Figma `bond` 4454:615 — chrome 走 `Card outlined`（p-4 / radius-md / border）。
+ * 选中态仅改 border/bg；Yield chrome → Chip soft success。
  */
 export function BondPeriodList({
   ariaLabel,
@@ -54,16 +55,17 @@ export function BondPeriodList({
           const selected = period === value
           const discount = discounts[period] || '0%'
           return (
-            <button
+            <Card
               aria-checked={selected}
+              as="button"
               className={cn(
-                // Figma bond `4454:602`：p-3 + 左栏 gap-2（稿 8）合成卡高（禁 h-[91px]）
-                'flex w-full items-start justify-between gap-3 rounded-md border p-3 text-left transition-colors',
-                selected ? 'border-coral-emphasis bg-primary-soft' : 'border-border bg-card',
+                'flex w-full items-start justify-between gap-3 text-left transition-colors',
+                selected && 'border-coral-emphasis bg-primary-soft',
               )}
               key={period}
               onClick={() => onChange(period)}
               role="radio"
+              surface="outlined"
               type="button"
             >
               <div className="grid min-w-0 flex-1 gap-2">
@@ -114,7 +116,7 @@ export function BondPeriodList({
                   {copy.discountPrice} {discountPrices[period]}
                 </Text>
               </div>
-            </button>
+            </Card>
           )
         })}
       </div>

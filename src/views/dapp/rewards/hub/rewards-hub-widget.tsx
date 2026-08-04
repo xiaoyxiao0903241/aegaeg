@@ -1,6 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query'
 
 import { dappAssets } from '~/app/assets'
+import { DappIcon } from '~/app/shell/dapp-icon'
 import { DappPanelToggle } from '~/app/shell/dapp-panel-toggle'
 import { DappWidgetConnectPromo } from '~/app/shell/dapp-widget-connect-footer'
 import { DappWidgetStack } from '~/app/shell/dapp-widget-frame'
@@ -12,6 +13,8 @@ import { useChainQuery } from '~/hooks/use-chain-query'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
 import { queryKeys } from '~/shared/api/query/query-keys'
+import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
 import type { Address } from '~/shared/config/contracts'
@@ -19,12 +22,12 @@ import type { RewardsView } from '~/shared/config/dapp-deep-links'
 import { REWARDS_CARD_CONTRACT } from '~/shared/config/dapp-deep-links'
 import { openRewardsView } from '~/shared/config/dapp-open-views'
 import { EXCHANGE_CONFIG } from '~/shared/config/exchange'
-import { RewardsModeCard } from '~/views/dapp/rewards/hub/rewards-mode-card'
 import { claimableAmountValue } from '~/views/dapp/rewards/rewards-display'
 import { readLuckyClaimSnapshot } from '~/web3/rewards/rewards-read'
 import { useActiveAccount } from '~/web3/thirdweb-react'
 
-const CARD_VIEWS = [
+/** 奖励 Hub：幸运 / 推荐 / 参与 / 共建 / 发展 / 创世 */
+const REWARD_CARDS = [
   'lucky',
   'referral',
   'participate',
@@ -35,14 +38,14 @@ const CARD_VIEWS = [
 
 const AGX_DECIMALS = EXCHANGE_CONFIG.tokens.agx.decimals
 
-/** Figma：参与/共建/发展 icon 24；其余 20。 */
-const CARD_ICONS = {
-  lucky: { src: dappAssets.rewardsHubLucky, className: undefined },
-  referral: { src: dappAssets.rewardsHubReferral, className: undefined },
-  participate: { src: dappAssets.rewardsHubParticipate, className: 'size-6' },
-  cobuild: { src: dappAssets.rewardsHubCobuild, className: 'size-6' },
-  grant: { src: dappAssets.rewardsHubGrant, className: 'size-6' },
-  genesis: { src: dappAssets.rewardsHubGenesis, className: undefined },
+/** Figma：参与/共建/发展 24（token）；其余 20（xl）。 */
+const REWARD_CARD_ICONS = {
+  lucky: { src: dappAssets.rewardsHubLucky, size: 'xl' },
+  referral: { src: dappAssets.rewardsHubReferral, size: 'xl' },
+  participate: { src: dappAssets.rewardsHubParticipate, size: 'token' },
+  cobuild: { src: dappAssets.rewardsHubCobuild, size: 'token' },
+  grant: { src: dappAssets.rewardsHubGrant, size: 'token' },
+  genesis: { src: dappAssets.rewardsHubGenesis, size: 'xl' },
 } as const
 
 function formatGagxBalance(value: number | null, ready: boolean, priceUsd: number | null) {
@@ -93,12 +96,12 @@ export function RewardsHubWidget() {
     return formatTokenAmountToNumber(snap.rewardAmount, AGX_DECIMALS)
   })()
 
-  const amountValue = (view: (typeof CARD_VIEWS)[number]) => {
+  const amountValue = (view: (typeof REWARD_CARDS)[number]) => {
     if (!sessionReady && view !== 'lucky') return null
     if (view === 'genesis') return genesisAmount
     if (view === 'grant') return grantAmount
     if (view === 'lucky') return luckyAmount
-    // referral / participate / cobuild：可领额来自签名（推荐=CommunityFund 简单签；共建=Dao Mixed），Hub 无预览 → 诚实空态
+    // referral / participate / cobuild：可领额来自签名，Hub 无预览 → 诚实空态
     return null
   }
 
@@ -110,12 +113,11 @@ export function RewardsHubWidget() {
         title={t.rewards.title}
       />
       <DappWidgetStack>
-        {CARD_VIEWS.map((view) => {
+        {REWARD_CARDS.map((view) => {
           const card = t.rewards.cards[view]
           const value = amountValue(view)
           const isGenesis = view === 'genesis'
-          const usesClaimableLabel = isGenesis || view === 'grant'
-          const icon = CARD_ICONS[view]
+          const icon = REWARD_CARD_ICONS[view]
           const balance = isGenesis
             ? {
                 amount:
@@ -125,24 +127,63 @@ export function RewardsHubWidget() {
                 approx: undefined as string | undefined,
               }
             : formatGagxBalance(value, view === 'lucky' ? walletReady : sessionReady, priceUsd)
+          const balanceLabel =
+            isGenesis || view === 'grant' ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
 
           return (
-            <RewardsModeCard
-              approx={balance.approx}
-              badge={isGenesis ? t.rewards.cards.genesis.badge : undefined}
-              balanceAmount={balance.amount}
-              balanceLabel={
-                usesClaimableLabel ? t.rewards.detail.claimable : t.rewards.hub.balanceLabel
-              }
-              body={card.body}
-              claimCta={isGenesis ? t.rewards.hub.enterClaim : undefined}
-              claimIcon={isGenesis ? dappAssets.rewardsHubEnterClaim : undefined}
-              icon={icon.src}
-              iconClassName={icon.className}
+            <InteractiveCard
+              className="grid gap-3"
               key={`${view}:${REWARDS_CARD_CONTRACT[view]}`}
               onClick={() => openRewardsView(view)}
-              title={card.title}
-            />
+            >
+              <div className="grid gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <DappIcon alt="" size={icon.size} src={icon.src} />
+                  <Text as="span" className="font-semibold wrap-break-word" variant="detail">
+                    {card.title}
+                  </Text>
+                  {isGenesis ? (
+                    <span className="inline-flex h-4.5 items-center rounded-full bg-primary-soft px-2">
+                      <Text as="span" className="leading-none" tone="primary" variant="caption">
+                        {t.rewards.cards.genesis.badge}
+                      </Text>
+                    </span>
+                  ) : null}
+                </div>
+                <Text as="p" className="m-0 wrap-break-word text-foreground/40" variant="copy">
+                  {card.body}
+                </Text>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                <Text as="span" className="text-foreground/70" variant="copy">
+                  {balanceLabel}
+                </Text>
+                <div className="flex min-w-0 flex-wrap items-center justify-end gap-1.5">
+                  <Text as="strong" className="wrap-break-word" variant="headline">
+                    <DappCountValue text={balance.amount} />
+                  </Text>
+                  {balance.approx ? (
+                    <Text as="span" className="wrap-break-word text-foreground/40" variant="copy">
+                      <DappCountValue text={balance.approx} />
+                    </Text>
+                  ) : null}
+                  {isGenesis ? (
+                    <span className="inline-flex items-center gap-1">
+                      <Text as="span" className="font-medium" tone="primary" variant="copy">
+                        {t.rewards.hub.enterClaim}
+                      </Text>
+                      <DappIcon
+                        alt=""
+                        className="size-4"
+                        size="sm"
+                        src={dappAssets.rewardsHubEnterClaim}
+                      />
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            </InteractiveCard>
           )
         })}
 

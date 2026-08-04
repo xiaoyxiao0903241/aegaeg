@@ -95,7 +95,7 @@ export function AssetsXminePositionCard({
       : redeemAnytimeLabel
 
   return (
-    <Card surface="outlined" className="grid gap-2 p-4 shadow-none">
+    <Card surface="outlined" className="grid gap-2">
       <div className="flex items-center gap-2">
         <span className="inline-flex h-6 items-center rounded-full bg-muted px-3 text-xs leading-none text-muted-foreground">
           {periodPill}

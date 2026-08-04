@@ -4,7 +4,7 @@
 
 ## 何时走本 runbook
 
-触达 **Token / Text / Button / Card / Chip / Input / shell primitive** 时必走。  
+触达 **Token / Text / Button / Card / InteractiveCard / Chip / Input / shell primitive** 时必走。  
 新建 / 重构 hub 入口卡、同 chrome 多实例 → 同时读 [`component-usage.md`](./component-usage.md)。
 
 ## 流程

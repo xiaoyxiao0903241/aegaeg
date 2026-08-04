@@ -8,8 +8,8 @@ import { useAgxPriceUsd } from '~/hooks/use-agx-price-usd'
 import { useBufferPoolSummary, useReleasePoolSummary } from '~/hooks/use-api-data'
 import { useI18n } from '~/i18n/use-i18n'
 import { formatApproxUsd, formatGroupedNumber } from '~/shared/api/format-display'
-import { Card } from '~/shared/components/card'
 import { DappCountValue } from '~/shared/components/dapp-count-value'
+import { InteractiveCard } from '~/shared/components/interactive-card'
 import { Text } from '~/shared/components/text'
 import { WidgetHeader } from '~/shared/components/widget-header'
 import { openReleaseView } from '~/shared/config/dapp-open-views'
@@ -110,21 +110,13 @@ export function ReleaseHubWidget() {
         title={t.release.title}
       />
       <DappWidgetStack>
-        {/* Figma 4298:365：outlined · py16 · gap · 已释放 coral；高随内容 */}
-        <Card
-          as="button"
-          className="duration-dapp-fast flex w-full cursor-pointer flex-col gap-1.5 rounded-2xl px-4 py-4 text-left shadow-none hover:border-primary"
+        <InteractiveCard
+          className="flex flex-col gap-1.5"
           data-slot-id="release-pool-card"
           onClick={() => openReleaseView('queue')}
-          surface="outlined"
-          type="button"
         >
           <div className="flex items-center gap-2.5">
-            <img
-              alt=""
-              className="size-(--app-icon-caption) shrink-0"
-              src={dappAssets.releasePool}
-            />
+            <img alt="" className="size-(--app-icon-caption)" src={dappAssets.releasePool} />
             <Text as="span" className="min-w-0 flex-1 font-semibold" variant="detail">
               {t.release.queue.title}
             </Text>
@@ -133,42 +125,34 @@ export function ReleaseHubWidget() {
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Text as="p" className="text-foreground/40" variant="copy">
+            <Text as="p" className="m-0 text-foreground/40" variant="copy">
               {t.release.labels.releasing}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="copy">
+            <Text as="p" className="m-0 text-foreground/40" variant="copy">
               {t.release.labels.released}
             </Text>
-            <Text as="p" className="font-semibold" variant="headline">
+            <Text as="strong" variant="headline">
               <DappCountValue text={queueReleasingLabel} />
             </Text>
-            <Text as="p" className="font-semibold text-primary" variant="headline">
+            <Text as="strong" tone="primary" variant="headline">
               <DappCountValue text={queueClaimableLabel} />
             </Text>
-            <Text as="p" className="text-foreground/40" variant="copy">
+            <Text as="p" className="m-0 text-foreground/40" variant="copy">
               {queueReleasingApprox}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="copy">
+            <Text as="p" className="m-0 text-foreground/40" variant="copy">
               {queueClaimableApprox}
             </Text>
           </div>
-        </Card>
+        </InteractiveCard>
 
-        {/* Figma 4298:376：总额行在上 · 已释放行在下（coral）；高随内容 */}
-        <Card
-          as="button"
-          className="duration-dapp-fast flex w-full cursor-pointer flex-col gap-2 rounded-2xl px-4 py-4 text-left shadow-none hover:border-primary"
+        <InteractiveCard
+          className="flex flex-col gap-2"
           data-slot-id="buffer-pool-card"
           onClick={() => openReleaseView('buffer')}
-          surface="outlined"
-          type="button"
         >
           <div className="flex items-center gap-2.5">
-            <img
-              alt=""
-              className="size-(--app-icon-caption) shrink-0"
-              src={dappAssets.bufferPool}
-            />
+            <img alt="" className="size-(--app-icon-caption)" src={dappAssets.bufferPool} />
             <Text as="span" className="min-w-0 flex-1 font-semibold" variant="detail">
               {t.release.buffer.title}
             </Text>
@@ -177,16 +161,16 @@ export function ReleaseHubWidget() {
             </Text>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Text as="p" className="font-semibold" variant="headline">
+            <Text as="strong" variant="headline">
               <DappCountValue text={bufferTotalAgx} />
             </Text>
-            <Text as="p" className="font-semibold" variant="headline">
+            <Text as="strong" variant="headline">
               {gagxZeroLabel}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="copy">
+            <Text as="p" className="m-0 text-foreground/40" variant="copy">
               {bufferTotalApprox}
             </Text>
-            <Text as="p" className="text-foreground/40" variant="copy">
+            <Text as="p" className="m-0 text-foreground/40" variant="copy">
               {bufferGagxApprox}
             </Text>
           </div>
@@ -195,7 +179,7 @@ export function ReleaseHubWidget() {
               <Text as="span" className="text-foreground/40" variant="copy">
                 {t.release.labels.released}
               </Text>
-              <Text as="span" className="text-primary" variant="copy">
+              <Text as="span" tone="primary" variant="copy">
                 <DappCountValue text={bufferClaimedAgx} />
               </Text>
             </div>
@@ -203,12 +187,12 @@ export function ReleaseHubWidget() {
               <Text as="span" className="text-foreground/40" variant="copy">
                 {t.release.labels.released}
               </Text>
-              <Text as="span" className="text-primary" variant="copy">
+              <Text as="span" tone="primary" variant="copy">
                 {gagxZeroLabel}
               </Text>
             </div>
           </div>
-        </Card>
+        </InteractiveCard>
 
         {!walletReady ? <DappWidgetConnectPromo /> : null}
       </DappWidgetStack>
